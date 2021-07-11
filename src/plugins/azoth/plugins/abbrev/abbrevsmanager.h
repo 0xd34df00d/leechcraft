@@ -9,13 +9,14 @@
 #pragma once
 
 #include <QObject>
+#include <QCoreApplication>
 #include "abbreviation.h"
 
 namespace LC::Azoth::Abbrev
 {
 	class AbbrevsManager : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Abbrev::AbbrevsManager)
 
 		QList<Abbreviation> Abbrevs_;
 	public:
