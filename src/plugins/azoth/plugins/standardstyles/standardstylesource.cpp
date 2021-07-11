@@ -347,14 +347,11 @@ namespace LC::Azoth::StandardStyles
 		return Coloring2Colors_ [mangledScheme];
 	}
 
-	QString StandardStyleSource::GetStatusImage (const QString& statusIconName)
+	QString StandardStyleSource::GetStatusImage (const QString& iconName)
 	{
-		const QString& fullName = Proxy_->GetSettingsManager ()->
-				property ("SystemIcons").toString () + '/' + statusIconName;
-		const QString& statusIconPath = Proxy_->
-				GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (fullName);
-		const QImage& img = QImage (statusIconPath);
-		return Util::GetAsBase64Src (img);
+		const auto& fullName = Proxy_->GetSettingsManager ()->property ("SystemIcons").toString () + '/' + iconName;
+		const auto& statusIconPath = Proxy_->GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (fullName);
+		return Util::GetAsBase64Src (QImage { statusIconPath });
 	}
 
 	void StandardStyleSource::HandleMessageDestroyed (QObject *msgObj)
