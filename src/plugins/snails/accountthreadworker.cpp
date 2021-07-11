@@ -434,8 +434,11 @@ namespace Snails
 			if (!field)
 				return;
 
-			if (const auto& alist = vmime::dynamicCast<const vmime::addressList> (field->getValue ()))
+			const auto fieldVal = field->getValue ();
+			if (const auto& alist = vmime::dynamicCast<const vmime::addressList> (fieldVal))
 				msg.Addresses_ [type] = Util::Map (alist->toMailboxList ()->getMailboxList (), &Mailbox2Strings);
+			else if (const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (fieldVal))
+				msg.Addresses_ [type] << Mailbox2Strings (mbox);
 			else
 			{
 				const auto fieldPtr = field.get ();
