@@ -397,13 +397,6 @@ namespace Snails
 		else
 			qWarning () << "no 'from' data";
 
-		if (const auto& replyToHeader = header->ReplyTo ())
-		{
-			const auto& replyToVal = replyToHeader->getValue ();
-			const auto& replyTo = vmime::dynamicCast<const vmime::mailbox> (replyToVal);
-			msg.Addresses_ [AddressType::ReplyTo] << Mailbox2Strings (replyTo);
-		}
-
 		if (const auto& msgIdField = header->MessageId ())
 		{
 			const auto& msgIdVal = msgIdField->getValue ();
@@ -452,6 +445,7 @@ namespace Snails
 		setAddresses (AddressType::To, header->To ());
 		setAddresses (AddressType::Cc, header->Cc ());
 		setAddresses (AddressType::Bcc, header->Bcc ());
+		setAddresses (AddressType::ReplyTo, header->ReplyTo ());
 		if (const auto dateHeader = header->Date ())
 		{
 			const auto& origDateVal = dateHeader->getValue ();
