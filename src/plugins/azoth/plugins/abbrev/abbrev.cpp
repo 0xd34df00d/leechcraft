@@ -9,6 +9,7 @@
 #include "abbrev.h"
 #include <QIcon>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include "abbrevsmanager.h"
@@ -131,11 +132,13 @@ namespace LC::Azoth::Abbrev
 
 	void Plugin::ListAbbrevs (ICLEntry *entry)
 	{
-		QStringList abbrevs;
-		for (const auto& abbrev : Manager_->List ())
-			abbrevs << QStringLiteral ("%1 → %2")
-					.arg (abbrev.Pattern_,
-						  abbrev.Expansion_);
+		const auto& abbrevs = Util::Map (Manager_->List (),
+				[] (const auto& abbrev) noexcept
+				{
+					return QStringLiteral ("%1 → %2")
+							.arg (abbrev.Pattern_,
+								  abbrev.Expansion_);
+				});
 
 		const auto& text = tr ("%n abbreviation(s):", 0, abbrevs.size ()) +
 				"<ol><li>" + abbrevs.join (QStringLiteral ("</li><li>")) + "</li></ol>";
