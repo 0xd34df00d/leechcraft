@@ -101,12 +101,18 @@ namespace LC::Azoth::Abbrev
 		return text;
 	}
 
+	namespace Keys
+	{
+		const QString Group = QStringLiteral ("Abbrevs");
+		const QString Abbreviations = QStringLiteral ("Abbreviations");
+	}
+
 	void AbbrevsManager::Load ()
 	{
 		QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Abbrev" };
-		settings.beginGroup ("Abbrevs");
-		Abbrevs_ = settings.value ("Abbreviations").value<decltype (Abbrevs_)> ();
+		settings.beginGroup (Keys::Group);
+		Abbrevs_ = settings.value (Keys::Abbreviations).value<decltype (Abbrevs_)> ();
 		settings.endGroup ();
 	}
 
@@ -114,8 +120,8 @@ namespace LC::Azoth::Abbrev
 	{
 		QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Abbrev" };
-		settings.beginGroup ("Abbrevs");
-		settings.setValue ("Abbreviations", QVariant::fromValue (Abbrevs_));
+		settings.beginGroup (Keys::Group);
+		settings.setValue (Keys::Abbreviations, QVariant::fromValue (Abbrevs_));
 		settings.endGroup ();
 	}
 }
