@@ -96,7 +96,7 @@ namespace LC::Azoth::Abbrev
 			text = result;
 			const auto expansionsLimit = 1024;
 			if (++cyclesCount >= expansionsLimit)
-				throw CommandException { tr ("Too much expansions during abbreviations application. Check your rules.") };
+				throw CommandException { tr ("Too many expansions during abbreviations application. Check your rules.") };
 		}
 
 		return text;
