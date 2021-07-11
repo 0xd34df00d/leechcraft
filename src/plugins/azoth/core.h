@@ -22,7 +22,6 @@
 #include "interfaces/azoth/azothcommon.h"
 #include "interfaces/azoth/imucentry.h"
 #include "interfaces/azoth/iprotocol.h"
-#include "interfaces/azoth/ichatstyleresourcesource.h"
 #include "interfaces/azoth/isupportriex.h"
 #include "sourcetrackingmodel.h"
 #include "animatediconmanager.h"
@@ -62,6 +61,8 @@ namespace LC::Azoth
 	class NotificationsManager;
 	class AvatarsManager;
 	class HistorySyncer;
+
+	struct ChatMsgAppendInfo;
 
 	class Core : public QObject
 	{

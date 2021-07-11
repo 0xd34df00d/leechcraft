@@ -52,6 +52,7 @@
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/icanhavesslerrors.h"
+#include "interfaces/azoth/ichatstyleresourcesource.h"
 
 #ifdef ENABLE_CRYPT
 #include "cryptomanager.h"
