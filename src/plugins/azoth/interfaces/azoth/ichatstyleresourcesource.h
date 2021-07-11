@@ -6,15 +6,13 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_ICHATSTYLERESOURCESOURCE_H
-#define PLUGINS_AZOTH_INTERFACES_ICHATSTYLERESOURCESOURCE_H
+#pragma once
+
 #include "iresourceplugin.h"
 
 class QUrl;
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class IAccount;
 
@@ -55,7 +53,7 @@ namespace Azoth
 	class IChatStyleResourceSource : public IResourceSource
 	{
 	public:
-		virtual ~IChatStyleResourceSource () {}
+		~IChatStyleResourceSource () override = default;
 
 		/** @brief Returns the base URL for the given style.
 		 *
@@ -142,9 +140,6 @@ namespace Azoth
 		virtual QStringList GetVariantsForPack (const QString& style) = 0;
 	};
 }
-}
 
 Q_DECLARE_INTERFACE (LC::Azoth::IChatStyleResourceSource,
 		"org.Deviant.LeechCraft.Azoth.IChatStyleResourceSource/1.0")
-
-#endif
