@@ -19,8 +19,6 @@ namespace Xtazy
 {
 	class TrackShareDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::TrackShareDialog Ui_;
 	public:
 		TrackShareDialog (const QString&, const QStringList&, QObject*, QWidget* = 0);
