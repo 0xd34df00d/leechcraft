@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QShortcut>
 #include <QMap>
+#include <QCoreApplication>
 #include <interfaces/ihaveshortcuts.h>
 
 namespace LC::Azoth::Abbrev
@@ -19,6 +20,8 @@ namespace LC::Azoth::Abbrev
 
 	class ShortcutsManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Abbrev::ShortcutsManager)
+
 		AbbrevsManager * const Abbrevs_;
 
 		QMap<QWidget*, QShortcut*> Tab2SC_;
