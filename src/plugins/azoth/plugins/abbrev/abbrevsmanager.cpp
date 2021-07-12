@@ -92,15 +92,14 @@ namespace LC::Azoth::Abbrev
 		int cyclesCount = 0;
 		while (true)
 		{
-			auto result = text;
+			bool changed = false;
 			for (const auto& abbrev : Abbrevs_)
-				if (TryExpand (result, abbrev))
-					break;
+				if (TryExpand (text, abbrev))
+					changed = true;
 
-			if (result == text)
+			if (!changed)
 				break;
 
-			text = result;
 			const auto expansionsLimit = 1024;
 			if (++cyclesCount >= expansionsLimit)
 				throw CommandException { tr ("Too many expansions during abbreviations application. Check your rules.") };
