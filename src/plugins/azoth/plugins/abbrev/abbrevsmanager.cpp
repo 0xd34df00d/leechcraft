@@ -60,6 +60,31 @@ namespace LC::Azoth::Abbrev
 		{
 			return c.isLetter ();
 		}
+
+		bool TryExpand (QString& result, const Abbreviation& abbrev)
+		{
+			if (!result.contains (abbrev.Pattern_))
+				return false;
+
+			bool changed = false;
+
+			auto pos = 0;
+			while ((pos = result.indexOf (abbrev.Pattern_, pos)) != -1)
+			{
+				const auto afterAbbrevPos = pos + abbrev.Pattern_.size ();
+				if ((!pos || !IsBadChar (result.at (pos - 1))) &&
+						(afterAbbrevPos >= result.size () || !IsBadChar (result.at (afterAbbrevPos))))
+				{
+					result.replace (pos, abbrev.Pattern_.size (), abbrev.Expansion_);
+					pos += abbrev.Expansion_.size ();
+					changed = true;
+				}
+				else
+					pos += abbrev.Pattern_.size ();
+			}
+
+			return changed;
+		}
 	}
 
 	QString AbbrevsManager::Process (QString text) const
@@ -69,26 +94,8 @@ namespace LC::Azoth::Abbrev
 		{
 			auto result = text;
 			for (const auto& abbrev : Abbrevs_)
-				if (result.contains (abbrev.Pattern_))
-				{
-					bool changed = false;
-					auto pos = 0;
-					while ((pos = result.indexOf (abbrev.Pattern_, pos)) != -1)
-					{
-						const auto afterAbbrevPos = pos + abbrev.Pattern_.size ();
-						if ((!pos || !IsBadChar (result.at (pos - 1))) &&
-							(afterAbbrevPos >= result.size () || !IsBadChar (result.at (afterAbbrevPos))))
-						{
-							result.replace (pos, abbrev.Pattern_.size (), abbrev.Expansion_);
-							pos += abbrev.Expansion_.size ();
-							changed = true;
-						}
-						else
-							pos += abbrev.Pattern_.size ();
-					}
-					if (changed)
-						break;
-				}
+				if (TryExpand (result, abbrev))
+					break;
 
 			if (result == text)
 				break;
