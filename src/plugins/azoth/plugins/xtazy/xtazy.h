@@ -30,7 +30,6 @@ class IProxyObject;
 namespace Xtazy
 {
 	class TuneSourceBase;
-	class LCSource;
 
 	class Plugin : public QObject
 				 , public IInfo
