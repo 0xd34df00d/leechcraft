@@ -14,6 +14,9 @@
 #include <qwt_plot_grid.h>
 #include <qwt_scale_engine.h>
 #include <qwt_curve_fitter.h>
+#if QWT_VERSION >= 0x060200
+#include <qwt_spline_curve_fitter.h>
+#endif
 #include <util/sll/prelude.h>
 #include "eqbandwidget.h"
 
