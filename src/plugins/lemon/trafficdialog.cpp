@@ -9,6 +9,7 @@
 #include "trafficdialog.h"
 #include <numeric>
 #include <QtDebug>
+#include <QPen>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_legend.h>
