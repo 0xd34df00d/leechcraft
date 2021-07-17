@@ -8,6 +8,7 @@
 
 #include "batteryhistorydialog.h"
 #include <algorithm>
+#include <QPen>
 #include <qwt_global.h>
 #include <qwt_plot_curve.h>
 #include <qwt_curve_fitter.h>
@@ -68,7 +69,11 @@ namespace Liznoo
 
 		auto item = new QwtPlotLegendItem;
 		item->setMaxColumns (1);
+#if QWT_VERSION >= 0x060200
+		item->setAlignmentInCanvas (Qt::AlignTop | Qt::AlignLeft);
+#else
 		item->setAlignment (Qt::AlignTop | Qt::AlignLeft);
+#endif
 		item->attach (Ui_.PercentPlot_);
 
 		auto bgColor = palette ().color (QPalette::Button);
