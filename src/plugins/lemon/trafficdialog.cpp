@@ -93,7 +93,11 @@ namespace Lemon
 
 		auto item = new QwtPlotLegendItem;
 		item->setMaxColumns (1);
+#if QWT_VERSION >= 0x060200
+		item->setAlignmentInCanvas (Qt::AlignTop | Qt::AlignLeft);
+#else
 		item->setAlignment (Qt::AlignTop | Qt::AlignLeft);
+#endif
 		item->attach (Ui_.TrafficPlot_);
 
 		auto bgColor = palette ().color (QPalette::Button);
