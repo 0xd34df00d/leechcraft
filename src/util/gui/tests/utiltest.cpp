@@ -10,7 +10,7 @@
 #include <QtTest>
 #include "util.h"
 
-QTEST_MAIN (LC::Util::UtilTest)
+QTEST_APPLESS_MAIN (LC::Util::UtilTest)
 
 namespace LC::Util
 {
