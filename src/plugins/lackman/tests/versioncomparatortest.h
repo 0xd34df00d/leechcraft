@@ -12,7 +12,7 @@
 #define VERSIONCOMPARATOR_DEBUG
 #include "../versioncomparator.h"
 
-using namespace LC::Plugins::LackMan;
+using namespace LC::LackMan;
 
 class TestVersionComparator : public QObject
 {
