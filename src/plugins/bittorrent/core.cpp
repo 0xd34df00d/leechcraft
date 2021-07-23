@@ -27,7 +27,6 @@
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
-#include <libtorrent/lazy_entry.hpp>
 #include <libtorrent/read_resume_data.hpp>
 #include <libtorrent/write_resume_data.hpp>
 #include <interfaces/entitytesthandleresult.h>
