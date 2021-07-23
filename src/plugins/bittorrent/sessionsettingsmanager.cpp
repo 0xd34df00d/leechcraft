@@ -549,7 +549,6 @@ namespace LC::BitTorrent
 
 		dhtSettings.max_peers_reply = xsm->property ("MaxPeersReply").toInt ();
 		dhtSettings.search_branching = xsm->property ("SearchBranching").toInt ();
-		dhtSettings.service_port = xsm->property ("ServicePort").toInt ();
 		dhtSettings.max_fail_count = xsm->property ("MaxDHTFailcount").toInt ();
 
 		Session_->set_dht_settings (dhtSettings);

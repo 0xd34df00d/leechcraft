@@ -73,9 +73,6 @@
 				<item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1">
 					<label lang="en" value="Search branching:" />
 				</item>
-				<item type="spinbox" property="ServicePort" default="0" minimum="0" maximum="65535" step="1">
-					<label lang="en" value="Service port:" />
-				</item>
 				<item type="spinbox" property="MaxDHTFailcount" default="20" minimum="5" maximum="50" step="5">
 					<label lang="en" value="Maximum node fail count:" />
 				</item>
