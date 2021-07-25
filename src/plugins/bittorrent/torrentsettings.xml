@@ -379,9 +379,6 @@
 				<item type="checkbox" property="ActiveTrackerStats" default="on">
 					<label lang="en" value="Per-tracker stats" />
 				</item>
-				<item type="checkbox" property="ActiveCacheStats" default="on">
-					<label lang="en" value="Cache stats" />
-				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Torrent" />

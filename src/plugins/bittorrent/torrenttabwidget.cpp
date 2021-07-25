@@ -490,7 +490,6 @@ namespace LC::BitTorrent
 		Ui_.BoxSessionStats_->setVisible (xsm->property ("ActiveSessionStats").toBool ());
 		Ui_.BoxAdvancedSessionStats_->setVisible (xsm->property ("ActiveAdvancedSessionStats").toBool ());
 		Ui_.BoxPerTrackerStats_->setVisible (xsm->property ("ActiveTrackerStats").toBool ());
-		Ui_.BoxCacheStats_->setVisible (xsm->property ("ActiveCacheStats").toBool ());
 		Ui_.BoxTorrentStatus_->setVisible (xsm->property ("ActiveTorrentStatus").toBool ());
 		Ui_.BoxTorrentAdvancedStatus_->setVisible (xsm->property ("ActiveTorrentAdvancedStatus").toBool ());
 		Ui_.BoxTorrentInfo_->setVisible (xsm->property ("ActiveTorrentInfo").toBool ());
