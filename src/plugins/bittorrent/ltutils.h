@@ -60,7 +60,7 @@ namespace LC::BitTorrent
 	SessionStats GetSessionStats (const libtorrent::session&);
 
 	struct FileInfo;
-	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle);
+	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle&);
 
 	struct PerTrackerStats
 	{

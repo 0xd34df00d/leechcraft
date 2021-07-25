@@ -234,7 +234,7 @@ namespace LC::BitTorrent
 		};
 	}
 
-	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle handle)
+	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle& handle)
 	{
 		QList<FileInfo> result;
 		const auto& infoPtr = handle.torrent_file ();
