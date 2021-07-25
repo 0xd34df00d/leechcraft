@@ -39,12 +39,5 @@ namespace LC::BitTorrent
 
 		int64_t TotalFailedBytes_;
 		int64_t TotalRedundantBytes_;
-
-		int BlocksWritten_;
-		int Writes_;
-		int BlocksRead_;
-		int BlocksReadHit_;
-		int CacheSize_;
-		int ReadCacheSize_;
 	};
 }

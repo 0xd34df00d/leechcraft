@@ -316,15 +316,6 @@ namespace LC::BitTorrent
 		Ui_.LabelTotalFailedData_->setText (Util::MakePrettySize (stats.TotalFailedBytes_));
 		Ui_.LabelTotalRedundantData_->setText (Util::MakePrettySize (stats.TotalRedundantBytes_));
 
-		Ui_.BlocksWritten_->setText (QString::number (stats.BlocksWritten_));
-		Ui_.Writes_->setText (QString::number (stats.Writes_));
-		Ui_.WriteHitRatio_->setText (QString::number (static_cast<double> (stats.BlocksWritten_ - stats.Writes_) / stats.BlocksWritten_));
-		Ui_.CacheSize_->setText (QString::number (stats.CacheSize_));
-		Ui_.TotalBlocksRead_->setText (QString::number (stats.BlocksRead_));
-		Ui_.CachedBlockReads_->setText (QString::number (stats.BlocksReadHit_));
-		Ui_.ReadHitRatio_->setText (QString::number (static_cast<double> (stats.BlocksReadHit_) / stats.BlocksRead_));
-		Ui_.ReadCacheSize_->setText (QString::number (stats.ReadCacheSize_));
-
 		Ui_.PerTrackerStats_->clear ();
 
 		for (const auto& [domain, stats] : Util::Stlize (GetPerTrackerStats (*Session_)))

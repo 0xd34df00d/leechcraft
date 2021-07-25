@@ -200,10 +200,6 @@ namespace LC::BitTorrent
 	SessionStats GetSessionStats (const libtorrent::session& session)
 	{
 		const auto& status = session.status ();
-
-		libtorrent::cache_status cacheStatus;
-		session.get_cache_info (&cacheStatus, {}, libtorrent::session::disk_cache_no_pieces);
-
 		return
 		{
 			{ status.download_rate, status.upload_rate },
@@ -224,13 +220,6 @@ namespace LC::BitTorrent
 
 			status.total_failed_bytes,
 			status.total_redundant_bytes,
-
-			cacheStatus.blocks_written,
-			cacheStatus.writes,
-			cacheStatus.blocks_read,
-			cacheStatus.blocks_read_hit,
-			cacheStatus.cache_size,
-			cacheStatus.read_cache_size,
 		};
 	}
 
