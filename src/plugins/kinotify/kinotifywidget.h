@@ -9,9 +9,7 @@
 
 #pragma once
 
-#include <variant>
 #include <QStateMachine>
-#include <util/sll/void.h>
 #include "ui_kinotifywidget.h"
 
 using QObject_ptr = std::shared_ptr<QObject>;
@@ -20,8 +18,6 @@ namespace LC
 {
 namespace Kinotify
 {
-	using ImageVar_t = std::variant<Util::Void, QPixmap>;
-
 	class KinotifyWidget : public QWidget
 	{
 		Q_OBJECT
@@ -33,11 +29,11 @@ namespace Kinotify
 
 		QString Title_;
 		QString Body_;
+		QPixmap Pixmap_;
 		QStringList ActionsNames_;
 
 		int Timeout_;
 		QStateMachine Machine_;
-		ImageVar_t OverridePixmap_;
 		QObject_ptr ActionHandler_;
 	public:
 		explicit KinotifyWidget (int timeout, QWidget *widget = nullptr);
@@ -49,9 +45,10 @@ namespace Kinotify
 		void SetID (const QString&);
 
 		void SetContent (const QString&, const QString&);
-		void OverrideImage (const ImageVar_t&);
-		void PrepareNotification ();
+		void SetPixmap (QPixmap);
 		void SetActions (const QStringList&, QObject_ptr);
+
+		void PrepareNotification ();
 	protected:
 		void showEvent (QShowEvent*) override;
 		void mouseReleaseEvent (QMouseEvent*) override;

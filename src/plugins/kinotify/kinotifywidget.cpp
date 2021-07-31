@@ -19,7 +19,6 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <util/gui/geometry.h>
-#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -124,6 +123,11 @@ namespace Kinotify
 		Body_ = body;
 	}
 
+	void KinotifyWidget::SetPixmap (QPixmap px)
+	{
+		Pixmap_ = std::move (px);
+	}
+
 	void KinotifyWidget::showEvent (QShowEvent*)
 	{
 		SetWidgetPlace ();
@@ -134,11 +138,6 @@ namespace Kinotify
 		QWidget::mouseReleaseEvent (event);
 		if (!event->isAccepted ())
 			emit initiateCloseNotification ();
-	}
-
-	void KinotifyWidget::OverrideImage (const ImageVar_t& px)
-	{
-		OverridePixmap_ = px;
 	}
 
 	void KinotifyWidget::PrepareNotification ()
@@ -173,9 +172,7 @@ namespace Kinotify
 	{
 		Ui_.Title_->setText ("<h3>" + Title_ + "</h3>");
 		Ui_.Body_->setText (Body_);
-		Util::Visit (OverridePixmap_,
-				[] (Util::Void) {},
-				[this] (const QPixmap& pixmap) { Ui_.Image_->setPixmap (pixmap); });
+		Ui_.Image_->setPixmap (Pixmap_);
 
 		for (int i = 0; i < ActionsNames_.size (); ++i)
 		{

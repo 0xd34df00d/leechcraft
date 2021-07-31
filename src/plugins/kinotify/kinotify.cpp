@@ -102,10 +102,10 @@ namespace Kinotify
 		{
 			if (notifVar.canConvert<QPixmap> ())
 			{
-				const auto& pixmap = notifVar.value<QPixmap> ();
+				auto pixmap = notifVar.value<QPixmap> ();
 				if (!pixmap.isNull ())
 				{
-					notificationWidget->OverrideImage (pixmap);
+					notificationWidget->SetPixmap (std::move (pixmap));
 					return Util::MakeReadyFuture<Util::Void> ({});
 				}
 			}
@@ -114,7 +114,7 @@ namespace Kinotify
 				auto image = notifVar.value<QImage> ();
 				if (!image.isNull ())
 				{
-					notificationWidget->OverrideImage (QPixmap::fromImage (std::move (image)));
+					notificationWidget->SetPixmap (QPixmap::fromImage (std::move (image)));
 					return Util::MakeReadyFuture<Util::Void> ({});
 				}
 			}
@@ -125,14 +125,13 @@ namespace Kinotify
 					return Util::Sequence (notificationWidget, *maybePxFuture) >>
 							[notificationWidget] (QImage image)
 							{
-								notificationWidget->OverrideImage (QPixmap::fromImage (std::move (image)));
+								notificationWidget->SetPixmap (QPixmap::fromImage (std::move (image)));
 								return Util::MakeReadyFuture<Util::Void> ({});
 							};
 			}
 
 			const auto& icon = proxy->GetIconThemeManager ()->GetIcon (GetPriorityIconName (prio));
-			const auto& px = icon.pixmap ({ 128, 128 });
-			notificationWidget->OverrideImage (px);
+			notificationWidget->SetPixmap (icon.pixmap ({ 128, 128 }));
 			return Util::MakeReadyFuture<Util::Void> ({});
 		}
 	}
