@@ -40,7 +40,6 @@ namespace Kinotify
 		QList<KinotifyWidget*> ActiveNotifications_;
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -58,8 +57,6 @@ namespace Kinotify
 		void TestNotification ();
 	public slots:
 		void pushNotification ();
-	private slots:
-		void handleWatchedDirsChanged ();
 	};
 }
 }

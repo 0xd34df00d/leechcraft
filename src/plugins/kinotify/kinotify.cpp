@@ -7,10 +7,7 @@
  **********************************************************************/
 
 #include "kinotify.h"
-#include <QMainWindow>
 #include <QIcon>
-#include <QTimer>
-#include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -35,21 +32,9 @@ namespace Kinotify
 
 		Proxy_ = proxy;
 
-		ThemeLoader_.reset (new Util::ResourceLoader ("kinotify/themes/notification"));
-		ThemeLoader_->AddLocalPrefix ();
-		ThemeLoader_->AddGlobalPrefix ();
-
-		connect (ThemeLoader_.get (),
-				SIGNAL (watchedDirectoriesChanged ()),
-				this,
-				SLOT (handleWatchedDirsChanged ()));
-
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"kinotifysettings.xml");
-
-		SettingsDialog_->SetDataSource ("NotificatorStyle",
-				ThemeLoader_->GetSubElemModel ());
 
 		connect (SettingsDialog_.get (),
 				&Util::XmlSettingsDialog::pushButtonClicked,
@@ -126,10 +111,10 @@ namespace Kinotify
 			}
 			else if (notifVar.canConvert<QImage> ())
 			{
-				const auto& image = notifVar.value<QImage> ();
+				auto image = notifVar.value<QImage> ();
 				if (!image.isNull ())
 				{
-					notificationWidget->OverrideImage (image);
+					notificationWidget->OverrideImage (QPixmap::fromImage (std::move (image)));
 					return Util::MakeReadyFuture<Util::Void> ({});
 				}
 			}
@@ -138,9 +123,9 @@ namespace Kinotify
 				const auto& maybePxFuture = notifVar.value<Util::LazyNotificationPixmap_t> () ();
 				if (maybePxFuture)
 					return Util::Sequence (notificationWidget, *maybePxFuture) >>
-							[notificationWidget] (const QImage& image)
+							[notificationWidget] (QImage image)
 							{
-								notificationWidget->OverrideImage (image);
+								notificationWidget->OverrideImage (QPixmap::fromImage (std::move (image)));
 								return Util::MakeReadyFuture<Util::Void> ({});
 							};
 			}
@@ -182,10 +167,8 @@ namespace Kinotify
 				property ("MessageTimeout").toInt () * 1000;
 		const auto timeout = e.Additional_.value ("NotificationTimeout", defaultTimeout).toInt ();
 
-		auto notificationWidget = new KinotifyWidget (Proxy_, timeout);
+		auto notificationWidget = new KinotifyWidget (timeout);
 		notificationWidget->SetID (notifyId);
-		notificationWidget->SetThemeLoader (ThemeLoader_);
-		notificationWidget->SetEntity (e);
 
 		QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
 		if (!actionsNames.isEmpty ())
@@ -202,11 +185,11 @@ namespace Kinotify
 		}
 
 		connect (notificationWidget,
-				SIGNAL (checkNotificationQueue ()),
+				&QObject::destroyed,
 				this,
-				SLOT (pushNotification ()));
+				&Plugin::pushNotification);
 
-		notificationWidget->SetContent (header, text, QString ());
+		notificationWidget->SetContent (header, text);
 
 		auto worker = [this, notificationWidget] (auto sameIdPos)
 		{
@@ -220,7 +203,7 @@ namespace Kinotify
 				auto oldNotify = *sameIdPos;
 				std::advance (sameIdPos, 1);
 				ActiveNotifications_.insert (sameIdPos, notificationWidget);
-				oldNotify->closeNotificationWidget ();
+				oldNotify->deleteLater ();
 			}
 			else
 			{
@@ -253,7 +236,7 @@ namespace Kinotify
 	void Plugin::TestNotification ()
 	{
 		auto e = Util::MakeNotification (tr ("Test notification"),
-				tr ("This is a <em>test</em> notification body."),
+				tr ("This is a <em>test</em> notification body that will soon disappear."),
 				Priority::Info);
 		auto nah = new Util::NotificationActionHandler { e };
 		nah->AddFunction (tr ("An action"), [] {});
@@ -269,11 +252,6 @@ namespace Kinotify
 		ActiveNotifications_.removeFirst ();
 		if (ActiveNotifications_.size ())
 			ActiveNotifications_.first ()->PrepareNotification ();
-	}
-
-	void Plugin::handleWatchedDirsChanged ()
-	{
-		KinotifyWidget::ClearThemeCache ();
 	}
 }
 }

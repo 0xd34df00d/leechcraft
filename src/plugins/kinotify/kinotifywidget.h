@@ -10,11 +10,11 @@
 #pragma once
 
 #include <variant>
-#include <QWebView>
 #include <QStateMachine>
 #include <util/sll/void.h>
 #include "interfaces/structures.h"
 #include "kinotify.h"
+#include "ui_kinotifywidget.h"
 
 namespace LC
 {
@@ -27,44 +27,28 @@ namespace Kinotify
 {
 	class NotificationAction;
 
-	using ImageVar_t = std::variant<Util::Void, QPixmap, QImage>;
+	using ImageVar_t = std::variant<Util::Void, QPixmap>;
 
-	class KinotifyWidget : public QWebView
+	class KinotifyWidget : public QWidget
 	{
 		Q_OBJECT
-		Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity)
+		Q_PROPERTY (qreal opacity READ windowOpacity WRITE SetOpacity)
 
-		ICoreProxy_ptr Proxy_;
+		Ui::KinotifyWidget Ui_;
 
 		QString ID_;
 
 		QString Title_;
 		QString Body_;
-		QString ImagePath_;
-		QString Theme_;
-
-		QSize DefaultSize_;
-		int Timeout_;
-		int AnimationTime_;
-		QTimer *CloseTimer_;
-		QTimer *CheckTimer_;
-		QStateMachine Machine_;
 		QStringList ActionsNames_;
+
+		int Timeout_;
+		QStateMachine Machine_;
 		NotificationAction *Action_;
-		std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 		ImageVar_t OverridePixmap_;
 		QObject_ptr HandlerGuard_;
-
-		static QMap<QString, QString> ThemeCache_;
-
-		Entity E_;
 	public:
-		KinotifyWidget (ICoreProxy_ptr, int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
-		void SetThemeLoader (std::shared_ptr<Util::ResourceLoader>);
-
-		static void ClearThemeCache ();
-
-		void SetEntity (const Entity&);
+		explicit KinotifyWidget (int timeout, QWidget *widget = nullptr);
 
 		QString GetTitle () const;
 		QString GetBody () const;
@@ -72,30 +56,19 @@ namespace Kinotify
 		QString GetID () const;
 		void SetID (const QString&);
 
-		void SetContent (const QString&, const QString&,
-				const QString&, const QSize& size = QSize (350, 70));
+		void SetContent (const QString&, const QString&);
 		void OverrideImage (const ImageVar_t&);
 		void PrepareNotification ();
 		void SetActions (const QStringList&, QObject_ptr);
 	protected:
-		virtual void mousePressEvent (QMouseEvent*);
-		virtual void showEvent (QShowEvent*);
+		void showEvent (QShowEvent*) override;
 	private:
-		const QByteArray MakeImage (const QString& imgPath = QString ());
-		void CreateWidget ();
-		void LoadTheme (const QString&);
 		void SetData ();
 		void SetWidgetPlace ();
-		void ShowNotification ();
-	public slots:
-		void stateMachinePause ();
-		void closeNotification ();
-		void closeNotificationWidget ();
-		void initJavaScript ();
-		void handleLinkClicked (const QUrl&);
+
+		void SetOpacity (qreal);
 	signals:
 		void initiateCloseNotification ();
-		void checkNotificationQueue ();
 	};
 }
 }

@@ -3,15 +3,6 @@
 	<page>
 		<label value="Kinotify" />
 		<groupbox>
-			<label value="Style" />
-			<item type="combobox" property="NotificatorStyle" mayHaveDataSource="true">
-				<label value="Notificator style:" />
-				<option name="Commie" default="true">
-					<label value="Commie" />
-				</option>
-			</item>
-		</groupbox>
-		<groupbox>
 			<label value="Behavior" />
 			<item type="checkbox" property="RespectFullscreen" default="true">
 				<label value="Don't show notifications when there is a fullscreen application" />
