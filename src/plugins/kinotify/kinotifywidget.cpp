@@ -178,6 +178,14 @@ namespace Kinotify
 				[] (Util::Void) {},
 				[this] (const QPixmap& pixmap) { Ui_.Image_->setPixmap (pixmap); });
 
+		const auto maxWidth = PreferredGeometry ().width () / 3;
+		auto twoLineWidth = Ui_.Body_->fontMetrics ().horizontalAdvance (Body_) / 2;
+
+		const auto& theseMargins = layout ()->contentsMargins ();
+		const auto layoutPixels = Ui_.TopDisplayLayout_->spacing () + theseMargins.left () + theseMargins.right ();
+		auto targetWidth = std::max (twoLineWidth + Ui_.Image_->width () + layoutPixels, width ());
+		setFixedWidth (std::min (targetWidth, maxWidth));
+
 		if (!ActionsNames_.isEmpty ())
 		{
 			/*
