@@ -16,13 +16,13 @@
 #include <QPropertyAnimation>
 #include <QFinalState>
 #include <QMainWindow>
+#include <QPushButton>
 #include <util/gui/geometry.h>
 #include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include "notificationaction.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -32,7 +32,6 @@ namespace Kinotify
 	KinotifyWidget::KinotifyWidget (int timeout, QWidget *widget)
 	: QWidget (widget)
 	, Timeout_ (timeout)
-	, Action_ (new NotificationAction (this))
 	{
 		Ui_.setupUi (this);
 
@@ -96,13 +95,6 @@ namespace Kinotify
 				{
 					QTimer::singleShot (Timeout_, this, &KinotifyWidget::initiateCloseNotification);
 				});
-
-		/*
-		connect (Action_,
-				SIGNAL (actionPressed ()),
-				this,
-				SLOT (deleteLater ()));
-				*/
 	}
 
 	QString KinotifyWidget::GetTitle () const
@@ -152,8 +144,7 @@ namespace Kinotify
 	void KinotifyWidget::SetActions (const QStringList& actions, QObject_ptr object)
 	{
 		ActionsNames_ = actions;
-		Action_->SetActionObject (object.get ());
-		HandlerGuard_ = object;
+		ActionHandler_ = std::move (object);
 	}
 
 	namespace
@@ -178,6 +169,22 @@ namespace Kinotify
 				[] (Util::Void) {},
 				[this] (const QPixmap& pixmap) { Ui_.Image_->setPixmap (pixmap); });
 
+		for (int i = 0; i < ActionsNames_.size (); ++i)
+		{
+			auto button = new QPushButton { ActionsNames_ [i] };
+			Ui_.ButtonsLayout_->addWidget (button);
+			connect (button,
+					&QPushButton::released,
+					[this, i]
+					{
+						emit initiateCloseNotification ();
+						QMetaObject::invokeMethod (ActionHandler_.get (),
+								"notificationActionTriggered",
+								Qt::QueuedConnection,
+								Q_ARG (int, i));
+					});
+		}
+
 		const auto maxWidth = PreferredGeometry ().width () / 3;
 		auto twoLineWidth = Ui_.Body_->fontMetrics ().horizontalAdvance (Body_) / 2;
 
@@ -185,28 +192,10 @@ namespace Kinotify
 		const auto layoutPixels = Ui_.TopDisplayLayout_->spacing () + theseMargins.left () + theseMargins.right ();
 		auto targetWidth = std::max (twoLineWidth + Ui_.Image_->width () + layoutPixels, width ());
 		setFixedWidth (std::min (targetWidth, maxWidth));
-
-		if (!ActionsNames_.isEmpty ())
-		{
-			/*
-			QWebElement button = page ()->mainFrame ()->documentElement ().findFirst ("form");
-			if (!button.isNull ())
-			{
-				auto reversed = ActionsNames_;
-				std::reverse (reversed.begin (), reversed.end ());
-				for (const auto& name : reversed)
-					button.appendInside (QString ("<input type=\"button\" id=\"%1\" value=\"%2\""
-							" onclick=\"Action.sendActionOnClick(id)\" />")
-									.arg (ActionsNames_.indexOf (name))
-									.arg (name));
-			}
-			 */
-		}
 	}
 
 	void KinotifyWidget::SetWidgetPlace ()
 	{
-		qDebug () << size () << sizeHint ();
 		const auto& geometry = PreferredGeometry ();
 
 		QPoint point;

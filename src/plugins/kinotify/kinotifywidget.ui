@@ -134,7 +134,7 @@
       </spacer>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="ButtonsLayout_"/>
+      <layout class="QHBoxLayout" name="ButtonsLayout_"/>
      </item>
     </layout>
    </item>

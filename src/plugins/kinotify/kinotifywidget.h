@@ -25,8 +25,6 @@ namespace Util
 
 namespace Kinotify
 {
-	class NotificationAction;
-
 	using ImageVar_t = std::variant<Util::Void, QPixmap>;
 
 	class KinotifyWidget : public QWidget
@@ -44,9 +42,8 @@ namespace Kinotify
 
 		int Timeout_;
 		QStateMachine Machine_;
-		NotificationAction *Action_;
 		ImageVar_t OverridePixmap_;
-		QObject_ptr HandlerGuard_;
+		QObject_ptr ActionHandler_;
 	public:
 		explicit KinotifyWidget (int timeout, QWidget *widget = nullptr);
 
