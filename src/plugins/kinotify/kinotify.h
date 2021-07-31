@@ -23,7 +23,6 @@ namespace Util
 
 namespace Kinotify
 {
-	class FSWinWatcher;
 	class KinotifyWidget;
 
 	class Plugin : public QObject
@@ -42,7 +41,6 @@ namespace Kinotify
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
-		std::shared_ptr<FSWinWatcher> FSWinWatcher_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

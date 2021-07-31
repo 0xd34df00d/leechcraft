@@ -8,18 +8,10 @@
 
 #include "fswinwatcher.h"
 
-namespace LC
+namespace LC::Kinotify
 {
-namespace Kinotify
-{
-	FSWinWatcher::FSWinWatcher (ICoreProxy_ptr, QObject *parent)
-	: QObject (parent)
-	{
-	}
-
-	bool FSWinWatcher::IsCurrentFS ()
+	bool IsCurrentWindowFullScreen ()
 	{
 		return false;
 	}
-}
 }

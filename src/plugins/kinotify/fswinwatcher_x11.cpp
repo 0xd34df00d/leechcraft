@@ -10,19 +10,13 @@
 #include <optional>
 #include <QX11Info>
 #include <QMainWindow>
-#include <X11/Xlib.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
-namespace LC
-{
-namespace Kinotify
-{
-	FSWinWatcher::FSWinWatcher (ICoreProxy_ptr proxy, QObject *parent)
-	: QObject (parent)
-	, Proxy_ (proxy)
-	{
-	}
+#include <X11/Xlib.h>
 
+namespace LC::Kinotify
+{
 	namespace
 	{
 		std::optional<QSize> GetSize (Display *dpy, Window win)
@@ -34,7 +28,7 @@ namespace Kinotify
 		}
 	}
 
-	bool FSWinWatcher::IsCurrentFS ()
+	bool IsCurrentWindowFullScreen ()
 	{
 		auto display = QX11Info::display ();
 		if (!display)
@@ -44,7 +38,7 @@ namespace Kinotify
 		int reverToReturn;
 		XGetInputFocus (display, &focusWin, &reverToReturn);
 
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			if (rootWM->GetMainWindow (i)->effectiveWinId () == focusWin)
 				return false;
@@ -53,5 +47,4 @@ namespace Kinotify
 		const auto focusSize = GetSize (display, focusWin);
 		return rootSize && focusSize && *rootSize == *focusSize;
 	}
-}
 }

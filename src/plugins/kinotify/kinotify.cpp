@@ -48,8 +48,6 @@ namespace Kinotify
 
 		SettingsDialog_->SetDataSource ("NotificatorStyle",
 				ThemeLoader_->GetSubElemModel ());
-
-		FSWinWatcher_.reset (new FSWinWatcher (Proxy_));
 	}
 
 	void Plugin::SecondInit ()
@@ -146,9 +144,8 @@ namespace Kinotify
 
 	void Plugin::Handle (Entity e)
 	{
-		if (XmlSettingsManager::Instance ()->
-					property ("RespectFullscreen").toBool () &&
-				FSWinWatcher_->IsCurrentFS ())
+		if (XmlSettingsManager::Instance ()->property ("RespectFullscreen").toBool () &&
+				IsCurrentWindowFullScreen ())
 			return;
 
 		auto prio = e.Additional_ ["Priority"].value<Priority> ();

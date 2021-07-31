@@ -12,21 +12,13 @@
 #include <basetyps.h>
 #include <shellapi.h>
 
-namespace LC
+namespace LC::Kinotify
 {
-namespace Kinotify
-{
-	FSWinWatcher::FSWinWatcher (ICoreProxy_ptr, QObject *parent)
-	: QObject (parent)
-	{
-	}
-
-	bool FSWinWatcher::IsCurrentFS ()
+	bool IsCurrentWindowFullScreen ()
 	{
 		QUERY_USER_NOTIFICATION_STATE state;
 		if (SHQueryUserNotificationState (&state) != S_OK)
 			return false;
 		return state != QUNS_ACCEPTS_NOTIFICATIONS;
 	}
-}
 }

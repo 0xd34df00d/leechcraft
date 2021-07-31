@@ -8,20 +8,7 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-
-namespace LC
+namespace LC::Kinotify
 {
-namespace Kinotify
-{
-	class FSWinWatcher : public QObject
-	{
-		ICoreProxy_ptr Proxy_;
-	public:
-		FSWinWatcher (ICoreProxy_ptr, QObject* = 0);
-
-		bool IsCurrentFS ();
-	};
-}
+	bool IsCurrentWindowFullScreen ();
 }
