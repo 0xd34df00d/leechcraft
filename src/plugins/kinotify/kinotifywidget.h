@@ -12,17 +12,12 @@
 #include <variant>
 #include <QStateMachine>
 #include <util/sll/void.h>
-#include "interfaces/structures.h"
-#include "kinotify.h"
 #include "ui_kinotifywidget.h"
+
+using QObject_ptr = std::shared_ptr<QObject>;
 
 namespace LC
 {
-namespace Util
-{
-	class ResourceLoader;
-}
-
 namespace Kinotify
 {
 	using ImageVar_t = std::variant<Util::Void, QPixmap>;
