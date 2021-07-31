@@ -56,11 +56,11 @@ namespace Kinotify
 		CloseTimer_->setSingleShot (true);
 		CheckTimer_->setSingleShot (true);
 
-		QState *showStartState = new QState;
-		QState *showFinishState = new QState;
-		QState *closeStartState = new QState;
-		QState *closeFinishState = new QState;
-		QFinalState *finalState = new QFinalState;
+		auto showStartState = new QState { &Machine_ };
+		auto showFinishState = new QState { &Machine_ };
+		auto closeStartState = new QState { &Machine_ };
+		auto closeFinishState = new QState { &Machine_ };
+		auto finalState = new QFinalState { &Machine_ };
 
 		QPropertyAnimation *opacityAmination = new QPropertyAnimation (this, "opacity", this);
 		opacityAmination->setDuration (AnimationTime_);
@@ -76,12 +76,6 @@ namespace Kinotify
 		closeStartState->addTransition (closeFinishState);
 		closeFinishState->addTransition (closeFinishState,
 				SIGNAL (propertiesAssigned ()), finalState);
-
-		Machine_.addState (showStartState);
-		Machine_.addState (showFinishState);
-		Machine_.addState (closeStartState);
-		Machine_.addState (closeFinishState);
-		Machine_.addState (finalState);
 
 		Machine_.addDefaultAnimation (opacityAmination);
 		Machine_.setInitialState (showStartState);
