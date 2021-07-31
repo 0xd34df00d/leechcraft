@@ -54,6 +54,8 @@ namespace Kinotify
 		void Handle (Entity);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		void TestNotification ();
 	public slots:
 		void pushNotification ();
 	private slots:

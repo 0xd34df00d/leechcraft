@@ -13,7 +13,9 @@
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/xpc/notificationactionhandler.h>
 #include <util/sll/void.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
@@ -48,6 +50,14 @@ namespace Kinotify
 
 		SettingsDialog_->SetDataSource ("NotificatorStyle",
 				ThemeLoader_->GetSubElemModel ());
+
+		connect (SettingsDialog_.get (),
+				&Util::XmlSettingsDialog::pushButtonClicked,
+				[this] (const QString& name)
+				{
+					if (name == "TestNotification"_ql)
+						TestNotification ();
+				});
 	}
 
 	void Plugin::SecondInit ()
@@ -238,6 +248,17 @@ namespace Kinotify
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	void Plugin::TestNotification ()
+	{
+		auto e = Util::MakeNotification (tr ("Test notification"),
+				tr ("This is a <em>test</em> notification body."),
+				Priority::Info);
+		auto nah = new Util::NotificationActionHandler { e };
+		nah->AddFunction (tr ("An action"), [] {});
+		nah->AddFunction (tr ("Another action"), [] {});
+		Handle (e);
 	}
 
 	void Plugin::pushNotification ()

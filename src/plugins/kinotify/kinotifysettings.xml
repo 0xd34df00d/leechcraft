@@ -39,6 +39,9 @@
 					<label value="Bottom right" />
 				</option>
 			</item>
+			<item type="pushbutton" name="TestNotification">
+				<label value="Display an example notification" />
+			</item>
 		</groupbox>
 	</page>
 </settings>
