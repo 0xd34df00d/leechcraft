@@ -54,6 +54,7 @@ namespace Kinotify
 		void SetActions (const QStringList&, QObject_ptr);
 	protected:
 		void showEvent (QShowEvent*) override;
+		void mouseReleaseEvent (QMouseEvent*) override;
 	private:
 		void SetData ();
 		void SetWidgetPlace ();

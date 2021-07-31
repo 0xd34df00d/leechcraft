@@ -128,6 +128,13 @@ namespace Kinotify
 		SetWidgetPlace ();
 	}
 
+	void KinotifyWidget::mouseReleaseEvent (QMouseEvent *event)
+	{
+		QWidget::mouseReleaseEvent (event);
+		if (!event->isAccepted ())
+			emit initiateCloseNotification ();
+	}
+
 	void KinotifyWidget::OverrideImage (const ImageVar_t& px)
 	{
 		OverridePixmap_ = px;
