@@ -14,6 +14,8 @@
 #include <util/sll/void.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
+#include <interfaces/entityconstants.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/core/icoreproxy.h>
@@ -75,8 +77,8 @@ namespace Kinotify
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		const bool could = e.Mime_ == "x-leechcraft/notification" &&
-				!e.Additional_ ["Text"].toString ().isEmpty ();
+		const bool could = e.Mime_ == LC::Mimes::Notification &&
+				!e.Additional_ [LC::EF::Text].toString ().isEmpty ();
 		return could ?
 				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
 				EntityTestHandleResult ();
@@ -142,10 +144,10 @@ namespace Kinotify
 				IsCurrentWindowFullScreen ())
 			return;
 
-		auto prio = e.Additional_ ["Priority"].value<Priority> ();
+		auto prio = e.Additional_ [LC::EF::Priority].value<Priority> ();
 
-		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toString ();
-		const auto& event = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
+		const auto& sender = e.Additional_ [LC::AN::EF::SenderID].toString ();
+		const auto& event = e.Additional_ [LC::AN::EF::EventID].toString ();
 		const auto& notifyId = sender + event;
 
 		auto sameIdPos = notifyId.isEmpty () ?
@@ -154,7 +156,7 @@ namespace Kinotify
 						[&notifyId] (KinotifyWidget *w) { return notifyId == w->GetID (); });
 
 		const auto& header = e.Entity_.toString ();
-		const auto& text = e.Additional_ ["Text"].toString ();
+		const auto& text = e.Additional_ [LC::EF::Text].toString ();
 		const auto sameDataPos =
 				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
 						[&header, &text] (KinotifyWidget *w)
@@ -162,25 +164,22 @@ namespace Kinotify
 		if (sameDataPos != ActiveNotifications_.end () && sameIdPos == ActiveNotifications_.end ())
 			return;
 
-		const auto defaultTimeout = XmlSettingsManager::Instance ()->
-				property ("MessageTimeout").toInt () * 1000;
-		const auto timeout = e.Additional_.value ("NotificationTimeout", defaultTimeout).toInt ();
+		const auto defaultTimeout = XmlSettingsManager::Instance ()->property ("MessageTimeout").toInt () * 1000;
+		const auto timeout = e.Additional_.value (LC::EF::NotificationTimeout, defaultTimeout).toInt ();
 
 		auto notificationWidget = new KinotifyWidget (timeout);
 		notificationWidget->SetID (notifyId);
 
-		QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
+		auto actionsNames = e.Additional_ [LC::EF::NotificationActions].toStringList ();
 		if (!actionsNames.isEmpty ())
 		{
-			if (!e.Additional_ ["HandlingObject"].canConvert<QObject_ptr> ())
+			const auto& handlingObjectVar = e.Additional_ [LC::EF::HandlingObject];
+			if (!handlingObjectVar.canConvert<QObject_ptr> ())
 				qWarning () << Q_FUNC_INFO
 						<< "value is not QObject_ptr"
-						<< e.Additional_ ["HandlingObject"];
+						<< handlingObjectVar;
 			else
-			{
-				QObject_ptr actionObject = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
-				notificationWidget->SetActions (actionsNames, actionObject);
-			}
+				notificationWidget->SetActions (actionsNames, handlingObjectVar.value<QObject_ptr> ());
 		}
 
 		connect (notificationWidget,
@@ -211,8 +210,8 @@ namespace Kinotify
 				ActiveNotifications_.insert (newPos, notificationWidget);
 			}
 		};
-		const auto& pxVar = e.Additional_ ["NotificationPixmap"];
-		const auto& pxFuture = OverridePixmap (notificationWidget, pxVar, prio, Proxy_);
+		const auto& pxVar = e.Additional_ [LC::EF::NotificationPixmap];
+		const auto& pxFuture = OverridePixmap (notificationWidget, pxVar, prio);
 		if (pxFuture.isFinished ())
 			worker (sameIdPos);
 		else
