@@ -19,15 +19,14 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <util/gui/geometry.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Kinotify
+namespace LC::Kinotify
 {
 	KinotifyWidget::KinotifyWidget (int timeout, QWidget *widget)
 	: QWidget (widget)
@@ -91,10 +90,7 @@ namespace Kinotify
 		connect (showFinishState,
 				&QState::entered,
 				this,
-				[this]
-				{
-					QTimer::singleShot (Timeout_, this, &KinotifyWidget::initiateCloseNotification);
-				});
+				[this] { QTimer::singleShot (Timeout_, this, &KinotifyWidget::initiateCloseNotification); });
 	}
 
 	QString KinotifyWidget::GetTitle () const
@@ -230,5 +226,4 @@ namespace Kinotify
 		setWindowOpacity (value);
 		update ();
 	}
-}
 }

@@ -17,24 +17,19 @@
 #include <interfaces/entityconstants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/entitytesthandleresult.h>
-#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
 #include "fswinwatcher.h"
 
-namespace LC
+namespace LC::Kinotify
 {
-namespace Kinotify
-{
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator (QStringLiteral ("kinotify"));
 
-		Proxy_ = proxy;
-
-		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				QStringLiteral ("kinotifysettings.xml"));
 
@@ -72,7 +67,7 @@ namespace Kinotify
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
@@ -100,7 +95,7 @@ namespace Kinotify
 		}
 
 		QFuture<Util::Void> OverridePixmap (KinotifyWidget *notificationWidget,
-				const QVariant& notifVar, Priority prio, const ICoreProxy_ptr& proxy)
+				const QVariant& notifVar, Priority prio)
 		{
 			if (notifVar.canConvert<QPixmap> ())
 			{
@@ -132,8 +127,9 @@ namespace Kinotify
 							};
 			}
 
-			const auto& icon = proxy->GetIconThemeManager ()->GetIcon (GetPriorityIconName (prio));
-			notificationWidget->SetPixmap (icon.pixmap ({ 128, 128 }));
+			const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon (GetPriorityIconName (prio));
+			const auto prioritySize = 128;
+			notificationWidget->SetPixmap (icon.pixmap ({ prioritySize, prioritySize }));
 			return Util::MakeReadyFuture<Util::Void> ({});
 		}
 	}
@@ -185,13 +181,21 @@ namespace Kinotify
 		connect (notificationWidget,
 				&QObject::destroyed,
 				this,
-				&Plugin::pushNotification);
+				[this]
+				{
+					if (ActiveNotifications_.isEmpty ())
+						return;
+
+					ActiveNotifications_.removeFirst ();
+					if (!ActiveNotifications_.isEmpty ())
+						ActiveNotifications_.first ()->PrepareNotification ();
+				});
 
 		notificationWidget->SetContent (header, text);
 
 		auto worker = [this, notificationWidget] (auto sameIdPos)
 		{
-			if (!ActiveNotifications_.size ())
+			if (ActiveNotifications_.isEmpty ())
 				notificationWidget->PrepareNotification ();
 
 			if (sameIdPos == ActiveNotifications_.end ())
@@ -241,17 +245,6 @@ namespace Kinotify
 		nah->AddFunction (tr ("Another action"), [] {});
 		Handle (e);
 	}
-
-	void Plugin::pushNotification ()
-	{
-		if (!ActiveNotifications_.size ())
-			return;
-
-		ActiveNotifications_.removeFirst ();
-		if (ActiveNotifications_.size ())
-			ActiveNotifications_.first ()->PrepareNotification ();
-	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_kinotify, LC::Kinotify::Plugin);

@@ -9,9 +9,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace Kinotify
+namespace LC::Kinotify
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -26,13 +24,11 @@ namespace Kinotify
 
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+		return new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Kinotify");
-		return settings;
 	}
 
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
 }

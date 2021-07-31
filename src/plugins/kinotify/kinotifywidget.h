@@ -14,9 +14,7 @@
 
 using QObject_ptr = std::shared_ptr<QObject>;
 
-namespace LC
-{
-namespace Kinotify
+namespace LC::Kinotify
 {
 	class KinotifyWidget : public QWidget
 	{
@@ -60,5 +58,4 @@ namespace Kinotify
 	signals:
 		void initiateCloseNotification ();
 	};
-}
 }

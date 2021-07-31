@@ -14,14 +14,7 @@
 #include <interfaces/ihavesettings.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-namespace LC
-{
-namespace Util
-{
-	class ResourceLoader;
-}
-
-namespace Kinotify
+namespace LC::Kinotify
 {
 	class KinotifyWidget;
 
@@ -35,28 +28,22 @@ namespace Kinotify
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Kinotify")
 
-		ICoreProxy_ptr Proxy_;
-
 		QList<KinotifyWidget*> ActiveNotifications_;
-
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const override;
+		void Handle (Entity) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	private:
 		void TestNotification ();
-	public slots:
-		void pushNotification ();
 	};
-}
 }
