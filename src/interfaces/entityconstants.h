@@ -15,6 +15,7 @@ namespace LC::EF
 	Q_DECL_IMPORT extern const QString Priority;
 	Q_DECL_IMPORT extern const QString NotificationActions;
 	Q_DECL_IMPORT extern const QString NotificationPixmap;
+	Q_DECL_IMPORT extern const QString NotificationTimeout;
 	Q_DECL_IMPORT extern const QString HandlingObject;
 	Q_DECL_IMPORT extern const QString UserVisibleName;
 	Q_DECL_IMPORT extern const QString Text;

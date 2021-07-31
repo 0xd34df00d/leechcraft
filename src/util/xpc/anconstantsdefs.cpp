@@ -15,6 +15,7 @@ namespace LC::EF
 	const QString Priority { QStringLiteral ("Priority") };
 	const QString NotificationActions { QStringLiteral ("NotificationActions") };
 	const QString NotificationPixmap { QStringLiteral ("NotificationPixmap") };
+	const QString NotificationTimeout { QStringLiteral ("NotificationTimeout") };
 	const QString HandlingObject { QStringLiteral ("HandlingObject") };
 	const QString UserVisibleName { QStringLiteral ("UserVisibleName") };
 	const QString Text { QStringLiteral ("Text") };
