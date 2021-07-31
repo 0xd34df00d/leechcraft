@@ -11,6 +11,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QMouseEvent>
+#include <QPainterPath>
 #include <QTimer>
 #include <QState>
 #include <QPropertyAnimation>
@@ -203,6 +204,11 @@ namespace Kinotify
 
 	void KinotifyWidget::SetWidgetPlace ()
 	{
+		QPainterPath path;
+		const auto& theseMargins = layout ()->contentsMargins ();
+		path.addRoundedRect (rect (), theseMargins.left (), theseMargins.top (), Qt::AbsoluteSize);
+		setMask (QRegion { path.toFillPolygon ().toPolygon () });
+
 		const auto& geometry = PreferredGeometry ();
 
 		QPoint point;
