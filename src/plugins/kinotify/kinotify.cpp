@@ -30,13 +30,13 @@ namespace Kinotify
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("kinotify");
+		Util::InstallTranslator (QStringLiteral ("kinotify"));
 
 		Proxy_ = proxy;
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"kinotifysettings.xml");
+				QStringLiteral ("kinotifysettings.xml"));
 
 		connect (SettingsDialog_.get (),
 				&Util::XmlSettingsDialog::pushButtonClicked,
@@ -62,7 +62,7 @@ namespace Kinotify
 
 	QString Plugin::GetName () const
 	{
-		return "Kinotify";
+		return QStringLiteral ("Kinotify");
 	}
 
 	QString Plugin::GetInfo () const
@@ -91,11 +91,11 @@ namespace Kinotify
 			switch (prio)
 			{
 			case Priority::Warning:
-				return "dialog-warning";
+				return QStringLiteral ("dialog-warning");
 			case Priority::Critical:
-				return "dialog-error";
+				return QStringLiteral ("dialog-error");
 			default:
-				return "dialog-information";
+				return QStringLiteral ("dialog-information");
 			}
 		}
 

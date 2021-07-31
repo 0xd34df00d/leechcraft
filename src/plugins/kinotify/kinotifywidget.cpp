@@ -210,15 +210,16 @@ namespace Kinotify
 
 		QPoint point;
 		const auto& placeStr = XmlSettingsManager::Instance ()->property ("NotifyPosition").toString ();
-		if (placeStr.startsWith ("Top"))
-			point.setY (geometry.top () + 20);
+		const auto margin = 20;
+		if (placeStr.startsWith ("Top"_ql))
+			point.setY (geometry.top () + margin);
 		else
-			point.setY (geometry.bottom () - 20);
+			point.setY (geometry.bottom () - margin);
 
-		if (placeStr.endsWith ("Left"))
-			point.setX (geometry.left () + 5);
+		if (placeStr.endsWith ("Left"_ql))
+			point.setX (geometry.left () + margin);
 		else
-			point.setX (geometry.right () - 5);
+			point.setX (geometry.right () - margin);
 
 		QRect place (Util::FitRectScreen (point, size (), Util::FitFlag::NoOverlap), size ());
 		setGeometry (place);
