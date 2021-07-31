@@ -14,6 +14,6 @@ LC_DEFINE_PLUGIN (
 		$<$<PLATFORM_ID:Linux,FreeBSD>:fswinwatcher_x11.cpp>
 		$<$<PLATFORM_ID:Windows>:fswinwatcher_win.cpp>
 	SETTINGS kinotifysettings.xml
-	QT_COMPONENTS WebKitWidgets ${QT_EXTRA_COMPONENTS}
+	QT_COMPONENTS ${QT_EXTRA_COMPONENTS}
 	INSTALL_SHARE
 	)
