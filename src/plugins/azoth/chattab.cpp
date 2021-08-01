@@ -43,7 +43,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
-#include "interfaces/azoth/irichtextmessage.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/imucentry.h"
 #include "interfaces/azoth/itransfermanager.h"
@@ -52,7 +51,6 @@
 #include "interfaces/azoth/isupportmediacalls.h"
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/ihistoryplugin.h"
-#include "interfaces/azoth/imucperms.h"
 #include "interfaces/azoth/iupdatablechatentry.h"
 #include "interfaces/azoth/iprovidecommands.h"
 #ifdef ENABLE_CRYPT
@@ -64,7 +62,6 @@
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "bookmarksmanagerdialog.h"
-#include "simpledialog.h"
 #include "callmanager.h"
 #include "callchatwidget.h"
 #include "msgformatterwidget.h"
