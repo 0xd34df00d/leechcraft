@@ -10,36 +10,25 @@
 
 #include <QWebView>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class ChatTabWebView : public QWebView
 	{
 		Q_OBJECT
 
-		QAction *QuoteAct_;
+		QAction *QuoteAct_ = nullptr;
 	public:
-		ChatTabWebView (QWidget* = 0);
+		explicit ChatTabWebView (QWidget* = nullptr);
 
 		void SetQuoteAction (QAction*);
 	protected:
-		void mouseReleaseEvent (QMouseEvent*);
-		void contextMenuEvent (QContextMenuEvent*);
+		void mouseReleaseEvent (QMouseEvent*) override;
+		void contextMenuEvent (QContextMenuEvent*) override;
 	private:
 		void HandleNick (QMenu*, const QUrl&);
 		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleOpenAsURL ();
-		void handleHighlightOccurences ();
-		void handleSaveLink ();
-		void handlePageLinkClicked (const QUrl&);
 	signals:
 		void linkClicked (const QUrl&, bool);
 		void chatWindowSearchRequested (const QString&);
 	};
-}
 }
