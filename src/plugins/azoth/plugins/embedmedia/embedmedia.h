@@ -15,11 +15,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace EmbedMedia
+namespace LC::Azoth::EmbedMedia
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -46,6 +42,4 @@ namespace EmbedMedia
 				QObject *entry,
 				QWebView *webView);
 	};
-}
-}
 }

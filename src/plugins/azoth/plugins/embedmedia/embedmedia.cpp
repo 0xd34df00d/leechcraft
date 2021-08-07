@@ -18,19 +18,15 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sys/resourceloader.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace EmbedMedia
+namespace LC::Azoth::EmbedMedia
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::ResourceLoader loader { "azoth/embedmedia" };
+		Util::ResourceLoader loader { QStringLiteral ("azoth/embedmedia") };
 		loader.AddGlobalPrefix ();
 		loader.AddLocalPrefix ();
 
-		auto embedderJS = loader.Load ("embedder.js", true);
+		auto embedderJS = loader.Load (QStringLiteral ("embedder.js"), true);
 
 		if (!embedderJS || !embedderJS->isOpen ())
 		{
@@ -57,7 +53,7 @@ namespace EmbedMedia
 
 	QString Plugin::GetName () const
 	{
-		return "Azoth EmbedMedia";
+		return QStringLiteral ("Azoth EmbedMedia");
 	}
 
 	QString Plugin::GetInfo () const
@@ -84,8 +80,6 @@ namespace EmbedMedia
 				&QWebFrame::initialLayoutCompleted,
 				[frame, this] { frame->evaluateJavaScript (ScriptContent_); });
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_embedmedia, LC::Azoth::EmbedMedia::Plugin);
