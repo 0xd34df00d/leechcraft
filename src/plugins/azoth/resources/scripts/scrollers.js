@@ -2,15 +2,19 @@
 
 function ScrollToBottom() {
 	if (window.ShouldScroll)
-		document.body.scrollTop = document.documentElement.scrollHeight - window.innerHeight;
+	    window.scrollTo(0, document.body.scrollHeight);
 }
 function TestScroll() {
 	window.ShouldScroll = document.documentElement.scrollHeight <= (window.innerHeight + window.pageYOffset + window.innerHeight / 5);
 }
 function InstallEventListeners() {
 	window.ShouldScroll = true;
-	document.body.addEventListener ("DOMNodeInserted", function () { setTimeout (ScrollToBottom, 0); }, false);
-	document.body.addEventListener ("DOMSubtreeModified", function () { setTimeout (ScrollToBottom, 0); }, false);
-	window.addEventListener ("resize", function () { setTimeout (ScrollToBottom, 0); });
+	let scheduleScroll = () => { setTimeout (ScrollToBottom, 0); };
+	document.body.addEventListener ("DOMNodeInserted", scheduleScroll, false);
+	document.body.addEventListener ("DOMSubtreeModified", scheduleScroll, false);
+	window.addEventListener ("resize", scheduleScroll);
 	window.addEventListener ("scroll", TestScroll);
 }
+
+InstallEventListeners();
+ScrollToBottom();

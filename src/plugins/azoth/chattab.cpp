@@ -742,10 +742,7 @@ namespace Azoth
 					<< "unable to open script file"
 					<< scrollerJS.errorString ();
 		else
-		{
 			Ui_.View_->page ()->runJavaScript (scrollerJS.readAll ());
-			Ui_.View_->page ()->runJavaScript ("InstallEventListeners(); ScrollToBottom();");
-		}
 
 		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				this, Ui_.View_, GetEntry<QObject> ());
