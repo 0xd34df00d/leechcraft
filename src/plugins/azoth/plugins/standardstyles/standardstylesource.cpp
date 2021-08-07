@@ -200,7 +200,6 @@ namespace LC::Azoth::StandardStyles
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::Type::ChatMessage:
-				statusIconName = "notification_chat_receive"_ql;
 				divClass = msg->GetDirection () == IMessage::Direction::In ?
 						"msgin"_ql :
 						"msgout"_ql;
