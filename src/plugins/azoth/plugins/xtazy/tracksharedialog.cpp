@@ -11,11 +11,7 @@
 #include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xtazy
+namespace LC::Azoth::Xtazy
 {
 	TrackShareDialog::TrackShareDialog (const QString& path,
 			const QStringList& services, QObject *entryObj, QWidget *parent)
@@ -27,9 +23,9 @@ namespace Xtazy
 
 		QFileInfo info (path);
 		Ui_.FileLabel_->setText (Ui_.FileLabel_->text ()
-					.arg (info.fileName ())
-					.arg (Util::MakePrettySize (info.size ()))
-					.arg (entry->GetEntryName ()));
+					.arg (info.fileName (),
+					      Util::MakePrettySize (info.size ()),
+					      entry->GetEntryName ()));
 
 		Ui_.Services_->addItems (services);
 	}
@@ -38,6 +34,4 @@ namespace Xtazy
 	{
 		return Ui_.Services_->currentText ();
 	}
-}
-}
 }

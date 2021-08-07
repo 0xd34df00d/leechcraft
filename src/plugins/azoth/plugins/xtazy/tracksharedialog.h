@@ -11,20 +11,14 @@
 #include <QDialog>
 #include "ui_tracksharedialog.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xtazy
+namespace LC::Azoth::Xtazy
 {
 	class TrackShareDialog : public QDialog
 	{
 		Ui::TrackShareDialog Ui_;
 	public:
-		TrackShareDialog (const QString&, const QStringList&, QObject*, QWidget* = 0);
+		TrackShareDialog (const QString&, const QStringList&, QObject*, QWidget* = nullptr);
 
 		QString GetVariantName () const;
 	};
-}
-}
 }

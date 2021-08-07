@@ -12,7 +12,6 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iprovidecommands.h>
 
 namespace Media
@@ -21,9 +20,7 @@ namespace Media
 	class ICurrentSongKeeper;
 }
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 class IProxyObject;
 
@@ -52,24 +49,24 @@ namespace Xtazy
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
+		using UploadNotifee_t = QPair<QPointer<QObject>, QString>;
 		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
 
 		StaticCommands_t Commands_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		StaticCommands_t GetStaticCommands (ICLEntry*);
+		StaticCommands_t GetStaticCommands (ICLEntry*) override;
 	private:
 		bool SendCurrentSong (ICLEntry*, QString&);
 		bool HandleShare (ICLEntry*, QString&);
@@ -83,6 +80,5 @@ namespace Xtazy
 
 		void handleAutoPublishChanged ();
 	};
-}
 }
 }

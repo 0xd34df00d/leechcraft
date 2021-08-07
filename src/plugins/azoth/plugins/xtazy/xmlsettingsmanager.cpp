@@ -9,11 +9,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xtazy
+namespace LC::Azoth::Xtazy
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -32,10 +28,7 @@ namespace Xtazy
 
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+		return new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Xtazy");
-		return settings;
 	}
-}
-}
 }

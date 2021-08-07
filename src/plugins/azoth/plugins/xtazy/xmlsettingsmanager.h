@@ -10,11 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xtazy
+namespace LC::Azoth::Xtazy
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
@@ -22,9 +18,7 @@ namespace Xtazy
 	public:
 		static XmlSettingsManager& Instance ();
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
 	};
-}
-}
 }
