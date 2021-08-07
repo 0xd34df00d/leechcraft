@@ -15,7 +15,7 @@
 
 class QDateTime;
 class QObject;
-class QWebView;
+class QWebEngineView;
 
 namespace LC
 {
@@ -34,7 +34,7 @@ namespace Azoth
 		void hookChatTabCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
-				QWebView *webView);
+				QWebEngineView *webView);
 
 		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 
@@ -191,7 +191,7 @@ namespace Azoth
 				QObject *message);
 		void hookThemeReloaded (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QWebView *view,
+				QWebEngineView *view,
 				QObject *entry);
 
 		/** @brief Hook for tooltip formatting.

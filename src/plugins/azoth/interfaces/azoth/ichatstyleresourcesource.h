@@ -11,6 +11,7 @@
 #include "iresourceplugin.h"
 
 class QUrl;
+class QWebEnginePage;
 
 namespace LC::Azoth
 {
@@ -98,7 +99,7 @@ namespace LC::Azoth
 		 * @sa GetVariantsForPack()
 		 */
 		virtual QString GetHTMLTemplate (const QString& style,
-				const QString& variant, QObject *entry, QWebFrame *frame) const = 0;
+				const QString& variant, QObject *entry, QWebEnginePage *page) const = 0;
 
 		/** @brief Appends a new message to the chat view.
 		 *
@@ -110,7 +111,7 @@ namespace LC::Azoth
 		 * @param[in] info Additional chat message info structure.
 		 * @return true on success, false otherwise.
 		 */
-		virtual bool AppendMessage (QWebFrame *frame, QObject *message,
+		virtual bool AppendMessage (QWebEnginePage *page, QObject *message,
 				const ChatMsgAppendInfo& info) = 0;
 
 		/** @brief Notifies about a frame obtaining user input focus.
@@ -124,7 +125,7 @@ namespace LC::Azoth
 		 *
 		 * @param[in] frame The frame that received focus.
 		 */
-		virtual void FrameFocused (QWebFrame *frame) = 0;
+		virtual void FrameFocused (QWebEnginePage *page) = 0;
 
 		/** @brief Returns the list of variants for the \em style pack.
 		 *
