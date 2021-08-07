@@ -2023,8 +2023,7 @@ namespace Azoth
 
 	void ChatTab::handleEditScroll (int direction)
 	{
-		static const auto js = QStringLiteral ("window.scrollBy(0, (window.innerHeight / 2 - 5) * %1);");
-		Ui_.View_->page ()->runJavaScript (js.arg (direction));
+		Ui_.View_->page ()->runJavaScript (QStringLiteral ("ScrollPage(%1);").arg (direction));
 	}
 
 	void ChatTab::UpdateStateIcon ()

@@ -18,3 +18,11 @@ function InstallEventListeners() {
 
 InstallEventListeners();
 ScrollToBottom();
+
+function ScrollPage(direction) {
+    window.scrollBy({
+        top: (window.innerHeight / 2 - 5) * direction,
+        left: 0,
+        behavior: 'smooth'
+    });
+}
