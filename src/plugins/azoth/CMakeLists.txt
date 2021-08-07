@@ -116,7 +116,7 @@ LC_DEFINE_PLUGIN (
 		$<$<BOOL:${ENABLE_CRYPT}>:pgpkeyselectiondialog.cpp cryptomanager.cpp>
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
-	QT_COMPONENTS Concurrent Network Sql WebKitWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
+	QT_COMPONENTS Concurrent Network Sql WebEngineWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
 	LINK_LIBRARIES $<$<BOOL:${ENABLE_CRYPT}>:PkgConfig::QCA2>
 	INSTALL_SHARE
 	)

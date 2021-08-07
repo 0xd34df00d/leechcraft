@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <QWebView>
+#include <QWebEngineView>
 
 namespace LC::Azoth
 {
-	class ChatTabWebView : public QWebView
+	class ChatTabWebView : public QWebEngineView
 	{
 		Q_OBJECT
 
@@ -22,7 +22,6 @@ namespace LC::Azoth
 
 		void SetQuoteAction (QAction*);
 	protected:
-		void mouseReleaseEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;
 	private:
 		void HandleNick (QMenu*, const QUrl&);

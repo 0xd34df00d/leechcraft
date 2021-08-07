@@ -8,7 +8,7 @@
 
 #include "chattabwebview.h"
 #include <QContextMenuEvent>
-#include <QWebHitTestResult>
+#include <QWebEngineContextMenuData>
 #include <QPointer>
 #include <QMenu>
 #include <QDesktopServices>
@@ -26,12 +26,14 @@
 namespace LC::Azoth
 {
 	ChatTabWebView::ChatTabWebView (QWidget *parent)
-	: QWebView (parent)
+	: QWebEngineView (parent)
 	{
+		/* TODO
 		connect (page (),
 				&QWebPage::linkClicked,
 				this,
 				[this] (const QUrl& url) { emit linkClicked (url, true); });
+				*/
 	}
 
 	void ChatTabWebView::SetQuoteAction (QAction *act)
@@ -39,24 +41,12 @@ namespace LC::Azoth
 		QuoteAct_ = act;
 	}
 
-	void ChatTabWebView::mouseReleaseEvent (QMouseEvent *e)
-	{
-		if (e->button () != Qt::MiddleButton)
-			return QWebView::mouseReleaseEvent (e);
-
-		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
-		if (r.linkUrl ().isEmpty ())
-			return QWebView::mouseReleaseEvent (e);
-
-		emit linkClicked (r.linkUrl (), false);
-	}
-
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu (this));
 		const auto menuGuard = Util::MakeScopeGuard ([&menu] { delete menu; });
 
-		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
+		const auto& r = page ()->contextMenuData ();
 
 		if (!r.linkUrl ().isEmpty ())
 		{
@@ -69,7 +59,7 @@ namespace LC::Azoth
 		const auto& text = page ()->selectedText ();
 		if (!text.isEmpty ())
 		{
-			menu->addAction (pageAction (QWebPage::Copy));
+			menu->addAction (pageAction (QWebEnginePage::Copy));
 			menu->addAction (QuoteAct_);
 
 			if (!text.contains (' ') && text.contains ('.'))
@@ -100,11 +90,13 @@ namespace LC::Azoth
 					Core::Instance ().GetProxy ()->GetEntityManager (), menu);
 		}
 
-		if (!r.imageUrl ().isEmpty ())
-			menu->addAction (pageAction (QWebPage::CopyImageToClipboard));
+		if (r.mediaType () == QWebEngineContextMenuData::MediaTypeImage)
+			menu->addAction (pageAction (QWebEnginePage::CopyImageToClipboard));
 
+		/* TODO
 		if (settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
-			menu->addAction (pageAction (QWebPage::InspectElement));
+			menu->addAction (pageAction (QWebEnginePage::InspectElement));
+		 */
 
 		if (menu->isEmpty ())
 			return;
@@ -162,7 +154,7 @@ namespace LC::Azoth
 		menu->addAction (tr ("Open externally"),
 				this,
 				[url] { QDesktopServices::openUrl (url); });
-		menu->addAction (pageAction (QWebPage::CopyLinkToClipboard));
+		menu->addAction (pageAction (QWebEnginePage::CopyLinkToClipboard));
 		menu->addSeparator ();
 	}
 }

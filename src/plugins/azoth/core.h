@@ -28,6 +28,7 @@
 
 class QStandardItemModel;
 class QStandardItem;
+class QWebEnginePage;
 
 namespace LC::Util
 {
@@ -237,12 +238,12 @@ namespace LC::Azoth
 
 		CoreCommandsManager* GetCoreCommandsManager () const;
 
-		QString GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const;
+		QString GetSelectedChatTemplate (QObject *entry, QWebEnginePage*) const;
 		QUrl GetSelectedChatTemplateURL (QObject*) const;
 
-		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
+		bool AppendMessageByTemplate (QWebEnginePage*, QObject*, const ChatMsgAppendInfo&);
 
-		void FrameFocused (QObject*, QWebFrame*);
+		void FrameFocused (QObject*, QWebEnginePage*);
 
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);

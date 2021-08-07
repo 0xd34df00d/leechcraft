@@ -714,7 +714,7 @@ namespace LC::Azoth
 			manager->AddChatStyleResourceSource (src);
 	}
 
-	QString Core::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
+	QString Core::GetSelectedChatTemplate (QObject *entry, QWebEnginePage *page) const
 	{
 		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
 		if (!src)
@@ -722,14 +722,14 @@ namespace LC::Azoth
 
 		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
 		if (!pair.first.isEmpty ())
-			return src->GetHTMLTemplate (pair.first, pair.second, entry, frame);
+			return src->GetHTMLTemplate (pair.first, pair.second, entry, page);
 
 		const QByteArray& optName = GetStyleOptName (entry);
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property (optName).toString ();
 		const QString& var = XmlSettingsManager::Instance ()
 				.property (optName + "Variant").toString ();
-		return src->GetHTMLTemplate (opt, var, entry, frame);
+		return src->GetHTMLTemplate (opt, var, entry, page);
 	}
 
 	QUrl Core::GetSelectedChatTemplateURL (QObject *entry) const
@@ -747,7 +747,7 @@ namespace LC::Azoth
 		return src->GetBaseURL (opt);
 	}
 
-	bool Core::AppendMessageByTemplate (QWebFrame *frame,
+	bool Core::AppendMessageByTemplate (QWebEnginePage *page,
 			QObject *message, const ChatMsgAppendInfo& info)
 	{
 		IChatStyleResourceSource *src = GetCurrentChatStyle (qobject_cast<IMessage*> (message)->ParentCLEntry ());
@@ -759,16 +759,16 @@ namespace LC::Azoth
 			return false;
 		}
 
-		return src->AppendMessage (frame, message, info);
+		return src->AppendMessage (page, message, info);
 	}
 
-	void Core::FrameFocused (QObject *entry, QWebFrame *frame)
+	void Core::FrameFocused (QObject *entry, QWebEnginePage *page)
 	{
 		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
 		if (!src)
 			return;
 
-		src->FrameFocused (frame);
+		src->FrameFocused (page);
 	}
 
 	QString Core::FormatDate (QDateTime dt, IMessage *msg)

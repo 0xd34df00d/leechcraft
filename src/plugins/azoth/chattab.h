@@ -268,7 +268,7 @@ namespace Azoth
 		void hookChatTabCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
-				QWebView *webView);
+				QWebEngineView *webView);
 		void hookGonnaAppendMsg (LC::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookMadeCurrent (LC::IHookProxy_ptr proxy,
@@ -280,7 +280,7 @@ namespace Azoth
 				QString variant);
 		void hookThemeReloaded (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QWebView *view,
+				QWebEngineView *view,
 				QObject *entry);
 	};
 

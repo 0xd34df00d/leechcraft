@@ -8,8 +8,7 @@
 
 #include "chattab.h"
 #include <cmath>
-#include <QWebFrame>
-#include <QWebElement>
+#include <QWebEngineSettings>
 #include <QTextDocument>
 #include <QBuffer>
 #include <QPalette>
@@ -131,8 +130,7 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		fontsWidget->RegisterSettable (this);
-		Ui_.View_->page ()->setNetworkAccessManager (nam);
-		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
+		// TODO Ui_.View_->page ()->setNetworkAccessManager (nam);
 
 		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this, fontsWidget] (QWheelEvent *e)
 				{
@@ -143,12 +141,12 @@ namespace Azoth
 					int steps = static_cast<qreal> (degrees) / 15;
 
 					const auto settings = Ui_.View_->settings ();
-					const auto newFontSize = std::max (6, settings->fontSize (QWebSettings::DefaultFontSize) + steps);
-					settings->setFontSize (QWebSettings::DefaultFontSize, newFontSize);
-					settings->setFontSize (QWebSettings::DefaultFixedFontSize, newFontSize);
-					settings->setFontSize (QWebSettings::MinimumFontSize, newFontSize);
+					const auto newFontSize = std::max (6, settings->fontSize (QWebEngineSettings::DefaultFontSize) + steps);
+					settings->setFontSize (QWebEngineSettings::DefaultFontSize, newFontSize);
+					settings->setFontSize (QWebEngineSettings::DefaultFixedFontSize, newFontSize);
+					settings->setFontSize (QWebEngineSettings::MinimumFontSize, newFontSize);
 
-					Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("setTimeout(ScrollToBottom,0);");
+					Ui_.View_->page ()->runJavaScript ("setTimeout(ScrollToBottom,0);");
 
 					if (e->modifiers () & Qt::ShiftModifier)
 					{
@@ -166,7 +164,7 @@ namespace Azoth
 					if (ev->matches (QKeySequence::Copy) &&
 						!Ui_.View_->page ()->selectedText ().isEmpty ())
 					{
-						Ui_.View_->pageAction (QWebPage::Copy)->trigger ();
+						Ui_.View_->pageAction (QWebEnginePage::Copy)->trigger ();
 						return true;
 					}
 
@@ -192,8 +190,10 @@ namespace Azoth
 				this,
 				SLOT (messageSend ()));
 
+		/* TODO
 		ChatFinder_ = new Util::FindNotificationWk (Core::Instance ().GetProxy (), Ui_.View_);
 		ChatFinder_->hide ();
+		 */
 
 		BuildBasicActions ();
 
@@ -207,8 +207,6 @@ namespace Azoth
 		QSize ccSize = Ui_.CharCounter_->size ();
 		ccSize.setWidth (fontMetrics ().horizontalAdvance (" 9999"));
 		Ui_.CharCounter_->resize (ccSize);
-
-		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 
 		connect (Ui_.View_,
 				SIGNAL (linkClicked (QUrl, bool)),
@@ -277,8 +275,7 @@ namespace Azoth
 	void ChatTab::PrepareTheme ()
 	{
 		const auto entry = GetEntry<QObject> ();
-		auto data = Core::Instance ().GetSelectedChatTemplate (entry,
-				Ui_.View_->page ()->mainFrame ());
+		auto data = Core::Instance ().GetSelectedChatTemplate (entry, Ui_.View_->page ());
 		if (data.isEmpty ())
 			data = QString (R"delim(
 				<?xml version="1.0" encoding="utf-8"?>
@@ -341,7 +338,7 @@ namespace Azoth
 	void ChatTab::TabMadeCurrent ()
 	{
 		Core::Instance ().GetChatTabsManager ()->ChatMadeCurrent (this);
-		Core::Instance ().FrameFocused (GetEntry<QObject> (), Ui_.View_->page ()->mainFrame ());
+		Core::Instance ().FrameFocused (GetEntry<QObject> (), Ui_.View_->page ());
 
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookMadeCurrent (proxy, this);
@@ -452,12 +449,12 @@ namespace Azoth
 
 	void ChatTab::SetFontFamily (FontFamily family, const QFont& font)
 	{
-		Ui_.View_->settings ()->setFontFamily (static_cast<QWebSettings::FontFamily> (family), font.family ());
+		Ui_.View_->settings ()->setFontFamily (static_cast<QWebEngineSettings::FontFamily> (family), font.family ());
 	}
 
 	void ChatTab::SetFontSize (FontSize type, int size)
 	{
-		Ui_.View_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
+		Ui_.View_->settings ()->setFontSize (static_cast<QWebEngineSettings::FontSize> (type), size);
 	}
 
 	void ChatTab::ShowUsersList ()
@@ -746,8 +743,8 @@ namespace Azoth
 					<< scrollerJS.errorString ();
 		else
 		{
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+			Ui_.View_->page ()->runJavaScript (scrollerJS.readAll ());
+			Ui_.View_->page ()->runJavaScript ("InstallEventListeners(); ScrollToBottom();");
 		}
 
 		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
@@ -1383,7 +1380,7 @@ namespace Azoth
 
 	void ChatTab::performJS (const QString& js)
 	{
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		Ui_.View_->page ()->runJavaScript (js);
 	}
 
 	template<typename T>
@@ -1862,7 +1859,7 @@ namespace Azoth
 				return;
 		}
 
-		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
+		const auto frame = Ui_.View_->page ();
 
 		const bool isActiveChat = Core::Instance ()
 				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
@@ -2019,16 +2016,18 @@ namespace Azoth
 
 	void ChatTab::handleChatWindowSearch (const QString& text)
 	{
+		/* TODO
 		ChatFinder_->SetText (text);
 		ChatFinder_->FindNext ();
 
 		ChatFinder_->show ();
+		 */
 	}
 
 	void ChatTab::handleEditScroll (int direction)
 	{
-		int distance = Ui_.View_->size ().height () / 2 - 5;
-		Ui_.View_->page ()->mainFrame ()->scroll (0, distance * direction);
+		static const auto js = QStringLiteral ("window.scrollBy(0, (window.innerHeight / 2 - 5) * %1);");
+		Ui_.View_->page ()->runJavaScript (js.arg (direction));
 	}
 
 	void ChatTab::UpdateStateIcon ()
