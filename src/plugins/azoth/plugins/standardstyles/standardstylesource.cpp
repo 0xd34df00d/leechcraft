@@ -373,7 +373,7 @@ namespace LC::Azoth::StandardStyles
 					loop.quit ();
 				});
 
-		loop.exec ();
+		loop.exec (QEventLoop::ExcludeUserInputEvents);
 
 		const auto& mangledScheme = scheme + bgColor.name ();
 
