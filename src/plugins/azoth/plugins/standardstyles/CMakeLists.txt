@@ -6,6 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		standardstyles.cpp
 		standardstylesource.cpp
-	QT_COMPONENTS WebKitWidgets
+	QT_COMPONENTS WebEngineWidgets
 	INSTALL_SHARE
 	)

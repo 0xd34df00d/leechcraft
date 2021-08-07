@@ -8,11 +8,10 @@
 
 #include "standardstylesource.h"
 #include <QTextDocument>
-#include <QWebElement>
-#include <QWebFrame>
 #include <QApplication>
 #include <QPalette>
 #include <QtDebug>
+#include <QWebEnginePage>
 #include <util/sys/resourceloader.h>
 #include <util/sll/qtutil.h>
 #include <util/util.h>
@@ -57,7 +56,7 @@ namespace LC::Azoth::StandardStyles
 	}
 
 	QString StandardStyleSource::GetHTMLTemplate (const QString& pack,
-			const QString&, QObject *entryObj, QWebFrame*) const
+			const QString&, QObject *entryObj, QWebEnginePage*) const
 	{
 		Coloring2Colors_.clear ();
 		if (pack != LastPack_)
@@ -121,11 +120,10 @@ namespace LC::Azoth::StandardStyles
 		}
 	}
 
-	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
+	bool StandardStyleSource::AppendMessage (QWebEnginePage *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
-		QObject *azothSettings = Proxy_->GetSettingsManager ();
-		const auto& colors = CreateColors (frame->metaData ().value (QStringLiteral ("coloring")), frame);
+		const auto& colors = CreateColors (frame);
 		auto& formatter = Proxy_->GetFormatterProxy ();
 
 		const QString& msgId = GetMessageID (msgObj);
@@ -181,6 +179,7 @@ namespace LC::Azoth::StandardStyles
 		const auto slashMeMarker = "/me "_ql;
 		const auto leechcraftMarker = "/leechcraft "_ql;
 
+		const auto azothSettings = Proxy_->GetSettingsManager ();
 		const auto& preNick = WrapNickPart (azothSettings->property ("PreNickText").toString (),
 				nickColor, msg->GetMessageType ());
 		const auto& postNick = WrapNickPart (azothSettings->property ("PostNickText").toString (),
@@ -291,29 +290,39 @@ namespace LC::Azoth::StandardStyles
 					.arg (GetStatusImage (statusIconName), msgId));
 		string.append (body);
 
-		QWebElement elem = frame->findFirstElement (QStringLiteral ("body"));
-
+		QString js;
 		if (msg->GetMessageType () == IMessage::Type::ChatMessage ||
-			msg->GetMessageType () == IMessage::Type::MUCMessage)
+				msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
 			const auto isRead = Proxy_->IsMessageRead (msgObj);
 			if (!info.IsActiveChat_ &&
-					!isRead && IsLastMsgRead_.value (frame, false))
+				!isRead && IsLastMsgRead_.value (frame, false))
 			{
-				auto hr = elem.findFirst (QStringLiteral ("hr[class=\"lastSeparator\"]"));
-				if (!hr.isNull ())
-					hr.removeFromDocument ();
-				elem.appendInside (QStringLiteral ("<hr class=\"lastSeparator\" />"));
+				js += R"(
+						(() => {
+							let hr = document.querySelector("hr[class='lastSeparator']");
+							if (hr)
+								document.body.appendChild(hr);
+							else
+								document.body.innerHTML += "<hr class='lastSeparator' />";
+						}) ();
+						)"_ql;
 			}
 			IsLastMsgRead_ [frame] = isRead;
 		}
 
-		elem.appendInside (QStringLiteral ("<div class='%1' style='word-wrap: break-word;'>%2</div>")
-					.arg (divClass, string));
+		js += R"(
+				document.body.innerHTML += "<div class='%1' style='word-wrap: break-word;'>%2</div>";
+				true;
+				)"_ql
+				.arg (divClass, string);
+
+		frame->runJavaScript (js, [] (const QVariant& var) { qDebug () << Q_FUNC_INFO << var; });
+
 		return true;
 	}
 
-	void StandardStyleSource::FrameFocused (QWebFrame *frame)
+	void StandardStyleSource::FrameFocused (QWebEnginePage *frame)
 	{
 		IsLastMsgRead_ [frame] = true;
 	}
@@ -323,20 +332,48 @@ namespace LC::Azoth::StandardStyles
 		return {};
 	}
 
-	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme, QWebFrame *frame)
+	namespace
 	{
+		QColor UnRgb (QString str)
+		{
+			str.remove (' ');
+			str.remove (QStringLiteral ("rgb("));
+			str.remove (')');
+			const auto& vals = str.splitRef (',', Qt::SkipEmptyParts);
+
+			QColor color;
+			if (vals.size () == 3)
+				color.setRgb (vals.value (0).toInt (),
+						vals.value (1).toInt (), vals.value (2).toInt ());
+			return color;
+		}
+	}
+
+	QList<QColor> StandardStyleSource::CreateColors (QWebEnginePage *frame)
+	{
+		// TODO cache this
+		QEventLoop loop;
+
+		static const auto js = QStringLiteral (R"(
+				(() => {
+					let coloring = document.querySelector("meta[name=coloring]")?.content;
+					let bgColor = window.getComputedStyle(document.body)['background-color'];
+					return { coloring, bgColor };
+				}) ();
+				)");
+
+		QString scheme;
 		QColor bgColor;
+		frame->runJavaScript (js,
+				[&] (const QVariant& var)
+				{
+					const auto& varMap = var.toMap ();
+					scheme = varMap [QStringLiteral ("coloring")].toString ();
+					bgColor = UnRgb (varMap [QStringLiteral ("bgColor")].toString ());
+					loop.quit ();
+				});
 
-		const auto js = "window.getComputedStyle(document.body) ['background-color']";
-		auto res = frame->evaluateJavaScript (js).toString ();
-		res.remove (' ');
-		res.remove (QStringLiteral ("rgb("));
-		res.remove (')');
-		const auto& vals = res.splitRef (',', Qt::SkipEmptyParts);
-
-		if (vals.size () == 3)
-			bgColor.setRgb (vals.value (0).toInt (),
-					vals.value (1).toInt (), vals.value (2).toInt ());
+		loop.exec ();
 
 		const auto& mangledScheme = scheme + bgColor.name ();
 
@@ -360,13 +397,19 @@ namespace LC::Azoth::StandardStyles
 
 	void StandardStyleSource::handleMessageDelivered ()
 	{
-		QWebFrame *frame = Msg2Frame_.take (sender ());
+		const auto frame = Msg2Frame_.take (sender ());
 		if (!frame)
 			return;
 
-		const QString& msgId = GetMessageID (sender ());
-		QWebElement elem = frame->findFirstElement ("img[id=\"" + msgId + "\"]");
-		elem.setAttribute (QStringLiteral ("src"), GetStatusImage (QStringLiteral ("notification_chat_delivery_ok")));
+		const auto& msgId = GetMessageID (sender ());
+		static const auto js = QStringLiteral (R"(
+				(() => {
+					let img = document.querySelector("img[id='%1']");
+					if (img)
+						img.src = "%2";
+				}) ();
+				)");
+		frame->runJavaScript (js.arg (msgId, GetStatusImage (QStringLiteral ("notification_chat_delivery_ok"))));
 
 		disconnect (sender (),
 				SIGNAL (messageDelivered ()),

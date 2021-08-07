@@ -43,19 +43,19 @@ namespace StandardStyles
 		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
 		mutable QString LastPack_;
 
-		QHash<QObject*, QWebFrame*> Msg2Frame_;
+		QHash<QObject*, QWebEnginePage*> Msg2Frame_;
 	public:
 		explicit StandardStyleSource (IProxyObject*, QObject* = nullptr);
 
 		QAbstractItemModel* GetOptionsModel () const override;
 		QUrl GetBaseURL (const QString&) const override;
 		QString GetHTMLTemplate (const QString&,
-				const QString&, QObject*, QWebFrame*) const override;
-		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&) override;
-		void FrameFocused (QWebFrame*) override;
+				const QString&, QObject*, QWebEnginePage*) const override;
+		bool AppendMessage (QWebEnginePage*, QObject*, const ChatMsgAppendInfo&) override;
+		void FrameFocused (QWebEnginePage*) override;
 		QStringList GetVariantsForPack (const QString&) override;
 	private:
-		QList<QColor> CreateColors (const QString&, QWebFrame*);
+		QList<QColor> CreateColors (QWebEnginePage*);
 		QString GetStatusImage (const QString&);
 
 		void HandleMessageDestroyed (QObject*);
