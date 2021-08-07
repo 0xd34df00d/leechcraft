@@ -14,7 +14,6 @@
 #include "ihaveavatars.h"
 
 class QObject;
-class QWebFrame;
 
 template<typename>
 class QFuture;

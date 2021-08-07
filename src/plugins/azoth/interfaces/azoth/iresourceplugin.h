@@ -14,7 +14,6 @@
 #include <QImage>
 
 class QAbstractItemModel;
-class QWebFrame;
 
 inline uint qHash (const QImage& image)
 {
