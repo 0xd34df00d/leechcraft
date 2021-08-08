@@ -711,8 +711,11 @@ namespace Azoth
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
-	void ChatTab::on_View__loadFinished (bool)
+	void ChatTab::on_View__loadFinished (bool ok)
 	{
+		if (!ok)
+			return;
+
 		emit hookThemeReloaded (std::make_shared<Util::DefaultHookProxy> (),
 				this, Ui_.View_, GetEntry<QObject> ());
 
