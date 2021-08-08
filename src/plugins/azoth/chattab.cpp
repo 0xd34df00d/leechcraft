@@ -713,6 +713,9 @@ namespace Azoth
 
 	void ChatTab::on_View__loadFinished (bool)
 	{
+		emit hookThemeReloaded (std::make_shared<Util::DefaultHookProxy> (),
+				this, Ui_.View_, GetEntry<QObject> ());
+
 		for (const auto msg : HistoryMessages_)
 			AppendMessage (msg);
 
@@ -743,9 +746,6 @@ namespace Azoth
 					<< scrollerJS.errorString ();
 		else
 			Ui_.View_->page ()->runJavaScript (scrollerJS.readAll ());
-
-		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
-				this, Ui_.View_, GetEntry<QObject> ());
 	}
 
 #ifdef ENABLE_MEDIACALLS
