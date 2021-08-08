@@ -179,7 +179,7 @@ namespace LC::Azoth::Abbrev
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
-	void Plugin::hookChatTabCreated (IHookProxy_ptr, QObject *chatTab, QObject*, QWebView*)
+	void Plugin::hookChatTabCreated (IHookProxy_ptr, QObject *chatTab, QObject*, QWebEngineView*)
 	{
 		ShortcutsMgr_->HandleTab (qobject_cast<QWidget*> (chatTab));
 	}

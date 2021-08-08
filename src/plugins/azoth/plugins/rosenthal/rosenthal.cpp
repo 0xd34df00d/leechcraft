@@ -129,7 +129,7 @@ namespace Rosenthal
 	}
 
 	void Plugin::hookChatTabCreated (LC::IHookProxy_ptr,
-			QObject *chatTab, QObject*, QWebView*)
+			QObject *chatTab, QObject*, QWebEngineView*)
 	{
 		if (!Checker_)
 			return;

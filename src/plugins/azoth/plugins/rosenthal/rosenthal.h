@@ -16,7 +16,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ispellcheckprovider.h>
 
-class QWebView;
+class QWebEngineView;
 class QTranslator;
 
 namespace LC
@@ -57,7 +57,7 @@ namespace Rosenthal
 		void hookChatTabCreated (LC::IHookProxy_ptr,
 				QObject*,
 				QObject*,
-				QWebView*);
+				QWebEngineView*);
 		void handleCorrectionTriggered ();
 		void handleHighlighterDestroyed ();
 	};

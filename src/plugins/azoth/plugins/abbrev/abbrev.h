@@ -15,7 +15,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iprovidecommands.h>
 
-class QWebView;
+class QWebEngineView;
 
 namespace LC::Azoth
 {
@@ -69,7 +69,7 @@ namespace Abbrev
 		void initPlugin (QObject*);
 
 		void hookChatTabCreated (LC::IHookProxy_ptr,
-				QObject*, QObject*, QWebView*);
+				QObject*, QObject*, QWebEngineView*);
 		void hookMessageSendRequested (LC::IHookProxy_ptr,
 				QObject*,
 				QObject*,
