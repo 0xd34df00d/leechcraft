@@ -45,29 +45,29 @@ namespace AdiumStyles
 
 		PackProxyModel *PackProxyModel_;
 
-		mutable QHash<QWebFrame*, QString> Frame2Pack_;
+		mutable QHash<QWebEnginePage*, QString> Frame2Pack_;
 		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
 		mutable QString LastPack_;
 
-		QHash<QObject*, QWebFrame*> Msg2Frame_;
+		QHash<QObject*, QWebEnginePage*> Msg2Frame_;
 
-		mutable QHash<QWebFrame*, QObject*> Frame2LastContact_;
+		mutable QHash<QWebEnginePage*, QObject*> Frame2LastContact_;
 	public:
 		AdiumStyleSource (IProxyObject*, QObject* = 0);
 
 		QAbstractItemModel* GetOptionsModel () const;
 		QUrl GetBaseURL (const QString&) const;
 		QString GetHTMLTemplate (const QString&,
-				const QString&, QObject*, QWebFrame*) const;
-		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
-		void FrameFocused (QWebFrame*);
+				const QString&, QObject*, QWebEnginePage*) const;
+		bool AppendMessage (QWebEnginePage*, QObject*, const ChatMsgAppendInfo&);
+		void FrameFocused (QWebEnginePage*);
 		QStringList GetVariantsForPack (const QString&);
 	private:
 		void PercentTemplate (QString&, const QMap<QString, QString>&) const;
 		void SubstituteUserIcon (QString&,
 				const QString&, bool, ICLEntry*, IAccount*);
 		QString ParseMsgTemplate (QString templ, const QString& path,
-				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
+				QWebEnginePage*, QObject*, const ChatMsgAppendInfo&);
 	private slots:
 		void handleMessageDelivered ();
 		void handleMessageDestroyed ();

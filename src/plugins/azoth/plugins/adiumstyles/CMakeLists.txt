@@ -8,6 +8,6 @@ LC_DEFINE_PLUGIN (
 		adiumstylesource.cpp
 		packproxymodel.cpp
 	RESOURCES adiumstyles.qrc
-	QT_COMPONENTS WebKitWidgets Xml
+	QT_COMPONENTS WebEngineWidgets Xml
 	INSTALL_SHARE
 	)

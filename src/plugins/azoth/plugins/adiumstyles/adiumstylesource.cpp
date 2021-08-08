@@ -7,11 +7,10 @@
  **********************************************************************/
 
 #include "adiumstylesource.h"
-#include <QTextDocument>
-#include <QWebElement>
-#include <QWebFrame>
+#include <QWebEnginePage>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/imessage.h>
@@ -133,7 +132,7 @@ namespace AdiumStyles
 	}
 
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
-			const QString& varCss, QObject *entryObj, QWebFrame *frame) const
+			const QString& varCss, QObject *entryObj, QWebEnginePage *frame) const
 	{
 		if (srcPack.contains ('/'))
 		{
@@ -263,10 +262,25 @@ namespace AdiumStyles
 		{
 			return QString::number (reinterpret_cast<uintptr_t> (msgObj));
 		}
+
+		QString MakeStateSetterJS (Util::ResourceLoader& loader,
+				const QObject *msgObj, const QString& prefix, const QString& stateFile)
+		{
+			const auto& stateContent = loader.Load ({ prefix + stateFile });
+			QString replacement;
+			if (stateContent && stateContent->open (QIODevice::ReadOnly))
+				replacement = QString::fromUtf8 (stateContent->readAll ());
+			return QStringLiteral (R"(
+					(() => {
+						let elem = document.querySelector("*[id='delivery_state_%1']");
+						if (elem)
+							elem.innerHTML = "%2";
+					}) ();
+			)").arg (GetMessageID (msgObj), replacement);
+		}
 	}
 
-	bool AdiumStyleSource::AppendMessage (QWebFrame *frame,
-			QObject *msgObj, const ChatMsgAppendInfo& info)
+	bool AdiumStyleSource::AppendMessage (QWebEnginePage *frame, QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
@@ -389,8 +403,10 @@ namespace AdiumStyles
 			}
 		}
 
-		const QString& command = isNextMsg ? "appendNextMessage(\"%1\");" : "appendMessage(\"%1\");";
-		frame->evaluateJavaScript (command.arg (body));
+		const auto& command = isNextMsg ?
+				QStringLiteral ("appendNextMessage(\"%1\");") :
+				QStringLiteral ("appendMessage(\"%1\");");
+		auto js = command.arg (body);
 
 		if (templ.contains ("%stateElementId%"))
 		{
@@ -409,21 +425,15 @@ namespace AdiumStyles
 				Msg2Frame_ [msgObj] = frame;
 			}
 
-			const auto& stateContent = StylesLoader_->Load ({ prefix + fname });
-			QString replacement;
-			if (stateContent && stateContent->open (QIODevice::ReadOnly))
-				replacement = QString::fromUtf8 (stateContent->readAll ());
-
-			const QString& selector = QString ("*[id=\"delivery_state_%1\"]")
-					.arg (GetMessageID (msgObj));
-			QWebElement elem = frame->findFirstElement (selector);
-			elem.setInnerXml (replacement);
+			js += MakeStateSetterJS (*StylesLoader_, msgObj, prefix, fname);
 		}
+
+		frame->runJavaScript (js);
 
 		return true;
 	}
 
-	void AdiumStyleSource::FrameFocused (QWebFrame*)
+	void AdiumStyleSource::FrameFocused (QWebEnginePage*)
 	{
 	}
 
@@ -501,7 +511,7 @@ namespace AdiumStyles
 	}
 
 	QString AdiumStyleSource::ParseMsgTemplate (QString templ, const QString& base,
-			QWebFrame*, QObject *msgObj, const ChatMsgAppendInfo& info)
+			QWebEnginePage*, QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		auto& formatter = Proxy_->GetFormatterProxy ();
@@ -665,7 +675,7 @@ namespace AdiumStyles
 
 	void AdiumStyleSource::handleMessageDelivered ()
 	{
-		QWebFrame *frame = Msg2Frame_.take (sender ());
+		const auto frame = Msg2Frame_.take (sender ());
 		if (!frame)
 			return;
 
@@ -681,15 +691,7 @@ namespace AdiumStyles
 		const QString& pack = Frame2Pack_ [frame];
 		const QString& prefix = pack + "/Contents/Resources/Outgoing/";
 
-		const auto& content = StylesLoader_->Load (QStringList (prefix + "StateSent.html"));
-		QString replacement;
-		if (content && content->open (QIODevice::ReadOnly))
-			replacement = QString::fromUtf8 (content->readAll ());
-
-		const QString& selector = QString ("*[id=\"delivery_state_%1\"]")
-				.arg (GetMessageID (sender ()));
-		QWebElement elem = frame->findFirstElement (selector);
-		elem.setInnerXml (replacement);
+		frame->runJavaScript (MakeStateSetterJS (*StylesLoader_, sender (), prefix, "StateSent.html"));
 
 		disconnect (sender (),
 				SIGNAL (messageDelivered ()),
@@ -705,15 +707,14 @@ namespace AdiumStyles
 	void AdiumStyleSource::handleFrameDestroyed ()
 	{
 		const QObject *snd = sender ();
-		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
-				i != Msg2Frame_.end (); )
+		for (auto i = Msg2Frame_.begin (); i != Msg2Frame_.end (); )
 			if (i.value () == snd)
 				i = Msg2Frame_.erase (i);
 			else
 				++i;
 
-		Frame2LastContact_.remove (static_cast<QWebFrame*> (sender ()));
-		Frame2Pack_.remove (static_cast<QWebFrame*> (sender ()));
+		Frame2LastContact_.remove (static_cast<QWebEnginePage*> (sender ()));
+		Frame2Pack_.remove (static_cast<QWebEnginePage*> (sender ()));
 	}
 }
 }
