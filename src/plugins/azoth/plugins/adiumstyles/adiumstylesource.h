@@ -68,7 +68,6 @@ namespace AdiumStyles
 				const QString&, bool, ICLEntry*, IAccount*);
 		QString ParseMsgTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
-		QString GetMessageID (QObject*);
 	private slots:
 		void handleMessageDelivered ();
 		void handleMessageDestroyed ();

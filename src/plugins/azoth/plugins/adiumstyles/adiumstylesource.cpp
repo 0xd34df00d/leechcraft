@@ -257,6 +257,14 @@ namespace AdiumStyles
 		}
 	}
 
+	namespace
+	{
+		QString GetMessageID (const QObject *msgObj)
+		{
+			return QString::number (reinterpret_cast<uintptr_t> (msgObj));
+		}
+	}
+
 	bool AdiumStyleSource::AppendMessage (QWebFrame *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
@@ -653,11 +661,6 @@ namespace AdiumStyles
 		templ.replace ("%message%", body);
 
 		return templ;
-	}
-
-	QString AdiumStyleSource::GetMessageID (QObject *msgObj)
-	{
-		return QString::number (reinterpret_cast<uintptr_t> (msgObj));
 	}
 
 	void AdiumStyleSource::handleMessageDelivered ()
