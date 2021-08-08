@@ -316,7 +316,7 @@ namespace LC::Azoth::StandardStyles
 				)"_ql
 				.arg (divClass, string);
 
-		frame->runJavaScript (js, [] (const QVariant& var) { qDebug () << Q_FUNC_INFO << var; });
+		frame->runJavaScript (js);
 
 		return true;
 	}
