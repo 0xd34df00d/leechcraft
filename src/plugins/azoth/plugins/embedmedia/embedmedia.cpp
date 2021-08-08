@@ -10,10 +10,10 @@
 #include <QDebug>
 #include <QFile>
 #include <QIcon>
-#include <QTextCodec>
-#include <QTextStream>
-#include <QWebFrame>
-#include <QWebPage>
+#include <QWebEnginePage>
+#include <QWebEngineScript>
+#include <QWebEngineScriptCollection>
+#include <QWebEngineView>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sys/resourceloader.h>
@@ -35,7 +35,9 @@ namespace LC::Azoth::EmbedMedia
 			return;
 		}
 
-		ScriptContent_ = embedderJS->readAll ();
+		Script_.setSourceCode (embedderJS->readAll ());
+		Script_.setName (GetUniqueID ());
+		Script_.setInjectionPoint (QWebEngineScript::DocumentReady);
 	}
 
 	void Plugin::SecondInit ()
@@ -72,13 +74,16 @@ namespace LC::Azoth::EmbedMedia
 	}
 
 	void Plugin::hookChatTabCreated (LC::IHookProxy_ptr,
-			QObject*, QObject*, QWebView *webView)
+			QObject*, QObject*, QWebEngineView *webView)
 	{
+		webView->page ()->scripts ().insert (Script_);
+		/* TODO
 		const auto frame = webView->page ()->mainFrame ();
 		frame->evaluateJavaScript (ScriptContent_);
 		connect (frame,
 				&QWebFrame::initialLayoutCompleted,
 				[frame, this] { frame->evaluateJavaScript (ScriptContent_); });
+				*/
 	}
 }
 

@@ -10,10 +10,12 @@
 
 #include <QObject>
 #include <QString>
-#include <QWebView>
+#include <QWebEngineScript>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+
+class QWebEngineView;
 
 namespace LC::Azoth::EmbedMedia
 {
@@ -26,7 +28,7 @@ namespace LC::Azoth::EmbedMedia
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.EmbedMedia")
 
-		QString	ScriptContent_;
+		QWebEngineScript Script_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -40,6 +42,6 @@ namespace LC::Azoth::EmbedMedia
 		void hookChatTabCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
-				QWebView *webView);
+				QWebEngineView *webView);
 	};
 }

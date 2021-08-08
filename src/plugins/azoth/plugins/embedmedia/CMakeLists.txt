@@ -4,6 +4,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (
 	SRCS embedmedia.cpp
-	QT_COMPONENTS WebKitWidgets
+	QT_COMPONENTS WebEngineWidgets
 	INSTALL_SHARE
 	)
