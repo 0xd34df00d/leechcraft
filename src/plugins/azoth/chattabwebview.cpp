@@ -36,6 +36,11 @@ namespace LC::Azoth
 				*/
 	}
 
+	void ChatTabWebView::InitializePage (QWebEngineProfile *profile)
+	{
+		setPage (new QWebEnginePage { profile, this });
+	}
+
 	void ChatTabWebView::SetQuoteAction (QAction *act)
 	{
 		QuoteAct_ = act;

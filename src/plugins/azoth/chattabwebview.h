@@ -20,6 +20,7 @@ namespace LC::Azoth
 	public:
 		explicit ChatTabWebView (QWidget* = nullptr);
 
+		void InitializePage (QWebEngineProfile*);
 		void SetQuoteAction (QAction*);
 	protected:
 		void contextMenuEvent (QContextMenuEvent*) override;
