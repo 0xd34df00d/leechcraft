@@ -129,8 +129,9 @@ namespace Azoth
 	, CDF_ (new ContactDropFilter (entryId, this))
 	{
 		Ui_.setupUi (this);
-		fontsWidget->RegisterSettable (this);
 		Ui_.View_->InitializePage (profile);
+
+		fontsWidget->RegisterSettable (this);
 
 		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this, fontsWidget] (QWheelEvent *e)
 				{
