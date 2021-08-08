@@ -49,7 +49,7 @@ namespace LC::Azoth::StandardStyles
 			qWarning () << Q_FUNC_INFO
 					<< "empty base URL for"
 					<< pack;
-			return QUrl ();
+			return {};
 		}
 
 		return QUrl::fromLocalFile (QFileInfo (path).absolutePath ());
@@ -78,7 +78,7 @@ namespace LC::Azoth::StandardStyles
 			qWarning () << Q_FUNC_INFO
 					<< "could not load HTML template for pack"
 					<< pack;
-			return QString ();
+			return {};
 		}
 
 		if (!dev->open (QIODevice::ReadOnly))
@@ -87,7 +87,7 @@ namespace LC::Azoth::StandardStyles
 					<< "unable to open source file for"
 					<< pack + "/viewcontents.html"
 					<< dev->errorString ();
-			return QString ();
+			return {};
 		}
 
 		QString data = QString::fromUtf8 (dev->readAll ());
