@@ -12,6 +12,7 @@
 #include <QPalette>
 #include <QtDebug>
 #include <QWebEnginePage>
+#include <QWebEngineView>
 #include <util/sys/resourceloader.h>
 #include <util/sll/qtutil.h>
 #include <util/util.h>
@@ -36,7 +37,7 @@ namespace LC::Azoth::StandardStyles
 		StylesLoader_->SetCacheParams (stylesCacheSizeKb, 0);
 	}
 
-	QAbstractItemModel* StandardStyleSource::GetOptionsModel() const
+	QAbstractItemModel* StandardStyleSource::GetOptionsModel () const
 	{
 		return StylesLoader_->GetSubElemModel ();
 	}
@@ -58,9 +59,10 @@ namespace LC::Azoth::StandardStyles
 	QString StandardStyleSource::GetHTMLTemplate (const QString& pack,
 			const QString&, QObject *entryObj, QWebEnginePage*) const
 	{
-		Coloring2Colors_.clear ();
 		if (pack != LastPack_)
 		{
+			Coloring2Colors_.clear ();
+			Frame2Colors_.clear ();
 			LastPack_ = pack;
 			StylesLoader_->FlushCache ();
 		}
@@ -123,7 +125,10 @@ namespace LC::Azoth::StandardStyles
 	bool StandardStyleSource::AppendMessage (QWebEnginePage *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
-		const auto& colors = CreateColors (frame);
+		auto& colors = Frame2Colors_ [frame];
+		if (colors.isEmpty ())
+			colors = CreateColors (frame);
+
 		auto& formatter = Proxy_->GetFormatterProxy ();
 
 		const QString& msgId = GetMessageID (msgObj);
@@ -153,12 +158,6 @@ namespace LC::Azoth::StandardStyles
 					SIGNAL (messageDelivered ()),
 					this,
 					SLOT (handleMessageDelivered ()));
-
-			connect (frame,
-					&QObject::destroyed,
-					this,
-					&StandardStyleSource::HandleFrameDestroyed,
-					Qt::UniqueConnection);
 			Msg2Frame_ [msgObj] = frame;
 		}
 
@@ -332,6 +331,17 @@ namespace LC::Azoth::StandardStyles
 		return {};
 	}
 
+	void StandardStyleSource::PrepareColors (QWebEngineView *view)
+	{
+		const auto page = view->page ();
+		Frame2Colors_ [page] = CreateColors (page);
+		connect (page,
+				&QObject::destroyed,
+				this,
+				&StandardStyleSource::HandleFrameDestroyed,
+				Qt::UniqueConnection);
+	}
+
 	namespace
 	{
 		QColor UnRgb (QString str)
@@ -351,7 +361,6 @@ namespace LC::Azoth::StandardStyles
 
 	QList<QColor> StandardStyleSource::CreateColors (QWebEnginePage *frame)
 	{
-		// TODO cache this
 		QEventLoop loop;
 
 		static const auto js = QStringLiteral (R"(
@@ -419,6 +428,7 @@ namespace LC::Azoth::StandardStyles
 
 	void StandardStyleSource::HandleFrameDestroyed (QObject *frameObj)
 	{
+		Frame2Colors_.remove (frameObj);
 		IsLastMsgRead_.remove (frameObj);
 		for (auto i = Msg2Frame_.begin (); i != Msg2Frame_.end (); )
 			if (i.value () == frameObj)

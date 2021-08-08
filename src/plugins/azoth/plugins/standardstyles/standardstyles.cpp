@@ -60,13 +60,17 @@ namespace LC::Azoth::StandardStyles
 
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		return ResourceSources_;
+		return { Source_ };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
-		Proxy_ = qobject_cast<IProxyObject*> (proxy);
-		ResourceSources_ << new StandardStyleSource (Proxy_);
+		Source_ = new StandardStyleSource { qobject_cast<IProxyObject*> (proxy) };
+	}
+
+	void Plugin::hookThemeReloaded (const LC::IHookProxy_ptr&, QObject*, QWebEngineView *view, QObject*)
+	{
+		Source_->PrepareColors (view);
 	}
 }
 

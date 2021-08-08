@@ -11,7 +11,10 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iresourceplugin.h>
+
+class QWebEngineView;
 
 namespace LC::Azoth
 {
@@ -19,6 +22,8 @@ class IProxyObject;
 
 namespace StandardStyles
 {
+	class StandardStyleSource;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -29,8 +34,7 @@ namespace StandardStyles
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.StandardStyles")
 
-		IProxyObject *Proxy_ = nullptr;
-		QObjectList ResourceSources_;
+		StandardStyleSource *Source_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -45,6 +49,10 @@ namespace StandardStyles
 		QList<QObject*> GetResourceSources () const override;
 	public slots:
 		void initPlugin (QObject*);
+		void hookThemeReloaded (const LC::IHookProxy_ptr&,
+				QObject*,
+				QWebEngineView*,
+				QObject*);
 	};
 }
 }

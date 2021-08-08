@@ -15,6 +15,8 @@
 #include <QColor>
 #include <interfaces/azoth/ichatstyleresourcesource.h>
 
+class QWebEngineView;
+
 namespace LC
 {
 namespace Util
@@ -44,6 +46,7 @@ namespace StandardStyles
 		mutable QString LastPack_;
 
 		QHash<QObject*, QWebEnginePage*> Msg2Frame_;
+		mutable QHash<QObject*, QList<QColor>> Frame2Colors_;
 	public:
 		explicit StandardStyleSource (IProxyObject*, QObject* = nullptr);
 
@@ -54,6 +57,8 @@ namespace StandardStyles
 		bool AppendMessage (QWebEnginePage*, QObject*, const ChatMsgAppendInfo&) override;
 		void FrameFocused (QWebEnginePage*) override;
 		QStringList GetVariantsForPack (const QString&) override;
+
+		void PrepareColors (QWebEngineView*);
 	private:
 		QList<QColor> CreateColors (QWebEnginePage*);
 		QString GetStatusImage (const QString&);
