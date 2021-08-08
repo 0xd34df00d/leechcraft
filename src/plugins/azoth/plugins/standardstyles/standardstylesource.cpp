@@ -311,7 +311,7 @@ namespace LC::Azoth::StandardStyles
 		}
 
 		js += R"(
-				document.body.innerHTML += "<div class='%1' style='word-wrap: break-word;'>%2</div>";
+				document.body.insertAdjacentHTML("beforeend", "<div class='%1' style='word-wrap: break-word;'>%2</div>");
 				true;
 				)"_ql
 				.arg (divClass, string);
