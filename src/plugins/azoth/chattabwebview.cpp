@@ -25,20 +25,34 @@
 
 namespace LC::Azoth
 {
+	class ChatTabWebPage final : public QWebEnginePage
+	{
+		ChatTabWebView * const View_;
+	public:
+		ChatTabWebPage (QWebEngineProfile *profile, ChatTabWebView *view)
+		: QWebEnginePage { profile, view }
+		, View_ { view }
+		{
+		}
+	protected:
+		bool acceptNavigationRequest (const QUrl& url, NavigationType type, bool) override
+		{
+			if (type != NavigationTypeLinkClicked)
+				return true;
+
+			emit View_->linkClicked (url, true);
+			return false;
+		}
+	};
+
 	ChatTabWebView::ChatTabWebView (QWidget *parent)
 	: QWebEngineView (parent)
 	{
-		/* TODO
-		connect (page (),
-				&QWebPage::linkClicked,
-				this,
-				[this] (const QUrl& url) { emit linkClicked (url, true); });
-				*/
 	}
 
 	void ChatTabWebView::InitializePage (QWebEngineProfile *profile)
 	{
-		setPage (new QWebEnginePage { profile, this });
+		setPage (new ChatTabWebPage { profile, this });
 	}
 
 	void ChatTabWebView::SetQuoteAction (QAction *act)
