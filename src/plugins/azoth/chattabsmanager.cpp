@@ -7,22 +7,23 @@
  **********************************************************************/
 
 #include "chattabsmanager.h"
+#include <QWebEngineProfile>
 #include <QtDebug>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "chattabnetworkaccessmanager.h"
+#include "avatarsmanager.h"
+#include "azothschemehandler.h"
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	ChatTabsManager::ChatTabsManager (AvatarsManager *am, Util::WkFontsWidget *fontsWidget, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
 	, FontsWidget_ { fontsWidget }
-	, NAM_ { new ChatTabNetworkAccessManager { am, this } }
+	, Profile_ { new QWebEngineProfile { this } }
 	{
+		Profile_->installUrlSchemeHandler ("azoth", new AzothSchemeHandler { am, this });
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
 				this, "chatWindowStyleChanged");
 
@@ -88,7 +89,7 @@ namespace Azoth
 
 		EverOpened_ << id;
 
-		QPointer<ChatTab> tab (new ChatTab (id, entry->GetParentAccount (), AvatarsManager_, FontsWidget_, NAM_));
+		QPointer<ChatTab> tab (new ChatTab (id, entry->GetParentAccount (), AvatarsManager_, FontsWidget_, Profile_));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
@@ -365,5 +366,4 @@ namespace Azoth
 		for (const auto& tab : Entry2Tab_)
 			tab->PrepareTheme ();
 	}
-}
 }

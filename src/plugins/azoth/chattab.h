@@ -22,7 +22,6 @@
 #include "ui_chattab.h"
 
 class QTextBrowser;
-class QNetworkAccessManager;
 
 namespace LC
 {
@@ -115,7 +114,7 @@ namespace Azoth
 				IAccount*,
 				AvatarsManager*,
 				Util::WkFontsWidget*,
-				QNetworkAccessManager*,
+				QWebEngineProfile*,
 				QWidget* = nullptr);
 		~ChatTab ();
 

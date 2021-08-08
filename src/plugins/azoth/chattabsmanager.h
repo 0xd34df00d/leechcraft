@@ -14,6 +14,7 @@
 #include "chattab.h"
 
 class QWidget;
+class QWebEngineProfile;
 
 namespace LC
 {
@@ -26,7 +27,6 @@ namespace Azoth
 {
 	class ICLEntry;
 	class AvatarsManager;
-	class ChatTabNetworkAccessManager;
 
 	class ChatTabsManager : public QObject
 	{
@@ -34,7 +34,7 @@ namespace Azoth
 
 		AvatarsManager * const AvatarsManager_;
 		Util::WkFontsWidget * const FontsWidget_;
-		ChatTabNetworkAccessManager * const NAM_;
+		QWebEngineProfile * const Profile_;
 
 		QSet<QString> StyleParams_;
 		QHash<QString, ChatTab_ptr> Entry2Tab_;

@@ -8,21 +8,20 @@
 
 #pragma once
 
-#include <QNetworkAccessManager>
+#include <QWebEngineUrlSchemeHandler>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class AvatarsManager;
 
-	class ChatTabNetworkAccessManager : public QNetworkAccessManager
+	class AzothSchemeHandler final : public QWebEngineUrlSchemeHandler
 	{
-		AvatarsManager * const AvatarsMgr_;
+		AvatarsManager * const AM_;
 	public:
-		ChatTabNetworkAccessManager (AvatarsManager*, QObject* = nullptr);
-	protected:
-		QNetworkReply* createRequest (Operation, const QNetworkRequest&, QIODevice*) override;
+		explicit AzothSchemeHandler (AvatarsManager*, QObject* = nullptr);
+
+		void requestStarted (QWebEngineUrlRequestJob *request) override;
+	private:
+		void LoadAvatar (const QString& path, QWebEngineUrlRequestJob *request);
 	};
-}
 }

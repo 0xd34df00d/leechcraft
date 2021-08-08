@@ -116,7 +116,7 @@ namespace Azoth
 			IAccount *account,
 			AvatarsManager *am,
 			Util::WkFontsWidget *fontsWidget,
-			QNetworkAccessManager *nam,
+			QWebEngineProfile *profile,
 			QWidget *parent)
 	: QWidget (parent)
 	, AvatarsManager_ (am)
@@ -130,7 +130,7 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		fontsWidget->RegisterSettable (this);
-		// TODO Ui_.View_->page ()->setNetworkAccessManager (nam);
+		Ui_.View_->InitializePage (profile);
 
 		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this, fontsWidget] (QWheelEvent *e)
 				{

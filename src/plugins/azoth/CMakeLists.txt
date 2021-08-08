@@ -36,6 +36,7 @@ endif ()
 LC_DEFINE_PLUGIN (
 	SRCS
 		azoth.cpp
+		azothschemehandler.cpp
 		core.cpp
 		mainwidget.cpp
 		chattabsmanager.cpp
@@ -106,7 +107,6 @@ LC_DEFINE_PLUGIN (
 		avatarsstorage.cpp
 		avatarsstorageondisk.cpp
 		avatarsstoragethread.cpp
-		chattabnetworkaccessmanager.cpp
 		historysyncer.cpp
 		chattabpartstatemanager.cpp
 		sslerrorshandler.cpp
