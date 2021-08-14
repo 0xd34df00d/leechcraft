@@ -124,7 +124,6 @@ namespace Azoth
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, MUCEventLog_ (new QTextBrowser ())
 	, EntryID_ (entryId)
-	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, CDF_ (new ContactDropFilter (entryId, this))
 	{

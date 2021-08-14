@@ -73,8 +73,6 @@ namespace Azoth
 
 		const QString EntryID_;
 
-		QColor BgColor_;
-
 		QList<QString> MsgHistory_;
 		int CurrentHistoryPosition_ = -1;
 
