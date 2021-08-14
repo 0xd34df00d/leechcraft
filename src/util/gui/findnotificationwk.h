@@ -10,8 +10,7 @@
 
 #include "findnotification.h"
 #include <QWebPage>
-
-class QWebView;
+#include <QWebView>
 
 namespace LC::Util
 {
@@ -44,7 +43,22 @@ namespace LC::Util
 		 *
 		 * @sa FindNotification
 		 */
-		FindNotificationWk (const ICoreProxy_ptr& proxy, QWebView *near);
+		FindNotificationWk (const ICoreProxy_ptr& proxy, QWebView *near)
+		: FindNotification { proxy, near }
+		, WebView_ { near }
+		{
+			connect (near,
+					&QWebView::loadFinished,
+					this,
+					[this]
+					{
+						if (PreviousFindText_.isEmpty ())
+							return;
+
+						ClearFindResults ();
+						FindNext ();
+					});
+		}
 
 		/** @brief Converts the given \em findFlags to WebKit find flags.
 		 *
@@ -52,11 +66,46 @@ namespace LC::Util
 		 * FindNotification.
 		 * @return The find flags in terms of WebKit.
 		 */
-		static QWebPage::FindFlags ToPageFlags (FindFlags findFlags);
+		static QWebPage::FindFlags ToPageFlags (FindFlags findFlags)
+		{
+			QWebPage::FindFlags pageFlags;
+			auto check = [&pageFlags, findFlags] (FindFlag ourFlag, QWebPage::FindFlag pageFlag)
+			{
+				if (findFlags & ourFlag)
+					pageFlags |= pageFlag;
+			};
+			check (FindCaseSensitively, QWebPage::FindCaseSensitively);
+			check (FindBackwards, QWebPage::FindBackward);
+			check (FindWrapsAround, QWebPage::FindWrapsAroundDocument);
+			return pageFlags;
+		}
 	private:
-		void ClearFindResults ();
+		void ClearFindResults ()
+		{
+			PreviousFindText_.clear ();
+			WebView_->page ()->findText ({}, QWebPage::HighlightAllOccurrences);
+		}
 	protected:
-		void HandleNext (const QString& text, FindFlags flags) override;
-		void Reject () override;
+		void HandleNext (const QString& text, FindFlags findFlags) override
+		{
+			const auto flags = ToPageFlags (findFlags);
+
+			if (PreviousFindText_ != text)
+			{
+				const auto nflags = flags | QWebPage::HighlightAllOccurrences;
+				WebView_->page ()->findText ({}, nflags);
+				WebView_->page ()->findText (text, nflags);
+				PreviousFindText_ = text;
+			}
+
+			const auto found = WebView_->page ()->findText (text, flags);
+			SetSuccessful (found);
+		}
+
+		void Reject () override
+		{
+			FindNotification::Reject ();
+			ClearFindResults ();
+		}
 	};
 }

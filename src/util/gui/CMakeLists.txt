@@ -4,7 +4,6 @@ set (GUI_SRCS
 	clearlineeditaddon.cpp
 	colorbutton.cpp
 	findnotification.cpp
-	findnotificationwk.cpp
 	flowlayout.cpp
 	geometry.cpp
 	lineeditbuttonmanager.cpp
@@ -43,7 +42,7 @@ target_link_libraries (leechcraft-util-gui${LC_LIBSUFFIX}
 set_property (TARGET leechcraft-util-gui${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-gui${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-gui${LC_LIBSUFFIX} Network WebKitWidgets Widgets)
+FindQtLibs (leechcraft-util-gui${LC_LIBSUFFIX} Network Widgets)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
