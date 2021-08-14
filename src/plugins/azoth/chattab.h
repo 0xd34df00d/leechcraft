@@ -27,7 +27,7 @@ namespace LC
 {
 namespace Util
 {
-	class FindNotificationWk;
+	class FindNotificationWE;
 	class WkFontsWidget;
 }
 
@@ -95,7 +95,7 @@ namespace Azoth
 
 		QString LastLink_;
 
-		Util::FindNotificationWk *ChatFinder_;
+		Util::FindNotificationWE *ChatFinder_;
 
 		bool IsCurrent_ = false;
 

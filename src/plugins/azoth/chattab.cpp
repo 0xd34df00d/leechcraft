@@ -28,7 +28,7 @@
 #include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/geometry.h>
-#include <util/gui/findnotificationwk.h>
+#include <util/gui/findnotificationwe.h>
 #include <util/sll/lambdaeventfilter.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/scopeguards.h>
@@ -191,10 +191,8 @@ namespace Azoth
 				this,
 				SLOT (messageSend ()));
 
-		/* TODO
-		ChatFinder_ = new Util::FindNotificationWk (Core::Instance ().GetProxy (), Ui_.View_);
+		ChatFinder_ = new Util::FindNotificationWE (Core::Instance ().GetProxy (), Ui_.View_);
 		ChatFinder_->hide ();
-		 */
 
 		BuildBasicActions ();
 
@@ -2017,12 +2015,10 @@ namespace Azoth
 
 	void ChatTab::handleChatWindowSearch (const QString& text)
 	{
-		/* TODO
 		ChatFinder_->SetText (text);
 		ChatFinder_->FindNext ();
 
 		ChatFinder_->show ();
-		 */
 	}
 
 	void ChatTab::handleEditScroll (int direction)
