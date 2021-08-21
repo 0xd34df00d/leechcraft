@@ -340,7 +340,8 @@ namespace LC::Util::SvcAuth
 	{
 		reply->deleteLater ();
 
-		if (reply->error () != QNetworkReply::NoError)
+		if (reply->error () != QNetworkReply::NoError &&
+				reply->error () != QNetworkReply::AuthenticationRequiredError)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< reply->error ()
