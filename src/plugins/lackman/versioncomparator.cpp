@@ -14,22 +14,66 @@ namespace LC
 {
 namespace LackMan
 {
-	QString Numerize (QString version)
+	void ParseDotted (QVector<int>& result, const QStringRef& dotted)
 	{
-		static const QStringList mods { "-rc", "-pre", "-beta", "-alpha" };
-		const int modsCount = mods.size ();
-		static const QStringList replacements = [modsCount]
-				{
-					QStringList result;
-					for (int i = 0; i < modsCount; ++i)
-						result << QStringLiteral (".%1.").arg (-i - 1);
-					return result;
-				} ();
+		for (const auto& part : dotted.split ('.', Qt::SkipEmptyParts))
+		{
+			bool isInt = false;
+			if (const auto num = part.toInt (&isInt);
+					isInt)
+				result.append (num);
+			else
+				qWarning () << Q_FUNC_INFO << "unable to parse" << part;
+		}
+	}
 
-		for (int i = 0; i < modsCount; ++i)
-			version.replace (mods.at (i), replacements.at (i));
+	void ParseModifier (QVector<int>& result, const QStringRef& modifier)
+	{
+		static const QStringList mods { "rc", "pre", "beta", "alpha" };
 
-		return version;
+		for (int i = 0; i < mods.size (); ++i)
+		{
+			if (!modifier.startsWith (mods.at (i)))
+				continue;
+
+			result.append (-i - 1);
+			const auto& leftover = modifier.mid (mods.at (i).size ());
+			if (!leftover.isEmpty ())
+			{
+				bool ok = false;
+				if (const auto num = leftover.toInt (&ok);
+					ok)
+					result.append (num);
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unable to parse"
+							<< leftover
+							<< "of"
+							<< modifier;
+			}
+			return;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown modifier"
+				<< modifier;
+	}
+
+	QVector<int> Numerize (const QString& version)
+	{
+		const auto& comps = version.splitRef ('-', Qt::SkipEmptyParts);
+		if (comps.size () > 2 || comps.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO << "unexpected components:" << comps;
+			return {};
+		}
+
+		QVector<int> result;
+		result.reserve (version.count ('.') + 1 + comps.size ());
+		ParseDotted (result, comps.at (0));
+		if (comps.size () == 2)
+			ParseModifier (result, comps.at (1));
+		return result;
 	}
 
 	bool IsVersionLess (const QString& leftVer, const QString& rightVer)
@@ -37,42 +81,17 @@ namespace LackMan
 		if (leftVer == rightVer)
 			return false;
 
-		const auto& leftNum = Numerize (leftVer);
-		const auto& rightNum = Numerize (rightVer);
+		const auto& leftParts = Numerize (leftVer);
+		const auto& rightParts = Numerize (rightVer);
 
-#ifdef VERSIONCOMPARATOR_DEBUG
-		qDebug () << leftVer << "->" << leftNum
-				<< rightVer << "->" << rightNum;
-#endif
-
-		const auto& padStr = QStringLiteral (".0");
-
-		auto leftParts = leftNum.splitRef ('.', Qt::SkipEmptyParts);
-		auto rightParts = rightNum.splitRef ('.', Qt::SkipEmptyParts);
-		auto pad = [&padStr] (QVector<QStringRef>& vec, const QVector<QStringRef>& target)
+		for (int i = 0; i < leftParts.size () || i < rightParts.size (); ++i)
 		{
-			const auto sizeDiff = target.size () - vec.size ();
-			if (sizeDiff > 0)
-				vec.append ({ sizeDiff, QStringRef { &padStr } });
-		};
-		pad (leftParts, rightParts);
-		pad (rightParts, leftParts);
+			int left = leftParts.value (i, 0);
+			int right = rightParts.value (i, 0);
+			if (left == right)
+				continue;
 
-#ifdef VERSIONCOMPARATOR_DEBUG
-		qDebug () << leftParts << rightParts;
-#endif
-
-		for (int i = 0; i < leftParts.size (); ++i)
-		{
-			int left = leftParts.at (i).toInt ();
-			int right = rightParts.at (i).toInt ();
-#ifdef VERSIONCOMPARATOR_DEBUG
-			qDebug () << left << right;
-#endif
-			if (left < right)
-				return true;
-			if (left > right)
-				return false;
+			return left < right;
 		}
 
 		return false;
