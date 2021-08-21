@@ -13,7 +13,6 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QEvent>
-#include <QWebView>
 #include <QFuture>
 #include <QFutureInterface>
 #include <util/network/customcookiejar.h>
@@ -24,6 +23,8 @@
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/iwebbrowser.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LC::Util::SvcAuth
@@ -310,30 +311,34 @@ namespace LC::Util::SvcAuth
 
 	void VkAuthManager::Reauth ()
 	{
-		auto view = new QWebView;
-		view->setWindowTitle (tr ("VK.com authentication for %1")
+		const auto& browsers = Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ();
+		if (browsers.isEmpty ())
+		{
+			const auto& e = Util::MakeNotification (tr ("VK.com authentication"),
+					tr ("Could not authenticate %1 since authentication requires a browser plugin. "
+						"Consider installing one like Poshuku.")
+						.arg (AccountHR_),
+					Priority::Critical);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
+			emit authCanceled ();
+			return;
+		}
+
+		auto view = browsers.value (0)->GetWidget ();
+		auto viewWidget = view->GetQWidget ();
+		viewWidget->setWindowTitle (tr ("VK.com authentication for %1")
 				.arg (AccountHR_));
-		view->setWindowFlags (Qt::Window);
-		view->resize (800, 600);
-		view->page ()->setNetworkAccessManager (AuthNAM_);
-		view->show ();
+		viewWidget->setWindowFlags (Qt::Window);
+		viewWidget->resize (800, 600);
+		viewWidget->show ();
 
-		view->setUrl (URL_);
-
-		connect (view,
-				&QWebView::urlChanged,
+		view->Load (URL_);
+		connect (viewWidget,
+				SIGNAL (urlChanged (const QUrl&)),
 				this,
-				[this, view] (const QUrl& url)
-				{
+				SLOT (handleUrlChanged (const QUrl&)));
 
-					if (!CheckReply (url))
-						return;
-
-					emit cookiesChanged (Cookies_->Save ());
-					view->deleteLater ();
-				});
-
-		new CloseEventFilter { [this] { emit authCanceled (); }, view };
+		new CloseEventFilter { [this] { emit authCanceled (); }, viewWidget };
 	}
 
 	void VkAuthManager::HandleGotForm (QNetworkReply *reply)
@@ -369,5 +374,14 @@ namespace LC::Util::SvcAuth
 			return;
 
 		RequestURL (location);
+	}
+
+	void VkAuthManager::handleUrlChanged (const QUrl& url)
+	{
+		if (!CheckReply (url))
+			return;
+
+		emit cookiesChanged (Cookies_->Save ());
+		sender ()->deleteLater ();
 	}
 }

@@ -106,6 +106,8 @@ namespace SvcAuth
 
 		void ScheduleTrack (const QString&);
 		void HandleGotForm (QNetworkReply*);
+	private slots:
+		void handleUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);
 		void cookiesChanged (const QByteArray&);
