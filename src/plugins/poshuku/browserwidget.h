@@ -191,7 +191,7 @@ namespace Poshuku
 		void handleFeaturePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&, IWebView::Feature);
 	signals:
 		void titleChanged (const QString&);
-		void urlChanged (const QUrl&);
+		void urlChanged (const QUrl&) override;
 		void iconChanged (const QIcon&);
 		void needToClose ();
 		void tooltipChanged (QWidget*);

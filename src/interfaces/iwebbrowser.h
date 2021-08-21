@@ -68,6 +68,12 @@ public:
 	 * @return A widget corresponding to this IWebWidget.
 	 */
 	virtual QWidget* GetQWidget () = 0;
+
+	/** @brief Emitted when the URL rendered by the browser changes to @url@.
+	 *
+	 * @param[out] url The new URL that the browser renders.
+	 */
+	virtual void urlChanged (const QUrl&) = 0;
 };
 
 class QWebView;
