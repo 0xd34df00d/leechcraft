@@ -11,7 +11,7 @@
 #include <util/sll/prelude.h>
 #include <stringpathtrie.h>
 
-QTEST_MAIN (LC::Poshuku::WebEngineView::StringPathTrieTest)
+QTEST_APPLESS_MAIN (LC::Poshuku::WebEngineView::StringPathTrieTest)
 
 namespace LC::Poshuku::WebEngineView
 {
