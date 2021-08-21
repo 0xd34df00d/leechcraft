@@ -31,4 +31,4 @@ target_link_libraries (leechcraft-util-svcauth${LC_LIBSUFFIX}
 set_property (TARGET leechcraft-util-svcauth${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-svcauth${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-svcauth${LC_LIBSUFFIX} Network WebKitWidgets Widgets)
+FindQtLibs (leechcraft-util-svcauth${LC_LIBSUFFIX} Network Widgets)
