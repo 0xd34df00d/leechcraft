@@ -30,7 +30,7 @@ public:
 	 *
 	 * @param[in] url The url of the resource.
 	 */
-	virtual void Load (const QString& url) = 0;
+	virtual void Load (const QUrl& url) = 0;
 
 	/** @brief Sets the contents of the web widget to the specified
 	 * html.

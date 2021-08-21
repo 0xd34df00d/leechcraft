@@ -121,7 +121,7 @@ namespace Poshuku
 		void SetWidgetSettings (const BrowserWidgetSettings&);
 		void SetURL (const QUrl&);
 
-		void Load (const QString&) override;
+		void Load (const QUrl&) override;
 		void SetHtml (const QString&, const QUrl& = QUrl ()) override;
 		void SetNavBarVisible (bool) override;
 		void SetEverythingElseVisible (bool) override;

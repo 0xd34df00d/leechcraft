@@ -578,9 +578,9 @@ namespace Poshuku
 		}
 	}
 
-	void BrowserWidget::Load (const QString& url)
+	void BrowserWidget::Load (const QUrl& url)
 	{
-		SetURL (Core::Instance ().MakeURL (url));
+		SetURL (url);
 	}
 
 	void BrowserWidget::SetHtml (const QString& html, const QUrl& base)
