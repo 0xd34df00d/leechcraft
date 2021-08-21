@@ -77,11 +77,6 @@ class QWebView;
 class Q_DECL_EXPORT IWebBrowser
 {
 public:
-	/** @brief Opens the url in the web browser itself.
-	 *
-	 * @param[in] url The URL to open.
-	 */
-	virtual void Open (const QString& url) = 0;
 
 	/** @brief Returns the IWebWidget for use in another modules of
 	 * LeechCraft.

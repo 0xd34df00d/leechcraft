@@ -208,11 +208,6 @@ namespace Poshuku
 		Core::Instance ().Handle (e);
 	}
 
-	void Poshuku::Open (const QString& link)
-	{
-		Core::Instance ().NewURL (link);
-	}
-
 	IWebWidget* Poshuku::GetWidget () const
 	{
 		return Core::Instance ().GetWidget ();

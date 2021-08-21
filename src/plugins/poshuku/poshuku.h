@@ -90,7 +90,6 @@ namespace Poshuku
 		EntityTestHandleResult CouldHandle (const LC::Entity&) const;
 		void Handle (LC::Entity);
 
-		void Open (const QString&);
 		IWebWidget* GetWidget () const;
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
