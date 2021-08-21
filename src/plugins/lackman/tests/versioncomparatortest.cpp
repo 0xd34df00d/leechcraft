@@ -8,4 +8,4 @@
 
 #include "versioncomparatortest.h"
 
-QTEST_MAIN (TestVersionComparator)
+QTEST_APPLESS_MAIN (TestVersionComparator)
