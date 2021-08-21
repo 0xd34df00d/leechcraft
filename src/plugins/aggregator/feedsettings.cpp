@@ -11,10 +11,10 @@
 #include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/sll/functor.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/iwebbrowser.h>
+#include <interfaces/core/ientitymanager.h>
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
 #include "xmlsettingsmanager.h"
@@ -62,11 +62,15 @@ namespace Aggregator
 				&QLabel::linkActivated,
 				[this] (const QString& url)
 				{
-					const auto browser = Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
-					if (!browser || XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
+					if (XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
 						QDesktopServices::openUrl ({ url });
 					else
-						browser->Open (url);
+					{
+						const auto& e = Util::MakeEntity (QUrl::fromUserInput (url),
+								{},
+								FromUserInitiated | OnlyHandle);
+						Proxy_->GetEntityManager ()->HandleEntity (e);
+					}
 				});
 		connect (Ui_.UpdateFavicon_,
 				&QPushButton::released,
