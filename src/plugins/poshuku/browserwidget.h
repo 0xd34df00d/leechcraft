@@ -125,7 +125,7 @@ namespace Poshuku
 		void SetHtml (const QString&, const QUrl& = QUrl ()) override;
 		void SetNavBarVisible (bool) override;
 		void SetEverythingElseVisible (bool) override;
-		QWidget* Widget () override;
+		QWidget* GetQWidget () override;
 
 		void Remove () override;
 		QToolBar* GetToolBar () const override;

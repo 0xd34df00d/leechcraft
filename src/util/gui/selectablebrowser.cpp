@@ -30,7 +30,7 @@ namespace LC::Util
 			Internal_ = false;
 			InternalBrowser_.reset ();
 			ExternalBrowser_.reset (browser->GetWidget ());
-			layout ()->addWidget (ExternalBrowser_->Widget ());
+			layout ()->addWidget (ExternalBrowser_->GetQWidget ());
 		}
 		else
 		{

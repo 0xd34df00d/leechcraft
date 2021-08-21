@@ -602,7 +602,7 @@ namespace Poshuku
 		Ui_.Splitter_->handle (1)->setVisible (visible);
 	}
 
-	QWidget* BrowserWidget::Widget ()
+	QWidget* BrowserWidget::GetQWidget ()
 	{
 		return this;
 	}

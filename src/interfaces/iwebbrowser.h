@@ -67,7 +67,7 @@ public:
 	 *
 	 * @return A widget corresponding to this IWebWidget.
 	 */
-	virtual QWidget* Widget () = 0;
+	virtual QWidget* GetQWidget () = 0;
 };
 
 class QWebView;
