@@ -37,24 +37,32 @@ namespace LackMan
 		if (leftVer == rightVer)
 			return false;
 
-		QString leftNum = Numerize (leftVer);
-		QString rightNum = Numerize (rightVer);
+		const auto& leftNum = Numerize (leftVer);
+		const auto& rightNum = Numerize (rightVer);
 
 #ifdef VERSIONCOMPARATOR_DEBUG
 		qDebug () << leftVer << "->" << leftNum
 				<< rightVer << "->" << rightNum;
 #endif
 
+		const auto& padStr = QStringLiteral (".0");
+
 		auto leftParts = leftNum.splitRef ('.', Qt::SkipEmptyParts);
 		auto rightParts = rightNum.splitRef ('.', Qt::SkipEmptyParts);
-
-		int minSize = std::min (leftParts.size (), rightParts.size ());
+		auto pad = [&padStr] (QVector<QStringRef>& vec, const QVector<QStringRef>& target)
+		{
+			const auto sizeDiff = target.size () - vec.size ();
+			if (sizeDiff > 0)
+				vec.append ({ sizeDiff, QStringRef { &padStr } });
+		};
+		pad (leftParts, rightParts);
+		pad (rightParts, leftParts);
 
 #ifdef VERSIONCOMPARATOR_DEBUG
 		qDebug () << leftParts << rightParts;
 #endif
 
-		for (int i = 0; i < minSize; ++i)
+		for (int i = 0; i < leftParts.size (); ++i)
 		{
 			int left = leftParts.at (i).toInt ();
 			int right = rightParts.at (i).toInt ();
@@ -63,16 +71,9 @@ namespace LackMan
 #endif
 			if (left < right)
 				return true;
-			else if (left > right)
+			if (left > right)
 				return false;
 		}
-
-		if (leftParts.size () >= rightParts.size ())
-			return false;
-
-		for (int i = minSize; i < rightParts.size (); ++i)
-			if (rightParts [i] != "0")
-				return true;
 
 		return false;
 	}
