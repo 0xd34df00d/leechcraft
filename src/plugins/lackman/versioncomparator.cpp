@@ -17,13 +17,16 @@ namespace LackMan
 	QString Numerize (QString version)
 	{
 		static const QStringList mods { "-rc", "-pre", "-beta", "-alpha" };
-		static QStringList replacements;
-		int modsSize = mods.size ();
-		if (replacements.isEmpty ())
-			for (int i = 0; i < modsSize; ++i)
-				replacements << QString (".%1.").arg (-i - 1);
+		const int modsCount = mods.size ();
+		static const QStringList replacements = [modsCount]
+				{
+					QStringList result;
+					for (int i = 0; i < modsCount; ++i)
+						result << QStringLiteral (".%1.").arg (-i - 1);
+					return result;
+				} ();
 
-		for (int i = 0; i < modsSize; ++i)
+		for (int i = 0; i < modsCount; ++i)
 			version.replace (mods.at (i), replacements.at (i));
 
 		return version;
