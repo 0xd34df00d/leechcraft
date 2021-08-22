@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef INTERFACES_IWEBBROWSER_H
-#define INTERFACES_IWEBBROWSER_H
+#pragma once
+
 #include <QString>
 #include <QWidget>
 #include <QUrl>
@@ -22,7 +22,7 @@
 class Q_DECL_EXPORT IWebWidget
 {
 public:
-	virtual ~IWebWidget () {}
+	virtual ~IWebWidget () = default;
 
 	/** @brief Loads a given url.
 	 *
@@ -41,8 +41,7 @@ public:
 	 * @param[in] html The HTML with the new contents.
 	 * @param[in] base Base address for resolution of external elements.
 	 */
-	virtual void SetHtml (const QString& html,
-			const QUrl& base = QUrl ()) = 0;
+	virtual void SetHtml (const QString& html, const QUrl& base = {}) = 0;
 
 	/** @brief Sets whether the navigation bar of the widget (where the
 	 * address bar and reload/back/forward/etc buttons are) is visible.
@@ -83,6 +82,7 @@ class QWebView;
 class Q_DECL_EXPORT IWebBrowser
 {
 public:
+	virtual ~IWebBrowser () = default;
 
 	/** @brief Returns the IWebWidget for use in another modules of
 	 * LeechCraft.
@@ -92,12 +92,7 @@ public:
 	 * @return The IWebWidget.
 	 */
 	virtual IWebWidget* GetWidget () const = 0;
-
-	virtual ~IWebBrowser () {}
 };
 
 Q_DECLARE_INTERFACE (IWebWidget, "org.Deviant.LeechCraft.IWebWidget/1.0")
 Q_DECLARE_INTERFACE (IWebBrowser, "org.Deviant.LeechCraft.IWebBrowser/1.0")
-
-#endif
-
