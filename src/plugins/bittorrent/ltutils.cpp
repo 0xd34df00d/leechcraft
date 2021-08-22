@@ -31,7 +31,7 @@ namespace LC::BitTorrent
 	void AddPeer (const libtorrent::torrent_handle& handle, const QString& ip, unsigned short port)
 	{
 		handle.connect_peer (libtorrent::tcp::endpoint {
-				libtorrent::address::from_string (ip.toStdString ()),
+				libtorrent::make_address (ip.toStdString ()),
 				port
 			});
 	}
@@ -39,8 +39,8 @@ namespace LC::BitTorrent
 	void BanPeers (libtorrent::session& session, const QPair<QString, QString>& peers, bool block)
 	{
 		auto filter = session.get_ip_filter ();
-		filter.add_rule (libtorrent::address::from_string (peers.first.toStdString ()),
-				libtorrent::address::from_string (peers.second.toStdString ()),
+		filter.add_rule (libtorrent::make_address (peers.first.toStdString ()),
+				libtorrent::make_address (peers.second.toStdString ()),
 				block ?
 						libtorrent::ip_filter::blocked :
 						0);
