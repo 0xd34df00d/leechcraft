@@ -70,7 +70,7 @@ namespace LC::Azoth
 		const auto entryObj = Core::Instance ().GetEntry (entryId);
 		if (!entryObj)
 		{
-			handleImage (ResourcesManager::Instance ().GetDefaultAvatar (32));
+			handleImage (ResourcesManager::Instance ().GetDefaultAvatar (64));
 			return;
 		}
 
