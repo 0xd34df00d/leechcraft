@@ -138,8 +138,10 @@ namespace Util
 				}
 			}
 		}
+#undef LC_TOSIGNAL
+#undef LC_TOSLOT
 #undef LC_N
-	};
+	}
 
 	void BaseHookInterconnector::AddPlugin (QObject *plugin)
 	{
