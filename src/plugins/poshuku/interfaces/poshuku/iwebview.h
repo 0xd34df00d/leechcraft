@@ -112,6 +112,17 @@ namespace Poshuku
 			ScrollAnimatorEnabled
 		};
 
+		enum class NavigationType
+		{
+			LinkClicked,
+			Typed,
+			FormSubmitted,
+			BackForward,
+			Reload,
+			Redirect,
+			Other,
+		};
+
 		class IFeatureSecurityOrigin
 		{
 		protected:
