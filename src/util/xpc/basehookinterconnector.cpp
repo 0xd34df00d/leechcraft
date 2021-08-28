@@ -45,9 +45,15 @@ namespace Util
 			return hookSlots;
 		}
 
+		bool ShouldBeVerbose ()
+		{
+			static bool result = qEnvironmentVariableIsSet ("LC_VERBOSE_HOOK_CHECKS");
+			return result;
+		}
+
 		void CheckMatchingSigs (const QObject *snd, const QObject *rcv)
 		{
-			if (!qEnvironmentVariableIsSet ("LC_VERBOSE_HOOK_CHECKS"))
+			if (!ShouldBeVerbose ())
 				return;
 
 			const auto& hookSlots = BuildHookSlots (snd);
@@ -126,7 +132,6 @@ namespace Util
 						receiver,
 						destSlot ? LC_TOSLOT (signature) : LC_TOSIGNAL (signature),
 						Qt::UniqueConnection))
-				{
 					qWarning () << Q_FUNC_INFO
 							<< "connect for"
 							<< sender
@@ -135,7 +140,14 @@ namespace Util
 							<< ":"
 							<< signature
 							<< "failed";
-				}
+				else if (ShouldBeVerbose ())
+					qDebug () << Q_FUNC_INFO
+							<< "connecting"
+							<< sender
+							<< "->"
+							<< receiver
+							<< "for"
+							<< signature;
 			}
 		}
 #undef LC_TOSIGNAL
