@@ -55,5 +55,10 @@ namespace Poshuku
 	{
 		return std::make_shared<LinkOpenModifier> ();
 	}
+
+	void ProxyObject::RegisterHookable (QObject *obj) const
+	{
+		Core::Instance ().GetPluginManager ()->RegisterHookable (obj);
+	}
 }
 }

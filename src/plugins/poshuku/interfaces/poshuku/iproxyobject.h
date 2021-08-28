@@ -38,6 +38,8 @@ namespace Poshuku
 		virtual QVariant GetPoshukuConfigValue (const QByteArray& name) const = 0;
 
 		virtual ILinkOpenModifier_ptr GetLinkOpenModifier () const = 0;
+
+		virtual void RegisterHookable (QObject*) const = 0;
 	};
 }
 }

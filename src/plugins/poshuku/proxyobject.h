@@ -32,6 +32,8 @@ namespace Poshuku
 		QVariant GetPoshukuConfigValue (const QByteArray&) const override;
 
 		ILinkOpenModifier_ptr GetLinkOpenModifier () const override;
+
+		void RegisterHookable (QObject*) const override;
 	};
 }
 }
