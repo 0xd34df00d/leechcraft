@@ -840,7 +840,7 @@ namespace Poshuku
 			return;
 
 		proxy->FillValue ("Text", text);
-		Load (text);
+		Load (Core::Instance ().MakeURL (text));
 	}
 
 	void BrowserWidget::handleReloadPeriodically ()
