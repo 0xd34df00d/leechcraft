@@ -15,6 +15,7 @@
 #include <util/xpc/basehookinterconnector.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
+#include "interfaces/poshuku/iwebview.h"
 
 class QContextMenuEvent;
 class QMenu;
@@ -297,6 +298,12 @@ namespace Poshuku
 				QObject *browserWidget);
 		void hookUserAgentForUrlRequested (LC::IHookProxy_ptr proxy,
 				const QUrl& url);
+
+		void hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy,
+				const QUrl& request,
+				IWebView *view,
+				IWebView::NavigationType type,
+				bool isMainFrame);
 
 		/** @brief Called when context menu for the view is requested.
 		 *
