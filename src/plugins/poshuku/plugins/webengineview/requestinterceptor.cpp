@@ -10,7 +10,6 @@
 #include <QWebEngineUrlRequestInfo>
 #include <QtDebug>
 #include <util/sll/visitor.h>
-#include <util/sll/slotclosure.h>
 #include "customwebview.h"
 
 namespace LC::Poshuku::WebEngineView
@@ -97,12 +96,9 @@ namespace LC::Poshuku::WebEngineView
 	{
 		Views_ << view;
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, view] { Views_.removeOne (view); },
-			view,
-			SIGNAL (destroyed ()),
-			this
-		};
+		connect (view,
+				&QObject::destroyed,
+				this,
+				[this, view] { Views_.removeOne (view); });
 	}
 }
