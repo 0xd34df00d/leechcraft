@@ -17,8 +17,6 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QWebView;
-
 namespace LC
 {
 namespace Poshuku
