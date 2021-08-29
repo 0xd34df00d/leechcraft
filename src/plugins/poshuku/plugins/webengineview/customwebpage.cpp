@@ -8,13 +8,15 @@
 
 #include "customwebpage.h"
 #include <QTimer>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 
 namespace LC::Poshuku::WebEngineView
 {
-	CustomWebPage::CustomWebPage (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy, QWidget *parent)
+	CustomWebPage::CustomWebPage (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy, CustomWebView *parent)
 	: QWebEnginePage { parent }
+	, View_ { parent }
 	, Proxy_ { proxy }
 	, PoshukuProxy_ { poshukuProxy }
 	, LinkOpenModifier_ { poshukuProxy->GetLinkOpenModifier () }
@@ -30,9 +32,43 @@ namespace LC::Poshuku::WebEngineView
 				});
 	}
 
+	namespace
+	{
+		IWebView::NavigationType ConvertType (QWebEnginePage::NavigationType type)
+		{
+#define LC_TYPE(x) \
+			case QWebEnginePage::NavigationType##x: \
+				return IWebView::NavigationType::x;
+
+			switch (type)
+			{
+			LC_TYPE (LinkClicked)
+			LC_TYPE (Typed)
+			LC_TYPE (FormSubmitted)
+			LC_TYPE (BackForward)
+			LC_TYPE (Reload)
+			LC_TYPE (Redirect)
+			LC_TYPE (Other)
+			}
+#undef LC_TYPE
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type"
+					<< type;
+
+			return IWebView::NavigationType::Other;
+		}
+	}
+
 	bool CustomWebPage::acceptNavigationRequest (const QUrl& url,
 			NavigationType type, bool isMainFrame)
 	{
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
+		emit hookAcceptNavigationRequest (proxy, url, View_, ConvertType (type), isMainFrame);
+
+		if (proxy->IsCancelled ())
+			return false;
+
 		if (type == NavigationTypeLinkClicked)
 		{
 			const auto suggestion = LinkOpenModifier_->GetOpenBehaviourSuggestion ();
