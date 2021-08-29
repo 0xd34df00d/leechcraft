@@ -19,10 +19,10 @@
 #include <QMouseEvent>
 #include <QAction>
 #include <util/sll/unreachable.h>
+#include <util/gui/findnotificationwe.h>
 #include <interfaces/poshuku/iwebviewhistory.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebpage.h"
-#include "findnotification.h"
 
 namespace LC::Poshuku::WebEngineView
 {
@@ -57,7 +57,7 @@ namespace LC::Poshuku::WebEngineView
 
 	void CustomWebView::SurroundingsInitialized ()
 	{
-		FindDialog_ = new FindNotification { Proxy_, this };
+		FindDialog_ = new Util::FindNotificationWE { Proxy_, this };
 		FindDialog_->hide ();
 	}
 

@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 		customwebpage.cpp
 		customwebview.cpp
 		downloaditemhandler.cpp
-		findnotification.cpp
 		icondatabase.cpp
 		icondatabaseondisk.cpp
 		requestinterceptor.cpp
