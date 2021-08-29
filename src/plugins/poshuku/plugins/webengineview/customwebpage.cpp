@@ -19,6 +19,8 @@ namespace LC::Poshuku::WebEngineView
 	, PoshukuProxy_ { poshukuProxy }
 	, LinkOpenModifier_ { poshukuProxy->GetLinkOpenModifier () }
 	{
+		poshukuProxy->RegisterHookable (this);
+
 		QTimer::singleShot (0, this,
 				[this]
 				{
