@@ -11,11 +11,10 @@
 #include <QObject>
 #include <QList>
 #include <QNetworkRequest>
-#include <QWebPage>
-#include <QWebFrame>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/poshuku/iproxyobject.h>
+#include <interfaces/poshuku/iwebview.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 #include "userscript.h"
@@ -64,10 +63,10 @@ namespace FatApe
 		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy,
-				QWebPage *page,
-				QWebFrame *frame,
-				QNetworkRequest request,
-				QWebPage::NavigationType type);
+				const QUrl& request,
+				IWebView*,
+				IWebView::NavigationType,
+				bool);
 		void initPlugin (QObject *proxy);
 	private slots:
 		void handleItemChanged (QStandardItem*);

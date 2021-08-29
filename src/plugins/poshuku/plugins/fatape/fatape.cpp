@@ -184,15 +184,14 @@ namespace FatApe
 		UserScripts_ [scriptIndex].SetEnabled (value);
 	}
 
-	void Plugin::hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy, QWebPage*,
-			QWebFrame*, QNetworkRequest request, QWebPage::NavigationType)
+	void Plugin::hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy,
+			const QUrl& url, IWebView*, IWebView::NavigationType, bool)
 	{
-		if (!request.url ().path ().endsWith ("user.js", Qt::CaseInsensitive) ||
-				request.url ().scheme () == "file")
+		if (!url.path ().endsWith ("user.js", Qt::CaseInsensitive) ||
+				url.scheme () == "file")
 			return;
 
-		UserScriptInstallerDialog installer (this,
-				CoreProxy_->GetNetworkAccessManager (), request.url ());
+		UserScriptInstallerDialog installer { this, CoreProxy_->GetNetworkAccessManager (), url };
 
 		switch (installer.exec ())
 		{
