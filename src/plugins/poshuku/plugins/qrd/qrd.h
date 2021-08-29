@@ -15,13 +15,7 @@
 #include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/poshuku/iwebview.h>
 
-class QContextMenuEvent;
-
-namespace LC
-{
-namespace Poshuku
-{
-namespace QRd
+namespace LC::Poshuku::QRd
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -32,24 +26,22 @@ namespace QRd
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.QRd")
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 	public slots:
-		void hookWebViewContextMenu (LC::IHookProxy_ptr proxy,
+		void hookWebViewContextMenu (const LC::IHookProxy_ptr& proxy,
 				LC::Poshuku::IWebView *view,
 				const LC::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);
-	private slots:
-		void genQR ();
+	private:
+		void GenQR ();
 	};
-}
-}
 }

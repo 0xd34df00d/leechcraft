@@ -18,15 +18,11 @@
 #include <util/gui/geometry.h>
 #include <util/sll/lambdaeventfilter.h>
 
-namespace LC
-{
-namespace Poshuku
-{
-namespace QRd
+namespace LC::Poshuku::QRd
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("poshuku_qrd");
+		Util::InstallTranslator (QStringLiteral ("poshuku_qrd"));
 	}
 
 	void Plugin::SecondInit ()
@@ -44,7 +40,7 @@ namespace QRd
 
 	QString Plugin::GetName () const
 	{
-		return "Poshuku QRd";
+		return QStringLiteral ("Poshuku QRd");
 	}
 
 	QString Plugin::GetInfo () const
@@ -54,17 +50,15 @@ namespace QRd
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return {};
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Poshuku.Plugins/1.0" };
 	}
 
-	void Plugin::hookWebViewContextMenu (IHookProxy_ptr,
+	void Plugin::hookWebViewContextMenu (const IHookProxy_ptr&,
 			IWebView *view, const ContextMenuInfo& info,
 			QMenu *menu, WebViewCtxMenuStage menuBuildStage)
 	{
@@ -75,19 +69,19 @@ namespace QRd
 		if (!url.isEmpty ())
 		{
 			const auto act = menu->addAction (tr ("Generate QR code..."),
-					this, SLOT (genQR ()));
+					this, &Plugin::GenQR);
 			act->setProperty ("Poshuku/QRd/URL", url);
 		}
 
 		if (!info.LinkUrl_.isEmpty ())
 		{
 			const auto act = menu->addAction (tr ("Generate QR code for the link..."),
-					this, SLOT (genQR ()));
+					this, &Plugin::GenQR);
 			act->setProperty ("Poshuku/QRd/URL", info.LinkUrl_);
 		}
 	}
 
-	void Plugin::genQR ()
+	void Plugin::GenQR ()
 	{
 		const auto& url = sender ()->property ("Poshuku/QRd/URL").toUrl ();
 
@@ -102,7 +96,7 @@ namespace QRd
 		if (!code)
 		{
 			QMessageBox::critical (nullptr,
-					"LeechCraft",
+					QStringLiteral ("LeechCraft"),
 					tr ("Failed to generate QR code for the page."));
 			return;
 		}
@@ -125,7 +119,7 @@ namespace QRd
 		if (dim < fullWidth)
 		{
 			QMessageBox::critical (nullptr,
-					"LeechCraft",
+					QStringLiteral ("LeechCraft"),
 					tr ("Sorry, but the QR code is bigger than your display."));
 			return;
 		}
@@ -148,8 +142,6 @@ namespace QRd
 					return false;
 				}));
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_qrd, LC::Poshuku::QRd::Plugin);
