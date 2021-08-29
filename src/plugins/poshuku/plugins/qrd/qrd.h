@@ -15,8 +15,6 @@
 #include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/poshuku/iwebview.h>
 
-class QWebHitTestResult;
-class QWebView;
 class QContextMenuEvent;
 
 namespace LC
