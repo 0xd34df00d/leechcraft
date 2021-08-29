@@ -124,9 +124,15 @@ namespace LC::Poshuku::QRd
 			return;
 		}
 
-		auto scale = (fullWidth < 2.0 * dim / 3) ? (2.0 * dim / 3 / fullWidth) : dim / fullWidth;
+		const auto maxRatio = 2.0 / 3;
+		auto scale = (fullWidth < maxRatio * dim) ?
+				(maxRatio * dim / fullWidth) :
+				(static_cast<float> (dim) / static_cast<float> (fullWidth));
 		if (scale > 1)
-			image = image.scaled (fullWidth * scale, fullWidth * scale, Qt::KeepAspectRatio, Qt::FastTransformation);
+		{
+			const auto newDim = static_cast<int> (fullWidth * scale);
+			image = image.scaled (newDim, newDim, Qt::KeepAspectRatio, Qt::FastTransformation);
+		}
 
 		auto label = new QLabel;
 		label->setWindowTitle (tr ("QR code for %1")
