@@ -391,9 +391,14 @@ namespace CSTP
 
 	void Task::HandleMetadataRedirection ()
 	{
-		const auto& newUrl = Reply_->rawHeader ("Location");
-		if (!newUrl.size ())
+		const auto& location = Reply_->rawHeader ("Location");
+		if (location.isEmpty ())
 			return;
+
+		const QUrl locationUrl { location };
+		const QUrl newUrl = locationUrl.isRelative () ?
+				URL_.resolved (locationUrl) :
+				locationUrl;
 
 		const auto code = Reply_->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
 		if (code > 399 || code < 300)
@@ -406,7 +411,7 @@ namespace CSTP
 			return;
 		}
 
-		if (!QUrl { newUrl }.isValid ())
+		if (!newUrl.isValid ())
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "invalid redirect URL"
@@ -435,7 +440,7 @@ namespace CSTP
 			QMetaObject::invokeMethod (this,
 					"redirectedConstruction",
 					Qt::QueuedConnection,
-					Q_ARG (QByteArray, newUrl));
+					Q_ARG (QUrl, newUrl));
 		}
 	}
 
@@ -567,7 +572,7 @@ namespace CSTP
 			emit updateInterface ();
 	}
 
-	void Task::redirectedConstruction (const QByteArray& newUrl)
+	void Task::redirectedConstruction (const QUrl& newUrl)
 	{
 		if (To_ && FileSizeAtStart_ >= 0)
 		{
@@ -586,7 +591,7 @@ namespace CSTP
 		Reply_.reset ();
 
 		Referer_ = URL_;
-		URL_ = QUrl::fromEncoded (newUrl);
+		URL_ = newUrl;
 		Start (To_);
 	}
 

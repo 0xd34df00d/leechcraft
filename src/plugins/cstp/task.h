@@ -40,7 +40,7 @@ namespace CSTP
 		QElapsedTimer SpeedTimer_;
 		qint64 Done_ = -1, Total_ = 0, FileSizeAtStart_ = -1;
 		double Speed_ = 0;
-		QList<QByteArray> RedirectHistory_;
+		QList<QUrl> RedirectHistory_;
 		std::shared_ptr<QFile> To_;
 		QTimer *Timer_;
 		bool CanChangeName_ = true;
@@ -85,7 +85,7 @@ namespace CSTP
 		void HandleError (IDownload::Error::Type, const QString&);
 	private slots:
 		void handleDataTransferProgress (qint64, qint64);
-		void redirectedConstruction (const QByteArray&);
+		void redirectedConstruction (const QUrl&);
 		void handleMetaDataChanged ();
 		void handleLocalTransfer ();
 		/** Returns true if the reply is at end after this read.
