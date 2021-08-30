@@ -804,9 +804,9 @@ namespace LC::Azoth
 					op ("entryId", other->GetEntryID ());
 			}
 
-			string.append ("<span class='nickname'><a href='");
+			string.append ("<span class='nickname'><a href=\"");
 			string.append (url.toEncoded ());
-			string.append ("' class='nicklink' style='text-decoration:none; color:");
+			string.append ("\" class='nicklink' style='text-decoration:none; color:");
 			string.append (color);
 			string.append ("'>");
 			string.append (nick);
@@ -1021,7 +1021,6 @@ namespace LC::Azoth
 			PluginProxyObject_->GetFormatterProxy ().FormatLinks (body);
 			body.replace ('\n', "<br />");
 			body.replace ("  ", "&nbsp; ");
-			body.replace ('"', "&quot;");
 		}
 
 		body = HandleSmiles (body);
