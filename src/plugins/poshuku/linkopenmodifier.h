@@ -13,7 +13,7 @@
 
 namespace LC
 {
-	namespace Poshuku
+namespace Poshuku
 {
 	class LinkOpenModifier : public QObject
 						   , public ILinkOpenModifier
@@ -25,6 +25,8 @@ namespace LC
 
 		OpenBehaviourSuggestion GetOpenBehaviourSuggestion () const override;
 		void ResetSuggestionState () override;
+	protected:
+		bool eventFilter (QObject*, QEvent*) override;
 	};
 }
 }

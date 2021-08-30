@@ -8,27 +8,15 @@
 
 #include "linkopenmodifier.h"
 #include <QMouseEvent>
+#include <QChildEvent>
 #include <QWidget>
-#include <util/sll/lambdaeventfilter.h>
+#include <QtDebug>
 
-namespace LC
-{
-namespace Poshuku
+namespace LC::Poshuku
 {
 	void LinkOpenModifier::InstallOn (QWidget *view)
 	{
-		const auto ef = Util::MakeLambdaEventFilter ([this] (QMouseEvent *e)
-				{
-					if (e->type () == QEvent::MouseButtonPress)
-					{
-						MouseButtons_ = e->buttons ();
-						Modifiers_ = e->modifiers ();
-					}
-
-					return false;
-				},
-				this);
-		view->installEventFilter (ef);
+		view->installEventFilter (this);
 	}
 
 	auto LinkOpenModifier::GetOpenBehaviourSuggestion () const -> OpenBehaviourSuggestion
@@ -45,5 +33,28 @@ namespace Poshuku
 		MouseButtons_ = {};
 		Modifiers_ = {};
 	}
-}
+
+	bool LinkOpenModifier::eventFilter (QObject*, QEvent *e)
+	{
+		switch (e->type ())
+		{
+		case QEvent::MouseButtonPress:
+		{
+			const auto me = static_cast<QMouseEvent*> (e);
+			MouseButtons_ = me->buttons ();
+			Modifiers_ = me->modifiers ();
+			break;
+		}
+		case QEvent::ChildAdded:
+			static_cast<QChildEvent*> (e)->child ()->installEventFilter (this);
+			break;
+		case QEvent::ChildRemoved:
+			static_cast<QChildEvent*> (e)->child ()->removeEventFilter (this);
+			break;
+		default:
+			break;
+		}
+
+		return false;
+	}
 }
