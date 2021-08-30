@@ -132,6 +132,22 @@ namespace Azoth
 
 		fontsWidget->RegisterSettable (this);
 
+		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
+		for (const auto child : Ui_.View_->findChildren<QWidget*> ())
+			child->setFocusProxy (Ui_.MsgEdit_);
+
+		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QChildEvent *e)
+				{
+					if (e->type () != QEvent::ChildAdded)
+						return false;
+
+					if (const auto w = qobject_cast<QWidget*> (e->child ()))
+						w->setFocusProxy (Ui_.MsgEdit_);
+
+					return false;
+				},
+				this));
+
 		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this, fontsWidget] (QWheelEvent *e)
 				{
 					if (!(e->modifiers () & Qt::ControlModifier))
@@ -236,8 +252,6 @@ namespace Azoth
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
-
-		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 
 		HandleMUCParticipantsChanged ();
 
