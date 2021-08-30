@@ -479,15 +479,16 @@ namespace LC::Poshuku::WebEngineView
 		if (event->type () != QEvent::MouseButtonPress)
 			return QWebEngineView::eventFilter (src, event);
 
-		const auto me = static_cast<QMouseEvent*> (event);
-		const bool mBack = me->button () == Qt::XButton1;
-		const bool mForward = me->button () == Qt::XButton2;
-		if (mBack || mForward)
+		switch (static_cast<QMouseEvent*> (event)->button ())
 		{
-			pageAction (mBack ? QWebEnginePage::Back : QWebEnginePage::Forward)->trigger ();
+		case Qt::BackButton:
+			pageAction (QWebEnginePage::Back)->trigger ();
 			return true;
-		}
-		else
+		case Qt::ForwardButton:
+			pageAction (QWebEnginePage::Forward)->trigger ();
+			return true;
+		default:
 			return QWebEngineView::eventFilter (src, event);
+		}
 	}
 }
