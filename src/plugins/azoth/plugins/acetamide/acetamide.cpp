@@ -107,26 +107,5 @@ namespace Acetamide
 }
 }
 
-QDataStream& operator<< (QDataStream& out, const QList<QStringList>& list)
-{
-	for (const auto& subList : list)
-		out << subList;
-
-	return out;
-}
-
-QDataStream& operator>> (QDataStream& in, QList<QStringList>& list)
-{
-	QStringList subList;
-	while (!in.atEnd ())
-	{
-		in >> subList;
-		list << subList;
-		subList.clear ();
-	}
-
-	return in;
-}
-
 LC_EXPORT_PLUGIN (leechcraft_azoth_acetamide,
 		LC::Azoth::Acetamide::Plugin);

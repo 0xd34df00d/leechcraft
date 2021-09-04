@@ -59,9 +59,4 @@ namespace Acetamide
 }
 }
 
-QDataStream& operator<< (QDataStream& out, const QList<QStringList>& myObj);
-QDataStream& operator>> (QDataStream& in, QList<QStringList>& myObj);
-
-Q_DECLARE_METATYPE (QList<QStringList>)
-
 #endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H
