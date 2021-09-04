@@ -36,7 +36,6 @@ if (TESTS_LACKMAN)
 	add_executable (lc_lackman_versioncomparatortest WIN32
 		tests/versioncomparatortest.cpp
 		versioncomparator.cpp
-		${VERSIONCOMPARATORTEST_MOC}
 	)
 	target_link_libraries (lc_lackman_versioncomparatortest
 		${LEECHCRAFT_LIBRARIES}
