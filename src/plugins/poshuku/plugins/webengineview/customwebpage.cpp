@@ -23,13 +23,9 @@ namespace LC::Poshuku::WebEngineView
 	{
 		poshukuProxy->RegisterHookable (this);
 
-		QTimer::singleShot (0, this,
-				[this]
-				{
-					LinkOpenModifier_->InstallOn (view ());
-					for (const auto child : view ()->findChildren<QWidget*> ())
-						LinkOpenModifier_->InstallOn (child);
-				});
+		LinkOpenModifier_->InstallOn (parent);
+		for (const auto child : parent->findChildren<QWidget*> ())
+			LinkOpenModifier_->InstallOn (child);
 	}
 
 	namespace
