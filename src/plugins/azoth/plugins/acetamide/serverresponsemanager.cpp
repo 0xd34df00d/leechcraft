@@ -269,10 +269,8 @@ namespace Acetamide
 
 		QString cmd;
 		QString outputMessage;
-		const QString& lcVer = Core::Instance ().GetProxy ()->GetVersion ();
-		const QString version = QString ("LeechCraft %1 (Acetamide 2.0) "
-					"(c) 2006-2017 LeechCraft team")
-				.arg (lcVer);
+		const QString& lcVer = GetProxyHolder ()->GetVersion ();
+		const QString version = QString ("LeechCraft %1 (Acetamide 2.0)").arg (lcVer);
 		const QDateTime currentDT = QDateTime::currentDateTime ();
 		const QString firstPartOutput = QString ("LeechCraft %1 (Acetamide 2.0) - "
 					"https://leechcraft.org")

@@ -32,7 +32,6 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<IrcProtocol> IrcProtocol_;
 		QObject *PluginProxy_ = nullptr;
 		QStandardItemModel* Model_;
@@ -49,9 +48,6 @@ namespace Acetamide
 
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-		void SendEntity (const Entity&);
 
 		NickServIdentifyWidget* GetNickServIdentifyWidget () const;
 		QStandardItemModel* GetNickServIdentifyModel () const;
@@ -65,8 +61,6 @@ namespace Acetamide
 				const QString&, const QString&) const;
 	private slots:
 		void handleItemsAdded (const QList<QObject*>&);
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 }
 }

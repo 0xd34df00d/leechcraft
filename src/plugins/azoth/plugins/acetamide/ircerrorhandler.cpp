@@ -9,9 +9,10 @@
 
 #include "ircerrorhandler.h"
 #include <QTextCodec>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
-#include "core.h"
 #include "ircserverhandler.h"
 
 namespace LC
@@ -42,7 +43,7 @@ namespace Acetamide
 						options.Message_ :
 						(paramsMessage + ": " + options.Message_),
 				Priority::Warning);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	bool IrcErrorHandler::IsError (int id)

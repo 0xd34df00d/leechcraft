@@ -10,11 +10,12 @@
 #include <QTextCodec>
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"
 #include "channelhandler.h"
-#include "core.h"
 #include "ircprotocol.h"
 #include "ircserverclentry.h"
 #include "ircserverhandler.h"
@@ -122,10 +123,10 @@ namespace Acetamide
 
 		if (ServerHandlers_ [serverId]->IsChannelExists (channelId))
 		{
-			Entity e = Util::MakeNotification ("Azoth",
-				tr ("This channel is already joined."),
-				Priority::Critical);
-			Core::Instance ().SendEntity (e);
+			const auto& e = Util::MakeNotification ("Azoth",
+					tr ("This channel is already joined."),
+					Priority::Warning);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity(e);
 			return;
 		}
 
@@ -199,9 +200,12 @@ namespace Acetamide
 		}
 
 		if (hadUnknownVersions)
-			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth Acetamide",
-						tr ("Some bookmarks were lost due to unknown storage version."),
-						Priority::Warning));
+		{
+			const auto& entity = Util::MakeNotification ("Azoth Acetamide",
+					tr ("Some bookmarks were lost due to unknown storage version."),
+					Priority::Warning);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+		}
 
 		return bookmarks;
 	}
@@ -323,10 +327,10 @@ namespace Acetamide
 
 		serverDisconnected (ish->GetServerID ());
 
-		Entity e = Util::MakeNotification ("Azoth",
+		const auto& e = Util::MakeNotification ("Azoth",
 				errorString,
 				Priority::Critical);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 		const auto& serverOpts = ish->GetServerOptions ();
 

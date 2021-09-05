@@ -61,21 +61,6 @@ namespace Acetamide
 		return qobject_cast<IProxyObject*> (PluginProxy_);
 	}
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
-	ICoreProxy_ptr Core::GetProxy () const
-	{
-		return Proxy_;
-	}
-
-	void Core::SendEntity (const LC::Entity& e)
-	{
-		emit gotEntity (e);
-	}
-
 	void Core::handleItemsAdded (const QList<QObject*>&)
 	{
 	}

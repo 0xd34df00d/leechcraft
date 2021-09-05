@@ -24,7 +24,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_acetamide"));
 
@@ -36,15 +36,8 @@ namespace Acetamide
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 					"azothacetamidesettings.xml");
 
-		Core::Instance ().SetProxy (proxy);
-
 		SettingsDialog_->SetCustomWidget ("NickServIdentifyWidget",
 				Core::Instance ().GetNickServIdentifyWidget ());
-
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LC::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LC::Entity&)));
 	}
 
 	void Plugin::SecondInit ()
@@ -74,7 +67,7 @@ namespace Acetamide
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

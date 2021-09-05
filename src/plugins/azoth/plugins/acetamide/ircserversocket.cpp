@@ -145,7 +145,7 @@ namespace Acetamide
 				tr ("Unknown encoding %1.")
 					.arg ("<em>" + encoding + "</em>"),
 				Priority::Critical);
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (notify);
 
 		if (LastCodec_)
 			return;
