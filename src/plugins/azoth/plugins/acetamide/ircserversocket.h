@@ -11,16 +11,12 @@
 #include <memory>
 #include <variant>
 #include <QObject>
-#include <QSslSocket>
 #include <interfaces/azoth/icanhavesslerrors.h>
 
 class QTcpSocket;
+class QSslSocket;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
 	class IrcAccount;
@@ -37,26 +33,20 @@ namespace Acetamide
 
 		QTextCodec *LastCodec_ = nullptr;
 	public:
-		IrcServerSocket (IrcServerHandler*);
-		~IrcServerSocket();
+		explicit IrcServerSocket (IrcServerHandler*);
+		~IrcServerSocket () override;
 		
 		void ConnectToHost (const QString&, int);
 		void DisconnectFromHost ();
 		void Send (const QString&);
 		void Close ();
 	private:
-		void Init ();
-
 		void RefreshCodec ();
-		void HandleSslErrors (const std::shared_ptr<QSslSocket>&, const QList<QSslError>&);
 
 		QTcpSocket* GetSocketPtr () const;
 	private slots:
-		void readReply ();
 		void handleSslErrors (const QList<QSslError>& errors);
 	signals:
 		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
-}
-}
 }

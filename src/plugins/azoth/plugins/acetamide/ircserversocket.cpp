@@ -10,38 +10,63 @@
 #include "ircserversocket.h"
 #include <QTcpSocket>
 #include <QTextCodec>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	int elideWidth = 300;
-
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject (ish)
 	, ISH_ (ish)
 	{
 		if (ish->GetServerOptions ().SSL_)
-			Socket_ = std::make_shared<QSslSocket> ();
+		{
+			auto socket = std::make_shared<QSslSocket> ();
+			Socket_ = socket;
+			connect (socket.get (),
+					qOverload<const QList<QSslError>&> (&QSslSocket::sslErrors),
+					this,
+					&IrcServerSocket::handleSslErrors);
+		}
 		else
 			Socket_ = std::make_shared<QTcpSocket> ();
 
-		Init ();
+		const auto socket = GetSocketPtr ();
+
+		connect (socket,
+				&QTcpSocket::readyRead,
+				this,
+				[this, socket]
+				{
+					while (socket->canReadLine ())
+						ISH_->ReadReply (socket->readLine ());
+				});
+
+		connect (socket,
+				SIGNAL (connected ()),
+				ISH_,
+				SLOT (connectionEstablished ()));
+
+		connect (socket,
+				SIGNAL (disconnected ()),
+				ISH_,
+				SLOT (connectionClosed ()));
+
+		connect (socket,
+				SIGNAL (error (QAbstractSocket::SocketError)),
+				ISH_,
+				SLOT (handleSocketError (QAbstractSocket::SocketError)));
 	}
 
 	IrcServerSocket::~IrcServerSocket ()
 	{
 		if (const auto socket = GetSocketPtr ())
 		{
-			QObject::disconnect (socket, 0, 0, 0);
+			QObject::disconnect (socket, nullptr, nullptr, nullptr);
 			socket->abort ();
 		}
 	}
@@ -55,10 +80,7 @@ namespace Acetamide
 
 	void IrcServerSocket::DisconnectFromHost ()
 	{
-		if (const auto socket = GetSocketPtr ())
-		{
-			socket->disconnectFromHost ();
-		}
+		GetSocketPtr ()->disconnectFromHost ();
 	}
 
 	void IrcServerSocket::Send (const QString& message)
@@ -85,47 +107,13 @@ namespace Acetamide
 		GetSocketPtr ()->close ();
 	}
 
-	void IrcServerSocket::Init ()
-	{
-		const auto socket = GetSocketPtr ();
-		connect (socket,
-				SIGNAL (readyRead ()),
-				this,
-				SLOT (readReply ()));
-
-		connect (socket,
-				SIGNAL (connected ()),
-				ISH_,
-				SLOT (connectionEstablished ()));
-
-		connect (socket,
-				SIGNAL (disconnected ()),
-				ISH_,
-				SLOT (connectionClosed ()));
-
-		connect (socket,
-				SIGNAL (error (QAbstractSocket::SocketError)),
-				ISH_,
-				SLOT (handleSocketError (QAbstractSocket::SocketError)));
-
-		Util::Visit (Socket_,
-				[this] (const Ssl_ptr& ptr)
-				{
-					connect (ptr.get (),
-							SIGNAL (sslErrors (const QList<QSslError> &)),
-							this,
-							SLOT (handleSslErrors (const QList<QSslError>&)));
-				},
-				[] (auto) {});
-	}
-
 	void IrcServerSocket::RefreshCodec ()
 	{
 		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
 		if (LastCodec_ && LastCodec_->name () == encoding)
 			return;
 
-		const auto newCodec = encoding == "System" ?
+		const auto newCodec = encoding == "System"_ql ?
 				QTextCodec::codecForLocale () :
 				QTextCodec::codecForName (encoding.toLatin1 ());
 		if (newCodec)
@@ -161,20 +149,13 @@ namespace Acetamide
 				[] (const auto& ptr) -> QTcpSocket* { return ptr.get (); });
 	}
 
-	void IrcServerSocket::readReply ()
-	{
-		const auto socket = GetSocketPtr ();
-		while (socket->canReadLine ())
-			ISH_->ReadReply (socket->readLine ());
-	}
-
 	namespace
 	{
 		class SslErrorsReaction final : public ICanHaveSslErrors::ISslErrorsReaction
 		{
 			std::weak_ptr<QSslSocket> Sock_;
 		public:
-			SslErrorsReaction (const std::shared_ptr<QSslSocket>& sock)
+			explicit SslErrorsReaction (const std::shared_ptr<QSslSocket>& sock)
 			: Sock_ { sock }
 			{
 			}
@@ -191,17 +172,10 @@ namespace Acetamide
 		};
 	}
 
-	void IrcServerSocket::HandleSslErrors (const std::shared_ptr<QSslSocket>& s, const QList<QSslError>& errors)
-	{
-		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (s));
-	}
-
 	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
 	{
 		Util::Visit (Socket_,
-				[&] (const Ssl_ptr& s) { HandleSslErrors (s, errors); },
+				[&] (const Ssl_ptr& s) { emit sslErrors (errors, std::make_shared<SslErrorsReaction> (s)); },
 				[] (auto) { qWarning () << Q_FUNC_INFO << "expected SSL socket"; });
 	}
-}
-}
 }
