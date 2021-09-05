@@ -229,8 +229,6 @@ namespace Acetamide
 		void handleSocketError (QAbstractSocket::SocketError error);
 		void showChannels (const QStringList& = QStringList ());
 	private slots:
-		void connectionEstablished ();
-		void connectionClosed ();
 		void joinAfterInvite ();
 		void handleSetAutoWho ();
 		void handleUpdateWhoPeriod ();

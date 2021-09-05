@@ -920,9 +920,34 @@ namespace Acetamide
 		ServerConnectionState_ = InProgress;
 
 		connect (Socket_.get (),
-				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				&IrcServerSocket::connected,
+				this,
+				[this]
+				{
+					ServerConnectionState_ = Connected;
+					emit connected (ServerID_);
+					ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
+					IrcParser_->AuthCommand ();
+				});
+		connect (Socket_.get (),
+				&IrcServerSocket::disconnected,
+				this,
+				[this, socket = Socket_.get ()]
+				{
+					ServerConnectionState_ = NotConnected;
+					ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
+					socket->Close ();
+					emit disconnected (ServerID_);
+				});
+
+		connect (Socket_.get (),
+				&IrcServerSocket::socketError,
+				this,
+				&IrcServerHandler::handleSocketError);
+		connect (Socket_.get (),
+				&IrcServerSocket::sslErrors,
 				Account_,
-				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
+				&IrcAccount::sslErrors);
 	}
 
 	void IrcServerHandler::DisconnectFromServer ()
@@ -1166,23 +1191,6 @@ namespace Acetamide
 	void IrcServerHandler::GotChannelsListEnd (const IrcMessageOptions&)
 	{
 		emit gotChannelsEnd ();
-	}
-
-	void IrcServerHandler::connectionEstablished ()
-	{
-		ServerConnectionState_ = Connected;
-		emit connected (ServerID_);
-		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
-		IrcParser_->AuthCommand ();
-	}
-
-	void IrcServerHandler::connectionClosed ()
-	{
-		ServerConnectionState_ = NotConnected;
-		ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
-		if (Socket_)
-			Socket_->Close ();
-		emit disconnected (ServerID_);
 	}
 
 	void IrcServerHandler::joinAfterInvite ()

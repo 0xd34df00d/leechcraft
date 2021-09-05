@@ -47,19 +47,18 @@ namespace LC::Azoth::Acetamide
 				});
 
 		connect (socket,
-				SIGNAL (connected ()),
-				ISH_,
-				SLOT (connectionEstablished ()));
+				&QTcpSocket::connected,
+				this,
+				&IrcServerSocket::connected);
+		connect (socket,
+				&QTcpSocket::disconnected,
+				this,
+				&IrcServerSocket::disconnected);
 
 		connect (socket,
-				SIGNAL (disconnected ()),
-				ISH_,
-				SLOT (connectionClosed ()));
-
-		connect (socket,
-				SIGNAL (error (QAbstractSocket::SocketError)),
-				ISH_,
-				SLOT (handleSocketError (QAbstractSocket::SocketError)));
+				&QTcpSocket::errorOccurred,
+				this,
+				&IrcServerSocket::socketError);
 	}
 
 	IrcServerSocket::~IrcServerSocket ()

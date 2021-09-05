@@ -11,6 +11,7 @@
 #include <memory>
 #include <variant>
 #include <QObject>
+#include <QAbstractSocket>
 #include <interfaces/azoth/icanhavesslerrors.h>
 
 class QTcpSocket;
@@ -47,6 +48,10 @@ namespace LC::Azoth::Acetamide
 	private slots:
 		void handleSslErrors (const QList<QSslError>& errors);
 	signals:
+		void connected ();
+		void disconnected ();
+
+		void socketError (QAbstractSocket::SocketError);
 		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 }
