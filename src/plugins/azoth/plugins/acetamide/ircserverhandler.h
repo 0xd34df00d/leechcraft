@@ -45,7 +45,7 @@ namespace Acetamide
 		IrcErrorHandler *ErrorHandler_;
 		IrcParser *IrcParser_ = 0;
 		IrcServerCLEntry *ServerCLEntry_;
-		IrcServerSocket *Socket_ = 0;
+		std::unique_ptr<IrcServerSocket> Socket_;
 		UserCommandManager *CmdManager_ = 0;
 		ServerResponseManager *ServerResponseManager_ = 0;
 		RplISupportParser *RplISupportParser_ = 0;
