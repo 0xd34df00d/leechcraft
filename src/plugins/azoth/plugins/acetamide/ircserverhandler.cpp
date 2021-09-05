@@ -83,6 +83,8 @@ namespace Acetamide
 		handleSetAutoWho ();
 	}
 
+	IrcServerHandler::~IrcServerHandler () = default;
+
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
 	{
 		return ServerCLEntry_;

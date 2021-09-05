@@ -70,6 +70,7 @@ namespace Acetamide
 		int LastNickIndex_ = 0;
 	public:
 		IrcServerHandler (const ServerOptions& server, IrcAccount* account);
+		~IrcServerHandler () override;
 		
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
