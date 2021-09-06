@@ -18,7 +18,6 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-class QWebView;
 namespace LC
 {
 namespace Blogique
