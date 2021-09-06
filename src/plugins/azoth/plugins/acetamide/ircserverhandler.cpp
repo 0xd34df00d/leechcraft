@@ -949,6 +949,7 @@ namespace Acetamide
 				this,
 				[this] (QAbstractSocket::SocketError, const QString& errorString)
 				{
+					ServerConnectionState_ = NotConnected;
 					ServerCLEntry_->SetStatus (EntryStatus (SError, errorString));
 
 					const auto& e = Util::MakeNotification ("Azoth",
@@ -961,6 +962,7 @@ namespace Acetamide
 				this,
 				[this] (QAbstractSocket::SocketError, const QString& errorString)
 				{
+					ServerConnectionState_ = NotConnected;
 					ServerCLEntry_->SetStatus (EntryStatus (SError, errorString));
 
 					const auto& e = Util::MakeNotification ("Azoth",
