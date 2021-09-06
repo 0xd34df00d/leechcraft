@@ -84,6 +84,10 @@ namespace LC::Azoth::Acetamide
 							this,
 							&IrcServerSocket::disconnected);
 
+					qWarning () << "LC::Azoth::Acetamide::IrcServerSocket:"
+							<< error
+							<< "after" << RetriesCount_ << "retries;"
+							<< socket->errorString ();
 					if (++RetriesCount_ > MaxRetriesCount)
 					{
 						emit finalSocketError (error, socket->errorString ());
