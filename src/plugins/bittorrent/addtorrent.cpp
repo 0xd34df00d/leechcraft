@@ -243,8 +243,7 @@ namespace LC::BitTorrent
 	{
 		const auto& dir = QFileDialog::getExistingDirectory (this,
 				tr ("Select save directory"),
-				Ui_.Destination_->text (),
-				{});
+				Ui_.Destination_->text ());
 		if (dir.isEmpty ())
 			return;
 
