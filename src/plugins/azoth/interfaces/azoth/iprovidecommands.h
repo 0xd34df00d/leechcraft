@@ -61,26 +61,8 @@ namespace Azoth
 		QStringList Names_;
 		Command_f Command_;
 
-		QString Description_;
-		QString Help_;
-
-		StaticCommand () = default;
-		StaticCommand (const StaticCommand&) = default;
-
-		StaticCommand (const QStringList& names, const Command_f& command)
-		: Names_ { names }
-		, Command_ { command }
-		{
-		}
-
-		StaticCommand (const QStringList& names, const Command_f& command,
-				const QString& descr, const QString& help)
-		: Names_ { names }
-		, Command_ { command }
-		, Description_ { descr }
-		, Help_ { help }
-		{
-		}
+		QString Description_ = {};
+		QString Help_ = {};
 	};
 
 	typedef QList<StaticCommand> StaticCommands_t;
