@@ -223,8 +223,16 @@ namespace Acetamide
 
 	void IrcServerHandler::SendQuit ()
 	{
-		IrcParser_->QuitCommand (QStringList (Account_->GetClientConnection ()->
-				GetStatusStringForState (SOffline)));
+		if (ServerConnectionState_ == Connected)
+			IrcParser_->QuitCommand ({ Account_->GetClientConnection ()->GetStatusStringForState (SOffline) });
+		else
+		{
+			ServerConnectionState_ = NotConnected;
+			if (Socket_)
+				Socket_->Close ();
+			Socket_.reset ();
+			emit disconnected (ServerID_);
+		}
 	}
 
 	void IrcServerHandler::QuitParticipant (const QString& nick, const QString& msg)
