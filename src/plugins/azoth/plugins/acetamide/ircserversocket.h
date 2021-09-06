@@ -16,6 +16,7 @@
 
 class QTcpSocket;
 class QSslSocket;
+class QTimer;
 
 namespace LC::Azoth::Acetamide
 {
@@ -33,6 +34,11 @@ namespace LC::Azoth::Acetamide
 		std::variant<Tcp_ptr, Ssl_ptr> Socket_;
 
 		QTextCodec *LastCodec_ = nullptr;
+
+		QString Host_;
+		int Port_;
+		int RetriesCount_ = 0;
+		QTimer * const RetryTimer_;
 	public:
 		explicit IrcServerSocket (IrcServerHandler*);
 		~IrcServerSocket () override;
@@ -51,7 +57,8 @@ namespace LC::Azoth::Acetamide
 		void connected ();
 		void disconnected ();
 
-		void socketError (QAbstractSocket::SocketError);
+		void retriableSocketError (QAbstractSocket::SocketError, const QString&);
+		void finalSocketError (QAbstractSocket::SocketError, const QString&);
 		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 }

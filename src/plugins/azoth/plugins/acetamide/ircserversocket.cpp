@@ -10,6 +10,7 @@
 #include "ircserversocket.h"
 #include <QTcpSocket>
 #include <QTextCodec>
+#include <QTimer>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
@@ -19,10 +20,20 @@
 
 namespace LC::Azoth::Acetamide
 {
+	constexpr int MaxRetriesCount = 10;
+
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
-	: QObject (ish)
-	, ISH_ (ish)
+	: QObject { ish }
+	, ISH_ { ish }
+	, RetryTimer_ { new QTimer { this } }
 	{
+		RetryTimer_->setSingleShot (true);
+		RetryTimer_->callOnTimeout ([this]
+				{
+					qDebug () << "LC::Azoth::Acetamide::IrcServerSocket: retrying...";
+					ConnectToHost (Host_, Port_);
+				});
+
 		if (ish->GetServerOptions ().SSL_)
 		{
 			auto socket = std::make_shared<QSslSocket> ();
@@ -42,6 +53,9 @@ namespace LC::Azoth::Acetamide
 				this,
 				[this, socket]
 				{
+					RetriesCount_ = 0;
+					RetryTimer_->stop ();
+
 					while (socket->canReadLine ())
 						ISH_->ReadReply (socket->readLine ());
 				});
@@ -49,16 +63,35 @@ namespace LC::Azoth::Acetamide
 		connect (socket,
 				&QTcpSocket::connected,
 				this,
-				&IrcServerSocket::connected);
-		connect (socket,
-				&QTcpSocket::disconnected,
-				this,
-				&IrcServerSocket::disconnected);
+				[this, socket]
+				{
+					qDebug () << "LC::Azoth::Acetamide::IrcServerSocket: connected";
+					emit connected ();
+					connect (socket,
+							&QTcpSocket::disconnected,
+							this,
+							&IrcServerSocket::disconnected,
+							Qt::UniqueConnection);
+				});
 
 		connect (socket,
 				&QTcpSocket::errorOccurred,
 				this,
-				&IrcServerSocket::socketError);
+				[this, socket] (QAbstractSocket::SocketError error)
+				{
+					disconnect (socket,
+							&QTcpSocket::disconnected,
+							this,
+							&IrcServerSocket::disconnected);
+
+					if (++RetriesCount_ > MaxRetriesCount)
+					{
+						emit finalSocketError (error, socket->errorString ());
+						return;
+					}
+					emit retriableSocketError (error, socket->errorString ());
+					RetryTimer_->start ((2 * RetriesCount_ + 1) * 1000);
+				});
 	}
 
 	IrcServerSocket::~IrcServerSocket ()
@@ -72,6 +105,9 @@ namespace LC::Azoth::Acetamide
 
 	void IrcServerSocket::ConnectToHost (const QString& host, int port)
 	{
+		Host_ = host;
+		Port_ = port;
+
 		Util::Visit (Socket_,
 				[&] (const Tcp_ptr& ptr) { ptr->connectToHost (host, port); },
 				[&] (const Ssl_ptr& ptr) { ptr->connectToHostEncrypted (host, port); });

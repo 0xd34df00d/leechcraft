@@ -226,7 +226,6 @@ namespace Acetamide
 		ServerParticipantEntry_ptr CreateParticipantEntry (const QString&);
 	public slots:
 		void autoWhoRequest ();
-		void handleSocketError (QAbstractSocket::SocketError error);
 		void showChannels (const QStringList& = QStringList ());
 	private slots:
 		void joinAfterInvite ();
@@ -237,8 +236,6 @@ namespace Acetamide
 		void disconnected (const QString&);
 		void sendMessageToConsole (IMessage::Direction, const QString&);
 		void nicknameConflict (const QString&);
-		void gotSocketError (QAbstractSocket::SocketError error,
-				const QString& erorString);
 
 		void gotChannelsBegin ();
 		void gotChannels (const ChannelsDiscoverInfo& info);

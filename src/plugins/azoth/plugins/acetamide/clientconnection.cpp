@@ -88,12 +88,8 @@ namespace Acetamide
 			return;
 		}
 
-		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		const auto ish = new IrcServerHandler (server, Account_);
 		emit gotRosterItems ({ ish->GetCLEntry () });
-		connect (ish,
-				SIGNAL (gotSocketError (QAbstractSocket::SocketError, const QString&)),
-				this,
-				SLOT (handleError(QAbstractSocket::SocketError, const QString&)));
 
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
@@ -308,38 +304,6 @@ namespace Acetamide
 		if (ServerHandlers_.isEmpty ())
 			Account_->SetState (EntryStatus (SOffline,
 					QString ()));
-	}
-
-	void ClientConnection::handleError (QAbstractSocket::SocketError error,
-			const QString& errorString)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< error
-				<< errorString;
-		IrcServerHandler *ish = qobject_cast<IrcServerHandler*> (sender ());
-		if (!ish)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "is not an IrcServerHandler"
-					<< sender ();
-			return;
-		}
-
-		serverDisconnected (ish->GetServerID ());
-
-		const auto& e = Util::MakeNotification ("Azoth",
-				errorString,
-				Priority::Critical);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-
-		const auto& serverOpts = ish->GetServerOptions ();
-
-		const auto& activeChannels = Util::Map (ish->GetChannelHandlers (),
-				&ChannelHandler::GetChannelOptions);
-
-		JoinServer (serverOpts);
-		for (const auto& co : activeChannels)
-			JoinChannel (serverOpts, co);
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)

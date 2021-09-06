@@ -9,10 +9,11 @@
 #include "ircserverhandler.h"
 #include <QTextCodec>
 #include <QTimer>
-#include <QMessageBox>
-#include <QInputDialog>
 #include <util/util.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "servercommandmessage.h"
@@ -928,6 +929,9 @@ namespace Acetamide
 					emit connected (ServerID_);
 					ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 					IrcParser_->AuthCommand ();
+
+					for (const auto& handler : GetChannelHandlers ())
+						JoinChannel (handler->GetChannelOptions ());
 				});
 		connect (Socket_.get (),
 				&IrcServerSocket::disconnected,
@@ -941,9 +945,29 @@ namespace Acetamide
 				});
 
 		connect (Socket_.get (),
-				&IrcServerSocket::socketError,
+				&IrcServerSocket::retriableSocketError,
 				this,
-				&IrcServerHandler::handleSocketError);
+				[this] (QAbstractSocket::SocketError, const QString& errorString)
+				{
+					ServerCLEntry_->SetStatus (EntryStatus (SError, errorString));
+
+					const auto& e = Util::MakeNotification ("Azoth",
+							errorString,
+							Priority::Warning);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
+		connect (Socket_.get (),
+				&IrcServerSocket::finalSocketError,
+				this,
+				[this] (QAbstractSocket::SocketError, const QString& errorString)
+				{
+					ServerCLEntry_->SetStatus (EntryStatus (SError, errorString));
+
+					const auto& e = Util::MakeNotification ("Azoth",
+							errorString,
+							Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 		connect (Socket_.get (),
 				&IrcServerSocket::sslErrors,
 				Account_,
@@ -1213,25 +1237,6 @@ namespace Acetamide
 			IrcParser_->WhoCommand ({ channelName });
 			SpyWho_ [channelName] = ChannelsManager_->GetChannelUsersCount (channelName) + 1;
 		}
-	}
-
-	void IrcServerHandler::handleSocketError (QAbstractSocket::SocketError error)
-	{
-		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
-		if (!socket)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "is not an object of TcpSocket"
-					<< sender ();
-			return;
-		}
-
-		qDebug () << "Socket error on server:"
-				<< ServerID_
-				<< error
-				<< socket->errorString ();
-
-		emit gotSocketError (error, socket->errorString ());
 	}
 
 	void IrcServerHandler::showChannels (const QStringList&)
