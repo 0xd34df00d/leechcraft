@@ -47,18 +47,10 @@ namespace LC::Util
 		Util::DBLock::Execute (query);
 	}
 
-	namespace
-	{
-		uintptr_t Thread2Num (QThread *thread)
-		{
-			return thread - static_cast<QThread*> (nullptr);
-		}
-	}
-
 	QString GenConnectionName (const QString& base)
 	{
 		return (base + ".%1_%2")
 				.arg (qrand ())
-				.arg (Thread2Num (QThread::currentThread ()));
+				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()));
 	}
 }
