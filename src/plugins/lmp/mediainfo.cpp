@@ -13,42 +13,6 @@ namespace LC
 {
 namespace LMP
 {
-	MediaInfo::MediaInfo (const QString& localPath,
-			const QString& artist, const QString& album, const QString& title,
-			const QStringList& genres,
-			qint32 length, qint32 year, qint32 trackNumber)
-	: LocalPath_ { localPath }
-	, Artist_ { artist }
-	, Album_ { album }
-	, Title_ { title }
-	, Genres_ { genres }
-	, Length_ { length }
-	, Year_ { year }
-	, TrackNumber_ { trackNumber }
-	{
-	}
-
-	MediaInfo& MediaInfo::operator= (const Media::AudioInfo& info)
-	{
-		Artist_ = info.Artist_;
-		Album_ = info.Album_;
-		Title_ = info.Title_;
-		Genres_ = info.Genres_;
-		Length_ = info.Length_;
-		Year_ = info.Year_;
-		TrackNumber_ = info.TrackNumber_;
-		Additional_ = info.Other_;
-
-		if (Additional_.contains ("URL"))
-		{
-			const auto& url = Additional_.take ("URL").toUrl ();
-			if (url.isLocalFile ())
-				LocalPath_ = url.toLocalFile ();
-		}
-
-		return *this;
-	}
-
 	bool MediaInfo::IsUseless () const
 	{
 		return (Artist_ + Album_ + Title_).trimmed ().isEmpty ();
@@ -73,9 +37,26 @@ namespace LMP
 
 	MediaInfo MediaInfo::FromAudioInfo (const Media::AudioInfo& info)
 	{
-		MediaInfo result;
-		result = info;
-		return result;
+		MediaInfo mi
+		{
+			.Artist_ = info.Artist_,
+			.Album_ = info.Album_,
+			.Title_ = info.Title_,
+			.Genres_ = info.Genres_,
+			.Length_ = info.Length_,
+			.Year_ = info.Year_,
+			.TrackNumber_ = info.TrackNumber_,
+			.Additional_ = info.Other_,
+		};
+
+		if (mi.Additional_.contains ("URL"))
+		{
+			const auto& url = mi.Additional_.take ("URL").toUrl ();
+			if (url.isLocalFile ())
+				mi.LocalPath_ = url.toLocalFile ();
+		}
+
+		return mi;
 	}
 
 	QDataStream& operator<< (QDataStream& out, const MediaInfo& info)

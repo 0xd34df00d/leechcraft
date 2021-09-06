@@ -18,29 +18,19 @@ namespace LMP
 {
 	struct MediaInfo
 	{
-		QString LocalPath_;
+		QString LocalPath_ = {};
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		QString Artist_ = {};
+		QString Album_ = {};
+		QString Title_ = {};
 
-		QStringList Genres_;
+		QStringList Genres_ = {};
 
 		qint32 Length_ = 0;
 		qint32 Year_ = 0;
 		qint32 TrackNumber_ = 0;
 
-		QVariantMap Additional_;
-
-		MediaInfo () = default;
-		MediaInfo (const MediaInfo&) = default;
-
-		MediaInfo (const QString& localPath,
-				const QString& artist, const QString& album, const QString& title,
-				const QStringList& genres,
-				qint32 length, qint32 year, qint32 trackNumber);
-
-		MediaInfo& operator= (const Media::AudioInfo&);
+		QVariantMap Additional_ = {};
 
 		bool IsUseless () const;
 

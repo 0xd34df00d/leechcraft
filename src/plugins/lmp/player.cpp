@@ -1550,7 +1550,7 @@ namespace LMP
 
 	void Player::handleRadioStream (const QUrl& url, const Media::AudioInfo& info)
 	{
-		Url2Info_ [url] = info;
+		Url2Info_ [url] = MediaInfo::FromAudioInfo (info);
 		Source_->SetCurrentSource (url);
 
 		qDebug () << Q_FUNC_INFO << static_cast<int> (Source_->GetState ());
@@ -1591,7 +1591,7 @@ namespace LMP
 				continue;
 			}
 
-			Url2Info_ [url] = info;
+			Url2Info_ [url] = MediaInfo::FromAudioInfo (info);
 			sources << url;
 		}
 
