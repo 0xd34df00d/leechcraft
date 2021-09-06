@@ -218,7 +218,10 @@ namespace Acetamide
 
 	void ClientConnection::DisconnectFromAll ()
 	{
-		for (auto ish : ServerHandlers_)
+		// we need to make a copy here since `SendQuit()` might cause the handler
+		// to be removed synchronously
+		const auto& values = ServerHandlers_.values ();
+		for (auto ish : values)
 			ish->SendQuit ();
 	}
 
