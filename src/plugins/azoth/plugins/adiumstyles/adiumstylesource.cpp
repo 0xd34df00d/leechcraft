@@ -655,7 +655,7 @@ namespace AdiumStyles
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
-			body = msg->GetEscapedBody ();
+			body = Proxy_->GetFormatterProxy ().EscapeBody (msg->GetBody (), msg->GetEscapePolicy ());
 
 		if (body.startsWith ("/me "))
 			body = QString ("* %1 %2")

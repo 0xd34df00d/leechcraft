@@ -168,7 +168,7 @@ namespace LC::Azoth::StandardStyles
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
-			body = msg->GetEscapedBody ();
+			body = Proxy_->GetFormatterProxy ().EscapeBody (msg->GetBody (), msg->GetEscapePolicy ());
 
 		body = formatter.FormatBody (body, msg->GetQObject (), colors);
 

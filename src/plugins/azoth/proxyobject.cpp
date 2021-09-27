@@ -13,6 +13,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include <util/sys/sysinfo.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
@@ -53,6 +54,22 @@ namespace Azoth
 	QString FormatterProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
 	{
 		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
+	}
+
+	QString FormatterProxyObject::EscapeBody (QString body, IMessage::EscapePolicy escape) const
+	{
+		switch (escape)
+		{
+		case IMessage::EscapePolicy::NoEscape:
+			return body;
+		case IMessage::EscapePolicy::Escape:
+			return body
+					.replace ('&', "&amp;"_ql)
+					.replace ('"', "&quot;"_ql)
+					.replace ('<', "&lt;"_ql)
+					.replace ('>', "&gt;"_ql)
+					;
+		}
 	}
 
 	QString FormatterProxyObject::FormatBody (QString body, QObject *obj, const QList<QColor>& coloring) const

@@ -162,6 +162,8 @@ namespace Azoth
 		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		const auto parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
+		const auto& getBody = [msg] { return FormatterProxyObject {}.EscapeBody (msg->GetBody (), msg->GetEscapePolicy ()); };
+
 		QString msgString;
 		bool isHighlightMsg = false;
 		switch (msg->GetMessageType ())
@@ -175,7 +177,7 @@ namespace Azoth
 							.arg (other->GetEntryName ());
 				else
 				{
-					const auto& body = msg->GetEscapedBody ();
+					const auto& body = getBody ();
 					const auto& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
@@ -197,7 +199,7 @@ namespace Azoth
 							.arg (other->GetEntryName ());
 				else
 				{
-					const auto& body = msg->GetEscapedBody ();
+					const auto& body = getBody ();
 					const auto& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
@@ -251,7 +253,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
 
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg->GetEscapedBody ();
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = getBody ();
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open chat"),

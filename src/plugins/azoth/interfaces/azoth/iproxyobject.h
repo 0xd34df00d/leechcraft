@@ -84,6 +84,8 @@ namespace Azoth
 		 */
 		virtual QString FormatNickname (QString nick, QObject *message, const QString& color) const = 0;
 
+		virtual QString EscapeBody (QString body, IMessage::EscapePolicy) const = 0;
+
 		/** @brief Formats the body for the given message.
 		 *
 		 * This function should be used to format the body of the given
