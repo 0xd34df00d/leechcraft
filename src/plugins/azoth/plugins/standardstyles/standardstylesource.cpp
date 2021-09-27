@@ -110,6 +110,9 @@ namespace LC::Azoth::StandardStyles
 		QString WrapNickPart (const QString& part,
 				const QString& color, IMessage::Type type)
 		{
+			if (part.isEmpty ())
+				return {};
+
 			const QString& pre = type == IMessage::Type::MUCMessage ?
 					"<span class='nickname' style='color: " + color + "'>" :
 					QStringLiteral ("<span class='nickname'>");
