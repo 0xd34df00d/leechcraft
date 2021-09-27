@@ -289,7 +289,7 @@ namespace LC::Azoth::StandardStyles
 
 		string.prepend (QStringLiteral ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2' class='deliveryStatusIcon' />")
 				.arg (GetStatusImage (statusIconName), msgId));
-		string.append (body);
+		string.append (body.replace ('"', R"(\")"_ql));
 
 		QString js;
 		if (msg->GetMessageType () == IMessage::Type::ChatMessage ||
