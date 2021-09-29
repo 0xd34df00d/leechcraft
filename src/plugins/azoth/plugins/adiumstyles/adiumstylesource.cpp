@@ -653,7 +653,7 @@ namespace AdiumStyles
 		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
 		QString body;
 		if (richMsg && info.UseRichTextBody_)
-			body = richMsg->GetRichBody ();
+			body = richMsg->GetRichBody ().replace ('\n', ' ');
 		if (body.isEmpty ())
 			body = Proxy_->GetFormatterProxy ().EscapeBody (msg->GetBody (), msg->GetEscapePolicy ());
 
