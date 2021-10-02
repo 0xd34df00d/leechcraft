@@ -139,14 +139,23 @@ namespace Util
 		}
 	}
 
+	// NOTE
+	// The noexcept specifier here is somewhat misleading:
+	// this function indeed _might_ throw if the underlying container throws
+	// when appending an element, for any reason,
+	// (be it a copy/move ctor throwing or failure to allocate memory).
+	// Due to how LC is written and intended to be used,
+	// such exceptions are not and should not be handled,
+	// so they are fatal anyway.
+	// Thus we're totally fine with std::unexpected() and the likes.
 	template<typename Container, typename F>
-	auto Map (Container&& c, F f)
+	auto Map (Container&& c, F&& f) noexcept (noexcept (std::is_nothrow_invocable_v<F, decltype (*c.begin ())>))
 	{
 		return detail::MapImpl<QList, false> (std::forward<Container> (c), std::forward<F> (f));
 	}
 
 	template<template<typename...> class Fallback, typename Container, typename F>
-	auto MapAs (Container&& c, F&& f)
+	auto MapAs (Container&& c, F&& f) noexcept (noexcept (std::is_nothrow_invocable_v<F, decltype (*c.begin ())>))
 	{
 		return detail::MapImpl<Fallback, true> (std::forward<Container> (c), std::forward<F> (f));
 	}
