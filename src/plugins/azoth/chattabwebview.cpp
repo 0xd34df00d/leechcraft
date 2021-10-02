@@ -53,6 +53,7 @@ namespace LC::Azoth
 	void ChatTabWebView::InitializePage (QWebEngineProfile *profile)
 	{
 		setPage (new ChatTabWebPage { profile, this });
+		page ()->setBackgroundColor (palette ().color (QPalette::Window));
 	}
 
 	void ChatTabWebView::SetQuoteAction (QAction *act)
