@@ -26,7 +26,7 @@ namespace Acetamide
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_acetamide"));
+		Util::InstallTranslator (QStringLiteral ("azoth_acetamide"));
 
 		qsrand (time (NULL));
 
@@ -34,9 +34,9 @@ namespace Acetamide
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-					"azothacetamidesettings.xml");
+					QStringLiteral ("azothacetamidesettings.xml"));
 
-		SettingsDialog_->SetCustomWidget ("NickServIdentifyWidget",
+		SettingsDialog_->SetCustomWidget (QStringLiteral ("NickServIdentifyWidget"),
 				Core::Instance ().GetNickServIdentifyWidget ());
 	}
 
@@ -57,7 +57,7 @@ namespace Acetamide
 
 	QString Plugin::GetName () const
 	{
-		return "Azoth Acetamide";
+		return QStringLiteral ("Azoth Acetamide");
 	}
 
 	QString Plugin::GetInfo () const

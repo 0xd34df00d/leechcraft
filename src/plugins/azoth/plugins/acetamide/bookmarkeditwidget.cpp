@@ -25,18 +25,35 @@ namespace Acetamide
 		Ui_.Encoding_->model ()->sort (0);
 	}
 
+	namespace
+	{
+#define DEFINE_LIT(a) const auto a = QStringLiteral (#a);
+
+		DEFINE_LIT (HumanReadableName)
+		DEFINE_LIT (StoredName)
+		DEFINE_LIT (Server)
+		DEFINE_LIT (Port)
+		DEFINE_LIT (ServerPassword)
+		DEFINE_LIT (Encoding)
+		DEFINE_LIT (Channel)
+		DEFINE_LIT (Password)
+		DEFINE_LIT (Nickname)
+		DEFINE_LIT (SSL)
+		DEFINE_LIT (Autojoin)
+	}
+
 	QVariantMap BookmarkEditWidget::GetIdentifyingData () const
 	{
 		QVariantMap result;
-		result ["HumanReadableName"] = QString ("%1@%2 (%3)")
-			.arg (Ui_.Channel_->text ())
-			.arg (Ui_.Server_->text ())
-			.arg (Ui_.Nickname_->text ());
-		result ["StoredName"] = Ui_.Name_->text ();
-		result ["Server"] = Ui_.Server_->text ();
-		result ["Port"] = Ui_.Port_->value ();
-		result ["ServerPassword"] = Ui_.ServerPassword_->text ();
-		result ["Encoding"] = Ui_.Encoding_->currentText ();
+		result [HumanReadableName] = QStringLiteral ("%1@%2 (%3)")
+			.arg (Ui_.Channel_->text (),
+				  Ui_.Server_->text (),
+				  Ui_.Nickname_->text ());
+		result [StoredName] = Ui_.Name_->text ();
+		result [Server] = Ui_.Server_->text ();
+		result [Port] = Ui_.Port_->value ();
+		result [ServerPassword] = Ui_.ServerPassword_->text ();
+		result [Encoding] = Ui_.Encoding_->currentText ();
 
 		QString channel = Ui_.Channel_->text ();
 		if (!channel.startsWith ('#') &&
@@ -44,29 +61,28 @@ namespace Acetamide
 				!channel.startsWith ('+') &&
 				!channel.startsWith ('!'))
 			channel.prepend ('#');
-		result ["Channel"] = channel;
+		result [Channel] = channel;
 
-		result ["Password"] = Ui_.Password_->text ();
-		result ["Nickname"] = Ui_.Nickname_->text ();
-		result ["SSL"] = Ui_.SSL_->checkState () == Qt::Checked;
-		result ["Autojoin"] = Ui_.AutoJoin_->checkState () == Qt::Checked;
+		result [Password] = Ui_.Password_->text ();
+		result [Nickname] = Ui_.Nickname_->text ();
+		result [SSL] = Ui_.SSL_->checkState () == Qt::Checked;
+		result [Autojoin] = Ui_.AutoJoin_->checkState () == Qt::Checked;
 		return result;
 	}
 
 	void BookmarkEditWidget::SetIdentifyingData (const QVariantMap& map)
 	{
-		Ui_.HumanReadable_->setText (map ["HumanReadableName"].toString ());
-		Ui_.Name_->setText (map ["StoredName"].toString ());
-		Ui_.Server_->setText (map ["Server"].toString ());
-		Ui_.Port_->setValue (map ["Port"].toInt ());
-		Ui_.ServerPassword_->setText (map ["ServerPassword"].toString ());
-		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->
-		findText (map ["Encoding"].toString ()));
-		Ui_.Channel_->setText (map ["Channel"].toString ());
-		Ui_.Password_->setText (map ["Password"].toString ());
-		Ui_.Nickname_->setText (map ["Nickname"].toString ());
-		Ui_.SSL_->setCheckState (map ["SSL"].toBool () ? Qt::Checked : Qt::Unchecked);
-		Ui_.AutoJoin_->setCheckState (map ["Autojoin"].toBool () ? Qt::Checked : Qt::Unchecked);
+		Ui_.HumanReadable_->setText (map [HumanReadableName].toString ());
+		Ui_.Name_->setText (map [StoredName].toString ());
+		Ui_.Server_->setText (map [Server].toString ());
+		Ui_.Port_->setValue (map [Port].toInt ());
+		Ui_.ServerPassword_->setText (map [ServerPassword].toString ());
+		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (map [Encoding].toString ()));
+		Ui_.Channel_->setText (map [Channel].toString ());
+		Ui_.Password_->setText (map [Password].toString ());
+		Ui_.Nickname_->setText (map [Nickname].toString ());
+		Ui_.SSL_->setCheckState (map [SSL].toBool () ? Qt::Checked : Qt::Unchecked);
+		Ui_.AutoJoin_->setCheckState (map [Autojoin].toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 }
 }
