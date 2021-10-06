@@ -183,13 +183,16 @@ namespace Azoth
 	}
 
 	ProxyObject::ProxyObject (IAvatarsManager *am, QObject* parent)
-	: QObject (parent)
-	, AvatarsManager_ (am)
+	: QObject { parent }
+	, SerializedStr2AuthStatus_
+		{
+			{ "None", ASNone },
+			{ "To", ASTo },
+			{ "From", ASFrom },
+			{ "Both", ASBoth },
+		}
+	, AvatarsManager_ { am }
 	{
-		SerializedStr2AuthStatus_ ["None"] = ASNone;
-		SerializedStr2AuthStatus_ ["To"] = ASTo;
-		SerializedStr2AuthStatus_ ["From"] = ASFrom;
-		SerializedStr2AuthStatus_ ["Both"] = ASBoth;
 	}
 
 	QObject* ProxyObject::GetSettingsManager ()
@@ -226,7 +229,7 @@ namespace Azoth
 		return Azoth::StateToString (st);
 	}
 
-	QString ProxyObject::AuthStatusToString (AuthStatus status) const
+	QByteArray ProxyObject::AuthStatusToString (AuthStatus status) const
 	{
 		switch (status)
 		{
@@ -248,9 +251,9 @@ namespace Azoth
 		}
 	}
 
-	AuthStatus ProxyObject::AuthStatusFromString (const QString& str) const
+	AuthStatus ProxyObject::AuthStatusFromString (const QByteArray& str) const
 	{
-		return SerializedStr2AuthStatus_.value (str, ASNone);;
+		return SerializedStr2AuthStatus_.value (str, ASNone);
 	}
 
 	QObject* ProxyObject::GetAccount (const QString& accID) const

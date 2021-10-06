@@ -43,7 +43,7 @@ namespace Azoth
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IProxyObject)
 
-		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
+		const QHash<QByteArray, AuthStatus> SerializedStr2AuthStatus_;
 
 		FormatterProxyObject Formatter_;
 		IAvatarsManager * const AvatarsManager_;
@@ -55,8 +55,8 @@ namespace Azoth
 		QString GetAccountPassword (QObject*, bool) override;
 		bool IsAutojoinAllowed () override;
 		QString StateToString (State) const override;
-		QString AuthStatusToString (AuthStatus) const override;
-		AuthStatus AuthStatusFromString (const QString&) const override;
+		QByteArray AuthStatusToString (AuthStatus) const override;
+		AuthStatus AuthStatusFromString (const QByteArray&) const override;
 		QObject* GetAccount (const QString&) const override;
 		QList<QObject*> GetAllAccounts () const override;
 		QObject* GetEntry (const QString&, const QString&) const override;

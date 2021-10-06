@@ -73,7 +73,7 @@ namespace Xoox
 		ods->ID_ = entryID;
 		ods->Groups_ = groups;
 
-		const auto& authStatusText = entry.firstChildElement ("authstatus").text ();
+		const auto& authStatusText = entry.firstChildElement ("authstatus").text ().toUtf8 ();
 		ods->AuthStatus_ = proxy->AuthStatusFromString (authStatusText);
 
 		LoadVCard (entry.firstChildElement ("vcard"), entryID,
