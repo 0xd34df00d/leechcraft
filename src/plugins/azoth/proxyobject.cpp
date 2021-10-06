@@ -68,7 +68,6 @@ namespace Azoth
 					.replace ('"', "&quot;"_ql)
 					.replace ('<', "&lt;"_ql)
 					.replace ('>', "&gt;"_ql)
-					.replace (R"(\n)"_ql, "<br/>"_ql)
 					.replace ('\\', R"(\\)"_ql)
 					;
 		}
