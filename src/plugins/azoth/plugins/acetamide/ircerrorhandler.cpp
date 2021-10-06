@@ -15,11 +15,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include "ircserverhandler.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	IrcErrorHandler::IrcErrorHandler (QObject *parent)
 	: QObject (parent)
@@ -119,6 +115,4 @@ namespace Acetamide
 				Points<491, 501, 502>
 			> {} (ErrorKeys_);
 	}
-}
-}
 }

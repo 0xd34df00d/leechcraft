@@ -10,6 +10,8 @@
 #include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
+
+#include <utility>
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
 #include "ircmessage.h"
@@ -17,46 +19,40 @@
 #include "channelconfigwidget.h"
 #include "channelsmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
-	: ICH_ (handler)
-	, IsWidgetRequest_ (false)
+	: ICH_ { handler }
+	, Perms_
+		{
+			{ "permclass_managment", { "kick", "ban_by_name", "ban_by_user_and_domain", "ban_by_domain", "kick_and_ban" } },
+			{ "permclass_role", { "participant" } },
+		}
+	, Managment2Str_
+		{
+			{ ChannelManagment::Kick, "kick" },
+			{ ChannelManagment::BanByName, "ban_by_name" },
+			{ ChannelManagment::BanByDomain, "ban_by_user_and_domain" },
+			{ ChannelManagment::BanByUserAndDomain, "ban_by_domain" },
+			{ ChannelManagment::KickAndBan, "kick_and_ban" },
+		}
+	, Translations_
+		{
+			{ "permclass_role", tr ("Role") },
+			{ "participant", tr ("Participant") },
+			{ "permclass_managment", tr ("Kick and Ban") },
+			{ "kick", tr ("Kick") },
+			{ "ban_by_name", tr ("Ban by nickname") },
+			{ "ban_by_domain", tr ("Ban by mask (*!*@domain)") },
+			{ "ban_by_user_and_domain", tr ("Ban by mask (*!user@domain)") },
+			{ "kick_and_ban", tr ("Kick and ban") },
+		}
 	{
-		Perms_ ["permclass_managment"] << "kick";
-		Perms_ ["permclass_managment"] << "ban_by_name";
-		Perms_ ["permclass_managment"] << "ban_by_user_and_domain";
-		Perms_ ["permclass_managment"] << "ban_by_domain";
-		Perms_ ["permclass_managment"] << "kick_and_ban";
-
-		Perms_ ["permclass_role"] << "participant";
-
 		Role2Str_ [ChannelRole::Participant] = "participant";
-
 		Aff2Str_ [ChannelRole::Participant] = "noaffiliation";
 
-		Managment2Str_ [ChannelManagment::Kick] = "kick";
-		Managment2Str_ [ChannelManagment::BanByName] = "ban_by_name";
-		Managment2Str_ [ChannelManagment::BanByDomain] = "ban_by_user_and_domain";
-		Managment2Str_ [ChannelManagment::BanByUserAndDomain] = "ban_by_domain";
-		Managment2Str_ [ChannelManagment::KickAndBan] = "kick_and_ban";
-
-		Translations_ ["permclass_role"] = tr ("Role");
-		Translations_ ["participant"] = tr ("Participant");
-
-		Translations_ ["permclass_managment"] = tr ("Kick and Ban");
-		Translations_ ["kick"] = tr ("Kick");
-		Translations_ ["ban_by_name"] = tr ("Ban by nickname");
-		Translations_ ["ban_by_domain"] = tr ("Ban by mask (*!*@domain)");
-		Translations_ ["ban_by_user_and_domain"] = tr ("Ban by mask (*!user@domain)");
-		Translations_ ["kick_and_ban"] = tr ("Kick and ban");
-
 		const auto& iSupport = ICH_->GetChannelsManager ()->GetISupport ();
-		QString roles = iSupport ["PREFIX"].split (')').value (0);
+		QString roles = iSupport [QStringLiteral ("PREFIX")].split (')').value (0);
 		for (int i = roles.length () - 1; i >= 1; --i)
 			switch (roles.at (i).toLatin1 ())
 			{
@@ -142,7 +138,7 @@ namespace Acetamide
 
 	QStringList ChannelCLEntry::Groups () const
 	{
-		return QStringList () << tr ("Channels");
+		return { tr ("Channels") };
 	}
 
 	void ChannelCLEntry::SetGroups (const QStringList&)
@@ -181,12 +177,12 @@ namespace Acetamide
 
 	QList<QAction*> ChannelCLEntry::GetActions () const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	QMap<QString, QVariant> ChannelCLEntry::GetClientInfo (const QString&) const
 	{
-		return QMap<QString, QVariant> ();
+		return {};
 	}
 
 	void ChannelCLEntry::MarkMsgsRead ()
@@ -200,12 +196,12 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetRealID (QObject*) const
 	{
-		return QString ();
+		return {};
 	}
 
 	EntryStatus ChannelCLEntry::GetStatus (const QString&) const
 	{
-		return EntryStatus (SOnline, QString ());
+		return { SOnline, {} };
 	}
 
 	void ChannelCLEntry::ShowInfo ()
@@ -274,10 +270,10 @@ namespace Acetamide
 		QVariantMap result;
 		const auto& channelOpts = ICH_->GetChannelOptions ();
 		const auto& serverOpts = ICH_->GetChannelsManager ()->GetServerOptions ();
-		result ["HumanReadableName"] = QString ("%1 on %2@%3:%4")
-				.arg (GetNick ())
-				.arg (channelOpts.ChannelName_)
-				.arg (channelOpts.ServerName_)
+		result [QStringLiteral ("HumanReadableName")] = QStringLiteral ("%1 on %2@%3:%4")
+				.arg (GetNick (),
+					  channelOpts.ChannelName_,
+					  channelOpts.ServerName_)
 				.arg (serverOpts.ServerPort_);
 		result ["AccountID"] = ICH_->GetChannelsManager ()->
 				GetAccount ()->GetAccountID ();
@@ -313,7 +309,7 @@ namespace Acetamide
 
 	QByteArray ChannelCLEntry::GetAffName (QObject *participant) const
 	{
-		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -348,12 +344,12 @@ namespace Acetamide
 
 	QPair<QByteArray, QByteArray> ChannelCLEntry::GetKickPerm () const
 	{
-		return QPair<QByteArray, QByteArray> ();
+		return {};
 	}
 
 	QPair<QByteArray, QByteArray> ChannelCLEntry::GetBanPerm () const
 	{
-		return QPair<QByteArray, QByteArray> ();
+		return {};
 	}
 
 	void ChannelCLEntry::SetPerm (QObject *participant,
@@ -395,8 +391,8 @@ namespace Acetamide
 
 	bool ChannelCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
 	{
-		ChannelParticipantEntry *e1 = qobject_cast<ChannelParticipantEntry*> (p1);
-		ChannelParticipantEntry *e2 = qobject_cast<ChannelParticipantEntry*> (p2);
+		const auto e1 = qobject_cast<ChannelParticipantEntry*> (p1);
+		const auto e2 = qobject_cast<ChannelParticipantEntry*> (p2);
 		if (!e1 || !e2)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -458,7 +454,7 @@ namespace Acetamide
 	bool ChannelCLEntry::MayChangePerm (QObject *participant,
 			const QByteArray& permClass, const QByteArray& perm) const
 	{
-		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -467,19 +463,17 @@ namespace Acetamide
 			return false;
 		}
 
-		const ChannelRole ourRole = ICH_->GetSelf ()->HighestRole ();
+		const auto ourRole = ICH_->GetSelf ()->HighestRole ();
 
 		if (permClass == "permclass_role")
 			return MayChange (ourRole, entry, Role2Str_.key (perm));
-		else if (permClass == "permclass_managment")
+		if (permClass == "permclass_managment")
 			return MayManage (ourRole, entry, ICH_->GetSelf ()->GetEntryName ());
-		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown perm class"
-					<< permClass;
-			return false;
-		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown perm class"
+				<< permClass;
+		return false;
 	}
 
 	bool ChannelCLEntry::IsMultiPerm (const QByteArray&) const
@@ -499,7 +493,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::AcceptConfiguration (QWidget *widget)
 	{
-		ChannelConfigWidget *cfg = qobject_cast<ChannelConfigWidget*> (widget);
+		const auto cfg = qobject_cast<ChannelConfigWidget*> (widget);
 		if (!cfg)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -557,32 +551,32 @@ namespace Acetamide
 
 	void ChannelCLEntry::AddBanListItem (QString mask)
 	{
-		ICH_->AddBanListItem (mask);
+		ICH_->AddBanListItem (std::move (mask));
 	}
 
 	void ChannelCLEntry::RemoveBanListItem (QString mask)
 	{
-		ICH_->RemoveBanListItem (mask);
+		ICH_->RemoveBanListItem (std::move (mask));
 	}
 
 	void ChannelCLEntry::AddExceptListItem (QString mask)
 	{
-		ICH_->AddExceptListItem (mask);
+		ICH_->AddExceptListItem (std::move (mask));
 	}
 
 	void ChannelCLEntry::RemoveExceptListItem (QString mask)
 	{
-		ICH_->RemoveExceptListItem (mask);
+		ICH_->RemoveExceptListItem (std::move (mask));
 	}
 
 	void ChannelCLEntry::AddInviteListItem (QString mask)
 	{
-		ICH_->AddInviteListItem (mask);
+		ICH_->AddInviteListItem (std::move (mask));
 	}
 
 	void ChannelCLEntry::RemoveInviteListItem (QString mask)
 	{
-		ICH_->RemoveInviteListItem (mask);
+		ICH_->RemoveInviteListItem (std::move (mask));
 	}
 
 	void ChannelCLEntry::SetNewChannelModes (const ChannelModes& modes)
@@ -594,6 +588,4 @@ namespace Acetamide
 	{
 		return Role2Str_ [role];
 	}
-}
-}
 }

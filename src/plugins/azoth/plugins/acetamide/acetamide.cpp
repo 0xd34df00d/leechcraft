@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "acetamide.h"
-#include <ctime>
 #include <QIcon>
 #include <QStandardItemModel>
 #include <interfaces/core/icoreproxy.h>
@@ -18,21 +17,15 @@
 #include "xmlsettingsmanager.h"
 #include "nickservidentifywidget.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator (QStringLiteral ("azoth_acetamide"));
 
-		qsrand (time (NULL));
-
 		qRegisterMetaTypeStreamOperators<QList<QStringList>> ("QList<QStringList>");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 					QStringLiteral ("azothacetamidesettings.xml"));
 
@@ -72,9 +65,7 @@ namespace Acetamide
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-		return classes;
+		return { "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin" };
 	}
 
 	QObject* Plugin::GetQObject ()
@@ -96,8 +87,6 @@ namespace Acetamide
 	{
 		Core::Instance ().SetPluginProxy (proxy);
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_acetamide,

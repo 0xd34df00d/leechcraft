@@ -6,8 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H
+#pragma once
 
 #include <QObject>
 #include <interfaces/azoth/iclentry.h>
@@ -16,13 +15,8 @@
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "localtypes.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-
 	class ChannelHandler;
 	class ChannelPublicMessage;
 	class ChannelParticipantEntry;
@@ -40,9 +34,9 @@ namespace Acetamide
 				LC::Azoth::IMUCPerms
 				LC::Azoth::IConfigurableMUC)
 
-		ChannelHandler *ICH_;
+		ChannelHandler * const ICH_;
 		QList<IMessage*> AllMessages_;
-		bool IsWidgetRequest_;
+		bool IsWidgetRequest_ = false;
 
 		QMap<QByteArray, QList<QByteArray>> Perms_;
 		QMap<ChannelRole, QByteArray> Role2Str_;
@@ -50,73 +44,72 @@ namespace Acetamide
 		QMap<ChannelManagment, QByteArray> Managment2Str_;
 		QMap<QByteArray, QString> Translations_;
 	public:
-		ChannelCLEntry (ChannelHandler*);
+		explicit ChannelCLEntry (ChannelHandler*);
+
 		ChannelHandler* GetChannelHandler () const;
 
-		QObject* GetQObject ();
-		IAccount* GetParentAccount () const;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&);
-		QList<IMessage*> GetAllMessages () const;
-		void PurgeMessages (const QDateTime&);
-		void SetChatPartState (ChatPartState, const QString&);
-		QList<QAction*> GetActions () const;
-		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-		void MarkMsgsRead ();
-		void ChatTabClosed ();
+		QObject* GetQObject () override;
+		IAccount* GetParentAccount () const override;
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString&) override;
+		QString GetEntryID () const override;
+		QString GetHumanReadableID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList&) override;
+		QStringList Variants () const override;
+		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&) override;
+		QList<IMessage*> GetAllMessages () const override;
+		void PurgeMessages (const QDateTime&) override;
+		void SetChatPartState (ChatPartState, const QString&) override;
+		QList<QAction*> GetActions () const override;
+		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
+		void MarkMsgsRead () override;
+		void ChatTabClosed () override;
 
-		QString GetRealID (QObject*) const;
+		QString GetRealID (QObject*) const override;
 
-		EntryStatus GetStatus (const QString& variant = QString ()) const;
-		void ShowInfo ();
+		EntryStatus GetStatus (const QString& variant = QString ()) const override;
+		void ShowInfo () override;
 
 		// IMUCEntry
-		MUCFeatures GetMUCFeatures () const;
-		QString GetMUCSubject () const;
-		bool CanChangeSubject () const;
-		void SetMUCSubject (const QString&);
-		QList<QObject*> GetParticipants ();
-		bool IsAutojoined () const;
-		void Join ();
-		void Leave (const QString&);
-		QString GetNick () const;
-		void SetNick (const QString&);
-		QString GetGroupName () const;
-		QVariantMap GetIdentifyingData () const;
-		void InviteToMUC (const QString&, const QString&);
+		MUCFeatures GetMUCFeatures () const override;
+		QString GetMUCSubject () const override;
+		bool CanChangeSubject () const override;
+		void SetMUCSubject (const QString&) override;
+		QList<QObject*> GetParticipants () override;
+		bool IsAutojoined () const override;
+		void Join () override;
+		void Leave (const QString&) override;
+		QString GetNick () const override;
+		void SetNick (const QString&) override;
+		QString GetGroupName () const override;
+		QVariantMap GetIdentifyingData () const override;
+		void InviteToMUC (const QString&, const QString&) override;
 
 		void HandleMessage (ChannelPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);
 
 		// IMUCPerms
-		QByteArray GetAffName (QObject*) const;
-		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject*) const;
-		QPair<QByteArray, QByteArray> GetKickPerm () const;
-		QPair<QByteArray, QByteArray> GetBanPerm () const;
-		void SetPerm (QObject*, const QByteArray&, const QByteArray&,
-					  const QString&);
-		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;
-		QString GetUserString (const QByteArray&) const;
-		bool IsLessByPerm (QObject*, QObject*) const;
-		bool MayChangePerm (QObject*, const QByteArray&,
-							const QByteArray&) const;
-		bool IsMultiPerm (const QByteArray&) const;
+		QByteArray GetAffName (QObject*) const override;
+		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject*) const override;
+		QPair<QByteArray, QByteArray> GetKickPerm () const override;
+		QPair<QByteArray, QByteArray> GetBanPerm () const override;
+		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&) override;
+		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const override;
+		QString GetUserString (const QByteArray&) const override;
+		bool IsLessByPerm (QObject*, QObject*) const override;
+		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const override;
+		bool IsMultiPerm (const QByteArray&) const override;
 
 		ChannelModes GetChannelModes () const;
 
 		// IConfigurableMUC
-		QWidget* GetConfigurationWidget ();
-		void AcceptConfiguration (QWidget*);
+		QWidget* GetConfigurationWidget () override;
+		void AcceptConfiguration (QWidget*) override;
+
 		void RequestBanList ();
 		void RequestExceptList ();
 		void RequestInviteList ();
@@ -137,21 +130,21 @@ namespace Acetamide
 		void SetNewChannelModes (const ChannelModes&);
 		QString Role2String (const ChannelRole&) const;
 	signals:
-		void gotNewParticipants (const QList<QObject*>&);
-		void mucSubjectChanged (const QString&);
+		void gotNewParticipants (const QList<QObject*>&) override;
+		void mucSubjectChanged (const QString&) override;
 
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
+		void gotMessage (QObject*) override;
+		void statusChanged (const EntryStatus&, const QString&) override;
+		void availableVariantsChanged (const QStringList&) override;
+		void nameChanged (const QString&) override;
+		void groupsChanged (const QStringList&) override;
+		void chatPartStateChanged (const ChatPartState&, const QString&) override;
+		void permsChanged () override;
+		void entryGenerallyChanged () override;
 
-		void nicknameConflict (const QString&);
-		void beenKicked (const QString&);
-		void beenBanned (const QString&);
+		void nicknameConflict (const QString&) override;
+		void beenKicked (const QString&) override;
+		void beenBanned (const QString&) override;
 
 		void gotBanListItem (const QString&,
 				const QString&, const QDateTime&);
@@ -162,7 +155,3 @@ namespace Acetamide
 		void gotNewChannelModes (const ChannelModes&);
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H

@@ -10,11 +10,7 @@
 #include <QTextCodec>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	BookmarkEditWidget::BookmarkEditWidget (QWidget *parent)
 	: QWidget (parent)
@@ -44,30 +40,34 @@ namespace Acetamide
 
 	QVariantMap BookmarkEditWidget::GetIdentifyingData () const
 	{
-		QVariantMap result;
-		result [HumanReadableName] = QStringLiteral ("%1@%2 (%3)")
-			.arg (Ui_.Channel_->text (),
-				  Ui_.Server_->text (),
-				  Ui_.Nickname_->text ());
-		result [StoredName] = Ui_.Name_->text ();
-		result [Server] = Ui_.Server_->text ();
-		result [Port] = Ui_.Port_->value ();
-		result [ServerPassword] = Ui_.ServerPassword_->text ();
-		result [Encoding] = Ui_.Encoding_->currentText ();
+		const auto& name = QStringLiteral ("%1@%2 (%3)")
+				.arg (Ui_.Channel_->text (),
+					  Ui_.Server_->text (),
+					  Ui_.Nickname_->text ());
 
-		QString channel = Ui_.Channel_->text ();
+		auto channel = Ui_.Channel_->text ();
 		if (!channel.startsWith ('#') &&
 				!channel.startsWith ('&') &&
 				!channel.startsWith ('+') &&
 				!channel.startsWith ('!'))
 			channel.prepend ('#');
-		result [Channel] = channel;
 
-		result [Password] = Ui_.Password_->text ();
-		result [Nickname] = Ui_.Nickname_->text ();
-		result [SSL] = Ui_.SSL_->checkState () == Qt::Checked;
-		result [Autojoin] = Ui_.AutoJoin_->checkState () == Qt::Checked;
-		return result;
+		return
+		{
+			{ HumanReadableName, name },
+			{ StoredName, Ui_.Name_->text () },
+			{ Server, Ui_.Server_->text () },
+			{ Port, Ui_.Port_->value () },
+			{ ServerPassword, Ui_.ServerPassword_->text () },
+			{ Encoding, Ui_.Encoding_->currentText () },
+
+			{ Channel, channel },
+
+			{ Password, Ui_.Password_->text () },
+			{ Nickname, Ui_.Nickname_->text () },
+			{ SSL, Ui_.SSL_->checkState () == Qt::Checked },
+			{ Autojoin, Ui_.AutoJoin_->checkState () == Qt::Checked },
+		};
 	}
 
 	void BookmarkEditWidget::SetIdentifyingData (const QVariantMap& map)
@@ -85,6 +85,3 @@ namespace Acetamide
 		Ui_.AutoJoin_->setCheckState (map [Autojoin].toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 }
-}
-}
-

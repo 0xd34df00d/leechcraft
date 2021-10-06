@@ -6,20 +6,14 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H
-#include <memory>
-#include <QTranslator>
+#pragma once
+
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class Plugin : public QObject
 					, public IInfo
@@ -34,28 +28,23 @@ namespace Acetamide
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Acetamide")
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		std::shared_ptr<QTranslator> Translator_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QObject* GetQObject ();
-		QList<QObject*> GetProtocols () const;
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		QObject* GetQObject () override;
+		QList<QObject*> GetProtocols () const override;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	public slots:
 		void initPlugin (QObject*);
 	signals:
-		void gotNewProtocols (const QList<QObject*>&);
+		void gotNewProtocols (const QList<QObject*>&) override;
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H

@@ -6,18 +6,14 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_BOOKMARKEDITWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_BOOKMARKEDITWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <QVariant>
 #include <interfaces/azoth/imucbookmarkeditorwidget.h>
 #include "ui_bookmarkeditwidget.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class BookmarkEditWidget : public QWidget
 							 , public IMUCBookmarkEditorWidget
@@ -27,13 +23,9 @@ namespace Acetamide
 
 		Ui::BookmarkEditWidget Ui_;
 	public:
-		BookmarkEditWidget (QWidget* = 0);
+		explicit BookmarkEditWidget (QWidget* = nullptr);
 
-		QVariantMap GetIdentifyingData () const;
-		void SetIdentifyingData (const QVariantMap&);
+		QVariantMap GetIdentifyingData () const override;
+		void SetIdentifyingData (const QVariantMap&) override;
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_BOOKMARKEDITWIDGET_H

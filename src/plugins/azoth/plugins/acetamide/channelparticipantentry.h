@@ -44,7 +44,7 @@ namespace Acetamide
 				const QString&, const QString&);
 
 		QList<ChannelRole> Roles () const;
-		ChannelRole HighestRole ();
+		ChannelRole HighestRole () const;
 
 		void SetRole (const ChannelRole& role);
 		void SetRoles (const QList<ChannelRole>& roles);

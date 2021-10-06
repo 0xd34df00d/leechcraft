@@ -8,7 +8,6 @@
 
 #include "clientconnection.h"
 #include <QTextCodec>
-#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -21,19 +20,12 @@
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ClientConnection::ClientConnection (IrcAccount *account)
 	: Account_ (account)
-	, ProxyObject_ (0)
-	, IsConsoleEnabled_ (false)
 	{
-		QObject *proxyObj = qobject_cast<IrcProtocol*> (account->
-				GetParentProtocol ())->GetProxyObject ();
+		const auto proxyObj = qobject_cast<IrcProtocol*> (account->GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
@@ -321,6 +313,4 @@ namespace Acetamide
 			break;
 		}
 	}
-};
-};
-};
+}

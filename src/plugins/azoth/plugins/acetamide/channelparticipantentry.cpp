@@ -109,7 +109,7 @@ namespace Acetamide
 		return Roles_;
 	}
 
-	ChannelRole ChannelParticipantEntry::HighestRole ()
+	ChannelRole ChannelParticipantEntry::HighestRole () const
 	{
 		if (Roles_.isEmpty ())
 			return ChannelRole::Participant;

@@ -76,7 +76,7 @@ namespace Acetamide
 
 	QStringList IrcServerCLEntry::Groups () const
 	{
-		return QStringList () << tr ("Servers");
+		return { tr ("Servers") };
 	}
 
 	void IrcServerCLEntry::SetGroups (const QStringList&)
@@ -85,9 +85,7 @@ namespace Acetamide
 
 	QStringList IrcServerCLEntry::Variants () const
 	{
-		QStringList result;
-		result << "";
-		return result;
+		return { "" };
 	}
 
 	IMessage* IrcServerCLEntry::CreateMessage (IMessage::Type,
@@ -120,7 +118,7 @@ namespace Acetamide
 
 	QList<QObject*> IrcServerCLEntry::GetParticipants ()
 	{
-		return QList<QObject*> ();
+		return {};
 	}
 
 	bool IrcServerCLEntry::IsAutojoined () const

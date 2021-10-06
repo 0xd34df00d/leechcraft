@@ -6,8 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
+#pragma once
 
 #include <QObject>
 #include <QHash>
@@ -15,19 +14,13 @@
 #include "core.h"
 #include "ircaccount.h"
 
-namespace LC
+namespace LC::Azoth
 {
+	class IProxyObject;
+}
 
-struct Entity;
-
-namespace Azoth
+namespace LC::Azoth::Acetamide
 {
-
-class IProxyObject;
-
-namespace Acetamide
-{
-
 	class ChannelCLEntry;
 	class IrcServerHandler;
 	class IrcServerCLEntry;
@@ -36,14 +29,13 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		QString ChID_;
 		IrcAccount *Account_;
-		IProxyObject *ProxyObject_;
+		IProxyObject *ProxyObject_ = nullptr;
 		QHash<QString, IrcServerHandler*> ServerHandlers_;
-		bool IsConsoleEnabled_;
+		bool IsConsoleEnabled_ = false;
 	public:
-		ClientConnection (IrcAccount*);
-		~ClientConnection ();
+		explicit ClientConnection (IrcAccount*);
+		~ClientConnection () override;
 
 		IrcAccount* GetAccount () const;
 		QList<IrcServerHandler*> GetServerHandlers () const;
@@ -82,7 +74,4 @@ namespace Acetamide
 		void gotCLItems (const QList<QObject*>&);
 		void gotConsoleLog (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
+}
