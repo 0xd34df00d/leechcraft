@@ -223,7 +223,7 @@ namespace Acetamide
 	{
 		if (Ui_.ExceptHostMask_->text ().isEmpty ())
 			return;
-		ChannelEntry_->AddExceptListItem (Ui_.BanHostMask_->text ());
+		ChannelEntry_->AddExceptListItem (Ui_.ExceptHostMask_->text ());
 	}
 
 	void ChannelConfigWidget::on_RemoveExcept__clicked ()
@@ -231,7 +231,7 @@ namespace Acetamide
 		const QModelIndex currentIndex = Ui_.ExceptList_->currentIndex ();
 		if (!currentIndex.isValid ())
 			return;
-		ChannelEntry_->RemoveExceptListItem (Ui_.BanHostMask_->text ());
+		ChannelEntry_->RemoveExceptListItem (Ui_.ExceptHostMask_->text ());
 	}
 
 	void ChannelConfigWidget::on_UpdateInvite__clicked ()
@@ -246,7 +246,7 @@ namespace Acetamide
 	{
 		if (Ui_.InviteHostMask_->text ().isEmpty ())
 			return;
-		ChannelEntry_->AddInviteListItem (Ui_.BanHostMask_->text ());
+		ChannelEntry_->AddInviteListItem (Ui_.InviteHostMask_->text ());
 	}
 
 	void ChannelConfigWidget::on_RemoveInvite__clicked ()
@@ -254,7 +254,7 @@ namespace Acetamide
 		const QModelIndex currentIndex = Ui_.InviteList_->currentIndex ();
 		if (!currentIndex.isValid ())
 			return;
-		ChannelEntry_->RemoveInviteListItem (Ui_.BanHostMask_->text ());
+		ChannelEntry_->RemoveInviteListItem (Ui_.InviteHostMask_->text ());
 	}
 
 	void ChannelConfigWidget::handleNewChannelModes (const ChannelModes& modes)
