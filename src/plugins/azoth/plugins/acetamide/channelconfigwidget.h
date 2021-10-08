@@ -43,16 +43,13 @@ namespace Acetamide
 		SortFilterProxyModel *BanFilterModel_;
 		SortFilterProxyModel *ExceptFilterModel_;
 		SortFilterProxyModel *InviteFilterModel_;
-		bool IsWidgetRequest_;
+		bool IsWidgetRequest_ = false;
 	public:
 		ChannelConfigWidget (ChannelCLEntry*, QWidget* = 0);
 	private:
 		void SetModesUi ();
 	public slots:
 		void accept ();
-		void on_BanSearch__textChanged (const QString&);
-		void on_ExceptSearch__textChanged (const QString&);
-		void on_InviteSearch__textChanged (const QString&);
 		void on_tabWidget_currentChanged (int);
 		void on_UpdateBan__clicked ();
 		void on_AddBan__clicked ();
@@ -63,13 +60,6 @@ namespace Acetamide
 		void on_AddInvite__clicked ();
 		void on_UpdateInvite__clicked ();
 		void on_RemoveInvite__clicked ();
-
-		void addBanListItem (const QString&, 
-				const QString&, const QDateTime&);
-		void addExceptListItem (const QString&, 
-				const QString&, const QDateTime&);
-		void addInviteListItem (const QString&, 
-				const QString&, const QDateTime&);
 
 		void handleNewChannelModes (const ChannelModes&);
 	signals:

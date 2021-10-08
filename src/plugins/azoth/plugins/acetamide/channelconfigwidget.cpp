@@ -19,18 +19,30 @@ namespace Azoth
 namespace Acetamide
 {
 	ChannelConfigWidget::ChannelConfigWidget (ChannelCLEntry *clentry, QWidget *parent)
-	: QWidget (parent)
-	, ChannelEntry_ (clentry)
-	, IsWidgetRequest_ (false)
+	: QWidget { parent }
+	, ChannelEntry_ { clentry }
+	, BanModel_ { new QStandardItemModel (this) }
+	, ExceptModel_ { new QStandardItemModel (this) }
+	, InviteModel_ { new QStandardItemModel (this) }
+	, BanFilterModel_ { new SortFilterProxyModel (this) }
+	, ExceptFilterModel_ { new SortFilterProxyModel (this) }
+	, InviteFilterModel_ { new SortFilterProxyModel (this) }
 	{
 		Ui_.setupUi (this);
 
-		BanModel_ = new QStandardItemModel (this);
-		ExceptModel_ = new QStandardItemModel (this);
-		InviteModel_ = new QStandardItemModel (this);
-		BanFilterModel_ = new SortFilterProxyModel (this);
-		ExceptFilterModel_ = new SortFilterProxyModel (this);
-		InviteFilterModel_ = new SortFilterProxyModel (this);
+		auto handleSearch = [] (QLineEdit *edit, QSortFilterProxyModel *model)
+		{
+			connect (edit,
+					&QLineEdit::textChanged,
+					[model] (const QString& text)
+					{
+						model->setFilterRegExp (QRegExp { text, Qt::CaseInsensitive, QRegExp::FixedString });
+						model->setFilterKeyColumn (1);
+					});
+		};
+		handleSearch (Ui_.BanSearch_, BanFilterModel_);
+		handleSearch (Ui_.ExceptSearch_, ExceptFilterModel_);
+		handleSearch (Ui_.InviteSearch_, InviteFilterModel_);
 
 		BanModel_->setColumnCount (3);
 		BanModel_->setHorizontalHeaderLabels (QStringList () << tr ("Ban mask")
@@ -60,23 +72,39 @@ namespace Acetamide
 		ChannelMode_ = ChannelEntry_->GetChannelModes ();
 		handleNewChannelModes (ChannelMode_);
 
-		connect (ChannelEntry_,
-				SIGNAL (gotBanListItem (const QString&, const QString&, const QDateTime&)),
-				this,
-				SLOT (addBanListItem (const QString&, const QString&, const QDateTime&)));
-		connect (ChannelEntry_,
-				SIGNAL (gotExceptListItem (const QString&, const QString&, const QDateTime&)),
-				this,
-				SLOT (addExceptListItem (const QString&, const QString&, const QDateTime&)));
-		connect (ChannelEntry_,
-				SIGNAL (gotInviteListItem (const QString&, const QString&, const QDateTime&)),
-				this,
-				SLOT (addInviteListItem (const QString&, const QString&, const QDateTime&)));
+		const auto appendRow = [] (QStandardItemModel *model)
+		{
+			return [model] (const QString& mask, const QString& nick, const QDateTime& date)
+			{
+				QList<QStandardItem*> items
+				{
+					new QStandardItem { mask },
+					new QStandardItem { nick },
+					new QStandardItem { date.toString ("dd.MM.yyyy hh:mm:ss") }
+				};
+				for (const auto item : items)
+					item->setEditable (false);
+				model->appendRow (items);
+			};
+		};
 
 		connect (ChannelEntry_,
-				SIGNAL (gotNewChannelModes (const ChannelModes&)),
+				&ChannelCLEntry::gotBanListItem,
 				this,
-				SLOT (handleNewChannelModes (const ChannelModes&)));
+				appendRow (BanModel_));
+		connect (ChannelEntry_,
+				&ChannelCLEntry::gotExceptListItem,
+				this,
+				appendRow (ExceptModel_));
+		connect (ChannelEntry_,
+				&ChannelCLEntry::gotInviteListItem,
+				this,
+				appendRow (InviteModel_));
+
+		connect (ChannelEntry_,
+				&ChannelCLEntry::gotNewChannelModes,
+				this,
+				&ChannelConfigWidget::handleNewChannelModes);
 
 		Ui_.tabWidget->setCurrentIndex (0);
 	}
@@ -95,27 +123,6 @@ namespace Acetamide
 		ChannelMode_.UserLimit_.first = Ui_.UserLimit_->isChecked ();
 		ChannelMode_.UserLimit_.second = Ui_.Limit_->value ();
 		ChannelEntry_->SetNewChannelModes (ChannelMode_);
-	}
-
-	void ChannelConfigWidget::on_BanSearch__textChanged (const QString& text)
-	{
-		BanFilterModel_->setFilterRegExp (QRegExp (text, Qt::CaseInsensitive,
-				QRegExp::FixedString));
-		BanFilterModel_->setFilterKeyColumn (1);
-	}
-
-	void ChannelConfigWidget::on_ExceptSearch__textChanged (const QString& text)
-	{
-		ExceptFilterModel_->setFilterRegExp (QRegExp (text, Qt::CaseInsensitive,
-				QRegExp::FixedString));
-		ExceptFilterModel_->setFilterKeyColumn (1);
-	}
-
-	void ChannelConfigWidget::on_InviteSearch__textChanged (const QString& text)
-	{
-		InviteFilterModel_->setFilterRegExp (QRegExp (text, Qt::CaseInsensitive,
-				QRegExp::FixedString));
-		InviteFilterModel_->setFilterKeyColumn (1);
 	}
 
 	void ChannelConfigWidget::on_tabWidget_currentChanged (int index)
@@ -141,51 +148,6 @@ namespace Acetamide
 			IsWidgetRequest_ = false;
 		}
 		ChannelEntry_->SetIsWidgetRequest (IsWidgetRequest_);
-	}
-
-	void ChannelConfigWidget::addBanListItem (const QString& mask,
-			const QString& nick, const QDateTime& date)
-	{
-		QStandardItem *itemMask = new QStandardItem (mask);
-		itemMask->setEditable (false);
-		QStandardItem *itemNick = new QStandardItem (nick);
-		itemNick->setEditable (false);
-		QStandardItem *itemDate = new QStandardItem (date.toString ("dd.MM.yyyy hh:mm:ss"));
-		itemDate->setEditable (false);
-
-		BanModel_->appendRow (QList<QStandardItem*> () << itemMask
-				<< itemNick
-				<< itemDate);
-	}
-
-	void ChannelConfigWidget::addExceptListItem (const QString& mask,
-			const QString& nick, const QDateTime& date)
-	{
-		QStandardItem *itemMask = new QStandardItem (mask);
-		itemMask->setEditable (false);
-		QStandardItem *itemNick = new QStandardItem (nick);
-		itemNick->setEditable (false);
-		QStandardItem *itemDate = new QStandardItem (date.toString ("dd.MM.yyyy hh:mm:ss"));
-		itemDate->setEditable (false);
-
-		ExceptModel_->appendRow (QList<QStandardItem*> () << itemMask
-				<< itemNick
-				<< itemDate);
-	}
-
-	void ChannelConfigWidget::addInviteListItem (const QString& mask,
-			const QString& nick, const QDateTime& date)
-	{
-		QStandardItem *itemMask = new QStandardItem (mask);
-		itemMask->setEditable (false);
-		QStandardItem *itemNick = new QStandardItem (nick);
-		itemNick->setEditable (false);
-		QStandardItem *itemDate = new QStandardItem (date.toString ("dd.MM.yyyy hh:mm:ss"));
-		itemDate->setEditable (false);
-
-		InviteModel_->appendRow (QList<QStandardItem*> () << itemMask
-				<< itemNick
-				<< itemDate);
 	}
 
 	void ChannelConfigWidget::on_UpdateBan__clicked ()
