@@ -12,11 +12,7 @@
 #include <QPair>
 #include <QDateTime>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	enum class IrcServer
 	{
@@ -42,6 +38,8 @@ namespace Acetamide
 		QString ServerName_;
 		QString ChannelName_;
 		QString ChannelPassword_;
+
+		bool operator== (const ChannelOptions&) const = default;
 	};
 
 	struct ChannelsDiscoverInfo
@@ -121,6 +119,8 @@ namespace Acetamide
 		QString NickServNick_;
 		QString AuthString_;
 		QString AuthMessage_;
+
+		bool operator== (const NickServIdentify&) const = default;
 	};
 
 	struct MainEntryInfo
@@ -157,10 +157,4 @@ namespace Acetamide
 		QString IsHelpOp_;
 		QString ConnectedFrom_;
 	};
-
-	bool operator== (const ChannelOptions&, const ChannelOptions&);
-
-	bool operator== (const NickServIdentify&, const NickServIdentify&);
-}
-}
 }
