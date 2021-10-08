@@ -219,7 +219,7 @@ namespace Azoth
 		 *
 		 * @sa AuthStatusFromString()
 		 */
-		virtual QString AuthStatusToString (AuthStatus status) const = 0;
+		virtual QByteArray AuthStatusToString (AuthStatus status) const = 0;
 
 		/** @brief Converts string representation to AuthStatus element.
 		 *
@@ -233,7 +233,7 @@ namespace Azoth
 		 *
 		 * @sa AuthStatusToString()
 		 */
-		virtual AuthStatus AuthStatusFromString (const QString& str) const = 0;
+		virtual AuthStatus AuthStatusFromString (const QByteArray& str) const = 0;
 
 		/** @brief Returns the account object for the given account ID.
 		 *
