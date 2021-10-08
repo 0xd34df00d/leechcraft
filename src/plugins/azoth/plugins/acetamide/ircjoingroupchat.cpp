@@ -12,6 +12,7 @@
 #include <QValidator>
 #include "ircaccount.h"
 #include "ircprotocol.h"
+#include "localtypes.h"
 
 namespace LC
 {
@@ -76,14 +77,14 @@ namespace Acetamide
 
 	void IrcJoinGroupChat::SetIdentifyingData (const QVariantMap& data)
 	{
-		const QString& nick = data ["Nickname"].toString ();
-		const QString& channel = data ["Channel"].toString ();
-		const QString& server = data ["Server"].toString ();
-		const QString& encoding = data ["Encoding"].toString ();
-		const QString& serverPass = data ["ServerPassword"].toString ();
-		const QString& channelPass = data ["ChannelPassword"].toString ();
-		const int port = data ["Port"].toInt ();
-		const bool ssl = data ["SSL"].toBool ();
+		const QString& nick = data [Lits::Nickname].toString ();
+		const QString& channel = data [Lits::Channel].toString ();
+		const QString& server = data [Lits::Server].toString ();
+		const QString& encoding = data [Lits::Encoding].toString ();
+		const QString& serverPass = data [Lits::ServerPassword].toString ();
+		const QString& channelPass = data [Lits::ChannelPassword].toString ();
+		const int port = data [Lits::Port].toInt ();
+		const bool ssl = data [Lits::SSL].toBool ();
 
 		if (!nick.isEmpty ())
 			Ui_.Nickname_->setText (nick);
@@ -104,23 +105,24 @@ namespace Acetamide
 
 	QVariantMap IrcJoinGroupChat::GetIdentifyingData () const
 	{
-		QVariantMap result;
-		result ["HumanReadableName"] = QString ("%1 on %2@%3:%4")
-				.arg (GetNickname ())
-				.arg (GetChannel ())
-				.arg (GetServer ())
+		const auto& name = QStringLiteral ("%1 on %2@%3:%4")
+				.arg (GetNickname (),
+						GetChannel (),
+						GetServer ())
 				.arg (GetPort ());
-		result ["AccountID"] = SelectedAccount_->GetAccountID ();
-		result ["Nickname"] = GetNickname ();
-		result ["Channel"] = GetChannel ();
-		result ["ChannelPassword"] = GetChannelPassword ();
-		result ["Server"] = GetServer ();
-		result ["Port"] = GetPort ();
-		result ["ServerPassword"] = GetServerPassword ();
-		result ["Encoding"] = GetEncoding ();
-		result ["SSL"] = GetSSL ();
-
-		return result;
+		return
+		{
+			{ Lits::HumanReadableName, name },
+			{ Lits::AccountID, SelectedAccount_->GetAccountID () },
+			{ Lits::Nickname, GetNickname () },
+			{ Lits::Channel, GetChannel () },
+			{ Lits::ChannelPassword, GetChannelPassword () },
+			{ Lits::Server, GetServer () },
+			{ Lits::Port, GetPort () },
+			{ Lits::ServerPassword, GetServerPassword () },
+			{ Lits::Encoding, GetEncoding () },
+			{ Lits::SSL, GetSSL () },
+		};
 	}
 
 	QString IrcJoinGroupChat::GetServer () const

@@ -8,6 +8,20 @@
 
 #include "localtypes.h"
 
-namespace LC::Azoth::Acetamide
+namespace LC::Azoth::Acetamide::Lits
 {
+#define DEFINE_LIT(a) const auto a = QStringLiteral (#a);
+
+	DEFINE_LIT (HumanReadableName)
+	DEFINE_LIT (StoredName)
+	DEFINE_LIT (Server)
+	DEFINE_LIT (Port)
+	DEFINE_LIT (ServerPassword)
+	DEFINE_LIT (Encoding)
+	DEFINE_LIT (Channel)
+	DEFINE_LIT (ChannelPassword)
+	DEFINE_LIT (Nickname)
+	DEFINE_LIT (SSL)
+	DEFINE_LIT (Autojoin)
+	DEFINE_LIT (AccountID)
 }

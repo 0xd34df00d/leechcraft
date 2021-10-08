@@ -270,19 +270,18 @@ namespace LC::Azoth::Acetamide
 		QVariantMap result;
 		const auto& channelOpts = ICH_->GetChannelOptions ();
 		const auto& serverOpts = ICH_->GetChannelsManager ()->GetServerOptions ();
-		result [QStringLiteral ("HumanReadableName")] = QStringLiteral ("%1 on %2@%3:%4")
+		result [Lits::HumanReadableName] = QStringLiteral ("%1 on %2@%3:%4")
 				.arg (GetNick (),
 					  channelOpts.ChannelName_,
 					  channelOpts.ServerName_)
 				.arg (serverOpts.ServerPort_);
-		result ["AccountID"] = ICH_->GetChannelsManager ()->
-				GetAccount ()->GetAccountID ();
-		result ["Nickname"] = GetNick ();
-		result ["Channel"] = channelOpts.ChannelName_;
-		result ["Server"] = channelOpts.ServerName_;
-		result ["Port"] = serverOpts.ServerPort_;
-		result ["Encoding"] = serverOpts.ServerEncoding_;
-		result ["SSL"] = serverOpts.SSL_;
+		result [Lits::AccountID] = ICH_->GetChannelsManager ()->GetAccount ()->GetAccountID ();
+		result [Lits::Nickname] = GetNick ();
+		result [Lits::Channel] = channelOpts.ChannelName_;
+		result [Lits::Server] = channelOpts.ServerName_;
+		result [Lits::Port] = serverOpts.ServerPort_;
+		result [Lits::Encoding] = serverOpts.ServerEncoding_;
+		result [Lits::SSL] = serverOpts.SSL_;
 
 		return result;
 	}

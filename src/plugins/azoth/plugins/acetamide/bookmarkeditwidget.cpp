@@ -9,6 +9,7 @@
 #include "bookmarkeditwidget.h"
 #include <QTextCodec>
 #include <QtDebug>
+#include "localtypes.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -19,23 +20,6 @@ namespace LC::Azoth::Acetamide
 		for (const auto& codec : QTextCodec::availableCodecs ())
 			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.Encoding_->model ()->sort (0);
-	}
-
-	namespace
-	{
-#define DEFINE_LIT(a) const auto a = QStringLiteral (#a);
-
-		DEFINE_LIT (HumanReadableName)
-		DEFINE_LIT (StoredName)
-		DEFINE_LIT (Server)
-		DEFINE_LIT (Port)
-		DEFINE_LIT (ServerPassword)
-		DEFINE_LIT (Encoding)
-		DEFINE_LIT (Channel)
-		DEFINE_LIT (Password)
-		DEFINE_LIT (Nickname)
-		DEFINE_LIT (SSL)
-		DEFINE_LIT (Autojoin)
 	}
 
 	QVariantMap BookmarkEditWidget::GetIdentifyingData () const
@@ -54,34 +38,32 @@ namespace LC::Azoth::Acetamide
 
 		return
 		{
-			{ HumanReadableName, name },
-			{ StoredName, Ui_.Name_->text () },
-			{ Server, Ui_.Server_->text () },
-			{ Port, Ui_.Port_->value () },
-			{ ServerPassword, Ui_.ServerPassword_->text () },
-			{ Encoding, Ui_.Encoding_->currentText () },
-
-			{ Channel, channel },
-
-			{ Password, Ui_.Password_->text () },
-			{ Nickname, Ui_.Nickname_->text () },
-			{ SSL, Ui_.SSL_->checkState () == Qt::Checked },
-			{ Autojoin, Ui_.AutoJoin_->checkState () == Qt::Checked },
+			{ Lits::HumanReadableName, name },
+			{ Lits::StoredName, Ui_.Name_->text () },
+			{ Lits::Server, Ui_.Server_->text () },
+			{ Lits::Port, Ui_.Port_->value () },
+			{ Lits::ServerPassword, Ui_.ServerPassword_->text () },
+			{ Lits::Encoding, Ui_.Encoding_->currentText () },
+			{ Lits::Channel, channel },
+			{ Lits::ChannelPassword, Ui_.Password_->text () },
+			{ Lits::Nickname, Ui_.Nickname_->text () },
+			{ Lits::SSL, Ui_.SSL_->checkState () == Qt::Checked },
+			{ Lits::Autojoin, Ui_.AutoJoin_->checkState () == Qt::Checked },
 		};
 	}
 
 	void BookmarkEditWidget::SetIdentifyingData (const QVariantMap& map)
 	{
-		Ui_.HumanReadable_->setText (map [HumanReadableName].toString ());
-		Ui_.Name_->setText (map [StoredName].toString ());
-		Ui_.Server_->setText (map [Server].toString ());
-		Ui_.Port_->setValue (map [Port].toInt ());
-		Ui_.ServerPassword_->setText (map [ServerPassword].toString ());
-		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (map [Encoding].toString ()));
-		Ui_.Channel_->setText (map [Channel].toString ());
-		Ui_.Password_->setText (map [Password].toString ());
-		Ui_.Nickname_->setText (map [Nickname].toString ());
-		Ui_.SSL_->setCheckState (map [SSL].toBool () ? Qt::Checked : Qt::Unchecked);
-		Ui_.AutoJoin_->setCheckState (map [Autojoin].toBool () ? Qt::Checked : Qt::Unchecked);
+		Ui_.HumanReadable_->setText (map [Lits::HumanReadableName].toString ());
+		Ui_.Name_->setText (map [Lits::StoredName].toString ());
+		Ui_.Server_->setText (map [Lits::Server].toString ());
+		Ui_.Port_->setValue (map [Lits::Port].toInt ());
+		Ui_.ServerPassword_->setText (map [Lits::ServerPassword].toString ());
+		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (map [Lits::Encoding].toString ()));
+		Ui_.Channel_->setText (map [Lits::Channel].toString ());
+		Ui_.Password_->setText (map [Lits::ChannelPassword].toString ());
+		Ui_.Nickname_->setText (map [Lits::Nickname].toString ());
+		Ui_.SSL_->setCheckState (map [Lits::SSL].toBool () ? Qt::Checked : Qt::Unchecked);
+		Ui_.AutoJoin_->setCheckState (map [Lits::Autojoin].toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 }

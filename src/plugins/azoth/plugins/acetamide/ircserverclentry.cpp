@@ -15,6 +15,7 @@
 #include "ircparser.h"
 #include "servercommandmessage.h"
 #include "serverinfowidget.h"
+#include "localtypes.h"
 
 namespace LC
 {
@@ -158,21 +159,20 @@ namespace Acetamide
 
 	QVariantMap IrcServerCLEntry::GetIdentifyingData () const
 	{
-		QVariantMap result;
-		result ["HumanReadableName"] = QString ("%1 on %2:%3")
-				.arg (ISH_->GetNickName ())
-				.arg (ISH_->GetServerOptions ().ServerName_)
+		const auto& name = QStringLiteral ("%1 on %2:%3")
+				.arg (ISH_->GetNickName (),
+						ISH_->GetServerOptions ().ServerName_)
 				.arg (ISH_->GetServerOptions ().ServerPort_);
-		result ["AccountID"] = ISH_->
-				GetAccount ()->GetAccountID ();
-		result ["Nickname"] = ISH_->
-				GetNickName ();
-		result ["Server"] = ISH_->GetServerOptions ().ServerName_;
-		result ["Port"] = ISH_->GetServerOptions ().ServerPort_;
-		result ["Encoding"] = ISH_->GetServerOptions ().ServerEncoding_;
-		result ["SSL"] = ISH_->GetServerOptions ().SSL_;
-
-		return result;
+		return
+		{
+			{ Lits::HumanReadableName, name },
+			{ Lits::AccountID, ISH_->GetAccount ()->GetAccountID () },
+			{ Lits::Nickname, ISH_->GetNickName () },
+			{ Lits::Server, ISH_->GetServerOptions ().ServerName_ },
+			{ Lits::Port, ISH_->GetServerOptions ().ServerPort_ },
+			{ Lits::Encoding, ISH_->GetServerOptions ().ServerEncoding_ },
+			{ Lits::SSL, ISH_->GetServerOptions ().SSL_ },
+		};
 	}
 
 	void IrcServerCLEntry::InviteToMUC (const QString&, const QString&)

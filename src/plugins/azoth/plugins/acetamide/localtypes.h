@@ -14,6 +14,22 @@
 
 namespace LC::Azoth::Acetamide
 {
+	namespace Lits
+	{
+		extern const QString HumanReadableName;
+		extern const QString StoredName;
+		extern const QString Server;
+		extern const QString Port;
+		extern const QString ServerPassword;
+		extern const QString Encoding;
+		extern const QString Channel;
+		extern const QString ChannelPassword;
+		extern const QString Nickname;
+		extern const QString SSL;
+		extern const QString Autojoin;
+		extern const QString AccountID;
+	}
+
 	enum class IrcServer
 	{
 		UnknownServer,

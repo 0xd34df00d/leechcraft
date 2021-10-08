@@ -254,23 +254,25 @@ namespace Acetamide
 		return Util::Map (GetBookmarks (),
 				[this] (const IrcBookmark& channel) -> QVariant
 				{
-					QVariantMap cm;
-					cm ["HumanReadableName"] = QString ("%1@%2 (%3)")
-							.arg (channel.ChannelName_ )
-							.arg (channel.ServerName_)
-							.arg (channel.NickName_);
-					cm ["AccountID"] = GetAccountID ();
-					cm ["Server"] = channel.ServerName_;
-					cm ["Port"] = channel.ServerPort_;
-					cm ["ServerPassword"] = channel.ServerPassword_;
-					cm ["Encoding"] = channel.ServerEncoding_;
-					cm ["Channel"] = channel.ChannelName_;
-					cm ["Password"] = channel.ChannelPassword_;
-					cm ["Nickname"] = channel.NickName_;
-					cm ["SSL"] = channel.SSL_;
-					cm ["Autojoin"] = channel.AutoJoin_;
-					cm ["StoredName"] = channel.Name_;
-					return cm;
+					const auto& name = QStringLiteral ("%1@%2 (%3)")
+							.arg (channel.ChannelName_ ,
+									channel.ServerName_,
+									channel.NickName_);
+					return QVariantMap
+					{
+						{ Lits::HumanReadableName, name },
+						{ Lits::AccountID, GetAccountID () },
+						{ Lits::Server, channel.ServerName_ },
+						{ Lits::Port, channel.ServerPort_ },
+						{ Lits::ServerPassword, channel.ServerPassword_ },
+						{ Lits::Encoding, channel.ServerEncoding_ },
+						{ Lits::Channel, channel.ChannelName_ },
+						{ Lits::ChannelPassword, channel.ChannelPassword_ },
+						{ Lits::Nickname, channel.NickName_ },
+						{ Lits::SSL, channel.SSL_ },
+						{ Lits::Autojoin, channel.AutoJoin_ },
+						{ Lits::StoredName, channel.Name_ },
+					};
 				});
 	}
 
@@ -281,18 +283,19 @@ namespace Acetamide
 				{
 					const auto& map = var.toMap ();
 
-					IrcBookmark bookmark;
-					bookmark.AutoJoin_  = map ["Autojoin"].toBool ();
-					bookmark.ServerName_ = map ["Server"].toString ();
-					bookmark.ServerPort_ = map ["Port"].toInt ();
-					bookmark.ServerPassword_ = map ["ServerPassword"].toString ();
-					bookmark.ServerEncoding_ = map ["Encoding"].toString ();
-					bookmark.ChannelName_ = map ["Channel"].toString ();
-					bookmark.ChannelPassword_ = map ["Password"].toString ();
-					bookmark.SSL_ = map ["SSL"].toBool ();
-					bookmark.NickName_ = map ["Nickname"].toString ();
-					bookmark.Name_ = map ["StoredName"].toString ();
-					return bookmark;
+					return IrcBookmark
+					{
+						.Name_ = map [Lits::StoredName].toString (),
+						.ServerName_ = map [Lits::Server].toString (),
+						.ServerPassword_ = map [Lits::ServerPassword].toString (),
+						.ServerEncoding_ = map [Lits::Encoding].toString (),
+						.NickName_ = map [Lits::Nickname].toString (),
+						.ChannelName_ = map [Lits::Channel].toString (),
+						.ChannelPassword_ = map [Lits::ChannelPassword].toString (),
+						.ServerPort_ = map [Lits::Port].toInt (),
+						.SSL_ = map [Lits::SSL].toBool (),
+						.AutoJoin_  = map [Lits::Autojoin].toBool (),
+					};
 				});
 
 		SetBookmarks (channels);
