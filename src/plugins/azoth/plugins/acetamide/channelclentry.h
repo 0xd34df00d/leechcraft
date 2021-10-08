@@ -89,8 +89,6 @@ namespace LC::Azoth::Acetamide
 		void InviteToMUC (const QString&, const QString&) override;
 
 		void HandleMessage (ChannelPublicMessage*);
-		void HandleNewParticipants (const QList<ICLEntry*>&);
-		void HandleSubjectChanged (const QString&);
 
 		// IMUCPerms
 		QByteArray GetAffName (QObject*) const override;

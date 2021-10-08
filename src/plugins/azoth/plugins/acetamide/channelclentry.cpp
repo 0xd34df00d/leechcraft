@@ -296,16 +296,6 @@ namespace LC::Azoth::Acetamide
 		emit gotMessage (msg);
 	}
 
-	void ChannelCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
-	{
-		emit gotNewParticipants (Util::Map (parts, &ICLEntry::GetQObject));
-	}
-
-	void ChannelCLEntry::HandleSubjectChanged (const QString& subj)
-	{
-		emit mucSubjectChanged (subj);
-	}
-
 	QByteArray ChannelCLEntry::GetAffName (QObject *participant) const
 	{
 		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
