@@ -267,23 +267,24 @@ namespace LC::Azoth::Acetamide
 
 	QVariantMap ChannelCLEntry::GetIdentifyingData () const
 	{
-		QVariantMap result;
 		const auto& channelOpts = ICH_->GetChannelOptions ();
 		const auto& serverOpts = ICH_->GetChannelsManager ()->GetServerOptions ();
-		result [Lits::HumanReadableName] = QStringLiteral ("%1 on %2@%3:%4")
+		const auto& name = QStringLiteral ("%1 on %2@%3:%4")
 				.arg (GetNick (),
 					  channelOpts.ChannelName_,
 					  channelOpts.ServerName_)
 				.arg (serverOpts.ServerPort_);
-		result [Lits::AccountID] = ICH_->GetChannelsManager ()->GetAccount ()->GetAccountID ();
-		result [Lits::Nickname] = GetNick ();
-		result [Lits::Channel] = channelOpts.ChannelName_;
-		result [Lits::Server] = channelOpts.ServerName_;
-		result [Lits::Port] = serverOpts.ServerPort_;
-		result [Lits::Encoding] = serverOpts.ServerEncoding_;
-		result [Lits::SSL] = serverOpts.SSL_;
-
-		return result;
+		return
+		{
+			{ Lits::HumanReadableName, name },
+			{ Lits::AccountID, ICH_->GetChannelsManager ()->GetAccount ()->GetAccountID () },
+			{ Lits::Nickname, GetNick () },
+			{ Lits::Channel, channelOpts.ChannelName_ },
+			{ Lits::Server, channelOpts.ServerName_ },
+			{ Lits::Port, serverOpts.ServerPort_ },
+			{ Lits::Encoding, serverOpts.ServerEncoding_ },
+			{ Lits::SSL, serverOpts.SSL_ },
+		};
 	}
 
 	void ChannelCLEntry::InviteToMUC (const QString&, const QString&)
