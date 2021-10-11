@@ -123,7 +123,7 @@ namespace LC::Azoth::Acetamide
 		void AddInviteListItem (QString);
 		void RemoveInviteListItem (QString);
 		void SetNewChannelModes (const ChannelModes&);
-		QString Role2String (const ChannelRole&) const;
+		QString Role2String (ChannelRole) const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&) override;
 		void mucSubjectChanged (const QString&) override;

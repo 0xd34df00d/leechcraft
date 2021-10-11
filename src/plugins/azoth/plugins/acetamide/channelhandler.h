@@ -97,8 +97,8 @@ namespace Acetamide
 		void KickParticipant (const QString&, const QString&,
 				const QString&);
 
-		void SetRole (ChannelParticipantEntry*, const ChannelRole&, const QString&);
-		void ManageWithParticipant (ChannelParticipantEntry*, const ChannelManagment&);
+		void SetRole (ChannelParticipantEntry*, ChannelRole, const QString&);
+		void ManageWithParticipant (ChannelParticipantEntry*, ChannelManagment);
 
 		void RequestBanList ();
 		void RequestExceptList ();

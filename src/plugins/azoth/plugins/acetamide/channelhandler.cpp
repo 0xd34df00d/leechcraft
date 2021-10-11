@@ -369,8 +369,7 @@ namespace Acetamide
 		RemoveUserFromChannel (target);
 	}
 
-	void ChannelHandler::SetRole (ChannelParticipantEntry *entry,
-			const ChannelRole& role, const QString&)
+	void ChannelHandler::SetRole (ChannelParticipantEntry *entry, ChannelRole role, const QString&)
 	{
 		QString mode;
 
@@ -403,8 +402,7 @@ namespace Acetamide
 					mode, entry->GetEntryName ());
 	}
 
-	void ChannelHandler::ManageWithParticipant (ChannelParticipantEntry *entry,
-			const ChannelManagment& manage)
+	void ChannelHandler::ManageWithParticipant (ChannelParticipantEntry *entry, ChannelManagment manage)
 	{
 		switch (manage)
 		{

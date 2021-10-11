@@ -563,7 +563,7 @@ namespace LC::Azoth::Acetamide
 		ICH_->SetNewChannelModes (modes);
 	}
 
-	QString ChannelCLEntry::Role2String (const ChannelRole& role) const
+	QString ChannelCLEntry::Role2String (ChannelRole role) const
 	{
 		return Role2Str_ [role];
 	}
