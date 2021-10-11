@@ -18,11 +18,10 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ChannelPublicMessage::ChannelPublicMessage (const QString& msg,
+	ChannelPublicMessage::ChannelPublicMessage (QString msg,
 			ChannelCLEntry *entry)
-	: QObject (0)
-	, ParentEntry_ (entry)
-	, Message_ (msg)
+	: ParentEntry_ (entry)
+	, Message_ (std::move (msg))
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (Direction::Out)
 	, Type_ (Type::MUCMessage)
@@ -30,16 +29,15 @@ namespace Acetamide
 	{
 	}
 
-	ChannelPublicMessage::ChannelPublicMessage (const QString& msg,
+	ChannelPublicMessage::ChannelPublicMessage (QString msg,
 			IMessage::Direction direction,
 			ChannelCLEntry *entry,
 			IMessage::Type type,
 			IMessage::SubType subType,
 			ChannelParticipantEntry_ptr part)
-	: QObject (0)
-	, ParentEntry_ (entry)
-	, ParticipantEntry_ (part)
-	, Message_ (msg)
+	: ParentEntry_ (entry)
+	, ParticipantEntry_ (std::move (part))
+	, Message_ (std::move (msg))
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (direction)
 	, Type_ (type)

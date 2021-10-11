@@ -38,8 +38,8 @@ namespace Acetamide
 		Type Type_;
 		SubType SubType_;
 	public:
-		ChannelPublicMessage (const QString&, ChannelCLEntry*);
-		ChannelPublicMessage (const QString&, Direction,
+		ChannelPublicMessage (QString, ChannelCLEntry*);
+		ChannelPublicMessage (QString, Direction,
 				ChannelCLEntry*,
 				Type,
 				SubType,
