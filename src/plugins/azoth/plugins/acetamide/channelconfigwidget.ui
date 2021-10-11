@@ -112,7 +112,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="Key_"/>
+            <widget class="QLineEdit" name="Key_">
+             <property name="clearButtonEnabled">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -148,7 +152,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="BanSearch_"/>
+          <widget class="QLineEdit" name="BanSearch_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -162,26 +170,39 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="BanHostMask_"/>
+          <widget class="QLineEdit" name="BanHostMask_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="UpdateBan_">
            <property name="text">
-            <string>u</string>
+            <string>Update</string>
+           </property>
+           <property name="icon">
+            <iconset theme="document-edit"/>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="AddBan_">
            <property name="text">
-            <string>+</string>
+            <string>Add</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-add"/>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="RemoveBan_">
            <property name="text">
-            <string>-</string>
+            <string>Remove</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-remove"/>
            </property>
           </widget>
          </item>
@@ -207,7 +228,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="ExceptSearch_"/>
+          <widget class="QLineEdit" name="ExceptSearch_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -224,26 +249,39 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="ExceptHostMask_"/>
+          <widget class="QLineEdit" name="ExceptHostMask_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="UpdateExcept_">
            <property name="text">
-            <string>u</string>
+            <string>Update</string>
+           </property>
+           <property name="icon">
+            <iconset theme="document-edit"/>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="AddExcept_">
            <property name="text">
-            <string>+</string>
+            <string>Add</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-add"/>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="RemoveExcept_">
            <property name="text">
-            <string>-</string>
+            <string>Remove</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-remove"/>
            </property>
           </widget>
          </item>
@@ -266,7 +304,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="InviteSearch_"/>
+          <widget class="QLineEdit" name="InviteSearch_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -280,26 +322,39 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="InviteHostMask_"/>
+          <widget class="QLineEdit" name="InviteHostMask_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="UpdateInvite_">
            <property name="text">
-            <string>u</string>
+            <string>Update</string>
+           </property>
+           <property name="icon">
+            <iconset theme="document-edit"/>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="AddInvite_">
            <property name="text">
-            <string>+</string>
+            <string>Add</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-add"/>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="RemoveInvite_">
            <property name="text">
-            <string>-</string>
+            <string>Remove</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-remove"/>
            </property>
           </widget>
          </item>
