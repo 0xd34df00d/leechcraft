@@ -6,8 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELHANDLER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELHANDLER_H
+#pragma once
 
 #include <QObject>
 #include <QHash>
@@ -15,11 +14,7 @@
 #include "localtypes.h"
 #include "channelparticipantentry.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class ChannelCLEntry;
 	class IrcMessage;
@@ -38,7 +33,7 @@ namespace Acetamide
 
 		ChannelOptions ChannelOptions_;
 
-		bool IsRosterReceived_;
+		bool IsRosterReceived_ = false;
 
 		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
 
@@ -46,6 +41,7 @@ namespace Acetamide
 		QString Url_;
 	public:
 		ChannelHandler (const ChannelOptions& options, ChannelsManager *manager);
+
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
 
@@ -142,8 +138,4 @@ namespace Acetamide
 	signals:
 		void updateChanModes (const ChannelModes&);
 	};
-};
-};
-};
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELHANDLER_H
+}

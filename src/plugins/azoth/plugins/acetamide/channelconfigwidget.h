@@ -44,7 +44,7 @@ namespace LC::Azoth::Acetamide
 		void SetupListButtons ();
 		void RerequestList (int);
 
-		void handleNewChannelModes (const ChannelModes&);
+		void HandleNewChannelModes (const ChannelModes&);
 	signals:
 		void dataReady () override;
 	};

@@ -7,11 +7,10 @@
  **********************************************************************/
 
 #include "channelclentry.h"
+#include <utility>
 #include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
-
-#include <utility>
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
 #include "ircmessage.h"
@@ -147,18 +146,15 @@ namespace LC::Azoth::Acetamide
 
 	QStringList ChannelCLEntry::Variants () const
 	{
-		QStringList result;
-		result << "";
-		return result;
+		return { {} };
 	}
 
 	IMessage* ChannelCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& body)
 	{
-		if (variant == "")
-			return new ChannelPublicMessage (body, this);
-		else
-			return nullptr;
+		return variant.isEmpty () ?
+				new ChannelPublicMessage (body, this) :
+				nullptr;
 	}
 
 	QList<IMessage*> ChannelCLEntry::GetAllMessages () const
@@ -347,7 +343,7 @@ namespace LC::Azoth::Acetamide
 			const QByteArray& perm,
 			const QString& reason)
 	{
-		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO

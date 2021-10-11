@@ -70,7 +70,7 @@ namespace LC::Azoth::Acetamide
 		InviteFilterModel_->setSourceModel (InviteModel_);
 
 		ChannelMode_ = ChannelEntry_->GetChannelModes ();
-		handleNewChannelModes (ChannelMode_);
+		HandleNewChannelModes (ChannelMode_);
 
 		const auto appendRow = [] (QStandardItemModel *model)
 		{
@@ -104,7 +104,7 @@ namespace LC::Azoth::Acetamide
 		connect (ChannelEntry_,
 				&ChannelCLEntry::gotNewChannelModes,
 				this,
-				&ChannelConfigWidget::handleNewChannelModes);
+				&ChannelConfigWidget::HandleNewChannelModes);
 	}
 
 	void ChannelConfigWidget::accept ()
@@ -189,7 +189,7 @@ namespace LC::Azoth::Acetamide
 		}
 	}
 
-	void ChannelConfigWidget::handleNewChannelModes (const ChannelModes& modes)
+	void ChannelConfigWidget::HandleNewChannelModes (const ChannelModes& modes)
 	{
 		ChannelMode_ = modes;
 		Ui_.OpTopic_->setChecked (ChannelMode_.OnlyOpChangeTopicMode_);
