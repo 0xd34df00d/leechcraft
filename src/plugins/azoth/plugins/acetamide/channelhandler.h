@@ -103,12 +103,12 @@ namespace Acetamide
 		void RequestBanList ();
 		void RequestExceptList ();
 		void RequestInviteList ();
-		void AddBanListItem (QString);
-		void RemoveBanListItem (QString);
-		void AddExceptListItem (QString);
-		void RemoveExceptListItem (QString);
-		void AddInviteListItem (QString);
-		void RemoveInviteListItem (QString);
+		void AddBanListItem (const QString&);
+		void RemoveBanListItem (const QString&);
+		void AddExceptListItem (const QString&);
+		void RemoveExceptListItem (const QString&);
+		void AddInviteListItem (const QString&);
+		void RemoveInviteListItem (const QString&);
 		void SetBanListItem (const QString&, const QString&,
 				const QDateTime&);
 		void SetExceptListItem (const QString&, const QString&,

@@ -460,32 +460,32 @@ namespace Acetamide
 		CM_->RequestInviteList (ChannelOptions_.ChannelName_);
 	}
 
-	void ChannelHandler::AddBanListItem (QString mask)
+	void ChannelHandler::AddBanListItem (const QString& mask)
 	{
 		CM_->AddBanListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
-	void ChannelHandler::RemoveBanListItem (QString mask)
+	void ChannelHandler::RemoveBanListItem (const QString& mask)
 	{
 		CM_->RemoveBanListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
-	void ChannelHandler::AddExceptListItem (QString mask)
+	void ChannelHandler::AddExceptListItem (const QString& mask)
 	{
 		CM_->AddExceptListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
-	void ChannelHandler::RemoveExceptListItem (QString mask)
+	void ChannelHandler::RemoveExceptListItem (const QString& mask)
 	{
 		CM_->RemoveExceptListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
-	void ChannelHandler::AddInviteListItem (QString mask)
+	void ChannelHandler::AddInviteListItem (const QString& mask)
 	{
 		CM_->AddInviteListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
-	void ChannelHandler::RemoveInviteListItem (QString mask)
+	void ChannelHandler::RemoveInviteListItem (const QString& mask)
 	{
 		CM_->RemoveInviteListItem (ChannelOptions_.ChannelName_, mask);
 	}
