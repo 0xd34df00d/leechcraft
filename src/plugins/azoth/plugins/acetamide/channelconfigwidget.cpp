@@ -186,10 +186,7 @@ namespace LC::Azoth::Acetamide
 			InviteModel_->clear ();
 			ChannelEntry_->RequestInviteList ();
 			break;
-		default:
-			return;
 		}
-		ChannelEntry_->SetIsWidgetRequest (true);
 	}
 
 	void ChannelConfigWidget::handleNewChannelModes (const ChannelModes& modes)

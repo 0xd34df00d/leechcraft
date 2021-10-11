@@ -496,42 +496,33 @@ namespace Acetamide
 			const QString& nick, const QDateTime& date)
 	{
 		ChannelCLEntry_->SetBanListItem (mask, nick, date);
-		if (!ChannelCLEntry_->GetIsWidgetRequest ())
-		{
-			const QString msg = tr ("%1 set by %2 on %3")
-					.arg (mask)
-					.arg (nick)
-					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
-		}
+		const QString msg = tr ("%1 set by %2 on %3")
+				.arg (mask)
+				.arg (nick)
+				.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
+		HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
 	}
 
 	void ChannelHandler::SetExceptListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		ChannelCLEntry_->SetExceptListItem (mask, nick, date);
-		if (!ChannelCLEntry_->GetIsWidgetRequest ())
-		{
-			const QString msg = tr ("%1 set by %2 on %3")
-					.arg (mask)
-					.arg (nick)
-					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
-		}
+		const QString msg = tr ("%1 set by %2 on %3")
+				.arg (mask)
+				.arg (nick)
+				.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
+		HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
 	}
 
 	void ChannelHandler::SetInviteListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		ChannelCLEntry_->SetInviteListItem (mask, nick, date);
-		if (!ChannelCLEntry_->GetIsWidgetRequest ())
-		{
-			const QString msg = tr ("%1 set by %2 on %3")
-					.arg (mask)
-					.arg (nick)
-					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
-		}
+		const QString msg = tr ("%1 set by %2 on %3")
+				.arg (mask)
+				.arg (nick)
+				.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
+		HandleServiceMessage (msg, IMessage::Type::EventMessage, IMessage::SubType::Other);
 	}
 
 	ChannelModes ChannelHandler::GetChannelModes () const

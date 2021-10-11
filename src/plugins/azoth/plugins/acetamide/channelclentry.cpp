@@ -528,16 +528,6 @@ namespace LC::Azoth::Acetamide
 		emit gotInviteListItem (mask, nick, date);
 	}
 
-	void ChannelCLEntry::SetIsWidgetRequest (bool set)
-	{
-		IsWidgetRequest_ = set;
-	}
-
-	bool ChannelCLEntry::GetIsWidgetRequest () const
-	{
-		return IsWidgetRequest_;
-	}
-
 	void ChannelCLEntry::AddBanListItem (QString mask)
 	{
 		ICH_->AddBanListItem (std::move (mask));

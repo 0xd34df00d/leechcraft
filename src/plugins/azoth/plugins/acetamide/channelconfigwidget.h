@@ -36,7 +36,6 @@ namespace LC::Azoth::Acetamide
 		SortFilterProxyModel * const BanFilterModel_;
 		SortFilterProxyModel * const ExceptFilterModel_;
 		SortFilterProxyModel * const InviteFilterModel_;
-		bool IsWidgetRequest_ = false;
 	public:
 		explicit ChannelConfigWidget (ChannelCLEntry*, QWidget* = nullptr);
 	public slots:

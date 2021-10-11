@@ -36,7 +36,6 @@ namespace LC::Azoth::Acetamide
 
 		ChannelHandler * const ICH_;
 		QList<IMessage*> AllMessages_;
-		bool IsWidgetRequest_ = false;
 
 		QMap<QByteArray, QList<QByteArray>> Perms_;
 		QMap<ChannelRole, QByteArray> Role2Str_;
@@ -117,8 +116,6 @@ namespace LC::Azoth::Acetamide
 				const QDateTime&);
 		void SetInviteListItem (const QString&, const QString&,
 				const QDateTime&);
-		void SetIsWidgetRequest (bool);
-		bool GetIsWidgetRequest () const;
 		void AddBanListItem (QString);
 		void RemoveBanListItem (QString);
 		void AddExceptListItem (QString);
