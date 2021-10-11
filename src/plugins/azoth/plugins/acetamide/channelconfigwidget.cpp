@@ -12,11 +12,7 @@
 #include "sortfilterproxymodel.h"
 #include "channelclentry.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ChannelConfigWidget::ChannelConfigWidget (ChannelCLEntry *clentry, QWidget *parent)
 	: QWidget { parent }
@@ -44,20 +40,24 @@ namespace Acetamide
 		handleSearch (Ui_.ExceptSearch_, ExceptFilterModel_);
 		handleSearch (Ui_.InviteSearch_, InviteFilterModel_);
 
+		connect (Ui_.ConfigTabs_,
+				&QTabWidget::currentChanged,
+				[this] (int idx)
+				{
+					if (idx > 0)
+						RerequestList (idx - 1);
+				});
+
+		SetupListButtons ();
+
 		BanModel_->setColumnCount (3);
-		BanModel_->setHorizontalHeaderLabels (QStringList () << tr ("Ban mask")
-				<< tr ("Set by")
-				<< tr ("Date"));
+		BanModel_->setHorizontalHeaderLabels ({ tr ("Ban mask"), tr ("Set by"), tr ("Date") });
 
 		ExceptModel_->setColumnCount (3);
-		ExceptModel_->setHorizontalHeaderLabels (QStringList () << tr ("Except mask")
-				<< tr ("Set by")
-				<< tr ("Date"));
+		ExceptModel_->setHorizontalHeaderLabels ({ tr ("Except mask"), tr ("Set by"), tr ("Date") });
 
 		InviteModel_->setColumnCount (3);
-		InviteModel_->setHorizontalHeaderLabels (QStringList () << tr ("Invite mask")
-				<< tr ("Set by")
-				<< tr ("Date"));
+		InviteModel_->setHorizontalHeaderLabels ({ tr ("Invite mask"), tr ("Set by"), tr ("Date") });
 
 		Ui_.BanList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
 		Ui_.ExceptList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
@@ -105,8 +105,6 @@ namespace Acetamide
 				&ChannelCLEntry::gotNewChannelModes,
 				this,
 				&ChannelConfigWidget::handleNewChannelModes);
-
-		Ui_.tabWidget->setCurrentIndex (0);
 	}
 
 	void ChannelConfigWidget::accept ()
@@ -125,98 +123,73 @@ namespace Acetamide
 		ChannelEntry_->SetNewChannelModes (ChannelMode_);
 	}
 
-	void ChannelConfigWidget::on_tabWidget_currentChanged (int index)
+	void ChannelConfigWidget::SetupListButtons ()
+	{
+		auto handleButtons = [this] (auto addButton, auto removeButton, auto updateButton,
+				auto textEdit, auto list, auto adder, auto remover)
+		{
+			auto addHandler = [=]
+			{
+				const auto& text = textEdit->text ();
+				if (!text.isEmpty ())
+					(ChannelEntry_->*adder) (text);
+			};
+			auto removeHandler = [=]
+			{
+				const auto& idx = list->currentIndex ();
+				if (idx.isValid ())
+					(ChannelEntry_->*remover) (idx.data ().toString ());
+			};
+
+			connect (addButton,
+					&QPushButton::clicked,
+					addHandler);
+			connect (removeButton,
+					&QPushButton::clicked,
+					removeHandler);
+			connect (updateButton,
+					&QPushButton::clicked,
+					[=]
+					{
+						if (!textEdit->text ().isEmpty ())
+						{
+							removeHandler ();
+							addHandler ();
+						}
+					});
+		};
+
+		handleButtons (Ui_.AddBan_, Ui_.RemoveBan_, Ui_.UpdateBan_,
+				Ui_.BanHostMask_, Ui_.BanList_,
+				&ChannelCLEntry::AddBanListItem, &ChannelCLEntry::RemoveBanListItem);
+		handleButtons (Ui_.AddExcept_, Ui_.RemoveExcept_, Ui_.UpdateExcept_,
+				Ui_.ExceptHostMask_, Ui_.ExceptList_,
+				&ChannelCLEntry::AddExceptListItem, &ChannelCLEntry::RemoveExceptListItem);
+		handleButtons (Ui_.AddInvite_, Ui_.RemoveInvite_, Ui_.UpdateInvite_,
+				Ui_.InviteHostMask_, Ui_.InviteList_,
+				&ChannelCLEntry::AddInviteListItem, &ChannelCLEntry::RemoveInviteListItem);
+	}
+
+	void ChannelConfigWidget::RerequestList (int index)
 	{
 		switch (index)
 		{
-		case 1:
+		case 0:
 			BanModel_->clear ();
 			ChannelEntry_->RequestBanList ();
-			IsWidgetRequest_ = true;
 			break;
-		case 2:
+		case 1:
 			ExceptModel_->clear ();
 			ChannelEntry_->RequestExceptList ();
-			IsWidgetRequest_ = true;
 			break;
-		case 3:
+		case 2:
 			InviteModel_->clear ();
 			ChannelEntry_->RequestInviteList ();
-			IsWidgetRequest_ = true;
 			break;
 		default:
-			IsWidgetRequest_ = false;
+			return;
 		}
-		ChannelEntry_->SetIsWidgetRequest (IsWidgetRequest_);
-	}
-
-	void ChannelConfigWidget::on_UpdateBan__clicked ()
-	{
-		if (Ui_.BanHostMask_->text ().isEmpty ())
-			return;
-		on_RemoveBan__clicked ();
-		on_AddBan__clicked ();
-	}
-
-	void ChannelConfigWidget::on_AddBan__clicked ()
-	{
-		if (Ui_.BanHostMask_->text ().isEmpty ())
-			return;
-		ChannelEntry_->AddBanListItem (Ui_.BanHostMask_->text ());
-	}
-
-	void ChannelConfigWidget::on_RemoveBan__clicked ()
-	{
-		const QModelIndex currentIndex = Ui_.BanList_->currentIndex ();
-		if (!currentIndex.isValid ())
-			return;
-		ChannelEntry_->RemoveBanListItem (Ui_.BanHostMask_->text ());
-	}
-
-	void ChannelConfigWidget::on_UpdateExcept__clicked ()
-	{
-		if (Ui_.ExceptHostMask_->text ().isEmpty ())
-			return;
-		on_RemoveExcept__clicked ();
-		on_AddExcept__clicked ();
-	}
-
-	void ChannelConfigWidget::on_AddExcept__clicked ()
-	{
-		if (Ui_.ExceptHostMask_->text ().isEmpty ())
-			return;
-		ChannelEntry_->AddExceptListItem (Ui_.ExceptHostMask_->text ());
-	}
-
-	void ChannelConfigWidget::on_RemoveExcept__clicked ()
-	{
-		const QModelIndex currentIndex = Ui_.ExceptList_->currentIndex ();
-		if (!currentIndex.isValid ())
-			return;
-		ChannelEntry_->RemoveExceptListItem (Ui_.ExceptHostMask_->text ());
-	}
-
-	void ChannelConfigWidget::on_UpdateInvite__clicked ()
-	{
-		if (Ui_.InviteHostMask_->text ().isEmpty ())
-			return;
-		on_RemoveInvite__clicked ();
-		on_AddInvite__clicked ();
-	}
-
-	void ChannelConfigWidget::on_AddInvite__clicked ()
-	{
-		if (Ui_.InviteHostMask_->text ().isEmpty ())
-			return;
-		ChannelEntry_->AddInviteListItem (Ui_.InviteHostMask_->text ());
-	}
-
-	void ChannelConfigWidget::on_RemoveInvite__clicked ()
-	{
-		const QModelIndex currentIndex = Ui_.InviteList_->currentIndex ();
-		if (!currentIndex.isValid ())
-			return;
-		ChannelEntry_->RemoveInviteListItem (Ui_.InviteHostMask_->text ());
+		ChannelEntry_->SetIsWidgetRequest (true);
 	}
 
 	void ChannelConfigWidget::handleNewChannelModes (const ChannelModes& modes)
@@ -234,6 +207,4 @@ namespace Acetamide
 		Ui_.Password_->setChecked (ChannelMode_.ChannelKey_.first);
 		Ui_.Key_->setText (ChannelMode_.ChannelKey_.second);
 	}
-}
-}
 }

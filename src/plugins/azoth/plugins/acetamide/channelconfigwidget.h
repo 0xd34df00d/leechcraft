@@ -6,9 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCONFIGWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCONFIGWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QDateTime>
@@ -18,13 +16,8 @@
 
 class QStandardItemModel;
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-
 	class ChannelCLEntry;
 	class SortFilterProxyModel;
 
@@ -35,37 +28,25 @@ namespace Acetamide
 		Q_INTERFACES (LC::Azoth::IMUCConfigWidget)
 
 		Ui::ChannelConfigWidget Ui_;
-		ChannelCLEntry *ChannelEntry_;
+		ChannelCLEntry * const ChannelEntry_;
 		ChannelModes ChannelMode_;
-		QStandardItemModel *BanModel_;
-		QStandardItemModel *ExceptModel_;
-		QStandardItemModel *InviteModel_;
-		SortFilterProxyModel *BanFilterModel_;
-		SortFilterProxyModel *ExceptFilterModel_;
-		SortFilterProxyModel *InviteFilterModel_;
+		QStandardItemModel * const BanModel_;
+		QStandardItemModel * const ExceptModel_;
+		QStandardItemModel * const InviteModel_;
+		SortFilterProxyModel * const BanFilterModel_;
+		SortFilterProxyModel * const ExceptFilterModel_;
+		SortFilterProxyModel * const InviteFilterModel_;
 		bool IsWidgetRequest_ = false;
 	public:
-		ChannelConfigWidget (ChannelCLEntry*, QWidget* = 0);
-	private:
-		void SetModesUi ();
+		explicit ChannelConfigWidget (ChannelCLEntry*, QWidget* = nullptr);
 	public slots:
-		void accept ();
-		void on_tabWidget_currentChanged (int);
-		void on_UpdateBan__clicked ();
-		void on_AddBan__clicked ();
-		void on_RemoveBan__clicked ();
-		void on_UpdateExcept__clicked ();
-		void on_AddExcept__clicked ();
-		void on_RemoveExcept__clicked ();
-		void on_AddInvite__clicked ();
-		void on_UpdateInvite__clicked ();
-		void on_RemoveInvite__clicked ();
+		void accept () override;
+	private:
+		void SetupListButtons ();
+		void RerequestList (int);
 
 		void handleNewChannelModes (const ChannelModes&);
 	signals:
-		void dataReady ();
+		void dataReady () override;
 	};
 }
-}
-}
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCONFIGWIDGET_H
