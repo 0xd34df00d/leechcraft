@@ -20,7 +20,7 @@ namespace LC::Azoth::Acetamide
 
 	class ChannelParticipantEntry : public IrcParticipantEntry
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::ChannelParticipantEntry)
 
 		ChannelHandler * const ICH_;
 		QList<ChannelRole> Roles_;

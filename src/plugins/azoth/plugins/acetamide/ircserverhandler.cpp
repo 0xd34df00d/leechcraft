@@ -714,7 +714,7 @@ namespace Acetamide
 			{
 				for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (msg.Nick_))
 				{
-					const auto entry = qobject_cast<ChannelParticipantEntry*> (entryObj);
+					const auto entry = dynamic_cast<ChannelParticipantEntry*> (entryObj);
 					if (!entry)
 						continue;
 

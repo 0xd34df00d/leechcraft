@@ -295,7 +295,7 @@ namespace LC::Azoth::Acetamide
 
 	QByteArray ChannelCLEntry::GetAffName (QObject *participant) const
 	{
-		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -313,7 +313,7 @@ namespace LC::Azoth::Acetamide
 			participant = ICH_->GetSelf ().get ();
 
 		QMap<QByteArray, QList<QByteArray>>  result;
-		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -343,7 +343,7 @@ namespace LC::Azoth::Acetamide
 			const QByteArray& perm,
 			const QString& reason)
 	{
-		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -377,8 +377,8 @@ namespace LC::Azoth::Acetamide
 
 	bool ChannelCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
 	{
-		const auto e1 = qobject_cast<ChannelParticipantEntry*> (p1);
-		const auto e2 = qobject_cast<ChannelParticipantEntry*> (p2);
+		const auto e1 = dynamic_cast<ChannelParticipantEntry*> (p1);
+		const auto e2 = dynamic_cast<ChannelParticipantEntry*> (p2);
 		if (!e1 || !e2)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -440,7 +440,7 @@ namespace LC::Azoth::Acetamide
 	bool ChannelCLEntry::MayChangePerm (QObject *participant,
 			const QByteArray& permClass, const QByteArray& perm) const
 	{
-		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
