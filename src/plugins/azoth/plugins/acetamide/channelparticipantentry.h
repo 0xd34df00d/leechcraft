@@ -6,18 +6,14 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
-#define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
+#pragma once
 
 #include <memory>
+#include <QCoreApplication>
 #include "ircparticipantentry.h"
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcAccount;
 	class ChannelHandler;
@@ -26,39 +22,29 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		ChannelHandler *ICH_;
+		ChannelHandler * const ICH_;
 		QList<ChannelRole> Roles_;
 	public:
-		ChannelParticipantEntry (const QString&,
-				ChannelHandler*, IrcAccount* = 0);
+		ChannelParticipantEntry (const QString&, ChannelHandler*, IrcAccount* = nullptr);
 
-		ICLEntry* GetParentCLEntry () const;
+		ICLEntry* GetParentCLEntry () const override;
 
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
+		QString GetEntryID () const override;
+		QString GetHumanReadableID () const override;
 
-		void SetGroups (const QStringList&);
-		QStringList Groups () const;
+		void SetGroups (const QStringList&) override;
+		QStringList Groups () const override;
 
 		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&);
+				const QString&, const QString&) override;
 
 		QList<ChannelRole> Roles () const;
 		ChannelRole HighestRole () const;
 
-		void SetRole (const ChannelRole& role);
+		void SetRole (ChannelRole role);
 		void SetRoles (const QList<ChannelRole>& roles);
-		void RemoveRole (const ChannelRole& role);
-	private slots:
-		void handleWhoIs ();
-		void handleWhoWas ();
-		void handleWho ();
-		void handleCTCPAction (QAction *action);
+		void RemoveRole (ChannelRole role);
 	};
 
-	typedef std::shared_ptr<ChannelParticipantEntry> ChannelParticipantEntry_ptr;
+	using ChannelParticipantEntry_ptr = std::shared_ptr<ChannelParticipantEntry>;
 }
-}
-}
-
-#endif // LEECHCRAFT_AZOTH_ACETAMIDE_CHANNELPARTICIPANTENTRY_H

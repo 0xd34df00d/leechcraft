@@ -15,44 +15,41 @@
 #include "ircaccount.h"
 #include "channelsmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ChannelParticipantEntry::ChannelParticipantEntry (const QString& nick,
 			ChannelHandler *ich, IrcAccount *acc)
-	: IrcParticipantEntry (nick, acc)
-	, ICH_ (ich)
+	: IrcParticipantEntry { nick, acc }
+	, ICH_ { ich }
 	{
-		QMenu *infoMenu = new QMenu (tr ("Information"));
+		const auto infoMenu = new QMenu (tr ("Information"));
 		infoMenu->addAction ("/WHOIS " + Nick_,
 				this,
-				SLOT (handleWhoIs ()));
+				[this] { ICH_->handleWhoIs (Nick_); });
 		infoMenu->addAction ("/WHOWAS " + Nick_,
 				this,
-				SLOT (handleWhoWas ()));
+				[this] { ICH_->handleWhoWas (Nick_); });
 		infoMenu->addAction ("/WHO " + Nick_,
 				this,
-				SLOT (handleWho ()));
+				[this] { ICH_->handleWho (Nick_); });
 
-		const auto ctcpMenu = new QMenu ("CTCP");
-		ctcpMenu->addAction ("PING");
-		ctcpMenu->addAction ("FINGER");
-		ctcpMenu->addAction ("VERSION");
-		ctcpMenu->addAction ("USERINFO");
-		ctcpMenu->addAction ("CLIENTINFO");
-		ctcpMenu->addAction ("SOURCE");
-		ctcpMenu->addAction ("TIME");
+		const auto ctcpMenu = new QMenu (QStringLiteral ("CTCP"));
+		ctcpMenu->addAction (QStringLiteral ("PING"));
+		ctcpMenu->addAction (QStringLiteral ("FINGER"));
+		ctcpMenu->addAction (QStringLiteral ("VERSION"));
+		ctcpMenu->addAction (QStringLiteral ("USERINFO"));
+		ctcpMenu->addAction (QStringLiteral ("CLIENTINFO"));
+		ctcpMenu->addAction (QStringLiteral ("SOURCE"));
+		ctcpMenu->addAction (QStringLiteral ("TIME"));
 
 		connect (ctcpMenu,
-				SIGNAL (triggered (QAction*)),
-				this,
-				SLOT (handleCTCPAction (QAction*)));
+				&QMenu::triggered,
+				[this] (QAction *act)
+				{
+					ICH_->handleCTCPRequest ({ Nick_, act->text ().toLower () });
+				});
 
-		Actions_.append (infoMenu->menuAction ());
-		Actions_.append (ctcpMenu->menuAction ());
+		Actions_ = QList { infoMenu->menuAction (), ctcpMenu->menuAction () };
 
 		ServerID_ = ICH_->GetParentID ();
 	}
@@ -75,7 +72,7 @@ namespace Acetamide
 
 	QStringList ChannelParticipantEntry::Groups () const
 	{
-		return QStringList (ICH_->GetChannelID ());
+		return { ICH_->GetChannelID () };
 	}
 
 	void ChannelParticipantEntry::SetGroups (const QStringList&)
@@ -85,7 +82,7 @@ namespace Acetamide
 	IMessage* ChannelParticipantEntry::CreateMessage (IMessage::Type,
 			const QString&, const QString& body)
 	{
-		IrcMessage *message = new IrcMessage (IMessage::Type::ChatMessage,
+		const auto message = new IrcMessage (IMessage::Type::ChatMessage,
 				IMessage::Direction::Out,
 				ServerID_,
 				Nick_,
@@ -110,7 +107,7 @@ namespace Acetamide
 		return Roles_.last ();
 	}
 
-	void ChannelParticipantEntry::SetRole (const ChannelRole& role)
+	void ChannelParticipantEntry::SetRole (ChannelRole role)
 	{
 		if (!Roles_.contains (role))
 		{
@@ -127,32 +124,9 @@ namespace Acetamide
 		emit permsChanged ();
 	}
 
-	void ChannelParticipantEntry::RemoveRole (const ChannelRole& role)
+	void ChannelParticipantEntry::RemoveRole (ChannelRole role)
 	{
 		if (Roles_.removeAll (role))
 			emit permsChanged ();
 	}
-
-	void ChannelParticipantEntry::handleWhoIs ()
-	{
-		ICH_->handleWhoIs (Nick_);
-	}
-
-	void ChannelParticipantEntry::handleWhoWas ()
-	{
-		ICH_->handleWhoWas (Nick_);
-	}
-
-	void ChannelParticipantEntry::handleWho ()
-	{
-		ICH_->handleWho (Nick_);
-	}
-
-	void ChannelParticipantEntry::handleCTCPAction (QAction *action)
-	{
-		ICH_->handleCTCPRequest ({ Nick_, action->text ().toLower () });
-	}
-
-}
-}
 }
