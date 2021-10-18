@@ -76,20 +76,9 @@ namespace Acetamide
 		return Type_;
 	}
 
-	void ChannelPublicMessage::SetMessageType (IMessage::Type t)
-	{
-		Type_ = t;
-	}
-
 	IMessage::SubType ChannelPublicMessage::GetMessageSubType () const
 	{
 		return SubType_;
-	}
-
-	void ChannelPublicMessage::SetMessageSubType
-			(IMessage::SubType type)
-	{
-		SubType_ = type;
 	}
 
 	QObject* ChannelPublicMessage::OtherPart () const

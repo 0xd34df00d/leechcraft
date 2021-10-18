@@ -33,10 +33,9 @@ namespace Acetamide
 		ChannelParticipantEntry_ptr ParticipantEntry_;
 		QString Message_;
 		QDateTime Datetime_;
-		Direction Direction_;
-		QString FromChID_;
-		Type Type_;
-		SubType SubType_;
+		const Direction Direction_;
+		const Type Type_;
+		const SubType SubType_;
 	public:
 		ChannelPublicMessage (QString, ChannelCLEntry*);
 		ChannelPublicMessage (QString, Direction,
@@ -50,9 +49,7 @@ namespace Acetamide
 		void Store ();
 		Direction GetDirection () const;
 		Type GetMessageType () const;
-		void SetMessageType (IMessage::Type);
 		SubType GetMessageSubType () const;
-		void SetMessageSubType (IMessage::SubType);
 		/** Since it's outgoing message, the other part
 		 * always equals to the room entry.
 		 */
