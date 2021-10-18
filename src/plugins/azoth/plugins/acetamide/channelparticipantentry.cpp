@@ -37,7 +37,7 @@ namespace Acetamide
 				this,
 				SLOT (handleWho ()));
 
-		const auto ctcpMenu = new QMenu (tr ("CTCP"));
+		const auto ctcpMenu = new QMenu ("CTCP");
 		ctcpMenu->addAction ("PING");
 		ctcpMenu->addAction ("FINGER");
 		ctcpMenu->addAction ("VERSION");
