@@ -525,34 +525,34 @@ namespace LC::Azoth::Acetamide
 		emit gotInviteListItem (mask, nick, date);
 	}
 
-	void ChannelCLEntry::AddBanListItem (QString mask)
+	void ChannelCLEntry::AddBanListItem (const QString& mask)
 	{
-		ICH_->AddBanListItem (std::move (mask));
+		ICH_->AddBanListItem (mask);
 	}
 
-	void ChannelCLEntry::RemoveBanListItem (QString mask)
+	void ChannelCLEntry::RemoveBanListItem (const QString& mask)
 	{
-		ICH_->RemoveBanListItem (std::move (mask));
+		ICH_->RemoveBanListItem (mask);
 	}
 
-	void ChannelCLEntry::AddExceptListItem (QString mask)
+	void ChannelCLEntry::AddExceptListItem (const QString& mask)
 	{
-		ICH_->AddExceptListItem (std::move (mask));
+		ICH_->AddExceptListItem (mask);
 	}
 
-	void ChannelCLEntry::RemoveExceptListItem (QString mask)
+	void ChannelCLEntry::RemoveExceptListItem (const QString& mask)
 	{
-		ICH_->RemoveExceptListItem (std::move (mask));
+		ICH_->RemoveExceptListItem (mask);
 	}
 
-	void ChannelCLEntry::AddInviteListItem (QString mask)
+	void ChannelCLEntry::AddInviteListItem (const QString& mask)
 	{
-		ICH_->AddInviteListItem (std::move (mask));
+		ICH_->AddInviteListItem (mask);
 	}
 
-	void ChannelCLEntry::RemoveInviteListItem (QString mask)
+	void ChannelCLEntry::RemoveInviteListItem (const QString& mask)
 	{
-		ICH_->RemoveInviteListItem (std::move (mask));
+		ICH_->RemoveInviteListItem (mask);
 	}
 
 	void ChannelCLEntry::SetNewChannelModes (const ChannelModes& modes)
