@@ -7,51 +7,53 @@
  **********************************************************************/
 
 #include "channelslistdialog.h"
+#include <chrono>
 #include <QTimer>
 #include <QStandardItemModel>
 #include "channelslistfilterproxymodel.h"
 #include "ircserverhandler.h"
+#include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ChannelsListDialog::ChannelsListDialog (IrcServerHandler* ish, QWidget* parent)
-	: QDialog (parent)
-	, ISH_ (ish)
-	, BufferTimer_ (new QTimer (this))
-	, FilterProxyModel_ (new ChannelsListFilterProxyModel (this))
-	, Model_ (new QStandardItemModel (this))
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
-		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Users count"), tr ("Topic") });
-		FilterProxyModel_->setSourceModel (Model_);
-		Ui_.ChannelsList_->setModel (FilterProxyModel_);
+		const auto bufferTimer = new QTimer { this };
+		const auto filterModel = new ChannelsListFilterProxyModel { this };
+		const auto model = new QStandardItemModel { this };
+
+		model->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Users count"), tr ("Topic") });
+		filterModel->setSourceModel (model);
+		Ui_.ChannelsList_->setModel (filterModel);
 		Ui_.ChannelsList_->setColumnWidth (ChannelName, 200);
 		Ui_.ChannelsList_->setColumnWidth (ParticipantsCount, 50);
 		Ui_.ChannelsList_->header ()->setStretchLastSection (true);
 
-		connect (BufferTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (appendRows ()));
+		connect (bufferTimer,
+				&QTimer::timeout,
+				[this, model]
+				{
+					for (const auto& row : Buffer_)
+						model->appendRow (row);
+					Buffer_.clear ();
+				});
 
 		connect (ish,
 				&IrcServerHandler::gotChannelsBegin,
 				this,
-				[this]
+				[=]
 				{
-					Model_->removeRows (0, Model_->rowCount ());
+					model->removeRows (0, model->rowCount ());
 
 					using namespace std::chrono_literals;
-					BufferTimer_->start (1s);
+					bufferTimer->start (1s);
 				});
 		connect (ish,
 				&IrcServerHandler::gotChannelsEnd,
-				BufferTimer_,
+				bufferTimer,
 				&QTimer::stop);
 		connect (ish,
 				&IrcServerHandler::gotChannels,
@@ -66,33 +68,20 @@ namespace Acetamide
 					for (const auto item : Buffer_.last ())
 						item->setEditable (false);
 				});
+
+		connect (Ui_.Filter_,
+				&QLineEdit::textChanged,
+				filterModel,
+				qOverload<const QString&> (&ChannelsListFilterProxyModel::setFilterRegExp));
+		connect (Ui_.ChannelsList_,
+				&QTreeView::doubleClicked,
+				this,
+				[ish] (const QModelIndex& index)
+				{
+					ish->JoinChannel ({
+							.ServerName_ = ish->GetServerOptions ().ServerName_,
+							.ChannelName_ = index.siblingAtColumn (Columns::ChannelName).data ().toString (),
+						});
+				});
 	}
-
-	void ChannelsListDialog::appendRows ()
-	{
-		auto list = Buffer_;
-		Buffer_.clear ();
-
-		for (const auto& row : list)
-			Model_->appendRow (row);
-	}
-
-	void ChannelsListDialog::on_Filter__textChanged (const QString& text)
-	{
-		FilterProxyModel_->setFilterRegExp (text);
-	}
-
-	void ChannelsListDialog::on_ChannelsList__doubleClicked (const QModelIndex& index)
-	{
-		if (!index.isValid ())
-			return;
-
-		QModelIndex idx = index.sibling (index.row (), 0);
-		ChannelOptions opts;
-		opts.ChannelName_ = idx.data ().toString ();
-		opts.ServerName_ = ISH_->GetServerOptions ().ServerName_;
-		ISH_->JoinChannel (opts);
-	}
-}
-}
 }

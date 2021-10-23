@@ -9,25 +9,22 @@
 #pragma once
 
 #include <QDialog>
-#include "localtypes.h"
+#include <QCoreApplication>
 #include "ui_channelslistdialog.h"
 
 class QStandardItem;
 class QStandardItemModel;
 class QTimer;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class ChannelsListFilterProxyModel;
 	class IrcServerHandler;
+	struct ChannelsDiscoverInfo;
 
 	class ChannelsListDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::ChannelsListDialog)
 
 		enum Columns
 		{
@@ -37,21 +34,9 @@ namespace Acetamide
 		};
 
 		Ui::ChannelsListDialog Ui_;
-		IrcServerHandler *ISH_;
 		QList<QList<QStandardItem*>> Buffer_;
-		QTimer *BufferTimer_;
-		ChannelsListFilterProxyModel *FilterProxyModel_;
-		QStandardItemModel *Model_;
-
 	public:
-		explicit ChannelsListDialog (IrcServerHandler *ish, QWidget *parent = 0);
-
-	private slots:
-		void appendRows ();
-		void on_Filter__textChanged (const QString& text);
-		void on_ChannelsList__doubleClicked (const QModelIndex& index);
+		explicit ChannelsListDialog (IrcServerHandler *ish, QWidget *parent = nullptr);
 	};
-}
-}
 }
 
