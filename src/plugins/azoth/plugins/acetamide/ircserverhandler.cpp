@@ -1248,23 +1248,8 @@ namespace Acetamide
 	{
 		IrcParser_->ChannelsListCommand (QStringList ());
 
-		ChannelsListDialog *dlg = new ChannelsListDialog (this);
+		const auto dlg = new ChannelsListDialog (this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose);
-		connect (this,
-				SIGNAL (gotChannelsBegin ()),
-				dlg,
-				SLOT (handleGotChannelsBegin ()),
-				Qt::UniqueConnection);
-		connect (this,
-				SIGNAL (gotChannels (ChannelsDiscoverInfo)),
-				dlg,
-				SLOT (handleGotChannels (ChannelsDiscoverInfo)),
-				Qt::UniqueConnection);
-		connect (this,
-				SIGNAL (gotChannelsEnd ()),
-				dlg,
-				SLOT (handleGotChannelsEnd ()),
-				Qt::UniqueConnection);
 		dlg->show ();
 	}
 

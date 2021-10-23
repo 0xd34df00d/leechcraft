@@ -46,10 +46,6 @@ namespace Acetamide
 	public:
 		explicit ChannelsListDialog (IrcServerHandler *ish, QWidget *parent = 0);
 
-	public slots:
-		void handleGotChannelsBegin ();
-		void handleGotChannels (const ChannelsDiscoverInfo& info);
-		void handleGotChannelsEnd ();
 	private slots:
 		void appendRows ();
 		void on_Filter__textChanged (const QString& text);

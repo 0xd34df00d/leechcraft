@@ -38,28 +38,34 @@ namespace Acetamide
 				SIGNAL (timeout ()),
 				this,
 				SLOT (appendRows ()));
-	}
 
-	void ChannelsListDialog::handleGotChannelsBegin ()
-	{
-		Model_->removeRows (0, Model_->rowCount ());
-		BufferTimer_->start (1000);
-	}
+		connect (ish,
+				&IrcServerHandler::gotChannelsBegin,
+				this,
+				[this]
+				{
+					Model_->removeRows (0, Model_->rowCount ());
 
-	void ChannelsListDialog::handleGotChannels (const ChannelsDiscoverInfo& info)
-	{
-		QStandardItem *name = new QStandardItem (info.ChannelName_);
-		name->setEditable (false);
-		QStandardItem *count = new QStandardItem (QString::number (info.UsersCount_));
-		count->setEditable (false);
-		QStandardItem *topic = new QStandardItem (info.Topic_);
-		topic->setEditable (false);
-		Buffer_.append ({ name, count, topic });
-	}
-
-	void ChannelsListDialog::handleGotChannelsEnd ()
-	{
-		BufferTimer_->stop ();
+					using namespace std::chrono_literals;
+					BufferTimer_->start (1s);
+				});
+		connect (ish,
+				&IrcServerHandler::gotChannelsEnd,
+				BufferTimer_,
+				&QTimer::stop);
+		connect (ish,
+				&IrcServerHandler::gotChannels,
+				this,
+				[this] (const ChannelsDiscoverInfo& info)
+				{
+					Buffer_.append ({
+							new QStandardItem { info.ChannelName_ },
+							new QStandardItem { QString::number (info.UsersCount_) },
+							new QStandardItem { info.Topic_ },
+						});
+					for (const auto item : Buffer_.last ())
+						item->setEditable (false);
+				});
 	}
 
 	void ChannelsListDialog::appendRows ()
