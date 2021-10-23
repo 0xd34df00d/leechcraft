@@ -74,7 +74,7 @@ namespace LC::Azoth::Acetamide
 				filterModel,
 				qOverload<const QString&> (&ChannelsListFilterProxyModel::setFilterRegExp));
 		connect (Ui_.ChannelsList_,
-				&QTreeView::doubleClicked,
+				&QTreeView::activated,
 				this,
 				[ish] (const QModelIndex& index)
 				{
