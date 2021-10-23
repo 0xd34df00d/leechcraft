@@ -28,8 +28,8 @@ namespace LC::Azoth::Acetamide
 		model->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Users count"), tr ("Topic") });
 		filterModel->setSourceModel (model);
 		Ui_.ChannelsList_->setModel (filterModel);
-		Ui_.ChannelsList_->setColumnWidth (ChannelName, 200);
-		Ui_.ChannelsList_->setColumnWidth (ParticipantsCount, 50);
+		Ui_.ChannelsList_->setColumnWidth (ChannelName, fontMetrics ().horizontalAdvance (QStringLiteral ("#asomewhatlongchannelname")));
+		Ui_.ChannelsList_->setColumnWidth (ParticipantsCount, fontMetrics ().horizontalAdvance (QStringLiteral ("99999")));
 		Ui_.ChannelsList_->header ()->setStretchLastSection (true);
 
 		connect (bufferTimer,
