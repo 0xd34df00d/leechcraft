@@ -559,11 +559,6 @@ namespace Acetamide
 				IMessage::Type::ServiceMessage,
 				IMessage::SubType::Other);
 	}
-
-	uint qHash (const ChannelOptions& opts)
-	{
-		return qHash (opts.ChannelName_ + opts.ChannelPassword_ + opts.ServerName_);
-	}
 }
 }
 }

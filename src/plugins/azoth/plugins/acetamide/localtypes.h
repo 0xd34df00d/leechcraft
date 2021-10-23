@@ -57,6 +57,7 @@ namespace LC::Azoth::Acetamide
 
 		bool operator== (const ChannelOptions&) const = default;
 	};
+	uint qHash (const ChannelOptions&);
 
 	struct ChannelsDiscoverInfo
 	{
