@@ -16,6 +16,26 @@
 
 namespace LC::Azoth::Acetamide
 {
+	namespace
+	{
+		constexpr auto SortRole = Qt::UserRole;
+
+		template<typename T>
+		auto MakeItem (T&& contents)
+		{
+			auto item = new QStandardItem;
+
+			using BaseT = std::decay_t<T>;
+			if constexpr (std::is_same_v<BaseT, QString>)
+				item->setText (contents);
+			else if constexpr (std::is_integral_v<BaseT>)
+				item->setText (QString::number (contents));
+
+			item->setData (contents, SortRole);
+
+			return item;
+		}
+	}
 	ChannelsListDialog::ChannelsListDialog (IrcServerHandler* ish, QWidget* parent)
 	: QDialog { parent }
 	{
@@ -27,6 +47,7 @@ namespace LC::Azoth::Acetamide
 
 		model->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Users count"), tr ("Topic") });
 		filterModel->setSourceModel (model);
+		filterModel->setSortRole (SortRole);
 		Ui_.ChannelsList_->setModel (filterModel);
 		Ui_.ChannelsList_->setColumnWidth (ChannelName, fontMetrics ().horizontalAdvance (QStringLiteral ("#asomewhatlongchannelname")));
 		Ui_.ChannelsList_->setColumnWidth (ParticipantsCount, fontMetrics ().horizontalAdvance (QStringLiteral ("99999")));
@@ -61,9 +82,9 @@ namespace LC::Azoth::Acetamide
 				[this] (const ChannelsDiscoverInfo& info)
 				{
 					Buffer_.append ({
-							new QStandardItem { info.ChannelName_ },
-							new QStandardItem { QString::number (info.UsersCount_) },
-							new QStandardItem { info.Topic_ },
+							MakeItem (info.ChannelName_),
+							MakeItem (QString::number (info.UsersCount_)),
+							MakeItem (info.Topic_),
 						});
 					for (const auto item : Buffer_.last ())
 						item->setEditable (false);

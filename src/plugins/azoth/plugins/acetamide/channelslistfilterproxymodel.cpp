@@ -8,11 +8,7 @@
 
 #include "channelslistfilterproxymodel.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ChannelsListFilterProxyModel::ChannelsListFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
@@ -23,30 +19,9 @@ namespace Acetamide
 		setSortLocaleAware (true);
 	}
 
-	bool ChannelsListFilterProxyModel::filterAcceptsRow (int sourceRow,
-			const QModelIndex& sourceParent) const
+	bool ChannelsListFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
-		const QModelIndex index = sourceModel()->index (sourceRow, 0, sourceParent);
-
+		const auto& index = sourceModel()->index (sourceRow, 0, sourceParent);
 		return sourceModel ()->data (index).toString ().contains (filterRegExp ());
 	}
-
-	bool ChannelsListFilterProxyModel::lessThan (const QModelIndex &left,
-			const QModelIndex &right) const
-	{
-		QVariant leftData = sourceModel ()->data (left);
-		QVariant rightData = sourceModel ()->data (right);
-
-		QString leftString = leftData.toString ();
-		if (left.column () == 0)
-			leftString = leftString.mid (1);
-
-		QString rightString = rightData.toString ();
-		if (right.column () == 0)
-			rightString = rightString.mid (1);
-
-		return QString::localeAwareCompare (leftString, rightString) > 0;
-	}
-}
-}
 }

@@ -10,20 +10,13 @@
 
 #include <QSortFilterProxyModel>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class ChannelsListFilterProxyModel : public QSortFilterProxyModel
 	{
 	public:
-		ChannelsListFilterProxyModel (QObject *parent = 0);
+		explicit ChannelsListFilterProxyModel (QObject *parent = nullptr);
 	protected:
-		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const;
-		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
+		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const override;
 	};
-}
-}
 }
