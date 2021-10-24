@@ -404,7 +404,7 @@ namespace Acetamide
 				handler->SetBlockOutsideMessagesMode (action);
 				break;
 			case 'q':
-				if (ISH_->GetISupport ().value ("PREFIX").contains ('q'))
+				if (ISH_->GetISupport ().value (Lits::PREFIX).contains ('q'))
 					handleRole (ChannelRole::Owner);
 				break;
 			case 'p':

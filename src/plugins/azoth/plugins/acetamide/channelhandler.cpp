@@ -172,18 +172,13 @@ namespace LC::Azoth::Acetamide
 		bool hasRole = false;
 		QChar roleSign;
 
-		static const auto prefix = QStringLiteral ("PREFIX");
-		const auto& supports = CM_->GetISupport ();
-		if (supports.contains (prefix))
+		const auto& prefixList = CM_->GetISupport ().value (Lits::PREFIX).split (')');
+		const int id = prefixList.value (1).indexOf (nick [0]);
+		if (id != -1)
 		{
-			const QStringList& prefixList = supports [prefix].split (')');
-			int id = prefixList.value (1).indexOf (nick [0]);
-			if (id != -1)
-			{
-				hasRole = true;
-				nickName = nickName.mid (1);
-				roleSign = prefixList.at (0) [id + 1];
-			}
+			hasRole = true;
+			nickName = nickName.mid (1);
+			roleSign = prefixList.at (0) [id + 1];
 		}
 
 		CM_->ClosePrivateChat (nickName);

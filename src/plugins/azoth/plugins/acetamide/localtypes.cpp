@@ -24,6 +24,7 @@ namespace LC::Azoth::Acetamide::Lits
 	DEFINE_LIT (SSL)
 	DEFINE_LIT (Autojoin)
 	DEFINE_LIT (AccountID)
+	DEFINE_LIT (PREFIX)
 }
 
 namespace LC::Azoth::Acetamide

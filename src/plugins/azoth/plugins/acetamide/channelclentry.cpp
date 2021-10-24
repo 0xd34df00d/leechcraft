@@ -51,7 +51,7 @@ namespace LC::Azoth::Acetamide
 		Aff2Str_ [ChannelRole::Participant] = "noaffiliation";
 
 		const auto& iSupport = ICH_->GetChannelsManager ()->GetISupport ();
-		QString roles = iSupport [QStringLiteral ("PREFIX")].split (')').value (0);
+		QString roles = iSupport [Lits::PREFIX].split (')').value (0);
 		for (int i = roles.length () - 1; i >= 1; --i)
 			switch (roles.at (i).toLatin1 ())
 			{

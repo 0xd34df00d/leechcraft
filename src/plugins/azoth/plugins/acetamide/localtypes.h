@@ -28,6 +28,7 @@ namespace LC::Azoth::Acetamide
 		extern const QString SSL;
 		extern const QString Autojoin;
 		extern const QString AccountID;
+		extern const QString PREFIX;
 	}
 
 	enum class IrcServer
