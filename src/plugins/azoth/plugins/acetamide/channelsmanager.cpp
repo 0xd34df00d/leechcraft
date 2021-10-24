@@ -358,101 +358,85 @@ namespace Acetamide
 	void ChannelsManager::ParseChanMode (const QString& channel,
 			const QString& mode, const QString& value)
 	{
+		const auto handler = GetChannelHandler (channel);
+		if (!handler)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no handler for channel"
+					<< channel;
+			return;
+		}
+
 		bool action = mode [0] == '+';
+
+		const auto handleRole = [&] (ChannelRole role)
+		{
+			if (const auto& entry = handler->GetParticipantEntry (value))
+			{
+				if (action)
+					entry->SetRole (role);
+				else
+					entry->RemoveRole (role);
+				handler->MakePermsChangedMessage (value, role, action);
+			}
+		};
 
 		for (int i = 1; i < mode.length (); ++i)
 		{
 			switch (mode [i].toLatin1 ())
 			{
-				case 'o':
-					if (!value.isEmpty () &&
-							ChannelHandlers_ [channel]->IsUserExists (value))
-					{
-						ChannelParticipantEntry_ptr entry =
-								ChannelHandlers_ [channel]->GetParticipantEntry (value);
-						if (action)
-							entry->SetRole (ChannelRole::Operator);
-						else
-							entry->RemoveRole (ChannelRole::Operator);
-
-						ChannelHandlers_ [channel]->MakePermsChangedMessage (value,
-								ChannelRole::Operator, action);
-					}
-					break;
-				case 'v':
-					if (!value.isEmpty () &&
-							ChannelHandlers_ [channel]->IsUserExists (value))
-					{
-						ChannelParticipantEntry_ptr entry =
-								ChannelHandlers_ [channel]->GetParticipantEntry (value);
-						if (action)
-							entry->SetRole (ChannelRole::Voiced);
-						else
-							entry->RemoveRole (ChannelRole::Voiced);
-
-						ChannelHandlers_ [channel]->MakePermsChangedMessage (value,
-								ChannelRole::Voiced, action);
-					}
-					break;
-				case 'a':
-					// may be it is nessesary
-					break;
-				case 'i':
-					ChannelHandlers_ [channel]->SetInviteMode (action);
-					break;
-				case 'm':
-					ChannelHandlers_ [channel]->SetModerateMode (action);
-					break;
-				case 'n':
-					ChannelHandlers_ [channel]->SetBlockOutsideMessagesMode (action);
-					break;
-				case 'q':
-					if (ISH_->GetISupport ().contains ("PREFIX") &&
-							ISH_->GetISupport () ["PREFIX"].contains ('q'))
-						if (!value.isEmpty () &&
-								ChannelHandlers_ [channel]->IsUserExists (value))
-						{
-							const auto& entry = ChannelHandlers_ [channel]->GetParticipantEntry (value);
-							if (action)
-								entry->SetRole (ChannelRole::Owner);
-							else
-								entry->RemoveRole (ChannelRole::Owner);
-
-							ChannelHandlers_ [channel]->MakePermsChangedMessage (value,
-									ChannelRole::Owner, action);
-						}
-					break;
-				case 'p':
-					ChannelHandlers_ [channel]->SetPrivateMode (action);
-					break;
-				case 'r':
-					ChannelHandlers_ [channel]->SetServerReOpMode (action);
-					break;
-				case 's':
-					ChannelHandlers_ [channel]->SetSecretMode (action);
-					break;
-				case 't':
-					ChannelHandlers_ [channel]->SetOnlyOpTopicChangeMode (action);
-					break;
-				case 'l':
-					ChannelHandlers_ [channel]->
-							SetUserLimit (action, value.toInt ());
-					break;
-				case 'k':
-					ChannelHandlers_ [channel]->SetChannelKey (action, value);
-					break;
-				case 'b':
-					ISH_->ShowAnswer ("mode", tr ("%1 added to your ban list.")
-							.arg (value));
-					break;
-				case 'e':
-					ISH_->ShowAnswer ("mode", tr ("%1 added to your except list.")
-							.arg (value));
-					break;
-				case 'I':
-					ISH_->ShowAnswer ("mode", tr ("%1 added to your invite list.")
-							.arg (value));
-					break;
+			case 'o':
+				handleRole (ChannelRole::Operator);
+				break;
+			case 'v':
+				handleRole (ChannelRole::Voiced);
+				break;
+			case 'a':
+				// may be it is nessesary
+				break;
+			case 'i':
+				handler->SetInviteMode (action);
+				break;
+			case 'm':
+				handler->SetModerateMode (action);
+				break;
+			case 'n':
+				handler->SetBlockOutsideMessagesMode (action);
+				break;
+			case 'q':
+				if (ISH_->GetISupport ().value ("PREFIX").contains ('q'))
+					handleRole (ChannelRole::Owner);
+				break;
+			case 'p':
+				handler->SetPrivateMode (action);
+				break;
+			case 'r':
+				handler->SetServerReOpMode (action);
+				break;
+			case 's':
+				handler->SetSecretMode (action);
+				break;
+			case 't':
+				handler->SetOnlyOpTopicChangeMode (action);
+				break;
+			case 'l':
+				handler->SetUserLimit (action, value.toInt ());
+				break;
+			case 'k':
+				handler->SetChannelKey (action, value);
+				break;
+			case 'b':
+				ISH_->ShowAnswer ("mode", tr ("%1 added to your ban list.")
+						.arg (value));
+				break;
+			case 'e':
+				ISH_->ShowAnswer ("mode", tr ("%1 added to your except list.")
+						.arg (value));
+				break;
+			case 'I':
+				ISH_->ShowAnswer ("mode", tr ("%1 added to your invite list.")
+						.arg (value));
+				break;
 			}
 		}
 	}
