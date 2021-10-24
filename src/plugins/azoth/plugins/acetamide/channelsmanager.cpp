@@ -113,9 +113,8 @@ namespace Acetamide
 
 	void ChannelsManager::CloseChannel (const QString& channel)
 	{
-		const QString& chnnl = channel.toLower ();
-		if (ChannelHandlers_.contains (chnnl))
-			ChannelHandlers_ [chnnl]->CloseChannel ();
+		if (const auto handler = GetChannelHandler (channel))
+			handler->CloseChannel ();
 	}
 
 	void ChannelsManager::CloseAllChannels ()
@@ -150,17 +149,15 @@ namespace Acetamide
 	void ChannelsManager::AddParticipant (const QString& channel, const QString& nick,
 			const QString& user, const QString& host)
 	{
-		const QString& chnnl = channel.toLower ();
-		if (ChannelHandlers_.contains (chnnl))
-			ChannelHandlers_ [chnnl]->SetChannelUser (nick, user, host);
+		if (const auto handler = GetChannelHandler (channel))
+			handler->SetChannelUser (nick, user, host);
 	}
 
 	void ChannelsManager::LeaveParticipant (const QString& channel,
 			const QString& nick, const QString& msg)
 	{
-		const QString& chnnl = channel.toLower ();
-		if (ChannelHandlers_.contains (chnnl))
-			ChannelHandlers_ [chnnl]->LeaveParticipant (nick, msg);
+		if (const auto handler = GetChannelHandler (channel))
+			handler->LeaveParticipant (nick, msg);
 	}
 
 	void ChannelsManager::QuitParticipant (const QString& nick, const QString& msg)
@@ -173,9 +170,8 @@ namespace Acetamide
 	void ChannelsManager::KickParticipant (const QString& channel,
 			const QString& target, const QString& reason, const QString& who)
 	{
-		const QString& chnnl = channel.toLower ();
-		if (ChannelHandlers_.contains (chnnl))
-			ChannelHandlers_ [chnnl]->KickParticipant (target, reason, who);
+		if (const auto handler = GetChannelHandler (channel))
+			handler->KickParticipant (target, reason, who);
 	}
 
 	void ChannelsManager::KickCommand (const QString& channel,
@@ -193,12 +189,12 @@ namespace Acetamide
 
 	void ChannelsManager::GotNames (const QString& channel, const QStringList& participants)
 	{
-		if (IsChannelExists (channel) &&
-				!ChannelHandlers_ [channel]->IsRosterReceived ())
+		if (const auto handler = GetChannelHandler (channel);
+			handler && !handler->IsRosterReceived ())
 		{
 			for (const auto& nick : participants)
 				if (!nick.isEmpty ())
-					ChannelHandlers_ [channel]->SetChannelUser (nick);
+					handler->SetChannelUser (nick);
 		}
 		else
 			ReceiveCmdAnswerMessage ("names", participants.join (" "), false);
@@ -206,11 +202,11 @@ namespace Acetamide
 
 	void ChannelsManager::GotEndOfNamesCmd (const QString& channel)
 	{
-		if (ChannelHandlers_.contains (channel) &&
-				!ChannelHandlers_ [channel]->IsRosterReceived ())
+		if (const auto handler = GetChannelHandler (channel);
+			!handler->IsRosterReceived ())
 		{
-			ChannelHandlers_ [channel]->SetRosterReceived (true);
-			ISH_->GetAccount ()->handleGotRosterItems (QObjectList () << ChannelHandlers_ [channel]->GetCLEntry ());
+			handler->SetRosterReceived (true);
+			ISH_->GetAccount ()->handleGotRosterItems ({ handler->GetCLEntry () });
 		}
 		else
 			ReceiveCmdAnswerMessage ("names", "End of /NAMES", true);
@@ -219,49 +215,45 @@ namespace Acetamide
 	void ChannelsManager::SendPublicMessage (const QString& channel, const QString& msg)
 	{
 		LastActiveChannel_ = channel.toLower ();
-		const QString& chnnl = channel.toLower ();
+		const auto handler = GetChannelHandler (LastActiveChannel_);
 		if (msg.startsWith ('/'))
 		{
-			if (ChannelHandlers_.contains (chnnl))
+			if (handler)
 			{
-				const QString& cmd = ISH_->ParseMessageForCommand (msg, chnnl);
-				if (cmd == "say")
-					ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
-							msg.mid (4));
-				else if (cmd == "me")
-					ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
-							msg);
+				const auto& cmd = ISH_->ParseMessageForCommand (msg, LastActiveChannel_);
+				if (cmd == "say"_ql)
+					handler->HandleIncomingMessage (ISH_->GetNickName (), msg.mid (4));
+				else if (cmd == "me"_ql)
+					handler->HandleIncomingMessage (ISH_->GetNickName (), msg);
 				else
-					ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
+					handler->HandleServiceMessage (msg,
 							IMessage::Type::EventMessage,
 							IMessage::SubType::Other);
 			}
 		}
 		else
 		{
-			ISH_->SendPublicMessage (msg, chnnl);
-			if (ChannelHandlers_.contains (chnnl))
-				ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
-						msg);
+			ISH_->SendPublicMessage (msg, LastActiveChannel_);
+			if (handler)
+				handler->HandleIncomingMessage (ISH_->GetNickName (), msg);
 		}
 	}
 
 	void ChannelsManager::ReceivePublicMessage (const QString& channel,
 			const QString& nick, const QString& msg)
 	{
-		const QString& chnnl = channel.toLower ();
-		if (ChannelHandlers_.contains (chnnl))
-			ChannelHandlers_ [chnnl]->HandleIncomingMessage (nick, msg);
+		if (const auto handler = GetChannelHandler (channel))
+			handler->HandleIncomingMessage (nick, msg);
 	}
 
 	bool ChannelsManager::ReceiveCmdAnswerMessage (const QString&,
 			const QString& answer, bool)
 	{
-		if (LastActiveChannel_.isEmpty () ||
-				!ChannelHandlers_.contains (LastActiveChannel_))
+		const auto handler = GetChannelHandler (LastActiveChannel_);
+		if (!handler)
 			return false;
 
-		ChannelHandlers_ [LastActiveChannel_]->HandleServiceMessage (answer,
+		handler->HandleServiceMessage (answer,
 				IMessage::Type::EventMessage,
 				IMessage::SubType::Other);
 
@@ -270,9 +262,8 @@ namespace Acetamide
 
 	void ChannelsManager::SetMUCSubject (const QString& channel, const QString& topic)
 	{
-		const QString& chnnl = channel.toLower ();
-		if (ChannelHandlers_.contains (chnnl))
-			ChannelHandlers_ [chnnl]->SetMUCSubject (topic);
+		if (const auto handler = GetChannelHandler (channel))
+			handler->SetMUCSubject (topic);
 
 		ReceiveCmdAnswerMessage ("topic", topic, ISH_->IsCmdHasLongAnswer ("topic"));
 	}
@@ -301,8 +292,8 @@ namespace Acetamide
 	void ChannelsManager::SetBanListItem (const QString& channel,
 			const QString& mask, const QString& nick, const QDateTime& time)
 	{
-		if (ChannelHandlers_.contains (channel))
-			ChannelHandlers_ [channel]->SetBanListItem (mask, nick, time);
+		if (const auto handler = GetChannelHandler (channel))
+			handler->SetBanListItem (mask, nick, time);
 	}
 
 	void ChannelsManager::RequestBanList (const QString& channel)
@@ -345,8 +336,8 @@ namespace Acetamide
 	void ChannelsManager::SetInviteListItem (const QString& channel,
 			const QString& mask, const QString& nick, const QDateTime& time)
 	{
-		if (ChannelHandlers_.contains (channel))
-			ChannelHandlers_ [channel]->SetInviteListItem (mask, nick, time);
+		if (const auto handler = GetChannelHandler (channel))
+			handler->SetInviteListItem (mask, nick, time);
 	}
 
 	void ChannelsManager::RequestInviteList (const QString& channel)
@@ -521,18 +512,14 @@ namespace Acetamide
 
 	void ChannelsManager::UpdateEntry (const WhoMessage& message)
 	{
-		if (!ChannelHandlers_.contains (message.Channel_.toLower ()))
-			return;
-
-		ChannelHandlers_ [message.Channel_.toLower ()]->UpdateEntry (message);
+		if (const auto handler = GetChannelHandler (message.Channel_))
+			handler->UpdateEntry (message);
 	}
 
 	int ChannelsManager::GetChannelUsersCount (const QString& channel)
 	{
-		if (!ChannelHandlers_.contains (channel.toLower ()))
-			return 0;
-
-		return ChannelHandlers_ [channel.toLower ()]->GetParticipants ().count ();
+		const auto handler = GetChannelHandler (channel);
+		return handler ? handler->GetParticipants ().size () : 0;
 	}
 
 	void ChannelsManager::ClosePrivateChat (const QString& nick)
@@ -542,13 +529,13 @@ namespace Acetamide
 
 	void ChannelsManager::SetChannelUrl (const QString& channel, const QString& url)
 	{
-		if (const auto& handler = ChannelHandlers_ [channel.toLower ()])
+		if (const auto handler = GetChannelHandler (channel))
 			handler->SetUrl (url);
 	}
 
 	void ChannelsManager::SetTopicWhoTime (const QString& channel, const QString& who, quint64 time)
 	{
-		const auto& handler = ChannelHandlers_ [channel.toLower ()];
+		const auto handler = GetChannelHandler (channel);
 		if (!handler)
 			return;
 
