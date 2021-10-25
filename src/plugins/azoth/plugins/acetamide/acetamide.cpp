@@ -50,7 +50,7 @@ namespace LC::Azoth::Acetamide
 
 	QString Plugin::GetName () const
 	{
-		return QStringLiteral ("Azoth Acetamide");
+		return Lits::AzothAcetamide;
 	}
 
 	QString Plugin::GetInfo () const

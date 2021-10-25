@@ -25,6 +25,8 @@ namespace LC::Azoth::Acetamide::Lits
 	DEFINE_LIT (Autojoin)
 	DEFINE_LIT (AccountID)
 	DEFINE_LIT (PREFIX)
+
+	const auto AzothAcetamide = QStringLiteral ("Azoth Acetamide");
 }
 
 namespace LC::Azoth::Acetamide

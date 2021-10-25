@@ -29,6 +29,8 @@ namespace LC::Azoth::Acetamide
 		extern const QString Autojoin;
 		extern const QString AccountID;
 		extern const QString PREFIX;
+
+		extern const QString AzothAcetamide;
 	}
 
 	enum class IrcServer

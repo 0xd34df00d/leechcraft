@@ -106,7 +106,7 @@ namespace LC::Azoth::Acetamide
 
 		if (ServerHandlers_ [serverId]->IsChannelExists (channelId))
 		{
-			const auto& e = Util::MakeNotification ("Azoth",
+			const auto& e = Util::MakeNotification (Lits::AzothAcetamide,
 					tr ("This channel is already joined."),
 					Priority::Warning);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity(e);
@@ -184,7 +184,7 @@ namespace LC::Azoth::Acetamide
 
 		if (hadUnknownVersions)
 		{
-			const auto& entity = Util::MakeNotification ("Azoth Acetamide",
+			const auto& entity = Util::MakeNotification (Lits::AzothAcetamide,
 					tr ("Some bookmarks were lost due to unknown storage version."),
 					Priority::Warning);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
