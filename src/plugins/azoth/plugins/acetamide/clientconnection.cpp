@@ -90,11 +90,6 @@ namespace LC::Azoth::Acetamide
 					this,
 					SLOT (handleLog (IMessage::Direction, const QString&)),
 					Qt::UniqueConnection);
-		else
-			disconnect (ish,
-					SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
-					this,
-					SLOT (handleLog (IMessage::Direction, const QString&)));
 		ServerHandlers_ [serverId] = ish;
 
 		ish->ConnectToServer ();
