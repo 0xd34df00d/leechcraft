@@ -54,6 +54,7 @@ namespace LC::Azoth::Acetamide
 
 		ChannelParticipantEntry_ptr GetSelf ();
 		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&, bool announce = true);
+		ChannelParticipantEntry_ptr GetExistingParticipantEntry (const QString&) const;
 
 		bool IsUserExists (const QString&) const;
 

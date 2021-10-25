@@ -82,6 +82,11 @@ namespace LC::Azoth::Acetamide
 		return entry;
 	}
 
+	ChannelParticipantEntry_ptr ChannelHandler::GetExistingParticipantEntry (const QString&) const
+	{
+		return Nick2Entry_.value (nick);
+	}
+
 	bool ChannelHandler::IsUserExists (const QString& nick) const
 	{
 		return Nick2Entry_.contains (nick);
