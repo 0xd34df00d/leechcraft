@@ -82,7 +82,7 @@ namespace LC::Azoth::Acetamide
 		return entry;
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::GetExistingParticipantEntry (const QString&) const
+	ChannelParticipantEntry_ptr ChannelHandler::GetExistingParticipantEntry (const QString& nick) const
 	{
 		return Nick2Entry_.value (nick);
 	}

@@ -371,7 +371,7 @@ namespace Acetamide
 
 		const auto handleRole = [&] (ChannelRole role)
 		{
-			if (const auto& entry = handler->GetParticipantEntry (value))
+			if (const auto& entry = handler->GetExistingParticipantEntry (value))
 			{
 				if (action)
 					entry->SetRole (role);
