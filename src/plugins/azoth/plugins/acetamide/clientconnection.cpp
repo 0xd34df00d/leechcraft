@@ -23,7 +23,7 @@
 namespace LC::Azoth::Acetamide
 {
 	ClientConnection::ClientConnection (IrcAccount *account)
-	: Account_ (account)
+	: Account_ { account }
 	{
 		const auto proxyObj = qobject_cast<IrcProtocol*> (account->GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);

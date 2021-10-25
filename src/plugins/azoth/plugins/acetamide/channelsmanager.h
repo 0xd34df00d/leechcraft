@@ -6,22 +6,17 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELSMANAGER_H
+#pragma once
 
 #include <memory>
 #include <QObject>
 #include <QHash>
 #include <QSet>
-#include <QQueue>
-#include <QDateTime>
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+class QDateTime;
+
+namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
 	class ChannelHandler;
@@ -33,14 +28,15 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		IrcServerHandler *ISH_;
+		IrcServerHandler * const ISH_;
 
 		QHash<QString, ChannelHandler_ptr> ChannelHandlers_;
 		QSet<ChannelOptions> ChannelsQueue_;
 
 		QString LastActiveChannel_;
 	public:
-		ChannelsManager (IrcServerHandler* = 0);
+		explicit ChannelsManager (IrcServerHandler*);
+
 		IrcAccount* GetAccount () const;
 
 		QString GetOurNick () const;
@@ -72,7 +68,7 @@ namespace Acetamide
 		QHash<QString, QObject*> GetParticipantsByNick (const QString& nick) const;
 
 		void AddParticipant (const QString& channel, const QString& nick,
-				const QString& user = QString (), const QString& host = QString ());
+				const QString& user = {}, const QString& host = {});
 
 		void LeaveParticipant (const QString& channel,
 				const QString& nick, const QString& msg);
@@ -133,9 +129,9 @@ namespace Acetamide
 
 		QMap<QString, QString> GetISupport () const;
 
-		void SetPrivateChat (const QString& nick);
+		void SetPrivateChat (const QString& nick) const;
 
-		void CreateServerParticipantEntry (QString nick);
+		void CreateServerParticipantEntry (const QString& nick);
 
 		void UpdateEntry (const WhoMessage& message);
 
@@ -148,7 +144,3 @@ namespace Acetamide
 				const QString& who, quint64 time);
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELSMANAGER_H

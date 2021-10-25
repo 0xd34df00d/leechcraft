@@ -10,8 +10,6 @@
 
 #include <QObject>
 #include <QHash>
-#include <QAbstractSocket>
-#include "core.h"
 #include "ircaccount.h"
 
 namespace LC::Azoth

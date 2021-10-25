@@ -9,7 +9,6 @@
 #include "core.h"
 #include <QStandardItemModel>
 #include <QRegExp>
-#include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "ircprotocol.h"
 #include "nickservidentifywidget.h"

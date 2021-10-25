@@ -7,23 +7,19 @@
  **********************************************************************/
 
 #include "channelsmanager.h"
-#include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "ircaccount.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ChannelsManager::ChannelsManager (IrcServerHandler *ish)
-	: QObject (ish)
-	, ISH_ (ish)
+	: QObject { ish }
+	, ISH_ { ish }
 	{
 	}
 
@@ -98,12 +94,7 @@ namespace Acetamide
 	{
 		const auto ch = std::make_shared<ChannelHandler> (options, this);
 		ChannelHandlers_ [options.ChannelName_.toLower ()] = ch;
-
-		ChannelCLEntry *ichEntry = ch->GetCLEntry ();
-		if (!ichEntry)
-			return false;
-
-		return true;
+		return ch->GetCLEntry ();
 	}
 
 	void ChannelsManager::LeaveChannel (const QString& channel, const QString& msg)
@@ -130,10 +121,10 @@ namespace Acetamide
 	{
 		const auto wasntEmpty = ChannelHandlers_.remove (ich->GetChannelOptions ().ChannelName_);
 
+		const auto autoDisconnect = XmlSettingsManager::Instance ().property ("AutoDisconnectFromServer").toBool ();
 		if (ChannelHandlers_.isEmpty () &&
 				wasntEmpty &&
-				XmlSettingsManager::Instance ()
-						.property ("AutoDisconnectFromServer").toBool ())
+				autoDisconnect)
 			ISH_->DisconnectFromServer ();
 	}
 
@@ -162,7 +153,7 @@ namespace Acetamide
 
 	void ChannelsManager::QuitParticipant (const QString& nick, const QString& msg)
 	{
-		for (auto ch : ChannelHandlers_)
+		for (const auto& ch : ChannelHandlers_)
 			if (ch->IsUserExists (nick))
 				ch->LeaveParticipant (nick, msg);
 	}
@@ -187,6 +178,11 @@ namespace Acetamide
 				ich->ChangeNickname (oldNick, newNick);
 	}
 
+	namespace
+	{
+		const auto Names = QStringLiteral ("names");
+	}
+
 	void ChannelsManager::GotNames (const QString& channel, const QStringList& participants)
 	{
 		if (const auto handler = GetChannelHandler (channel);
@@ -197,7 +193,7 @@ namespace Acetamide
 					handler->SetChannelUser (nick);
 		}
 		else
-			ReceiveCmdAnswerMessage ("names", participants.join (" "), false);
+			ReceiveCmdAnswerMessage (Names, participants.join (' '), false);
 	}
 
 	void ChannelsManager::GotEndOfNamesCmd (const QString& channel)
@@ -209,7 +205,7 @@ namespace Acetamide
 			ISH_->GetAccount ()->handleGotRosterItems ({ handler->GetCLEntry () });
 		}
 		else
-			ReceiveCmdAnswerMessage ("names", "End of /NAMES", true);
+			ReceiveCmdAnswerMessage (Names, QStringLiteral ("End of /NAMES"), true);
 	}
 
 	void ChannelsManager::SendPublicMessage (const QString& channel, const QString& msg)
@@ -265,7 +261,8 @@ namespace Acetamide
 		if (const auto handler = GetChannelHandler (channel))
 			handler->SetMUCSubject (topic);
 
-		ReceiveCmdAnswerMessage ("topic", topic, ISH_->IsCmdHasLongAnswer ("topic"));
+		const auto topicMarker = QStringLiteral ("topic");
+		ReceiveCmdAnswerMessage (topicMarker, topic, ISH_->IsCmdHasLongAnswer (topicMarker));
 	}
 
 	void ChannelsManager::SetTopic (const QString& channel, const QString& topic)
@@ -381,6 +378,8 @@ namespace Acetamide
 			}
 		};
 
+		const auto Mode = QStringLiteral ("mode");
+
 		for (int i = 1; i < mode.length (); ++i)
 		{
 			switch (mode [i].toLatin1 ())
@@ -426,16 +425,13 @@ namespace Acetamide
 				handler->SetChannelKey (action, value);
 				break;
 			case 'b':
-				ISH_->ShowAnswer ("mode", tr ("%1 added to your ban list.")
-						.arg (value));
+				ISH_->ShowAnswer (Mode, tr ("%1 added to your ban list.").arg (value));
 				break;
 			case 'e':
-				ISH_->ShowAnswer ("mode", tr ("%1 added to your except list.")
-						.arg (value));
+				ISH_->ShowAnswer (Mode, tr ("%1 added to your except list.").arg (value));
 				break;
 			case 'I':
-				ISH_->ShowAnswer ("mode", tr ("%1 added to your invite list.")
-						.arg (value));
+				ISH_->ShowAnswer (Mode, tr ("%1 added to your invite list.").arg (value));
 				break;
 			}
 		}
@@ -482,14 +478,14 @@ namespace Acetamide
 		return ISH_->GetISupport ();
 	}
 
-	void ChannelsManager::SetPrivateChat (const QString& nick)
+	void ChannelsManager::SetPrivateChat (const QString& nick) const
 	{
 		for (const auto entryObj : GetParticipantsByNick (nick))
 			if (const auto entry = qobject_cast<IrcParticipantEntry*> (entryObj))
 				entry->SetPrivateChat (true);
 	}
 
-	void ChannelsManager::CreateServerParticipantEntry (QString nick)
+	void ChannelsManager::CreateServerParticipantEntry (const QString& nick)
 	{
 		ISH_->CreateServerParticipantEntry (nick);
 	}
@@ -523,13 +519,11 @@ namespace Acetamide
 		if (!handler)
 			return;
 
-		QString msg (tr ("Topic was set by %1 at %2")
-				.arg (who)
-				.arg (QDateTime::fromSecsSinceEpoch (time).toString (Qt::TextDate)));
+		const auto& msg = tr ("Topic was set by %1 at %2")
+				.arg (who,
+					  QDateTime::fromSecsSinceEpoch (time).toString (Qt::TextDate));
 		handler->HandleServiceMessage (msg,
 				IMessage::Type::ServiceMessage,
 				IMessage::SubType::Other);
 	}
-}
-}
 }

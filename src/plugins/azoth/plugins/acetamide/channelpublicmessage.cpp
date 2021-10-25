@@ -8,15 +8,10 @@
 
 #include "channelpublicmessage.h"
 #include <QtDebug>
-#include <QTextDocument>
 #include "channelclentry.h"
 #include "channelhandler.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ChannelPublicMessage::ChannelPublicMessage (QString msg,
 			ChannelCLEntry *entry)
@@ -126,6 +121,4 @@ namespace Acetamide
 	{
 		Datetime_ = dt;
 	}
-};
-};
-};
+}
