@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CORE_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CORE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
@@ -15,15 +15,13 @@
 
 class QStandardItemModel;
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-class IProxyObject;
+	class IProxyObject;
+}
 
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
-
 	class IrcProtocol;
 	class IrcAccount;
 	class NickServIdentifyWidget;
@@ -34,7 +32,6 @@ namespace Acetamide
 
 		std::shared_ptr<IrcProtocol> IrcProtocol_;
 		QObject *PluginProxy_ = nullptr;
-		QStandardItemModel* Model_;
 		NickServIdentifyWidget* NickServIdentifyWidget_;
 		QList<NickServIdentify> NickServIdentifyList_;
 
@@ -50,20 +47,9 @@ namespace Acetamide
 		IProxyObject* GetPluginProxy () const;
 
 		NickServIdentifyWidget* GetNickServIdentifyWidget () const;
-		QStandardItemModel* GetNickServIdentifyModel () const;
 
 		void AddNickServIdentify (const NickServIdentify&);
-		QList<NickServIdentify> GetAllNickServIdentify () const;
-		QList<NickServIdentify> GetNickServIdentifyWithNick (const QString&) const;
-		QList<NickServIdentify> GetNickServIdentifyWithNickServ (const QString&) const;
-		QList<NickServIdentify> GetNickServIdentifyWithServ (const QString&) const;
 		QList<NickServIdentify> GetNickServIdentifyWithMainParams (const QString&,
 				const QString&, const QString&) const;
-	private slots:
-		void handleItemsAdded (const QList<QObject*>&);
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CORE_H
