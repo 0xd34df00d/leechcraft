@@ -26,12 +26,10 @@
 #include "util.h"
 #include "customstatusesmanager.h"
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	FormatterProxyObject::FormatterProxyObject ()
-	: LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))[^\\s<]+)",
+	: LinkRegexp_ (R"(((?:(?:\w+://)|(?:xmpp:|mailto:|www\.|magnet:|irc:))[^\s<]+))",
 			Qt::CaseInsensitive)
 	{
 	}
@@ -48,12 +46,12 @@ namespace Azoth
 
 	QString FormatterProxyObject::FormatDate (QDateTime dt, QObject *obj) const
 	{
-		return Core::Instance ().FormatDate (dt, qobject_cast<IMessage*> (obj));
+		return Core::Instance ().FormatDate (std::move (dt), qobject_cast<IMessage*> (obj));
 	}
 
 	QString FormatterProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
 	{
-		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
+		return Core::Instance ().FormatNickname (std::move (nick), qobject_cast<IMessage*> (obj), color);
 	}
 
 	QString FormatterProxyObject::EscapeBody (QString body, IMessage::EscapePolicy escape) const
@@ -75,7 +73,7 @@ namespace Azoth
 
 	QString FormatterProxyObject::FormatBody (QString body, QObject *obj, const QList<QColor>& coloring) const
 	{
-		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj), coloring);
+		return Core::Instance ().FormatBody (std::move (body), qobject_cast<IMessage*> (obj), coloring);
 	}
 
 	void FormatterProxyObject::PreprocessMessage (QObject *msgObj)
@@ -104,12 +102,9 @@ namespace Azoth
 			{
 				const auto& newBody = text.isEmpty () ?
 						ProxyObject::tr ("%1 changed status to %2")
-							.arg (nick)
-							.arg (state) :
+							.arg (nick, state) :
 						ProxyObject::tr ("%1 changed status to %2 (%3)")
-							.arg (nick)
-							.arg (state)
-							.arg (text);
+							.arg (nick, state, text);
 				msg->SetBody (newBody);
 			}
 			break;
@@ -140,7 +135,7 @@ namespace Azoth
 			}
 
 			auto trimmed = link.trimmed ();
-			if (trimmed.startsWith ("www."))
+			if (trimmed.startsWith ("www."_ql))
 				trimmed.prepend ("http://");
 
 			auto shortened = trimmed;
@@ -399,5 +394,4 @@ namespace Azoth
 	{
 		return AvatarsManager_;
 	}
-}
 }
