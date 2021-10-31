@@ -6,13 +6,15 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NICKSERVIDENTIFYWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NICKSERVIDENTIFYWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include "ui_nickservidentifywidget.h"
 
-class QStandardItemModel;
+namespace LC::Util
+{
+	class FlatItemsModelBase;
+}
 
 namespace LC
 {
@@ -20,6 +22,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
+	struct NickServIdentify;
+
 	class NickServIdentifyWidget : public QWidget
 	{
 		Q_OBJECT
@@ -34,20 +38,21 @@ namespace Acetamide
 		};
 
 		Ui::NickServIdentifyWidget Ui_;
-		QStandardItemModel* Model_;
 	public:
-		NickServIdentifyWidget (QStandardItemModel*, QWidget* = 0);
-	private:
-		void ReadSettings ();
+		explicit NickServIdentifyWidget (Util::FlatItemsModelBase&, QWidget* = nullptr);
 	public slots:
 		void accept ();
 	private slots:
 		void on_Add__clicked ();
 		void on_Edit__clicked ();
 		void on_Delete__clicked ();
-	};
-};
-};
-};
+	signals:
+		void saveSettings ();
 
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NICKSERVIDENTIFYWIDGET_H
+		void identifyAdded (const NickServIdentify&);
+		void identifyEdited (int, const NickServIdentify&);
+		void identifyRemoved (int);
+	};
+}
+}
+}

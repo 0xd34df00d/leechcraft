@@ -11,6 +11,7 @@
 #include <QStringList>
 #include <QPair>
 #include <QDateTime>
+#include <QMetaType>
 
 namespace LC::Azoth::Acetamide
 {
@@ -178,3 +179,5 @@ namespace LC::Azoth::Acetamide
 		QString ConnectedFrom_;
 	};
 }
+
+Q_DECLARE_METATYPE (LC::Azoth::Acetamide::NickServIdentify)

@@ -12,6 +12,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/azoth/iprotocolplugin.h>
+#include "nickservidentifymanager.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -28,6 +29,7 @@ namespace LC::Azoth::Acetamide
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Acetamide")
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		std::shared_ptr<NickServIdentifyManager> IdentifyManager_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;

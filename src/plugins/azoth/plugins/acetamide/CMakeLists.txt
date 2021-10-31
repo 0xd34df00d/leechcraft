@@ -32,6 +32,7 @@ LC_DEFINE_PLUGIN (
 		invitechannelsdialog.cpp
 		localtypes.cpp
 		newnickservidentifydialog.cpp
+		nickservidentifymanager.cpp
 		nickservidentifywidget.cpp
 		rplisupportparser.cpp
 		servercommandmessage.cpp

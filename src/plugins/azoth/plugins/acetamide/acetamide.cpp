@@ -21,16 +21,18 @@ namespace LC::Azoth::Acetamide
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("azoth_acetamide"));
-
 		qRegisterMetaTypeStreamOperators<QList<QStringList>> ("QList<QStringList>");
+
+		Util::InstallTranslator (QStringLiteral ("azoth_acetamide"));
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 					QStringLiteral ("azothacetamidesettings.xml"));
 
+		IdentifyManager_ = std::make_shared<NickServIdentifyManager> ();
+
 		SettingsDialog_->SetCustomWidget (QStringLiteral ("NickServIdentifyWidget"),
-				Core::Instance ().GetNickServIdentifyWidget ());
+				IdentifyManager_->GetConfigWidget ());
 	}
 
 	void Plugin::SecondInit ()

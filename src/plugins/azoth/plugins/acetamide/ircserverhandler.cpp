@@ -31,6 +31,7 @@
 #include "rplisupportparser.h"
 #include "channelsmanager.h"
 #include "channelslistdialog.h"
+#include "nickservidentifymanager.h"
 
 namespace LC
 {
@@ -291,10 +292,9 @@ namespace Acetamide
 	void IrcServerHandler::IncomingNoticeMessage (const QString& nick, const QString& msg)
 	{
 		ShowAnswer ("NOTICE", msg);
-		QList<NickServIdentify> list = Core::Instance ()
-				.GetNickServIdentifyWithMainParams (ServerOptions_.ServerName_,
-						GetNickName (),
-						nick);
+		const auto& list = NickServIdentifyManager::Instance ().GetIdentifies (ServerOptions_.ServerName_,
+				GetNickName (),
+				nick);
 
 		if (list.isEmpty ())
 			return;

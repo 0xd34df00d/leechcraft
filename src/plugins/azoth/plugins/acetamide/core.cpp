@@ -11,13 +11,11 @@
 #include <QRegExp>
 #include <interfaces/azoth/iproxyobject.h>
 #include "ircprotocol.h"
-#include "nickservidentifywidget.h"
 
 namespace LC::Azoth::Acetamide
 {
 	Core::Core ()
 	: IrcProtocol_ { std::make_shared<IrcProtocol> () }
-	, NickServIdentifyWidget_ { new NickServIdentifyWidget { new QStandardItemModel { this } } }
 	{
 	}
 
@@ -51,35 +49,5 @@ namespace LC::Azoth::Acetamide
 	IProxyObject* Core::GetPluginProxy () const
 	{
 		return qobject_cast<IProxyObject*> (PluginProxy_);
-	}
-
-	NickServIdentifyWidget* Core::GetNickServIdentifyWidget () const
-	{
-		return NickServIdentifyWidget_;
-	}
-
-	void Core::AddNickServIdentify (const NickServIdentify& nsi)
-	{
-		if (NickServIdentifyList_.contains (nsi))
-			return;
-
-		NickServIdentifyList_ << nsi;
-	}
-
-	QList<NickServIdentify> Core::GetNickServIdentifyWithMainParams (const QString& server,
-			const QString& nick, const QString& nickserv) const
-	{
-		QList<NickServIdentify> list;
-		for (const auto& nsi : NickServIdentifyList_)
-		{
-			QRegExp nickMask (nsi.NickServNick_,
-					Qt::CaseInsensitive,
-					QRegExp::Wildcard);
-			if (nsi.Server_ == server &&
-					nsi.Nick_ == nick &&
-					nickMask.indexIn (nickserv) == 0)
-				list << nsi;
-		}
-		return list;
 	}
 }

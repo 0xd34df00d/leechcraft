@@ -13,8 +13,6 @@
 #include <interfaces/structures.h>
 #include "localtypes.h"
 
-class QStandardItemModel;
-
 namespace LC::Azoth
 {
 	class IProxyObject;
@@ -24,7 +22,6 @@ namespace LC::Azoth::Acetamide
 {
 	class IrcProtocol;
 	class IrcAccount;
-	class NickServIdentifyWidget;
 
 	class Core : public QObject
 	{
@@ -32,8 +29,6 @@ namespace LC::Azoth::Acetamide
 
 		std::shared_ptr<IrcProtocol> IrcProtocol_;
 		QObject *PluginProxy_ = nullptr;
-		NickServIdentifyWidget* NickServIdentifyWidget_;
-		QList<NickServIdentify> NickServIdentifyList_;
 
 		Core ();
 	public:
@@ -45,11 +40,5 @@ namespace LC::Azoth::Acetamide
 
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;
-
-		NickServIdentifyWidget* GetNickServIdentifyWidget () const;
-
-		void AddNickServIdentify (const NickServIdentify&);
-		QList<NickServIdentify> GetNickServIdentifyWithMainParams (const QString&,
-				const QString&, const QString&) const;
 	};
 }
