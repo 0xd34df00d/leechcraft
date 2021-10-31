@@ -66,16 +66,16 @@ namespace LC::Azoth::Acetamide
 		return ServerHandlers_.contains (GetServerKey (server));
 	}
 
-	void ClientConnection::JoinServer (const ServerOptions& server)
+	IrcServerHandler& ClientConnection::JoinServer (const ServerOptions& server)
 	{
 		const auto& serverId = GetServerKey (server);
-		if (ServerHandlers_.contains (serverId))
+		if (const auto ish = ServerHandlers_.value (serverId))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "server"
 					<< serverId
 					<< "is already present";
-			return;
+			return *ish;
 		}
 
 		const auto ish = new IrcServerHandler (server, Account_);
@@ -91,6 +91,8 @@ namespace LC::Azoth::Acetamide
 		ServerHandlers_ [serverId] = ish;
 
 		ish->ConnectToServer ();
+
+		return *ish;
 	}
 
 	void ClientConnection::JoinChannel (const ServerOptions& server,
@@ -99,10 +101,11 @@ namespace LC::Azoth::Acetamide
 		const auto& serverId = GetServerKey (server);
 		const auto& channelId = channel.ChannelName_ + "@" + channel.ServerName_;
 
-		if (!ServerHandlers_.contains (serverId))
-			JoinServer (server);
+		auto ish = ServerHandlers_.value (serverId);
+		if (!ish)
+			ish = &JoinServer (server);
 
-		if (ServerHandlers_ [serverId]->IsChannelExists (channelId))
+		if (ish->IsChannelExists (channelId))
 		{
 			const auto& e = Util::MakeNotification (Lits::AzothAcetamide,
 					tr ("This channel is already joined."),
@@ -112,7 +115,7 @@ namespace LC::Azoth::Acetamide
 		}
 
 		if (!channel.ChannelName_.isEmpty ())
-			ServerHandlers_ [serverId]->JoinChannel (channel);
+			ish->JoinChannel (channel);
 	}
 
 	void ClientConnection::SetBookmarks (const QList<IrcBookmark>& bookmarks)
@@ -238,16 +241,14 @@ namespace LC::Azoth::Acetamide
 
 	void ClientConnection::ClosePrivateChat (const QString& serverID, QString nick)
 	{
-		if (ServerHandlers_.contains (serverID))
-			ServerHandlers_ [serverID]->ClosePrivateChat (nick);
+		if (const auto ish = ServerHandlers_.value (serverID))
+			ish->ClosePrivateChat (nick);
 	}
 
 	void ClientConnection::FetchVCard (const QString& serverId, const QString& nick)
 	{
-		if (!ServerHandlers_.contains (serverId))
-			return;
-
-		ServerHandlers_ [serverId]->VCardRequest (nick);
+		if (const auto ish = ServerHandlers_.value (serverId))
+			ish->VCardRequest (nick);
 	}
 
 	void ClientConnection::SetAway (bool away, const QString& message)
@@ -281,10 +282,10 @@ namespace LC::Azoth::Acetamide
 
 	void ClientConnection::serverDisconnected (const QString& serverId)
 	{
-		if (!ServerHandlers_.contains (serverId))
+		const auto entry = ServerHandlers_.take (serverId);
+		if (!entry)
 			return;
 
-		const auto entry = ServerHandlers_.take (serverId);
 		Account_->handleEntryRemoved (entry->GetCLEntry ());
 		entry->DisconnectFromServer ();
 		entry->deleteLater ();

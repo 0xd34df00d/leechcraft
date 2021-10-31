@@ -34,7 +34,7 @@ namespace LC::Azoth::Acetamide
 		QList<QObject*> GetCLEntries () const;
 
 		bool IsServerExists (const ServerOptions&) const;
-		void JoinServer (const ServerOptions&);
+		IrcServerHandler& JoinServer (const ServerOptions&);
 		void JoinChannel (const ServerOptions&, const ChannelOptions&);
 
 		void SetBookmarks (const QList<IrcBookmark>&);
