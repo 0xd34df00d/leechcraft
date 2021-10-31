@@ -84,9 +84,9 @@ namespace LC::Azoth::Acetamide
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
 			connect (ish,
-					SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
+					&IrcServerHandler::sendMessageToConsole,
 					this,
-					SLOT (handleLog (IMessage::Direction, const QString&)),
+					&ClientConnection::HandleLog,
 					Qt::UniqueConnection);
 		ServerHandlers_ [serverId] = ish;
 
@@ -227,19 +227,19 @@ namespace LC::Azoth::Acetamide
 			srv->SetConsoleEnabled (enabled);
 			if (enabled)
 				connect (srv,
-						SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
+						&IrcServerHandler::sendMessageToConsole,
 						this,
-						SLOT (handleLog (IMessage::Direction, const QString&)),
+						&ClientConnection::HandleLog,
 						Qt::UniqueConnection);
 			else
 				disconnect (srv,
-						SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
+						&IrcServerHandler::sendMessageToConsole,
 						this,
-						SLOT (handleLog (IMessage::Direction, const QString&)));
+						&ClientConnection::HandleLog);
 		}
 	}
 
-	void ClientConnection::ClosePrivateChat (const QString& serverID, QString nick)
+	void ClientConnection::ClosePrivateChat (const QString& serverID, const QString& nick)
 	{
 		if (const auto ish = ServerHandlers_.value (serverID))
 			ish->ClosePrivateChat (nick);
@@ -253,15 +253,14 @@ namespace LC::Azoth::Acetamide
 
 	void ClientConnection::SetAway (bool away, const QString& message)
 	{
-		QString msg = message;
-		if (msg.isEmpty ())
-			msg = GetStatusStringForState (SAway);
-
-		if (!away)
-			msg.clear ();
+		QString fullMsg;
+		if (away)
+			fullMsg = message.isEmpty () ?
+					GetStatusStringForState (SAway) :
+					message;
 
 		for (const auto& handler : ServerHandlers_)
-			handler->SetAway (msg);
+			handler->SetAway (fullMsg);
 	}
 
 	QString ClientConnection::GetStatusStringForState (State state)
@@ -295,7 +294,7 @@ namespace LC::Azoth::Acetamide
 					QString ()));
 	}
 
-	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)
+	void ClientConnection::HandleLog (IMessage::Direction type, const QString& msg)
 	{
 		switch (type)
 		{

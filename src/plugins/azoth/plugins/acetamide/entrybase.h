@@ -6,20 +6,16 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ENTRYBASE_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ENTRYBASE_H
+#pragma once
 
 #include <QObject>
-#include <QImage>
 #include <QVariant>
 #include <interfaces/azoth/iclentry.h>
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+class QImage;
+
+namespace LC::Azoth::Acetamide
 {
 	class IrcAccount;
 	class IrcMessage;
@@ -35,26 +31,24 @@ namespace Acetamide
 		EntryStatus CurrentStatus_;
 		QList<QAction*> Actions_;
 
-		IrcAccount *Account_;
-		VCardDialog *VCardDialog_;
+		IrcAccount * const Account_;
+		VCardDialog *VCardDialog_ = nullptr;
 
 	public:
-		EntryBase (IrcAccount* = 0);
-		virtual ~EntryBase ();
+		explicit EntryBase (IrcAccount*);
+		~EntryBase () override;
 
-		QObject* GetQObject ();
-		QList<IMessage*> GetAllMessages () const;
-		void PurgeMessages (const QDateTime&);
-		void SetChatPartState (ChatPartState, const QString&);
-		EntryStatus GetStatus (const QString&) const;
-		QList<QAction*> GetActions () const;
-		void ShowInfo ();
-		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		QObject* GetQObject () override;
+		QList<IMessage*> GetAllMessages () const override;
+		void PurgeMessages (const QDateTime&) override;
+		void SetChatPartState (ChatPartState, const QString&) override;
+		EntryStatus GetStatus (const QString&) const override;
+		QList<QAction*> GetActions () const override;
+		void ShowInfo () override;
+		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
 
-		void MarkMsgsRead ();
-		void ChatTabClosed ();
-
-		virtual QString GetEntryID () const = 0;
+		void MarkMsgsRead () override;
+		void ChatTabClosed () override;
 
 		void HandleMessage (IrcMessage*);
 		void SetStatus (const EntryStatus&);
@@ -64,19 +58,13 @@ namespace Acetamide
 		void SetInfo (const WhoIsMessage& msg);
 
 	signals:
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
-
-		void chatTabClosed ();
+		void gotMessage (QObject*) override;
+		void statusChanged (const EntryStatus&, const QString&) override;
+		void availableVariantsChanged (const QStringList&) override;
+		void nameChanged (const QString&) override;
+		void groupsChanged (const QStringList&) override;
+		void chatPartStateChanged (const ChatPartState&, const QString&) override;
+		void permsChanged () override;
+		void entryGenerallyChanged () override;
 	};
-};
-};
-};
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ENTRYBASE_H
+}

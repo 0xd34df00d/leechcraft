@@ -48,7 +48,7 @@ namespace LC::Azoth::Acetamide
 
 		void SetConsoleEnabled (bool);
 
-		void ClosePrivateChat (const QString& serverID, QString nick);
+		void ClosePrivateChat (const QString& serverID, const QString& nick);
 
 		void FetchVCard (const QString& serverId, const QString& nick);
 
@@ -58,7 +58,8 @@ namespace LC::Azoth::Acetamide
 	public slots:
 		void serverConnected (const QString&);
 		void serverDisconnected (const QString&);
-		void handleLog (IMessage::Direction, const QString&);
+	private:
+		void HandleLog (IMessage::Direction, const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

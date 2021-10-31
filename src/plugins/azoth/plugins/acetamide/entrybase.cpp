@@ -97,7 +97,6 @@ namespace Acetamide
 
 	void EntryBase::ChatTabClosed ()
 	{
-		emit chatTabClosed ();
 	}
 
 	void EntryBase::HandleMessage (IrcMessage *msg)
