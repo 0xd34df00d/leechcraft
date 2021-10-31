@@ -33,13 +33,7 @@ namespace LC::Azoth::Acetamide
 		if (nns.exec () == QDialog::Rejected)
 			return;
 
-		emit identifyAdded ({
-				.Server_ = nns.GetServer (),
-				.Nick_ = nns.GetNickName (),
-				.NickServNick_ = nns.GetNickServNickName (),
-				.AuthString_ = nns.GetAuthString (),
-				.AuthMessage_ = nns.GetAuthMessage (),
-			});
+		emit identifyAdded (nns.GetIdentify ());
 	}
 
 	void NickServIdentifyWidget::on_Edit__clicked ()
@@ -51,22 +45,12 @@ namespace LC::Azoth::Acetamide
 		const auto& identify = index.data (Util::FlatItemsModelBase::DataRole).value<NickServIdentify> ();
 
 		NewNickServIdentifyDialog nns { this };
-		nns.SetServer (identify.Server_);
-		nns.SetNickName (identify.Nick_);
-		nns.SetNickServNickName (identify.NickServNick_);
-		nns.SetAuthString (identify.AuthString_);
-		nns.SetAuthMessage (identify.AuthMessage_);
+		nns.SetIdentify (identify);
 
 		if (nns.exec () == QDialog::Rejected)
 			return;
 
-		emit identifyEdited (index.row (), {
-				.Server_ = nns.GetServer (),
-				.Nick_ = nns.GetNickName (),
-				.NickServNick_ = nns.GetNickServNickName (),
-				.AuthString_ = nns.GetAuthString (),
-				.AuthMessage_ = nns.GetAuthMessage (),
-			});
+		emit identifyEdited (index.row (), nns.GetIdentify ());
 	}
 
 	void NickServIdentifyWidget::on_Delete__clicked ()

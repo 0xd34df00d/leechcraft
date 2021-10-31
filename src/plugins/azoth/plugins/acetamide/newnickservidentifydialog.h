@@ -18,26 +18,18 @@ namespace Azoth
 {
 namespace Acetamide
 {
+	struct NickServIdentify;
+
 	class NewNickServIdentifyDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::NewNickServDataDialog Ui_;
 	public:
-		NewNickServIdentifyDialog (QWidget* = 0);
+		explicit NewNickServIdentifyDialog (QWidget* = nullptr);
 
-		QString GetServer () const;
-		QString GetNickName () const;
-		QString GetNickServNickName () const;
-		QString GetAuthString () const;
-		QString GetAuthMessage () const;
-		void SetServer (const QString&);
-		void SetNickName (const QString&);
-		void SetNickServNickName (const QString&);
-		void SetAuthString (const QString&);
-		void SetAuthMessage (const QString&);
-	public slots:
-		void accept ();
+		NickServIdentify GetIdentify () const;
+		void SetIdentify (const NickServIdentify&);
 	};
 }
 }

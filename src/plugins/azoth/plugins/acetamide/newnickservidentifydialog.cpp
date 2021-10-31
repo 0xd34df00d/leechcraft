@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "newnickservidentifydialog.h"
-#include <QMessageBox>
+#include "localtypes.h"
 
 namespace LC
 {
@@ -21,66 +21,25 @@ namespace Acetamide
 		Ui_.setupUi (this);
 	}
 
-	QString NewNickServIdentifyDialog::GetServer () const
+	NickServIdentify NewNickServIdentifyDialog::GetIdentify () const
 	{
-		return Ui_.Server_->text ();
+		return
+		{
+			.Server_ = Ui_.Server_->text (),
+			.Nick_ = Ui_.NickName_->text (),
+			.NickServNick_ = Ui_.NickServNickname_->text (),
+			.AuthString_ = Ui_.NickServAuthString_->text (),
+			.AuthMessage_ = Ui_.AuthMessage_->text (),
+		};
 	}
 
-	QString NewNickServIdentifyDialog::GetNickName () const
+	void NewNickServIdentifyDialog::SetIdentify (const NickServIdentify& identify)
 	{
-		return Ui_.NickName_->text ();
-	}
-
-	QString NewNickServIdentifyDialog::GetNickServNickName () const
-	{
-		return Ui_.NickServNickname_->text ();
-	}
-
-	QString NewNickServIdentifyDialog::GetAuthString () const
-	{
-		return Ui_.NickServAuthString_->text ();
-	}
-
-	QString NewNickServIdentifyDialog::GetAuthMessage () const
-	{
-		return Ui_.AuthMessage_->text ();
-	}
-
-	void NewNickServIdentifyDialog::accept ()
-	{
-		if (GetServer ().isEmpty () ||
-				GetNickName ().isEmpty () ||
-				GetNickServNickName ().isEmpty () ||
-				GetAuthString ().isEmpty () ||
-				GetAuthMessage ().isEmpty ())
-			return;
-
-		QDialog::accept ();
-	}
-
-	void NewNickServIdentifyDialog::SetServer (const QString& server)
-	{
-		Ui_.Server_->setText (server);
-	}
-
-	void NewNickServIdentifyDialog::SetNickName (const QString& nick)
-	{
-		Ui_.NickName_->setText (nick);
-	}
-
-	void NewNickServIdentifyDialog::SetNickServNickName (const QString& nickServ)
-	{
-		Ui_.NickServNickname_->setText (nickServ);
-	}
-
-	void NewNickServIdentifyDialog::SetAuthString (const QString& authString)
-	{
-		Ui_.NickServAuthString_->setText (authString);
-	}
-
-	void NewNickServIdentifyDialog::SetAuthMessage (const QString& authMessage)
-	{
-		Ui_.AuthMessage_->setText (authMessage);
+		Ui_.Server_->setText (identify.Server_);
+		Ui_.NickName_->setText (identify.Nick_);
+		Ui_.NickServNickname_->setText (identify.NickServNick_);
+		Ui_.NickServAuthString_->setText (identify.AuthString_);
+		Ui_.AuthMessage_->setText (identify.AuthMessage_);
 	}
 }
 }
