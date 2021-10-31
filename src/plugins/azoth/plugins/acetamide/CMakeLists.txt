@@ -15,7 +15,6 @@ LC_DEFINE_PLUGIN (
 		channelslistfilterproxymodel.cpp
 		channelsmanager.cpp
 		clientconnection.cpp
-		core.cpp
 		entrybase.cpp
 		ircaccount.cpp
 		ircaccountconfigurationdialog.cpp

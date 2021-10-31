@@ -45,12 +45,12 @@ namespace Acetamide
 		RestoreAccounts ();
 	}
 
-	QObject* IrcProtocol::GetProxyObject () const
+	IProxyObject* IrcProtocol::GetProxyObject () const
 	{
 		return ProxyObject_;
 	}
 
-	void IrcProtocol::SetProxyObject (QObject *po)
+	void IrcProtocol::SetProxyObject (IProxyObject *po)
 	{
 		ProxyObject_ = po;
 	}

@@ -92,7 +92,7 @@ namespace Acetamide
 
 	void EntryBase::MarkMsgsRead ()
 	{
-		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
+		Account_->GetParentProtocol ()->GetProxyObject ()->MarkMessagesAsRead (this);
 	}
 
 	void EntryBase::ChatTabClosed ()
@@ -103,9 +103,7 @@ namespace Acetamide
 	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
 		msg->SetOtherPart (this);
-		const auto proto = qobject_cast<IrcProtocol*> (Account_->GetParentProtocol ());
-		const auto proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-		proxy->GetFormatterProxy ().PreprocessMessage (msg);
+		Account_->GetParentProtocol ()->GetProxyObject ()->GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
 		emit gotMessage (msg);

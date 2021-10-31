@@ -18,7 +18,6 @@
 #include "core.h"
 #include "ircaccountconfigurationdialog.h"
 #include "ircaccountconfigurationwidget.h"
-#include "ircprotocol.h"
 #include "ircserverclentry.h"
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
@@ -80,7 +79,7 @@ namespace Acetamide
 		return this;
 	}
 
-	QObject* IrcAccount::GetParentProtocol () const
+	IrcProtocol* IrcAccount::GetParentProtocol () const
 	{
 		return ParentProtocol_;
 	}
@@ -314,17 +313,7 @@ namespace Acetamide
 				IrcAccountState_ == SOffline))
 			return;
 
-		IProxyObject *obj = qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
-		bool autoJoin = false;
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "is not an object of IProxyObject"
-					<< ParentProtocol_->GetProxyObject ();
-		}
-		else
-			autoJoin = obj->GetSettingsManager ()->
-					property ("IsAutojoinAllowed").toBool ();
+		bool autoJoin = ParentProtocol_->GetProxyObject ()->GetSettingsManager ()->property ("IsAutojoinAllowed").toBool ();
 
 		EntryStatus newStatus = state;
 		switch (state.State_)

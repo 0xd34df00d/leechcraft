@@ -11,11 +11,14 @@
 #include <QStandardItemModel>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include "core.h"
-#include "xmlsettingsmanager.h"
+#include "ircprotocol.h"
+#include "localtypes.h"
+#include "nickservidentifymanager.h"
 #include "nickservidentifywidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -33,16 +36,18 @@ namespace LC::Azoth::Acetamide
 
 		SettingsDialog_->SetCustomWidget (QStringLiteral ("NickServIdentifyWidget"),
 				IdentifyManager_->GetConfigWidget ());
+
+		IrcProtocol_ = std::make_shared<IrcProtocol> ();
 	}
 
 	void Plugin::SecondInit ()
 	{
-		Core::Instance ().SecondInit ();
+		IrcProtocol_->Prepare ();
 	}
 
 	void Plugin::Release ()
 	{
-		Core::Instance ().Release ();
+		IrcProtocol_.reset ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -77,7 +82,7 @@ namespace LC::Azoth::Acetamide
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return Core::Instance ().GetProtocols ();
+		return { IrcProtocol_.get () };
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -87,7 +92,7 @@ namespace LC::Azoth::Acetamide
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
-		Core::Instance ().SetPluginProxy (proxy);
+		IrcProtocol_->SetProxyObject (qobject_cast<IProxyObject*> (proxy));
 	}
 }
 

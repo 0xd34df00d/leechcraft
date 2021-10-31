@@ -12,11 +12,6 @@
 #include <QHash>
 #include "ircaccount.h"
 
-namespace LC::Azoth
-{
-	class IProxyObject;
-}
-
 namespace LC::Azoth::Acetamide
 {
 	class ChannelCLEntry;
@@ -28,7 +23,6 @@ namespace LC::Azoth::Acetamide
 		Q_OBJECT
 
 		IrcAccount *Account_;
-		IProxyObject *ProxyObject_ = nullptr;
 		QHash<QString, IrcServerHandler*> ServerHandlers_;
 		bool IsConsoleEnabled_ = false;
 	public:

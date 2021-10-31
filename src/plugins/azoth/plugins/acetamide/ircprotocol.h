@@ -13,6 +13,11 @@
 #include <interfaces/azoth/imucprotocol.h>
 #include <interfaces/azoth/iurihandler.h>
 
+namespace LC::Azoth
+{
+	class IProxyObject;
+}
+
 namespace LC
 {
 struct Entity;
@@ -35,14 +40,14 @@ namespace Acetamide
 
 		QObject *ParentProtocolPlugin_;
 		QList<IrcAccount*> IrcAccounts_;
-		QObject *ProxyObject_ = nullptr;
+		IProxyObject *ProxyObject_ = nullptr;
 	public:
 		IrcProtocol (QObject* = nullptr);
 		virtual ~IrcProtocol ();
 
 		void Prepare ();
-		QObject* GetProxyObject () const;
-		void SetProxyObject (QObject*);
+		IProxyObject* GetProxyObject () const;
+		void SetProxyObject (IProxyObject*);
 
 		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;

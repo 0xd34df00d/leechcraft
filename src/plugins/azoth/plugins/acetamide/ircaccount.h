@@ -15,7 +15,7 @@
 #include <interfaces/azoth/ihaveconsole.h>
 #include <interfaces/azoth/isupportbookmarks.h>
 #include <interfaces/azoth/icanhavesslerrors.h>
-#include "core.h"
+#include "ircprotocol.h"
 #include "localtypes.h"
 
 namespace LC
@@ -27,7 +27,6 @@ class IProtocol;
 namespace Acetamide
 {
 	class ClientConnection;
-	class IrcProtocol;
 	class IrcAccountConfigurationWidget;
 
 	class IrcAccount final : public QObject
@@ -65,7 +64,7 @@ namespace Acetamide
 		void Init ();
 
 		QObject* GetQObject ();
-		QObject* GetParentProtocol () const;
+		IrcProtocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 

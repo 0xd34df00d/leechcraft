@@ -183,7 +183,7 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelCLEntry::MarkMsgsRead ()
 	{
-		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
+		ICH_->GetChannelsManager ()->GetAccount ()->GetParentProtocol ()->GetProxyObject ()->MarkMessagesAsRead (this);
 	}
 
 	void ChannelCLEntry::ChatTabClosed ()

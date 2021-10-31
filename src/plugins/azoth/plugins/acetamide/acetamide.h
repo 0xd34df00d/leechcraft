@@ -12,10 +12,12 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/azoth/iprotocolplugin.h>
-#include "nickservidentifymanager.h"
 
 namespace LC::Azoth::Acetamide
 {
+	class IrcProtocol;
+	class NickServIdentifyManager;
+
 	class Plugin : public QObject
 					, public IInfo
 					, public IHaveSettings
@@ -30,6 +32,8 @@ namespace LC::Azoth::Acetamide
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<NickServIdentifyManager> IdentifyManager_;
+
+		std::shared_ptr<IrcProtocol> IrcProtocol_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
