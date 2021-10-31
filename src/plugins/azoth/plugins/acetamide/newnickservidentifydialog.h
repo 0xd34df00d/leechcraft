@@ -6,24 +6,17 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NEWNICKSERVIDENTIFYDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NEWNICKSERVIDENTIFYDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include "ui_newnickservidentifydialog.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	struct NickServIdentify;
 
 	class NewNickServIdentifyDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::NewNickServDataDialog Ui_;
 	public:
 		explicit NewNickServIdentifyDialog (QWidget* = nullptr);
@@ -32,7 +25,3 @@ namespace Acetamide
 		void SetIdentify (const NickServIdentify&);
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NEWNICKSERVIDENTIFYDIALOG_H

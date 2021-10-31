@@ -20,46 +20,65 @@ namespace LC::Azoth::Acetamide
 
 		Ui_.NickServIdentifyView_->setModel (&model);
 		Ui_.NickServIdentifyView_->horizontalHeader ()->setStretchLastSection (true);
+
+		connect (Ui_.Add_,
+				&QPushButton::clicked,
+				[this]
+				{
+					auto nns = new NewNickServIdentifyDialog { this };
+					nns->show ();
+					connect (nns,
+							&QDialog::accepted,
+							this,
+							[=] { emit identifyAdded (nns->GetIdentify ()); });
+					connect (nns,
+							&QDialog::finished,
+							this,
+							[=] { DeleteInvalidatedDialogs_.removeOne (nns); });
+					DeleteInvalidatedDialogs_ << nns;
+				});
+		connect (Ui_.Delete_,
+				&QPushButton::clicked,
+				[this]
+				{
+					const auto& index = Ui_.NickServIdentifyView_->currentIndex ();
+					if (index.isValid ())
+						emit identifyRemoved (index.row ());
+
+					// Important to copy the dialogs list,
+					// since rejecting the dialogs might get them removed from this list in the rejection handler.
+					auto dias = DeleteInvalidatedDialogs_;
+					for (const auto dia : dias)
+						delete dia;
+					DeleteInvalidatedDialogs_.clear ();
+				});
+		connect (Ui_.Edit_,
+				&QPushButton::clicked,
+				[this]
+				{
+					const auto& index = Ui_.NickServIdentifyView_->currentIndex ();
+					if (!index.isValid ())
+						return;
+
+					const auto& identify = index.data (Util::FlatItemsModelBase::DataRole).value<NickServIdentify> ();
+
+					auto nns = new NewNickServIdentifyDialog { this };
+					nns->SetIdentify (identify);
+					nns->show ();
+					connect (nns,
+							&QDialog::accepted,
+							this,
+							[=, row = index.row ()] { emit identifyEdited (row, nns->GetIdentify ()); });
+					connect (nns,
+							&QDialog::finished,
+							this,
+							[=] { DeleteInvalidatedDialogs_.removeOne (nns); });
+					DeleteInvalidatedDialogs_ << nns;
+				});
 	}
 
 	void NickServIdentifyWidget::accept ()
 	{
 		emit saveSettings ();
 	}
-
-	void NickServIdentifyWidget::on_Add__clicked ()
-	{
-		NewNickServIdentifyDialog nns { this };
-		if (nns.exec () == QDialog::Rejected)
-			return;
-
-		emit identifyAdded (nns.GetIdentify ());
-	}
-
-	void NickServIdentifyWidget::on_Edit__clicked ()
-	{
-		const QModelIndex& index = Ui_.NickServIdentifyView_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		const auto& identify = index.data (Util::FlatItemsModelBase::DataRole).value<NickServIdentify> ();
-
-		NewNickServIdentifyDialog nns { this };
-		nns.SetIdentify (identify);
-
-		if (nns.exec () == QDialog::Rejected)
-			return;
-
-		emit identifyEdited (index.row (), nns.GetIdentify ());
-	}
-
-	void NickServIdentifyWidget::on_Delete__clicked ()
-	{
-		const QModelIndex& index = Ui_.NickServIdentifyView_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		emit identifyRemoved (index.row ());
-	}
-
 }

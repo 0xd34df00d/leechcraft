@@ -9,16 +9,13 @@
 #include "newnickservidentifydialog.h"
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	NewNickServIdentifyDialog::NewNickServIdentifyDialog (QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
+		setAttribute (Qt::WA_DeleteOnClose);
 	}
 
 	NickServIdentify NewNickServIdentifyDialog::GetIdentify () const
@@ -41,6 +38,4 @@ namespace Acetamide
 		Ui_.NickServAuthString_->setText (identify.AuthString_);
 		Ui_.AuthMessage_->setText (identify.AuthMessage_);
 	}
-}
-}
 }
