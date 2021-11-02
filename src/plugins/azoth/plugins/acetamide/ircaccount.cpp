@@ -36,11 +36,6 @@ namespace Acetamide
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
 	, IrcAccountState_ (SOffline)
 	{
-		connect (this,
-				SIGNAL (scheduleClientDestruction ()),
-				this,
-				SLOT (handleDestroyClient ()),
-				Qt::QueuedConnection);
 		Init ();
 	}
 
@@ -494,10 +489,6 @@ namespace Acetamide
 	void IrcAccount::handleGotRosterItems (const QList<QObject*>& items)
 	{
 		emit gotCLItems (items);
-	}
-
-	void IrcAccount::handleDestroyClient ()
-	{
 	}
 
 	void IrcAccount::joinFromBookmarks ()

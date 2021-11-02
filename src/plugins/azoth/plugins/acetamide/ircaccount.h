@@ -115,7 +115,6 @@ namespace Acetamide
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
-		void handleDestroyClient ();
 		void joinFromBookmarks ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
@@ -132,8 +131,6 @@ namespace Acetamide
 				const QString&, const QString&);
 
 		void accountSettingsChanged ();
-
-		void scheduleClientDestruction ();
 
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 
