@@ -59,9 +59,8 @@ namespace Acetamide
 		bool IsFirstStart_ = true;
 		QList<IrcBookmark> ActiveChannels_;
 	public:
-		IrcAccount (const QString&, QObject*);
+		IrcAccount (QString, QObject*);
 		~IrcAccount ();
-		void Init ();
 
 		QObject* GetQObject ();
 		IrcProtocol* GetParentProtocol () const;

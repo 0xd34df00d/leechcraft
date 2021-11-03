@@ -30,21 +30,10 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	IrcAccount::IrcAccount (const QString& name, QObject *parent)
-	: QObject (parent)
-	, AccountName_ (name)
-	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
-	, IrcAccountState_ (SOffline)
-	{
-		Init ();
-	}
-
-	IrcAccount::~IrcAccount()
-	{
-		emit removedCLItems (GetCLEntries ());
-	}
-
-	void IrcAccount::Init ()
+	IrcAccount::IrcAccount (QString name, QObject *parent)
+	: QObject { parent }
+	, AccountName_ { std::move (name) }
+	, ParentProtocol_ { qobject_cast<IrcProtocol*> (parent) }
 	{
 		ClientConnection_.reset (new ClientConnection (this));
 
@@ -455,8 +444,6 @@ namespace Acetamide
 					>> result->DefaultPort_
 					>> result->DefaultEncoding_
 					>> result->DefaultChannel_;
-
-		result->Init ();
 
 		return result;
 	}
