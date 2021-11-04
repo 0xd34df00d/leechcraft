@@ -135,21 +135,13 @@ namespace Acetamide
 	void IrcAccount::OpenConfigurationDialog ()
 	{
 		IrcAccountConfigurationDialog dia { nullptr };
-
-		if (!RealName_.isEmpty ())
-			dia.ConfWidget ()->SetRealName (RealName_);
-		if (!UserName_.isEmpty ())
-			dia.ConfWidget ()->SetUserName (UserName_);
-		if (!NickNames_.isEmpty ())
-			dia.ConfWidget ()->SetNickNames (NickNames_);
-		if (!DefaultServer_.isEmpty ())
-			dia.ConfWidget ()->SetDefaultServer (DefaultServer_);
-		if (!DefaultPort_)
-			dia.ConfWidget ()->SetDefaultPort (DefaultPort_);
-		if (!DefaultEncoding_.isEmpty ())
-			dia.ConfWidget ()->SetDefaultEncoding (DefaultEncoding_);
-		if (!DefaultChannel_.isEmpty ())
-			dia.ConfWidget ()->SetDefaultChannel (DefaultChannel_);
+		dia.ConfWidget ()->SetRealName (RealName_);
+		dia.ConfWidget ()->SetUserName (UserName_);
+		dia.ConfWidget ()->SetNickNames (NickNames_);
+		dia.ConfWidget ()->SetDefaultServer (DefaultServer_);
+		dia.ConfWidget ()->SetDefaultPort (DefaultPort_);
+		dia.ConfWidget ()->SetDefaultEncoding (DefaultEncoding_);
+		dia.ConfWidget ()->SetDefaultChannel (DefaultChannel_);
 
 		if (dia.exec () == QDialog::Rejected)
 			return;
