@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "channelhandler.h"
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
@@ -419,13 +420,12 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelHandler::RemoveThis ()
 	{
+		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& obj) -> QObject* { return obj.get (); });
+		emit CM_->GetAccount ()->removedCLItems (entries);
+
 		for (const auto& entry : Nick2Entry_)
-		{
-			const bool isPrivate = entry->IsPrivateChat ();
-			emit CM_->GetAccount ()->removedCLItems ({ entry.get () });
-			if (isPrivate)
+			if (entry->IsPrivateChat ())
 				CM_->CreateServerParticipantEntry (entry->GetEntryName ());
-		}
 
 		Nick2Entry_.clear ();
 
