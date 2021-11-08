@@ -202,7 +202,7 @@ namespace LC::Azoth::Acetamide
 			!handler->IsRosterReceived ())
 		{
 			handler->SetRosterReceived (true);
-			ISH_->GetAccount ()->handleGotRosterItems ({ handler->GetCLEntry () });
+			emit ISH_->GetAccount ()->gotCLItems ({ handler->GetCLEntry () });
 		}
 		else
 			ReceiveCmdAnswerMessage (Names, QStringLiteral ("End of /NAMES"), true);

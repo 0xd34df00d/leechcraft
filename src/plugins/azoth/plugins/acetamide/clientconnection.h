@@ -60,11 +60,5 @@ namespace LC::Azoth::Acetamide
 		void serverDisconnected (const QString&);
 	private:
 		void HandleLog (IMessage::Direction, const QString&);
-	signals:
-		void gotRosterItems (const QList<QObject*>&);
-		void rosterItemRemoved (QObject*);
-		void rosterItemsRemoved (const QList<QObject*>&);
-		void gotCLItems (const QList<QObject*>&);
-		void gotConsoleLog (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 	};
 }

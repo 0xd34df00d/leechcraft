@@ -34,28 +34,13 @@ namespace Acetamide
 	: QObject { parent }
 	, AccountName_ { std::move (name) }
 	, ParentProtocol_ { qobject_cast<IrcProtocol*> (parent) }
+	, ClientConnection_ { std::make_shared<ClientConnection> (this) }
 	{
-		ClientConnection_.reset (new ClientConnection (this));
+	}
 
-		connect (ClientConnection_.get (),
-				SIGNAL (gotRosterItems (const QList<QObject*>&)),
-				this,
-				SLOT (handleGotRosterItems (const QList<QObject*>&)));
-
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemRemoved (QObject*)),
-				this,
-				SLOT (handleEntryRemoved (QObject*)));
-
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
-				this,
-				SIGNAL (removedCLItems (const QList<QObject*>&)));
-
-		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (QByteArray, IHaveConsole::PacketDirection, QString)),
-				this,
-				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
+	IrcAccount::~IrcAccount ()
+	{
+		emit removedCLItems (GetCLEntries ());
 	}
 
 	QObject* IrcAccount::GetQObject ()
@@ -460,16 +445,6 @@ namespace Acetamide
 				ActiveChannels_ << bookmark;
 			}
 		}
-	}
-
-	void IrcAccount::handleEntryRemoved (QObject *entry)
-	{
-		emit removedCLItems ({ entry });
-	}
-
-	void IrcAccount::handleGotRosterItems (const QList<QObject*>& items)
-	{
-		emit gotCLItems (items);
 	}
 
 	void IrcAccount::joinFromBookmarks ()

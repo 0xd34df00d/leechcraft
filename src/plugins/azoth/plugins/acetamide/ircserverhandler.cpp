@@ -320,10 +320,10 @@ namespace Acetamide
 		if (!Nick2Entry_.contains (nick))
 			return;
 
-		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+		emit Account_->removedCLItems ({ Nick2Entry_ [nick].get () });
 		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
 		entry->SetEntryName (msg);
-		Account_->handleGotRosterItems (QObjectList () << entry.get ());
+		emit Account_->gotCLItems ({ entry.get () });
 		Nick2Entry_ [msg] = entry;
 
 		if (nick == NickName_)
@@ -985,7 +985,7 @@ namespace Acetamide
 		ChannelsManager_->CloseAllChannels ();
 
 		for (const auto& entry : Nick2Entry_)
-			Account_->handleEntryRemoved (entry.get ());
+			emit Account_->removedCLItems ({ entry.get () });
 
 		Nick2Entry_.clear ();
 
@@ -1081,7 +1081,7 @@ namespace Acetamide
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
 	{
 		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, this, Account_));
-		Account_->handleGotRosterItems (QObjectList () << entry.get ());
+		emit Account_->gotCLItems ({ entry.get () });
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
 		return entry;
 	}
@@ -1153,8 +1153,8 @@ namespace Acetamide
 
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)
 	{
-		if (Nick2Entry_.contains (nick))
-			Account_->handleEntryRemoved (Nick2Entry_.take (nick).get ());
+		if (const auto entry = Nick2Entry_.take (nick))
+			emit Account_->removedCLItems ({ entry.get () });
 
 		for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
 			if (const auto entry = qobject_cast<IrcParticipantEntry*> (entryObj))

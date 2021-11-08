@@ -53,7 +53,7 @@ namespace Acetamide
 		int DefaultPort_;
 		QString DefaultEncoding_;
 		QString DefaultChannel_;
-		State IrcAccountState_;
+		State IrcAccountState_ = SOffline;
 
 		std::shared_ptr<ClientConnection> ClientConnection_;
 		bool IsFirstStart_ = true;
@@ -110,9 +110,6 @@ namespace Acetamide
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);
 	private:
 		void SaveActiveChannels ();
-	public slots:
-		void handleEntryRemoved (QObject*);
-		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
 		void joinFromBookmarks ();
 	signals:

@@ -79,7 +79,7 @@ namespace LC::Azoth::Acetamide
 		}
 
 		const auto ish = new IrcServerHandler (server, Account_);
-		emit gotRosterItems ({ ish->GetCLEntry () });
+		emit Account_->gotCLItems ({ ish->GetCLEntry () });
 
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
@@ -285,7 +285,7 @@ namespace LC::Azoth::Acetamide
 		if (!entry)
 			return;
 
-		Account_->handleEntryRemoved (entry->GetCLEntry ());
+		emit Account_->removedCLItems ({ entry->GetCLEntry () });
 		entry->DisconnectFromServer ();
 		entry->deleteLater ();
 
@@ -299,10 +299,10 @@ namespace LC::Azoth::Acetamide
 		switch (type)
 		{
 		case IMessage::Direction::Out:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::Out, {});
+			emit Account_->gotConsolePacket (msg.toUtf8 (), IHaveConsole::PacketDirection::Out, {});
 			break;
 		case IMessage::Direction::In:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::In, {});
+			emit Account_->gotConsolePacket (msg.toUtf8 (), IHaveConsole::PacketDirection::In, {});
 			break;
 		}
 	}

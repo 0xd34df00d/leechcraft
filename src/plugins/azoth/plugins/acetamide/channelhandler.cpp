@@ -110,17 +110,18 @@ namespace LC::Azoth::Acetamide
 	{
 		const QString mess = tr ("%1 has changed nickname to %2")
 				.arg (oldNick, newNick);
+
 		HandleServiceMessage (mess,
 				IMessage::Type::StatusMessage,
 				IMessage::SubType::ParticipantNickChange,
 				Nick2Entry_ [oldNick]);
 
-		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick].get ());
+		emit CM_->GetAccount ()->removedCLItems ({ Nick2Entry_ [oldNick].get () });
 		QList<ChannelRole> roles = Nick2Entry_ [oldNick]->Roles ();
 		ChannelParticipantEntry_ptr entry = Nick2Entry_.take (oldNick);
 		entry->SetEntryName (newNick);
 		entry->SetRoles (roles);
-		CM_->GetAccount ()->handleGotRosterItems (QObjectList () << entry.get ());
+		emit CM_->GetAccount ()->gotCLItems ({ entry.get () });
 
 		Nick2Entry_ [newNick] = entry;
 	}
@@ -221,7 +222,7 @@ namespace LC::Azoth::Acetamide
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
 
 		if (!existed)
-			CM_->GetAccount ()->handleGotRosterItems ({ entry.get () });
+			emit CM_->GetAccount ()->gotCLItems ({ entry.get () });
 
 		MakeJoinMessage (nickName);
 	}
@@ -421,15 +422,14 @@ namespace LC::Azoth::Acetamide
 		for (const auto& entry : Nick2Entry_)
 		{
 			const bool isPrivate = entry->IsPrivateChat ();
-			const QString nick = entry->GetEntryName ();
-			CM_->GetAccount ()->handleEntryRemoved (entry.get ());
+			emit CM_->GetAccount ()->removedCLItems ({ entry.get () });
 			if (isPrivate)
-				CM_->CreateServerParticipantEntry (nick);
+				CM_->CreateServerParticipantEntry (entry->GetEntryName ());
 		}
 
 		Nick2Entry_.clear ();
 
-		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_.get ());
+		emit CM_->GetAccount ()->removedCLItems ({ ChannelCLEntry_.get () });
 
 		CM_->UnregisterChannel (this);
 	}
@@ -649,7 +649,7 @@ namespace LC::Azoth::Acetamide
 
 		ChannelParticipantEntry_ptr entry = Nick2Entry_ [nick];
 		Nick2Entry_.remove (nick);
-		CM_->GetAccount ()->handleEntryRemoved (entry.get ());
+		emit CM_->GetAccount ()->removedCLItems ({ entry.get () });
 
 		return true;
 	}
@@ -658,7 +658,7 @@ namespace LC::Azoth::Acetamide
 	{
 		auto entry = std::make_shared<ChannelParticipantEntry> (nick, this, CM_->GetAccount ());
 		if (announce)
-			CM_->GetAccount ()->handleGotRosterItems ({ entry.get () });
+			emit CM_->GetAccount ()->gotCLItems ({ entry.get () });
 		return entry;
 	}
 
