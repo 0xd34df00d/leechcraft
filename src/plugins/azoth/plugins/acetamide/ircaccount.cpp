@@ -266,6 +266,26 @@ namespace Acetamide
 		return EntryStatus (IrcAccountState_, QString ());
 	}
 
+	namespace
+	{
+		EntryStatus NormalizeStatus (EntryStatus status)
+		{
+			switch (status.State_)
+			{
+			case SDND:
+			case SXA:
+				status.State_ = SAway;
+				break;
+			case SChat:
+				status.State_ = SOnline;
+				break;
+			default:
+				break;
+			}
+			return status;
+		}
+	}
+
 	void IrcAccount::ChangeState (const EntryStatus& state)
 	{
 		if ((IrcAccountState_ == SOffline &&
@@ -276,20 +296,7 @@ namespace Acetamide
 
 		bool autoJoin = ParentProtocol_->GetProxyObject ()->GetSettingsManager ()->property ("IsAutojoinAllowed").toBool ();
 
-		EntryStatus newStatus = state;
-		switch (state.State_)
-		{
-			case SDND:
-			case SXA:
-				newStatus.State_ = SAway;
-				break;
-			case SChat:
-				newStatus.State_ = SOnline;
-				break;
-			default:
-				break;
-		}
-
+		const auto newStatus = NormalizeStatus (state);
 		if (newStatus.State_ == SOffline)
 		{
 			if (ClientConnection_->GetServerHandlers ().count ())
@@ -302,22 +309,20 @@ namespace Acetamide
 			if (newStatus.State_ == SOnline)
 			{
 				if (IrcAccountState_ == SAway)
-					ClientConnection_->SetAway (false, QString ());
+					ClientConnection_->SetAway (false, {});
 				else
 					SetState (newStatus);
 			}
 			else if (newStatus.State_ == SAway)
 				ClientConnection_->SetAway (true, newStatus.StatusString_);
 
-			if (autoJoin)
-			{
-				if (ActiveChannels_.isEmpty ())
-					ActiveChannels_ << GetBookmarks ();
+			if (autoJoin && ActiveChannels_.isEmpty ())
+				ActiveChannels_ << GetBookmarks ();
 
-				if (IsFirstStart_)
-					QTimer::singleShot (10000, this, SLOT (joinFromBookmarks ()));
-				else
-					joinFromBookmarks ();
+			if (IsFirstStart_)
+			{
+				using namespace std::chrono_literals;
+				QTimer::singleShot (10s, this, &IrcAccount::joinFromBookmarks);
 			}
 			else
 				joinFromBookmarks ();
