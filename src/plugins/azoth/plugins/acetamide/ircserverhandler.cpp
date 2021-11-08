@@ -317,17 +317,14 @@ namespace Acetamide
 	{
 		ChannelsManager_->ChangeNickname (nick, msg);
 
-		if (!Nick2Entry_.contains (nick))
-			return;
-
-		emit Account_->removedCLItems ({ Nick2Entry_ [nick].get () });
-		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
-		entry->SetEntryName (msg);
-		emit Account_->gotCLItems ({ entry.get () });
-		Nick2Entry_ [msg] = entry;
-
 		if (nick == NickName_)
 			NickName_ = msg;
+
+		if (const auto entry = Nick2Entry_.take (nick))
+		{
+			Nick2Entry_.insert (msg, entry);
+			entry->SetEntryName (msg);
+		}
 	}
 
 	bool IrcServerHandler::IsCmdHasLongAnswer (const QString& cmd)

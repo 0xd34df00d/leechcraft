@@ -56,6 +56,7 @@ namespace Acetamide
 	void IrcParticipantEntry::SetEntryName (const QString& name)
 	{
 		Nick_ = name;
+		emit nameChanged (Nick_);
 
 		for (const auto message : AllMessages_)
 		{
