@@ -6,47 +6,28 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_INVITECHANNELSDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_INVITECHANNELSDIALOG_H
+#pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_invitechannelsdialog.h"
 
 class QStandardItemModel;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class InviteChannelsDialog : public QDialog
 	{
-		Q_OBJECT
-		Ui::InviteChannelsDialog Ui_;
-		QStandardItemModel *Model_;
-		QStandardItemModel *ActionsModel_;
-		enum ActionByDefault
-		{
-			Ask,
-			JoinAll,
-			IgnoreAll
-		};
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::InviteChannelsDialog)
 
-		enum ActionsRole
-		{
-			ActionRole = Qt::UserRole + 1
-		};
+		Ui::InviteChannelsDialog Ui_;
+		QStandardItemModel * const Model_;
 	public:
-		InviteChannelsDialog (const QString&,
-				const QString&, QWidget* = 0);
+		InviteChannelsDialog (const QString&, const QString&, QWidget* = nullptr);
+
 		void AddInvitation (const QString&, const QString&);
 		QStringList GetChannels () const;
-	public slots:
-		void accept ();
+	protected:
+		void accept () override;
 	};
-};
-};
-};
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_INVITECHANNELSDIALOG_H
+}

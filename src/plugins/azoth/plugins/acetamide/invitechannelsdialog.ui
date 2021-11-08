@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
+    <width>646</width>
     <height>384</height>
    </rect>
   </property>
@@ -41,7 +41,23 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="AlwaysAction_"/>
+      <widget class="QComboBox" name="AlwaysAction_">
+       <item>
+        <property name="text">
+         <string>Always ask</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Always join</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Always ignore</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer">
