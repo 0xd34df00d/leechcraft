@@ -10,6 +10,7 @@
 #include <QTextCodec>
 #include <QTimer>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -981,8 +982,8 @@ namespace Acetamide
 		Account_->ChangeState (EntryStatus (SOffline, QString ()));
 		ChannelsManager_->CloseAllChannels ();
 
-		for (const auto& entry : Nick2Entry_)
-			emit Account_->removedCLItems ({ entry.get () });
+		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& entry) -> QObject* { return entry.get (); });
+		emit Account_->removedCLItems (entries);
 
 		Nick2Entry_.clear ();
 
