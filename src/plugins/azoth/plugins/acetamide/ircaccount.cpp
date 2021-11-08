@@ -435,21 +435,31 @@ namespace Acetamide
 	void IrcAccount::SaveActiveChannels ()
 	{
 		ActiveChannels_.clear ();
+
 		for (auto ish : ClientConnection_->GetServerHandlers ())
+		{
+			const auto& opts = ish->GetServerOptions ();
+			const IrcBookmark bookmarkTemplate
+			{
+				.ServerName_ = opts.ServerName_,
+				.ServerPassword_ = opts.ServerPassword_,
+				.ServerEncoding_ = opts.ServerEncoding_,
+				.NickName_ = opts.ServerNickName_,
+				.ServerPort_ = opts.ServerPort_,
+				.SSL_ = opts.SSL_,
+				.AutoJoin_ = true,
+			};
+
 			for (auto ich : ish->GetChannelHandlers ())
 			{
-				IrcBookmark bookmark;
-				bookmark.ServerName_ = ish->GetServerOptions ().ServerName_;
-				bookmark.ServerPort_ = ish->GetServerOptions ().ServerPort_;
-				bookmark.ServerPassword_ = ish->GetServerOptions ().ServerPassword_;
-				bookmark.ServerEncoding_ = ish->GetServerOptions ().ServerEncoding_;
-				bookmark.NickName_ = ish->GetServerOptions ().ServerNickName_;
-				bookmark.SSL_ = ish->GetServerOptions ().SSL_;
+				auto bookmark = bookmarkTemplate;
+
 				bookmark.ChannelName_ = ich->GetChannelOptions ().ChannelName_;
 				bookmark.ChannelPassword_ = ich->GetChannelOptions ().ChannelPassword_;
-				bookmark.AutoJoin_ = true;
+
 				ActiveChannels_ << bookmark;
 			}
+		}
 	}
 
 	void IrcAccount::handleEntryRemoved (QObject *entry)
