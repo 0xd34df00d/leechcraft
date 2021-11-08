@@ -409,7 +409,7 @@ namespace Acetamide
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 3)
+		if (version != 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -423,19 +423,11 @@ namespace Acetamide
 		in >> result->AccountID_
 				>> result->RealName_
 				>> result->UserName_
-				>> result->NickNames_;
-		if (version < 3)
-		{
-			result->DefaultServer_ = "chat.freenode.net";
-			result->DefaultPort_ = 8001;
-			result->DefaultEncoding_ = "UTF-8";
-			result->DefaultChannel_ = "leechcraft";
-		}
-		else
-			in >> result->DefaultServer_
-					>> result->DefaultPort_
-					>> result->DefaultEncoding_
-					>> result->DefaultChannel_;
+				>> result->NickNames_
+				>> result->DefaultServer_
+				>> result->DefaultPort_
+				>> result->DefaultEncoding_
+				>> result->DefaultChannel_;
 
 		return result;
 	}
