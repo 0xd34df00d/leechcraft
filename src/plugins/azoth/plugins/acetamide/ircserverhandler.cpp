@@ -1042,7 +1042,7 @@ namespace Acetamide
 		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
 
-		ServerParticipantEntry_ptr entry (CreateParticipantEntry (nick));
+		auto entry = CreateParticipantEntry (nick);
 		Nick2Entry_ [nick] = entry;
 		return entry;
 	}
@@ -1078,7 +1078,7 @@ namespace Acetamide
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
 	{
-		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, this, Account_));
+		const auto entry = std::make_shared<ServerParticipantEntry> (nick, this, Account_);
 		emit Account_->gotCLItems ({ entry.get () });
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
 		return entry;
@@ -1161,8 +1161,7 @@ namespace Acetamide
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)
 	{
-		ServerParticipantEntry_ptr entry (GetParticipantEntry (nick));
-		entry->SetStatus (EntryStatus (SOnline, ""));
+		GetParticipantEntry (nick)->SetStatus (EntryStatus (SOnline, ""));
 	}
 
 	void IrcServerHandler::VCardRequest (const QString& nick)

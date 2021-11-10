@@ -8,25 +8,16 @@
 
 #include "ircaccountconfigurationdialog.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	IrcAccountConfigurationDialog::
-			IrcAccountConfigurationDialog (QWidget *parent)
-	: QDialog (parent)
+	IrcAccountConfigurationDialog::IrcAccountConfigurationDialog (QWidget *parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 	}
 
-	IrcAccountConfigurationWidget*
-			IrcAccountConfigurationDialog::ConfWidget () const
+	IrcAccountConfigurationWidget* IrcAccountConfigurationDialog::ConfWidget () const
 	{
 		return Ui_.ConfWidget_;
 	}
-
-};
-};
-};
+}

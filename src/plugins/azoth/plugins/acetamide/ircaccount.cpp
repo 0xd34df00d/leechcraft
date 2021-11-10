@@ -15,7 +15,6 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"
 #include "clientconnection.h"
-#include "core.h"
 #include "ircaccountconfigurationdialog.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircserverclentry.h"
@@ -24,11 +23,7 @@
 #include "channelhandler.h"
 #include "bookmarkeditwidget.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	IrcAccount::IrcAccount (QString name, QObject *parent)
 	: QObject { parent }
@@ -62,7 +57,7 @@ namespace Acetamide
 	{
 		return ClientConnection_ ?
 				ClientConnection_->GetCLEntries () :
-				QList<QObject*> ();
+				QList<QObject*> {};
 	}
 
 	QString IrcAccount::GetAccountName () const
@@ -72,7 +67,7 @@ namespace Acetamide
 
 	QString IrcAccount::GetOurNick () const
 	{
-		return "R!";
+		return QStringLiteral ("R!");
 	}
 
 	QString IrcAccount::GetUserName () const
@@ -114,7 +109,7 @@ namespace Acetamide
 
 	QList<QAction*> IrcAccount::GetActions () const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	void IrcAccount::OpenConfigurationDialog ()
@@ -160,8 +155,7 @@ namespace Acetamide
 		emit accountSettingsChanged ();
 	}
 
-	void IrcAccount::JoinServer (ServerOptions server,
-			ChannelOptions channel, bool onlyServer)
+	void IrcAccount::JoinServer (ServerOptions server, ChannelOptions channel, bool onlyServer)
 	{
 		if (server.ServerName_.isEmpty ())
 			server.ServerName_ = DefaultServer_;
@@ -199,7 +193,7 @@ namespace Acetamide
 	QList<IrcBookmark> IrcAccount::GetBookmarks () const
 	{
 		if (!ClientConnection_)
-			return QList<IrcBookmark> ();
+			return {};
 
 		return ClientConnection_->GetBookmarks ();
 	}
@@ -263,7 +257,7 @@ namespace Acetamide
 
 	EntryStatus IrcAccount::GetState () const
 	{
-		return EntryStatus (IrcAccountState_, QString ());
+		return { IrcAccountState_, {} };
 	}
 
 	namespace
@@ -356,7 +350,7 @@ namespace Acetamide
 
 	QObject* IrcAccount::GetTransferManager () const
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IHaveConsole::PacketFormat IrcAccount::GetPacketFormat () const
@@ -404,7 +398,7 @@ namespace Acetamide
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
 					<< version;
-			return 0;
+			return nullptr;
 		}
 
 		QString name;
@@ -479,6 +473,4 @@ namespace Acetamide
 
 		ActiveChannels_.clear ();
 	}
-}
-}
 }

@@ -6,25 +6,18 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include "ui_ircaccountconfigurationwidget.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcAccountConfigurationWidget : public QWidget
 	{
-		Q_OBJECT
-
 		Ui::IrcAccountConfigurationWidget Ui_;
 	public:
-		IrcAccountConfigurationWidget (QWidget* = 0);
+		explicit IrcAccountConfigurationWidget (QWidget* = nullptr);
 
 		void SetRealName (const QString&);
 		QString GetRealName () const;
@@ -41,8 +34,4 @@ namespace Acetamide
 		void SetDefaultChannel (const QString&);
 		QString GetDefaultChannel () const;
 	};
-};
-};
-};
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H
+}

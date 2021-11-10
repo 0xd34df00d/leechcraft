@@ -54,7 +54,6 @@ namespace LC::Azoth::Acetamide
 		void SetStatus (const EntryStatus&);
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
-		void SetRawInfo (const QString&);
 		void SetInfo (const WhoIsMessage& msg);
 
 	signals:

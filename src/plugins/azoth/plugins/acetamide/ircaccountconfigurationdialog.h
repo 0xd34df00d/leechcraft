@@ -6,28 +6,19 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include "ui_ircaccountconfigurationdialog.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-
 	class IrcAccountConfigurationDialog : public QDialog
 	{
 		Ui::IrcAccountConfigurationDialog Ui_;
 	public:
-		IrcAccountConfigurationDialog (QWidget* = 0);
+		explicit IrcAccountConfigurationDialog (QWidget* = nullptr);
 
 		IrcAccountConfigurationWidget* ConfWidget () const;
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONDIALOG_H
+}

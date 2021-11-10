@@ -9,22 +9,17 @@
 #include "ircaccountconfigurationwidget.h"
 #include <QTextCodec>
 
-
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	IrcAccountConfigurationWidget::
-			IrcAccountConfigurationWidget (QWidget* parent)
-	: QWidget (parent)
+	IrcAccountConfigurationWidget::IrcAccountConfigurationWidget (QWidget* parent)
+	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
+
 		for (const auto& codec : QTextCodec::availableCodecs ())
 			Ui_.DefaultEncoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.DefaultEncoding_->model ()->sort (0);
-		Ui_.DefaultEncoding_->setCurrentIndex (Ui_.DefaultEncoding_->findText ("UTF-8"));
+		Ui_.DefaultEncoding_->setCurrentIndex (Ui_.DefaultEncoding_->findText (QStringLiteral ("UTF-8")));
 	}
 
 	void IrcAccountConfigurationWidget::SetRealName (const QString& real)
@@ -47,10 +42,9 @@ namespace Acetamide
 		return Ui_.UserName_->text ();
 	}
 
-	void IrcAccountConfigurationWidget::
-			SetNickNames (const QStringList& nicks)
+	void IrcAccountConfigurationWidget::SetNickNames (const QStringList& nicks)
 	{
-		Ui_.NickNames_->setPlainText (nicks.join ("\n"));
+		Ui_.NickNames_->setPlainText (nicks.join ('\n'));
 	}
 
 	QStringList IrcAccountConfigurationWidget::GetNickNames () const
@@ -80,8 +74,7 @@ namespace Acetamide
 
 	void IrcAccountConfigurationWidget::SetDefaultEncoding (const QString& encoding)
 	{
-		Ui_.DefaultEncoding_->
-				setCurrentIndex (Ui_.DefaultEncoding_->findText (encoding));
+		Ui_.DefaultEncoding_->setCurrentIndex (Ui_.DefaultEncoding_->findText (encoding));
 	}
 
 	QString IrcAccountConfigurationWidget::GetDefaultEncoding () const
@@ -98,7 +91,4 @@ namespace Acetamide
 	{
 		return Ui_.DefaultChannel_->text ();
 	}
-
-};
-};
-};
+}

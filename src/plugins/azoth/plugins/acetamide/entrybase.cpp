@@ -17,16 +17,11 @@
 #include "vcarddialog.h"
 #include "ircparticipantentry.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	EntryBase::EntryBase (IrcAccount *account)
-	: QObject (account)
-	, Account_ (account)
-	, VCardDialog_ (0)
+	: QObject { account }
+	, Account_ { account }
 	{
 	}
 
@@ -68,7 +63,7 @@ namespace Acetamide
 
 	void EntryBase::ShowInfo ()
 	{
-		IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (this);
+		const auto entry = qobject_cast<IrcParticipantEntry*> (this);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -87,7 +82,7 @@ namespace Acetamide
 
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString&) const
 	{
-		return QMap<QString, QVariant> ();
+		return {};
 	}
 
 	void EntryBase::MarkMsgsRead ()
@@ -122,15 +117,9 @@ namespace Acetamide
 	{
 	}
 
-	void EntryBase::SetRawInfo (const QString&)
-	{
-	}
-
 	void EntryBase::SetInfo (const WhoIsMessage& msg)
 	{
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (msg);
 	}
-};
-};
-};
+}
