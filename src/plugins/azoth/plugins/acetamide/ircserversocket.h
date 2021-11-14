@@ -48,7 +48,7 @@ namespace LC::Azoth::Acetamide
 		void Send (const QString&);
 		void Close ();
 	private:
-		void RefreshCodec ();
+		QTextCodec* GetCodec ();
 
 		QTcpSocket* GetSocketPtr () const;
 	private slots:

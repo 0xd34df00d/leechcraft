@@ -1057,7 +1057,7 @@ namespace Acetamide
 		IsConsoleEnabled_ = enabled;
 	}
 
-	void IrcServerHandler::ReadReply (const QByteArray& msg)
+	void IrcServerHandler::ReadReply (const QString& msg)
 	{
 		SendToConsole (IMessage::Direction::In, msg.trimmed ());
 		if (!IrcParser_->ParseMessage (msg))

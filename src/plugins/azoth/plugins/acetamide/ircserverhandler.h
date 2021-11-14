@@ -185,7 +185,7 @@ namespace Acetamide
 
 		void SetConsoleEnabled (bool);
 
-		void ReadReply (const QByteArray&);
+		void ReadReply (const QString&);
 		void JoinFromQueue ();
 
 		void SayCommand (const QStringList&);

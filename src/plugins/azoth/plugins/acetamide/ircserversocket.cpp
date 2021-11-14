@@ -57,7 +57,7 @@ namespace LC::Azoth::Acetamide
 					RetryTimer_->stop ();
 
 					while (socket->canReadLine ())
-						ISH_->ReadReply (socket->readLine ());
+						ISH_->ReadReply (GetCodec ()->toUnicode (socket->readLine ()));
 				});
 
 		connect (socket,
@@ -133,9 +133,7 @@ namespace LC::Azoth::Acetamide
 			return;
 		}
 
-		RefreshCodec ();
-
-		if (socket->write (LastCodec_->fromUnicode (message)) == -1)
+		if (socket->write (GetCodec ()->fromUnicode (message)) == -1)
 			qWarning () << Q_FUNC_INFO
 					<< socket->error ()
 					<< socket->errorString ();
@@ -146,11 +144,11 @@ namespace LC::Azoth::Acetamide
 		GetSocketPtr ()->close ();
 	}
 
-	void IrcServerSocket::RefreshCodec ()
+	QTextCodec* IrcServerSocket::GetCodec ()
 	{
 		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
 		if (LastCodec_ && LastCodec_->name () == encoding)
-			return;
+			return LastCodec_;
 
 		const auto newCodec = encoding == "System"_ql ?
 				QTextCodec::codecForLocale () :
@@ -158,7 +156,7 @@ namespace LC::Azoth::Acetamide
 		if (newCodec)
 		{
 			LastCodec_ = newCodec;
-			return;
+			return LastCodec_;
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -174,12 +172,13 @@ namespace LC::Azoth::Acetamide
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (notify);
 
 		if (LastCodec_)
-			return;
+			return LastCodec_;
 
 		qWarning () << Q_FUNC_INFO
 				<< "no codec is set, will fall back to locale-default codec";
 
 		LastCodec_ = QTextCodec::codecForLocale ();
+		return LastCodec_;
 	}
 
 	QTcpSocket* IrcServerSocket::GetSocketPtr () const

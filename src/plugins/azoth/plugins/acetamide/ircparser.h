@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include "core.h"
 #include "localtypes.h"
 
 namespace LC
@@ -80,11 +79,8 @@ namespace Acetamide
 
 		/** Automatically converts the \em ba to UTF-8.
 		 */
-		bool ParseMessage (const QByteArray& ba);
+		bool ParseMessage (const QString& ba);
 		IrcMessageOptions GetIrcMessageOptions () const;
-	private:
-		QTextCodec* GetCodec ();
-		QStringList EncodingList (const QStringList&);
 	};
 }
 }
