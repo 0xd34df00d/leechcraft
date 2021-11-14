@@ -993,9 +993,9 @@ namespace Acetamide
 
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
-		SendToConsole (IMessage::Direction::Out, cmd.trimmed ());
+		SendToConsole (IMessage::Direction::Out, cmd);
 		if (Socket_)
-			Socket_->Send (cmd);
+			Socket_->Send (cmd + "\r\n");
 	}
 
 	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
