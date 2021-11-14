@@ -9,20 +9,17 @@
 #pragma once
 
 #include <QObject>
-#include <QVector>
-#include "localtypes.h"
 
 namespace LC::Azoth::Acetamide
 {
+	struct IrcMessageOptions;
+
 	class IrcErrorHandler : public QObject
 	{
-		QVector<int> ErrorKeys_;
 	public:
 		explicit IrcErrorHandler (QObject *parent);
 
 		void HandleError (const IrcMessageOptions& opts);
 		bool IsError (int code);
-	private:
-		void InitErrors ();
 	};
 }

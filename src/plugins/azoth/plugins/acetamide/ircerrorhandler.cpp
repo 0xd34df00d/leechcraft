@@ -14,13 +14,13 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "ircserverhandler.h"
+#include "localtypes.h"
 
 namespace LC::Azoth::Acetamide
 {
 	IrcErrorHandler::IrcErrorHandler (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
-		InitErrors ();
 	}
 
 	void IrcErrorHandler::HandleError (const IrcMessageOptions& options)
@@ -32,19 +32,14 @@ namespace LC::Azoth::Acetamide
 
 		if (options.Parameters_.count () > 1)
 			for (const auto& str : options.Parameters_.mid (1))
-				paramsMessage += QString::fromUtf8 (str.c_str ()) + " ";
+				paramsMessage += QString::fromStdString (str) + " ";
 
-		Entity e = Util::MakeNotification ("Azoth",
+		Entity e = Util::MakeNotification (Lits::AzothAcetamide,
 				paramsMessage.isEmpty () ?
 						options.Message_ :
 						(paramsMessage + ": " + options.Message_),
 				Priority::Warning);
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	bool IrcErrorHandler::IsError (int id)
-	{
-		return ErrorKeys_.contains (id);
 	}
 
 	namespace
@@ -54,54 +49,31 @@ namespace LC::Azoth::Acetamide
 		{
 			static_assert (B <= E, "Invalid range");
 
-			constexpr static int Begin = B;
-			constexpr static int End = E;
+			bool operator() (int id) const
+			{
+				return B <= id && id <= E;
+			}
 		};
 
 		template<int... Pts>
 		struct Points
 		{
-		};
-
-		template<typename T, typename... Args>
-		struct Filler;
-
-		template<typename T, int... Pts, typename... Args>
-		struct Filler<T, Points<Pts...>, Args...>
-		{
-			void operator() (T& list) const
+			bool operator() (int id) const
 			{
-				list += T { Pts... };
-
-				Filler<T, Args...> {} (list);
+				return ((id == Pts) || ...);
 			}
 		};
 
-		template<typename T, typename Arg, typename... Args>
-		struct Filler<T, Arg, Args...>
+		template<typename... Args>
+		bool Check (int id)
 		{
-			void operator() (T& list) const
-			{
-				for (int i = Arg::Begin; i <= Arg::End; ++i)
-					list << i;
-
-				Filler<T, Args...> {} (list);
-			}
-		};
-
-		template<typename T>
-		struct Filler<T>
-		{
-			void operator() (T&) const
-			{
-			}
-		};
+			return (Args {} (id) || ...);
+		}
 	}
 
-	void IrcErrorHandler::InitErrors ()
+	bool IrcErrorHandler::IsError (int id)
 	{
-		Filler<
-				decltype (ErrorKeys_),
+		return Check<
 				Range<401, 409>,
 				Range<411, 415>,
 				Points<421, 422, 424>,
@@ -113,6 +85,6 @@ namespace LC::Azoth::Acetamide
 				Range<471, 478>,
 				Range<481, 485>,
 				Points<491, 501, 502>
-			> {} (ErrorKeys_);
+			> (id);
 	}
 }
