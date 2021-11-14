@@ -7,45 +7,37 @@
  **********************************************************************/
 
 #include "ircmessage.h"
-#include <QtDebug>
 #include <QTextDocument>
 #include "clientconnection.h"
-#include "core.h"
 #include "ircserverhandler.h"
 #include "channelsmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	IrcMessage::IrcMessage (IMessage::Type type,
 			IMessage::Direction dir,
-			const QString& id,
-			const QString& nickname,
+			QString id,
+			QString nickname,
 			ClientConnection *conn)
-	: Type_ (type)
-	, SubType_ (SubType::Other)
-	, Direction_ (dir)
-	, ID_ (id)
-	, NickName_ (nickname)
-	, Connection_ (conn)
-	, OtherPart_ (0)
+	: Type_ { type }
+	, SubType_ { SubType::Other }
+	, Direction_ { dir }
+	, ID_ { std::move (id) }
+	, NickName_ { std::move (nickname) }
+	, Connection_ { conn }
 	{
 		Message_.Stamp_ = QDateTime::currentDateTime ();
 		Message_.Nickname_ = NickName_;
 	}
 
-	IrcMessage::IrcMessage (const Message& msg,
-			const QString& id, ClientConnection* conn)
-	: Type_ (Type::MUCMessage)
-	, SubType_ (SubType::Other)
-	, Direction_ (Direction::In)
-	, ID_ (id)
-	, Message_ (msg)
-	, Connection_ (conn)
-	, OtherPart_ (0)
+	IrcMessage::IrcMessage (Message msg,
+			QString id, ClientConnection* conn)
+	: Type_ { Type::MUCMessage }
+	, SubType_ { SubType::Other }
+	, Direction_ { Direction::In }
+	, ID_ { std::move (id) }
+	, Message_ { std::move (msg) }
+	, Connection_ { conn }
 	{
 		if (!Message_.Stamp_.isValid ())
 			Message_.Stamp_ = QDateTime::currentDateTime ();
@@ -84,9 +76,7 @@ namespace Acetamide
 
 	void IrcMessage::Store ()
 	{
-		ServerParticipantEntry_ptr entry =
-				Connection_->GetIrcServerHandler (ID_)->
-						GetParticipantEntry (GetOtherVariant ());
+		const auto entry = Connection_->GetIrcServerHandler (ID_)->GetParticipantEntry (GetOtherVariant ());
 		entry->HandleMessage (this);
 	}
 
@@ -103,11 +93,6 @@ namespace Acetamide
 	IMessage::SubType IrcMessage::GetMessageSubType () const
 	{
 		return SubType_;
-	}
-
-	void IrcMessage::SetMessageSubType (IMessage::SubType subtype)
-	{
-		SubType_ = subtype;
 	}
 
 	QObject* IrcMessage::OtherPart () const
@@ -154,6 +139,4 @@ namespace Acetamide
 	{
 		Message_.Stamp_ = dateTime;
 	}
-};
-};
-};
+}

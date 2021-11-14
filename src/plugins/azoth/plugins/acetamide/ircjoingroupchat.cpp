@@ -11,36 +11,28 @@
 #include <QTextCodec>
 #include <QValidator>
 #include "ircaccount.h"
-#include "ircprotocol.h"
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	IrcJoinGroupChat::IrcJoinGroupChat (QWidget *parent)
-	: QWidget (parent)
-	, SelectedAccount_ (0)
+	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
-
-		Ui_.Channel_->setMaxLength (50);
 
 		for (const auto& codec : QTextCodec::availableCodecs ())
 			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.Encoding_->model ()->sort (0);
-		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText ("UTF-8"));
+		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (QStringLiteral ("UTF-8")));
 
-		QRegExp rx ("^([\\#,\\&,\\!,\\+]?)([^\\,,\\a,\\s]+)");
+		QRegExp rx { R"(^([\#,\&,\!,\+]?)([^\,,\a,\s]+))" };
 		const auto validator = new QRegExpValidator (rx, this);
 		Ui_.Channel_->setValidator (validator);
 	}
 
 	void IrcJoinGroupChat::AccountSelected (QObject *accObj)
 	{
-		IrcAccount *acc = qobject_cast<IrcAccount*> (accObj);
+		const auto acc = qobject_cast<IrcAccount*> (accObj);
 		if (!acc)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -56,7 +48,7 @@ namespace Acetamide
 
 	void IrcJoinGroupChat::Join (QObject *accObj)
 	{
-		IrcAccount *acc = qobject_cast<IrcAccount*> (accObj);
+		const auto acc = qobject_cast<IrcAccount*> (accObj);
 		if (!acc)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -77,12 +69,12 @@ namespace Acetamide
 
 	void IrcJoinGroupChat::SetIdentifyingData (const QVariantMap& data)
 	{
-		const QString& nick = data [Lits::Nickname].toString ();
-		const QString& channel = data [Lits::Channel].toString ();
-		const QString& server = data [Lits::Server].toString ();
-		const QString& encoding = data [Lits::Encoding].toString ();
-		const QString& serverPass = data [Lits::ServerPassword].toString ();
-		const QString& channelPass = data [Lits::ChannelPassword].toString ();
+		const auto& nick = data [Lits::Nickname].toString ();
+		const auto& channel = data [Lits::Channel].toString ();
+		const auto& server = data [Lits::Server].toString ();
+		const auto& encoding = data [Lits::Encoding].toString ();
+		const auto& serverPass = data [Lits::ServerPassword].toString ();
+		const auto& channelPass = data [Lits::ChannelPassword].toString ();
 		const int port = data [Lits::Port].toInt ();
 		const bool ssl = data [Lits::SSL].toBool ();
 
@@ -142,11 +134,11 @@ namespace Acetamide
 
 	QString IrcJoinGroupChat::GetChannel () const
 	{
-		QString channel = Ui_.Channel_->text ().toLower ();
-		if (!Ui_.Channel_->text ().startsWith ('#') &&
-				!Ui_.Channel_->text ().startsWith ('&') &&
-				!Ui_.Channel_->text ().startsWith ('+') &&
-				!Ui_.Channel_->text ().startsWith ('!'))
+		auto channel = Ui_.Channel_->text ().toLower ();
+		if (!channel.startsWith ('#') &&
+				!channel.startsWith ('&') &&
+				!channel.startsWith ('+') &&
+				!channel.startsWith ('!'))
 			channel.prepend ('#');
 		return channel;
 	}
@@ -173,25 +165,24 @@ namespace Acetamide
 
 	ServerOptions IrcJoinGroupChat::GetServerOptions () const
 	{
-		ServerOptions so;
-		so.ServerName_ = GetServer ();
-		so.ServerPort_ = GetPort ();
-		so.ServerEncoding_ = GetEncoding ();
-		so.ServerPassword_ = GetServerPassword ();
-		so.SSL_ = GetSSL ();
-		so.ServerNickName_ = GetNickname ();
-		return so;
+		return
+		{
+			.ServerName_ = GetServer (),
+			.ServerEncoding_ = GetEncoding (),
+			.ServerPassword_ = GetServerPassword (),
+			.ServerNickName_ = GetNickname (),
+			.ServerPort_ = GetPort (),
+			.SSL_ = GetSSL (),
+		};
 	}
 
 	ChannelOptions IrcJoinGroupChat::GetChannelOptions () const
 	{
-		ChannelOptions cho;
-		cho.ChannelName_ = GetChannel ();
-		cho.ServerName_ = GetServer ();
-		cho.ChannelPassword_ = GetChannelPassword ();
-
-		return cho;
+		return
+		{
+			.ServerName_ = GetServer (),
+			.ChannelName_ = GetChannel (),
+			.ChannelPassword_ = GetChannelPassword (),
+		};
 	}
-};
-};
-};
+}

@@ -6,8 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
+#pragma once
 
 #include <QWidget>
 #include <interfaces/azoth/imucjoinwidget.h>
@@ -15,11 +14,7 @@
 #include "core.h"
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcAccount;
 
@@ -30,15 +25,15 @@ namespace Acetamide
 		Q_INTERFACES (LC::Azoth::IMUCJoinWidget)
 
 		Ui::IrcJoinGroupChat Ui_;
-		IrcAccount *SelectedAccount_;
+		IrcAccount *SelectedAccount_ = nullptr;
 	public:
-		IrcJoinGroupChat (QWidget* = 0);
+		explicit IrcJoinGroupChat (QWidget* = nullptr);
 
-		void AccountSelected (QObject*);
-		void Join (QObject*);
-		void Cancel ();
-		void SetIdentifyingData (const QVariantMap&);
-		QVariantMap GetIdentifyingData () const;
+		void AccountSelected (QObject*) override;
+		void Join (QObject*) override;
+		void Cancel () override;
+		void SetIdentifyingData (const QVariantMap&) override;
+		QVariantMap GetIdentifyingData () const override;
 
 		QString GetServer () const;
 		int GetPort () const;
@@ -52,10 +47,6 @@ namespace Acetamide
 		ServerOptions GetServerOptions () const;
 		ChannelOptions GetChannelOptions () const;
 	signals:
-		void validityChanged (bool);
+		void validityChanged (bool) override;
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H

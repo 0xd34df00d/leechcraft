@@ -50,7 +50,7 @@ namespace LC::Azoth::Acetamide
 		bool SSL_;
 
 		IrcServer IrcServer_ = IrcServer::UnknownServer;
-		QString IrcServerVersion_;
+		QString IrcServerVersion_ = {};
 	};
 
 	struct ChannelOptions

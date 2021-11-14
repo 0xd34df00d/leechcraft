@@ -6,17 +6,12 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCMESSAGE_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCMESSAGE_H
+#pragma once
 
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	struct Message
 	{
@@ -28,48 +23,43 @@ namespace Acetamide
 	class ClientConnection;
 
 	class IrcMessage : public QObject
-						, public IMessage
+					 , public IMessage
 	{
-		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage)
 
-		Type Type_;
-		SubType SubType_;
-		Direction Direction_;
-		QString ID_;
+		const Type Type_;
+		const SubType SubType_;
+		const Direction Direction_;
+		const QString ID_;
 		QString NickName_;
 		Message Message_;
-		ClientConnection *Connection_;
+		ClientConnection * const Connection_;
 
-		QObject *OtherPart_;
+		QObject *OtherPart_ = nullptr;
 	public:
 		IrcMessage (IMessage::Type type,
 				IMessage::Direction direction,
-				const QString& chid,
-				const QString& nickname,
+				QString chid,
+				QString nickname,
 				ClientConnection *conn);
-		IrcMessage (const Message& msg,
-				const QString& id,
+		IrcMessage (Message msg,
+				QString id,
 				ClientConnection *conn);
-		QObject* GetQObject ();
-		void Send ();
-		void Store ();
-		Direction GetDirection () const;
-		Type GetMessageType () const;
-		SubType GetMessageSubType () const;
-		void SetMessageSubType (IMessage::SubType);
-		QObject* OtherPart () const;
+
+		QObject* GetQObject () override;
+		void Send () override;
+		void Store () override;
+		Direction GetDirection () const override;
+		Type GetMessageType () const override;
+		SubType GetMessageSubType () const override;
+		QObject* OtherPart () const override;
 		void SetOtherPart (QObject *entry);
 		QString GetID () const;
-		QString GetOtherVariant () const;
+		QString GetOtherVariant () const override;
 		void SetOtherVariant (const QString&);
-		QString GetBody () const;
-		void SetBody (const QString&);
-		QDateTime GetDateTime () const;
-		void SetDateTime (const QDateTime&);
+		QString GetBody () const override;
+		void SetBody (const QString&) override;
+		QDateTime GetDateTime () const override;
+		void SetDateTime (const QDateTime&) override;
 	};
-};
-};
-};
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCMESSAGE_H
+}
