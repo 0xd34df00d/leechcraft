@@ -39,6 +39,7 @@ LC_DEFINE_PLUGIN (
 		serverparticipantentry.cpp
 		serverresponsemanager.cpp
 		sortfilterproxymodel.cpp
+		urldecoder.cpp
 		usercommandmanager.cpp
 		xmlsettingsmanager.cpp
 		vcarddialog.cpp
