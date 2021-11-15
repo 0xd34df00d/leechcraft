@@ -11,27 +11,19 @@
 #include <QObject>
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
 
 	class IrcParser : public QObject
 	{
-		Q_OBJECT
-
 		IrcServerHandler *ISH_;
 		ServerOptions ServerOptions_;
 		IrcMessageOptions IrcMessageOptions_;
-
-		QStringList LongAnswerCommands_;
 	public:
-		IrcParser (IrcServerHandler*);
+		explicit IrcParser (IrcServerHandler*);
 
-		bool CmdHasLongAnswer (const QString& cmd);
+		static bool CmdHasLongAnswer (const QString& cmd);
 
 		void AuthCommand ();
 		void UserCommand ();
@@ -82,6 +74,4 @@ namespace Acetamide
 		bool ParseMessage (const QString& ba);
 		IrcMessageOptions GetIrcMessageOptions () const;
 	};
-}
-}
 }
