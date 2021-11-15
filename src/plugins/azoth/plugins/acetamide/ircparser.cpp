@@ -113,15 +113,7 @@ namespace Acetamide
 
 	void IrcParser::CTCPRequest (const QStringList& cmd)
 	{
-		QString ctcpCmd;
-		if (cmd.count () > 2)
-			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
-					cmd.at (1) + " " + cmd.mid (2).join (" ") +
-					"\001";
-		else
-			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
-					cmd.at (1) + "\001";
-		ISH_->SendCommand (ctcpCmd);
+		ISH_->SendCommand ("PRIVMSG " + cmd.first () + " :\001" + cmd.mid (1).join (' ') + "\001");
 	}
 
 	void IrcParser::CTCPReply (const QStringList& cmd)
