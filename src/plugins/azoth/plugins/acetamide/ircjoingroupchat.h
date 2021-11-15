@@ -11,7 +11,6 @@
 #include <QWidget>
 #include <interfaces/azoth/imucjoinwidget.h>
 #include "ui_ircjoingroupchat.h"
-#include "core.h"
 #include "localtypes.h"
 
 namespace LC::Azoth::Acetamide

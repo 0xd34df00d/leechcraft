@@ -13,7 +13,6 @@
 #include <util/util.h>
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "ircaccount.h"
 
 namespace LC

@@ -17,7 +17,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
 #include <interfaces/azoth/iprotocolplugin.h>
-#include "core.h"
 #include "ircaccount.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircjoingroupchat.h"
