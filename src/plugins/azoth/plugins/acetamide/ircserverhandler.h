@@ -112,8 +112,6 @@ namespace Acetamide
 
 		void ChangeNickname (const QString&, const QString&);
 
-		bool IsCmdHasLongAnswer (const QString& cmd);
-
 		void GetBanList (const QString&);
 		void GetExceptList (const QString&);
 		void GetInviteList (const QString&);

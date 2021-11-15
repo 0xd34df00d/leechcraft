@@ -193,7 +193,7 @@ namespace LC::Azoth::Acetamide
 					handler->SetChannelUser (nick);
 		}
 		else
-			ReceiveCmdAnswerMessage (Names, participants.join (' '), false);
+			ReceiveCmdAnswerMessage (participants.join (' '));
 	}
 
 	void ChannelsManager::GotEndOfNamesCmd (const QString& channel)
@@ -205,7 +205,7 @@ namespace LC::Azoth::Acetamide
 			emit ISH_->GetAccount ()->gotCLItems ({ handler->GetCLEntry () });
 		}
 		else
-			ReceiveCmdAnswerMessage (Names, QStringLiteral ("End of /NAMES"), true);
+			ReceiveCmdAnswerMessage (QStringLiteral ("End of /NAMES"));
 	}
 
 	void ChannelsManager::SendPublicMessage (const QString& channel, const QString& msg)
@@ -242,8 +242,7 @@ namespace LC::Azoth::Acetamide
 			handler->HandleIncomingMessage (nick, msg);
 	}
 
-	bool ChannelsManager::ReceiveCmdAnswerMessage (const QString&,
-			const QString& answer, bool)
+	bool ChannelsManager::ReceiveCmdAnswerMessage (const QString& answer)
 	{
 		const auto handler = GetChannelHandler (LastActiveChannel_);
 		if (!handler)
@@ -261,8 +260,7 @@ namespace LC::Azoth::Acetamide
 		if (const auto handler = GetChannelHandler (channel))
 			handler->SetMUCSubject (topic);
 
-		const auto topicMarker = QStringLiteral ("topic");
-		ReceiveCmdAnswerMessage (topicMarker, topic, ISH_->IsCmdHasLongAnswer (topicMarker));
+		ReceiveCmdAnswerMessage (topic);
 	}
 
 	void ChannelsManager::SetTopic (const QString& channel, const QString& topic)

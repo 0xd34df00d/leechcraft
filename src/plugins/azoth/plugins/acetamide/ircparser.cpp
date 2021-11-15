@@ -24,26 +24,6 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	bool IrcParser::CmdHasLongAnswer (const QString& cmd)
-	{
-		static const QStringList cmds
-		{
-			QStringLiteral ("mode"),
-			QStringLiteral ("names"),
-			QStringLiteral ("motd"),
-			QStringLiteral ("stats"),
-			QStringLiteral ("links"),
-			QStringLiteral ("info"),
-			QStringLiteral ("who"),
-			QStringLiteral ("whois"),
-			QStringLiteral ("whowas"),
-			QStringLiteral ("users"),
-			QStringLiteral ("trace"),
-		};
-
-		return cmds.contains (cmd, Qt::CaseInsensitive);
-	}
-
 	void IrcParser::AuthCommand ()
 	{
 		const auto& pass = ServerOptions_.ServerPassword_;

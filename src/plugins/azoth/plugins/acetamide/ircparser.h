@@ -23,8 +23,6 @@ namespace LC::Azoth::Acetamide
 	public:
 		explicit IrcParser (IrcServerHandler*);
 
-		static bool CmdHasLongAnswer (const QString& cmd);
-
 		void AuthCommand ();
 		void UserCommand ();
 		void NickCommand (const QStringList&);

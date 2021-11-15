@@ -88,8 +88,7 @@ namespace LC::Azoth::Acetamide
 
 		void ReceivePublicMessage (const QString& channel,
 				const QString& nick, const QString& msg);
-		bool ReceiveCmdAnswerMessage (const QString& cmd,
-				const QString& answer, bool endOdfCmd = false);
+		bool ReceiveCmdAnswerMessage (const QString& answer);
 
 		void SetMUCSubject (const QString& channel, const QString& topic);
 		void SetTopic (const QString& channel, const QString& topic);

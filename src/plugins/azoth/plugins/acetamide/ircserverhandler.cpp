@@ -328,11 +328,6 @@ namespace Acetamide
 		}
 	}
 
-	bool IrcServerHandler::IsCmdHasLongAnswer (const QString& cmd)
-	{
-		return IrcParser_->CmdHasLongAnswer (cmd);
-	}
-
 	void IrcServerHandler::GetBanList (const QString& channel)
 	{
 		IrcParser_->ChanModeCommand (QStringList () << channel << "b");
@@ -481,10 +476,10 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::ShowAnswer (const QString& cmd,
-			const QString& answer, bool isEndOf, IMessage::Type type)
+			const QString& answer, bool /*isEndOf*/, IMessage::Type type)
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
-		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
+		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (msg);
 
 		if (!res ||
 				XmlSettingsManager::Instance ()
