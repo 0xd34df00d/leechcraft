@@ -49,3 +49,17 @@ LC_DEFINE_PLUGIN (
 	INSTALL_DESKTOP
 	INSTALL_SHARE
 	)
+
+option (ENABLE_AZOTH_ACETAMIDE_TESTS "Build tests for Azoth Acetamide" ON)
+if (ENABLE_AZOTH_ACETAMIDE_TESTS)
+	function (AddAzothAcetamideTest _execName _cppFile _testName)
+		set (_fullExecName lc_azoth_acetamide_${_execName}_test)
+		add_executable (${_fullExecName} WIN32 ${_cppFile})
+		target_link_libraries (${_fullExecName} ${LEECHCRAFT_LIBRARIES})
+		add_test (${_testName} ${_fullExecName})
+		FindQtLibs (${_fullExecName} Test)
+		add_dependencies (${_fullExecName} leechcraft_azoth_acetamide)
+	endfunction ()
+
+	AddAzothAcetamideTest (urldecodertest tests/urldecodertest.cpp AzothAcetamideUrlDecoderTest)
+endif ()
