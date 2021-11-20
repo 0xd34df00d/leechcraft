@@ -40,8 +40,7 @@ namespace LC::Azoth::Acetamide
 		rule<> subdomain = label >> +(label >> !ch_p ('.'));
 		rule<> host = subdomain  [assign_a (host_)];
 		rule<> servername = host;
-		rule<> user = (ascii - ' ' - '\0' - '\r' - '\n') >>
-				*(ascii - ' ' - '\0' - '\r' - '\n');
+		rule<> user = +(ascii - ' ' - '\0' - '\r' - '\n');
 		rule<> nick = alpha_p >> *(alnum_p | special);
 		rule<> userinfo = user >> ch_p ('@') >> servername;
 		rule<> nickinfo = nick >> ch_p ('!')
