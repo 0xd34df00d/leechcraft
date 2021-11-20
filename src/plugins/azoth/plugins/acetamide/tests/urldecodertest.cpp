@@ -44,6 +44,17 @@ namespace LC::Azoth::Acetamide
 		QCOMPARE (res->Server_.ServerName_, "foobar.org");
 		QCOMPARE (res->Channel_.ChannelName_, "secret");
 		QCOMPARE (res->Channel_.ServerName_, res->Server_.ServerName_);
-		QCOMPARE (res->ChannelPassword_, true);
+		QCOMPARE (res->HasServerPassword_, false);
+		QCOMPARE (res->HasChannelPassword_, true);
+
+		res = Decode ("irc://foobar.org:6665/secret,needkey,needpass");
+		QVERIFY2 (static_cast<bool> (res), "parsing succeeded");
+
+		QCOMPARE (res->Server_.ServerPort_, 6665);
+		QCOMPARE (res->Server_.ServerName_, "foobar.org");
+		QCOMPARE (res->Channel_.ChannelName_, "secret");
+		QCOMPARE (res->Channel_.ServerName_, res->Server_.ServerName_);
+		QCOMPARE (res->HasServerPassword_, true);
+		QCOMPARE (res->HasChannelPassword_, true);
 	}
 }

@@ -19,7 +19,9 @@ namespace LC::Azoth::Acetamide
 	{
 		ServerOptions Server_;
 		ChannelOptions Channel_;
-		bool ChannelPassword_ = false;
+
+		bool HasServerPassword_ = false;
+		bool HasChannelPassword_ = false;
 	};
 
 	std::optional<DecodedUrl> DecodeUrl (const QUrl&);

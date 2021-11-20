@@ -143,8 +143,8 @@ namespace Acetamide
 		auto maybeDecoded = DecodeUrl (url);
 
 		auto& res = *maybeDecoded;
-		if (res.ChannelPassword_)
-			res.Channel_.ChannelPassword_ = QInputDialog::getText (0,
+		if (res.HasChannelPassword_)
+			res.Channel_.ChannelPassword_ = QInputDialog::getText (nullptr,
 					tr ("This channel needs password."),
 					tr ("Password:"),
 					QLineEdit::Password);

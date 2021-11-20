@@ -91,6 +91,12 @@ namespace LC::Azoth::Acetamide
 			cho.ChannelName_ = QString::fromUtf8 (channel_.c_str ());
 		cho.ServerName_ = so.ServerName_;
 
-		return DecodedUrl { so, cho, channelPass };
+		return DecodedUrl
+		{
+			.Server_ = so,
+			.Channel_ = cho,
+			.HasServerPassword_ = serverPass,
+			.HasChannelPassword_ = channelPass,
+		};
 	}
 }
