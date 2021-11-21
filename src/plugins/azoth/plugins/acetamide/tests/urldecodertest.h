@@ -17,7 +17,9 @@ namespace LC::Azoth::Acetamide
 		Q_OBJECT
 	private slots:
 		void testDefaultServer ();
-
 		void testServerChannel ();
+		void testNickOnly ();
+		void testNickInfo ();
+		void testUserInfo ();
 	};
 }

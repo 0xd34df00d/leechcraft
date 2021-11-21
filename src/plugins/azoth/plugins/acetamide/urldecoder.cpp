@@ -62,15 +62,15 @@ namespace LC::Azoth::Acetamide
 		rule<> host = subdomain  [assign_a (host_)];
 
 		rule<> servername = subdomain [assign_a (user_server_)];
-		rule<> user = +(ascii - ' ' - '\0' - '\r' - '\n') [assign_a (user_)];
+		rule<> user = (+(ascii - ' ' - '\0' - '\r' - '\n' - '@')) [assign_a (user_)];
 		rule<> nick = (alpha_p >> *(alnum_p | special)) [assign_a (nick_)];
 		rule<> userinfo = user >> ch_p ('@') >> servername;
 		rule<> hostmask = lexeme_d [+(ascii - ' ' - '\0' - ',' - '\r' - '\n')] [assign_a (hostmask_)];
 		rule<> nickinfo = nick >> ch_p ('!') >> user >> ch_p ('@') >> hostmask;
 
-		rule<> nicktypes = nickinfo [Assign<TargetType::NickInfo> (targetType)]
-				| userinfo [Assign<TargetType::UserInfo> (targetType)]
-				| nick [Assign<TargetType::NickOnly> (targetType)];
+		rule<> nicktypes = (nickinfo [Assign<TargetType::NickInfo> (targetType)])
+				| (userinfo [Assign<TargetType::UserInfo> (targetType)])
+				| (nick [Assign<TargetType::NickOnly> (targetType)]);
 
 		rule<> nicktrgt = nicktypes >> ch_p (',') >> str_p ("isnick");
 
@@ -81,7 +81,7 @@ namespace LC::Azoth::Acetamide
 
 		rule<> channeltrgt = longest_d [channelstr | keystr] [Assign<TargetType::Channel> (targetType)];
 
-		rule<> target = longest_d [nicktrgt | channeltrgt];
+		rule<> target = nicktrgt | channeltrgt;
 
 		rule<> port = int_p[assign_a (port_)];
 		rule<> uri = str_p ("irc:") >>
@@ -90,13 +90,8 @@ namespace LC::Azoth::Acetamide
 						>> !ch_p ('/')
 						>> !target >> !(ch_p (',') >> str_p ("needpass") [Assign<true> (serverPass)]));
 
-		bool res = parse (url.toString ().toUtf8 ().constData (), uri).full;
-		if (!res)
-		{
-			qWarning () << "input string is not a valid IRC URI"
-					<< url.toString ().toUtf8 ().constData ();
+		if (!parse (url.toString ().toUtf8 ().constData (), uri).full)
 			return {};
-		}
 
 		ServerOptions so;
 		so.SSL_ = false;
