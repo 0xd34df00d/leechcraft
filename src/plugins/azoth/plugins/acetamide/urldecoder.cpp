@@ -15,6 +15,13 @@
 
 namespace LC::Azoth::Acetamide
 {
+	template<auto Val>
+	auto Assign (auto& ref)
+	{
+		static constexpr auto val = Val;
+		return boost::spirit::classic::assign_a (ref, val);
+	}
+
 	std::optional<DecodedUrl> DecodeUrl (const QUrl& url)
 	{
 		std::string host_;
@@ -54,7 +61,7 @@ namespace LC::Azoth::Acetamide
 		rule<> channelstr = lexeme_d [!(ch_p ('#') | ch_p ('&') | ch_p ('+')) >>
 				+(ascii - ' ' - '\0' - ',' - '\r' - '\n')][assign_a (channel_)];
 
-		rule<> keystr = lexeme_d [channelstr >> ch_p (',') >> str_p ("needkey")[assign_a (channelPass, true)]];
+		rule<> keystr = lexeme_d [channelstr >> ch_p (',') >> str_p ("needkey") [Assign<true> (channelPass)]];
 
 		rule<> channeltrgt = longest_d [channelstr | keystr];
 
@@ -65,7 +72,7 @@ namespace LC::Azoth::Acetamide
 				!(str_p ("//") >>
 						!(host >> !(ch_p (':') >> port))
 						>> !ch_p ('/')
-						>> !target >> !(ch_p (',') >> str_p ("needpass")[assign_a (serverPass, true)]));
+						>> !target >> !(ch_p (',') >> str_p ("needpass") [Assign<true> (serverPass)]));
 
 		bool res = parse (url.toString ().toUtf8 ().constData (), uri).full;
 		if (!res)
