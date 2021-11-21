@@ -9,19 +9,58 @@
 #pragma once
 
 #include <optional>
+#include <variant>
 #include "localtypes.h"
 
 class QUrl;
 
 namespace LC::Azoth::Acetamide
 {
+	struct NickOnly
+	{
+		QString Nick_;
+
+		bool operator== (const NickOnly&) const = default;
+	};
+
+	struct NickInfo
+	{
+		QString Nick_;
+		QString User_;
+		QString HostMask_;
+
+		bool operator== (const NickInfo&) const = default;
+	};
+
+	struct UserInfo
+	{
+		QString User_;
+		QString ServerName_;
+
+		bool operator== (const UserInfo&) const = default;
+	};
+
+	struct ChannelTarget
+	{
+		ChannelOptions Opts_;
+		bool HasPassword_ = false;
+
+		bool operator== (const ChannelTarget&) const = default;
+	};
+
+	struct NoTarget
+	{
+		bool operator== (const NoTarget&) const = default;
+	};
+
+	using Target = std::variant<NoTarget, ChannelTarget, NickOnly, NickInfo, UserInfo>;
+
 	struct DecodedUrl
 	{
 		ServerOptions Server_;
-		ChannelOptions Channel_;
-
 		bool HasServerPassword_ = false;
-		bool HasChannelPassword_ = false;
+
+		Target Target_;
 	};
 
 	std::optional<DecodedUrl> DecodeUrl (const QUrl&);

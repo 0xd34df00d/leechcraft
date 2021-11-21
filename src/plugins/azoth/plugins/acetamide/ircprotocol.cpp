@@ -141,16 +141,25 @@ namespace Acetamide
 		}
 
 		auto maybeDecoded = DecodeUrl (url);
+		if (!maybeDecoded)
+		{
+			qWarning () << "input string is not a valid IRC URI"
+					<< url.toString ().toUtf8 ().constData ();
+			return;
+		}
 
 		auto& res = *maybeDecoded;
-		if (res.HasChannelPassword_)
-			res.Channel_.ChannelPassword_ = QInputDialog::getText (nullptr,
-					tr ("This channel needs password."),
-					tr ("Password:"),
-					QLineEdit::Password);
+		if (const auto channel = std::get_if<ChannelTarget> (&res.Target_))
+		{
+			if (channel->HasPassword_)
+				channel->Opts_.ChannelPassword_ = QInputDialog::getText (nullptr,
+						Lits::AzothAcetamide,
+						tr ("This channel needs password. Please enter it here:"),
+						QLineEdit::Password);
 
-		//TODO nickServ for urls
-		acc->JoinServer (res.Server_, res.Channel_);
+			//TODO nickServ for urls
+			acc->JoinServer (res.Server_, channel->Opts_);
+		}
 	}
 
 	bool IrcProtocol::SupportsURI (const QUrl& url) const
