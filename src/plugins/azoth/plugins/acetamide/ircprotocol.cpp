@@ -151,6 +151,12 @@ namespace Acetamide
 		auto& res = *maybeDecoded;
 		if (const auto channel = std::get_if<ChannelTarget> (&res.Target_))
 		{
+			if (res.HasServerPassword_)
+				res.Server_.ServerPassword_ = QInputDialog::getText (nullptr,
+						Lits::AzothAcetamide,
+						tr ("This server needs password. Please enter it here:"),
+						QLineEdit::Password);
+
 			if (channel->HasPassword_)
 				channel->Opts_.ChannelPassword_ = QInputDialog::getText (nullptr,
 						Lits::AzothAcetamide,
