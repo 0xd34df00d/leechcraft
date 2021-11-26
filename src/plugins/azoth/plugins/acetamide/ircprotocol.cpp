@@ -12,22 +12,18 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <util/sll/prelude.h>
-#include <util/sll/functional.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include "ircaccount.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircjoingroupchat.h"
 #include "urldecoder.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	IrcProtocol::IrcProtocol (QObject *parent)
-	: QObject (parent)
-	, ParentProtocolPlugin_ (parent)
+	: QObject { parent }
+	, ParentProtocolPlugin_ { parent }
 	{
 	}
 
@@ -64,7 +60,7 @@ namespace Acetamide
 
 	QList<QObject*> IrcProtocol::GetRegisteredAccounts ()
 	{
-		return Util::Map (IrcAccounts_, Util::Caster<QObject*> {});
+		return Util::Map (IrcAccounts_, [] (auto obj) -> QObject* { return obj; });
 	}
 
 	QObject* IrcProtocol::GetParentProtocolPlugin () const
@@ -74,7 +70,7 @@ namespace Acetamide
 
 	QString IrcProtocol::GetProtocolName () const
 	{
-		return "IRC";
+		return QStringLiteral ("IRC");
 	}
 
 	QIcon IrcProtocol::GetProtocolIcon () const
@@ -105,7 +101,7 @@ namespace Acetamide
 			return;
 		}
 
-		IrcAccount *account = new IrcAccount (name, this);
+		const auto account = new IrcAccount (name, this);
 		account->FillSettings (w);
 		account->SetAccountID (GetProtocolID () + "." + QString::number (QDateTime::currentSecsSinceEpoch ()));
 		IrcAccounts_ << account;
@@ -120,7 +116,7 @@ namespace Acetamide
 
 	void IrcProtocol::RemoveAccount (QObject *acc)
 	{
-		IrcAccount *accObj = qobject_cast<IrcAccount*> (acc);
+		const auto accObj = qobject_cast<IrcAccount*> (acc);
 		if (IrcAccounts_.removeAll (accObj))
 		{
 			emit accountRemoved (accObj);
@@ -170,7 +166,13 @@ namespace Acetamide
 
 	bool IrcProtocol::SupportsURI (const QUrl& url) const
 	{
-		return url.scheme () == "irc";
+		return url.scheme () == "irc"_ql;
+	}
+
+	namespace
+	{
+		const QString Accounts = QStringLiteral ("Accounts");
+		const QString SerializedData = QStringLiteral ("SerializedData");
 	}
 
 	void IrcProtocol::saveAccounts () const
@@ -180,17 +182,15 @@ namespace Acetamide
 				QCoreApplication::applicationName () +
 					"_Azoth_Acetamide_Accounts");
 
-		settings.beginWriteArray ("Accounts");
+		settings.beginWriteArray (Accounts);
 
 		for (int i = 0, size = IrcAccounts_.size (); i < size; ++i)
 		{
 			settings.setArrayIndex (i);
-			settings.setValue ("SerializedData",
-					IrcAccounts_.at (i)->Serialize ());
+			settings.setValue (SerializedData, IrcAccounts_.at (i)->Serialize ());
 		}
 
 		settings.endArray ();
-		settings.sync ();
 	}
 
 	void IrcProtocol::RestoreAccounts ()
@@ -200,14 +200,13 @@ namespace Acetamide
 				QCoreApplication::applicationName () +
 					"_Azoth_Acetamide_Accounts");
 
-		int size = settings.beginReadArray ("Accounts");
+		int size = settings.beginReadArray (Accounts);
 		for (int i = 0; i < size; ++i)
 		{
 			settings.setArrayIndex (i);
-			QByteArray data = settings
-					.value ("SerializedData").toByteArray ();
+			const auto& data = settings.value (SerializedData).toByteArray ();
 
-			IrcAccount *acc = IrcAccount::Deserialize (data, this);
+			const auto acc = IrcAccount::Deserialize (data, this);
 			if (!acc)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -217,14 +216,12 @@ namespace Acetamide
 			}
 
 			connect (acc,
-					SIGNAL (accountSettingsChanged ()),
+					&IrcAccount::accountSettingsChanged,
 					this,
-					SLOT (saveAccounts ()));
+					&IrcProtocol::saveAccounts);
 
 			IrcAccounts_ << acc;
 			emit accountAdded (acc);
 		}
 	}
-};
-};
-};
+}

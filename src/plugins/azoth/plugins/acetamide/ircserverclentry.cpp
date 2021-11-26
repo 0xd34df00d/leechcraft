@@ -17,33 +17,23 @@
 #include "serverinfowidget.h"
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	IrcServerCLEntry::IrcServerCLEntry (IrcServerHandler *handler,
 			IrcAccount *account)
-	: EntryBase (account)
-	, ISH_ (handler)
+	: EntryBase { account }
+	, ISH_ { handler }
 	{
-		QAction *showChannels = new QAction (tr ("Channels list"), this);
+		const auto showChannels = new QAction { tr ("Channels list"), this };
 		connect (showChannels,
-				SIGNAL (triggered ()),
-				ISH_,
-				SLOT (showChannels ()));
+				&QAction::triggered,
+				[this] { ISH_->showChannels (); });
 		Actions_ << showChannels;
 	}
 
 	IrcServerHandler* IrcServerCLEntry::GetIrcServerHandler () const
 	{
 		return ISH_;
-	}
-
-	IrcAccount* IrcServerCLEntry::GetIrcAccount () const
-	{
-		return Account_;
 	}
 
 	IAccount* IrcServerCLEntry::GetParentAccount () const
@@ -92,10 +82,10 @@ namespace Acetamide
 	IMessage* IrcServerCLEntry::CreateMessage (IMessage::Type,
 			const QString& variant, const QString& body)
 	{
-		if (variant.isEmpty ())
-			return new ServerCommandMessage (body, this);
-		else
+		if (!variant.isEmpty ())
 			return nullptr;
+
+		return new ServerCommandMessage (body, this);
 	}
 
 	IMUCEntry::MUCFeatures IrcServerCLEntry::GetMUCFeatures () const
@@ -129,7 +119,7 @@ namespace Acetamide
 
 	void IrcServerCLEntry::Join ()
 	{
-		ISH_->GetParser ()->NickCommand (QStringList () << ISH_->GetNickName ());
+		ISH_->GetParser ()->NickCommand ({ ISH_->GetNickName () });
 	}
 
 	void IrcServerCLEntry::Leave (const QString&)
@@ -149,12 +139,12 @@ namespace Acetamide
 
 	QString IrcServerCLEntry::GetGroupName () const
 	{
-		return QString ();
+		return {};
 	}
 
 	QString IrcServerCLEntry::GetRealID (QObject*) const
 	{
-		return QString ();
+		return {};
 	}
 
 	QVariantMap IrcServerCLEntry::GetIdentifyingData () const
@@ -194,6 +184,4 @@ namespace Acetamide
 		return ISH_->GetISupport ();
 	}
 
-}
-}
 }

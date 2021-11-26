@@ -31,7 +31,7 @@ namespace Acetamide
 		IrcServerCLEntry *ISCLEntry_;
 		QHash<QString, std::function<void (QString)>> Parameter2Command_;
 	public:
-		ServerInfoWidget (IrcServerCLEntry*, QWidget* = 0);
+		explicit ServerInfoWidget (IrcServerCLEntry*, QWidget* = nullptr);
 	private:
 		void Init ();
 		void SetISupport ();

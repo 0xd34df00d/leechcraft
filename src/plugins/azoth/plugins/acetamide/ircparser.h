@@ -26,7 +26,7 @@ namespace LC::Azoth::Acetamide
 		void AuthCommand ();
 		void UserCommand ();
 		void NickCommand (const QStringList&);
-		void JoinCommand (QStringList);
+		void JoinCommand (const QStringList&);
 		void PrivMsgCommand (const QStringList&);
 		void PartCommand (const QStringList&);
 		void PongCommand (const QStringList&);

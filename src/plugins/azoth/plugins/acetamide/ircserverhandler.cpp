@@ -136,11 +136,6 @@ namespace Acetamide
 		return result;
 	}
 
-	ChannelHandler* IrcServerHandler::GetChannelHandler (const QString& channel)
-	{
-		return ChannelsManager_->GetChannelHandler (channel);
-	}
-
 	QList<ChannelHandler*> IrcServerHandler::GetChannelHandlers () const
 	{
 		return ChannelsManager_->GetChannels ();
@@ -1238,7 +1233,7 @@ namespace Acetamide
 
 	void IrcServerHandler::showChannels (const QStringList&)
 	{
-		IrcParser_->ChannelsListCommand (QStringList ());
+		IrcParser_->ChannelsListCommand ({});
 
 		const auto dlg = new ChannelsListDialog (this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose);

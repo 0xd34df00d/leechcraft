@@ -6,8 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
+#pragma once
 
 #include <QObject>
 #include <interfaces/azoth/iclentry.h>
@@ -15,13 +14,8 @@
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "entrybase.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-
 	class IrcServerHandler;
 	class IrcAccount;
 
@@ -38,49 +32,43 @@ namespace Acetamide
 		IrcServerCLEntry (IrcServerHandler*, IrcAccount*);
 
 		IrcServerHandler* GetIrcServerHandler () const;
-		IrcAccount* GetIrcAccount () const;
 
-		IAccount* GetParentAccount () const;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		QString GetEntryID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		IMessage* CreateMessage (IMessage::Type, const QString&,
-				const QString&);
+		IAccount* GetParentAccount () const override;
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString&) override;
+		QString GetEntryID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList&) override;
+		QStringList Variants () const override;
+		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&) override;
 
 		// IMUCEntry
-		MUCFeatures GetMUCFeatures () const;
-		QString GetMUCSubject () const;
-		bool CanChangeSubject () const;
-		void SetMUCSubject (const QString&);
-		QList<QObject*> GetParticipants ();
-		bool IsAutojoined () const;
-		void Join ();
-		void Leave (const QString& msg = QString ());
-		QString GetNick () const;
-		void SetNick (const QString&);
-		QString GetGroupName () const;
-		QString GetRealID (QObject*) const;
-		QVariantMap GetIdentifyingData () const;
-		void InviteToMUC (const QString&, const QString&);
+		MUCFeatures GetMUCFeatures () const override;
+		QString GetMUCSubject () const override;
+		bool CanChangeSubject () const override;
+		void SetMUCSubject (const QString&) override;
+		QList<QObject*> GetParticipants () override;
+		bool IsAutojoined () const override;
+		void Join () override;
+		void Leave (const QString& msg = {}) override;
+		QString GetNick () const override;
+		void SetNick (const QString&) override;
+		QString GetGroupName () const override;
+		QString GetRealID (QObject*) const override;
+		QVariantMap GetIdentifyingData () const override;
+		void InviteToMUC (const QString&, const QString&) override;
 
 		// IConfigurableMUC
-		QWidget* GetConfigurationWidget ();
-		void AcceptConfiguration (QWidget*);
+		QWidget* GetConfigurationWidget () override;
+		void AcceptConfiguration (QWidget*) override;
 		QMap<QString, QString> GetISupport () const;
 	signals:
-		void gotNewParticipants (const QList<QObject*>&);
-		void mucSubjectChanged (const QString&);
-		void nicknameConflict (const QString&);
-		void beenKicked (const QString&);
-		void beenBanned (const QString&);
+		void gotNewParticipants (const QList<QObject*>&) override;
+		void mucSubjectChanged (const QString&) override;
+		void nicknameConflict (const QString&) override;
+		void beenKicked (const QString&) override;
+		void beenBanned (const QString&) override;
 	};
-};
-};
-};
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
+}

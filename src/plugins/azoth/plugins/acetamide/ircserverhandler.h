@@ -81,7 +81,6 @@ namespace Acetamide
 		ServerOptions GetServerOptions () const;
 		QObjectList GetCLEntries () const;
 
-		ChannelHandler* GetChannelHandler (const QString& channel);
 		QList<ChannelHandler*> GetChannelHandlers () const;
 
 		IrcMessage* CreateMessage (IMessage::Type type,

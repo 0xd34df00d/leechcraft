@@ -13,18 +13,17 @@
 #include <interfaces/azoth/imucprotocol.h>
 #include <interfaces/azoth/iurihandler.h>
 
+namespace LC
+{
+	struct Entity;
+}
+
 namespace LC::Azoth
 {
 	class IProxyObject;
 }
 
-namespace LC
-{
-struct Entity;
-
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcAccount;
 
@@ -42,36 +41,34 @@ namespace Acetamide
 		QList<IrcAccount*> IrcAccounts_;
 		IProxyObject *ProxyObject_ = nullptr;
 	public:
-		IrcProtocol (QObject* = nullptr);
-		virtual ~IrcProtocol ();
+		explicit IrcProtocol (QObject* = nullptr);
+		~IrcProtocol () override;
 
 		void Prepare ();
 		IProxyObject* GetProxyObject () const;
 		void SetProxyObject (IProxyObject*);
 
-		QObject* GetQObject ();
-		ProtocolFeatures GetFeatures () const;
-		QList<QObject*> GetRegisteredAccounts ();
+		QObject* GetQObject () override;
+		ProtocolFeatures GetFeatures () const override;
+		QList<QObject*> GetRegisteredAccounts () override;
 
-		QObject* GetParentProtocolPlugin () const;
-		QString GetProtocolName () const;
-		QIcon GetProtocolIcon () const;
-		QByteArray GetProtocolID () const;
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
-		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
-		void RemoveAccount (QObject*);
+		QObject* GetParentProtocolPlugin () const override;
+		QString GetProtocolName () const override;
+		QIcon GetProtocolIcon () const override;
+		QByteArray GetProtocolID () const override;
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions) override;
+		void RegisterAccount (const QString&, const QList<QWidget*>&) override;
+		QWidget* GetMUCJoinWidget () override;
+		void RemoveAccount (QObject*) override;
 
-		void HandleURI (const QUrl&, QObject*);
-		bool SupportsURI (const QUrl&) const;
+		void HandleURI (const QUrl&, QObject*) override;
+		bool SupportsURI (const QUrl&) const override;
 	private:
 		void RestoreAccounts ();
 	private slots:
 		void saveAccounts () const;
 	signals:
-		void accountAdded (QObject*);
-		void accountRemoved (QObject*);
+		void accountAdded (QObject*) override;
+		void accountRemoved (QObject*) override;
 	};
-};
-};
-};
+}

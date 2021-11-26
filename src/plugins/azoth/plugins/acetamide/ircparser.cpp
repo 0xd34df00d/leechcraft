@@ -46,8 +46,10 @@ namespace LC::Azoth::Acetamide
 		ISH_->SendCommand ("NICK " + nick.first ());
 	}
 
-	void IrcParser::JoinCommand (QStringList cmd)
+	void IrcParser::JoinCommand (const QStringList& rawCmd)
 	{
+		auto cmd = rawCmd;
+
 		auto& str = cmd [0];
 		if (!str.isEmpty () &&
 				!str.startsWith ('#') &&
