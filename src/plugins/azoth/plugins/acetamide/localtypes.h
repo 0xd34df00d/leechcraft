@@ -46,8 +46,8 @@ namespace LC::Azoth::Acetamide
 		QString ServerEncoding_;
 		QString ServerPassword_;
 		QString ServerNickName_;
-		int ServerPort_;
-		bool SSL_;
+		int ServerPort_ = 0;
+		bool SSL_ = false;
 
 		IrcServer IrcServer_ = IrcServer::UnknownServer;
 		QString IrcServerVersion_ = {};

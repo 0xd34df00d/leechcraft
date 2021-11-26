@@ -9,7 +9,7 @@
 #include "urldecoder.h"
 #include <boost/spirit/include/classic_core.hpp>
 #include <boost/spirit/include/classic_loops.hpp>
-#include <boost/spirit/include/classic_push_back_actor.hpp>
+#include <boost/spirit/include/classic_utility.hpp>
 #include <QUrl>
 #include <QtDebug>
 
@@ -24,8 +24,6 @@ namespace LC::Azoth::Acetamide
 
 	std::optional<DecodedUrl> DecodeUrl (const QUrl& url)
 	{
-		qDebug () << url.host () << url.port () << url.path ();
-
 		std::string host_;
 		int port_ = 0;
 		bool serverPass = false;
@@ -49,9 +47,8 @@ namespace LC::Azoth::Acetamide
 
 		using namespace boost::spirit::classic;
 
-		range<> ascii (char (0x01), char (0x7F));
-		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
-				'^' | '{' | '|' | '}' | '-'];
+		range<> ascii { char { 0x01 }, char { 0x7F } };
+		rule<> special = chset_p ("[]\\`^{|}-");
 		rule<> let_dig_hyp = alnum_p | ch_p ('-');
 
 		rule<> ldh_str;
@@ -59,27 +56,25 @@ namespace LC::Azoth::Acetamide
 
 		rule<> label = alpha_p >> !(!ldh_str >> alnum_p);
 		rule<> subdomain = label >> +(label >> !ch_p ('.'));
-		rule<> host = subdomain  [assign_a (host_)];
+		rule<> host = subdomain [assign_a (host_)];
+		rule<> nonwhite = ascii - chset_p (" ,\r\n");
 
 		rule<> servername = subdomain [assign_a (user_server_)];
-		rule<> user = (+(ascii - ' ' - '\0' - '\r' - '\n' - '@')) [assign_a (user_)];
+		rule<> user = (+(nonwhite - '@')) [assign_a (user_)];
 		rule<> nick = (alpha_p >> *(alnum_p | special)) [assign_a (nick_)];
 		rule<> userinfo = user >> ch_p ('@') >> servername;
-		rule<> hostmask = lexeme_d [+(ascii - ' ' - '\0' - ',' - '\r' - '\n')] [assign_a (hostmask_)];
+		rule<> hostmask = lexeme_d [+nonwhite] [assign_a (hostmask_)];
 		rule<> nickinfo = nick >> ch_p ('!') >> user >> ch_p ('@') >> hostmask;
 
 		rule<> nicktypes = (nickinfo [Assign<TargetType::NickInfo> (targetType)])
 				| (userinfo [Assign<TargetType::UserInfo> (targetType)])
 				| (nick [Assign<TargetType::NickOnly> (targetType)]);
 
-		rule<> nicktrgt = nicktypes >> ch_p (',') >> str_p ("isnick");
+		rule<> nicktrgt = nicktypes >> str_p (",isnick");
 
-		rule<> channelstr = lexeme_d [!(ch_p ('#') | ch_p ('&') | ch_p ('+')) >>
-				+(ascii - ' ' - '\0' - ',' - '\r' - '\n')][assign_a (channel_)];
+		rule<> channelstr = lexeme_d [!chset_p ("#&+") >> +nonwhite] [assign_a (channel_)];
 
-		rule<> keystr = lexeme_d [channelstr >> ch_p (',') >> str_p ("needkey") [Assign<true> (channelPass)]];
-
-		rule<> channeltrgt = longest_d [channelstr | keystr] [Assign<TargetType::Channel> (targetType)];
+		rule<> channeltrgt = (channelstr >> !(str_p (",needkey") [Assign<true> (channelPass)])) [Assign<TargetType::Channel> (targetType)];
 
 		rule<> target = nicktrgt | channeltrgt;
 
@@ -88,22 +83,16 @@ namespace LC::Azoth::Acetamide
 				!(str_p ("//") >>
 						!(host >> !(ch_p (':') >> port))
 						>> !ch_p ('/')
-						>> !target >> !(ch_p (',') >> str_p ("needpass") [Assign<true> (serverPass)]));
+						>> !target >> !(str_p (",needpass") [Assign<true> (serverPass)]));
 
 		if (!parse (url.toString ().toUtf8 ().constData (), uri).full)
 			return {};
 
-		ServerOptions so;
-		so.SSL_ = false;
-		if (!host_.empty ())
-			so.ServerName_ = QString::fromUtf8 (host_.c_str ());
-
-		so.ServerPort_ = port_;
-
-		ChannelOptions cho;
-		if (!channel_.empty ())
-			cho.ChannelName_ = QString::fromUtf8 (channel_.c_str ());
-		cho.ServerName_ = so.ServerName_;
+		ServerOptions so
+		{
+			.ServerName_ = QString::fromUtf8 (host_.c_str ()),
+			.ServerPort_ = port_,
+		};
 
 		Target targetVar;
 		switch (targetType)
@@ -114,7 +103,11 @@ namespace LC::Azoth::Acetamide
 		case TargetType::Channel:
 			targetVar = ChannelTarget
 			{
-				.Opts_ = cho,
+				.Opts_ = ChannelOptions
+				{
+					.ServerName_ = so.ServerName_,
+					.ChannelName_ = QString::fromUtf8 (channel_.c_str ()),
+				},
 				.HasPassword_ = channelPass,
 			};
 			break;
