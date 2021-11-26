@@ -37,7 +37,7 @@ namespace LC::Azoth::Acetamide
 
 	void UrlDecoderTest::testServerChannel ()
 	{
-		const Target refTarget = ChannelTarget
+		Target refTarget = ChannelTarget
 		{
 			.Opts_ = ChannelOptions { .ServerName_ = "foobar.org", .ChannelName_ = "secret" },
 			.HasPassword_ = true,
@@ -52,6 +52,19 @@ namespace LC::Azoth::Acetamide
 		QCOMPARE (res->Target_, refTarget);
 
 		res = Decode ("irc://foobar.org:6665/secret,needkey,needpass");
+		QVERIFY2 (static_cast<bool> (res), "parsing succeeded");
+
+		QCOMPARE (res->Server_.ServerPort_, 6665);
+		QCOMPARE (res->Server_.ServerName_, "foobar.org");
+		QCOMPARE (res->HasServerPassword_, true);
+		QCOMPARE (res->Target_, refTarget);
+
+		refTarget = ChannelTarget
+		{
+			.Opts_ = ChannelOptions { .ServerName_ = "foobar.org", .ChannelName_ = "#secret" },
+			.HasPassword_ = false,
+		};
+		res = Decode ("irc://foobar.org:6665/#secret,needpass");
 		QVERIFY2 (static_cast<bool> (res), "parsing succeeded");
 
 		QCOMPARE (res->Server_.ServerPort_, 6665);
