@@ -8,28 +8,21 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QHash>
+class QString;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
 	class IrcParser;
 
-	class UserCommandManager : public QObject
+	class UserCommandManager
 	{
-		IrcServerHandler *ISH_;
-		QHash<QString, std::function<void (QStringList)>> Command2Action_;
+		IrcServerHandler * const ISH_;
+		IrcParser * const Parser_;
 	public:
-		UserCommandManager (IrcServerHandler*, IrcParser *parser);
-		QString VerifyMessage (const QString&, const QString&);
+		UserCommandManager (IrcServerHandler*, IrcParser*);
+
+		QString VerifyMessage (const QString&, const QString&) const;
 	};
-}
-}
 }
 

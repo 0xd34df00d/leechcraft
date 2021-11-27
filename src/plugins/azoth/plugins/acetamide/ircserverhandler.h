@@ -15,6 +15,7 @@
 #include "localtypes.h"
 #include "serverparticipantentry.h"
 #include "invitechannelsdialog.h"
+#include "usercommandmanager.h"
 
 namespace LC
 {
@@ -30,7 +31,6 @@ namespace Acetamide
 	class IrcParser;
 	class IrcServerCLEntry;
 	class IrcServerSocket;
-	class UserCommandManager;
 	class ServerResponseManager;
 	class RplISupportParser;
 	class ChannelsManager;
@@ -41,23 +41,21 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		IrcAccount *Account_;
-		IrcErrorHandler *ErrorHandler_;
-		IrcParser *IrcParser_ = 0;
-		IrcServerCLEntry *ServerCLEntry_;
+		IrcAccount * const Account_;
+		IrcErrorHandler * const ErrorHandler_;
+		IrcParser * const IrcParser_;
+		IrcServerCLEntry * const ServerCLEntry_;
 		std::unique_ptr<IrcServerSocket> Socket_;
-		UserCommandManager *CmdManager_ = 0;
-		ServerResponseManager *ServerResponseManager_ = 0;
-		RplISupportParser *RplISupportParser_ = 0;
-		ChannelsManager *ChannelsManager_ = 0;
+		UserCommandManager CmdManager_;
+		ServerResponseManager * const ServerResponseManager_;
+		RplISupportParser * const RplISupportParser_;
+		ChannelsManager * const ChannelsManager_;
 
-		ConnectionState ServerConnectionState_;
+		ConnectionState ServerConnectionState_ = NotConnected;
 		bool IsConsoleEnabled_ = false;
 		bool IsInviteDialogActive_ = false;
 		QString ServerID_;
 		QString NickName_;
-		QString OldNickName_;
-		QString LastSendId_;
 		ServerOptions ServerOptions_;
 		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
@@ -65,7 +63,7 @@ namespace Acetamide
 
 		QHash<QString, int> SpyWho_;
 		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
-		QTimer *AutoWhoTimer_;
+		QTimer * const AutoWhoTimer_;
 		
 		int LastNickIndex_ = 0;
 	public:

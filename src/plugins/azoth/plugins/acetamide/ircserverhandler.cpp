@@ -42,21 +42,19 @@ namespace Acetamide
 {
 	IrcServerHandler::IrcServerHandler (const ServerOptions& server,
 			IrcAccount *account)
-	: Account_ (account)
-	, ErrorHandler_ (new IrcErrorHandler (this))
-	, ServerCLEntry_ (new IrcServerCLEntry (this, account))
-	, ServerConnectionState_ (NotConnected)
-	, ServerID_ (server.ServerName_ + ":" +
-			QString::number (server.ServerPort_))
-	, NickName_ (server.ServerNickName_)
-	, ServerOptions_ (server)
-	, AutoWhoTimer_ (new QTimer (this))
+	: Account_ { account }
+	, ErrorHandler_ { new IrcErrorHandler { this } }
+	, IrcParser_ { new IrcParser { this } }
+	, ServerCLEntry_ { new IrcServerCLEntry { this, account } }
+	, CmdManager_ { this, IrcParser_ }
+	, ServerResponseManager_ { new ServerResponseManager { this } }
+	, RplISupportParser_ { new RplISupportParser { this } }
+	, ChannelsManager_ { new ChannelsManager { this } }
+	, ServerID_ { server.ServerName_ + ":" + QString::number (server.ServerPort_) }
+	, NickName_ { server.ServerNickName_ }
+	, ServerOptions_ { server }
+	, AutoWhoTimer_ { new QTimer { this } }
 	{
-		IrcParser_ = new IrcParser (this);
-		CmdManager_ = new UserCommandManager (this, IrcParser_);
-		ServerResponseManager_ = new ServerResponseManager (this);
-		RplISupportParser_ = new RplISupportParser (this);
-		ChannelsManager_ = new ChannelsManager (this);
 
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoPeriod",
 				this, "handleUpdateWhoPeriod");
@@ -875,7 +873,7 @@ namespace Acetamide
 	void IrcServerHandler::SendMessage2Server (const QStringList& list)
 	{
 		QString msg = list.join (" ");
-		const QString& cmd = CmdManager_->VerifyMessage (msg, QString ());
+		const QString& cmd = CmdManager_.VerifyMessage (msg, QString ());
 		if (!cmd.isEmpty ())
 		{
 			if (msg.startsWith ('/'))
@@ -889,7 +887,7 @@ namespace Acetamide
 	QString IrcServerHandler::ParseMessageForCommand (const QString& msg,
 			const QString& channel) const
 	{
-		const QString& cmd = CmdManager_->VerifyMessage (msg, channel);
+		const QString& cmd = CmdManager_.VerifyMessage (msg, channel);
 		if (cmd.isEmpty ())
 			IrcParser_->RawCommand (msg.mid (1).split (' '));
 
