@@ -18,69 +18,58 @@ namespace LC::Azoth::Acetamide
 {
 	namespace
 	{
-		constexpr uint64_t CalcHash (std::string_view name)
-		{
-			uint64_t res = 0;
-			for (auto ch : name)
-				res = (res << 8) + ch;
-			return res;
-		}
-
 		template<typename T>
 		using CmdImpl_t = void (T::*) (const QStringList&);
 
-		template<typename T>
-		using KVPair = Util::KVPair<std::string_view, CmdImpl_t<T>>;
+		using Util::KVPair;
+		using namespace std::string_view_literals;
 
-		using KVPairISH = KVPair<IrcServerHandler>;
-		using KVPairP = KVPair<IrcParser>;
-
-		constexpr auto ServerHash = Util::MakeHash<std::string_view, CmdImpl_t<IrcServerHandler>, CalcHash> (
-				KVPairISH { "privmsg", &IrcServerHandler::SendMessage },
-				KVPairISH { "msg", &IrcServerHandler::SendMessage },
-				KVPairISH { "say", &IrcServerHandler::SayCommand },
-				KVPairISH { "list", &IrcServerHandler::showChannels }
+		constexpr auto ServerHash = Util::MakeStringHash<CmdImpl_t<IrcServerHandler>> (
+				KVPair { "privmsg"sv, &IrcServerHandler::SendMessage },
+				KVPair { "msg"sv, &IrcServerHandler::SendMessage },
+				KVPair { "say"sv, &IrcServerHandler::SayCommand },
+				KVPair { "list"sv, &IrcServerHandler::showChannels }
 			);
-		constexpr auto ParserHash = Util::MakeHash<std::string_view, CmdImpl_t<IrcParser>, CalcHash> (
-				KVPairP { "join", &IrcParser::JoinCommand },
-				KVPairP { "part", &IrcParser::PartCommand },
-				KVPairP { "quit", &IrcParser::QuitCommand },
-				KVPairP { "nick", &IrcParser::NickCommand },
-				KVPairP { "ping", &IrcParser::PingCommand },
-				KVPairP { "pong", &IrcParser::PongCommand },
-				KVPairP { "topic", &IrcParser::TopicCommand },
-				KVPairP { "kick", &IrcParser::KickCommand },
-				KVPairP { "invite", &IrcParser::InviteCommand },
-				KVPairP { "ctcp", &IrcParser::CTCPRequest },
-				KVPairP { "names", &IrcParser::NamesCommand },
-				KVPairP { "away", &IrcParser::AwayCommand },
-				KVPairP { "userhost", &IrcParser::UserhostCommand },
-				KVPairP { "ison", &IrcParser::IsonCommand },
-				KVPairP { "whois", &IrcParser::WhoisCommand },
-				KVPairP { "whowas", &IrcParser::WhowasCommand },
-				KVPairP { "who", &IrcParser::WhoCommand },
-				KVPairP { "summon", &IrcParser::SummonCommand },
-				KVPairP { "version", &IrcParser::VersionCommand },
-				KVPairP { "links", &IrcParser::LinksCommand },
-				KVPairP { "info", &IrcParser::InfoCommand },
-				KVPairP { "motd", &IrcParser::MOTDCommand },
-				KVPairP { "time", &IrcParser::TimeCommand },
-				KVPairP { "oper", &IrcParser::OperCommand },
-				KVPairP { "rehash", &IrcParser::RehashCommand },
-				KVPairP { "lusers", &IrcParser::LusersCommand },
-				KVPairP { "users", &IrcParser::UsersCommand },
-				KVPairP { "wallops", &IrcParser::WallopsCommand },
-				KVPairP { "quote", &IrcParser::RawCommand },
-				KVPairP { "me", &IrcParser::CTCPRequest },
-				KVPairP { "squit", &IrcParser::SQuitCommand },
-				KVPairP { "stats", &IrcParser::StatsCommand },
-				KVPairP { "connect", &IrcParser::ConnectCommand },
-				KVPairP { "trace", &IrcParser::TraceCommand },
-				KVPairP { "admin", &IrcParser::AdminCommand },
-				KVPairP { "kill", &IrcParser::KillCommand },
-				KVPairP { "die", &IrcParser::DieCommand },
-				KVPairP { "restart", &IrcParser::RestartCommand },
-				KVPairP { "mode", &IrcParser::ChanModeCommand }
+		constexpr auto ParserHash = Util::MakeStringHash<CmdImpl_t<IrcParser>> (
+				KVPair { "join"sv, &IrcParser::JoinCommand },
+				KVPair { "part"sv, &IrcParser::PartCommand },
+				KVPair { "quit"sv, &IrcParser::QuitCommand },
+				KVPair { "nick"sv, &IrcParser::NickCommand },
+				KVPair { "ping"sv, &IrcParser::PingCommand },
+				KVPair { "pong"sv, &IrcParser::PongCommand },
+				KVPair { "topic"sv, &IrcParser::TopicCommand },
+				KVPair { "kick"sv, &IrcParser::KickCommand },
+				KVPair { "invite"sv, &IrcParser::InviteCommand },
+				KVPair { "ctcp"sv, &IrcParser::CTCPRequest },
+				KVPair { "names"sv, &IrcParser::NamesCommand },
+				KVPair { "away"sv, &IrcParser::AwayCommand },
+				KVPair { "userhost"sv, &IrcParser::UserhostCommand },
+				KVPair { "ison"sv, &IrcParser::IsonCommand },
+				KVPair { "whois"sv, &IrcParser::WhoisCommand },
+				KVPair { "whowas"sv, &IrcParser::WhowasCommand },
+				KVPair { "who"sv, &IrcParser::WhoCommand },
+				KVPair { "summon"sv, &IrcParser::SummonCommand },
+				KVPair { "version"sv, &IrcParser::VersionCommand },
+				KVPair { "links"sv, &IrcParser::LinksCommand },
+				KVPair { "info"sv, &IrcParser::InfoCommand },
+				KVPair { "motd"sv, &IrcParser::MOTDCommand },
+				KVPair { "time"sv, &IrcParser::TimeCommand },
+				KVPair { "oper"sv, &IrcParser::OperCommand },
+				KVPair { "rehash"sv, &IrcParser::RehashCommand },
+				KVPair { "lusers"sv, &IrcParser::LusersCommand },
+				KVPair { "users"sv, &IrcParser::UsersCommand },
+				KVPair { "wallops"sv, &IrcParser::WallopsCommand },
+				KVPair { "quote"sv, &IrcParser::RawCommand },
+				KVPair { "me"sv, &IrcParser::CTCPRequest },
+				KVPair { "squit"sv, &IrcParser::SQuitCommand },
+				KVPair { "stats"sv, &IrcParser::StatsCommand },
+				KVPair { "connect"sv, &IrcParser::ConnectCommand },
+				KVPair { "trace"sv, &IrcParser::TraceCommand },
+				KVPair { "admin"sv, &IrcParser::AdminCommand },
+				KVPair { "kill"sv, &IrcParser::KillCommand },
+				KVPair { "die"sv, &IrcParser::DieCommand },
+				KVPair { "restart"sv, &IrcParser::RestartCommand },
+				KVPair { "mode"sv, &IrcParser::ChanModeCommand }
 			);
 	}
 

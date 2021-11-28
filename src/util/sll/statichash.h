@@ -28,7 +28,19 @@ namespace LC::Util
 		};
 	}
 
-	template<typename K, typename V, auto Hasher>
+	template<typename K>
+	constexpr uint64_t DefaultHash (K);
+
+	template<>
+	constexpr uint64_t DefaultHash (std::string_view name)
+	{
+		uint64_t res = 0;
+		for (auto ch : name)
+			res = (res << 8) + ch;
+		return res;
+	}
+
+	template<typename K, typename V, auto Hasher = DefaultHash<K>>
 	consteval auto MakeHash (auto&&... commands)
 	{
 		const std::initializer_list<KVPair<K, V>> commandsList { commands... };
@@ -47,5 +59,11 @@ namespace LC::Util
 				return V {};
 			return result;
 		};
+	}
+
+	template<typename V>
+	consteval auto MakeStringHash (auto&&... commands)
+	{
+		return MakeHash<std::string_view, V> (std::forward<decltype (commands)> (commands)...);
 	}
 }
