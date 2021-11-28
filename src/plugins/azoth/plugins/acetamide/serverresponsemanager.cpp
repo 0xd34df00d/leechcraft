@@ -9,137 +9,149 @@
 #include "serverresponsemanager.h"
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/statichash.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
 #include "ircaccount.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	ServerResponseManager::ServerResponseManager (IrcServerHandler *ish)
-	: QObject (ish)
-	, ISH_ (ish)
+	namespace
 	{
-		using Util::BindMemFn;
+		template<typename T>
+		using CmdImpl_t = void (T::*) (const IrcMessageOptions&);
 
-		Command2Action_ ["join"] = BindMemFn (&ServerResponseManager::GotJoin, this);
-		Command2Action_ ["part"] = BindMemFn (&ServerResponseManager::GotPart, this);
-		Command2Action_ ["quit"] = BindMemFn (&ServerResponseManager::GotQuit, this);
-		Command2Action_ ["privmsg"] = BindMemFn (&ServerResponseManager::GotPrivMsg, this);
-		Command2Action_ ["notice"] = BindMemFn (&ServerResponseManager::GotNoticeMsg, this);
-		Command2Action_ ["nick"] = BindMemFn (&ServerResponseManager::GotNick, this);
-		Command2Action_ ["ping"] = BindMemFn (&ServerResponseManager::GotPing, this);
-		Command2Action_ ["topic"] = BindMemFn (&ServerResponseManager::GotTopic, this);
-		Command2Action_ ["kick"] = BindMemFn (&ServerResponseManager::GotKick, this);
-		Command2Action_ ["invite"] = BindMemFn (&ServerResponseManager::GotInvitation, this);
-		Command2Action_ ["ctcp_rpl"] = BindMemFn (&ServerResponseManager::GotCTCPReply, this);
-		Command2Action_ ["ctcp_rqst"] = BindMemFn (&ServerResponseManager::GotCTCPRequestResult, this);
-		Command2Action_ ["331"] = BindMemFn (&ServerResponseManager::GotTopic, this);
-		Command2Action_ ["332"] = BindMemFn (&ServerResponseManager::GotTopic, this);
-		Command2Action_ ["341"] = BindMemFn (&ServerResponseManager::ShowInviteMessage, this);
-		Command2Action_ ["353"] = BindMemFn (&ServerResponseManager::GotNames, this);
-		Command2Action_ ["366"] = BindMemFn (&ServerResponseManager::GotEndOfNames, this);
-		Command2Action_ ["301"] = BindMemFn (&ServerResponseManager::GotAwayReply, this);
-		Command2Action_ ["305"] = BindMemFn (&ServerResponseManager::GotSetAway, this);
-		Command2Action_ ["306"] = BindMemFn (&ServerResponseManager::GotSetAway, this);
-		Command2Action_ ["302"] = BindMemFn (&ServerResponseManager::GotUserHost, this);
-		Command2Action_ ["303"] = BindMemFn (&ServerResponseManager::GotIson, this);
-		Command2Action_ ["311"] = BindMemFn (&ServerResponseManager::GotWhoIsUser, this);
-		Command2Action_ ["312"] = BindMemFn (&ServerResponseManager::GotWhoIsServer, this);
-		Command2Action_ ["313"] = BindMemFn (&ServerResponseManager::GotWhoIsOperator, this);
-		Command2Action_ ["317"] = BindMemFn (&ServerResponseManager::GotWhoIsIdle, this);
-		Command2Action_ ["318"] = BindMemFn (&ServerResponseManager::GotEndOfWhoIs, this);
-		Command2Action_ ["319"] = BindMemFn (&ServerResponseManager::GotWhoIsChannels, this);
-		Command2Action_ ["314"] = BindMemFn (&ServerResponseManager::GotWhoWas, this);
-		Command2Action_ ["369"] = BindMemFn (&ServerResponseManager::GotEndOfWhoWas, this);
-		Command2Action_ ["352"] = BindMemFn (&ServerResponseManager::GotWho, this);
-		Command2Action_ ["315"] = BindMemFn (&ServerResponseManager::GotEndOfWho, this);
-		Command2Action_ ["342"] = BindMemFn (&ServerResponseManager::GotSummoning, this);
-		Command2Action_ ["351"] = BindMemFn (&ServerResponseManager::GotVersion, this);
-		Command2Action_ ["364"] = BindMemFn (&ServerResponseManager::GotLinks, this);
-		Command2Action_ ["365"] = BindMemFn (&ServerResponseManager::GotEndOfLinks, this);
-		Command2Action_ ["371"] = BindMemFn (&ServerResponseManager::GotInfo, this);
-		Command2Action_ ["374"] = BindMemFn (&ServerResponseManager::GotEndOfInfo, this);
-		Command2Action_ ["372"] = BindMemFn (&ServerResponseManager::GotMotd, this);
-		Command2Action_ ["375"] = BindMemFn (&ServerResponseManager::GotMotd, this);
-		Command2Action_ ["376"] = BindMemFn (&ServerResponseManager::GotEndOfMotd, this);
-		Command2Action_ ["422"] = BindMemFn (&ServerResponseManager::GotMotd, this);
-		Command2Action_ ["381"] = BindMemFn (&ServerResponseManager::GotYoureOper, this);
-		Command2Action_ ["382"] = BindMemFn (&ServerResponseManager::GotRehash, this);
-		Command2Action_ ["391"] = BindMemFn (&ServerResponseManager::GotTime, this);
-		Command2Action_ ["251"] = BindMemFn (&ServerResponseManager::GotLuserOnlyMsg, this);
-		Command2Action_ ["252"] = BindMemFn (&ServerResponseManager::GotLuserParamsWithMsg, this);
-		Command2Action_ ["253"] = BindMemFn (&ServerResponseManager::GotLuserParamsWithMsg, this);
-		Command2Action_ ["254"] = BindMemFn (&ServerResponseManager::GotLuserParamsWithMsg, this);
-		Command2Action_ ["255"] = BindMemFn (&ServerResponseManager::GotLuserOnlyMsg, this);
-		Command2Action_ ["392"] = BindMemFn (&ServerResponseManager::GotUsersStart, this);
-		Command2Action_ ["393"] = BindMemFn (&ServerResponseManager::GotUsers, this);
-		Command2Action_ ["395"] = BindMemFn (&ServerResponseManager::GotNoUser, this);
-		Command2Action_ ["394"] = BindMemFn (&ServerResponseManager::GotEndOfUsers, this);
-		Command2Action_ ["200"] = BindMemFn (&ServerResponseManager::GotTraceLink, this);
-		Command2Action_ ["201"] = BindMemFn (&ServerResponseManager::GotTraceConnecting, this);
-		Command2Action_ ["202"] = BindMemFn (&ServerResponseManager::GotTraceHandshake, this);
-		Command2Action_ ["203"] = BindMemFn (&ServerResponseManager::GotTraceUnknown, this);
-		Command2Action_ ["204"] = BindMemFn (&ServerResponseManager::GotTraceOperator, this);
-		Command2Action_ ["205"] = BindMemFn (&ServerResponseManager::GotTraceUser, this);
-		Command2Action_ ["206"] = BindMemFn (&ServerResponseManager::GotTraceServer, this);
-		Command2Action_ ["207"] = BindMemFn (&ServerResponseManager::GotTraceService, this);
-		Command2Action_ ["208"] = BindMemFn (&ServerResponseManager::GotTraceNewType, this);
-		Command2Action_ ["209"] = BindMemFn (&ServerResponseManager::GotTraceClass, this);
-		Command2Action_ ["261"] = BindMemFn (&ServerResponseManager::GotTraceLog, this);
-		Command2Action_ ["262"] = BindMemFn (&ServerResponseManager::GotTraceEnd, this);
-		Command2Action_ ["211"] = BindMemFn (&ServerResponseManager::GotStatsLinkInfo, this);
-		Command2Action_ ["212"] = BindMemFn (&ServerResponseManager::GotStatsCommands, this);
-		Command2Action_ ["219"] = BindMemFn (&ServerResponseManager::GotStatsEnd, this);
-		Command2Action_ ["242"] = BindMemFn (&ServerResponseManager::GotStatsUptime, this);
-		Command2Action_ ["243"] = BindMemFn (&ServerResponseManager::GotStatsOline, this);
-		Command2Action_ ["256"] = BindMemFn (&ServerResponseManager::GotAdmineMe, this);
-		Command2Action_ ["257"] = BindMemFn (&ServerResponseManager::GotAdminLoc1, this);
-		Command2Action_ ["258"] = BindMemFn (&ServerResponseManager::GotAdminLoc2, this);
-		Command2Action_ ["259"] = BindMemFn (&ServerResponseManager::GotAdminEmail, this);
-		Command2Action_ ["263"] = BindMemFn (&ServerResponseManager::GotTryAgain, this);
-		Command2Action_ ["005"] = BindMemFn (&ServerResponseManager::GotISupport, this);
-		Command2Action_ ["mode"] = BindMemFn (&ServerResponseManager::GotChannelMode, this);
-		Command2Action_ ["367"] = BindMemFn (&ServerResponseManager::GotBanList, this);
-		Command2Action_ ["368"] = BindMemFn (&ServerResponseManager::GotBanListEnd, this);
-		Command2Action_ ["348"] = BindMemFn (&ServerResponseManager::GotExceptList, this);
-		Command2Action_ ["349"] = BindMemFn (&ServerResponseManager::GotExceptListEnd, this);
-		Command2Action_ ["346"] = BindMemFn (&ServerResponseManager::GotInviteList, this);
-		Command2Action_ ["347"] = BindMemFn (&ServerResponseManager::GotInviteListEnd, this);
-		Command2Action_ ["324"] = BindMemFn (&ServerResponseManager::GotChannelModes, this);
-		Command2Action_ ["321"] = BindMemFn (&IrcServerHandler::GotChannelsListBegin, ISH_);
-		Command2Action_ ["322"] = BindMemFn (&IrcServerHandler::GotChannelsList, ISH_);
-		Command2Action_ ["323"] = BindMemFn (&IrcServerHandler::GotChannelsListEnd, ISH_);
+		using Util::KVPair;
+		using namespace std::string_view_literals;
 
-		//not from rfc
-		Command2Action_ ["330"] = BindMemFn (&ServerResponseManager::GotWhoIsAccount, this);
-		Command2Action_ ["671"] = BindMemFn (&ServerResponseManager::GotWhoIsSecure, this);
-		Command2Action_ ["328"] = BindMemFn (&ServerResponseManager::GotChannelUrl, this);
-		Command2Action_ ["333"] = BindMemFn (&ServerResponseManager::GotTopicWhoTime, this);
-		Command2Action_ ["004"] = BindMemFn (&ServerResponseManager::GotServerInfo, this);
-		Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("307", opts.Message_); };
-		Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("310", opts.Message_); };
-		Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("320", opts.Message_); };
-		Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("278", opts.Message_); };
+		constexpr auto SRMHash = Util::MakeStringHash<CmdImpl_t<ServerResponseManager>> (
+				KVPair { "join"sv, &ServerResponseManager::GotJoin },
+				KVPair { "part"sv, &ServerResponseManager::GotPart },
+				KVPair { "quit"sv, &ServerResponseManager::GotQuit },
+				KVPair { "privmsg"sv, &ServerResponseManager::GotPrivMsg },
+				KVPair { "notice"sv, &ServerResponseManager::GotNoticeMsg },
+				KVPair { "nick"sv, &ServerResponseManager::GotNick },
+				KVPair { "ping"sv, &ServerResponseManager::GotPing },
+				KVPair { "topic"sv, &ServerResponseManager::GotTopic },
+				KVPair { "kick"sv, &ServerResponseManager::GotKick },
+				KVPair { "invite"sv, &ServerResponseManager::GotInvitation },
+				KVPair { "ctcp_rpl"sv, &ServerResponseManager::GotCTCPReply },
+				KVPair { "ctcp_rqst"sv, &ServerResponseManager::GotCTCPRequestResult },
+				KVPair { "mode"sv, &ServerResponseManager::GotChannelMode },
+				KVPair { "331"sv, &ServerResponseManager::GotTopic },
+				KVPair { "332"sv, &ServerResponseManager::GotTopic },
+				KVPair { "341"sv, &ServerResponseManager::ShowInviteMessage },
+				KVPair { "353"sv, &ServerResponseManager::GotNames },
+				KVPair { "366"sv, &ServerResponseManager::GotEndOfNames },
+				KVPair { "301"sv, &ServerResponseManager::GotAwayReply },
+				KVPair { "305"sv, &ServerResponseManager::GotSetAway },
+				KVPair { "306"sv, &ServerResponseManager::GotSetAway },
+				KVPair { "302"sv, &ServerResponseManager::GotUserHost },
+				KVPair { "303"sv, &ServerResponseManager::GotIson },
+				KVPair { "311"sv, &ServerResponseManager::GotWhoIsUser },
+				KVPair { "312"sv, &ServerResponseManager::GotWhoIsServer },
+				KVPair { "313"sv, &ServerResponseManager::GotWhoIsOperator },
+				KVPair { "317"sv, &ServerResponseManager::GotWhoIsIdle },
+				KVPair { "318"sv, &ServerResponseManager::GotEndOfWhoIs },
+				KVPair { "319"sv, &ServerResponseManager::GotWhoIsChannels },
+				KVPair { "314"sv, &ServerResponseManager::GotWhoWas },
+				KVPair { "369"sv, &ServerResponseManager::GotEndOfWhoWas },
+				KVPair { "352"sv, &ServerResponseManager::GotWho },
+				KVPair { "315"sv, &ServerResponseManager::GotEndOfWho },
+				KVPair { "342"sv, &ServerResponseManager::GotSummoning },
+				KVPair { "351"sv, &ServerResponseManager::GotVersion },
+				KVPair { "364"sv, &ServerResponseManager::GotLinks },
+				KVPair { "365"sv, &ServerResponseManager::GotEndOfLinks },
+				KVPair { "371"sv, &ServerResponseManager::GotInfo },
+				KVPair { "374"sv, &ServerResponseManager::GotEndOfInfo },
+				KVPair { "372"sv, &ServerResponseManager::GotMotd },
+				KVPair { "375"sv, &ServerResponseManager::GotMotd },
+				KVPair { "376"sv, &ServerResponseManager::GotEndOfMotd },
+				KVPair { "422"sv, &ServerResponseManager::GotMotd },
+				KVPair { "381"sv, &ServerResponseManager::GotYoureOper },
+				KVPair { "382"sv, &ServerResponseManager::GotRehash },
+				KVPair { "391"sv, &ServerResponseManager::GotTime },
+				KVPair { "251"sv, &ServerResponseManager::GotLuserOnlyMsg },
+				KVPair { "252"sv, &ServerResponseManager::GotLuserParamsWithMsg },
+				KVPair { "253"sv, &ServerResponseManager::GotLuserParamsWithMsg },
+				KVPair { "254"sv, &ServerResponseManager::GotLuserParamsWithMsg },
+				KVPair { "255"sv, &ServerResponseManager::GotLuserOnlyMsg },
+				KVPair { "392"sv, &ServerResponseManager::GotUsersStart },
+				KVPair { "393"sv, &ServerResponseManager::GotUsers },
+				KVPair { "395"sv, &ServerResponseManager::GotNoUser },
+				KVPair { "394"sv, &ServerResponseManager::GotEndOfUsers },
+				KVPair { "200"sv, &ServerResponseManager::GotTraceLink },
+				KVPair { "201"sv, &ServerResponseManager::GotTraceConnecting },
+				KVPair { "202"sv, &ServerResponseManager::GotTraceHandshake },
+				KVPair { "203"sv, &ServerResponseManager::GotTraceUnknown },
+				KVPair { "204"sv, &ServerResponseManager::GotTraceOperator },
+				KVPair { "205"sv, &ServerResponseManager::GotTraceUser },
+				KVPair { "206"sv, &ServerResponseManager::GotTraceServer },
+				KVPair { "207"sv, &ServerResponseManager::GotTraceService },
+				KVPair { "208"sv, &ServerResponseManager::GotTraceNewType },
+				KVPair { "209"sv, &ServerResponseManager::GotTraceClass },
+				KVPair { "261"sv, &ServerResponseManager::GotTraceLog },
+				KVPair { "262"sv, &ServerResponseManager::GotTraceEnd },
+				KVPair { "211"sv, &ServerResponseManager::GotStatsLinkInfo },
+				KVPair { "212"sv, &ServerResponseManager::GotStatsCommands },
+				KVPair { "219"sv, &ServerResponseManager::GotStatsEnd },
+				KVPair { "242"sv, &ServerResponseManager::GotStatsUptime },
+				KVPair { "243"sv, &ServerResponseManager::GotStatsOline },
+				KVPair { "256"sv, &ServerResponseManager::GotAdmineMe },
+				KVPair { "257"sv, &ServerResponseManager::GotAdminLoc1 },
+				KVPair { "258"sv, &ServerResponseManager::GotAdminLoc2 },
+				KVPair { "259"sv, &ServerResponseManager::GotAdminEmail },
+				KVPair { "263"sv, &ServerResponseManager::GotTryAgain },
+				KVPair { "005"sv, &ServerResponseManager::GotISupport },
+				KVPair { "367"sv, &ServerResponseManager::GotBanList },
+				KVPair { "368"sv, &ServerResponseManager::GotBanListEnd },
+				KVPair { "348"sv, &ServerResponseManager::GotExceptList },
+				KVPair { "349"sv, &ServerResponseManager::GotExceptListEnd },
+				KVPair { "346"sv, &ServerResponseManager::GotInviteList },
+				KVPair { "347"sv, &ServerResponseManager::GotInviteListEnd },
+				KVPair { "324"sv, &ServerResponseManager::GotChannelModes },
 
+				//not from rfc
+				KVPair { "330"sv, &ServerResponseManager::GotWhoIsAccount },
+				KVPair { "671"sv, &ServerResponseManager::GotWhoIsSecure },
+				KVPair { "328"sv, &ServerResponseManager::GotChannelUrl },
+				KVPair { "333"sv, &ServerResponseManager::GotTopicWhoTime },
+				KVPair { "004"sv, &ServerResponseManager::GotServerInfo }
+			);
+
+		constexpr auto ISHHash = Util::MakeStringHash<CmdImpl_t<IrcServerHandler>> (
+				KVPair { "321"sv, &IrcServerHandler::GotChannelsListBegin },
+				KVPair { "322"sv, &IrcServerHandler::GotChannelsList },
+				KVPair { "323"sv, &IrcServerHandler::GotChannelsListEnd }
+			);
+	}
+
+	ServerResponseManager::ServerResponseManager (IrcServerHandler *ish)
+	: QObject { ish }
+	, ISH_ { ish }
+	{
 		MatchString2Server_ ["unreal"] = IrcServer::UnrealIRCD;
 	}
 
 	void ServerResponseManager::DoAction (const IrcMessageOptions& opts)
 	{
-		if (opts.Command_ == "privmsg" && IsCTCPMessage (opts.Message_))
-			Command2Action_ ["ctcp_rpl"] (opts);
-		else if (opts.Command_ == "notice" && IsCTCPMessage (opts.Message_))
-			Command2Action_ ["ctcp_rqst"] (opts);
-		else if (Command2Action_.contains (opts.Command_))
-			Command2Action_ [opts.Command_] (opts);
+		auto cmdUtf8 = opts.Command_.toUtf8 ();
+		if (cmdUtf8 == "privmsg" && IsCTCPMessage (opts.Message_))
+			cmdUtf8 = "ctcp_rpl";
+		else if (cmdUtf8 == "notice" && IsCTCPMessage (opts.Message_))
+			cmdUtf8 = "ctcp_rqst";
+
+		if (const auto actor = Command2Action_.value (cmdUtf8))
+			actor (opts);
+		else if (const auto actor = SRMHash (Util::AsStringView (cmdUtf8)))
+			(this->*actor) (opts);
+		else if (const auto actor = ISHHash (Util::AsStringView (cmdUtf8)))
+			(ISH_->*actor) (opts);
 		else
-			ISH_->ShowAnswer ("UNKNOWN CMD " + opts.Command_, opts.Message_);
+			ISH_->ShowAnswer (opts.Command_, opts.Message_);
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
@@ -1042,7 +1054,5 @@ namespace Acetamide
 	}
 
 
-}
-}
 }
 

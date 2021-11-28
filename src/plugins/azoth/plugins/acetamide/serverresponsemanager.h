@@ -9,32 +9,25 @@
 #pragma once
 
 #include <functional>
-#include <string>
 #include <QObject>
 #include <QHash>
 #include <QMap>
 #include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
 
 	class ServerResponseManager : public QObject
 	{
-		Q_OBJECT
-
-		IrcServerHandler *ISH_;
-		QHash<QString, std::function<void (IrcMessageOptions)>> Command2Action_;
+		IrcServerHandler * const ISH_;
+		QHash<QByteArray, std::function<void (IrcMessageOptions)>> Command2Action_;
 		QMap<QString, IrcServer> MatchString2Server_;
 	public:
-		ServerResponseManager (IrcServerHandler*);
+		explicit ServerResponseManager (IrcServerHandler*);
+
         void DoAction (const IrcMessageOptions& opts);
-	private:
-		bool IsCTCPMessage (const QString&);
+
 		void GotJoin (const IrcMessageOptions& opts);
 		void GotPart (const IrcMessageOptions& opts);
 		void GotQuit (const IrcMessageOptions& opts);
@@ -119,7 +112,7 @@ namespace Acetamide
 		void GotWhoIsSecure (const IrcMessageOptions& opts);
 		void GotChannelUrl (const IrcMessageOptions& opts);
 		void GotTopicWhoTime (const IrcMessageOptions& opts);
+	private:
+		bool IsCTCPMessage (const QString&);
 	};
-}
-}
 }
