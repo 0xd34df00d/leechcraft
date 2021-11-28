@@ -8,6 +8,8 @@
 
 #include "usercommandmanager.h"
 #include <QHash>
+#include <util/sll/qtutil.h>
+#include <util/sll/statichash.h>
 #include "ircserverhandler.h"
 #include "ircparser.h"
 #include "ircaccount.h"
@@ -16,61 +18,75 @@ namespace LC::Azoth::Acetamide
 {
 	namespace
 	{
-		const QHash<QByteArray, void (IrcServerHandler::*) (const QStringList&)> ServerCommand2Action
+		constexpr uint64_t CalcHash (std::string_view name)
 		{
-			{ "privmsg", &IrcServerHandler::SendMessage },
-			{ "msg", &IrcServerHandler::SendMessage },
-			{ "say", &IrcServerHandler::SayCommand },
-			{ "list", &IrcServerHandler::showChannels },
-		};
-		const QHash<QByteArray, void (IrcParser::*) (const QStringList&)> ParserCommand2Action
-		{
-			{ "join", &IrcParser::JoinCommand },
-			{ "part", &IrcParser::PartCommand },
-			{ "quit", &IrcParser::QuitCommand },
-			{ "nick", &IrcParser::NickCommand },
-			{ "ping", &IrcParser::PingCommand },
-			{ "pong", &IrcParser::PongCommand },
-			{ "topic", &IrcParser::TopicCommand },
-			{ "kick", &IrcParser::KickCommand },
-			{ "invite", &IrcParser::InviteCommand },
-			{ "ctcp", &IrcParser::CTCPRequest },
-			{ "names", &IrcParser::NamesCommand },
-			{ "away", &IrcParser::AwayCommand },
-			{ "userhost", &IrcParser::UserhostCommand },
-			{ "ison", &IrcParser::IsonCommand },
-			{ "whois", &IrcParser::WhoisCommand },
-			{ "whowas", &IrcParser::WhowasCommand },
-			{ "who", &IrcParser::WhoCommand },
-			{ "summon", &IrcParser::SummonCommand },
-			{ "version", &IrcParser::VersionCommand },
-			{ "links", &IrcParser::LinksCommand },
-			{ "info", &IrcParser::InfoCommand },
-			{ "motd", &IrcParser::MOTDCommand },
-			{ "time", &IrcParser::TimeCommand },
-			{ "oper", &IrcParser::OperCommand },
-			{ "rehash", &IrcParser::RehashCommand },
-			{ "lusers", &IrcParser::LusersCommand },
-			{ "users", &IrcParser::UsersCommand },
-			{ "wallops", &IrcParser::WallopsCommand },
-			{ "quote", &IrcParser::RawCommand },
-			{ "me", &IrcParser::CTCPRequest },
-			{ "squit", &IrcParser::SQuitCommand },
-			{ "stats", &IrcParser::StatsCommand },
-			{ "connect", &IrcParser::ConnectCommand },
-			{ "trace", &IrcParser::TraceCommand },
-			{ "admin", &IrcParser::AdminCommand },
-			{ "kill", &IrcParser::KillCommand },
-			{ "die", &IrcParser::DieCommand },
-			{ "restart", &IrcParser::RestartCommand },
-			{ "mode", &IrcParser::ChanModeCommand },
-		};
+			uint64_t res = 0;
+			for (auto ch : name)
+				res = (res << 8) + ch;
+			return res;
+		}
+
+		template<typename T>
+		using CmdImpl_t = void (T::*) (const QStringList&);
+
+		template<typename T>
+		using KVPair = Util::KVPair<std::string_view, CmdImpl_t<T>>;
+
+		using KVPairISH = KVPair<IrcServerHandler>;
+		using KVPairP = KVPair<IrcParser>;
+
+		constexpr auto ServerHash = Util::MakeHash<std::string_view, CmdImpl_t<IrcServerHandler>, CalcHash> (
+				KVPairISH { "privmsg", &IrcServerHandler::SendMessage },
+				KVPairISH { "msg", &IrcServerHandler::SendMessage },
+				KVPairISH { "say", &IrcServerHandler::SayCommand },
+				KVPairISH { "list", &IrcServerHandler::showChannels }
+			);
+		constexpr auto ParserHash = Util::MakeHash<std::string_view, CmdImpl_t<IrcParser>, CalcHash> (
+				KVPairP { "join", &IrcParser::JoinCommand },
+				KVPairP { "part", &IrcParser::PartCommand },
+				KVPairP { "quit", &IrcParser::QuitCommand },
+				KVPairP { "nick", &IrcParser::NickCommand },
+				KVPairP { "ping", &IrcParser::PingCommand },
+				KVPairP { "pong", &IrcParser::PongCommand },
+				KVPairP { "topic", &IrcParser::TopicCommand },
+				KVPairP { "kick", &IrcParser::KickCommand },
+				KVPairP { "invite", &IrcParser::InviteCommand },
+				KVPairP { "ctcp", &IrcParser::CTCPRequest },
+				KVPairP { "names", &IrcParser::NamesCommand },
+				KVPairP { "away", &IrcParser::AwayCommand },
+				KVPairP { "userhost", &IrcParser::UserhostCommand },
+				KVPairP { "ison", &IrcParser::IsonCommand },
+				KVPairP { "whois", &IrcParser::WhoisCommand },
+				KVPairP { "whowas", &IrcParser::WhowasCommand },
+				KVPairP { "who", &IrcParser::WhoCommand },
+				KVPairP { "summon", &IrcParser::SummonCommand },
+				KVPairP { "version", &IrcParser::VersionCommand },
+				KVPairP { "links", &IrcParser::LinksCommand },
+				KVPairP { "info", &IrcParser::InfoCommand },
+				KVPairP { "motd", &IrcParser::MOTDCommand },
+				KVPairP { "time", &IrcParser::TimeCommand },
+				KVPairP { "oper", &IrcParser::OperCommand },
+				KVPairP { "rehash", &IrcParser::RehashCommand },
+				KVPairP { "lusers", &IrcParser::LusersCommand },
+				KVPairP { "users", &IrcParser::UsersCommand },
+				KVPairP { "wallops", &IrcParser::WallopsCommand },
+				KVPairP { "quote", &IrcParser::RawCommand },
+				KVPairP { "me", &IrcParser::CTCPRequest },
+				KVPairP { "squit", &IrcParser::SQuitCommand },
+				KVPairP { "stats", &IrcParser::StatsCommand },
+				KVPairP { "connect", &IrcParser::ConnectCommand },
+				KVPairP { "trace", &IrcParser::TraceCommand },
+				KVPairP { "admin", &IrcParser::AdminCommand },
+				KVPairP { "kill", &IrcParser::KillCommand },
+				KVPairP { "die", &IrcParser::DieCommand },
+				KVPairP { "restart", &IrcParser::RestartCommand },
+				KVPairP { "mode", &IrcParser::ChanModeCommand }
+			);
 	}
 
-	UserCommandManager::UserCommandManager (IrcServerHandler *ish, 
+	UserCommandManager::UserCommandManager (IrcServerHandler *ish,
 			IrcParser *parser)
-	: QObject { ish }
-	, ISH_ { ish }
+	: ISH_ { ish }
 	, Parser_ { parser }
 	{
 	}
@@ -83,8 +99,8 @@ namespace LC::Azoth::Acetamide
 				.trimmed ()
 				.toLower ();
 
-		auto serverCommand = ServerCommand2Action [cmd];
-		auto parserCommand = ParserCommand2Action [cmd];
+		auto serverCommand = ServerHash (Util::AsStringView (cmd));
+		auto parserCommand = ParserHash (Util::AsStringView (cmd));
 		if (!serverCommand && !parserCommand)
 			return {};
 
