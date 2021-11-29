@@ -26,6 +26,9 @@ namespace LC::Util
 			{
 			}
 		};
+
+		template<size_t N, typename V>
+		KVPair (const char (&) [N], V) -> KVPair<std::string_view, V>;
 	}
 
 	template<typename K>
