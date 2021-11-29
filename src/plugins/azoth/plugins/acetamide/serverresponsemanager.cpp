@@ -8,14 +8,14 @@
 
 #include "serverresponsemanager.h"
 #include <util/sll/prelude.h>
-#include <util/sll/functional.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/statichash.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include "ircserverhandler.h"
-#include "xmlsettingsmanager.h"
 #include "ircaccount.h"
+#include "localtypes.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -182,8 +182,7 @@ namespace LC::Azoth::Acetamide
 	}
 
 	ServerResponseManager::ServerResponseManager (IrcServerHandler *ish)
-	: QObject { ish }
-	, ISH_ { ish }
+	: ISH_ { ish }
 	{
 	}
 

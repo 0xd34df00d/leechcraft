@@ -13,8 +13,9 @@
 #include <QTcpSocket>
 #include <interfaces/azoth/imessage.h>
 #include "localtypes.h"
-#include "serverparticipantentry.h"
 #include "invitechannelsdialog.h"
+#include "serverparticipantentry.h"
+#include "serverresponsemanager.h"
 #include "usercommandmanager.h"
 
 namespace LC
@@ -47,7 +48,7 @@ namespace Acetamide
 		IrcServerCLEntry * const ServerCLEntry_;
 		std::unique_ptr<IrcServerSocket> Socket_;
 		UserCommandManager CmdManager_;
-		ServerResponseManager * const ServerResponseManager_;
+		ServerResponseManager ServerResponseManager_;
 		RplISupportParser * const RplISupportParser_;
 		ChannelsManager * const ChannelsManager_;
 

@@ -8,19 +8,17 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QHash>
-#include <QMap>
-#include "localtypes.h"
+#include <QCoreApplication>
 
 namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
 	struct IrcMessageOptions;
 
-	class ServerResponseManager : public QObject
+	class ServerResponseManager
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::ServerResponseManager)
+
 		IrcServerHandler * const ISH_;
 	public:
 		explicit ServerResponseManager (IrcServerHandler*);

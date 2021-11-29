@@ -27,8 +27,6 @@
 #include "channelpublicmessage.h"
 #include "ircerrorhandler.h"
 #include "ircserversocket.h"
-#include "usercommandmanager.h"
-#include "serverresponsemanager.h"
 #include "rplisupportparser.h"
 #include "channelsmanager.h"
 #include "channelslistdialog.h"
@@ -47,7 +45,7 @@ namespace Acetamide
 	, IrcParser_ { new IrcParser { this } }
 	, ServerCLEntry_ { new IrcServerCLEntry { this, account } }
 	, CmdManager_ { this, IrcParser_ }
-	, ServerResponseManager_ { new ServerResponseManager { this } }
+	, ServerResponseManager_ { this }
 	, RplISupportParser_ { new RplISupportParser { this } }
 	, ChannelsManager_ { new ChannelsManager { this } }
 	, ServerID_ { server.ServerName_ + ":" + QString::number (server.ServerPort_) }
@@ -1061,7 +1059,7 @@ namespace Acetamide
 			}
 		}
 		else
-			ServerResponseManager_->DoAction (opts);
+			ServerResponseManager_.DoAction (opts);
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
