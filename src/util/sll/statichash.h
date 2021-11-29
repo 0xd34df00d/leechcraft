@@ -32,15 +32,26 @@ namespace LC::Util
 	}
 
 	template<typename K>
-	constexpr uint64_t DefaultHash (K);
+	constexpr uint64_t DefaultHashImpl (K);
 
 	template<>
-	constexpr uint64_t DefaultHash (std::string_view name)
+	constexpr uint64_t DefaultHashImpl (std::string_view name)
 	{
 		uint64_t res = 0;
 		for (auto ch : name)
 			res = (res << 8) + ch;
 		return res;
+	}
+
+	template<std::convertible_to<uint64_t> K>
+	constexpr uint64_t DefaultHashImpl (K val)
+	{
+		return static_cast<uint64_t> (val);
+	}
+
+	constexpr uint64_t DefaultHash (auto val)
+	{
+		return DefaultHashImpl (val);
 	}
 
 	template<typename K, typename V, auto Hasher = DefaultHash<K>>
@@ -52,14 +63,14 @@ namespace LC::Util
 				if (Hasher (i->Key_) == Hasher (j->Key_))
 					throw "duplicate hashes";
 
-		return [=] (std::string_view str)
+		return [=] (K key, V defValue = V {})
 		{
-			const auto strHash = Hasher (str);
-			V result {};
-			std::string_view foundName {};
-			(void) ((Hasher (commands.Key_) == strHash && (result = commands.Val_, foundName = commands.Key_, true)) || ...);
-			if (foundName != str)
-				return V {};
+			const auto keyHash = Hasher (key);
+			V result = defValue;
+			K foundKey {};
+			(void) ((Hasher (commands.Key_) == keyHash && (result = commands.Val_, foundKey = commands.Key_, true)) || ...);
+			if (foundKey != key)
+				return defValue;
 			return result;
 		};
 	}
