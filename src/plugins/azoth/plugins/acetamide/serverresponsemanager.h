@@ -17,12 +17,11 @@
 namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
+	struct IrcMessageOptions;
 
 	class ServerResponseManager : public QObject
 	{
 		IrcServerHandler * const ISH_;
-		QHash<QByteArray, std::function<void (IrcMessageOptions)>> Command2Action_;
-		QMap<QString, IrcServer> MatchString2Server_;
 	public:
 		explicit ServerResponseManager (IrcServerHandler*);
 

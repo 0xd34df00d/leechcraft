@@ -126,13 +126,65 @@ namespace LC::Azoth::Acetamide
 					KVPair { "322", &IrcServerHandler::GotChannelsList },
 					KVPair { "323", &IrcServerHandler::GotChannelsListEnd }
 				);
+
+		using CustomCommand_t = void (*) (IrcServerHandler&, const IrcMessageOptions&);
+
+		constexpr auto UnrealCustoms = Util::MakeStringHash<CustomCommand_t> (
+					KVPair
+					{
+						"307",
+						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
+						{
+							WhoIsMessage msg;
+							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.IsRegistered_ = opts.Message_;
+							ish.ShowWhoIsReply (msg);
+						}
+					},
+					KVPair
+					{
+						"310",
+						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
+						{
+							WhoIsMessage msg;
+							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.IsHelpOp_ = opts.Message_;
+							ish.ShowWhoIsReply (msg);
+						}
+					},
+					KVPair
+					{
+						"320",
+						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
+						{
+							WhoIsMessage msg;
+							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.Mail_ = opts.Message_;
+							ish.ShowWhoIsReply (msg);
+						}
+					},
+					KVPair
+					{
+						"378",
+						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
+						{
+							WhoIsMessage msg;
+							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.ConnectedFrom_ = opts.Message_;
+							ish.ShowWhoIsReply (msg);
+						}
+					}
+				);
+
+		constexpr auto MatchString2Server = std::to_array<std::pair<QStringView, IrcServer>> ({
+					{ u"unreal", IrcServer::UnrealIRCD }
+				});
 	}
 
 	ServerResponseManager::ServerResponseManager (IrcServerHandler *ish)
 	: QObject { ish }
 	, ISH_ { ish }
 	{
-		MatchString2Server_ ["unreal"] = IrcServer::UnrealIRCD;
 	}
 
 	void ServerResponseManager::DoAction (const IrcMessageOptions& opts)
@@ -143,9 +195,17 @@ namespace LC::Azoth::Acetamide
 		else if (cmdUtf8 == "notice" && IsCTCPMessage (opts.Message_))
 			cmdUtf8 = "ctcp_rqst";
 
-		if (const auto actor = Command2Action_.value (cmdUtf8))
-			actor (opts);
-		else if (const auto actor = SRMHash (Util::AsStringView (cmdUtf8)))
+		switch (ISH_->GetServerOptions ().IrcServer_)
+		{
+		case IrcServer::UnknownServer:
+			break;
+		case IrcServer::UnrealIRCD:
+			if (const auto actor = UnrealCustoms (Util::AsStringView (cmdUtf8)))
+				return actor (*ISH_, opts);
+			break;
+		}
+
+		if (const auto actor = SRMHash (Util::AsStringView (cmdUtf8)))
 			(this->*actor) (opts);
 		else if (const auto actor = ISHHash (Util::AsStringView (cmdUtf8)))
 			(ISH_->*actor) (opts);
@@ -962,53 +1022,11 @@ namespace LC::Azoth::Acetamide
 		ISH_->ShowAnswer ("myinfo",
 				Util::Map (opts.Parameters_, &QString::fromStdString).join (" "));
 
-		QString ircServer = QString::fromStdString (opts.Parameters_.at (2));
-		IrcServer server;
-		auto serversKeys = MatchString2Server_.keys ();
-		auto it = std::find_if (serversKeys.begin (), serversKeys.end (),
-				[&ircServer] (const auto& key) { return ircServer.contains (key, Qt::CaseInsensitive); });
-
-		if (it == serversKeys.end ())
-			return;
-
-		server = MatchString2Server_ [*it];
+		const auto& ircServer = QString::fromStdString (opts.Parameters_.at (2));
+		const auto it = std::find_if (MatchString2Server.begin (), MatchString2Server.end (),
+				[&ircServer] (const auto& key) { return ircServer.contains (key.first, Qt::CaseInsensitive); });
+		const auto server = it == MatchString2Server.end () ? IrcServer::UnknownServer : it->second;
 		ISH_->SetIrcServerInfo (server, ircServer);
-
-		switch (server)
-		{
-		case IrcServer::UnknownServer:
-			break;
-		case IrcServer::UnrealIRCD:
-			Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
-				{
-					WhoIsMessage msg;
-					msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
-					msg.IsRegistered_ = opts.Message_;
-					ISH_->ShowWhoIsReply (msg);
-				};
-			Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
-				{
-					WhoIsMessage msg;
-					msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
-					msg.IsHelpOp_ = opts.Message_;
-					ISH_->ShowWhoIsReply (msg);
-				};
-			Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
-				{
-					WhoIsMessage msg;
-					msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
-					msg.Mail_ = opts.Message_;
-					ISH_->ShowWhoIsReply (msg);
-				};
-			Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
-				{
-					WhoIsMessage msg;
-					msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
-					msg.ConnectedFrom_ = opts.Message_;
-					ISH_->ShowWhoIsReply (msg);
-				};
-			break;
-		}
 	}
 
 	void ServerResponseManager::GotWhoIsAccount (const IrcMessageOptions& opts)
