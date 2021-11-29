@@ -38,10 +38,6 @@ namespace LC::Azoth::Acetamide
 		QList<IMessage*> AllMessages_;
 
 		QMap<QByteArray, QList<QByteArray>> Perms_;
-		QMap<ChannelRole, QByteArray> Role2Str_;
-		QMap<ChannelRole, QByteArray> Aff2Str_;
-		QMap<ChannelManagment, QByteArray> Managment2Str_;
-		QMap<QByteArray, QString> Translations_;
 	public:
 		explicit ChannelCLEntry (ChannelHandler*);
 

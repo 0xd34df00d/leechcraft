@@ -7,8 +7,9 @@
  **********************************************************************/
 
 #include "channelclentry.h"
-#include <utility>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/statichash.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "channelhandler.h"
@@ -20,6 +21,45 @@
 
 namespace LC::Azoth::Acetamide
 {
+	namespace
+	{
+		using Util::KVPair;
+		using namespace std::literals::string_view_literals;
+
+		constexpr uint64_t ShortHash (std::string_view view)
+		{
+			return (view [0] << 8) + view [1];
+		}
+
+		constexpr auto Str2Management = Util::MakeStringHash<ChannelManagment> (
+					KVPair { "kick", ChannelManagment::Kick },
+					KVPair { "ban_by_name", ChannelManagment::BanByName },
+					KVPair { "ban_by_user_and_domain", ChannelManagment::BanByDomain },
+					KVPair { "ban_by_domain", ChannelManagment::BanByUserAndDomain },
+					KVPair { "kick_and_ban", ChannelManagment::KickAndBan }
+				);
+
+		constexpr auto Str2Role = Util::MakeHash<std::string_view, ChannelRole, &ShortHash> (
+					KVPair { "participant", ChannelRole::Participant,  },
+					KVPair { "voiced", ChannelRole::Voiced,  },
+					KVPair { "halfoperator", ChannelRole::HalfOperator },
+					KVPair { "operator", ChannelRole::Operator },
+					KVPair { "administrator", ChannelRole::Admin },
+					KVPair { "owner", ChannelRole::Owner }
+				);
+
+		constexpr auto Role2Str = std::to_array ({
+					"participant",
+					"voiced",
+					"halfoperator",
+					"operator",
+					"administrator",
+					"owner"
+				});
+
+		constexpr auto Aff2Str = std::to_array ({ "noaffiliation", "member", "admin", "admin", "admin", "owner" });
+	}
+
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
 	: ICH_ { handler }
 	, Perms_
@@ -27,65 +67,34 @@ namespace LC::Azoth::Acetamide
 			{ "permclass_managment", { "kick", "ban_by_name", "ban_by_user_and_domain", "ban_by_domain", "kick_and_ban" } },
 			{ "permclass_role", { "participant" } },
 		}
-	, Managment2Str_
-		{
-			{ ChannelManagment::Kick, "kick" },
-			{ ChannelManagment::BanByName, "ban_by_name" },
-			{ ChannelManagment::BanByDomain, "ban_by_user_and_domain" },
-			{ ChannelManagment::BanByUserAndDomain, "ban_by_domain" },
-			{ ChannelManagment::KickAndBan, "kick_and_ban" },
-		}
-	, Translations_
-		{
-			{ "permclass_role", tr ("Role") },
-			{ "participant", tr ("Participant") },
-			{ "permclass_managment", tr ("Kick and Ban") },
-			{ "kick", tr ("Kick") },
-			{ "ban_by_name", tr ("Ban by nickname") },
-			{ "ban_by_domain", tr ("Ban by mask (*!*@domain)") },
-			{ "ban_by_user_and_domain", tr ("Ban by mask (*!user@domain)") },
-			{ "kick_and_ban", tr ("Kick and ban") },
-		}
 	{
-		Role2Str_ [ChannelRole::Participant] = "participant";
-		Aff2Str_ [ChannelRole::Participant] = "noaffiliation";
-
 		const auto& iSupport = ICH_->GetChannelsManager ()->GetISupport ();
-		QString roles = iSupport [Lits::PREFIX].split (')').value (0);
+		const auto& roles = iSupport [Lits::PREFIX].split (')').value (0);
 		for (int i = roles.length () - 1; i >= 1; --i)
+		{
+			auto role = ChannelRole::Participant;
 			switch (roles.at (i).toLatin1 ())
 			{
 			case 'v':
-				Perms_ ["permclass_role"] << "voiced";
-				Role2Str_ [ChannelRole::Voiced] = "voiced";
-				Aff2Str_ [ChannelRole::Voiced] = "member";
-				Translations_ ["voiced"] = tr ("Voiced");
+				role = ChannelRole::Voiced;
 				break;
 			case 'h':
-				Perms_ ["permclass_role"] << "halfoperator";
-				Role2Str_ [ChannelRole::HalfOperator] = "halfoperator";
-				Aff2Str_ [ChannelRole::HalfOperator] = "admin";
-				Translations_ ["halfoperator"] = tr ("HalfOperator");
+				role = ChannelRole::HalfOperator;
 				break;
 			case 'o':
-				Perms_ ["permclass_role"] << "operator";
-				Role2Str_ [ChannelRole::Operator] = "operator";
-				Aff2Str_ [ChannelRole::Operator] = "admin";
-				Translations_ ["operator"] = tr ("Operator");
+				role = ChannelRole::Operator;
 				break;
 			case 'a':
-				Perms_ ["permclass_role"] << "admin";
-				Role2Str_ [ChannelRole::Admin] = "administrator";
-				Aff2Str_ [ChannelRole::Admin] = "admin";
-				Translations_ ["admin"] = tr ("Admin");
+				role = ChannelRole::Admin;
 				break;
 			case 'q':
-				Perms_ ["permclass_role"] << "owner";
-				Role2Str_ [ChannelRole::Owner] = "owner";
-				Aff2Str_ [ChannelRole::Owner] = "owner";
-				Translations_ ["owner"] = tr ("Owner");
+				role = ChannelRole::Owner;
 				break;
+			default:
+				continue;
 			}
+			Perms_ ["permclass_role"] << Role2Str [role];
+		}
 	}
 
 	ChannelHandler* ChannelCLEntry::GetChannelHandler () const
@@ -304,7 +313,7 @@ namespace LC::Azoth::Acetamide
 			return "noaffiliation";
 		}
 
-		return Aff2Str_ [entry->HighestRole ()];
+		return Aff2Str [entry->HighestRole ()];
 	}
 
 	QMap<QByteArray, QList<QByteArray>>  ChannelCLEntry::GetPerms (QObject *participant) const
@@ -323,7 +332,7 @@ namespace LC::Azoth::Acetamide
 		}
 		else
 			for (const auto& role : entry->Roles ())
-				result ["permclass_role"] << Role2Str_.value (role, "invalid");
+				result ["permclass_role"] << Role2Str [role];
 
 		return result;
 	}
@@ -353,9 +362,9 @@ namespace LC::Azoth::Acetamide
 		}
 
 		if (permClass == "permclass_role")
-			ICH_->SetRole (entry, Role2Str_.key (perm), reason);
+			ICH_->SetRole (entry, Str2Role (Util::AsStringView (perm)), reason);
 		else if (permClass == "permclass_managment")
-			ICH_->ManageWithParticipant (entry, Managment2Str_.key (perm));
+			ICH_->ManageWithParticipant (entry, Str2Management (Util::AsStringView (perm)));
 		else
 		{
 			qWarning () << Q_FUNC_INFO
@@ -372,7 +381,23 @@ namespace LC::Azoth::Acetamide
 
 	QString ChannelCLEntry::GetUserString (const QByteArray& id) const
 	{
-		return Translations_.value (id, id);
+		static const QHash<QByteArray, QString> translations
+		{
+			{ "permclass_role", tr ("Role") },
+			{ "participant", tr ("Participant") },
+			{ "permclass_managment", tr ("Kick and Ban") },
+			{ "kick", tr ("Kick") },
+			{ "ban_by_name", tr ("Ban by nickname") },
+			{ "ban_by_domain", tr ("Ban by mask (*!*@domain)") },
+			{ "ban_by_user_and_domain", tr ("Ban by mask (*!user@domain)") },
+			{ "kick_and_ban", tr ("Kick and ban") },
+			{ "voiced", tr ("Voiced") },
+			{ "halfoperator", tr ("HalfOperator") },
+			{ "operator", tr ("Operator") },
+			{ "admin", tr ("Admin") },
+			{ "owner", tr ("Owner") },
+		};
+		return translations.value (id, id);
 	}
 
 	bool ChannelCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
@@ -452,7 +477,7 @@ namespace LC::Azoth::Acetamide
 		const auto ourRole = ICH_->GetSelf ()->HighestRole ();
 
 		if (permClass == "permclass_role")
-			return MayChange (ourRole, entry, Role2Str_.key (perm));
+			return MayChange (ourRole, entry, Str2Role (Util::AsStringView (perm)));
 		if (permClass == "permclass_managment")
 			return MayManage (ourRole, entry, ICH_->GetSelf ()->GetEntryName ());
 
@@ -562,6 +587,6 @@ namespace LC::Azoth::Acetamide
 
 	QString ChannelCLEntry::Role2String (ChannelRole role) const
 	{
-		return Role2Str_ [role];
+		return Role2Str [role];
 	}
 }
