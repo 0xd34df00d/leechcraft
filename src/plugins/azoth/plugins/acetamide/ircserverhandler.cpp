@@ -519,200 +519,87 @@ namespace Acetamide
 		ShowAnswer ("ison", tr ("%1 is on server").arg (nick));
 	}
 
+	void IrcServerHandler::HandleSpyNick (const WhoIsMessage& msg)
+	{
+		auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+		auto merge = [&whois, &msg] (auto mem)
+		{
+			if (!(msg.*mem).isEmpty ())
+				whois.*mem = msg.*mem;
+		};
+		merge (&WhoIsMessage::UserName_);
+		merge (&WhoIsMessage::Host_);
+		merge (&WhoIsMessage::RealName_);
+		merge (&WhoIsMessage::Channels_);
+		merge (&WhoIsMessage::ServerName_);
+		merge (&WhoIsMessage::ServerCountry_);
+
+		if (!msg.EndString_.isEmpty ())
+		{
+			for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (msg.Nick_))
+				if (const auto entry = dynamic_cast<ChannelParticipantEntry*> (entryObj))
+					entry->SetInfo (whois);
+
+			SpyNick2WhoIsMessage_.remove (msg.Nick_);
+		}
+	}
+
 	void IrcServerHandler::ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf)
 	{
-		QString message;
-		if (!msg.Nick_.isEmpty () &&
-				!msg.UserName_.isEmpty () &&
+		if (msg.Nick_.isEmpty ())
+			return;
+
+		if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+		{
+			HandleSpyNick (msg);
+			return;
+		}
+
+		auto show = [&] (const QString& msg) { ShowAnswer (QStringLiteral ("whois"), msg, isEndOf); };
+
+		if (!msg.UserName_.isEmpty () &&
 				!msg.Host_.isEmpty ())
-		{
-			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
-				whois.Nick_ = msg.Nick_;
-				whois.UserName_ = msg.UserName_;
-				whois.Host_ = msg.Host_;
-			}
-			else
-			{
-				message = tr ("%1 is %2")
-						.arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+			show (tr ("%1 is %2").arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.RealName_.isEmpty ())
-		{
-			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
-				whois.Nick_ = msg.Nick_;
-				whois.RealName_ = msg.RealName_;
-			}
-			else
-			{
-				message = tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.RealName_.isEmpty ())
+			show (tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.Channels_.isEmpty ())
-		{
-			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
-				whois.Nick_ = msg.Nick_;
-				whois.Channels_ = msg.Channels_;
-			}
-			else
-			{
-				message = tr ("%1 is on channels: %2")
-						.arg (msg.Nick_, msg.Channels_.join (", "));
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.Channels_.isEmpty ())
+			show (tr ("%1 is on channels: %2").arg (msg.Nick_, msg.Channels_.join (QStringLiteral (", "))));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.ServerName_.isEmpty () &&
+		if (!msg.ServerName_.isEmpty () &&
 				!msg.ServerCountry_.isEmpty ())
-		{
-			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
-				whois.Nick_ = msg.Nick_;
-				whois.ServerName_ = msg.ServerName_;
-				whois.ServerCountry_ = msg.ServerCountry_;
-			}
-			else
-			{
-				message = tr ("%1's server is: %2 - %3")
-						.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+			show (tr ("%1's server is: %2 - %3").arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.IdleTime_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.IdleTime_.isEmpty ())
+			show (tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.AuthTime_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.AuthTime_.isEmpty ())
+			show (tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.IrcOperator_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = msg.Nick_ + ": " + msg.IrcOperator_;
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.IrcOperator_.isEmpty ())
+			show (msg.Nick_ + ": " + msg.IrcOperator_);
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.LoggedName_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1 is logged in as %2 ")
-						.arg (msg.Nick_, msg.LoggedName_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.LoggedName_.isEmpty ())
+			show (tr ("%1 is logged in as %2 ").arg (msg.Nick_, msg.LoggedName_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.Secure_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1 is using a secure connection")
-						.arg (msg.Nick_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.Secure_.isEmpty ())
+			show (tr ("%1 is using a secure connection").arg (msg.Nick_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.ConnectedFrom_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1: %2")
-						.arg (msg.Nick_)
-						.arg (msg.ConnectedFrom_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.ConnectedFrom_.isEmpty ())
+			show (tr ("%1: %2").arg (msg.Nick_, msg.ConnectedFrom_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.IsHelpOp_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1 is available for help")
-						.arg (msg.Nick_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.IsHelpOp_.isEmpty ())
+			show (tr ("%1 is available for help").arg (msg.Nick_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.IsRegistered_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1 is a registered nick")
-						.arg (msg.Nick_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.IsRegistered_.isEmpty ())
+			show (tr ("%1 is a registered nick").arg (msg.Nick_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.Mail_.isEmpty ())
-		{
-			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				message = tr ("%1 e-mail address is %2")
-						.arg (msg.Nick_)
-						.arg (msg.Mail_);
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.Mail_.isEmpty ())
+			show (tr ("%1 e-mail address is %2").arg (msg.Nick_, msg.Mail_));
 
-		if (!msg.Nick_.isEmpty () &&
-				!msg.EndString_.isEmpty ())
-		{
-			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
-			{
-				for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (msg.Nick_))
-				{
-					const auto entry = dynamic_cast<ChannelParticipantEntry*> (entryObj);
-					if (!entry)
-						continue;
-
-					entry->SetInfo (SpyNick2WhoIsMessage_ [msg.Nick_]);
-				}
-
-				SpyNick2WhoIsMessage_.remove (msg.Nick_);
-			}
-			else
-			{
-				message = msg.Nick_ + " " + msg.EndString_;
-				ShowAnswer ("whois", message, isEndOf);
-			}
-		}
+		if (!msg.EndString_.isEmpty ())
+			show (msg.Nick_ + " " + msg.EndString_);
 	}
 
 	void IrcServerHandler::ShowWhoWasReply (const QString& msg, bool isEndOf)

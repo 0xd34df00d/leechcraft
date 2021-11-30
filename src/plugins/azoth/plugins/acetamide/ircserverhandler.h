@@ -217,6 +217,7 @@ namespace Acetamide
 		void GotChannelsListEnd (const IrcMessageOptions& opts);
 
 	private:
+		void HandleSpyNick (const WhoIsMessage&);
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
 		ServerParticipantEntry_ptr CreateParticipantEntry (const QString&);
