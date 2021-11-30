@@ -466,10 +466,10 @@ namespace Acetamide
 		InviteChannelsDialog_->show ();
 	}
 
-	void IrcServerHandler::ShowAnswer (const QString& cmd,
+	void IrcServerHandler::ShowAnswer (const QByteArray& cmd,
 			const QString& answer, bool /*isEndOf*/, IMessage::Type type)
 	{
-		QString msg = "[" + cmd.toUpper () + "] " + answer;
+		auto msg = "[" + cmd.toUpper () + "] " + answer;
 		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (msg);
 
 		if (!res ||
@@ -555,7 +555,7 @@ namespace Acetamide
 			return;
 		}
 
-		auto show = [&] (const QString& msg) { ShowAnswer (QStringLiteral ("whois"), msg, isEndOf); };
+		auto show = [&] (const QString& msg) { ShowAnswer ("whois", msg, isEndOf); };
 
 		if (!msg.UserName_.isEmpty () &&
 				!msg.Host_.isEmpty ())
@@ -757,8 +757,8 @@ namespace Acetamide
 
 	void IrcServerHandler::SendMessage2Server (const QStringList& list)
 	{
-		QString msg = list.join (" ");
-		const QString& cmd = CmdManager_.VerifyMessage (msg, QString ());
+		const auto& msg = list.join (' ');
+		const auto& cmd = CmdManager_.VerifyMessage (msg, {});
 		if (!cmd.isEmpty ())
 		{
 			if (msg.startsWith ('/'))
@@ -1040,7 +1040,11 @@ namespace Acetamide
 	void IrcServerHandler::VCardRequest (const QString& nick)
 	{
 		RequestWhoIs (nick);
-		SpyNick2WhoIsMessage_.insert (nick, WhoIsMessage ());
+
+		WhoIsMessage msg;
+		msg.Nick_ = nick;
+
+		SpyNick2WhoIsMessage_.insert (nick, msg);
 	}
 
 	void IrcServerHandler::SetAway (const QString& message)

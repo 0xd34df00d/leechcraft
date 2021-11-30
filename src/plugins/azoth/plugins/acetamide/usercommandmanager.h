@@ -8,6 +8,7 @@
 
 #pragma once
 
+class QByteArray;
 class QString;
 
 namespace LC::Azoth::Acetamide
@@ -22,7 +23,7 @@ namespace LC::Azoth::Acetamide
 	public:
 		UserCommandManager (IrcServerHandler*, IrcParser*);
 
-		QString VerifyMessage (const QString&, const QString&) const;
+		QByteArray VerifyMessage (const QString&, const QString&) const;
 	};
 }
 

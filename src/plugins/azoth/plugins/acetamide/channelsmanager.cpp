@@ -376,8 +376,6 @@ namespace LC::Azoth::Acetamide
 			}
 		};
 
-		const auto Mode = QStringLiteral ("mode");
-
 		for (int i = 1; i < mode.length (); ++i)
 		{
 			switch (mode [i].toLatin1 ())
@@ -423,13 +421,13 @@ namespace LC::Azoth::Acetamide
 				handler->SetChannelKey (action, value);
 				break;
 			case 'b':
-				ISH_->ShowAnswer (Mode, tr ("%1 added to your ban list.").arg (value));
+				ISH_->ShowAnswer ("Mode", tr ("%1 added to your ban list.").arg (value));
 				break;
 			case 'e':
-				ISH_->ShowAnswer (Mode, tr ("%1 added to your except list.").arg (value));
+				ISH_->ShowAnswer ("Mode", tr ("%1 added to your except list.").arg (value));
 				break;
 			case 'I':
-				ISH_->ShowAnswer (Mode, tr ("%1 added to your invite list.").arg (value));
+				ISH_->ShowAnswer ("Mode", tr ("%1 added to your invite list.").arg (value));
 				break;
 			}
 		}

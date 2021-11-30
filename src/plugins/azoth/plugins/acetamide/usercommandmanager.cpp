@@ -80,7 +80,7 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	QString UserCommandManager::VerifyMessage (const QString& msg, const QString& channelName) const
+	QByteArray UserCommandManager::VerifyMessage (const QString& msg, const QString& channelName) const
 	{
 		const int pos = msg.indexOf (' ');
 		const auto cmd = (msg.startsWith ('/') ? msg.mid (1, pos) : msg.left (pos))

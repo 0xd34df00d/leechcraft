@@ -209,7 +209,7 @@ namespace LC::Azoth::Acetamide
 		else if (const auto actor = ISHHash (Util::AsStringView (cmdUtf8)))
 			(ISH_->*actor) (opts);
 		else
-			ISH_->ShowAnswer (opts.Command_, opts.Message_);
+			ISH_->ShowAnswer (opts.Command_.toUtf8 (), opts.Message_);
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
