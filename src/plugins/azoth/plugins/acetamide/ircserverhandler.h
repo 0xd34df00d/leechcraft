@@ -54,7 +54,6 @@ namespace Acetamide
 
 		ConnectionState ServerConnectionState_ = NotConnected;
 		bool IsConsoleEnabled_ = false;
-		bool IsInviteDialogActive_ = false;
 		QString ServerID_;
 		QString NickName_;
 		ServerOptions ServerOptions_;

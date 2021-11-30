@@ -450,19 +450,22 @@ namespace Acetamide
 	void IrcServerHandler::GotInvitation (const QString& nick,
 			const QString& msg)
 	{
-		if (IsInviteDialogActive_)
-			InviteChannelsDialog_->AddInvitation (msg, nick);
-		else
+		if (InviteChannelsDialog_)
 		{
-			IsInviteDialogActive_ = true;
-			InviteChannelsDialog_.reset (new InviteChannelsDialog (msg, nick));
-			InviteChannelsDialog_->setModal (true);
-
-			connect (InviteChannelsDialog_.get (),
-					SIGNAL (accepted ()),
-					this,
-					SLOT (joinAfterInvite ()));
+			InviteChannelsDialog_->AddInvitation (msg, nick);
+			return;
 		}
+
+		InviteChannelsDialog_ = std::make_unique<InviteChannelsDialog> (msg, nick);
+		connect (InviteChannelsDialog_.get (),
+				&QDialog::accepted,
+				this,
+				&IrcServerHandler::joinAfterInvite);
+		connect (InviteChannelsDialog_.get (),
+				&QDialog::finished,
+				this,
+				[this] { InviteChannelsDialog_.reset (); },
+				Qt::QueuedConnection);
 		InviteChannelsDialog_->show ();
 	}
 
