@@ -59,21 +59,6 @@ namespace Acetamide
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
 				this, "handleSetAutoWho");
 
-		connect (this,
-				SIGNAL (connected (const QString&)),
-				Account_->GetClientConnection ().get (),
-				SLOT (serverConnected (const QString&)));
-
-		connect (this,
-				SIGNAL (disconnected (const QString&)),
-				Account_->GetClientConnection ().get (),
-				SLOT (serverDisconnected (const QString&)));
-
-		connect (this,
-				SIGNAL (nicknameConflict (const QString&)),
-				ServerCLEntry_,
-				SIGNAL (nicknameConflict (const QString&)));
-
 		connect (AutoWhoTimer_,
 				SIGNAL (timeout ()),
 				this,
@@ -803,7 +788,7 @@ namespace Acetamide
 				[this]
 				{
 					ServerConnectionState_ = Connected;
-					emit connected (ServerID_);
+					Account_->GetClientConnection ()->serverConnected (ServerID_);
 					ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 					IrcParser_->AuthCommand ();
 
@@ -818,7 +803,7 @@ namespace Acetamide
 					ServerConnectionState_ = NotConnected;
 					ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
 					socket->Close ();
-					emit disconnected (ServerID_);
+					Account_->GetClientConnection ()->serverDisconnected (ServerID_);
 				});
 
 		connect (Socket_.get (),
@@ -891,7 +876,7 @@ namespace Acetamide
 		if (Account_->GetNickNames ().isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "NickName conflict";
-			emit nicknameConflict (NickName_);
+			emit ServerCLEntry_->nicknameConflict (NickName_);
 			return;
 		}
 		
@@ -900,7 +885,7 @@ namespace Acetamide
 		else
 		{
 			qDebug () << Q_FUNC_INFO << "NickName conflict";
-			emit nicknameConflict (NickName_);
+			emit ServerCLEntry_->nicknameConflict (NickName_);
 			return;
 		}
 		
