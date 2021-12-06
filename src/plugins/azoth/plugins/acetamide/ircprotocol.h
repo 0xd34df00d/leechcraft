@@ -26,6 +26,7 @@ namespace LC::Azoth
 namespace LC::Azoth::Acetamide
 {
 	class IrcAccount;
+	class NickServIdentifyManager;
 
 	class IrcProtocol final : public QObject
 							, public IProtocol
@@ -39,10 +40,13 @@ namespace LC::Azoth::Acetamide
 
 		QObject *ParentProtocolPlugin_;
 		QList<IrcAccount*> IrcAccounts_;
+		const NickServIdentifyManager& IdentifyManager_;
 		IProxyObject *ProxyObject_ = nullptr;
 	public:
-		explicit IrcProtocol (QObject* = nullptr);
+		explicit IrcProtocol (const NickServIdentifyManager&, QObject*);
 		~IrcProtocol () override;
+
+		const NickServIdentifyManager& GetNickServIdentifyManager () const;
 
 		void Prepare ();
 		IProxyObject* GetProxyObject () const;

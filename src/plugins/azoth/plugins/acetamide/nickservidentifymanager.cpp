@@ -15,8 +15,6 @@
 
 namespace LC::Azoth::Acetamide
 {
-	NickServIdentifyManager *NickServIdentifyManager::Instance_ = nullptr;
-
 	NickServIdentifyManager::NickServIdentifyManager ()
 	: Model_ { std::make_unique<IdentifyModel> (QStringList
 		{
@@ -46,8 +44,6 @@ namespace LC::Azoth::Acetamide
 				&NickServIdentifyWidget::identifyRemoved,
 				Model_.get (),
 				&IdentifyModel::RemoveItem);
-
-		Instance_ = this;
 	}
 
 	NickServIdentifyManager::~NickServIdentifyManager () = default;

@@ -21,9 +21,10 @@
 
 namespace LC::Azoth::Acetamide
 {
-	IrcProtocol::IrcProtocol (QObject *parent)
+	IrcProtocol::IrcProtocol (const NickServIdentifyManager& nsim, QObject *parent)
 	: QObject { parent }
 	, ParentProtocolPlugin_ { parent }
+	, IdentifyManager_ { nsim }
 	{
 	}
 
@@ -31,6 +32,11 @@ namespace LC::Azoth::Acetamide
 	{
 		for (auto acc : GetRegisteredAccounts ())
 			emit accountRemoved (acc);
+	}
+
+	const NickServIdentifyManager& IrcProtocol::GetNickServIdentifyManager () const
+	{
+		return IdentifyManager_;
 	}
 
 	void IrcProtocol::Prepare ()

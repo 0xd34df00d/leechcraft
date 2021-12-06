@@ -261,7 +261,8 @@ namespace LC::Azoth::Acetamide
 	void IrcServerHandler::IncomingNoticeMessage (const QString& nick, const QString& msg)
 	{
 		ShowAnswer ("NOTICE", msg);
-		const auto& list = NickServIdentifyManager::Instance ().GetIdentifies (ServerOptions_.ServerName_,
+		const auto& nsim = Account_->GetParentProtocol ()->GetNickServIdentifyManager ();
+		const auto& list = nsim.GetIdentifies (ServerOptions_.ServerName_,
 				GetNickName (),
 				nick);
 

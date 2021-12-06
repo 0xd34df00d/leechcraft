@@ -30,17 +30,11 @@ namespace LC::Azoth::Acetamide
 
 		const std::unique_ptr<IdentifyModel> Model_;
 		const std::unique_ptr<NickServIdentifyWidget> ConfigWidget_;
-
-		static NickServIdentifyManager *Instance_;
 	public:
 		explicit NickServIdentifyManager ();
 		~NickServIdentifyManager ();
 
-		// TODO ugly hack for now, remove after de-coreifying
-		static NickServIdentifyManager& Instance () { return *Instance_; }
-
 		QWidget* GetConfigWidget () const;
-
 
 		QList<NickServIdentify> GetIdentifies (const QString& server,
 				const QString& nick,

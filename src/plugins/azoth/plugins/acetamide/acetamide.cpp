@@ -37,7 +37,7 @@ namespace LC::Azoth::Acetamide
 		SettingsDialog_->SetCustomWidget (QStringLiteral ("NickServIdentifyWidget"),
 				IdentifyManager_->GetConfigWidget ());
 
-		IrcProtocol_ = std::make_shared<IrcProtocol> ();
+		IrcProtocol_ = std::make_shared<IrcProtocol> (*IdentifyManager_, this);
 	}
 
 	void Plugin::SecondInit ()
