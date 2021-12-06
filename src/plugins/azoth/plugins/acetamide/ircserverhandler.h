@@ -112,12 +112,12 @@ namespace Acetamide
 		void GetBanList (const QString&);
 		void GetExceptList (const QString&);
 		void GetInviteList (const QString&);
-		void AddBanListItem (const QString&, QString);
-		void RemoveBanListItem (const QString&, QString);
-		void AddExceptListItem (const QString&, QString);
-		void RemoveExceptListItem (const QString&, QString);
-		void AddInviteListItem (const QString&, QString);
-		void RemoveInviteListItem (const QString&, QString);
+		void AddBanListItem (const QString&, const QString&);
+		void RemoveBanListItem (const QString&, const QString&);
+		void AddExceptListItem (const QString&, const QString&);
+		void RemoveExceptListItem (const QString&, const QString&);
+		void AddInviteListItem (const QString&, const QString&);
+		void RemoveInviteListItem (const QString&, const QString&);
 		void SetNewChannelModes (const QString&, const ChannelModes&);
 		void SetNewChannelMode (const QString&, const QString&, const QString&);
 
@@ -198,7 +198,7 @@ namespace Acetamide
 
 		void ClosePrivateChat (const QString& nick);
 
-		void CreateServerParticipantEntry (QString nick);
+		void CreateServerParticipantEntry (const QString& nick);
 
 		void VCardRequest (const QString& nick);
 
@@ -231,7 +231,6 @@ namespace Acetamide
 		void connected (const QString&);
 		void disconnected (const QString&);
 		void sendMessageToConsole (IMessage::Direction, const QString&);
-		void nicknameConflict (const QString&);
 
 		void gotChannelsBegin ();
 		void gotChannels (const ChannelsDiscoverInfo& info);
