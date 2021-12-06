@@ -25,10 +25,10 @@
 
 namespace LC::Azoth::Acetamide
 {
-	IrcAccount::IrcAccount (QString name, QObject *parent)
-	: QObject { parent }
+	IrcAccount::IrcAccount (QString name, IrcProtocol *proto)
+	: QObject { proto }
 	, AccountName_ { std::move (name) }
-	, ParentProtocol_ { qobject_cast<IrcProtocol*> (parent) }
+	, ParentProtocol_ { proto }
 	, ClientConnection_ { std::make_shared<ClientConnection> (this) }
 	{
 	}
@@ -386,7 +386,7 @@ namespace LC::Azoth::Acetamide
 	}
 
 	IrcAccount* IrcAccount::Deserialize (const QByteArray& data,
-			QObject *parent)
+			IrcProtocol *parent)
 	{
 		quint16 version = 0;
 

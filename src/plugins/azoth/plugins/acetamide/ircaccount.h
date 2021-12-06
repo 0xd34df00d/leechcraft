@@ -57,7 +57,7 @@ namespace LC::Azoth::Acetamide
 		bool IsFirstStart_ = true;
 		QList<IrcBookmark> ActiveChannels_;
 	public:
-		IrcAccount (QString, QObject*);
+		IrcAccount (QString, IrcProtocol*);
 		~IrcAccount () override;
 
 		QObject* GetQObject () override;
@@ -105,7 +105,7 @@ namespace LC::Azoth::Acetamide
 		PacketFormat GetPacketFormat () const override;
 		void SetConsoleEnabled (bool) override;
 		QByteArray Serialize () const;
-		static IrcAccount* Deserialize (const QByteArray&, QObject*);
+		static IrcAccount* Deserialize (const QByteArray&, IrcProtocol*);
 	private:
 		void SaveActiveChannels ();
 	private slots:
