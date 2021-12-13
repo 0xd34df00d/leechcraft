@@ -98,8 +98,13 @@ namespace LC::Util
 
 namespace LC
 {
-	constexpr QLatin1String operator"" _ql (const char *str, std::size_t size)
+	constexpr QLatin1String operator"" _ql (const char *str, std::size_t size) noexcept
 	{
 		return QLatin1String { str, static_cast<int> (size) };
+	}
+
+	constexpr QStringView operator"" _qsv (const char16_t *str, std::size_t size) noexcept
+	{
+		return QStringView { str, static_cast<qsizetype> (size) };
 	}
 }
