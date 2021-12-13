@@ -59,7 +59,7 @@ namespace LC::Azoth::Acetamide
 					KVPair { "lusers", &IrcParser::LusersCommand },
 					KVPair { "users", &IrcParser::UsersCommand },
 					KVPair { "wallops", &IrcParser::WallopsCommand },
-					KVPair { "quote", &IrcParser::RawCommand },
+					KVPair { "quote", &IrcParser::QuoteCommand },
 					KVPair { "me", &IrcParser::CTCPRequest },
 					KVPair { "squit", &IrcParser::SQuitCommand },
 					KVPair { "stats", &IrcParser::StatsCommand },

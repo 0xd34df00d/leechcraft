@@ -25,12 +25,12 @@ namespace LC::Azoth::Acetamide
 
 		void AuthCommand ();
 		void UserCommand ();
+		void QuoteCommand (const QStringList&);
 		void NickCommand (const QStringList&);
 		void JoinCommand (const QStringList&);
 		void PrivMsgCommand (const QStringList&);
 		void PartCommand (const QStringList&);
 		void PongCommand (const QStringList&);
-		void RawCommand (const QStringList&);
 		void CTCPRequest (const QStringList&);
 		void CTCPReply (const QStringList&);
 		void TopicCommand (const QStringList&);

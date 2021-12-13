@@ -41,6 +41,11 @@ namespace LC::Azoth::Acetamide
 				ISH_->GetAccount ()->GetRealName ());
 	}
 
+	void IrcParser::QuoteCommand (const QStringList& quote)
+	{
+		ISH_->SendCommand (quote.join (' '));
+	}
+
 	void IrcParser::NickCommand (const QStringList& nick)
 	{
 		ISH_->SendCommand ("NICK " + nick.first ());
@@ -74,11 +79,6 @@ namespace LC::Azoth::Acetamide
 	void IrcParser::PongCommand (const QStringList& msg)
 	{
 		ISH_->SendCommand ("PONG :" + msg.join (' '));
-	}
-
-	void IrcParser::RawCommand (const QStringList& cmd)
-	{
-		ISH_->SendCommand (cmd.join (' '));
 	}
 
 	void IrcParser::CTCPRequest (const QStringList& cmd)

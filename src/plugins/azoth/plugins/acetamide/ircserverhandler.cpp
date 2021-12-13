@@ -276,7 +276,7 @@ namespace LC::Azoth::Acetamide
 			if (authRegExp.indexIn (msg) == -1)
 				continue;
 
-			SendMessage2Server (nsi.AuthMessage_.split (' '));
+			SendMessage2Server (nsi.AuthMessage_);
 			return;
 		}
 	}
@@ -715,27 +715,20 @@ namespace LC::Azoth::Acetamide
 			Nick2Entry_ [msg->GetOtherVariant ()]->HandleMessage (msg);
 	}
 
-	void IrcServerHandler::SendMessage2Server (const QStringList& list)
+	void IrcServerHandler::SendMessage2Server (const QString& msg)
 	{
-		const auto& msg = list.join (' ');
+		const auto& unslashed = msg.startsWith ('/') ? msg.mid (1) : msg;
 		const auto& cmd = CmdManager_.VerifyMessage (msg, {});
-		if (!cmd.isEmpty ())
-		{
-			if (msg.startsWith ('/'))
-				IrcParser_->RawCommand (msg.mid (1).split (' '));
-			else
-				IrcParser_->RawCommand (list);
-		}
+		if (cmd.isEmpty ())
+			SendCommand (unslashed);
 		ShowAnswer (cmd, msg);
 	}
 
-	QString IrcServerHandler::ParseMessageForCommand (const QString& msg,
-			const QString& channel) const
+	QString IrcServerHandler::ParseMessageForCommand (const QString& msg, const QString& channel) const
 	{
-		const QString& cmd = CmdManager_.VerifyMessage (msg, channel);
+		const auto& cmd = CmdManager_.VerifyMessage (msg, channel);
 		if (cmd.isEmpty ())
-			IrcParser_->RawCommand (msg.mid (1).split (' '));
-
+			SendCommand (msg.startsWith ('/') ? msg.mid (1) : msg);
 		return cmd;
 	}
 
@@ -824,15 +817,14 @@ namespace LC::Azoth::Acetamide
 			Socket_->DisconnectFromHost ();
 	}
 
-	void IrcServerHandler::SendCommand (const QString& cmd)
+	void IrcServerHandler::SendCommand (const QString& cmd) const
 	{
 		SendToConsole (IMessage::Direction::Out, cmd);
 		if (Socket_)
 			Socket_->Send (cmd + "\r\n");
 	}
 
-	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
-			const QString& message)
+	void IrcServerHandler::SendToConsole (IMessage::Direction dir, const QString& message) const
 	{
 		if (!IsConsoleEnabled_)
 			return;

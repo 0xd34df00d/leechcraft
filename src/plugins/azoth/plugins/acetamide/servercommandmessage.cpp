@@ -36,7 +36,7 @@ namespace Acetamide
 		if (!ParentEntry_)
 			return;
 
-		ParentEntry_->GetIrcServerHandler ()->SendMessage2Server (Message_.split (' '));
+		ParentEntry_->GetIrcServerHandler ()->SendMessage2Server (Message_);
 	}
 
 	void ServerCommandMessage::Store ()

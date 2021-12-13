@@ -165,14 +165,14 @@ namespace Acetamide
 
 		void SendPublicMessage (const QString& msg, const QString& channel);
 		void SendPrivateMessage (IrcMessage*);
-		void SendMessage2Server (const QStringList&);
+		void SendMessage2Server (const QString&);
 		QString ParseMessageForCommand (const QString&, const QString&) const;
 		void LeaveChannel (const QString& channel, const QString& msg);
 
 		void ConnectToServer ();
 		void DisconnectFromServer ();
 
-		void SendCommand (const QString&);
+		void SendCommand (const QString&) const;
 
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
@@ -216,7 +216,7 @@ namespace Acetamide
 
 	private:
 		void HandleSpyNick (const WhoIsMessage&);
-		void SendToConsole (IMessage::Direction, const QString&);
+		void SendToConsole (IMessage::Direction, const QString&) const;
 		void NickCmdError ();
 		ServerParticipantEntry_ptr CreateParticipantEntry (const QString&);
 	public slots:
@@ -229,7 +229,7 @@ namespace Acetamide
 	signals:
 		void connected (const QString&);
 		void disconnected (const QString&);
-		void sendMessageToConsole (IMessage::Direction, const QString&);
+		void sendMessageToConsole (IMessage::Direction, const QString&) const;
 
 		void gotChannelsBegin ();
 		void gotChannels (const ChannelsDiscoverInfo& info);
