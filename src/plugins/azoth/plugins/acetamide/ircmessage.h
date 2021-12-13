@@ -25,6 +25,7 @@ namespace LC::Azoth::Acetamide
 	class IrcMessage : public QObject
 					 , public IMessage
 	{
+		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage)
 
 		const Type Type_;
