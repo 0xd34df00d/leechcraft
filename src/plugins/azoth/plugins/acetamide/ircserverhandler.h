@@ -49,7 +49,6 @@ namespace Acetamide
 		std::unique_ptr<IrcServerSocket> Socket_;
 		UserCommandManager CmdManager_;
 		ServerResponseManager ServerResponseManager_;
-		RplISupportParser * const RplISupportParser_;
 		ChannelsManager * const ChannelsManager_;
 
 		ConnectionState ServerConnectionState_ = NotConnected;
@@ -59,7 +58,7 @@ namespace Acetamide
 		ServerOptions ServerOptions_;
 		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
-		QMap<QString, QString> ISupport_;
+		QHash<QString, QString> ISupport_;
 
 		QHash<QString, int> SpyWho_;
 		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
@@ -190,7 +189,7 @@ namespace Acetamide
 		void ParseUserMode (const QString&, const QString&);
 
 		void ParserISupport (const QString&);
-		QMap<QString, QString> GetISupport () const;
+		QHash<QString, QString> GetISupport () const;
 
 		void RequestWho (const QString&);
 		void RequestWhoIs (const QString&);

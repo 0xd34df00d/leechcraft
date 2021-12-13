@@ -42,7 +42,6 @@ namespace LC::Azoth::Acetamide
 	, ServerCLEntry_ { new IrcServerCLEntry { this, account } }
 	, CmdManager_ { this, IrcParser_ }
 	, ServerResponseManager_ { this }
-	, RplISupportParser_ { new RplISupportParser { this } }
 	, ChannelsManager_ { new ChannelsManager { this } }
 	, ServerID_ { server.ServerName_ + ":" + QString::number (server.ServerPort_) }
 	, NickName_ { server.ServerNickName_ }
@@ -953,11 +952,11 @@ namespace LC::Azoth::Acetamide
 
 	void IrcServerHandler::ParserISupport (const QString& msg)
 	{
-		if (RplISupportParser_->ParseISupportReply (msg))
-			ISupport_ = RplISupportParser_->GetISupportMap ();
+		if (const auto res = ParseISupportReply (msg))
+			ISupport_ = *res;
 	}
 
-	QMap<QString, QString> IrcServerHandler::GetISupport () const
+	QHash<QString, QString> IrcServerHandler::GetISupport () const
 	{
 		return ISupport_;
 	}

@@ -6,34 +6,12 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_RPLISUPPORTPARSER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_RPLISUPPORTPARSER_H
+#pragma once
 
-#include <QObject>
-#include <QMap>
+#include <optional>
+#include <QHash>
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-
-	class IrcServerHandler;
-
-	class RplISupportParser : public QObject
-	{
-		Q_OBJECT
-		IrcServerHandler *ISH_;
-		QMap<QString, QString> ISupportMap_;
-	public:
-		RplISupportParser (IrcServerHandler*);
-		bool ParseISupportReply (const QString&);
-		QMap<QString, QString> GetISupportMap () const;
-	private:
-		void ConvertFromStdMapToQMap (const std::map<std::string, std::string>&);
-	};
+	std::optional<QHash<QString, QString>> ParseISupportReply (const QString&);
 }
-}
-}
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_RPLISUPPORTPARSER_H

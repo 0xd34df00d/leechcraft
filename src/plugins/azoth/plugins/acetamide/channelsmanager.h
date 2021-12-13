@@ -126,7 +126,7 @@ namespace LC::Azoth::Acetamide
 
 		void CTCPRequest (const QStringList& cmd, const QString& channel);
 
-		QMap<QString, QString> GetISupport () const;
+		QHash<QString, QString> GetISupport () const;
 
 		void SetPrivateChat (const QString& nick) const;
 

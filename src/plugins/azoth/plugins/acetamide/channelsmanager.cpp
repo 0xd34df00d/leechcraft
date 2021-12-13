@@ -469,7 +469,7 @@ namespace LC::Azoth::Acetamide
 		ISH_->CTCPRequst (cmd);
 	}
 
-	QMap<QString, QString> ChannelsManager::GetISupport () const
+	QHash<QString, QString> ChannelsManager::GetISupport () const
 	{
 		return ISH_->GetISupport ();
 	}

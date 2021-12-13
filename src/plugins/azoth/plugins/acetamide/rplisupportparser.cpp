@@ -7,28 +7,28 @@
  **********************************************************************/
 
 #include "rplisupportparser.h"
+#include <map>
 #include <boost/spirit/include/classic_core.hpp>
 #include <boost/spirit/include/classic_loops.hpp>
-#include <boost/spirit/include/classic_push_back_actor.hpp>
 #include <boost/spirit/include/classic_insert_at_actor.hpp>
-#include "ircserverhandler.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	using namespace boost::spirit::classic;
-
-	RplISupportParser::RplISupportParser (IrcServerHandler *ish)
-	: QObject (ish)
-	, ISH_ (ish)
+	namespace
 	{
+		auto Convert (const std::map<std::string, std::string>& map)
+		{
+			QHash<QString, QString> result;
+			for (const auto& [key, val] : map)
+				result [QString::fromStdString (key)] = QString::fromStdString (val);
+			return result;
+		}
 	}
 
-	bool RplISupportParser::ParseISupportReply (const QString& reply)
+	std::optional<QHash<QString, QString>> ParseISupportReply (const QString& reply)
 	{
+		using namespace boost::spirit::classic;
+
 		std::string param;
 		std::string val;
 		std::map<std::string, std::string> stringParams;
@@ -51,31 +51,8 @@ namespace Acetamide
 						>> ch_p (' ')) >>
 						str_p (":are supported") >> *(alnum_p | punct_p | blank_p);
 
-		bool res = parse (reply.toUtf8 ().constData (), isuppport).full;
-		if (!res)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "input string is not a valide IRC ISupport message"
-					<< reply;
-		}
-		else
-			ConvertFromStdMapToQMap (stringParams);
-
-		return res;
+		if (!parse (reply.toUtf8 ().constData (), isuppport).full)
+			return {};
+		return Convert (stringParams);
 	}
-
-	QMap<QString, QString> RplISupportParser::GetISupportMap () const
-	{
-		return ISupportMap_;
-	}
-
-	void RplISupportParser::ConvertFromStdMapToQMap (const std::map<std::string, std::string>& map)
-	{
-		for (std::map<std::string, std::string>::const_iterator it_begin = map.begin (),
-				it_end = map.end (); it_begin != it_end; ++it_begin)
-			ISupportMap_.insert (QString::fromUtf8 ((*it_begin).first.c_str ()),
-					QString::fromUtf8 ((*it_begin).second.c_str ()));
-	}
-}
-}
 }
