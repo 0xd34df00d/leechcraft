@@ -7,52 +7,37 @@
  **********************************************************************/
 
 #include "rplisupportparser.h"
-#include <map>
-#include <boost/spirit/include/classic_core.hpp>
-#include <boost/spirit/include/classic_loops.hpp>
-#include <boost/spirit/include/classic_insert_at_actor.hpp>
+#include <util/sll/qtutil.h>
 
 namespace LC::Azoth::Acetamide
 {
-	namespace
-	{
-		auto Convert (const std::map<std::string, std::string>& map)
-		{
-			QHash<QString, QString> result;
-			for (const auto& [key, val] : map)
-				result [QString::fromStdString (key)] = QString::fromStdString (val);
-			return result;
-		}
-	}
-
 	std::optional<QHash<QString, QString>> ParseISupportReply (const QString& reply)
 	{
-		using namespace boost::spirit::classic;
-
-		std::string param;
-		std::string val;
-		std::map<std::string, std::string> stringParams;
-
-		range<> ascii (char (0x01), char (0x7F));
-		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
-				'_' | '^' | '{' | '|' | '}'];
-		rule<> nickname = (alpha_p | special)
-				>> * (alnum_p | special | ch_p ('-'));
-		rule<> nick = lexeme_d [nickname];
-		rule<> value = *(alnum_p | punct_p);
-		rule<> parameter = *alnum_p;
-		rule<> token = !(ch_p ('-') [assign_a (val, "false")])
-				>> parameter[assign_a (param)]
-				>> !(ch_p ('=') >> value [assign_a (val)]);
-		rule<> isuppport = nick >>
-				ch_p (' ') >>
-				*(eps_p[assign_a (val, "true")]
-						>> token[insert_at_a (stringParams, param, val)]
-						>> ch_p (' ')) >>
-						str_p (":are supported") >> *(alnum_p | punct_p | blank_p);
-
-		if (!parse (reply.toUtf8 ().constData (), isuppport).full)
+		const auto firstSpace = reply.indexOf (' ');
+		if (firstSpace < 0)
 			return {};
-		return Convert (stringParams);
+
+		const auto& withoutNick = reply.midRef (firstSpace + 1);
+		const auto endMarker = u" :are supported by this server"_qsv;
+		if (!withoutNick.endsWith (endMarker))
+			return {};
+
+		const auto& features = withoutNick.chopped (static_cast<int> (endMarker.size ()));
+
+		QHash<QString, QString> result;
+		for (const auto& feature : features.split (' ', Qt::SkipEmptyParts))
+		{
+			const bool isNegated = feature [0] == '-';
+			const auto eqPos = feature.indexOf ('=');
+
+			auto& featureVal = result [feature.left (eqPos).toString ()];
+			if (isNegated)
+				featureVal = "false"_ql;
+			else if (eqPos < 0)
+				featureVal = "true"_ql;
+			else
+				featureVal = feature.mid (eqPos + 1).toString ();
+		}
+		return result;
 	}
 }
