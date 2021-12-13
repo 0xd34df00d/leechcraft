@@ -30,26 +30,17 @@ namespace Acetamide
 
 		QPointer<IrcServerCLEntry> ParentEntry_;
 		QString Message_;
-		QDateTime Datetime_;
-		Direction Direction_;
-		QString FromChID_;
+		QDateTime Datetime_ = QDateTime::currentDateTime ();
 		QString FromVariant_;
-		Type Type_;
-		SubType SubType_;
 	public:
-		ServerCommandMessage (const QString&, IrcServerCLEntry*);
-		ServerCommandMessage (const QString&, Direction,
-				IrcServerCLEntry*,
-				Type,
-				SubType);
+		ServerCommandMessage (QString, IrcServerCLEntry*);
+
 		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
 		Type GetMessageType () const;
-		void SetMessageType (IMessage::Type);
 		SubType GetMessageSubType () const;
-		void SetMessageSubType (IMessage::SubType);
 		/** Since it's outgoing message, the other part
 		 * always equals to the room entry.
 		 */

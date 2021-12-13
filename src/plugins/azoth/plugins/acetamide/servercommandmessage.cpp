@@ -18,28 +18,11 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ServerCommandMessage::ServerCommandMessage (const QString& msg,
+	ServerCommandMessage::ServerCommandMessage (QString msg,
 			IrcServerCLEntry *entry)
-	: QObject (entry)
-	, ParentEntry_ (entry)
-	, Message_ (msg)
-	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (Direction::Out)
-	, Type_ (Type::MUCMessage)
-	, SubType_ (SubType::Other)
-	{
-	}
-
-	ServerCommandMessage::ServerCommandMessage (const QString& msg,
-			IMessage::Direction dir, IrcServerCLEntry *entry,
-			IMessage::Type mtype, IMessage::SubType mstype)
-	: QObject (entry)
-	, ParentEntry_ (entry)
-	, Message_ (msg)
-	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (dir)
-	, Type_ (mtype)
-	, SubType_ (mstype)
+	: QObject { entry }
+	, ParentEntry_ { entry }
+	, Message_ { std::move (msg) }
 	{
 	}
 
@@ -53,8 +36,7 @@ namespace Acetamide
 		if (!ParentEntry_)
 			return;
 
-		ParentEntry_->GetIrcServerHandler ()->
-				SendMessage2Server (Message_.split (' '));
+		ParentEntry_->GetIrcServerHandler ()->SendMessage2Server (Message_.split (' '));
 	}
 
 	void ServerCommandMessage::Store ()
@@ -65,28 +47,17 @@ namespace Acetamide
 
 	IMessage::Direction ServerCommandMessage::GetDirection () const
 	{
-		return Direction_;
+		return Direction::Out;
 	}
 
 	IMessage::Type ServerCommandMessage::GetMessageType () const
 	{
-		return Type_;
-	}
-
-	void ServerCommandMessage::SetMessageType (IMessage::Type t)
-	{
-		Type_ = t;
+		return Type::MUCMessage;
 	}
 
 	IMessage::SubType ServerCommandMessage::GetMessageSubType () const
 	{
-		return SubType_;
-	}
-
-	void ServerCommandMessage::SetMessageSubType
-			(IMessage::SubType type)
-	{
-		SubType_ = type;
+		return SubType::Other;
 	}
 
 	QObject* ServerCommandMessage::OtherPart () const
