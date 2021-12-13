@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "ircjoingroupchat.h"
+#include <util/sll/qtutil.h>
 #include <QComboBox>
 #include <QTextCodec>
 #include <QValidator>
@@ -97,7 +98,7 @@ namespace LC::Azoth::Acetamide
 
 	QVariantMap IrcJoinGroupChat::GetIdentifyingData () const
 	{
-		const auto& name = QStringLiteral ("%1 on %2@%3:%4")
+		const auto& name = u"%1 on %2@%3:%4"_qsv
 				.arg (GetNickname (),
 						GetChannel (),
 						GetServer ())

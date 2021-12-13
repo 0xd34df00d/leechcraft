@@ -274,7 +274,7 @@ namespace LC::Azoth::Acetamide
 	{
 		const auto& channelOpts = ICH_->GetChannelOptions ();
 		const auto& serverOpts = ICH_->GetChannelsManager ()->GetServerOptions ();
-		const auto& name = QStringLiteral ("%1 on %2@%3:%4")
+		const auto& name = u"%1 on %2@%3:%4"_qsv
 				.arg (GetNick (),
 					  channelOpts.ChannelName_,
 					  channelOpts.ServerName_)

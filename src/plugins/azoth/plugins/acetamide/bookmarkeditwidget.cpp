@@ -9,6 +9,7 @@
 #include "bookmarkeditwidget.h"
 #include <QTextCodec>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "localtypes.h"
 
 namespace LC::Azoth::Acetamide
@@ -24,7 +25,7 @@ namespace LC::Azoth::Acetamide
 
 	QVariantMap BookmarkEditWidget::GetIdentifyingData () const
 	{
-		const auto& name = QStringLiteral ("%1@%2 (%3)")
+		const auto& name = u"%1@%2 (%3)"_qsv
 				.arg (Ui_.Channel_->text (),
 					  Ui_.Server_->text (),
 					  Ui_.Nickname_->text ());

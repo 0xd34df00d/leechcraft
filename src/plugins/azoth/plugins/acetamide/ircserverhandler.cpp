@@ -532,7 +532,7 @@ namespace LC::Azoth::Acetamide
 			show (tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_));
 
 		if (!msg.Channels_.isEmpty ())
-			show (tr ("%1 is on channels: %2").arg (msg.Nick_, msg.Channels_.join (QStringLiteral (", "))));
+			show (tr ("%1 is on channels: %2").arg (msg.Nick_, msg.Channels_.join (u", "_qsv)));
 
 		if (!msg.ServerName_.isEmpty () &&
 				!msg.ServerCountry_.isEmpty ())
