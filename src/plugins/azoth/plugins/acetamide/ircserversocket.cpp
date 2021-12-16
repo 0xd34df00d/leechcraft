@@ -41,7 +41,7 @@ namespace LC::Azoth::Acetamide
 			connect (socket.get (),
 					qOverload<const QList<QSslError>&> (&QSslSocket::sslErrors),
 					this,
-					&IrcServerSocket::handleSslErrors);
+					&IrcServerSocket::HandleSslErrors);
 		}
 		else
 			Socket_ = std::make_shared<QTcpSocket> ();
@@ -94,7 +94,9 @@ namespace LC::Azoth::Acetamide
 						return;
 					}
 					emit retriableSocketError (error, socket->errorString ());
-					RetryTimer_->start ((2 * RetriesCount_ + 1) * 1000);
+
+					using namespace std::chrono_literals;
+					RetryTimer_->start (1s * (2 * RetriesCount_ + 1));
 				});
 	}
 
@@ -165,7 +167,7 @@ namespace LC::Azoth::Acetamide
 				<< "`; known codecs:"
 				<< QTextCodec::availableCodecs ();
 
-		const auto& notify = Util::MakeNotification ("Azoth Acetamide",
+		const auto& notify = Util::MakeNotification (Lits::AzothAcetamide,
 				tr ("Unknown encoding %1.")
 					.arg ("<em>" + encoding + "</em>"),
 				Priority::Critical);
@@ -210,7 +212,7 @@ namespace LC::Azoth::Acetamide
 		};
 	}
 
-	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
+	void IrcServerSocket::HandleSslErrors (const QList<QSslError>& errors)
 	{
 		Util::Visit (Socket_,
 				[&] (const Ssl_ptr& s) { emit sslErrors (errors, std::make_shared<SslErrorsReaction> (s)); },

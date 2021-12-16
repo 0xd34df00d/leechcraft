@@ -36,7 +36,7 @@ namespace LC::Azoth::Acetamide
 		QTextCodec *LastCodec_ = nullptr;
 
 		QString Host_;
-		int Port_;
+		int Port_ = 0;
 		int RetriesCount_ = 0;
 		QTimer * const RetryTimer_;
 	public:
@@ -49,10 +49,8 @@ namespace LC::Azoth::Acetamide
 		void Close ();
 	private:
 		QTextCodec* GetCodec ();
-
 		QTcpSocket* GetSocketPtr () const;
-	private slots:
-		void handleSslErrors (const QList<QSslError>& errors);
+		void HandleSslErrors (const QList<QSslError>& errors);
 	signals:
 		void connected ();
 		void disconnected ();

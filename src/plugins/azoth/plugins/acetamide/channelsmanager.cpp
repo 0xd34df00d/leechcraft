@@ -178,11 +178,6 @@ namespace LC::Azoth::Acetamide
 				ich->ChangeNickname (oldNick, newNick);
 	}
 
-	namespace
-	{
-		const auto Names = QStringLiteral ("names");
-	}
-
 	void ChannelsManager::GotNames (const QString& channel, const QStringList& participants)
 	{
 		if (const auto handler = GetChannelHandler (channel);

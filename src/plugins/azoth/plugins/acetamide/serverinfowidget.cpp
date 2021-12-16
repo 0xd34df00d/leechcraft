@@ -7,16 +7,12 @@
  **********************************************************************/
 
 #include "serverinfowidget.h"
-#include <QtDebug>
 #include <util/sll/functional.h>
 #include <util/sll/qtutil.h>
 #include "ircserverclentry.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+
+namespace LC::Azoth::Acetamide
 {
 	ServerInfoWidget::ServerInfoWidget (IrcServerCLEntry *isEntry , QWidget *parent)
 	: QWidget (parent)
@@ -76,7 +72,7 @@ namespace Acetamide
 	{
 		bool GetBoolFromString (const QString& str)
 		{
-			return str == "true";
+			return str == "true"_ql;
 		}
 	}
 
@@ -135,6 +131,4 @@ namespace Acetamide
 	void ServerInfoWidget::accept ()
 	{
 	}
-}
-}
 }

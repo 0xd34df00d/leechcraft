@@ -17,8 +17,8 @@ namespace LC::Azoth::Acetamide
 {
 	class ChannelCLEntry;
 
-	class ChannelPublicMessage : public QObject
-								, public IMessage
+	class ChannelPublicMessage final : public QObject
+									 , public IMessage
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage)

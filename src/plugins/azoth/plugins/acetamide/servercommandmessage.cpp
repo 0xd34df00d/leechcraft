@@ -12,11 +12,7 @@
 #include "ircserverclentry.h"
 #include "ircserverhandler.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	ServerCommandMessage::ServerCommandMessage (QString msg,
 			IrcServerCLEntry *entry)
@@ -94,6 +90,4 @@ namespace Acetamide
 	{
 		Datetime_ = dt;
 	}
-}
-}
 }

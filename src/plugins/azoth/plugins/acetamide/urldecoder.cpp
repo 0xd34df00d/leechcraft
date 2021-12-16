@@ -11,7 +11,6 @@
 #include <boost/spirit/include/classic_loops.hpp>
 #include <boost/spirit/include/classic_utility.hpp>
 #include <QUrl>
-#include <QtDebug>
 
 namespace LC::Azoth::Acetamide
 {

@@ -83,7 +83,7 @@ namespace LC::Azoth::Acetamide
 	QByteArray UserCommandManager::VerifyMessage (const QString& msg, const QString& channelName) const
 	{
 		const int pos = msg.indexOf (' ');
-		const auto cmd = (msg.startsWith ('/') ? msg.mid (1, pos) : msg.left (pos))
+		auto cmd = (msg.startsWith ('/') ? msg.midRef (1, pos) : msg.leftRef (pos))
 				.toUtf8 ()
 				.trimmed ()
 				.toLower ();

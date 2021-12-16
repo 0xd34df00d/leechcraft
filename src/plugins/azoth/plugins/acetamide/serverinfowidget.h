@@ -13,11 +13,7 @@
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_serverinfowidget.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class IrcServerCLEntry;
 
@@ -46,6 +42,4 @@ namespace Acetamide
 	signals:
 		void dataReady ();
 	};
-}
-}
 }

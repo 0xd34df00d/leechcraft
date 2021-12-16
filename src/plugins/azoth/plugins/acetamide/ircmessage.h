@@ -22,8 +22,8 @@ namespace LC::Azoth::Acetamide
 
 	class ClientConnection;
 
-	class IrcMessage : public QObject
-					 , public IMessage
+	class IrcMessage final : public QObject
+						   , public IMessage
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage)
