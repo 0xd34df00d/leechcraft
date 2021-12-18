@@ -63,7 +63,6 @@ namespace LC::Azoth::Acetamide
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget () override;
 		void AcceptConfiguration (QWidget*) override;
-		QHash<QString, QString> GetISupport () const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&) override;
 		void mucSubjectChanged (const QString&) override;

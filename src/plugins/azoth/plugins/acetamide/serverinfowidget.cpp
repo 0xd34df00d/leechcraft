@@ -10,7 +10,7 @@
 #include <util/sll/functional.h>
 #include <util/sll/qtutil.h>
 #include "ircserverclentry.h"
-
+#include "ircserverhandler.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -50,11 +50,11 @@ namespace LC::Azoth::Acetamide
 
 	void ServerInfoWidget::SetISupport ()
 	{
-		for (const auto& pair : Util::Stlize (ISCLEntry_->GetISupport ()))
+		for (const auto& pair : Util::Stlize (ISCLEntry_->GetIrcServerHandler ()->GetISupport ()))
 		{
 			const auto& key = pair.first.toLower ();
 			if (Parameter2Command_.contains (key))
-				Parameter2Command_ [key] (pair.second);
+				Parameter2Command_ [key] (pair.second.toString ());
 		}
 	}
 

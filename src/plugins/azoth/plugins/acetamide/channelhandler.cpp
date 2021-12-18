@@ -179,7 +179,7 @@ namespace LC::Azoth::Acetamide
 		bool hasRole = false;
 		QChar roleSign;
 
-		const auto& prefixList = CM_->GetISupport ().value (Lits::PREFIX).split (')');
+		const auto& prefixList = CM_->GetISupport ().value ("PREFIX").toByteArray ().split (')');
 		const int id = prefixList.value (1).indexOf (nick [0]);
 		if (id != -1)
 		{

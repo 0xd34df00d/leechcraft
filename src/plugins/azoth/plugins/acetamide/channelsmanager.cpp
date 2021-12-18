@@ -394,7 +394,7 @@ namespace LC::Azoth::Acetamide
 				handler->SetBlockOutsideMessagesMode (action);
 				break;
 			case 'q':
-				if (ISH_->GetISupport ().value (Lits::PREFIX).contains ('q'))
+				if (ISH_->GetISupport ().value ("PREFIX").toByteArray ().contains ('q'))
 					handleRole (ChannelRole::Owner);
 				break;
 			case 'p':
@@ -464,7 +464,7 @@ namespace LC::Azoth::Acetamide
 		ISH_->CTCPRequst (cmd);
 	}
 
-	QHash<QString, QString> ChannelsManager::GetISupport () const
+	QHash<QByteArray, QVariant> ChannelsManager::GetISupport () const
 	{
 		return ISH_->GetISupport ();
 	}

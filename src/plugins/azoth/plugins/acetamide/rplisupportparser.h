@@ -11,7 +11,9 @@
 #include <optional>
 #include <QHash>
 
+class QVariant;
+
 namespace LC::Azoth::Acetamide
 {
-	std::optional<QHash<QString, QString>> ParseISupportReply (const QString&);
+	std::optional<QHash<QByteArray, QVariant>> ParseISupportReply (const QString&);
 }

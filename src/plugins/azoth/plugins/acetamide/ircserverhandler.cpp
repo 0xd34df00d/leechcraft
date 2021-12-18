@@ -948,7 +948,7 @@ namespace LC::Azoth::Acetamide
 			ISupport_ = *res;
 	}
 
-	QHash<QString, QString> IrcServerHandler::GetISupport () const
+	QHash<QByteArray, QVariant> IrcServerHandler::GetISupport () const
 	{
 		return ISupport_;
 	}

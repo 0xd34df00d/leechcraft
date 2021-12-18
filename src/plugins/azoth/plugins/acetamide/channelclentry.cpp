@@ -69,11 +69,11 @@ namespace LC::Azoth::Acetamide
 		}
 	{
 		const auto& iSupport = ICH_->GetChannelsManager ()->GetISupport ();
-		const auto& roles = iSupport [Lits::PREFIX].split (')').value (0);
+		const auto& roles = iSupport ["PREFIX"].toByteArray ().split (')').value (0);
 		for (int i = roles.length () - 1; i >= 1; --i)
 		{
-			auto role = ChannelRole::Participant;
-			switch (roles.at (i).toLatin1 ())
+			ChannelRole role {};
+			switch (roles.at (i))
 			{
 			case 'v':
 				role = ChannelRole::Voiced;

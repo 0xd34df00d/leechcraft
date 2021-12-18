@@ -58,7 +58,7 @@ namespace Acetamide
 		ServerOptions ServerOptions_;
 		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
-		QHash<QString, QString> ISupport_;
+		QHash<QByteArray, QVariant> ISupport_;
 
 		QHash<QString, int> SpyWho_;
 		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
@@ -189,7 +189,7 @@ namespace Acetamide
 		void ParseUserMode (const QString&, const QString&);
 
 		void ParserISupport (const QString&);
-		QHash<QString, QString> GetISupport () const;
+		QHash<QByteArray, QVariant> GetISupport () const;
 
 		void RequestWho (const QString&);
 		void RequestWhoIs (const QString&);
