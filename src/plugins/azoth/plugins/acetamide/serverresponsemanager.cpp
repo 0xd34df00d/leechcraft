@@ -327,74 +327,41 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotCTCPReply (const IrcMessageOptions& opts)
 	{
-		if (opts.Parameters_.isEmpty ())
+		if (opts.Parameters_.isEmpty () || opts.Message_.isEmpty ())
 			return;
 
-		if (opts.Message_.isEmpty ())
+		const auto& ctcpArgs = opts.Message_.midRef (1, opts.Message_.length () - 2);
+		if (ctcpArgs.isEmpty ())
 			return;
 
-		QStringList ctcpList = opts.Message_.mid (1, opts.Message_.length () - 2).split (' ');
-		if (ctcpList.isEmpty ())
-			return;
+		const auto commandSepPos = ctcpArgs.indexOf (' ');
+		const auto& command = ctcpArgs.left (commandSepPos).toUtf8 ().toUpper ();
 
-		QString cmd;
-		QString outputMessage;
-		const QString& lcVer = GetProxyHolder ()->GetVersion ();
-		const QString version = QString ("LeechCraft %1 (Acetamide 2.0)").arg (lcVer);
-		const QDateTime currentDT = QDateTime::currentDateTime ();
-		const QString firstPartOutput = QString ("LeechCraft %1 (Acetamide 2.0) - "
-					"https://leechcraft.org")
-				.arg (lcVer);
-		const QString target = QString::fromStdString (opts.Parameters_.last ());
+		const auto lcVer = [] { return GetProxyHolder ()->GetVersion (); };
+		const auto fullVersion = [&] { return u"LeechCraft %1 (Acetamide 2.0) - https://leechcraft.org"_qsv.arg (lcVer ()); };
 
-		if (ctcpList.at (0).toLower () == "version")
+		const auto sendReply = [&] (const QString& body)
 		{
-			cmd = QString ("%1 %2%3").arg ("\001VERSION",
-					version, QChar ('\001'));
-			outputMessage = tr ("Received request %1 from %2, sending response")
-					.arg ("VERSION", opts.Nick_);
-		}
-		else if (ctcpList.at (0).toLower () == "ping")
-		{
-			cmd = QString ("%1 %2%3").arg ("\001PING ",
-					QString::number (currentDT.toSecsSinceEpoch ()), QChar ('\001'));
-			outputMessage = tr ("Received request %1 from %2, sending response")
-					.arg ("PING", opts.Nick_);
-		}
-		else if (ctcpList.at (0).toLower () == "time")
-		{
-			cmd = QString ("%1 %2%3").arg ("\001TIME",
-					currentDT.toString ("ddd MMM dd hh:mm:ss yyyy"),
-					QChar ('\001'));
-			outputMessage = tr ("Received request %1 from %2, sending response")
-					.arg ("TIME", opts.Nick_);
-		}
-		else if (ctcpList.at (0).toLower () == "source")
-		{
-			cmd = QString ("%1 %2 %3").arg ("\001SOURCE", firstPartOutput,
-					QChar ('\001'));
-			outputMessage = tr ("Received request %1 from %2, sending response")
-					.arg ("SOURCE", opts.Nick_);
-		}
-		else if (ctcpList.at (0).toLower () == "clientinfo")
-		{
-			cmd = QString ("%1 %2 - %3 %4 %5").arg ("\001CLIENTINFO",
-					firstPartOutput, "Supported tags:",
-					"VERSION PING TIME SOURCE CLIENTINFO", QChar ('\001'));
-			outputMessage = tr ("Received request %1 from %2, sending response")
-					.arg ("CLIENTINFO", opts.Nick_);
-		}
-		else if (ctcpList.at (0).toLower () == "action")
-		{
-			QString mess = "/me " + QStringList (ctcpList.mid (1)).join (" ");
-			ISH_->IncomingMessage (opts.Nick_, target, mess);
-			return;
-		}
+			ISH_->CTCPReply (opts.Nick_,
+					'\001' + command + ' ' + body + '\001',
+					tr ("Received request %1 from %2, sending response")
+							.arg (command, opts.Nick_));
+		};
 
-		if (outputMessage.isEmpty ())
-			return;
-
-		ISH_->CTCPReply (opts.Nick_, cmd, outputMessage);
+		if (command == "VERSION")
+			sendReply (u"LeechCraft %1 (Acetamide 2.0)"_qsv.arg (lcVer ()));
+		else if (command == "PING")
+			sendReply (QString::number (QDateTime::currentDateTime ().toSecsSinceEpoch ()));
+		else if (command == "TIME")
+			sendReply (QDateTime::currentDateTime ().toString (u"ddd MMM dd hh:mm:ss yyyy"_qsv));
+		else if (command == "SOURCE")
+			sendReply (fullVersion ());
+		else if (command == "CLIENTINFO")
+			sendReply (fullVersion () + " - Supported tags: VERSION PING TIME SOURCE CLIENTINFO");
+		else if (command == "ACTION" && commandSepPos > 0)
+			ISH_->IncomingMessage (opts.Nick_,
+					QString::fromStdString (opts.Parameters_.last ()),
+					QStringLiteral ("/me ") + ctcpArgs.mid (commandSepPos + 1));
 	}
 
 	void ServerResponseManager::GotCTCPRequestResult (const IrcMessageOptions& opts)
