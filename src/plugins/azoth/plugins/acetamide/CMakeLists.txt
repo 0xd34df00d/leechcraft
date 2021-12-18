@@ -38,7 +38,6 @@ LC_DEFINE_PLUGIN (
 		serverinfowidget.cpp
 		serverparticipantentry.cpp
 		serverresponsemanager.cpp
-		sortfilterproxymodel.cpp
 		urldecoder.cpp
 		usercommandmanager.cpp
 		xmlsettingsmanager.cpp
@@ -58,7 +57,6 @@ if (ENABLE_AZOTH_ACETAMIDE_TESTS)
 		target_link_libraries (${_fullExecName} ${LEECHCRAFT_LIBRARIES})
 		add_test (${_testName} ${_fullExecName})
 		FindQtLibs (${_fullExecName} Test)
-		add_dependencies (${_fullExecName} leechcraft_azoth_acetamide)
 	endfunction ()
 
 	AddAzothAcetamideTest (urldecodertest tests/urldecodertest.cpp AzothAcetamideUrlDecoderTest)

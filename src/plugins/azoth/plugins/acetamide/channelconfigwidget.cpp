@@ -8,21 +8,22 @@
 
 #include "channelconfigwidget.h"
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QtDebug>
-#include "sortfilterproxymodel.h"
 #include "channelclentry.h"
 
 namespace LC::Azoth::Acetamide
 {
+
 	ChannelConfigWidget::ChannelConfigWidget (ChannelCLEntry *clentry, QWidget *parent)
 	: QWidget { parent }
 	, ChannelEntry_ { clentry }
 	, BanModel_ { new QStandardItemModel (this) }
 	, ExceptModel_ { new QStandardItemModel (this) }
 	, InviteModel_ { new QStandardItemModel (this) }
-	, BanFilterModel_ { new SortFilterProxyModel (this) }
-	, ExceptFilterModel_ { new SortFilterProxyModel (this) }
-	, InviteFilterModel_ { new SortFilterProxyModel (this) }
+	, BanFilterModel_ { new QSortFilterProxyModel (this) }
+	, ExceptFilterModel_ { new QSortFilterProxyModel (this) }
+	, InviteFilterModel_ { new QSortFilterProxyModel (this) }
 	{
 		Ui_.setupUi (this);
 
@@ -66,8 +67,14 @@ namespace LC::Azoth::Acetamide
 		Ui_.ExceptList_->setModel (ExceptFilterModel_);
 		Ui_.InviteList_->setModel (InviteFilterModel_);
 		BanFilterModel_->setSourceModel (BanModel_);
+		BanFilterModel_->setDynamicSortFilter (true);
+		BanFilterModel_->setFilterKeyColumn (-1);
 		ExceptFilterModel_->setSourceModel (ExceptModel_);
+		ExceptFilterModel_->setDynamicSortFilter (true);
+		ExceptFilterModel_->setFilterKeyColumn (-1);
 		InviteFilterModel_->setSourceModel (InviteModel_);
+		InviteFilterModel_->setDynamicSortFilter (true);
+		InviteFilterModel_->setFilterKeyColumn (-1);
 
 		ChannelMode_ = ChannelEntry_->GetChannelModes ();
 		HandleNewChannelModes (ChannelMode_);

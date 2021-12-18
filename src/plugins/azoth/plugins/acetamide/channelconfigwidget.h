@@ -15,11 +15,11 @@
 #include "localtypes.h"
 
 class QStandardItemModel;
+class QSortFilterProxyModel;
 
 namespace LC::Azoth::Acetamide
 {
 	class ChannelCLEntry;
-	class SortFilterProxyModel;
 
 	class ChannelConfigWidget : public QWidget
 								, public IMUCConfigWidget
@@ -33,9 +33,9 @@ namespace LC::Azoth::Acetamide
 		QStandardItemModel * const BanModel_;
 		QStandardItemModel * const ExceptModel_;
 		QStandardItemModel * const InviteModel_;
-		SortFilterProxyModel * const BanFilterModel_;
-		SortFilterProxyModel * const ExceptFilterModel_;
-		SortFilterProxyModel * const InviteFilterModel_;
+		QSortFilterProxyModel * const BanFilterModel_;
+		QSortFilterProxyModel * const ExceptFilterModel_;
+		QSortFilterProxyModel * const InviteFilterModel_;
 	public:
 		explicit ChannelConfigWidget (ChannelCLEntry*, QWidget* = nullptr);
 	public slots:
