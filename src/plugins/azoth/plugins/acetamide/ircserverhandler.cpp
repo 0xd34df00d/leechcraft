@@ -944,8 +944,13 @@ namespace LC::Azoth::Acetamide
 
 	void IrcServerHandler::ParserISupport (const QString& msg)
 	{
-		if (const auto res = ParseISupportReply (msg))
-			ISupport_ = *res;
+		if (auto res = ParseISupportReply (msg))
+		{
+			ISupport_.reserve (ISupport_.size () + res->size ());
+
+			for (auto&& [key, value] : Util::Stlize (*res))
+				ISupport_ [key] = std::move (value);
+		}
 	}
 
 	QHash<QByteArray, QVariant> IrcServerHandler::GetISupport () const
