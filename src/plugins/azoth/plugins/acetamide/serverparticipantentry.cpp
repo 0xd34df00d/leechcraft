@@ -14,17 +14,12 @@
 #include "ircmessage.h"
 #include "ircserverhandler.h"
 
-
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	ServerParticipantEntry::ServerParticipantEntry (const QString& nick,
+	ServerParticipantEntry::ServerParticipantEntry (QString nick,
 			IrcServerHandler *ish, IrcAccount *acc)
-	: IrcParticipantEntry (nick, acc)
-	, ISH_ (ish)
+	: IrcParticipantEntry { std::move (nick), acc }
+	, ISH_ { ish }
 	{
 		ServerID_ = ish->GetServerID ();
 	}
@@ -57,7 +52,7 @@ namespace Acetamide
 	IMessage* ServerParticipantEntry::CreateMessage (IMessage::Type,
 			const QString&, const QString& body)
 	{
- 		IrcMessage *message = new IrcMessage (IMessage::Type::ChatMessage,
+ 		const auto message = new IrcMessage (IMessage::Type::ChatMessage,
 				IMessage::Direction::Out,
 				ISH_->GetServerID (),
 				Nick_,
@@ -68,13 +63,4 @@ namespace Acetamide
 
 		return message;
 	}
-
-	void ServerParticipantEntry::SetMessageHistory (QObjectList messages)
-	{
-		for (const auto message : messages)
-			AllMessages_ << qobject_cast<IMessage*> (message);
-	}
-
-};
-};
-};
+}

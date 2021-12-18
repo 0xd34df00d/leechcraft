@@ -12,23 +12,21 @@
 #include "ircaccount.h"
 #include "clientconnection.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	IrcParticipantEntry::IrcParticipantEntry (const QString& nick, IrcAccount *account)
-	: EntryBase (account)
-	, Nick_ (nick)
-	, IsPrivateChat_ (false)
+	IrcParticipantEntry::IrcParticipantEntry (QString nick, IrcAccount *account)
+	: EntryBase { account }
+	, Nick_ { std::move (nick) }
 	{
-		QAction *closePrivate = new QAction ("Close chat", this);
+		const auto closePrivate = new QAction { tr ("Close chat"), this };
 
 		connect (closePrivate,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleClosePrivate ()));
+				&QAction::triggered,
+				[this]
+				{
+					IsPrivateChat_ = false;
+					Account_->GetClientConnection ()->ClosePrivateChat (ServerID_, Nick_);
+				});
 
 		Actions_ << closePrivate;
 	}
@@ -75,7 +73,7 @@ namespace Acetamide
 
 	QStringList IrcParticipantEntry::Variants () const
 	{
-		return QStringList (QString ());
+		return { {} };
 	}
 
 	QString IrcParticipantEntry::GetUserName () const
@@ -122,13 +120,4 @@ namespace Acetamide
 	{
 		IsPrivateChat_ = isPrivate;
 	}
-
-	void IrcParticipantEntry::handleClosePrivate ()
-	{
-		IsPrivateChat_ = false;
-		Account_->GetClientConnection ()->ClosePrivateChat (ServerID_, Nick_);
-	}
-
-}
-}
 }

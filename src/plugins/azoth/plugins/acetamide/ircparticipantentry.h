@@ -6,44 +6,39 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARTICIPANTENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARTICIPANTENTRY_H
+#pragma once
 
+#include <QCoreApplication>
 #include "entrybase.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-
 	class IrcAccount;
 
 	class IrcParticipantEntry : public EntryBase
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::IrcParticipantEntry)
 	protected:
 		QString Nick_;
 		QString UserName_;
 		QString HostName_;
 		QString RealName_;
 		QString ServerID_;
-		bool IsPrivateChat_;
+		bool IsPrivateChat_ = false;
 	public:
-		IrcParticipantEntry (const QString&, IrcAccount* = 0);
+		explicit IrcParticipantEntry (QString, IrcAccount* = nullptr);
 
-		IAccount* GetParentAccount () const;
+		IAccount* GetParentAccount () const override;
 
-		ICLEntry::Features GetEntryFeatures () const;
-		ICLEntry::EntryType GetEntryType () const;
+		ICLEntry::Features GetEntryFeatures () const override;
+		ICLEntry::EntryType GetEntryType () const override;
 
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
+		QString GetEntryName () const override;
+		void SetEntryName (const QString&) override;
 
-		virtual QString GetEntryID () const = 0;
+		QString GetEntryID () const override = 0;
 
-		QStringList Variants () const;
+		QStringList Variants () const override;
 
 		QString GetUserName () const;
 		void SetUserName (const QString& user);
@@ -58,11 +53,5 @@ namespace Acetamide
 
 		bool IsPrivateChat () const;
 		void SetPrivateChat (bool isPrivate);
-	private slots:
-		void handleClosePrivate ();
 	};
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARTICIPANTENTRY_H

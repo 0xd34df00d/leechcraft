@@ -974,7 +974,7 @@ namespace LC::Azoth::Acetamide
 			emit Account_->removedCLItems ({ entry.get () });
 
 		for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
-			if (const auto entry = qobject_cast<IrcParticipantEntry*> (entryObj))
+			if (const auto entry = dynamic_cast<IrcParticipantEntry*> (entryObj))
 				entry->SetPrivateChat (false);
 	}
 

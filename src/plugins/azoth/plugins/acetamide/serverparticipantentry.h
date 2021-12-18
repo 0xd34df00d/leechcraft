@@ -6,51 +6,36 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
+#pragma once
 
 #include <memory>
-#include <QObject>
+#include <QCoreApplication>
 #include <QStringList>
 #include "ircparticipantentry.h"
-#include "localtypes.h"
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-
 	class IrcAccount;
 	class IrcServerHandler;
 
 	class ServerParticipantEntry : public IrcParticipantEntry
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::ServerParticipantEntry)
 
-		IrcServerHandler *ISH_;
+		IrcServerHandler * const ISH_;
 	public:
-		ServerParticipantEntry (const QString&,
-				IrcServerHandler*, IrcAccount*);
+		ServerParticipantEntry (QString, IrcServerHandler*, IrcAccount*);
 
-		ICLEntry* GetParentCLEntry () const;
+		ICLEntry* GetParentCLEntry () const override;
 
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
+		QString GetEntryID () const override;
+		QString GetHumanReadableID () const override;
 
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
+		QStringList Groups () const override;
+		void SetGroups (const QStringList&) override;
 
-		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&);
-
-		void SetMessageHistory (QObjectList messages);
+		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&) override;
 	};
 
-	typedef std::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
+	using ServerParticipantEntry_ptr = std::shared_ptr<ServerParticipantEntry>;
 }
-}
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H

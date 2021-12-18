@@ -472,7 +472,7 @@ namespace LC::Azoth::Acetamide
 	void ChannelsManager::SetPrivateChat (const QString& nick) const
 	{
 		for (const auto entryObj : GetParticipantsByNick (nick))
-			if (const auto entry = qobject_cast<IrcParticipantEntry*> (entryObj))
+			if (const auto entry = dynamic_cast<IrcParticipantEntry*> (entryObj))
 				entry->SetPrivateChat (true);
 	}
 

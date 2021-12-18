@@ -63,7 +63,7 @@ namespace LC::Azoth::Acetamide
 
 	void EntryBase::ShowInfo ()
 	{
-		const auto entry = qobject_cast<IrcParticipantEntry*> (this);
+		const auto entry = dynamic_cast<IrcParticipantEntry*> (this);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
