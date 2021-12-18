@@ -548,7 +548,7 @@ namespace LC::Azoth::Acetamide
 			show (msg.Nick_ + ": " + msg.IrcOperator_);
 
 		if (!msg.LoggedName_.isEmpty ())
-			show (tr ("%1 is logged in as %2 ").arg (msg.Nick_, msg.LoggedName_));
+			show (tr ("%1 is logged in as %2").arg (msg.Nick_, msg.LoggedName_));
 
 		if (!msg.Secure_.isEmpty ())
 			show (tr ("%1 is using a secure connection").arg (msg.Nick_));

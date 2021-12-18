@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" connectslotsbyname="false">
  <class>ServerInfoWidget</class>
  <widget class="QWidget" name="ServerInfoWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>449</height>
+    <width>901</width>
+    <height>670</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Server information</string>
@@ -34,411 +40,16 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>541</width>
-            <height>396</height>
+            <width>865</width>
+            <height>601</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
            <item row="0" column="0">
-            <layout class="QFormLayout" name="formLayout">
+            <layout class="QFormLayout" name="BaseParamsLayout_">
              <property name="fieldGrowthPolicy">
               <enum>QFormLayout::ExpandingFieldsGrow</enum>
              </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="theIRCNetworkNameLabel">
-               <property name="toolTip">
-                <string>The IRC network name.</string>
-               </property>
-               <property name="text">
-                <string>NETWORK:</string>
-               </property>
-               <property name="buddy">
-                <cstring>NetworkName_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="NetworkName_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IRC network name.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: NETWORK=EFnet indicates that the client is connected  to the EFnet IRC network.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="maximumNumberOfChannelModesWithParameterAllowedPerMODECommandLabel">
-               <property name="toolTip">
-                <string>Maximum number of channel modes with parameter allowed per MODE command.</string>
-               </property>
-               <property name="text">
-                <string>MODES:</string>
-               </property>
-               <property name="wordWrap">
-                <bool>false</bool>
-               </property>
-               <property name="buddy">
-                <cstring>Modes_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLineEdit" name="Modes_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number of channel modes with parameter allowed per MODE command.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: MODES=3 indicates that 3 modes may be set with a MODE command.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="maximumNumberOfChannelsAllowedToJoinByChannelPrefixLabel">
-               <property name="toolTip">
-                <string>Maximum number of channels allowed to join by channel prefix. </string>
-               </property>
-               <property name="text">
-                <string>CHANLIMIT:</string>
-               </property>
-               <property name="wordWrap">
-                <bool>false</bool>
-               </property>
-               <property name="buddy">
-                <cstring>ChanLimit_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="ChanLimit_">
-               <property name="toolTip">
-                <string>Maximum number of channels allowed to join by channel prefix. </string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="maximumNicknameLengthLabel">
-               <property name="toolTip">
-                <string>Maximum nickname length.</string>
-               </property>
-               <property name="text">
-                <string>NICKLEN:</string>
-               </property>
-               <property name="buddy">
-                <cstring>NickLength_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QLineEdit" name="NickLength_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum nickname length.&lt;br /&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: NICKLEN=9 indicates that clients may have nicknames up to 9 characters in length.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="maximumNumberEntriesInTheListPerModeLabel">
-               <property name="toolTip">
-                <string>Maximum number entries in the list per mode. </string>
-               </property>
-               <property name="text">
-                <string>MAXLIST:</string>
-               </property>
-               <property name="buddy">
-                <cstring>MaxList_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <widget class="QLineEdit" name="MaxList_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number entries in the list per mode. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: Given &amp;quot;b:25,eI:50&amp;quot;, it would be possible to set up to 25 &amp;quot;+b&amp;quot; modes, and up to 50 of a combination of &amp;quot;+e&amp;quot; and &amp;quot;+I&amp;quot;  modes, e.g. 30 &amp;quot;+e&amp;quot; and 20 &amp;quot;+I&amp;quot; modes, making up a total of 50.] &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: MAXLIST=b:25 indicates that 25 bans may be set on a      channel at one time.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="caseMappingLabel">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Case mapping used for nick- and channel name comparing. Current possible values: &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ascii: The chars [a-z] are lowercase of [A-Z]. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;rfc1459: ascii with additional {}|~ the lowercase of []\^. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;strict-rfc1459: ascii with additional {}| the lowercase of []\. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>CASEMAPPING:</string>
-               </property>
-               <property name="buddy">
-                <cstring>CaseMapping_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QLineEdit" name="CaseMapping_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Case mapping used for nick- and channel name comparing. Current possible values: &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ascii: The chars [a-z] are lowercase of [A-Z]. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;rfc1459: ascii with additional {}|~ the lowercase of []\^. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;strict-rfc1459: ascii with additional {}| the lowercase of []\. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="QLabel" name="tOPICLENLabel">
-               <property name="toolTip">
-                <string>Maximum topic length. </string>
-               </property>
-               <property name="text">
-                <string>TOPICLEN:</string>
-               </property>
-               <property name="buddy">
-                <cstring>TopicLen_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="1">
-              <widget class="QLineEdit" name="TopicLen_">
-               <property name="toolTip">
-                <string>Maximum topic length. </string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="0">
-              <widget class="QLabel" name="kICKLENLabel">
-               <property name="toolTip">
-                <string>Maximum kick comment length. </string>
-               </property>
-               <property name="text">
-                <string>KICKLEN:</string>
-               </property>
-               <property name="buddy">
-                <cstring>KickLen_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="1">
-              <widget class="QLineEdit" name="KickLen_">
-               <property name="toolTip">
-                <string>Maximum kick comment length. </string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="0">
-              <widget class="QLabel" name="cHANNELLENLabel">
-               <property name="toolTip">
-                <string>Maximum channel name length.</string>
-               </property>
-               <property name="text">
-                <string>CHANNELLEN:</string>
-               </property>
-               <property name="buddy">
-                <cstring>ChannelLen_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="1">
-              <widget class="QLineEdit" name="ChannelLen_">
-               <property name="toolTip">
-                <string>Maximum channel name length.</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="0">
-              <widget class="QLabel" name="iDCHANLabel">
-               <property name="toolTip">
-                <string>The IDCHAN parameter indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.</string>
-               </property>
-               <property name="text">
-                <string>IDCHAN:</string>
-               </property>
-               <property name="buddy">
-                <cstring>IdChan_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="1">
-              <widget class="QLineEdit" name="IdChan_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IDCHAN parameter indicates the existence of &amp;quot;safe&amp;quot; channels as described in RFC 2811, and the length of the &amp;quot;id&amp;quot; portion of those channel names.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &amp;quot;!&amp;quot; channels; for example  &amp;quot;!JNB4Sircd&amp;quot;, where &amp;quot;JNB4S&amp;quot; is the ID and &amp;quot;ircd&amp;quot; is the channel's short name.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="0">
-              <widget class="QLabel" name="sTATUSMSGLabel">
-               <property name="toolTip">
-                <string>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.</string>
-               </property>
-               <property name="text">
-                <string>STATUSMSG:</string>
-               </property>
-               <property name="buddy">
-                <cstring>StatusMsg_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="1">
-              <widget class="QLineEdit" name="StatusMsg_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.&lt;/span&gt;&lt;/pre&gt;
-&lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: NOTICE @#channel :Hi there]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="0">
-              <widget class="QLabel" name="sTDLabel">
-               <property name="toolTip">
-                <string>The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &quot;rfcnnnn&quot;, which refers to this document.</string>
-               </property>
-               <property name="text">
-                <string>STD:</string>
-               </property>
-               <property name="buddy">
-                <cstring>Std_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="1">
-              <widget class="QLineEdit" name="Std_">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &amp;quot;rfcnnnn&amp;quot;, which refers to this document.&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="12" column="0">
-              <widget class="QLabel" name="eXCEPTSLabel">
-               <property name="toolTip">
-                <string>The EXCEPTS parameter indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</string>
-               </property>
-               <property name="text">
-                <string>EXCEPTS:</string>
-               </property>
-               <property name="buddy">
-                <cstring>Excepts_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="12" column="1">
-              <widget class="QCheckBox" name="Excepts_">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="toolTip">
-                <string>The EXCEPTS parameter indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</string>
-               </property>
-              </widget>
-             </item>
-             <item row="13" column="0">
-              <widget class="QLabel" name="sAFELISTLabel">
-               <property name="toolTip">
-                <string>The SAFELIST parameter indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</string>
-               </property>
-               <property name="text">
-                <string>SAFELIST:</string>
-               </property>
-               <property name="buddy">
-                <cstring>SafeList_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="13" column="1">
-              <widget class="QCheckBox" name="SafeList_">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="toolTip">
-                <string>The SAFELIST parameter indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</string>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="0">
-              <widget class="QLabel" name="iNVEXLabel_2">
-               <property name="text">
-                <string>INVEX:</string>
-               </property>
-               <property name="buddy">
-                <cstring>InvEx_</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="1">
-              <widget class="QCheckBox" name="InvEx_">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
             </layout>
            </item>
           </layout>
@@ -459,9 +70,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <item row="0" column="0">
           <widget class="QLabel" name="cHANMODESTypeALabel">
-           <property name="toolTip">
-            <string>Mode that adds or removes a nick or address to a list. Always has a parameter. </string>
-           </property>
            <property name="text">
             <string>CHANMODES type A:</string>
            </property>
@@ -479,9 +87,6 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="cHANMODESTypeBLabel">
-           <property name="toolTip">
-            <string>Mode that changes a setting and always has a parameter. </string>
-           </property>
            <property name="text">
             <string>CHANMODES type B:</string>
            </property>
@@ -499,9 +104,6 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="cHANMODESTypeCLabel">
-           <property name="toolTip">
-            <string>Mode that changes a setting and only has a parameter when set. </string>
-           </property>
            <property name="text">
             <string>CHANMODES type C:</string>
            </property>
@@ -519,9 +121,6 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="cHANMODESTypeDLabel">
-           <property name="toolTip">
-            <string>Mode that changes a setting and never has a parameter. </string>
-           </property>
            <property name="text">
             <string>CHANMODES type D:</string>
            </property>
@@ -551,7 +150,7 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="0">
           <widget class="QLabel" name="cHANTYPESLabel">
            <property name="toolTip">
-            <string>The supported channel prefixes. </string>
+            <string>The supported channel prefixes.</string>
            </property>
            <property name="text">
             <string>CHANTYPES:</string>
@@ -562,7 +161,11 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="ChanTypes_"/>
+          <widget class="QLineEdit" name="ChanTypes_">
+           <property name="toolTip">
+            <string>The supported channel prefixes.</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -577,9 +180,6 @@ p, li { white-space: pre-wrap; }
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="label">
-           <property name="toolTip">
-            <string>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. </string>
-           </property>
            <property name="text">
             <string>PREFIX:</string>
            </property>
@@ -587,20 +187,12 @@ p, li { white-space: pre-wrap; }
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
            </property>
            <property name="buddy">
-            <cstring>tableWidget</cstring>
+            <cstring>PrefixTable_</cstring>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="tableWidget">
-           <property name="toolTip">
-            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: (ab)&amp;amp;* maps the channel mode 'a' to the channel status flag '&amp;amp;', and channel mode 'b' to the channel status flag '*'.]&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: PREFIX=(ohv)@%+ maps channel mode 'o' to status '@', 'h' to status '%', and 'v' to status +.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
+          <widget class="QTableWidget" name="PrefixTable_">
            <property name="columnCount">
             <number>2</number>
            </property>

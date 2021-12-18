@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <functional>
 #include <QWidget>
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_serverinfowidget.h"
@@ -24,19 +23,14 @@ namespace LC::Azoth::Acetamide
 		Q_INTERFACES (LC::Azoth::IMUCConfigWidget)
 
 		Ui::ServerInfoWidget Ui_;
-		IrcServerCLEntry *ISCLEntry_;
-		QHash<QString, std::function<void (QString)>> Parameter2Command_;
+		IrcServerCLEntry * const ISCLEntry_;
 	public:
 		explicit ServerInfoWidget (IrcServerCLEntry*, QWidget* = nullptr);
 	private:
-		void Init ();
-		void SetISupport ();
-		void SetChanModes (const QString&);
-		void SetExcepts (const QString&);
-		void SetPrefix (const QString&); 
-		void SetSafeList (const QString&);
-		void SetTargMax (const QString&);
-		void SetInvEx (const QString&);
+		void HandleSpecial (QHash<QByteArray, QVariant>&);
+
+		void SetPrefix (const QByteArray&);
+		void SetTargMax (const QByteArray&);
 	public slots:
 		void accept ();
 	signals:
