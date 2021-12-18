@@ -232,7 +232,7 @@ namespace LC::Azoth::Acetamide
 			ISH_->JoinedChannel (co);
 		}
 		else
-			ISH_->JoinParticipant (opts.Nick_, channel, opts.Host_, opts.UserName_);
+			ISH_->JoinParticipant (opts.Nick_, channel, opts.UserName_, opts.Host_);
 	}
 
 	void ServerResponseManager::GotPart (const IrcMessageOptions& opts)
