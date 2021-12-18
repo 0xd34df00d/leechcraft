@@ -319,9 +319,10 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.count () < 3)
 			return;
 
-		QString msg = tr ("You invite ") + QString::fromStdString (opts.Parameters_.at (1)) +
-				tr (" to a channel ") + QString::fromStdString (opts.Parameters_.at (2));
-		ISH_->ShowAnswer ("invite", msg);
+		ISH_->ShowAnswer ("invite",
+				tr ("You invite %1 to channel %2")
+					.arg (QString::fromStdString (opts.Parameters_.at (1)),
+						  QString::fromStdString (opts.Parameters_.at (2))));
 	}
 
 	void ServerResponseManager::GotCTCPReply (const IrcMessageOptions& opts)
