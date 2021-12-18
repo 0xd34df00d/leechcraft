@@ -118,52 +118,52 @@
         <translation>Password:</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="138"/>
+        <location filename="channelconfigwidget.ui" line="142"/>
         <source>Ban list</source>
         <translation>Ban list</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="146"/>
-        <location filename="channelconfigwidget.ui" line="205"/>
-        <location filename="channelconfigwidget.ui" line="264"/>
+        <location filename="channelconfigwidget.ui" line="150"/>
+        <location filename="channelconfigwidget.ui" line="226"/>
+        <location filename="channelconfigwidget.ui" line="302"/>
         <source>Search:</source>
         <translation>Search:</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="160"/>
-        <location filename="channelconfigwidget.ui" line="222"/>
-        <location filename="channelconfigwidget.ui" line="278"/>
+        <location filename="channelconfigwidget.ui" line="168"/>
+        <location filename="channelconfigwidget.ui" line="247"/>
+        <location filename="channelconfigwidget.ui" line="320"/>
         <source>Host mask:</source>
         <translation>Host mask:</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="170"/>
-        <location filename="channelconfigwidget.ui" line="232"/>
-        <location filename="channelconfigwidget.ui" line="288"/>
-        <source>u</source>
-        <translation>u</translation>
+        <location filename="channelconfigwidget.ui" line="182"/>
+        <location filename="channelconfigwidget.ui" line="261"/>
+        <location filename="channelconfigwidget.ui" line="334"/>
+        <source>Update</source>
+        <translation>Update</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="177"/>
-        <location filename="channelconfigwidget.ui" line="239"/>
-        <location filename="channelconfigwidget.ui" line="295"/>
-        <source>+</source>
-        <translation>+</translation>
+        <location filename="channelconfigwidget.ui" line="192"/>
+        <location filename="channelconfigwidget.ui" line="271"/>
+        <location filename="channelconfigwidget.ui" line="344"/>
+        <source>Add</source>
+        <translation>Add</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="184"/>
-        <location filename="channelconfigwidget.ui" line="246"/>
-        <location filename="channelconfigwidget.ui" line="302"/>
-        <source>-</source>
-        <translation>-</translation>
+        <location filename="channelconfigwidget.ui" line="202"/>
+        <location filename="channelconfigwidget.ui" line="281"/>
+        <location filename="channelconfigwidget.ui" line="354"/>
+        <source>Remove</source>
+        <translation>Remove</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="197"/>
+        <location filename="channelconfigwidget.ui" line="218"/>
         <source>Exception list</source>
         <translation>Exception list</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="256"/>
+        <location filename="channelconfigwidget.ui" line="294"/>
         <source>Invite list</source>
         <translation>Invite list</translation>
     </message>
@@ -190,8 +190,24 @@
     </message>
     <message>
         <location filename="invitechannelsdialog.ui" line="39"/>
-        <source>From now on: </source>
-        <translation>From now on: </translation>
+        <source>From now on:</source>
+        <oldsource>From now on: </oldsource>
+        <translation type="unfinished">From now on: </translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="47"/>
+        <source>Always ask</source>
+        <translation>Always ask</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="52"/>
+        <source>Always join</source>
+        <translation>Always join</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="57"/>
+        <source>Always ignore</source>
+        <translation>Always ignore</translation>
     </message>
 </context>
 <context>
@@ -308,72 +324,72 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelCLEntry</name>
     <message>
-        <location filename="channelclentry.cpp" line="69"/>
+        <location filename="channelclentry.cpp" line="386"/>
         <source>Role</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="70"/>
+        <location filename="channelclentry.cpp" line="387"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="72"/>
+        <location filename="channelclentry.cpp" line="388"/>
         <source>Kick and Ban</source>
         <translation>Kick and Ban</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="73"/>
+        <location filename="channelclentry.cpp" line="389"/>
         <source>Kick</source>
         <translation>Kick</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="74"/>
+        <location filename="channelclentry.cpp" line="390"/>
         <source>Ban by nickname</source>
         <translation>Ban by nickname</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="75"/>
+        <location filename="channelclentry.cpp" line="391"/>
         <source>Ban by mask (*!*@domain)</source>
         <translation>Ban by mask (*!*@domain)</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="76"/>
+        <location filename="channelclentry.cpp" line="392"/>
         <source>Ban by mask (*!user@domain)</source>
         <translation>Ban by mask (*!user@domain)</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="77"/>
+        <location filename="channelclentry.cpp" line="393"/>
         <source>Kick and ban</source>
         <translation>Kick and ban</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="88"/>
+        <location filename="channelclentry.cpp" line="394"/>
         <source>Voiced</source>
         <translation>Voiced</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="94"/>
+        <location filename="channelclentry.cpp" line="395"/>
         <source>HalfOperator</source>
         <translation>HalfOperator</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="100"/>
+        <location filename="channelclentry.cpp" line="396"/>
         <source>Operator</source>
         <translation>Operator</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="106"/>
+        <location filename="channelclentry.cpp" line="397"/>
         <source>Admin</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="112"/>
+        <location filename="channelclentry.cpp" line="398"/>
         <source>Owner</source>
         <translation>Owner</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="166"/>
+        <location filename="channelclentry.cpp" line="149"/>
         <source>Channels</source>
         <translation>Channels</translation>
     </message>
@@ -381,31 +397,31 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelConfigWidget</name>
     <message>
-        <location filename="channelconfigwidget.cpp" line="57"/>
+        <location filename="channelconfigwidget.cpp" line="54"/>
         <source>Ban mask</source>
         <translation>Ban mask</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="58"/>
-        <location filename="channelconfigwidget.cpp" line="63"/>
-        <location filename="channelconfigwidget.cpp" line="68"/>
+        <location filename="channelconfigwidget.cpp" line="54"/>
+        <location filename="channelconfigwidget.cpp" line="57"/>
+        <location filename="channelconfigwidget.cpp" line="60"/>
         <source>Set by</source>
         <translation>Set by</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="59"/>
-        <location filename="channelconfigwidget.cpp" line="64"/>
-        <location filename="channelconfigwidget.cpp" line="69"/>
+        <location filename="channelconfigwidget.cpp" line="54"/>
+        <location filename="channelconfigwidget.cpp" line="57"/>
+        <location filename="channelconfigwidget.cpp" line="60"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="62"/>
+        <location filename="channelconfigwidget.cpp" line="57"/>
         <source>Except mask</source>
         <translation>Except mask</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="67"/>
+        <location filename="channelconfigwidget.cpp" line="60"/>
         <source>Invite mask</source>
         <translation>Invite mask</translation>
     </message>
@@ -413,145 +429,148 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelHandler</name>
     <message>
-        <location filename="channelhandler.cpp" line="277"/>
+        <location filename="channelhandler.cpp" line="252"/>
         <source>%1 has left the channel (%2)</source>
         <translation>%1 has left the channel (%2)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="279"/>
+        <location filename="channelhandler.cpp" line="251"/>
         <source>%1 has left the channel</source>
         <translation>%1 has left the channel</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="302"/>
+        <location filename="channelhandler.cpp" line="274"/>
         <source>You have been kicked by %1 %2</source>
         <translation>You have been kicked by %1 %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="131"/>
+        <location filename="channelhandler.cpp" line="112"/>
         <source>%1 has changed nickname to %2</source>
         <translation>%1 has changed nickname to %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="257"/>
+        <location filename="channelhandler.cpp" line="233"/>
         <source>%1 joined the channel as %2</source>
         <translation>%1 joined the channel as %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="305"/>
+        <location filename="channelhandler.cpp" line="277"/>
         <source>You kicked %1: %2</source>
         <translation>You kicked %1: %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="308"/>
+        <location filename="channelhandler.cpp" line="280"/>
         <source>%1 has been kicked by %2: %3</source>
         <translation>%1 has been kicked by %2: %3</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="324"/>
+        <location filename="channelhandler.cpp" line="296"/>
         <source>%1 is now %2</source>
         <translation>%1 is now %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="325"/>
+        <location filename="channelhandler.cpp" line="297"/>
         <source>%1 is not %2 anymore</source>
         <translation>%1 is not %2 anymore</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="522"/>
-        <location filename="channelhandler.cpp" line="536"/>
-        <location filename="channelhandler.cpp" line="550"/>
+        <location filename="channelhandler.cpp" line="317"/>
+        <source>Topic changed to: %1</source>
+        <translation>Topic changed to: %1</translation>
+    </message>
+    <message>
+        <location filename="channelhandler.cpp" line="486"/>
         <source>%1 set by %2 on %3</source>
         <oldsource> setted by </oldsource>
         <translation>%1 set by %2 on %3</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="568"/>
+        <location filename="channelhandler.cpp" line="524"/>
         <source>Channel mode set to invite only channel (+i)</source>
         <translation>Channel mode set to invite only channel (+i)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="570"/>
+        <location filename="channelhandler.cpp" line="525"/>
         <source>Channel mode set to non invite only channel (-i)</source>
         <translation>Channel mode set to non invite only channel (-i)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="581"/>
+        <location filename="channelhandler.cpp" line="535"/>
         <source>Channel mode set to moderate channel (+m)</source>
         <translation>Channel mode set to moderate channel (+m)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="583"/>
+        <location filename="channelhandler.cpp" line="536"/>
         <source>Channel mode set to unmoderate channel (-m)</source>
         <translation>Channel mode set to unmoderate channel (-m)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="594"/>
+        <location filename="channelhandler.cpp" line="546"/>
         <source>Channel mode set to block outside messages (+n)</source>
         <translation>Channel mode set to block outside messages (+n)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="596"/>
+        <location filename="channelhandler.cpp" line="547"/>
         <source>Channel mode set to not block outside messages (-n)</source>
         <translation>Channel mode set to not block outside messages (-n)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="607"/>
+        <location filename="channelhandler.cpp" line="557"/>
         <source>Channel mode set to private channel (+p)</source>
         <translation>Channel mode set to private channel (+p)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="609"/>
+        <location filename="channelhandler.cpp" line="558"/>
         <source>Channel mode set to non private channel (-p)</source>
         <translation>Channel mode set to non private channel (-p)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="620"/>
+        <location filename="channelhandler.cpp" line="568"/>
         <source>Channel mode set to secret channel (+s)</source>
         <translation>Channel mode set to secret channel (+s)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="622"/>
+        <location filename="channelhandler.cpp" line="569"/>
         <source>Channel mode set to non secret channel (-s)</source>
         <translation>Channel mode set to non secret channel (-s)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="633"/>
+        <location filename="channelhandler.cpp" line="579"/>
         <source>Reop flag is set (+r)</source>
         <translation>Reop flag is set (+r)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="635"/>
+        <location filename="channelhandler.cpp" line="580"/>
         <source>Reop flag is remove (-r)</source>
         <translation>Reop flag is remove (-r)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="646"/>
+        <location filename="channelhandler.cpp" line="590"/>
         <source>Change topic available only for channel operators (+t)</source>
         <translation>Change topic available only for channel operators (+t)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="648"/>
+        <location filename="channelhandler.cpp" line="591"/>
         <source>Change topic available not only for channel operators (-t)</source>
         <translation>Change topic available not only for channel operators (-t)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="659"/>
+        <location filename="channelhandler.cpp" line="601"/>
         <source>Limit user set to %1 (+l)</source>
         <translation>Limit user set to %1 (+l)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="661"/>
+        <location filename="channelhandler.cpp" line="602"/>
         <source>Remove limit user (-l)</source>
         <translation>Remove limit user (-l)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="672"/>
+        <location filename="channelhandler.cpp" line="612"/>
         <source>Channel key set to %1 (+k)</source>
         <translation>Channel key set to %1 (+k)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="674"/>
+        <location filename="channelhandler.cpp" line="613"/>
         <source>Remove channel key (-k)</source>
         <translation>Remove channel key (-k)</translation>
     </message>
@@ -559,30 +578,25 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelParticipantEntry</name>
     <message>
-        <location filename="channelparticipantentry.cpp" line="50"/>
+        <location filename="channelparticipantentry.cpp" line="25"/>
         <source>Information</source>
         <translation>Information</translation>
-    </message>
-    <message>
-        <location filename="channelparticipantentry.cpp" line="61"/>
-        <source>CTCP</source>
-        <translation>CTCP</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::Acetamide::ChannelsListDialog</name>
     <message>
-        <location filename="channelslistdialog.cpp" line="51"/>
+        <location filename="channelslistdialog.cpp" line="48"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="channelslistdialog.cpp" line="51"/>
+        <location filename="channelslistdialog.cpp" line="48"/>
         <source>Users count</source>
         <translation>Users count</translation>
     </message>
     <message>
-        <location filename="channelslistdialog.cpp" line="51"/>
+        <location filename="channelslistdialog.cpp" line="48"/>
         <source>Topic</source>
         <translation>Topic</translation>
     </message>
@@ -590,22 +604,22 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelsManager</name>
     <message>
-        <location filename="channelsmanager.cpp" line="473"/>
+        <location filename="channelsmanager.cpp" line="419"/>
         <source>%1 added to your ban list.</source>
         <translation>%1 added to your ban list.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="477"/>
+        <location filename="channelsmanager.cpp" line="422"/>
         <source>%1 added to your except list.</source>
         <translation>%1 added to your except list.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="481"/>
+        <location filename="channelsmanager.cpp" line="425"/>
         <source>%1 added to your invite list.</source>
         <translation>%1 added to your invite list.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="574"/>
+        <location filename="channelsmanager.cpp" line="513"/>
         <source>Topic was set by %1 at %2</source>
         <translation>Topic was set by %1 at %2</translation>
     </message>
@@ -613,13 +627,13 @@
 <context>
     <name>LC::Azoth::Acetamide::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="147"/>
+        <location filename="clientconnection.cpp" line="111"/>
         <source>This channel is already joined.</source>
         <oldsource>This server is already joined.</oldsource>
         <translation>This channel is already joined.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="224"/>
+        <location filename="clientconnection.cpp" line="189"/>
         <source>Some bookmarks were lost due to unknown storage version.</source>
         <translation>Some bookmarks were lost due to unknown storage version.</translation>
     </message>
@@ -627,58 +641,43 @@
 <context>
     <name>LC::Azoth::Acetamide::InviteChannelsDialog</name>
     <message>
-        <location filename="invitechannelsdialog.cpp" line="54"/>
+        <location filename="invitechannelsdialog.cpp" line="24"/>
         <source>Join</source>
         <translation>Join</translation>
     </message>
     <message>
-        <location filename="invitechannelsdialog.cpp" line="55"/>
+        <location filename="invitechannelsdialog.cpp" line="24"/>
         <source>Channel name</source>
         <translation>Channel name</translation>
     </message>
     <message>
-        <location filename="invitechannelsdialog.cpp" line="56"/>
+        <location filename="invitechannelsdialog.cpp" line="24"/>
         <source>Nickname</source>
         <translation>Nickname</translation>
-    </message>
-    <message>
-        <location filename="invitechannelsdialog.cpp" line="70"/>
-        <source>Always ask</source>
-        <translation>Always ask</translation>
-    </message>
-    <message>
-        <location filename="invitechannelsdialog.cpp" line="75"/>
-        <source>Always join</source>
-        <translation>Always join</translation>
-    </message>
-    <message>
-        <location filename="invitechannelsdialog.cpp" line="80"/>
-        <source>Always ignore</source>
-        <translation>Always ignore</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::Acetamide::IrcProtocol</name>
     <message>
-        <location filename="ircprotocol.cpp" line="252"/>
-        <source>This channel needs password.</source>
-        <translation>This channel needs password.</translation>
+        <location filename="ircprotocol.cpp" line="159"/>
+        <source>This server needs password. Please enter it here:</source>
+        <translation>This server needs password. Please enter it here:</translation>
     </message>
     <message>
-        <location filename="ircprotocol.cpp" line="253"/>
-        <source>Password:</source>
-        <translation>Password:</translation>
+        <location filename="ircprotocol.cpp" line="165"/>
+        <source>This channel needs password. Please enter it here:</source>
+        <translation>This channel needs password. Please enter it here:</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::Acetamide::IrcServerCLEntry</name>
     <message>
-        <location filename="ircserverclentry.cpp" line="50"/>
+        <location filename="ircserverclentry.cpp" line="27"/>
         <source>Channels list</source>
         <translation>Channels list</translation>
     </message>
     <message>
-        <location filename="ircserverclentry.cpp" line="99"/>
+        <location filename="ircserverclentry.cpp" line="70"/>
         <source>Servers</source>
         <translation>Servers</translation>
     </message>
@@ -686,77 +685,78 @@
 <context>
     <name>LC::Azoth::Acetamide::IrcServerHandler</name>
     <message>
-        <location filename="ircserverhandler.cpp" line="546"/>
+        <location filename="ircserverhandler.cpp" line="481"/>
         <source>%1 is a %2</source>
         <translation>%1 is a %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="551"/>
+        <location filename="ircserverhandler.cpp" line="486"/>
         <source>%1 is on server</source>
         <translation>%1 is on server</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="570"/>
+        <location filename="ircserverhandler.cpp" line="529"/>
         <source>%1 is %2</source>
         <translation>%1 is %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="587"/>
+        <location filename="ircserverhandler.cpp" line="532"/>
         <source>%1&apos;s real name is %2</source>
         <translation>%1&apos;s real name is %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="603"/>
+        <location filename="ircserverhandler.cpp" line="535"/>
         <source>%1 is on channels: %2</source>
         <translation>%1 is on channels: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="622"/>
+        <location filename="ircserverhandler.cpp" line="539"/>
         <source>%1&apos;s server is: %2 - %3</source>
         <translation>%1&apos;s server is: %2 - %3</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="633"/>
+        <location filename="ircserverhandler.cpp" line="542"/>
         <source>%1&apos;s idle time: %2</source>
         <translation>%1&apos;s idle time: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="643"/>
+        <location filename="ircserverhandler.cpp" line="545"/>
         <source>%1&apos;s auth date: %2</source>
         <translation>%1&apos;s auth date: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="663"/>
-        <source>%1 is logged in as %2 </source>
-        <translation>%1 is logged in as %2 </translation>
+        <location filename="ircserverhandler.cpp" line="551"/>
+        <source>%1 is logged in as %2</source>
+        <oldsource>%1 is logged in as %2 </oldsource>
+        <translation type="unfinished">%1 is logged in as %2 </translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="674"/>
+        <location filename="ircserverhandler.cpp" line="554"/>
         <source>%1 is using a secure connection</source>
         <translation>%1 is using a secure connection</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="685"/>
+        <location filename="ircserverhandler.cpp" line="557"/>
         <source>%1: %2</source>
         <translation>%1: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="697"/>
+        <location filename="ircserverhandler.cpp" line="560"/>
         <source>%1 is available for help</source>
         <translation>%1 is available for help</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="708"/>
+        <location filename="ircserverhandler.cpp" line="563"/>
         <source>%1 is a registered nick</source>
         <translation>%1 is a registered nick</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="719"/>
+        <location filename="ircserverhandler.cpp" line="566"/>
         <source>%1 e-mail address is %2</source>
         <translation>%1 e-mail address is %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="762"/>
+        <location filename="ircserverhandler.cpp" line="584"/>
         <source>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</source>
         <translation>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</translation>
     </message>
@@ -764,35 +764,35 @@
 <context>
     <name>LC::Azoth::Acetamide::IrcServerSocket</name>
     <message>
-        <location filename="ircserversocket.cpp" line="165"/>
+        <location filename="ircserversocket.cpp" line="171"/>
         <source>Unknown encoding %1.</source>
         <translation>Unknown encoding %1.</translation>
     </message>
 </context>
 <context>
-    <name>LC::Azoth::Acetamide::NickServIdentifyWidget</name>
+    <name>LC::Azoth::Acetamide::NickServIdentifyManager</name>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="53"/>
+        <location filename="nickservidentifymanager.cpp" line="21"/>
         <source>Server</source>
         <translation>Server</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="54"/>
+        <location filename="nickservidentifymanager.cpp" line="22"/>
         <source>Nickname</source>
         <translation>Nickname</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="55"/>
+        <location filename="nickservidentifymanager.cpp" line="23"/>
         <source>NickServ nickname</source>
         <translation>NickServ nickname</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="56"/>
+        <location filename="nickservidentifymanager.cpp" line="24"/>
         <source>NickServ auth string</source>
         <translation>NickServ auth string</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="57"/>
+        <location filename="nickservidentifymanager.cpp" line="25"/>
         <source>Auth message</source>
         <translation>Auth message</translation>
     </message>
@@ -800,15 +800,129 @@
 <context>
     <name>LC::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="91"/>
+        <location filename="acetamide.cpp" line="65"/>
         <source>IRC protocol support.</source>
         <translation>IRC protocol support.</translation>
     </message>
 </context>
 <context>
+    <name>LC::Azoth::Acetamide::ServerInfoWidget</name>
+    <message>
+        <location filename="serverinfowidget.cpp" line="149"/>
+        <source>Case mapping used for nick- and channel name comparing. Current possible values:
+ascii: The chars [a-z] are lowercase of [A-Z].
+rfc1459: ascii with additional {}|~ the lowercase of []^.
+strict-rfc1459: ascii with additional {}| the lowercase of [].
+Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too.</source>
+        <translation>Case mapping used for nick- and channel name comparing. Current possible values:
+ascii: The chars [a-z] are lowercase of [A-Z].
+rfc1459: ascii with additional {}|~ the lowercase of []^.
+strict-rfc1459: ascii with additional {}| the lowercase of [].
+Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="159"/>
+        <source>Maximum number of channels allowed to join by channel prefix.</source>
+        <translation>Maximum number of channels allowed to join by channel prefix.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="165"/>
+        <source>Maximum channel name length.</source>
+        <translation>Maximum channel name length.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="179"/>
+        <source>Maximum kick comment length.</source>
+        <translation>Maximum kick comment length.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="185"/>
+        <source>Maximum number entries in the list per mode. 
+[Example: Given &quot;b:25,eI:50&quot;, it would be possible to set up to 25 &quot;+b&quot; modes, and up to 50 of a combination of &quot;+e&quot; and &quot;+I&quot;  modes, e.g. 30 &quot;+e&quot; and 20 &quot;+I&quot; modes, making up a total of 50.]</source>
+        <translation>Maximum number entries in the list per mode. 
+[Example: Given &quot;b:25,eI:50&quot;, it would be possible to set up to 25 &quot;+b&quot; modes, and up to 50 of a combination of &quot;+e&quot; and &quot;+I&quot;  modes, e.g. 30 &quot;+e&quot; and 20 &quot;+I&quot; modes, making up a total of 50.]</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="193"/>
+        <source>Maximum number of channel modes with parameter allowed per MODE command.</source>
+        <translation>Maximum number of channel modes with parameter allowed per MODE command.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="199"/>
+        <source>The IRC network name.</source>
+        <translation>The IRC network name.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="205"/>
+        <source>Maximum nickname length.</source>
+        <translation>Maximum nickname length.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="171"/>
+        <source>Indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.
+[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &quot;!&quot; channels; for example  &quot;!JNB4Sircd&quot;, where &quot;JNB4S&quot; is the ID and &quot;ircd&quot; is the channel&apos;s short name.]</source>
+        <translation>Indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.
+[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &quot;!&quot; channels; for example  &quot;!JNB4Sircd&quot;, where &quot;JNB4S&quot; is the ID and &quot;ircd&quot; is the channel&apos;s short name.]</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="211"/>
+        <source>Indicates which form(s) of the ISUPPORT numeric are used by the server.</source>
+        <translation>Indicates which form(s) of the ISUPPORT numeric are used by the server.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="217"/>
+        <source>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status. This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.
+[Example: NOTICE @#channel :Hi there]</source>
+        <translation>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status. This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.
+[Example: NOTICE @#channel :Hi there]</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="225"/>
+        <source>Maximum topic length.</source>
+        <translation>Maximum topic length.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="233"/>
+        <source>Indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
+        <translation>Indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="239"/>
+        <source>Indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</source>
+        <translation>Indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="249"/>
+        <source>Mode that adds or removes a nick or address to a list. Always has a parameter.</source>
+        <translation>Mode that adds or removes a nick or address to a list. Always has a parameter.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="255"/>
+        <source>Mode that changes a setting and always has a parameter.</source>
+        <translation>Mode that changes a setting and always has a parameter.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="261"/>
+        <source>Mode that changes a setting and only has a parameter when set.</source>
+        <translation>Mode that changes a setting and only has a parameter when set.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="267"/>
+        <source>Mode that changes a setting and never has a parameter.</source>
+        <translation>Mode that changes a setting and never has a parameter.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="273"/>
+        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. [Example: (ab)&amp;* maps the channel mode &apos;a&apos; to the channel status flag &apos;&amp;&apos;, and channel mode &apos;b&apos; to the channel status flag &apos;*&apos;.]
+[Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]</source>
+        <translation>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. [Example: (ab)&amp;* maps the channel mode &apos;a&apos; to the channel status flag &apos;&amp;&apos;, and channel mode &apos;b&apos; to the channel status flag &apos;*&apos;.]
+[Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]</translation>
+    </message>
+</context>
+<context>
     <name>LC::Azoth::Acetamide::ServerParticipantEntry</name>
     <message>
-        <location filename="serverparticipantentry.cpp" line="71"/>
+        <location filename="serverparticipantentry.cpp" line="50"/>
         <source>Private chats</source>
         <translation>Private chats</translation>
     </message>
@@ -816,41 +930,41 @@
 <context>
     <name>LC::Azoth::Acetamide::ServerResponseManager</name>
     <message>
-        <location filename="serverresponsemanager.cpp" line="271"/>
+        <location filename="serverresponsemanager.cpp" line="314"/>
         <source> invites you to a channel </source>
         <translation> invites you to a channel </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="279"/>
+        <location filename="serverresponsemanager.cpp" line="322"/>
         <source>You invite </source>
         <translation>You invite </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="280"/>
+        <location filename="serverresponsemanager.cpp" line="323"/>
         <source> to a channel </source>
         <translation> to a channel </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="312"/>
-        <location filename="serverresponsemanager.cpp" line="319"/>
-        <location filename="serverresponsemanager.cpp" line="327"/>
-        <location filename="serverresponsemanager.cpp" line="334"/>
-        <location filename="serverresponsemanager.cpp" line="342"/>
+        <location filename="serverresponsemanager.cpp" line="353"/>
+        <location filename="serverresponsemanager.cpp" line="360"/>
+        <location filename="serverresponsemanager.cpp" line="368"/>
+        <location filename="serverresponsemanager.cpp" line="375"/>
+        <location filename="serverresponsemanager.cpp" line="383"/>
         <source>Received request %1 from %2, sending response</source>
         <translation>Received request %1 from %2, sending response</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="370"/>
+        <location filename="serverresponsemanager.cpp" line="411"/>
         <source>Received answer CTCP-%1 from %2: %3</source>
         <translation>Received answer CTCP-%1 from %2: %3</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="553"/>
+        <location filename="serverresponsemanager.cpp" line="594"/>
         <source> summoning to IRC</source>
         <translation> summoning to IRC</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="668"/>
+        <location filename="serverresponsemanager.cpp" line="709"/>
         <source>End of USERS</source>
         <translation>End of USERS</translation>
     </message>
@@ -858,7 +972,7 @@
 <context>
     <name>LC::Azoth::Acetamide::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="51"/>
+        <location filename="vcarddialog.cpp" line="30"/>
         <source>VCard for %1</source>
         <translation>VCard for %1</translation>
     </message>
@@ -910,12 +1024,12 @@
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.ui" line="35"/>
+        <location filename="nickservidentifywidget.ui" line="38"/>
         <source>Edit</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.ui" line="42"/>
+        <location filename="nickservidentifywidget.ui" line="48"/>
         <source>Delete</source>
         <translation>Delete</translation>
     </message>
@@ -933,331 +1047,69 @@
         <translation>Base parameters</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="50"/>
-        <source>The IRC network name.</source>
-        <translation>The IRC network name.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="53"/>
-        <source>NETWORK:</source>
-        <translation>NETWORK:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="63"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IRC network name.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NETWORK=EFnet indicates that the client is connected  to the EFnet IRC network.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="78"/>
-        <source>Maximum number of channel modes with parameter allowed per MODE command.</source>
-        <translation>Maximum number of channel modes with parameter allowed per MODE command.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="81"/>
-        <source>MODES:</source>
-        <translation>MODES:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="94"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number of channel modes with parameter allowed per MODE command.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: MODES=3 indicates that 3 modes may be set with a MODE command.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="109"/>
-        <location filename="serverinfowidget.ui" line="125"/>
-        <source>Maximum number of channels allowed to join by channel prefix. </source>
-        <translation>Maximum number of channels allowed to join by channel prefix. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="112"/>
-        <source>CHANLIMIT:</source>
-        <translation>CHANLIMIT:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="135"/>
-        <source>Maximum nickname length.</source>
-        <translation>Maximum nickname length.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="138"/>
-        <source>NICKLEN:</source>
-        <translation>NICKLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="148"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum nickname length.&lt;br /&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NICKLEN=9 indicates that clients may have nicknames up to 9 characters in length.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="162"/>
-        <source>Maximum number entries in the list per mode. </source>
-        <translation>Maximum number entries in the list per mode. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="165"/>
-        <source>MAXLIST:</source>
-        <translation>MAXLIST:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="175"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number entries in the list per mode. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: Given &amp;quot;b:25,eI:50&amp;quot;, it would be possible to set up to 25 &amp;quot;+b&amp;quot; modes, and up to 50 of a combination of &amp;quot;+e&amp;quot; and &amp;quot;+I&amp;quot;  modes, e.g. 30 &amp;quot;+e&amp;quot; and 20 &amp;quot;+I&amp;quot; modes, making up a total of 50.] &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: MAXLIST=b:25 indicates that 25 bans may be set on a      channel at one time.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="191"/>
-        <location filename="serverinfowidget.ui" line="212"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Case mapping used for nick- and channel name comparing. Current possible values: &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ascii: The chars [a-z] are lowercase of [A-Z]. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;rfc1459: ascii with additional {}|~ the lowercase of []\^. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;strict-rfc1459: ascii with additional {}| the lowercase of []\. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="202"/>
-        <source>CASEMAPPING:</source>
-        <translation>CASEMAPPING:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="230"/>
-        <location filename="serverinfowidget.ui" line="243"/>
-        <source>Maximum topic length. </source>
-        <translation>Maximum topic length. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="233"/>
-        <source>TOPICLEN:</source>
-        <translation>TOPICLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="253"/>
-        <location filename="serverinfowidget.ui" line="266"/>
-        <source>Maximum kick comment length. </source>
-        <translation>Maximum kick comment length. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="256"/>
-        <source>KICKLEN:</source>
-        <translation>KICKLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="276"/>
-        <location filename="serverinfowidget.ui" line="289"/>
-        <source>Maximum channel name length.</source>
-        <translation>Maximum channel name length.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="279"/>
-        <source>CHANNELLEN:</source>
-        <translation>CHANNELLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="299"/>
-        <source>The IDCHAN parameter indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.</source>
-        <translation>The IDCHAN parameter indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="302"/>
-        <source>IDCHAN:</source>
-        <translation>IDCHAN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="312"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IDCHAN parameter indicates the existence of &amp;quot;safe&amp;quot; channels as described in RFC 2811, and the length of the &amp;quot;id&amp;quot; portion of those channel names.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &amp;quot;!&amp;quot; channels; for example  &amp;quot;!JNB4Sircd&amp;quot;, where &amp;quot;JNB4S&amp;quot; is the ID and &amp;quot;ircd&amp;quot; is the channel&apos;s short name.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="327"/>
-        <source>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.</source>
-        <translation>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="330"/>
-        <source>STATUSMSG:</source>
-        <translation>STATUSMSG:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="340"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.&lt;/span&gt;&lt;/pre&gt;
-&lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NOTICE @#channel :Hi there]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="355"/>
-        <source>The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &quot;rfcnnnn&quot;, which refers to this document.</source>
-        <translation>The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &quot;rfcnnnn&quot;, which refers to this document.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="358"/>
-        <source>STD:</source>
-        <translation>STD:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="368"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &amp;quot;rfcnnnn&amp;quot;, which refers to this document.&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="382"/>
-        <location filename="serverinfowidget.ui" line="398"/>
-        <source>The EXCEPTS parameter indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
-        <translation>The EXCEPTS parameter indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="385"/>
-        <source>EXCEPTS:</source>
-        <translation>EXCEPTS:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="405"/>
-        <location filename="serverinfowidget.ui" line="421"/>
-        <source>The SAFELIST parameter indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</source>
-        <translation>The SAFELIST parameter indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="408"/>
-        <source>SAFELIST:</source>
-        <translation>SAFELIST:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="428"/>
-        <source>INVEX:</source>
-        <translation>INVEX:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="452"/>
+        <location filename="serverinfowidget.ui" line="57"/>
         <source>Channel parameters</source>
         <translation>Channel parameters</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="463"/>
-        <source>Mode that adds or removes a nick or address to a list. Always has a parameter. </source>
-        <translation>Mode that adds or removes a nick or address to a list. Always has a parameter. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="466"/>
+        <location filename="serverinfowidget.ui" line="68"/>
         <source>CHANMODES type A:</source>
         <translation>CHANMODES type A:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="483"/>
-        <source>Mode that changes a setting and always has a parameter. </source>
-        <translation>Mode that changes a setting and always has a parameter. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="486"/>
+        <location filename="serverinfowidget.ui" line="85"/>
         <source>CHANMODES type B:</source>
         <translation>CHANMODES type B:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="503"/>
-        <source>Mode that changes a setting and only has a parameter when set. </source>
-        <translation>Mode that changes a setting and only has a parameter when set. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="506"/>
+        <location filename="serverinfowidget.ui" line="102"/>
         <source>CHANMODES type C:</source>
         <translation>CHANMODES type C:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="523"/>
-        <source>Mode that changes a setting and never has a parameter. </source>
-        <translation>Mode that changes a setting and never has a parameter. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="526"/>
+        <location filename="serverinfowidget.ui" line="119"/>
         <source>CHANMODES type D:</source>
         <translation>CHANMODES type D:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="554"/>
-        <source>The supported channel prefixes. </source>
-        <translation>The supported channel prefixes. </translation>
+        <location filename="serverinfowidget.ui" line="147"/>
+        <location filename="serverinfowidget.ui" line="160"/>
+        <source>The supported channel prefixes.</source>
+        <oldsource>The supported channel prefixes. </oldsource>
+        <translation>The supported channel prefixes.</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="557"/>
+        <location filename="serverinfowidget.ui" line="150"/>
         <source>CHANTYPES:</source>
         <translation>CHANTYPES:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="581"/>
-        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. </source>
-        <translation>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. </translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="584"/>
+        <location filename="serverinfowidget.ui" line="178"/>
         <source>PREFIX:</source>
         <translation>PREFIX:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="597"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: (ab)&amp;amp;* maps the channel mode &apos;a&apos; to the channel status flag &apos;&amp;amp;&apos;, and channel mode &apos;b&apos; to the channel status flag &apos;*&apos;.]&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="609"/>
+        <location filename="serverinfowidget.ui" line="195"/>
         <source>Mode</source>
         <translation>Mode</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="614"/>
+        <location filename="serverinfowidget.ui" line="200"/>
         <source>Prefix</source>
         <translation>Prefix</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="625"/>
+        <location filename="serverinfowidget.ui" line="211"/>
         <source>Maximum targets</source>
         <translation>Maximum targets</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="632"/>
+        <location filename="serverinfowidget.ui" line="218"/>
         <source>Target</source>
         <translation>Target</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="637"/>
+        <location filename="serverinfowidget.ui" line="223"/>
         <source>Maximum count</source>
         <translation>Maximum count</translation>
     </message>

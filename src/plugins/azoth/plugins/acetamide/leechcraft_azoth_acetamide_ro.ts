@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ro_RO" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ro_RO">
 <context>
     <name>BookmarkEditWidget</name>
     <message>
@@ -116,52 +118,52 @@
         <translation>Parola:</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="138"/>
+        <location filename="channelconfigwidget.ui" line="142"/>
         <source>Ban list</source>
         <translation>Listă Interdicții</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="146"/>
-        <location filename="channelconfigwidget.ui" line="205"/>
-        <location filename="channelconfigwidget.ui" line="264"/>
+        <location filename="channelconfigwidget.ui" line="150"/>
+        <location filename="channelconfigwidget.ui" line="226"/>
+        <location filename="channelconfigwidget.ui" line="302"/>
         <source>Search:</source>
         <translation>Cauta:</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="160"/>
-        <location filename="channelconfigwidget.ui" line="222"/>
-        <location filename="channelconfigwidget.ui" line="278"/>
+        <location filename="channelconfigwidget.ui" line="168"/>
+        <location filename="channelconfigwidget.ui" line="247"/>
+        <location filename="channelconfigwidget.ui" line="320"/>
         <source>Host mask:</source>
         <translation>Mască gazdă:</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="170"/>
-        <location filename="channelconfigwidget.ui" line="232"/>
-        <location filename="channelconfigwidget.ui" line="288"/>
-        <source>u</source>
-        <translation>u</translation>
+        <location filename="channelconfigwidget.ui" line="182"/>
+        <location filename="channelconfigwidget.ui" line="261"/>
+        <location filename="channelconfigwidget.ui" line="334"/>
+        <source>Update</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="177"/>
-        <location filename="channelconfigwidget.ui" line="239"/>
-        <location filename="channelconfigwidget.ui" line="295"/>
-        <source>+</source>
-        <translation>+</translation>
+        <location filename="channelconfigwidget.ui" line="192"/>
+        <location filename="channelconfigwidget.ui" line="271"/>
+        <location filename="channelconfigwidget.ui" line="344"/>
+        <source>Add</source>
+        <translation>Adăugare</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="184"/>
-        <location filename="channelconfigwidget.ui" line="246"/>
-        <location filename="channelconfigwidget.ui" line="302"/>
-        <source>-</source>
-        <translation>-</translation>
+        <location filename="channelconfigwidget.ui" line="202"/>
+        <location filename="channelconfigwidget.ui" line="281"/>
+        <location filename="channelconfigwidget.ui" line="354"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="197"/>
+        <location filename="channelconfigwidget.ui" line="218"/>
         <source>Exception list</source>
         <translation>Listă excepții</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.ui" line="256"/>
+        <location filename="channelconfigwidget.ui" line="294"/>
         <source>Invite list</source>
         <translation>Listă invitații</translation>
     </message>
@@ -188,8 +190,24 @@
     </message>
     <message>
         <location filename="invitechannelsdialog.ui" line="39"/>
-        <source>From now on: </source>
-        <translation>De acum înainte:</translation>
+        <source>From now on:</source>
+        <oldsource>From now on: </oldsource>
+        <translation type="unfinished">De acum înainte:</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="47"/>
+        <source>Always ask</source>
+        <translation>Întreabă întotdeauna</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="52"/>
+        <source>Always join</source>
+        <translation>Participă întotdeauna</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="57"/>
+        <source>Always ignore</source>
+        <translation>Ignoră întotdeauna</translation>
     </message>
 </context>
 <context>
@@ -306,72 +324,72 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelCLEntry</name>
     <message>
-        <location filename="channelclentry.cpp" line="68"/>
+        <location filename="channelclentry.cpp" line="386"/>
         <source>Role</source>
         <translation>Rol</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="69"/>
+        <location filename="channelclentry.cpp" line="387"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="71"/>
+        <location filename="channelclentry.cpp" line="388"/>
         <source>Kick and Ban</source>
         <translation>Eliminare și Interdicție</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="72"/>
+        <location filename="channelclentry.cpp" line="389"/>
         <source>Kick</source>
         <translation>Eliminare</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="73"/>
+        <location filename="channelclentry.cpp" line="390"/>
         <source>Ban by nickname</source>
         <translation>Interdicție după pseudonim</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="74"/>
+        <location filename="channelclentry.cpp" line="391"/>
         <source>Ban by mask (*!*@domain)</source>
         <translation>Interdicție după mască (*!*@domain)</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="75"/>
+        <location filename="channelclentry.cpp" line="392"/>
         <source>Ban by mask (*!user@domain)</source>
         <translation>Interdicție după mască (*!user@domain)</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="76"/>
+        <location filename="channelclentry.cpp" line="393"/>
         <source>Kick and ban</source>
         <translation>Eliminare și interdicție</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="87"/>
+        <location filename="channelclentry.cpp" line="394"/>
         <source>Voiced</source>
         <translation>Vocal</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="93"/>
+        <location filename="channelclentry.cpp" line="395"/>
         <source>HalfOperator</source>
         <translation>SemiOperator</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="99"/>
+        <location filename="channelclentry.cpp" line="396"/>
         <source>Operator</source>
         <translation>Operator</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="105"/>
+        <location filename="channelclentry.cpp" line="397"/>
         <source>Admin</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="111"/>
+        <location filename="channelclentry.cpp" line="398"/>
         <source>Owner</source>
         <translation>Proprietar</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="165"/>
+        <location filename="channelclentry.cpp" line="149"/>
         <source>Channels</source>
         <translation>Canale</translation>
     </message>
@@ -379,31 +397,31 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelConfigWidget</name>
     <message>
-        <location filename="channelconfigwidget.cpp" line="57"/>
+        <location filename="channelconfigwidget.cpp" line="54"/>
         <source>Ban mask</source>
         <translation>Mască interdicție </translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="58"/>
-        <location filename="channelconfigwidget.cpp" line="63"/>
-        <location filename="channelconfigwidget.cpp" line="68"/>
+        <location filename="channelconfigwidget.cpp" line="54"/>
+        <location filename="channelconfigwidget.cpp" line="57"/>
+        <location filename="channelconfigwidget.cpp" line="60"/>
         <source>Set by</source>
         <translation>Stabilit de către</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="59"/>
-        <location filename="channelconfigwidget.cpp" line="64"/>
-        <location filename="channelconfigwidget.cpp" line="69"/>
+        <location filename="channelconfigwidget.cpp" line="54"/>
+        <location filename="channelconfigwidget.cpp" line="57"/>
+        <location filename="channelconfigwidget.cpp" line="60"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="62"/>
+        <location filename="channelconfigwidget.cpp" line="57"/>
         <source>Except mask</source>
         <translation>Mască Excepție</translation>
     </message>
     <message>
-        <location filename="channelconfigwidget.cpp" line="67"/>
+        <location filename="channelconfigwidget.cpp" line="60"/>
         <source>Invite mask</source>
         <translation>Mască invitație</translation>
     </message>
@@ -411,145 +429,148 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelHandler</name>
     <message>
-        <location filename="channelhandler.cpp" line="277"/>
+        <location filename="channelhandler.cpp" line="252"/>
         <source>%1 has left the channel (%2)</source>
         <translation>%1 a părăsit canalul (%2)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="279"/>
+        <location filename="channelhandler.cpp" line="251"/>
         <source>%1 has left the channel</source>
         <translation>%1 a părăsit canalul</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="302"/>
+        <location filename="channelhandler.cpp" line="274"/>
         <source>You have been kicked by %1 %2</source>
         <translation>Ai fost eliminat de către %1 %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="131"/>
+        <location filename="channelhandler.cpp" line="112"/>
         <source>%1 has changed nickname to %2</source>
         <translation>%1 și-a schimbat pseudonimul în %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="257"/>
+        <location filename="channelhandler.cpp" line="233"/>
         <source>%1 joined the channel as %2</source>
         <translation>%1 s-a alăturat canalului ca și %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="305"/>
+        <location filename="channelhandler.cpp" line="277"/>
         <source>You kicked %1: %2</source>
         <translation>Ați eliminat pe %1: %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="308"/>
+        <location filename="channelhandler.cpp" line="280"/>
         <source>%1 has been kicked by %2: %3</source>
         <translation>%1 a fost eliminat de către %2: %3</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="324"/>
+        <location filename="channelhandler.cpp" line="296"/>
         <source>%1 is now %2</source>
         <translation>%1 este acum %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="325"/>
+        <location filename="channelhandler.cpp" line="297"/>
         <source>%1 is not %2 anymore</source>
         <translation>%1 nu mai este %2</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="552"/>
-        <location filename="channelhandler.cpp" line="566"/>
-        <location filename="channelhandler.cpp" line="580"/>
+        <location filename="channelhandler.cpp" line="317"/>
+        <source>Topic changed to: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="channelhandler.cpp" line="486"/>
         <source>%1 set by %2 on %3</source>
         <oldsource> setted by </oldsource>
         <translation>%1 este stabilit de către %2 pe %3</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="598"/>
+        <location filename="channelhandler.cpp" line="524"/>
         <source>Channel mode set to invite only channel (+i)</source>
         <translation>Modul canalului este stabilit să invite numai canalul (+i)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="600"/>
+        <location filename="channelhandler.cpp" line="525"/>
         <source>Channel mode set to non invite only channel (-i)</source>
         <translation>Modul canalului este stabilit să nu invite numai canalul (-i)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="611"/>
+        <location filename="channelhandler.cpp" line="535"/>
         <source>Channel mode set to moderate channel (+m)</source>
         <translation>Modul canalului este stabilit să modereze canalul (+m)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="613"/>
+        <location filename="channelhandler.cpp" line="536"/>
         <source>Channel mode set to unmoderate channel (-m)</source>
         <translation>Modul canalului este stabilit să nu modereze canalul (-m)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="624"/>
+        <location filename="channelhandler.cpp" line="546"/>
         <source>Channel mode set to block outside messages (+n)</source>
         <translation>Modul canalului este stabilit să blocheze mesajele din afară (+n)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="626"/>
+        <location filename="channelhandler.cpp" line="547"/>
         <source>Channel mode set to not block outside messages (-n)</source>
         <translation>Modul canalului este stabilit să nu blocheze mesajele din afară (-n)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="637"/>
+        <location filename="channelhandler.cpp" line="557"/>
         <source>Channel mode set to private channel (+p)</source>
-        <translation>Modul canalului este stabilit ca și canal privat (+p) </translation>
+        <translation>Modul canalului este stabilit ca și canal privat (+p)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="639"/>
+        <location filename="channelhandler.cpp" line="558"/>
         <source>Channel mode set to non private channel (-p)</source>
         <translation>Modul canalului este stabilit ca și canal non-privat (-p)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="650"/>
+        <location filename="channelhandler.cpp" line="568"/>
         <source>Channel mode set to secret channel (+s)</source>
         <translation>Modul canalului este stabilit ca și canal secret (+s)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="652"/>
+        <location filename="channelhandler.cpp" line="569"/>
         <source>Channel mode set to non secret channel (-s)</source>
         <translation>Modul canalului este stabilit ca și canal non-secret (-s)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="663"/>
+        <location filename="channelhandler.cpp" line="579"/>
         <source>Reop flag is set (+r)</source>
         <translation>Semnalizarea Reop este stabilită (+r)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="665"/>
+        <location filename="channelhandler.cpp" line="580"/>
         <source>Reop flag is remove (-r)</source>
         <translation>Semnalizarea Reop este eliminată (-r)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="676"/>
+        <location filename="channelhandler.cpp" line="590"/>
         <source>Change topic available only for channel operators (+t)</source>
         <translation>Modificarea subiectului este disponibilă numai operatorilor de canal (+t)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="678"/>
+        <location filename="channelhandler.cpp" line="591"/>
         <source>Change topic available not only for channel operators (-t)</source>
         <translation>Modificarea subiectului nu este disponibilă numai operatorilor de canal (-t)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="689"/>
+        <location filename="channelhandler.cpp" line="601"/>
         <source>Limit user set to %1 (+l)</source>
         <translation>Limita de utilizatori stabilită la %1 (+l)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="691"/>
+        <location filename="channelhandler.cpp" line="602"/>
         <source>Remove limit user (-l)</source>
         <translation>Elimină limita de utilizatori (-l)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="702"/>
+        <location filename="channelhandler.cpp" line="612"/>
         <source>Channel key set to %1 (+k)</source>
         <translation>Cheia canalului e stabilită  la %1 (+k)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="704"/>
+        <location filename="channelhandler.cpp" line="613"/>
         <source>Remove channel key (-k)</source>
         <translation>Elimină cheia canalului (-k)</translation>
     </message>
@@ -557,30 +578,25 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelParticipantEntry</name>
     <message>
-        <location filename="channelparticipantentry.cpp" line="50"/>
+        <location filename="channelparticipantentry.cpp" line="25"/>
         <source>Information</source>
         <translation>Informații</translation>
-    </message>
-    <message>
-        <location filename="channelparticipantentry.cpp" line="61"/>
-        <source>CTCP</source>
-        <translation>CTCP</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::Acetamide::ChannelsListDialog</name>
     <message>
-        <location filename="channelslistdialog.cpp" line="51"/>
+        <location filename="channelslistdialog.cpp" line="48"/>
         <source>Name</source>
         <translation>Nume</translation>
     </message>
     <message>
-        <location filename="channelslistdialog.cpp" line="51"/>
+        <location filename="channelslistdialog.cpp" line="48"/>
         <source>Users count</source>
         <translation>Număr utilizatori</translation>
     </message>
     <message>
-        <location filename="channelslistdialog.cpp" line="51"/>
+        <location filename="channelslistdialog.cpp" line="48"/>
         <source>Topic</source>
         <translation>Subiect</translation>
     </message>
@@ -588,22 +604,22 @@
 <context>
     <name>LC::Azoth::Acetamide::ChannelsManager</name>
     <message>
-        <location filename="channelsmanager.cpp" line="471"/>
+        <location filename="channelsmanager.cpp" line="419"/>
         <source>%1 added to your ban list.</source>
         <translation>%1 a fost adăugat la lista ta de interdicții.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="475"/>
+        <location filename="channelsmanager.cpp" line="422"/>
         <source>%1 added to your except list.</source>
         <translation>%1 a fost adăugat la lista ta de excepții.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="479"/>
+        <location filename="channelsmanager.cpp" line="425"/>
         <source>%1 added to your invite list.</source>
         <translation>%1  a fost adăugat la lista ta de invitații.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="572"/>
+        <location filename="channelsmanager.cpp" line="513"/>
         <source>Topic was set by %1 at %2</source>
         <translation>Subiectul a fost stabilit de către %1 la %2</translation>
     </message>
@@ -611,13 +627,13 @@
 <context>
     <name>LC::Azoth::Acetamide::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="135"/>
+        <location filename="clientconnection.cpp" line="111"/>
         <source>This channel is already joined.</source>
         <oldsource>This server is already joined.</oldsource>
         <translation>Acest canal este deja aderat.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="212"/>
+        <location filename="clientconnection.cpp" line="189"/>
         <source>Some bookmarks were lost due to unknown storage version.</source>
         <translation>Anumite marcaje au fost pierdute datorită unei versiuni de stocare necunoscută.</translation>
     </message>
@@ -625,58 +641,43 @@
 <context>
     <name>LC::Azoth::Acetamide::InviteChannelsDialog</name>
     <message>
-        <location filename="invitechannelsdialog.cpp" line="54"/>
+        <location filename="invitechannelsdialog.cpp" line="24"/>
         <source>Join</source>
         <translation>Participă</translation>
     </message>
     <message>
-        <location filename="invitechannelsdialog.cpp" line="55"/>
+        <location filename="invitechannelsdialog.cpp" line="24"/>
         <source>Channel name</source>
         <translation>Nume canal:</translation>
     </message>
     <message>
-        <location filename="invitechannelsdialog.cpp" line="56"/>
+        <location filename="invitechannelsdialog.cpp" line="24"/>
         <source>Nickname</source>
         <translation>Pseudonim</translation>
-    </message>
-    <message>
-        <location filename="invitechannelsdialog.cpp" line="70"/>
-        <source>Always ask</source>
-        <translation>Întreabă întotdeauna</translation>
-    </message>
-    <message>
-        <location filename="invitechannelsdialog.cpp" line="75"/>
-        <source>Always join</source>
-        <translation>Participă întotdeauna</translation>
-    </message>
-    <message>
-        <location filename="invitechannelsdialog.cpp" line="80"/>
-        <source>Always ignore</source>
-        <translation>Ignoră întotdeauna</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::Acetamide::IrcProtocol</name>
     <message>
-        <location filename="ircprotocol.cpp" line="255"/>
-        <source>This channel needs password.</source>
-        <translation>Acest canal necesită parolă</translation>
+        <location filename="ircprotocol.cpp" line="159"/>
+        <source>This server needs password. Please enter it here:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ircprotocol.cpp" line="256"/>
-        <source>Password:</source>
-        <translation>Parola:</translation>
+        <location filename="ircprotocol.cpp" line="165"/>
+        <source>This channel needs password. Please enter it here:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::Acetamide::IrcServerCLEntry</name>
     <message>
-        <location filename="ircserverclentry.cpp" line="50"/>
+        <location filename="ircserverclentry.cpp" line="27"/>
         <source>Channels list</source>
         <translation>Listă canale</translation>
     </message>
     <message>
-        <location filename="ircserverclentry.cpp" line="99"/>
+        <location filename="ircserverclentry.cpp" line="70"/>
         <source>Servers</source>
         <translation>Servere</translation>
     </message>
@@ -684,77 +685,78 @@
 <context>
     <name>LC::Azoth::Acetamide::IrcServerHandler</name>
     <message>
-        <location filename="ircserverhandler.cpp" line="548"/>
+        <location filename="ircserverhandler.cpp" line="481"/>
         <source>%1 is a %2</source>
         <translation>%1 este %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="553"/>
+        <location filename="ircserverhandler.cpp" line="486"/>
         <source>%1 is on server</source>
         <translation>%1 este pe server</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="572"/>
+        <location filename="ircserverhandler.cpp" line="529"/>
         <source>%1 is %2</source>
         <translation>%1 este %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="589"/>
+        <location filename="ircserverhandler.cpp" line="532"/>
         <source>%1&apos;s real name is %2</source>
         <translation>numele real a lui %1 este %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="605"/>
+        <location filename="ircserverhandler.cpp" line="535"/>
         <source>%1 is on channels: %2</source>
         <translation>%1 este pe canalele: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="624"/>
+        <location filename="ircserverhandler.cpp" line="539"/>
         <source>%1&apos;s server is: %2 - %3</source>
         <translation>serverul lui %1 este: %2 - %3</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="635"/>
+        <location filename="ircserverhandler.cpp" line="542"/>
         <source>%1&apos;s idle time: %2</source>
         <translation>timpul de inactivitate a lui %1 este: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="645"/>
+        <location filename="ircserverhandler.cpp" line="545"/>
         <source>%1&apos;s auth date: %2</source>
         <translation>data de auth a lui %1 este: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="665"/>
-        <source>%1 is logged in as %2 </source>
-        <translation>%1 s-a autentificat ca și %2</translation>
+        <location filename="ircserverhandler.cpp" line="551"/>
+        <source>%1 is logged in as %2</source>
+        <oldsource>%1 is logged in as %2 </oldsource>
+        <translation type="unfinished">%1 s-a autentificat ca și %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="676"/>
+        <location filename="ircserverhandler.cpp" line="554"/>
         <source>%1 is using a secure connection</source>
         <translation>%1 folosește o conexiune securizată</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="687"/>
+        <location filename="ircserverhandler.cpp" line="557"/>
         <source>%1: %2</source>
         <translation>%1: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="699"/>
+        <location filename="ircserverhandler.cpp" line="560"/>
         <source>%1 is available for help</source>
         <translation>%1 este disponibil pentru asistență</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="710"/>
+        <location filename="ircserverhandler.cpp" line="563"/>
         <source>%1 is a registered nick</source>
         <translation>%1 este un pseudonim înregistrat</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="721"/>
+        <location filename="ircserverhandler.cpp" line="566"/>
         <source>%1 e-mail address is %2</source>
         <translation>%1 are adresa de email %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="766"/>
+        <location filename="ircserverhandler.cpp" line="584"/>
         <source>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</source>
         <translation>%1 [%2@%3]: Canalul: %4, Server: %5, Hops: %6, Semnalizări: %7, Plecat: %8, Nume Real: %9</translation>
     </message>
@@ -762,35 +764,35 @@
 <context>
     <name>LC::Azoth::Acetamide::IrcServerSocket</name>
     <message>
-        <location filename="ircserversocket.cpp" line="153"/>
+        <location filename="ircserversocket.cpp" line="171"/>
         <source>Unknown encoding %1.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LC::Azoth::Acetamide::NickServIdentifyWidget</name>
+    <name>LC::Azoth::Acetamide::NickServIdentifyManager</name>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="53"/>
+        <location filename="nickservidentifymanager.cpp" line="21"/>
         <source>Server</source>
         <translation>Server</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="54"/>
+        <location filename="nickservidentifymanager.cpp" line="22"/>
         <source>Nickname</source>
         <translation>Pseudonim</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="55"/>
+        <location filename="nickservidentifymanager.cpp" line="23"/>
         <source>NickServ nickname</source>
         <translation>Pseudonim NickServ</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="56"/>
+        <location filename="nickservidentifymanager.cpp" line="24"/>
         <source>NickServ auth string</source>
         <translation>Șir auth NickServ</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.cpp" line="57"/>
+        <location filename="nickservidentifymanager.cpp" line="25"/>
         <source>Auth message</source>
         <translation>Mesaj Auth</translation>
     </message>
@@ -798,15 +800,121 @@
 <context>
     <name>LC::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="91"/>
+        <location filename="acetamide.cpp" line="65"/>
         <source>IRC protocol support.</source>
         <translation>Suport protocol IRC.</translation>
     </message>
 </context>
 <context>
+    <name>LC::Azoth::Acetamide::ServerInfoWidget</name>
+    <message>
+        <location filename="serverinfowidget.cpp" line="149"/>
+        <source>Case mapping used for nick- and channel name comparing. Current possible values:
+ascii: The chars [a-z] are lowercase of [A-Z].
+rfc1459: ascii with additional {}|~ the lowercase of []^.
+strict-rfc1459: ascii with additional {}| the lowercase of [].
+Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="159"/>
+        <source>Maximum number of channels allowed to join by channel prefix.</source>
+        <translation>Numărul maxim de canale permise să se alăture prin prefixul canalului.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="165"/>
+        <source>Maximum channel name length.</source>
+        <translation>Lungimea maximă pentru numele canalului.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="171"/>
+        <source>Indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.
+[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &quot;!&quot; channels; for example  &quot;!JNB4Sircd&quot;, where &quot;JNB4S&quot; is the ID and &quot;ircd&quot; is the channel&apos;s short name.]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="179"/>
+        <source>Maximum kick comment length.</source>
+        <translation>Lungimea maximă de comentariu pentru kick .</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="185"/>
+        <source>Maximum number entries in the list per mode. 
+[Example: Given &quot;b:25,eI:50&quot;, it would be possible to set up to 25 &quot;+b&quot; modes, and up to 50 of a combination of &quot;+e&quot; and &quot;+I&quot;  modes, e.g. 30 &quot;+e&quot; and 20 &quot;+I&quot; modes, making up a total of 50.]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="193"/>
+        <source>Maximum number of channel modes with parameter allowed per MODE command.</source>
+        <translation>Numărul maxim de moduri de canale cu parametru permis pentru comanda MODE.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="199"/>
+        <source>The IRC network name.</source>
+        <translation>Numele rețelei IRC.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="205"/>
+        <source>Maximum nickname length.</source>
+        <translation>Dimensiunea maximă a pseudonimului.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="211"/>
+        <source>Indicates which form(s) of the ISUPPORT numeric are used by the server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="217"/>
+        <source>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status. This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.
+[Example: NOTICE @#channel :Hi there]</source>
+        <translation>Serverul suportă o metodă de trimitere a unui mesaj de NOTIFICARE numai către acele persoane din canal cu status specificat. Aceasta se face printr-o comandă NOTICE, cu canalul prefixat de indicatorul de stare, ca și țintă.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="225"/>
+        <source>Maximum topic length.</source>
+        <translation>Dimensiunea maximă a subiectului.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="233"/>
+        <source>Indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
+        <translation>Indică faptul că, serverul suportă &quot;exceptii de interzicere&quot; (modul de canal +e), așa cum este definit în RFC 2811, secțiunea 4.3.1</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="239"/>
+        <source>Indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</source>
+        <translation>Indică faptul că clientul poate solicita o comandă &quot;LIST&quot;  de la server, fără a fi deconectat din cauza cantității mari de date generate de către comandă.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="249"/>
+        <source>Mode that adds or removes a nick or address to a list. Always has a parameter.</source>
+        <translation>Modul care adaugă sau elimină un pseudonim sau adresă într-o listă. Are întotdeauna un parametru.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="255"/>
+        <source>Mode that changes a setting and always has a parameter.</source>
+        <translation>Modul care schimbă o setare şi întotdeauna are un parametru.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="261"/>
+        <source>Mode that changes a setting and only has a parameter when set.</source>
+        <translation>Modul care schimbă o setare şi are un parametru doar când e stabilit.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="267"/>
+        <source>Mode that changes a setting and never has a parameter.</source>
+        <translation>Modul care schimbă o setare şi nu are niciodată un parametru.</translation>
+    </message>
+    <message>
+        <location filename="serverinfowidget.cpp" line="273"/>
+        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. [Example: (ab)&amp;* maps the channel mode &apos;a&apos; to the channel status flag &apos;&amp;&apos;, and channel mode &apos;b&apos; to the channel status flag &apos;*&apos;.]
+[Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LC::Azoth::Acetamide::ServerParticipantEntry</name>
     <message>
-        <location filename="serverparticipantentry.cpp" line="71"/>
+        <location filename="serverparticipantentry.cpp" line="50"/>
         <source>Private chats</source>
         <translation>Chaturi Private</translation>
     </message>
@@ -814,41 +922,41 @@
 <context>
     <name>LC::Azoth::Acetamide::ServerResponseManager</name>
     <message>
-        <location filename="serverresponsemanager.cpp" line="367"/>
+        <location filename="serverresponsemanager.cpp" line="314"/>
         <source> invites you to a channel </source>
         <translation>vă invită pe un canal</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="375"/>
+        <location filename="serverresponsemanager.cpp" line="322"/>
         <source>You invite </source>
         <translation>Invitați pe</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="376"/>
+        <location filename="serverresponsemanager.cpp" line="323"/>
         <source> to a channel </source>
         <translation>la un canal</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="408"/>
-        <location filename="serverresponsemanager.cpp" line="415"/>
-        <location filename="serverresponsemanager.cpp" line="423"/>
-        <location filename="serverresponsemanager.cpp" line="430"/>
-        <location filename="serverresponsemanager.cpp" line="438"/>
+        <location filename="serverresponsemanager.cpp" line="353"/>
+        <location filename="serverresponsemanager.cpp" line="360"/>
+        <location filename="serverresponsemanager.cpp" line="368"/>
+        <location filename="serverresponsemanager.cpp" line="375"/>
+        <location filename="serverresponsemanager.cpp" line="383"/>
         <source>Received request %1 from %2, sending response</source>
         <translation>A primit solicitarea %1 de la %2, se trimite răspuns</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="466"/>
+        <location filename="serverresponsemanager.cpp" line="411"/>
         <source>Received answer CTCP-%1 from %2: %3</source>
         <translation>Răspuns CTCP primit - %1 de la: %2:%3</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="651"/>
+        <location filename="serverresponsemanager.cpp" line="594"/>
         <source> summoning to IRC</source>
         <translation>chemare la IRC</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="750"/>
+        <location filename="serverresponsemanager.cpp" line="709"/>
         <source>End of USERS</source>
         <translation>Capăt de UTILIZATORI</translation>
     </message>
@@ -856,7 +964,7 @@
 <context>
     <name>LC::Azoth::Acetamide::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="51"/>
+        <location filename="vcarddialog.cpp" line="30"/>
         <source>VCard for %1</source>
         <translation>VCard pentru %1</translation>
     </message>
@@ -908,12 +1016,12 @@
         <translation>Adăugare</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.ui" line="35"/>
+        <location filename="nickservidentifywidget.ui" line="38"/>
         <source>Edit</source>
         <translation>Editare</translation>
     </message>
     <message>
-        <location filename="nickservidentifywidget.ui" line="42"/>
+        <location filename="nickservidentifywidget.ui" line="48"/>
         <source>Delete</source>
         <translation>Șterge</translation>
     </message>
@@ -931,378 +1039,68 @@
         <translation>Parametrii Principali</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="50"/>
-        <source>The IRC network name.</source>
-        <translation>Numele rețelei IRC.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="53"/>
-        <source>NETWORK:</source>
-        <translation>REȚEA:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="63"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IRC network name.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NETWORK=EFnet indicates that the client is connected  to the EFnet IRC network.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Numele rețelei IRC.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: NETWORK=EFnet indică că, clientul este conectat la rețeaua IRC EFnet.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="78"/>
-        <source>Maximum number of channel modes with parameter allowed per MODE command.</source>
-        <translation>Numărul maxim de moduri de canale cu parametru permis pentru comanda MODE.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="81"/>
-        <source>MODES:</source>
-        <translation>MODURI:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="94"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number of channel modes with parameter allowed per MODE command.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: MODES=3 indicates that 3 modes may be set with a MODE command.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Numărul maxim de moduri de canale cu parametru permis pentru comanda MODE.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: MODES=3 indică faptul că 3 moduri pot fi configurate prin comanda MODE.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="109"/>
-        <location filename="serverinfowidget.ui" line="125"/>
-        <source>Maximum number of channels allowed to join by channel prefix. </source>
-        <translation>Numărul maxim de canale permise să se alăture prin prefixul canalului.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="112"/>
-        <source>CHANLIMIT:</source>
-        <translation>CHANLIMIT:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="135"/>
-        <source>Maximum nickname length.</source>
-        <translation>Dimensiunea maximă a pseudonimului.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="138"/>
-        <source>NICKLEN:</source>
-        <translation>NICKLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="148"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum nickname length.&lt;br /&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NICKLEN=9 indicates that clients may have nicknames up to 9 characters in length.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Dimensiunea maximă a pseudonimului.&lt;br /&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: NICKLEN=9 indică faptul că, utilizatorii pot avea pseudonime cu un număr de 9 caractere.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="162"/>
-        <source>Maximum number entries in the list per mode. </source>
-        <translation>Numărul maxim de intrări în listă pentru fiecare mod.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="165"/>
-        <source>MAXLIST:</source>
-        <translation>MAXLIST:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="175"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number entries in the list per mode. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: Given &amp;quot;b:25,eI:50&amp;quot;, it would be possible to set up to 25 &amp;quot;+b&amp;quot; modes, and up to 50 of a combination of &amp;quot;+e&amp;quot; and &amp;quot;+I&amp;quot;  modes, e.g. 30 &amp;quot;+e&amp;quot; and 20 &amp;quot;+I&amp;quot; modes, making up a total of 50.] &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: MAXLIST=b:25 indicates that 25 bans may be set on a      channel at one time.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Numărul maxim de intrări în listă pentru fiecare mod. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: Dacă este &amp;quot;b:25,eI:50&amp;quot;, va fi posibil să se stabilească până la 25 &amp;quot;+b&amp;quot; de moduri, și până la 50 de combinații &amp;quot;+e&amp;quot; și &amp;quot;+I&amp;quot;  moduri, ex. 30 &amp;quot;+e&amp;quot; și 20 &amp;quot;+I&amp;quot; de moduri, dau un total de 50.] &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: MAXLIST=b:25 indică că 25 de interdicții pot fi stabilite în același timp pe un canal.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="191"/>
-        <location filename="serverinfowidget.ui" line="212"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Case mapping used for nick- and channel name comparing. Current possible values: &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ascii: The chars [a-z] are lowercase of [A-Z]. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;rfc1459: ascii with additional {}|~ the lowercase of []\^. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;strict-rfc1459: ascii with additional {}| the lowercase of []\. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Case mapping utilizat pentru pseudonim- și compararea numelui canalului . Valori curente posibile: &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ascii: Caracterele [a-z] sunt literele mici ale [A-Z]. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;rfc1459: ascii cu caracterele {}|~ adiționale pentru cacaterele mici ale []\^. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;strict-rfc1459: ascii cu caracterelel {}| adiționale pentru cacaterele mici ale []\. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note: RFC1459 am uitat să menționăm ~ și ^ deși în toate implementările cunoscute, acestea sunt considerate echivalente. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="202"/>
-        <source>CASEMAPPING:</source>
-        <translation>CASEMAPPING:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="230"/>
-        <location filename="serverinfowidget.ui" line="243"/>
-        <source>Maximum topic length. </source>
-        <translation>Dimensiunea maximă a subiectului.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="233"/>
-        <source>TOPICLEN:</source>
-        <translation>TOPICLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="253"/>
-        <location filename="serverinfowidget.ui" line="266"/>
-        <source>Maximum kick comment length. </source>
-        <translation>Lungimea maximă de comentariu pentru kick .</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="256"/>
-        <source>KICKLEN:</source>
-        <translation>KICKLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="276"/>
-        <location filename="serverinfowidget.ui" line="289"/>
-        <source>Maximum channel name length.</source>
-        <translation>Lungimea maximă pentru numele canalului.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="279"/>
-        <source>CHANNELLEN:</source>
-        <translation>CHANNELLEN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="299"/>
-        <source>The IDCHAN parameter indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.</source>
-        <translation>Parametrul IDCHAN indică existența canalelor &quot;sigure&quot; așa cum este descris în RFC 2811, şi lungimea porțiunii &quot;id&quot; a numelor acestor canale.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="302"/>
-        <source>IDCHAN:</source>
-        <translation>IDCHAN:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="312"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IDCHAN parameter indicates the existence of &amp;quot;safe&amp;quot; channels as described in RFC 2811, and the length of the &amp;quot;id&amp;quot; portion of those channel names.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &amp;quot;!&amp;quot; channels; for example  &amp;quot;!JNB4Sircd&amp;quot;, where &amp;quot;JNB4S&amp;quot; is the ID and &amp;quot;ircd&amp;quot; is the channel&apos;s short name.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Parametrul IDCHAN indică existența canalelor &amp;quot;sigure&amp;quot; așa cum sunt descrise în RFC 2811, și lungimea porțiunii &amp;quot;id&amp;quot; a numelor acestor canale.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: IDCHAN=!:5 înseamnă că, clientul ar trebui să aștepte ID-uri cu 5 caractere lungime pentru &amp;quot;!&amp;quot; canale; de examplu  &amp;quot;!JNB4Sircd&amp;quot;, unde &amp;quot;JNB4S&amp;quot; este ID-ul și &amp;quot;ircd&amp;quot; este numele scurt al canalului.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="327"/>
-        <source>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.</source>
-        <translation>Serverul suportă o metodă de trimitere a unui mesaj de NOTIFICARE numai către acele persoane din canal cu status specificat. Aceasta se face printr-o comandă NOTICE, cu canalul prefixat de indicatorul de stare, ca și țintă.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="330"/>
-        <source>STATUSMSG:</source>
-        <translation>STATUSMSG:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="340"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.&lt;/span&gt;&lt;/pre&gt;
-&lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NOTICE @#channel :Hi there]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;Serverul suportă o metodă de trimitere a unui mesaj de NOTIFICARE numai către acele persoane din canal cu status specificat. Aceasta se face printr-o comandă NOTICE, cu canalul prefixat de indicatorul de stare, ca și țintă.&lt;/span&gt;&lt;/pre&gt;
-&lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: NOTICE @#channel :Salut]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="355"/>
-        <source>The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &quot;rfcnnnn&quot;, which refers to this document.</source>
-        <translation>Parametrul STD indică care formă(e) numerică(e) de ISUPPORT sunt utilizate de către server. În prezent, numai o valoarea posibilă este definită; aceasta este &quot;rfcnnnn&quot;, care se referă la acest document.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="358"/>
-        <source>STD:</source>
-        <translation>STD:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="368"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &amp;quot;rfcnnnn&amp;quot;, which refers to this document.&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;Parametrul STD indică care formă(e) numerică(e) de ISUPPORT sunt utilizate de către server. În prezent, numai o valoarea posibilă este definită; aceasta este &quot;rfcnnnn&quot;, care se referă la acest document.&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="382"/>
-        <location filename="serverinfowidget.ui" line="398"/>
-        <source>The EXCEPTS parameter indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
-        <translation>Parametrul EXCEPTS indică faptul că, serverul suportă &quot;exceptii de interzicere&quot; (modul de canal +e), așa cum este definit în RFC 2811, secțiunea 4.3.1</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="385"/>
-        <source>EXCEPTS:</source>
-        <translation>EXCEPTS:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="405"/>
-        <location filename="serverinfowidget.ui" line="421"/>
-        <source>The SAFELIST parameter indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</source>
-        <translation>Parametrul SAFELIST indică faptul că clientul poate solicita o comandă &quot;LIST&quot;  de la server, fără a fi deconectat din cauza cantității mari de date generate de către comandă.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="408"/>
-        <source>SAFELIST:</source>
-        <translation>SAFELIST:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="428"/>
-        <source>INVEX:</source>
-        <translation>INVEX:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="452"/>
+        <location filename="serverinfowidget.ui" line="57"/>
         <source>Channel parameters</source>
         <translation>Parametrii canalului</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="463"/>
-        <source>Mode that adds or removes a nick or address to a list. Always has a parameter. </source>
-        <translation>Modul care adaugă sau elimină un pseudonim sau adresă într-o listă. Are întotdeauna un parametru.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="466"/>
+        <location filename="serverinfowidget.ui" line="68"/>
         <source>CHANMODES type A:</source>
         <translation>CHANMODES tip A:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="483"/>
-        <source>Mode that changes a setting and always has a parameter. </source>
-        <translation>Modul care schimbă o setare şi întotdeauna are un parametru.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="486"/>
+        <location filename="serverinfowidget.ui" line="85"/>
         <source>CHANMODES type B:</source>
         <translation>CHANMODES tip B:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="503"/>
-        <source>Mode that changes a setting and only has a parameter when set. </source>
-        <translation>Modul care schimbă o setare şi are un parametru doar când e stabilit.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="506"/>
+        <location filename="serverinfowidget.ui" line="102"/>
         <source>CHANMODES type C:</source>
         <translation>CHANMODES tip C:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="523"/>
-        <source>Mode that changes a setting and never has a parameter. </source>
-        <translation>Modul care schimbă o setare şi nu are niciodată un parametru.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="526"/>
+        <location filename="serverinfowidget.ui" line="119"/>
         <source>CHANMODES type D:</source>
         <translation>CHANMODES tip D:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="554"/>
-        <source>The supported channel prefixes. </source>
-        <translation>Prefixele cuportate de canal.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="557"/>
+        <location filename="serverinfowidget.ui" line="150"/>
         <source>CHANTYPES:</source>
         <translation>CHANTYPES:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="581"/>
-        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. </source>
-        <translation>O listă de moduri de canale  pe care le poate obține o persoană şi prefixul respectiv pe care un canal sau pseudonim, le va primi în cazul în care persoana îl are. Ordinea modurilor pleacă de la cel mai puternic la cel mai puțin puternic. Acele prefixe sunt afișate în generarea de comenzi WHOIS, WHO și NAMES.</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="584"/>
+        <location filename="serverinfowidget.ui" line="178"/>
         <source>PREFIX:</source>
         <translation>PREFIX:</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="597"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: (ab)&amp;amp;* maps the channel mode 'a' to the channel status flag '&amp;amp;', and channel mode 'b' to the channel status flag '*'.]&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: (ab)&amp;amp;* cartografiază modul de canal &apos;a&apos; la indicatorul de status al canalului &apos;&amp;amp;&apos;, și modul de canal  &apos;b&apos; la indicatorul de status al canalului  &apos;*&apos;.]&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Exemplu: PREFIX=(ohv)@%+ cartografiază modul de canal  &apos;o&apos; la statusul &apos;@&apos;, &apos;h&apos; la statusul &apos;%&apos;, și &apos;v&apos; la statusul +.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <location filename="serverinfowidget.ui" line="147"/>
+        <location filename="serverinfowidget.ui" line="160"/>
+        <source>The supported channel prefixes.</source>
+        <translation>Prefixele cuportate de canal.</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="609"/>
+        <location filename="serverinfowidget.ui" line="195"/>
         <source>Mode</source>
         <translation>Mod</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="614"/>
+        <location filename="serverinfowidget.ui" line="200"/>
         <source>Prefix</source>
         <translation>Prefix</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="625"/>
+        <location filename="serverinfowidget.ui" line="211"/>
         <source>Maximum targets</source>
         <translation>Destinații maxime</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="632"/>
+        <location filename="serverinfowidget.ui" line="218"/>
         <source>Target</source>
         <translation>Destinație</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.ui" line="637"/>
+        <location filename="serverinfowidget.ui" line="223"/>
         <source>Maximum count</source>
         <translation>Numărul Maxim</translation>
     </message>
