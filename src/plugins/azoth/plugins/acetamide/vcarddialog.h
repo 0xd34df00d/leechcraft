@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_vcarddialog.h"
 
@@ -19,7 +20,7 @@ namespace LC::Azoth::Acetamide
 
 	class VCardDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::VCardDialog)
 
 		Ui::VCardDialog Ui_;
 	public:

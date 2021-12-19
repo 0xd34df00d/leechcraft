@@ -23,7 +23,7 @@ namespace LC::Azoth::Acetamide
 	public:
 		explicit ServerResponseManager (IrcServerHandler*);
 
-        void DoAction (const IrcMessageOptions& opts);
+		void DoAction (const IrcMessageOptions& opts);
 
 		void GotJoin (const IrcMessageOptions& opts);
 		void GotPart (const IrcMessageOptions& opts);

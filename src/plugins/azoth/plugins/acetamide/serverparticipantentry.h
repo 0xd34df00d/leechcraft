@@ -18,7 +18,7 @@ namespace LC::Azoth::Acetamide
 	class IrcAccount;
 	class IrcServerHandler;
 
-	class ServerParticipantEntry : public IrcParticipantEntry
+	class ServerParticipantEntry final : public IrcParticipantEntry
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Acetamide::ServerParticipantEntry)
 
