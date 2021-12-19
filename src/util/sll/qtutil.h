@@ -94,6 +94,16 @@ namespace LC::Util
 	{
 		return { arr.constData (), static_cast<size_t> (arr.size ()) };
 	}
+
+	template<typename T, typename S>
+	std::pair<T, T> BreakAt (const T& str, S c) noexcept
+	{
+		const auto pos = str.indexOf (c);
+		if (pos == -1)
+			return { str, {} };
+
+		return { str.left (pos), str.mid (pos + 1) };
+	}
 }
 
 namespace LC
