@@ -339,8 +339,8 @@ namespace LC::Azoth::Acetamide
 		if (ctcpArgs.isEmpty ())
 			return;
 
-		const auto commandSepPos = ctcpArgs.indexOf (' ');
-		const auto& command = ctcpArgs.left (commandSepPos).toUtf8 ().toUpper ();
+		const auto& [commandStr, commandArg] = Util::BreakAt (ctcpArgs, ' ');
+		const auto& command = commandStr.toUtf8 ().toUpper ();
 
 		const auto lcVer = [] { return GetProxyHolder ()->GetVersion (); };
 		const auto fullVersion = [&] { return u"LeechCraft %1 (Acetamide 2.0) - https://leechcraft.org"_qsv.arg (lcVer ()); };
@@ -363,10 +363,10 @@ namespace LC::Azoth::Acetamide
 			sendReply (fullVersion ());
 		else if (command == "CLIENTINFO")
 			sendReply (fullVersion () + " - Supported tags: VERSION PING TIME SOURCE CLIENTINFO");
-		else if (command == "ACTION" && commandSepPos > 0)
+		else if (command == "ACTION" && commandArg.size ())
 			ISH_->IncomingMessage (opts.Nick_,
 					QString::fromStdString (opts.Parameters_.last ()),
-					QStringLiteral ("/me ") + ctcpArgs.mid (commandSepPos + 1));
+					QStringLiteral ("/me ") + commandArg);
 	}
 
 	void ServerResponseManager::GotCTCPRequestResult (const IrcMessageOptions& opts)
@@ -377,14 +377,14 @@ namespace LC::Azoth::Acetamide
 		if (opts.Message_.isEmpty ())
 			return;
 
-		const QStringList ctcpList = opts.Message_.mid (1, opts.Message_.length () - 2).split (' ');
-		if (ctcpList.isEmpty ())
+		const auto& ctcpArg = opts.Message_.midRef (1, opts.Message_.length () - 2);
+		if (ctcpArg.isEmpty ())
 			return;
 
-		const QString output = tr ("Received answer CTCP-%1 from %2: %3")
-				.arg (ctcpList.at (0), opts.Nick_,
-						(QStringList (ctcpList.mid (1))).join (" "));
-		ISH_->CTCPRequestResult (output);
+		const auto& [command, reply] = Util::BreakAt (ctcpArg, ' ');
+
+		ISH_->CTCPRequestResult (tr ("Received answer CTCP-%1 from %2: %3")
+				.arg (command, opts.Nick_, reply));
 	}
 
 	void ServerResponseManager::GotNames (const IrcMessageOptions& opts)
@@ -439,8 +439,7 @@ namespace LC::Azoth::Acetamide
 	{
 		for (const auto& str : opts.Message_.splitRef (' '))
 		{
-			const auto& user = str.left (str.indexOf ('='));
-			const auto& host = str.mid (str.indexOf ('=') + 1);
+			const auto& [user, host] = Util::BreakAt (str, '=');
 			ISH_->ShowUserHost (user.toString (), host.toString ());
 		}
 	}
@@ -542,9 +541,11 @@ namespace LC::Azoth::Acetamide
 		msg.Host_ = QString::fromStdString (opts.Parameters_.at (3));
 		msg.ServerName_ = QString::fromStdString (opts.Parameters_.at (4));
 		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (5));
-		int index = opts.Message_.indexOf (' ');
-		msg.RealName_ = opts.Message_.mid (index);
-		msg.Jumps_ = opts.Message_.left (index).toInt ();
+
+		const auto& [realName, jumps] = Util::BreakAt (QStringRef { &opts.Message_ }, ' ');
+		msg.RealName_ = realName.toString ();
+		msg.Jumps_ = jumps.toInt ();
+
 		msg.Flags_ = QString::fromStdString (opts.Parameters_.at (6));
 		if (msg.Flags_.at (0) == 'H')
 			msg.IsAway_ = false;
