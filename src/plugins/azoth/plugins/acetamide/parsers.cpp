@@ -157,12 +157,12 @@ namespace LC::Azoth::Acetamide
 
 		ServerOptions so
 		{
-			.ServerName_ = matchRes.captured (u"host"_qsv),
-			.ServerPort_ = matchRes.capturedView (u"port"_qsv).toInt (),
+			.ServerName_ = matchRes.captured (u"host"),
+			.ServerPort_ = matchRes.capturedView (u"port").toInt (),
 		};
 
 		Target targetVar;
-		if (const auto& channel = matchRes.captured (u"channel"_qsv);
+		if (const auto& channel = matchRes.captured (u"channel");
 			!channel.isEmpty ())
 			targetVar = ChannelTarget
 			{
@@ -173,9 +173,9 @@ namespace LC::Azoth::Acetamide
 				},
 				.HasPassword_ = matchRes.capturedLength (u"needkey") > 0,
 			};
-		else if (matchRes.capturedLength (u"nickonly"_qsv) > 0)
-			targetVar = NickOnly { matchRes.captured (u"nickonly_nick"_qsv) };
-		else if (matchRes.capturedLength (u"nickinfo"_qsv) > 0)
+		else if (matchRes.capturedLength (u"nickonly") > 0)
+			targetVar = NickOnly { matchRes.captured (u"nickonly_nick") };
+		else if (matchRes.capturedLength (u"nickinfo") > 0)
 			targetVar = NickInfo
 			{
 				.Nick_ = matchRes.captured (u"nickinfo_nick"),
@@ -194,7 +194,7 @@ namespace LC::Azoth::Acetamide
 		return DecodedUrl
 		{
 			.Server_ = so,
-			.HasServerPassword_ = matchRes.capturedLength (u"needpass"_qsv) > 0,
+			.HasServerPassword_ = matchRes.capturedLength (u"needpass") > 0,
 			.Target_ = std::move (targetVar),
 		};
 	}
