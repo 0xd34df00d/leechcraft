@@ -12,6 +12,7 @@
 #include <boost/spirit/include/classic_push_back_actor.hpp>
 #include <QString>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include "localtypes.h"
 
 namespace LC::Azoth::Acetamide
@@ -79,7 +80,7 @@ namespace LC::Azoth::Acetamide
 			.Host_ = QString::fromStdString (hostStr),
 			.Command_ = QString::fromStdString (commandStr).toLower (),
 			.Message_ = QString::fromStdString (msgStr),
-			.Parameters_ = opts,
+			.Parameters_ = Util::Map (opts, &QString::fromStdString),
 		};
 	}
 }

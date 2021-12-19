@@ -28,12 +28,7 @@ namespace LC::Azoth::Acetamide
 		if (!IsError (options.Command_.toInt ()))
 			return;
 
-		QString paramsMessage;
-
-		if (options.Parameters_.count () > 1)
-			for (const auto& str : options.Parameters_.mid (1))
-				paramsMessage += QString::fromStdString (str) + " ";
-
+		const auto& paramsMessage = options.Parameters_.mid (1).join (' ');
 		Entity e = Util::MakeNotification (Lits::AzothAcetamide,
 				paramsMessage.isEmpty () ?
 						options.Message_ :

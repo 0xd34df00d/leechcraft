@@ -102,7 +102,7 @@ namespace LC::Azoth::Acetamide
 		QString Host_;
 		QString Command_;
 		QString Message_;
-		QList<std::string> Parameters_;
+		QStringList Parameters_;
 	};
 
 	struct IrcBookmark

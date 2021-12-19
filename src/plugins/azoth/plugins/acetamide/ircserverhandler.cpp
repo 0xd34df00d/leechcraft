@@ -1039,8 +1039,8 @@ namespace LC::Azoth::Acetamide
 	{
 		ChannelsDiscoverInfo info;
 		info.Topic_ = opts.Message_;
-		info.ChannelName_ = QString::fromStdString (opts.Parameters_.value (1));
-		info.UsersCount_ = QString::fromStdString (opts.Parameters_.value (2)).toInt ();
+		info.ChannelName_ = opts.Parameters_.value (1);
+		info.UsersCount_ = opts.Parameters_.value (2).toInt ();
 		emit gotChannels (info);
 	}
 

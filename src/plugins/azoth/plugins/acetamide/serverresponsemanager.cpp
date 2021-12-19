@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "serverresponsemanager.h"
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/statichash.h>
 #include <interfaces/core/icoreproxy.h>
@@ -136,7 +135,7 @@ namespace LC::Azoth::Acetamide
 						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
 						{
 							WhoIsMessage msg;
-							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.Nick_ = opts.Parameters_ [1];
 							msg.IsRegistered_ = opts.Message_;
 							ish.ShowWhoIsReply (msg);
 						}
@@ -147,7 +146,7 @@ namespace LC::Azoth::Acetamide
 						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
 						{
 							WhoIsMessage msg;
-							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.Nick_ = opts.Parameters_ [1];
 							msg.IsHelpOp_ = opts.Message_;
 							ish.ShowWhoIsReply (msg);
 						}
@@ -158,7 +157,7 @@ namespace LC::Azoth::Acetamide
 						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
 						{
 							WhoIsMessage msg;
-							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.Nick_ = opts.Parameters_ [1];
 							msg.Mail_ = opts.Message_;
 							ish.ShowWhoIsReply (msg);
 						}
@@ -169,7 +168,7 @@ namespace LC::Azoth::Acetamide
 						+[] (IrcServerHandler& ish, const IrcMessageOptions& opts)
 						{
 							WhoIsMessage msg;
-							msg.Nick_ = QString::fromStdString (opts.Parameters_ [1]);
+							msg.Nick_ = opts.Parameters_ [1];
 							msg.ConnectedFrom_ = opts.Message_;
 							ish.ShowWhoIsReply (msg);
 						}
@@ -225,8 +224,8 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotJoin (const IrcMessageOptions& opts)
 	{
-		const QString& channel = opts.Message_.isEmpty () ?
-				QString::fromStdString (opts.Parameters_.last ()) :
+		const auto& channel = opts.Message_.isEmpty () ?
+				opts.Parameters_.last () :
 				opts.Message_;
 
 		if (opts.Nick_ == ISH_->GetNickName ())
@@ -245,7 +244,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-        const QString channel (QString::fromStdString (opts.Parameters_.first ()));
+        const auto& channel = opts.Parameters_.first ();
 		if (opts.Nick_ == ISH_->GetNickName ())
 		{
 			ISH_->CloseChannel (channel);
@@ -268,7 +267,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString target (QString::fromStdString (opts.Parameters_.first ()));
+		const auto& target = opts.Parameters_.first ();
 		ISH_->IncomingMessage (opts.Nick_, target, opts.Message_);
 	}
 
@@ -289,8 +288,7 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotTopic (const IrcMessageOptions& opts)
 	{
-        QString channel (QString::fromStdString (opts.Parameters_.last ()));
-		ISH_->GotTopic (channel, opts.Message_);
+		ISH_->GotTopic (opts.Parameters_.last (), opts.Message_);
 	}
 
 	void ServerResponseManager::GotKick (const IrcMessageOptions& opts)
@@ -298,8 +296,8 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString channel (QString::fromStdString (opts.Parameters_.first ()));
-		const QString target (QString::fromStdString (opts.Parameters_.last ()));
+		const auto& channel = opts.Parameters_.first ();
+		const auto& target = opts.Parameters_.last ();
 		if (opts.Nick_ == target)
 			return;
 
@@ -326,8 +324,8 @@ namespace LC::Azoth::Acetamide
 
 		ISH_->ShowAnswer ("invite",
 				tr ("You invite %1 to channel %2")
-					.arg (QString::fromStdString (opts.Parameters_.at (1)),
-						  QString::fromStdString (opts.Parameters_.at (2))));
+					.arg (opts.Parameters_.at (1),
+						  opts.Parameters_.at (2)));
 	}
 
 	void ServerResponseManager::GotCTCPReply (const IrcMessageOptions& opts)
@@ -365,13 +363,13 @@ namespace LC::Azoth::Acetamide
 			sendReply (fullVersion () + " - Supported tags: VERSION PING TIME SOURCE CLIENTINFO");
 		else if (command == "ACTION" && commandArg.size ())
 			ISH_->IncomingMessage (opts.Nick_,
-					QString::fromStdString (opts.Parameters_.last ()),
+					opts.Parameters_.last (),
 					QStringLiteral ("/me ") + commandArg);
 	}
 
 	void ServerResponseManager::GotCTCPRequestResult (const IrcMessageOptions& opts)
 	{
-		if (QString::fromStdString (opts.Parameters_.first ()) != ISH_->GetNickName ())
+		if (opts.Parameters_.first () != ISH_->GetNickName ())
 			return;
 
 		if (opts.Message_.isEmpty ())
@@ -392,8 +390,8 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString channel = QString::fromStdString (opts.Parameters_.last ());
-		const QStringList& participants = opts.Message_.split (' ');
+		const auto& channel = opts.Parameters_.last ();
+		const auto& participants = opts.Message_.split (' ');
 		ISH_->GotNames (channel, participants);
 	}
 
@@ -402,7 +400,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString channel = QString::fromStdString (opts.Parameters_.last ());
+		const auto& channel = opts.Parameters_.last ();
 		ISH_->GotEndOfNames (channel);
 	}
 
@@ -411,7 +409,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const auto& target = QString::fromStdString (opts.Parameters_.last ());
+		const auto& target = opts.Parameters_.last ();
 		ISH_->IncomingMessage (target,
 				target,
 				u"[AWAY] %1 :%2"_qsv.arg (target, opts.Message_),
@@ -456,9 +454,9 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
-		msg.UserName_ = QString::fromStdString (opts.Parameters_.at (2));
-		msg.Host_ = QString::fromStdString (opts.Parameters_.at (3));
+		msg.Nick_ = opts.Parameters_.at (1);
+		msg.UserName_ = opts.Parameters_.at (2);
+		msg.Host_ = opts.Parameters_.at (3);
 		msg.RealName_ = opts.Message_;
 		ISH_->ShowWhoIsReply (msg);
 	}
@@ -469,8 +467,8 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
-		msg.ServerName_ = QString::fromStdString (opts.Parameters_.at (2));
+		msg.Nick_ = opts.Parameters_.at (1);
+		msg.ServerName_ = opts.Parameters_.at (2);
 		msg.ServerCountry_ = opts.Message_;
 		ISH_->ShowWhoIsReply (msg);
 	}
@@ -481,7 +479,7 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
+		msg.Nick_ = opts.Parameters_.at (1);
 		msg.IrcOperator_ = opts.Message_;
 		ISH_->ShowWhoIsReply (msg);
 	}
@@ -492,16 +490,16 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
-		msg.IdleTime_ = Util::MakeTimeFromLong (std::stol (opts.Parameters_.at (2)));
-		msg.AuthTime_ = QDateTime::fromSecsSinceEpoch (std::stoul (opts.Parameters_.at (3))).toString (Qt::TextDate);
+		msg.Nick_ = opts.Parameters_.at (1);
+		msg.IdleTime_ = Util::MakeTimeFromLong (opts.Parameters_.at (2).toInt ());
+		msg.AuthTime_ = QDateTime::fromSecsSinceEpoch (opts.Parameters_.at (3).toInt ()).toString (Qt::TextDate);
 		ISH_->ShowWhoIsReply (msg);
 	}
 
 	void ServerResponseManager::GotEndOfWhoIs (const IrcMessageOptions& opts)
 	{
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
+		msg.Nick_ = opts.Parameters_.at (1);
 		msg.EndString_ = opts.Message_;
 		ISH_->ShowWhoIsReply (msg, true);
 	}
@@ -512,16 +510,16 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
+		msg.Nick_ = opts.Parameters_.at (1);
 		msg.Channels_ = opts.Message_.split (' ', Qt::SkipEmptyParts);
 		ISH_->ShowWhoIsReply (msg);
 	}
 
 	void ServerResponseManager::GotWhoWas (const IrcMessageOptions& opts)
 	{
-		ISH_->ShowWhoWasReply (QString::fromStdString (opts.Parameters_.at (1)) +
-				" - " + QString::fromStdString (opts.Parameters_.at (2)) + "@"
-				+ QString::fromStdString (opts.Parameters_.at (3)) +
+		ISH_->ShowWhoWasReply (opts.Parameters_.at (1) +
+				" - " + opts.Parameters_.at (2) + "@"
+				+ opts.Parameters_.at (3) +
 				" (" + opts.Message_ + ")");
 	}
 
@@ -536,17 +534,17 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoMessage msg;
-		msg.Channel_ = QString::fromStdString (opts.Parameters_.at (1));
-		msg.UserName_ = QString::fromStdString (opts.Parameters_.at (2));
-		msg.Host_ = QString::fromStdString (opts.Parameters_.at (3));
-		msg.ServerName_ = QString::fromStdString (opts.Parameters_.at (4));
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (5));
+		msg.Channel_ = opts.Parameters_.at (1);
+		msg.UserName_ = opts.Parameters_.at (2);
+		msg.Host_ = opts.Parameters_.at (3);
+		msg.ServerName_ = opts.Parameters_.at (4);
+		msg.Nick_ = opts.Parameters_.at (5);
 
 		const auto& [realName, jumps] = Util::BreakAt (QStringRef { &opts.Message_ }, ' ');
 		msg.RealName_ = realName.toString ();
 		msg.Jumps_ = jumps.toInt ();
 
-		msg.Flags_ = QString::fromStdString (opts.Parameters_.at (6));
+		msg.Flags_ = opts.Parameters_.at (6);
 		if (msg.Flags_.at (0) == 'H')
 			msg.IsAway_ = false;
 		else if (msg.Flags_.at (0) == 'G')
@@ -557,7 +555,7 @@ namespace LC::Azoth::Acetamide
 	void ServerResponseManager::GotEndOfWho (const IrcMessageOptions& opts)
 	{
 		WhoMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
+		msg.Nick_ = opts.Parameters_.at (1);
 		msg.EndString_ = opts.Message_;
 		ISH_->ShowWhoReply (msg, true);
 	}
@@ -567,18 +565,14 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.count () < 2)
 			return;
 
-		ISH_->ShowAnswer ("summon", QString::fromStdString (opts.Parameters_.at (1)) +
-				tr (" summoning to IRC"));
+		ISH_->ShowAnswer ("summon", opts.Parameters_.at (1) + tr (" summoning to IRC"));
 	}
 
 	namespace
 	{
-		QString BuildParamsStr (const QList<std::string>& params)
+		QString BuildParamsStr (const QStringList& params)
 		{
-			QString string;
-			for (const auto& str : params)
-				string.append (QString::fromStdString (str) + " ");
-			return string;
+			return params.join (' ');
 		}
 
 		template<int N>
@@ -639,8 +633,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		ISH_->ShowAnswer ("rehash", QString::fromStdString (opts.Parameters_.last ()) +
-			" :" + opts.Message_);
+		ISH_->ShowAnswer ("rehash", opts.Parameters_.last () + " :" + opts.Message_);
 	}
 
 	void ServerResponseManager::GotTime (const IrcMessageOptions& opts)
@@ -648,8 +641,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		ISH_->ShowAnswer ("time", QString::fromStdString (opts.Parameters_.last ()) +
-				" :" + opts.Message_);
+		ISH_->ShowAnswer ("time", opts.Parameters_.last () + " :" + opts.Message_);
 	}
 
 	void ServerResponseManager::GotLuserOnlyMsg (const IrcMessageOptions& opts)
@@ -662,8 +654,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		ISH_->ShowAnswer ("luser", QString::fromStdString (opts.Parameters_.last ()) + ":"
-				+ opts.Message_);
+		ISH_->ShowAnswer ("luser", opts.Parameters_.last () + ":" + opts.Message_);
 	}
 
 	void ServerResponseManager::GotUsersStart (const IrcMessageOptions& opts)
@@ -779,8 +770,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const auto& server = QString::fromStdString (opts.Parameters_.last ());
-		ISH_->ShowTraceReply (server + " " + opts.Message_, true);
+		ISH_->ShowTraceReply (opts.Parameters_.last () + " " + opts.Message_, true);
 	}
 
 	void ServerResponseManager::GotStatsLinkInfo (const IrcMessageOptions& opts)
@@ -804,8 +794,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const auto& letter = QString::fromStdString (opts.Parameters_.last ());
-		ISH_->ShowStatsReply (letter + " " + opts.Message_, true);
+		ISH_->ShowStatsReply (opts.Parameters_.last () + " " + opts.Message_, true);
 	}
 
 	void ServerResponseManager::GotStatsUptime (const IrcMessageOptions& opts)
@@ -826,7 +815,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		ISH_->ShowAnswer ("admin", QString::fromStdString (opts.Parameters_.last ()) + ":" + opts.Message_);
+		ISH_->ShowAnswer ("admin", opts.Parameters_.last () + ":" + opts.Message_);
 	}
 
 	void ServerResponseManager::GotAdminLoc1 (const IrcMessageOptions& opts)
@@ -849,8 +838,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString cmd = QString::fromStdString (opts.Parameters_.last ());
-		ISH_->ShowAnswer ("error", cmd + ":" + opts.Message_);
+		ISH_->ShowAnswer ("error", opts.Parameters_.last () + ":" + opts.Message_);
 	}
 
 	void ServerResponseManager::GotISupport (const IrcMessageOptions& opts)
@@ -869,61 +857,56 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		if (opts.Parameters_.count () == 1 &&
-				QString::fromStdString (opts.Parameters_.first ()) == ISH_->GetNickName ())
+				opts.Parameters_.first () == ISH_->GetNickName ())
 		{
-			ISH_->ParseUserMode (QString::fromStdString (opts.Parameters_.first ()),
-					opts.Message_);
+			ISH_->ParseUserMode (opts.Parameters_.first (), opts.Message_);
 			return;
 		}
 
-		const QString channel = QString::fromStdString (opts.Parameters_.first ());
+		const auto& channel = opts.Parameters_.first ();
 
 		if (opts.Parameters_.count () == 2)
-			ISH_->ParseChanMode (channel,
-					QString::fromStdString (opts.Parameters_.at (1)));
+			ISH_->ParseChanMode (channel, opts.Parameters_.at (1));
 		else if (opts.Parameters_.count () == 3)
 			ISH_->ParseChanMode (channel,
-					QString::fromStdString (opts.Parameters_.at (1)),
-					QString::fromStdString (opts.Parameters_.at (2)));
+					opts.Parameters_.at (1),
+					opts.Parameters_.at (2));
 	}
 
 	void ServerResponseManager::GotChannelModes (const IrcMessageOptions& opts)
 	{
-		const QString channel = QString::fromStdString (opts.Parameters_.at (1));
+		const auto& channel = opts.Parameters_.at (1);
 
 		if (opts.Parameters_.count () == 3)
 			ISH_->ParseChanMode (channel,
-					QString::fromStdString (opts.Parameters_.at (2)));
+					opts.Parameters_.at (2));
 		else if (opts.Parameters_.count () == 4)
 			ISH_->ParseChanMode (channel,
-					QString::fromStdString (opts.Parameters_.at (2)),
-					QString::fromStdString (opts.Parameters_.at (3)));
+					opts.Parameters_.at (2),
+					opts.Parameters_.at (3));
+	}
+
+	namespace
+	{
+		void ShowList (const IrcMessageOptions& opts,
+				IrcServerHandler& ish,
+				void (IrcServerHandler::*handler) (const QString&, const QString&, const QString&, const QDateTime&))
+		{
+			const auto& channel = opts.Parameters_.value (1);
+			const auto& mask = opts.Parameters_.value (2);
+
+			QDateTime time;
+			if (const auto& timeStr = opts.Parameters_.value (4);
+					!timeStr.isEmpty ())
+				time = QDateTime::fromSecsSinceEpoch (timeStr.toInt ());
+
+			(ish.*handler) (channel, mask, opts.Nick_, time);
+		}
 	}
 
 	void ServerResponseManager::GotBanList (const IrcMessageOptions& opts)
 	{
-		const int count = opts.Parameters_.count ();
-		QString channel;
-		QString nick;
-		QString mask;
-		QDateTime time;
-
-		if (count > 2)
-		{
-			channel = QString::fromStdString (opts.Parameters_.at (1));
-			mask = QString::fromStdString (opts.Parameters_.at (2));
-		}
-
-		if (count > 3)
-		{
-			auto name = QString::fromStdString (opts.Parameters_.at (3));
-			nick = name.left (name.indexOf ('!'));
-		}
-
-		if (count > 4)
-			time = QDateTime::fromSecsSinceEpoch (std::stoi (opts.Parameters_.at (4)));
-
-		ISH_->ShowBanList (channel, mask, opts.Nick_, time);
+		ShowList (opts, *ISH_, &IrcServerHandler::ShowBanList);
 	}
 
 	void ServerResponseManager::GotBanListEnd (const IrcMessageOptions& opts)
@@ -933,28 +916,7 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotExceptList (const IrcMessageOptions& opts)
 	{
-		const int count = opts.Parameters_.count ();
-		QString channel;
-		QString nick;
-		QString mask;
-		QDateTime time;
-
-		if (count > 2)
-		{
-			channel = QString::fromStdString (opts.Parameters_.at (1));
-			mask = QString::fromStdString (opts.Parameters_.at (2));
-		}
-
-		if (count > 3)
-		{
-			auto name = QString::fromStdString (opts.Parameters_.at (3));
-			nick = name.left (name.indexOf ('!'));
-		}
-
-		if (count > 4)
-			time = QDateTime::fromSecsSinceEpoch (std::stoi (opts.Parameters_.at (4)));
-
-		ISH_->ShowExceptList (channel, mask, opts.Nick_, time);
+		ShowList (opts, *ISH_, &IrcServerHandler::ShowExceptList);
 	}
 
 	void ServerResponseManager::GotExceptListEnd (const IrcMessageOptions& opts)
@@ -964,28 +926,7 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotInviteList (const IrcMessageOptions& opts)
 	{
-		const int count = opts.Parameters_.count ();
-		QString channel;
-		QString nick;
-		QString mask;
-		QDateTime time;
-
-		if (count > 2)
-		{
-			channel = QString::fromStdString (opts.Parameters_.at (1));
-			mask = QString::fromStdString (opts.Parameters_.at (2));
-		}
-
-		if (count > 3)
-		{
-			QString name = QString::fromStdString (opts.Parameters_.at (3));
-			nick = name.left (name.indexOf ('!'));
-		}
-
-		if (count > 4)
-			time = QDateTime::fromSecsSinceEpoch (std::stoi (opts.Parameters_.at (4)));
-
-		ISH_->ShowInviteList (channel, mask, opts.Nick_, time);
+		ShowList (opts, *ISH_, &IrcServerHandler::ShowInviteList);
 	}
 
 	void ServerResponseManager::GotInviteListEnd (const IrcMessageOptions& opts)
@@ -995,10 +936,9 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotServerInfo (const IrcMessageOptions& opts)
 	{
-		ISH_->ShowAnswer ("myinfo",
-				Util::Map (opts.Parameters_, &QString::fromStdString).join (' '));
+		ISH_->ShowAnswer ("myinfo", opts.Parameters_.join (' '));
 
-		const auto& ircServer = QString::fromStdString (opts.Parameters_.at (2));
+		const auto& ircServer = opts.Parameters_.at (2);
 		const auto it = std::find_if (MatchString2Server.begin (), MatchString2Server.end (),
 				[&ircServer] (const auto& key) { return ircServer.contains (key.first, Qt::CaseInsensitive); });
 		const auto server = it == MatchString2Server.end () ? IrcServer::UnknownServer : it->second;
@@ -1011,8 +951,8 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
-		msg.LoggedName_ = QString::fromStdString (opts.Parameters_.at (2));
+		msg.Nick_ = opts.Parameters_.at (1);
+		msg.LoggedName_ = opts.Parameters_.at (2);
 		ISH_->ShowWhoIsReply (msg);
 	}
 
@@ -1022,7 +962,7 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		WhoIsMessage msg;
-		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
+		msg.Nick_ = opts.Parameters_.at (1);
 		msg.Secure_ = opts.Message_;
 		ISH_->ShowWhoIsReply (msg);
 	}
@@ -1032,8 +972,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.count () < 2)
 			return;
 
-		ISH_->GotChannelUrl (QString::fromStdString (opts.Parameters_.at (1)),
-				opts.Message_);
+		ISH_->GotChannelUrl (opts.Parameters_.at (1), opts.Message_);
 	}
 
 	void ServerResponseManager::GotTopicWhoTime (const IrcMessageOptions& opts)
@@ -1041,9 +980,9 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.count () < 4)
 			return;
 
-		ISH_->GotTopicWhoTime (QString::fromStdString (opts.Parameters_.at (1)),
-				QString::fromStdString (opts.Parameters_.at (2)),
-				std::stoll (opts.Parameters_.at (3)));
+		ISH_->GotTopicWhoTime (opts.Parameters_.at (1),
+				opts.Parameters_.at (2),
+				opts.Parameters_.at (3).toLongLong ());
 	}
 
 
