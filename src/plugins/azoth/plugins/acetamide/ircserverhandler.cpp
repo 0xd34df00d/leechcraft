@@ -32,6 +32,7 @@
 #include "channelsmanager.h"
 #include "channelslistdialog.h"
 #include "nickservidentifymanager.h"
+#include "messageparser.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -885,10 +886,11 @@ namespace LC::Azoth::Acetamide
 	void IrcServerHandler::ReadReply (const QString& msg)
 	{
 		SendToConsole (IMessage::Direction::In, msg.trimmed ());
-		if (!IrcParser_->ParseMessage (msg))
+		const auto& maybeOpts = ParseMessage (msg);
+		if (!maybeOpts)
 			return;
 
-		const auto& opts = IrcParser_->GetIrcMessageOptions ();
+		const auto& opts = *maybeOpts;
 		if (ErrorHandler_->IsError (opts.Command_.toInt ()))
 		{
 			ErrorHandler_->HandleError (opts);

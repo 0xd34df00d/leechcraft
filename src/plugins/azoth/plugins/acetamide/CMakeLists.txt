@@ -30,6 +30,7 @@ LC_DEFINE_PLUGIN (
 		ircserverhandler.cpp
 		invitechannelsdialog.cpp
 		localtypes.cpp
+		messageparser.cpp
 		newnickservidentifydialog.cpp
 		nickservidentifymanager.cpp
 		nickservidentifywidget.cpp

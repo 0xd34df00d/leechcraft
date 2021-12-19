@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include "localtypes.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -17,9 +16,7 @@ namespace LC::Azoth::Acetamide
 
 	class IrcParser : public QObject
 	{
-		IrcServerHandler *ISH_;
-		ServerOptions ServerOptions_;
-		IrcMessageOptions IrcMessageOptions_;
+		IrcServerHandler * const ISH_;
 	public:
 		explicit IrcParser (IrcServerHandler*);
 
@@ -66,10 +63,5 @@ namespace LC::Azoth::Acetamide
 		void QuitCommand (const QStringList&);
 		void ChanModeCommand (const QStringList&);
 		void ChannelsListCommand (const QStringList&);
-
-		/** Automatically converts the \em ba to UTF-8.
-		 */
-		bool ParseMessage (const QString& ba);
-		IrcMessageOptions GetIrcMessageOptions () const;
 	};
 }
