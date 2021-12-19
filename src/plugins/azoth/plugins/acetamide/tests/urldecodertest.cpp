@@ -8,7 +8,7 @@
 
 #include "urldecodertest.h"
 #include <QtTest>
-#include "../urldecoder.cpp"
+#include "../parsers.cpp"
 
 QTEST_APPLESS_MAIN (LC::Azoth::Acetamide::UrlDecoderTest)
 

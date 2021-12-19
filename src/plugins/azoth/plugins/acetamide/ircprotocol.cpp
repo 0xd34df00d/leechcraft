@@ -17,7 +17,7 @@
 #include "ircaccount.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircjoingroupchat.h"
-#include "urldecoder.h"
+#include "parsers.h"
 
 namespace LC::Azoth::Acetamide
 {

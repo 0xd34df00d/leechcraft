@@ -32,7 +32,7 @@
 #include "channelsmanager.h"
 #include "channelslistdialog.h"
 #include "nickservidentifymanager.h"
-#include "messageparser.h"
+#include "parsers.h"
 
 namespace LC::Azoth::Acetamide
 {

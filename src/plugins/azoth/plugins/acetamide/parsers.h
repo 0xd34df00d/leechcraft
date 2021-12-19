@@ -12,10 +12,10 @@
 #include <variant>
 #include "localtypes.h"
 
-class QUrl;
-
 namespace LC::Azoth::Acetamide
 {
+	std::optional<IrcMessageOptions> ParseMessage (const QString& msg);
+
 	struct NickOnly
 	{
 		QString Nick_;

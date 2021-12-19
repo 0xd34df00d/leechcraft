@@ -30,16 +30,15 @@ LC_DEFINE_PLUGIN (
 		ircserverhandler.cpp
 		invitechannelsdialog.cpp
 		localtypes.cpp
-		messageparser.cpp
 		newnickservidentifydialog.cpp
 		nickservidentifymanager.cpp
 		nickservidentifywidget.cpp
 		rplisupportparser.cpp
+		parsers.cpp
 		servercommandmessage.cpp
 		serverinfowidget.cpp
 		serverparticipantentry.cpp
 		serverresponsemanager.cpp
-		urldecoder.cpp
 		usercommandmanager.cpp
 		xmlsettingsmanager.cpp
 		vcarddialog.cpp
