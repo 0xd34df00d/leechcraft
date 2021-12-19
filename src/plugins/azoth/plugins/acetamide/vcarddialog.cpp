@@ -7,20 +7,13 @@
  **********************************************************************/
 
 #include "vcarddialog.h"
-#include <QPushButton>
-#include <QFileDialog>
-#include <QBuffer>
 #include "entrybase.h"
-#include "ircaccount.h"
+#include "localtypes.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	VCardDialog::VCardDialog (QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 	}
@@ -37,6 +30,4 @@ namespace Acetamide
 		Ui_.ServerDislocation_->setText (msg.ServerCountry_);
 		Ui_.EMailAddress_->setText (msg.Mail_);
 	}
-}
-}
 }

@@ -186,6 +186,14 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
+	namespace
+	{
+		bool IsCTCPMessage (const QString& msg)
+		{
+			return msg.startsWith ('\001') && msg.endsWith ('\001');
+		}
+	}
+
 	void ServerResponseManager::DoAction (const IrcMessageOptions& opts)
 	{
 		auto cmdUtf8 = opts.Command_.toUtf8 ();
@@ -200,7 +208,10 @@ namespace LC::Azoth::Acetamide
 			break;
 		case IrcServer::UnrealIRCD:
 			if (const auto actor = UnrealCustoms (Util::AsStringView (cmdUtf8)))
-				return actor (*ISH_, opts);
+			{
+				actor (*ISH_, opts);
+				return;
+			}
 			break;
 		}
 
@@ -210,11 +221,6 @@ namespace LC::Azoth::Acetamide
 			(ISH_->*actor) (opts);
 		else
 			ISH_->ShowAnswer (opts.Command_.toUtf8 (), opts.Message_);
-	}
-
-	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
-	{
-		return msg.startsWith ('\001') && msg.endsWith ('\001');
 	}
 
 	void ServerResponseManager::GotJoin (const IrcMessageOptions& opts)
@@ -228,7 +234,6 @@ namespace LC::Azoth::Acetamide
 			ChannelOptions co;
 			co.ChannelName_ = channel;
 			co.ServerName_ = ISH_->GetServerOptions ().ServerName_.toLower ();
-			co.ChannelPassword_ = QString ();
 			ISH_->JoinedChannel (co);
 		}
 		else
@@ -406,19 +411,23 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString& target = QString::fromStdString (opts.Parameters_.last ());
-		ISH_->IncomingMessage (target, target, QString ("[AWAY] %1 :%2")
-				.arg (target, opts.Message_), IMessage::Type::StatusMessage);
+		const auto& target = QString::fromStdString (opts.Parameters_.last ());
+		ISH_->IncomingMessage (target,
+				target,
+				u"[AWAY] %1 :%2"_qsv.arg (target, opts.Message_),
+				IMessage::Type::StatusMessage);
 	}
 
 	void ServerResponseManager::GotSetAway (const IrcMessageOptions& opts)
 	{
+		constexpr auto NotAway = 305;
+		constexpr auto Away = 306;
 		switch (opts.Command_.toInt ())
 		{
-		case 305:
+		case NotAway:
 			ISH_->ChangeAway (false);
 			break;
-		case 306:
+		case Away:
 			ISH_->ChangeAway (true, opts.Message_);
 			break;
 		}
@@ -511,11 +520,10 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotWhoWas (const IrcMessageOptions& opts)
 	{
-		const QString message = QString::fromStdString (opts.Parameters_.at (1)) +
+		ISH_->ShowWhoWasReply (QString::fromStdString (opts.Parameters_.at (1)) +
 				" - " + QString::fromStdString (opts.Parameters_.at (2)) + "@"
 				+ QString::fromStdString (opts.Parameters_.at (3)) +
-				" (" + opts.Message_ + ")";
-		ISH_->ShowWhoWasReply (message);
+				" (" + opts.Message_ + ")");
 	}
 
 	void ServerResponseManager::GotEndOfWhoWas (const IrcMessageOptions& opts)
@@ -907,7 +915,7 @@ namespace LC::Azoth::Acetamide
 
 		if (count > 3)
 		{
-			QString name = QString::fromStdString (opts.Parameters_.at (3));
+			auto name = QString::fromStdString (opts.Parameters_.at (3));
 			nick = name.left (name.indexOf ('!'));
 		}
 
@@ -938,7 +946,7 @@ namespace LC::Azoth::Acetamide
 
 		if (count > 3)
 		{
-			QString name = QString::fromStdString (opts.Parameters_.at (3));
+			auto name = QString::fromStdString (opts.Parameters_.at (3));
 			nick = name.left (name.indexOf ('!'));
 		}
 
@@ -987,7 +995,7 @@ namespace LC::Azoth::Acetamide
 	void ServerResponseManager::GotServerInfo (const IrcMessageOptions& opts)
 	{
 		ISH_->ShowAnswer ("myinfo",
-				Util::Map (opts.Parameters_, &QString::fromStdString).join (" "));
+				Util::Map (opts.Parameters_, &QString::fromStdString).join (' '));
 
 		const auto& ircServer = QString::fromStdString (opts.Parameters_.at (2));
 		const auto it = std::find_if (MatchString2Server.begin (), MatchString2Server.end (),

@@ -109,7 +109,5 @@ namespace LC::Azoth::Acetamide
 		void GotWhoIsSecure (const IrcMessageOptions& opts);
 		void GotChannelUrl (const IrcMessageOptions& opts);
 		void GotTopicWhoTime (const IrcMessageOptions& opts);
-	private:
-		bool IsCTCPMessage (const QString&);
 	};
 }

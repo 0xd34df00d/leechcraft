@@ -9,14 +9,10 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	XmlSettingsManager::XmlSettingsManager ()
-	: Util::BaseSettingsManager (true)
+	: Util::BaseSettingsManager { true }
 	{
 		Util::BaseSettingsManager::Init ();
 	}
@@ -29,14 +25,14 @@ namespace Acetamide
 
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () +
-					"_Azoth_Acetamide");
+		return new QSettings
+		{
+			QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Azoth_Acetamide"
+		};
 	}
 
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-};
-};
-};
+}

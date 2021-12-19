@@ -6,21 +6,16 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_VCARDDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_VCARDDIALOG_H
+#pragma once
 
 #include <QDialog>
-#include "localtypes.h"
 #include "ui_vcarddialog.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Acetamide
+namespace LC::Azoth::Acetamide
 {
 	class EntryBase;
 	class IrcAccount;
+	struct WhoIsMessage;
 
 	class VCardDialog : public QDialog
 	{
@@ -28,12 +23,8 @@ namespace Acetamide
 
 		Ui::VCardDialog Ui_;
 	public:
-		VCardDialog (QWidget *parent = 0);
+		explicit VCardDialog (QWidget *parent = nullptr);
 
 		void UpdateInfo (const WhoIsMessage& msg);
 	};
 }
-}
-}
-
-#endif

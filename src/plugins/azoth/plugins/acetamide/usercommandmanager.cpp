@@ -104,17 +104,17 @@ namespace LC::Azoth::Acetamide
 		if (cmd == "me")
 		{
 			messageList.insert (0, channelName);
-			messageList.insert (1, "ACTION");
+			messageList.insert (1, QStringLiteral ("ACTION"));
 		}
 		else if (cmd == "part" && message.isEmpty ())
 			messageList << channelName; //TODO message for part
 		else if (cmd == "join" && !message.isEmpty ())
 		{
-			QStringList channelList = messageList.value (0).split (',');
+			auto channelList = messageList.value (0).split (',');
 
 			for (int i = 0; i < channelList.count (); ++i)
 			{
-				const QString& channel = channelList.at (i);
+				const auto& channel = channelList.at (i);
 				if (!channel.startsWith ('#') &&
 						!channel.startsWith ('+') &&
 						!channel.startsWith ('&') &&
@@ -125,13 +125,11 @@ namespace LC::Azoth::Acetamide
 			QString passwords;
 			if (messageList.count () == 2)
 				passwords = messageList.last ();
-			messageList.clear ();
-			messageList << channelList.join (",")
-					<< passwords;
+			messageList = QStringList { channelList.join (','), passwords };
 		}
 		else if (cmd == "away")
 		{
-			ISH_->SetAway (messageList.join (" "));
+			ISH_->SetAway (messageList.join (' '));
 			return cmd;
 		}
 // 		else if (cmd == "kick" && !message.isEmpty ())
