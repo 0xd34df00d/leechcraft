@@ -888,7 +888,11 @@ namespace LC::Azoth::Acetamide
 		SendToConsole (IMessage::Direction::In, msg.trimmed ());
 		const auto& maybeOpts = ParseMessage (msg);
 		if (!maybeOpts)
+		{
+			qWarning () << "unable to parse IRC command"
+					<< msg;
 			return;
+		}
 
 		const auto& opts = *maybeOpts;
 		if (ErrorHandler_->IsError (opts.Command_.toInt ()))

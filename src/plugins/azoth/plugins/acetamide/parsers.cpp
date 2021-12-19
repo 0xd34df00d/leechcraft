@@ -69,8 +69,6 @@ namespace LC::Azoth::Acetamide
 
 		if (!res)
 		{
-			qWarning () << "input string is not a valid IRC command"
-					<< msg;
 			return {};
 		}
 
