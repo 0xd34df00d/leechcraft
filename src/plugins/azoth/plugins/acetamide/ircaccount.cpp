@@ -10,6 +10,7 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QTimer>
+#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -208,7 +209,7 @@ namespace LC::Azoth::Acetamide
 		return Util::Map (GetBookmarks (),
 				[this] (const IrcBookmark& channel) -> QVariant
 				{
-					const auto& name = QStringLiteral ("%1@%2 (%3)")
+					const auto& name = u"%1@%2 (%3)"_qsv
 							.arg (channel.ChannelName_ ,
 									channel.ServerName_,
 									channel.NickName_);

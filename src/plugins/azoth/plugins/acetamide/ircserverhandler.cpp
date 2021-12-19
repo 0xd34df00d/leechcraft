@@ -346,7 +346,7 @@ namespace LC::Azoth::Acetamide
 		if (!IsChannelExists (channel))
 			return;
 
-		auto chanMode = [&] (bool enabled, char code){ return QStringList { channel, (enabled ? '+' : '-') + QString { code } }; };
+		auto chanMode = [&] (bool enabled, char code) { return QStringList { channel, (enabled ? '+' : '-') + QString { code } }; };
 
 		IrcParser_->ChanModeCommand (chanMode (modes.BlockOutsideMessageMode_, 'n'));
 

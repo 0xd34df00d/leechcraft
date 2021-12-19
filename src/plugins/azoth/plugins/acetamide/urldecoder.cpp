@@ -7,133 +7,127 @@
  **********************************************************************/
 
 #include "urldecoder.h"
-#include <boost/spirit/include/classic_core.hpp>
-#include <boost/spirit/include/classic_loops.hpp>
-#include <boost/spirit/include/classic_utility.hpp>
+#include <QRegularExpression>
 #include <QUrl>
+#include <QtDebug>
+#include <util/sll/qtutil.h>
 
 namespace LC::Azoth::Acetamide
 {
-	template<auto Val>
-	auto Assign (auto& ref)
+	namespace
 	{
-		static constexpr auto val = Val;
-		return boost::spirit::classic::assign_a (ref, val);
+		QRegularExpression MkRx ()
+		{
+			auto with = [] (QByteArray str, std::initializer_list<QPair<QByteArray, QByteArray>> subs)
+			{
+				for (const auto& [key, value] : subs)
+					str.replace (key, value);
+				return str;
+			};
+
+			const QByteArray subdomain { R"( [a-zA-Z]\w+ )" };
+
+			const auto host = with (R"( {subdomain}(\.{subdomain})* )", { { "{subdomain}", subdomain } });
+			const auto authority = with (R"( (?<host>{host})(:(?<port>\d+))? )", { {  "{host}", host } });
+
+			const auto nonwhite = "[^ ,\r\n@]";
+
+			const auto nick = R"( (\w | [\[\]\`^{|}-])+ )";
+
+			const auto userinfo = with (R"( (?<userinfo_user>{nonwhite}+)@(?<userinfo_servername>{host}) )",
+					{
+						{ "{nonwhite}", nonwhite },
+						{ "{host}", host },
+					});
+			const auto nickinfo = with (R"( (?<nickinfo_nick>{nick})!(?<nickinfo_user>({nonwhite}+))@(?<nickinfo_hostmask>{nonwhite}+) )",
+					{
+						{ "{nick}", nick },
+						{ "{nonwhite}", nonwhite },
+					});
+			const auto nickonly = with (R"( (?<nickonly_nick>{nick}) )", { { "{nick}", nick } });
+
+			const auto target = with (R"(
+						(
+							(?<nickinfo>{nickinfo})
+							| (?<userinfo>{userinfo})
+							| (?<nickonly>{nickonly})
+						),isnick
+						| ((?<channel>{nonwhite}+)(?<needkey>,needkey)?)
+					)",
+					{
+						{ "{nickinfo}", nickinfo },
+						{ "{userinfo}", userinfo },
+						{ "{nickonly}", nickonly },
+						{ "{nonwhite}", nonwhite },
+					});
+
+			auto pat = with (R"(
+					irc:(//)?
+						({authority})?
+						/?
+						({target})?
+						(?<needpass>,needpass)?
+					)",
+					{
+						{ "{authority}", authority },
+						{ "{target}", target },
+					});
+
+			return QRegularExpression
+			{
+				QString { pat }.remove ('\n').remove ('\t').remove (' '),
+				QRegularExpression::DontCaptureOption
+			};
+		}
 	}
 
 	std::optional<DecodedUrl> DecodeUrl (const QUrl& url)
 	{
-		std::string host_;
-		int port_ = 0;
-		bool serverPass = false;
-
-		std::string channel_;
-		bool channelPass = false;
-
-		std::string hostmask_;
-		std::string user_server_;
-		std::string user_;
-		std::string nick_;
-
-		enum class TargetType
-		{
-			None,
-			Channel,
-			NickOnly,
-			NickInfo,
-			UserInfo,
-		} targetType = TargetType::None;
-
-		using namespace boost::spirit::classic;
-
-		range<> ascii { char { 0x01 }, char { 0x7F } };
-		rule<> special = chset_p ("[]\\`^{|}-");
-		rule<> let_dig_hyp = alnum_p | ch_p ('-');
-
-		rule<> ldh_str;
-		ldh_str = *(let_dig_hyp >> !ldh_str);
-
-		rule<> label = alpha_p >> !(!ldh_str >> alnum_p);
-		rule<> subdomain = label >> +(label >> !ch_p ('.'));
-		rule<> host = subdomain [assign_a (host_)];
-		rule<> nonwhite = ascii - chset_p (" ,\r\n");
-
-		rule<> servername = subdomain [assign_a (user_server_)];
-		rule<> user = (+(nonwhite - '@')) [assign_a (user_)];
-		rule<> nick = (alpha_p >> *(alnum_p | special)) [assign_a (nick_)];
-		rule<> userinfo = user >> ch_p ('@') >> servername;
-		rule<> hostmask = lexeme_d [+nonwhite] [assign_a (hostmask_)];
-		rule<> nickinfo = nick >> ch_p ('!') >> user >> ch_p ('@') >> hostmask;
-
-		rule<> nicktypes = (nickinfo [Assign<TargetType::NickInfo> (targetType)])
-				| (userinfo [Assign<TargetType::UserInfo> (targetType)])
-				| (nick [Assign<TargetType::NickOnly> (targetType)]);
-
-		rule<> nicktrgt = nicktypes >> str_p (",isnick");
-
-		rule<> channelstr = lexeme_d [!chset_p ("#&+") >> +nonwhite] [assign_a (channel_)];
-
-		rule<> channeltrgt = (channelstr >> !(str_p (",needkey") [Assign<true> (channelPass)])) [Assign<TargetType::Channel> (targetType)];
-
-		rule<> target = nicktrgt | channeltrgt;
-
-		rule<> port = int_p[assign_a (port_)];
-		rule<> uri = str_p ("irc:") >>
-				!(str_p ("//") >>
-						!(host >> !(ch_p (':') >> port))
-						>> !ch_p ('/')
-						>> !target >> !(str_p (",needpass") [Assign<true> (serverPass)]));
-
-		if (!parse (url.toString ().toUtf8 ().constData (), uri).full)
+		static const auto rx = MkRx ();
+		const auto& matchRes = rx.match (url.toString ());
+		if (!matchRes.hasMatch ())
 			return {};
 
 		ServerOptions so
 		{
-			.ServerName_ = QString::fromUtf8 (host_.c_str ()),
-			.ServerPort_ = port_,
+			.ServerName_ = matchRes.captured (u"host"_qsv),
+			.ServerPort_ = matchRes.capturedView (u"port"_qsv).toInt (),
 		};
 
 		Target targetVar;
-		switch (targetType)
-		{
-		case TargetType::None:
-			targetVar = NoTarget {};
-			break;
-		case TargetType::Channel:
+		if (const auto& channel = matchRes.captured (u"channel"_qsv);
+			!channel.isEmpty ())
 			targetVar = ChannelTarget
 			{
 				.Opts_ = ChannelOptions
 				{
 					.ServerName_ = so.ServerName_,
-					.ChannelName_ = QString::fromUtf8 (channel_.c_str ()),
+					.ChannelName_ = channel,
 				},
-				.HasPassword_ = channelPass,
+				.HasPassword_ = matchRes.capturedLength (u"needkey") > 0,
 			};
-			break;
-		case TargetType::NickOnly:
-			targetVar = NickOnly { QString::fromStdString (nick_) };
-			break;
-		case TargetType::NickInfo:
+		else if (matchRes.capturedLength (u"nickonly"_qsv) > 0)
+			targetVar = NickOnly { matchRes.captured (u"nickonly_nick"_qsv) };
+		else if (matchRes.capturedLength (u"nickinfo"_qsv) > 0)
 			targetVar = NickInfo
 			{
-				.Nick_ = QString::fromStdString (nick_),
-				.User_ = QString::fromStdString (user_),
-				.HostMask_ = QString::fromStdString (hostmask_),
+				.Nick_ = matchRes.captured (u"nickinfo_nick"),
+				.User_ = matchRes.captured (u"nickinfo_user"),
+				.HostMask_ = matchRes.captured (u"nickinfo_hostmask"),
 			};
-			break;
-		case TargetType::UserInfo:
+		else if (matchRes.capturedLength (u"userinfo") > 0)
 			targetVar = UserInfo
 			{
-				.User_ = QString::fromStdString (user_),
-				.ServerName_ = QString::fromStdString (user_server_),
+				.User_ = matchRes.captured (u"userinfo_user"),
+				.ServerName_ = matchRes.captured (u"userinfo_servername"),
 			};
-			break;
-		}
+		else
+			targetVar = NoTarget {};
 
 		return DecodedUrl
 		{
 			.Server_ = so,
-			.HasServerPassword_ = serverPass,
+			.HasServerPassword_ = matchRes.capturedLength (u"needpass"_qsv) > 0,
 			.Target_ = std::move (targetVar),
 		};
 	}
