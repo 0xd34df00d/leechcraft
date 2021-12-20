@@ -13,6 +13,8 @@
 #include <QSettings>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include "ircaccount.h"
 #include "ircaccountconfigurationwidget.h"
@@ -81,7 +83,7 @@ namespace LC::Azoth::Acetamide
 
 	QIcon IrcProtocol::GetProtocolIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/acetamide/resources/images/ircicon.svg");
+		static const auto icon = GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon (QStringLiteral ("azoth/acetamide/ircicon"));
 		return icon;
 	}
 

@@ -43,7 +43,6 @@ LC_DEFINE_PLUGIN (
 		xmlsettingsmanager.cpp
 		vcarddialog.cpp
 	SETTINGS azothacetamidesettings.xml
-	RESOURCES azothacetamideresources.qrc
 	QT_COMPONENTS Network Widgets Xml
 	INSTALL_DESKTOP
 	INSTALL_SHARE
