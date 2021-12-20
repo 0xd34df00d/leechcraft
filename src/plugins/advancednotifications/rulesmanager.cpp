@@ -19,6 +19,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/stdanfields.h>
 #include <util/xpc/util.h>
 #include <util/xpc/anutil.h>
@@ -145,7 +146,7 @@ namespace LC::AdvancedNotifications
 			QList<QStandardItem*> items;
 			items << new QStandardItem (rule.GetName ());
 			items << new QStandardItem (Util::AN::GetCategoryName (rule.GetCategory ()));
-			items << new QStandardItem (hrTypes.join (QStringLiteral ("; ")));
+			items << new QStandardItem (hrTypes.join (u"; "_qsv));
 
 			items.first ()->setCheckable (true);
 			items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);

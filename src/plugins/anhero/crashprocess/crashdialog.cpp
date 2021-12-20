@@ -29,7 +29,7 @@ namespace LC::AnHero::CrashProcess
 	{
 		QString GetNowFilename ()
 		{
-			const auto& nowStr = QDateTime::currentDateTime ().toString (QStringLiteral ("yy_MM_dd-hh_mm_ss"));
+			const auto& nowStr = QDateTime::currentDateTime ().toString (u"yy_MM_dd-hh_mm_ss"_qsv);
 			return "lc_crash_" + nowStr + ".log";
 		}
 	}

@@ -11,7 +11,6 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/iinfo.h>
 #include "util.h"
@@ -137,7 +136,7 @@ namespace LC::Auscrie
 			for (const auto& var : idf->GetFilterVariants (imageVar))
 			{
 				Filters_.append ({ filter, var.ID_ });
-				Ui_.ActionBox_->addItem (QStringLiteral ("%1: %2").arg (verb, var.Name_));
+				Ui_.ActionBox_->addItem (u"%1: %2"_qsv.arg (verb, var.Name_));
 
 				if (pluginId == selected.PluginId_ &&
 						var.ID_ == selected.Variant_)

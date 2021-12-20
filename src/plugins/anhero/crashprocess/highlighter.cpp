@@ -78,8 +78,8 @@ namespace LC::AnHero::CrashProcess
 		{
 			static const Matchers matchers
 			{
-				QStringMatcher { QStringLiteral (" to ") },
-				QStringMatcher { QStringLiteral (" in ") },
+				QStringMatcher { u" to "_qsv },
+				QStringMatcher { u" in "_qsv },
 			};
 			funcStartIdx = FindOneOf (text, numberEnd, matchers);
 		}
@@ -127,8 +127,8 @@ namespace LC::AnHero::CrashProcess
 	{
 		static const Matchers matchers
 		{
-			QStringMatcher { QStringLiteral (" at ") },
-			QStringMatcher { QStringLiteral (" from ") },
+			QStringMatcher { u" at "_qsv },
+			QStringMatcher { u" from "_qsv },
 		};
 		const auto restIdx = FindOneOf (text, fromAround, matchers);
 

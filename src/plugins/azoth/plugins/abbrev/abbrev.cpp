@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include "abbrevsmanager.h"
@@ -135,13 +136,13 @@ namespace LC::Azoth::Abbrev
 		const auto& abbrevs = Util::Map (Manager_->List (),
 				[] (const auto& abbrev) noexcept
 				{
-					return QStringLiteral ("%1 → %2")
+					return u"%1 → %2"_qsv
 							.arg (abbrev.Pattern_,
 								  abbrev.Expansion_);
 				});
 
 		const auto& text = tr ("%n abbreviation(s):", nullptr, abbrevs.size ()) +
-				"<ol><li>" + abbrevs.join (QStringLiteral ("</li><li>")) + "</li></ol>";
+				"<ol><li>" + abbrevs.join (u"</li><li>"_qsv) + "</li></ol>";
 
 		const auto entryObj = entry->GetQObject ();
 		const auto msgObj = AzothProxy_->CreateCoreMessage (text,
