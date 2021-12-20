@@ -14,7 +14,7 @@
 
 namespace LC::Azoth::Acetamide
 {
-	std::optional<IrcMessageOptions> ParseMessage (const QString& msg);
+	std::optional<IrcMessageOptions> ParseMessage (QStringView msg);
 
 	struct NickOnly
 	{

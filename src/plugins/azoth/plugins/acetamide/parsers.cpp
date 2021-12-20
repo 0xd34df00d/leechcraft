@@ -7,9 +7,6 @@
  **********************************************************************/
 
 #include "parsers.h"
-#include <boost/spirit/include/classic_core.hpp>
-#include <boost/spirit/include/classic_loops.hpp>
-#include <boost/spirit/include/classic_push_back_actor.hpp>
 #include <QRegularExpression>
 #include <QUrl>
 #include <QtDebug>
@@ -18,68 +15,108 @@
 
 namespace LC::Azoth::Acetamide
 {
-	std::optional<IrcMessageOptions> ParseMessage (const QString& msg)
+	namespace
 	{
-		using namespace boost::spirit::classic;
-
-		std::string nickStr;
-		std::string userStr;
-		std::string hostStr;
-		std::string commandStr;
-		std::string msgStr;
-		QList<std::string> opts;
-
-		range<> ascii (char (0x01), char (0x7F));
-		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
-				'_' | '^' | '{' | '|' | '}'];
-		rule<> shortname = *(alnum_p
-				>> *(alnum_p || ch_p ('-'))
-				>> *alnum_p);
-		rule<> hostname = (shortname >> *(ch_p ('.') >> shortname)) [assign_a (hostStr)];
-		rule<> nickname = (alpha_p | special)
-				>> *(alnum_p | special | ch_p ('-'));
-		rule<> user =  +(ascii - '\r' - '\n' - ' ' - '@' - '\0');
-		rule<> host = lexeme_d [+(anychar_p - ' ')] ;
-		rule<> nick = lexeme_d [nickname [assign_a (nickStr)]
-				>> !(!(ch_p ('!')
-						>> user [assign_a (userStr)])
-						>> ch_p ('@')
-						>> host [assign_a (hostStr)])];
-		rule<> nospcrlfcl = (anychar_p - '\0' - '\r' - '\n' -
-				' ' - ':');
-		rule<> lastParam = lexeme_d [ch_p (' ')
-				>> !ch_p (':')
-				>> (*(ch_p (':') | ch_p (' ') | nospcrlfcl))
-				[assign_a (msgStr)]];
-		rule<> firsParam = lexeme_d [ch_p (' ')
-				>> (nospcrlfcl >> *(ch_p (':') | nospcrlfcl))
-				[push_back_a (opts)]];
-		rule<> params =  *firsParam
-				>> !lastParam;
-		rule<> command = longest_d [(+alpha_p) |
-				(repeat_p (3) [digit_p])] [assign_a (commandStr)];
-		rule<> prefix = longest_d [hostname | nick];
-		rule<> reply = (lexeme_d [!(ch_p (':')
-				>> prefix >> ch_p (' '))]
-				>> command
-				>> !params
-				>> eol_p);
-
-		bool res = parse (msg.toUtf8 ().constData (), reply).full;
-
-		if (!res)
+		QByteArray With (QByteArray str, std::initializer_list<QPair<QByteArray, QByteArray>> subs)
 		{
-			return {};
+			for (const auto& [key, value] : subs)
+				str.replace (key, value);
+			return str;
 		}
+
+		QString Fixup (const QByteArray& pat)
+		{
+			return QString { pat }.remove ('\n').remove ('\t').remove (' ');
+		}
+
+		// TODO C++20 replace with constexpr std::strings when they become more widely available
+		const auto host = With (R"( {subdomain}(\.{subdomain})* )", { { "{subdomain}", R"( [a-zA-Z][-\w]+ )" } });
+
+		constexpr auto nick = R"( (\w | [\[\]\`^{|}-])+ )";
+
+		constexpr auto nonwhite = "[^ ,\r\n@]";
+
+		auto ParseMessagePrefix (QStringView str)
+		{
+			struct Result
+			{
+				QString Nick_;
+				QString Username_;
+				QString Host_;
+			};
+
+			const auto pat = With (R"(
+						(?<host>{host})
+						| ((?<nick>{nick})(!(?<user>{nonwhite}+))?(@(?<servername>@{host}))?)
+					)",
+					{
+						{ "{host}", host },
+						{ "{nick}", nick },
+						{ "{nonwhite}", nonwhite },
+					});
+
+			static const QRegularExpression rx
+			{
+				Fixup (pat),
+				QRegularExpression::DontCaptureOption
+			};
+
+			const auto match = rx.match (str);
+
+			const auto host = match.captured (u"host");
+			return Result
+			{
+				.Nick_ = match.captured (u"nick"),
+				.Username_ = match.captured (u"user"),
+				.Host_ = host.isEmpty () ? match.captured (u"servername") : host,
+			};
+		}
+
+		bool IsValidCommand (QStringView cmd)
+		{
+			if (cmd.size () == 3 && std::all_of (cmd.begin (), cmd.end (), [] (QChar ch) { return ch.isDigit (); }))
+				return true;
+
+			return std::all_of (cmd.begin (), cmd.end (), [] (QChar ch) { return ch.isLetter (); });
+		}
+	}
+
+	std::optional<IrcMessageOptions> ParseMessage (QStringView msg)
+	{
+		msg = msg.trimmed ();
+		const auto lastParamIdx = msg.indexOf (" :"_ql);
+		const auto preMessage = msg.left (lastParamIdx);
+
+		QStringView prefix;
+		QStringView commandsStr;
+		if (preMessage.startsWith (':'))
+		{
+			const auto& [left, right] = Util::BreakAt (preMessage, ' ');
+			prefix = left;
+			commandsStr = right;
+		}
+		else
+			commandsStr = preMessage;
+
+		const auto [command, params] = Util::BreakAt (commandsStr, ' ');
+
+		if (!IsValidCommand (command))
+			return {};
+
+		auto split = preMessage.split (' ', Qt::SkipEmptyParts);
+		if (split.isEmpty ())
+			return {};
+
+		const auto parsedPrefix = ParseMessagePrefix (prefix);
 
 		return IrcMessageOptions
 		{
-			.Nick_ = QString::fromStdString (nickStr),
-			.UserName_ = QString::fromStdString (userStr),
-			.Host_ = QString::fromStdString (hostStr),
-			.Command_ = QString::fromStdString (commandStr).toLower (),
-			.Message_ = QString::fromStdString (msgStr),
-			.Parameters_ = Util::Map (opts, &QString::fromStdString),
+			.Nick_ = !parsedPrefix.Nick_.isEmpty () ? parsedPrefix.Nick_ : parsedPrefix.Host_.section ('.', 0, 0),
+			.UserName_ = parsedPrefix.Username_,
+			.Host_ = parsedPrefix.Host_,
+			.Command_ = command.toString ().toLower (),
+			.Message_ = lastParamIdx > 0 ? msg.mid (lastParamIdx + 2).toString () : QString {},
+			.Parameters_ = Util::MapAs<QList> (params.split (' ', Qt::SkipEmptyParts), &QStringView::toString),
 		};
 	}
 
@@ -87,33 +124,21 @@ namespace LC::Azoth::Acetamide
 	{
 		QRegularExpression MkUrlRx ()
 		{
-			auto with = [] (QByteArray str, std::initializer_list<QPair<QByteArray, QByteArray>> subs)
-			{
-				for (const auto& [key, value] : subs)
-					str.replace (key, value);
-				return str;
-			};
+			const auto authority = With (R"( (?<host>{host})(:(?<port>\d+))? )", { {  "{host}", host } });
 
-			const auto host = with (R"( {subdomain}(\.{subdomain})* )", { { "{subdomain}", R"( [a-zA-Z][-\w]+ )" } });
-			const auto authority = with (R"( (?<host>{host})(:(?<port>\d+))? )", { {  "{host}", host } });
-
-			const auto nonwhite = "[^ ,\r\n@]";
-
-			const auto nick = R"( (\w | [\[\]\`^{|}-])+ )";
-
-			const auto userinfo = with (R"( (?<userinfo_user>{nonwhite}+)@(?<userinfo_servername>{host}) )",
+			const auto userinfo = With (R"( (?<userinfo_user>{nonwhite}+)@(?<userinfo_servername>{host}) )",
 					{
 						{ "{nonwhite}", nonwhite },
 						{ "{host}", host },
 					});
-			const auto nickinfo = with (R"( (?<nickinfo_nick>{nick})!(?<nickinfo_user>({nonwhite}+))@(?<nickinfo_hostmask>{nonwhite}+) )",
+			const auto nickinfo = With (R"( (?<nickinfo_nick>{nick})!(?<nickinfo_user>({nonwhite}+))@(?<nickinfo_hostmask>{nonwhite}+) )",
 					{
 						{ "{nick}", nick },
 						{ "{nonwhite}", nonwhite },
 					});
-			const auto nickonly = with (R"( (?<nickonly_nick>{nick}) )", { { "{nick}", nick } });
+			const auto nickonly = With (R"( (?<nickonly_nick>{nick}) )", { { "{nick}", nick } });
 
-			const auto target = with (R"(
+			const auto target = With (R"(
 						(
 							(?<nickinfo>{nickinfo})
 							| (?<userinfo>{userinfo})
@@ -128,7 +153,7 @@ namespace LC::Azoth::Acetamide
 						{ "{nonwhite}", nonwhite },
 					});
 
-			auto pat = with (R"(
+			const auto pat = With (R"(
 					irc:(//)?
 						({authority})?
 						/?
@@ -140,11 +165,7 @@ namespace LC::Azoth::Acetamide
 						{ "{target}", target },
 					});
 
-			return QRegularExpression
-			{
-				QString { pat }.remove ('\n').remove ('\t').remove (' '),
-				QRegularExpression::DontCaptureOption
-			};
+			return QRegularExpression { Fixup (pat), QRegularExpression::DontCaptureOption };
 		}
 	}
 
