@@ -65,6 +65,11 @@ namespace LC
 			auto basename = QFileInfo { Loader_->GetFileName () }.baseName ();
 			return Engine_.GetPluginIcon (basename.section ('_', 1));
 		}
+
+		QIcon GetPluginIcon (const QString& name) override
+		{
+			return Engine_.GetPluginIcon (name);
+		}
 	};
 
 	CoreProxy::CoreProxy (Loaders::IPluginLoader_ptr loader)

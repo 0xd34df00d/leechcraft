@@ -86,6 +86,8 @@ public:
 	virtual void RegisterChangeHandler (const std::function<void ()>& function) = 0;
 
 	virtual QIcon GetPluginIcon () = 0;
+
+	virtual QIcon GetPluginIcon (const QString& name) = 0;
 };
 
 Q_DECLARE_INTERFACE (IIconThemeManager, "org.LeechCraft.IIconThemeManager/1.0")
