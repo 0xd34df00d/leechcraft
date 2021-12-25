@@ -67,15 +67,12 @@ namespace Util
 	namespace detail
 	{
 		template<typename Res, typename T>
-		void Append (Res& result, T&& val, decltype (result.push_back (std::forward<T> (val)))* = nullptr)
+		void Append (Res& result, T&& val) noexcept
 		{
-			result.push_back (std::forward<T> (val));
-		}
-
-		template<typename Res, typename T>
-		void Append (Res& result, T&& val, decltype (result.insert (std::forward<T> (val)))* = nullptr)
-		{
-			result.insert (std::forward<T> (val));
+			if constexpr (requires { result.push_back (std::forward<T> (val)); })
+				result.push_back (std::forward<T> (val));
+			else
+				result.insert (std::forward<T> (val));
 		}
 
 		template<typename>
