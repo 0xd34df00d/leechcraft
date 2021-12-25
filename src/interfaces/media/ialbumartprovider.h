@@ -33,15 +33,11 @@ namespace Media
 		/** @brief The album name.
 		 */
 		QString Album_;
-	};
 
-	/** @brief Compares two AlbumInfo structures.
-	 */
-	inline bool operator== (const AlbumInfo& a1, const AlbumInfo& a2)
-	{
-		return a1.Artist_ == a2.Artist_ &&
-			a1.Album_ == a2.Album_;
-	}
+		/** @brief Compares two AlbumInfo structures.
+		 */
+		bool operator== (const AlbumInfo&) const = default;
+	};
 
 	/** @brief A hash function for AlbumInfo to use it with QHash.
 	 */
