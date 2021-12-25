@@ -117,4 +117,9 @@ namespace LC
 	{
 		return QStringView { str, static_cast<qsizetype> (size) };
 	}
+
+	inline QByteArray operator"" _qba (const char *str, std::size_t size) noexcept
+	{
+		return QByteArray::fromRawData (str, static_cast<int> (size));
+	}
 }

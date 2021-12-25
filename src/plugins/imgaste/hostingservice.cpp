@@ -10,10 +10,10 @@
 #include <QtDebug>
 #include <QNetworkReply>
 #include <QUrl>
-#include <QRegExp>
 #include <QStringList>
 #include <util/sll/either.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/udls.h>
 #include <util/sll/unreachable.h>
 #include "requestbuilder.h"
 
@@ -37,11 +37,6 @@ namespace LC::Imgaste
 	auto MakeChecker (quint64 sizeLimit)
 	{
 		return [=] (const ImageInfo& info) { return info.Size_ <= sizeLimit; };
-	}
-
-	constexpr quint64 operator"" _mib (quint64 mibs)
-	{
-		return mibs * 1024 * 1024;
 	}
 
 	HostingServiceInfo ToInfo (HostingService s)
