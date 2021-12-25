@@ -11,10 +11,10 @@
 #include <QtDebug>
 #include <interfaces/media/iradiostation.h>
 #include <interfaces/media/audiostructs.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "radiocustomstation.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
@@ -36,8 +36,7 @@ namespace LMP
 	, Model_ { new QStandardItemModel { this } }
 	, Root_ { new QStandardItem { tr ("Custom streams") } }
 	{
-		Root_->setIcon (Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("favorites"));
+		Root_->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("favorites"));
 		Root_->setData (Media::RadioType::CustomAddableStreams, Media::RadioItemRole::ItemType);
 		Root_->setData ("org.LeechCraft.LMP.Custom", Media::RadioItemRole::RadioID);
 		Root_->setEditable (false);

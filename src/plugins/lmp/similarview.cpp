@@ -8,6 +8,7 @@
 
 #include "similarview.h"
 #include <QQmlEngine>
+#include <interfaces/core/icoreproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
@@ -17,12 +18,12 @@ namespace LC
 {
 namespace LMP
 {
-	SimilarView::SimilarView (const ICoreProxy_ptr& proxy, QWidget *parent)
+	SimilarView::SimilarView (QWidget *parent)
 	: QQuickWidget (parent)
-	, Manager_ (new SimilarViewManager (proxy, this, this))
+	, Manager_ (new SimilarViewManager (this, this))
 	{
 		setResizeMode (SizeRootObjectToView);
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },

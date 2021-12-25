@@ -14,7 +14,6 @@
 #include "player.h"
 #include "engine/sourceobject.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "nowplayingwidget.h"
 #include "util.h"
 
@@ -93,7 +92,7 @@ namespace LMP
 
 		auto e = Util::MakeNotification ("LMP", text, Priority::Info);
 		e.Additional_ ["NotificationPixmap"] = notifyPx;
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	namespace

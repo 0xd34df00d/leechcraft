@@ -19,7 +19,6 @@
 #endif
 
 #include <interfaces/media/iradiostation.h>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "engine/audiosource.h"
 #include "mediainfo.h"
 #include "sortingcriteria.h"
@@ -50,8 +49,6 @@ namespace LMP
 #endif
 	{
 		Q_OBJECT
-
-		const ICoreProxy_ptr Proxy_;
 
 		QStandardItemModel *PlaylistModel_;
 		SourceObject *Source_;
@@ -125,7 +122,7 @@ namespace LMP
 
 		Q_DECLARE_FLAGS (EnqueueFlags, EnqueueFlag)
 
-		Player (const ICoreProxy_ptr& proxy, QObject* = 0);
+		Player (QObject* = 0);
 
 		void InitWithOtherPlugins ();
 

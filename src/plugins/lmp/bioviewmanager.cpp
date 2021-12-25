@@ -67,19 +67,17 @@ namespace LMP
 		const int AASize = 170;
 	}
 
-	BioViewManager::BioViewManager (const ICoreProxy_ptr& proxy,
-			QQuickWidget *view, QObject *parent)
+	BioViewManager::BioViewManager (QQuickWidget *view, QObject *parent)
 	: QObject (parent)
 	, View_ (view)
 	, BioPropProxy_ (new BioPropProxy (this))
 	, DiscoModel_ (new DiscoModel (this))
-	, Proxy_ (proxy)
 	{
 		View_->rootContext ()->setContextObject (BioPropProxy_);
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		View_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
+		View_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
@@ -92,7 +90,7 @@ namespace LMP
 				this,
 				SLOT (handleAlbumPreviewRequested (int)));
 
-		new StdArtistActionsManager (Proxy_, View_, this);
+		new StdArtistActionsManager (View_, this);
 	}
 
 	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist, const QStringList& releases)
@@ -118,7 +116,7 @@ namespace LMP
 					}
 				};
 
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto pm = GetProxyHolder ()->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
 			Util::Sequence (this, prov->GetDiscography (CurrentArtist_, releases)) >>
 					Util::Visitor
@@ -192,11 +190,11 @@ namespace LMP
 
 	void BioViewManager::HandleDiscographyReady (QList<Media::ReleaseInfo> releases)
 	{
-		const auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto pm = GetProxyHolder ()->GetPluginsManager ();
 		const auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
 		const auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
 
-		const auto& icon = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
+		const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->
 				GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
 
 		std::sort (releases.rbegin (), releases.rend (),

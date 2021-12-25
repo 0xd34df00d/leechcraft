@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QQuickWidget>
 #include <interfaces/media/iartistbiofetcher.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/qml/standardnamfactory.h>
@@ -22,14 +23,12 @@ namespace LC
 {
 namespace LMP
 {
-	ArtistBrowserTab::ArtistBrowserTab (const ICoreProxy_ptr& proxy,
-			const TabClassInfo& tc, QObject *plugin)
+	ArtistBrowserTab::ArtistBrowserTab (const TabClassInfo& tc, QObject *plugin)
 	: TC_ (tc)
 	, Plugin_ (plugin)
 	, View_ (new QQuickWidget)
-	, BioMgr_ (new BioViewManager (proxy, View_, this))
-	, SimilarMgr_ (new SimilarViewManager (proxy, View_, this))
-	, Proxy_ (proxy)
+	, BioMgr_ (new BioViewManager (View_, this))
+	, SimilarMgr_ (new SimilarViewManager (View_, this))
 	{
 		Ui_.setupUi (this);
 
@@ -45,7 +44,7 @@ namespace LMP
 		BioMgr_->InitWithSource ();
 		SimilarMgr_->InitWithSource ();
 
-		new Util::ClearLineEditAddon (proxy, Ui_.ArtistNameEdit_);
+		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.ArtistNameEdit_);
 	}
 
 	TabClassInfo ArtistBrowserTab::GetTabClassInfo () const
@@ -99,7 +98,7 @@ namespace LMP
 
 	void ArtistBrowserTab::on_ArtistNameEdit__returnPressed ()
 	{
-		auto provs = Proxy_->GetPluginsManager ()->
+		auto provs = GetProxyHolder ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		if (provs.isEmpty ())
 		{

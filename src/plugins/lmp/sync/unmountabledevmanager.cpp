@@ -12,7 +12,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "../interfaces/lmp/iunmountablesync.h"
-#include "../core.h"
 
 namespace LC
 {
@@ -32,7 +31,7 @@ namespace LMP
 
 	void UnmountableDevManager::InitializePlugins ()
 	{
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto pm = GetProxyHolder ()->GetPluginsManager ();
 		Managers_ = pm->GetAllCastableRoots<IUnmountableSync*> ();
 		for (auto mgr : Managers_)
 			connect (mgr,

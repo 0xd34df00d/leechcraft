@@ -11,11 +11,11 @@
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/iinfo.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "similarview.h"
@@ -26,7 +26,7 @@ namespace LMP
 {
 	RecommendationsWidget::RecommendationsWidget (QWidget *parent)
 	: QWidget (parent)
-	, RecView_ (new SimilarView (Core::Instance ().GetProxy ()))
+	, RecView_ (new SimilarView ())
 	{
 		Ui_.setupUi (this);
 
@@ -35,9 +35,7 @@ namespace LMP
 
 	void RecommendationsWidget::InitializeProviders ()
 	{
-		const auto& provs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IRecommendedArtists*> ();
-		for (auto prov : provs)
+		for (auto prov : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IRecommendedArtists*> ())
 		{
 			Util::Sequence (this, prov->RequestRecommended (10)) >>
 					Util::Visitor

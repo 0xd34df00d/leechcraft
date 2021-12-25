@@ -19,10 +19,8 @@ namespace LC
 {
 namespace LMP
 {
-	StdArtistActionsManager::StdArtistActionsManager (const ICoreProxy_ptr& proxy,
-			QQuickWidget *view, QObject* parent)
+	StdArtistActionsManager::StdArtistActionsManager (QQuickWidget *view, QObject* parent)
 	: QObject { parent }
-	, Proxy_ { proxy }
 	{
 		connect (view->rootObject (),
 				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),
@@ -50,12 +48,12 @@ namespace LMP
 				"x-leechcraft/todo-item");
 		e.Additional_ ["TodoBody"] = tags + "<br />" + QString ("<a href='%1'>%1</a>").arg (page);
 		e.Additional_ ["Tags"] = QStringList ("music");
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void StdArtistActionsManager::handleLink (const QString& link)
 	{
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
 					{},
 					FromUserInitiated | OnlyHandle));
 	}

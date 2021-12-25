@@ -15,6 +15,7 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
+#include <interfaces/core/ientitymanager.h>
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -928,7 +929,7 @@ namespace LMP
 					.arg (artistsMsg)
 					.arg (albumsMsg)
 					.arg (tracksMsg);
-			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, Priority::Info));
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("LMP", msg, Priority::Info));
 
 			UpdateNewArtists_ = UpdateNewAlbums_ = UpdateNewTracks_ = 0;
 		}

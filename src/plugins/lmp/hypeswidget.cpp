@@ -22,6 +22,7 @@
 #include <util/threads/futures.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iinfo.h>
 #include "util.h"
@@ -79,8 +80,7 @@ namespace LMP
 
 		HypesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
-		HypesView_->engine ()->addImageProvider ("ThemeIcons",
-				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
+		HypesView_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
@@ -95,8 +95,7 @@ namespace LMP
 		root->setContextProperty ("tracksLabelText", tr ("Hyped tracks"));
 		root->setContextProperty ("newsText", tr ("Show novelties"));
 		root->setContextProperty ("topsText", tr ("Show tops"));
-		root->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+		root->setContextProperty ("colorProxy", new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			HypesView_->engine ()->addImportPath (cand);
@@ -136,8 +135,7 @@ namespace LMP
 
 		bool lastFound = false;
 
-		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableRoots<Media::IHypesProvider*> ();
+		Providers_ = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<Media::IHypesProvider*> ();
 		for (auto provObj : Providers_)
 		{
 			auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
@@ -261,7 +259,7 @@ namespace LMP
 
 	void HypesWidget::handleLink (const QString& link)
 	{
-		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
 					QString (),
 					FromUserInitiated | OnlyHandle));
 	}

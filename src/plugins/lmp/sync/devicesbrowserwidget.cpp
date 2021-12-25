@@ -16,6 +16,7 @@
 #include <util/util.h>
 #include <util/sll/prelude.h>
 #include <interfaces/devices/iremovabledevmanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
@@ -117,7 +118,7 @@ namespace LMP
 
 	void DevicesBrowserWidget::InitializeDevices ()
 	{
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto pm = GetProxyHolder ()->GetPluginsManager ();
 
 		const auto& mgrs = pm->GetAllCastableTo<IRemovableDevManager*> ();
 		for (const auto& mgr : mgrs)

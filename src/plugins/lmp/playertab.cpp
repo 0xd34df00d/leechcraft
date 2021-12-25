@@ -248,10 +248,10 @@ namespace LMP
 
 		NavButtons_->setFixedWidth (NavButtons_->gridSize ().width () + 5);
 
-		auto mkButton = [this] (const QString& title, const QString& iconName)
+		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
+		auto mkButton = [this, itm] (const QString& title, const QString& iconName)
 		{
-			const auto& icon = Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon (iconName);
+			const auto& icon = itm->GetIcon (iconName);
 
 			auto but = new QListWidgetItem ();
 			NavButtons_->addItem (but);
@@ -416,8 +416,7 @@ namespace LMP
 				.property ("EnableScrobbling").toBool ())
 			return;
 
-		auto scrobblers = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+		auto scrobblers = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		if (info.Title_.isEmpty () && info.Artist_.isEmpty ())
 		{
 			for (const auto& s : scrobblers)
@@ -442,7 +441,7 @@ namespace LMP
 		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
 			return;
 
-		auto finders = Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableTo<Media::ILyricsFinder*> ();
+		auto finders = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::ILyricsFinder*> ();
 		if (finders.isEmpty ())
 			return;
 
@@ -492,7 +491,7 @@ namespace LMP
 	{
 		QIcon GetIconFromState (SourceState state)
 		{
-			const auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+			const auto mgr = GetProxyHolder ()->GetIconThemeManager ();
 			switch (state)
 			{
 			case SourceState::Playing:
@@ -549,7 +548,7 @@ namespace LMP
 		}
 		else if (!Similars_.contains (info.Artist_))
 		{
-			const auto& similars = Core::Instance ().GetProxy ()->
+			const auto& similars = GetProxyHolder ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
 			for (const auto similar : similars)
 				Util::Sequence (this, similar->GetSimilarArtists (info.Artist_, 15)) >>
@@ -586,7 +585,7 @@ namespace LMP
 					.property ("EnableScrobbling").toBool ())
 				return;
 
-			auto scrobblers = Core::Instance ().GetProxy ()->
+			auto scrobblers = GetProxyHolder ()->
 						GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 			for (const auto scrobbler : scrobblers)
 				std::invoke (marker, scrobbler);

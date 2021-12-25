@@ -69,7 +69,7 @@ namespace LMP
 				StationsProxy_,
 				SLOT (setFilterFixedString (QString)));
 
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.StationsSearch_);
+		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.StationsSearch_);
 	}
 
 	void RadioWidget::SetPlayer (Player *player)
@@ -141,7 +141,7 @@ namespace LMP
 		const auto type = idx.data (Media::RadioItemRole::ItemType).toInt ();
 		const auto parentType = idx.parent ().data (Media::RadioItemRole::ItemType).toInt ();
 
-		const auto iconsMgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+		const auto iconsMgr = GetProxyHolder ()->GetIconThemeManager ();
 
 		QMenu menu;
 		menu.addAction (iconsMgr->GetIcon ("view-refresh"),

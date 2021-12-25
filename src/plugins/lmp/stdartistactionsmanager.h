@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxyfwd.h>
 
 class QQuickWidget;
 
@@ -20,10 +19,8 @@ namespace LMP
 	class StdArtistActionsManager : public QObject
 	{
 		Q_OBJECT
-
-		const ICoreProxy_ptr Proxy_;
 	public:
-		StdArtistActionsManager (const ICoreProxy_ptr&, QQuickWidget *view, QObject *parent = 0);
+		StdArtistActionsManager (QQuickWidget *view, QObject *parent = 0);
 	private slots:
 		void handleBookmark (const QString&, const QString&, const QString&);
 		void handleLink (const QString&);

@@ -8,7 +8,6 @@
 
 #include "biowidget.h"
 #include <QQuickWidget>
-#include <QtDebug>
 #include <util/util.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
@@ -17,9 +16,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iinfo.h>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "bioviewmanager.h"
-#include "previewhandler.h"
 
 namespace LC
 {
@@ -40,14 +37,14 @@ namespace LMP
 				[] { return 50 * 1024 * 1024; },
 				View_->engine ());
 
-		Manager_ = new BioViewManager (Core::Instance ().GetProxy (), View_, this);
+		Manager_ = new BioViewManager (View_, this);
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "BioView.qml"));
 		Manager_->InitWithSource ();
 
 		const auto& lastProv = XmlSettingsManager::Instance ()
 				.Property ("LastUsedBioProvider", QString ()).toString ();
 
-		auto providerObjs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+		auto providerObjs = GetProxyHolder ()->GetPluginsManager ()->
 				GetAllCastableRoots<Media::IArtistBioFetcher*> ();
 		for (auto providerObj : providerObjs)
 		{

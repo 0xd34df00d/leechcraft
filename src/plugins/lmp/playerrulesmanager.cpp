@@ -11,6 +11,7 @@
 #include <QStandardItemModel>
 #include <QtConcurrentMap>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/ianrulesstorage.h>
@@ -19,7 +20,6 @@
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include "core.h"
 #include "player.h"
 
 Q_DECLARE_METATYPE (QList<LC::Entity>)
@@ -174,7 +174,7 @@ namespace LMP
 
 	void PlayerRulesManager::InitializePlugins ()
 	{
-		const auto plugMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto plugMgr = GetProxyHolder ()->GetPluginsManager ();
 		for (auto storage : plugMgr->GetAllCastableRoots<IANRulesStorage*> ())
 			connect (storage,
 					SIGNAL (rulesChanged ()),
@@ -237,7 +237,7 @@ namespace LMP
 	{
 		Rules_.clear ();
 
-		const auto plugMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto plugMgr = GetProxyHolder ()->GetPluginsManager ();
 		for (auto storage : plugMgr->GetAllCastableTo<IANRulesStorage*> ())
 			Rules_ += storage->GetAllRules (AN::CatMediaPlayer);
 	}

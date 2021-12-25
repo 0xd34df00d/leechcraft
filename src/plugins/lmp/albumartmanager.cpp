@@ -102,7 +102,7 @@ namespace LMP
 	{
 		using MaybeImage_t = std::optional<QImage>;
 
-		const auto nam = Core::Instance ().GetProxy ()->GetNetworkAccessManager ();
+		const auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
 
 		auto sync = std::make_shared<QFutureSynchronizer<MaybeImage_t>> ();
 		for (const auto& url : urls)
@@ -148,8 +148,7 @@ namespace LMP
 
 	void AlbumArtManager::rotateQueue ()
 	{
-		auto provs = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableRoots<Media::IAlbumArtProvider*> ();
+		auto provs = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<Media::IAlbumArtProvider*> ();
 		const auto& task = Queue_.takeFirst ();
 		for (auto provObj : provs)
 		{
@@ -193,7 +192,7 @@ namespace LMP
 			const auto& e = Util::MakeNotification ("LMP",
 					tr ("Path %1 cannot be used as album art storage, default path will be used instead."),
 					Priority::Warning);
-			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 			AADir_ = Util::GetUserDir (Util::UserDir::Cache, "lmp/covers");
 		}

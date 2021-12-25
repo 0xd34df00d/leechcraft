@@ -9,8 +9,9 @@
 #include "syncmanagerbase.h"
 #include <QFileInfo>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "transcodemanager.h"
-#include "../core.h"
 
 namespace LC
 {
@@ -64,7 +65,7 @@ namespace LMP
 					tr ("Files were transcoded, but some errors occured. "
 						"Check the upload log for details."),
 					Priority::Warning);
-			Core::Instance ().SendEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			WereTCErrors_ = false;
 		}
 
@@ -83,7 +84,7 @@ namespace LMP
 		const auto& e = Util::MakeNotification ("LMP",
 				tr ("Files finished uploading."),
 				Priority::Info);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void SyncManagerBase::HandleFileTranscoded (const QString&, const QString&)
@@ -137,7 +138,7 @@ namespace LMP
 		const auto& filename = QFileInfo (localPath).fileName ();
 		const auto& text = tr ("Error copying file %1: %2.").arg (filename).arg (errorStr);
 
-		Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("LMP",
 					text,
 					Priority::Warning));
 		emit uploadLog (text);

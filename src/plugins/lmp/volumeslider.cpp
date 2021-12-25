@@ -7,9 +7,9 @@
  **********************************************************************/
 
 #include "volumeslider.h"
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "engine/output.h"
-#include "core.h"
 
 namespace LC
 {
@@ -47,8 +47,7 @@ namespace LMP
 	void VolumeSlider::handleMuted (bool muted)
 	{
 		const auto iconName = muted ? "player-volume-muted" : "player-volume";
-		Ui_.MuteButton_->setIcon (Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon (iconName));
+		Ui_.MuteButton_->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon (iconName));
 	}
 }
 }

@@ -11,6 +11,7 @@
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QMimeData>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
@@ -197,8 +198,7 @@ namespace LMP
 		while (StaticRoot_->rowCount ())
 			StaticRoot_->removeRow (0);
 
-		const auto& icon = Core::Instance ().GetProxy ()->
-				GetIconThemeManager ()->GetIcon ("view-media-playlist");
+		const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("view-media-playlist");
 		for (const auto& name : Static_->EnumerateCustomPlaylists ())
 		{
 			auto item = new QStandardItem (icon, name);

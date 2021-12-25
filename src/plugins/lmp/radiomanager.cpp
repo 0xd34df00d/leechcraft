@@ -21,8 +21,8 @@
 #include <util/gui/util.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/imodifiableradiostation.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "core.h"
 #include "player.h"
 #include "xmlsettingsmanager.h"
 #include "radiocustomstreams.h"
@@ -118,7 +118,7 @@ namespace LMP
 
 	void RadioManager::InitProviders ()
 	{
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto pm = GetProxyHolder ()->GetPluginsManager ();
 
 		const auto rpm = new RadioPilesManager { pm, this };
 		MergeModel_->AddModel (rpm->GetModel ());

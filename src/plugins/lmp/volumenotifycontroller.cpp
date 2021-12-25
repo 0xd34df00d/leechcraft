@@ -9,9 +9,9 @@
 #include "volumenotifycontroller.h"
 #include <QTimer>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "engine/output.h"
-#include "core.h"
 
 namespace LC
 {
@@ -53,7 +53,7 @@ namespace LMP
 				Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.LMP";
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "VolumeChange";
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

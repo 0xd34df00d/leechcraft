@@ -22,11 +22,11 @@
 #include <util/threads/futures.h>
 #include <util/models/rolenamesmixin.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/iinfo.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 
@@ -81,10 +81,10 @@ namespace LMP
 				ReleasesView_->engine ());
 
 		ReleasesView_->engine ()->addImageProvider ("ThemeIcons",
-				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
+				new Util::ThemeImageProvider (GetProxyHolder ()));
 		ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
 		ReleasesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ReleasesView.qml"));
 
 		connect (Ui_.InfoProvider_,
@@ -108,7 +108,7 @@ namespace LMP
 
 	void ReleasesWidget::InitializeProviders ()
 	{
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto pm = GetProxyHolder ()->GetPluginsManager ();
 
 		const auto& lastProv = ShouldRememberProvs () ?
 				XmlSettingsManager::Instance ()
@@ -214,7 +214,7 @@ namespace LMP
 
 	void ReleasesWidget::handleLink (const QString& link)
 	{
-		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
 					QString (),
 					FromUserInitiated | OnlyHandle));
 	}

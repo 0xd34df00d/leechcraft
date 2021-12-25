@@ -15,7 +15,6 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "player.h"
-#include "core.h"
 #include "previewcharacteristicinfo.h"
 
 namespace LC
@@ -37,7 +36,7 @@ namespace LMP
 
 	void PreviewHandler::InitWithPlugins ()
 	{
-		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableTo<Media::IAudioPile*> ();
+		Providers_ = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IAudioPile*> ();
 	}
 
 	void PreviewHandler::previewArtist (const QString& artist)
@@ -166,7 +165,7 @@ namespace LMP
 					.arg (info.Album_)
 					.arg (info.Artist_),
 				Priority::Warning);
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void PreviewHandler::HandlePendingReady (const Media::IAudioPile::Results_t& results)

@@ -266,7 +266,7 @@ namespace LC::LMP
 					return;
 			}
 
-			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+			const auto iem = GetProxyHolder ()->GetEntityManager ();
 			for (const auto& pair : Util::Zip (urls, filenames))
 			{
 				const auto& e = Util::MakeEntity (pair.first,

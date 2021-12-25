@@ -16,26 +16,24 @@
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
 #include <util/threads/futures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/isimilarartists.h>
 #include "similarmodel.h"
-#include "core.h"
 #include "stdartistactionsmanager.h"
 
 namespace LC
 {
 namespace LMP
 {
-	SimilarViewManager::SimilarViewManager (const ICoreProxy_ptr& proxy,
-			QQuickWidget *view, QObject *parent)
+	SimilarViewManager::SimilarViewManager (QQuickWidget *view, QObject *parent)
 	: QObject (parent)
 	, View_ (view)
 	, Model_ (new SimilarModel (this))
-	, Proxy_ (proxy)
 	{
 		View_->rootContext ()->setContextProperty ("similarModel", Model_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
@@ -43,13 +41,12 @@ namespace LMP
 
 	void SimilarViewManager::InitWithSource ()
 	{
-		new StdArtistActionsManager (Proxy_, View_, this);
+		new StdArtistActionsManager (View_, this);
 	}
 
 	void SimilarViewManager::DefaultRequest (const QString& artist)
 	{
-		auto similars = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
+		const auto& similars = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
 		for (auto similar : similars)
 			Util::Sequence (this, similar->GetSimilarArtists (artist, 20)) >>
 					Util::Visitor

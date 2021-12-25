@@ -17,11 +17,11 @@
 #include <QThread>
 #include <util/sll/unreachable.h>
 #include <util/sll/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "path.h"
 #include "../gstfix.h"
-#include "../core.h"
 #include "../xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (GstMessage*);
@@ -462,7 +462,7 @@ namespace LMP
 		}
 
 		const auto& str = QString ("LeechCraft LMP/%1 (%2)")
-				.arg (Core::Instance ().GetProxy ()->GetVersion ())
+				.arg (GetProxyHolder ()->GetVersion ())
 				.arg (gst_version_string ());
 		qDebug () << Q_FUNC_INFO
 				<< "setting user-agent to"

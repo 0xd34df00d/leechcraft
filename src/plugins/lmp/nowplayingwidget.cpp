@@ -11,6 +11,7 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <util/xpc/stddatafiltermenucreator.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "mediainfo.h"
 #include "core.h"
@@ -27,7 +28,7 @@ namespace LMP
 	NowPlayingWidget::NowPlayingWidget (QWidget *parent)
 	: QWidget (parent)
 	, BioWidget_ (new BioWidget)
-	, SimilarView_ (new SimilarView (Core::Instance ().GetProxy ()))
+	, SimilarView_ (new SimilarView ())
 	{
 		Ui_.setupUi (this);
 		Ui_.BioPage_->layout ()->addWidget (BioWidget_);
@@ -37,7 +38,7 @@ namespace LMP
 				this,
 				SLOT (resetSimilarArtists ()));
 
-		auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+		auto mgr = GetProxyHolder ()->GetIconThemeManager ();
 		Ui_.PrevLyricsButton_->setIcon (mgr->GetIcon ("go-previous"));
 		Ui_.NextLyricsButton_->setIcon (mgr->GetIcon ("go-next"));
 
@@ -149,7 +150,7 @@ namespace LMP
 
 		if (!selection.isEmpty ())
 		{
-			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+			const auto iem = GetProxyHolder ()->GetEntityManager ();
 			new Util::StdDataFilterMenuCreator { selection, iem, menu.get () };
 		}
 

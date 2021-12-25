@@ -79,7 +79,7 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.CollectionFilter_);
+		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.CollectionFilter_);
 		new PaletteFixerFilter (Ui_.CollectionTree_);
 
 		connect (Core::Instance ().GetLocalCollection (),
@@ -288,7 +288,7 @@ namespace LMP
 		emit hookCollectionContextMenuRequested (std::make_shared<Util::DefaultHookProxy> (),
 				&menu, ColIndex2MediaInfo (index));
 
-		Core::Instance ().GetProxy ()->GetIconThemeManager ()->ManageWidget (&menu);
+		GetProxyHolder ()->GetIconThemeManager ()->ManageWidget (&menu);
 
 		menu.exec (Ui_.CollectionTree_->viewport ()->mapToGlobal (point));
 	}

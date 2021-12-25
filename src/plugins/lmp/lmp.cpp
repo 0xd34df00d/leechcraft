@@ -114,7 +114,7 @@ namespace LMP
 			TFSuggestOpening | TFOpenableByRequest
 		};
 
-		Core::Instance ().InitWithProxy (proxy);
+		Core::Instance ().InitWithProxy ();
 
 		auto mgr = new RootPathSettingsManager (this);
 		XSD_->SetDataSource ("RootPathsView", mgr->GetModel ());
@@ -483,7 +483,7 @@ namespace LMP
 		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
 		initShortcut (SIGNAL (notifyCurrentTrackRequested ()), {});
 
-		auto proxy = Core::Instance ().GetProxy ();
+		auto proxy = GetProxyHolder ();
 		auto setInfo = [this, proxy] (const QByteArray& method,
 				const QString& userText, const QString& icon)
 		{
@@ -518,7 +518,7 @@ namespace LMP
 
 	void Plugin::handleArtistBrowseRequested (const QString& artist, const DynPropertiesList_t& props)
 	{
-		auto tab = new ArtistBrowserTab (Proxy_, ArtistBrowserTC_, this);
+		auto tab = new ArtistBrowserTab (ArtistBrowserTC_, this);
 
 		for (const auto& pair : props)
 			tab->setProperty (pair.first, pair.second);

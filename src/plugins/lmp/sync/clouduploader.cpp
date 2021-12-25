@@ -11,7 +11,8 @@
 #include <QtDebug>
 #include <QFileInfo>
 #include <util/xpc/util.h>
-#include "../core.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LC
 {
@@ -68,7 +69,7 @@ namespace LMP
 			QFile::remove (localPath);
 
 		if (!errorStr.isEmpty () && error != CloudStorageError::NoError)
-			Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("LMP",
 						tr ("Error uploading file %1 to cloud: %2.")
 							.arg (QFileInfo (localPath).fileName ())
 							.arg (errorStr),

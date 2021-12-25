@@ -25,6 +25,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
 #include <util/threads/futures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irestorableradiostationprovider.h>
@@ -114,9 +115,8 @@ namespace LMP
 		bool ShouldClear_;
 	};
 
-	Player::Player (const ICoreProxy_ptr& proxy, QObject *parent)
+	Player::Player (QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, PlaylistModel_ (new PlaylistModel (this))
 	, Source_ (new SourceObject (Category::Music, this))
 	, Output_ (new Output (this))
@@ -158,7 +158,7 @@ namespace LMP
 				this,
 				SIGNAL (bufferStatusChanged (int)));
 
-		const auto seh = new SourceErrorHandler { Source_, Proxy_->GetEntityManager () };
+		const auto seh = new SourceErrorHandler { Source_, GetProxyHolder ()->GetEntityManager () };
 		connect (seh,
 				SIGNAL (nextTrack ()),
 				this,
@@ -781,7 +781,7 @@ namespace LMP
 				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
 				setter,
 				[this] { clear (); },
-				Proxy_);
+				GetProxyHolder ());
 
 		setter (playlist);
 	}
@@ -1096,7 +1096,7 @@ namespace LMP
 		e.Additional_ [AN::Field::MediaTitle] = mediaInfo.Title_;
 		e.Additional_ [AN::Field::MediaLength] = mediaInfo.Length_;
 
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	template<typename T>
@@ -1545,7 +1545,7 @@ namespace LMP
 				tr ("Radio station error: %1.")
 					.arg (error),
 				Priority::Critical);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Player::handleRadioStream (const QUrl& url, const Media::AudioInfo& info)

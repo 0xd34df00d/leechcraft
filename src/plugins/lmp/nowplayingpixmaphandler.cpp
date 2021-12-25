@@ -12,9 +12,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
-#include "core.h"
 #include "mediainfo.h"
 
 namespace LC
@@ -62,7 +60,7 @@ namespace LMP
 		if (IsValidPixmap_)
 			return;
 
-		auto nam = Core::Instance ().GetProxy ()->GetNetworkAccessManager ();
+		auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
 		connect (nam->get (QNetworkRequest (url)),
 				SIGNAL (finished ()),
 				this,

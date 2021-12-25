@@ -11,7 +11,6 @@
 #include <memory>
 #include <optional>
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
 
 class QUrl;
 
@@ -42,8 +41,6 @@ namespace LMP
 
 		static std::shared_ptr<Core> CoreInstance_;
 
-		const ICoreProxy_ptr Proxy_;
-
 		struct Members;
 
 		std::shared_ptr<Members> M_;
@@ -51,22 +48,16 @@ namespace LMP
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
 
-		Core (const ICoreProxy_ptr&);
-
-		Core () = delete;
+		Core ();
 		Core (const Core&) = delete;
 		Core (Core&&) = delete;
 		Core& operator= (const Core&) = delete;
 		Core& operator= (Core&&) = delete;
 	public:
 		static Core& Instance ();
-		static void InitWithProxy (const ICoreProxy_ptr&);
+		static void InitWithProxy ();
 
 		void Release ();
-
-		ICoreProxy_ptr GetProxy ();
-
-		void SendEntity (const Entity&);
 
 		void InitWithOtherPlugins ();
 

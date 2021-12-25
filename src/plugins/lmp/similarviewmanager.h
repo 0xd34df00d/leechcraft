@@ -10,7 +10,6 @@
 
 #include <QObject>
 #include <interfaces/media/audiostructs.h>
-#include <interfaces/core/icoreproxyfwd.h>
 
 class QQuickWidget;
 
@@ -24,9 +23,8 @@ namespace LMP
 	{
 		QQuickWidget * const View_;
 		QStandardItemModel * const Model_;
-		const ICoreProxy_ptr Proxy_;
 	public:
-		SimilarViewManager (const ICoreProxy_ptr&, QQuickWidget*, QObject* = 0);
+		SimilarViewManager (QQuickWidget*, QObject* = 0);
 
 		void InitWithSource ();
 

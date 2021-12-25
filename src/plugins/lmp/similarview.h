@@ -11,7 +11,6 @@
 #include <QtGlobal>
 #include <QQuickWidget>
 #include <interfaces/media/audiostructs.h>
-#include <interfaces/core/icoreproxyfwd.h>
 
 namespace LC
 {
@@ -25,7 +24,7 @@ namespace LMP
 
 		SimilarViewManager *Manager_;
 	public:
-		SimilarView (const ICoreProxy_ptr&, QWidget* = nullptr);
+		SimilarView (QWidget* = nullptr);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
 	};

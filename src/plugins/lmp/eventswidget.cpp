@@ -12,6 +12,7 @@
 #include <QQmlContext>
 #include <QQuickItem>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
 #include <interfaces/iinfo.h>
@@ -20,7 +21,6 @@
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/threads/futures.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 
@@ -89,7 +89,7 @@ namespace LMP
 		View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
 		View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
 		View_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
 
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "EventsView.qml"));
 
@@ -116,8 +116,7 @@ namespace LMP
 
 		bool lastFound = false;
 
-		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableRoots<Media::IEventsProvider*> ();
+		const auto& roots = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<Media::IEventsProvider*> ();
 		for (auto root : roots)
 		{
 			auto scrob = qobject_cast<Media::IEventsProvider*> (root);

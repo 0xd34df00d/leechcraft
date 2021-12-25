@@ -11,7 +11,6 @@
 #include <QObject>
 #include <QImage>
 #include <interfaces/media/idiscographyprovider.h>
-#include <interfaces/core/icoreproxyfwd.h>
 
 class QQuickWidget;
 
@@ -42,10 +41,8 @@ namespace LMP
 		BioPropProxy *BioPropProxy_;
 		QStandardItemModel *DiscoModel_;
 		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
-
-		const ICoreProxy_ptr Proxy_;
 	public:
-		BioViewManager (const ICoreProxy_ptr&, QQuickWidget*, QObject* = nullptr);
+		BioViewManager (QQuickWidget*, QObject* = nullptr);
 
 		void InitWithSource ();
 		void Request (Media::IArtistBioFetcher*, const QString&, const QStringList&);
