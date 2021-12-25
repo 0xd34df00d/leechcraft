@@ -106,14 +106,11 @@ namespace LMP
 	{
 		using PropsVec_t = QVector<QPair<QString, QString>>;
 
+		using namespace TagLib;
+
 		struct PropsGetter
 		{
 			PropsVec_t& Vec_;
-
-			PropsGetter (PropsVec_t& vec)
-			: Vec_ { vec }
-			{
-			}
 
 			void Append (const QString& name, const QString& val)
 			{
@@ -127,128 +124,139 @@ namespace LMP
 
 			void Append (const QString& name, bool val)
 			{
-				Append (name, val ? AudioPropsWidget::tr ("yes") : AudioPropsWidget::tr ("no"));
+				Append (name, val ? tr ("yes") : tr ("no"));
 			}
 
-			QString Parse (TagLib::APE::Properties *props)
+			QString VersionField (QLatin1String codec) const
 			{
-				Append ("APE version", props->version ());
-				Append ("Bits per sample", props->bitsPerSample ());
-				return "APE";
+				return tr ("%1 version").arg (codec);
 			}
 
-			QString Parse (TagLib::ASF::Properties*)
+			QString Parse (APE::Properties *props)
 			{
-				return "ASF";
+				Append (VersionField ("APE"_ql), props->version ());
+				Append (tr ("Bits per sample"), props->bitsPerSample ());
+				return QStringLiteral ("APE");
 			}
 
-			QString Parse (TagLib::FLAC::Properties *props)
+			QString Parse (ASF::Properties*)
 			{
-				Append ("Sample width", props->bitsPerSample ());
-				return "FLAC";
+				return QStringLiteral ("ASF");
 			}
 
-			QString Parse (TagLib::MP4::Properties *props)
+			QString Parse (FLAC::Properties *props)
 			{
-				Append ("Bits per sample", props->bitsPerSample ());
-				return "MP4";
+				Append (tr ("Bits per sample"), props->bitsPerSample ());
+				return QStringLiteral ("FLAC");
 			}
 
-			QString Parse (TagLib::MPC::Properties *props)
+			QString Parse (MP4::Properties *props)
 			{
-				Append ("MPC version", props->mpcVersion ());
-				return "MPC";
+				Append (tr ("Bits per sample"), props->bitsPerSample ());
+				return QStringLiteral ("MP4");
 			}
 
-			QString Parse (TagLib::MPEG::Properties *props)
+			QString Parse (MPC::Properties *props)
 			{
+				Append (VersionField ("MPC"_ql), props->mpcVersion ());
+				return QStringLiteral ("MPC");
+			}
+
+			QString Parse (MPEG::Properties *props)
+			{
+				QString mpegVersion;
 				switch (props->version ())
 				{
-				case TagLib::MPEG::Header::Version1:
-					Append ("MPEG version", 1);
+				case MPEG::Header::Version1:
+					mpegVersion = "1";
 					break;
-				case TagLib::MPEG::Header::Version2:
-					Append ("MPEG version", 2);
+				case MPEG::Header::Version2:
+					mpegVersion = "2";
 					break;
-				case TagLib::MPEG::Header::Version2_5:
-					Append ("MPEG version", "2.5");
+				case MPEG::Header::Version2_5:
+					mpegVersion = "2.5";
 					break;
 				}
+				Append (VersionField ("MPEG"_ql), mpegVersion);
 
-				Append ("MPEG layer", props->layer ());
-				Append ("Protected", props->protectionEnabled ());
-				Append ("Copyrighted", props->isCopyrighted ());
-				Append ("Original", props->isOriginal ());
+				Append (tr ("MPEG layer"), props->layer ());
+				Append (tr ("Protected"), props->protectionEnabled ());
+				Append (tr ("Copyrighted"), props->isCopyrighted ());
+				Append (tr ("Original"), props->isOriginal ());
 
+				QString channelMode;
 				switch (props->channelMode ())
 				{
-				case TagLib::MPEG::Header::Stereo:
-					Append ("Channel mode", "Stereo");
+				case MPEG::Header::Stereo:
+					channelMode = tr ("Stereo");
 					break;
-				case TagLib::MPEG::Header::JointStereo:
-					Append ("Channel mode", "Joint Stereo");
+				case MPEG::Header::JointStereo:
+					channelMode = tr ("Joint Stereo");
 					break;
-				case TagLib::MPEG::Header::DualChannel:
-					Append ("Channel mode", "Dual Mono");
+				case MPEG::Header::DualChannel:
+					channelMode = tr ("Dual Mono");
 					break;
-				case TagLib::MPEG::Header::SingleChannel:
-					Append ("Channel mode", "Mono");
+				case MPEG::Header::SingleChannel:
+					channelMode = tr ("Mono");
 					break;
 				}
+				Append ("Channel mode", channelMode);
 
-				return "MPEG";
+				return QStringLiteral ("MPEG");
 			}
 
-			QString Parse (TagLib::Ogg::Speex::Properties *props)
+			QString Parse (Ogg::Speex::Properties *props)
 			{
-				Append ("Speex version", props->speexVersion ());
-				return "Speex";
+				Append (VersionField ("Speex"_ql), props->speexVersion ());
+				return QStringLiteral ("Speex");
 			}
 
-			QString Parse (TagLib::Vorbis::Properties *props)
+			QString Parse (Vorbis::Properties *props)
 			{
-				Append ("Vorbis version", props->vorbisVersion ());
-				Append ("Minimum bitrate", props->bitrateMinimum ());
-				Append ("Maximum bitrate", props->bitrateMaximum ());
-				Append ("Nominal bitrate", props->bitrateNominal ());
-				return "OGG Vorbis";
+				Append (VersionField ("Vorbis"_ql), props->vorbisVersion ());
+				Append (tr ("Minimum bitrate"), props->bitrateMinimum ());
+				Append (tr ("Maximum bitrate"), props->bitrateMaximum ());
+				Append (tr ("Nominal bitrate"), props->bitrateNominal ());
+				return QStringLiteral ("OGG Vorbis");
 			}
 
-			QString Parse (TagLib::RIFF::AIFF::Properties *props)
+			QString Parse (RIFF::AIFF::Properties *props)
 			{
-				Append ("Sample width", props->bitsPerSample ());
-				return "AIFF";
+				Append (tr ("Bits per sample"), props->bitsPerSample ());
+				return QStringLiteral ("AIFF");
 			}
 
-			QString Parse (TagLib::RIFF::WAV::Properties *props)
+			QString Parse (RIFF::WAV::Properties *props)
 			{
-				Append ("Sample width", props->bitsPerSample ());
-				return "WAV";
+				Append (tr ("Bits per sample"), props->bitsPerSample ());
+				return QStringLiteral ("WAV");
 			}
 
-			QString Parse (TagLib::TrueAudio::Properties *props)
+			QString Parse (TrueAudio::Properties *props)
 			{
-				Append ("Bits per sample", props->bitsPerSample ());
-				Append ("TTA version", props->ttaVersion ());
-				return "TTA (TrueAudio)";
+				Append (VersionField ("TTA"_ql), props->ttaVersion ());
+				Append (tr ("Bits per sample"), props->bitsPerSample ());
+				return QStringLiteral ("TTA (TrueAudio)");
 			}
 
-			QString Parse (TagLib::WavPack::Properties *props)
+			QString Parse (WavPack::Properties *props)
 			{
-				Append ("Bits per sample", props->bitsPerSample ());
-				Append ("WavPack version", props->version ());
-				return "WavPack";
+				Append (VersionField ("WavPack"_ql), props->version ());
+				Append (tr ("Bits per sample"), props->bitsPerSample ());
+				return QStringLiteral ("WavPack");
 			}
 
 			template<typename T>
-			void HandleProp (TagLib::AudioProperties *props)
+			void HandleProp (AudioProperties *props)
 			{
 				if (const auto val = dynamic_cast<T> (props))
 				{
-					Parse (val);
+					Append (tr ("File type"), Parse (val));
 					return;
 				}
 			}
+
+			Q_DECLARE_TR_FUNCTIONS (LC::LMP::AudioPropsWidget)
 		};
 
 		template<typename... Props>
@@ -273,9 +281,9 @@ namespace LMP
 			if (!props)
 				return;
 
-			vec.push_back ({ AudioPropsWidget::tr ("Bitrate"), QString::number (props->bitrate ()) + " kbps" });
+			vec.push_back ({ AudioPropsWidget::tr ("Bitrate"), AudioPropsWidget::tr ("%1 kbps").arg (props->bitrate ()) });
 			vec.push_back ({ AudioPropsWidget::tr ("Channels"), QString::number (props->channels ()) });
-			vec.push_back ({ AudioPropsWidget::tr ("Sample rate"), QString::number (props->sampleRate ()) + " Hz" });
+			vec.push_back ({ AudioPropsWidget::tr ("Sample rate"), AudioPropsWidget::tr ("%1 Hz").arg (props->sampleRate ()) });
 
 			using namespace TagLib;
 
@@ -305,16 +313,18 @@ namespace LMP
 			{ tr ("Album"), info.Album_ },
 			{ tr ("Track number"), QString::number (info.TrackNumber_) },
 			{ tr ("Year"), QString::number (info.Year_) },
-			{ tr ("Genres"), info.Genres_.join ("; ") },
+			{ tr ("Genres"), info.Genres_.join (QStringLiteral ("; ")) },
 			{ tr ("Length"), QString::number (info.Length_) },
-			{ tr ("Local path"), info.LocalPath_.isEmpty () ? tr ("unknown") : info.LocalPath_ },
 		};
 
 		for (const auto& [key, value] : Util::Stlize (info.Additional_))
 			props.push_back ({ key, value.toString () });
 
 		if (!info.LocalPath_.isEmpty ())
+		{
+			props.push_back ({ tr ("Local path"), info.LocalPath_ }),
 			CollectLocalProps (props, info.LocalPath_);
+		}
 
 		PropsModel_->SetItems (props);
 	}
