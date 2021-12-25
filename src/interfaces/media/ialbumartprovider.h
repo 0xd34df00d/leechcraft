@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <boost/functional/hash.hpp>
 #include <QString>
 #include <QList>
 #include <QImage>
@@ -48,10 +47,8 @@ namespace Media
 	 */
 	inline size_t qHash (const AlbumInfo& info)
 	{
-		size_t seed = 0;
-		boost::hash_combine (seed, qHash (info.Album_));
-		boost::hash_combine (seed, qHash (info.Artist_));
-		return seed;
+		const std::initializer_list<QString> elems { info.Album_, info.Artist_ };
+		return qHashRange (elems.begin (), elems.end ());
 	}
 
 	/** @brief Interface for plugins that can search for album art.
