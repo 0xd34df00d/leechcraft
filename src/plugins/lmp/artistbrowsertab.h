@@ -15,9 +15,7 @@
 
 class QQuickWidget;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class BioViewManager;
 	class SimilarViewManager;
@@ -39,24 +37,23 @@ namespace LMP
 		BioViewManager * const BioMgr_;
 		SimilarViewManager * const SimilarMgr_;
 	public:
-		ArtistBrowserTab (const TabClassInfo&, QObject*);
+		ArtistBrowserTab (TabClassInfo, QObject*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 
-		QByteArray GetTabRecoverData () const;
-		QIcon GetTabRecoverIcon () const;
-		QString GetTabRecoverName () const;
+		QByteArray GetTabRecoverData () const override;
+		QIcon GetTabRecoverIcon () const override;
+		QString GetTabRecoverName () const override;
 
 		void Browse (const QString&);
-	private slots:
-		void on_ArtistNameEdit__returnPressed ();
+	private:
+		void DoQueries (const QString&);
 	signals:
 		void removeTab (QWidget*);
 
-		void tabRecoverDataChanged ();
+		void tabRecoverDataChanged () override;
 	};
-}
 }

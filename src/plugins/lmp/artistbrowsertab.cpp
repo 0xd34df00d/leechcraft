@@ -14,21 +14,20 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/udls.h>
 #include <util/sys/paths.h>
 #include "similarviewmanager.h"
 #include "bioviewmanager.h"
-#include "previewhandler.h"
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	ArtistBrowserTab::ArtistBrowserTab (const TabClassInfo& tc, QObject *plugin)
-	: TC_ (tc)
-	, Plugin_ (plugin)
-	, View_ (new QQuickWidget)
-	, BioMgr_ (new BioViewManager (View_, this))
-	, SimilarMgr_ (new SimilarViewManager (View_, this))
+	ArtistBrowserTab::ArtistBrowserTab (TabClassInfo tc, QObject *plugin)
+	: TC_ { std::move (tc) }
+	, Plugin_ { plugin }
+	, View_ { new QQuickWidget }
+	, BioMgr_ { new BioViewManager { View_, this } }
+	, SimilarMgr_ { new SimilarViewManager { View_, this } }
 	{
 		Ui_.setupUi (this);
 
@@ -37,7 +36,7 @@ namespace LMP
 		layout ()->addWidget (View_);
 
 		new Util::StandardNAMFactory ("lmp/qml",
-				[] { return 50 * 1024 * 1024; },
+				[] { return 50_mib; },
 				View_->engine ());
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ArtistBrowserView.qml"));
 
@@ -45,6 +44,10 @@ namespace LMP
 		SimilarMgr_->InitWithSource ();
 
 		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.ArtistNameEdit_);
+
+		connect (Ui_.ArtistNameEdit_,
+				&QLineEdit::returnPressed,
+				[this] { DoQueries (Ui_.ArtistNameEdit_->text ().trimmed ()); });
 	}
 
 	TabClassInfo ArtistBrowserTab::GetTabClassInfo () const
@@ -64,18 +67,18 @@ namespace LMP
 
 	QToolBar* ArtistBrowserTab::GetToolBar () const
 	{
-		return 0;
+		return nullptr;
 	}
 
 	QByteArray ArtistBrowserTab::GetTabRecoverData () const
 	{
 		const auto& artist = Ui_.ArtistNameEdit_->text ();
 		if (artist.isEmpty ())
-			return QByteArray ();
+			return {};
 
 		QByteArray result;
 		QDataStream stream (&result, QIODevice::WriteOnly);
-		stream << QByteArray ("artistbrowser") << artist;
+		stream << "artistbrowser"_qba << artist;
 		return result;
 	}
 
@@ -93,13 +96,12 @@ namespace LMP
 	void ArtistBrowserTab::Browse (const QString& artist)
 	{
 		Ui_.ArtistNameEdit_->setText (artist);
-		on_ArtistNameEdit__returnPressed ();
+		DoQueries (artist);
 	}
 
-	void ArtistBrowserTab::on_ArtistNameEdit__returnPressed ()
+	void ArtistBrowserTab::DoQueries (const QString& artist)
 	{
-		auto provs = GetProxyHolder ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IArtistBioFetcher*> ();
+		auto provs = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		if (provs.isEmpty ())
 		{
 			QMessageBox::critical (this,
@@ -109,12 +111,9 @@ namespace LMP
 			return;
 		}
 
-		auto artist = Ui_.ArtistNameEdit_->text ().trimmed ();
-
 		BioMgr_->Request (provs.first (), artist, {});
 		SimilarMgr_->DefaultRequest (artist);
 
 		emit tabRecoverDataChanged ();
 	}
-}
 }
