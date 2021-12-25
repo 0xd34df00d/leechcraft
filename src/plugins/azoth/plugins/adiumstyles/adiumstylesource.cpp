@@ -270,13 +270,13 @@ namespace AdiumStyles
 			QString replacement;
 			if (stateContent && stateContent->open (QIODevice::ReadOnly))
 				replacement = QString::fromUtf8 (stateContent->readAll ());
-			return QStringLiteral (R"(
+			return uR"(
 					(() => {
 						let elem = document.querySelector("*[id='delivery_state_%1']");
 						if (elem)
 							elem.innerHTML = "%2";
 					}) ();
-			)").arg (GetMessageID (msgObj), replacement);
+			)"_qsv.arg (GetMessageID (msgObj), replacement);
 		}
 	}
 
@@ -404,19 +404,19 @@ namespace AdiumStyles
 		}
 
 		const auto& command = isNextMsg ?
-				QStringLiteral ("appendNextMessage(\"%1\");") :
-				QStringLiteral ("appendMessage(\"%1\");");
+				u"appendNextMessage(\"%1\");"_qsv :
+				u"appendMessage(\"%1\");"_qsv;
 		auto js = command.arg (body);
 
-		if (templ.contains ("%stateElementId%"))
+		if (templ.contains (u"%stateElementId%"_qsv))
 		{
 			const auto advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 			QString fname;
 			if (!advMsg || advMsg->IsDelivered () || in)
-				fname = "StateSent.html";
+				fname = "StateSent.html"_ql;
 			else
 			{
-				fname = "StateSending.html";
+				fname = "StateSending.html"_ql;
 				connect (msgObj,
 						SIGNAL (messageDelivered ()),
 						this,
