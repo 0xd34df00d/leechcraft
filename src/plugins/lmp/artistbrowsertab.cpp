@@ -101,18 +101,24 @@ namespace LC::LMP
 
 	void ArtistBrowserTab::DoQueries (const QString& artist)
 	{
+		SimilarMgr_->DefaultRequest (artist);
+
 		auto provs = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		if (provs.isEmpty ())
 		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("There aren't any plugins that can fetch biography. Check if "
-						"you have installed for example the LastFMScrobble plugin."));
+			static bool shownWarning = false;
+			if (!shownWarning)
+			{
+				QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("There aren't any plugins that can fetch biography. "
+							"Check if you have installed for example the LastFMScrobble plugin."));
+				shownWarning = true;
+			}
 			return;
 		}
 
 		BioMgr_->Request (provs.first (), artist, {});
-		SimilarMgr_->DefaultRequest (artist);
 
 		emit tabRecoverDataChanged ();
 	}
