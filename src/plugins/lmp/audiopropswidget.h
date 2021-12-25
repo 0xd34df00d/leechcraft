@@ -11,7 +11,11 @@
 #include <QWidget>
 #include "ui_audiopropswidget.h"
 
-class QStandardItemModel;
+namespace LC::Util
+{
+	template<typename T>
+	class FlatItemsModel;
+}
 
 namespace LC
 {
@@ -24,7 +28,7 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::AudioPropsWidget Ui_;
-		QStandardItemModel *PropsModel_;
+		Util::FlatItemsModel<QPair<QString, QString>> * const PropsModel_;
 	public:
 		AudioPropsWidget (QWidget* = 0);
 

@@ -33,6 +33,7 @@
 #include <taglib/wavproperties.h>
 #include <taglib/trueaudioproperties.h>
 #include <taglib/wavpackproperties.h>
+#include <util/models/flatitemsmodel.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
@@ -45,8 +46,8 @@ namespace LC
 namespace LMP
 {
 	AudioPropsWidget::AudioPropsWidget (QWidget *parent)
-	: QWidget (parent)
-	, PropsModel_ (new QStandardItemModel (this))
+	: QWidget { parent }
+	, PropsModel_ { new Util::FlatItemsModel<QPair<QString, QString>> { { tr ("Property"), tr ("Value") }, this } }
 	{
 		Ui_.setupUi (this);
 		Ui_.PropsView_->setModel (PropsModel_);
@@ -103,38 +104,30 @@ namespace LMP
 
 	namespace
 	{
-		QMap<QString, QString> GetGenericProps (TagLib::AudioProperties *props)
-		{
-			QMap<QString, QString> result;
-			result [AudioPropsWidget::tr ("Bitrate")] = QString::number (props->bitrate ()) + " kbps";
-			result [AudioPropsWidget::tr ("Channels")] = QString::number (props->channels ());
-			result [AudioPropsWidget::tr ("Sample rate")] = QString::number (props->sampleRate ()) + " Hz";
-			return result;
-		}
+		using PropsVec_t = QVector<QPair<QString, QString>>;
 
-		template<typename Appender>
 		struct PropsGetter
 		{
-			Appender F_;
+			PropsVec_t& Vec_;
 
-			PropsGetter (Appender app)
-			: F_ (app)
+			PropsGetter (PropsVec_t& vec)
+			: Vec_ { vec }
 			{
 			}
 
 			void Append (const QString& name, const QString& val)
 			{
-				F_ (name, val);
+				Vec_.push_back ({ name, val });
 			}
 
 			void Append (const QString& name, int val)
 			{
-				F_ (name, QString::number (val));
+				Append (name, QString::number (val));
 			}
 
 			void Append (const QString& name, bool val)
 			{
-				F_ (name, val ? AudioPropsWidget::tr ("yes") : AudioPropsWidget::tr ("no"));
+				Append (name, val ? AudioPropsWidget::tr ("yes") : AudioPropsWidget::tr ("no"));
 			}
 
 			QString Parse (TagLib::APE::Properties *props)
@@ -246,82 +239,84 @@ namespace LMP
 				Append ("WavPack version", props->version ());
 				return "WavPack";
 			}
+
+			template<typename T>
+			void HandleProp (TagLib::AudioProperties *props)
+			{
+				if (const auto val = dynamic_cast<T> (props))
+				{
+					Parse (val);
+					return;
+				}
+			}
 		};
 
 		template<typename... Props>
 		void AppendProps (auto&& getter, TagLib::AudioProperties *props)
 		{
-			(getter.Parse (dynamic_cast<Props> (props)), ...);
+			(getter.template HandleProp<Props> (props), ...);
+		}
+
+		void CollectLocalProps (PropsVec_t& vec, const QString& path)
+		{
+			const auto resolver = Core::Instance ().GetLocalFileResolver ();
+
+			QMutexLocker tlLocker { &resolver->GetMutex () };
+			const auto r = resolver->GetFileRef (path);
+			const auto tag = r.tag ();
+			if (!tag)
+				return;
+
+			vec.push_back ({ AudioPropsWidget::tr ("Comment"), QString::fromStdString (tag->comment ().to8Bit (true)) });
+
+			const auto props = r.audioProperties ();
+			if (!props)
+				return;
+
+			vec.push_back ({ AudioPropsWidget::tr ("Bitrate"), QString::number (props->bitrate ()) + " kbps" });
+			vec.push_back ({ AudioPropsWidget::tr ("Channels"), QString::number (props->channels ()) });
+			vec.push_back ({ AudioPropsWidget::tr ("Sample rate"), QString::number (props->sampleRate ()) + " Hz" });
+
+			using namespace TagLib;
+
+			AppendProps<
+					APE::Properties*,
+					ASF::Properties*,
+					FLAC::Properties*,
+					MP4::Properties*,
+					MPC::Properties*,
+					MPEG::Properties*,
+					Ogg::Speex::Properties*,
+					Vorbis::Properties*,
+					RIFF::AIFF::Properties*,
+					RIFF::WAV::Properties*,
+					TrueAudio::Properties*,
+					WavPack::Properties*
+			> (PropsGetter { vec }, props);
 		}
 	}
 
 	void AudioPropsWidget::SetProps (const MediaInfo& info)
 	{
-		PropsModel_->clear ();
-
-		auto append = [this] (const QString& name, const QString& val)
+		PropsVec_t props
 		{
-			auto nameItem = new QStandardItem (name);
-			nameItem->setEditable (false);
-			auto valItem = new QStandardItem (val);
-			valItem->setEditable (false);
-			QList<QStandardItem*> items;
-			items << nameItem << valItem;
-			PropsModel_->appendRow (items);
+			{ tr ("Artist"), info.Artist_ },
+			{ tr ("Title"), info.Title_ },
+			{ tr ("Album"), info.Album_ },
+			{ tr ("Track number"), QString::number (info.TrackNumber_) },
+			{ tr ("Year"), QString::number (info.Year_) },
+			{ tr ("Genres"), info.Genres_.join ("; ") },
+			{ tr ("Length"), QString::number (info.Length_) },
+			{ tr ("Local path"), info.LocalPath_.isEmpty () ? tr ("unknown") : info.LocalPath_ },
 		};
 
-		append (tr ("Artist"), info.Artist_);
-		append (tr ("Title"), info.Title_);
-		append (tr ("Album"), info.Album_);
-		append (tr ("Track number"), QString::number (info.TrackNumber_));
-		append (tr ("Year"), QString::number (info.Year_));
-		append (tr ("Genres"), info.Genres_.join ("; "));
-		append (tr ("Length"), QString::number (info.Length_));
-		append (tr ("Local path"), info.LocalPath_.isEmpty () ? tr ("unknown") : info.LocalPath_);
+		for (const auto& [key, value] : Util::Stlize (info.Additional_))
+			props.push_back ({ key, value.toString () });
 
-		for (auto i = info.Additional_.begin (), end = info.Additional_.end (); i != end; ++i)
-			append (i.key (), i.value ().toString ());
+		if (!info.LocalPath_.isEmpty ())
+			CollectLocalProps (props, info.LocalPath_);
 
-		if (info.LocalPath_.isEmpty ())
-			return;
-
-		QMutexLocker tlLocker (&Core::Instance ().GetLocalFileResolver ()->GetMutex ());
-
-		auto r = Core::Instance ().GetLocalFileResolver ()->GetFileRef (info.LocalPath_);
-		auto tag = r.tag ();
-		if (!tag)
-			return;
-
-		append (tr ("Comment"), QString::fromUtf8 (tag->comment ().toCString (true)));
-
-		auto props = r.audioProperties ();
-		if (!props)
-			return;
-
-		auto addMap = [append] (const QMap<QString, QString>& map)
-		{
-			for (const auto& pair : Util::Stlize (map))
-				append (pair.first, pair.second);
-		};
-
-		addMap (GetGenericProps (props));
-
-		using namespace TagLib;
-
-		AppendProps<
-		        APE::Properties*,
-				ASF::Properties*,
-				FLAC::Properties*,
-				MP4::Properties*,
-				MPC::Properties*,
-				MPEG::Properties*,
-				Ogg::Speex::Properties*,
-				Vorbis::Properties*,
-				RIFF::AIFF::Properties*,
-				RIFF::WAV::Properties*,
-				TrueAudio::Properties*,
-				WavPack::Properties*
-			> (PropsGetter { append }, props);
+		PropsModel_->SetItems (props);
 	}
 
 	void AudioPropsWidget::handleCopy ()
@@ -336,8 +331,7 @@ namespace LMP
 			text.prepend (": ");
 			text.prepend (idx.data ().toString ());
 		}
-
-		qApp->clipboard ()->setText (text);
+		QGuiApplication::clipboard ()->setText (text);
 	}
 }
 }
