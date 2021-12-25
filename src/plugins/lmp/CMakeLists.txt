@@ -101,6 +101,7 @@ LC_DEFINE_PLUGIN (
 		playlistwidgetviewexpander.cpp
 		sourceerrorhandler.cpp
 		mediainfo.cpp
+		literals.cpp
 		engine/audiosource.cpp
 		engine/output.cpp
 		engine/path.cpp

@@ -38,6 +38,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
+#include "literals.h"
 #include "localfileresolver.h"
 #include "core.h"
 
@@ -95,7 +96,7 @@ namespace LMP
 							<< err.FilePath_;
 
 					QMessageBox::critical (this,
-							"LeechCraft",
+							Lits::LMP,
 							tr ("Error showing properties for %1: %2.")
 								.arg (QFileInfo (err.FilePath_).fileName ())
 								.arg (err.ReasonString_));
