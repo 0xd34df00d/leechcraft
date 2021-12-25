@@ -8,8 +8,6 @@
 
 #include "audiopropswidget.h"
 #include <functional>
-#include <boost/mpl/vector.hpp>
-#include <boost/mpl/for_each.hpp>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
@@ -118,27 +116,31 @@ namespace LMP
 		struct PropsGetter
 		{
 			Appender F_;
-			const std::function<void (QString, int)> IF_;
-			TagLib::AudioProperties * const Props_;
 
-			PropsGetter (Appender app, TagLib::AudioProperties *props)
+			PropsGetter (Appender app)
 			: F_ (app)
-			, IF_ ([app] (const QString& name, int val) { app (name, QString::number (val)); })
-			, Props_ (props)
 			{
 			}
 
-			template<typename T>
-			void operator() (const T * const)
+			void Append (const QString& name, const QString& val)
 			{
-				if (const auto casted = dynamic_cast<T*> (Props_))
-					F_ (AudioPropsWidget::tr ("File type"), Parse (casted));
+				F_ (name, val);
+			}
+
+			void Append (const QString& name, int val)
+			{
+				F_ (name, QString::number (val));
+			}
+
+			void Append (const QString& name, bool val)
+			{
+				F_ (name, val ? AudioPropsWidget::tr ("yes") : AudioPropsWidget::tr ("no"));
 			}
 
 			QString Parse (TagLib::APE::Properties *props)
 			{
-				IF_ ("APE version", props->version ());
-				IF_ ("Bits per sample", props->bitsPerSample ());
+				Append ("APE version", props->version ());
+				Append ("Bits per sample", props->bitsPerSample ());
 				return "APE";
 			}
 
@@ -149,19 +151,19 @@ namespace LMP
 
 			QString Parse (TagLib::FLAC::Properties *props)
 			{
-				IF_ ("Sample width", props->bitsPerSample ());
+				Append ("Sample width", props->bitsPerSample ());
 				return "FLAC";
 			}
 
 			QString Parse (TagLib::MP4::Properties *props)
 			{
-				IF_ ("Bits per sample", props->bitsPerSample ());
+				Append ("Bits per sample", props->bitsPerSample ());
 				return "MP4";
 			}
 
 			QString Parse (TagLib::MPC::Properties *props)
 			{
-				IF_ ("MPC version", props->mpcVersion ());
+				Append ("MPC version", props->mpcVersion ());
 				return "MPC";
 			}
 
@@ -170,34 +172,34 @@ namespace LMP
 				switch (props->version ())
 				{
 				case TagLib::MPEG::Header::Version1:
-					IF_ ("MPEG version", 1);
+					Append ("MPEG version", 1);
 					break;
 				case TagLib::MPEG::Header::Version2:
-					IF_ ("MPEG version", 2);
+					Append ("MPEG version", 2);
 					break;
 				case TagLib::MPEG::Header::Version2_5:
-					F_ ("MPEG version", "2.5");
+					Append ("MPEG version", "2.5");
 					break;
 				}
 
-				IF_ ("MPEG layer", props->layer ());
-				F_ ("Protected", props->protectionEnabled () ? "true" : "false");
-				F_ ("Copyrighted", props->isCopyrighted () ? "true" : "false");
-				F_ ("Original", props->isOriginal () ? "true" : "false");
+				Append ("MPEG layer", props->layer ());
+				Append ("Protected", props->protectionEnabled ());
+				Append ("Copyrighted", props->isCopyrighted ());
+				Append ("Original", props->isOriginal ());
 
 				switch (props->channelMode ())
 				{
 				case TagLib::MPEG::Header::Stereo:
-					F_ ("Channel mode", "Stereo");
+					Append ("Channel mode", "Stereo");
 					break;
 				case TagLib::MPEG::Header::JointStereo:
-					F_ ("Channel mode", "Joint Stereo");
+					Append ("Channel mode", "Joint Stereo");
 					break;
 				case TagLib::MPEG::Header::DualChannel:
-					F_ ("Channel mode", "Dual Mono");
+					Append ("Channel mode", "Dual Mono");
 					break;
 				case TagLib::MPEG::Header::SingleChannel:
-					F_ ("Channel mode", "Mono");
+					Append ("Channel mode", "Mono");
 					break;
 				}
 
@@ -206,50 +208,50 @@ namespace LMP
 
 			QString Parse (TagLib::Ogg::Speex::Properties *props)
 			{
-				IF_ ("Speex version", props->speexVersion ());
+				Append ("Speex version", props->speexVersion ());
 				return "Speex";
 			}
 
 			QString Parse (TagLib::Vorbis::Properties *props)
 			{
-				IF_ ("Vorbis version", props->vorbisVersion ());
-				IF_ ("Minimum bitrate", props->bitrateMinimum ());
-				IF_ ("Maximum bitrate", props->bitrateMaximum ());
-				IF_ ("Nominal bitrate", props->bitrateNominal ());
+				Append ("Vorbis version", props->vorbisVersion ());
+				Append ("Minimum bitrate", props->bitrateMinimum ());
+				Append ("Maximum bitrate", props->bitrateMaximum ());
+				Append ("Nominal bitrate", props->bitrateNominal ());
 				return "OGG Vorbis";
 			}
 
 			QString Parse (TagLib::RIFF::AIFF::Properties *props)
 			{
-				IF_ ("Sample width", props->bitsPerSample ());
+				Append ("Sample width", props->bitsPerSample ());
 				return "AIFF";
 			}
 
 			QString Parse (TagLib::RIFF::WAV::Properties *props)
 			{
-				IF_ ("Sample width", props->bitsPerSample ());
+				Append ("Sample width", props->bitsPerSample ());
 				return "WAV";
 			}
 
 			QString Parse (TagLib::TrueAudio::Properties *props)
 			{
-				IF_ ("Bits per sample", props->bitsPerSample ());
-				IF_ ("TTA version", props->ttaVersion ());
+				Append ("Bits per sample", props->bitsPerSample ());
+				Append ("TTA version", props->ttaVersion ());
 				return "TTA (TrueAudio)";
 			}
 
 			QString Parse (TagLib::WavPack::Properties *props)
 			{
-				IF_ ("Bits per sample", props->bitsPerSample ());
-				IF_ ("WavPack version", props->version ());
+				Append ("Bits per sample", props->bitsPerSample ());
+				Append ("WavPack version", props->version ());
 				return "WavPack";
 			}
 		};
 
-		template<typename T>
-		PropsGetter<T> MakeGetter (T f, TagLib::AudioProperties *props)
+		template<typename... Props>
+		void AppendProps (auto&& getter, TagLib::AudioProperties *props)
 		{
-			return PropsGetter<T> (f, props);
+			(getter.Parse (dynamic_cast<Props> (props)), ...);
 		}
 	}
 
@@ -304,21 +306,22 @@ namespace LMP
 
 		addMap (GetGenericProps (props));
 
-		boost::mpl::vector<
-				TagLib::APE::Properties*,
-				TagLib::ASF::Properties*,
-				TagLib::FLAC::Properties*,
-				TagLib::MP4::Properties*,
-				TagLib::MPC::Properties*,
-				TagLib::MPEG::Properties*,
-				TagLib::Ogg::Speex::Properties*,
-				TagLib::Vorbis::Properties*,
-				TagLib::RIFF::AIFF::Properties*,
-				TagLib::RIFF::WAV::Properties*,
-				TagLib::TrueAudio::Properties*,
-				TagLib::WavPack::Properties*
-				> propsTypes;
-		boost::mpl::for_each (MakeGetter (append, props), &propsTypes);
+		using namespace TagLib;
+
+		AppendProps<
+		        APE::Properties*,
+				ASF::Properties*,
+				FLAC::Properties*,
+				MP4::Properties*,
+				MPC::Properties*,
+				MPEG::Properties*,
+				Ogg::Speex::Properties*,
+				Vorbis::Properties*,
+				RIFF::AIFF::Properties*,
+				RIFF::WAV::Properties*,
+				TrueAudio::Properties*,
+				WavPack::Properties*
+			> (PropsGetter { append }, props);
 	}
 
 	void AudioPropsWidget::handleCopy ()
