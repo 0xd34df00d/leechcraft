@@ -26,30 +26,31 @@ namespace LC::Util
 		if (!suffix.isEmpty () && suffix.at (suffix.size () - 1) != '/')
 			suffix += '/';
 
-		QStringList candidates;
 		switch (path)
 		{
 		case SysPath::QML:
 			return GetPathCandidates (SysPath::Share, "qml5/" + suffix);
 		case SysPath::Share:
 #ifdef Q_OS_WIN32
-			candidates << QApplication::applicationDirPath () + "/share/" + suffix;
+			return { QApplication::applicationDirPath () + "/share/" + suffix };
 #elif defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
-			candidates << QApplication::applicationDirPath () + "/../Resources/share/" + suffix;
+			return { QApplication::applicationDirPath () + "/../Resources/share/" + suffix };
 #else
 	#ifdef INSTALL_PREFIX
-			candidates << INSTALL_PREFIX "/share/leechcraft/" + suffix;
+			return { INSTALL_PREFIX "/share/leechcraft/" + suffix };
 	#endif
-			candidates << "/usr/local/share/leechcraft/" + suffix
-					<< "/usr/share/leechcraft/" + suffix;
+			return
+			{
+				"/usr/local/share/leechcraft/" + suffix,
+				"/usr/share/leechcraft/" + suffix
+			};
 #endif
-			return candidates;
 		}
 
 		qWarning () << Q_FUNC_INFO
 				<< "unknown system path"
 				<< static_cast<int> (path);
-		return QStringList ();
+		return {};
 	}
 
 	QString GetSysPath (SysPath path, const QString& suffix, const QString& filename)
