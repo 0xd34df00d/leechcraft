@@ -119,19 +119,9 @@ namespace LC
 		/** @brief Whether the field should be set.
 		 */
 		bool IsSet_;
-	};
 
-	/** @brief Compares two fields with boolean values.
-	 *
-	 * @param[in] left First operand.
-	 * @param[in] right Second operand.
-	 * @return Whether \em left and \em right have the same boundary and
-	 * the same operation.
-	 */
-	inline bool operator== (const ANBoolFieldValue& left, const ANBoolFieldValue& right)
-	{
-		return left.IsSet_ == right.IsSet_;
-	}
+		auto operator<=> (const ANBoolFieldValue&) const = default;
+	};
 
 	/** @brief Describes a field with integer values.
 	 */
@@ -165,20 +155,9 @@ namespace LC
 		 * This is the combination of values in Operation enum.
 		 */
 		Operations Ops_;
-	};
 
-	/** @brief Compares two fields with integer values.
-	 *
-	 * @param[in] left First operand.
-	 * @param[in] right Second operand.
-	 * @return Whether \em left and \em right have the same boundary and
-	 * the same operation.
-	 */
-	inline bool operator== (const ANIntFieldValue& left, const ANIntFieldValue& right)
-	{
-		return left.Boundary_ == right.Boundary_ &&
-				left.Ops_ == right.Ops_;
-	}
+		bool operator== (const ANIntFieldValue&) const = default;
+	};
 
 	/** @brief Describes a field with QString values.
 	 */
@@ -224,20 +203,9 @@ namespace LC
 		, Contains_ { contains }
 		{
 		}
-	};
 
-	/** @brief Compares two string field values.
-	 *
-	 * @param[in] left The left operand.
-	 * @param[in] right The right operand.
-	 * @return Whether \em left and \em right have the same regexp pattern
-	 * and they both require the presense (or the absence) of the match.
-	 */
-	inline bool operator== (const ANStringFieldValue& left, const ANStringFieldValue& right)
-	{
-		return left.Contains_ == right.Contains_ &&
-				left.Rx_ == right.Rx_;
-	}
+		bool operator== (const ANStringFieldValue&) const = default;
+	};
 
 	/** @brief A combination of all possible descriptions.
 	 */
