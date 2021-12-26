@@ -65,7 +65,7 @@ namespace Util
 		{
 		}
 
-		Visitor (const detail::VisitorFinallyTag&, Args&&... args, FinallyFunc&& func)
+		Visitor (detail::VisitorFinallyTag, Args&&... args, FinallyFunc&& func)
 		: Base_ { std::forward<Args> (args)... }
 		, Finally_ { std::forward<FinallyFunc> (func) }
 		{
