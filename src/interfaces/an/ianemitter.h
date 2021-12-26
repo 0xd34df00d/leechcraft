@@ -56,7 +56,7 @@ namespace LC
 		 * For now only QVariant::Int, QVariant::String and
 		 * QVariant::StringList are supported.
 		 */
-		QVariant::Type Type_;
+		QVariant::Type Type_ = QVariant::Invalid;
 
 		/** @brief The types of the event that contain this field.
 		 *
@@ -75,41 +75,7 @@ namespace LC
 		 * QVariant::StringList, in which case each QVariant in this list
 		 * should be a QString.
 		 */
-		QVariantList AllowedValues_;
-
-		/** @brief Constructs an empty field info.
-		 *
-		 * The corresponding type is invalid, and all other members are
-		 * empty.
-		 */
-		ANFieldData ()
-		: Type_ (QVariant::Invalid)
-		{
-		}
-
-		/** @brief Constructs field with the given info variables.
-		 *
-		 * @param[in] id The ID of the field.
-		 * @param[in] name The name of the field.
-		 * @param[in] description The description of the field.
-		 * @param[in] type The type of the field.
-		 * @param[in] events The list of events for this field.
-		 * @param[in] values The allowed values of this field.
-		 */
-		ANFieldData (const QString& id,
-				const QString& name,
-				const QString& description,
-				QVariant::Type type,
-				const QStringList& events,
-				const QVariantList& values = {})
-		: ID_ (id)
-		, Name_ (name)
-		, Description_ (description)
-		, Type_ (type)
-		, EventTypes_ (events)
-		, AllowedValues_ (values)
-		{
-		}
+		QVariantList AllowedValues_ = {};
 	};
 
 	/** @brief Describes a field with boolean values.
@@ -209,7 +175,7 @@ namespace LC
 
 	/** @brief A combination of all possible descriptions.
 	 */
-	typedef std::variant<ANBoolFieldValue, ANIntFieldValue, ANStringFieldValue> ANFieldValue;
+	using ANFieldValue = std::variant<ANBoolFieldValue, ANIntFieldValue, ANStringFieldValue>;
 }
 
 /** @brief Interface for plugins emitting AdvancedNotifications entries.
@@ -229,7 +195,7 @@ namespace LC
 class Q_DECL_EXPORT IANEmitter
 {
 public:
-	virtual ~IANEmitter () {}
+	virtual ~IANEmitter () = default;
 
 	/** @brief Returns the list of additional fields.
 	 *

@@ -1525,7 +1525,10 @@ namespace LC::Azoth
 			AN::TypeIMEventLocationChange
 		};
 
-		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.Msg",
+		ANFields_ = QList<ANFieldData>
+		{
+			{
+				"org.LC.Plugins.Azoth.Msg",
 				tr ("Message body"),
 				tr ("Original human-readable message body."),
 				QVariant::String,
@@ -1534,43 +1537,51 @@ namespace LC::Azoth
 					auto res = havingMsgField + havingSourceFields;
 					res.removeDuplicates ();
 					return res;
-				} ());
-
-		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceName",
+				} ()
+			},
+			{
+				"org.LC.Plugins.Azoth.SourceName",
 				tr ("Sender name"),
 				tr ("Human-readable name of the sender of the message."),
 				QVariant::String,
-				havingSourceFields);
-
-		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceID",
+				havingSourceFields
+			},
+			{
+				"org.LC.Plugins.Azoth.SourceID",
 				tr ("Sender ID"),
 				tr ("Non-human-readable ID of the sender (protocol-specific)."),
 				QVariant::String,
-				havingSourceFields);
-
-		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.ParentSourceName",
+				havingSourceFields
+			},
+			{
+				"org.LC.Plugins.Azoth.ParentSourceName",
 				tr ("Sender's parent entry name"),
 				tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
 				QVariant::String,
-				havingSourceFields);
-
-		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.ParentSourceID",
+				havingSourceFields
+			},
+			{
+				"org.LC.Plugins.Azoth.ParentSourceID",
 				tr ("Sender's parent ID"),
 				tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
 				QVariant::String,
-				havingSourceFields);
-
-		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceGroups",
+				havingSourceFields
+			},
+			{
+				"org.LC.Plugins.Azoth.SourceGroups",
 				tr ("Sender groups"),
 				tr ("Groups to which the sender belongs."),
 				QVariant::StringList,
-				havingSourceFields);
-
-		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.NewStatus",
+				havingSourceFields
+			},
+			{
+				"org.LC.Plugins.Azoth.NewStatus",
 				tr ("New status"),
 				tr ("The new status string of the contact."),
 				QVariant::String,
-				{ AN::TypeIMStatusChange });
+				{ AN::TypeIMStatusChange }
+			}
+		};
 	}
 
 	namespace
