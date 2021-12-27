@@ -12,7 +12,6 @@
 #include <QUrl>
 #include <QtConcurrentRun>
 #include <QFuture>
-#include <QFutureSynchronizer>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
@@ -86,50 +85,48 @@ namespace LC::LMP
 
 	void AlbumArtManager::HandleGotUrls (const TaskQueue& task, const QList<QUrl>& urls)
 	{
-		using MaybeImage_t = std::optional<QImage>;
+		if (urls.isEmpty ())
+			return;
 
 		const auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
 
-		auto sync = std::make_shared<QFutureSynchronizer<MaybeImage_t>> ();
-		for (const auto& url : urls)
-		{
-			QFutureInterface<MaybeImage_t> promise;
-			promise.reportStarted ();
+		QFutureInterface<QImage> promise;
+		promise.reportStarted ();
+		promise.setExpectedResultCount (urls.size ());
 
+		auto decreateExpected = [promise] () mutable { promise.setExpectedResultCount (promise.expectedResultCount () - 1); };
+
+		for (const auto& url : urls)
 			Util::HandleReplySeq (nam->get (QNetworkRequest { url }), this) >>
 					Util::Visitor
 					{
-						[promise] (Util::Void) mutable { Util::ReportFutureResult (promise, MaybeImage_t {}); },
-						[promise] (const QByteArray& data) mutable
+						[=] (Util::Void) mutable { decreateExpected (); },
+						[=] (const QByteArray& data) mutable
 						{
 							if (QImage image; image.loadFromData (data))
-								Util::ReportFutureResult (promise, image);
+								promise.reportResult (image, promise.resultCount ());
 							else
-								Util::ReportFutureResult (promise, MaybeImage_t {});
+								decreateExpected ();
 						}
-					};
+					}.Finally ([=] () mutable
+					{
+						if (promise.resultCount () >= promise.expectedResultCount ())
+							promise.reportFinished ();
+					});
 
-			sync->addFuture (promise.future ());
-		}
-
-		const auto& future = QtConcurrent::run ([sync]
+		auto watcher = new QFutureWatcher<QImage> { this };
+		watcher->setFuture (promise.future ());
+		connect (watcher,
+				&QFutureWatcher<QImage>::finished,
+				this,
+				[this, watcher, task]
 				{
-					sync->waitForFinished ();
-					return Util::Map (sync->futures (), &QFuture<MaybeImage_t>::result);
-				});
-		Util::Sequence (this, future) >>
-				[this, task] (const QList<MaybeImage_t>& maybeImages)
-				{
-					QList<QImage> images;
-					for (const auto& maybe : maybeImages)
-						if (maybe)
-							images << *maybe;
-
+					const auto& images = watcher->future ().results ();
 					if (task.PreviewMode_)
 						emit gotImages (task.Info_, images);
 					else
 						HandleGotAlbumArt (task.Info_, images);
-				};
+				});
 	}
 
 	void AlbumArtManager::ScheduleRotateQueue ()
