@@ -683,6 +683,8 @@ namespace LMP
 			UpdateNewArtists_ += artists.size ();
 			UpdateNewAlbums_ += albumCount;
 			UpdateNewTracks_ += trackCount;
+
+			emit gotNewArtists (artists);
 		}
 	}
 

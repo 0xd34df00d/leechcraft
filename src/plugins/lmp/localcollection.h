@@ -156,6 +156,8 @@ namespace LMP
 		void collectionReady ();
 
 		void rootPathsChanged (const QStringList&);
+
+		void gotNewArtists (const Collection::Artists_t&);
 	};
 }
 }
