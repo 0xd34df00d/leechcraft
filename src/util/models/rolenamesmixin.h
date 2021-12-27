@@ -31,26 +31,7 @@ namespace LC::Util
 	{
 		QHash<int, QByteArray> RoleNames_;
 	protected:
-		/** @brief Default constructor.
-		 *
-		 * Assumes the existence of a default constructor in the
-		 * \em Model type.
-		 */
-		RoleNamesMixin () = default;
-
-		/** @brief Constructs the base \em Model type with the given
-		 * \em args.
-		 *
-		 * @tparam Args The arguments of the values to pass to the
-		 * \em Model constructor.
-		 * @param[in] args The values to pass to the \em Model
-		 * constructor.
-		 */
-		template<typename... Args>
-		explicit RoleNamesMixin (Args&&... args)
-		: Model { std::forward<Args> (args)... }
-		{
-		}
+		using Model::Model;
 
 		/** @brief Sets the role names to \em roleNames.
 		 *
