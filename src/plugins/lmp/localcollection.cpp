@@ -650,8 +650,8 @@ namespace LMP
 			{
 				trackCount += album->Tracks_.size ();
 
-				if (autoFetchAA)
-					AlbumArtMgr_->CheckAlbumArt (artist, album);
+				if (autoFetchAA && album->CoverPath_.isEmpty ())
+					AlbumArtMgr_->CheckAlbumArt (artist.Name_, album->Name_, false);
 
 				auto& presentAlbum = AlbumID2Album_ [album->ID_];
 				if (!presentAlbum)

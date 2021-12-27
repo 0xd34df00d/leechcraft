@@ -11,11 +11,9 @@
 #include <QObject>
 #include <QDir>
 #include <interfaces/media/ialbumartprovider.h>
-#include "localcollection.h"
+#include "interfaces/lmp/collectiontypes.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class AlbumArtManager : public QObject
 	{
@@ -26,27 +24,24 @@ namespace LMP
 		struct TaskQueue
 		{
 			Media::AlbumInfo Info_;
-			bool PreviewMode_;
+			bool PreviewMode_ = true;
 		};
 		QList<TaskQueue> Queue_;
 		QHash<Media::AlbumInfo, int> NumRequests_;
 
 		QHash<Media::AlbumInfo, QSize> BestSizes_;
 	public:
-		AlbumArtManager (QObject*);
+		explicit AlbumArtManager (QObject*);
 
-		void CheckAlbumArt (const Collection::Artist&, Collection::Album_ptr);
 		void CheckAlbumArt (const QString& artist, const QString& album, bool preview);
 
 		void HandleGotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	private:
 		void HandleGotUrls (const TaskQueue&, const QList<QUrl>&);
-	private slots:
-		void rotateQueue ();
-
-		void handleCoversPath ();
+		void ScheduleRotateQueue ();
+		void RotateQueue ();
+		void HandleCoversPath (const QString&);
 	signals:
 		void gotImages (const Media::AlbumInfo&, const QList<QImage>&);
 	};
-}
 }

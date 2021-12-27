@@ -23,38 +23,23 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include "core.h"
+#include "localcollection.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	AlbumArtManager::AlbumArtManager (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("CoversStoragePath",
-				this, "handleCoversPath");
-
-		QTimer::singleShot (0,
-				this,
-				SLOT (handleCoversPath ()));
-	}
-
-	void AlbumArtManager::CheckAlbumArt (const Collection::Artist& artist, Collection::Album_ptr album)
-	{
-		const auto& path = album->CoverPath_;
-		if (!path.isEmpty () && QFile::exists (path))
-			return;
-
-		CheckAlbumArt (artist.Name_, album->Name_, false);
+		XmlSettingsManager::Instance ().RegisterObject ("CoversStoragePath", this,
+				[this] (const QVariant& var) { HandleCoversPath (var.toString ()); });
 	}
 
 	void AlbumArtManager::CheckAlbumArt (const QString& artist, const QString& album, bool preview)
 	{
 		if (Queue_.isEmpty ())
-			QTimer::singleShot (500,
-					this,
-					SLOT (rotateQueue ()));
+			ScheduleRotateQueue ();
+
 		Queue_.push_back ({ { artist, album }, preview });
 	}
 
@@ -85,7 +70,7 @@ namespace LMP
 		if (image.isNull ())
 		{
 			if (!NumRequests_ [info])
-				collection->SetAlbumArt (id, "NOTFOUND");
+				collection->SetAlbumArt (id, QStringLiteral ("NOTFOUND"));
 			return;
 		}
 
@@ -94,7 +79,8 @@ namespace LMP
 		const auto& filename = QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png";
 		const auto& fullPath = AADir_.absoluteFilePath (filename);
 
-		Util::Sequence (this, QtConcurrent::run ([image, fullPath] { image.save (fullPath, "PNG", 100); })) >>
+		constexpr auto compressionRatio = 100;
+		Util::Sequence (this, QtConcurrent::run ([image, fullPath] { image.save (fullPath, "PNG", compressionRatio); })) >>
 				[id, fullPath] { Core::Instance ().GetLocalCollection ()->SetAlbumArt (id, fullPath); };
 	}
 
@@ -113,7 +99,7 @@ namespace LMP
 			Util::HandleReplySeq (nam->get (QNetworkRequest { url }), this) >>
 					Util::Visitor
 					{
-						[promise] (const Util::Void&) mutable { Util::ReportFutureResult (promise, MaybeImage_t {}); },
+						[promise] (Util::Void) mutable { Util::ReportFutureResult (promise, MaybeImage_t {}); },
 						[promise] (const QByteArray& data) mutable
 						{
 							if (QImage image; image.loadFromData (data))
@@ -146,7 +132,15 @@ namespace LMP
 				};
 	}
 
-	void AlbumArtManager::rotateQueue ()
+	void AlbumArtManager::ScheduleRotateQueue ()
+	{
+		using namespace std::chrono_literals;
+		QTimer::singleShot (500ms,
+				this,
+				&AlbumArtManager::RotateQueue);
+	}
+
+	void AlbumArtManager::RotateQueue ()
 	{
 		auto provs = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<Media::IAlbumArtProvider*> ();
 		const auto& task = Queue_.takeFirst ();
@@ -165,16 +159,11 @@ namespace LMP
 			NumRequests_ [task.Info_] = provs.size ();
 
 		if (!Queue_.isEmpty ())
-			QTimer::singleShot (500,
-					this,
-					SLOT (rotateQueue ()));
+			ScheduleRotateQueue ();
 	}
 
-	void AlbumArtManager::handleCoversPath ()
+	void AlbumArtManager::HandleCoversPath (const QString& path)
 	{
-		const auto& path = XmlSettingsManager::Instance ()
-				.property ("CoversStoragePath").toString ();
-
 		bool failed = false;
 		if (!QFile::exists (path) && !QDir::root ().mkpath (path))
 			failed = true;
@@ -189,15 +178,14 @@ namespace LMP
 					<< "unable to create"
 					<< path;
 
-			const auto& e = Util::MakeNotification ("LMP",
+			const auto& e = Util::MakeNotification (QStringLiteral ("LMP"),
 					tr ("Path %1 cannot be used as album art storage, default path will be used instead."),
 					Priority::Warning);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
-			AADir_ = Util::GetUserDir (Util::UserDir::Cache, "lmp/covers");
+			AADir_ = Util::GetUserDir (Util::UserDir::Cache, QStringLiteral ("lmp/covers"));
 		}
 		else
 			AADir_ = QDir (path);
 	}
-}
 }
