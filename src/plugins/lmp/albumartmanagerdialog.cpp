@@ -13,7 +13,6 @@
 #include <QTimer>
 #include <QtConcurrentMap>
 #include <util/threads/futures.h>
-#include <util/gui/clearlineeditaddon.h>
 #include "albumartmanager.h"
 
 namespace LC
@@ -64,9 +63,6 @@ namespace LMP
 		Ui_.ArtistLine_->installEventFilter (new ReturnPressSwallower (this));
 		Ui_.AlbumLine_->setText (album);
 		Ui_.AlbumLine_->installEventFilter (new ReturnPressSwallower (this));
-
-		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.ArtistLine_);
-		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.AlbumLine_);
 
 		Ui_.ArtView_->setModel (Model_);
 

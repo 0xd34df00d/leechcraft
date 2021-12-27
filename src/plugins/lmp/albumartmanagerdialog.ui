@@ -19,12 +19,18 @@
      <property name="placeholderText">
       <string>Artist</string>
      </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
     <widget class="QLineEdit" name="AlbumLine_">
      <property name="placeholderText">
       <string>Album</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -66,6 +72,9 @@
       <widget class="QPushButton" name="BrowseButton_">
        <property name="text">
         <string>Browse...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="document-open"/>
        </property>
       </widget>
      </item>
