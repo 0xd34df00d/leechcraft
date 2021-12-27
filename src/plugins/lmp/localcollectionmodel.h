@@ -42,6 +42,7 @@ namespace LC::LMP
 		{
 			Node = Qt::UserRole + 1,
 			ArtistName,
+			AlbumID,
 			AlbumYear,
 			AlbumName,
 			AlbumArt,

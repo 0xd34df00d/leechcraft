@@ -197,6 +197,7 @@ namespace LC::LMP
 							item->setText (QString::fromUtf8 ("%1 — %2")
 									.arg (album->Year_)
 									.arg (album->Name_));
+							item->setData (album->ID_, Role::AlbumID);
 							item->setData (album->Year_, Role::AlbumYear);
 							item->setData (album->Name_, Role::AlbumName);
 							item->setData (artist.Name_, Role::ArtistName);
