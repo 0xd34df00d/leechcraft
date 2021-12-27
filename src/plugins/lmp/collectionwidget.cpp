@@ -139,10 +139,11 @@ namespace LMP
 		auto aamgr = Core::Instance ().GetLocalCollection ()->GetAlbumArtManager ();
 
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto albumId = index.data (LocalCollectionModel::Role::AlbumID).toInt ();
 		const auto& album = index.data (LocalCollectionModel::Role::AlbumName).toString ();
 		const auto& artist = index.data (LocalCollectionModel::Role::ArtistName).toString ();
 
-		auto dia = new AlbumArtManagerDialog (artist, album, aamgr, this);
+		auto dia = new AlbumArtManagerDialog (albumId, artist, album, aamgr, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}

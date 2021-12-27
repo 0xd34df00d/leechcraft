@@ -8,40 +8,44 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QDir>
+#include <QFutureInterface>
 #include <interfaces/media/ialbumartprovider.h>
 #include "interfaces/lmp/collectiontypes.h"
 
 namespace LC::LMP
 {
+	class LocalCollection;
+
 	class AlbumArtManager : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::AlbumArtManager)
+
+		LocalCollection& Collection_;
 
 		QDir AADir_;
 
 		struct TaskQueue
 		{
 			Media::AlbumInfo Info_;
-			bool PreviewMode_ = true;
+			QFutureInterface<QList<QImage>> Promise_;
 		};
 		QList<TaskQueue> Queue_;
-		QHash<Media::AlbumInfo, int> NumRequests_;
-
-		QHash<Media::AlbumInfo, QSize> BestSizes_;
 	public:
-		explicit AlbumArtManager (QObject*);
+		explicit AlbumArtManager (LocalCollection&, QObject*);
 
-		void CheckAlbumArt (const QString& artist, const QString& album, bool preview);
-
-		void HandleGotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+		[[nodiscard]] QFuture<QList<QImage>> CheckAlbumArt (const QString& artist, const QString& album);
+		void SetAlbumArt (int id, const QString& artist, const QString& album, const QImage&);
 	private:
+		void CheckNewArtists (const Collection::Artists_t&);
+
 		void HandleGotUrls (const TaskQueue&, const QList<QUrl>&);
+
 		void ScheduleRotateQueue ();
 		void RotateQueue ();
+
 		void HandleCoversPath (const QString&);
-	signals:
-		void gotImages (const Media::AlbumInfo&, const QList<QImage>&);
 	};
 }

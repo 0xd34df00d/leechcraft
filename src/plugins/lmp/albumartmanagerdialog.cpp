@@ -12,7 +12,7 @@
 #include <QFileDialog>
 #include <QTimer>
 #include <QtConcurrentMap>
-#include <QFutureWatcher>
+#include <util/threads/futures.h>
 #include <util/gui/clearlineeditaddon.h>
 #include "albumartmanager.h"
 
@@ -47,12 +47,17 @@ namespace LMP
 		};
 	}
 
-	AlbumArtManagerDialog::AlbumArtManagerDialog (const QString& artist,
-			const QString& album, AlbumArtManager *aamgr, QWidget *parent)
+	AlbumArtManagerDialog::AlbumArtManagerDialog (int albumId,
+			const QString& artist,
+			const QString& album,
+			AlbumArtManager *aamgr,
+			QWidget *parent)
 	: QDialog (parent)
 	, AAMgr_ (aamgr)
 	, Model_ (new QStandardItemModel (this))
-	, SourceInfo_ ({ artist, album })
+	, AlbumID_ (albumId)
+	, Artist_ (artist)
+	, Album_ (album)
 	{
 		Ui_.setupUi (this);
 		Ui_.ArtistLine_->setText (artist);
@@ -65,27 +70,26 @@ namespace LMP
 
 		Ui_.ArtView_->setModel (Model_);
 
-		connect (Ui_.ArtistLine_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (scheduleRequest ()));
-		connect (Ui_.AlbumLine_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (scheduleRequest ()));
-		connect (Ui_.ArtistLine_,
-				SIGNAL (returnPressed ()),
-				this,
-				SLOT (request ()));
-		connect (Ui_.AlbumLine_,
-				SIGNAL (returnPressed ()),
-				this,
-				SLOT (request ()));
+		if (!Artist_.isEmpty () && !Album_.isEmpty ())
+			setWindowTitle (tr ("Album art for %1 — %2")
+					.arg (Artist_.trimmed (), Album_.trimmed ()));
 
-		connect (aamgr,
-				SIGNAL (gotImages (Media::AlbumInfo, QList<QImage>)),
+		connect (Ui_.ArtistLine_,
+				SIGNAL (textChanged (QString)),
 				this,
-				SLOT (handleImages (Media::AlbumInfo, QList<QImage>)));
+				SLOT (scheduleRequest ()));
+		connect (Ui_.AlbumLine_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (scheduleRequest ()));
+		connect (Ui_.ArtistLine_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (request ()));
+		connect (Ui_.AlbumLine_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (request ()));
 
 		connect (Ui_.ArtView_,
 				SIGNAL (activated (QModelIndex)),
@@ -113,8 +117,7 @@ namespace LMP
 		if (!idx.isValid ())
 			return;
 
-		const auto& img = FullImages_ [idx.row ()];
-		AAMgr_->HandleGotAlbumArt (SourceInfo_, { img });
+		AAMgr_->SetAlbumArt (AlbumID_, Artist_, Album_, FullImages_ [idx.row ()]);
 	}
 
 	void AlbumArtManagerDialog::on_BrowseButton__released ()
@@ -130,7 +133,7 @@ namespace LMP
 		if (image.isNull ())
 			return;
 
-		handleImages ({ GetArtist (), GetAlbum () }, { image });
+		HandleImages ({ image });
 	}
 
 	namespace
@@ -139,25 +142,19 @@ namespace LMP
 		{
 			QImage Image_;
 			QImage SourceImage_;
-			Media::AlbumInfo Info_;
 		};
 	}
 
-	void AlbumArtManagerDialog::handleImages (const Media::AlbumInfo& info, const QList<QImage>& images)
+	void AlbumArtManagerDialog::HandleImages (const QList<QImage>& images)
 	{
-		qDebug () << Q_FUNC_INFO << images.size ();
-		if (info.Album_ != GetAlbum () || info.Artist_ != GetArtist ())
-			return;
-
-		auto watcher = new QFutureWatcher<ScaleResult> ();
+		auto watcher = new QFutureWatcher<ScaleResult> { this };
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleResized ()));
-		auto worker = [info] (const QImage& image) -> ScaleResult
+		auto worker = [] (const QImage& image)
 		{
-			const auto& scaled = image.scaled (200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			return { scaled, image, info };
+			return ScaleResult { image.scaled (200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation), image };
 		};
 		watcher->setFuture (QtConcurrent::mapped (images, std::function<ScaleResult (QImage)> (worker)));
 	}
@@ -169,10 +166,6 @@ namespace LMP
 
 		for (const auto& result : watcher->future ())
 		{
-			if (result.Info_.Album_ != GetAlbum () ||
-					result.Info_.Artist_ != GetArtist ())
-				continue;
-
 			auto item = new QStandardItem ();
 			item->setIcon (QIcon (QPixmap::fromImage (result.Image_)));
 			item->setText (QString::fromUtf8 ("%1×%2")
@@ -194,7 +187,12 @@ namespace LMP
 		if (artist.isEmpty () || album.isEmpty ())
 			return;
 
-		AAMgr_->CheckAlbumArt (artist, album, true);
+		Util::Sequence (this, AAMgr_->CheckAlbumArt (artist, album)) >>
+			[this, artist, album] (const QList<QImage>& images)
+			{
+				if (GetArtist () == artist && GetAlbum () == album)
+					HandleImages (images);
+			};
 		RequestScheduled_ = false;
 	}
 

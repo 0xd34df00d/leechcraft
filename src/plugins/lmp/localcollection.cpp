@@ -39,7 +39,7 @@ namespace LMP
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new LocalCollectionModel (Storage_, this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
-	, AlbumArtMgr_ (new AlbumArtManager (this))
+	, AlbumArtMgr_ (new AlbumArtManager (*this, this)) // TODO it needn't be owned by the collection
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
 	{
 		connect (Watcher_,
@@ -642,16 +642,12 @@ namespace LMP
 					PresentPaths_ << track.FilePath_;
 		}
 
-		const auto autoFetchAA = XmlSettingsManager::Instance ().property ("AutoFetchAlbumArt").toBool ();
 		for (const auto& artist : artists)
 		{
 			albumCount += artist.Albums_.size ();
 			for (auto album : artist.Albums_)
 			{
 				trackCount += album->Tracks_.size ();
-
-				if (autoFetchAA && album->CoverPath_.isEmpty ())
-					AlbumArtMgr_->CheckAlbumArt (artist.Name_, album->Name_, false);
 
 				auto& presentAlbum = AlbumID2Album_ [album->ID_];
 				if (!presentAlbum)

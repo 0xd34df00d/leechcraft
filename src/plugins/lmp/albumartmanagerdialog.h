@@ -31,19 +31,26 @@ namespace LMP
 		QStandardItemModel *Model_;
 		QList<QImage> FullImages_;
 
-		const Media::AlbumInfo SourceInfo_;
+		const int AlbumID_;
+		const QString Artist_;
+		const QString Album_;
 
 		bool RequestScheduled_ = false;
 	public:
-		AlbumArtManagerDialog (const QString& artist, const QString& album, AlbumArtManager*, QWidget* = 0);
+		AlbumArtManagerDialog (int albumId,
+				const QString& artist,
+				const QString& album,
+				AlbumArtManager*,
+				QWidget* = nullptr);
 
 		QString GetArtist () const;
 		QString GetAlbum () const;
 	public slots:
 		void accept ();
+	private:
+		void HandleImages (const QList<QImage>&);
 	private slots:
 		void on_BrowseButton__released ();
-		void handleImages (const Media::AlbumInfo&, const QList<QImage>&);
 		void handleResized ();
 		void request ();
 		void requestScheduled ();

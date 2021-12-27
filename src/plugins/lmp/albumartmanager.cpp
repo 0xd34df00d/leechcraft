@@ -21,66 +21,72 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
-#include "core.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::LMP
 {
-	AlbumArtManager::AlbumArtManager (QObject *parent)
+	AlbumArtManager::AlbumArtManager (LocalCollection& coll, QObject *parent)
 	: QObject { parent }
+	, Collection_ { coll }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CoversStoragePath", this,
 				[this] (const QVariant& var) { HandleCoversPath (var.toString ()); });
+
+		connect (&coll,
+				&LocalCollection::gotNewArtists,
+				this,
+				&AlbumArtManager::CheckNewArtists);
 	}
 
-	void AlbumArtManager::CheckAlbumArt (const QString& artist, const QString& album, bool preview)
+	QFuture<QList<QImage>> AlbumArtManager::CheckAlbumArt (const QString& artist, const QString& album)
 	{
 		if (Queue_.isEmpty ())
 			ScheduleRotateQueue ();
 
-		Queue_.push_back ({ { artist, album }, preview });
+		QFutureInterface<QList<QImage>> promise;
+		Queue_.push_back ({ { artist, album }, promise });
+		return promise.future ();
 	}
 
-	void AlbumArtManager::HandleGotAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
+	void AlbumArtManager::SetAlbumArt (int id, const QString& artist, const QString& album, const QImage& image)
 	{
-		auto collection = Core::Instance ().GetLocalCollection ();
-		const auto id = collection->FindAlbum (info.Artist_, info.Album_);
-		if (id < 0)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "album not found"
-					<< info.Artist_
-					<< info.Album_;
-			return;
-		}
-
-		--NumRequests_ [info];
-
-		const auto& image = images.size () > 1 ?
-				*std::max_element (images.begin (), images.end (), Util::ComparingBy (&QImage::width)) :
-				images.value (0);
-
-		if (BestSizes_.value (info).width () >= image.width ())
-			return;
-
-		BestSizes_ [info] = image.size ();
-
-		if (image.isNull ())
-		{
-			if (!NumRequests_ [info])
-				collection->SetAlbumArt (id, QStringLiteral ("NOTFOUND"));
-			return;
-		}
-
-		auto joined = info.Artist_ + "_-_" + info.Album_;
+		auto joined = artist + "_-_" + album;
 		joined.replace (' ', '_');
 		const auto& filename = QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png";
 		const auto& fullPath = AADir_.absoluteFilePath (filename);
 
 		constexpr auto compressionRatio = 100;
 		Util::Sequence (this, QtConcurrent::run ([image, fullPath] { image.save (fullPath, "PNG", compressionRatio); })) >>
-				[id, fullPath] { Core::Instance ().GetLocalCollection ()->SetAlbumArt (id, fullPath); };
+				[this, id, fullPath] { Collection_.SetAlbumArt (id, fullPath); };
+	}
+
+	namespace
+	{
+		const auto NotFoundMarker = QStringLiteral ("NOTFOUND");
+	}
+
+	void AlbumArtManager::CheckNewArtists (const Collection::Artists_t& artists)
+	{
+		if (!XmlSettingsManager::Instance ().property ("AutoFetchAlbumArt").toBool ())
+			return;
+
+		for (const auto& artist : artists)
+			for (const auto& album : artist.Albums_)
+				if (album->CoverPath_.isEmpty () || album->CoverPath_ == NotFoundMarker)
+					Util::Sequence (this, CheckAlbumArt (artist.Name_, album->Name_)) >>
+							[ this
+							, id = album->ID_
+							, artist = artist.Name_
+							, album = album->Name_
+							] (const QList<QImage>& images)
+							{
+								if (images.isEmpty ())
+									Collection_.SetAlbumArt (id, NotFoundMarker);
+								else
+									SetAlbumArt (id, artist, album,
+											*std::max_element (images.begin (), images.end (), Util::ComparingBy (&QImage::width)));
+							};
 	}
 
 	void AlbumArtManager::HandleGotUrls (const TaskQueue& task, const QList<QUrl>& urls)
@@ -119,13 +125,11 @@ namespace LC::LMP
 		connect (watcher,
 				&QFutureWatcher<QImage>::finished,
 				this,
-				[this, watcher, task]
+				[watcher, task]
 				{
 					const auto& images = watcher->future ().results ();
-					if (task.PreviewMode_)
-						emit gotImages (task.Info_, images);
-					else
-						HandleGotAlbumArt (task.Info_, images);
+					auto promise = task.Promise_;
+					promise.reportFinished (&images);
 				});
 	}
 
@@ -152,8 +156,6 @@ namespace LC::LMP
 						[this, task] (const QList<QUrl>& urls) { HandleGotUrls (task, urls); }
 					};
 		}
-		if (!provs.isEmpty ())
-			NumRequests_ [task.Info_] = provs.size ();
 
 		if (!Queue_.isEmpty ())
 			ScheduleRotateQueue ();
