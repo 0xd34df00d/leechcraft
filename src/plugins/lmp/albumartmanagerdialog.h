@@ -8,21 +8,20 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include <interfaces/media/ialbumartprovider.h>
 #include "ui_albumartmanagerdialog.h"
 
 class QStandardItemModel;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class AlbumArtManager;
 
 	class AlbumArtManagerDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::AlbumArtManagerDialog)
 
 		AlbumArtManager * const AAMgr_;
 
@@ -35,7 +34,7 @@ namespace LMP
 		const QString Artist_;
 		const QString Album_;
 
-		bool RequestScheduled_ = false;
+		QTimer * const ReqTimer_;
 	public:
 		AlbumArtManagerDialog (int albumId,
 				const QString& artist,
@@ -45,16 +44,14 @@ namespace LMP
 
 		QString GetArtist () const;
 		QString GetAlbum () const;
-	public slots:
-		void accept ();
+
+		void ScheduleRequest ();
+	protected:
+		void accept () override;
 	private:
+		void BrowseImage ();
 		void HandleImages (const QList<QImage>&);
-	private slots:
-		void on_BrowseButton__released ();
-		void handleResized ();
-		void request ();
-		void requestScheduled ();
-		void scheduleRequest ();
+
+		void Request ();
 	};
-}
 }
