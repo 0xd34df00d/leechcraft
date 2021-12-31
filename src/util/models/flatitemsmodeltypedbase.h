@@ -39,7 +39,7 @@ namespace LC::Util
 			endInsertRows ();
 		}
 
-		void EditItem (int idx, const T& item)
+		void SetItem (int idx, const T& item)
 		{
 			Items_ [idx] = item;
 			emit dataChanged (index (idx, 0),

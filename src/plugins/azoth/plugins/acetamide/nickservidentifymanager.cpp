@@ -39,7 +39,7 @@ namespace LC::Azoth::Acetamide
 		QObject::connect (ConfigWidget_.get (),
 				&NickServIdentifyWidget::identifyEdited,
 				Model_.get (),
-				&IdentifyModel::EditItem);
+				&IdentifyModel::SetItem);
 		QObject::connect (ConfigWidget_.get (),
 				&NickServIdentifyWidget::identifyRemoved,
 				Model_.get (),
