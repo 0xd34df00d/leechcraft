@@ -9,7 +9,7 @@
 #pragma once
 
 #include <utility>
-#include "flatitemsmodelbase.h"
+#include "flatitemsmodeltypedbase.h"
 
 namespace LC::Util
 {
@@ -161,59 +161,20 @@ namespace LC::Util
 	}
 
 	template<typename T>
-	class FlatItemsModel : public FlatItemsModelBase
+	class FlatItemsModel : public FlatItemsModelTypedBase<T>
 	{
-		QVector<T> Items_;
 	public:
-		using FlatItemsModelBase::FlatItemsModelBase;
-
-		void SetItems (QVector<T> items)
-		{
-			beginResetModel ();
-			Items_ = std::move (items);
-			endResetModel ();
-		}
-
-		const QVector<T>& GetItems () const
-		{
-			return Items_;
-		}
-
-		void AddItem (const T& item)
-		{
-			beginInsertRows ({}, Items_.size (), Items_.size ());
-			Items_.push_back (item);
-			endInsertRows ();
-		}
-
-		void EditItem (int idx, const T& item)
-		{
-			Items_ [idx] = item;
-			emit dataChanged (index (idx, 0),
-					index (idx, columnCount ({}) - 1));
-		}
-
-		void RemoveItem (int idx)
-		{
-			beginRemoveRows ({}, idx, idx);
-			Items_.removeAt (idx);
-			endRemoveRows ();
-		}
+		using FlatItemsModelTypedBase<T>::FlatItemsModelTypedBase;
 	protected:
-		int GetItemsCount () const override
-		{
-			return Items_.size ();
-		}
-
 		QVariant GetData (int row, int col, int role) const override
 		{
-			if (role == DataRole)
-				return QVariant::fromValue (Items_.at (row));
+			if (role == this->DataRole)
+				return QVariant::fromValue (this->Items_.at (row));
 
 			if (role != Qt::DisplayRole)
 				return {};
 
-			return detail::GetField (Items_.at (row), col);
+			return detail::GetField (this->Items_.at (row), col);
 		}
 	};
 }
