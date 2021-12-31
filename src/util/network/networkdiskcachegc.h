@@ -9,9 +9,9 @@
 #pragma once
 
 #include <functional>
+#include <list>
 #include <QObject>
 #include <QMap>
-#include <QLinkedList>
 #include <util/sll/util.h>
 
 template<typename T>
@@ -29,7 +29,7 @@ namespace LC::Util
 	 */
 	class NetworkDiskCacheGC : public QObject
 	{
-		using CacheSizeGetters_t = QLinkedList<std::function<int ()>>;
+		using CacheSizeGetters_t = std::list<std::function<int ()>>;
 		QMap<QString, CacheSizeGetters_t> Directories_;
 
 		QMap<QString, qint64> LastSizes_;

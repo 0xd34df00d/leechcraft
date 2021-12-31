@@ -91,7 +91,7 @@ namespace LC::Util
 		auto& list = Directories_ [path];
 		list.erase (pos);
 
-		if (!list.isEmpty ())
+		if (!list.empty ())
 			return;
 
 		Directories_.remove (path);
