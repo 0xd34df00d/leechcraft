@@ -18,20 +18,14 @@
 #include "mediainfo.h"
 #include "localcollectionmodel.h"
 
-class QStandardItemModel;
-class QStandardItem;
-class QAbstractItemModel;
 class QModelIndex;
 class QSortFilterProxyModel;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class AlbumArtManager;
 	class LocalCollectionStorage;
 	class LocalCollectionWatcher;
-	class LocalCollectionModel;
 	class Player;
 
 	class LocalCollection : public QObject
@@ -87,7 +81,7 @@ namespace LMP
 			Banned
 		};
 
-		LocalCollection (QObject* = nullptr);
+		explicit LocalCollection (QObject* = nullptr);
 
 		bool IsReady () const;
 
@@ -109,8 +103,9 @@ namespace LMP
 		int FindArtist (const QString&) const;
 
 		int FindAlbum (const QString& artist, const QString& album) const;
-		void SetAlbumArt (int, const QString&);
 		Collection::Album_ptr GetAlbum (int albumId) const;
+
+		void SetAlbumArt (int, const QString&);
 
 		int FindTrack (const QString& path) const;
 		int GetTrackAlbumId (int trackId) const;
@@ -159,5 +154,4 @@ namespace LMP
 
 		void gotNewArtists (const Collection::Artists_t&);
 	};
-}
 }

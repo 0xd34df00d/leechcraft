@@ -17,27 +17,24 @@ namespace LC::Util
 	class FlatItemsModel;
 }
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	struct MediaInfo;
 
 	class AudioPropsWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::AudioPropsWidget)
 
-		Ui::AudioPropsWidget Ui_;
+		Ui::AudioPropsWidget Ui_ {};
 		Util::FlatItemsModel<QPair<QString, QString>> * const PropsModel_;
 	public:
-		AudioPropsWidget (QWidget* = 0);
+		explicit AudioPropsWidget (QWidget* = nullptr);
 
 		static AudioPropsWidget* MakeDialog ();
 
 		void SetProps (const QString&);
 		void SetProps (const MediaInfo&);
-	private slots:
-		void handleCopy ();
+	private:
+		void CopyRow () const;
 	};
-}
 }

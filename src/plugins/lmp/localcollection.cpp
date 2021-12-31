@@ -30,9 +30,7 @@
 #include "localcollectionwatcher.h"
 #include "localcollectionmodel.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
@@ -645,7 +643,7 @@ namespace LMP
 		for (const auto& artist : artists)
 		{
 			albumCount += artist.Albums_.size ();
-			for (auto album : artist.Albums_)
+			for (const auto& album : artist.Albums_)
 			{
 				trackCount += album->Tracks_.size ();
 
@@ -939,5 +937,4 @@ namespace LMP
 	{
 		XmlSettingsManager::Instance ().setProperty ("RootCollectionPaths", RootPaths_);
 	}
-}
 }

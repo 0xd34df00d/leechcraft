@@ -10,13 +10,11 @@
 #include <QMouseEvent>
 #include "util.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	AALabelEventFilter::AALabelEventFilter (CoverPathGetter_t getter, QObject *parent)
-	: QObject (parent)
-	, Getter_ (getter)
+	: QObject { parent }
+	, Getter_ { std::move (getter) }
 	{
 	}
 
@@ -28,5 +26,4 @@ namespace LMP
 		ShowAlbumArt (Getter_ (), static_cast<QMouseEvent*> (event)->pos ());
 		return true;
 	}
-}
 }

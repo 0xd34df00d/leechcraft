@@ -18,9 +18,7 @@ namespace Media
 	struct ArtistImage;
 }
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class BioPropProxy : public QObject
 	{
@@ -41,7 +39,7 @@ namespace LMP
 
 		QStandardItemModel *ArtistImages_;
 	public:
-		BioPropProxy (QObject* = 0);
+		explicit BioPropProxy (QObject* = nullptr);
 
 		void SetBio (const Media::ArtistBio&);
 
@@ -63,5 +61,4 @@ namespace LMP
 		void artistPageURLChanged (const QUrl&);
 		void artistImagesModelChanged (QObject*);
 	};
-}
 }

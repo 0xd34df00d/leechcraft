@@ -17,8 +17,9 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/udls.h>
 #include <util/sys/paths.h>
-#include "similarviewmanager.h"
 #include "bioviewmanager.h"
+#include "literals.h"
+#include "similarviewmanager.h"
 
 namespace LC::LMP
 {
@@ -35,10 +36,10 @@ namespace LC::LMP
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 		layout ()->addWidget (View_);
 
-		new Util::StandardNAMFactory ("lmp/qml",
+		new Util::StandardNAMFactory (QStringLiteral ("lmp/qml"),
 				[] { return 50_mib; },
 				View_->engine ());
-		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "ArtistBrowserView.qml"));
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, QStringLiteral ("lmp"), QStringLiteral ("ArtistBrowserView.qml")));
 
 		BioMgr_->InitWithSource ();
 		SimilarMgr_->InitWithSource ();
@@ -90,7 +91,7 @@ namespace LC::LMP
 	QString ArtistBrowserTab::GetTabRecoverName () const
 	{
 		const auto& artist = Ui_.ArtistNameEdit_->text ();
-		return artist.isEmpty () ? QString () : tr ("Artist browser: %1");
+		return artist.isEmpty () ? QString {} : tr ("Artist browser: %1");
 	}
 
 	void ArtistBrowserTab::Browse (const QString& artist)
@@ -110,7 +111,7 @@ namespace LC::LMP
 			if (!shownWarning)
 			{
 				QMessageBox::warning (this,
-						"LeechCraft",
+						Lits::LMP,
 						tr ("There aren't any plugins that can fetch biography. "
 							"Check if you have installed for example the LastFMScrobble plugin."));
 				shownWarning = true;

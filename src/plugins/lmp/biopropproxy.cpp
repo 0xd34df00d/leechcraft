@@ -13,11 +13,9 @@
 #include <QtDebug>
 #include <util/models/rolenamesmixin.h>
 #include <util/sll/prelude.h>
-#include "xmlsettingsmanager.h"
+#include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	namespace
 	{
@@ -34,22 +32,22 @@ namespace LMP
 			};
 
 			ArtistImagesModel (QObject *parent)
-			: Util::RoleNamesMixin<QStandardItemModel> (parent)
+			: RoleNamesMixin { parent }
 			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [Role::ThumbURL] = "thumbURL";
-				roleNames [Role::FullURL] = "fullURL";
-				roleNames [Role::Title] = "title";
-				roleNames [Role::Author] = "author";
-				roleNames [Role::Date] = "date";
-				setRoleNames (roleNames);
+				setRoleNames ({
+						{ Role::ThumbURL, "thumbURL" },
+						{ Role::FullURL, "fullURL" },
+						{ Role::Title, "title" },
+						{ Role::Author, "author" },
+						{ Role::Date, "date" },
+					});
 			}
 		};
 	}
 
 	BioPropProxy::BioPropProxy (QObject *parent)
-	: QObject (parent)
-	, ArtistImages_ (new ArtistImagesModel (this))
+	: QObject { parent }
+	, ArtistImages_ { new ArtistImagesModel { this } }
 	{
 	}
 
@@ -60,12 +58,12 @@ namespace LMP
 
 		Bio_ = bio;
 
-		CachedTags_ = Util::Map (Bio_.BasicInfo_.Tags_, &Media::TagInfo::Name_).join ("; ");
+		CachedTags_ = Util::Map (Bio_.BasicInfo_.Tags_, &Media::TagInfo::Name_).join (QStringLiteral ("; "));
 
 		CachedInfo_ = Bio_.BasicInfo_.FullDesc_.isEmpty () ?
 				Bio_.BasicInfo_.ShortDesc_ :
 				Bio_.BasicInfo_.FullDesc_;
-		CachedInfo_.replace ("\n", "<br />");
+		CachedInfo_.replace ("\n"_ql, "<br />"_ql);
 
 		if (auto rc = ArtistImages_->rowCount ())
 			ArtistImages_->removeRows (0, rc);
@@ -117,9 +115,6 @@ namespace LMP
 
 	void BioPropProxy::SetOtherImages (const QList<Media::ArtistImage>& images)
 	{
-		if (!XmlSettingsManager::Instance ().property ("FetchArtistBioPhotos").toBool ())
-			return;
-
 		QList<QStandardItem*> rows;
 		for (const auto& imageItem : images)
 		{
@@ -134,5 +129,4 @@ namespace LMP
 		if (!rows.isEmpty ())
 			ArtistImages_->invisibleRootItem ()->appendRows (rows);
 	}
-}
 }

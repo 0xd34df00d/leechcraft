@@ -11,20 +11,17 @@
 #include <functional>
 #include <QObject>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class AALabelEventFilter : public QObject
 	{
 	public:
-		typedef std::function<QString ()> CoverPathGetter_t;
+		using CoverPathGetter_t = std::function<QString ()>;
 	private:
 		CoverPathGetter_t Getter_;
 	public:
-		AALabelEventFilter (CoverPathGetter_t, QObject* = 0);
+		explicit AALabelEventFilter (CoverPathGetter_t, QObject* = nullptr);
 	protected:
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	};
-}
 }

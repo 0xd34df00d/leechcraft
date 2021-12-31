@@ -17,8 +17,6 @@
 #include <QFileInfo>
 #include <QAction>
 #include <QtDebug>
-#include <taglib/taglib_config.h>
-#include <taglib/taglib.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/apeproperties.h>
@@ -35,16 +33,13 @@
 #include <taglib/wavpackproperties.h>
 #include <util/models/flatitemsmodel.h>
 #include <util/sll/either.h>
-#include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "literals.h"
 #include "localfileresolver.h"
 #include "core.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	AudioPropsWidget::AudioPropsWidget (QWidget *parent)
 	: QWidget { parent }
@@ -54,11 +49,11 @@ namespace LMP
 		Ui_.PropsView_->setModel (PropsModel_);
 
 		auto copy = new QAction (tr ("Copy"), this);
-		copy->setIcon (QIcon::fromTheme ("edit-copy"));
+		copy->setIcon (QIcon::fromTheme (QStringLiteral ("edit-copy")));
 		connect (copy,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleCopy ()));
+				&AudioPropsWidget::CopyRow);
 		Ui_.PropsView_->addAction (copy);
 	}
 
@@ -73,9 +68,9 @@ namespace LMP
 
 		auto box = new QDialogButtonBox (QDialogButtonBox::Close);
 		connect (box,
-				SIGNAL (rejected ()),
+				&QDialogButtonBox::rejected,
 				dia,
-				SLOT (close ()));
+				&QDialog::close);
 
 		dia->layout ()->addWidget (props);
 		dia->layout ()->addWidget (box);
@@ -98,8 +93,8 @@ namespace LMP
 					QMessageBox::critical (this,
 							Lits::LMP,
 							tr ("Error showing properties for %1: %2.")
-								.arg (QFileInfo (err.FilePath_).fileName ())
-								.arg (err.ReasonString_));
+								.arg (QFileInfo { err.FilePath_ }.fileName (),
+										err.ReasonString_));
 				});
 	}
 
@@ -169,13 +164,13 @@ namespace LMP
 				switch (props->version ())
 				{
 				case MPEG::Header::Version1:
-					mpegVersion = "1";
+					mpegVersion = "1"_ql;
 					break;
 				case MPEG::Header::Version2:
-					mpegVersion = "2";
+					mpegVersion = "2"_ql;
 					break;
 				case MPEG::Header::Version2_5:
-					mpegVersion = "2.5";
+					mpegVersion = "2.5"_ql;
 					break;
 				}
 				Append (VersionField ("MPEG"_ql), mpegVersion);
@@ -201,7 +196,7 @@ namespace LMP
 					channelMode = tr ("Mono");
 					break;
 				}
-				Append ("Channel mode", channelMode);
+				Append (tr ("Channel mode"), channelMode);
 
 				return QStringLiteral ("MPEG");
 			}
@@ -330,19 +325,13 @@ namespace LMP
 		PropsModel_->SetItems (props);
 	}
 
-	void AudioPropsWidget::handleCopy ()
+	void AudioPropsWidget::CopyRow () const
 	{
 		const auto& idx = Ui_.PropsView_->currentIndex ();
 		if (!idx.isValid ())
 			return;
 
-		QString text = idx.sibling (idx.row (), 1).data ().toString ();
-		if (!idx.column ())
-		{
-			text.prepend (": ");
-			text.prepend (idx.data ().toString ());
-		}
-		QGuiApplication::clipboard ()->setText (text);
+		const auto& propsPair = PropsModel_->GetItems () [idx.row ()];
+		QGuiApplication::clipboard ()->setText (propsPair.first + ": " + propsPair.second);
 	}
-}
 }
