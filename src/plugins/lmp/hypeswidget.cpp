@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "hypeswidget.h"
-#include <QStandardItemModel>
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -16,9 +15,10 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/sll/prelude.h>
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
-#include <util/sll/functional.h>
+#include <util/models/roleditemsmodel.h>
 #include <util/threads/futures.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
@@ -28,52 +28,40 @@
 #include "util.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
-#include "similarmodel.h"
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
+	struct HypesWidget::HypedTrack : Media::HypedTrackInfo
+	{
+		QString Stats_;
+	};
+
 	namespace
 	{
-		class TracksModel : public Util::RoleNamesMixin<QStandardItemModel>
+		auto MakeTracksModel (QObject *parent)
 		{
-		public:
-			enum Role
+			using Util::RoledMemberField_v;
+			return new HypesWidget::TracksModel
 			{
-				TrackName = Qt::UserRole + 1,
-				TrackURL,
-				ArtistName,
-				ArtistURL,
-				ThumbImageURL,
-				FullImageURL,
-				PercentageChange
+				parent,
+				RoledMemberField_v<"trackName", &HypesWidget::HypedTrack::TrackName_>,
+				RoledMemberField_v<"trackURL", &HypesWidget::HypedTrack::TrackPage_>,
+				RoledMemberField_v<"artistName", &HypesWidget::HypedTrack::ArtistName_>,
+				RoledMemberField_v<"artistURL", &HypesWidget::HypedTrack::ArtistPage_>,
+				RoledMemberField_v<"thumbImageURL", &HypesWidget::HypedTrack::Image_>,
+				RoledMemberField_v<"fullURL", &HypesWidget::HypedTrack::LargeImage_>,
+				RoledMemberField_v<"change", &HypesWidget::HypedTrack::Stats_>,
 			};
-
-			TracksModel (QObject *parent)
-			: RoleNamesMixin<QStandardItemModel> (parent)
-			{
-				QHash<int, QByteArray> names;
-				names [TrackName] = "trackName";
-				names [TrackURL] = "trackURL";
-				names [ArtistName] = "artistName";
-				names [ArtistURL] = "artistURL";
-				names [ThumbImageURL] = "thumbImageURL";
-				names [FullImageURL] = "fullURL";
-				names [PercentageChange] = "change";
-
-				setRoleNames (names);
-			}
-		};
+		}
 	}
 
 	HypesWidget::HypesWidget (QWidget *parent)
 	: QWidget (parent)
 	, HypesView_ (new QQuickWidget)
-	, NewArtistsModel_ (new SimilarModel (this))
-	, TopArtistsModel_ (new SimilarModel (this))
-	, NewTracksModel_ (new TracksModel (this))
-	, TopTracksModel_ (new TracksModel (this))
+	, NewArtistsModel_ (MakeSimilarModel (this))
+	, TopArtistsModel_ (MakeSimilarModel (this))
+	, NewTracksModel_ (MakeTracksModel (this))
+	, TopTracksModel_ (MakeTracksModel (this))
 	{
 		Ui_.setupUi (this);
 		layout ()->addWidget (HypesView_);
@@ -174,10 +162,10 @@ namespace LMP
 
 	void HypesWidget::request ()
 	{
-		NewArtistsModel_->clear ();
-		TopArtistsModel_->clear ();
-		NewTracksModel_->clear ();
-		TopTracksModel_->clear ();
+		NewArtistsModel_->SetItems ({});
+		TopArtistsModel_->SetItems ({});
+		NewTracksModel_->SetItems ({});
+		TopTracksModel_->SetItems ({});
 
 		const auto idx = Ui_.InfoProvider_->currentIndex ();
 		if (idx < 0)
@@ -221,19 +209,16 @@ namespace LMP
 		auto model = type == Media::IHypesProvider::HypeType::NewArtists ?
 				NewArtistsModel_ :
 				TopArtistsModel_;
-
-		for (const auto& info : infos)
-		{
-			auto artist = info.Info_;
-
-			if (artist.ShortDesc_.isEmpty ())
-				artist.ShortDesc_ = tr ("%1 is not <em>that</em> mainstream to have a description.")
-						.arg (artist.Name_);
-
-			auto item = SimilarModel::ConstructItem (artist);
-			item->setData (GetStats (info).join ("; "), SimilarModel::Role::Similarity);
-			model->appendRow (item);
-		}
+		model->SetItems (Util::MapAs<QVector> (infos,
+				[] (const Media::HypedArtistInfo& info)
+				{
+					SimilarArtistInfo prepared { info.Info_, *Core::Instance ().GetLocalCollection () };
+					if (prepared.ShortDesc_.isEmpty ())
+						prepared.ShortDesc_ = tr ("%1 is not <em>that</em> mainstream to have a description.")
+								.arg (info.Info_.Name_);
+					prepared.Similarity_ = GetStats (info).join ("; ");
+					return prepared;
+				}));
 	}
 
 	void HypesWidget::HandleTracks (const QList<Media::HypedTrackInfo>& infos, Media::IHypesProvider::HypeType type)
@@ -241,20 +226,8 @@ namespace LMP
 		auto model = type == Media::IHypesProvider::HypeType::NewTracks ?
 				NewTracksModel_ :
 				TopTracksModel_;
-
-		for (const auto& info : infos)
-		{
-			auto item = new QStandardItem;
-			item->setData (info.TrackName_, TracksModel::Role::TrackName);
-			item->setData (info.TrackPage_, TracksModel::Role::TrackURL);
-			item->setData (info.ArtistName_, TracksModel::Role::ArtistName);
-			item->setData (info.ArtistPage_, TracksModel::Role::ArtistURL);
-			item->setData (info.Image_, TracksModel::Role::ThumbImageURL);
-			item->setData (info.LargeImage_, TracksModel::Role::FullImageURL);
-			item->setData (GetStats (info).join ("; "), TracksModel::Role::PercentageChange);
-
-			model->appendRow (item);
-		}
+		model->SetItems (Util::MapAs<QVector> (infos,
+				[] (const Media::HypedTrackInfo& info) { return HypedTrack { info, GetStats (info).join ("; ") }; }));
 	}
 
 	void HypesWidget::handleLink (const QString& link)
@@ -263,5 +236,4 @@ namespace LMP
 					QString (),
 					FromUserInitiated | OnlyHandle));
 	}
-}
 }

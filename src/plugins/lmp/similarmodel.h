@@ -8,38 +8,32 @@
 
 #pragma once
 
-#include <QStandardItemModel>
-#include <util/models/rolenamesmixin.h>
+#include <interfaces/media/audiostructs.h>
 
 namespace Media
 {
 	struct ArtistInfo;
 }
 
-namespace LC
+namespace LC::Util
 {
-namespace LMP
-{
-	class SimilarModel : public Util::RoleNamesMixin<QStandardItemModel>
-	{
-		Q_OBJECT
-	public:
-		enum Role
-		{
-			ArtistName = Qt::UserRole + 1,
-			Similarity,
-			ArtistImageURL,
-			ArtistBigImageURL,
-			ArtistPageURL,
-			ArtistTags,
-			ShortDesc,
-			FullDesc,
-			IsInCollection
-		};
-
-		SimilarModel (QObject* = 0);
-
-		static QStandardItem* ConstructItem (const Media::ArtistInfo&);
-	};
+	template<typename>
+	class RoledItemsModel;
 }
+
+namespace LC::LMP
+{
+	class LocalCollection;
+
+	struct SimilarArtistInfo : Media::ArtistInfo
+	{
+		QString TagsString_;
+		bool IsInCollection_ = false;
+		QString Similarity_ = 0;
+
+		SimilarArtistInfo (const Media::ArtistInfo&, const LocalCollection&);
+	};
+
+	using SimilarModel = Util::RoledItemsModel<SimilarArtistInfo>;
+	SimilarModel* MakeSimilarModel (QObject *parent);
 }

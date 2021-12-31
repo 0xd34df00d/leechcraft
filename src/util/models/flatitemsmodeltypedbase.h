@@ -46,6 +46,14 @@ namespace LC::Util
 					index (idx, columnCount ({}) - 1));
 		}
 
+		template<typename F>
+		void EditItem (int idx, F&& editor)
+		{
+			std::invoke (std::forward<F> (editor), Items_ [idx]);
+			emit dataChanged (index (idx, 0),
+					index (idx, columnCount ({}) - 1));
+		}
+
 		void RemoveItem (int idx)
 		{
 			beginRemoveRows ({}, idx, idx);

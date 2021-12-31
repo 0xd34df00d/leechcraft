@@ -10,10 +10,17 @@
 
 #include <QWidget>
 #include <interfaces/media/ihypesprovider.h>
+#include "similarmodel.h"
 #include "ui_hypeswidget.h"
 
 class QStandardItemModel;
 class QQuickWidget;
+
+namespace LC::Util
+{
+	template<typename T>
+	class RoledItemsModel;
+}
 
 namespace LC
 {
@@ -22,15 +29,18 @@ namespace LMP
 	class HypesWidget : public QWidget
 	{
 		Q_OBJECT
-
+	public:
+		struct HypedTrack;
+		using TracksModel = Util::RoledItemsModel<HypedTrack>;
+	private:
 		Ui::HypesWidget Ui_;
 
 		QQuickWidget * const HypesView_;
 
-		QStandardItemModel * const NewArtistsModel_;
-		QStandardItemModel * const TopArtistsModel_;
-		QStandardItemModel * const NewTracksModel_;
-		QStandardItemModel * const TopTracksModel_;
+		SimilarModel * const NewArtistsModel_;
+		SimilarModel * const TopArtistsModel_;
+		TracksModel * const NewTracksModel_;
+		TracksModel * const TopTracksModel_;
 
 		QList<QObject*> Providers_;
 	public:

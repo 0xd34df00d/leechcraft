@@ -7,40 +7,16 @@
  **********************************************************************/
 
 #include "similarmodel.h"
+#include <util/models/roleditemsmodel.h>
 #include <interfaces/media/audiostructs.h>
-#include "core.h"
 #include "localcollection.h"
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	SimilarModel::SimilarModel (QObject *parent)
-	: RoleNamesMixin<QStandardItemModel> (parent)
+	SimilarArtistInfo::SimilarArtistInfo (const Media::ArtistInfo& artist, const LocalCollection& coll)
+	: Media::ArtistInfo { artist }
+	, IsInCollection_ { coll.FindArtist (artist.Name_) >= 0 }
 	{
-		QHash<int, QByteArray> names;
-		names [ArtistName] = "artistName";
-		names [Similarity] = "similarity";
-		names [ArtistImageURL] = "artistImageURL";
-		names [ArtistBigImageURL] = "artistBigImageURL";
-		names [ArtistPageURL] = "artistPageURL";
-		names [ArtistTags] = "artistTags";
-		names [ShortDesc] = "shortDesc";
-		names [FullDesc] = "fullDesc";
-		names [IsInCollection] = "artistInCollection";
-		setRoleNames (names);
-	}
-
-	QStandardItem* SimilarModel::ConstructItem (const Media::ArtistInfo& artist)
-	{
-		auto item = new QStandardItem;
-		item->setData (artist.Name_, SimilarModel::Role::ArtistName);
-		item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
-		item->setData (artist.LargeImage_, SimilarModel::Role::ArtistBigImageURL);
-		item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
-		item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
-		item->setData (artist.Page_, SimilarModel::Role::ArtistPageURL);
-
 		QStringList tags;
 		const int diff = artist.Tags_.size () - 5;
 		auto begin = artist.Tags_.begin ();
@@ -49,12 +25,25 @@ namespace LMP
 		std::transform (begin, artist.Tags_.end (), std::back_inserter (tags),
 				[] (const auto& tag) { return tag.Name_; });
 		std::reverse (tags.begin (), tags.end ());
-		item->setData (tr ("Tags: %1").arg (tags.join ("; ")), SimilarModel::Role::ArtistTags);
 
-		const auto col = Core::Instance ().GetLocalCollection ();
-		item->setData (col->FindArtist (artist.Name_) >= 0, SimilarModel::Role::IsInCollection);
-
-		return item;
+		TagsString_ = QObject::tr ("Tags: %1").arg (tags.join ("; "));
 	}
-}
+
+	SimilarModel* MakeSimilarModel (QObject *parent)
+	{
+		using Util::RoledMemberField_v;
+		return new SimilarModel
+		{
+			parent,
+			RoledMemberField_v<"artistName", &SimilarArtistInfo::Name_>,
+			RoledMemberField_v<"artistImageURL", &SimilarArtistInfo::Image_>,
+			RoledMemberField_v<"artistBigImageURL", &SimilarArtistInfo::LargeImage_>,
+			RoledMemberField_v<"artistPageURL", &SimilarArtistInfo::Page_>,
+			RoledMemberField_v<"artistTags", &SimilarArtistInfo::TagsString_>,
+			RoledMemberField_v<"shortDesc", &SimilarArtistInfo::ShortDesc_>,
+			RoledMemberField_v<"fullDesc", &SimilarArtistInfo::FullDesc_>,
+			RoledMemberField_v<"artistInCollection", &SimilarArtistInfo::IsInCollection_>,
+			RoledMemberField_v<"similarity", &SimilarArtistInfo::Similarity_>,
+		};
+	}
 }

@@ -18,6 +18,12 @@ namespace Media
 	struct ArtistImage;
 }
 
+namespace LC::Util
+{
+	template<typename>
+	class RoledItemsModel;
+}
+
 namespace LC::LMP
 {
 	class BioPropProxy : public QObject
@@ -37,7 +43,10 @@ namespace LC::LMP
 		QString CachedTags_;
 		QString CachedInfo_;
 
-		QStandardItemModel *ArtistImages_;
+	public:
+		using ArtistImagesModel_t = Util::RoledItemsModel<Media::ArtistImage>;
+	private:
+		ArtistImagesModel_t * const ArtistImages_;
 	public:
 		explicit BioPropProxy (QObject* = nullptr);
 
@@ -50,8 +59,6 @@ namespace LC::LMP
 		QString GetArtistInfo () const;
 		QUrl GetArtistPageURL () const;
 		QObject* GetArtistImagesModel () const;
-	private:
-		void SetOtherImages (const QList<Media::ArtistImage>&);
 	signals:
 		void artistNameChanged (const QString&);
 		void artistImageURLChanged (const QUrl&);

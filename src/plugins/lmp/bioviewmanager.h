@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <QImage>
 #include <interfaces/media/idiscographyprovider.h>
@@ -22,6 +23,12 @@ namespace Media
 	class IArtistBioFetcher;
 	class IAlbumArtProvider;
 	struct AlbumInfo;
+}
+
+namespace LC::Util
+{
+	template<typename>
+	class RoledItemsModel;
 }
 
 namespace LC
@@ -39,7 +46,11 @@ namespace LMP
 		QString CurrentArtist_;
 
 		BioPropProxy *BioPropProxy_;
-		QStandardItemModel *DiscoModel_;
+
+		struct DiscoItem;
+		using DiscoModel = Util::RoledItemsModel<DiscoItem>;
+		DiscoModel * const DiscoModel_;
+
 		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
 	public:
 		BioViewManager (QQuickWidget*, QObject* = nullptr);
@@ -47,7 +58,7 @@ namespace LMP
 		void InitWithSource ();
 		void Request (Media::IArtistBioFetcher*, const QString&, const QStringList&);
 	private:
-		QStandardItem* FindAlbumItem (const QString&) const;
+		std::optional<int> FindAlbumItem (const QString&) const;
 
 		bool QueryReleaseImageLocal (const Media::AlbumInfo&) const;
 		void QueryReleaseImage (Media::IAlbumArtProvider*, const Media::AlbumInfo&);

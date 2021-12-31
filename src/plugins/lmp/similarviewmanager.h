@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <interfaces/media/audiostructs.h>
+#include "similarmodel.h"
 
 class QQuickWidget;
 
@@ -22,7 +23,7 @@ namespace LMP
 	class SimilarViewManager : public QObject
 	{
 		QQuickWidget * const View_;
-		QStandardItemModel * const Model_;
+		SimilarModel * const Model_;
 	public:
 		SimilarViewManager (QQuickWidget*, QObject* = 0);
 

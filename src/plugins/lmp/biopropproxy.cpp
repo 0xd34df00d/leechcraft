@@ -8,46 +8,23 @@
 
 #include "biopropproxy.h"
 #include <algorithm>
-#include <QStandardItemModel>
-#include <QApplication>
 #include <QtDebug>
-#include <util/models/rolenamesmixin.h>
+#include <util/models/roleditemsmodel.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 
 namespace LC::LMP
 {
-	namespace
-	{
-		class ArtistImagesModel : public Util::RoleNamesMixin<QStandardItemModel>
-		{
-		public:
-			enum Role
-			{
-				ThumbURL = Qt::UserRole + 1,
-				FullURL,
-				Title,
-				Author,
-				Date
-			};
-
-			ArtistImagesModel (QObject *parent)
-			: RoleNamesMixin { parent }
-			{
-				setRoleNames ({
-						{ Role::ThumbURL, "thumbURL" },
-						{ Role::FullURL, "fullURL" },
-						{ Role::Title, "title" },
-						{ Role::Author, "author" },
-						{ Role::Date, "date" },
-					});
-			}
-		};
-	}
-
 	BioPropProxy::BioPropProxy (QObject *parent)
 	: QObject { parent }
-	, ArtistImages_ { new ArtistImagesModel { this } }
+	, ArtistImages_ { new ArtistImagesModel_t {
+			this,
+			Util::RoledMemberField_v<"thumbURL", &Media::ArtistImage::Thumb_>,
+			Util::RoledMemberField_v<"fullURL", &Media::ArtistImage::Full_>,
+			Util::RoledMemberField_v<"title", &Media::ArtistImage::Title_>,
+			Util::RoledMemberField_v<"author", &Media::ArtistImage::Author_>,
+			Util::RoledMemberField_v<"date", &Media::ArtistImage::Date_>,
+	} }
 	{
 	}
 
@@ -65,10 +42,7 @@ namespace LC::LMP
 				Bio_.BasicInfo_.FullDesc_;
 		CachedInfo_.replace ("\n"_ql, "<br />"_ql);
 
-		if (auto rc = ArtistImages_->rowCount ())
-			ArtistImages_->removeRows (0, rc);
-
-		SetOtherImages (bio.OtherImages_);
+		ArtistImages_->SetItems (bio.OtherImages_.toVector ());
 
 		emit artistNameChanged (GetArtistName ());
 		emit artistImageURLChanged (GetArtistImageURL ());
@@ -111,22 +85,5 @@ namespace LC::LMP
 	QObject* BioPropProxy::GetArtistImagesModel () const
 	{
 		return ArtistImages_;
-	}
-
-	void BioPropProxy::SetOtherImages (const QList<Media::ArtistImage>& images)
-	{
-		QList<QStandardItem*> rows;
-		for (const auto& imageItem : images)
-		{
-			auto item = new QStandardItem ();
-			item->setData (imageItem.Thumb_, ArtistImagesModel::Role::ThumbURL);
-			item->setData (imageItem.Full_, ArtistImagesModel::Role::FullURL);
-			item->setData (imageItem.Title_, ArtistImagesModel::Role::Title);
-			item->setData (imageItem.Author_, ArtistImagesModel::Role::Author);
-			item->setData (imageItem.Date_, ArtistImagesModel::Role::Date);
-			rows << item;
-		}
-		if (!rows.isEmpty ())
-			ArtistImages_->invisibleRootItem ()->appendRows (rows);
 	}
 }

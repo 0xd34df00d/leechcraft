@@ -7,20 +7,18 @@
  **********************************************************************/
 
 #include "bioviewmanager.h"
-#include <numeric>
+#include <algorithm>
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <QStandardItemModel>
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
-#include <util/models/rolenamesmixin.h>
-#include <util/sll/slotclosure.h>
+#include <util/models/roleditemsmodel.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
@@ -35,43 +33,32 @@
 #include "stdartistactionsmanager.h"
 #include "localcollection.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	namespace
 	{
-		class DiscoModel : public Util::RoleNamesMixin<QStandardItemModel>
-		{
-		public:
-			enum Roles
-			{
-				AlbumName = Qt::UserRole + 1,
-				AlbumYear,
-				AlbumImage,
-				AlbumTrackListTooltip
-			};
-
-			DiscoModel (QObject *parent)
-			: RoleNamesMixin<QStandardItemModel> (parent)
-			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::AlbumName] = "albumName";
-				roleNames [Roles::AlbumYear] = "albumYear";
-				roleNames [Roles::AlbumImage] = "albumImage";
-				roleNames [Roles::AlbumTrackListTooltip] = "albumTrackListTooltip";
-				setRoleNames (roleNames);
-			}
-		};
-
-		const int AASize = 170;
+		constexpr int AASize = 170;
 	}
 
+	struct BioViewManager::DiscoItem
+	{
+		QString Name_;
+		QString Year_;
+		QUrl Image_;
+		QString TrackListToolTip_;
+	};
+
 	BioViewManager::BioViewManager (QQuickWidget *view, QObject *parent)
-	: QObject (parent)
-	, View_ (view)
-	, BioPropProxy_ (new BioPropProxy (this))
-	, DiscoModel_ (new DiscoModel (this))
+	: QObject { parent }
+	, View_ { view }
+	, BioPropProxy_ { new BioPropProxy { this } }
+	, DiscoModel_ { new DiscoModel {
+		this,
+		Util::RoledMemberField_v<"albumName", &DiscoItem::Name_>,
+		Util::RoledMemberField_v<"albumYear", &DiscoItem::Year_>,
+		Util::RoledMemberField_v<"albumImage", &DiscoItem::Image_>,
+		Util::RoledMemberField_v<"albumTrackListTooltip", &DiscoItem::TrackListToolTip_>,
+	} }
 	{
 		View_->rootContext ()->setContextObject (BioPropProxy_);
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
@@ -99,7 +86,7 @@ namespace LMP
 		// of the artist being the same.
 		if (CurrentArtist_ != artist)
 		{
-			DiscoModel_->clear ();
+			DiscoModel_->SetItems ({});
 			BioPropProxy_->SetBio ({});
 
 			CurrentArtist_ = artist;
@@ -126,16 +113,15 @@ namespace LMP
 					};
 	}
 
-	QStandardItem* BioViewManager::FindAlbumItem (const QString& albumName) const
+	std::optional<int> BioViewManager::FindAlbumItem (const QString& albumName) const
 	{
-		for (int i = 0, rc = DiscoModel_->rowCount (); i < rc; ++i)
-		{
-			auto item = DiscoModel_->item (i);
-			const auto& itemData = item->data (DiscoModel::Roles::AlbumName);
-			if (itemData.toString () == albumName)
-				return item;
-		}
-		return 0;
+		const auto& albums = DiscoModel_->GetItems ();
+		const auto pos = std::find_if (albums.begin (), albums.end (),
+				[&] (const DiscoItem& album) { return album.Name_ == albumName; });
+		if (pos == albums.end ())
+			return {};
+
+		return pos - albums.begin ();
 	}
 
 	bool BioViewManager::QueryReleaseImageLocal (const Media::AlbumInfo& info) const
@@ -176,8 +162,8 @@ namespace LMP
 
 	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img) const
 	{
-		auto item = FindAlbumItem (album);
-		if (!item)
+		auto idx = FindAlbumItem (album);
+		if (!idx)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown item for"
@@ -185,7 +171,7 @@ namespace LMP
 			return;
 		}
 
-		item->setData (img, DiscoModel::Roles::AlbumImage);
+		DiscoModel_->EditItem (*idx, [&] (DiscoItem& item) { item.Image_ = img; });
 	}
 
 	void BioViewManager::HandleDiscographyReady (QList<Media::ReleaseInfo> releases)
@@ -196,28 +182,29 @@ namespace LMP
 
 		const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->
 				GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
+		const auto& iconBase64 = Util::GetAsBase64Src (icon.toImage ());
 
 		std::sort (releases.rbegin (), releases.rend (),
 				Util::ComparingBy (&Media::ReleaseInfo::Year_));
+
+		QVector<DiscoItem> newItems;
+		newItems.reserve (releases.size ());
 		for (const auto& release : releases)
 		{
 			if (FindAlbumItem (release.Name_))
 				continue;
 
-			auto item = new QStandardItem;
-			item->setData (release.Name_, DiscoModel::Roles::AlbumName);
-			item->setData (QString::number (release.Year_), DiscoModel::Roles::AlbumYear);
-			item->setData (Util::GetAsBase64Src (icon.toImage ()), DiscoModel::Roles::AlbumImage);
-
-			item->setData (MakeTrackListTooltip (release.TrackInfos_),
-					DiscoModel::Roles::AlbumTrackListTooltip);
+			newItems.push_back ({
+					.Name_ = release.Name_,
+					.Year_ = QString::number (release.Year_),
+					.Image_ = iconBase64,
+					.TrackListToolTip_ = MakeTrackListTooltip (release.TrackInfos_),
+				});
 
 			Album2Tracks_ << Util::Concat (release.TrackInfos_);
-
-			DiscoModel_->appendRow (item);
-
 			QueryReleaseImage (aaProv, { CurrentArtist_, release.Name_ });
 		}
+		DiscoModel_->SetItems (DiscoModel_->GetItems () + std::move (newItems));
 	}
 
 	void BioViewManager::handleAlbumPreviewRequested (int index)
@@ -226,10 +213,7 @@ namespace LMP
 		for (const auto& track : Album2Tracks_.at (index))
 			tracks.push_back ({ track.Name_, track.Length_ });
 
-		const auto& album = DiscoModel_->item (index)->data (DiscoModel::Roles::AlbumName).toString ();
-
 		auto ph = Core::Instance ().GetPreviewHandler ();
-		ph->previewAlbum (CurrentArtist_, album, tracks);
+		ph->previewAlbum (CurrentArtist_, DiscoModel_->GetItems () [index].Name_, tracks);
 	}
-}
 }
