@@ -20,13 +20,12 @@
 #include "bioviewmanager.h"
 #include "literals.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	BioWidget::BioWidget (QWidget *parent)
-	: QWidget (parent)
-	, View_ (new QQuickWidget)
+	: QWidget { parent }
+	, View_ { new QQuickWidget }
+	, Manager_ { new BioViewManager { View_, this } }
 	{
 		Ui_.setupUi (this);
 
@@ -39,7 +38,6 @@ namespace LMP
 				[] { return 50_mib; },
 				View_->engine ());
 
-		Manager_ = new BioViewManager (View_, this);
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
 				Lits::LmpQmlSubdir,
 				QStringLiteral ("BioView.qml")));
@@ -63,18 +61,17 @@ namespace LMP
 		}
 
 		connect (Ui_.Provider_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (requestBiography ()));
-		connect (Ui_.Provider_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (saveLastUsedProv ()));
+				qOverload<int> (&QComboBox::currentIndexChanged),
+				[this]
+				{
+					RequestBiography ();
+					SaveLastUsedProv ();
+				});
 
 		connect (Manager_,
-				SIGNAL (gotArtistImage (QString, QUrl)),
+				&BioViewManager::gotArtistImage,
 				this,
-				SIGNAL (gotArtistImage (QString, QUrl)));
+				&BioWidget::gotArtistImage);
 	}
 
 	void BioWidget::SetCurrentArtist (const QString& artist, const QStringList& hints)
@@ -87,10 +84,10 @@ namespace LMP
 
 		Current_ = { artist, hints };
 
-		requestBiography ();
+		RequestBiography ();
 	}
 
-	void BioWidget::saveLastUsedProv ()
+	void BioWidget::SaveLastUsedProv ()
 	{
 		const int idx = Ui_.Provider_->currentIndex ();
 		const auto& prov = idx >= 0 ?
@@ -100,7 +97,7 @@ namespace LMP
 		XmlSettingsManager::Instance ().setProperty ("LastUsedBioProvider", prov);
 	}
 
-	void BioWidget::requestBiography ()
+	void BioWidget::RequestBiography ()
 	{
 		const int idx = Ui_.Provider_->currentIndex ();
 		if (idx < 0 || Current_.Artist_.isEmpty ())
@@ -108,5 +105,4 @@ namespace LMP
 
 		Manager_->Request (Providers_ [idx], Current_.Artist_, Current_.Hints_);
 	}
-}
 }

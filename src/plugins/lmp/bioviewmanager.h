@@ -31,9 +31,7 @@ namespace LC::Util
 	class RoledItemsModel;
 }
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class BioPropProxy;
 
@@ -69,5 +67,4 @@ namespace LMP
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
 	};
-}
 }

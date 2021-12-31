@@ -14,9 +14,7 @@
 #include "collectionsortermodel.h"
 #include "player.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	CollectionsManager::CollectionsManager (QObject *parent)
 	: QObject { parent }
@@ -54,5 +52,4 @@ namespace LMP
 
 		player->Enqueue (sources);
 	}
-}
 }

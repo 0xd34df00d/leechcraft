@@ -18,9 +18,7 @@ namespace Media
 	class IArtistBioFetcher;
 }
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class BioViewManager;
 
@@ -31,8 +29,7 @@ namespace LMP
 		Ui::BioWidget Ui_;
 
 		QQuickWidget * const View_;
-
-		BioViewManager *Manager_;
+		BioViewManager * const Manager_;
 
 		QList<Media::IArtistBioFetcher*> Providers_;
 
@@ -42,14 +39,13 @@ namespace LMP
 			QStringList Hints_;
 		} Current_;
 	public:
-		BioWidget (QWidget* = 0);
+		explicit BioWidget (QWidget* = nullptr);
 
 		void SetCurrentArtist (const QString&, const QStringList&);
-	private slots:
-		void saveLastUsedProv ();
-		void requestBiography ();
+	private:
+		void SaveLastUsedProv ();
+		void RequestBiography ();
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
 	};
-}
 }

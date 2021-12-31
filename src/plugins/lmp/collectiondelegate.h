@@ -12,24 +12,21 @@
 #include <QPixmapCache>
 #include <QCache>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class CollectionDelegate : public QStyledItemDelegate
 	{
 		const QPixmap DefaultAlbum_;
 		mutable QCache<QString, QPixmap> PXCache_;
 	public:
-		CollectionDelegate (QObject* = 0);
+		explicit CollectionDelegate (QObject* = nullptr);
 
-		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
+		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
+		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const override;
 	private:
 		void PaintBorder (QPainter*, const QStyleOptionViewItem&) const;
 		void PaintWPixmap (QPainter*, const QStyleOptionViewItem&, const QModelIndex&, const QPixmap&) const;
 		void PaintOther (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 		void PaintAlbum (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 	};
-}
 }

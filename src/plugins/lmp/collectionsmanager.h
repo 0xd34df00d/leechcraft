@@ -15,24 +15,21 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class QSortFilterProxyModel;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class MergeModel;
 }
-namespace LMP
+
+namespace LC::LMP
 {
 	class Player;
 
 	class CollectionsManager : public QObject
 	{
-		Q_OBJECT
-
 		Util::MergeModel * const Model_;
 		QSortFilterProxyModel * const Sorter_;
 	public:
-		CollectionsManager (QObject* = nullptr);
+		explicit CollectionsManager (QObject* = nullptr);
 
 		void Add (QAbstractItemModel*);
 
@@ -40,5 +37,4 @@ namespace LMP
 
 		void Enqueue (const QList<QModelIndex>&, Player*);
 	};
-}
 }

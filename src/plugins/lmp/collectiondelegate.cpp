@@ -12,9 +12,7 @@
 #include "literals.h"
 #include "localcollectionmodel.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	const int IconSize = 32;
 	const int Padding = 2;
@@ -129,5 +127,4 @@ namespace LMP
 
 		PaintWPixmap (painter, option, index, px);
 	}
-}
 }

@@ -25,7 +25,7 @@ namespace LC::LMP
 
 		LocalCollectionStorage * const Storage_;
 
-		QIcon ArtistIcon_ = QIcon::fromTheme ("view-media-artist");
+		QIcon ArtistIcon_ = QIcon::fromTheme (QStringLiteral ("view-media-artist"));
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QHash<int, QStandardItem*>> Album2Item_;

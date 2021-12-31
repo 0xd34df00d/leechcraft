@@ -62,12 +62,12 @@ namespace LC::LMP
 	} }
 	{
 		View_->rootContext ()->setContextObject (BioPropProxy_);
-		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
-		View_->rootContext ()->setContextProperty ("colorProxy",
+		View_->rootContext ()->setContextProperty (QStringLiteral ("artistDiscoModel"), DiscoModel_);
+		View_->rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
-		View_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (GetProxyHolder ()));
+		View_->engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (GetProxyHolder ()));
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			View_->engine ()->addImportPath (cand);
 	}
 
@@ -100,6 +100,9 @@ namespace LC::LMP
 					[this] (const Media::ArtistBio& bio)
 					{
 						BioPropProxy_->SetBio (bio);
+						// TODO architecture: this is eventually used to update NowPlayingPixmapHandler,
+						// and it is wrong.
+						// There needs to be instead something stateful keeping the information about the current artist.
 						emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
 					}
 				};
