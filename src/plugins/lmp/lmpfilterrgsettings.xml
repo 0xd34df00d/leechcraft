@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="ReplayGain" />
+		<label value="ReplayGain" translatable="false" />
 		<item type="checkbox" property="RGAlbumMode" default="true">
-			<label value="Album mode" />
+			<label value="Whole album analysis" />
 		</item>
 		<item type="checkbox" property="RGLimiting" default="true">
-			<label value="Limiting" />
+			<label value="Audio limiting" />
 		</item>
 		<item type="doublespinbox" property="RGPreamp" default="0" minimum="-60" maximum="60">
-			<label value="Preamp:" />
+			<label value="Pre-amplification:" />
 			<suffix value=" dB" />
 		</item>
 	</page>
