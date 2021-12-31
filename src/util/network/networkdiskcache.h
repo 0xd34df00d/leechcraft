@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QNetworkDiskCache>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QHash>
 #include <util/sll/util.h>
 #include "networkconfig.h"
@@ -33,9 +33,9 @@ namespace LC::Util
 	{
 		Q_OBJECT
 
-		qint64 CurrentSize_;
+		qint64 CurrentSize_ = -1;
 
-		mutable QMutex InsertRemoveMutex_;
+		mutable QRecursiveMutex InsertRemoveMutex_;
 
 		QHash<QIODevice*, QUrl> PendingDev2Url_;
 		QHash<QUrl, QList<QIODevice*>> PendingUrl2Devs_;

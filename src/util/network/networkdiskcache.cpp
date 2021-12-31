@@ -26,8 +26,6 @@ namespace LC::Util
 
 	NetworkDiskCache::NetworkDiskCache (const QString& subpath, QObject *parent)
 	: QNetworkDiskCache (parent)
-	, CurrentSize_ (-1)
-	, InsertRemoveMutex_ (QMutex::Recursive)
 	, GcGuard_ (NetworkDiskCacheGC::Instance ().RegisterDirectory (GetCacheDir (subpath),
 			[this] { return maximumCacheSize (); }))
 	{
