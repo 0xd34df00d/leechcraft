@@ -25,8 +25,6 @@ namespace SecureStorage
 	{
 		Q_OBJECT
 	private slots:
-		/** Initialization. */
-		void initTestCase ();
 		/** Test SHA-256 hash. */
 		void testHash ();
 		/** Check that ciphertexts (and HMAC's) of same data are different. */

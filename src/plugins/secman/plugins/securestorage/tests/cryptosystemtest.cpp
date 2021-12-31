@@ -11,6 +11,7 @@
 #include <QtTest/QtTest>
 #include <QByteArray>
 #include <QList>
+#include <QRandomGenerator>
 #include "../cryptosystem.h"
 #include "../ciphertextformat.h"
 
@@ -90,15 +91,16 @@ namespace
 	 */
 	QByteArray randomData (unsigned minLength, unsigned maxLength = 0)
 	{
+		auto& gen = *QRandomGenerator::global ();
 		unsigned length;
 		if (maxLength <= minLength)
 			length = minLength;
 		else
-			length = minLength + qrand () % (maxLength - minLength);
+			length = gen.bounded (minLength, maxLength);
 
 		QByteArray result;
-		for (unsigned i = 0; i < length; i++)
-			result.append (qrand ());
+		result.resize (length);
+		gen.generate (result.begin (), result.end ());
 		return result;
 	}
 
@@ -115,11 +117,6 @@ namespace
 		CipherTextFormat ctf2 (enc2.data (), CipherTextFormatUtils::DataLengthFor (enc2.length ()));
 		QVERIFY (AllFieldsDifferent (ctf1, ctf2));
 	}
-}
-
-void CryptoSystemTest::initTestCase ()
-{
-	qsrand (time (0));
 }
 
 void CryptoSystemTest::testHash ()

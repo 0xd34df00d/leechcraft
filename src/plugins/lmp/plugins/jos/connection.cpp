@@ -13,6 +13,7 @@
 #include <QtDebug>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <QRandomGenerator>
 #include <libimobiledevice/lockdown.h>
 #include <gpod/itdb.h>
 #include "afcfile.h"
@@ -181,7 +182,9 @@ namespace jOS
 			return {};
 		}
 
-		const auto dirNum = qrand () % lastMD;
+		auto& gen = *QRandomGenerator::global ();
+
+		const auto dirNum = gen.bounded (lastMD);
 		const auto& dir = mdir (dirNum);
 		if (!Exists (dir))
 		{
@@ -201,7 +204,7 @@ namespace jOS
 		QString filename;
 		while (true)
 		{
-			filename = QString { "jos%1" }.arg (qrand () % 999999, 6, 10, QChar { '0' });
+			filename = QString { "jos%1" }.arg (gen.bounded (999999), 6, 10, QChar { '0' });
 			filename += '.' + ext;
 			filename.prepend (dir + '/');
 

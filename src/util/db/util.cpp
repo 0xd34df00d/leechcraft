@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QSqlQuery>
 #include <QThread>
+#include <QRandomGenerator>
 #include "dblock.h"
 
 namespace LC::Util
@@ -50,7 +51,7 @@ namespace LC::Util
 	QString GenConnectionName (const QString& base)
 	{
 		return (base + ".%1_%2")
-				.arg (qrand ())
+				.arg (QRandomGenerator::global ()->generate ())
 				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()));
 	}
 }

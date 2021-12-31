@@ -8,6 +8,7 @@
 
 #include "keeso.h"
 #include <QIcon>
+#include <QRandomGenerator>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -23,8 +24,10 @@ namespace Keeso
 				{ "/keeso" },
 				[] (ICLEntry*, QString& text) -> bool
 				{
+					auto& gen = *QRandomGenerator::global ();
+
 					text = text.mid (QString ("/keeso ").length ()).trimmed ();
-					bool isUpper = qrand () % 2;
+					bool isUpper = gen () % 2;
 					for (int i = 0, length = text.length (); i < length; ++i)
 					{
 						const auto& c = text.at (i);
@@ -34,7 +37,7 @@ namespace Keeso
 							continue;
 
 						text [i] = isUpper ? u : l;
-						isUpper = (qrand () % 4) ? !isUpper : isUpper;
+						isUpper = (gen () % 4) ? !isUpper : isUpper;
 					}
 
 					return false;

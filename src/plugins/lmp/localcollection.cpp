@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <numeric>
 #include <QStandardItemModel>
+#include <QRandomGenerator>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 #include <QTimer>
@@ -320,8 +321,12 @@ namespace LC::LMP
 			const auto& keys = Track2Path_.keys ();
 			if (keys.isEmpty ())
 				return {};
+
+			auto& gen = *QRandomGenerator::global ();
+			// TODO properly avoid repetitions
 			for (int i = 0; i < 50; ++i)
-				result << keys [qrand () % keys.size ()];
+				result << keys [gen () % keys.size ()];
+
 			break;
 		}
 		case DynamicPlaylist::LovedTracks:
