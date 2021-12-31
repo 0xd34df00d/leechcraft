@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include "interfaces/lmp/mediainfo.h"
 
@@ -19,6 +20,8 @@ namespace LMP
 
 	class NPTooltipHook : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::NPTooltipHook)
+
 		NowPlayingPixmapHandler * const PxHandler_;
 
 		QString Base64Px_;

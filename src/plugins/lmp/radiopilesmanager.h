@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 
 class QAbstractItemModel;
@@ -26,6 +27,8 @@ namespace LMP
 {
 	class RadioPilesManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::RadioPilesManager)
+
 		QStandardItemModel * const PilesModel_;
 	public:
 		RadioPilesManager (const IPluginsManager*, QObject* = nullptr);

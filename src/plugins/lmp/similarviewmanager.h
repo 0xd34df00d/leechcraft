@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <interfaces/media/audiostructs.h>
 #include "similarmodel.h"
@@ -22,6 +23,8 @@ namespace LMP
 {
 	class SimilarViewManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::SimilarViewManager)
+
 		QQuickWidget * const View_;
 		SimilarModel * const Model_;
 	public:

@@ -106,6 +106,8 @@ namespace LC::LMP
 
 		struct PropsGetter
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::LMP::AudioPropsWidget)
+		public:
 			PropsVec_t& Vec_;
 
 			void Append (const QString& name, const QString& val)
@@ -251,8 +253,6 @@ namespace LC::LMP
 					return;
 				}
 			}
-
-			Q_DECLARE_TR_FUNCTIONS (LC::LMP::AudioPropsWidget)
 		};
 
 		template<typename... Props>
