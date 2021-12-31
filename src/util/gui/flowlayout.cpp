@@ -88,7 +88,12 @@ namespace LC::Util
 		for (const auto item : ItemList_)
 			size = size.expandedTo (item->minimumSize ());
 
-		size += QSize { margin () * 2, margin () * 2 };
+		int left = 0;
+		int top = 0;
+		int right = 0;
+		int bottom = 0;
+		getContentsMargins (&left, &top, &right, &bottom);
+		size += QSize { left + right, top + bottom };
 		return size;
 	}
 
