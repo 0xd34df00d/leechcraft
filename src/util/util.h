@@ -24,6 +24,10 @@ class QModelIndex;
 
 namespace LC::Util
 {
+	/** @brief The "leechcraft" literal, with no run-time overhead.
+	 */
+	Q_DECL_IMPORT extern const QString LCLowercase;
+
 	/** @brief Returns the given image in a Base64-encoded form.
 	 *
 	 * The return result is suitable for inserting into
@@ -76,8 +80,8 @@ namespace LC::Util
 
 	UTIL_API QTranslator* LoadTranslator (const QString& base,
 			const QString& locale,
-			const QString& prefix = "leechcraft",
-			const QString& appname = "leechcraft");
+			const QString& prefix = LCLowercase,
+			const QString& appname = LCLowercase);
 
 	/** @brief Loads and installs a translator.
 	 *
@@ -98,8 +102,8 @@ namespace LC::Util
 	 * otherwise.
 	 */
 	UTIL_API QTranslator* InstallTranslator (const QString& base,
-			const QString& prefix = "leechcraft",
-			const QString& appname = "leechcraft");
+			const QString& prefix = LCLowercase,
+			const QString& appname = LCLowercase);
 
 	/** @brief Returns the current locale name, like en_US.
 	 *

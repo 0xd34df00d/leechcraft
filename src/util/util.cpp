@@ -25,6 +25,8 @@
 
 namespace LC::Util
 {
+	const QString LCLowercase = QStringLiteral ("leechcraft");
+
 	QString GetAsBase64Src (const QImage& pix)
 	{
 		QBuffer buf;
