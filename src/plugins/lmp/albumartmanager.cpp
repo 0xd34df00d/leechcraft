@@ -21,6 +21,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
+#include "literals.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
 
@@ -177,7 +178,7 @@ namespace LC::LMP
 					<< "unable to create"
 					<< path;
 
-			const auto& e = Util::MakeNotification (QStringLiteral ("LMP"),
+			const auto& e = Util::MakeNotification (Lits::LMP,
 					tr ("Path %1 cannot be used as album art storage, default path will be used instead."),
 					Priority::Warning);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);

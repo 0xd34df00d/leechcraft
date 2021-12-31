@@ -9,6 +9,7 @@
 #include "collectiondelegate.h"
 #include <QPainter>
 #include <QApplication>
+#include "literals.h"
 #include "localcollectionmodel.h"
 
 namespace LC
@@ -20,7 +21,7 @@ namespace LMP
 
 	CollectionDelegate::CollectionDelegate (QObject *parent)
 	: QStyledItemDelegate (parent)
-	, DefaultAlbum_ (QIcon::fromTheme ("media-optical").pixmap (64, 64))
+	, DefaultAlbum_ (QIcon::fromTheme (Lits::DefaultAlbumImage).pixmap (64, 64))
 	, PXCache_ (100000)
 	{
 	}

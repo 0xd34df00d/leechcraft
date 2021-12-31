@@ -36,10 +36,12 @@ namespace LC::LMP
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 		layout ()->addWidget (View_);
 
-		new Util::StandardNAMFactory (QStringLiteral ("lmp/qml"),
+		new Util::StandardNAMFactory (Lits::LmpSlashQml,
 				[] { return 50_mib; },
 				View_->engine ());
-		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, QStringLiteral ("lmp"), QStringLiteral ("ArtistBrowserView.qml")));
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
+				Lits::LmpQmlSubdir,
+				QStringLiteral ("ArtistBrowserView.qml")));
 
 		BioMgr_->InitWithSource ();
 		SimilarMgr_->InitWithSource ();

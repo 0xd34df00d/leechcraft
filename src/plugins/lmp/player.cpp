@@ -46,6 +46,7 @@
 #include "localcollectionmodel.h"
 #include "playerrulesmanager.h"
 #include "sourceerrorhandler.h"
+#include "literals.h"
 
 namespace LC
 {
@@ -864,7 +865,7 @@ namespace LMP
 					const auto& artImage = futureWatcher->result ();
 					auto art = QPixmap::fromImage (artImage);
 					if (art.isNull ())
-						art = QIcon::fromTheme ("media-optical").pixmap (dim, dim);
+						art = QIcon::fromTheme (Lits::DefaultAlbumImage).pixmap (dim, dim);
 					albumItem->setData (art, Player::Role::AlbumArt);
 					futureWatcher->deleteLater ();
 				},

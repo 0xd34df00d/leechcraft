@@ -13,4 +13,12 @@ class QString;
 namespace LC::LMP::Lits
 {
 	extern const QString LMP;
+
+	// The "lmp" string.
+	extern const QString LmpQmlSubdir;
+
+	// The "lmp/qml" string.
+	extern const QString LmpSlashQml;
+
+	extern const QString DefaultAlbumImage;
 }

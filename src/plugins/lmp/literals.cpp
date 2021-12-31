@@ -12,4 +12,10 @@
 namespace LC::LMP::Lits
 {
 	const QString LMP = QStringLiteral ("LMP");
+
+	const QString LmpQmlSubdir = QStringLiteral ("lmp");
+
+	const QString LmpSlashQml = QStringLiteral ("lmp/qml");
+
+	const QString DefaultAlbumImage = QStringLiteral ("media-optical");
 }

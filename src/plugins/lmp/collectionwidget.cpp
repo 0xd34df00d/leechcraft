@@ -23,6 +23,7 @@
 #include "collectionsmanager.h"
 #include "hookinterconnector.h"
 #include "player.h"
+#include "literals.h"
 
 namespace LC
 {
@@ -269,7 +270,7 @@ namespace LMP
 		if (nodeType == LocalCollectionModel::NodeType::Album)
 		{
 			auto showAlbumArt = menu.addAction (tr ("Show album art"), this, &CollectionWidget::ShowCollectionAlbumArt);
-			showAlbumArt->setProperty ("ActionIcon", "media-optical");
+			showAlbumArt->setProperty ("ActionIcon", Lits::DefaultAlbumImage);
 
 			menu.addAction (tr ("Album art manager..."), this, &CollectionWidget::ShowAlbumArtManager);
 		}

@@ -20,6 +20,7 @@
 #include "core.h"
 #include "localcollection.h"
 #include "util.h"
+#include "literals.h"
 
 namespace LC
 {
@@ -66,7 +67,7 @@ namespace LMP
 
 			QImage img { PxHandler_->GetLastCoverPath () };
 			if (img.isNull ())
-				img = QIcon::fromTheme ("media-optical").pixmap (maxDim, maxDim).toImage ();
+				img = QIcon::fromTheme (Lits::DefaultAlbumImage).pixmap (maxDim, maxDim).toImage ();
 
 			if (img.width () > maxDim)
 				img = img.scaled (maxDim, maxDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);

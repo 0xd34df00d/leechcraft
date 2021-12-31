@@ -48,6 +48,7 @@
 #include "engine/sourceobject.h"
 #include "hookinterconnector.h"
 #include "playlistwidgetviewexpander.h"
+#include "literals.h"
 
 Q_DECLARE_METATYPE (QList<LC::Entity>)
 
@@ -579,7 +580,7 @@ namespace LMP
 				SLOT (showTrackProps ()));
 
 		ActionShowAlbumArt_ = new QAction (tr ("Show album art"), Ui_.Playlist_);
-		ActionShowAlbumArt_->setProperty ("ActionIcon", "media-optical");
+		ActionShowAlbumArt_->setProperty ("ActionIcon", Lits::DefaultAlbumImage);
 		connect (ActionShowAlbumArt_,
 				SIGNAL (triggered ()),
 				this,

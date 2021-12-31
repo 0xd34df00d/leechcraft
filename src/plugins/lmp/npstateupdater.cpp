@@ -16,6 +16,7 @@
 #include "xmlsettingsmanager.h"
 #include "nowplayingwidget.h"
 #include "util.h"
+#include "literals.h"
 
 namespace LC
 {
@@ -113,7 +114,7 @@ namespace LMP
 
 			if (pi.PX_.isNull ())
 			{
-				pi.PX_ = QIcon::fromTheme ("media-optical").pixmap (128, 128);
+				pi.PX_ = QIcon::fromTheme (Lits::DefaultAlbumImage).pixmap (128, 128);
 				pi.CoverPath_.clear ();
 			}
 

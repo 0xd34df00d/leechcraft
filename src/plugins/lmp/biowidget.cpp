@@ -11,12 +11,14 @@
 #include <util/util.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
+#include <util/sll/udls.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iinfo.h>
 #include "xmlsettingsmanager.h"
 #include "bioviewmanager.h"
+#include "literals.h"
 
 namespace LC
 {
@@ -33,12 +35,14 @@ namespace LMP
 
 		layout ()->addWidget (View_);
 
-		new Util::StandardNAMFactory ("lmp/qml",
-				[] { return 50 * 1024 * 1024; },
+		new Util::StandardNAMFactory (Lits::LmpSlashQml,
+				[] { return 50_mib; },
 				View_->engine ());
 
 		Manager_ = new BioViewManager (View_, this);
-		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "BioView.qml"));
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
+				Lits::LmpQmlSubdir,
+				QStringLiteral ("BioView.qml")));
 		Manager_->InitWithSource ();
 
 		const auto& lastProv = XmlSettingsManager::Instance ()

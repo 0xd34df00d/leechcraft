@@ -32,6 +32,7 @@
 #include "previewhandler.h"
 #include "stdartistactionsmanager.h"
 #include "localcollection.h"
+#include "literals.h"
 
 namespace LC::LMP
 {
@@ -181,7 +182,7 @@ namespace LC::LMP
 		const auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
 
 		const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->
-				GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
+				GetIcon (Lits::DefaultAlbumImage).pixmap (AASize * 2, AASize * 2);
 		const auto& iconBase64 = Util::GetAsBase64Src (icon.toImage ());
 
 		std::sort (releases.rbegin (), releases.rend (),
