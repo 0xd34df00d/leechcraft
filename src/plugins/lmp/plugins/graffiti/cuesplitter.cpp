@@ -404,7 +404,7 @@ namespace Graffiti
 				SLOT (handleProcessError ()));
 
 #ifdef Q_OS_UNIX
-		setpriority (PRIO_PROCESS, process->pid (), 19);
+		setpriority (PRIO_PROCESS, process->processId (), 19);
 #endif
 	}
 

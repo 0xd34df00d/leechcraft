@@ -93,7 +93,7 @@ namespace LMP
 		Process_->start ("ffmpeg", args);
 
 #ifdef Q_OS_UNIX
-		setpriority (PRIO_PROCESS, Process_->pid (), 19);
+		setpriority (PRIO_PROCESS, Process_->processId (), 19);
 #endif
 	}
 
