@@ -322,27 +322,29 @@ namespace LC::Azoth::Xoox
 		orgInfo.setRole (Ui_.Role_->text ());
 		VCard_.setOrganization (orgInfo);
 
-		const auto px = Ui_.LabelPhoto_->pixmap ();
-		if (px)
+		if (ShownPixmap_.isNull ())
 		{
 			QBuffer buffer;
 			buffer.open (QIODevice::WriteOnly);
-			px->save (&buffer, "PNG", 100);
+			ShownPixmap_.save (&buffer, "PNG", 100);
 			buffer.close ();
 			VCard_.setPhoto (buffer.data ());
 			if (PhotoChanged_)
+			{
 				Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
+				Account_->GetClientConnection ()->GetUserAvatarManager ()->PublishAvatar (ShownPixmap_.toImage ());
+			}
 		}
 		else
 		{
 			VCard_.setPhoto (QByteArray ());
 			if (PhotoChanged_)
+			{
 				Account_->UpdateOurPhotoHash ("");
+				Account_->GetClientConnection ()->GetUserAvatarManager ()->PublishAvatar ({});
+			}
 		}
 
-		if (PhotoChanged_)
-			Account_->GetClientConnection ()->GetUserAvatarManager ()->
-						PublishAvatar (px ? px->toImage () : QImage ());
 		PhotoChanged_ = false;
 
 		Account_->GetClientConnection ()->Exts ().Get<QXmppVCardManager> ().setClientVCard (VCard_);
@@ -484,7 +486,7 @@ namespace LC::Azoth::Xoox
 
 	void VCardDialog::on_PhotoClear__released ()
 	{
-		Ui_.LabelPhoto_->clear ();
+		SetPixmapLabel ({});
 		PhotoChanged_ = true;
 	}
 
