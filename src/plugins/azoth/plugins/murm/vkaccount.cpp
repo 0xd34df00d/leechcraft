@@ -196,7 +196,7 @@ namespace Murm
 	}
 
 	void VkAccount::Send (qulonglong to, VkConnection::Type type,
-			VkMessage *msg, const QStringList& attachments)
+			VkMessage *msg, const QByteArrayList& attachments)
 	{
 		QPointer<VkMessage> safeMsg { msg };
 		Conn_->SendMessage (to,

@@ -194,8 +194,8 @@ namespace Murm
 
 		const auto& docMap = json.toMap () ["response"].toList ().value (0).toMap ();
 
-		const auto& ownerId = docMap ["owner_id"].toString ();
-		const auto& docId = docMap ["id"].toString ();
+		const auto& ownerId = docMap ["owner_id"].toByteArray ();
+		const auto& docId = docMap ["id"].toByteArray ();
 		const auto& attId = "doc" + ownerId + "_" + docId;
 
 		Conn_->SendMessage (Entry_->GetInfo ().ID_,

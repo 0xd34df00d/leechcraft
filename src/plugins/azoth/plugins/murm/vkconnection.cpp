@@ -165,7 +165,7 @@ namespace Murm
 	}
 
 	void VkConnection::SendMessage (qulonglong to, const QString& body,
-			std::function<void (qulonglong)> idSetter, Type type, const QStringList& attachments)
+			std::function<void (qulonglong)> idSetter, Type type, const QByteArrayList& attachments)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)

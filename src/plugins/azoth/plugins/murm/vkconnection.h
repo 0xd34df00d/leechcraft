@@ -160,7 +160,7 @@ namespace Murm
 				const QString& body,
 				std::function<void (qulonglong)> idSetter,
 				Type type,
-				const QStringList& attachments);
+				const QByteArrayList& attachments);
 		void SendTyping (qulonglong to);
 		void MarkAsRead (const QList<qulonglong>&);
 		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
