@@ -180,7 +180,7 @@ namespace LC::Azoth::Acetamide
 		QChar roleSign;
 
 		const auto& prefixList = CM_->GetISupport ().value ("PREFIX").toByteArray ().split (')');
-		const int id = prefixList.value (1).indexOf (nick [0]);
+		const int id = prefixList.value (1).indexOf (nick [0].toLatin1 ());
 		if (id != -1)
 		{
 			hasRole = true;
