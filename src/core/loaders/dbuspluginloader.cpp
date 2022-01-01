@@ -53,7 +53,7 @@ namespace Loaders
 		Proc_->start ("lc_plugin_wrapper", QStringList {});
 
 		QLocalServer srv;
-		srv.listen (QString ("lc_waiter_%1").arg (Proc_->pid ()));
+		srv.listen (QString ("lc_waiter_%1").arg (Proc_->processId ()));
 
 		if (!Proc_->waitForStarted ())
 		{
@@ -70,7 +70,7 @@ namespace Loaders
 			return false;
 		}
 
-		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (Proc_->pid ());
+		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (Proc_->processId ());
 		CtrlIface_.reset (new QDBusInterface (serviceName,
 					"/org/LeechCraft/Control",
 					"org.LeechCraft.Control"));
