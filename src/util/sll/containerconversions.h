@@ -9,21 +9,12 @@
 #pragma once
 
 #include <QSet>
-#include <QList>
 
 namespace LC::Util
 {
 	template<typename T>
-#if QT_VERSION >= QT_VERSION_CHECK (5, 14, 0)
 	auto AsSet (const T& cont)
-#else
-	auto AsSet (const QList<T>& cont)
-#endif
 	{
-#if QT_VERSION >= QT_VERSION_CHECK (5, 14, 0)
-		return QSet (cont.begin (), cont.end ());
-#else
-		return QSet<T>::fromList (cont);
-#endif
+		return QSet<typename T::value_type> { cont.begin (), cont.end () };
 	}
 }
