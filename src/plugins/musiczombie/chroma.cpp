@@ -29,7 +29,7 @@ namespace LC
 {
 namespace MusicZombie
 {
-	QMutex Chroma::CodecMutex_ (QMutex::NonRecursive);
+	QMutex Chroma::CodecMutex_;
 
 	Chroma::Chroma ()
 	: Ctx_ (chromaprint_new (CHROMAPRINT_ALGORITHM_DEFAULT), &chromaprint_free)
