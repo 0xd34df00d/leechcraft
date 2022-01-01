@@ -26,7 +26,7 @@ namespace WebKitView
 		IPluginsManager * const PM_;
 
 		QList<IWebPlugin*> Plugins_;
-		typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
+		using MIME2Plugin_t = QHash<QString, QList<IWebPlugin*>>;
 		MIME2Plugin_t MIME2Plugin_;
 	public:
 		WebPluginFactory (IPluginsManager*, QObject* = nullptr);

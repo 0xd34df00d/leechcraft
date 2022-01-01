@@ -27,7 +27,7 @@ namespace WebKitView
 			const QUrl& url,
 			const QStringList& args, const QStringList& params) const
 	{
-		for (const auto plugin : MIME2Plugin_.values (mime))
+		for (const auto plugin : MIME2Plugin_.value (mime))
 			if (const auto result = plugin->Create (mime, url, args, params))
 				return result;
 
@@ -60,7 +60,7 @@ namespace WebKitView
 		for (const auto plugin : Plugins_)
 			if (const auto maybeInfo = plugin->Plugin (false))
 				for (const auto& mime : maybeInfo->mimeTypes)
-					MIME2Plugin_.insertMulti (mime.name, plugin);
+					MIME2Plugin_ [mime.name] << plugin;
 	}
 }
 }
