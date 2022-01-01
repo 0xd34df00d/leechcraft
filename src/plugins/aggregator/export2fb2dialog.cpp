@@ -407,20 +407,25 @@ namespace Aggregator
 		printer.setOutputFileName (info.File_);
 		printer.setOutputFormat (QPrinter::PdfFormat);
 		printer.setFontEmbeddingEnabled (true);
-		printer.setPageMargins (Ui_.LeftMargin_->value (), Ui_.TopMargin_->value (),
-				Ui_.RightMargin_->value (), Ui_.BottomMargin_->value (),
-				QPrinter::Millimeter);
+		printer.setPageMargins (QMargins
+				{
+					Ui_.LeftMargin_->value (),
+					Ui_.TopMargin_->value (),
+					Ui_.RightMargin_->value (),
+					Ui_.BottomMargin_->value (),
+				},
+				QPageLayout::Millimeter);
 
 		switch (Ui_.PageSizeBox_->currentIndex ())
 		{
 		case 0:
-			printer.setPageSize (QPrinter::A4);
+			printer.setPageSize (QPageSize { QPageSize::A4 });
 			break;
 		case 1:
-			printer.setPageSize (QPrinter::A5);
+			printer.setPageSize (QPageSize { QPageSize::A5 });
 			break;
 		case 2:
-			printer.setPageSize (QPrinter::Letter);
+			printer.setPageSize (QPageSize { QPageSize::Letter });
 			break;
 		}
 
