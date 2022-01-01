@@ -9,6 +9,7 @@
 #include "fields.h"
 #include <algorithm>
 #include <QtDebug>
+#include "qt5compat.h"
 #include <poppler-form.h>
 #include <util/sll/unreachable.h>
 #include "links.h"

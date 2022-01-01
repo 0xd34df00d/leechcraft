@@ -8,6 +8,7 @@
 
 #include "pendingfontinforequest.h"
 #include <QtConcurrentRun>
+#include "qt5compat.h"
 #include <poppler-qt5.h>
 #include <util/threads/futures.h>
 

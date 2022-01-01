@@ -13,6 +13,7 @@
 #include <QBuffer>
 #include <QFile>
 #include <QtConcurrentRun>
+#include "qt5compat.h"
 #include <poppler-qt5.h>
 #include <poppler-form.h>
 #include <poppler-version.h>

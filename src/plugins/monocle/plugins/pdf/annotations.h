@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include "qt5compat.h"
 #include <poppler-annotation.h>
 #include <interfaces/monocle/iannotation.h>
 

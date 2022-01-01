@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include "qt5compat.h"
 #include <poppler-qt5.h>
 #include <interfaces/monocle/ilink.h>
 
