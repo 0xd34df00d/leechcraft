@@ -32,7 +32,7 @@ namespace LMP
 		if (event->type () == QEvent::Wheel)
 		{
 			QWheelEvent *wheel = static_cast<QWheelEvent*> (event);
-			emit changedVolume (wheel->delta ());
+			emit changedVolume (wheel->angleDelta ().y ());
 
 			return true;
 		}
