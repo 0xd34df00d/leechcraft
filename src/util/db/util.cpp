@@ -52,6 +52,6 @@ namespace LC::Util
 	{
 		return (base + ".%1_%2")
 				.arg (QRandomGenerator::global ()->generate ())
-				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()));
+				.arg (std::bit_cast<uintptr_t> (QThread::currentThread ()));
 	}
 }
