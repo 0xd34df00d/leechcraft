@@ -42,8 +42,8 @@ namespace Scroblibre
 		QByteArray GetPostBody (const QString& sid, const SubmitInfo& info, int idx)
 		{
 			const auto& idStr = idx < 0 ?
-					QString () :
-					("[" + QString::number (idx) + "]");
+					QByteArray {} :
+					("[" + QByteArray::number (idx) + "]");
 
 			QByteArray data;
 			if (!sid.isEmpty ())
