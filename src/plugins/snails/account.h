@@ -17,7 +17,7 @@
 #include "progressfwd.h"
 #include "accountconfig.h"
 
-class QMutex;
+class QRecursiveMutex;
 class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
@@ -56,7 +56,7 @@ namespace Snails
 
 		std::shared_ptr<ThreadPool> WorkerPool_;
 
-		QMutex * const AccMutex_;
+		QRecursiveMutex * const AccMutex_;
 
 		QByteArray ID_;
 		AccountConfig Config_;

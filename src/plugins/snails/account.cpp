@@ -11,7 +11,7 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QInputDialog>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QStandardItemModel>
 #include <QTimer>
 #include <util/xpc/util.h>
@@ -85,7 +85,7 @@ namespace Snails
 	: QObject (deps.Parent_)
 	, Logger_ (std::make_shared<AccountLogger> (cfg.AccName_))
 	, WorkerPool_ (std::make_shared<ThreadPool> (this, deps.Storage_))
-	, AccMutex_ (new QMutex (QMutex::Recursive))
+	, AccMutex_ (new QRecursiveMutex)
 	, ID_ (id)
 	, Config_ (cfg)
 	, FolderManager_ (new AccountFolderManager (this))
