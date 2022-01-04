@@ -4,6 +4,7 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 
+  <xsl:template match="label[@translatable='false']"/>
 	<xsl:template match="label">
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@value"/>")
 		<xsl:value-of select="document(.)" />
