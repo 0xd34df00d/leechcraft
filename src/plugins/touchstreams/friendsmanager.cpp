@@ -22,6 +22,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "albumsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "recsmanager.h"
@@ -214,8 +215,8 @@ namespace TouchStreams
 						query += '&';
 						query += "code=" + QUrl::toPercentEncoding (code.toUtf8 ());
 
-						for (auto i = map.begin (); i != map.end (); ++i)
-							query += '&' + i.key () + '=' + QUrl::toPercentEncoding (i->toUtf8 ());
+						for (const auto& [key, val] : Util::Stlize (map))
+							query += '&' + key.toUtf8 () + '=' + QUrl::toPercentEncoding (val.toUtf8 ());
 
 						QNetworkRequest req (url);
 						req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
