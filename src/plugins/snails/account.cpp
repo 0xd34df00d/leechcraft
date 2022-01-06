@@ -491,7 +491,7 @@ namespace Snails
 		return ProgressMgr_->MakeProgressListener (context);
 	}
 
-	QMutex* Account::GetMutex () const
+	QRecursiveMutex* Account::GetMutex () const
 	{
 		return AccMutex_;
 	}

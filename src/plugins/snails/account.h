@@ -144,7 +144,7 @@ namespace Snails
 	private:
 		QFuture<SynchronizeResult_t> SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		void SyncStatuses (const QStringList&, TaskPriority);
-		QMutex* GetMutex () const;
+		QRecursiveMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();
 
