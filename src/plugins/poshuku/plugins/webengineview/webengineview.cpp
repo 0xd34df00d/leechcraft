@@ -65,7 +65,7 @@ namespace LC::Poshuku::WebEngineView
 		prof->setHttpUserAgent (GetDefaultUserAgent (proxy, wkVer, chromeVer));
 
 		Interceptor_ = std::make_shared<RequestInterceptor> ();
-		prof->setRequestInterceptor (Interceptor_.get ());
+		prof->setUrlRequestInterceptor (Interceptor_.get ());
 
 		new DownloadItemHandler (proxy, prof);
 
@@ -81,7 +81,7 @@ namespace LC::Poshuku::WebEngineView
 
 	void Plugin::Release ()
 	{
-		QWebEngineProfile::defaultProfile ()->setRequestInterceptor (nullptr);
+		QWebEngineProfile::defaultProfile ()->setUrlRequestInterceptor (nullptr);
 		Interceptor_.reset ();
 	}
 
