@@ -63,8 +63,8 @@ namespace Poshuku
 				if (!Cond_ (we))
 					return false;
 
-				qreal degrees = we->delta () / 8;
-				qreal delta = degrees / 150;
+				qreal degrees = we->angleDelta ().y () / 8.;
+				qreal delta = degrees / 150.;
 				Zoomer_->Setter_ (Zoomer_->Getter_ () + delta);
 
 				return true;
