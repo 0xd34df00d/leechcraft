@@ -444,7 +444,7 @@ namespace Blogique
 			wv.setHtml (GetHtmlContent (entries));
 
 			QPrinter printer (QPrinter::HighResolution);
-			printer.setPaperSize (QPageSize { QPageSize::A4 });
+			printer.setPageSize (QPageSize { QPageSize::A4 });
 			printer.setOutputFormat (QPrinter::PdfFormat);
 
 			printer.setOutputFileName (filePath);
