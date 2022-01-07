@@ -1163,8 +1163,8 @@ namespace Monocle
 		QPrinter printer;
 		printer.setOutputFormat (QPrinter::PdfFormat);
 		printer.setOutputFileName (path);
-		printer.setPageMargins (0, 0, 0, 0, QPrinter::DevicePixel);
-		printer.setPaperSize (CurrentDoc_->GetPageSize (0), QPrinter::DevicePixel);
+		printer.setPageMargins (QMarginsF { 0, 0, 0, 0 }, QPageLayout::Point);
+		printer.setPageSize (QPageSize { CurrentDoc_->GetPageSize (0) });
 		printer.setFontEmbeddingEnabled (true);
 
 		QPainter painter (&printer);

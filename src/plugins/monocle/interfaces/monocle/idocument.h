@@ -125,10 +125,10 @@ namespace Monocle
 		 */
 		virtual int GetNumPages () const = 0;
 
-		/** @brief Returns the size in pixels of the given page.
+		/** @brief Returns the size in points of the given page.
 		 *
 		 * This function returns the physical dimensions of the given
-		 * \em page in pixels.
+		 * \em page in points.
 		 *
 		 * Some formats support different pages having different sizes in
 		 * the same document, thus the size should be queried for each
