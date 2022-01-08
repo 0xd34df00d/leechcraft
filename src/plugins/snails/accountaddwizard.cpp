@@ -260,7 +260,7 @@ namespace Snails
 
 	AccountConfig AccountAddWizard::GetConfig () const
 	{
-		const auto& pgs = visitedPages ();
+		const auto& pgs = visitedIds ();
 		if (pgs.isEmpty ())
 			return {};
 
