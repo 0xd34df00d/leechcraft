@@ -9,7 +9,6 @@
 #include "repoinfofetcher.h"
 #include <QTimer>
 #include <util/sll/either.h>
-#include <util/sll/overload.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
@@ -177,7 +176,7 @@ namespace LackMan
 
 			auto unarch = new QProcess { parent };
 			QObject::connect (unarch,
-					Util::Overload<int, QProcess::ExitStatus> (&QProcess::finished),
+					qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
 					parent,
 					[=] (int exitCode)
 					{

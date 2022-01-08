@@ -20,7 +20,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/either.h>
 #include <util/sll/qstringwrappers.h>
-#include <util/sll/overload.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -267,7 +266,7 @@ namespace CSTP
 				SLOT (handleReadyRead ()));
 
 		connect (Reply_.get (),
-				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
+				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				this,
 				[this] (QNetworkReply::NetworkError err) { HandleError (MapError (err), Reply_->errorString ()); });
 	}

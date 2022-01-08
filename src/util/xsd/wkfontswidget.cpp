@@ -10,7 +10,6 @@
 #include <QTimer>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/overload.h>
 #include <util/sll/prelude.h>
 #include <interfaces/iwkfontssettable.h>
 #include "ui_wkfontswidget.h"
@@ -60,7 +59,7 @@ namespace Util
 
 		for (const auto& pair : Util::Stlize (Size2Spinbox_))
 			connect (pair.second,
-					Util::Overload<int> (&QSpinBox::valueChanged),
+					qOverload<int> (&QSpinBox::valueChanged),
 					[this, pair] { PendingSizeChanges_ [pair.first] = pair.second->value (); });
 	}
 

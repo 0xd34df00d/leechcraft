@@ -35,7 +35,6 @@
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/gui/findnotification.h>
 #include <util/sll/prelude.h>
-#include <util/sll/overload.h>
 #include <util/sll/unreachable.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -605,7 +604,7 @@ namespace Monocle
 
 		PageNumLabel_ = new PageNumLabel;
 		connect (PageNumLabel_,
-				Util::Overload<int> (&QSpinBox::valueChanged),
+				qOverload<int> (&QSpinBox::valueChanged),
 				[this] (int value)
 				{
 					SetCurrentPage (value - 1);

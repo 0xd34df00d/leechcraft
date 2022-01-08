@@ -10,7 +10,6 @@
 
 #include <QNetworkReply>
 #include <util/sll/either.h>
-#include <util/sll/overload.h>
 #include <util/sll/void.h>
 #include <util/sll/typelist.h>
 #include <util/threads/futures.h>
@@ -80,7 +79,7 @@ namespace LC::Util
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
 		QObject::connect (reply,
-				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
+				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::errorOccurred),
 				context,
 				[promise, reply] () mutable
 				{

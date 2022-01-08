@@ -28,7 +28,6 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <util/sll/containerconversions.h>
-#include <util/sll/overload.h>
 #include <util/sll/curry.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -151,7 +150,7 @@ namespace Aggregator
 				this,
 				&ItemsWidget::updateItemsFilter);
 		connect (Impl_->Ui_.SearchType_,
-				Util::Overload<int> (&QComboBox::currentIndexChanged),
+				qOverload<int> (&QComboBox::currentIndexChanged),
 				this,
 				&ItemsWidget::updateItemsFilter);
 
