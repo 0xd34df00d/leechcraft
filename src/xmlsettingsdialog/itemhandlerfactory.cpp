@@ -111,7 +111,7 @@ namespace LC
 	{
 		ItemHandlerBase::Prop2NewValue_t result;
 		for (const auto& handler : Handlers_)
-			result.unite (handler->GetChangedProperties ());
+			result.insert (handler->GetChangedProperties ());
 		return result;
 	}
 

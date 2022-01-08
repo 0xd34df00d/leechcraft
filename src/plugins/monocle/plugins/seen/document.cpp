@@ -262,12 +262,12 @@ namespace Seen
 						return result;
 					}
 				},
-				+[] (Result& acc, const Result& partial) { acc.Unrendered_.unite (partial.Unrendered_); });
+				+[] (Result& acc, const Result& partial) { acc.Unrendered_.insert (partial.Unrendered_); });
 
 		Util::Sequence (this, future) >>
 				[this] (const Result& result)
 				{
-					RenderJobs_.unite (result.Unrendered_);
+					RenderJobs_.insert (result.Unrendered_);
 
 					const auto& remainingJobs = Util::AsSet (RenderJobs_.keys ());
 

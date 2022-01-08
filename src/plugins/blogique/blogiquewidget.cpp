@@ -581,13 +581,13 @@ namespace Blogique
 			{
 			case SideWidgetType::PostOptionsSideWidget:
 			{
-				e.PostOptions_.unite (ibsw->GetPostOptions ());
+				e.PostOptions_.insert (ibsw->GetPostOptions ());
 				e.Date_ = GetPostDate ();
 				e.Tags_ = GetPostTags ();
 				break;
 			}
 			case SideWidgetType::CustomSideWidget:
-				e.CustomData_.unite (ibsw->GetCustomData ());
+				e.CustomData_.insert (ibsw->GetCustomData ());
 				break;
 			default:
 				break;

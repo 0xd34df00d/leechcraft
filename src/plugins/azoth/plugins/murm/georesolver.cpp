@@ -32,7 +32,7 @@ namespace Murm
 
 	void GeoResolver::AddCountriesToCache (const QHash<int, QString>& countries)
 	{
-		Countries_.unite (countries);
+		Countries_.insert (countries);
 	}
 
 	QFuture<QString> GeoResolver::RequestCountry (int code)
@@ -52,7 +52,7 @@ namespace Murm
 
 	void GeoResolver::AddCitiesToCache (const QHash<int, QString>& cities)
 	{
-		Cities_.unite (cities);
+		Cities_.insert (cities);
 	}
 
 	QFuture<QString> GeoResolver::RequestCity (int code)
@@ -83,7 +83,7 @@ namespace Murm
 		Conn_->RequestGeoIds (ids,
 				[&result, &pending] (const QHash<int, QString>& newItems)
 				{
-					result.unite (newItems);
+					result.insert (newItems);
 					for (const auto& pair : Util::Stlize (newItems))
 						pending.remove (pair.first);
 				},
@@ -101,7 +101,7 @@ namespace Murm
 		Conn_->RequestGeoIds ({ code },
 				[&hash, code, iface] (const QHash<int, QString>& result) mutable
 				{
-					hash.unite (result);
+					hash.insert (result);
 
 					const auto& value = result [code];
 					iface.reportFinished (&value);
