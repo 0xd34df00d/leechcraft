@@ -13,6 +13,7 @@
 #include <util/xpc/util.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/iinfo.h>
+#include "types.h"
 #include "util.h"
 
 namespace LC::Auscrie
@@ -48,7 +49,7 @@ namespace LC::Auscrie
 		};
 		updateSettingsLabel (Ui_.Format_->currentText ());
 		connect (Ui_.Format_,
-				qOverload<const QString&> (&QComboBox::currentIndexChanged),
+				&QComboBox::currentTextChanged,
 				updateSettingsLabel);
 
 		auto button = new QPushButton (tr ("Make screenshot"));
@@ -66,7 +67,7 @@ namespace LC::Auscrie
 				Action::Upload;
 	}
 
-	ShooterDialog::Mode ShooterDialog::GetMode () const
+	Mode ShooterDialog::GetMode () const
 	{
 		switch (Ui_.ModeBox_->currentIndex ())
 		{

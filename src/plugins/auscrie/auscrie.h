@@ -42,7 +42,6 @@ namespace LC::Auscrie
 	private:
 		void PerformAction ();
 		void MakeScreenshot (int);
-		QPixmap GetPixmap () const;
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

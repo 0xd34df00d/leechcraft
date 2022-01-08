@@ -13,6 +13,8 @@
 
 namespace LC::Auscrie
 {
+	enum class Mode;
+
 	class ShooterDialog : public QDialog
 	{
 		Q_OBJECT
@@ -32,14 +34,6 @@ namespace LC::Auscrie
 		{
 			Upload,
 			Save
-		};
-
-		enum class Mode
-		{
-			LCWindowOverlay,
-			LCWindow,
-			CurrentScreen,
-			WholeDesktop
 		};
 
 		explicit ShooterDialog (QWidget* = nullptr);

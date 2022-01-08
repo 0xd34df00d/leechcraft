@@ -11,7 +11,7 @@
 #include <QTimer>
 #include <QDir>
 #include <QFileDialog>
-#include <QDesktopWidget>
+#include <QPixmap>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -20,6 +20,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ientityhandler.h>
+#include "platform.h"
 #include "shooterdialog.h"
 #include "util.h"
 
@@ -159,40 +160,10 @@ namespace LC::Auscrie
 				{
 					ShotAction_->setEnabled (true);
 
-					const auto& pm = GetPixmap ();
+					const auto& pm = GetPixmap (Dialog_->GetMode ());
 					Dialog_->show ();
 					Dialog_->SetScreenshot (pm);
 				});
-	}
-
-	QPixmap Plugin::GetPixmap () const
-	{
-		auto rootWin = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
-
-		// Qt folks have decided that grabbing screens is "insecure", so there is no good substitute for this API
-		// now that it's deprecated. The suggestion is to use platform-dependent code.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-		switch (Dialog_->GetMode ())
-		{
-		case ShooterDialog::Mode::LCWindowOverlay:
-			return QPixmap::grabWindow (rootWin->winId ());
-		case ShooterDialog::Mode::LCWindow:
-			return QPixmap::grabWidget (rootWin);
-		case ShooterDialog::Mode::CurrentScreen:
-		{
-			auto desk = QApplication::desktop ();
-			auto screen = desk->screen (desk->screenNumber (QCursor::pos ()));
-			auto geom = desk->screenGeometry (QCursor::pos ());
-			return QPixmap::grabWindow (screen->winId (),
-					geom.x (), geom.y (), geom.width (), geom.height ());
-		}
-		case ShooterDialog::Mode::WholeDesktop:
-			return QPixmap::grabWindow (QApplication::desktop ()->winId ());
-		}
-#pragma GCC diagnostic pop
-
-		Util::Unreachable ();
 	}
 }
 

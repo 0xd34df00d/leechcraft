@@ -5,8 +5,11 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		auscrie.cpp
+		platform.cpp
 		shooterdialog.cpp
 		util.cpp
+		$<$<PLATFORM_ID:Linux>:platform_x11.cpp>
+		$<$<PLATFORM_ID:FreeBSD>:platform_x11.cpp>
 	QT_COMPONENTS Widgets
 	INSTALL_SHARE
 	)
