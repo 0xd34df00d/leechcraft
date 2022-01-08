@@ -266,7 +266,7 @@ namespace CSTP
 				SLOT (handleReadyRead ()));
 
 		connect (Reply_.get (),
-				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::error),
+				&QNetworkReply::errorOccurred,
 				this,
 				[this] (QNetworkReply::NetworkError err) { HandleError (MapError (err), Reply_->errorString ()); });
 	}

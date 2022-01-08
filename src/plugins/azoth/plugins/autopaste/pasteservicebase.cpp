@@ -50,7 +50,7 @@ namespace LC::Azoth::Autopaste
 				this,
 				[this, reply] { HandleMetadata (reply); });
 		connect (reply,
-				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::error),
+				&QNetworkReply::errorOccurred,
 				this,
 				[this, reply] (QNetworkReply::NetworkError error)
 				{

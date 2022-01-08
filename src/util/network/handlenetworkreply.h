@@ -79,7 +79,7 @@ namespace LC::Util
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
 		QObject::connect (reply,
-				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::errorOccurred),
+				&QNetworkReply::errorOccurred,
 				context,
 				[promise, reply] () mutable
 				{

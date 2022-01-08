@@ -92,7 +92,7 @@ namespace FileScheme
 			setError (ContentNotFoundError,
 					tr ("%1: no such file or directory")
 						.arg (dir.absolutePath ()));
-			emit error (ContentNotFoundError);
+			emit errorOccurred (ContentNotFoundError);
 			emit finished ();
 			return;
 		}
@@ -102,7 +102,7 @@ namespace FileScheme
 			setError (ContentAccessDenied,
 					tr ("Unable to read %1")
 						.arg (dir.absolutePath ()));
-			emit error (ContentAccessDenied);
+			emit errorOccurred (ContentAccessDenied);
 			emit finished ();
 			return;
 		}
@@ -203,7 +203,7 @@ namespace FileScheme
 		emit downloadProgress (Buffer_.size (), Buffer_.size ());
 		NetworkError errorCode = error ();
 		if (errorCode != NoError)
-			emit error (errorCode);
+			emit errorOccurred (errorCode);
 		else if (Buffer_.size () > 0)
 			emit readyRead ();
 
