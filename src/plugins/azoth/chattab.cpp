@@ -152,7 +152,7 @@ namespace Azoth
 					if (!(e->modifiers () & Qt::ControlModifier))
 						return false;
 
-					int degrees = e->delta () / 8;
+					int degrees = e->angleDelta ().y () / 8.;
 					int steps = static_cast<qreal> (degrees) / 15;
 
 					const auto settings = Ui_.View_->settings ();
