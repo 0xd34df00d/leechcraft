@@ -446,7 +446,7 @@ namespace DebugHandler
 		const auto& thread = QString { "0x%1" }
 				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
 				.toStdString ();
-		const auto& module = Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx)).constData ();
+		const auto& module = Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx));
 
 		QMutexLocker locker { &G_DbgMutex };
 
@@ -460,7 +460,7 @@ namespace DebugHandler
 				<< "] ["
 				<< thread
 				<< "] ["
-				<< module
+				<< module.constData ()
 				<< "] "
 				<< message
 				<< std::endl;
