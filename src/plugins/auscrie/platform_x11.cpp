@@ -7,11 +7,31 @@
  **********************************************************************/
 
 #include "platform.h"
+#include <QCursor>
+#include <QGuiApplication>
 #include <QPixmap>
+#include <QScreen>
+#include <QtDebug>
+#include <util/x11/xwrapper.h>
 #include "types.h"
 
 namespace LC::Auscrie
 {
+	namespace
+	{
+		QPixmap GetRootScreen (const QRect& geom)
+		{
+			auto screen = QGuiApplication::screenAt (geom.topLeft ());
+			if (!screen)
+				screen = QGuiApplication::primaryScreen ();
+
+			const auto root = Util::XWrapper::Instance ().GetRootWindow ();
+			return geom.isValid () ?
+					screen->grabWindow (root, geom.x (), geom.y (), geom.width (), geom.height ()):
+					screen->grabWindow (root);
+		}
+	}
+
 	QPixmap GetPixmap (Mode mode)
 	{
 		switch (mode)
@@ -21,8 +41,16 @@ namespace LC::Auscrie
 		case Mode::LCWindow:
 			return GetLCWindow ();
 		case Mode::CurrentScreen:
-		case Mode::WholeDesktop:
-			return {};
+		{
+			const auto screen = QGuiApplication::screenAt (QCursor::pos ());
+			return GetRootScreen (screen ? screen->geometry () : QRect {});
 		}
+		case Mode::WholeDesktop:
+			return GetRootScreen ({});
+		}
+
+		qWarning () << "unknown mode"
+				<< static_cast<int> (mode);
+		return {};
 	}
 }
