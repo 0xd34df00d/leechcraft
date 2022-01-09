@@ -14,7 +14,7 @@
 #include <QString>
 #include <QtDebug>
 
-namespace LC::Poshuku::WebEngineView
+namespace LC::Util
 {
 	template<typename V>
 	class StringPathTrie

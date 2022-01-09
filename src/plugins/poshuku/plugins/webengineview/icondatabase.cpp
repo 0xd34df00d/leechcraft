@@ -10,15 +10,15 @@
 #include <functional>
 #include <QUrl>
 #include <QIcon>
+#include <util/sll/stringpathtrie.h>
 #include "icondatabaseondisk.h"
-#include "stringpathtrie.h"
 
 namespace LC::Poshuku::WebEngineView
 {
 	IconDatabase::IconDatabase (QObject *parent)
 	: QObject { parent }
 	, DB_ { std::make_shared<IconDatabaseOnDisk> () }
-	, Trie_ { std::make_shared<StringPathTrie<QUrl>> () }
+	, Trie_ { std::make_shared<Util::StringPathTrie<QUrl>> () }
 	{
 		for (const auto& [pageUrl, iconUrl] : DB_->GetAllPages ())
 			MarkUrl (pageUrl, iconUrl);

@@ -11,9 +11,9 @@
 #include <util/sll/prelude.h>
 #include <stringpathtrie.h>
 
-QTEST_APPLESS_MAIN (LC::Poshuku::WebEngineView::StringPathTrieTest)
+QTEST_APPLESS_MAIN (LC::Util::StringPathTrieTest)
 
-namespace LC::Poshuku::WebEngineView
+namespace LC::Util
 {
 	using IntTrie = StringPathTrie<int>;
 
@@ -28,7 +28,7 @@ namespace LC::Poshuku::WebEngineView
 	{
 		IntTrie trie;
 
-		QCOMPARE (trie.Find (AsRefs ({ "foo", "bar", "baz" })), FindResult { std::optional<int> {} });
+		QCOMPARE (trie.Find (AsRefs ({ "foo", "bar", "baz" })), (FindResult { std::optional<int> {}, 3 }));
 	}
 
 	void StringPathTrieTest::testEmptyQuery ()

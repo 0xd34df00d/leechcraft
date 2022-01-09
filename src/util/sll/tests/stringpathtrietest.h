@@ -10,7 +10,7 @@
 
 #include <QObject>
 
-namespace LC::Poshuku::WebEngineView
+namespace LC::Util
 {
 	class StringPathTrieTest : public QObject
 	{

@@ -14,17 +14,20 @@
 class QUrl;
 class QIcon;
 
+namespace LC::Util
+{
+	template<typename V>
+	class StringPathTrie;
+}
+
 namespace LC::Poshuku::WebEngineView
 {
 	class IconDatabaseOnDisk;
 
-	template<typename V>
-	class StringPathTrie;
-
 	class IconDatabase : public QObject
 	{
 		std::shared_ptr<IconDatabaseOnDisk> DB_;
-		std::shared_ptr<StringPathTrie<QUrl>> Trie_;
+		std::shared_ptr<Util::StringPathTrie<QUrl>> Trie_;
 	public:
 		explicit IconDatabase (QObject* = nullptr);
 
