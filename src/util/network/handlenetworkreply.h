@@ -38,6 +38,7 @@ namespace LC::Util
 
 	struct UTIL_NETWORK_API ReplyWithHeaders
 	{
+		int Code_;
 		QByteArray Data_;
 		QHash<QByteArray, QList<QByteArray>> Headers_;
 

@@ -11,13 +11,14 @@
 namespace LC::Util
 {
 	ReplyWithHeaders::ReplyWithHeaders (QNetworkReply *reply)
-	: Data_ { reply->readAll () }
+	: Code_ { reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt () }
+	, Data_ { reply->readAll () }
 	{
 		const auto& raws = reply->rawHeaderPairs ();
 
 		Headers_.reserve (raws.size ());
-		for (const auto& pair : raws)
-			Headers_ [pair.first] << pair.second;
+		for (const auto& [header, value] : raws)
+			Headers_ [header] << value;
 	}
 
 	ReplyError::ReplyError (QNetworkReply *reply)
