@@ -95,12 +95,26 @@ namespace LC::Util
 		QCOMPARE (trie.Find (AsRefs ({ "foo", "bar", "baz" })), (FindResult { std::optional<int> { 10 }, 1 }));
 	}
 
+	void StringPathTrieTest::testPartialMatchLongerQueryWithChildren ()
+	{
+		IntTrie trie;
+		trie.Add (AsRefs ({ "foo" }), 20);
+		trie.Add (AsRefs ({ "foo", "bar" }), 10);
+		trie.Add (AsRefs ({ "foo", "bar", "c1" }), 30);
+
+		QCOMPARE (trie.Find (AsRefs ({ "foo", "bar", "baz" })), (FindResult { std::optional<int> { 10 }, 1 }));
+
+		trie.Add (AsRefs ({ "foo", "bar", "c2" }), 30);
+
+		QCOMPARE (trie.Find (AsRefs ({ "foo", "bar", "baz" })), (FindResult { std::optional<int> { 10 }, 1 }));
+	}
+
 	void StringPathTrieTest::testPartialMatchShorterQuery ()
 	{
 		IntTrie trie;
 		trie.Add (AsRefs ({ "foo", "bar" }), 20);
 		trie.Add (AsRefs ({ "foo", "bar", "baz" }), 10);
 
-		QCOMPARE (trie.Find (AsRefs ({ "foo" })), FindResult { std::optional<int> {} });
+		QCOMPARE (trie.Find (AsRefs ({ "foo" })).Value_, std::optional<int> {});
 	}
 }

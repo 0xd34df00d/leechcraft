@@ -27,6 +27,7 @@ namespace LC::Util
 		void testExactMatchParentPost ();
 
 		void testPartialMatchLongerQuery ();
+		void testPartialMatchLongerQueryWithChildren ();
 		void testPartialMatchShorterQuery ();
 	};
 }
