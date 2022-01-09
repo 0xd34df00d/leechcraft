@@ -38,10 +38,10 @@ namespace LC::Poshuku::WebEngineView
 		template<typename F>
 		auto WithRefs (const QUrl& url, F&& fun)
 		{
-			auto path = url.path ();
-			auto refs = path.splitRef ('/', Qt::SkipEmptyParts);
-			auto host = url.host ();
-			refs.prepend ({ &host });
+			const auto& path = url.path ();
+			auto refs = QStringView { path }.split ('/', Qt::SkipEmptyParts);
+			const auto& host = url.host ();
+			refs.prepend ({ host });
 
 			return std::invoke (std::forward<F> (fun), std::move (refs));
 		}
@@ -57,6 +57,6 @@ namespace LC::Poshuku::WebEngineView
 
 	void IconDatabase::MarkUrl (const QUrl& pageUrl, const QUrl& iconUrl)
 	{
-		WithRefs (pageUrl, [this, iconUrl] (const auto& refs) { Trie_->Add (refs, std::move (iconUrl)); });
+		WithRefs (pageUrl, [this, iconUrl] (const auto& refs) mutable { Trie_->Add (refs, std::move (iconUrl)); });
 	}
 }

@@ -8,14 +8,18 @@
 
 #pragma once
 
-#include <stdexcept>
 #include <optional>
+#include <type_traits>
 #include <QHash>
 #include <QString>
+#include <QStringView>
 #include <QtDebug>
 
 namespace LC::Util
 {
+	template<typename Cont>
+	concept StringViewContainer = std::is_same_v<typename std::decay_t<Cont>::value_type, QStringView>;
+
 	template<typename V>
 	class StringPathTrie
 	{
@@ -24,7 +28,8 @@ namespace LC::Util
 		// TODO C++20 use transparent hashes and unordered_map
 		QHash<QString, StringPathTrie> Children_;
 	public:
-		void Add (const QVector<QStringRef>& path, V value)
+		template<StringViewContainer Cont>
+		void Add (Cont&& path, V value)
 		{
 			Add (path.begin (), path.end (), std::move (value));
 		}
@@ -37,7 +42,8 @@ namespace LC::Util
 			bool operator<=> (const FindResult&) const = default;
 		};
 
-		FindResult Find (const QVector<QStringRef>& path) const
+		template<StringViewContainer Cont>
+		FindResult Find (Cont&& path) const
 		{
 			return Find (path.begin (), path.end ());
 		}
@@ -51,7 +57,7 @@ namespace LC::Util
 				return;
 			}
 
-			const auto& strRef = QString::fromRawData (begin->constData (), begin->size ());
+			const auto& strRef = begin->toString ();
 			auto pos = Children_.find (strRef);
 			if (pos == Children_.end ())
 				pos = Children_.insert (begin->toString (), {});
@@ -64,7 +70,7 @@ namespace LC::Util
 			if (begin == end)
 				return { Value_, 0 };
 
-			const auto& strRef = QString::fromRawData (begin->constData (), begin->size ());
+			const auto& strRef = begin->toString ();
 			const auto pos = Children_.find (strRef);
 			return pos == Children_.end () ?
 					FindResult { Value_, end - begin } :

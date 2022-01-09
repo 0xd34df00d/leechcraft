@@ -19,9 +19,9 @@ namespace LC::Util
 
 	using FindResult = IntTrie::FindResult;
 
-	QVector<QStringRef> AsRefs (const QVector<QString>& lst)
+	QVector<QStringView> AsRefs (const QVector<QString>& lst)
 	{
-		return Util::Map (lst, [] (const auto& str) { return QStringRef { &str }; });
+		return Util::Map (lst, [] (const auto& str) { return QStringView { str }; });
 	}
 
 	void StringPathTrieTest::testEmptyTrie ()
