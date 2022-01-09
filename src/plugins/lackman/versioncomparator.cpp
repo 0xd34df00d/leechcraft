@@ -14,66 +14,69 @@ namespace LC
 {
 namespace LackMan
 {
-	void ParseDotted (QVector<int>& result, const QStringRef& dotted)
+	namespace
 	{
-		for (const auto& part : dotted.split ('.', Qt::SkipEmptyParts))
+		void ParseDotted (QVector<int>& result, const QStringRef& dotted)
 		{
-			bool isInt = false;
-			if (const auto num = part.toInt (&isInt);
-					isInt)
-				result.append (num);
-			else
-				qWarning () << Q_FUNC_INFO << "unable to parse" << part;
-		}
-	}
-
-	void ParseModifier (QVector<int>& result, const QStringRef& modifier)
-	{
-		static const QStringList mods { "rc", "pre", "beta", "alpha" };
-
-		for (int i = 0; i < mods.size (); ++i)
-		{
-			if (!modifier.startsWith (mods.at (i)))
-				continue;
-
-			result.append (-i - 1);
-			const auto& leftover = modifier.mid (mods.at (i).size ());
-			if (!leftover.isEmpty ())
+			for (const auto& part : dotted.split ('.', Qt::SkipEmptyParts))
 			{
-				bool ok = false;
-				if (const auto num = leftover.toInt (&ok);
-					ok)
+				bool isInt = false;
+				if (const auto num = part.toInt (&isInt);
+						isInt)
 					result.append (num);
 				else
-					qWarning () << Q_FUNC_INFO
-							<< "unable to parse"
-							<< leftover
-							<< "of"
-							<< modifier;
+					qWarning () << Q_FUNC_INFO << "unable to parse" << part;
 			}
-			return;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown modifier"
-				<< modifier;
-	}
-
-	QVector<int> Numerize (const QString& version)
-	{
-		const auto& comps = version.splitRef ('-', Qt::SkipEmptyParts);
-		if (comps.size () > 2 || comps.isEmpty ())
+		void ParseModifier (QVector<int>& result, const QStringRef& modifier)
 		{
-			qWarning () << Q_FUNC_INFO << "unexpected components:" << comps;
-			return {};
+			static const QStringList mods { "rc", "pre", "beta", "alpha" };
+
+			for (int i = 0; i < mods.size (); ++i)
+			{
+				if (!modifier.startsWith (mods.at (i)))
+					continue;
+
+				result.append (-i - 1);
+				const auto& leftover = modifier.mid (mods.at (i).size ());
+				if (!leftover.isEmpty ())
+				{
+					bool ok = false;
+					if (const auto num = leftover.toInt (&ok);
+						ok)
+						result.append (num);
+					else
+						qWarning () << Q_FUNC_INFO
+								<< "unable to parse"
+								<< leftover
+								<< "of"
+								<< modifier;
+				}
+				return;
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown modifier"
+					<< modifier;
 		}
 
-		QVector<int> result;
-		result.reserve (version.count ('.') + 1 + comps.size ());
-		ParseDotted (result, comps.at (0));
-		if (comps.size () == 2)
-			ParseModifier (result, comps.at (1));
-		return result;
+		QVector<int> Numerize (const QString& version)
+		{
+			const auto& comps = version.splitRef ('-', Qt::SkipEmptyParts);
+			if (comps.size () > 2 || comps.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO << "unexpected components:" << comps;
+				return {};
+			}
+
+			QVector<int> result;
+			result.reserve (version.count ('.') + 1 + comps.size ());
+			ParseDotted (result, comps.at (0));
+			if (comps.size () == 2)
+				ParseModifier (result, comps.at (1));
+			return result;
+		}
 	}
 
 	bool IsVersionLess (const QString& leftVer, const QString& rightVer)
