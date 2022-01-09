@@ -8,7 +8,7 @@
 
 #include "pslhandler.h"
 #include <QUrl>
-#include <util/sll/qtutil.h>
+#include <util/sll/tokenize.h>
 
 namespace LC::Poshuku::CleanWeb
 {
@@ -65,7 +65,7 @@ namespace LC::Poshuku::CleanWeb
 
 		Util::StringPathTrie<Kind> trie;
 
-		for (auto line : contents.split ('\n', Qt::SkipEmptyParts))
+		for (auto line : Util::Tokenize { contents, '\n' })
 		{
 			line = line.left (line.indexOf (' '));
 			if (line.isEmpty () || line.startsWith (u"//"))
@@ -78,7 +78,7 @@ namespace LC::Poshuku::CleanWeb
 				line = line.mid (1);
 			}
 
-			const auto& split = line.split ('.');
+			Util::Tokenize split { line, '.' };
 			trie.Add (split.rbegin (), split.rend (), kind);
 		}
 
