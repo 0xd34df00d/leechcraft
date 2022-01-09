@@ -49,7 +49,7 @@ namespace LC::Poshuku::WebEngineView
 
 	QIcon IconDatabase::GetIcon (const QUrl& pageUrl)
 	{
-		const auto& maybeMatch = WithRefs (pageUrl, [this] (const auto& refs) { return Trie_->BestMatch (refs); });
+		const auto maybeMatch = WithRefs (pageUrl, [this] (const auto& refs) { return Trie_->Find (refs); }).Value_;
 		return maybeMatch ?
 				DB_->GetIcon (*maybeMatch) :
 				QIcon {};
@@ -57,6 +57,6 @@ namespace LC::Poshuku::WebEngineView
 
 	void IconDatabase::MarkUrl (const QUrl& pageUrl, const QUrl& iconUrl)
 	{
-		WithRefs (pageUrl, [this, iconUrl] (const auto& refs) { Trie_->Mark (refs, std::move (iconUrl)); });
+		WithRefs (pageUrl, [this, iconUrl] (const auto& refs) { Trie_->Add (refs, std::move (iconUrl)); });
 	}
 }

@@ -24,18 +24,26 @@ namespace LC::Poshuku::WebEngineView
 		// TODO C++20 use transparent hashes and unordered_map
 		QHash<QString, StringPathTrie> Children_;
 	public:
-		void Mark (const QVector<QStringRef>& path, V value)
+		void Add (const QVector<QStringRef>& path, V value)
 		{
-			Mark (path.begin (), path.end (), std::move (value));
+			Add (path.begin (), path.end (), std::move (value));
 		}
 
-		const std::optional<V>& BestMatch (const QVector<QStringRef>& path) const
+		struct FindResult
 		{
-			return BestMatch (path.begin (), path.end ());
+			std::optional<V> Value_;
+			std::ptrdiff_t Remaining_ = 0;
+
+			bool operator<=> (const FindResult&) const = default;
+		};
+
+		FindResult Find (const QVector<QStringRef>& path) const
+		{
+			return Find (path.begin (), path.end ());
 		}
 	private:
 		template<typename It>
-		void Mark (It begin, It end, V value)
+		void Add (It begin, It end, V value)
 		{
 			if (begin == end)
 			{
@@ -47,34 +55,20 @@ namespace LC::Poshuku::WebEngineView
 			auto pos = Children_.find (strRef);
 			if (pos == Children_.end ())
 				pos = Children_.insert (begin->toString (), {});
-			pos->Mark (begin + 1, end, std::move (value));
+			pos->Add (begin + 1, end, std::move (value));
 		}
 
 		template<typename It>
-		const std::optional<V>& BestMatch (It begin, It end) const
+		FindResult Find (It begin, It end) const
 		{
 			if (begin == end)
-				return Value_ ? Value_ : WalkArbitraryChild ();
+				return { Value_, 0 };
 
 			const auto& strRef = QString::fromRawData (begin->constData (), begin->size ());
 			const auto pos = Children_.find (strRef);
 			return pos == Children_.end () ?
-					Value_ :
-					pos->BestMatch (begin + 1, end);
-		}
-
-		const std::optional<V>& WalkArbitraryChild () const
-		{
-			if (Value_)
-				return Value_;
-
-			if (Children_.isEmpty ())
-			{
-				qCritical () << Q_FUNC_INFO << "empty children";
-				throw std::runtime_error { "empty children" };
-			}
-
-			return Children_.begin ()->WalkArbitraryChild ();
+					FindResult { Value_, end - begin } :
+					pos->Find (begin + 1, end);
 		}
 	};
 }
