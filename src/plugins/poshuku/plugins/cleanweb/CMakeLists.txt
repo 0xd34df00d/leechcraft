@@ -15,6 +15,7 @@ LC_DEFINE_PLUGIN (
 		subscriptionadddialog.cpp
 		lineparser.cpp
 		subscriptionsmodel.cpp
+		pslhandler.cpp
 	SETTINGS poshukucleanwebsettings.xml
 	QT_COMPONENTS Concurrent Widgets Xml
 	INSTALL_SHARE
