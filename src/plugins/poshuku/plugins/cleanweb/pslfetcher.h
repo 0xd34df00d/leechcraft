@@ -8,27 +8,33 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <util/sll/stringpathtrie.h>
 
-class QUrl;
+class QNetworkAccessManager;
+
+namespace LC::Util
+{
+	struct ReplyWithHeaders;
+}
 
 namespace LC::Poshuku::CleanWeb
 {
-	class PslHandler
+	class PslHandler;
+	class PslFetcher : public QObject
 	{
-		enum class Kind
-		{
-			Rule,
-			Exception
-		};
-		const Util::StringPathTrie<Kind> Tlds_;
-	public:
-		explicit PslHandler (QStringView);
+		const QString PslPath_;
 
-		int GetTldCount (const QUrl&) const;
-		int GetTldCountHost (QStringView) const;
+		QNetworkAccessManager& NAM_;
+
+		std::unique_ptr<PslHandler> Handler_;
+	public:
+		explicit PslFetcher (QNetworkAccessManager&, QObject* = nullptr);
+		~PslFetcher () override;
+
+		const PslHandler& GetPsl () const;
 	private:
-		static Util::StringPathTrie<Kind> ParseFile (QStringView);
+		void CheckRefresh ();
+		void HandleReply (const QDateTime&, const Util::ReplyWithHeaders&);
 	};
 }

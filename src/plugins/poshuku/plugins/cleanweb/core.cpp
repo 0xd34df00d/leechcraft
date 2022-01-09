@@ -10,21 +10,16 @@
 #include <algorithm>
 #include <functional>
 #include <thread>
-#include <QNetworkRequest>
-#include <QRegExp>
 #include <QFile>
 #include <QSettings>
 #include <QFileInfo>
 #include <QTimer>
 #include <QTextCodec>
-#include <QMessageBox>
 #include <QDir>
 #include <QCoreApplication>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
 #include <QMenu>
-#include <QMainWindow>
-#include <QDir>
 #include <QElapsedTimer>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
@@ -44,6 +39,7 @@
 #include "userfiltersmodel.h"
 #include "lineparser.h"
 #include "subscriptionsmodel.h"
+#include "pslhandler.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
@@ -91,6 +87,7 @@ namespace CleanWeb
 	Core::Core (SubscriptionsModel *model, UserFiltersModel *ufm, const ICoreProxy_ptr& proxy)
 	: UserFilters_ { ufm }
 	, SubsModel_ { model }
+	, PslFetcher_ { *proxy->GetNetworkAccessManager () }
 	, Proxy_ { proxy }
 	{
 		connect (SubsModel_,
@@ -290,25 +287,31 @@ namespace CleanWeb
 			}
 		}
 
-		bool IsSameDomain (const QUrl& url1, const QUrl& url2)
+		bool IsSameDomain (const QUrl& url1, const QUrl& url2, const PslHandler& psl)
 		{
-			const auto& tld1 = url1.topLevelDomain ();
-			const auto& tld2 = url2.topLevelDomain ();
-			if (tld1 != tld2)
+			const auto tldCount = psl.GetTldCount (url1);
+			const auto tld2count = psl.GetTldCount (url2);
+			if (tldCount != tld2count)
 				return false;
 
 			// example.com -> example (section index is -2)
 			// example.co.uk -> example (section index is -3)
-			const auto nextComponentPos = -tld1.count ('.') - 1;
+			const auto nextComponentPos = -tldCount - 1;
 
-			const auto& nextComponent1 = url1.host ().section ('.', nextComponentPos, nextComponentPos);
-			const auto& nextComponent2 = url1.host ().section ('.', nextComponentPos, nextComponentPos);
+			const auto& nextComponent1 = url1.host ().section ('.', nextComponentPos);
+			const auto& nextComponent2 = url1.host ().section ('.', nextComponentPos);
 			return nextComponent1 == nextComponent2;
 		}
 
-		bool ShouldReject (const IInterceptableRequests::RequestInfo& req,
-				const QList<QList<FilterItem_ptr>>& exceptions,
-				const QList<QList<FilterItem_ptr>>& filters)
+		struct RejectInfo
+		{
+			const QList<QList<FilterItem_ptr>>& Exceptions_;
+			const QList<QList<FilterItem_ptr>>& Filters_;
+
+			const PslHandler& Psl_;
+		};
+
+		bool ShouldReject (const IInterceptableRequests::RequestInfo& req, RejectInfo info)
 		{
 			if (!XmlSettingsManager::Instance ()->property ("EnableFiltering").toBool ())
 				return false;
@@ -327,7 +330,7 @@ namespace CleanWeb
 			const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
 
 			const QString& domain = req.PageUrl_.host ();
-			const bool isThirdParty = !IsSameDomain (req.PageUrl_, url);
+			const bool isThirdParty = !IsSameDomain (req.PageUrl_, url, info.Psl_);
 
 			auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks)
 			{
@@ -364,9 +367,9 @@ namespace CleanWeb
 						},
 						+[] (bool& res, bool value) { res = res || value; });
 			};
-			if (matches (exceptions))
+			if (matches (info.Exceptions_))
 				return false;
-			if (matches (filters))
+			if (matches (info.Filters_))
 				return true;
 
 			return false;
@@ -381,7 +384,7 @@ namespace CleanWeb
 			if (info.RequestUrl_.scheme () == "data")
 				return IInterceptableRequests::Allow {};
 
-			if (!ShouldReject (info, ExceptionsCache_, FilterItemsCache_))
+			if (!ShouldReject (info, { .Exceptions_ = ExceptionsCache_, .Filters_ = FilterItemsCache_, .Psl_ = PslFetcher_.GetPsl () }))
 				return IInterceptableRequests::Allow {};
 
 			if (info.View_)

@@ -16,6 +16,7 @@ LC_DEFINE_PLUGIN (
 		lineparser.cpp
 		subscriptionsmodel.cpp
 		pslhandler.cpp
+		pslfetcher.cpp
 	SETTINGS poshukucleanwebsettings.xml
 	QT_COMPONENTS Concurrent Widgets Xml
 	INSTALL_SHARE

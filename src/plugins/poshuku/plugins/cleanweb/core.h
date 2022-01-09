@@ -14,10 +14,9 @@
 #include <QNetworkReply>
 #include <QDateTime>
 #include <interfaces/iinfo.h>
-#include <interfaces/idownload.h>
 #include <interfaces/poshuku/poshukutypes.h>
-#include <interfaces/core/ihookproxy.h>
 #include "filter.h"
+#include "pslfetcher.h"
 
 class QNetworkRequest;
 
@@ -52,6 +51,8 @@ namespace CleanWeb
 		QHash<QObject*, QSet<QUrl>> MoreDelayedURLs_;
 
 		QSet<IWebView*> ScheduledHidings_;
+
+		const PslFetcher PslFetcher_;
 
 		const ICoreProxy_ptr Proxy_;
 	public:
