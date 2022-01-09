@@ -48,8 +48,8 @@ namespace LC::Util
 			Add (path.begin (), path.end (), std::move (value));
 		}
 
-		template<typename It>
-		void Add (It begin, It end, V value)
+		template<typename It, typename End>
+		void Add (It begin, End end, V value)
 		{
 			if (begin == end)
 			{
@@ -57,11 +57,11 @@ namespace LC::Util
 				return;
 			}
 
-			const auto& strRef = begin->toString ();
+			const auto& strRef = (*begin).toString ();
 			auto pos = Children_.find (strRef);
 			if (pos == Children_.end ())
 				pos = Children_.insert (strRef, {});
-			pos->Add (begin + 1, end, std::move (value));
+			pos->Add (std::next (begin), end, std::move (value));
 		}
 
 		struct FindResult
@@ -90,14 +90,14 @@ namespace LC::Util
 			return Find (path.begin (), path.end ());
 		}
 
-		template<typename It>
-		FindResult Find (It begin, It end) const
+		template<typename It, typename End>
+		FindResult Find (It begin, End end) const
 		{
 			return Find (begin, end, { Value_, end - begin, this });
 		}
 	private:
-		template<typename It>
-		FindResult Find (It begin, It end, FindResult lastGood) const
+		template<typename It, typename End>
+		FindResult Find (It begin, End end, FindResult lastGood) const
 		{
 			if (Value_)
 				lastGood = { Value_, end - begin, this };
@@ -105,12 +105,12 @@ namespace LC::Util
 			if (begin == end)
 				return lastGood;
 
-			const auto& strRef = begin->toString ();
+			const auto& strRef = (*begin).toString ();
 			const auto pos = Children_.find (strRef);
 			if (pos == Children_.end ())
 				return lastGood;
 
-			return pos->Find (begin + 1, end, lastGood);
+			return pos->Find (std::next (begin), end, lastGood);
 		}
 	};
 }
