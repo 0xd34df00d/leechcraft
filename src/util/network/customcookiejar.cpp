@@ -12,7 +12,6 @@
 #include <QNetworkCookie>
 #include <QtDebug>
 #include <QDateTime>
-#include <QStringRef>
 #include <QtConcurrentRun>
 #include <util/sll/util.h>
 #include <util/threads/futures.h>
@@ -126,9 +125,9 @@ namespace LC::Util
 	{
 		bool MatchDomain (const QString& rawDomain, const QString& rawCookieDomain)
 		{
-			auto normalize = [] (const QString& s)
+			auto normalize = [] (QStringView s)
 			{
-				return s.startsWith ('.') ? s.midRef (1) : QStringRef { &s };
+				return s.startsWith ('.') ? s.mid (1) : s;
 			};
 			const auto& domain = normalize (rawDomain);
 			const auto& cookieDomain = normalize (rawCookieDomain);

@@ -73,16 +73,16 @@ namespace LC::Util
 
 	bool TagsFilterModel::FilterTagsMode (int sourceRow, const QModelIndex&) const
 	{
-		QList<QStringRef> filterTags;
+		QList<QStringView> filterTags;
 		const auto& pattern = filterRegExp ().pattern ();
-		for (const auto& s : pattern.splitRef (Separator_, Qt::SkipEmptyParts))
+		for (const auto& s : QStringView { pattern }.split (Separator_, Qt::SkipEmptyParts))
 			filterTags << s.trimmed ();
 
 		if (filterTags.isEmpty ())
 			return true;
 
 		const auto& itemTags = GetTagsForIndex (sourceRow);
-		const auto hasTag = [&] (const QStringRef& tag) { return itemTags.contains (tag); };
+		const auto hasTag = [&] (QStringView tag) { return itemTags.contains (tag); };
 		switch (TagsMode_)
 		{
 		case TagsInclusionMode::Any:
