@@ -19,7 +19,7 @@ namespace DCAC
 	template<int Alignment, typename F>
 	void HandleLoopBegin (const uchar * const scanline, int width, int& x, int& bytesCount, F&& f)
 	{
-		const auto beginUnaligned = (scanline - static_cast<const uchar*> (nullptr)) % Alignment;
+		const int beginUnaligned = std::bit_cast<uintptr_t> (scanline) % Alignment;
 		bytesCount = width * 4;
 		if (beginUnaligned)
 		{
