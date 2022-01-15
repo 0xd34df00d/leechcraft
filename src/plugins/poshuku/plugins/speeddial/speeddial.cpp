@@ -20,12 +20,13 @@ namespace LC::Poshuku::SpeedDial
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<AddrList_t> ("LC::Poshuku::SpeedDial::AddrList_t");
+		qRegisterMetaType<AddrList_t> ("LeechCraft::Poshuku::SpeedDial::AddrList_t");
+		qRegisterMetaTypeStreamOperators<AddrList_t> ();
+
 		Util::InstallTranslator ("poshuku_speeddial");
 
 		Cache_ = new ImageCache { proxy };
-
-		qRegisterMetaType<AddrList_t> ("LC::Poshuku::SpeedDial::AddrList_t");
-		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuspeeddialsettings.xml");
