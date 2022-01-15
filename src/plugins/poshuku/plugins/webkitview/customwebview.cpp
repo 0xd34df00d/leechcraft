@@ -103,6 +103,10 @@ namespace WebKitView
 				SIGNAL (storeFormData (PageFormsData_t)),
 				this,
 				SIGNAL (storeFormData (PageFormsData_t)));
+		connect (page,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SIGNAL (loadFinished (bool)));
 
 		connect (page,
 				SIGNAL (linkHovered (QString, QString, QString)),

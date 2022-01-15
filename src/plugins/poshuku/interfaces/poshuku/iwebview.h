@@ -185,6 +185,8 @@ namespace Poshuku
 
 		virtual void SetAttribute (Attribute, bool) = 0;
 	protected:
+		virtual void loadFinished (bool) = 0;
+
 		virtual void earliestViewLayout () = 0;
 
 		virtual void linkHovered (const QString& link,

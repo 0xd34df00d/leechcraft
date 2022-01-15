@@ -136,6 +136,7 @@ namespace WebKitView
 		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&) override;
 
 		void earliestViewLayout () override;
+		void loadFinished (bool) override;
 		void linkHovered (const QString& link, const QString& title, const QString& textContent) override;
 		void storeFormData (const PageFormsData_t&) override;
 		void featurePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&,

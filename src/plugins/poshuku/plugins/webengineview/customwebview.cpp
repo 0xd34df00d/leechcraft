@@ -38,6 +38,10 @@ namespace LC::Poshuku::WebEngineView
 				this,
 				SIGNAL (earliestViewLayout ()));
 		connect (page,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SIGNAL (loadFinished (bool)));
+		connect (page,
 				SIGNAL (iconChanged (const QIcon&)),
 				this,
 				SIGNAL (iconChanged ()));
