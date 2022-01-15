@@ -16,7 +16,7 @@ namespace LackMan
 {
 	namespace
 	{
-		void ParseDotted (QVector<int>& result, const QStringRef& dotted)
+		void ParseDotted (QVector<int>& result, QStringView dotted)
 		{
 			for (const auto& part : dotted.split ('.', Qt::SkipEmptyParts))
 			{
@@ -29,9 +29,9 @@ namespace LackMan
 			}
 		}
 
-		void ParseModifier (QVector<int>& result, const QStringRef& modifier)
+		void ParseModifier (QVector<int>& result, QStringView modifier)
 		{
-			static const QStringList mods { "rc", "pre", "beta", "alpha" };
+			static const QList<QStringView> mods { u"rc", u"pre", u"beta", u"alpha" };
 
 			for (int i = 0; i < mods.size (); ++i)
 			{
@@ -61,9 +61,9 @@ namespace LackMan
 					<< modifier;
 		}
 
-		QVector<int> Numerize (const QString& version)
+		QVector<int> Numerize (QStringView version)
 		{
-			const auto& comps = version.splitRef ('-', Qt::SkipEmptyParts);
+			const auto& comps = version.split ('-', Qt::SkipEmptyParts);
 			if (comps.size () > 2 || comps.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO << "unexpected components:" << comps;
