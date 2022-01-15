@@ -56,7 +56,7 @@ namespace LC::Poshuku::SpeedDial
 			const auto& now = QDateTime::currentDateTime ();
 
 			QHash<QString, double> url2score;
-			QHash<QStringRef, double> host2score;
+			QHash<QStringView, double> host2score;
 			for (const auto& item : items)
 			{
 				const auto score = GetScore (item.DateTime_, now);
@@ -65,7 +65,7 @@ namespace LC::Poshuku::SpeedDial
 				const auto startPos = item.URL_.indexOf ("//") + 2;
 				const auto endPos = item.URL_.indexOf ('/', startPos);
 				if (startPos >= 0 && endPos > startPos)
-					host2score [item.URL_.leftRef (endPos + 1)] += score;
+					host2score [QStringView { item.URL_ }.left (endPos + 1)] += score;
 			}
 			const auto& hostsVec = GetSortedVec (host2score);
 
