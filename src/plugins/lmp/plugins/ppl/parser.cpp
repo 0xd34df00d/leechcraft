@@ -23,9 +23,9 @@ namespace PPL
 		template<typename S>
 		std::function<QDateTime (QDateTime)> GetDateConverter (S&& sect)
 		{
-			if (sect == "UTC")
+			if (sect == u"UTC")
 				return [] (const QDateTime& dt) { return dt; };
-			else if (sect == "UNKNOWN")
+			if (sect == u"UNKNOWN")
 				return [] (const QDateTime& dt) { return dt.toUTC (); };
 
 			qWarning () << Q_FUNC_INFO
@@ -35,7 +35,7 @@ namespace PPL
 			return [] (const QDateTime& dt) { return dt; };
 		}
 
-		std::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (QStringRef line)
+		std::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (QStringView line)
 		{
 			enum
 			{
@@ -75,7 +75,7 @@ namespace PPL
 				return {};
 			}
 
-			if (elems.at (Rating) != "L")
+			if (elems.at (Rating) != u"L")
 				return {};
 
 			Media::AudioInfo info
@@ -101,16 +101,16 @@ namespace PPL
 		Media::IAudioScrobbler::BackdatedTracks_t tracks;
 
 		auto dateConverter = GetDateConverter (QString { "UTC" });
-		for (auto line : data.splitRef ('\n', Qt::SkipEmptyParts))
+		for (auto line : QStringView { data }.split ('\n', Qt::SkipEmptyParts))
 		{
 			if (line.at (0) == '#')
 			{
-				if (line.startsWith ("#TZ/"))
+				if (line.startsWith (u"#TZ/"))
 					dateConverter = GetDateConverter (line.split ('/').value (1));
 				continue;
 			}
 
-			if (auto trackInfo = ParseTrack (std::move (line)))
+			if (auto trackInfo = ParseTrack (line))
 			{
 				trackInfo->second = dateConverter (trackInfo->second);
 				tracks.push_back (*trackInfo);
