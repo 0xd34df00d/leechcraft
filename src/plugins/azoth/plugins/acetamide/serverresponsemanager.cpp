@@ -540,7 +540,7 @@ namespace LC::Azoth::Acetamide
 		msg.ServerName_ = opts.Parameters_.at (4);
 		msg.Nick_ = opts.Parameters_.at (5);
 
-		const auto& [realName, jumps] = Util::BreakAt (QStringRef { &opts.Message_ }, ' ');
+		const auto& [realName, jumps] = Util::BreakAt (QStringView { opts.Message_ }, ' ');
 		msg.RealName_ = realName.toString ();
 		msg.Jumps_ = jumps.toInt ();
 
