@@ -67,7 +67,7 @@ namespace LC::Util
 	 */
 	inline QByteArray AsByteArray (std::string_view view)
 	{
-		return QByteArray::fromRawData (view.data (), view.size ());
+		return QByteArray::fromRawData (view.data (), static_cast<int> (view.size ()));
 	}
 
 	/** @brief Create a QByteArray with the data referenced by the view.
