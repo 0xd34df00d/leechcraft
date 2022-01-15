@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QString>
 #include <QWidget>
 #include <QUrl>
@@ -87,11 +88,9 @@ public:
 	/** @brief Returns the IWebWidget for use in another modules of
 	 * LeechCraft.
 	 *
-	 * The ownership transfers to the caller.
-	 *
 	 * @return The IWebWidget.
 	 */
-	virtual IWebWidget* GetWidget () const = 0;
+	virtual std::unique_ptr<IWebWidget> CreateWidget () const = 0;
 };
 
 Q_DECLARE_INTERFACE (IWebWidget, "org.Deviant.LeechCraft.IWebWidget/1.0")

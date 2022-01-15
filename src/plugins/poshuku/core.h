@@ -103,7 +103,7 @@ namespace Poshuku
 		QUrl MakeURL (QString);
 		BrowserWidget* NewURL (const QUrl&, bool = false, const DynPropertiesList_t& = DynPropertiesList_t ());
 		BrowserWidget* NewURL (const QString&, bool = false);
-		IWebWidget* GetWidget ();
+		std::unique_ptr<BrowserWidget> CreateWidget ();
 		IWebView* MakeWebView (bool = false);
 		void Unregister (BrowserWidget*);
 		/** Sets up the connections between widget's signals

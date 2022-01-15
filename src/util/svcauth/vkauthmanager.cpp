@@ -69,6 +69,8 @@ namespace LC::Util::SvcAuth
 				});
 	}
 
+	VkAuthManager::~VkAuthManager () = default;
+
 	bool VkAuthManager::IsAuthenticated () const
 	{
 		return !Token_.isEmpty () &&
@@ -324,15 +326,16 @@ namespace LC::Util::SvcAuth
 			return;
 		}
 
-		auto view = browsers.value (0)->GetWidget ();
-		auto viewWidget = view->GetQWidget ();
+		if (!Browser_)
+			Browser_ = browsers.value (0)->CreateWidget ();
+		auto viewWidget = Browser_->GetQWidget ();
 		viewWidget->setWindowTitle (tr ("VK.com authentication for %1")
 				.arg (AccountHR_));
 		viewWidget->setWindowFlags (Qt::Window);
 		viewWidget->resize (800, 600);
 		viewWidget->show ();
 
-		view->Load (URL_);
+		Browser_->Load (URL_);
 		connect (viewWidget,
 				SIGNAL (urlChanged (const QUrl&)),
 				this,
@@ -382,6 +385,6 @@ namespace LC::Util::SvcAuth
 			return;
 
 		emit cookiesChanged (Cookies_->Save ());
-		sender ()->deleteLater ();
+		Browser_.reset ();
 	}
 }

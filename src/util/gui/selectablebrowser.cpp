@@ -24,12 +24,11 @@ namespace LC::Util
 
 	void SelectableBrowser::Construct (IWebBrowser *browser)
 	{
-		if (browser &&
-				browser->GetWidget ())
+		if (auto external = browser ? browser->CreateWidget () : std::unique_ptr<IWebWidget> {})
 		{
 			Internal_ = false;
 			InternalBrowser_.reset ();
-			ExternalBrowser_.reset (browser->GetWidget ());
+			ExternalBrowser_ = std::move (external);
 			layout ()->addWidget (ExternalBrowser_->GetQWidget ());
 		}
 		else

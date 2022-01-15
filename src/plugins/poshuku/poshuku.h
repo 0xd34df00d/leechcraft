@@ -90,7 +90,7 @@ namespace Poshuku
 		EntityTestHandleResult CouldHandle (const LC::Entity&) const;
 		void Handle (LC::Entity);
 
-		IWebWidget* GetWidget () const;
+		std::unique_ptr<IWebWidget> CreateWidget () const;
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;

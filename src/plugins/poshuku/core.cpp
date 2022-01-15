@@ -346,16 +346,16 @@ namespace Poshuku
 		return NewURL (MakeURL (str), raise);
 	}
 
-	IWebWidget* Core::GetWidget ()
+	std::unique_ptr<BrowserWidget> Core::CreateWidget ()
 	{
 		if (!Initialized_)
-			return nullptr;
+			return {};
 
-		const auto widget = new BrowserWidget { CreateWebView (), ShortcutMgr_, Proxy_ };
-		emit browserWidgetCreated (widget);
+		auto widget = std::make_unique<BrowserWidget> (CreateWebView (), ShortcutMgr_, Proxy_);
+		emit browserWidgetCreated (widget.get ());
 		widget->Deown ();
 		widget->FinalizeInit ();
-		SetupConnections (widget);
+		SetupConnections (widget.get ());
 		return widget;
 	}
 

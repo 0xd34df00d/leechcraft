@@ -23,6 +23,8 @@ class QTimer;
 template<typename>
 class QFuture;
 
+class IWebWidget;
+
 namespace LC::Util
 {
 class QueueManager;
@@ -39,6 +41,8 @@ namespace SvcAuth
 		ICoreProxy_ptr Proxy_;
 
 		const QString AccountHR_;
+
+		std::unique_ptr<IWebWidget> Browser_;
 
 		QNetworkAccessManager * const AuthNAM_;
 		Util::CustomCookieJar * const Cookies_;
@@ -75,6 +79,7 @@ namespace SvcAuth
 		VkAuthManager (const QString& accountName, const QString& clientId,
 				const QStringList& scope, const QByteArray& cookies,
 				const ICoreProxy_ptr&, QueueManager* = nullptr, QObject* = nullptr);
+		~VkAuthManager () override;
 
 		bool IsAuthenticated () const;
 		bool HadAuthentication () const;

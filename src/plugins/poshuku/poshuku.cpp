@@ -208,9 +208,9 @@ namespace Poshuku
 		Core::Instance ().Handle (e);
 	}
 
-	IWebWidget* Poshuku::GetWidget () const
+	std::unique_ptr<IWebWidget> Poshuku::CreateWidget () const
 	{
-		return Core::Instance ().GetWidget ();
+		return Core::Instance ().CreateWidget ();
 	}
 
 	void Poshuku::SetShortcut (const QString& name, const QKeySequences_t& sequences)
