@@ -419,8 +419,12 @@ namespace Blogique
 			Ui_.Tools_->removeItem (i);
 			w->deleteLater ();
 		}
-		Ui_.Tools_->addItem (DraftEntriesWidget_, DraftEntriesWidget_->GetName ());
-		Ui_.Tools_->addItem (CommentsWidget_, CommentsWidget_->GetName ());
+		Ui_.Tools_->addItem (DraftEntriesWidget_,
+				QIcon::fromTheme ("folder-documents"),
+				DraftEntriesWidget_->GetName ());
+		Ui_.Tools_->addItem (CommentsWidget_,
+				QIcon::fromTheme ("mail-reply-all"),
+				CommentsWidget_->GetName ());
 	}
 
 	void BlogiqueWidget::PrepareQmlWidgets ()

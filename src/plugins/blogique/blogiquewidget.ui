@@ -99,6 +99,9 @@
             <height>776</height>
            </rect>
           </property>
+          <attribute name="icon">
+           <iconset theme="document-multiple"/>
+          </attribute>
           <attribute name="label">
            <string>Blog posts</string>
           </attribute>
@@ -112,6 +115,9 @@
             <height>776</height>
            </rect>
           </property>
+          <attribute name="icon">
+           <iconset theme="document-properties"/>
+          </attribute>
           <attribute name="label">
            <string>Post options</string>
           </attribute>
