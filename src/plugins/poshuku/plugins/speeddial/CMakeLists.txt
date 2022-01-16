@@ -8,5 +8,5 @@ LC_DEFINE_PLUGIN (
 		customsitesmanager.cpp
 		xmlsettingsmanager.cpp
 	SETTINGS poshukuspeeddialsettings.xml
-	QT_COMPONENTS Concurrent Widgets WebKitWidgets
+	QT_COMPONENTS Concurrent Widgets
 	)

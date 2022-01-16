@@ -13,7 +13,6 @@
 #include <QList>
 
 class QXmlStreamWriter;
-class QWebView;
 class QUrl;
 class QImage;
 

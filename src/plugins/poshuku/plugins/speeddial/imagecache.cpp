@@ -10,13 +10,16 @@
 #include <QImage>
 #include <QUrl>
 #include <QDateTime>
-#include <QWebPage>
-#include <QWebFrame>
 #include <QPainter>
+#include <QWidget>
 #include <QTimer>
+#include <QShowEvent>
+#include <QCoreApplication>
 #include <QtDebug>
 #include <util/sys/paths.h>
-#include <util/sll/util.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
+#include <interfaces/poshuku/iproxyobject.h>
+#include <interfaces/poshuku/iwebview.h>
 #include "xmlsettingsmanager.h"
 
 namespace LC::Poshuku::SpeedDial
@@ -24,11 +27,13 @@ namespace LC::Poshuku::SpeedDial
 	const QSize RenderSize { 1280, 720 };
 	const QSize ThumbSize = RenderSize / 8;
 
-	ImageCache::ImageCache (const ICoreProxy_ptr& proxy)
+	ImageCache::ImageCache (IProxyObject& proxy)
 	: CacheDir_ { Util::GetUserDir (Util::UserDir::Cache, "poshuku/speeddial/snapshots") }
 	, Proxy_ { proxy }
 	{
 	}
+
+	ImageCache::~ImageCache () = default;
 
 	QImage ImageCache::GetSnapshot (const QUrl& url)
 	{
@@ -48,37 +53,15 @@ namespace LC::Poshuku::SpeedDial
 			QFile::remove (path);
 		}
 
-		if (Url2Page_.contains (url))
+		if (QueuedLoads_.contains (url))
 			return {};
 
-		const auto page = new QWebPage;
-		const auto frame = page->mainFrame ();
-		frame->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
-		frame->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-		page->setViewportSize (RenderSize);
-		page->setNetworkAccessManager (Proxy_->GetNetworkAccessManager ());
+		if (std::any_of (CurrentLoads_.begin (), CurrentLoads_.end (),
+				[&url] (const auto& pair) { return pair.second.first == url; }))
+			return {};
 
-		const auto settings = page->settings ();
-		settings->setAttribute (QWebSettings::DnsPrefetchEnabled, false);
-		settings->setAttribute (QWebSettings::JavaEnabled, false);
-		settings->setAttribute (QWebSettings::PluginsEnabled, false);
-		settings->setAttribute (QWebSettings::DeveloperExtrasEnabled, false);
-		settings->setAttribute (QWebSettings::XSSAuditingEnabled, false);
-
-		settings->setAttribute (QWebSettings::JavascriptEnabled,
-				XmlSettingsManager::Instance ().property ("EnableJS").toBool ());
-
-		Page2Url_ [page] = url;
-		Url2Page_ [url] = page;
-		connect (page,
-				SIGNAL (loadFinished (bool)),
-				this,
-				SLOT (handleLoadFinished ()));
-
-		PendingLoads_ << page;
-
-		if (PendingLoads_.size () <= 2)
-			page->mainFrame ()->load (url);
+		QueuedLoads_ << url;
+		StartNextLoad ();
 
 		return {};
 	}
@@ -88,32 +71,71 @@ namespace LC::Poshuku::SpeedDial
 		return ThumbSize;
 	}
 
-	void ImageCache::Render (QWebPage *page)
+	void ImageCache::StartNextLoad ()
 	{
-		const auto pullNextGuard = Util::MakeScopeGuard ([this]
-				{
-					if (PendingLoads_.isEmpty ())
-						return;
-
-					const auto page = PendingLoads_.takeFirst ();
-					page->mainFrame ()->load (Page2Url_.value (page));
-				});
-
-		PendingLoads_.removeAll (page);
-
-		const auto& url = Page2Url_.take (page);
-		if (url.isEmpty ())
+		if (QueuedLoads_.isEmpty ())
 			return;
 
-		Url2Page_.remove (url);
+		if (CurrentLoads_.size () >= 2)
+			return;
 
-		QImage image { page->viewportSize (), QImage::Format_ARGB32 };
+		const auto& url = QueuedLoads_.takeFirst ();
+
+		auto page = Proxy_.CreateBrowserWidget ();
+
+		const auto view = page->GetWebView ();
+		const auto viewWidget = view->GetQWidget ();
+		viewWidget->setFixedSize (RenderSize);
+		viewWidget->setWindowFlags (Qt::Window
+				| Qt::BypassWindowManagerHint
+				| Qt::WindowDoesNotAcceptFocus
+				| Qt::WindowTransparentForInput);
+
+		// Move + show is required for QtWebEngine to actually start displaying the contents.
+		// It's unfortunate this implementation detail leaks into another plugin,
+		// but there seems to be no better option that'd be general enough.
+		viewWidget->move (-RenderSize.width (), -RenderSize.height ());
+		viewWidget->show ();
+
+		viewWidget->setStyleSheet ("QScrollBar { width: 0px; height: 0px; }");
+
+		using enum IWebView::Attribute;
+		view->SetAttribute (PluginsEnabled, false);
+		view->SetAttribute (XSSAuditingEnabled, false);
+		view->SetAttribute (JavascriptEnabled,
+				XmlSettingsManager::Instance ().property ("EnableJS").toBool ());
+
+		view->Load (url);
+
+		connect (viewWidget,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SLOT (handleLoadFinished ()));
+		CurrentLoads_.try_emplace (viewWidget, url, std::move (page));
+	}
+
+	void ImageCache::Render (QWidget *webWidget)
+	{
+		const auto pos = CurrentLoads_.find (webWidget);
+		if (pos == CurrentLoads_.end ())
+		{
+			qWarning () << "unable to find"
+					<< webWidget;
+
+			CurrentLoads_.clear ();
+			StartNextLoad ();
+			return;
+		}
+
+		auto [url, page] = std::move (pos->second);
+		CurrentLoads_.erase (pos);
+		StartNextLoad ();
+
+		QImage image { RenderSize, QImage::Format_ARGB32 };
 		QPainter painter { &image };
 
-		page->mainFrame ()->render (&painter);
+		webWidget->render (&painter);
 		painter.end ();
-
-		page->deleteLater ();
 
 		const auto& thumb = image.scaled (ThumbSize,
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -124,8 +146,6 @@ namespace LC::Poshuku::SpeedDial
 
 	void ImageCache::handleLoadFinished ()
 	{
-		const auto page = qobject_cast<QWebPage*> (sender ());
-
-		QTimer::singleShot (1000, this, [this, page] { Render (page); });
+		Render (qobject_cast<QWidget*> (sender ()));
 	}
 }

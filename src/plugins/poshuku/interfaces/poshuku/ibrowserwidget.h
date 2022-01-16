@@ -8,7 +8,6 @@
 
 #pragma once
 
-class QWebView;
 class QLineEdit;
 class QMenu;
 class QString;

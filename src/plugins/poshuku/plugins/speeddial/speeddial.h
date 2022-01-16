@@ -16,8 +16,6 @@
 #include <interfaces/ihavesettings.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-class QWebView;
-
 namespace LC::Poshuku
 {
 class IProxyObject;

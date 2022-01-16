@@ -9,13 +9,17 @@
 #pragma once
 
 #include <QDir>
-#include <QMap>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 
 class QSize;
-class QWebPage;
 class QImage;
+
+namespace LC::Poshuku
+{
+	class IProxyObject;
+	class IBrowserWidget;
+}
 
 namespace LC::Poshuku::SpeedDial
 {
@@ -24,19 +28,19 @@ namespace LC::Poshuku::SpeedDial
 		Q_OBJECT
 
 		const QDir CacheDir_;
-		const ICoreProxy_ptr Proxy_;
+		IProxyObject& Proxy_;
 
-		QMap<QWebPage*, QUrl> Page2Url_;
-		QMap<QUrl, QWebPage*> Url2Page_;
-
-		QList<QWebPage*> PendingLoads_;
+		std::unordered_map<QWidget*, std::pair<QUrl, std::unique_ptr<IBrowserWidget>>> CurrentLoads_;
+		QList<QUrl> QueuedLoads_;
 	public:
-		explicit ImageCache (const ICoreProxy_ptr&);
+		explicit ImageCache (IProxyObject&);
+		~ImageCache () override;
 
 		QImage GetSnapshot (const QUrl&);
 		QSize GetThumbSize () const;
 	private:
-		void Render (QWebPage*);
+		void StartNextLoad ();
+		void Render (QWidget*);
 	private slots:
 		void handleLoadFinished ();
 	signals:
