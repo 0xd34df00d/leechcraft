@@ -65,7 +65,6 @@ namespace Blogique
 		QList<QAction*> InlineTagInserters_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
-		BlogEntriesWidget *BlogEntriesWidget_;
 		CommentsWidget *CommentsWidget_;
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_ = -1;

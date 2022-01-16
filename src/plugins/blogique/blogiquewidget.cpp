@@ -60,7 +60,6 @@ namespace Blogique
 	, ProgressToolBar_ (new QToolBar (this))
 	, AccountsBox_ (new QComboBox ())
 	, DraftEntriesWidget_ (new DraftEntriesWidget (this))
-	, BlogEntriesWidget_ (new BlogEntriesWidget)
 	, CommentsWidget_ (new CommentsWidget (this))
 	, TagsProxyModel_ (new TagsProxyModel (this))
 	, TagsModel_ (new QStandardItemModel (this))
@@ -118,19 +117,19 @@ namespace Blogique
 				&Core::Instance (),
 				SIGNAL (changeTabName (QWidget*, QString)));
 
-		connect (BlogEntriesWidget_,
+		connect (Ui_.BlogPosts_,
 				SIGNAL (fillCurrentWidgetWithBlogEntry (Entry)),
 				this,
 				SLOT (fillCurrentTabWithEntry (Entry)));
-		connect (BlogEntriesWidget_,
+		connect (Ui_.BlogPosts_,
 				SIGNAL (fillNewWidgetWithBlogEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
-		connect (BlogEntriesWidget_,
+		connect (Ui_.BlogPosts_,
 				SIGNAL (entryAboutToBeRemoved ()),
 				this,
 				SLOT (handleRemovingEntryBegin ()));
-		connect (BlogEntriesWidget_,
+		connect (Ui_.BlogPosts_,
 				SIGNAL (entriesListUpdated ()),
 				this,
 				SLOT (handleRequestEntriesEnd ()));
@@ -173,9 +172,7 @@ namespace Blogique
 	void BlogiqueWidget::Remove ()
 	{
 		emit removeTab (this);
-		BlogEntriesWidget_->deleteLater ();
 		PostTargetBox_->deleteLater ();
-		Ui_.SideWidget_->deleteLater ();
 		deleteLater ();
 	}
 
@@ -413,12 +410,6 @@ namespace Blogique
 		Ui_.DockWidgetGridLayout_->addWidget (Ui_.Tools_, 1, 0);
 		Ui_.DockWidgetGridLayout_->addWidget (ProgressToolBar_, 0, 0);
 
-		for (int i = 0; i < Ui_.Tools_->count (); ++i)
-		{
-			auto w = Ui_.Tools_->widget (i);
-			Ui_.Tools_->removeItem (i);
-			w->deleteLater ();
-		}
 		Ui_.Tools_->addItem (DraftEntriesWidget_,
 				QIcon::fromTheme ("folder-documents"),
 				DraftEntriesWidget_->GetName ());
@@ -676,8 +667,8 @@ namespace Blogique
 		}
 
 		auto account = Id2Account_ [id];
-		BlogEntriesWidget_->clear ();
-		BlogEntriesWidget_->SetAccount (account);
+		Ui_.BlogPosts_->clear ();
+		Ui_.BlogPosts_->SetAccount (account);
 
 		auto ibp = qobject_cast<IBloggingPlatform*> (account->
 				GetParentBloggingPlatform ());
@@ -722,17 +713,6 @@ namespace Blogique
 
 		if (auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_))
 			iahe->SetCustomTags (ibp->GetCustomTags ());
-
-		bool exists = false;
-
-		for (int i = 0; i < Ui_.Tools_->count (); ++i)
-			if (Ui_.Tools_->widget (i) == BlogEntriesWidget_)
-			{
-				exists = true;
-				break;
-			}
-		if (!exists)
-			Ui_.Tools_->insertItem (0, BlogEntriesWidget_, BlogEntriesWidget_->GetName ());
 
 		for (auto w : ibp->GetBlogiqueSideWidgets ())
 		{
