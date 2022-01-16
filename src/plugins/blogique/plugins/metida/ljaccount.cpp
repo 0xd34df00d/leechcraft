@@ -13,6 +13,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/prelude.h>
+#include <util/gui/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
@@ -184,8 +185,10 @@ namespace Metida
 
 	QString LJAccount::GetPassword () const
 	{
-		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
-		return Util::GetPassword (key, QString (), Proxy_);
+		return Util::GetPassword ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID (),
+				tr ("Please enter password for the %1 account %2:")
+					.arg (ParentBloggingPlatform_->GetBloggingPlatformName (), Util::FormatName (Name_)),
+				Proxy_);
 	}
 
 	QObject* LJAccount::GetProfile ()
