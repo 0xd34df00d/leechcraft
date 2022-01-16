@@ -36,6 +36,11 @@ namespace Poshuku
 		return Core::Instance ().NewURL (url, raise);
 	}
 
+	std::unique_ptr<IBrowserWidget> ProxyObject::CreateBrowserWidget () const
+	{
+		return Core::Instance ().CreateWidget ();
+	}
+
 	IStorageBackend_ptr ProxyObject::CreateStorageBackend ()
 	{
 		return StorageBackend::Create ();

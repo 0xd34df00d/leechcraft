@@ -25,6 +25,8 @@ namespace Poshuku
 		QObject* GetFavoritesModel () const override;
 		QObject* OpenInNewTab (const QUrl&, bool) const override;
 
+		std::unique_ptr<IBrowserWidget> CreateBrowserWidget () const override;
+
 		IStorageBackend_ptr CreateStorageBackend () override;
 
 		QString GetUserAgent (const QUrl&) const override;

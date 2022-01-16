@@ -23,6 +23,8 @@ namespace Poshuku
 	class ILinkOpenModifier;
 	using ILinkOpenModifier_ptr = std::shared_ptr<ILinkOpenModifier>;
 
+	class IBrowserWidget;
+
 	class IProxyObject
 	{
 	public:
@@ -30,6 +32,8 @@ namespace Poshuku
 		virtual QObject* GetFavoritesModel () const = 0;
 		virtual QObject* OpenInNewTab (const QUrl& url,
 				bool inverted = false) const = 0;
+
+		virtual std::unique_ptr<IBrowserWidget> CreateBrowserWidget () const = 0;
 
 		virtual IStorageBackend_ptr CreateStorageBackend () = 0;
 
