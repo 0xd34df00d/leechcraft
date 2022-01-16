@@ -12,11 +12,10 @@
 #include <QMessageBox>
 #include <QPrinter>
 #include <QCloseEvent>
-#include <QWebFrame>
-#include <QWebView>
 #include <QDomElement>
 #include <QDomText>
 #include <QButtonGroup>
+#include <QTextDocument>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include "interfaces/blogique/ibloggingplatform.h"
@@ -341,7 +340,7 @@ namespace Blogique
 			QFile file (filePath);
 			if (!file.open (QIODevice::WriteOnly))
 			{
-				QMessageBox::warning (0,
+				QMessageBox::warning (nullptr,
 						"LeechCraft",
 						QObject::tr ("Unable to open file %1: %2")
 								.arg (filePath)
@@ -349,10 +348,9 @@ namespace Blogique
 				return;
 			}
 
-			QWebView wv;
-			wv.setContent (GetPlainTextContent (entries).toUtf8 (), "text/plain; charset=UTF-8");
-			file.write (wv.page ()->currentFrame ()->toPlainText ().toUtf8 ());
-			file.close ();
+			QTextDocument doc;
+			doc.setHtml (GetPlainTextContent (entries));
+			file.write (doc.toPlainText ().toUtf8 ());
 		}
 
 		void WriteHtml (const QList<Entry>& entries, const QString& filePath)
@@ -360,7 +358,7 @@ namespace Blogique
 			QFile file (filePath);
 			if (!file.open (QIODevice::WriteOnly))
 			{
-				QMessageBox::warning (0,
+				QMessageBox::warning (nullptr,
 						"LeechCraft",
 						QObject::tr ("Unable to open file %1: %2")
 								.arg (filePath)
@@ -410,12 +408,12 @@ namespace Blogique
 				QDomText sectionTitleDate = doc.createTextNode (QLocale {}.toString (entry.Date_, QLocale::LongFormat));
 				emphasis.appendChild (sectionTitleDate);
 
-				QWebView wv;
-				wv.setContent (entry.Content_.toUtf8 (), "text/html; charset=UTF-8");
+				QTextDocument converter;
+				converter.setHtml (entry.Content_.toUtf8 ());
+
 				QDomElement p3 = doc.createElement ("p");
 				section.appendChild (p3);
-				QDomText content = doc.createTextNode (wv.page ()->
-						currentFrame ()->toPlainText ());
+				QDomText content = doc.createTextNode (converter.toPlainText ());
 				p3.appendChild (content);
 			}
 
@@ -431,13 +429,13 @@ namespace Blogique
 			}
 
 			file.write (doc.toByteArray ());
-			file.close ();
 		}
 
 		void WritePdf (const QList<Entry>& entries, const QString& filePath)
 		{
-			QWebView wv;
-			wv.setHtml (GetHtmlContent (entries));
+			// TODO use poshuku to print to pdf
+			QTextDocument doc;
+			doc.setHtml (GetHtmlContent (entries));
 
 			QPrinter printer (QPrinter::HighResolution);
 			printer.setPageSize (QPageSize { QPageSize::A4 });
@@ -445,7 +443,7 @@ namespace Blogique
 
 			printer.setOutputFileName (filePath);
 
-			wv.print (&printer);
+			doc.print (&printer);
 		}
 	}
 
