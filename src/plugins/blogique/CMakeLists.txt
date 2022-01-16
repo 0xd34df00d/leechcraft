@@ -29,7 +29,7 @@ LC_DEFINE_PLUGIN (
 		updateentriesdialog.cpp
 		utils.cpp
 		xmlsettingsmanager.cpp
-	QT_COMPONENTS PrintSupport QuickWidgets Sql WebKitWidgets Xml
+	QT_COMPONENTS PrintSupport QuickWidgets Sql Xml
 	INSTALL_SHARE
 	)
 
