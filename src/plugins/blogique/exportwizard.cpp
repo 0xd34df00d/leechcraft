@@ -368,11 +368,7 @@ namespace Blogique
 				return;
 			}
 
-			QWebView wv;
-			wv.setHtml (GetHtmlContent (entries));
-
-			file.write (wv.page ()->currentFrame ()->toHtml ().toUtf8 ());
-			file.close ();
+			file.write (GetHtmlContent (entries).toUtf8 ());
 		}
 
 		void WriteFb2 (const QList<Entry>& entries, const QString& filePath)
