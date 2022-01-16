@@ -20,7 +20,6 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QWidgetAction>
-#include <QWebView>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
@@ -39,7 +38,6 @@
 #include "commentswidget.h"
 #include "core.h"
 #include "draftentrieswidget.h"
-#include "dummytexteditor.h"
 #include "profiledialog.h"
 #include "storagemanager.h"
 #include "submittodialog.h"
@@ -280,29 +278,22 @@ namespace Blogique
 
 	void BlogiqueWidget::SetTextEditor ()
 	{
-		auto plugs = Core::Instance ().GetCoreProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
-
-		QVBoxLayout *editFrameLay = new QVBoxLayout ();
+		const auto editFrameLay = new QVBoxLayout ();
 		editFrameLay->setContentsMargins (0, 0, 0, 0);
 		Ui_.PostFrame_->setLayout (editFrameLay);
 
+		const auto plugs = Core::Instance ().GetCoreProxy ()->GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
 		if (plugs.isEmpty ())
 		{
-			DummyTextEditor *dummy = new DummyTextEditor (this);
-			PostEdit_ = qobject_cast<IEditorWidget*> (dummy);
-			if (PostEdit_)
-			{
-				connect (dummy,
-						SIGNAL (textChanged ()),
-						this,
-						SLOT (handleEntryChanged ()));
-				PostEditWidget_ = dummy;
-				editFrameLay->setContentsMargins (4, 4, 4, 4);
-				editFrameLay->addWidget (dummy);
-			}
-			else
-				delete dummy;
+			setEnabled (false);
+
+			const auto label = new QLabel { tr ("No text editor plugins are installed. Consider installing a plugin like %1.").arg ("LHTR") };
+			label->setStyleSheet ("font-size: 24pt; font-weight: bold;");
+			label->setWordWrap (true);
+			label->setAlignment (Qt::AlignCenter);
+			editFrameLay->addWidget (label);
+
+			return;
 		}
 
 		for (const auto plug : plugs)
