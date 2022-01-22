@@ -68,8 +68,7 @@ namespace LHTR
 			return Position::RightWrap;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown position"
+		qWarning () << "unknown position"
 				<< Ui_.Position_->currentIndex ();
 		return Position::Center;
 	}

@@ -65,8 +65,7 @@ namespace LHTR
 			return true;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown content type"
+		qWarning () << "unknown content type"
 				<< static_cast<int> (type);
 		return false;
 	}

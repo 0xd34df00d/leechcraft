@@ -618,8 +618,7 @@ namespace LHTR
 					!tidyOptSetBool (tdoc, TidyForceOutput, yes) ||
 					!tidyOptSetValue (tdoc, TidyCharEncoding, "utf8"))
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot set xhtml output";
+				qWarning () << "cannot set xhtml output";
 				return;
 			}
 
@@ -627,24 +626,21 @@ namespace LHTR
 
 			if (tidyParseString (tdoc, html.toUtf8 ().constData ()) < 0)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to parse"
+				qWarning () << "failed to parse"
 						<< html;
 				return;
 			}
 
 			if (tidyCleanAndRepair (tdoc) < 0)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to clean and repair"
+				qWarning () << "failed to clean and repair"
 						<< html;
 				return;
 			}
 
 			if (tidySaveBuffer (tdoc, &output) < 0)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot save buffer";
+				qWarning () << "cannot save buffer";
 				return;
 			}
 
@@ -670,8 +666,7 @@ namespace LHTR
 		QDomDocument doc;
 		if (!doc.setContent (html))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to set content from"
+			qWarning () << "unable to set content from"
 					<< html;
 			return html;
 		}
@@ -717,8 +712,7 @@ namespace LHTR
 					elem.setOuterXml (elem.attribute ("__original__"));
 				else if (!doc.setContent (elem.toOuterXml ()))
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to parse"
+					qWarning () << "unable to parse"
 							<< elem.toOuterXml ();
 					elem.setOuterXml (elem.attribute ("__original__"));
 				}
@@ -739,8 +733,7 @@ namespace LHTR
 					}
 					else
 					{
-						qWarning () << Q_FUNC_INFO
-								<< "FromKnown_ failed";
+						qWarning () << "FromKnown_ failed";
 						elem.setOuterXml (original);
 					}
 				}
@@ -756,8 +749,7 @@ namespace LHTR
 
 		if (!peElem.isNull ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "there are parser errors, ignoring reverting";
+			qWarning () << "there are parser errors, ignoring reverting";
 			return;
 		}
 
@@ -808,8 +800,7 @@ namespace LHTR
 			auto frame = Ui_.View_->page ()->mainFrame ();
 			if (frame->findFirstElement ("html > body").isNull ())
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "null html/body element";
+				qWarning () << "null html/body element";
 
 				SetContents (str, ContentType::HTML);
 			}
@@ -1156,8 +1147,7 @@ namespace LHTR
 				return info.Full_;
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown preview size"
+			qWarning () << "unknown preview size"
 					<< static_cast<int> (size);
 			return {};
 		}
@@ -1176,8 +1166,7 @@ namespace LHTR
 				return info.FullSize_;
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown preview size"
+			qWarning () << "unknown preview size"
 					<< static_cast<int> (size);
 			return {};
 		}

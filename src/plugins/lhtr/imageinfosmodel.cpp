@@ -131,8 +131,7 @@ namespace LC::LHTR
 						QImage image;
 						if (!image.loadFromData (reply->readAll ()))
 						{
-							qWarning () << Q_FUNC_INFO
-									<< "cannot read data from"
+							qWarning () << "cannot read data from"
 									<< reply->request ().url ();
 							return;
 						}
