@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "imageinfosmodel.h"
-#include <functional>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
@@ -67,58 +66,39 @@ namespace LHTR
 
 	QVariant ImageInfosModel::data (const QModelIndex& index, int role) const
 	{
-		const auto& info = Infos_.at (index.row ());
+		const auto row = index.row ();
+		const auto& info = Infos_.at (row);
 
-		const std::map<Column, std::map<int, std::function<QVariant ()>>> map
+		switch (static_cast<Column> (index.column ()))
 		{
-			{
-				CImage,
-				{
-					{
-						Qt::DecorationRole,
-						[this, &index] () -> QVariant
-						{
-							if (!Images_.at (index.row ()).isNull ())
-								return Images_.at (index.row ());
+		case CImage:
+			if (role != Qt::DecorationRole)
+				return {};
 
-							FetchImage (index.row ());
-							return {};
-						}
-					}
-				}
-			},
+			if (!Images_.at (row).isNull ())
+				return Images_.at (row);
+
+			FetchImage (row);
+			return {};
+		case CSize:
+			if (role != Qt::DisplayRole)
+				return {};
+
+			return QString::fromUtf8 ("%1×%2")
+					.arg (info.FullSize_.width ())
+					.arg (info.FullSize_.height ());
+		case CAlt:
+			switch (role)
 			{
-				CSize,
-				{
-					{
-						Qt::DisplayRole,
-						[&info]
-						{
-							return QString::fromUtf8 ("%1×%2")
-									.arg (info.FullSize_.width ())
-									.arg (info.FullSize_.height ());
-						}
-					}
-				}
-			},
-			{
-				CAlt,
-				{
-					{
-						Qt::DisplayRole,
-						[&info] { return info.Title_; }
-					},
-					{
-						Qt::EditRole,
-						[&info] { return info.Title_; }
-					}
-				}
+			case Qt::DisplayRole:
+			case Qt::EditRole:
+				return info.Title_;
+			default:
+				return {};
 			}
-		};
+		}
 
-		const auto& roleMap = map.find (static_cast<Column> (index.column ()))->second;
-		const auto& roleIt = roleMap.find (role);
-		return roleIt == roleMap.end () ? QVariant {} : roleIt->second ();
+		return {};
 	}
 
 	bool ImageInfosModel::setData (const QModelIndex& index, const QVariant& value, int)
