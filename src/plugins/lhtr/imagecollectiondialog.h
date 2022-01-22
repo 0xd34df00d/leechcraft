@@ -43,7 +43,7 @@ namespace LHTR
 			RightWrap
 		};
 
-		ImageCollectionDialog (const RemoteImageInfos_t&, ICoreProxy_ptr, QWidget* = nullptr);
+		explicit ImageCollectionDialog (const RemoteImageInfos_t&, QWidget* = nullptr);
 
 		RemoteImageInfos_t GetInfos () const;
 		Position GetPosition () const;

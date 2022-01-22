@@ -20,10 +20,8 @@ namespace LC
 {
 namespace LHTR
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
-
 		Util::InstallTranslator ("lhtr");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
@@ -55,7 +53,7 @@ namespace LHTR
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	bool Plugin::SupportsEditor (ContentType type) const
@@ -75,7 +73,7 @@ namespace LHTR
 
 	QWidget* Plugin::GetTextEditor (ContentType)
 	{
-		return new RichEditorWidget (Proxy_);
+		return new RichEditorWidget ();
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

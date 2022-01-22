@@ -77,9 +77,8 @@ namespace LHTR
 		};
 	}
 
-	RichEditorWidget::RichEditorWidget (ICoreProxy_ptr proxy, QWidget *parent)
+	RichEditorWidget::RichEditorWidget (QWidget *parent)
 	: QWidget (parent)
-	, Proxy_ (proxy)
 	, ViewBar_ (new QToolBar (tr ("Editor bar")))
 	, FindAction_ (new QAction (tr ("Find"), this))
 	, ReplaceAction_ (new QAction (tr ("Replace"), this))
@@ -205,7 +204,7 @@ namespace LHTR
 		ViewBar_->addSeparator ();
 
 		QMenu *headMenu = new QMenu (tr ("Headings"));
-		headMenu->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-list-details"));
+		headMenu->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("view-list-details"));
 		ViewBar_->addAction (headMenu->menuAction ());
 		for (int i = 1; i <= 6; ++i)
 		{
@@ -485,7 +484,7 @@ namespace LHTR
 		auto imagesButton = new QToolButton;
 		imagesButton->setMenu (imagesMenu);
 		imagesButton->setPopupMode (QToolButton::InstantPopup);
-		imagesButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("insert-image"));
+		imagesButton->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("insert-image"));
 		ViewBar_->addWidget (imagesButton);
 
 		InsertImage_ = imagesMenu->addAction (tr ("Insert image by link..."),
@@ -495,7 +494,7 @@ namespace LHTR
 		auto fromCollection = imagesMenu->addMenu (tr ("Insert image from collection"));
 
 		bool added = false;
-		for (const auto pluginObj : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IImgSource*> ())
+		for (const auto pluginObj : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<IImgSource*> ())
 		{
 			const auto plugin = qobject_cast<IImgSource*> (pluginObj);
 			for (const auto& service : plugin->GetServices ())
@@ -519,7 +518,7 @@ namespace LHTR
 		auto tablesButton = new QToolButton;
 		tablesButton->setMenu (tablesMenu);
 		tablesButton->setPopupMode (QToolButton::InstantPopup);
-		tablesButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-form-table"));
+		tablesButton->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("view-form-table"));
 		ViewBar_->addWidget (tablesButton);
 
 		auto table = tablesMenu->addAction (tr ("Insert table..."),
@@ -779,7 +778,7 @@ namespace LHTR
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
 	{
 		const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void RichEditorWidget::on_TabWidget__currentChanged (int idx)

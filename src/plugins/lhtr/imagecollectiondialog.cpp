@@ -16,8 +16,7 @@ namespace LC
 {
 namespace LHTR
 {
-	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos,
-			ICoreProxy_ptr proxy, QWidget *parent)
+	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos, QWidget *parent)
 	: QDialog { parent }
 	, Infos_ { infos }
 	{

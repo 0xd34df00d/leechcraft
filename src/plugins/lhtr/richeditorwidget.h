@@ -10,7 +10,6 @@
 
 #include <QWidget>
 #include <QHash>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/iadvancedhtmleditor.h>
 #include <interfaces/iwkfontssettable.h>
@@ -30,7 +29,6 @@ namespace LHTR
 		Q_OBJECT
 		Q_INTERFACES (IEditorWidget IAdvancedHTMLEditor IWkFontsSettable)
 
-		ICoreProxy_ptr Proxy_;
 		Ui::RichEditorWidget Ui_;
 
 		QToolBar * const ViewBar_;
@@ -54,7 +52,7 @@ namespace LHTR
 
 		QAction *ToggleView_;
 	public:
-		explicit RichEditorWidget (ICoreProxy_ptr, QWidget* = nullptr);
+		explicit RichEditorWidget (QWidget* = nullptr);
 
 		QString GetContents (ContentType) const override;
 		void SetContents (QString, ContentType) override;

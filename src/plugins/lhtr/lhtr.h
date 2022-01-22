@@ -27,7 +27,6 @@ namespace LHTR
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LHTR")
 
-		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
