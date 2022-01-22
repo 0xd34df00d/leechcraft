@@ -12,16 +12,15 @@
 #include <QNetworkAccessManager>
 #include <QImage>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
 
-namespace LC
+namespace LC::LHTR
 {
-namespace LHTR
-{
-	ImageInfosModel::ImageInfosModel (RemoteImageInfos_t& infos, ICoreProxy_ptr proxy, QObject* parent)
+	ImageInfosModel::ImageInfosModel (RemoteImageInfos_t& infos, QObject* parent)
 	: QAbstractItemModel { parent }
-	, Proxy_ { proxy }
 	, Infos_ (infos)
 	, Columns_ { tr ("Image"), tr ("Size"), tr ("Alt") }
+	, This_ { *this }
 	{
 		Images_.resize (infos.size ());
 	}
@@ -78,7 +77,7 @@ namespace LHTR
 			if (!Images_.at (row).isNull ())
 				return Images_.at (row);
 
-			FetchImage (row);
+			This_.FetchImage (row);
 			return {};
 		case CSize:
 			if (role != Qt::DisplayRole)
@@ -111,43 +110,38 @@ namespace LHTR
 		return true;
 	}
 
-	void ImageInfosModel::FetchImage (int row) const
+	void ImageInfosModel::FetchImage (int row)
 	{
 		const auto& info = Infos_.at (row);
 
-		const auto nam = Proxy_->GetNetworkAccessManager ();
+		const auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
 		for (const auto& url : { info.Thumb_, info.Preview_, info.Full_ })
 		{
 			if (!url.isValid ())
 				continue;
 
 			const auto reply = nam->get (QNetworkRequest { url });
-			Reply2Image_ [reply] = row;
 			connect (reply,
-					SIGNAL (finished ()),
+					&QNetworkReply::finished,
 					this,
-					SLOT (handleImageFetched ()));
+					[this, reply, row]
+					{
+						reply->deleteLater ();
+
+						QImage image;
+						if (!image.loadFromData (reply->readAll ()))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "cannot read data from"
+									<< reply->request ().url ();
+							return;
+						}
+
+						Images_ [row] = image.scaledToHeight (128, Qt::SmoothTransformation);
+
+						const auto& modelIdx = index (row, Column::CImage);
+						emit dataChanged (modelIdx, modelIdx);
+					});
 		}
 	}
-
-	void ImageInfosModel::handleImageFetched ()
-	{
-		const auto reply = qobject_cast<QNetworkReply*> (sender ());
-		const auto idx = Reply2Image_.take (reply);
-
-		QImage image;
-		if (!image.loadFromData (reply->readAll ()))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot read data from"
-					<< reply->request ().url ();
-			return;
-		}
-
-		Images_ [idx] = image.scaledToHeight (128, Qt::SmoothTransformation);
-
-		const auto& modelIdx = index (idx, Column::CImage);
-		emit dataChanged (modelIdx, modelIdx);
-	}
-}
 }

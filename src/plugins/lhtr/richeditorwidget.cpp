@@ -1191,7 +1191,7 @@ namespace LHTR
 		if (rawInfos.isEmpty ())
 			return;
 
-		ImageCollectionDialog dia { rawInfos, Proxy_, this };
+		ImageCollectionDialog dia { rawInfos, this };
 		if (dia.exec () != QDialog::Accepted)
 			return;
 

@@ -12,22 +12,18 @@
 #include <QStringList>
 #include <QVector>
 #include <interfaces/data/iimgsource.h>
-#include <interfaces/core/icoreproxy.h>
 
-namespace LC
-{
-namespace LHTR
+class QNetworkReply;
+
+namespace LC::LHTR
 {
 	class ImageInfosModel : public QAbstractItemModel
 	{
-		Q_OBJECT
-
-		const ICoreProxy_ptr Proxy_;
 		RemoteImageInfos_t& Infos_;
 		const QStringList Columns_;
-
 		QVector<QImage> Images_;
-		mutable QMap<QNetworkReply*, int> Reply2Image_;
+
+		ImageInfosModel& This_;
 
 		enum Column
 		{
@@ -36,7 +32,7 @@ namespace LHTR
 			CAlt
 		};
 	public:
-		ImageInfosModel (RemoteImageInfos_t& infos, ICoreProxy_ptr, QObject *parent);
+		ImageInfosModel (RemoteImageInfos_t& infos, QObject *parent);
 
 		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent (const QModelIndex& child) const;
@@ -49,9 +45,6 @@ namespace LHTR
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 	private:
-		void FetchImage (int) const;
-	private slots:
-		void handleImageFetched ();
+		void FetchImage (int);
 	};
-}
 }

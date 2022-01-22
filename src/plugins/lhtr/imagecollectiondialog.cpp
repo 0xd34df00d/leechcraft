@@ -23,7 +23,7 @@ namespace LHTR
 	{
 		Ui_.setupUi (this);
 
-		auto model = new ImageInfosModel (Infos_, proxy, this);
+		auto model = new ImageInfosModel (Infos_, this);
 		Ui_.Images_->setModel (model);
 
 		if (infos.isEmpty ())
