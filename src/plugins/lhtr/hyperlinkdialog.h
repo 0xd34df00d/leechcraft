@@ -11,24 +11,17 @@
 #include <QDialog>
 #include "ui_hyperlinkdialog.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	class HyperlinkDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::HyperlinkDialog Ui_;
 	public:
-		HyperlinkDialog (QWidget* = 0);
+		explicit HyperlinkDialog (QWidget* = nullptr);
 
 		QString GetLink () const;
 		QString GetText () const;
 		QString GetTitle () const;
 		QString GetTarget () const;
-	private slots:
-		void checkCanAccept ();
 	};
-}
 }

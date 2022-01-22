@@ -17,9 +17,7 @@
 
 class QToolBar;
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	class RichEditorWidget final : public QWidget
 								 , public IEditorWidget
@@ -128,5 +126,4 @@ namespace LHTR
 	signals:
 		void textChanged () override;
 	};
-}
 }

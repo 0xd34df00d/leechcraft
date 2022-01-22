@@ -16,15 +16,13 @@
 #include "richeditorwidget.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("lhtr");
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lhtrsettings.xml");
 	}
 
@@ -79,7 +77,6 @@ namespace LHTR
 	{
 		return XSD_;
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lhtr, LC::LHTR::Plugin);

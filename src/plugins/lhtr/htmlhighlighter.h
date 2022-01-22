@@ -10,9 +10,7 @@
 
 #include <QSyntaxHighlighter>
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	class HtmlHighlighter : public QSyntaxHighlighter
 	{
@@ -38,9 +36,8 @@ namespace LHTR
 			AttrValue
 		};
 	public:
-		HtmlHighlighter (QTextDocument*);
+		explicit HtmlHighlighter (QTextDocument*);
 	protected:
-		void highlightBlock (const QString&);
+		void highlightBlock (const QString&) override;
 	};
-}
 }

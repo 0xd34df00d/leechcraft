@@ -46,9 +46,7 @@
 #include "htmlhighlighter.h"
 #include "imagecollectiondialog.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	const QString MIMEType = "application/xhtml+xml";
 
@@ -62,7 +60,7 @@ namespace LHTR
 			{
 			}
 		protected:
-			bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest& request, NavigationType type)
+			bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest& request, NavigationType type) override
 			{
 				if (type == NavigationTypeLinkClicked || type == NavigationTypeOther)
 					emit linkClicked (request.url ());
@@ -593,8 +591,8 @@ namespace LHTR
 		const bool isView = Ui_.TabWidget_->currentIndex () == 0;
 
 		auto dia = isView ?
-				new FindDialog (Ui_.View_, Proxy_, this) :
-				new FindDialog (Ui_.HTML_, Proxy_, this);
+				new FindDialog (FindObjectProxy { Ui_.View_ }, this) :
+				new FindDialog (FindObjectProxy { Ui_.HTML_ }, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}
@@ -1279,5 +1277,4 @@ namespace LHTR
 	{
 		OpenFindReplace (false);
 	}
-}
 }

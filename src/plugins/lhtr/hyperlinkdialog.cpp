@@ -10,23 +10,24 @@
 #include <QPushButton>
 #include <QtDebug>
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	HyperlinkDialog::HyperlinkDialog (QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
+		const auto checkCanAccept = [this]
+		{
+			const bool can = !GetLink ().isEmpty () && !GetText ().isEmpty ();
+			Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (can);
+		};
 		connect (Ui_.Link_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (checkCanAccept ()));
+				&QLineEdit::textChanged,
+				checkCanAccept);
 		connect (Ui_.Text_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (checkCanAccept ()));
+				&QLineEdit::textChanged,
+				checkCanAccept);
 		checkCanAccept ();
 	}
 
@@ -49,11 +50,4 @@ namespace LHTR
 	{
 		return Ui_.Target_->currentText ();
 	}
-
-	void HyperlinkDialog::checkCanAccept ()
-	{
-		const bool can = !GetLink ().isEmpty () && !GetText ().isEmpty ();
-		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (can);
-	}
-}
 }

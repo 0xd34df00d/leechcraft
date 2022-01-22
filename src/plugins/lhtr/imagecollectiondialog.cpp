@@ -7,14 +7,10 @@
  **********************************************************************/
 
 #include "imagecollectiondialog.h"
-#include <map>
-#include <functional>
 #include <QtDebug>
 #include "imageinfosmodel.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	ImageCollectionDialog::ImageCollectionDialog (const RemoteImageInfos_t& infos, QWidget *parent)
 	: QDialog { parent }
@@ -30,16 +26,15 @@ namespace LHTR
 
 		const auto& sample = infos.first ();
 
-		const auto addSize = [this] (const QSize& size,
-				const QString& str, PreviewSize enumValue) -> void
+		const auto addSize = [this] (const QSize& size, const QString& str, PreviewSize enumValue)
 		{
-			if (size.isValid ())
-			{
-				Ui_.PreviewSize_->addItem (str
-						.arg (size.width ())
-						.arg (size.height ()));
-				Sizes_ << enumValue;
-			}
+			if (!size.isValid ())
+				return;
+
+			Ui_.PreviewSize_->addItem (str
+					.arg (size.width ())
+					.arg (size.height ()));
+			Sizes_ << enumValue;
 		};
 
 		addSize (sample.ThumbSize_, tr ("Thumbnail (%1×%2)"), PreviewSize::Thumb);
@@ -82,5 +77,4 @@ namespace LHTR
 	{
 		return Sizes_.value (Ui_.PreviewSize_->currentIndex (), PreviewSize::None);
 	}
-}
 }

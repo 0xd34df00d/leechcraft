@@ -9,9 +9,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -26,13 +24,11 @@ namespace LHTR
 
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+		return new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_LHTR");
-		return settings;
 	}
 
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
 }

@@ -8,12 +8,10 @@
 
 #include "inserttabledialog.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	InsertTableDialog::InsertTableDialog (QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 	}
@@ -32,5 +30,4 @@ namespace LHTR
 	{
 		return Ui_.Rows_->value ();
 	}
-}
 }

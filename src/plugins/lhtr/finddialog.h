@@ -8,37 +8,28 @@
 
 #pragma once
 
-#include <functional>
 #include <QDialog>
-#include <interfaces/core/icoreproxy.h>
 #include "ui_finddialog.h"
 
 class QTextEdit;
 class QWebView;
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	class FindObjectProxy
 	{
-		ICoreProxy_ptr Proxy_;
-
-		QWebView *View_;
-		QTextEdit *HTML_;
+		QWebView * const View_ = nullptr;
+		QTextEdit * const HTML_ = nullptr;
 	public:
-		FindObjectProxy (QWebView*);
-		FindObjectProxy (QTextEdit*);
-
-		void SetProxy (ICoreProxy_ptr);
+		explicit FindObjectProxy (QWebView*);
+		explicit FindObjectProxy (QTextEdit*);
 
 		void Next (const QString&, bool cs);
 		void Previous (const QString&, bool cs);
 
 		void Replace (const QString& text, const QString& with, bool cs, bool all);
 	private:
-		template<typename T>
-		T Alt (std::function<T (QWebView*)> viewF, std::function<T (QTextEdit*)> htmlF)
+		auto Alt (auto viewF, auto htmlF)
 		{
 			return View_ ? viewF (View_) : htmlF (HTML_);
 		}
@@ -46,22 +37,11 @@ namespace LHTR
 
 	class FindDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::FindDialog Ui_;
-
 		FindObjectProxy Proxy_;
 	public:
-		FindDialog (const FindObjectProxy&, ICoreProxy_ptr, QWidget* = 0);
-	private slots:
-		void on_FindText__textChanged (const QString&);
-		void on_ReplaceText__textChanged (const QString&);
-
-		void on_Next__released ();
-		void on_Previous__released ();
-
-		void on_Replace__released ();
-		void on_ReplaceAll__released ();
+		explicit FindDialog (const FindObjectProxy&, QWidget* = nullptr);
+	private:
+		bool IsCaseSensitive () const;
 	};
-}
 }

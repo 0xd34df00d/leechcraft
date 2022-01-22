@@ -8,9 +8,7 @@
 
 #include "htmlhighlighter.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	HtmlHighlighter::HtmlHighlighter (QTextDocument *doc)
 	: QSyntaxHighlighter { doc }
@@ -168,5 +166,4 @@ namespace LHTR
 
 		setCurrentBlockState (static_cast<int> (state));
 	}
-}
 }

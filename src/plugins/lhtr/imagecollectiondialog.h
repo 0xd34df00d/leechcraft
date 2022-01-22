@@ -8,18 +8,16 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include <interfaces/data/iimgsource.h>
-#include <interfaces/core/icoreproxy.h>
 #include "ui_imagecollectiondialog.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	class ImageCollectionDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LHTR::ImageCollectionDialog)
 
 		Ui::ImageCollectionDialog Ui_;
 	public:
@@ -50,5 +48,4 @@ namespace LHTR
 		bool PreviewsAreLinks () const;
 		PreviewSize GetPreviewSize () const;
 	};
-}
 }

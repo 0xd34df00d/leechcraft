@@ -11,21 +11,16 @@
 #include <QDialog>
 #include "ui_inserttabledialog.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	class InsertTableDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::InsertTableDialog Ui_;
 	public:
-		InsertTableDialog (QWidget* = 0);
+		explicit InsertTableDialog (QWidget* = nullptr);
 
 		QString GetCaption () const;
 		int GetRows () const;
 		int GetColumns () const;
 	};
-}
 }

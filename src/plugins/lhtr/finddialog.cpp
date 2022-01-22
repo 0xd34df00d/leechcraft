@@ -10,28 +10,20 @@
 #include <QWebView>
 #include <QWebFrame>
 #include <QTextEdit>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	FindObjectProxy::FindObjectProxy (QWebView *view)
-	: View_ (view)
-	, HTML_ (0)
+	: View_ { view }
 	{
 	}
 
 	FindObjectProxy::FindObjectProxy (QTextEdit *edit)
-	: View_ (0)
-	, HTML_ (edit)
+	: HTML_ { edit }
 	{
-	}
-
-	void FindObjectProxy::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
 	}
 
 	void FindObjectProxy::Next (const QString& str, bool cs)
@@ -44,7 +36,7 @@ namespace LHTR
 			htmlFlags |= QTextDocument::FindCaseSensitively;
 		}
 
-		Alt<void> ([&str, viewFlags] (QWebView *view) { view->page ()->findText (str, viewFlags); },
+		Alt ([&str, viewFlags] (QWebView *view) { view->page ()->findText (str, viewFlags); },
 				[&str, htmlFlags] (QTextEdit *edit) { edit->find (str, htmlFlags); });
 	}
 
@@ -58,13 +50,13 @@ namespace LHTR
 			htmlFlags |= QTextDocument::FindCaseSensitively;
 		}
 
-		Alt<void> ([&str, viewFlags] (QWebView *view) { view->page ()->findText (str, viewFlags); },
+		Alt ([&str, viewFlags] (QWebView *view) { view->page ()->findText (str, viewFlags); },
 				[&str, htmlFlags] (QTextEdit *edit) { edit->find (str, htmlFlags); } );
 	}
 
 	void FindObjectProxy::Replace (const QString& text, const QString& with, bool cs, bool all)
 	{
-		const auto& origHtml = Alt<QString> ([] (QWebView *view) { return view->page ()->mainFrame ()->toHtml (); },
+		const auto& origHtml = Alt ([] (QWebView *view) { return view->page ()->mainFrame ()->toHtml (); },
 				[] (QTextEdit *edit) { return edit->toPlainText (); });
 		auto html = origHtml;
 
@@ -75,7 +67,7 @@ namespace LHTR
 			const auto e = Util::MakeNotification (FindDialog::tr ("Text editor"),
 					FindDialog::tr ("%n replacement(s) have been made", 0, encounters),
 					Priority::Info);
-			Proxy_->GetEntityManager ()->HandleEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 			html.replace (text, with, csFlag);
 		}
@@ -91,61 +83,61 @@ namespace LHTR
 			const auto& e = Util::MakeNotification (FindDialog::tr ("Text editor"),
 					FindDialog::tr ("No replacements were made"),
 					Priority::Warning);
-			Proxy_->GetEntityManager ()->HandleEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			return;
 		}
 
-		Alt<void> ([&html] (QWebView *view) { view->setHtml (html); },
+		Alt ([&html] (QWebView *view) { view->setHtml (html); },
 				[&html] (QTextEdit *edit) { edit->setPlainText (html); });
 	}
 
-	FindDialog::FindDialog (const FindObjectProxy& proxy, ICoreProxy_ptr coreProxy, QWidget *parent)
+	FindDialog::FindDialog (const FindObjectProxy& proxy, QWidget *parent)
 	: QDialog (parent)
 	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
-		Proxy_.SetProxy (coreProxy);
-		on_FindText__textChanged (QString ());
+
+		for (const auto button : { Ui_.Next_, Ui_.Previous_, Ui_.Replace_, Ui_.ReplaceAll_ })
+			button->setEnabled (false);
+
+		auto replaceChangeHandler = [this] (const QString& text)
+		{
+			const auto& findText = Ui_.FindText_->text ();
+			const bool empty = findText.isEmpty () || text.isEmpty ();
+
+			Ui_.Replace_->setEnabled (!empty);
+			Ui_.ReplaceAll_->setEnabled (!empty);
+		};
+
+		connect (Ui_.ReplaceText_,
+				&QLineEdit::textChanged,
+				replaceChangeHandler);
+		connect (Ui_.FindText_,
+				&QLineEdit::textChanged,
+				[this, replaceChangeHandler] (const QString& text)
+				{
+					const bool empty = text.isEmpty ();
+					Ui_.Next_->setEnabled (!empty);
+					Ui_.Previous_->setEnabled (!empty);
+
+					replaceChangeHandler (Ui_.ReplaceText_->text ());
+				});
+		connect (Ui_.Next_,
+				&QPushButton::released,
+				[this] { Proxy_.Next (Ui_.FindText_->text (), IsCaseSensitive ()); });
+		connect (Ui_.Previous_,
+				&QPushButton::released,
+				[this] { Proxy_.Previous (Ui_.FindText_->text (), IsCaseSensitive ()); });
+		connect (Ui_.Replace_,
+				&QPushButton::released,
+				[this] { Proxy_.Replace (Ui_.FindText_->text (), Ui_.ReplaceText_->text (), IsCaseSensitive (), false); });
+		connect (Ui_.ReplaceAll_,
+				&QPushButton::released,
+				[this] { Proxy_.Replace (Ui_.FindText_->text (), Ui_.ReplaceText_->text (), IsCaseSensitive (), true); });
 	}
 
-	void FindDialog::on_FindText__textChanged (const QString& text)
+	bool FindDialog::IsCaseSensitive () const
 	{
-		const bool empty = text.isEmpty ();
-		Ui_.Next_->setEnabled (!empty);
-		Ui_.Previous_->setEnabled (!empty);
-
-		on_ReplaceText__textChanged (Ui_.ReplaceText_->text ());
+		return Ui_.CaseSensitive_->checkState () == Qt::Checked;
 	}
-
-	void FindDialog::on_ReplaceText__textChanged (const QString& text)
-	{
-		const auto& findText = Ui_.FindText_->text ();
-		const bool empty = findText.isEmpty () || text.isEmpty ();
-
-		Ui_.Replace_->setEnabled (!empty);
-		Ui_.ReplaceAll_->setEnabled (!empty);
-	}
-
-	void FindDialog::on_Next__released ()
-	{
-		Proxy_.Next (Ui_.FindText_->text (), Ui_.CaseSensitive_->checkState () == Qt::Checked);
-	}
-
-	void FindDialog::on_Previous__released ()
-	{
-		Proxy_.Previous (Ui_.FindText_->text (), Ui_.CaseSensitive_->checkState () == Qt::Checked);
-	}
-
-	void FindDialog::on_Replace__released ()
-	{
-		Proxy_.Replace (Ui_.FindText_->text (), Ui_.ReplaceText_->text (),
-				Ui_.CaseSensitive_->checkState () == Qt::Checked, false);
-	}
-
-	void FindDialog::on_ReplaceAll__released ()
-	{
-		Proxy_.Replace (Ui_.FindText_->text (), Ui_.ReplaceText_->text (),
-				Ui_.CaseSensitive_->checkState () == Qt::Checked, true);
-	}
-}
 }
