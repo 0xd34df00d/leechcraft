@@ -46,7 +46,7 @@ namespace LC::LHTR
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("LeechCraft HTML Text editoR.");
+		return tr ("Full-blown Blink-based HTML text editor.");
 	}
 
 	QIcon Plugin::GetIcon () const

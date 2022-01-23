@@ -113,9 +113,9 @@ namespace LC::LHTR
 		Alt (viewWorker, editWorker);
 	}
 
-	FindDialog::FindDialog (const FindObjectProxy& proxy, QWidget *parent)
-	: QDialog (parent)
-	, Proxy_ (proxy)
+	FindDialog::FindDialog (FindObjectProxy proxy, QWidget *parent)
+	: QDialog { parent }
+	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 

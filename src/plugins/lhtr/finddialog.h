@@ -40,7 +40,7 @@ namespace LC::LHTR
 		Ui::FindDialog Ui_;
 		FindObjectProxy Proxy_;
 	public:
-		explicit FindDialog (const FindObjectProxy&, QWidget* = nullptr);
+		explicit FindDialog (FindObjectProxy, QWidget* = nullptr);
 	private:
 		bool IsCaseSensitive () const;
 	};

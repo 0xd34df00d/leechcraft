@@ -56,7 +56,8 @@
           <string>Next</string>
          </property>
          <property name="icon">
-          <iconset theme="arrow-down"/>
+          <iconset theme="arrow-down">
+           <normaloff>.</normaloff>.</iconset>
          </property>
         </widget>
        </item>
@@ -66,7 +67,8 @@
           <string>Previous</string>
          </property>
          <property name="icon">
-          <iconset theme="arrow-up"/>
+          <iconset theme="arrow-up">
+           <normaloff>.</normaloff>.</iconset>
          </property>
         </widget>
        </item>
