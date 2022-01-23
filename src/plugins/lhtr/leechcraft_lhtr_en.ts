@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>FindDialog</name>
     <message>
@@ -14,32 +14,32 @@
         <translation>Find:</translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="34"/>
+        <location filename="finddialog.ui" line="38"/>
         <source>Replace:</source>
         <translation>Replace:</translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="48"/>
+        <location filename="finddialog.ui" line="56"/>
         <source>Next</source>
         <translation>Next</translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="58"/>
+        <location filename="finddialog.ui" line="67"/>
         <source>Previous</source>
         <translation>Previous</translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="68"/>
+        <location filename="finddialog.ui" line="78"/>
         <source>Replace</source>
         <translation>Replace</translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="75"/>
+        <location filename="finddialog.ui" line="85"/>
         <source>Replace all</source>
         <translation>Replace all</translation>
     </message>
     <message>
-        <location filename="finddialog.ui" line="86"/>
+        <location filename="finddialog.ui" line="96"/>
         <source>Case sensitive</source>
         <translation>Case sensitive</translation>
     </message>
@@ -229,48 +229,15 @@
     </message>
 </context>
 <context>
-    <name>LC::LHTR</name>
-    <message utf8="true">
-        <location filename="imagecollectiondialog.cpp" line="67"/>
-        <source>Thumbnail (%1×%2)</source>
-        <translation>Thumbnail (%1×%2)</translation>
-    </message>
-    <message utf8="true">
-        <location filename="imagecollectiondialog.cpp" line="68"/>
-        <source>Preview (%1×%2)</source>
-        <translation>Preview (%1×%2)</translation>
-    </message>
-    <message utf8="true">
-        <location filename="imagecollectiondialog.cpp" line="69"/>
-        <source>Full (%1×%2)</source>
-        <translation>Full (%1×%2)</translation>
-    </message>
-    <message>
-        <location filename="imageinfosmodel.cpp" line="44"/>
-        <source>Image</source>
-        <translation>Image</translation>
-    </message>
-    <message>
-        <location filename="imageinfosmodel.cpp" line="44"/>
-        <source>Size</source>
-        <translation>Size</translation>
-    </message>
-    <message>
-        <location filename="imageinfosmodel.cpp" line="44"/>
-        <source>Alt</source>
-        <translation>Alt</translation>
-    </message>
-</context>
-<context>
     <name>LC::LHTR::FindDialog</name>
     <message>
-        <location filename="finddialog.cpp" line="96"/>
-        <location filename="finddialog.cpp" line="112"/>
+        <location filename="finddialog.cpp" line="67"/>
+        <location filename="finddialog.cpp" line="83"/>
         <source>Text editor</source>
         <translation>Text editor</translation>
     </message>
     <message numerus="yes">
-        <location filename="finddialog.cpp" line="97"/>
+        <location filename="finddialog.cpp" line="68"/>
         <source>%n replacement(s) have been made</source>
         <translation>
             <numerusform>%n replacement have been made</numerusform>
@@ -278,226 +245,257 @@
         </translation>
     </message>
     <message>
-        <location filename="finddialog.cpp" line="113"/>
+        <location filename="finddialog.cpp" line="84"/>
         <source>No replacements were made</source>
         <translation>No replacements were made</translation>
     </message>
 </context>
 <context>
+    <name>LC::LHTR::ImageCollectionDialog</name>
+    <message>
+        <location filename="imagecollectiondialog.cpp" line="40"/>
+        <source>Thumbnail (%1×%2)</source>
+        <translation>Thumbnail (%1×%2)</translation>
+    </message>
+    <message>
+        <location filename="imagecollectiondialog.cpp" line="41"/>
+        <source>Preview (%1×%2)</source>
+        <translation>Preview (%1×%2)</translation>
+    </message>
+    <message>
+        <location filename="imagecollectiondialog.cpp" line="42"/>
+        <source>Full (%1×%2)</source>
+        <translation>Full (%1×%2)</translation>
+    </message>
+</context>
+<context>
     <name>LC::LHTR::ImageDialog</name>
     <message>
-        <location filename="imagedialog.cpp" line="86"/>
+        <location filename="imagedialog.cpp" line="65"/>
         <source>Select image</source>
         <translation>Select image</translation>
     </message>
 </context>
 <context>
+    <name>LC::LHTR::ImageInfosModel</name>
+    <message>
+        <location filename="imageinfosmodel.cpp" line="22"/>
+        <source>Image</source>
+        <translation>Image</translation>
+    </message>
+    <message>
+        <location filename="imageinfosmodel.cpp" line="22"/>
+        <source>Size</source>
+        <translation>Size</translation>
+    </message>
+    <message>
+        <location filename="imageinfosmodel.cpp" line="22"/>
+        <source>Alt</source>
+        <translation>Alt</translation>
+    </message>
+</context>
+<context>
     <name>LC::LHTR::Plugin</name>
     <message>
-        <location filename="lhtr.cpp" line="72"/>
-        <source>LeechCraft HTML Text editoR.</source>
-        <translation>LeechCraft HTML Text editoR.</translation>
+        <location filename="lhtr.cpp" line="49"/>
+        <source>Full-blown Blink-based HTML text editor.</source>
+        <translation>Full-blown Blink-based HTML text editor.</translation>
     </message>
 </context>
 <context>
     <name>LC::LHTR::RichEditorWidget</name>
     <message>
-        <location filename="richeditorwidget.cpp" line="141"/>
+        <location filename="richeditorwidget.cpp" line="165"/>
         <source>Find</source>
         <translation>Find</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="142"/>
+        <location filename="richeditorwidget.cpp" line="166"/>
         <source>Replace</source>
         <translation>Replace</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="186"/>
+        <location filename="richeditorwidget.cpp" line="164"/>
         <source>Editor bar</source>
         <translation>Editor bar</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="220"/>
+        <location filename="richeditorwidget.cpp" line="233"/>
         <source>Bold</source>
         <translation>Bold</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="223"/>
+        <location filename="richeditorwidget.cpp" line="234"/>
         <source>Italic</source>
         <translation>Italic</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="226"/>
+        <location filename="richeditorwidget.cpp" line="235"/>
         <source>Underline</source>
         <translation>Underline</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="230"/>
+        <location filename="richeditorwidget.cpp" line="237"/>
         <source>Strikethrough</source>
         <translation>Strikethrough</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="232"/>
+        <location filename="richeditorwidget.cpp" line="238"/>
         <source>Subscript</source>
         <translation>Subscript</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="234"/>
+        <location filename="richeditorwidget.cpp" line="239"/>
         <source>Superscript</source>
         <translation>Superscript</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="248"/>
+        <location filename="richeditorwidget.cpp" line="253"/>
         <source>Code</source>
         <translation>Code</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="253"/>
+        <location filename="richeditorwidget.cpp" line="259"/>
         <source>Align left</source>
         <translation>Align left</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="255"/>
+        <location filename="richeditorwidget.cpp" line="260"/>
         <source>Align center</source>
         <translation>Align center</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="257"/>
+        <location filename="richeditorwidget.cpp" line="261"/>
         <source>Align right</source>
         <translation>Align right</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="259"/>
+        <location filename="richeditorwidget.cpp" line="262"/>
         <source>Align justify</source>
         <translation>Align justify</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="270"/>
+        <location filename="richeditorwidget.cpp" line="273"/>
         <source>Headings</source>
         <translation>Headings</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="276"/>
+        <location filename="richeditorwidget.cpp" line="280"/>
         <source>Heading %1</source>
         <translation>Heading %1</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="280"/>
+        <location filename="richeditorwidget.cpp" line="283"/>
         <source>Paragraph</source>
         <translation>Paragraph</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="285"/>
+        <location filename="richeditorwidget.cpp" line="287"/>
         <source>Background color...</source>
         <translation>Background color...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="290"/>
+        <location filename="richeditorwidget.cpp" line="297"/>
         <source>Text color...</source>
         <translation>Text color...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="295"/>
+        <location filename="richeditorwidget.cpp" line="307"/>
         <source>Font...</source>
         <translation>Font...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="301"/>
+        <location filename="richeditorwidget.cpp" line="313"/>
         <source>Mark as quote</source>
         <translation>Mark as quote</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="305"/>
+        <location filename="richeditorwidget.cpp" line="317"/>
         <source>Indent more</source>
         <translation>Indent more</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="306"/>
+        <location filename="richeditorwidget.cpp" line="318"/>
         <source>Indent less</source>
         <translation>Indent less</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="310"/>
+        <location filename="richeditorwidget.cpp" line="322"/>
         <source>Ordered list</source>
         <translation>Ordered list</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="311"/>
+        <location filename="richeditorwidget.cpp" line="323"/>
         <source>Unordered list</source>
         <translation>Unordered list</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="315"/>
+        <location filename="richeditorwidget.cpp" line="327"/>
         <source>Insert link...</source>
         <translation>Insert link...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="524"/>
+        <location filename="richeditorwidget.cpp" line="550"/>
         <source>Insert image...</source>
         <translation>Insert image...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="329"/>
-        <source>Toggle view</source>
-        <translation>Toggle view</translation>
-    </message>
-    <message>
-        <location filename="richeditorwidget.cpp" line="532"/>
+        <location filename="richeditorwidget.cpp" line="558"/>
         <source>Insert image by link...</source>
         <translation>Insert image by link...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="536"/>
+        <location filename="richeditorwidget.cpp" line="562"/>
         <source>Insert image from collection</source>
         <translation>Insert image from collection</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="558"/>
+        <location filename="richeditorwidget.cpp" line="588"/>
         <source>Tables...</source>
         <translation>Tables...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="566"/>
+        <location filename="richeditorwidget.cpp" line="596"/>
         <source>Insert table...</source>
         <translation>Insert table...</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="573"/>
+        <location filename="richeditorwidget.cpp" line="603"/>
         <source>Insert row above</source>
         <translation>Insert row above</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="579"/>
+        <location filename="richeditorwidget.cpp" line="608"/>
         <source>Insert row below</source>
         <translation>Insert row below</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="585"/>
+        <location filename="richeditorwidget.cpp" line="613"/>
         <source>Insert column to the left</source>
         <translation>Insert column to the left</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="591"/>
+        <location filename="richeditorwidget.cpp" line="618"/>
         <source>Insert column to the right</source>
         <translation>Insert column to the right</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="599"/>
+        <location filename="richeditorwidget.cpp" line="625"/>
         <source>Remove row</source>
         <translation>Remove row</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="604"/>
+        <location filename="richeditorwidget.cpp" line="630"/>
         <source>Remove column</source>
         <translation>Remove column</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="1130"/>
+        <location filename="richeditorwidget.cpp" line="1072"/>
         <source>Insert link</source>
         <translation>Insert link</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.cpp" line="1130"/>
+        <location filename="richeditorwidget.cpp" line="1072"/>
         <source>Enter URL:</source>
         <translation>Enter URL:</translation>
     </message>
@@ -505,17 +503,12 @@
 <context>
     <name>RichEditorWidget</name>
     <message>
-        <location filename="richeditorwidget.ui" line="30"/>
+        <location filename="richeditorwidget.ui" line="39"/>
         <source>View</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="richeditorwidget.ui" line="40"/>
-        <source>about:blank</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="richeditorwidget.ui" line="49"/>
+        <location filename="richeditorwidget.ui" line="61"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
