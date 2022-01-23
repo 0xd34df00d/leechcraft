@@ -771,14 +771,7 @@ namespace LC::LHTR
 
 	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
 	{
-		disconnect (Ui_.HTML_,
-				SIGNAL (textChanged ()),
-				this,
-				SIGNAL (textChanged ()));
-		disconnect (Ui_.View_->page (),
-				SIGNAL (contentsChanged ()),
-				this,
-				SIGNAL (textChanged ()));
+		QSignalBlocker blocker { this };
 
 		switch (idx)
 		{
@@ -805,15 +798,6 @@ namespace LC::LHTR
 
 			break;
 		}
-
-		connect (Ui_.HTML_,
-				SIGNAL (textChanged ()),
-				this,
-				SIGNAL (textChanged ()));
-		connect (Ui_.View_->page (),
-				SIGNAL (contentsChanged ()),
-				this,
-				SIGNAL (textChanged ()));
 	}
 
 	void RichEditorWidget::setupJS ()
