@@ -379,8 +379,7 @@ namespace LC::LHTR
 		expanded.replace ('\n', "\\n");
 		expanded.replace ('\'', "\\'");
 
-		auto frame = Ui_.View_->page ()->mainFrame ();
-		frame->evaluateJavaScript (R"delim(
+		ExecJS (R"delim(
 			var s = window.getSelection();
 			if (!s.rangeCount || !s.getRangeAt(0).endContainer)
 				document.body.focus();
@@ -571,11 +570,10 @@ namespace LC::LHTR
 			return;
 		}
 
-		auto frame = Ui_.View_->page ()->mainFrame ();
-		const QString& js = arg.isEmpty () ?
-				QString ("document.execCommand('%1', false, null)").arg (cmd) :
-				QString ("document.execCommand('%1', false, '%2')").arg (cmd, arg.replace ('\n', "\\n"));
-		frame->evaluateJavaScript (js);
+		const auto& js = arg.isEmpty () ?
+				u"document.execCommand('%1', false, null)"_qsv.arg (cmd) :
+				u"document.execCommand('%1', false, '%2')"_qsv.arg (cmd, arg.replace ('\n', "\\n"));
+		ExecJS (js);
 	}
 
 	bool RichEditorWidget::QueryCommandState (const QString& cmd)
@@ -899,8 +897,7 @@ namespace LC::LHTR
 				"	parentItem.outerHTML = parentItem.innerHTML;"
 				"}";
 
-		auto frame = Ui_.View_->page ()->mainFrame ();
-		frame->evaluateJavaScript (jstr);
+		ExecJS (jstr);
 	}
 
 	void RichEditorWidget::handleInlineCmd ()
@@ -925,7 +922,7 @@ namespace LC::LHTR
 			"}";
 
 		auto frame = Ui_.View_->page ()->mainFrame ();
-		frame->evaluateJavaScript (jstr);
+		ExecJS (jstr);
 
 		const auto& fullHtml = frame->documentElement ().toOuterXml ();
 		Ui_.View_->setContent (ExpandCustomTags (fullHtml).toUtf8 (), MIMEType);
@@ -1021,7 +1018,7 @@ namespace LC::LHTR
 		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
 		js += "}";
 
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		ExecJS (js);
 	}
 
 	void RichEditorWidget::handleInsertColumn ()
@@ -1038,7 +1035,7 @@ namespace LC::LHTR
 		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
 		js += "}";
 
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		ExecJS (js);
 	}
 
 	void RichEditorWidget::handleRemoveRow ()
@@ -1048,7 +1045,7 @@ namespace LC::LHTR
 		js += "var table = findParent(row, 'table');";
 		js += "table.deleteRow(row.rowIndex);";
 
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		ExecJS (js);
 	}
 
 	void RichEditorWidget::handleRemoveColumn ()
@@ -1060,7 +1057,7 @@ namespace LC::LHTR
 		js += "for (var r = 0; r < table.rows.length; ++r)";
 		js += "    table.rows[r].deleteCell(colIdx);";
 
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		ExecJS (js);
 	}
 
 	void RichEditorWidget::handleInsertLink ()
