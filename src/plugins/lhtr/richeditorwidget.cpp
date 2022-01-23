@@ -441,18 +441,6 @@ const findParent = (item, name) => {
 			return FindAction_;
 		case EditorAction::Replace:
 			return ReplaceAction_;
-		case EditorAction::Bold:
-			return Bold_;
-		case EditorAction::Italic:
-			return Italic_;
-		case EditorAction::Underline:
-			return Underline_;
-		case EditorAction::InsertLink:
-			return InsertLink_;
-		case EditorAction::InsertImage:
-			return InsertImage_;
-		case EditorAction::ToggleView:
-			return ToggleView_;
 		}
 
 		return nullptr;

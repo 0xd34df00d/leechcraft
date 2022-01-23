@@ -47,30 +47,6 @@ namespace LC
 		/** @brief Open "Replace" dialog.
 		 */
 		Replace,
-
-		/** @brief Toggle the boldness of the selected text's font.
-		 */
-		Bold,
-
-		/** @brief Toggle the italicness of the selected text's font.
-		 */
-		Italic,
-
-		/** @brief Toggle underlining of the selected text's font.
-		 */
-		Underline,
-
-		/** @brief Open the dialog for inserting a hyperlink.
-		 */
-		InsertLink,
-
-		/** @brief Open the dialog for inserting an image.
-		 */
-		InsertImage,
-
-		/** @brief Toggle between WYSIWYG and source view, if applicable.
-		 */
-		ToggleView
 	};
 }
 
