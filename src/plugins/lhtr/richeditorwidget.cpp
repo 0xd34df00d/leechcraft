@@ -54,8 +54,6 @@
 
 namespace LC::LHTR
 {
-	const QString MIMEType = "application/xhtml+xml";
-
 	namespace
 	{
 		class EditorPage : public QWebEnginePage
@@ -65,7 +63,7 @@ namespace LC::LHTR
 		protected:
 			bool acceptNavigationRequest (const QUrl& url, NavigationType type, bool) override
 			{
-				if (type == NavigationTypeTyped || url.scheme () == "data")
+				if (type == NavigationTypeTyped || url.scheme () == "data"_ql)
 					return true;
 
 				if (type == NavigationTypeLinkClicked || type == NavigationTypeOther)
@@ -82,30 +80,30 @@ namespace LC::LHTR
 			RichEditorWidget& Editor_;
 			const QByteArray PageKey_;
 		public:
-			RequestInterceptor (const QByteArray& pageKey, RichEditorWidget& editor)
+			RequestInterceptor (QByteArray pageKey, RichEditorWidget& editor)
 			: QWebEngineUrlRequestInterceptor { &editor }
 			, Editor_ { editor }
-			, PageKey_ { pageKey }
+			, PageKey_ { std::move (pageKey) }
 			{
 			}
 		protected:
 			void interceptRequest (QWebEngineUrlRequestInfo& info) override
 			{
 				const auto& url = info.requestUrl ();
-				if (url.host () != "lhtr")
+				if (url.host () != "lhtr"_ql)
 					return;
 
 				info.block (true);
 
 				const QUrlQuery query { url };
-				if (query.queryItemValue ("key") != PageKey_)
+				if (query.queryItemValue (QStringLiteral ("key")) != PageKey_)
 				{
 					qWarning () << "wrong page key"
 							<< url;
 					return;
 				}
 
-				if (url.path () == "/notify")
+				if (url.path () == "/notify"_ql)
 					emit Editor_.textChanged ();
 			}
 		};
@@ -170,15 +168,13 @@ const findParent = (item, name) => {
 		FindAction_->setProperty ("ActionIcon", "edit-find");
 		FindAction_->setShortcut (QKeySequence::Find);
 		connect (FindAction_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleFind ()));
+				&QAction::triggered,
+				[this] { OpenFindReplace (true); });
 		ReplaceAction_->setProperty ("ActionIcon", "edit-find-replace");
 		ReplaceAction_->setShortcut (QKeySequence::Replace);
 		connect (ReplaceAction_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleReplace ()));
+				&QAction::triggered,
+				[this] { OpenFindReplace (false); });
 
 		const auto pageKey = QByteArray::number (QRandomGenerator::global ()->generate ());
 		Ui_.setupUi (this);
@@ -193,22 +189,35 @@ const findParent = (item, name) => {
 					emit textChanged ();
 				});
 
-		handleBgColorSettings ();
+		connect (Ui_.TabWidget_,
+				&QTabWidget::currentChanged,
+				this,
+				&RichEditorWidget::SyncTabs);
+
 		XmlSettingsManager::Instance ().RegisterObject ({ "BgColor", "HTMLBgColor" },
-				this, "handleBgColorSettings");
+				this,
+				[this]
+				{
+					auto& xsm = XmlSettingsManager::Instance ();
+					InternalSetBgColor (xsm.property ("BgColor").value<QColor> (), ContentType::HTML);
+					InternalSetBgColor (xsm.property ("HTMLBgColor").value<QColor> (), ContentType::PlainText);
+				});
 
 		Ui_.View_->installEventFilter (this);
 
 		connect (Ui_.View_->page (),
-				SIGNAL (selectionChanged ()),
-				this,
-				SLOT (updateActions ()));
+				&QWebEnginePage::selectionChanged,
+				[this]
+				{
+					for (const auto& [cmd, act] : HtmlActions_)
+						act->setChecked (QueryCommandState (cmd));
+				});
 
 		qobject_cast<QVBoxLayout*> (Ui_.ViewTab_->layout ())->insertWidget (0, ViewBar_);
 
 		auto addCmd = [this] (const QString& name,
 				const QString& icon,
-				const QString& cmd,
+				QStringView cmd,
 				auto addable,
 				const QString& arg = {})
 		{
@@ -221,26 +230,17 @@ const findParent = (item, name) => {
 			return act;
 		};
 
-		Bold_ = addCmd (tr ("Bold"), "format-text-bold",
-				"bold", ViewBar_, {});
-		Bold_->setCheckable (true);
-		Italic_ = addCmd (tr ("Italic"), "format-text-italic",
-				"italic", ViewBar_, {});
-		Italic_->setCheckable (true);
-		Underline_ = addCmd (tr ("Underline"), "format-text-underline",
-				"underline", ViewBar_, {});
-		Underline_->setCheckable (true);
+		addCmd (tr ("Bold"), QStringLiteral ("format-text-bold"), u"bold", ViewBar_)->setCheckable (true);
+		addCmd (tr ("Italic"), QStringLiteral ("format-text-italic"), u"italic", ViewBar_)->setCheckable (true);
+		addCmd (tr ("Underline"), QStringLiteral ("format-text-underline"), u"underline", ViewBar_)->setCheckable (true);
 
-		addCmd (tr ("Strikethrough"), "format-text-strikethrough",
-				"strikeThrough", ViewBar_, {})->setCheckable (true);
-		addCmd (tr ("Subscript"), "format-text-subscript",
-				"subscript", ViewBar_, {})->setCheckable (true);
-		addCmd (tr ("Superscript"), "format-text-superscript",
-				"superscript", ViewBar_, {})->setCheckable (true);
+		addCmd (tr ("Strikethrough"), QStringLiteral ("format-text-strikethrough"), u"strikeThrough", ViewBar_)->setCheckable (true);
+		addCmd (tr ("Subscript"), QStringLiteral ("format-text-subscript"), u"subscript", ViewBar_)->setCheckable (true);
+		addCmd (tr ("Superscript"), QStringLiteral ("format-text-superscript"), u"superscript", ViewBar_)->setCheckable (true);
 
 		auto addInlineCmd = [this] (const QString& name,
 				const QString& icon,
-				const QString& cmd,
+				QStringView cmd,
 				auto addable)
 		{
 			auto act = addable->addAction (name,
@@ -250,16 +250,16 @@ const findParent = (item, name) => {
 			return act;
 		};
 
-		addInlineCmd (tr ("Code"), "code-context", "code", ViewBar_);
+		addInlineCmd (tr ("Code"), QStringLiteral ("code-context"), u"code", ViewBar_);
 
 		ViewBar_->addSeparator ();
 
 		auto alignActs =
 		{
-			addCmd (tr ("Align left"), "format-justify-left", "justifyLeft", ViewBar_, {}),
-			addCmd (tr ("Align center"), "format-justify-center", "justifyCenter", ViewBar_, {}),
-			addCmd (tr ("Align right"), "format-justify-right", "justifyRight", ViewBar_, {}),
-			addCmd (tr ("Align justify"), "format-justify-fill", "justifyFull", ViewBar_, {})
+			addCmd (tr ("Align left"), QStringLiteral ("format-justify-left"), u"justifyLeft", ViewBar_, {}),
+			addCmd (tr ("Align center"), QStringLiteral ("format-justify-center"), u"justifyCenter", ViewBar_, {}),
+			addCmd (tr ("Align right"), QStringLiteral ("format-justify-right"), u"justifyRight", ViewBar_, {}),
+			addCmd (tr ("Align justify"), QStringLiteral ("format-justify-fill"), u"justifyFull", ViewBar_, {})
 		};
 		const auto alignGroup = new QActionGroup (this);
 		for (QAction *act : alignActs)
@@ -271,16 +271,16 @@ const findParent = (item, name) => {
 		ViewBar_->addSeparator ();
 
 		const auto headMenu = new QMenu (tr ("Headings"));
-		headMenu->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("view-list-details"));
+		headMenu->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon (QStringLiteral ("view-list-details")));
 		ViewBar_->addAction (headMenu->menuAction ());
 		const int maxHeadingLevel = 6;
 		for (int i = 1; i <= maxHeadingLevel; ++i)
 		{
 			const auto& num = QString::number (i);
-			addCmd (tr ("Heading %1").arg (i), {}, "formatBlock", headMenu, "h" + num);
+			addCmd (tr ("Heading %1").arg (i), {}, u"formatBlock", headMenu, "h" + num);
 		}
 		headMenu->addSeparator ();
-		addCmd (tr ("Paragraph"), QString (), "formatBlock", headMenu, "p");
+		addCmd (tr ("Paragraph"), QString (), u"formatBlock", headMenu, QStringLiteral ("p"));
 
 		ViewBar_->addSeparator ();
 
@@ -290,7 +290,7 @@ const findParent = (item, name) => {
 					{
 						const auto& color = QColorDialog::getColor (Qt::white, this);
 						if (color.isValid ())
-							ExecCommand ("hiliteColor", color.name ());
+							ExecCommand (u"hiliteColor", color.name ());
 					});
 		bgColor->setProperty ("ActionIcon", "format-fill-color");
 
@@ -300,7 +300,7 @@ const findParent = (item, name) => {
 					{
 						const auto& color = QColorDialog::getColor (Qt::black, this);
 						if (color.isValid ())
-							ExecCommand ("foreColor", color.name ());
+							ExecCommand (u"foreColor", color.name ());
 					});
 		fgColor->setProperty ("ActionIcon", "format-text-color");
 
@@ -310,42 +310,31 @@ const findParent = (item, name) => {
 		font->setProperty ("ActionIcon", "list-add-font");
 		ViewBar_->addSeparator ();
 
-		addCmd (tr ("Mark as quote"), "mail-reply-sender", "formatBlock", ViewBar_, "blockquote");
+		addCmd (tr ("Mark as quote"), QStringLiteral ("mail-reply-sender"), u"formatBlock", ViewBar_, QStringLiteral ("blockquote"));
 
 		ViewBar_->addSeparator ();
 
-		addCmd (tr ("Indent more"), "format-indent-more", "indent", ViewBar_, {});
-		addCmd (tr ("Indent less"), "format-indent-less", "outdent", ViewBar_, {});
+		addCmd (tr ("Indent more"), QStringLiteral ("format-indent-more"), u"indent", ViewBar_);
+		addCmd (tr ("Indent less"), QStringLiteral ("format-indent-less"), u"outdent", ViewBar_);
 
 		ViewBar_->addSeparator ();
 
-		addCmd (tr ("Ordered list"), "format-list-ordered", "insertOrderedList", ViewBar_, {});
-		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", ViewBar_, {});
+		addCmd (tr ("Ordered list"), QStringLiteral ("format-list-ordered"), u"insertOrderedList", ViewBar_);
+		addCmd (tr ("Unordered list"), QStringLiteral ("format-list-unordered"), u"insertUnorderedList", ViewBar_);
 
 		ViewBar_->addSeparator ();
 
-		InsertLink_ = ViewBar_->addAction (tr ("Insert link..."),
-					this,
-					&RichEditorWidget::HandleInsertLink);
-		InsertLink_->setProperty ("ActionIcon", "insert-link");
+		const auto insertLink = ViewBar_->addAction (tr ("Insert link..."),
+				this,
+				&RichEditorWidget::HandleInsertLink);
+		insertLink->setProperty ("ActionIcon", "insert-link");
 
 		SetupImageMenu ();
 		SetupTableMenu ();
 
 		Ui_.View_->page ()->scripts ().insert (GetInjectableScript (pageKey));
 
-		ToggleView_ = new QAction (tr ("Toggle view"), this);
-		connect (ToggleView_,
-				&QAction::triggered,
-				[this]
-				{
-					if (Ui_.TabWidget_->currentIndex () == 1)
-						Ui_.TabWidget_->setCurrentIndex (0);
-					else
-						Ui_.TabWidget_->setCurrentIndex (1);
-				});
-
-		SetContents ("", ContentType::HTML);
+		SetContents ({}, ContentType::HTML);
 
 		new HtmlHighlighter (Ui_.HTML_->document ());
 
@@ -404,13 +393,13 @@ const findParent = (item, name) => {
 			break;
 		case ContentType::PlainText:
 			contents = contents.toHtmlEscaped ();
-			contents.replace ("\r\n", "<br/>");
-			contents.replace ("\n", "<br/>");
-			contents.replace ("\r", "<br/>");
+			contents.replace ("\r\n"_ql, "<br/>"_ql);
+			contents.replace ('\n', "<br/>"_ql);
+			contents.replace ('\r', "<br/>"_ql);
 			content += "<pre>" + contents + "</pre>";
 			break;
 		}
-		content += "</body></html>";
+		content += "</body></html>"_ql;
 
 		if (type == ContentType::HTML)
 			content = ExpandCustomTags (content);
@@ -466,8 +455,8 @@ const findParent = (item, name) => {
 	{
 		auto expanded = ExpandCustomTags (html, ExpandMode::PartialHTML);
 
-		expanded.replace ('\n', "\\n");
-		expanded.replace ('\'', "\\'");
+		expanded.replace ('\n', "\\n"_ql);
+		expanded.replace ('\'', "\\'"_ql);
 
 		ExecJS (R"delim(
 			var s = window.getSelection();
@@ -563,12 +552,12 @@ const findParent = (item, name) => {
 		auto imagesButton = new QToolButton;
 		imagesButton->setMenu (imagesMenu);
 		imagesButton->setPopupMode (QToolButton::InstantPopup);
-		imagesButton->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("insert-image"));
+		imagesButton->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon (QStringLiteral ("insert-image")));
 		ViewBar_->addWidget (imagesButton);
 
-		InsertImage_ = imagesMenu->addAction (tr ("Insert image by link..."),
-					this,
-					SLOT (handleInsertImage ()));
+		imagesMenu->addAction (tr ("Insert image by link..."),
+				this,
+				&RichEditorWidget::HandleInsertImage);
 
 		auto fromCollection = imagesMenu->addMenu (tr ("Insert image from collection"));
 
@@ -578,11 +567,15 @@ const findParent = (item, name) => {
 			const auto plugin = qobject_cast<IImgSource*> (pluginObj);
 			for (const auto& service : plugin->GetServices ())
 			{
-				const auto act = fromCollection->addAction (service.Name_,
+				fromCollection->addAction (service.Name_,
 						this,
-						SLOT (handleInsertImageFromCollection ()));
-				act->setProperty ("LHTR/Plugin", QVariant::fromValue (pluginObj));
-				act->setProperty ("LHTR/Service", service.ID_);
+						[=]
+						{
+							connect (plugin->RequestImages (service.ID_)->GetQObject (),
+									SIGNAL (ready ()),
+									this,
+									SLOT (handleCollectionImageChosen ()));
+						});
 				added = true;
 			}
 		}
@@ -597,50 +590,46 @@ const findParent = (item, name) => {
 		auto tablesButton = new QToolButton;
 		tablesButton->setMenu (tablesMenu);
 		tablesButton->setPopupMode (QToolButton::InstantPopup);
-		tablesButton->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("view-form-table"));
+		tablesButton->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon (QStringLiteral ("view-form-table")));
 		ViewBar_->addWidget (tablesButton);
 
 		auto table = tablesMenu->addAction (tr ("Insert table..."),
 					this,
-					SLOT (handleInsertTable ()));
+					&RichEditorWidget::HandleInsertTable);
 		table->setProperty ("ActionIcon", "insert-table");
 
 		tablesMenu->addSeparator ();
 
 		auto addRowAbove = tablesMenu->addAction (tr ("Insert row above"),
 					this,
-					SLOT (handleInsertRow ()));
+					[this] { HandleInsertRow (0); });
 		addRowAbove->setProperty ("ActionIcon", "edit-table-insert-row-above");
-		addRowAbove->setProperty ("LHTR/Shift", 0);
 
 		auto addRowBelow = tablesMenu->addAction (tr ("Insert row below"),
 					this,
-					SLOT (handleInsertRow ()));
+					[this] { HandleInsertRow (1); });
 		addRowBelow->setProperty ("ActionIcon", "edit-table-insert-row-below");
-		addRowBelow->setProperty ("LHTR/Shift", 1);
 
 		auto addColumnLeft = tablesMenu->addAction (tr ("Insert column to the left"),
 					this,
-					SLOT (handleInsertColumn ()));
+					[this] { HandleInsertColumn (0); });
 		addColumnLeft->setProperty ("ActionIcon", "edit-table-insert-column-left");
-		addColumnLeft->setProperty ("LHTR/Shift", 0);
 
 		auto addColumnRight = tablesMenu->addAction (tr ("Insert column to the right"),
 					this,
-					SLOT (handleInsertColumn ()));
+					[this] { HandleInsertColumn (1); });
 		addColumnRight->setProperty ("ActionIcon", "edit-table-insert-column-right");
-		addColumnRight->setProperty ("LHTR/Shift", 1);
 
 		tablesMenu->addSeparator ();
 
 		auto removeRow = tablesMenu->addAction (tr ("Remove row"),
 					this,
-					SLOT (handleRemoveRow ()));
+					&RichEditorWidget::HandleRemoveRow);
 		removeRow->setProperty ("ActionIcon", "edit-table-delete-row");
 
 		auto removeColumn = tablesMenu->addAction (tr ("Remove column"),
 					this,
-					SLOT (handleRemoveColumn ()));
+					&RichEditorWidget::HandleRemoveColumn);
 		removeColumn->setProperty ("ActionIcon", "edit-table-delete-column");
 	}
 
@@ -650,23 +639,23 @@ const findParent = (item, name) => {
 				[&] (QWebEnginePage *page, auto callback) { page->runJavaScript (js, callback); });
 	}
 
-	void RichEditorWidget::ExecCommand (const QString& cmd, QString arg)
+	void RichEditorWidget::ExecCommand (QStringView cmd, QStringView arg)
 	{
-		if (cmd == "insertHTML")
+		if (cmd == u"insertHTML"_qsv)
 		{
-			InsertHTML (arg);
+			InsertHTML (arg.toString ());
 			return;
 		}
 
 		const auto& js = arg.isEmpty () ?
 				u"document.execCommand('%1', false, null)"_qsv.arg (cmd) :
-				u"document.execCommand('%1', false, '%2')"_qsv.arg (cmd, arg.replace ('\n', "\\n"));
+				u"document.execCommand('%1', false, '%2')"_qsv.arg (cmd, arg.toString ().replace ('\n', R"(\n)"_ql));
 		ExecJS (js);
 	}
 
-	bool RichEditorWidget::QueryCommandState (const QString& cmd)
+	bool RichEditorWidget::QueryCommandState (QStringView cmd)
 	{
-		return ExecJSBlocking (u"document.queryCommandState(\"%1\", false, null)"_qsv.arg (cmd)).toBool ();
+		return ExecJSBlocking (uR"(document.queryCommandState("%1", false, null))"_qsv.arg (cmd)).toBool ();
 	}
 
 	void RichEditorWidget::OpenFindReplace (bool)
@@ -728,11 +717,15 @@ const findParent = (item, name) => {
 			html = QString::fromUtf8 (std::bit_cast<char*> (output.bp));
 #endif
 
-			if (prependDoctype && !html.startsWith ("<!DOCTYPE "))
-			{
-				html.prepend ("<!DOCTYPE html>");
-			}
+			if (prependDoctype && !html.startsWith ("<!DOCTYPE "_ql))
+				html.prepend (u"<!DOCTYPE html>"_qsv);
 		}
+	}
+
+	namespace Lits
+	{
+		const QString Tagname = QStringLiteral ("__tagname__");
+		const QString Original = QStringLiteral ("__original__");
 	}
 
 	QString RichEditorWidget::ExpandCustomTags (QString html, ExpandMode mode) const
@@ -751,8 +744,9 @@ const findParent = (item, name) => {
 			return html;
 		}
 
-		if (!doc.documentElement ().hasAttribute ("xmlns"))
-			doc.documentElement ().setAttribute ("xmlns", "http://www.w3.org/1999/xhtml");
+		const auto xmlns = QStringLiteral ("xmlns");
+		if (!doc.documentElement ().hasAttribute (xmlns))
+			doc.documentElement ().setAttribute (xmlns, QStringLiteral ("http://www.w3.org/1999/xhtml"));
 
 		for (const auto& tag : CustomTags_)
 		{
@@ -767,11 +761,10 @@ const findParent = (item, name) => {
 
 				tag.ToKnown_ (elem);
 
-				elem.setAttribute ("__tagname__", tag.TagName_);
-
-				elem.setAttribute ("__original__", origContents.trimmed ());
+				elem.setAttribute (Lits::Tagname, tag.TagName_);
+				elem.setAttribute (Lits::Original, origContents.trimmed ());
 				if (!tag.FromKnown_)
-					elem.setAttribute ("contenteditable", "false");
+					elem.setAttribute (QStringLiteral ("contenteditable"), QStringLiteral ("false"));
 			}
 		}
 
@@ -803,7 +796,7 @@ const findParent = (item, name) => {
 		// Returns whether this is a custom element whose children shall not be processed.
 		bool TryRevertCustomTag (const QHash<QString, IAdvancedHTMLEditor::CustomTag>& customTags, QDomElement elem)
 		{
-			const auto& tagName = elem.attribute ("__tagname__");
+			const auto& tagName = elem.attribute (Lits::Tagname);
 			if (tagName.isEmpty ())
 				return false;
 
@@ -818,7 +811,7 @@ const findParent = (item, name) => {
 
 			const auto& customTag = customTags [tagName];
 
-			const auto& original = elem.attribute ("__original__");
+			const auto& original = elem.attribute (Lits::Original);
 			const auto setOriginal = [&]
 			{
 				if (const auto& maybeOrigDoc = ParseXml (original))
@@ -831,8 +824,8 @@ const findParent = (item, name) => {
 				return true;
 			}
 
-			elem.removeAttribute ("__tagname__");
-			elem.removeAttribute ("__original__");
+			elem.removeAttribute (Lits::Tagname);
+			elem.removeAttribute (Lits::Original);
 			if (!customTag.FromKnown_ (elem))
 			{
 				QString elemRepr;
@@ -872,14 +865,14 @@ const findParent = (item, name) => {
 
 	void RichEditorWidget::SyncHTMLToView () const
 	{
-		Ui_.View_->page ()->runJavaScript (R"(
+		Ui_.View_->page ()->runJavaScript (QStringLiteral (R"(
 (() => {
     if (document.querySelectorAll("parsererror").length) {
         return false;
     }
     return new XMLSerializer().serializeToString(document);
 })();
-			)",
+)"),
 			[pThis = QPointer { this }] (const QVariant& var)
 			{
 				if (!pThis)
@@ -898,16 +891,7 @@ const findParent = (item, name) => {
 			});
 	}
 
-	void RichEditorWidget::handleBgColorSettings ()
-	{
-		const auto& color = XmlSettingsManager::Instance ().property ("BgColor").value<QColor> ();
-		InternalSetBgColor (color, ContentType::HTML);
-
-		const auto& plainColor = XmlSettingsManager::Instance ().property ("HTMLBgColor").value<QColor> ();
-		InternalSetBgColor (plainColor, ContentType::PlainText);
-	}
-
-	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
+	void RichEditorWidget::SyncTabs (int idx)
 	{
 		// Unfortunate to use a shared_ptr where a stack-allocated QSignalBlocker would do,
 		// but, sadly, QtWebEngine requires a copyable callback below.
@@ -924,9 +908,9 @@ const findParent = (item, name) => {
 
 			HTMLDirty_ = false;
 			const auto& str = ExpandCustomTags (Ui_.HTML_->toPlainText ());
-			Ui_.View_->setContent (str.toUtf8 (), MIMEType);
+			Ui_.View_->setHtml (str.toUtf8 ());
 
-			Ui_.View_->page ()->runJavaScript (R"(document.querySelectorAll("html > body").length)",
+			Ui_.View_->page ()->runJavaScript (QStringLiteral (R"(document.querySelectorAll("html > body").length)"),
 					[str, blocker, pThis = QPointer { this }] (const QVariant& result)
 					{
 						if (!result.toInt () && pThis)
@@ -939,15 +923,9 @@ const findParent = (item, name) => {
 		}
 	}
 
-	void RichEditorWidget::updateActions ()
+	void RichEditorWidget::HandleHtmlCmdAction (QStringView command, QStringView args)
 	{
-		for (const auto& [cmd, act] : HtmlActions_)
-			act->setChecked (QueryCommandState (cmd));
-	}
-
-	void RichEditorWidget::HandleHtmlCmdAction (const QString& command, const QString& args)
-	{
-		if (command.toLower () != "formatblock")
+		if (command.compare (u"formatblock", Qt::CaseInsensitive))
 		{
 			ExecCommand (command, args);
 			return;
@@ -964,7 +942,7 @@ if (parentItem == null) {
 )"_qsv.arg (args));
 	}
 
-	void RichEditorWidget::HandleInlineCmd (const QString& tag, const QVariantMap& attrs)
+	void RichEditorWidget::HandleInlineCmd (QStringView tag, const QVariantMap& attrs)
 	{
 		QString attrsStr;
 		for (const auto& [name, val] : Util::Stlize (attrs))
@@ -993,24 +971,21 @@ if (parentItem == null) {
 		if (!ok)
 			return;
 
-		ExecCommand ("fontName", font.family ());
+		ExecCommand (u"fontName", font.family ());
 
-		auto checkWebAct = [this, &font] (auto f, QWebEnginePage::WebAction act)
+		auto checkWebAct = [this, &font] (auto f, QStringView cmd)
 		{
 			const bool state = std::invoke (f, &font);
-			const auto actObj = Ui_.View_->page ()->action (act);
-			if (state != actObj->isChecked ())
-			{
-				actObj->setChecked (state);
-			}
+			if (QueryCommandState (cmd) != state)
+				ExecCommand (cmd);
 		};
 
-		checkWebAct (&QFont::bold, QWebEnginePage::ToggleBold);
-		checkWebAct (&QFont::italic, QWebEnginePage::ToggleItalic);
-		checkWebAct (&QFont::underline, QWebEnginePage::ToggleUnderline);
+		checkWebAct (&QFont::bold, u"bold");
+		checkWebAct (&QFont::italic, u"italic");
+		checkWebAct (&QFont::underline, u"underline");
 	}
 
-	void RichEditorWidget::handleInsertTable ()
+	void RichEditorWidget::HandleInsertTable ()
 	{
 		InsertTableDialog dia;
 		if (dia.exec () != QDialog::Accepted)
@@ -1018,38 +993,32 @@ if (parentItem == null) {
 
 		QString html;
 		QXmlStreamWriter w (&html);
-		w.writeStartElement ("table");
-		w.writeAttribute ("style", "border: 1px solid black; border-collapse: collapse;");
+		w.writeStartElement (QStringLiteral ("table"));
+		w.writeAttribute (QStringLiteral ("style"), QStringLiteral ("border: 1px solid black; border-collapse: collapse;"));
 
 		const auto& caption = dia.GetCaption ().trimmed ();
 		if (!caption.isEmpty ())
-		{
-			w.writeStartElement ("caption");
-			w.writeCharacters (caption);
-			w.writeEndElement ();
-		}
+			w.writeTextElement (QStringLiteral ("caption"), caption);
 
-		w.writeStartElement ("tbody");
+		w.writeStartElement (QStringLiteral ("tbody"));
 		for (int i = 0; i < dia.GetRows (); ++i)
 		{
-			w.writeStartElement ("tr");
+			w.writeStartElement (QStringLiteral ("tr"));
 			for (int j = 0; j < dia.GetColumns (); ++j)
 			{
-				w.writeStartElement ("td");
-				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1.5em;");
+				w.writeStartElement (QStringLiteral ("td"));
+				w.writeAttribute (QStringLiteral ("style"), QStringLiteral ("border: 1px solid black; min-width: 1em; height: 1.5em;"));
 				w.writeEndElement ();
 			}
 			w.writeEndElement ();
 		}
 		w.writeEndElement ();
 		w.writeEndElement ();
-		ExecCommand ("insertHTML", html);
+		ExecCommand (u"insertHTML", html);
 	}
 
-	void RichEditorWidget::handleInsertRow ()
+	void RichEditorWidget::HandleInsertRow (int shift)
 	{
-		auto shift = sender ()->property ("LHTR/Shift").toInt ();
-
 		ExecJS (uR"(
 const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
 const rowIdx = row.rowIndex;
@@ -1062,10 +1031,8 @@ for (let j = 0; j < row.cells.length; ++j) {
 )"_qsv.arg (QString::number (shift)));
 	}
 
-	void RichEditorWidget::handleInsertColumn ()
+	void RichEditorWidget::HandleInsertColumn (int shift)
 	{
-		auto shift = sender ()->property ("LHTR/Shift").toInt ();
-
 		ExecJS (uR"(
 const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
 const colIdx = cell.cellIndex + %1;
@@ -1077,7 +1044,7 @@ for (let r = 0; r < table.rows.length; ++r) {
 )"_qsv.arg (QString::number (shift)));
 	}
 
-	void RichEditorWidget::handleRemoveRow ()
+	void RichEditorWidget::HandleRemoveRow ()
 	{
 		ExecJS (QStringLiteral (uR"(
 const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
@@ -1086,7 +1053,7 @@ table.deleteRow(row.rowIndex);
 )"));
 	}
 
-	void RichEditorWidget::handleRemoveColumn ()
+	void RichEditorWidget::HandleRemoveColumn ()
 	{
 		ExecJS (QStringLiteral (uR"(
 const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
@@ -1105,7 +1072,7 @@ for (let r = 0; r < table.rows.length; ++r)
 					tr ("Insert link"), tr ("Enter URL:"));
 			const QUrl& guess = QUrl::fromUserInput (url);
 			if (guess.isValid ())
-				ExecCommand ("createLink", guess.toString ());
+				ExecCommand (u"createLink", guess.toString ());
 
 			return;
 		}
@@ -1121,19 +1088,19 @@ for (let r = 0; r < table.rows.length; ++r)
 
 		QString html;
 		QXmlStreamWriter w (&html);
-		w.writeStartElement ("a");
-		w.writeAttribute ("href", link);
+		w.writeStartElement (QStringLiteral ("a"));
+		w.writeAttribute (QStringLiteral ("href"), link);
 		if (!dia.GetTitle ().isEmpty ())
-			w.writeAttribute ("title", dia.GetTitle ());
+			w.writeAttribute (QStringLiteral ("title"), dia.GetTitle ());
 		if (!dia.GetTarget ().isEmpty ())
-			w.writeAttribute ("target", dia.GetTarget ());
+			w.writeAttribute (QStringLiteral ("target"), dia.GetTarget ());
 		w.writeCharacters (text);
 		w.writeEndElement ();
 
-		ExecCommand ("insertHTML", html);
+		ExecCommand (u"insertHTML", html);
 	}
 
-	void RichEditorWidget::handleInsertImage ()
+	void RichEditorWidget::HandleInsertImage ()
 	{
 		ImageDialog dia (this);
 		if (dia.exec () != QDialog::Accepted)
@@ -1141,26 +1108,23 @@ for (let r = 0; r < table.rows.length; ++r)
 
 		const QString& path = dia.GetPath ();
 		const QUrl& url = QUrl::fromEncoded (path.toUtf8 ());
-		const QString& src = url.scheme () == "file" ?
+		const QString& src = url.scheme () == "file"_ql ?
 				Util::GetAsBase64Src (QImage (url.toLocalFile ())) :
 				path;
 
-		QStringList styles;
-		styles << "float:" + dia.GetFloat ();
-
 		QString html;
 		QXmlStreamWriter w (&html);
-		w.writeStartElement ("img");
-		w.writeAttribute ("src", src);
-		w.writeAttribute ("alt", dia.GetAlt ());
+		w.writeStartElement (QStringLiteral ("img"));
+		w.writeAttribute (QStringLiteral ("src"), src);
+		w.writeAttribute (QStringLiteral ("alt"), dia.GetAlt ());
 		if (dia.GetWidth () > 0)
-			w.writeAttribute ("width", QString::number (dia.GetWidth ()));
+			w.writeAttribute (QStringLiteral ("width"), QString::number (dia.GetWidth ()));
 		if (dia.GetHeight () > 0)
-			w.writeAttribute ("height", QString::number (dia.GetHeight ()));
-		w.writeAttribute ("style", styles.join (";"));
+			w.writeAttribute (QStringLiteral ("height"), QString::number (dia.GetHeight ()));
+		w.writeAttribute (QStringLiteral ("style"), "float:" + dia.GetFloat ());
 		w.writeEndElement ();
 
-		ExecCommand ("insertHTML", html);
+		ExecCommand (u"insertHTML", html);
 	}
 
 	namespace
@@ -1220,61 +1184,61 @@ for (let r = 0; r < table.rows.length; ++r)
 
 		QString html;
 		QXmlStreamWriter w (&html);
-		w.writeStartElement ("span");
+		w.writeStartElement (QStringLiteral ("span"));
 
 		bool displayBlock = false;
-		QString floatPos;
-		QString align;
+		QStringView floatPos;
+		QStringView align;
 		switch (dia.GetPosition ())
 		{
 		case ImageCollectionDialog::Position::Center:
-			align = "center";
+			align = u"center";
 			displayBlock = true;
 			break;
 		case ImageCollectionDialog::Position::Right:
 			displayBlock = true;
-			align = "right";
+			align = u"right";
 			break;
 		case ImageCollectionDialog::Position::Left:
 			displayBlock = true;
-			align = "left";
+			align = u"left";
 			break;
 		case ImageCollectionDialog::Position::RightWrap:
-			floatPos = "right";
+			floatPos = u"right";
 			break;
 		case ImageCollectionDialog::Position::LeftWrap:
-			floatPos = "left";
+			floatPos = u"left";
 			break;
 		}
 
 		QStringList styleElems;
 		if (displayBlock)
-			styleElems << "display: block";
+			styleElems << QStringLiteral ("display: block");
 		if (!floatPos.isEmpty ())
-			styleElems << "float: " + floatPos;
+			styleElems << QStringLiteral ("float: ").append (floatPos);
 		if (!align.isEmpty ())
-			styleElems << "text-align: " + align;
+			styleElems << QStringLiteral ("text-align: ").append (align);
 
 		if (!styleElems.isEmpty ())
-			w.writeAttribute ("style", styleElems.join ("; "));
+			w.writeAttribute (QStringLiteral ("style"), styleElems.join (';'));
 
 		for (const auto& image : dia.GetInfos ())
 		{
 			if (linkPreviews)
 			{
-				w.writeStartElement ("a");
-				w.writeAttribute ("href", image.Full_.toString ());
+				w.writeStartElement (QStringLiteral ("a"));
+				w.writeAttribute (QStringLiteral ("href"), image.Full_.toString ());
 			}
 
-			w.writeStartElement ("img");
-			w.writeAttribute ("src", GetPreviewUrl (image, previewSize).toString ());
-			w.writeAttribute ("alt", image.Title_);
+			w.writeStartElement (QStringLiteral ("img"));
+			w.writeAttribute (QStringLiteral ("src"), GetPreviewUrl (image, previewSize).toString ());
+			w.writeAttribute (QStringLiteral ("alt"), image.Title_);
 
 			const auto& size = GetPreviewSize (image, previewSize);
 			if (size.isValid ())
 			{
-				w.writeAttribute ("width", QString::number (size.width ()));
-				w.writeAttribute ("height", QString::number (size.height ()));
+				w.writeAttribute (QStringLiteral ("width"), QString::number (size.width ()));
+				w.writeAttribute (QStringLiteral ("height"), QString::number (size.height ()));
 			}
 
 			w.writeEndElement ();
@@ -1282,33 +1246,10 @@ for (let r = 0; r < table.rows.length; ++r)
 			if (linkPreviews)
 				w.writeEndElement ();
 
-			w.writeEmptyElement ("br");
+			w.writeEmptyElement (QStringLiteral ("br"));
 		}
 		w.writeEndElement ();
 
-		ExecCommand ("insertHTML", html);
-	}
-
-	void RichEditorWidget::handleInsertImageFromCollection ()
-	{
-		const auto pluginObj = sender ()->property ("LHTR/Plugin").value<QObject*> ();
-		const auto& service = sender ()->property ("LHTR/Service").toByteArray ();
-
-		const auto plugin = qobject_cast<IImgSource*> (pluginObj);
-		const auto chooser = plugin->RequestImages (service);
-		connect (chooser->GetQObject (),
-				SIGNAL (ready ()),
-				this,
-				SLOT (handleCollectionImageChosen ()));
-	}
-
-	void RichEditorWidget::handleFind ()
-	{
-		OpenFindReplace (true);
-	}
-
-	void RichEditorWidget::handleReplace ()
-	{
-		OpenFindReplace (false);
+		ExecCommand (u"insertHTML", html);
 	}
 }

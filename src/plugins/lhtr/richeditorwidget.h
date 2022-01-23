@@ -38,16 +38,7 @@ namespace LC::LHTR
 		QAction *FindAction_;
 		QAction *ReplaceAction_;
 
-		QAction *Bold_;
-		QAction *Italic_;
-		QAction *Underline_;
-
-		QAction *InsertLink_;
-		QAction *InsertImage_;
-
-		QAction *ToggleView_;
-
-		QList<QPair<QString, QAction*>> HtmlActions_;
+		QList<QPair<QStringView, QAction*>> HtmlActions_;
 	public:
 		explicit RichEditorWidget (QWidget* = nullptr);
 
@@ -76,8 +67,8 @@ namespace LC::LHTR
 		void SetupImageMenu ();
 		void SetupTableMenu ();
 
-		void ExecCommand (const QString&, QString = QString ());
-		bool QueryCommandState (const QString& cmd);
+		void ExecCommand (QStringView, QStringView = {});
+		bool QueryCommandState (QStringView cmd);
 
 		void OpenFindReplace (bool findOnly);
 
@@ -91,31 +82,23 @@ namespace LC::LHTR
 
 		QVariant ExecJSBlocking (const QString&);
 
+		void SyncTabs (int chosenIdx);
 		void SyncHTMLToView () const;
 
-		void HandleHtmlCmdAction (const QString& cmd, const QString& args);
-		void HandleInlineCmd (const QString& cmd, const QVariantMap& args = {});
+		void HandleHtmlCmdAction (QStringView cmd, QStringView args);
+		void HandleInlineCmd (QStringView cmd, const QVariantMap& args = {});
+
 		void HandleFont ();
 		void HandleInsertLink ();
+		void HandleInsertImage ();
+
+		void HandleInsertTable ();
+		void HandleInsertRow (int);
+		void HandleInsertColumn (int);
+		void HandleRemoveRow ();
+		void HandleRemoveColumn ();
 	private slots:
-		void handleBgColorSettings ();
-
-		void on_TabWidget__currentChanged (int);
-
-		void updateActions ();
-
-		void handleInsertTable ();
-		void handleInsertRow ();
-		void handleInsertColumn ();
-		void handleRemoveRow ();
-		void handleRemoveColumn ();
-
-		void handleInsertImage ();
 		void handleCollectionImageChosen ();
-		void handleInsertImageFromCollection ();
-
-		void handleFind ();
-		void handleReplace ();
 	signals:
 		void textChanged () override;
 	};

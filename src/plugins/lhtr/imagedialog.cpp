@@ -46,11 +46,11 @@ namespace LHTR
 		switch (Ui_.Float_->currentIndex ())
 		{
 		case 1:
-			return "left";
+			return QStringLiteral ("left");
 		case 2:
-			return "right";
+			return QStringLiteral ("right");
 		default:
-			return "none";
+			return QStringLiteral ("none");
 		}
 	}
 

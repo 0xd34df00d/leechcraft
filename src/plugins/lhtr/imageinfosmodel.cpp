@@ -83,7 +83,7 @@ namespace LC::LHTR
 			if (role != Qt::DisplayRole)
 				return {};
 
-			return QString::fromUtf8 ("%1×%2")
+			return QStringLiteral ("%1×%2")
 					.arg (info.FullSize_.width ())
 					.arg (info.FullSize_.height ());
 		case CAlt:

@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "htmlhighlighter.h"
+#include <util/sll/qtutil.h>
 
 namespace LC::LHTR
 {
@@ -96,7 +97,7 @@ namespace LC::LHTR
 			case State::Comment:
 			{
 				start = pos;
-				const auto endIdx = block.indexOf ("-->", pos);
+				const auto endIdx = block.indexOf ("-->"_ql, pos);
 				if (endIdx <= 0)
 					pos = blockLen;
 				else
