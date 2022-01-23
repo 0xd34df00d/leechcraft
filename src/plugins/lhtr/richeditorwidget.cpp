@@ -965,44 +965,37 @@ const findParent = (item, name) => {
 			return;
 		}
 
-		QString jstr;
-		jstr += "var selection = window.getSelection().getRangeAt(0);"
-				"var parentItem = findParent(selection.commonAncestorContainer.parentNode, '" + args + "');"
-				"if (parentItem == null) {"
-				"	document.execCommand('formatBlock', false, '" + args + "');"
-				"} else {"
-				"	parentItem.outerHTML = parentItem.innerHTML;"
-				"}";
-
-		ExecJS (jstr);
+		ExecJS (uR"(
+var selection = window.getSelection().getRangeAt(0);
+var parentItem = findParent(selection.commonAncestorContainer.parentNode, '%1');
+if (parentItem == null) {
+	document.execCommand('formatBlock', false, '%1');
+} else {
+	parentItem.outerHTML = parentItem.innerHTML;
+}
+)"_qsv.arg (args));
 	}
 
 	void RichEditorWidget::HandleInlineCmd (const QString& tag, const QVariantMap& attrs)
 	{
-		QString jstr;
-		jstr += "var selection = window.getSelection().getRangeAt(0);"
-				"var parentItem = findParent(selection.commonAncestorContainer.parentNode, '" + tag + "');"
-				"if (parentItem == null) {"
-				"	var selectedText = selection.extractContents();"
-				"	var span = document.createElement('" + tag + "');";
+		QString attrsStr;
+		for (const auto& [name, val] : Util::Stlize (attrs))
+			for (auto i = attrs.begin (), end = attrs.end (); i != end; ++i)
+				attrsStr += u"	span.setAttribute ('%1', '%2');"_qsv.arg (name, val.toString ());
 
-		for (auto i = attrs.begin (), end = attrs.end (); i != end; ++i)
-			jstr += QString ("	span.setAttribute ('%1', '%2');")
-					.arg (i.key ())
-					.arg (i->toString ());
-
-		jstr += "	span.appendChild(selectedText);"
-				"	selection.insertNode(span);"
-				"} else {"
-				"	parentItem.outerHTML = parentItem.innerHTML;"
-			"}";
-
-		ExecJS (jstr);
-
-		/* TODO is this needed?
-		const auto& fullHtml = frame->documentElement ().toOuterXml ();
-		Ui_.View_->setContent (ExpandCustomTags (fullHtml).toUtf8 (), MIMEType);
-		 */
+		ExecJS (uR"(
+var selection = window.getSelection().getRangeAt(0);
+var parentItem = findParent(selection.commonAncestorContainer.parentNode, '%1');
+if (parentItem == null) {
+	var selectedText = selection.extractContents();
+	var span = document.createElement('%1');
+	%2
+	span.appendChild(selectedText);
+	selection.insertNode(span);
+} else {
+	parentItem.outerHTML = parentItem.innerHTML;
+}
+)"_qsv.arg (tag, attrsStr));
 	}
 
 	void RichEditorWidget::HandleFont ()
@@ -1069,57 +1062,51 @@ const findParent = (item, name) => {
 	{
 		auto shift = sender ()->property ("LHTR/Shift").toInt ();
 
-		QString js;
-		js += "var row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');";
-		js += "var rowIdx = row.rowIndex;";
-		js += "var table = findParent(row, 'table');";
-		js += "var newRow = table.insertRow(rowIdx + " + QString::number (shift) + ");";
-		js += "for (var j = 0; j < row.cells.length; ++j)";
-		js += "{";
-		js += "    var newCell = newRow.insertCell(j);";
-		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
-		js += "}";
-
-		ExecJS (js);
+		ExecJS (uR"(
+const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
+const rowIdx = row.rowIndex;
+const table = findParent(row, 'table');
+const newRow = table.insertRow(rowIdx + %1);
+for (let j = 0; j < row.cells.length; ++j) {
+    const newCell = newRow.insertCell(j);
+    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');
+}
+)"_qsv.arg (QString::number (shift)));
 	}
 
 	void RichEditorWidget::handleInsertColumn ()
 	{
 		auto shift = sender ()->property ("LHTR/Shift").toInt ();
 
-		QString js;
-		js += "var cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');";
-		js += "var colIdx = cell.cellIndex + " + QString::number (shift) + ";";
-		js += "var table = findParent(cell, 'table');";
-		js += "for (var r = 0; r < table.rows.length; ++r)";
-		js += "{";
-		js += "    var newCell = table.rows[r].insertCell(colIdx);";
-		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
-		js += "}";
-
-		ExecJS (js);
+		ExecJS (uR"(
+const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
+const colIdx = cell.cellIndex + %1;
+const table = findParent(cell, 'table');
+for (let r = 0; r < table.rows.length; ++r) {
+    const newCell = table.rows[r].insertCell(colIdx);
+    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');
+}
+)"_qsv.arg (QString::number (shift)));
 	}
 
 	void RichEditorWidget::handleRemoveRow ()
 	{
-		QString js;
-		js += "var row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');";
-		js += "var table = findParent(row, 'table');";
-		js += "table.deleteRow(row.rowIndex);";
-
-		ExecJS (js);
+		ExecJS (QStringLiteral (uR"(
+const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
+const table = findParent(row, 'table');
+table.deleteRow(row.rowIndex);
+)"));
 	}
 
 	void RichEditorWidget::handleRemoveColumn ()
 	{
-		QString js;
-		js += "var cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');";
-		js += "var colIdx = cell.cellIndex;";
-		js += "var table = findParent(cell, 'table');";
-		js += "for (var r = 0; r < table.rows.length; ++r)";
-		js += "    table.rows[r].deleteCell(colIdx);";
-
-		ExecJS (js);
+		ExecJS (QStringLiteral (uR"(
+const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
+const colIdx = cell.cellIndex;
+const table = findParent(cell, 'table');
+for (let r = 0; r < table.rows.length; ++r)
+    table.rows[r].deleteCell(colIdx);
+)"));
 	}
 
 	void RichEditorWidget::HandleInsertLink ()
