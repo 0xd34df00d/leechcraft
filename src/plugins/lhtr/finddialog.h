@@ -12,16 +12,16 @@
 #include "ui_finddialog.h"
 
 class QTextEdit;
-class QWebView;
+class QWebEngineView;
 
 namespace LC::LHTR
 {
 	class FindObjectProxy
 	{
-		QWebView * const View_ = nullptr;
+		QWebEngineView * const View_ = nullptr;
 		QTextEdit * const HTML_ = nullptr;
 	public:
-		explicit FindObjectProxy (QWebView*);
+		explicit FindObjectProxy (QWebEngineView*);
 		explicit FindObjectProxy (QTextEdit*);
 
 		void Next (const QString&, bool cs);

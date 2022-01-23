@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "finddialog.h"
-#include <QWebView>
-#include <QWebFrame>
+#include <QWebEnginePage>
+#include <QWebEngineView>
 #include <QTextEdit>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -16,7 +16,7 @@
 
 namespace LC::LHTR
 {
-	FindObjectProxy::FindObjectProxy (QWebView *view)
+	FindObjectProxy::FindObjectProxy (QWebEngineView *view)
 	: View_ { view }
 	{
 	}
@@ -28,67 +28,89 @@ namespace LC::LHTR
 
 	void FindObjectProxy::Next (const QString& str, bool cs)
 	{
-		QWebPage::FindFlags viewFlags = QWebPage::FindWrapsAroundDocument;
-		QTextDocument::FindFlags htmlFlags;
+		QWebEnginePage::FindFlags viewFlags {};
+		QTextDocument::FindFlags htmlFlags {};
 		if (cs)
 		{
-			viewFlags |= QWebPage::FindCaseSensitively;
+			viewFlags |= QWebEnginePage::FindCaseSensitively;
 			htmlFlags |= QTextDocument::FindCaseSensitively;
 		}
 
-		Alt ([&str, viewFlags] (QWebView *view) { view->page ()->findText (str, viewFlags); },
+		Alt ([&str, viewFlags] (QWebEngineView *view) { view->findText (str, viewFlags); },
 				[&str, htmlFlags] (QTextEdit *edit) { edit->find (str, htmlFlags); });
 	}
 
 	void FindObjectProxy::Previous (const QString& str, bool cs)
 	{
-		QWebPage::FindFlags viewFlags = QWebPage::FindWrapsAroundDocument | QWebPage::FindBackward;
-		QTextDocument::FindFlags htmlFlags = QTextDocument::FindBackward;;
+		QWebEnginePage::FindFlags viewFlags = QWebEnginePage::FindBackward;
+		QTextDocument::FindFlags htmlFlags = QTextDocument::FindBackward;
 		if (cs)
 		{
-			viewFlags |= QWebPage::FindCaseSensitively;
+			viewFlags |= QWebEnginePage::FindCaseSensitively;
 			htmlFlags |= QTextDocument::FindCaseSensitively;
 		}
 
-		Alt ([&str, viewFlags] (QWebView *view) { view->page ()->findText (str, viewFlags); },
+		Alt ([&str, viewFlags] (QWebEngineView *view) { view->findText (str, viewFlags); },
 				[&str, htmlFlags] (QTextEdit *edit) { edit->find (str, htmlFlags); } );
+	}
+
+	namespace
+	{
+		std::optional<QString> HandleHtml (const QString& text, const QString& with, bool cs, bool all, const QString& origHtml)
+		{
+			auto html = origHtml;
+
+			auto csFlag = cs ? Qt::CaseSensitive : Qt::CaseInsensitive;
+			if (all)
+			{
+				const int encounters = html.count (text, csFlag);
+				const auto e = Util::MakeNotification (FindDialog::tr ("Text editor"),
+						FindDialog::tr ("%n replacement(s) have been made", nullptr, encounters),
+						Priority::Info);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+
+				html.replace (text, with, csFlag);
+			}
+			else
+			{
+				const int pos = html.indexOf (text, 0, csFlag);
+				if (pos >= 0)
+					html.replace (pos, text.size (), with);
+			}
+
+			if (origHtml == html)
+			{
+				const auto& e = Util::MakeNotification (FindDialog::tr ("Text editor"),
+						FindDialog::tr ("No replacements were made"),
+						Priority::Warning);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				return {};
+			}
+
+			return html;
+		}
 	}
 
 	void FindObjectProxy::Replace (const QString& text, const QString& with, bool cs, bool all)
 	{
-		const auto& origHtml = Alt ([] (QWebView *view) { return view->page ()->mainFrame ()->toHtml (); },
-				[] (QTextEdit *edit) { return edit->toPlainText (); });
-		auto html = origHtml;
-
-		auto csFlag = cs ? Qt::CaseSensitive : Qt::CaseInsensitive;
-		if (all)
+		auto viewWorker = [&] (QWebEngineView *view)
 		{
-			const int encounters = html.count (text, csFlag);
-			const auto e = Util::MakeNotification (FindDialog::tr ("Text editor"),
-					FindDialog::tr ("%n replacement(s) have been made", 0, encounters),
-					Priority::Info);
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+			QPointer viewPtr { view };
 
-			html.replace (text, with, csFlag);
-		}
-		else
+			view->page ()->toHtml ([=] (const QString& origHtml)
+					{
+						if (auto maybeHtml = HandleHtml (text, with, cs, all, origHtml);
+							maybeHtml && viewPtr)
+							viewPtr->page ()->setHtml (*maybeHtml);
+					});
+		};
+		auto editWorker = [&] (QTextEdit *edit)
 		{
-			const int pos = html.indexOf (text, 0, csFlag);
-			if (pos >= 0)
-				html.replace (pos, text.size (), with);
-		}
+			if (auto maybeHtml = HandleHtml (text, with, cs, all, edit->toPlainText ()))
+				edit->setPlainText (*maybeHtml);
+		};
 
-		if (origHtml == html)
-		{
-			const auto& e = Util::MakeNotification (FindDialog::tr ("Text editor"),
-					FindDialog::tr ("No replacements were made"),
-					Priority::Warning);
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-			return;
-		}
-
-		Alt ([&html] (QWebView *view) { view->setHtml (html); },
-				[&html] (QTextEdit *edit) { edit->setPlainText (html); });
+		Alt (viewWorker, editWorker);
 	}
 
 	FindDialog::FindDialog (const FindObjectProxy& proxy, QWidget *parent)

@@ -24,7 +24,7 @@ LC_DEFINE_PLUGIN (
 		imagecollectiondialog.cpp
 		imageinfosmodel.cpp
 	SETTINGS lhtrsettings.xml
-	QT_COMPONENTS Network WebKitWidgets
+	QT_COMPONENTS Network WebEngineWidgets
 	LINK_LIBRARIES ${TIDY_LIB}
 	INSTALL_SHARE
 	)

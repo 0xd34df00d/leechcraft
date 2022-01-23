@@ -31,10 +31,7 @@ namespace LC::LHTR
 
 		QToolBar * const ViewBar_;
 
-		QHash<QWebPage::WebAction, QAction*> WebAction2Action_;
-		QHash<QString, QHash<QString, QAction*>> Cmd2Action_;
-
-		CustomTags_t CustomTags_;
+		QHash<QString, CustomTag> CustomTags_;
 
 		bool HTMLDirty_ = false;
 
@@ -49,6 +46,8 @@ namespace LC::LHTR
 		QAction *InsertImage_;
 
 		QAction *ToggleView_;
+
+		QList<QPair<QString, QAction*>> HtmlActions_;
 	public:
 		explicit RichEditorWidget (QWidget* = nullptr);
 
@@ -88,27 +87,22 @@ namespace LC::LHTR
 			PartialHTML
 		};
 		QString ExpandCustomTags (QString, ExpandMode = ExpandMode::FullHTML) const;
-		QString RevertCustomTags () const;
+		QString RevertCustomTags (const QString&) const;
+
+		QVariant ExecJSBlocking (const QString&);
 
 		void SyncHTMLToView () const;
+
+		void HandleHtmlCmdAction (const QString& cmd, const QString& args);
+		void HandleInlineCmd (const QString& cmd, const QVariantMap& args = {});
+		void HandleFont ();
+		void HandleInsertLink ();
 	private slots:
 		void handleBgColorSettings ();
 
-		void handleLinkClicked (const QUrl&);
 		void on_TabWidget__currentChanged (int);
 
-		void setupJS ();
-
-		void on_HTML__textChanged ();
 		void updateActions ();
-
-		void toggleView ();
-
-		void handleCmd ();
-		void handleInlineCmd ();
-		void handleBgColor ();
-		void handleFgColor ();
-		void handleFont ();
 
 		void handleInsertTable ();
 		void handleInsertRow ();
@@ -116,7 +110,6 @@ namespace LC::LHTR
 		void handleRemoveRow ();
 		void handleRemoveColumn ();
 
-		void handleInsertLink ();
 		void handleInsertImage ();
 		void handleCollectionImageChosen ();
 		void handleInsertImageFromCollection ();
