@@ -745,6 +745,7 @@ const findParent = (item, name) => {
 	{
 		const QString Tagname = QStringLiteral ("__tagname__");
 		const QString Original = QStringLiteral ("__original__");
+		const QString ContentEditable = QStringLiteral ("contenteditable");
 	}
 
 	QString RichEditorWidget::ExpandCustomTags (QString html, ExpandMode mode) const
@@ -783,7 +784,7 @@ const findParent = (item, name) => {
 				elem.setAttribute (Lits::Tagname, tag.TagName_);
 				elem.setAttribute (Lits::Original, origContents.trimmed ());
 				if (!tag.FromKnown_)
-					elem.setAttribute (QStringLiteral ("contenteditable"), QStringLiteral ("false"));
+					elem.setAttribute (Lits::ContentEditable, QStringLiteral ("false"));
 			}
 		}
 
@@ -845,6 +846,7 @@ const findParent = (item, name) => {
 
 			elem.removeAttribute (Lits::Tagname);
 			elem.removeAttribute (Lits::Original);
+			elem.removeAttribute (Lits::ContentEditable);
 			if (!customTag.FromKnown_ (elem))
 			{
 				QString elemRepr;
