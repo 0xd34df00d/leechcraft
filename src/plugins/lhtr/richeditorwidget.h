@@ -32,6 +32,7 @@ namespace LC::LHTR
 		QToolBar * const ViewBar_;
 
 		QHash<QString, CustomTag> CustomTags_;
+		QMap<CustomTag::TagType, QByteArray> CustomTagNames_;
 
 		bool HTMLDirty_ = false;
 

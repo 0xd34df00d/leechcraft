@@ -484,8 +484,16 @@ const findParent = (item, name) => {
 	void RichEditorWidget::SetCustomTags (const CustomTags_t& tags)
 	{
 		CustomTags_.clear ();
+		QMap<CustomTag::TagType, QByteArrayList> tagNames;
 		for (const auto& tag : tags)
+		{
 			CustomTags_ [tag.TagName_] = tag;
+			tagNames [tag.TagType_] << tag.TagName_.toUtf8 ();
+		}
+
+		CustomTagNames_.clear ();
+		for (const auto& [type, names] : Util::Stlize (tagNames))
+			CustomTagNames_ [type] = names.join (',');
 	}
 
 	QAction* RichEditorWidget::AddInlineTagInserter (const QString& tagName, const QVariantMap& params)
@@ -671,7 +679,7 @@ const findParent = (item, name) => {
 
 	namespace
 	{
-		void TryFixHTML (QString& html, bool prependDoctype)
+		void TryFixHTML (QString& html, const QMap<RichEditorWidget::CustomTag::TagType, QByteArray>& tagNames)
 		{
 #ifdef WITH_HTMLTIDY
 			TidyBuffer output {};
@@ -684,9 +692,20 @@ const findParent = (item, name) => {
 						tidyBufFree (&output);
 					});
 
+			auto setTagType = [tdoc] (TidyOptionId option, const QByteArray& names) -> bool
+			{
+				if (!names.isEmpty ())
+					return tidyOptSetValue (tdoc, option, names.constData ());
+				return true;
+			};
+
+			using enum RichEditorWidget::CustomTag::TagType;
 			if (!tidyOptSetBool (tdoc, TidyXmlOut, yes) ||
 					!tidyOptSetBool (tdoc, TidyForceOutput, yes) ||
-					!tidyOptSetValue (tdoc, TidyCharEncoding, "utf8"))
+					!tidyOptSetValue (tdoc, TidyCharEncoding, "utf8") ||
+					!setTagType (TidyEmptyTags, tagNames [Empty]) ||
+					!setTagType (TidyInlineTags, tagNames [Inline]) ||
+					!setTagType (TidyBlockTags, tagNames [Block]))
 			{
 				qWarning () << "cannot set xhtml output";
 				return;
@@ -717,7 +736,7 @@ const findParent = (item, name) => {
 			html = QString::fromUtf8 (std::bit_cast<char*> (output.bp));
 #endif
 
-			if (prependDoctype && !html.startsWith ("<!DOCTYPE "_ql))
+			if (!html.startsWith ("<!DOCTYPE "_ql))
 				html.prepend (u"<!DOCTYPE html>"_qsv);
 		}
 	}
@@ -730,11 +749,11 @@ const findParent = (item, name) => {
 
 	QString RichEditorWidget::ExpandCustomTags (QString html, ExpandMode mode) const
 	{
-		TryFixHTML (html, mode == ExpandMode::FullHTML);
 		if (CustomTags_.isEmpty ())
 			return html;
 
-		html.remove ('\n');
+		if (mode == ExpandMode::FullHTML)
+			TryFixHTML (html, CustomTagNames_);
 
 		QDomDocument doc;
 		if (!doc.setContent (html))
