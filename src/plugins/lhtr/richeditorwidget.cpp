@@ -764,10 +764,6 @@ const findParent = (item, name) => {
 			return html;
 		}
 
-		const auto xmlns = QStringLiteral ("xmlns");
-		if (!doc.documentElement ().hasAttribute (xmlns))
-			doc.documentElement ().setAttribute (xmlns, QStringLiteral ("http://www.w3.org/1999/xhtml"));
-
 		for (const auto& tag : CustomTags_)
 		{
 			const auto& elems = doc.elementsByTagName (tag.TagName_);
