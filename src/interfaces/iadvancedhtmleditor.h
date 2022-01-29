@@ -49,6 +49,15 @@ public:
 		 */
 		QString TagName_;
 
+		enum class TagType
+		{
+			Empty,
+			Inline,
+			Block
+		};
+
+		TagType TagType_ = TagType::Inline;
+
 		/** @brief The converter of an instance of the tag to HTML.
 		 *
 		 * This function is invoked to convert an instance of the tag

@@ -191,9 +191,12 @@ namespace Metida
 	{
 		IAdvancedHTMLEditor::CustomTags_t tags;
 
+		using enum IAdvancedHTMLEditor::CustomTag::TagType;
+
 		IAdvancedHTMLEditor::CustomTag ljUserTag;
 		ljUserTag.TagName_ = "lj";
-		ljUserTag.ToKnown_ = [] (QDomElement& elem) -> void
+		ljUserTag.TagType_ = Inline;
+		ljUserTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			const auto& user = elem.attribute ("user");
 			elem.setTagName ("span");
@@ -219,7 +222,7 @@ namespace Metida
 
 			elem.removeAttribute ("user");
 		};
-		ljUserTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		ljUserTag.FromKnown_ = [] (QDomElement& elem)
 		{
 			auto aElem = elem.firstChildElement ("a");
 			while (!aElem.isNull ())
@@ -246,6 +249,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljCutTag;
 		ljCutTag.TagName_ = "lj-cut";
+		ljCutTag.TagType_ = Empty;
 		ljCutTag.ToKnown_ = [] (QDomElement& elem) -> void
 		{
 			elem.setTagName ("div");
@@ -276,6 +280,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljPollTag;
 		ljPollTag.TagName_ = "lj-poll";
+		ljPollTag.TagType_ = Block;
 		ljPollTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			const auto& whoView = elem.attribute ("whoview");
@@ -345,6 +350,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljEmbedTag;
 		ljEmbedTag.TagName_ = "lj-embed";
+		ljEmbedTag.TagType_ = Block;
 		ljEmbedTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			const auto& id = elem.attribute ("id");
@@ -377,6 +383,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljLikeTag;
 		ljLikeTag.TagName_ = "lj-like";
+		ljEmbedTag.TagType_ = Block;
 		ljLikeTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			const auto& buttons = elem.attribute ("buttons");
