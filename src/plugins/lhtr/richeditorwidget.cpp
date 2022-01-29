@@ -183,11 +183,8 @@ const findParent = (item, name) => {
 
 		connect (Ui_.HTML_,
 				&QTextEdit::textChanged,
-				[this]
-				{
-					HTMLDirty_ = true;
-					emit textChanged ();
-				});
+				this,
+				&RichEditorWidget::HandleHtmlEditChanged);
 
 		connect (Ui_.TabWidget_,
 				&QTabWidget::currentChanged,
@@ -904,8 +901,22 @@ const findParent = (item, name) => {
 					return;
 				}
 
+				disconnect (pThis->Ui_.HTML_,
+						&QTextEdit::textChanged,
+						&*pThis,
+						&RichEditorWidget::HandleHtmlEditChanged);
 				pThis->Ui_.HTML_->setPlainText (pThis->RevertCustomTags (var.toString ()));
+				connect (pThis->Ui_.HTML_,
+						&QTextEdit::textChanged,
+						&*pThis,
+						&RichEditorWidget::HandleHtmlEditChanged);
 			});
+	}
+
+	void RichEditorWidget::HandleHtmlEditChanged ()
+	{
+		HTMLDirty_ = true;
+		emit textChanged ();
 	}
 
 	void RichEditorWidget::SyncTabs (int idx)

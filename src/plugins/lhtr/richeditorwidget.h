@@ -85,6 +85,7 @@ namespace LC::LHTR
 
 		void SyncTabs (int chosenIdx);
 		void SyncHTMLToView () const;
+		void HandleHtmlEditChanged ();
 
 		void HandleHtmlCmdAction (QStringView cmd, QStringView args);
 		void HandleInlineCmd (QStringView cmd, const QVariantMap& args = {});
