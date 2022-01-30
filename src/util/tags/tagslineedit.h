@@ -31,7 +31,7 @@ namespace LC::Util
 
 		friend class TagsCompleter;
 
-		CategorySelector *CategorySelector_;
+		CategorySelector *CategorySelector_ = nullptr;
 		TagsCompleter *Completer_ = nullptr;
 
 		QString Separator_;
