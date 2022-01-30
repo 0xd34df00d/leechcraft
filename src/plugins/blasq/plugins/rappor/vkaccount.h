@@ -79,20 +79,20 @@ namespace Rappor
 
 		void Schedule (std::function<void (QString)>);
 
-		QObject* GetQObject ();
-		IService* GetService () const;
-		QString GetName () const;
-		QByteArray GetID () const;
+		QObject* GetQObject () override;
+		IService* GetService () const override;
+		QString GetName () const override;
+		QByteArray GetID () const override;
 
-		QAbstractItemModel* GetCollectionsModel () const;
-		void UpdateCollections ();
+		QAbstractItemModel* GetCollectionsModel () const override;
+		void UpdateCollections () override;
 
-		bool HasUploadFeature (Feature) const;
-		void CreateCollection (const QModelIndex& parent);
-		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths);
+		bool HasUploadFeature (Feature) const override;
+		void CreateCollection (const QModelIndex& parent) override;
+		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
 
-		bool SupportsFeature (DeleteFeature) const;
-		void Delete (const QModelIndex&);
+		bool SupportsFeature (DeleteFeature) const override;
+		void Delete (const QModelIndex&) override;
 	private:
 		void HandleAlbumElement (const QDomElement&);
 		bool HandlePhotoElement (const QDomElement&, bool atEnd = true);
@@ -108,9 +108,9 @@ namespace Rappor
 	signals:
 		void accountChanged (VkAccount*);
 
-		void itemUploaded (const UploadItem&, const QUrl&);
+		void itemUploaded (const UploadItem&, const QUrl&) override;
 
-		void doneUpdating ();
+		void doneUpdating () override;
 	};
 }
 }
