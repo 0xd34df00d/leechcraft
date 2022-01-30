@@ -11,20 +11,16 @@
 #include <QSet>
 #include <QStringList>
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	FilesWatcher::FilesWatcher (QObject *parent)
 	: QObject (parent)
 	, Watcher_ (new QFileSystemWatcher (this))
 	{
 		connect (Watcher_,
-				SIGNAL (directoryChanged (QString)),
+				&QFileSystemWatcher::directoryChanged,
 				this,
-				SIGNAL (rereadFiles ()));
+				&FilesWatcher::rereadFiles);
 	}
 
 	void FilesWatcher::Clear ()
@@ -47,6 +43,4 @@ namespace Graffiti
 			Watcher_->addPath (dir);
 		}
 	}
-}
-}
 }

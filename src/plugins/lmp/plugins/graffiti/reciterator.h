@@ -13,33 +13,25 @@
 #include <QFileInfo>
 #include <interfaces/lmp/ilmpplugin.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	class RecIterator : public QObject
 	{
 		Q_OBJECT
 
 		const ILMPProxy_ptr LMPProxy_;
-		std::atomic<bool> StopFlag_;
+		std::atomic<bool> StopFlag_ { false };
 
 		QList<QFileInfo> Result_;
 	public:
-		RecIterator (ILMPProxy_ptr, QObject* = 0);
+		explicit RecIterator (ILMPProxy_ptr, QObject* = nullptr);
 
 		void Start (const QString&);
 		QList<QFileInfo> GetResult () const;
-	public slots:
-		void cancel ();
-	private slots:
-		void handleImplFinished ();
+
+		void Cancel ();
 	signals:
 		void finished ();
 		void canceled ();
 	};
-}
-}
 }

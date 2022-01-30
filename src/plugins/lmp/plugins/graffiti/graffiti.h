@@ -21,8 +21,14 @@ namespace LC
 {
 namespace LMP
 {
-struct MediaInfo;
+	struct MediaInfo;
+}
+}
 
+namespace LC
+{
+namespace LMP
+{
 namespace Graffiti
 {
 	class ProgressManager;
@@ -44,29 +50,28 @@ namespace Graffiti
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.Graffiti")
 
-		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LMPProxy_;
 
 		TabClassInfo TaggerTC_;
 
 		ProgressManager *ProgressMgr_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray& tabClass);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray& tabClass) override;
 
-		QAbstractItemModel* GetRepresentation () const;
+		QAbstractItemModel* GetRepresentation () const override;
 
-		void SetLMPProxy (ILMPProxy_ptr);
+		void SetLMPProxy (ILMPProxy_ptr) override;
 	private:
 		GraffitiTab* MakeTab ();
 	public slots:
@@ -76,15 +81,13 @@ namespace Graffiti
 		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
 				const LC::LMP::MediaInfo&);
-	private slots:
-		void handleOpenTabFromContextMenu ();
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void raiseTab (QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
+		void addNewTab (const QString&, QWidget*) override;
+		void removeTab (QWidget*) override;
+		void changeTabName (QWidget*, const QString&) override;
+		void changeTabIcon (QWidget*, const QIcon&) override;
+		void raiseTab (QWidget*) override;
+		void statusBarChanged (QWidget*, const QString&) override;
 	};
 }
 }

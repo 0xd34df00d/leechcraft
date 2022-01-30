@@ -12,11 +12,7 @@
 #include <interfaces/ijobholder.h>
 #include "cuesplitter.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	ProgressManager::ProgressManager (QObject *parent)
 	: QObject (parent)
@@ -30,19 +26,15 @@ namespace Graffiti
 		return Model_;
 	}
 
-	void ProgressManager::handleTagsFetch (int fetched, int total, QObject *obj)
+	void ProgressManager::HandleTagsFetch (int fetched, int total, QObject *obj)
 	{
 		if (!TagsFetchObj2Row_.contains (obj))
 		{
-			auto nameItem = new QStandardItem (tr ("Fetching tags..."));
-			auto statusItem = new QStandardItem (tr ("Fetching..."));
-			auto progressItem = new QStandardItem ();
-
 			const QList<QStandardItem*> row
 			{
-				nameItem,
-				statusItem,
-				progressItem
+				new QStandardItem { tr ("Fetching tags...") },
+				new QStandardItem { tr ("Fetching...") },
+				new QStandardItem {}
 			};
 			auto item = row.at (JobHolderColumn::JobProgress);
 			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
@@ -66,7 +58,7 @@ namespace Graffiti
 		Util::SetJobHolderProgress (item, fetched, total);
 	}
 
-	void ProgressManager::handleCueSplitter (CueSplitter *splitter)
+	void ProgressManager::HandleCueSplitter (CueSplitter *splitter)
 	{
 		const QList<QStandardItem*> row
 		{
@@ -83,38 +75,26 @@ namespace Graffiti
 		Model_->appendRow (row);
 
 		connect (splitter,
-				SIGNAL (splitProgress (int, int, CueSplitter*)),
+				&CueSplitter::splitProgress,
 				this,
-				SLOT (handleSplitProgress (int, int, CueSplitter*)));
+				[this, splitter] (int done, int total)
+				{
+					if (!Splitter2Row_.contains (splitter))
+					{
+						qWarning () << "unknown splitter";
+						return;
+					}
+
+					Util::SetJobHolderProgress (Splitter2Row_ [splitter], done, total,
+							tr ("%1 of %2").arg (done).arg (total));
+				});
 		connect (splitter,
-				SIGNAL (finished (CueSplitter*)),
+				&CueSplitter::finished,
 				this,
-				SLOT (handleSplitFinished (CueSplitter*)));
+				[this, splitter]
+				{
+					if (Splitter2Row_.contains (splitter))
+						Model_->removeRow (Splitter2Row_.take (splitter).constFirst ()->row ());
+				});
 	}
-
-	void ProgressManager::handleSplitProgress (int done, int total, CueSplitter *splitter)
-	{
-		if (!Splitter2Row_.contains (splitter))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown splitter";
-			return;
-		}
-
-		if (done == total)
-			return;
-
-		Util::SetJobHolderProgress (Splitter2Row_ [splitter], done, total,
-				tr ("%1 of %2").arg (done).arg (total));
-	}
-
-	void ProgressManager::handleSplitFinished (CueSplitter *splitter)
-	{
-		if (!Splitter2Row_.contains (splitter))
-			return;
-
-		Model_->removeRow (Splitter2Row_.take (splitter).first ()->row ());
-	}
-}
-}
 }

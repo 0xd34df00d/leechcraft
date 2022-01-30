@@ -8,34 +8,33 @@
 
 #include "reciterator.h"
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
+#include <util/threads/futures.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilmputilproxy.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	RecIterator::RecIterator (ILMPProxy_ptr proxy, QObject *parent)
 	: QObject { parent }
 	, LMPProxy_ { proxy }
-	, StopFlag_ { false }
 	{
 	}
 
 	void RecIterator::Start (const QString& path)
 	{
-		auto watcher = new QFutureWatcher<QList<QFileInfo>> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleImplFinished ()));
-
 		const auto& future = QtConcurrent::run ([this, path]
 				{ return LMPProxy_->GetUtilProxy ()->RecIterateInfo (path, true, &StopFlag_); });
-		watcher->setFuture (future);
+
+		Util::Sequence (this, future) >>
+				[this] (const QList<QFileInfo>& files)
+				{
+					Result_ = files;
+
+					if (StopFlag_)
+						emit canceled ();
+					else
+						emit finished ();
+				};
 	}
 
 	QList<QFileInfo> RecIterator::GetResult () const
@@ -43,22 +42,8 @@ namespace Graffiti
 		return Result_;
 	}
 
-	void RecIterator::cancel ()
+	void RecIterator::Cancel ()
 	{
 		StopFlag_.store (true, std::memory_order_relaxed);
 	}
-
-	void RecIterator::handleImplFinished ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<QFileInfo>>*> (sender ());
-		Result_ = watcher->result ();
-		watcher->deleteLater ();
-
-		if (StopFlag_)
-			emit canceled ();
-		else
-			emit finished ();
-	}
-}
-}
 }

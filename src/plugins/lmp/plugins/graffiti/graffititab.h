@@ -15,6 +15,7 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include "ui_graffititab.h"
 
+class QFileInfo;
 class QFileSystemModel;
 
 namespace Media
@@ -22,13 +23,12 @@ namespace Media
 	struct AudioInfo;
 }
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-struct MediaInfo;
+	struct MediaInfo;
+}
 
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	class FilesModel;
 	class FilesWatcher;
@@ -40,7 +40,6 @@ namespace Graffiti
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
-		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LMPProxy_;
 
 		const TabClassInfo TC_;
@@ -58,15 +57,13 @@ namespace Graffiti
 		QAction *RenameFiles_;
 		QAction *GetTags_;
 		QAction *SplitCue_;
-
-		bool IsChangingCurrent_;
 	public:
-		GraffitiTab (ICoreProxy_ptr, ILMPProxy_ptr, const TabClassInfo&, QObject*);
+		GraffitiTab (ILMPProxy_ptr, TabClassInfo, QObject*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 
 		void SetPath (const QString& dir, const QString& filename = {});
 	private:
@@ -79,42 +76,21 @@ namespace Graffiti
 
 		void RestorePathHistory ();
 		void AddToPathHistory (const QString&);
-	private slots:
-		void on_Artist__textChanged ();
-		void on_Album__textChanged ();
-		void on_Title__textChanged ();
-		void on_Genre__textChanged ();
-		void on_Year__valueChanged ();
-		void on_TrackNumber__valueChanged ();
 
-		void on_TrackNumberAutoFill__released ();
+		void Save ();
+		void Revert ();
+		void RenameFiles ();
+		void FetchTags ();
+		void SplitCue ();
 
-		void save ();
-		void revert ();
-		void renameFiles ();
-		void fetchTags ();
-		void splitCue ();
+		void PopulateFields (const QModelIndex&);
+		void RereadFiles ();
 
-		void handleTagsFetched (const QString&);
-
-		void on_DirectoryTree__activated (const QModelIndex&);
-		void handlePathLine ();
-
-		void currentFileChanged (const QModelIndex&);
-		void handleRereadFiles ();
-
-		void handleIterateFinished ();
-		void handleIterateCanceled ();
-		void handleScanFinished ();
-
-		void handleCueSplitError (const QString&);
-		void handleCueSplitFinished ();
+		void HandleDirIterateResults (const QList<QFileInfo>&, const QString&);
 	signals:
 		void removeTab (QWidget*);
 
 		void tagsFetchProgress (int, int, QObject*);
 		void cueSplitStarted (CueSplitter*);
 	};
-}
-}
 }

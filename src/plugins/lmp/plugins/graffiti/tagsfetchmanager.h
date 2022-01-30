@@ -16,11 +16,7 @@ namespace Media
 	struct AudioInfo;
 }
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	class FilesModel;
 
@@ -30,17 +26,13 @@ namespace Graffiti
 
 		FilesModel * const FilesModel_;
 
-		int FetchedTags_;
+		int FetchedTags_ = 0;
 		const int TotalTags_;
 	public:
 		TagsFetchManager (const QStringList&, Media::ITagsFetcher*, FilesModel*, QObject*);
-	private slots:
-		void handleTagsFetched (const QString&, const Media::AudioInfo&);
 	signals:
 		void tagsFetchProgress (int done, int total, QObject *thisObj);
 		void tagsFetched (const QString&);
-		void finished (bool);
+		void finished ();
 	};
-}
-}
 }

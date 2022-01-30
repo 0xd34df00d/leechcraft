@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QHash>
 
@@ -15,32 +16,23 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	class CueSplitter;
 
 	class ProgressManager : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::Graffiti::ProgressManager)
 
 		QStandardItemModel *Model_;
 		QHash<QObject*, QList<QStandardItem*>> TagsFetchObj2Row_;
 		QHash<CueSplitter*, QList<QStandardItem*>> Splitter2Row_;
 	public:
-		ProgressManager (QObject* = 0);
+		explicit ProgressManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
-	public slots:
-		void handleTagsFetch (int fetched, int total, QObject *obj);
 
-		void handleCueSplitter (CueSplitter*);
-		void handleSplitProgress (int, int, CueSplitter*);
-		void handleSplitFinished (CueSplitter*);
+		void HandleTagsFetch (int fetched, int total, QObject *obj);
+		void HandleCueSplitter (CueSplitter*);
 	};
-}
-}
 }

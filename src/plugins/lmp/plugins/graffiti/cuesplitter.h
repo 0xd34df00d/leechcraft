@@ -12,11 +12,9 @@
 #include <QTime>
 #include <QSet>
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+class QProcess;
+
+namespace LC::LMP::Graffiti
 {
 	class CueSplitter : public QObject
 	{
@@ -47,20 +45,17 @@ namespace Graffiti
 
 		QSet<QString> EmittedErrors_;
 	public:
-		CueSplitter (const QString& cue, const QString& dir, QObject* = 0);
+		CueSplitter (QString cue, QString dir, QObject* = nullptr);
 
 		QString GetCueFile () const;
-	private slots:
-		void split ();
-		void scheduleNext ();
-		void handleProcessFinished (int);
-		void handleProcessError ();
+	private:
+		void Split ();
+		void ScheduleNext ();
+		void HandleProcessError (QProcess&);
 	signals:
 		void error (const QString&);
-		void finished (CueSplitter*);
+		void finished ();
 
-		void splitProgress (int, int, CueSplitter*);
+		void splitProgress (int, int);
 	};
-}
-}
 }

@@ -14,12 +14,9 @@
 #include <util/sll/prelude.h>
 #include <util/sll/util.h>
 #include <util/lmp/util.h>
+#include "literals.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	RenameDialog::RenameDialog (ILMPProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
@@ -29,15 +26,15 @@ namespace Graffiti
 		Ui_.setupUi (this);
 
 		const auto& helpText = tr ("The following variables are allowed in the pattern: %1.")
-				.arg (GetSubstGettersKeys ().join ("; "));
+				.arg (GetSubstGettersKeys ().join (u"; "));
 		Ui_.PatternDescLabel_->setText (helpText);
 
 		Ui_.Preview_->setModel (PreviewModel_);
 
 		connect (Ui_.Pattern_,
-				SIGNAL (editTextChanged (QString)),
+				&QComboBox::editTextChanged,
 				this,
-				SLOT (updatePreview ()));
+				&RenameDialog::UpdatePreview);
 	}
 
 	void RenameDialog::SetInfos (const QList<MediaInfo>& infos)
@@ -54,7 +51,7 @@ namespace Graffiti
 			PreviewModel_->appendRow ({ sourceItem, new QStandardItem });
 		}
 
-		updatePreview ();
+		UpdatePreview ();
 	}
 
 	QList<QPair<QString, QString>> RenameDialog::GetRenames () const
@@ -75,8 +72,7 @@ namespace Graffiti
 				const QFileInfo sourceInfo (pair.first);
 				auto sourceDir = sourceInfo.absoluteDir ();
 				if (!sourceDir.rename (sourceInfo.fileName (), pair.second))
-					qWarning () << Q_FUNC_INFO
-							<< "failed to rename"
+					qWarning () << "failed to rename"
 							<< sourceInfo.fileName ()
 							<< "to"
 							<< pair.second;
@@ -93,18 +89,15 @@ namespace Graffiti
 			return;
 
 		if (QMessageBox::question (this,
-				"LMP Graffiti",
-				tr ("Are you sure you want to rename %n file(s)?", 0, toRename.size ()),
+				Lits::LMPGraffiti,
+				tr ("Are you sure you want to rename %n file(s)?", nullptr, toRename.size ()),
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 			Rename (toRename);
 	}
 
-	void RenameDialog::updatePreview ()
+	void RenameDialog::UpdatePreview ()
 	{
 		Names_ = PerformSubstitutions (Ui_.Pattern_->currentText (), Infos_,
-				[this] (int row, const QString& name)
-					{ PreviewModel_->item (row, 1)->setText (name); });
+				[this] (int row, const QString& name) { PreviewModel_->item (row, 1)->setText (name); });
 	}
-}
-}
 }

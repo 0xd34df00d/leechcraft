@@ -13,6 +13,7 @@ LC_DEFINE_PLUGIN (
 		progressmanager.cpp
 		tagsfetchmanager.cpp
 		reciterator.cpp
+		literals.cpp
 	QT_COMPONENTS Concurrent Widgets
 	LINK_LIBRARIES PkgConfig::TagLib
 	INSTALL_SHARE

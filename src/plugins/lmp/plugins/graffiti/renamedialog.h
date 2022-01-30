@@ -16,11 +16,7 @@
 
 class QStandardItemModel;
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	class RenameDialog : public QDialog
 	{
@@ -35,16 +31,13 @@ namespace Graffiti
 		QList<MediaInfo> Infos_;
 		QList<QString> Names_;
 	public:
-		RenameDialog (ILMPProxy_ptr, QWidget* = 0);
+		explicit RenameDialog (ILMPProxy_ptr, QWidget* = nullptr);
 
 		void SetInfos (const QList<MediaInfo>&);
+	protected:
+		void accept () override;
 	private:
 		QList<QPair<QString, QString>> GetRenames () const;
-	public slots:
-		void accept ();
-	private slots:
-		void updatePreview ();
+		void UpdatePreview ();
 	};
-}
-}
 }

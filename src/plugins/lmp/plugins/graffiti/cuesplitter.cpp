@@ -22,17 +22,13 @@
 #include <sys/resource.h>
 #endif
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	namespace
 	{
 		struct Track
 		{
-			int Index_;
+			int Index_ = -1;
 
 			QTime StartPos_;
 			QTime EndPos_;
@@ -48,10 +44,8 @@ namespace Graffiti
 
 			bool IsValid () const
 			{
-				for (const auto& track : Tracks_)
-					if (!track.StartPos_.isValid ())
-						return false;
-				return true;
+				return std::all_of (Tracks_.begin (), Tracks_.end (),
+						[] (const Track& track) { return track.StartPos_.isValid (); });
 			}
 		};
 
@@ -60,7 +54,7 @@ namespace Graffiti
 			QString Performer_;
 			QString Album_;
 
-			int Date_;
+			int Date_ = -1;
 			QString Genre_;
 			QString DiscId_;
 
@@ -68,10 +62,7 @@ namespace Graffiti
 
 			bool IsValid () const
 			{
-				for (const auto& file : Files_)
-					if (!file.IsValid ())
-						return false;
-				return true;
+				return std::all_of (Files_.begin (), Files_.end (), [] (const File& file) { return file.IsValid (); });
 			}
 		};
 
@@ -88,16 +79,17 @@ namespace Graffiti
 		{
 			rem = rem.mid (4);
 
-			const QList<QPair<QString, std::function<void (QString)>>> setters ({
-					{ "GENRE", [&result] (const QString& val) { result.Genre_ = val; } },
-					{ "DATE", [&result] (const QString& val) { result.Date_ = val.toInt (); } },
-					{ "DISCID", [&result] (const QString& val) { result.DiscId_ = val; } }
-				});
+			const std::initializer_list<QPair<QStringView, std::function<void (QString)>>> setters
+			{
+				{ u"GENRE", [&result] (const QString& val) { result.Genre_ = val; } },
+				{ u"DATE", [&result] (const QString& val) { result.Date_ = val.toInt (); } },
+				{ u"DISCID", [&result] (const QString& val) { result.DiscId_ = val; } }
+			};
 
-			for (const auto& key : setters)
-				if (rem.startsWith (key.first))
+			for (const auto& [key, setter] : setters)
+				if (rem.startsWith (key))
 				{
-					key.second (rem.mid (key.first.size () + 1));
+					setter (rem.mid (key.size () + 1));
 					break;
 				}
 		}
@@ -131,7 +123,8 @@ namespace Graffiti
 					track.Performer_ = textVal ();
 				else if (command == "INDEX" && line.mid (firstSpace + 1, 2) == "01")
 				{
-					const auto& components = line.mid (firstSpace + 4, 8).trimmed ().split (':');
+					constexpr auto HH_MM_SS_length = 8;
+					const auto& components = line.mid (firstSpace + 4, HH_MM_SS_length).trimmed ().split (':');
 					if (components.size () == 3)
 						track.StartPos_.setHMS (0,
 								components.at (0).toInt (),
@@ -164,7 +157,7 @@ namespace Graffiti
 				i = HandleTrack (i, end, file, result);
 			}
 
-			Track *prevTrack = 0;
+			Track *prevTrack = nullptr;
 			int index = 1;
 			for (auto& track : file.Tracks_)
 			{
@@ -186,10 +179,9 @@ namespace Graffiti
 			QFile file (cue);
 			if (!file.open (QIODevice::ReadOnly))
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to parse"
+				qWarning () << "unable to parse"
 						<< cue;
-				return Cue ();
+				return {};
 			}
 
 			Cue result;
@@ -198,27 +190,30 @@ namespace Graffiti
 			{
 				const auto& line = QString::fromUtf8 (i->trimmed ());
 
-				if (line.startsWith ("REM "))
+				if (constexpr QStringView marker = u"REM ";
+					line.startsWith (marker))
 				{
 					HandleREM (line, result);
 					++i;
 				}
-				else if (line.startsWith ("PERFORMER "))
+				else if (constexpr QStringView marker = u"PERFORMER ";
+					line.startsWith (marker))
 				{
-					result.Performer_ = ChopQuotes (line.mid (10));
+					result.Performer_ = ChopQuotes (line.mid (marker.size ()));
 					++i;
 				}
-				else if (line.startsWith ("TITLE "))
+				else if (constexpr QStringView marker = u"TITLE ";
+					line.startsWith (marker))
 				{
-					result.Album_ = ChopQuotes (line.mid (6));
+					result.Album_ = ChopQuotes (line.mid (marker.size ()));
 					++i;
 				}
-				else if (line.startsWith ("FILE "))
-					i = HandleFile (line.mid (5), i + 1, end, result);
+				else if (constexpr QStringView marker = u"FILE ";
+					line.startsWith (marker))
+					i = HandleFile (line.mid (marker.size ()), i + 1, end, result);
 				else
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "unknown field"
+					qWarning () << "unknown field"
 							<< line;
 					++i;
 				}
@@ -227,14 +222,14 @@ namespace Graffiti
 		}
 	}
 
-	CueSplitter::CueSplitter (const QString& cueFile, const QString& dir, QObject *parent)
-	: QObject (parent)
-	, CueFile_ (cueFile)
-	, Dir_ (dir)
+	CueSplitter::CueSplitter (QString cueFile, QString dir, QObject *parent)
+	: QObject { parent }
+	, CueFile_ { std::move (cueFile) }
+	, Dir_ { std::move (dir) }
 	{
 		QTimer::singleShot (0,
 				this,
-				SLOT (split ()));
+				&CueSplitter::Split);
 	}
 
 	QString CueSplitter::GetCueFile () const
@@ -271,7 +266,7 @@ namespace Graffiti
 		}
 	}
 
-	void CueSplitter::split ()
+	void CueSplitter::Split ()
 	{
 		const auto& cue = ParseCue (QDir (Dir_).absoluteFilePath (CueFile_));
 		qDebug () << cue.IsValid () << cue.Album_ << cue.Performer_ << cue.Date_ << cue.DiscId_;
@@ -297,8 +292,7 @@ namespace Graffiti
 			const auto& path = FindFile (file.Filename_, dir);
 			if (path.isEmpty ())
 			{
-				qWarning () << Q_FUNC_INFO
-						<< file.Filename_
+				qWarning () << file.Filename_
 						<< "not found";
 				emit error (tr ("No such file %1.").arg (file.Filename_));
 				continue;
@@ -307,17 +301,21 @@ namespace Graffiti
 			auto makeFilename = [&cue, &file] (const Track& track)
 			{
 				const auto digitsCount = static_cast<int> (std::floor (std::log10 (file.Tracks_.size ()))) + 1;
-				auto filename = QString { "%1" }
-						.arg (track.Index_,
-								std::max (2, digitsCount),
-								10,
-								QChar { '0' });
+
+				auto filename = QString::number (track.Index_);
+				if (const auto padding = digitsCount - filename.size ();
+					padding > 0)
+					filename = QString { padding, QChar { '0' } } + filename;
+
 				if (!cue.Performer_.isEmpty ())
 					filename += " - " + cue.Performer_;
+
 				if (!cue.Album_.isEmpty ())
 					filename += " - " + cue.Album_;
+
 				if (!track.Title_.isEmpty ())
 					filename += " - " + track.Title_;
+
 				return filename + ".flac";
 			};
 
@@ -341,28 +339,28 @@ namespace Graffiti
 
 		const auto concurrency = std::max (QThread::idealThreadCount (), 1);
 		for (int i = 0, cnt = std::min (SplitQueue_.size (), concurrency); i < cnt; ++i)
-			scheduleNext ();
+			ScheduleNext ();
 	}
 
-	void CueSplitter::scheduleNext ()
+	void CueSplitter::ScheduleNext ()
 	{
-		emit splitProgress (TotalItems_ - SplitQueue_.size () - CurrentlyProcessing_, TotalItems_, this);
+		emit splitProgress (TotalItems_ - SplitQueue_.size () - CurrentlyProcessing_, TotalItems_);
 
 		if (SplitQueue_.isEmpty ())
 		{
 			if (!CurrentlyProcessing_)
 			{
 				deleteLater ();
-				emit finished (this);
+				emit finished ();
 			}
 			return;
 		}
 
 		const auto& item = SplitQueue_.takeFirst ();
 
-		auto makeTime = [] (const QTime& time)
+		auto makeTime = [] (QTime time)
 		{
-			return QString ("%1:%2%3%4")
+			return QStringLiteral ("%1:%2%3%4")
 					.arg (time.hour () * 60 + time.minute ())
 					.arg (time.second ())
 					.arg (QLocale::system ().decimalPoint ())
@@ -375,54 +373,52 @@ namespace Graffiti
 		if (item.To_.isValid ())
 			args << ("--until=" + makeTime (item.To_));
 
-		auto addTag = [&args] (const QString& name, const QString& value)
+		auto addTag = [&args] (QStringView name, const QString& value)
 		{
 			if (!value.isEmpty ())
-				args << ("--tag=" + name + "=" + value);
+				args << ("--tag=" + name.toString () + "=" + value);
 		};
-		addTag ("ARTIST", item.Artist_);
-		addTag ("ALBUM", item.Album_);
-		addTag ("TITLE", item.Title_);
-		addTag ("TRACKNUMBER", QString::number (item.Index_));
-		addTag ("GENRE", item.Genre_);
-		addTag ("DATE", item.Date_ > 0 ? QString::number (item.Date_) : QString ());
-		addTag ("DISCID", item.DiscId_);
+		addTag (u"ARTIST", item.Artist_);
+		addTag (u"ALBUM", item.Album_);
+		addTag (u"TITLE", item.Title_);
+		addTag (u"TRACKNUMBER", QString::number (item.Index_));
+		addTag (u"GENRE", item.Genre_);
+		addTag (u"DATE", item.Date_ > 0 ? QString::number (item.Date_) : QString ());
+		addTag (u"DISCID", item.DiscId_);
 
-		args << item.SourceFile_ << "-o" << item.TargetFile_;
+		args << item.SourceFile_ << QStringLiteral ("-o") << item.TargetFile_;
 
 		++CurrentlyProcessing_;
 		auto process = new QProcess (this);
-		process->start ("flac", args);
+		process->start (QStringLiteral ("flac"), args);
 
 		connect (process,
-				SIGNAL (finished (int)),
+				&QProcess::finished,
 				this,
-				SLOT (handleProcessFinished (int)));
+				[this, process]
+				{
+					process->deleteLater ();
+					--CurrentlyProcessing_;
+					ScheduleNext ();
+				});
 		connect (process,
-				SIGNAL (error (QProcess::ProcessError)),
+				&QProcess::errorOccurred,
 				this,
-				SLOT (handleProcessError ()));
+				[this, process] { HandleProcessError (*process); });
 
 #ifdef Q_OS_UNIX
-		setpriority (PRIO_PROCESS, process->processId (), 19);
+		// PRIO_MAX is actually the highest _niceness_ value,
+		// so it's the lowest priority.
+		setpriority (PRIO_PROCESS, process->processId (), PRIO_MAX - 1);
 #endif
 	}
 
-	void CueSplitter::handleProcessFinished (int)
+	void CueSplitter::HandleProcessError (QProcess& process)
 	{
-		sender ()->deleteLater ();
-
-		--CurrentlyProcessing_;
-		scheduleNext ();
-	}
-
-	void CueSplitter::handleProcessError ()
-	{
-		auto process = qobject_cast<QProcess*> (sender ());
-		process->deleteLater ();
+		process.deleteLater ();
 
 		const auto& errorString = tr ("Failed to start recoder: %1.")
-				.arg (process->errorString ());
+				.arg (process.errorString ());
 
 		if (!EmittedErrors_.contains (errorString))
 		{
@@ -431,8 +427,6 @@ namespace Graffiti
 		}
 
 		--CurrentlyProcessing_;
-		scheduleNext ();
+		ScheduleNext ();
 	}
-}
-}
 }

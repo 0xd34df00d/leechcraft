@@ -6,15 +6,13 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#pragma once
+#include "literals.h"
 
-namespace LC
+namespace LC::LMP::Graffiti::Lits
 {
-namespace LMP
-{
-namespace Graffiti
-{
-	static const QStringList Genres =
+	const QString LMPGraffiti = QStringLiteral ("LMP Graffiti");
+
+	const QList<QByteArray> Genres
 	{
 		"Metalcore",
 		"Progressive Metal",
@@ -179,6 +177,4 @@ namespace Graffiti
 		"JPop",
 		"Synthpop"
 	};
-}
-}
 }

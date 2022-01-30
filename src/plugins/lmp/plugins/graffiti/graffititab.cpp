@@ -14,18 +14,16 @@
 #include <QInputDialog>
 #include <QProgressDialog>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <QtDebug>
 #include <QSettings>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
-#include <util/gui/clearlineeditaddon.h>
-#include <util/gui/lineeditbuttonmanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
 #include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/itagsfetcher.h>
@@ -34,30 +32,24 @@
 #include <interfaces/lmp/mediainfo.h>
 #include "filesmodel.h"
 #include "renamedialog.h"
-#include "genres.h"
 #include "fileswatcher.h"
 #include "cuesplitter.h"
 #include "tagsfetchmanager.h"
 #include "reciterator.h"
+#include "literals.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	const int MaxHistoryCount = 25;
 
-	GraffitiTab::GraffitiTab (ICoreProxy_ptr coreProxy, ILMPProxy_ptr proxy, const TabClassInfo& tc, QObject *plugin)
-	: CoreProxy_ (coreProxy)
-	, LMPProxy_ (proxy)
-	, TC_ (tc)
+	GraffitiTab::GraffitiTab (ILMPProxy_ptr proxy, TabClassInfo tc, QObject *plugin)
+	: LMPProxy_ (proxy)
+	, TC_ (std::move (tc))
 	, Plugin_ (plugin)
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new FilesModel (this))
 	, FilesWatcher_ (new FilesWatcher (this))
-	, Toolbar_ (new QToolBar ("Graffiti"))
-	, IsChangingCurrent_ (false)
+	, Toolbar_ (new QToolBar (Lits::LMPGraffiti))
 	{
 		Ui_.setupUi (this);
 
@@ -66,9 +58,9 @@ namespace Graffiti
 		SetupToolbar ();
 
 		connect (FilesWatcher_,
-				SIGNAL (rereadFiles ()),
+				&FilesWatcher::rereadFiles,
 				this,
-				SLOT (handleRereadFiles ()));
+				&GraffitiTab::RereadFiles);
 
 		RestorePathHistory ();
 	}
@@ -98,8 +90,7 @@ namespace Graffiti
 	{
 		if (path.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty path for file"
+			qWarning () << "empty path for file"
 					<< filename;
 			return;
 		}
@@ -111,54 +102,64 @@ namespace Graffiti
 		FilesWatcher_->Clear ();
 
 		auto recIterator = new RecIterator (LMPProxy_, this);
-		recIterator->setProperty ("LMP/Graffiti/Filename", filename);
 		connect (recIterator,
-				SIGNAL (finished ()),
+				&RecIterator::finished,
 				this,
-				SLOT (handleIterateFinished ()));
+				[=]
+				{
+					recIterator->deleteLater ();
+					HandleDirIterateResults (recIterator->GetResult (), filename);
+				});
 		connect (recIterator,
-				SIGNAL (canceled ()),
+				&RecIterator::canceled,
 				this,
-				SLOT (handleIterateCanceled ()));
+				[=]
+				{
+					recIterator->deleteLater ();
+					setEnabled (true);
+				});
 
 		auto progDialog = new QProgressDialog (this);
 		progDialog->setLabelText (tr ("Scanning path %1...")
 					.arg ("<em>" + path + "</em>"));
 		progDialog->setAttribute (Qt::WA_DeleteOnClose);
 		connect (recIterator,
-				SIGNAL (finished ()),
+				&RecIterator::finished,
 				progDialog,
-				SLOT (close ()));
+				&QDialog::close);
 		connect (progDialog,
-				SIGNAL (canceled ()),
+				&QProgressDialog::canceled,
 				recIterator,
-				SLOT (cancel ()));
+				&RecIterator::Cancel);
 		progDialog->show ();
 
 		recIterator->Start (path);
 
-		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
+		SplitCue_->setEnabled (!QDir (path).entryList ({ QStringLiteral ("*.cue") }).isEmpty ());
 	}
 
 	template<typename T, typename F>
 	void GraffitiTab::UpdateData (const T& newData, F getter)
 	{
-		if (IsChangingCurrent_)
-			return;
-
 		static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
 				"functor doesn't return an lvalue reference");
+
+		bool changed = false;
 
 		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
 		for (const auto& index : selected)
 		{
 			const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
 			auto info = infoData.template value<MediaInfo> ();
+			if (getter (info) == newData)
+				continue;
+
 			getter (info) = newData;
 			FilesModel_->UpdateInfo (index, info);
+			changed = true;
 		}
 
-		if (!selected.isEmpty ())
+		if (changed)
 		{
 			Save_->setEnabled (true);
 			Revert_->setEnabled (true);
@@ -167,43 +168,104 @@ namespace Graffiti
 
 	void GraffitiTab::SetupEdits ()
 	{
-		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Album_);
-		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Artist_);
-		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Title_);
-
-		auto genreMgr = new Util::LineEditButtonManager (Ui_.Genre_);
-
-		Ui_.Genre_->SetSeparator (" / ");
+		Ui_.Genre_->SetSeparator (QStringLiteral (" / "));
 
 		auto model = new Util::TagsCompletionModel (this);
-		model->UpdateTags (Genres);
+		model->UpdateTags (Util::Map (Lits::Genres, [] (const QByteArray& ba) { return QString::fromUtf8 (ba); }));
 		auto completer = new Util::TagsCompleter (Ui_.Genre_);
 		completer->OverrideModel (model);
 
-		Ui_.Genre_->AddSelector (genreMgr);
+		Ui_.Genre_->AddSelector ();
 
-		new Util::ClearLineEditAddon (CoreProxy_, Ui_.Genre_, genreMgr);
+		auto initField = [this]<typename T> (T *edit, QAbstractButton *button, auto handler)
+		{
+			connect (edit,
+					&T::textChanged,
+					this,
+					handler);
+			connect (button,
+					&QAbstractButton::released,
+					this,
+					handler);
+		};
 
-		connect (Ui_.ArtistSetAll_,
-				SIGNAL (released ()),
+		initField (Ui_.Artist_, Ui_.ArtistSetAll_,
+				[this]
+				{
+					const auto& artist = Ui_.Artist_->text ();
+					UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
+				});
+		initField (Ui_.Album_, Ui_.AlbumSetAll_,
+				[this]
+				{
+					const auto& album = Ui_.Album_->text ();
+					UpdateData (album, [] (MediaInfo& info) -> QString& { return info.Album_; });
+				});
+		initField (Ui_.Title_, Ui_.TitleSetAll_,
+				[this]
+				{
+					const auto& title = Ui_.Title_->text ();
+					UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
+				});
+		initField (Ui_.Genre_, Ui_.GenreSetAll_,
+				[this]
+				{
+					const auto& genreString = Ui_.Genre_->text ();
+					auto genres = genreString.split ('/', Qt::SkipEmptyParts);
+					for (auto& genre : genres)
+						genre = genre.trimmed ();
+
+					UpdateData (genres, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
+				});
+		initField (Ui_.Year_, Ui_.YearSetAll_,
+				[this]
+				{
+					const auto year = Ui_.Year_->value ();
+					UpdateData (year, [] (MediaInfo& info) -> int& { return info.Year_; });
+				});
+
+		connect (Ui_.TrackNumber_,
+				&QSpinBox::valueChanged,
 				this,
-				SLOT (on_Artist__textChanged ()));
-		connect (Ui_.AlbumSetAll_,
-				SIGNAL (released ()),
+				[this] (int number)
+				{
+					const auto& index = Ui_.FilesList_->currentIndex ();
+					if (!index.isValid ())
+						return;
+
+					const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
+					auto info = infoData.value<MediaInfo> ();
+					if (info.TrackNumber_ == number)
+						return;
+
+					info.TrackNumber_ = number;
+					FilesModel_->UpdateInfo (index, info);
+
+					Save_->setEnabled (true);
+					Revert_->setEnabled (true);
+				});
+		connect (Ui_.TrackNumberAutoFill_,
+				&QAbstractButton::released,
 				this,
-				SLOT (on_Album__textChanged ()));
-		connect (Ui_.TitleSetAll_,
-				SIGNAL (released ()),
-				this,
-				SLOT (on_Title__textChanged ()));
-		connect (Ui_.GenreSetAll_,
-				SIGNAL (released ()),
-				this,
-				SLOT (on_Genre__textChanged ()));
-		connect (Ui_.YearSetAll_,
-				SIGNAL (released ()),
-				this,
-				SLOT (on_Year__valueChanged ()));
+				[this]
+				{
+					QMap<QString, int> album2counter;
+
+					const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
+					for (const auto& index : selected)
+					{
+						const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
+						auto info = infoData.value<MediaInfo> ();
+						info.TrackNumber_ = ++album2counter [info.Album_];
+						FilesModel_->UpdateInfo (index, info);
+					}
+
+					if (!selected.isEmpty ())
+					{
+						Save_->setEnabled (true);
+						Revert_->setEnabled (true);
+					}
+				});
 	}
 
 	void GraffitiTab::SetupViews ()
@@ -224,51 +286,81 @@ namespace Graffiti
 		Ui_.FilesList_->setModel (FilesModel_);
 
 		connect (Ui_.FilesList_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				&QItemSelectionModel::currentRowChanged,
 				this,
-				SLOT (currentFileChanged (QModelIndex)));
+				&GraffitiTab::PopulateFields);
 
 		connect (Ui_.PathLine_,
-				SIGNAL (activated (QString)),
-				this,
-				SLOT (handlePathLine ()));
+				&QComboBox::textActivated,
+				[this]
+				{
+					auto path = Ui_.PathLine_->currentText ();
+					if (path.startsWith ('~'))
+					{
+						path.replace (0, 1, QDir::homePath ());
+						Ui_.PathLine_->blockSignals (true);
+						Ui_.PathLine_->setEditText (path);
+						Ui_.PathLine_->blockSignals (false);
+					}
+
+					Ui_.DirectoryTree_->setCurrentIndex (FSModel_->index (path));
+					SetPath (path);
+				});
+
+		connect (Ui_.DirectoryTree_,
+				&QTreeView::activated,
+				[this] (const QModelIndex& index)
+				{
+					const auto& path = FSModel_->filePath (index);
+					Ui_.PathLine_->blockSignals (true);
+					Ui_.PathLine_->setEditText (path);
+					Ui_.PathLine_->blockSignals (false);
+
+					SetPath (path);
+				});
 	}
 
 	void GraffitiTab::SetupToolbar ()
 	{
 		Save_ = Toolbar_->addAction (tr ("Save"),
-				this, SLOT (save ()));
+				this, &GraffitiTab::Save);
 		Save_->setProperty ("ActionIcon", "document-save");
-		Save_->setShortcut (QString ("Ctrl+S"));
+		Save_->setShortcut (QKeySequence::Save);
 
 		Revert_ = Toolbar_->addAction (tr ("Revert"),
-				this, SLOT (revert ()));
+				this, &GraffitiTab::Revert);
 		Revert_->setProperty ("ActionIcon", "document-revert");
 
 		Toolbar_->addSeparator ();
 
 		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
-				this, SLOT (renameFiles ()));
+				this, &GraffitiTab::RenameFiles);
 		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
 
 		Toolbar_->addSeparator ();
 
 		GetTags_ = Toolbar_->addAction (tr ("Fetch tags"),
-				this, SLOT (fetchTags ()));
+				this, &GraffitiTab::FetchTags);
 		GetTags_->setProperty ("ActionIcon", "download");
 
 		SplitCue_ = Toolbar_->addAction (tr ("Split CUE..."),
-				this, SLOT (splitCue ()));
+				this, &GraffitiTab::SplitCue);
 		SplitCue_->setProperty ("ActionIcon", "split");
 		SplitCue_->setEnabled (false);
+	}
+
+	namespace
+	{
+		const QString PathHistoryGroup = QStringLiteral ("PathHistory");
+		const QString HistListKey = QStringLiteral ("HistList");
 	}
 
 	void GraffitiTab::RestorePathHistory ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_LMP_Graffiti");
-		settings.beginGroup ("PathHistory");
-		const auto& paths = settings.value ("HistList").toStringList ();
+		settings.beginGroup (PathHistoryGroup);
+		const auto& paths = settings.value (HistListKey).toStringList ();
 		settings.endGroup ();
 
 		Ui_.PathLine_->blockSignals (true);
@@ -304,98 +396,24 @@ namespace Graffiti
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_LMP_Graffiti");
-		settings.beginGroup ("PathHistory");
-		settings.setValue ("HistList", paths);
+		settings.beginGroup (PathHistoryGroup);
+		settings.setValue (HistListKey, paths);
 		settings.endGroup ();
 	}
 
-	void GraffitiTab::on_Artist__textChanged ()
-	{
-		const auto& artist = Ui_.Artist_->text ();
-		UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
-	}
-
-	void GraffitiTab::on_Album__textChanged ()
-	{
-		const auto& album = Ui_.Album_->text ();
-		UpdateData (album, [] (MediaInfo& info) -> QString& { return info.Album_; });
-	}
-
-	void GraffitiTab::on_Title__textChanged ()
-	{
-		const auto& title = Ui_.Title_->text ();
-		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
-	}
-
-	void GraffitiTab::on_Genre__textChanged ()
-	{
-		const auto& genreString = Ui_.Genre_->text ();
-		auto genres = genreString.split ('/', Qt::SkipEmptyParts);
-		for (auto& genre : genres)
-			genre = genre.trimmed ();
-
-		UpdateData (genres, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
-	}
-
-	void GraffitiTab::on_Year__valueChanged ()
-	{
-		const auto year = Ui_.Year_->value ();
-		UpdateData (year, [] (MediaInfo& info) -> int& { return info.Year_; });
-	}
-
-	void GraffitiTab::on_TrackNumber__valueChanged ()
-	{
-		const auto number = Ui_.TrackNumber_->value ();
-
-		if (IsChangingCurrent_)
-			return;
-
-		const auto& index = Ui_.FilesList_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
-		auto info = infoData.value<MediaInfo> ();
-		info.TrackNumber_ = number;
-		FilesModel_->UpdateInfo (index, info);
-
-		Save_->setEnabled (true);
-		Revert_->setEnabled (true);
-	}
-
-	void GraffitiTab::on_TrackNumberAutoFill__released ()
-	{
-		QMap<QString, int> album2counter;
-
-		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
-		for (const auto& index : selected)
-		{
-			const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
-			auto info = infoData.value<MediaInfo> ();
-			info.TrackNumber_ = ++album2counter [info.Album_];
-			FilesModel_->UpdateInfo (index, info);
-		}
-
-		if (!selected.isEmpty ())
-		{
-			Save_->setEnabled (true);
-			Revert_->setEnabled (true);
-		}
-	}
-
-	void GraffitiTab::save ()
+	void GraffitiTab::Save ()
 	{
 		const auto& modified = FilesModel_->GetModified ();
 		if (modified.isEmpty ())
 			return;
 
 		if (QMessageBox::question (this,
-				"LMP Graffiti",
-				tr ("Do you really want to accept changes to %n file(s)?", 0, modified.size ()),
+				Lits::LMPGraffiti,
+				tr ("Do you really want to accept changes to %n file(s)?", nullptr, modified.size ()),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		ITagResolver *resolver = LMPProxy_->GetTagResolver ();
+		const auto resolver = LMPProxy_->GetTagResolver ();
 
 		auto toTLStr = [] (const QString& str)
 		{
@@ -414,7 +432,7 @@ namespace Graffiti
 			tag->setAlbum (toTLStr (newInfo.Album_));
 			tag->setTitle (toTLStr (newInfo.Title_));
 			tag->setYear (newInfo.Year_);
-			tag->setGenre (toTLStr (newInfo.Genres_.join (" / ")));
+			tag->setGenre (toTLStr (newInfo.Genres_.join (u" / ")));
 			tag->setTrack (newInfo.TrackNumber_);
 
 			if (!file.save ())
@@ -423,18 +441,18 @@ namespace Graffiti
 						<< newInfo.LocalPath_;
 		}
 
-		handleRereadFiles ();
+		RereadFiles ();
 	}
 
-	void GraffitiTab::revert ()
+	void GraffitiTab::Revert ()
 	{
 		const auto& modified = FilesModel_->GetModified ();
 		if (modified.isEmpty ())
 			return;
 
 		if (QMessageBox::question (this,
-				"LMP Graffiti",
-				tr ("Do you really want to revert changes to %n file(s)?", 0, modified.size ()),
+				Lits::LMPGraffiti,
+				tr ("Do you really want to revert changes to %n file(s)?", nullptr, modified.size ()),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
@@ -446,21 +464,21 @@ namespace Graffiti
 		Save_->setEnabled (false);
 		Revert_->setEnabled (false);
 
-		currentFileChanged (Ui_.FilesList_->currentIndex ());
+		PopulateFields (Ui_.FilesList_->currentIndex ());
 	}
 
-	void GraffitiTab::renameFiles ()
+	void GraffitiTab::RenameFiles ()
 	{
 		if (!FilesModel_->GetModified ().isEmpty ())
 		{
 			auto res = QMessageBox::question (this,
-					"LMP Graffiti",
+					Lits::LMPGraffiti,
 					tr ("You have unsaved files with changed tags. Do you want to save or discard those changes?"),
 					QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 			if (res == QMessageBox::Save)
-				save ();
+				Save ();
 			else if (res == QMessageBox::Discard)
-				revert ();
+				Revert ();
 			else
 				return;
 		}
@@ -478,9 +496,9 @@ namespace Graffiti
 		dia->show ();
 	}
 
-	void GraffitiTab::fetchTags ()
+	void GraffitiTab::FetchTags ()
 	{
-		auto provs = CoreProxy_->GetPluginsManager ()->GetAllCastableTo<Media::ITagsFetcher*> ();
+		auto provs = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::ITagsFetcher*> ();
 		if (provs.isEmpty ())
 			return;
 
@@ -499,20 +517,24 @@ namespace Graffiti
 
 		auto fetcher = new TagsFetchManager (paths, provs.first (), FilesModel_, this);
 		connect (fetcher,
-				SIGNAL (tagsFetchProgress (int, int, QObject*)),
+				&TagsFetchManager::tagsFetchProgress,
 				this,
-				SIGNAL (tagsFetchProgress (int, int, QObject*)));
+				&GraffitiTab::tagsFetchProgress);
 		connect (fetcher,
-				SIGNAL (tagsFetched (QString)),
-				this,
-				SLOT (handleTagsFetched (QString)));
+				&TagsFetchManager::tagsFetched,
+				[this] (const QString& filename)
+				{
+					const auto& curIdx = Ui_.FilesList_->selectionModel ()->currentIndex ();
+					const auto& curInfo = curIdx.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
+					if (curInfo.LocalPath_ == filename)
+						PopulateFields (curIdx);
+				});
 		connect (fetcher,
-				SIGNAL (finished (bool)),
-				GetTags_,
-				SLOT (setEnabled (bool)));
+				&TagsFetchManager::finished,
+				[this] { GetTags_->setEnabled (true); });
 	}
 
-	void GraffitiTab::splitCue ()
+	void GraffitiTab::SplitCue ()
 	{
 		const auto& curDirIdx = Ui_.DirectoryTree_->currentIndex ();
 		if (!curDirIdx.isValid ())
@@ -525,7 +547,7 @@ namespace Graffiti
 		if (cues.isEmpty ())
 		{
 			QMessageBox::critical (this,
-					"LMP Graffiti",
+					Lits::LMPGraffiti,
 					tr ("No cue sheets are available in this directory."));
 			return;
 		}
@@ -534,7 +556,7 @@ namespace Graffiti
 		if (cues.size () >= 2)
 		{
 			cue = QInputDialog::getItem (this,
-					"Select cue sheet",
+					Lits::LMPGraffiti,
 					tr ("Select cue sheet to use for splitting:"),
 					cues,
 					0,
@@ -547,82 +569,52 @@ namespace Graffiti
 
 		auto splitter = new CueSplitter (cue, path);
 		connect (splitter,
-				SIGNAL (error (QString)),
-				this,
-				SLOT (handleCueSplitError (QString)));
+				&CueSplitter::error,
+				[] (const QString& error)
+				{
+					const auto& e = Util::MakeNotification (Lits::LMPGraffiti, error, Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 		connect (splitter,
-				SIGNAL (finished (CueSplitter*)),
-				this,
-				SLOT (handleCueSplitFinished ()));
+				&CueSplitter::finished,
+				[]
+				{
+					const auto& e = Util::MakeNotification (Lits::LMPGraffiti,
+							tr ("Finished splitting CUE file"),
+							Priority::Info);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 		emit cueSplitStarted (splitter);
 	}
 
-	void GraffitiTab::handleTagsFetched (const QString& filename)
-	{
-		const auto& curIdx = Ui_.FilesList_->selectionModel ()->currentIndex ();
-		const auto& curInfo = curIdx.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
-		if (curInfo.LocalPath_ == filename)
-			currentFileChanged (curIdx);
-	}
-
-	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
-	{
-		const auto& path = FSModel_->filePath (index);
-		Ui_.PathLine_->blockSignals (true);
-		Ui_.PathLine_->setEditText (path);
-		Ui_.PathLine_->blockSignals (false);
-
-		SetPath (path);
-	}
-
-	void GraffitiTab::handlePathLine ()
-	{
-		QString path = Ui_.PathLine_->currentText ();
-		if (path.startsWith ('~'))
-		{
-			path.replace (0, 1, QDir::homePath ());
-			Ui_.PathLine_->blockSignals (true);
-			Ui_.PathLine_->setEditText (path);
-			Ui_.PathLine_->blockSignals (false);
-		}
-
-		Ui_.DirectoryTree_->setCurrentIndex (FSModel_->index (path));
-
-		SetPath (path);
-	}
-
-	void GraffitiTab::currentFileChanged (const QModelIndex& index)
+	void GraffitiTab::PopulateFields (const QModelIndex& index)
 	{
 		const auto& infoData = FilesModel_->data (index, FilesModel::Roles::MediaInfoRole);
 		const auto& info = infoData.value<MediaInfo> ();
 
-		IsChangingCurrent_ = true;
+		QWidget* const widgets [] { Ui_.Album_, Ui_.Artist_, Ui_.Title_, Ui_.Genre_, Ui_.Year_, Ui_.TrackNumber_ };
+
+		for (const auto w : widgets)
+			w->blockSignals (true);
 
 		Ui_.Album_->setText (info.Album_);
 		Ui_.Artist_->setText (info.Artist_);
 		Ui_.Title_->setText (info.Title_);
-		Ui_.Genre_->setText (info.Genres_.join (" / "));
-
+		Ui_.Genre_->setText (info.Genres_.join (u" / "));
 		Ui_.Year_->setValue (info.Year_);
-
 		Ui_.TrackNumber_->setValue (info.TrackNumber_);
 
-		IsChangingCurrent_ = false;
+		for (const auto w : widgets)
+			w->blockSignals (false);
 	}
 
-	void GraffitiTab::handleRereadFiles ()
+	void GraffitiTab::RereadFiles ()
 	{
-		const auto& current = Ui_.DirectoryTree_->currentIndex ();
-		on_DirectoryTree__activated (current);
+		SetPath (FSModel_->filePath (Ui_.DirectoryTree_->currentIndex ()));
 	}
 
-	void GraffitiTab::handleIterateFinished ()
+	void GraffitiTab::HandleDirIterateResults (const QList<QFileInfo>& files, const QString& origFilename)
 	{
-		auto recIterator = qobject_cast<RecIterator*> (sender ());
-		recIterator->deleteLater ();
-
-		const auto& files = recIterator->GetResult ();
-
 		FilesWatcher_->AddFiles (files);
 		FilesModel_->AddFiles (files);
 
@@ -635,55 +627,21 @@ namespace Graffiti
 			const auto& parts = Util::PartitionEithers (eithers);
 
 			for (const auto& resolveError : parts.first)
-				qWarning () << Q_FUNC_INFO
-						<< resolveError.FilePath_
+				qWarning () << resolveError.FilePath_
 						<< resolveError.ReasonString_;
 
 			return parts.second;
 		};
 
-		auto scanWatcher = new QFutureWatcher<QList<MediaInfo>> ();
-		connect (scanWatcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleScanFinished ()));
-		scanWatcher->setProperty ("LMP/Graffiti/Filename", recIterator->property ("LMP/Graffiti/Filename"));
-		scanWatcher->setFuture (QtConcurrent::run (std::function<QList<MediaInfo> ()> (worker)));
+		Util::Sequence (this, QtConcurrent::run (worker)) >>
+				[=] (const QList<MediaInfo>& infos)
+				{
+					FilesModel_->SetInfos (infos);
+					setEnabled (true);
+
+					if (const auto& index = FilesModel_->FindIndexByFileName (origFilename);
+						index.isValid ())
+						Ui_.FilesList_->setCurrentIndex (index);
+				};
 	}
-
-	void GraffitiTab::handleIterateCanceled  ()
-	{
-		sender ()->deleteLater ();
-		setEnabled (true);
-	}
-
-	void GraffitiTab::handleScanFinished ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<MediaInfo>>*> (sender ());
-		watcher->deleteLater ();
-
-		FilesModel_->SetInfos (watcher->result ());
-		setEnabled (true);
-
-		const auto& filename = watcher->property ("LMP/Graffiti/Filename").toString ();
-		const auto& index = FilesModel_->FindIndexByFileName (filename);
-		if (index.isValid ())
-			Ui_.FilesList_->setCurrentIndex (index);
-	}
-
-	void GraffitiTab::handleCueSplitError (const QString& error)
-	{
-		const auto& e = Util::MakeNotification ("LMP Graffiti", error, Priority::Critical);
-		CoreProxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
-	void GraffitiTab::handleCueSplitFinished ()
-	{
-		const auto& e = Util::MakeNotification ("LMP Graffiti",
-				tr ("Finished splitting CUE file"),
-				Priority::Info);
-		CoreProxy_->GetEntityManager ()->HandleEntity (e);
-	}
-}
-}
 }

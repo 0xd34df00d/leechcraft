@@ -14,20 +14,16 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/lmp/mediainfo.h>
+#include "cuesplitter.h"
+#include "literals.h"
 #include "graffititab.h"
 #include "progressmanager.h"
 
-namespace LC
+namespace LC::LMP::Graffiti
 {
-namespace LMP
-{
-namespace Graffiti
-{
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("lmp_graffiti");
-
-		CoreProxy_ = proxy;
+		Util::InstallTranslator (QStringLiteral ("lmp_graffiti"));
 
 		ProgressMgr_ = new ProgressManager ();
 
@@ -57,7 +53,7 @@ namespace Graffiti
 
 	QString Plugin::GetName () const
 	{
-		return "LMP Graffiti";
+		return Lits::LMPGraffiti;
 	}
 
 	QString Plugin::GetInfo () const
@@ -67,14 +63,12 @@ namespace Graffiti
 
 	QIcon Plugin::GetIcon () const
 	{
-		return CoreProxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.LMP.General";
-		return result;
+		return { "org.LeechCraft.LMP.General" };
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
@@ -87,8 +81,7 @@ namespace Graffiti
 		if (TaggerTC_.TabClass_ == tabClass)
 			MakeTab ();
 		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
+			qWarning () << "unknown tab class"
 					<< tabClass;
 	}
 
@@ -104,23 +97,24 @@ namespace Graffiti
 
 	GraffitiTab* Plugin::MakeTab ()
 	{
-		auto tab = new GraffitiTab (CoreProxy_, LMPProxy_, TaggerTC_, this);
+		auto tab = new GraffitiTab (LMPProxy_, TaggerTC_, this);
 		emit addNewTab (TaggerTC_.VisibleName_, tab);
 		emit raiseTab (tab);
 
 		connect (tab,
-				SIGNAL (removeTab (QWidget*)),
+				&GraffitiTab::removeTab,
 				this,
-				SIGNAL (removeTab (QWidget*)));
+				&Plugin::removeTab);
 
 		connect (tab,
-				SIGNAL (tagsFetchProgress (int, int, QObject*)),
+				&GraffitiTab::tagsFetchProgress,
 				ProgressMgr_,
-				SLOT (handleTagsFetch (int, int, QObject*)));
+				&ProgressManager::HandleTagsFetch);
 		connect (tab,
-				SIGNAL (cueSplitStarted (CueSplitter*)),
+				&GraffitiTab::cueSplitStarted,
 				ProgressMgr_,
-				SLOT (handleCueSplitter (CueSplitter*)));
+				&ProgressManager::HandleCueSplitter);
+
 		return tab;
 	}
 
@@ -138,9 +132,12 @@ namespace Graffiti
 
 		const auto action = menu->addAction (tr ("Edit tags..."),
 				this,
-				SLOT (handleOpenTabFromContextMenu ()));
+				[this, path = mediaInfo.LocalPath_]
+				{
+					const QFileInfo info { path };
+					MakeTab ()->SetPath (info.dir ().path (), info.fileName ());
+				});
 		action->setProperty ("ActionIcon", "mail-tagged");
-		action->setProperty ("LMP/Graffiti/Filepath", mediaInfo.LocalPath_);
 	}
 
 	void Plugin::hookCollectionContextMenuRequested (IHookProxy_ptr proxy,
@@ -148,18 +145,6 @@ namespace Graffiti
 	{
 		hookPlaylistContextMenuRequested (proxy, menu, info);
 	}
-
-	void Plugin::handleOpenTabFromContextMenu ()
-	{
-		const auto& path = sender ()->property ("LMP/Graffiti/Filepath").toString ();
-
-		const auto tab = MakeTab ();
-
-		const QFileInfo info { path };
-		tab->SetPath (info.dir ().path (), info.fileName ());
-	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lmp_graffiti, LC::LMP::Graffiti::Plugin);

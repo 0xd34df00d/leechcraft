@@ -13,11 +13,7 @@
 #include <QStringList>
 #include <interfaces/lmp/mediainfo.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	class FilesModel : public QAbstractItemModel
 	{
@@ -33,7 +29,7 @@ namespace Graffiti
 
 			MediaInfo Info_;
 			MediaInfo OrigInfo_;
-			bool IsChanged_;
+			bool IsChanged_ = false;
 
 			File (const QFileInfo&);
 		};
@@ -55,14 +51,14 @@ namespace Graffiti
 			OrigMediaInfo
 		};
 
-		FilesModel (QObject*);
+		explicit FilesModel (QObject*);
 
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex&) const;
-		int columnCount (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int) const;
-		QVariant data (const QModelIndex&, int) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex&) const override;
+		int columnCount (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int) const override;
+		QVariant data (const QModelIndex&, int) const override;
 
 		void AddFiles (const QList<QFileInfo>&);
 
@@ -79,6 +75,4 @@ namespace Graffiti
 		QList<File>::iterator FindFile (const QString&);
 		QList<File>::const_iterator FindFile (const QString&) const;
 	};
-}
-}
 }

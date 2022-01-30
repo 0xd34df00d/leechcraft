@@ -11,7 +11,16 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -69,7 +78,11 @@
        <item row="0" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLineEdit" name="Artist_"/>
+          <widget class="QLineEdit" name="Artist_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QToolButton" name="ArtistSetAll_">
@@ -77,7 +90,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset theme="edit-select-all"/>
+            <iconset theme="edit-select-all">
+             <normaloff>.</normaloff>.</iconset>
            </property>
           </widget>
          </item>
@@ -93,12 +107,17 @@
        <item row="1" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLineEdit" name="Album_"/>
+          <widget class="QLineEdit" name="Album_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QToolButton" name="AlbumSetAll_">
            <property name="icon">
-            <iconset theme="edit-select-all"/>
+            <iconset theme="edit-select-all">
+             <normaloff>.</normaloff>.</iconset>
            </property>
           </widget>
          </item>
@@ -126,7 +145,8 @@
          <item>
           <widget class="QToolButton" name="YearSetAll_">
            <property name="icon">
-            <iconset theme="edit-select-all"/>
+            <iconset theme="edit-select-all">
+             <normaloff>.</normaloff>.</iconset>
            </property>
           </widget>
          </item>
@@ -142,12 +162,17 @@
        <item row="3" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLineEdit" name="Title_"/>
+          <widget class="QLineEdit" name="Title_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QToolButton" name="TitleSetAll_">
            <property name="icon">
-            <iconset theme="edit-select-all"/>
+            <iconset theme="edit-select-all">
+             <normaloff>.</normaloff>.</iconset>
            </property>
           </widget>
          </item>
@@ -163,12 +188,17 @@
        <item row="4" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="LC::Util::TagsLineEdit" name="Genre_"/>
+          <widget class="LC::Util::TagsLineEdit" name="Genre_">
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QToolButton" name="GenreSetAll_">
            <property name="icon">
-            <iconset theme="edit-select-all"/>
+            <iconset theme="edit-select-all">
+             <normaloff>.</normaloff>.</iconset>
            </property>
           </widget>
          </item>
@@ -186,7 +216,7 @@
          <item>
           <widget class="QSpinBox" name="TrackNumber_">
            <property name="specialValueText">
-            <string notr="true"> </string>
+            <string notr="true"/>
            </property>
            <property name="minimum">
             <number>0</number>
@@ -196,7 +226,8 @@
          <item>
           <widget class="QToolButton" name="TrackNumberAutoFill_">
            <property name="icon">
-            <iconset theme="fill-color"/>
+            <iconset theme="fill-color">
+             <normaloff>.</normaloff>.</iconset>
            </property>
           </widget>
          </item>

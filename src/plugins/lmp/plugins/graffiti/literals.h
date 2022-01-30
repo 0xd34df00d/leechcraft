@@ -8,24 +8,12 @@
 
 #pragma once
 
-#include <QObject>
-#include <QFileInfo>
+#include <QList>
+#include <QString>
 
-class QFileSystemWatcher;
-
-namespace LC::LMP::Graffiti
+namespace LC::LMP::Graffiti::Lits
 {
-	class FilesWatcher : public QObject
-	{
-		Q_OBJECT
+	extern const QString LMPGraffiti;
 
-		QFileSystemWatcher *Watcher_;
-	public:
-		explicit FilesWatcher (QObject* = nullptr);
-
-		void Clear ();
-		void AddFiles (const QList<QFileInfo>&);
-	signals:
-		void rereadFiles ();
-	};
+	extern const QList<QByteArray> Genres;
 }

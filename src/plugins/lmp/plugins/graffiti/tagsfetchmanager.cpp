@@ -7,50 +7,26 @@
  **********************************************************************/
 
 #include "tagsfetchmanager.h"
-#include <QFuture>
+#include <concepts>
 #include <QTimer>
 #include <util/threads/futures.h>
 #include <interfaces/lmp/mediainfo.h>
 #include <interfaces/media/itagsfetcher.h>
 #include "filesmodel.h"
 
-namespace LC
+namespace LC::LMP::Graffiti
 {
-namespace LMP
-{
-namespace Graffiti
-{
-	TagsFetchManager::TagsFetchManager (const QStringList& paths,
-			Media::ITagsFetcher *prov, FilesModel *filesModel, QObject *parent)
-	: QObject (parent)
-	, FilesModel_ (filesModel)
-	, FetchedTags_ (0)
-	, TotalTags_ (paths.size ())
-	{
-		for (const auto& path : paths)
-			Util::Sequence (this, prov->FetchTags (path)) >>
-					[this, path] (const Media::AudioInfo& result) { handleTagsFetched (path, result); };
-
-		QTimer::singleShot (0, this, [this] { emit tagsFetchProgress (0, TotalTags_, this); });
-	}
-
 	namespace
 	{
-		template<typename T>
+		template<std::default_initializable T>
 		bool IsEmptyData (const T& val)
 		{
-			if constexpr (std::is_default_constructible<T> {})
-				return val == T {};
-			else
-				static_assert (std::is_same<T, struct Error> {}, "not a default-constructible data type");
+			return val == T {};
 		}
 
 		template<typename F>
 		void UpgradeInfo (MediaInfo& info, MediaInfo& other, F getter)
 		{
-			static_assert (std::is_lvalue_reference<std::result_of_t<F (MediaInfo&)>> {},
-					"functor doesn't return an lvalue reference");
-
 			auto& data = std::invoke (getter, info);
 			const auto& otherData = std::invoke (getter, other);
 			if (!IsEmptyData (otherData) && IsEmptyData (data))
@@ -58,30 +34,39 @@ namespace Graffiti
 		}
 	}
 
-	void TagsFetchManager::handleTagsFetched (const QString& filename, const Media::AudioInfo& result)
+	TagsFetchManager::TagsFetchManager (const QStringList& paths,
+			Media::ITagsFetcher *prov, FilesModel *filesModel, QObject *parent)
+	: QObject { parent }
+	, FilesModel_ { filesModel }
+	, TotalTags_ { paths.size () }
 	{
-		emit tagsFetchProgress (++FetchedTags_, TotalTags_, this);
+		for (const auto& path : paths)
+			Util::Sequence (this, prov->FetchTags (path)) >>
+					[this, path] (const Media::AudioInfo& result)
+					{
+						emit tagsFetchProgress (++FetchedTags_, TotalTags_, this);
 
-		const auto& index = FilesModel_->FindIndex (filename);
-		if (!index.isValid ())
-			return;
+						const auto& index = FilesModel_->FindIndex (path);
+						if (!index.isValid ())
+							return;
 
-		auto newInfo = MediaInfo::FromAudioInfo (result);
+						auto newInfo = MediaInfo::FromAudioInfo (result);
 
-		auto info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
-		UpgradeInfo (info, newInfo, &MediaInfo::Title_);
-		UpgradeInfo (info, newInfo, &MediaInfo::Artist_);
-		UpgradeInfo (info, newInfo, &MediaInfo::Album_);
-		UpgradeInfo (info, newInfo, &MediaInfo::Year_);
-		UpgradeInfo (info, newInfo, &MediaInfo::TrackNumber_);
-		UpgradeInfo (info, newInfo, &MediaInfo::Genres_);
-		FilesModel_->UpdateInfo (index, info);
+						auto info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
+						UpgradeInfo (info, newInfo, &MediaInfo::Title_);
+						UpgradeInfo (info, newInfo, &MediaInfo::Artist_);
+						UpgradeInfo (info, newInfo, &MediaInfo::Album_);
+						UpgradeInfo (info, newInfo, &MediaInfo::Year_);
+						UpgradeInfo (info, newInfo, &MediaInfo::TrackNumber_);
+						UpgradeInfo (info, newInfo, &MediaInfo::Genres_);
+						FilesModel_->UpdateInfo (index, info);
 
-		emit tagsFetched (filename);
+						emit tagsFetched (path);
 
-		if (FetchedTags_ == TotalTags_)
-			emit finished (true);
+						if (FetchedTags_ == TotalTags_)
+								emit finished ();
+					};
+
+		QTimer::singleShot (0, this, [this] { emit tagsFetchProgress (0, TotalTags_, this); });
 	}
-}
-}
 }

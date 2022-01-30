@@ -10,16 +10,11 @@
 #include <QtDebug>
 #include <QColor>
 
-namespace LC
-{
-namespace LMP
-{
-namespace Graffiti
+namespace LC::LMP::Graffiti
 {
 	FilesModel::File::File (const QFileInfo& fi)
 	: Path_ (fi.absoluteFilePath ())
 	, Name_ (fi.fileName ())
-	, IsChanged_ (false)
 	{
 	}
 
@@ -36,7 +31,7 @@ namespace Graffiti
 
 	QModelIndex FilesModel::parent (const QModelIndex&) const
 	{
-		return QModelIndex ();
+		return {};
 	}
 
 	int FilesModel::rowCount (const QModelIndex& parent) const
@@ -52,10 +47,10 @@ namespace Graffiti
 	QVariant FilesModel::headerData (int section, Qt::Orientation orientation, int role) const
 	{
 		if (orientation != Qt::Horizontal)
-			return QVariant ();
+			return {};
 
 		if (role != Qt::DisplayRole)
-			return QVariant ();
+			return {};
 
 		return Headers_.at (section);
 	}
@@ -63,7 +58,7 @@ namespace Graffiti
 	QVariant FilesModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
 
 		switch (role)
 		{
@@ -82,10 +77,9 @@ namespace Graffiti
 				return file.Info_.Title_;
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown column"
+			qWarning () << "unknown column"
 					<< index.column ();
-			return QVariant ();
+			return {};
 		}
 		case Qt::ForegroundRole:
 			return Files_.at (index.row ()).IsChanged_ ?
@@ -96,7 +90,7 @@ namespace Graffiti
 		case Roles::OrigMediaInfo:
 			return QVariant::fromValue (Files_.at (index.row ()).OrigInfo_);
 		default:
-			return QVariant ();
+			return {};
 		}
 	}
 
@@ -122,7 +116,7 @@ namespace Graffiti
 			pos->OrigInfo_ = info;
 			pos->IsChanged_ = false;
 
-			const auto row = std::distance (Files_.begin (), pos);
+			const int row = pos - Files_.begin ();
 			emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
 		}
 	}
@@ -131,8 +125,7 @@ namespace Graffiti
 	{
 		if (!idx.isValid ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index"
+			qWarning () << "invalid index"
 					<< idx;
 			return;
 		}
@@ -162,8 +155,8 @@ namespace Graffiti
 	{
 		const auto pos = FindFile (path);
 		return pos == Files_.end () ?
-				QModelIndex () :
-				createIndex (std::distance (Files_.begin (), pos), 0);
+				QModelIndex {} :
+				createIndex (pos - Files_.begin (), 0);
 	}
 
 	QModelIndex FilesModel::FindIndexByFileName (const QString& name) const
@@ -171,8 +164,8 @@ namespace Graffiti
 		const auto pos = std::find_if (Files_.begin (), Files_.end (),
 				[&name] (const File& file) { return file.Name_ == name; });
 		return pos == Files_.end () ?
-				QModelIndex () :
-				createIndex (std::distance (Files_.begin (), pos), 0);
+				QModelIndex {} :
+				createIndex (pos - Files_.begin (), 0);
 	}
 
 	QList<QPair<MediaInfo, MediaInfo>> FilesModel::GetModified () const
@@ -195,6 +188,4 @@ namespace Graffiti
 		return std::find_if (Files_.begin (), Files_.end (),
 				[&path] (const File& file) { return file.Path_ == path; });
 	}
-}
-}
 }
