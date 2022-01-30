@@ -41,7 +41,7 @@ namespace LC::LMP::Graffiti
 		QList<SplitQueueItem> SplitQueue_;
 
 		int TotalItems_ = 0;
-		int CurrentlyProcessing_ = 0;
+		QSet<QProcess*> CurrentProcesses_;
 
 		QSet<QString> EmittedErrors_;
 	public:

@@ -344,11 +344,11 @@ namespace LC::LMP::Graffiti
 
 	void CueSplitter::ScheduleNext ()
 	{
-		emit splitProgress (TotalItems_ - SplitQueue_.size () - CurrentlyProcessing_, TotalItems_);
+		emit splitProgress (TotalItems_ - SplitQueue_.size () - CurrentProcesses_.size (), TotalItems_);
 
 		if (SplitQueue_.isEmpty ())
 		{
-			if (!CurrentlyProcessing_)
+			if (CurrentProcesses_.isEmpty ())
 			{
 				deleteLater ();
 				emit finished ();
@@ -388,9 +388,10 @@ namespace LC::LMP::Graffiti
 
 		args << item.SourceFile_ << QStringLiteral ("-o") << item.TargetFile_;
 
-		++CurrentlyProcessing_;
 		auto process = new QProcess (this);
 		process->start (QStringLiteral ("flac"), args);
+
+		CurrentProcesses_ << process;
 
 		connect (process,
 				&QProcess::finished,
@@ -398,7 +399,7 @@ namespace LC::LMP::Graffiti
 				[this, process]
 				{
 					process->deleteLater ();
-					--CurrentlyProcessing_;
+					CurrentProcesses_.remove (process);
 					ScheduleNext ();
 				});
 		connect (process,
@@ -426,7 +427,7 @@ namespace LC::LMP::Graffiti
 			EmittedErrors_ << errorString;
 		}
 
-		--CurrentlyProcessing_;
+		CurrentProcesses_.remove (&process);
 		ScheduleNext ();
 	}
 }
