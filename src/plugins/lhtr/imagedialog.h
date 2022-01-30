@@ -11,17 +11,13 @@
 #include <QDialog>
 #include "ui_imagedialog.h"
 
-namespace LC
-{
-namespace LHTR
+namespace LC::LHTR
 {
 	class ImageDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::ImageDialog Ui_;
 	public:
-		ImageDialog (QWidget* = 0);
+		explicit ImageDialog (QWidget* = nullptr);
 
 		QString GetPath () const;
 		QString GetAlt () const;
@@ -29,9 +25,5 @@ namespace LHTR
 		int GetHeight () const;
 
 		QString GetFloat () const;
-	private slots:
-		void on_TypeEmbed__toggled (bool);
-		void on_Browse__released ();
 	};
-}
 }
