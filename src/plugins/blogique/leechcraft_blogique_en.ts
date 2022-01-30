@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>AccountsListWidget</name>
     <message>
@@ -124,145 +124,145 @@
 <context>
     <name>BlogiqueWidget</name>
     <message>
-        <location filename="blogiquewidget.ui" line="36"/>
+        <location filename="blogiquewidget.ui" line="45"/>
         <source>Title:</source>
         <translation>Title:</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="103"/>
+        <location filename="blogiquewidget.ui" line="124"/>
         <source>Blog posts</source>
         <translation>Blog posts</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="116"/>
+        <location filename="blogiquewidget.ui" line="140"/>
         <source>Post options</source>
         <translation>Post options</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="148"/>
+        <location filename="blogiquewidget.ui" line="173"/>
         <source>Modify timestamp</source>
         <translation>Modify timestamp</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="178"/>
+        <location filename="blogiquewidget.ui" line="212"/>
         <source>Now</source>
         <translation>Now</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="200"/>
+        <location filename="blogiquewidget.ui" line="234"/>
         <source>January</source>
         <translation>January</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="205"/>
+        <location filename="blogiquewidget.ui" line="239"/>
         <source>February</source>
         <translation>February</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="210"/>
+        <location filename="blogiquewidget.ui" line="244"/>
         <source>March</source>
         <translation>March</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="215"/>
+        <location filename="blogiquewidget.ui" line="249"/>
         <source>April</source>
         <translation>April</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="220"/>
+        <location filename="blogiquewidget.ui" line="254"/>
         <source>May</source>
         <translation>May</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="225"/>
+        <location filename="blogiquewidget.ui" line="259"/>
         <source>June</source>
         <translation>June</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="230"/>
+        <location filename="blogiquewidget.ui" line="264"/>
         <source>Jule</source>
         <translation>Jule</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="235"/>
+        <location filename="blogiquewidget.ui" line="269"/>
         <source>August</source>
         <translation>August</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="240"/>
+        <location filename="blogiquewidget.ui" line="274"/>
         <source>September</source>
         <translation>September</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="245"/>
+        <location filename="blogiquewidget.ui" line="279"/>
         <source>October</source>
         <translation>October</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="250"/>
+        <location filename="blogiquewidget.ui" line="284"/>
         <source>November</source>
         <translation>November</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="255"/>
+        <location filename="blogiquewidget.ui" line="289"/>
         <source>December</source>
         <translation>December</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="284"/>
-        <location filename="blogiquewidget.ui" line="303"/>
+        <location filename="blogiquewidget.ui" line="318"/>
+        <location filename="blogiquewidget.ui" line="324"/>
         <source>Tags</source>
         <translation>Tags</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="324"/>
+        <location filename="blogiquewidget.ui" line="345"/>
         <source>Save as draft</source>
         <translation>Save as draft</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="329"/>
+        <location filename="blogiquewidget.ui" line="350"/>
         <source>Open in browser</source>
         <translation>Open in browser</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="334"/>
+        <location filename="blogiquewidget.ui" line="355"/>
         <source>Submit</source>
         <translation>Submit</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="339"/>
-        <location filename="blogiquewidget.ui" line="342"/>
+        <location filename="blogiquewidget.ui" line="360"/>
+        <location filename="blogiquewidget.ui" line="363"/>
         <source>Show profile</source>
         <oldsource>Update profile</oldsource>
         <translation>Update profile</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="347"/>
+        <location filename="blogiquewidget.ui" line="368"/>
         <source>Save as a new draft</source>
         <translation>Save as a new draft</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="350"/>
+        <location filename="blogiquewidget.ui" line="371"/>
         <source>Save entry as a new draft</source>
         <translation>Save entry as a new draft</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="355"/>
+        <location filename="blogiquewidget.ui" line="376"/>
         <source>New post</source>
         <translation>New post</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="360"/>
+        <location filename="blogiquewidget.ui" line="381"/>
         <source>Submit to...</source>
         <translation>Submit to...</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="365"/>
+        <location filename="blogiquewidget.ui" line="386"/>
         <source>Preview post</source>
         <translation>Preview post</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="368"/>
+        <location filename="blogiquewidget.ui" line="389"/>
         <source>Preview post in blog style</source>
         <translation>Preview post in blog style</translation>
     </message>
@@ -469,46 +469,46 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::AccountsListWidget</name>
     <message>
-        <location filename="accountslistwidget.cpp" line="79"/>
+        <location filename="accountslistwidget.cpp" line="58"/>
         <source>Account</source>
         <translation>Account</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="79"/>
-        <location filename="accountslistwidget.cpp" line="103"/>
-        <location filename="accountslistwidget.cpp" line="189"/>
+        <location filename="accountslistwidget.cpp" line="58"/>
+        <location filename="accountslistwidget.cpp" line="82"/>
+        <location filename="accountslistwidget.cpp" line="168"/>
         <source>Validated</source>
         <translation>Validated</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="104"/>
-        <location filename="accountslistwidget.cpp" line="190"/>
+        <location filename="accountslistwidget.cpp" line="83"/>
+        <location filename="accountslistwidget.cpp" line="169"/>
         <source>Not validated</source>
         <translation>Not validated</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="120"/>
-        <location filename="accountslistwidget.cpp" line="159"/>
+        <location filename="accountslistwidget.cpp" line="99"/>
+        <location filename="accountslistwidget.cpp" line="138"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="121"/>
+        <location filename="accountslistwidget.cpp" line="100"/>
         <source>Error adding account.</source>
         <translation>Error adding account.</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="160"/>
+        <location filename="accountslistwidget.cpp" line="139"/>
         <source>Error removing account.</source>
         <translation>Error removing account.</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="198"/>
+        <location filename="accountslistwidget.cpp" line="177"/>
         <source>Add account</source>
         <translation>Add account</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="234"/>
+        <location filename="accountslistwidget.cpp" line="213"/>
         <source>Are you sure you want to remove the account %1?</source>
         <translation>Are you sure you want to remove the account %1?</translation>
     </message>
@@ -516,7 +516,7 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::AccountsSelectDialog</name>
     <message>
-        <location filename="accountsselectdialog.cpp" line="45"/>
+        <location filename="accountsselectdialog.cpp" line="24"/>
         <source>Account name</source>
         <translation>Account name</translation>
     </message>
@@ -524,7 +524,7 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::AddAccountWizardFirstPage</name>
     <message>
-        <location filename="addaccountwizardfirstpage.cpp" line="131"/>
+        <location filename="addaccountwizardfirstpage.cpp" line="106"/>
         <source>%1 options</source>
         <translation>%1 options</translation>
     </message>
@@ -532,7 +532,7 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::AddCommentDialog</name>
     <message>
-        <location filename="addcommentdialog.cpp" line="44"/>
+        <location filename="addcommentdialog.cpp" line="23"/>
         <source>Send</source>
         <translation>Send</translation>
     </message>
@@ -540,32 +540,32 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::BlogEntriesWidget</name>
     <message>
-        <location filename="blogentrieswidget.cpp" line="72"/>
+        <location filename="blogentrieswidget.cpp" line="52"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="72"/>
+        <location filename="blogentrieswidget.cpp" line="52"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="76"/>
+        <location filename="blogentrieswidget.cpp" line="56"/>
         <source>Open in new tab</source>
         <translation>Open in new tab</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="77"/>
+        <location filename="blogentrieswidget.cpp" line="57"/>
         <source>Open here</source>
         <translation>Open here</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="97"/>
+        <location filename="blogentrieswidget.cpp" line="77"/>
         <source>Blog entries</source>
         <translation>Blog entries</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="236"/>
+        <location filename="blogentrieswidget.cpp" line="216"/>
         <source>Are you sure you want to delete entry %1 from the blog?</source>
         <translation>Are you sure you want to delete entry %1 from the blog?</translation>
     </message>
@@ -573,70 +573,75 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::BlogiqueWidget</name>
     <message>
-        <location filename="blogiquewidget.cpp" line="285"/>
+        <location filename="blogiquewidget.cpp" line="268"/>
         <source>No subject</source>
         <translation>No subject</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="410"/>
+        <location filename="blogiquewidget.cpp" line="287"/>
+        <source>No text editor plugins are installed. Consider installing a plugin like %1.</source>
+        <translation>No text editor plugins are installed. Consider installing a plugin like %1.</translation>
+    </message>
+    <message>
+        <location filename="blogiquewidget.cpp" line="392"/>
         <source>Add new account...</source>
         <translation>Add new account...</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="574"/>
+        <location filename="blogiquewidget.cpp" line="554"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="575"/>
+        <location filename="blogiquewidget.cpp" line="555"/>
         <source>Entry can&apos;t be empty.</source>
         <oldsource>Entry can&apos;t be emprty.</oldsource>
         <translation>Entry can&apos;t be empty.</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="785"/>
+        <location filename="blogiquewidget.cpp" line="754"/>
         <source>You have unsaved changes in your current tab. Do you want to open this entry in a new tab instead?</source>
         <translation>You have unsaved changes in your current tab. Do you want to open this entry in a new tab instead?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="824"/>
+        <location filename="blogiquewidget.cpp" line="793"/>
         <source>Removing entry...</source>
         <translation>Removing entry...</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="834"/>
+        <location filename="blogiquewidget.cpp" line="803"/>
         <source>Updating entries...</source>
         <translation>Updating entries...</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="888"/>
+        <location filename="blogiquewidget.cpp" line="857"/>
         <source>%1 (original message: %2)</source>
         <translation>%1 (original message: %2)</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="924"/>
+        <location filename="blogiquewidget.cpp" line="893"/>
         <source>Do you want to save current entry?</source>
         <translation>Do you want to save current entry?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1022"/>
+        <location filename="blogiquewidget.cpp" line="991"/>
         <source>Do you want to update entry or to post new one?</source>
         <translation>Do you want to update entry or to post new one?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1026"/>
+        <location filename="blogiquewidget.cpp" line="995"/>
         <source>Update post</source>
         <translation>Update post</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1027"/>
+        <location filename="blogiquewidget.cpp" line="996"/>
         <source>Post new</source>
         <translation>Post new</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1034"/>
-        <location filename="blogiquewidget.cpp" line="1039"/>
-        <location filename="blogiquewidget.cpp" line="1045"/>
+        <location filename="blogiquewidget.cpp" line="1003"/>
+        <location filename="blogiquewidget.cpp" line="1008"/>
+        <location filename="blogiquewidget.cpp" line="1014"/>
         <source>Posting entry...</source>
         <translation>Posting entry...</translation>
     </message>
@@ -644,12 +649,12 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::CommentsWidget</name>
     <message>
-        <location filename="commentswidget.cpp" line="109"/>
+        <location filename="commentswidget.cpp" line="92"/>
         <source>Comments</source>
         <translation>Comments</translation>
     </message>
     <message>
-        <location filename="commentswidget.cpp" line="182"/>
+        <location filename="commentswidget.cpp" line="165"/>
         <source>Do you want to delete whole comment thread too?</source>
         <translation>Do you want to delete whole comment thread too?</translation>
     </message>
@@ -657,27 +662,27 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::Core</name>
     <message>
-        <location filename="core.cpp" line="356"/>
+        <location filename="core.cpp" line="329"/>
         <source>Entry was posted successfully:</source>
         <translation>Entry was posted successfully:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="361"/>
+        <location filename="core.cpp" line="335"/>
         <source>Open Link</source>
         <translation>Open Link</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="382"/>
+        <location filename="core.cpp" line="356"/>
         <source>Entry was removed successfully.</source>
         <translation>Entry was removed successfully.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="399"/>
+        <location filename="core.cpp" line="373"/>
         <source>Entry was updated successfully.</source>
         <translation>Entry was updated successfully.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="415"/>
+        <location filename="core.cpp" line="389"/>
         <source>Export blog</source>
         <translation>Export blog</translation>
     </message>
@@ -685,42 +690,42 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::DraftEntriesWidget</name>
     <message>
-        <location filename="draftentrieswidget.cpp" line="75"/>
+        <location filename="draftentrieswidget.cpp" line="54"/>
         <source>Open in new tab</source>
         <translation>Open in new tab</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="76"/>
+        <location filename="draftentrieswidget.cpp" line="55"/>
         <source>Open here</source>
         <translation>Open here</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="77"/>
+        <location filename="draftentrieswidget.cpp" line="56"/>
         <source>Show all entries</source>
         <translation>Show all entries</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="79"/>
+        <location filename="draftentrieswidget.cpp" line="58"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="79"/>
+        <location filename="draftentrieswidget.cpp" line="58"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="106"/>
+        <location filename="draftentrieswidget.cpp" line="85"/>
         <source>Drafts</source>
         <translation>Drafts</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="281"/>
+        <location filename="draftentrieswidget.cpp" line="260"/>
         <source>Do you want to delete selected entry?</source>
         <translation>Do you want to delete selected entry?</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="286"/>
+        <location filename="draftentrieswidget.cpp" line="265"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
@@ -728,32 +733,32 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::ExportWizard</name>
     <message>
-        <location filename="exportwizard.cpp" line="206"/>
+        <location filename="exportwizard.cpp" line="187"/>
         <source>All entries</source>
         <translation>All entries</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="207"/>
+        <location filename="exportwizard.cpp" line="188"/>
         <source>Only between %1 and %2</source>
         <translation>Only between %1 and %2</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="215"/>
+        <location filename="exportwizard.cpp" line="196"/>
         <source>All tags</source>
         <translation>All tags</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="216"/>
+        <location filename="exportwizard.cpp" line="197"/>
         <source>Only tags: %1</source>
         <translation>Only tags: %1</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="256"/>
+        <location filename="exportwizard.cpp" line="237"/>
         <source>Select export path</source>
         <translation>Select export path</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="499"/>
+        <location filename="exportwizard.cpp" line="477"/>
         <source>Exporting finished</source>
         <translation>Exporting finished</translation>
     </message>
@@ -761,12 +766,12 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::Plugin</name>
     <message>
-        <location filename="blogique.cpp" line="91"/>
+        <location filename="blogique.cpp" line="67"/>
         <source>Export blog</source>
         <translation>Export blog</translation>
     </message>
     <message>
-        <location filename="blogique.cpp" line="119"/>
+        <location filename="blogique.cpp" line="96"/>
         <source>Blogging client</source>
         <translation>Blogging client</translation>
     </message>
@@ -774,8 +779,8 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::SelectTargetDelegate</name>
     <message>
-        <location filename="selecttargetdelegate.cpp" line="64"/>
-        <location filename="selecttargetdelegate.cpp" line="70"/>
+        <location filename="selecttargetdelegate.cpp" line="43"/>
+        <location filename="selecttargetdelegate.cpp" line="49"/>
         <source>&lt;Default&gt;</source>
         <translation>&lt;Default&gt;</translation>
     </message>
@@ -783,12 +788,12 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>LC::Blogique::SubmitToDialog</name>
     <message>
-        <location filename="submittodialog.cpp" line="47"/>
+        <location filename="submittodialog.cpp" line="26"/>
         <source>Account</source>
         <translation>Account</translation>
     </message>
     <message>
-        <location filename="submittodialog.cpp" line="47"/>
+        <location filename="submittodialog.cpp" line="26"/>
         <source>Target</source>
         <translation>Target</translation>
     </message>
@@ -796,9 +801,9 @@ You can specify all export parameters in this wizard.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="exportwizard.cpp" line="362"/>
-        <location filename="exportwizard.cpp" line="381"/>
-        <location filename="exportwizard.cpp" line="447"/>
+        <location filename="exportwizard.cpp" line="345"/>
+        <location filename="exportwizard.cpp" line="363"/>
+        <location filename="exportwizard.cpp" line="425"/>
         <source>Unable to open file %1: %2</source>
         <translation>Unable to open file %1: %2</translation>
     </message>
@@ -913,6 +918,29 @@ You can specify all export parameters in this wizard.</translation>
         <location filename="dummy.cpp" line="19"/>
         <source> s</source>
         <translation> s</translation>
+    </message>
+</context>
+<context>
+    <name>commentsview</name>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="249"/>
+        <source>Open in browser</source>
+        <translation>Open in browser</translation>
+    </message>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="264"/>
+        <source>Mark as read</source>
+        <translation>Mark as read</translation>
+    </message>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="279"/>
+        <source>Add comment</source>
+        <translation>Add comment</translation>
+    </message>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="294"/>
+        <source>Delete comment</source>
+        <translation>Delete comment</translation>
     </message>
 </context>
 </TS>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AccountsListWidget</name>
     <message>
@@ -124,145 +124,145 @@
 <context>
     <name>BlogiqueWidget</name>
     <message>
-        <location filename="blogiquewidget.ui" line="36"/>
+        <location filename="blogiquewidget.ui" line="45"/>
         <source>Title:</source>
         <translation>Название:</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="103"/>
+        <location filename="blogiquewidget.ui" line="124"/>
         <source>Blog posts</source>
         <translation>Записи в блоге</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="116"/>
+        <location filename="blogiquewidget.ui" line="140"/>
         <source>Post options</source>
         <translation>Опции записи</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="148"/>
+        <location filename="blogiquewidget.ui" line="173"/>
         <source>Modify timestamp</source>
         <translation>Изменить время</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="178"/>
+        <location filename="blogiquewidget.ui" line="212"/>
         <source>Now</source>
         <translation>Сейчас</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="200"/>
+        <location filename="blogiquewidget.ui" line="234"/>
         <source>January</source>
         <translation>Январь</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="205"/>
+        <location filename="blogiquewidget.ui" line="239"/>
         <source>February</source>
         <translation>Февраль</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="210"/>
+        <location filename="blogiquewidget.ui" line="244"/>
         <source>March</source>
         <translation>Март</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="215"/>
+        <location filename="blogiquewidget.ui" line="249"/>
         <source>April</source>
         <translation>Апрель</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="220"/>
+        <location filename="blogiquewidget.ui" line="254"/>
         <source>May</source>
         <translation>Март</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="225"/>
+        <location filename="blogiquewidget.ui" line="259"/>
         <source>June</source>
         <translation>Июнь</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="230"/>
+        <location filename="blogiquewidget.ui" line="264"/>
         <source>Jule</source>
         <translation>Июль</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="235"/>
+        <location filename="blogiquewidget.ui" line="269"/>
         <source>August</source>
         <translation>Август</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="240"/>
+        <location filename="blogiquewidget.ui" line="274"/>
         <source>September</source>
         <translation>Сентябрь</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="245"/>
+        <location filename="blogiquewidget.ui" line="279"/>
         <source>October</source>
         <translation>Октябрь</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="250"/>
+        <location filename="blogiquewidget.ui" line="284"/>
         <source>November</source>
         <translation>Ноябрь</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="255"/>
+        <location filename="blogiquewidget.ui" line="289"/>
         <source>December</source>
         <translation>Декабрь</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="284"/>
-        <location filename="blogiquewidget.ui" line="303"/>
+        <location filename="blogiquewidget.ui" line="318"/>
+        <location filename="blogiquewidget.ui" line="324"/>
         <source>Tags</source>
         <translation>Метки</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="324"/>
+        <location filename="blogiquewidget.ui" line="345"/>
         <source>Save as draft</source>
         <translation>Сохранить как черновик</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="329"/>
+        <location filename="blogiquewidget.ui" line="350"/>
         <source>Open in browser</source>
         <translation>Открыть в браузере</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="334"/>
+        <location filename="blogiquewidget.ui" line="355"/>
         <source>Submit</source>
         <translation>Отправить</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="339"/>
-        <location filename="blogiquewidget.ui" line="342"/>
+        <location filename="blogiquewidget.ui" line="360"/>
+        <location filename="blogiquewidget.ui" line="363"/>
         <source>Show profile</source>
         <oldsource>Update profile</oldsource>
         <translation>Обновить профиль</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="347"/>
+        <location filename="blogiquewidget.ui" line="368"/>
         <source>Save as a new draft</source>
         <translation>Сохранить как новый черновик</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="350"/>
+        <location filename="blogiquewidget.ui" line="371"/>
         <source>Save entry as a new draft</source>
         <translation>Сохранить запись как новый черновик</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="355"/>
+        <location filename="blogiquewidget.ui" line="376"/>
         <source>New post</source>
         <translation>Новая запись</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="360"/>
+        <location filename="blogiquewidget.ui" line="381"/>
         <source>Submit to...</source>
         <translation>Отправить в…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="365"/>
+        <location filename="blogiquewidget.ui" line="386"/>
         <source>Preview post</source>
         <translation>Предпросмотр записи</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.ui" line="368"/>
+        <location filename="blogiquewidget.ui" line="389"/>
         <source>Preview post in blog style</source>
         <translation>Предпросмотр записи в стиле блога</translation>
     </message>
@@ -469,46 +469,46 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::AccountsListWidget</name>
     <message>
-        <location filename="accountslistwidget.cpp" line="79"/>
+        <location filename="accountslistwidget.cpp" line="58"/>
         <source>Account</source>
         <translation>Учётная запись</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="79"/>
-        <location filename="accountslistwidget.cpp" line="103"/>
-        <location filename="accountslistwidget.cpp" line="189"/>
+        <location filename="accountslistwidget.cpp" line="58"/>
+        <location filename="accountslistwidget.cpp" line="82"/>
+        <location filename="accountslistwidget.cpp" line="168"/>
         <source>Validated</source>
         <translation>Валидировано</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="104"/>
-        <location filename="accountslistwidget.cpp" line="190"/>
+        <location filename="accountslistwidget.cpp" line="83"/>
+        <location filename="accountslistwidget.cpp" line="169"/>
         <source>Not validated</source>
         <translation>Не валидировано</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="120"/>
-        <location filename="accountslistwidget.cpp" line="159"/>
+        <location filename="accountslistwidget.cpp" line="99"/>
+        <location filename="accountslistwidget.cpp" line="138"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="121"/>
+        <location filename="accountslistwidget.cpp" line="100"/>
         <source>Error adding account.</source>
         <translation>Ошибка добавления учётной записи.</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="160"/>
+        <location filename="accountslistwidget.cpp" line="139"/>
         <source>Error removing account.</source>
         <translation>Ошибка удаления учётной записи.</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="198"/>
+        <location filename="accountslistwidget.cpp" line="177"/>
         <source>Add account</source>
         <translation>Добавить учётную запись</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="234"/>
+        <location filename="accountslistwidget.cpp" line="213"/>
         <source>Are you sure you want to remove the account %1?</source>
         <translation>Вы уверены, что хотите удалить учётную запись %1?</translation>
     </message>
@@ -516,7 +516,7 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::AccountsSelectDialog</name>
     <message>
-        <location filename="accountsselectdialog.cpp" line="45"/>
+        <location filename="accountsselectdialog.cpp" line="24"/>
         <source>Account name</source>
         <translation>Имя учётной записи</translation>
     </message>
@@ -524,7 +524,7 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::AddAccountWizardFirstPage</name>
     <message>
-        <location filename="addaccountwizardfirstpage.cpp" line="131"/>
+        <location filename="addaccountwizardfirstpage.cpp" line="106"/>
         <source>%1 options</source>
         <translation>Опции %1</translation>
     </message>
@@ -532,7 +532,7 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::AddCommentDialog</name>
     <message>
-        <location filename="addcommentdialog.cpp" line="44"/>
+        <location filename="addcommentdialog.cpp" line="23"/>
         <source>Send</source>
         <translation>Отправить</translation>
     </message>
@@ -540,32 +540,32 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::BlogEntriesWidget</name>
     <message>
-        <location filename="blogentrieswidget.cpp" line="72"/>
+        <location filename="blogentrieswidget.cpp" line="52"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="72"/>
+        <location filename="blogentrieswidget.cpp" line="52"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="76"/>
+        <location filename="blogentrieswidget.cpp" line="56"/>
         <source>Open in new tab</source>
         <translation>Открыть в новой вкладке</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="77"/>
+        <location filename="blogentrieswidget.cpp" line="57"/>
         <source>Open here</source>
         <translation>Открыть здесь</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="97"/>
+        <location filename="blogentrieswidget.cpp" line="77"/>
         <source>Blog entries</source>
         <translation>Записи блога</translation>
     </message>
     <message>
-        <location filename="blogentrieswidget.cpp" line="236"/>
+        <location filename="blogentrieswidget.cpp" line="216"/>
         <source>Are you sure you want to delete entry %1 from the blog?</source>
         <translation>Вы уверены, что хотите удалить запись %1 из блога?</translation>
     </message>
@@ -573,70 +573,75 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::BlogiqueWidget</name>
     <message>
-        <location filename="blogiquewidget.cpp" line="285"/>
+        <location filename="blogiquewidget.cpp" line="268"/>
         <source>No subject</source>
         <translation>Без темы</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="410"/>
+        <location filename="blogiquewidget.cpp" line="287"/>
+        <source>No text editor plugins are installed. Consider installing a plugin like %1.</source>
+        <translation>Нет модулей-редакторов текста. Установите модуль вроде %1.</translation>
+    </message>
+    <message>
+        <location filename="blogiquewidget.cpp" line="392"/>
         <source>Add new account...</source>
         <translation>Добавить новую учётную запись…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="574"/>
+        <location filename="blogiquewidget.cpp" line="554"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="575"/>
+        <location filename="blogiquewidget.cpp" line="555"/>
         <source>Entry can&apos;t be empty.</source>
         <oldsource>Entry can&apos;t be emprty.</oldsource>
         <translation>Запись не может быть пустой.</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="785"/>
+        <location filename="blogiquewidget.cpp" line="754"/>
         <source>You have unsaved changes in your current tab. Do you want to open this entry in a new tab instead?</source>
         <translation>У вас есть несохранённые изменения в текущей вкладке. Хотите открыть эту запись в новой вкладке?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="824"/>
+        <location filename="blogiquewidget.cpp" line="793"/>
         <source>Removing entry...</source>
         <translation>Удаление записи…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="834"/>
+        <location filename="blogiquewidget.cpp" line="803"/>
         <source>Updating entries...</source>
         <translation>Обновление записей…</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="888"/>
+        <location filename="blogiquewidget.cpp" line="857"/>
         <source>%1 (original message: %2)</source>
         <translation>%1 (исходное сообщение: %2)</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="924"/>
+        <location filename="blogiquewidget.cpp" line="893"/>
         <source>Do you want to save current entry?</source>
         <translation>Вы хотите сохранить текущую запись?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1022"/>
+        <location filename="blogiquewidget.cpp" line="991"/>
         <source>Do you want to update entry or to post new one?</source>
         <translation>Вы хотите обновить запись или опубликовать новую?</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1026"/>
+        <location filename="blogiquewidget.cpp" line="995"/>
         <source>Update post</source>
         <translation>Обновить запись</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1027"/>
+        <location filename="blogiquewidget.cpp" line="996"/>
         <source>Post new</source>
         <translation>Опубликовать новую</translation>
     </message>
     <message>
-        <location filename="blogiquewidget.cpp" line="1034"/>
-        <location filename="blogiquewidget.cpp" line="1039"/>
-        <location filename="blogiquewidget.cpp" line="1045"/>
+        <location filename="blogiquewidget.cpp" line="1003"/>
+        <location filename="blogiquewidget.cpp" line="1008"/>
+        <location filename="blogiquewidget.cpp" line="1014"/>
         <source>Posting entry...</source>
         <translation>Публикация записи…</translation>
     </message>
@@ -644,12 +649,12 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::CommentsWidget</name>
     <message>
-        <location filename="commentswidget.cpp" line="109"/>
+        <location filename="commentswidget.cpp" line="92"/>
         <source>Comments</source>
         <translation>Комментарии</translation>
     </message>
     <message>
-        <location filename="commentswidget.cpp" line="182"/>
+        <location filename="commentswidget.cpp" line="165"/>
         <source>Do you want to delete whole comment thread too?</source>
         <translation>Вы хотите также удалить всю ветку комментариев?</translation>
     </message>
@@ -657,27 +662,27 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::Core</name>
     <message>
-        <location filename="core.cpp" line="356"/>
+        <location filename="core.cpp" line="329"/>
         <source>Entry was posted successfully:</source>
         <translation>Запись была успешно опубликована:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="361"/>
+        <location filename="core.cpp" line="335"/>
         <source>Open Link</source>
         <translation>Открыть ссылку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="382"/>
+        <location filename="core.cpp" line="356"/>
         <source>Entry was removed successfully.</source>
         <translation>Запись была успешно удалена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="399"/>
+        <location filename="core.cpp" line="373"/>
         <source>Entry was updated successfully.</source>
         <translation>Запись была успешно обновлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="415"/>
+        <location filename="core.cpp" line="389"/>
         <source>Export blog</source>
         <translation>Экспортировать блог</translation>
     </message>
@@ -685,42 +690,42 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::DraftEntriesWidget</name>
     <message>
-        <location filename="draftentrieswidget.cpp" line="75"/>
+        <location filename="draftentrieswidget.cpp" line="54"/>
         <source>Open in new tab</source>
         <translation>Открыть в новой вкладке</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="76"/>
+        <location filename="draftentrieswidget.cpp" line="55"/>
         <source>Open here</source>
         <translation>Открыть здесь</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="77"/>
+        <location filename="draftentrieswidget.cpp" line="56"/>
         <source>Show all entries</source>
         <translation>Показать все записи</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="79"/>
+        <location filename="draftentrieswidget.cpp" line="58"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="79"/>
+        <location filename="draftentrieswidget.cpp" line="58"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="106"/>
+        <location filename="draftentrieswidget.cpp" line="85"/>
         <source>Drafts</source>
         <translation>Черновики</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="281"/>
+        <location filename="draftentrieswidget.cpp" line="260"/>
         <source>Do you want to delete selected entry?</source>
         <translation>Вы хотите удалить выделенную запись?</translation>
     </message>
     <message>
-        <location filename="draftentrieswidget.cpp" line="286"/>
+        <location filename="draftentrieswidget.cpp" line="265"/>
         <source>Always</source>
         <translation>Всегда</translation>
     </message>
@@ -728,32 +733,32 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::ExportWizard</name>
     <message>
-        <location filename="exportwizard.cpp" line="206"/>
+        <location filename="exportwizard.cpp" line="187"/>
         <source>All entries</source>
         <translation>Все записи</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="207"/>
+        <location filename="exportwizard.cpp" line="188"/>
         <source>Only between %1 and %2</source>
         <translation>Только между %1 и %2</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="215"/>
+        <location filename="exportwizard.cpp" line="196"/>
         <source>All tags</source>
         <translation>Все теги</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="216"/>
+        <location filename="exportwizard.cpp" line="197"/>
         <source>Only tags: %1</source>
         <translation>Только метки: %1</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="256"/>
+        <location filename="exportwizard.cpp" line="237"/>
         <source>Select export path</source>
         <translation>Выбор пути экспорта</translation>
     </message>
     <message>
-        <location filename="exportwizard.cpp" line="499"/>
+        <location filename="exportwizard.cpp" line="477"/>
         <source>Exporting finished</source>
         <translation>Экспорт завершен</translation>
     </message>
@@ -761,12 +766,12 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::Plugin</name>
     <message>
-        <location filename="blogique.cpp" line="91"/>
+        <location filename="blogique.cpp" line="67"/>
         <source>Export blog</source>
         <translation>Экспортировать блог</translation>
     </message>
     <message>
-        <location filename="blogique.cpp" line="119"/>
+        <location filename="blogique.cpp" line="96"/>
         <source>Blogging client</source>
         <translation>Клиент для различных платформ блоггинга</translation>
     </message>
@@ -774,8 +779,8 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::SelectTargetDelegate</name>
     <message>
-        <location filename="selecttargetdelegate.cpp" line="64"/>
-        <location filename="selecttargetdelegate.cpp" line="70"/>
+        <location filename="selecttargetdelegate.cpp" line="43"/>
+        <location filename="selecttargetdelegate.cpp" line="49"/>
         <source>&lt;Default&gt;</source>
         <translation>&lt;По умолчанию&gt;</translation>
     </message>
@@ -783,12 +788,12 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>LC::Blogique::SubmitToDialog</name>
     <message>
-        <location filename="submittodialog.cpp" line="47"/>
+        <location filename="submittodialog.cpp" line="26"/>
         <source>Account</source>
         <translation>Учётная запись</translation>
     </message>
     <message>
-        <location filename="submittodialog.cpp" line="47"/>
+        <location filename="submittodialog.cpp" line="26"/>
         <source>Target</source>
         <translation>Цель</translation>
     </message>
@@ -796,9 +801,9 @@ You can specify all export parameters in this wizard.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="exportwizard.cpp" line="362"/>
-        <location filename="exportwizard.cpp" line="381"/>
-        <location filename="exportwizard.cpp" line="447"/>
+        <location filename="exportwizard.cpp" line="345"/>
+        <location filename="exportwizard.cpp" line="363"/>
+        <location filename="exportwizard.cpp" line="425"/>
         <source>Unable to open file %1: %2</source>
         <translation>Невозможно открыть файл %1: %2</translation>
     </message>
@@ -913,6 +918,29 @@ You can specify all export parameters in this wizard.</source>
         <location filename="dummy.cpp" line="19"/>
         <source> s</source>
         <translation> с</translation>
+    </message>
+</context>
+<context>
+    <name>commentsview</name>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="249"/>
+        <source>Open in browser</source>
+        <translation>Открыть в браузере</translation>
+    </message>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="264"/>
+        <source>Mark as read</source>
+        <translation>Пометить как прочитанное</translation>
+    </message>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="279"/>
+        <source>Add comment</source>
+        <translation>Добавить комментарий</translation>
+    </message>
+    <message>
+        <location filename="share/qml5/blogique/commentsview.qml" line="294"/>
+        <source>Delete comment</source>
+        <translation>Удалить комментарий</translation>
     </message>
 </context>
 </TS>

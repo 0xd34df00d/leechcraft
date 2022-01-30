@@ -186,8 +186,8 @@ namespace Metida
 	QString LJAccount::GetPassword () const
 	{
 		return Util::GetPassword ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID (),
-				tr ("Please enter password for the %1 account %2:")
-					.arg (ParentBloggingPlatform_->GetBloggingPlatformName (), Util::FormatName (Name_)),
+				tr ("Please enter password for the LiveJournal account %1:")
+					.arg (Util::FormatName (Name_)),
 				Proxy_);
 	}
 

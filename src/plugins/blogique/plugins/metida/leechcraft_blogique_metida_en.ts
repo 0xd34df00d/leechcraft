@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>AddEditEntryDialog</name>
     <message>
@@ -51,6 +51,423 @@
     </message>
 </context>
 <context>
+    <name>LC::Blogique::Metida::AddEditEntryDialog</name>
+    <message>
+        <location filename="addeditentrydialog.cpp" line="162"/>
+        <source>Username must be defined.</source>
+        <translation>Username must be defined.</translation>
+    </message>
+    <message>
+        <location filename="addeditentrydialog.cpp" line="171"/>
+        <source>Group name must be defined.</source>
+        <translation>Group name must be defined.</translation>
+    </message>
+    <message>
+        <location filename="addeditentrydialog.cpp" line="197"/>
+        <source>Select background color for new user:</source>
+        <oldsource>Select background color for new user.</oldsource>
+        <translation>Select background color for new user:</translation>
+    </message>
+    <message>
+        <location filename="addeditentrydialog.cpp" line="206"/>
+        <source>Select foreground color for new user:</source>
+        <oldsource>Select foreground color for new user.</oldsource>
+        <translation>Select foreground color for new user:</translation>
+    </message>
+    <message>
+        <location filename="addeditentrydialog.cpp" line="216"/>
+        <source>Add friend to groups:</source>
+        <translation>Add friend to groups:</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::LJAccount</name>
+    <message>
+        <location filename="ljaccount.cpp" line="42"/>
+        <source>Last entries</source>
+        <translation>Last entries</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="43"/>
+        <source>Changed entries</source>
+        <translation>Changed entries</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="189"/>
+        <source>Please enter password for the LiveJournal account %1:</source>
+        <oldsource>Please enter password for the %1 account %2:</oldsource>
+        <translation>Please enter password for the LiveJournal account %1:</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="669"/>
+        <source>You have unread messages in account %1</source>
+        <translation>You have unread messages in account %1</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="674"/>
+        <source>Open inbox</source>
+        <translation>Open inbox</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="683"/>
+        <source>Mark all as read</source>
+        <translation>Mark all as read</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="694"/>
+        <source>All unread messages were marked as read</source>
+        <translation>All unread messages were marked as read</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="701"/>
+        <source>Message has been sent successfully</source>
+        <translation>Message has been sent successfully</translation>
+    </message>
+    <message>
+        <location filename="ljaccount.cpp" line="751"/>
+        <source>Reply was posted successfully:</source>
+        <translation>Reply was posted successfully:</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::LJBloggingPlatform</name>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="39"/>
+        <source>Add LJ user</source>
+        <translation>Add LJ user</translation>
+    </message>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="40"/>
+        <source>Create poll</source>
+        <translation>Create poll</translation>
+    </message>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="41"/>
+        <source>Insert LJ cut</source>
+        <translation>Insert LJ cut</translation>
+    </message>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="311"/>
+        <source>Poll: %1</source>
+        <translation>Poll: %1</translation>
+    </message>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="363"/>
+        <source>Embedded: %1</source>
+        <oldsource>Embeded: %1</oldsource>
+        <translation>Embedded: %1</translation>
+    </message>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="395"/>
+        <source>Likes: %1</source>
+        <translation>Likes: %1</translation>
+    </message>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="469"/>
+        <source>Add LJ User</source>
+        <translation>Add LJ User</translation>
+    </message>
+    <message>
+        <location filename="ljbloggingplatform.cpp" line="470"/>
+        <source>Enter LJ user name:</source>
+        <oldsource>Enter LJ user name</oldsource>
+        <translation>Enter LJ user name:</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::Plugin</name>
+    <message>
+        <location filename="metida.cpp" line="56"/>
+        <source>LiveJournal blogging platform support for Blogique.</source>
+        <oldsource>LiveJournal blogging platform support</oldsource>
+        <translation>LiveJournal blogging platform support for Blogique.</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::PollDialog</name>
+    <message>
+        <location filename="polldialog.cpp" line="36"/>
+        <source>Check boxes</source>
+        <translation>Check boxes</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="41"/>
+        <source>Radio buttons</source>
+        <translation>Radio buttons</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="46"/>
+        <source>Dropdown</source>
+        <translation>Dropdown</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="51"/>
+        <source>Text entry</source>
+        <translation>Text entry</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="56"/>
+        <source>Scale</source>
+        <translation>Scale</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="62"/>
+        <source>Allowed tags: %1.</source>
+        <translation>Allowed tags: %1.</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="194"/>
+        <source>Poll should have at least one question.</source>
+        <translation>Poll should have at least one question.</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="205"/>
+        <source>Scaled values are invalid. Default values will be used.</source>
+        <translation>Scaled values are invalid. Default values will be used.</translation>
+    </message>
+    <message>
+        <location filename="polldialog.cpp" line="257"/>
+        <source>Field %1</source>
+        <translation>Field %1</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::PostOptionsWidget</name>
+    <message>
+        <location filename="postoptionswidget.cpp" line="55"/>
+        <source>Post options</source>
+        <translation>Post options</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="271"/>
+        <source>(default)</source>
+        <translation>(default)</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="282"/>
+        <source>Public</source>
+        <translation>Public</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="283"/>
+        <source>Friends only</source>
+        <translation>Friends only</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="284"/>
+        <source>Private</source>
+        <translation>Private</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="285"/>
+        <source>Custom</source>
+        <translation>Custom</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="287"/>
+        <source>Enable</source>
+        <translation>Enable</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="288"/>
+        <source>Disable</source>
+        <translation>Disable</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="290"/>
+        <source>Default</source>
+        <translation>Default</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="291"/>
+        <source>Anonymous only</source>
+        <oldsource>Anonymouse only</oldsource>
+        <translation>Anonymous only</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="293"/>
+        <source>Not from friends</source>
+        <translation>Not from friends</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="295"/>
+        <source>Not from friends with links</source>
+        <translation>Not from friends with links</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="297"/>
+        <source>Don&apos;t hide</source>
+        <oldsource>Don&apos;t hide&apos;</oldsource>
+        <translation>Don&apos;t hide</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="299"/>
+        <source>All</source>
+        <translation>All</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="302"/>
+        <source>Without adult content</source>
+        <translation>Without adult content</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="304"/>
+        <source>For adults (&gt;14)</source>
+        <translation>For adults (&gt;14)</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="305"/>
+        <source>For adults (&gt;18)</source>
+        <translation>For adults (&gt;18)</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="349"/>
+        <source>Choose friends groups that will be allowed to comment this post:</source>
+        <translation>Choose friends groups that will be allowed to comment this post:</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="394"/>
+        <location filename="postoptionswidget.cpp" line="403"/>
+        <source>Collapse</source>
+        <translation>Collapse</translation>
+    </message>
+    <message>
+        <location filename="postoptionswidget.cpp" line="395"/>
+        <location filename="postoptionswidget.cpp" line="404"/>
+        <source>Expand</source>
+        <translation>Expand</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::ProfileWidget</name>
+    <message>
+        <location filename="profilewidget.cpp" line="52"/>
+        <source>Username</source>
+        <oldsource>UserName</oldsource>
+        <translation>Username</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="53"/>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="53"/>
+        <source>Birthday</source>
+        <translation>Birthday</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="53"/>
+        <source>Full name</source>
+        <translation>Full name</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="61"/>
+        <source>Add friend</source>
+        <translation>Add friend</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="67"/>
+        <source>Delete friend</source>
+        <translation>Delete friend</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="73"/>
+        <source>Edit friend</source>
+        <translation>Edit friend</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="79"/>
+        <source>Read journal</source>
+        <translation>Read journal</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="85"/>
+        <source>Send message</source>
+        <translation>Send message</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="116"/>
+        <source>Read community</source>
+        <translation>Read community</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="135"/>
+        <source>Add group</source>
+        <translation>Add group</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="141"/>
+        <source>Delete group</source>
+        <translation>Delete group</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="147"/>
+        <source>Edit group</source>
+        <translation>Edit group</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="328"/>
+        <source>Are you sure you want to delete %1 from your friends?</source>
+        <oldsource>Are you sure to delete user &lt;b&gt;%1&lt;/b&gt; from your friends.</oldsource>
+        <translation>Are you sure you want to delete %1 from your friends?</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="331"/>
+        <source>Change friendslist</source>
+        <translation>Change friendslist</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="525"/>
+        <source>Adding new group</source>
+        <oldsource>Add new group</oldsource>
+        <translation>Adding new group</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="526"/>
+        <source>You cannot add more groups: the limit of 30 groups is reached.</source>
+        <oldsource>You cannot add more groups. The limit of 30 groups is reached.</oldsource>
+        <translation>You cannot add more groups: the limit of 30 groups is reached.</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="539"/>
+        <source>Are you sure you want to delete the group %1?&lt;br&gt;&lt;i&gt;Note: all friends in this group will &lt;b&gt;not&lt;/b&gt; be deleted.&lt;/i&gt;</source>
+        <oldsource>Are you sure to delete group &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;i&gt;Note: all friends in this group will &lt;b&gt;not&lt;/b&gt; be deleted.&lt;/i&gt;</oldsource>
+        <translation>Are you sure you want to delete the group %1?&lt;br&gt;&lt;i&gt;Note: all friends in this group will &lt;b&gt;not&lt;/b&gt; be deleted.&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <location filename="profilewidget.cpp" line="543"/>
+        <source>Change groups</source>
+        <translation>Change groups</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::SelectGroupsDialog</name>
+    <message>
+        <location filename="selectgroupsdialog.cpp" line="28"/>
+        <source>Group</source>
+        <translation>Group</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Blogique::Metida::SendMessageDialog</name>
+    <message>
+        <location filename="sendmessagedialog.cpp" line="29"/>
+        <source>Send</source>
+        <translation>Send</translation>
+    </message>
+    <message>
+        <location filename="sendmessagedialog.cpp" line="37"/>
+        <source>Please enter a valid username</source>
+        <translation>Please enter a valid username</translation>
+    </message>
+    <message>
+        <location filename="sendmessagedialog.cpp" line="46"/>
+        <source>Stop trying to message yourself, livejournal is not that kind of service</source>
+        <translation>Stop trying to message yourself, livejournal is not that kind of service</translation>
+    </message>
+</context>
+<context>
     <name>LJAccountConfigurationDialog</name>
     <message>
         <location filename="ljaccountconfigurationdialog.ui" line="14"/>
@@ -69,417 +486,6 @@
         <location filename="ljaccountconfigurationwidget.ui" line="35"/>
         <source>Password:</source>
         <translation>Password:</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::AddEditEntryDialog</name>
-    <message>
-        <location filename="addeditentrydialog.cpp" line="184"/>
-        <source>Username must be defined.</source>
-        <translation>Username must be defined.</translation>
-    </message>
-    <message>
-        <location filename="addeditentrydialog.cpp" line="193"/>
-        <source>Group name must be defined.</source>
-        <translation>Group name must be defined.</translation>
-    </message>
-    <message>
-        <location filename="addeditentrydialog.cpp" line="219"/>
-        <source>Select background color for new user:</source>
-        <oldsource>Select background color for new user.</oldsource>
-        <translation>Select background color for new user:</translation>
-    </message>
-    <message>
-        <location filename="addeditentrydialog.cpp" line="228"/>
-        <source>Select foreground color for new user:</source>
-        <oldsource>Select foreground color for new user.</oldsource>
-        <translation>Select foreground color for new user:</translation>
-    </message>
-    <message>
-        <location filename="addeditentrydialog.cpp" line="238"/>
-        <source>Add friend to groups:</source>
-        <translation>Add friend to groups:</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::LJAccount</name>
-    <message>
-        <location filename="ljaccount.cpp" line="61"/>
-        <source>Last entries</source>
-        <translation>Last entries</translation>
-    </message>
-    <message>
-        <location filename="ljaccount.cpp" line="62"/>
-        <source>Changed entries</source>
-        <translation>Changed entries</translation>
-    </message>
-    <message>
-        <location filename="ljaccount.cpp" line="686"/>
-        <source>You have unread messages in account %1</source>
-        <translation>You have unread messages in account %1</translation>
-    </message>
-    <message>
-        <location filename="ljaccount.cpp" line="691"/>
-        <source>Open inbox</source>
-        <translation>Open inbox</translation>
-    </message>
-    <message>
-        <location filename="ljaccount.cpp" line="700"/>
-        <source>Mark all as read</source>
-        <translation>Mark all as read</translation>
-    </message>
-    <message>
-        <location filename="ljaccount.cpp" line="711"/>
-        <source>All unread messages were marked as read</source>
-        <translation>All unread messages were marked as read</translation>
-    </message>
-    <message>
-        <location filename="ljaccount.cpp" line="718"/>
-        <source>Message has been sent successfully</source>
-        <translation>Message has been sent successfully</translation>
-    </message>
-    <message>
-        <location filename="ljaccount.cpp" line="772"/>
-        <source>Reply was posted successfully:</source>
-        <translation>Reply was posted successfully:</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::LJBloggingPlatform</name>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="59"/>
-        <source>Add LJ user</source>
-        <translation>Add LJ user</translation>
-    </message>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="61"/>
-        <source>Create poll</source>
-        <translation>Create poll</translation>
-    </message>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="63"/>
-        <source>Insert LJ cut</source>
-        <translation>Insert LJ cut</translation>
-    </message>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="324"/>
-        <source>Poll: %1</source>
-        <translation>Poll: %1</translation>
-    </message>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="371"/>
-        <source>Embedded: %1</source>
-        <oldsource>Embeded: %1</oldsource>
-        <translation>Embedded: %1</translation>
-    </message>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="402"/>
-        <source>Likes: %1</source>
-        <translation>Likes: %1</translation>
-    </message>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="476"/>
-        <source>Add LJ User</source>
-        <translation>Add LJ User</translation>
-    </message>
-    <message>
-        <location filename="ljbloggingplatform.cpp" line="477"/>
-        <source>Enter LJ user name:</source>
-        <oldsource>Enter LJ user name</oldsource>
-        <translation>Enter LJ user name:</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::Plugin</name>
-    <message>
-        <location filename="metida.cpp" line="88"/>
-        <source>LiveJournal blogging platform support for Blogique.</source>
-        <oldsource>LiveJournal blogging platform support</oldsource>
-        <translation>LiveJournal blogging platform support for Blogique.</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::PollDialog</name>
-    <message>
-        <location filename="polldialog.cpp" line="59"/>
-        <source>Check boxes</source>
-        <translation>Check boxes</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="64"/>
-        <source>Radio buttons</source>
-        <translation>Radio buttons</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="69"/>
-        <source>Dropdown</source>
-        <translation>Dropdown</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="74"/>
-        <source>Text entry</source>
-        <translation>Text entry</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="79"/>
-        <source>Scale</source>
-        <translation>Scale</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="85"/>
-        <source>Allowed tags: %1.</source>
-        <translation>Allowed tags: %1.</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="217"/>
-        <source>Poll should have at least one question.</source>
-        <translation>Poll should have at least one question.</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="228"/>
-        <source>Scaled values are invalid. Default values will be used.</source>
-        <translation>Scaled values are invalid. Default values will be used.</translation>
-    </message>
-    <message>
-        <location filename="polldialog.cpp" line="280"/>
-        <source>Field %1</source>
-        <translation>Field %1</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::PostOptionsWidget</name>
-    <message>
-        <location filename="postoptionswidget.cpp" line="81"/>
-        <source>Post options</source>
-        <translation>Post options</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="297"/>
-        <source>(default)</source>
-        <translation>(default)</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="308"/>
-        <source>Public</source>
-        <translation>Public</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="309"/>
-        <source>Friends only</source>
-        <translation>Friends only</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="310"/>
-        <source>Private</source>
-        <translation>Private</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="311"/>
-        <source>Custom</source>
-        <translation>Custom</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="313"/>
-        <source>Enable</source>
-        <translation>Enable</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="314"/>
-        <source>Disable</source>
-        <translation>Disable</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="316"/>
-        <source>Default</source>
-        <translation>Default</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="317"/>
-        <source>Anonymous only</source>
-        <oldsource>Anonymouse only</oldsource>
-        <translation>Anonymous only</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="319"/>
-        <source>Not from friends</source>
-        <translation>Not from friends</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="321"/>
-        <source>Not from friends with links</source>
-        <translation>Not from friends with links</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="323"/>
-        <source>Don&apos;t hide</source>
-        <oldsource>Don&apos;t hide&apos;</oldsource>
-        <translation>Don&apos;t hide</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="325"/>
-        <source>All</source>
-        <translation>All</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="328"/>
-        <source>Without adult content</source>
-        <translation>Without adult content</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="330"/>
-        <source>For adults (&gt;14)</source>
-        <translation>For adults (&gt;14)</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="331"/>
-        <source>For adults (&gt;18)</source>
-        <translation>For adults (&gt;18)</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="376"/>
-        <source>Choose friends groups that will be allowed to comment this post:</source>
-        <translation>Choose friends groups that will be allowed to comment this post:</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="422"/>
-        <location filename="postoptionswidget.cpp" line="431"/>
-        <source>Collapse</source>
-        <translation>Collapse</translation>
-    </message>
-    <message>
-        <location filename="postoptionswidget.cpp" line="423"/>
-        <location filename="postoptionswidget.cpp" line="432"/>
-        <source>Expand</source>
-        <translation>Expand</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::ProfileWidget</name>
-    <message>
-        <location filename="profilewidget.cpp" line="68"/>
-        <source>Username</source>
-        <oldsource>UserName</oldsource>
-        <translation>Username</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="69"/>
-        <source>Status</source>
-        <translation>Status</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="69"/>
-        <source>Birthday</source>
-        <translation>Birthday</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="69"/>
-        <source>Full name</source>
-        <translation>Full name</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="77"/>
-        <source>Add friend</source>
-        <translation>Add friend</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="83"/>
-        <source>Delete friend</source>
-        <translation>Delete friend</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="89"/>
-        <source>Edit friend</source>
-        <translation>Edit friend</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="95"/>
-        <source>Read journal</source>
-        <translation>Read journal</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="101"/>
-        <source>Send message</source>
-        <translation>Send message</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="132"/>
-        <source>Read community</source>
-        <translation>Read community</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="151"/>
-        <source>Add group</source>
-        <translation>Add group</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="157"/>
-        <source>Delete group</source>
-        <translation>Delete group</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="163"/>
-        <source>Edit group</source>
-        <translation>Edit group</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="342"/>
-        <source>Are you sure you want to delete %1 from your friends?</source>
-        <oldsource>Are you sure to delete user &lt;b&gt;%1&lt;/b&gt; from your friends.</oldsource>
-        <translation>Are you sure you want to delete %1 from your friends?</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="345"/>
-        <source>Change friendslist</source>
-        <translation>Change friendslist</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="541"/>
-        <source>Adding new group</source>
-        <oldsource>Add new group</oldsource>
-        <translation>Adding new group</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="542"/>
-        <source>You cannot add more groups: the limit of 30 groups is reached.</source>
-        <oldsource>You cannot add more groups. The limit of 30 groups is reached.</oldsource>
-        <translation>You cannot add more groups: the limit of 30 groups is reached.</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="555"/>
-        <source>Are you sure you want to delete the group %1?&lt;br&gt;&lt;i&gt;Note: all friends in this group will &lt;b&gt;not&lt;/b&gt; be deleted.&lt;/i&gt;</source>
-        <oldsource>Are you sure to delete group &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;&lt;i&gt;Note: all friends in this group will &lt;b&gt;not&lt;/b&gt; be deleted.&lt;/i&gt;</oldsource>
-        <translation>Are you sure you want to delete the group %1?&lt;br&gt;&lt;i&gt;Note: all friends in this group will &lt;b&gt;not&lt;/b&gt; be deleted.&lt;/i&gt;</translation>
-    </message>
-    <message>
-        <location filename="profilewidget.cpp" line="559"/>
-        <source>Change groups</source>
-        <translation>Change groups</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::SelectGroupsDialog</name>
-    <message>
-        <location filename="selectgroupsdialog.cpp" line="49"/>
-        <source>Group</source>
-        <translation>Group</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Blogique::Metida::SendMessageDialog</name>
-    <message>
-        <location filename="sendmessagedialog.cpp" line="50"/>
-        <source>Send</source>
-        <translation>Send</translation>
-    </message>
-    <message>
-        <location filename="sendmessagedialog.cpp" line="58"/>
-        <source>Please enter a valid username</source>
-        <translation>Please enter a valid username</translation>
-    </message>
-    <message>
-        <location filename="sendmessagedialog.cpp" line="67"/>
-        <source>Stop trying to message yourself, livejournal is not that kind of service</source>
-        <translation>Stop trying to message yourself, livejournal is not that kind of service</translation>
     </message>
 </context>
 <context>
@@ -738,343 +744,343 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="utils.cpp" line="49"/>
+        <location filename="utils.cpp" line="28"/>
         <source>Invalid username</source>
         <translation>Invalid username</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="50"/>
+        <location filename="utils.cpp" line="29"/>
         <source>Invalid password</source>
         <translation>Invalid password</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="51"/>
+        <location filename="utils.cpp" line="30"/>
         <source>Can&apos;t use custom/private security in communities</source>
         <translation>Can&apos;t use custom/private security in communities</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="52"/>
+        <location filename="utils.cpp" line="31"/>
         <source>Poll error</source>
         <translation>Poll error</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="53"/>
+        <location filename="utils.cpp" line="32"/>
         <source>Error adding one or more friends</source>
         <translation>Error adding one or more friends</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="54"/>
+        <location filename="utils.cpp" line="33"/>
         <source>Challenge expired</source>
         <translation>Challenge expired</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="55"/>
+        <location filename="utils.cpp" line="34"/>
         <source>Can&apos;t post as non-user</source>
         <translation>Can&apos;t post as non-user</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="56"/>
+        <location filename="utils.cpp" line="35"/>
         <source>Banned from journal</source>
         <translation>Banned from journal</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="57"/>
+        <location filename="utils.cpp" line="36"/>
         <source>Can&apos;t post back-dated entries in a non-personal journal</source>
         <translation>Can&apos;t post back-dated entries in a non-personal journal</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="58"/>
+        <location filename="utils.cpp" line="37"/>
         <source>Incorrent time value</source>
         <translation>Incorrent time value</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="59"/>
+        <location filename="utils.cpp" line="38"/>
         <source>Can&apos;t add a redirected account as a friend</source>
         <translation>Can&apos;t add a redirected account as a friend</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="60"/>
+        <location filename="utils.cpp" line="39"/>
         <source>Non-validated email address</source>
         <translation>Non-validated email address</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="61"/>
+        <location filename="utils.cpp" line="40"/>
         <source>Protocol authentication denied due to user&apos;s failure to accept TOS</source>
         <oldsource>Protocol authentication denied due to userâs failure to accept TOS</oldsource>
         <translation>Protocol authentication denied due to user&apos;s failure to accept TOS</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="62"/>
+        <location filename="utils.cpp" line="41"/>
         <source>Tags error</source>
         <translation>Tags error</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="64"/>
+        <location filename="utils.cpp" line="43"/>
         <source>Missing required argument(s)</source>
         <translation>Missing required argument(s)</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="65"/>
+        <location filename="utils.cpp" line="44"/>
         <source>Unknown method</source>
         <translation>Unknown method</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="66"/>
+        <location filename="utils.cpp" line="45"/>
         <source>Too many arguments</source>
         <translation>Too many arguments</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="67"/>
+        <location filename="utils.cpp" line="46"/>
         <source>Invalid argument(s)</source>
         <translation>Invalid argument(s)</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="68"/>
+        <location filename="utils.cpp" line="47"/>
         <source>Invalid metadata datatype</source>
         <translation>Invalid metadata datatype</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="69"/>
+        <location filename="utils.cpp" line="48"/>
         <source>Unknown metadata</source>
         <translation>Unknown metadata</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="70"/>
+        <location filename="utils.cpp" line="49"/>
         <source>Invalid destination journal username</source>
         <translation>Invalid destination journal username</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="71"/>
+        <location filename="utils.cpp" line="50"/>
         <source>Protocol version mismatch</source>
         <translation>Protocol version mismatch</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="72"/>
+        <location filename="utils.cpp" line="51"/>
         <source>Invalid text encoding</source>
         <translation>Invalid text encoding</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="73"/>
+        <location filename="utils.cpp" line="52"/>
         <source>Parameter out of range</source>
         <translation>Parameter out of range</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="74"/>
+        <location filename="utils.cpp" line="53"/>
         <source>Client tried to edit with corrupt data. Preventing</source>
         <translation>Client tried to edit with corrupt data. Preventing</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="75"/>
+        <location filename="utils.cpp" line="54"/>
         <source>Invalid or malformed tag list</source>
         <translation>Invalid or malformed tag list</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="76"/>
+        <location filename="utils.cpp" line="55"/>
         <source>Message body is too long</source>
         <translation>Message body is too long</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="77"/>
+        <location filename="utils.cpp" line="56"/>
         <source>Message body is empty</source>
         <translation>Message body is empty</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="78"/>
+        <location filename="utils.cpp" line="57"/>
         <source>Message looks like spam</source>
         <translation>Message looks like spam</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="80"/>
+        <location filename="utils.cpp" line="59"/>
         <source>Don&apos;t have access to requested journal</source>
         <translation>Don&apos;t have access to requested journal</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="81"/>
+        <location filename="utils.cpp" line="60"/>
         <source>Access of restricted feature</source>
         <translation>Access of restricted feature</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="82"/>
+        <location filename="utils.cpp" line="61"/>
         <source>Can&apos;t edit post from requested journal</source>
         <translation>Can&apos;t edit post from requested journal</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="83"/>
+        <location filename="utils.cpp" line="62"/>
         <source>Can&apos;t edit post in this community</source>
         <translation>Can&apos;t edit post in this community</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="84"/>
+        <location filename="utils.cpp" line="63"/>
         <source>Can&apos;t delete post in this community</source>
         <translation>Can&apos;t delete post in this community</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="85"/>
+        <location filename="utils.cpp" line="64"/>
         <source>Action forbidden; account is suspended</source>
         <translation>Action forbidden; account is suspended</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="86"/>
+        <location filename="utils.cpp" line="65"/>
         <source>This journal is temporarily in read-only mode. Try again in a couple minutes</source>
         <translation>This journal is temporarily in read-only mode. Try again in a couple minutes</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="87"/>
+        <location filename="utils.cpp" line="66"/>
         <source>Selected journal no longer exists</source>
         <translation>Selected journal no longer exists</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="88"/>
+        <location filename="utils.cpp" line="67"/>
         <source>Account is locked and cannot be used</source>
         <translation>Account is locked and cannot be used</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="89"/>
+        <location filename="utils.cpp" line="68"/>
         <source>Account is marked as a memorial (journal is locked and does not accept comments)</source>
         <oldsource>Account is marked as a memorial (journal is locked and does not accept comments</oldsource>
         <translation>Account is marked as a memorial (journal is locked and does not accept comments)</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="90"/>
+        <location filename="utils.cpp" line="69"/>
         <source>Account user needs to be age-verified before use</source>
         <translation>Account user needs to be age-verified before use</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="91"/>
+        <location filename="utils.cpp" line="70"/>
         <source>Access temporarily disabled</source>
         <translation>Access temporarily disabled</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="92"/>
+        <location filename="utils.cpp" line="71"/>
         <source>Not allowed to add tags to entries in this journal</source>
         <translation>Not allowed to add tags to entries in this journal</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="93"/>
+        <location filename="utils.cpp" line="72"/>
         <source>Must use existing tags for entries in this journal (can&apos;t create new ones)</source>
         <translation>Must use existing tags for entries in this journal (can&apos;t create new ones)</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="94"/>
+        <location filename="utils.cpp" line="73"/>
         <source>Only paid users are allowed to use this request</source>
         <translation>Only paid users are allowed to use this request</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="95"/>
+        <location filename="utils.cpp" line="74"/>
         <source>User messaging is currently disabled</source>
         <translation>User messaging is currently disabled</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="96"/>
+        <location filename="utils.cpp" line="75"/>
         <source>Poster is read-only and cannot post entries</source>
         <translation>Poster is read-only and cannot post entries</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="97"/>
+        <location filename="utils.cpp" line="76"/>
         <source>Journal is read-only and entries cannot be posted to it</source>
         <translation>Journal is read-only and entries cannot be posted to it</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="98"/>
+        <location filename="utils.cpp" line="77"/>
         <source>Poster is read-only and cannot edit entries</source>
         <translation>Poster is read-only and cannot edit entries</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="99"/>
+        <location filename="utils.cpp" line="78"/>
         <source>Journal is read-only and its entries cannot be edited</source>
         <translation>Journal is read-only and its entries cannot be edited</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="100"/>
+        <location filename="utils.cpp" line="79"/>
         <source>Sorry, there was a problem with entry content</source>
         <translation>Sorry, there was a problem with entry content</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="101"/>
+        <location filename="utils.cpp" line="80"/>
         <source>Sorry, deleting is temporary disabled. Entry is private now</source>
         <oldsource>Sorry, deleting is temporary disabled. Entry is &apos;private&apos; now</oldsource>
         <translation>Sorry, deleting is temporary disabled. Entry is private now</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="103"/>
+        <location filename="utils.cpp" line="82"/>
         <source>Your IP address has been temporarily banned for exceeding the login failure rate</source>
         <translation>Your IP address has been temporarily banned for exceeding the login failure rate</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="104"/>
+        <location filename="utils.cpp" line="83"/>
         <source>Cannot post</source>
         <translation>Cannot post</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="105"/>
+        <location filename="utils.cpp" line="84"/>
         <source>Post frequency limit is exceeded</source>
         <oldsource>Post frequency limit</oldsource>
         <translation>Post frequency limit is exceeded</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="106"/>
+        <location filename="utils.cpp" line="85"/>
         <source>Client is making repeated requests. Perhaps it&apos;s broken?</source>
         <translation>Client is making repeated requests. Perhaps it&apos;s broken?</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="107"/>
+        <location filename="utils.cpp" line="86"/>
         <source>Moderation queue full</source>
         <translation>Moderation queue full</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="108"/>
+        <location filename="utils.cpp" line="87"/>
         <source>Maximum queued posts for this community and poster combination reached</source>
         <oldsource>Maximum queued posts for this &lt;community+poster&gt; combination reached</oldsource>
         <translation>Maximum queued posts for this community and poster combination reached</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="109"/>
+        <location filename="utils.cpp" line="88"/>
         <source>Post is too large</source>
         <translation>Post is too large</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="110"/>
+        <location filename="utils.cpp" line="89"/>
         <source>Your trial account has expired. Posting is now disabled</source>
         <translation>Your trial account has expired. Posting is now disabled</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="111"/>
+        <location filename="utils.cpp" line="90"/>
         <source>Action frequency limit is exceeded</source>
         <oldsource>Action frequency limit</oldsource>
         <translation>Action frequency limit is exceeded</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="113"/>
+        <location filename="utils.cpp" line="92"/>
         <source>Internal server error</source>
         <translation>Internal server error</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="114"/>
+        <location filename="utils.cpp" line="93"/>
         <source>Database error</source>
         <translation>Database error</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="115"/>
+        <location filename="utils.cpp" line="94"/>
         <source>Database is temporarily unavailable</source>
         <translation>Database is temporarily unavailable</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="116"/>
+        <location filename="utils.cpp" line="95"/>
         <source>Error obtaining necessary database lock</source>
         <translation>Error obtaining necessary database lock</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="117"/>
+        <location filename="utils.cpp" line="96"/>
         <source>Protocol mode no longer supported</source>
         <translation>Protocol mode no longer supported</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="118"/>
+        <location filename="utils.cpp" line="97"/>
         <source>Account data format on server is old and needs to be upgraded</source>
         <translation>Account data format on server is old and needs to be upgraded</translation>
     </message>
     <message>
-        <location filename="utils.cpp" line="119"/>
+        <location filename="utils.cpp" line="98"/>
         <source>Journal sync is temporarily unavailable</source>
         <translation>Journal sync is temporarily unavailable</translation>
     </message>
