@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>236</width>
-    <height>128</height>
+    <width>445</width>
+    <height>164</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,6 +69,9 @@
     <widget class="QLineEdit" name="Caption_">
      <property name="placeholderText">
       <string>Leave blank to disable</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
