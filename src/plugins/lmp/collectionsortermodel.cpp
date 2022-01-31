@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "collectionsortermodel.h"
-#include <functional>
+#include <util/sll/statichash.h>
 #include "localcollectionmodel.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -25,14 +25,12 @@ namespace LMP
 		};
 		Q_DECLARE_FLAGS (CompareFlags, CompareFlag);
 
-		template<typename T>
-		bool VarCompare (const QVariant& left, const QVariant& right, CompareFlags)
+		bool IntCompare (const QVariant& left, const QVariant& right, CompareFlags)
 		{
-			return left.value<T> () < right.value<T> ();
+			return left.toInt () < right.toInt ();
 		}
 
-		template<>
-		bool VarCompare<QString> (const QVariant& left, const QVariant& right, CompareFlags)
+		bool StrCompare (const QVariant& left, const QVariant& right, CompareFlags)
 		{
 			return QString::localeAwareCompare (left.toString (), right.toString ()) < 0;
 		}
@@ -42,83 +40,63 @@ namespace LMP
 			return CompareArtists (left.toString (), right.toString (), flags & WithoutThe);
 		}
 
-		struct Comparators
-		{
-			typedef std::function<bool (const QVariant&, const QVariant&, CompareFlags)> Comparator_t;
-			QHash<LocalCollectionModel::Role, Comparator_t> Role2Cmp_;
+		using Comparator_t = bool (*) (const QVariant&, const QVariant&, CompareFlags);
 
-			Comparators ()
-			{
-				Role2Cmp_ [LocalCollectionModel::Role::ArtistName] = NameCompare;
-				Role2Cmp_ [LocalCollectionModel::Role::AlbumName] = VarCompare<QString>;
-				Role2Cmp_ [LocalCollectionModel::Role::AlbumYear] = VarCompare<int>;
-				Role2Cmp_ [LocalCollectionModel::Role::TrackNumber] = VarCompare<int>;
-				Role2Cmp_ [LocalCollectionModel::Role::TrackTitle] = VarCompare<QString>;
-				Role2Cmp_ [LocalCollectionModel::Role::TrackPath] = VarCompare<QString>;
-			}
-		};
+		using Util::KVPair;
+		constexpr auto RoleComparators = Util::MakeHash<LocalCollectionModel::Role, Comparator_t> (
+				KVPair { LocalCollectionModel::Role::ArtistName, NameCompare },
+				KVPair { LocalCollectionModel::Role::AlbumName, StrCompare },
+				KVPair { LocalCollectionModel::Role::AlbumYear, IntCompare },
+				KVPair { LocalCollectionModel::Role::TrackNumber, IntCompare },
+				KVPair { LocalCollectionModel::Role::TrackTitle, StrCompare },
+				KVPair { LocalCollectionModel::Role::TrackPath, StrCompare }
+			);
 
 		bool RoleCompare (const QModelIndex& left, const QModelIndex& right,
-				QList<LocalCollectionModel::Role> roles, CompareFlags flags)
+				std::initializer_list<LocalCollectionModel::Role> roles, CompareFlags flags)
 		{
-			static Comparators comparators;
-			while (!roles.isEmpty ())
+			for (auto role : roles)
 			{
-				auto role = roles.takeFirst ();
 				const auto& lData = left.data (role);
 				const auto& rData = right.data (role);
 				if (lData != rData)
-					return comparators.Role2Cmp_ [role] (lData, rData, flags);
+					return RoleComparators (role) (lData, rData, flags);
 			}
 			return false;
 		}
 	}
 
 	CollectionSorterModel::CollectionSorterModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
-	, UseThe_ (true)
+	: QSortFilterProxyModel { parent }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("SortWithThe",
 				this,
-				"handleUseTheChanged");
-
-		handleUseTheChanged ();
+				[this] (const QVariant& var)
+				{
+					UseThe_ = var.toBool ();
+					invalidate ();
+				});
 	}
 
 	bool CollectionSorterModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		const auto type = left.data (LocalCollectionModel::Role::Node).toInt ();
-		QList<LocalCollectionModel::Role> roles;
-		switch (type)
-		{
-		case LocalCollectionModel::NodeType::Artist:
-			roles << LocalCollectionModel::Role::ArtistName;
-			break;
-		case LocalCollectionModel::NodeType::Album:
-			roles << LocalCollectionModel::Role::AlbumYear
-					<< LocalCollectionModel::Role::AlbumName;
-			break;
-		case LocalCollectionModel::NodeType::Track:
-			roles << LocalCollectionModel::Role::TrackNumber
-					<< LocalCollectionModel::Role::TrackTitle
-					<< LocalCollectionModel::Role::TrackPath;
-			break;
-		default:
-			return QSortFilterProxyModel::lessThan (left, right);
-		}
-
 		CompareFlags flags = CompareFlag::None;
 		if (!UseThe_)
 			flags |= CompareFlag::WithoutThe;
 
-		return RoleCompare (left, right, roles, flags);
-	}
+		using enum LocalCollectionModel::Role;
 
-	void CollectionSorterModel::handleUseTheChanged ()
-	{
-		UseThe_ = XmlSettingsManager::Instance ()
-				.property ("SortWithThe").toBool ();
-		invalidate ();
+		switch (left.data (LocalCollectionModel::Role::Node).toInt ())
+		{
+		case LocalCollectionModel::NodeType::Artist:
+			return RoleCompare (left, right, { ArtistName }, flags);
+		case LocalCollectionModel::NodeType::Album:
+			return RoleCompare (left, right, { AlbumYear, AlbumName }, flags);
+		case LocalCollectionModel::NodeType::Track:
+			return RoleCompare (left, right, { TrackNumber, TrackTitle, TrackPath }, flags);
+		default:
+			return QSortFilterProxyModel::lessThan (left, right);
+		}
 	}
 }
 }

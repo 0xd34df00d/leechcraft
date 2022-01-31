@@ -18,13 +18,11 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		bool UseThe_;
+		bool UseThe_ = true;
 	public:
-		CollectionSorterModel (QObject*);
+		explicit CollectionSorterModel (QObject*);
 	protected:
-		bool lessThan (const QModelIndex&, const QModelIndex&) const;
-	private slots:
-		void handleUseTheChanged ();
+		bool lessThan (const QModelIndex&, const QModelIndex&) const override;
 	};
 }
 }
