@@ -16,8 +16,6 @@ namespace LMP
 {
 	class CollectionSorterModel : public QSortFilterProxyModel
 	{
-		Q_OBJECT
-
 		bool UseThe_ = true;
 	public:
 		explicit CollectionSorterModel (QObject*);

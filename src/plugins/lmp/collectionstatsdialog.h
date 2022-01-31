@@ -17,7 +17,7 @@ namespace LMP
 {
 	class CollectionStatsDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::CollectionStatsDialog)
 
 		Ui::CollectionStatsDialog Ui_;
 	public:
