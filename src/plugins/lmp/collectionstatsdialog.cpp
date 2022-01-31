@@ -22,10 +22,18 @@ namespace LMP
 		QList<T> findTops (const QHash<T, int>& counts, int number)
 		{
 			auto keys = counts.keys ();
-			std::sort (keys.begin (), keys.end (),
-					[&counts] (const T& t1, const T& t2)
-						{ return counts [t1] > counts [t2]; });
-			return keys.mid (0, number);
+			const auto pred = [&counts] (const T& t1, const T& t2) { return counts [t1] > counts [t2]; };
+			if (number >= keys.size ())
+			{
+				std::sort (keys.begin (), keys.end (), pred);
+				return keys;
+			}
+
+			const auto mid = keys.begin () + number;
+			std::nth_element (keys.begin (), mid, keys.end (), pred);
+			std::sort (keys.begin (), mid);
+			keys.erase (mid, keys.end ());
+			return keys;
 		}
 	}
 
