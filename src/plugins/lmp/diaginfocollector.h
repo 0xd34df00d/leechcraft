@@ -10,17 +10,7 @@
 
 #include <QStringList>
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	class DiagInfoCollector
-	{
-		QStringList Strs_;
-	public:
-		DiagInfoCollector ();
-
-		QString operator() () const;
-	};
-}
+	QString CollectDiagInfo ();
 }

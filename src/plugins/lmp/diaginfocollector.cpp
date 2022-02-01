@@ -9,28 +9,30 @@
 #include "diaginfocollector.h"
 #include <gst/gst.h>
 #include <taglib/taglib.h>
+#include <util/sll/qtutil.h>
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	DiagInfoCollector::DiagInfoCollector ()
+	QString CollectDiagInfo ()
 	{
-		Strs_ << QString { "Built with GStreamer %1.%2.%3; running with %4" }
-				.arg (GST_VERSION_MAJOR)
-				.arg (GST_VERSION_MINOR)
-				.arg (GST_VERSION_MICRO)
-				.arg (QString::fromUtf8 (gst_version_string ()));
+		QStringList strs
+		{
+			QStringLiteral ("Built with GStreamer %1.%2.%3; running with %4")
+					.arg (GST_VERSION_MAJOR)
+					.arg (GST_VERSION_MINOR)
+					.arg (GST_VERSION_MICRO)
+					.arg (QString::fromUtf8 (gst_version_string ())),
 #ifdef WITH_LIBGUESS
-		Strs_ << "Built WITH libguess";
+			QStringLiteral ("Built WITH libguess"),
 #else
-		Strs_ << "Built WITHOUT libguess";
+			QStringLiteral ("Built WITHOUT libguess"),
 #endif
-		Strs_ << QString { "Built with Taglib %1.%2.%3" }
-				.arg (TAGLIB_MAJOR_VERSION)
-				.arg (TAGLIB_MINOR_VERSION)
-				.arg (TAGLIB_PATCH_VERSION);
-		Strs_ << "GStreamer plugins:";
+			QStringLiteral ("Built with Taglib %1.%2.%3")
+					.arg (TAGLIB_MAJOR_VERSION)
+					.arg (TAGLIB_MINOR_VERSION)
+					.arg (TAGLIB_PATCH_VERSION),
+			QStringLiteral ("GStreamer plugins:"),
+		};
 
 		const auto plugins = gst_registry_get_plugin_list (gst_registry_get ());
 		auto node = plugins;
@@ -38,23 +40,18 @@ namespace LMP
 		while (node)
 		{
 			const auto plugin = static_cast<GstPlugin*> (node->data);
-			pluginsList << QString { "* %1 (from %2)" }
-					.arg (QString::fromUtf8 (gst_plugin_get_name (plugin)))
-					.arg (QString::fromUtf8 (gst_plugin_get_filename (plugin)));
+			pluginsList << u"* %1 (from %2)"_qsv
+					.arg (QLatin1String { gst_plugin_get_name (plugin) },
+						  QLatin1String { gst_plugin_get_filename (plugin) });
 
 			node = g_list_next (node);
 		}
-
 		pluginsList.sort ();
 
-		Strs_ += pluginsList;
+		strs << pluginsList;
 
 		gst_plugin_list_free (plugins);
-	}
 
-	QString DiagInfoCollector::operator() () const
-	{
-		return Strs_.join ("\n");
+		return strs.join ('\n');
 	}
-}
 }

@@ -451,7 +451,7 @@ namespace LMP
 
 	QString Plugin::GetDiagInfoString () const
 	{
-		return DiagInfoCollector {} ();
+		return CollectDiagInfo ();
 	}
 
 	void Plugin::InitShortcuts ()
