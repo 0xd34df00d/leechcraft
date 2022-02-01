@@ -40,7 +40,7 @@ namespace LC::Util
 	 * @tparam Assoc The type of the source Qt associative container.
 	 */
 	template<typename Assoc>
-	auto Stlize (Assoc&& assoc)
+	auto Stlize (Assoc&& assoc) noexcept
 	{
 		struct Range
 		{
@@ -65,7 +65,7 @@ namespace LC::Util
 	 *
 	 * @sa ToByteArray()
 	 */
-	inline QByteArray AsByteArray (std::string_view view)
+	inline QByteArray AsByteArray (std::string_view view) noexcept
 	{
 		return QByteArray::fromRawData (view.data (), static_cast<int> (view.size ()));
 	}
@@ -80,7 +80,7 @@ namespace LC::Util
 	 *
 	 * @sa AsByteArray()
 	 */
-	inline QByteArray ToByteArray (std::string_view view)
+	inline QByteArray ToByteArray (std::string_view view) noexcept
 	{
 		return { view.data (), static_cast<int> (view.size ()) };
 	}
@@ -90,7 +90,7 @@ namespace LC::Util
 	 * @param arr A QByteArray.
 	 * @return An std::string_view referencing the data within arr.
 	 */
-	inline std::string_view AsStringView (const QByteArray& arr)
+	inline std::string_view AsStringView (const QByteArray& arr) noexcept
 	{
 		return { arr.constData (), static_cast<size_t> (arr.size ()) };
 	}
