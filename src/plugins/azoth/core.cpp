@@ -848,7 +848,7 @@ namespace LC::Azoth
 					[] (QObject *obj) { return qobject_cast<ICLEntry*> (obj)->GetEntryName (); });
 			for (const auto& nick : nicks)
 			{
-				if (!body.contains (nick))
+				if (!body.contains (nick) || nick.isEmpty ())
 					continue;
 
 				auto nickColor = GetNickColor (nick, colors);
