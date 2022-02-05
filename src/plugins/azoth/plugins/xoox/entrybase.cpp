@@ -817,9 +817,7 @@ namespace Xoox
 
 	void EntryBase::SetClientVersion (const QString& variant, const QXmppVersionIq& version)
 	{
-		qDebug () << Q_FUNC_INFO << variant << version.os ();
 		Variants_ [variant].Version_ = version;
-
 		emit entryGenerallyChanged ();
 	}
 
