@@ -537,9 +537,12 @@ namespace Xoox
 	{
 		for (const auto& entry : Nick2Entry_)
 			Account_->handleEntryRemoved (entry.get ());
+		if (RoomPseudoEntry_)
+			Account_->handleEntryRemoved (RoomPseudoEntry_.get ());
 
 		Room_->leave (msg);
 		Nick2Entry_.clear ();
+		RoomPseudoEntry_.reset ();
 
 		if (remove)
 			RemoveThis ();
@@ -588,6 +591,12 @@ namespace Xoox
 	void RoomHandler::HandleRenameStart (const RoomParticipantEntry_ptr& entry,
 			const QString& nick, const QString& newNick)
 	{
+		if (entry == RoomPseudoEntry_)
+		{
+			qWarning () << "tried to rename the pseudo entry";
+			return;
+		}
+
 		if (!Nick2Entry_.contains (newNick))
 		{
 			const auto& newEntry = GetParticipantEntry (newNick, false);
@@ -607,26 +616,29 @@ namespace Xoox
 		Nick2Entry_.remove (nick);
 	}
 
-	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
-	{
-		auto entry = std::make_shared<RoomParticipantEntry> (nick, this, Account_);
-		connect (entry.get (),
-				SIGNAL (chatTabClosed ()),
-				this,
-				SLOT (handleChatTabClosed ()),
-				Qt::QueuedConnection);
-		Nick2Entry_ [nick] = entry;
-		if (announce)
-			Account_->gotCLItems ({ entry.get () });
-		return entry;
-	}
-
 	RoomParticipantEntry_ptr RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
 	{
-		if (!Nick2Entry_.contains (nick))
-			return CreateParticipantEntry (nick, announce);
-		else
-			return Nick2Entry_ [nick];
+		auto& entry = nick.isEmpty () ?
+				RoomPseudoEntry_ :
+				Nick2Entry_ [nick];
+
+		if (!entry)
+		{
+			entry = std::make_shared<RoomParticipantEntry> (nick, this, Account_);
+			connect (entry.get (),
+					&RoomParticipantEntry::chatTabClosed,
+					entry.get (),
+					[this, entry = entry.get ()]
+					{
+						if (entry->GetStatus (QString ()).State_ == SOffline)
+							RemoveEntry (entry);
+					},
+					Qt::QueuedConnection);
+			if (announce && !nick.isEmpty ())
+				Account_->gotCLItems ({ entry.get () });
+		}
+
+		return entry;
 	}
 
 	void RoomHandler::handleParticipantAdded (const QString& jid)
@@ -746,21 +758,6 @@ namespace Xoox
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 
-	void RoomHandler::handleChatTabClosed ()
-	{
-		auto entry = qobject_cast<RoomParticipantEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a RoomParticipantEntry";
-			return;
-		}
-
-		if (entry->GetStatus (QString ()).State_ == SOffline)
-			RemoveEntry (entry);
-	}
-
 	bool RoomHandler::IsGateway () const
 	{
 		if (ServerDisco_.identities ().size () != 1)
@@ -773,7 +770,11 @@ namespace Xoox
 	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)
 	{
 		Account_->handleEntryRemoved (entry);
-		Nick2Entry_.remove (entry->GetNick ());
+		if (const auto nick = entry->GetNick ();
+			!nick.isEmpty ())
+			Nick2Entry_.remove (nick);
+		else
+			RoomPseudoEntry_.reset ();
 	}
 
 	void RoomHandler::RemoveThis ()

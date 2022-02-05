@@ -38,6 +38,10 @@ namespace Xoox
 		const QString RoomJID_;
 		QXmppMucRoom *Room_;
 		RoomCLEntry *CLEntry_;
+
+		// some servers advertise a special, nick-less entry denoting the room
+		RoomParticipantEntry_ptr RoomPseudoEntry_;
+
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QString Subject_;
 		// contains new nicks
@@ -92,8 +96,6 @@ namespace Xoox
 		void handleParticipantRemoved (const QString&);
 
 		void requestVoice ();
-
-		void handleChatTabClosed ();
 	private:
 		void HandleMessageExtensions (const QXmppMessage&);
 		void HandlePendingForm (std::unique_ptr<QXmppDataForm>, const QString&);
@@ -101,9 +103,6 @@ namespace Xoox
 		void HandleRenameStart (const RoomParticipantEntry_ptr& entry,
 				const QString& nick, const QString& newNick);
 
-		/** Creates a new entry for the given nick.
-		 */
-		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
 		void MakeLeaveMessage (const QXmppPresence&, const QString&);
 		void MakeJoinMessage (const QXmppPresence&, const QString&);
 		void MakeStatusChangedMessage (const QXmppPresence&, const QString&);
