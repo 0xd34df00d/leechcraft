@@ -62,7 +62,7 @@ namespace Xoox
 					{ if (pThis) pThis->ServerDisco_ = iq; },
 				server);
 
-		Room_->setNickName (ourNick);
+		Room_->setNickName (ourNick.isEmpty () ? account->GetOurNick () : ourNick);
 
 		connect (Room_,
 				SIGNAL (participantChanged (const QString&)),
