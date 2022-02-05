@@ -650,7 +650,7 @@ namespace Xoox
 
 		entry->HandlePresence (pres, {});
 
-		if (!existed)
+		if (!existed && !nick.isEmpty ())
 			Account_->gotCLItems ({ entry.get () });
 
 		MakeJoinMessage (pres, nick);
