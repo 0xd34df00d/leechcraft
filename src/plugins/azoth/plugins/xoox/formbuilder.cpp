@@ -168,7 +168,9 @@ namespace Xoox
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
-			auto edit = new QTextEdit (field.value ().toStringList ().join ("\n"));
+			auto edit = new QTextEdit;
+			edit->setAcceptRichText (false);
+			edit->setText (field.value ().toStringList ().join ("\n"));
 			layout->addRow (field.label (), edit);
 			return edit;
 		}
