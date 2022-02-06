@@ -116,10 +116,7 @@ namespace LC::LMP
 
 	void HypesWidget::InitializeProviders ()
 	{
-		const auto& lastProv = ShouldRememberProvs () ?
-				XmlSettingsManager::Instance ()
-					.Property ("LastUsedHypesProvider", QString ()).toString () :
-				QString ();
+		const auto& lastProv = XmlSettingsManager::Instance ().Property ("LastUsedHypesProvider", QString {}).toString ();
 
 		bool lastFound = false;
 

@@ -156,11 +156,6 @@ namespace LC::LMP
 		return text;
 	}
 
-	bool ShouldRememberProvs ()
-	{
-		return XmlSettingsManager::Instance ().property ("RememberUsedProviders").toBool ();
-	}
-
 	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>& infos)
 	{
 		QString trackTooltip;

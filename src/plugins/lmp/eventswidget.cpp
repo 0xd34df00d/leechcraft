@@ -109,10 +109,7 @@ namespace LC::LMP
 
 	void EventsWidget::InitializeProviders ()
 	{
-		const auto& lastProv = ShouldRememberProvs () ?
-				XmlSettingsManager::Instance ()
-					.Property ("LastUsedEventsProvider", QString ()).toString () :
-				QString ();
+		const auto& lastProv = XmlSettingsManager::Instance ().Property ("LastUsedEventsProvider", QString {}).toString ();
 
 		bool lastFound = false;
 

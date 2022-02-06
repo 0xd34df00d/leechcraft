@@ -102,9 +102,6 @@
 			<item type="checkbox" property="AutoFetchAlbumArt" default="true">
 				<label value="Automatically fetch missing album art" />
 			</item>
-			<item type="checkbox" property="RememberUsedProviders" default="true">
-				<label value="Remember used data providers" />
-			</item>
 			<item type="checkbox" property="RefreshRadioOnWakeup" default="true">
 				<label value="Refresh radio stations on wake up" />
 				<tooltip>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn't usually result in changing your IP.</tooltip>

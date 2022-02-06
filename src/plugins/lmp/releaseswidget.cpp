@@ -110,10 +110,7 @@ namespace LMP
 	{
 		auto pm = GetProxyHolder ()->GetPluginsManager ();
 
-		const auto& lastProv = ShouldRememberProvs () ?
-				XmlSettingsManager::Instance ()
-					.Property ("LastUsedReleasesProvider", QString ()).toString () :
-				QString ();
+		const auto& lastProv = XmlSettingsManager::Instance ().Property ("LastUsedReleasesProvider", QString ()).toString ();
 
 		bool lastFound = false;
 

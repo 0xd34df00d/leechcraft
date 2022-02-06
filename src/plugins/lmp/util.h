@@ -50,8 +50,6 @@ namespace LMP
 
 	QString PerformSubstitutionsPlaylist (const MediaInfo& info);
 
-	bool ShouldRememberProvs ();
-
 	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
 
 	bool CompareArtists (QString, QString, bool withoutThe);
