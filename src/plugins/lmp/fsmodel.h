@@ -10,17 +10,14 @@
 
 #include <QFileSystemModel>
 #include <util/models/dndactionsmixin.h>
-#include "localcollection.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class FSModel : public Util::DndActionsMixin<QFileSystemModel>
 	{
-		Q_OBJECT
+		const std::unique_ptr<QFileIconProvider> IconProv_;
 	public:
-		FSModel (QObject* = 0);
+		explicit FSModel (QObject* = nullptr);
+		~FSModel () override;
 	};
-}
 }

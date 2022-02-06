@@ -13,14 +13,12 @@
 #include "core.h"
 #include "localcollection.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class FSIconProvider : public QFileIconProvider
 	{
 	public:
-		QIcon icon (const QFileInfo& info) const
+		QIcon icon (const QFileInfo& info) const override
 		{
 			if (!info.isDir ())
 				return QFileIconProvider::icon (info);
@@ -35,11 +33,12 @@ namespace LMP
 	};
 
 	FSModel::FSModel (QObject *parent)
-	: DndActionsMixin<QFileSystemModel> (parent)
+	: DndActionsMixin<QFileSystemModel> { parent }
+	, IconProv_ { std::make_unique<FSIconProvider> () }
 	{
-		setIconProvider (new FSIconProvider);
-
+		setIconProvider (IconProv_.get ());
 		setSupportedDragActions (Qt::CopyAction);
 	}
-}
+
+	FSModel::~FSModel () = default;
 }
