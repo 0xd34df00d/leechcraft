@@ -253,10 +253,10 @@ const findParent = (item, name) => {
 
 		auto alignActs =
 		{
-			addCmd (tr ("Align left"), QStringLiteral ("format-justify-left"), u"justifyLeft", ViewBar_, {}),
-			addCmd (tr ("Align center"), QStringLiteral ("format-justify-center"), u"justifyCenter", ViewBar_, {}),
-			addCmd (tr ("Align right"), QStringLiteral ("format-justify-right"), u"justifyRight", ViewBar_, {}),
-			addCmd (tr ("Align justify"), QStringLiteral ("format-justify-fill"), u"justifyFull", ViewBar_, {})
+			addCmd (tr ("Align left"), QStringLiteral ("format-justify-left"), u"justifyLeft", ViewBar_),
+			addCmd (tr ("Align center"), QStringLiteral ("format-justify-center"), u"justifyCenter", ViewBar_),
+			addCmd (tr ("Align right"), QStringLiteral ("format-justify-right"), u"justifyRight", ViewBar_),
+			addCmd (tr ("Align justify"), QStringLiteral ("format-justify-fill"), u"justifyFull", ViewBar_)
 		};
 		const auto alignGroup = new QActionGroup (this);
 		for (QAction *act : alignActs)
