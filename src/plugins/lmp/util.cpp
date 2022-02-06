@@ -197,9 +197,9 @@ namespace LC::LMP
 		{
 			auto chopStr = [] (QString& str)
 			{
-				if (str.startsWith ("the ", Qt::CaseInsensitive))
+				if (str.startsWith (u"the ", Qt::CaseInsensitive))
 					str = str.mid (4);
-				if (str.startsWith ("a ", Qt::CaseInsensitive))
+				if (str.startsWith (u"a ", Qt::CaseInsensitive))
 					str = str.mid (2);
 			};
 

@@ -8,12 +8,11 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_collectionstatsdialog.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class CollectionStatsDialog : public QDialog
 	{
@@ -21,9 +20,8 @@ namespace LMP
 
 		Ui::CollectionStatsDialog Ui_;
 	public:
-		CollectionStatsDialog (QWidget* = 0);
+		CollectionStatsDialog (QWidget* = nullptr);
 	protected:
-		void keyReleaseEvent (QKeyEvent*);
+		void keyReleaseEvent (QKeyEvent*) override;
 	};
-}
 }

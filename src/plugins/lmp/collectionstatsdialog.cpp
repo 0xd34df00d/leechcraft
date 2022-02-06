@@ -12,9 +12,7 @@
 #include "core.h"
 #include "localcollection.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	namespace
 	{
@@ -90,14 +88,16 @@ namespace LMP
 		addValue (tr ("Average tracks per album:"),
 				QString::number (static_cast<double> (trackCount) / albumsCount, 'g', 2));
 
-		const auto& years = findTops (year2albums, 10);
+		constexpr auto topYears = 10;
+		const auto& years = findTops (year2albums, topYears);
 		QStringList yearsStrs;
 		std::transform (years.begin (), years.end (), std::back_inserter (yearsStrs),
 				[] (int year) { return QString::number (year); });
-		addValue (tr ("Top 10 album years:"), yearsStrs.join ("; "));
+		addValue (tr ("Top 10 album years:"), yearsStrs.join (u"; "));
 
-		const auto& genres = QStringList (findTops (genre2encounters, 5));
-		addValue (tr ("Top 5 genres:"), genres.join ("; "));
+		constexpr auto topGenres = 5;
+		const auto& genres = QStringList (findTops (genre2encounters, topGenres));
+		addValue (tr ("Top 5 genres:"), genres.join (u"; "));
 	}
 
 	void CollectionStatsDialog::keyReleaseEvent (QKeyEvent *e)
@@ -109,5 +109,4 @@ namespace LMP
 		}
 		QWidget::keyReleaseEvent (e);
 	}
-}
 }

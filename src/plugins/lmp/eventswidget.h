@@ -19,12 +19,10 @@ namespace Media
 	class IEventsProvider;
 
 	struct EventInfo;
-	typedef QList<EventInfo> EventInfos_t;
+	using EventInfos_t = QList<EventInfo>;
 }
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class EventsWidget : public QWidget
 	{
@@ -37,16 +35,15 @@ namespace LMP
 
 		QList<Media::IEventsProvider*> Providers_;
 	public:
-		EventsWidget (QWidget* = 0);
+		explicit EventsWidget (QWidget* = nullptr);
 
 		void InitializeProviders ();
 	private:
+		void RequestEvents (int);
 		void HandleEvents (const Media::EventInfos_t&);
 	private slots:
-		void on_Provider__activated (int);
 		void handleAttendSure (int);
 		void handleAttendMaybe (int);
 		void handleUnattend (int);
 	};
-}
 }

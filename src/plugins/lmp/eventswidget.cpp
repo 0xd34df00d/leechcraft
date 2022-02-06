@@ -18,18 +18,19 @@
 #include <interfaces/iinfo.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/sll/udls.h>
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/threads/futures.h>
+#include "literals.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	namespace
 	{
+		// TODO replace with RoledItemsModel when we get events page scraping working
 		class EventsModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
@@ -49,7 +50,7 @@ namespace LMP
 				IsAttended
 			};
 
-			EventsModel (QObject *parent = 0)
+			explicit EventsModel (QObject *parent)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
@@ -76,22 +77,33 @@ namespace LMP
 	, Model_ (new EventsModel (this))
 	{
 		Ui_.setupUi (this);
+		connect (Ui_.Provider_,
+				&QComboBox::activated,
+				this,
+				&EventsWidget::RequestEvents);
+
 		layout ()->addWidget (View_);
 
-		new Util::StandardNAMFactory ("lmp/qml",
-				[] { return 50 * 1024 * 1024; },
+		new Util::StandardNAMFactory (Lits::LmpSlashQml,
+				[] { return 50_mib; },
 				View_->engine ());
 
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
-		View_->rootContext ()->setContextProperty ("eventsModel", Model_);
-		View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
-		View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
-		View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
-		View_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
+		View_->rootContext ()->setContextProperties ({
+				{ QStringLiteral ("eventsModel"), QVariant::fromValue<QObject*> (Model_) },
+				{ QStringLiteral ("attendSureTextString"), tr ("Sure!") },
+				{ QStringLiteral ("attendMaybeTextString"), tr ("Maybe") },
+				{ QStringLiteral ("unattendTextString"), tr ("Unattend") },
+				{
+					QStringLiteral ("colorProxy"),
+					QVariant::fromValue<QObject*> (new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this))
+				},
+			});
 
-		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "EventsView.qml"));
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
+				Lits::LmpQmlSubdir,
+				QStringLiteral ("EventsView.qml")));
 
 		connect (View_->rootObject (),
 				SIGNAL (attendSure (int)),
@@ -131,7 +143,7 @@ namespace LMP
 			{
 				const int idx = Providers_.size () - 1;
 				Ui_.Provider_->setCurrentIndex (idx);
-				on_Provider__activated (idx);
+				RequestEvents (idx);
 				lastFound = true;
 			}
 		}
@@ -140,7 +152,7 @@ namespace LMP
 			Ui_.Provider_->setCurrentIndex (-1);
 	}
 
-	void EventsWidget::on_Provider__activated (int index)
+	void EventsWidget::RequestEvents (int index)
 	{
 		Model_->clear ();
 
@@ -170,7 +182,7 @@ namespace LMP
 			item->setData (event.Name_, EventsModel::Role::EventName);
 			item->setData (event.SmallImage_, EventsModel::Role::ImageThumbURL);
 			item->setData (event.BigImage_, EventsModel::Role::ImageBigURL);
-			item->setData (event.Tags_.join ("; "), EventsModel::Role::Tags);
+			item->setData (event.Tags_.join (u"; "), EventsModel::Role::Tags);
 			item->setData (QLocale {}.toString (event.Date_, QLocale::LongFormat), EventsModel::Role::Date);
 			item->setData (event.PlaceName_, EventsModel::Role::Place);
 			item->setData (event.City_, EventsModel::Role::City);
@@ -183,7 +195,7 @@ namespace LMP
 			otherArtists.removeAll (event.Headliner_);
 			item->setData (otherArtists.isEmpty () ?
 						QString () :
-						tr ("Other artists: %1").arg (otherArtists.join ("; ")),
+						tr ("Other artists: %1").arg (otherArtists.join (u"; ")),
 					EventsModel::Role::OtherArtists);
 
 			item->setData (event.CanBeAttended_, EventsModel::Role::CanBeAttended);
@@ -196,26 +208,19 @@ namespace LMP
 
 	void EventsWidget::handleAttendSure (int id)
 	{
-		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
-		if (!prov)
-			return;
-		prov->AttendEvent (id, Media::EventAttendType::Surely);
+		if (auto prov = Providers_.value (Ui_.Provider_->currentIndex ()))
+			prov->AttendEvent (id, Media::EventAttendType::Surely);
 	}
 
 	void EventsWidget::handleAttendMaybe (int id)
 	{
-		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
-		if (!prov)
-			return;
-		prov->AttendEvent (id, Media::EventAttendType::Maybe);
+		if (auto prov = Providers_.value (Ui_.Provider_->currentIndex ()))
+			prov->AttendEvent (id, Media::EventAttendType::Maybe);
 	}
 
 	void EventsWidget::handleUnattend (int id)
 	{
-		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
-		if (!prov)
-			return;
-		prov->AttendEvent (id, Media::EventAttendType::None);
+		if (auto prov = Providers_.value (Ui_.Provider_->currentIndex ()))
+			prov->AttendEvent (id, Media::EventAttendType::None);
 	}
-}
 }

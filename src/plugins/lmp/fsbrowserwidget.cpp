@@ -18,15 +18,13 @@
 #include "audiopropswidget.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	FSBrowserWidget::FSBrowserWidget (QWidget *parent)
-	: QWidget (parent)
-	, Player_ (0)
-	, FSModel_ (new FSModel (this))
-	, ColumnsBeenResized_ (false)
+	: QWidget { parent }
+	, FSModel_ { new FSModel { this } }
+	, DirCollection_ { new QAction { QString {}, this } }
+	, ViewProps_ { new QAction { tr ("Show track properties"), this } }
 	{
 		Ui_.setupUi (this);
 
@@ -37,34 +35,37 @@ namespace LMP
 		auto addToPlaylist = new QAction (tr ("Add to playlist"), this);
 		addToPlaylist->setProperty ("ActionIcon", "list-add");
 		connect (addToPlaylist,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (loadFromFSBrowser ()));
+				&FSBrowserWidget::LoadFromFSBrowser);
 		Ui_.FSTree_->addAction (addToPlaylist);
 
-		DirCollection_ = new QAction (QString (), this);
 		DirCollection_->setProperty ("WatchActionIconChange", true);
 		Ui_.FSTree_->addAction (DirCollection_);
 
 		Ui_.FSTree_->addAction (Util::CreateSeparator (this));
 
-		ViewProps_ = new QAction (tr ("Show track properties"), this);
 		ViewProps_->setProperty ("ActionIcon", "document-properties");
 		connect (ViewProps_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (viewProps ()));
+				[this]
+				{
+					const auto& index = Ui_.FSTree_->currentIndex ();
+					if (index.isValid ())
+						AudioPropsWidget::MakeDialog ()->SetProps (FSModel_->fileInfo (index).absoluteFilePath ());
+				});
 		Ui_.FSTree_->addAction (ViewProps_);
 
 		connect (Ui_.FSTree_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				&QItemSelectionModel::currentRowChanged,
 				this,
-				SLOT (handleItemSelected (QModelIndex)));
+				&FSBrowserWidget::UpdateActions);
 
 		connect (Core::Instance ().GetLocalCollection (),
-				SIGNAL (rootPathsChanged (QStringList)),
+				&LocalCollection::rootPathsChanged,
 				this,
-				SLOT (handleCollectionChanged ()));
+				[this] { UpdateActions (Ui_.FSTree_->currentIndex ()); });
 	}
 
 	void FSBrowserWidget::showEvent (QShowEvent *event)
@@ -73,7 +74,8 @@ namespace LMP
 
 		if (!ColumnsBeenResized_)
 		{
-			Ui_.FSTree_->setColumnWidth (0, Ui_.FSTree_->width () * 0.6);
+			constexpr auto proportion = 0.6;
+			Ui_.FSTree_->setColumnWidth (0, Ui_.FSTree_->width () * proportion);
 			ColumnsBeenResized_ = true;
 		}
 	}
@@ -83,35 +85,46 @@ namespace LMP
 		Player_ = player;
 	}
 
-	void FSBrowserWidget::handleItemSelected (const QModelIndex& index)
+	void FSBrowserWidget::UpdateActions (const QModelIndex& index)
 	{
 		const auto& fi = FSModel_->fileInfo (index);
 		ViewProps_->setEnabled (fi.isFile ());
 
 		const auto& path = fi.absoluteFilePath ();
 
-		disconnect (DirCollection_,
-				0,
-				this,
-				0);
+		if (DirCollectionConn_)
+		{
+			QObject::disconnect (DirCollectionConn_);
+			DirCollectionConn_ = {};
+		}
 
 		switch (Core::Instance ().GetLocalCollection ()->GetDirStatus (path))
 		{
 		case LocalCollection::DirStatus::None:
 			DirCollection_->setText (tr ("Add to collection..."));
 			DirCollection_->setEnabled (true);
-			connect (DirCollection_,
-					SIGNAL (triggered ()),
+			DirCollectionConn_ = connect (DirCollection_,
+					&QAction::triggered,
 					this,
-					SLOT (handleAddToCollection ()));
+					[this]
+					{
+						const auto& index = Ui_.FSTree_->currentIndex ();
+						const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
+						Core::Instance ().GetLocalCollection ()->Scan (path);
+					});
 			break;
 		case LocalCollection::DirStatus::RootPath:
 			DirCollection_->setText (tr ("Remove from collection..."));
 			DirCollection_->setEnabled (true);
-			connect (DirCollection_,
-					SIGNAL (triggered ()),
+			DirCollectionConn_ = connect (DirCollection_,
+					&QAction::triggered,
 					this,
-					SLOT (handleRemoveFromCollection ()));
+					[this]
+					{
+						const auto& index = Ui_.FSTree_->currentIndex ();
+						const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
+						Core::Instance ().GetLocalCollection ()->Unscan (path);
+					});
 			break;
 		case LocalCollection::DirStatus::SubPath:
 			DirCollection_->setText (tr ("Already in collection"));
@@ -120,57 +133,19 @@ namespace LMP
 		}
 	}
 
-	void FSBrowserWidget::handleCollectionChanged ()
-	{
-		handleItemSelected (Ui_.FSTree_->currentIndex ());
-	}
-
-	void FSBrowserWidget::handleAddToCollection ()
+	void FSBrowserWidget::LoadFromFSBrowser ()
 	{
 		const auto& index = Ui_.FSTree_->currentIndex ();
-		const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
-
-		Core::Instance ().GetLocalCollection ()->Scan (path);
-	}
-
-	void FSBrowserWidget::handleRemoveFromCollection ()
-	{
-		const auto& index = Ui_.FSTree_->currentIndex ();
-		const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
-
-		Core::Instance ().GetLocalCollection ()->Unscan (path);
-	}
-
-	void FSBrowserWidget::loadFromFSBrowser ()
-	{
-		if (!Player_)
+		if (!index.isValid () || !Player_)
 			return;
 
-		const QModelIndex& index = Ui_.FSTree_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		const QFileInfo& fi = FSModel_->fileInfo (index);
-
+		const auto& fi = FSModel_->fileInfo (index);
 		if (fi.isDir ())
 		{
-			const bool symLinks = XmlSettingsManager::Instance ()
-					.property ("FollowSymLinks").toBool ();
+			const bool symLinks = XmlSettingsManager::Instance ().property ("FollowSymLinks").toBool ();
 			Player_->Enqueue (RecIterate (fi.absoluteFilePath (), symLinks));
 		}
 		else
-			Player_->Enqueue (QStringList (fi.absoluteFilePath ()));
+			Player_->Enqueue (QStringList { fi.absoluteFilePath () });
 	}
-
-	void FSBrowserWidget::viewProps ()
-	{
-		const QModelIndex& index = Ui_.FSTree_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		const QFileInfo& fi = FSModel_->fileInfo (index);
-
-		AudioPropsWidget::MakeDialog ()->SetProps (fi.absoluteFilePath ());
-	}
-}
 }

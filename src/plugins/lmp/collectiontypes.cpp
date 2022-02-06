@@ -8,16 +8,10 @@
 
 #include "interfaces/lmp/collectiontypes.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace Collection
+namespace LC::LMP::Collection
 {
 	TrackStats::operator bool () const
 	{
 		return TrackID_;
 	}
-}
-}
 }

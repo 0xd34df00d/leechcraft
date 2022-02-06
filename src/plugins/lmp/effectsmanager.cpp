@@ -16,9 +16,7 @@
 #include "engine/rgfilter.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	QDataStream& operator<< (QDataStream& out, const SavedFilterInfo& info)
 	{
@@ -72,19 +70,17 @@ namespace LMP
 
 	void EffectsManager::RegisteringFinished ()
 	{
-		const auto& data = XmlSettingsManager::Instance ()
-				.property ("AddedFilters").value<QList<SavedFilterInfo>> ();
+		const auto& data = XmlSettingsManager::Instance ().property ("AddedFilters").value<QList<SavedFilterInfo>> ();
 
 		for (const auto& filter : data)
 		{
 			const auto& id = filter.FilterId_;
-			const auto effectPos = std::find_if (RegisteredEffects_.begin (), RegisteredEffects_.end (),
+			const auto effectPos = std::find_if (RegisteredEffects_.cbegin (), RegisteredEffects_.cend (),
 					[&id] (const EffectInfo& info) { return info.ID_ == id; });
 
 			if (effectPos == RegisteredEffects_.end ())
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot recover filter"
+				qWarning () << "cannot recover filter"
 						<< id
 						<< "; not available";
 				continue;
@@ -98,7 +94,7 @@ namespace LMP
 		ReemitEffectsList ();
 	}
 
-	IFilterElement* EffectsManager::RestoreFilter (const QList<EffectInfo>::const_iterator effectPos, const QByteArray& instanceId)
+	IFilterElement* EffectsManager::RestoreFilter (QList<EffectInfo>::const_iterator effectPos, const QByteArray& instanceId)
 	{
 		auto modelItem = new QStandardItem { effectPos->Name_ };
 		modelItem->setEditable (false);
@@ -128,11 +124,12 @@ namespace LMP
 							}))
 				continue;
 
-			QVariantMap map;
-			map ["Icon"] = QVariant::fromValue (effect.Icon_);
-			map ["Name"] = effect.Name_;
-			map ["ID"] = id;
-			items << map;
+			items << QVariantMap
+				{
+					{ "Icon", QVariant::fromValue (effect.Icon_) },
+					{ "Name", effect.Name_ },
+					{ "ID", id },
+				};
 		}
 
 		Model_->horizontalHeaderItem (0)->setData (items,
@@ -166,8 +163,7 @@ namespace LMP
 		const auto filter = Filters_.value (row);
 		if (!filter)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid row"
+			qWarning () << "invalid row"
 					<< row
 					<< "of"
 					<< Filters_.size ();
@@ -189,12 +185,11 @@ namespace LMP
 	void EffectsManager::addRequested (const QString&, const QVariantList& datas)
 	{
 		const auto& id = datas.value (0).toByteArray ();
-		const auto effectPos = std::find_if (RegisteredEffects_.begin (), RegisteredEffects_.end (),
+		const auto effectPos = std::find_if (RegisteredEffects_.cbegin (), RegisteredEffects_.cend (),
 				[&id] (const EffectInfo& info) { return info.ID_ == id; });
 		if (effectPos == RegisteredEffects_.end ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "effect"
+			qWarning () << "effect"
 					<< id
 					<< "not found";
 			return;
@@ -216,8 +211,7 @@ namespace LMP
 			const auto elem = Filters_.takeAt (index.row ());
 			if (!elem)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid row"
+				qWarning () << "invalid row"
 						<< index
 						<< "of"
 						<< Filters_.size ();
@@ -239,5 +233,4 @@ namespace LMP
 	{
 		showEffectConfig (row);
 	}
-}
 }

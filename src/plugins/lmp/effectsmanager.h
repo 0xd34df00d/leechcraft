@@ -20,9 +20,7 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QByteArray;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class IPath;
 	class Path;
@@ -58,7 +56,7 @@ namespace LMP
 
 		void RegisteringFinished ();
 	private:
-		IFilterElement* RestoreFilter (const QList<EffectInfo>::const_iterator, const QByteArray&);
+		IFilterElement* RestoreFilter (QList<EffectInfo>::const_iterator, const QByteArray&);
 		void UpdateHeaders ();
 		void SaveFilters () const;
 
@@ -73,7 +71,6 @@ namespace LMP
 	signals:
 		void effectsListChanged (const QStringList&);
 	};
-}
 }
 
 Q_DECLARE_METATYPE (LC::LMP::SavedFilterInfo)

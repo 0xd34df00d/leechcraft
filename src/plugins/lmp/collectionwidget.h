@@ -14,9 +14,7 @@
 
 class QSortFilterProxyModel;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class Player;
 	struct MediaInfo;
@@ -41,12 +39,11 @@ namespace LMP
 		void HandleCollectionDelete ();
 		void LoadFromCollection ();
 		void HandleScanProgress (int);
-	private slots:
-		void on_CollectionTree__customContextMenuRequested (const QPoint&);
+
+		void ShowContextMenu (QPoint);
 	signals:
 		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
 				const LC::LMP::MediaInfo&);
 	};
-}
 }

@@ -10,9 +10,7 @@
 
 #include <QSortFilterProxyModel>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class CollectionSorterModel : public QSortFilterProxyModel
 	{
@@ -22,5 +20,4 @@ namespace LMP
 	protected:
 		bool lessThan (const QModelIndex&, const QModelIndex&) const override;
 	};
-}
 }

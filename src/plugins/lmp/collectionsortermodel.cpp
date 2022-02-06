@@ -12,9 +12,7 @@
 #include "xmlsettingsmanager.h"
 #include "util.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	namespace
 	{
@@ -98,5 +96,4 @@ namespace LMP
 			return QSortFilterProxyModel::lessThan (left, right);
 		}
 	}
-}
 }

@@ -8,41 +8,37 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWidget>
 #include "ui_fsbrowserwidget.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class Player;
 	class FSModel;
 
 	class FSBrowserWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::FSBrowserWidget)
 
 		Ui::FSBrowserWidget Ui_;
 
-		Player *Player_;
-		FSModel *FSModel_;
-		QAction *DirCollection_;
-		QAction *ViewProps_;
+		Player *Player_ = nullptr;
+		FSModel * const FSModel_;
+		QAction * const DirCollection_;
+		QAction * const ViewProps_;
 
-		bool ColumnsBeenResized_;
+		QMetaObject::Connection DirCollectionConn_;
+
+		bool ColumnsBeenResized_ = false;
 	public:
-		FSBrowserWidget (QWidget* = 0);
+		explicit FSBrowserWidget (QWidget* = nullptr);
 
 		void AssociatePlayer (Player*);
 	protected:
-		void showEvent (QShowEvent*);
-	private slots:
-		void handleItemSelected (const QModelIndex&);
-		void handleCollectionChanged ();
-		void handleAddToCollection ();
-		void handleRemoveFromCollection ();
-		void loadFromFSBrowser ();
-		void viewProps ();
+		void showEvent (QShowEvent*) override;
+	private:
+		void UpdateActions (const QModelIndex&);
+		void LoadFromFSBrowser ();
 	};
-}
 }

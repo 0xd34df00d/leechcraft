@@ -25,9 +25,7 @@
 #include "player.h"
 #include "literals.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	namespace
 	{
@@ -41,7 +39,7 @@ namespace LMP
 				setRecursiveFilteringEnabled (true);
 			}
 		protected:
-			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
+			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const override
 			{
 				const auto& source = sourceModel ()->index (sourceRow, 0, sourceParent);
 				if (source.data (LocalCollectionModel::Role::IsTrackIgnored).toBool ())
@@ -111,6 +109,11 @@ namespace LMP
 				&QLineEdit::textChanged,
 				CollectionFilterModel_,
 				&QSortFilterProxyModel::setFilterFixedString);
+
+		connect (Ui_.CollectionTree_,
+				&QTreeView::customContextMenuRequested,
+				this,
+				&CollectionWidget::ShowContextMenu);
 
 		Core::Instance ().GetHookInterconnector ()->RegisterHookable (this);
 	}
@@ -195,9 +198,9 @@ namespace LMP
 			return;
 
 		auto response = QMessageBox::question (this,
-				"LeechCraft",
+				Lits::LMP,
 				tr ("Are you sure you want to erase %n track(s)? This action cannot be undone.",
-					0,
+					nullptr,
 					paths.size ()),
 					QMessageBox::Yes | QMessageBox::No);
 		if (response != QMessageBox::Yes)
@@ -240,7 +243,7 @@ namespace LMP
 		}
 	}
 
-	void CollectionWidget::on_CollectionTree__customContextMenuRequested (const QPoint& point)
+	void CollectionWidget::ShowContextMenu (QPoint point)
 	{
 		const auto& index = Ui_.CollectionTree_->indexAt (point);
 		if (!index.isValid ())
@@ -307,5 +310,4 @@ namespace LMP
 			Ui_.ScanProgress_->show ();
 		Ui_.ScanProgress_->setValue (progress);
 	}
-}
 }
