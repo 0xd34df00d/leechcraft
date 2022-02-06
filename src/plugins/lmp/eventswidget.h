@@ -38,12 +38,12 @@ namespace LC::LMP
 		explicit EventsWidget (QWidget* = nullptr);
 
 		void InitializeProviders ();
+
+		Q_INVOKABLE void attendSure (int);
+		Q_INVOKABLE void attendMaybe (int);
+		Q_INVOKABLE void unattend (int);
 	private:
 		void RequestEvents (int);
 		void HandleEvents (const Media::EventInfos_t&);
-	private slots:
-		void handleAttendSure (int);
-		void handleAttendMaybe (int);
-		void handleUnattend (int);
 	};
 }

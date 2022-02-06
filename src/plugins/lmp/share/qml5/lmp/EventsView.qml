@@ -5,10 +5,6 @@ import "."
 Rectangle {
     id: rootRect
 
-    signal attendSure(int id)
-    signal attendMaybe(int id)
-    signal unattend(int id)
-
     gradient: Gradient {
         GradientStop {
             position: 0
@@ -217,7 +213,7 @@ Rectangle {
 
                     text: attendSureTextString
 
-                    onClicked: rootRect.attendSure(eventID)
+                    onClicked: eventsProxy.attendSure(eventID)
                 }
 
                 TextButton {
@@ -230,7 +226,7 @@ Rectangle {
 
                     text: attendMaybeTextString
 
-                    onClicked: rootRect.unattendMaybe(eventID)
+                    onClicked: eventsProxy.attendMaybe(eventID)
                 }
 
                 TextButton {
@@ -243,7 +239,7 @@ Rectangle {
 
                     text: unattendTextString
 
-                    onClicked: rootRect.unattend(eventID)
+                    onClicked: eventsProxy.unattend(eventID)
                 }
             }
         }

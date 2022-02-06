@@ -92,6 +92,7 @@ namespace LC::LMP
 
 		View_->rootContext ()->setContextProperties ({
 				{ QStringLiteral ("eventsModel"), QVariant::fromValue<QObject*> (Model_) },
+				{ QStringLiteral ("eventsProxy"), QVariant::fromValue<QObject*> (this) },
 				{ QStringLiteral ("attendSureTextString"), tr ("Sure!") },
 				{ QStringLiteral ("attendMaybeTextString"), tr ("Maybe") },
 				{ QStringLiteral ("unattendTextString"), tr ("Unattend") },
@@ -104,19 +105,6 @@ namespace LC::LMP
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
 				Lits::LmpQmlSubdir,
 				QStringLiteral ("EventsView.qml")));
-
-		connect (View_->rootObject (),
-				SIGNAL (attendSure (int)),
-				this,
-				SLOT (handleAttendSure (int)));
-		connect (View_->rootObject (),
-				SIGNAL (attendMaybe (int)),
-				this,
-				SLOT (handleAttendMaybe (int)));
-		connect (View_->rootObject (),
-				SIGNAL (unattend (int)),
-				this,
-				SLOT (handleUnattend (int)));
 	}
 
 	void EventsWidget::InitializeProviders ()
@@ -206,19 +194,19 @@ namespace LC::LMP
 		}
 	}
 
-	void EventsWidget::handleAttendSure (int id)
+	void EventsWidget::attendSure (int id)
 	{
 		if (auto prov = Providers_.value (Ui_.Provider_->currentIndex ()))
 			prov->AttendEvent (id, Media::EventAttendType::Surely);
 	}
 
-	void EventsWidget::handleAttendMaybe (int id)
+	void EventsWidget::attendMaybe (int id)
 	{
 		if (auto prov = Providers_.value (Ui_.Provider_->currentIndex ()))
 			prov->AttendEvent (id, Media::EventAttendType::Maybe);
 	}
 
-	void EventsWidget::handleUnattend (int id)
+	void EventsWidget::unattend (int id)
 	{
 		if (auto prov = Providers_.value (Ui_.Provider_->currentIndex ()))
 			prov->AttendEvent (id, Media::EventAttendType::None);
