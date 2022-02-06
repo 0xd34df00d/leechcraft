@@ -204,7 +204,7 @@ Rectangle {
                 }
 
                 TextButton {
-                    id: attendMaybe
+                    id: attendSure
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.right: parent.right
@@ -217,10 +217,10 @@ Rectangle {
                 }
 
                 TextButton {
-                    id: attendSure
+                    id: attendMaybe
                     anchors.top: parent.top
                     anchors.topMargin: 2
-                    anchors.right: attendMaybe.left
+                    anchors.right: attendSure.left
                     anchors.rightMargin: 2
                     visible: !isAttended
 
@@ -230,7 +230,7 @@ Rectangle {
                 }
 
                 TextButton {
-                    id: unAttend
+                    id: unattend
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.right: parent.right
