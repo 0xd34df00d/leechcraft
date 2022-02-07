@@ -17,6 +17,7 @@
 #include <QMessageBox>
 #include <QShortcut>
 #include <QInputDialog>
+#include <QLabel>
 #include <util/util.h>
 #include <util/models/util.h>
 #include <util/tags/categoryselector.h>
@@ -116,6 +117,8 @@ namespace Snails
 				SLOT (handleMailSelected ()));
 
 		FillTabToolbarActions (sm);
+
+		ClearMessage ();
 	}
 
 	namespace
@@ -419,7 +422,7 @@ namespace Snails
 
 	namespace
 	{
-		QString HTMLize (const Addresses_t& adds)
+		QString FormatAddresses (const Addresses_t& adds)
 		{
 			QStringList result;
 
@@ -433,11 +436,9 @@ namespace Snails
 				QString thisStr;
 
 				if (hasName)
-					thisStr += "<span style='address_name'>" + addr.Name_ + "</span> &lt;";
-
-				thisStr += QString ("<span style='address_email'><a href='mailto:%1'>%1</a></span>")
-						.arg (addr.Email_);
-
+					thisStr += addr.Name_.toHtmlEscaped () + " &lt;";
+				thisStr += u"<a href='mailto:%1'>%1</a>"_qsv
+						.arg (addr.Email_.toHtmlEscaped ());
 				if (hasName)
 					thisStr += '>';
 
@@ -447,107 +448,18 @@ namespace Snails
 			return result.join (", ");
 		}
 
-		QString GetStyle (QString headerClass)
+		QString GetStyle ()
 		{
-			headerClass.prepend ('.');
-
 			const auto& palette = qApp->palette ();
 
 			auto result = Core::Instance ().GetMsgViewTemplate ();
-			result.replace (".header", headerClass);
 			result.replace ("$WindowText", palette.color (QPalette::ColorRole::WindowText).name ());
 			result.replace ("$Window", palette.color (QPalette::ColorRole::Window).name ());
 			result.replace ("$Base", palette.color (QPalette::ColorRole::Base).name ());
 			result.replace ("$Text", palette.color (QPalette::ColorRole::Text).name ());
 			result.replace ("$LinkVisited", palette.color (QPalette::ColorRole::LinkVisited).name ());
 			result.replace ("$Link", palette.color (QPalette::ColorRole::Link).name ());
-
-			result += R"(
-						html, body {
-							width: 100%;
-							height: 100%;
-							overflow: hidden;
-						}
-					)" + headerClass + R"( {
-							top: 0;
-							left: 0;
-							right: 0;
-							position: fixed;
-						}
-
-						.body {
-							width: 100%;
-							bottom: 0;
-							position: absolute;
-							overflow: auto;
-						}
-					)";
-
 			return result;
-		}
-
-		QString AttachmentsToHtml (const MessageInfo& msgInfo)
-		{
-			const auto& attachments = msgInfo.Attachments_;
-			if (attachments.isEmpty ())
-				return {};
-
-			QString result;
-			result += "<div class='attachments'>";
-
-			const auto& extData = Util::ExtensionsData::Instance ();
-			for (const auto& attach : attachments)
-			{
-				result += "<span class='attachment'>";
-
-				QUrl linkUrl { "snails://attachment/" };
-				Util::UrlOperator { linkUrl }
-						("msgId", msgInfo.FolderId_)
-						("folderId", msgInfo.Folder_.join ("/"))
-						("attName", attach.GetName ());
-				const auto& link = linkUrl.toEncoded ();
-
-				result += "<a href='" + link + "'>";
-
-				const auto& mimeType = attach.GetType () + '/' + attach.GetSubType ();
-				const auto& icon = extData.GetMimeIcon (mimeType);
-				if (!icon.isNull ())
-				{
-					const auto& iconData = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
-
-					result += "<img class='attachMime' style='float:left' src='" + iconData + "' alt='" + mimeType + "' />";
-				}
-
-				result += "</a><span><a href='" + link + "'>";
-
-				result += attach.GetName ();
-				if (!attach.GetDescr ().isEmpty ())
-					result += " (" + attach.GetDescr () + ")";
-				result += " &mdash; " + Util::MakePrettySize (attach.GetSize ());
-
-				result += "</a></span>";
-				result += "</span>";
-			}
-
-			result += "</div>";
-			return result;
-		}
-
-		QString GenerateId (const QString& body, QString classId)
-		{
-			int pos = 0;
-			while ((pos = body.indexOf (classId)) >= 0)
-			{
-				const auto nextCharIdx = pos + classId.size ();
-				if (nextCharIdx >= body.size ())
-					classId += '1';
-				else
-					classId += body.at (nextCharIdx) == '1' ?
-							'2' :
-							'1';
-			}
-
-			return classId;
 		}
 
 		QString GetMessageContents (const std::optional<MessageBodies>& bodies, bool allowHtml)
@@ -575,57 +487,21 @@ namespace Snails
 			return "<pre>" + lines.join ("\n") + "</pre>";
 		}
 
-		QString ToHtml (const MessageInfo& msgInfo, const std::optional<MessageBodies>& bodies, bool htmlAllowed)
+		QString ToHtml (const std::optional<MessageBodies>& bodies, bool htmlAllowed)
 		{
-			const auto& headerClass = GenerateId (bodies.value_or (MessageBodies {}).HTML_, "header");
-
-			QString html = R"(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">)";
-			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
-			html += GetStyle (headerClass);
-			html += "</style>";
-			html += R"d(
-						<script language='javascript'>
-							function resizeBody() {
-								var headHeight = document.getElementById('msgHeader').offsetHeight;
-
-								var bodyElem = document.getElementById('msgBody');
-								bodyElem.style.top = headHeight + "px";
-							}
-							function setupResize() {
-								window.onresize = resizeBody;
-								resizeBody();
-							}
-						</script>
-					)d";
-			html += "</head><body onload='setupResize()'><header class='" + headerClass + "' id='msgHeader'>";
-			auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
-			{
-				if (!text.trimmed ().isEmpty ())
-					html += "<span class='field " + cssClass + "'><span class='fieldName'>" +
-							name + ": </span>" + text + "</span><br />";
-			};
-
-			addField ("subject", MailTab::tr ("Subject"), msgInfo.Subject_);
-			addField ("from", MailTab::tr ("From"), HTMLize (msgInfo.Addresses_ [AddressType::From]));
-			addField ("replyTo", MailTab::tr ("Reply to"), HTMLize (msgInfo.Addresses_ [AddressType::ReplyTo]));
-			addField ("to", MailTab::tr ("To"), HTMLize (msgInfo.Addresses_ [AddressType::To]));
-			addField ("cc", MailTab::tr ("Copy"), HTMLize (msgInfo.Addresses_ [AddressType::Cc]));
-			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msgInfo.Addresses_ [AddressType::Bcc]));
-			addField ("date", MailTab::tr ("Date"), msgInfo.Date_.toString ());
-			html += AttachmentsToHtml (msgInfo);
-			html += "</header><div class='body' id='msgBody'>";
+			QString html = "<!DOCTYPE html><html><head><title>Message</title><style>";
+			html += GetStyle ();
+			html += "</style></head><body><div class='body' id='msgBody'>";
 			html += GetMessageContents (bodies, htmlAllowed);
-			html += "</div><script language='javascript'>setupResize();</script>";
-			html += "</body></html>";
+			html += "</div></body></html>";
 
 			return html;
 		}
 
 		QString ToHtmlError (const QString& err)
 		{
-			QString html = R"(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">)";
-			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
-			html += GetStyle (".header");
+			QString html = "<!DOCTYPE html><html><head><title>Message</title><style>";
+			html += GetStyle ();
 			html += "</style><body><div style='errormessage'>" + err + "</div></body></html>";
 			return html;
 		}
@@ -633,10 +509,30 @@ namespace Snails
 
 	void MailTab::SetMessage (const MessageInfo& msgInfo, const std::optional<MessageBodies>& bodies)
 	{
-		const auto& html = ToHtml (msgInfo, bodies, HtmlViewAllowed_);
+		ClearMessage ();
+
+		auto addField = [this] (const QString& name, QString text)
+		{
+			if (!text.isEmpty ())
+			{
+				auto label = new QLabel;
+				label->setTextFormat (Qt::RichText);
+				label->setText (text);
+				label->setWordWrap (true);
+				Ui_.MailInfoLayout_->addRow (name + ":", label);
+			}
+		};
+
+		addField (tr ("Subject"), msgInfo.Subject_.toHtmlEscaped ());
+		addField (tr ("From"), FormatAddresses (msgInfo.Addresses_ [AddressType::From]));
+		addField (tr ("Reply to"), FormatAddresses (msgInfo.Addresses_ [AddressType::ReplyTo]));
+		addField (tr ("To"), FormatAddresses (msgInfo.Addresses_ [AddressType::To]));
+		addField (tr ("Copy"), FormatAddresses (msgInfo.Addresses_ [AddressType::Cc]));
+		addField (tr ("Blind copy"), FormatAddresses (msgInfo.Addresses_ [AddressType::Bcc]));
+		addField (tr ("Date"), msgInfo.Date_.toString ());
 
 		MailWebPage_->SetMessageContext ({ CurrAcc_.get (), msgInfo });
-		Ui_.MailView_->setHtml (html);
+		Ui_.MailView_->setHtml (ToHtml (bodies, HtmlViewAllowed_));
 
 		MsgAttachments_->clear ();
 		MsgAttachmentsButton_->setEnabled (!msgInfo.Attachments_.isEmpty ());
@@ -650,6 +546,14 @@ namespace Snails
 					this,
 					[this, msgId, folder, name = att.GetName ()] { HandleAttachment (msgId, folder, name); });
 		}
+	}
+
+	void MailTab::ClearMessage ()
+	{
+		Ui_.MailView_->setHtml ({});
+
+		while (Ui_.MailInfoLayout_->rowCount ())
+			Ui_.MailInfoLayout_->removeRow (0);
 	}
 
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
@@ -773,7 +677,7 @@ namespace Snails
 		const auto updateActionsGuard = Util::MakeScopeGuard ([this] { UpdateMsgActionsStatus (); });
 		if (!CurrAcc_)
 		{
-			Ui_.MailView_->setHtml ({});
+			ClearMessage ();
 			return;
 		}
 
@@ -788,7 +692,7 @@ namespace Snails
 		if (!sidx.isValid () ||
 				!Ui_.MailTree_->selectionModel ()->selectedIndexes ().contains (sidx))
 		{
-			Ui_.MailView_->setHtml ({});
+			ClearMessage ();
 			return;
 		}
 
@@ -821,6 +725,8 @@ namespace Snails
 								},
 								[this] (auto err)
 								{
+									ClearMessage ();
+
 									const auto& errMsg = Util::Visit (err,
 											[] (auto e) { return QString::fromUtf8 (e.what ()); });
 									const auto& msg = tr ("Unable to fetch whole message: %1.")

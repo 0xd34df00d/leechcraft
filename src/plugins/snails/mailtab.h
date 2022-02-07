@@ -115,6 +115,7 @@ namespace Snails
 		QList<Folder> GetActualFolders () const;
 
 		void SetMessage (const MessageInfo&, const std::optional<MessageBodies>&);
+		void ClearMessage ();
 
 		void HandleLinkedRequested (MsgType);
 
