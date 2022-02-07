@@ -35,12 +35,7 @@ namespace Snails
 
 		void SetMessageContext (const MessagePageContext&);
 	protected:
-		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType);
-	private:
-		void HandleAttachment (const QUrl&);
-	signals:
-		void attachmentSelected (const QByteArray& msgId,
-				const QStringList& folder, const QString& attName);
+		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType) override;
 	};
 }
 }

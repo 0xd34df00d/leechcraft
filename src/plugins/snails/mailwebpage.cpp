@@ -32,32 +32,13 @@ namespace Snails
 
 	bool MailWebPage::acceptNavigationRequest (QWebFrame*, const QNetworkRequest& req, QWebPage::NavigationType type)
 	{
-		const auto& url = req.url ();
-		if (type == NavigationTypeLinkClicked &&
-				url.scheme () != "snails")
+		if (type == NavigationTypeLinkClicked)
 		{
-			const auto& e = Util::MakeEntity (url, {}, FromUserInitiated);
+			const auto& e = Util::MakeEntity (req.url (), {}, FromUserInitiated);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
-			return false;
-		}
-
-		if (url.scheme () == "snails")
-		{
-			if (url.host () == "attachment")
-				HandleAttachment (url);
 		}
 
 		return false;
-	}
-
-	void MailWebPage::HandleAttachment (const QUrl& url)
-	{
-		const QUrlQuery queryable { url };
-		const auto& msgId = queryable.queryItemValue ("msgId").toUtf8 ();
-		const auto& folder = queryable.queryItemValue ("folderId").split ('/');
-		const auto& attName = queryable.queryItemValue ("attName");
-
-		emit attachmentSelected (msgId, folder, attName);
 	}
 }
 }
