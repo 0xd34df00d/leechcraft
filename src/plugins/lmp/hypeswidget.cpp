@@ -176,10 +176,12 @@ namespace LC::LMP
 
 		auto provObj = Providers_.at (idx);
 		auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
-		TryHype<Media::IHypesProvider::HypeType::NewArtists, &HypesWidget::HandleArtists> (this, prov);
-		TryHype<Media::IHypesProvider::HypeType::TopArtists, &HypesWidget::HandleArtists> (this, prov);
-		TryHype<Media::IHypesProvider::HypeType::NewTracks, &HypesWidget::HandleTracks> (this, prov);
-		TryHype<Media::IHypesProvider::HypeType::TopTracks, &HypesWidget::HandleTracks> (this, prov);
+
+		using enum Media::IHypesProvider::HypeType;
+		TryHype<NewArtists, &HypesWidget::HandleArtists> (this, prov);
+		TryHype<TopArtists, &HypesWidget::HandleArtists> (this, prov);
+		TryHype<NewTracks, &HypesWidget::HandleTracks> (this, prov);
+		TryHype<TopTracks, &HypesWidget::HandleTracks> (this, prov);
 
 		XmlSettingsManager::Instance ().setProperty ("LastUsedHypesProvider", prov->GetServiceName ());
 	}
