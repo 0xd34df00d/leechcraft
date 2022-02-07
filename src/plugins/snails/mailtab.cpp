@@ -511,7 +511,7 @@ namespace Snails
 	{
 		ClearMessage ();
 
-		auto addField = [this] (const QString& name, QString text)
+		auto addField = [this] (const QString& name, const QString& text)
 		{
 			if (!text.isEmpty ())
 			{
