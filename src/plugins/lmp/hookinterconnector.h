@@ -13,9 +13,7 @@
 
 class QMenu;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	struct MediaInfo;
 
@@ -23,7 +21,7 @@ namespace LMP
 	{
 		Q_OBJECT
 	public:
-		HookInterconnector (QObject* = nullptr);
+		using Util::BaseHookInterconnector::BaseHookInterconnector;
 	signals:
 		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
@@ -32,5 +30,4 @@ namespace LMP
 				QMenu*,
 				const LC::LMP::MediaInfo&);
 	};
-}
 }

@@ -7,14 +7,3 @@
  **********************************************************************/
 
 #include "hookinterconnector.h"
-
-namespace LC
-{
-namespace LMP
-{
-	HookInterconnector::HookInterconnector (QObject *parent)
-	: BaseHookInterconnector { parent }
-	{
-	}
-}
-}

@@ -50,9 +50,9 @@ namespace LMP
 	private:
 		void HandleArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
 		void HandleTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
-	private slots:
-		void request ();
-		void handleLink (const QString&);
+		void Request ();
+
+		Q_INVOKABLE void handleLink (const QString&);
 	signals:
 		void artistPreviewRequested (const QString&);
 		void trackPreviewRequested (const QString&, const QString&);

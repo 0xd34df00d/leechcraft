@@ -26,7 +26,7 @@ namespace LC::LMP
 			const auto& path = info.absoluteFilePath ();
 			const auto status = Core::Instance ().GetLocalCollection ()->GetDirStatus (path);
 			if (status != LocalCollection::DirStatus::None)
-				return GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("folder-bookmark");
+				return GetProxyHolder ()->GetIconThemeManager ()->GetIcon (QStringLiteral ("folder-bookmark"));
 
 			return QFileIconProvider::icon (info);
 		}

@@ -17,6 +17,7 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/sll/prelude.h>
 #include <util/sys/paths.h>
+#include <util/sll/udls.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/models/roleditemsmodel.h>
 #include <util/threads/futures.h>
@@ -71,29 +72,31 @@ namespace LC::LMP
 		HypesView_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",
-				[] { return 50 * 1024 * 1024; },
+				[] { return 50_mib; },
 				HypesView_->engine ());
 
-		auto root = HypesView_->rootContext ();
-		root->setContextProperty ("newArtistsModel", NewArtistsModel_);
-		root->setContextProperty ("newTracksModel", NewTracksModel_);
-		root->setContextProperty ("topArtistsModel", TopArtistsModel_);
-		root->setContextProperty ("topTracksModel", TopTracksModel_);
-		root->setContextProperty ("artistsLabelText", tr ("Hyped artists"));
-		root->setContextProperty ("tracksLabelText", tr ("Hyped tracks"));
-		root->setContextProperty ("newsText", tr ("Show novelties"));
-		root->setContextProperty ("topsText", tr ("Show tops"));
-		root->setContextProperty ("colorProxy", new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
+		auto objVar = &QVariant::fromValue<QObject*>;
+		HypesView_->rootContext ()->setContextProperties ({
+					{ QStringLiteral ("newArtistsModel"), objVar (NewArtistsModel_) },
+					{ QStringLiteral ("newTracksModel"), objVar (NewTracksModel_) },
+					{ QStringLiteral ("topArtistsModel"), objVar (TopArtistsModel_) },
+					{ QStringLiteral ("topTracksModel"), objVar (TopTracksModel_) },
+					{ QStringLiteral ("artistsLabelText"), tr ("Hyped artists") },
+					{ QStringLiteral ("tracksLabelText"), tr ("Hyped tracks") },
+					{ QStringLiteral ("newsText"), tr ("Show novelties") },
+					{ QStringLiteral ("topsText"), tr ("Show tops") },
+					{ QStringLiteral ("colorProxy"), objVar (new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this)) },
+				});
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			HypesView_->engine ()->addImportPath (cand);
 
 		HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,
-				SIGNAL (activated (int)),
+				&QComboBox::activated,
 				this,
-				SLOT (request ()));
+				&HypesWidget::Request);
 
 		connect (HypesView_->rootObject (),
 				SIGNAL (linkActivated (QString)),
@@ -131,7 +134,7 @@ namespace LC::LMP
 			{
 				const int idx = Providers_.size () - 1;
 				Ui_.InfoProvider_->setCurrentIndex (idx);
-				request ();
+				Request ();
 				lastFound = true;
 			}
 		}
@@ -142,8 +145,8 @@ namespace LC::LMP
 
 	namespace
 	{
-		template<Media::IHypesProvider::HypeType Type, auto Handler, typename C>
-		void TryHype (C *ctx, Media::IHypesProvider *prov)
+		template<Media::IHypesProvider::HypeType Type, auto Handler>
+		void TryHype (HypesWidget *ctx, Media::IHypesProvider *prov)
 		{
 			if (!prov->SupportsHype (Type))
 				return;
@@ -157,7 +160,7 @@ namespace LC::LMP
 		}
 	}
 
-	void HypesWidget::request ()
+	void HypesWidget::Request ()
 	{
 		NewArtistsModel_->SetItems ({});
 		TopArtistsModel_->SetItems ({});
