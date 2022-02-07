@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QWebPage>
-#include <interfaces/core/icoreproxy.h>
 #include "messageinfo.h"
 
 namespace LC
@@ -26,12 +25,9 @@ namespace Snails
 
 	class MailWebPage : public QWebPage
 	{
-		Q_OBJECT
-
-		const ICoreProxy_ptr Proxy_;
 		MessagePageContext Ctx_;
 	public:
-		MailWebPage (const ICoreProxy_ptr&, QObject* = nullptr);
+		explicit MailWebPage (QObject* = nullptr);
 
 		void SetMessageContext (const MessagePageContext&);
 	protected:

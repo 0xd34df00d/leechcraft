@@ -11,6 +11,7 @@
 #include <QtDebug>
 #include <QUrlQuery>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "mailwebpagenam.h"
 
@@ -18,9 +19,8 @@ namespace LC
 {
 namespace Snails
 {
-	MailWebPage::MailWebPage (const ICoreProxy_ptr& proxy, QObject *parent)
+	MailWebPage::MailWebPage (QObject *parent)
 	: QWebPage { parent }
-	, Proxy_ { proxy }
 	{
 		setNetworkAccessManager (new MailWebPageNAM { [this] { return Ctx_; }, this });
 	}
@@ -35,7 +35,7 @@ namespace Snails
 		if (type == NavigationTypeLinkClicked)
 		{
 			const auto& e = Util::MakeEntity (req.url (), {}, FromUserInitiated);
-			Proxy_->GetEntityManager ()->HandleEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
 		return false;
