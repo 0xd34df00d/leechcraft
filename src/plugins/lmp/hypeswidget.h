@@ -22,9 +22,7 @@ namespace LC::Util
 	class RoledItemsModel;
 }
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class HypesWidget : public QWidget
 	{
@@ -44,7 +42,7 @@ namespace LMP
 
 		QList<QObject*> Providers_;
 	public:
-		HypesWidget (QWidget* = 0);
+		explicit HypesWidget (QWidget* = nullptr);
 
 		void InitializeProviders ();
 	private:
@@ -57,5 +55,4 @@ namespace LMP
 		void artistPreviewRequested (const QString&);
 		void trackPreviewRequested (const QString&, const QString&);
 	};
-}
 }

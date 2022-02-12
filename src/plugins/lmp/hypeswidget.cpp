@@ -57,12 +57,12 @@ namespace LC::LMP
 	}
 
 	HypesWidget::HypesWidget (QWidget *parent)
-	: QWidget (parent)
-	, HypesView_ (new QQuickWidget)
-	, NewArtistsModel_ (MakeSimilarModel (this))
-	, TopArtistsModel_ (MakeSimilarModel (this))
-	, NewTracksModel_ (MakeTracksModel (this))
-	, TopTracksModel_ (MakeTracksModel (this))
+	: QWidget { parent }
+	, HypesView_ { new QQuickWidget }
+	, NewArtistsModel_ { MakeSimilarModel (this) }
+	, TopArtistsModel_ { MakeSimilarModel (this) }
+	, NewTracksModel_ { MakeTracksModel (this) }
+	, TopTracksModel_ { MakeTracksModel (this) }
 	{
 		Ui_.setupUi (this);
 		layout ()->addWidget (HypesView_);
