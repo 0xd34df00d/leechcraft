@@ -15,6 +15,7 @@
 #include <QFileDialog>
 #include <QToolButton>
 #include <QMessageBox>
+#include <QMimeDatabase>
 #include <QShortcut>
 #include <QInputDialog>
 #include <QLabel>
@@ -285,13 +286,6 @@ namespace Snails
 		TabToolbar_->addAction (msgFwd);
 		registerMailAction (msgFwd);
 
-		MsgAttachments_ = new QMenu (tr ("Attachments"));
-		MsgAttachmentsButton_ = new QToolButton;
-		MsgAttachmentsButton_->setProperty ("ActionIcon", "mail-attachment");
-		MsgAttachmentsButton_->setMenu (MsgAttachments_);
-		MsgAttachmentsButton_->setPopupMode (QToolButton::InstantPopup);
-		TabToolbar_->addWidget (MsgAttachmentsButton_);
-
 		TabToolbar_->addSeparator ();
 
 		MsgCopy_ = new QMenu (tr ("Copy messages"));
@@ -527,21 +521,46 @@ namespace Snails
 		addField (tr ("Blind copy"), FormatAddresses (msgInfo.Addresses_ [AddressType::Bcc]));
 		addField (tr ("Date"), msgInfo.Date_.toString ());
 
-		MailWebPage_->SetMessageContext ({ CurrAcc_.get (), msgInfo });
-		Ui_.MailView_->setHtml (ToHtml (bodies, HtmlViewAllowed_));
-
-		MsgAttachments_->clear ();
-		MsgAttachmentsButton_->setEnabled (!msgInfo.Attachments_.isEmpty ());
-
 		const auto& msgId = msgInfo.FolderId_;
 		const auto& folder = msgInfo.Folder_;
-		for (const auto& att : msgInfo.Attachments_)
+		auto addAttachment = [this, msgId, folder] (auto addable, const AttDescr& att)
 		{
-			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
-			MsgAttachments_->addAction (name,
+			auto icon = QIcon::fromTheme (att.GetType () + "-" + att.GetSubType ());
+			if (icon.isNull ())
+				icon = QIcon::fromTheme (QMimeDatabase {}.mimeTypeForFile (att.GetName (), QMimeDatabase::MatchExtension).iconName ());
+			addable->addAction (icon,
+					att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")",
 					this,
-					[this, msgId, folder, name = att.GetName ()] { HandleAttachment (msgId, folder, name); });
+					[=, name = att.GetName ()] { HandleAttachment (msgId, folder, name); });
+		};
+
+		if (!msgInfo.Attachments_.isEmpty ())
+		{
+			auto attsBar = new QToolBar;
+			attsBar->setContentsMargins (0, 0, 0, 0);
+			attsBar->setToolButtonStyle (Qt::ToolButtonTextBesideIcon);
+			Ui_.MailInfoLayout_->addRow (attsBar);
+
+			const auto totalAtts = msgInfo.Attachments_.size ();
+			const auto attsDisplayThreshold = 5;
+			for (int i = 0; i < std::min (attsDisplayThreshold, totalAtts); ++i)
+				addAttachment (attsBar, msgInfo.Attachments_.at (i));
+
+			if (totalAtts > attsDisplayThreshold)
+			{
+				const auto attsButton = new QToolButton;
+				const auto attsMenu = new QMenu { tr ("%1 more...").arg (totalAtts - attsDisplayThreshold), attsButton };
+				attsButton->setProperty ("ActionIcon", "mail-attachment");
+				attsButton->setMenu (attsMenu);
+				attsButton->setPopupMode (QToolButton::InstantPopup);
+
+				for (int i = attsDisplayThreshold; i < totalAtts; ++i)
+					addAttachment (attsMenu, msgInfo.Attachments_.at (i));
+			}
 		}
+
+		MailWebPage_->SetMessageContext ({ CurrAcc_.get (), msgInfo });
+		Ui_.MailView_->setHtml (ToHtml (bodies, HtmlViewAllowed_));
 	}
 
 	void MailTab::ClearMessage ()

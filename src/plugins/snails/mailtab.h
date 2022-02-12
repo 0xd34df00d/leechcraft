@@ -62,9 +62,6 @@ namespace Snails
 		QMenu *MsgCopy_;
 		QMenu *MsgMove_;
 
-		QMenu *MsgAttachments_;
-		QToolButton *MsgAttachmentsButton_;
-
 		TabClassInfo TabClass_;
 		QObject *PMT_;
 
