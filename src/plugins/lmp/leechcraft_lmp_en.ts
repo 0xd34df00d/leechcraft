@@ -415,32 +415,32 @@
 <context>
     <name>LC::LMP::CollectionStatsDialog</name>
     <message>
-        <location filename="collectionstatsdialog.cpp" line="55"/>
+        <location filename="collectionstatsdialog.cpp" line="61"/>
         <source>Artists in collection:</source>
         <translation>Artists in collection:</translation>
     </message>
     <message>
-        <location filename="collectionstatsdialog.cpp" line="77"/>
+        <location filename="collectionstatsdialog.cpp" line="83"/>
         <source>Albums in collection:</source>
         <translation>Albums in collection:</translation>
     </message>
     <message>
-        <location filename="collectionstatsdialog.cpp" line="78"/>
+        <location filename="collectionstatsdialog.cpp" line="84"/>
         <source>Tracks in collection:</source>
         <translation>Tracks in collection:</translation>
     </message>
     <message>
-        <location filename="collectionstatsdialog.cpp" line="82"/>
+        <location filename="collectionstatsdialog.cpp" line="88"/>
         <source>Average tracks per album:</source>
         <translation>Average tracks per album:</translation>
     </message>
     <message>
-        <location filename="collectionstatsdialog.cpp" line="89"/>
+        <location filename="collectionstatsdialog.cpp" line="96"/>
         <source>Top 10 album years:</source>
         <translation>Top 10 album years:</translation>
     </message>
     <message>
-        <location filename="collectionstatsdialog.cpp" line="92"/>
+        <location filename="collectionstatsdialog.cpp" line="100"/>
         <source>Top 5 genres:</source>
         <translation>Top 5 genres:</translation>
     </message>
@@ -448,7 +448,7 @@
 <context>
     <name>LC::LMP::CollectionWidget</name>
     <message numerus="yes">
-        <location filename="collectionwidget.cpp" line="199"/>
+        <location filename="collectionwidget.cpp" line="202"/>
         <source>Are you sure you want to erase %n track(s)? This action cannot be undone.</source>
         <translation>
             <numerusform>Are you sure you want to erase %n track? This action cannot be undone.</numerusform>
@@ -456,42 +456,42 @@
         </translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="253"/>
+        <location filename="collectionwidget.cpp" line="256"/>
         <source>Add to playlist</source>
         <translation>Add to playlist</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="256"/>
+        <location filename="collectionwidget.cpp" line="259"/>
         <source>Replace playlist</source>
         <translation>Replace playlist</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="265"/>
+        <location filename="collectionwidget.cpp" line="268"/>
         <source>Show track properties</source>
         <translation>Show track properties</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="272"/>
+        <location filename="collectionwidget.cpp" line="275"/>
         <source>Show album art</source>
         <translation>Show album art</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="275"/>
+        <location filename="collectionwidget.cpp" line="278"/>
         <source>Album art manager...</source>
         <translation>Album art manager...</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="278"/>
+        <location filename="collectionwidget.cpp" line="281"/>
         <source>Show in artist browser</source>
         <translation>Show in artist browser</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="284"/>
+        <location filename="collectionwidget.cpp" line="287"/>
         <source>Remove from collection...</source>
         <translation>Remove from collection...</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="287"/>
+        <location filename="collectionwidget.cpp" line="290"/>
         <source>Delete from disk...</source>
         <translation>Delete from disk...</translation>
     </message>
@@ -527,17 +527,17 @@
 <context>
     <name>LC::LMP::EffectsManager</name>
     <message>
-        <location filename="effectsmanager.cpp" line="50"/>
+        <location filename="effectsmanager.cpp" line="48"/>
         <source>Effect</source>
         <translation>Effect</translation>
     </message>
     <message>
-        <location filename="effectsmanager.cpp" line="183"/>
+        <location filename="effectsmanager.cpp" line="179"/>
         <source>Effects configuration</source>
         <translation>Effects configuration</translation>
     </message>
     <message>
-        <location filename="effectsmanager.cpp" line="184"/>
+        <location filename="effectsmanager.cpp" line="180"/>
         <source>Seems like %1 doesn&apos;t have any settings to configure.</source>
         <translation>Seems like %1 doesn&apos;t have any settings to configure.</translation>
     </message>
@@ -545,27 +545,27 @@
 <context>
     <name>LC::LMP::EventsWidget</name>
     <message>
-        <location filename="eventswidget.cpp" line="88"/>
+        <location filename="eventswidget.cpp" line="96"/>
         <source>Sure!</source>
         <translation>Sure!</translation>
     </message>
     <message>
-        <location filename="eventswidget.cpp" line="89"/>
+        <location filename="eventswidget.cpp" line="97"/>
         <source>Maybe</source>
         <translation>Maybe</translation>
     </message>
     <message>
-        <location filename="eventswidget.cpp" line="90"/>
+        <location filename="eventswidget.cpp" line="98"/>
         <source>Unattend</source>
         <translation>Unattend</translation>
     </message>
     <message>
-        <location filename="eventswidget.cpp" line="179"/>
+        <location filename="eventswidget.cpp" line="176"/>
         <source>Headliner: %1</source>
         <translation>Headliner: %1</translation>
     </message>
     <message>
-        <location filename="eventswidget.cpp" line="186"/>
+        <location filename="eventswidget.cpp" line="183"/>
         <source>Other artists: %1</source>
         <translation>Other artists: %1</translation>
     </message>
@@ -573,27 +573,27 @@
 <context>
     <name>LC::LMP::FSBrowserWidget</name>
     <message>
-        <location filename="fsbrowserwidget.cpp" line="37"/>
+        <location filename="fsbrowserwidget.cpp" line="35"/>
         <source>Add to playlist</source>
         <translation>Add to playlist</translation>
     </message>
     <message>
-        <location filename="fsbrowserwidget.cpp" line="51"/>
+        <location filename="fsbrowserwidget.cpp" line="27"/>
         <source>Show track properties</source>
         <translation>Show track properties</translation>
     </message>
     <message>
-        <location filename="fsbrowserwidget.cpp" line="101"/>
+        <location filename="fsbrowserwidget.cpp" line="104"/>
         <source>Add to collection...</source>
         <translation>Add to collection...</translation>
     </message>
     <message>
-        <location filename="fsbrowserwidget.cpp" line="109"/>
+        <location filename="fsbrowserwidget.cpp" line="117"/>
         <source>Remove from collection...</source>
         <translation>Remove from collection...</translation>
     </message>
     <message>
-        <location filename="fsbrowserwidget.cpp" line="117"/>
+        <location filename="fsbrowserwidget.cpp" line="130"/>
         <source>Already in collection</source>
         <translation>Already in collection</translation>
     </message>
@@ -601,33 +601,33 @@
 <context>
     <name>LC::LMP::HypesWidget</name>
     <message>
-        <location filename="hypeswidget.cpp" line="82"/>
+        <location filename="hypeswidget.cpp" line="84"/>
         <source>Hyped artists</source>
         <translation>Hyped artists</translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="83"/>
+        <location filename="hypeswidget.cpp" line="85"/>
         <source>Hyped tracks</source>
         <translation>Hyped tracks</translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="84"/>
+        <location filename="hypeswidget.cpp" line="86"/>
         <source>Show novelties</source>
         <translation>Show novelties</translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="85"/>
+        <location filename="hypeswidget.cpp" line="87"/>
         <source>Show tops</source>
         <translation>Show tops</translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="197"/>
+        <location filename="hypeswidget.cpp" line="196"/>
         <source>Growth: x%1</source>
         <comment>better use unicode multiplication sign here instead of &apos;x&apos;</comment>
         <translation>Growth: ×%1</translation>
     </message>
     <message numerus="yes">
-        <location filename="hypeswidget.cpp" line="200"/>
+        <location filename="hypeswidget.cpp" line="199"/>
         <source>%n listener(s)</source>
         <translation>
             <numerusform>%n listener</numerusform>
@@ -635,7 +635,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="hypeswidget.cpp" line="202"/>
+        <location filename="hypeswidget.cpp" line="201"/>
         <source>%n playback(s)</source>
         <translation>
             <numerusform>%n playback</numerusform>
@@ -643,7 +643,7 @@
         </translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="217"/>
+        <location filename="hypeswidget.cpp" line="216"/>
         <source>%1 is not &lt;em&gt;that&lt;/em&gt; mainstream to have a description.</source>
         <translation>%1 is not &lt;em&gt;that&lt;/em&gt; mainstream to have a description.</translation>
     </message>
@@ -669,7 +669,7 @@
 <context>
     <name>LC::LMP::LocalCollection</name>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="921"/>
+        <location filename="localcollection.cpp" line="926"/>
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n new artist</numerusform>
@@ -677,7 +677,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="922"/>
+        <location filename="localcollection.cpp" line="927"/>
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n new album</numerusform>
@@ -685,7 +685,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="923"/>
+        <location filename="localcollection.cpp" line="928"/>
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n new track</numerusform>
@@ -693,7 +693,7 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollection.cpp" line="924"/>
+        <location filename="localcollection.cpp" line="929"/>
         <source>Local collection updated: %1, %2, %3.</source>
         <translation>Local collection updated: %1, %2, %3.</translation>
     </message>
@@ -1749,12 +1749,12 @@
         <translation>Album art</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="174"/>
+        <location filename="util.cpp" line="169"/>
         <source>CD %1:</source>
         <translation>CD %1:</translation>
     </message>
     <message numerus="yes">
-        <location filename="util.cpp" line="233"/>
+        <location filename="util.cpp" line="228"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n day ago</numerusform>
@@ -1762,22 +1762,22 @@
         </translation>
     </message>
     <message>
-        <location filename="util.cpp" line="237"/>
+        <location filename="util.cpp" line="232"/>
         <source>yesterday</source>
         <translation>yesterday</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="239"/>
+        <location filename="util.cpp" line="234"/>
         <source>today</source>
         <translation>today</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="257"/>
+        <location filename="util.cpp" line="252"/>
         <source>Invalid directory</source>
         <translation>Invalid directory</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="258"/>
+        <location filename="util.cpp" line="253"/>
         <source>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</source>
         <translation>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</translation>
     </message>
@@ -2056,11 +2056,6 @@
         <translation>The following variables are allowed: &lt;em&gt;$artist&lt;/em&gt;, &lt;em&gt;$year&lt;/em&gt;, &lt;em&gt;$album&lt;/em&gt;, &lt;em&gt;$trackNumber&lt;/em&gt;, &lt;em&gt;$title&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
-        <source>Remember used data providers</source>
-        <translation>Remember used data providers</translation>
-    </message>
-    <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Take &apos;The&apos; into account when sorting</source>
         <translation>Take “The” into account when sorting</translation>
@@ -2187,73 +2182,73 @@
         <translation>Services</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Refresh radio stations on wake up</source>
         <translation>Refresh radio stations on wake up</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn&apos;t usually result in changing your IP.</source>
         <translation>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn&apos;t usually result in changing your IP.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Automatically refresh radios</source>
         <translation>Automatically refresh radios</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>Refresh interval:</source>
         <translation>Refresh interval:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="47"/>
         <source> h</source>
         <translation> h</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="48"/>
         <source>Effects</source>
         <translation>Effects</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Effects manager</source>
         <translation>Effects manager</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>Effect settings</source>
         <oldsource>Filter settings</oldsource>
         <translation>Effect settings</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Collection</source>
         <translation>Collection</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Root paths</source>
         <translation>Root paths</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Automatically calculate ReplayGain data for tracks in collection</source>
         <translation>Automatically calculate ReplayGain data for tracks in collection</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Plugin communication</source>
         <translation>Plugin communication</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Test only these extensions</source>
         <translation>Test only these extensions</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Extenstions list:</source>
         <translation>Extenstions list:</translation>
     </message>
