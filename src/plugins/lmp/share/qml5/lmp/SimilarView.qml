@@ -119,6 +119,7 @@ Rectangle {
 
                         MouseArea {
                             anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
 
                             onClicked: stdActions.openLink(artistPageURL)
                         }
