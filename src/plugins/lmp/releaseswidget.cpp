@@ -27,6 +27,7 @@
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/iinfo.h>
+#include "stdartistactionsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 
@@ -96,14 +97,7 @@ namespace LMP
 				this,
 				SLOT (request ()));
 
-		connect (ReleasesView_->rootObject (),
-				SIGNAL (linkActivated (QString)),
-				this,
-				SLOT (handleLink (QString)));
-		connect (ReleasesView_->rootObject (),
-				SIGNAL (albumPreviewRequested (int)),
-				this,
-				SLOT (previewAlbum (int)));
+		new StdArtistActionsManager { *ReleasesView_, this };
 	}
 
 	void ReleasesWidget::InitializeProviders ()
@@ -199,21 +193,6 @@ namespace LMP
 				};
 
 		XmlSettingsManager::Instance ().setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
-	}
-
-	void ReleasesWidget::previewAlbum (int index)
-	{
-		auto item = ReleasesModel_->item (index);
-		const auto& artist = item->data (ReleasesModel::Role::ArtistName).toString ();
-		for (const auto& track : TrackLists_.value (index))
-			emit previewRequested (track.Name_, artist, track.Length_);
-	}
-
-	void ReleasesWidget::handleLink (const QString& link)
-	{
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
-					QString (),
-					FromUserInitiated | OnlyHandle));
 	}
 }
 }

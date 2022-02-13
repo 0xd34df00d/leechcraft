@@ -48,12 +48,9 @@ namespace LC::LMP
 		struct DiscoItem;
 		using DiscoModel = Util::RoledItemsModel<DiscoItem>;
 		DiscoModel * const DiscoModel_;
-
-		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
 	public:
 		BioViewManager (QQuickWidget*, QObject* = nullptr);
 
-		void InitWithSource ();
 		void Request (Media::IArtistBioFetcher*, const QString&, const QStringList&);
 	private:
 		std::optional<int> FindAlbumItem (const QString&) const;
@@ -62,8 +59,6 @@ namespace LC::LMP
 		void QueryReleaseImage (Media::IAlbumArtProvider*, const Media::AlbumInfo&);
 		void SetAlbumImage (const QString&, const QUrl&) const;
 		void HandleDiscographyReady (QList<Media::ReleaseInfo>);
-	private slots:
-		void handleAlbumPreviewRequested (int);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
 	};

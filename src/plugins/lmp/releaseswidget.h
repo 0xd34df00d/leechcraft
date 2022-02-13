@@ -47,10 +47,6 @@ namespace LMP
 		void HandleRecentReleases (const QList<Media::AlbumRelease>&);
 	private slots:
 		void request ();
-		void previewAlbum (int);
-		void handleLink (const QString&);
-	signals:
-		void previewRequested (const QString&, const QString&, int);
 	};
 }
 }

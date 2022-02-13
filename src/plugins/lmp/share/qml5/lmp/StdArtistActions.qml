@@ -4,13 +4,11 @@ Row {
     id: rootRow
 
     signal bookmarkRequested()
-    signal previewRequested()
     signal browseInfo()
 
     spacing: 8
 
     property bool bookmarkVisible: true
-    property bool previewVisible: true
 
     BrowseButton {
         id: browseInfoImage
@@ -51,13 +49,5 @@ Row {
             border.width: 1
             border.color: "#888888"
         }
-    }
-
-    PreviewAudioButton {
-        id: previewAudio
-
-        visible: rootRow.previewVisible
-
-        onClicked: rootRow.previewRequested()
     }
 }

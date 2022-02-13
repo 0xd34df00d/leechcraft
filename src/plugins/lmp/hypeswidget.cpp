@@ -28,6 +28,7 @@
 #include <interfaces/iinfo.h>
 #include "util.h"
 #include "xmlsettingsmanager.h"
+#include "stdartistactionsmanager.h"
 #include "core.h"
 
 namespace LC::LMP
@@ -98,23 +99,7 @@ namespace LC::LMP
 				this,
 				&HypesWidget::Request);
 
-		connect (HypesView_->rootObject (),
-				SIGNAL (linkActivated (QString)),
-				this,
-				SLOT (handleLink (QString)));
-		connect (HypesView_->rootObject (),
-				SIGNAL (artistPreviewRequested (QString)),
-				this,
-				SIGNAL (artistPreviewRequested (QString)));
-		connect (HypesView_->rootObject (),
-				SIGNAL (trackPreviewRequested (QString, QString)),
-				this,
-				SIGNAL (trackPreviewRequested (QString, QString)));
-
-		connect (HypesView_->rootObject (),
-				SIGNAL (browseInfo (QString)),
-				&Core::Instance (),
-				SIGNAL (artistBrowseRequested (QString)));
+		new StdArtistActionsManager { *HypesView_, this };
 	}
 
 	void HypesWidget::InitializeProviders ()
@@ -230,12 +215,5 @@ namespace LC::LMP
 				TopTracksModel_;
 		model->SetItems (Util::MapAs<QVector> (infos,
 				[] (const Media::HypedTrackInfo& info) { return HypedTrack { info, GetStats (info).join ("; ") }; }));
-	}
-
-	void HypesWidget::handleLink (const QString& link)
-	{
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
-					QString (),
-					FromUserInitiated | OnlyHandle));
 	}
 }

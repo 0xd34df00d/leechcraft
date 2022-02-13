@@ -38,8 +38,6 @@ namespace BrainSlugz
 
 		QSet<int> Scheduled_;
 
-		QMap<int, QList<Media::ReleaseInfo>> Artist2Missings_;
-
 		const Collection::Artists_t AllArtists_;
 		const ILMPProxy_ptr Proxy_;
 		const QString DefaultAlbumIcon_;
@@ -73,8 +71,6 @@ namespace BrainSlugz
 		void selectAll ();
 		void selectNone ();
 		void setArtistScheduled (int, bool);
-
-		void previewRelease (int artistId, int releaseIdx);
 	};
 }
 }

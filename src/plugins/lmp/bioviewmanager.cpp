@@ -29,7 +29,6 @@
 #include "biopropproxy.h"
 #include "core.h"
 #include "util.h"
-#include "previewhandler.h"
 #include "stdartistactionsmanager.h"
 #include "localcollection.h"
 #include "literals.h"
@@ -69,16 +68,8 @@ namespace LC::LMP
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			View_->engine ()->addImportPath (cand);
-	}
 
-	void BioViewManager::InitWithSource ()
-	{
-		connect (View_->rootObject (),
-				SIGNAL (albumPreviewRequested (int)),
-				this,
-				SLOT (handleAlbumPreviewRequested (int)));
-
-		new StdArtistActionsManager (View_, this);
+		new StdArtistActionsManager { *View_, this };
 	}
 
 	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist, const QStringList& releases)
@@ -205,19 +196,8 @@ namespace LC::LMP
 					.TrackListToolTip_ = MakeTrackListTooltip (release.TrackInfos_),
 				});
 
-			Album2Tracks_ << Util::Concat (release.TrackInfos_);
 			QueryReleaseImage (aaProv, { CurrentArtist_, release.Name_ });
 		}
 		DiscoModel_->SetItems (DiscoModel_->GetItems () + std::move (newItems));
-	}
-
-	void BioViewManager::handleAlbumPreviewRequested (int index)
-	{
-		QList<QPair<QString, int>> tracks;
-		for (const auto& track : Album2Tracks_.at (index))
-			tracks.push_back ({ track.Name_, track.Length_ });
-
-		auto ph = Core::Instance ().GetPreviewHandler ();
-		ph->previewAlbum (CurrentArtist_, DiscoModel_->GetItems () [index].Name_, tracks);
 	}
 }

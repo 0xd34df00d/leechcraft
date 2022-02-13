@@ -37,9 +37,6 @@ namespace LMP
 		virtual const ILMPUtilProxy* GetUtilProxy () const = 0;
 
 		virtual const ILMPGuiProxy* GetGuiProxy () const = 0;
-
-		virtual void PreviewRelease (const QString& artist, const QString& release,
-				const QList<QPair<QString, int>>& tracks) const = 0;
 	};
 
 	using ILMPProxy_ptr = ILMPProxy*;

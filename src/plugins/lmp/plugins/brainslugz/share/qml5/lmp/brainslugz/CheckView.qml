@@ -242,13 +242,6 @@ Rectangle {
                         color: colorProxy.color_TextBox_Aux2TextColor
                         horizontalAlignment: Text.AlignHCenter
                     }
-
-                    PreviewAudioButton {
-                        id: previewAudio
-                        anchors.top: parent.top
-                        anchors.right: parent.right
-                        onClicked: artistsModel.previewRelease(artistId, index)
-                    }
                 }
             }
         }

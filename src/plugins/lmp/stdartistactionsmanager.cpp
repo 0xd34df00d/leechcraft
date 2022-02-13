@@ -7,40 +7,28 @@
  **********************************************************************/
 
 #include "stdartistactionsmanager.h"
+#include <QQmlContext>
+#include <QQmlEngine>
 #include <QQuickWidget>
 #include <QQuickItem>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
-#include "previewhandler.h"
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	StdArtistActionsManager::StdArtistActionsManager (QQuickWidget *view, QObject* parent)
+	StdArtistActionsManager::StdArtistActionsManager (QQuickWidget& view, QObject* parent)
 	: QObject { parent }
 	{
-		connect (view->rootObject (),
-				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),
-				this,
-				SLOT (handleBookmark (QString, QString, QString)));
-		connect (view->rootObject (),
-				SIGNAL (previewRequested (QString)),
-				Core::Instance ().GetPreviewHandler (),
-				SLOT (previewArtist (QString)));
-		connect (view->rootObject (),
-				SIGNAL (linkActivated (QString)),
-				this,
-				SLOT (handleLink (QString)));
-		connect (view->rootObject (),
-				SIGNAL (browseInfo (QString)),
-				&Core::Instance (),
-				SIGNAL (artistBrowseRequested (QString)));
+		if (const auto ctx = view.engine ()->rootContext ();
+			ctx->contextProperty ("stdActions").isNull ())
+			ctx->setContextProperty ("stdActions", this);
+		else
+			deleteLater ();
 	}
 
-	void StdArtistActionsManager::handleBookmark (const QString& name, const QString& page, const QString& tags)
+	void StdArtistActionsManager::bookmarkArtist (const QString& name, const QString& page, const QString& tags)
 	{
 		auto e = Util::MakeEntity (tr ("Check out \"%1\"").arg (name),
 				{},
@@ -51,11 +39,15 @@ namespace LMP
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void StdArtistActionsManager::handleLink (const QString& link)
+	void StdArtistActionsManager::browseArtistInfo (const QString& name)
+	{
+		emit Core::Instance ().artistBrowseRequested (name);
+	}
+
+	void StdArtistActionsManager::openLink (const QString& link)
 	{
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
 					{},
 					FromUserInitiated | OnlyHandle));
 	}
-}
 }

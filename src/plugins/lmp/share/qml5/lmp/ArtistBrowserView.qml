@@ -4,13 +4,6 @@ import "."
 Rectangle {
     id: rootRect
 
-    signal linkActivated(string id)
-    signal albumPreviewRequested(int idx)
-
-    signal bookmarkArtistRequested(string id, string page, string tags)
-    signal previewRequested(string artist)
-    signal browseInfo(string artist)
-
     Item {
         id: bioViewContainer
 
@@ -21,8 +14,6 @@ Rectangle {
 
         BioView {
             anchors.fill: parent
-            onLinkActivated: rootRect.linkActivated(id)
-            onAlbumPreviewRequested: rootRect.albumPreviewRequested(idx)
         }
     }
 
@@ -34,9 +25,6 @@ Rectangle {
 
         SimilarView {
             anchors.fill: parent
-            onBookmarkArtistRequested: rootRect.bookmarkArtistRequested(id, page, tags)
-            onPreviewRequested: rootRect.previewRequested(artist)
-            onBrowseInfo: rootRect.browseInfo(artist)
         }
     }
 }

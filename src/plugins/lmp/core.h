@@ -29,7 +29,6 @@ namespace LMP
 	class SyncUnmountableManager;
 	class CloudUploadManager;
 	class Player;
-	class PreviewHandler;
 	class ProgressManager;
 	class RadioManager;
 	class CollectionsManager;
@@ -81,7 +80,6 @@ namespace LMP
 		RadioManager* GetRadioManager () const;
 
 		Player* GetPlayer () const;
-		PreviewHandler* GetPreviewHandler () const;
 
 		std::optional<MediaInfo> TryURLResolve (const QUrl&) const;
 	public slots:

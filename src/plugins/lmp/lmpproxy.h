@@ -18,7 +18,6 @@ namespace LC
 namespace LMP
 {
 	class PlayerTab;
-	class PreviewHandler;
 
 	class LMPUtilProxy : public QObject
 					   , public ILMPUtilProxy
@@ -52,21 +51,17 @@ namespace LMP
 
 		ILocalCollection * const LocalCollection_;
 		ITagResolver * const TagResolver_;
-		PreviewHandler * const PreviewHandler_;
 
 		LMPUtilProxy UtilProxy_;
 		LMPGuiProxy GuiProxy_;
 	public:
-		LMPProxy (ILocalCollection*, ITagResolver*, PreviewHandler*);
+		LMPProxy (ILocalCollection*, ITagResolver*);
 
 		ILocalCollection* GetLocalCollection () const;
 		ITagResolver* GetTagResolver () const;
 		const ILMPUtilProxy* GetUtilProxy () const;
 		const ILMPGuiProxy* GetGuiProxy () const;
 		LMPGuiProxy* GetGuiProxy ();
-
-		void PreviewRelease (const QString& artist, const QString& release,
-				const QList<QPair<QString, int>>& tracks) const;
 	};
 }
 }

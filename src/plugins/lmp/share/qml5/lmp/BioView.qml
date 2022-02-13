@@ -12,12 +12,6 @@ Rectangle {
 
     color: colorProxy.color_TextView_TopColor
 
-    signal bookmarkArtistRequested(string id, string page, string tags)
-    signal previewRequested(string artist)
-    signal linkActivated(string id)
-    signal browseInfo(string artist)
-    signal albumPreviewRequested(int idx)
-
     Image {
         id: fullSizeArtistImg
         state: "hidden"
@@ -244,17 +238,6 @@ Rectangle {
                             }
                             onExited: trackListContainer.state = ""
                         }
-
-                        PreviewAudioButton {
-                            id: previewAudio
-
-                            anchors.top: parent.top
-                            anchors.topMargin: 2
-                            anchors.right: parent.right
-                            anchors.rightMargin: 2
-
-                            onClicked: rootRect.albumPreviewRequested(index)
-                        }
                     }
                 }
             }
@@ -289,7 +272,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onClicked: rootRect.linkActivated(artistPageURL)
+                    onClicked: stdActions.openLink(artistPageURL)
                 }
             }
 
@@ -301,9 +284,8 @@ Rectangle {
 
                 visible: artistName.length > 0
 
-                onBrowseInfo: rootRect.browseInfo(artistName)
-                onBookmarkRequested: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
-                onPreviewRequested: rootRect.previewRequested(artistName)
+                onBrowseInfo: stdActions.browseArtistInfo(artistName)
+                onBookmarkRequested: stdActions.bookmarkArtist(artistName, artistPageURL, artistTags)
             }
 
             Text {
@@ -360,7 +342,7 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
 
-                            onLinkActivated: rootRect.linkActivated(link)
+                            onLinkActivated: stdActions.openLink(link)
                         }
                     }
                 }

@@ -42,7 +42,6 @@
 #include "xmlsettingsmanager.h"
 #include "aalabeleventfilter.h"
 #include "nowplayingpixmaphandler.h"
-#include "previewhandler.h"
 #include "engine/sourceobject.h"
 #include "engine/output.h"
 #include "volumeslider.h"
@@ -60,7 +59,6 @@ namespace LMP
 	, Plugin_ (plugin)
 	, TC_ (info)
 	, Player_ (player)
-	, PreviewHandler_ (Core::Instance ().GetPreviewHandler ())
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
 	, TrayMenu_ (new QMenu ("LMP", this))
@@ -140,19 +138,6 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)),
 				NPPixmapHandler_,
 				SLOT (handleGotArtistImage (QString, QUrl)));
-
-		connect (Ui_.HypesWidget_,
-				SIGNAL (artistPreviewRequested (QString)),
-				PreviewHandler_,
-				SLOT (previewArtist (QString)));
-		connect (Ui_.HypesWidget_,
-				SIGNAL (trackPreviewRequested (QString, QString)),
-				PreviewHandler_,
-				SLOT (previewTrack (QString, QString)));
-		connect (Ui_.ReleasesWidget_,
-				SIGNAL (previewRequested (QString, QString, int)),
-				PreviewHandler_,
-				SLOT (previewTrack (QString, QString, int)));
 
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);

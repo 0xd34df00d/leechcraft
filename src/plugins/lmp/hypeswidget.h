@@ -49,10 +49,5 @@ namespace LC::LMP
 		void HandleArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
 		void HandleTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 		void Request ();
-
-		Q_INVOKABLE void handleLink (const QString&);
-	signals:
-		void artistPreviewRequested (const QString&);
-		void trackPreviewRequested (const QString&, const QString&);
 	};
 }

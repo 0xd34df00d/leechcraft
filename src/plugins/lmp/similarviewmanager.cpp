@@ -39,11 +39,8 @@ namespace LMP
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
-	}
 
-	void SimilarViewManager::InitWithSource ()
-	{
-		new StdArtistActionsManager (View_, this);
+		new StdArtistActionsManager { *View_, this };
 	}
 
 	void SimilarViewManager::DefaultRequest (const QString& artist)

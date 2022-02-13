@@ -11,7 +11,6 @@
 #include "util.h"
 #include "localcollection.h"
 #include "localfileresolver.h"
-#include "previewhandler.h"
 #include "playertab.h"
 #include "util.h"
 
@@ -45,10 +44,9 @@ namespace LMP
 		PlayerTab_->GetToolBar ()->addAction (action);
 	}
 
-	LMPProxy::LMPProxy (ILocalCollection *lc, ITagResolver *tr, PreviewHandler *ph)
+	LMPProxy::LMPProxy (ILocalCollection *lc, ITagResolver *tr)
 	: LocalCollection_ { lc }
 	, TagResolver_ { tr }
-	, PreviewHandler_ { ph }
 	{
 	}
 
@@ -75,12 +73,6 @@ namespace LMP
 	LMPGuiProxy* LMPProxy::GetGuiProxy ()
 	{
 		return &GuiProxy_;
-	}
-
-	void LMPProxy::PreviewRelease (const QString& artist,
-			const QString& release, const QList<QPair<QString, int>>& tracks) const
-	{
-		PreviewHandler_->previewAlbum (artist, release, tracks);
 	}
 }
 }

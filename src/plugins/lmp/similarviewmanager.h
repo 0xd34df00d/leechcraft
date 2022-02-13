@@ -28,9 +28,7 @@ namespace LMP
 		QQuickWidget * const View_;
 		SimilarModel * const Model_;
 	public:
-		SimilarViewManager (QQuickWidget*, QObject* = 0);
-
-		void InitWithSource ();
+		explicit SimilarViewManager (QQuickWidget*, QObject* = nullptr);
 
 		void DefaultRequest (const QString&);
 		void SetInfos (Media::SimilarityInfos_t);

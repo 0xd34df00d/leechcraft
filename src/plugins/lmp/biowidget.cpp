@@ -41,7 +41,6 @@ namespace LC::LMP
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
 				Lits::LmpQmlSubdir,
 				QStringLiteral ("BioView.qml")));
-		Manager_->InitWithSource ();
 
 		const auto& lastProv = XmlSettingsManager::Instance ()
 				.Property ("LastUsedBioProvider", QString ()).toString ();

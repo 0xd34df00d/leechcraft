@@ -43,9 +43,6 @@ namespace LC::LMP
 				Lits::LmpQmlSubdir,
 				QStringLiteral ("ArtistBrowserView.qml")));
 
-		BioMgr_->InitWithSource ();
-		SimilarMgr_->InitWithSource ();
-
 		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.ArtistNameEdit_);
 
 		connect (Ui_.ArtistNameEdit_,

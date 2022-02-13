@@ -25,11 +25,10 @@ namespace LC
 namespace LMP
 {
 	RecommendationsWidget::RecommendationsWidget (QWidget *parent)
-	: QWidget (parent)
-	, RecView_ (new SimilarView ())
+	: QWidget { parent }
+	, RecView_ { new SimilarView }
 	{
 		Ui_.setupUi (this);
-
 		layout ()->addWidget (RecView_);
 	}
 

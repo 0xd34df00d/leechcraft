@@ -20,14 +20,12 @@ namespace LMP
 
 	class RecommendationsWidget : public QWidget
 	{
-		Q_OBJECT
-
 		Ui::RecommendationsWidget Ui_;
-		SimilarView * const RecView_;
+		SimilarView *RecView_ = nullptr;
 
 		Media::SimilarityInfos_t Similars_;
 	public:
-		RecommendationsWidget (QWidget* = nullptr);
+		explicit RecommendationsWidget (QWidget* = nullptr);
 
 		void InitializeProviders ();
 	private:

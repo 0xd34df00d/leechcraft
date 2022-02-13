@@ -12,18 +12,17 @@
 
 class QQuickWidget;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class StdArtistActionsManager : public QObject
 	{
 		Q_OBJECT
 	public:
-		StdArtistActionsManager (QQuickWidget *view, QObject *parent = 0);
-	private slots:
-		void handleBookmark (const QString&, const QString&, const QString&);
-		void handleLink (const QString&);
+		explicit StdArtistActionsManager (QQuickWidget& view, QObject *parent = nullptr);
+
+		Q_INVOKABLE void bookmarkArtist (const QString&, const QString&, const QString&);
+		Q_INVOKABLE void browseArtistInfo (const QString&);
+
+		Q_INVOKABLE void openLink (const QString&);
 	};
-}
 }

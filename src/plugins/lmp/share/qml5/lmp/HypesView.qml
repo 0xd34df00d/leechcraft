@@ -17,12 +17,6 @@ Rectangle {
         }
     }
 
-    signal linkActivated(string id)
-    signal artistPreviewRequested(string artist)
-    signal trackPreviewRequested(string track, string artist)
-
-    signal browseInfo(string artist)
-
     TextButton {
         id: modeButton
         anchors.top: parent.top
@@ -124,10 +118,6 @@ Rectangle {
                 model: topArtistsModel
 
                 anchors.fill: parent
-
-                onLinkActivated: rootRect.linkActivated(id)
-                onPreviewRequested: rootRect.artistPreviewRequested(artist)
-                onBrowseInfo: rootRect.browseInfo(artist)
             }
         }
     }
@@ -283,37 +273,15 @@ Rectangle {
                                 anchors.topMargin: 2
                                 anchors.left: trackImageThumb.right
                                 anchors.leftMargin: 5
-                                anchors.right: browseInfoImage.left
+                                anchors.right: parent.right
                                 anchors.rightMargin: 8
 
                                 elide: Text.ElideRight
 
                                 MouseArea {
                                     anchors.fill: parent
-                                    onClicked: rootRect.linkActivated(trackURL)
+                                    onClicked: stdActions.openLink(trackURL)
                                 }
-                            }
-
-                            BrowseButton {
-                                id: browseInfoImage
-
-                                anchors.top: parent.top
-                                anchors.topMargin: 2
-                                anchors.right: previewAudio.left
-                                anchors.rightMargin: 5
-
-                                onClicked: rootRect.browseInfo(artistName)
-                            }
-
-                            PreviewAudioButton {
-                                id: previewAudio
-
-                                anchors.top: parent.top
-                                anchors.topMargin: 2
-                                anchors.right: parent.right
-                                anchors.rightMargin: 5
-
-                                onClicked: rootRect.trackPreviewRequested(trackName, artistName)
                             }
 
                             Text {
@@ -330,8 +298,18 @@ Rectangle {
 
                                 MouseArea {
                                     anchors.fill: parent
-                                    onClicked: rootRect.linkActivated(artistURL)
+                                    onClicked: stdActions.openLink(artistURL)
                                 }
+                            }
+
+                            BrowseButton {
+                                id: browseInfoImage
+
+                                anchors.verticalCenter: trackArtistNameLabel.verticalCenter
+                                anchors.left: trackArtistNameLabel.right
+                                anchors.leftMargin: 5
+
+                                onClicked: stdActions.browseArtistInfo(artistName)
                             }
 
                             Text {

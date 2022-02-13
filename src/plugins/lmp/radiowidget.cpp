@@ -19,7 +19,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "player.h"
-#include "previewhandler.h"
 #include "radiomanager.h"
 #include "engine/sourceobject.h"
 #include "radiocustomdialog.h"

@@ -30,7 +30,6 @@ namespace LMP
 	struct MediaInfo;
 	class Player;
 	class NowPlayingPixmapHandler;
-	class PreviewHandler;
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
@@ -45,7 +44,6 @@ namespace LMP
 		const TabClassInfo TC_;
 
 		Player *Player_;
-		PreviewHandler *PreviewHandler_;
 
 		QToolBar *TabToolbar_;
 

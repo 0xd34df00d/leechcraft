@@ -30,8 +30,6 @@ namespace LMP
 				engine ());
 
 		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "SimilarView.qml"));
-		Manager_->InitWithSource ();
-
 		setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 	}
 

@@ -5,9 +5,6 @@ import "."
 Rectangle {
     id: rootRect
 
-    signal linkActivated(string id)
-    signal albumPreviewRequested(int idx)
-
     gradient: Gradient {
         GradientStop {
             position: 0
@@ -119,19 +116,6 @@ Rectangle {
                     onExited: trackListContainer.state = ""
                 }
 
-                PreviewAudioButton {
-                    id: previewAudio
-
-                    visible: trackList.length > 0
-
-                    anchors.top: parent.top
-                    anchors.topMargin: 2
-                    anchors.right: parent.right
-                    anchors.rightMargin: 5
-
-                    onClicked: rootRect.albumPreviewRequested(index)
-                }
-
                 Column {
                     id: column1
                     anchors.fill: parent
@@ -175,7 +159,7 @@ Rectangle {
 
                         MouseArea {
                             anchors.fill: parent
-                            onClicked: rootRect.linkActivated(releaseURL)
+                            onClicked: stdActions.openLink(releaseURL)
                         }
                     }
 

@@ -21,7 +21,6 @@
 #include "interfaces/lmp/icloudstorageplugin.h"
 #include "lmpproxy.h"
 #include "player.h"
-#include "previewhandler.h"
 #include "progressmanager.h"
 #include "radiomanager.h"
 #include "rganalysismanager.h"
@@ -53,9 +52,8 @@ namespace LMP
 		RadioManager RadioManager_;
 
 		Player Player_;
-		PreviewHandler PreviewMgr_ { &Player_ };
 
-		LMPProxy LmpProxy_ { &Collection_, &Resolver_, &PreviewMgr_ };
+		LMPProxy LmpProxy_ { &Collection_, &Resolver_ };
 
 		RgAnalysisManager RgMgr_ { &Collection_ };
 
@@ -89,7 +87,6 @@ namespace LMP
 
 	void Core::InitWithOtherPlugins ()
 	{
-		M_->PreviewMgr_.InitWithPlugins ();
 		M_->Player_.InitWithOtherPlugins ();
 		M_->RadioManager_.InitProviders ();
 	}
@@ -201,11 +198,6 @@ namespace LMP
 	Player* Core::GetPlayer () const
 	{
 		return &M_->Player_;
-	}
-
-	PreviewHandler* Core::GetPreviewHandler () const
-	{
-		return &M_->PreviewMgr_;
 	}
 
 	std::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const

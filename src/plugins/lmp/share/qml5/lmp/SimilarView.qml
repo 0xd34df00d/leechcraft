@@ -18,11 +18,6 @@ Rectangle {
         }
     }
 
-    signal bookmarkArtistRequested(string id, string page, string tags)
-    signal previewRequested(string artist)
-    signal linkActivated(string id)
-    signal browseInfo(string artist)
-
     property alias model: similarView.model
 
     Image {
@@ -125,7 +120,7 @@ Rectangle {
                         MouseArea {
                             anchors.fill: parent
 
-                            onClicked: rootRect.linkActivated(artistPageURL)
+                            onClicked: stdActions.openLink(artistPageURL)
                         }
                     }
 
@@ -159,12 +154,10 @@ Rectangle {
                         anchors.left: artistNameLabel.right
                         anchors.leftMargin: 8
 
-                        previewVisible: !artistInCollection
                         bookmarkVisible: !artistInCollection
 
-                        onBrowseInfo: rootRect.browseInfo(artistName)
-                        onBookmarkRequested: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
-                        onPreviewRequested: rootRect.previewRequested(artistName)
+                        onBrowseInfo: stdActions.browseArtistInfo(artistName)
+                        onBookmarkRequested: stdActions.bookmarkArtist(artistName, artistPageURL, artistTags)
                     }
 
                     Text {
@@ -206,7 +199,7 @@ Rectangle {
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 1
 
-                        onLinkActivated: rootRect.linkActivated(link)
+                        onLinkActivated: stdActions.openLink(link)
                     }
 
                     Rectangle {
