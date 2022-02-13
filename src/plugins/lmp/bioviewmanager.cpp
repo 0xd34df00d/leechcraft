@@ -64,7 +64,7 @@ namespace LC::LMP
 		View_->rootContext ()->setContextProperty (QStringLiteral ("artistDiscoModel"), DiscoModel_);
 		View_->rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
-		View_->engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (GetProxyHolder ()));
+		View_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			View_->engine ()->addImportPath (cand);

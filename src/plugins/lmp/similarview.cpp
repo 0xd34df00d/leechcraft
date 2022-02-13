@@ -13,6 +13,7 @@
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
 #include "similarviewmanager.h"
+#include "literals.h"
 
 namespace LC
 {
@@ -23,7 +24,7 @@ namespace LMP
 	, Manager_ (new SimilarViewManager (this, this))
 	{
 		setResizeMode (SizeRootObjectToView);
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (GetProxyHolder ()));
+		engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },

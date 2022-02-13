@@ -18,4 +18,6 @@ namespace LC::LMP::Lits
 	const QString LmpSlashQml = QStringLiteral ("lmp/qml");
 
 	const QString DefaultAlbumImage = QStringLiteral ("media-optical");
+
+	const QString ThemeIconsUriScheme = QStringLiteral ("ThemeIcons");
 }

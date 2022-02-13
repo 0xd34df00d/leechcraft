@@ -21,4 +21,6 @@ namespace LC::LMP::Lits
 	extern const QString LmpSlashQml;
 
 	extern const QString DefaultAlbumImage;
+
+	extern const QString ThemeIconsUriScheme;
 }

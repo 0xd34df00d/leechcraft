@@ -27,6 +27,7 @@
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/iinfo.h>
+#include "literals.h"
 #include "stdartistactionsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -81,8 +82,7 @@ namespace LMP
 				[] { return 50 * 1024 * 1024; },
 				ReleasesView_->engine ());
 
-		ReleasesView_->engine ()->addImageProvider ("ThemeIcons",
-				new Util::ThemeImageProvider (GetProxyHolder ()));
+		ReleasesView_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
 		ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));

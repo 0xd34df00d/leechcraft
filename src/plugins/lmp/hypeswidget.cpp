@@ -29,6 +29,7 @@
 #include "util.h"
 #include "xmlsettingsmanager.h"
 #include "stdartistactionsmanager.h"
+#include "literals.h"
 #include "core.h"
 
 namespace LC::LMP
@@ -70,7 +71,7 @@ namespace LC::LMP
 
 		HypesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
-		HypesView_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (GetProxyHolder ()));
+		HypesView_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50_mib; },
