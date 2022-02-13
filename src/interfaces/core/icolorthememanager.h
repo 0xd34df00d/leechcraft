@@ -33,7 +33,7 @@ public:
 	 * @return The given color for the \em section and \em key, or an
 	 * invalid color if the combination is invalid.
 	 */
-	virtual QColor GetQMLColor (const QString& section, const QString& key) = 0;
+	virtual QColor GetQMLColor (const QByteArray& section, const QByteArray& key) = 0;
 
 	/** @brief Returns the manager as a QObject.
 	 *

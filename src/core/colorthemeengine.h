@@ -30,7 +30,7 @@ namespace LC
 		Q_INTERFACES (IColorThemeManager)
 
 		QPalette StartupPalette_;
-		QHash<QString, QHash<QString, QColor>> QMLColors_;
+		QHash<QByteArray, QHash<QByteArray, QColor>> QMLColors_;
 
 		Util::ResourceLoader *Loader_;
 
@@ -38,7 +38,7 @@ namespace LC
 	public:
 		static ColorThemeEngine& Instance ();
 
-		QColor GetQMLColor (const QString& section, const QString& key);
+		QColor GetQMLColor (const QByteArray& section, const QByteArray& key);
 		QObject* GetQObject ();
 
 		QAbstractItemModel* GetThemesModel () const;

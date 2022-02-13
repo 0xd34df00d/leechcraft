@@ -202,7 +202,7 @@ namespace LC::Util
 		 */
 		QColor setAlpha (QColor color, qreal alpha);
 	private:
-		QColor GetColor (const QString&, const QString&) const;
+		QColor GetColor (const QByteArray&, const QByteArray&) const;
 	signals:
 		/** @brief Emitted when the color theme changes.
 		 *

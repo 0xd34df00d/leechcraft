@@ -37,7 +37,7 @@ namespace LC
 		return engine;
 	}
 
-	QColor ColorThemeEngine::GetQMLColor (const QString& section, const QString& key)
+	QColor ColorThemeEngine::GetQMLColor (const QByteArray& section, const QByteArray& key)
 	{
 		return QMLColors_ [section] [key];
 	}
@@ -258,14 +258,14 @@ namespace LC
 		for (const auto& group : settings.childGroups ())
 		{
 			settings.beginGroup (group);
-			auto& hash = QMLColors_ [group];
+			auto& hash = QMLColors_ [group.toUtf8 ()];
 			for (const auto& key : settings.childKeys ())
-				hash [key] = ParseColor (settings.value (key));
+				hash [key.toUtf8 ()] = ParseColor (settings.value (key));
 			settings.endGroup ();
 		}
 
-		auto fixup = [this, &settings] (const QString& section,
-				const QString& name, const QString& fallback) -> void
+		auto fixup = [this, &settings] (const QByteArray& section,
+				const QByteArray& name, const QByteArray& fallback)
 		{
 			auto& sec = QMLColors_ [section];
 			if (sec.contains (name))

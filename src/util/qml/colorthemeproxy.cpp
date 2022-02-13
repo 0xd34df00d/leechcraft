@@ -28,7 +28,7 @@ namespace LC::Util
 		return color;
 	}
 
-	QColor ColorThemeProxy::GetColor (const QString& group, const QString& color) const
+	QColor ColorThemeProxy::GetColor (const QByteArray& group, const QByteArray& color) const
 	{
 		return Manager_->GetQMLColor (group, color);
 	}
