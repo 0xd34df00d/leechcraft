@@ -41,6 +41,14 @@
     </message>
 </context>
 <context>
+    <name>BrowseButton</name>
+    <message>
+        <location filename="share/qml5/lmp/BrowseButton.qml" line="5"/>
+        <source>Show artist info...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CloudWidget</name>
     <message>
         <location filename="sync/cloudwidget.ui" line="25"/>
@@ -197,12 +205,12 @@
 <context>
     <name>LC::LMP::ArtistBrowserTab</name>
     <message>
-        <location filename="artistbrowsertab.cpp" line="96"/>
+        <location filename="artistbrowsertab.cpp" line="93"/>
         <source>Artist browser: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="artistbrowsertab.cpp" line="117"/>
+        <location filename="artistbrowsertab.cpp" line="114"/>
         <source>There aren&apos;t any plugins that can fetch biography. Check if you have installed for example the LastFMScrobble plugin.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -601,33 +609,33 @@
 <context>
     <name>LC::LMP::HypesWidget</name>
     <message>
-        <location filename="hypeswidget.cpp" line="84"/>
+        <location filename="hypeswidget.cpp" line="86"/>
         <source>Hyped artists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="85"/>
+        <location filename="hypeswidget.cpp" line="87"/>
         <source>Hyped tracks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="86"/>
+        <location filename="hypeswidget.cpp" line="88"/>
         <source>Show novelties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="87"/>
+        <location filename="hypeswidget.cpp" line="89"/>
         <source>Show tops</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="196"/>
+        <location filename="hypeswidget.cpp" line="185"/>
         <source>Growth: x%1</source>
         <comment>better use unicode multiplication sign here instead of &apos;x&apos;</comment>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="hypeswidget.cpp" line="199"/>
+        <location filename="hypeswidget.cpp" line="188"/>
         <source>%n listener(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -635,7 +643,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="hypeswidget.cpp" line="201"/>
+        <location filename="hypeswidget.cpp" line="190"/>
         <source>%n playback(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -643,7 +651,7 @@
         </translation>
     </message>
     <message>
-        <location filename="hypeswidget.cpp" line="216"/>
+        <location filename="hypeswidget.cpp" line="205"/>
         <source>%1 is not &lt;em&gt;that&lt;/em&gt; mainstream to have a description.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -846,87 +854,87 @@
 <context>
     <name>LC::LMP::PlayerTab</name>
     <message>
-        <location filename="playertab.cpp" line="68"/>
+        <location filename="playertab.cpp" line="66"/>
         <source>Effects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="267"/>
+        <location filename="playertab.cpp" line="252"/>
         <source>Current song</source>
         <translation>La pista corriente</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="268"/>
+        <location filename="playertab.cpp" line="253"/>
         <source>Collection</source>
         <translation>Colección</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="269"/>
+        <location filename="playertab.cpp" line="254"/>
         <source>Playlists</source>
         <translation>Listas de reproducción</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="270"/>
+        <location filename="playertab.cpp" line="255"/>
         <source>Social</source>
         <translation>Social</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="271"/>
+        <location filename="playertab.cpp" line="256"/>
         <source>Internet</source>
         <translation>Internet</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="272"/>
+        <location filename="playertab.cpp" line="257"/>
         <source>Filesystem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="273"/>
+        <location filename="playertab.cpp" line="258"/>
         <source>Devices</source>
         <translation>Dispositivos</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="293"/>
+        <location filename="playertab.cpp" line="278"/>
         <source>Previous track</source>
         <translation>La pista anterior</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="301"/>
+        <location filename="playertab.cpp" line="286"/>
         <source>Play/Pause</source>
         <translation>Reproducir / Pausar</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="310"/>
+        <location filename="playertab.cpp" line="295"/>
         <source>Stop</source>
         <translation>Detener</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="318"/>
+        <location filename="playertab.cpp" line="303"/>
         <source>Next track</source>
         <translation>La pista siguiente</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="328"/>
+        <location filename="playertab.cpp" line="313"/>
         <source>Love</source>
         <translation>Amor</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="337"/>
+        <location filename="playertab.cpp" line="322"/>
         <source>Ban</source>
         <translation>Banear</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="373"/>
+        <location filename="playertab.cpp" line="358"/>
         <source>Close LMP</source>
         <translation>Cerrar LMP</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="380"/>
+        <location filename="playertab.cpp" line="365"/>
         <source>Stop after current track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="486"/>
+        <location filename="playertab.cpp" line="471"/>
         <source>Open effects configuration page...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1318,17 +1326,6 @@
     </message>
 </context>
 <context>
-    <name>LC::LMP::PreviewHandler</name>
-    <message numerus="yes">
-        <location filename="previewhandler.cpp" line="163"/>
-        <source>Not all tracks were fetched for album %1 by %2: %n track(s) weren&apos;t found.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-</context>
-<context>
     <name>LC::LMP::ProgressManager</name>
     <message>
         <location filename="progressmanager.cpp" line="72"/>
@@ -1460,27 +1457,27 @@
 <context>
     <name>LC::LMP::RadioWidget</name>
     <message>
-        <location filename="radiowidget.cpp" line="148"/>
+        <location filename="radiowidget.cpp" line="147"/>
         <source>Refresh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="157"/>
+        <location filename="radiowidget.cpp" line="156"/>
         <source>Add an URL...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="163"/>
+        <location filename="radiowidget.cpp" line="162"/>
         <source>Add current stream...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="173"/>
+        <location filename="radiowidget.cpp" line="172"/>
         <source>Download tracks...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="185"/>
+        <location filename="radiowidget.cpp" line="184"/>
         <source>Remove this URL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1501,12 +1498,12 @@
 <context>
     <name>LC::LMP::SimilarViewManager</name>
     <message>
-        <location filename="similarviewmanager.cpp" line="72"/>
+        <location filename="similarviewmanager.cpp" line="69"/>
         <source>Similarity: %1%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="similarviewmanager.cpp" line="75"/>
+        <location filename="similarviewmanager.cpp" line="72"/>
         <source>Similar to: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1555,7 +1552,7 @@
 <context>
     <name>LC::LMP::StdArtistActionsManager</name>
     <message>
-        <location filename="stdartistactionsmanager.cpp" line="45"/>
+        <location filename="stdartistactionsmanager.cpp" line="33"/>
         <source>Check out &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1922,6 +1919,15 @@
         <location filename="sortingcriteriadialog.ui" line="59"/>
         <source>Move down</source>
         <translation>Bajar</translation>
+    </message>
+</context>
+<context>
+    <name>StdArtistActions</name>
+    <message>
+        <location filename="share/qml5/lmp/StdArtistActions.qml" line="23"/>
+        <source>Save the artist for later</source>
+        <oldsource>Bookmark the artist</oldsource>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
