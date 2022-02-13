@@ -150,7 +150,7 @@ Rectangle {
                     StdArtistActions {
                         id: artistActions
 
-                        anchors.bottom: artistNameLabel.bottom
+                        anchors.verticalCenter: artistNameLabel.verticalCenter
                         anchors.left: artistNameLabel.right
                         anchors.leftMargin: 8
 
