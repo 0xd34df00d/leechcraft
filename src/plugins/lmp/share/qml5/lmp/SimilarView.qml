@@ -153,6 +153,7 @@ Rectangle {
                         anchors.verticalCenter: artistNameLabel.verticalCenter
                         anchors.left: artistNameLabel.right
                         anchors.leftMargin: 8
+                        height: artistNameLabel.height
 
                         bookmarkVisible: !artistInCollection
 

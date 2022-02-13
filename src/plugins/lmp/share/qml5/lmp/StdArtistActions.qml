@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import org.LC.common 1.0
 
 Row {
     id: rootRow
@@ -12,42 +13,19 @@ Row {
 
     BrowseButton {
         id: browseInfoImage
+        onTriggered: rootRow.browseInfo()
 
-        onClicked: rootRow.browseInfo()
+        height: parent.height
+        width: parent.height
     }
 
-    Image {
-        id: addToList
-
-        width: 16
-        height: 16
-        smooth: true
-        fillMode: Image.PreserveAspectFit
-
-        source: "image://ThemeIcons/bookmark-new"
+    ActionButton {
+        textTooltip: qsTr("Bookmark the artist")
+        onTriggered: rootRow.bookmarkRequested()
+        actionIconURL: "image://ThemeIcons/bookmark-new"
         visible: rootRow.bookmarkVisible
 
-        cache: false
-
-        MouseArea {
-            id: addToListArea
-            anchors.fill: parent
-            anchors.margins: -2
-            hoverEnabled: true
-
-            onClicked: rootRow.bookmarkRequested()
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: -1
-            radius: 2
-
-            visible: addToListArea.containsMouse
-
-            color: "#00000000"
-            border.width: 1
-            border.color: "#888888"
-        }
+        height: parent.height
+        width: parent.height
     }
 }

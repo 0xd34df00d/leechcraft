@@ -280,7 +280,8 @@ Rectangle {
                 id: artistActions
                 anchors.left: artistNameLabel.right
                 anchors.leftMargin: 8
-                anchors.bottom: artistNameLabel.bottom
+                anchors.verticalCenter: artistNameLabel.verticalCenter
+                height: artistNameLabel.height
 
                 visible: artistName.length > 0
 

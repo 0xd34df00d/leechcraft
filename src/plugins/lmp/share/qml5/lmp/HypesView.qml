@@ -308,8 +308,10 @@ Rectangle {
                                 anchors.verticalCenter: trackArtistNameLabel.verticalCenter
                                 anchors.left: trackArtistNameLabel.right
                                 anchors.leftMargin: 5
+                                height: trackArtistNameLabel.height
+                                width: height
 
-                                onClicked: stdActions.browseArtistInfo(artistName)
+                                onTriggered: stdActions.browseArtistInfo(artistName)
                             }
 
                             Text {
