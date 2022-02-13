@@ -20,7 +20,7 @@ Row {
     }
 
     ActionButton {
-        textTooltip: qsTr("Bookmark the artist")
+        textTooltip: qsTr("Save the artist for later")
         onTriggered: rootRow.bookmarkRequested()
         actionIconURL: "image://ThemeIcons/bookmark-new"
         visible: rootRow.bookmarkVisible
