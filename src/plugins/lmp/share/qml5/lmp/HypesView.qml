@@ -214,7 +214,7 @@ Rectangle {
                     model: topTracksModel
 
                     delegate: Item {
-                        height: 75
+                        height: 150
                         width: hypedTracksView.width
                         smooth: true
 
