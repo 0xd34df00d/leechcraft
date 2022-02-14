@@ -9,6 +9,7 @@
 #include "platformlayer.h"
 #include <QFuture>
 #include <util/xpc/util.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LC
@@ -37,21 +38,21 @@ namespace Events
 	void PlatformLayer::emitGonnaSleep (int timeout)
 	{
 		qDebug () << Q_FUNC_INFO << "detected sleep in" << timeout;
-		auto e = Util::MakeEntity ("Sleeping",
+		auto e = Util::MakeEntity (PowerState::Sleeping,
 				{},
 				TaskParameter::Internal,
-				"x-leechcraft/power-state-changed");
-		e.Additional_ ["TimeLeft"] = timeout;
+				Mimes::PowerStateChanged);
+		e.Additional_ [EF::PowerState::TimeLeft] = timeout;
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void PlatformLayer::emitWokeUp ()
 	{
 		qDebug () << Q_FUNC_INFO << "detected wake up";
-		const auto& e = Util::MakeEntity ("WokeUp",
+		const auto& e = Util::MakeEntity (PowerState::WokeUp,
 				{},
 				TaskParameter::Internal,
-				"x-leechcraft/power-state-changed");
+				Mimes::PowerStateChanged);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
