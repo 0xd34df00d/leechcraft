@@ -60,10 +60,10 @@ namespace LC::LMP
 		Util::RoledMemberField_v<"albumTrackListTooltip", &DiscoItem::TrackListToolTip_>,
 	} }
 	{
-		View_->rootContext ()->setContextObject (BioPropProxy_);
-		View_->rootContext ()->setContextProperty (QStringLiteral ("artistDiscoModel"), DiscoModel_);
-		View_->rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
-				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
+		const auto ctx = View_->rootContext ();
+		ctx->setContextObject (BioPropProxy_);
+		ctx->setContextProperty (QStringLiteral ("artistDiscoModel"), DiscoModel_);
+		ctx->setContextProperty (QStringLiteral ("colorProxy"), new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
 		View_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))

@@ -73,7 +73,7 @@ namespace LC::LMP
 
 		HypesView_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
 
-		new Util::StandardNAMFactory ("lmp/qml",
+		new Util::StandardNAMFactory (Lits::LmpSlashQml,
 				[] { return 50_mib; },
 				HypesView_->engine ());
 
@@ -93,7 +93,7 @@ namespace LC::LMP
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			HypesView_->engine ()->addImportPath (cand);
 
-		HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "HypesView.qml"));
+		HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, Lits::LmpQmlSubdir, QStringLiteral ("HypesView.qml")));
 
 		connect (Ui_.InfoProvider_,
 				&QComboBox::activated,
@@ -204,7 +204,7 @@ namespace LC::LMP
 					if (prepared.ShortDesc_.isEmpty ())
 						prepared.ShortDesc_ = tr ("%1 is not <em>that</em> mainstream to have a description.")
 								.arg (info.Info_.Name_);
-					prepared.Similarity_ = GetStats (info).join ("; ");
+					prepared.Similarity_ = GetStats (info).join (u"; ");
 					return prepared;
 				}));
 	}
