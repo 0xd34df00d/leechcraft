@@ -467,11 +467,11 @@ namespace LMP
 			thisE.Additional_ ["Shortcut"] = QVariant::fromValue (seq);
 			GlobAction2Entity_ ["LMP_Global_" + method] = thisE;
 		};
-		initShortcut (SLOT (togglePause ()), QString ("Meta+C"));
-		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
-		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
-		initShortcut (SLOT (stop ()), QString ("Meta+X"));
-		initShortcut (SLOT (stopAfterCurrent ()), QString ("Meta+Alt+X"));
+		initShortcut (SLOT (togglePause ()), QStringLiteral ("Meta+C"));
+		initShortcut (SLOT (previousTrack ()), QStringLiteral ("Meta+V"));
+		initShortcut (SLOT (nextTrack ()), QStringLiteral ("Meta+B"));
+		initShortcut (SLOT (stop ()), QStringLiteral ("Meta+X"));
+		initShortcut (SLOT (stopAfterCurrent ()), QStringLiteral ("Meta+Alt+X"));
 
 		auto output = PlayerTab_->GetPlayer ()->GetAudioOutput ();
 		auto controller = new VolumeNotifyController (output, PlayerTab_->GetPlayer ());
@@ -480,7 +480,7 @@ namespace LMP
 		initShortcut (SLOT (volumeDown ()), {});
 
 		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
-		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
+		initShortcut (SLOT (handleLoveTrack ()), QStringLiteral ("Meta+L"));
 		initShortcut (SIGNAL (notifyCurrentTrackRequested ()), {});
 
 		auto proxy = GetProxyHolder ();
@@ -491,17 +491,17 @@ namespace LMP
 			const auto& seq = GlobAction2Entity_ [id].Additional_ ["Shortcut"].value<QKeySequence> ();
 			GlobAction2Info_ [id] = { userText, seq, proxy->GetIconThemeManager ()->GetIcon (icon) };
 		};
-		setInfo (SLOT (togglePause ()), tr ("Play/pause"), "media-playback-start");
-		setInfo (SLOT (previousTrack ()), tr ("Previous track"), "media-skip-backward");
-		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
-		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
-		setInfo (SLOT (stopAfterCurrent ()), tr ("Stop playback after current track"), "process-stop");
-		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
+		setInfo (SLOT (togglePause ()), tr ("Play/pause"), QStringLiteral ("media-playback-start"));
+		setInfo (SLOT (previousTrack ()), tr ("Previous track"), QStringLiteral ("media-skip-backward"));
+		setInfo (SLOT (nextTrack ()), tr ("Next track"), QStringLiteral ("media-skip-forward"));
+		setInfo (SLOT (stop ()), tr ("Stop playback"), QStringLiteral ("media-playback-stop"));
+		setInfo (SLOT (stopAfterCurrent ()), tr ("Stop playback after current track"), QStringLiteral ("process-stop"));
+		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), QStringLiteral ("emblem-favorite"));
 		setInfo (SIGNAL (notifyCurrentTrackRequested ()),
 				tr ("Notify about current track"),
-				"dialog-information");
-		setInfo (SLOT (volumeUp ()), tr ("Increase volume"), "audio-volume-high");
-		setInfo (SLOT (volumeDown ()), tr ("Decrease volume"), "audio-volume-low");
+				QStringLiteral ("dialog-information"));
+		setInfo (SLOT (volumeUp ()), tr ("Increase volume"), QStringLiteral ("audio-volume-high"));
+		setInfo (SLOT (volumeDown ()), tr ("Decrease volume"), QStringLiteral ("audio-volume-low"));
 	}
 
 	void Plugin::handleFullRaiseRequested ()
