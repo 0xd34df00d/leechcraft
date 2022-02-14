@@ -34,3 +34,12 @@ namespace LC::Mimes
 
 	Q_DECL_IMPORT extern const QString DataFilterRequest;
 }
+
+namespace LC::GlobalAction
+{
+	Q_DECL_IMPORT extern const QString ActionID;
+	Q_DECL_IMPORT extern const QString Shortcut;
+	Q_DECL_IMPORT extern const QString Receiver;
+	Q_DECL_IMPORT extern const QString Method;
+	Q_DECL_IMPORT extern const QString AltShortcuts;
+}
