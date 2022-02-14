@@ -26,4 +26,11 @@ namespace LC::Mimes
 {
 	Q_DECL_IMPORT extern const QString Notification;
 	Q_DECL_IMPORT extern const QString NotificationRuleCreate;
+
+	Q_DECL_IMPORT extern const QString GlobalActionRegister;
+	Q_DECL_IMPORT extern const QString GlobalActionUnregister;
+
+	Q_DECL_IMPORT extern const QString PowerStateChanged;
+
+	Q_DECL_IMPORT extern const QString DataFilterRequest;
 }

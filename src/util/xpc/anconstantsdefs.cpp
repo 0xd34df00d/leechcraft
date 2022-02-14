@@ -27,6 +27,13 @@ namespace LC::Mimes
 #define MIME_NOTIFICATION "x-leechcraft/notification"
 	const QString Notification { QStringLiteral (MIME_NOTIFICATION) };
 	const QString NotificationRuleCreate { QStringLiteral (MIME_NOTIFICATION "-rule-create") };
+
+	const QString GlobalActionRegister { QStringLiteral ("x-leechcraft/global-action-register") };
+	const QString GlobalActionUnregister { QStringLiteral ("x-leechcraft/global-action-unregister") };
+
+	const QString PowerStateChanged { QStringLiteral ("x-leechcraft/power-state-changed") };
+
+	const QString DataFilterRequest { QStringLiteral ("x-leechcraft/data-filter-request") };
 }
 
 namespace LC::AN
