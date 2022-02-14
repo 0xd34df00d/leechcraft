@@ -9,6 +9,7 @@
 #include "shortcutmanager.h"
 #include <QAction>
 #include <QShortcut>
+#include <interfaces/entityconstants.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include "interfaces/ihaveshortcuts.h"
@@ -104,13 +105,13 @@ namespace LC::Util
 	void ShortcutManager::RegisterGlobalShortcut (const QString& id,
 			QObject *target, const QByteArray& method, const ActionInfo& info)
 	{
-		Entity e = Util::MakeEntity ({}, {}, {},
-				QStringLiteral ("x-leechcraft/global-action-register"));
-		e.Additional_ [QStringLiteral ("Receiver")] = QVariant::fromValue (target);
-		e.Additional_ [QStringLiteral ("ActionID")] = id;
-		e.Additional_ [QStringLiteral ("Method")] = method;
-		e.Additional_ [QStringLiteral ("Shortcut")] = QVariant::fromValue (info.Seqs_.value (0));
-		e.Additional_ [QStringLiteral ("AltShortcuts")] = Util::Map (info.Seqs_.mid (1), &QVariant::fromValue<QKeySequence>);
+		Entity e = Util::MakeEntity ({}, {}, {}, Mimes::GlobalActionRegister);
+		using namespace EF::GlobalAction;
+		e.Additional_ [Receiver] = QVariant::fromValue (target);
+		e.Additional_ [ActionID] = id;
+		e.Additional_ [Method] = method;
+		e.Additional_ [Shortcut] = QVariant::fromValue (info.Seqs_.value (0));
+		e.Additional_ [AltShortcuts] = Util::Map (info.Seqs_.mid (1), &QVariant::fromValue<QKeySequence>);
 		Globals_ [id] = e;
 
 		ActionInfo_ [id] = info;
