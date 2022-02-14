@@ -20,6 +20,15 @@ namespace LC::EF
 	Q_DECL_IMPORT extern const QString UserVisibleName;
 	Q_DECL_IMPORT extern const QString Text;
 	Q_DECL_IMPORT extern const QString Tags;
+
+	namespace GlobalAction
+	{
+		Q_DECL_IMPORT extern const QString ActionID;
+		Q_DECL_IMPORT extern const QString Shortcut;
+		Q_DECL_IMPORT extern const QString Receiver;
+		Q_DECL_IMPORT extern const QString Method;
+		Q_DECL_IMPORT extern const QString AltShortcuts;
+	}
 }
 
 namespace LC::Mimes
@@ -33,13 +42,4 @@ namespace LC::Mimes
 	Q_DECL_IMPORT extern const QString PowerStateChanged;
 
 	Q_DECL_IMPORT extern const QString DataFilterRequest;
-}
-
-namespace LC::GlobalAction
-{
-	Q_DECL_IMPORT extern const QString ActionID;
-	Q_DECL_IMPORT extern const QString Shortcut;
-	Q_DECL_IMPORT extern const QString Receiver;
-	Q_DECL_IMPORT extern const QString Method;
-	Q_DECL_IMPORT extern const QString AltShortcuts;
 }

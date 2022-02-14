@@ -55,7 +55,7 @@ namespace GActs
 	{
 		const bool good = (e.Mime_ == Mimes::GlobalActionRegister ||
 					e.Mime_ == Mimes::GlobalActionUnregister) &&
-				e.Additional_.contains (GlobalAction::ActionID);
+				e.Additional_.contains (EF::GlobalAction::ActionID);
 		return EntityTestHandleResult (good ?
 					EntityTestHandleResult::PIdeal :
 					EntityTestHandleResult::PNone);
@@ -63,21 +63,21 @@ namespace GActs
 
 	void Plugin::Handle (Entity e)
 	{
-		const QByteArray& id = e.Additional_ [GlobalAction::ActionID].toByteArray ();
+		const QByteArray& id = e.Additional_ [EF::GlobalAction::ActionID].toByteArray ();
 
 		RegisteredShortcuts_.remove (id);
 		if (e.Mime_ == Mimes::GlobalActionUnregister)
 			return;
 
-		const QKeySequence& seq = e.Additional_ [GlobalAction::Shortcut].value<QKeySequence> ();
+		const QKeySequence& seq = e.Additional_ [EF::GlobalAction::Shortcut].value<QKeySequence> ();
 		if (seq.isEmpty ())
 			return;
 
-		QObject *receiver = e.Additional_ [GlobalAction::Receiver].value<QObject*> ();
+		QObject *receiver = e.Additional_ [EF::GlobalAction::Receiver].value<QObject*> ();
 		if (!receiver)
 			return;
 
-		const QByteArray& method = e.Additional_ [GlobalAction::Method].toByteArray ();
+		const QByteArray& method = e.Additional_ [EF::GlobalAction::Method].toByteArray ();
 		if (method.isEmpty ())
 			return;
 
@@ -99,7 +99,7 @@ namespace GActs
 
 	void Plugin::RegisterChildren (QxtGlobalShortcut *sh, const Entity& e)
 	{
-		for (const auto& seqVar : e.Additional_ [GlobalAction::AltShortcuts].toList ())
+		for (const auto& seqVar : e.Additional_ [EF::GlobalAction::AltShortcuts].toList ())
 		{
 			const auto& subseq = seqVar.value<QKeySequence> ();
 			if (subseq.isEmpty ())

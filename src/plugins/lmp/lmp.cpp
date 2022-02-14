@@ -206,8 +206,8 @@ namespace LMP
 		}
 
 		auto& e = GlobAction2Entity_ [id];
-		e.Additional_ [GlobalAction::Shortcut] = QVariant::fromValue (sequences.value (0));
-		e.Additional_ [GlobalAction::AltShortcuts] = Util::Map (sequences.mid (1),
+		e.Additional_ [EF::GlobalAction::Shortcut] = QVariant::fromValue (sequences.value (0));
+		e.Additional_ [EF::GlobalAction::AltShortcuts] = Util::Map (sequences.mid (1),
 				&QVariant::fromValue<QKeySequence>);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
@@ -459,13 +459,13 @@ namespace LMP
 	{
 		Entity e = Util::MakeEntity ({}, {}, {},
 				Mimes::GlobalActionRegister);
-		e.Additional_ [GlobalAction::Receiver] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
+		e.Additional_ [EF::GlobalAction::Receiver] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
 		auto initShortcut = [&e, this] (const QByteArray& method, const QKeySequence& seq)
 		{
 			Entity thisE = e;
-			thisE.Additional_ [GlobalAction::ActionID] = "LMP_Global_" + method;
-			thisE.Additional_ [GlobalAction::Method] = method;
-			thisE.Additional_ [GlobalAction::Shortcut] = QVariant::fromValue (seq);
+			thisE.Additional_ [EF::GlobalAction::ActionID] = "LMP_Global_" + method;
+			thisE.Additional_ [EF::GlobalAction::Method] = method;
+			thisE.Additional_ [EF::GlobalAction::Shortcut] = QVariant::fromValue (seq);
 			GlobAction2Entity_ ["LMP_Global_" + method] = thisE;
 		};
 		initShortcut (SLOT (togglePause ()), QStringLiteral ("Meta+C"));
@@ -476,11 +476,11 @@ namespace LMP
 
 		auto output = PlayerTab_->GetPlayer ()->GetAudioOutput ();
 		auto controller = new VolumeNotifyController (output, PlayerTab_->GetPlayer ());
-		e.Additional_ [GlobalAction::Receiver] = QVariant::fromValue<QObject*> (controller);
+		e.Additional_ [EF::GlobalAction::Receiver] = QVariant::fromValue<QObject*> (controller);
 		initShortcut (SLOT (volumeUp ()), {});
 		initShortcut (SLOT (volumeDown ()), {});
 
-		e.Additional_ [GlobalAction::Receiver] = QVariant::fromValue<QObject*> (PlayerTab_);
+		e.Additional_ [EF::GlobalAction::Receiver] = QVariant::fromValue<QObject*> (PlayerTab_);
 		initShortcut (SLOT (handleLoveTrack ()), QStringLiteral ("Meta+L"));
 		initShortcut (SIGNAL (notifyCurrentTrackRequested ()), {});
 
@@ -489,7 +489,7 @@ namespace LMP
 				const QString& userText, const QString& icon)
 		{
 			const auto& id = "LMP_Global_" + method;
-			const auto& seq = GlobAction2Entity_ [id].Additional_ [GlobalAction::Shortcut].value<QKeySequence> ();
+			const auto& seq = GlobAction2Entity_ [id].Additional_ [EF::GlobalAction::Shortcut].value<QKeySequence> ();
 			GlobAction2Info_ [id] = { userText, seq, proxy->GetIconThemeManager ()->GetIcon (icon) };
 		};
 		setInfo (SLOT (togglePause ()), tr ("Play/pause"), QStringLiteral ("media-playback-start"));

@@ -20,6 +20,15 @@ namespace LC::EF
 	const QString UserVisibleName { QStringLiteral ("UserVisibleName") };
 	const QString Text { QStringLiteral ("Text") };
 	const QString Tags { QStringLiteral (" Tags") };
+
+	namespace GlobalAction
+	{
+		const QString ActionID { QStringLiteral ("ActionID") };
+		const QString Shortcut { QStringLiteral ("Shortcut") };
+		const QString Receiver { QStringLiteral ("Receiver") };
+		const QString Method { QStringLiteral ("Method") };
+		const QString AltShortcuts { QStringLiteral ("AltShortcuts") };
+	}
 }
 
 namespace LC::Mimes
@@ -34,15 +43,6 @@ namespace LC::Mimes
 	const QString PowerStateChanged { QStringLiteral ("x-leechcraft/power-state-changed") };
 
 	const QString DataFilterRequest { QStringLiteral ("x-leechcraft/data-filter-request") };
-}
-
-namespace LC::GlobalAction
-{
-	const QString ActionID { QStringLiteral ("ActionID") };
-	const QString Shortcut { QStringLiteral ("Shortcut") };
-	const QString Receiver { QStringLiteral ("Receiver") };
-	const QString Method { QStringLiteral ("Method") };
-	const QString AltShortcuts { QStringLiteral ("AltShortcuts") };
 }
 
 namespace LC::AN
