@@ -316,12 +316,12 @@ namespace LMP
 
 		if (e.Mime_ == Mimes::PowerStateChanged)
 		{
-			if (e.Entity_ == "Sleeping")
+			if (e.Entity_ == PowerState::Sleeping)
 			{
 				player->SavePlayState (true);
 				player->setPause ();
 			}
-			else if (e.Entity_ == "WokeUp")
+			else if (e.Entity_ == PowerState::WokeUp)
 			{
 				player->RestorePlayState ();
 				Core::Instance ().GetRadioManager ()->HandleWokeUp ();
