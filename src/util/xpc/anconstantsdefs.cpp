@@ -9,6 +9,7 @@
 #include <interfaces/entityconstants.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
+#include <QVariant>
 
 namespace LC::EF
 {
@@ -29,6 +30,11 @@ namespace LC::EF
 		const QString Method { QStringLiteral ("Method") };
 		const QString AltShortcuts { QStringLiteral ("AltShortcuts") };
 	}
+
+	namespace PowerState
+	{
+		const QString TimeLeft { QStringLiteral ("TimeLeft") };
+	}
 }
 
 namespace LC::Mimes
@@ -43,6 +49,12 @@ namespace LC::Mimes
 	const QString PowerStateChanged { QStringLiteral ("x-leechcraft/power-state-changed") };
 
 	const QString DataFilterRequest { QStringLiteral ("x-leechcraft/data-filter-request") };
+}
+
+namespace LC::PowerState
+{
+	const QVariant Sleeping { QByteArray { "Sleeping" } };
+	const QVariant WokeUp { QByteArray { "WokeUp" } };
 }
 
 namespace LC::AN

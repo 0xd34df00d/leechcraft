@@ -10,6 +10,8 @@
 
 #include <QString>
 
+class QVariant;
+
 namespace LC::EF
 {
 	Q_DECL_IMPORT extern const QString Priority;
@@ -29,6 +31,11 @@ namespace LC::EF
 		Q_DECL_IMPORT extern const QString Method;
 		Q_DECL_IMPORT extern const QString AltShortcuts;
 	}
+
+	namespace PowerState
+	{
+		Q_DECL_IMPORT extern const QString TimeLeft;
+	}
 }
 
 namespace LC::Mimes
@@ -42,4 +49,10 @@ namespace LC::Mimes
 	Q_DECL_IMPORT extern const QString PowerStateChanged;
 
 	Q_DECL_IMPORT extern const QString DataFilterRequest;
+}
+
+namespace LC::PowerState
+{
+	Q_DECL_IMPORT extern const QVariant Sleeping;
+	Q_DECL_IMPORT extern const QVariant WokeUp;
 }
