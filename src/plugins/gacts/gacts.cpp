@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <qxtglobalshortcut.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 
 namespace LC
@@ -52,9 +53,9 @@ namespace GActs
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		const bool good = (e.Mime_ == "x-leechcraft/global-action-register" ||
-					e.Mime_ == "x-leechcraft/global-action-unregister") &&
-				e.Additional_.contains ("ActionID");
+		const bool good = (e.Mime_ == Mimes::GlobalActionRegister ||
+					e.Mime_ == Mimes::GlobalActionUnregister) &&
+				e.Additional_.contains (GlobalAction::ActionID);
 		return EntityTestHandleResult (good ?
 					EntityTestHandleResult::PIdeal :
 					EntityTestHandleResult::PNone);
@@ -62,21 +63,21 @@ namespace GActs
 
 	void Plugin::Handle (Entity e)
 	{
-		const QByteArray& id = e.Additional_ ["ActionID"].toByteArray ();
+		const QByteArray& id = e.Additional_ [GlobalAction::ActionID].toByteArray ();
 
 		RegisteredShortcuts_.remove (id);
-		if (e.Mime_ == "x-leechcraft/global-action-unregister")
+		if (e.Mime_ == Mimes::GlobalActionUnregister)
 			return;
 
-		const QKeySequence& seq = e.Additional_ ["Shortcut"].value<QKeySequence> ();
+		const QKeySequence& seq = e.Additional_ [GlobalAction::Shortcut].value<QKeySequence> ();
 		if (seq.isEmpty ())
 			return;
 
-		QObject *receiver = e.Additional_ ["Receiver"].value<QObject*> ();
+		QObject *receiver = e.Additional_ [GlobalAction::Receiver].value<QObject*> ();
 		if (!receiver)
 			return;
 
-		const QByteArray& method = e.Additional_ ["Method"].toByteArray ();
+		const QByteArray& method = e.Additional_ [GlobalAction::Method].toByteArray ();
 		if (method.isEmpty ())
 			return;
 
@@ -98,7 +99,7 @@ namespace GActs
 
 	void Plugin::RegisterChildren (QxtGlobalShortcut *sh, const Entity& e)
 	{
-		for (const auto& seqVar : e.Additional_ ["AltShortcuts"].toList ())
+		for (const auto& seqVar : e.Additional_ [GlobalAction::AltShortcuts].toList ())
 		{
 			const auto& subseq = seqVar.value<QKeySequence> ();
 			if (subseq.isEmpty ())
