@@ -33,6 +33,7 @@
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
@@ -374,7 +375,7 @@ namespace LC::Azoth
 
 	bool Core::CouldHandle (const Entity& e) const
 	{
-		if (e.Mime_ == "x-leechcraft/power-state-changed" ||
+		if (e.Mime_ == Mimes::PowerStateChanged ||
 				e.Mime_ == "x-leechcraft/im-account-import" ||
 				e.Mime_ == "x-leechcraft/im-history-import")
 			return true;
@@ -391,7 +392,7 @@ namespace LC::Azoth
 
 	void Core::Handle (Entity e)
 	{
-		if (e.Mime_ == "x-leechcraft/power-state-changed")
+		if (e.Mime_ == Mimes::PowerStateChanged)
 		{
 			HandlePowerNotification (e);
 			return;
@@ -1407,7 +1408,7 @@ namespace LC::Azoth
 	{
 		qDebug () << Q_FUNC_INFO << e.Entity_;
 
-		if (e.Entity_ == "Sleeping")
+		if (e.Entity_ == PowerState::Sleeping)
 			for (const auto acc : GetAccountsPred (ProtocolPlugins_))
 			{
 				const auto& state = acc->GetState ();
@@ -1417,7 +1418,7 @@ namespace LC::Azoth
 				SavedStatus_ [acc] = state;
 				acc->ChangeState ({SOffline, tr ("Client went to sleep")});
 			}
-		else if (e.Entity_ == "WokeUp")
+		else if (e.Entity_ == PowerState::WokeUp)
 		{
 			for (const auto& pair : Util::Stlize (SavedStatus_))
 				pair.first->ChangeState (pair.second);
