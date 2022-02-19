@@ -171,10 +171,8 @@ namespace Blogique
 				QByteArray accId;
 				str >> accId;
 				tab->FillWidget (e, accId);
-				emit addNewTab ("Blogique", tab);
-				emit changeTabIcon (tab, GetIcon ());
+				emit addNewTab (e.Subject_, tab);
 				emit raiseTab (tab);
-				emit changeTabName (tab, e.Subject_);
 			}
 			else
 				qWarning () << Q_FUNC_INFO
@@ -192,7 +190,6 @@ namespace Blogique
 	{
 		BlogiqueWidget *blogPage = Core::Instance ().CreateBlogiqueWidget ();
 		emit addNewTab ("Blogique", blogPage);
-		emit changeTabIcon (blogPage, GetIcon ());
 		emit raiseTab (blogPage);
 	}
 }
