@@ -124,8 +124,8 @@ namespace Monocle
 	void Plugin::Handle (Entity e)
 	{
 		auto tab = new DocumentTab (DocTabInfo_, this);
-		tab->SetDoc (e.Entity_.toUrl ().toLocalFile (), DocumentTab::DocumentOpenOptions {});
 		AddTab (tab);
+		tab->SetDoc (e.Entity_.toUrl ().toLocalFile (), DocumentTab::DocumentOpenOptions {});
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
