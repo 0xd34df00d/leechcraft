@@ -9,6 +9,7 @@
 #include "artistbrowsertab.h"
 #include <QMessageBox>
 #include <QQuickWidget>
+#include <interfaces/iinfo.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -23,9 +24,8 @@
 
 namespace LC::LMP
 {
-	ArtistBrowserTab::ArtistBrowserTab (QObject *plugin)
-	: Plugin_ { plugin }
-	, View_ { new QQuickWidget }
+	ArtistBrowserTab::ArtistBrowserTab ()
+	: View_ { new QQuickWidget }
 	, BioMgr_ { new BioViewManager { View_, this } }
 	, SimilarMgr_ { new SimilarViewManager { View_, this } }
 	{
@@ -70,7 +70,7 @@ namespace LC::LMP
 
 	QObject* ArtistBrowserTab::ParentMultiTabs ()
 	{
-		return Plugin_;
+		return GetPluginInstance ();
 	}
 
 	void ArtistBrowserTab::Remove ()
