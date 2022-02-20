@@ -34,7 +34,7 @@ namespace LC::LMP
 		BioViewManager * const BioMgr_;
 		SimilarViewManager * const SimilarMgr_;
 	public:
-		explicit ArtistBrowserTab ();
+		explicit ArtistBrowserTab (const QString& artistName = {}, const DynPropertiesList_t& props = {});
 
 		static const TabClassInfo& GetStaticTabClass ();
 

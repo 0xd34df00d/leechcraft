@@ -111,8 +111,6 @@ namespace LMP
 	private slots:
 		void handleFullRaiseRequested ();
 		void showCollectionStats ();
-
-		void handleArtistBrowseRequested (const QString&, const DynPropertiesList_t& = DynPropertiesList_t ());
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

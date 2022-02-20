@@ -115,11 +115,6 @@ namespace LMP
 
 		Core::Instance ().GetLmpProxy ()->GetGuiProxy ()->SetPlayerTab (PlayerTab_);
 
-		connect (&Core::Instance (),
-				SIGNAL (artistBrowseRequested (QString)),
-				this,
-				SLOT (handleArtistBrowseRequested (QString)));
-
 		EffectsMgr_ = new EffectsManager (Core::Instance ().GetPlayer ()->GetPath (), this);
 		XSD_->SetDataSource ("EffectsView", EffectsMgr_->GetEffectsModel ());
 		connect (EffectsMgr_,
@@ -236,7 +231,7 @@ namespace LMP
 		if (tc == PlayerTC_.TabClass_)
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab ("LMP", PlayerTab_);
 		else if (tc == ArtistBrowserTab::GetStaticTabClass ().TabClass_)
-			handleArtistBrowseRequested ({});
+			new ArtistBrowserTab {};
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -307,7 +302,7 @@ namespace LMP
 		}
 		if (e.Mime_ == Mimes::DataFilterRequest)
 		{
-			handleArtistBrowseRequested (e.Entity_.toString ().trimmed ());
+			new ArtistBrowserTab { e.Entity_.toString ().trimmed () };
 			return;
 		}
 
@@ -368,7 +363,7 @@ namespace LMP
 			{
 				QString artist;
 				stream >> artist;
-				handleArtistBrowseRequested (artist, recInfo.DynProperties_);
+				new ArtistBrowserTab { artist, recInfo.DynProperties_ };
 			}
 			else
 				qWarning () << Q_FUNC_INFO
@@ -491,18 +486,6 @@ namespace LMP
 		auto dia = new CollectionStatsDialog ();
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
-	}
-
-	void Plugin::handleArtistBrowseRequested (const QString& artist, const DynPropertiesList_t& props)
-	{
-		auto tab = new ArtistBrowserTab (this);
-		for (const auto& pair : props)
-			tab->setProperty (pair.first, pair.second);
-
-		if (!artist.isEmpty ())
-			tab->Browse (artist);
-
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tab->GetStaticTabClass ().VisibleName_, tab);
 	}
 }
 }

@@ -24,6 +24,7 @@
 #include "hookinterconnector.h"
 #include "player.h"
 #include "literals.h"
+#include "artistbrowsertab.h"
 
 namespace LC::LMP
 {
@@ -155,8 +156,7 @@ namespace LC::LMP
 	void CollectionWidget::ShowInArtistBrowser ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& artist = index.data (LocalCollectionModel::Role::ArtistName).toString ();
-		Core::Instance ().RequestArtistBrowser (artist);
+		new ArtistBrowserTab { index.data (LocalCollectionModel::Role::ArtistName).toString () };
 	}
 
 	namespace

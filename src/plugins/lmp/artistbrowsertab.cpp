@@ -13,6 +13,7 @@
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sll/qtutil.h>
@@ -24,7 +25,7 @@
 
 namespace LC::LMP
 {
-	ArtistBrowserTab::ArtistBrowserTab ()
+	ArtistBrowserTab::ArtistBrowserTab (const QString& artist, const DynPropertiesList_t& props)
 	: View_ { new QQuickWidget }
 	, BioMgr_ { new BioViewManager { View_, this } }
 	, SimilarMgr_ { new SimilarViewManager { View_, this } }
@@ -47,6 +48,14 @@ namespace LC::LMP
 		connect (Ui_.ArtistNameEdit_,
 				&QLineEdit::returnPressed,
 				[this] { DoQueries (Ui_.ArtistNameEdit_->text ().trimmed ()); });
+
+		for (const auto& pair : props)
+			setProperty (pair.first, pair.second);
+
+		if (!artist.isEmpty ())
+			Browse (artist);
+
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetStaticTabClass ().VisibleName_, this);
 	}
 
 	const TabClassInfo& ArtistBrowserTab::GetStaticTabClass ()

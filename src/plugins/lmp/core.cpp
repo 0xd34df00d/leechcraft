@@ -140,11 +140,6 @@ namespace LMP
 		return CloudPlugins_;
 	}
 
-	void Core::RequestArtistBrowser (const QString& artist)
-	{
-		emit artistBrowseRequested (artist);
-	}
-
 	HookInterconnector* Core::GetHookInterconnector () const
 	{
 		return &M_->HookInterconnector_;
