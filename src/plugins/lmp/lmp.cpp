@@ -106,16 +106,6 @@ namespace LMP
 			TFSingle | TFByDefault | TFOpenableByRequest
 		};
 
-		ArtistBrowserTC_ =
-		{
-			GetUniqueID () + "_artistBrowser",
-			tr ("Artist browser"),
-			tr ("Allows one to browse information about different artists."),
-			QIcon ("lcicons:/lmp/resources/images/lmp_artist_browser.svg"),
-			35,
-			TFSuggestOpening | TFOpenableByRequest
-		};
-
 		Core::Instance ().InitWithProxy ();
 
 		auto mgr = new RootPathSettingsManager (this);
@@ -237,7 +227,7 @@ namespace LMP
 		return
 		{
 			PlayerTC_,
-			ArtistBrowserTC_
+			ArtistBrowserTab::GetStaticTabClass ()
 		};
 	}
 
@@ -245,7 +235,7 @@ namespace LMP
 	{
 		if (tc == PlayerTC_.TabClass_)
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab ("LMP", PlayerTab_);
-		else if (tc == ArtistBrowserTC_.TabClass_)
+		else if (tc == ArtistBrowserTab::GetStaticTabClass ().TabClass_)
 			handleArtistBrowseRequested ({});
 		else
 			qWarning () << Q_FUNC_INFO
@@ -431,7 +421,7 @@ namespace LMP
 				GetUniqueID () + ".ArtistBrowser",
 				tr ("Show artist information"),
 				tr ("Search for artist biography, similar artists, releases and so on."),
-				ArtistBrowserTC_.Icon_
+				ArtistBrowserTab::GetStaticTabClass ().Icon_
 			}
 		};
 	}
@@ -505,14 +495,14 @@ namespace LMP
 
 	void Plugin::handleArtistBrowseRequested (const QString& artist, const DynPropertiesList_t& props)
 	{
-		auto tab = new ArtistBrowserTab (ArtistBrowserTC_, this);
+		auto tab = new ArtistBrowserTab (this);
 		for (const auto& pair : props)
 			tab->setProperty (pair.first, pair.second);
 
 		if (!artist.isEmpty ())
 			tab->Browse (artist);
 
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (ArtistBrowserTC_.VisibleName_, tab);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tab->GetStaticTabClass ().VisibleName_, tab);
 	}
 }
 }

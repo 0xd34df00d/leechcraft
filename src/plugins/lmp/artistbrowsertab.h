@@ -27,7 +27,6 @@ namespace LC::LMP
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
-		const TabClassInfo TC_;
 		QObject * const Plugin_;
 
 		QQuickWidget * const View_;
@@ -37,7 +36,9 @@ namespace LC::LMP
 		BioViewManager * const BioMgr_;
 		SimilarViewManager * const SimilarMgr_;
 	public:
-		ArtistBrowserTab (TabClassInfo, QObject*);
+		explicit ArtistBrowserTab (QObject*);
+
+		static const TabClassInfo& GetStaticTabClass ();
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

@@ -23,9 +23,8 @@
 
 namespace LC::LMP
 {
-	ArtistBrowserTab::ArtistBrowserTab (TabClassInfo tc, QObject *plugin)
-	: TC_ { std::move (tc) }
-	, Plugin_ { plugin }
+	ArtistBrowserTab::ArtistBrowserTab (QObject *plugin)
+	: Plugin_ { plugin }
 	, View_ { new QQuickWidget }
 	, BioMgr_ { new BioViewManager { View_, this } }
 	, SimilarMgr_ { new SimilarViewManager { View_, this } }
@@ -50,9 +49,23 @@ namespace LC::LMP
 				[this] { DoQueries (Ui_.ArtistNameEdit_->text ().trimmed ()); });
 	}
 
+	const TabClassInfo& ArtistBrowserTab::GetStaticTabClass ()
+	{
+		static const TabClassInfo tc
+		{
+			"org.LeechCraft.LMP_artistBrowser",
+			tr ("Artist browser"),
+			tr ("Allows one to browse information about different artists."),
+			QIcon ("lcicons:/lmp/resources/images/lmp_artist_browser.svg"),
+			35,
+			TFSuggestOpening | TFOpenableByRequest
+		};
+		return tc;
+	}
+
 	TabClassInfo ArtistBrowserTab::GetTabClassInfo () const
 	{
-		return TC_;
+		return GetStaticTabClass ();
 	}
 
 	QObject* ArtistBrowserTab::ParentMultiTabs ()
@@ -84,7 +97,7 @@ namespace LC::LMP
 
 	QIcon ArtistBrowserTab::GetTabRecoverIcon () const
 	{
-		return TC_.Icon_;
+		return GetStaticTabClass ().Icon_;
 	}
 
 	QString ArtistBrowserTab::GetTabRecoverName () const

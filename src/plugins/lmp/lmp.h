@@ -59,7 +59,6 @@ namespace LMP
 		ICoreProxy_ptr Proxy_;
 
 		TabClassInfo PlayerTC_;
-		TabClassInfo ArtistBrowserTC_;
 
 		PlayerTab *PlayerTab_;
 
