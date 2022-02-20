@@ -37,7 +37,7 @@ namespace Poleemery
 		void updateGraph ();
 		void setPredefinedDate (int);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 	};
 }
 }

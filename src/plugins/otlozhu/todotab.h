@@ -57,7 +57,7 @@ namespace Otlozhu
 		void handleImport ();
 		void handleExport ();
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 		void gotEntity (const LC::Entity&);
 	};
 }

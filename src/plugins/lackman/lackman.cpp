@@ -14,6 +14,7 @@
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -105,29 +106,14 @@ namespace LackMan
 		{
 			if (LackManTab_)
 			{
-				raiseTab (LackManTab_);
+				emit LackManTab_->raise ();
 				return;
 			}
 
 			LackManTab_ = new LackManTab (ShortcutMgr_, TabClass_, this);
-			connect (LackManTab_,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-
 			for (const auto& pair : props)
 				LackManTab_->setProperty (pair.first, pair.second);
-
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
-			{
-				[this] { LackManTab_ = nullptr; },
-				LackManTab_,
-				SIGNAL (removeTab (QWidget*)),
-				LackManTab_
-			};
-
-			emit addNewTab (GetName (), LackManTab_);
-			emit raiseTab (LackManTab_);
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), LackManTab_);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

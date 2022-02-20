@@ -8,6 +8,8 @@
 
 #include "poleemery.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/prelude.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "operationstab.h"
@@ -122,15 +124,7 @@ namespace Poleemery
 	template<typename T>
 	void Plugin::MakeTab (const TabClassInfo& tc)
 	{
-		const auto tab = new T { tc, this };
-
-		connect (tab,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		emit addNewTab (tc.VisibleName_, tab);
-		emit changeTabIcon (tab, tc.Icon_);
-		emit raiseTab (tab);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tc.VisibleName_, new T { tc, this });
 	}
 }
 }

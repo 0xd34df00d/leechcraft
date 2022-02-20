@@ -80,13 +80,6 @@ namespace Snails
 		QMap<QString, LC::ActionInfo> GetActionInfo () const;
 	private slots:
 		void handleNewTab (const QString& name, QWidget*);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }

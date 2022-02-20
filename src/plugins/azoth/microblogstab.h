@@ -33,14 +33,14 @@ namespace Azoth
 	public:
 		static void SetTabData (QObject*, const TabClassInfo&);
 
-		MicroblogsTab (IAccount*);
+		explicit MicroblogsTab (IAccount*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 	};
 }
 }

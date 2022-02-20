@@ -181,7 +181,7 @@ namespace NetStoreManager
 		void handleFilterTextChanged (const QString& text);
 
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 
 		void uploadRequested (IStorageAccount *acc, const QString& fileName,
 				const QByteArray& parentId = QByteArray (), bool byHand = true);

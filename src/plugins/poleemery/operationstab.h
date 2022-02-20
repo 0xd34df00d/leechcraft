@@ -44,7 +44,7 @@ namespace Poleemery
 		void add ();
 		void remove ();
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 	};
 }
 }

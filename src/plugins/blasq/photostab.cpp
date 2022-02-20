@@ -168,7 +168,7 @@ namespace Blasq
 
 	void PhotosTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

@@ -209,7 +209,7 @@ namespace NetStoreManager
 
 	void ManagerTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 	}
 
 	QToolBar* ManagerTab::GetToolBar () const

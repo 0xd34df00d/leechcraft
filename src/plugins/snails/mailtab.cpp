@@ -233,7 +233,7 @@ namespace Snails
 
 	void MailTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

@@ -40,7 +40,7 @@ namespace Azoth
 
 	void MicroblogsTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

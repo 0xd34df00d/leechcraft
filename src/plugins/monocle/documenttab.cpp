@@ -290,7 +290,7 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 
 		Scene_.clear ();
 
@@ -976,7 +976,7 @@ namespace Monocle
 		CurrentDoc_ = document;
 		CurrentDocPath_ = path;
 		const auto& title = QFileInfo (path).fileName ();
-		emit changeTabName (this, title);
+		emit changeTabName (title);
 
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{

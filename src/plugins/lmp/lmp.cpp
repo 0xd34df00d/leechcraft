@@ -18,6 +18,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -124,18 +125,6 @@ namespace LMP
 
 		Core::Instance ().GetLmpProxy ()->GetGuiProxy ()->SetPlayerTab (PlayerTab_);
 
-		connect (PlayerTab_,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (PlayerTab_,
-				SIGNAL (changeTabName (QWidget*, QString)),
-				this,
-				SIGNAL (changeTabName (QWidget*, QString)));
-		connect (PlayerTab_,
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
 		connect (&Core::Instance (),
 				SIGNAL (artistBrowseRequested (QString)),
 				this,
@@ -255,10 +244,7 @@ namespace LMP
 	void Plugin::TabOpenRequested (const QByteArray& tc)
 	{
 		if (tc == PlayerTC_.TabClass_)
-		{
-			emit addNewTab ("LMP", PlayerTab_);
-			emit raiseTab (PlayerTab_);
-		}
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab ("LMP", PlayerTab_);
 		else if (tc == ArtistBrowserTC_.TabClass_)
 			handleArtistBrowseRequested ({});
 		else
@@ -520,20 +506,13 @@ namespace LMP
 	void Plugin::handleArtistBrowseRequested (const QString& artist, const DynPropertiesList_t& props)
 	{
 		auto tab = new ArtistBrowserTab (ArtistBrowserTC_, this);
-
 		for (const auto& pair : props)
 			tab->setProperty (pair.first, pair.second);
 
-		emit addNewTab (tr ("Artist browser"), tab);
-		emit raiseTab (tab);
-
-		connect (tab,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-
 		if (!artist.isEmpty ())
 			tab->Browse (artist);
+
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (ArtistBrowserTC_.VisibleName_, tab);
 	}
 }
 }

@@ -127,7 +127,8 @@ namespace Choroid
 
 	void ChoroidTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
+		deleteLater ();
 	}
 
 	QToolBar* ChoroidTab::GetToolBar () const

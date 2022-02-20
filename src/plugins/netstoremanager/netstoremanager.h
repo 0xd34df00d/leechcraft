@@ -75,13 +75,6 @@ namespace NetStoreManager
 		QStringList GetServiceVariants () const;
 		void UploadFile (const QString& filename, const QString& service);
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-
 		void fileUploaded (const QString&, const QUrl&);
 	};
 

@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "accountslistwidget.h"
 #include "blogiquewidget.h"
 #include "commentswidget.h"
@@ -50,18 +51,6 @@ namespace Blogique
 				SIGNAL (gotEntity (LC::Entity)),
 				this,
 				SIGNAL (gotEntity (LC::Entity)));
-		connect (&Core::Instance (),
-				SIGNAL (addNewTab (QString,QWidget*)),
-				this,
-				SIGNAL (addNewTab (QString,QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabName (QWidget*, QString)),
-				this,
-				SIGNAL (changeTabName (QWidget*, QString)));
 
 		ExportAction_ = new QAction (proxy->GetIconThemeManager ()->GetIcon ("document-export"),
 				tr ("Export blog"), this);
@@ -171,8 +160,8 @@ namespace Blogique
 				QByteArray accId;
 				str >> accId;
 				tab->FillWidget (e, accId);
-				emit addNewTab (e.Subject_, tab);
-				emit raiseTab (tab);
+
+				GetProxyHolder ()->GetRootWindowsManager ()->AddTab (e.Subject_, tab);
 			}
 			else
 				qWarning () << Q_FUNC_INFO
@@ -188,9 +177,7 @@ namespace Blogique
 
 	void Plugin::CreateTab ()
 	{
-		BlogiqueWidget *blogPage = Core::Instance ().CreateBlogiqueWidget ();
-		emit addNewTab ("Blogique", blogPage);
-		emit raiseTab (blogPage);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), Core::Instance ().CreateBlogiqueWidget ());
 	}
 }
 }

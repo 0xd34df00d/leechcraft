@@ -13,6 +13,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "documenttab.h"
@@ -112,11 +113,19 @@ namespace Monocle
 				EntityTestHandleResult ();
 	}
 
+	namespace
+	{
+		void AddTab (DocumentTab *tab)
+		{
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tab->GetTabClassInfo ().VisibleName_, tab);
+		}
+	}
+
 	void Plugin::Handle (Entity e)
 	{
 		auto tab = new DocumentTab (DocTabInfo_, this);
 		tab->SetDoc (e.Entity_.toUrl ().toLocalFile (), DocumentTab::DocumentOpenOptions {});
-		EmitTab (tab);
+		AddTab (tab);
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -132,7 +141,7 @@ namespace Monocle
 	void Plugin::TabOpenRequested (const QByteArray& id)
 	{
 		if (id == DocTabInfo_.TabClass_)
-			EmitTab (new DocumentTab (DocTabInfo_, this));
+			AddTab (new DocumentTab (DocTabInfo_, this));
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -159,7 +168,7 @@ namespace Monocle
 			for (const auto& pair : info.DynProperties_)
 				tab->setProperty (pair.first, pair.second);
 
-			EmitTab (tab);
+			AddTab (tab);
 
 			tab->RecoverState (info.Data_);
 		}
@@ -186,22 +195,6 @@ namespace Monocle
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
 	{
 		Core::Instance ().GetShortcutManager ()->SetShortcut (id, sequences);
-	}
-
-	void Plugin::EmitTab (DocumentTab *tab)
-	{
-		emit addNewTab (DocTabInfo_.VisibleName_, tab);
-		emit changeTabIcon (tab, DocTabInfo_.Icon_);
-		emit raiseTab (tab);
-
-		connect (tab,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (tab,
-				SIGNAL (changeTabName (QWidget*, QString)),
-				this,
-				SIGNAL (changeTabName (QWidget*, QString)));
 	}
 }
 }

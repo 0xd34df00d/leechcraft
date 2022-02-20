@@ -201,8 +201,8 @@ namespace Monocle
 		void handleScaleChosen (int);
 		void handleCustomScale (QString);
 	signals:
-		void changeTabName (QWidget*, const QString&);
-		void removeTab (QWidget*);
+		void changeTabName (const QString&) override;
+		void removeTab () override;
 
 		void tabRecoverDataChanged () override;
 

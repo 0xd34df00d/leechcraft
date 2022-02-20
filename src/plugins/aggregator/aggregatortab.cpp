@@ -120,7 +120,7 @@ namespace Aggregator
 
 	void AggregatorTab::Remove ()
 	{
-		emit removeTabRequested ();
+		emit removeTab ();
 	}
 
 	QByteArray AggregatorTab::GetTabRecoverData () const

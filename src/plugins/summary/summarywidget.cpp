@@ -221,7 +221,8 @@ namespace Summary
 
 	void SummaryWidget::Remove ()
 	{
-		emit needToClose ();
+		emit removeTab ();
+		deleteLater ();
 	}
 
 	QToolBar* SummaryWidget::GetToolBar () const

@@ -63,7 +63,7 @@ namespace Poleemery
 
 	void GraphsTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

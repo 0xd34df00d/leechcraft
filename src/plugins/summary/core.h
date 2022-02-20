@@ -35,7 +35,7 @@ namespace Summary
 		 * all the downloaders and such stuff.
 		 */
 		std::shared_ptr<Util::MergeModel> MergeModel_;
-		SummaryWidget *Current_;
+		QPointer<SummaryWidget> Current_;
 
 		Core ();
 	public:
@@ -124,19 +124,10 @@ namespace Summary
 		template<typename F>
 		SummaryWidget* CreateSummaryWidget (F&& f);
 	private slots:
-		void handleChangeTabName (const QString&);
 		void handleCurrentTabChanged (int);
-		void handleNeedToClose ();
 		void handleWindow (int);
 		void handlePluginInjected (QObject*);
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 		void currentViewChanged (QTreeView*);
 	};
 }

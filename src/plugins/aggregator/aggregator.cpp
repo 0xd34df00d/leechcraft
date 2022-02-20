@@ -26,6 +26,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/db/backendselector.h>
 #include <util/gui/util.h>
@@ -202,30 +203,24 @@ namespace Aggregator
 
 	void Aggregator::TabOpenRequested (const QByteArray& tabClass)
 	{
-		if (tabClass == "Aggregator")
-		{
-			if (!AggregatorTab_)
-			{
-				AggregatorTab_ = std::make_unique<AggregatorTab> (AggregatorTab::InitParams {
-							*AppWideActions_,
-							ChannelActions_,
-							TabInfo_,
-							ChannelsModel_.get (),
-							Proxy_->GetTagsManager (),
-							MakeItemsWidgetDeps ()
-						},
-						this);
-				connect (AggregatorTab_.get (),
-						&AggregatorTab::removeTabRequested,
-						[this] { emit removeTab (AggregatorTab_.get ()); });
-			}
-			emit addNewTab (AggregatorTab_->GetTabClassInfo ().VisibleName_, AggregatorTab_.get ());
-
-		}
-		else
+		if (tabClass != "Aggregator")
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
+
+		if (!AggregatorTab_)
+			AggregatorTab_ = std::make_unique<AggregatorTab> (AggregatorTab::InitParams {
+						*AppWideActions_,
+						ChannelActions_,
+						TabInfo_,
+						ChannelsModel_.get (),
+						Proxy_->GetTagsManager (),
+						MakeItemsWidgetDeps ()
+					},
+					this);
+
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (AggregatorTab_->GetTabClassInfo ().VisibleName_,
+				AggregatorTab_.get ());
 	}
 
 	Util::XmlSettingsDialog_ptr Aggregator::GetSettingsDialog () const

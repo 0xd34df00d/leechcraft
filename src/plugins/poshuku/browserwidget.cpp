@@ -402,7 +402,12 @@ namespace Poshuku
 		connect (webViewWidget,
 				SIGNAL (closeRequested ()),
 				this,
-				SIGNAL (needToClose ()));
+				SIGNAL (removeTab ()));
+
+		connect (this,
+				&BrowserWidget::removeTab,
+				this,
+				&QObject::deleteLater);
 
 		connect (HistoryAction_,
 				SIGNAL (triggered (bool)),
@@ -614,7 +619,7 @@ namespace Poshuku
 		if (proxy->IsCancelled ())
 			return;
 
-		emit needToClose ();
+		emit removeTab ();
 	}
 
 	QToolBar* BrowserWidget::GetToolBar () const
@@ -792,7 +797,7 @@ namespace Poshuku
 
 		Ui_.URLFrame_->SetFavicon (icon);
 
-		emit iconChanged (icon);
+		emit changeTabIcon (icon);
 	}
 
 	void BrowserWidget::handleStatusBarMessage (const QString& thmsg)
@@ -968,7 +973,7 @@ namespace Poshuku
 		if (title.isEmpty ())
 			title = QFileInfo { WebView_->GetUrl ().path () }.fileName ();
 
-		emit titleChanged (title);
+		emit changeTabName (title);
 	}
 
 	const int MaxHistoryItems = 10;
@@ -1406,7 +1411,7 @@ namespace Poshuku
 
 		if (p > 0 && p < 100)
 			title.prepend (QString ("[%1%] ").arg (p));
-		emit titleChanged (title);
+		emit changeTabName (title);
 
 		QAction *o = 0;
 		QAction *n = 0;
@@ -1477,7 +1482,7 @@ namespace Poshuku
 
 		Entity e = Util::MakeNotification ("Poshuku", text, prio);
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Open"), [this] () { emit raiseTab (this); });
+		nh->AddFunction (tr ("Open"), [this] () { emit raiseTab (); });
 		nh->AddDependentObject (this);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}

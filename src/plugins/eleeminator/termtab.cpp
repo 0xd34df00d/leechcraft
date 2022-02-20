@@ -488,7 +488,7 @@ namespace Eleeminator
 		const auto& title = cwd.isEmpty () ?
 				processName :
 				(cwd.section ('/', -1, -1) + " : " + processName);
-		emit changeTabName (this, title);
+		emit changeTabName (title);
 	}
 
 	namespace
@@ -536,7 +536,7 @@ namespace Eleeminator
 
 	void TermTab::handleFinished ()
 	{
-		emit remove (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 }

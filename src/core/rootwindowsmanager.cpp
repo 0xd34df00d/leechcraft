@@ -229,10 +229,13 @@ namespace LC
 		return win;
 	}
 
-	void RootWindowsManager::PerformWithTab (const std::function<void (TabManager*, int)>& f, QWidget *w)
+	template<typename F>
+	void RootWindowsManager::PerformWithSender (F&& f)
 	{
 		if (IsShuttingDown_)
 			return;
+
+		const auto w = qobject_cast<QWidget*> (sender ());
 
 		const int idx = GetWindowForTab (qobject_cast<ITabWidget*> (w));
 		if (idx < 0)
@@ -243,7 +246,7 @@ namespace LC
 			return;
 		}
 
-		f (Windows_ [idx].TM_, idx);
+		f (Windows_ [idx].TM_, w, idx);
 	}
 
 	void RootWindowsManager::MoveTab (int tabIdx, int fromWin, int toWin)
@@ -305,12 +308,21 @@ namespace LC
 #endif
 	}
 
-	void RootWindowsManager::add (const QString& name, QWidget *w)
+	void RootWindowsManager::AddTab (const QString& name, QWidget *w, AddTabFlags flags)
 	{
+		auto raiseIfNeeded = [=]
+		{
+			if (!(flags & AddTabFlag::Background))
+				window.TM_->bringToFront (w);
+		};
+
 		auto itw = qobject_cast<ITabWidget*> (w);
 
 		if (GetWindowForTab (itw) != -1)
+		{
+			raiseIfNeeded ();
 			return;
+		}
 
 		const auto& hookProxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookTabAdding (hookProxy, w);
@@ -336,34 +348,69 @@ namespace LC
 		while (winIdx >= Windows_.size ())
 			MakeMainWindow ();
 
+		auto& window = Windows_ [winIdx];
+
 		const auto& tc = itw->GetTabClassInfo ().TabClass_;
-		Windows_ [winIdx].Window_->setWindowRole (tc);
-		SetWMClass (Windows_ [winIdx].Window_, tc);
-		Windows_ [winIdx].TM_->add (name, w);
-		emit tabAdded (winIdx, Windows_ [winIdx].Window_->GetTabWidget ()->IndexOf (w));
+		window.Window_->setWindowRole (tc);
+		SetWMClass (window.Window_, tc);
+		window.TM_->add (name, w);
+		emit tabAdded (winIdx, window.Window_->GetTabWidget ()->IndexOf (w));
+
+		ConnectSignals (w);
+
+		raiseIfNeeded ();
 	}
 
-	void RootWindowsManager::remove (QWidget *w)
+	void RootWindowsManager::ConnectSignals (QWidget *w)
 	{
-		PerformWithTab ([this, w] (TabManager *tm, int winIdx)
+		connect (w,
+				SIGNAL (removeTab ()),
+				this,
+				SLOT (remove ()));
+
+		const auto mo = w->metaObject ();
+		const auto hasSignal = [mo] (const char *signal)
+		{
+			return mo->indexOfSignal (QMetaObject::normalizedSignature (signal)) >= 0;
+		};
+		if (hasSignal ("changeTabName (QString)"))
+			connect (w,
+					SIGNAL (changeTabName (QString)),
+					this,
+					SLOT (changeTabName (QString)));
+		if (hasSignal ("changeTabIcon (QIcon)"))
+			connect (w,
+					SIGNAL (changeTabIcon (QIcon)),
+					this,
+					SLOT (changeTabIcon (QIcon)));
+		if (hasSignal ("raiseTab ()"))
+			connect (w,
+					SIGNAL (raiseTab ()),
+					this,
+					SLOT (bringToFront ()));
+	}
+
+	void RootWindowsManager::remove ()
+	{
+		PerformWithSender ([this] (TabManager *tm, QWidget *w, int winIdx)
 			{
 				emit tabIsRemoving (winIdx, tm->FindTabForWidget (w));
 				tm->remove (w);
-			}, w);
+			});
 	}
 
-	void RootWindowsManager::changeTabName (QWidget *w, const QString& name)
+	void RootWindowsManager::changeTabName (const QString& name)
 	{
-		PerformWithTab ([w, &name] (TabManager *tm, int) { tm->changeTabName (w, name); }, w);
+		PerformWithSender ([&name] (TabManager *tm, QWidget *w, int) { tm->changeTabName (w, name); });
 	}
 
-	void RootWindowsManager::changeTabIcon (QWidget *w, const QIcon& icon)
+	void RootWindowsManager::changeTabIcon (const QIcon& icon)
 	{
-		PerformWithTab ([w, &icon] (TabManager *tm, int) { tm->changeTabIcon (w, icon); }, w);
+		PerformWithSender ([&icon] (TabManager *tm, QWidget *w, int) { tm->changeTabIcon (w, icon); });
 	}
 
-	void RootWindowsManager::bringToFront (QWidget *w)
+	void RootWindowsManager::bringToFront ()
 	{
-		PerformWithTab ([w] (TabManager *tm, int) { tm->bringToFront (w); }, w);
+		PerformWithSender ([] (TabManager *tm, QWidget *w, int) { tm->bringToFront (w); });
 	}
 }

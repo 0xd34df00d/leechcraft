@@ -9,6 +9,8 @@
 
 #include "choroid.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "choroidtab.h"
 
 namespace LC
@@ -65,17 +67,7 @@ namespace Choroid
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "ChoroidTab")
-		{
-			auto t = new ChoroidTab (TabInfo_, Proxy_, this);
-
-			connect (t,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-
-			emit addNewTab ("Choroid", t);
-			emit raiseTab (t);
-		}
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), new ChoroidTab (TabInfo_, Proxy_, this));
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"

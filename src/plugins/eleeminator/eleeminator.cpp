@@ -13,6 +13,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "termtab.h"
 #include "xmlsettingsmanager.h"
 #include "colorschemesmanager.h"
@@ -107,20 +108,8 @@ namespace Eleeminator
 	void Plugin::TabOpenRequested (const QByteArray& tc)
 	{
 		if (tc == TermTabTC_.TabClass_)
-		{
-			auto tab = new TermTab { Proxy_, ShortcutMgr_, TermTabTC_, ColorSchemesMgr_, this };
-			emit addNewTab (TermTabTC_.VisibleName_, tab);
-			emit raiseTab (tab);
-
-			connect (tab,
-					SIGNAL (changeTabName (QWidget*, QString)),
-					this,
-					SIGNAL (changeTabName (QWidget*, QString)));
-			connect (tab,
-					SIGNAL (remove (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-		}
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TermTabTC_.VisibleName_,
+					new TermTab { Proxy_, ShortcutMgr_, TermTabTC_, ColorSchemesMgr_, this });
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"

@@ -124,7 +124,7 @@ namespace Blasq
 
 		void handleAccDoneUpdating ();
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 
 		void tabRecoverDataChanged ();
 	};

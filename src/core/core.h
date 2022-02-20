@@ -183,11 +183,6 @@ namespace LC
 		/** Initializes IInfo's signals of the object.
 		 */
 		void InitDynamicSignals (const QObject *object);
-
-		/** Initializes the object as a IMultiTabs. The object is assumed
-		 * to be a valid IMultiTabs*.
-		 */
-		void InitMultiTab (const QObject *object);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

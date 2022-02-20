@@ -154,9 +154,8 @@ namespace Blogique
 		void on_PreviewPost__triggered ();
 
 	signals:
-		void removeTab (QWidget *tab);
-		void addNewTab (const QString& name, QWidget *tab);
-		void changeTabName (QWidget *content, const QString& name);
+		void removeTab ();
+		void changeTabName (const QString& name);
 
 		void tabRecoverDataChanged ();
 

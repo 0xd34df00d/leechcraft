@@ -88,7 +88,7 @@ namespace LC::LMP::Graffiti
 
 		void HandleDirIterateResults (const QList<QFileInfo>&, const QString&);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 
 		void tagsFetchProgress (int, int, QObject*);
 		void cueSplitStarted (CueSplitter*);

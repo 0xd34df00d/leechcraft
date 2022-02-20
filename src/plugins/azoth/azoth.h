@@ -115,13 +115,6 @@ namespace Azoth
 	signals:
 		void gotEntity (const LC::Entity&) override;
 
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
-
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }

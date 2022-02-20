@@ -13,6 +13,8 @@
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/iservice.h"
@@ -223,12 +225,7 @@ namespace Blasq
 			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this, Proxy_);
 			for (const auto& prop : list)
 				tab->setProperty (prop.first, prop.second);
-			connect (tab,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-			emit addNewTab (PhotosTabTC_.VisibleName_, tab);
-			emit raiseTab (tab);
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (PhotosTabTC_.VisibleName_, tab);
 
 			if (recover)
 				tab->RecoverState (*recover);

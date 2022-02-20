@@ -38,10 +38,10 @@ namespace Azoth
 	public:
 		ConsoleWidget (QObject*, QWidget* = 0);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 
 		void SetParentMultiTabs (QObject*);
 		QString GetTitle () const;
@@ -50,7 +50,7 @@ namespace Azoth
 		void on_ClearButton__released ();
 		void on_EnabledBox__toggled (bool);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 	};
 }
 }

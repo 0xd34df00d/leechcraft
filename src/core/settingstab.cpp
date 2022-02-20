@@ -240,7 +240,7 @@ namespace LC
 
 	void SettingsTab::Remove ()
 	{
-		emit remove (this);
+		emit removeTab ();
 	}
 
 	QToolBar* SettingsTab::GetToolBar () const

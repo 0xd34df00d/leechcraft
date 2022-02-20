@@ -87,7 +87,7 @@ namespace Aggregator
 	signals:
 		void tabRecoverDataChanged () override;
 
-		void removeTabRequested ();
+		void removeTab () override;
 	};
 }
 }

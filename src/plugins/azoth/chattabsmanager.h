@@ -83,18 +83,11 @@ namespace Azoth
 		void RestoreChat (const RestoreChatInfo&, QObject*);
 		void CloseChatTab (ChatTab*, bool fromUser);
 	private slots:
-		void handleNeedToClose (ChatTab*);
 		void updateCurrentTab (QObject*);
 		void handleAddingCLEntryEnd (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 		void chatWindowStyleChanged ();
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void removeTab (QWidget*);
-		void raiseTab (QWidget*);
-
 		void entryMadeCurrent (QObject*);
 		void entryLostCurrent (QObject*);
 	};

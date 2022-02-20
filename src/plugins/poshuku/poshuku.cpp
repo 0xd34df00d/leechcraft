@@ -273,34 +273,6 @@ namespace Poshuku
 				SLOT (handleSettingsClicked (const QString&)));
 
 		connect (&Core::Instance (),
-				SIGNAL (addNewTab (const QString&, QWidget*)),
-				this,
-				SIGNAL (addNewTab (const QString&, QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTooltip (QWidget*, QWidget*)),
-				this,
-				SIGNAL (changeTooltip (QWidget*, QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (statusBarChanged (QWidget*, const QString&)),
-				this,
-				SIGNAL (statusBarChanged (QWidget*, const QString&)));
-		connect (&Core::Instance (),
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
-		connect (&Core::Instance (),
 				SIGNAL (error (const QString&)),
 				this,
 				SLOT (handleError (const QString&)));

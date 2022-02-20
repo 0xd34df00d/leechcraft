@@ -63,7 +63,7 @@ namespace Poshuku
 
 		void loadStarted ();
 		void loadProgress (int);
-		void loadFinished (bool);
+		void loadFinished (bool) override;
 		void iconChanged ();
 		void titleChanged (const QString&);
 		void urlChanged (const QUrl&);

@@ -115,13 +115,6 @@ namespace LMP
 
 		void handleArtistBrowseRequested (const QString&, const DynPropertiesList_t& = DynPropertiesList_t ());
 	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
-
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }

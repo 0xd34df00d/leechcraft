@@ -217,7 +217,7 @@ namespace Popishu
 				on_ActionSave__triggered ();
 		}
 
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 
@@ -311,7 +311,7 @@ namespace Popishu
 		Ui_.TextEditor_->setText (QString ());
 		Modified_ = false;
 
-		emit changeTabName (this, QString ("%1 - Popishu")
+		emit changeTabName (QString ("%1 - Popishu")
 				.arg (tr ("Untitled")));
 
 		DoctypeDetected_ = false;
@@ -591,7 +591,7 @@ namespace Popishu
 			if (Filename_.isEmpty ())
 				return false;
 
-			emit changeTabName (this, QString ("%1 - Popishu")
+			emit changeTabName (QString ("%1 - Popishu")
 					.arg (Filename_));
 		}
 
@@ -646,7 +646,7 @@ namespace Popishu
 
 		Modified_ = false;
 
-		emit changeTabName (this, QString ("%1 - Popishu")
+		emit changeTabName (QString ("%1 - Popishu")
 				.arg (Filename_));
 		QStringList path ("Popishu");
 		path += Filename_.split ('/', Qt::SkipEmptyParts);

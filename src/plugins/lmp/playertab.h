@@ -100,9 +100,7 @@ namespace LMP
 		void handleChangedVolume (qreal delta);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason);
 	signals:
-		void changeTabName (QWidget*, const QString&);
-		void removeTab (QWidget*);
-		void raiseTab (QWidget*);
+		void removeTab ();
 
 		void fullRaiseRequested ();
 

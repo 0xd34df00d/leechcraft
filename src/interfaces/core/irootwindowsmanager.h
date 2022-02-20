@@ -148,6 +148,17 @@ public:
 	 */
 	virtual ICoreTabWidget* GetTabWidget (int idx) const = 0;
 
+	enum class AddTabFlag
+	{
+		None = 0x00,
+
+		Background = 0x01,
+	};
+
+	Q_DECLARE_FLAGS (AddTabFlags, AddTabFlag)
+
+	virtual void AddTab (const QString& name, QWidget *tab, AddTabFlags flags = AddTabFlag::None) = 0;
+
 	/** @brief Returns the index of the window containing the tab widget.
 	 *
 	 * @param[in] ictw The tab widget to search for.
@@ -242,5 +253,7 @@ protected:
 	 */
 	virtual void tabMoved (int fromWin, int toWin, int tabIdx) = 0;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (IRootWindowsManager::AddTabFlags)
 
 Q_DECLARE_INTERFACE (IRootWindowsManager, "org.LeechCraft.IRootWindowsManager/1.0")

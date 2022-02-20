@@ -170,30 +170,9 @@ namespace Summary
 	SummaryWidget* Core::CreateSummaryWidget (F&& f)
 	{
 		auto result = new SummaryWidget ();
-		connect (result,
-				SIGNAL (changeTabName (const QString&)),
-				this,
-				SLOT (handleChangeTabName (const QString&)));
-		connect (result,
-				SIGNAL (needToClose ()),
-				this,
-				SLOT (handleNeedToClose ()));
-		connect (result,
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
-
 		std::invoke (f, *result);
-
-		emit addNewTab (tr ("Summary"), result);
-		emit changeTabIcon (result, GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
-
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Summary"), result);
 		return result;
-	}
-
-	void Core::handleChangeTabName (const QString& name)
-	{
-		emit changeTabName (Current_, name);
 	}
 
 	void Core::handleCurrentTabChanged (int newIndex)
@@ -233,14 +212,8 @@ namespace Summary
 	{
 		if (!Current_)
 			Current_ = CreateSummaryWidget ([] (auto&&) {});
-		emit raiseTab (Current_);
-	}
-
-	void Core::handleNeedToClose ()
-	{
-		emit removeTab (Current_);
-		Current_->deleteLater ();
-		Current_ = nullptr;
+		else
+			emit Current_->raiseTab ();
 	}
 
 	void Core::handleWindow (int index)

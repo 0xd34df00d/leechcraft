@@ -90,7 +90,7 @@ namespace Snails
 
 		void handleEditorChanged (IEditorWidget*, IEditorWidget*);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 	};
 }
 }

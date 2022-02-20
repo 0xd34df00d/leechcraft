@@ -411,42 +411,6 @@ namespace Qrosp
 	{
 	}
 
-	void WrapperObject::addNewTab (const QString&, QWidget*)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "is called, but this should never happen";
-	}
-
-	void WrapperObject::removeTab (QWidget*)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "is called, but this should never happen";
-	}
-
-	void WrapperObject::changeTabName (QWidget*, const QString&)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "is called, but this should never happen";
-	}
-
-	void WrapperObject::changeTabIcon (QWidget*, const QIcon&)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "is called, but this should never happen";
-	}
-
-	void WrapperObject::statusBarChanged (QWidget*, const QString&)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "is called, but this should never happen";
-	}
-
-	void WrapperObject::raiseTab (QWidget*)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "is called, but this should never happen";
-	}
-
 	void WrapperObject::gotActions (QList<QAction*>, ActionsEmbedPlace)
 	{
 		qWarning () << Q_FUNC_INFO

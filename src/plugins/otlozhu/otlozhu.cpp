@@ -13,6 +13,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -92,13 +93,7 @@ namespace Otlozhu
 		if (id == TCTodo_.TabClass_)
 		{
 			auto tab = new TodoTab (TCTodo_, this);
-			emit addNewTab (TCTodo_.VisibleName_, tab);
-			emit raiseTab (tab);
-
-			connect (tab,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TCTodo_.VisibleName_, tab);
 
 			connect (tab,
 					SIGNAL (gotEntity (LC::Entity)),

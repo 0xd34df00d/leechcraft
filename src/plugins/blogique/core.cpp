@@ -148,10 +148,6 @@ namespace Blogique
 	BlogiqueWidget* Core::CreateBlogiqueWidget ()
 	{
 		auto newTab = new BlogiqueWidget;
-		connect (newTab,
-				SIGNAL (removeTab (QWidget*)),
-				&Core::Instance (),
-				SIGNAL (removeTab (QWidget*)));
 		connect (&Core::Instance (),
 				SIGNAL (checkAutoSave ()),
 				newTab,

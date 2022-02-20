@@ -49,14 +49,6 @@ namespace Summary
 
 		void RecoverTabs (const QList<TabRecoverInfo>&);
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }

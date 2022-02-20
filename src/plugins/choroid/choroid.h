@@ -39,13 +39,6 @@ namespace Choroid
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }

@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "mainwindow.h"
@@ -60,20 +59,26 @@ namespace LC
 		IMWProxy* GetMWProxy (int) const override;
 		MainWindow* GetMainWindow (int) const override;
 		ICoreTabWidget* GetTabWidget (int) const override;
+
+		void AddTab (const QString&, QWidget*, AddTabFlags) override;
 	private:
+		void ConnectSignals (QWidget*);
+
 		MainWindow* CreateWindow (QScreen *screen, bool primary);
-		void PerformWithTab (const std::function<void (TabManager*, int)>&, QWidget*);
+
+		template<typename F>
+		void PerformWithSender (F&&);
+
 		void MoveTab (int tab, int fromWin, int toWin);
 		void CloseWindowTabs (int index);
 	public slots:
 		void moveTabToNewWindow ();
 		void moveTabToExistingWindow ();
-
-		void add (const QString&, QWidget*);
-		void remove (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void bringToFront (QWidget*);
+	private slots:
+		void remove ();
+		void changeTabName (const QString&);
+		void changeTabIcon (const QIcon&);
+		void bringToFront ();
 	signals:
 		void windowAdded (int) override;
 		void windowRemoved (int) override;

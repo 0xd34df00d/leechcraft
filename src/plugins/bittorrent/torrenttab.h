@@ -58,6 +58,6 @@ namespace LC::BitTorrent
 
 		void SetCurrentTorrent (const QModelIndex&);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 	};
 }

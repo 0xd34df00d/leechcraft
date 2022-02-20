@@ -112,9 +112,7 @@ namespace ChatHistory
 		void RequestLogs ();
 		void RequestSearch (ChatFindBox::FindFlags);
 	signals:
-		void removeSelf (QWidget*);
-
-		void gotEntity (const LC::Entity&);
+		void removeTab ();
 	};
 }
 }

@@ -104,7 +104,7 @@ namespace Azoth
 
 	void SearchWidget::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

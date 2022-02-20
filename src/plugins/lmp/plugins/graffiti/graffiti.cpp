@@ -13,6 +13,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/lmp/mediainfo.h>
 #include "cuesplitter.h"
 #include "literals.h"
@@ -98,13 +99,7 @@ namespace LC::LMP::Graffiti
 	GraffitiTab* Plugin::MakeTab ()
 	{
 		auto tab = new GraffitiTab (LMPProxy_, TaggerTC_, this);
-		emit addNewTab (TaggerTC_.VisibleName_, tab);
-		emit raiseTab (tab);
-
-		connect (tab,
-				&GraffitiTab::removeTab,
-				this,
-				&Plugin::removeTab);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TaggerTC_.VisibleName_, tab);
 
 		connect (tab,
 				&GraffitiTab::tagsFetchProgress,

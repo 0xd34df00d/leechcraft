@@ -78,13 +78,6 @@ namespace Blasq
 		QList<FilterVariant> GetFilterVariants (const QVariant&) const;
 	private:
 		void TabOpenRequested (const QByteArray&, const DynPropertiesList_t&, QDataStream* = nullptr);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }

@@ -190,15 +190,15 @@ namespace Poshuku
 
 		void handleFeaturePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&, IWebView::Feature);
 	signals:
-		void titleChanged (const QString&);
-		void urlChanged (const QUrl&) override;
-		void iconChanged (const QIcon&);
-		void needToClose ();
-		void tooltipChanged (QWidget*);
-		void addToFavorites (const QString&, const QString&);
-		void statusBarChanged (const QString&);
-		void raiseTab (QWidget*);
+		void removeTab () override;
+		void changeTabName (const QString&) override;
+		void changeTabIcon (const QIcon&) override;
+		void raiseTab () override;
+
 		void tabRecoverDataChanged () override;
+
+		void urlChanged (const QUrl&) override;
+		void addToFavorites (const QString&, const QString&);
 
 		// Hook support
 		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr proxy,

@@ -58,6 +58,6 @@ namespace LC
 
 		void handleBackRequested ();
 	signals:
-		void remove (QWidget*);
+		void removeTab () override;
 	};
 }

@@ -343,7 +343,7 @@ namespace Azoth
 	{
 		if (IsCurrent_)
 			emit entryLostCurrent (GetEntry<QObject> ());
-		emit needToClose (this);
+		emit needToClose ();
 	}
 
 	void ChatTab::TabMadeCurrent ()
@@ -1099,7 +1099,7 @@ namespace Azoth
 
 	void ChatTab::handleNameChanged (const QString& name)
 	{
-		emit changeTabName (this, name);
+		ReformatTitle ();
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
@@ -1931,7 +1931,7 @@ namespace Azoth
 					.arg (NumUnreadMsgs_));
 		if (HadHighlight_)
 			title.prepend ("* ");
-		emit changeTabName (this, title);
+		emit changeTabName (title);
 
 		QStringList path ("Azoth");
 		switch (GetEntry<ICLEntry> ()->GetEntryType ())
@@ -2040,7 +2040,7 @@ namespace Azoth
 
 	void ChatTab::UpdateStateIcon ()
 	{
-		emit changeTabIcon (this, TabIcon_);
+		emit changeTabIcon (TabIcon_);
 	}
 
 #ifdef ENABLE_CRYPT

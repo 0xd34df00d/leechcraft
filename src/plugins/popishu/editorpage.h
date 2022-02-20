@@ -115,11 +115,8 @@ namespace Popishu
 
 		void PrependRecentFile (const QString&, bool = true);
 	signals:
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
+		void removeTab () override;
+		void changeTabName (const QString&) override;
 
 		void languageChanged (const QString& language);
 

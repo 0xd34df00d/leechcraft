@@ -60,13 +60,6 @@ namespace Eleeminator
 		void SetShortcut (const QString&, const QKeySequences_t&);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void raiseTab (QWidget*);
-		void removeTab (QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
 	};
 }
 }

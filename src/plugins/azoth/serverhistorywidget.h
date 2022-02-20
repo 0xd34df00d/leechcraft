@@ -47,10 +47,10 @@ namespace Azoth
 
 		void SetTabInfo (QObject*, const TabClassInfo&);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 
 		void SelectEntry (ICLEntry*);
 	private:
@@ -62,7 +62,7 @@ namespace Azoth
 		void navigatePrevious ();
 		void navigateNext ();
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 	};
 }
 }

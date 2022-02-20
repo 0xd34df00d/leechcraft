@@ -162,7 +162,7 @@ namespace LMP
 
 	void PlayerTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 	}
 
 	QToolBar* PlayerTab::GetToolBar () const

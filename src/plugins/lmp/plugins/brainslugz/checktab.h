@@ -62,7 +62,7 @@ namespace BrainSlugz
 		void handleStart ();
 		void handleCheckFinished ();
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 
 		void runningStateChanged (bool);
 		void checkStarted (Checker*);

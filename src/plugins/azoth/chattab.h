@@ -250,9 +250,13 @@ namespace Azoth
 		void SetEncryptionEnabled (ISupportPGP*, bool enable);
 #endif
 	signals:
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void needToClose (ChatTab*);
+		void changeTabName (const QString&);
+		void changeTabIcon (const QIcon&);
+		void removeTab ();
+		void raiseTab ();
+
+		void needToClose ();
+
 		void entryMadeCurrent (QObject*);
 		void entryLostCurrent (QObject*);
 

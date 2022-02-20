@@ -81,13 +81,6 @@ namespace Graffiti
 		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
 				const LC::LMP::MediaInfo&);
-	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void raiseTab (QWidget*) override;
-		void statusBarChanged (QWidget*, const QString&) override;
 	};
 }
 }

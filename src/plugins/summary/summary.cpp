@@ -26,35 +26,6 @@ namespace Summary
 
 		Core::Instance ().SetProxy (proxy);
 
-		connect (&Core::Instance (),
-				SIGNAL (addNewTab (QString, QWidget*)),
-				this,
-				SIGNAL (addNewTab (QString, QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabName (QWidget*, QString)),
-				this,
-				SIGNAL (changeTabName (QWidget*, QString)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabIcon (QWidget*, QIcon)),
-				this,
-				SIGNAL (changeTabIcon (QWidget*, QIcon)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTooltip (QWidget*, QWidget*)),
-				this,
-				SIGNAL (changeTooltip (QWidget*, QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (statusBarChanged (QWidget*, QString)),
-				this,
-				SIGNAL (statusBarChanged (QWidget*, QString)));
-		connect (&Core::Instance (),
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
-
 		TabClassInfo tabClass =
 		{
 			"Summary",

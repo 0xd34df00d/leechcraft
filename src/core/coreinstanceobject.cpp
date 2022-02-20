@@ -12,6 +12,8 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QStyleFactory>
+#include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/icoretabwidget.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/paths.h>
@@ -117,11 +119,6 @@ namespace LC
 				SIGNAL (pushButtonClicked (QString)),
 				this,
 				SLOT (handleSettingsButton (QString)));
-
-		connect (SettingsTab_,
-				SIGNAL (remove (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
 	}
 
 	void CoreInstanceObject::SetProxy (ICoreProxy_ptr)
@@ -285,10 +282,7 @@ namespace LC
 	void CoreInstanceObject::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "org.LeechCraft.SettingsPane")
-		{
-			emit addNewTab (tr ("Settings"), SettingsTab_);
-			emit raiseTab (SettingsTab_);
-		}
+			CoreProxy::UnsafeWithoutDeps ()->GetRootWindowsManager ()->AddTab (tr ("Settings"), SettingsTab_);
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"

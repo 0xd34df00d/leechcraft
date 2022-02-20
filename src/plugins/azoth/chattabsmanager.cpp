@@ -9,6 +9,8 @@
 #include "chattabsmanager.h"
 #include <QWebEngineProfile>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -70,7 +72,7 @@ namespace LC::Azoth
 		if (Entry2Tab_.contains (id))
 		{
 			auto tab = Entry2Tab_ [id];
-			emit raiseTab (tab);
+			emit tab->raiseTab ();
 			return tab;
 		}
 
@@ -97,9 +99,9 @@ namespace LC::Azoth
 			tab->setProperty (prop.first, prop.second);
 
 		connect (tab,
-				SIGNAL (needToClose (ChatTab*)),
+				&ChatTab::needToClose,
 				this,
-				SLOT (handleNeedToClose (ChatTab*)));
+				[=] { CloseChatTab (tab, true); });
 		connect (tab,
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
@@ -112,22 +114,13 @@ namespace LC::Azoth
 				SIGNAL (entryLostCurrent (QObject*)),
 				this,
 				SIGNAL (entryLostCurrent (QObject*)));
-		connect (tab,
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (tab,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
 
-		emit addNewTab (tab->ReformatTitle (), tab);
+		IRootWindowsManager::AddTabFlags flags {};
+		if (!fromUser && !XmlSettingsManager::Instance ().property ("JumpToNewTabOnOpen").toBool ())
+			flags |= IRootWindowsManager::AddTabFlag::Background;
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tab->ReformatTitle (), tab, flags);
 
 		tab->HasBeenAdded ();
-
-		if (fromUser || XmlSettingsManager::Instance ()
-				.property ("JumpToNewTabOnOpen").toBool ())
-			emit raiseTab (tab);
 
 		return tab;
 	}
@@ -302,7 +295,7 @@ namespace LC::Azoth
 
 	void ChatTabsManager::CloseChatTab (ChatTab *tab, bool fromUser)
 	{
-		emit removeTab (tab);
+		emit tab->removeTab ();
 
 		const auto& entry = Entry2Tab_.key (tab);
 		Entry2Tab_.remove (entry);
@@ -316,11 +309,6 @@ namespace LC::Azoth
 			if (const auto muc = qobject_cast<IMUCEntry*> (entryObj))
 				muc->Leave ();
 		}
-	}
-
-	void ChatTabsManager::handleNeedToClose (ChatTab *tab)
-	{
-		CloseChatTab (tab, true);
 	}
 
 	void ChatTabsManager::updateCurrentTab (QObject *entryObj)

@@ -14,6 +14,7 @@
 #include <util/threads/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
@@ -177,18 +178,6 @@ namespace ChatHistory
 		StorageMgr_->AddLogItems (accountId, entryId, visibleName, items, true);
 	}
 
-	void Plugin::InitWidget (ChatHistoryWidget *wh)
-	{
-		connect (wh,
-				SIGNAL (removeSelf (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (wh,
-				SIGNAL (gotEntity (LC::Entity)),
-				this,
-				SIGNAL (gotEntity (LC::Entity)));
-	}
-
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
@@ -334,17 +323,15 @@ namespace ChatHistory
 
 	void Plugin::HandleHistoryRequested ()
 	{
-		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ } };
-		InitWidget (wh);
-		emit addNewTab (tr ("Chat history"), wh);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Chat history"),
+				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ } },
+				IRootWindowsManager::AddTabFlag::Background);
 	}
 
 	void Plugin::HandleEntryHistoryRequested (ICLEntry *entry)
 	{
-		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ }, entry };
-		InitWidget (wh);
-		emit addNewTab (tr ("Chat history"), wh);
-		emit raiseTab (wh);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Chat history"),
+				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ }, entry });
 	}
 
 }

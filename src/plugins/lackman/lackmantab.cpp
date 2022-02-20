@@ -146,7 +146,7 @@ namespace LackMan
 
 	void LackManTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

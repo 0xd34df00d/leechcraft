@@ -95,7 +95,7 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::Remove ()
 	{
-		emit removeSelf (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 
@@ -579,7 +579,7 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::on_HistView__anchorClicked (const QUrl& url)
 	{
-		emit gotEntity (Util::MakeEntity (url,
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (url,
 				{},
 				FromUserInitiated | OnlyHandle));
 	}
@@ -590,7 +590,7 @@ namespace ChatHistory
 				QString (),
 				FromUserInitiated | OnlyHandle);
 		e.Additional_ ["BackgroundHandle"] = true;
-		emit gotEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	QStandardItem* ChatHistoryWidget::FindContactItem (const QString& id) const

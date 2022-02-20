@@ -55,7 +55,7 @@ namespace LackMan
 
 		TabClassInfo TabClass_;
 
-		LackManTab *LackManTab_ = nullptr;
+		QPointer<LackManTab> LackManTab_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -82,14 +82,6 @@ namespace LackMan
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 	signals:
 		void gotEntity (const LC::Entity&);
-
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }

@@ -210,15 +210,8 @@ namespace Azoth
 		else if (tabClass == "SD")
 			handleSDWidget (new ServiceDiscoveryWidget);
 		else if (tabClass == "Search")
-		{
-			SearchWidget *search = new SearchWidget { Core::Instance ().GetAvatarsManager () };
-			connect (search,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-			emit addNewTab (tr ("Search"), search);
-			emit raiseTab (search);
-		}
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Search"),
+					new SearchWidget { Core::Instance ().GetAvatarsManager () });
 	}
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
@@ -504,27 +497,6 @@ namespace Azoth
 				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
 				this,
 				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (addNewTab (QString, QWidget*)),
-				this,
-				SIGNAL (addNewTab (QString, QWidget*)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabName (QWidget*, QString)),
-				this,
-				SIGNAL (changeTabName (QWidget*, QString)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabIcon (QWidget*, QIcon)),
-				this,
-				SIGNAL (changeTabIcon (QWidget*, QIcon)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -613,34 +585,18 @@ namespace Azoth
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
 	{
-		connect (sd,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		emit addNewTab (tr ("Service discovery"), sd);
-		emit raiseTab (sd);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Service discovery"), sd);
 	}
 
 	void Plugin::handleMicroblogsTab (MicroblogsTab *tab)
 	{
-		connect (tab,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		emit addNewTab (tr ("Microblogs"), tab);
-		emit raiseTab (tab);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Microblogs"), tab);
 	}
 
 	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
 	{
-		connect (widget,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
 		widget->SetTabInfo (this, ServerHistoryTC_);
-
-		emit addNewTab (ServerHistoryTC_.VisibleName_, widget);
-		emit raiseTab (widget);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (ServerHistoryTC_.VisibleName_, widget);
 	}
 
 	void Plugin::handleMWLocation (Qt::DockWidgetArea area)
@@ -681,13 +637,7 @@ namespace Azoth
 	void Plugin::handleConsoleWidget (ConsoleWidget *cw)
 	{
 		cw->SetParentMultiTabs (this);
-		connect (cw,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)),
-				Qt::UniqueConnection);
-		emit addNewTab (cw->GetTitle (), cw);
-		emit raiseTab (cw);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (cw->GetTitle (), cw);
 	}
 }
 }

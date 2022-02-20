@@ -113,7 +113,7 @@ namespace BrainSlugz
 
 	void CheckTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

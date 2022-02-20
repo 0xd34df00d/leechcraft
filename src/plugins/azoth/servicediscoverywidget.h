@@ -43,21 +43,21 @@ namespace Azoth
 	public:
 		static void SetParentMultiTabs (QObject*);
 
-		ServiceDiscoveryWidget (QWidget* = 0);
+		explicit ServiceDiscoveryWidget (QWidget* = nullptr);
 
 		void SetAccount (QObject*);
 		void SetSDSession (ISDSession*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 	private slots:
 		void handleDiscoveryAddressChanged ();
 		void on_DiscoveryTree__customContextMenuRequested (const QPoint&);
 		void discover ();
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 	};
 }
 }

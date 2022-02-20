@@ -6,8 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef INTERFACES_CORE_ICORETABWIDGET_H
-#define INTERFACES_CORE_ICORETABWIDGET_H
+#pragma once
 
 #include <QTabBar>
 #include <QVariant>
@@ -24,7 +23,7 @@ class QMenu;
 class Q_DECL_EXPORT ICoreTabWidget
 {
 public:
-	virtual ~ICoreTabWidget () {}
+	virtual ~ICoreTabWidget () = default;
 
 	/** @brief Returns the pointer to tab widget as a QObject.
 	 *
@@ -179,5 +178,3 @@ protected:
 };
 
 Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0")
-
-#endif

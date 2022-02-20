@@ -52,7 +52,7 @@ namespace LC::LMP
 	private:
 		void DoQueries (const QString&);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 
 		void tabRecoverDataChanged () override;
 	};

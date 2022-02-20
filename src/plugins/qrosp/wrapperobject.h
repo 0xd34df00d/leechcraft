@@ -88,12 +88,6 @@ namespace Qrosp
 		void TabOpenRequested (const QByteArray&);
 
 		// Signals hacks
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	private:
 		template<typename T>

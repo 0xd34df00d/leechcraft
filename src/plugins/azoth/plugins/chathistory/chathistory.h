@@ -94,8 +94,6 @@ namespace ChatHistory
 		QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount*);
 		void AddRawMessages (const QString&, const QString&, const QString&, const QList<HistoryItem>&);
 	private:
-		void InitWidget (ChatHistoryWidget*);
-
 		void HandleGotChatLogs (const QPointer<QObject>&, const ChatLogsResult_t&);
 
 		void HandleHistoryRequested ();
@@ -115,19 +113,9 @@ namespace ChatHistory
 	private slots:
 		void handlePushButton (const QString&);
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-
 		void gotLastMessages (QObject*, const QList<QObject*>&);
 
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
-
-		void gotEntity (const LC::Entity&);
 	};
 }
 }

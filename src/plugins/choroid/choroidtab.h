@@ -89,7 +89,7 @@ namespace Choroid
 		void showPrevImage ();
 		void goUp ();
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 	};
 }
 }

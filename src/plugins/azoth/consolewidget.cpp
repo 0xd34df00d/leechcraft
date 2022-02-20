@@ -58,7 +58,7 @@ namespace Azoth
 	{
 		if (AsObject_)
 			AsConsole_->SetConsoleEnabled (false);
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

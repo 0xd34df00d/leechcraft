@@ -251,6 +251,72 @@ public:
 	virtual void TabLostCurrent ()
 	{
 	}
+
+	/** @brief This signal is emitted by a tab when it wants to remove
+	 * itself.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 */
+	virtual void removeTab () = 0;
+
+	/** @brief This signal is emitted by a tab to change its name.
+	 *
+	 * The name of the tab is shown in the tab bar of the tab widget. It
+	 * also may be shown in other places and contexts, like in the
+	 * LeechCraft title bar when the corresponding tab is active.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] name The new name of the tab with tabContents.
+	 */
+	virtual void changeTabName (const QString& name)
+	{
+		Q_UNUSED (name)
+	}
+
+	/** @brief This signal is emitted by a tab to change its icon.
+	 *
+	 * Null icon object may be used to clear the icon.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] icon The new icon of the tab with tabContents.
+	 *
+	 * @sa addNewTab().
+	 */
+	virtual void changeTabIcon (const QIcon& icon)
+	{
+		Q_UNUSED (icon)
+	}
+
+	/** @brief This signal is emitted by a tab to change its status bar text.
+	 *
+	 * The text set by this signal would be shown when the corresponding
+	 * tab is active. To clear the status bar, this signal should be
+	 * emitted with empty text.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @note User may choose to hide the status bar, so important
+	 * information should not be presented this way.
+	 *
+	 * @param[out] text The new statusbar text of the tab with
+	 * tabContents.
+	 *
+	 * @sa addNewTab().
+	 */
+	virtual void statusBarChanged (const QString& text)
+	{
+		Q_UNUSED (text)
+	}
+
+	/** @brief This signal is emitted by a tab to bring itself to the front.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 */
+	virtual void raiseTab ()
+	{
+	}
 };
 
 /** @brief Interface for plugins that have one or more tabs.
@@ -330,120 +396,6 @@ public:
 	 * @sa GetTabClasses()
 	 */
 	virtual void TabOpenRequested (const QByteArray& tabClass) = 0;
-
-	/** @brief This signal is emitted by plugin to add a new tab.
-	 *
-	 * tabContents must implement the ITabWidget interface to be
-	 * successfully added to the tab widget.
-	 *
-	 * For the tab to have an icon, emit the changeTabIcon() signal
-	 * after emitting this one.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @param[out] name The initial name of the tab.
-	 * @param[out] tabContents The widget to be added, must implement
-	 * ITabWidget.
-	 *
-	 * @sa removeTab(), changeTabName(), changeTabIcon(),
-	 * statusBarChanged(), raiseTab().
-	 */
-	virtual void addNewTab (const QString& name, QWidget *tabContents) = 0;
-
-	/** @brief This signal is emitted by plugin when it wants to remove
-	 * a tab.
-	 *
-	 * tabContents must be a widget previously added by emitting the
-	 * addNewTab() signal by this same plugin.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @param[out] tabContents The widget to remove from the tab widget,
-	 * must be previously added with addNewTab().
-	 *
-	 * @sa addNewTab()
-	 */
-	virtual void removeTab (QWidget *tabContents) = 0;
-
-	/** @brief This signal is emitted by plugin to change the name of
-	 * the tab with the given tabContents.
-	 *
-	 * The name of the tab is shown in the tab bar of the tab widget. It
-	 * also may be shown in other places and contexts, like in the
-	 * LeechCraft title bar when the corresponding tab is active.
-	 *
-	 * The tab is identified by tabContents, which should be the widget
-	 * previously added by emitting the addNewTab() signal by this same
-	 * plugin.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @param[out] tabContents The widget with the contents of the tab
-	 * which name should be changed, added previously with addNewTab().
-	 * @param[out] name The new name of the tab with tabContents.
-	 *
-	 * @sa addNewTab().
-	 */
-	virtual void changeTabName (QWidget *tabContents, const QString& name) = 0;
-
-	/** @brief This signal is emitted by plugin to change the icon of
-	 * the tab with the given tabContents.
-	 *
-	 * The tab is identified by tabContents, which should be the widget
-	 * previously added by emitting the addNewTab() signal by this same
-	 * plugin.
-	 *
-	 * Null icon object may be used to clear the icon.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @param[out] tabContents The widget with the contents of the tab
-	 * which icon should be changed, added previously with addNewTab().
-	 * @param[out] icon The new icon of the tab with tabContents.
-	 *
-	 * @sa addNewTab().
-	 */
-	virtual void changeTabIcon (QWidget *tabContents, const QIcon& icon) = 0;
-
-	/** @brief This signal is emitted by plugin to change the status bar
-	 * text for the tab with the given tabContents.
-	 *
-	 * The text set by this signal would be shown when the corresponding
-	 * tab is active. To clear the status bar, this signal should be
-	 * emitted with empty text.
-	 *
-	 * The tab is identified by tabContents, which should be the widget
-	 * previously added by emitting the addNewTab() signal by this same
-	 * plugin.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @note User may choose to hide the status bar, so important
-	 * information should not be presented this way.
-	 *
-	 * @param[out] tabContents The widget with the contents of the tab
-	 * which statusbar text should be changed, added previously with
-	 * addNewTab().
-	 * @param[out] text The new statusbar text of the tab with
-	 * tabContents.
-	 *
-	 * @sa addNewTab().
-	 */
-	virtual void statusBarChanged (QWidget *tabContents, const QString& text) = 0;
-
-	/** @brief This signal is emitted by plugin to bring the tab with
-	 * the given tabContents to the front.
-	 *
-	 * The tab is identified by tabContents, which should be the widget
-	 * previously added by emitting the addNewTab() signal by this same
-	 * plugin.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @param[out] tabContents The widget with the contents of the tab
-	 * that should be brought to the front.
-	 */
-	virtual void raiseTab (QWidget *tabContents) = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::TabFeatures)

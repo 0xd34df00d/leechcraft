@@ -150,7 +150,7 @@ namespace Azoth
 
 	void ServiceDiscoveryWidget::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

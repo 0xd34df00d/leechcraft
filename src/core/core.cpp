@@ -190,8 +190,6 @@ namespace LC
 	void Core::Setup (QObject *plugin)
 	{
 		InitDynamicSignals (plugin);
-		if (qobject_cast<IHaveTabs*> (plugin))
-			InitMultiTab (plugin);
 	}
 
 	void Core::PostSecondInit (QObject *plugin)
@@ -407,32 +405,5 @@ namespace LC
 					this,
 					SLOT (handleGotEntity (LC::Entity)),
 					Qt::QueuedConnection);
-	}
-
-	void Core::InitMultiTab (const QObject *plugin)
-	{
-		connect (plugin,
-				SIGNAL (addNewTab (const QString&, QWidget*)),
-				RootWindowsManager_.get (),
-				SLOT (add (const QString&, QWidget*)));
-		connect (plugin,
-				SIGNAL (removeTab (QWidget*)),
-				RootWindowsManager_.get (),
-				SLOT (remove (QWidget*)));
-		connect (plugin,
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				RootWindowsManager_.get (),
-				SLOT (changeTabName (QWidget*, const QString&)),
-				Qt::UniqueConnection);
-		connect (plugin,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-				RootWindowsManager_.get (),
-				SLOT (changeTabIcon (QWidget*, const QIcon&)),
-				Qt::UniqueConnection);
-		connect (plugin,
-				SIGNAL (raiseTab (QWidget*)),
-				RootWindowsManager_.get (),
-				SLOT (bringToFront (QWidget*)),
-				Qt::UniqueConnection);
 	}
 }

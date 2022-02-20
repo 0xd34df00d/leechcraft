@@ -106,12 +106,6 @@ namespace Poshuku
 		std::unique_ptr<BrowserWidget> CreateWidget ();
 		IWebView* MakeWebView (bool = false);
 		void Unregister (BrowserWidget*);
-		/** Sets up the connections between widget's signals
-			* and our signals/slots only useful in own mode.
-			*
-			* Calls to SetupConnections internally as well.
-			*/
-		void ConnectSignals (BrowserWidget *widget);
 
 		void CheckFavorites ();
 		void ReloadAll ();
@@ -150,14 +144,7 @@ namespace Poshuku
 		void handleWebViewCreated (const std::shared_ptr<IWebView>&, bool);
 		void favoriteTagsUpdated (const QStringList&);
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void raiseTab (QWidget*);
 		void error (const QString&) const;
-		void statusBarChanged (QWidget*, const QString&);
 		void bookmarkAdded (const QString&);
 		void bookmarkRemoved (const QString&);
 		void browserWidgetCreated (BrowserWidget*);

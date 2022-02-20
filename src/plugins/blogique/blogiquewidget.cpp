@@ -108,15 +108,6 @@ namespace Blogique
 
 		SetToolBarActions ();
 
-		connect (this,
-				SIGNAL (addNewTab (QString, QWidget*)),
-				&Core::Instance (),
-				SIGNAL (addNewTab (QString, QWidget*)));
-		connect (this,
-				SIGNAL (changeTabName (QWidget*, QString)),
-				&Core::Instance (),
-				SIGNAL (changeTabName (QWidget*, QString)));
-
 		connect (Ui_.BlogPosts_,
 				SIGNAL (fillCurrentWidgetWithBlogEntry (Entry)),
 				this,
@@ -171,7 +162,7 @@ namespace Blogique
 
 	void BlogiqueWidget::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		PostTargetBox_->deleteLater ();
 		deleteLater ();
 	}
@@ -770,7 +761,7 @@ namespace Blogique
 		else
 			FillWidget (entry);
 
-		emit changeTabName (this, entry.Subject_);
+		emit changeTabName (entry.Subject_);
 	}
 
 	void BlogiqueWidget::fillNewTabWithEntry (const Entry& entry,
@@ -778,8 +769,7 @@ namespace Blogique
 	{
 		auto w = Core::Instance ().CreateBlogiqueWidget ();
 		w->FillWidget (entry, accountId);
-		emit addNewTab ("Blogique", w);
-		emit changeTabName (w, entry.Subject_);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (entry.Subject_, w);
 	}
 
 	void BlogiqueWidget::handleEntryChanged (const QString&)

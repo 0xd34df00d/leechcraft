@@ -192,7 +192,7 @@ namespace Otlozhu
 
 	void TodoTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

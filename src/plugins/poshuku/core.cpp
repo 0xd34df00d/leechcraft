@@ -315,15 +315,16 @@ namespace Poshuku
 		QString tabTitle = "Poshuku";
 		if (url.host ().size ())
 			tabTitle = url.host ();
-		emit addNewTab (tabTitle, widget);
 
-		ConnectSignals (widget);
+		IRootWindowsManager::AddTabFlags flags {};
+		if (!raise)
+			flags |= IRootWindowsManager::AddTabFlag::Background;
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tabTitle, widget, flags);
+
+		SetupConnections (widget);
 
 		if (!url.isEmpty ())
 			widget->SetURL (url);
-
-		if (raise)
-			emit raiseTab (widget);
 
 		emit hookTabAdded (std::make_shared<Util::DefaultHookProxy> (),
 				widget,
@@ -373,39 +374,6 @@ namespace Poshuku
 			return nullptr;
 
 		return NewURL (QUrl {}, ShouldRaise (invert))->GetWebView ();
-	}
-
-	void Core::ConnectSignals (BrowserWidget *widget)
-	{
-		SetupConnections (widget);
-		connect (widget,
-				&BrowserWidget::titleChanged,
-				this,
-				[this, widget] (const QString& newTitle) { emit changeTabName (widget, newTitle); });
-		connect (widget,
-				&BrowserWidget::iconChanged,
-				this,
-				[this, widget] (const QIcon& icon) { emit changeTabIcon (widget, icon); });
-		connect (widget,
-				&BrowserWidget::needToClose,
-				this,
-				[this, widget]
-				{
-					emit removeTab (widget);
-					widget->deleteLater ();
-				});
-		connect (widget,
-				SIGNAL (statusBarChanged (const QString&)),
-				this,
-				SLOT (handleStatusBarChanged (const QString&)));
-		connect (widget,
-				SIGNAL (tooltipChanged (QWidget*)),
-				this,
-				SLOT (handleTooltipChanged (QWidget*)));
-		connect (widget,
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
 	}
 
 	void Core::CheckFavorites ()
@@ -663,16 +631,6 @@ namespace Poshuku
 			FavoritesModel_->EditBookmark (index);
 
 		emit bookmarkAdded (url);
-	}
-
-	void Core::handleStatusBarChanged (const QString& msg)
-	{
-		emit statusBarChanged (static_cast<QWidget*> (sender ()), msg);
-	}
-
-	void Core::handleTooltipChanged (QWidget *tip)
-	{
-		emit changeTooltip (static_cast<QWidget*> (sender ()), tip);
 	}
 
 	void Core::handleWebViewCreated (const IWebView_ptr& view, bool invert)

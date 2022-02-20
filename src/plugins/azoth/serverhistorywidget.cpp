@@ -94,7 +94,7 @@ namespace Azoth
 
 	void ServerHistoryWidget::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 	}
 
 	QToolBar* ServerHistoryWidget::GetToolBar () const

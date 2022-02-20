@@ -118,11 +118,6 @@ namespace LC::BitTorrent
 			this
 		};
 
-		connect (TorrentTab_,
-				&TorrentTab::removeTab,
-				this,
-				&TorrentPlugin::removeTab);
-
 		ReprProxy_ = new ReprProxy (Core::Instance ());
 	}
 
@@ -408,10 +403,7 @@ namespace LC::BitTorrent
 	void TorrentPlugin::TabOpenRequested (const QByteArray& tc)
 	{
 		if (tc == TabTC_.TabClass_)
-		{
-			emit addNewTab (QStringLiteral ("BitTorrent"), TorrentTab_);
-			emit raiseTab (TorrentTab_);
-		}
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), TorrentTab_);
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"

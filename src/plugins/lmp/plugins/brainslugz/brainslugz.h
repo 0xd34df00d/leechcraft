@@ -64,13 +64,6 @@ namespace BrainSlugz
 		QAbstractItemModel* GetRepresentation () const;
 
 		void SetLMPProxy (ILMPProxy_ptr);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }

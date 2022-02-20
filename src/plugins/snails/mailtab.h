@@ -151,7 +151,7 @@ namespace Snails
 
 		void on_TagsTree__customContextMenuRequested (const QPoint&);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab ();
 
 		void mailActionsEnabledChanged (bool);
 	};

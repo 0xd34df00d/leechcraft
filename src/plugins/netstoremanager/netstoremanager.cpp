@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -112,13 +113,8 @@ namespace NetStoreManager
 		{
 			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_,
 					Proxy_, this);
-			emit addNewTab (tr ("Net storage"), tab);
-			emit changeTabIcon (tab, GetIcon ());
-			emit raiseTab (tab);
-			connect (tab,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (ManagerTC_.VisibleName_, tab);
+
 			connect (tab,
 					SIGNAL (uploadRequested (IStorageAccount*, QString, QByteArray, bool)),
 					UpManager_,

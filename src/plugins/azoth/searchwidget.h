@@ -36,19 +36,19 @@ namespace Azoth
 	public:
 		static void SetParentMultiTabs (QObject*);
 
-		SearchWidget (AvatarsManager*, QWidget* = 0);
+		explicit SearchWidget (AvatarsManager*, QWidget* = nullptr);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 	private:
 		IHaveSearch* GetCurrentSearch () const;
 	private slots:
 		void search ();
 		void on_AccountBox__activated (int);
 	signals:
-		void removeTab (QWidget*);
+		void removeTab () override;
 	};
 }
 }

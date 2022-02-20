@@ -69,7 +69,7 @@ namespace Poleemery
 
 	void OperationsTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

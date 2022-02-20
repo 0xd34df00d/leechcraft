@@ -83,9 +83,8 @@ namespace Summary
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
 		void syncSelection (const QModelIndex&);
 	signals:
-		void changeTabName (const QString&);
-		void raiseTab (QWidget*);
-		void needToClose ();
+		void removeTab () override;
+		void raiseTab () override;
 
 		void tabRecoverDataChanged () override;
 	};

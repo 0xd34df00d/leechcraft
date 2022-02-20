@@ -14,6 +14,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "mailtab.h"
 #include "xmlsettingsmanager.h"
 #include "accountslistwidget.h"
@@ -172,16 +173,10 @@ namespace Snails
 
 	void Plugin::handleNewTab (const QString& name, QWidget *mt)
 	{
-		connect (mt,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-
 		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (mt))
 			WkFontsWidget_->RegisterSettable (iwfs);
 
-		emit addNewTab (name, mt);
-		emit raiseTab (mt);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (name, mt);
 	}
 }
 }

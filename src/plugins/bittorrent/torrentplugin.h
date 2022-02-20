@@ -131,13 +131,6 @@ namespace LC::BitTorrent
 		void SetupStuff ();
 		void SetupActions ();
 	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
-		void removeTab (QWidget*) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }

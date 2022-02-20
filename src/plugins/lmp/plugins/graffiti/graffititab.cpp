@@ -77,7 +77,7 @@ namespace LC::LMP::Graffiti
 
 	void GraffitiTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

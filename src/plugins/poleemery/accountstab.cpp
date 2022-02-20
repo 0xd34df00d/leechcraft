@@ -43,7 +43,7 @@ namespace Poleemery
 
 	void AccountsTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 

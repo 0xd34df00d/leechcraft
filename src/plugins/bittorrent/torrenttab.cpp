@@ -163,7 +163,7 @@ namespace LC::BitTorrent
 
 	void TorrentTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 	}
 
 	QToolBar* TorrentTab::GetToolBar () const

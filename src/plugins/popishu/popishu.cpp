@@ -11,6 +11,7 @@
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -144,23 +145,12 @@ namespace Popishu
 
 	EditorPage* Plugin::MakeEditorPage ()
 	{
-		auto result = new EditorPage (Proxy_, TabClass_, this);
-		connect (result,
-				&EditorPage::removeTab,
-				this,
-				&Plugin::removeTab);
-		connect (result,
-				&EditorPage::changeTabName,
-				this,
-				&Plugin::changeTabName);
-		return result;
+		return new EditorPage (Proxy_, TabClass_, this);
 	}
 
 	void Plugin::AnnouncePage (EditorPage *page)
 	{
-		emit addNewTab (page->GetTabRecoverName (), page);
-		emit raiseTab (page);
-		emit changeTabIcon (page, QIcon { "lcicons:/resources/images/popishu.svg" });
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (page->GetTabRecoverName (), page);
 	}
 }
 }

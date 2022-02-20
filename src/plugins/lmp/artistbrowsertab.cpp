@@ -62,7 +62,7 @@ namespace LC::LMP
 
 	void ArtistBrowserTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 	}
 
 	QToolBar* ArtistBrowserTab::GetToolBar () const

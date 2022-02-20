@@ -85,7 +85,7 @@ namespace Snails
 
 	void ComposeMessageTab::Remove ()
 	{
-		emit removeTab (this);
+		emit removeTab ();
 		deleteLater ();
 	}
 
