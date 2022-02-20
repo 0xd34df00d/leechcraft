@@ -53,6 +53,8 @@ namespace LC
 
 		// IInfo
 		void SetProxy (ICoreProxy_ptr);
+		void SetPluginInstance (QObject*);
+
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();

@@ -27,6 +27,8 @@ namespace DBus
 		InfoServerWrapper (IInfo*);
 
 		Q_INVOKABLE void SetProxy (ICoreProxy_ptr);
+		Q_INVOKABLE void SetPluginInstance (QObject*);
+
 		Q_INVOKABLE void Init (ICoreProxy_ptr);
 		Q_INVOKABLE void SecondInit ();
 		Q_INVOKABLE void Release ();

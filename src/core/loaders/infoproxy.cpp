@@ -28,6 +28,11 @@ namespace Loaders
 		Info_->call ("SetProxy", QVariant::fromValue (proxy));
 	}
 
+	void InfoProxy::SetPluginInstance (QObject *obj)
+	{
+		Info_->call ("SetPluginInstance", QVariant::fromValue (obj));
+	}
+
 	void InfoProxy::Init (ICoreProxy_ptr proxy)
 	{
 		qDebug () << Q_FUNC_INFO;

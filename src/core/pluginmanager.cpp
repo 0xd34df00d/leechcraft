@@ -1141,6 +1141,7 @@ namespace LC
 			const auto ii = qobject_cast<IInfo*> (inst);
 			auto proxy = std::make_shared<CoreProxy> (loader);
 			ii->SetProxy (proxy);
+			ii->SetPluginInstance (inst);
 
 			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (inst);
 			if (ipa)

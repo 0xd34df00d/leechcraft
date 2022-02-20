@@ -125,6 +125,10 @@ namespace LC
 	{
 	}
 
+	void CoreInstanceObject::SetPluginInstance (QObject*)
+	{
+	}
+
 	void CoreInstanceObject::Init (ICoreProxy_ptr)
 	{
 #ifndef Q_OS_MAC

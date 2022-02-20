@@ -256,15 +256,18 @@ public:
 
 	// implementation details
 	virtual void SetProxy (ICoreProxy_ptr) = 0;
+	virtual void SetPluginInstance (QObject*) = 0;
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 
-#define CURRENT_API_LEVEL 20
+#define CURRENT_API_LEVEL 21
 
 #define LC_EXPORT_PLUGIN(file,klass) \
-	ICoreProxy_ptr klass::S_Proxy_; \
+	ICoreProxy_ptr klass::S_Proxy_;     \
+	QObject* klass::S_Plugin_; \
 	const ICoreProxy_ptr& GetProxyHolder () { return klass::S_Proxy_; } \
+	QObject* GetPluginInstance () { return klass::S_Plugin_; } \
 	\
 	extern "C"\
 	{\
@@ -272,6 +275,8 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 	}
 
 const ICoreProxy_ptr& GetProxyHolder ();
+
+QObject* GetPluginInstance ();
 
 #ifdef __clang__
 #define LC_PUSH_OVERRIDE_WARNING \
@@ -286,10 +291,13 @@ const ICoreProxy_ptr& GetProxyHolder ();
 
 #define DEFINE_PROXY \
 	static ICoreProxy_ptr S_Proxy_; \
+	static QObject *S_Plugin_; \
 	LC_PUSH_OVERRIDE_WARNING \
 	void SetProxy (ICoreProxy_ptr proxy) { S_Proxy_ = std::move (proxy); } \
+	void SetPluginInstance (QObject *instance) { S_Plugin_ = instance; } \
 	LC_POP_OVERRIDE_WARNING \
-	friend const ICoreProxy_ptr& ::GetProxyHolder ();
+	friend const ICoreProxy_ptr& ::GetProxyHolder (); \
+	friend QObject* ::GetPluginInstance ();
 
 #define LC_PLUGIN_METADATA(id) \
 	Q_PLUGIN_METADATA (IID id) \

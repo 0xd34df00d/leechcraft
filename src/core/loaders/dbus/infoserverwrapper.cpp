@@ -22,6 +22,11 @@ namespace DBus
 		W_->SetProxy (proxy);
 	}
 
+	void InfoServerWrapper::SetPluginInstance (QObject *instance)
+	{
+		W_->SetPluginInstance (instance);
+	}
+
 	void InfoServerWrapper::Init (ICoreProxy_ptr proxy)
 	{
 		W_->Init (proxy);

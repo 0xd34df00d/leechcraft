@@ -31,6 +31,8 @@ namespace Loaders
 		explicit InfoProxy (const QString& service);
 
 		void SetProxy (ICoreProxy_ptr proxy);
+		void SetPluginInstance (QObject*);
+
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
 		void Release ();
