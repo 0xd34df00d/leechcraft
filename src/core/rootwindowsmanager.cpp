@@ -310,17 +310,18 @@ namespace LC
 
 	void RootWindowsManager::AddTab (const QString& name, QWidget *w, AddTabFlags flags)
 	{
-		auto raiseIfNeeded = [=]
+		auto raiseIfNeeded = [=] (int idx)
 		{
 			if (!(flags & AddTabFlag::Background))
-				window.TM_->bringToFront (w);
+				Windows_ [idx].TM_->bringToFront (w);
 		};
 
 		auto itw = qobject_cast<ITabWidget*> (w);
 
-		if (GetWindowForTab (itw) != -1)
+		if (const auto idx = GetWindowForTab (itw);
+			idx != -1)
 		{
-			raiseIfNeeded ();
+			raiseIfNeeded (idx);
 			return;
 		}
 
@@ -358,7 +359,7 @@ namespace LC
 
 		ConnectSignals (w);
 
-		raiseIfNeeded ();
+		raiseIfNeeded (winIdx);
 	}
 
 	void RootWindowsManager::ConnectSignals (QWidget *w)
