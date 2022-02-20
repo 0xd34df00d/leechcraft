@@ -289,27 +289,6 @@ public:
 		Q_UNUSED (icon)
 	}
 
-	/** @brief This signal is emitted by a tab to change its status bar text.
-	 *
-	 * The text set by this signal would be shown when the corresponding
-	 * tab is active. To clear the status bar, this signal should be
-	 * emitted with empty text.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @note User may choose to hide the status bar, so important
-	 * information should not be presented this way.
-	 *
-	 * @param[out] text The new statusbar text of the tab with
-	 * tabContents.
-	 *
-	 * @sa addNewTab().
-	 */
-	virtual void statusBarChanged (const QString& text)
-	{
-		Q_UNUSED (text)
-	}
-
 	/** @brief This signal is emitted by a tab to bring itself to the front.
 	 *
 	 * @note This function is expected to be a signal in subclasses.
