@@ -49,10 +49,13 @@ namespace LC::LMP
 		for (const auto& pair : props)
 			setProperty (pair.first, pair.second);
 
-		if (!artist.isEmpty ())
-			Browse (artist);
-
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetStaticTabClass ().VisibleName_, this);
+
+		if (!artist.isEmpty ())
+		{
+			Ui_.ArtistNameEdit_->setText (artist);
+			DoQueries (artist);
+		}
 	}
 
 	const TabClassInfo& ArtistBrowserTab::GetStaticTabClass ()
@@ -112,12 +115,6 @@ namespace LC::LMP
 		return artist.isEmpty () ? GetStaticTabClass ().VisibleName_ : tr ("Artist browser: %1");
 	}
 
-	void ArtistBrowserTab::Browse (const QString& artist)
-	{
-		Ui_.ArtistNameEdit_->setText (artist);
-		DoQueries (artist);
-	}
-
 	void ArtistBrowserTab::DoQueries (const QString& artist)
 	{
 		SimilarMgr_->DefaultRequest (artist);
@@ -139,6 +136,7 @@ namespace LC::LMP
 
 		BioMgr_->Request (provs.first (), artist, {});
 
+		emit changeTabName (GetTabRecoverName ());
 		emit tabRecoverDataChanged ();
 	}
 }

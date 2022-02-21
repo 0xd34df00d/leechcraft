@@ -46,12 +46,11 @@ namespace LC::LMP
 		QByteArray GetTabRecoverData () const override;
 		QIcon GetTabRecoverIcon () const override;
 		QString GetTabRecoverName () const override;
-
-		void Browse (const QString&);
 	private:
 		void DoQueries (const QString&);
 	signals:
 		void removeTab () override;
+		void changeTabName (const QString&) override;
 
 		void tabRecoverDataChanged () override;
 	};
