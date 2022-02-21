@@ -45,6 +45,7 @@ namespace Qrosp
 		std::shared_ptr<QTranslator> Translator_;
 
 		void SetProxy (ICoreProxy_ptr) {}
+		void SetPluginInstance (QObject*) {}
 	public:
 		WrapperObject (const QString&, const QString&);
 		virtual ~WrapperObject ();
