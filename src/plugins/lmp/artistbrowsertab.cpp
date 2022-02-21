@@ -14,7 +14,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/gui/clearlineeditaddon.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/udls.h>
@@ -42,8 +41,6 @@ namespace LC::LMP
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
 				Lits::LmpQmlSubdir,
 				QStringLiteral ("ArtistBrowserView.qml")));
-
-		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.ArtistNameEdit_);
 
 		connect (Ui_.ArtistNameEdit_,
 				&QLineEdit::returnPressed,
