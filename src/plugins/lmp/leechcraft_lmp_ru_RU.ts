@@ -205,12 +205,22 @@
 <context>
     <name>LC::LMP::ArtistBrowserTab</name>
     <message>
-        <location filename="artistbrowsertab.cpp" line="93"/>
-        <source>Artist browser: %1</source>
-        <translation>Обзор исполнителей: %1</translation>
+        <location filename="artistbrowsertab.cpp" line="66"/>
+        <source>Artist browser</source>
+        <translation>Обзор исполнителей</translation>
     </message>
     <message>
-        <location filename="artistbrowsertab.cpp" line="114"/>
+        <location filename="artistbrowsertab.cpp" line="67"/>
+        <source>Allows one to browse information about different artists.</source>
+        <translation>Позволяет просматривать информацию о различных исполнителях.</translation>
+    </message>
+    <message>
+        <location filename="artistbrowsertab.cpp" line="117"/>
+        <source>%1 — artist browser</source>
+        <translation>%1 — обзор исполнителей</translation>
+    </message>
+    <message>
+        <location filename="artistbrowsertab.cpp" line="132"/>
         <source>There aren&apos;t any plugins that can fetch biography. Check if you have installed for example the LastFMScrobble plugin.</source>
         <translation>Нет модулей, способных получить биографию. Проверьте, установлен ли у вас, например, модуль LastFMScrobble.</translation>
     </message>
@@ -1249,90 +1259,78 @@
 <context>
     <name>LC::LMP::Plugin</name>
     <message>
-        <location filename="lmp.cpp" line="110"/>
-        <location filename="lmp.cpp" line="526"/>
-        <source>Artist browser</source>
-        <translation>Обзор исполнителей</translation>
-    </message>
-    <message>
-        <location filename="lmp.cpp" line="111"/>
-        <source>Allows one to browse information about different artists.</source>
-        <oldsource>Allows to browse information about different artists.</oldsource>
-        <translation>Позволяет просматривать информацию о различных исполнителях.</translation>
-    </message>
-    <message>
-        <location filename="lmp.cpp" line="159"/>
+        <location filename="lmp.cpp" line="134"/>
         <source>Rebuild collection</source>
         <translation>Перестроить коллекцию</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="167"/>
+        <location filename="lmp.cpp" line="142"/>
         <source>Are you sure you want to rebuild the collection? This will reset all the play history and counts.</source>
         <translation>Вы уверены, что хотите перестроить коллекцию? Вы потеряете всю историю прослушиваний.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="176"/>
+        <location filename="lmp.cpp" line="151"/>
         <source>Collection statistics</source>
         <translation>Статистика по коллекции</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="436"/>
-        <location filename="lmp.cpp" line="445"/>
+        <location filename="lmp.cpp" line="408"/>
+        <location filename="lmp.cpp" line="417"/>
         <source>Show artist information</source>
         <translation>Показать информацию об исполнителе</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="446"/>
+        <location filename="lmp.cpp" line="418"/>
         <source>Search for artist biography, similar artists, releases and so on.</source>
         <translation>Поискать биографию исполнителя, похожих исполнителей, релизы и тому подобное.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="494"/>
+        <location filename="lmp.cpp" line="466"/>
         <source>Play/pause</source>
         <translation>Играть/приостановить</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="495"/>
+        <location filename="lmp.cpp" line="467"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="496"/>
+        <location filename="lmp.cpp" line="468"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="497"/>
+        <location filename="lmp.cpp" line="469"/>
         <source>Stop playback</source>
         <translation>Остановать воспроизведение</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="498"/>
+        <location filename="lmp.cpp" line="470"/>
         <source>Stop playback after current track</source>
         <translation>Остановить воспроизведение после текущего трека</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="499"/>
+        <location filename="lmp.cpp" line="471"/>
         <source>Love track</source>
         <translation>Отметить трек как любимый</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="501"/>
+        <location filename="lmp.cpp" line="473"/>
         <source>Notify about current track</source>
         <translation>Уведомить о текущем треке</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="503"/>
+        <location filename="lmp.cpp" line="475"/>
         <source>Increase volume</source>
         <translation>Увеличить громкость</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="504"/>
+        <location filename="lmp.cpp" line="476"/>
         <source>Decrease volume</source>
         <translation>Уменьшить громкость</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="236"/>
+        <location filename="lmp.cpp" line="211"/>
         <source>LeechCraft Music Player.</source>
         <translation>Музыкальный плеер LeechCraft.</translation>
     </message>

@@ -205,12 +205,22 @@
 <context>
     <name>LC::LMP::ArtistBrowserTab</name>
     <message>
-        <location filename="artistbrowsertab.cpp" line="93"/>
-        <source>Artist browser: %1</source>
-        <translation>Artist browser: %1</translation>
+        <location filename="artistbrowsertab.cpp" line="66"/>
+        <source>Artist browser</source>
+        <translation>Artist browser</translation>
     </message>
     <message>
-        <location filename="artistbrowsertab.cpp" line="114"/>
+        <location filename="artistbrowsertab.cpp" line="67"/>
+        <source>Allows one to browse information about different artists.</source>
+        <translation>Allows to browse information about different artists.</translation>
+    </message>
+    <message>
+        <location filename="artistbrowsertab.cpp" line="117"/>
+        <source>%1 — artist browser</source>
+        <translation>%1 — artist browser</translation>
+    </message>
+    <message>
+        <location filename="artistbrowsertab.cpp" line="132"/>
         <source>There aren&apos;t any plugins that can fetch biography. Check if you have installed for example the LastFMScrobble plugin.</source>
         <translation>There aren&apos;t any plugins that can fetch biography. Check if you have installed for example the LastFMScrobble plugin.</translation>
     </message>
@@ -1238,90 +1248,78 @@
 <context>
     <name>LC::LMP::Plugin</name>
     <message>
-        <location filename="lmp.cpp" line="110"/>
-        <location filename="lmp.cpp" line="526"/>
-        <source>Artist browser</source>
-        <translation>Artist browser</translation>
-    </message>
-    <message>
-        <location filename="lmp.cpp" line="111"/>
-        <source>Allows one to browse information about different artists.</source>
-        <oldsource>Allows to browse information about different artists.</oldsource>
-        <translation>Allows to browse information about different artists.</translation>
-    </message>
-    <message>
-        <location filename="lmp.cpp" line="159"/>
+        <location filename="lmp.cpp" line="134"/>
         <source>Rebuild collection</source>
         <translation>Rebuild collection</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="167"/>
+        <location filename="lmp.cpp" line="142"/>
         <source>Are you sure you want to rebuild the collection? This will reset all the play history and counts.</source>
         <translation>Are you sure you want to rebuild the collection? This will reset all the play history and counts.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="176"/>
+        <location filename="lmp.cpp" line="151"/>
         <source>Collection statistics</source>
         <translation>Collection statistics</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="436"/>
-        <location filename="lmp.cpp" line="445"/>
+        <location filename="lmp.cpp" line="408"/>
+        <location filename="lmp.cpp" line="417"/>
         <source>Show artist information</source>
         <translation>Show artist information</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="446"/>
+        <location filename="lmp.cpp" line="418"/>
         <source>Search for artist biography, similar artists, releases and so on.</source>
         <translation>Search for artist biography, similar artists, releases and so on.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="494"/>
+        <location filename="lmp.cpp" line="466"/>
         <source>Play/pause</source>
         <translation>Play/pause</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="495"/>
+        <location filename="lmp.cpp" line="467"/>
         <source>Previous track</source>
         <translation>Previous track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="496"/>
+        <location filename="lmp.cpp" line="468"/>
         <source>Next track</source>
         <translation>Next track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="497"/>
+        <location filename="lmp.cpp" line="469"/>
         <source>Stop playback</source>
         <translation>Stop playback</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="498"/>
+        <location filename="lmp.cpp" line="470"/>
         <source>Stop playback after current track</source>
         <translation>Stop playback after current track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="499"/>
+        <location filename="lmp.cpp" line="471"/>
         <source>Love track</source>
         <translation>Love track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="501"/>
+        <location filename="lmp.cpp" line="473"/>
         <source>Notify about current track</source>
         <translation>Notify about current track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="503"/>
+        <location filename="lmp.cpp" line="475"/>
         <source>Increase volume</source>
         <translation>Increase volume</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="504"/>
+        <location filename="lmp.cpp" line="476"/>
         <source>Decrease volume</source>
         <translation>Decrease volume</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="236"/>
+        <location filename="lmp.cpp" line="211"/>
         <source>LeechCraft Music Player.</source>
         <translation>LeechCraft Music Player.</translation>
     </message>
