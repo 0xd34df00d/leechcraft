@@ -112,7 +112,9 @@ namespace LC::LMP
 	QString ArtistBrowserTab::GetTabRecoverName () const
 	{
 		const auto& artist = Ui_.ArtistNameEdit_->text ();
-		return artist.isEmpty () ? GetStaticTabClass ().VisibleName_ : tr ("Artist browser: %1");
+		return artist.isEmpty () ?
+				GetStaticTabClass ().VisibleName_ :
+				tr ("%1 — artist browser").arg (artist);
 	}
 
 	void ArtistBrowserTab::DoQueries (const QString& artist)
