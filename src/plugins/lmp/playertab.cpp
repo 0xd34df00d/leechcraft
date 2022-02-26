@@ -348,10 +348,6 @@ namespace LMP
 
 		// fill tray menu
 		connect (TrayIcon_,
-				SIGNAL (changedVolume (qreal)),
-				this,
-				SLOT (handleChangedVolume (qreal)));
-		connect (TrayIcon_,
 				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 				this,
 				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
@@ -641,22 +637,6 @@ namespace LMP
 		Ui_.WidgetsLayout_->insertWidget (0, widget, 0,
 				useTabs ? Qt::AlignTop : Qt::Alignment ());
 		widget->show ();
-	}
-
-	void PlayerTab::handleChangedVolume (qreal delta)
-	{
-		qreal volume = Player_->GetAudioOutput ()->GetVolume ();
-		qreal dl = delta > 0 ? 0.05 : -0.05;
-		if (volume != volume)
-			volume = 0.0;
-
-		volume += dl;
-		if (volume < 0)
-			volume = 0;
-		else if (volume > 1)
-			volume = 1;
-
-		Player_->GetAudioOutput ()->setVolume (volume);
 	}
 
 	void PlayerTab::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)

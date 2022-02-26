@@ -30,8 +30,6 @@ namespace LMP
 		bool event (QEvent *event);
 	public slots:
 		void handleSongChanged (const MediaInfo& song);
-	signals:
-		void changedVolume (qreal delta);
 	};
 }
 }

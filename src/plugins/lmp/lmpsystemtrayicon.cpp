@@ -29,14 +29,7 @@ namespace LMP
 
 	bool LMPSystemTrayIcon::event (QEvent *event)
 	{
-		if (event->type () == QEvent::Wheel)
-		{
-			QWheelEvent *wheel = static_cast<QWheelEvent*> (event);
-			emit changedVolume (wheel->angleDelta ().y ());
-
-			return true;
-		}
-		else if (event->type () == QEvent::ToolTip)
+		if (event->type () == QEvent::ToolTip)
 		{
 			QHelpEvent *help = static_cast<QHelpEvent*> (event);
 			QString text;
