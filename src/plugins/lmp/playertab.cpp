@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QToolButton>
 #include <QPainter>
+#include <util/gui/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
@@ -116,7 +117,7 @@ namespace LMP
 				Ui_.Playlist_,
 				SLOT (focusIndex (QModelIndex)));
 
-		TrayIcon_ = new LMPSystemTrayIcon (QIcon ("lcicons:/lmp/resources/images/lmp.svg"), this);
+		TrayIcon_ = new LMPSystemTrayIcon (Util::FixupTrayIcon (QIcon ("lcicons:/lmp/resources/images/lmp.svg")), this);
 		connect (Player_,
 				SIGNAL (songChanged (const MediaInfo&)),
 				TrayIcon_,
