@@ -137,4 +137,14 @@ namespace LC::Util
 
 		return px;
 	}
+
+	// https://bugreports.qt.io/browse/QTBUG-53550
+	QIcon FixupTrayIcon (const QIcon& icon)
+	{
+		if (!icon.availableSizes ().isEmpty ())
+			return icon;
+
+		constexpr auto pxSize = 256;
+		return QIcon { icon.pixmap (pxSize, pxSize) };
+	}
 }
