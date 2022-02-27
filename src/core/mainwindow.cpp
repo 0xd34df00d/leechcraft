@@ -19,6 +19,7 @@
 #include <QWidgetAction>
 #include <QMimeData>
 #include <QToolBar>
+#include <util/gui/util.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -645,7 +646,7 @@ void LC::MainWindow::FillTray ()
 
 	iconMenu->addAction (Ui_.ActionQuit_);
 
-	TrayIcon_ = new QSystemTrayIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"), this);
+	TrayIcon_ = new QSystemTrayIcon (Util::FixupTrayIcon (QIcon ("lcicons:/resources/images/leechcraft.svg")), this);
 	handleShowTrayIconChanged ();
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
