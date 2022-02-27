@@ -189,7 +189,7 @@ namespace LC::AdvancedNotifications
 		if (Category2Icon_.contains (category))
 			return;
 
-		const auto trayIcon = new QSystemTrayIcon (GetIconForCategory (category));
+		const auto trayIcon = new QSystemTrayIcon (Util::FixupTrayIcon (GetIconForCategory (category)));
 		trayIcon->setContextMenu (new QMenu ());
 		Category2Icon_ [category] = trayIcon;
 
