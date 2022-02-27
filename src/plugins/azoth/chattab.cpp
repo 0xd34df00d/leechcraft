@@ -1097,7 +1097,7 @@ namespace Azoth
 			handleStatusChanged (EntryStatus (), QString ());
 	}
 
-	void ChatTab::handleNameChanged (const QString& name)
+	void ChatTab::handleNameChanged (const QString&)
 	{
 		ReformatTitle ();
 	}
