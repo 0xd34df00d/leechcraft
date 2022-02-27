@@ -14,9 +14,7 @@
 #include "playertab.h"
 #include "util.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	QString LMPUtilProxy::FindAlbumArt (const QString& nearPath, bool includeCollection) const
 	{
@@ -74,5 +72,4 @@ namespace LMP
 	{
 		return &GuiProxy_;
 	}
-}
 }

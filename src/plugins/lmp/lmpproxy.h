@@ -13,9 +13,7 @@
 #include "interfaces/lmp/ilmputilproxy.h"
 #include "interfaces/lmp/ilmpguiproxy.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class PlayerTab;
 
@@ -25,8 +23,8 @@ namespace LMP
 		Q_OBJECT
 		Q_INTERFACES (LC::LMP::ILMPUtilProxy)
 	public:
-		QString FindAlbumArt (const QString&, bool) const;
-		QList<QFileInfo> RecIterateInfo (const QString&, bool, std::atomic<bool>*) const;
+		QString FindAlbumArt (const QString&, bool) const override;
+		QList<QFileInfo> RecIterateInfo (const QString&, bool, std::atomic<bool>*) const override;
 	};
 
 	class LMPGuiProxy : public QObject
@@ -39,8 +37,8 @@ namespace LMP
 	public:
 		void SetPlayerTab (PlayerTab*);
 
-		void AddCurrentSongTab (const QString&, QWidget*) const;
-		void AddToolbarAction (QAction*) const;
+		void AddCurrentSongTab (const QString&, QWidget*) const override;
+		void AddToolbarAction (QAction*) const override;
 	};
 
 	class LMPProxy : public QObject
@@ -57,11 +55,11 @@ namespace LMP
 	public:
 		LMPProxy (ILocalCollection*, ITagResolver*);
 
-		ILocalCollection* GetLocalCollection () const;
-		ITagResolver* GetTagResolver () const;
-		const ILMPUtilProxy* GetUtilProxy () const;
-		const ILMPGuiProxy* GetGuiProxy () const;
+		ILocalCollection* GetLocalCollection () const override;
+		ITagResolver* GetTagResolver () const override;
+		const ILMPUtilProxy* GetUtilProxy () const override;
+		const ILMPGuiProxy* GetGuiProxy () const override;
+
 		LMPGuiProxy* GetGuiProxy ();
 	};
-}
 }
