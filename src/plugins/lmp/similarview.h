@@ -20,11 +20,9 @@ namespace LMP
 
 	class SimilarView : public QQuickWidget
 	{
-		Q_OBJECT
-
 		SimilarViewManager *Manager_;
 	public:
-		SimilarView (QWidget* = nullptr);
+		explicit SimilarView (QWidget* = nullptr);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
 	};

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWidget>
 #include <interfaces/media/ihypesprovider.h>
 #include "similarmodel.h"
@@ -26,7 +27,7 @@ namespace LC::LMP
 {
 	class HypesWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::HypesWidget)
 	public:
 		struct HypedTrack;
 		using TracksModel = Util::RoledItemsModel<HypedTrack>;
