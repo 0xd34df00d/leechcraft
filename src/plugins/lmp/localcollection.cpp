@@ -18,6 +18,7 @@
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/either.h>
+#include <util/sll/unreachable.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
@@ -313,30 +314,21 @@ namespace LC::LMP
 
 	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
 	{
-		QList<int> result;
 		switch (type)
 		{
 		case DynamicPlaylist::Random50:
 		{
-			const auto& keys = Track2Path_.keys ();
-			if (keys.isEmpty ())
-				return {};
-
-			auto& gen = *QRandomGenerator::global ();
-			// TODO properly avoid repetitions
-			for (int i = 0; i < 50; ++i)
-				result << keys [gen () % keys.size ()];
-
-			break;
+			auto keys = Track2Path_.keys ();
+			std::shuffle (keys.begin (), keys.end (), *QRandomGenerator::global ());
+			return keys.mid (0, 50);
 		}
 		case DynamicPlaylist::LovedTracks:
-			result = Storage_->GetLovedTracks ();
-			break;
+			return Storage_->GetLovedTracks ();
 		case DynamicPlaylist::BannedTracks:
-			result = Storage_->GetBannedTracks ();
-			break;
+			return Storage_->GetBannedTracks ();
 		}
-		return result;
+
+		Util::Unreachable ();
 	}
 
 	QStringList LocalCollection::TrackList2PathList (const QList<int>& tracks) const
