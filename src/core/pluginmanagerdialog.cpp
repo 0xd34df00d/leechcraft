@@ -41,11 +41,13 @@ namespace LC
 				button->setToolTip (tr ("Configure..."));
 				button->setMaximumWidth (48);
 
-				const auto settingsTab = Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab ();
 				const auto pluginObj = index.data (PluginManager::Roles::PluginObject).value<QObject*> ();
 				connect (button,
 						&QPushButton::released,
-						[settingsTab, pluginObj] { settingsTab->showSettingsFor (pluginObj); });
+						[pluginObj]
+						{
+							Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab ()->showSettingsFor (pluginObj);
+						});
 				return button;
 			}
 
