@@ -101,6 +101,7 @@ LC_DEFINE_PLUGIN (
 		sourceerrorhandler.cpp
 		mediainfo.cpp
 		literals.cpp
+		collectionnormalizer.cpp
 		engine/audiosource.cpp
 		engine/output.cpp
 		engine/path.cpp
