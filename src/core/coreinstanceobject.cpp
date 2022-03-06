@@ -106,7 +106,6 @@ namespace LC
 	CoreInstanceObject::CoreInstanceObject (QObject *parent)
 	: QObject (parent)
 	, XmlSettingsDialog_ (new Util::XmlSettingsDialog ())
-	, SettingsTab_ (new SettingsTab)
 	, CorePlugin2Manager_ (new CorePlugin2Manager)
 	, ShortcutManager_ (new ShortcutManager)
 	, CoreShortcutManager_ (new Util::ShortcutManager (CoreProxy::UnsafeWithoutDeps ()))
@@ -198,7 +197,7 @@ namespace LC
 					{}
 				});
 
-		Classes_ << SettingsTab_->GetTabClassInfo ();
+		Classes_ << SettingsTab::GetStaticTabClassInfo ();
 
 		XmlSettingsDialog_->SetCustomWidget ("PluginManager", new PluginManagerDialog);
 		XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
@@ -239,7 +238,6 @@ namespace LC
 	void CoreInstanceObject::SecondInit ()
 	{
 		BuildNewTabModel ();
-		SettingsTab_->Initialize ();
 
 #ifdef STRICT_LICENSING
 		QTimer::singleShot (10000,
@@ -285,6 +283,8 @@ namespace LC
 
 	void CoreInstanceObject::TabOpenRequested (const QByteArray& tabClass)
 	{
+		LazyInitSettingsTab ();
+
 		if (tabClass == "org.LeechCraft.SettingsPane")
 			CoreProxy::UnsafeWithoutDeps ()->GetRootWindowsManager ()->AddTab (tr ("Settings"), SettingsTab_);
 		else
@@ -320,8 +320,9 @@ namespace LC
 		return CorePlugin2Manager_;
 	}
 
-	SettingsTab* CoreInstanceObject::GetSettingsTab () const
+	SettingsTab* CoreInstanceObject::GetSettingsTab ()
 	{
+		LazyInitSettingsTab ();
 		return SettingsTab_;
 	}
 
@@ -369,6 +370,15 @@ namespace LC
 
 		Core::Instance ().GetCoreInstanceObject ()->
 				GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
+	}
+
+	void CoreInstanceObject::LazyInitSettingsTab ()
+	{
+		if (SettingsTab_)
+			return;
+
+		SettingsTab_ = new SettingsTab;
+		SettingsTab_->Initialize ();
 	}
 
 	void CoreInstanceObject::handleSettingsButton (const QString& name)

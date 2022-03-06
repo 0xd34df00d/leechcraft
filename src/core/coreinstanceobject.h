@@ -41,7 +41,7 @@ namespace LC
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		TabClasses_t Classes_;
 
-		SettingsTab *SettingsTab_;
+		SettingsTab *SettingsTab_ = nullptr;
 
 		CorePlugin2Manager *CorePlugin2Manager_;
 
@@ -80,13 +80,14 @@ namespace LC
 
 		CorePlugin2Manager* GetCorePluginManager () const;
 
-		SettingsTab* GetSettingsTab () const;
+		SettingsTab* GetSettingsTab ();
 
 		IShortcutProxy* GetShortcutProxy () const;
 		ShortcutManager* GetShortcutManager () const;
 		Util::ShortcutManager* GetCoreShortcutManager () const;
 	private:
 		void BuildNewTabModel ();
+		void LazyInitSettingsTab ();
 	private slots:
 		void handleSettingsButton (const QString&);
 		void updateIconSet ();

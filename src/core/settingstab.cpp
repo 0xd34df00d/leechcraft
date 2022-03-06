@@ -219,9 +219,9 @@ namespace LC
 		}
 	}
 
-	TabClassInfo SettingsTab::GetTabClassInfo () const
+	TabClassInfo SettingsTab::GetStaticTabClassInfo ()
 	{
-		TabClassInfo setInfo =
+		static TabClassInfo setInfo
 		{
 			"org.LeechCraft.SettingsPane",
 			tr ("Settings"),
@@ -231,6 +231,11 @@ namespace LC
 			TFSingle | TFOpenableByRequest
 		};
 		return setInfo;
+	}
+
+	TabClassInfo SettingsTab::GetTabClassInfo () const
+	{
+		return GetStaticTabClassInfo ();
 	}
 
 	QObject* SettingsTab::ParentMultiTabs ()

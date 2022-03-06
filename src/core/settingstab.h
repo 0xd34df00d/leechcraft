@@ -44,6 +44,8 @@ namespace LC
 
 		void Initialize ();
 
+		static TabClassInfo GetStaticTabClassInfo ();
+
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;
 		void Remove () override;
