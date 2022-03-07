@@ -61,7 +61,9 @@ namespace LC::LMP
 					IsReady_ = true;
 					emit collectionReady ();
 
-					QTimer::singleShot (5000, this, &LocalCollection::RescanOnLoad);
+					using namespace std::chrono_literals;
+					const auto rescanDelay = 5s;
+					QTimer::singleShot (rescanDelay, this, &LocalCollection::RescanOnLoad);
 				};
 
 		auto& xsd = XmlSettingsManager::Instance ();
@@ -130,6 +132,8 @@ namespace LC::LMP
 		if (root)
 			AddRootPaths ({ path });
 
+		const auto datetimeTolerance = 1500;
+
 		const bool symLinks = XmlSettingsManager::Instance ()
 				.property ("FollowSymLinks").toBool ();
 		auto worker = [path, symLinks]
@@ -149,7 +153,7 @@ namespace LC::LMP
 				{
 					const auto& storedDt = storage.GetMTime (trackPath);
 					if (storedDt.isValid () &&
-							std::abs (storedDt.msecsTo (mtime)) < 1500)
+							std::abs (storedDt.msecsTo (mtime)) < datetimeTolerance)
 					{
 						result.UnchangedFiles_ << trackPath;
 						continue;
@@ -321,7 +325,8 @@ namespace LC::LMP
 		{
 			auto keys = Track2Path_.keys ();
 			std::shuffle (keys.begin (), keys.end (), *QRandomGenerator::global ());
-			return keys.mid (0, 50);
+			const auto playlistSize = 50;
+			return keys.mid (0, playlistSize);
 		}
 		case DynamicPlaylist::LovedTracks:
 			return Storage_->GetLovedTracks ();
@@ -355,7 +360,7 @@ namespace LC::LMP
 	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path) const
 	{
 		if (!Path2Track_.contains (path))
-			return Collection::TrackStats ();
+			return {};
 
 		try
 		{
@@ -368,7 +373,7 @@ namespace LC::LMP
 					<< path
 					<< Path2Track_ [path]
 					<< e.what ();
-			return Collection::TrackStats ();
+			return {};
 		}
 	}
 
@@ -721,7 +726,8 @@ namespace LC::LMP
 	void LocalCollection::handleScanFinished ()
 	{
 		auto future = Watcher_->future ();
-		QList<MediaInfo> newInfos, existingInfos;
+		QList<MediaInfo> newInfos;
+		QList<MediaInfo> existingInfos;
 		for (const auto& info : future)
 		{
 			const auto& path = info.LocalPath_;
@@ -746,9 +752,9 @@ namespace LC::LMP
 			InitiateScan (NewPathsQueue_.takeFirst ());
 		else if (UpdateNewTracks_)
 		{
-			const auto& artistsMsg = tr ("%n new artist(s)", 0, UpdateNewArtists_);
-			const auto& albumsMsg = tr ("%n new album(s)", 0, UpdateNewAlbums_);
-			const auto& tracksMsg = tr ("%n new track(s)", 0, UpdateNewTracks_);
+			const auto& artistsMsg = tr ("%n new artist(s)", nullptr, UpdateNewArtists_);
+			const auto& albumsMsg = tr ("%n new album(s)", nullptr, UpdateNewAlbums_);
+			const auto& tracksMsg = tr ("%n new track(s)", nullptr, UpdateNewTracks_);
 			const auto& msg = tr ("Local collection updated: %1, %2, %3.")
 					.arg (artistsMsg)
 					.arg (albumsMsg)

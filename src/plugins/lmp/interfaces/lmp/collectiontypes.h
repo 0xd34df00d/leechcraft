@@ -12,11 +12,7 @@
 #include <QStringList>
 #include <QDateTime>
 
-namespace LC
-{
-namespace LMP
-{
-namespace Collection
+namespace LC::LMP::Collection
 {
 	struct Track
 	{
@@ -40,7 +36,7 @@ namespace Collection
 
 		QList<Track> Tracks_;
 	};
-	typedef std::shared_ptr<Album> Album_ptr;
+	using Album_ptr = std::shared_ptr<Album>;
 
 	struct Artist
 	{
@@ -49,7 +45,7 @@ namespace Collection
 		QString Name_;
 		QList<Album_ptr> Albums_;
 	};
-	typedef QList<Artist> Artists_t;
+	using Artists_t = QList<Artist>;
 
 	struct TrackStats
 	{
@@ -63,6 +59,4 @@ namespace Collection
 
 		operator bool () const;
 	};
-}
-}
 }
