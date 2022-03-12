@@ -48,7 +48,6 @@ namespace LC::LMP
 
 		QSet<QString> PresentPaths_;
 		QHash<QString, int> Path2Track_;
-		QHash<int, QString> Track2Path_;
 
 		QHash<int, int> Track2Album_;
 		QHash<int, Collection::Album_ptr> AlbumID2Album_;
@@ -112,7 +111,6 @@ namespace LC::LMP
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 
 		QStringList GetDynamicPlaylist (DynamicPlaylist) const;
-		QStringList TrackList2PathList (const QList<int>&) const;
 
 		void AddTrackTo (int, StaticRating);
 

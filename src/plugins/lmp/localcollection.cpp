@@ -109,7 +109,6 @@ namespace LC::LMP
 		PresentPaths_.clear ();
 
 		Path2Track_.clear ();
-		Track2Path_.clear ();
 
 		Track2Album_.clear ();
 		AlbumID2Album_.clear ();
@@ -337,13 +336,6 @@ namespace LC::LMP
 		Util::Unreachable ();
 	}
 
-	QStringList LocalCollection::TrackList2PathList (const QList<int>& tracks) const
-	{
-		auto result = Util::Map (tracks, [this] (int id) { return Track2Path_ [id]; });
-		result.removeAll ({});
-		return result;
-	}
-
 	void LocalCollection::AddTrackTo (int trackId, StaticRating rating)
 	{
 		switch (rating)
@@ -492,8 +484,6 @@ namespace LC::LMP
 				for (const auto& track : album->Tracks_)
 				{
 					Path2Track_ [track.FilePath_] = track.ID_;
-					Track2Path_ [track.ID_] = track.FilePath_;
-
 					Track2Album_ [track.ID_] = album->ID_;
 				}
 			}
@@ -558,7 +548,6 @@ namespace LC::LMP
 		CollectionModel_->RemoveTrack (id);
 
 		Path2Track_.remove (path);
-		Track2Path_.remove (id);
 		Track2Album_.remove (id);
 		PresentPaths_.remove (path);
 
