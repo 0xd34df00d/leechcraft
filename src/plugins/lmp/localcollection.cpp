@@ -9,7 +9,6 @@
 #include "localcollection.h"
 #include <functional>
 #include <algorithm>
-#include <numeric>
 #include <QStandardItemModel>
 #include <QRandomGenerator>
 #include <QtConcurrentMap>
@@ -18,6 +17,7 @@
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -106,7 +106,6 @@ namespace LC::LMP
 		Storage_->Clear ();
 		CollectionModel_->Clear ();
 		Artists_.clear ();
-		PresentPaths_.clear ();
 
 		Path2Track_.clear ();
 
@@ -202,9 +201,10 @@ namespace LC::LMP
 		if (!RootPaths_.contains (path))
 			return;
 
-		const auto& toRemove = Util::Filter (PresentPaths_,
-				[&path] (const QString& subPath) { return subPath.startsWith (path); });
-		PresentPaths_.subtract (toRemove);
+		QStringList toRemove;
+		for (const auto& subPath : Util::StlizeKeys (Path2Track_))
+			if (subPath.startsWith (path))
+				toRemove << subPath;
 
 		try
 		{
@@ -322,7 +322,7 @@ namespace LC::LMP
 		{
 		case DynamicPlaylist::Random50:
 		{
-			QStringList keys { PresentPaths_.begin (), PresentPaths_.end () };
+			auto keys = Path2Track_.keys ();
 			std::shuffle (keys.begin (), keys.end (), *QRandomGenerator::global ());
 			const auto playlistSize = 50;
 			return keys.mid (0, playlistSize);
@@ -459,10 +459,6 @@ namespace LC::LMP
 			}
 			else
 				pos->Albums_ << artist.Albums_;
-
-			for (const auto& album : artist.Albums_)
-				for (const auto& track : album->Tracks_)
-					PresentPaths_ << track.FilePath_;
 		}
 
 		for (const auto& artist : artists)
@@ -549,7 +545,6 @@ namespace LC::LMP
 
 		Path2Track_.remove (path);
 		Track2Album_.remove (id);
-		PresentPaths_.remove (path);
 
 		if (!album)
 			return;
@@ -649,7 +644,7 @@ namespace LC::LMP
 
 	void LocalCollection::CheckRemovedFiles (const QSet<QString>& scanned, const QString& rootPath)
 	{
-		auto toRemove = PresentPaths_;
+		QSet<QString> toRemove { Path2Track_.keyBegin (), Path2Track_.keyEnd () };
 		toRemove.subtract (scanned);
 
 		for (auto pos = toRemove.begin (); pos != toRemove.end (); )
@@ -723,13 +718,10 @@ namespace LC::LMP
 			if (path.isEmpty ())
 				continue;
 
-			if (PresentPaths_.contains (path))
+			if (Path2Track_.contains (path))
 				existingInfos << info;
 			else
-			{
 				newInfos << info;
-				PresentPaths_ += path;
-			}
 		}
 
 		emit scanFinished ();
