@@ -111,7 +111,7 @@ namespace LC::LMP
 		int GetTrackAlbumId (int trackId) const;
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 
-		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
+		QStringList GetDynamicPlaylist (DynamicPlaylist) const;
 		QStringList TrackList2PathList (const QList<int>&) const;
 
 		void AddTrackTo (int, StaticRating);

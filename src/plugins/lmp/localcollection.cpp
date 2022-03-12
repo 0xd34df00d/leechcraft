@@ -317,21 +317,21 @@ namespace LC::LMP
 		return AlbumID2Album_ [Track2Album_ [trackId]];
 	}
 
-	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
+	QStringList LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
 	{
 		switch (type)
 		{
 		case DynamicPlaylist::Random50:
 		{
-			auto keys = Track2Path_.keys ();
+			QStringList keys { PresentPaths_.begin (), PresentPaths_.end () };
 			std::shuffle (keys.begin (), keys.end (), *QRandomGenerator::global ());
 			const auto playlistSize = 50;
 			return keys.mid (0, playlistSize);
 		}
 		case DynamicPlaylist::LovedTracks:
-			return Storage_->GetLovedTracks ();
+			return Storage_->GetLovedTracksPaths ();
 		case DynamicPlaylist::BannedTracks:
-			return Storage_->GetBannedTracks ();
+			return Storage_->GetBannedTracksPaths ();
 		}
 
 		Util::Unreachable ();

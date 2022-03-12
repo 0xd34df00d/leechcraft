@@ -395,12 +395,12 @@ namespace LC::LMP
 		}
 	}
 
-	QList<int> LocalCollectionStorage::GetLovedTracks ()
+	QStringList LocalCollectionStorage::GetLovedTracksPaths ()
 	{
 		return GetLovedBanned (LovedStateID);
 	}
 
-	QList<int> LocalCollectionStorage::GetBannedTracks ()
+	QStringList LocalCollectionStorage::GetBannedTracksPaths ()
 	{
 		return GetLovedBanned (BannedStateID);
 	}
@@ -484,7 +484,7 @@ namespace LC::LMP
 		}
 	}
 
-	QList<int> LocalCollectionStorage::GetLovedBanned (int state)
+	QStringList LocalCollectionStorage::GetLovedBanned (int state)
 	{
 		GetLovedBanned_.bindValue (":state", state);
 		if (!GetLovedBanned_.exec ())
@@ -493,9 +493,9 @@ namespace LC::LMP
 			throw std::runtime_error ("cannot get loved/banned tracks");
 		}
 
-		QList<int> result;
+		QStringList result;
 		while (GetLovedBanned_.next ())
-			result << GetLovedBanned_.value (0).toInt ();
+			result << GetLovedBanned_.value (0).toString ();
 		GetLovedBanned_.finish ();
 		return result;
 	}
@@ -753,7 +753,7 @@ namespace LC::LMP
 		SetFileMTime_.prepare ("INSERT OR REPLACE INTO fileTimes (TrackID, MTime) VALUES ((SELECT Id FROM tracks WHERE Path = :filepath), :mtime);");
 
 		GetLovedBanned_ = QSqlQuery (DB_);
-		GetLovedBanned_.prepare ("SELECT TrackId FROM lovedBanned WHERE State = :state;");
+		GetLovedBanned_.prepare ("SELECT Path FROM tracks INNER JOIN lovedBanned ON TrackId = Tracks.Id WHERE State = :state;");
 
 		SetLovedBanned_ = QSqlQuery (DB_);
 		SetLovedBanned_.prepare ("INSERT OR REPLACE INTO lovedBanned (TrackId, State) "

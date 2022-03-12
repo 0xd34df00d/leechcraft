@@ -153,11 +153,9 @@ namespace LMP
 	NativePlaylist_t PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
-		auto toSrcs = [col] (const QList<int>& ids)
+		auto toSrcs = [] (const auto& paths)
 		{
-			return Util::Map (col->TrackList2PathList (ids),
-					[] (const QString& path) -> NativePlaylistItem_t
-						{ return { path, {} }; });
+			return Util::Map (paths, [] (const auto& path) { return NativePlaylistItem_t { path, {} }; });
 		};
 
 		switch (index.data (Roles::PlaylistType).toInt ())
@@ -171,9 +169,7 @@ namespace LMP
 		case PlaylistTypes::BannedTracks:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
-			return Util::Map (index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> (),
-					[] (const QUrl& url) -> NativePlaylistItem_t
-						{ return { url, {} }; });
+			return toSrcs (index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> ());
 		}
 	}
 

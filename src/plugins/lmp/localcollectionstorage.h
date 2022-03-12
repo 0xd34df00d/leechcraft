@@ -104,15 +104,15 @@ namespace LC::LMP
 		void SetTrackLoved (int);
 		void SetTrackBanned (int);
 		void ClearTrackLovedBanned (int);
-		QList<int> GetLovedTracks ();
-		QList<int> GetBannedTracks ();
+		QStringList GetLovedTracksPaths ();
+		QStringList GetBannedTracksPaths ();
 
 		QList<int> GetOutdatedRgTracks ();
 		void SetRgTrackInfo (int, const RGData&);
 		RGData GetRgTrackInfo (const QString&);
 	private:
 		void MarkLovedBanned (int, int);
-		QList<int> GetLovedBanned (int);
+		QStringList GetLovedBanned (int);
 
 		Collection::Artists_t GetAllArtists ();
 		QHash<int, Collection::Album_ptr> GetAllAlbums ();
