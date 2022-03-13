@@ -106,6 +106,7 @@ namespace LC::LMP
 
 		int FindTrack (const QString& path) const;
 		std::optional<Collection::FullTrackInfo> GetTrackInfo (const QString&) const;
+		std::optional<Collection::FullTrackInfo> GetTrackInfo (int) const;
 
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 

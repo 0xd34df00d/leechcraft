@@ -303,7 +303,11 @@ namespace LC::LMP
 
 	std::optional<Collection::FullTrackInfo> LocalCollection::GetTrackInfo (const QString& path) const
 	{
-		const auto trackId = Path2Track_.value (path, -1);
+		return GetTrackInfo (Path2Track_.value (path, -1));
+	}
+
+	std::optional<Collection::FullTrackInfo> LocalCollection::GetTrackInfo (int trackId) const
+	{
 		const auto albumId = Track2Album_.value (trackId, -1);
 		const auto artistId = AlbumID2ArtistID_.value (albumId, -1);
 		if (trackId == -1 || albumId == -1 || artistId == -1)
