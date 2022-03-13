@@ -261,12 +261,6 @@ namespace LC::LMP
 			item->parent ()->removeRow (item->row ());
 	}
 
-	QVariant LocalCollectionModel::GetTrackData (int trackId, LocalCollectionModel::Role role) const
-	{
-		const auto item = Track2Item_.value (trackId);
-		return item ? item->data (role) : QVariant ();
-	}
-
 	void LocalCollectionModel::RemoveArtist (int id)
 	{
 		removeRow (Artist2Item_.take (id)->row ());

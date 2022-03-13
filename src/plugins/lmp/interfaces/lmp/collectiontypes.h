@@ -47,6 +47,13 @@ namespace LC::LMP::Collection
 	};
 	using Artists_t = QList<Artist>;
 
+	struct FullTrackInfo
+	{
+		const Artist& Artist_;
+		const Album_ptr Album_;
+		const Track& Track_;
+	};
+
 	struct TrackStats
 	{
 		int TrackID_ = 0;

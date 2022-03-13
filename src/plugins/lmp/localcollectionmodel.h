@@ -73,7 +73,6 @@ namespace LC::LMP
 		void RemoveArtist (int);
 
 		void SetAlbumArt (int, const QString&);
-		QVariant GetTrackData (int trackId, Role) const;
 
 		void UpdatePlayStats (int);
 	};

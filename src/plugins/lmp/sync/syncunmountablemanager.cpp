@@ -44,44 +44,25 @@ namespace LMP
 
 		const auto& format = params.TCParams_.FormatID_;
 
-		auto syncer = params.Syncer_;
 		for (const auto& file : params.Files_)
-		{
-			const auto trackId = coll->FindTrack (file);
-			if (trackId < 0)
-				continue;
+			if (const auto& trackInfo = coll->GetTrackInfo (file))
+			{
+				params.Syncer_->SetFileInfo (file,
+						{
+							format.isEmpty () ?
+								QFileInfo (file).suffix ().toLower () :
+								format,
+							trackInfo->Track_.Number_,
+							trackInfo->Track_.Name_,
+							trackInfo->Artist_.Name_,
+							trackInfo->Album_->Name_,
+							trackInfo->Album_->Year_,
+							trackInfo->Album_->CoverPath_,
+							{}
+						});
 
-			const auto trackNumber = coll->
-					GetTrackData (trackId, LocalCollectionModel::Role::TrackNumber).toInt ();
-			const auto& trackTitle = coll->
-					GetTrackData (trackId, LocalCollectionModel::Role::TrackTitle).toString ();
-
-			const auto album = coll->GetTrackAlbum (trackId);
-			if (!album)
-				continue;
-
-			const auto& artists = coll->GetAlbumArtists (album->ID_);
-			if (artists.isEmpty ())
-				continue;
-
-			const auto& artist = coll->GetArtist (artists.at (0));
-
-			syncer->SetFileInfo (file,
-					{
-						format.isEmpty () ?
-							QFileInfo (file).suffix ().toLower () :
-							format,
-						trackNumber,
-						trackTitle,
-						artist.Name_,
-						album->Name_,
-						album->Year_,
-						album->CoverPath_,
-						QStringList ()
-					});
-
-			Source2Params_ [file] = params;
-		}
+				Source2Params_ [file] = params;
+			}
 
 		SyncManagerBase::AddFiles (params.Files_, params.TCParams_);
 	}

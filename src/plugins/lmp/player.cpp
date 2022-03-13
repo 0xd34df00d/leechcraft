@@ -889,8 +889,8 @@ namespace LMP
 
 			auto collection = Core::Instance ().GetLocalCollection ();
 
-			const auto trackId = collection->FindTrack (source.GetLocalPath ());
-			if (trackId == -1)
+			const auto& maybeTrackInfo = collection->GetTrackInfo (source.GetLocalPath ());
+			if (!maybeTrackInfo)
 			{
 				auto resolver = Core::Instance ().GetLocalFileResolver ();
 				return Util::Visit (resolver->ResolveInfo (source.GetLocalPath ()),
@@ -905,20 +905,14 @@ namespace LMP
 						});
 			}
 
-			info.Artist_ = collection->GetTrackData (trackId,
-					LocalCollectionModel::Role::ArtistName).toString ();
-			info.Album_ = collection->GetTrackData (trackId,
-					LocalCollectionModel::Role::AlbumName).toString ();
-			info.Title_ = collection->GetTrackData (trackId,
-					LocalCollectionModel::Role::TrackTitle).toString ();
-			info.Genres_ = collection->GetTrackData (trackId,
-					LocalCollectionModel::Role::TrackGenres).toStringList ();
-			info.Length_ = collection->GetTrackData (trackId,
-					LocalCollectionModel::Role::TrackLength).toInt ();
-			info.Year_ = collection->GetTrackData (trackId,
-					LocalCollectionModel::Role::AlbumYear).toInt ();
-			info.TrackNumber_ = collection->GetTrackData (trackId,
-					LocalCollectionModel::Role::TrackNumber).toInt ();
+			const auto& trackInfo = *maybeTrackInfo;
+			info.Artist_ = trackInfo.Artist_.Name_;
+			info.Album_ = trackInfo.Album_->Name_;
+			info.Year_ = trackInfo.Album_->Year_;
+			info.Title_ = trackInfo.Track_.Name_;
+			info.Genres_ = trackInfo.Track_.Genres_;
+			info.Length_ = trackInfo.Track_.Length_;
+			info.TrackNumber_ = trackInfo.Track_.Number_;
 
 			return { source, info };
 		}

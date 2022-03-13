@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <QHash>
 #include <QSet>
@@ -87,8 +88,6 @@ namespace LC::LMP
 		LocalCollectionStorage* GetStorage () const;
 		QAbstractItemModel* GetCollectionModel () const;
 
-		QVariant GetTrackData (int trackId, LocalCollectionModel::Role) const;
-
 		void Clear ();
 
 		void Scan (const QString&, bool root = true);
@@ -106,6 +105,8 @@ namespace LC::LMP
 		void SetAlbumArt (int, const QString&);
 
 		int FindTrack (const QString& path) const;
+		std::optional<Collection::FullTrackInfo> GetTrackInfo (const QString&) const;
+
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 
 		QStringList GetDynamicPlaylist (DynamicPlaylist) const;

@@ -96,11 +96,6 @@ namespace LC::LMP
 		return CollectionModel_;
 	}
 
-	QVariant LocalCollection::GetTrackData (int trackId, LocalCollectionModel::Role role) const
-	{
-		return CollectionModel_->GetTrackData (trackId, role);
-	}
-
 	void LocalCollection::Clear ()
 	{
 		Storage_->Clear ();
@@ -304,6 +299,54 @@ namespace LC::LMP
 	int LocalCollection::FindTrack (const QString& path) const
 	{
 		return Path2Track_.value (path, -1);
+	}
+
+	std::optional<Collection::FullTrackInfo> LocalCollection::GetTrackInfo (const QString& path) const
+	{
+		const auto trackId = Path2Track_.value (path, -1);
+		const auto albumId = Track2Album_.value (trackId, -1);
+		const auto artistId = AlbumID2ArtistID_.value (albumId, -1);
+		if (trackId == -1 || albumId == -1 || artistId == -1)
+			return {};
+
+		const auto& artistPos = std::find_if (Artists_.begin (), Artists_.end (),
+				[artistId] (const auto& artist) { return artist.ID_ == artistId; });
+		if (artistPos == Artists_.end ())
+		{
+			qWarning () << "unknown artist for"
+					<< trackId
+					<< albumId
+					<< artistId;
+			return {};
+		}
+
+		const auto& artist = *artistPos;
+
+		const auto albumPos = std::find_if (artist.Albums_.begin (), artist.Albums_.end (),
+				[albumId] (const auto& album) { return album->ID_ == albumId; });
+		if (albumPos == artist.Albums_.end ())
+		{
+			qWarning () << "unknown album for"
+					<< trackId
+					<< albumId
+					<< artistId;
+			return {};
+		}
+
+		const auto& album = *albumPos;
+
+		const auto trackPos = std::find_if (album->Tracks_.begin (), album->Tracks_.end (),
+				[trackId] (const auto& track) { return track.ID_ == trackId; });
+		if (trackPos == album->Tracks_.end ())
+		{
+			qWarning () << "unknown track for"
+					<< trackId
+					<< albumId
+					<< artistId;
+			return {};
+		}
+
+		return Collection::FullTrackInfo { artist, album, *trackPos };
 	}
 
 	Collection::Album_ptr LocalCollection::GetTrackAlbum (int trackId) const
