@@ -13,11 +13,7 @@
 #include "checktab.h"
 #include "progressmodelmanager.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -108,8 +104,6 @@ namespace BrainSlugz
 					<< "unknown tab class"
 					<< tc;
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lmp_brainslugz, LC::LMP::BrainSlugz::Plugin)

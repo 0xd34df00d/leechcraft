@@ -23,11 +23,7 @@ class IAlbumArtProvider;
 class IArtistBioFetcher;
 }
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	class CheckModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
@@ -72,6 +68,4 @@ namespace BrainSlugz
 		void selectNone ();
 		void setArtistScheduled (int, bool);
 	};
-}
-}
 }

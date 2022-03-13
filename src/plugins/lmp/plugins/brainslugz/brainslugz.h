@@ -18,11 +18,7 @@
 
 class QWidget;
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	class CheckTab;
 	class ProgressModelManager;
@@ -65,6 +61,4 @@ namespace BrainSlugz
 
 		void SetLMPProxy (ILMPProxy_ptr) override;
 	};
-}
-}
 }

@@ -18,11 +18,7 @@ class QSortFilterProxyModel;
 
 class QQuickWidget;
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	class CheckModel;
 	class Checker;
@@ -67,6 +63,4 @@ namespace BrainSlugz
 		void runningStateChanged (bool);
 		void checkStarted (Checker*);
 	};
-}
-}
 }

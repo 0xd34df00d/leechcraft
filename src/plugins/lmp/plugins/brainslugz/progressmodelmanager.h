@@ -14,11 +14,7 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	class Checker;
 
@@ -39,6 +35,4 @@ namespace BrainSlugz
 		void handleProgress (int);
 		void handleFinished ();
 	};
-}
-}
 }

@@ -24,11 +24,7 @@
 #include "checkmodel.h"
 #include "checker.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	namespace
 	{
@@ -184,6 +180,4 @@ namespace BrainSlugz
 		IsRunning_ = false;
 		emit runningStateChanged (IsRunning_);
 	}
-}
-}
 }

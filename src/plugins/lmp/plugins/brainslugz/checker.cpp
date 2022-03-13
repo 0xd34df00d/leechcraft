@@ -18,11 +18,7 @@
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	Checker::Checker (CheckModel *model,
 			const QList<Media::ReleaseInfo::Type>& types,
@@ -161,6 +157,4 @@ namespace BrainSlugz
 					[=, this] (const auto& result) { HandleDiscoReady (artist, result); }
 				}.Finally ([this] { rotateQueue (); });
 	}
-}
-}
 }

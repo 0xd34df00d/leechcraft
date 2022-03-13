@@ -12,11 +12,7 @@
 #include <util/xpc/util.h>
 #include "checker.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	ProgressModelManager::ProgressModelManager (QObject *parent)
 	: QObject { parent }
@@ -73,6 +69,4 @@ namespace BrainSlugz
 		Model_->removeRow (0);
 		Row_.clear ();
 	}
-}
-}
 }
