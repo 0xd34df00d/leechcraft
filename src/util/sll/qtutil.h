@@ -53,6 +53,20 @@ namespace LC::Util
 		return Range { std::forward<Assoc> (assoc) };
 	}
 
+	template<typename Assoc>
+	auto StlizeKeys (Assoc&& assoc) noexcept
+	{
+		struct Range
+		{
+			Assoc Assoc_;
+
+			auto begin () const { return Assoc_.keyBegin (); }
+			auto end () const { return Assoc_.keyEnd (); }
+		};
+
+		return Range { std::forward<Assoc> (assoc) };
+	}
+
 	/** @brief Convert the view into a QByteArray without copying.
 	 *
 	 * The lifetime of the view should be not less than the
