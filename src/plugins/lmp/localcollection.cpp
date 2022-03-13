@@ -306,11 +306,6 @@ namespace LC::LMP
 		return Path2Track_.value (path, -1);
 	}
 
-	int LocalCollection::GetTrackAlbumId (int trackId) const
-	{
-		return Track2Album_ [trackId];
-	}
-
 	Collection::Album_ptr LocalCollection::GetTrackAlbum (int trackId) const
 	{
 		return AlbumID2Album_ [Track2Album_ [trackId]];

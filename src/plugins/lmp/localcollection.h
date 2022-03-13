@@ -106,7 +106,6 @@ namespace LC::LMP
 		void SetAlbumArt (int, const QString&);
 
 		int FindTrack (const QString& path) const;
-		int GetTrackAlbumId (int trackId) const;
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 
 		QStringList GetDynamicPlaylist (DynamicPlaylist) const;

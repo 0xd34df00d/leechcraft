@@ -540,7 +540,18 @@ namespace LC::LMP
 		while (getter.next ())
 			trackGenres [getter.value (0).toInt ()] << getter.value (1).toString ();
 
-		if (!getter.exec ("SELECT albums.Id, albums.Name, albums.Year, albums.CoverPath, tracks.Id, tracks.TrackNumber, tracks.Name, tracks.Length, tracks.Path FROM tracks INNER JOIN albums ON tracks.AlbumID = albums.Id;"))
+		if (!getter.exec (R"(SELECT
+								albums.Id,
+								albums.Name,
+								albums.Year,
+								albums.CoverPath,
+								tracks.Id,
+								tracks.TrackNumber,
+								tracks.Name,
+								tracks.Length,
+								tracks.Path
+								FROM tracks INNER JOIN albums ON tracks.AlbumID = albums.Id;
+				)"))
 		{
 			Util::DBLock::DumpError (getter);
 			throw std::runtime_error ("cannot fetch albums");
