@@ -48,22 +48,22 @@ namespace BrainSlugz
 
 		ProgressModelManager *ProgressModelManager_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QAbstractItemModel* GetRepresentation () const;
+		QAbstractItemModel* GetRepresentation () const override;
 
-		void SetLMPProxy (ILMPProxy_ptr);
+		void SetLMPProxy (ILMPProxy_ptr) override;
 	};
 }
 }

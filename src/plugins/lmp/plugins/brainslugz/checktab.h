@@ -50,10 +50,10 @@ namespace BrainSlugz
 		CheckTab (const ILMPProxy_ptr&, const ICoreProxy_ptr&,
 				const TabClassInfo& tc, QObject *plugin);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 	private:
 		void SetupToolbar ();
 	private slots:
@@ -62,7 +62,7 @@ namespace BrainSlugz
 		void handleStart ();
 		void handleCheckFinished ();
 	signals:
-		void removeTab ();
+		void removeTab () override;
 
 		void runningStateChanged (bool);
 		void checkStarted (Checker*);
