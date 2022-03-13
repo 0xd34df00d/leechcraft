@@ -107,7 +107,7 @@ namespace LC::LMP
 		QStringList GetLovedTracksPaths ();
 		QStringList GetBannedTracksPaths ();
 
-		QList<int> GetOutdatedRgTracks ();
+		QList<int> GetOutdatedRgAlbums ();
 		void SetRgTrackInfo (int, const RGData&);
 		RGData GetRgTrackInfo (const QString&);
 	private:

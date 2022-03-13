@@ -405,7 +405,7 @@ namespace LC::LMP
 		return GetLovedBanned (BannedStateID);
 	}
 
-	QList<int> LocalCollectionStorage::GetOutdatedRgTracks ()
+	QList<int> LocalCollectionStorage::GetOutdatedRgAlbums ()
 	{
 		if (!GetOutdatedRgData_.exec ())
 		{
@@ -763,7 +763,13 @@ namespace LC::LMP
 		RemoveLovedBanned_.prepare ("DELETE FROM lovedBanned WHERE TrackId = :track_id;");
 
 		GetOutdatedRgData_ = QSqlQuery (DB_);
-		GetOutdatedRgData_.prepare ("SELECT fileTimes.TrackID FROM fileTimes LEFT OUTER JOIN rgdata ON fileTimes.TrackId = rgdata.TrackId WHERE fileTimes.MTime != rgdata.LastMTime OR rgdata.LastMTime IS NULL;");
+		GetOutdatedRgData_.prepare (R"(
+				SELECT DISTINCT tracks.AlbumID
+				FROM tracks
+				INNER JOIN fileTimes ON tracks.Id = fileTimes.TrackID
+				LEFT OUTER JOIN rgdata ON fileTimes.TrackId = rgdata.TrackId
+				WHERE fileTimes.MTime != rgdata.LastMTime OR rgdata.LastMTime IS NULL;
+				)");
 
 		GetTrackRgData_ = QSqlQuery (DB_);
 		GetTrackRgData_.prepare ("SELECT TrackGain, TrackPeak, AlbumGain, AlbumPeak "

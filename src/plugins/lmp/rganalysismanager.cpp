@@ -94,13 +94,9 @@ namespace LMP
 		if (!IsScanAllowed ())
 			return;
 
-		QSet<int> albums;
-		for (const auto track : Coll_->GetStorage ()->GetOutdatedRgTracks ())
-			albums << Coll_->GetTrackAlbumId (track);
-
 		const bool wasEmpty = AlbumsQueue_.isEmpty ();
 
-		for (auto albumId : albums)
+		for (auto albumId : Coll_->GetStorage ()->GetOutdatedRgAlbums ())
 			if (const auto& album = Coll_->GetAlbum (albumId))
 				AlbumsQueue_ << album;
 
