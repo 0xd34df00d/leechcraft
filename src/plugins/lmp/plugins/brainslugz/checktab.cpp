@@ -99,6 +99,15 @@ namespace LC::LMP::BrainSlugz
 		CheckView_->setSource (QUrl::fromLocalFile (filename));
 
 		SetupToolbar ();
+
+		connect (Ui_.SelectAll_,
+				&QPushButton::released,
+				Model_,
+				&CheckModel::SelectAll);
+		connect (Ui_.SelectNone_,
+				&QPushButton::released,
+				Model_,
+				&CheckModel::SelectNone);
 	}
 
 	TabClassInfo CheckTab::GetTabClassInfo () const
@@ -124,30 +133,16 @@ namespace LC::LMP::BrainSlugz
 
 	void CheckTab::SetupToolbar ()
 	{
-		const auto startAction = Toolbar_->addAction (tr ("Start"));
+		const auto startAction = Toolbar_->addAction (tr ("Start"), this, &CheckTab::Start);
 		startAction->setProperty ("ActionIcon", "system-run");
-		connect (startAction,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleStart ()));
 
 		connect (this,
-				SIGNAL (runningStateChanged (bool)),
+				&CheckTab::runningStateChanged,
 				startAction,
-				SLOT (setDisabled (bool)));
+				&QAction::setDisabled);
 	}
 
-	void CheckTab::on_SelectAll__released ()
-	{
-		Model_->selectAll ();
-	}
-
-	void CheckTab::on_SelectNone__released ()
-	{
-		Model_->selectNone ();
-	}
-
-	void CheckTab::handleStart ()
+	void CheckTab::Start ()
 	{
 		QList<Media::ReleaseInfo::Type> types;
 
@@ -168,20 +163,18 @@ namespace LC::LMP::BrainSlugz
 
 		const auto checker = new Checker { Model_, types, CoreProxy_, this };
 		connect (checker,
-				SIGNAL (finished ()),
+				&Checker::finished,
 				this,
-				SLOT (handleCheckFinished ()));
+				[this]
+				{
+					IsRunning_ = false;
+					emit runningStateChanged (IsRunning_);
+				});
 		emit checkStarted (checker);
 
 		CheckView_->rootContext ()->setContextProperty ("checkingState", QStringLiteral ("checking"));
 
 		IsRunning_ = true;
-		emit runningStateChanged (IsRunning_);
-	}
-
-	void CheckTab::handleCheckFinished ()
-	{
-		IsRunning_ = false;
 		emit runningStateChanged (IsRunning_);
 	}
 }

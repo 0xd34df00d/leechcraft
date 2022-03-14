@@ -39,7 +39,7 @@ namespace LC::LMP::BrainSlugz
 			return;
 		}
 
-		rotateQueue ();
+		RotateQueue ();
 	}
 
 	int Checker::GetRemainingCount () const
@@ -133,7 +133,7 @@ namespace LC::LMP::BrainSlugz
 			Model_->SetMissingReleases (releases, artist);
 	}
 
-	void Checker::rotateQueue ()
+	void Checker::RotateQueue ()
 	{
 		emit progress (Artists_.size ());
 
@@ -155,6 +155,6 @@ namespace LC::LMP::BrainSlugz
 						Model_->MarkNoNews (artist);
 					},
 					[=, this] (const auto& result) { HandleDiscoReady (artist, result); }
-				}.Finally ([this] { rotateQueue (); });
+				}.Finally ([this] { RotateQueue (); });
 	}
 }

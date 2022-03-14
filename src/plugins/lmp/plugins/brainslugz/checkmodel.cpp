@@ -23,11 +23,7 @@
 #include <util/sll/either.h>
 #include <util/threads/futures.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	namespace
 	{
@@ -199,21 +195,21 @@ namespace BrainSlugz
 		}
 	}
 
-	void CheckModel::selectAll ()
+	void CheckModel::SelectAll ()
 	{
 		for (const auto& artist : AllArtists_)
 			if (!Scheduled_.contains (artist.ID_))
-				setArtistScheduled (artist.ID_, true);
+				SetArtistScheduled (artist.ID_, true);
 	}
 
-	void CheckModel::selectNone ()
+	void CheckModel::SelectNone ()
 	{
 		for (const auto& artist : AllArtists_)
 			if (Scheduled_.contains (artist.ID_))
-				setArtistScheduled (artist.ID_, false);
+				SetArtistScheduled (artist.ID_, false);
 	}
 
-	void CheckModel::setArtistScheduled (int id, bool scheduled)
+	void CheckModel::SetArtistScheduled (int id, bool scheduled)
 	{
 		if (!Artist2Item_.contains (id))
 			return;
@@ -225,6 +221,4 @@ namespace BrainSlugz
 		else
 			Scheduled_.remove (id);
 	}
-}
-}
 }

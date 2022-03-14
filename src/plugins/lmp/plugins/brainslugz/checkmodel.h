@@ -63,9 +63,9 @@ namespace LC::LMP::BrainSlugz
 		void MarkNoNews (const Collection::Artist&);
 
 		void RemoveUnscheduled ();
-	public slots:
-		void selectAll ();
-		void selectNone ();
-		void setArtistScheduled (int, bool);
+
+		Q_INVOKABLE void SelectAll ();
+		Q_INVOKABLE void SelectNone ();
+		Q_INVOKABLE void SetArtistScheduled (int, bool);
 	};
 }

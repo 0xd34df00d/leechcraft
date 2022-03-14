@@ -16,14 +16,10 @@
 
 namespace Media
 {
-class IDiscographyProvider;
+	class IDiscographyProvider;
 }
 
-namespace LC
-{
-namespace LMP
-{
-namespace BrainSlugz
+namespace LC::LMP::BrainSlugz
 {
 	class CheckModel;
 
@@ -45,12 +41,10 @@ namespace BrainSlugz
 	private:
 		void HandleReady ();
 		void HandleDiscoReady (const Collection::Artist&, QList<Media::ReleaseInfo>);
-	private slots:
-		void rotateQueue ();
+
+		void RotateQueue ();
 	signals:
 		void finished ();
 		void progress (int remaining);
 	};
-}
-}
 }

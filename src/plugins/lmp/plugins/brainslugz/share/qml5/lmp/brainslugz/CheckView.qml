@@ -117,7 +117,7 @@ Rectangle {
                 height: width
 
                 actionIconURL: scheduled ? "image://ThemeIcons/list-remove" : "image://ThemeIcons/list-add"
-                onTriggered: artistsModel.setArtistScheduled(artistId, !scheduled)
+                onTriggered: artistsModel.SetArtistScheduled(artistId, !scheduled)
             }
 
             GridView.onRemove: SequentialAnimation {

@@ -10,6 +10,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include "checker.h"
 #include "checktab.h"
 #include "progressmodelmanager.h"
 
@@ -86,23 +87,23 @@ namespace LC::LMP::BrainSlugz
 
 	void Plugin::TabOpenRequested (const QByteArray& tc)
 	{
-		if (tc == CheckTC_.TabClass_)
+		if (tc != CheckTC_.TabClass_)
 		{
-			if (!OpenedTab_)
-			{
-				OpenedTab_ = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
-				connect (OpenedTab_,
-						SIGNAL (checkStarted (Checker*)),
-						ProgressModelManager_,
-						SLOT (handleCheckStarted (Checker*)));
-			}
-
-			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), OpenedTab_);
-		}
-		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tc;
+			return;
+		}
+
+		if (!OpenedTab_)
+		{
+			OpenedTab_ = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
+			connect (OpenedTab_,
+					&CheckTab::checkStarted,
+					ProgressModelManager_,
+					&ProgressModelManager::handleCheckStarted);
+		}
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), OpenedTab_);
 	}
 }
 

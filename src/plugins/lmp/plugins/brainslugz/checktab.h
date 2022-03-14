@@ -52,11 +52,7 @@ namespace LC::LMP::BrainSlugz
 		QToolBar* GetToolBar () const override;
 	private:
 		void SetupToolbar ();
-	private slots:
-		void on_SelectAll__released ();
-		void on_SelectNone__released ();
-		void handleStart ();
-		void handleCheckFinished ();
+		void Start ();
 	signals:
 		void removeTab () override;
 
