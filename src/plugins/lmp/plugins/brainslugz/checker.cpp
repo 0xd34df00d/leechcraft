@@ -9,6 +9,7 @@
 #include "checker.h"
 #include <algorithm>
 #include <cmath>
+#include <QTimer>
 #include <QtDebug>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
@@ -38,7 +39,7 @@ namespace LC::LMP::BrainSlugz
 			return;
 		}
 
-		RotateQueue ();
+		QTimer::singleShot (0, this, &Checker::RotateQueue);
 	}
 
 	int Checker::GetRemainingCount () const
