@@ -10,11 +10,10 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include "ui_checktab.h"
 
-class QSortFilterProxyModel;
+class QAbstractItemModel;
 
 class QQuickWidget;
 
@@ -32,7 +31,6 @@ namespace LC::LMP::BrainSlugz
 		Ui::CheckTab Ui_;
 		QQuickWidget * const CheckView_;
 
-		const ICoreProxy_ptr CoreProxy_;
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
 
@@ -43,8 +41,7 @@ namespace LC::LMP::BrainSlugz
 
 		bool IsRunning_ = false;
 	public:
-		CheckTab (const ILMPProxy_ptr&, const ICoreProxy_ptr&,
-				const TabClassInfo& tc, QObject *plugin);
+		CheckTab (const ILMPProxy_ptr&, const TabClassInfo& tc, QObject *plugin);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

@@ -37,7 +37,6 @@ namespace LC::LMP::BrainSlugz
 
 		TabClassInfo CheckTC_;
 
-		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LmpProxy_;
 
 		QPointer<CheckTab> OpenedTab_;

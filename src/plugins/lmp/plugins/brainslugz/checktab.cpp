@@ -54,16 +54,13 @@ namespace LC::LMP::BrainSlugz
 	}
 
 	CheckTab::CheckTab (const ILMPProxy_ptr& lmpProxy,
-			const ICoreProxy_ptr& coreProxy,
 			const TabClassInfo& tc,
 			QObject* plugin)
 	: CheckView_ { new QQuickWidget }
-	, CoreProxy_ { coreProxy }
 	, TC_ (tc)
 	, Plugin_ { plugin }
 	, Toolbar_ { new QToolBar { this } }
-	, Model_ { new CheckModel { SortArtists (lmpProxy->GetLocalCollection ()->GetAllArtists ()),
-				coreProxy, lmpProxy, this } }
+	, Model_ { new CheckModel { SortArtists (lmpProxy->GetLocalCollection ()->GetAllArtists ()), lmpProxy, this } }
 	, CheckedModel_ { new MissingModel { Model_, this } }
 	{
 		Ui_.setupUi (this);
@@ -72,13 +69,13 @@ namespace LC::LMP::BrainSlugz
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			CheckView_->engine ()->addImportPath (cand);
 		CheckView_->engine ()->addImageProvider (QStringLiteral ("ThemeIcons"),
-				new Util::ThemeImageProvider { coreProxy });
+				new Util::ThemeImageProvider { GetProxyHolder () });
 
 		CheckView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
 		constexpr auto obj = &QVariant::fromValue<QObject*>;
 		CheckView_->rootContext ()->setContextProperties ({
-					{ QStringLiteral ("colorProxy"), obj (new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this }) },
+					{ QStringLiteral ("colorProxy"), obj (new Util::ColorThemeProxy { GetProxyHolder ()->GetColorThemeManager (), this }) },
 					{ QStringLiteral ("artistsModel"), obj (Model_) },
 					{ QStringLiteral ("checkedModel"), obj (CheckedModel_) },
 					{ QStringLiteral ("checkingState"), QString {} },
@@ -161,7 +158,7 @@ namespace LC::LMP::BrainSlugz
 
 		Model_->RemoveUnscheduled ();
 
-		const auto checker = new Checker { Model_, types, CoreProxy_, this };
+		const auto checker = new Checker { Model_, types, this };
 		connect (checker,
 				&Checker::finished,
 				this,

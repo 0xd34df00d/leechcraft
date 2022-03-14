@@ -16,13 +16,11 @@
 
 namespace LC::LMP::BrainSlugz
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator (QStringLiteral ("lmp_brainslugz"));
 
 		ProgressModelManager_ = new ProgressModelManager { this };
-
-		CoreProxy_ = proxy;
 
 		CheckTC_ = TabClassInfo
 		{
@@ -97,7 +95,7 @@ namespace LC::LMP::BrainSlugz
 
 		if (!OpenedTab_)
 		{
-			OpenedTab_ = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
+			OpenedTab_ = new CheckTab { LmpProxy_, CheckTC_, this };
 			connect (OpenedTab_,
 					&CheckTab::checkStarted,
 					ProgressModelManager_,

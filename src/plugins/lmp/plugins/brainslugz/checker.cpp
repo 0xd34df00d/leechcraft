@@ -13,6 +13,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
@@ -22,12 +23,10 @@ namespace LC::LMP::BrainSlugz
 {
 	Checker::Checker (CheckModel *model,
 			const QList<Media::ReleaseInfo::Type>& types,
-			const ICoreProxy_ptr& coreProxy,
 			QObject *parent)
 	: QObject { parent }
 	, Model_ { model }
-	, Provider_ { coreProxy->GetPluginsManager ()->
-				GetAllCastableTo<Media::IDiscographyProvider*> ().value (0) }
+	, Provider_ { GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IDiscographyProvider*> ().value (0) }
 	, Types_ { types }
 	, Artists_ { Model_->GetSelectedArtists () }
 	{

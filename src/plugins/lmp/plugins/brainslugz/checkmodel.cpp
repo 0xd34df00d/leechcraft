@@ -14,6 +14,7 @@
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/media/iartistbiofetcher.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
@@ -51,23 +52,22 @@ namespace LC::LMP::BrainSlugz
 			}
 		};
 
-		QString GetIcon (const ICoreProxy_ptr& proxy, const QString& name, int size)
+		QString GetIcon (const QString& name, int size)
 		{
-			return Util::GetAsBase64Src (proxy->GetIconThemeManager ()->
+			return Util::GetAsBase64Src (GetProxyHolder ()->GetIconThemeManager ()->
 						GetIcon (name).pixmap (size, size).toImage ());
 		}
 	}
 
-	CheckModel::CheckModel (const Collection::Artists_t& artists,
-			const ICoreProxy_ptr& proxy, const ILMPProxy_ptr& lmpProxy, QObject *parent)
+	CheckModel::CheckModel (const Collection::Artists_t& artists, const ILMPProxy_ptr& lmpProxy, QObject *parent)
 	: RoleNamesMixin<QStandardItemModel> { parent }
 	, AllArtists_ { artists }
 	, Proxy_ { lmpProxy }
-	, DefaultAlbumIcon_ { GetIcon (proxy, "media-optical", AASize * 2) }
-	, DefaultArtistIcon_ { GetIcon (proxy, "view-media-artist", ArtistSize * 2) }
-	, AAProv_ { proxy->GetPluginsManager ()->
+	, DefaultAlbumIcon_ { GetIcon ("media-optical", AASize * 2) }
+	, DefaultArtistIcon_ { GetIcon ("view-media-artist", ArtistSize * 2) }
+	, AAProv_ { GetProxyHolder ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IAlbumArtProvider*> ().value (0) }
-	, BioProv_ { proxy->GetPluginsManager ()->
+	, BioProv_ { GetProxyHolder ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IArtistBioFetcher*> ().value (0) }
 	{
 		QHash<int, QByteArray> roleNames;

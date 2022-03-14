@@ -11,7 +11,6 @@
 #include <QObject>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/collectiontypes.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/idiscographyprovider.h>
 
 namespace Media
@@ -34,8 +33,7 @@ namespace LC::LMP::BrainSlugz
 
 		Collection::Artists_t Artists_;
 	public:
-		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
-				const ICoreProxy_ptr&, QObject* = nullptr);
+		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&, QObject* = nullptr);
 
 		int GetRemainingCount () const;
 	private:
