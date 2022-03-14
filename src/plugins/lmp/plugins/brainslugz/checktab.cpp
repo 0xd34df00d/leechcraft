@@ -19,6 +19,7 @@
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/qmlerrorwatcher.h>
 #include <util/sll/prelude.h>
+#include <util/sll/udls.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
@@ -68,30 +69,33 @@ namespace LC::LMP::BrainSlugz
 		Ui_.setupUi (this);
 		Ui_.CheckViewWidget_->layout ()->addWidget (CheckView_);
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			CheckView_->engine ()->addImportPath (cand);
-		CheckView_->engine ()->addImageProvider ("ThemeIcons",
+		CheckView_->engine ()->addImageProvider (QStringLiteral ("ThemeIcons"),
 				new Util::ThemeImageProvider { coreProxy });
 
 		CheckView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
-		const auto root = CheckView_->rootContext ();
-		root->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this });
-		root->setContextProperty ("artistsModel", Model_);
-		root->setContextProperty ("checkedModel", CheckedModel_);
-		root->setContextProperty ("checkingState", "");
+		constexpr auto obj = &QVariant::fromValue<QObject*>;
+		CheckView_->rootContext ()->setContextProperties ({
+					{ QStringLiteral ("colorProxy"), obj (new Util::ColorThemeProxy { coreProxy->GetColorThemeManager (), this }) },
+					{ QStringLiteral ("artistsModel"), obj (Model_) },
+					{ QStringLiteral ("checkedModel"), obj (CheckedModel_) },
+					{ QStringLiteral ("checkingState"), QString {} },
+				});
 
 		new Util::StandardNAMFactory
 		{
-			"lmp/qml",
-			[] { return 50 * 1024 * 1024; },
+			QStringLiteral ("lmp/qml"),
+			[] { return 50_mib; },
 			CheckView_->engine ()
 		};
 
 		Util::WatchQmlErrors (CheckView_);
 
-		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
+		const auto& filename = Util::GetSysPath (Util::SysPath::QML,
+				QStringLiteral ("lmp/brainslugz"),
+				QStringLiteral ("CheckView.qml"));
 		CheckView_->setSource (QUrl::fromLocalFile (filename));
 
 		SetupToolbar ();
@@ -169,7 +173,7 @@ namespace LC::LMP::BrainSlugz
 				SLOT (handleCheckFinished ()));
 		emit checkStarted (checker);
 
-		CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
+		CheckView_->rootContext ()->setContextProperty ("checkingState", QStringLiteral ("checking"));
 
 		IsRunning_ = true;
 		emit runningStateChanged (IsRunning_);

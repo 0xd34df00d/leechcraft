@@ -17,7 +17,7 @@ namespace LC::LMP::BrainSlugz
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("lmp_brainslugz");
+		Util::InstallTranslator (QStringLiteral ("lmp_brainslugz"));
 
 		ProgressModelManager_ = new ProgressModelManager { this };
 
@@ -49,7 +49,7 @@ namespace LC::LMP::BrainSlugz
 
 	QString Plugin::GetName () const
 	{
-		return "LMP BrainSlugz";
+		return QStringLiteral ("LMP BrainSlugz");
 	}
 
 	QString Plugin::GetInfo () const

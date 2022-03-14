@@ -11,6 +11,7 @@
 #include <cmath>
 #include <QtDebug>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
@@ -57,16 +58,16 @@ namespace LC::LMP::BrainSlugz
 		{
 			for (auto c : { '(', ')', ',', '.', ':' })
 				name.remove (c);
-			for (auto str : { QString::fromUtf8 ("—") })
+			for (const auto& str : { QStringLiteral ("—") })
 				name.remove (str);
 			name = name.trimmed ().simplified ();
 		}
 
 		void CleanupAlbumName (QString& name)
 		{
-			name.remove ("EP");
-			name.remove (" the ", Qt::CaseInsensitive);
-			if (name.startsWith ("the ", Qt::CaseInsensitive))
+			name.remove ("EP"_ql);
+			name.remove (" the "_ql, Qt::CaseInsensitive);
+			if (name.startsWith ("the "_ql, Qt::CaseInsensitive))
 				name = name.mid (4);
 			name = name.trimmed ().simplified ();
 		}
