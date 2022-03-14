@@ -99,7 +99,7 @@ namespace LC::LMP::BrainSlugz
 			connect (OpenedTab_,
 					&CheckTab::checkStarted,
 					ProgressModelManager_,
-					&ProgressModelManager::handleCheckStarted);
+					&ProgressModelManager::AddChecker);
 		}
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), OpenedTab_);
 	}

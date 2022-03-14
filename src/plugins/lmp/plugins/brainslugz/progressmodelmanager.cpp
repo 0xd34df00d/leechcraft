@@ -25,7 +25,7 @@ namespace LC::LMP::BrainSlugz
 		return Model_;
 	}
 
-	void ProgressModelManager::handleCheckStarted (Checker *checker)
+	void ProgressModelManager::AddChecker (Checker *checker)
 	{
 		if (!Row_.isEmpty ())
 		{
@@ -44,29 +44,24 @@ namespace LC::LMP::BrainSlugz
 		};
 
 		Util::InitJobHolderRow (Row_);
-		handleProgress (InitialCount_);
 
 		Model_->appendRow (Row_);
 
 		connect (checker,
-				SIGNAL (progress (int)),
+				&Checker::progress,
 				this,
-				SLOT (handleProgress (int)));
+				[this] (int remaining)
+				{
+					const auto done = InitialCount_ - remaining;
+					Util::SetJobHolderProgress (Row_, done, InitialCount_, tr ("%1 of %2"));
+				});
 		connect (checker,
-				SIGNAL (finished ()),
+				&Checker::finished,
 				this,
-				SLOT (handleFinished ()));
-	}
-
-	void ProgressModelManager::handleProgress (int remaining)
-	{
-		const auto done = InitialCount_ - remaining;
-		Util::SetJobHolderProgress (Row_, done, InitialCount_, tr ("%1 of %2"));
-	}
-
-	void ProgressModelManager::handleFinished ()
-	{
-		Model_->removeRow (0);
-		Row_.clear ();
+				[this]
+				{
+					Model_->removeRow (0);
+					Row_.clear ();
+				});
 	}
 }

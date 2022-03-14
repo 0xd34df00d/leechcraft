@@ -27,12 +27,10 @@ namespace LC::LMP::BrainSlugz
 
 		int InitialCount_ = 0;
 	public:
-		ProgressModelManager (QObject* = nullptr);
+		explicit ProgressModelManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
-	public slots:
-		void handleCheckStarted (Checker*);
-		void handleProgress (int);
-		void handleFinished ();
+
+		void AddChecker (Checker*);
 	};
 }
