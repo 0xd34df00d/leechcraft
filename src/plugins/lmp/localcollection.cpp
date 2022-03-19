@@ -487,10 +487,16 @@ namespace LC::LMP
 	{
 		NormalizeArtistsInfos (artists);
 
+		const auto artistsCmp = [] (const Collection::Artist& a1, const Collection::Artist& a2)
+		{
+			return QString::localeAwareCompare (a1.Name_, a2.Name_) < 0;
+		};
+
 		if (Artists_.isEmpty ())
 		{
 			const auto guard = CollectionModel_->ResetArtists ();
 			Artists_ = std::move (artists);
+			std::sort (Artists_.begin (), Artists_.end (), artistsCmp);
 		}
 		else
 		{
@@ -503,11 +509,7 @@ namespace LC::LMP
 						[&artist] (const auto& present) { return present.ID_ == artist.ID_; });
 				if (pos == Artists_.end ())
 				{
-					const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist,
-							[] (const Collection::Artist& a1, const Collection::Artist& a2)
-							{
-								return QString::localeAwareCompare (a1.Name_, a2.Name_);
-							});
+					const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist, artistsCmp);
 
 					const auto guard = CollectionModel_->InsertArtist (pos - Artists_.begin ());
 					Artists_.insert (pos, artist);
