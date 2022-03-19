@@ -11,6 +11,7 @@
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QHash>
+#include <QCache>
 #include <util/models/dndactionsmixin.h>
 #include <util/sll/util.h>
 #include "interfaces/lmp/icollectionmodel.h"
@@ -19,6 +20,7 @@
 namespace LC::LMP
 {
 	class LocalCollection;
+	class LocalCollectionStorage;
 
 	class LocalCollectionModel : public Util::DndActionsMixin<QAbstractItemModel>
 							   , public ICollectionModel
@@ -26,14 +28,15 @@ namespace LC::LMP
 		Q_OBJECT
 
 		const Collection::Artists_t& Artists_;
+		LocalCollectionStorage& Storage_;
 
 		QIcon ArtistIcon_ = QIcon::fromTheme (QStringLiteral ("view-media-artist"));
 
 		QSet<int> IgnoredTracks_;
 
-		QHash<int, QString> ArtistTooltips_;
-		QHash<int, QString> AlbumTooltips_;
-		QHash<int, QString> TrackTooltips_;
+		mutable QCache<int, QString> ArtistTooltips_;
+		mutable QCache<int, QString> AlbumTooltips_;
+		mutable QCache<int, QString> TrackTooltips_;
 	public:
 		enum NodeType
 		{
@@ -59,7 +62,7 @@ namespace LC::LMP
 			IsTrackIgnored
 		};
 
-		LocalCollectionModel (const Collection::Artists_t&, QObject*);
+		LocalCollectionModel (const Collection::Artists_t&, LocalCollectionStorage&, QObject*);
 
 		QStringList mimeTypes () const override;
 		QMimeData* mimeData (const QModelIndexList&) const override;
@@ -100,5 +103,9 @@ namespace LC::LMP
 
 		Util::DefaultScopeGuard EndInsertRowsGuard ();
 		Util::DefaultScopeGuard EndRemoveRowsGuard ();
+
+		QString GetArtistTooltip (int artistId) const;
+		QString GetAlbumTooltip (int albumId) const;
+		QString GetTrackTooltip (int trackId) const;
 	};
 }

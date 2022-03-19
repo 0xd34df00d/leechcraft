@@ -38,7 +38,7 @@ namespace LC::LMP
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
 	, Storage_ (new LocalCollectionStorage (this))
-	, CollectionModel_ (new LocalCollectionModel (Artists_, this))
+	, CollectionModel_ (new LocalCollectionModel (Artists_, *Storage_, this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (*this, this)) // TODO it needn't be owned by the collection
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))

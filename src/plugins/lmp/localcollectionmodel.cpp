@@ -19,9 +19,11 @@
 
 namespace LC::LMP
 {
-	LocalCollectionModel::LocalCollectionModel (const Collection::Artists_t& artists, QObject *parent)
+	LocalCollectionModel::LocalCollectionModel (const Collection::Artists_t& artists,
+			LocalCollectionStorage& storage, QObject *parent)
 	: DndActionsMixin<QAbstractItemModel> { parent }
 	, Artists_ { artists }
+	, Storage_ { storage }
 	{
 		setSupportedDragActions (Qt::CopyAction);
 	}
@@ -177,9 +179,17 @@ namespace LC::LMP
 			return nodeType == NodeType::Artist ?
 					ArtistIcon_ :
 					QVariant {};
-		case Qt::ToolTip:
-			// TODO
-			return {};
+		case Qt::ToolTipRole:
+			switch (nodeType)
+			{
+			case NodeType::Artist:
+				return GetArtistTooltip (artist.ID_);
+			case NodeType::Album:
+				return GetAlbumTooltip (album->ID_);
+			case NodeType::Track:
+				return GetTrackTooltip (track.ID_);
+			}
+			Util::Unreachable ();
 
 		case Role::Node:
 			return nodeType;
@@ -423,5 +433,45 @@ namespace LC::LMP
 	Util::DefaultScopeGuard LocalCollectionModel::EndRemoveRowsGuard ()
 	{
 		return Util::MakeScopeGuard ([this] { endRemoveRows (); });
+	}
+
+	QString LocalCollectionModel::GetArtistTooltip (int artistId) const
+	{
+		return {};
+	}
+
+	QString LocalCollectionModel::GetAlbumTooltip (int albumId) const
+	{
+		if (const auto str = AlbumTooltips_.object (albumId))
+			return *str;
+
+		QString tooltip;
+		if (const auto stats = Storage_.GetAlbumStats (albumId))
+			tooltip = tr ("Last playback: %1 (%2)")
+					.arg (FormatDateTime (stats->LastPlayback_), stats->LastPlayedTrack_);
+		else
+			tooltip = tr ("Never has been played");
+
+		AlbumTooltips_.insert (albumId, new QString { tooltip });
+
+		return tooltip;
+	}
+
+	QString LocalCollectionModel::GetTrackTooltip (int trackId) const
+	{
+		if (const auto str = TrackTooltips_.object (trackId))
+			return *str;
+
+		QString tooltip;
+		if (const auto& stats = Storage_.GetTrackStats (trackId))
+			tooltip = tr ("Last playback: %1").arg (FormatDateTime (stats.LastPlay_))
+					+ "\n"
+					+ tr ("Played %n time(s) since %1", nullptr, stats.Playcount_).arg (FormatDateTime (stats.Added_));
+		else
+			tooltip = tr ("Never has been played");
+
+		TrackTooltips_.insert (trackId, new QString { tooltip });
+
+		return tooltip;
 	}
 }
