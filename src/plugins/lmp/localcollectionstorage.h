@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <QHash>
 #include <QSet>
@@ -49,6 +50,8 @@ namespace LC::LMP
 		QSqlQuery GetTrackStats_;
 		QSqlQuery SetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
+
+		QSqlQuery GetAlbumStats_;
 
 		QSqlQuery GetFileIdMTime_;
 		QSqlQuery GetFileMTime_;
@@ -97,6 +100,13 @@ namespace LC::LMP
 		Collection::TrackStats GetTrackStats (int);
 		void SetTrackStats (const Collection::TrackStats&);
 		void RecordTrackPlayed (int, const QDateTime&);
+
+		struct AlbumStats
+		{
+			QDateTime LastPlayback_;
+			QString LastPlayedTrack_;
+		};
+		std::optional<AlbumStats> GetAlbumStats (int);
 
 		QDateTime GetMTime (const QString&);
 		void SetMTime (const QString&, const QDateTime&);

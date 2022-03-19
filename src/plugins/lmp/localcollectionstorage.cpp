@@ -345,6 +345,23 @@ namespace LC::LMP
 		}
 	}
 
+	std::optional<LocalCollectionStorage::AlbumStats> LocalCollectionStorage::GetAlbumStats (int albumId)
+	{
+		GetAlbumStats_.bindValue (":album_id", albumId);
+		Util::DBLock::Execute (GetAlbumStats_);
+
+		if (!GetAlbumStats_.next ())
+			return {};
+
+		AlbumStats stats
+		{
+			.LastPlayback_ = GetAlbumStats_.value (0).toDateTime (),
+			.LastPlayedTrack_ = GetAlbumStats_.value (1).toString (),
+		};
+		GetAlbumStats_.finish ();
+		return stats;
+	}
+
 	QDateTime LocalCollectionStorage::GetMTime (const QString& filepath)
 	{
 		GetFileMTime_.bindValue (":filepath", filepath);
@@ -753,6 +770,15 @@ namespace LC::LMP
 				"		coalesce ((SELECT Added FROM statistics WHERE TrackId = :track_id_add), :add_date),"
 				"		max (coalesce ((SELECT LastPlay FROM statistics where TrackId = :track_id_lp), 0), :play_date)"
 				");");
+
+		GetAlbumStats_ = QSqlQuery (DB_);
+		GetAlbumStats_.prepare (R"(
+				SELECT LastPlay, Name
+				FROM statistics INNER JOIN tracks ON TrackId = Tracks.Id
+				WHERE AlbumId = :album_id
+				GROUP BY AlbumId
+				HAVING LastPlay = MAX(LastPlay)
+				)");
 
 		GetFileIdMTime_ = QSqlQuery (DB_);
 		GetFileIdMTime_.prepare ("SELECT MTime FROM fileTimes WHERE fileTimes.TrackID = :track_id;");
