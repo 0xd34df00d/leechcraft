@@ -485,6 +485,19 @@ namespace LC::LMP
 			const auto guard = CollectionModel_->ResetArtists ();
 			Artists_ = std::move (artists);
 			std::sort (Artists_.begin (), Artists_.end (), artistsCmp);
+
+			for (const auto& artist : Artists_)
+				for (const auto& album : artist.Albums_)
+				{
+					AlbumID2ArtistID_ [album->ID_] = artist.ID_;
+					AlbumID2Album_ [album->ID_] = album;
+
+					for (const auto& track : album->Tracks_)
+					{
+						Path2Track_ [track.FilePath_] = track.ID_;
+						Track2Album_ [track.ID_] = album->ID_;
+					}
+				}
 		}
 		else
 		{
