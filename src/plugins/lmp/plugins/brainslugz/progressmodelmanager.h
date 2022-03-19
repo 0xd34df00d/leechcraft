@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 
 class QAbstractItemModel;
@@ -20,7 +21,7 @@ namespace LC::LMP::BrainSlugz
 
 	class ProgressModelManager : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::BrainSlugz::ProgressModelManager)
 
 		QStandardItemModel * const Model_;
 		QList<QStandardItem*> Row_;
