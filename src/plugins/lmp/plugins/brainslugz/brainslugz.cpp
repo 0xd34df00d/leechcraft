@@ -68,9 +68,7 @@ namespace LC::LMP::BrainSlugz
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.LMP.General";
-		return result;
+		return { "org.LeechCraft.LMP.General" };
 	}
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
