@@ -73,7 +73,7 @@ namespace LC::Util
 
 	void DBLock::DumpError (const QSqlQuery& lastQuery)
 	{
-		qWarning () << "query:" << lastQuery.lastQuery ();
+		qWarning () << "query:" << lastQuery.lastQuery ().simplified ();
 		DumpError (lastQuery.lastError ());
 		qWarning () << "bound values:" << lastQuery.boundValues ();
 	}
