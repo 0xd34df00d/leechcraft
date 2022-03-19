@@ -116,7 +116,6 @@ namespace LC::LMP
 
 		Collection::TrackStats GetTrackStats (const QString&) const;
 
-		QList<int> GetAlbumArtists (int) const;
 		Collection::Artist GetArtist (int) const;
 		Collection::Artists_t GetAllArtists () const override;
 
