@@ -8,28 +8,32 @@
 
 #pragma once
 
-#include <QStandardItemModel>
+#include <QAbstractItemModel>
+#include <QIcon>
 #include <QHash>
 #include <util/models/dndactionsmixin.h>
+#include <util/sll/util.h>
 #include "interfaces/lmp/icollectionmodel.h"
 #include "interfaces/lmp/collectiontypes.h"
 
 namespace LC::LMP
 {
-	class LocalCollectionStorage;
+	class LocalCollection;
 
-	class LocalCollectionModel : public Util::DndActionsMixin<QStandardItemModel>
+	class LocalCollectionModel : public Util::DndActionsMixin<QAbstractItemModel>
 							   , public ICollectionModel
 	{
 		Q_OBJECT
 
-		LocalCollectionStorage * const Storage_;
+		const Collection::Artists_t& Artists_;
 
 		QIcon ArtistIcon_ = QIcon::fromTheme (QStringLiteral ("view-media-artist"));
 
-		QHash<int, QStandardItem*> Artist2Item_;
-		QHash<int, QHash<int, QStandardItem*>> Album2Item_;
-		QHash<int, QStandardItem*> Track2Item_;
+		QSet<int> IgnoredTracks_;
+
+		QHash<int, QString> ArtistTooltips_;
+		QHash<int, QString> AlbumTooltips_;
+		QHash<int, QString> TrackTooltips_;
 	public:
 		enum NodeType
 		{
@@ -55,25 +59,46 @@ namespace LC::LMP
 			IsTrackIgnored
 		};
 
-		LocalCollectionModel (LocalCollectionStorage*, QObject*);
+		LocalCollectionModel (const Collection::Artists_t&, QObject*);
 
 		QStringList mimeTypes () const override;
 		QMimeData* mimeData (const QModelIndexList&) const override;
-		QVariant data (const QModelIndex& index, int role) const override;
+
+		int columnCount (const QModelIndex&) const override;
+		QVariant data (const QModelIndex&, int) const override;
+		QModelIndex index (int, int, const QModelIndex&) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex&) const override;
 
 		QList<QUrl> ToSourceUrls (const QList<QModelIndex>&) const override;
 
-		void AddArtists (const Collection::Artists_t&);
-		void Clear ();
+		void IgnoreTracks (const QSet<int>&);
 
-		void IgnoreTrack (int);
+		[[nodiscard]] Util::DefaultScopeGuard ResetArtists ();
+		[[nodiscard]] Util::DefaultScopeGuard InsertArtist (int idx);
+		[[nodiscard]] Util::DefaultScopeGuard AppendAlbums (int artistIdx, int newAlbumsCount);
 
-		void RemoveTrack (int);
-		void RemoveAlbum (int);
-		void RemoveArtist (int);
+		struct AppendTracksByIds
+		{
+			int ArtistID_;
+			int AlbumID_;
+			int NewTracksCount_;
+		};
+		[[nodiscard]] Util::DefaultScopeGuard AppendTracks (const AppendTracksByIds&);
 
-		void SetAlbumArt (int, const QString&);
+		[[nodiscard]] Util::DefaultScopeGuard RemoveArtist (int artistId);
+		[[nodiscard]] Util::DefaultScopeGuard RemoveAlbum (int artistId, int albumId);
+		[[nodiscard]] Util::DefaultScopeGuard RemoveTrack (int artistId, int albumId, int trackId);
 
-		void UpdatePlayStats (int);
+		void DataChanged (int artistId, int albumId);
+
+		void UpdatePlayStats (int, int, int);
+	private:
+		QModelIndex MakeArtistIndex (quintptr artistIdx) const;
+		QModelIndex MakeAlbumIndex (quintptr artistIdx, quintptr albumIdx) const;
+		QModelIndex MakeTrackIndex (quintptr artistIdx, quintptr albumIdx, quintptr trackIdx) const;
+
+		Util::DefaultScopeGuard EndInsertRowsGuard ();
+		Util::DefaultScopeGuard EndRemoveRowsGuard ();
 	};
 }

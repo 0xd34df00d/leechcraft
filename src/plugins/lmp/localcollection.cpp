@@ -38,7 +38,7 @@ namespace LC::LMP
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
 	, Storage_ (new LocalCollectionStorage (this))
-	, CollectionModel_ (new LocalCollectionModel (Storage_, this))
+	, CollectionModel_ (new LocalCollectionModel (Artists_, this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (*this, this)) // TODO it needn't be owned by the collection
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
@@ -99,8 +99,11 @@ namespace LC::LMP
 	void LocalCollection::Clear ()
 	{
 		Storage_->Clear ();
-		CollectionModel_->Clear ();
-		Artists_.clear ();
+
+		{
+			const auto guard = CollectionModel_->ResetArtists ();
+			Artists_.clear ();
+		}
 
 		Path2Track_.clear ();
 
@@ -281,14 +284,16 @@ namespace LC::LMP
 		return (*albumPos)->ID_;
 	}
 
-	void LocalCollection::SetAlbumArt (int id, const QString& path)
+	void LocalCollection::SetAlbumArt (int albumId, const QString& path)
 	{
-		CollectionModel_->SetAlbumArt (id, path);
+		if (const auto album = AlbumID2Album_.value (albumId))
+		{
+			album->CoverPath_ = path;
 
-		if (AlbumID2Album_.contains (id))
-			AlbumID2Album_ [id]->CoverPath_ = path;
+			CollectionModel_->DataChanged (AlbumID2ArtistID_.value (albumId, -1), albumId);
+		}
 
-		Storage_->SetAlbumArt (id, path);
+		Storage_->SetAlbumArt (albumId, path);
 	}
 
 	Collection::Album_ptr LocalCollection::GetAlbum (int albumId) const
@@ -482,65 +487,80 @@ namespace LC::LMP
 	{
 		NormalizeArtistsInfos (artists);
 
-		int albumCount = 0;
-		int trackCount = 0;
-		const bool shouldEmit = !Artists_.isEmpty ();
-
-		for (const auto& artist : artists)
+		if (Artists_.isEmpty ())
 		{
-			const auto pos = std::find_if (Artists_.begin (), Artists_.end (),
-					[&artist] (const auto& present) { return present.ID_ == artist.ID_; });
-			if (pos == Artists_.end ())
-			{
-				const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist,
-						[] (const Collection::Artist& a1, const Collection::Artist& a2)
-						{
-							return QString::localeAwareCompare (a1.Name_, a2.Name_);
-						});
-				Artists_.insert (pos, artist);
-			}
-			else
-				pos->Albums_ << artist.Albums_;
+			const auto guard = CollectionModel_->ResetArtists ();
+			Artists_ = std::move (artists);
 		}
-
-		for (const auto& artist : artists)
+		else
 		{
-			albumCount += artist.Albums_.size ();
-			for (const auto& album : artist.Albums_)
+			int albumCount = 0;
+			int trackCount = 0;
+
+			for (const auto& artist : artists)
 			{
-				trackCount += album->Tracks_.size ();
-
-				auto& presentAlbum = AlbumID2Album_ [album->ID_];
-				if (!presentAlbum)
+				const auto pos = std::find_if (Artists_.begin (), Artists_.end (),
+						[&artist] (const auto& present) { return present.ID_ == artist.ID_; });
+				if (pos == Artists_.end ())
 				{
-					presentAlbum = album;
-					AlbumID2ArtistID_ [album->ID_] = artist.ID_;
+					const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist,
+							[] (const Collection::Artist& a1, const Collection::Artist& a2)
+							{
+								return QString::localeAwareCompare (a1.Name_, a2.Name_);
+							});
+
+					const auto guard = CollectionModel_->InsertArtist (pos - Artists_.begin ());
+					Artists_.insert (pos, artist);
 				}
-				else if (presentAlbum != album)
-					presentAlbum->Tracks_ << album->Tracks_;
-
-				for (const auto& track : album->Tracks_)
+				else
 				{
-					Path2Track_ [track.FilePath_] = track.ID_;
-					Track2Album_ [track.ID_] = album->ID_;
+					const auto guard = CollectionModel_->AppendAlbums (pos - Artists_.begin (), artist.Albums_.size ());
+					pos->Albums_ << artist.Albums_;
 				}
 			}
+
+			for (const auto& artist : artists)
+			{
+				albumCount += artist.Albums_.size ();
+				for (const auto& album : artist.Albums_)
+				{
+					trackCount += album->Tracks_.size ();
+
+					auto& presentAlbum = AlbumID2Album_ [album->ID_];
+					if (!presentAlbum)
+					{
+						presentAlbum = album;
+						AlbumID2ArtistID_ [album->ID_] = artist.ID_;
+					}
+					else if (presentAlbum != album)
+					{
+						const auto guard = CollectionModel_->AppendTracks (LocalCollectionModel::AppendTracksByIds {
+								.ArtistID_ = artist.ID_,
+								.AlbumID_ = presentAlbum->ID_,
+								.NewTracksCount_ = album->Tracks_.size (),
+							});
+						presentAlbum->Tracks_ << album->Tracks_;
+					}
+
+					for (const auto& track : album->Tracks_)
+					{
+						Path2Track_ [track.FilePath_] = track.ID_;
+						Track2Album_ [track.ID_] = album->ID_;
+					}
+				}
+			}
+
+			if (trackCount)
+			{
+				UpdateNewArtists_ += artists.size ();
+				UpdateNewAlbums_ += albumCount;
+				UpdateNewTracks_ += trackCount;
+
+				emit gotNewArtists (artists);
+			}
 		}
 
-		CollectionModel_->AddArtists (artists);
-
-		for (const auto item : ignored)
-			CollectionModel_->IgnoreTrack (item);
-
-		if (shouldEmit &&
-				trackCount)
-		{
-			UpdateNewArtists_ += artists.size ();
-			UpdateNewAlbums_ += albumCount;
-			UpdateNewTracks_ += trackCount;
-
-			emit gotNewArtists (artists);
-		}
+		CollectionModel_->IgnoreTracks (ignored);
 	}
 
 	void LocalCollection::IgnoreTrack (const QString& path)
@@ -561,7 +581,7 @@ namespace LC::LMP
 			throw;
 		}
 
-		CollectionModel_->IgnoreTrack (id);
+		CollectionModel_->IgnoreTracks ({ id });
 	}
 
 	void LocalCollection::RemoveTrack (const QString& path)
@@ -583,17 +603,20 @@ namespace LC::LMP
 			throw;
 		}
 
-		CollectionModel_->RemoveTrack (id);
-
-		Path2Track_.remove (path);
-		Track2Album_.remove (id);
-
 		if (!album)
 			return;
 
-		auto pos = std::remove_if (album->Tracks_.begin (), album->Tracks_.end (),
-				[id] (const auto& item) { return item.ID_ == id; });
-		album->Tracks_.erase (pos, album->Tracks_.end ());
+		const auto artistId = AlbumID2ArtistID_ [album->ID_];
+
+		{
+			const auto guard = CollectionModel_->RemoveTrack (artistId, album->ID_, id);
+			const auto pos = std::find_if (album->Tracks_.begin (), album->Tracks_.end (),
+					[id] (const auto& item) { return item.ID_ == id; });
+			album->Tracks_.erase (pos);
+		}
+
+		Path2Track_.remove (path);
+		Track2Album_.remove (id);
 
 		if (album->Tracks_.isEmpty ())
 			RemoveAlbum (album->ID_);
@@ -616,8 +639,6 @@ namespace LC::LMP
 		AlbumID2Album_.remove (id);
 		AlbumID2ArtistID_.remove (id);
 
-		CollectionModel_->RemoveAlbum (id);
-
 		for (auto i = Artists_.begin (); i != Artists_.end (); )
 		{
 			auto& artist = *i;
@@ -630,7 +651,11 @@ namespace LC::LMP
 				continue;
 			}
 
-			artist.Albums_.erase (pos);
+			{
+				const auto guard = CollectionModel_->RemoveAlbum (artist.ID_, id);
+				artist.Albums_.erase (pos);
+			}
+
 			if (artist.Albums_.isEmpty ())
 				i = RemoveArtist (i);
 			else
@@ -653,7 +678,7 @@ namespace LC::LMP
 			throw;
 		}
 
-		CollectionModel_->RemoveArtist (id);
+		const auto guard = CollectionModel_->RemoveArtist (id);
 		return Artists_.erase (pos);
 	}
 
@@ -724,15 +749,21 @@ namespace LC::LMP
 
 	void LocalCollection::RecordPlayedTrack (const QString& path)
 	{
-		if (Path2Track_.contains (path))
-			RecordPlayedTrack (Path2Track_ [path], QDateTime::currentDateTime ());
+		RecordPlayedTrack (Path2Track_.value (path, -1), QDateTime::currentDateTime ());
 	}
 
 	void LocalCollection::RecordPlayedTrack (int trackId, const QDateTime& date)
 	{
+		if (trackId == -1)
+			return;
+
+		const auto albumId = Track2Album_.value (trackId, -1);
+		const auto artistId = AlbumID2ArtistID_.value (albumId, -1);
+		if (albumId != -1 && artistId != -1)
+			CollectionModel_->UpdatePlayStats (artistId, albumId, trackId);
+
 		try
 		{
-			CollectionModel_->UpdatePlayStats (trackId);
 			Storage_->RecordTrackPlayed (trackId, date);
 		}
 		catch (const std::runtime_error& e)

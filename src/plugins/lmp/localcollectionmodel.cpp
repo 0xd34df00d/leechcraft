@@ -10,18 +10,18 @@
 #include <numeric>
 #include <QUrl>
 #include <QMimeData>
+#include <QtDebug>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
-#include "core.h"
 #include "localcollectionstorage.h"
 #include "util.h"
 
 namespace LC::LMP
 {
-	LocalCollectionModel::LocalCollectionModel (LocalCollectionStorage *storage, QObject *parent)
-	: DndActionsMixin<QStandardItemModel> { parent }
-	, Storage_ { storage }
+	LocalCollectionModel::LocalCollectionModel (const Collection::Artists_t& artists, QObject *parent)
+	: DndActionsMixin<QAbstractItemModel> { parent }
+	, Artists_ { artists }
 	{
 		setSupportedDragActions (Qt::CopyAction);
 	}
@@ -66,76 +66,196 @@ namespace LC::LMP
 		return result;
 	}
 
+	int LocalCollectionModel::columnCount (const QModelIndex&) const
+	{
+		return 1;
+	}
+
 	namespace
 	{
-		struct RefreshTooltipState
-		{
-			Collection::TrackStats LastStats_;
-			QString VisibleName_;
-		};
+		/* Upper half of the index's internal pointer contains the album index,
+		 * and the lower half contains the artist index.
+		 */
+		constexpr auto AlbumShift = (sizeof (quintptr) / 2) * 8;
+		constexpr auto ArtistMask = (quintptr { 1 } << AlbumShift) - 1;
+		constexpr auto InvalidIdx = static_cast<size_t> (-1);
 
-		QString GetVisibleName (int type, QStandardItem *item)
+		bool IsArtist (quintptr id)
 		{
-			switch (type)
-			{
-			case LocalCollectionModel::NodeType::Track:
-				return item->data (LocalCollectionModel::Role::TrackTitle).toString ();
-			case LocalCollectionModel::NodeType::Album:
-				return item->data (LocalCollectionModel::Role::AlbumName).toString ();
-			case LocalCollectionModel::NodeType::Artist:
-				return item->data (LocalCollectionModel::Role::ArtistName).toString ();
-			}
-
-			Util::Unreachable ();
+			return !id;
 		}
 
-		RefreshTooltipState RefreshTooltip (QStandardItem *item, LocalCollectionStorage *storage)
+		bool IsAlbum (quintptr id)
 		{
-			const auto type = item->data (LocalCollectionModel::Role::Node).toInt ();
-			if (type == LocalCollectionModel::NodeType::Track)
-			{
-				const auto trackId = item->data (LocalCollectionModel::Role::TrackID).toInt ();
-				const auto& stats = storage->GetTrackStats (trackId);
-
-				if (stats)
-				{
-					const auto& last = LocalCollectionModel::tr ("Last playback: %1")
-							.arg (FormatDateTime (stats.LastPlay_));
-					const auto& total = LocalCollectionModel::tr ("Played %n time(s) since %1", nullptr, stats.Playcount_)
-							.arg (FormatDateTime (stats.Added_));
-					item->setToolTip (last + "\n" + total);
-				}
-				else
-					item->setToolTip (LocalCollectionModel::tr ("Never has been played"));
-
-				return { stats, GetVisibleName (type, item) };
-			}
-
-			RefreshTooltipState latest;
-			for (int i = 0; i < item->rowCount (); ++i)
-				latest = std::max (RefreshTooltip (item->child (i), storage), latest,
-						Util::ComparingBy ([] (const auto& state) { return state.LastStats_.LastPlay_; }));
-			if (!latest.LastStats_)
-			{
-				item->setToolTip (LocalCollectionModel::tr ("Never has been played"));
-				return {};
-			}
-
-			const auto& lastStr = LocalCollectionModel::tr ("Last playback: %1 (%2)")
-					.arg (FormatDateTime (latest.LastStats_.LastPlay_))
-					.arg ("<em>" + latest.VisibleName_ + "</em>");
-			item->setToolTip (lastStr);
-
-			return { latest.LastStats_, GetVisibleName (type, item) };
+			return !IsArtist (id) && !(id >> AlbumShift);
 		}
+
+		bool IsTrack (quintptr id)
+		{
+			return id >= (quintptr { 1 } << AlbumShift);
+		}
+
+		size_t ArtistIdx (const QModelIndex& index)
+		{
+			if (IsArtist (index.internalId ()))
+				return index.row ();
+
+			return (index.internalId () & ArtistMask) - 1U;
+		}
+
+		size_t AlbumIdx (const QModelIndex& index)
+		{
+			const auto id = index.internalId ();
+			if (IsAlbum (id))
+				return index.row ();
+
+			return (index.internalId () >> AlbumShift) - 1U;
+		}
+
+		size_t TrackIdx (const QModelIndex& index)
+		{
+			return IsTrack (index.internalId ()) ? index.row () : InvalidIdx;
+		}
+	}
+
+	QModelIndex LocalCollectionModel::MakeArtistIndex (quintptr artistIdx) const
+	{
+		return createIndex (artistIdx, 0, quintptr { 0 });
+	}
+
+	QModelIndex LocalCollectionModel::MakeAlbumIndex (quintptr artistIdx, quintptr albumIdx) const
+	{
+		return createIndex (albumIdx, 0, artistIdx + 1);
+	}
+
+	QModelIndex LocalCollectionModel::MakeTrackIndex (quintptr artistIdx, quintptr albumIdx, quintptr trackIdx) const
+	{
+		return createIndex (trackIdx, 0, (artistIdx + 1) | (albumIdx + 1) << AlbumShift);
 	}
 
 	QVariant LocalCollectionModel::data (const QModelIndex& index, int role) const
 	{
-		if (role == Qt::ToolTipRole)
-			RefreshTooltip (itemFromIndex (index), Storage_);
+		if (!index.isValid ())
+			return {};
 
-		return QStandardItemModel::data (index, role);
+		const auto artistIdx = ArtistIdx (index);
+		const auto albumIdx = AlbumIdx (index);
+		const auto trackIdx = TrackIdx (index);
+
+		const auto& artist = Artists_.value (artistIdx);
+		const auto& album = artist.Albums_.value (albumIdx);
+		const auto track = trackIdx != InvalidIdx ?
+				album->Tracks_.value (trackIdx) :
+				Collection::Track {};
+
+		const auto nodeType = [&]
+		{
+			if (trackIdx != InvalidIdx)
+				return NodeType::Track;
+			if (albumIdx != InvalidIdx)
+				return NodeType::Album;
+			return NodeType::Artist;
+		} ();
+
+		switch (role)
+		{
+		case Qt::DisplayRole:
+			switch (nodeType)
+			{
+			case NodeType::Artist:
+				return artist.Name_;
+			case NodeType::Album:
+				return QStringLiteral ("%1 — %2")
+						.arg (album->Year_)
+						.arg (album->Name_);
+			case NodeType::Track:
+				return QStringLiteral ("%1 — %2")
+						.arg (track.Number_)
+						.arg (track.Name_);
+			}
+		case Qt::DecorationRole:
+			return nodeType == NodeType::Artist ?
+					ArtistIcon_ :
+					QVariant {};
+		case Qt::ToolTip:
+			// TODO
+			return {};
+
+		case Role::Node:
+			return nodeType;
+
+		case Role::ArtistName:
+			return artist.Name_;
+
+		case Role::AlbumID:
+			return album->ID_;
+		case Role::AlbumYear:
+			return album->Year_;
+		case Role::AlbumName:
+			return album->Name_;
+		case Role::AlbumArt:
+			return album->CoverPath_;
+
+		case Role::TrackID:
+			return track.ID_;
+		case Role::TrackNumber:
+			return track.Number_;
+		case Role::TrackTitle:
+			return track.Name_;
+		case Role::TrackPath:
+			return track.FilePath_;
+		case Role::TrackGenres:
+			return track.Genres_;
+		case Role::TrackLength:
+			return track.Length_;
+
+		case Role::IsTrackIgnored:
+			return IgnoredTracks_.contains (track.ID_);
+		}
+
+		return {};
+	}
+
+	QModelIndex LocalCollectionModel::index (int row, int, const QModelIndex& parent) const
+	{
+		const auto artistIdx = ArtistIdx (parent);
+		const auto albumIdx = AlbumIdx (parent);
+
+		if (albumIdx != InvalidIdx)
+			return MakeTrackIndex (artistIdx, albumIdx, row);
+		if (artistIdx != InvalidIdx)
+			return MakeAlbumIndex (artistIdx, row);
+
+		return MakeArtistIndex (row);
+	}
+
+	QModelIndex LocalCollectionModel::parent (const QModelIndex& index) const
+	{
+		const auto artistIdx = ArtistIdx (index);
+		const auto albumIdx = AlbumIdx (index);
+		const auto trackIdx = TrackIdx (index);
+
+		if (trackIdx != InvalidIdx)
+			return MakeAlbumIndex (artistIdx, albumIdx);
+		if (albumIdx != InvalidIdx)
+			return MakeArtistIndex (artistIdx);
+
+		return {};
+	}
+
+	int LocalCollectionModel::rowCount (const QModelIndex& index) const
+	{
+		const auto artistIdx = ArtistIdx (index);
+		const auto albumIdx = AlbumIdx (index);
+		const auto trackIdx = TrackIdx (index);
+
+		if (trackIdx != InvalidIdx)
+			return 0;
+		if (albumIdx != InvalidIdx)
+			return Artists_.value (artistIdx).Albums_.value (albumIdx)->Tracks_.size ();
+		if (artistIdx != InvalidIdx)
+			return Artists_.value (artistIdx).Albums_.size ();
+		return Artists_.size ();
 	}
 
 	QList<QUrl> LocalCollectionModel::ToSourceUrls (const QList<QModelIndex>& indexes) const
@@ -151,135 +271,157 @@ namespace LC::LMP
 		return result;
 	}
 
+	void LocalCollectionModel::IgnoreTracks (const QSet<int>& ids)
+	{
+		IgnoredTracks_.unite (ids);
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::ResetArtists ()
+	{
+		beginResetModel ();
+
+		IgnoredTracks_.clear ();
+		ArtistTooltips_.clear ();
+		AlbumTooltips_.clear ();
+		TrackTooltips_.clear ();
+
+		return Util::MakeScopeGuard ([this] { endResetModel (); });
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::InsertArtist (int idx)
+	{
+		beginInsertRows ({}, idx, idx);
+		return EndInsertRowsGuard ();
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::AppendAlbums (int artistIdx, int newAlbumsCount)
+	{
+		const auto curAlbumsCount = Artists_ [artistIdx].Albums_.size ();
+		beginInsertRows (MakeArtistIndex (artistIdx), curAlbumsCount, curAlbumsCount + newAlbumsCount);
+		return EndInsertRowsGuard ();
+	}
+
 	namespace
 	{
-		template<typename T, typename Init, typename Parent, typename Idx>
-		QStandardItem* GetItem (T& c, Init f, Parent parent, Idx idx)
+		int FindIdx (const Collection::Artists_t& artists, int artistId)
 		{
-			auto& item = c [idx];
-			if (item)
-				return item;
-
-			item = new QStandardItem;
-			item->setEditable (false);
-			f (item);
-			parent->appendRow (item);
-			return item;
-		}
-
-		template<typename T, typename Init, typename Parent, typename Idx, typename... Idxs>
-		QStandardItem* GetItem (T& c, Init f, Parent parent, Idx idx, Idxs... idxs)
-		{
-			return GetItem (c [idx], f, parent, idxs...);
-		}
-	}
-
-	void LocalCollectionModel::AddArtists (const Collection::Artists_t& artists)
-	{
-		for (const auto& artist : artists)
-		{
-			auto artistItem = GetItem (Artist2Item_,
-					[this, &artist] (QStandardItem *item)
-					{
-						item->setIcon (ArtistIcon_);
-						item->setText (artist.Name_);
-						item->setData (artist.Name_, Role::ArtistName);
-						item->setData (NodeType::Artist, Role::Node);
-					},
-					this,
-					artist.ID_);
-
-			for (const auto& album : artist.Albums_)
+			const auto artistPos = std::find_if (artists.begin (), artists.end (),
+					[&] (const auto& artist) { return artist.ID_ == artistId; });
+			if (artistPos == artists.end ())
 			{
-				auto albumItem = GetItem (Album2Item_,
-						[album, artist] (QStandardItem *item)
-						{
-							item->setText (QString::fromUtf8 ("%1 — %2")
-									.arg (album->Year_)
-									.arg (album->Name_));
-							item->setData (album->ID_, Role::AlbumID);
-							item->setData (album->Year_, Role::AlbumYear);
-							item->setData (album->Name_, Role::AlbumName);
-							item->setData (artist.Name_, Role::ArtistName);
-							item->setData (NodeType::Album, Role::Node);
-							if (!album->CoverPath_.isEmpty ())
-								item->setData (album->CoverPath_, Role::AlbumArt);
-						},
-						artistItem,
-						album->ID_,
-						artist.ID_);
-
-				for (const auto& track : album->Tracks_)
-				{
-					const QString& name = QString::fromUtf8 ("%1 — %2")
-							.arg (track.Number_)
-							.arg (track.Name_);
-					auto item = new QStandardItem (name);
-					item->setEditable (false);
-					item->setData (album->Year_, Role::AlbumYear);
-					item->setData (album->Name_, Role::AlbumName);
-					item->setData (artist.Name_, Role::ArtistName);
-					item->setData (track.ID_, Role::TrackID);
-					item->setData (track.Number_, Role::TrackNumber);
-					item->setData (track.Name_, Role::TrackTitle);
-					item->setData (track.FilePath_, Role::TrackPath);
-					item->setData (track.Genres_, Role::TrackGenres);
-					item->setData (track.Length_, Role::TrackLength);
-					item->setData (NodeType::Track, Role::Node);
-					albumItem->appendRow (item);
-
-					Track2Item_ [track.ID_] = item;
-				}
+				qWarning () << "unable to find artist"
+						<< artistId;
+				return -1;
 			}
+
+			return artistPos - artists.begin ();
 		}
-	}
 
-	void LocalCollectionModel::Clear ()
-	{
-		clear ();
-
-		Artist2Item_.clear ();
-		Album2Item_.clear ();
-		Track2Item_.clear ();
-	}
-
-	void LocalCollectionModel::IgnoreTrack (int id)
-	{
-		auto item = Track2Item_.value (id);
-		item->setData (true, IsTrackIgnored);
-	}
-
-	void LocalCollectionModel::RemoveTrack (int id)
-	{
-		auto item = Track2Item_.take (id);
-		item->parent ()->removeRow (item->row ());
-	}
-
-	void LocalCollectionModel::RemoveAlbum (int id)
-	{
-		for (const auto item : Album2Item_.take (id))
-			item->parent ()->removeRow (item->row ());
-	}
-
-	void LocalCollectionModel::RemoveArtist (int id)
-	{
-		removeRow (Artist2Item_.take (id)->row ());
-	}
-
-	void LocalCollectionModel::SetAlbumArt (int id, const QString& path)
-	{
-		for (const auto item : Album2Item_.value (id))
-			item->setData (path, Role::AlbumArt);
-	}
-
-	void LocalCollectionModel::UpdatePlayStats (int trackId)
-	{
-		auto item = Track2Item_ [trackId];
-
-		while (item)
+		std::tuple<int, int> FindIdx (const Collection::Artists_t& artists, int artistId, int albumId)
 		{
-			item->setToolTip ({});
-			item = item->parent ();
+			const auto artistIdx = FindIdx (artists, artistId);
+			if (artistIdx == -1)
+				return { -1, -1 };
+
+			const auto& albums = artists.at (artistIdx).Albums_;
+			const auto albumPos = std::find_if (albums.begin (), albums.end (),
+					[&] (const auto& album) { return album->ID_ == albumId; });
+			if (albumPos == albums.end ())
+			{
+				qWarning () << "unable to find album"
+						<< albumId
+						<< "in artist"
+						<< artistId;
+				return { -1, -1 };
+			}
+
+			return { artistIdx, albumPos - albums.begin () };
 		}
+
+		std::tuple<int, int, int> FindIdx (const Collection::Artists_t& artists, int artistId, int albumId, int trackId)
+		{
+			const auto [artistIdx, albumIdx] = FindIdx (artists, artistId, albumId);
+			if (artistIdx == -1 || albumIdx == -1)
+				return { -1, -1, -1 };
+
+			const auto& tracks = artists [artistIdx].Albums_ [albumIdx]->Tracks_;
+			const auto trackPos = std::find_if (tracks.begin (), tracks.end (),
+					[&] (const auto& track) { return track.ID_ == trackId; });
+			if (trackPos == tracks.end ())
+			{
+				qWarning () << "unable to find track"
+						<< trackId
+						<< "in"
+						<< albumId
+						<< artistId;
+				return { -1, -1, -1 };
+			}
+
+			return { artistIdx, albumIdx, trackPos - tracks.begin () };
+		}
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::AppendTracks (const AppendTracksByIds& info)
+	{
+		const auto [artistIdx, albumIdx] = FindIdx (Artists_, info.ArtistID_, info.AlbumID_);
+
+		const auto curTracksCount = Artists_ [artistIdx].Albums_ [albumIdx]->Tracks_.size ();
+		beginInsertRows (MakeAlbumIndex (artistIdx, albumIdx), curTracksCount, curTracksCount + info.NewTracksCount_);
+		return EndInsertRowsGuard ();
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::RemoveArtist (int artistId)
+	{
+		const auto idx = FindIdx (Artists_, artistId);
+		if (idx == -1)
+			return {};
+
+		beginRemoveRows ({}, idx, idx);
+		return EndRemoveRowsGuard ();
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::RemoveAlbum (int artistId, int albumId)
+	{
+		const auto [artistIdx, albumIdx] = FindIdx (Artists_, artistId, albumId);
+		if (artistIdx == -1 || albumIdx == -1)
+			return {};
+
+		beginRemoveRows (MakeArtistIndex (artistIdx), albumIdx, albumIdx);
+		return EndRemoveRowsGuard ();
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::RemoveTrack (int artistId, int albumId, int trackId)
+	{
+		const auto [artistIdx, albumIdx, trackIdx] = FindIdx (Artists_, artistId, albumId, trackId);
+		if (artistIdx == -1 || albumIdx == -1 || trackIdx == -1)
+			return {};
+
+		beginRemoveRows (MakeAlbumIndex (artistIdx, albumIdx), trackIdx, trackIdx);
+		return EndRemoveRowsGuard ();
+	}
+
+	void LocalCollectionModel::DataChanged (int artistId, int albumId)
+	{
+		const auto [artistIdx, albumIdx] = FindIdx (Artists_, artistId, albumId);
+
+		const auto& idx = MakeAlbumIndex (artistIdx, albumIdx);
+		emit dataChanged (idx, idx);
+	}
+
+	void LocalCollectionModel::UpdatePlayStats (int artistId, int albumId, int trackId)
+	{
+		ArtistTooltips_.remove (artistId);
+		AlbumTooltips_.remove (albumId);
+		TrackTooltips_.remove (trackId);
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::EndInsertRowsGuard ()
+	{
+		return Util::MakeScopeGuard ([this] { endInsertRows (); });
+	}
+
+	Util::DefaultScopeGuard LocalCollectionModel::EndRemoveRowsGuard ()
+	{
+		return Util::MakeScopeGuard ([this] { endRemoveRows (); });
 	}
 }
