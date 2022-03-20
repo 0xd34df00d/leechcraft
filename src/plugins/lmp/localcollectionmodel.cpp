@@ -16,15 +16,17 @@
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include "localcollectionstorage.h"
+#include "localcollection.h"
 #include "util.h"
 
 namespace LC::LMP
 {
 	LocalCollectionModel::LocalCollectionModel (const Collection::Artists_t& artists,
-			LocalCollectionStorage& storage, QObject *parent)
-	: DndActionsMixin<QAbstractItemModel> { parent }
+			LocalCollectionStorage& storage, LocalCollection& collection)
+	: DndActionsMixin<QAbstractItemModel> { &collection }
 	, Artists_ { artists }
 	, Storage_ { storage }
+	, Collection_ { collection }
 	{
 		setSupportedDragActions (Qt::CopyAction);
 	}

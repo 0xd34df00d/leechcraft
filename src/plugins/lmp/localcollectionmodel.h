@@ -29,6 +29,7 @@ namespace LC::LMP
 
 		const Collection::Artists_t& Artists_;
 		LocalCollectionStorage& Storage_;
+		LocalCollection& Collection_;
 
 		QIcon ArtistIcon_ = QIcon::fromTheme (QStringLiteral ("view-media-artist"));
 
@@ -62,7 +63,7 @@ namespace LC::LMP
 			IsTrackIgnored
 		};
 
-		LocalCollectionModel (const Collection::Artists_t&, LocalCollectionStorage&, QObject*);
+		LocalCollectionModel (const Collection::Artists_t&, LocalCollectionStorage&, LocalCollection&);
 
 		QStringList mimeTypes () const override;
 		QMimeData* mimeData (const QModelIndexList&) const override;
