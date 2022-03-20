@@ -12,6 +12,7 @@
 #include <QMimeData>
 #include <QtDebug>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/gui/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include "localcollectionstorage.h"
@@ -467,7 +468,8 @@ namespace LC::LMP
 				[] (const LocalCollectionStorage::AlbumStats& stats)
 				{
 					return tr ("Last playback: %1 (%2)")
-							.arg (FormatDateTime (stats.LastPlayback_), stats.LastPlayedTrack_);
+							.arg (FormatDateTime (stats.LastPlayback_),
+									Util::FormatName (stats.LastPlayedTrack_));
 				});
 	}
 
@@ -476,9 +478,11 @@ namespace LC::LMP
 		return GetTooltip (trackId, TrackTooltips_, Storage_, &LocalCollectionStorage::GetTrackStats,
 				[] (const Collection::TrackStats& stats)
 				{
-					return tr ("Last playback: %1").arg (FormatDateTime (stats.LastPlay_))
+					return tr ("Last playback: %1")
+									.arg (FormatDateTime (stats.LastPlay_))
 							+ "\n"
-							+ tr ("Played %n time(s) since %1", nullptr, stats.Playcount_).arg (FormatDateTime (stats.Added_));
+							+ tr ("Played %n time(s) since %1", nullptr, stats.Playcount_)
+									.arg (FormatDateTime (stats.Added_));
 				});
 	}
 }
