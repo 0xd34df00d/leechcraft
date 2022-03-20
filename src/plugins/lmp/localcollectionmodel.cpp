@@ -284,11 +284,6 @@ namespace LC::LMP
 		return result;
 	}
 
-	void LocalCollectionModel::IgnoreTracks (const QSet<int>& ids)
-	{
-		IgnoredTracks_.unite (ids);
-	}
-
 	Util::DefaultScopeGuard LocalCollectionModel::ResetArtists ()
 	{
 		beginResetModel ();
@@ -372,6 +367,24 @@ namespace LC::LMP
 
 			return { artistIdx, albumIdx, trackPos - tracks.begin () };
 		}
+	}
+
+	void LocalCollectionModel::IgnoreTracks (const QSet<int>& tracksIds, bool emitting)
+	{
+		IgnoredTracks_.unite (tracksIds);
+
+		for (const auto trackId : tracksIds)
+			if (const auto info = Collection_.GetTrackInfo (trackId))
+			{
+				const auto artistId = info->Artist_.ID_;
+				const auto [artistIdx, albumIdx, trackIdx] = FindIdx (Artists_, artistId, info->Album_->ID_, trackId);
+
+				if (emitting)
+				{
+					const auto modelIdx = MakeTrackIndex (artistIdx, albumIdx, trackIdx);
+					emit dataChanged (modelIdx, modelIdx);
+				}
+			}
 	}
 
 	Util::DefaultScopeGuard LocalCollectionModel::AppendTracks (const AppendTracksByIds& info)

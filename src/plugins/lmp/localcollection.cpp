@@ -483,6 +483,7 @@ namespace LC::LMP
 		if (Artists_.isEmpty ())
 		{
 			const auto guard = CollectionModel_->ResetArtists ();
+
 			Artists_ = std::move (artists);
 			std::sort (Artists_.begin (), Artists_.end (), artistsCmp);
 
@@ -498,6 +499,8 @@ namespace LC::LMP
 						Track2Album_ [track.ID_] = album->ID_;
 					}
 				}
+
+			CollectionModel_->IgnoreTracks (ignored, false);
 		}
 		else
 		{
@@ -561,9 +564,9 @@ namespace LC::LMP
 
 				emit gotNewArtists (artists);
 			}
-		}
 
-		CollectionModel_->IgnoreTracks (ignored);
+			CollectionModel_->IgnoreTracks (ignored);
+		}
 	}
 
 	void LocalCollection::IgnoreTrack (const QString& path)

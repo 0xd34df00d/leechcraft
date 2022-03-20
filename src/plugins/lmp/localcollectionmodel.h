@@ -76,7 +76,7 @@ namespace LC::LMP
 
 		QList<QUrl> ToSourceUrls (const QList<QModelIndex>&) const override;
 
-		void IgnoreTracks (const QSet<int>&);
+		void IgnoreTracks (const QSet<int>&, bool emitting = true);
 
 		[[nodiscard]] Util::DefaultScopeGuard ResetArtists ();
 		[[nodiscard]] Util::DefaultScopeGuard InsertArtist (int idx);
