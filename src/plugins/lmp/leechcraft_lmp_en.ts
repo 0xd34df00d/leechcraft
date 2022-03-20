@@ -669,17 +669,7 @@
 <context>
     <name>LC::LMP::LMPSystemTrayIcon</name>
     <message>
-        <location filename="lmpsystemtrayicon.cpp" line="47"/>
-        <source>%1 (%2)</source>
-        <translation>%1 (%2)</translation>
-    </message>
-    <message>
-        <location filename="lmpsystemtrayicon.cpp" line="57"/>
-        <source>Volume: %1%</source>
-        <translation>Volume: %1%</translation>
-    </message>
-    <message>
-        <location filename="lmpsystemtrayicon.cpp" line="84"/>
+        <location filename="lmpsystemtrayicon.cpp" line="37"/>
         <source>No track playing</source>
         <translation>No track playing</translation>
     </message>
@@ -687,7 +677,7 @@
 <context>
     <name>LC::LMP::LocalCollection</name>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="926"/>
+        <location filename="localcollection.cpp" line="814"/>
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n new artist</numerusform>
@@ -695,7 +685,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="927"/>
+        <location filename="localcollection.cpp" line="815"/>
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n new album</numerusform>
@@ -703,7 +693,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="928"/>
+        <location filename="localcollection.cpp" line="816"/>
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n new track</numerusform>
@@ -711,7 +701,7 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollection.cpp" line="929"/>
+        <location filename="localcollection.cpp" line="817"/>
         <source>Local collection updated: %1, %2, %3.</source>
         <translation>Local collection updated: %1, %2, %3.</translation>
     </message>
@@ -719,12 +709,12 @@
 <context>
     <name>LC::LMP::LocalCollectionModel</name>
     <message>
-        <location filename="localcollectionmodel.cpp" line="102"/>
+        <location filename="localcollectionmodel.cpp" line="497"/>
         <source>Last playback: %1</source>
         <translation>Last playback: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollectionmodel.cpp" line="104"/>
+        <location filename="localcollectionmodel.cpp" line="500"/>
         <source>Played %n time(s) since %1</source>
         <translation>
             <numerusform>Played %n time since %1</numerusform>
@@ -732,13 +722,17 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollectionmodel.cpp" line="109"/>
-        <location filename="localcollectionmodel.cpp" line="120"/>
+        <location filename="localcollectionmodel.cpp" line="461"/>
         <source>Never has been played</source>
         <translation>Never has been played</translation>
     </message>
     <message>
-        <location filename="localcollectionmodel.cpp" line="124"/>
+        <location filename="localcollectionmodel.cpp" line="474"/>
+        <source>Last palyback: %1 (%2 from %3)</source>
+        <translation>Last palyback: %1 (%2 from %3)</translation>
+    </message>
+    <message>
+        <location filename="localcollectionmodel.cpp" line="486"/>
         <source>Last playback: %1 (%2)</source>
         <translation>Last playback: %1 (%2)</translation>
     </message>
@@ -832,32 +826,32 @@
         <translation>Maximum bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1069"/>
+        <location filename="player.cpp" line="1063"/>
         <source>paused</source>
         <translation>paused</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1074"/>
+        <location filename="player.cpp" line="1068"/>
         <source>playing</source>
         <translation>playing</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1078"/>
+        <location filename="player.cpp" line="1072"/>
         <source>stopped</source>
         <translation>stopped</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1083"/>
+        <location filename="player.cpp" line="1077"/>
         <source>%1 by %2 is now %3</source>
         <translation>%1 by %2 is now %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1429"/>
+        <location filename="player.cpp" line="1423"/>
         <source>Stream</source>
         <translation>Stream</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1546"/>
+        <location filename="player.cpp" line="1540"/>
         <source>Radio station error: %1.</source>
         <translation>Radio station error: %1.</translation>
     </message>
@@ -865,87 +859,87 @@
 <context>
     <name>LC::LMP::PlayerTab</name>
     <message>
-        <location filename="playertab.cpp" line="66"/>
+        <location filename="playertab.cpp" line="67"/>
         <source>Effects</source>
         <translation>Effects</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="252"/>
+        <location filename="playertab.cpp" line="253"/>
         <source>Current song</source>
         <translation>Current song</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="253"/>
+        <location filename="playertab.cpp" line="254"/>
         <source>Collection</source>
         <translation>Collection</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="254"/>
+        <location filename="playertab.cpp" line="255"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="255"/>
+        <location filename="playertab.cpp" line="256"/>
         <source>Social</source>
         <translation>Social</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="256"/>
+        <location filename="playertab.cpp" line="257"/>
         <source>Internet</source>
         <translation>Internet</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="257"/>
+        <location filename="playertab.cpp" line="258"/>
         <source>Filesystem</source>
         <translation>Filesystem</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="258"/>
+        <location filename="playertab.cpp" line="259"/>
         <source>Devices</source>
         <translation>Devices</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="278"/>
+        <location filename="playertab.cpp" line="279"/>
         <source>Previous track</source>
         <translation>Previous track</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="286"/>
+        <location filename="playertab.cpp" line="287"/>
         <source>Play/Pause</source>
         <translation>Play/Pause</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="295"/>
+        <location filename="playertab.cpp" line="296"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="303"/>
+        <location filename="playertab.cpp" line="304"/>
         <source>Next track</source>
         <translation>Next track</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="313"/>
+        <location filename="playertab.cpp" line="314"/>
         <source>Love</source>
         <translation>Love</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="322"/>
+        <location filename="playertab.cpp" line="323"/>
         <source>Ban</source>
         <translation>Ban</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="358"/>
+        <location filename="playertab.cpp" line="355"/>
         <source>Close LMP</source>
         <translation>Close LMP</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="365"/>
+        <location filename="playertab.cpp" line="362"/>
         <source>Stop after current track</source>
         <translation>Stop after current track</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="471"/>
+        <location filename="playertab.cpp" line="468"/>
         <source>Open effects configuration page...</source>
         <translation>Open effects configuration page...</translation>
     </message>
@@ -953,27 +947,27 @@
 <context>
     <name>LC::LMP::PlaylistManager</name>
     <message>
-        <location filename="playlistmanager.cpp" line="86"/>
+        <location filename="playlistmanager.cpp" line="85"/>
         <source>Static playlists</source>
         <translation>Static playlists</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="100"/>
+        <location filename="playlistmanager.cpp" line="99"/>
         <source>Dynamic playlists</source>
         <translation>Dynamic playlists</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="112"/>
+        <location filename="playlistmanager.cpp" line="105"/>
         <source>50 random tracks</source>
         <translation>50 random tracks</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="113"/>
+        <location filename="playlistmanager.cpp" line="106"/>
         <source>Loved tracks</source>
         <translation>Loved tracks</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="114"/>
+        <location filename="playlistmanager.cpp" line="107"/>
         <source>Banned tracks</source>
         <translation>Banned tracks</translation>
     </message>

@@ -672,17 +672,7 @@
 <context>
     <name>LC::LMP::LMPSystemTrayIcon</name>
     <message>
-        <location filename="lmpsystemtrayicon.cpp" line="47"/>
-        <source>%1 (%2)</source>
-        <translation>%1 (%2)</translation>
-    </message>
-    <message>
-        <location filename="lmpsystemtrayicon.cpp" line="57"/>
-        <source>Volume: %1%</source>
-        <translation>Громкость: %1%</translation>
-    </message>
-    <message>
-        <location filename="lmpsystemtrayicon.cpp" line="84"/>
+        <location filename="lmpsystemtrayicon.cpp" line="37"/>
         <source>No track playing</source>
         <translation>Воспроизведение остановлено</translation>
     </message>
@@ -690,7 +680,7 @@
 <context>
     <name>LC::LMP::LocalCollection</name>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="926"/>
+        <location filename="localcollection.cpp" line="814"/>
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n новый исполнитель</numerusform>
@@ -699,7 +689,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="927"/>
+        <location filename="localcollection.cpp" line="815"/>
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n новый альбом</numerusform>
@@ -708,7 +698,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="928"/>
+        <location filename="localcollection.cpp" line="816"/>
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n новый трек</numerusform>
@@ -717,7 +707,7 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollection.cpp" line="929"/>
+        <location filename="localcollection.cpp" line="817"/>
         <source>Local collection updated: %1, %2, %3.</source>
         <translation>Локальная коллекция обновлена: %1, %2, %3.</translation>
     </message>
@@ -725,12 +715,12 @@
 <context>
     <name>LC::LMP::LocalCollectionModel</name>
     <message>
-        <location filename="localcollectionmodel.cpp" line="102"/>
+        <location filename="localcollectionmodel.cpp" line="497"/>
         <source>Last playback: %1</source>
         <translation>Последнее воспроизведение: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollectionmodel.cpp" line="104"/>
+        <location filename="localcollectionmodel.cpp" line="500"/>
         <source>Played %n time(s) since %1</source>
         <translation>
             <numerusform>%n воспроизведение с %1</numerusform>
@@ -739,13 +729,17 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollectionmodel.cpp" line="109"/>
-        <location filename="localcollectionmodel.cpp" line="120"/>
+        <location filename="localcollectionmodel.cpp" line="461"/>
         <source>Never has been played</source>
         <translation>Никогда не воспроизводилось</translation>
     </message>
     <message>
-        <location filename="localcollectionmodel.cpp" line="124"/>
+        <location filename="localcollectionmodel.cpp" line="474"/>
+        <source>Last palyback: %1 (%2 from %3)</source>
+        <translation>Последнее воспроизведение: %1 (%2 с %3)</translation>
+    </message>
+    <message>
+        <location filename="localcollectionmodel.cpp" line="486"/>
         <source>Last playback: %1 (%2)</source>
         <translation>Последнее воспроизведение: %1 (%2)</translation>
     </message>
@@ -840,32 +834,32 @@
         <translation>Максимальный битрейт</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1069"/>
+        <location filename="player.cpp" line="1063"/>
         <source>paused</source>
         <translation>пауза</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1074"/>
+        <location filename="player.cpp" line="1068"/>
         <source>playing</source>
         <translation>играет</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1078"/>
+        <location filename="player.cpp" line="1072"/>
         <source>stopped</source>
         <translation>остановлено</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1083"/>
+        <location filename="player.cpp" line="1077"/>
         <source>%1 by %2 is now %3</source>
         <translation>%1 от %2 теперь %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1429"/>
+        <location filename="player.cpp" line="1423"/>
         <source>Stream</source>
         <translation>Поток</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1546"/>
+        <location filename="player.cpp" line="1540"/>
         <source>Radio station error: %1.</source>
         <translation>Ошибка радиостанции: %1.</translation>
     </message>
@@ -873,87 +867,87 @@
 <context>
     <name>LC::LMP::PlayerTab</name>
     <message>
-        <location filename="playertab.cpp" line="66"/>
+        <location filename="playertab.cpp" line="67"/>
         <source>Effects</source>
         <translation>Эффекты</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="252"/>
+        <location filename="playertab.cpp" line="253"/>
         <source>Current song</source>
         <translation>Текущая песня</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="253"/>
+        <location filename="playertab.cpp" line="254"/>
         <source>Collection</source>
         <translation>Коллекция</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="254"/>
+        <location filename="playertab.cpp" line="255"/>
         <source>Playlists</source>
         <translation>Списки воспроизведения</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="255"/>
+        <location filename="playertab.cpp" line="256"/>
         <source>Social</source>
         <translation>Социальное</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="256"/>
+        <location filename="playertab.cpp" line="257"/>
         <source>Internet</source>
         <translation>Интернет</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="257"/>
+        <location filename="playertab.cpp" line="258"/>
         <source>Filesystem</source>
         <translation>Файловая система</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="258"/>
+        <location filename="playertab.cpp" line="259"/>
         <source>Devices</source>
         <translation>Устройства</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="278"/>
+        <location filename="playertab.cpp" line="279"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="286"/>
+        <location filename="playertab.cpp" line="287"/>
         <source>Play/Pause</source>
         <translation>Играть/Приостановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="295"/>
+        <location filename="playertab.cpp" line="296"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="303"/>
+        <location filename="playertab.cpp" line="304"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="313"/>
+        <location filename="playertab.cpp" line="314"/>
         <source>Love</source>
         <translation>Отметить как любимое</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="322"/>
+        <location filename="playertab.cpp" line="323"/>
         <source>Ban</source>
         <translation>Запретить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="358"/>
+        <location filename="playertab.cpp" line="355"/>
         <source>Close LMP</source>
         <translation>Закрыть LMP</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="365"/>
+        <location filename="playertab.cpp" line="362"/>
         <source>Stop after current track</source>
         <translation>Остановиться после текущего трека</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="471"/>
+        <location filename="playertab.cpp" line="468"/>
         <source>Open effects configuration page...</source>
         <translation>Открыть страницу настройки эффектов…</translation>
     </message>
@@ -961,27 +955,27 @@
 <context>
     <name>LC::LMP::PlaylistManager</name>
     <message>
-        <location filename="playlistmanager.cpp" line="86"/>
+        <location filename="playlistmanager.cpp" line="85"/>
         <source>Static playlists</source>
         <translation>Статические списки воспроизведения</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="100"/>
+        <location filename="playlistmanager.cpp" line="99"/>
         <source>Dynamic playlists</source>
         <translation>Динамические списки воспроизведения</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="112"/>
+        <location filename="playlistmanager.cpp" line="105"/>
         <source>50 random tracks</source>
         <translation>50 случайных треков</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="113"/>
+        <location filename="playlistmanager.cpp" line="106"/>
         <source>Loved tracks</source>
         <translation>Избранные треки</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="114"/>
+        <location filename="playlistmanager.cpp" line="107"/>
         <source>Banned tracks</source>
         <translation>Забаненные треки</translation>
     </message>
