@@ -51,6 +51,7 @@ namespace LC::LMP
 					return true;
 
 				const auto type = source.data (LocalCollectionModel::Role::Node).toInt ();
+				const bool hasAlbumData = type != LocalCollectionModel::NodeType::Artist;
 				const bool isTrack = type == LocalCollectionModel::NodeType::Track;
 				const auto childrenCount = sourceModel ()->rowCount (source);
 				if (!isTrack)
@@ -67,9 +68,9 @@ namespace LC::LMP
 				};
 				return check (Qt::DisplayRole) ||
 						check (LocalCollectionModel::Role::ArtistName) ||
-						check (LocalCollectionModel::Role::AlbumName) ||
-						check (LocalCollectionModel::Role::TrackTitle) ||
-						check (LocalCollectionModel::Role::AlbumYear);
+						(hasAlbumData && check (LocalCollectionModel::Role::AlbumName)) ||
+						(isTrack && check (LocalCollectionModel::Role::TrackTitle)) ||
+						(hasAlbumData && check (LocalCollectionModel::Role::AlbumYear));
 			}
 		};
 	}
