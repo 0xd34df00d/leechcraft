@@ -435,6 +435,27 @@ namespace LC::LMP
 		return Util::MakeScopeGuard ([this] { endRemoveRows (); });
 	}
 
+	namespace
+	{
+		QString GetTooltip (int id, QCache<int, QString>& cache,
+				LocalCollectionStorage& storage, auto getter,
+				auto fmtStats)
+		{
+			if (const auto str = cache.object (id))
+				return *str;
+
+			QString tooltip;
+			if (const auto stats = (storage.*getter) (id))
+				tooltip = fmtStats (*stats);
+			else
+				tooltip = LocalCollectionModel::tr ("Never has been played");
+
+			cache.insert (id, new QString { tooltip });
+
+			return tooltip;
+		}
+	}
+
 	QString LocalCollectionModel::GetArtistTooltip (int artistId) const
 	{
 		return {};
@@ -442,36 +463,22 @@ namespace LC::LMP
 
 	QString LocalCollectionModel::GetAlbumTooltip (int albumId) const
 	{
-		if (const auto str = AlbumTooltips_.object (albumId))
-			return *str;
-
-		QString tooltip;
-		if (const auto stats = Storage_.GetAlbumStats (albumId))
-			tooltip = tr ("Last playback: %1 (%2)")
-					.arg (FormatDateTime (stats->LastPlayback_), stats->LastPlayedTrack_);
-		else
-			tooltip = tr ("Never has been played");
-
-		AlbumTooltips_.insert (albumId, new QString { tooltip });
-
-		return tooltip;
+		return GetTooltip (albumId, AlbumTooltips_, Storage_, &LocalCollectionStorage::GetAlbumStats,
+				[] (const LocalCollectionStorage::AlbumStats& stats)
+				{
+					return tr ("Last playback: %1 (%2)")
+							.arg (FormatDateTime (stats.LastPlayback_), stats.LastPlayedTrack_);
+				});
 	}
 
 	QString LocalCollectionModel::GetTrackTooltip (int trackId) const
 	{
-		if (const auto str = TrackTooltips_.object (trackId))
-			return *str;
-
-		QString tooltip;
-		if (const auto& stats = Storage_.GetTrackStats (trackId))
-			tooltip = tr ("Last playback: %1").arg (FormatDateTime (stats->LastPlay_))
-					+ "\n"
-					+ tr ("Played %n time(s) since %1", nullptr, stats->Playcount_).arg (FormatDateTime (stats->Added_));
-		else
-			tooltip = tr ("Never has been played");
-
-		TrackTooltips_.insert (trackId, new QString { tooltip });
-
-		return tooltip;
+		return GetTooltip (trackId, TrackTooltips_, Storage_, &LocalCollectionStorage::GetTrackStats,
+				[] (const Collection::TrackStats& stats)
+				{
+					return tr ("Last playback: %1").arg (FormatDateTime (stats.LastPlay_))
+							+ "\n"
+							+ tr ("Played %n time(s) since %1", nullptr, stats.Playcount_).arg (FormatDateTime (stats.Added_));
+				});
 	}
 }
