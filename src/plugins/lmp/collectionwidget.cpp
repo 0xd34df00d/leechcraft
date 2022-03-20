@@ -37,7 +37,6 @@ namespace LC::LMP
 			: QSortFilterProxyModel { parent }
 			{
 				setDynamicSortFilter (true);
-				setRecursiveFilteringEnabled (true);
 			}
 		protected:
 			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const override
@@ -58,9 +57,6 @@ namespace LC::LMP
 					for (int i = 0; i < childrenCount; ++i)
 						if (filterAcceptsRow (i, source))
 							return true;
-
-				if (pattern.isEmpty () && !isTrack && childrenCount)
-					return false;
 
 				auto check = [&source, &pattern] (int role)
 				{
