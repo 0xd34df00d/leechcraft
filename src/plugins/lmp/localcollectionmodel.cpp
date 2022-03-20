@@ -201,13 +201,13 @@ namespace LC::LMP
 			return artist.Name_;
 
 		case Role::AlbumID:
-			return album->ID_;
+			return album ? album->ID_ : QVariant {};
 		case Role::AlbumYear:
-			return album->Year_;
+			return album ? album->Year_ : QVariant {};
 		case Role::AlbumName:
-			return album->Name_;
+			return album ? album->Name_ : QVariant {};
 		case Role::AlbumArt:
-			return album->CoverPath_;
+			return album ? album->CoverPath_ : QVariant {};
 
 		case Role::TrackID:
 			return track.ID_;
