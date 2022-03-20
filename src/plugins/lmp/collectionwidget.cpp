@@ -62,8 +62,7 @@ namespace LC::LMP
 				{
 					return source.data (role).toString ().contains (pattern, Qt::CaseInsensitive);
 				};
-				return check (Qt::DisplayRole) ||
-						check (LocalCollectionModel::Role::ArtistName) ||
+				return check (LocalCollectionModel::Role::ArtistName) ||
 						(hasAlbumData && check (LocalCollectionModel::Role::AlbumName)) ||
 						(isTrack && check (LocalCollectionModel::Role::TrackTitle)) ||
 						(hasAlbumData && check (LocalCollectionModel::Role::AlbumYear));
