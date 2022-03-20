@@ -10,8 +10,4 @@
 
 namespace LC::LMP::Collection
 {
-	TrackStats::operator bool () const
-	{
-		return TrackID_;
-	}
 }

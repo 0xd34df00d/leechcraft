@@ -114,7 +114,7 @@ namespace LC::LMP
 
 		void AddTrackTo (int, StaticRating);
 
-		Collection::TrackStats GetTrackStats (const QString&) const;
+		std::optional<Collection::TrackStats> GetTrackStats (const QString&) const;
 
 		Collection::Artist GetArtist (int) const;
 		Collection::Artists_t GetAllArtists () const override;

@@ -283,7 +283,7 @@ namespace LC::LMP
 		}
 	}
 
-	Collection::TrackStats LocalCollectionStorage::GetTrackStats (int trackId)
+	std::optional<Collection::TrackStats> LocalCollectionStorage::GetTrackStats (int trackId)
 	{
 		GetTrackStats_.bindValue (":track_id", trackId);
 		if (!GetTrackStats_.exec ())
@@ -293,11 +293,10 @@ namespace LC::LMP
 		}
 
 		if (!GetTrackStats_.next ())
-			return Collection::TrackStats ();
+			return {};
 
-		Collection::TrackStats result =
+		Collection::TrackStats result
 		{
-			trackId,
 			GetTrackStats_.value (0).toInt (),
 			GetTrackStats_.value (1).toDateTime (),
 			GetTrackStats_.value (2).toDateTime (),
@@ -309,9 +308,9 @@ namespace LC::LMP
 		return result;
 	}
 
-	void LocalCollectionStorage::SetTrackStats (const Collection::TrackStats& stats)
+	void LocalCollectionStorage::SetTrackStats (int trackId, const Collection::TrackStats& stats)
 	{
-		SetTrackStats_.bindValue (":track_id", stats.TrackID_);
+		SetTrackStats_.bindValue (":track_id", trackId);
 		SetTrackStats_.bindValue (":playcount", stats.Playcount_);
 		SetTrackStats_.bindValue (":added", stats.Added_);
 		SetTrackStats_.bindValue (":last_play", stats.LastPlay_);

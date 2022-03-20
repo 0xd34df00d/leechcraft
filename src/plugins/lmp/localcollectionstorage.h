@@ -97,8 +97,8 @@ namespace LC::LMP
 
 		void SetAlbumArt (int, const QString&);
 
-		Collection::TrackStats GetTrackStats (int);
-		void SetTrackStats (const Collection::TrackStats&);
+		std::optional<Collection::TrackStats> GetTrackStats (int);
+		void SetTrackStats (int, const Collection::TrackStats&);
 		void RecordTrackPlayed (int, const QDateTime&);
 
 		struct AlbumStats

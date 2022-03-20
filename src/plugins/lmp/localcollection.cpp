@@ -396,7 +396,7 @@ namespace LC::LMP
 		}
 	}
 
-	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path) const
+	std::optional<Collection::TrackStats> LocalCollection::GetTrackStats (const QString& path) const
 	{
 		if (!Path2Track_.contains (path))
 			return {};
@@ -459,15 +459,15 @@ namespace LC::LMP
 					track.Genres_ == info.Genres_)
 				continue;
 
-			auto stats = GetTrackStats (path);
+			const auto& stats = GetTrackStats (path);
 			RemoveTrack (path);
 
 			const auto& newArts = Storage_->AddToCollection ({ info });
 			HandleNewArtists (newArts);
 
 			const auto newTrackIdx = FindTrack (path);
-			stats.TrackID_ = newTrackIdx;
-			Storage_->SetTrackStats (stats);
+			if (stats)
+				Storage_->SetTrackStats (newTrackIdx, *stats);
 		}
 	}
 

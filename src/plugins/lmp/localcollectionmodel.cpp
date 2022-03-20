@@ -464,9 +464,9 @@ namespace LC::LMP
 
 		QString tooltip;
 		if (const auto& stats = Storage_.GetTrackStats (trackId))
-			tooltip = tr ("Last playback: %1").arg (FormatDateTime (stats.LastPlay_))
+			tooltip = tr ("Last playback: %1").arg (FormatDateTime (stats->LastPlay_))
 					+ "\n"
-					+ tr ("Played %n time(s) since %1", nullptr, stats.Playcount_).arg (FormatDateTime (stats.Added_));
+					+ tr ("Played %n time(s) since %1", nullptr, stats->Playcount_).arg (FormatDateTime (stats->Added_));
 		else
 			tooltip = tr ("Never has been played");
 
