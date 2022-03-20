@@ -46,6 +46,10 @@ namespace LC::LMP
 				if (source.data (LocalCollectionModel::Role::IsIgnored).toBool ())
 					return false;
 
+				const auto& pattern = filterRegExp ().pattern ();
+				if (pattern.isEmpty ())
+					return true;
+
 				const auto type = source.data (LocalCollectionModel::Role::Node).toInt ();
 				const bool isTrack = type == LocalCollectionModel::NodeType::Track;
 				const auto childrenCount = sourceModel ()->rowCount (source);
@@ -53,8 +57,6 @@ namespace LC::LMP
 					for (int i = 0; i < childrenCount; ++i)
 						if (filterAcceptsRow (i, source))
 							return true;
-
-				const auto& pattern = filterRegExp ().pattern ();
 
 				if (pattern.isEmpty () && !isTrack && childrenCount)
 					return false;
