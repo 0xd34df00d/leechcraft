@@ -34,6 +34,8 @@ namespace LC::LMP
 		QIcon ArtistIcon_ = QIcon::fromTheme (QStringLiteral ("view-media-artist"));
 
 		QSet<int> IgnoredTracks_;
+		QSet<int> IgnoredAlbums_;
+		QSet<int> IgnoredArtists_;
 
 		mutable QCache<int, QString> ArtistTooltips_;
 		mutable QCache<int, QString> AlbumTooltips_;
@@ -60,7 +62,7 @@ namespace LC::LMP
 			TrackPath,
 			TrackGenres,
 			TrackLength,
-			IsTrackIgnored
+			IsIgnored
 		};
 
 		LocalCollectionModel (const Collection::Artists_t&, LocalCollectionStorage&, LocalCollection&);

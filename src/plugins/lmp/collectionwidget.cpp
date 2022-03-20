@@ -43,7 +43,7 @@ namespace LC::LMP
 			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const override
 			{
 				const auto& source = sourceModel ()->index (sourceRow, 0, sourceParent);
-				if (source.data (LocalCollectionModel::Role::IsTrackIgnored).toBool ())
+				if (source.data (LocalCollectionModel::Role::IsIgnored).toBool ())
 					return false;
 
 				const auto type = source.data (LocalCollectionModel::Role::Node).toInt ();

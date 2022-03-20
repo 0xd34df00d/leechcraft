@@ -222,8 +222,18 @@ namespace LC::LMP
 		case Role::TrackLength:
 			return track.Length_;
 
-		case Role::IsTrackIgnored:
-			return IgnoredTracks_.contains (track.ID_);
+		case Role::IsIgnored:
+			switch (nodeType)
+			{
+			case NodeType::Artist:
+				return IgnoredArtists_.contains (artist.ID_);
+			case NodeType::Album:
+				return IgnoredAlbums_.contains (album->ID_);
+			case NodeType::Track:
+				return IgnoredTracks_.contains (track.ID_);
+			}
+
+			Util::Unreachable ();
 		}
 
 		return {};
@@ -288,6 +298,8 @@ namespace LC::LMP
 	{
 		beginResetModel ();
 
+		IgnoredArtists_.clear ();
+		IgnoredAlbums_.clear ();
 		IgnoredTracks_.clear ();
 		ArtistTooltips_.clear ();
 		AlbumTooltips_.clear ();
@@ -373,6 +385,8 @@ namespace LC::LMP
 	{
 		IgnoredTracks_.unite (tracksIds);
 
+		QSet<QPair<int, int>> albums2check;
+		QSet<int> artists2check;
 		for (const auto trackId : tracksIds)
 			if (const auto info = Collection_.GetTrackInfo (trackId))
 			{
@@ -384,7 +398,43 @@ namespace LC::LMP
 					const auto modelIdx = MakeTrackIndex (artistIdx, albumIdx, trackIdx);
 					emit dataChanged (modelIdx, modelIdx);
 				}
+
+				albums2check.insert ({ artistIdx, albumIdx });
+				artists2check.insert (artistIdx);
 			}
+
+		for (const auto [artistIdx, albumIdx] : albums2check)
+		{
+			const auto& album = Artists_ [artistIdx].Albums_ [albumIdx];
+			if (std::all_of (album->Tracks_.begin (), album->Tracks_.end (),
+					[this] (const Collection::Track& track) { return IgnoredTracks_.contains (track.ID_); }))
+			{
+				IgnoredAlbums_ << album->ID_;
+
+				if (emitting)
+				{
+					const auto modelIdx = MakeAlbumIndex (artistIdx, albumIdx);
+					emit dataChanged (modelIdx, modelIdx);
+				}
+			}
+		}
+
+		for (const auto artistIdx : artists2check)
+		{
+			const auto& artist = Artists_ [artistIdx];
+			const auto& albums = artist.Albums_;
+			if (std::all_of (albums.begin (), albums.end (),
+					[this] (const Collection::Album_ptr& album) { return IgnoredAlbums_.contains (album->ID_); }))
+			{
+				IgnoredArtists_ << artist.ID_;
+
+				if (emitting)
+				{
+					const auto modelIdx = MakeArtistIndex (artistIdx);
+					emit dataChanged (modelIdx, modelIdx);
+				}
+			}
+		}
 	}
 
 	Util::DefaultScopeGuard LocalCollectionModel::AppendTracks (const AppendTracksByIds& info)
