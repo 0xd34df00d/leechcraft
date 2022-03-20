@@ -52,6 +52,7 @@ namespace LC::LMP
 		QSqlQuery UpdateTrackStats_;
 
 		QSqlQuery GetAlbumStats_;
+		QSqlQuery GetArtistStats_;
 
 		QSqlQuery GetFileIdMTime_;
 		QSqlQuery GetFileMTime_;
@@ -107,6 +108,14 @@ namespace LC::LMP
 			QString LastPlayedTrack_;
 		};
 		std::optional<AlbumStats> GetAlbumStats (int);
+
+		struct ArtistStats
+		{
+			QDateTime LastPlayback_;
+			QString LastPlayedAlbum_;
+			QString LastPlayedTrack_;
+		};
+		std::optional<ArtistStats> GetArtistStats (int);
 
 		QDateTime GetMTime (const QString&);
 		void SetMTime (const QString&, const QDateTime&);

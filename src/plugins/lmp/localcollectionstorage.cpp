@@ -361,6 +361,24 @@ namespace LC::LMP
 		return stats;
 	}
 
+	std::optional<LocalCollectionStorage::ArtistStats> LocalCollectionStorage::GetArtistStats (int artistId)
+	{
+		GetArtistStats_.bindValue (":artist_id", artistId);
+		Util::DBLock::Execute (GetArtistStats_);
+
+		if (!GetArtistStats_.next ())
+			return {};
+
+		ArtistStats stats
+		{
+			.LastPlayback_ = GetArtistStats_.value (0).toDateTime (),
+			.LastPlayedAlbum_ = GetArtistStats_.value (1).toString (),
+			.LastPlayedTrack_ = GetArtistStats_.value (2).toString (),
+		};
+		GetArtistStats_.finish ();
+		return stats;
+	}
+
 	QDateTime LocalCollectionStorage::GetMTime (const QString& filepath)
 	{
 		GetFileMTime_.bindValue (":filepath", filepath);
@@ -776,6 +794,19 @@ namespace LC::LMP
 				FROM statistics INNER JOIN tracks ON TrackId = Tracks.Id
 				WHERE AlbumId = :album_id
 				GROUP BY AlbumId
+				HAVING LastPlay = MAX(LastPlay)
+				)");
+
+		GetArtistStats_ = QSqlQuery (DB_);
+		GetArtistStats_.prepare (R"(
+				SELECT LastPlay, albums.Name, tracks.Name
+				FROM statistics
+				INNER JOIN tracks ON TrackId = tracks.Id
+				INNER JOIN albums ON albums.Id = tracks.AlbumId
+				INNER JOIN artists2albums ON albums.Id = artists2albums.AlbumId
+				INNER JOIN artists ON artists.Id = artists2albums.ArtistId
+				WHERE artists.Id = :artist_id
+				GROUP BY artists.Id
 				HAVING LastPlay = MAX(LastPlay)
 				)");
 
