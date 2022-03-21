@@ -241,6 +241,13 @@ namespace LC::LMP
 		return {};
 	}
 
+	Qt::ItemFlags LocalCollectionModel::flags (const QModelIndex&) const
+	{
+		return Qt::ItemIsSelectable
+				| Qt::ItemIsEnabled
+				| Qt::ItemIsDragEnabled;
+	}
+
 	QModelIndex LocalCollectionModel::index (int row, int, const QModelIndex& parent) const
 	{
 		const auto artistIdx = ArtistIdx (parent);

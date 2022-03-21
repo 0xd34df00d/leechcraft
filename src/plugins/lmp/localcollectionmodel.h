@@ -72,6 +72,7 @@ namespace LC::LMP
 
 		int columnCount (const QModelIndex&) const override;
 		QVariant data (const QModelIndex&, int) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
 		QModelIndex index (int, int, const QModelIndex&) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex&) const override;
