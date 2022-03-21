@@ -241,11 +241,14 @@ namespace LC::LMP
 		return {};
 	}
 
-	Qt::ItemFlags LocalCollectionModel::flags (const QModelIndex&) const
+	Qt::ItemFlags LocalCollectionModel::flags (const QModelIndex& idx) const
 	{
-		return Qt::ItemIsSelectable
+		auto flags = Qt::ItemIsSelectable
 				| Qt::ItemIsEnabled
 				| Qt::ItemIsDragEnabled;
+		if (IsTrack (idx.internalId ()))
+			flags |= Qt::ItemNeverHasChildren;
+		return flags;
 	}
 
 	QModelIndex LocalCollectionModel::index (int row, int, const QModelIndex& parent) const
