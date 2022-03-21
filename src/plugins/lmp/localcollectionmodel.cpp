@@ -178,6 +178,8 @@ namespace LC::LMP
 						.arg (track.Number_)
 						.arg (track.Name_);
 			}
+			Util::Unreachable ();
+
 		case Qt::DecorationRole:
 			return nodeType == NodeType::Artist ?
 					ArtistIcon_ :
@@ -301,6 +303,7 @@ namespace LC::LMP
 		IgnoredArtists_.clear ();
 		IgnoredAlbums_.clear ();
 		IgnoredTracks_.clear ();
+
 		ArtistTooltips_.clear ();
 		AlbumTooltips_.clear ();
 		TrackTooltips_.clear ();
