@@ -748,8 +748,10 @@ namespace LC::LMP
 		LinkArtistAlbum_.prepare ("INSERT INTO artists2albums (ArtistID, AlbumID) VALUES (:artist_id, :album_id);");
 
 		AddTrack_ = QSqlQuery (DB_);
-		AddTrack_.prepare ("INSERT INTO tracks (ArtistID, AlbumID, Path, Name, TrackNumber, Length) "
-				"VALUES (:artist_id, :album_id, :path, :name, :track_number, :length);");
+		AddTrack_.prepare (R"(
+				INSERT INTO tracks (ArtistID, AlbumID, Path, Name, TrackNumber, Length)
+				VALUES (:artist_id, :album_id, :path, :name, :track_number, :length);
+				)");
 
 		AddGenre_ = QSqlQuery (DB_);
 		AddGenre_.prepare ("INSERT INTO genres (TrackId, Name) VALUES (:track_id, :name);");
@@ -776,17 +778,19 @@ namespace LC::LMP
 		GetTrackStats_.prepare ("SELECT Playcount, Added, LastPlay, Score, Rating FROM statistics WHERE TrackId = :track_id;");
 
 		SetTrackStats_ = QSqlQuery (DB_);
-		SetTrackStats_.prepare ("INSERT OR REPLACE INTO statistics "
-				"(TrackId, Playcount, Added, LastPlay) VALUES "
-				"(:track_id, :playcount, :added, :last_play);");
+		SetTrackStats_.prepare (R"(
+				INSERT OR REPLACE INTO statistics (TrackId, Playcount, Added, LastPlay)
+				VALUES (:track_id, :playcount, :added, :last_play);
+				)");
 
 		UpdateTrackStats_ = QSqlQuery (DB_);
-		UpdateTrackStats_.prepare ("INSERT OR REPLACE INTO statistics (TrackId, Playcount, Added, LastPlay) "
-				"VALUES (:track_id, "
-				"		coalesce ((SELECT Playcount FROM statistics WHERE TrackId = :track_id_pc), 0) + 1,"
-				"		coalesce ((SELECT Added FROM statistics WHERE TrackId = :track_id_add), :add_date),"
-				"		max (coalesce ((SELECT LastPlay FROM statistics where TrackId = :track_id_lp), 0), :play_date)"
-				");");
+		UpdateTrackStats_.prepare (R"(
+				INSERT OR REPLACE INTO statistics (TrackId, Playcount, Added, LastPlay)
+				VALUES (:track_id,
+						coalesce ((SELECT Playcount FROM statistics WHERE TrackId = :track_id_pc), 0) + 1,
+						coalesce ((SELECT Added FROM statistics WHERE TrackId = :track_id_add), :add_date),
+						max (coalesce ((SELECT LastPlay FROM statistics where TrackId = :track_id_lp), 0), :play_date)
+				);)");
 
 		GetAlbumStats_ = QSqlQuery (DB_);
 		GetAlbumStats_.prepare (R"(
@@ -823,8 +827,10 @@ namespace LC::LMP
 		GetLovedBanned_.prepare ("SELECT Path FROM tracks INNER JOIN lovedBanned ON TrackId = Tracks.Id WHERE State = :state;");
 
 		SetLovedBanned_ = QSqlQuery (DB_);
-		SetLovedBanned_.prepare ("INSERT OR REPLACE INTO lovedBanned (TrackId, State) "
-				" VALUES (:track_id, :state);");
+		SetLovedBanned_.prepare (R"(
+				INSERT OR REPLACE INTO lovedBanned (TrackId, State)
+				VALUES (:track_id, :state);
+				)");
 
 		RemoveLovedBanned_ = QSqlQuery (DB_);
 		RemoveLovedBanned_.prepare ("DELETE FROM lovedBanned WHERE TrackId = :track_id;");
@@ -839,19 +845,25 @@ namespace LC::LMP
 				)");
 
 		GetTrackRgData_ = QSqlQuery (DB_);
-		GetTrackRgData_.prepare ("SELECT TrackGain, TrackPeak, AlbumGain, AlbumPeak "
-				"FROM rgdata, tracks "
-				"WHERE tracks.Path = :filepath AND tracks.Id = rgdata.TrackId;");
+		GetTrackRgData_.prepare (R"(
+				SELECT TrackGain, TrackPeak, AlbumGain, AlbumPeak
+				FROM rgdata, tracks
+				WHERE tracks.Path = :filepath AND tracks.Id = rgdata.TrackId;
+				)");
 
 		SetTrackRgData_ = QSqlQuery (DB_);
-		SetTrackRgData_.prepare ("INSERT OR REPLACE INTO rgdata "
-				"(TrackId, LastMTime, TrackGain, TrackPeak, AlbumGain, AlbumPeak)"
-				" VALUES "
-				"(:track_id, :mtime, :track_gain, :track_peak, :album_gain, :album_peak);");
+		SetTrackRgData_.prepare (R"(
+				INSERT OR REPLACE INTO rgdata
+				(TrackId, LastMTime, TrackGain, TrackPeak, AlbumGain, AlbumPeak)
+				VALUES
+				(:track_id, :mtime, :track_gain, :track_peak, :album_gain, :album_peak);
+				)");
 
 		AppendToPlayHistory_ = QSqlQuery (DB_);
-		AppendToPlayHistory_.prepare ("INSERT INTO playhistory "
-				"(TrackId, Date) VALUES (:track_id, :date);");
+		AppendToPlayHistory_.prepare (R"(
+				INSERT INTO playhistory (TrackId, Date)
+				VALUES (:track_id, :date);
+				)");
 	}
 
 	void LocalCollectionStorage::CreateTables ()
