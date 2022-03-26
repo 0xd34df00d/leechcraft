@@ -283,6 +283,8 @@ namespace LMP
 				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 
 		LastCurrentTime_ = pos * GST_MSECOND;
+
+		emit seeked (pos);
 	}
 
 	AudioSource SourceObject::GetActualSource () const

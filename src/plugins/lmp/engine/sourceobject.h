@@ -210,6 +210,8 @@ namespace LMP
 
 		void tick (qint64);
 
+		void seeked (qint64);
+
 		void error (const QString&, SourceError);
 	};
 }
