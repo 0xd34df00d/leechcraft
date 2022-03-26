@@ -61,6 +61,23 @@ namespace LC::Imgaste
 
 		const auto em = GetProxyHolder ()->GetEntityManager ();
 
+		const auto makeErrorNotification = [=] (const QString& text)
+		{
+			auto e = Util::MakeNotification ("Imgaste", text, Priority::Critical);
+			const auto nah = new Util::NotificationActionHandler { e };
+			const auto guard = connect (nah,
+					&QObject::destroyed,
+					this,
+					&QObject::deleteLater);
+			nah->AddFunction (tr ("Try another service..."),
+					[=]
+					{
+						disconnect (guard);
+						TryAnotherService (serviceName);
+					});
+			em->HandleEntity (e);
+		};
+
 		auto uploader = new SingleServiceUploader (*service,
 				Data_,
 				Format_,
@@ -85,7 +102,7 @@ namespace LC::Imgaste
 					},
 					Util::Visitor
 					{
-						[this, em] (const SingleServiceUploader::NetworkRequestError& error)
+						[=] (const SingleServiceUploader::NetworkRequestError& error)
 						{
 							qWarning () << Q_FUNC_INFO
 									<< "original URL:"
@@ -96,9 +113,7 @@ namespace LC::Imgaste
 
 							const auto& text = tr ("Image upload failed: %1")
 									.arg (error.ErrorString_);
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Critical));
-
-							deleteLater ();
+							makeErrorNotification (text);
 						},
 						[=] (const SingleServiceUploader::ServiceAPIError&)
 						{
@@ -107,20 +122,7 @@ namespace LC::Imgaste
 
 							const auto& text = tr ("Image upload to %1 failed: service error.")
 									.arg ("<em>" + serviceName + "</em>");
-
-							auto e = Util::MakeNotification ("Imgaste", text, Priority::Critical);
-							const auto nah = new Util::NotificationActionHandler { e };
-							const auto guard = connect (nah,
-									&QObject::destroyed,
-									this,
-									&QObject::deleteLater);
-							nah->AddFunction (tr ("Try another service..."),
-									[=]
-									{
-										disconnect (guard);
-										TryAnotherService (serviceName);
-									});
-							em->HandleEntity (e);
+							makeErrorNotification (text);
 						}
 					}
 				};
