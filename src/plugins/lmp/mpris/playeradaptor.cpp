@@ -123,7 +123,7 @@ namespace LC::LMP::MPRIS
 					QString ("/local/%1")
 						.arg (info.LocalPath_);
 		result ["mpris:length"] = info.Length_ * 1000000;
-		result ["mpris:artUrl"] = QUrl (Player_->GetCurrentAAPath ()).toLocalFile ();
+		result ["mpris:artUrl"] = QUrl::fromLocalFile (Player_->GetCurrentAAPath ()).toString ();
 		result ["xesam:album"] = info.Album_;
 		result ["xesam:artist"] = QStringList { info.Artist_ };
 		result ["xesam:genre"] = info.Genres_.join (" / ");
