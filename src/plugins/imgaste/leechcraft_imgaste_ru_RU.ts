@@ -1,56 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>LC::Imgaste::Plugin</name>
     <message>
-        <location filename="imgaste.cpp" line="75"/>
-        <source>Simple image uploader to imagebin services like dump.bitcheese.net.</source>
-        <translation>Простой загрузчик изображений на сервисы вроде dump.bitcheese.net.</translation>
+        <location filename="imgaste.cpp" line="53"/>
+        <source>Simple image uploader to imagebin services like pomf.cat or imagebin.ca.</source>
+        <translation>Простой загрузчик изображений на сервисы вроде pomf.cat или imagebin.ca.</translation>
     </message>
     <message>
-        <location filename="imgaste.cpp" line="118"/>
+        <location filename="imgaste.cpp" line="96"/>
         <source>Upload image</source>
         <translation>Загрузить изображение</translation>
     </message>
-    <message>
-        <location filename="imgaste.cpp" line="213"/>
-        <source>Unknown upload service: %1.</source>
-        <translation>Неизвестный сервис загрузки изображений: %1.</translation>
-    </message>
 </context>
 <context>
-    <name>LC::Imgaste::Poster</name>
+    <name>LC::Imgaste::SingleServiceUploader</name>
     <message>
-        <location filename="poster.cpp" line="64"/>
+        <location filename="singleserviceuploader.cpp" line="35"/>
         <source>Image upload</source>
         <translation>Загрузка изображения</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="65"/>
+        <location filename="singleserviceuploader.cpp" line="36"/>
         <source>Uploading...</source>
         <translation>Загрузка…</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="108"/>
-        <source>Page parse failed</source>
-        <translation>Разбор страницы не удался</translation>
+        <location filename="singleserviceuploader.cpp" line="50"/>
+        <source>%1 of %2</source>
+        <translation>%1 из %2</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Imgaste::Uploader</name>
+    <message>
+        <location filename="uploader.cpp" line="57"/>
+        <source>Unknown upload service: %1.</source>
+        <translation>Неизвестный сервис загрузки изображений: %1.</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="116"/>
+        <location filename="uploader.cpp" line="72"/>
+        <source>Try another service...</source>
+        <translation>Попробовать другой сервис…</translation>
+    </message>
+    <message>
+        <location filename="uploader.cpp" line="94"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Изображение загружено: %1, URL был скопирован в буфер обмена</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="132"/>
+        <location filename="uploader.cpp" line="114"/>
         <source>Image upload failed: %1</source>
-        <oldsource>Upload of screenshot failed: %1</oldsource>
         <translation>Ошибка загрузки изображения: %1</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="142"/>
-        <source>%1 of %2</source>
-        <translation>%1 из %2</translation>
+        <location filename="uploader.cpp" line="123"/>
+        <source>Image upload to %1 failed: service error.</source>
+        <translation>Ошибка сервиса %1 при загрузке изображения.</translation>
+    </message>
+    <message>
+        <location filename="uploader.cpp" line="149"/>
+        <source>Please select another service to try:</source>
+        <translation>Пожалуйста, выберите другой сервис:</translation>
     </message>
 </context>
 </TS>
