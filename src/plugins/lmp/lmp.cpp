@@ -40,6 +40,10 @@
 #include "lmpproxy.h"
 #include "diaginfocollector.h"
 
+#ifdef ENABLE_MPRIS
+#include "mpris/instance.h"
+#endif
+
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
 
@@ -156,6 +160,14 @@ namespace LMP
 				SLOT (showCollectionStats ()));
 
 		InitShortcuts ();
+
+#ifdef ENABLE_MPRIS
+		const auto mpris = new MPRIS::Instance (Core::Instance ().GetPlayer (), this);
+		connect (mpris,
+				&MPRIS::Instance::raiseRequested,
+				this,
+				[this] { GetProxyHolder ()->GetRootWindowsManager ()->AddTab ("LMP", PlayerTab_); });
+#endif
 	}
 
 	void Plugin::SecondInit ()

@@ -23,8 +23,6 @@ namespace LC
 {
 namespace LMP
 {
-class Player;
-
 namespace MPRIS
 {
 	class MediaPlayer2Adaptor: public QDBusAbstractAdaptor
@@ -46,9 +44,8 @@ namespace MPRIS
 	"  </interface>\n"
 			"")
 
-		QObject * const Tab_;
 	public:
-		MediaPlayer2Adaptor (QObject*, Player*);
+		explicit MediaPlayer2Adaptor (QObject*);
 
 	public:
 		Q_PROPERTY (bool CanQuit READ GetCanQuit)
@@ -74,6 +71,8 @@ namespace MPRIS
 	public slots:
 		void Quit ();
 		void Raise ();
+	signals:
+		void raiseRequested ();
 	};
 }
 }

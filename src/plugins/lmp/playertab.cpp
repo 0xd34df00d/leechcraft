@@ -31,11 +31,6 @@
 #include <interfaces/media/ilyricsfinder.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-
-#ifdef ENABLE_MPRIS
-#include "mpris/instance.h"
-#endif
-
 #include "player.h"
 #include "util.h"
 #include "core.h"
@@ -139,10 +134,6 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)),
 				NPPixmapHandler_,
 				SLOT (handleGotArtistImage (QString, QUrl)));
-
-#ifdef ENABLE_MPRIS
-		new MPRIS::Instance (this, Player_);
-#endif
 	}
 
 	PlayerTab::~PlayerTab ()

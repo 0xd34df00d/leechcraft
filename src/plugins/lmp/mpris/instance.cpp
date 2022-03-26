@@ -19,12 +19,17 @@ namespace LMP
 {
 namespace MPRIS
 {
-	Instance::Instance (QObject *tab, Player *player)
-	: QObject (tab)
+	Instance::Instance (Player *player, QObject *parent)
+	: QObject { parent }
 	{
-		auto fdo = new FDOPropsAdaptor (player);
-		new MediaPlayer2Adaptor (tab, player);
-		new PlayerAdaptor (fdo, player);
+		const auto mp2 = new MediaPlayer2Adaptor { player };
+		connect (mp2,
+				&MediaPlayer2Adaptor::raiseRequested,
+				this,
+				&Instance::raiseRequested);
+
+		auto fdo = new FDOPropsAdaptor { player };
+		new PlayerAdaptor { fdo, player };
 
 		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP");
 		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", player);

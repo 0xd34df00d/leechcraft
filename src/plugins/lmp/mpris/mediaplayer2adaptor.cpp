@@ -8,15 +8,9 @@
 
 #include "mediaplayer2adaptor.h"
 #include <QMetaObject>
-#include <QByteArray>
-#include <QList>
-#include <QMap>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
-#include <interfaces/imwproxy.h>
-#include "../core.h"
-#include "../player.h"
 
 namespace LC
 {
@@ -24,9 +18,8 @@ namespace LMP
 {
 namespace MPRIS
 {
-	MediaPlayer2Adaptor::MediaPlayer2Adaptor (QObject *tab, Player *player)
-	: QDBusAbstractAdaptor (player)
-	, Tab_ (tab)
+	MediaPlayer2Adaptor::MediaPlayer2Adaptor (QObject *parent)
+	: QDBusAbstractAdaptor { parent }
 	{
 		setAutoRelaySignals (true);
 	}
@@ -87,7 +80,7 @@ namespace MPRIS
 
 	void MediaPlayer2Adaptor::Raise ()
 	{
-		QMetaObject::invokeMethod (Tab_, "fullRaiseRequested");
+		emit raiseRequested ();
 	}
 }
 }

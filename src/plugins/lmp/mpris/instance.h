@@ -22,7 +22,9 @@ namespace MPRIS
 	{
 		Q_OBJECT
 	public:
-		Instance (QObject*, Player*);
+		explicit Instance (Player*, QObject* = nullptr);
+	signals:
+		void raiseRequested ();
 	};
 }
 }
