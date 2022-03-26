@@ -9,8 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <functional>
-#include <optional>
 #include <QSize>
 #include <QString>
 #include <util/sll/eitherfwd.h>
@@ -24,33 +22,26 @@ class QHash;
 
 namespace LC::Imgaste
 {
-	enum class HostingService
-	{
-		ImagebinCa,
-		PomfCat,
-		CatboxMoe,
-	};
-
 	struct ImageInfo
 	{
-		quint64 Size_;
+		quint64 Size_ = -1;
 		QSize Dim_;
 	};
 
-	struct HostingServiceInfo
+	struct HostingService
 	{
-		QString Name_;
-		std::function<bool (ImageInfo)> Accepts_;
-	};
+		virtual ~HostingService () = default;
 
-	bool operator< (HostingService, HostingService);
-	HostingServiceInfo ToInfo (HostingService);
-	std::optional<HostingService> FromString (const QString&);
-	QList<HostingService> GetAllServices ();
+		HostingService () = default;
 
-	struct Worker
-	{
-		virtual ~Worker () = default;
+		HostingService (const HostingService&) = delete;
+		HostingService (HostingService&&) = delete;
+		HostingService& operator= (const HostingService&) = delete;
+		HostingService& operator= (HostingService&&) = delete;
+
+		virtual QString GetName () const = 0;
+
+		virtual bool Accepts (const ImageInfo&) const = 0;
 
 		struct Error {};
 
@@ -60,10 +51,9 @@ namespace LC::Imgaste
 
 		virtual QNetworkReply* Post (const QByteArray& imageData,
 				const QString& format, QNetworkAccessManager *am) const = 0;
+
 		virtual Result_t GetLink (const QString& contents, const Headers_t& headers) const = 0;
 	};
 
-	typedef std::unique_ptr<Worker> Worker_ptr;
-
-	Worker_ptr MakeWorker (HostingService);
+	const QList<std::shared_ptr<HostingService>>& GetAllServices ();
 }

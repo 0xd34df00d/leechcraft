@@ -14,7 +14,6 @@
 #include <QFutureInterface>
 #include <QNetworkReply>
 #include <util/sll/eitherfwd.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/idatafilter.h>
 #include "hostingservice.h"
 
@@ -29,8 +28,7 @@ namespace Imgaste
 {
 	class Poster : public QObject
 	{
-		const Worker_ptr Worker_;
-		const ICoreProxy_ptr Proxy_;
+		const HostingService& Service_;
 	public:
 		struct NetworkRequestError
 		{
@@ -39,17 +37,16 @@ namespace Imgaste
 			std::optional<int> HttpCode_;
 			QString ErrorString_;
 		};
-		using ServiceAPIError = Worker::Error;
+		using ServiceAPIError = HostingService::Error;
 
 		using Error_t = std::variant<NetworkRequestError, ServiceAPIError>;
 		using Result_t = Util::Either<Error_t, QString>;
 	private:
 		QFutureInterface<Result_t> Promise_;
 	public:
-		Poster (HostingService service,
+		Poster (const HostingService& service,
 				const QByteArray& data,
 				const QString& format,
-				ICoreProxy_ptr coreProxy,
 				QStandardItemModel* = nullptr,
 				QObject *parent = nullptr);
 

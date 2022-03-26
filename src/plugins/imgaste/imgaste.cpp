@@ -30,10 +30,9 @@
 
 namespace LC::Imgaste
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("imgaste");
-		Proxy_ = proxy;
 
 		ReprModel_ = new QStandardItemModel { this };
 	}
@@ -63,7 +62,7 @@ namespace LC::Imgaste
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return {};
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
@@ -106,14 +105,13 @@ namespace LC::Imgaste
 
 	namespace
 	{
-		std::optional<IDataFilter::FilterVariant> ToFilterVariant (HostingService s,
+		std::optional<IDataFilter::FilterVariant> ToFilterVariant (const HostingService& service,
 				const ImageInfo& imageInfo)
 		{
-			const auto& hostingInfo = ToInfo (s);
-			if (!hostingInfo.Accepts_ (imageInfo))
+			if (!service.Accepts (imageInfo))
 				return {};
 
-			const auto& str = hostingInfo.Name_;
+			const auto& str = service.GetName ();
 			return { { str.toUtf8 (), str, {}, {} } };
 		}
 
@@ -143,7 +141,7 @@ namespace LC::Imgaste
 
 		QList<IDataFilter::FilterVariant> result;
 		for (const auto& item : GetAllServices ())
-			if (const auto res = ToFilterVariant (item, info))
+			if (const auto res = ToFilterVariant (*item, info))
 				result << *res;
 		return result;
 	}
@@ -188,11 +186,23 @@ namespace LC::Imgaste
 		UploadImpl (buf.data (), e, format);
 	}
 
+	namespace
+	{
+		const HostingService* FromString (const QString& name)
+		{
+			for (const auto& service : GetAllServices ())
+				if (service->GetName () == name)
+					return service.get ();
+
+			return nullptr;
+		}
+	}
+
 	void Plugin::UploadImpl (const QByteArray& data, const Entity& e, const QString& format)
 	{
 		const auto& dataFilter = e.Additional_ ["DataFilter"].toString ();
-		const auto& type = FromString (dataFilter);
-		if (!type)
+		const auto service = FromString (dataFilter);
+		if (!service)
 		{
 			QMessageBox::critical (nullptr,
 					"LeechCraft",
@@ -203,12 +213,11 @@ namespace LC::Imgaste
 
 		const auto& callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
 
-		const auto em = Proxy_->GetEntityManager ();
+		const auto em = GetProxyHolder ()->GetEntityManager ();
 
-		auto poster = new Poster (*type,
+		auto poster = new Poster (*service,
 				data,
 				format,
-				Proxy_,
 				ReprModel_);
 		Util::Sequence (this, poster->GetFuture ()) >>
 				Util::Visitor

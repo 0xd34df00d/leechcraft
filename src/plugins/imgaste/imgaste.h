@@ -30,8 +30,6 @@ namespace LC::Imgaste
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Imgaste")
 
-		ICoreProxy_ptr Proxy_;
-
 		QStandardItemModel *ReprModel_;
 	public:
 		void Init (ICoreProxy_ptr) override;

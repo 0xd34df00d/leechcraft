@@ -14,70 +14,17 @@
 #include <util/sll/either.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/udls.h>
-#include <util/sll/unreachable.h>
 #include "requestbuilder.h"
 
 namespace LC::Imgaste
 {
-	bool operator< (HostingService s1, HostingService s2)
-	{
-		return static_cast<int> (s1) < static_cast<int> (s2);
-	}
-
-	auto MakeChecker (quint64 sizeLimit, const QSize& dimLimit)
-	{
-		return [=] (const ImageInfo& info)
-		{
-			return info.Size_ <= sizeLimit &&
-					info.Dim_.width () <= dimLimit.width () &&
-					info.Dim_.height () <= dimLimit.height ();
-		};
-	}
-
-	auto MakeChecker (quint64 sizeLimit)
-	{
-		return [=] (const ImageInfo& info) { return info.Size_ <= sizeLimit; };
-	}
-
-	HostingServiceInfo ToInfo (HostingService s)
-	{
-		switch (s)
-		{
-		case HostingService::ImagebinCa:
-			return { "imagebin.ca", MakeChecker (15_mib) };
-		case HostingService::PomfCat:
-			return { "pomf.cat", MakeChecker (75_mib) };
-		case HostingService::CatboxMoe:
-			return { "catbox.moe", MakeChecker (200_mib) };
-		}
-
-		Util::Unreachable ();
-	}
-
-	std::optional<HostingService> FromString (const QString& str)
-	{
-		for (auto s : GetAllServices ())
-			if (ToInfo (s).Name_ == str)
-				return s;
-
-		qWarning () << Q_FUNC_INFO
-				<< "unknown hosting service"
-				<< str;
-		return {};
-	}
-
-	QList<HostingService> GetAllServices ()
-	{
-		return
-		{
-			HostingService::PomfCat,
-			HostingService::ImagebinCa,
-			HostingService::CatboxMoe,
-		};
-	}
-
 	namespace
 	{
+		bool CheckImage (const ImageInfo& info, quint64 sizeLimit)
+		{
+			return info.Size_ <= sizeLimit;
+		}
+
 		QNetworkRequest PrefillRequest (const QUrl& url, const RequestBuilder& builder)
 		{
 			QNetworkRequest request { url };
@@ -87,8 +34,18 @@ namespace LC::Imgaste
 			return request;
 		}
 
-		struct ImagebinWorker final : Worker
+		struct ImagebinService final : HostingService
 		{
+			QString GetName () const override
+			{
+				return "imagebin.ca";
+			}
+
+			bool Accepts (const ImageInfo& info) const override
+			{
+				return CheckImage (info, 15_mib);
+			}
+
 			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
 			{
 				QUrl url { "https://imagebin.ca/upload.php" };
@@ -129,8 +86,18 @@ namespace LC::Imgaste
 			}
 		};
 
-		struct CatboxWorker final : Worker
+		struct CatboxService final : HostingService
 		{
+			QString GetName () const override
+			{
+				return "catbox.moe";
+			}
+
+			bool Accepts (const ImageInfo& info) const override
+			{
+				return CheckImage (info, 75_mib);
+			}
+
 			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
 			{
 				QUrl url { "https://catbox.moe/user/api.php" };
@@ -155,15 +122,27 @@ namespace LC::Imgaste
 			}
 		};
 
-		struct PomfLikeWorker final : Worker
+		class PomfLikeService final : public HostingService
 		{
-			const QString Prefix_;
-			const QUrl UploadUrl_;
-
-			PomfLikeWorker (const QString& prefix, const QUrl& uploadUrl)
-			: Prefix_ { prefix }
-			, UploadUrl_ { uploadUrl }
+			QString Name_;
+			QString Prefix_;
+			QUrl UploadUrl_;
+		public:
+			PomfLikeService (QString name, QString prefix, QUrl uploadUrl)
+			: Name_ { std::move (name) }
+			, Prefix_ { std::move (prefix) }
+			, UploadUrl_ { std::move (uploadUrl) }
 			{
+			}
+
+			QString GetName () const override
+			{
+				return Name_;
+			}
+
+			bool Accepts (const ImageInfo& info) const override
+			{
+				return CheckImage (info, 200_mib);
 			}
 
 			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
@@ -185,19 +164,15 @@ namespace LC::Imgaste
 		};
 	}
 
-	Worker_ptr MakeWorker (HostingService s)
+	const QList<std::shared_ptr<HostingService>>& GetAllServices ()
 	{
-		switch (s)
+		static const QList<std::shared_ptr<HostingService>> list
 		{
-		case HostingService::ImagebinCa:
-			return std::make_unique<ImagebinWorker> ();
-		case HostingService::PomfCat:
-			return std::make_unique<PomfLikeWorker> ("https://a.pomf.cat/",
-					QUrl { "https://pomf.cat/upload.php" });
-		case HostingService::CatboxMoe:
-			return std::make_unique<CatboxWorker> ();
-		}
+			std::make_shared<ImagebinService> (),
+			std::make_shared<CatboxService> (),
+			std::make_shared<PomfLikeService> ("pomf.cat", "https://a.pomf.cat/", QUrl { "https://pomf.cat/upload.php" }),
+		};
 
-		Util::Unreachable ();
+		return list;
 	}
 }

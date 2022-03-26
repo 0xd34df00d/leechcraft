@@ -12,6 +12,7 @@
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
@@ -19,15 +20,13 @@
 
 namespace LC::Imgaste
 {
-	Poster::Poster (HostingService service,
+	Poster::Poster (const HostingService& service,
 			const QByteArray& data,
 			const QString& format,
-			ICoreProxy_ptr proxy,
 			QStandardItemModel *reprModel,
 			QObject *parent)
-	: QObject (parent)
-	, Worker_ (MakeWorker (service))
-	, Proxy_ (proxy)
+	: QObject { parent }
+	, Service_ { service }
 	{
 		Promise_.reportStarted ();
 
@@ -54,7 +53,7 @@ namespace LC::Imgaste
 		};
 		setUploadProgress (0, data.size ());
 
-		const auto reply = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
+		const auto reply = Service_.Post (data, format, GetProxyHolder ()->GetNetworkAccessManager ());
 		connect (reply,
 				&QNetworkReply::uploadProgress,
 				this,
@@ -63,7 +62,7 @@ namespace LC::Imgaste
 		Util::HandleReplySeq<Util::ErrorInfo<Util::ReplyError>, Util::ResultInfo<Util::ReplyWithHeaders>> (reply, this) >>
 				Util::Visitor
 				{
-					[this, url = reply->request ().url ()] (Util::ReplyError reply)
+					[this, url = reply->request ().url ()] (const Util::ReplyError& reply)
 					{
 						Util::ReportFutureResult (Promise_,
 								NetworkRequestError
@@ -76,9 +75,9 @@ namespace LC::Imgaste
 									reply.ErrorString_
 								});
 					},
-					[this] (Util::ReplyWithHeaders reply)
+					[this] (const Util::ReplyWithHeaders& reply)
 					{
-						Util::ReportFutureResult (Promise_, Result_t::LeftLift (Worker_->GetLink (reply.Data_, reply.Headers_)));
+						Util::ReportFutureResult (Promise_, Result_t::LeftLift (Service_.GetLink (reply.Data_, reply.Headers_)));
 					}
 				}.Finally ([this, reprModel, reprRow]
 						{
