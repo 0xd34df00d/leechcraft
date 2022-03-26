@@ -155,7 +155,10 @@ namespace LC::Imgaste
 
 			Result_t GetLink (const QString& body, const Headers_t&) const override
 			{
-				const auto& json = Util::ParseJson (body.toUtf8 (), Q_FUNC_INFO);
+				const auto& json = Util::ParseJson (body.toUtf8 (), "LC::Imgaste::PomfLikeService::GetLink()");
+				if (json.isNull ())
+					return Result_t::Left ({});
+
 				const auto filename = json.toMap () ["files"]
 						.toList ().value (0)
 						.toMap () ["url"].toString ();
