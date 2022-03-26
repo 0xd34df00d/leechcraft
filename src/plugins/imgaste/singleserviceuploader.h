@@ -22,11 +22,9 @@ class QStandardItemModel;
 
 namespace LC
 {
-struct Entity;
-
 namespace Imgaste
 {
-	class Poster : public QObject
+	class SingleServiceUploader : public QObject
 	{
 		const HostingService& Service_;
 	public:
@@ -44,7 +42,7 @@ namespace Imgaste
 	private:
 		QFutureInterface<Result_t> Promise_;
 	public:
-		Poster (const HostingService& service,
+		SingleServiceUploader (const HostingService& service,
 				const QByteArray& data,
 				const QString& format,
 				QStandardItemModel* = nullptr,

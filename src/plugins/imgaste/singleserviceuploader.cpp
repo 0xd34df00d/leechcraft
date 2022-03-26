@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "poster.h"
+#include "singleserviceuploader.h"
 #include <QStandardItemModel>
 #include <QNetworkReply>
 #include <QtDebug>
@@ -20,7 +20,7 @@
 
 namespace LC::Imgaste
 {
-	Poster::Poster (const HostingService& service,
+	SingleServiceUploader::SingleServiceUploader (const HostingService& service,
 			const QByteArray& data,
 			const QString& format,
 			QStandardItemModel *reprModel,
@@ -86,7 +86,7 @@ namespace LC::Imgaste
 						});
 	}
 
-	QFuture<Poster::Result_t> Poster::GetFuture ()
+	QFuture<SingleServiceUploader::Result_t> SingleServiceUploader::GetFuture ()
 	{
 		return Promise_.future ();
 	}

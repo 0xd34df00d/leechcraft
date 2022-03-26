@@ -26,7 +26,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "hostingservice.h"
-#include "poster.h"
+#include "singleserviceuploader.h"
 
 namespace LC::Imgaste
 {
@@ -215,11 +215,11 @@ namespace LC::Imgaste
 
 		const auto em = GetProxyHolder ()->GetEntityManager ();
 
-		auto poster = new Poster (*service,
+		auto uploader = new SingleServiceUploader (*service,
 				data,
 				format,
 				ReprModel_);
-		Util::Sequence (this, poster->GetFuture ()) >>
+		Util::Sequence (this, uploader->GetFuture ()) >>
 				Util::Visitor
 				{
 					[callback, em] (const QString& url)
@@ -237,7 +237,7 @@ namespace LC::Imgaste
 					},
 					Util::Visitor
 					{
-						[em] (const Poster::NetworkRequestError& error)
+						[em] (const SingleServiceUploader::NetworkRequestError& error)
 						{
 							qWarning () << Q_FUNC_INFO
 									<< "original URL:"
@@ -250,7 +250,7 @@ namespace LC::Imgaste
 									.arg (error.ErrorString_);
 							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Critical));
 						},
-						[em, dataFilter] (const Poster::ServiceAPIError&)
+						[em, dataFilter] (const SingleServiceUploader::ServiceAPIError&)
 						{
 							qWarning () << Q_FUNC_INFO
 									<< dataFilter;
