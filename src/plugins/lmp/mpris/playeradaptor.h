@@ -18,13 +18,12 @@ class QString;
 class QStringList;
 class QVariant;
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-class Player;
+	class Player;
+}
 
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	class FDOPropsAdaptor;
 
@@ -101,6 +100,4 @@ namespace MPRIS
 	signals:
 		void Seeked (qlonglong Position);
 	};
-}
-}
 }

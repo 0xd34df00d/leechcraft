@@ -8,23 +8,15 @@
 
 #include "playeradaptor.h"
 #include <QMetaObject>
-#include <QByteArray>
-#include <QList>
-#include <QMap>
 #include <QString>
 #include <QStringList>
-#include <QVariant>
 #include <util/sll/unreachable.h>
 #include "../player.h"
 #include "../engine/sourceobject.h"
 #include "../engine/output.h"
 #include "fdopropsadaptor.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	PlayerAdaptor::PlayerAdaptor (FDOPropsAdaptor *fdo, Player *player)
 	: QDBusAbstractAdaptor (player)
@@ -251,6 +243,4 @@ namespace MPRIS
 	{
 		Player_->stop ();
 	}
-}
-}
 }

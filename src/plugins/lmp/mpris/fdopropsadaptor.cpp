@@ -16,11 +16,7 @@
 #include <QDBusVariant>
 #include <QtDebug>
 
-namespace LC
-{
-namespace LMP
-{
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	FDOPropsAdaptor::FDOPropsAdaptor (QObject *parent)
 	: QDBusAbstractAdaptor { parent }
@@ -129,6 +125,4 @@ namespace MPRIS
 
 		return false;
 	}
-}
-}
 }

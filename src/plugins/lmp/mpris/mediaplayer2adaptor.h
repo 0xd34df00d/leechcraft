@@ -19,11 +19,7 @@ class QString;
 class QStringList;
 class QVariant;
 
-namespace LC
-{
-namespace LMP
-{
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	class MediaPlayer2Adaptor: public QDBusAbstractAdaptor
 	{
@@ -43,7 +39,6 @@ namespace MPRIS
 	"    <property access=\"read\" type=\"as\" name=\"SupportedMimeTypes\"/>\n"
 	"  </interface>\n"
 			"")
-
 	public:
 		explicit MediaPlayer2Adaptor (QObject*);
 
@@ -74,6 +69,4 @@ namespace MPRIS
 	signals:
 		void raiseRequested ();
 	};
-}
-}
 }

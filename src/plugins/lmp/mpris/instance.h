@@ -10,13 +10,12 @@
 
 #include <QObject>
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-class Player;
+	class Player;
+}
 
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	class Instance : public QObject
 	{
@@ -26,6 +25,4 @@ namespace MPRIS
 	signals:
 		void raiseRequested ();
 	};
-}
-}
 }

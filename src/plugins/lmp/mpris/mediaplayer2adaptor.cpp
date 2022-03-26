@@ -12,11 +12,7 @@
 #include <QStringList>
 #include <QVariant>
 
-namespace LC
-{
-namespace LMP
-{
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	MediaPlayer2Adaptor::MediaPlayer2Adaptor (QObject *parent)
 	: QDBusAbstractAdaptor { parent }
@@ -82,6 +78,4 @@ namespace MPRIS
 	{
 		emit raiseRequested ();
 	}
-}
-}
 }

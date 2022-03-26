@@ -13,11 +13,7 @@
 #include "playeradaptor.h"
 #include "fdopropsadaptor.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	Instance::Instance (Player *player, QObject *parent)
 	: QObject { parent }
@@ -34,6 +30,4 @@ namespace MPRIS
 		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP");
 		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", player);
 	}
-}
-}
 }

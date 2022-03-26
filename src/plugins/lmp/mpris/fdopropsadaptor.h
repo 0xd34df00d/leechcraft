@@ -13,11 +13,7 @@
 
 class QDBusContext;
 
-namespace LC
-{
-namespace LMP
-{
-namespace MPRIS
+namespace LC::LMP::MPRIS
 {
 	class FDOPropsAdaptor : public QDBusAbstractAdaptor
 	{
@@ -39,6 +35,4 @@ namespace MPRIS
 	signals:
 		void PropertiesChanged (const QString&, const QVariantMap&, const QStringList&);
 	};
-}
-}
 }
