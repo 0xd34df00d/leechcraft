@@ -10,6 +10,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <util/threads/futures.h>
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
@@ -106,10 +107,54 @@ namespace LC::Imgaste
 
 							const auto& text = tr ("Image upload to %1 failed: service error.")
 									.arg ("<em>" + serviceName + "</em>");
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Critical));
-							deleteLater ();
+
+							auto e = Util::MakeNotification ("Imgaste", text, Priority::Critical);
+							const auto nah = new Util::NotificationActionHandler { e };
+							const auto guard = connect (nah,
+									&QObject::destroyed,
+									this,
+									&QObject::deleteLater);
+							nah->AddFunction (tr ("Try another service..."),
+									[=]
+									{
+										disconnect (guard);
+										TryAnotherService (serviceName);
+									});
+							em->HandleEntity (e);
 						}
 					}
 				};
+	}
+
+	void Uploader::TryAnotherService (const QString& failedService)
+	{
+		const ImageInfo info { .Size_ = static_cast<quint64> (Data_.size ()), .Dim_ = {} };
+
+		QStringList otherServices;
+		for (const auto& service : GetAllServices ())
+		{
+			if (!service->Accepts (info))
+				continue;
+
+			const auto& name = service->GetName ();
+			if (name != failedService)
+				otherServices << name;
+		}
+
+		bool ok = false;
+		const auto& serviceName = QInputDialog::getItem (nullptr,
+				"Imgaste",
+				tr ("Please select another service to try:"),
+				otherServices,
+				0,
+				false,
+				&ok);
+		if (!ok || serviceName.isEmpty ())
+		{
+			deleteLater ();
+			return;
+		}
+
+		Upload (serviceName);
 	}
 }

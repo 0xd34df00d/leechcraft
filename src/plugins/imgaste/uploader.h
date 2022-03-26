@@ -32,5 +32,7 @@ namespace LC::Imgaste
 				QStandardItemModel *reprModel);
 
 		void Upload (const QString& service);
+	private:
+		void TryAnotherService (const QString&);
 	};
 }
