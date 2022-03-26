@@ -41,6 +41,10 @@ namespace LC::LMP::MPRIS
 		connect (Player_->GetAudioOutput (),
 				&Output::volumeChanged,
 				[this] { Notify ("Volume"); });
+		connect (Player_->GetSourceObject (),
+				&SourceObject::seeked,
+				this,
+				[this] (qlonglong pos) { emit Seeked (pos * 1000); });
 	}
 
 	bool PlayerAdaptor::GetCanControl () const
