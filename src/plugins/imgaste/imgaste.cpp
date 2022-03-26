@@ -7,26 +7,19 @@
  **********************************************************************/
 
 #include "imgaste.h"
+#include <optional>
 #include <QIcon>
 #include <QBuffer>
 #include <QUrl>
 #include <QStandardItemModel>
-#include <QMessageBox>
 #include <QImageReader>
-#include <QClipboard>
-#include <QApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <util/sys/mimedetector.h>
-#include <util/threads/futures.h>
-#include <util/sll/visitor.h>
-#include <util/sll/either.h>
-#include <util/xpc/util.h>
 #include <util/util.h>
-#include <interfaces/core/ientitymanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "hostingservice.h"
-#include "singleserviceuploader.h"
+#include "uploader.h"
 
 namespace LC::Imgaste
 {
@@ -186,81 +179,12 @@ namespace LC::Imgaste
 		UploadImpl (buf.data (), e, format);
 	}
 
-	namespace
-	{
-		const HostingService* FromString (const QString& name)
-		{
-			for (const auto& service : GetAllServices ())
-				if (service->GetName () == name)
-					return service.get ();
-
-			return nullptr;
-		}
-	}
-
 	void Plugin::UploadImpl (const QByteArray& data, const Entity& e, const QString& format)
 	{
-		const auto& dataFilter = e.Additional_ ["DataFilter"].toString ();
-		const auto service = FromString (dataFilter);
-		if (!service)
-		{
-			QMessageBox::critical (nullptr,
-					"LeechCraft",
-					tr ("Unknown upload service: %1.")
-						.arg (dataFilter));
-			return;
-		}
-
 		const auto& callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
 
-		const auto em = GetProxyHolder ()->GetEntityManager ();
-
-		auto uploader = new SingleServiceUploader (*service,
-				data,
-				format,
-				ReprModel_);
-		Util::Sequence (this, uploader->GetFuture ()) >>
-				Util::Visitor
-				{
-					[callback, em] (const QString& url)
-					{
-						if (!callback)
-						{
-							QApplication::clipboard ()->setText (url, QClipboard::Clipboard);
-
-							auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-									.arg ("<em>" + url + "</em>");
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Info));
-						}
-						else
-							callback (url);
-					},
-					Util::Visitor
-					{
-						[em] (const SingleServiceUploader::NetworkRequestError& error)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "original URL:"
-									<< error.OriginalUrl_
-									<< error.NetworkError_
-									<< error.HttpCode_.value_or (-1)
-									<< error.ErrorString_;
-
-							const auto& text = tr ("Image upload failed: %1")
-									.arg (error.ErrorString_);
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Critical));
-						},
-						[em, dataFilter] (const SingleServiceUploader::ServiceAPIError&)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< dataFilter;
-
-							const auto& text = tr ("Image upload to %1 failed: service error.")
-									.arg ("<em>" + dataFilter + "</em>");
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Critical));
-						}
-					}
-				};
+		const auto uploader = new Uploader { data, format, callback, ReprModel_ };
+		uploader->Upload (e.Additional_ ["DataFilter"].toString ());
 	}
 }
 

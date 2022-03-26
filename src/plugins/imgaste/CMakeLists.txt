@@ -8,5 +8,6 @@ LC_DEFINE_PLUGIN (
 		hostingservice.cpp
 		singleserviceuploader.cpp
 		requestbuilder.cpp
+		uploader.cpp
 	QT_COMPONENTS Network Widgets
 	)
