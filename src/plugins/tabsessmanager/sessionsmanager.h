@@ -55,7 +55,7 @@ namespace TabSessManager
 
 		void handleRemoveTab (QWidget*);
 	private slots:
-		void handleNewTab (const QString&, QWidget*);
+		void handleNewTab (int, QWidget*);
 		void handleTabMoved (int, int);
 
 		void handleWindow (int);

@@ -35,16 +35,13 @@ namespace TabSessManager
 	: QObject { parent }
 	, TabsPropsMgr_ { tpm }
 	{
-		const auto& roots = GetProxyHolder ()->GetPluginsManager ()->
-				GetAllCastableRoots<IHaveTabs*> ();
-		for (const auto root : roots)
-			connect (root,
-					SIGNAL (addNewTab (QString, QWidget*)),
-					this,
-					SLOT (handleNewTab (QString, QWidget*)),
-					Qt::QueuedConnection);
-
 		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
+		connect (rootWM->GetQObject (),
+				SIGNAL (tabAdded (int, QWidget*)),
+				this,
+				SLOT (handleNewTab (int, QWidget*)),
+				Qt::QueuedConnection);
+
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
@@ -377,7 +374,7 @@ namespace TabSessManager
 		handleTabRecoverDataChanged ();
 	}
 
-	void SessionsManager::handleNewTab (const QString&, QWidget *widget)
+	void SessionsManager::handleNewTab (int, QWidget *widget)
 	{
 		if (HasTab (widget))
 			return;
