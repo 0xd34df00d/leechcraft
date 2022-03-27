@@ -132,6 +132,7 @@ namespace LC::PinTab
 		if (Window2Widget2TabData_.value (window).contains (widget))
 		{
 			action->setText (tr ("Unpin tab"));
+			action->setIcon (QIcon::fromTheme ("object-unlocked"));
 			connect (action,
 					&QAction::triggered,
 					this,
@@ -140,6 +141,7 @@ namespace LC::PinTab
 		else
 		{
 			action->setText (tr ("Pin tab"));
+			action->setIcon (QIcon::fromTheme ("object-locked"));
 			connect (action,
 					&QAction::triggered,
 					this,
