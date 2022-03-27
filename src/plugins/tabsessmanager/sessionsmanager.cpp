@@ -17,6 +17,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -30,13 +31,11 @@ namespace LC
 {
 namespace TabSessManager
 {
-	SessionsManager::SessionsManager (const ICoreProxy_ptr& proxy,
-			TabsPropsManager *tpm, QObject *parent)
+	SessionsManager::SessionsManager (TabsPropsManager *tpm, QObject *parent)
 	: QObject { parent }
-	, Proxy_ { proxy }
 	, TabsPropsMgr_ { tpm }
 	{
-		const auto& roots = Proxy_->GetPluginsManager ()->
+		const auto& roots = GetProxyHolder ()->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
 		for (const auto root : roots)
 			connect (root,
@@ -45,7 +44,7 @@ namespace TabSessManager
 					SLOT (handleNewTab (QString, QWidget*)),
 					Qt::QueuedConnection);
 
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
@@ -64,7 +63,7 @@ namespace TabSessManager
 
 	namespace
 	{
-		QHash<QObject*, QList<RecInfo>> GetTabsFromStream (QDataStream& str, ICoreProxy_ptr proxy)
+		QHash<QObject*, QList<RecInfo>> GetTabsFromStream (QDataStream& str)
 		{
 			QHash<QByteArray, QObject*> pluginCache;
 			QHash<QObject*, QList<RecInfo>> tabs;
@@ -82,7 +81,7 @@ namespace TabSessManager
 				str >> pluginId >> recData >> name >> icon >> props >> winId;
 				if (!pluginCache.contains (pluginId))
 				{
-					const auto obj = proxy->GetPluginsManager ()->GetPluginByID (pluginId);
+					const auto obj = GetProxyHolder ()->GetPluginsManager ()->GetPluginByID (pluginId);
 					pluginCache [pluginId] = obj;
 				}
 
@@ -122,7 +121,7 @@ namespace TabSessManager
 			tabs = dia.GetTabs ();
 		}
 
-		QHash<QObject*, QList<RecInfo>> GetSession (const QString& name, const ICoreProxy_ptr& proxy)
+		QHash<QObject*, QList<RecInfo>> GetSession (const QString& name)
 		{
 			QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager" };
@@ -130,13 +129,13 @@ namespace TabSessManager
 			QDataStream str { settings.value ("Data").toByteArray () };
 			settings.endGroup ();
 
-			return GetTabsFromStream (str, proxy);
+			return GetTabsFromStream (str);
 		}
 	}
 
 	QHash<QObject *, QList<RecInfo>> SessionsManager::GetTabsInSession (const QString& name) const
 	{
-		return GetSession (name, Proxy_);
+		return GetSession (name);
 	}
 
 	bool SessionsManager::HasTab (QObject *tab)
@@ -250,7 +249,7 @@ namespace TabSessManager
 				QCoreApplication::applicationName () + "_TabSessManager" };
 
 		QDataStream str (settings.value ("Data").toByteArray ());
-		auto tabs = GetTabsFromStream (str, Proxy_);
+		auto tabs = GetTabsFromStream (str);
 
 		if (!settings.value ("CleanShutdown", false).toBool ())
 			AskTabs (tabs);
@@ -263,7 +262,7 @@ namespace TabSessManager
 
 	void SessionsManager::handleTabRecoverDataChanged ()
 	{
-		if (IsRecovering_ || Proxy_->IsShuttingDown ())
+		if (IsRecovering_ || GetProxyHolder ()->IsShuttingDown ())
 			return;
 
 		if (IsScheduled_)
@@ -288,7 +287,7 @@ namespace TabSessManager
 
 	void SessionsManager::saveCustomSession ()
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const QString& name = QInputDialog::getText (rootWM->GetPreferredWindow (),
 				tr ("Custom session"),
 				tr ("Enter the name of the session:"));
@@ -307,7 +306,7 @@ namespace TabSessManager
 
 	void SessionsManager::loadCustomSession (const QString& name)
 	{
-		const auto rootMgr = Proxy_->GetRootWindowsManager ();
+		const auto rootMgr = GetProxyHolder ()->GetRootWindowsManager ();
 		for (int i = rootMgr->GetWindowsCount () - 1; i >= 0; --i)
 		{
 			const auto tabWidget = rootMgr->GetTabWidget (i);
@@ -322,12 +321,12 @@ namespace TabSessManager
 				rootMgr->GetMainWindow (i)->close ();
 		}
 
-		OpenTabs (GetSession (name, Proxy_));
+		OpenTabs (GetSession (name));
 	}
 
 	void SessionsManager::addCustomSession (const QString& name)
 	{
-		auto tabs = GetSession (name, Proxy_);
+		auto tabs = GetSession (name);
 
 		QHash<QObject*, QList<QByteArray>> plugin2recoveries;
 		for (const auto& window : Tabs_)
@@ -383,7 +382,7 @@ namespace TabSessManager
 		if (HasTab (widget))
 			return;
 
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const auto itw = qobject_cast<ITabWidget*> (widget);
 		const auto windowIndex = rootWM->GetWindowForTab (itw);
 
@@ -430,7 +429,7 @@ namespace TabSessManager
 
 	void SessionsManager::handleTabMoved (int from, int to)
 	{
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const auto tabWidget = qobject_cast<ICoreTabWidget*> (sender ());
 		const auto pos = rootWM->GetTabWidgetIndex (tabWidget);
 
@@ -458,7 +457,7 @@ namespace TabSessManager
 	void SessionsManager::handleWindow (int index)
 	{
 		Tabs_ << QList<QObject*> {};
-		connect (Proxy_->GetRootWindowsManager ()->GetTabWidget (index)->GetQObject (),
+		connect (GetProxyHolder ()->GetRootWindowsManager ()->GetTabWidget (index)->GetQObject (),
 				SIGNAL (tabWasMoved (int, int)),
 				this,
 				SLOT (handleTabMoved (int, int)));

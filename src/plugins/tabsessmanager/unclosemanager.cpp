@@ -12,6 +12,7 @@
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include "tabspropsmanager.h"
@@ -21,9 +22,8 @@ namespace LC
 {
 namespace TabSessManager
 {
-	UncloseManager::UncloseManager (const ICoreProxy_ptr& proxy, TabsPropsManager *tpm, QObject *parent)
+	UncloseManager::UncloseManager (TabsPropsManager *tpm, QObject *parent)
 	: QObject { parent }
-	, Proxy_ { proxy }
 	, TabsPropsMgr_ { tpm }
 	, UncloseMenu_ { new QMenu { tr ("Unclose tabs") } }
 	{
@@ -66,7 +66,7 @@ namespace TabSessManager
 
 		const auto tab = qobject_cast<ITabWidget*> (params.Widget_);
 
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const auto winIdx = rootWM->GetWindowForTab (tab);
 		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (params.Widget_);
 		info.DynProperties_.append ({ "TabSessManager/Position", tabIdx });

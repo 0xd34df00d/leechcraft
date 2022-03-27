@@ -35,8 +35,6 @@ namespace TabSessManager
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.TabSessManager")
 
-		ICoreProxy_ptr Proxy_;
-
 		struct Managers;
 		std::shared_ptr<Managers> Mgrs_;
 	public:

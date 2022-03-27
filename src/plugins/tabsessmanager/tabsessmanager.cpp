@@ -30,14 +30,11 @@ namespace TabSessManager
 	struct Plugin::Managers
 	{
 		TabsPropsManager TabsPropsMgr_;
-		UncloseManager UncloseMgr_;
-		SessionsManager SessionsMgr_;
-		SessionMenuManager SessionMenuMgr_;
+		UncloseManager UncloseMgr_ { &TabsPropsMgr_ };
+		SessionsManager SessionsMgr_ { &TabsPropsMgr_ };
+		SessionMenuManager SessionMenuMgr_ { &SessionsMgr_ };
 
-		Managers (const ICoreProxy_ptr& proxy)
-		: UncloseMgr_ { proxy, &TabsPropsMgr_ }
-		, SessionsMgr_ { proxy, &TabsPropsMgr_ }
-		, SessionMenuMgr_ { &SessionsMgr_ }
+		Managers ()
 		{
 			QObject::connect (&SessionMenuMgr_,
 					SIGNAL (loadRequested (QString)),
@@ -63,13 +60,11 @@ namespace TabSessManager
 		}
 	};
 
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("tabsessmanager");
 
-		Mgrs_ = std::make_shared<Managers> (proxy);
-
-		Proxy_ = proxy;
+		Mgrs_ = std::make_shared<Managers> ();
 
 		for (const auto& name : Mgrs_->SessionsMgr_.GetCustomSessions ())
 			Mgrs_->SessionMenuMgr_.addCustomSession (name);
@@ -146,7 +141,7 @@ namespace TabSessManager
 		if (!Mgrs_)
 			return;
 
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const auto tabWidget = rootWM->GetTabWidget (windowId);
 		const auto widget = tabWidget->Widget (index);
 

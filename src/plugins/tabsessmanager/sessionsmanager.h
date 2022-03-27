@@ -10,7 +10,6 @@
 
 #include <QObject>
 #include <QPair>
-#include <interfaces/core/icoreproxy.h>
 
 namespace LC
 {
@@ -23,8 +22,6 @@ namespace TabSessManager
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
-
 		TabsPropsManager * const TabsPropsMgr_;
 
 		bool IsScheduled_ = false;
@@ -32,7 +29,7 @@ namespace TabSessManager
 
 		QList<QList<QObject*>> Tabs_;
 	public:
-		SessionsManager (const ICoreProxy_ptr&, TabsPropsManager*,  QObject* = nullptr);
+		SessionsManager (TabsPropsManager*,  QObject* = nullptr);
 
 		QStringList GetCustomSessions () const;
 
