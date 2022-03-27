@@ -18,6 +18,12 @@ namespace TabSessManager
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+		connect (Ui_.SelectAll_,
+				&QPushButton::released,
+				[this] { CheckAll (Qt::Checked); });
+		connect (Ui_.SelectNone_,
+				&QPushButton::released,
+				[this] { CheckAll (Qt::Unchecked); });
 	}
 
 	void RestoreSessionDialog::SetTabs (const QHash<QObject*, QList<RecInfo>>& pages)
@@ -83,16 +89,6 @@ namespace TabSessManager
 			for (int j = 0, jsize = parent->childCount (); j < jsize; ++j)
 				parent->child (j)->setCheckState (0, state);
 		}
-	}
-
-	void RestoreSessionDialog::on_SelectAll__released ()
-	{
-		CheckAll (Qt::Checked);
-	}
-
-	void RestoreSessionDialog::on_SelectNone__released ()
-	{
-		CheckAll (Qt::Unchecked);
 	}
 }
 }

@@ -28,9 +28,6 @@ namespace TabSessManager
 		QHash<QObject*, QList<RecInfo>> GetTabs () const;
 	private:
 		void CheckAll (Qt::CheckState);
-	private slots:
-		void on_SelectAll__released ();
-		void on_SelectNone__released ();
 	};
 }
 }

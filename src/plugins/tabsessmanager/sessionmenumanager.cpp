@@ -9,7 +9,6 @@
 #include "sessionmenumanager.h"
 #include <QMenu>
 #include <util/sll/qtutil.h>
-#include <util/sll/slotclosure.h>
 #include <interfaces/iinfo.h>
 #include "sessionsmanager.h"
 #include "recinfo.h"
@@ -25,7 +24,7 @@ namespace TabSessManager
 	{
 		const auto saveAct = SessMgrMenu_->addAction (tr ("Save current session..."),
 				this,
-				SIGNAL (saveCustomSessionRequested ()));
+				&SessionMenuManager::saveCustomSessionRequested);
 		saveAct->setProperty ("ActionIcon", "document-save-all");
 
 		SessMgrMenu_->menuAction ()->setProperty ("ActionIcon",
@@ -54,64 +53,36 @@ namespace TabSessManager
 				[this] (QMenu *menu) { SessMgrMenu_->removeAction (menu->menuAction ()); });
 		Session2Menu_ [name] = menu;
 
-		const auto loadAct = menu->addAction (tr ("Load"));
+		const auto loadAct = menu->addAction (tr ("Load"),
+				this,
+				[=] { emit loadRequested (name); });
 		loadAct->setProperty ("ActionIcon", "edit-find-replace");
 		loadAct->setToolTip (tr ("Load the session, replacing all currently opened tabs."));
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, name] { emit loadRequested (name); },
-			loadAct,
-			SIGNAL (triggered ()),
-			loadAct
-		};
 
-		const auto addAct = menu->addAction (tr ("Add"));
+		const auto addAct = menu->addAction (tr ("Add"),
+				this,
+				[=] { emit addRequested (name); });
 		addAct->setProperty ("ActionIcon", "list-add");
 		loadAct->setToolTip (tr ("Add the tabs from the session to the currently open ones."));
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, name] { emit addRequested (name); },
-			addAct,
-			SIGNAL (triggered ()),
-			addAct
-		};
 
-		const auto deleteAct = menu->addAction (tr ("Delete"));
+		const auto deleteAct = menu->addAction (tr ("Delete"),
+				this,
+				[=] { DeleteSession (name); });
 		deleteAct->setProperty ("ActionIcon", "list-remove");
 		deleteAct->setToolTip (tr ("Delete the session."));
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, name] { DeleteSession (name); },
-			deleteAct,
-			SIGNAL (triggered ()),
-			deleteAct
-		};
 
 		menu->addSeparator ();
 
-		for (const auto& pair : Util::Stlize (SessMgr_->GetTabsInSession (name)))
+		for (const auto& [obj, infos] : Util::Stlize (SessMgr_->GetTabsInSession (name)))
 		{
-			const auto pluginObj = pair.first;
-			const auto ii = qobject_cast<IInfo*> (pluginObj);
-
+			const auto ii = qobject_cast<IInfo*> (obj);
 			const auto submenu = menu->addMenu (ii->GetIcon (), ii->GetName ());
 
-			for (const auto& info : pair.second)
-			{
-				const auto action = submenu->addAction (info.Icon_, info.Name_);
-				new Util::SlotClosure<Util::NoDeletePolicy>
-				{
-					[pluginObj, info, this]
-					{
-						QHash<QObject*, QList<RecInfo>> toOpen;
-						toOpen [pluginObj] = { info };
-						SessMgr_->OpenTabs (toOpen);
-					},
-					action,
-					SIGNAL (triggered ()),
-					action
-				};
-			}
+			for (const auto& info : infos)
+				submenu->addAction (info.Icon_,
+						info.Name_,
+						this,
+						[=, obj = obj] { SessMgr_->OpenTabs ({ { obj, { info } } }); });
 		}
 	}
 }
