@@ -72,7 +72,8 @@ namespace TabSessManager
 
 	void Plugin::SecondInit ()
 	{
-		QTimer::singleShot (5000,
+		using namespace std::chrono_literals;
+		QTimer::singleShot (5ms,
 				&Mgrs_->SessionsMgr_,
 				SLOT (recover ()));
 	}
