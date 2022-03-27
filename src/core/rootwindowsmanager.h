@@ -83,8 +83,8 @@ namespace LC
 		void windowAdded (int) override;
 		void windowRemoved (int) override;
 		void currentWindowChanged (int, int) override;
-		void tabAdded (int, int) override;
-		void tabIsRemoving (int, int) override;
+		void tabAdded (int, QWidget*) override;
+		void tabIsRemoving (int, QWidget*) override;
 		void tabIsMoving (int, int, int) override;
 		void tabMoved (int, int, int) override;
 

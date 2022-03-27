@@ -209,23 +209,23 @@ protected:
 	/** @brief Emitted after a new tab is added to the given window.
 	 *
 	 * @param[out] windowIdx The index of the window tab is added to.
-	 * @param[out] tabIdx The index of the tab.
+	 * @param[out] tab The tab that was added.
 	 *
 	 * @sa tabIsRemoving()
 	 * @sa GetQObject()
 	 */
-	virtual void tabAdded (int windowIdx, int tabIdx) = 0;
+	virtual void tabAdded (int windowIdx, QWidget *tab) = 0;
 
 	/** @brief Emitted before a tab is removed from the given window.
 	 *
 	 * @param[out] windowIdx The index of the window tab is being removed
 	 * from.
-	 * @param[out] tabIdx The index of the tab.
+	 * @param[out] tab The tab that will be removed.
 	 *
 	 * @sa tabAdded()
 	 * @sa GetQObject()
 	 */
-	virtual void tabIsRemoving (int windowIdx, int tabIdx) = 0;
+	virtual void tabIsRemoving (int windowIdx, QWidget *tab) = 0;
 
 	/** @brief Emitted before a tab is moved from a window to another one.
 	 *

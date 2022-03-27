@@ -336,7 +336,7 @@ namespace LC
 		if (oldWinIdx >= 0 && oldWinIdx != winIdx)
 		{
 			const auto& oldData = Windows_ [oldWinIdx];
-			emit tabIsRemoving (winIdx, oldData.Window_->GetTabWidget ()->IndexOf (w));
+			emit tabIsRemoving (winIdx, w);
 			oldData.TM_->remove (w);
 		}
 
@@ -355,7 +355,7 @@ namespace LC
 		window.Window_->setWindowRole (tc);
 		SetWMClass (window.Window_, tc);
 		window.TM_->add (name, w);
-		emit tabAdded (winIdx, window.Window_->GetTabWidget ()->IndexOf (w));
+		emit tabAdded (winIdx, w);
 
 		ConnectSignals (w);
 
@@ -395,7 +395,7 @@ namespace LC
 	{
 		PerformWithSender ([this] (TabManager *tm, QWidget *w, int winIdx)
 			{
-				emit tabIsRemoving (winIdx, tm->FindTabForWidget (w));
+				emit tabIsRemoving (winIdx, w);
 				tm->remove (w);
 			});
 	}

@@ -32,8 +32,6 @@ namespace PinTab
 		LC_PLUGIN_METADATA ("org.LeechCraft.PinTab")
 
 		ICoreTabWidget *MainTabWidget_;
-		QAction *PinTab_;
-		QAction *UnPinTab_;
 
 		ICoreProxy_ptr Proxy_;
 
@@ -50,8 +48,8 @@ namespace PinTab
 
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
-		void PinTab (int tabIndex, int windowIndex);
-		void UnPinTab (int tabIndex, int windowIndex);
+		void PinTab (QWidget *tab, int windowIndex);
+		void UnPinTab (QWidget *tab, int windowIndex);
 	public slots:
 		void hookTabContextMenuFill (LC::IHookProxy_ptr proxy,
 				QMenu *menu, int index, int windowId);
@@ -60,8 +58,8 @@ namespace PinTab
 		void hookTabSetText (LC::IHookProxy_ptr proxy, int index,
 				int windowId);
 	private slots:
-		void checkPinState (int windowId, int index);
-		void handleTabRemoving (int windowId, int index);
+		void checkPinState (int windowId, QWidget *tab);
+		void handleTabRemoving (int windowId, QWidget *tab);
 
 		void handleWindowRemoved (int index);
 	};
