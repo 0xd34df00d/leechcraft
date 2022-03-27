@@ -18,9 +18,7 @@
 
 class QMainWindow;
 
-namespace LC
-{
-namespace PinTab
+namespace LC::PinTab
 {
 	class Plugin : public QObject
 				, public IInfo
@@ -38,24 +36,24 @@ namespace PinTab
 		QHash<QMainWindow*, QHash<QWidget*, QPair<QString, QWidget*>>> Window2Widget2TabData_;
 		QTabBar::ButtonPosition CloseSide_;
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr proxy) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 	private:
 		void PinTab (QWidget *tab, int windowIndex);
 		void UnPinTab (QWidget *tab, int windowIndex);
 	public slots:
-		void hookTabContextMenuFill (LC::IHookProxy_ptr proxy,
+		void hookTabContextMenuFill (const LC::IHookProxy_ptr& proxy,
 				QMenu *menu, int index, int windowId);
-		void hookTabFinishedMoving (LC::IHookProxy_ptr proxy, int index,
+		void hookTabFinishedMoving (const LC::IHookProxy_ptr& proxy, int index,
 				int windowId);
-		void hookTabSetText (LC::IHookProxy_ptr proxy, int index,
+		void hookTabSetText (const LC::IHookProxy_ptr& proxy, int index,
 				int windowId);
 	private slots:
 		void checkPinState (int windowId, QWidget *tab);
@@ -63,5 +61,4 @@ namespace PinTab
 
 		void handleWindowRemoved (int index);
 	};
-}
 }

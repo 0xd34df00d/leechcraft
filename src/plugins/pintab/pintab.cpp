@@ -17,9 +17,7 @@
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
-namespace LC
-{
-namespace PinTab
+namespace LC::PinTab
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -72,9 +70,7 @@ namespace PinTab
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Core.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Core.Plugins/1.0" };
 	}
 
 	void Plugin::PinTab (QWidget *tab, int windowIndex)
@@ -120,7 +116,7 @@ namespace PinTab
 		tw->MoveTab (tabIndex, Window2Widget2TabData_.value (window).count ());
 	}
 
-	void Plugin::hookTabContextMenuFill (LC::IHookProxy_ptr,
+	void Plugin::hookTabContextMenuFill (const IHookProxy_ptr&,
 			QMenu *menu, int index, int windowId)
 	{
 		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
@@ -153,7 +149,7 @@ namespace PinTab
 		menu->insertAction (tw->GetPermanentActions ().value (0), action);
 	}
 
-	void Plugin::hookTabFinishedMoving (LC::IHookProxy_ptr, int index, int windowId)
+	void Plugin::hookTabFinishedMoving (const IHookProxy_ptr&, int index, int windowId)
 	{
 		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
 		if (!window)
@@ -182,7 +178,7 @@ namespace PinTab
 		}
 	}
 
-	void Plugin::hookTabSetText (IHookProxy_ptr proxy, int index, int windowId)
+	void Plugin::hookTabSetText (const IHookProxy_ptr& proxy, int index, int windowId)
 	{
 		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
 		if (!window)
@@ -220,7 +216,6 @@ namespace PinTab
 
 		Window2Widget2TabData_.remove (window);
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_pintab, LC::PinTab::Plugin);
