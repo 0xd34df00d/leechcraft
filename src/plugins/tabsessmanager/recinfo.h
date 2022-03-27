@@ -27,8 +27,6 @@ namespace TabSessManager
 		QIcon Icon_;
 		int WindowID_;
 	};
-
-	bool operator== (const RecInfo&, const RecInfo&);
 }
 }
 

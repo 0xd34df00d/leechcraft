@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		tabsessmanager.cpp
 		restoresessiondialog.cpp
-		recinfo.cpp
 		sessionmenumanager.cpp
 		sessionsmanager.cpp
 		tabspropsmanager.cpp
