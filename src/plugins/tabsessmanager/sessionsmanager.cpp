@@ -95,9 +95,6 @@ namespace TabSessManager
 						<< pluginId << name << plugin << "; window" << winId;
 			}
 
-			for (const auto obj : tabs.keys ({}))
-				tabs.remove (obj);
-
 			return tabs;
 		}
 
