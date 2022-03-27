@@ -152,6 +152,8 @@ namespace TabSessManager
 
 	namespace
 	{
+		constexpr auto IconSize = 32;
+
 		void WriteRecoverableTab (QDataStream& str, int windowIndex,
 				QObject *tab, IRecoverableTab *rec, IInfo *plugin)
 		{
@@ -159,7 +161,7 @@ namespace TabSessManager
 			if (data.isEmpty ())
 				return;
 
-			const QIcon forRecover { rec->GetTabRecoverIcon ().pixmap (32, 32) };
+			const QIcon forRecover { rec->GetTabRecoverIcon ().pixmap (IconSize, IconSize) };
 
 			str << plugin->GetUniqueID ()
 					<< data
@@ -175,7 +177,7 @@ namespace TabSessManager
 			str << plugin->GetUniqueID ()
 					<< tc.TabClass_
 					<< tc.VisibleName_
-					<< tc.Icon_.pixmap (32, 32)
+					<< tc.Icon_.pixmap (IconSize, IconSize)
 					<< GetSessionProps (tab)
 					<< windowIndex;
 		}
