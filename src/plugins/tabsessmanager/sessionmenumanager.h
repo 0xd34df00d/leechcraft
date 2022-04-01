@@ -15,9 +15,7 @@
 class QMenu;
 class QAction;
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	class SessionsManager;
 
@@ -45,5 +43,4 @@ namespace TabSessManager
 
 		void saveCustomSessionRequested ();
 	};
-}
 }

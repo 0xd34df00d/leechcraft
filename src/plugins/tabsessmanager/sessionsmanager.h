@@ -11,9 +11,7 @@
 #include <QObject>
 #include <QPair>
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	struct RecInfo;
 	class TabsPropsManager;
@@ -63,5 +61,4 @@ namespace TabSessManager
 	signals:
 		void gotCustomSession (const QString&);
 	};
-}
 }

@@ -18,9 +18,7 @@
 #include "tabspropsmanager.h"
 #include "util.h"
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	UncloseManager::UncloseManager (TabsPropsManager *tpm, QObject *parent)
 	: QObject { parent }
@@ -147,5 +145,4 @@ namespace TabSessManager
 				}
 			});
 	}
-}
 }

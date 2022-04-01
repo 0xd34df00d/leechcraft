@@ -10,9 +10,7 @@
 #include <util/sll/qtutil.h>
 #include <interfaces/iinfo.h>
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	RestoreSessionDialog::RestoreSessionDialog (QWidget *parent)
 	: QDialog (parent)
@@ -90,5 +88,4 @@ namespace TabSessManager
 				parent->child (j)->setCheckState (0, state);
 		}
 	}
-}
 }

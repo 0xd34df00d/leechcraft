@@ -15,9 +15,7 @@
 #include <interfaces/ishutdownlistener.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	class SessionMenuManager;
 	class SessionsManager;
@@ -62,5 +60,4 @@ namespace TabSessManager
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
-}
 }

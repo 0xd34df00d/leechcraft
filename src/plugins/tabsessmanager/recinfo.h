@@ -6,17 +6,15 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_TABSESSMANAGER_RECINFO_H
-#define PLUGINS_TABSESSMANAGER_RECINFO_H
+#pragma once
+
 #include <QByteArray>
 #include <QString>
 #include <QIcon>
 #include <QVariant>
 #include <QMetaType>
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	struct RecInfo
 	{
@@ -28,8 +26,5 @@ namespace TabSessManager
 		int WindowID_;
 	};
 }
-}
 
 Q_DECLARE_METATYPE (LC::TabSessManager::RecInfo)
-
-#endif

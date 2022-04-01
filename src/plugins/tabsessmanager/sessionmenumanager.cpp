@@ -13,9 +13,7 @@
 #include "sessionsmanager.h"
 #include "recinfo.h"
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	SessionMenuManager::SessionMenuManager (SessionsManager *sessMgr, QObject *parent)
 	: QObject { parent }
@@ -85,5 +83,4 @@ namespace TabSessManager
 						[=, obj = obj] { SessMgr_->OpenTabs ({ { obj, { info } } }); });
 		}
 	}
-}
 }

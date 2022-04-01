@@ -20,12 +20,9 @@ class QList;
 
 struct TabClassInfo;
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	QList<QPair<QByteArray, QVariant>> GetSessionProps (QObject*);
 
 	bool IsGoodSingleTC (const TabClassInfo&);
-}
 }

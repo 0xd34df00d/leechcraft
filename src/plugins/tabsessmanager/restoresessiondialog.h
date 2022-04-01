@@ -12,9 +12,7 @@
 #include "ui_restoresessiondialog.h"
 #include "recinfo.h"
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	class RestoreSessionDialog : public QDialog
 	{
@@ -29,5 +27,4 @@ namespace TabSessManager
 	private:
 		void CheckAll (Qt::CheckState);
 	};
-}
 }

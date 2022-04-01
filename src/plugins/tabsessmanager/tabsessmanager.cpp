@@ -23,9 +23,7 @@
 #include "unclosemanager.h"
 #include "tabspropsmanager.h"
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	struct Plugin::Managers
 	{
@@ -165,7 +163,6 @@ namespace TabSessManager
 
 		Mgrs_->TabsPropsMgr_.HandlePreferredWindowIndex (proxy, widget);
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_tabsessmanager, LC::TabSessManager::Plugin);

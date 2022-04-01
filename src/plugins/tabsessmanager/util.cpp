@@ -13,9 +13,7 @@
 #include <QVariant>
 #include <interfaces/ihavetabs.h>
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	QList<QPair<QByteArray, QVariant>> GetSessionProps (QObject *tab)
 	{
@@ -34,5 +32,4 @@ namespace TabSessManager
 	{
 		return tc.Features_ & TabFeature::TFSingle && tc.Features_ & TabFeature::TFOpenableByRequest;
 	}
-}
 }

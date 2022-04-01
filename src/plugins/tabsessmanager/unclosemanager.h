@@ -15,9 +15,7 @@ class QMenu;
 class QAction;
 class ITabWidget;
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	class TabsPropsManager;
 
@@ -41,5 +39,4 @@ namespace TabSessManager
 		void HandleRemoveRecoverableTab (QWidget*, IRecoverableTab*);
 		void HandleRemoveSingleTab (QWidget*, ITabWidget*);
 	};
-}
 }

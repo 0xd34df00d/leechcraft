@@ -9,9 +9,7 @@
 #include "tabspropsmanager.h"
 #include <QWidget>
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	namespace
 	{
@@ -58,5 +56,4 @@ namespace TabSessManager
 		for (const auto& pair : TabsPropsQueue_.takeFirst ())
 			widget->setProperty (pair.first, pair.second);
 	}
-}
 }

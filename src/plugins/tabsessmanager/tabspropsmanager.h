@@ -14,9 +14,7 @@
 
 class QWidget;
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	class TabsPropsManager
 	{
@@ -32,5 +30,4 @@ namespace TabSessManager
 		void HandlePreferredWindowIndex (const IHookProxy_ptr&, const QWidget*);
 		void HandleTabAdding (QWidget*);
 	};
-}
 }

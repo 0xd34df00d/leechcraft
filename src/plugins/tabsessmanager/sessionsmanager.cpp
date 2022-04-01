@@ -27,9 +27,7 @@
 #include "util.h"
 #include "tabspropsmanager.h"
 
-namespace LC
-{
-namespace TabSessManager
+namespace LC::TabSessManager
 {
 	SessionsManager::SessionsManager (TabsPropsManager *tpm, QObject *parent)
 	: QObject { parent }
@@ -465,5 +463,4 @@ namespace TabSessManager
 		Tabs_.removeAt (index);
 		handleTabRecoverDataChanged ();
 	}
-}
 }
