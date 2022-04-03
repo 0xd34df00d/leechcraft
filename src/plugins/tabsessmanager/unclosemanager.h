@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <interfaces/ihaverecoverabletabs.h>
 
@@ -21,7 +22,7 @@ namespace LC::TabSessManager
 
 	class UncloseManager : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::TabSessManager::UncloseManager)
 
 		struct RemoveTabParams;
 

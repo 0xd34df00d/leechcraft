@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_restoresessiondialog.h"
 #include "recinfo.h"
@@ -16,7 +17,7 @@ namespace LC::TabSessManager
 {
 	class RestoreSessionDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::TabSessManager::RestoreSessionDialog)
 
 		Ui::RestoreSessionDialog Ui_;
 	public:
