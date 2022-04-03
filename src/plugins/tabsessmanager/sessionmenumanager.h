@@ -33,15 +33,6 @@ namespace LC::TabSessManager
 		SessionMenuManager (SessionsManager*, QObject* = nullptr);
 
 		QAction* GetSessionsAction () const;
-	private:
-		void DeleteSession (const QString&);
-	public slots:
-		void addCustomSession (const QString&);
-	signals:
-		void loadRequested (const QString&);
-		void addRequested (const QString&);
-		void deleteRequested (const QString&);
-
-		void saveCustomSessionRequested ();
+		void AddCustomSession (const QString&);
 	};
 }

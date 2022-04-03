@@ -34,27 +34,10 @@ namespace LC::TabSessManager
 
 		Managers ()
 		{
-			QObject::connect (&SessionMenuMgr_,
-					SIGNAL (loadRequested (QString)),
-					&SessionsMgr_,
-					SLOT (loadCustomSession (QString)));
-			QObject::connect (&SessionMenuMgr_,
-					SIGNAL (addRequested (QString)),
-					&SessionsMgr_,
-					SLOT (addCustomSession (QString)));
-			QObject::connect (&SessionMenuMgr_,
-					SIGNAL (deleteRequested (QString)),
-					&SessionsMgr_,
-					SLOT (deleteCustomSession (QString)));
-			QObject::connect (&SessionMenuMgr_,
-					SIGNAL (saveCustomSessionRequested ()),
-					&SessionsMgr_,
-					SLOT (saveCustomSession ()));
-
 			QObject::connect (&SessionsMgr_,
-					SIGNAL (gotCustomSession (QString)),
+					&SessionsManager::gotCustomSession,
 					&SessionMenuMgr_,
-					SLOT (addCustomSession (QString)));
+					&SessionMenuManager::AddCustomSession);
 		}
 	};
 
@@ -65,7 +48,7 @@ namespace LC::TabSessManager
 		Mgrs_ = std::make_shared<Managers> ();
 
 		for (const auto& name : Mgrs_->SessionsMgr_.GetCustomSessions ())
-			Mgrs_->SessionMenuMgr_.addCustomSession (name);
+			Mgrs_->SessionMenuMgr_.AddCustomSession (name);
 	}
 
 	void Plugin::SecondInit ()
@@ -73,7 +56,7 @@ namespace LC::TabSessManager
 		using namespace std::chrono_literals;
 		QTimer::singleShot (5ms,
 				&Mgrs_->SessionsMgr_,
-				SLOT (recover ()));
+				&SessionsManager::Recover);
 	}
 
 	QByteArray Plugin::GetUniqueID () const

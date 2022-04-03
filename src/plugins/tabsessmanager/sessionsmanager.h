@@ -36,19 +36,19 @@ namespace LC::TabSessManager
 		QHash<QObject*, QList<RecInfo>> GetTabsInSession (const QString&) const;
 
 		void OpenTabs (const QHash<QObject*, QList<RecInfo>>&);
+
+		void Recover ();
+
+		void SaveCustomSession ();
+		void LoadCustomSession (const QString&);
+		void AddCustomSession (const QString&);
+		void DeleteCustomSession (const QString&);
 	protected:
 		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		QByteArray GetCurrentSession () const;
 	public slots:
-		void recover ();
 		void handleTabRecoverDataChanged ();
-
-		void saveCustomSession ();
-
-		void loadCustomSession (const QString&);
-		void addCustomSession (const QString&);
-		void deleteCustomSession (const QString&);
 
 		void handleRemoveTab (QWidget*);
 	private slots:

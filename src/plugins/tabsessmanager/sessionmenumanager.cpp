@@ -21,8 +21,8 @@ namespace LC::TabSessManager
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
 	{
 		const auto saveAct = SessMgrMenu_->addAction (tr ("Save current session..."),
-				this,
-				&SessionMenuManager::saveCustomSessionRequested);
+				sessMgr,
+				&SessionsManager::SaveCustomSession);
 		saveAct->setProperty ("ActionIcon", "document-save-all");
 
 		SessMgrMenu_->menuAction ()->setProperty ("ActionIcon",
@@ -36,13 +36,7 @@ namespace LC::TabSessManager
 		return SessMgrMenu_->menuAction ();
 	}
 
-	void SessionMenuManager::DeleteSession (const QString& name)
-	{
-		Session2Menu_.remove (name);
-		emit deleteRequested (name);
-	}
-
-	void SessionMenuManager::addCustomSession (const QString& name)
+	void SessionMenuManager::AddCustomSession (const QString& name)
 	{
 		if (Session2Menu_.contains (name))
 			return;
@@ -53,19 +47,23 @@ namespace LC::TabSessManager
 
 		const auto loadAct = menu->addAction (tr ("Load"),
 				this,
-				[=] { emit loadRequested (name); });
+				[=] { SessMgr_->LoadCustomSession (name); });
 		loadAct->setProperty ("ActionIcon", "edit-find-replace");
 		loadAct->setToolTip (tr ("Load the session, replacing all currently opened tabs."));
 
 		const auto addAct = menu->addAction (tr ("Add"),
 				this,
-				[=] { emit addRequested (name); });
+				[=] { SessMgr_->AddCustomSession (name); });
 		addAct->setProperty ("ActionIcon", "list-add");
 		loadAct->setToolTip (tr ("Add the tabs from the session to the currently open ones."));
 
 		const auto deleteAct = menu->addAction (tr ("Delete"),
 				this,
-				[=] { DeleteSession (name); });
+				[=]
+				{
+					Session2Menu_.remove (name);
+					SessMgr_->DeleteCustomSession (name);
+				});
 		deleteAct->setProperty ("ActionIcon", "list-remove");
 		deleteAct->setToolTip (tr ("Delete the session."));
 

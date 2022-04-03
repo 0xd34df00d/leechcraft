@@ -237,7 +237,7 @@ namespace LC::TabSessManager
 		}
 	}
 
-	void SessionsManager::recover ()
+	void SessionsManager::Recover ()
 	{
 		QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager" };
@@ -276,7 +276,7 @@ namespace LC::TabSessManager
 				});
 	}
 
-	void SessionsManager::saveCustomSession ()
+	void SessionsManager::SaveCustomSession ()
 	{
 		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const QString& name = QInputDialog::getText (rootWM->GetPreferredWindow (),
@@ -295,7 +295,7 @@ namespace LC::TabSessManager
 		emit gotCustomSession (name);
 	}
 
-	void SessionsManager::loadCustomSession (const QString& name)
+	void SessionsManager::LoadCustomSession (const QString& name)
 	{
 		const auto rootMgr = GetProxyHolder ()->GetRootWindowsManager ();
 		for (int i = rootMgr->GetWindowsCount () - 1; i >= 0; --i)
@@ -315,7 +315,7 @@ namespace LC::TabSessManager
 		OpenTabs (GetSession (name));
 	}
 
-	void SessionsManager::addCustomSession (const QString& name)
+	void SessionsManager::AddCustomSession (const QString& name)
 	{
 		auto tabs = GetSession (name);
 
@@ -352,7 +352,7 @@ namespace LC::TabSessManager
 		OpenTabs (tabs);
 	}
 
-	void SessionsManager::deleteCustomSession (const QString& name)
+	void SessionsManager::DeleteCustomSession (const QString& name)
 	{
 		QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager" };
