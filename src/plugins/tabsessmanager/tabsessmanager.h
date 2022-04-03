@@ -36,19 +36,19 @@ namespace LC::TabSessManager
 		struct Managers;
 		std::shared_ptr<Managers> Mgrs_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
-		void HandleShutdownInitiated ();
+		void HandleShutdownInitiated () override;
 	public slots:
 		void hookTabIsRemoving (LC::IHookProxy_ptr proxy,
 				int index,
@@ -58,6 +58,6 @@ namespace LC::TabSessManager
 		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr proxy,
 				const QWidget *widget) const;
 	signals:
-		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }

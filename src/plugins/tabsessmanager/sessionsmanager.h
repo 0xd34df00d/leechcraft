@@ -37,7 +37,7 @@ namespace LC::TabSessManager
 
 		void OpenTabs (const QHash<QObject*, QList<RecInfo>>&);
 	protected:
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		QByteArray GetCurrentSession () const;
 	public slots:
