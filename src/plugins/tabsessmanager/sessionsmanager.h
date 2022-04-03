@@ -44,7 +44,6 @@ namespace LC::TabSessManager
 		void recover ();
 		void handleTabRecoverDataChanged ();
 
-		void saveDefaultSession ();
 		void saveCustomSession ();
 
 		void loadCustomSession (const QString&);

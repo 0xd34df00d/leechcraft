@@ -266,18 +266,14 @@ namespace LC::TabSessManager
 		using namespace std::chrono_literals;
 		QTimer::singleShot (2s,
 				this,
-				SLOT (saveDefaultSession ()));
-	}
+				[this]
+				{
+					IsScheduled_ = false;
 
-	void SessionsManager::saveDefaultSession ()
-	{
-		IsScheduled_ = false;
-
-		const auto& result = GetCurrentSession ();
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_TabSessManager");
-		settings.setValue ("Data", result);
+					QSettings settings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_TabSessManager");
+					settings.setValue ("Data", GetCurrentSession ());
+				});
 	}
 
 	void SessionsManager::saveCustomSession ()
