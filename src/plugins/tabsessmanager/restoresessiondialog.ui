@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -48,12 +47,18 @@
        <property name="text">
         <string>All</string>
        </property>
+       <property name="icon">
+        <iconset theme="edit-select-all"/>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="SelectNone_">
        <property name="text">
         <string>None</string>
+       </property>
+       <property name="icon">
+        <iconset theme="edit-select-none"/>
        </property>
       </widget>
      </item>
