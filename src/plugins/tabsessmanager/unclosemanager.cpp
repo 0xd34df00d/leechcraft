@@ -10,7 +10,6 @@
 #include <functional>
 #include <QMenu>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -83,28 +82,25 @@ namespace LC::TabSessManager
 		action->setProperty ("RecData", params.RecoverData_);
 
 		const auto plugin = tab->ParentMultiTabs ();
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[uncloser = params.Uncloser_, info, plugin, action, winIdx, this]
-			{
-				action->deleteLater ();
+		connect (action,
+				&QAction::triggered,
+				this,
+				[uncloser = params.Uncloser_, info, plugin, action, winIdx, this]
+				{
+					action->deleteLater ();
 
-				if (UncloseMenu_->defaultAction () == action)
-					if (const auto nextAct = UncloseMenu_->actions ().value (1))
-					{
-						UncloseMenu_->setDefaultAction (nextAct);
-						nextAct->setShortcut (QString ("Ctrl+Shift+T"));
-					}
-				UncloseMenu_->removeAction (action);
+					if (UncloseMenu_->defaultAction () == action)
+						if (const auto nextAct = UncloseMenu_->actions ().value (1))
+						{
+							UncloseMenu_->setDefaultAction (nextAct);
+							nextAct->setShortcut (QString ("Ctrl+Shift+T"));
+						}
+					UncloseMenu_->removeAction (action);
 
-				const auto propsGuard = TabsPropsMgr_->AppendProps (info.DynProperties_);
-				const auto winGuard = TabsPropsMgr_->AppendWindow (winIdx);
-				uncloser (plugin, info);
-			},
-			action,
-			SIGNAL (triggered ()),
-			action
-		};
+					const auto propsGuard = TabsPropsMgr_->AppendProps (info.DynProperties_);
+					const auto winGuard = TabsPropsMgr_->AppendWindow (winIdx);
+					uncloser (plugin, info);
+				});
 
 		if (UncloseMenu_->defaultAction ())
 			UncloseMenu_->defaultAction ()->setShortcut (QKeySequence ());
