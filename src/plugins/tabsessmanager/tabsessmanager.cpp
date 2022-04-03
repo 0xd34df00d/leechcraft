@@ -105,9 +105,7 @@ namespace LC::TabSessManager
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Core.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Core.Plugins/1.0" };
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const

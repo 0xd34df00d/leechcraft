@@ -18,12 +18,12 @@ namespace LC::TabSessManager
 {
 	struct RecInfo
 	{
-		int Order_;
+		int Order_ = -1;
 		QByteArray Data_;
 		QList<QPair<QByteArray, QVariant>> Props_;
 		QString Name_;
 		QIcon Icon_;
-		int WindowID_;
+		int WindowID_ = -1;
 	};
 }
 

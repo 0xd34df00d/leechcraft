@@ -30,7 +30,7 @@ namespace LC::TabSessManager
 
 		QMenu * const UncloseMenu_;
 	public:
-		UncloseManager (TabsPropsManager*, QObject* = nullptr);
+		explicit UncloseManager (TabsPropsManager*, QObject* = nullptr);
 
 		QAction* GetMenuAction () const;
 

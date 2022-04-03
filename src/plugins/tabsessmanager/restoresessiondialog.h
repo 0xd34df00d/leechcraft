@@ -21,7 +21,7 @@ namespace LC::TabSessManager
 
 		Ui::RestoreSessionDialog Ui_;
 	public:
-		RestoreSessionDialog (QWidget* = 0);
+		explicit RestoreSessionDialog (QWidget* = nullptr);
 
 		void SetTabs (const QHash<QObject*, QList<RecInfo>>&);
 		QHash<QObject*, QList<RecInfo>> GetTabs () const;

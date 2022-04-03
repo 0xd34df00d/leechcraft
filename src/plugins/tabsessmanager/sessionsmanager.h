@@ -27,7 +27,7 @@ namespace LC::TabSessManager
 
 		QList<QList<QObject*>> Tabs_;
 	public:
-		SessionsManager (TabsPropsManager*,  QObject* = nullptr);
+		explicit SessionsManager (TabsPropsManager*,  QObject* = nullptr);
 
 		QStringList GetCustomSessions () const;
 

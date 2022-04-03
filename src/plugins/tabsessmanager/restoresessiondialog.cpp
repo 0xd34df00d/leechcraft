@@ -16,6 +16,7 @@ namespace LC::TabSessManager
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+
 		connect (Ui_.SelectAll_,
 				&QPushButton::released,
 				[this] { CheckAll (Qt::Checked); });
@@ -26,18 +27,16 @@ namespace LC::TabSessManager
 
 	void RestoreSessionDialog::SetTabs (const QHash<QObject*, QList<RecInfo>>& pages)
 	{
-		for (const auto pair : Util::Stlize (pages))
+		for (const auto [obj, infos] : Util::Stlize (pages))
 		{
-			const auto obj = pair.first;
 			const auto ii = qobject_cast<IInfo*> (obj);
 
 			auto parent = new QTreeWidgetItem ({ ii->GetName () });
 			parent->setIcon (0, ii->GetIcon ());
-			parent->setData (0, Qt::UserRole,
-					QVariant::fromValue<QObject*> (obj));
+			parent->setData (0, Qt::UserRole, QVariant::fromValue (obj));
 			Ui_.Tabs_->addTopLevelItem (parent);
 
-			for (const auto& info : pair.second)
+			for (const auto& info : infos)
 			{
 				const auto& name = info.Name_.isEmpty () ?
 						'<' + tr ("no name") + '>' :
@@ -80,8 +79,7 @@ namespace LC::TabSessManager
 
 	void RestoreSessionDialog::CheckAll (Qt::CheckState state)
 	{
-		for (int i = 0, size = Ui_.Tabs_->topLevelItemCount ();
-				i < size; ++i)
+		for (int i = 0, size = Ui_.Tabs_->topLevelItemCount (); i < size; ++i)
 		{
 			auto parent = Ui_.Tabs_->topLevelItem (i);
 			for (int j = 0, jsize = parent->childCount (); j < jsize; ++j)
