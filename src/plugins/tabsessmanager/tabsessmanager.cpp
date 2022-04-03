@@ -133,7 +133,7 @@ namespace LC::TabSessManager
 		Mgrs_.reset ();
 	}
 
-	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
+	void Plugin::hookTabIsRemoving (const IHookProxy_ptr&, int index, int windowId)
 	{
 		if (!Mgrs_)
 			return;
@@ -146,7 +146,7 @@ namespace LC::TabSessManager
 		Mgrs_->SessionsMgr_.handleRemoveTab (widget);
 	}
 
-	void Plugin::hookTabAdding (IHookProxy_ptr, QWidget *widget)
+	void Plugin::hookTabAdding (const IHookProxy_ptr&, QWidget *widget)
 	{
 		if (!Mgrs_)
 			return;
@@ -154,7 +154,7 @@ namespace LC::TabSessManager
 		Mgrs_->TabsPropsMgr_.HandleTabAdding (widget);
 	}
 
-	void Plugin::hookGetPreferredWindowIndex (IHookProxy_ptr proxy, const QWidget *widget) const
+	void Plugin::hookGetPreferredWindowIndex (const IHookProxy_ptr& proxy, const QWidget *widget) const
 	{
 		if (!Mgrs_)
 			return;

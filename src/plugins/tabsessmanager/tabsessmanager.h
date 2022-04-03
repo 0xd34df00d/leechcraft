@@ -50,12 +50,12 @@ namespace LC::TabSessManager
 
 		void HandleShutdownInitiated () override;
 	public slots:
-		void hookTabIsRemoving (LC::IHookProxy_ptr proxy,
+		void hookTabIsRemoving (const LC::IHookProxy_ptr& proxy,
 				int index,
 				int windowId);
-		void hookTabAdding (LC::IHookProxy_ptr proxy,
+		void hookTabAdding (const LC::IHookProxy_ptr& proxy,
 				QWidget *widget);
-		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr proxy,
+		void hookGetPreferredWindowIndex (const LC::IHookProxy_ptr& proxy,
 				const QWidget *widget) const;
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
