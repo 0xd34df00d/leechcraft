@@ -10,27 +10,73 @@
 
 #include <Qt>
 
-namespace LC
+namespace LC::DataSources
 {
-	namespace DataSources
+	/** @brief The additional item roles for the XSD data source.
+	 *
+	 * These roles are used by the `"dataview"` XSD item handler to understand
+	 * the data that the associated model contains.
+	 *
+	 * Each horizontal header item in the model will have the values at these
+	 * roles describing the corresponding column.
+	 */
+	enum DataSourceRole
 	{
-		enum DataSourceRole
-		{
-			FieldType = Qt::UserRole + 1,
-			FieldValues,
-			FieldNonModifiable
-		};
+		/** @brief The type of this field.
+		 *
+		 * The value should be an element of the DataFieldType enum.
+		 *
+		 * @sa DataFieldType
+		 */
+		FieldType = Qt::UserRole + 1,
 
-		enum DataFieldType
-		{
-			None,
-			String,
-			Url,
-			LocalPath,
-			Integer,
-			Enum,
-			Color,
-			Font
-		};
-	}
+		/** @brief The values admissible for this field.
+		 *
+		 * This is only used if FieldType is DataFieldType::Enum.
+		 */
+		FieldValues,
+
+		/** @brief Whether the field can(not) be modified after it is created.
+		 */
+		FieldNonModifiable,
+	};
+
+	/** @brief The type of the
+	 */
+	enum DataFieldType
+	{
+		/** @brief This field does not support nor need an editor.
+		 */
+		None,
+
+		/** @brief An arbitrary string as a QString.
+		 */
+		String,
+
+		/** @brief An URL as a QString.
+		 */
+		Url,
+
+		/** @brief A path to a local file as a QString.
+		 */
+		LocalPath,
+
+		/** @brief An integer as an `int`.
+		 */
+		Integer,
+
+		/** @brief An enumeration, with values from the DataSourceRole::FieldValues list.
+		 *
+		 * @sa DataSourceRole::FieldValues
+		 */
+		Enum,
+
+		/** @brief A color as a QColor.
+		 */
+		Color,
+
+		/** @brief A font as a QFont.
+		 */
+		Font,
+	};
 }
