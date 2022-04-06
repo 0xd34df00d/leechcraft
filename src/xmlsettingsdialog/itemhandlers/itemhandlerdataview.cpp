@@ -265,7 +265,6 @@ namespace LC
 		{
 			const auto& info = infos.at (i);
 
-			const auto name = new QLabel (info.Name_);
 			if (info.Type_ == DataSources::Enum && info.ValuesInfo_.toList ().isEmpty ())
 			{
 				if (existing.isEmpty ())
@@ -289,7 +288,7 @@ namespace LC
 			SetData (editorWidget, info.Type_, existing.value (i));
 
 			const int row = lay->rowCount ();
-			lay->addWidget (name, row, 0, Qt::AlignRight);
+			lay->addWidget (new QLabel { info.Name_ }, row, 0, Qt::AlignRight);
 			lay->addWidget (editorWidget, row, 1);
 		}
 		const auto buttons = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
