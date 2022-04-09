@@ -35,12 +35,11 @@ namespace Azoth
 		QVariantList values;
 		auto append = [&values] (State state)
 		{
-			const QVariantMap value {
-					{ "Name", StateToString (state) },
-					{ "Icon", ResourcesManager::Instance ().GetIconForState (state) },
-					{ "ID", QVariant::fromValue (state) }
-				};
-			values << value;
+			values << QVariant::fromValue<DataSources::EnumValueInfo> ({
+					.Icon_ = ResourcesManager::Instance ().GetIconForState (state),
+					.Name_ = StateToString (state),
+					.UserData_ = QVariant::fromValue (state),
+				});
 		};
 		append (State::SOnline);
 		append (State::SAway);

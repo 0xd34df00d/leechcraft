@@ -124,12 +124,11 @@ namespace LC::LMP
 							}))
 				continue;
 
-			items << QVariantMap
-				{
-					{ "Icon", QVariant::fromValue (effect.Icon_) },
-					{ "Name", effect.Name_ },
-					{ "ID", id },
-				};
+			items << QVariant::fromValue<DataSources::EnumValueInfo> ({
+					.Icon_ = effect.Icon_,
+					.Name_ = effect.Name_,
+					.UserData_ = id,
+				});
 		}
 
 		Model_->horizontalHeaderItem (0)->setData (items,

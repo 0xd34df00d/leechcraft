@@ -161,13 +161,12 @@ namespace Tracolor
 			remainingEvents.removeOne (Model_->item (i)->data (Role::EventId).toString ());
 
 		const auto& map = Util::Map (remainingEvents,
-				[] (const QString& eventId) -> QVariant
+				[] (const QString& eventId)
 				{
-					return QVariantMap
-					{
-						{ "Name", Util::AN::GetTypeName (eventId) },
-						{ "ID", eventId }
-					};
+					return QVariant::fromValue<DataSources::EnumValueInfo> ({
+								.Name_ = Util::AN::GetTypeName (eventId),
+								.UserData_ = eventId,
+							});
 				});
 		Model_->setHeaderData (0, Qt::Horizontal,
 				map,

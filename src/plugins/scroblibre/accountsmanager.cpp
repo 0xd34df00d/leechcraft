@@ -40,12 +40,10 @@ namespace Scroblibre
 		Model_->setHeaderData (Column::CService, Qt::Horizontal,
 				QVariantList
 				{
-					QVariantMap
-					{
-						{ "Icon", {} },
-						{ "Name", "libre.fm" },
-						{ "ID", "libre.fm" }
-					}
+					QVariant::fromValue<DataSources::EnumValueInfo> ({
+							.Name_ = "libre.fm",
+							.UserData_ = "libre.fm",
+						})
 				},
 				DataSources::DataSourceRole::FieldValues);
 

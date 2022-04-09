@@ -8,10 +8,27 @@
 
 #pragma once
 
-#include <Qt>
+#include <QIcon>
+#include <QString>
+#include <QVariant>
 
 namespace LC::DataSources
 {
+	struct EnumValueInfo
+	{
+		/** @brief The icon associated with this enum value.
+		 */
+		QIcon Icon_;
+
+		/** @brief The name of this enum value.
+		 */
+		QString Name_;
+
+		/** @brief Arbitrary data.
+		 */
+		QVariant UserData_;
+	};
+
 	/** @brief The additional item roles for the XSD data source.
 	 *
 	 * These roles are used by the `"dataview"` XSD item handler to understand
@@ -32,7 +49,11 @@ namespace LC::DataSources
 
 		/** @brief The values admissible for this field.
 		 *
+		 * The value should be `QList<EnumValueInfo>`.
+		 *
 		 * This is only used if FieldType is DataFieldType::Enum.
+		 *
+		 * @sa EnumValueInfo
 		 */
 		FieldValues,
 
@@ -68,6 +89,7 @@ namespace LC::DataSources
 		/** @brief An enumeration, with values from the DataSourceRole::FieldValues list.
 		 *
 		 * @sa DataSourceRole::FieldValues
+		 * @sa EnumValueInfo
 		 */
 		Enum,
 
@@ -80,3 +102,5 @@ namespace LC::DataSources
 		Font,
 	};
 }
+
+Q_DECLARE_METATYPE (LC::DataSources::EnumValueInfo)

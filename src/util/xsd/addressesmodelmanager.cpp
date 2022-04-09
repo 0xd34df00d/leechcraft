@@ -102,9 +102,11 @@ namespace Util
 			if (!addr.scopeId ().isEmpty ())
 				continue;
 
-			QVariantMap map;
-			map ["ID"] = map ["Name"] = addr.toString ();
-			hosts << map;
+			const auto& str = addr.toString ();
+			hosts << QVariant::fromValue<DataSources::EnumValueInfo> ({
+					.Name_ = str,
+					.UserData_ = str
+				});
 		}
 		Model_->horizontalHeaderItem (0)->setData (hosts,
 				DataSources::DataSourceRole::FieldValues);

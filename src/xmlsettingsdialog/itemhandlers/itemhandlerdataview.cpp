@@ -144,10 +144,8 @@ namespace LC
 				auto box = new QComboBox;
 				for (const auto& var : valuesInfo.toList ())
 				{
-					const auto& map = var.toMap ();
-					box->addItem (map ["Icon"].value<QIcon> (),
-							map ["Name"].toString (),
-							map ["ID"]);
+					const auto& info = var.value<DataSources::EnumValueInfo> ();
+					box->addItem (info.Icon_, info.Name_, info.UserData_);
 				}
 				return box;
 			}
