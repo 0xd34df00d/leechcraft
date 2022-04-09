@@ -16,6 +16,7 @@
 #include <QComboBox>
 #include <QFontComboBox>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include "../widgets/dataviewwidget.h"
 #include "../filepicker.h"
 #include "../itemhandlerfactory.h"
@@ -122,7 +123,7 @@ namespace LC
 
 	namespace
 	{
-		QWidget* GetEditor (DataSources::DataFieldType type, const QVariant& valuesInfo)
+		QWidget* GetEditor (DataSources::DataFieldType type, const QList<DataSources::EnumValueInfo>& valuesInfo)
 		{
 			switch (type)
 			{
@@ -142,11 +143,8 @@ namespace LC
 			case DataSources::DataFieldType::Enum:
 			{
 				auto box = new QComboBox;
-				for (const auto& var : valuesInfo.toList ())
-				{
-					const auto& info = var.value<DataSources::EnumValueInfo> ();
+				for (const auto& info : valuesInfo)
 					box->addItem (info.Icon_, info.Name_, info.UserData_);
-				}
 				return box;
 			}
 			case DataSources::DataFieldType::Color:
@@ -225,25 +223,34 @@ namespace LC
 		struct ColumnInfo
 		{
 			DataSources::DataFieldType Type_;
-			QVariant ValuesInfo_;
+			QList<DataSources::EnumValueInfo> ValuesInfo_;
 			QString Name_;
 			bool IsConst_;
 		};
 
 		QList<ColumnInfo> GetColumnInfos (QAbstractItemModel *model)
 		{
+			using namespace DataSources;
+
 			QList<ColumnInfo> infos;
 			for (int i = 0, size = model->columnCount (); i < size; ++i)
 			{
-				const auto& hData = model->headerData (i, Qt::Horizontal,
-						DataSources::DataSourceRole::FieldType);
-				const auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
-				if (type == DataSources::DataFieldType::None)
+				const auto atRole = [&] (int role) { return model->headerData (i, Qt::Horizontal, role); };
+
+				const auto& hData = atRole (DataSourceRole::FieldType);
+				const auto type = static_cast<DataFieldType> (hData.value<int> ());
+				if (type == DataFieldType::None)
 					continue;
 
-				const auto& name = model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
-				const auto& values = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldValues);
-				const bool isConst = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldNonModifiable).toBool ();
+				const auto& name = atRole (Qt::DisplayRole).toString ();
+
+				const auto& valuesVar = atRole (DataSourceRole::FieldValues).toList ();
+				const auto& valGen = atRole (DataSourceRole::FieldValuesGenerator).value<EnumValueInfoGenerator> ();
+				const auto& values = valuesVar.isEmpty () && valGen ?
+						valGen () :
+						Util::Map (valuesVar, &QVariant::value<EnumValueInfo>);
+
+				const bool isConst = atRole (DataSourceRole::FieldNonModifiable).toBool ();
 				infos.push_back ({ type, values, name, isConst });
 			}
 			return infos;
@@ -255,7 +262,7 @@ namespace LC
 		const auto& infos = GetColumnInfos (model);
 
 		QDialog dia (XSD_->GetWidget ());
-		QGridLayout *lay = new QGridLayout ();
+		const auto lay = new QGridLayout ();
 		dia.setLayout (lay);
 
 		QList<QWidget*> dataWidgets;
@@ -263,15 +270,12 @@ namespace LC
 		{
 			const auto& info = infos.at (i);
 
-			if (info.Type_ == DataSources::Enum && info.ValuesInfo_.toList ().isEmpty ())
+			if (info.Type_ == DataSources::Enum && info.ValuesInfo_.isEmpty ())
 			{
 				if (existing.isEmpty ())
 					return {};
-				else
-				{
-					dataWidgets << nullptr;
-					continue;
-				}
+				dataWidgets << nullptr;
+				continue;
 			}
 
 			if (!existing.isEmpty () && info.IsConst_)

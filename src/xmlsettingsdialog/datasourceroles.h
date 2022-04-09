@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QIcon>
 #include <QString>
 #include <QVariant>
@@ -29,13 +30,18 @@ namespace LC::DataSources
 		QVariant UserData_;
 	};
 
+	using EnumValueInfoGenerator = std::function<QList<EnumValueInfo> ()>;
+
 	/** @brief The additional item roles for the XSD data source.
 	 *
 	 * These roles are used by the `"dataview"` XSD item handler to understand
 	 * the data that the associated model contains.
-	 *
 	 * Each horizontal header item in the model will have the values at these
 	 * roles describing the corresponding column.
+	 *
+	 * XSD queries this data every time a value is added or modified by the
+	 * user, so any changes to these values will be picked up next time the
+	 * user interacts with the settings item.
 	 */
 	enum DataSourceRole
 	{
@@ -54,8 +60,22 @@ namespace LC::DataSources
 		 * This is only used if FieldType is DataFieldType::Enum.
 		 *
 		 * @sa EnumValueInfo
+		 * @sa FieldValuesGenerator
 		 */
 		FieldValues,
+
+		/** @brief The values admissible for this field, as a callable.
+		 *
+		 * This is analogous to FieldValues, but if the list is dynamic and
+		 * it's impractical or expensive to keep this list updated, then this
+		 * role should be used instead.
+		 * The value at this role is expected to be EnumValueInfoGenerator, and
+		 * this function will be invoked by XSD each time the user interacts
+		 * with the item.
+		 *
+		 * @sa FieldValues
+		 */
+		FieldValuesGenerator,
 
 		/** @brief Whether the field can(not) be modified after it is created.
 		 */
@@ -104,3 +124,4 @@ namespace LC::DataSources
 }
 
 Q_DECLARE_METATYPE (LC::DataSources::EnumValueInfo)
+Q_DECLARE_METATYPE (LC::DataSources::EnumValueInfoGenerator)
