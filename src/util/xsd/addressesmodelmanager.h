@@ -81,8 +81,6 @@ namespace Util
 	private:
 		void SaveSettings () const;
 		void AppendRow (const QPair<QString, QString>&);
-	private Q_SLOTS:
-		void updateAvailInterfaces ();
 	public Q_SLOTS:
 		/** @brief Invoked by XML settings dialog to add new user-selected
 		 * items.

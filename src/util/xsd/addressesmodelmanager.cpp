@@ -9,7 +9,6 @@
 #include "addressesmodelmanager.h"
 #include <QStandardItemModel>
 #include <QNetworkInterface>
-#include <QNetworkConfigurationManager>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -17,32 +16,42 @@ namespace LC
 {
 namespace Util
 {
+	namespace
+	{
+		auto GetAddrInfos ()
+		{
+			const auto& addrs = QNetworkInterface::allAddresses ();
+			QList<DataSources::EnumValueInfo> hosts;
+			hosts.reserve (addrs.size ());
+			for (const auto& addr : addrs)
+			{
+				if (!addr.scopeId ().isEmpty ())
+					continue;
+
+				const auto& str = addr.toString ();
+				hosts.push_back ({
+						.Name_ = str,
+						.UserData_ = str
+					});
+			}
+			return hosts;
+		}
+	}
+
 	AddressesModelManager::AddressesModelManager (BaseSettingsManager *bsm, int defaultPort, QObject *parent)
 	: QObject { parent }
 	, Model_ { new QStandardItemModel { this } }
 	, BSM_ { bsm }
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Host"), tr ("Port") });
-		Model_->horizontalHeaderItem (0)->setData (DataSources::DataFieldType::Enum,
-				DataSources::DataSourceRole::FieldType);
-		Model_->horizontalHeaderItem (1)->setData (DataSources::DataFieldType::Integer,
-				DataSources::DataSourceRole::FieldType);
 
-		const auto confManager = new QNetworkConfigurationManager { this };
-		connect (confManager,
-				SIGNAL (configurationAdded (QNetworkConfiguration)),
-				this,
-				SLOT (updateAvailInterfaces ()));
-		connect (confManager,
-				SIGNAL (configurationRemoved (QNetworkConfiguration)),
-				this,
-				SLOT (updateAvailInterfaces ()));
-		connect (confManager,
-				SIGNAL (configurationChanged (QNetworkConfiguration)),
-				this,
-				SLOT (updateAvailInterfaces ()));
+		using namespace DataSources;
 
-		updateAvailInterfaces ();
+		const auto hostHeader = Model_->horizontalHeaderItem (0);
+		hostHeader->setData (DataFieldType::Enum, DataSourceRole::FieldType);
+		hostHeader->setData (QVariant::fromValue<EnumValueInfoGenerator> (GetAddrInfos), DataSourceRole::FieldValuesGenerator);
+
+		Model_->horizontalHeaderItem (1)->setData (DataFieldType::Integer, DataSourceRole::FieldType);
 
 		const auto& addrs = BSM_->Property ("ListenAddresses",
 				QVariant::fromValue (GetLocalAddresses (defaultPort))).value<AddrList_t> ();
@@ -92,24 +101,6 @@ namespace Util
 		Model_->appendRow (items);
 
 		emit addressesChanged ();
-	}
-
-	void AddressesModelManager::updateAvailInterfaces ()
-	{
-		QVariantList hosts;
-		for (const auto& addr : QNetworkInterface::allAddresses ())
-		{
-			if (!addr.scopeId ().isEmpty ())
-				continue;
-
-			const auto& str = addr.toString ();
-			hosts << QVariant::fromValue<DataSources::EnumValueInfo> ({
-					.Name_ = str,
-					.UserData_ = str
-				});
-		}
-		Model_->horizontalHeaderItem (0)->setData (hosts,
-				DataSources::DataSourceRole::FieldValues);
 	}
 
 	void AddressesModelManager::addRequested (const QString&, const QVariantList& data)
