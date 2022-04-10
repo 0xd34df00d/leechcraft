@@ -12,9 +12,7 @@
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
@@ -121,5 +119,4 @@ namespace Util
 		SaveSettings ();
 		emit addressesChanged ();
 	}
-}
 }

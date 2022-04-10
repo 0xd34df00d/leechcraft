@@ -12,9 +12,7 @@
 
 class QString;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class XmlSettingsDialog;
 	class BaseSettingsManager;
@@ -33,5 +31,4 @@ namespace Util
 	 * @return The XML settings dialog.
 	 */
 	UTIL_XSD_API XmlSettingsDialog* OpenXSD (const QString& title, const QString& filename, Util::BaseSettingsManager *bsm);
-}
 }

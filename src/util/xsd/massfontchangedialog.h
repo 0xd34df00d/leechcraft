@@ -13,14 +13,10 @@
 #include <interfaces/iwkfontssettable.h>
 #include "ui_massfontchangedialog.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class MassFontChangeDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::MassFontChangeDialog Ui_;
 
 		QHash<IWkFontsSettable::FontFamily, QCheckBox*> Family2Box_;
@@ -32,5 +28,4 @@ namespace Util
 		QFont GetFont () const;
 		QList<IWkFontsSettable::FontFamily> GetFamilies () const;
 	};
-}
 }

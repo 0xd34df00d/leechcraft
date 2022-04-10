@@ -12,15 +12,13 @@
 #include <QVBoxLayout>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	XmlSettingsDialog* OpenXSD (const QString& title, const QString& filename, Util::BaseSettingsManager *bsm)
 	{
 		auto lay = new QVBoxLayout;
 
-		auto xsd = new Util::XmlSettingsDialog;
+		auto xsd = new XmlSettingsDialog;
 		xsd->RegisterObject (bsm, filename);
 		lay->addWidget (xsd->GetWidget ());
 
@@ -31,21 +29,21 @@ namespace Util
 		dia->setLayout (lay);
 
 		QObject::connect (bbox,
-				SIGNAL (accepted ()),
+				&QDialogButtonBox::accepted,
 				xsd,
-				SLOT (accept ()));
+				&XmlSettingsDialog::accept);
 		QObject::connect (bbox,
-				SIGNAL (rejected ()),
+				&QDialogButtonBox::rejected,
 				xsd,
-				SLOT (reject ()));
+				&XmlSettingsDialog::reject);
 		QObject::connect (bbox,
-				SIGNAL (accepted ()),
+				&QDialogButtonBox::accepted,
 				dia,
-				SLOT (accept ()));
+				&QDialog::accept);
 		QObject::connect (bbox,
-				SIGNAL (rejected ()),
+				&QDialogButtonBox::rejected,
 				dia,
-				SLOT (reject ()));
+				&QDialog::reject);
 
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->setWindowTitle (title);
@@ -53,5 +51,4 @@ namespace Util
 
 		return xsd;
 	}
-}
 }

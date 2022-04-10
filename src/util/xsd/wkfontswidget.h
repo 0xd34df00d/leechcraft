@@ -21,9 +21,7 @@ namespace Ui
 	class WkFontsWidget;
 }
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class BaseSettingsManager;
 	class FontChooserWidget;
@@ -113,8 +111,8 @@ namespace Util
 		void ResetSizeChoosers ();
 
 		void ApplyPendingSizeChanges ();
-	private slots:
-		void on_ChangeAll__released ();
+
+		void ChangeAllFonts ();
 	public slots:
 		void accept ();
 		void reject ();
@@ -143,5 +141,4 @@ namespace Util
 		 */
 		void sizeMultiplierChanged (qreal factor);
 	};
-}
 }

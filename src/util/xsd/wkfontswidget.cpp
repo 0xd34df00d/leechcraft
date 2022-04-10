@@ -15,9 +15,7 @@
 #include "ui_wkfontswidget.h"
 #include "massfontchangedialog.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	WkFontsWidget::WkFontsWidget (BaseSettingsManager *bsm, QWidget *parent)
 	: QWidget { parent }
@@ -61,6 +59,11 @@ namespace Util
 			connect (pair.second,
 					qOverload<int> (&QSpinBox::valueChanged),
 					[this, pair] { PendingSizeChanges_ [pair.first] = pair.second->value (); });
+
+		connect (Ui_->ChangeAll_,
+				&QPushButton::released,
+				this,
+				&WkFontsWidget::ChangeAllFonts);
 	}
 
 	void WkFontsWidget::RegisterSettable (IWkFontsSettable *settable)
@@ -117,7 +120,7 @@ namespace Util
 		PendingSizeChanges_.clear ();
 	}
 
-	void WkFontsWidget::on_ChangeAll__released ()
+	void WkFontsWidget::ChangeAllFonts ()
 	{
 		QHash<QString, QList<IWkFontsSettable::FontFamily>> families;
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
@@ -169,5 +172,4 @@ namespace Util
 		PendingFontChanges_.clear ();
 		PendingSizeChanges_.clear ();
 	}
-}
 }

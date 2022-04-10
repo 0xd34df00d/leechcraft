@@ -11,9 +11,7 @@
 #include <QWidget>
 #include "ui_fontchooserwidget.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Provides a widget for choosing a font.
 	 *
@@ -54,5 +52,4 @@ namespace Util
 		 */
 		void fontChanged (QFont font);
 	};
-}
 }

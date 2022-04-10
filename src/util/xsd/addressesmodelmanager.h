@@ -18,9 +18,7 @@ class QHostAddress;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class BaseSettingsManager;
 
@@ -110,5 +108,4 @@ namespace Util
 		 */
 		void addressesChanged ();
 	};
-}
 }

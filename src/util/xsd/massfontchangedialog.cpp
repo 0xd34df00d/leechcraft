@@ -9,9 +9,7 @@
 #include "massfontchangedialog.h"
 #include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	MassFontChangeDialog::MassFontChangeDialog (const QFont& font,
 			const QList<IWkFontsSettable::FontFamily>& families, QWidget *parent)
@@ -45,5 +43,4 @@ namespace Util
 				result << pair.first;
 		return result;
 	}
-}
 }

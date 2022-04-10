@@ -8,9 +8,7 @@
 
 #include "fontchooserwidget.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	FontChooserWidget::FontChooserWidget (QWidget *parent)
 	: QWidget { parent }
@@ -18,9 +16,9 @@ namespace Util
 		Ui_.setupUi (this);
 
 		connect (Ui_.FontBox_,
-				SIGNAL (currentFontChanged (QFont)),
+				&QFontComboBox::currentFontChanged,
 				this,
-				SIGNAL (fontChanged (QFont)));
+				&FontChooserWidget::fontChanged);
 	}
 
 	QFont FontChooserWidget::GetFont () const
@@ -32,5 +30,4 @@ namespace Util
 	{
 		Ui_.FontBox_->setCurrentFont (font);
 	}
-}
 }
