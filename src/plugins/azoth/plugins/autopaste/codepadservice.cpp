@@ -62,7 +62,8 @@ namespace LC::Azoth::Autopaste
 			data += "&run=True";
 
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
-		req.setAttribute (QNetworkRequest::FollowRedirectsAttribute, true);
+		req.setAttribute (QNetworkRequest::RedirectPolicyAttribute,
+				int { QNetworkRequest::NoLessSafeRedirectPolicy });
 
 		InitReply (params.NAM_->post (req, data));
 	}

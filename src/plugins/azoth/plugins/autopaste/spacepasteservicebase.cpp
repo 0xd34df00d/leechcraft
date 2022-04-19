@@ -23,7 +23,8 @@ namespace LC::Azoth::Autopaste
 		req.setRawHeader ("Origin", baseUrl);
 		req.setRawHeader ("Referer", baseUrl);
 		req.setHeader (QNetworkRequest::ContentLengthHeader, postData.size ());
-		req.setAttribute (QNetworkRequest::FollowRedirectsAttribute, true);
+		req.setAttribute (QNetworkRequest::RedirectPolicyAttribute,
+				int { QNetworkRequest::NoLessSafeRedirectPolicy });
 		InitReply (params.NAM_->post (req, postData));
 	}
 }
