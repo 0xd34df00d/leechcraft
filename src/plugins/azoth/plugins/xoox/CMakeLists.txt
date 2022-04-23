@@ -3,7 +3,7 @@ project (leechcraft_azoth_xoox)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET qxmpp>=1.1.0)
+pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET qxmpp>=1.3.0)
 
 add_compile_definitions (
 	$<$<BOOL:${ENABLE_CRYPT}>:ENABLE_CRYPT>
