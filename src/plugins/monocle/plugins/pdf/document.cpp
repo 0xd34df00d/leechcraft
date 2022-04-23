@@ -18,7 +18,6 @@
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include <util/sll/util.h>
-#include <util/sll/domchildrenrange.h>
 #include <util/threads/futures.h>
 #include "links.h"
 #include "fields.h"
@@ -310,45 +309,21 @@ namespace PDF
 
 	namespace
 	{
-		template<typename T>
-		TOCEntryLevel_t BuildTOCLevel (Document *doc, PDocument_ptr pDoc, const T& levelRoot)
+		TOCEntryLevel_t BuildTOCLevel (Document *doc, const QVector<Poppler::OutlineItem>& level)
 		{
 			TOCEntryLevel_t result;
 
-			for (const auto& elem : Util::DomChildren (levelRoot, {}))
+			for (const auto& item : level)
 			{
-				const auto& name = elem.tagName ();
-
 				ILink_ptr link;
-				const auto& destStr = elem.attribute ("Destination");
-				if (!destStr.isEmpty ())
-					link = std::make_shared<TOCLink> (doc, std::make_unique<Poppler::LinkDestination> (destStr));
-				else
-				{
-					const auto& destName = elem.attribute ("DestinationName");
-					if (destName.isEmpty ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "empty destination name, dunno how to handle that";
-						continue;
-					}
-
-					std::unique_ptr<Poppler::LinkDestination> dest { pDoc->linkDestination (destName) };
-					if (!dest)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "empty destination for"
-								<< destName;
-						continue;
-					}
-					link = std::make_shared<TOCLink> (doc, std::move (dest));
-				}
+				if (const auto dest = item.destination ())
+					link = std::make_shared<TOCLink> (doc, std::make_unique<Poppler::LinkDestination> (*dest));
 
 				TOCEntry entry =
 				{
 					link,
-					name,
-					BuildTOCLevel (doc, pDoc, elem)
+					item.name (),
+					BuildTOCLevel (doc, item.children ()),
 				};
 				result << entry;
 			}
@@ -359,10 +334,7 @@ namespace PDF
 
 	void Document::BuildTOC ()
 	{
-		std::unique_ptr<QDomDocument> doc (PDocument_->toc ());
-		if (!doc)
-			return;
-		TOC_ = BuildTOCLevel (this, PDocument_, *doc);
+		TOC_ = BuildTOCLevel (this, PDocument_->outline ());
 	}
 }
 }
