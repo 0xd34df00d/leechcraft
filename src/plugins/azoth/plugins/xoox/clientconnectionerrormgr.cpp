@@ -116,8 +116,6 @@ namespace Xoox
 			return tr ("Action is not allowed.");
 		case QXmppStanza::Error::NotAuthorized:
 			return tr ("Not authorized.");
-		case QXmppStanza::Error::PaymentRequired:
-			return tr ("Payment required.");
 		case QXmppStanza::Error::RecipientUnavailable:
 			return tr ("Recipient unavailable.");
 		case QXmppStanza::Error::Redirect:
