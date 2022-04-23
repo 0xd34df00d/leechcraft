@@ -101,8 +101,8 @@ namespace MusicZombie
 			swr_init (swr.get ());
 		}
 
-		AVPacket packet;
-		av_init_packet (&packet);
+		auto packetDeleter = [] (AVPacket *packet) { av_packet_free (&packet); };
+		std::unique_ptr<AVPacket, decltype (packetDeleter)> packet { av_packet_alloc () };
 
 		const int maxLength = 120;
 		auto remaining = maxLength * stream->codecpar->channels * stream->codecpar->sample_rate;
@@ -115,15 +115,15 @@ namespace MusicZombie
 		const auto dstDataGuard = Util::MakeScopeGuard ([&dstData] { if (dstData [0]) av_freep (&dstData [0]); });
 		while (true)
 		{
-			if (av_read_frame (formatCtx.get (), &packet) < 0)
+			if (av_read_frame (formatCtx.get (), packet.get ()) < 0)
 				break;
 
-			const auto guard = Util::MakeScopeGuard ([&packet] { if (packet.data) av_packet_unref (&packet); });
+			const auto guard = Util::MakeScopeGuard ([&packet] { if (packet->data) av_packet_unref (packet.get ()); });
 
-			if (packet.stream_index != streamIndex)
+			if (packet->stream_index != streamIndex)
 				continue;
 
-			if (avcodec_send_packet (codecCtx.get (), &packet) ||
+			if (avcodec_send_packet (codecCtx.get (), packet.get ()) ||
 					avcodec_receive_frame (codecCtx.get (), frame.get ()))
 			{
 				qWarning () << Q_FUNC_INFO
