@@ -275,6 +275,13 @@ namespace LC::SeekThru
 
 	void Core::SetTags (int pos, const QStringList& tags)
 	{
+		if (pos >= Descriptions_.size () || pos < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid pos";
+			return;
+		}
+
 		const auto oldCats = ComputeUniqueCategories ();
 
 		Descriptions_ [pos].Tags_ = Proxy_->GetTagsManager ()->GetIDs (tags);
