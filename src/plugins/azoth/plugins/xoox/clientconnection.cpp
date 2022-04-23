@@ -17,6 +17,7 @@
 #include <QXmppRosterManager.h>
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
+#include <QXmppPubSubItem.h>
 #include <QXmppPubSubIq.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
