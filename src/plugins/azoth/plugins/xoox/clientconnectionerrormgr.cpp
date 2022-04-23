@@ -103,7 +103,6 @@ namespace Xoox
 			return tr ("Feature not implemented.");
 		case QXmppStanza::Error::Forbidden:
 			return tr ("Forbidden.");
-			//case QXmppStanza::Error::Gone:
 		case QXmppStanza::Error::InternalServerError:
 			return tr ("Internal server error.");
 		case QXmppStanza::Error::ItemNotFound:
@@ -132,11 +131,20 @@ namespace Xoox
 			return tr ("Service is unavailable at the moment.");
 		case QXmppStanza::Error::SubscriptionRequired:
 			return tr ("Subscription is required to perform this action.");
-			//case QXmppStanza::Error::UndefinedCondition:
-			//case QXmppStanza::Error::UnexpectedRequest:
-		default:
-			return tr ("Other error.");
+		case QXmppStanza::Error::Gone:
+			return tr ("The user or server cannot be contacted at this address.");
+		case QXmppStanza::Error::UndefinedCondition:
+			return tr ("Undefined condition.");
+		case QXmppStanza::Error::UnexpectedRequest:
+			return tr ("Unexpected request.");
+		case QXmppStanza::Error::PolicyViolation:
+			return tr ("Local server policy violation.");
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown condition:"
+				<< condition;
+		return tr ("Other error.");
 	}
 
 	void ClientConnectionErrorMgr::HandleError (const QXmppIq& iq)
