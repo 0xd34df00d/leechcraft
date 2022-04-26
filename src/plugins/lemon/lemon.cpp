@@ -12,10 +12,13 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "core.h"
 #include "trafficmanager.h"
 #include "xmlsettingsmanager.h"
 #include "quarkproxy.h"
+
+#ifdef Q_OS_LINUX
+#include "linuxplatformbackend.h"
+#endif
 
 namespace LC
 {
@@ -28,9 +31,11 @@ namespace Lemon
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lemonsettings.xml");
 
-		Core::Instance ().SetProxy (proxy);
+#ifdef Q_OS_LINUX
+		Backend_ = std::make_shared<LinuxPlatformBackend> ();
+#endif
 
-		TrafficMgr_ = new TrafficManager;
+		TrafficMgr_ = new TrafficManager { Backend_ };
 
 		PanelComponent_ = std::make_shared<QuarkComponent> ("lemon", "LemonQuark.qml");
 		PanelComponent_->DynamicProps_.append ({ "Lemon_infoModel", TrafficMgr_->GetModel () });
@@ -48,7 +53,7 @@ namespace Lemon
 
 	void Plugin::Release ()
 	{
-		Core::Instance ().Release ();
+		Backend_.reset ();
 	}
 
 	QString Plugin::GetName () const

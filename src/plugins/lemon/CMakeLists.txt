@@ -9,7 +9,6 @@ pkg_check_modules (LemonLibnl REQUIRED IMPORTED_TARGET libnl-3.0 libnl-route-3.0
 LC_DEFINE_PLUGIN (
 	SRCS
 		lemon.cpp
-		core.cpp
 		trafficmanager.cpp
 		trafficdialog.cpp
 		platformbackend.cpp

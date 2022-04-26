@@ -26,12 +26,16 @@ namespace LC
 {
 namespace Lemon
 {
+	class PlatformBackend;
+
 	class TrafficManager : public QObject
 	{
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
 		QNetworkConfigurationManager *ConfManager_;
+
+		std::shared_ptr<PlatformBackend> Backend_;
 
 		struct InterfaceInfo
 		{
@@ -55,7 +59,7 @@ namespace Lemon
 		};
 		QHash<QString, InterfaceInfo> ActiveInterfaces_;
 	public:
-		TrafficManager (QObject* = 0);
+		TrafficManager (std::shared_ptr<PlatformBackend>, QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
 

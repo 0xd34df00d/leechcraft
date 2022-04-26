@@ -20,6 +20,9 @@ namespace Lemon
 	class TrafficManager;
 	class ActionsManager;
 
+	class PlatformBackend;
+	using PlatformBackend_ptr = std::shared_ptr<PlatformBackend>;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
@@ -34,6 +37,8 @@ namespace Lemon
 
 		TrafficManager *TrafficMgr_;
 		QuarkComponent_ptr PanelComponent_;
+
+		PlatformBackend_ptr Backend_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

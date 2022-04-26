@@ -13,7 +13,6 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/models/rolenamesmixin.h>
-#include "core.h"
 #include "platformbackend.h"
 
 namespace LC
@@ -56,10 +55,11 @@ namespace Lemon
 		};
 	}
 
-	TrafficManager::TrafficManager (QObject *parent)
+	TrafficManager::TrafficManager (std::shared_ptr<PlatformBackend> backend, QObject *parent)
 	: QObject (parent)
 	, Model_ (new IfacesModel (this))
 	, ConfManager_ (new QNetworkConfigurationManager (this))
+	, Backend_ (std::move (backend))
 	{
 		connect (ConfManager_,
 				SIGNAL (configurationAdded (QNetworkConfiguration)),
@@ -149,11 +149,10 @@ namespace Lemon
 			InterfaceInfo info (item);
 			info.Name_ = ifaceId;
 
-			auto backend = Core::Instance ().GetPlatformBackend ();
-			if (backend)
+			if (Backend_)
 			{
-				backend->update ({ ifaceId });
-				const auto& bytesStats = backend->GetCurrentNumBytes (ifaceId);
+				Backend_->update ({ ifaceId });
+				const auto& bytesStats = Backend_->GetCurrentNumBytes (ifaceId);
 				info.PrevRead_ = bytesStats.Down_;
 				info.PrevWritten_ = bytesStats.Up_;
 			}
@@ -196,11 +195,10 @@ namespace Lemon
 
 	void TrafficManager::updateCounters ()
 	{
-		auto backend = Core::Instance ().GetPlatformBackend ();
-		if (!backend)
+		if (!Backend_)
 			return;
 
-		backend->update (ActiveInterfaces_.keys ());
+		Backend_->update (ActiveInterfaces_.keys ());
 
 		const auto backtrack = GetBacktrackSize ();
 
@@ -208,7 +206,7 @@ namespace Lemon
 		{
 			const auto& name = info.Name_;
 
-			const auto& bytesStats = backend->GetCurrentNumBytes (name);
+			const auto& bytesStats = Backend_->GetCurrentNumBytes (name);
 
 			auto updateCounts = [&info, backtrack] (const qint64 now, qint64& prev,
 					QVector<qint64>& list, IfacesModel::Roles role, const QString& text) -> qint64
