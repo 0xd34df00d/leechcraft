@@ -111,6 +111,26 @@ namespace Lemon
 				this,
 				SLOT (handleUpdated ()));
 		handleUpdated ();
+
+		Ui_.Legend_->setDefaultItemMode (QwtLegendData::Checkable);
+		Ui_.Legend_->setMaxColumns (2);
+		connect (Ui_.TrafficPlot_,
+				&QwtPlot::legendDataChanged,
+				Ui_.Legend_,
+				&QwtLegend::updateLegend);
+		Ui_.TrafficPlot_->updateLegend ();
+
+		connect (Ui_.Legend_,
+				&QwtLegend::checked,
+				this,
+				[this] (const QVariant& itemVar, bool on)
+				{
+					if (const auto item = itemVar.value<QwtPlotItem*> ())
+					{
+						item->setVisible (!on);
+						Ui_.TrafficPlot_->replot ();
+					}
+				});
 	}
 
 	namespace
@@ -190,12 +210,6 @@ namespace Lemon
 		else
 			Ui_.StatsFrame_->setVisible (false);
 
-		Ui_.TrafficPlot_->replot ();
-	}
-
-	void TrafficDialog::on_TrafficPlot__legendChecked (QwtPlotItem *item, bool on)
-	{
-		item->setVisible (!on);
 		Ui_.TrafficPlot_->replot ();
 	}
 }
