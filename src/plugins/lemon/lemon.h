@@ -13,9 +13,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iquarkcomponentprovider.h>
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	class TrafficManager;
 	class ActionsManager;
@@ -40,17 +38,16 @@ namespace Lemon
 
 		PlatformBackend_ptr Backend_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		QuarkComponents_t GetComponents () const;
+		QuarkComponents_t GetComponents () const override;
 	};
-}
 }

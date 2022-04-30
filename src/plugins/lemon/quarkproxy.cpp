@@ -10,9 +10,7 @@
 #include "trafficdialog.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	QuarkProxy::QuarkProxy (TrafficManager *tm, QObject *parent)
 	: QObject { parent }
@@ -47,5 +45,4 @@ namespace Lemon
 		dia->show ();
 		Iface2Dialog_ [ifaceName] = dia;
 	}
-}
 }

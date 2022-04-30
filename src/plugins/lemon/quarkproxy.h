@@ -13,9 +13,7 @@
 #include <QPointer>
 #include <QColor>
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	class TrafficManager;
 	class TrafficDialog;
@@ -41,5 +39,4 @@ namespace Lemon
 		void downloadGraphColorChanged ();
 		void uploadGraphColorChanged ();
 	};
-}
 }

@@ -11,13 +11,10 @@
 #include <QObject>
 #include <QPair>
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	class PlatformBackend : public QObject
 	{
-		Q_OBJECT
 	public:
 		using QObject::QObject;
 
@@ -28,8 +25,6 @@ namespace Lemon
 		};
 
 		virtual CurrentTrafficState GetCurrentNumBytes (const QString&) const = 0;
-	public slots:
-		virtual void update (const QStringList&) = 0;
+		virtual void Update (const QStringList&) = 0;
 	};
-}
 }

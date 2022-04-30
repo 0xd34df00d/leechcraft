@@ -21,9 +21,7 @@
 #include "trafficmanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	TrafficDialog::TrafficDialog (const QString& name, TrafficManager *manager, QWidget *parent)
 	: QDialog (parent)
@@ -107,10 +105,10 @@ namespace Lemon
 		item->setBorderPen (QPen (palette ().color (QPalette::Dark), 1));
 
 		connect (manager,
-				SIGNAL (updated ()),
+				&TrafficManager::updated,
 				this,
-				SLOT (handleUpdated ()));
-		handleUpdated ();
+				&TrafficDialog::ReplotGraphs);
+		ReplotGraphs ();
 
 		Ui_.Legend_->setDefaultItemMode (QwtLegendData::Checkable);
 		Ui_.Legend_->setMaxColumns (2);
@@ -140,8 +138,8 @@ namespace Lemon
 			if (!smooth)
 				return list.at (pos);
 
-			const std::array<double, 3> kernel { { 1, 1.2, 1 } };
-			const auto kernelSum = std::accumulate (kernel.begin (), kernel.end (), 0);
+			constexpr std::array<double, 3> kernel { { 1, 1.2, 1 } };
+			constexpr auto kernelSum = std::accumulate (kernel.begin (), kernel.end (), 0);
 
 			if (static_cast<size_t> (list.size ()) < kernel.size ())
 				return list.at (pos);
@@ -162,7 +160,7 @@ namespace Lemon
 		}
 	}
 
-	void TrafficDialog::handleUpdated ()
+	void TrafficDialog::ReplotGraphs ()
 	{
 		const auto& downList = Manager_->GetDownHistory (IfaceName_);
 		const auto& upList = Manager_->GetUpHistory (IfaceName_);
@@ -174,11 +172,13 @@ namespace Lemon
 		const auto shouldSmooth = XmlSettingsManager::Instance ()
 				.property ("EnableSmoothing").toBool ();
 
+		constexpr auto bytesInKb = 1024;
+
 		for (int i = 0; i < downList.size (); ++i)
 		{
 			xdata [i] = i;
-			down [i] = GetSmoothed (downList, i, shouldSmooth) / 1024.;
-			up [i] = GetSmoothed (upList, i, shouldSmooth) / 1024.;
+			down [i] = GetSmoothed (downList, i, shouldSmooth) / bytesInKb;
+			up [i] = GetSmoothed (upList, i, shouldSmooth) / bytesInKb;
 		}
 
 		DownTraffic_->setSamples (xdata, down);
@@ -204,13 +204,12 @@ namespace Lemon
 			Ui_.AvgRXSpeed_->setText (Util::MakePrettySize (avgRx) + tr ("/s"));
 			Ui_.AvgTXSpeed_->setText (Util::MakePrettySize (avgTx) + tr ("/s"));
 
-			DownAvg_->setSamples (xdata, QVector<double> (downList.size (), avgRx / 1024));
-			UpAvg_->setSamples (xdata, QVector<double> (downList.size (), avgTx / 1024));
+			DownAvg_->setSamples (xdata, QVector<double> (downList.size (), avgRx / bytesInKb));
+			UpAvg_->setSamples (xdata, QVector<double> (downList.size (), avgTx / bytesInKb));
 		}
 		else
 			Ui_.StatsFrame_->setVisible (false);
 
 		Ui_.TrafficPlot_->replot ();
 	}
-}
 }

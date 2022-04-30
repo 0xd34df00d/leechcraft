@@ -14,13 +14,11 @@
 #include <netlink/route/link.h>
 #include <netlink/route/route.h>
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	LinuxPlatformBackend::LinuxPlatformBackend (QObject *parent)
-	: PlatformBackend (parent)
-	, Rtsock_ (nl_socket_alloc ())
+	: PlatformBackend { parent }
+	, Rtsock_ { nl_socket_alloc () }
 	{
 		if (nl_connect (Rtsock_, NETLINK_ROUTE) >= 0)
 			rtnl_link_alloc_cache (Rtsock_, AF_UNSPEC, &LinkCache_);
@@ -41,7 +39,7 @@ namespace Lemon
 		return DevInfos_ [name].Traffic_;
 	}
 
-	void LinuxPlatformBackend::update (const QStringList& devices)
+	void LinuxPlatformBackend::Update (const QStringList& devices)
 	{
 		if (!LinkCache_)
 			return;
@@ -67,5 +65,4 @@ namespace Lemon
 			rtnl_link_put (link);
 		}
 	}
-}
 }

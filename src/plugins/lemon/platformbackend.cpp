@@ -7,10 +7,3 @@
  **********************************************************************/
 
 #include "platformbackend.h"
-
-namespace LC
-{
-namespace Lemon
-{
-}
-}

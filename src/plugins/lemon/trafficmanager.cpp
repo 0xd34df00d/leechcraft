@@ -15,9 +15,7 @@
 #include <util/sll/qtutil.h>
 #include "platformbackend.h"
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	namespace
 	{
@@ -37,34 +35,36 @@ namespace Lemon
 				MaxDownSpeed
 			};
 
-			IfacesModel (QObject *parent)
-			: RoleNamesMixin<QStandardItemModel> (parent)
+			explicit IfacesModel (QObject *parent)
+			: RoleNamesMixin<QStandardItemModel> { parent }
 			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::IfaceName] = "ifaceName";
-				roleNames [Roles::BearerType] = "bearerType";
-				roleNames [Roles::IconName] = "iconName";
-				roleNames [Roles::UpSpeed] = "upSpeed";
-				roleNames [Roles::UpSpeedPretty] = "upSpeedPretty";
-				roleNames [Roles::DownSpeed] = "downSpeed";
-				roleNames [Roles::DownSpeedPretty] = "downSpeedPretty";
-				roleNames [Roles::MaxUpSpeed] = "maxUpSpeed";
-				roleNames [Roles::MaxDownSpeed] = "maxDownSpeed";
-				setRoleNames (roleNames);
+				setRoleNames ({
+						{ Roles::IfaceName, "ifaceName" },
+						{ Roles::BearerType, "bearerType" },
+						{ Roles::IconName, "iconName" },
+						{ Roles::UpSpeed, "upSpeed" },
+						{ Roles::UpSpeedPretty, "upSpeedPretty" },
+						{ Roles::DownSpeed, "downSpeed" },
+						{ Roles::DownSpeedPretty, "downSpeedPretty" },
+						{ Roles::MaxUpSpeed, "maxUpSpeed" },
+						{ Roles::MaxDownSpeed, "maxDownSpeed" },
+					});
 			}
 		};
 	}
 
 	TrafficManager::TrafficManager (std::shared_ptr<PlatformBackend> backend, QObject *parent)
-	: QObject (parent)
-	, Model_ (new IfacesModel (this))
-	, Backend_ (std::move (backend))
+	: QObject { parent }
+	, Model_ { new IfacesModel { this } }
+	, Backend_ { std::move (backend) }
 	{
 		auto timer = new QTimer (this);
 		timer->callOnTimeout ([this]
 			{
 				UpdateInterfaces ();
 				UpdateCounters ();
+
+				emit updated ();
 			});
 		timer->start (1000);
 		timer->setTimerType (Qt::VeryCoarseTimer);
@@ -98,7 +98,7 @@ namespace Lemon
 
 		if (Backend_)
 		{
-			Backend_->update ({ name });
+			Backend_->Update ({ name });
 			const auto& bytesStats = Backend_->GetCurrentNumBytes (name);
 			info.PrevRead_ = bytesStats.Down_;
 			info.PrevWritten_ = bytesStats.Up_;
@@ -184,7 +184,7 @@ namespace Lemon
 		if (!Backend_)
 			return;
 
-		Backend_->update (ActiveInterfaces_.keys ());
+		Backend_->Update (ActiveInterfaces_.keys ());
 
 		const auto backtrack = GetBacktrackSize ();
 
@@ -221,8 +221,5 @@ namespace Lemon
 			updateMax (info.DownSpeeds_, IfacesModel::Roles::MaxDownSpeed);
 			updateMax (info.UpSpeeds_, IfacesModel::Roles::MaxUpSpeed);
 		}
-
-		emit updated ();
 	}
-}
 }

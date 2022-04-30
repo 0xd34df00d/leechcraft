@@ -11,20 +11,15 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-
 		XmlSettingsManager ();
 	public:
 		static XmlSettingsManager& Instance ();
 	protected:
-		QSettings* BeginSettings () const;
-		void EndSettings (QSettings*) const;
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
 	};
-}
 }

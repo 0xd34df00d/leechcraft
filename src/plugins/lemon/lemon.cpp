@@ -20,15 +20,13 @@
 #include "linuxplatformbackend.h"
 #endif
 
-namespace LC
+namespace LC::Lemon
 {
-namespace Lemon
-{
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("lemon");
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lemonsettings.xml");
 
 #ifdef Q_OS_LINUX
@@ -80,7 +78,6 @@ namespace Lemon
 	{
 		return { PanelComponent_ };
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lemon, LC::Lemon::Plugin);

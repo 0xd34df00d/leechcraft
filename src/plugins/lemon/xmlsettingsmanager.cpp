@@ -10,9 +10,7 @@
 #include "xmlsettingsmanager.h"
 #include <QApplication>
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -35,5 +33,4 @@ namespace Lemon
 				QCoreApplication::applicationName () + "_Lemon");
 		return settings;
 	}
-}
 }

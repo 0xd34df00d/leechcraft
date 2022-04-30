@@ -12,14 +12,10 @@
 #include <QHash>
 #include <libnl3/netlink/route/link.h>
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	class LinuxPlatformBackend : public PlatformBackend
 	{
-		Q_OBJECT
-
 		nl_sock *Rtsock_ = nullptr;
 		nl_cache *LinkCache_ = nullptr;
 
@@ -29,12 +25,10 @@ namespace Lemon
 		};
 		QHash<QString, DevInfo> DevInfos_;
 	public:
-		LinuxPlatformBackend (QObject* = 0);
-		~LinuxPlatformBackend ();
+		explicit LinuxPlatformBackend (QObject* = nullptr);
+		~LinuxPlatformBackend () override;
 
-		CurrentTrafficState GetCurrentNumBytes (const QString&) const;
-	public slots:
-		void update (const QStringList&);
+		CurrentTrafficState GetCurrentNumBytes (const QString&) const override;
+		void Update (const QStringList&) override;
 	};
-}
 }

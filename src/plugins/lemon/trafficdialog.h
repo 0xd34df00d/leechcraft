@@ -8,20 +8,19 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_trafficdialog.h"
 
 class QwtPlotCurve;
 
-namespace LC
-{
-namespace Lemon
+namespace LC::Lemon
 {
 	class TrafficManager;
 
 	class TrafficDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Lemon::TrafficDialog)
 
 		Ui::TrafficDialog Ui_;
 
@@ -34,9 +33,8 @@ namespace Lemon
 		QwtPlotCurve *DownAvg_;
 		QwtPlotCurve *UpAvg_;
 	public:
-		TrafficDialog (const QString&, TrafficManager*, QWidget* = 0);
-	private slots:
-		void handleUpdated ();
+		TrafficDialog (const QString&, TrafficManager*, QWidget* = nullptr);
+	private:
+		void ReplotGraphs ();
 	};
-}
 }
