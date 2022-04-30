@@ -7,12 +7,12 @@
  **********************************************************************/
 
 #include "trafficmanager.h"
+#include <QNetworkInterface>
 #include <QStandardItemModel>
-#include <QNetworkConfigurationManager>
-#include <QNetworkSession>
 #include <QTimer>
 #include <util/util.h>
 #include <util/models/rolenamesmixin.h>
+#include <util/sll/qtutil.h>
 #include "platformbackend.h"
 
 namespace LC
@@ -58,32 +58,14 @@ namespace Lemon
 	TrafficManager::TrafficManager (std::shared_ptr<PlatformBackend> backend, QObject *parent)
 	: QObject (parent)
 	, Model_ (new IfacesModel (this))
-	, ConfManager_ (new QNetworkConfigurationManager (this))
 	, Backend_ (std::move (backend))
 	{
-		connect (ConfManager_,
-				SIGNAL (configurationAdded (QNetworkConfiguration)),
-				this,
-				SLOT (addConfiguration (QNetworkConfiguration)));
-		connect (ConfManager_,
-				SIGNAL (configurationRemoved (QNetworkConfiguration)),
-				this,
-				SLOT (removeConfiguration (QNetworkConfiguration)));
-		connect (ConfManager_,
-				SIGNAL (configurationChanged (QNetworkConfiguration)),
-				this,
-				SLOT (handleConfigChanged (QNetworkConfiguration)));
-
-		ConfManager_->updateConfigurations ();
-
-		for (const auto& conf : ConfManager_->allConfigurations (QNetworkConfiguration::Active))
-			addConfiguration (conf);
-
 		auto timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (updateCounters ()));
+		timer->callOnTimeout ([this]
+			{
+				UpdateInterfaces ();
+				UpdateCounters ();
+			});
 		timer->start (1000);
 	}
 
@@ -107,93 +89,96 @@ namespace Lemon
 		return 500;
 	}
 
-	namespace
+	void TrafficManager::AddInterface (const QNetworkInterface& iface)
 	{
-		struct NetIcons
+		const auto& name = iface.name ();
+
+		InterfaceInfo info { .Item_ = new QStandardItem };
+
+		if (Backend_)
 		{
-			QMap<QNetworkConfiguration::BearerType, QString> Icons_;
-
-			NetIcons ()
-			{
-				Icons_ [QNetworkConfiguration::BearerEthernet] = "network-wired";
-				Icons_ [QNetworkConfiguration::BearerWLAN] = "network-wireless";
-				Icons_ [QNetworkConfiguration::BearerWiMAX] = "network-wireless";
-
-				Icons_ [QNetworkConfiguration::Bearer2G] = "mobile";
-				Icons_ [QNetworkConfiguration::BearerCDMA2000] = "mobile";
-				Icons_ [QNetworkConfiguration::BearerWCDMA] = "mobile";
-				Icons_ [QNetworkConfiguration::BearerHSPA] = "mobile";
-
-				Icons_ [QNetworkConfiguration::BearerUnknown] = "network-workgroup";
-			}
-		};
-	}
-
-	void TrafficManager::addConfiguration (const QNetworkConfiguration& conf)
-	{
-		static NetIcons icons;
-
-		const auto sess = std::make_shared<QNetworkSession> (conf);
-		if (sess->state () != QNetworkSession::Connected)
-			return;
-
-		auto iface = sess->interface ();
-		const auto& ifaceId = iface.name ();
-		const auto& config = sess->configuration ();
-
-		if (!ActiveInterfaces_.contains (ifaceId))
-		{
-			auto item = new QStandardItem;
-			Model_->appendRow (item);
-
-			InterfaceInfo info (item);
-			info.Name_ = ifaceId;
-
-			if (Backend_)
-			{
-				Backend_->update ({ ifaceId });
-				const auto& bytesStats = Backend_->GetCurrentNumBytes (ifaceId);
-				info.PrevRead_ = bytesStats.Down_;
-				info.PrevWritten_ = bytesStats.Up_;
-			}
-
-			ActiveInterfaces_ [ifaceId] = info;
+			Backend_->update ({ name });
+			const auto& bytesStats = Backend_->GetCurrentNumBytes (name);
+			info.PrevRead_ = bytesStats.Down_;
+			info.PrevWritten_ = bytesStats.Up_;
 		}
 
-		auto& info = ActiveInterfaces_ [ifaceId];
+		ActiveInterfaces_ [name] = info;
 
-		auto item = info.Item_;
+		Model_->appendRow (info.Item_);
+	}
+
+	void TrafficManager::UpdateInterface (const QNetworkInterface& iface)
+	{
+		auto item = ActiveInterfaces_ [iface.name ()].Item_;
+		if (!item)
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "unknown interface"
+					<< iface
+					<< "in"
+					<< ActiveInterfaces_.keys ();
+			return;
+		}
+
+		struct NetInfo
+		{
+			QString Icon_;
+			QString TypeStr_;
+		};
+		static const QMap<QNetworkInterface::InterfaceType, NetInfo> netInfos
+		{
+			{ QNetworkInterface::Ethernet, { "network-wired", tr ("Ethernet") } },
+			{ QNetworkInterface::Virtual, { "network-server", tr ("Virtual interface") } },
+			{ QNetworkInterface::Wifi, { "network-wireless", "WiFi" } },
+			{ QNetworkInterface::Ppp, { "network-wired", "PPP" } },
+		};
+
+		const auto netInfo = netInfos.value (iface.type (), { .Icon_ = "network-workgroup", .TypeStr_ = tr ("Unknown type") });
+
 		item->setData (iface.humanReadableName (), IfacesModel::Roles::IfaceName);
-		item->setData (config.bearerTypeName (), IfacesModel::Roles::BearerType);
-		item->setData (icons.Icons_ [config.bearerType ()], IfacesModel::Roles::IconName);
+		item->setData (netInfo.TypeStr_, IfacesModel::Roles::BearerType);
+		item->setData (netInfo.Icon_, IfacesModel::Roles::IconName);
 		item->setData (0, IfacesModel::Roles::MaxDownSpeed);
 		item->setData (0, IfacesModel::Roles::MaxUpSpeed);
-
-		info.LastSession_ = sess;
 	}
 
-	void TrafficManager::removeConfiguration (const QNetworkConfiguration& conf)
+	void TrafficManager::RemoveInterface (const QString& name)
 	{
-		for (const auto& info : ActiveInterfaces_)
+		const auto& info = ActiveInterfaces_.take (name);
+		if (info.Item_)
+			Model_->removeRow (info.Item_->row ());
+	}
+
+	void TrafficManager::UpdateInterfaces ()
+	{
+		QSet<QString> currentNames { ActiveInterfaces_.keyBegin (), ActiveInterfaces_.keyEnd () };
+
+		for (const auto& iface : QNetworkInterface::allInterfaces ())
 		{
-			if (info.LastSession_->configuration () != conf)
+			if (iface.flags () & QNetworkInterface::IsLoopBack)
 				continue;
 
-			Model_->removeRow (info.Item_->row ());
-			ActiveInterfaces_.remove (info.Name_);
-			break;
+			const auto& name = iface.name ();
+			currentNames.remove (name);
+
+			const auto isActive = iface.flags () & QNetworkInterface::IsRunning;
+			const auto isKnown = ActiveInterfaces_.contains (iface.name ());
+			if (isActive)
+			{
+				if (!isKnown)
+					AddInterface (iface);
+				UpdateInterface (iface);
+			}
+			else if (!isActive && isKnown)
+				RemoveInterface (name);
 		}
+
+		for (const auto& deleted : currentNames)
+			RemoveInterface (deleted);
 	}
 
-	void TrafficManager::handleConfigChanged (const QNetworkConfiguration& conf)
-	{
-		if (conf.state () == QNetworkConfiguration::Active)
-			addConfiguration (conf);
-		else
-			removeConfiguration (conf);
-	}
-
-	void TrafficManager::updateCounters ()
+	void TrafficManager::UpdateCounters ()
 	{
 		if (!Backend_)
 			return;
@@ -202,19 +187,17 @@ namespace Lemon
 
 		const auto backtrack = GetBacktrackSize ();
 
-		for (auto& info : ActiveInterfaces_)
+		for (auto&& [name, info] : Util::Stlize (ActiveInterfaces_))
 		{
-			const auto& name = info.Name_;
-
 			const auto& bytesStats = Backend_->GetCurrentNumBytes (name);
 
-			auto updateCounts = [&info, backtrack] (const qint64 now, qint64& prev,
-					QVector<qint64>& list, IfacesModel::Roles role, const QString& text) -> qint64
+			auto updateCounts = [backtrack, item = info.Item_] (const qint64 now, qint64& prev,
+					QVector<qint64>& list, IfacesModel::Roles role, const QString& text)
 			{
 				const auto diff = now - prev;
 
-				info.Item_->setData (diff, role);
-				info.Item_->setData (text.arg (Util::MakePrettySize (diff)), role + 1);
+				item->setData (diff, role);
+				item->setData (text.arg (Util::MakePrettySize (diff)), role + 1);
 
 				list << diff;
 				if (list.size () > backtrack)
@@ -229,10 +212,10 @@ namespace Lemon
 			updateCounts (bytesStats.Up_, info.PrevWritten_, info.UpSpeeds_,
 					IfacesModel::Roles::UpSpeed, tr ("Upload speed: %1/s"));
 
-			auto updateMax = [&info] (const QVector<qint64>& speeds, IfacesModel::Roles role)
+			auto updateMax = [item = info.Item_] (const QVector<qint64>& speeds, IfacesModel::Roles role)
 			{
 				const auto max = *std::max_element (speeds.begin (), speeds.end ());
-				info.Item_->setData (max, role);
+				item->setData (max, role);
 			};
 			updateMax (info.DownSpeeds_, IfacesModel::Roles::MaxDownSpeed);
 			updateMax (info.UpSpeeds_, IfacesModel::Roles::MaxUpSpeed);

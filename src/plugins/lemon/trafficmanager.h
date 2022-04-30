@@ -14,13 +14,9 @@
 #include <QVector>
 
 class QStandardItem;
-class QNetworkConfiguration;
-class QNetworkConfigurationManager;
 class QAbstractItemModel;
 class QStandardItemModel;
-
-class QNetworkSession;
-typedef std::shared_ptr<QNetworkSession> QNetworkSession_ptr;
+class QNetworkInterface;
 
 namespace LC
 {
@@ -32,30 +28,18 @@ namespace Lemon
 	{
 		Q_OBJECT
 
-		QStandardItemModel *Model_;
-		QNetworkConfigurationManager *ConfManager_;
+		QStandardItemModel * const Model_;
 
 		std::shared_ptr<PlatformBackend> Backend_;
 
 		struct InterfaceInfo
 		{
-			QString Name_;
-
-			QStandardItem *Item_;
-			qint64 PrevRead_;
-			qint64 PrevWritten_;
-
-			QNetworkSession_ptr LastSession_;
+			QStandardItem *Item_ = nullptr;
+			qint64 PrevRead_ = 0;
+			qint64 PrevWritten_ = 0;
 
 			QVector<qint64> DownSpeeds_;
 			QVector<qint64> UpSpeeds_;
-
-			InterfaceInfo (QStandardItem *item = 0)
-			: Item_ (item)
-			, PrevRead_ (0)
-			, PrevWritten_ (0)
-			{
-			}
 		};
 		QHash<QString, InterfaceInfo> ActiveInterfaces_;
 	public:
@@ -67,12 +51,13 @@ namespace Lemon
 		QVector<qint64> GetUpHistory (const QString&) const;
 
 		int GetBacktrackSize () const;
-	private slots:
-		void addConfiguration (const QNetworkConfiguration&);
-		void removeConfiguration (const QNetworkConfiguration&);
-		void handleConfigChanged (const QNetworkConfiguration&);
+	private:
+		void AddInterface (const QNetworkInterface&);
+		void UpdateInterface (const QNetworkInterface&);
+		void RemoveInterface (const QString&);
 
-		void updateCounters ();
+		void UpdateInterfaces ();
+		void UpdateCounters ();
 	signals:
 		void updated ();
 	};
