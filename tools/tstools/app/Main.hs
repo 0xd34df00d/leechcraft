@@ -4,11 +4,14 @@
 module Main where
 
 import qualified Control.Foldl as F
+import qualified Data.List as L
 import qualified Data.Text as T
+import Control.Arrow
 import Control.Monad
 import Data.Either
 import Data.FileEmbed
 import Data.Functor
+import Data.Maybe
 import Data.String.Interpolate.IsString
 import Options.Generic
 import Prelude hiding(FilePath)
@@ -28,11 +31,13 @@ mkGenerated allFiles
       pure ["dummy.cpp"]
   where
     toText' = fromRight undefined . toText
-    settingsFiles = filter (settingsFilter . fromRight "" . toText) allFiles
-    settingsFilter str = any (`T.isSuffixOf` str) ["settings.xml", ".qml.settings"]
-    procFile xsltFile settingFile = sed ("__FILENAME__" $> toText' (basename settingFile))
-                                  $ grep (has "QT_TRANSL")
-                                  $ inproc "xsltproc" [toText' xsltFile, toText' settingFile] empty
+    settingsFiles = mapMaybe settingsExtractor allFiles
+    settingsExtractor str = first (const str) <$> L.find ((`T.isSuffixOf` toTextHR str) . fst) [ ("settings.xml", basename)
+                                                                                               , (".qml.settings", filename)
+                                                                                               ]
+    procFile xsltFile (settingFile, contextFun) = sed ("__FILENAME__" $> toText' (contextFun settingFile))
+                                                $ grep (has "QT_TRANSL")
+                                                $ inproc "xsltproc" [toText' xsltFile, toText' settingFile] empty
 
 guessTsBase :: FilePath -> FilePath
 guessTsBase fullPath = go "leechcraft" $ tail $ dropWhile (/= "src") $ T.takeWhile (/= '/') . toTextHR <$> splitDirectories fullPath
