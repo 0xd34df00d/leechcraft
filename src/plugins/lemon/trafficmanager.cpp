@@ -67,6 +67,7 @@ namespace Lemon
 				UpdateCounters ();
 			});
 		timer->start (1000);
+		timer->setTimerType (Qt::VeryCoarseTimer);
 	}
 
 	QAbstractItemModel* TrafficManager::GetModel () const
