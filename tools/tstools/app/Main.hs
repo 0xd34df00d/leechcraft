@@ -35,12 +35,11 @@ mkGenerated allFiles
                                   $ inproc "xsltproc" [toText' xsltFile, toText' settingFile] empty
 
 guessTsBase :: FilePath -> FilePath
-guessTsBase fullPath
-  | ["plugins", plugin, "plugins", subplugin] <- components = [i|leechcraft_#{plugin}_#{subplugin}|]
-  | ["plugins", plugin] <- components = [i|leechcraft_#{plugin}|]
-  | otherwise = [i|leechcraft|]
+guessTsBase fullPath = go "leechcraft" $ tail $ dropWhile (/= "src") $ T.takeWhile (/= '/') . toTextHR <$> splitDirectories fullPath
   where
-    components = tail $ dropWhile (/= "src") $ T.takeWhile (/= '/') . toTextHR <$> splitDirectories fullPath
+    go acc [] = acc
+    go acc ("plugins" : plugin : rest) = go [i|#{acc}_#{plugin}|] rest
+    go _   comps = error [i|Unparseable components: #{comps}|]
 
 data Options w = Options
   { path :: w ::: Maybe String <?> "Path to the plugin directory"
