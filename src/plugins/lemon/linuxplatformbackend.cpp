@@ -7,8 +7,10 @@
  **********************************************************************/
 
 #include "linuxplatformbackend.h"
+#include <stdexcept>
 #include <QStringList>
 #include <QtDebug>
+#include <netlink/errno.h>
 #include <netlink/route/addr.h>
 #include <netlink/route/rtnl.h>
 #include <netlink/route/link.h>
@@ -16,23 +18,44 @@
 
 namespace LC::Lemon
 {
-	LinuxPlatformBackend::LinuxPlatformBackend (QObject *parent)
-	: PlatformBackend { parent }
-	, Rtsock_ { nl_socket_alloc () }
+	LinuxPlatformBackend::SockConn::SockConn (nl_sock& sock)
+	: Sock_ { sock }
 	{
-		if (nl_connect (Rtsock_, NETLINK_ROUTE) >= 0)
-			rtnl_link_alloc_cache (Rtsock_, AF_UNSPEC, &LinkCache_);
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "unable to establish netlink conn";
+		if (const auto res = nl_connect (&Sock_, NETLINK_ROUTE);
+			res < 0)
+		{
+			const auto errStr = nl_geterror (res);
+			qCritical () << Q_FUNC_INFO
+					<< "unable to connect to netlink:"
+					<< errStr;
+			throw std::runtime_error { "unable to connect to netlink" };
+		}
 	}
 
-	LinuxPlatformBackend::~LinuxPlatformBackend ()
+	LinuxPlatformBackend::SockConn::~SockConn ()
 	{
-		nl_cache_free (LinkCache_);
-		nl_close (Rtsock_);
-		nl_socket_free (Rtsock_);
+		nl_close (&Sock_);
 	}
+
+	namespace
+	{
+		auto MakeCache (nl_sock& sock)
+		{
+			nl_cache *cache = nullptr;
+			rtnl_link_alloc_cache (&sock, AF_UNSPEC, &cache);
+			return cache;
+		}
+	}
+
+	LinuxPlatformBackend::LinuxPlatformBackend (QObject *parent)
+	: PlatformBackend { parent }
+	, Rtsock_ { nl_socket_alloc (), &nl_socket_free }
+	, Conn_ { *Rtsock_ }
+	, LinkCache_ { MakeCache (*Rtsock_), &nl_cache_free }
+	{
+	}
+
+	LinuxPlatformBackend::~LinuxPlatformBackend () = default;
 
 	auto LinuxPlatformBackend::GetCurrentNumBytes (const QString& name) const -> CurrentTrafficState
 	{
@@ -44,11 +67,11 @@ namespace LC::Lemon
 		if (!LinkCache_)
 			return;
 
-		nl_cache_refill (Rtsock_, LinkCache_);
+		nl_cache_refill (&*Rtsock_, &*LinkCache_);
 
 		for (const auto& devName : devices)
 		{
-			auto link = rtnl_link_get_by_name (LinkCache_, devName.toLocal8Bit ().constData ());
+			auto link = rtnl_link_get_by_name (&*LinkCache_, devName.toLocal8Bit ().constData ());
 			if (!link)
 			{
 				qWarning () << Q_FUNC_INFO

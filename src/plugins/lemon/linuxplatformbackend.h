@@ -8,16 +8,35 @@
 
 #pragma once
 
-#include "platformbackend.h"
+#include <memory>
 #include <QHash>
 #include <libnl3/netlink/route/link.h>
+#include "platformbackend.h"
 
 namespace LC::Lemon
 {
 	class LinuxPlatformBackend : public PlatformBackend
 	{
-		nl_sock *Rtsock_ = nullptr;
-		nl_cache *LinkCache_ = nullptr;
+		template<typename T>
+		using NlPtr = std::unique_ptr<T, void (*) (T*)>;
+
+		struct SockConn final
+		{
+			nl_sock& Sock_;
+
+			explicit SockConn (nl_sock&);
+			~SockConn ();
+
+			SockConn (const SockConn&) = delete;
+			SockConn (SockConn&&) = delete;
+
+			SockConn& operator= (const SockConn&) = delete;
+			SockConn& operator= (SockConn&&) = delete;
+		};
+
+		NlPtr<nl_sock> Rtsock_;
+		SockConn Conn_;
+		NlPtr<nl_cache> LinkCache_;
 
 		struct DevInfo
 		{
