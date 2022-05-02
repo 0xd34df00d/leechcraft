@@ -29,9 +29,17 @@ namespace LC::Lemon
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lemonsettings.xml");
 
+		try
+		{
 #ifdef Q_OS_LINUX
-		Backend_ = std::make_shared<LinuxPlatformBackend> ();
+			Backend_ = std::make_shared<LinuxPlatformBackend> ();
 #endif
+		}
+		catch (const std::exception& e)
+		{
+			qCritical () << "unable to initialize platform backend:"
+					<< e.what ();
+		}
 
 		TrafficMgr_ = new TrafficManager { Backend_ };
 
