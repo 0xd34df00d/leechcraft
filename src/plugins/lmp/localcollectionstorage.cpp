@@ -344,7 +344,7 @@ namespace LC::LMP
 		}
 	}
 
-	std::optional<LocalCollectionStorage::AlbumStats> LocalCollectionStorage::GetAlbumStats (int albumId)
+	std::optional<Collection::AlbumStats> LocalCollectionStorage::GetAlbumStats (int albumId)
 	{
 		GetAlbumStats_.bindValue (":album_id", albumId);
 		Util::DBLock::Execute (GetAlbumStats_);
@@ -352,7 +352,7 @@ namespace LC::LMP
 		if (!GetAlbumStats_.next ())
 			return {};
 
-		AlbumStats stats
+		Collection::AlbumStats stats
 		{
 			.LastPlayback_ = GetAlbumStats_.value (0).toDateTime (),
 			.LastPlayedTrack_ = GetAlbumStats_.value (1).toString (),
@@ -361,7 +361,7 @@ namespace LC::LMP
 		return stats;
 	}
 
-	std::optional<LocalCollectionStorage::ArtistStats> LocalCollectionStorage::GetArtistStats (int artistId)
+	std::optional<Collection::ArtistStats> LocalCollectionStorage::GetArtistStats (int artistId)
 	{
 		GetArtistStats_.bindValue (":artist_id", artistId);
 		Util::DBLock::Execute (GetArtistStats_);
@@ -369,7 +369,7 @@ namespace LC::LMP
 		if (!GetArtistStats_.next ())
 			return {};
 
-		ArtistStats stats
+		Collection::ArtistStats stats
 		{
 			.LastPlayback_ = GetArtistStats_.value (0).toDateTime (),
 			.LastPlayedAlbum_ = GetArtistStats_.value (1).toString (),

@@ -54,6 +54,19 @@ namespace LC::LMP::Collection
 		const Track& Track_;
 	};
 
+	struct ArtistStats
+	{
+		QDateTime LastPlayback_;
+		QString LastPlayedAlbum_;
+		QString LastPlayedTrack_;
+	};
+
+	struct AlbumStats
+	{
+		QDateTime LastPlayback_;
+		QString LastPlayedTrack_;
+	};
+
 	struct TrackStats
 	{
 		int Playcount_ = 0;

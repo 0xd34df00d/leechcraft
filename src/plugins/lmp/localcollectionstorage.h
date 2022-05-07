@@ -102,20 +102,9 @@ namespace LC::LMP
 		void SetTrackStats (int, const Collection::TrackStats&);
 		void RecordTrackPlayed (int, const QDateTime&);
 
-		struct AlbumStats
-		{
-			QDateTime LastPlayback_;
-			QString LastPlayedTrack_;
-		};
-		std::optional<AlbumStats> GetAlbumStats (int);
+		std::optional<Collection::AlbumStats> GetAlbumStats (int);
 
-		struct ArtistStats
-		{
-			QDateTime LastPlayback_;
-			QString LastPlayedAlbum_;
-			QString LastPlayedTrack_;
-		};
-		std::optional<ArtistStats> GetArtistStats (int);
+		std::optional<Collection::ArtistStats> GetArtistStats (int);
 
 		QDateTime GetMTime (const QString&);
 		void SetMTime (const QString&, const QDateTime&);

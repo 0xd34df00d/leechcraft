@@ -538,7 +538,7 @@ namespace LC::LMP
 	QString LocalCollectionModel::GetArtistTooltip (int artistId) const
 	{
 		return GetTooltip (artistId, ArtistTooltips_, Storage_, &LocalCollectionStorage::GetArtistStats,
-				[] (const LocalCollectionStorage::ArtistStats& stats)
+				[] (const Collection::ArtistStats& stats)
 				{
 					return tr ("Last palyback: %1 (%2 from %3)")
 							.arg (FormatDateTime (stats.LastPlayback_),
@@ -550,7 +550,7 @@ namespace LC::LMP
 	QString LocalCollectionModel::GetAlbumTooltip (int albumId) const
 	{
 		return GetTooltip (albumId, AlbumTooltips_, Storage_, &LocalCollectionStorage::GetAlbumStats,
-				[] (const LocalCollectionStorage::AlbumStats& stats)
+				[] (const Collection::AlbumStats& stats)
 				{
 					return tr ("Last playback: %1 (%2)")
 							.arg (FormatDateTime (stats.LastPlayback_),
