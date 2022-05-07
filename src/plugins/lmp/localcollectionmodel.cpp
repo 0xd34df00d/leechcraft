@@ -540,7 +540,7 @@ namespace LC::LMP
 		return GetTooltip (artistId, ArtistTooltips_, Storage_, &LocalCollectionStorage::GetArtistStats,
 				[] (const Collection::ArtistStats& stats)
 				{
-					return tr ("Last palyback: %1 (%2 from %3)")
+					return tr ("Last playback: %1 (%2 from %3)")
 							.arg (FormatDateTime (stats.LastPlayback_),
 									Util::FormatName (stats.LastPlayedTrack_),
 									Util::FormatName (stats.LastPlayedAlbum_));
