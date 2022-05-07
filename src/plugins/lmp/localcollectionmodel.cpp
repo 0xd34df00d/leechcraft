@@ -516,22 +516,22 @@ namespace LC::LMP
 
 	namespace
 	{
-		QString GetTooltip (int id, QCache<int, QString>& cache,
+		template<typename Stats>
+		QString GetTooltip (int id, QCache<int, std::optional<Stats>>& cache,
 				LocalCollectionStorage& storage, auto getter,
 				auto fmtStats)
 		{
-			if (const auto str = cache.object (id))
-				return *str;
+			const auto mkTooltip = [&] (const std::optional<Stats>& stats)
+			{
+				return stats ? fmtStats (*stats) : LocalCollectionModel::tr ("Never has been played");
+			};
 
-			QString tooltip;
-			if (const auto stats = (storage.*getter) (id))
-				tooltip = fmtStats (*stats);
-			else
-				tooltip = LocalCollectionModel::tr ("Never has been played");
+			if (const auto cachedStatsPtr = cache.object (id))
+				return mkTooltip (*cachedStatsPtr);
 
-			cache.insert (id, new QString { tooltip });
-
-			return tooltip;
+			const auto& maybeStats = (storage.*getter) (id);
+			cache.insert (id, new std::optional<Stats> { maybeStats });
+			return mkTooltip (maybeStats);
 		}
 	}
 

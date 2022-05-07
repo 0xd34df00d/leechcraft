@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QHash>
@@ -37,9 +38,11 @@ namespace LC::LMP
 		QSet<int> IgnoredAlbums_;
 		QSet<int> IgnoredArtists_;
 
-		mutable QCache<int, QString> ArtistTooltips_;
-		mutable QCache<int, QString> AlbumTooltips_;
-		mutable QCache<int, QString> TrackTooltips_;
+		template<typename T>
+		using Cache_t = QCache<int, std::optional<T>>;
+		mutable Cache_t<Collection::ArtistStats> ArtistTooltips_;
+		mutable Cache_t<Collection::AlbumStats> AlbumTooltips_;
+		mutable Cache_t<Collection::TrackStats> TrackTooltips_;
 	public:
 		enum NodeType
 		{
