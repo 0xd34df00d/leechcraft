@@ -114,9 +114,9 @@ namespace LMP
 
 		TrayIcon_ = new LMPSystemTrayIcon (Util::FixupTrayIcon (QIcon ("lcicons:/lmp/resources/images/lmp.svg")), this);
 		connect (Player_,
-				SIGNAL (songChanged (const MediaInfo&)),
+				&Player::songChanged,
 				TrayIcon_,
-				SLOT (handleSongChanged (const MediaInfo&)));
+				&LMPSystemTrayIcon::UpdateSongInfo);
 		SetupToolbar ();
 		Ui_.PLManagerWidget_->SetPlayer (Player_);
 
@@ -601,11 +601,10 @@ namespace LMP
 		else
 		{
 			if (newState == SourceState::Stopped)
-				TrayIcon_->handleSongChanged (MediaInfo ());
+				TrayIcon_->UpdateSongInfo ({});
 			PlayPause_->setProperty ("ActionIcon", "media-playback-start");
 		}
-		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_, newState,
-				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
+		UpdateIcon (TrayIcon_, newState, [] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
 	}
 
 	void PlayerTab::handleShowTrayIcon ()

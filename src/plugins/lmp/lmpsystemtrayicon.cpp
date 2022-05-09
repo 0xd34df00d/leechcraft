@@ -7,88 +7,59 @@
  **********************************************************************/
 
 #include "lmpsystemtrayicon.h"
-#include <QWheelEvent>
-#include <QHelpEvent>
-#include <QToolTip>
 #include <QTime>
-#include "core.h"
-#include "playertab.h"
+#include <QChildEvent>
+#include <QActionEvent>
+#include <QAction>
+#include <util/sll/qtutil.h>
 #include "util.h"
-#include "player.h"
-#include "engine/output.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	LMPSystemTrayIcon::LMPSystemTrayIcon (const QIcon& icon, QObject *parent)
-	: QSystemTrayIcon (icon, parent)
-	, PlayerTab_ (qobject_cast<PlayerTab*> (parent))
+	: QSystemTrayIcon { icon, parent }
 	{
+		UpdateSongInfo ({});
 	}
 
-	bool LMPSystemTrayIcon::event (QEvent *event)
+	namespace
 	{
-		if (event->type () == QEvent::ToolTip)
+		QString MakeTooltip (const MediaInfo& song)
 		{
-			QHelpEvent *help = static_cast<QHelpEvent*> (event);
-			QString text;
+			if (song.Title_.isEmpty ())
+				return u"<table border='0'><tr>"
+					   "<td align='center' valign='middle'><img src='%1' width='%2' height='%2'></td>"
+					   "<td align='center' valign='middle'><b>%3</b><br>%4</td>"
+					   "</tr></table>"_qsv
+						.arg ("lcicons:/lmp/resources/images/lmp.svg",
+							  QString::number (48),
+							  "LMP",
+							  LMPSystemTrayIcon::tr ("No track playing"));
 
-			if (PlayerTab_ &&
-					!CurrentSong_.Title_.isEmpty ())
-			{
-				const QString& trackText = tr ("%1 (%2)")
-						.arg ("<b>" + CurrentSong_.Title_ + "</b>")
-						.arg ("<b>" + QTime ().addSecs (CurrentSong_.Length_).toString ("mm:ss") + "</b>");
-				auto ao = PlayerTab_->GetPlayer ()->GetAudioOutput ();
-				int vol = 0;
-				if (ao)
-				{
-					qreal volume = ao->GetVolume ();
-					vol = volume * 100;
-				}
-				const QString& volumeText = tr ("Volume: %1%")
-						.arg (vol);
+			const auto& albumArt = song.LocalPath_.isEmpty () ?
+					QString {} :
+					FindAlbumArtPath (song.LocalPath_);
 
-				text = QString ("<table border='0'>"
-						"<tr><td align='center' valign='top' rowspan='5'><img src='%1' width='%2' height='%3'></td></tr>"
-						"<tr><td><p style='white-space:pre;'>%4</p></td></tr>"
-						"<tr><td><p style='white-space:pre;'>%5</p></td></tr>"
-						"<tr><td><p style='white-space:pre;'>%6</p></td></tr>"
-						"<tr><td><p style='white-space:pre;'>%7</p></td></tr>"
-						"</table>")
-						.arg (CurrentAlbumArt_)
-						.arg (130)
-						.arg (130)
-						.arg (trackText)
-						.arg ("<b>" + CurrentSong_.Album_ + "</b>")
-						.arg ("<b>" + CurrentSong_.Artist_ + "</b>")
-						.arg ("<em>" + volumeText + "</em>");
-			}
-			else if (CurrentSong_.Title_.isEmpty ())
-				text = QString ("<table border='0'><tr>"
-						"<td align='center' valign='middle'><img src='%1' width='%2' height='%3'></td>"
-						"<td align='center' valign='middle'><b>%4</b><br>%5</td>"
-						"</tr></table>")
-						.arg ("lcicons:/lmp/resources/images/lmp.svg")
-						.arg (48)
-						.arg (48)
-						.arg ("LMP")
-						.arg (tr ("No track playing"));
+			const auto& trackText = QStringLiteral ("<b>%1</b> (<b>%2</b>)")
+					.arg (song.Title_)
+					.arg (QTime ().addSecs (song.Length_).toString ("mm:ss"));
 
-			QToolTip::showText (help->globalPos (), text);
-
-			return true;
+			return u"<table border='0'>"
+					"<tr><td align='center' valign='top' rowspan='5'><img src='%1' width='%2' height='%2'></td></tr>"
+					"<tr><td><p style='white-space:pre;'>%3</p></td></tr>"
+					"<tr><td><p style='white-space:pre;'><b>%4</b></p></td></tr>"
+					"<tr><td><p style='white-space:pre;'><b>%5</b></p></td></tr>"
+					"</table>"_qsv
+					.arg (albumArt,
+						  QString::number (130),
+						  trackText,
+						  song.Album_,
+						  song.Artist_);
 		}
-
-		return QSystemTrayIcon::event (event);
 	}
 
-	void LMPSystemTrayIcon::handleSongChanged (const MediaInfo& song)
+	void LMPSystemTrayIcon::UpdateSongInfo (const MediaInfo& song)
 	{
-		CurrentSong_ = song;
-		CurrentAlbumArt_ = FindAlbumArtPath (song.LocalPath_);
+		setToolTip (MakeTooltip (song));
 	}
-
-}
 }

@@ -11,25 +11,15 @@
 #include <QSystemTrayIcon>
 #include "mediainfo.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class PlayerTab;
 
 	class LMPSystemTrayIcon : public QSystemTrayIcon
 	{
-		Q_OBJECT
-
-		MediaInfo CurrentSong_;
-		QString CurrentAlbumArt_;
-		PlayerTab *PlayerTab_;
 	public:
-		LMPSystemTrayIcon (const QIcon& icon, QObject *parent = 0);
-	protected:
-		bool event (QEvent *event);
-	public slots:
-		void handleSongChanged (const MediaInfo& song);
+		explicit LMPSystemTrayIcon (const QIcon& icon, QObject *parent = nullptr);
+
+		void UpdateSongInfo (const MediaInfo& song);
 	};
-}
 }
