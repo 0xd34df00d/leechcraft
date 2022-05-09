@@ -61,7 +61,6 @@ namespace LC::SB2
 		if (!ViewMgr_)
 			return;
 
-		qDebug () << Q_FUNC_INFO << "adding" << Component_->Url_;
 		auto engine = manager->GetView ()->engine ();
 		for (const auto& pair : Component_->ImageProviders_)
 		{
@@ -73,7 +72,6 @@ namespace LC::SB2
 
 	void QuarkManager::SetupContext (QQmlContext *ctx)
 	{
-		qDebug () << Q_FUNC_INFO << Component_->Url_;
 		QVector<QQmlContext::PropertyPair> props;
 		for (const auto& [name, value] : Component_->StaticProps_)
 			props.push_back ({ name, value });
