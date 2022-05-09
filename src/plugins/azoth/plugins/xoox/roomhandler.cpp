@@ -747,11 +747,9 @@ namespace Xoox
 		reqField.setKey ("muc#role");
 		reqField.setValue ("participant");
 
-		QXmppDataForm form;
-		form.setType (QXmppDataForm::Submit);
-		form.setFields ({ typeField, reqField });
+		QXmppDataForm form { QXmppDataForm::Submit, { typeField, reqField } };
 
-		QXmppMessage msg ("", Room_->jid ());
+		QXmppMessage msg ({}, Room_->jid ());
 		msg.setType (QXmppMessage::Normal);
 		msg.setExtensions ({ XooxUtil::Form2XmppElem (form) });
 
