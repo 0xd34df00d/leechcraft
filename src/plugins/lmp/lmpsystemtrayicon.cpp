@@ -8,9 +8,6 @@
 
 #include "lmpsystemtrayicon.h"
 #include <QTime>
-#include <QChildEvent>
-#include <QActionEvent>
-#include <QAction>
 #include <util/sll/qtutil.h>
 #include "util.h"
 
