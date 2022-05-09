@@ -7,6 +7,7 @@ set (SYS_SRCS
 	util.cpp
 	fdguard.cpp
 	cpufeatures.cpp
+	timer.cpp
 	)
 
 foreach (SRC ${SYS_SRCS})
