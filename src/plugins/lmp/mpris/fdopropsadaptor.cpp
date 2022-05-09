@@ -31,9 +31,7 @@ namespace LC::LMP::MPRIS
 
 	void FDOPropsAdaptor::Notify (const QString& iface, const QString& prop, const QVariant& val)
 	{
-		QVariantMap changes;
-		changes [prop] = val;
-		emit PropertiesChanged (iface, changes, QStringList ());
+		emit PropertiesChanged (iface, { { prop, val } }, {});
 	}
 
 	QDBusVariant FDOPropsAdaptor::Get (const QString& iface, const QString& propName)
