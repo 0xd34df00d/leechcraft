@@ -93,7 +93,6 @@ namespace LMP
 
 		void handlePlayerAvailable (bool);
 
-		void closeLMP ();
 		void handleStateChanged ();
 		void handleShowTrayIcon ();
 		void handleUseNavTabBar ();

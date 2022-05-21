@@ -343,13 +343,6 @@ namespace LMP
 				this,
 				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 
-		const auto closeLMP = new QAction (tr ("Close LMP"), TrayIcon_);
-		closeLMP->setProperty ("ActionIcon", "edit-delete");
-		connect (closeLMP,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (closeLMP ()));
-
 		const auto stopAfterCurrent = new QAction (tr ("Stop after current track"), TrayIcon_);
 		stopAfterCurrent->setCheckable (true);
 		connect (stopAfterCurrent,
@@ -379,7 +372,6 @@ namespace LMP
 		TrayMenu_->addAction (love);
 		TrayMenu_->addAction (ban);
 		TrayMenu_->addSeparator ();
-		TrayMenu_->addAction (closeLMP);
 		TrayIcon_->setContextMenu (TrayMenu_);
 	}
 
@@ -586,11 +578,6 @@ namespace LMP
 		Ui_.PlaylistsTab_->setEnabled (available);
 		Ui_.CollectionTab_->setEnabled (available);
 		Ui_.RadioTab_->setEnabled (available);
-	}
-
-	void PlayerTab::closeLMP ()
-	{
-		Remove ();
 	}
 
 	void PlayerTab::handleStateChanged ()
