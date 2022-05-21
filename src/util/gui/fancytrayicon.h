@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <variant>
 #include <QObject>
 #include <QIcon>
 #include <QPointer>
@@ -35,13 +36,15 @@ namespace LC::Util
 			QString PlainText_;
 			QString HTML_;
 		};
+
+		using Icon = std::variant<QString, QIcon>;
 	private:
 		std::unique_ptr<FancyTrayIconImpl> Impl_;
 
 		const IconInfo Info_;
 
 		bool Visible_ = true;
-		QIcon Icon_;
+		Icon Icon_;
 		Tooltip Tooltip_;
 		QPointer<QMenu> Menu_;
 	public:
@@ -50,8 +53,8 @@ namespace LC::Util
 
 		void SetVisible (bool visible);
 
-		void SetIcon (const QIcon& icon);
-		const QIcon& GetIcon () const;
+		void SetIcon (const Icon& icon);
+		const Icon& GetIcon () const;
 
 		void SetToolTip (Tooltip tooltip);
 		const Tooltip& GetTooltip () const;

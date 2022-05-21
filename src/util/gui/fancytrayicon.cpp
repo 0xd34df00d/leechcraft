@@ -38,14 +38,14 @@ namespace LC::Util
 			ReinitImpl ();
 	}
 
-	void FancyTrayIcon::SetIcon (const QIcon& icon)
+	void FancyTrayIcon::SetIcon (const Icon& icon)
 	{
 		Icon_ = icon;
 		if (Impl_)
 			Impl_->UpdateIcon ();
 	}
 
-	const QIcon& FancyTrayIcon::GetIcon () const
+	const FancyTrayIcon::Icon& FancyTrayIcon::GetIcon () const
 	{
 		return Icon_;
 	}

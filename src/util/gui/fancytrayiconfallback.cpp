@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "fancytrayiconfallback.h"
+#include <util/sll/visitor.h>
 
 namespace LC::Util
 {
@@ -34,7 +35,10 @@ namespace LC::Util
 
 	void FancyTrayIconFallback::UpdateIcon ()
 	{
-		Icon_.setIcon (FTI_.GetIcon ());
+		const auto& icon = Util::Visit (FTI_.GetIcon (),
+				[] (const QString& filename) { return QIcon { filename }; },
+				[] (const QIcon& icon) { return icon; });
+		Icon_.setIcon (icon);
 	}
 
 	void FancyTrayIconFallback::UpdateTooltip ()
