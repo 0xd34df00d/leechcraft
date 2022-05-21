@@ -19,6 +19,21 @@ namespace LC::Util
 
 namespace LC::Util::detail
 {
+	struct IconFrame
+	{
+		int Width_;
+		int Height_;
+		QByteArray Data_;
+
+		static IconFrame FromPixmap (const QPixmap&);
+	};
+}
+
+Q_DECLARE_METATYPE (LC::Util::detail::IconFrame)
+Q_DECLARE_METATYPE (QList<LC::Util::detail::IconFrame>)
+
+namespace LC::Util::detail
+{
 	class SNIAdaptor : public QDBusAbstractAdaptor
 	{
 		Q_OBJECT
@@ -32,6 +47,9 @@ namespace LC::Util::detail
 
 		Q_PROPERTY (QString Id READ GetId CONSTANT)
 		Q_PROPERTY (QString Title READ GetTitle)
+
+		Q_PROPERTY (QString IconName READ GetIconName)
+		Q_PROPERTY (QList<LC::Util::detail::IconFrame> IconPixmap READ GetIconPixmap NOTIFY NewIcon)
 
 		FancyTrayIconFreedesktop& Impl_;
 
@@ -47,7 +65,10 @@ namespace LC::Util::detail
 	private:
 		QString GetId () const;
 		QString GetTitle () const;
+		QString GetIconName () const;
+		QList<IconFrame> GetIconPixmap () const;
 	signals:
+		void NewIcon ();
 		void NewTooltip ();
 	};
 }

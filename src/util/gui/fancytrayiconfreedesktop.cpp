@@ -12,9 +12,45 @@
 #include <QDBusInterface>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QDBusMetaType>
 #include <QMenu>
 #include <QtDebug>
+#include <QtEndian>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
+
+namespace LC::Util::detail
+{
+	IconFrame IconFrame::FromPixmap (const QPixmap& px)
+	{
+		const auto& img = px.toImage ().convertToFormat (QImage::Format_ARGB32);
+
+		QByteArray data;
+		const auto pixelsCnt = img.width () * img.height ();
+		data.resize (pixelsCnt * sizeof (quint32));
+		qToBigEndian<quint32> (img.bits (), pixelsCnt, data.data ());
+
+		return { .Width_ = img.width (), .Height_ = img.height (), .Data_ = data };
+	}
+
+	QDBusArgument& operator<< (QDBusArgument& out, const IconFrame& frame)
+	{
+		out.beginStructure ();
+		out << frame.Width_ << frame.Height_ << frame.Data_;
+		out.endStructure ();
+		return out;
+	}
+
+	const QDBusArgument& operator>> (const QDBusArgument& in, IconFrame& frame)
+	{
+		in.beginStructure ();
+		in >> frame.Width_ >> frame.Height_ >> frame.Data_;
+		in.endStructure ();
+		return in;
+	}
+
+}
 
 namespace LC::Util
 {
@@ -47,6 +83,7 @@ namespace LC::Util
 
 	void FancyTrayIconFreedesktop::UpdateIcon ()
 	{
+		emit Adaptor_.NewIcon ();
 	}
 
 	void FancyTrayIconFreedesktop::UpdateTooltip ()
@@ -65,6 +102,8 @@ namespace LC::Util::detail
 	: QDBusAbstractAdaptor { &impl }
 	, Impl_ { impl }
 	{
+		qDBusRegisterMetaType<IconFrame> ();
+		qDBusRegisterMetaType<QList<IconFrame>> ();
 	}
 
 	void SNIAdaptor::ContextMenu (int x, int y)
@@ -91,6 +130,31 @@ namespace LC::Util::detail
 	QString SNIAdaptor::GetTitle () const
 	{
 		return Impl_.Info_.Title_;
+	}
+
+	QString SNIAdaptor::GetIconName () const
+	{
+		return Util::Visit (Impl_.FTI_.GetIcon (),
+				[] (const QString& path) { return path; },
+				[] (const QIcon&) { return QString {}; });
+	}
+
+	QList<IconFrame> SNIAdaptor::GetIconPixmap () const
+	{
+		return Util::Visit (Impl_.FTI_.GetIcon (),
+				[] (const QString&) { return QList<IconFrame> {}; },
+				[] (const QIcon& icon)
+				{
+					if (icon.isNull ())
+						return QList<IconFrame> {};
+
+					auto sizes = icon.availableSizes ();
+					constexpr auto fallbackSize = 128;
+					if (sizes.isEmpty ())
+						sizes << QSize { fallbackSize, fallbackSize };
+
+					return Util::Map (sizes, [&] (QSize size) { return IconFrame::FromPixmap (icon.pixmap (size)); });
+				});
 	}
 }
 
