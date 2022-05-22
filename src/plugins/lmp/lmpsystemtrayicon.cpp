@@ -39,7 +39,7 @@ namespace LC::LMP
 
 			const auto& trackText = QStringLiteral ("<b>%1</b> (<b>%2</b>)")
 					.arg (song.Title_)
-					.arg (QTime ().addSecs (song.Length_).toString ("mm:ss"));
+					.arg (QTime { 0, 0 }.addSecs (song.Length_).toString ("mm:ss"));
 
 			return u"<table border='0'>"
 					"<tr><td align='center' valign='top' rowspan='5'><img src='%1' width='%2' height='%2'></td></tr>"
