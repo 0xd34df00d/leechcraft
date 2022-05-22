@@ -15,6 +15,7 @@ namespace LC::Util
 	: FancyTrayIconImpl { &icon }
 	, FTI_ { icon }
 	{
+		Icon_.setVisible (true);
 		connect (&Icon_,
 				&QSystemTrayIcon::activated,
 				[&icon] (QSystemTrayIcon::ActivationReason reason)
