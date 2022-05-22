@@ -19,7 +19,7 @@ namespace LC::Util
 {
 	FancyTrayIcon::FancyTrayIcon (IconInfo info, QObject *parent)
 	: QObject { parent }
-	, Info_ { info }
+	, Info_ { std::move (info) }
 	{
 		ReinitImpl ();
 	}
