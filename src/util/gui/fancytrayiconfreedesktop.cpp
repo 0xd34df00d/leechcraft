@@ -34,6 +34,19 @@ namespace LC::Util::detail
 		return { .Width_ = img.width (), .Height_ = img.height (), .Data_ = data };
 	}
 
+	QList<IconFrame> IconToFrames (const QIcon& icon)
+	{
+		if (icon.isNull ())
+			return {};
+
+		auto sizes = icon.availableSizes ();
+		constexpr auto fallbackSize = 128;
+		if (sizes.isEmpty ())
+			sizes << QSize { fallbackSize, fallbackSize };
+
+		return Util::Map (sizes, [&] (QSize size) { return IconFrame::FromPixmap (icon.pixmap (size)); });
+	}
+
 	QDBusArgument& operator<< (QDBusArgument& out, const IconFrame& frame)
 	{
 		out.beginStructure ();
@@ -143,18 +156,7 @@ namespace LC::Util::detail
 	{
 		return Util::Visit (Impl_.FTI_.GetIcon (),
 				[] (const QString&) { return QList<IconFrame> {}; },
-				[] (const QIcon& icon)
-				{
-					if (icon.isNull ())
-						return QList<IconFrame> {};
-
-					auto sizes = icon.availableSizes ();
-					constexpr auto fallbackSize = 128;
-					if (sizes.isEmpty ())
-						sizes << QSize { fallbackSize, fallbackSize };
-
-					return Util::Map (sizes, [&] (QSize size) { return IconFrame::FromPixmap (icon.pixmap (size)); });
-				});
+				[] (const QIcon& icon) { return IconToFrames (icon); });
 	}
 }
 
