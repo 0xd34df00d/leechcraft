@@ -723,7 +723,7 @@ namespace LMP
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
 			{
-				if (!item.second)
+				if (!item.second || item.second->IsUseless ())
 					continue;
 
 				const auto& media = *item.second;
