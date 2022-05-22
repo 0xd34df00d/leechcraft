@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "lmpsystemtrayicon.h"
-#include <QTime>
 #include <util/sll/qtutil.h>
 #include "util.h"
 
@@ -24,32 +23,22 @@ namespace LC::LMP
 		QString MakeTooltip (const MediaInfo& song)
 		{
 			if (song.Title_.isEmpty ())
-				return u"<table border='0'><tr>"
-					   "<td align='center' valign='middle'><img src='%1' width='%2' height='%2'></td>"
-					   "<td align='center' valign='middle'><b>%3</b><br>%4</td>"
-					   "</tr></table>"_qsv
-						.arg ("lcicons:/lmp/resources/images/lmp.svg",
-							  QString::number (48),
-							  "LMP",
-							  LMPSystemTrayIcon::tr ("No track playing"));
+				return LMPSystemTrayIcon::tr ("No track is currently playing");
 
 			const auto& albumArt = song.LocalPath_.isEmpty () ?
 					QString {} :
 					FindAlbumArtPath (song.LocalPath_);
 
-			const auto& trackText = QStringLiteral ("<b>%1</b> (<b>%2</b>)")
-					.arg (song.Title_)
-					.arg (QTime { 0, 0 }.addSecs (song.Length_).toString ("mm:ss"));
+			if (albumArt.isEmpty ())
+				return LMPSystemTrayIcon::tr ("%1 from %2 by %3")
+						.arg ("<b>" + song.Title_ + "</b>",
+							  "<b>" + song.Album_ + "</b>",
+							  "<b>" + song.Artist_ + "</b>");
 
-			return u"<table border='0'>"
-					"<tr><td align='center' valign='top' rowspan='5'><img src='%1' width='%2' height='%2'></td></tr>"
-					"<tr><td><p style='white-space:pre;'>%3</p></td></tr>"
-					"<tr><td><p style='white-space:pre;'><b>%4</b></p></td></tr>"
-					"<tr><td><p style='white-space:pre;'><b>%5</b></p></td></tr>"
-					"</table>"_qsv
+			return u"<img src='%1' width='%2' height='%2'/><br/>%3<br/>%4<br/>%5"_qsv
 					.arg (albumArt,
-						  QString::number (130),
-						  trackText,
+						  QString::number (400),
+						  song.Title_,
 						  song.Album_,
 						  song.Artist_);
 		}
