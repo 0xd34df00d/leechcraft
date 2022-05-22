@@ -26,6 +26,11 @@ namespace LC::Util
 
 	FancyTrayIcon::~FancyTrayIcon () = default;
 
+	const FancyTrayIcon::IconInfo& FancyTrayIcon::GetInfo () const
+	{
+		return Info_;
+	}
+
 	void FancyTrayIcon::SetVisible (bool visible)
 	{
 		if (visible == Visible_)
@@ -79,7 +84,7 @@ namespace LC::Util
 		try
 		{
 #ifdef IS_FREEDESKTOP_PLATFORM
-			Impl_ = std::make_unique<FancyTrayIconFreedesktop> (*this, Info_);
+			Impl_ = std::make_unique<FancyTrayIconFreedesktop> (*this);
 #endif
 		}
 		catch (const std::exception& e)

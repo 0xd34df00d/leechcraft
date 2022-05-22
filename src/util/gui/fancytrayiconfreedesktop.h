@@ -89,12 +89,11 @@ namespace LC::Util
 	{
 		friend class detail::SNIAdaptor;
 
-		const FancyTrayIcon::IconInfo Info_;
 		FancyTrayIcon& FTI_;
 
 		detail::SNIAdaptor Adaptor_;
 	public:
-		explicit FancyTrayIconFreedesktop (FancyTrayIcon& icon, const FancyTrayIcon::IconInfo& info);
+		explicit FancyTrayIconFreedesktop (FancyTrayIcon& icon);
 
 		void UpdateIcon () override;
 		void UpdateTooltip () override;

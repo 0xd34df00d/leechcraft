@@ -51,6 +51,8 @@ namespace LC::Util
 		explicit FancyTrayIcon (IconInfo info, QObject *parent = nullptr);
 		~FancyTrayIcon () override;
 
+		const IconInfo& GetInfo () const;
+
 		void SetVisible (bool visible);
 
 		void SetIcon (const Icon& icon);

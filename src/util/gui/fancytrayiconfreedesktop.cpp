@@ -92,9 +92,8 @@ namespace LC::Util::detail
 
 namespace LC::Util
 {
-	FancyTrayIconFreedesktop::FancyTrayIconFreedesktop (FancyTrayIcon& icon, const FancyTrayIcon::IconInfo& info)
+	FancyTrayIconFreedesktop::FancyTrayIconFreedesktop (FancyTrayIcon& icon)
 	: FancyTrayIconImpl { &icon }
-	, Info_ { info }
 	, FTI_ { icon }
 	, Adaptor_ { *this }
 	{
@@ -165,12 +164,12 @@ namespace LC::Util::detail
 
 	QString SNIAdaptor::GetId () const
 	{
-		return Impl_.Info_.Id_;
+		return Impl_.FTI_.GetInfo ().Id_;
 	}
 
 	QString SNIAdaptor::GetTitle () const
 	{
-		return Impl_.Info_.Title_;
+		return Impl_.FTI_.GetInfo ().Title_;
 	}
 
 	QString SNIAdaptor::GetIconName () const
@@ -191,7 +190,7 @@ namespace LC::Util::detail
 	{
 		return
 		{
-			.Title_ = Impl_.Info_.Title_,
+			.Title_ = Impl_.FTI_.GetInfo ().Title_,
 			.Subtitle_ = Impl_.FTI_.GetTooltip ().HTML_
 		};
 	}
