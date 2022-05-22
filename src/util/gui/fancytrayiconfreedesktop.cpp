@@ -116,7 +116,9 @@ namespace LC::Util
 		if (!sb.registerObject ("/StatusNotifierItem", this))
 			throw std::runtime_error { "unable to register SNI object" };
 
-		qDebug () << watcher.call ("RegisterStatusNotifierItem", serviceName);
+		if (const auto reply = watcher.call ("RegisterStatusNotifierItem", serviceName);
+			reply.type () == QDBusMessage::ErrorMessage)
+			throw std::runtime_error { "unable to register the SNI with the watcher: " + reply.errorMessage ().toStdString () };
 	}
 
 	void FancyTrayIconFreedesktop::UpdateIcon ()
