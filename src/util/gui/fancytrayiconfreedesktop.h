@@ -27,10 +27,17 @@ namespace LC::Util::detail
 
 		static IconFrame FromPixmap (const QPixmap&);
 	};
+
+	struct DBusTooltip
+	{
+		QString Title_;
+		QString Subtitle_;
+	};
 }
 
 Q_DECLARE_METATYPE (LC::Util::detail::IconFrame)
 Q_DECLARE_METATYPE (QList<LC::Util::detail::IconFrame>)
+Q_DECLARE_METATYPE (LC::Util::detail::DBusTooltip)
 
 namespace LC::Util::detail
 {
@@ -51,6 +58,8 @@ namespace LC::Util::detail
 		Q_PROPERTY (QString IconName READ GetIconName)
 		Q_PROPERTY (QList<LC::Util::detail::IconFrame> IconPixmap READ GetIconPixmap NOTIFY NewIcon)
 
+		Q_PROPERTY (LC::Util::detail::DBusTooltip ToolTip READ GetTooltip NOTIFY NewTooltip)
+
 		FancyTrayIconFreedesktop& Impl_;
 
 		const QString Category_ = QStringLiteral ("ApplicationStatus");
@@ -67,6 +76,7 @@ namespace LC::Util::detail
 		QString GetTitle () const;
 		QString GetIconName () const;
 		QList<IconFrame> GetIconPixmap () const;
+		DBusTooltip GetTooltip () const;
 	signals:
 		void NewIcon ();
 		void NewTooltip ();

@@ -63,6 +63,31 @@ namespace LC::Util::detail
 		return in;
 	}
 
+	QDBusArgument& operator<< (QDBusArgument& out, const DBusTooltip& tooltip)
+	{
+		out.beginStructure ();
+		out << QString {};
+		out << IconToFrames (QIcon {});
+		out << tooltip.Title_;
+		out << tooltip.Subtitle_;
+		out.endStructure ();
+		return out;
+	}
+
+	const QDBusArgument& operator>> (const QDBusArgument& in, DBusTooltip& tooltip)
+	{
+		QString iconName;
+		QList<IconFrame> frames;
+
+		in.beginStructure ();
+		in >> iconName;
+		in >> frames;
+		in >> tooltip.Title_;
+		in >> tooltip.Subtitle_;
+		in.endStructure ();
+
+		return in;
+	}
 }
 
 namespace LC::Util
@@ -117,6 +142,7 @@ namespace LC::Util::detail
 	{
 		qDBusRegisterMetaType<IconFrame> ();
 		qDBusRegisterMetaType<QList<IconFrame>> ();
+		qDBusRegisterMetaType<DBusTooltip> ();
 	}
 
 	void SNIAdaptor::ContextMenu (int x, int y)
@@ -157,6 +183,15 @@ namespace LC::Util::detail
 		return Util::Visit (Impl_.FTI_.GetIcon (),
 				[] (const QString&) { return QList<IconFrame> {}; },
 				[] (const QIcon& icon) { return IconToFrames (icon); });
+	}
+
+	DBusTooltip SNIAdaptor::GetTooltip () const
+	{
+		return
+		{
+			.Title_ = Impl_.Info_.Title_,
+			.Subtitle_ = Impl_.FTI_.GetTooltip ().HTML_
+		};
 	}
 }
 
