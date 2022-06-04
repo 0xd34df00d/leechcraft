@@ -96,7 +96,6 @@ namespace LMP
 		void handleStateChanged ();
 		void handleShowTrayIcon ();
 		void handleUseNavTabBar ();
-		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason);
 	signals:
 		void removeTab ();
 

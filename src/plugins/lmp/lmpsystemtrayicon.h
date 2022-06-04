@@ -11,15 +11,29 @@
 #include <QSystemTrayIcon>
 #include "mediainfo.h"
 
+namespace LC::Util
+{
+	class FancyTrayIcon;
+}
+
 namespace LC::LMP
 {
 	class PlayerTab;
 
-	class LMPSystemTrayIcon : public QSystemTrayIcon
+	class LMPSystemTrayIcon : public QObject
 	{
+		Q_OBJECT
+
+		Util::FancyTrayIcon& Icon_;
 	public:
 		explicit LMPSystemTrayIcon (const QIcon& icon, QObject *parent = nullptr);
 
+		void SetMenu (QMenu*);
+		void SetVisible (bool);
+		void SetIcon (const QIcon&);
+
 		void UpdateSongInfo (const MediaInfo& song);
+	signals:
+		void playPauseToggled ();
 	};
 }

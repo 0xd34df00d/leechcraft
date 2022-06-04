@@ -112,7 +112,7 @@ namespace LMP
 				Ui_.Playlist_,
 				SLOT (focusIndex (QModelIndex)));
 
-		TrayIcon_ = new LMPSystemTrayIcon (Util::FixupTrayIcon (QIcon ("lcicons:/lmp/resources/images/lmp.svg")), this);
+		TrayIcon_ = new LMPSystemTrayIcon (QIcon { "lcicons:/lmp/resources/images/lmp.svg" }, this);
 		connect (Player_,
 				&Player::songChanged,
 				TrayIcon_,
@@ -339,9 +339,9 @@ namespace LMP
 
 		// fill tray menu
 		connect (TrayIcon_,
-				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
-				this,
-				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
+				&LMPSystemTrayIcon::playPauseToggled,
+				Player_,
+				&Player::togglePause);
 
 		const auto stopAfterCurrent = new QAction (tr ("Stop after current track"), TrayIcon_);
 		stopAfterCurrent->setCheckable (true);
@@ -372,7 +372,7 @@ namespace LMP
 		TrayMenu_->addAction (love);
 		TrayMenu_->addAction (ban);
 		TrayMenu_->addSeparator ();
-		TrayIcon_->setContextMenu (TrayMenu_);
+		TrayIcon_->SetMenu (TrayMenu_);
 	}
 
 	void PlayerTab::Scrobble (const MediaInfo& info)
@@ -468,17 +468,13 @@ namespace LMP
 			}
 		}
 
-		template<typename T, typename F>
-		void UpdateIcon (T iconable, SourceState state, F iconSizeGetter)
+		template<typename T>
+		void UpdateIcon (T iconable, SourceState state)
 		{
-			const QSize& iconSize = iconSizeGetter (iconable);
-			if (iconSize.isEmpty ())
-				return;
+			const QSize iconSize { 256, 256 };
 
 			QIcon icon = GetIconFromState (state);
-			QIcon baseIcon = icon.isNull () ?
-				QIcon ("lcicons:/lmp/resources/images/lmp.svg") :
-				iconable->icon ();
+			QIcon baseIcon { "lcicons:/lmp/resources/images/lmp.svg" };
 
 			QPixmap px = baseIcon.pixmap (iconSize);
 			if (px.isNull ())
@@ -497,7 +493,7 @@ namespace LMP
 				p.end ();
 			}
 
-			iconable->setIcon (QIcon (px));
+			iconable->SetIcon ({ px });
 		}
 	}
 
@@ -591,12 +587,12 @@ namespace LMP
 				TrayIcon_->UpdateSongInfo ({});
 			PlayPause_->setProperty ("ActionIcon", "media-playback-start");
 		}
-		UpdateIcon (TrayIcon_, newState, [] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
+		UpdateIcon (TrayIcon_, newState);
 	}
 
 	void PlayerTab::handleShowTrayIcon ()
 	{
-		TrayIcon_->setVisible (XmlSettingsManager::Instance ().property ("ShowTrayIcon").toBool ());
+		TrayIcon_->SetVisible (XmlSettingsManager::Instance ().property ("ShowTrayIcon").toBool ());
 	}
 
 	void PlayerTab::handleUseNavTabBar ()
@@ -614,18 +610,6 @@ namespace LMP
 		Ui_.WidgetsLayout_->insertWidget (0, widget, 0,
 				useTabs ? Qt::AlignTop : Qt::Alignment ());
 		widget->show ();
-	}
-
-	void PlayerTab::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
-	{
-		switch (reason)
-		{
-			case QSystemTrayIcon::MiddleClick:
-				Player_->togglePause ();
-				break;
-			default:
-				break;
-		}
 	}
 }
 }

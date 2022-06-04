@@ -7,20 +7,54 @@
  **********************************************************************/
 
 #include "lmpsystemtrayicon.h"
+#include <util/gui/fancytrayicon.h>
 #include <util/sll/qtutil.h>
 #include "util.h"
 
 namespace LC::LMP
 {
 	LMPSystemTrayIcon::LMPSystemTrayIcon (const QIcon& icon, QObject *parent)
-	: QSystemTrayIcon { icon, parent }
+	: QObject { parent }
+	, Icon_ { *new Util::FancyTrayIcon { { .Id_ = QStringLiteral ("LMP"), .Title_ = QStringLiteral ("LeechCraft LMP") }, this } }
 	{
+		SetIcon (icon);
 		UpdateSongInfo ({});
+
+		connect (&Icon_,
+				&Util::FancyTrayIcon::secondaryActivated,
+				this,
+				&LMPSystemTrayIcon::playPauseToggled);
+	}
+
+	void LMPSystemTrayIcon::SetMenu (QMenu *menu)
+	{
+		Icon_.SetContextMenu (menu);
+	}
+
+	void LMPSystemTrayIcon::SetVisible (bool visible)
+	{
+		Icon_.SetVisible (visible);
+	}
+
+	void LMPSystemTrayIcon::SetIcon (const QIcon& icon)
+	{
+		Icon_.SetIcon (icon);
 	}
 
 	namespace
 	{
-		QString MakeTooltip (const MediaInfo& song)
+		QString MakePlainTooltip (const MediaInfo& song)
+		{
+			if (song.Title_.isEmpty ())
+				return LMPSystemTrayIcon::tr ("No track is currently playing");
+
+			return LMPSystemTrayIcon::tr ("%1 from %2 by %3")
+					.arg (song.Title_,
+						  song.Album_,
+						  song.Artist_);
+		}
+
+		QString MakeHtmlTooltip (const MediaInfo& song)
 		{
 			if (song.Title_.isEmpty ())
 				return LMPSystemTrayIcon::tr ("No track is currently playing");
@@ -46,6 +80,9 @@ namespace LC::LMP
 
 	void LMPSystemTrayIcon::UpdateSongInfo (const MediaInfo& song)
 	{
-		setToolTip (MakeTooltip (song));
+		Icon_.SetToolTip ({
+				.PlainText_ = MakePlainTooltip (song),
+				.HTML_ = MakeHtmlTooltip (song)
+			});
 	}
 }
