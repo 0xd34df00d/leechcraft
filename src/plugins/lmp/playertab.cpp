@@ -339,6 +339,14 @@ namespace LMP
 
 		// fill tray menu
 		connect (TrayIcon_,
+				&LMPSystemTrayIcon::changedVolume,
+				Player_,
+				[this] (qreal delta)
+				{
+					const auto out = Player_->GetAudioOutput ();
+					out->setVolume (std::clamp (out->GetVolume () + delta * 0.05, 0., 1.));
+				});
+		connect (TrayIcon_,
 				&LMPSystemTrayIcon::playPauseToggled,
 				Player_,
 				&Player::togglePause);

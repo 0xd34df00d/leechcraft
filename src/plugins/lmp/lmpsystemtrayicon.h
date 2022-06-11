@@ -34,6 +34,7 @@ namespace LC::LMP
 
 		void UpdateSongInfo (const MediaInfo& song);
 	signals:
+		void changedVolume (qreal);
 		void playPauseToggled ();
 	};
 }

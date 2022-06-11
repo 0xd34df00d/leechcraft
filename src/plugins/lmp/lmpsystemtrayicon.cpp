@@ -24,6 +24,15 @@ namespace LC::LMP
 				&Util::FancyTrayIcon::secondaryActivated,
 				this,
 				&LMPSystemTrayIcon::playPauseToggled);
+
+		connect (&Icon_,
+				&Util::FancyTrayIcon::scrolled,
+				this,
+				[this] (int delta, Qt::Orientation orient)
+				{
+					if (orient == Qt::Vertical)
+						emit changedVolume (delta / 120.);
+				});
 	}
 
 	void LMPSystemTrayIcon::SetMenu (QMenu *menu)
