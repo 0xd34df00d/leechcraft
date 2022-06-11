@@ -9,6 +9,7 @@
 #include "lmpsystemtrayicon.h"
 #include <util/gui/fancytrayicon.h>
 #include <util/sll/qtutil.h>
+#include <util/util.h>
 #include "util.h"
 
 namespace LC::LMP
@@ -63,6 +64,12 @@ namespace LC::LMP
 						  song.Artist_);
 		}
 
+		auto PrepareSerialized (const QString& name)
+		{
+			const auto& icon = QIcon::fromTheme (name);
+			return Util::GetAsBase64Src (icon.pixmap (24, 24).toImage ());
+		}
+
 		QString MakeHtmlTooltip (const MediaInfo& song)
 		{
 			if (song.Title_.isEmpty ())
@@ -78,12 +85,19 @@ namespace LC::LMP
 							  "<b>" + song.Album_ + "</b>",
 							  "<b>" + song.Artist_ + "</b>");
 
-			return u"<img src='%1' width='%2' height='%2'/><br/>%3<br/>%4<br/>%5"_qsv
+			static const auto artistIcon = PrepareSerialized ("view-media-artist");
+			static const auto albumIcon = PrepareSerialized ("media-optical");
+			static const auto titleIcon = PrepareSerialized ("media-playback-start");
+
+			return u"<img src='%1' width='%2' height='%2'/><br/><img src='%3'/>%4<br/><img src='%5'/>%6<br/><img src='%7'/>%8"_qsv
 					.arg (albumArt,
 						  QString::number (400),
+						  titleIcon,
 						  song.Title_,
-						  song.Album_,
-						  song.Artist_);
+						  artistIcon,
+						  song.Artist_,
+						  albumIcon,
+						  song.Album_);
 		}
 	}
 
