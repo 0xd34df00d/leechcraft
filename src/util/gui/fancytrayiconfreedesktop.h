@@ -71,6 +71,7 @@ namespace LC::Util::detail
 		void ContextMenu (int x, int y);
 		void Activate (int, int);
 		void SecondaryActivate (int, int);
+		void Scroll (int, const QString&);
 	private:
 		QString GetId () const;
 		QString GetTitle () const;

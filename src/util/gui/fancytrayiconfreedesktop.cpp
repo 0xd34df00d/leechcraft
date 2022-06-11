@@ -162,6 +162,11 @@ namespace LC::Util::detail
 		emit Impl_.FTI_.secondaryActivated ();
 	}
 
+	void SNIAdaptor::Scroll (int delta, const QString& orient)
+	{
+		emit Impl_.FTI_.scrolled (delta, orient == u"Vertical"_qsv ? Qt::Vertical : Qt::Horizontal);
+	}
+
 	QString SNIAdaptor::GetId () const
 	{
 		return Impl_.FTI_.GetInfo ().Id_;

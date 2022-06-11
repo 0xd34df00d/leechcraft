@@ -68,6 +68,6 @@ namespace LC::Util
 	signals:
 		void activated ();
 		void secondaryActivated ();
-		void scrolled (int);
+		void scrolled (int, Qt::Orientation);
 	};
 }
