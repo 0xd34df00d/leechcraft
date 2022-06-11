@@ -51,4 +51,8 @@ namespace LC::Util
 	{
 		Icon_.setContextMenu (FTI_.GetContextMenu ());
 	}
+
+	void FancyTrayIconFallback::UpdateStatus ()
+	{
+	}
 }

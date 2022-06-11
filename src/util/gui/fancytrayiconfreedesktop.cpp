@@ -133,6 +133,11 @@ namespace LC::Util
 	void FancyTrayIconFreedesktop::UpdateMenu ()
 	{
 	}
+
+	void FancyTrayIconFreedesktop::UpdateStatus ()
+	{
+		emit Adaptor_.NewStatus ();
+	}
 }
 
 namespace LC::Util::detail
@@ -177,6 +182,23 @@ namespace LC::Util::detail
 		return Impl_.FTI_.GetInfo ().Title_;
 	}
 
+	QString SNIAdaptor::GetStatus () const
+	{
+		switch (Impl_.FTI_.GetStatus ())
+		{
+		case FancyTrayIcon::Status::Passive:
+			return "Passive";
+		case FancyTrayIcon::Status::Active:
+			return "Active";
+		case FancyTrayIcon::Status::NeedsAttention:
+			return "NeedsAttention";
+		}
+
+		qWarning () << Q_FUNC_INFO
+				 << "unknown status";
+		return "Active";
+	}
+
 	QString SNIAdaptor::GetIconName () const
 	{
 		return Util::Visit (Impl_.FTI_.GetIcon (),
@@ -200,4 +222,3 @@ namespace LC::Util::detail
 		};
 	}
 }
-

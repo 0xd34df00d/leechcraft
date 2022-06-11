@@ -49,11 +49,11 @@ namespace LC::Util::detail
 		Q_CLASSINFO ("D-Bus Interface", "org.kde.StatusNotifierItem")
 
 		Q_PROPERTY (QString Category MEMBER Category_ CONSTANT)
-		Q_PROPERTY (QString Status MEMBER Status_ CONSTANT)
 		Q_PROPERTY (quint32 WindowId MEMBER WindowId_ CONSTANT)
 
 		Q_PROPERTY (QString Id READ GetId CONSTANT)
 		Q_PROPERTY (QString Title READ GetTitle)
+		Q_PROPERTY (QString Status READ GetStatus NOTIFY NewStatus)
 
 		Q_PROPERTY (QString IconName READ GetIconName)
 		Q_PROPERTY (QList<LC::Util::detail::IconFrame> IconPixmap READ GetIconPixmap NOTIFY NewIcon)
@@ -75,12 +75,14 @@ namespace LC::Util::detail
 	private:
 		QString GetId () const;
 		QString GetTitle () const;
+		QString GetStatus () const;
 		QString GetIconName () const;
 		QList<IconFrame> GetIconPixmap () const;
 		DBusTooltip GetTooltip () const;
 	signals:
 		void NewIcon ();
 		void NewTooltip ();
+		void NewStatus ();
 	};
 }
 
@@ -99,5 +101,6 @@ namespace LC::Util
 		void UpdateIcon () override;
 		void UpdateTooltip () override;
 		void UpdateMenu () override;
+		void UpdateStatus () override;
 	};
 }

@@ -23,5 +23,6 @@ namespace LC::Util
 		void UpdateIcon () override;
 		void UpdateTooltip () override;
 		void UpdateMenu () override;
+		void UpdateStatus () override;
 	};
 }

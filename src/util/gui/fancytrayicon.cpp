@@ -43,6 +43,18 @@ namespace LC::Util
 			ReinitImpl ();
 	}
 
+	void FancyTrayIcon::SetStatus (Status status)
+	{
+		Status_ = status;
+		if (Impl_)
+			Impl_->UpdateStatus ();
+	}
+
+	FancyTrayIcon::Status FancyTrayIcon::GetStatus () const
+	{
+		return Status_;
+	}
+
 	void FancyTrayIcon::SetIcon (const Icon& icon)
 	{
 		Icon_ = icon;

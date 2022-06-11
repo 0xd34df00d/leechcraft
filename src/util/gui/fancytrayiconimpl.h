@@ -23,5 +23,6 @@ namespace LC::Util
 		virtual void UpdateIcon () = 0;
 		virtual void UpdateTooltip () = 0;
 		virtual void UpdateMenu () = 0;
+		virtual void UpdateStatus () = 0;
 	};
 }

@@ -37,6 +37,13 @@ namespace LC::Util
 			QString HTML_;
 		};
 
+		enum class Status
+		{
+			Passive,
+			Active,
+			NeedsAttention,
+		};
+
 		using Icon = std::variant<QString, QIcon>;
 	private:
 		std::unique_ptr<FancyTrayIconImpl> Impl_;
@@ -44,6 +51,7 @@ namespace LC::Util
 		const IconInfo Info_;
 
 		bool Visible_ = true;
+		Status Status_ = Status::Active;
 		Icon Icon_;
 		Tooltip Tooltip_;
 		QPointer<QMenu> Menu_;
@@ -54,6 +62,9 @@ namespace LC::Util
 		const IconInfo& GetInfo () const;
 
 		void SetVisible (bool visible);
+
+		void SetStatus (Status status);
+		Status GetStatus () const;
 
 		void SetIcon (const Icon& icon);
 		const Icon& GetIcon () const;
