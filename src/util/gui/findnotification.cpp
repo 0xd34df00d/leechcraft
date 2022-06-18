@@ -57,6 +57,10 @@ namespace LC::Util
 						flags |= FindBackwards;
 					HandleNext (Ui_->Pattern_->text (), flags);
 				});
+		connect (Ui_->CloseButton_,
+				&QPushButton::released,
+				this,
+				&FindNotification::Reject);
 	}
 
 	FindNotification::~FindNotification () = default;
