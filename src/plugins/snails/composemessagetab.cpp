@@ -9,7 +9,6 @@
 #include "composemessagetab.h"
 #include <optional>
 #include <QToolBar>
-#include <QWebFrame>
 #include <QMenu>
 #include <QFileDialog>
 #include <QMessageBox>
