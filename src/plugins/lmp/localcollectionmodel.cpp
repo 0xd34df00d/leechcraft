@@ -330,7 +330,7 @@ namespace LC::LMP
 	Util::DefaultScopeGuard LocalCollectionModel::AppendAlbums (int artistIdx, int newAlbumsCount)
 	{
 		const auto curAlbumsCount = Artists_ [artistIdx].Albums_.size ();
-		beginInsertRows (MakeArtistIndex (artistIdx), curAlbumsCount, curAlbumsCount + newAlbumsCount);
+		beginInsertRows (MakeArtistIndex (artistIdx), curAlbumsCount, curAlbumsCount + newAlbumsCount - 1);
 		return EndInsertRowsGuard ();
 	}
 
@@ -455,7 +455,7 @@ namespace LC::LMP
 		const auto [artistIdx, albumIdx] = FindIdx (Artists_, info.ArtistID_, info.AlbumID_);
 
 		const auto curTracksCount = Artists_ [artistIdx].Albums_ [albumIdx]->Tracks_.size ();
-		beginInsertRows (MakeAlbumIndex (artistIdx, albumIdx), curTracksCount, curTracksCount + info.NewTracksCount_);
+		beginInsertRows (MakeAlbumIndex (artistIdx, albumIdx), curTracksCount, curTracksCount + info.NewTracksCount_ - 1);
 		return EndInsertRowsGuard ();
 	}
 
