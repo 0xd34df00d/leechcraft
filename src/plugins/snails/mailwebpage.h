@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QWebPage>
+#include <QWebEnginePage>
 #include "messageinfo.h"
 
 namespace LC
@@ -23,7 +23,7 @@ namespace Snails
 		MessageInfo MsgInfo_;
 	};
 
-	class MailWebPage : public QWebPage
+	class MailWebPage : public QWebEnginePage
 	{
 		MessagePageContext Ctx_;
 	public:
@@ -31,7 +31,7 @@ namespace Snails
 
 		void SetMessageContext (const MessagePageContext&);
 	protected:
-		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType) override;
+		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
 	};
 }
 }

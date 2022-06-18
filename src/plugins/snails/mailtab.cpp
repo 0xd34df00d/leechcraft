@@ -19,6 +19,7 @@
 #include <QShortcut>
 #include <QInputDialog>
 #include <QLabel>
+#include <QWebEngineSettings>
 #include <util/util.h>
 #include <util/models/util.h>
 #include <util/tags/categoryselector.h>
@@ -81,7 +82,6 @@ namespace Snails
 
 		MailWebPage_ = new MailWebPage { Ui_.MailView_ };
 		Ui_.MailView_->setPage (MailWebPage_);
-		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
 		Ui_.AccountsTree_->setModel (AccsMgr_->GetAccountsModel ());
 
@@ -251,14 +251,14 @@ namespace Snails
 	{
 		const auto settings = Ui_.MailView_->settings ();
 		if (font == QFont {})
-			settings->resetFontFamily (static_cast<QWebSettings::FontFamily> (family));
+			settings->resetFontFamily (static_cast<QWebEngineSettings::FontFamily> (family));
 		else
-			settings->setFontFamily (static_cast<QWebSettings::FontFamily> (family), font.family ());
+			settings->setFontFamily (static_cast<QWebEngineSettings::FontFamily> (family), font.family ());
 	}
 
 	void MailTab::SetFontSize (FontSize type, int size)
 	{
-		Ui_.MailView_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
+		Ui_.MailView_->settings ()->setFontSize (static_cast<QWebEngineSettings::FontSize> (type), size);
 	}
 
 	void MailTab::FillCommonActions (Util::ShortcutManager *sm)

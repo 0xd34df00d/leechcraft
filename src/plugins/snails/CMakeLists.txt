@@ -65,7 +65,7 @@ LC_DEFINE_PLUGIN (
 		accountaddwizard.cpp
 		mailwebpagenam.cpp
 	SETTINGS snailssettings.xml
-	QT_COMPONENTS Concurrent Network Sql WebKitWidgets
+	QT_COMPONENTS Concurrent Network Sql WebEngineWidgets
 	LINK_LIBRARIES PkgConfig::Vmime
 	INSTALL_SHARE
 	)

@@ -8,7 +8,6 @@
 
 #include "mailwebpage.h"
 #include <QNetworkRequest>
-#include <QtDebug>
 #include <QUrlQuery>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -20,9 +19,10 @@ namespace LC
 namespace Snails
 {
 	MailWebPage::MailWebPage (QObject *parent)
-	: QWebPage { parent }
+	: QWebEnginePage { parent }
 	{
-		setNetworkAccessManager (new MailWebPageNAM { [this] { return Ctx_; }, this });
+		// TODO port over QWebEngine
+		// setNetworkAccessManager (new MailWebPageNAM { [this] { return Ctx_; }, this });
 	}
 
 	void MailWebPage::SetMessageContext (const MessagePageContext& ctx)
@@ -30,11 +30,11 @@ namespace Snails
 		Ctx_ = ctx;
 	}
 
-	bool MailWebPage::acceptNavigationRequest (QWebFrame*, const QNetworkRequest& req, QWebPage::NavigationType type)
+	bool MailWebPage::acceptNavigationRequest (const QUrl& url, NavigationType type, bool)
 	{
 		if (type == NavigationTypeLinkClicked)
 		{
-			const auto& e = Util::MakeEntity (req.url (), {}, FromUserInitiated);
+			const auto& e = Util::MakeEntity (url, {}, FromUserInitiated);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
