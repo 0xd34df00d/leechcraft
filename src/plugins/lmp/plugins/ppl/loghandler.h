@@ -23,8 +23,6 @@ namespace PPL
 {
 	class LogHandler : public QObject
 	{
-		Q_OBJECT
-
 		ILocalCollection * const Collection_;
 	public:
 		LogHandler (const QString&, ILocalCollection*, IPluginsManager*, QObject* = nullptr);
