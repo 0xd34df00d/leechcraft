@@ -278,9 +278,9 @@ namespace PPL
 	QList<TracksSelectorDialog::SelectedTrack> TracksSelectorDialog::TracksModel::GetSelectedTracks () const
 	{
 		QList<TracksSelectorDialog::SelectedTrack> result;
-		for (const auto& pair : Util::Views::Zip<std::pair> (Tracks_, Scrobble_))
-			if (std::any_of (pair.second.begin (), pair.second.end (), Util::Id))
-				result.push_back ({ pair.first, pair.second });
+		for (const auto& [track, scrobbles] : Util::Views::Zip<std::pair> (Tracks_, Scrobble_))
+			if (std::ranges::any_of (scrobbles, Util::Id))
+				result.push_back ({ track, scrobbles });
 		return result;
 	}
 

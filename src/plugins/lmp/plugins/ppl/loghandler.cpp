@@ -175,9 +175,9 @@ namespace PPL
 				QHash<Media::IAudioScrobbler*, Media::IAudioScrobbler::BackdatedTracks_t> scrob2tracks;
 
 				for (const auto& track : dia->GetSelectedTracks ())
-					for (const auto& pair : Util::Views::Zip (scrobblers, track.Scrobbles_))
-						if (pair.second)
-							scrob2tracks [pair.first] << track.Track_;
+					for (const auto& [scrobbler, shouldSubmit] : Util::Views::Zip (scrobblers, track.Scrobbles_))
+						if (shouldSubmit)
+							scrob2tracks [scrobbler] << track.Track_;
 
 				for (const auto& pair : Util::Stlize (scrob2tracks))
 					pair.first->SendBackdated (pair.second);
