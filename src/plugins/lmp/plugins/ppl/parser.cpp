@@ -20,21 +20,6 @@ namespace PPL
 {
 	namespace
 	{
-		template<typename S>
-		std::function<QDateTime (QDateTime)> GetDateConverter (S&& sect)
-		{
-			if (sect == u"UTC")
-				return [] (const QDateTime& dt) { return dt; };
-			if (sect == u"UNKNOWN")
-				return [] (const QDateTime& dt) { return dt.toUTC (); };
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown timezone"
-					<< sect
-					<< "assuming UTC";
-			return [] (const QDateTime& dt) { return dt; };
-		}
-
 		std::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (QStringView line)
 		{
 			enum
@@ -100,13 +85,13 @@ namespace PPL
 	{
 		Media::IAudioScrobbler::BackdatedTracks_t tracks;
 
-		auto dateConverter = GetDateConverter (QString { "UTC" });
+		auto dateConverter = +[] (const QDateTime& dt) { return dt; };
 		for (auto line : QStringView { data }.split ('\n', Qt::SkipEmptyParts))
 		{
 			if (line.at (0) == '#')
 			{
-				if (line.startsWith (u"#TZ/"))
-					dateConverter = GetDateConverter (line.split ('/').value (1));
+				if (line == u"#TZ/UNKNOWN")
+					dateConverter = +[] (const QDateTime& dt) { return dt.toUTC (); };
 				continue;
 			}
 
