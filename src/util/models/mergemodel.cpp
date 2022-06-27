@@ -361,11 +361,11 @@ namespace LC::Util
 		const auto startingRow = parent.isValid () ?
 				0 :
 				GetStartingRow (FindModel (model));
-		beginRemoveRows (mapFromSource (parent),
-				first + startingRow, last + startingRow);
+		const auto mergedParent = mapFromSource (parent);
+		beginRemoveRows (mergedParent, first + startingRow, last + startingRow);
 
 		const auto rawItem = parent.isValid () ?
-				static_cast<ModelItem*> (mapFromSource (parent).internalPointer ()) :
+				static_cast<ModelItem*> (mergedParent.internalPointer ()) :
 				Root_.get ();
 		const auto& item = rawItem->shared_from_this ();
 
