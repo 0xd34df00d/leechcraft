@@ -9,7 +9,6 @@
 #include "collectionsmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <util/models/mergemodel.h>
 #include "interfaces/lmp/icollectionmodel.h"
 #include "collectionsortermodel.h"
 #include "player.h"
@@ -18,17 +17,17 @@ namespace LC::LMP
 {
 	CollectionsManager::CollectionsManager (QObject *parent)
 	: QObject { parent }
-	, Model_ { new Util::MergeModel { { {} }, this } }
 	, Sorter_ { new CollectionSorterModel { this } }
 	{
+	}
+
+	void CollectionsManager::SetCollectionModel (QAbstractItemModel *model)
+	{
+		Model_ = model;
+
 		Sorter_->setSourceModel (Model_);
 		Sorter_->setDynamicSortFilter (true);
 		Sorter_->sort (0);
-	}
-
-	void CollectionsManager::Add (QAbstractItemModel *model)
-	{
-		Model_->AddModel (model);
 	}
 
 	QAbstractItemModel* CollectionsManager::GetModel () const
@@ -41,7 +40,7 @@ namespace LC::LMP
 		QList<AudioSource> sources;
 		for (const auto& idx : indexes)
 		{
-			auto srcIdx = Model_->mapToSource (Sorter_->mapToSource (idx));
+			auto srcIdx = Sorter_->mapToSource (idx);
 			if (auto proxyModel = qobject_cast<const QSortFilterProxyModel*> (srcIdx.model ()))
 				srcIdx = proxyModel->mapToSource (srcIdx);
 

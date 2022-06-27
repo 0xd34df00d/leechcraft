@@ -12,13 +12,7 @@
 
 class QModelIndex;
 class QAbstractItemModel;
-class QStandardItemModel;
 class QSortFilterProxyModel;
-
-namespace LC::Util
-{
-	class MergeModel;
-}
 
 namespace LC::LMP
 {
@@ -26,12 +20,12 @@ namespace LC::LMP
 
 	class CollectionsManager : public QObject
 	{
-		Util::MergeModel * const Model_;
+		QAbstractItemModel *Model_ = nullptr;
 		QSortFilterProxyModel * const Sorter_;
 	public:
 		explicit CollectionsManager (QObject* = nullptr);
 
-		void Add (QAbstractItemModel*);
+		void SetCollectionModel (QAbstractItemModel*);
 
 		QAbstractItemModel* GetModel () const;
 

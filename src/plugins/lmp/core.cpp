@@ -67,7 +67,7 @@ namespace LMP
 		M_->ProgressManager_.AddSyncManager (&M_->SyncUnmountableManager_);
 		M_->ProgressManager_.AddSyncManager (&M_->CloudUpMgr_);
 
-		M_->CollectionsManager_.Add (M_->Collection_.GetCollectionModel ());
+		M_->CollectionsManager_.SetCollectionModel (M_->Collection_.GetCollectionModel ());
 	}
 
 	Core& Core::Instance ()
