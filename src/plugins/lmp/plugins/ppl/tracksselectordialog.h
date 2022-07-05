@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QDialog>
+#include <QCoreApplication>
 #include <interfaces/media/iaudioscrobbler.h>
 #include "ui_tracksselectordialog.h"
 
@@ -16,7 +17,7 @@ namespace LC::LMP::PPL
 {
 	class TracksSelectorDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::PPL::TracksSelectorDialog)
 
 		Ui::TracksSelectorDialog Ui_;
 
