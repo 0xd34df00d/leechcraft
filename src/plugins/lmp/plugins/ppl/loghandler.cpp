@@ -13,7 +13,6 @@
 #include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilocalcollection.h>
-#include <util/sll/slotclosure.h>
 #include <util/sll/views.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/functor.h>
@@ -166,32 +165,28 @@ namespace PPL
 
 		const auto dia = new TracksSelectorDialog { tracks, scrobblers };
 		dia->setAttribute (Qt::WA_DeleteOnClose);
+		connect (dia,
+				&QDialog::accepted,
+				this,
+				[dia, scrobblers, logPath]
+				{
+					QHash<Media::IAudioScrobbler*, Media::IAudioScrobbler::BackdatedTracks_t> scrob2tracks;
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[dia, scrobblers, logPath]
-			{
-				QHash<Media::IAudioScrobbler*, Media::IAudioScrobbler::BackdatedTracks_t> scrob2tracks;
+					for (const auto& track : dia->GetSelectedTracks ())
+						for (const auto& [scrobbler, shouldSubmit] : Util::Views::Zip (scrobblers, track.Scrobbles_))
+							if (shouldSubmit)
+								scrob2tracks [scrobbler] << track.Track_;
 
-				for (const auto& track : dia->GetSelectedTracks ())
-					for (const auto& [scrobbler, shouldSubmit] : Util::Views::Zip (scrobblers, track.Scrobbles_))
-						if (shouldSubmit)
-							scrob2tracks [scrobbler] << track.Track_;
+					for (const auto& pair : Util::Stlize (scrob2tracks))
+						pair.first->SendBackdated (pair.second);
 
-				for (const auto& pair : Util::Stlize (scrob2tracks))
-					pair.first->SendBackdated (pair.second);
-
-				QFile::remove (logPath);
-			},
-			dia,
-			SIGNAL (accepted ()),
-			dia
-		};
+					QFile::remove (logPath);
+				});
 
 		connect (dia,
-				SIGNAL (finished (int)),
+				&QDialog::finished,
 				this,
-				SLOT (deleteLater ()));
+				&QObject::deleteLater);
 	}
 }
 }
