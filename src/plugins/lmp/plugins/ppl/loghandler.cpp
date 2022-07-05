@@ -17,7 +17,6 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/functor.h>
 #include <util/sll/monad.h>
-#include <util/sll/monadplus.h>
 #include "parser.h"
 #include "tracksselectordialog.h"
 
@@ -73,17 +72,18 @@ namespace LC::LMP::PPL
 				return *pos;
 			};
 
+			if (const auto res = finder ([&] (const QString& other) { return attr == other; }))
+				return res;
+			if (const auto res = finder ([&] (const QString& other) { return attr.compare (other, Qt::CaseInsensitive); }))
+				return res;
+
 			auto normalize = [] (const QString& str)
 			{
 				return str.toLower ().remove (' ');
 			};
 			const auto& attrNorm = normalize (attr);
 
-			return Util::Msum ({
-						finder ([&] (const QString& other) { return attr == other; }),
-						finder ([&] (const QString& other) { return attr.compare (other, Qt::CaseInsensitive); }),
-						finder ([&] (const QString& other) { return normalize (other) == attrNorm; })
-					});
+			return finder ([&] (const QString& other) { return normalize (other) == attrNorm; });
 		}
 
 		std::optional<Collection::Artist> FindArtist (const Collection::Artists_t& artists, const QString& name)
