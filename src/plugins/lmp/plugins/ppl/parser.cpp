@@ -51,7 +51,7 @@ namespace PPL
 			}
 
 			const int required [] = { Artist, Title, Duration, Rating, Timestamp };
-			if (std::any_of (std::begin (required), std::end (required),
+			if (std::ranges::any_of (required,
 					[&elems] (int field) { return elems.at (field).isEmpty (); }))
 			{
 				qWarning () << Q_FUNC_INFO

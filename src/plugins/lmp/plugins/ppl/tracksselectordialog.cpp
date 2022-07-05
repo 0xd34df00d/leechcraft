@@ -331,7 +331,7 @@ namespace PPL
 							[&] (int)
 							{
 								for (auto& subvec : Scrobble_)
-									std::fill (subvec.begin (), subvec.end (), shouldScrobble);
+									std::ranges::fill (subvec, shouldScrobble);
 							},
 							[&] (int, int column)
 							{
@@ -348,7 +348,7 @@ namespace PPL
 					auto& scrobbles = Scrobble_ [index.row ()];
 
 					WithCheckableColumns (index,
-							[&] (int) { std::fill (scrobbles.begin (), scrobbles.end (), shouldScrobble); },
+							[&] (int) { std::ranges::fill (scrobbles, shouldScrobble); },
 							[&] (int, int column) { scrobbles [column] = shouldScrobble; });
 
 					const auto lastColumn = columnCount (index.parent ()) - 1;
@@ -381,7 +381,7 @@ namespace PPL
 				if (notCheckable (indices.value (0)))
 				{
 					const auto column = indices.value (0).column ();
-					if (std::all_of (indices.begin (), indices.end (),
+					if (std::ranges::all_of (indices,
 							[&column] (const auto& idx) { return idx.column () == column; }))
 						for (auto& idx : indices)
 							idx = idx.sibling (idx.row (), TracksModel::ColumnSelectAll);

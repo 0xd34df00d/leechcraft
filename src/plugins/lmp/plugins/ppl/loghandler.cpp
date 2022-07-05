@@ -72,7 +72,7 @@ namespace PPL
 		{
 			auto finder = [&] (const auto& checker) -> std::optional<T>
 			{
-				const auto pos = std::find_if (items.begin (), items.end (),
+				const auto pos = std::ranges::find_if (items,
 						[&] (const auto& item) { return checker (std::invoke (attrGetter, item)); });
 				if (pos == items.end ())
 					return {};
