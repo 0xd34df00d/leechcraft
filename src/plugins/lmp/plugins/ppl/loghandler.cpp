@@ -16,7 +16,6 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/views.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/curry.h>
 #include <util/sll/functor.h>
 #include <util/sll/monad.h>
 #include <util/sll/monadplus.h>
@@ -86,7 +85,7 @@ namespace PPL
 			const auto& attrNorm = normalize (attr);
 
 			return Util::Msum ({
-						finder (Util::Curry (std::equal_to<> {}) (attr)),
+						finder ([&] (const QString& other) { return attr == other; }),
 						finder ([&] (const QString& other) { return attr.compare (other, Qt::CaseInsensitive); }),
 						finder ([&] (const QString& other) { return normalize (other) == attrNorm; })
 					});
