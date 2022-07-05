@@ -13,9 +13,7 @@
 
 class IPluginsManager;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 class ILocalCollection;
 
@@ -27,6 +25,5 @@ namespace PPL
 	public:
 		LogHandler (const QString&, ILocalCollection*, IPluginsManager*, QObject* = nullptr);
 	};
-}
 }
 }

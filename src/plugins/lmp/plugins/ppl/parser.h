@@ -10,13 +10,7 @@
 
 #include <interfaces/media/iaudioscrobbler.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace PPL
+namespace LC::LMP::PPL
 {
 	Media::IAudioScrobbler::BackdatedTracks_t ParseData (const QString&);
-}
-}
 }

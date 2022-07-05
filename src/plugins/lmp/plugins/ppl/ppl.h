@@ -14,11 +14,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace PPL
+namespace LC::LMP::PPL
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -56,6 +52,4 @@ namespace PPL
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
-}
-}
 }

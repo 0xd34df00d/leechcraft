@@ -15,11 +15,7 @@
 #include <interfaces/lmp/ilmpproxy.h>
 #include "loghandler.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace PPL
+namespace LC::LMP::PPL
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -106,8 +102,6 @@ namespace PPL
 	{
 		LMPProxy_ = proxy;
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lmp_ppl, LC::LMP::PPL::Plugin);

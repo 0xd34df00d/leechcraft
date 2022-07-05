@@ -16,11 +16,7 @@
 #include <util/sll/views.h>
 #include <util/sll/util.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace PPL
+namespace LC::LMP::PPL
 {
 	class TracksSelectorDialog::TracksModel : public QAbstractItemModel
 	{
@@ -454,6 +450,4 @@ namespace PPL
 	{
 		return Model_->GetSelectedTracks ();
 	}
-}
-}
 }

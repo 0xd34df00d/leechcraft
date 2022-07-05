@@ -21,11 +21,7 @@
 #include "parser.h"
 #include "tracksselectordialog.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace PPL
+namespace LC::LMP::PPL
 {
 	namespace
 	{
@@ -188,6 +184,4 @@ namespace PPL
 				this,
 				&QObject::deleteLater);
 	}
-}
-}
 }

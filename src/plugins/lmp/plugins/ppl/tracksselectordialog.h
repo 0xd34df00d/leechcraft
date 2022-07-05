@@ -12,11 +12,7 @@
 #include <interfaces/media/iaudioscrobbler.h>
 #include "ui_tracksselectordialog.h"
 
-namespace LC
-{
-namespace LMP
-{
-namespace PPL
+namespace LC::LMP::PPL
 {
 	class TracksSelectorDialog : public QDialog
 	{
@@ -40,6 +36,4 @@ namespace PPL
 	private:
 		void FixSize ();
 	};
-}
-}
 }

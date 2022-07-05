@@ -12,11 +12,7 @@
 #include <QDateTime>
 #include <QtDebug>
 
-namespace LC
-{
-namespace LMP
-{
-namespace PPL
+namespace LC::LMP::PPL
 {
 	namespace
 	{
@@ -103,6 +99,4 @@ namespace PPL
 		}
 		return tracks;
 	}
-}
-}
 }
