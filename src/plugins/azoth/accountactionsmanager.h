@@ -82,8 +82,6 @@ namespace Azoth
 		void handleAccountRename ();
 		void handleAccountModify ();
 		void handleAccountRemove ();
-
-		void consoleRemoved (QWidget*);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);

@@ -642,9 +642,9 @@ namespace Azoth
 			ConsoleWidget *cw = new ConsoleWidget (account->GetQObject ());
 			Account2CW_ [account] = cw;
 			connect (cw,
-					SIGNAL (removeTab (QWidget*)),
+					&ConsoleWidget::removeTab,
 					this,
-					SLOT (consoleRemoved (QWidget*)));
+					[this, account] { Account2CW_.remove (account); });
 		}
 
 		emit gotConsoleWidget (Account2CW_ [account]);
@@ -700,12 +700,6 @@ namespace Azoth
 	void AccountActionsManager::handleAccountRemove ()
 	{
 		RemoveAccount (GetAccountFromSender (sender (), Q_FUNC_INFO));
-	}
-
-	void AccountActionsManager::consoleRemoved (QWidget *w)
-	{
-		ConsoleWidget *cw = qobject_cast<ConsoleWidget*> (w);
-		Account2CW_.remove (Account2CW_.key (cw));
 	}
 }
 }
