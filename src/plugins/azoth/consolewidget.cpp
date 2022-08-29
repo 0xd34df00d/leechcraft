@@ -42,6 +42,15 @@ namespace Azoth
 				SLOT (handleConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 
 		AsConsole_->SetConsoleEnabled (true);
+
+		connect (Ui_.ClearButton_,
+				&QPushButton::released,
+				Ui_.PacketsBrowser_,
+				&QTextBrowser::clear);
+		connect (Ui_.EnabledBox_,
+				&QCheckBox::toggled,
+				this,
+				[this] (bool enable) { AsConsole_->SetConsoleEnabled (enable); });
 	}
 
 	TabClassInfo ConsoleWidget::GetTabClassInfo () const
@@ -123,16 +132,6 @@ namespace Azoth
 		html += "</font><br />";
 
 		Ui_.PacketsBrowser_->append (html);
-	}
-
-	void ConsoleWidget::on_ClearButton__released ()
-	{
-		Ui_.PacketsBrowser_->clear ();
-	}
-
-	void ConsoleWidget::on_EnabledBox__toggled (bool enable)
-	{
-		AsConsole_->SetConsoleEnabled (enable);
 	}
 }
 }
