@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CONSOLEWIDGET_H
-#define PLUGINS_AZOTH_CONSOLEWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <QPointer>
 #include <interfaces/ihavetabs.h>
@@ -52,5 +52,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif
