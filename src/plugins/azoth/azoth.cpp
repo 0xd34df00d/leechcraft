@@ -372,7 +372,6 @@ namespace Azoth
 	{
 		auto accActsMgr = new AccountActionsManager ();
 		MW_ = new MainWidget (accActsMgr);
-		accActsMgr->SetMainWidget (MW_);
 		connect (accActsMgr,
 				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
 				this,

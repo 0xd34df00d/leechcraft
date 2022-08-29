@@ -30,8 +30,6 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		QWidget *MW_ = nullptr;
-
 		QHash<IAccount*, ConsoleWidget*> Account2CW_;
 
 		StatusChangeMenuManager * const StatusMenuMgr_;
@@ -56,7 +54,6 @@ namespace Azoth
 	public:
 		AccountActionsManager (QObject* = nullptr);
 
-		void SetMainWidget (QWidget*);
 		QList<QAction*> GetMenuActions (QMenu*, IAccount*);
 
 		QString GetStatusText (QAction*, State) const;

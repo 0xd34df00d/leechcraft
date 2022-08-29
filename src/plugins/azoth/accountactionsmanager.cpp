@@ -10,8 +10,10 @@
 #include <QAction>
 #include <QMenu>
 #include <QInputDialog>
+#include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -155,11 +157,6 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountRemove ()));
-	}
-
-	void AccountActionsManager::SetMainWidget (QWidget *mw)
-	{
-		MW_ = mw;
 	}
 
 	QList<QAction*> AccountActionsManager::GetMenuActions (QMenu *menu, IAccount *account)
@@ -395,6 +392,14 @@ namespace Azoth
 		acc->ChangeState (status);
 	}
 
+	namespace
+	{
+		QWidget* GetDialogParentWidget ()
+		{
+			return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
+		}
+	}
+
 	void AccountActionsManager::joinAccountConference ()
 	{
 		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
@@ -403,7 +408,7 @@ namespace Azoth
 
 		QList<IAccount*> accounts;
 		accounts << account;
-		auto dia = new JoinConferenceDialog (accounts, MW_);
+		auto dia = new JoinConferenceDialog (accounts, GetDialogParentWidget ());
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
@@ -441,7 +446,7 @@ namespace Azoth
 		if (!account)
 			return;
 
-		auto dia = new BookmarksManagerDialog (MW_);
+		auto dia = new BookmarksManagerDialog (GetDialogParentWidget ());
 		dia->FocusOn (account);
 		dia->show ();
 	}
@@ -452,7 +457,7 @@ namespace Azoth
 		if (!account)
 			return;
 
-		AddContactDialog dia (account, MW_);
+		AddContactDialog dia (account, GetDialogParentWidget ());
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -559,7 +564,7 @@ namespace Azoth
 			return;
 		}
 
-		ActivityDialog dia (MW_);
+		ActivityDialog dia (GetDialogParentWidget ());
 
 		InitSelfDialog (account, &IHaveContactActivity::GetUserActivity,
 				[&dia] (const ActivityInfo& info) { dia.SetActivityInfo (info); });
@@ -586,7 +591,7 @@ namespace Azoth
 			return;
 		}
 
-		MoodDialog dia (MW_);
+		MoodDialog dia (GetDialogParentWidget ());
 
 		InitSelfDialog (account, &IHaveContactMood::GetUserMood,
 				[&dia] (const MoodInfo& info) { dia.SetMood (info); });
@@ -613,7 +618,7 @@ namespace Azoth
 			return;
 		}
 
-		LocationDialog dia (MW_);
+		LocationDialog dia (GetDialogParentWidget ());
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
