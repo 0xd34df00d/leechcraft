@@ -52,7 +52,6 @@ namespace Azoth
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel (this))
-	, FastStatusButton_ (new QToolButton (this))
 	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
 	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
@@ -63,7 +62,6 @@ namespace Azoth
 		MainMenu_->setIcon (QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg"));
 
 		BottomBar_->addWidget (MenuButton_);
-		BottomBar_->addWidget (FastStatusButton_);
 
 		Ui_.setupUi (this);
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
@@ -137,9 +135,6 @@ namespace Azoth
 
 		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
 
-		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
-		FastStatusButton_->setPopupMode (QToolButton::InstantPopup);
-
 		ActionDeleteSelected_ = new QAction (this);
 		ActionDeleteSelected_->setShortcut (Qt::Key_Delete);
 		ActionDeleteSelected_->setShortcutContext (Qt::WidgetWithChildrenShortcut);
@@ -156,11 +151,6 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
 				this, "handleStatusIconsChanged");
 		handleStatusIconsChanged ();
-
-		connect (&Core::Instance (),
-				SIGNAL (topStatusChanged (LC::Azoth::State)),
-				this,
-				SLOT (updateFastStatusButton (LC::Azoth::State)));
 
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 
@@ -261,11 +251,6 @@ namespace Azoth
 	void MainWidget::handleAccountVisibilityChanged ()
 	{
 		ProxyModel_->invalidate ();
-	}
-
-	void MainWidget::updateFastStatusButton (State state)
-	{
-		FastStatusButton_->setIcon (ResourcesManager::Instance ().GetIconForState (state));
 	}
 
 	void MainWidget::treeActivated (const QModelIndex& index)
@@ -480,26 +465,6 @@ namespace Azoth
 			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
 		}
 
-		for (IAccount *acc : Core::Instance ().GetAccounts ())
-			if (acc->IsShownInRoster ())
-				acc->ChangeState (status);
-		updateFastStatusButton (status.State_);
-	}
-
-	void MainWidget::fastStateChangeRequested ()
-	{
-		const auto& stateVar = sender ()->property ("Azoth/TargetState");
-		if (stateVar.isNull ())
-		{
-			handleChangeStatusRequested ();
-			return;
-		}
-
-		const auto state = stateVar.value<State> ();
-		updateFastStatusButton (state);
-
-		const EntryStatus status (state,
-				AccountActsMgr_->GetStatusText (static_cast<QAction*> (sender ()), state));
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 			if (acc->IsShownInRoster ())
 				acc->ChangeState (status);
@@ -789,9 +754,6 @@ namespace Azoth
 	void MainWidget::handleStatusIconsChanged ()
 	{
 		ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline));
-
-		if (FastStatusButton_->icon ().isNull ())
-			updateFastStatusButton (SOffline);
 	}
 
 	namespace

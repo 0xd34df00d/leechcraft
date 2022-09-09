@@ -39,7 +39,6 @@ namespace Azoth
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
 
-		QToolButton *FastStatusButton_;
 		QAction *ActionCLMode_;
 		QAction *ActionShowOffline_;
 		QAction *ActionDeleteSelected_;
@@ -61,7 +60,6 @@ namespace Azoth
 	public slots:
 		void handleAccountVisibilityChanged ();
 	private slots:
-		void updateFastStatusButton (LC::Azoth::State);
 		void treeActivated (const QModelIndex&);
 		void showAllUsersList ();
 		void on_CLTree__customContextMenuRequested (const QPoint&);
