@@ -61,7 +61,6 @@ namespace Azoth
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 		TabClasses_t TabClasses_;
-		TabClassInfo ServerHistoryTC_;
 
 		QMenu *StatusChangeMenu_;
 	public:

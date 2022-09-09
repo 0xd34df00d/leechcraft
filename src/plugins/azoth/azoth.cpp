@@ -568,7 +568,7 @@ namespace Azoth
 		};
 		MicroblogsTab::SetTabData (this, microblogsTab);
 
-		ServerHistoryTC_ =
+		TabClassInfo serverHistoryTab =
 		{
 			"ServerHistoryTab",
 			tr ("Server history"),
@@ -577,6 +577,7 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+		ServerHistoryWidget::SetTabData (this, serverHistoryTab);
 
 		TabClasses_ << chatTab;
 		TabClasses_ << mucTab;
@@ -584,7 +585,7 @@ namespace Azoth
 		TabClasses_ << sdTab;
 		TabClasses_ << consoleTab;
 		TabClasses_ << microblogsTab;
-		TabClasses_ << ServerHistoryTC_;
+		TabClasses_ << serverHistoryTab;
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
@@ -599,8 +600,7 @@ namespace Azoth
 
 	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
 	{
-		widget->SetTabInfo (this, ServerHistoryTC_);
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (ServerHistoryTC_.VisibleName_, widget);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (widget->GetTabClassInfo ().VisibleName_, widget);
 	}
 
 	void Plugin::handleMWLocation (Qt::DockWidgetArea area)

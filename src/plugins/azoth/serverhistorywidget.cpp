@@ -26,6 +26,9 @@ namespace Azoth
 		const auto MaxMsgCount = 25;
 	}
 
+	QObject* ServerHistoryWidget::S_ParentMultiTabs_ = 0;
+	TabClassInfo ServerHistoryWidget::S_TC_ = TabClassInfo ();
+
 	ServerHistoryWidget::ServerHistoryWidget (QObject *account, QWidget *parent)
 	: QWidget { parent }
 	, Toolbar_ { new QToolBar { this } }
@@ -76,20 +79,20 @@ namespace Azoth
 		nextAct->setProperty ("ActionIcon", "go-next");
 	}
 
-	void ServerHistoryWidget::SetTabInfo (QObject *plugin, const TabClassInfo& tc)
+	void ServerHistoryWidget::SetTabData (QObject *plugin, const TabClassInfo& tc)
 	{
-		PluginObj_ = plugin;
-		TC_ = tc;
+		S_ParentMultiTabs_ = plugin;
+		S_TC_ = tc;
 	}
 
 	TabClassInfo ServerHistoryWidget::GetTabClassInfo () const
 	{
-		return TC_;
+		return S_TC_;
 	}
 
 	QObject* ServerHistoryWidget::ParentMultiTabs ()
 	{
-		return PluginObj_;
+		return S_ParentMultiTabs_;
 	}
 
 	void ServerHistoryWidget::Remove ()

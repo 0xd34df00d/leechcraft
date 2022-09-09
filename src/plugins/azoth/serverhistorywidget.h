@@ -27,8 +27,8 @@ namespace Azoth
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
-		QObject *PluginObj_;
-		TabClassInfo TC_;
+		static QObject *S_ParentMultiTabs_;
+		static TabClassInfo S_TC_;
 
 		Ui::ServerHistoryWidget Ui_;
 
@@ -45,7 +45,7 @@ namespace Azoth
 	public:
 		ServerHistoryWidget (QObject*, QWidget* = nullptr);
 
-		void SetTabInfo (QObject*, const TabClassInfo&);
+		static void SetTabData (QObject*, const TabClassInfo&);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;
