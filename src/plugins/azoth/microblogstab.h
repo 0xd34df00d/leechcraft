@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
+#include "tabbase.h"
 #include "ui_microblogstab.h"
 
 namespace LC
@@ -18,15 +17,8 @@ namespace Azoth
 {
 	class IAccount;
 
-	class MicroblogsTab : public QWidget
-						, public ITabWidget
+	class MicroblogsTab : public TabBase
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
-
-		static QObject* S_ParentMultiTabs_;
-		static TabClassInfo S_TC_;
-
 		Ui::MicroblogsTab Ui_;
 
 		IAccount *Account_;
@@ -35,12 +27,8 @@ namespace Azoth
 
 		explicit MicroblogsTab (IAccount*);
 
-		TabClassInfo GetTabClassInfo () const override;
-		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
-	signals:
-		void removeTab () override;
 	};
 }
 }

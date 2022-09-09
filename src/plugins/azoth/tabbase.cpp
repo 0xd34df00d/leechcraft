@@ -6,28 +6,26 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "microblogstab.h"
-#include <interfaces/azoth/iaccount.h>
+#include "tabbase.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	MicroblogsTab::MicroblogsTab (IAccount *acc)
-	: Account_ (acc)
+	QObject* TabBase::S_ParentMultiTabs_ = nullptr;
+	TabClassInfo TabBase::S_TC_ = {};
+
+	void TabBase::SetTabData (QObject *plugin, const TabClassInfo& tc)
 	{
-		Ui_.setupUi (this);
+		S_ParentMultiTabs_ = plugin;
+		S_TC_ = tc;
 	}
 
-	void MicroblogsTab::Remove ()
+	TabClassInfo TabBase::GetTabClassInfo () const
 	{
-		emit removeTab ();
-		deleteLater ();
+		return S_TC_;
 	}
 
-	QToolBar* MicroblogsTab::GetToolBar () const
+	QObject* TabBase::ParentMultiTabs ()
 	{
-		return nullptr;
+		return S_ParentMultiTabs_;
 	}
-}
 }

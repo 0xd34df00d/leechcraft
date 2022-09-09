@@ -113,6 +113,7 @@ LC_DEFINE_PLUGIN (
 		sslerrorsdialog.cpp
 		sslerrorschoicestorage.cpp
 		contactslistview.cpp
+		tabbase.cpp
 		$<$<BOOL:${ENABLE_CRYPT}>:pgpkeyselectiondialog.cpp cryptomanager.cpp>
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc

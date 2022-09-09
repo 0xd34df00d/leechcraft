@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
 #include "interfaces/azoth/ihaveserverhistory.h"
+#include "tabbase.h"
 #include "ui_serverhistorywidget.h"
 
 class QSortFilterProxyModel;
@@ -21,14 +20,9 @@ namespace Azoth
 {
 	class IHaveServerHistory;
 
-	class ServerHistoryWidget : public QWidget
-							  , public ITabWidget
+	class ServerHistoryWidget : public TabBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
-
-		static QObject *S_ParentMultiTabs_;
-		static TabClassInfo S_TC_;
 
 		Ui::ServerHistoryWidget Ui_;
 
@@ -43,12 +37,8 @@ namespace Azoth
 
 		QSortFilterProxyModel * const ContactsFilter_;
 	public:
-		ServerHistoryWidget (QObject*, QWidget* = nullptr);
+		ServerHistoryWidget (QObject* account, QWidget* parent = nullptr);
 
-		static void SetTabData (QObject*, const TabClassInfo&);
-
-		TabClassInfo GetTabClassInfo () const override;
-		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
 
@@ -61,8 +51,6 @@ namespace Azoth
 		void on_MessagesView__anchorClicked (const QUrl&);
 		void navigatePrevious ();
 		void navigateNext ();
-	signals:
-		void removeTab () override;
 	};
 }
 }
