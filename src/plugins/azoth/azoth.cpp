@@ -50,6 +50,7 @@
 #include "serverhistorywidget.h"
 #include "actionsmanager.h"
 #include "resourcesmanager.h"
+#include "statuschange.h"
 
 namespace LC
 {
@@ -94,6 +95,8 @@ namespace Azoth
 		setSOM ("MUCWindowStyle");
 
 		Core::Instance ().GetShortcutManager ()->AnnounceGlobalShorcuts ();
+
+		StatusChangeMenu_ = StatusChange::CreateMenu (this, StatusChange::ChangeAllAccountsStatus);
 	}
 
 	void Plugin::Release ()
@@ -171,8 +174,10 @@ namespace Azoth
 		switch (aep)
 		{
 		case ActionsEmbedPlace::TrayMenu:
-			result << MW_->GetChangeStatusMenu ()->menuAction ();
+		{
+			result << StatusChangeMenu_->menuAction ();
 			break;
+		}
 		default:
 			break;
 		}

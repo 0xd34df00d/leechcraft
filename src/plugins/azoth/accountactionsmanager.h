@@ -19,7 +19,6 @@ namespace LC
 {
 namespace Azoth
 {
-	class StatusChangeMenuManager;
 	class IAccount;
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
@@ -32,7 +31,6 @@ namespace Azoth
 
 		QHash<IAccount*, ConsoleWidget*> Account2CW_;
 
-		StatusChangeMenuManager * const StatusMenuMgr_;
 		QMenu *MenuChangeStatus_;
 
 		QAction *AccountJoinConference_;
@@ -55,13 +53,11 @@ namespace Azoth
 		AccountActionsManager (QObject* = nullptr);
 
 		QList<QAction*> GetMenuActions (QMenu*, IAccount*);
-
-		QString GetStatusText (QAction*, State) const;
 	private:
-		QList<QAction*> AddMenuChangeStatus (QMenu*);
 		QList<QAction*> AddBMActions (QMenu*, QObject*);
+
+		void ChangeStatus (State, const QString&);
 	private slots:
-		void handleChangeStatusRequested ();
 		void joinAccountConference ();
 		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();

@@ -25,7 +25,6 @@ namespace Azoth
 	class ServiceDiscoveryWidget;
 	class MicroblogsTab;
 	class AccountActionsManager;
-	class StatusChangeMenuManager;
 
 	class MainWidget : public QWidget
 	{
@@ -44,17 +43,12 @@ namespace Azoth
 		QAction *ActionDeleteSelected_;
 		QToolBar *BottomBar_;
 
-		QMenu *TrayChangeStatus_;
-
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool>> SndLevelExpands_;
-
-		StatusChangeMenuManager *StatusMenuMgr_;
 	public:
 		MainWidget (AccountActionsManager*, QWidget* = 0);
 
 		QList<QAction*> GetMenuActions ();
-		QMenu* GetChangeStatusMenu () const;
 	private:
 		void CreateMenu ();
 	public slots:
@@ -63,9 +57,6 @@ namespace Azoth
 		void treeActivated (const QModelIndex&);
 		void showAllUsersList ();
 		void on_CLTree__customContextMenuRequested (const QPoint&);
-
-		void handleChangeStatusRequested ();
-		void fastStateChangeRequested ();
 
 		void handleEntryActivationType ();
 

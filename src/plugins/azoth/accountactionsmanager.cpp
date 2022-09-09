@@ -49,7 +49,7 @@
 #include "servicediscoverywidget.h"
 #include "microblogstab.h"
 #include "chattabsmanager.h"
-#include "statuschangemenumanager.h"
+#include "statuschange.h"
 #include "setstatusdialog.h"
 #include "xmlsettingsmanager.h"
 #include "serverhistorywidget.h"
@@ -62,9 +62,7 @@ namespace Azoth
 {
 	AccountActionsManager::AccountActionsManager (QObject *parent)
 	: QObject (parent)
-	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
-	, MenuChangeStatus_ (StatusMenuMgr_->CreateMenu (this,
-				SLOT (handleChangeStatusRequested ()), nullptr, false))
+	, MenuChangeStatus_ (StatusChange::CreateMenu (this, std::bind_front (&AccountActionsManager::ChangeStatus, this)))
 	, AccountJoinConference_ (new QAction (tr ("Join conference..."), this))
 	, AccountManageBookmarks_ (new QAction (tr ("Manage bookmarks..."), this))
 	, AccountAddContact_ (new QAction (tr ("Add contact..."), this))
@@ -166,7 +164,8 @@ namespace Azoth
 		const auto accObj = account->GetQObject ();
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 
-		actions << AddMenuChangeStatus (menu);
+		actions << MenuChangeStatus_->menuAction ();
+		actions << Util::CreateSeparator (menu);
 
 		AccountJoinConference_->setEnabled (proto->GetFeatures () & IProtocol::PFMUCsJoinable);
 		actions << AccountJoinConference_;
@@ -260,37 +259,6 @@ namespace Azoth
 		return actions;
 	}
 
-	QString AccountActionsManager::GetStatusText (QAction *object, State state) const
-	{
-		const auto& textVar = object->property ("Azoth/TargetText");
-		if (!textVar.isNull ())
-			return textVar.toString ();
-
-		const auto& propName = "DefaultStatus" + QString::number (state);
-		return XmlSettingsManager::Instance ()
-				.property (propName.toLatin1 ()).toString ();
-	}
-
-	QList<QAction*> AccountActionsManager::AddMenuChangeStatus (QMenu *menu)
-	{
-		StatusMenuMgr_->UpdateCustomStatuses (MenuChangeStatus_);
-
-		for (auto act : MenuChangeStatus_->actions ())
-		{
-			if (act->isSeparator ())
-				continue;
-
-			QVariant stateVar = act->property ("Azoth/TargetState");
-			if (stateVar.isNull ())
-				continue;
-
-			const auto state = stateVar.value<State> ();
-			act->setIcon (ResourcesManager::Instance ().GetIconForState (state));
-		}
-
-		return { MenuChangeStatus_->menuAction (), Util::CreateSeparator (menu) };
-	}
-
 	QList<QAction*> AccountActionsManager::AddBMActions (QMenu *menu, QObject *accObj)
 	{
 		if (!qobject_cast<ISupportBookmarks*> (accObj))
@@ -368,25 +336,20 @@ namespace Azoth
 		}
 	}
 
-	void AccountActionsManager::handleChangeStatusRequested ()
+	void AccountActionsManager::ChangeStatus (State state, const QString& text)
 	{
-		auto action = qobject_cast<QAction*> (sender ());
 		const auto acc = GetAccountFromSender (sender (), Q_FUNC_INFO);
 
-		QVariant stateVar = action->property ("Azoth/TargetState");
 		EntryStatus status;
-		if (!stateVar.isNull ())
-		{
-			const auto state = stateVar.value<State> ();
-			status = EntryStatus (state, GetStatusText (action, state));
-		}
+		if (state != SInvalid)
+			status = EntryStatus { state, StatusChange::GetStatusText (state, text) };
 		else
 		{
-			SetStatusDialog ssd (acc->GetAccountID ());
+			SetStatusDialog ssd { acc->GetAccountID () };
 			if (ssd.exec () != QDialog::Accepted)
 				return;
 
-			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
+			status = EntryStatus { ssd.GetState (), ssd.GetStatusText () };
 		}
 
 		acc->ChangeState (status);

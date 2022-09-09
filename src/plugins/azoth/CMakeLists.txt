@@ -88,7 +88,7 @@ LC_DEFINE_PLUGIN (
 		customstatusesmanager.cpp
 		userslistwidget.cpp
 		keyboardrosterfixer.cpp
-		statuschangemenumanager.cpp
+		statuschange.cpp
 		customchatstylemanager.cpp
 		advancedpermchangedialog.cpp
 		groupremovedialog.cpp

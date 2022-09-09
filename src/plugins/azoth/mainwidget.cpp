@@ -37,7 +37,6 @@
 #include "accountactionsmanager.h"
 #include "bookmarksmanagerdialog.h"
 #include "keyboardrosterfixer.h"
-#include "statuschangemenumanager.h"
 #include "userslistwidget.h"
 #include "groupremovedialog.h"
 #include "resourcesmanager.h"
@@ -55,7 +54,6 @@ namespace Azoth
 	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
 	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
-	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
 	{
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
@@ -133,8 +131,6 @@ namespace Azoth
 		MenuButton_->setIcon (MainMenu_->icon ());
 		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
-		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
-
 		ActionDeleteSelected_ = new QAction (this);
 		ActionDeleteSelected_->setShortcut (Qt::Key_Delete);
 		ActionDeleteSelected_->setShortcutContext (Qt::WidgetWithChildrenShortcut);
@@ -184,11 +180,6 @@ namespace Azoth
 	QList<QAction*> MainWidget::GetMenuActions ()
 	{
 		return MainMenu_->actions ();
-	}
-
-	QMenu* MainWidget::GetChangeStatusMenu () const
-	{
-		return TrayChangeStatus_;
 	}
 
 	void MainWidget::CreateMenu ()
@@ -436,38 +427,6 @@ namespace Azoth
 		menu->addActions (actions);
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
 		menu->deleteLater ();
-	}
-
-	void MainWidget::handleChangeStatusRequested ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not an action";
-			return;
-		}
-
-		QVariant stateVar = action->property ("Azoth/TargetState");
-		EntryStatus status;
-		if (!stateVar.isNull ())
-		{
-			const auto state = stateVar.value<State> ();
-			status = EntryStatus (state, AccountActsMgr_->GetStatusText (action, state));
-		}
-		else
-		{
-			SetStatusDialog ssd ("global", this);
-			if (ssd.exec () != QDialog::Accepted)
-				return;
-
-			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
-		}
-
-		for (IAccount *acc : Core::Instance ().GetAccounts ())
-			if (acc->IsShownInRoster ())
-				acc->ChangeState (status);
 	}
 
 	void MainWidget::handleEntryActivationType ()
