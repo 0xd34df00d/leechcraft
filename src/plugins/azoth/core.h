@@ -102,8 +102,6 @@ namespace LC::Azoth
 
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
-		QMap<State, int> StateCounter_;
-
 		std::shared_ptr<SourceTrackingModel<IEmoticonResourceSource>> SmilesOptionsModel_;
 		std::shared_ptr<SourceTrackingModel<IChatStyleResourceSource>> ChatStylesOptionsModel_;
 
@@ -327,8 +325,6 @@ namespace LC::Azoth
 		void AddEntryTo (ICLEntry*, QStandardItem*);
 
 		void FillANFields ();
-
-		void UpdateInitState (State);
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
@@ -446,7 +442,6 @@ namespace LC::Azoth
 		void handleRIEXItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString);
 	signals:
 		void gotEntity (const LC::Entity&);
-		void topStatusChanged (LC::Azoth::State);
 
 		/** Convenient signal for rethrowing the event of an account
 		 * being added.

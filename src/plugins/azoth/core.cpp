@@ -1585,40 +1585,6 @@ namespace LC::Azoth
 		};
 	}
 
-	namespace
-	{
-		template<typename T>
-		T FindTop (const QMap<T, int>& map)
-		{
-			if (map.isEmpty ())
-				return {};
-
-			const auto& stlized = Util::Stlize (map);
-			const auto& maxElem = *std::max_element (stlized.begin (), stlized.end (),
-					Util::ComparingBy (Util::Snd));
-			return maxElem.first;
-		}
-	}
-
-	void Core::UpdateInitState (State state)
-	{
-		if (state == SConnecting)
-			return;
-
-		const State prevTop = FindTop (StateCounter_);
-
-		StateCounter_.clear ();
-		for (const auto acc : GetAccounts ())
-			++StateCounter_ [acc->GetState ().State_];
-
-		StateCounter_.remove (SOffline);
-
-		const State newTop = FindTop (StateCounter_);
-
-		if (newTop != prevTop)
-			emit topStatusChanged (newTop);
-	}
-
 	void Core::handleMucJoinRequested ()
 	{
 		auto accounts = GetAccountsPred (ProtocolPlugins_,
@@ -1776,8 +1742,6 @@ namespace LC::Azoth
 		{
 			if (const auto& s = LoadSavedStatus (account))
 				account->ChangeState (*s);
-			else
-				UpdateInitState (account->GetState ().State_);
 		}
 
 		if (const auto xferMgr = account->GetTransferManager ())
@@ -1951,8 +1915,6 @@ namespace LC::Azoth
 					<< acc->GetParentProtocol ();
 			return;
 		}
-
-		UpdateInitState (status.State_);
 
 		const QByteArray& id = proto->GetProtocolID () + acc->GetAccountID ();
 		QByteArray serializedStatus;
