@@ -8,10 +8,9 @@
 
 #pragma once
 
-#include <QWidget>
 #include <QPointer>
-#include <interfaces/ihavetabs.h>
 #include "interfaces/azoth/ihaveconsole.h"
+#include "tabbase.h"
 #include "ui_consolewidget.h"
 
 namespace LC
@@ -21,15 +20,11 @@ namespace Azoth
 	class IAccount;
 	class IHaveConsole;
 
-	class ConsoleWidget : public QWidget
-						, public ITabWidget
+	class ConsoleWidget : public TabBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
 
 		Ui::ConsoleWidget Ui_;
-		QObject *ParentMultiTabs_ = nullptr;
-		TabClassInfo TabClass_;
 
 		QPointer<QObject> AsObject_;
 		IAccount *AsAccount_;
@@ -38,17 +33,12 @@ namespace Azoth
 	public:
 		ConsoleWidget (QObject*, QWidget* = 0);
 
-		TabClassInfo GetTabClassInfo () const override;
-		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
 
-		void SetParentMultiTabs (QObject*);
 		QString GetTitle () const;
 	private slots:
 		void handleConsolePacket (QByteArray, IHaveConsole::PacketDirection, const QString&);
-	signals:
-		void removeTab () override;
 	};
 }
 }

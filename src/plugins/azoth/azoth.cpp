@@ -556,6 +556,7 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+		ConsoleWidget::SetTabData (this, consoleTab);
 
 		TabClassInfo microblogsTab =
 		{
@@ -640,7 +641,6 @@ namespace Azoth
 
 	void Plugin::handleConsoleWidget (ConsoleWidget *cw)
 	{
-		cw->SetParentMultiTabs (this);
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (cw->GetTitle (), cw);
 	}
 }

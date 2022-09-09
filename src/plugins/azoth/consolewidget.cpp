@@ -16,25 +16,13 @@ namespace LC
 namespace Azoth
 {
 	ConsoleWidget::ConsoleWidget (QObject *obj, QWidget *parent)
-	: QWidget (parent)
+	: TabBase (parent)
 	, AsObject_ (obj)
 	, AsAccount_ (qobject_cast<IAccount*> (obj))
 	, AsConsole_ (qobject_cast<IHaveConsole*> (obj))
 	, Format_ (AsConsole_->GetPacketFormat ())
 	{
 		Ui_.setupUi (this);
-
-		TabClassInfo temp =
-		{
-			"ConsoleTab",
-			tr ("IM console"),
-			tr ("Protocol console, for example, XML console for a XMPP "
-				"client protocol"),
-			QIcon ("lcicons:/plugins/azoth/resources/images/sdtab.svg"),
-			0,
-			TFEmpty
-		};
-		TabClass_ = temp;
 
 		connect (obj,
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)),
@@ -53,16 +41,6 @@ namespace Azoth
 				[this] (bool enable) { AsConsole_->SetConsoleEnabled (enable); });
 	}
 
-	TabClassInfo ConsoleWidget::GetTabClassInfo () const
-	{
-		return TabClass_;
-	}
-
-	QObject* ConsoleWidget::ParentMultiTabs ()
-	{
-		return ParentMultiTabs_;
-	}
-
 	void ConsoleWidget::Remove ()
 	{
 		if (AsObject_)
@@ -73,12 +51,7 @@ namespace Azoth
 
 	QToolBar* ConsoleWidget::GetToolBar () const
 	{
-		return 0;
-	}
-
-	void ConsoleWidget::SetParentMultiTabs (QObject *obj)
-	{
-		ParentMultiTabs_ = obj;
+		return nullptr;
 	}
 
 	QString ConsoleWidget::GetTitle () const
