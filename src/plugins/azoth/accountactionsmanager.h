@@ -75,8 +75,6 @@ namespace Azoth
 		void handleAccountRename ();
 		void handleAccountModify ();
 		void handleAccountRemove ();
-	signals:
-		void gotServerHistoryTab (ServerHistoryWidget*);
 	};
 }
 }

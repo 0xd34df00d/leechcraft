@@ -66,11 +66,6 @@ namespace Azoth
 
 		Core::Instance ().SetProxy (proxy);
 
-		connect (Core::Instance ().GetActionsManager (),
-				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
-				this,
-				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
-
 		InitShortcuts ();
 		InitAccActsMgr ();
 		InitSettings ();
@@ -377,10 +372,6 @@ namespace Azoth
 	{
 		auto accActsMgr = new AccountActionsManager ();
 		MW_ = new MainWidget (accActsMgr);
-		connect (accActsMgr,
-				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
-				this,
-				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
 	}
 
 	void Plugin::InitSettings ()
@@ -571,11 +562,6 @@ namespace Azoth
 		TabClasses_ << consoleTab;
 		TabClasses_ << microblogsTab;
 		TabClasses_ << serverHistoryTab;
-	}
-
-	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
-	{
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (widget->GetTabClassInfo ().VisibleName_, widget);
 	}
 
 	void Plugin::handleMWLocation (Qt::DockWidgetArea area)

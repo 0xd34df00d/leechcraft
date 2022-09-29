@@ -73,8 +73,6 @@ namespace Azoth
 				QObject *entry);
 		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-
-		void gotServerHistoryTab (ServerHistoryWidget*);
 	};
 }
 }

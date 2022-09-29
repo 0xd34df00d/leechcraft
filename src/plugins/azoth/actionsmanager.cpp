@@ -31,6 +31,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/an/constants.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucperms.h"
@@ -227,7 +228,7 @@ namespace Azoth
 			QApplication::clipboard ()->setText (id, QClipboard::Selection);
 		}
 
-		void ViewServerHistory (ICLEntry *entry, ActionsManager *mgr)
+		void ViewServerHistory (ICLEntry *entry)
 		{
 			const auto accObj = entry->GetParentAccount ()->GetQObject ();
 			const auto ihsh = qobject_cast<IHaveServerHistory*> (accObj);
@@ -237,9 +238,7 @@ namespace Azoth
 			auto widget = new ServerHistoryWidget (accObj);
 			widget->SelectEntry (entry);
 
-			QMetaObject::invokeMethod (mgr,
-					"gotServerHistoryTab",
-					Q_ARG (ServerHistoryWidget*, widget));
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (widget);
 		}
 
 #ifdef ENABLE_CRYPT
@@ -593,7 +592,7 @@ namespace Azoth
 			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
 			{ "copy_muc_id", SingleEntryActor_f (CopyMUCParticipantID) },
 			{ "sep_afterjid", {} },
-			{ "view_server_history", SingleEntryActorWManager_f (ViewServerHistory) },
+			{ "view_server_history", SingleEntryActor_f (ViewServerHistory) },
 #ifdef ENABLE_CRYPT
 			{ "managepgp", SingleEntryActor_f (ManagePGP) },
 #endif
