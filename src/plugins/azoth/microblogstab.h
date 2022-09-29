@@ -23,8 +23,6 @@ namespace Azoth
 
 		IAccount *Account_;
 	public:
-		static void SetTabData (QObject*, const TabClassInfo&);
-
 		explicit MicroblogsTab (IAccount*);
 
 		void Remove () override;
