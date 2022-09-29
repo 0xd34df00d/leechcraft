@@ -235,9 +235,8 @@ namespace Azoth
 			if (!ihsh || !ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory))
 				return;
 
-			auto widget = new ServerHistoryWidget (accObj);
+			auto widget = new ServerHistoryWidget (ihsh);
 			widget->SelectEntry (entry);
-
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (widget);
 		}
 

@@ -26,22 +26,13 @@ namespace Azoth
 		const auto MaxMsgCount = 25;
 	}
 
-	ServerHistoryWidget::ServerHistoryWidget (QObject *account, QWidget *parent)
+	ServerHistoryWidget::ServerHistoryWidget (IHaveServerHistory *account, QWidget *parent)
 	: TabBase { parent }
 	, Toolbar_ { new QToolBar { this } }
-	, AccObj_ { account }
-	, IHSH_ { qobject_cast<IHaveServerHistory*> (account) }
+	, IHSH_ { account }
 	, ContactsFilter_ { new QSortFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
-
-		if (!IHSH_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "account doesn't implement IHaveServerHistory"
-					<< account;
-			return;
-		}
 
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.ContactsFilter_);
 
@@ -57,7 +48,7 @@ namespace Azoth
 		Ui_.ContactsView_->setModel (ContactsFilter_);
 		Ui_.ContactsView_->sortByColumn (sortParams.Column_, sortParams.Order_);
 
-		connect (AccObj_,
+		connect (dynamic_cast<QObject*> (account),
 				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
 				this,
 				SLOT (handleFetched (QModelIndex, QByteArray, SrvHistMessages_t)));

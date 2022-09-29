@@ -471,7 +471,7 @@ namespace Azoth
 		if (!ihsh)
 			return;
 
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new ServerHistoryWidget { obj });
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new ServerHistoryWidget { ihsh });
 	}
 
 	void AccountActionsManager::handleConfigServerHistory ()

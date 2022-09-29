@@ -28,7 +28,6 @@ namespace Azoth
 
 		QToolBar * const Toolbar_;
 
-		QObject * const AccObj_;
 		IHaveServerHistory * const IHSH_;
 
 		QByteArray CurrentID_;
@@ -37,7 +36,7 @@ namespace Azoth
 
 		QSortFilterProxyModel * const ContactsFilter_;
 	public:
-		ServerHistoryWidget (QObject* account, QWidget* parent = nullptr);
+		ServerHistoryWidget (IHaveServerHistory *account, QWidget* parent = nullptr);
 
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
