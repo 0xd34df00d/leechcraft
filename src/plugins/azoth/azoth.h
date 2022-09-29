@@ -106,13 +106,11 @@ namespace Azoth
 		void InitTabClasses ();
 	public slots:
 		void handleSDWidget (ServiceDiscoveryWidget*);
-		void handleMicroblogsTab (MicroblogsTab*);
 		void handleServerHistoryTab (ServerHistoryWidget*);
 	private slots:
 		void handleMWLocation (Qt::DockWidgetArea);
 		void handleMWFloating (bool);
 		void handleMoreThisStuff (const QString&);
-		void handleConsoleWidget (ConsoleWidget*);
 	signals:
 		void gotEntity (const LC::Entity&) override;
 

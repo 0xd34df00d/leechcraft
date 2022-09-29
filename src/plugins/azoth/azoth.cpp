@@ -378,17 +378,9 @@ namespace Azoth
 		auto accActsMgr = new AccountActionsManager ();
 		MW_ = new MainWidget (accActsMgr);
 		connect (accActsMgr,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
-				this,
-				SLOT (handleConsoleWidget (ConsoleWidget*)));
-		connect (accActsMgr,
 				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
 				this,
 				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-		connect (accActsMgr,
-				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
-				this,
-				SLOT (handleMicroblogsTab (MicroblogsTab*)));
 		connect (accActsMgr,
 				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
 				this,
@@ -594,11 +586,6 @@ namespace Azoth
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Service discovery"), sd);
 	}
 
-	void Plugin::handleMicroblogsTab (MicroblogsTab *tab)
-	{
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Microblogs"), tab);
-	}
-
 	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
 	{
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (widget->GetTabClassInfo ().VisibleName_, widget);
@@ -637,11 +624,6 @@ namespace Azoth
 		e.Additional_ ["Tags"] = tags;
 
 		emit gotEntity (e);
-	}
-
-	void Plugin::handleConsoleWidget (ConsoleWidget *cw)
-	{
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (cw->GetTitle (), cw);
 	}
 }
 }

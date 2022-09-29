@@ -487,7 +487,7 @@ namespace Azoth
 		if (!account)
 			return;
 
-		emit gotMicroblogsTab (new MicroblogsTab (account));
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new MicroblogsTab { account });
 	}
 
 	namespace
@@ -605,17 +605,17 @@ namespace Azoth
 		if (!account)
 			return;
 
-		if (!Account2CW_.contains (account))
+		auto& cw = Account2CW_ [account];
+		if (!cw)
 		{
-			ConsoleWidget *cw = new ConsoleWidget (account->GetQObject ());
-			Account2CW_ [account] = cw;
+			cw = new ConsoleWidget (account->GetQObject ());
 			connect (cw,
 					&ConsoleWidget::removeTab,
 					this,
 					[this, account] { Account2CW_.remove (account); });
 		}
 
-		emit gotConsoleWidget (Account2CW_ [account]);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (cw->GetTitle (), cw);
 	}
 
 	void AccountActionsManager::handleUpdatePassword ()

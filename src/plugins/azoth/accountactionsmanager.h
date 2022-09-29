@@ -76,9 +76,7 @@ namespace Azoth
 		void handleAccountModify ();
 		void handleAccountRemove ();
 	signals:
-		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);
-		void gotMicroblogsTab (MicroblogsTab*);
 		void gotServerHistoryTab (ServerHistoryWidget*);
 	};
 }
