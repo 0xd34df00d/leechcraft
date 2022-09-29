@@ -71,10 +71,9 @@
 #include "avatarsmanager.h"
 
 using SingleEntryActor_f = std::function<void (LC::Azoth::ICLEntry*)> ;
-using SingleEntryActorWManager_f = std::function<void (LC::Azoth::ICLEntry*, LC::Azoth::ActionsManager*)>;
 using MultiEntryActor_f = std::function<void (QList<LC::Azoth::ICLEntry*>)> ;
 
-using EntryActor_f = std::variant<LC::Util::Void, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
+using EntryActor_f = std::variant<LC::Util::Void, SingleEntryActor_f, MultiEntryActor_f>;
 Q_DECLARE_METATYPE (EntryActor_f);
 
 using EntriesList_t = QList<LC::Azoth::ICLEntry*>;
@@ -1484,11 +1483,6 @@ namespace Azoth
 				{
 					for (const auto entry : entries)
 						actor (entry);
-				},
-				[&entries, this] (const SingleEntryActorWManager_f& actor)
-				{
-					for (const auto entry : entries)
-						actor (entry, this);
 				},
 				[&entries] (const MultiEntryActor_f& actor) { actor (entries); },
 				[action] (const Util::Void&)
