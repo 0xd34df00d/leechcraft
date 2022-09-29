@@ -9,8 +9,8 @@
 #pragma once
 
 #include <QObject>
+#include "interfaces/ihavetabs.h"
 
-class ITabWidget;
 class QMainWindow;
 class ICoreTabWidget;
 class IMWProxy;
@@ -158,6 +158,11 @@ public:
 	Q_DECLARE_FLAGS (AddTabFlags, AddTabFlag)
 
 	virtual void AddTab (const QString& name, QWidget *tab, AddTabFlags flags = AddTabFlag::None) = 0;
+
+	void AddTab (QWidget *tab, AddTabFlags flags = AddTabFlag::None)
+	{
+		AddTab (qobject_cast<ITabWidget*> (tab)->GetTabClassInfo ().VisibleName_, tab, flags);
+	}
 
 	/** @brief Returns the index of the window containing the tab widget.
 	 *
