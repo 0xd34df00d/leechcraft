@@ -596,7 +596,7 @@ namespace Azoth
 
 		auto w = new ServiceDiscoveryWidget ();
 		w->SetAccount (account->GetQObject ());
-		emit gotSDWidget (w);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (w);
 	}
 
 	void AccountActionsManager::handleAccountConsole ()

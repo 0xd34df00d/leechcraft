@@ -2276,10 +2276,10 @@ namespace LC::Azoth
 			return;
 		}
 
-		ServiceDiscoveryWidget *w = new ServiceDiscoveryWidget;
+		const auto w = new ServiceDiscoveryWidget;
 		w->SetAccount (sender ());
 		w->SetSDSession (sess);
-		emit gotSDWidget (w);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (w);
 	}
 
 	void Core::handleFileOffered (QObject *jobObj)

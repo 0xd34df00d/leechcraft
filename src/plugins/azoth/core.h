@@ -453,8 +453,6 @@ namespace LC::Azoth
 		 */
 		void accountRemoved (IAccount*);
 
-		void gotSDWidget (ServiceDiscoveryWidget*);
-
 		// Plugin API
 		void hookAddingCLEntryBegin (LC::IHookProxy_ptr proxy,
 				QObject *entry);

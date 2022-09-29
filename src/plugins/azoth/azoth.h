@@ -105,7 +105,6 @@ namespace Azoth
 		void InitSignals ();
 		void InitTabClasses ();
 	public slots:
-		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleServerHistoryTab (ServerHistoryWidget*);
 	private slots:
 		void handleMWLocation (Qt::DockWidgetArea);

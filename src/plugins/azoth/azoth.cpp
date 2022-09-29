@@ -213,7 +213,7 @@ namespace Azoth
 		if (tabClass == "MUCTab")
 			Core::Instance ().handleMucJoinRequested ();
 		else if (tabClass == "SD")
-			handleSDWidget (new ServiceDiscoveryWidget);
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new ServiceDiscoveryWidget);
 		else if (tabClass == "Search")
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Search"),
 					new SearchWidget { Core::Instance ().GetAvatarsManager () });
@@ -378,10 +378,6 @@ namespace Azoth
 		auto accActsMgr = new AccountActionsManager ();
 		MW_ = new MainWidget (accActsMgr);
 		connect (accActsMgr,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-		connect (accActsMgr,
 				SIGNAL (gotServerHistoryTab (ServerHistoryWidget*)),
 				this,
 				SLOT (handleServerHistoryTab (ServerHistoryWidget*)));
@@ -489,10 +485,6 @@ namespace Azoth
 				SIGNAL (gotEntity (const LC::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LC::Entity&)));
-		connect (&Core::Instance (),
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -579,11 +571,6 @@ namespace Azoth
 		TabClasses_ << consoleTab;
 		TabClasses_ << microblogsTab;
 		TabClasses_ << serverHistoryTab;
-	}
-
-	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
-	{
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Service discovery"), sd);
 	}
 
 	void Plugin::handleServerHistoryTab (ServerHistoryWidget *widget)
