@@ -210,8 +210,7 @@ namespace Azoth
 		else if (tabClass == "SD")
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new ServiceDiscoveryWidget);
 		else if (tabClass == "Search")
-			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Search"),
-					new SearchWidget { Core::Instance ().GetAvatarsManager () });
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new SearchWidget { Core::Instance ().GetAvatarsManager () });
 	}
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
