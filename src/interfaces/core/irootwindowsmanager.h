@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QObject>
+#include <QWidget>
 #include "interfaces/ihavetabs.h"
 
 class QMainWindow;
