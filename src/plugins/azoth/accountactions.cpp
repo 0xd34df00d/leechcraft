@@ -97,7 +97,8 @@ namespace LC::Azoth::Actions
 			if (bms.isEmpty ())
 				return;
 
-			const auto bmsMenu = menu->addMenu (AccountActions::tr ("Join bookmarked conference"));
+			const auto bmsMenu = menu->addMenu (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("bookmarks"),
+					AccountActions::tr ("Join bookmarked conference"));
 			for (const auto& bm : bms)
 			{
 				const QVariantMap& bmData = bm.toMap ();
@@ -216,11 +217,12 @@ namespace LC::Azoth::Actions
 
 		void AddExtendedStatusIcons (QMenu *menu, QObject *accObj)
 		{
+			const auto itm = GetProxyHolder ()->GetIconThemeManager ();
 			const auto iesi = qobject_cast<IExtSelfInfoAccount*> (accObj);
 
 			if (const auto isa = qobject_cast<ISupportActivity*> (accObj))
-				menu->addAction (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("face-smile"),
-						AccountActions::tr("Set activity..."),
+				menu->addAction (itm->GetIcon ("view-calendar"),
+						AccountActions::tr ("Set activity..."),
 						[=]
 						{
 							ActivityDialog dia { GetDialogParentWidget () };
@@ -231,7 +233,8 @@ namespace LC::Azoth::Actions
 						});
 
 			if (const auto ism = qobject_cast<ISupportMood*> (accObj))
-				menu->addAction (AccountActions::tr ("Set mood..."),
+				menu->addAction (itm->GetIcon ("face-smile"),
+						AccountActions::tr ("Set mood..."),
 						[=]
 						{
 							MoodDialog dia { GetDialogParentWidget () };
@@ -375,16 +378,19 @@ namespace LC::Azoth::Actions
 
 		if (const auto irma = qobject_cast<IRegManagedAccount*> (acc->GetQObject ());
 			irma && irma->SupportsFeature (IRegManagedAccount::Feature::UpdatePass))
-			menu->addAction (AccountActions::tr ("Update server password..."),
+			menu->addAction (itm->GetIcon ("preferences-desktop-user-password"),
+					AccountActions::tr ("Update server password..."),
 					[=] { UpdatePassword (acc, irma); })->setToolTip (AccountActions::tr ("Updates the account password on the server"));
 
 		if (acc->GetAccountFeatures () & IAccount::FRenamable)
 			menu->addAction (itm->GetIcon ("edit-rename"),
 					AccountActions::tr ("Rename..."),
 					[=] { RenameAccount (acc); });
-		menu->addAction (AccountActions::tr ("Modify..."),
+		menu->addAction (itm->GetIcon ("configure"),
+				AccountActions::tr ("Modify..."),
 				[acc] { acc->OpenConfigurationDialog (); });
-		menu->addAction (AccountActions::tr ("Remove"),
+		menu->addAction (itm->GetIcon ("list-remove"),
+				AccountActions::tr ("Remove"),
 				[acc] { RemoveAccount (acc); });
 	}
 }
