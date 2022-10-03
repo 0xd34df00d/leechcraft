@@ -97,15 +97,13 @@ namespace Azoth
 		QMap<QString, ActionInfo> GetActionInfo() const override;
 
 		QList<ANFieldData> GetANFields () const override;
-	private :
+	private:
 		void InitShortcuts ();
 		void InitSettings ();
 		void InitMW ();
 		void InitSignals ();
 		void InitTabClasses ();
 	private slots:
-		void handleMWLocation (Qt::DockWidgetArea);
-		void handleMWFloating (bool);
 		void handleMoreThisStuff (const QString&);
 	signals:
 		void gotEntity (const LC::Entity&) override;

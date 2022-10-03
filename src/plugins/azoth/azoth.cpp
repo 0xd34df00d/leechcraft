@@ -455,13 +455,13 @@ namespace Azoth
 
 		dw->setFloating (floating);
 		connect (dw,
-				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
+				&QDockWidget::dockLocationChanged,
 				this,
-				SLOT (handleMWLocation (Qt::DockWidgetArea)));
+				[] (Qt::DockWidgetArea area) { XmlSettingsManager::Instance ().setProperty ("MWDockArea", area); });
 		connect (dw,
-				SIGNAL (topLevelChanged (bool)),
+				&QDockWidget::topLevelChanged,
 				this,
-				SLOT (handleMWFloating (bool)));
+				[] (bool floating) { XmlSettingsManager::Instance ().setProperty ("MWFloating", floating); });
 	}
 
 	void Plugin::InitSignals ()
@@ -556,16 +556,6 @@ namespace Azoth
 		TabClasses_ << consoleTab;
 		TabClasses_ << microblogsTab;
 		TabClasses_ << serverHistoryTab;
-	}
-
-	void Plugin::handleMWLocation (Qt::DockWidgetArea area)
-	{
-		XmlSettingsManager::Instance ().setProperty ("MWDockArea", area);
-	}
-
-	void Plugin::handleMWFloating (bool floating)
-	{
-		XmlSettingsManager::Instance ().setProperty ("MWFloating", floating);
 	}
 
 	void Plugin::handleMoreThisStuff (const QString& id)
