@@ -24,15 +24,12 @@ namespace Azoth
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
 	class MicroblogsTab;
-	class AccountActionsManager;
 
 	class MainWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::MainWidget Ui_;
-
-		AccountActionsManager * const AccountActsMgr_;
 
 		QMenu *MainMenu_;
 		QToolButton *MenuButton_;
@@ -46,7 +43,7 @@ namespace Azoth
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool>> SndLevelExpands_;
 	public:
-		MainWidget (AccountActionsManager*, QWidget* = 0);
+		MainWidget (QWidget* = 0);
 
 		QList<QAction*> GetMenuActions ();
 	private:

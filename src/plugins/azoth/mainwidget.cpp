@@ -34,7 +34,7 @@
 #include "util.h"
 #include "groupsenddialog.h"
 #include "actionsmanager.h"
-#include "accountactionsmanager.h"
+#include "accountactions.h"
 #include "bookmarksmanagerdialog.h"
 #include "keyboardrosterfixer.h"
 #include "userslistwidget.h"
@@ -45,9 +45,8 @@ namespace LC
 {
 namespace Azoth
 {
-	MainWidget::MainWidget (AccountActionsManager *accActsMgr, QWidget *parent)
+	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
-	, AccountActsMgr_ (accActsMgr)
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel (this))
@@ -315,14 +314,14 @@ namespace Azoth
 		if (!index.isValid ())
 			return;
 
-		const auto manager = Core::Instance ().GetActionsManager ();
-
-		QMenu *menu = new QMenu (tr ("Entry context menu"));
-		QList<QAction*> actions;
+		QMenu menu { tr ("Entry context menu") };
 		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
 		{
 		case Core::CLETContact:
 		{
+			QList<QAction*> actions;
+
+			const auto manager = Core::Instance ().GetActionsManager ();
 			auto rows = Ui_.CLTree_->selectionModel ()->selectedRows ();
 			for (auto& row : rows)
 				row = ProxyModel_->mapToSource (row);
@@ -355,7 +354,7 @@ namespace Azoth
 						entries << entry;
 				}
 
-				const auto& allActions = manager->CreateEntriesActions (entries, menu);
+				const auto& allActions = manager->CreateEntriesActions (entries, &menu);
 				for (auto action : allActions)
 				{
 					const auto& areas = manager->GetAreasForAction (action);
@@ -364,6 +363,7 @@ namespace Azoth
 						actions << action;
 				}
 			}
+			menu.addActions (actions);
 			break;
 		}
 		case Core::CLETCategory:
@@ -376,57 +376,49 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleCatRenameTriggered ()));
-			actions << rename;
+			menu.addAction (rename);
 
 			auto model = index.model ();
 			QList<QVariant> entries;
 			for (int i = 0, cnt = model->rowCount (index); i < cnt; ++i)
 				entries << model->index (i, 0, index).data (Core::CLREntryObject);
 
-			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
+			QAction *sendMsg = new QAction (tr ("Send message..."), &menu);
 			sendMsg->setProperty ("Azoth/Entries", entries);
 			connect (sendMsg,
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleSendGroupMsgTriggered ()));
-			actions << sendMsg;
+			menu.addAction (sendMsg);
 
 			if (index.data (Core::CLRUnreadMsgCount).toInt ())
 			{
-				auto markAll = new QAction (tr ("Mark all messages as read"), menu);
+				auto markAll = new QAction (tr ("Mark all messages as read"), &menu);
 				markAll->setProperty ("Azoth/Entries", entries);
 				connect (markAll,
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleMarkAllTriggered ()));
-				actions << markAll;
+				menu.addAction (markAll);
 			}
 
-			QAction *removeChildren = new QAction (tr ("Remove group's participants"), menu);
+			QAction *removeChildren = new QAction (tr ("Remove group's participants"), &menu);
 			removeChildren->setProperty ("Azoth/Entries", entries);
 			connect (removeChildren,
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleRemoveChildrenTriggered ()));
-			actions << removeChildren;
+			menu.addAction (removeChildren);
 			break;
 		}
 		case Core::CLETAccount:
-			actions << AccountActsMgr_->GetMenuActions (menu,
-					index.data (Core::CLRAccountObject).value<IAccount*> ());
+			Actions::PopulateMenu (&menu, index.data (Core::CLRAccountObject).value<IAccount*> ());
 			break;
 		default:
-			break;
-		}
-		if (!actions.size ())
-		{
-			delete menu;
 			return;
 		}
 
-		menu->addActions (actions);
-		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
-		menu->deleteLater ();
+		menu.exec (Ui_.CLTree_->mapToGlobal (pos));
 	}
 
 	void MainWidget::handleEntryActivationType ()

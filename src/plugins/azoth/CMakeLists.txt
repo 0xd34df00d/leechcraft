@@ -76,7 +76,7 @@ LC_DEFINE_PLUGIN (
 		groupsenddialog.cpp
 		actionsmanager.cpp
 		importmanager.cpp
-		accountactionsmanager.cpp
+		accountactions.cpp
 		unreadqueuemanager.cpp
 		chatstyleoptionmanager.cpp
 		microblogstab.cpp

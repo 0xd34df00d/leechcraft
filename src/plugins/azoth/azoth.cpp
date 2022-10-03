@@ -46,7 +46,6 @@
 #include "chatstyleoptionmanager.h"
 #include "colorlisteditorwidget.h"
 #include "customstatusesmanager.h"
-#include "accountactionsmanager.h"
 #include "serverhistorywidget.h"
 #include "actionsmanager.h"
 #include "resourcesmanager.h"
@@ -67,7 +66,9 @@ namespace Azoth
 		Core::Instance ().SetProxy (proxy);
 
 		InitShortcuts ();
-		InitAccActsMgr ();
+
+		MW_ = new MainWidget {};
+
 		InitSettings ();
 		InitSignals ();
 		InitTabClasses ();
@@ -365,12 +366,6 @@ namespace Azoth
 					{}
 				}
 			);
-	}
-
-	void Plugin::InitAccActsMgr ()
-	{
-		auto accActsMgr = new AccountActionsManager ();
-		MW_ = new MainWidget (accActsMgr);
 	}
 
 	void Plugin::InitSettings ()

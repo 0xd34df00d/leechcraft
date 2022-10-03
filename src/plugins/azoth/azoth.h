@@ -99,7 +99,6 @@ namespace Azoth
 		QList<ANFieldData> GetANFields () const override;
 	private :
 		void InitShortcuts ();
-		void InitAccActsMgr ();
 		void InitSettings ();
 		void InitMW ();
 		void InitSignals ();
