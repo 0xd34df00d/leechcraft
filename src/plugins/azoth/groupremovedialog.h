@@ -17,18 +17,20 @@ namespace LC
 {
 namespace Azoth
 {
+	class ICLEntry;
+
 	class GroupRemoveDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::GroupRemoveDialog Ui_;
 
-		const QList<QObject*> Entries_;
+		const QList<ICLEntry*> Entries_;
 		QStandardItemModel *Model_;
 	public:
-		GroupRemoveDialog (const QList<QObject*>&, QWidget* = 0);
+		GroupRemoveDialog (const QList<ICLEntry*>&, QWidget* = 0);
 
-		QList<QObject*> GetSelectedEntries () const;
+		QList<ICLEntry*> GetSelectedEntries () const;
 
 		void accept ();
 	};

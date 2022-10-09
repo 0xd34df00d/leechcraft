@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_GROUPSENDDIALOG_H
-#define PLUGINS_AZOTH_GROUPSENDDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_groupsenddialog.h"
 
@@ -18,15 +18,17 @@ namespace LC
 {
 namespace Azoth
 {
+	class ICLEntry;
+
 	class GroupSendDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::GroupSendDialog Ui_;
 		QStandardItemModel *ContactsModel_;
-		QMap<QObject*, QStandardItem*> Entry2Item_;
+		QMap<ICLEntry*, QStandardItem*> Entry2Item_;
 	public:
-		GroupSendDialog (const QList<QObject*>&, QWidget* = 0);
+		GroupSendDialog (const QList<ICLEntry*>&, QWidget* = 0);
 	private slots:
 		void on_Message__textChanged ();
 		void on_SendButton__released ();
@@ -39,5 +41,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

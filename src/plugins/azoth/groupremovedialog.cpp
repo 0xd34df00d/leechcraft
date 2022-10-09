@@ -15,16 +15,14 @@ namespace LC
 {
 namespace Azoth
 {
-	GroupRemoveDialog::GroupRemoveDialog (const QList<QObject*>& entries, QWidget *parent)
+	GroupRemoveDialog::GroupRemoveDialog (const QList<ICLEntry*>& entries, QWidget *parent)
 	: QDialog (parent)
 	, Entries_ (entries)
 	, Model_ (new QStandardItemModel (this))
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("ID") });
-		for (auto entryObj : entries)
+		for (auto entry : entries)
 		{
-			auto entry = qobject_cast<ICLEntry*> (entryObj);
-
 			auto nameItem = new QStandardItem (entry->GetEntryName ());
 			nameItem->setCheckable (true);
 			nameItem->setEditable (false);
@@ -40,9 +38,9 @@ namespace Azoth
 		Ui_.View_->setModel (Model_);
 	}
 
-	QList<QObject*> GroupRemoveDialog::GetSelectedEntries () const
+	QList<ICLEntry*> GroupRemoveDialog::GetSelectedEntries () const
 	{
-		QList<QObject*> result;
+		QList<ICLEntry*> result;
 		for (auto i = 0; i < Model_->rowCount (); ++i)
 			if (Model_->item (i)->checkState () == Qt::Checked)
 				result << Entries_.at (i);
@@ -51,11 +49,8 @@ namespace Azoth
 
 	void GroupRemoveDialog::accept ()
 	{
-		for (auto entryObj : GetSelectedEntries ())
-		{
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			entry->GetParentAccount ()->RemoveEntry (entryObj);
-		}
+		for (auto entry : GetSelectedEntries ())
+			entry->GetParentAccount ()->RemoveEntry (entry->GetQObject ());
 
 		QDialog::accept ();
 	}

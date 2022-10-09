@@ -8,6 +8,8 @@
 
 #include "groupsenddialog.h"
 #include <QStandardItemModel>
+#include <util/sll/qtutil.h>
+#include <util/sll/slotclosure.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
 #include "core.h"
@@ -18,42 +20,46 @@ namespace LC
 {
 namespace Azoth
 {
-	GroupSendDialog::GroupSendDialog (const QList<QObject*>& entries,
-			QWidget *parent)
+	GroupSendDialog::GroupSendDialog (const QList<ICLEntry*>& entries, QWidget *parent)
 	: QDialog (parent)
 	, ContactsModel_ (new QStandardItemModel (this))
 	{
-		ContactsModel_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("ID"));
+		ContactsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("ID") });
 
-		for (const auto entryObj : entries)
+		for (const auto& entry : entries)
 		{
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry)
-				continue;
-
 			QList<QStandardItem*> row
 			{
 				new QStandardItem { entry->GetEntryName () },
 				new QStandardItem { entry->GetHumanReadableID () }
 			};
-			row.first ()->setIcon (ResourcesManager::Instance ()
+			const auto item = row.first ();
+			item->setIcon (ResourcesManager::Instance ()
 						.GetIconForState (entry->GetStatus ().State_));
-			row.first ()->setData (QVariant::fromValue (entryObj));
-			row.first ()->setCheckable (true);
-			row.first ()->setCheckState (Qt::Checked);
+			item->setCheckable (true);
+			item->setCheckState (Qt::Checked);
 
 			ContactsModel_->appendRow (row);
 
-			Entry2Item_ [entryObj] = row.first ();
+			Entry2Item_ [entry] = item;
 
-			connect (entryObj,
-					SIGNAL (destroyed (QObject*)),
+			// TODO this won't be needed once raw ICLEntry pointers are gone
+			connect (entry->GetQObject (),
+					&QObject::destroyed,
 					this,
-					SLOT (handleEntryDestroyed ()));
-			connect (entryObj,
+					[this, entry]
+					{
+						const auto item = Entry2Item_.take (entry);
+						qDeleteAll (ContactsModel_->takeRow (item->row ()));
+					});
+			new Util::SlotClosure<Util::NoDeletePolicy> ([entry, item]
+					{
+						const auto& icon = ResourcesManager::Instance ().GetIconForState (entry->GetStatus ().State_);
+						item->setIcon (icon);
+					},
+					entry->GetQObject (),
 					SIGNAL (statusChanged (EntryStatus, QString)),
-					this,
-					SLOT (handleEntryStatusChanged ()));
+					this);
 		}
 
 		Ui_.setupUi (this);
@@ -62,7 +68,6 @@ namespace Azoth
 
 	void GroupSendDialog::on_Message__textChanged ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		Ui_.SendButton_->setEnabled (!Ui_.Message_->toPlainText ().isEmpty ());
 	}
 
@@ -70,13 +75,10 @@ namespace Azoth
 	{
 		const auto& msg = Ui_.Message_->toPlainText ();
 
-		for (const auto item : Entry2Item_)
+		for (const auto [entry, item] : Util::Stlize (Entry2Item_))
 		{
 			if (item->checkState () != Qt::Checked)
 				continue;
-
-			const auto entryObj = item->data ().value<QObject*> ();
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
 			new MsgSender { entry, IMessage::Type::ChatMessage, msg };
 			Core::Instance ().IncreaseUnreadCount (entry, -1);
@@ -102,11 +104,8 @@ namespace Azoth
 		template<typename T, typename F>
 		void MarkOnly (const T& items, const F& f)
 		{
-			for (const auto item : items)
+			for (const auto [entry, item] : Util::Stlize (items))
 			{
-				const auto entryObj = item->data ().template value<QObject*> ();
-				const auto entry = qobject_cast<ICLEntry*> (entryObj);
-
 				const auto state = f (entry->GetStatus ().State_) ?
 						Qt::Checked :
 						Qt::Unchecked;
@@ -123,27 +122,6 @@ namespace Azoth
 	void GroupSendDialog::on_OfflineButton__released ()
 	{
 		MarkOnly (Entry2Item_, [] (State st) { return st == SOffline; });
-	}
-
-	void GroupSendDialog::handleEntryStatusChanged ()
-	{
-		QStandardItem *item = Entry2Item_ [sender ()];
-		if (!item)
-			return;
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		const auto& icon = ResourcesManager::Instance ()
-				.GetIconForState (entry->GetStatus ().State_);
-		item->setIcon (icon);
-	}
-
-	void GroupSendDialog::handleEntryDestroyed ()
-	{
-		QStandardItem *item = Entry2Item_.take (sender ());
-		if (!item)
-			return;
-
-		qDeleteAll (ContactsModel_->takeRow (item->row ()));
 	}
 }
 }
