@@ -322,11 +322,20 @@ namespace Azoth
 			}
 			return entries;
 		}
+
+		QList<ICLEntry*> GetCategoryEntries (const QModelIndex& index, QModelIndexList selection)
+		{
+			auto result = GetCategoryEntries (index);
+			for (const auto& selIdx : selection)
+				if (selIdx != index && selIdx.data (Core::CLREntryType).toInt () == Core::CLETCategory)
+					result += GetCategoryEntries (selIdx);
+			return result;
+		}
 	}
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
 	{
-		const QModelIndex& index = ProxyModel_->mapToSource (Ui_.CLTree_->indexAt (pos));
+		const QModelIndex& index = Ui_.CLTree_->indexAt (pos);
 		if (!index.isValid ())
 			return;
 
@@ -339,9 +348,6 @@ namespace Azoth
 
 			const auto manager = Core::Instance ().GetActionsManager ();
 			auto rows = Ui_.CLTree_->selectionModel ()->selectedRows ();
-			for (auto& row : rows)
-				row = ProxyModel_->mapToSource (row);
-
 			if (!rows.contains (index))
 				rows << index;
 
@@ -388,7 +394,7 @@ namespace Azoth
 					{
 						.Name_ = index.data ().toString (),
 						.Account_ = qobject_cast<IAccount*> (index.parent ().data (Core::CLRAccountObject).value<QObject*> ()),
-						.Entries_ = GetCategoryEntries (index),
+						.Entries_ = GetCategoryEntries (index, Ui_.CLTree_->selectionModel ()->selectedRows ()),
 						.UnreadCount_ = index.data (Core::CLRUnreadMsgCount).toInt (),
 					});
 			break;
