@@ -57,11 +57,6 @@ namespace Azoth
 
 		void handleEntryActivationType ();
 
-		void handleCatRenameTriggered ();
-		void handleSendGroupMsgTriggered ();
-		void handleMarkAllTriggered ();
-		void handleRemoveChildrenTriggered ();
-
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();
 		void handleAddContactRequested ();

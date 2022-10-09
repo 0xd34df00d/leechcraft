@@ -11,7 +11,6 @@
 #include <QMenu>
 #include <QHash>
 #include <QInputDialog>
-#include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
 #include <interfaces/core/irootwindowsmanager.h>

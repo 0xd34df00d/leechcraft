@@ -12,7 +12,6 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QToolButton>
-#include <QInputDialog>
 #include <QToolBar>
 #include <QShortcut>
 #include <QToolTip>
@@ -32,13 +31,12 @@
 #include "addcontactdialog.h"
 #include "chattabsmanager.h"
 #include "util.h"
-#include "groupsenddialog.h"
 #include "actionsmanager.h"
 #include "accountactions.h"
+#include "categoryactions.h"
 #include "bookmarksmanagerdialog.h"
 #include "keyboardrosterfixer.h"
 #include "userslistwidget.h"
-#include "groupremovedialog.h"
 #include "resourcesmanager.h"
 
 namespace LC
@@ -308,6 +306,24 @@ namespace Azoth
 					OpenChat (qobject_cast<ICLEntry*> (entry), true);
 	}
 
+	namespace
+	{
+		QList<ICLEntry*> GetCategoryEntries (const QModelIndex& index)
+		{
+			auto model = index.model ();
+			const auto numEntries = model->rowCount (index);
+
+			QList<ICLEntry*> entries;
+			entries.reserve (numEntries);
+			for (int i = 0; i < numEntries; ++i)
+			{
+				const auto entryObj = model->index (i, 0, index).data (Core::CLREntryObject).value<QObject*> ();
+				entries << qobject_cast<ICLEntry*> (entryObj);
+			}
+			return entries;
+		}
+	}
+
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
 	{
 		const QModelIndex& index = ProxyModel_->mapToSource (Ui_.CLTree_->indexAt (pos));
@@ -367,50 +383,15 @@ namespace Azoth
 			break;
 		}
 		case Core::CLETCategory:
-		{
-			QAction *rename = new QAction (tr ("Rename group..."), this);
-			const auto& objVar = index.parent ().data (Core::CLRAccountObject);
-			rename->setProperty ("Azoth/OldGroupName", index.data ());
-			rename->setProperty ("Azoth/AccountObject", objVar);
-			connect (rename,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleCatRenameTriggered ()));
-			menu.addAction (rename);
-
-			auto model = index.model ();
-			QList<QVariant> entries;
-			for (int i = 0, cnt = model->rowCount (index); i < cnt; ++i)
-				entries << model->index (i, 0, index).data (Core::CLREntryObject);
-
-			QAction *sendMsg = new QAction (tr ("Send message..."), &menu);
-			sendMsg->setProperty ("Azoth/Entries", entries);
-			connect (sendMsg,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleSendGroupMsgTriggered ()));
-			menu.addAction (sendMsg);
-
-			if (index.data (Core::CLRUnreadMsgCount).toInt ())
-			{
-				auto markAll = new QAction (tr ("Mark all messages as read"), &menu);
-				markAll->setProperty ("Azoth/Entries", entries);
-				connect (markAll,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleMarkAllTriggered ()));
-				menu.addAction (markAll);
-			}
-
-			QAction *removeChildren = new QAction (tr ("Remove group's participants"), &menu);
-			removeChildren->setProperty ("Azoth/Entries", entries);
-			connect (removeChildren,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleRemoveChildrenTriggered ()));
-			menu.addAction (removeChildren);
+			Actions::PopulateMenu (&menu,
+					Actions::CategoryInfo
+					{
+						.Name_ = index.data ().toString (),
+						.Account_ = qobject_cast<IAccount*> (index.parent ().data (Core::CLRAccountObject).value<QObject*> ()),
+						.Entries_ = GetCategoryEntries (index),
+						.UnreadCount_ = index.data (Core::CLRUnreadMsgCount).toInt (),
+					});
 			break;
-		}
 		case Core::CLETAccount:
 			Actions::PopulateMenu (&menu, index.data (Core::CLRAccountObject).value<IAccount*> ());
 			break;
@@ -451,103 +432,6 @@ namespace Azoth
 				signal,
 				this,
 				SLOT (clearFilter ()));
-	}
-
-	void MainWidget::handleCatRenameTriggered ()
-	{
-		if (!sender ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null sender()";
-			return;
-		}
-		sender ()->deleteLater ();
-
-		const QString& group = sender ()->property ("Azoth/OldGroupName").toString ();
-
-		const QString& newGroup = QInputDialog::getText (this,
-				tr ("Rename group"),
-				tr ("Enter new group name for %1:")
-					.arg (group),
-				QLineEdit::Normal,
-				group);
-		if (newGroup.isEmpty () || newGroup == group)
-			return;
-
-		const auto acc = sender ()->property ("Azoth/AccountObject").value<IAccount*> ();
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no account";
-			return;
-		}
-
-		for (const auto entryObj : acc->GetCLEntries ())
-		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast"
-						<< entryObj
-						<< "to ICLEntry";
-				continue;
-			}
-
-			QStringList groups = entry->Groups ();
-			if (groups.removeAll (group))
-			{
-				groups << newGroup;
-				entry->SetGroups (groups);
-			}
-		}
-	}
-
-	namespace
-	{
-		QList<QObject*> GetEntriesFromSender (QObject *sender)
-		{
-			QList<QObject*> entries;
-			for (const auto& entryVar : sender->property ("Azoth/Entries").toList ())
-				entries << entryVar.value<QObject*> ();
-			return entries;
-		}
-	}
-
-	void MainWidget::handleSendGroupMsgTriggered ()
-	{
-		const auto& entries = GetEntriesFromSender (sender ());
-
-		auto dlg = new GroupSendDialog (entries, this);
-		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
-		dlg->show ();
-	}
-
-	void MainWidget::handleMarkAllTriggered ()
-	{
-		for (const auto entry : GetEntriesFromSender (sender ()))
-			qobject_cast<ICLEntry*> (entry)->MarkMsgsRead ();
-	}
-
-	void MainWidget::handleRemoveChildrenTriggered ()
-	{
-		auto entries = GetEntriesFromSender (sender ());
-		for (auto i = entries.begin (); i != entries.end (); )
-		{
-			auto entry = qobject_cast<ICLEntry*> (*i);
-			if (!entry ||
-				(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
-				i = entries.erase (i);
-			else
-				++i;
-		}
-
-		if (entries.isEmpty ())
-			return;
-
-		auto dlg = new GroupRemoveDialog (entries, this);
-		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
-		dlg->show ();
 	}
 
 	void MainWidget::handleManageBookmarks ()
@@ -779,10 +663,8 @@ namespace Azoth
 
 	void MainWidget::expandIndex (const QPersistentModelIndex& pIdx)
 	{
-		if (!pIdx.isValid ())
-			return;
-
-		Ui_.CLTree_->expand (pIdx);
+		if (pIdx.isValid ())
+			Ui_.CLTree_->expand (pIdx);
 	}
 
 	namespace
