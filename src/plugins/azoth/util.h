@@ -32,6 +32,8 @@ namespace Azoth
 	class IAccount;
 	class AvatarsManager;
 
+	QWidget* GetDialogParent ();
+
 	Q_REQUIRED_RESULT QFuture<Entity> BuildNotification (AvatarsManager*,
 			Entity, ICLEntry*, const QString& id = {}, ICLEntry* = nullptr);
 	QString GetActivityIconName (const QString&, const QString&);

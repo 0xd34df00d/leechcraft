@@ -12,6 +12,7 @@
 #include <QWizard>
 #include <QList>
 #include <QMessageBox>
+#include <QMainWindow>
 #include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <interfaces/an/constants.h>
@@ -39,6 +40,11 @@ namespace LC
 {
 namespace Azoth
 {
+	QWidget* GetDialogParent ()
+	{
+		return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
+	}
+
 	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,
 			Entity e, ICLEntry *other, const QString& id, ICLEntry *avatarSource)
 	{

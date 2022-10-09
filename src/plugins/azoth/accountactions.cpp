@@ -61,11 +61,6 @@ namespace LC::Azoth::Actions
 {
 	namespace
 	{
-		QWidget* GetDialogParentWidget ()
-		{
-			return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
-		}
-
 		void ChangeStatus (IAccount *acc, State state, const QString& text)
 		{
 			EntryStatus status;
@@ -73,7 +68,7 @@ namespace LC::Azoth::Actions
 				status = EntryStatus { state, StatusChange::GetStatusText (state, text) };
 			else
 			{
-				SetStatusDialog ssd { acc->GetAccountID (), GetDialogParentWidget () };
+				SetStatusDialog ssd { acc->GetAccountID (), GetDialogParent () };
 				if (ssd.exec () != QDialog::Accepted)
 					return;
 
@@ -132,7 +127,7 @@ namespace LC::Azoth::Actions
 					AccountActions::tr ("Join conference..."),
 					[account]
 					{
-						auto dia = new JoinConferenceDialog ({ account }, GetDialogParentWidget ());
+						auto dia = new JoinConferenceDialog ({ account }, GetDialogParent ());
 						dia->show ();
 						dia->setAttribute (Qt::WA_DeleteOnClose, true);
 					});
@@ -143,7 +138,7 @@ namespace LC::Azoth::Actions
 					AccountActions::tr ("Manage bookmarks..."),
 					[account]
 					{
-						auto dia = new BookmarksManagerDialog (GetDialogParentWidget ());
+						auto dia = new BookmarksManagerDialog (GetDialogParent ());
 						dia->FocusOn (account);
 						dia->show ();
 					});
@@ -153,7 +148,7 @@ namespace LC::Azoth::Actions
 
 		void AddAccountContact (IAccount *account)
 		{
-			AddContactDialog dia { account, GetDialogParentWidget () };
+			AddContactDialog dia { account, GetDialogParent () };
 			if (dia.exec () == QDialog::Accepted)
 				dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
 						dia.GetReason (), dia.GetNick (), dia.GetGroups ());
@@ -225,7 +220,7 @@ namespace LC::Azoth::Actions
 						AccountActions::tr ("Set activity..."),
 						[=]
 						{
-							ActivityDialog dia { GetDialogParentWidget () };
+							ActivityDialog dia { GetDialogParent () };
 							InitSelfDialog (iesi, &IHaveContactActivity::GetUserActivity,
 									[&dia] (const ActivityInfo& info) { dia.SetActivityInfo (info); });
 							if (dia.exec () == QDialog::Accepted)
@@ -237,7 +232,7 @@ namespace LC::Azoth::Actions
 						AccountActions::tr ("Set mood..."),
 						[=]
 						{
-							MoodDialog dia { GetDialogParentWidget () };
+							MoodDialog dia { GetDialogParent () };
 							InitSelfDialog (iesi, &IHaveContactMood::GetUserMood,
 									[&dia] (const MoodInfo& info) { dia.SetMood (info); });
 							if (dia.exec () == QDialog::Accepted)
@@ -248,7 +243,7 @@ namespace LC::Azoth::Actions
 				menu->addAction (AccountActions::tr ("Set location..."),
 						[isg]
 						{
-							LocationDialog dia { GetDialogParentWidget () };
+							LocationDialog dia { GetDialogParent () };
 							if (dia.exec () == QDialog::Accepted)
 								isg->SetGeolocationInfo (dia.GetInfo ());
 						});
