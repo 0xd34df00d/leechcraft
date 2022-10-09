@@ -76,7 +76,7 @@ namespace LC::Azoth::Actions
 					});
 		if (!removableEntries.isEmpty ())
 			menu->addAction (itm->GetIcon ("list-remove"),
-					CategoryActions::tr ("Remove group's participants"),
+					CategoryActions::tr ("Remove group's participants..."),
 					[removableEntries]
 					{
 						auto dlg = new GroupRemoveDialog { removableEntries, GetDialogParent () };
