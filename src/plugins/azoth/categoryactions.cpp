@@ -39,27 +39,13 @@ namespace LC::Azoth::Actions
 				entry->SetGroups (groups);
 			}
 		}
-
-		void RemoveEntries (const QList<ICLEntry*>& entries)
-		{
-			const auto& toRemove = Util::Filter (entries,
-					[] (ICLEntry *entry)
-					{
-						return (entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry;
-					});
-			if (toRemove.isEmpty ())
-				return;
-
-			auto dlg = new GroupRemoveDialog { entries, GetDialogParent () };
-			dlg->setAttribute (Qt::WA_DeleteOnClose, true);
-			dlg->show ();
-		}
 	}
 
 	void PopulateMenu (QMenu *menu, const CategoryInfo& cat)
 	{
 		menu->addAction (CategoryActions::tr ("Rename group..."),
 				[=] { RenameCategory (cat); });
+
 		menu->addAction (CategoryActions::tr ("Send message..."),
 				[=]
 				{
@@ -67,6 +53,7 @@ namespace LC::Azoth::Actions
 					dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 					dlg->show ();
 				});
+
 		if (cat.UnreadCount_)
 			menu->addAction (CategoryActions::tr ("Mark all messages as read"),
 					[=]
@@ -74,7 +61,19 @@ namespace LC::Azoth::Actions
 						for (const auto entry : cat.Entries_)
 							entry->MarkMsgsRead ();
 					});
-		menu->addAction (CategoryActions::tr ("Remove group's participants"),
-				[=] { RemoveEntries (cat.Entries_); });
+
+		const auto removableEntries = Util::Filter (cat.Entries_,
+					[] (ICLEntry *entry)
+					{
+						return (entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry;
+					});
+		if (!removableEntries.isEmpty ())
+			menu->addAction (CategoryActions::tr ("Remove group's participants"),
+					[removableEntries]
+					{
+						auto dlg = new GroupRemoveDialog { removableEntries, GetDialogParent () };
+						dlg->setAttribute (Qt::WA_DeleteOnClose, true);
+						dlg->show ();
+					});
 	}
 }
