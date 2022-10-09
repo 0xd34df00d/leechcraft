@@ -36,9 +36,11 @@ namespace LC::Azoth::Actions
 			for (const auto entry : cat.Entries_)
 			{
 				auto groups = entry->Groups ();
-				groups.removeAll (cat.Name_);
-				groups << newName;
-				entry->SetGroups (groups);
+				if (groups.removeAll (cat.Name_))
+				{
+					groups << newName;
+					entry->SetGroups (groups);
+				}
 			}
 		}
 	}
@@ -53,9 +55,9 @@ namespace LC::Azoth::Actions
 
 		menu->addAction (itm->GetIcon ("mail-send"),
 				CategoryActions::tr ("Send message..."),
-				[=]
+				[entries = cat.Entries_]
 				{
-					auto dlg = new GroupSendDialog { cat.Entries_, GetDialogParent () };
+					auto dlg = new GroupSendDialog { entries, GetDialogParent () };
 					dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 					dlg->show ();
 				});
@@ -63,9 +65,9 @@ namespace LC::Azoth::Actions
 		if (cat.UnreadCount_)
 			menu->addAction (itm->GetIcon ("mail-mark-read"),
 					CategoryActions::tr ("Mark all messages as read"),
-					[=]
+					[entries = cat.Entries_]
 					{
-						for (const auto entry : cat.Entries_)
+						for (const auto entry : entries)
 							entry->MarkMsgsRead ();
 					});
 
