@@ -10,6 +10,8 @@
 #include <QMenu>
 #include <QLineEdit>
 #include <QInputDialog>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/sll/prelude.h>
 #include "interfaces/azoth/iclentry.h"
 #include "groupsenddialog.h"
@@ -43,10 +45,14 @@ namespace LC::Azoth::Actions
 
 	void PopulateMenu (QMenu *menu, const CategoryInfo& cat)
 	{
-		menu->addAction (CategoryActions::tr ("Rename group..."),
+		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
+
+		menu->addAction (itm->GetIcon ("edit-rename"),
+				CategoryActions::tr ("Rename group..."),
 				[=] { RenameCategory (cat); });
 
-		menu->addAction (CategoryActions::tr ("Send message..."),
+		menu->addAction (itm->GetIcon ("mail-send"),
+				CategoryActions::tr ("Send message..."),
 				[=]
 				{
 					auto dlg = new GroupSendDialog { cat.Entries_, GetDialogParent () };
@@ -55,7 +61,8 @@ namespace LC::Azoth::Actions
 				});
 
 		if (cat.UnreadCount_)
-			menu->addAction (CategoryActions::tr ("Mark all messages as read"),
+			menu->addAction (itm->GetIcon ("mail-mark-read"),
+					CategoryActions::tr ("Mark all messages as read"),
 					[=]
 					{
 						for (const auto entry : cat.Entries_)
@@ -68,7 +75,8 @@ namespace LC::Azoth::Actions
 						return (entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry;
 					});
 		if (!removableEntries.isEmpty ())
-			menu->addAction (CategoryActions::tr ("Remove group's participants"),
+			menu->addAction (itm->GetIcon ("list-remove"),
+					CategoryActions::tr ("Remove group's participants"),
 					[removableEntries]
 					{
 						auto dlg = new GroupRemoveDialog { removableEntries, GetDialogParent () };
