@@ -494,123 +494,123 @@
 <context>
     <name>LC::Azoth::AccountActions</name>
     <message>
-        <location filename="accountactions.cpp" line="100"/>
+        <location filename="accountactions.cpp" line="95"/>
         <source>Join bookmarked conference</source>
         <translation>Кыстырылган конференцияләр</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="131"/>
+        <location filename="accountactions.cpp" line="126"/>
         <source>Join conference...</source>
         <translation>Конференциягә кушылырга...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="142"/>
+        <location filename="accountactions.cpp" line="137"/>
         <source>Manage bookmarks...</source>
         <translation>Кыстыргычларны оештыру...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="168"/>
+        <location filename="accountactions.cpp" line="163"/>
         <source>Open chat with non-roster contact</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="169"/>
+        <location filename="accountactions.cpp" line="164"/>
         <source>Enter ID of the contact you wish to open chat with:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="183"/>
+        <location filename="accountactions.cpp" line="178"/>
         <source>Error opening chat: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="196"/>
+        <location filename="accountactions.cpp" line="191"/>
         <source>Open server history...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="203"/>
+        <location filename="accountactions.cpp" line="198"/>
         <source>Configure server history...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="223"/>
+        <location filename="accountactions.cpp" line="219"/>
         <source>Set activity...</source>
         <translation>Шөгел...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="234"/>
+        <location filename="accountactions.cpp" line="231"/>
         <source>Set mood...</source>
         <translation>Кәеф...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="245"/>
+        <location filename="accountactions.cpp" line="242"/>
         <source>Set location...</source>
         <translation>Урынны билгеләргә...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="275"/>
+        <location filename="accountactions.cpp" line="272"/>
         <source>Change password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="276"/>
+        <location filename="accountactions.cpp" line="273"/>
         <source>Enter new password for account %1 (the password will be updated on server):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="287"/>
+        <location filename="accountactions.cpp" line="284"/>
         <source>Rename account</source>
         <translation>Аккаунт янә атау</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="288"/>
+        <location filename="accountactions.cpp" line="285"/>
         <source>Enter new name for account %1:</source>
         <translation>%1 аккаунтының яңа исемен кертегез:</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="318"/>
+        <location filename="accountactions.cpp" line="315"/>
         <source>Add contact...</source>
         <translation>Контакт өстәргә...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="322"/>
+        <location filename="accountactions.cpp" line="319"/>
         <source>Chat with non-CL contact</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="331"/>
+        <location filename="accountactions.cpp" line="328"/>
         <source>View microblogs...</source>
         <translation>Микроблогларны карарга...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="349"/>
+        <location filename="accountactions.cpp" line="346"/>
         <source>Service discovery...</source>
         <translation>Сервисларны ачыклау...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="358"/>
+        <location filename="accountactions.cpp" line="355"/>
         <source>Console...</source>
         <translation>Консоль...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="378"/>
+        <location filename="accountactions.cpp" line="376"/>
         <source>Update server password...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="379"/>
+        <location filename="accountactions.cpp" line="377"/>
         <source>Updates the account password on the server</source>
         <oldsource>Updates the acc&apos;s password on the server</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="383"/>
+        <location filename="accountactions.cpp" line="381"/>
         <source>Rename...</source>
         <translation>Янә атарга...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="385"/>
+        <location filename="accountactions.cpp" line="384"/>
         <source>Modify...</source>
         <translation>Үзгәртергә...</translation>
     </message>
@@ -1500,6 +1500,40 @@
     </message>
 </context>
 <context>
+    <name>LC::Azoth::CategoryActions</name>
+    <message>
+        <location filename="categoryactions.cpp" line="28"/>
+        <source>Rename group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="29"/>
+        <source>Enter new group name for %1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="51"/>
+        <source>Rename group...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="55"/>
+        <source>Send message...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="65"/>
+        <source>Mark all messages as read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="79"/>
+        <source>Remove group&apos;s participants...</source>
+        <oldsource>Remove group&apos;s participants</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LC::Azoth::ChatTab</name>
     <message>
         <location filename="chattab.cpp" line="123"/>
@@ -1931,37 +1965,37 @@
         <translation>%1 гәптә сезнең катнашуны тыйдылар: %2.</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="284"/>
+        <location filename="util.cpp" line="290"/>
         <source>Online</source>
         <translation>Онлайн</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="286"/>
+        <location filename="util.cpp" line="292"/>
         <source>Free to chat</source>
         <translation>Гәпкә әзер</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="288"/>
+        <location filename="util.cpp" line="294"/>
         <source>Away</source>
         <translation>Читтә</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="290"/>
+        <location filename="util.cpp" line="296"/>
         <source>Do not disturb</source>
         <translation>Борчымаска</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="292"/>
+        <location filename="util.cpp" line="298"/>
         <source>Not available</source>
         <translation>Аралашу мөмкинсез</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="294"/>
+        <location filename="util.cpp" line="300"/>
         <source>Offline</source>
         <translation>Оффлайн</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="296"/>
+        <location filename="util.cpp" line="302"/>
         <source>Error</source>
         <translation>Хата</translation>
     </message>
@@ -2095,12 +2129,12 @@
 <context>
     <name>LC::Azoth::GroupSendDialog</name>
     <message>
-        <location filename="groupsenddialog.cpp" line="26"/>
+        <location filename="groupsenddialog.cpp" line="27"/>
         <source>Name</source>
         <translation>Исем</translation>
     </message>
     <message>
-        <location filename="groupsenddialog.cpp" line="26"/>
+        <location filename="groupsenddialog.cpp" line="27"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -2124,92 +2158,62 @@
 <context>
     <name>LC::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="199"/>
+        <location filename="mainwidget.cpp" line="197"/>
         <source>Manage bookmarks...</source>
         <translation>Кыстыргычларны оештыру...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="203"/>
+        <location filename="mainwidget.cpp" line="201"/>
         <source>Add account...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="386"/>
-        <source>Send message...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="469"/>
-        <source>Rename group</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="470"/>
-        <source>Enter new group name for %1:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="50"/>
+        <location filename="mainwidget.cpp" line="48"/>
         <source>Azoth menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="53"/>
+        <location filename="mainwidget.cpp" line="51"/>
         <source>CL mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="55"/>
+        <location filename="mainwidget.cpp" line="53"/>
         <source>Azoth bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="158"/>
+        <location filename="mainwidget.cpp" line="156"/>
         <source>Show all users list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="188"/>
+        <location filename="mainwidget.cpp" line="186"/>
         <source>Add contact...</source>
         <translation>Контакт өстәргә...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="193"/>
+        <location filename="mainwidget.cpp" line="191"/>
         <source>Join conference...</source>
         <translation>Конференциягә кушылырга...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="396"/>
-        <source>Mark all messages as read</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="405"/>
-        <source>Remove group&apos;s participants</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="615"/>
+        <location filename="mainwidget.cpp" line="499"/>
         <source>Are you sure you want to remove %1 from roster?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="65"/>
+        <location filename="mainwidget.cpp" line="63"/>
         <source>Search...</source>
         <translation>Эзләргә...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="208"/>
+        <location filename="mainwidget.cpp" line="206"/>
         <source>Show offline contacts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="371"/>
-        <source>Rename group...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="317"/>
+        <location filename="mainwidget.cpp" line="333"/>
         <source>Entry context menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3522,22 +3526,22 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="104"/>
+        <location filename="util.cpp" line="110"/>
         <source>Add account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="util.cpp" line="249"/>
+        <location filename="util.cpp" line="255"/>
         <source>Are you sure you want to remove the account %1?</source>
         <translation>Сез чынлап %1 аккаунтын бетерергә телисезме?</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="258"/>
+        <location filename="util.cpp" line="264"/>
         <source>Do you also want to remove %1 from the server?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="util.cpp" line="315"/>
+        <location filename="util.cpp" line="321"/>
         <source>Please select the key for %1 (%2).</source>
         <translation>%1 (%2) өчен ачкычны, зинһар, сайлагыз.</translation>
     </message>

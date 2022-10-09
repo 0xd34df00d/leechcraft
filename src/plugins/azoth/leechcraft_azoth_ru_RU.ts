@@ -494,123 +494,123 @@
 <context>
     <name>LC::Azoth::AccountActions</name>
     <message>
-        <location filename="accountactions.cpp" line="100"/>
+        <location filename="accountactions.cpp" line="95"/>
         <source>Join bookmarked conference</source>
         <translation>Конференции из закладок</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="131"/>
+        <location filename="accountactions.cpp" line="126"/>
         <source>Join conference...</source>
         <translation>Присоединиться к конференции...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="142"/>
+        <location filename="accountactions.cpp" line="137"/>
         <source>Manage bookmarks...</source>
         <translation>Редактировать закладки...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="168"/>
+        <location filename="accountactions.cpp" line="163"/>
         <source>Open chat with non-roster contact</source>
         <translation>Открыть окно разговора с контактом не из ростера</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="169"/>
+        <location filename="accountactions.cpp" line="164"/>
         <source>Enter ID of the contact you wish to open chat with:</source>
         <translation>Введите ID контакта, с которым вы желаете открыть разговор:</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="183"/>
+        <location filename="accountactions.cpp" line="178"/>
         <source>Error opening chat: %1</source>
         <translation>Ошибка создания разговора: %1</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="196"/>
+        <location filename="accountactions.cpp" line="191"/>
         <source>Open server history...</source>
         <translation>Открыть историю на сервере…</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="203"/>
+        <location filename="accountactions.cpp" line="198"/>
         <source>Configure server history...</source>
         <translation>Настроить историю на сервере…</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="223"/>
+        <location filename="accountactions.cpp" line="219"/>
         <source>Set activity...</source>
         <translation>Занятие...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="234"/>
+        <location filename="accountactions.cpp" line="231"/>
         <source>Set mood...</source>
         <translation>Настроение...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="245"/>
+        <location filename="accountactions.cpp" line="242"/>
         <source>Set location...</source>
         <translation>Установить местоположение...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="275"/>
+        <location filename="accountactions.cpp" line="272"/>
         <source>Change password</source>
         <translation>Изменение пароля</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="276"/>
+        <location filename="accountactions.cpp" line="273"/>
         <source>Enter new password for account %1 (the password will be updated on server):</source>
         <translation>Введите новый пароль для учётной записи %1 (пароль будет также обновлен на сервере):</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="287"/>
+        <location filename="accountactions.cpp" line="284"/>
         <source>Rename account</source>
         <translation>Переименование учётной записи</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="288"/>
+        <location filename="accountactions.cpp" line="285"/>
         <source>Enter new name for account %1:</source>
         <translation>Введите новое имя для учётной записи %1:</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="318"/>
+        <location filename="accountactions.cpp" line="315"/>
         <source>Add contact...</source>
         <translation>Добавить контакт...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="322"/>
+        <location filename="accountactions.cpp" line="319"/>
         <source>Chat with non-CL contact</source>
         <translation>Разговор с контактом не из ростера</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="331"/>
+        <location filename="accountactions.cpp" line="328"/>
         <source>View microblogs...</source>
         <translation>Просмотр микроблогов...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="349"/>
+        <location filename="accountactions.cpp" line="346"/>
         <source>Service discovery...</source>
         <translation>Обзор сервисов...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="358"/>
+        <location filename="accountactions.cpp" line="355"/>
         <source>Console...</source>
         <translation>Консоль...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="378"/>
+        <location filename="accountactions.cpp" line="376"/>
         <source>Update server password...</source>
         <translation>Обновить пароль на сервере...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="379"/>
+        <location filename="accountactions.cpp" line="377"/>
         <source>Updates the account password on the server</source>
         <oldsource>Updates the acc&apos;s password on the server</oldsource>
         <translation>Обновляет пароль учётной записи на сервере</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="383"/>
+        <location filename="accountactions.cpp" line="381"/>
         <source>Rename...</source>
         <translation>Переименовать...</translation>
     </message>
     <message>
-        <location filename="accountactions.cpp" line="385"/>
+        <location filename="accountactions.cpp" line="384"/>
         <source>Modify...</source>
         <translation>Изменить...</translation>
     </message>
@@ -1502,6 +1502,40 @@
     </message>
 </context>
 <context>
+    <name>LC::Azoth::CategoryActions</name>
+    <message>
+        <location filename="categoryactions.cpp" line="28"/>
+        <source>Rename group</source>
+        <translation>Переименование группы</translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="29"/>
+        <source>Enter new group name for %1:</source>
+        <translation>Введите новое имя для группы %1:</translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="51"/>
+        <source>Rename group...</source>
+        <translation>Переименовать группу...</translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="55"/>
+        <source>Send message...</source>
+        <translation>Отправить сообщение...</translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="65"/>
+        <source>Mark all messages as read</source>
+        <translation>Отметить все сообщения как прочитанные</translation>
+    </message>
+    <message>
+        <location filename="categoryactions.cpp" line="79"/>
+        <source>Remove group&apos;s participants...</source>
+        <oldsource>Remove group&apos;s participants</oldsource>
+        <translation>Удалить участников группы…</translation>
+    </message>
+</context>
+<context>
     <name>LC::Azoth::ChatTab</name>
     <message>
         <location filename="chattab.cpp" line="123"/>
@@ -1938,37 +1972,37 @@
         <translation>Вас забанили на %1: %2.</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="284"/>
+        <location filename="util.cpp" line="290"/>
         <source>Online</source>
         <translation>Доступен</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="286"/>
+        <location filename="util.cpp" line="292"/>
         <source>Free to chat</source>
         <translation>Готов поболтать</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="288"/>
+        <location filename="util.cpp" line="294"/>
         <source>Away</source>
         <translation>Отсутствую</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="290"/>
+        <location filename="util.cpp" line="296"/>
         <source>Do not disturb</source>
         <translation>Не отвлекать</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="292"/>
+        <location filename="util.cpp" line="298"/>
         <source>Not available</source>
         <translation>Недоступен</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="294"/>
+        <location filename="util.cpp" line="300"/>
         <source>Offline</source>
         <translation>Отключён</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="296"/>
+        <location filename="util.cpp" line="302"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -2102,12 +2136,12 @@
 <context>
     <name>LC::Azoth::GroupSendDialog</name>
     <message>
-        <location filename="groupsenddialog.cpp" line="26"/>
+        <location filename="groupsenddialog.cpp" line="27"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="groupsenddialog.cpp" line="26"/>
+        <location filename="groupsenddialog.cpp" line="27"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -2131,92 +2165,62 @@
 <context>
     <name>LC::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="199"/>
+        <location filename="mainwidget.cpp" line="197"/>
         <source>Manage bookmarks...</source>
         <translation>Редактировать закладки...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="203"/>
+        <location filename="mainwidget.cpp" line="201"/>
         <source>Add account...</source>
         <translation>Добавить учётную запись...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="386"/>
-        <source>Send message...</source>
-        <translation>Отправить сообщение...</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="469"/>
-        <source>Rename group</source>
-        <translation>Переименование группы</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="470"/>
-        <source>Enter new group name for %1:</source>
-        <translation>Введите новое имя группы для %1:</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="50"/>
+        <location filename="mainwidget.cpp" line="48"/>
         <source>Azoth menu</source>
         <translation>Меню Azoth</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="53"/>
+        <location filename="mainwidget.cpp" line="51"/>
         <source>CL mode</source>
         <translation>Режим контакт-листа</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="55"/>
+        <location filename="mainwidget.cpp" line="53"/>
         <source>Azoth bar</source>
         <translation>Панель Azoth</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="158"/>
+        <location filename="mainwidget.cpp" line="156"/>
         <source>Show all users list</source>
         <translation>Показать список всех пользователей</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="188"/>
+        <location filename="mainwidget.cpp" line="186"/>
         <source>Add contact...</source>
         <translation>Добавить контакт...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="193"/>
+        <location filename="mainwidget.cpp" line="191"/>
         <source>Join conference...</source>
         <translation>Присоединиться к конференции...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="396"/>
-        <source>Mark all messages as read</source>
-        <translation>Отметить все сообщения как прочитанные</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="405"/>
-        <source>Remove group&apos;s participants</source>
-        <translation>Удалить участников группы</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="615"/>
+        <location filename="mainwidget.cpp" line="499"/>
         <source>Are you sure you want to remove %1 from roster?</source>
         <translation>Вы уверены, что хотите удалить %1 из списка контактов?</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="65"/>
+        <location filename="mainwidget.cpp" line="63"/>
         <source>Search...</source>
         <translation>Поиск...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="208"/>
+        <location filename="mainwidget.cpp" line="206"/>
         <source>Show offline contacts</source>
         <translation>Показывать оффлайн-контакты</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="371"/>
-        <source>Rename group...</source>
-        <translation>Переименовать группу...</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="317"/>
+        <location filename="mainwidget.cpp" line="333"/>
         <source>Entry context menu</source>
         <translation>Контекстное меню контакта</translation>
     </message>
@@ -3540,22 +3544,22 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="104"/>
+        <location filename="util.cpp" line="110"/>
         <source>Add account</source>
         <translation>Добавить учётную запись</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="249"/>
+        <location filename="util.cpp" line="255"/>
         <source>Are you sure you want to remove the account %1?</source>
         <translation>Вы уверены, что хотите удалить учетную запись %1?</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="258"/>
+        <location filename="util.cpp" line="264"/>
         <source>Do you also want to remove %1 from the server?</source>
         <translation>Вы хотите также удалить запись %1 с сервера?</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="315"/>
+        <location filename="util.cpp" line="321"/>
         <source>Please select the key for %1 (%2).</source>
         <translation>Пожалуйста, выберите ключ для %1 (%2).</translation>
     </message>
