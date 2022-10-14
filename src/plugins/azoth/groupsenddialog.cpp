@@ -116,7 +116,7 @@ namespace Azoth
 
 	void GroupSendDialog::on_OnlineButton__released ()
 	{
-		MarkOnly (Entry2Item_, [] (State st) { return st != SOffline; });
+		MarkOnly (Entry2Item_, [] (State st) { return st != SOffline && st != SError && st != SInvalid; });
 	}
 
 	void GroupSendDialog::on_OfflineButton__released ()
