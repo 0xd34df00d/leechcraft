@@ -26,6 +26,8 @@ namespace Azoth
 	{
 		ContactsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("ID") });
 
+		auto& rmi = ResourcesManager::Instance ();
+
 		for (const auto& entry : entries)
 		{
 			QList<QStandardItem*> row
@@ -34,8 +36,7 @@ namespace Azoth
 				new QStandardItem { entry->GetHumanReadableID () }
 			};
 			const auto item = row.first ();
-			item->setIcon (ResourcesManager::Instance ()
-						.GetIconForState (entry->GetStatus ().State_));
+			item->setIcon (rmi.GetIconForState (entry->GetStatus ().State_));
 			item->setCheckable (true);
 			item->setCheckState (Qt::Checked);
 
@@ -64,6 +65,9 @@ namespace Azoth
 
 		Ui_.setupUi (this);
 		Ui_.Contacts_->setModel (ContactsModel_);
+
+		Ui_.OnlineButton_->setIcon (rmi.GetIconForState (SOnline));
+		Ui_.OfflineButton_->setIcon (rmi.GetIconForState (SOffline));
 	}
 
 	void GroupSendDialog::on_Message__textChanged ()
