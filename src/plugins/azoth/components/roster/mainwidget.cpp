@@ -52,11 +52,11 @@ namespace Azoth
 	, ProxyModel_ (new SortFilterProxyModel (this))
 	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
 	, ActionShowOffline_ (0)
-	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
+	, ButtonsBar_ (new QToolBar (tr ("Azoth bar"), this))
 	{
 		MainMenu_->setIcon (QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg"));
 
-		BottomBar_->addWidget (MenuButton_);
+		ButtonsBar_->addWidget (MenuButton_);
 
 		Ui_.setupUi (this);
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
@@ -118,7 +118,7 @@ namespace Azoth
 				this, "handleStatusIconsChanged");
 		handleStatusIconsChanged ();
 
-		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
+		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, ButtonsBar_);
 
 		auto sm = Core::Instance ().GetShortcutManager ();
 		auto listShortcut = new QShortcut (QString ("Alt+C"),
@@ -196,13 +196,13 @@ namespace Azoth
 				ExpansionStateMgr_,
 				&ExpansionStateManager::SetMucMode);
 
-		BottomBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
+		ButtonsBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 
 		auto addBottomAct = [this] (QAction *act)
 		{
 			const QString& icon = act->property ("ActionIcon").toString ();
 			act->setIcon (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (icon));
-			BottomBar_->addAction (act);
+			ButtonsBar_->addAction (act);
 		};
 		addBottomAct (addContact);
 		addBottomAct (ActionShowOffline_);

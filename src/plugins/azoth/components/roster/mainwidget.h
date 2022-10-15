@@ -40,7 +40,7 @@ namespace Azoth
 		QAction *ActionCLMode_;
 		QAction *ActionShowOffline_;
 		QAction *ActionDeleteSelected_;
-		QToolBar *BottomBar_;
+		QToolBar *ButtonsBar_;
 	public:
 		MainWidget (QWidget* = 0);
 
