@@ -10,8 +10,8 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <util/gui/clearlineeditaddon.h>
+#include "components/roster/keyboardrosterfixer.h"
 #include "core.h"
-#include "keyboardrosterfixer.h"
 #include "resourcesmanager.h"
 
 namespace LC

@@ -26,6 +26,8 @@
 #include "components/dialogs/addcontactdialog.h"
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/setstatusdialog.h"
+#include "components/dialogs/userslistwidget.h"
+#include "components/roster/keyboardrosterfixer.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "contactlistdelegate.h"
@@ -35,8 +37,6 @@
 #include "actionsmanager.h"
 #include "accountactions.h"
 #include "categoryactions.h"
-#include "keyboardrosterfixer.h"
-#include "userslistwidget.h"
 #include "resourcesmanager.h"
 
 namespace LC

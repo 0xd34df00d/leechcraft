@@ -55,6 +55,7 @@
 #include "interfaces/azoth/isupportpgp.h"
 #endif
 #include "components/dialogs/bookmarksmanagerdialog.h"
+#include "components/dialogs/userslistwidget.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
@@ -65,7 +66,6 @@
 #include "msgformatterwidget.h"
 #include "actionsmanager.h"
 #include "contactdropfilter.h"
-#include "userslistwidget.h"
 #include "util.h"
 #include "proxyobject.h"
 #include "customchatstylemanager.h"

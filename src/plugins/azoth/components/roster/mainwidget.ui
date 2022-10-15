@@ -82,7 +82,7 @@
   <customwidget>
    <class>LC::Azoth::ContactsListView</class>
    <extends>QTreeView</extends>
-   <header>contactslistview.h</header>
+   <header>components/roster/contactslistview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

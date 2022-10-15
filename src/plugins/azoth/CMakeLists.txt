@@ -56,27 +56,31 @@ LC_DEFINE_PLUGIN (
 		components/dialogs/shareriexdialog.cpp
 		components/dialogs/simpledialog.cpp
 		components/dialogs/sslerrorsdialog.cpp
+		components/dialogs/userslistwidget.cpp
 		$<$<BOOL:${ENABLE_CRYPT}>:components/dialogs/pgpkeyselectiondialog.cpp>
+		components/roster/clmodel.cpp
+		components/roster/cltooltipmanager.cpp
+		components/roster/contactlistdelegate.cpp
+		components/roster/contactslistview.cpp
+		components/roster/keyboardrosterfixer.cpp
+		components/roster/mainwidget.cpp
+		components/roster/sortfilterproxymodel.cpp
 		azoth.cpp
 		azothschemehandler.cpp
 		core.cpp
-		mainwidget.cpp
 		chattabsmanager.cpp
 		chattab.cpp
-		sortfilterproxymodel.cpp
 		accountslistwidget.cpp
 		pluginmanager.cpp
 		proxyobject.cpp
 		textedit.cpp
 		xmlsettingsmanager.cpp
-		contactlistdelegate.cpp
 		transferjobmanager.cpp
 		addaccountwizardfirstpage.cpp
 		util.cpp
 		servicediscoverywidget.cpp
 		consolewidget.cpp
 		callmanager.cpp
-		clmodel.cpp
 		callchatwidget.cpp
 		chattabwebview.cpp
 		msgformatterwidget.cpp
@@ -92,15 +96,12 @@ LC_DEFINE_PLUGIN (
 		contactdropfilter.cpp
 		colorlisteditorwidget.cpp
 		customstatusesmanager.cpp
-		userslistwidget.cpp
-		keyboardrosterfixer.cpp
 		statuschange.cpp
 		customchatstylemanager.cpp
 		coremessage.cpp
 		dummymsgmanager.cpp
 		serverhistorywidget.cpp
 		dndutil.cpp
-		cltooltipmanager.cpp
 		corecommandsmanager.cpp
 		resourcesmanager.cpp
 		notificationsmanager.cpp
@@ -114,7 +115,6 @@ LC_DEFINE_PLUGIN (
 		chattabpartstatemanager.cpp
 		sslerrorshandler.cpp
 		sslerrorschoicestorage.cpp
-		contactslistview.cpp
 		tabbase.cpp
 		categoryactions.cpp
 		$<$<BOOL:${ENABLE_CRYPT}>:cryptomanager.cpp>

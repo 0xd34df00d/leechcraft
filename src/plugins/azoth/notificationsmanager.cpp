@@ -38,7 +38,6 @@
 #include "util.h"
 #include "core.h"
 #include "chattabsmanager.h"
-#include "cltooltipmanager.h"
 #include "proxyobject.h"
 #include "avatarsmanager.h"
 
