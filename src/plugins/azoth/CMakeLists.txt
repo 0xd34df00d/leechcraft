@@ -62,6 +62,7 @@ LC_DEFINE_PLUGIN (
 		components/roster/cltooltipmanager.cpp
 		components/roster/contactlistdelegate.cpp
 		components/roster/contactslistview.cpp
+		components/roster/expansionstatemanager.cpp
 		components/roster/keyboardrosterfixer.cpp
 		components/roster/mainwidget.cpp
 		components/roster/sortfilterproxymodel.cpp

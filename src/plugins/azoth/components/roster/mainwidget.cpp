@@ -27,7 +27,8 @@
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/setstatusdialog.h"
 #include "components/dialogs/userslistwidget.h"
-#include "components/roster/keyboardrosterfixer.h"
+#include "keyboardrosterfixer.h"
+#include "expansionstatemanager.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "contactlistdelegate.h"
@@ -89,39 +90,12 @@ namespace Azoth
 				ProxyModel_,
 				SLOT (setFilterFixedString (const QString&)));
 
-		connect (ProxyModel_,
-				SIGNAL (rowsInserted (const QModelIndex&, int, int)),
-				this,
-				SLOT (handleRowsInserted (const QModelIndex&, int, int)));
-		connect (ProxyModel_,
-				SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
-				this,
-				SLOT (rebuildTreeExpansions ()));
-		connect (ProxyModel_,
-				SIGNAL (modelReset ()),
-				this,
-				SLOT (rebuildTreeExpansions ()));
-		connect (ProxyModel_,
-				SIGNAL (mucMode ()),
-				Ui_.CLTree_,
-				SLOT (expandAll ()));
-		connect (ProxyModel_,
-				SIGNAL (wholeMode ()),
-				this,
-				SLOT (resetToWholeMode ()));
+		ExpansionStateMgr_ = new ExpansionStateManager { *ProxyModel_, *Ui_.CLTree_, this };
 
-		QMetaObject::invokeMethod (Ui_.CLTree_,
-				"expandToDepth",
-				Qt::QueuedConnection,
-				Q_ARG (int, 0));
-
-		if (ProxyModel_->rowCount ())
-			QMetaObject::invokeMethod (this,
-					"handleRowsInserted",
-					Qt::QueuedConnection,
-					Q_ARG (QModelIndex, QModelIndex ()),
-					Q_ARG (int, 0),
-					Q_ARG (int, ProxyModel_->rowCount () - 1));
+		connect (ProxyModel_,
+				&SortFilterProxyModel::wholeMode,
+				this,
+				[this] { ActionCLMode_->setChecked (false); });
 
 		CreateMenu ();
 		MenuButton_->setMenu (MainMenu_);
@@ -219,9 +193,9 @@ namespace Azoth
 		ActionCLMode_->setShortcut (QString ("Ctrl+Shift+R"));
 		Core::Instance ().GetShortcutManager ()->RegisterAction ("org.LeechCraft.Azoth.CLMode", ActionCLMode_);
 		connect (ActionCLMode_,
-				SIGNAL (toggled (bool)),
-				this,
-				SLOT (handleCLMode (bool)));
+				&QAction::toggled,
+				ExpansionStateMgr_,
+				&ExpansionStateManager::SetMucMode);
 
 		BottomBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 
@@ -531,62 +505,6 @@ namespace Azoth
 			ActionCLMode_->setChecked (false);
 	}
 
-	void MainWidget::resetToWholeMode ()
-	{
-		ActionCLMode_->setChecked (false);
-	}
-
-	void MainWidget::handleCLMode (bool mucMode)
-	{
-		if (mucMode)
-		{
-			FstLevelExpands_.clear ();
-			SndLevelExpands_.clear ();
-
-			for (int i = 0; i < ProxyModel_->rowCount (); ++i)
-			{
-				const QModelIndex& accIdx = ProxyModel_->index (i, 0);
-				const QString& name = accIdx.data ().toString ();
-				FstLevelExpands_ [name] = Ui_.CLTree_->isExpanded (accIdx);
-
-				QMap<QString, bool> groups;
-				for (int j = 0, rc = ProxyModel_->rowCount (accIdx);
-						j < rc; ++j)
-				{
-					const QModelIndex& grpIdx = ProxyModel_->index (j, 0, accIdx);
-					groups [grpIdx.data ().toString ()] = Ui_.CLTree_->isExpanded (grpIdx);
-				}
-
-				SndLevelExpands_ [name] = groups;
-			}
-		}
-
-		ProxyModel_->SetMUCMode (mucMode);
-
-		if (!mucMode &&
-				!FstLevelExpands_.isEmpty () &&
-				!SndLevelExpands_.isEmpty ())
-		{
-			for (int i = 0; i < ProxyModel_->rowCount (); ++i)
-			{
-				const QModelIndex& accIdx = ProxyModel_->index (i, 0);
-				const QString& name = accIdx.data ().toString ();
-				if (!FstLevelExpands_.contains (name))
-					continue;
-
-				Ui_.CLTree_->setExpanded (accIdx, FstLevelExpands_.take (name));
-
-				const QMap<QString, bool>& groups = SndLevelExpands_.take (name);
-				for (int j = 0, rc = ProxyModel_->rowCount (accIdx);
-						j < rc; ++j)
-				{
-					const QModelIndex& grpIdx = ProxyModel_->index (j, 0, accIdx);
-					Ui_.CLTree_->setExpanded (grpIdx, groups [grpIdx.data ().toString ()]);
-				}
-			}
-		}
-	}
-
 	void MainWidget::menuBarVisibilityToggled ()
 	{
 		BottomBar_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
@@ -595,104 +513,6 @@ namespace Azoth
 	void MainWidget::handleStatusIconsChanged ()
 	{
 		ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline));
-	}
-
-	namespace
-	{
-		QString BuildPath (const QModelIndex& index)
-		{
-			if (!index.isValid ())
-				return QString ();
-
-			QString path = "CLTreeState/Expanded/" + index.data ().toString ();
-			QModelIndex parent = index;
-			while ((parent = parent.parent ()).isValid ())
-				path.prepend (parent.data ().toString () + "/");
-
-			path = path.toUtf8 ().toBase64 ().replace ('/', '_');
-
-			return path;
-		}
-	}
-
-	void MainWidget::handleRowsInserted (const QModelIndex& parent, int begin, int end)
-	{
-		for (int i = begin; i <= end; ++i)
-		{
-			const auto& index = ProxyModel_->index (i, 0, parent);
-			if (!index.isValid ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid index"
-						<< parent
-						<< i
-						<< "in"
-						<< begin
-						<< end;
-				continue;
-			}
-
-			const auto type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
-			if (type == Core::CLETCategory)
-			{
-				const QString& path = BuildPath (index);
-
-				const bool expanded = ProxyModel_->IsMUCMode () ||
-						XmlSettingsManager::Instance ().Property (path.toStdString (), true).toBool ();
-				if (expanded)
-					QMetaObject::invokeMethod (this,
-							"expandIndex",
-							Qt::QueuedConnection,
-							Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
-
-				if (ProxyModel_->rowCount (index))
-					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
-			}
-			else if (type == Core::CLETAccount)
-			{
-				QMetaObject::invokeMethod (this,
-						"expandIndex",
-						Qt::QueuedConnection,
-						Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
-
-				if (ProxyModel_->rowCount (index))
-					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
-			}
-		}
-	}
-
-	void MainWidget::rebuildTreeExpansions ()
-	{
-		if (ProxyModel_->rowCount ())
-			handleRowsInserted (QModelIndex (), 0, ProxyModel_->rowCount () - 1);
-	}
-
-	void MainWidget::expandIndex (const QPersistentModelIndex& pIdx)
-	{
-		if (pIdx.isValid ())
-			Ui_.CLTree_->expand (pIdx);
-	}
-
-	namespace
-	{
-		void SetExpanded (const QModelIndex& idx, bool expanded)
-		{
-			const QString& path = BuildPath (idx);
-			if (path.isEmpty ())
-				return;
-
-			XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
-		}
-	}
-
-	void MainWidget::on_CLTree__collapsed (const QModelIndex& idx)
-	{
-		SetExpanded (idx, false);
-	}
-
-	void MainWidget::on_CLTree__expanded (const QModelIndex& idx)
-	{
-		SetExpanded (idx, true);
 	}
 }
 }

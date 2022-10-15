@@ -24,6 +24,7 @@ namespace Azoth
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
 	class MicroblogsTab;
+	class ExpansionStateManager;
 
 	class MainWidget : public QWidget
 	{
@@ -31,17 +32,15 @@ namespace Azoth
 
 		Ui::MainWidget Ui_;
 
-		QMenu *MainMenu_;
-		QToolButton *MenuButton_;
-		SortFilterProxyModel *ProxyModel_;
+		QMenu *MainMenu_ = nullptr;
+		QToolButton *MenuButton_ = nullptr;
+		SortFilterProxyModel *ProxyModel_ = nullptr;
+		ExpansionStateManager *ExpansionStateMgr_ = nullptr;
 
 		QAction *ActionCLMode_;
 		QAction *ActionShowOffline_;
 		QAction *ActionDeleteSelected_;
 		QToolBar *BottomBar_;
-
-		QMap<QString, bool> FstLevelExpands_;
-		QMap<QString, QMap<QString, bool>> SndLevelExpands_;
 	public:
 		MainWidget (QWidget* = 0);
 
@@ -68,16 +67,8 @@ namespace Azoth
 
 		void handleEntryMadeCurrent (QObject*);
 		void handleEntryLostCurrent (QObject*);
-		void resetToWholeMode ();
-		void handleCLMode (bool);
 		void menuBarVisibilityToggled ();
 		void handleStatusIconsChanged ();
-
-		void handleRowsInserted (const QModelIndex&, int, int);
-		void rebuildTreeExpansions ();
-		void expandIndex (const QPersistentModelIndex&);
-		void on_CLTree__expanded (const QModelIndex&);
-		void on_CLTree__collapsed (const QModelIndex&);
 	};
 }
 }
