@@ -31,15 +31,15 @@
 #include "interfaces/azoth/ihavecontactactivity.h"
 #include "interfaces/azoth/moodinfo.h"
 #include "interfaces/azoth/activityinfo.h"
+#include "components/dialogs/activitydialog.h"
+#include "components/dialogs/joinconferencedialog.h"
+#include "components/dialogs/mooddialog.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "core.h"
-#include "joinconferencedialog.h"
 #include "chattabsmanager.h"
 #include "cltooltipmanager.h"
 #include "proxyobject.h"
-#include "activitydialog.h"
-#include "mooddialog.h"
 #include "avatarsmanager.h"
 
 namespace LC

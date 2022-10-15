@@ -14,8 +14,8 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/prelude.h>
 #include "interfaces/azoth/iclentry.h"
-#include "groupsenddialog.h"
-#include "groupremovedialog.h"
+#include "components/dialogs/groupsenddialog.h"
+#include "components/dialogs/groupremovedialog.h"
 #include "util.h"
 
 namespace LC::Azoth::Actions

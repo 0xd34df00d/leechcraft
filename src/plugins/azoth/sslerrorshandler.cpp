@@ -12,7 +12,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
 #include <util/sll/prelude.h>
-#include "sslerrorsdialog.h"
+#include "components/dialogs/sslerrorsdialog.h"
 #include "sslerrorschoicestorage.h"
 
 namespace LC

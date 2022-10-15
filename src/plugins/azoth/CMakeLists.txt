@@ -35,6 +35,28 @@ endif ()
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		components/dialogs/acceptriexdialog.cpp
+		components/dialogs/accounthandlerchooserdialog.cpp
+		components/dialogs/activitydialog.cpp
+		components/dialogs/addcontactdialog.cpp
+		components/dialogs/advancedpermchangedialog.cpp
+		components/dialogs/bookmarkeditdialog.cpp
+		components/dialogs/bookmarksmanagerdialog.cpp
+		components/dialogs/drawattentiondialog.cpp
+		components/dialogs/filesenddialog.cpp
+		components/dialogs/groupeditordialog.cpp
+		components/dialogs/groupremovedialog.cpp
+		components/dialogs/groupsenddialog.cpp
+		components/dialogs/joinconferencedialog.cpp
+		components/dialogs/locationdialog.cpp
+		components/dialogs/mooddialog.cpp
+		components/dialogs/mucinvitedialog.cpp
+		components/dialogs/pgpkeyselectiondialog.cpp
+		components/dialogs/setstatusdialog.cpp
+		components/dialogs/shareriexdialog.cpp
+		components/dialogs/simpledialog.cpp
+		components/dialogs/sslerrorsdialog.cpp
+		$<$<BOOL:${ENABLE_CRYPT}>:components/dialogs/pgpkeyselectiondialog.cpp>
 		azoth.cpp
 		azothschemehandler.cpp
 		core.cpp
@@ -43,37 +65,22 @@ LC_DEFINE_PLUGIN (
 		chattab.cpp
 		sortfilterproxymodel.cpp
 		accountslistwidget.cpp
-		setstatusdialog.cpp
 		pluginmanager.cpp
 		proxyobject.cpp
 		textedit.cpp
 		xmlsettingsmanager.cpp
 		contactlistdelegate.cpp
-		addcontactdialog.cpp
-		joinconferencedialog.cpp
-		groupeditordialog.cpp
 		transferjobmanager.cpp
 		addaccountwizardfirstpage.cpp
-		bookmarksmanagerdialog.cpp
-		accounthandlerchooserdialog.cpp
 		util.cpp
-		simpledialog.cpp
 		servicediscoverywidget.cpp
-		drawattentiondialog.cpp
 		consolewidget.cpp
-		activitydialog.cpp
-		mooddialog.cpp
 		callmanager.cpp
 		clmodel.cpp
 		callchatwidget.cpp
 		chattabwebview.cpp
-		locationdialog.cpp
 		msgformatterwidget.cpp
-		acceptriexdialog.cpp
-		shareriexdialog.cpp
 		searchwidget.cpp
-		mucinvitedialog.cpp
-		groupsenddialog.cpp
 		actionsmanager.cpp
 		importmanager.cpp
 		accountactions.cpp
@@ -81,7 +88,6 @@ LC_DEFINE_PLUGIN (
 		chatstyleoptionmanager.cpp
 		microblogstab.cpp
 		riexhandler.cpp
-		filesenddialog.cpp
 		pendinguploadpaster.cpp
 		contactdropfilter.cpp
 		colorlisteditorwidget.cpp
@@ -90,8 +96,6 @@ LC_DEFINE_PLUGIN (
 		keyboardrosterfixer.cpp
 		statuschange.cpp
 		customchatstylemanager.cpp
-		advancedpermchangedialog.cpp
-		groupremovedialog.cpp
 		coremessage.cpp
 		dummymsgmanager.cpp
 		serverhistorywidget.cpp
@@ -101,7 +105,6 @@ LC_DEFINE_PLUGIN (
 		resourcesmanager.cpp
 		notificationsmanager.cpp
 		msgeditautocompleter.cpp
-		bookmarkeditdialog.cpp
 		msgsender.cpp
 		avatarsmanager.cpp
 		avatarsstorage.cpp
@@ -110,12 +113,11 @@ LC_DEFINE_PLUGIN (
 		historysyncer.cpp
 		chattabpartstatemanager.cpp
 		sslerrorshandler.cpp
-		sslerrorsdialog.cpp
 		sslerrorschoicestorage.cpp
 		contactslistview.cpp
 		tabbase.cpp
 		categoryactions.cpp
-		$<$<BOOL:${ENABLE_CRYPT}>:pgpkeyselectiondialog.cpp cryptomanager.cpp>
+		$<$<BOOL:${ENABLE_CRYPT}>:cryptomanager.cpp>
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
 	QT_COMPONENTS Concurrent Network Sql WebEngineWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}

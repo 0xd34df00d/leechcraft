@@ -14,7 +14,7 @@
 #include "interfaces/azoth/isupportimport.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "core.h"
-#include "accounthandlerchooserdialog.h"
+#include "components/dialogs/accounthandlerchooserdialog.h"
 
 namespace LC
 {

@@ -19,7 +19,7 @@
 #include "interfaces/azoth/iprotocol.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
-#include "pgpkeyselectiondialog.h"
+#include "components/dialogs/pgpkeyselectiondialog.h"
 #include "cryptomanager.h"
 #endif
 #include "core.h"

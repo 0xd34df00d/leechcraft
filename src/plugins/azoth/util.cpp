@@ -25,7 +25,7 @@
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
-#include "pgpkeyselectiondialog.h"
+#include "components/dialogs/pgpkeyselectiondialog.h"
 #endif
 
 #include "addaccountwizardfirstpage.h"

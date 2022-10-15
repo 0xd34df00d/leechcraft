@@ -11,7 +11,7 @@
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
-#include "acceptriexdialog.h"
+#include "components/dialogs/acceptriexdialog.h"
 
 namespace LC
 {

@@ -54,12 +54,12 @@
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
 #endif
+#include "components/dialogs/bookmarksmanagerdialog.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
-#include "bookmarksmanagerdialog.h"
 #include "callmanager.h"
 #include "callchatwidget.h"
 #include "msgformatterwidget.h"

@@ -22,10 +22,10 @@
 #include <util/threads/futures.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
+#include "components/dialogs/filesenddialog.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
-#include "filesenddialog.h"
 #include "avatarsmanager.h"
 
 Q_DECLARE_METATYPE (QToolBar*)

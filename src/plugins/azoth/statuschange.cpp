@@ -12,11 +12,11 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/azoth/iaccount.h>
+#include "components/dialogs/setstatusdialog.h"
 #include "core.h"
 #include "util.h"
 #include "customstatusesmanager.h"
 #include "resourcesmanager.h"
-#include "setstatusdialog.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Azoth::StatusChange

@@ -14,9 +14,9 @@
 #include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
+#include "components/dialogs/mucinvitedialog.h"
 #include "core.h"
 #include "transferjobmanager.h"
-#include "mucinvitedialog.h"
 #include "dndutil.h"
 #include "cltooltipmanager.h"
 
