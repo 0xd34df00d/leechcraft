@@ -47,21 +47,19 @@ namespace Azoth
 		QList<QAction*> GetMenuActions ();
 	private:
 		void CreateMenu ();
+
+		void TreeActivated (const QModelIndex&);
 	public slots:
 		void handleAccountVisibilityChanged ();
 	private slots:
-		void treeActivated (const QModelIndex&);
 		void showAllUsersList ();
 		void on_CLTree__customContextMenuRequested (const QPoint&);
-
-		void handleEntryActivationType ();
 
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();
 		void handleAddContactRequested ();
 
 		void handleShowOffline (bool);
-		void clearFilter ();
 
 		void handleDeleteSelected ();
 

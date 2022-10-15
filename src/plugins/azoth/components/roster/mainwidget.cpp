@@ -45,6 +45,18 @@ namespace LC
 {
 namespace Azoth
 {
+	namespace
+	{
+		auto EntryActivationType2Signal (const QString& type)
+		{
+			if (type == "click")
+				return &QTreeView::clicked;
+			if (type == "dclick")
+				return &QTreeView::doubleClicked;
+			return &QTreeView::activated;
+		}
+	}
+
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
@@ -81,8 +93,15 @@ namespace Azoth
 				SLOT (handleEntryLostCurrent (QObject*)));
 
 		XmlSettingsManager::Instance ().RegisterObject ("EntryActivationType",
-				this, "handleEntryActivationType");
-		handleEntryActivationType ();
+				this,
+				[this, conn = std::make_shared<QMetaObject::Connection> ()] (const QVariant& var)
+				{
+					disconnect (*conn);
+					*conn = connect (Ui_.CLTree_,
+							EntryActivationType2Signal (var.toString ()),
+							this,
+							&MainWidget::TreeActivated);
+				});
 
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -214,10 +233,14 @@ namespace Azoth
 		ProxyModel_->invalidate ();
 	}
 
-	void MainWidget::treeActivated (const QModelIndex& index)
+	void MainWidget::TreeActivated (const QModelIndex& index)
 	{
 		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return;
+
+		if (XmlSettingsManager::Instance ().property ("ClearSearchAfterFocus").toBool () &&
+				!Ui_.FilterLine_->text ().isEmpty ())
+			Ui_.FilterLine_->setText (QString ());
 
 		if (QApplication::keyboardModifiers () & Qt::CTRL)
 			if (auto tab = Core::Instance ().GetChatTabsManager ()->GetActiveChatTab ())
@@ -381,38 +404,6 @@ namespace Azoth
 		menu.exec (Ui_.CLTree_->mapToGlobal (pos));
 	}
 
-	void MainWidget::handleEntryActivationType ()
-	{
-		disconnect (Ui_.CLTree_,
-				0,
-				this,
-				SLOT (treeActivated (const QModelIndex&)));
-		disconnect (Ui_.CLTree_,
-				0,
-				this,
-				SLOT (clearFilter ()));
-
-		const char *signal = 0;
-		const QString& actType = XmlSettingsManager::Instance ()
-				.property ("EntryActivationType").toString ();
-
-		if (actType == "click")
-			signal = SIGNAL (clicked (const QModelIndex&));
-		else if (actType == "dclick")
-			signal = SIGNAL (doubleClicked (const QModelIndex&));
-		else
-			signal = SIGNAL (activated (const QModelIndex&));
-
-		connect (Ui_.CLTree_,
-				signal,
-				this,
-				SLOT (treeActivated (const QModelIndex&)));
-		connect (Ui_.CLTree_,
-				signal,
-				this,
-				SLOT (clearFilter ()));
-	}
-
 	void MainWidget::handleManageBookmarks ()
 	{
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
@@ -443,15 +434,6 @@ namespace Azoth
 	{
 		XmlSettingsManager::Instance ().setProperty ("ShowOfflineContacts", show);
 		ProxyModel_->showOfflineContacts (show);
-	}
-
-	void MainWidget::clearFilter ()
-	{
-		if (!XmlSettingsManager::Instance ().property ("ClearSearchAfterFocus").toBool ())
-			return;
-
-		if (!Ui_.FilterLine_->text ().isEmpty ())
-			Ui_.FilterLine_->setText (QString ());
 	}
 
 	void MainWidget::handleDeleteSelected ()
