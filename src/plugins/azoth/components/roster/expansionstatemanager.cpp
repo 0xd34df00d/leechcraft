@@ -10,7 +10,7 @@
 #include <QTimer>
 #include <QTreeView>
 #include <QtDebug>
-#include "core.h"
+#include "roles.h"
 #include "sortfilterproxymodel.h"
 #include "xmlsettingsmanager.h"
 
@@ -146,8 +146,8 @@ namespace LC::Azoth
 		{
 			const auto& index = Model_.index (i, 0, parent);
 
-			const auto type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
-			if (type == Core::CLETCategory)
+			const auto type = index.data (CLREntryType).value<CLEntryType> ();
+			if (type == CLETCategory)
 			{
 				const auto& path = BuildPath (index);
 
@@ -156,7 +156,7 @@ namespace LC::Azoth
 				if (expanded)
 					ExpandLater (index);
 			}
-			else if (type == Core::CLETAccount)
+			else if (type == CLETAccount)
 				ExpandLater (index);
 
 			if (const auto rc = Model_.rowCount (index))

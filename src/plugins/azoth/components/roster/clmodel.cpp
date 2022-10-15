@@ -19,6 +19,7 @@
 #include "transferjobmanager.h"
 #include "dndutil.h"
 #include "cltooltipmanager.h"
+#include "roles.h"
 
 namespace LC
 {
@@ -55,15 +56,15 @@ namespace Azoth
 
 		for (const auto& index : indexes)
 		{
-			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+			if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
 				continue;
 
-			auto entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
+			auto entryObj = index.data (CLREntryObject).value<QObject*> ();
 			auto entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry)
 				continue;
 
-			const auto& thisGroup = index.parent ().data (Core::CLREntryCategory).toString ();
+			const auto& thisGroup = index.parent ().data (CLREntryCategory).toString ();
 
 			entries.append ({ entry, thisGroup });
 			names << entry->GetEntryName ();
@@ -109,10 +110,10 @@ namespace Azoth
 		if (role != Qt::ToolTipRole)
 			return;
 
-		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return;
 
-		const auto entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
+		const auto entryObj = index.data (CLREntryObject).value<QObject*> ();
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 			return;
@@ -132,14 +133,14 @@ namespace Azoth
 	{
 		if (row != -1 ||
 				!DndUtil::HasContacts (mime) ||
-				parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+				parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return false;
 
 		const auto source = DndUtil::DecodeEntryObj (mime);
 		if (!source)
 			return false;
 
-		QObject *target = parent.data (Core::CLREntryObject).value<QObject*> ();
+		QObject *target = parent.data (CLREntryObject).value<QObject*> ();
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookDnDEntry2Entry (proxy, source, target);
@@ -151,10 +152,10 @@ namespace Azoth
 		if (!DndUtil::HasContacts (mime))
 			return false;
 
-		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+		if (parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return false;
 
-		const auto targetObj = parent.data (Core::CLREntryObject).value<QObject*> ();
+		const auto targetObj = parent.data (CLREntryObject).value<QObject*> ();
 		const auto targetEntry = qobject_cast<ICLEntry*> (targetObj);
 		const auto targetMuc = qobject_cast<IMUCEntry*> (targetObj);
 
@@ -189,14 +190,14 @@ namespace Azoth
 		if (!DndUtil::HasContacts (mime))
 			return false;
 
-		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETAccount)
+		if (parent.data (CLREntryType).value<CLEntryType> () != CLETAccount)
 			return false;
 
-		const auto acc = parent.data (Core::CLRAccountObject).value<IAccount*> ();
+		const auto acc = parent.data (CLRAccountObject).value<IAccount*> ();
 		if (!acc)
 			return false;
 
-		const auto& newGrp = index (row, 0, parent).data (Core::CLREntryCategory).toString ();
+		const auto& newGrp = index (row, 0, parent).data (CLREntryCategory).toString ();
 
 		for (const auto& info : DndUtil::DecodeMimeInfos (mime))
 		{
@@ -223,10 +224,10 @@ namespace Azoth
 		if (DndUtil::HasContacts (mime))
 			return false;
 
-		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+		if (parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return false;
 
-		QObject *entryObj = parent.data (Core::CLREntryObject).value<QObject*> ();
+		QObject *entryObj = parent.data (CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
 		const auto& urls = mime->urls ();

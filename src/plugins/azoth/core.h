@@ -120,32 +120,6 @@ namespace LC::Azoth
 
 		Core ();
 	public:
-		enum CLRoles
-		{
-			CLRAccountObject = Qt::UserRole + 1,
-			CLREntryObject,
-			CLREntryType,
-			CLREntryCategory,
-			CLRUnreadMsgCount,
-			CLRRole,
-			CLRAffiliation,
-			CLRNumOnline,
-			CLRIsMUCCategory
-		};
-
-		enum CLEntryType
-		{
-			/** Self account.
-				*/
-			CLETAccount,
-			/** Category (under self account).
-				*/
-			CLETCategory,
-			/** Remote contact.
-				*/
-			CLETContact
-		};
-
 		static Core& Instance ();
 		void Release ();
 
@@ -487,5 +461,4 @@ namespace LC::Azoth
 	};
 }
 
-Q_DECLARE_METATYPE (LC::Azoth::Core::CLEntryType)
 Q_DECLARE_METATYPE (LC::Azoth::ICLEntry*)

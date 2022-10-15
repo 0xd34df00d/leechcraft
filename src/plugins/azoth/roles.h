@@ -6,16 +6,31 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "contactslistview.h"
-#include "roles.h"
+#pragma once
+
+#include <QMetaType>
 
 namespace LC::Azoth
 {
-	QRect ContactsListView::visualRect (const QModelIndex& index) const
+	enum CLRoles
 	{
-		auto rect = QTreeView::visualRect (index);
-		if (index.data (CLREntryType).value<CLEntryType> () == CLETContact)
-			rect.setLeft (0);
-		return rect;
-	}
+		CLRAccountObject = Qt::UserRole + 1,
+		CLREntryObject,
+		CLREntryType,
+		CLREntryCategory,
+		CLRUnreadMsgCount,
+		CLRRole,
+		CLRAffiliation,
+		CLRNumOnline,
+		CLRIsMUCCategory,
+	};
+
+	enum CLEntryType
+	{
+		CLETAccount,
+		CLETCategory,
+		CLETContact,
+	};
 }
+
+Q_DECLARE_METATYPE (LC::Azoth::CLEntryType)

@@ -29,6 +29,7 @@
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "resourcesmanager.h"
+#include "roles.h"
 
 namespace LC
 {
@@ -74,15 +75,15 @@ namespace Azoth
 			const QStyleOptionViewItem& sopt, const QModelIndex& index) const
 	{
 		painter->save ();
-		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
+		switch (index.data (CLREntryType).value<CLEntryType> ())
 		{
-		case Core::CLETAccount:
+		case CLETAccount:
 			DrawAccount (painter, sopt, index);
 			break;
-		case Core::CLETCategory:
+		case CLETCategory:
 			DrawCategory (painter, sopt, index);
 			break;
-		case Core::CLETContact:
+		case CLETContact:
 			DrawContact (painter, sopt, index);
 			break;
 		}
@@ -93,16 +94,16 @@ namespace Azoth
 	{
 		QSize size = QStyledItemDelegate::sizeHint (option, index);
 
-		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
+		switch (index.data (CLREntryType).value<CLEntryType> ())
 		{
-		case Core::CLETContact:
+		case CLETContact:
 			if (size.height () < ContactHeight_)
 				size.setHeight (ContactHeight_);
 			break;
-		case Core::CLETAccount:
+		case CLETAccount:
 			size.setHeight (size.height () * 1.1);
 			break;
-		case Core::CLETCategory:
+		case CLETCategory:
 			const int textHeight = option.fontMetrics.height ();
 			size.setHeight (qMax (textHeight + CPadding * 2, size.height ()));
 			break;
@@ -124,7 +125,7 @@ namespace Azoth
 
 		QStyledItemDelegate::paint (painter, o, index);
 
-		const auto acc = index.data (Core::CLRAccountObject).value<IAccount*> ();
+		const auto acc = index.data (CLRAccountObject).value<IAccount*> ();
 		const auto extAcc = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
 
 		QIcon accIcon = extAcc ? extAcc->GetAccountIcon () : QIcon ();
@@ -185,7 +186,7 @@ namespace Azoth
 			if (model->rowCount (sourceIndex) != visibleCount)
 				return { visibleCount, model->rowCount (sourceIndex) };
 
-			const auto numOnline = index.data (Core::CLRNumOnline).toInt ();
+			const auto numOnline = index.data (CLRNumOnline).toInt ();
 
 			return { numOnline, visibleCount };
 		}
@@ -208,7 +209,7 @@ namespace Azoth
 		if (o.state & QStyle::State_Selected)
 			painter->setPen (o.palette.color (QPalette::HighlightedText));
 
-		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
+		const int unread = index.data (CLRUnreadMsgCount).toInt ();
 		if (unread)
 		{
 			const QString& text = QString (" %1 :: ").arg (unread);
@@ -256,7 +257,7 @@ namespace Azoth
 	{
 		option.rect.setLeft (0);
 
-		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
+		QObject *entryObj = index.data (CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
 		const bool isMUC = entry->GetEntryType () == ICLEntry::EntryType::MUC;
@@ -276,7 +277,7 @@ namespace Azoth
 		const QImage& avatarImg = ShowAvatars_ ?
 				Core::Instance ().GetAvatar (entry, iconSize) :
 				QImage ();
-		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
+		const int unreadNum = index.data (CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
 				QString (" %1 :: ").arg (unreadNum) :
 				QString ();
@@ -373,7 +374,7 @@ namespace Azoth
 
 		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 		{
-			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
+			const QByteArray& aff = index.data (CLRAffiliation).toByteArray ();
 			const QIcon& icon = ResourcesManager::Instance ().GetAffIcon (aff);
 
 			if (!icon.isNull ())

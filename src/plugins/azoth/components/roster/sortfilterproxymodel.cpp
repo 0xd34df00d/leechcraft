@@ -9,8 +9,9 @@
 #include "sortfilterproxymodel.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imucentry.h"
 #include "interfaces/azoth/imucperms.h"
-#include "core.h"
+#include "roles.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -111,14 +112,14 @@ namespace Azoth
 
 	namespace
 	{
-		Core::CLEntryType GetType (const QModelIndex& idx)
+		CLEntryType GetType (const QModelIndex& idx)
 		{
-			return idx.data (Core::CLREntryType).value<Core::CLEntryType> ();
+			return idx.data (CLREntryType).value<CLEntryType> ();
 		}
 
 		ICLEntry* GetEntry (const QModelIndex& idx)
 		{
-			return qobject_cast<ICLEntry*> (idx.data (Core::CLREntryObject).value<QObject*> ());
+			return qobject_cast<ICLEntry*> (idx.data (CLREntryObject).value<QObject*> ());
 		}
 	}
 
@@ -133,12 +134,12 @@ namespace Azoth
 			const QModelIndex& left) const			// sort in reverse order ok
 	{
 		const auto leftType = GetType (left);
-		if (leftType == Core::CLETAccount)
+		if (leftType == CLETAccount)
 			return QSortFilterProxyModel::lessThan (left, right);
-		else if (leftType == Core::CLETCategory)
+		else if (leftType == CLETCategory)
 		{
-			const bool leftIsMuc = left.data (Core::CLRIsMUCCategory).toBool ();
-			const bool rightIsMuc = right.data (Core::CLRIsMUCCategory).toBool ();
+			const bool leftIsMuc = left.data (CLRIsMUCCategory).toBool ();
+			const bool rightIsMuc = right.data (CLRIsMUCCategory).toBool ();
 			if (leftIsMuc == rightIsMuc)
 				return QSortFilterProxyModel::lessThan (left, right);
 			else
@@ -176,12 +177,12 @@ namespace Azoth
 		const auto& idx = sourceModel ()->index (row, 0, parent);
 		switch (GetType (idx))
 		{
-		case Core::CLETAccount:
+		case CLETAccount:
 		{
 			const auto acc = qobject_cast<ICLEntry*> (MUCEntry_)->GetParentAccount ();
-			return acc == idx.data (Core::CLRAccountObject).value<IAccount*> ();
+			return acc == idx.data (CLRAccountObject).value<IAccount*> ();
 		}
-		case Core::CLETCategory:
+		case CLETCategory:
 		{
 			const QString& gName = idx.data ().toString ();
 			return gName == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName () ||
@@ -196,16 +197,16 @@ namespace Azoth
 	{
 		const auto& idx = sourceModel ()->index (row, 0, parent);
 		if (!filterRegExp ().isEmpty ())
-			return GetType (idx) == Core::CLETContact ?
+			return GetType (idx) == CLETContact ?
 					idx.data ().toString ().contains (filterRegExp ()) :
 					true;
 
-		if (idx.data (Core::CLRUnreadMsgCount).toInt ())
+		if (idx.data (CLRUnreadMsgCount).toInt ())
 			return true;
 
 		const auto type = GetType (idx);
 
-		if (type == Core::CLETContact)
+		if (type == CLETContact)
 		{
 			const auto entry = GetEntry (idx);
 			const auto state = entry->GetStatus ().State_;
@@ -217,7 +218,7 @@ namespace Azoth
 
 			if (!ShowOffline_ &&
 					state == SOffline &&
-					!idx.data (Core::CLRUnreadMsgCount).toInt ())
+					!idx.data (CLRUnreadMsgCount).toInt ())
 				return false;
 
 			if (HideMUCParts_ &&
@@ -228,10 +229,10 @@ namespace Azoth
 					entry->GetEntryFeatures () & ICLEntry::FSelfContact)
 				return false;
 		}
-		else if (type == Core::CLETCategory)
+		else if (type == CLETCategory)
 		{
 			if (!ShowOffline_ &&
-					!idx.data (Core::CLRNumOnline).toInt ())
+					!idx.data (CLRNumOnline).toInt ())
 				return false;
 
 			for (int subRow = 0; subRow < sourceModel ()->rowCount (idx); ++subRow)
@@ -240,8 +241,8 @@ namespace Azoth
 
 			return false;
 		}
-		else if (type == Core::CLETAccount)
-			return idx.data (Core::CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
+		else if (type == CLETAccount)
+			return idx.data (CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
 
 		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
 	}

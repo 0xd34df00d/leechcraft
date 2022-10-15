@@ -39,6 +39,7 @@
 #include "accountactions.h"
 #include "categoryactions.h"
 #include "resourcesmanager.h"
+#include "roles.h"
 
 namespace LC
 {
@@ -217,7 +218,7 @@ namespace Azoth
 
 	void MainWidget::treeActivated (const QModelIndex& index)
 	{
-		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return;
 
 		if (QApplication::keyboardModifiers () & Qt::CTRL)
@@ -291,7 +292,7 @@ namespace Azoth
 			entries.reserve (numEntries);
 			for (int i = 0; i < numEntries; ++i)
 			{
-				const auto entryObj = model->index (i, 0, index).data (Core::CLREntryObject).value<QObject*> ();
+				const auto entryObj = model->index (i, 0, index).data (CLREntryObject).value<QObject*> ();
 				entries << qobject_cast<ICLEntry*> (entryObj);
 			}
 			return entries;
@@ -301,7 +302,7 @@ namespace Azoth
 		{
 			auto result = GetCategoryEntries (index);
 			for (const auto& selIdx : selection)
-				if (selIdx != index && selIdx.data (Core::CLREntryType).toInt () == Core::CLETCategory)
+				if (selIdx != index && selIdx.data (CLREntryType).toInt () == CLETCategory)
 					result += GetCategoryEntries (selIdx);
 			return result;
 		}
@@ -314,9 +315,9 @@ namespace Azoth
 			return;
 
 		QMenu menu { tr ("Entry context menu") };
-		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
+		switch (index.data (CLREntryType).value<CLEntryType> ())
 		{
-		case Core::CLETContact:
+		case CLETContact:
 		{
 			QList<QAction*> actions;
 
@@ -327,7 +328,7 @@ namespace Azoth
 
 			if (rows.size () == 1)
 			{
-				QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
+				QObject *obj = index.data (CLREntryObject).value<QObject*> ();
 				ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
 
 				const auto& allActions = manager->GetEntryActions (entry);
@@ -344,7 +345,7 @@ namespace Azoth
 				QList<ICLEntry*> entries;
 				for (const auto& row : rows)
 				{
-					const auto entryObj = row.data (Core::CLREntryObject).value<QObject*> ();
+					const auto entryObj = row.data (CLREntryObject).value<QObject*> ();
 					const auto entry = qobject_cast<ICLEntry*> (entryObj);
 					if (entry)
 						entries << entry;
@@ -362,18 +363,18 @@ namespace Azoth
 			menu.addActions (actions);
 			break;
 		}
-		case Core::CLETCategory:
+		case CLETCategory:
 			Actions::PopulateMenu (&menu,
 					Actions::CategoryInfo
 					{
 						.Name_ = index.data ().toString (),
-						.Account_ = qobject_cast<IAccount*> (index.parent ().data (Core::CLRAccountObject).value<QObject*> ()),
+						.Account_ = qobject_cast<IAccount*> (index.parent ().data (CLRAccountObject).value<QObject*> ()),
 						.Entries_ = GetCategoryEntries (index, Ui_.CLTree_->selectionModel ()->selectedRows ()),
-						.UnreadCount_ = index.data (Core::CLRUnreadMsgCount).toInt (),
+						.UnreadCount_ = index.data (CLRUnreadMsgCount).toInt (),
 					});
 			break;
-		case Core::CLETAccount:
-			Actions::PopulateMenu (&menu, index.data (Core::CLRAccountObject).value<IAccount*> ());
+		case CLETAccount:
+			Actions::PopulateMenu (&menu, index.data (CLRAccountObject).value<IAccount*> ());
 			break;
 		default:
 			return;
@@ -461,10 +462,10 @@ namespace Azoth
 		if (!idx.isValid ())
 			return;
 
-		if (idx.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+		if (idx.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return;
 
-		const auto& obj = idx.data (Core::CLREntryObject).value<QObject*> ();
+		const auto& obj = idx.data (CLREntryObject).value<QObject*> ();
 		auto entry = qobject_cast<ICLEntry*> (obj);
 		auto acc = entry ? entry->GetParentAccount () : nullptr;
 		if (!entry || !acc)

@@ -85,6 +85,7 @@
 #include "avatarsmanager.h"
 #include "historysyncer.h"
 #include "sslerrorshandler.h"
+#include "roles.h"
 
 Q_DECLARE_METATYPE (QPointer<QObject>);
 

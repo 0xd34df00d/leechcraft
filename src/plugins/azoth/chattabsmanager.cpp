@@ -13,6 +13,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
+#include "roles.h"
 #include "xmlsettingsmanager.h"
 #include "avatarsmanager.h"
 #include "azothschemehandler.h"
@@ -49,7 +50,7 @@ namespace LC::Azoth
 			return nullptr;
 		}
 
-		QObject *entryObj = ti.data (Core::CLREntryObject).value<QObject*> ();
+		QObject *entryObj = ti.data (CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
