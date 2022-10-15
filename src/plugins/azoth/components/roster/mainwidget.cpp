@@ -130,12 +130,12 @@ namespace Azoth
 		addAction (ActionDeleteSelected_);
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
-				this, "menuBarVisibilityToggled");
-		menuBarVisibilityToggled ();
+				this,
+				[this] (const QVariant& opt) { ButtonsBar_->setVisible (opt.toBool ()); });
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
-				this, "handleStatusIconsChanged");
-		handleStatusIconsChanged ();
+				this,
+				[this] (auto) { ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline)); });
 
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, ButtonsBar_);
 
@@ -484,16 +484,6 @@ namespace Azoth
 	{
 		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
 			ActionCLMode_->setChecked (false);
-	}
-
-	void MainWidget::menuBarVisibilityToggled ()
-	{
-		BottomBar_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
-	}
-
-	void MainWidget::handleStatusIconsChanged ()
-	{
-		ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline));
 	}
 }
 }

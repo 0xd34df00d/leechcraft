@@ -65,8 +65,6 @@ namespace Azoth
 
 		void handleEntryMadeCurrent (QObject*);
 		void handleEntryLostCurrent (QObject*);
-		void menuBarVisibilityToggled ();
-		void handleStatusIconsChanged ();
 	};
 }
 }
