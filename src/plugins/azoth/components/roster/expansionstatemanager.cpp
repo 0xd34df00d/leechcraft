@@ -45,6 +45,8 @@ namespace LC::Azoth
 	, Model_ { model }
 	, View_ { view }
 	{
+		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
+
 		connect (&model,
 				&QAbstractItemModel::rowsInserted,
 				this,

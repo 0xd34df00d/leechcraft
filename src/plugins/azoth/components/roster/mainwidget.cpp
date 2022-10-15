@@ -54,8 +54,6 @@ namespace Azoth
 	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
 	{
-		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
-
 		MainMenu_->setIcon (QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg"));
 
 		BottomBar_->addWidget (MenuButton_);
