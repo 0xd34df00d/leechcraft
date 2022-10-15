@@ -147,7 +147,7 @@ namespace Azoth
 				{
 					tr ("Show all users list"),
 					{ "Alt+C" },
-					Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("system-users")
+					GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("system-users")
 				},
 				listShortcut);
 
@@ -220,7 +220,7 @@ namespace Azoth
 		auto addBottomAct = [this] (QAction *act)
 		{
 			const QString& icon = act->property ("ActionIcon").toString ();
-			act->setIcon (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (icon));
+			act->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon (icon));
 			ButtonsBar_->addAction (act);
 		};
 		addBottomAct (addContact);
@@ -438,7 +438,7 @@ namespace Azoth
 
 	void MainWidget::handleDeleteSelected ()
 	{
-		const auto& idx = ProxyModel_->mapToSource (Ui_.CLTree_->currentIndex ());
+		const auto& idx = Ui_.CLTree_->currentIndex ();
 		if (!idx.isValid ())
 			return;
 
@@ -451,12 +451,13 @@ namespace Azoth
 		if (!entry || !acc)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "no entry or account";
+					<< "no entry or account for"
+					<< idx;
 			return;
 		}
 
 		if (QMessageBox::question (this,
-				"LeechCraft",
+				"LeechCraft Azoth",
 				tr ("Are you sure you want to remove %1 from roster?")
 					.arg (entry->GetEntryName ()),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
