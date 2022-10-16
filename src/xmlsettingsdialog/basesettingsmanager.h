@@ -17,6 +17,7 @@
 #include <QStringList>
 #include <QDynamicPropertyChangeEvent>
 #include <QPointer>
+#include <util/sll/typegetter.h>
 #include "xsdconfig.h"
 
 typedef std::shared_ptr<QSettings> Settings_ptr;
@@ -103,6 +104,18 @@ namespace Util
 		void RegisterObject (const QByteArray& propName,
 				QObject *object, const VariantHandler_f& func,
 				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate);
+
+		template<typename F, size_t Cnt = ArgCount_v<F>>
+			requires (Cnt > 0 && !std::is_same_v<std::decay_t<ArgType_t<F, 0>>, QVariant>)
+		void RegisterObject (const QByteArray& propName,
+				QObject *object, F func,
+				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate)
+		{
+			RegisterObject (propName,
+					object,
+					[func] (const QVariant& var) { std::invoke (func, var.value<std::decay_t<ArgType_t<F, 0>>> ()); },
+					flags);
+		}
 
 		/** @brief Subscribes object to property changes.
 		 *
