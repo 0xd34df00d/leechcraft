@@ -131,11 +131,11 @@ namespace Azoth
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this,
-				[this] (const QVariant& opt) { ButtonsBar_->setVisible (opt.toBool ()); });
+				[this] (bool show) { ButtonsBar_->setVisible (show); });
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
 				this,
-				[this] (auto) { ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline)); });
+				[this] { ActionShowOffline_->setIcon (ResourcesManager::Instance ().GetIconForState (SOffline)); });
 
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, ButtonsBar_);
 
