@@ -1461,14 +1461,11 @@ namespace LC::Azoth
 		QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
 		clItem->setEditable (false);
 		const auto acc = clEntry->GetParentAccount ();
-		clItem->setData (QVariant::fromValue<IAccount*> (acc),
-				CLRAccountObject);
-		clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetQObject ()),
-				CLREntryObject);
-		clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
-				CLREntryType);
-		clItem->setData (catItem->data (CLREntryCategory),
-				CLREntryCategory);
+		clItem->setData (QVariant::fromValue<IAccount*> (acc), CLRAccountObject);
+		clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetQObject ()), CLREntryObject);
+		clItem->setData (QVariant::fromValue<ICLEntry*> (clEntry), CLRIEntry);
+		clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact), CLREntryType);
+		clItem->setData (catItem->data (CLREntryCategory), CLREntryCategory);
 
 		clItem->setFlags (clItem->flags () |
 				Qt::ItemIsDragEnabled |

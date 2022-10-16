@@ -16,6 +16,7 @@ namespace LC::Azoth
 	{
 		CLRAccountObject = Qt::UserRole + 1,
 		CLREntryObject,
+		CLRIEntry,
 		CLREntryType,
 		CLREntryCategory,
 		CLRUnreadMsgCount,
