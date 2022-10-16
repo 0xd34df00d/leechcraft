@@ -97,7 +97,11 @@ namespace Util
 				QObject *object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
 
 		void RegisterObject (const QByteArray& propName,
-				QObject *object, const VariantHandler_f&,
+				QObject *object, const std::function<void ()>& func,
+				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate);
+
+		void RegisterObject (const QByteArray& propName,
+				QObject *object, const VariantHandler_f& func,
 				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate);
 
 		/** @brief Subscribes object to property changes.

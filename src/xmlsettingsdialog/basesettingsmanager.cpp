@@ -56,6 +56,12 @@ namespace LC::Util
 	}
 
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
+			QObject *object, const std::function<void () >& func, EventFlags flags)
+	{
+		RegisterObject (propName, object, [func] (const QVariant&) { func (); }, flags);
+	}
+
+	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
 			QObject *object, const VariantHandler_f& func, EventFlags flags)
 	{
 		RegisterObjectImpl (propName, object, func, flags);
