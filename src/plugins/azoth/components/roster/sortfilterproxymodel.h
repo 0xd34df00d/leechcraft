@@ -10,9 +10,7 @@
 
 #include <QSortFilterProxyModel>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class SortFilterProxyModel : public QSortFilterProxyModel
 	{
@@ -34,10 +32,6 @@ namespace Azoth
 	public slots:
 		void showOfflineContacts (bool);
 	private slots:
-		void handleStatusOrderingChanged ();
-		void handleHideMUCPartsChanged ();
-		void handleShowSelfContactsChanged ();
-		void handleHideErrorContactsChanged ();
 		void handleMUCDestroyed ();
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
@@ -49,5 +43,4 @@ namespace Azoth
 		void mucMode ();
 		void wholeMode ();
 	};
-}
 }

@@ -14,9 +14,7 @@
 #include "roles.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel { parent }
@@ -24,21 +22,34 @@ namespace Azoth
 		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
 
-		XmlSettingsManager::Instance ().RegisterObject ("OrderByStatus",
-				this, "handleStatusOrderingChanged");
-		handleStatusOrderingChanged ();
+		auto& xsm = XmlSettingsManager::Instance ();
+		xsm.RegisterObject ("OrderByStatus", this,
+				[this] (bool orderByStatus)
+				{
+					OrderByStatus_ = orderByStatus;
+					invalidate ();
+				});
 
-		XmlSettingsManager::Instance ().RegisterObject ("HideMUCPartsInWholeCL",
-				this, "handleHideMUCPartsChanged");
-		handleHideMUCPartsChanged ();
+		xsm.RegisterObject ("HideMUCPartsInWholeCL", this,
+				[this] (bool hide)
+				{
+					HideMUCParts_ = hide;
+					invalidate ();
+				});
 
-		XmlSettingsManager::Instance ().RegisterObject ("ShowSelfContacts",
-				this, "handleShowSelfContactsChanged");
-		handleShowSelfContactsChanged ();
+		xsm.RegisterObject ("ShowSelfContacts", this,
+				[this] (bool showSelf)
+				{
+					ShowSelfContacts_ = showSelf;
+					invalidate ();
+				});
 
-		XmlSettingsManager::Instance ().RegisterObject ("HideErrorContactsWithOffline",
-				this, "handleHideErrorContactsChanged");
-		handleHideErrorContactsChanged ();
+		xsm.RegisterObject ("HideErrorContactsWithOffline", this,
+				[this] (bool hideErroring)
+				{
+					HideErroring_ = hideErroring;
+					invalidate ();
+				});
 	}
 
 	void SortFilterProxyModel::SetMUCMode (bool muc)
@@ -76,30 +87,6 @@ namespace Azoth
 	void SortFilterProxyModel::showOfflineContacts (bool show)
 	{
 		ShowOffline_ = show;
-		invalidate ();
-	}
-
-	void SortFilterProxyModel::handleStatusOrderingChanged ()
-	{
-		OrderByStatus_ = XmlSettingsManager::Instance ().property ("OrderByStatus").toBool ();
-		invalidate ();
-	}
-
-	void SortFilterProxyModel::handleHideMUCPartsChanged ()
-	{
-		HideMUCParts_ = XmlSettingsManager::Instance ().property ("HideMUCPartsInWholeCL").toBool ();
-		invalidate ();
-	}
-
-	void SortFilterProxyModel::handleShowSelfContactsChanged ()
-	{
-		ShowSelfContacts_ = XmlSettingsManager::Instance ().property ("ShowSelfContacts").toBool ();
-		invalidate ();
-	}
-
-	void SortFilterProxyModel::handleHideErrorContactsChanged ()
-	{
-		HideErroring_ = XmlSettingsManager::Instance ().property ("HideErrorContactsWithOffline").toBool ();
 		invalidate ();
 	}
 
@@ -246,5 +233,4 @@ namespace Azoth
 
 		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
 	}
-}
 }
