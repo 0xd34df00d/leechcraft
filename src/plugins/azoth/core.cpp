@@ -1397,9 +1397,8 @@ namespace LC::Azoth
 		int result = 0;
 		for (int i = 0; i < catItem->rowCount (); ++i)
 		{
-			auto entryObj = catItem->child (i)->
-					data (CLREntryObject).value<QObject*> ();
-			result += qobject_cast<ICLEntry*> (entryObj)->GetStatus ().State_ != SOffline;
+			auto entry = catItem->child (i)->data (CLRIEntry).value<ICLEntry*> ();
+			result += entry->GetStatus ().State_ != SOffline;
 		}
 
 		catItem->setData (result, CLRNumOnline);
@@ -1429,8 +1428,8 @@ namespace LC::Azoth
 
 	void Core::RemoveCLItem (QStandardItem *item)
 	{
-		QObject *entryObj = item->data (CLREntryObject).value<QObject*> ();
-		Entry2Items_ [qobject_cast<ICLEntry*> (entryObj)].removeAll (item);
+		const auto entry = item->data (CLRIEntry).value<ICLEntry*> ();
+		Entry2Items_ [entry].removeAll (item);
 
 		QStandardItem *category = item->parent ();
 		const int unread = item->data (CLRUnreadMsgCount).toInt ();

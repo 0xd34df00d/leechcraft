@@ -59,8 +59,7 @@ namespace Azoth
 			if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
 				continue;
 
-			auto entryObj = index.data (CLREntryObject).value<QObject*> ();
-			auto entry = qobject_cast<ICLEntry*> (entryObj);
+			const auto entry = index.data (CLRIEntry).value<ICLEntry*> ();
 			if (!entry)
 				continue;
 
@@ -113,12 +112,8 @@ namespace Azoth
 		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return;
 
-		const auto entryObj = index.data (CLREntryObject).value<QObject*> ();
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-			return;
-
-		TooltipManager_->RebuildTooltip (entry);
+		if (const auto entry = index.data (CLRIEntry).value<ICLEntry*> ())
+			TooltipManager_->RebuildTooltip (entry);
 	}
 
 	bool CLModel::PerformHooks (const QMimeData *mime, int row, const QModelIndex& parent)
@@ -140,7 +135,7 @@ namespace Azoth
 		if (!source)
 			return false;
 
-		QObject *target = parent.data (CLREntryObject).value<QObject*> ();
+		const auto target = parent.data (CLREntryObject).value<QObject*> ();
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookDnDEntry2Entry (proxy, source, target);
@@ -155,9 +150,8 @@ namespace Azoth
 		if (parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return false;
 
-		const auto targetObj = parent.data (CLREntryObject).value<QObject*> ();
-		const auto targetEntry = qobject_cast<ICLEntry*> (targetObj);
-		const auto targetMuc = qobject_cast<IMUCEntry*> (targetObj);
+		const auto targetEntry = parent.data (CLRIEntry).value<ICLEntry*> ();
+		const auto targetMuc = qobject_cast<IMUCEntry*> (targetEntry->GetQObject ());
 
 		bool accepted = false;
 
@@ -227,8 +221,7 @@ namespace Azoth
 		if (parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return false;
 
-		QObject *entryObj = parent.data (CLREntryObject).value<QObject*> ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entry = parent.data (CLRIEntry).value<ICLEntry*> ();
 
 		const auto& urls = mime->urls ();
 		if (urls.isEmpty ())
