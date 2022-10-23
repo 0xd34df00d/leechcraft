@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <boost/iterator.hpp>
-#include <boost/iterator/function_input_iterator.hpp>
-#include <boost/range.hpp>
 #include <QDomElement>
 #include <QString>
 
@@ -18,43 +15,6 @@ namespace LC
 {
 namespace Util
 {
-	namespace detail
-	{
-		class DomSiblingsIterator : public boost::iterator_facade<
-				DomSiblingsIterator,
-				QDomElement,
-				boost::single_pass_traversal_tag,
-				const QDomElement&
-			>
-		{
-			QDomElement Elem_;
-			const QString TagName_;
-		public:
-			DomSiblingsIterator () = default;
-
-			DomSiblingsIterator (const QDomElement& firstChild, const QString& tagName)
-			: Elem_ { firstChild }
-			, TagName_ { tagName }
-			{
-			}
-
-			void increment ()
-			{
-				Elem_ = Elem_.nextSiblingElement (TagName_);
-			}
-
-			const QDomElement& dereference () const
-			{
-				return Elem_;
-			}
-
-			bool equal (const DomSiblingsIterator& other) const
-			{
-				return Elem_ == other.Elem_;
-			}
-		};
-	}
-
 	/** @brief Creates a range iterating over direct children named \em tag.
 	 *
 	 * The returned range is suitable for range-based for loops, in particular. For instance, the
@@ -83,8 +43,38 @@ namespace Util
 	 */
 	inline auto DomChildren (const QDomNode& parent, const QString& tag)
 	{
-		auto child = parent.firstChildElement (tag);
-		return boost::make_iterator_range<detail::DomSiblingsIterator> ({ child, tag }, {});
+		struct Iterator
+		{
+			QDomElement Elem_;
+			const QString Tag_;
+
+			bool operator== (const Iterator& other) const
+			{
+				return Elem_ == other.Elem_;
+			}
+
+			Iterator& operator++ ()
+			{
+				Elem_ = Elem_.nextSiblingElement (Tag_);
+				return *this;
+			}
+
+			QDomElement& operator* ()
+			{
+				return Elem_;
+			}
+		};
+
+		struct Range
+		{
+			const Iterator Begin_;
+
+			auto begin () const { return Begin_; }
+			auto end () const { return Iterator {}; }
+		};
+
+		auto firstChild = parent.firstChildElement (tag);
+		return Range { { firstChild, tag } };
 	}
 }
 }
