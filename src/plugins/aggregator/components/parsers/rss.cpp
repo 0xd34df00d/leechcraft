@@ -61,18 +61,30 @@ namespace LC::Aggregator::Parsers
 			return result;
 		}
 
+		namespace
+		{
+			QDateTime ParseRfc822Lax (const QString& str)
+			{
+				if (str.isEmpty ())
+					return {};
+
+				auto result = QDateTime::fromString (str, Qt::RFC2822Date);
+				if (!result.isValid ())
+					result = QDateTime::fromString (str, "yyyy-MM-dd");
+				if (!result.isValid ())
+				{
+					qWarning () << "Can't parse RSS item pubDate: "
+							<< str;
+					result = QDateTime::currentDateTime ();
+				}
+				return result;
+			}
+		}
+
 		Item_ptr ParseRssItem (const QDomElement& entry, IDType_t channelId)
 		{
 			auto result = ParseCommonRssRdfItem (entry, channelId);
-
-			result->PubDate_ = QDateTime::fromString (entry.firstChildElement ("pubDate").text (), Qt::RFC2822Date);
-			if (!result->PubDate_.isValid ())
-			{
-				qWarning () << "Can't parse RSS item pubDate: "
-						<< entry.firstChildElement ("pubDate").text ();
-				result->PubDate_ = QDateTime::currentDateTime ();
-			}
-
+			result->PubDate_ = ParseRfc822Lax (entry.firstChildElement ("pubDate").text ());
 			return result;
 		}
 
@@ -101,7 +113,7 @@ namespace LC::Aggregator::Parsers
 				chan->Items_ = Util::Map (Util::DomChildren (channel, "item"),
 						[cid = chan->ChannelID_] (const QDomElement& item) { return ParseRssItem (item, cid); });
 
-				chan->LastBuild_ = QDateTime::fromString (channel.firstChildElement ("lastBuildDate").text (), Qt::RFC2822Date);
+				chan->LastBuild_ = ParseRfc822Lax (channel.firstChildElement ("lastBuildDate").text ());
 				if (!chan->LastBuild_.isValid ())
 					chan->LastBuild_ = chan->Items_.isEmpty () ?
 							QDateTime::currentDateTime () :
