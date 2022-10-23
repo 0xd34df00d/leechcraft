@@ -245,9 +245,9 @@ namespace Aggregator
 						}) ();
 				if (ourItemID)
 				{
-					if (const auto& ourItem = SB_->GetItem (*ourItemID);
-						ourItem && UpdateItem (item, *ourItem))
-						++updatedItems;
+					if (const auto& ourItem = SB_->GetItem (*ourItemID))
+						if (UpdateItem (item, *ourItem))
+							++updatedItems;
 				}
 				else if (AddItem (item, ourChannel, feedSettings))
 					++newItems;
