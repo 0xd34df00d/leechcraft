@@ -18,10 +18,9 @@
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
+#include "components/parsers/parse.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
-#include "parser.h"
-#include "parserfactory.h"
 #include "storagebackend.h"
 #include "storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
@@ -63,21 +62,18 @@ namespace LC::Aggregator
 						.arg (url));
 			}
 
-			auto parser = ParserFactory::Instance ().Return (doc);
-			if (!parser)
-			{
-				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
-				file.copy (copyPath);
-				qWarning () << Q_FUNC_INFO
-						<< "no parser for"
-						<< url
-						<< "; copy at"
-						<< copyPath;
-				return ParseResult::Left (UpdatesManager::tr ("Could not find parser to parse %1.")
-						.arg (url));
-			}
+			if (auto maybeChannels = Parsers::TryParse (doc, feedId))
+				return ParseResult::Right (*maybeChannels);
 
-			return ParseResult::Right (parser->ParseFeed (doc, feedId));
+			const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
+			file.copy (copyPath);
+			qWarning () << Q_FUNC_INFO
+					<< "no parser for"
+					<< url
+					<< "; copy at"
+					<< copyPath;
+			return ParseResult::Left (UpdatesManager::tr ("Could not find parser to parse %1.")
+					.arg (url));
 		}
 	}
 
@@ -90,8 +86,6 @@ namespace LC::Aggregator
 	, UpdateTimer_ { new QTimer { this } }
 	, CustomUpdateTimer_ { new QTimer { this } }
 	{
-		ParserFactory::Instance ().RegisterDefaultParsers ();
-
 		UpdateTimer_->setSingleShot (true);
 		connect (UpdateTimer_,
 				&QTimer::timeout,

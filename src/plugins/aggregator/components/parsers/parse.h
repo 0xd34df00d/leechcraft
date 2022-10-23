@@ -8,21 +8,12 @@
 
 #pragma once
 
-#include "rssparser.h"
+#include <optional>
 #include "channel.h"
 
-namespace LC
+class QDomDocument;
+
+namespace LC::Aggregator::Parsers
 {
-namespace Aggregator
-{
-	class RSS10Parser : public RSSParser
-	{
-		RSS10Parser () = default;
-	public:
-		static RSS10Parser& Instance ();
-		bool CouldParse (const QDomDocument&) const override;
-	private:
-		channels_container_t Parse (const QDomDocument&, const IDType_t&) const override;
-	};
-}
+	std::optional<channels_container_t> TryParse (const QDomDocument& doc, IDType_t feedId);
 }

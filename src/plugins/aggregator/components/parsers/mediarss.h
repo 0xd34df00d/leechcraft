@@ -8,28 +8,17 @@
 
 #pragma once
 
-#include <QList>
+#include "common.h"
 
-class QDomDocument;
+class QDomElement;
+class QStringList;
 
-namespace LC
+namespace LC::Aggregator
 {
-namespace Aggregator
-{
-	class Parser;
-
-	class ParserFactory
-	{
-		QList<Parser*> Parsers_;
-
-		ParserFactory () = default;
-	public:
-		static ParserFactory& Instance ();
-
-		void Register (Parser*);
-		void RegisterDefaultParsers ();
-
-		Parser* Return (const QDomDocument&) const;
-	};
+	struct MRSSEntry;
 }
+
+namespace LC::Aggregator::Parsers::MediaRSS
+{
+	QList<MRSSEntry> Parse (const QDomElement& item, IDType_t itemId);
 }

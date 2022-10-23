@@ -13,18 +13,14 @@ FindQtLibs (leechcraft_aggregator_util Widgets)
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		components/parsers/atom.cpp
+		components/parsers/mediarss.cpp
+		components/parsers/parse.cpp
+		components/parsers/rss.cpp
+		components/parsers/utils.cpp
 		aggregator.cpp
 		aggregatortab.cpp
 		addfeeddialog.cpp
-		parserfactory.cpp
-		rssparser.cpp
-		rss20parser.cpp
-		rss10parser.cpp
-		rss091parser.cpp
-		atomparser.cpp
-		atom10parser.cpp
-		atom03parser.cpp
-		parser.cpp
 		item.cpp
 		channel.cpp
 		feed.cpp
