@@ -81,7 +81,6 @@ namespace Aggregator
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
 		qRegisterMetaType<Channel> ("Channel");
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
-		qRegisterMetaTypeStreamOperators<Feed> ("LC::Plugins::Aggregator::Feed");
 
 		TabInfo_ = TabClassInfo
 		{

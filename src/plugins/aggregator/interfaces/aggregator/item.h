@@ -60,8 +60,6 @@ namespace Aggregator
 		QString Lang_;
 
 		static Enclosure CreateForItem (IDType_t itemId);
-	private:
-		friend QDataStream& operator>> (QDataStream&, QList<Enclosure>&);
 	};
 
 	bool operator== (const Enclosure&, const Enclosure&);
@@ -76,8 +74,6 @@ namespace Aggregator
 		QString Time_;
 
 		static MRSSThumbnail CreateForEntry (IDType_t entryId);
-	private:
-		friend QDataStream& operator>> (QDataStream&, QList<MRSSThumbnail>&);
 	};
 
 	bool operator== (const MRSSThumbnail&, const MRSSThumbnail&);
@@ -90,8 +86,6 @@ namespace Aggregator
 		QString Who_;
 
 		static MRSSCredit CreateForEntry (IDType_t entryId);
-	private:
-		friend QDataStream& operator>> (QDataStream&, QList<MRSSCredit>&);
 	};
 
 	bool operator== (const MRSSCredit&, const MRSSCredit&);
@@ -104,8 +98,6 @@ namespace Aggregator
 		QString Comment_;
 
 		static MRSSComment CreateForEntry (IDType_t entryId);
-	private:
-		friend QDataStream& operator>> (QDataStream&, QList<MRSSComment>&);
 	};
 
 	bool operator== (const MRSSComment&, const MRSSComment&);
@@ -118,8 +110,6 @@ namespace Aggregator
 		QString Link_;
 
 		static MRSSPeerLink CreateForEntry (IDType_t entryId);
-	private:
-		friend QDataStream& operator>> (QDataStream&, QList<MRSSPeerLink>&);
 	};
 
 	bool operator== (const MRSSPeerLink&, const MRSSPeerLink&);
@@ -134,8 +124,6 @@ namespace Aggregator
 		QString EndTime_;
 
 		static MRSSScene CreateForEntry (IDType_t entryId);
-	private:
-		friend QDataStream& operator>> (QDataStream&, QList<MRSSScene>&);
 	};
 
 	bool operator== (const MRSSScene&, const MRSSScene&);
@@ -180,8 +168,6 @@ namespace Aggregator
 		QList<MRSSScene> Scenes_;
 
 		static MRSSEntry CreateForItem (IDType_t itemId);
-	private:
-		friend QDataStream& operator>> (QDataStream&, QList<MRSSEntry>&);
 	};
 
 	bool operator== (const MRSSEntry&, const MRSSEntry&);
@@ -287,24 +273,6 @@ namespace Aggregator
 	using items_shorts_t = QList<ItemShort>;
 
 	bool operator== (const Item&, const Item&);
-	QDataStream& operator<< (QDataStream&, const Enclosure&);
-	QDataStream& operator>> (QDataStream&, Enclosure&);
-	QDataStream& operator<< (QDataStream&, const MRSSEntry&);
-	QDataStream& operator>> (QDataStream&, MRSSEntry&);
-	QDataStream& operator<< (QDataStream&, const MRSSThumbnail&);
-	QDataStream& operator>> (QDataStream&, MRSSThumbnail&);
-	QDataStream& operator<< (QDataStream&, const MRSSCredit&);
-	QDataStream& operator>> (QDataStream&, MRSSCredit&);
-	QDataStream& operator<< (QDataStream&, const MRSSComment&);
-	QDataStream& operator>> (QDataStream&, MRSSComment&);
-	QDataStream& operator<< (QDataStream&, const MRSSPeerLink&);
-	QDataStream& operator>> (QDataStream&, MRSSPeerLink&);
-	QDataStream& operator<< (QDataStream&, const MRSSScene&);
-	QDataStream& operator>> (QDataStream&, MRSSScene&);
-	QDataStream& operator<< (QDataStream&, const MRSSEntry&);
-	QDataStream& operator>> (QDataStream&, MRSSEntry&);
-	QDataStream& operator<< (QDataStream&, const Item&);
-	QDataStream& operator>> (QDataStream&, Item&);
 	void Print (const Item&);
 	void Diff (const Item&, const Item&);
 

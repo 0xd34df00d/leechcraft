@@ -68,8 +68,6 @@ namespace Aggregator
 	bool operator== (const Channel_ptr&, const ChannelShort&);
 	bool operator== (const ChannelShort&, const Channel_ptr&);
 	bool operator== (const Channel&, const Channel&);
-	QDataStream& operator<< (QDataStream&, const Channel&);
-	QDataStream& operator>> (QDataStream&, Channel&);
 }
 }
 

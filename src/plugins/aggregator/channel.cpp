@@ -8,7 +8,6 @@
 
 #include <QtDebug>
 #include <numeric>
-#include <QDataStream>
 #include <QVariant>
 #include <QStringList>
 #include <QPixmap>
@@ -76,93 +75,5 @@ namespace Aggregator
 	{
 		return c1.ChannelID_ == c2.ChannelID_;
 	}
-
-	/*
-	QDataStream& operator<< (QDataStream& out, const Channel& chan)
-	{
-		int version = 4;
-		out << version
-			<< chan.Title_
-			<< chan.DisplayTitle_
-			<< chan.Link_
-			<< chan.Description_
-			<< chan.LastBuild_
-			<< chan.Tags_
-			<< chan.Language_
-			<< chan.Author_
-			<< chan.PixmapURL_
-			<< chan.Pixmap_
-			<< chan.Favicon_
-			<< static_cast<quint32> (chan.Items_.size ());
-		for (const auto& item : chan.Items_)
-			out << *item;
-		return out;
-	}
-
-	QDataStream& operator>> (QDataStream& in, Channel& chan)
-	{
-		int version = 0;
-		in >> version;
-		if (version < 1 || version > 4)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< version;
-			return in;
-		}
-
-		in >> chan.Title_;
-
-		if (version == 4)
-			in >> chan.DisplayTitle_;
-
-		in >> chan.Link_
-			>> chan.Description_
-			>> chan.LastBuild_
-			>> chan.Tags_
-			>> chan.Language_
-			>> chan.Author_
-			>> chan.PixmapURL_;
-
-		if (version == 1)
-		{
-			quint32 size;
-			in >> chan.Pixmap_
-				>> chan.Favicon_;
-			in >> size;
-			for (size_t i = 0; i < size; ++i)
-			{
-				auto it = std::make_shared<Item> ();
-				in >> *it;
-				chan.Items_.push_back (it);
-			}
-		}
-		else
-		{
-			quint32 size;
-			if (version == 3)
-				in >> chan.Pixmap_
-					>> chan.Favicon_;
-			else
-			{
-				QPixmap px, favicon;
-				in >> px
-					>> favicon;
-				chan.Pixmap_ = px.toImage ();
-				chan.Favicon_ = favicon.toImage ();
-			}
-
-			in >> size;
-			for (size_t i = 0; i < size; ++i)
-			{
-				auto it = std::make_shared<Item> ();
-				in >> *it;
-				chan.Items_.push_back (it);
-			}
-		}
-
-		return in;
-	}
-	*/
 }
 }

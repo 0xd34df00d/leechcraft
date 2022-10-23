@@ -83,8 +83,6 @@ namespace Aggregator
 	typedef std::vector<QString> feeds_urls_t;
 
 	bool operator< (const Feed& f1, const Feed& f2);
-	QDataStream& operator<< (QDataStream&, const Feed&);
-	QDataStream& operator>> (QDataStream&, Feed&);
 }
 }
 
