@@ -486,18 +486,26 @@ namespace Aggregator
 
 	void Print (const Item& item)
 	{
-		qDebug () << item.ItemID_
-			<< item.ChannelID_
-			<< item.Title_
-			<< item.Link_
-			<< item.Description_
-			<< item.Author_
-			<< item.Categories_
-			<< item.Guid_
-			<< item.PubDate_
-			<< item.NumComments_
-			<< item.CommentsLink_
-			<< item.CommentsPageLink_;
+		auto trimmedDescr = item.Description_;
+		const auto showLen = 50;
+		if (trimmedDescr.size () > 2 * showLen)
+			trimmedDescr = trimmedDescr.left (showLen) + " [...] " + trimmedDescr.right (showLen);
+
+		qDebug () << "item:" << item.ItemID_
+			<< "\ncid:" << item.ChannelID_
+			<< "\ntitle:" << item.Title_
+			<< "\nlink:" << item.Link_
+			<< "\ndescr:" << trimmedDescr
+			<< "\nauthor:" << item.Author_
+			<< "\ncategories:" << item.Categories_
+			<< "\nguid:" << item.Guid_
+			<< "\npubdate:" << item.PubDate_
+			<< "\nnum comments:" << item.NumComments_
+			<< "\ncomments link:" << item.CommentsLink_
+			<< "\ncomments page link:" << item.CommentsPageLink_
+			<< "\nenclosures #:" << item.Enclosures_.size ()
+			<< "\nlat/lon:" << item.Latitude_ << item.Longitude_
+			<< "\nmrss #:" << item.MRSSEntries_.size ();
 	}
 
 	void Diff (const Item& i1, const Item& i2)
