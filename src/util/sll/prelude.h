@@ -14,12 +14,6 @@
 #include <QPair>
 #include <QStringList>
 
-namespace boost
-{
-	template<typename>
-	class iterator_range;
-}
-
 namespace LC
 {
 namespace Util
@@ -105,15 +99,6 @@ namespace Util
 			using Type = Container<T>;
 		};
 
-		template<typename>
-		struct IsNotBrokenSFINAE : std::false_type {};
-
-		template<typename T>
-		struct IsNotBrokenSFINAE<boost::iterator_range<T>> : std::true_type {};
-
-		template<typename T>
-		constexpr bool IsNotBrokenSFINAE_v = IsNotBrokenSFINAE<T> {};
-
 		template<template<typename...> class Fallback, bool ForceFallback, typename Container, typename F>
 		auto MapImpl (Container&& c, F f)
 		{
@@ -124,8 +109,7 @@ namespace Util
 
 			using ResultCont_t = std::conditional_t<
 					!ForceFallback &&
-						detail::IsSimpleContainer<DecayContainer_t> () &&
-						!detail::IsNotBrokenSFINAE_v<DecayContainer_t>,
+						detail::IsSimpleContainer<DecayContainer_t> (),
 					typename detail::Replace<DecayContainer_t, FRet_t>::Type,
 					Fallback<FRet_t>>;
 
