@@ -32,14 +32,6 @@ namespace Aggregator
 		ActionExportOPML_->setObjectName ("ActionExportOPML_");
 		ActionExportOPML_->setProperty ("ActionIcon", "document-export");
 
-		ActionImportBinary_ = new QAction (tr ("Import from binary..."), parent);
-		ActionImportBinary_->setObjectName ("ActionImportBinary_");
-		ActionImportBinary_->setProperty ("ActionIcon", "svn-update");
-
-		ActionExportBinary_ = new QAction (tr ("Export to binary..."), parent);
-		ActionExportBinary_->setObjectName ("ActionExportBinary_");
-		ActionExportBinary_->setProperty ("ActionIcon", "svn-commit");
-
 		ActionExportFB2_ = new QAction (tr ("Export to FB2..."), parent);
 		ActionExportFB2_->setObjectName ("ActionExportFB2_");
 		ActionExportFB2_->setProperty ("ActionIcon", "application-xml");
@@ -53,8 +45,6 @@ namespace Aggregator
 					{ "ActionUpdateFeeds_", ActionUpdateFeeds_ },
 					{ "ActionImportOPML_", ActionImportOPML_ },
 					{ "ActionExportOPML_", ActionExportOPML_ },
-					{ "ActionImportBinary_", ActionImportBinary_ },
-					{ "ActionExportBinary_", ActionExportBinary_ },
 					{ "ActionExportFB2_", ActionExportFB2_ }
 				});
 	}
@@ -66,8 +56,6 @@ namespace Aggregator
 		menu->addSeparator ();
 		menu->addAction (ActionImportOPML_);
 		menu->addAction (ActionExportOPML_);
-		menu->addAction (ActionImportBinary_);
-		menu->addAction (ActionExportBinary_);
 		menu->addAction (ActionExportFB2_);
 		return menu;
 	}
@@ -78,8 +66,6 @@ namespace Aggregator
 		ActionUpdateFeeds_->setEnabled (enabled);
 		ActionImportOPML_->setEnabled (enabled);
 		ActionExportOPML_->setEnabled (enabled);
-		ActionImportBinary_->setEnabled (enabled);
-		ActionExportBinary_->setEnabled (enabled);
 		ActionExportFB2_->setEnabled (enabled);
 		ActionMarkAllAsRead_->setEnabled (enabled);
 	}
@@ -97,7 +83,7 @@ namespace Aggregator
 		ActionRenameFeed_ = new QAction (tr ("Rename feed"), parent);
 		ActionRenameFeed_->setObjectName ("ActionRenameFeed_");
 		ActionRenameFeed_->setProperty ("ActionIcon", "edit-rename");
-		
+
 		ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"), parent);
 		ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");
 		ActionMarkChannelAsRead_->setProperty ("ActionIcon", "mail-mark-read");

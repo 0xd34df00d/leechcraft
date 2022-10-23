@@ -35,7 +35,6 @@ LC_DEFINE_PLUGIN (
 		export.cpp
 		sqlstoragebackend.cpp
 		storagebackend.cpp
-		importbinary.cpp
 		feedsettings.cpp
 		jobholderrepresentation.cpp
 		itemswidget.cpp

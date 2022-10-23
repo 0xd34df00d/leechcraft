@@ -41,7 +41,6 @@
 #include "aggregator.h"
 #include "addfeeddialog.h"
 #include "xmlsettingsmanager.h"
-#include "importbinary.h"
 #include "feedsettings.h"
 #include "export2fb2dialog.h"
 #include "channelsmodel.h"
@@ -662,33 +661,6 @@ namespace Aggregator
 	void Aggregator::on_ActionExportOPML__triggered ()
 	{
 		ExportUtils::RunExportOPML (Proxy_->GetTagsManager ());
-	}
-
-	void Aggregator::on_ActionImportBinary__triggered ()
-	{
-		ImportBinary import (nullptr);
-		if (import.exec () == QDialog::Rejected)
-			return;
-
-		auto tags = Proxy_->GetTagsManager ()->Split (import.GetTags ());
-		tags.removeDuplicates ();
-
-		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& feed : import.GetSelectedFeeds ())
-		{
-			for (const auto& channel : feed->Channels_)
-			{
-				channel->Tags_ += tags;
-				channel->Tags_.removeDuplicates ();
-			}
-
-			sb->AddFeed (*feed);
-		}
-	}
-
-	void Aggregator::on_ActionExportBinary__triggered ()
-	{
-		ExportUtils::RunExportBinary ();
 	}
 
 	void Aggregator::on_ActionExportFB2__triggered ()

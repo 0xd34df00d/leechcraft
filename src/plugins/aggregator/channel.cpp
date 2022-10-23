@@ -77,6 +77,7 @@ namespace Aggregator
 		return c1.ChannelID_ == c2.ChannelID_;
 	}
 
+	/*
 	QDataStream& operator<< (QDataStream& out, const Channel& chan)
 	{
 		int version = 4;
@@ -162,5 +163,6 @@ namespace Aggregator
 
 		return in;
 	}
+	*/
 }
 }

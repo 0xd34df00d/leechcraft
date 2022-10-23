@@ -29,8 +29,6 @@ namespace Aggregator
 		QAction *ActionUpdateFeeds_ = nullptr;
 		QAction *ActionImportOPML_ = nullptr;
 		QAction *ActionExportOPML_ = nullptr;
-		QAction *ActionImportBinary_ = nullptr;
-		QAction *ActionExportBinary_ = nullptr;
 		QAction *ActionExportFB2_ = nullptr;
 		QAction *ActionMarkAllAsRead_ = nullptr;
 

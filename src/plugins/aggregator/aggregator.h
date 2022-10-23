@@ -155,8 +155,6 @@ namespace Aggregator
 		void on_ActionUpdateSelectedFeed__triggered ();
 		void on_ActionImportOPML__triggered ();
 		void on_ActionExportOPML__triggered ();
-		void on_ActionImportBinary__triggered ();
-		void on_ActionExportBinary__triggered ();
 		void on_ActionExportFB2__triggered ();
 		void on_ActionMarkChannelAsRead__triggered ();
 		void on_ActionMarkChannelAsUnread__triggered ();
