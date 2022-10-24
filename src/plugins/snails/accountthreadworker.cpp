@@ -429,7 +429,7 @@ namespace Snails
 
 			const auto fieldVal = field->getValue ();
 			if (const auto& alist = vmime::dynamicCast<const vmime::addressList> (fieldVal))
-				msg.Addresses_ [type] = Util::Map (alist->toMailboxList ()->getMailboxList (), &Mailbox2Strings);
+				msg.Addresses_ [type] = Util::MapAs<QList> (alist->toMailboxList ()->getMailboxList (), &Mailbox2Strings);
 			else if (const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (fieldVal))
 				msg.Addresses_ [type] << Mailbox2Strings (mbox);
 			else
@@ -571,7 +571,7 @@ namespace Snails
 		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
 				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
 
-		auto newMessages = Util::Map (messages, [this, &folderName] (const auto& msg)
+		auto newMessages = Util::MapAs<QList> (messages, [this, &folderName] (const auto& msg)
 				{
 					auto res = FromHeaders (msg);
 					res.Info_.Folder_ = folderName;
