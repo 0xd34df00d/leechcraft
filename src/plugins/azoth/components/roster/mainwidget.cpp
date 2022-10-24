@@ -94,11 +94,11 @@ namespace Azoth
 
 		XmlSettingsManager::Instance ().RegisterObject ("EntryActivationType",
 				this,
-				[this, conn = std::make_shared<QMetaObject::Connection> ()] (const QVariant& var)
+				[this, conn = std::make_shared<QMetaObject::Connection> ()] (const QString& type)
 				{
 					disconnect (*conn);
 					*conn = connect (Ui_.CLTree_,
-							EntryActivationType2Signal (var.toString ()),
+							EntryActivationType2Signal (type),
 							this,
 							&MainWidget::TreeActivated);
 				});
