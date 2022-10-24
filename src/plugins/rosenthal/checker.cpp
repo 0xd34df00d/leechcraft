@@ -45,7 +45,7 @@ namespace Rosenthal
 
 		QStringList Suggest (Hunspell *hs, QTextCodec *codec, const QByteArray& word)
 		{
-			return Util::Map (hs->suggest (word.toStdString ()),
+			return Util::MapAs<QList> (hs->suggest (word.toStdString ()),
 					[codec] (const std::string& str)
 					{
 						return codec->toUnicode (str.c_str ());
