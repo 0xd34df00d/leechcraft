@@ -69,24 +69,6 @@ namespace Util
 				result.insert (std::forward<T> (val));
 		}
 
-		template<typename>
-		struct CountArgs
-		{
-			static const size_t ArgsCount = 0;
-		};
-
-		template<template<typename...> class Container, typename... Args>
-		struct CountArgs<Container<Args...>>
-		{
-			static const size_t ArgsCount = sizeof... (Args);
-		};
-
-		template<typename C>
-		constexpr bool IsSimpleContainer ()
-		{
-			return CountArgs<std::decay_t<C>>::ArgsCount == 1;
-		}
-
 		template<typename Container, typename T>
 		struct Replace
 		{
@@ -99,21 +81,10 @@ namespace Util
 			using Type = Container<T>;
 		};
 
-		template<template<typename...> class Fallback, bool ForceFallback, typename Container, typename F>
+		template<typename ResultContainer, typename Container, typename F>
 		auto MapImpl (Container&& c, F f)
 		{
-			using FRet_t = std::decay_t<decltype (std::invoke (f, *c.begin ()))>;
-			static_assert (!std::is_same<void, FRet_t> {}, "The function shall not return void.");
-
-			using DecayContainer_t = std::decay_t<Container>;
-
-			using ResultCont_t = std::conditional_t<
-					!ForceFallback &&
-						detail::IsSimpleContainer<DecayContainer_t> (),
-					typename detail::Replace<DecayContainer_t, FRet_t>::Type,
-					Fallback<FRet_t>>;
-
-			WrapType_t<ResultCont_t> cont;
+			WrapType_t<ResultContainer> cont;
 			for (auto&& t : c)
 				Append (cont, std::invoke (f, t));
 			return cont;
@@ -132,13 +103,15 @@ namespace Util
 	template<typename Container, typename F>
 	auto Map (Container&& c, F&& f) noexcept (noexcept (std::is_nothrow_invocable_v<F, decltype (*c.begin ())>))
 	{
-		return detail::MapImpl<QList, false> (std::forward<Container> (c), std::forward<F> (f));
+		using FRet_t = std::decay_t<decltype (std::invoke (f, *c.begin ()))>;
+		return detail::MapImpl<typename detail::Replace<std::decay_t<Container>, FRet_t>::Type> (std::forward<Container> (c), std::forward<F> (f));
 	}
 
 	template<template<typename...> class Fallback, typename Container, typename F>
 	auto MapAs (Container&& c, F&& f) noexcept (noexcept (std::is_nothrow_invocable_v<F, decltype (*c.begin ())>))
 	{
-		return detail::MapImpl<Fallback, true> (std::forward<Container> (c), std::forward<F> (f));
+		using FRet_t = std::decay_t<decltype (std::invoke (f, *c.begin ()))>;
+		return detail::MapImpl<Fallback<FRet_t>> (std::forward<Container> (c), std::forward<F> (f));
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
