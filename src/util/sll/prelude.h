@@ -93,7 +93,7 @@ namespace Util
 			using Type = QList<T>;
 		};
 
-		template<template<typename> class Container, typename U, typename T>
+		template<template<typename...> class Container, typename U, typename T>
 		struct Replace<Container<U>, T>
 		{
 			using Type = Container<T>;
