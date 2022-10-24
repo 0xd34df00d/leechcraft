@@ -89,9 +89,9 @@ namespace Aggregator
 		return ChannelsModel_;
 	}
 
-	QList<Channel> ProxyObject::GetAllChannels () const
+	QVector<Channel> ProxyObject::GetAllChannels () const
 	{
-		QList<Channel> result;
+		QVector<Channel> result;
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (const auto& cs : ChannelUtils::GetAllChannels ())
 			result << sb->GetChannel (cs.ChannelID_);
@@ -109,7 +109,7 @@ namespace Aggregator
 		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItemsCount (channel);
 	}
 
-	QList<Item_ptr> ProxyObject::GetChannelItems (IDType_t channelId) const
+	QVector<Item_ptr> ProxyObject::GetChannelItems (IDType_t channelId) const
 	{
 		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetFullItems (channelId);
 	}

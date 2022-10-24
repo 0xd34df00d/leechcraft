@@ -86,7 +86,7 @@ namespace LC::Aggregator::Parsers
 
 		auto chan = ParseAtomChannelCommon (root, feedId);
 		chan->Description_ = root.firstChildElement ("tagline").text ();
-		chan->Items_ = Util::Map (Util::DomChildren (root, "entry"),
+		chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (root, "entry"),
 				[cid = chan->ChannelID_] (const QDomElement& entry) { return Parse03Item (entry, cid); });
 
 		return { { chan } };
@@ -109,7 +109,7 @@ namespace LC::Aggregator::Parsers
 			chan->Author_ = name + " (" + email + ")";
 		}
 
-		chan->Items_ = Util::Map (Util::DomChildren (root, "entry"),
+		chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (root, "entry"),
 				[cid = chan->ChannelID_] (const QDomElement& entry) { return Parse10Item (entry, cid); });
 
 		return { { chan } };

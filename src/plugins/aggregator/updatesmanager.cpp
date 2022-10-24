@@ -222,6 +222,12 @@ namespace LC::Aggregator
 						Util::Visit (ParseChannels (filename, url, feedId),
 								[&] (const channels_container_t& channels)
 								{
+									/*
+									qDebug () << "got" << channels.size ();
+									for (const auto& chan : channels)
+										for (const auto& item : chan->Items_)
+											Print (*item);
+									*/
 									FeedsErrorManager_->ClearFeedErrors (feedId);
 									DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, url);
 								},

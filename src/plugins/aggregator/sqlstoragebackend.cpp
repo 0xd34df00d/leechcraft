@@ -818,7 +818,7 @@ namespace LC::Aggregator
 					&ItemR::Unread_
 				>;
 		auto rawTuples = Items_->Select (shortFields, sph::f<&ItemR::ChannelID_> == channelId);
-		return Util::Map (std::move (rawTuples),
+		return Util::MapAs<QVector> (std::move (rawTuples),
 				[] (auto&& tup) { return AggregateFromTuple<ItemShort> (std::forward<decltype (tup)> (tup)); });
 	}
 

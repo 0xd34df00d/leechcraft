@@ -88,10 +88,10 @@ namespace Aggregator
 		void AddItem (Item item) override;
 
 		QAbstractItemModel* GetChannelsModel () const override;
-		QList<Channel> GetAllChannels () const override;
+		QVector<Channel> GetAllChannels () const override;
 		Channel GetChannel (IDType_t) const override;
 		int CountUnreadItems (IDType_t) const override;
-		QList<Item_ptr> GetChannelItems (IDType_t) const override;
+		QVector<Item_ptr> GetChannelItems (IDType_t) const override;
 
 		std::optional<Item> GetItem (IDType_t) const override;
 		void SetItemRead (IDType_t, bool) const override;

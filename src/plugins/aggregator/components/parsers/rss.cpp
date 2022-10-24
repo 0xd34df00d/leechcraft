@@ -110,7 +110,7 @@ namespace LC::Aggregator::Parsers
 					chan->Author_ = channel.firstChildElement ("managingEditor").text ();
 				if (chan->Author_.isEmpty ())
 					chan->Author_ = channel.firstChildElement ("webMaster").text ();
-				chan->Items_ = Util::Map (Util::DomChildren (channel, "item"),
+				chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (channel, "item"),
 						[cid = chan->ChannelID_] (const QDomElement& item) { return ParseRssItem (item, cid); });
 
 				chan->LastBuild_ = ParseRfc822Lax (channel.firstChildElement ("lastBuildDate").text ());
