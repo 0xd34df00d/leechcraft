@@ -90,7 +90,7 @@ namespace Util
 		template<typename Container, typename T>
 		struct Replace
 		{
-			using Type = struct Fail;
+			using Type = QList<T>;
 		};
 
 		template<template<typename> class Container, typename U, typename T>
