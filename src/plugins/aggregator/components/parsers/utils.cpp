@@ -170,8 +170,10 @@ namespace LC::Aggregator::Parsers
 		const auto& str = GetFirstNodeText (parent, NS::Slash, "comments");
 		if (!str)
 			return -1;
-		// TODO handle conversion failure
-		return str->toInt ();
+
+		bool ok = false;
+		const auto res = str->toInt (&ok);
+		return ok ? res : -1;
 	}
 
 	QString GetCommentsRSS (const QDomElement& parent)
@@ -186,7 +188,6 @@ namespace LC::Aggregator::Parsers
 
 	QPair<double, double> GetGeoPoint (const QDomElement& parent)
 	{
-		// TODO conversion failures
 		const auto& latStr = GetFirstNodeText (parent, NS::GeoRSSW3, "lat");
 		const auto& longStr = GetFirstNodeText (parent, NS::GeoRSSW3, "long");
 		if (latStr && longStr)
