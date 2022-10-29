@@ -102,11 +102,15 @@ namespace LC::Aggregator::Parsers
 		chan->Description_ = root.firstChildElement ("subtitle").text ();
 		if (chan->Author_.isEmpty ())
 		{
-			// TODO what if it's missing?
 			const auto& author = root.firstChildElement ("author");
 			const auto& name = author.firstChildElement ("name").text ();
 			const auto& email = author.firstChildElement ("email").text ();
-			chan->Author_ = name + " (" + email + ")";
+			if (!name.isEmpty () && !email.isEmpty ())
+				chan->Author_ = name + " (" + email + ")";
+			else if (!name.isEmpty ())
+				chan->Author_ = name;
+			else if (!email.isEmpty ())
+				chan->Author_ = email;
 		}
 
 		chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (root, "entry"),
