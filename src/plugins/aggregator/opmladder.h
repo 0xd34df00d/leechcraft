@@ -11,7 +11,6 @@
 #include <functional>
 #include <optional>
 #include <QObject>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "feed.h"
 
 namespace LC
@@ -23,13 +22,12 @@ namespace LC::Aggregator
 {
 	class OpmlAdder : public QObject
 	{
-		const ICoreProxy_ptr Proxy_;
 	public:
 		using AddFeedHandler = std::function<void (QString, QStringList, std::optional<Feed::FeedSettings>)>;
 	private:
 		const AddFeedHandler AddFeedHandler_;
 	public:
-		OpmlAdder (const AddFeedHandler&, const ICoreProxy_ptr&, QObject* = nullptr);
+		OpmlAdder (const AddFeedHandler&, QObject* = nullptr);
 
 		bool IsOpmlEntity (const Entity&) const;
 		bool HandleOpmlEntity (const Entity&);

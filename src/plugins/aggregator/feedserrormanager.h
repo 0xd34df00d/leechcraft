@@ -32,7 +32,7 @@ namespace LC::Aggregator
 		const ICoreProxy_ptr Proxy_;
 		QHash<IDType_t, QList<Error>> Errors_;
 	public:
-		explicit FeedsErrorManager (const ICoreProxy_ptr&);
+		FeedsErrorManager () = default;
 
 		void AddFeedError (IDType_t, const Error&);
 

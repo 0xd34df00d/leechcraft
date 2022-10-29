@@ -14,7 +14,6 @@
 #include <QObject>
 #include <QVariantList>
 #include <interfaces/core/ihookproxy.h>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "common.h"
 #include "channel.h"
 #include "feed.h"
@@ -29,10 +28,9 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
 		std::shared_ptr<StorageBackend> SB_;
 	public:
-		DBUpdateThreadWorker (const ICoreProxy_ptr&, QObject* = nullptr);
+		DBUpdateThreadWorker (QObject* = nullptr);
 
 		void WithWorker (const std::function<void (DBUpdateThreadWorker*)>&);
 	private:

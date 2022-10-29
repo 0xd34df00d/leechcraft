@@ -23,9 +23,8 @@
 
 namespace LC::Aggregator
 {
-	OpmlAdder::OpmlAdder (const AddFeedHandler& handler, const ICoreProxy_ptr& proxy, QObject *parent)
+	OpmlAdder::OpmlAdder (const AddFeedHandler& handler, QObject *parent)
 	: QObject { parent }
-	, Proxy_ { proxy }
 	, AddFeedHandler_ { handler }
 	{
 	}
@@ -65,7 +64,7 @@ namespace LC::Aggregator
 							NotPersistent |
 							DoNotAnnounceEntity);
 
-			const auto& handleResult = Proxy_->GetEntityManager ()->DelegateEntity (dlEntity);
+			const auto& handleResult = GetProxyHolder ()->GetEntityManager ()->DelegateEntity (dlEntity);
 			if (!handleResult)
 			{
 				ReportError (tr ("Could not find plugin to download OPML %1.")
@@ -104,7 +103,7 @@ namespace LC::Aggregator
 		if (importDialog.exec () == QDialog::Rejected)
 			return;
 
-		const auto& tags = Proxy_->GetTagsManager ()->Split (importDialog.GetTags ());
+		const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (importDialog.GetTags ());
 		const auto& selectedUrls = importDialog.GetSelectedUrls ();
 
 		Util::Visit (ParseOPMLItems (importDialog.GetFilename ()),
@@ -128,6 +127,6 @@ namespace LC::Aggregator
 	void OpmlAdder::ReportError (const QString& body) const
 	{
 		auto e = Util::MakeNotification (tr ("OPML import error"), body, Priority::Critical);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 }

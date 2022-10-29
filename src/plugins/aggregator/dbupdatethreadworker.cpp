@@ -22,9 +22,8 @@ namespace LC
 {
 namespace Aggregator
 {
-	DBUpdateThreadWorker::DBUpdateThreadWorker (const ICoreProxy_ptr& proxy, QObject *parent)
+	DBUpdateThreadWorker::DBUpdateThreadWorker (QObject *parent)
 	: QObject (parent)
-	, Proxy_ { proxy }
 	, SB_ { StorageBackendManager::Instance ().MakeStorageBackendForThread () }
 	{
 		SB_->Prepare ();
@@ -71,7 +70,7 @@ namespace Aggregator
 				"", channel.Items_.size ())
 			.arg (channel.Title_);
 
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
 	bool DBUpdateThreadWorker::AddItem (Item& item, const Channel& channel, const Feed::FeedSettings& settings)
@@ -87,7 +86,7 @@ namespace Aggregator
 		item.ChannelID_ = channel.ChannelID_;
 		SB_->AddItem (item);
 
-		const auto iem = Proxy_->GetEntityManager ();
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
 		if (settings.AutoDownloadEnclosures_)
 			for (const auto& e : item.Enclosures_)
 			{
@@ -157,7 +156,7 @@ namespace Aggregator
 		const auto& str = tr ("Updated channel \"%1\" (%2).")
 				.arg (channel->Title_)
 				.arg (substrs.join (", "));
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
 	std::optional<IDType_t> DBUpdateThreadWorker::MatchChannel (const Channel& channel, IDType_t feedId,

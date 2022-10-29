@@ -23,11 +23,6 @@ namespace LC::Aggregator
 		return Error_ == other.Error_;
 	}
 
-	FeedsErrorManager::FeedsErrorManager (const ICoreProxy_ptr& proxy)
-	: Proxy_ { proxy }
-	{
-	}
-
 	namespace
 	{
 		auto MakeEventId (IDType_t id)
@@ -74,7 +69,7 @@ namespace LC::Aggregator
 				{},
 				0, 1,
 				errInfo.Full_);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void FeedsErrorManager::ClearFeedErrors (IDType_t id)
@@ -84,7 +79,7 @@ namespace LC::Aggregator
 
 		emit clearedErrors (id);
 
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Aggregator", MakeEventId (id)));
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Aggregator", MakeEventId (id)));
 	}
 
 	QList<FeedsErrorManager::Error> FeedsErrorManager::GetFeedErrors (IDType_t id) const
