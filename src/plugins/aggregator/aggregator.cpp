@@ -107,13 +107,13 @@ namespace Aggregator
 		// TODO replace with std::bind_front in C++20
 		OpmlAdder_ = std::make_shared<OpmlAdder> ([this] (auto... args) { AddFeed (args...); }, Proxy_);
 
-		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
+		DBUpThread_ = std::make_shared<DBUpdateThread> ();
 		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
 
 		PoolsManager::Instance ().ReloadPools ();
 
-		ErrorsManager_ = std::make_shared<FeedsErrorManager> (Proxy_);
+		ErrorsManager_ = std::make_shared<FeedsErrorManager> ();
 
 		UpdatesManager_ = std::make_shared<UpdatesManager> (UpdatesManager::InitParams {
 					DBUpThread_,
