@@ -104,8 +104,7 @@ namespace Aggregator
 
 		ReinitStorage ();
 
-		// TODO replace with std::bind_front in C++20
-		OpmlAdder_ = std::make_shared<OpmlAdder> ([this] (auto... args) { AddFeed (args...); }, Proxy_);
+		OpmlAdder_ = std::make_shared<OpmlAdder> (std::bind_front (&Aggregator::AddFeed, this));
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> ();
 		DBUpThread_->SetAutoQuit (true);
