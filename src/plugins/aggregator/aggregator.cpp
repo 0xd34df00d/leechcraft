@@ -89,7 +89,7 @@ namespace Aggregator
 			TFSingle | TFOpenableByRequest
 		};
 
-		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
+		ShortcutMgr_ = new Util::ShortcutManager (GetProxyHolder (), this);
 
 		ChannelActions_ = std::make_shared<ChannelActions> (ShortcutMgr_, this);
 		AppWideActions_ = std::make_shared<AppWideActions> (ShortcutMgr_, this);
@@ -118,7 +118,7 @@ namespace Aggregator
 		UpdatesManager_ = std::make_shared<UpdatesManager> (UpdatesManager::InitParams {
 					DBUpThread_,
 					ErrorsManager_,
-					Proxy_->GetEntityManager ()
+					GetProxyHolder ()->GetEntityManager ()
 				});
 
 		connect (AppWideActions_->ActionUpdateFeeds_,
@@ -128,12 +128,12 @@ namespace Aggregator
 
 		QMetaObject::connectSlotsByName (this);
 
-		ChannelsModel_ = std::make_shared<ChannelsModel> (ErrorsManager_, Proxy_->GetTagsManager ());
+		ChannelsModel_ = std::make_shared<ChannelsModel> (ErrorsManager_, GetProxyHolder ()->GetTagsManager ());
 
 		PluginManager_ = std::make_shared<PluginManager> (ChannelsModel_.get ());
 		PluginManager_->RegisterHookable (&StorageBackendManager::Instance ());
 
-		ResourcesFetcher_ = std::make_shared<ResourcesFetcher> (Proxy_->GetEntityManager ());
+		ResourcesFetcher_ = std::make_shared<ResourcesFetcher> (GetProxyHolder ()->GetEntityManager ());
 	}
 
 	void Aggregator::SecondInit ()
