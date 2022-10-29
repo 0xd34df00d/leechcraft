@@ -59,7 +59,6 @@ LC_DEFINE_PLUGIN (
 		resourcesfetcher.cpp
 		opmladder.cpp
 		poolsmanager.cpp
-		coreproxyholder.cpp
 		feedserrormanager.cpp
 	SETTINGS aggregatorsettings.xml
 	RESOURCES aggregatorresources.qrc

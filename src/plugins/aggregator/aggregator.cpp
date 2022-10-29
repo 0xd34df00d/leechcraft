@@ -34,7 +34,6 @@
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/xpc/coreproxyholder.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "channelsfiltermodel.h"
@@ -68,8 +67,6 @@ namespace Aggregator
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::CoreProxyHolder::Set (proxy);
 
 		Util::InstallTranslator ("aggregator");
 

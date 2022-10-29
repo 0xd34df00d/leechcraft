@@ -22,7 +22,6 @@
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/util.h>
-#include <util/xpc/coreproxyholder.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -105,7 +104,7 @@ namespace Aggregator
 		Impl_->MergeMode_ = false;
 		Impl_->ControlToolBar_ = SetupToolBar ();
 
-		auto proxy = Util::CoreProxyHolder::Get ();
+		const auto& proxy = GetProxyHolder ();
 		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
 		Impl_->ItemLists_ = std::make_unique<Util::MergeModel> (QStringList { tr ("Name"), tr ("Date") });
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
@@ -441,8 +440,8 @@ namespace Aggregator
 		QString commentRSS = it.CommentsLink_;
 		QStringList tags = it.Categories_;
 
-		const auto& addTags = Util::CoreProxyHolder::Get ()->GetTagsManager ()->
-				Split (XmlSettingsManager::Instance ()->property ("CommentsTags").toString ());
+		const auto itm = GetProxyHolder ()->GetTagsManager ();
+		const auto& addTags = itm->Split (XmlSettingsManager::Instance ()->property ("CommentsTags").toString ());
 		Impl_->FeedAdder_ (commentRSS, tags + addTags);
 	}
 
@@ -486,8 +485,7 @@ namespace Aggregator
 
 	void ItemsWidget::ConstructBrowser ()
 	{
-		const auto proxy = Util::CoreProxyHolder::Get ();
-		const auto browser = proxy->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
+		const auto browser = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 		Impl_->Ui_.ItemView_->Construct (browser);
 		navBarVisibilityChanged ();
 	}
@@ -516,7 +514,7 @@ namespace Aggregator
 		if (channelId == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 			return;
 
-		auto ilm = std::make_shared<ItemsListModel> (Util::CoreProxyHolder::Get ()->GetIconThemeManager ());
+		auto ilm = std::make_shared<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
 		ilm->Reset (channelId);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
@@ -1284,7 +1282,7 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionItemLinkOpen__triggered ()
 	{
-		const auto iem = Util::CoreProxyHolder::Get ()->GetEntityManager ();
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
 		for (const auto& idx : GetSelected ())
 			iem->HandleEntity (Util::MakeEntity (QUrl { GetItem (idx).Link_ },
 						{},

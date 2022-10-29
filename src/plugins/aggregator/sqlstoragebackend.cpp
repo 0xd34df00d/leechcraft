@@ -19,7 +19,6 @@
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
 #include <util/db/oral/pgimpl.h>
-#include <util/xpc/coreproxyholder.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/functor.h>
@@ -80,7 +79,7 @@ namespace LC::Aggregator
 			if (TagsList_.isEmpty ())
 				return EmptyMarker_;
 
-			static const auto itm = Util::CoreProxyHolder::Get ()->GetTagsManager ();
+			static const auto itm = GetProxyHolder ()->GetTagsManager ();
 			return itm->Join (TagsList_);
 		}
 
@@ -89,7 +88,7 @@ namespace LC::Aggregator
 			if (var == EmptyMarker_)
 				return {};
 
-			static const auto itm = Util::CoreProxyHolder::Get ()->GetTagsManager ();
+			static const auto itm = GetProxyHolder ()->GetTagsManager ();
 			return { itm->Split (var) };
 		}
 	};
