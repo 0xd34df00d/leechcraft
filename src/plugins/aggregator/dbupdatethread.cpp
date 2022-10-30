@@ -9,10 +9,20 @@
 #include "dbupdatethread.h"
 #include <QModelIndex>
 #include "common.h"
+#include "channelutils.h"
 #include "dbupdatethreadworker.h"
 
 namespace LC::Aggregator
 {
+	QFuture<void> DBUpdateThread::SetAllChannelsRead ()
+	{
+		return ScheduleImpl ([] (DBUpdateThreadWorker *worker)
+				{
+					for (const auto& channel : ChannelUtils::GetAllChannels ())
+						worker->toggleChannelUnread (channel.ChannelID_, false);
+				});
+	}
+
 	QFuture<void> DBUpdateThread::ToggleChannelUnread (const QModelIndex& idx, bool unread)
 	{
 		const auto channelId = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();

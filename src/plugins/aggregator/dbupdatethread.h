@@ -21,6 +21,8 @@ namespace LC::Aggregator
 	public:
 		using WorkerThread::WorkerThread;
 
+		QFuture<void> SetAllChannelsRead ();
+
 		QFuture<void> ToggleChannelUnread (const QModelIndex&, bool unread);
 	};
 
