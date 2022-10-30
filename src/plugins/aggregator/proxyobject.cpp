@@ -92,7 +92,7 @@ namespace Aggregator
 	{
 		QVector<Channel> result;
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& cs : GetAllChannels ())
+		for (const auto& cs : Aggregator::GetAllChannels ())
 			result << sb->GetChannel (cs.ChannelID_);
 		return result;
 	}
