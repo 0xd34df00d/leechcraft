@@ -8,14 +8,7 @@
 
 #pragma once
 
-#include <util/threads/workerthreadbasefwd.h>
-
-namespace LC
+namespace LC::Aggregator
 {
-namespace Aggregator
-{
-	class DBUpdateThreadWorker;
-
-	using DBUpdateThread = Util::WorkerThread<DBUpdateThreadWorker>;
-}
+	class DBUpdateThread;
 }

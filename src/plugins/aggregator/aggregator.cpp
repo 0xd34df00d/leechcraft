@@ -439,15 +439,6 @@ namespace Aggregator
 		UpdatesManager_->UpdateFeed (feed.FeedID_);
 	}
 
-	namespace
-	{
-		void MarkChannel (DBUpdateThread& dbUpThread, const QModelIndex& idx, bool unread)
-		{
-			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
-			dbUpThread.ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
-		}
-	}
-
 	void Aggregator::on_ActionMarkAllAsRead__triggered ()
 	{
 		if (XmlSettingsManager::Instance ()->property ("ConfirmMarkAllAsRead").toBool ())
@@ -469,7 +460,7 @@ namespace Aggregator
 		}
 
 		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
-			MarkChannel (*DBUpThread_, ChannelsModel_->index (i, 0), false);
+			DBUpThread_->ToggleChannelUnread (ChannelsModel_->index (i, 0), false);
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()
@@ -603,7 +594,7 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkChannelAsRead", false);
 		}
 
-		Perform ([this] (const QModelIndex& mi) { MarkChannel (*DBUpThread_, mi, false); });
+		Perform ([this] (const QModelIndex& mi) { DBUpThread_->ToggleChannelUnread (mi, false); });
 	}
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
@@ -618,7 +609,7 @@ namespace Aggregator
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		Perform ([this] (const QModelIndex& mi) { MarkChannel (*DBUpThread_, mi, true); });
+		Perform ([this] (const QModelIndex& mi) { DBUpThread_->ToggleChannelUnread (mi, true); });
 	}
 
 	void Aggregator::on_ActionChannelSettings__triggered ()

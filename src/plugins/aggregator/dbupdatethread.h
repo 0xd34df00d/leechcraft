@@ -10,14 +10,19 @@
 
 #include <util/threads/workerthreadbase.h>
 
-namespace LC
-{
-namespace Aggregator
+class QModelIndex;
+
+namespace LC::Aggregator
 {
 	class DBUpdateThreadWorker;
 
-	using DBUpdateThread = Util::WorkerThread<DBUpdateThreadWorker>;
+	class DBUpdateThread : public Util::WorkerThread<DBUpdateThreadWorker>
+	{
+	public:
+		using WorkerThread::WorkerThread;
+
+		QFuture<void> ToggleChannelUnread (const QModelIndex&, bool unread);
+	};
 
 	using DBUpdateThread_ptr = std::shared_ptr<DBUpdateThread>;
-}
 }
