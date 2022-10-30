@@ -352,11 +352,6 @@ namespace Aggregator
 			result << AppWideActions_->ActionAddFeed_;
 			result << AppWideActions_->ActionUpdateFeeds_;
 			break;
-		case ActionsEmbedPlace::TrayMenu:
-			result << AppWideActions_->ActionMarkAllAsRead_;
-			result << AppWideActions_->ActionAddFeed_;
-			result << AppWideActions_->ActionUpdateFeeds_;
-			break;
 		default:
 			break;
 		}
