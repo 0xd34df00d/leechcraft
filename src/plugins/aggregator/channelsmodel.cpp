@@ -149,6 +149,16 @@ namespace Aggregator
 		}
 	}
 
+	namespace
+	{
+		QString GetChannelTitle (const ChannelShort& channel)
+		{
+			return channel.DisplayTitle_.isEmpty () ?
+					channel.Title_ :
+					channel.DisplayTitle_;
+		}
+	}
+
 	QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
@@ -156,26 +166,26 @@ namespace Aggregator
 
 		const auto row = index.row ();
 		const auto column = index.column ();
+
+		const auto& channel = Channels_.at (row);
 		switch (role)
 		{
 		case Qt::DisplayRole:
 			switch (column)
 			{
 			case ColumnTitle:
-				return Channels_.at (row).DisplayTitle_.isEmpty () ?
-						Channels_.at (row).Title_ :
-						Channels_.at (row).DisplayTitle_;
+				return GetChannelTitle (channel);
 			case ColumnUnread:
-				return Channels_.at (row).Unread_;
+				return channel.Unread_;
 			case ColumnLastBuild:
-				return Channels_.at (row).LastBuild_;
+				return channel.LastBuild_;
 			default:
 				return {};
 			}
 		case Qt::DecorationRole:
 			if (column == ColumnTitle)
 			{
-				QIcon result = QPixmap::fromImage (Channels_.at (row).Favicon_);
+				QIcon result = QPixmap::fromImage (channel.Favicon_);
 				if (result.isNull ())
 					result = QIcon (":/resources/images/rss.png");
 				return result;
@@ -183,36 +193,36 @@ namespace Aggregator
 			else
 				return {};
 		case Qt::ForegroundRole:
-			return GetForegroundColor (Channels_.at (row));
+			return GetForegroundColor (channel);
 		case Qt::FontRole:
-			if (const auto& errors = FeedsErrorManager_->GetFeedErrors (Channels_.at (row).FeedID_); !errors.isEmpty ())
+			if (const auto& errors = FeedsErrorManager_->GetFeedErrors (channel.FeedID_); !errors.isEmpty ())
 			{
 				QFont font;
 				font.setStrikeOut (true);
 				return font;
 			}
-			else if (Channels_.at (row).Unread_)
+			else if (channel.Unread_)
 				return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
 			else
 				return {};
 		case Qt::ToolTipRole:
-			return GetTooltip (TagsManager_, *FeedsErrorManager_, Channels_.at (row));
+			return GetTooltip (TagsManager_, *FeedsErrorManager_, channel);
 		case RoleTags:
-			return Channels_.at (row).Tags_;
+			return channel.Tags_;
 		case ChannelRoles::UnreadCount:
-			return Channels_.at (row).Unread_;
+			return channel.Unread_;
 		case ChannelRoles::ErrorCount:
-			return FeedsErrorManager_->GetFeedErrors (Channels_.at (row).FeedID_).size ();
+			return FeedsErrorManager_->GetFeedErrors (channel.FeedID_).size ();
 		case ChannelRoles::ChannelID:
-			return Channels_.at (row).ChannelID_;
+			return channel.ChannelID_;
 		case ChannelRoles::FeedID:
-			return Channels_.at (row).FeedID_;
+			return channel.FeedID_;
 		case ChannelRoles::RawTags:
-			return Channels_.at (row).Tags_;
+			return channel.Tags_;
 		case ChannelRoles::HumanReadableTags:
-			return TagsManager_->GetTags (Channels_.at (row).Tags_);
+			return TagsManager_->GetTags (channel.Tags_);
 		case ChannelRoles::ChannelLink:
-			return Channels_.at (row).Link_;
+			return channel.Link_;
 		default:
 			return {};
 		}
