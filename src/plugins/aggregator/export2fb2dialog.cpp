@@ -31,10 +31,9 @@ namespace LC
 {
 namespace Aggregator
 {
-	Export2FB2Dialog::Export2FB2Dialog (ChannelsModel *channelsModel, const ICoreProxy_ptr& proxy, QWidget *parent)
+	Export2FB2Dialog::Export2FB2Dialog (ChannelsModel *channelsModel, QWidget *parent)
 	: QDialog { parent }
 	, ChannelsModel_ { channelsModel }
-	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 
@@ -222,8 +221,7 @@ namespace Aggregator
 		void WriteBeginning (QXmlStreamWriter& w,
 				const QStringList& authors,
 				const QStringList& genres,
-				const QString& name,
-				const ICoreProxy_ptr& proxy)
+				const QString& name)
 		{
 			w.setAutoFormatting (true);
 			w.setAutoFormattingIndent (2);
@@ -252,7 +250,7 @@ namespace Aggregator
 					w.writeEndElement ();
 					w.writeTextElement ("program-used",
 							QString ("LeechCraft Aggregator %1")
-								.arg (proxy->GetVersion ()));
+								.arg (GetProxyHolder ()->GetVersion ()));
 					w.writeTextElement ("id",
 							QUuid::createUuid ().toString ());
 					w.writeTextElement ("version", "1.0");
@@ -301,14 +299,14 @@ namespace Aggregator
 		}
 
 		QXmlStreamWriter w (&file);
-		WriteBeginning (w, authors, genres, Ui_.Name_->text (), Proxy_);
+		WriteBeginning (w, authors, genres, Ui_.Name_->text ());
 
 		for (const auto& cs : channels)
 			WriteChannel (w, cs, info.Items_ [cs]);
 		w.writeEndElement ();
 		w.writeEndDocument ();
 
-		const auto iem = Proxy_->GetEntityManager ();
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
 		iem->HandleEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
 					Priority::Info));
@@ -431,7 +429,7 @@ namespace Aggregator
 
 		doc.print (&printer);
 
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator",
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
 					Priority::Info));
 	}

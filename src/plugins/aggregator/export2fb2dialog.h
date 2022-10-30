@@ -9,13 +9,10 @@
 #pragma once
 
 #include <QDialog>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_export2fb2dialog.h"
 
 namespace LC
 {
-struct Entity;
-
 namespace Util
 {
 	class CategorySelector;
@@ -31,7 +28,6 @@ namespace Aggregator
 		Q_OBJECT
 
 		ChannelsModel * const ChannelsModel_;
-		const ICoreProxy_ptr Proxy_;
 
 		Ui::Export2FB2Dialog Ui_;
 		Util::CategorySelector *Selector_;
@@ -39,7 +35,7 @@ namespace Aggregator
 
 		bool HasBeenTextModified_ = false;
 	public:
-		Export2FB2Dialog (ChannelsModel*, const ICoreProxy_ptr&, QWidget* = nullptr);
+		Export2FB2Dialog (ChannelsModel*, QWidget* = nullptr);
 	private:
 		void WriteFB2 (const WriteInfo&);
 		void WritePDF (const WriteInfo&);
