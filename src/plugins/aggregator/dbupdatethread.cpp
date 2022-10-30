@@ -9,7 +9,7 @@
 #include "dbupdatethread.h"
 #include <QModelIndex>
 #include "common.h"
-#include "channelutils.h"
+#include "dbutils.h"
 #include "dbupdatethreadworker.h"
 
 namespace LC::Aggregator
@@ -18,7 +18,7 @@ namespace LC::Aggregator
 	{
 		return ScheduleImpl ([] (DBUpdateThreadWorker *worker)
 				{
-					for (const auto& channel : ChannelUtils::GetAllChannels ())
+					for (const auto& channel : GetAllChannels ())
 						worker->toggleChannelUnread (channel.ChannelID_, false);
 				});
 	}

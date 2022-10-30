@@ -6,11 +6,11 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "channelutils.h"
+#include "dbutils.h"
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
 
-namespace LC::Aggregator::ChannelUtils
+namespace LC::Aggregator
 {
 	channels_shorts_t GetAllChannels ()
 	{

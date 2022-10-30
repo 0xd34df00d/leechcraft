@@ -12,7 +12,7 @@
 #include "storagebackendmanager.h"
 #include "channelsmodel.h"
 #include "itemslistmodel.h"
-#include "channelutils.h"
+#include "dbutils.h"
 
 namespace LC
 {
@@ -92,7 +92,7 @@ namespace Aggregator
 	{
 		QVector<Channel> result;
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& cs : ChannelUtils::GetAllChannels ())
+		for (const auto& cs : GetAllChannels ())
 			result << sb->GetChannel (cs.ChannelID_);
 		return result;
 	}

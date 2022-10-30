@@ -53,13 +53,13 @@ LC_DEFINE_PLUGIN (
 		channelsmodelrepresentationproxy.cpp
 		exportutils.cpp
 		itemutils.cpp
-		channelutils.cpp
 		representationmanager.cpp
 		updatesmanager.cpp
 		resourcesfetcher.cpp
 		opmladder.cpp
 		poolsmanager.cpp
 		feedserrormanager.cpp
+		dbutils.cpp
 	SETTINGS aggregatorsettings.xml
 	RESOURCES aggregatorresources.qrc
 	QT_COMPONENTS Network PrintSupport Sql Widgets Xml

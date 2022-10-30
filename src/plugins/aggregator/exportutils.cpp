@@ -17,7 +17,7 @@
 #include "opmlwriter.h"
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
-#include "channelutils.h"
+#include "dbutils.h"
 
 namespace LC::Aggregator::ExportUtils
 {
@@ -34,7 +34,7 @@ namespace LC::Aggregator::ExportUtils
 
 	void RunExportOPML (QWidget *parent)
 	{
-		const auto& allChannels = ChannelUtils::GetAllChannels ();
+		const auto& allChannels = GetAllChannels ();
 		Export exportDialog (QObject::tr ("Export to OPML"),
 				QObject::tr ("Select save file"),
 				QObject::tr ("OPML files (*.opml);;"

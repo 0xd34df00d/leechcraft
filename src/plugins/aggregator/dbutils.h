@@ -10,7 +10,7 @@
 
 #include "channel.h"
 
-namespace LC::Aggregator::ChannelUtils
+namespace LC::Aggregator
 {
 	channels_shorts_t GetAllChannels ();
 }
