@@ -11,8 +11,6 @@
 #include <QDialog>
 #include "ui_addfeeddialog.h"
 
-class ITagsManager;
-
 namespace LC
 {
 namespace Aggregator
@@ -20,10 +18,8 @@ namespace Aggregator
 	class AddFeedDialog : public QDialog
 	{
 		Ui::AddFeedDialog Ui_;
-
-		const ITagsManager * const TagsManager_;
 	public:
-		explicit AddFeedDialog (const ITagsManager*, const QString& = QString (), QWidget *parent = 0);
+		explicit AddFeedDialog (const QString& = {}, QWidget *parent = nullptr);
 
 		QString GetURL () const;
 		QStringList GetTags () const;

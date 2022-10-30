@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include <util/tags/tagscompleter.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "addfeeddialog.h"
 
@@ -14,9 +15,8 @@ namespace LC
 {
 namespace Aggregator
 {
-	AddFeedDialog::AddFeedDialog (const ITagsManager *itm, const QString& url, QWidget *parent)
+	AddFeedDialog::AddFeedDialog (const QString& url, QWidget *parent)
 	: QDialog { parent }
-	, TagsManager_ { itm }
 	{
 		Ui_.setupUi (this);
 		new Util::TagsCompleter (Ui_.Tags_);
@@ -35,7 +35,7 @@ namespace Aggregator
 
 	QStringList AddFeedDialog::GetTags () const
 	{
-		return TagsManager_->Split (Ui_.Tags_->text ());
+		return GetProxyHolder ()->GetTagsManager ()->Split (Ui_.Tags_->text ());
 	}
 }
 }

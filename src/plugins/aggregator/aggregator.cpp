@@ -293,7 +293,7 @@ namespace Aggregator
 		else if (str.startsWith ("itpc://"))
 			str.replace (0, 4, "http");
 
-		AddFeedDialog af { Proxy_->GetTagsManager (), str };
+		AddFeedDialog af { str };
 		if (af.exec () == QDialog::Accepted)
 			AddFeed (af.GetURL (), af.GetTags ());
 	}
@@ -465,7 +465,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionAddFeed__triggered ()
 	{
-		AddFeedDialog af { Proxy_->GetTagsManager () };
+		AddFeedDialog af;
 		if (af.exec () == QDialog::Accepted)
 			AddFeed (af.GetURL (), af.GetTags ());
 	}
