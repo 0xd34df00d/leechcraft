@@ -221,6 +221,8 @@ namespace Aggregator
 			return channel.Tags_;
 		case ChannelRoles::HumanReadableTags:
 			return TagsManager_->GetTags (channel.Tags_);
+		case ChannelRoles::ChannelTitle:
+			return GetChannelTitle (channel);
 		case ChannelRoles::ChannelLink:
 			return channel.Link_;
 		default:

@@ -45,7 +45,8 @@ namespace Aggregator
 		FeedID,
 		RawTags,
 		HumanReadableTags,
-		ChannelLink
+		ChannelTitle,
+		ChannelLink,
 	};
 }
 }
