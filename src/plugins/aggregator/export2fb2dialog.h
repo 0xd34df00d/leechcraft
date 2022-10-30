@@ -27,7 +27,7 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		ChannelsModel * const ChannelsModel_;
+		ChannelsModel& ChannelsModel_;
 
 		Ui::Export2FB2Dialog Ui_;
 		Util::CategorySelector *Selector_;
@@ -35,7 +35,7 @@ namespace Aggregator
 
 		bool HasBeenTextModified_ = false;
 	public:
-		Export2FB2Dialog (ChannelsModel*, QWidget* = nullptr);
+		Export2FB2Dialog (ChannelsModel&, QWidget* = nullptr);
 	private:
 		void WriteFB2 (const WriteInfo&);
 		void WritePDF (const WriteInfo&);
