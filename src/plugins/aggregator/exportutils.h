@@ -10,9 +10,7 @@
 
 class QWidget;
 
-class ITagsManager;
-
 namespace LC::Aggregator::ExportUtils
 {
-	void RunExportOPML (const ITagsManager*, QWidget* = nullptr);
+	void RunExportOPML (QWidget* = nullptr);
 }

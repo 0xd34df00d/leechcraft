@@ -12,6 +12,7 @@
 #include <QByteArray>
 #include <QDataStream>
 #include <QMessageBox>
+#include <interfaces/core/icoreproxy.h>
 #include "export.h"
 #include "opmlwriter.h"
 #include "storagebackendmanager.h"
@@ -31,7 +32,7 @@ namespace LC::Aggregator::ExportUtils
 		}
 	}
 
-	void RunExportOPML (const ITagsManager *itm, QWidget *parent)
+	void RunExportOPML (QWidget *parent)
 	{
 		const auto& allChannels = ChannelUtils::GetAllChannels ();
 		Export exportDialog (QObject::tr ("Export to OPML"),
@@ -46,7 +47,7 @@ namespace LC::Aggregator::ExportUtils
 
 		auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());
 
-		OPMLWriter writer { itm };
+		OPMLWriter writer { GetProxyHolder ()->GetTagsManager () };
 		auto data = writer.Write (channels,
 				exportDialog.GetTitle (), exportDialog.GetOwner (), exportDialog.GetOwnerEmail ());
 
