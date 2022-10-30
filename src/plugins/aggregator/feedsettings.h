@@ -10,7 +10,6 @@
 
 #include <QDialog>
 #include <QModelIndex>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_feedsettings.h"
 #include "common.h"
 
@@ -24,9 +23,8 @@ namespace Aggregator
 
 		Ui::FeedSettings Ui_;
 		QPersistentModelIndex Index_;
-		const ICoreProxy_ptr Proxy_;
 	public:
-		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
+		explicit FeedSettings (const QModelIndex&, QWidget* = nullptr);
 	public:
 		void accept () override;
 	signals:

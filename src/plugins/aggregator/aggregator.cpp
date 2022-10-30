@@ -618,7 +618,7 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		FeedSettings dia { index, Proxy_ };
+		FeedSettings dia { index };
 		connect (&dia,
 				&FeedSettings::faviconRequested,
 				ResourcesFetcher_.get (),

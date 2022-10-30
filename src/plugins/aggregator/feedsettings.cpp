@@ -45,10 +45,9 @@ namespace Aggregator
 		}
 	}
 
-	FeedSettings::FeedSettings (const QModelIndex& mapped, const ICoreProxy_ptr& proxy, QWidget *parent)
+	FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 	: QDialog { parent }
 	, Index_ { mapped }
-	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 
@@ -60,7 +59,7 @@ namespace Aggregator
 
 		connect (Ui_.ChannelLink_,
 				&QLabel::linkActivated,
-				[this] (const QString& url)
+				[] (const QString& url)
 				{
 					if (XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
 						QDesktopServices::openUrl ({ url });
@@ -69,7 +68,7 @@ namespace Aggregator
 						const auto& e = Util::MakeEntity (QUrl::fromUserInput (url),
 								{},
 								FromUserInitiated | OnlyHandle);
-						Proxy_->GetEntityManager ()->HandleEntity (e);
+						GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 					}
 				});
 		connect (Ui_.UpdateFavicon_,
@@ -81,7 +80,7 @@ namespace Aggregator
 							Index_.data (ChannelRoles::ChannelLink).toString ());
 				});
 
-		const auto itm = proxy->GetTagsManager ();
+		const auto itm = GetProxyHolder ()->GetTagsManager ();
 
 		Ui_.ChannelTags_->setText (itm->Join (Index_.data (ChannelRoles::HumanReadableTags).toStringList ()));
 
@@ -124,7 +123,7 @@ namespace Aggregator
 	{
 		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		const auto itm = Proxy_->GetTagsManager ();
+		const auto itm = GetProxyHolder ()->GetTagsManager ();
 
 		const auto& channelTags = Ui_.ChannelTags_->text ();
 		storage->SetChannelTags (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (), itm->SplitToIDs (channelTags));
