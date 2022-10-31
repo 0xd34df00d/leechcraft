@@ -259,7 +259,7 @@ SUBPLUGIN (POSHUKU "Build Poshuku, the WWW Browser" ${WITH_PLUGINS})
 SUBPLUGIN (SECMAN "Build SecMan, security & personal data manager" ${WITH_PLUGINS})
 SUBPLUGIN (SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web sites" ${WITH_PLUGINS})
 SUBPLUGIN (SUMMARY "Build Summary, the plugin that shows a handy summary of the stuff going on" ${WITH_PLUGINS})
-SUBPLUGIN (SYNCER "Build Syncer, the synchronization plugin for LeechCraft" FALSE)
+SUBPLUGIN (SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 SUBPLUGIN (TABSESSMANAGER "Build Tab Session Manager" ${WITH_PLUGINS})
 SUBPLUGIN (TABSLIST "Quick overview of tabs" ${WITH_PLUGINS})
 
