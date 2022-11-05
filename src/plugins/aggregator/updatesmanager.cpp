@@ -175,8 +175,7 @@ namespace LC::Aggregator
 				continue;
 
 			if (!Updates_.contains (id) ||
-					(Updates_ [id].isValid () &&
-						Updates_ [id].secsTo (current) / 60 > ut))
+					Updates_ [id].secsTo (current) / 60 > ut)
 			{
 				UpdateFeed (id);
 				Updates_ [id] = QDateTime::currentDateTime ();
