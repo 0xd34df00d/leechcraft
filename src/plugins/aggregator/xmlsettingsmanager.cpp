@@ -9,21 +9,19 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
 		Util::BaseSettingsManager::Init ();
 	}
-	
+
 	XmlSettingsManager* XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager manager;
 		return &manager;
 	}
-	
+
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
 		QSettings *settings =
@@ -31,9 +29,8 @@ namespace Aggregator
 					QCoreApplication::applicationName () + "_Aggregator");
 		return settings;
 	}
-	
+
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
 }

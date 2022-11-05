@@ -6,13 +6,11 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_XMLSETTINGSMANAGER_H
-#define PLUGINS_AGGREGATOR_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
@@ -20,10 +18,8 @@ namespace Aggregator
 	public:
 		static XmlSettingsManager* Instance ();
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
 	};
 }
-}
 
-#endif
