@@ -64,7 +64,7 @@ set (RESOURCES poshukuresources.qrc)
 
 SUBPLUGIN (AUTOSEARCH "Build autosearch plugin for Poshuku browser")
 SUBPLUGIN (CLEANWEB "Build content filter plugin for Poshuku browser")
-SUBPLUGIN (DCAC "Build DC/AC for inverting colors on web pages")
+SUBPLUGIN (DCAC "Build DC/AC for inverting colors on web pages" OFF)
 SUBPLUGIN (FATAPE "Build FatApe, support for GreaseMonkey userscripts")
 SUBPLUGIN (FILESCHEME "Build support of local file browsing for Poshuku browser")
 SUBPLUGIN (FUA "Build user agent customization plugin for Poshuku browser")
