@@ -208,7 +208,7 @@ namespace LC::Aggregator
 
 		auto emitError = [this] (const QString& body)
 		{
-			EntityManager_->HandleEntity (Util::MakeNotification (tr ("Feed error"), body, Priority::Critical));
+			EntityManager_->HandleEntity (Util::MakeNotification ("Aggregator", body, Priority::Critical));
 		};
 
 		const auto& delegateResult = EntityManager_->DelegateEntity (e);
