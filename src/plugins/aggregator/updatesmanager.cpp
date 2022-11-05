@@ -14,7 +14,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/gui/util.h>
 #include <util/sll/either.h>
-#include <util/sll/functor.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <util/sys/paths.h>
@@ -162,19 +161,16 @@ namespace LC::Aggregator
 		if (!sb)
 			return;
 
-		using Util::operator*;
-
-		QDateTime current = QDateTime::currentDateTime ();
+		const auto& current = QDateTime::currentDateTime ();
 		for (const auto id : sb->GetFeedsIDs ())
 		{
-			const auto ut = (sb->GetFeedSettings (id) * &Feed::FeedSettings::UpdateTimeout_).value_or (0);
-
+			const auto& feedSettings = sb->GetFeedSettings (id);
 			// It's handled by normal timer.
-			if (!ut)
+			if (!feedSettings || !feedSettings->UpdateTimeout_)
 				continue;
 
 			if (!Updates_.contains (id) ||
-					Updates_ [id].secsTo (current) / 60 > ut)
+					Updates_ [id].secsTo (current) >= feedSettings->UpdateTimeout_ * 60)
 			{
 				UpdateFeed (id);
 				Updates_ [id] = QDateTime::currentDateTime ();
