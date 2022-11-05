@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QCoreApplication>
 #include <QObject>
 #include "common.h"
 #include "dbupdatethread.h"
@@ -23,7 +24,7 @@ namespace LC::Aggregator
 
 	class UpdatesManager : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::UpdatesManager)
 
 		IEntityManager * const EntityManager_;
 
