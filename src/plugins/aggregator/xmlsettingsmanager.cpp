@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "xmlsettingsmanager.h"
+#include <QMessageBox>
+#include <QPushButton>
 #include <QCoreApplication>
 
 namespace LC::Aggregator
@@ -32,5 +34,30 @@ namespace LC::Aggregator
 
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
+	}
+
+	bool ConfirmWithPersistence (const char *propName, const QString& questionMessage)
+	{
+		if (!XmlSettingsManager::Instance ()->property (propName).toBool ())
+			return true;
+
+		QMessageBox mbox
+		{
+			QMessageBox::Question,
+			"Aggregator",
+			questionMessage,
+			QMessageBox::Yes | QMessageBox::No,
+		};
+		mbox.setDefaultButton (QMessageBox::No);
+
+		QPushButton always { QObject::tr ("Always", "whether to remember the choice and don't ask again") };
+		mbox.addButton (&always, QMessageBox::AcceptRole);
+
+		if (mbox.exec () == QMessageBox::No)
+			return false;
+
+		if (mbox.clickedButton () == &always)
+			XmlSettingsManager::Instance ()->setProperty (propName, false);
+		return true;
 	}
 }

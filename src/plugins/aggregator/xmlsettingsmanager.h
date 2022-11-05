@@ -21,5 +21,6 @@ namespace LC::Aggregator
 		QSettings* BeginSettings () const override;
 		void EndSettings (QSettings*) const override;
 	};
-}
 
+	bool ConfirmWithPersistence (const char *propName, const QString& questionMessage);
+}
