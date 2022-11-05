@@ -66,5 +66,5 @@ LC_DEFINE_PLUGIN (
 	INSTALL_SHARE
 	)
 
-SUBPLUGIN (BODYFETCH "Enable BodyFetch for fetching full bodies of news items")
+SUBPLUGIN (BODYFETCH "Enable BodyFetch for fetching full bodies of news items" OFF)
 SUBPLUGIN (WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
