@@ -73,5 +73,5 @@ SUBPLUGIN (ONLINEBOOKMARKS "Build support of online bookmark synchronization for
 SUBPLUGIN (QRD "Build QRd for showing the URL of a web page as a QR code" OFF)
 SUBPLUGIN (SPEEDDIAL "Build Speed Dial support module")
 
-SUBPLUGIN (WEBENGINEVIEW "Build WebEngine-based backend" OFF)
-SUBPLUGIN (WEBKITVIEW "Build WebKit-based backend" ON)
+SUBPLUGIN (WEBENGINEVIEW "Build WebEngine-based backend" ON)
+SUBPLUGIN (WEBKITVIEW "Build WebKit-based backend" OFF)
