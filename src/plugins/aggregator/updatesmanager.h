@@ -50,7 +50,5 @@ namespace LC::Aggregator
 	private:
 		void HandleCustomUpdates ();
 		void RotateUpdatesQueue ();
-	private slots:
-		void updateIntervalChanged ();
 	};
 }

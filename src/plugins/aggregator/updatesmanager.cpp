@@ -111,7 +111,19 @@ namespace LC::Aggregator
 				UpdateTimer_->start (updateDiff * 1000);
 		}
 
-		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
+		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this,
+				[this] (int min)
+				{
+					if (min)
+					{
+						if (UpdateTimer_->isActive ())
+							UpdateTimer_->setInterval (min * 60 * 1000);
+						else
+							UpdateTimer_->start (min * 60 * 1000);
+					}
+					else
+						UpdateTimer_->stop ();
+				});
 	}
 
 	namespace
@@ -142,19 +154,6 @@ namespace LC::Aggregator
 					&UpdatesManager::RotateUpdatesQueue);
 
 		UpdatesQueue_ << id;
-	}
-
-	void UpdatesManager::updateIntervalChanged ()
-	{
-		if (int min = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
-		{
-			if (UpdateTimer_->isActive ())
-				UpdateTimer_->setInterval (min * 60 * 1000);
-			else
-				UpdateTimer_->start (min * 60 * 1000);
-		}
-		else
-			UpdateTimer_->stop ();
 	}
 
 	void UpdatesManager::HandleCustomUpdates ()
