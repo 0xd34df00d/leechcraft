@@ -29,11 +29,12 @@ namespace LC::Aggregator
 	public:
 		OpmlAdder (const AddFeedHandler&, QObject* = nullptr);
 
-		bool IsOpmlEntity (const Entity&) const;
 		bool HandleOpmlEntity (const Entity&);
 
 		void StartAddingOpml (const QString&);
 	private:
 		void ReportError (const QString&) const;
 	};
+
+	bool IsOpmlEntity (const Entity&);
 }

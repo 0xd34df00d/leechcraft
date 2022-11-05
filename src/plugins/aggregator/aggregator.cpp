@@ -238,7 +238,7 @@ namespace Aggregator
 		if (!e.Entity_.canConvert<QUrl> ())
 			return {};
 
-		if (OpmlAdder_->IsOpmlEntity (e))
+		if (IsOpmlEntity (e))
 			return EntityTestHandleResult { EntityTestHandleResult::PIdeal };
 
 		const auto& url = e.Entity_.toUrl ();

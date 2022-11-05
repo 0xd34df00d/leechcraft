@@ -29,21 +29,6 @@ namespace LC::Aggregator
 	{
 	}
 
-	bool OpmlAdder::IsOpmlEntity (const Entity& e) const
-	{
-		if (!e.Entity_.canConvert<QUrl> ())
-			return false;
-
-		const auto& url = e.Entity_.toUrl ();
-		if (e.Mime_ != "text/x-opml")
-			return false;
-
-		return url.scheme () == "file" ||
-				url.scheme () == "http" ||
-				url.scheme () == "https" ||
-				url.scheme () == "itpc";
-	}
-
 	bool OpmlAdder::HandleOpmlEntity (const Entity& e)
 	{
 		if (e.Mime_ != "text/x-opml")
@@ -128,5 +113,20 @@ namespace LC::Aggregator
 	{
 		auto e = Util::MakeNotification (tr ("OPML import error"), body, Priority::Critical);
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+	}
+
+	bool IsOpmlEntity (const Entity& e)
+	{
+		if (!e.Entity_.canConvert<QUrl> ())
+			return false;
+
+		const auto& url = e.Entity_.toUrl ();
+		if (e.Mime_ != "text/x-opml")
+			return false;
+
+		return url.scheme () == "file" ||
+				url.scheme () == "http" ||
+				url.scheme () == "https" ||
+				url.scheme () == "itpc";
 	}
 }
