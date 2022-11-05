@@ -10,6 +10,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <interfaces/core/icoreproxy.h>
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/sll/curry.h>
 #include <util/sll/prelude.h>
@@ -28,7 +29,7 @@ namespace Aggregator
 	: TabClass_ { params.TabClass_ }
 	, ParentPlugin_ { plugin }
 	, ChannelActions_ { params.ChannelActions_ }
-	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> (params.TagsManager_) }
+	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> (GetProxyHolder ()->GetTagsManager ()) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
 		ChannelsFilterModel_->setSourceModel (params.ChannelsModel_);

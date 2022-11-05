@@ -208,7 +208,6 @@ namespace Aggregator
 						ChannelActions_,
 						TabInfo_,
 						ChannelsModel_.get (),
-						Proxy_->GetTagsManager (),
 						MakeItemsWidgetDeps ()
 					},
 					this);

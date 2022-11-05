@@ -16,8 +16,6 @@
 #include "ui_mainwidget.h"
 #include "actionsstructs.h"
 
-class ITagsManager;
-
 namespace LC
 {
 namespace Util
@@ -56,7 +54,6 @@ namespace Aggregator
 			const std::shared_ptr<const ChannelActions>& ChannelActions_;
 			const TabClassInfo& TabClass_;
 			ChannelsModel *ChannelsModel_;
-			const ITagsManager * const TagsManager_;
 
 			ItemsWidget::Dependencies ItemsWidgetDeps_;
 		};
