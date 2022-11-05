@@ -19,7 +19,6 @@ class IEntityManager;
 
 namespace LC::Aggregator
 {
-	class StorageBackend;
 	class FeedsErrorManager;
 
 	class UpdatesManager : public QObject
@@ -30,7 +29,6 @@ namespace LC::Aggregator
 
 		const DBUpdateThread_ptr DBUpThread_;
 		const std::shared_ptr<FeedsErrorManager> FeedsErrorManager_;
-		const std::shared_ptr<StorageBackend> StorageBackend_;
 
 		QTimer * const UpdateTimer_;
 		QTimer * const CustomUpdateTimer_;

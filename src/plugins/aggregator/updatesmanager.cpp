@@ -16,11 +16,11 @@
 #include <util/sll/either.h>
 #include <util/sll/functor.h>
 #include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include "components/parsers/parse.h"
 #include "dbupdatethread.h"
-#include "dbupdatethreadworker.h"
 #include "storagebackend.h"
 #include "storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
@@ -82,7 +82,6 @@ namespace LC::Aggregator
 	, EntityManager_ { initParams.EntityManager_ }
 	, DBUpThread_ { initParams.DBUpThread_ }
 	, FeedsErrorManager_ { initParams.FeedsErrorManager_ }
-	, StorageBackend_ { StorageBackendManager::Instance ().MakeStorageBackendForThread () }
 	, UpdateTimer_ { new QTimer { this } }
 	, CustomUpdateTimer_ { new QTimer { this } }
 	{
@@ -115,16 +114,20 @@ namespace LC::Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 	}
 
+	namespace
+	{
+		bool IsCustomTimer (const StorageBackend& sb, IDType_t feedId)
+		{
+			return sb.GetFeedSettings (feedId).value_or (Feed::FeedSettings {}).UpdateTimeout_;
+		}
+	}
+
 	void UpdatesManager::UpdateFeeds ()
 	{
-		for (const auto id : StorageBackend_->GetFeedsIDs ())
-		{
-			// It's handled by custom timer.
-			if (StorageBackend_->GetFeedSettings (id).value_or (Feed::FeedSettings {}).UpdateTimeout_)
-				continue;
-
-			UpdateFeed (id);
-		}
+		if (const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ())
+			for (const auto id : sb->GetFeedsIDs ())
+				if (!IsCustomTimer (*sb, id))
+					UpdateFeed (id);
 
 		XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
 		if (int interval = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
@@ -156,12 +159,16 @@ namespace LC::Aggregator
 
 	void UpdatesManager::HandleCustomUpdates ()
 	{
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		if (!sb)
+			return;
+
 		using Util::operator*;
 
 		QDateTime current = QDateTime::currentDateTime ();
-		for (const auto id : StorageBackend_->GetFeedsIDs ())
+		for (const auto id : sb->GetFeedsIDs ())
 		{
-			const auto ut = (StorageBackend_->GetFeedSettings (id) * &Feed::FeedSettings::UpdateTimeout_).value_or (0);
+			const auto ut = (sb->GetFeedSettings (id) * &Feed::FeedSettings::UpdateTimeout_).value_or (0);
 
 			// It's handled by normal timer.
 			if (!ut)
@@ -179,6 +186,10 @@ namespace LC::Aggregator
 
 	void UpdatesManager::RotateUpdatesQueue ()
 	{
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		if (!sb)
+			return;
+
 		if (UpdatesQueue_.isEmpty ())
 			return;
 
@@ -189,7 +200,7 @@ namespace LC::Aggregator
 					this,
 					&UpdatesManager::RotateUpdatesQueue);
 
-		const auto& url = StorageBackend_->GetFeed (feedId).URL_;
+		const auto& url = sb->GetFeed (feedId).URL_;
 
 		auto filename = Util::GetTemporaryName ();
 
@@ -223,7 +234,7 @@ namespace LC::Aggregator
 								[&] (const channels_container_t& channels)
 								{
 									FeedsErrorManager_->ClearFeedErrors (feedId);
-									DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, url);
+									DBUpThread_->UpdateFeed (channels, url);
 								},
 								[&] (const QString& error)
 								{
