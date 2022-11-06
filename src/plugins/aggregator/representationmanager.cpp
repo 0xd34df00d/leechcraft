@@ -8,6 +8,7 @@
 
 #include "representationmanager.h"
 #include <QModelIndex>
+#include "appwideactions.h"
 #include "jobholderrepresentation.h"
 #include "itemswidget.h"
 #include "channelsmodelrepresentationproxy.h"
@@ -41,7 +42,12 @@ namespace LC::Aggregator
 
 		ReprModel_->setSourceModel (JobHolderRepresentation_.get ());
 		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_.get ());
-		// TODO ReprModel_->SetMenu (CreateFeedsContextMenu (deps.ChannelActions_, deps.AppWideActions_));
+
+		auto reprMenu = new QMenu;
+		reprMenu->addActions (ChannelActions_->GetAllActions ());
+		reprMenu->addSeparator ();
+		reprMenu->addActions (deps.AppWideActions_.GetFastActions ());
+		ReprModel_->SetMenu (reprMenu);
 
 		ReprWidget_->ConstructBrowser ();
 	}
