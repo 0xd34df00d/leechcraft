@@ -7,48 +7,56 @@
  **********************************************************************/
 
 #include "representationmanager.h"
+#include <QModelIndex>
 #include "jobholderrepresentation.h"
 #include "itemswidget.h"
 #include "channelsmodelrepresentationproxy.h"
 #include "channelsmodel.h"
-#include "actionsstructs.h"
+#include "channelactions.h"
 
 namespace LC::Aggregator
 {
-	RepresentationManager::RepresentationManager (const InitParams& params)
+	RepresentationManager::RepresentationManager (const Deps& deps)
+	: ChannelActions_ { std::make_unique<ChannelActions> (ChannelActions::Deps {
+				.ShortcutManager_ = deps.ShortcutManager_,
+				.UpdatesManager_ = deps.UpdatesManager_,
+				.ResourcesFetcher_ = deps.ResourcesFetcher_,
+				.DBUpThread_ = deps.DBUpThread_,
+				.GetCurrentChannel_ = [this] { return SelectedRepr_; },
+				.GetAllSelectedChannels_ = [this] { return QList { SelectedRepr_ }; },
+			}) }
+	, ReprWidget_ { std::make_unique<ItemsWidget> () }
+	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> () }
+	, ReprModel_ { std::make_unique<ChannelsModelRepresentationProxy> () }
 	{
-		JobHolderRepresentation_ = new JobHolderRepresentation ();
-		JobHolderRepresentation_->setSourceModel (params.ChannelsModel_);
+		JobHolderRepresentation_->setSourceModel (&deps.ChannelsModel_);
 
-		ReprWidget_ = new ItemsWidget;
-		ReprWidget_->InjectDependencies (params.ReprWidgetDeps_);
+		ReprWidget_->InjectDependencies ({
+					.ShortcutsMgr_ = deps.ShortcutManager_,
+					.ChannelsModel_ = deps.ChannelsModel_,
+					.AppWideActions_ = deps.AppWideActions_,
+					.ChannelActions_ = *ChannelActions_,
+					.UpdatesManager_ = deps.UpdatesManager_,
+				});
 
-		ReprModel_ = new ChannelsModelRepresentationProxy { this };
-		ReprModel_->setSourceModel (JobHolderRepresentation_);
-		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
-		ReprModel_->SetMenu (CreateFeedsContextMenu (params.ChannelActions_, params.AppWideActions_));
+		ReprModel_->setSourceModel (JobHolderRepresentation_.get ());
+		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_.get ());
+		// TODO ReprModel_->SetMenu (CreateFeedsContextMenu (deps.ChannelActions_, deps.AppWideActions_));
 
 		ReprWidget_->ConstructBrowser ();
 	}
 
+	RepresentationManager::~RepresentationManager () = default;
+
 	QAbstractItemModel* RepresentationManager::GetRepresentation () const
 	{
-		return ReprModel_;
+		return ReprModel_.get ();
 	}
 
 	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& srcIdx)
 	{
 		auto index = ReprModel_->mapToSource (srcIdx);
-		index = JobHolderRepresentation_->SelectionChanged (index);
-		SelectedRepr_ = index;
-		ReprWidget_->CurrentChannelChanged (index);
-	}
-
-	std::optional<QModelIndex> RepresentationManager::GetRelevantIndex () const
-	{
-		if (!ReprWidget_->isVisible ())
-			return {};
-
-		return JobHolderRepresentation_->mapToSource (SelectedRepr_);
+		SelectedRepr_ = JobHolderRepresentation_->SelectionChanged (index);
+		ReprWidget_->CurrentChannelChanged (SelectedRepr_);
 	}
 }

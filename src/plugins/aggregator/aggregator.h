@@ -23,7 +23,6 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
-#include "dbupdatethreadfwd.h"
 #include "feed.h"
 
 namespace LC
@@ -43,9 +42,9 @@ namespace Aggregator
 	class ResourcesFetcher;
 	class OpmlAdder;
 	class FeedsErrorManager;
-	struct AppWideActions;
-	struct ChannelActions;
-	struct ItemsWidgetDependencies;
+	class AppWideActions;
+	class ChannelActions;
+	class DBUpdateThread;
 
 	class Aggregator : public QObject
 					 , public IInfo
@@ -73,11 +72,7 @@ namespace Aggregator
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
 
-		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<AppWideActions> AppWideActions_;
-		std::shared_ptr<ChannelActions> ChannelActions_;
-
-		QMenu *ToolMenu_;
 
 		TabClassInfo TabInfo_;
 
@@ -135,30 +130,9 @@ namespace Aggregator
 		void RecoverTabs (const QList<TabRecoverInfo>& infos) override;
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 	private:
-		QModelIndex GetRelevantIndex () const;
-		QList<QModelIndex> GetRelevantIndexes () const;
-
-		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {}) const;
-
-		template<typename F>
-		void Perform (F&&);
-
 		void ReinitStorage ();
-
-		ItemsWidgetDependencies MakeItemsWidgetDeps () const;
 	private slots:
-		void on_ActionMarkAllAsRead__triggered ();
-		void on_ActionAddFeed__triggered ();
-		void on_ActionRemoveFeed__triggered ();
-		void on_ActionRenameFeed__triggered ();
-		void on_ActionRemoveChannel__triggered ();
-		void on_ActionUpdateSelectedFeed__triggered ();
 		void on_ActionImportOPML__triggered ();
-		void on_ActionExportOPML__triggered ();
-		void on_ActionExportFB2__triggered ();
-		void on_ActionMarkChannelAsRead__triggered ();
-		void on_ActionMarkChannelAsUnread__triggered ();
-		void on_ActionChannelSettings__triggered ();
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

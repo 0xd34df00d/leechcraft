@@ -14,7 +14,6 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "ui_mainwidget.h"
-#include "actionsstructs.h"
 
 namespace LC
 {
@@ -28,6 +27,9 @@ namespace Aggregator
 {
 	class ChannelsFilterModel;
 	class ChannelsModel;
+	class UpdatesManager;
+	class ResourcesFetcher;
+	class DBUpdateThread;
 
 	class AggregatorTab : public QWidget
 						, public ITabWidget
@@ -41,8 +43,8 @@ namespace Aggregator
 		const TabClassInfo TabClass_;
 		QObject * const ParentPlugin_;
 
-		const std::shared_ptr<const ChannelActions> ChannelActions_;
-		const std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
+		const std::unique_ptr<const ChannelActions> ChannelActions_;
+		const std::unique_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 
 		ChannelsFilterModel * const ChannelsFilterModel_;
 
@@ -50,15 +52,19 @@ namespace Aggregator
 	public:
 		struct InitParams
 		{
-			const AppWideActions& AppWideActions_;
-			const std::shared_ptr<const ChannelActions>& ChannelActions_;
 			const TabClassInfo& TabClass_;
-			ChannelsModel *ChannelsModel_;
 
-			ItemsWidget::Dependencies ItemsWidgetDeps_;
+			const AppWideActions& AppWideActions_;
+			ChannelsModel& ChannelsModel_;
+
+			Util::ShortcutManager& ShortcutManager_;
+			UpdatesManager& UpdatesManager_;
+			ResourcesFetcher& ResourcesFetcher_;
+			DBUpdateThread& DBUpThread_;
 		};
 
 		AggregatorTab (const InitParams&, QObject*);
+		~AggregatorTab () override;
 
 		QToolBar* GetToolBar () const override;
 		TabClassInfo GetTabClassInfo () const override;
@@ -68,9 +74,6 @@ namespace Aggregator
 		QByteArray GetTabRecoverData () const override;
 		QIcon GetTabRecoverIcon () const override;
 		QString GetTabRecoverName () const override;
-
-		QModelIndex GetRelevantIndex () const;
-		QList<QModelIndex> GetRelevantIndexes () const;
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
 	private slots:

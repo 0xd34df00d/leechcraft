@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <interfaces/core/icoreproxy.h>
 #include "export.h"
+#include "export2fb2dialog.h"
 #include "opmlwriter.h"
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
@@ -21,6 +22,14 @@
 
 namespace LC::Aggregator::ExportUtils
 {
+	void RunExportFB2 (ChannelsModel& channelsModel, QWidget *parent)
+	{
+		// TODO the dialog shouldn't depend on the exact ChannelsModel
+		const auto dialog = new Export2FB2Dialog (channelsModel, parent);
+		dialog->setAttribute (Qt::WA_DeleteOnClose);
+		dialog->show ();
+	}
+
 	namespace
 	{
 		auto FilterChannels (channels_shorts_t channels, const QSet<IDType_t>& selected)

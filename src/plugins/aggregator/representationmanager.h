@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <optional>
+#include <memory>
 #include <QObject>
 #include <QModelIndex>
 #include <interfaces/ijobholderrepresentationhandler.h>
@@ -24,33 +24,37 @@ namespace LC::Aggregator
 	class JobHolderRepresentation;
 	class ChannelsModelRepresentationProxy;
 	class ChannelsModel;
-	struct AppWideActions;
-	struct ChannelActions;
-	struct ItemsWidgetDependencies;
+	class UpdatesManager;
+	class AppWideActions;
+	class ChannelActions;
+	class ResourcesFetcher;
+	class DBUpdateThread;
 
 	class RepresentationManager : public QObject
 								, public IJobHolderRepresentationHandler
 	{
-		ItemsWidget *ReprWidget_ = nullptr;
-		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
-		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
+		std::unique_ptr<ChannelActions> ChannelActions_;
+		std::unique_ptr<ItemsWidget> ReprWidget_;
+		std::unique_ptr<JobHolderRepresentation> JobHolderRepresentation_;
+		std::unique_ptr<ChannelsModelRepresentationProxy> ReprModel_;
+
 		QModelIndex SelectedRepr_;
 	public:
-		struct InitParams
+		struct Deps
 		{
+			Util::ShortcutManager& ShortcutManager_;
 			const AppWideActions& AppWideActions_;
-			const ChannelActions& ChannelActions_;
-			ChannelsModel *ChannelsModel_;
-
-			const ItemsWidgetDependencies& ReprWidgetDeps_;
+			ChannelsModel& ChannelsModel_;
+			UpdatesManager& UpdatesManager_;
+			ResourcesFetcher& ResourcesFetcher_;
+			DBUpdateThread& DBUpThread_;
 		};
 
-		explicit RepresentationManager (const InitParams&);
+		explicit RepresentationManager (const Deps&);
+		~RepresentationManager () override;
 
 		QAbstractItemModel* GetRepresentation () const;
 
 		void HandleCurrentRowChanged (const QModelIndex&) override;
-
-		std::optional<QModelIndex> GetRelevantIndex () const;
 	};
 }

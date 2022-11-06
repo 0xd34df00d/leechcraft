@@ -8,9 +8,23 @@
 
 #pragma once
 
+#include <optional>
+#include "feed.h"
 #include "channel.h"
 
 namespace LC::Aggregator
 {
 	channels_shorts_t GetAllChannels ();
+
+	class UpdatesManager;
+
+	struct AddFeedParams
+	{
+		QString URL_;
+		QStringList Tags_;
+		std::optional<Feed::FeedSettings> FeedSettings_;
+
+		UpdatesManager& UpdatesManager_;
+	};
+	void AddFeed (const AddFeedParams&);
 }

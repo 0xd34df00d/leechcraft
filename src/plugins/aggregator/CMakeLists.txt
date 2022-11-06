@@ -43,11 +43,9 @@ LC_DEFINE_PLUGIN (
 		startupsecondpage.cpp
 		startupthirdpage.cpp
 		export2fb2dialog.cpp
-		actionsstructs.cpp
 		pluginmanager.cpp
 		proxyobject.cpp
 		dbupdatethread.cpp
-		dbupdatethreadworker.cpp
 		dumbstorage.cpp
 		storagebackendmanager.cpp
 		channelsmodelrepresentationproxy.cpp
@@ -59,6 +57,8 @@ LC_DEFINE_PLUGIN (
 		opmladder.cpp
 		poolsmanager.cpp
 		feedserrormanager.cpp
+		appwideactions.cpp
+		channelactions.cpp
 		dbutils.cpp
 	SETTINGS aggregatorsettings.xml
 	RESOURCES aggregatorresources.qrc

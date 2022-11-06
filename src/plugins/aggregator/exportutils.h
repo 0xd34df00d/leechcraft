@@ -10,7 +10,14 @@
 
 class QWidget;
 
+namespace LC::Aggregator
+{
+	class ChannelsModel;
+}
+
 namespace LC::Aggregator::ExportUtils
 {
+	void RunExportFB2 (ChannelsModel&, QWidget* = nullptr);
+
 	void RunExportOPML (QWidget* = nullptr);
 }

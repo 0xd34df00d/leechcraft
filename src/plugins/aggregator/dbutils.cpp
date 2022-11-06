@@ -7,8 +7,13 @@
  **********************************************************************/
 
 #include "dbutils.h"
+#include <QUrl>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/xpc/util.h>
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
+#include "updatesmanager.h"
 
 namespace LC::Aggregator
 {
@@ -24,5 +29,36 @@ namespace LC::Aggregator
 		}
 
 		return result;
+	}
+
+	void AddFeed (const AddFeedParams& params)
+	{
+		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
+		const auto& fixedUrl = QUrl::fromUserInput (params.URL_);
+		const auto& url = fixedUrl.toString ();
+		if (sb->FindFeed (url))
+		{
+			auto e = Util::MakeNotification ("Aggregator",
+					QObject::tr ("The feed %1 is already added")
+						.arg (url),
+					Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+			return;
+		}
+
+		Feed feed;
+		feed.URL_ = url;
+		sb->AddFeed (feed);
+		sb->SetFeedTags (feed.FeedID_, GetProxyHolder ()->GetTagsManager ()->GetIDs (params.Tags_));
+
+		if (params.FeedSettings_)
+		{
+			auto fs = *params.FeedSettings_;
+			fs.FeedID_ = feed.FeedID_;
+			sb->SetFeedSettings (fs);
+		}
+
+		params.UpdatesManager_.UpdateFeed (feed.FeedID_);
 	}
 }

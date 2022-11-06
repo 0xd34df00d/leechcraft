@@ -18,6 +18,8 @@
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "uistatepersist.h"
+#include "appwideactions.h"
+#include "channelactions.h"
 #include "channelsmodel.h"
 #include "channelsfiltermodel.h"
 
@@ -25,21 +27,32 @@ namespace LC
 {
 namespace Aggregator
 {
-	AggregatorTab::AggregatorTab (const InitParams& params, QObject *plugin)
-	: TabClass_ { params.TabClass_ }
+	AggregatorTab::AggregatorTab (const InitParams& deps, QObject *plugin)
+	: TabClass_ { deps.TabClass_ }
 	, ParentPlugin_ { plugin }
-	, ChannelActions_ { params.ChannelActions_ }
-	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> (GetProxyHolder ()->GetTagsManager ()) }
+	, ChannelActions_ { std::make_unique<ChannelActions> (ChannelActions::Deps {
+				.ShortcutManager_ = deps.ShortcutManager_,
+				.UpdatesManager_ = deps.UpdatesManager_,
+				.ResourcesFetcher_ = deps.ResourcesFetcher_,
+				.DBUpThread_ = deps.DBUpThread_,
+				.GetCurrentChannel_ = [this] { return Ui_.Feeds_->selectionModel ()->currentIndex (); },
+				.GetAllSelectedChannels_ = [this] { return Ui_.Feeds_->selectionModel ()->selectedRows (); },
+			}) }
+	, FlatToFolders_ { std::make_unique<Util::FlatToFoldersProxyModel> (GetProxyHolder ()->GetTagsManager ()) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
-		ChannelsFilterModel_->setSourceModel (params.ChannelsModel_);
+		ChannelsFilterModel_->setSourceModel (&deps.ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		Ui_.setupUi (this);
 
-		auto itemsWidgetDeps = params.ItemsWidgetDeps_;
-		itemsWidgetDeps.ChannelsModel_ = ChannelsFilterModel_;
-		Ui_.ItemsWidget_->InjectDependencies (itemsWidgetDeps);
+		Ui_.ItemsWidget_->InjectDependencies ({
+					.ShortcutsMgr_ = deps.ShortcutManager_,
+					.ChannelsModel_ = *ChannelsFilterModel_,
+					.AppWideActions_ = deps.AppWideActions_,
+					.ChannelActions_ = *ChannelActions_,
+					.UpdatesManager_ = deps.UpdatesManager_,
+				});
 
 		connect (Ui_.ItemsWidget_,
 				&ItemsWidget::movedToChannel,
@@ -48,18 +61,9 @@ namespace Aggregator
 
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
 
-		Ui_.Feeds_->addAction (ChannelActions_->ActionMarkChannelAsRead_);
-		Ui_.Feeds_->addAction (ChannelActions_->ActionMarkChannelAsUnread_);
+		Ui_.Feeds_->addActions (ChannelActions_->GetAllActions ());
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (ChannelActions_->ActionRemoveFeed_);
-		Ui_.Feeds_->addAction (ChannelActions_->ActionUpdateSelectedFeed_);
-		Ui_.Feeds_->addAction (ChannelActions_->ActionRenameFeed_);
-		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (ChannelActions_->ActionRemoveChannel_);
-		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (ChannelActions_->ActionChannelSettings_);
-		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (params.AppWideActions_.ActionAddFeed_);
+		Ui_.Feeds_->addActions (deps.AppWideActions_.GetFastActions ());
 
 		connect (Ui_.Feeds_,
 				&QWidget::customContextMenuRequested,
@@ -104,6 +108,8 @@ namespace Aggregator
 		currentChannelChanged ();
 	}
 
+	AggregatorTab::~AggregatorTab () = default;
+
 	QToolBar* AggregatorTab::GetToolBar () const
 	{
 		return Ui_.ItemsWidget_->GetToolBar ();
@@ -137,27 +143,6 @@ namespace Aggregator
 	QString AggregatorTab::GetTabRecoverName () const
 	{
 		return TabClass_.VisibleName_;
-	}
-
-	QModelIndex AggregatorTab::GetRelevantIndex () const
-	{
-		auto index = Ui_.Feeds_->selectionModel ()->currentIndex ();
-		if (FlatToFolders_->GetSourceModel ())
-			index = FlatToFolders_->MapToSource (index);
-		return ChannelsFilterModel_->mapToSource (index);
-	}
-
-	QList<QModelIndex> AggregatorTab::GetRelevantIndexes () const
-	{
-		auto rawList = Util::Map (Ui_.Feeds_->selectionModel ()->selectedRows (),
-				[this] (QModelIndex index)
-				{
-					if (FlatToFolders_->GetSourceModel ())
-						index = FlatToFolders_->MapToSource (index);
-					return ChannelsFilterModel_->mapToSource (index);
-				});
-		rawList.removeAll ({});
-		return rawList;
 	}
 
 	void AggregatorTab::keyPressEvent (QKeyEvent *e)
@@ -238,14 +223,7 @@ namespace Aggregator
 	void AggregatorTab::handleFeedsContextMenuRequested (const QPoint& pos)
 	{
 		bool enable = Ui_.Feeds_->indexAt (pos).isValid ();
-		const QList<QAction*> toToggle
-		{
-			ChannelActions_->ActionMarkChannelAsRead_,
-			ChannelActions_->ActionMarkChannelAsUnread_,
-			ChannelActions_->ActionRemoveFeed_,
-			ChannelActions_->ActionChannelSettings_,
-			ChannelActions_->ActionUpdateSelectedFeed_
-		};
+		const auto& toToggle = ChannelActions_->GetAllActions ();
 
 		for (const auto act : toToggle)
 			act->setEnabled (enable);

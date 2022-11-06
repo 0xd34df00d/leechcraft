@@ -28,18 +28,19 @@ namespace Util
 namespace Aggregator
 {
 	struct ItemsWidget_Impl;
-	struct ChannelActions;
-	struct AppWideActions;
+	class ChannelActions;
+	class AppWideActions;
 	class Aggregator;
 	class ItemsFilterModel;
+	class UpdatesManager;
 
 	struct ItemsWidgetDependencies
 	{
-		Util::ShortcutManager *ShortcutsMgr_;
-		QAbstractItemModel *ChannelsModel_;
+		Util::ShortcutManager& ShortcutsMgr_;
+		QAbstractItemModel& ChannelsModel_;
 		const AppWideActions& AppWideActions_;
 		const ChannelActions& ChannelActions_;
-		std::function<void (QString, QStringList)> FeedAdder_;
+		UpdatesManager& UpdatesManager_;
 	};
 
 	class ItemsWidget : public QWidget

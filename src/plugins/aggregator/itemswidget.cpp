@@ -37,8 +37,10 @@
 #include "channelsmodel.h"
 #include "uistatepersist.h"
 #include "storagebackendmanager.h"
-#include "actionsstructs.h"
 #include "itemutils.h"
+#include "channelactions.h"
+#include "appwideactions.h"
+#include "dbutils.h"
 
 namespace LC
 {
@@ -79,11 +81,11 @@ namespace Aggregator
 		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::unique_ptr<CategorySelector> ItemCategorySelector_;
 
-		std::function<void (QString, QStringList)> FeedAdder_;
-
 		QTimer *SelectedChecker_ = nullptr;
 		QModelIndex LastSelectedIndex_;
 		QModelIndex LastSelectedChannel_;
+
+		UpdatesManager *UpdatesManager_ = nullptr;
 	};
 
 	ItemsWidget::ItemsWidget (QWidget *parent)
@@ -215,32 +217,31 @@ namespace Aggregator
 
 	void ItemsWidget::InjectDependencies (const Dependencies& deps)
 	{
-		auto cm = deps.ChannelsModel_;
-		Impl_->ChannelsModel_ = cm;
-		connect (cm,
+		Impl_->UpdatesManager_ = &deps.UpdatesManager_;
+
+		auto& cm = deps.ChannelsModel_;
+		Impl_->ChannelsModel_ = &cm;
+		connect (&cm,
 				&QAbstractItemModel::rowsInserted,
 				this,
 				&ItemsWidget::invalidateMergeMode);
-		connect (cm,
+		connect (&cm,
 				&QAbstractItemModel::rowsRemoved,
 				this,
 				&ItemsWidget::invalidateMergeMode);
 
 		auto first = Impl_->ControlToolBar_->actions ().first ();
 
-		Impl_->ControlToolBar_->insertAction (first, deps.AppWideActions_.ActionUpdateFeeds_);
+		Impl_->ControlToolBar_->insertActions (first, deps.AppWideActions_.GetFastActions ());
 		Impl_->ControlToolBar_->insertSeparator (first);
 
-		Impl_->ControlToolBar_->insertAction (first, deps.ChannelActions_.ActionRemoveFeed_);
-		Impl_->ControlToolBar_->insertAction (first, deps.ChannelActions_.ActionUpdateSelectedFeed_);
+		Impl_->ControlToolBar_->insertActions (first, deps.ChannelActions_.GetToolbarActions ());
 		Impl_->ControlToolBar_->insertSeparator (first);
-
-		Impl_->FeedAdder_ = deps.FeedAdder_;
 
 		auto addAct = [this, &deps] (ItemsWidget::Action actId)
 		{
 			auto act = GetAction (actId);
-			deps.ShortcutsMgr_->RegisterAction (act->objectName (), act);
+			deps.ShortcutsMgr_.RegisterAction (act->objectName (), act);
 		};
 
 		for (int i = 0; i < static_cast<int> (ItemsWidget::Action::MaxAction); ++i)
@@ -442,7 +443,7 @@ namespace Aggregator
 
 		const auto itm = GetProxyHolder ()->GetTagsManager ();
 		const auto& addTags = itm->Split (XmlSettingsManager::Instance ()->property ("CommentsTags").toString ());
-		Impl_->FeedAdder_ (commentRSS, tags + addTags);
+		AddFeed ({ .URL_ = commentRSS, .Tags_ = tags + addTags, .UpdatesManager_ = *Impl_->UpdatesManager_ });
 	}
 
 	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
