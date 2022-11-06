@@ -1029,7 +1029,7 @@ namespace LC::Aggregator
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)
 	{
 		for (const auto& enclosure : enclosures)
-			Enclosures_->Insert (EnclosureR::FromOrig (enclosure));
+			Enclosures_->Insert (EnclosureR::FromOrig (enclosure), oral::InsertAction::Replace::PKey<EnclosureR>);
 	}
 
 	void SQLStorageBackend::GetEnclosures (IDType_t itemId, QList<Enclosure>& enclosures) const
