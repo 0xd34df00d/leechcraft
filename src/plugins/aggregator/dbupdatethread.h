@@ -8,22 +8,27 @@
 
 #pragma once
 
-#include <util/threads/workerthreadbase.h>
+#include <QCoreApplication>
+#include <QThreadPool>
+#include <QFuture>
+#include "channel.h"
 
 class QModelIndex;
 
 namespace LC::Aggregator
 {
-	class DBUpdateThreadWorker;
-
-	class DBUpdateThread : public Util::WorkerThread<DBUpdateThreadWorker>
+	class DBUpdateThread : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::DBUpdateThread)
+
+		QThreadPool Pool_;
 	public:
-		using WorkerThread::WorkerThread;
+		explicit DBUpdateThread (QObject* = nullptr);
 
 		QFuture<void> SetAllChannelsRead ();
-
 		QFuture<void> ToggleChannelUnread (const QModelIndex&, bool unread);
+
+		QFuture<void> UpdateFeed (channels_container_t channels, QString url);
 	};
 
 	using DBUpdateThread_ptr = std::shared_ptr<DBUpdateThread>;
