@@ -262,9 +262,7 @@ namespace LC::Aggregator
 		return QtConcurrent::run (&Pool_,
 				[channels = std::move (channels), url = std::move (url)] () mutable
 				{
-					qDebug () << 1;
 					UpdateFeedWorker { channels, url };
-					qDebug () << 2;
 				});
 	}
 }
