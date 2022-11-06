@@ -18,6 +18,7 @@
 #include "dbutils.h"
 #include "exportutils.h"
 #include "updatesmanager.h"
+#include "opmladder.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Aggregator
@@ -81,7 +82,9 @@ namespace LC::Aggregator
 					if (ConfirmWithPersistence ("ConfirmMarkAllAsRead", tr ("Do you really want to mark all channels as read?")))
 						deps.DBUpThread_.SetAllChannelsRead ();
 				});
-		// TODO importOpml
+		connect (importOpml,
+				&QAction::triggered,
+				[deps] { Opml::HandleOpmlFile ({}, deps.UpdatesManager_); });
 		connect (exportOpml,
 				&QAction::triggered,
 				[] { ExportUtils::RunExportOPML (); });

@@ -40,7 +40,6 @@ namespace Aggregator
 	class UpdatesManager;
 	class ChannelsModel;
 	class ResourcesFetcher;
-	class OpmlAdder;
 	class FeedsErrorManager;
 	class AppWideActions;
 	class ChannelActions;
@@ -89,8 +88,6 @@ namespace Aggregator
 
 		std::shared_ptr<ChannelsModel> ChannelsModel_;
 
-		std::shared_ptr<OpmlAdder> OpmlAdder_;
-
 		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
 		bool InitFailed_ = false;
@@ -131,8 +128,6 @@ namespace Aggregator
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 	private:
 		void ReinitStorage ();
-	private slots:
-		void on_ActionImportOPML__triggered ();
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

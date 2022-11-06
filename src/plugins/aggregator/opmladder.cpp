@@ -20,24 +20,34 @@
 #include "importopml.h"
 #include "opmlparser.h"
 #include "common.h"
+#include "dbutils.h"
 
-namespace LC::Aggregator
+namespace LC::Aggregator::Opml
 {
-	OpmlAdder::OpmlAdder (const AddFeedHandler& handler, QObject *parent)
-	: QObject { parent }
-	, AddFeedHandler_ { handler }
+	bool IsOpmlEntity (const Entity& e)
 	{
-	}
+		if (!e.Entity_.canConvert<QUrl> ())
+			return false;
 
-	bool OpmlAdder::HandleOpmlEntity (const Entity& e)
-	{
+		const auto& url = e.Entity_.toUrl ();
 		if (e.Mime_ != "text/x-opml")
 			return false;
 
-		auto url = e.Entity_.toUrl ();
-		if (url.scheme () == "file")
-			StartAddingOpml (url.toLocalFile ());
-		else
+		return url.scheme () == "file" ||
+				url.scheme () == "http" ||
+				url.scheme () == "https" ||
+				url.scheme () == "itpc";
+	}
+
+	namespace
+	{
+		void ReportError (const QString& body)
+		{
+			auto e = Util::MakeNotification (QObject::tr ("OPML import error"), body, Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
+
+		void HandleOpmlRemote (const QUrl& url, std::weak_ptr<UpdatesManager> updatesManager)
 		{
 			const auto& name = Util::GetTemporaryName ();
 
@@ -52,37 +62,41 @@ namespace LC::Aggregator
 			const auto& handleResult = GetProxyHolder ()->GetEntityManager ()->DelegateEntity (dlEntity);
 			if (!handleResult)
 			{
-				ReportError (tr ("Could not find plugin to download OPML %1.")
+				ReportError (QObject::tr ("Could not find plugin to download OPML %1.")
 						.arg (url.toString ()));
-				return true;
+				return;
 			}
 
-			Util::Sequence (this, handleResult.DownloadResult_) >>
+			Util::Sequence (nullptr, handleResult.DownloadResult_) >>
 					Util::Visitor
 					{
-						[this, name] (IDownload::Success) { StartAddingOpml (name); },
-						[this] (const IDownload::Error&)
+						[name, updatesManager] (IDownload::Success)
 						{
-							ReportError (tr ("Unable to download the OPML file."));
+							if (const auto um = updatesManager.lock ())
+								HandleOpmlFile (name, *um);
+						},
+						[] (const IDownload::Error&)
+						{
+							ReportError (QObject::tr ("Unable to download the OPML file."));
 						}
 					}.Finally ([name] { QFile::remove (name); });
 		}
 
-		const auto& s = e.Additional_;
-		auto copyVal = [&s] (const QByteArray& name)
+		void HandleOpmlGlobalSettings (const Entity& e)
 		{
-			if (s.contains (name))
-				XmlSettingsManager::Instance ()->setProperty (name, s.value (name));
-		};
-		copyVal ("UpdateOnStartup");
-		copyVal ("UpdateTimeout");
-		copyVal ("MaxArticles");
-		copyVal ("MaxAge");
-
-		return true;
+			auto copyVal = [&e] (const QByteArray& name)
+			{
+				if (e.Additional_.contains (name))
+					XmlSettingsManager::Instance ()->setProperty (name, e.Additional_.value (name));
+			};
+			copyVal ("UpdateOnStartup");
+			copyVal ("UpdateTimeout");
+			copyVal ("MaxArticles");
+			copyVal ("MaxAge");
+		}
 	}
 
-	void OpmlAdder::StartAddingOpml (const QString& file)
+	void HandleOpmlFile (const QString& file, UpdatesManager& updatesManager)
 	{
 		ImportOPML importDialog { file };
 		if (importDialog.exec () == QDialog::Rejected)
@@ -92,7 +106,7 @@ namespace LC::Aggregator
 		const auto& selectedUrls = importDialog.GetSelectedUrls ();
 
 		Util::Visit (ParseOPMLItems (importDialog.GetFilename ()),
-				[this] (const QString& error) { ReportError (error); },
+				[] (const QString& error) { ReportError (error); },
 				[&] (const OPMLParser::items_container_t& items)
 				{
 					for (const auto& item : items)
@@ -103,30 +117,25 @@ namespace LC::Aggregator
 						int interval = 0;
 						if (item.CustomFetchInterval_)
 							interval = item.FetchInterval_;
-						AddFeedHandler_ (item.URL_, tags + item.Categories_,
-								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
+
+						AddFeed ({
+									.URL_ = item.URL_,
+									.Tags_ = tags + item.Categories_,
+									.FeedSettings_ = { { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } },
+									.UpdatesManager_ = updatesManager,
+								});
 					}
 				});
 	}
 
-	void OpmlAdder::ReportError (const QString& body) const
+	void HandleOpmlEntity (const Entity& e, std::weak_ptr<UpdatesManager> updatesManager)
 	{
-		auto e = Util::MakeNotification (tr ("OPML import error"), body, Priority::Critical);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-	}
+		auto url = e.Entity_.toUrl ();
+		if (url.scheme () == "file")
+			HandleOpmlFile (url.toLocalFile (), *updatesManager.lock ());
+		else
+			HandleOpmlRemote (url, std::move (updatesManager));
 
-	bool IsOpmlEntity (const Entity& e)
-	{
-		if (!e.Entity_.canConvert<QUrl> ())
-			return false;
-
-		const auto& url = e.Entity_.toUrl ();
-		if (e.Mime_ != "text/x-opml")
-			return false;
-
-		return url.scheme () == "file" ||
-				url.scheme () == "http" ||
-				url.scheme () == "https" ||
-				url.scheme () == "itpc";
+		HandleOpmlGlobalSettings (e);
 	}
 }

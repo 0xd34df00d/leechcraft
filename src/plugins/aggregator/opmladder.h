@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <functional>
 #include <optional>
+#include <memory>
 #include <QObject>
 #include "feed.h"
 
@@ -20,21 +20,13 @@ namespace LC
 
 namespace LC::Aggregator
 {
-	class OpmlAdder : public QObject
-	{
-	public:
-		using AddFeedHandler = std::function<void (QString, QStringList, std::optional<Feed::FeedSettings>)>;
-	private:
-		const AddFeedHandler AddFeedHandler_;
-	public:
-		OpmlAdder (const AddFeedHandler&, QObject* = nullptr);
+	class UpdatesManager;
+}
 
-		bool HandleOpmlEntity (const Entity&);
-
-		void StartAddingOpml (const QString&);
-	private:
-		void ReportError (const QString&) const;
-	};
-
+namespace LC::Aggregator::Opml
+{
 	bool IsOpmlEntity (const Entity&);
+
+	void HandleOpmlFile (const QString&, UpdatesManager&);
+	void HandleOpmlEntity (const Entity&, std::weak_ptr<UpdatesManager>);
 }

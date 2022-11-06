@@ -229,7 +229,7 @@ namespace Aggregator
 		if (!e.Entity_.canConvert<QUrl> ())
 			return {};
 
-		if (IsOpmlEntity (e))
+		if (Opml::IsOpmlEntity (e))
 			return EntityTestHandleResult { EntityTestHandleResult::PIdeal };
 
 		const auto& url = e.Entity_.toUrl ();
@@ -272,8 +272,11 @@ namespace Aggregator
 
 	void Aggregator::Handle (Entity e)
 	{
-		if (OpmlAdder_->HandleOpmlEntity (e))
+		if (Opml::IsOpmlEntity (e))
+		{
+			Opml::HandleOpmlEntity (e, UpdatesManager_);
 			return;
+		}
 
 		QUrl url = e.Entity_.toUrl ();
 		QString str = url.toString ();
@@ -388,11 +391,6 @@ namespace Aggregator
 				});
 
 		AppWideActions_->SetEnabled (storageReady);
-	}
-
-	void Aggregator::on_ActionImportOPML__triggered ()
-	{
-		OpmlAdder_->StartAddingOpml ({});
 	}
 }
 }
