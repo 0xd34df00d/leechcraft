@@ -91,8 +91,6 @@ namespace Aggregator
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
-		// TODO OpmlAdder_ = std::make_shared<OpmlAdder> (std::bind_front (&Aggregator::AddFeed, this));
-
 		DBUpThread_ = std::make_shared<DBUpdateThread> ();
 
 		ErrorsManager_ = std::make_shared<FeedsErrorManager> ();
