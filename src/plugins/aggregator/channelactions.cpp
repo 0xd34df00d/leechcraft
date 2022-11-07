@@ -123,7 +123,7 @@ namespace LC::Aggregator
 				const QString& multiple)
 		{
 			if (idxes.size () > 1)
-				return multiple.arg (idxes.size ());
+				return multiple;
 
 			const auto& name = idxes.value (0).data (ChannelRoles::ChannelTitle).toString ();
 			return single.arg (Util::FormatName (name));
@@ -144,7 +144,7 @@ namespace LC::Aggregator
 	{
 		const auto& userString = GetUserString (idxes,
 				tr ("Are you sure you want to mark channel %1 as read?"),
-				tr ("Are you sure you want to mark %n channel(s) as read?"));
+				tr ("Are you sure you want to mark %n channel(s) as read?", nullptr, idxes.size ()));
 		if (!ConfirmWithPersistence ("ConfirmMarkChannelAsRead", userString))
 			return;
 
@@ -156,7 +156,7 @@ namespace LC::Aggregator
 	{
 		if (!Confirm (idxes,
 				tr ("Are you sure you want to mark channel %1 as unread?"),
-				tr ("Are you sure you want to mark %n channel(s) as unread?")))
+				tr ("Are you sure you want to mark %n channel(s) as unread?", nullptr, idxes.size ())))
 			return;
 
 		for (const auto& idx : idxes)
@@ -167,7 +167,7 @@ namespace LC::Aggregator
 	{
 		if (!Confirm (idxes,
 				tr ("Are you sure you want to delete feed %1?"),
-				tr ("Are you sure you want to delete %n feed(s)?")))
+				tr ("Are you sure you want to delete %n feed(s)?", nullptr, idxes.size ())))
 			return;
 
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
@@ -179,7 +179,7 @@ namespace LC::Aggregator
 	{
 		if (!Confirm (idxes,
 				tr ("Are you sure you want to delete channel %1?"),
-				tr ("Are you sure you want to delete %n channel(s)?")))
+				tr ("Are you sure you want to delete %n channel(s)?", nullptr, idxes.size ())))
 			return;
 
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
