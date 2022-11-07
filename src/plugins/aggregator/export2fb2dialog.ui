@@ -110,12 +110,12 @@
           <widget class="QComboBox" name="ExportFormat_">
            <item>
             <property name="text">
-             <string>fb2</string>
+             <string notr="true">fb2</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>pdf</string>
+             <string notr="true">pdf</string>
             </property>
            </item>
           </widget>
