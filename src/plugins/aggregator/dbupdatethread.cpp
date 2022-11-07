@@ -72,6 +72,9 @@ namespace LC::Aggregator
 
 				for (auto& channel : channels)
 				{
+					FixChannel (*channel);
+					TrimChannel (*channel);
+
 					if (const auto& maybeOurChannelID = FindMatchingChannel (*channel, channels.size () == 1))
 						UpdateChannel (*maybeOurChannelID, *channel);
 					else
@@ -120,6 +123,31 @@ namespace LC::Aggregator
 				return localChannel.ChannelID_;
 			}
 
+			void FixChannel (Channel& channel)
+			{
+				for (const auto& item : channel.Items_)
+				{
+					item->FixDate ();
+					item->ChannelID_ = channel.ChannelID_;
+				}
+			}
+
+			void TrimChannel (Channel& channel)
+			{
+				const auto& now = QDateTime::currentDateTime ();
+				const auto isOld = [&] (auto&& item) { return item->PubDate_.daysTo (now) >= FeedSettings_.ItemAge_; };
+				const auto erasePos = std::remove_if (channel.Items_.begin (), channel.Items_.end (), isOld);
+				channel.Items_.erase (erasePos, channel.Items_.end ());
+
+				if (channel.Items_.size () > FeedSettings_.NumItems_)
+				{
+					// sort by publication date in reverse order
+					std::stable_sort (channel.Items_.begin (), channel.Items_.end (),
+							[] (const Item_ptr& left, const Item_ptr& right) { return left->PubDate_ > right->PubDate_; });
+					channel.Items_.resize (FeedSettings_.NumItems_);
+				}
+			}
+
 			void AddChannel (Channel& channel) const
 			{
 				if (const auto tags = SB_->GetFeedTags (channel.FeedID_))
@@ -145,14 +173,17 @@ namespace LC::Aggregator
 				for (const auto& itemPtr : channel.Items_)
 				{
 					auto& item = *itemPtr;
-					if (const auto& ourItemId = FindOurItem (item, ourChannel.ChannelID_))
+					if (const auto& ourItemId = FindOurItem (item, ourChannel.ChannelID_);
+						const auto& ourItem = SB_->GetItem (*ourItemId))
 					{
-						if (const auto& ourItem = SB_->GetItem (*ourItemId))
-							if (UpdateItem (item, *ourItem))
-								++updatedItems;
+						if (UpdateItem (item, *ourItem))
+							++updatedItems;
 					}
-					else if (AddItem (item, ourChannel))
+					else
+					{
+						AddItem (item, ourChannel);
 						++newItems;
+					}
 				}
 
 				SB_->TrimChannel (ourChannelId, FeedSettings_.ItemAge_, FeedSettings_.NumItems_);
@@ -173,21 +204,12 @@ namespace LC::Aggregator
 				return SB_->FindItemByTitle (item.Title_, channelId);
 			}
 
-			bool AddItem (Item& item, const Channel& channel) const
+			void AddItem (Item& item, const Channel& channel) const
 			{
-				if (item.PubDate_.isValid () &&
-					item.PubDate_.daysTo (QDateTime::currentDateTime ()) >= FeedSettings_.ItemAge_)
-					return false;
-
-				item.FixDate ();
-				item.ChannelID_ = channel.ChannelID_;
-
 				SB_->AddItem (item);
 
 				if (FeedSettings_.AutoDownloadEnclosures_)
 					DownloadEnclosures (item.Enclosures_, channel.Tags_);
-
-				return true;
 			}
 
 			void DownloadEnclosures (const QList<Enclosure>& enclosures, const QStringList& tags) const
