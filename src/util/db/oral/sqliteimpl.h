@@ -15,13 +15,9 @@
 
 namespace LC::Util::oral::detail::SQLite
 {
-	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
-
 	class InsertQueryBuilder final : public IInsertQueryBuilder
 	{
 		const QSqlDatabase DB_;
-
-		std::array<QSqlQuery_ptr, InsertAction::StaticCount () + 1> Queries_;
 		const QString InsertSuffix_;
 	public:
 		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
@@ -32,14 +28,10 @@ namespace LC::Util::oral::detail::SQLite
 		{
 		}
 
-		QSqlQuery_ptr GetQuery (InsertAction action) override
+		QSqlQuery GetQuery (InsertAction action) override
 		{
-			auto& query = Queries_ [action.Selector_.index ()];
-			if (!query)
-			{
-				query = std::make_shared<QSqlQuery> (DB_);
-				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
-			}
+			QSqlQuery query { DB_ };
+			query.prepare (GetInsertPrefix (action) + InsertSuffix_);
 			return query;
 		}
 	private:

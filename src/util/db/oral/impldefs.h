@@ -21,7 +21,7 @@ namespace LC::Util::oral::detail
 	public:
 		virtual ~IInsertQueryBuilder () = default;
 
-		virtual std::shared_ptr<QSqlQuery> GetQuery (InsertAction) = 0;
+		virtual QSqlQuery GetQuery (InsertAction) = 0;
 	};
 
 	using IInsertQueryBuilder_ptr = std::unique_ptr<IInsertQueryBuilder>;

@@ -15,14 +15,9 @@
 
 namespace LC::Util::oral::detail::PostgreSQL
 {
-	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
-
 	class InsertQueryBuilder final : public IInsertQueryBuilder
 	{
 		const QSqlDatabase DB_;
-
-		QSqlQuery_ptr Default_;
-		QSqlQuery_ptr Ignore_;
 
 		const QString InsertBase_;
 		const QString Updater_;
@@ -36,7 +31,7 @@ namespace LC::Util::oral::detail::PostgreSQL
 		{
 		}
 
-		QSqlQuery_ptr GetQuery (InsertAction action) override
+		QSqlQuery GetQuery (InsertAction action) override
 		{
 			return Visit (action.Selector_,
 					[this] (InsertAction::DefaultTag) { return GetDefaultQuery (); },
@@ -44,30 +39,24 @@ namespace LC::Util::oral::detail::PostgreSQL
 					[this] (InsertAction::Replace ct) { return MakeReplaceQuery (ct.Fields_); });
 		}
 	private:
-		QSqlQuery_ptr GetDefaultQuery ()
+		QSqlQuery GetDefaultQuery ()
 		{
-			if (!Default_)
-			{
-				Default_ = std::make_shared<QSqlQuery> (DB_);
-				Default_->prepare (InsertBase_);
-			}
-			return Default_;
+			QSqlQuery query { DB_ };
+			query.prepare (InsertBase_);
+			return query;
 		}
 
-		QSqlQuery_ptr GetIgnoreQuery ()
+		QSqlQuery GetIgnoreQuery ()
 		{
-			if (!Default_)
-			{
-				Default_ = std::make_shared<QSqlQuery> (DB_);
-				Default_->prepare (InsertBase_ + "ON CONFLICT DO NOTHING");
-			}
-			return Default_;
+			QSqlQuery query { DB_ };
+			query.prepare (InsertBase_ + "ON CONFLICT DO NOTHING");
+			return query;
 		}
 
-		QSqlQuery_ptr MakeReplaceQuery (const QStringList& constraining)
+		QSqlQuery MakeReplaceQuery (const QStringList& constraining)
 		{
-			auto query = std::make_shared<QSqlQuery> (DB_);
-			query->prepare (InsertBase_ + GetReplacer (constraining));
+			QSqlQuery query { DB_ };
+			query.prepare (InsertBase_ + GetReplacer (constraining));
 			return query;
 		}
 

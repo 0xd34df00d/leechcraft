@@ -288,25 +288,22 @@ namespace oral
 		}
 
 		template<typename T>
-		auto MakeInserter (const CachedFieldsData& data, const QSqlQuery_ptr& insertQuery, bool bindPrimaryKey) noexcept
+		auto DoInsert (const T& t, const CachedFieldsData& data, QSqlQuery& insertQuery, bool bindPrimaryKey)
 		{
-			return [data, insertQuery, bindPrimaryKey] (const T& t)
-			{
-				boost::fusion::fold (t, data.BoundFields_.begin (),
-						[&] (auto pos, const auto& elem)
-						{
-							using Elem = std::decay_t<decltype (elem)>;
-							if (bindPrimaryKey || !IsPKey<Elem>::value)
-								insertQuery->bindValue (*pos++, ToVariantF (elem));
-							return pos;
-						});
+			boost::fusion::fold (t, data.BoundFields_.begin (),
+					[&] (auto pos, const auto& elem)
+					{
+						using Elem = std::decay_t<decltype (elem)>;
+						if (bindPrimaryKey || !IsPKey<Elem>::value)
+							insertQuery.bindValue (*pos++, ToVariantF (elem));
+						return pos;
+					});
 
-				if (!insertQuery->exec ())
-				{
-					DBLock::DumpError (*insertQuery);
-					throw QueryException ("insert query execution failed", insertQuery);
-				}
-			};
+			if (!insertQuery.exec ())
+			{
+				DBLock::DumpError (insertQuery);
+				throw QueryException ("insert query execution failed", insertQuery);
+			}
 		}
 
 		template<typename Seq, int Idx>
@@ -394,15 +391,15 @@ namespace oral
 			template<bool UpdatePKey, typename Val>
 			auto Run (Val&& t, InsertAction action) const
 			{
-				const auto query = QueryBuilder_->GetQuery (action);
+				auto query = QueryBuilder_->GetQuery (action);
 
-				MakeInserter<Seq> (Data_, query, !HasAutogen_) (t);
+				DoInsert (t, Data_, query, !HasAutogen_);
 
 				if constexpr (HasAutogen_)
 				{
 					constexpr auto index = PKeyIndex_v<Seq>;
 
-					const auto& lastId = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
+					const auto& lastId = FromVariant<ValueAtC_t<Seq, index>> {} (query.lastInsertId ());
 					if constexpr (UpdatePKey)
 						boost::fusion::at_c<index> (t) = lastId;
 					else
@@ -1483,19 +1480,22 @@ namespace oral
 			}
 		};
 
-		template<typename T, bool HasPKey = HasPKey<T>>
+		template<typename T>
 		class AdaptUpdate
 		{
 			const QSqlDatabase DB_;
 			const QString Table_;
 
-			std::function<void (T)> Updater_;
+			// TODO this needn't be present of T doesn't have a PKey
+			QSqlQuery UpdateByPKey_ { DB_ };
+			const CachedFieldsData FieldsData_;
 		public:
 			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data) noexcept
 			: DB_ { db }
 			, Table_ { data.Table_ }
+			, FieldsData_ { data }
 			{
-				if constexpr (HasPKey)
+				if constexpr (HasPKey<T>)
 				{
 					constexpr auto index = PKeyIndex_v<T>;
 
@@ -1506,16 +1506,13 @@ namespace oral
 							" SET " + statements.join (", ") +
 							" WHERE " + wherePart;
 
-					const auto updateQuery = std::make_shared<QSqlQuery> (db);
-					updateQuery->prepare (update);
-					Updater_ = MakeInserter<T> (data, updateQuery, true);
+					UpdateByPKey_.prepare (update);
 				}
 			}
 
-			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const T& seq)
+			void operator() (const T& seq) requires HasPKey<T>
 			{
-				Updater_ (seq);
+				DoInsert (seq, FieldsData_, UpdateByPKey_, true);
 			}
 
 			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
