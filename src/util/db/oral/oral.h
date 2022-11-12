@@ -76,13 +76,10 @@ namespace oral
 
 	namespace detail
 	{
-		template<typename U>
-		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
-
 		template<typename T>
 		QString MorphFieldName (QString str) noexcept
 		{
-			if constexpr (IsDetected_v<MorpherDetector, T>)
+			if constexpr (requires { T::FieldNameMorpher (QString {}); })
 				return T::FieldNameMorpher (str);
 			else
 			{
@@ -173,16 +170,10 @@ namespace oral
 		}
 
 		template<typename T>
-		using TypeNameDetector = decltype (T::TypeName);
+		concept TypeNameCustomized = requires { typename T::TypeName; };
 
 		template<typename T>
-		constexpr bool TypeNameCustomized = IsDetected_v<TypeNameDetector, T>;
-
-		template<typename T>
-		using BaseTypeDetector = typename T::BaseType;
-
-		template<typename T>
-		constexpr bool BaseTypeCustomized = IsDetected_v<BaseTypeDetector, T>;
+		concept BaseTypeCustomized = requires { typename T::BaseType; };
 	}
 
 	template<typename ImplFactory, typename T, typename = void>
@@ -471,13 +462,10 @@ namespace oral
 			}
 		};
 
-		template<typename T, typename... Args>
-		using AggregateDetector_t = decltype (new T { std::declval<Args> ()... });
-
 		template<typename T, size_t... Indices>
 		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>, int startIdx) noexcept
 		{
-			if constexpr (IsDetected_v<AggregateDetector_t, T, ValueAtC_t<T, Indices>...>)
+			if constexpr (requires { T { FromVariant<ValueAtC_t<T, Indices>> {} (QVariant {})... }; })
 				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))... };
 			else
 			{
