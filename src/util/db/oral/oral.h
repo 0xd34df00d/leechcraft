@@ -53,24 +53,24 @@ namespace oral
 
 	class QueryException : public std::runtime_error
 	{
-		const QSqlQuery_ptr Query_;
+		const QSqlQuery Query_;
 	public:
 		QueryException (const std::string& str, const QSqlQuery_ptr& q)
-		: std::runtime_error (str)
-		, Query_ (q)
+		: QueryException { str, *q }
+		{
+		}
+
+		QueryException (const std::string& str, const QSqlQuery& q)
+		: std::runtime_error { str }
+		, Query_ { q }
 		{
 		}
 
 		~QueryException () noexcept = default;
 
-		const QSqlQuery_ptr& GetQueryPtr () const
-		{
-			return Query_;
-		}
-
 		const QSqlQuery& GetQuery () const
 		{
-			return *Query_;
+			return Query_;
 		}
 	};
 
