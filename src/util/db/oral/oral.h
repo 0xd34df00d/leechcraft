@@ -422,41 +422,29 @@ namespace oral
 			}
 		};
 
-		template<typename Seq, bool HasPKey = HasPKey<Seq>>
+		template<typename Seq>
 		struct AdaptDelete
 		{
-			std::function<void (Seq)> Deleter_;
+			QSqlQuery DeleteQuery_;
 		public:
-			template<bool B = HasPKey>
-			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data, std::enable_if_t<B>* = nullptr) noexcept
+			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data) noexcept
+			: DeleteQuery_ { db }
 			{
-				const auto index = FindPKey<Seq>::result_type::value;
-
-				const auto& boundName = data.BoundFields_.at (index);
-				const auto& del = "DELETE FROM " + data.Table_ +
-						" WHERE " + data.Fields_.at (index) + " = " + boundName;
-
-				const auto deleteQuery = std::make_shared<QSqlQuery> (db);
-				deleteQuery->prepare (del);
-
-				Deleter_ = [deleteQuery, boundName] (const Seq& t)
+				if constexpr (HasPKey<Seq>)
 				{
-					constexpr auto index = FindPKey<Seq>::result_type::value;
-					deleteQuery->bindValue (boundName, ToVariantF (boost::fusion::at_c<index> (t)));
-					if (!deleteQuery->exec ())
-						throw QueryException ("delete query execution failed", deleteQuery);
-				};
+					constexpr auto index = PKeyIndex_v<Seq>;
+					const auto& del = "DELETE FROM " + data.Table_ +
+							" WHERE " + data.Fields_.at (index) + " = ?";
+					DeleteQuery_.prepare (del);
+				}
 			}
 
-			template<bool B = HasPKey>
-			AdaptDelete (const QSqlDatabase&, const CachedFieldsData&, std::enable_if_t<!B>* = nullptr) noexcept
+			void operator() (const Seq& seq) requires HasPKey<Seq>
 			{
-			}
-
-			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const Seq& seq)
-			{
-				Deleter_ (seq);
+				constexpr auto index = PKeyIndex_v<Seq>;
+				DeleteQuery_.bindValue (0, ToVariantF (boost::fusion::at_c<index> (seq)));
+				if (!DeleteQuery_.exec ())
+					throw QueryException ("delete query execution failed", DeleteQuery_);
 			}
 		};
 
