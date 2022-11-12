@@ -312,39 +312,37 @@ namespace oral
 		template<typename Seq, int Idx>
 		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
 
-		template<typename Seq, typename Idx>
-		using ValueAt_t = typename boost::fusion::result_of::value_at<Seq, Idx>::type;
-
-		template<typename Seq, typename MemberIdx = boost::mpl::int_<0>>
-		struct FindPKey
+		template<typename Seq>
+		consteval int PKeyIndexUnsafe ()
 		{
-			static_assert ((boost::fusion::result_of::size<Seq>::value) != (MemberIdx::value),
-					"Primary key not found");
-
-			template<typename T>
-			struct Lazy
+			auto run = []<size_t... Idxes> (std::index_sequence<Idxes...>)
 			{
-				using type = T;
+				int result = -1;
+				((IsPKey<ValueAtC_t<Seq, Idxes>>::value ? (result = Idxes) : 0), ...);
+				return result;
 			};
-
-			using result_type = typename std::conditional_t<
-						IsPKey<ValueAt_t<Seq, MemberIdx>>::value,
-						Lazy<MemberIdx>,
-						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>::type>>
-					>::type;
-		};
+			return run (SeqIndices<Seq>);
+		}
 
 		template<typename Seq>
-		using FindPKeyDetector = boost::mpl::int_<FindPKey<Seq>::result_type::value>;
+		consteval int PKeyIndex ()
+		{
+			const auto idx = PKeyIndexUnsafe<Seq> ();
+			static_assert (idx >= 0);
+			return idx;
+		}
 
 		template<typename Seq>
-		constexpr auto HasPKey = IsDetected_v<FindPKeyDetector, Seq>;
+		constexpr int PKeyIndex_v = PKeyIndex<Seq> ();
+
+		template<typename Seq>
+		concept HasPKey = PKeyIndexUnsafe<Seq> () >= 0;
 
 		template<typename Seq>
 		constexpr auto HasAutogenPKey () noexcept
 		{
 			if constexpr (HasPKey<Seq>)
-				return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>> {});
+				return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, PKeyIndex_v<Seq>>> {});
 			else
 				return false;
 		}
@@ -402,7 +400,7 @@ namespace oral
 
 				if constexpr (HasAutogen_)
 				{
-					constexpr auto index = FindPKey<Seq>::result_type::value;
+					constexpr auto index = PKeyIndex_v<Seq>;
 
 					const auto& lastId = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
 					if constexpr (UpdatePKey)
@@ -416,7 +414,7 @@ namespace oral
 			{
 				if constexpr (HasAutogen_)
 				{
-					constexpr auto index = FindPKey<Seq>::result_type::value;
+					constexpr auto index = PKeyIndex_v<Seq>;
 					data.Fields_.removeAt (index);
 					data.BoundFields_.removeAt (index);
 				}
@@ -1511,7 +1509,7 @@ namespace oral
 			{
 				if constexpr (HasPKey)
 				{
-					constexpr auto index = FindPKey<T>::result_type::value;
+					constexpr auto index = PKeyIndex_v<T>;
 
 					auto statements = Util::ZipWith<QList> (data.Fields_, data.BoundFields_,
 							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
@@ -1629,7 +1627,7 @@ namespace oral
 	InsertAction::Replace::PKeyType<Seq>::operator InsertAction::Replace () const
 	{
 		static_assert (detail::HasPKey<Seq>, "Sequence does not have any primary keys");
-		return { { detail::GetFieldName<Seq, detail::FindPKey<Seq>::result_type::value> () } };
+		return { { detail::GetFieldName<Seq, detail::PKeyIndex_v<Seq>> () } };
 	}
 
 	template<typename T>
