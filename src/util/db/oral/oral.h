@@ -482,11 +482,7 @@ namespace oral
 			else
 			{
 				T t;
-				const auto dummy = std::initializer_list<int>
-				{
-					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), 0)...
-				};
-				Q_UNUSED (dummy);
+				((boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), ...);
 				return t;
 			}
 		}
