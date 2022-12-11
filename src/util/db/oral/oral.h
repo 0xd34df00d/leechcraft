@@ -971,9 +971,9 @@ namespace oral
 		}
 
 		template<auto... Ptrs>
-		QStringList BuildFieldNames () noexcept
+		QStringList BuildFieldNames (const QStringList& qualifiedFields) noexcept
 		{
-			return { BuildCachedFieldsData<MemberPtrStruct_t<Ptrs>> ().QualifiedFields_.value (FieldIndex<Ptrs> ())... };
+			return { qualifiedFields.value (FieldIndex<Ptrs> ())... };
 		}
 
 		enum class SelectBehaviour { Some, One };
@@ -1345,7 +1345,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					BuildFieldNames<Ptrs...> ().join (", "),
+					BuildFieldNames<Ptrs...> (Cached_.QualifiedFields_).join (", "),
 					MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}),
 					ResultBehaviour::All {}
 				};
