@@ -10,6 +10,7 @@
 
 #include "sllconfig.h"
 #include <QLatin1String>
+#include "ctstring.h"
 
 namespace LC::Util
 {
@@ -135,5 +136,18 @@ namespace LC
 	inline QByteArray operator"" _qba (const char *str, std::size_t size) noexcept
 	{
 		return QByteArray::fromRawData (str, static_cast<int> (size));
+	}
+
+	template<Util::CtString S>
+	QString operator""_qs ()
+	{
+		static const auto literal = []
+		{
+			static QStaticStringData<S.Size - 1> literal { Q_STATIC_STRING_DATA_HEADER_INITIALIZER (S.Size - 1), { 0 } };
+			std::copy (std::begin (S.GetRawSized ()), std::end (S.GetRawSized ()), literal.data);
+			return &literal;
+		} ();
+		QStringDataPtr holder { literal->data_ptr () };
+		return QString { holder };
 	}
 }
