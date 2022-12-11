@@ -35,6 +35,7 @@ FindQtLibs (leechcraft-util-sll${LC_LIBSUFFIX} Core Concurrent Xml)
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
 	AddUtilTest (sll_applicative tests/applicativetest.cpp UtilSllApplicativeTest leechcraft-util-sll${LC_LIBSUFFIX})
+	AddUtilTest (sll_ctstring tests/ctstringtest.cpp UtilSllCtStringTest leechcraft-util-sll${LC_LIBSUFFIX})
 	AddUtilTest (sll_curry tests/currytest.cpp UtilSllCurryTest leechcraft-util-sll${LC_LIBSUFFIX})
 	AddUtilTest (sll_detector tests/detectortest.cpp UtilSllDetectorTest leechcraft-util-sll${LC_LIBSUFFIX})
 
