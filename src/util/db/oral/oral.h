@@ -1574,9 +1574,9 @@ namespace oral
 		}
 
 		template<typename ImplFactory, typename T, size_t... Indices>
-		QList<QString> GetTypes (std::index_sequence<Indices...>) noexcept
+		auto GetTypes (std::index_sequence<Indices...>) noexcept
 		{
-			return { Type2Name<ImplFactory, ValueAtC_t<T, Indices>> {} ()... };
+			return std::array { Type2Name<ImplFactory, ValueAtC_t<T, Indices>> {} ()... };
 		}
 
 		template<typename ImplFactory, typename T>
