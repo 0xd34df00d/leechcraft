@@ -1589,8 +1589,9 @@ namespace oral
 					QString {} :
 					(", " + constraints.join (", "));
 
-			const auto& statements = Util::ZipWith<QList> (types, data.Fields_,
-					[] (const QString& type, const QString& field) { return field + " " + type; });
+			QStringList statements;
+			for (int i = 0; i < data.Fields_.size (); ++i)
+				statements << data.Fields_.value (i) + " " + types [i];
 			return "CREATE TABLE " +
 					data.Table_ +
 					" (" +
