@@ -21,6 +21,10 @@ namespace LC::Util
 	template<size_t N, typename Char = char>
 	struct CtString
 	{
+		using Char_t = Char;
+
+		constexpr static size_t Size = N;
+
 		Char Data_ [N] {};
 
 		consteval CtString () = default;
