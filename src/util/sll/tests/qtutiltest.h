@@ -17,6 +17,9 @@ namespace LC::Util
 		Q_OBJECT
 	private slots:
 		void testStringUDL ();
+
+		void testStringUDLBench ();
+		void testStringUDLBench_data ();
 	};
 }
 

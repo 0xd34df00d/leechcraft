@@ -28,5 +28,40 @@ namespace LC::Util
 		QCOMPARE (foo2, "fo");
 		QCOMPARE (foo1, "foo");
 	}
+
+	void QtUtilTest::testStringUDLBench ()
+	{
+		QFETCH (int, strInit);
+
+		switch (strInit)
+		{
+		case 0:
+			QBENCHMARK
+			{
+				const QString str { "foo" };
+			}
+			break;
+		case 1:
+			QBENCHMARK
+			{
+				const auto str = QStringLiteral ("foo");
+			}
+			break;
+		case 2:
+			QBENCHMARK
+			{
+				const auto str = u"foo"_qs;
+			}
+			break;
+		}
+	}
+
+	void QtUtilTest::testStringUDLBench_data ()
+	{
+		QTest::addColumn<int> ("strInit");
+		QTest::newRow ("ctor") << 0;
+		QTest::newRow ("QStringLiteral") << 1;
+		QTest::newRow ("UDL") << 2;
+	}
 }
 
