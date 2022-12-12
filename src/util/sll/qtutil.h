@@ -9,6 +9,7 @@
 #pragma once
 
 #include "sllconfig.h"
+#include <utility>
 #include <QLatin1String>
 #include "ctstring.h"
 
@@ -138,16 +139,24 @@ namespace LC
 		return QByteArray::fromRawData (str, static_cast<int> (size));
 	}
 
+	namespace
+	{
+		template<Util::CtString S, size_t... Idxes>
+		QString MkString (std::index_sequence<Idxes...>)
+		{
+			static constexpr QStaticStringData<S.Size - 1> literal
+			{
+				Q_STATIC_STRING_DATA_HEADER_INITIALIZER (S.Size - 1),
+				{ S.GetRawSized () [Idxes]... }
+			};
+			QStringDataPtr holder { literal.data_ptr () };
+			return QString { holder };
+		}
+	}
+
 	template<Util::CtString S>
 	QString operator""_qs ()
 	{
-		static const auto literal = []
-		{
-			static QStaticStringData<S.Size - 1> literal { Q_STATIC_STRING_DATA_HEADER_INITIALIZER (S.Size - 1), { 0 } };
-			std::copy (std::begin (S.GetRawSized ()), std::end (S.GetRawSized ()), literal.data);
-			return &literal;
-		} ();
-		QStringDataPtr holder { literal->data_ptr () };
-		return QString { holder };
+		return MkString<S> (std::make_index_sequence<S.Size> {});
 	}
 }
