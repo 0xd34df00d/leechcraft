@@ -16,12 +16,12 @@ namespace LC::Util
 {
 	void QtUtilTest::testStringUDL ()
 	{
-		const auto& foo1 = u"foo"_qs;
-		const auto& bar = u"bar"_qs;
+		const auto& foo1 = "foo"_qs;
+		const auto& bar = "bar"_qs;
 		QCOMPARE (foo1, "foo");
 		QCOMPARE (bar, "bar");
 
-		auto foo2 = u"foo"_qs;
+		auto foo2 = "foo"_qs;
 		QCOMPARE (foo2, "foo");
 
 		foo2.chop (1);
@@ -50,7 +50,7 @@ namespace LC::Util
 		case 2:
 			QBENCHMARK
 			{
-				const auto str = u"foo"_qs;
+				const auto str = "foo"_qs;
 			}
 			break;
 		}
