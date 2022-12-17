@@ -68,14 +68,18 @@ namespace LC::Util
 	void DBLock::DumpError (const QSqlError& lastError)
 	{
 		qCritical () << lastError.text () << "|"
-				<< lastError.type ();
+				<< lastError.type ()
+				<< lastError.nativeErrorCode ();
 	}
 
 	void DBLock::DumpError (const QSqlQuery& lastQuery)
 	{
 		qCritical () << "query:" << lastQuery.lastQuery ().simplified ();
 		DumpError (lastQuery.lastError ());
-		qCritical () << "bound values:" << lastQuery.boundValues ();
+
+		const auto& boundValues = lastQuery.boundValues ();
+		qCritical () << "bound keys:" << boundValues.size () << boundValues.keys ();
+		qCritical () << "bound values:" << boundValues;
 	}
 
 	void DBLock::Execute (QSqlQuery& query)
