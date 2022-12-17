@@ -8,6 +8,7 @@
 
 #include "utils.h"
 #include <QDomElement>
+#include <QRegularExpression>
 #include <QStringList>
 #include <QtDebug>
 #include <util/sll/domchildrenrange.h>
@@ -239,6 +240,28 @@ namespace LC::Aggregator::Parsers
 		return result;
 	}
 
+	namespace
+	{
+		void ConvertNumberEntities (QString& str)
+		{
+			if (!str.contains ("&#"_ql))
+				return;
+
+			static const QRegularExpression rx { R"(&#\d+;)" };
+			for (auto match = rx.match (str); match.hasMatch (); match = rx.match (str, match.capturedStart (0) + 1))
+			{
+				const auto& matchingStr = match.capturedView ().mid (2).chopped (1);
+
+				bool ok = false;
+				const auto code = matchingStr.toInt (&ok);
+				if (!ok)
+					continue;
+
+				str.replace (match.capturedStart (), match.capturedLength (), QChar { code });
+			}
+		}
+	}
+
 	QString UnescapeHTML (QString&& str)
 	{
 		str .replace ("&euro;"_ql, "€"_ql)
@@ -254,6 +277,7 @@ namespace LC::Aggregator::Parsers
 			.replace ("&ndash;"_qs, "-"_qs)
 			.replace ("&mdash;"_qs, u"—"_qs)
 			;
+		ConvertNumberEntities (str);
 		return str;
 	}
 }
