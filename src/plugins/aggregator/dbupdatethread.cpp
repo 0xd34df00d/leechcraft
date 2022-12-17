@@ -72,7 +72,7 @@ namespace LC::Aggregator
 
 				for (auto& channel : channels)
 				{
-					FixChannel (*channel);
+					FixItems (*channel);
 					TrimChannel (*channel);
 
 					if (const auto& maybeOurChannelID = FindMatchingChannel (*channel, channels.size () == 1))
@@ -123,13 +123,10 @@ namespace LC::Aggregator
 				return localChannel.ChannelID_;
 			}
 
-			void FixChannel (Channel& channel)
+			void FixItems (Channel& channel)
 			{
 				for (const auto& item : channel.Items_)
-				{
 					item->FixDate ();
-					item->ChannelID_ = channel.ChannelID_;
-				}
 			}
 
 			void TrimChannel (Channel& channel)
@@ -181,6 +178,7 @@ namespace LC::Aggregator
 					}
 					else
 					{
+						item.ChannelID_ = ourChannel.ChannelID_;
 						AddItem (item, ourChannel);
 						++newItems;
 					}
