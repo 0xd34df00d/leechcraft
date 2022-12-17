@@ -11,11 +11,17 @@
 #include <util/sll/qtutil.h>
 #include "atom.h"
 #include "rss.h"
+#include "utils.h"
 
 namespace LC::Aggregator::Parsers
 {
 	namespace
 	{
+		QString FixItemTitle (QString&& title)
+		{
+			return UnescapeHTML (std::move (title).trimmed ().simplified ());
+		}
+
 		void PostprocessParsed (channels_container_t& channels)
 		{
 			for (const auto& newChannel : channels)
@@ -27,7 +33,7 @@ namespace LC::Aggregator::Parsers
 					newChannel->Link_ = "about:blank"_qs;
 				}
 				for (const auto& item : newChannel->Items_)
-					item->Title_ = item->Title_.trimmed ().simplified ();
+					item->Title_ = FixItemTitle (std::move (item->Title_));
 			}
 		}
 	}
