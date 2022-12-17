@@ -241,15 +241,20 @@ namespace LC::Aggregator::Parsers
 
 	QString UnescapeHTML (QString&& str)
 	{
-		return std::move (str)
-				.replace ("&euro;"_ql, "€"_ql)
-				.replace ("&quot;"_ql, "\""_ql)
-				.replace ("&amp;"_ql, "&"_ql)
-				.replace ("&nbsp;"_ql, " "_ql)
-				.replace ("&lt;"_ql, "<"_ql)
-				.replace ("&gt;"_ql, ">"_ql)
-				.replace ("&#8217;"_qs, "'"_ql)
-				.replace ("&#8230;"_qs, "..."_ql);
+		str .replace ("&euro;"_ql, "€"_ql)
+			.replace ("&quot;"_ql, "\""_ql)
+			.replace ("&amp;"_ql, "&"_ql)
+			.replace ("&nbsp;"_ql, " "_ql)
+			.replace ("&lt;"_ql, "<"_ql)
+			.replace ("&gt;"_ql, ">"_ql)
+			.replace ("&#8217;"_qs, "'"_ql)
+			.replace ("&#8230;"_qs, u"…"_qs)
+			.replace ("&laquo;"_qs, u"«"_qs)
+			.replace ("&raquo;"_qs, u"»"_qs)
+			.replace ("&ndash;"_qs, "-"_qs)
+			.replace ("&mdash;"_qs, u"—"_qs)
+			;
+		return str;
 	}
 }
 

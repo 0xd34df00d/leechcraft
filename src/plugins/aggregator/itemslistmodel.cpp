@@ -257,11 +257,6 @@ namespace Aggregator
 								break;
 						}
 
-						title.replace ("&laquo;", QString::fromUtf8 ("«"));
-						title.replace ("&raquo;", QString::fromUtf8 ("»"));
-						title.replace ("&quot;", "\"");
-						title.replace ("&ndash;", "-");
-						title.replace ("&mdash;", QString::fromUtf8 ("—"));
 
 						return title;
 					}
