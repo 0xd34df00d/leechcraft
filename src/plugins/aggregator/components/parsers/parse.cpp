@@ -19,7 +19,7 @@ namespace LC::Aggregator::Parsers
 	{
 		QString FixItemTitle (QString&& title)
 		{
-			return UnescapeHTML (std::move (title).trimmed ().simplified ());
+			return std::move (title).trimmed ().simplified ();
 		}
 
 		void PostprocessParsed (channels_container_t& channels)

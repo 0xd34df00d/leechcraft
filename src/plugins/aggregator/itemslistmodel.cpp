@@ -13,8 +13,9 @@
 #include <QTextDocument>
 #include <QtDebug>
 #include <interfaces/core/iiconthememanager.h>
-#include "xmlsettingsmanager.h"
+#include "components/parsers/utils.h"
 #include "storagebackendmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -257,8 +258,7 @@ namespace Aggregator
 								break;
 						}
 
-
-						return title;
+						return Parsers::UnescapeHTML (std::move (title));
 					}
 				case 1:
 					return CurrentItems_ [index.row ()].PubDate_;
