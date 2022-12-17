@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QModelIndex>
 #include <QInputDialog>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/util.h>
@@ -83,6 +84,8 @@ namespace LC::Aggregator
 		mkAction (tr ("Remove channel"), {}, &ChannelActions::RemoveChannel);
 		mkSep ();
 		mkAction (tr ("Settings..."), "configure", &ChannelActions::Settings, "ChannelSettings_");
+
+		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);
 	}
 
 	QList<QAction*> ChannelActions::GetAllActions () const

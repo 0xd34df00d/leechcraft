@@ -91,6 +91,8 @@ namespace LC::Aggregator
 		connect (exportFb2,
 				&QAction::triggered,
 				[deps] { ExportUtils::RunExportFB2 (deps.ChannelsModel_); });
+
+		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);
 	}
 
 	QList<QAction*> AppWideActions::GetActions (ActionsEmbedPlace place) const
