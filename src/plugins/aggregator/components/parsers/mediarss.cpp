@@ -10,6 +10,7 @@
 #include <optional>
 #include <QDomElement>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
 #include "item.h"
 #include "utils.h"
 
@@ -17,7 +18,7 @@ namespace LC::Aggregator::Parsers::MediaRSS
 {
 	namespace NS
 	{
-		const QString MediaRSS = "http://search.yahoo.com/mrss/";
+		const QString MediaRSS = "http://search.yahoo.com/mrss/"_qs;
 	}
 
 	namespace
@@ -126,22 +127,22 @@ namespace LC::Aggregator::Parsers::MediaRSS
 
 		std::optional<QString> GetURL (const QDomElement& element)
 		{
-			const auto& playerElem = GetFirstChildNS (element, "player");
-			if (playerElem && playerElem->hasAttribute ("url"))
-				return playerElem->attribute ("url");
+			const auto& playerElem = GetFirstChildNS (element, "player"_qs);
+			if (playerElem && playerElem->hasAttribute ("url"_qs))
+				return playerElem->attribute ("url"_qs);
 			return {};
 		}
 
 		QList<MRSSThumbnail> GetThumbnails (const QDomElement& element)
 		{
 			QList<MRSSThumbnail> result;
-			for (const auto& node : GetAllChildrenNS (element, "thumbnail"))
+			for (const auto& node : GetAllChildrenNS (element, "thumbnail"_qs))
 			{
 				auto thumb = MRSSThumbnail::CreateForEntry ({});
-				thumb.URL_ = node.attribute ("url");
-				thumb.Width_ = GetIntAttr (node, "width").value_or (0);
-				thumb.Height_ = GetIntAttr (node, "height").value_or (0);
-				thumb.Time_ = node.attribute ("time");
+				thumb.URL_ = node.attribute ("url"_qs);
+				thumb.Width_ = GetIntAttr (node, "width"_qs).value_or (0);
+				thumb.Height_ = GetIntAttr (node, "height"_qs).value_or (0);
+				thumb.Time_ = node.attribute ("time"_qs);
 				result << thumb;
 			}
 			return result;
@@ -150,13 +151,13 @@ namespace LC::Aggregator::Parsers::MediaRSS
 		QList<MRSSCredit> GetCredits (const QDomElement& element)
 		{
 			QList<MRSSCredit> result;
-			for (const auto& node : GetAllChildrenNS (element, "credit"))
+			for (const auto& node : GetAllChildrenNS (element, "credit"_qs))
 			{
-				if (!node.hasAttribute ("role"))
+				if (!node.hasAttribute ("role"_qs))
 					continue;
 
 				auto credit = MRSSCredit::CreateForEntry ({});
-				credit.Role_ = node.attribute ("role");
+				credit.Role_ = node.attribute ("role"_qs);
 				credit.Who_ = node.text ();
 				result << credit;
 			}
@@ -177,20 +178,20 @@ namespace LC::Aggregator::Parsers::MediaRSS
 						result << comment;
 					}
 			};
-			getSpecificType ("comment", QObject::tr ("Comments"));
-			getSpecificType ("response", QObject::tr ("Responses"));
-			getSpecificType ("backLinks", QObject::tr ("Backlinks"));
+			getSpecificType ("comment"_qs, QObject::tr ("Comments"));
+			getSpecificType ("response"_qs, QObject::tr ("Responses"));
+			getSpecificType ("backLinks"_qs, QObject::tr ("Backlinks"));
 			return result;
 		}
 
 		QList<MRSSPeerLink> GetPeerLinks (const QDomElement& element)
 		{
 			QList<MRSSPeerLink> result;
-			for (const auto& linkNode : GetAllChildrenNS (element, "peerLink"))
+			for (const auto& linkNode : GetAllChildrenNS (element, "peerLink"_qs))
 			{
 				auto link = MRSSPeerLink::CreateForEntry ({});
-				link.Link_ = linkNode.attribute ("href");
-				link.Type_ = linkNode.attribute ("type");
+				link.Link_ = linkNode.attribute ("href"_qs);
+				link.Type_ = linkNode.attribute ("type"_qs);
 				result << link;
 			}
 			return result;
@@ -199,14 +200,14 @@ namespace LC::Aggregator::Parsers::MediaRSS
 		QList<MRSSScene> GetScenes (const QDomElement& element)
 		{
 			QList<MRSSScene> result;
-			if (const auto& scenes = GetFirstChildNS (element, "scenes"))
-				for (const auto& sceneNode : GetAllChildrenNS (*scenes, "scene"))
+			if (const auto& scenes = GetFirstChildNS (element, "scenes"_qs))
+				for (const auto& sceneNode : GetAllChildrenNS (*scenes, "scene"_qs))
 				{
 					auto scene = MRSSScene::CreateForEntry (IDNotFound);
-					scene.Title_ = sceneNode.firstChildElement ("sceneTitle").text ();
-					scene.Description_ = sceneNode.firstChildElement ("sceneDescription").text ();
-					scene.StartTime_ = sceneNode.firstChildElement ("sceneStartTime").text ();
-					scene.EndTime_ = sceneNode.firstChildElement ("sceneEndTime").text ();
+					scene.Title_ = sceneNode.firstChildElement ("sceneTitle"_qs).text ();
+					scene.Description_ = sceneNode.firstChildElement ("sceneDescription"_qs).text ();
+					scene.StartTime_ = sceneNode.firstChildElement ("sceneStartTime"_qs).text ();
+					scene.EndTime_ = sceneNode.firstChildElement ("sceneEndTime"_qs).text ();
 					result << scene;
 				}
 			return result;
@@ -217,40 +218,40 @@ namespace LC::Aggregator::Parsers::MediaRSS
 			Metadata result;
 
 			result.URL_ = GetURL (element);
-			result.Title_ = GetFirstNodeText (element, NS::MediaRSS, "title");
-			result.Description_ = GetFirstNodeText (element, NS::MediaRSS, "description");
-			result.Keywords_ = GetFirstNodeText (element, NS::MediaRSS, "keywords");
+			result.Title_ = GetFirstNodeText (element, NS::MediaRSS, "title"_qs);
+			result.Description_ = GetFirstNodeText (element, NS::MediaRSS, "description"_qs);
+			result.Keywords_ = GetFirstNodeText (element, NS::MediaRSS, "keywords"_qs);
 
-			if (const auto& rating = GetFirstChildNS (element, "rating"))
+			if (const auto& rating = GetFirstChildNS (element, "rating"_qs))
 			{
 				result.Rating_ = rating->text ();
-				result.RatingScheme_ = rating->attribute ("scheme", "urn:simple");
+				result.RatingScheme_ = rating->attribute ("scheme"_qs, "urn:simple"_qs);
 			}
 
-			if (const auto& copyright = GetFirstChildNS (element, "copyright"))
+			if (const auto& copyright = GetFirstChildNS (element, "copyright"_qs))
 			{
 				result.CopyrightText_ = copyright->text ();
-				if (copyright->hasAttribute ("url"))
-					result.CopyrightURL_ = copyright->attribute ("url");
+				if (copyright->hasAttribute ("url"_qs))
+					result.CopyrightURL_ = copyright->attribute ("url"_qs);
 			}
 
-			if (const auto& community = GetFirstChildNS (element, "community"))
+			if (const auto& community = GetFirstChildNS (element, "community"_qs))
 			{
-				if (const auto& rating = GetFirstChildNS (*community, "starRating"))
+				if (const auto& rating = GetFirstChildNS (*community, "starRating"_qs))
 				{
-					result.RatingAverage_ = GetIntAttr (*rating, "average");
-					result.RatingCount_ = GetIntAttr (*rating, "count");
-					result.RatingMin_ = GetIntAttr (*rating, "min");
-					result.RatingMax_ = GetIntAttr (*rating, "max");
+					result.RatingAverage_ = GetIntAttr (*rating, "average"_qs);
+					result.RatingCount_ = GetIntAttr (*rating, "count"_qs);
+					result.RatingMin_ = GetIntAttr (*rating, "min"_qs);
+					result.RatingMax_ = GetIntAttr (*rating, "max"_qs);
 				}
 
-				if (const auto& stats = GetFirstChildNS (*community, "statistics"))
+				if (const auto& stats = GetFirstChildNS (*community, "statistics"_qs))
 				{
-					result.Views_ = GetIntAttr (*stats, "views");
-					result.Favs_ = GetIntAttr (*stats, "favorites");
+					result.Views_ = GetIntAttr (*stats, "views"_qs);
+					result.Favs_ = GetIntAttr (*stats, "favorites"_qs);
 				}
 
-				if (const auto& tags = GetFirstChildNS (*community, "tags"))
+				if (const auto& tags = GetFirstChildNS (*community, "tags"_qs))
 					result.Tags_ = tags->text ();
 			}
 
@@ -265,24 +266,24 @@ namespace LC::Aggregator::Parsers::MediaRSS
 
 		void FillEntry (MRSSEntry& entry, const QDomElement& elem)
 		{
-			if (elem.hasAttribute ("url"))
-				entry.URL_ = elem.attribute ("url");
+			if (elem.hasAttribute ("url"_qs))
+				entry.URL_ = elem.attribute ("url"_qs);
 			else
 				entry.URL_ = GetURL (elem).value_or (QString {});
 
-			entry.Size_ = elem.attribute ("fileSize").toInt ();
-			entry.Type_ = elem.attribute ("type");
-			entry.Medium_ = elem.attribute ("medium");
-			entry.IsDefault_ = elem.attribute ("isDefault") == "true";
-			entry.Expression_ = elem.attribute ("expression", "full");
-			entry.Bitrate_ = elem.attribute ("bitrate").toInt ();
-			entry.Framerate_ = elem.attribute ("framerate").toDouble ();
-			entry.SamplingRate_ = elem.attribute ("samplingrate").toDouble ();
-			entry.Channels_ = elem.attribute ("channels").toInt ();
-			entry.Duration_ = elem.attribute ("duration").toInt ();
-			entry.Width_ = elem.attribute ("width").toInt ();
-			entry.Height_ = elem.attribute ("height").toInt ();
-			entry.Lang_ = elem.attribute ("lang");
+			entry.Size_ = elem.attribute ("fileSize"_qs).toInt ();
+			entry.Type_ = elem.attribute ("type"_qs);
+			entry.Medium_ = elem.attribute ("medium"_qs);
+			entry.IsDefault_ = elem.attribute ("isDefault"_qs) == "true"_ql;
+			entry.Expression_ = elem.attribute ("expression"_qs, "full"_qs);
+			entry.Bitrate_ = elem.attribute ("bitrate"_qs).toInt ();
+			entry.Framerate_ = elem.attribute ("framerate"_qs).toDouble ();
+			entry.SamplingRate_ = elem.attribute ("samplingrate"_qs).toDouble ();
+			entry.Channels_ = elem.attribute ("channels"_qs).toInt ();
+			entry.Duration_ = elem.attribute ("duration"_qs).toInt ();
+			entry.Width_ = elem.attribute ("width"_qs).toInt ();
+			entry.Height_ = elem.attribute ("height"_qs).toInt ();
+			entry.Lang_ = elem.attribute ("lang"_qs);
 		}
 
 		void FillWithMetadata (MRSSEntry& entry, const Metadata& md)
@@ -310,7 +311,7 @@ namespace LC::Aggregator::Parsers::MediaRSS
 
 		QList<MRSSEntry> ParseChildren (const QDomElement& parent, const Metadata& groupMetadata, IDType_t itemId)
 		{
-			const auto& entries = parent.elementsByTagNameNS (NS::MediaRSS, "content");
+			const auto& entries = parent.elementsByTagNameNS (NS::MediaRSS, "content"_qs);
 			const auto size = entries.size ();
 
 			QList<MRSSEntry> result;
@@ -338,7 +339,7 @@ namespace LC::Aggregator::Parsers::MediaRSS
 
 		const auto& rootMetadata = ParseMetadata (item);
 
-		auto groups = item.elementsByTagNameNS (NS::MediaRSS, "group");
+		auto groups = item.elementsByTagNameNS (NS::MediaRSS, "group"_qs);
 		for (int i = 0; i < groups.size (); ++i)
 		{
 			const auto& group = groups.at (i).toElement ();

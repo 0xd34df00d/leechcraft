@@ -8,6 +8,7 @@
 
 #include "parse.h"
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "atom.h"
 #include "rss.h"
 
@@ -23,7 +24,7 @@ namespace LC::Aggregator::Parsers
 				{
 					qWarning () << "detected empty link for"
 						<< newChannel->Title_;
-					newChannel->Link_ = "about:blank";
+					newChannel->Link_ = "about:blank"_qs;
 				}
 				for (const auto& item : newChannel->Items_)
 					item->Title_ = item->Title_.trimmed ().simplified ();

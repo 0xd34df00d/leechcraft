@@ -10,6 +10,7 @@
 #include <QDomDocument>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "mediarss.h"
 #include "utils.h"
 
@@ -21,11 +22,11 @@ namespace LC::Aggregator::Parsers
 		{
 			auto item = ParseCommonItem (entry, channelId);
 
-			item->Title_ = Atom::ParseEscapeAware (entry.firstChildElement ("title"));
+			item->Title_ = Atom::ParseEscapeAware (entry.firstChildElement ("title"_qs));
 			item->Link_ = GetLink (entry);
-			item->Guid_ = entry.firstChildElement ("id").text ();
+			item->Guid_ = entry.firstChildElement ("id"_qs).text ();
 
-			item->Description_ = Atom::ParseEscapeAware (GetBestDescription (entry, { "content", "summary" }));
+			item->Description_ = Atom::ParseEscapeAware (GetBestDescription (entry, { "content"_qs, "summary"_qs }));
 
 			return item;
 		}
@@ -34,9 +35,9 @@ namespace LC::Aggregator::Parsers
 		{
 			auto item = ParseCommonAtomItem (entry, channelId);
 
-			auto date = entry.firstChildElement ("modified");
+			auto date = entry.firstChildElement ("modified"_qs);
 			if (date.isNull ())
-				date = entry.firstChildElement ("issued");
+				date = entry.firstChildElement ("issued"_qs);
 			item->PubDate_ = QDateTime::fromString (date.text (), Qt::ISODateWithMs);
 
 			return item;
@@ -45,17 +46,17 @@ namespace LC::Aggregator::Parsers
 		Item_ptr Parse10Item (const QDomElement& entry, IDType_t channelId)
 		{
 			auto item = ParseCommonAtomItem (entry, channelId);
-			item->PubDate_ = QDateTime::fromString (entry.firstChildElement ("updated").text (), Qt::ISODateWithMs);
+			item->PubDate_ = QDateTime::fromString (entry.firstChildElement ("updated"_qs).text (), Qt::ISODateWithMs);
 			return item;
 		}
 
 		Channel_ptr ParseAtomChannelCommon (const QDomElement& root, IDType_t feedId)
 		{
 			auto chan = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
-			chan->Title_ = root.firstChildElement ("title").text ().trimmed ();
+			chan->Title_ = root.firstChildElement ("title"_qs).text ().trimmed ();
 			if (chan->Title_.isEmpty ())
 				chan->Title_ = QObject::tr ("(No title)");
-			chan->LastBuild_ = QDateTime::fromString (root.firstChildElement ("updated").text (), Qt::ISODateWithMs);
+			chan->LastBuild_ = QDateTime::fromString (root.firstChildElement ("updated"_qs).text (), Qt::ISODateWithMs);
 			chan->Link_ = GetLink (root);
 			chan->Author_ = GetAuthor (root);
 			return chan;
@@ -63,18 +64,18 @@ namespace LC::Aggregator::Parsers
 
 		bool IsAtom03 (const QDomElement& root)
 		{
-			if (root.tagName () != "feed" || !root.hasAttribute ("version"))
+			if (root.tagName () != "feed"_ql || !root.hasAttribute ("version"_qs))
 				return false;
-			return root.attribute ("version") == "0.3";
+			return root.attribute ("version"_qs) == "0.3"_ql;
 		}
 
 		bool IsAtom10 (const QDomElement& root)
 		{
-			if (root.tagName () != "feed")
+			if (root.tagName () != "feed"_ql)
 				return false;
-			if (!root.hasAttribute ("version"))
+			if (!root.hasAttribute ("version"_qs))
 				return true;
-			return root.attribute ("version", "1.0") == "1.0";
+			return root.attribute ("version"_qs, "1.0"_qs) == "1.0"_ql;
 		}
 	}
 
@@ -85,8 +86,8 @@ namespace LC::Aggregator::Parsers
 			return {};
 
 		auto chan = ParseAtomChannelCommon (root, feedId);
-		chan->Description_ = root.firstChildElement ("tagline").text ();
-		chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (root, "entry"),
+		chan->Description_ = root.firstChildElement ("tagline"_qs).text ();
+		chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (root, "entry"_qs),
 				[cid = chan->ChannelID_] (const QDomElement& entry) { return Parse03Item (entry, cid); });
 
 		return { { chan } };
@@ -99,12 +100,12 @@ namespace LC::Aggregator::Parsers
 			return {};
 
 		auto chan = ParseAtomChannelCommon (root, feedId);
-		chan->Description_ = root.firstChildElement ("subtitle").text ();
+		chan->Description_ = root.firstChildElement ("subtitle"_qs).text ();
 		if (chan->Author_.isEmpty ())
 		{
-			const auto& author = root.firstChildElement ("author");
-			const auto& name = author.firstChildElement ("name").text ();
-			const auto& email = author.firstChildElement ("email").text ();
+			const auto& author = root.firstChildElement ("author"_qs);
+			const auto& name = author.firstChildElement ("name"_qs).text ();
+			const auto& email = author.firstChildElement ("email"_qs).text ();
 			if (!name.isEmpty () && !email.isEmpty ())
 				chan->Author_ = name + " (" + email + ")";
 			else if (!name.isEmpty ())
@@ -113,7 +114,7 @@ namespace LC::Aggregator::Parsers
 				chan->Author_ = email;
 		}
 
-		chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (root, "entry"),
+		chan->Items_ = Util::MapAs<QVector> (Util::DomChildren (root, "entry"_qs),
 				[cid = chan->ChannelID_] (const QDomElement& entry) { return Parse10Item (entry, cid); });
 
 		return { { chan } };

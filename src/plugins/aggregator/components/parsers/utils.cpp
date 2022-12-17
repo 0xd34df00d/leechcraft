@@ -12,6 +12,7 @@
 #include <QtDebug>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "item.h"
 #include "mediarss.h"
 
@@ -43,27 +44,27 @@ namespace LC::Aggregator::Parsers
 
 	namespace NS
 	{
-		const QString DC = "http://purl.org/dc/elements/1.1/";
-		const QString WFW = "http://wellformedweb.org/CommentAPI/";
-		const QString Atom = "http://www.w3.org/2005/Atom";
-		const QString RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-		const QString Slash = "http://purl.org/rss/1.0/modules/slash/";
-		const QString Enc = "http://purl.oclc.org/net/rss_2.0/enc#";
-		const QString ITunes = "http://www.itunes.com/dtds/podcast-1.0.dtd";
-		const QString GeoRSSSimple = "http://www.georss.org/georss";
-		const QString GeoRSSW3 = "http://www.w3.org/2003/01/geo/wgs84_pos#";
-		const QString Content = "http://purl.org/rss/1.0/modules/content/";
+		const QString DC = "http://purl.org/dc/elements/1.1/"_qs;
+		const QString WFW = "http://wellformedweb.org/CommentAPI/"_qs;
+		const QString Atom = "http://www.w3.org/2005/Atom"_qs;
+		const QString RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"_qs;
+		const QString Slash = "http://purl.org/rss/1.0/modules/slash/"_qs;
+		const QString Enc = "http://purl.oclc.org/net/rss_2.0/enc#"_qs;
+		const QString ITunes = "http://www.itunes.com/dtds/podcast-1.0.dtd"_qs;
+		const QString GeoRSSSimple = "http://www.georss.org/georss"_qs;
+		const QString GeoRSSW3 = "http://www.w3.org/2003/01/geo/wgs84_pos#"_qs;
+		const QString Content = "http://purl.org/rss/1.0/modules/content/"_qs;
 	}
 
 	QString GetLink (const QDomElement& parent)
 	{
-		for (const auto& link : Util::DomChildren (parent, "link"))
+		for (const auto& link : Util::DomChildren (parent, "link"_qs))
 		{
-			if (link.attribute ("rel", "alternate") != "alternate")
+			if (link.attribute ("rel"_qs, "alternate"_qs) != "alternate"_ql)
 				continue;
 
-			return link.hasAttribute ("href") ?
-					link.attribute ("href") :
+			return link.hasAttribute ("href"_qs) ?
+					link.attribute ("href"_qs) :
 					link.text ();
 		}
 		return {};
@@ -85,8 +86,8 @@ namespace LC::Aggregator::Parsers
 
 	QDomElement GetBestDescription (const QDomElement& parent, const QStringList& additionalChildren)
 	{
-		auto elems = ToList (parent.elementsByTagNameNS (NS::Content, "encoded")) +
-				ToList (parent.elementsByTagNameNS (NS::ITunes, "summary"));
+		auto elems = ToList (parent.elementsByTagNameNS (NS::Content, "encoded"_qs)) +
+				ToList (parent.elementsByTagNameNS (NS::ITunes, "summary"_qs));
 		for (const auto& name : additionalChildren)
 			if (const auto el = parent.firstChildElement (name);
 				!el.isNull ())
@@ -116,17 +117,17 @@ namespace LC::Aggregator::Parsers
 
 	QStringList GetDCCategories (const QDomElement& parent)
 	{
-		return GetCategoriesFrom (parent.elementsByTagNameNS (NS::DC, "subject"));
+		return GetCategoriesFrom (parent.elementsByTagNameNS (NS::DC, "subject"_qs));
 	}
 
 	QStringList GetITunesCategories (const QDomElement& parent)
 	{
-		return GetCategoriesFrom (parent.elementsByTagNameNS (NS::ITunes, "keywords"));
+		return GetCategoriesFrom (parent.elementsByTagNameNS (NS::ITunes, "keywords"_qs));
 	}
 
 	QStringList GetPlainCategories (const QDomElement& parent)
 	{
-		return GetCategoriesFrom (parent.elementsByTagName ("category"));
+		return GetCategoriesFrom (parent.elementsByTagName ("category"_qs));
 	}
 
 	QStringList GetAllCategories (const QDomElement& parent)
@@ -147,9 +148,9 @@ namespace LC::Aggregator::Parsers
 			return true;
 		};
 
-		tryField (parent.elementsByTagNameNS (NS::ITunes, "author")) ||
-			tryField (parent.elementsByTagNameNS (NS::DC, "creator")) ||
-			tryField (parent.elementsByTagName ("author"));
+		tryField (parent.elementsByTagNameNS (NS::ITunes, "author"_qs)) ||
+			tryField (parent.elementsByTagNameNS (NS::DC, "creator"_qs)) ||
+			tryField (parent.elementsByTagName ("author"_qs));
 
 		return author;
 	}
@@ -167,7 +168,7 @@ namespace LC::Aggregator::Parsers
 
 	int GetNumComments (const QDomElement& parent)
 	{
-		const auto& str = GetFirstNodeText (parent, NS::Slash, "comments");
+		const auto& str = GetFirstNodeText (parent, NS::Slash, "comments"_qs);
 		if (!str)
 			return -1;
 
@@ -178,22 +179,22 @@ namespace LC::Aggregator::Parsers
 
 	QString GetCommentsRSS (const QDomElement& parent)
 	{
-		return GetFirstNodeText (parent, NS::WFW, "commentRss").value_or (QString {});
+		return GetFirstNodeText (parent, NS::WFW, "commentRss"_qs).value_or (QString {});
 	}
 
 	QString GetCommentsLink (const QDomElement& parent)
 	{
-		return GetFirstNodeText (parent, {}, "comments").value_or (QString {});
+		return GetFirstNodeText (parent, {}, "comments"_qs).value_or (QString {});
 	}
 
 	QPair<double, double> GetGeoPoint (const QDomElement& parent)
 	{
-		const auto& latStr = GetFirstNodeText (parent, NS::GeoRSSW3, "lat");
-		const auto& longStr = GetFirstNodeText (parent, NS::GeoRSSW3, "long");
+		const auto& latStr = GetFirstNodeText (parent, NS::GeoRSSW3, "lat"_qs);
+		const auto& longStr = GetFirstNodeText (parent, NS::GeoRSSW3, "long"_qs);
 		if (latStr && longStr)
 			return QPair { latStr->toDouble (), longStr->toDouble () };
 
-		if (const auto& pointStr = GetFirstNodeText (parent, NS::GeoRSSSimple, "point"))
+		if (const auto& pointStr = GetFirstNodeText (parent, NS::GeoRSSSimple, "point"_qs))
 		{
 			const auto& splitted = pointStr->splitRef (' ');
 			if (splitted.size () == 2)
@@ -205,19 +206,19 @@ namespace LC::Aggregator::Parsers
 
 	QDateTime GetDCDateTime (const QDomElement& parent)
 	{
-		if (const auto& dateElem = GetFirstNodeText (parent, NS::DC, "date"))
+		if (const auto& dateElem = GetFirstNodeText (parent, NS::DC, "date"_qs))
 			return QDateTime::fromString (*dateElem, Qt::ISODate);
 		return {};
 	}
 
 	QString GetITunesDuration (const QDomElement& parent)
 	{
-		return GetFirstNodeText (parent, NS::ITunes, "duration").value_or (QString {});
+		return GetFirstNodeText (parent, NS::ITunes, "duration"_qs).value_or (QString {});
 	}
 
 	QList<Enclosure> GetEncEnclosures (const QDomElement& entry, IDType_t itemId)
 	{
-		const auto& nodes = entry.elementsByTagNameNS (NS::Enc, "enclosure");
+		const auto& nodes = entry.elementsByTagNameNS (NS::Enc, "enclosure"_qs);
 		const auto size = nodes.size ();
 
 		QList<Enclosure> result;
@@ -228,9 +229,9 @@ namespace LC::Aggregator::Parsers
 			const auto& link = nodes.at (i).toElement ();
 
 			auto e = Enclosure::CreateForItem (itemId);
-			e.URL_ = link.attributeNS (NS::RDF, "resource");
-			e.Type_ = link.attributeNS (NS::Enc, "type");
-			e.Length_ = link.attributeNS (NS::Enc, "length", "-1").toLongLong ();
+			e.URL_ = link.attributeNS (NS::RDF, "resource"_qs);
+			e.Type_ = link.attributeNS (NS::Enc, "type"_qs);
+			e.Length_ = link.attributeNS (NS::Enc, "length"_qs, "-1"_qs).toLongLong ();
 
 			result << e;
 		}
@@ -240,15 +241,15 @@ namespace LC::Aggregator::Parsers
 
 	QString UnescapeHTML (QString&& str)
 	{
-		return str
-				.replace ("&euro;", "€")
-				.replace ("&quot;", "\"")
-				.replace ("&amp;", "&")
-				.replace ("&nbsp;", " ")
-				.replace ("&lt;", "<")
-				.replace ("&gt;", ">")
-				.replace ("&#8217;", "'")
-				.replace ("&#8230;", "...");
+		return std::move (str)
+				.replace ("&euro;"_ql, "€"_ql)
+				.replace ("&quot;"_ql, "\""_ql)
+				.replace ("&amp;"_ql, "&"_ql)
+				.replace ("&nbsp;"_ql, " "_ql)
+				.replace ("&lt;"_ql, "<"_ql)
+				.replace ("&gt;"_ql, ">"_ql)
+				.replace ("&#8217;"_qs, "'"_ql)
+				.replace ("&#8230;"_qs, "..."_ql);
 	}
 }
 
@@ -256,8 +257,8 @@ namespace LC::Aggregator::Parsers::Atom
 {
 	QString ParseEscapeAware (const QDomElement& parent)
 	{
-		if (parent.attribute ("type", "text") == "text" ||
-			parent.attribute ("mode") != "escaped")
+		if (parent.attribute ("type"_qs, "text"_qs) == "text"_ql ||
+			parent.attribute ("mode"_qs) != "escaped"_ql)
 			return parent.text ();
 
 		return UnescapeHTML (parent.text ());
@@ -265,7 +266,7 @@ namespace LC::Aggregator::Parsers::Atom
 
 	QList<Enclosure> GetEnclosures (const QDomElement& entry, IDType_t itemId)
 	{
-		const auto& links = entry.elementsByTagName ("link");
+		const auto& links = entry.elementsByTagName ("link"_qs);
 		const auto size = links.size ();
 
 		QList<Enclosure> result;
@@ -273,14 +274,14 @@ namespace LC::Aggregator::Parsers::Atom
 		for (int i = 0; i < size; ++i)
 		{
 			const auto& link = links.at (i).toElement ();
-			if (link.attribute ("rel") != "enclosure")
+			if (link.attribute ("rel"_qs) != "enclosure"_ql)
 				continue;
 
 			auto e = Enclosure::CreateForItem (itemId);
-			e.URL_ = link.attribute ("href");
-			e.Type_ = link.attribute ("type");
-			e.Length_ = link.attribute ("length", "-1").toLongLong ();
-			e.Lang_ = link.attribute ("hreflang");
+			e.URL_ = link.attribute ("href"_qs);
+			e.Type_ = link.attribute ("type"_qs);
+			e.Length_ = link.attribute ("length"_qs, "-1"_qs).toLongLong ();
+			e.Lang_ = link.attribute ("hreflang"_qs);
 			result << e;
 		}
 		return result;
@@ -291,7 +292,7 @@ namespace LC::Aggregator::Parsers::RSS
 {
 	QList<Enclosure> GetEnclosures (const QDomElement& entry, IDType_t itemId)
 	{
-		const auto& links = entry.elementsByTagName ("enclosure");
+		const auto& links = entry.elementsByTagName ("enclosure"_qs);
 		const auto size = links.size ();
 
 		QList<Enclosure> result;
@@ -301,10 +302,10 @@ namespace LC::Aggregator::Parsers::RSS
 			const auto& link = links.at (i).toElement ();
 
 			auto e = Enclosure::CreateForItem (itemId);
-			e.URL_ = link.attribute ("url");
-			e.Type_ = link.attribute ("type");
-			e.Length_ = link.attribute ("length", "-1").toLongLong ();
-			e.Lang_ = link.attribute ("hreflang");
+			e.URL_ = link.attribute ("url"_qs);
+			e.Type_ = link.attribute ("type"_qs);
+			e.Length_ = link.attribute ("length"_qs, "-1"_qs).toLongLong ();
+			e.Lang_ = link.attribute ("hreflang"_qs);
 			result << e;
 		}
 		return result;
