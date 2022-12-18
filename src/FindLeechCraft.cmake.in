@@ -2,33 +2,7 @@
 # LEECHCRAFT_LIBRARIES
 # LEECHCRAFT_FOUND
 
-set (CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package (Qt5Widgets)
-
-find_package (Qt5LinguistTools REQUIRED)
-
-macro (QtWrapUi outfiles)
-	set (UIS_H)
-    QT5_WRAP_UI (UIS_H ${ARGN})
-	set (${outfiles} ${${outfiles}} ${UIS_H})
-endmacro ()
-
-macro (QtAddResources outfiles)
-	set (RCCS)
-	QT5_ADD_RESOURCES (RCCS ${ARGN} OPTIONS -compress-algo best -threshold 0)
-	set (${outfiles} ${${outfiles}} ${RCCS})
-endmacro ()
-
-macro (FindQtLibs Target)
-	cmake_policy (SET CMP0043 NEW)
-	set (CMAKE_INCLUDE_CURRENT_DIR ON)
-	find_package (Qt5 COMPONENTS ${ARGN})
-	set (_TARGET_LINK_QT5_LIBS "")
-	foreach (V ${ARGN})
-		list (APPEND _TARGET_LINK_QT5_LIBS "Qt5::${V}")
-	endforeach ()
-	target_link_libraries (${Target} ${_TARGET_LINK_QT5_LIBS})
-endmacro ()
+include (CommonLCSetup.cmake)
 
 find_path(LEECHCRAFT_INCLUDE_DIR NAMES leechcraft/config.h PATH ENV)
 if (LEECHCRAFT_INCLUDE_DIR)
@@ -91,11 +65,6 @@ else()
 		message(STATUS "Could NOT find LeechCraft")
 	endif()
 endif()
-
-set (CMAKE_AUTOMOC TRUE)
-set (CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set (CMAKE_CXX_EXTENSIONS OFF)
 
 set (LC_BINDIR @LC_BINDIR@)
 set (LC_PLUGINS_DEST @LC_PLUGINS_DEST@)
