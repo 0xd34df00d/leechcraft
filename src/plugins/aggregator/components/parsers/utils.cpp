@@ -264,19 +264,32 @@ namespace LC::Aggregator::Parsers
 
 	QString UnescapeHTML (QString&& str)
 	{
-		str .replace ("&euro;"_ql, "€"_ql)
-			.replace ("&quot;"_ql, "\""_ql)
-			.replace ("&amp;"_ql, "&"_ql)
-			.replace ("&nbsp;"_ql, " "_ql)
-			.replace ("&lt;"_ql, "<"_ql)
-			.replace ("&gt;"_ql, ">"_ql)
-			.replace ("&#8217;"_qs, "'"_ql)
-			.replace ("&#8230;"_qs, u"…"_qs)
-			.replace ("&laquo;"_qs, u"«"_qs)
-			.replace ("&raquo;"_qs, u"»"_qs)
-			.replace ("&ndash;"_qs, "-"_qs)
-			.replace ("&mdash;"_qs, u"—"_qs)
-			;
+		const static auto l1Replacements = std::to_array<std::pair<QLatin1String, QLatin1String>> ({
+					{ "&quot;"_ql, "\""_ql },
+					{ "&amp;"_ql, "&"_ql },
+					{ "&nbsp;"_ql, " "_ql },
+					{ "&lt;"_ql, "<"_ql },
+					{ "&gt;"_ql, ">"_ql },
+					{ "&#8217;"_ql, "'"_ql },
+				});
+		const static auto unicodeReplacements = std::to_array<std::pair<QLatin1String, QString>> ({
+					{ "&euro;"_ql, u"€"_qs },
+					{ "&#8230;"_ql, u"…"_qs },
+					{ "&laquo;"_ql, u"«"_qs },
+					{ "&raquo;"_ql, u"»"_qs },
+					{ "&ndash;"_ql, "-"_qs },
+					{ "&mdash;"_ql, u"—"_qs },
+				});
+
+		const auto apply = [&str] (const auto& replacements)
+		{
+			for (const auto& [pat, rep] : replacements)
+				str.replace (pat, rep);
+		};
+
+		apply (l1Replacements);
+		apply (unicodeReplacements);
+
 		ConvertNumberEntities (str);
 		return str;
 	}
