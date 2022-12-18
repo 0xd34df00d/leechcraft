@@ -247,7 +247,7 @@ namespace LC::Aggregator::Parsers
 			if (!str.contains ("&#"_ql))
 				return;
 
-			static const QRegularExpression rx { R"(&#\d+;)" };
+			static thread_local const QRegularExpression rx { R"(&#\d+;)" };
 			for (auto match = rx.match (str); match.hasMatch (); match = rx.match (str, match.capturedStart (0) + 1))
 			{
 				const auto& matchingStr = match.capturedView ().mid (2).chopped (1);
