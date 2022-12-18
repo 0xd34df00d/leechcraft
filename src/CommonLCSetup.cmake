@@ -56,7 +56,7 @@ function (CreateTrs CompiledTranVar)
 endfunction ()
 
 function (LC_DEFINE_PLUGIN)
-	set (options INSTALL_SHARE INSTALL_DESKTOP)
+	set (options INSTALL_SHARE INSTALL_DESKTOP HAS_TESTS)
 	set (one_value_args RESOURCES)
 	set (multi_value_args SRCS SETTINGS QT_COMPONENTS LINK_LIBRARIES)
 	cmake_parse_arguments (P "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
@@ -91,6 +91,36 @@ function (LC_DEFINE_PLUGIN)
 
 	if (P_INSTALL_DESKTOP AND UNIX AND NOT APPLE)
 		install (DIRECTORY freedesktop/ DESTINATION share/applications)
+	endif ()
+
+	if (P_HAS_TESTS)
+		option (ENABLE_${PROJECT_NAME_UPPER}_TESTS "Enable ${PROJECT_NAME} tests" OFF)
+		if (ENABLE_${PROJECT_NAME_UPPER}_TESTS)
+			set (P_QT_COMPONENTS "${P_QT_COMPONENTS};Test")
+		endif ()
+
+		function (Add${PROJECT_NAME}Test _name _testObjectDef)
+			string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
+			if (ENABLE_${PROJECT_NAME_UPPER}_TESTS)
+				set (_fullExecName lc_${PROJECT_NAME}_test_${_name})
+
+				set (_testRunner ${CMAKE_CURRENT_BINARY_DIR}/test_${_name}.cpp)
+				file (WRITE ${_testRunner} "
+#include <${_testObjectDef}.h>
+#include <QtTest>
+
+QTEST_APPLESS_MAIN (TheTestObject)
+")
+
+				add_executable (${_fullExecName} WIN32 ${_testRunner})
+
+				add_test (${_fullExecName} ${_fullExecName})
+				FindQtLibs (${_fullExecName} Test)
+				target_link_libraries (${_fullExecName} leechcraft_${PROJECT_NAME} ${LEECHCRAFT_LIBRARIES})
+
+				target_sources (leechcraft_${PROJECT_NAME} PRIVATE ${_testObjectDef}.cpp)
+			endif ()
+		endfunction ()
 	endif ()
 
 	FindQtLibs (${FULL_NAME} ${P_QT_COMPONENTS})
