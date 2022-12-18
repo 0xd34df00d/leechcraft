@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_filescheme)
+project (poshuku_filescheme)
 
 LC_DEFINE_PLUGIN (
 	SRCS filescheme.cpp schemereply.cpp

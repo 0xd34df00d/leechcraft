@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_fua)
+project (poshuku_fua)
 
 LC_DEFINE_PLUGIN (
 	SRCS

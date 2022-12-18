@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_lhtr)
+project (lhtr)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (WITH_LHTR_HTML "Build extended support for (invalid) HTML" ON)

@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_secman)
+project (secman)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (WITH_SECMAN_EXPOSE_CONTENTSDISPLAY "Build the GUI for viewing the data stored in SecMan" OFF)

@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_qrd)
+project (poshuku_qrd)
 
 find_package (PkgConfig)
 pkg_check_modules (QREncode REQUIRED IMPORTED_TARGET libqrencode)

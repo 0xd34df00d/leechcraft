@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_blasq_deathnote)
+project (blasq_deathnote)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (

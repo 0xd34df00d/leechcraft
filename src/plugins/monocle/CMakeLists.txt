@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_monocle)
+project (monocle)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)

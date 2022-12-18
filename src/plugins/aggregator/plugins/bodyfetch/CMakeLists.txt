@@ -1,4 +1,4 @@
-project (leechcraft_aggregator_bodyfetch)
+project (aggregator_bodyfetch)
 
 LC_DEFINE_PLUGIN (
 	SRCS

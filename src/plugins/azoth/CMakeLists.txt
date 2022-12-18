@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_azoth)
+project (azoth)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_MEDIACALLS "Enable support for media calls" ON)

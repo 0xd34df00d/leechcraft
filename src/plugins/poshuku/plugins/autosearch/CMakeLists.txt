@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_autosearch)
+project (poshuku_autosearch)
 
 LC_DEFINE_PLUGIN (
 	SRCS autosearch.cpp

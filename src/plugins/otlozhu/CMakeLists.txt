@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_otlozhu)
+project (otlozhu)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_OTLOZHU_SYNC "Enable synchronization support for Otlozhu" ON)

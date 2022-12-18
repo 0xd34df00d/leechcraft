@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_vrooby)
+project (vrooby)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" ON)

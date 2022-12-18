@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_fatape)
+project (poshuku_fatape)
 
 LC_DEFINE_PLUGIN (
 	SRCS

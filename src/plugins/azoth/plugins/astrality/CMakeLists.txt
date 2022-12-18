@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_azoth_astrality)
+project (azoth_astrality)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

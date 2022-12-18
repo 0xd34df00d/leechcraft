@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_onlinebookmarks_delicious)
+project (poshuku_onlinebookmarks_delicious)
 
 LC_DEFINE_PLUGIN (
 	SRCS

@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_lmp_jos)
+project (lmp_jos)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 pkg_check_modules (LibGPod REQUIRED IMPORTED_TARGET libgpod-1.0)

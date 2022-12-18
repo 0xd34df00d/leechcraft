@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_lmp_ppl)
+project (lmp_ppl)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 include_directories (${LMP_INCLUDE_DIR}

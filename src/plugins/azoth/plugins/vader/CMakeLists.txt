@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_azoth_vader)
+project (azoth_vader)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_AZOTH_VADER_VERBOSE_LOG "Debug protocol messages & similar stuff with increased verbosity" OFF)

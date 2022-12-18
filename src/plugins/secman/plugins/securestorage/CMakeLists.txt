@@ -1,4 +1,4 @@
-project (leechcraft_secman_securestorage)
+project (secman_securestorage)
 
 LC_DEFINE_PLUGIN (
 	SRCS

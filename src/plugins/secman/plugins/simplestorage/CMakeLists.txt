@@ -1,4 +1,4 @@
-project (leechcraft_secman_simplestorage)
+project (secman_simplestorage)
 
 LC_DEFINE_PLUGIN (
 	SRCS simplestorage.cpp

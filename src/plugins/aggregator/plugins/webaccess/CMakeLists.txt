@@ -1,4 +1,4 @@
-project (leechcraft_aggregator_webaccess)
+project (aggregator_webaccess)
 
 find_package (Wt REQUIRED)
 add_definitions (-DQT_NO_KEYWORDS -DWT_NO_SLOT_MACROS)

@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_keywords)
+project (poshuku_keywords)
 
 LC_DEFINE_PLUGIN (
 	SRCS

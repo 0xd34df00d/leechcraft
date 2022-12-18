@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_cleanweb)
+project (poshuku_cleanweb)
 
 LC_DEFINE_PLUGIN (
 	SRCS

@@ -68,7 +68,8 @@ function (LC_DEFINE_PLUGIN)
 
 	CreateTrs (QM_RESULTS)
 
-	set (FULL_NAME ${PROJECT_NAME})
+	set (FULL_NAME leechcraft_${PROJECT_NAME})
+	string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
 
 	add_library (${FULL_NAME} SHARED
 		${QM_RESULTS}
@@ -96,16 +97,15 @@ function (LC_DEFINE_PLUGIN)
 endfunction()
 
 function (SUBPLUGIN suffix descr)
-	string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
-	string (SUBSTRING ${PROJECT_NAME_UPPER} 10 -1 root_name)
+	string (TOUPPER ${PROJECT_NAME} root_name)
 
 	set (defVal "ON")
-  if ("${ARGN}" STREQUAL "OFF")
-    set (defVal ${ARGV2})
+	if ("${ARGN}" STREQUAL "OFF")
+		set (defVal ${ARGV2})
 	endif ()
 	string (TOLOWER ${suffix} suffixL)
-	option (ENABLE${root_name}_${suffix} "${descr}" ${defVal})
-	if (ENABLE${root_name}_${suffix})
+	option (ENABLE_${root_name}_${suffix} "${descr}" ${defVal})
+	if (ENABLE_${root_name}_${suffix})
 		include_directories (BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 		add_subdirectory (plugins/${suffixL})
 	endif ()

@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_xtazy)
+project (xtazy)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (WITH_XTAZY_DBUS "Enable support for DBus/MPRIS" ON)

@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_wkplugins)
+project (wkplugins)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 add_library (leechcraft_wkplugins_qtplugin STATIC staticplugin.cpp)

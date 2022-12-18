@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_azoth_keeso)
+project (azoth_keeso)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (

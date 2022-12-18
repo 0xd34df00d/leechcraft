@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_devmon)
+project (devmon)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)

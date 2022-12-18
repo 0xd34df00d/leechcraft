@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_webkitview)
+project (poshuku_webkitview)
 
 LC_DEFINE_PLUGIN (
 	SRCS

@@ -1,4 +1,4 @@
-project (leechcraft_poshuku_speeddial)
+project (poshuku_speeddial)
 
 LC_DEFINE_PLUGIN (
 	SRCS

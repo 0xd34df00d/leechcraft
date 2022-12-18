@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_lmp_mp3tunes)
+project (lmp_mp3tunes)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (

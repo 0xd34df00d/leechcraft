@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_azoth_mucommands)
+project (azoth_mucommands)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_AZOTH_MUCOMMANDS_TESTS "Enable tests for Azoth MuCommands" OFF)

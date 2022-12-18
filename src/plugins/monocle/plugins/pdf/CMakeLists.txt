@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_monocle_pdf)
+project (monocle_pdf)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)

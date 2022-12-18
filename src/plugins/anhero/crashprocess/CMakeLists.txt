@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.10)
 if (POLICY CMP0071)
 	cmake_policy (SET CMP0071 NEW)
 endif ()
-project (leechcraft_anhero_crashprocess)
+project (anhero_crashprocess)
 
 find_package (Boost REQUIRED COMPONENTS program_options)
 

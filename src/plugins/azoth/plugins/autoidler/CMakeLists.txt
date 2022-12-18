@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (leechcraft_azoth_autoidler)
+project (azoth_autoidler)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 if (UNIX)
