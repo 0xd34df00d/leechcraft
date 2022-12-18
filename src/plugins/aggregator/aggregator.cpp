@@ -70,7 +70,6 @@ namespace Aggregator
 		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
 		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
-		qRegisterMetaType<QItemSelection> ("QItemSelection");
 		qRegisterMetaType<Item> ("Item");
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
 		qRegisterMetaType<Channel> ("Channel");

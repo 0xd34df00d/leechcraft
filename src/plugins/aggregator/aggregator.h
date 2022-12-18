@@ -9,9 +9,7 @@
 #pragma once
 
 #include <memory>
-#include <optional>
 #include <QWidget>
-#include <QItemSelection>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ijobholder.h>
