@@ -64,9 +64,10 @@ LC_DEFINE_PLUGIN (
 	RESOURCES aggregatorresources.qrc
 	QT_COMPONENTS Network PrintSupport Sql Widgets Xml
 	INSTALL_SHARE
+	HAS_TESTS
 	)
 
 SUBPLUGIN (BODYFETCH "Enable BodyFetch for fetching full bodies of news items" OFF)
 SUBPLUGIN (WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
 
-option (ENABLE_AGGREGATOR_TESTS "Enable tests for some of the Utility components" OFF)
+AddAggregatorTest (parsers_utils components/parsers/tests/utils_test)
