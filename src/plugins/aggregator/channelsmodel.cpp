@@ -15,6 +15,7 @@
 #include <QIcon>
 #include <QFontMetrics>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/xpc/downloaderrorstrings.h>
 #include <interfaces/core/icoreproxy.h>
@@ -128,23 +129,21 @@ namespace Aggregator
 				return errorsStrings.join ("\n");
 			}
 
-			auto result = QString ("<qt><b>%1</b><br />").arg (cs.Title_);
+			auto result = "<b>" + cs.Title_ + "</b><br/>";
 			if (cs.Author_.size ())
 			{
-				result += ChannelsModel::tr ("<strong>Author</strong>: %1").arg (cs.Author_);
+				result += "<b>" + ChannelsModel::tr ("Author") + "</b>: " + cs.Author_ + "<br/>";
 				result += "<br />";
 			}
 			if (cs.Tags_.size ())
 			{
-				const auto& hrTags = itm->GetTags (cs.Tags_);
-				result += ChannelsModel::tr ("<b>Tags</b>: %1").arg (hrTags.join ("; "));
+				result += "<b>" + ChannelsModel::tr ("Tags") + "</b>: " + itm->JoinIDs (cs.Tags_);
 				result += "<br />";
 			}
 			QString elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
-			result += QString ("<a href='%1'>%2</a>")
-					.arg (cs.Link_)
-					.arg (elidedLink);
-			result += "</qt>";
+			result += u"<a href='%1'>%2</a>"_qsv
+					.arg (cs.Link_,
+						  elidedLink);
 			return result;
 		}
 	}

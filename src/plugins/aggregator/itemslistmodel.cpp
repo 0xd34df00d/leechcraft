@@ -300,15 +300,16 @@ namespace Aggregator
 				return {};
 
 			const auto& item = *maybeItem;
-			QString result = QString ("<qt><strong>%1</strong><br />").arg (item.Title_);
+
+			auto result = QString ("<b>%1</b><br />").arg (item.Title_);
 			if (item.Author_.size ())
 			{
-				result += tr ("<b>Author</b>: %1").arg (item.Author_);
+				result += "<b>" + tr ("Author") + "</b>: " + item.Author_;
 				result += "<br />";
 			}
 			if (item.Categories_.size ())
 			{
-				result += tr ("<b>Categories</b>: %1").arg (item.Categories_.join ("; "));
+				result += "<b>" + tr ("Categories") + "</b>: " + item.Categories_.join ("; ");
 				result += "<br />";
 			}
 			if (item.NumComments_ > 0)
