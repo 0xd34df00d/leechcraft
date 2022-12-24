@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Feed settings</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="aggregatorresources.qrc">
-    <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QTabWidget" name="tabWidget">
@@ -310,9 +306,7 @@
   <tabstop>buttonBox</tabstop>
   <tabstop>ChannelDescription_</tabstop>
  </tabstops>
- <resources>
-  <include location="aggregatorresources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

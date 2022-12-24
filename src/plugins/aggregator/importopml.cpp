@@ -11,6 +11,8 @@
 #include <QMessageBox>
 #include <QDomDocument>
 #include <QTimer>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
@@ -29,6 +31,7 @@ namespace Aggregator
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 
 		if (file.isEmpty ())
@@ -39,21 +42,21 @@ namespace Aggregator
 			on_File__textEdited (file);
 		}
 	}
-	
+
 	QString ImportOPML::GetFilename () const
 	{
 		return Ui_.File_->text ();
 	}
-	
+
 	QString ImportOPML::GetTags () const
 	{
 		return Ui_.AdditionalTags_->text ().trimmed ();
 	}
-	
+
 	QSet<QString> ImportOPML::GetSelectedUrls () const
 	{
 		QSet<QString> result;
-	
+
 		for (int i = 0, items = Ui_.FeedsToImport_->topLevelItemCount (); i < items; ++i)
 		{
 			const auto item = Ui_.FeedsToImport_->topLevelItem (i);
@@ -63,7 +66,7 @@ namespace Aggregator
 
 		return result;
 	}
-	
+
 	void ImportOPML::on_File__textEdited (const QString& newFilename)
 	{
 		if (QFile::exists (newFilename))
@@ -71,13 +74,13 @@ namespace Aggregator
 		else
 			Reset ();
 	}
-	
+
 	void ImportOPML::on_Browse__released ()
 	{
 		auto startingPath = QFileInfo (Ui_.File_->text ()).path ();
 		if (startingPath.isEmpty ())
 			startingPath = QDir::homePath ();
-	
+
 		const auto& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select OPML file"),
 				startingPath,
@@ -88,12 +91,12 @@ namespace Aggregator
 			return;
 
 		Reset ();
-	
+
 		Ui_.File_->setText (filename);
-	
+
 		HandleFile (filename);
 	}
-	
+
 	void ImportOPML::HandleFile (const QString& filename)
 	{
 		Util::Visit (ParseOPML (filename),
@@ -130,7 +133,7 @@ namespace Aggregator
 					Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (true);
 				});
 	}
-	
+
 	void ImportOPML::Reset ()
 	{
 		Ui_.Title_->setText ("");
@@ -140,7 +143,7 @@ namespace Aggregator
 		Ui_.OwnerEmail_->setText ("");
 		Ui_.OtherFields_->clear ();
 		Ui_.FeedsToImport_->clear ();
-	
+
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 	}
 }

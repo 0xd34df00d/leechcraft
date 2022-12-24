@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>OPML Import</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="resources.qrc">
-    <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
-  </property>
   <layout class="QFormLayout" name="formLayout">
    <property name="fieldGrowthPolicy">
     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -180,9 +176,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>ButtonBox_</sender>

@@ -6,10 +6,12 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include <util/tags/tagscompleter.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/itagsmanager.h>
 #include "addfeeddialog.h"
+#include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/itagsmanager.h>
+#include <util/tags/tagscompleter.h>
 
 namespace LC
 {
@@ -19,6 +21,7 @@ namespace Aggregator
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
+		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 		new Util::TagsCompleter (Ui_.Tags_);
 		Ui_.Tags_->AddSelector ();
 

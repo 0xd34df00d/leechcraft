@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <property name="windowIcon">
-   <iconset resource="aggregatorresources.qrc">
-    <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
     <number>0</number>
@@ -91,8 +87,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="aggregatorresources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

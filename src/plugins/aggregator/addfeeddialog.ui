@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Add feed</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="aggregatorresources.qrc">
-    <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout">
@@ -72,9 +68,7 @@
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="aggregatorresources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

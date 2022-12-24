@@ -13,6 +13,7 @@
 #include <util/sll/functor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "storagebackendmanager.h"
@@ -50,6 +51,7 @@ namespace Aggregator
 	, Index_ { mapped }
 	{
 		Ui_.setupUi (this);
+		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
 		new Util::TagsCompleter { Ui_.ChannelTags_ };
 		new Util::TagsCompleter { Ui_.FeedTags_ };
