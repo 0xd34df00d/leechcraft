@@ -36,6 +36,9 @@
          <property name="text">
           <string>Browse...</string>
          </property>
+         <property name="icon">
+          <iconset theme="folder"/>
+         </property>
         </widget>
        </item>
       </layout>
