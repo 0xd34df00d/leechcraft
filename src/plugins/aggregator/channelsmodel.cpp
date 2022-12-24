@@ -126,24 +126,24 @@ namespace Aggregator
 			{
 				auto errorsStrings = Util::Map (errors, ErrorToString);
 				errorsStrings.removeDuplicates ();
-				return errorsStrings.join ("\n");
+				return errorsStrings.join ('\n');
 			}
 
 			auto result = "<b>" + cs.Title_ + "</b><br/>";
-			if (cs.Author_.size ())
+
+			const auto addField = [&result] (const QString& name, const QString& value)
 			{
-				result += "<b>" + ChannelsModel::tr ("Author") + "</b>: " + cs.Author_ + "<br/>";
-				result += "<br />";
-			}
-			if (cs.Tags_.size ())
-			{
-				result += "<b>" + ChannelsModel::tr ("Tags") + "</b>: " + itm->JoinIDs (cs.Tags_);
-				result += "<br />";
-			}
-			QString elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
+				if (!value.isEmpty ())
+					result += "<b>" + name + "</b>: " + value + "<br/>";
+			};
+			addField (ChannelsModel::tr ("Author"), cs.Author_);
+			addField (ChannelsModel::tr ("Tags"), itm->JoinIDs (cs.Tags_));
+
+			auto elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
 			result += u"<a href='%1'>%2</a>"_qsv
 					.arg (cs.Link_,
 						  elidedLink);
+
 			return result;
 		}
 	}
