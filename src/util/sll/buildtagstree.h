@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <QStringList>
+#include "sllconfig.h"
 
 class QDomNode;
 class QDomElement;
@@ -42,7 +43,7 @@ namespace LC::Util
 	 * given element.
 	 * @return Parent element of the item with tags.
 	 */
-	QDomElement BuildTagsTree (QStringList tags,
+	QDomElement UTIL_SLL_API BuildTagsTree (QStringList tags,
 			QDomNode& node,
 			QDomDocument& document,
 			const QString& elementName,
