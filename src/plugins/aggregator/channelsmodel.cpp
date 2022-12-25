@@ -19,6 +19,7 @@
 #include <util/sll/visitor.h>
 #include <util/xpc/downloaderrorstrings.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include "channelsmodel.h"
 #include "item.h"
@@ -186,7 +187,9 @@ namespace Aggregator
 			{
 				QIcon result = QPixmap::fromImage (channel.Favicon_);
 				if (result.isNull ())
-					result = QIcon (":/resources/images/rss.png");
+					result = QIcon::fromTheme ("application-rss+xml");
+				if (result.isNull ())
+					result = GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 				return result;
 			}
 			else
