@@ -60,6 +60,7 @@ LC_DEFINE_PLUGIN (
 		appwideactions.cpp
 		channelactions.cpp
 		dbutils.cpp
+		tooltipbuilder.cpp
 	SETTINGS aggregatorsettings.xml
 	RESOURCES aggregatorresources.qrc
 	QT_COMPONENTS Network PrintSupport Sql Widgets Xml

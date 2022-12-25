@@ -15,6 +15,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "components/parsers/utils.h"
 #include "storagebackendmanager.h"
+#include "tooltipbuilder.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -214,28 +215,6 @@ namespace Aggregator
 		return ItemHeaders_.size ();
 	}
 
-	namespace
-	{
-		void RemoveTag (const QString& name, QString& str)
-		{
-			int startPos = 0;
-			while ((startPos = str.indexOf ("<" + name, startPos, Qt::CaseInsensitive)) >= 0)
-			{
-				const int end = str.indexOf ('>', startPos);
-				if (end < 0)
-					return;
-
-				str.remove (startPos, end - startPos + 1);
-			}
-		}
-
-		void RemovePair (const QString& name, QString& str)
-		{
-			RemoveTag (name, str);
-			RemoveTag ('/' + name, str);
-		}
-	}
-
 	QVariant ItemsListModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid () || index.row () >= rowCount ())
@@ -300,54 +279,15 @@ namespace Aggregator
 				return {};
 
 			const auto& item = *maybeItem;
-
-			auto result = QString ("<b>%1</b><br />").arg (item.Title_);
-			if (item.Author_.size ())
-			{
-				result += "<b>" + tr ("Author") + "</b>: " + item.Author_;
-				result += "<br />";
-			}
-			if (item.Categories_.size ())
-			{
-				result += "<b>" + tr ("Categories") + "</b>: " + item.Categories_.join ("; ");
-				result += "<br />";
-			}
-			if (item.NumComments_ > 0)
-			{
-				result += tr ("%n comment(s)", "", item.NumComments_);
-				result += "<br />";
-			}
-			if (item.Enclosures_.size () > 0)
-			{
-				result += tr ("%n enclosure(s)", "", item.Enclosures_.size ());
-				result += "<br />";
-			}
-			if (item.MRSSEntries_.size () > 0)
-			{
-				result += tr ("%n MediaRSS entry(s)", "", item.MRSSEntries_.size ());
-				result += "<br />";
-			}
-			if (item.CommentsLink_.size ())
-			{
-				result += tr ("RSS with comments is available");
-				result += "<br />";
-			}
-			result += "<br />";
-
-			const int maxDescriptionSize = 1000;
-			auto descr = item.Description_;
-			RemoveTag ("img", descr);
-			RemovePair ("font", descr);
-			RemovePair ("span", descr);
-			RemovePair ("p", descr);
-			RemovePair ("div", descr);
-			for (auto i : { 1, 2, 3, 4, 5, 6 })
-				RemovePair ("h" + QString::number (i), descr);
-			result += descr.left (maxDescriptionSize);
-			if (descr.size () > maxDescriptionSize)
-				result += "...";
-
-			return result;
+			return TooltipBuilder { item.Title_ }
+					.Add (tr ("Author"), item.Author_)
+					.Add (tr ("Categories"), item.Categories_.join ("; "))
+					.Add (tr ("%n comment(s)", "", item.NumComments_), item.NumComments_)
+					.Add (tr ("%n enclosure(s)", "", item.Enclosures_.size ()), item.Enclosures_.size ())
+					.Add (tr ("%n MediaRSS entry(s)", "", item.MRSSEntries_.size ()), item.MRSSEntries_.size ())
+					.Add (tr ("RSS with comments is available"), item.CommentsLink_.size ())
+					.AddHtml ("<hr/>" + item.Description_)
+					.GetTooltip ();
 		}
 		else if (role == Qt::BackgroundRole)
 		{

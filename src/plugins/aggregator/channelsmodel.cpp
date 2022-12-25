@@ -26,6 +26,7 @@
 #include "xmlsettingsmanager.h"
 #include "storagebackendmanager.h"
 #include "feedserrormanager.h"
+#include "tooltipbuilder.h"
 
 namespace LC
 {
@@ -130,22 +131,16 @@ namespace Aggregator
 				return errorsStrings.join ('\n');
 			}
 
-			auto result = "<b>" + cs.Title_ + "</b><br/>";
-
-			const auto addField = [&result] (const QString& name, const QString& value)
-			{
-				if (!value.isEmpty ())
-					result += "<b>" + name + "</b>: " + value + "<br/>";
-			};
-			addField (ChannelsModel::tr ("Author"), cs.Author_);
-			addField (ChannelsModel::tr ("Tags"), itm->JoinIDs (cs.Tags_));
+			auto tb = TooltipBuilder { cs.Title_ }
+					.Add (ChannelsModel::tr ("Author"), cs.Author_)
+					.Add (ChannelsModel::tr ("Tags"), itm->JoinIDs (cs.Tags_));
 
 			auto elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
-			result += u"<a href='%1'>%2</a>"_qsv
+			tb += u"<a href='%1'>%2</a>"_qsv
 					.arg (cs.Link_,
 						  elidedLink);
 
-			return result;
+			return tb.GetTooltip ();
 		}
 	}
 
