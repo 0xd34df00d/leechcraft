@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/" >
-    <file>resources/images/rss.png</file>
     <file>resources/data/default_feeds.xml</file>
   </qresource>
 </RCC>
