@@ -167,10 +167,7 @@ namespace Aggregator
 			--remainingCount;
 
 			if (!shouldReset)
-			{
 				endRemoveRows ();
-				qApp->processEvents (QEventLoop::ExcludeUserInputEvents);
-			}
 		}
 
 		if (shouldReset)
