@@ -56,7 +56,11 @@ namespace Aggregator
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::itemDataUpdated,
 				this,
-				&ItemsListModel::HandleItemDataUpdated);
+				[this] (const Item& item)
+				{
+					if (item.ChannelID_ == CurrentChannel_)
+						ItemDataUpdated (item);
+				});
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::itemReadStatusUpdated,
 				this,
@@ -335,14 +339,6 @@ namespace Aggregator
 		if (!SB_.hasLocalData ())
 			SB_.setLocalData (StorageBackendManager::Instance ().MakeStorageBackendForThread ());
 		return SB_.localData ();
-	}
-
-	void ItemsListModel::HandleItemDataUpdated (const Item& item)
-	{
-		if (item.ChannelID_ != CurrentChannel_)
-			return;
-
-		ItemDataUpdated (item);
 	}
 
 	void ItemsListModel::HandleItemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread)
