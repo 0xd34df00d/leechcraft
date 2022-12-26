@@ -52,7 +52,7 @@ namespace Aggregator
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::itemsRemoved,
 				this,
-				&ItemsListModel::HandleItemsRemoved);
+				&ItemsListModel::RemoveItems);
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::itemDataUpdated,
 				this,
@@ -335,11 +335,6 @@ namespace Aggregator
 		if (!SB_.hasLocalData ())
 			SB_.setLocalData (StorageBackendManager::Instance ().MakeStorageBackendForThread ());
 		return SB_.localData ();
-	}
-
-	void ItemsListModel::HandleItemsRemoved (const QSet<IDType_t>& items)
-	{
-		RemoveItems (items);
 	}
 
 	void ItemsListModel::HandleItemDataUpdated (const Item& item)
