@@ -227,12 +227,9 @@ namespace Aggregator
 		}
 	}
 
-	Qt::ItemFlags ChannelsModel::flags (const QModelIndex& index) const
+	Qt::ItemFlags ChannelsModel::flags (const QModelIndex&) const
 	{
-		if (!index.isValid ())
-			return {};
-		else
-			return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	}
 
 	QVariant ChannelsModel::headerData (int column, Qt::Orientation orient, int role) const
