@@ -301,6 +301,7 @@ namespace oral
 
 			if (!insertQuery.exec ())
 			{
+				qCritical () << "insert query execution failed";
 				DBLock::DumpError (insertQuery);
 				throw QueryException ("insert query execution failed", insertQuery);
 			}
@@ -1125,6 +1126,7 @@ namespace oral
 
 				if (!query.exec ())
 				{
+					qCritical () << "select query execution failed";
 					DBLock::DumpError (query);
 					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
 				}
@@ -1532,6 +1534,7 @@ namespace oral
 				whereBinder (query);
 				if (!query.exec ())
 				{
+					qCritical () << "update query execution failed";
 					DBLock::DumpError (query);
 					throw QueryException ("update query execution failed", std::make_shared<QSqlQuery> (query));
 				}
