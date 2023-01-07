@@ -26,7 +26,8 @@ namespace Aggregator
 		{
 			IsRead = Qt::UserRole + 1,
 			ItemId,
-			ItemShortDescr
+			ItemShortDescr,
+			ItemCategories,
 		};
 
 		virtual void reset (IDType_t channelId) = 0;
