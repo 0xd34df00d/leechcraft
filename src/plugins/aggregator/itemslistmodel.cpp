@@ -200,18 +200,15 @@ namespace Aggregator
 		return ItemHeaders_.size ();
 	}
 
-	QVariant ItemsListModel::data (const QModelIndex& index, int role) const
+	namespace
 	{
-		if (!index.isValid () || index.row () >= rowCount ())
-			return {};
-
-		if (role == Qt::DisplayRole)
+		QVariant GetItemDisplay (const ItemShort& item, int column)
 		{
-			switch (index.column ())
+			switch (column)
 			{
 			case 0:
 			{
-				auto title = CurrentItems_ [index.row ()].Title_;
+				auto title = item.Title_;
 				auto pos = 0;
 				while ((pos = title.indexOf ('<', pos)) != -1)
 				{
@@ -225,18 +222,20 @@ namespace Aggregator
 				return Parsers::UnescapeHTML (std::move (title));
 			}
 			case 1:
-				return CurrentItems_ [index.row ()].PubDate_;
-			default:
-				return {};
+				return item.PubDate_;
 			}
+
+			return {};
 		}
-		else if (role == Qt::ForegroundRole)
+
+		QVariant GetItemForeground (const ItemShort& item)
 		{
-			bool palette = XmlSettingsManager::Instance ()->property ("UsePaletteColors").toBool ();
-			if (CurrentItems_ [index.row ()].Unread_)
+			auto& xsm = *XmlSettingsManager::Instance ();
+			bool palette = xsm.property ("UsePaletteColors").toBool ();
+			if (item.Unread_)
 			{
-				if (XmlSettingsManager::Instance ()->property ("UnreadCustomColor").toBool ())
-					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor").value<QColor> ();
+				if (xsm.property ("UnreadCustomColor").toBool ())
+					return xsm.property ("UnreadItemsColor").value<QColor> ();
 				else
 					return palette ?
 						QApplication::palette ().link ().color () :
@@ -247,6 +246,26 @@ namespace Aggregator
 					QApplication::palette ().linkVisited ().color () :
 					QVariant {};
 		}
+
+		QVariant GetItemBackground ()
+		{
+			const auto& p = QApplication::palette ();
+			QLinearGradient grad { 0, 0, 0, 10 };
+			grad.setColorAt (0, p.color (QPalette::AlternateBase));
+			grad.setColorAt (1, p.color (QPalette::Base));
+			return QBrush { grad };
+		}
+	}
+
+	QVariant ItemsListModel::data (const QModelIndex& index, int role) const
+	{
+		if (!index.isValid () || index.row () >= rowCount ())
+			return {};
+
+		if (role == Qt::DisplayRole)
+			return GetItemDisplay (CurrentItems_ [index.row ()], index.column ());
+		else if (role == Qt::ForegroundRole)
+			return GetItemForeground (CurrentItems_ [index.row ()]);
 		else if (role == Qt::FontRole &&
 				CurrentItems_ [index.row ()].Unread_)
 			return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
@@ -270,13 +289,7 @@ namespace Aggregator
 					.GetTooltip ();
 		}
 		else if (role == Qt::BackgroundRole)
-		{
-			const QPalette& p = QApplication::palette ();
-			QLinearGradient grad (0, 0, 0, 10);
-			grad.setColorAt (0, p.color (QPalette::AlternateBase));
-			grad.setColorAt (1, p.color (QPalette::Base));
-			return QBrush (grad);
-		}
+			return GetItemBackground ();
 		else if (role == Qt::DecorationRole)
 		{
 			if (index.column ())
