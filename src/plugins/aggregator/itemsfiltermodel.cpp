@@ -20,13 +20,15 @@ namespace Aggregator
 {
 	ItemsFilterModel::ItemsFilterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
-	, UnreadOnTop_ (XmlSettingsManager::Instance ()->
-			property ("UnreadOnTop").toBool ())
 	{
 		setDynamicSortFilter (true);
 
-		XmlSettingsManager::Instance ()->RegisterObject ("UnreadOnTop",
-				this, "handleUnreadOnTopChanged");
+		XmlSettingsManager::Instance ()->RegisterObject ("UnreadOnTop", this,
+				[this] (bool unreadOnTop)
+				{
+					UnreadOnTop_ = unreadOnTop;
+					invalidateFilter ();
+				});
 	}
 
 	void ItemsFilterModel::SetItemsWidget (ItemsWidget *w)
@@ -110,13 +112,6 @@ namespace Aggregator
 	void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
 	{
 		ItemCategories_ = Util::AsSet (categories);
-		invalidateFilter ();
-	}
-
-	void ItemsFilterModel::handleUnreadOnTopChanged ()
-	{
-		UnreadOnTop_ = XmlSettingsManager::Instance ()->
-				property ("UnreadOnTop").toBool ();
 		invalidateFilter ();
 	}
 }

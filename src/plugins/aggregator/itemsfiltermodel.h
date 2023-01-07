@@ -25,7 +25,7 @@ namespace Aggregator
 		Q_OBJECT
 
 		bool HideRead_ = false;
-		bool UnreadOnTop_;
+		bool UnreadOnTop_ = false;
 		QSet<QString> ItemCategories_;
 		ItemsWidget *ItemsWidget_ = nullptr;
 		QSet<IDType_t> TaggedItems_;
@@ -40,7 +40,6 @@ namespace Aggregator
 		virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
 	public slots:
 		void categorySelectionChanged (const QStringList&);
-		void handleUnreadOnTopChanged ();
 	};
 }
 }
