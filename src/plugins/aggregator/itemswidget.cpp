@@ -265,6 +265,11 @@ namespace Aggregator
 		return Impl_->ControlToolBar_;
 	}
 
+	QModelIndex ItemsWidget::GetUnfilteredSelectedIndex () const
+	{
+		return Impl_->LastSelectedIndex_;
+	}
+
 	QAction* ItemsWidget::GetAction (Action action) const
 	{
 		switch (action)

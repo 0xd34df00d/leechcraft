@@ -77,6 +77,8 @@ namespace Aggregator
 		QToolBar* GetToolBar () const;
 		void SetTapeMode (bool);
 
+		QModelIndex GetUnfilteredSelectedIndex () const;
+
 		QAction* GetAction (Action) const;
 
 		/** Merge all that channels that are currently shown.

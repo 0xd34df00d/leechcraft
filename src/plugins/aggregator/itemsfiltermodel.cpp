@@ -66,8 +66,10 @@ namespace Aggregator
 	bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
 			const QModelIndex& sourceParent) const
 	{
+		const auto& index = sourceModel ()->index (sourceRow, 0, sourceParent);
 		if (HideRead_ &&
-				ItemsWidget_->IsItemReadNotCurrent (sourceRow))
+				index.data (IItemsModel::ItemRole::IsRead).toBool () &&
+				ItemsWidget_->GetUnfilteredSelectedIndex () != index)
 			return false;
 
 		if (!ItemCategories_.isEmpty ())
