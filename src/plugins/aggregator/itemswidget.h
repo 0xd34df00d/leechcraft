@@ -101,7 +101,6 @@ namespace Aggregator
 		void SetMergeModeTags (const QStringList& tags);
 		void SetHideRead (bool);
 		void Selected (const QModelIndex&);
-		QStringList GetItemCategories (int) const;
 		IDType_t GetItemIDFromRow (int) const;
 		void SubscribeToComments (const QModelIndex&) const;
 		void CurrentChannelChanged (const QModelIndex&);

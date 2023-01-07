@@ -47,8 +47,6 @@ namespace Aggregator
 		void Selected (const QModelIndex&);
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;
-		bool IsItemRead (int) const;
-		QStringList GetCategories (int) const;
 		void Reset (IDType_t);
 		void Reset (const QList<IDType_t>&);
 		void RemoveItems (const QSet<IDType_t>&);

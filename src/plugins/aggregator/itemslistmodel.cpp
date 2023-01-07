@@ -94,16 +94,6 @@ namespace Aggregator
 		return CurrentItems_;
 	}
 
-	bool ItemsListModel::IsItemRead (int item) const
-	{
-		return !CurrentItems_ [item].Unread_;
-	}
-
-	QStringList ItemsListModel::GetCategories (int item) const
-	{
-		return CurrentItems_ [item].Categories_;
-	}
-
 	void ItemsListModel::Reset (IDType_t channel)
 	{
 		beginResetModel ();
