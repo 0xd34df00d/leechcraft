@@ -391,13 +391,6 @@ namespace Aggregator
 		sb->SetItemUnread (idx.data (ItemsListModel::ItemId).value<IDType_t> (), !read);
 	}
 
-	bool ItemsWidget::IsItemRead (int item) const
-	{
-		int starting = 0;
-		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
-		return static_cast<ItemsListModel*> (i->data ())->IsItemRead (item - starting);
-	}
-
 	bool ItemsWidget::IsItemReadNotCurrent (int item) const
 	{
 		int starting = 0;
