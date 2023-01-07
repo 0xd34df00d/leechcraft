@@ -74,7 +74,7 @@ namespace Aggregator
 
 		if (!ItemCategories_.isEmpty ())
 		{
-			const auto& itemCategories = ItemsWidget_->GetItemCategories (sourceRow);
+			const auto& itemCategories = index.data (IItemsModel::ItemRole::ItemCategories).toStringList ();
 
 			const bool categoryFound = itemCategories.isEmpty () ?
 					true :
