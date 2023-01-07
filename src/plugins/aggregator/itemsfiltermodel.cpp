@@ -9,6 +9,7 @@
 #include "itemsfiltermodel.h"
 #include <QtDebug>
 #include <util/sll/containerconversions.h>
+#include "interfaces/aggregator/iitemsmodel.h"
 #include "itemswidget.h"
 #include "xmlsettingsmanager.h"
 #include "storagebackendmanager.h"
@@ -94,8 +95,8 @@ namespace Aggregator
 				UnreadOnTop_ &&
 				!HideRead_)
 		{
-			bool lr = ItemsWidget_->IsItemRead (left.row ());
-			bool rr = ItemsWidget_->IsItemRead (right.row ());
+			const bool lr = left.data (IItemsModel::ItemRole::IsRead).toBool ();
+			const bool rr = right.data (IItemsModel::ItemRole::IsRead).toBool ();
 			if (lr && !rr)
 				return true;
 			else if (lr == rr)
