@@ -67,11 +67,6 @@ namespace Aggregator
 				&ItemsListModel::HandleItemReadStatusUpdated);
 	}
 
-	int ItemsListModel::GetSelectedRow () const
-	{
-		return CurrentRow_;
-	}
-
 	const IDType_t& ItemsListModel::GetCurrentChannel () const
 	{
 		return CurrentChannel_;
@@ -79,11 +74,10 @@ namespace Aggregator
 
 	void ItemsListModel::Selected (const QModelIndex& index)
 	{
-		CurrentRow_ = index.row ();
 		if (!index.isValid ())
 			return;
 
-		const auto& item = CurrentItems_ [CurrentRow_];
+		const auto& item = CurrentItems_ [index.row ()];
 		if (!item.Unread_)
 			return;
 
@@ -115,7 +109,6 @@ namespace Aggregator
 		beginResetModel ();
 
 		CurrentChannel_ = channel;
-		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
 		if (channel != IDNotFound)
@@ -129,7 +122,6 @@ namespace Aggregator
 		beginResetModel ();
 
 		CurrentChannel_ = IDNotFound;
-		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
 		const auto& sb = GetSB ();

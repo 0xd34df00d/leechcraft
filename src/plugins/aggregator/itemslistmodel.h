@@ -33,7 +33,6 @@ namespace Aggregator
 
 		QStringList ItemHeaders_;
 		items_shorts_t CurrentItems_;
-		int CurrentRow_ = -1;
 		IDType_t CurrentChannel_ = -1;
 
 		const QIcon StarredIcon_;
@@ -44,7 +43,6 @@ namespace Aggregator
 	public:
 		explicit ItemsListModel (IIconThemeManager*, QObject* = nullptr);
 
-		int GetSelectedRow () const;
 		const IDType_t& GetCurrentChannel () const;
 		void Selected (const QModelIndex&);
 		const ItemShort& GetItem (const QModelIndex&) const;

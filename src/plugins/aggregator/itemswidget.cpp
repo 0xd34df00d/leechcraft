@@ -396,15 +396,6 @@ namespace Aggregator
 		sb->SetItemUnread (idx.data (ItemsListModel::ItemId).value<IDType_t> (), !read);
 	}
 
-	bool ItemsWidget::IsItemReadNotCurrent (int item) const
-	{
-		int starting = 0;
-		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
-		ItemsListModel *m = static_cast<ItemsListModel*> (i->data ());
-		return m->IsItemRead (item - starting) &&
-				m->GetSelectedRow () != item - starting;
-	}
-
 	QStringList ItemsWidget::GetItemCategories (int index) const
 	{
 		if (!Impl_->SupplementaryModels_.size ())
