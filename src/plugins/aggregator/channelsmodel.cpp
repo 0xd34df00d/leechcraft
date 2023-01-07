@@ -99,12 +99,12 @@ namespace Aggregator
 				else
 					return palette ?
 							QApplication::palette ().link ().color () :
-							QVariant ();
+							QVariant {};
 			}
 			else
 				return palette ?
 						QApplication::palette ().linkVisited ().color () :
-						QVariant ();
+						QVariant {};
 		}
 
 		QString ErrorToString (const FeedsErrorManager::Error& error)
@@ -157,7 +157,7 @@ namespace Aggregator
 	QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
 
 		const auto row = index.row ();
 		const auto column = index.column ();
@@ -237,20 +237,20 @@ namespace Aggregator
 		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 			return Headers_.at (column);
 		else
-			return QVariant ();
+			return {};
 	}
 
 	QModelIndex ChannelsModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
-			return QModelIndex ();
+			return {};
 
 		return createIndex (row, column);
 	}
 
 	QModelIndex ChannelsModel::parent (const QModelIndex&) const
 	{
-		return QModelIndex ();
+		return {};
 	}
 
 	int ChannelsModel::rowCount (const QModelIndex& parent) const
@@ -260,7 +260,7 @@ namespace Aggregator
 
 	void ChannelsModel::AddChannel (const ChannelShort& channel)
 	{
-		beginInsertRows (QModelIndex (), rowCount (), rowCount ());
+		beginInsertRows ({}, rowCount (), rowCount ());
 		Channels_ << channel;
 		endInsertRows ();
 	}

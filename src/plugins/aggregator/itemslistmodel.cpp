@@ -203,58 +203,53 @@ namespace Aggregator
 	QVariant ItemsListModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid () || index.row () >= rowCount ())
-			return QVariant ();
+			return {};
 
 		if (role == Qt::DisplayRole)
 		{
 			switch (index.column ())
 			{
-				case 0:
-					{
-						auto title = CurrentItems_ [index.row ()].Title_;
-						auto pos = 0;
-						while ((pos = title.indexOf ('<', pos)) != -1)
-						{
-							auto end = title.indexOf ('>', pos);
-							if (end > 0)
-								title.remove (pos, end - pos + 1);
-							else
-								break;
-						}
+			case 0:
+			{
+				auto title = CurrentItems_ [index.row ()].Title_;
+				auto pos = 0;
+				while ((pos = title.indexOf ('<', pos)) != -1)
+				{
+					auto end = title.indexOf ('>', pos);
+					if (end > 0)
+						title.remove (pos, end - pos + 1);
+					else
+						break;
+				}
 
-						return Parsers::UnescapeHTML (std::move (title));
-					}
-				case 1:
-					return CurrentItems_ [index.row ()].PubDate_;
-				default:
-					return QVariant ();
+				return Parsers::UnescapeHTML (std::move (title));
+			}
+			case 1:
+				return CurrentItems_ [index.row ()].PubDate_;
+			default:
+				return {};
 			}
 		}
-		//Color mark an items as read/unread
 		else if (role == Qt::ForegroundRole)
 		{
-			bool palette = XmlSettingsManager::Instance ()->
-					property ("UsePaletteColors").toBool ();
+			bool palette = XmlSettingsManager::Instance ()->property ("UsePaletteColors").toBool ();
 			if (CurrentItems_ [index.row ()].Unread_)
 			{
-				if (XmlSettingsManager::Instance ()->
-						property ("UnreadCustomColor").toBool ())
-					return XmlSettingsManager::Instance ()->
-							property ("UnreadItemsColor").value<QColor> ();
+				if (XmlSettingsManager::Instance ()->property ("UnreadCustomColor").toBool ())
+					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor").value<QColor> ();
 				else
 					return palette ?
 						QApplication::palette ().link ().color () :
-						QVariant ();
+						QVariant {};
 			}
 			else
 				return palette ?
 					QApplication::palette ().linkVisited ().color () :
-					QVariant ();
+					QVariant {};
 		}
 		else if (role == Qt::FontRole &&
 				CurrentItems_ [index.row ()].Unread_)
-			return XmlSettingsManager::Instance ()->
-				property ("UnreadItemsFont");
+			return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
 		else if (role == Qt::ToolTipRole &&
 				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 		{
@@ -285,7 +280,7 @@ namespace Aggregator
 		else if (role == Qt::DecorationRole)
 		{
 			if (index.column ())
-				return QVariant ();
+				return {};
 
 			const auto& item = CurrentItems_ [index.row ()];
 			if (GetSB ()->GetItemTags (item.ItemID_).contains ("_important"))
@@ -300,7 +295,7 @@ namespace Aggregator
 		else if (role == ItemRole::ItemShortDescr)
 			return QVariant::fromValue (CurrentItems_ [index.row ()]);
 		else
-			return QVariant ();
+			return {};
 	}
 
 	Qt::ItemFlags ItemsListModel::flags (const QModelIndex&) const
@@ -313,20 +308,20 @@ namespace Aggregator
 		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 			return ItemHeaders_.at (column);
 		else
-			return QVariant ();
+			return {};
 	}
 
 	QModelIndex ItemsListModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
-			return QModelIndex ();
+			return {};
 
 		return createIndex (row, column);
 	}
 
 	QModelIndex ItemsListModel::parent (const QModelIndex&) const
 	{
-		return QModelIndex ();
+		return {};
 	}
 
 	int ItemsListModel::rowCount (const QModelIndex& parent) const
