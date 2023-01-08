@@ -15,26 +15,23 @@ namespace LC
 {
 namespace Aggregator
 {
-	ItemsModelDecorator::ItemsModelDecorator (QObject *model)
+	ItemsModelDecorator::ItemsModelDecorator (IItemsModel& model)
 	: Model_ { model }
 	{
 	}
 
 	void ItemsModelDecorator::Reset (IDType_t channelId, IDType_t feedId)
 	{
-		QMetaObject::invokeMethod (Model_,
-				"reset",
-				Qt::QueuedConnection,
-				Q_ARG (IDType_t, channelId),
-				Q_ARG (IDType_t, feedId));
+		QMetaObject::invokeMethod (&dynamic_cast<QObject&> (Model_),
+				[=] { Model_.Reset (channelId); },
+				Qt::QueuedConnection);
 	}
 
 	void ItemsModelDecorator::Selected (const QModelIndex& index)
 	{
-		QMetaObject::invokeMethod (Model_,
-				"selected",
-				Qt::QueuedConnection,
-				Q_ARG (QModelIndex, index));
+		QMetaObject::invokeMethod (&dynamic_cast<QObject&> (Model_),
+				[=] { Model_.Selected (index); },
+				Qt::QueuedConnection);
 	}
 }
 }

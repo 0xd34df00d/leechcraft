@@ -16,11 +16,13 @@ namespace LC
 {
 namespace Aggregator
 {
+	class IItemsModel;
+
 	class ItemsModelDecorator
 	{
-		QObject * const Model_;
+		IItemsModel& Model_;
 	public:
-		ItemsModelDecorator (QObject*);
+		ItemsModelDecorator (IItemsModel&);
 
 		void Reset (IDType_t, IDType_t);
 		void Selected (const QModelIndex&);

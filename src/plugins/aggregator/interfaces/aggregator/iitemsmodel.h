@@ -20,7 +20,7 @@ namespace Aggregator
 	class IItemsModel
 	{
 	public:
-		virtual ~IItemsModel () {}
+		virtual ~IItemsModel () = default;
 
 		enum ItemRole
 		{
@@ -30,8 +30,8 @@ namespace Aggregator
 			ItemCategories,
 		};
 
-		virtual void reset (IDType_t channelId) = 0;
-		virtual void selected (const QModelIndex&) = 0;
+		virtual void Reset (IDType_t channelId) = 0;
+		virtual void Selected (const QModelIndex&) = 0;
 	};
 }
 }

@@ -354,15 +354,5 @@ namespace Aggregator
 		int distance = std::distance (CurrentItems_.begin (), pos);
 		emit dataChanged (index (distance, 0), index (distance, 1));
 	}
-
-	void ItemsListModel::reset (IDType_t channelId)
-	{
-		Reset (channelId);
-	}
-
-	void ItemsListModel::selected (const QModelIndex& index)
-	{
-		Selected (index);
-	}
 }
 }

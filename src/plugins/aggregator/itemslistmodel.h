@@ -44,10 +44,10 @@ namespace Aggregator
 		explicit ItemsListModel (IIconThemeManager*, QObject* = nullptr);
 
 		const IDType_t& GetCurrentChannel () const;
-		void Selected (const QModelIndex&);
+		void Selected (const QModelIndex&) override;
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;
-		void Reset (IDType_t);
+		void Reset (IDType_t) override;
 		void Reset (const QList<IDType_t>&);
 		void RemoveItems (const QSet<IDType_t>&);
 		void ItemDataUpdated (const Item&);
@@ -62,9 +62,6 @@ namespace Aggregator
 	private:
 		StorageBackend_ptr GetSB () const;
 		void HandleItemReadStatusUpdated (IDType_t, IDType_t, bool);
-	public slots:
-		void reset (IDType_t) override;
-		void selected (const QModelIndex&) override;
 	};
 }
 }
