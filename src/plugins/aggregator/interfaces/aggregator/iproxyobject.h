@@ -22,6 +22,8 @@ namespace Aggregator
 	struct Channel;
 	struct Feed;
 
+	class IItemsModel;
+
 	typedef std::shared_ptr<Item> Item_ptr;
 	typedef std::shared_ptr<Channel> Channel_ptr;
 	typedef std::shared_ptr<Feed> Feed_ptr;
@@ -44,7 +46,7 @@ namespace Aggregator
 		virtual std::optional<Item> GetItem (IDType_t) const = 0;
 		virtual void SetItemRead (IDType_t, bool) const = 0;
 
-		virtual QAbstractItemModel* CreateItemsModel () const = 0;
+		virtual std::unique_ptr<IItemsModel> CreateItemsModel () const = 0;
 	};
 
 	typedef std::shared_ptr<IProxyObject> IProxyObject_ptr;

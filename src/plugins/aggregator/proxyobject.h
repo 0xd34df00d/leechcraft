@@ -96,7 +96,7 @@ namespace Aggregator
 		std::optional<Item> GetItem (IDType_t) const override;
 		void SetItemRead (IDType_t, bool) const override;
 
-		QAbstractItemModel* CreateItemsModel () const override;
+		std::unique_ptr<IItemsModel> CreateItemsModel () const override;
 	};
 }
 }

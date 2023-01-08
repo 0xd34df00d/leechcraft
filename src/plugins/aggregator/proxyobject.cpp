@@ -130,9 +130,9 @@ namespace Aggregator
 		sb->UpdateItem (*item);
 	}
 
-	QAbstractItemModel* ProxyObject::CreateItemsModel () const
+	std::unique_ptr<IItemsModel> ProxyObject::CreateItemsModel () const
 	{
-		return new ItemsListModel { GetProxyHolder ()->GetIconThemeManager () };
+		return std::make_unique<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
 	}
 }
 }
