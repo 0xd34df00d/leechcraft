@@ -166,7 +166,7 @@ namespace WebAccess
 
 	void AggregatorApp::ShowItem (const QModelIndex& src, const Item& item)
 	{
-		ItemsModelDecorator { *SourceItemModel_ }.Selected (src);
+		AP_->SetItemRead (item.ItemID_, true);
 
 		auto text = Wt::WString ("<div><a href='{1}' target='_blank'>{2}</a><br />{3}<br /><hr/>{4}</div>")
 				.arg (ToW (item.Link_))
