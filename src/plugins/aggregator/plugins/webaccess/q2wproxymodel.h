@@ -28,7 +28,7 @@ namespace WebAccess
 	{
 		Q_OBJECT
 
-		QAbstractItemModel * const Src_;
+		QAbstractItemModel& Src_;
 		Util::ModelItem_ptr Root_;
 
 		QMap<int, int> Mapping_;
@@ -42,7 +42,7 @@ namespace WebAccess
 	private:
 		QList<Morphism_t> Morphisms_;
 	public:
-		Q2WProxyModel (QAbstractItemModel*, Wt::WApplication*);
+		Q2WProxyModel (QAbstractItemModel&, Wt::WApplication*);
 
 		void SetRoleMappings (const QMap<int, int>&);
 		void AddDataMorphism (const Morphism_t&);

@@ -24,46 +24,46 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, Wt::WApplication *app)
+	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel& src, Wt::WApplication *app)
 	: Src_ { src }
-	, Root_ { new Util::ModelItem { src, {}, {} } }
+	, Root_ { new Util::ModelItem { &src, {}, {} } }
 	, App_ { app }
 	, Update_ { app }
 	{
 		const auto type = Qt::DirectConnection;
-		connect (src,
+		connect (&src,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDataChanged (QModelIndex, QModelIndex)),
 				type);
 
-		connect (src,
+		connect (&src,
 				SIGNAL (rowsAboutToBeInserted (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsAboutToBeInserted (QModelIndex, int, int)),
 				type);
-		connect (src,
+		connect (&src,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsInserted (QModelIndex, int, int)),
 				type);
-		connect (src,
+		connect (&src,
 				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsAboutToBeRemoved (QModelIndex, int, int)),
 				type);
-		connect (src,
+		connect (&src,
 				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsRemoved (QModelIndex, int, int)),
 				type);
 
-		connect (src,
+		connect (&src,
 				SIGNAL (modelAboutToBeReset ()),
 				this,
 				SLOT (handleModelAboutToBeReset ()),
 				type);
-		connect (src,
+		connect (&src,
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (handleModelReset ()),
@@ -87,12 +87,12 @@ namespace WebAccess
 
 	int Q2WProxyModel::columnCount (const Wt::WModelIndex& parent) const
 	{
-		return Src_->columnCount (W2QIdx (parent));
+		return Src_.columnCount (W2QIdx (parent));
 	}
 
 	int Q2WProxyModel::rowCount (const Wt::WModelIndex& parent) const
 	{
-		return Src_->rowCount (W2QIdx (parent));
+		return Src_.rowCount (W2QIdx (parent));
 	}
 
 	Wt::WModelIndex Q2WProxyModel::parent (const Wt::WModelIndex& index) const
@@ -182,7 +182,7 @@ namespace WebAccess
 		if (orientation != Wt::Orientation::Horizontal || role != Wt::ItemDataRole::Display)
 			return Wt::WAbstractItemModel::headerData (section, orientation, role);
 
-		return Variant2Any (Src_->headerData (section, Qt::Horizontal, Qt::DisplayRole));
+		return Variant2Any (Src_.headerData (section, Qt::Horizontal, Qt::DisplayRole));
 	}
 
 	void* Q2WProxyModel::toRawIndex (const Wt::WModelIndex& index) const
@@ -292,7 +292,7 @@ namespace WebAccess
 		const auto item = rawItem->shared_from_this ();
 
 		for ( ; first <= last; ++first)
-			item->InsertChild (first, Src_, Src_->index (first, 0, srcParent), item);
+			item->InsertChild (first, &Src_, Src_.index (first, 0, srcParent), item);
 
 		for ( ; first < item->GetRowCount (); ++first)
 			item->GetChild (first)->RefreshIndex (0);

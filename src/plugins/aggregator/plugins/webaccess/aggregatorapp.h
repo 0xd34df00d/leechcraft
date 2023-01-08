@@ -20,6 +20,7 @@ namespace LC
 {
 namespace Aggregator
 {
+class IItemsModel;
 class IProxyObject;
 
 namespace WebAccess
@@ -40,7 +41,7 @@ namespace WebAccess
 		std::shared_ptr<Q2WProxyModel> ChannelsModel_;
 		std::shared_ptr<ReadChannelsFilter> ChannelsFilter_;
 
-		QAbstractItemModel * const SourceItemModel_;
+		std::unique_ptr<IItemsModel> SourceItemModel_;
 		std::shared_ptr<Q2WProxyModel> ItemsModel_;
 		std::shared_ptr<ReadItemsFilter> ItemsFilter_;
 

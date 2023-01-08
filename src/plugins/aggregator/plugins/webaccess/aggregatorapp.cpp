@@ -63,10 +63,10 @@ namespace WebAccess
 	, AP_ { ap }
 	, CP_ { cp }
 	, ObjsThread_ { new WittyThread (this) }
-	, ChannelsModel_ { std::make_shared<Q2WProxyModel> (AP_->GetChannelsModel (), this) }
+	, ChannelsModel_ { std::make_shared<Q2WProxyModel> (*AP_->GetChannelsModel (), this) }
 	, ChannelsFilter_ { std::make_shared<ReadChannelsFilter> () }
 	, SourceItemModel_ { AP_->CreateItemsModel () }
-	, ItemsModel_ { std::make_shared<Q2WProxyModel> (SourceItemModel_, this) }
+	, ItemsModel_ { std::make_shared<Q2WProxyModel> (SourceItemModel_->GetQModel (), this) }
 	, ItemsFilter_ { std::make_shared<ReadItemsFilter> () }
 	{
 		ChannelsModel_->SetRoleMappings ({
@@ -98,8 +98,8 @@ namespace WebAccess
 					SLOT (deleteLater ()));
 		};
 		initThread (ChannelsModel_.get ());
-		initThread (SourceItemModel_);
 		initThread (ItemsModel_.get ());
+		SourceItemModel_->GetQModel ().moveToThread (ObjsThread_);
 
 		ObjsThread_->start ();
 
@@ -133,10 +133,9 @@ namespace WebAccess
 		ItemView_->setText ({});
 
 		const auto cid = Wt::cpp17::any_cast<IDType_t> (idx.data (ChannelRole::CID));
-		const auto fid = Wt::cpp17::any_cast<IDType_t> (idx.data (ChannelRole::FID));
 
 		ItemsFilter_->ClearCurrentItem ();
-		ItemsModelDecorator { SourceItemModel_ }.Reset (cid, fid);
+		ItemsModelDecorator { *SourceItemModel_ }.Reset (cid);
 	}
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx, const Wt::WMouseEvent& event)
@@ -167,7 +166,7 @@ namespace WebAccess
 
 	void AggregatorApp::ShowItem (const QModelIndex& src, const Item& item)
 	{
-		ItemsModelDecorator { SourceItemModel_ }.Selected (src);
+		ItemsModelDecorator { *SourceItemModel_ }.Selected (src);
 
 		auto text = Wt::WString ("<div><a href='{1}' target='_blank'>{2}</a><br />{3}<br /><hr/>{4}</div>")
 				.arg (ToW (item.Link_))
