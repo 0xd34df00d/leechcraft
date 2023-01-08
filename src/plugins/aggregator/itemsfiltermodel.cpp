@@ -63,8 +63,7 @@ namespace Aggregator
 		invalidate ();
 	}
 
-	bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
-			const QModelIndex& sourceParent) const
+	bool ItemsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
 		const auto& index = sourceModel ()->index (sourceRow, 0, sourceParent);
 		if (HideRead_ &&
@@ -91,8 +90,7 @@ namespace Aggregator
 		return QSortFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent);
 	}
 
-	bool ItemsFilterModel::lessThan (const QModelIndex& left,
-			const QModelIndex& right) const
+	bool ItemsFilterModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
 		if (left.column () == 1 &&
 				right.column () == 1 &&

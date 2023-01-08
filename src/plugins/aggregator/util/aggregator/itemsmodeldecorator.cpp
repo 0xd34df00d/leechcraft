@@ -11,9 +11,7 @@
 #include <QModelIndex>
 #include <interfaces/aggregator/iitemsmodel.h>
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	ItemsModelDecorator::ItemsModelDecorator (IItemsModel& model)
 	: Model_ { model }
@@ -33,5 +31,4 @@ namespace Aggregator
 				[=] { Model_.Selected (index); },
 				Qt::QueuedConnection);
 	}
-}
 }

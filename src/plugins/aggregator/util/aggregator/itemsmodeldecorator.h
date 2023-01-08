@@ -12,9 +12,7 @@
 
 class QModelIndex;
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class IItemsModel;
 
@@ -22,10 +20,9 @@ namespace Aggregator
 	{
 		IItemsModel& Model_;
 	public:
-		ItemsModelDecorator (IItemsModel&);
+		explicit ItemsModelDecorator (IItemsModel&);
 
 		void Reset (IDType_t);
 		void Selected (const QModelIndex&);
 	};
-}
 }
