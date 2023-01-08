@@ -43,6 +43,8 @@ namespace Aggregator
 	public:
 		explicit ItemsListModel (IIconThemeManager*, QObject* = nullptr);
 
+		QAbstractItemModel& GetQModel () override;
+
 		const IDType_t& GetCurrentChannel () const;
 		void Selected (const QModelIndex&) override;
 		const ItemShort& GetItem (const QModelIndex&) const;

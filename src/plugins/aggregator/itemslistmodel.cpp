@@ -67,6 +67,11 @@ namespace Aggregator
 				&ItemsListModel::HandleItemReadStatusUpdated);
 	}
 
+	QAbstractItemModel& ItemsListModel::GetQModel ()
+	{
+		return *this;
+	}
+
 	const IDType_t& ItemsListModel::GetCurrentChannel () const
 	{
 		return CurrentChannel_;

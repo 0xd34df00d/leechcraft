@@ -11,6 +11,7 @@
 #include <Qt>
 #include "common.h"
 
+class QAbstractItemModel;
 class QModelIndex;
 
 namespace LC
@@ -29,6 +30,8 @@ namespace Aggregator
 			ItemShortDescr,
 			ItemCategories,
 		};
+
+		virtual QAbstractItemModel& GetQModel () = 0;
 
 		virtual void Reset (IDType_t channelId) = 0;
 		virtual void Selected (const QModelIndex&) = 0;
