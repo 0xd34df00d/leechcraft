@@ -1373,12 +1373,11 @@ namespace Aggregator
 	{
 		const auto& sourceIndex = Impl_->Ui_.Items_->currentIndex ();
 		const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
-		if (cIndex != Impl_->LastSelectedIndex_)
+		if (cIndex != Impl_->LastSelectedIndex_ || cIndex.data (IItemsModel::ItemRole::IsRead).toBool ())
 			return;
 
-		const auto& mapped = Impl_->ItemLists_->mapToSource (cIndex);
-		static_cast<ItemsListModel*> (Impl_->ItemLists_->
-				GetModelForRow (cIndex.row ())->data ())->Selected (mapped);
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		sb->SetItemUnread (cIndex.data (IItemsModel::ItemRole::ItemId).value<IDType_t> (), false);
 	}
 
 	void ItemsWidget::makeCurrentItemVisible ()
