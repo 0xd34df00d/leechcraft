@@ -20,7 +20,7 @@ namespace Aggregator
 	{
 	}
 
-	void ItemsModelDecorator::Reset (IDType_t channelId, IDType_t feedId)
+	void ItemsModelDecorator::Reset (IDType_t channelId)
 	{
 		QMetaObject::invokeMethod (&dynamic_cast<QObject&> (Model_),
 				[=] { Model_.Reset (channelId); },

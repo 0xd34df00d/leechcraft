@@ -24,7 +24,7 @@ namespace Aggregator
 	public:
 		ItemsModelDecorator (IItemsModel&);
 
-		void Reset (IDType_t, IDType_t);
+		void Reset (IDType_t);
 		void Selected (const QModelIndex&);
 	};
 }
