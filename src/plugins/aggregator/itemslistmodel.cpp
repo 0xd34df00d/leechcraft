@@ -77,18 +77,6 @@ namespace Aggregator
 		return CurrentChannel_;
 	}
 
-	void ItemsListModel::Selected (const QModelIndex& index)
-	{
-		if (!index.isValid ())
-			return;
-
-		const auto& item = CurrentItems_ [index.row ()];
-		if (!item.Unread_)
-			return;
-
-		GetSB ()->SetItemUnread (item.ItemID_, false);
-	}
-
 	const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const
 	{
 		return CurrentItems_ [index.row ()];

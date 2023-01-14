@@ -24,11 +24,4 @@ namespace LC::Aggregator
 				[=] { Model_.Reset (channelId); },
 				Qt::QueuedConnection);
 	}
-
-	void ItemsModelDecorator::Selected (const QModelIndex& index)
-	{
-		QMetaObject::invokeMethod (&dynamic_cast<QObject&> (Model_),
-				[=] { Model_.Selected (index); },
-				Qt::QueuedConnection);
-	}
 }

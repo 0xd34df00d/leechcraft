@@ -34,7 +34,6 @@ namespace Aggregator
 		virtual QAbstractItemModel& GetQModel () = 0;
 
 		virtual void Reset (IDType_t channelId) = 0;
-		virtual void Selected (const QModelIndex&) = 0;
 	};
 }
 }

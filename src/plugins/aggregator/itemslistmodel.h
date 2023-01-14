@@ -46,7 +46,6 @@ namespace Aggregator
 		QAbstractItemModel& GetQModel () override;
 
 		const IDType_t& GetCurrentChannel () const;
-		void Selected (const QModelIndex&) override;
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;
 		void Reset (IDType_t) override;

@@ -23,6 +23,5 @@ namespace LC::Aggregator
 		explicit ItemsModelDecorator (IItemsModel&);
 
 		void Reset (IDType_t);
-		void Selected (const QModelIndex&);
 	};
 }
