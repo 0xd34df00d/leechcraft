@@ -33,6 +33,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
+#include "components/gui/itemnavigator.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
@@ -48,14 +49,24 @@ namespace Aggregator
 {
 	using LC::Util::CategorySelector;
 
+	struct UiInit
+	{
+		UiInit (auto&& ui, QWidget *parent)
+		{
+			ui.setupUi (parent);
+		}
+	};
+
 	struct ItemsWidget_Impl
 	{
+		ItemsWidget * const Parent_;
 		Ui::ItemsWidget Ui_;
 
 		QToolBar *ControlToolBar_;
 
 		QAction *ActionHideReadItems_;
 		QAction *ActionShowAsTape_;
+		UiInit UiInit_ { Ui_, Parent_ };
 
 		QAction *ActionMarkItemAsUnread_;
 		QAction *ActionMarkItemAsRead_;
@@ -71,30 +82,41 @@ namespace Aggregator
 		QAction *ActionItemLinkOpen_;
 		QAction *ActionItemLinkCopy_;
 
-		bool TapeMode_;
-		bool MergeMode_;
+		bool TapeMode_ = false;
+		bool MergeMode_ = false;
 
 		QAbstractItemModel *ChannelsModel_ = nullptr;
 
-		std::unique_ptr<ItemsListModel> CurrentItemsModel_;
-		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_;
-		std::unique_ptr<Util::MergeModel> ItemLists_;
-		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_;
-		std::unique_ptr<CategorySelector> ItemCategorySelector_;
+		std::unique_ptr<ItemsListModel> CurrentItemsModel_ {};
+		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_ {};
+		std::unique_ptr<Util::MergeModel> ItemLists_ {};
+		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ {};
+		std::unique_ptr<CategorySelector> ItemCategorySelector_ {};
 
 		QTimer *SelectedChecker_ = nullptr;
 
 		// The last selected index into the ItemLists_ model.
-		QModelIndex LastSelectedIndex_;
+		QModelIndex LastSelectedIndex_ {};
 
-		QModelIndex LastSelectedChannel_;
+		QModelIndex LastSelectedChannel_ {};
 
 		UpdatesManager *UpdatesManager_ = nullptr;
+
+		ItemNavigator ItemNavigator_
+		{
+			*Ui_.Items_,
+			LastSelectedIndex_,
+			[this] (const QModelIndex& newChan)
+			{
+				emit Parent_->movedToChannel (newChan);
+				Parent_->CurrentChannelChanged (newChan);
+			}
+		};
 	};
 
 	ItemsWidget::ItemsWidget (const Dependencies& deps, QWidget *parent)
 	: QWidget (parent)
-	, Impl_ (new ItemsWidget_Impl)
+	, Impl_ (new ItemsWidget_Impl { this })
 	{
 		Impl_->SelectedChecker_ = new QTimer (this);
 		Impl_->SelectedChecker_->setSingleShot (true);
@@ -1126,124 +1148,22 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionPrevUnreadItem__triggered ()
 	{
-		auto current = Impl_->Ui_.Items_->currentIndex ();
-		if (!current.isValid () &&
-				Impl_->ItemsFilterModel_->rowCount ())
-		{
-			current = Impl_->ItemsFilterModel_->index (Impl_->ItemsFilterModel_->rowCount () - 1, 0);
-			if (current.isValid () &&
-					!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
-			{
-				Impl_->Ui_.Items_->setCurrentIndex (current);
-				return;
-			}
-		}
-
-		for (int i = current.row () - 1; i >= 0; --i)
-		{
-			const auto& next = current.sibling (i, current.column ());
-			if (!next.isValid ())
-				break;
-
-			if (!next.data (ItemsListModel::ItemRole::IsRead).toBool ())
-			{
-				Impl_->Ui_.Items_->setCurrentIndex (next);
-				return;
-			}
-		}
-
-		const auto& chanIdx = Impl_->LastSelectedChannel_;
-		if (!chanIdx.isValid ())
-			return;
-
-		auto tryRange = [&] (int start, int end) -> bool
-		{
-			for (int i = start; i >= end; --i)
-			{
-				const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
-				if (otherChannel.data ().toInt ())
-				{
-					emit movedToChannel (otherChannel);
-					CurrentChannelChanged (otherChannel);
-					on_ActionPrevUnreadItem__triggered ();
-					return true;
-				}
-			}
-
-			return false;
-		};
-
-		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
-		tryRange (chanIdx.row () - 1, 0) || tryRange (channelRc - 1, chanIdx.row () + 1);
+		Impl_->ItemNavigator_.MoveToPrevUnread ();
 	}
 
 	void ItemsWidget::on_ActionPrevItem__triggered ()
 	{
-		const auto& current = Impl_->Ui_.Items_->currentIndex ();
-		const auto& next = current.sibling (current.row () - 1, current.column ());
-		if (next.isValid ())
-			Impl_->Ui_.Items_->setCurrentIndex (next);
+		Impl_->ItemNavigator_.MoveToPrev ();
 	}
 
 	void ItemsWidget::on_ActionNextItem__triggered ()
 	{
-		const auto& current = Impl_->Ui_.Items_->currentIndex ();
-		const auto& next = current.sibling (current.row () + 1, current.column ());
-		if (next.isValid ())
-			Impl_->Ui_.Items_->setCurrentIndex (next);
+		Impl_->ItemNavigator_.MoveToNext ();
 	}
 
 	void ItemsWidget::on_ActionNextUnreadItem__triggered ()
 	{
-		auto current = Impl_->Ui_.Items_->currentIndex ();
-		if (!current.isValid ())
-		{
-			current = Impl_->ItemsFilterModel_->index (0, 0);
-			if (current.isValid () &&
-					!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
-			{
-				Impl_->Ui_.Items_->setCurrentIndex (current);
-				return;
-			}
-		}
-
-		const auto rc = Impl_->ItemsFilterModel_->rowCount (current.parent ());
-		for (int i = current.row () + 1; i < rc; ++i)
-		{
-			const auto& next = current.sibling (i, current.column ());
-			if (!next.isValid ())
-				break;
-
-			if (!next.data (ItemsListModel::ItemRole::IsRead).toBool ())
-			{
-				Impl_->Ui_.Items_->setCurrentIndex (next);
-				return;
-			}
-		}
-
-		const auto& chanIdx = Impl_->LastSelectedChannel_;
-		if (!chanIdx.isValid ())
-			return;
-
-		auto tryRange = [&] (int start, int end) -> bool
-			{
-				for (int i = start; i < end; ++i)
-				{
-					const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
-					if (otherChannel.data ().toInt ())
-					{
-						emit movedToChannel (otherChannel);
-						CurrentChannelChanged (otherChannel);
-						on_ActionNextUnreadItem__triggered ();
-						return true;
-					}
-				}
-
-				return false;
-			};
-
-		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
-		tryRange (chanIdx.row () + 1, channelRc) || tryRange (0, chanIdx.row ());
+		Impl_->ItemNavigator_.MoveToNextUnread ();
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)

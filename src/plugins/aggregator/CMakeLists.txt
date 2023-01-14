@@ -15,6 +15,7 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		components/actions/appwideactions.cpp
 		components/actions/channelactions.cpp
+		components/gui/itemnavigator.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp
