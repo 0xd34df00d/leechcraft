@@ -42,17 +42,21 @@ namespace Proto
 	QByteArray ToMRIM (int);
 
 	template<typename Enum>
-	typename std::enable_if<std::is_enum<Enum>::value, QByteArray>::type ToMRIM (Enum e)
+	concept IsEnum = std::is_enum_v<Enum>;
+
+	template<IsEnum Enum>
+	QByteArray ToMRIM (Enum e)
 	{
 		return ToMRIM (static_cast<quint32> (e));
 	}
 
 	QByteArray ToMRIM ();
 
-	template<typename T, typename... Args>
-	QByteArray ToMRIM (T t, Args... args)
+	template<typename... Args>
+		requires (sizeof... (Args) > 0)
+	QByteArray ToMRIM (Args... args)
 	{
-		return ToMRIM (t) + ToMRIM (args...);
+		return (ToMRIM (args) + ...);
 	}
 
 	struct EncoderProxy
@@ -92,19 +96,19 @@ namespace Proto
 	void FromMRIM (QByteArray&, quint32&);
 	void FromMRIM (QByteArray&);
 
-	template<typename Enum>
-	void FromMRIM (QByteArray& ba, Enum& out, typename std::enable_if<std::is_enum<Enum>::value, void>::type* = nullptr)
+	template<IsEnum Enum>
+	void FromMRIM (QByteArray& ba, Enum& out)
 	{
 		quint32 proxy = 0;
 		FromMRIM (ba, proxy);
 		out = static_cast<Enum> (proxy);
 	}
 
-	template<typename T, typename... Args>
-	void FromMRIM (QByteArray& ba, T& u, Args&... args)
+	template<typename... Args>
+		requires (sizeof... (Args) > 0)
+	void FromMRIM (QByteArray& ba, Args&... args)
 	{
-		FromMRIM (ba, u);
-		FromMRIM (ba, args...);
+		(FromMRIM (ba, args), ...);
 	}
 }
 }

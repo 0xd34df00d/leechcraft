@@ -133,10 +133,6 @@ namespace Proto
 		ba = ba.mid (4);
 		res = qFromLittleEndian<quint32> (reinterpret_cast<const uchar*> (toDecode.constData ()));
 	}
-
-	void FromMRIM (QByteArray&)
-	{
-	}
 }
 }
 }
