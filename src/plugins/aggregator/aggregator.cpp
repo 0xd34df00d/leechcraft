@@ -36,6 +36,8 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "components/actions/appwideactions.h"
+#include "components/actions/channelactions.h"
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
 #include "addfeeddialog.h"
@@ -55,8 +57,6 @@
 #include "poolsmanager.h"
 #include "opmladder.h"
 #include "feedserrormanager.h"
-#include "appwideactions.h"
-#include "channelactions.h"
 #include "dbutils.h"
 
 namespace LC

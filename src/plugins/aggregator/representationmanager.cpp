@@ -8,12 +8,12 @@
 
 #include "representationmanager.h"
 #include <QModelIndex>
-#include "appwideactions.h"
+#include "components/actions/appwideactions.h"
+#include "components/actions/channelactions.h"
 #include "jobholderrepresentation.h"
 #include "itemswidget.h"
 #include "channelsmodelrepresentationproxy.h"
 #include "channelsmodel.h"
-#include "channelactions.h"
 
 namespace LC::Aggregator
 {

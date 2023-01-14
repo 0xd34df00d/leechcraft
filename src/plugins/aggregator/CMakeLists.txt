@@ -13,6 +13,8 @@ FindQtLibs (leechcraft_aggregator_util Widgets)
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		components/actions/appwideactions.cpp
+		components/actions/channelactions.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp
@@ -57,8 +59,6 @@ LC_DEFINE_PLUGIN (
 		opmladder.cpp
 		poolsmanager.cpp
 		feedserrormanager.cpp
-		appwideactions.cpp
-		channelactions.cpp
 		dbutils.cpp
 		tooltipbuilder.cpp
 	SETTINGS aggregatorsettings.xml

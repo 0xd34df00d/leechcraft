@@ -16,10 +16,10 @@
 #include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
+#include "components/actions/appwideactions.h"
+#include "components/actions/channelactions.h"
 #include "xmlsettingsmanager.h"
 #include "uistatepersist.h"
-#include "appwideactions.h"
-#include "channelactions.h"
 #include "channelsmodel.h"
 #include "channelsfiltermodel.h"
 

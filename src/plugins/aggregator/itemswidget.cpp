@@ -31,6 +31,8 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include "components/actions/appwideactions.h"
+#include "components/actions/channelactions.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
@@ -38,8 +40,6 @@
 #include "uistatepersist.h"
 #include "storagebackendmanager.h"
 #include "itemutils.h"
-#include "channelactions.h"
-#include "appwideactions.h"
 #include "dbutils.h"
 
 namespace LC
@@ -82,7 +82,10 @@ namespace Aggregator
 		std::unique_ptr<CategorySelector> ItemCategorySelector_;
 
 		QTimer *SelectedChecker_ = nullptr;
+
+		// The last selected index into the ItemLists_ model.
 		QModelIndex LastSelectedIndex_;
+
 		QModelIndex LastSelectedChannel_;
 
 		UpdatesManager *UpdatesManager_ = nullptr;
