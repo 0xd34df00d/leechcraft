@@ -14,7 +14,16 @@
    <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -69,7 +78,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="LC::Aggregator::ItemsWidget" name="ItemsWidget_" native="true"/>
     </widget>
    </item>
   </layout>
@@ -79,12 +87,6 @@
    <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>LC::Aggregator::ItemsWidget</class>
-   <extends>QWidget</extends>
-   <header>itemswidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

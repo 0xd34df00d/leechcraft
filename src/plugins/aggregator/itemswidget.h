@@ -68,10 +68,8 @@ namespace Aggregator
 
 		using Dependencies = ItemsWidgetDependencies;
 
-		explicit ItemsWidget (QWidget* = nullptr);
+		explicit ItemsWidget (const Dependencies&, QWidget* = nullptr);
 		~ItemsWidget () override;
-
-		void InjectDependencies (const Dependencies&);
 
 		Item GetItem (const QModelIndex&) const;
 		QToolBar* GetToolBar () const;

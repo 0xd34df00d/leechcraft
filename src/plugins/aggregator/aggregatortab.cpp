@@ -22,6 +22,7 @@
 #include "uistatepersist.h"
 #include "channelsmodel.h"
 #include "channelsfiltermodel.h"
+#include "itemswidget.h"
 
 namespace LC
 {
@@ -40,21 +41,21 @@ namespace Aggregator
 			}) }
 	, FlatToFolders_ { std::make_unique<Util::FlatToFoldersProxyModel> (GetProxyHolder ()->GetTagsManager ()) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
+	, ItemsWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
+				.ShortcutsMgr_ = deps.ShortcutManager_,
+				.ChannelsModel_ = *ChannelsFilterModel_,
+				.AppWideActions_ = deps.AppWideActions_,
+				.ChannelActions_ = *ChannelActions_,
+				.UpdatesManager_ = deps.UpdatesManager_,
+			}) }
 	{
 		ChannelsFilterModel_->setSourceModel (&deps.ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		Ui_.setupUi (this);
+		Ui_.MainSplitter_->addWidget (ItemsWidget_.get ());
 
-		Ui_.ItemsWidget_->InjectDependencies ({
-					.ShortcutsMgr_ = deps.ShortcutManager_,
-					.ChannelsModel_ = *ChannelsFilterModel_,
-					.AppWideActions_ = deps.AppWideActions_,
-					.ChannelActions_ = *ChannelActions_,
-					.UpdatesManager_ = deps.UpdatesManager_,
-				});
-
-		connect (Ui_.ItemsWidget_,
+		connect (ItemsWidget_.get (),
 				&ItemsWidget::movedToChannel,
 				this,
 				&AggregatorTab::handleItemsMovedToChannel);
@@ -93,13 +94,13 @@ namespace Aggregator
 				&QTreeView::expand);
 
 		LoadColumnWidth (Ui_.Feeds_, "feeds");
-		Ui_.ItemsWidget_->ConstructBrowser ();
-		Ui_.ItemsWidget_->LoadUIState ();
+		ItemsWidget_->ConstructBrowser ();
+		ItemsWidget_->LoadUIState ();
 
 		UiStateGuard_ = Util::MakeScopeGuard ([this]
 				{
 					SaveColumnWidth (Ui_.Feeds_, "feeds");
-					Ui_.ItemsWidget_->SaveUIState ();
+					ItemsWidget_->SaveUIState ();
 				});
 
 		handleGroupChannels ();
@@ -112,7 +113,7 @@ namespace Aggregator
 
 	QToolBar* AggregatorTab::GetToolBar () const
 	{
-		return Ui_.ItemsWidget_->GetToolBar ();
+		return ItemsWidget_->GetToolBar ();
 	}
 
 	TabClassInfo AggregatorTab::GetTabClassInfo () const
@@ -244,10 +245,10 @@ namespace Aggregator
 		if (!mapped.isValid ())
 		{
 			const auto& tags = index.data (RoleTags).toStringList ();
-			Ui_.ItemsWidget_->SetMergeModeTags (tags);
+			ItemsWidget_->SetMergeModeTags (tags);
 		}
 		else
-			Ui_.ItemsWidget_->CurrentChannelChanged (mapped);
+			ItemsWidget_->CurrentChannelChanged (mapped);
 	}
 
 	void AggregatorTab::handleGroupChannels ()
@@ -271,7 +272,7 @@ namespace Aggregator
 
 	void AggregatorTab::on_MergeItems__toggled (bool merge)
 	{
-		Ui_.ItemsWidget_->SetMergeMode (merge);
+		ItemsWidget_->SetMergeMode (merge);
 		XmlSettingsManager::Instance ()->setProperty ("MergeItems", merge);
 	}
 }

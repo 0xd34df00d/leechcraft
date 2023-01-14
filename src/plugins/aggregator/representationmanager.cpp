@@ -26,19 +26,17 @@ namespace LC::Aggregator
 				.GetCurrentChannel_ = [this] { return SelectedRepr_; },
 				.GetAllSelectedChannels_ = [this] { return QList { SelectedRepr_ }; },
 			}) }
-	, ReprWidget_ { std::make_unique<ItemsWidget> () }
+	, ReprWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
+				.ShortcutsMgr_ = deps.ShortcutManager_,
+				.ChannelsModel_ = deps.ChannelsModel_,
+				.AppWideActions_ = deps.AppWideActions_,
+				.ChannelActions_ = *ChannelActions_,
+				.UpdatesManager_ = deps.UpdatesManager_,
+			})}
 	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> () }
 	, ReprModel_ { std::make_unique<ChannelsModelRepresentationProxy> () }
 	{
 		JobHolderRepresentation_->setSourceModel (&deps.ChannelsModel_);
-
-		ReprWidget_->InjectDependencies ({
-					.ShortcutsMgr_ = deps.ShortcutManager_,
-					.ChannelsModel_ = deps.ChannelsModel_,
-					.AppWideActions_ = deps.AppWideActions_,
-					.ChannelActions_ = *ChannelActions_,
-					.UpdatesManager_ = deps.UpdatesManager_,
-				});
 
 		ReprModel_->setSourceModel (JobHolderRepresentation_.get ());
 		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_.get ());

@@ -53,6 +53,7 @@ namespace Aggregator
 		Ui::ItemsWidget Ui_;
 
 		QToolBar *ControlToolBar_;
+
 		QAction *ActionHideReadItems_;
 		QAction *ActionShowAsTape_;
 
@@ -91,7 +92,7 @@ namespace Aggregator
 		UpdatesManager *UpdatesManager_ = nullptr;
 	};
 
-	ItemsWidget::ItemsWidget (QWidget *parent)
+	ItemsWidget::ItemsWidget (const Dependencies& deps, QWidget *parent)
 	: QWidget (parent)
 	, Impl_ (new ItemsWidget_Impl)
 	{
@@ -102,12 +103,41 @@ namespace Aggregator
 				this,
 				&ItemsWidget::checkSelected);
 
+		Impl_->UpdatesManager_ = &deps.UpdatesManager_;
+
+		auto& cm = deps.ChannelsModel_;
+		Impl_->ChannelsModel_ = &cm;
+		connect (&cm,
+				&QAbstractItemModel::rowsInserted,
+				this,
+				&ItemsWidget::invalidateMergeMode);
+		connect (&cm,
+				&QAbstractItemModel::rowsRemoved,
+				this,
+				&ItemsWidget::invalidateMergeMode);
+
 		SetupActions ();
+		auto addAct = [this, &deps] (ItemsWidget::Action actId)
+		{
+			auto act = GetAction (actId);
+			deps.ShortcutsMgr_.RegisterAction (act->objectName (), act);
+		};
+
+		for (int i = 0; i < static_cast<int> (ItemsWidget::Action::MaxAction); ++i)
+			addAct (static_cast<ItemsWidget::Action> (i));
 
 		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ();
 		Impl_->MergeMode_ = false;
 		Impl_->ControlToolBar_ = SetupToolBar ();
+
+		auto first = Impl_->ControlToolBar_->actions ().first ();
+
+		Impl_->ControlToolBar_->insertActions (first, deps.AppWideActions_.GetFastActions ());
+		Impl_->ControlToolBar_->insertSeparator (first);
+
+		Impl_->ControlToolBar_->insertActions (first, deps.ChannelActions_.GetToolbarActions ());
+		Impl_->ControlToolBar_->insertSeparator (first);
 
 		const auto& proxy = GetProxyHolder ();
 		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
@@ -216,39 +246,6 @@ namespace Aggregator
 				this,
 				0);
 		delete Impl_;
-	}
-
-	void ItemsWidget::InjectDependencies (const Dependencies& deps)
-	{
-		Impl_->UpdatesManager_ = &deps.UpdatesManager_;
-
-		auto& cm = deps.ChannelsModel_;
-		Impl_->ChannelsModel_ = &cm;
-		connect (&cm,
-				&QAbstractItemModel::rowsInserted,
-				this,
-				&ItemsWidget::invalidateMergeMode);
-		connect (&cm,
-				&QAbstractItemModel::rowsRemoved,
-				this,
-				&ItemsWidget::invalidateMergeMode);
-
-		auto first = Impl_->ControlToolBar_->actions ().first ();
-
-		Impl_->ControlToolBar_->insertActions (first, deps.AppWideActions_.GetFastActions ());
-		Impl_->ControlToolBar_->insertSeparator (first);
-
-		Impl_->ControlToolBar_->insertActions (first, deps.ChannelActions_.GetToolbarActions ());
-		Impl_->ControlToolBar_->insertSeparator (first);
-
-		auto addAct = [this, &deps] (ItemsWidget::Action actId)
-		{
-			auto act = GetAction (actId);
-			deps.ShortcutsMgr_.RegisterAction (act->objectName (), act);
-		};
-
-		for (int i = 0; i < static_cast<int> (ItemsWidget::Action::MaxAction); ++i)
-			addAct (static_cast<ItemsWidget::Action> (i));
 	}
 
 	Item ItemsWidget::GetItem (const QModelIndex& index) const

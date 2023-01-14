@@ -25,11 +25,14 @@ namespace Util
 
 namespace Aggregator
 {
+	class AppWideActions;
+	class ChannelActions;
 	class ChannelsFilterModel;
 	class ChannelsModel;
-	class UpdatesManager;
-	class ResourcesFetcher;
 	class DBUpdateThread;
+	class ItemsWidget;
+	class ResourcesFetcher;
+	class UpdatesManager;
 
 	class AggregatorTab : public QWidget
 						, public ITabWidget
@@ -47,6 +50,8 @@ namespace Aggregator
 		const std::unique_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 
 		ChannelsFilterModel * const ChannelsFilterModel_;
+
+		const std::unique_ptr<ItemsWidget> ItemsWidget_;
 
 		Util::DefaultScopeGuard UiStateGuard_;
 	public:
