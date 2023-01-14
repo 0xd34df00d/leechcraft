@@ -143,7 +143,6 @@ namespace WebAccess
 		if (!idx.isValid ())
 			return;
 
-		const auto& src = ItemsModel_->MapToSource (ItemsFilter_->mapToSource (idx));
 		const auto itemId = Wt::cpp17::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
 		if (!item)
