@@ -68,8 +68,8 @@ namespace WebAccess
 		void HandleChannelClicked (const Wt::WModelIndex&, const Wt::WMouseEvent&);
 		void HandleItemClicked (const Wt::WModelIndex&, const Wt::WMouseEvent&);
 
-		void ShowItem (const QModelIndex&, const Item&);
-		void ShowItemMenu (const QModelIndex&, const Item&, const Wt::WMouseEvent&);
+		void ShowItem (const Item&);
+		void ShowItemMenu (const Item&, const Wt::WMouseEvent&);
 
 		void SetupUI ();
 	};

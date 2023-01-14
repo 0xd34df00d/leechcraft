@@ -154,17 +154,17 @@ namespace WebAccess
 		switch (event.button ())
 		{
 		case Wt::MouseButton::Left:
-			ShowItem (src, *item);
+			ShowItem (*item);
 			break;
 		case Wt::MouseButton::Right:
-			ShowItemMenu (src, *item, event);
+			ShowItemMenu (*item, event);
 			break;
 		default:
 			break;
 		}
 	}
 
-	void AggregatorApp::ShowItem (const QModelIndex& src, const Item& item)
+	void AggregatorApp::ShowItem (const Item& item)
 	{
 		AP_->SetItemRead (item.ItemID_, true);
 
@@ -176,7 +176,7 @@ namespace WebAccess
 		ItemView_->setText (text);
 	}
 
-	void AggregatorApp::ShowItemMenu (const QModelIndex&, const Item& item, const Wt::WMouseEvent& event)
+	void AggregatorApp::ShowItemMenu (const Item& item, const Wt::WMouseEvent& event)
 	{
 		Wt::WPopupMenu menu;
 		const auto itemId = item.ItemID_;
