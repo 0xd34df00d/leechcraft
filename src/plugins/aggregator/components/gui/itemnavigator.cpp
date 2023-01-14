@@ -46,7 +46,7 @@ namespace LC::Aggregator
 		if (MoveToPrevUnreadInChannel ())
 			return;
 		if (SelectPrevUnreadChannel ())
-			MoveToPrevUnread ();
+			MoveToPrevUnreadInChannel ();
 	}
 
 	void ItemNavigator::MoveToNextUnread () const
@@ -54,7 +54,7 @@ namespace LC::Aggregator
 		if (MoveToNextUnreadInChannel ())
 			return;
 		if (SelectNextUnreadChannel ())
-			MoveToNextUnread ();
+			MoveToNextUnreadInChannel ();
 	}
 
 	bool ItemNavigator::MoveToPrevUnreadInChannel () const
