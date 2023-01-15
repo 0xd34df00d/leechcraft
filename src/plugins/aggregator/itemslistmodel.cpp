@@ -237,17 +237,18 @@ namespace Aggregator
 		if (!index.isValid () || index.row () >= rowCount ())
 			return {};
 
+		const auto& item = CurrentItems_ [index.row ()];
 		if (role == Qt::DisplayRole)
-			return GetItemDisplay (CurrentItems_ [index.row ()], index.column ());
+			return GetItemDisplay (item, index.column ());
 		else if (role == Qt::ForegroundRole)
-			return GetItemForeground (CurrentItems_ [index.row ()]);
+			return GetItemForeground (item);
 		else if (role == Qt::FontRole &&
-				CurrentItems_ [index.row ()].Unread_)
+				item.Unread_)
 			return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
 		else if (role == Qt::ToolTipRole &&
 				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 		{
-			IDType_t id = CurrentItems_ [index.row ()].ItemID_;
+			IDType_t id = item.ItemID_;
 			const auto& maybeItem = GetSB ()->GetItem (id);
 			if (!maybeItem)
 				return {};
@@ -270,20 +271,19 @@ namespace Aggregator
 			if (index.column ())
 				return {};
 
-			const auto& item = CurrentItems_ [index.row ()];
 			if (GetSB ()->GetItemTags (item.ItemID_).contains ("_important"))
 				return StarredIcon_;
 
 			return item.Unread_ ? UnreadIcon_ : ReadIcon_;
 		}
 		else if (role == ItemRole::IsRead)
-			return !CurrentItems_ [index.row ()].Unread_;
+			return !item.Unread_;
 		else if (role == ItemRole::ItemId)
-			return CurrentItems_ [index.row ()].ItemID_;
+			return item.ItemID_;
 		else if (role == ItemRole::ItemShortDescr)
-			return QVariant::fromValue (CurrentItems_ [index.row ()]);
+			return QVariant::fromValue (item);
 		else if (role == ItemRole::ItemCategories)
-			return CurrentItems_ [index.row ()].Categories_;
+			return item.Categories_;
 		else
 			return {};
 	}
