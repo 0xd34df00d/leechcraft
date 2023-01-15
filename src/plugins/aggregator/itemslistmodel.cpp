@@ -248,20 +248,19 @@ namespace Aggregator
 		else if (role == Qt::ToolTipRole &&
 				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 		{
-			IDType_t id = item.ItemID_;
-			const auto& maybeItem = GetSB ()->GetItem (id);
+			const auto& maybeItem = GetSB ()->GetItem (item.ItemID_);
 			if (!maybeItem)
 				return {};
 
-			const auto& item = *maybeItem;
-			return TooltipBuilder { item.Title_ }
-					.Add (tr ("Author"), item.Author_)
-					.Add (tr ("Categories"), item.Categories_.join ("; "))
-					.Add (tr ("%n comment(s)", "", item.NumComments_), item.NumComments_)
-					.Add (tr ("%n enclosure(s)", "", item.Enclosures_.size ()), item.Enclosures_.size ())
-					.Add (tr ("%n MediaRSS entry(s)", "", item.MRSSEntries_.size ()), item.MRSSEntries_.size ())
-					.Add (tr ("RSS with comments is available"), item.CommentsLink_.size ())
-					.AddHtml ("<hr/>" + item.Description_)
+			const auto& fullItem = *maybeItem;
+			return TooltipBuilder { fullItem.Title_ }
+					.Add (tr ("Author"), fullItem.Author_)
+					.Add (tr ("Categories"), fullItem.Categories_.join ("; "))
+					.Add (tr ("%n comment(s)", "", fullItem.NumComments_), fullItem.NumComments_)
+					.Add (tr ("%n enclosure(s)", "", fullItem.Enclosures_.size ()), fullItem.Enclosures_.size ())
+					.Add (tr ("%n MediaRSS entry(s)", "", fullItem.MRSSEntries_.size ()), fullItem.MRSSEntries_.size ())
+					.Add (tr ("RSS with comments is available"), fullItem.CommentsLink_.size ())
+					.AddHtml ("<hr/>" + fullItem.Description_)
 					.GetTooltip ();
 		}
 		else if (role == Qt::BackgroundRole)
