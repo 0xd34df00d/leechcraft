@@ -85,7 +85,7 @@ namespace LC::Aggregator
 				[this] { MarkSelectedReadStatus (true); },
 				{ .Shortcut_ = { "R" } });
 		mkSep ();
-		MarkUnimportant_ = mkAction (tr ("Unimportant"), "rating", "MarkItemAsUnimportant",
+		MarkUnimportant_ = mkAction (tr ("Unimportant"), "rating-unrated", "MarkItemAsUnimportant",
 				[this] { MarkSelectedAsImportant (false); },
 				{ .Shortcut_ = { "I" } });
 		MarkImportant_ = mkAction (tr ("Important"), "rating", "MarkItemAsImportant",
