@@ -9,8 +9,9 @@
 #pragma once
 
 #include <functional>
-#include <QObject>
+#include <QCoreApplication>
 #include <QList>
+#include <QObject>
 #include "../../common.h"
 #include "../gui/itemnavigator.h"
 
@@ -27,6 +28,8 @@ namespace LC::Aggregator
 
 	class ItemActions : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ItemActions)
+
 		QList<QAction*> AllActions_;
 		QList<QAction*> ToolbarActions_;
 		QList<QAction*> InvisibleActions_;

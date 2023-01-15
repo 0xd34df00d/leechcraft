@@ -9,6 +9,7 @@
 #pragma once
 
 #include <functional>
+#include <QCoreApplication>
 #include <QMenu>
 #include <QList>
 
@@ -27,6 +28,8 @@ namespace LC::Aggregator
 
 	class ChannelActions : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ItemActions)
+
 		QList<QAction*> AllActions_;
 		QList<QAction*> ToolbarActions_;
 	public:
