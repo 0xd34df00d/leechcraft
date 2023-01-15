@@ -941,7 +941,7 @@ namespace LC::Aggregator
 
 		lock.Good ();
 
-		emit itemsRemoved ({ items });
+		emit itemsRemoved (items);
 
 		for (const auto& cid : modifiedChannels)
 			emit channelUnreadCountUpdated (cid, GetUnreadItemsCount (cid));
