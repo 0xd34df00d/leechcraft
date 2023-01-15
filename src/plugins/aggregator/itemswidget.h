@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWidget>
+#include "components/actions/itemactions.h"
 #include "ui_itemswidget.h"
 #include "item.h"
 #include "channel.h"
@@ -49,23 +50,9 @@ namespace Aggregator
 
 		friend class Aggregator;
 		ItemsWidget_Impl *Impl_;
+
+		ItemActions Actions_;
 	public:
-		enum class Action
-		{
-			MarkAsRead,
-			MarkAsUnread,
-			MarkAsImportant,
-			PrevUnreadItem,
-			PrevItem,
-			NextItem,
-			NextUnreadItem,
-			Delete,
-			OpenLink,
-			CopyLink,
-
-			MaxAction
-		};
-
 		using Dependencies = ItemsWidgetDependencies;
 
 		explicit ItemsWidget (const Dependencies&, QWidget* = nullptr);
@@ -76,8 +63,6 @@ namespace Aggregator
 		void SetTapeMode (bool);
 
 		QModelIndex GetUnfilteredSelectedIndex () const;
-
-		QAction* GetAction (Action) const;
 
 		/** Merge all that channels that are currently shown.
 			*
@@ -100,41 +85,23 @@ namespace Aggregator
 		void SetHideRead (bool);
 		void Selected (const QModelIndex&);
 		IDType_t GetItemIDFromRow (int) const;
-		void SubscribeToComments (const QModelIndex&) const;
 		void CurrentChannelChanged (const QModelIndex&);
 
 		void ConstructBrowser ();
 		void LoadUIState ();
 		void SaveUIState ();
 	private:
-		void MarkItemReadStatus (const QModelIndex&, bool);
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);
-		void SetupActions ();
 		QToolBar* SetupToolBar ();
 		QString GetHex (QPalette::ColorRole,
 				QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 		QString ToHtml (const Item&);
 		void RestoreSplitter ();
-		QList<QPersistentModelIndex> GetSelected () const;
 	private slots:
 		void invalidateMergeMode ();
-		void on_ActionHideReadItems__triggered ();
-		void on_ActionShowAsTape__triggered ();
-		void on_ActionMarkItemAsUnread__triggered ();
-		void on_ActionMarkItemAsRead__triggered ();
-		void on_ActionMarkItemAsImportant__triggered ();
-		void on_ActionDeleteItem__triggered ();
-
-		void on_ActionPrevUnreadItem__triggered ();
-		void on_ActionPrevItem__triggered ();
-		void on_ActionNextItem__triggered ();
-		void on_ActionNextUnreadItem__triggered ();
 
 		void on_CaseSensitiveSearch__stateChanged (int);
-		void on_ActionItemCommentsSubscribe__triggered ();
-		void on_ActionItemLinkOpen__triggered ();
-		void on_ActionItemLinkCopy__triggered ();
 
 		void on_CategoriesSplitter__splitterMoved ();
 		void currentItemChanged ();

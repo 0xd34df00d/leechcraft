@@ -17,7 +17,6 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QToolBar>
-#include <QClipboard>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
@@ -49,38 +48,18 @@ namespace Aggregator
 {
 	using LC::Util::CategorySelector;
 
-	struct UiInit
-	{
-		UiInit (auto&& ui, QWidget *parent)
-		{
-			ui.setupUi (parent);
-		}
-	};
-
 	struct ItemsWidget_Impl
 	{
 		ItemsWidget * const Parent_;
-		Ui::ItemsWidget Ui_;
 
-		QToolBar *ControlToolBar_;
+		Ui::ItemsWidget Ui_ {};
 
-		QAction *ActionHideReadItems_;
-		QAction *ActionShowAsTape_;
-		UiInit UiInit_ { Ui_, Parent_ };
+		struct UiInit
+		{
+			UiInit (auto&& ui, QWidget *parent) { ui.setupUi (parent); }
+		} UiInit_ { Ui_, Parent_ };
 
-		QAction *ActionMarkItemAsUnread_;
-		QAction *ActionMarkItemAsRead_;
-		QAction *ActionMarkItemAsImportant_;
-
-		QAction *ActionPrevUnreadItem_;
-		QAction *ActionPrevItem_;
-		QAction *ActionNextItem_;
-		QAction *ActionNextUnreadItem_;
-
-		QAction *ActionDeleteItem_;
-		QAction *ActionItemCommentsSubscribe_;
-		QAction *ActionItemLinkOpen_;
-		QAction *ActionItemLinkCopy_;
+		QToolBar *ControlToolBar_ = nullptr;
 
 		bool TapeMode_ = false;
 		bool MergeMode_ = false;
@@ -101,22 +80,29 @@ namespace Aggregator
 		QModelIndex LastSelectedChannel_ {};
 
 		UpdatesManager *UpdatesManager_ = nullptr;
-
-		ItemNavigator ItemNavigator_
-		{
-			*Ui_.Items_,
-			LastSelectedIndex_,
-			[this] (const QModelIndex& newChan)
-			{
-				emit Parent_->movedToChannel (newChan);
-				Parent_->CurrentChannelChanged (newChan);
-			}
-		};
 	};
 
 	ItemsWidget::ItemsWidget (const Dependencies& deps, QWidget *parent)
 	: QWidget (parent)
 	, Impl_ (new ItemsWidget_Impl { this })
+	, Actions_ { ItemActions::Deps {
+		.Parent_ = this,
+		.ShortcutsMgr_ = deps.ShortcutsMgr_,
+		.UpdatesManager_ = deps.UpdatesManager_,
+		.SetHideRead_ = [this] (bool hide) { SetHideRead (hide); },
+		.SetShowTape_ = [this] (bool tape) { SetTapeMode (tape); },
+		.GetSelection_ = [this] { return Impl_->Ui_.Items_->selectionModel ()->selectedRows (); },
+		.ItemNavigator_ = ItemNavigator
+		{
+			*Impl_->Ui_.Items_,
+			Impl_->LastSelectedIndex_,
+			[this] (const QModelIndex& newChan)
+			{
+				emit movedToChannel (newChan);
+				CurrentChannelChanged (newChan);
+			}
+		},
+	}, this }
 	{
 		Impl_->SelectedChecker_ = new QTimer (this);
 		Impl_->SelectedChecker_->setSingleShot (true);
@@ -138,26 +124,14 @@ namespace Aggregator
 				this,
 				&ItemsWidget::invalidateMergeMode);
 
-		SetupActions ();
-		auto addAct = [this, &deps] (ItemsWidget::Action actId)
-		{
-			auto act = GetAction (actId);
-			deps.ShortcutsMgr_.RegisterAction (act->objectName (), act);
-		};
-
-		for (int i = 0; i < static_cast<int> (ItemsWidget::Action::MaxAction); ++i)
-			addAct (static_cast<ItemsWidget::Action> (i));
-
 		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ();
-		Impl_->MergeMode_ = false;
+
+		// TODO refactor
 		Impl_->ControlToolBar_ = SetupToolBar ();
-
 		auto first = Impl_->ControlToolBar_->actions ().first ();
-
 		Impl_->ControlToolBar_->insertActions (first, deps.AppWideActions_.GetFastActions ());
 		Impl_->ControlToolBar_->insertSeparator (first);
-
 		Impl_->ControlToolBar_->insertActions (first, deps.ChannelActions_.GetToolbarActions ());
 		Impl_->ControlToolBar_->insertSeparator (first);
 
@@ -165,8 +139,6 @@ namespace Aggregator
 		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
 		Impl_->ItemLists_ = std::make_unique<Util::MergeModel> (QStringList { tr ("Name"), tr ("Date") });
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
-
-		Impl_->Ui_.setupUi (this);
 
 		Impl_->Ui_.Items_->setAcceptDrops (false);
 
@@ -182,24 +154,10 @@ namespace Aggregator
 				Impl_->ItemsFilterModel_.get (),
 				&QSortFilterProxyModel::invalidate);
 
-		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
-		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsRead_);
-		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
-		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsImportant_);
-		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
-		Impl_->Ui_.Items_->addAction (Impl_->ActionDeleteItem_);
-		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
-		Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
-		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
-		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkCopy_);
+		Impl_->Ui_.Items_->addActions (Actions_.GetAllActions ());
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 
-		addActions ({
-				Impl_->ActionPrevUnreadItem_,
-				Impl_->ActionPrevItem_,
-				Impl_->ActionNextItem_,
-				Impl_->ActionNextUnreadItem_
-			});
+		addActions (Actions_.GetInvisibleActions ());
 
 		connect (Impl_->Ui_.SearchLine_,
 				&QLineEdit::textChanged,
@@ -235,14 +193,24 @@ namespace Aggregator
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::categorySelectionChanged);
 
-		connect (Impl_->Ui_.Items_->selectionModel (),
+		const auto sm = Impl_->Ui_.Items_->selectionModel ();
+		connect (sm,
 				&QItemSelectionModel::selectionChanged,
+				this,
+				&ItemsWidget::currentItemChanged);
+		connect (sm,
+				&QItemSelectionModel::selectionChanged,
+				this,
+				[this, sm] { Actions_.HandleSelectionChanged (sm->selectedRows ()); });
+
+		connect (Impl_->ItemsFilterModel_.get (),
+				&ItemsFilterModel::modelReset,
 				this,
 				&ItemsWidget::currentItemChanged);
 		connect (Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::modelReset,
 				this,
-				&ItemsWidget::currentItemChanged);
+				[this, sm] { Actions_.HandleSelectionChanged (sm->selectedRows ()); });
 
 		currentItemChanged ();
 
@@ -251,8 +219,6 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView",
 				this, "navBarVisibilityChanged");
 		selectorVisiblityChanged ();
-
-		on_ActionHideReadItems__triggered ();
 	}
 
 	ItemsWidget::~ItemsWidget ()
@@ -292,41 +258,6 @@ namespace Aggregator
 		return Impl_->LastSelectedIndex_;
 	}
 
-	QAction* ItemsWidget::GetAction (Action action) const
-	{
-		switch (action)
-		{
-		case Action::MarkAsRead:
-			return Impl_->ActionMarkItemAsRead_;
-		case Action::MarkAsUnread:
-			return Impl_->ActionMarkItemAsUnread_;
-		case Action::MarkAsImportant:
-			return Impl_->ActionMarkItemAsImportant_;
-		case Action::PrevUnreadItem:
-			return Impl_->ActionPrevUnreadItem_;
-		case Action::PrevItem:
-			return Impl_->ActionPrevItem_;
-		case Action::NextItem:
-			return Impl_->ActionNextItem_;
-		case Action::NextUnreadItem:
-			return Impl_->ActionNextUnreadItem_;
-		case Action::Delete:
-			return Impl_->ActionDeleteItem_;
-		case Action::OpenLink:
-			return Impl_->ActionItemLinkOpen_;
-		case Action::CopyLink:
-			return Impl_->ActionItemLinkCopy_;
-		case Action::MaxAction:
-			break;
-		}
-
-		qWarning () << Q_FUNC_INFO
-				<< "unknown action"
-				<< static_cast<int> (action);
-
-		return nullptr;
-	}
-
 	void ItemsWidget::SetTapeMode (bool tape)
 	{
 		Impl_->TapeMode_ = tape;
@@ -342,8 +273,7 @@ namespace Aggregator
 					&ItemsWidget::currentItemChanged);
 		currentItemChanged ();
 
-		XmlSettingsManager::Instance ()->
-				setProperty ("ShowAsTape", tape);
+		XmlSettingsManager::Instance ()->setProperty ("ShowAsTape", tape);
 	}
 
 	void ItemsWidget::SetMergeMode (bool merge)
@@ -400,6 +330,7 @@ namespace Aggregator
 	void ItemsWidget::SetHideRead (bool hide)
 	{
 		Impl_->ItemsFilterModel_->SetHideRead (hide);
+		XmlSettingsManager::Instance ()->setProperty ("HideReadItems", hide);
 	}
 
 	void ItemsWidget::Selected (const QModelIndex& index)
@@ -410,12 +341,6 @@ namespace Aggregator
 		const auto timeout = XmlSettingsManager::Instance ()->
 				property ("MarkAsReadTimeout").toInt () * 1000;
 		Impl_->SelectedChecker_->start (timeout);
-	}
-
-	void ItemsWidget::MarkItemReadStatus (const QModelIndex& idx, bool read)
-	{
-		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		sb->SetItemUnread (idx.data (ItemsListModel::ItemId).value<IDType_t> (), !read);
 	}
 
 	IDType_t ItemsWidget::GetItemIDFromRow (int index) const
@@ -432,17 +357,6 @@ namespace Aggregator
 		}
 
 		return model->GetItem (model->index (index, 0)).ItemID_;
-	}
-
-	void ItemsWidget::SubscribeToComments (const QModelIndex& index) const
-	{
-		const auto& it = GetItem (index);
-		QString commentRSS = it.CommentsLink_;
-		QStringList tags = it.Categories_;
-
-		const auto itm = GetProxyHolder ()->GetTagsManager ();
-		const auto& addTags = itm->Split (XmlSettingsManager::Instance ()->property ("CommentsTags").toString ());
-		AddFeed ({ .URL_ = commentRSS, .Tags_ = tags + addTags, .UpdatesManager_ = *Impl_->UpdatesManager_ });
 	}
 
 	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
@@ -520,83 +434,11 @@ namespace Aggregator
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}
 
-	void ItemsWidget::SetupActions ()
-	{
-		Impl_->ActionHideReadItems_ = new QAction (tr ("Hide read items"),
-				this);
-		Impl_->ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
-		Impl_->ActionHideReadItems_->setCheckable (true);
-		Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "mail-mark-unread");
-		Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
-				Property ("HideReadItems", false).toBool ());
-
-		Impl_->ActionShowAsTape_ = new QAction (tr ("Show items as tape"), this);
-		Impl_->ActionShowAsTape_->setObjectName ("ActionShowAsTape_");
-		Impl_->ActionShowAsTape_->setCheckable (true);
-		Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "format-list-unordered");
-		Impl_->ActionShowAsTape_->setChecked (XmlSettingsManager::Instance ()->
-				Property ("ShowAsTape", false).toBool ());
-
-		Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"), this);
-		Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
-		Impl_->ActionMarkItemAsUnread_->setShortcut ({ "U" });
-
-		Impl_->ActionMarkItemAsRead_ = new QAction (tr ("Mark item as read"), this);
-		Impl_->ActionMarkItemAsRead_->setObjectName ("ActionMarkItemAsRead_");
-		Impl_->ActionMarkItemAsRead_->setShortcut ({ "R" });
-
-		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Important"), this);
-		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
-		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "rating");
-		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
-		Impl_->ActionMarkItemAsImportant_->setShortcut ({ "I" });
-
-		Impl_->ActionPrevUnreadItem_ = new QAction (tr ("Previous unread item"), this);
-		Impl_->ActionPrevUnreadItem_->setObjectName ("ActionPrevUnreadItem_");
-		Impl_->ActionPrevUnreadItem_->setProperty ("ActionIcon", "go-first");
-		Impl_->ActionPrevUnreadItem_->setShortcut ({ "Shift+K" });
-
-		Impl_->ActionPrevItem_ = new QAction (tr ("Previous item"), this);
-		Impl_->ActionPrevItem_->setObjectName ("ActionPrevItem_");
-		Impl_->ActionPrevItem_->setProperty ("ActionIcon", "go-previous");
-		Impl_->ActionPrevItem_->setShortcut ({ "K" });
-
-		Impl_->ActionNextItem_ = new QAction (tr ("Next item"), this);
-		Impl_->ActionNextItem_->setObjectName ("ActionNextItem_");
-		Impl_->ActionNextItem_->setProperty ("ActionIcon", "go-next");
-		Impl_->ActionNextItem_->setShortcut ({ "J" });
-
-		Impl_->ActionNextUnreadItem_ = new QAction (tr ("Next unread item"), this);
-		Impl_->ActionNextUnreadItem_->setObjectName ("ActionNextUnreadItem_");
-		Impl_->ActionNextUnreadItem_->setProperty ("ActionIcon", "go-last");
-		Impl_->ActionNextUnreadItem_->setShortcut ({ "Shift+J" });
-
-		Impl_->ActionDeleteItem_ = new QAction (tr ("Delete"), this);
-		Impl_->ActionDeleteItem_->setObjectName ("ActionDeleteItem_");
-		Impl_->ActionDeleteItem_->setProperty ("ActionIcon", "remove");
-		Impl_->ActionDeleteItem_->setShortcut ({ "Delete" });
-
-		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"), this);
-		Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
-
-		Impl_->ActionItemLinkOpen_ = new QAction (tr ("Open in new tab"), this);
-		Impl_->ActionItemLinkOpen_->setProperty ("ActionIcon", "internet-web-browser");
-		Impl_->ActionItemLinkOpen_->setShortcut ({ "O" });
-		Impl_->ActionItemLinkOpen_->setObjectName ("ActionItemLinkOpen_");
-
-		Impl_->ActionItemLinkCopy_ = new QAction (tr ("Copy news item link"), this);
-		Impl_->ActionItemLinkCopy_->setProperty ("ActionIcon", "edit-copy");
-		Impl_->ActionItemLinkCopy_->setShortcut ({ "C" });
-		Impl_->ActionItemLinkCopy_->setObjectName ("ActionItemLinkCopy_");
-	}
-
 	QToolBar* ItemsWidget::SetupToolBar ()
 	{
-		QToolBar *bar = new QToolBar ();
+		const auto bar = new QToolBar ();
 		bar->setWindowTitle ("Aggregator");
-		bar->addAction (Impl_->ActionHideReadItems_);
-		bar->addAction (Impl_->ActionShowAsTape_);
-
+		bar->addActions (Actions_.GetToolbarActions ());
 		return bar;
 	}
 
@@ -1049,20 +891,6 @@ namespace Aggregator
 			Impl_->Ui_.CategoriesSplitter_->setSizes (sizes);
 	}
 
-	QList<QPersistentModelIndex> ItemsWidget::GetSelected () const
-	{
-		QList<QPersistentModelIndex> result;
-		for (const auto& idx : Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
-		{
-			const auto& mapped = Impl_->ItemsFilterModel_->mapToSource (idx);
-			if (!mapped.isValid ())
-				continue;
-
-			result << mapped;
-		}
-		return result;
-	}
-
 	void ItemsWidget::invalidateMergeMode ()
 	{
 		if (Impl_->MergeMode_)
@@ -1072,129 +900,10 @@ namespace Aggregator
 		}
 	}
 
-	void ItemsWidget::on_ActionHideReadItems__triggered ()
-	{
-		bool hide = Impl_->ActionHideReadItems_->isChecked ();
-		XmlSettingsManager::Instance ()->setProperty ("HideReadItems", hide);
-		SetHideRead (hide);
-	}
-
-	void ItemsWidget::on_ActionShowAsTape__triggered ()
-	{
-		SetTapeMode (!Impl_->TapeMode_);
-	}
-
-	void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
-	{
-		for (const auto& idx : GetSelected ())
-			MarkItemReadStatus (idx, false);
-	}
-
-	void ItemsWidget::on_ActionMarkItemAsRead__triggered ()
-	{
-		for (const auto& idx : GetSelected ())
-			MarkItemReadStatus (idx, true);
-	}
-
-	void ItemsWidget::on_ActionMarkItemAsImportant__triggered ()
-	{
-		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-
-		const bool mark = Impl_->ActionMarkItemAsImportant_->isChecked ();
-
-		const ITagsManager::tag_id impId = "_important";
-
-		for (const auto& idx : GetSelected ())
-		{
-			const auto& mapped = Impl_->ItemLists_->mapToSource (idx);
-			const auto model =
-					static_cast<ItemsListModel*> (Impl_->ItemLists_->
-							GetModelForRow (idx.row ())->data ());
-
-			const auto item = model->GetItem (mapped).ItemID_;
-
-			auto tags = sb->GetItemTags (item);
-			if (mark && !tags.contains (impId))
-				sb->SetItemTags (item, tags + QStringList (impId));
-			else if (!mark && tags.removeAll (impId))
-				sb->SetItemTags (item, tags);
-		}
-	}
-
-	void ItemsWidget::on_ActionDeleteItem__triggered ()
-	{
-		QSet<IDType_t> ids;
-		for (const auto& idx : GetSelected ())
-		{
-			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
-			const ItemsListModel *model =
-					static_cast<ItemsListModel*> (Impl_->ItemLists_->
-							GetModelForRow (idx.row ())->data ());
-			ids << model->GetItem (mapped).ItemID_;
-		}
-
-		if (ids.isEmpty ())
-			return;
-
-		if (QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("Are you sure you want to remove %n items?", 0, ids.size ()),
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return;
-
-		Impl_->Ui_.Items_->clearSelection ();
-		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->RemoveItems (ids);
-	}
-
-	void ItemsWidget::on_ActionPrevUnreadItem__triggered ()
-	{
-		Impl_->ItemNavigator_.MoveToPrevUnread ();
-	}
-
-	void ItemsWidget::on_ActionPrevItem__triggered ()
-	{
-		Impl_->ItemNavigator_.MoveToPrev ();
-	}
-
-	void ItemsWidget::on_ActionNextItem__triggered ()
-	{
-		Impl_->ItemNavigator_.MoveToNext ();
-	}
-
-	void ItemsWidget::on_ActionNextUnreadItem__triggered ()
-	{
-		Impl_->ItemNavigator_.MoveToNextUnread ();
-	}
-
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
 	{
 		Impl_->ItemsFilterModel_->setFilterCaseSensitivity (state ?
 				Qt::CaseSensitive : Qt::CaseInsensitive);
-	}
-
-	void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
-	{
-		for (const auto& idx : GetSelected ())
-			SubscribeToComments (idx);
-	}
-
-	void ItemsWidget::on_ActionItemLinkOpen__triggered ()
-	{
-		const auto iem = GetProxyHolder ()->GetEntityManager ();
-		for (const auto& idx : GetSelected ())
-			iem->HandleEntity (Util::MakeEntity (QUrl { GetItem (idx).Link_ },
-						{},
-						FromUserInitiated | OnlyHandle));
-	}
-
-	void ItemsWidget::on_ActionItemLinkCopy__triggered ()
-	{
-		const auto& idx = GetSelected ().value (0);
-		const auto& item = GetItem (idx);
-		if (item.ItemID_ == IDNotFound)
-			return;
-
-		QApplication::clipboard ()->setText (item.Link_);
 	}
 
 	void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
@@ -1208,15 +917,6 @@ namespace Aggregator
 
 	void ItemsWidget::currentItemChanged ()
 	{
-		const QModelIndex& current = Impl_->ItemsFilterModel_->
-				mapToSource (Impl_->Ui_.Items_->selectionModel ()->currentIndex ());
-		if (current.isValid ())
-		{
-			const int idx = GetItem (current).ItemID_;
-			const auto& tags = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItemTags (idx);
-			Impl_->ActionMarkItemAsImportant_->setChecked (tags.contains ("_important"));
-		}
-
 		QString preHtml = R"(<html><head><meta charset="UTF-8" /><title>News</title></head><body bgcolor=")";
 		preHtml += palette ().color (QPalette::Base).name ();
 		preHtml += "\">";
@@ -1260,31 +960,14 @@ namespace Aggregator
 			Impl_->Ui_.ItemView_->SetHtml (QString (), QUrl ());
 			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", link);
 
-			if (html.isEmpty ())
-			{
-				Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
-				Impl_->ActionMarkItemAsUnread_->setEnabled (false);
-				Impl_->ActionMarkItemAsRead_->setEnabled (false);
-				Impl_->ActionItemLinkOpen_->setEnabled (false);
-				Impl_->ActionItemLinkCopy_->setEnabled (false);
-			}
-			else
+			if (!html.isEmpty ())
 			{
 				auto sourceIndex = Impl_->Ui_.Items_->currentIndex ();
 				if (!sourceIndex.isValid ())
 					sourceIndex = rows.value (0);
 
 				const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
-
 				Selected (cIndex);
-
-				QString commentsRSS = GetItem (cIndex).CommentsLink_;
-				Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
-
-				Impl_->ActionMarkItemAsUnread_->setEnabled (true);
-				Impl_->ActionMarkItemAsRead_->setEnabled (true);
-				Impl_->ActionItemLinkOpen_->setEnabled (true);
-				Impl_->ActionItemLinkCopy_->setEnabled (true);
 			}
 		}
 	}
