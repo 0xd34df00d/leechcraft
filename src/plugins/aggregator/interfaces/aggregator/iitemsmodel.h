@@ -30,6 +30,8 @@ namespace Aggregator
 			ItemShortDescr,
 			ItemCategories,
 			ItemImportant,
+
+			FullItem,
 		};
 
 		virtual QAbstractItemModel& GetQModel () = 0;
