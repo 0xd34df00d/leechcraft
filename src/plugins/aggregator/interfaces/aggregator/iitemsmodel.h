@@ -29,6 +29,7 @@ namespace Aggregator
 			ItemId,
 			ItemShortDescr,
 			ItemCategories,
+			ItemImportant,
 		};
 
 		virtual QAbstractItemModel& GetQModel () = 0;

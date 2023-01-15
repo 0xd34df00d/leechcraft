@@ -284,6 +284,8 @@ namespace Aggregator
 			return QVariant::fromValue (item);
 		else if (role == ItemRole::ItemCategories)
 			return item.Categories_;
+		else if (role == ItemRole::ItemImportant)
+			return GetSB ()->GetItemTags (item.ItemID_).contains ("_important");
 		else
 			return {};
 	}
