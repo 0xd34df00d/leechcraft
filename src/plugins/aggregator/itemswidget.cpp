@@ -32,6 +32,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
+#include "components/actions/itemactions.h"
 #include "components/gui/itemnavigator.h"
 #include "ui_itemswidget.h"
 #include "xmlsettingsmanager.h"
@@ -102,24 +103,26 @@ namespace Aggregator
 	ItemsWidget::ItemsWidget (const Dependencies& deps, QWidget *parent)
 	: QWidget (parent)
 	, Impl_ (new ItemsWidget_Impl { this })
-	, Actions_ { ItemActions::Deps {
-		.Parent_ = this,
-		.ShortcutsMgr_ = deps.ShortcutsMgr_,
-		.UpdatesManager_ = deps.UpdatesManager_,
-		.SetHideRead_ = [this] (bool hide) { SetHideRead (hide); },
-		.SetShowTape_ = [this] (bool tape) { SetTapeMode (tape); },
-		.GetSelection_ = [this] { return Impl_->Ui_.Items_->selectionModel ()->selectedRows (); },
-		.ItemNavigator_ = ItemNavigator
-		{
-			*Impl_->Ui_.Items_,
-			Impl_->LastSelectedIndex_,
-			[this] (const QModelIndex& newChan)
+	, Actions_ { std::make_unique<ItemActions> (ItemActions::Deps {
+			.Parent_ = this,
+			.ShortcutsMgr_ = deps.ShortcutsMgr_,
+			.UpdatesManager_ = deps.UpdatesManager_,
+			.SetHideRead_ = [this] (bool hide) { SetHideRead (hide); },
+			.SetShowTape_ = [this] (bool tape) { SetTapeMode (tape); },
+			.GetSelection_ = [this] { return Impl_->Ui_.Items_->selectionModel ()->selectedRows (); },
+			.ItemNavigator_ = ItemNavigator
 			{
-				emit movedToChannel (newChan);
-				CurrentChannelChanged (newChan);
-			}
+				*Impl_->Ui_.Items_,
+				Impl_->LastSelectedIndex_,
+				[this] (const QModelIndex& newChan)
+				{
+					emit movedToChannel (newChan);
+					CurrentChannelChanged (newChan);
+				}
+			},
 		},
-	}, this }
+		this)
+	}
 	{
 		Impl_->SelectedChecker_ = new QTimer (this);
 		Impl_->SelectedChecker_->setSingleShot (true);
@@ -144,7 +147,7 @@ namespace Aggregator
 		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ();
 
-		Impl_->ControlToolBar_ = CreateToolbar (Actions_, deps.ChannelActions_, deps.AppWideActions_);
+		Impl_->ControlToolBar_ = CreateToolbar (*Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
 		const auto& proxy = GetProxyHolder ();
 		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
@@ -165,10 +168,10 @@ namespace Aggregator
 				Impl_->ItemsFilterModel_.get (),
 				&QSortFilterProxyModel::invalidate);
 
-		Impl_->Ui_.Items_->addActions (Actions_.GetAllActions ());
+		Impl_->Ui_.Items_->addActions (Actions_->GetAllActions ());
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 
-		addActions (Actions_.GetInvisibleActions ());
+		addActions (Actions_->GetInvisibleActions ());
 
 		connect (Impl_->Ui_.SearchLine_,
 				&QLineEdit::textChanged,
@@ -212,7 +215,7 @@ namespace Aggregator
 		connect (sm,
 				&QItemSelectionModel::selectionChanged,
 				this,
-				[this, sm] { Actions_.HandleSelectionChanged (sm->selectedRows ()); });
+				[this, sm] { Actions_->HandleSelectionChanged (sm->selectedRows ()); });
 
 		connect (Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::modelReset,
@@ -221,7 +224,7 @@ namespace Aggregator
 		connect (Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::modelReset,
 				this,
-				[this, sm] { Actions_.HandleSelectionChanged (sm->selectedRows ()); });
+				[this, sm] { Actions_->HandleSelectionChanged (sm->selectedRows ()); });
 
 		currentItemChanged ();
 

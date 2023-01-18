@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QWidget>
-#include "components/actions/itemactions.h"
 #include "item.h"
 #include "channel.h"
 
@@ -33,6 +32,7 @@ namespace Aggregator
 	class Aggregator;
 	class ItemsFilterModel;
 	class UpdatesManager;
+	class ItemActions;
 
 	struct ItemsWidgetDependencies
 	{
@@ -50,7 +50,7 @@ namespace Aggregator
 		friend class Aggregator;
 		ItemsWidget_Impl *Impl_;
 
-		ItemActions Actions_;
+		std::unique_ptr<ItemActions> Actions_;
 	public:
 		using Dependencies = ItemsWidgetDependencies;
 
