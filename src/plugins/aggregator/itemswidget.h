@@ -10,7 +10,6 @@
 
 #include <QWidget>
 #include "components/actions/itemactions.h"
-#include "ui_itemswidget.h"
 #include "item.h"
 #include "channel.h"
 

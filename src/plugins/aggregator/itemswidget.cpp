@@ -33,6 +33,7 @@
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "components/gui/itemnavigator.h"
+#include "ui_itemswidget.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
