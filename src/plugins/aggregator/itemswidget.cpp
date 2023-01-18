@@ -444,16 +444,19 @@ namespace Aggregator
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}
 
-	QString ItemsWidget::GetHex (QPalette::ColorRole role, QPalette::ColorGroup group)
+	namespace
 	{
-		static_assert (std::numeric_limits<int>::max () >= 0xffffffL, "int is too small :(");
+		QString GetHex (QPalette::ColorRole role, QPalette::ColorGroup group = QPalette {}.currentColorGroup ())
+		{
+			static_assert (std::numeric_limits<int>::max () >= 0xffffffL, "int is too small :(");
 
-		int r, g, b;
-		QApplication::palette ().color (group, role).getRgb (&r, &g, &b);
-		int color = b + (g << 8) + (r << 16);
-		QString result ("#%1");
-		// Fill spare space with zeros.
-		return result.arg (color, 6, 16, QChar ('0'));
+			int r, g, b;
+			QPalette {}.color (group, role).getRgb (&r, &g, &b);
+			int color = b + (g << 8) + (r << 16);
+			QString result ("#%1");
+			// Fill spare space with zeros.
+			return result.arg (color, 6, 16, QChar ('0'));
+		}
 	}
 
 	QString ItemsWidget::ToHtml (const Item& item)

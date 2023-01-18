@@ -93,8 +93,6 @@ namespace Aggregator
 	private:
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);
-		QString GetHex (QPalette::ColorRole,
-				QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 		QString ToHtml (const Item&);
 		void RestoreSplitter ();
 	private slots:
