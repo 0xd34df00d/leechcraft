@@ -33,6 +33,7 @@ namespace Aggregator
 	class ItemsFilterModel;
 	class UpdatesManager;
 	class ItemActions;
+	class ItemSelectionTracker;
 
 	struct ItemsWidgetDependencies
 	{
@@ -51,6 +52,7 @@ namespace Aggregator
 		ItemsWidget_Impl *Impl_;
 
 		std::unique_ptr<ItemActions> Actions_;
+		std::unique_ptr<ItemSelectionTracker> SelectionTracker_;
 	public:
 		using Dependencies = ItemsWidgetDependencies;
 

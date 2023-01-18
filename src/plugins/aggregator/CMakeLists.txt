@@ -17,6 +17,7 @@ LC_DEFINE_PLUGIN (
 		components/actions/channelactions.cpp
 		components/actions/itemactions.cpp
 		components/gui/itemnavigator.cpp
+		components/gui/itemselectiontracker.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp

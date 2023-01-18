@@ -34,6 +34,7 @@
 #include "components/actions/channelactions.h"
 #include "components/actions/itemactions.h"
 #include "components/gui/itemnavigator.h"
+#include "components/gui/itemselectiontracker.h"
 #include "ui_itemswidget.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
@@ -144,8 +145,7 @@ namespace Aggregator
 				this,
 				&ItemsWidget::invalidateMergeMode);
 
-		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
-				Property ("ShowAsTape", false).toBool ();
+		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->Property ("ShowAsTape", false).toBool ();
 
 		Impl_->ControlToolBar_ = CreateToolbar (*Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
@@ -207,32 +207,17 @@ namespace Aggregator
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::categorySelectionChanged);
 
-		const auto sm = Impl_->Ui_.Items_->selectionModel ();
-		connect (sm,
-				&QItemSelectionModel::selectionChanged,
-				this,
-				&ItemsWidget::currentItemChanged);
-		connect (sm,
-				&QItemSelectionModel::selectionChanged,
-				this,
-				[this, sm] { Actions_->HandleSelectionChanged (sm->selectedRows ()); });
-
-		connect (Impl_->ItemsFilterModel_.get (),
-				&ItemsFilterModel::modelReset,
-				this,
-				&ItemsWidget::currentItemChanged);
-		connect (Impl_->ItemsFilterModel_.get (),
-				&ItemsFilterModel::modelReset,
-				this,
-				[this, sm] { Actions_->HandleSelectionChanged (sm->selectedRows ()); });
-
-		currentItemChanged ();
-
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector",
 				this, "selectorVisiblityChanged");
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView",
 				this, "navBarVisibilityChanged");
 		selectorVisiblityChanged ();
+
+		SelectionTracker_ = std::make_unique<ItemSelectionTracker> (*Impl_->Ui_.Items_, *Actions_, this);
+		connect (SelectionTracker_.get (),
+				&ItemSelectionTracker::refreshItemDisplay,
+				this,
+				&ItemsWidget::currentItemChanged);
 	}
 
 	ItemsWidget::~ItemsWidget ()
@@ -275,16 +260,7 @@ namespace Aggregator
 	void ItemsWidget::SetTapeMode (bool tape)
 	{
 		Impl_->TapeMode_ = tape;
-		if (tape)
-			disconnect (Impl_->Ui_.Items_->selectionModel (),
-					&QItemSelectionModel::selectionChanged,
-					this,
-					&ItemsWidget::currentItemChanged);
-		else
-			connect (Impl_->Ui_.Items_->selectionModel (),
-					&QItemSelectionModel::selectionChanged,
-					this,
-					&ItemsWidget::currentItemChanged);
+		SelectionTracker_->SetItemDependsOnSelection (!tape);
 		currentItemChanged ();
 
 		XmlSettingsManager::Instance ()->setProperty ("ShowAsTape", tape);
