@@ -93,7 +93,6 @@ namespace Aggregator
 	private:
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);
-		QToolBar* SetupToolBar ();
 		QString GetHex (QPalette::ColorRole,
 				QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 		QString ToHtml (const Item&);

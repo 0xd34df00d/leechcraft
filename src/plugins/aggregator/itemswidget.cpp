@@ -82,6 +82,22 @@ namespace Aggregator
 		UpdatesManager *UpdatesManager_ = nullptr;
 	};
 
+	namespace
+	{
+		auto CreateToolbar (const ItemActions& itemActs,
+				const ChannelActions& channelActs,
+				const AppWideActions& appWideActs)
+		{
+			const auto toolbar = new QToolBar {};
+			toolbar->addActions (appWideActs.GetFastActions ());
+			toolbar->addSeparator ();
+			toolbar->addActions (channelActs.GetToolbarActions ());
+			toolbar->addSeparator ();
+			toolbar->addActions (itemActs.GetToolbarActions ());
+			return toolbar;
+		}
+	}
+
 	ItemsWidget::ItemsWidget (const Dependencies& deps, QWidget *parent)
 	: QWidget (parent)
 	, Impl_ (new ItemsWidget_Impl { this })
@@ -127,13 +143,7 @@ namespace Aggregator
 		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ();
 
-		// TODO refactor
-		Impl_->ControlToolBar_ = SetupToolBar ();
-		auto first = Impl_->ControlToolBar_->actions ().first ();
-		Impl_->ControlToolBar_->insertActions (first, deps.AppWideActions_.GetFastActions ());
-		Impl_->ControlToolBar_->insertSeparator (first);
-		Impl_->ControlToolBar_->insertActions (first, deps.ChannelActions_.GetToolbarActions ());
-		Impl_->ControlToolBar_->insertSeparator (first);
+		Impl_->ControlToolBar_ = CreateToolbar (Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
 		const auto& proxy = GetProxyHolder ();
 		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
@@ -432,14 +442,6 @@ namespace Aggregator
 		ilm->Reset (channelId);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
-	}
-
-	QToolBar* ItemsWidget::SetupToolBar ()
-	{
-		const auto bar = new QToolBar ();
-		bar->setWindowTitle ("Aggregator");
-		bar->addActions (Actions_.GetToolbarActions ());
-		return bar;
 	}
 
 	QString ItemsWidget::GetHex (QPalette::ColorRole role, QPalette::ColorGroup group)
