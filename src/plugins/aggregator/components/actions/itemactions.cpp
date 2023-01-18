@@ -12,6 +12,7 @@
 #include <QGuiApplication>
 #include <QClipboard>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QModelIndex>
 #include <interfaces/core/ientitymanager.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -247,11 +248,11 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		QStringList GetSelectedLinks (const QModelIndexList& selection)
+		QList<QUrl> GetSelectedLinks (const QModelIndexList& selection)
 		{
-			QStringList result;
+			QList<QUrl> result;
 			for (const auto& idx : selection)
-				result << idx.data (IItemsModel::ItemRole::ItemShortDescr).value<ItemShort> ().URL_;
+				result << QUrl { idx.data (IItemsModel::ItemRole::ItemShortDescr).value<ItemShort> ().URL_ };
 			return result;
 		}
 	}
@@ -260,7 +261,7 @@ namespace LC::Aggregator
 	{
 		const auto iem = GetProxyHolder ()->GetEntityManager ();
 		for (const auto& link : GetSelectedLinks (Deps_.GetSelection_ ()))
-			iem->HandleEntity (Util::MakeEntity (QUrl { link },
+			iem->HandleEntity (Util::MakeEntity (link,
 						{},
 						FromUserInitiated | OnlyHandle));
 	}
@@ -268,7 +269,10 @@ namespace LC::Aggregator
 	void ItemActions::LinkCopy ()
 	{
 		const auto& links = GetSelectedLinks (Deps_.GetSelection_ ());
-		QGuiApplication::clipboard ()->setText (links.join ('\n'));
+
+		const auto mime = new QMimeData;
+		mime->setUrls (links);
+		QGuiApplication::clipboard ()->setMimeData (mime);
 	}
 
 	QVector<IDType_t> ItemActions::GetSelectedIds () const
