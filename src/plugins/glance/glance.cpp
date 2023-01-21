@@ -33,7 +33,7 @@ namespace Glance
 		Core::Instance ().SetProxy (proxy);
 
 		ActionGlance_ = new QAction (GetName (), this);
-		ActionGlance_->setToolTip ("Show the quick overview of tabs");
+		ActionGlance_->setToolTip (tr ("Show the quick overview of tabs"));
 		ActionGlance_->setShortcut (QKeySequence ("Ctrl+Shift+G"));
 		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
 		ActionGlance_->setProperty ("ActionIcon", "view-list-icons");
