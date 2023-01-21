@@ -119,16 +119,16 @@ namespace LC::Util
 
 	void ShortcutManager::AnnounceGlobalShorcuts ()
 	{
-		for (const auto& entity : Globals_)
+		for (const auto& entity : qAsConst (Globals_))
 			CoreProxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 
 	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 	{
-		for (auto act : Actions_ [id])
+		for (auto act : qAsConst (Actions_ [id]))
 			act->setShortcuts (seqs);
 
-		for (auto sc : Shortcuts_ [id])
+		for (auto sc : qAsConst (Shortcuts_ [id]))
 		{
 			sc->setKey (seqs.value (0));
 			qDeleteAll (Shortcut2Subs_.take (sc));
