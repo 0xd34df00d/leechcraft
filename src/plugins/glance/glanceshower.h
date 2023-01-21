@@ -27,7 +27,6 @@ namespace Glance
 
 		ICoreTabWidget *TabWidget_ = nullptr;
 		QGraphicsScene *Scene_;
-		bool Shown_ = false;
 		QSize SSize_;
 	public:
 		GlanceShower (QWidget* = 0);
