@@ -98,14 +98,14 @@ namespace Glance
 
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
-		QMap<QString, ActionInfo> result;
-
 		const auto& iconName = ActionGlance_->property ("ActionIcon").toString ();
-		result ["ShowList"] = ActionInfo (ActionGlance_->text (),
-				ActionGlance_->shortcut (),
-				Proxy_->GetIconThemeManager ()->GetIcon (iconName));
-
-		return result;
+		ActionInfo info
+		{
+			ActionGlance_->text (),
+			ActionGlance_->shortcut (),
+			Proxy_->GetIconThemeManager ()->GetIcon (iconName)
+		};
+		return { { "ShowList", info } };
 	}
 
 	void Plugin::SetShortcut (const QString&, const QKeySequences_t& seqs)
