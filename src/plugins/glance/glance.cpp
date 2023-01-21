@@ -13,6 +13,7 @@
 #include <QToolBar>
 #include <QMainWindow>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -22,11 +23,11 @@ namespace LC::Plugins::Glance
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("glance");
+		Util::InstallTranslator ("glance"_qs);
 
 		ActionGlance_ = new QAction (GetName (), this);
 		ActionGlance_->setToolTip (tr ("Show the quick overview of tabs"));
-		ActionGlance_->setShortcut (QKeySequence ("Ctrl+Shift+G"));
+		ActionGlance_->setShortcut ("Ctrl+Shift+G"_qs);
 		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
 		ActionGlance_->setProperty ("ActionIcon", "view-list-icons");
 		ActionGlance_->setProperty ("Action/ID", GetUniqueID () + "_glance");
@@ -52,7 +53,7 @@ namespace LC::Plugins::Glance
 
 	QString Plugin::GetName () const
 	{
-		return "Glance";
+		return "Glance"_qs;
 	}
 
 	QString Plugin::GetInfo () const

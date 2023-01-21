@@ -14,6 +14,7 @@
 #include <QIcon>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 
@@ -119,7 +120,7 @@ namespace LC::Plugins::Glance
 		QPixmap px (Pixmap_);
 		QPainter p (&px);
 
-		const auto& closeIcon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("window-close");
+		const auto& closeIcon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("window-close"_qs);
 		closeIcon.paint (&p, CloseButtonRect_, Qt::AlignCenter, selected ? QIcon::Selected : QIcon::Normal);
 
 		p.end ();

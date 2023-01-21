@@ -22,6 +22,7 @@
 #include <QMainWindow>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -38,7 +39,7 @@ namespace LC::Plugins::Glance
 				Qt::WindowStaysOnTopHint |
 				Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
-		setStyleSheet ("background: transparent");
+		setStyleSheet ("background: transparent"_qs);
 		setOptimizationFlag (DontSavePainterState);
 		Scene_->setItemIndexMethod (QGraphicsScene::NoIndex);
 		setRenderHints (QPainter::Antialiasing | QPainter::TextAntialiasing);
