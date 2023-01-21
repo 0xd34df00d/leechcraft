@@ -17,11 +17,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 
-namespace LC
-{
-namespace Plugins
-{
-namespace Glance
+namespace LC::Plugins::Glance
 {
 	GlanceItem::GlanceItem (const QPixmap& px, const QRect& closeButtonRect, QGraphicsItem *parent)
 	: QGraphicsPixmapItem (px, parent)
@@ -129,6 +125,4 @@ namespace Glance
 		p.end ();
 		setPixmap (px);
 	}
-};
-};
-};
+}

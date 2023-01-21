@@ -16,14 +16,9 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
-#include "core.h"
 #include "glanceshower.h"
 
-namespace LC
-{
-namespace Plugins
-{
-namespace Glance
+namespace LC::Plugins::Glance
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -109,8 +104,6 @@ namespace Glance
 	{
 		ActionGlance_->setShortcuts (seqs);
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_glance, LC::Plugins::Glance::Plugin);

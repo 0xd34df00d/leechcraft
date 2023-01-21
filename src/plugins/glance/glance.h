@@ -7,22 +7,16 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_GLANCE_GLANCE_H
-#define PLUGINS_GLANCE_GLANCE_H
+#pragma once
+
 #include <QObject>
 #include <QAction>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LC
+namespace LC::Plugins::Glance
 {
-namespace Plugins
-{
-namespace Glance
-{
-	class GlanceShower;
-
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IActionsExporter
@@ -33,29 +27,24 @@ namespace Glance
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Glance")
 
-		ICoreProxy_ptr Proxy_;
 		QAction *ActionGlance_;
 		GlanceShower *Glance_;
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr proxy) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
-		QMap<QByteArray, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QByteArray&, const QKeySequences_t&);
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
 	public slots:
 		void on_ActionGlance__triggered ();
 	signals:
-		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
-};
-};
-};
-
-#endif // PLUGINS_GLANCE_GLANCE_H
+}

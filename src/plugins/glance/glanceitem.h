@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_GLANCE_GLANCEITEM_H
-#define PLUGINS_GLANCE_GLANCEITEM_H
+#pragma once
+
 #include <QObject>
 #include <QGraphicsPixmapItem>
 
@@ -36,7 +36,7 @@ namespace Glance
 		QRect CloseButtonRect_;
 		QPixmap Pixmap_;
 	public:
-		GlanceItem (const QPixmap&, const QRect&, QGraphicsItem* = 0);
+		GlanceItem (const QPixmap&, const QRect&, QGraphicsItem* = nullptr);
 
 		void SetIndex (int);
 		void SetIdealScale (qreal);
@@ -47,16 +47,14 @@ namespace Glance
 		void QueueScaleAnim (qreal, qreal);
 		void DrawCloseButton (bool);
 	protected:
-		virtual void hoverEnterEvent (QGraphicsSceneHoverEvent*);
-		virtual void hoverMoveEvent (QGraphicsSceneHoverEvent*);
-		virtual void hoverLeaveEvent (QGraphicsSceneHoverEvent*);
-		virtual void mousePressEvent (QGraphicsSceneMouseEvent*);
-		virtual void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
+		void hoverEnterEvent (QGraphicsSceneHoverEvent*) override;
+		void hoverMoveEvent (QGraphicsSceneHoverEvent*) override;
+		void hoverLeaveEvent (QGraphicsSceneHoverEvent*) override;
+		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
+		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
 	signals:
 		void clicked (int, bool);
 	};
-};
-};
-};
-#endif
-
+}
+}
+}

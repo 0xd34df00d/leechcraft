@@ -28,11 +28,7 @@
 #include <interfaces/ihavetabs.h>
 #include "glanceitem.h"
 
-namespace LC
-{
-namespace Plugins
-{
-namespace Glance
+namespace LC::Plugins::Glance
 {
 	GlanceShower::GlanceShower (QWidget *parent)
 	: QGraphicsView (parent)
@@ -387,6 +383,4 @@ namespace Glance
 		if (!this->itemAt (e->pos ()))
 			Finalize ();
 	}
-}
-}
 }
