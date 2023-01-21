@@ -25,12 +25,9 @@ namespace Plugins
 {
 namespace Glance
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("glance");
-
-		Proxy_ = proxy;
-		Core::Instance ().SetProxy (proxy);
 
 		ActionGlance_ = new QAction (GetName (), this);
 		ActionGlance_->setToolTip (tr ("Show the quick overview of tabs"));
@@ -70,13 +67,13 @@ namespace Glance
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	void Plugin::on_ActionGlance__triggered ()
 	{
 		Glance_ = new GlanceShower;
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		Glance_->SetTabWidget (rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()));
 
 		connect (Glance_,
@@ -103,7 +100,7 @@ namespace Glance
 		{
 			ActionGlance_->text (),
 			ActionGlance_->shortcut (),
-			Proxy_->GetIconThemeManager ()->GetIcon (iconName)
+			GetProxyHolder ()->GetIconThemeManager ()->GetIcon (iconName)
 		};
 		return { { "ShowList", info } };
 	}

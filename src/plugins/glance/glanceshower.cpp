@@ -22,9 +22,10 @@
 #include <QMainWindow>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ihavetabs.h>
-#include "core.h"
 #include "glanceitem.h"
 
 namespace LC
@@ -50,6 +51,15 @@ namespace Glance
 	void GlanceShower::SetTabWidget (ICoreTabWidget *tw)
 	{
 		TabWidget_ = tw;
+	}
+
+	namespace
+	{
+		auto GetWindowGeometry ()
+		{
+			const auto window = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
+			return QApplication::desktop ()->screenGeometry (window);
+		}
 	}
 
 	void GlanceShower::Start ()
@@ -78,8 +88,7 @@ namespace Glance
 		if (rows * cols < count)
 			++rows;
 
-		const QRect& screenGeom = QApplication::desktop ()->
-				screenGeometry (Core::Instance ().GetMainWindow ());
+		const auto& screenGeom = GetWindowGeometry ();
 		const int width = screenGeom.width ();
 		const int height = screenGeom.height ();
 
@@ -312,8 +321,7 @@ namespace Glance
 			if (rows * cols < count)
 				++rows;
 
-			const QRect& screenGeom = QApplication::desktop ()->
-					screenGeometry (Core::Instance ().GetMainWindow ());
+			const auto& screenGeom = GetWindowGeometry ();
 			const int width = screenGeom.width ();
 			const int height = screenGeom.height ();
 

@@ -16,7 +16,6 @@
 #include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include "core.h"
 
 namespace LC
 {
@@ -124,8 +123,7 @@ namespace Glance
 		QPixmap px (Pixmap_);
 		QPainter p (&px);
 
-		const auto& closeIcon = Core::Instance ().GetProxy ()->
-				GetIconThemeManager ()->GetIcon ("window-close");
+		const auto& closeIcon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("window-close");
 		closeIcon.paint (&p, CloseButtonRect_, Qt::AlignCenter, selected ? QIcon::Selected : QIcon::Normal);
 
 		p.end ();
