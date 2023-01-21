@@ -8,6 +8,7 @@
 
 #include "itemselectiontracker.h"
 #include <QAbstractItemView>
+#include "interfaces/aggregator/iitemsmodel.h"
 
 namespace LC::Aggregator
 {
@@ -15,11 +16,15 @@ namespace LC::Aggregator
 	: QObject { parent }
 	{
 		const auto sm = view.selectionModel ();
-		const auto commonHandler = [this, sm, &actions]
+
+		const auto commonHandler = [=, &actions]
 		{
-			actions.HandleSelectionChanged (sm->selectedRows ());
+			const auto& rows = sm->selectedRows ();
+			actions.HandleSelectionChanged (rows);
 			if (EmitRefreshes_)
 				emit refreshItemDisplay ();
+
+			SaveLastSelection (rows);
 		};
 
 		connect (sm,
@@ -30,10 +35,33 @@ namespace LC::Aggregator
 				&QAbstractItemModel::modelReset,
 				this,
 				commonHandler);
+
+		connect (view.model (),
+				&QAbstractItemModel::dataChanged,
+				this,
+				[=, &actions] (const QModelIndex& from, const QModelIndex& to)
+				{
+					for (int row = from.row (); row <= to.row (); ++row)
+					{
+						const auto changedItemId = from.siblingAtRow (row).data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+						if (LastSelection_.contains (changedItemId))
+						{
+							actions.HandleSelectionChanged (sm->selectedRows ());
+							return;
+						}
+					}
+				});
 	}
 
 	void ItemSelectionTracker::SetItemDependsOnSelection (bool depends)
 	{
 		EmitRefreshes_ = depends;
+	}
+
+	void ItemSelectionTracker::SaveLastSelection (const QModelIndexList& rows)
+	{
+		LastSelection_.clear ();
+		for (const auto& row : rows)
+			LastSelection_ << row.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 	}
 }

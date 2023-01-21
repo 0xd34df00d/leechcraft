@@ -9,9 +9,12 @@
 #pragma once
 
 #include <QObject>
+#include <QSet>
 #include "components/actions/itemactions.h"
+#include "common.h"
 
 class QAbstractItemView;
+class QModelIndex;
 
 namespace LC::Aggregator
 {
@@ -22,10 +25,13 @@ namespace LC::Aggregator
 		Q_OBJECT
 
 		bool EmitRefreshes_ = true;
+		QSet<IDType_t> LastSelection_;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
 		void SetItemDependsOnSelection (bool);
+	private:
+		void SaveLastSelection (const QList<QModelIndex>&);
 	signals:
 		void refreshItemDisplay ();
 	};
