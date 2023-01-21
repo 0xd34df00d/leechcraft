@@ -111,8 +111,8 @@ namespace LC::BitTorrent
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
 		// IHaveShortcuts
-		void SetShortcut (const QString&, const QKeySequences_t&) override;
-		QMap<QString, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
 
 		// IHaveTabs
 		TabClasses_t GetTabClasses () const override;

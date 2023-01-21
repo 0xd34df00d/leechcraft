@@ -95,7 +95,7 @@ public:
 	 * @param[in] id The id of the action.
 	 * @param[in] sequences The new key sequences.
 	 */
-	virtual void SetShortcut (const QString& id, const QKeySequences_t& sequences) = 0;
+	virtual void SetShortcut (const QByteArray& id, const QKeySequences_t& sequences) = 0;
 
 	/** @brief Returns information about all the shortcuts.
 	 *
@@ -105,7 +105,7 @@ public:
 	 *
 	 * @return Shortcut IDs mapped to the corresponding ActionInfo.
 	 */
-	virtual QMap<QString, LC::ActionInfo> GetActionInfo () const = 0;
+	virtual QMap<QByteArray, LC::ActionInfo> GetActionInfo () const = 0;
 
 	virtual ~IHaveShortcuts () { }
 };

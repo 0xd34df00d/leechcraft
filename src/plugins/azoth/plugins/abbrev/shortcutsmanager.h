@@ -32,8 +32,8 @@ namespace LC::Azoth::Abbrev
 
 		void HandleTab (QWidget*);
 
-		QMap<QString, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QByteArray, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&);
 	private:
 		void HandleActivated (QWidget*);
 	};

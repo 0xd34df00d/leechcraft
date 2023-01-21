@@ -213,12 +213,12 @@ namespace Poshuku
 		return Core::Instance ().CreateWidget ();
 	}
 
-	void Poshuku::SetShortcut (const QString& name, const QKeySequences_t& sequences)
+	void Poshuku::SetShortcut (const QByteArray& name, const QKeySequences_t& sequences)
 	{
 		ShortcutMgr_->SetShortcut (name, sequences);
 	}
 
-	QMap<QString, ActionInfo> Poshuku::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> Poshuku::GetActionInfo () const
 	{
 		return ShortcutMgr_->GetActionInfo ();
 	}

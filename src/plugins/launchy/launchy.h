@@ -59,8 +59,8 @@ namespace Launchy
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
-		QMap<QString, ActionInfo> GetActionInfo () const override;
-		void SetShortcut (const QString& id, const QKeySequences_t& sequences) override;
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray& id, const QKeySequences_t& sequences) override;
 
 		QuarkComponents_t GetComponents () const override;
 	private slots:

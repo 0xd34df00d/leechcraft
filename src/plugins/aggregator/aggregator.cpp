@@ -289,12 +289,12 @@ namespace Aggregator
 			AddFeed ({ .URL_ = af.GetURL (), .Tags_ = af.GetTags (), .UpdatesManager_ = *UpdatesManager_ });
 	}
 
-	void Aggregator::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
+	void Aggregator::SetShortcut (const QByteArray& name, const QKeySequences_t& shortcuts)
 	{
 		ShortcutMgr_->SetShortcut (name, shortcuts);
 	}
 
-	QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> Aggregator::GetActionInfo () const
 	{
 		return ShortcutMgr_->GetActionInfo ();
 	}

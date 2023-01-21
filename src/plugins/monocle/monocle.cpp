@@ -187,12 +187,12 @@ namespace Monocle
 				});
 	}
 
-	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return Core::Instance ().GetShortcutManager( )->GetActionInfo ();
 	}
 
-	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	void Plugin::SetShortcut (const QByteArray& id, const QKeySequences_t& sequences)
 	{
 		Core::Instance ().GetShortcutManager ()->SetShortcut (id, sequences);
 	}

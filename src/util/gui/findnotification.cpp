@@ -33,16 +33,16 @@ namespace LC::Util
 		const auto coreInstance = proxy->GetPluginsManager ()->GetPluginByID ("org.LeechCraft.CoreInstance");
 		const auto scProxy = proxy->GetShortcutProxy ();
 
-		CreateShortcuts (scProxy->GetShortcuts (coreInstance, QStringLiteral ("Find.Show")),
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Show"),
 				[this]
 				{
 					show ();
 					setFocus ();
 				},
 				parent);
-		CreateShortcuts (scProxy->GetShortcuts (coreInstance, QStringLiteral ("Find.Next")),
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Next"),
 				this, &FindNotification::FindNext, parent);
-		CreateShortcuts (scProxy->GetShortcuts (coreInstance, QStringLiteral ("Find.Prev")),
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Prev"),
 				this, &FindNotification::FindPrevious, parent);
 
 		connect (Ui_->Pattern_,

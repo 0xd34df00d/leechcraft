@@ -54,7 +54,7 @@ namespace LC::Aggregator
 	: QObject { parent }
 	, Deps_ { deps }
 	{
-		const auto mkAction = [&] (const QString& name, const QByteArray& icon, auto handler, const QString& actionId = {})
+		const auto mkAction = [&] (const QString& name, const QByteArray& icon, auto handler, const QByteArray& actionId = {})
 		{
 			const auto action = new QAction { name, parent };
 			if (!icon.isEmpty ())

@@ -98,12 +98,12 @@ namespace LC::SB2
 		return { "org.LeechCraft.Core.Plugins/1.0" };
 	}
 
-	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return ShortcutMgr_->GetActionInfo ();
 	}
 
-	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
+	void Plugin::SetShortcut (const QByteArray& id, const QKeySequences_t& seqs)
 	{
 		ShortcutMgr_->SetShortcut (id, seqs);
 	}

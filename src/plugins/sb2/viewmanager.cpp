@@ -114,7 +114,7 @@ namespace LC::SB2
 		auto toggleAct = Toolbar_->toggleViewAction ();
 		toggleAct->setProperty ("ActionIcon", "layer-visible-on");
 		toggleAct->setShortcut (QStringLiteral ("Ctrl+J,S"));
-		shortcutMgr->RegisterAction (QStringLiteral ("TogglePanel"), toggleAct);
+		shortcutMgr->RegisterAction ("TogglePanel", toggleAct);
 
 		window->addAction (toggleAct);
 	}

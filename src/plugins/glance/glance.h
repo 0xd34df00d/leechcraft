@@ -47,8 +47,8 @@ namespace Glance
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
-		QMap<QString, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QByteArray, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&);
 	public slots:
 		void on_ActionGlance__triggered ();
 	signals:

@@ -71,8 +71,8 @@ namespace LC
 		void TabOpenRequested (const QByteArray&);
 
 		// IHaveShortcuts
-		QMap<QString, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
+		QMap<QByteArray, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QByteArray& id, const QKeySequences_t& sequences);
 
 		// IPluginReady
 		QSet<QByteArray> GetExpectedPluginClasses () const;

@@ -99,12 +99,12 @@ namespace Launchy
 		return result;
 	}
 
-	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return ShortcutMgr_->GetActionInfo ();
 	}
 
-	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	void Plugin::SetShortcut (const QByteArray& id, const QKeySequences_t& sequences)
 	{
 		ShortcutMgr_->SetShortcut (id, sequences);
 	}

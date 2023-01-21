@@ -96,7 +96,7 @@ namespace Glance
 		return result;
 	}
 
-	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> Plugin::GetActionInfo () const
 	{
 		const auto& iconName = ActionGlance_->property ("ActionIcon").toString ();
 		ActionInfo info
@@ -108,7 +108,7 @@ namespace Glance
 		return { { "ShowList", info } };
 	}
 
-	void Plugin::SetShortcut (const QString&, const QKeySequences_t& seqs)
+	void Plugin::SetShortcut (const QByteArray&, const QKeySequences_t& seqs)
 	{
 		ActionGlance_->setShortcuts (seqs);
 	}

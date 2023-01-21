@@ -293,12 +293,12 @@ namespace LC
 					<< tabClass;
 	}
 
-	QMap<QString, ActionInfo> CoreInstanceObject::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> CoreInstanceObject::GetActionInfo () const
 	{
 		return CoreShortcutManager_->GetActionInfo ();
 	}
 
-	void CoreInstanceObject::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	void CoreInstanceObject::SetShortcut (const QByteArray& id, const QKeySequences_t& sequences)
 	{
 		CoreShortcutManager_->SetShortcut (id, sequences);
 	}

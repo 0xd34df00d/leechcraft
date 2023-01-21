@@ -170,7 +170,7 @@ namespace LC
 	}
 
 	QKeySequences_t ShortcutManager::GetShortcuts (QObject *object,
-			const QString& originalName)
+			const QByteArray& originalName)
 	{
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
@@ -184,7 +184,7 @@ namespace LC
 				if (item->data (Roles::OriginalName).toString () == originalName)
 					return item->data (Roles::Sequence).value<QKeySequences_t> ();
 			}
-			return QKeySequences_t ();
+			return {};
 		}
 		AddObject (object);
 		return GetShortcuts (object, originalName);
@@ -255,7 +255,7 @@ namespace LC
 				auto item = objectItem->child (j);
 				if (!item->data (Roles::OldSequence).isNull ())
 				{
-					QString name = item->data (Roles::OriginalName).toString ();
+					const auto& name = item->data (Roles::OriginalName).toByteArray ();
 					const auto& sequences = item->data (Roles::Sequence).value<QKeySequences_t> ();
 
 					settings.setValue (name, QVariant::fromValue<QKeySequences_t> (sequences));

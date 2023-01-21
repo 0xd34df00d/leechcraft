@@ -61,8 +61,8 @@ namespace LC::SB2
 
 		QSet<QByteArray> GetPluginClasses () const override;
 
-		QMap<QString, ActionInfo> GetActionInfo () const override;
-		void SetShortcut (const QString&, const QKeySequences_t&) override;
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
 	public slots:
 		void hookGonnaShowStatusBar (const LC::IHookProxy_ptr&, bool);
 		void hookDockWidgetActionVisToggled (const LC::IHookProxy_ptr&,

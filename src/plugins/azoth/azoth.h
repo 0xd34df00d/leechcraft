@@ -93,8 +93,8 @@ namespace Azoth
 		void RecoverTabs (const QList<TabRecoverInfo>&) override;
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 
-		void SetShortcut (const QString&, const QKeySequences_t&) override;
-		QMap<QString, ActionInfo> GetActionInfo() const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
+		QMap<QByteArray, ActionInfo> GetActionInfo() const override;
 
 		QList<ANFieldData> GetANFields () const override;
 	private:

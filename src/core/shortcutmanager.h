@@ -42,7 +42,7 @@ namespace LC
 		void AddObject (QObject*);
 		void AddObject (QObject*, const QString&,
 				const QString&, const QIcon&);
-		QList<QKeySequence> GetShortcuts (QObject*, const QString&);
+		QList<QKeySequence> GetShortcuts (QObject*, const QByteArray&);
 	private:
 		int GetObjectRow (QObject*) const;
 	public slots:

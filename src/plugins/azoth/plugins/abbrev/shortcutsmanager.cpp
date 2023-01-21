@@ -35,7 +35,7 @@ namespace LC::Azoth::Abbrev
 				[this, tab] { Tab2SC_.remove (tab); });
 	}
 
-	QMap<QString, ActionInfo> ShortcutsManager::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> ShortcutsManager::GetActionInfo () const
 	{
 		return
 		{
@@ -50,7 +50,7 @@ namespace LC::Azoth::Abbrev
 		};
 	}
 
-	void ShortcutsManager::SetShortcut (const QString&, const QKeySequences_t& seqs)
+	void ShortcutsManager::SetShortcut (const QByteArray&, const QKeySequences_t& seqs)
 	{
 		Sequence_ = seqs.value (0);
 

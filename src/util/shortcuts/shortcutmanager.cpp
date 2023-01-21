@@ -30,7 +30,7 @@ namespace LC::Util
 		ContextObj_ = obj;
 	}
 
-	void ShortcutManager::RegisterAction (const QString& id, QAction *act)
+	void ShortcutManager::RegisterAction (const QByteArray& id, QAction *act)
 	{
 		Actions_ [id] << act;
 		connect (act,
@@ -75,7 +75,7 @@ namespace LC::Util
 			RegisterAction (id, act);
 	}
 
-	void ShortcutManager::RegisterShortcut (const QString& id, const ActionInfo& info, QShortcut *shortcut)
+	void ShortcutManager::RegisterShortcut (const QByteArray& id, const ActionInfo& info, QShortcut *shortcut)
 	{
 		Shortcuts_ [id] << shortcut;
 		connect (shortcut,
@@ -96,13 +96,13 @@ namespace LC::Util
 					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
 
-	void ShortcutManager::RegisterActionInfo (const QString& id, const ActionInfo& info)
+	void ShortcutManager::RegisterActionInfo (const QByteArray& id, const ActionInfo& info)
 	{
 		if (!HasActionInfo (id))
 			ActionInfo_ [id] = info;
 	}
 
-	void ShortcutManager::RegisterGlobalShortcut (const QString& id,
+	void ShortcutManager::RegisterGlobalShortcut (const QByteArray& id,
 			QObject *target, const QByteArray& method, const ActionInfo& info)
 	{
 		Entity e = Util::MakeEntity ({}, {}, {}, Mimes::GlobalActionRegister);
@@ -123,7 +123,7 @@ namespace LC::Util
 			CoreProxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 
-	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs)
+	void ShortcutManager::SetShortcut (const QByteArray& id, const QKeySequences_t& seqs)
 	{
 		for (auto act : qAsConst (Actions_ [id]))
 			act->setShortcuts (seqs);
@@ -157,18 +157,18 @@ namespace LC::Util
 		}
 	}
 
-	QMap<QString, ActionInfo> ShortcutManager::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> ShortcutManager::GetActionInfo () const
 	{
 		return ActionInfo_;
 	}
 
-	ShortcutManager& ShortcutManager::operator<< (const QPair<QString, QAction*>& pair)
+	ShortcutManager& ShortcutManager::operator<< (const QPair<QByteArray, QAction*>& pair)
 	{
 		RegisterAction (pair.first, pair.second);
 		return *this;
 	}
 
-	bool ShortcutManager::HasActionInfo (const QString& id) const
+	bool ShortcutManager::HasActionInfo (const QByteArray& id) const
 	{
 		return ActionInfo_.contains (id) &&
 				!ActionInfo_ [id].UserVisibleText_.isEmpty ();

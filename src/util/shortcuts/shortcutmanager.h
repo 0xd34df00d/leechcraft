@@ -57,14 +57,14 @@ namespace LC::Util
 		ICoreProxy_ptr CoreProxy_;
 		QObject *ContextObj_ = nullptr;
 
-		QHash<QString, QList<QAction*>> Actions_;
+		QHash<QByteArray, QList<QAction*>> Actions_;
 
-		QHash<QString, QList<QShortcut*>> Shortcuts_;
+		QHash<QByteArray, QList<QShortcut*>> Shortcuts_;
 		QHash<QShortcut*, QList<QShortcut*>> Shortcut2Subs_;
 
-		QHash<QString, Entity> Globals_;
+		QHash<QByteArray, Entity> Globals_;
 
-		QMap<QString, ActionInfo> ActionInfo_;
+		QMap<QByteArray, ActionInfo> ActionInfo_;
 	public:
 		/** @brief Creates the shortcut manager.
 		 *
@@ -95,9 +95,9 @@ namespace LC::Util
 		 *
 		 * @sa RegisterShortcut(), RegisterActionInfo()
 		 */
-		void RegisterAction (const QString& id, QAction *action);
+		void RegisterAction (const QByteArray& id, QAction *action);
 
-		using IDPair_t = QPair<QString, QAction*>;
+		using IDPair_t = QPair<QByteArray, QAction*>;
 
 		void RegisterActions (const std::initializer_list<IDPair_t>& actions);
 
@@ -109,7 +109,7 @@ namespace LC::Util
 		 *
 		 * @sa RegisterAction(), RegisterActionInfo()
 		 */
-		void RegisterShortcut (const QString& id,
+		void RegisterShortcut (const QByteArray& id,
 				const ActionInfo& info, QShortcut *shortcut);
 
 		/** @brief Registers the given action info with the given id.
@@ -126,7 +126,7 @@ namespace LC::Util
 		 *
 		 * @sa RegisterAction(), RegisterShortcut()
 		 */
-		void RegisterActionInfo (const QString& id, const ActionInfo& info);
+		void RegisterActionInfo (const QByteArray& id, const ActionInfo& info);
 
 		/** @brief Registers the given global shortcut with the given id.
 		 *
@@ -143,7 +143,7 @@ namespace LC::Util
 		 *
 		 * @sa AnnounceGlobalShorcuts()
 		 */
-		void RegisterGlobalShortcut (const QString& id,
+		void RegisterGlobalShortcut (const QByteArray& id,
 				QObject *target, const QByteArray& method,
 				const ActionInfo& info);
 
@@ -168,7 +168,7 @@ namespace LC::Util
 		 * @param[in] id The ID of the action to update.
 		 * @param[in] sequences The list of sequences to for the action.
 		 */
-		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
+		void SetShortcut (const QByteArray& id, const QKeySequences_t& sequences);
 
 		/** @brief Returns the map with information about actions.
 		 *
@@ -177,7 +177,7 @@ namespace LC::Util
 		 *
 		 * @return Action info map.
 		 */
-		QMap<QString, ActionInfo> GetActionInfo () const;
+		QMap<QByteArray, ActionInfo> GetActionInfo () const;
 
 		/** @brief Utility function equivalent to RegisterAction().
 		 *
@@ -187,8 +187,8 @@ namespace LC::Util
 		 * @param[in] pair The pair of action ID and the action itself.
 		 * @return The shortcut manager object.
 		 */
-		ShortcutManager& operator<< (const QPair<QString, QAction*>& pair);
+		ShortcutManager& operator<< (const QPair<QByteArray, QAction*>& pair);
 	private:
-		bool HasActionInfo (const QString&) const;
+		bool HasActionInfo (const QByteArray&) const;
 	};
 }

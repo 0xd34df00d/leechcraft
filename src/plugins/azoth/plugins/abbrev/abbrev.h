@@ -58,8 +58,8 @@ namespace Abbrev
 
 		QSet<QByteArray> GetPluginClasses () const override;
 
-		QMap<QString, ActionInfo> GetActionInfo () const override;
-		void SetShortcut (const QString&, const QKeySequences_t&) override;
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
 
 		StaticCommands_t GetStaticCommands (ICLEntry*) override;
 	private:

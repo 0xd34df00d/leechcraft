@@ -112,8 +112,8 @@ namespace Aggregator
 		EntityTestHandleResult CouldHandle (const Entity&) const override;
 		void Handle (Entity) override;
 
-		void SetShortcut (const QString&, const QKeySequences_t&) override;
-		QMap<QString, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
 
 		QList<QWizardPage*> GetWizardPages () const override;
 

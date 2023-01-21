@@ -49,7 +49,7 @@ public:
 	 * @param[in] id ID of the action.
 	 * @return The key sequences for the passed action.
 	 */
-	virtual QList<QKeySequence> GetShortcuts (QObject *object, const QString& id) = 0;
+	virtual QList<QKeySequence> GetShortcuts (QObject *object, const QByteArray& id) = 0;
 
 	virtual ~IShortcutProxy () { }
 };

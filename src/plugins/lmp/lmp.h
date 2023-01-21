@@ -67,8 +67,8 @@ namespace LMP
 		QAction *ActionRescan_;
 		QAction *ActionCollectionStats_;
 
-		QMap<QString, Entity> GlobAction2Entity_;
-		QMap<QString, ActionInfo> GlobAction2Info_;
+		QMap<QByteArray, Entity> GlobAction2Entity_;
+		QMap<QByteArray, ActionInfo> GlobAction2Info_;
 
 		EffectsManager *EffectsMgr_;
 	public:
@@ -94,8 +94,8 @@ namespace LMP
 		void RecoverTabs (const QList<TabRecoverInfo>& infos) override;
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 
-		void SetShortcut (const QString&, const QKeySequences_t&) override;
-		QMap<QString, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const override;
 		void AddPlugin (QObject* plugin) override;

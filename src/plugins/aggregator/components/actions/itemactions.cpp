@@ -41,7 +41,7 @@ namespace LC::Aggregator
 
 		const auto mkAction = [&] (const QString& name,
 				const QByteArray& icon,
-				const QString& objectNameSuffix,
+				const QByteArray& objectNameSuffix,
 				auto handler,
 				ActionInfo info = {})
 		{

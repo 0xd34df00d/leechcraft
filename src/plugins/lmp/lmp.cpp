@@ -181,7 +181,7 @@ namespace LMP
 		EffectsMgr_->RegisteringFinished ();
 	}
 
-	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	void Plugin::SetShortcut (const QByteArray& id, const QKeySequences_t& sequences)
 	{
 		if (!GlobAction2Entity_.contains (id))
 		{
@@ -198,7 +198,7 @@ namespace LMP
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
-	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return GlobAction2Info_;
 	}

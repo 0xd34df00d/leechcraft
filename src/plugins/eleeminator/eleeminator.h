@@ -56,8 +56,8 @@ namespace Eleeminator
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
-		QMap<QString, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QByteArray, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};

@@ -385,12 +385,12 @@ namespace LC::BitTorrent
 		return XmlSettingsDialog_;
 	}
 
-	void TorrentPlugin::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
+	void TorrentPlugin::SetShortcut (const QByteArray& name, const QKeySequences_t& shortcuts)
 	{
 		Core::Instance ()->GetShortcutManager ()->SetShortcut (name, shortcuts);
 	}
 
-	QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
+	QMap<QByteArray, ActionInfo> TorrentPlugin::GetActionInfo () const
 	{
 		return Core::Instance ()->GetShortcutManager ()->GetActionInfo ();
 	}
