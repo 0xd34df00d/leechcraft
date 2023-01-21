@@ -85,12 +85,14 @@ namespace TabsList
 
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
-		QMap<QString, ActionInfo> result;
 		const auto& iconName = ShowList_->property ("ActionIcon").toString ();
-		result ["ShowList"] = ActionInfo (ShowList_->text (),
-				ShowList_->shortcut (),
-				Proxy_->GetIconThemeManager ()->GetIcon (iconName));
-		return result;
+		ActionInfo info
+		{
+			ShowList_->text (),
+			ShowList_->shortcut (),
+			Proxy_->GetIconThemeManager ()->GetIcon (iconName),
+		};
+		return { { "ShowList", info } };
 	}
 
 	void Plugin::SetShortcut (const QString&, const QKeySequences_t& seqs)
