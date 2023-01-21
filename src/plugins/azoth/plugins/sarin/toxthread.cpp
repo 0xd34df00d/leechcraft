@@ -473,6 +473,7 @@ namespace LC::Azoth::Sarin
 			Config_.AllowIPv6_,
 			Config_.AllowUDP_,
 			Config_.AllowLocalDiscovery_,
+			true,		// TODO
 			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
 			Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),
 			static_cast<uint16_t> (Config_.ProxyPort_),
@@ -489,7 +490,9 @@ namespace LC::Azoth::Sarin
 			{
 				static_cast<ToxLogger*> (udata)->Log (level, file, line, func, message);
 			},
-			Logger_.get ()
+			Logger_.get (),
+			false,
+			nullptr,
 		};
 
 		TOX_ERR_NEW creationError {};
