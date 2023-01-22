@@ -29,9 +29,10 @@
 
 namespace LC::Plugins::Glance
 {
-	GlanceShower::GlanceShower (QWidget *parent)
-	: QGraphicsView (parent)
-	, Scene_ (new QGraphicsScene)
+	GlanceShower::GlanceShower (ICoreTabWidget& tw, QWidget *parent)
+	: QGraphicsView { parent }
+	, TabWidget_ { tw }
+	, Scene_ { new QGraphicsScene }
 	{
 		setWindowFlags (Qt::Dialog |
 				Qt::WindowStaysOnTopHint |
@@ -41,11 +42,6 @@ namespace LC::Plugins::Glance
 		setOptimizationFlag (DontSavePainterState);
 		Scene_->setItemIndexMethod (QGraphicsScene::NoIndex);
 		setRenderHints (QPainter::Antialiasing | QPainter::TextAntialiasing);
-	}
-
-	void GlanceShower::SetTabWidget (ICoreTabWidget *tw)
-	{
-		TabWidget_ = tw;
 	}
 
 	namespace
@@ -59,14 +55,7 @@ namespace LC::Plugins::Glance
 
 	void GlanceShower::Start ()
 	{
-		if (!TabWidget_)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "no tab widget set";
-			return;
-		}
-
-		const int count = TabWidget_->WidgetCount ();
+		const int count = TabWidget_.WidgetCount ();
 		if (count < 2)
 		{
 			emit finished ();
@@ -108,7 +97,7 @@ namespace LC::Plugins::Glance
 			{
 				const int idx = column + row * cols;
 				pg.setValue (idx);
-				QWidget *w = TabWidget_->Widget (idx);
+				const auto w = TabWidget_.Widget (idx);
 
 				if (!SSize_.isValid ())
 					SSize_ = w->size () / 2;
@@ -192,7 +181,7 @@ namespace LC::Plugins::Glance
 					[] (auto item) { return qgraphicsitem_cast<GlanceItem*> (item); });
 
 			int currentItem = -1;
-			const int count = TabWidget_->WidgetCount ();
+			const int count = TabWidget_.WidgetCount ();
 
 			const int sqrt = std::sqrt (static_cast<double> (count));
 			int rows = sqrt;
@@ -297,7 +286,7 @@ namespace LC::Plugins::Glance
 	{
 		if (close)
 		{
-			qobject_cast<ITabWidget*> (TabWidget_->Widget (idx))->Remove ();
+			qobject_cast<ITabWidget*> (TabWidget_.Widget (idx))->Remove ();
 			Scene_->removeItem (Scene_->items () [idx]);
 			if (Scene_->items ().size () < 2)
 			{
@@ -305,7 +294,7 @@ namespace LC::Plugins::Glance
 				return;
 			}
 			//Now rearrange and resize all the rest items
-			const int count = TabWidget_->WidgetCount ();
+			const int count = TabWidget_.WidgetCount ();
 			const int sqr = std::sqrt (static_cast<double> (count));
 			int rows = sqr;
 			int cols = sqr;
@@ -363,7 +352,7 @@ namespace LC::Plugins::Glance
 		}
 		else
 		{
-			TabWidget_->setCurrentTab (idx);
+			TabWidget_.setCurrentTab (idx);
 			Finalize ();
 		}
 	}

@@ -21,13 +21,12 @@ namespace LC::Plugins::Glance
 	{
 		Q_OBJECT
 
-		ICoreTabWidget *TabWidget_ = nullptr;
+		ICoreTabWidget& TabWidget_;
 		QGraphicsScene *Scene_;
 		QSize SSize_;
 	public:
-		explicit GlanceShower (QWidget* = nullptr);
+		explicit GlanceShower (ICoreTabWidget&, QWidget* = nullptr);
 
-		void SetTabWidget (ICoreTabWidget*);
 		void Start ();
 	private:
 		void Finalize ();

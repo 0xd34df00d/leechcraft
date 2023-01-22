@@ -68,9 +68,8 @@ namespace LC::Plugins::Glance
 
 	void Plugin::on_ActionGlance__triggered ()
 	{
-		const auto glance = new GlanceShower;
-		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
-		glance->SetTabWidget (rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()));
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
+		const auto glance = new GlanceShower { *rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()) };
 
 		connect (glance,
 				&GlanceShower::finished,
