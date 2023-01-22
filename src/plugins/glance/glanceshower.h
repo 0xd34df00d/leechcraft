@@ -37,6 +37,6 @@ namespace LC::Plugins::Glance
 	private slots:
 		void handleClicked (int, bool = false);
 	signals:
-		void finished (bool);
+		void finished ();
 	};
 }

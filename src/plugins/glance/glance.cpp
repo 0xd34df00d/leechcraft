@@ -75,7 +75,7 @@ namespace LC::Plugins::Glance
 		connect (glance,
 				&GlanceShower::finished,
 				ActionGlance_,
-				&QAction::setEnabled);
+				[this] { ActionGlance_->setEnabled (true); });
 
 		ActionGlance_->setEnabled (false);
 		glance->Start ();

@@ -69,7 +69,7 @@ namespace LC::Plugins::Glance
 		const int count = TabWidget_->WidgetCount ();
 		if (count < 2)
 		{
-			emit finished (true);
+			emit finished ();
 			return;
 		}
 
@@ -370,7 +370,7 @@ namespace LC::Plugins::Glance
 
 	void GlanceShower::Finalize ()
 	{
-		emit finished (true);
+		emit finished ();
 		deleteLater ();
 	}
 
