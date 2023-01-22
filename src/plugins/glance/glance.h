@@ -28,7 +28,6 @@ namespace LC::Plugins::Glance
 		LC_PLUGIN_METADATA ("org.LeechCraft.Glance")
 
 		QAction *ActionGlance_;
-		GlanceShower *Glance_;
 	public:
 		void Init (ICoreProxy_ptr proxy) override;
 		void SecondInit () override;

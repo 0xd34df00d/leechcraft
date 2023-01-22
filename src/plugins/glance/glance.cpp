@@ -68,17 +68,17 @@ namespace LC::Plugins::Glance
 
 	void Plugin::on_ActionGlance__triggered ()
 	{
-		Glance_ = new GlanceShower;
+		const auto glance = new GlanceShower;
 		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
-		Glance_->SetTabWidget (rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()));
+		glance->SetTabWidget (rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()));
 
-		connect (Glance_,
-				SIGNAL (finished (bool)),
+		connect (glance,
+				&GlanceShower::finished,
 				ActionGlance_,
-				SLOT (setEnabled (bool)));
+				&QAction::setEnabled);
 
 		ActionGlance_->setEnabled (false);
-		Glance_->Start ();
+		glance->Start ();
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
