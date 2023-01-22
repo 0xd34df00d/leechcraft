@@ -9,10 +9,8 @@
 #include "glanceitem.h"
 #include <QPropertyAnimation>
 #include <QGraphicsSceneHoverEvent>
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QIcon>
-#include <QtDebug>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
@@ -20,17 +18,17 @@
 
 namespace LC::Plugins::Glance
 {
-	GlanceItem::GlanceItem (const QPixmap& px, const QRect& closeButtonRect, QGraphicsItem *parent)
-	: QGraphicsPixmapItem (px, parent)
-	, ScaleAnim_ (new QPropertyAnimation (this, "Scale"))
-	, CloseButtonRect_ (closeButtonRect)
-	, Pixmap_ (px)
+	GlanceItem::GlanceItem (const QPixmap& px, QRect closeButtonRect, QGraphicsItem *parent)
+	: QGraphicsPixmapItem { px, parent }
+	, ScaleAnim_ { new QPropertyAnimation { this, "Scale" } }
+	, CloseButtonRect_ { closeButtonRect }
+	, Pixmap_ { px }
 	{
 		setAcceptHoverEvents (true);
 		setTransformationMode (Qt::SmoothTransformation);
 		setCacheMode (ItemCoordinateCache);
 
-		DrawCloseButton(false);
+		DrawCloseButton (false);
 	}
 
 	void GlanceItem::SetIndex (int idx)
@@ -55,7 +53,7 @@ namespace LC::Plugins::Glance
 
 	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
-		for (const auto item : ItemsList_)
+		for (const auto item : qAsConst (ItemsList_))
 			if (item->IsCurrent () && item != this)
 				item->SetCurrent (false);
 		SetCurrent (true);
@@ -92,10 +90,13 @@ namespace LC::Plugins::Glance
 
 	void GlanceItem::SetCurrent (bool cur)
 	{
+		constexpr auto minScale = 0.5;
+		constexpr auto scaleIncreaseFactor = 1.2;
+
 		if (cur)
 		{
 			setZValue (1);
-			QueueScaleAnim (scale (), std::max (0.5, Scale_ * 1.2));
+			QueueScaleAnim (scale (), std::max (minScale, Scale_ * scaleIncreaseFactor));
 		}
 		else
 		{
@@ -110,7 +111,7 @@ namespace LC::Plugins::Glance
 		return Current_;
 	}
 
-	void GlanceItem::SetItemList (QList<QGraphicsItem*> list)
+	void GlanceItem::SetItemList (const QList<QGraphicsItem*>& list)
 	{
 		ItemsList_ = Util::Map (list, [] (auto item) { return qgraphicsitem_cast<GlanceItem*> (item); });
 	}

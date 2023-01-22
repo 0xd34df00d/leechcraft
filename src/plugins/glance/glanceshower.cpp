@@ -10,7 +10,6 @@
 #include <cmath>
 #include <limits>
 #include <QLabel>
-#include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
@@ -20,7 +19,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QMainWindow>
-#include <QtDebug>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
@@ -130,7 +128,7 @@ namespace LC::Plugins::Glance
 				const int buttonSize = 25;
 				const int buttonLeft = SSize_.width() - buttonSize * 2;
 				const int buttonTop = buttonSize;
-				QRect buttonRect(QPoint (buttonLeft, buttonTop), QPoint (buttonLeft + buttonSize, buttonTop + buttonSize));
+				const QRect buttonRect { QPoint { buttonLeft, buttonTop }, QSize { buttonSize, buttonSize } };
 
 				{
 					QPainter p (&pixmap);
@@ -141,7 +139,7 @@ namespace LC::Plugins::Glance
 
 				}
 
-				GlanceItem *item = new GlanceItem (pixmap, buttonRect);
+				const auto item = new GlanceItem (pixmap, buttonRect);
 				item->SetIndex (idx);
 				connect (item,
 						SIGNAL (clicked (int, bool)),
@@ -157,14 +155,14 @@ namespace LC::Plugins::Glance
 
 				QAnimationGroup *pair = new QParallelAnimationGroup;
 
-				QPropertyAnimation *posAnim = new QPropertyAnimation (item, "Pos");
+				const auto posAnim = new QPropertyAnimation (item, "Pos");
 				posAnim->setDuration (animLength);
 				posAnim->setStartValue (QPointF (0, 0));
 				posAnim->setEndValue (QPointF (column * singleW, row * singleH));
 				posAnim->setEasingCurve (QEasingCurve::OutSine);
 				pair->addAnimation (posAnim);
 
-				QPropertyAnimation *opacityAnim = new QPropertyAnimation (item, "Opacity");
+				const auto opacityAnim = new QPropertyAnimation (item, "Opacity");
 				opacityAnim->setDuration (animLength);
 				opacityAnim->setStartValue (0.);
 				opacityAnim->setEndValue (1.);
@@ -208,7 +206,6 @@ namespace LC::Plugins::Glance
 				if (glanceItemList [i]->IsCurrent ())
 					currentItem = i;
 
-
 			switch (e->key ())
 			{
 			case Qt::Key_Right:
@@ -244,30 +241,29 @@ namespace LC::Plugins::Glance
 			case Qt::Key_Down:
 				if (count < 3)
 				{
-					QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
+					const auto event = new QKeyEvent (QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
 					QCoreApplication::postEvent (this, event);
 				}
 				else
 					if (currentItem < 0)
 						glanceItemList [0]->SetCurrent (true);
+					else if (currentItem + cols < count)
+					{
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [currentItem + cols]->SetCurrent (true);
+					}
 					else
-						if (currentItem + cols < count)
-						{
-							glanceItemList [currentItem]->SetCurrent (false);
-							glanceItemList [currentItem + cols]->SetCurrent (true);
-						}
-						else
-						{
-							glanceItemList [currentItem]->SetCurrent (false);
-							while ((currentItem - cols * (rows - 1)) <  0)
-								rows--;
-							glanceItemList [currentItem - cols * (rows - 1)]->SetCurrent (true);
-						}
+					{
+						glanceItemList [currentItem]->SetCurrent (false);
+						while ((currentItem - cols * (rows - 1)) <  0)
+							rows--;
+						glanceItemList [currentItem - cols * (rows - 1)]->SetCurrent (true);
+					}
 				break;
 			case Qt::Key_Up:
 				if (count < 3)
 				{
-					QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+					const auto event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
 					QCoreApplication::postEvent (this, event);
 				}
 				else
@@ -330,18 +326,19 @@ namespace LC::Plugins::Glance
 
 			const int animLength = 400;
 
-			QParallelAnimationGroup *anim = new QParallelAnimationGroup();
+			const auto anim = new QParallelAnimationGroup;
 
-			qreal scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
+			const auto scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
 					static_cast<qreal> (wH) / SSize_.height ());
 
+			const auto allItems = items ();
 			for (int row = 0; row < rows; ++row)
 				for (int column = 0;
 						column < cols && column + row * cols < count;
 						++column)
 				{
 					const int idx = column + row * cols;
-					GlanceItem *item = qgraphicsitem_cast<GlanceItem*> (items ()[idx]);
+					const auto item = qgraphicsitem_cast<GlanceItem*> (allItems [idx]);
 					item->SetIndex (idx);
 					item->SetIdealScale (scaleFactor);
 
@@ -381,7 +378,7 @@ namespace LC::Plugins::Glance
 	{
 		QGraphicsView::mousePressEvent (e);
 		e->accept ();
-		if (!this->itemAt (e->pos ()))
+		if (!itemAt (e->pos ()))
 			Finalize ();
 	}
 }

@@ -33,15 +33,15 @@ namespace Glance
 		QPropertyAnimation *ScaleAnim_;
 		bool Current_ = false;
 		QList<GlanceItem*> ItemsList_;
-		QRect CloseButtonRect_;
+		const QRect CloseButtonRect_;
 		QPixmap Pixmap_;
 	public:
-		GlanceItem (const QPixmap&, const QRect&, QGraphicsItem* = nullptr);
+		GlanceItem (const QPixmap&, QRect, QGraphicsItem* = nullptr);
 
 		void SetIndex (int);
 		void SetIdealScale (qreal);
 		void SetCurrent (bool);
-		void SetItemList (QList<QGraphicsItem*>);
+		void SetItemList (const QList<QGraphicsItem*>&);
 		bool IsCurrent () const;
 	private:
 		void QueueScaleAnim (qreal, qreal);
