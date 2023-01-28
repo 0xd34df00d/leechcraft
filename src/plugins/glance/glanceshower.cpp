@@ -187,6 +187,24 @@ namespace LC::Plugins::Glance
 		show ();
 	}
 
+	namespace
+	{
+		void HandleHorizontalNav (const QVector<GlanceItem*>& items,
+				int currentItem, int delta, int wrapAround)
+		{
+			if (currentItem != -1)
+				items [currentItem]->SetCurrent (false);
+
+			if (currentItem != -1)
+				currentItem += delta;
+
+			if (currentItem < 0 || currentItem >= items.size ())
+				currentItem = wrapAround;
+
+			items [currentItem]->SetCurrent (true);
+		}
+	}
+
 	void GlanceShower::keyPressEvent (QKeyEvent *e)
 	{
 		if (e->key () == Qt::Key_Escape)
@@ -205,34 +223,10 @@ namespace LC::Plugins::Glance
 			switch (e->key ())
 			{
 			case Qt::Key_Right:
-				if (currentItem < 0)
-					Items_ [0]->SetCurrent (true);
-				else
-					if (currentItem < count - 1)
-					{
-						Items_ [currentItem]->SetCurrent (false);
-						Items_ [currentItem + 1]->SetCurrent (true);
-					}
-					else
-					{
-						Items_ [currentItem]->SetCurrent (false);
-						Items_ [0]->SetCurrent (true);
-					}
+				HandleHorizontalNav (Items_, currentItem, +1, 0);
 				break;
 			case Qt::Key_Left:
-				if (currentItem < 0)
-					Items_ [count - 1]->SetCurrent (true);
-				else
-					if (currentItem > 0)
-					{
-						Items_ [currentItem]->SetCurrent (false);
-						Items_ [currentItem - 1]->SetCurrent (true);
-					}
-					else
-					{
-						Items_ [currentItem]->SetCurrent (false);
-						Items_ [count - 1]->SetCurrent (true);
-					}
+				HandleHorizontalNav (Items_, currentItem, -1, count - 1);
 				break;
 			case Qt::Key_Down:
 				if (count < 3)
