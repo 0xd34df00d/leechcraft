@@ -169,9 +169,6 @@ namespace LC::Plugins::Glance
 		setGeometry (screenGeom);
 		animGroup->start ();
 
-		for (const auto item : items ())
-			qgraphicsitem_cast<GlanceItem*> (item)->SetItemList (items ());
-
 		show ();
 	}
 

@@ -28,7 +28,6 @@ namespace LC::Plugins::Glance
 		qreal Scale_ = 0;
 		QPropertyAnimation *ScaleAnim_;
 		bool Current_ = false;
-		QList<GlanceItem*> ItemsList_;
 		const QRect CloseButtonRect_;
 		QPixmap Pixmap_;
 	public:
@@ -37,7 +36,6 @@ namespace LC::Plugins::Glance
 		void SetIndex (int);
 		void SetIdealScale (qreal);
 		void SetCurrent (bool);
-		void SetItemList (const QList<QGraphicsItem*>&);
 		bool IsCurrent () const;
 	private:
 		void QueueScaleAnim (qreal, qreal);

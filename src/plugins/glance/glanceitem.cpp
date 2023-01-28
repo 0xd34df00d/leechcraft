@@ -11,7 +11,6 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
 #include <QIcon>
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -53,9 +52,6 @@ namespace LC::Plugins::Glance
 
 	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
-		for (const auto item : qAsConst (ItemsList_))
-			if (item->IsCurrent () && item != this)
-				item->SetCurrent (false);
 		SetCurrent (true);
 	}
 
@@ -109,11 +105,6 @@ namespace LC::Plugins::Glance
 	bool GlanceItem::IsCurrent () const
 	{
 		return Current_;
-	}
-
-	void GlanceItem::SetItemList (const QList<QGraphicsItem*>& list)
-	{
-		ItemsList_ = Util::Map (list, [] (auto item) { return qgraphicsitem_cast<GlanceItem*> (item); });
 	}
 
 	void GlanceItem::DrawCloseButton (bool selected)
