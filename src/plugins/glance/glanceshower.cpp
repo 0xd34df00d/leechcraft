@@ -58,7 +58,7 @@ namespace LC::Plugins::Glance
 		const int count = TabWidget_.WidgetCount ();
 		if (count < 2)
 		{
-			emit finished ();
+			Finalize ();
 			return;
 		}
 
