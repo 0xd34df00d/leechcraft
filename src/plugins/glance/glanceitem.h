@@ -53,7 +53,8 @@ namespace Glance
 		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
 	signals:
-		void clicked (int, bool);
+		void tabSelected (int);
+		void tabClosed (int);
 	};
 }
 }

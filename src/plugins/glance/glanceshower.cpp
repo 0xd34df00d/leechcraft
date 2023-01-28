@@ -131,9 +131,13 @@ namespace LC::Plugins::Glance
 				const auto item = new GlanceItem (pixmap, buttonRect);
 				item->SetIndex (idx);
 				connect (item,
-						SIGNAL (clicked (int, bool)),
+						&GlanceItem::tabSelected,
 						this,
-						SLOT (handleClicked (int, bool)));
+						&GlanceShower::handleSelected);
+				connect (item,
+						&GlanceItem::tabClosed,
+						this,
+						&GlanceShower::handleClosed);
 
 				Scene_->addItem (item);
 				item->setTransformOriginPoint (SSize_.width () / 2, SSize_.height () / 2);
@@ -274,7 +278,7 @@ namespace LC::Plugins::Glance
 				break;
 			case Qt::Key_Return:
 				if (currentItem >= 0)
-					handleClicked (currentItem);
+					handleSelected (currentItem);
 				break;
 			default:
 				QGraphicsView::keyPressEvent (e);
@@ -282,79 +286,77 @@ namespace LC::Plugins::Glance
 		}
 	}
 
-	void GlanceShower::handleClicked (int idx, bool close)
+	void GlanceShower::handleClosed (int idx)
 	{
-		if (close)
+		qobject_cast<ITabWidget*> (TabWidget_.Widget (idx))->Remove ();
+		Scene_->removeItem (Scene_->items () [idx]);
+		if (Scene_->items ().size () < 2)
 		{
-			qobject_cast<ITabWidget*> (TabWidget_.Widget (idx))->Remove ();
-			Scene_->removeItem (Scene_->items () [idx]);
-			if (Scene_->items ().size () < 2)
-			{
-				Finalize ();
-				return;
-			}
-			//Now rearrange and resize all the rest items
-			const int count = TabWidget_.WidgetCount ();
-			const int sqr = std::sqrt (static_cast<double> (count));
-			int rows = sqr;
-			int cols = sqr;
-			if (rows * cols < count)
-				++cols;
-			if (rows * cols < count)
-				++rows;
-
-			const auto& screenGeom = GetWindowGeometry ();
-			const int width = screenGeom.width ();
-			const int height = screenGeom.height ();
-
-			const int singleW = width / cols;
-			const int singleH = height / rows;
-
-			const int wW = singleW * 4 / 5;
-			const int wH = singleH * 4 / 5;
-
-			const int animLength = 400;
-
-			const auto anim = new QParallelAnimationGroup;
-
-			const auto scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
-					static_cast<qreal> (wH) / SSize_.height ());
-
-			const auto allItems = items ();
-			for (int row = 0; row < rows; ++row)
-				for (int column = 0;
-						column < cols && column + row * cols < count;
-						++column)
-				{
-					const int idx = column + row * cols;
-					const auto item = qgraphicsitem_cast<GlanceItem*> (allItems [idx]);
-					item->SetIndex (idx);
-					item->SetIdealScale (scaleFactor);
-
-					auto pair = new QParallelAnimationGroup ();
-
-					auto posAnim = new QPropertyAnimation (item, "Pos");
-					posAnim->setDuration (animLength);
-					posAnim->setStartValue (item->pos ());
-					posAnim->setEndValue (QPointF (column * singleW, row * singleH));
-					posAnim->setEasingCurve (QEasingCurve::OutSine);
-					pair->addAnimation (posAnim);
-
-					auto scaleAnim = new QPropertyAnimation (item, "Scale");
-					scaleAnim->setDuration (animLength);
-					scaleAnim->setStartValue (item->scale ());
-					scaleAnim->setEndValue (scaleFactor);
-					pair->addAnimation (scaleAnim);
-
-					anim->addAnimation (pair);
-				}
-			anim->start ();
-		}
-		else
-		{
-			TabWidget_.setCurrentTab (idx);
 			Finalize ();
+			return;
 		}
+		//Now rearrange and resize all the rest items
+		const int count = TabWidget_.WidgetCount ();
+		const int sqr = std::sqrt (static_cast<double> (count));
+		int rows = sqr;
+		int cols = sqr;
+		if (rows * cols < count)
+			++cols;
+		if (rows * cols < count)
+			++rows;
+
+		const auto& screenGeom = GetWindowGeometry ();
+		const int width = screenGeom.width ();
+		const int height = screenGeom.height ();
+
+		const int singleW = width / cols;
+		const int singleH = height / rows;
+
+		const int wW = singleW * 4 / 5;
+		const int wH = singleH * 4 / 5;
+
+		const int animLength = 400;
+
+		const auto anim = new QParallelAnimationGroup;
+
+		const auto scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
+				static_cast<qreal> (wH) / SSize_.height ());
+
+		const auto allItems = items ();
+		for (int row = 0; row < rows; ++row)
+			for (int column = 0;
+					column < cols && column + row * cols < count;
+					++column)
+			{
+				const int idx = column + row * cols;
+				const auto item = qgraphicsitem_cast<GlanceItem*> (allItems [idx]);
+				item->SetIndex (idx);
+				item->SetIdealScale (scaleFactor);
+
+				auto pair = new QParallelAnimationGroup ();
+
+				auto posAnim = new QPropertyAnimation (item, "Pos");
+				posAnim->setDuration (animLength);
+				posAnim->setStartValue (item->pos ());
+				posAnim->setEndValue (QPointF (column * singleW, row * singleH));
+				posAnim->setEasingCurve (QEasingCurve::OutSine);
+				pair->addAnimation (posAnim);
+
+				auto scaleAnim = new QPropertyAnimation (item, "Scale");
+				scaleAnim->setDuration (animLength);
+				scaleAnim->setStartValue (item->scale ());
+				scaleAnim->setEndValue (scaleFactor);
+				pair->addAnimation (scaleAnim);
+
+				anim->addAnimation (pair);
+			}
+		anim->start ();
+	}
+
+	void GlanceShower::handleSelected (int idx)
+	{
+		TabWidget_.setCurrentTab (idx);
+		Finalize ();
 	}
 
 	void GlanceShower::Finalize ()

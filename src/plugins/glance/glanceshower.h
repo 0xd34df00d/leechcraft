@@ -34,7 +34,8 @@ namespace LC::Plugins::Glance
 		void keyPressEvent (QKeyEvent*) override;
 		void mousePressEvent (QMouseEvent *) override;
 	private slots:
-		void handleClicked (int, bool = false);
+		void handleSelected (int);
+		void handleClosed (int);
 	signals:
 		void finished ();
 	};

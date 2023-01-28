@@ -83,9 +83,9 @@ namespace LC::Plugins::Glance
 	{
 		const auto& clickPoint = e->buttonDownPos (Qt::LeftButton).toPoint ();
 		if (CloseButtonRect_.contains (clickPoint))
-			emit clicked (Index_, true);
+			emit tabClosed (Index_);
 		else
-			emit clicked (Index_, false);
+			emit tabSelected (Index_);
 	}
 
 	void GlanceItem::SetCurrent (bool cur)
