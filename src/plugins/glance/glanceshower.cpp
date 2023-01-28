@@ -189,7 +189,7 @@ namespace LC::Plugins::Glance
 
 	namespace
 	{
-		void HandleHorizontalNav (const QVector<GlanceItem*>& items,
+		void HandleNav (const QVector<GlanceItem*>& items,
 				int currentItem, int delta, int wrapAround)
 		{
 			if (currentItem != -1)
@@ -220,58 +220,36 @@ namespace LC::Plugins::Glance
 				if (Items_ [i]->IsCurrent ())
 					currentItem = i;
 
+			const auto next = [=, this] { HandleNav (Items_, currentItem, +1, 0); };
+			const auto prev = [=, this] { HandleNav (Items_, currentItem, -1, count - 1); };
+
 			switch (e->key ())
 			{
 			case Qt::Key_Right:
-				HandleHorizontalNav (Items_, currentItem, +1, 0);
+				next ();
 				break;
 			case Qt::Key_Left:
-				HandleHorizontalNav (Items_, currentItem, -1, count - 1);
+				prev ();
 				break;
 			case Qt::Key_Down:
-				if (count < 3)
-				{
-					const auto event = new QKeyEvent (QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
-					QCoreApplication::postEvent (this, event);
-				}
+				if (rows == 1)
+					next ();
 				else
-					if (currentItem < 0)
-						Items_ [0]->SetCurrent (true);
-					else if (currentItem + cols < count)
-					{
-						Items_ [currentItem]->SetCurrent (false);
-						Items_ [currentItem + cols]->SetCurrent (true);
-					}
-					else
-					{
-						Items_ [currentItem]->SetCurrent (false);
-						while ((currentItem - cols * (rows - 1)) <  0)
-							rows--;
-						Items_ [currentItem - cols * (rows - 1)]->SetCurrent (true);
-					}
+				{
+					const auto wrapAround = currentItem >= 0 ? currentItem % cols : 0;
+					HandleNav (Items_, currentItem, +cols, wrapAround);
+				}
 				break;
 			case Qt::Key_Up:
-				if (count < 3)
-				{
-					const auto event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
-					QCoreApplication::postEvent (this, event);
-				}
+				if (rows == 1)
+					prev ();
 				else
-					if (currentItem < 0)
-						Items_ [0]->SetCurrent (true);
-					else
-						if (currentItem >= cols)
-						{
-							Items_ [currentItem]->SetCurrent (false);
-							Items_ [currentItem - cols]->SetCurrent (true);
-						}
-						else
-						{
-							Items_ [currentItem]->SetCurrent (false);
-							while ((currentItem + cols * (rows - 1)) > count - 1)
-								rows--;
-							Items_ [currentItem + cols * (rows - 1)]->SetCurrent (true);
-						}
+				{
+					auto wrapAround = currentItem >= 0 ? currentItem + (rows - 1) * cols : 0;
+					if (wrapAround >= Items_.size ())
+						wrapAround -= cols;
+					HandleNav (Items_, currentItem, -cols, wrapAround);
+				}
 				break;
 			case Qt::Key_Return:
 				if (currentItem >= 0)
@@ -279,6 +257,7 @@ namespace LC::Plugins::Glance
 				break;
 			default:
 				QGraphicsView::keyPressEvent (e);
+				break;
 			}
 		}
 	}
