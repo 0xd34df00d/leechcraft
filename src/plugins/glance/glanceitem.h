@@ -13,11 +13,7 @@
 
 class QPropertyAnimation;
 
-namespace LC
-{
-namespace Plugins
-{
-namespace Glance
+namespace LC::Plugins::Glance
 {
 	class GlanceItem : public QObject
 					 , public QGraphicsPixmapItem
@@ -56,6 +52,4 @@ namespace Glance
 		void tabSelected (int);
 		void tabClosed (int);
 	};
-}
-}
 }
