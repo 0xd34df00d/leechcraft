@@ -19,7 +19,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QMainWindow>
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -80,7 +79,9 @@ namespace LC::Plugins::Glance
 			return;
 		}
 
-		QAnimationGroup *animGroup = new QParallelAnimationGroup;
+		Items_.reserve (count);
+
+		const auto animGroup = new QParallelAnimationGroup;
 
 		const auto [rows, cols] = GetGridInfo (count);
 
@@ -151,6 +152,8 @@ namespace LC::Plugins::Glance
 						this,
 						&GlanceShower::handleClosed);
 
+				Items_ << item;
+
 				Scene_->addItem (item);
 				item->setTransformOriginPoint (SSize_.width () / 2, SSize_.height () / 2);
 				item->setScale (scaleFactor);
@@ -158,7 +161,7 @@ namespace LC::Plugins::Glance
 				item->setOpacity (0);
 				item->moveBy (column * singleW, row * singleH);
 
-				QAnimationGroup *pair = new QParallelAnimationGroup;
+				const auto pair = new QParallelAnimationGroup;
 
 				const auto posAnim = new QPropertyAnimation (item, "Pos");
 				posAnim->setDuration (animLength);
@@ -190,48 +193,45 @@ namespace LC::Plugins::Glance
 			Finalize ();
 		else
 		{
-			const auto& glanceItemList = Util::Map (items (),
-					[] (auto item) { return qgraphicsitem_cast<GlanceItem*> (item); });
-
 			int currentItem = -1;
 			const int count = TabWidget_.WidgetCount ();
 
 			auto [rows, cols] = GetGridInfo (count);
 
 			for (int i = 0; i < count; ++i)
-				if (glanceItemList [i]->IsCurrent ())
+				if (Items_ [i]->IsCurrent ())
 					currentItem = i;
 
 			switch (e->key ())
 			{
 			case Qt::Key_Right:
 				if (currentItem < 0)
-					glanceItemList [0]->SetCurrent (true);
+					Items_ [0]->SetCurrent (true);
 				else
-					if (currentItem < (count - 1))
+					if (currentItem < count - 1)
 					{
-						glanceItemList [currentItem]->SetCurrent (false);
-						glanceItemList [currentItem + 1]->SetCurrent (true);
+						Items_ [currentItem]->SetCurrent (false);
+						Items_ [currentItem + 1]->SetCurrent (true);
 					}
 					else
 					{
-						glanceItemList [currentItem]->SetCurrent (false);
-						glanceItemList [0]->SetCurrent (true);
+						Items_ [currentItem]->SetCurrent (false);
+						Items_ [0]->SetCurrent (true);
 					}
 				break;
 			case Qt::Key_Left:
 				if (currentItem < 0)
-					glanceItemList [count - 1]->SetCurrent (true);
+					Items_ [count - 1]->SetCurrent (true);
 				else
 					if (currentItem > 0)
 					{
-						glanceItemList [currentItem]->SetCurrent (false);
-						glanceItemList [currentItem - 1]->SetCurrent (true);
+						Items_ [currentItem]->SetCurrent (false);
+						Items_ [currentItem - 1]->SetCurrent (true);
 					}
 					else
 					{
-						glanceItemList [currentItem]->SetCurrent (false);
-						glanceItemList [count - 1]->SetCurrent (true);
+						Items_ [currentItem]->SetCurrent (false);
+						Items_ [count - 1]->SetCurrent (true);
 					}
 				break;
 			case Qt::Key_Down:
@@ -242,18 +242,18 @@ namespace LC::Plugins::Glance
 				}
 				else
 					if (currentItem < 0)
-						glanceItemList [0]->SetCurrent (true);
+						Items_ [0]->SetCurrent (true);
 					else if (currentItem + cols < count)
 					{
-						glanceItemList [currentItem]->SetCurrent (false);
-						glanceItemList [currentItem + cols]->SetCurrent (true);
+						Items_ [currentItem]->SetCurrent (false);
+						Items_ [currentItem + cols]->SetCurrent (true);
 					}
 					else
 					{
-						glanceItemList [currentItem]->SetCurrent (false);
+						Items_ [currentItem]->SetCurrent (false);
 						while ((currentItem - cols * (rows - 1)) <  0)
 							rows--;
-						glanceItemList [currentItem - cols * (rows - 1)]->SetCurrent (true);
+						Items_ [currentItem - cols * (rows - 1)]->SetCurrent (true);
 					}
 				break;
 			case Qt::Key_Up:
@@ -264,19 +264,19 @@ namespace LC::Plugins::Glance
 				}
 				else
 					if (currentItem < 0)
-						glanceItemList [0]->SetCurrent (true);
+						Items_ [0]->SetCurrent (true);
 					else
 						if (currentItem >= cols)
 						{
-							glanceItemList [currentItem]->SetCurrent (false);
-							glanceItemList [currentItem - cols]->SetCurrent (true);
+							Items_ [currentItem]->SetCurrent (false);
+							Items_ [currentItem - cols]->SetCurrent (true);
 						}
 						else
 						{
-							glanceItemList [currentItem]->SetCurrent (false);
+							Items_ [currentItem]->SetCurrent (false);
 							while ((currentItem + cols * (rows - 1)) > count - 1)
 								rows--;
-							glanceItemList [currentItem + cols * (rows - 1)]->SetCurrent (true);
+							Items_ [currentItem + cols * (rows - 1)]->SetCurrent (true);
 						}
 				break;
 			case Qt::Key_Return:
@@ -292,12 +292,15 @@ namespace LC::Plugins::Glance
 	void GlanceShower::handleClosed (int idx)
 	{
 		qobject_cast<ITabWidget*> (TabWidget_.Widget (idx))->Remove ();
-		Scene_->removeItem (Scene_->items () [idx]);
-		if (Scene_->items ().size () < 2)
+
+		const auto removedItem = Items_.takeAt (idx);
+		Scene_->removeItem (removedItem);
+		if (Items_.size () < 2)
 		{
 			Finalize ();
 			return;
 		}
+
 		//Now rearrange and resize all the rest items
 		const int count = TabWidget_.WidgetCount ();
 		const auto [rows, cols] = GetGridInfo (count);

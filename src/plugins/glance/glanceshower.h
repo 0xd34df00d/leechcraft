@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QGraphicsView>
+#include <QVector>
 #include <interfaces/iinfo.h>
 
 class ICoreTabWidget;
@@ -24,6 +25,8 @@ namespace LC::Plugins::Glance
 		ICoreTabWidget& TabWidget_;
 		QGraphicsScene *Scene_;
 		QSize SSize_;
+
+		QVector<GlanceItem*> Items_;
 	public:
 		explicit GlanceShower (ICoreTabWidget&, QWidget* = nullptr);
 
