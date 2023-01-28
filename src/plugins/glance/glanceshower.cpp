@@ -51,6 +51,24 @@ namespace LC::Plugins::Glance
 			const auto window = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
 			return QApplication::desktop ()->screenGeometry (window);
 		}
+
+		auto GetGridInfo (int widgetCount)
+		{
+			const auto sqr = static_cast<int> (std::sqrt (widgetCount));
+			int rows = sqr;
+			int cols = sqr;
+			if (rows * cols < widgetCount)
+				++cols;
+			if (rows * cols < widgetCount)
+				++rows;
+
+			struct
+			{
+				int Rows_;
+				int Cols_;
+			} grid { rows, cols };
+			return grid;
+		}
 	}
 
 	void GlanceShower::Start ()
@@ -64,13 +82,7 @@ namespace LC::Plugins::Glance
 
 		QAnimationGroup *animGroup = new QParallelAnimationGroup;
 
-		const int sqr = std::sqrt (static_cast<double> (count));
-		int rows = sqr;
-		int cols = sqr;
-		if (rows * cols < count)
-			++cols;
-		if (rows * cols < count)
-			++rows;
+		const auto [rows, cols] = GetGridInfo (count);
 
 		const auto& screenGeom = GetWindowGeometry ();
 		const int width = screenGeom.width ();
@@ -184,13 +196,7 @@ namespace LC::Plugins::Glance
 			int currentItem = -1;
 			const int count = TabWidget_.WidgetCount ();
 
-			const int sqrt = std::sqrt (static_cast<double> (count));
-			int rows = sqrt;
-			int cols = sqrt;
-			if (rows * cols < count)
-				++cols;
-			if (rows * cols < count)
-				++rows;
+			auto [rows, cols] = GetGridInfo (count);
 
 			for (int i = 0; i < count; ++i)
 				if (glanceItemList [i]->IsCurrent ())
@@ -294,13 +300,7 @@ namespace LC::Plugins::Glance
 		}
 		//Now rearrange and resize all the rest items
 		const int count = TabWidget_.WidgetCount ();
-		const int sqr = std::sqrt (static_cast<double> (count));
-		int rows = sqr;
-		int cols = sqr;
-		if (rows * cols < count)
-			++cols;
-		if (rows * cols < count)
-			++rows;
+		const auto [rows, cols] = GetGridInfo (count);
 
 		const auto& screenGeom = GetWindowGeometry ();
 		const int width = screenGeom.width ();
