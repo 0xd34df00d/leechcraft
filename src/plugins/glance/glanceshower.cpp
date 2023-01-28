@@ -208,57 +208,58 @@ namespace LC::Plugins::Glance
 	void GlanceShower::keyPressEvent (QKeyEvent *e)
 	{
 		if (e->key () == Qt::Key_Escape)
-			Finalize ();
-		else
 		{
-			int currentItem = -1;
-			const int count = TabWidget_.WidgetCount ();
+			Finalize ();
+			return;
+		}
 
-			auto [rows, cols] = GetGridInfo (count);
+		int currentItem = -1;
+		const int count = TabWidget_.WidgetCount ();
 
-			for (int i = 0; i < count; ++i)
-				if (Items_ [i]->IsCurrent ())
-					currentItem = i;
+		auto [rows, cols] = GetGridInfo (count);
 
-			const auto next = [=, this] { HandleNav (Items_, currentItem, +1, 0); };
-			const auto prev = [=, this] { HandleNav (Items_, currentItem, -1, count - 1); };
+		for (int i = 0; i < count; ++i)
+			if (Items_ [i]->IsCurrent ())
+				currentItem = i;
 
-			switch (e->key ())
-			{
-			case Qt::Key_Right:
+		const auto next = [=, this] { HandleNav (Items_, currentItem, +1, 0); };
+		const auto prev = [=, this] { HandleNav (Items_, currentItem, -1, count - 1); };
+
+		switch (e->key ())
+		{
+		case Qt::Key_Right:
+			next ();
+			break;
+		case Qt::Key_Left:
+			prev ();
+			break;
+		case Qt::Key_Down:
+			if (rows == 1)
 				next ();
-				break;
-			case Qt::Key_Left:
-				prev ();
-				break;
-			case Qt::Key_Down:
-				if (rows == 1)
-					next ();
-				else
-				{
-					const auto wrapAround = currentItem >= 0 ? currentItem % cols : 0;
-					HandleNav (Items_, currentItem, +cols, wrapAround);
-				}
-				break;
-			case Qt::Key_Up:
-				if (rows == 1)
-					prev ();
-				else
-				{
-					auto wrapAround = currentItem >= 0 ? currentItem + (rows - 1) * cols : 0;
-					if (wrapAround >= Items_.size ())
-						wrapAround -= cols;
-					HandleNav (Items_, currentItem, -cols, wrapAround);
-				}
-				break;
-			case Qt::Key_Return:
-				if (currentItem >= 0)
-					handleSelected (currentItem);
-				break;
-			default:
-				QGraphicsView::keyPressEvent (e);
-				break;
+			else
+			{
+				const auto wrapAround = currentItem >= 0 ? currentItem % cols : 0;
+				HandleNav (Items_, currentItem, +cols, wrapAround);
 			}
+			break;
+		case Qt::Key_Up:
+			if (rows == 1)
+				prev ();
+			else
+			{
+				auto wrapAround = currentItem >= 0 ? currentItem + (rows - 1) * cols : 0;
+				if (wrapAround >= Items_.size ())
+					wrapAround -= cols;
+				HandleNav (Items_, currentItem, -cols, wrapAround);
+			}
+			break;
+		case Qt::Key_Return:
+			if (currentItem >= 0)
+				handleSelected (currentItem);
+			break;
+		default:
+			QGraphicsView::keyPressEvent (e);
+			break;
 		}
 	}
 
