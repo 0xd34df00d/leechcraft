@@ -8,12 +8,10 @@
 
 #include "glanceshower.h"
 #include <cmath>
-#include <limits>
 #include <optional>
 #include <QLabel>
 #include <QGraphicsPixmapItem>
 #include <QParallelAnimationGroup>
-#include <QSequentialAnimationGroup>
 #include <QProgressDialog>
 #include <QPropertyAnimation>
 #include <QKeyEvent>
@@ -117,7 +115,7 @@ namespace LC::Plugins::Glance
 
 		Items_.reserve (count);
 
-		const auto animGroup = new QParallelAnimationGroup;
+		const auto animGroup = new QParallelAnimationGroup { this };
 
 		const GridInfo grid { count };
 		const auto [rows, cols] = grid;
@@ -177,17 +175,13 @@ namespace LC::Plugins::Glance
 				item->SetIdealScale (scaleFactor);
 				item->setOpacity (0);
 
-				const auto pair = new QParallelAnimationGroup;
-
-				pair->addAnimation (MakePosAnimator (*item, row, column, cellSize));
+				animGroup->addAnimation (MakePosAnimator (*item, row, column, cellSize));
 
 				const auto opacityAnim = new QPropertyAnimation (item, "Opacity");
 				opacityAnim->setDuration (AnimationLength);
 				opacityAnim->setStartValue (0.);
 				opacityAnim->setEndValue (1.);
-				pair->addAnimation (opacityAnim);
-
-				animGroup->addAnimation (pair);
+				animGroup->addAnimation (opacityAnim);
 			}
 
 		setScene (Scene_);
@@ -300,7 +294,7 @@ namespace LC::Plugins::Glance
 		const QSizeF cellSize = GetCellSize (grid);
 		const auto scaleFactor = GetRenderingScaleFactor (GetTabSize (TabWidget_), cellSize);
 
-		const auto anim = new QParallelAnimationGroup;
+		const auto anim = new QParallelAnimationGroup { this };
 		for (int row = 0; row < rows; ++row)
 			for (int column = 0;
 					column < cols && column + row * cols < count;
@@ -311,16 +305,13 @@ namespace LC::Plugins::Glance
 				item->SetIndex (idx);
 				item->SetIdealScale (scaleFactor);
 
-				auto pair = new QParallelAnimationGroup;
-				pair->addAnimation (MakePosAnimator (*item, row, column, cellSize));
+				anim->addAnimation (MakePosAnimator (*item, row, column, cellSize));
 
 				auto scaleAnim = new QPropertyAnimation (item, "Scale");
 				scaleAnim->setDuration (AnimationLength);
 				scaleAnim->setStartValue (item->scale ());
 				scaleAnim->setEndValue (scaleFactor);
-				pair->addAnimation (scaleAnim);
-
-				anim->addAnimation (pair);
+				anim->addAnimation (scaleAnim);
 			}
 		anim->start ();
 	}
