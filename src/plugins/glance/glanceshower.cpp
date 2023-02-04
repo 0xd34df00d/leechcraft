@@ -132,12 +132,6 @@ namespace LC::Plugins::Glance
 			w->render (&pixmap);
 			pixmap = pixmap.scaled (tabSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
-			//Close button
-			const int buttonSize = 25;
-			const int buttonLeft = tabSize.width () - buttonSize * 2;
-			const int buttonTop = buttonSize;
-			const QRect buttonRect { QPoint { buttonLeft, buttonTop }, QSize { buttonSize, buttonSize } };
-
 			{
 				QPainter p (&pixmap);
 				QPen pen (Qt::black);
@@ -146,7 +140,7 @@ namespace LC::Plugins::Glance
 				p.drawRect (QRect (QPoint (0, 0), tabSize));
 			}
 
-			const auto item = new GlanceItem (pixmap, buttonRect);
+			const auto item = new GlanceItem (pixmap);
 			connect (item,
 					&GlanceItem::tabSelected,
 					this,

@@ -31,7 +31,7 @@ namespace LC::Plugins::Glance
 		const QRect CloseButtonRect_;
 		QPixmap Pixmap_;
 	public:
-		GlanceItem (const QPixmap&, QRect, QGraphicsItem* = nullptr);
+		GlanceItem (const QPixmap&, QGraphicsItem* = nullptr);
 
 		void SetIndex (int);
 		void SetIdealScale (qreal);

@@ -7,6 +7,9 @@
  **********************************************************************/
 
 #include "glanceitem.h"
+#include <QApplication>
+#include <QStyle>
+#include <QStyleOption>
 #include <QPropertyAnimation>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
@@ -17,10 +20,20 @@
 
 namespace LC::Plugins::Glance
 {
-	GlanceItem::GlanceItem (const QPixmap& px, QRect closeButtonRect, QGraphicsItem *parent)
+	namespace
+	{
+		QRect CalcCloseButtonRect (const QSize& pxSize)
+		{
+			const auto buttonSize = 24;
+			const QPoint topLeft { 0, pxSize.width () - buttonSize };
+			return { topLeft, QSize { buttonSize, buttonSize } };
+		}
+	}
+
+	GlanceItem::GlanceItem (const QPixmap& px, QGraphicsItem *parent)
 	: QGraphicsPixmapItem { px, parent }
 	, ScaleAnim_ { new QPropertyAnimation { this, "Scale" } }
-	, CloseButtonRect_ { closeButtonRect }
+	, CloseButtonRect_ { CalcCloseButtonRect (px.size ()) }
 	, Pixmap_ { px }
 	{
 		setAcceptHoverEvents (true);
@@ -112,8 +125,8 @@ namespace LC::Plugins::Glance
 
 	void GlanceItem::DrawCloseButton (bool selected)
 	{
-		QPixmap px (Pixmap_);
-		QPainter p (&px);
+		auto px = Pixmap_;
+		QPainter p { &px };
 
 		const auto& closeIcon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("window-close"_qs);
 		closeIcon.paint (&p, CloseButtonRect_, Qt::AlignCenter, selected ? QIcon::Selected : QIcon::Normal);
