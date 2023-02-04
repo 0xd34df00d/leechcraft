@@ -9,6 +9,7 @@
 #include "glanceshower.h"
 #include <cmath>
 #include <limits>
+#include <optional>
 #include <QLabel>
 #include <QGraphicsPixmapItem>
 #include <QParallelAnimationGroup>
@@ -190,18 +191,18 @@ namespace LC::Plugins::Glance
 	namespace
 	{
 		void HandleNav (const QVector<GlanceItem*>& items,
-				int currentItem, int delta, int wrapAround)
+				std::optional<int> currentItem, int delta, int wrapAround)
 		{
-			if (currentItem != -1)
-				items [currentItem]->SetCurrent (false);
+			if (currentItem)
+				items [*currentItem]->SetCurrent (false);
 
-			if (currentItem != -1)
-				currentItem += delta;
+			if (currentItem)
+				*currentItem += delta;
 
-			if (currentItem < 0 || currentItem >= items.size ())
+			if (!currentItem || currentItem < 0 || currentItem >= items.size ())
 				currentItem = wrapAround;
 
-			items [currentItem]->SetCurrent (true);
+			items [*currentItem]->SetCurrent (true);
 		}
 	}
 
@@ -213,7 +214,7 @@ namespace LC::Plugins::Glance
 			return;
 		}
 
-		int currentItem = -1;
+		std::optional<int> currentItem;
 		const int count = TabWidget_.WidgetCount ();
 
 		auto [rows, cols] = GetGridInfo (count);
@@ -238,7 +239,7 @@ namespace LC::Plugins::Glance
 				next ();
 			else
 			{
-				const auto wrapAround = currentItem >= 0 ? currentItem % cols : 0;
+				const auto wrapAround = currentItem ? *currentItem % cols : 0;
 				HandleNav (Items_, currentItem, +cols, wrapAround);
 			}
 			break;
@@ -247,15 +248,15 @@ namespace LC::Plugins::Glance
 				prev ();
 			else
 			{
-				auto wrapAround = currentItem >= 0 ? currentItem + (rows - 1) * cols : 0;
+				auto wrapAround = currentItem ? *currentItem + (rows - 1) * cols : 0;
 				if (wrapAround >= Items_.size ())
 					wrapAround -= cols;
 				HandleNav (Items_, currentItem, -cols, wrapAround);
 			}
 			break;
 		case Qt::Key_Return:
-			if (currentItem >= 0)
-				handleSelected (currentItem);
+			if (currentItem)
+				handleSelected (*currentItem);
 			break;
 		default:
 			QGraphicsView::keyPressEvent (e);
