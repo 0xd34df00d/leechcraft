@@ -41,8 +41,8 @@ namespace LC::Plugins::Glance
 
 		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
 		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
-	public slots:
-		void on_ActionGlance__triggered ();
+	private:
+		void ShowGlance ();
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

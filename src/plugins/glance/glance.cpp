@@ -33,9 +33,9 @@ namespace LC::Plugins::Glance
 		ActionGlance_->setProperty ("Action/ID", GetUniqueID () + "_glance");
 
 		connect (ActionGlance_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (on_ActionGlance__triggered ()));
+				&Plugin::ShowGlance);
 	}
 
 	void Plugin::SecondInit ()
@@ -66,7 +66,7 @@ namespace LC::Plugins::Glance
 		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
-	void Plugin::on_ActionGlance__triggered ()
+	void Plugin::ShowGlance ()
 	{
 		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const auto glance = new GlanceShower { *rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()) };
