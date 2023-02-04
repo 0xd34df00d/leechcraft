@@ -10,7 +10,6 @@
 #include <cmath>
 #include <optional>
 #include <QLabel>
-#include <QGraphicsPixmapItem>
 #include <QParallelAnimationGroup>
 #include <QProgressDialog>
 #include <QPropertyAnimation>
@@ -118,76 +117,65 @@ namespace LC::Plugins::Glance
 		const auto animGroup = new QParallelAnimationGroup { this };
 
 		const GridInfo grid { count };
-		const auto [rows, cols] = grid;
-
-		const QSizeF cellSize = GetCellSize (grid);
 		const auto tabSize = GetTabSize (TabWidget_);
-		const auto scaleFactor = GetRenderingScaleFactor (tabSize, cellSize);
+		const auto scaleFactor = GetRenderingScaleFactor (tabSize, GetCellSize (grid));
 
 		QProgressDialog pg;
 		pg.setMinimumDuration (1000);
 		pg.setRange (0, count);
+		for (int idx = 0; idx < count; ++idx)
+		{
+			pg.setValue (idx);
+			const auto w = TabWidget_.Widget (idx);
 
-		for (int row = 0; row < rows; ++row)
-			for (int column = 0;
-					column < cols && column + row * cols < count;
-					++column)
+			QPixmap pixmap { tabSize * Subscale };
+			w->render (&pixmap);
+			pixmap = pixmap.scaled (tabSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+			//Close button
+			const int buttonSize = 25;
+			const int buttonLeft = tabSize.width () - buttonSize * 2;
+			const int buttonTop = buttonSize;
+			const QRect buttonRect { QPoint { buttonLeft, buttonTop }, QSize { buttonSize, buttonSize } };
+
 			{
-				const int idx = column + row * cols;
-				pg.setValue (idx);
-				const auto w = TabWidget_.Widget (idx);
-
-				QPixmap pixmap { tabSize * Subscale };
-				w->render (&pixmap);
-				pixmap = pixmap.scaled (tabSize,
-						Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
-				//Close button
-				const int buttonSize = 25;
-				const int buttonLeft = tabSize.width () - buttonSize * 2;
-				const int buttonTop = buttonSize;
-				const QRect buttonRect { QPoint { buttonLeft, buttonTop }, QSize { buttonSize, buttonSize } };
-
-				{
-					QPainter p (&pixmap);
-					QPen pen (Qt::black);
-					pen.setWidth (2 / scaleFactor + 1);
-					p.setPen (pen);
-					p.drawRect (QRect (QPoint (0, 0), tabSize));
-				}
-
-				const auto item = new GlanceItem (pixmap, buttonRect);
-				item->SetIndex (idx);
-				connect (item,
-						&GlanceItem::tabSelected,
-						this,
-						&GlanceShower::HandleSelected);
-				connect (item,
-						&GlanceItem::tabClosed,
-						this,
-						&GlanceShower::HandleClosed);
-
-				Items_ << item;
-
-				Scene_->addItem (item);
-				item->setTransformOriginPoint (tabSize.width () / 2., tabSize.height () / 2.);
-				item->setScale (scaleFactor);
-				item->SetIdealScale (scaleFactor);
-				item->setOpacity (0);
-
-				animGroup->addAnimation (MakePosAnimator (*item, row, column, cellSize));
-
-				const auto opacityAnim = new QPropertyAnimation (item, "Opacity");
-				opacityAnim->setDuration (AnimationLength);
-				opacityAnim->setStartValue (0.);
-				opacityAnim->setEndValue (1.);
-				animGroup->addAnimation (opacityAnim);
+				QPainter p (&pixmap);
+				QPen pen (Qt::black);
+				pen.setWidth (2 / scaleFactor + 1);
+				p.setPen (pen);
+				p.drawRect (QRect (QPoint (0, 0), tabSize));
 			}
+
+			const auto item = new GlanceItem (pixmap, buttonRect);
+			connect (item,
+					&GlanceItem::tabSelected,
+					this,
+					&GlanceShower::HandleSelected);
+			connect (item,
+					&GlanceItem::tabClosed,
+					this,
+					&GlanceShower::HandleClosed);
+
+			Items_ << item;
+
+			Scene_->addItem (item);
+			item->setTransformOriginPoint (tabSize.width () / 2., tabSize.height () / 2.);
+			item->setScale (scaleFactor);
+			item->setOpacity (0);
+
+			const auto opacityAnim = new QPropertyAnimation (item, "Opacity");
+			opacityAnim->setDuration (AnimationLength);
+			opacityAnim->setStartValue (0.);
+			opacityAnim->setEndValue (1.);
+			animGroup->addAnimation (opacityAnim);
+		}
 
 		setScene (Scene_);
 
 		setGeometry (GetScreenGeometry ());
 		animGroup->start ();
+
+		Reposition ();
 
 		show ();
 	}
@@ -276,16 +264,29 @@ namespace LC::Plugins::Glance
 	void GlanceShower::HandleClosed (int idx)
 	{
 		qobject_cast<ITabWidget*> (TabWidget_.Widget (idx))->Remove ();
-
 		const auto removedItem = Items_.takeAt (idx);
 		Scene_->removeItem (removedItem);
-		if (Items_.size () < 2)
-		{
-			Finalize ();
-			return;
-		}
 
-		//Now rearrange and resize all the rest items
+		if (Items_.size () < 2)
+			Finalize ();
+		else
+			Reposition ();
+	}
+
+	void GlanceShower::HandleSelected (int idx)
+	{
+		TabWidget_.setCurrentTab (idx);
+		Finalize ();
+	}
+
+	void GlanceShower::Finalize ()
+	{
+		emit finished ();
+		deleteLater ();
+	}
+
+	void GlanceShower::Reposition ()
+	{
 		const int count = TabWidget_.WidgetCount ();
 
 		const GridInfo grid { count };
@@ -308,18 +309,6 @@ namespace LC::Plugins::Glance
 				anim->addAnimation (MakePosAnimator (*item, row, column, cellSize));
 			}
 		anim->start ();
-	}
-
-	void GlanceShower::HandleSelected (int idx)
-	{
-		TabWidget_.setCurrentTab (idx);
-		Finalize ();
-	}
-
-	void GlanceShower::Finalize ()
-	{
-		emit finished ();
-		deleteLater ();
 	}
 
 	void GlanceShower::mousePressEvent (QMouseEvent *e)

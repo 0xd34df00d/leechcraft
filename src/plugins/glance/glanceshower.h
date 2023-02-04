@@ -34,6 +34,8 @@ namespace LC::Plugins::Glance
 		void Finalize ();
 		void HandleSelected (int);
 		void HandleClosed (int);
+
+		void Reposition ();
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
 		void mousePressEvent (QMouseEvent *) override;
