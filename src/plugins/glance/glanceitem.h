@@ -38,7 +38,7 @@ namespace LC::Plugins::Glance
 		void SetCurrent (bool);
 		bool IsCurrent () const;
 	private:
-		void QueueScaleAnim (qreal, qreal);
+		void QueueScaleAnim ();
 		void DrawCloseButton (bool);
 	protected:
 		void hoverEnterEvent (QGraphicsSceneHoverEvent*) override;

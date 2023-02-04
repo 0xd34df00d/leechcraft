@@ -306,12 +306,6 @@ namespace LC::Plugins::Glance
 				item->SetIdealScale (scaleFactor);
 
 				anim->addAnimation (MakePosAnimator (*item, row, column, cellSize));
-
-				auto scaleAnim = new QPropertyAnimation (item, "Scale");
-				scaleAnim->setDuration (AnimationLength);
-				scaleAnim->setStartValue (item->scale ());
-				scaleAnim->setEndValue (scaleFactor);
-				anim->addAnimation (scaleAnim);
 			}
 		anim->start ();
 	}

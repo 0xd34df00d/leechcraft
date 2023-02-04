@@ -38,14 +38,28 @@ namespace LC::Plugins::Glance
 	void GlanceItem::SetIdealScale (qreal scale)
 	{
 		Scale_ = scale;
+		QueueScaleAnim ();
 	}
 
-	void GlanceItem::QueueScaleAnim (qreal start, qreal end)
+	namespace
+	{
+		auto GetTargetScale (bool current, qreal scale)
+		{
+			constexpr auto minScale = 0.5;
+			constexpr auto scaleIncreaseFactor = 1.2;
+
+			return current ?
+					std::max (minScale, scale * scaleIncreaseFactor) :
+					scale;
+		}
+	}
+
+	void GlanceItem::QueueScaleAnim ()
 	{
 		ScaleAnim_->stop ();
-		ScaleAnim_->setDuration (300);
-		ScaleAnim_->setStartValue (start);
-		ScaleAnim_->setEndValue (end);
+		ScaleAnim_->setDuration (400);
+		ScaleAnim_->setStartValue (scale ());
+		ScaleAnim_->setEndValue (GetTargetScale (Current_, Scale_));
 
 		ScaleAnim_->start ();
 	}
@@ -86,20 +100,9 @@ namespace LC::Plugins::Glance
 
 	void GlanceItem::SetCurrent (bool cur)
 	{
-		constexpr auto minScale = 0.5;
-		constexpr auto scaleIncreaseFactor = 1.2;
-
-		if (cur)
-		{
-			setZValue (1);
-			QueueScaleAnim (scale (), std::max (minScale, Scale_ * scaleIncreaseFactor));
-		}
-		else
-		{
-			setZValue (0);
-			QueueScaleAnim (scale (), Scale_);
-		}
 		Current_ = cur;
+		setZValue (cur ? 1 : 0);
+		QueueScaleAnim ();
 	}
 
 	bool GlanceItem::IsCurrent () const
