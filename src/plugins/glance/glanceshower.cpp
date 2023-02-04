@@ -147,11 +147,11 @@ namespace LC::Plugins::Glance
 				connect (item,
 						&GlanceItem::tabSelected,
 						this,
-						&GlanceShower::handleSelected);
+						&GlanceShower::HandleSelected);
 				connect (item,
 						&GlanceItem::tabClosed,
 						this,
-						&GlanceShower::handleClosed);
+						&GlanceShower::HandleClosed);
 
 				Items_ << item;
 
@@ -256,7 +256,7 @@ namespace LC::Plugins::Glance
 			break;
 		case Qt::Key_Return:
 			if (currentItem)
-				handleSelected (*currentItem);
+				HandleSelected (*currentItem);
 			break;
 		default:
 			QGraphicsView::keyPressEvent (e);
@@ -264,7 +264,7 @@ namespace LC::Plugins::Glance
 		}
 	}
 
-	void GlanceShower::handleClosed (int idx)
+	void GlanceShower::HandleClosed (int idx)
 	{
 		qobject_cast<ITabWidget*> (TabWidget_.Widget (idx))->Remove ();
 
@@ -328,7 +328,7 @@ namespace LC::Plugins::Glance
 		anim->start ();
 	}
 
-	void GlanceShower::handleSelected (int idx)
+	void GlanceShower::HandleSelected (int idx)
 	{
 		TabWidget_.setCurrentTab (idx);
 		Finalize ();
