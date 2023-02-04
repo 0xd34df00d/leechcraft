@@ -24,7 +24,6 @@ namespace LC::Plugins::Glance
 
 		ICoreTabWidget& TabWidget_;
 		QGraphicsScene *Scene_;
-		QSize SSize_;
 
 		QVector<GlanceItem*> Items_;
 	public:

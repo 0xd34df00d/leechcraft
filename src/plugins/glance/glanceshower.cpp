@@ -46,28 +46,63 @@ namespace LC::Plugins::Glance
 
 	namespace
 	{
-		auto GetWindowGeometry ()
+		struct GridInfo
+		{
+			int Rows_;
+			int Cols_;
+
+			explicit GridInfo (int widgetCount)
+			{
+				const auto sqr = static_cast<int> (std::sqrt (widgetCount));
+				Rows_ = sqr;
+				Cols_ = sqr;
+				if (Rows_ * Cols_ < widgetCount)
+					++Cols_;
+				if (Rows_ * Cols_ < widgetCount)
+					++Rows_;
+			}
+		};
+
+		auto GetScreenGeometry ()
 		{
 			const auto window = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
 			return QApplication::desktop ()->screenGeometry (window);
 		}
 
-		auto GetGridInfo (int widgetCount)
+		QSizeF GetCellSize (const GridInfo& grid)
 		{
-			const auto sqr = static_cast<int> (std::sqrt (widgetCount));
-			int rows = sqr;
-			int cols = sqr;
-			if (rows * cols < widgetCount)
-				++cols;
-			if (rows * cols < widgetCount)
-				++rows;
-
-			struct
+			const auto& geometry = GetScreenGeometry ();
+			return
 			{
-				int Rows_;
-				int Cols_;
-			} grid { rows, cols };
-			return grid;
+				static_cast<qreal> (geometry.width () / grid.Cols_),
+				static_cast<qreal> (geometry.height () / grid.Rows_),
+			};
+		}
+
+		constexpr auto Subscale = 2;
+
+		auto GetTabSize (ICoreTabWidget& ictw)
+		{
+			return ictw.Widget (ictw.CurrentIndex ())->size () / Subscale;
+		}
+
+		auto GetRenderingScaleFactor (QSize tabSize, QSizeF cellSize)
+		{
+			const auto cellContentsSize = cellSize * 0.8;
+			return std::min (cellContentsSize.width () / tabSize.width (),
+					cellContentsSize.height () / tabSize.height ());
+		}
+
+		constexpr auto AnimationLength = 400;
+
+		auto MakePosAnimator (GlanceItem& item, int row, int column, QSizeF cellSize)
+		{
+			auto anim = new QPropertyAnimation { &item, "Pos" };
+			anim->setDuration (AnimationLength);
+			anim->setStartValue (item.pos ());
+			anim->setEndValue (QPointF { column * cellSize.width (), row * cellSize.height () });
+			anim->setEasingCurve (QEasingCurve::OutSine);
+			return anim;
 		}
 	}
 
@@ -84,21 +119,12 @@ namespace LC::Plugins::Glance
 
 		const auto animGroup = new QParallelAnimationGroup;
 
-		const auto [rows, cols] = GetGridInfo (count);
+		const GridInfo grid { count };
+		const auto [rows, cols] = grid;
 
-		const auto& screenGeom = GetWindowGeometry ();
-		const int width = screenGeom.width ();
-		const int height = screenGeom.height ();
-
-		const int singleW = width / cols;
-		const int singleH = height / rows;
-
-		const int wW = singleW * 4 / 5;
-		const int wH = singleH * 4 / 5;
-
-		qreal scaleFactor = 0;
-
-		const int animLength = 400;
+		const QSizeF cellSize = GetCellSize (grid);
+		const auto tabSize = GetTabSize (TabWidget_);
+		const auto scaleFactor = GetRenderingScaleFactor (tabSize, cellSize);
 
 		QProgressDialog pg;
 		pg.setMinimumDuration (1000);
@@ -113,23 +139,14 @@ namespace LC::Plugins::Glance
 				pg.setValue (idx);
 				const auto w = TabWidget_.Widget (idx);
 
-				if (!SSize_.isValid ())
-					SSize_ = w->size () / 2;
-				if (SSize_ != w->size ())
-					w->resize (SSize_ * 2);
-
-				if (std::fabs (scaleFactor) < std::numeric_limits<qreal>::epsilon ())
-					scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
-							static_cast<qreal> (wH) / SSize_.height ());
-
-				QPixmap pixmap (SSize_ * 2);
+				QPixmap pixmap { tabSize * Subscale };
 				w->render (&pixmap);
-				pixmap = pixmap.scaled (SSize_,
+				pixmap = pixmap.scaled (tabSize,
 						Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
 				//Close button
 				const int buttonSize = 25;
-				const int buttonLeft = SSize_.width() - buttonSize * 2;
+				const int buttonLeft = tabSize.width () - buttonSize * 2;
 				const int buttonTop = buttonSize;
 				const QRect buttonRect { QPoint { buttonLeft, buttonTop }, QSize { buttonSize, buttonSize } };
 
@@ -138,8 +155,7 @@ namespace LC::Plugins::Glance
 					QPen pen (Qt::black);
 					pen.setWidth (2 / scaleFactor + 1);
 					p.setPen (pen);
-					p.drawRect (QRect (QPoint (0, 0), SSize_));
-
+					p.drawRect (QRect (QPoint (0, 0), tabSize));
 				}
 
 				const auto item = new GlanceItem (pixmap, buttonRect);
@@ -156,23 +172,17 @@ namespace LC::Plugins::Glance
 				Items_ << item;
 
 				Scene_->addItem (item);
-				item->setTransformOriginPoint (SSize_.width () / 2, SSize_.height () / 2);
+				item->setTransformOriginPoint (tabSize.width () / 2., tabSize.height () / 2.);
 				item->setScale (scaleFactor);
 				item->SetIdealScale (scaleFactor);
 				item->setOpacity (0);
-				item->moveBy (column * singleW, row * singleH);
 
 				const auto pair = new QParallelAnimationGroup;
 
-				const auto posAnim = new QPropertyAnimation (item, "Pos");
-				posAnim->setDuration (animLength);
-				posAnim->setStartValue (QPointF (0, 0));
-				posAnim->setEndValue (QPointF (column * singleW, row * singleH));
-				posAnim->setEasingCurve (QEasingCurve::OutSine);
-				pair->addAnimation (posAnim);
+				pair->addAnimation (MakePosAnimator (*item, row, column, cellSize));
 
 				const auto opacityAnim = new QPropertyAnimation (item, "Opacity");
-				opacityAnim->setDuration (animLength);
+				opacityAnim->setDuration (AnimationLength);
 				opacityAnim->setStartValue (0.);
 				opacityAnim->setEndValue (1.);
 				pair->addAnimation (opacityAnim);
@@ -182,7 +192,7 @@ namespace LC::Plugins::Glance
 
 		setScene (Scene_);
 
-		setGeometry (screenGeom);
+		setGeometry (GetScreenGeometry ());
 		animGroup->start ();
 
 		show ();
@@ -204,6 +214,15 @@ namespace LC::Plugins::Glance
 
 			items [*currentItem]->SetCurrent (true);
 		}
+
+		std::optional<int> GetCurrentItem (const QVector<GlanceItem*>& items)
+		{
+			for (int i = 0; i < items.size (); ++i)
+				if (items [i]->IsCurrent ())
+					return i;
+
+			return {};
+		}
 	}
 
 	void GlanceShower::keyPressEvent (QKeyEvent *e)
@@ -214,14 +233,10 @@ namespace LC::Plugins::Glance
 			return;
 		}
 
-		std::optional<int> currentItem;
 		const int count = TabWidget_.WidgetCount ();
+		auto [rows, cols] = GridInfo { count };
 
-		auto [rows, cols] = GetGridInfo (count);
-
-		for (int i = 0; i < count; ++i)
-			if (Items_ [i]->IsCurrent ())
-				currentItem = i;
+		const auto& currentItem = GetCurrentItem (Items_);
 
 		const auto next = [=, this] { HandleNav (Items_, currentItem, +1, 0); };
 		const auto prev = [=, this] { HandleNav (Items_, currentItem, -1, count - 1); };
@@ -278,47 +293,29 @@ namespace LC::Plugins::Glance
 
 		//Now rearrange and resize all the rest items
 		const int count = TabWidget_.WidgetCount ();
-		const auto [rows, cols] = GetGridInfo (count);
 
-		const auto& screenGeom = GetWindowGeometry ();
-		const int width = screenGeom.width ();
-		const int height = screenGeom.height ();
+		const GridInfo grid { count };
+		const auto [rows, cols] = grid;
 
-		const int singleW = width / cols;
-		const int singleH = height / rows;
-
-		const int wW = singleW * 4 / 5;
-		const int wH = singleH * 4 / 5;
-
-		const int animLength = 400;
+		const QSizeF cellSize = GetCellSize (grid);
+		const auto scaleFactor = GetRenderingScaleFactor (GetTabSize (TabWidget_), cellSize);
 
 		const auto anim = new QParallelAnimationGroup;
-
-		const auto scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
-				static_cast<qreal> (wH) / SSize_.height ());
-
-		const auto allItems = items ();
 		for (int row = 0; row < rows; ++row)
 			for (int column = 0;
 					column < cols && column + row * cols < count;
 					++column)
 			{
 				const int idx = column + row * cols;
-				const auto item = qgraphicsitem_cast<GlanceItem*> (allItems [idx]);
+				const auto item = Items_ [idx];
 				item->SetIndex (idx);
 				item->SetIdealScale (scaleFactor);
 
-				auto pair = new QParallelAnimationGroup ();
-
-				auto posAnim = new QPropertyAnimation (item, "Pos");
-				posAnim->setDuration (animLength);
-				posAnim->setStartValue (item->pos ());
-				posAnim->setEndValue (QPointF (column * singleW, row * singleH));
-				posAnim->setEasingCurve (QEasingCurve::OutSine);
-				pair->addAnimation (posAnim);
+				auto pair = new QParallelAnimationGroup;
+				pair->addAnimation (MakePosAnimator (*item, row, column, cellSize));
 
 				auto scaleAnim = new QPropertyAnimation (item, "Scale");
-				scaleAnim->setDuration (animLength);
+				scaleAnim->setDuration (AnimationLength);
 				scaleAnim->setStartValue (item->scale ());
 				scaleAnim->setEndValue (scaleFactor);
 				pair->addAnimation (scaleAnim);
