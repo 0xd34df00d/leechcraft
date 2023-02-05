@@ -111,20 +111,15 @@ namespace Launchy
 	, IconsProvider_ (new ItemIconsProvider (proxy))
 	, SysPathHandler_ (new SysPathItemProvider (ItemsModel_, this))
 	{
-		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+		Util::SetupFullscreenView (*View_);
 		Util::EnableTransparency (*View_);
 		Util::WatchQmlErrors (*View_);
-
-		const auto& rect = Util::ScreenGeometry (QCursor::pos ());
-		View_->setGeometry (rect);
-		View_->setFixedSize (rect.size ());
 
 		View_->engine ()->addImageProvider ("appicon", IconsProvider_);
 		View_->engine ()->addImageProvider ("theme", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
 
-		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
 		View_->rootContext ()->setContextProperty ("launchyProxy", this);
