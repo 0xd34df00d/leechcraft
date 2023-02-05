@@ -18,7 +18,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 
-namespace LC::Plugins::Glance
+namespace LC::Glance
 {
 	namespace
 	{

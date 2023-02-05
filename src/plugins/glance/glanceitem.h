@@ -13,7 +13,7 @@
 
 class QPropertyAnimation;
 
-namespace LC::Plugins::Glance
+namespace LC::Glance
 {
 	class GlanceItem : public QObject
 					 , public QGraphicsPixmapItem

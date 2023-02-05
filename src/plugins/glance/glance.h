@@ -15,7 +15,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LC::Plugins::Glance
+namespace LC::Glance
 {
 	class Plugin : public QObject
 				 , public IInfo

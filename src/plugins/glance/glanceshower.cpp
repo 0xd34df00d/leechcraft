@@ -24,7 +24,7 @@
 #include <interfaces/ihavetabs.h>
 #include "glanceitem.h"
 
-namespace LC::Plugins::Glance
+namespace LC::Glance
 {
 	GlanceShower::GlanceShower (ICoreTabWidget& tw, QWidget *parent)
 	: QGraphicsView { parent }

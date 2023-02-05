@@ -14,7 +14,7 @@
 
 class ICoreTabWidget;
 
-namespace LC::Plugins::Glance
+namespace LC::Glance
 {
 	class GlanceItem;
 

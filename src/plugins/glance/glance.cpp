@@ -19,7 +19,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "glanceshower.h"
 
-namespace LC::Plugins::Glance
+namespace LC::Glance
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -106,4 +106,4 @@ namespace LC::Plugins::Glance
 	}
 }
 
-LC_EXPORT_PLUGIN (leechcraft_glance, LC::Plugins::Glance::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_glance, LC::Glance::Plugin);
