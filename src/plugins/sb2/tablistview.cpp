@@ -65,7 +65,7 @@ namespace LC::SB2
 		}
 
 		setWindowFlags (Qt::ToolTip);
-		Util::EnableTransparency (this);
+		Util::EnableTransparency (*this);
 
 		QString longestText;
 

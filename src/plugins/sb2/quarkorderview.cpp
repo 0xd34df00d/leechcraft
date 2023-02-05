@@ -60,7 +60,7 @@ namespace LC::SB2
 		}
 
 		setWindowFlags (Qt::ToolTip);
-		Util::EnableTransparency (this);
+		Util::EnableTransparency (*this);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);

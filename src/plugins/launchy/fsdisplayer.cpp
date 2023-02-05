@@ -113,7 +113,7 @@ namespace Launchy
 	, SysPathHandler_ (new SysPathItemProvider (ItemsModel_, this))
 	{
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-		Util::EnableTransparency (View_.get ());
+		Util::EnableTransparency (*View_);
 
 		const auto& rect = Util::ScreenGeometry (QCursor::pos ());
 		View_->setGeometry (rect);

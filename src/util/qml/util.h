@@ -14,5 +14,5 @@ class QQuickWidget;
 
 namespace LC::Util
 {
-	UTIL_QML_API void EnableTransparency (QQuickWidget *widget);
+	UTIL_QML_API void EnableTransparency (QQuickWidget& widget);
 }

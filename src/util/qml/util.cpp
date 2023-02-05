@@ -11,9 +11,9 @@
 
 namespace LC::Util
 {
-	void EnableTransparency (QQuickWidget *widget)
+	void EnableTransparency (QQuickWidget& widget)
 	{
-		widget->setAttribute (Qt::WA_TranslucentBackground);
-		widget->setClearColor (Qt::transparent);
+		widget.setAttribute (Qt::WA_TranslucentBackground);
+		widget.setClearColor (Qt::transparent);
 	}
 }

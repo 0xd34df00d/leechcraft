@@ -24,7 +24,7 @@ namespace LC::AdvancedNotifications
 	VisualNotificationsView::VisualNotificationsView (const ICoreProxy_ptr& proxy)
 	{
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
-		Util::EnableTransparency (this);
+		Util::EnableTransparency (*this);
 
 		Util::WatchQmlErrors (this);
 

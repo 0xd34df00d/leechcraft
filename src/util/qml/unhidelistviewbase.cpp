@@ -39,7 +39,7 @@ namespace LC::Util
 		}
 
 		setWindowFlags (Qt::ToolTip);
-		Util::EnableTransparency (this);
+		Util::EnableTransparency (*this);
 
 		for (const auto& cand : GetPathCandidates (SysPath::QML, {}))
 			engine ()->addImportPath (cand);

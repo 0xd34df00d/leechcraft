@@ -31,7 +31,7 @@ namespace LC::SB2
 			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
 
 		setWindowFlags (Qt::Tool | Qt::FramelessWindowHint);
-		Util::EnableTransparency (this);
+		Util::EnableTransparency (*this);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);

@@ -121,7 +121,7 @@ namespace Vrooby
 		Filtered_->setSourceModel (Flattened_);
 
 		setWindowFlags (Qt::ToolTip);
-		Util::EnableTransparency (this);
+		Util::EnableTransparency (*this);
 
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
