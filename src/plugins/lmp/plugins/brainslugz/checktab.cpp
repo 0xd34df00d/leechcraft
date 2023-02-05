@@ -17,7 +17,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
-#include <util/qml/qmlerrorwatcher.h>
+#include <util/qml/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/udls.h>
 #include <interfaces/lmp/ilmpproxy.h>

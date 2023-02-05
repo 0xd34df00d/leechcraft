@@ -15,4 +15,12 @@ class QQuickWidget;
 namespace LC::Util
 {
 	UTIL_QML_API void EnableTransparency (QQuickWidget& widget);
+
+	/** @brief Logs errors from a QML view.
+	 *
+	 * @param[in] view The declarative view to watch for errors.
+	 *
+	 * @ingroup QmlUtil
+	 */
+	UTIL_QML_API void WatchQmlErrors (QQuickWidget& view);
 }

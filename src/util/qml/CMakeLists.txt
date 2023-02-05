@@ -8,7 +8,6 @@ set (QML_SRCS
 	unhidelistviewbase.cpp
 	util.cpp
 	widthiconprovider.cpp
-	qmlerrorwatcher.cpp
 	)
 
 if (WITH_QWT)

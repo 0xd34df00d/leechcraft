@@ -24,7 +24,7 @@
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
-#include <util/qml/qmlerrorwatcher.h>
+#include <util/qml/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>

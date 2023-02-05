@@ -8,6 +8,8 @@
 
 #include "util.h"
 #include <QQuickWidget>
+#include <QQmlError>
+#include <QtDebug>
 
 namespace LC::Util
 {
@@ -15,5 +17,22 @@ namespace LC::Util
 	{
 		widget.setAttribute (Qt::WA_TranslucentBackground);
 		widget.setClearColor (Qt::transparent);
+	}
+
+	void WatchQmlErrors (QQuickWidget& view)
+	{
+		QObject::connect (&view,
+				&QQuickWidget::statusChanged,
+				[&view]
+				{
+					if (view.status () == QQuickWidget::Error)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "view errors:";
+						for (const auto& err : view.errors ())
+							qWarning () << "\t"
+									<< err.toString ();
+					}
+				});
 	}
 }
