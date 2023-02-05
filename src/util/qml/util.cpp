@@ -10,6 +10,7 @@
 #include <QQuickWidget>
 #include <QQmlError>
 #include <QtDebug>
+#include <util/gui/geometry.h>
 
 namespace LC::Util
 {
@@ -17,6 +18,17 @@ namespace LC::Util
 	{
 		widget.setAttribute (Qt::WA_TranslucentBackground);
 		widget.setClearColor (Qt::transparent);
+	}
+
+	void SetupFullscreenView (QQuickWidget& widget)
+	{
+		widget.setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+
+		const auto& rect = ScreenGeometry (QCursor::pos ());
+		widget.setGeometry (rect);
+		widget.setFixedSize (rect.size ());
+
+		widget.setResizeMode (QQuickWidget::SizeRootObjectToView);
 	}
 
 	void WatchQmlErrors (QQuickWidget& view)
