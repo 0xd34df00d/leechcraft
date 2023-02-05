@@ -20,5 +20,5 @@ namespace LC::Util
 	 *
 	 * @ingroup QmlUtil
 	 */
-	UTIL_QML_API void WatchQmlErrors (QQuickWidget *view);
+	UTIL_QML_API void WatchQmlErrors (QQuickWidget& view);
 }

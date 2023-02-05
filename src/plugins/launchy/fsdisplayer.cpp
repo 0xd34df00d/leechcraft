@@ -114,6 +114,7 @@ namespace Launchy
 	{
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		Util::EnableTransparency (*View_);
+		Util::WatchQmlErrors (*View_);
 
 		const auto& rect = Util::ScreenGeometry (QCursor::pos ());
 		View_->setGeometry (rect);
@@ -130,8 +131,6 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("launchyProxy", this);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
-
-		Util::WatchQmlErrors (View_.get ());
 
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "launchy", "FSView.qml"));
 

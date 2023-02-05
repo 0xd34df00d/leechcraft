@@ -26,7 +26,7 @@ namespace LC::AdvancedNotifications
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		Util::EnableTransparency (*this);
 
-		Util::WatchQmlErrors (this);
+		Util::WatchQmlErrors (*this);
 
 		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML,
 				QStringLiteral ("advancednotifications"),

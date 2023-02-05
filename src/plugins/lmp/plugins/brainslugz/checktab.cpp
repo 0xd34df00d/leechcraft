@@ -88,7 +88,7 @@ namespace LC::LMP::BrainSlugz
 			CheckView_->engine ()
 		};
 
-		Util::WatchQmlErrors (CheckView_);
+		Util::WatchQmlErrors (*CheckView_);
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML,
 				QStringLiteral ("lmp/brainslugz"),

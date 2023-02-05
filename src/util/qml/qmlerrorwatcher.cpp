@@ -13,17 +13,17 @@
 
 namespace LC::Util
 {
-	void WatchQmlErrors (QQuickWidget *view)
+	void WatchQmlErrors (QQuickWidget& view)
 	{
-		QObject::connect (view,
+		QObject::connect (&view,
 				&QQuickWidget::statusChanged,
-				[view]
+				[&view]
 				{
-					if (view->status () == QQuickWidget::Error)
+					if (view.status () == QQuickWidget::Error)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "view errors:";
-						for (const auto& err : view->errors ())
+						for (const auto& err : view.errors ())
 							qWarning () << "\t"
 									<< err.toString ();
 					}
