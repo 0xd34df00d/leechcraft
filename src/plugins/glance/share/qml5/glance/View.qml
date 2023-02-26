@@ -57,6 +57,7 @@ Rectangle {
         Keys.onEscapePressed: view.finish()
         Keys.onEnterPressed: selectCurrent()
         Keys.onReturnPressed: selectCurrent()
+        Keys.onSpacePressed: selectCurrent()
         Keys.onDeletePressed: deleteCurrent()
 
         function navigate(delta, wrapAround) {
