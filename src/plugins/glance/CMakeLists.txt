@@ -5,8 +5,7 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		glance.cpp
-		glanceitem.cpp
-		glanceshower.cpp
-	QT_COMPONENTS Widgets
+		glanceview.cpp
+	QT_COMPONENTS QuickWidgets
 	INSTALL_SHARE
 	)

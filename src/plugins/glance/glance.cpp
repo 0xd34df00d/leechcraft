@@ -17,7 +17,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
-#include "glanceshower.h"
+#include "glanceview.h"
 
 namespace LC::Glance
 {
@@ -68,16 +68,15 @@ namespace LC::Glance
 
 	void Plugin::ShowGlance ()
 	{
-		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
-		const auto glance = new GlanceShower { *rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()) };
+		ActionGlance_->setEnabled (false);
 
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
+
+		const auto glance = new GlanceView { *rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()) };
 		connect (glance,
-				&GlanceShower::finished,
+				&QObject::destroyed,
 				ActionGlance_,
 				[this] { ActionGlance_->setEnabled (true); });
-
-		ActionGlance_->setEnabled (false);
-		glance->Start ();
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
