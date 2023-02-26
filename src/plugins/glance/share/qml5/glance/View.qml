@@ -29,6 +29,10 @@ Rectangle {
 
         currentIndex: initialIndex
 
+        displaced: Transition {
+            NumberAnimation { properties: "x,y"; duration: 400; easing.type: Easing.InOutQuad }
+        }
+
         function calculateDims(count) {
             let rows = Math.floor(Math.sqrt(count));
             let cols = rows;
