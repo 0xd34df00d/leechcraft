@@ -48,11 +48,7 @@ Rectangle {
         readonly property int verticalMargins: cellHeight / 10
 
         function selectCurrent() { view.selectItem(currentIndex); }
-        function deleteCurrent() {
-            const toDelete = currentIndex;
-            currentIndex = -1;
-            view.deleteItem(toDelete);
-        }
+        function deleteCurrent() { currentIndex = view.deleteItem(currentIndex); }
 
         Keys.onEscapePressed: view.finish()
         Keys.onEnterPressed: selectCurrent()

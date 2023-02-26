@@ -35,7 +35,7 @@ namespace LC::Glance
 	public slots:
 		void finish ();
 		void selectItem (int);
-		void deleteItem (int);
+		int deleteItem (int);
 	private:
 		void Start ();
 	};

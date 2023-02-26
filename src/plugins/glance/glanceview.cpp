@@ -108,13 +108,13 @@ namespace LC::Glance
 		deleteLater ();
 	}
 
-	void GlanceView::deleteItem (int idx)
+	int GlanceView::deleteItem (int idx)
 	{
 		if (idx < 0 || idx >= Tabs_.WidgetCount ())
 		{
 			qCritical () << "GlanceView: index outside of bounds"
 					<< idx;
-			return;
+			return -1;
 		}
 
 		qobject_cast<ITabWidget*> (Tabs_.Widget (idx))->Remove ();
@@ -123,6 +123,8 @@ namespace LC::Glance
 
 		if (Tabs_.WidgetCount () < 2)
 			deleteLater ();
+
+		return Tabs_.CurrentIndex ();
 	}
 
 	namespace
