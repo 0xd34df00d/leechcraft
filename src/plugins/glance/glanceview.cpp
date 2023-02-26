@@ -91,8 +91,6 @@ namespace LC::Glance
 		rootCtx.setContextProperty ("colorProxy"_qs,
 				new Util::ColorThemeProxy { GetProxyHolder ()->GetColorThemeManager (), this });
 
-		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "glance"_qs, "View.qml"_qs));
-
 		QTimer::singleShot (0, this, &GlanceView::Start);
 	}
 
@@ -156,6 +154,8 @@ namespace LC::Glance
 			item->setData (i, ModelRoles::ThumbId);
 			ThumbsModel_.appendRow (item);
 		}
+
+		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "glance"_qs, "View.qml"_qs));
 
 		View_->show ();
 		View_->setFocus ();
