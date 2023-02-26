@@ -131,6 +131,10 @@ Rectangle {
                         }
                     }
                 ]
+
+                transitions: Transition {
+                    NumberAnimation { properties: "anchors.leftMargin,anchors.rightMargin,anchors.topMargin,anchors.bottomMargin"; duration: 100 }
+                }
             }
         }
     }
