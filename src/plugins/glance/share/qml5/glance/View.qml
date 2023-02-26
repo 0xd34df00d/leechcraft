@@ -105,21 +105,32 @@ Rectangle {
             }
 
             Image {
-                source: "image://thumbs/" + thumbId
+                id: thumbsImage
 
+                source: "image://thumbs/" + thumbId
                 smooth: true
+                fillMode: Image.PreserveAspectFit
 
                 anchors.centerIn: parent
                 anchors.fill: parent
+                anchors.leftMargin: thumbsView.horizontalMargins
+                anchors.rightMargin: thumbsView.horizontalMargins
+                anchors.topMargin: thumbsView.verticalMargins
+                anchors.bottomMargin: thumbsView.verticalMargins
 
-                readonly property bool isCurrent: thumbsView.currentIndex === index
-
-                anchors.leftMargin: isCurrent ? 0 : thumbsView.horizontalMargins
-                anchors.rightMargin: isCurrent ? 0 : thumbsView.horizontalMargins
-                anchors.topMargin: isCurrent ? 0 : thumbsView.verticalMargins
-                anchors.bottomMargin: isCurrent ? 0 : thumbsView.verticalMargins
-
-                fillMode: Image.PreserveAspectFit
+                states: [
+                    State {
+                        name: "current"
+                        when: thumbsView.currentIndex === index
+                        PropertyChanges {
+                            target: thumbsImage
+                            anchors.leftMargin: 0
+                            anchors.rightMargin: 0
+                            anchors.topMargin: 0
+                            anchors.bottomMargin: 0
+                        }
+                    }
+                ]
             }
         }
     }
