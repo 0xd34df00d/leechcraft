@@ -27,7 +27,7 @@ Rectangle {
 
         highlightFollowsCurrentItem: false
 
-        currentIndex: -1
+        currentIndex: initialIndex
 
         function calculateDims(count) {
             let rows = Math.floor(Math.sqrt(count));

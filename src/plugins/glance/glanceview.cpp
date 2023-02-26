@@ -90,6 +90,7 @@ namespace LC::Glance
 		rootCtx.setContextProperty ("thumbsModel"_qs, &ThumbsModel_);
 		rootCtx.setContextProperty ("colorProxy"_qs,
 				new Util::ColorThemeProxy { GetProxyHolder ()->GetColorThemeManager (), this });
+		rootCtx.setContextProperty ("initialIndex"_qs, Tabs_.CurrentIndex ());
 
 		QTimer::singleShot (0, this, &GlanceView::Start);
 	}
