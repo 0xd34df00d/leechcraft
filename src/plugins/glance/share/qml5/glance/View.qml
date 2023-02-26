@@ -39,7 +39,7 @@ Rectangle {
             return { rows, cols };
         }
 
-        readonly property var dims: calculateDims(count)
+        readonly property var dims: calculateDims(initialCount)
 
         cellWidth: width / dims.cols
         cellHeight: height / dims.rows

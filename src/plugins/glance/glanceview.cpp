@@ -91,6 +91,7 @@ namespace LC::Glance
 		rootCtx.setContextProperty ("colorProxy"_qs,
 				new Util::ColorThemeProxy { GetProxyHolder ()->GetColorThemeManager (), this });
 		rootCtx.setContextProperty ("initialIndex"_qs, Tabs_.CurrentIndex ());
+		rootCtx.setContextProperty ("initialCount"_qs, Tabs_.WidgetCount ());
 
 		QTimer::singleShot (0, this, &GlanceView::Start);
 	}
