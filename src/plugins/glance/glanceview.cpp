@@ -119,7 +119,6 @@ namespace LC::Glance
 		}
 
 		qobject_cast<ITabWidget*> (Tabs_.Widget (idx))->Remove ();
-		ThumbsProvider_.RemovePixmap (idx);
 		ThumbsModel_.removeRow (idx);
 
 		if (Tabs_.WidgetCount () < 2)

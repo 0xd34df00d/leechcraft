@@ -93,7 +93,7 @@ Rectangle {
             color: "transparent"
 
             Image {
-                source: index >= 0 ? "image://thumbs/" + index : ""
+                source: "image://thumbs/" + thumbId
 
                 smooth: true
 
