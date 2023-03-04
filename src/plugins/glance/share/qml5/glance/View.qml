@@ -110,6 +110,7 @@ Rectangle {
 
                 source: "image://thumbs/" + thumbId
                 smooth: true
+                cache: false
                 fillMode: Image.PreserveAspectFit
 
                 anchors.centerIn: parent
