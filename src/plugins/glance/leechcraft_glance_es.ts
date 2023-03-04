@@ -1,8 +1,15 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="es">
 <context>
-    <name>LC::Plugins::Glance::Plugin</name>
+    <name>LC::Glance::Plugin</name>
     <message>
-        <location filename="glance.cpp" line="70"/>
+        <location filename="glance.cpp" line="29"/>
+        <source>Show the quick overview of tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="glance.cpp" line="61"/>
         <source>Quick overview of tabs.</source>
         <translation>Visión rápida de las fichas.</translation>
     </message>

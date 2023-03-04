@@ -1,10 +1,17 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="uk_UA">
 <context>
-    <name>LC::Plugins::Glance::Plugin</name>
+    <name>LC::Glance::Plugin</name>
     <message>
-        <location filename="glance.cpp" line="70"/>
+        <location filename="glance.cpp" line="29"/>
+        <source>Show the quick overview of tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="glance.cpp" line="61"/>
         <source>Quick overview of tabs.</source>
-        <translation>Швидкий огляд вкладок.</translation>
+        <translation type="unfinished">Швидкий огляд вкладок.</translation>
     </message>
 </context>
 </TS>
