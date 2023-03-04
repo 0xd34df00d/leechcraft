@@ -69,6 +69,14 @@ namespace LC::Aggregator
 
 		void HandleSelectionChanged (const QList<QModelIndex>&);
 	private:
+		struct ActionInfo;
+
+		QAction* MakeAction (const QString& name,
+				const QByteArray& icon,
+				const QByteArray& objectNameSuffix,
+				auto handler,
+				const ActionInfo& info);
+
 		void MarkSelectedReadStatus (bool read);
 		void MarkSelectedAsImportant (bool important);
 

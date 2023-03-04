@@ -51,6 +51,8 @@ namespace LC::Aggregator
 		QList<QAction*> GetAllActions () const;
 		QList<QAction*> GetToolbarActions () const;
 	private:
+		QAction* MakeAction (const QString& name, const QByteArray& icon, auto handler, const QByteArray& actionId = {});
+
 		void MarkAsRead (const QList<QModelIndex>&);
 		void MarkAsUnread (const QList<QModelIndex>&);
 

@@ -25,98 +25,71 @@
 
 namespace LC::Aggregator
 {
+	struct ItemActions::ActionInfo
+	{
+		QKeySequence Shortcut_ {};
+		std::optional<bool> Checked_ {};
+
+		bool AddToAllActions_ = true;
+	};
+
 	ItemActions::ItemActions (const Deps& deps, QObject *parent)
 	: QObject { parent }
 	, Deps_ { deps }
 	{
 		auto& xsm = *XmlSettingsManager::Instance ();
 
-		struct ActionInfo
-		{
-			QKeySequence Shortcut_ {};
-			std::optional<bool> Checked_ {};
-
-			bool AddToAllActions_ = true;
-		};
-
-		const auto mkAction = [&] (const QString& name,
-				const QByteArray& icon,
-				const QByteArray& objectNameSuffix,
-				auto handler,
-				ActionInfo info = {})
-		{
-			const auto action = new QAction { name, parent };
-			if (!icon.isEmpty ())
-				action->setProperty ("ActionIcon", icon);
-			if (!info.Shortcut_.isEmpty ())
-				action->setShortcut (info.Shortcut_);
-			if (info.Checked_)
-			{
-				action->setCheckable (true);
-				action->setChecked (*info.Checked_);
-			}
-			connect (action,
-					&QAction::triggered,
-					this,
-					handler);
-
-			deps.ShortcutsMgr_.RegisterAction ("Action" + objectNameSuffix + "_", action);
-
-			if (info.AddToAllActions_)
-				AllActions_ << action;
-
-			return action;
-		};
-
 		const auto mkSep = [&] { AllActions_ << Util::CreateSeparator (parent); };
 
-		ToolbarActions_ << mkAction (tr ("Hide read items"), "mail-mark-unread", "HideReadItems",
+		ToolbarActions_ << MakeAction (tr ("Hide read items"), "mail-mark-unread", "HideReadItems",
 				deps.SetHideRead_,
 				{ .Checked_ = xsm.Property ("HideReadItems", false).toBool () });
-		ToolbarActions_ << mkAction (tr ("Show items as tape"), "format-list-unordered", "ActionShowAsTape",
+		ToolbarActions_ << MakeAction (tr ("Show items as tape"), "format-list-unordered", "ActionShowAsTape",
 				deps.SetShowTape_,
 				{ .Checked_ = xsm.Property ("ShowAsTape", false).toBool () });
 
 		mkSep ();
 
-		MarkUnread_ = mkAction (tr ("Mark as unread"), {}, "MarkItemAsUnread",
+		MarkUnread_ = MakeAction (tr ("Mark as unread"), {}, "MarkItemAsUnread",
 				[this] { MarkSelectedReadStatus (false); },
 				{ .Shortcut_ = { "U" } });
-		MarkRead_ = mkAction (tr ("Mark as read"), {}, "MarkItemAsRead",
+		MarkRead_ = MakeAction (tr ("Mark as read"), {}, "MarkItemAsRead",
 				[this] { MarkSelectedReadStatus (true); },
 				{ .Shortcut_ = { "R" } });
 		mkSep ();
-		MarkUnimportant_ = mkAction (tr ("Unimportant"), "rating-unrated", "MarkItemAsUnimportant",
+		MarkUnimportant_ = MakeAction (tr ("Unimportant"), "rating-unrated", "MarkItemAsUnimportant",
 				[this] { MarkSelectedAsImportant (false); },
 				{ .Shortcut_ = { "I" } });
-		MarkImportant_ = mkAction (tr ("Important"), "rating", "MarkItemAsImportant",
+		MarkImportant_ = MakeAction (tr ("Important"), "rating", "MarkItemAsImportant",
 				[this] { MarkSelectedAsImportant (true); },
 				{ .Shortcut_ = { "Shift+I" } });
 		mkSep ();
-		Delete_ = mkAction (tr ("Delete"), "remove", "DeleteItem",
+		Delete_ = MakeAction (tr ("Delete"), "remove", "DeleteItem",
 				[this] { DeleteSelected (); },
 				{ .Shortcut_ = { "Delete" } });
 		mkSep ();
-		SubComments_ = mkAction (tr ("Subscribe to comments"), "news-subscribe", "ItemCommentsSubscribe",
-				[this] { SubscribeComments (); });
-		LinkOpen_ = mkAction (tr ("Open in new tab"), "internet-web-browser", "ItemLinkOpen",
+		SubComments_ = MakeAction (tr ("Subscribe to comments"), "news-subscribe", "ItemCommentsSubscribe",
+				[this] { SubscribeComments (); },
+				{});
+		LinkOpen_ = MakeAction (tr ("Open in new tab"), "internet-web-browser", "ItemLinkOpen",
 				[this] { LinkOpen (); },
 				{ .Shortcut_ = { "O" } });
-		LinkCopy_ = mkAction (tr ("Copy news item link"), "edit-copy", "ItemLinkCopy",
+		LinkCopy_ = MakeAction (tr ("Copy news item link"), "edit-copy", "ItemLinkCopy",
 				[this] { LinkCopy (); },
 				{ .Shortcut_ = { "C" } });
 
-		InvisibleActions_ << mkAction (tr ("Previous unread item"), "go-first", "PrevUnreadItem",
-				[deps] { deps.ItemNavigator_.MoveToPrevUnread (); },
+		auto& nav = deps.ItemNavigator_;
+		InvisibleActions_ << MakeAction (tr ("Previous unread item"), "go-first", "PrevUnreadItem",
+				[&nav] { nav.MoveToPrevUnread (); },
 				{ .Shortcut_ = { "Shift+K" }, .AddToAllActions_ = false });
-		InvisibleActions_ << mkAction (tr ("Next unread item"), "go-last", "NextUnreadItem",
-				[deps] { deps.ItemNavigator_.MoveToNextUnread (); },
+		InvisibleActions_ << MakeAction (tr ("Next unread item"), "go-last", "NextUnreadItem",
+				[&nav] { nav.MoveToNextUnread (); },
 				{ .Shortcut_ = { "Shift+J" }, .AddToAllActions_ = false });
-		InvisibleActions_ << mkAction (tr ("Previous item"), "go-previous", "PrevItem",
-				[deps] { deps.ItemNavigator_.MoveToPrev (); },
+		InvisibleActions_ << MakeAction (tr ("Previous item"), "go-previous", "PrevItem",
+				[&nav] { nav.MoveToPrev (); },
 				{ .Shortcut_ = { "K" }, .AddToAllActions_ = false });
-		InvisibleActions_ << mkAction (tr ("Next item"), "go-next", "NextItem",
-				[deps] { deps.ItemNavigator_.MoveToNext (); },
+		InvisibleActions_ << MakeAction (tr ("Next item"), "go-next", "NextItem",
+				[&nav] { nav.MoveToNext (); },
 				{ .Shortcut_ = { "J" }, .AddToAllActions_ = false });
 	}
 
@@ -173,6 +146,35 @@ namespace LC::Aggregator
 		LinkOpen_->setEnabled (!selected.isEmpty ());
 		LinkCopy_->setEnabled (!selected.isEmpty ());
 		SubComments_->setEnabled (hasCommentsRss);
+	}
+
+	QAction* ItemActions::MakeAction (const QString& name,
+			const QByteArray& icon,
+			const QByteArray& objectNameSuffix,
+			auto handler,
+			const ActionInfo& info)
+	{
+		const auto action = new QAction { name, parent () };
+		if (!icon.isEmpty ())
+			action->setProperty ("ActionIcon", icon);
+		if (!info.Shortcut_.isEmpty ())
+			action->setShortcut (info.Shortcut_);
+		if (info.Checked_)
+		{
+			action->setCheckable (true);
+			action->setChecked (*info.Checked_);
+		}
+		connect (action,
+				&QAction::triggered,
+				this,
+				handler);
+
+		Deps_.ShortcutsMgr_.RegisterAction ("Action" + objectNameSuffix + "_", action);
+
+		if (info.AddToAllActions_)
+			AllActions_ << action;
+
+		return action;
 	}
 
 	void ItemActions::MarkSelectedReadStatus (bool read)

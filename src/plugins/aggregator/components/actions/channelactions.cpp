@@ -25,65 +25,22 @@
 
 namespace LC::Aggregator
 {
-	namespace
-	{
-		auto InvokeHandler (ChannelActions *pThis, const ChannelActions::Deps& deps,
-				std::invocable<ChannelActions*, QModelIndex> auto handler)
-		{
-			return [=]
-			{
-				if (const auto& idx = deps.GetCurrentChannel_ ();
-					idx.isValid ())
-					std::invoke (handler, pThis, idx);
-			};
-		}
-
-		auto InvokeHandler (ChannelActions *pThis, const ChannelActions::Deps& deps,
-				std::invocable<ChannelActions*, QModelIndexList> auto handler)
-		{
-			return [=]
-			{
-				if (const auto& chans = deps.GetAllSelectedChannels_ ();
-					!chans.isEmpty ())
-					std::invoke (handler, pThis, chans);
-			};
-		}
-	}
-
 	ChannelActions::ChannelActions (const Deps& deps, QObject *parent)
 	: QObject { parent }
 	, Deps_ { deps }
 	{
-		const auto mkAction = [&] (const QString& name, const QByteArray& icon, auto handler, const QByteArray& actionId = {})
-		{
-			const auto action = new QAction { name, parent };
-			if (!icon.isEmpty ())
-				action->setProperty ("ActionIcon", icon);
-			if (!actionId.isEmpty ())
-				deps.ShortcutManager_.RegisterAction ("Action" + actionId, action);
-
-			connect (action,
-					&QAction::triggered,
-					this,
-					InvokeHandler (this, deps, handler));
-
-			AllActions_ << action;
-
-			return action;
-		};
-
 		const auto mkSep = [this] { AllActions_ << Util::CreateSeparator (this); };
 
-		mkAction (tr ("Mark channel as read"), "mail-mark-read", &ChannelActions::MarkAsRead, "MarkChannelAsRead_");
-		mkAction (tr ("Mark channel as unread"), "mail-mark-unread", &ChannelActions::MarkAsUnread, "MarkChannelAsUnread_");
+		MakeAction (tr ("Mark channel as read"), "mail-mark-read", &ChannelActions::MarkAsRead, "MarkChannelAsRead_");
+		MakeAction (tr ("Mark channel as unread"), "mail-mark-unread", &ChannelActions::MarkAsUnread, "MarkChannelAsUnread_");
 		mkSep ();
-		ToolbarActions_ << mkAction (tr ("Remove feed"), "list-remove", &ChannelActions::RemoveFeed, "RemoveFeed_");
-		ToolbarActions_ << mkAction (tr ("Update selected feed"), "view-refresh", &ChannelActions::Update, "UpdateSelectedFeed_");
-		mkAction (tr ("Rename feed"), "edit-rename", &ChannelActions::Rename);
+		ToolbarActions_ << MakeAction (tr ("Remove feed"), "list-remove", &ChannelActions::RemoveFeed, "RemoveFeed_");
+		ToolbarActions_ << MakeAction (tr ("Update selected feed"), "view-refresh", &ChannelActions::Update, "UpdateSelectedFeed_");
+		MakeAction (tr ("Rename feed"), "edit-rename", &ChannelActions::Rename);
 		mkSep ();
-		mkAction (tr ("Remove channel"), {}, &ChannelActions::RemoveChannel);
+		MakeAction (tr ("Remove channel"), {}, &ChannelActions::RemoveChannel);
 		mkSep ();
-		mkAction (tr ("Settings..."), "configure", &ChannelActions::Settings, "ChannelSettings_");
+		MakeAction (tr ("Settings..."), "configure", &ChannelActions::Settings, "ChannelSettings_");
 
 		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);
 	}
@@ -141,6 +98,52 @@ namespace LC::Aggregator
 					GetUserString (idxes, single, multiple),
 					QMessageBox::Yes | QMessageBox::No);
 		}
+	}
+
+	namespace
+	{
+		auto InvokeHandler (ChannelActions *pThis, const ChannelActions::Deps& deps,
+				std::invocable<ChannelActions*, QModelIndex> auto handler)
+		{
+			return [=]
+			{
+				if (const auto& idx = deps.GetCurrentChannel_ ();
+						idx.isValid ())
+					std::invoke (handler, pThis, idx);
+			};
+		}
+
+		auto InvokeHandler (ChannelActions *pThis, const ChannelActions::Deps& deps,
+				std::invocable<ChannelActions*, QModelIndexList> auto handler)
+		{
+			return [=]
+			{
+				if (const auto& chans = deps.GetAllSelectedChannels_ ();
+						!chans.isEmpty ())
+					std::invoke (handler, pThis, chans);
+			};
+		}
+	}
+
+	QAction* ChannelActions::MakeAction (const QString& name,
+			const QByteArray& icon,
+			auto handler,
+			const QByteArray& actionId)
+	{
+		const auto action = new QAction { name, parent () };
+		if (!icon.isEmpty ())
+			action->setProperty ("ActionIcon", icon);
+		if (!actionId.isEmpty ())
+			Deps_.ShortcutManager_.RegisterAction ("Action" + actionId, action);
+
+		connect (action,
+				&QAction::triggered,
+				this,
+				InvokeHandler (this, Deps_, handler));
+
+		AllActions_ << action;
+
+		return action;
 	}
 
 	void ChannelActions::MarkAsRead (const QModelIndexList& idxes)
