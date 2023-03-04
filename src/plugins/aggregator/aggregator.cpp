@@ -379,7 +379,7 @@ namespace Aggregator
 				[] (const auto& error)
 				{
 					auto box = new QMessageBox (QMessageBox::Critical,
-							"LeechCraft",
+							MessageBoxTitle,
 							tr ("Failed to initialize Aggregator storage: %1.")
 								.arg (error.Message_),
 							QMessageBox::Ok);

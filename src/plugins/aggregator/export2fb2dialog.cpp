@@ -272,7 +272,7 @@ namespace Aggregator
 		if (!file.open (QIODevice::WriteOnly))
 		{
 			QMessageBox::critical (this,
-					"LeechCraft",
+					MessageBoxTitle,
 					tr ("Could not open file %1 for write:<br />%2.")
 						.arg (Ui_.File_->text ())
 						.arg (file.errorString ()));

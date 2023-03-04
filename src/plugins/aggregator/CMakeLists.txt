@@ -64,6 +64,7 @@ LC_DEFINE_PLUGIN (
 		feedserrormanager.cpp
 		dbutils.cpp
 		tooltipbuilder.cpp
+		common.cpp
 	SETTINGS aggregatorsettings.xml
 	RESOURCES aggregatorresources.qrc
 	QT_COMPONENTS Network PrintSupport Sql Widgets Xml

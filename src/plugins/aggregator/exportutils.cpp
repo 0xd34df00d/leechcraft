@@ -64,8 +64,8 @@ namespace LC::Aggregator::ExportUtils
 		if (!f.open (QIODevice::WriteOnly))
 		{
 			QMessageBox::critical (parent,
-					QObject::tr ("OPML export error"),
-					QObject::tr ("Could not open file %1 for write.")
+					MessageBoxTitle,
+					QObject::tr ("OPML export error: could not open file %1 for write.")
 							.arg (f.fileName ()));
 			return;
 		}

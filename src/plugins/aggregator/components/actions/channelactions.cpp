@@ -94,7 +94,7 @@ namespace LC::Aggregator
 				const QString& multiple)
 		{
 			return QMessageBox::Yes == QMessageBox::question (nullptr,
-					"Aggregator",
+					MessageBoxTitle,
 					GetUserString (idxes, single, multiple),
 					QMessageBox::Yes | QMessageBox::No);
 		}

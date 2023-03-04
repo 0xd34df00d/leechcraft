@@ -204,7 +204,7 @@ namespace LC::Aggregator
 		const auto& ids = GetSelectedIds ();
 
 		if (QMessageBox::warning (Deps_.Parent_,
-					"LeechCraft",
+					MessageBoxTitle,
 					tr ("Are you sure you want to remove %n items?", 0, ids.size ()),
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;

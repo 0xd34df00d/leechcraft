@@ -17,6 +17,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
 #include "opmlparser.h"
+#include "common.h"
 
 namespace LC
 {
@@ -102,7 +103,7 @@ namespace Aggregator
 		Util::Visit (ParseOPML (filename),
 				[this] (const QString& error)
 				{
-					QMessageBox::critical (this, tr ("LeechCraft"), error);
+					QMessageBox::critical (this, MessageBoxTitle, error);
 					Reset ();
 				},
 				[this] (OPMLParser parser)

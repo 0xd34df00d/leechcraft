@@ -12,15 +12,13 @@
 #include <QMetaType>
 #include <interfaces/structures.h>
 
-namespace LC
+namespace LC::Aggregator
 {
-namespace Aggregator
-{
-	typedef quint64 IDType_t;
+	using IDType_t = quint64;
 
-	static const IDType_t IDNotFound = static_cast<IDType_t> (-1);
+	static constexpr IDType_t IDNotFound = static_cast<IDType_t> (-1);
 
-	typedef QList<IDType_t> ids_t;
+	using ids_t = QList<IDType_t>;
 
 	enum PoolType
 	{
@@ -48,7 +46,8 @@ namespace Aggregator
 		ChannelTitle,
 		ChannelLink,
 	};
-}
+
+	extern const QString MessageBoxTitle;
 }
 
 Q_DECLARE_METATYPE (LC::Aggregator::IDType_t)

@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QCoreApplication>
+#include "common.h"
 
 namespace LC::Aggregator
 {
@@ -44,7 +45,7 @@ namespace LC::Aggregator
 		QMessageBox mbox
 		{
 			QMessageBox::Question,
-			"Aggregator",
+			MessageBoxTitle,
 			questionMessage,
 			QMessageBox::Yes | QMessageBox::No,
 		};
