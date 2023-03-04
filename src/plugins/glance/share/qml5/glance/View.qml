@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtQuick.Controls 2.15
 
 Rectangle {
     id: rootRect
@@ -134,6 +135,27 @@ Rectangle {
 
                 transitions: Transition {
                     NumberAnimation { properties: "anchors.leftMargin,anchors.rightMargin,anchors.topMargin,anchors.bottomMargin"; duration: 100 }
+                }
+
+                ToolButton {
+                    x: parent.x + parent.width / 2 - parent.anchors.leftMargin + parent.paintedWidth / 2 - width
+                    y: parent.y + parent.height / 2 - parent.anchors.topMargin - parent.paintedHeight / 2
+                    width: 64
+                    height: 64
+
+                    icon.name: "window-close"
+                    icon.width: width
+                    icon.height: height
+                    icon.color: "transparent"
+                    display: AbstractButton.IconOnly
+
+                    onClicked: {
+                        if (index === thumbsView.currentIndex) {
+                            thumbsView.deleteCurrent();
+                        } else {
+                            view.deleteItem(index);
+                        }
+                    }
                 }
             }
         }
