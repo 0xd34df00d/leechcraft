@@ -12,77 +12,84 @@
 #include <QSettings>
 #include <QSet>
 #include <QStandardPaths>
+#include <QtDebug>
 #include <qtermwidget.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 
 namespace LC::Eleeminator
 {
-	ColorSchemesManager::ColorSchemesManager (QObject* parent)
-	: QObject { parent }
-	{
-		LoadKonsoleSchemes ();
-
-		Schemes_ += Util::Map (QTermWidget::availableColorSchemes (),
-				[] (const QString& name) { return Scheme { name, name }; });
-
-		FilterDuplicates ();
-
-		std::sort (Schemes_.begin (), Schemes_.end (), Util::ComparingBy (&Scheme::Name_));
-	}
-
-	QList<ColorSchemesManager::Scheme> ColorSchemesManager::GetSchemes () const
-	{
-		return Schemes_;
-	}
-
 	namespace
 	{
-		QStringList CollectSchemes (const QString& dir)
-		{
-			return Util::Map (QDir { dir }.entryList ({ "*.colorscheme" }),
-					[&dir] (QString str) { return str.prepend (dir); });
-		}
-
 		using MaybeScheme_t = std::optional<ColorSchemesManager::Scheme>;
 
 		MaybeScheme_t ParseScheme (const QString& filename)
 		{
 			QSettings settings { filename, QSettings::IniFormat };
 			settings.setIniCodec ("UTF-8");
-			auto name = settings.value ("Description").toString ();
+			auto name = settings.value ("Description"_qs).toString ();
 			if (name.isEmpty ())
 				name = QFileInfo { filename }.baseName ();
 
 			return { { name, filename } };
 		}
-	}
 
-	void ColorSchemesManager::LoadKonsoleSchemes ()
-	{
-		const auto& pathCandidates = Util::Map (QStandardPaths::standardLocations (QStandardPaths::GenericDataLocation),
-				[] (const QString& str) { return str + "/konsole/"; });
-
-		const auto& filenames = Util::ConcatMap (pathCandidates, &CollectSchemes);
-		Schemes_ += Util::Map (Util::Filter (Util::Map (filenames, &ParseScheme),
-						[] (const MaybeScheme_t& scheme) { return static_cast<bool> (scheme); }),
-					[] (const MaybeScheme_t& scheme) { return *scheme; });
-	}
-
-	void ColorSchemesManager::FilterDuplicates ()
-	{
-		QSet<QString> names;
-
-		for (auto i = Schemes_.begin (); i != Schemes_.end (); )
+		auto LoadKonsoleSchemes ()
 		{
-			const auto normalized = QString { i->Name_ }.remove (' ').toLower ();
-
-			if (names.contains (normalized))
-				i = Schemes_.erase (i);
-			else
+			QVector<ColorSchemesManager::Scheme> schemes;
+			for (const auto& location : QStandardPaths::standardLocations (QStandardPaths::GenericDataLocation))
 			{
-				names << normalized;
-				++i;
+				const auto& schemeFiles = QDir { location + "/konsole/" }.entryInfoList ({ "*.colorscheme"_qs });
+
+				for (const auto& schemeFile : schemeFiles)
+				{
+					const auto& maybeScheme = ParseScheme (schemeFile.filePath ());
+					if (maybeScheme)
+						schemes << *maybeScheme;
+				}
+			}
+			return schemes;
+		}
+
+		auto LoadTermWidgetSchemes ()
+		{
+			QVector<ColorSchemesManager::Scheme> schemes;
+			for (const auto& name : QTermWidget::availableColorSchemes ())
+				schemes << ColorSchemesManager::Scheme { name, name };
+			return schemes;
+		}
+
+		void FilterDuplicates (QVector<ColorSchemesManager::Scheme>& schemes)
+		{
+			QSet<QString> names;
+
+			for (auto i = schemes.begin (); i != schemes.end (); )
+			{
+				const auto normalized = QString { i->Name_ }.remove (' ').toLower ();
+
+				if (names.contains (normalized))
+					i = schemes.erase (i);
+				else
+				{
+					names << normalized;
+					++i;
+				}
 			}
 		}
+	}
+
+	ColorSchemesManager::ColorSchemesManager (QObject* parent)
+	: QObject { parent }
+	{
+		Schemes_ += LoadKonsoleSchemes ();
+		Schemes_ += LoadTermWidgetSchemes ();
+		FilterDuplicates (Schemes_);
+
+		std::ranges::sort (Schemes_, {}, &Scheme::Name_);
+	}
+
+	QVector<ColorSchemesManager::Scheme> ColorSchemesManager::GetSchemes () const
+	{
+		return Schemes_;
 	}
 }

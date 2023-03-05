@@ -21,13 +21,10 @@ namespace LC::Eleeminator
 			QString ID_;
 		};
 	private:
-		QList<Scheme> Schemes_;
+		QVector<Scheme> Schemes_;
 	public:
 		explicit ColorSchemesManager (QObject *parent = nullptr);
 
-		QList<Scheme> GetSchemes () const;
-	private:
-		void LoadKonsoleSchemes ();
-		void FilterDuplicates ();
+		QVector<Scheme> GetSchemes () const;
 	};
 }
