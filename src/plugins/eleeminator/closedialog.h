@@ -12,16 +12,14 @@
 #include <QDialog>
 #include "ui_closedialog.h"
 
-class QAbstractItemModel;
-
 namespace LC::Eleeminator
 {
 	class CloseDialog : public QDialog
 	{
 		Ui::CloseDialog Ui_;
 
-		const std::shared_ptr<QAbstractItemModel> Model_;
+		const std::unique_ptr<QAbstractItemModel> Model_;
 	public:
-		CloseDialog (QAbstractItemModel*, QWidget* = nullptr);
+		CloseDialog (std::unique_ptr<QAbstractItemModel>, QWidget* = nullptr);
 	};
 }

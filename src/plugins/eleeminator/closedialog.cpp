@@ -10,12 +10,12 @@
 
 namespace LC::Eleeminator
 {
-	CloseDialog::CloseDialog (QAbstractItemModel *model, QWidget *parent)
+	CloseDialog::CloseDialog (std::unique_ptr<QAbstractItemModel> model, QWidget *parent)
 	: QDialog { parent }
-	, Model_ { model }
+	, Model_ { std::move (model) }
 	{
 		Ui_.setupUi (this);
-		Ui_.ChildView_->setModel (model);
+		Ui_.ChildView_->setModel (Model_.get ());
 		Ui_.ChildView_->expandAll ();
 	}
 }

@@ -8,8 +8,10 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
+#include <memory>
 #include "processinfo.h"
+
+class QAbstractItemModel;
 
 namespace LC::Eleeminator
 {
@@ -22,6 +24,6 @@ namespace LC::Eleeminator
 		ProcessInfo GetProcessTree () const;
 		bool IsEmpty () const;
 
-		QAbstractItemModel* CreateModel () const;
+		std::unique_ptr<QAbstractItemModel> CreateModel () const;
 	};
 }

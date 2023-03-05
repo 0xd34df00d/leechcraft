@@ -140,9 +140,9 @@ namespace LC::Eleeminator
 		}
 	}
 
-	QAbstractItemModel* ProcessGraphBuilder::CreateModel () const
+	std::unique_ptr<QAbstractItemModel> ProcessGraphBuilder::CreateModel () const
 	{
-		auto model = new QStandardItemModel;
+		auto model = std::make_unique<QStandardItemModel> ();
 		model->setHorizontalHeaderLabels ({ QObject::tr ("PID"), QObject::tr ("Command"), QObject::tr ("Arguments") });
 
 		for (const auto& child : Root_.Children_)
