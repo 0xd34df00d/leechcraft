@@ -36,9 +36,7 @@
 #include "closedialog.h"
 #include "colorschemesmanager.h"
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	namespace
 	{
@@ -90,10 +88,9 @@ namespace Eleeminator
 #endif
 	}
 
-	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
+	TermTab::TermTab (Util::ShortcutManager *scMgr,
 			const TabClassInfo& tc, ColorSchemesManager *colorSchemesMgr, QObject *plugin)
-	: CoreProxy_ { proxy }
-	, TC_ (tc)
+	: TC_ (tc)
 	, ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
 	, Term_ { new QTermWidget { false } }
@@ -310,7 +307,7 @@ namespace Eleeminator
 		if (cap.isEmpty ())
 			return;
 
-		const auto itm = CoreProxy_->GetIconThemeManager ();
+		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
 		const auto openAct = menu.addAction (itm->GetIcon ("document-open-remote"),
 				tr ("Open URL"),
 				this,
@@ -335,10 +332,10 @@ namespace Eleeminator
 			return;
 
 		const auto& localUrl = QUrl::fromLocalFile (workingDir.filePath (selected));
-		auto openHandler = [this, localUrl] (bool internally)
+		auto openHandler = [localUrl] (bool internally)
 		{
 			if (internally)
-				CoreProxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (localUrl,
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (localUrl,
 							{}, OnlyHandle | FromUserInitiated));
 			else
 				QDesktopServices::openUrl (localUrl);
@@ -364,7 +361,7 @@ namespace Eleeminator
 
 		menu.addSeparator ();
 
-		new Util::StdDataFilterMenuCreator { localUrl, CoreProxy_->GetEntityManager (), &menu };
+		new Util::StdDataFilterMenuCreator { localUrl, GetProxyHolder ()->GetEntityManager (), &menu };
 	}
 
 	void TermTab::setHistorySettings ()
@@ -385,7 +382,7 @@ namespace Eleeminator
 		const auto& selected = Term_->selectedText ();
 		AddLocalFileActions (menu, selected);
 
-		const auto itm = CoreProxy_->GetIconThemeManager ();
+		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
 
 		const auto copyAct = menu.addAction (itm->GetIcon ("edit-copy"),
 				tr ("Copy selected text"),
@@ -399,7 +396,7 @@ namespace Eleeminator
 				SLOT (pasteClipboard ()));
 		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
 
-		new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
+		new Util::StdDataFilterMenuCreator { selected, GetProxyHolder ()->GetEntityManager (), &menu };
 
 		menu.exec (Term_->mapToGlobal (point));
 	}
@@ -410,7 +407,7 @@ namespace Eleeminator
 		const auto& url = QUrl::fromEncoded (cap.toUtf8 ());
 
 		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
-		CoreProxy_->GetEntityManager ()->HandleEntity (entity);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
 	}
 
 	void TermTab::copyUrl ()
@@ -520,7 +517,7 @@ namespace Eleeminator
 			return;
 
 		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
-		CoreProxy_->GetEntityManager ()->HandleEntity (entity);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
 	}
 
 	void TermTab::handleBell (const QString&)
@@ -531,7 +528,7 @@ namespace Eleeminator
 				{ "Eleeminator", tr ("Bell") });
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::TerminalActive] = IsTabCurrent_;
-		CoreProxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void TermTab::handleFinished ()
@@ -539,5 +536,4 @@ namespace Eleeminator
 		emit removeTab ();
 		deleteLater ();
 	}
-}
 }

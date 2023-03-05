@@ -15,14 +15,12 @@
 class QMenu;
 class QTermWidget;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class ShortcutManager;
 }
 
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	class ColorSchemesManager;
 
@@ -32,7 +30,6 @@ namespace Eleeminator
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
-		const ICoreProxy_ptr CoreProxy_;
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 
@@ -45,7 +42,7 @@ namespace Eleeminator
 
 		bool IsTabCurrent_ = false;
 	public:
-		TermTab (const ICoreProxy_ptr&, Util::ShortcutManager*, const TabClassInfo&, ColorSchemesManager*, QObject*);
+		TermTab (Util::ShortcutManager*, const TabClassInfo&, ColorSchemesManager*, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -86,5 +83,4 @@ namespace Eleeminator
 		void changeTabName (const QString&);
 		void removeTab ();
 	};
-}
 }
