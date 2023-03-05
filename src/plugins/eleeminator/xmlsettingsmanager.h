@@ -20,7 +20,7 @@ namespace LC::Eleeminator
 	public:
 		static XmlSettingsManager& Instance ();
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
 	};
 }

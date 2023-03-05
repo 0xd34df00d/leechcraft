@@ -43,21 +43,20 @@ namespace LC::Eleeminator
 
 		ColorSchemesManager *ColorSchemesMgr_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		QMap<QByteArray, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QByteArray&, const QKeySequences_t&);
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	};
-}
 }
