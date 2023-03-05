@@ -14,7 +14,6 @@ namespace LC::Eleeminator
 {
 	class ColorSchemesManager : public QObject
 	{
-		Q_OBJECT
 	public:
 		struct Scheme
 		{

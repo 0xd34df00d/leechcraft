@@ -14,8 +14,6 @@ namespace LC::Eleeminator
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-
 		XmlSettingsManager ();
 	public:
 		static XmlSettingsManager& Instance ();

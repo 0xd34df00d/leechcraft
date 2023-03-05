@@ -18,8 +18,6 @@ namespace LC::Eleeminator
 {
 	class CloseDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::CloseDialog Ui_;
 
 		const std::shared_ptr<QAbstractItemModel> Model_;
