@@ -2,15 +2,6 @@ cmake_minimum_required (VERSION 3.10)
 project (aggregator)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (UTIL_SRCS
-	util/aggregator/itemsmodeldecorator.cpp
-	)
-add_library (leechcraft_aggregator_util STATIC
-	${UTIL_SRCS}
-	)
-set_target_properties(leechcraft_aggregator_util PROPERTIES POSITION_INDEPENDENT_CODE True)
-FindQtLibs (leechcraft_aggregator_util Widgets)
-
 LC_DEFINE_PLUGIN (
 	SRCS
 		components/actions/appwideactions.cpp
