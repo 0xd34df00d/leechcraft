@@ -8,9 +8,7 @@
 
 #include "processinfo.h"
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	void PrintPI (QDebug& debug, const ProcessInfo& info, int level = 0)
 	{
@@ -35,7 +33,6 @@ namespace Eleeminator
 		printShift ();
 		debug << "}\n";
 	}
-}
 }
 
 QDebug operator<< (QDebug debug, const LC::Eleeminator::ProcessInfo& info)

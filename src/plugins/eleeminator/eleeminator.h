@@ -14,14 +14,12 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class ShortcutManager;
 }
 
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	class ColorSchemesManager;
 

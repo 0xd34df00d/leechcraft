@@ -10,9 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
@@ -25,5 +23,4 @@ namespace Eleeminator
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
 	};
-}
 }

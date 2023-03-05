@@ -14,9 +14,7 @@
 
 class QAbstractItemModel;
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	class CloseDialog : public QDialog
 	{
@@ -28,5 +26,4 @@ namespace Eleeminator
 	public:
 		CloseDialog (QAbstractItemModel*, QWidget* = nullptr);
 	};
-}
 }

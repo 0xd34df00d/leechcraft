@@ -8,9 +8,7 @@
 
 #include "closedialog.h"
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	CloseDialog::CloseDialog (QAbstractItemModel *model, QWidget *parent)
 	: QDialog { parent }
@@ -20,5 +18,4 @@ namespace Eleeminator
 		Ui_.ChildView_->setModel (model);
 		Ui_.ChildView_->expandAll ();
 	}
-}
 }

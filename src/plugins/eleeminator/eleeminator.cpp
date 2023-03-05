@@ -18,9 +18,7 @@
 #include "xmlsettingsmanager.h"
 #include "colorschemesmanager.h"
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -130,7 +128,6 @@ namespace Eleeminator
 	{
 		return XSD_;
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_eleeminator, LC::Eleeminator::Plugin);

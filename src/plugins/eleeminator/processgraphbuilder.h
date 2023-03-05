@@ -11,9 +11,7 @@
 #include <QAbstractItemModel>
 #include "processinfo.h"
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	class ProcessGraphBuilder
 	{
@@ -26,5 +24,4 @@ namespace Eleeminator
 
 		QAbstractItemModel* CreateModel () const;
 	};
-}
 }

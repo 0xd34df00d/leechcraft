@@ -9,9 +9,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -34,5 +32,4 @@ namespace Eleeminator
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
 }

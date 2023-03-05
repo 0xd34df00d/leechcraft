@@ -10,9 +10,7 @@
 
 #include <QObject>
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	class ColorSchemesManager : public QObject
 	{
@@ -33,5 +31,4 @@ namespace Eleeminator
 		void LoadKonsoleSchemes ();
 		void FilterDuplicates ();
 	};
-}
 }

@@ -14,9 +14,7 @@
 #include <QtDebug>
 #include <QStandardItemModel>
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	namespace
 	{
@@ -152,5 +150,4 @@ namespace Eleeminator
 
 		return model;
 	}
-}
 }

@@ -15,9 +15,7 @@
 #include <qtermwidget.h>
 #include <util/sll/prelude.h>
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	ColorSchemesManager::ColorSchemesManager (QObject* parent)
 	: QObject { parent }
@@ -87,5 +85,4 @@ namespace Eleeminator
 			}
 		}
 	}
-}
 }

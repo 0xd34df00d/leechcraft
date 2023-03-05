@@ -11,9 +11,7 @@
 #include <QStringList>
 #include <QDebug>
 
-namespace LC
-{
-namespace Eleeminator
+namespace LC::Eleeminator
 {
 	struct ProcessInfo
 	{
@@ -22,7 +20,6 @@ namespace Eleeminator
 		QString CommandLine_;
 		QList<ProcessInfo> Children_;
 	};
-}
 }
 
 QDebug operator<< (QDebug, const LC::Eleeminator::ProcessInfo&);
