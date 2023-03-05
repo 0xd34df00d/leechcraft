@@ -19,5 +19,4 @@ LC_DEFINE_PLUGIN (
 	LINK_LIBRARIES
 		Wt::Wt
 		Wt::HTTP
-		leechcraft_aggregator_util
 	)

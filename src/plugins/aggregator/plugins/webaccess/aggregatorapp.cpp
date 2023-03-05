@@ -25,7 +25,7 @@
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
 #include <interfaces/aggregator/iitemsmodel.h>
-#include <util/aggregator/itemsmodeldecorator.h>
+#include <util/threads/util.h>
 #include "readchannelsfilter.h"
 #include "util.h"
 #include "q2wproxymodel.h"
@@ -135,7 +135,9 @@ namespace WebAccess
 		const auto cid = Wt::cpp17::any_cast<IDType_t> (idx.data (ChannelRole::CID));
 
 		ItemsFilter_->ClearCurrentItem ();
-		ItemsModelDecorator { *SourceItemModel_ }.Reset (cid);
+
+		Util::InObjectThread (dynamic_cast<QObject&> (*SourceItemModel_),
+				[cid, &model = *SourceItemModel_] { model.Reset (cid); });
 	}
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx, const Wt::WMouseEvent& event)
