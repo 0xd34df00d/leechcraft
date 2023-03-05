@@ -19,7 +19,7 @@ namespace LC::Eleeminator
 	{
 		const ProcessInfo Root_;
 	public:
-		ProcessGraphBuilder (int);
+		explicit ProcessGraphBuilder (int);
 
 		ProcessInfo GetProcessTree () const;
 		bool IsEmpty () const;

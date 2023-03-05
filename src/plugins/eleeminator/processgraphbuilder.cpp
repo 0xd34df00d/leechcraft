@@ -11,8 +11,8 @@
 #include <optional>
 #include <QDir>
 #include <QMap>
-#include <QtDebug>
 #include <QStandardItemModel>
+#include <util/sll/qtutil.h>
 
 namespace LC::Eleeminator
 {
@@ -23,16 +23,14 @@ namespace LC::Eleeminator
 			if (!subdir.cd (subdirName))
 				return {};
 
-			QFile file { subdir.filePath ("status") };
+			QFile file { subdir.filePath ("status"_qs) };
 			if (!file.open (QIODevice::ReadOnly))
 				return {};
 
-			static QByteArray marker { "PPid:" };
+			static const QByteArray marker { "PPid:" };
 
-			QByteArray line;
-			do
+			for (auto line = file.readLine (); !line.isEmpty (); line = file.readLine ())
 			{
-				line = file.readLine ();
 				if (!line.startsWith (marker))
 					continue;
 
@@ -41,18 +39,17 @@ namespace LC::Eleeminator
 				const auto parentPid = parentPidStr.toInt (&ok);
 				return ok ? parentPid : std::optional<int> {};
 			}
-			while (!line.isEmpty ());
 
 			return {};
 		}
 
-		typedef QMap<int, QList<int>> RawProcessGraph_t;
+		using RawProcessGraph_t = QMap<int, QList<int>>;
 
 		RawProcessGraph_t BuildRawProcessGraph ()
 		{
 			RawProcessGraph_t processGraph;
 
-			const QDir procDir { "/proc" };
+			const QDir procDir { "/proc"_qs };
 			if (!procDir.isReadable ())
 				return {};
 
@@ -72,15 +69,15 @@ namespace LC::Eleeminator
 
 		void FillProcessInfo (ProcessInfo& info)
 		{
-			QDir processDir { "/proc/" + QString::number (info.Pid_) };
+			const QDir processDir { "/proc/" + QString::number (info.Pid_) };
 			if (!processDir.isReadable ())
 				return;
 
-			QFile commFile { processDir.filePath ("comm") };
+			QFile commFile { processDir.filePath ("comm"_qs) };
 			if (commFile.open (QIODevice::ReadOnly))
 				info.Command_ = QString::fromUtf8 (commFile.readAll ().trimmed ());
 
-			QFile cmdLineFile { processDir.filePath ("cmdline") };
+			QFile cmdLineFile { processDir.filePath ("cmdline"_qs) };
 			if (cmdLineFile.open (QIODevice::ReadOnly))
 			{
 				auto cmdLine = cmdLineFile.readAll ().trimmed ();
@@ -92,7 +89,8 @@ namespace LC::Eleeminator
 
 		ProcessInfo Convert2Info (const RawProcessGraph_t& rawProcessGraph, int pid)
 		{
-			ProcessInfo result { pid, "(UNKNOWN)", "(UNKNOWN)", {} };
+			const QString unknown = "(UNKNOWN)"_qs;
+			ProcessInfo result { pid, unknown, unknown, {} };
 
 			FillProcessInfo (result);
 
