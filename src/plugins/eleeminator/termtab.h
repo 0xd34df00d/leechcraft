@@ -59,8 +59,6 @@ namespace LC::Eleeminator
 
 		void RemoveTab ();
 	private slots:
-		void setHistorySettings ();
-
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);
 		void stopColorSchemePreview ();

@@ -194,10 +194,17 @@ namespace LC::Eleeminator
 				SLOT (updateTitle ()));
 		timer->start (3000);
 
-		XmlSettingsManager::Instance ().RegisterObject ({ "FiniteHistory", "HistorySize" },
+		auto& xsm = XmlSettingsManager::Instance ();
+		xsm.RegisterObject ({ "FiniteHistory", "HistorySize" },
 				this,
-				"setHistorySettings");
-		setHistorySettings ();
+				[this, &xsm]
+				{
+					const bool isFinite = xsm.property ("FiniteHistory").toBool ();
+					const auto linesCount = isFinite ?
+							xsm.property ("HistorySize").toInt () :
+							-1;
+					Term_.setHistorySize (linesCount);
+				});
 	}
 
 	TabClassInfo TermTab::GetTabClassInfo () const
@@ -315,15 +322,6 @@ namespace LC::Eleeminator
 
 		auto closeSc = new QShortcut { {}, &Term_, this, &TermTab::Remove };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
-	}
-
-	void TermTab::setHistorySettings ()
-	{
-		const bool isFinite = XmlSettingsManager::Instance ().property ("FiniteHistory").toBool ();
-		const auto linesCount = isFinite ?
-				XmlSettingsManager::Instance ().property ("HistorySize").toInt () :
-				-1;
-		Term_.setHistorySize (linesCount);
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)
