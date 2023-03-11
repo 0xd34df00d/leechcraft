@@ -313,13 +313,13 @@ namespace LC::Eleeminator
 
 	void TermTab::SetupShortcuts (Util::ShortcutManager *manager)
 	{
-		auto copySc = new QShortcut { { "Ctrl+Shift+C" }, &Term_, &Term_, &QTermWidget::copyClipboard };
+		auto copySc = new QShortcut { {}, &Term_, &Term_, &QTermWidget::copyClipboard };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Copy", {}, copySc);
 
-		auto pasteSc = new QShortcut { { "Ctrl+Shift+V" }, &Term_, &Term_, &QTermWidget::pasteClipboard };
+		auto pasteSc = new QShortcut { {}, &Term_, &Term_, &QTermWidget::pasteClipboard };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Paste", {}, pasteSc);
 
-		auto closeSc = new QShortcut { { "Ctrl+Shift+W" }, &Term_, this, &TermTab::Remove };
+		auto closeSc = new QShortcut { {}, &Term_, this, &TermTab::Remove };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
 	}
 
