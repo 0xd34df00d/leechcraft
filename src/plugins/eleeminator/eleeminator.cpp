@@ -9,52 +9,55 @@
 #include "eleeminator.h"
 #include <QIcon>
 #include <QtDebug>
-#include <util/util.h>
-#include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/util.h>
+#include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/qtutil.h>
 #include "termtab.h"
 #include "xmlsettingsmanager.h"
 #include "colorschemesmanager.h"
 
 namespace LC::Eleeminator
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
+		const auto& proxy = GetProxyHolder ();
 
 		ShortcutMgr_ = new Util::ShortcutManager { proxy };
 		ShortcutMgr_->SetObject (this);
 
+		auto& itm = *proxy->GetIconThemeManager ();
+
 		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Close",
 				{
 					tr ("Close terminal tab"),
-					QString { "Ctrl+Shift+W" },
-					proxy->GetIconThemeManager ()->GetIcon ("tab-close")
+					"Ctrl+Shift+W"_qs,
+					itm.GetIcon ("tab-close"_qs)
 				});
 		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Clear",
 				{
 					tr ("Clear terminal window"),
-					QString { "Ctrl+Shift+L" },
-					proxy->GetIconThemeManager ()->GetIcon ("edit-clear")
+					"Ctrl+Shift+L"_qs,
+					itm.GetIcon ("edit-clear"_qs)
 				});
 		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Copy",
 				{
 					tr ("Copy selected text to clipboard"),
-					QString { "Ctrl+Shift+C" },
-					proxy->GetIconThemeManager ()->GetIcon ("edit-copy")
+					"Ctrl+Shift+C"_qs,
+					itm.GetIcon ("edit-copy"_qs)
 				});
 		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Paste",
 				{
 					tr ("Paste text from clipboard"),
-					QString { "Ctrl+Shift+V" },
-					proxy->GetIconThemeManager ()->GetIcon ("edit-paste")
+					"Ctrl+Shift+V"_qs,
+					itm.GetIcon ("edit-paste"_qs)
 				});
 
 		ColorSchemesMgr_ = new ColorSchemesManager;
 
-		Util::InstallTranslator ("eleeminator");
+		Util::InstallTranslator ("eleeminator"_qs);
 
 		TermTabTC_ =
 		{
@@ -67,7 +70,7 @@ namespace LC::Eleeminator
 		};
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "eleeminatorsettings.xml");
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "eleeminatorsettings.xml"_qs);
 	}
 
 	void Plugin::SecondInit ()
@@ -85,7 +88,7 @@ namespace LC::Eleeminator
 
 	QString Plugin::GetName () const
 	{
-		return "Eleeminator";
+		return "Eleeminator"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -95,7 +98,7 @@ namespace LC::Eleeminator
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

@@ -24,9 +24,8 @@ namespace LC::Eleeminator
 
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+		return new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Eleeminator");
-		return settings;
 	}
 
 	void XmlSettingsManager::EndSettings (QSettings*) const

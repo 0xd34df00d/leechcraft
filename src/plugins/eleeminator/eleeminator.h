@@ -34,7 +34,6 @@ namespace LC::Eleeminator
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Eleeminator")
 
-		ICoreProxy_ptr Proxy_;
 		TabClassInfo TermTabTC_;
 
 		Util::ShortcutManager *ShortcutMgr_;
