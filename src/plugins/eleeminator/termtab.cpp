@@ -25,7 +25,6 @@
 #include <QtDebug>
 #include <QDir>
 #include <qtermwidget.h>
-#include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -86,6 +85,45 @@ namespace LC::Eleeminator
 				};
 		}
 #endif
+		void SendUrl (const QUrl& url)
+		{
+			const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+		}
+
+		Qt::KeyboardModifier GetModifier (const QString& str)
+		{
+			if (str == "Ctrl")
+				return Qt::ControlModifier;
+			else if (str == "Alt")
+				return Qt::AltModifier;
+			else if (str == "Shift")
+				return Qt::ShiftModifier;
+			else if (str == "Meta")
+				return Qt::MetaModifier;
+			else
+				return Qt::NoModifier;
+		}
+
+		void HandleUrlActivatedInTerm (const QUrl& url)
+		{
+			const auto modifiers = QApplication::keyboardModifiers ();
+			const auto neededMod = GetModifier (XmlSettingsManager::Instance ().property ("LinkActivationModifier").toString ());
+			if ((modifiers & neededMod) == neededMod)
+				SendUrl (url);
+		}
+
+		void SetEnvironment (QTermWidget& term)
+		{
+			auto systemEnv = QProcessEnvironment::systemEnvironment ();
+			if (systemEnv.value ("TERM") != "xterm")
+				systemEnv.remove ("TERM");
+			if (!systemEnv.contains ("TERM"))
+			{
+				systemEnv.insert ("TERM", "xterm");
+				term.setEnvironment (systemEnv.toStringList ());
+			}
+		}
 	}
 
 	TermTab::TermTab (Util::ShortcutManager *scMgr,
@@ -93,65 +131,64 @@ namespace LC::Eleeminator
 	: TC_ (tc)
 	, ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
-	, Term_ { new QTermWidget { false } }
+	, Term_ { *new QTermWidget { false } }
 	, ColorSchemesMgr_ { colorSchemesMgr }
 	{
 		auto lay = new QVBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
 		setLayout (lay);
 
-		lay->addWidget (Term_);
+		lay->addWidget (&Term_);
 
-		Term_->setFlowControlEnabled (true);
-		Term_->setFlowControlWarningEnabled (true);
-		Term_->setScrollBarPosition (QTermWidget::ScrollBarRight);
+		Term_.setFlowControlEnabled (true);
+		Term_.setFlowControlWarningEnabled (true);
+		Term_.setScrollBarPosition (QTermWidget::ScrollBarRight);
 
 #ifdef Q_OS_MAC
-		connect (Term_,
+		connect (&Term_,
 				&QTermWidget::termKeyPressed,
-				Term_,
+				&Term_,
 				&FixCommandControl);
 #endif
 
-		auto systemEnv = QProcessEnvironment::systemEnvironment ();
-		if (systemEnv.value ("TERM") != "xterm")
-			systemEnv.remove ("TERM");
-		if (!systemEnv.contains ("TERM"))
-		{
-			systemEnv.insert ("TERM", "xterm");
-			Term_->setEnvironment (systemEnv.toStringList ());
-		}
+		SetEnvironment (Term_);
 
-		Term_->startShellProgram ();
+		Term_.startShellProgram ();
 
-		connect (Term_,
-				SIGNAL (finished ()),
+		connect (&Term_,
+				&QTermWidget::finished,
 				this,
-				SLOT (handleFinished ()));
+				&TermTab::RemoveTab);
 
-		connect (Term_,
-				SIGNAL (urlActivated (QUrl)),
+		connect (&Term_,
+				&QTermWidget::urlActivated,
 				this,
-				SLOT (handleUrlActivated (QUrl)));
+				[] (const QUrl& url, bool fromMenu)
+				{
+					if (fromMenu)
+						SendUrl (url);
+					else
+						HandleUrlActivatedInTerm (url);
+				});
 
 		const auto& savedFontVar = XmlSettingsManager::Instance ().property ("Font");
 		if (!savedFontVar.isNull () && savedFontVar.canConvert<QFont> ())
-			Term_->setTerminalFont (savedFontVar.value<QFont> ());
+			Term_.setTerminalFont (savedFontVar.value<QFont> ());
 
 		QTimer::singleShot (0,
-				Term_,
-				SLOT (setFocus ()));
+				&Term_,
+				qOverload<> (&QTermWidget::setFocus));
 
 		SetupToolbar (scMgr);
 		SetupShortcuts (scMgr);
 
-		Term_->setContextMenuPolicy (Qt::CustomContextMenu);
-		connect (Term_,
+		Term_.setContextMenuPolicy (Qt::CustomContextMenu);
+		connect (&Term_,
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
 				SLOT (handleTermContextMenu (QPoint)));
 
-		connect (Term_,
+		connect (&Term_,
 				SIGNAL (bell (QString)),
 				this,
 				SLOT (handleBell (QString)));
@@ -186,7 +223,7 @@ namespace LC::Eleeminator
 
 	void TermTab::Remove ()
 	{
-		ProcessGraphBuilder builder { Term_->getShellPID () };
+		const ProcessGraphBuilder builder { Term_.getShellPID () };
 		if (!builder.IsEmpty ())
 		{
 			CloseDialog dia { builder.CreateModel (), this };
@@ -194,7 +231,7 @@ namespace LC::Eleeminator
 				return;
 		}
 
-		handleFinished ();
+		RemoveTab ();
 	}
 
 	void TermTab::TabMadeCurrent ()
@@ -217,9 +254,9 @@ namespace LC::Eleeminator
 		const auto clearAct = Toolbar_->addAction (tr ("Clear window"));
 		clearAct->setProperty ("ActionIcon", "edit-clear");
 		connect (clearAct,
-				SIGNAL (triggered ()),
-				Term_,
-				SLOT (clear ()));
+				&QAction::triggered,
+				&Term_,
+				&QTermWidget::clear);
 		manager->RegisterAction ("org.LeechCraft.Eleeminator.Clear", clearAct);
 	}
 
@@ -276,26 +313,19 @@ namespace LC::Eleeminator
 
 	void TermTab::SetupShortcuts (Util::ShortcutManager *manager)
 	{
-		auto copySc = new QShortcut { { "Ctrl+Shift+C" }, Term_, SLOT (copyClipboard ()) };
+		auto copySc = new QShortcut { { "Ctrl+Shift+C" }, &Term_, &Term_, &QTermWidget::copyClipboard };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Copy", {}, copySc);
-		auto pasteSc = new QShortcut { { "Ctrl+Shift+V" }, Term_, SLOT (pasteClipboard ()) };
+
+		auto pasteSc = new QShortcut { { "Ctrl+Shift+V" }, &Term_, &Term_, &QTermWidget::pasteClipboard };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Paste", {}, pasteSc);
 
-		auto closeSc = new QShortcut { QString { "Ctrl+Shift+W" }, Term_ };
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { Remove (); },
-			closeSc,
-			SIGNAL (activated ()),
-			this
-		};
-
+		auto closeSc = new QShortcut { { "Ctrl+Shift+W" }, &Term_, this, &TermTab::Remove };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
 	}
 
 	void TermTab::AddUrlActions (QMenu& menu, const QPoint& point)
 	{
-		const auto hotspot = Term_->getHotSpotAt (point);
+		const auto hotspot = Term_.getHotSpotAt (point);
 		if (!hotspot)
 			return;
 
@@ -308,17 +338,18 @@ namespace LC::Eleeminator
 			return;
 
 		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
-		const auto openAct = menu.addAction (itm->GetIcon ("document-open-remote"),
+		menu.addAction (itm->GetIcon ("document-open-remote"),
 				tr ("Open URL"),
 				this,
-				SLOT (openUrl ()));
-		openAct->setProperty ("ER/Url", cap);
-
-		const auto copyAct = menu.addAction (tr ("Copy URL"),
+				[cap]
+				{
+					const auto& url = QUrl::fromEncoded (cap.toUtf8 ());
+					const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+				});
+		menu.addAction (tr ("Copy URL"),
 				this,
-				SLOT (copyUrl ()));
-		copyAct->setProperty ("ER/Url", cap);
-
+				[cap] { QApplication::clipboard ()->setText (cap, QClipboard::Clipboard); });
 		menu.addSeparator ();
 	}
 
@@ -327,38 +358,24 @@ namespace LC::Eleeminator
 		if (selected.isEmpty ())
 			return;
 
-		const QDir workingDir { Term_->workingDirectory () };
+		const QDir workingDir { Term_.workingDirectory () };
 		if (!workingDir.exists (selected))
 			return;
 
 		const auto& localUrl = QUrl::fromLocalFile (workingDir.filePath (selected));
-		auto openHandler = [localUrl] (bool internally)
-		{
-			if (internally)
-				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (localUrl,
-							{}, OnlyHandle | FromUserInitiated));
-			else
-				QDesktopServices::openUrl (localUrl);
-		};
-
-		const auto openAct = menu.addAction (tr ("Open file"));
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[openHandler] { openHandler (true); },
-			openAct,
-			SIGNAL (triggered ()),
-			openAct
-		};
-
-		const auto openExternally = menu.addAction (tr ("Open file externally"));
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[openHandler] { openHandler (true); },
-			openExternally,
-			SIGNAL (triggered ()),
-			openExternally
-		};
-
+		menu.addAction (tr ("Open file"),
+				this,
+				[localUrl]
+				{
+					const auto& entity = Util::MakeEntity (localUrl, {}, OnlyHandle | FromUserInitiated);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+				});
+		menu.addAction (tr ("Open file externally"),
+				this,
+				[localUrl]
+				{
+					QDesktopServices::openUrl (localUrl);
+				});
 		menu.addSeparator ();
 
 		new Util::StdDataFilterMenuCreator { localUrl, GetProxyHolder ()->GetEntityManager (), &menu };
@@ -370,7 +387,7 @@ namespace LC::Eleeminator
 		const auto linesCount = isFinite ?
 				XmlSettingsManager::Instance ().property ("HistorySize").toInt () :
 				-1;
-		Term_->setHistorySize (linesCount);
+		Term_.setHistorySize (linesCount);
 	}
 
 	void TermTab::handleTermContextMenu (const QPoint& point)
@@ -379,42 +396,26 @@ namespace LC::Eleeminator
 
 		AddUrlActions (menu, point);
 
-		const auto& selected = Term_->selectedText ();
+		const auto& selected = Term_.selectedText ();
 		AddLocalFileActions (menu, selected);
 
 		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
 
 		const auto copyAct = menu.addAction (itm->GetIcon ("edit-copy"),
 				tr ("Copy selected text"),
-				Term_,
-				SLOT (copyClipboard ()));
-		copyAct->setEnabled (!Term_->selectedText ().isEmpty ());
+				&Term_,
+				&QTermWidget::copyClipboard);
+		copyAct->setEnabled (!Term_.selectedText ().isEmpty ());
 
 		const auto pasteAct = menu.addAction (itm->GetIcon ("edit-paste"),
 				tr ("Paste from clipboard"),
-				Term_,
-				SLOT (pasteClipboard ()));
+				&Term_,
+				&QTermWidget::pasteClipboard);
 		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
 
 		new Util::StdDataFilterMenuCreator { selected, GetProxyHolder ()->GetEntityManager (), &menu };
 
-		menu.exec (Term_->mapToGlobal (point));
-	}
-
-	void TermTab::openUrl ()
-	{
-		const auto& cap = sender ()->property ("ER/Url").toString ();
-		const auto& url = QUrl::fromEncoded (cap.toUtf8 ());
-
-		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
-	}
-
-	void TermTab::copyUrl ()
-	{
-		const auto& url = sender ()->property ("ER/Url").toUrl ();
-
-		QApplication::clipboard ()->setText (url.toString (), QClipboard::Clipboard);
+		menu.exec (Term_.mapToGlobal (point));
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)
@@ -430,7 +431,7 @@ namespace LC::Eleeminator
 
 		schemeAct->setChecked (true);
 
-		Term_->setColorScheme (colorScheme);
+		Term_.setColorScheme (colorScheme);
 		CurrentColorScheme_ = colorScheme;
 
 		XmlSettingsManager::Instance ().setProperty ("LastColorScheme", colorScheme);
@@ -447,17 +448,17 @@ namespace LC::Eleeminator
 			return;
 		}
 
-		Term_->setColorScheme (colorScheme);
+		Term_.setColorScheme (colorScheme);
 	}
 
 	void TermTab::stopColorSchemePreview ()
 	{
-		Term_->setColorScheme (CurrentColorScheme_);
+		Term_.setColorScheme (CurrentColorScheme_);
 	}
 
 	void TermTab::selectFont ()
 	{
-		const auto& currentFont = Term_->getTerminalFont ();
+		const auto& currentFont = Term_.getTerminalFont ();
 		auto savedFont = XmlSettingsManager::Instance ()
 				.Property ("Font", QVariant::fromValue (currentFont)).value<QFont> ();
 
@@ -466,18 +467,18 @@ namespace LC::Eleeminator
 		if (!ok)
 			return;
 
-		Term_->setTerminalFont (font);
+		Term_.setTerminalFont (font);
 
 		XmlSettingsManager::Instance ().setProperty ("Font", QVariant::fromValue (font));
 	}
 
 	void TermTab::updateTitle ()
 	{
-		auto cwd = Term_->workingDirectory ();
+		auto cwd = Term_.workingDirectory ();
 		while (cwd.endsWith ('/'))
 			cwd.chop (1);
 
-		const auto& tree = ProcessGraphBuilder { Term_->getShellPID () }.GetProcessTree ();
+		const auto& tree = ProcessGraphBuilder { Term_.getShellPID () }.GetProcessTree ();
 		const auto& processName = tree.Children_.isEmpty () ?
 				tree.Command_ :
 				tree.Children_.value (0).Command_;
@@ -486,38 +487,6 @@ namespace LC::Eleeminator
 				processName :
 				(cwd.section ('/', -1, -1) + " : " + processName);
 		emit changeTabName (title);
-	}
-
-	namespace
-	{
-		Qt::KeyboardModifier GetModifier (const QString& str)
-		{
-			if (str == "Ctrl")
-				return Qt::ControlModifier;
-			else if (str == "Alt")
-				return Qt::AltModifier;
-			else if (str == "Shift")
-				return Qt::ShiftModifier;
-			else if (str == "Meta")
-				return Qt::MetaModifier;
-			else
-				return Qt::NoModifier;
-		}
-	}
-
-	void TermTab::handleUrlActivated (const QUrl& url)
-	{
-		const auto modifiers = QApplication::keyboardModifiers ();
-
-		const auto& selectedStr = XmlSettingsManager::Instance ()
-				.property ("LinkActivationModifier").toString ();
-		const auto selected = GetModifier (selectedStr);
-
-		if (selected != Qt::NoModifier && !(modifiers & selected))
-			return;
-
-		const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
 	}
 
 	void TermTab::handleBell (const QString&)
@@ -531,7 +500,7 @@ namespace LC::Eleeminator
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void TermTab::handleFinished ()
+	void TermTab::RemoveTab ()
 	{
 		emit removeTab ();
 		deleteLater ();

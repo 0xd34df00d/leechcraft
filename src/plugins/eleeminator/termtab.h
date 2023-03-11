@@ -35,7 +35,7 @@ namespace LC::Eleeminator
 
 		QToolBar * const Toolbar_;
 
-		QTermWidget * const Term_;
+		QTermWidget& Term_;
 
 		ColorSchemesManager * const ColorSchemesMgr_;
 		QString CurrentColorScheme_;
@@ -44,12 +44,12 @@ namespace LC::Eleeminator
 	public:
 		TermTab (Util::ShortcutManager*, const TabClassInfo&, ColorSchemesManager*, QObject*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		QToolBar* GetToolBar () const;
-		void Remove ();
-		void TabMadeCurrent ();
-		void TabLostCurrent ();
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		QToolBar* GetToolBar () const override;
+		void Remove () override;
+		void TabMadeCurrent () override;
+		void TabLostCurrent () override;
 	private:
 		void SetupToolbar (Util::ShortcutManager*);
 		void SetupColorsButton ();
@@ -59,13 +59,12 @@ namespace LC::Eleeminator
 
 		void AddUrlActions (QMenu&, const QPoint&);
 		void AddLocalFileActions (QMenu&, const QString&);
+
+		void RemoveTab ();
 	private slots:
 		void setHistorySettings ();
 
 		void handleTermContextMenu (const QPoint&);
-
-		void openUrl ();
-		void copyUrl ();
 
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);
@@ -75,12 +74,9 @@ namespace LC::Eleeminator
 
 		void updateTitle ();
 
-		void handleUrlActivated (const QUrl&);
 		void handleBell (const QString&);
-
-		void handleFinished ();
 	signals:
-		void changeTabName (const QString&);
-		void removeTab ();
+		void changeTabName (const QString&) override;
+		void removeTab () override;
 	};
 }
