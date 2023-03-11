@@ -19,14 +19,11 @@
 #include <QProcessEnvironment>
 #include <QApplication>
 #include <QClipboard>
-#include <QDesktopServices>
 #include <QTimer>
 #include <QKeyEvent>
 #include <QtDebug>
-#include <QDir>
 #include <qtermwidget.h>
 #include <util/xpc/util.h>
-#include <util/xpc/stddatafiltermenucreator.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -34,6 +31,7 @@
 #include "processgraphbuilder.h"
 #include "closedialog.h"
 #include "colorschemesmanager.h"
+#include "termcontextmenubuilder.h"
 
 namespace LC::Eleeminator
 {
@@ -182,11 +180,7 @@ namespace LC::Eleeminator
 		SetupToolbar (scMgr);
 		SetupShortcuts (scMgr);
 
-		Term_.setContextMenuPolicy (Qt::CustomContextMenu);
-		connect (&Term_,
-				SIGNAL (customContextMenuRequested (QPoint)),
-				this,
-				SLOT (handleTermContextMenu (QPoint)));
+		SetupContextMenu (Term_);
 
 		connect (&Term_,
 				SIGNAL (bell (QString)),
@@ -323,64 +317,6 @@ namespace LC::Eleeminator
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
 	}
 
-	void TermTab::AddUrlActions (QMenu& menu, const QPoint& point)
-	{
-		const auto hotspot = Term_.getHotSpotAt (point);
-		if (!hotspot)
-			return;
-
-		if (hotspot->type () != Filter::HotSpot::Link)
-			return;
-
-		const auto urlHotSpot = static_cast<const Konsole::UrlFilter::HotSpot*> (hotspot);
-		const auto& cap = urlHotSpot->capturedTexts ().value (0);
-		if (cap.isEmpty ())
-			return;
-
-		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
-		menu.addAction (itm->GetIcon ("document-open-remote"),
-				tr ("Open URL"),
-				this,
-				[cap]
-				{
-					const auto& url = QUrl::fromEncoded (cap.toUtf8 ());
-					const auto& entity = Util::MakeEntity (url, {}, TaskParameter::FromUserInitiated);
-					GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
-				});
-		menu.addAction (tr ("Copy URL"),
-				this,
-				[cap] { QApplication::clipboard ()->setText (cap, QClipboard::Clipboard); });
-		menu.addSeparator ();
-	}
-
-	void TermTab::AddLocalFileActions (QMenu& menu, const QString& selected)
-	{
-		if (selected.isEmpty ())
-			return;
-
-		const QDir workingDir { Term_.workingDirectory () };
-		if (!workingDir.exists (selected))
-			return;
-
-		const auto& localUrl = QUrl::fromLocalFile (workingDir.filePath (selected));
-		menu.addAction (tr ("Open file"),
-				this,
-				[localUrl]
-				{
-					const auto& entity = Util::MakeEntity (localUrl, {}, OnlyHandle | FromUserInitiated);
-					GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
-				});
-		menu.addAction (tr ("Open file externally"),
-				this,
-				[localUrl]
-				{
-					QDesktopServices::openUrl (localUrl);
-				});
-		menu.addSeparator ();
-
-		new Util::StdDataFilterMenuCreator { localUrl, GetProxyHolder ()->GetEntityManager (), &menu };
-	}
-
 	void TermTab::setHistorySettings ()
 	{
 		const bool isFinite = XmlSettingsManager::Instance ().property ("FiniteHistory").toBool ();
@@ -388,34 +324,6 @@ namespace LC::Eleeminator
 				XmlSettingsManager::Instance ().property ("HistorySize").toInt () :
 				-1;
 		Term_.setHistorySize (linesCount);
-	}
-
-	void TermTab::handleTermContextMenu (const QPoint& point)
-	{
-		QMenu menu;
-
-		AddUrlActions (menu, point);
-
-		const auto& selected = Term_.selectedText ();
-		AddLocalFileActions (menu, selected);
-
-		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
-
-		const auto copyAct = menu.addAction (itm->GetIcon ("edit-copy"),
-				tr ("Copy selected text"),
-				&Term_,
-				&QTermWidget::copyClipboard);
-		copyAct->setEnabled (!Term_.selectedText ().isEmpty ());
-
-		const auto pasteAct = menu.addAction (itm->GetIcon ("edit-paste"),
-				tr ("Paste from clipboard"),
-				&Term_,
-				&QTermWidget::pasteClipboard);
-		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
-
-		new Util::StdDataFilterMenuCreator { selected, GetProxyHolder ()->GetEntityManager (), &menu };
-
-		menu.exec (Term_.mapToGlobal (point));
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)

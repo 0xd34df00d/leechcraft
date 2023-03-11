@@ -57,14 +57,9 @@ namespace LC::Eleeminator
 
 		void SetupShortcuts (Util::ShortcutManager*);
 
-		void AddUrlActions (QMenu&, const QPoint&);
-		void AddLocalFileActions (QMenu&, const QString&);
-
 		void RemoveTab ();
 	private slots:
 		void setHistorySettings ();
-
-		void handleTermContextMenu (const QPoint&);
 
 		void setColorScheme (QAction*);
 		void previewColorScheme (QAction*);
