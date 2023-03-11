@@ -126,12 +126,11 @@ namespace LC::Eleeminator
 	}
 
 	TermTab::TermTab (Util::ShortcutManager *scMgr,
-			const TabClassInfo& tc, ColorSchemesManager *colorSchemesMgr, QObject *plugin)
+			const TabClassInfo& tc, const ColorSchemesManager& colorSchemes, QObject *plugin)
 	: TC_ (tc)
 	, ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
 	, Term_ { *new QTermWidget { false } }
-	, ColorSchemesMgr_ { colorSchemesMgr }
 	{
 		auto lay = new QVBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
@@ -178,7 +177,7 @@ namespace LC::Eleeminator
 				&Term_,
 				qOverload<> (&QTermWidget::setFocus));
 
-		SetupToolbar (scMgr);
+		SetupToolbar (scMgr, colorSchemes);
 		SetupShortcuts (scMgr);
 
 		SetupContextMenu (Term_);
@@ -246,9 +245,9 @@ namespace LC::Eleeminator
 		IsTabCurrent_ = false;
 	}
 
-	void TermTab::SetupToolbar (Util::ShortcutManager *manager)
+	void TermTab::SetupToolbar (Util::ShortcutManager *manager, const ColorSchemesManager& colorSchemes)
 	{
-		Toolbar_->addWidget (&MakeChooserButton (Term_, *ColorSchemesMgr_));
+		Toolbar_->addWidget (&MakeChooserButton (Term_, colorSchemes));
 		SetupFontsButton ();
 
 		Toolbar_->addSeparator ();

@@ -110,7 +110,7 @@ namespace LC::Eleeminator
 	{
 		if (tc == TermTabTC_.TabClass_)
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TermTabTC_.VisibleName_,
-					new TermTab { ShortcutMgr_, TermTabTC_, ColorSchemesMgr_, this });
+					new TermTab { ShortcutMgr_, TermTabTC_, *ColorSchemesMgr_, this });
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
