@@ -31,6 +31,7 @@
 #include "processgraphbuilder.h"
 #include "closedialog.h"
 #include "colorschemesmanager.h"
+#include "termcolorschemechooser.h"
 #include "termcontextmenubuilder.h"
 
 namespace LC::Eleeminator
@@ -247,7 +248,7 @@ namespace LC::Eleeminator
 
 	void TermTab::SetupToolbar (Util::ShortcutManager *manager)
 	{
-		SetupColorsButton ();
+		Toolbar_->addWidget (&MakeChooserButton (Term_, *ColorSchemesMgr_));
 		SetupFontsButton ();
 
 		Toolbar_->addSeparator ();
@@ -259,50 +260,6 @@ namespace LC::Eleeminator
 				&Term_,
 				&QTermWidget::clear);
 		manager->RegisterAction ("org.LeechCraft.Eleeminator.Clear", clearAct);
-	}
-
-	void TermTab::SetupColorsButton ()
-	{
-		auto colorMenu = new QMenu { tr ("Color scheme"), this };
-		colorMenu->menuAction ()->setProperty ("ActionIcon", "fill-color");
-		connect (colorMenu,
-				SIGNAL (triggered (QAction*)),
-				this,
-				SLOT (setColorScheme (QAction*)));
-		connect (colorMenu,
-				SIGNAL (hovered (QAction*)),
-				this,
-				SLOT (previewColorScheme (QAction*)));
-		connect (colorMenu,
-				SIGNAL (aboutToHide ()),
-				this,
-				SLOT (stopColorSchemePreview ()));
-
-		const auto& lastScheme = XmlSettingsManager::Instance ()
-				.Property ("LastColorScheme", "Linux").toString ();
-
-		const auto colorActionGroup = new QActionGroup { colorMenu };
-		for (const auto& colorScheme : ColorSchemesMgr_->GetSchemes ())
-		{
-			auto act = colorMenu->addAction (colorScheme.Name_);
-			act->setCheckable (true);
-			act->setProperty ("ER/ColorScheme", colorScheme.ID_);
-
-			if (colorScheme.ID_ == lastScheme)
-			{
-				act->setChecked (true);
-				setColorScheme (act);
-			}
-
-			colorActionGroup->addAction (act);
-		}
-
-		auto colorButton = new QToolButton { Toolbar_ };
-		colorButton->setPopupMode (QToolButton::InstantPopup);
-		colorButton->setMenu (colorMenu);
-		colorButton->setProperty ("ActionIcon", "fill-color");
-
-		Toolbar_->addWidget (colorButton);
 	}
 
 	void TermTab::SetupFontsButton ()
@@ -322,44 +279,6 @@ namespace LC::Eleeminator
 
 		auto closeSc = new QShortcut { {}, &Term_, this, &TermTab::Remove };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
-	}
-
-	void TermTab::setColorScheme (QAction *schemeAct)
-	{
-		const auto& colorScheme = schemeAct->property ("ER/ColorScheme").toString ();
-		if (colorScheme.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty color scheme for"
-					<< schemeAct;
-			return;
-		}
-
-		schemeAct->setChecked (true);
-
-		Term_.setColorScheme (colorScheme);
-		CurrentColorScheme_ = colorScheme;
-
-		XmlSettingsManager::Instance ().setProperty ("LastColorScheme", colorScheme);
-	}
-
-	void TermTab::previewColorScheme (QAction *schemeAct)
-	{
-		const auto& colorScheme = schemeAct->property ("ER/ColorScheme").toString ();
-		if (colorScheme.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty color scheme for"
-					<< schemeAct;
-			return;
-		}
-
-		Term_.setColorScheme (colorScheme);
-	}
-
-	void TermTab::stopColorSchemePreview ()
-	{
-		Term_.setColorScheme (CurrentColorScheme_);
 	}
 
 	void TermTab::selectFont ()

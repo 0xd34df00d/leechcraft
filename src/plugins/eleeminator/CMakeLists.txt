@@ -14,6 +14,7 @@ LC_DEFINE_PLUGIN (
 		xmlsettingsmanager.cpp
 		closedialog.cpp
 		colorschemesmanager.cpp
+		termcolorschemechooser.cpp
 		termcontextmenubuilder.cpp
 	SETTINGS eleeminatorsettings.xml
 	QT_COMPONENTS Widgets

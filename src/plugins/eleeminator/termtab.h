@@ -36,9 +36,7 @@ namespace LC::Eleeminator
 		QToolBar * const Toolbar_;
 
 		QTermWidget& Term_;
-
 		ColorSchemesManager * const ColorSchemesMgr_;
-		QString CurrentColorScheme_;
 
 		bool IsTabCurrent_ = false;
 	public:
@@ -52,17 +50,12 @@ namespace LC::Eleeminator
 		void TabLostCurrent () override;
 	private:
 		void SetupToolbar (Util::ShortcutManager*);
-		void SetupColorsButton ();
 		void SetupFontsButton ();
 
 		void SetupShortcuts (Util::ShortcutManager*);
 
 		void RemoveTab ();
 	private slots:
-		void setColorScheme (QAction*);
-		void previewColorScheme (QAction*);
-		void stopColorSchemePreview ();
-
 		void selectFont ();
 
 		void updateTitle ();
