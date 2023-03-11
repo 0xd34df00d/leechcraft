@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>CloseDialog</name>
     <message>
@@ -15,47 +15,80 @@
     </message>
 </context>
 <context>
-    <name>LC::Eleeminator</name>
+    <name>LC::Eleeminator::ChooserState</name>
     <message>
-        <location filename="termtab.cpp" line="67"/>
-        <source>Terminal toolbar</source>
-        <translation>Terminal toolbar</translation>
+        <location filename="termcolorschemechooser.cpp" line="43"/>
+        <source>Color scheme</source>
+        <translation>Color scheme</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Eleeminator::ContextMenuRunner</name>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="61"/>
+        <source>Open URL</source>
+        <translation>Open URL</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="69"/>
+        <source>Copy URL</source>
+        <translation>Copy URL</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="85"/>
+        <source>Open file</source>
+        <translation>Open file</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="92"/>
+        <source>Open file externally</source>
+        <translation>Open file externally</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="105"/>
+        <source>Copy selected text</source>
+        <translation>Copy selected text</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="111"/>
+        <source>Paste from clipboard</source>
+        <translation>Paste from clipboard</translation>
     </message>
 </context>
 <context>
     <name>LC::Eleeminator::Plugin</name>
     <message>
-        <location filename="eleeminator.cpp" line="53"/>
+        <location filename="eleeminator.cpp" line="35"/>
         <source>Close terminal tab</source>
         <translation>Close terminal tab</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="59"/>
+        <location filename="eleeminator.cpp" line="41"/>
         <source>Clear terminal window</source>
         <translation>Clear terminal window</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="65"/>
+        <location filename="eleeminator.cpp" line="47"/>
         <source>Copy selected text to clipboard</source>
         <translation>Copy selected text to clipboard</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="71"/>
+        <location filename="eleeminator.cpp" line="53"/>
         <source>Paste text from clipboard</source>
         <translation>Paste text from clipboard</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="81"/>
+        <location filename="eleeminator.cpp" line="65"/>
         <source>Terminal</source>
         <translation>Terminal</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="82"/>
+        <location filename="eleeminator.cpp" line="66"/>
         <source>Termianl emulator.</source>
         <translation>Termianl emulator.</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="112"/>
+        <location filename="eleeminator.cpp" line="96"/>
         <source>Embedded LeechCraft terminal emulator.</source>
         <translation>Embedded LeechCraft terminal emulator.</translation>
     </message>
@@ -63,57 +96,27 @@
 <context>
     <name>LC::Eleeminator::TermTab</name>
     <message>
-        <location filename="termtab.cpp" line="181"/>
+        <location filename="termtab.cpp" line="256"/>
         <source>Clear window</source>
         <translation>Clear window</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="192"/>
-        <source>Color scheme</source>
-        <translation>Color scheme</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="236"/>
+        <location filename="termtab.cpp" line="267"/>
         <source>Select font...</source>
         <translation>Select font...</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="281"/>
-        <source>Open URL</source>
-        <translation>Open URL</translation>
+        <location filename="termtab.cpp" line="133"/>
+        <source>Terminal toolbar</source>
+        <translation>Terminal toolbar</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="286"/>
-        <source>Copy URL</source>
-        <translation>Copy URL</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="308"/>
-        <source>Copy selected text</source>
-        <translation>Copy selected text</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="314"/>
-        <source>Paste from clipboard</source>
-        <translation>Paste from clipboard</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="327"/>
-        <source>Open file</source>
-        <translation>Open file</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="334"/>
-        <source>Open file externally</source>
-        <translation>Open file externally</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="491"/>
+        <location filename="termtab.cpp" line="319"/>
         <source>Bell in terminal.</source>
         <translation>Bell in terminal.</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="494"/>
+        <location filename="termtab.cpp" line="322"/>
         <source>Bell</source>
         <translation>Bell</translation>
     </message>
@@ -121,17 +124,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="processgraphbuilder.cpp" line="169"/>
+        <location filename="processgraphbuilder.cpp" line="144"/>
         <source>PID</source>
         <translation>PID</translation>
     </message>
     <message>
-        <location filename="processgraphbuilder.cpp" line="169"/>
+        <location filename="processgraphbuilder.cpp" line="144"/>
         <source>Command</source>
         <translation>Command</translation>
     </message>
     <message>
-        <location filename="processgraphbuilder.cpp" line="169"/>
+        <location filename="processgraphbuilder.cpp" line="144"/>
         <source>Arguments</source>
         <translation>Arguments</translation>
     </message>

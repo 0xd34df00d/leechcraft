@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>CloseDialog</name>
     <message>
@@ -15,47 +15,80 @@
     </message>
 </context>
 <context>
-    <name>LC::Eleeminator</name>
+    <name>LC::Eleeminator::ChooserState</name>
     <message>
-        <location filename="termtab.cpp" line="67"/>
-        <source>Terminal toolbar</source>
-        <translation>Панель инструментов терминала</translation>
+        <location filename="termcolorschemechooser.cpp" line="43"/>
+        <source>Color scheme</source>
+        <translation>Цветовая схема</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Eleeminator::ContextMenuRunner</name>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="61"/>
+        <source>Open URL</source>
+        <translation>Открыть URL</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="69"/>
+        <source>Copy URL</source>
+        <translation>Скопировать URL</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="85"/>
+        <source>Open file</source>
+        <translation>Открыть файл</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="92"/>
+        <source>Open file externally</source>
+        <translation>Открыть файл внешней программой</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="105"/>
+        <source>Copy selected text</source>
+        <translation>Скопировать выбранный текст</translation>
+    </message>
+    <message>
+        <location filename="termcontextmenubuilder.cpp" line="111"/>
+        <source>Paste from clipboard</source>
+        <translation>Вставить из буфера обмена</translation>
     </message>
 </context>
 <context>
     <name>LC::Eleeminator::Plugin</name>
     <message>
-        <location filename="eleeminator.cpp" line="53"/>
+        <location filename="eleeminator.cpp" line="35"/>
         <source>Close terminal tab</source>
         <translation>Закрыть вкладку терминала</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="59"/>
+        <location filename="eleeminator.cpp" line="41"/>
         <source>Clear terminal window</source>
         <translation>Очистить окно терминала</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="65"/>
+        <location filename="eleeminator.cpp" line="47"/>
         <source>Copy selected text to clipboard</source>
         <translation>Скопировать выделенный текст в буфер обмена</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="71"/>
+        <location filename="eleeminator.cpp" line="53"/>
         <source>Paste text from clipboard</source>
         <translation>Вставить текст из буфера обмена</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="81"/>
+        <location filename="eleeminator.cpp" line="65"/>
         <source>Terminal</source>
         <translation>Терминал</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="82"/>
+        <location filename="eleeminator.cpp" line="66"/>
         <source>Termianl emulator.</source>
         <translation>Эмулятор терминала.</translation>
     </message>
     <message>
-        <location filename="eleeminator.cpp" line="112"/>
+        <location filename="eleeminator.cpp" line="96"/>
         <source>Embedded LeechCraft terminal emulator.</source>
         <translation>Встроенный в LeechCraft эмулятор терминала.</translation>
     </message>
@@ -63,57 +96,27 @@
 <context>
     <name>LC::Eleeminator::TermTab</name>
     <message>
-        <location filename="termtab.cpp" line="181"/>
+        <location filename="termtab.cpp" line="256"/>
         <source>Clear window</source>
         <translation>Очистить окно</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="192"/>
-        <source>Color scheme</source>
-        <translation>Цветовая схема</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="236"/>
+        <location filename="termtab.cpp" line="267"/>
         <source>Select font...</source>
         <translation>Выбрать шрифт…</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="281"/>
-        <source>Open URL</source>
-        <translation>Открыть URL</translation>
+        <location filename="termtab.cpp" line="133"/>
+        <source>Terminal toolbar</source>
+        <translation>Панель инструментов терминала</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="286"/>
-        <source>Copy URL</source>
-        <translation>Скопировать URL</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="308"/>
-        <source>Copy selected text</source>
-        <translation>Скопировать выбранный текст</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="314"/>
-        <source>Paste from clipboard</source>
-        <translation>Вставить из буфера обмена</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="327"/>
-        <source>Open file</source>
-        <translation>Открыть файл</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="334"/>
-        <source>Open file externally</source>
-        <translation>Открыть файл внешней программой</translation>
-    </message>
-    <message>
-        <location filename="termtab.cpp" line="491"/>
+        <location filename="termtab.cpp" line="319"/>
         <source>Bell in terminal.</source>
         <translation>Сигнал в терминале.</translation>
     </message>
     <message>
-        <location filename="termtab.cpp" line="494"/>
+        <location filename="termtab.cpp" line="322"/>
         <source>Bell</source>
         <translation>Сигнал</translation>
     </message>
@@ -121,17 +124,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="processgraphbuilder.cpp" line="169"/>
+        <location filename="processgraphbuilder.cpp" line="144"/>
         <source>PID</source>
         <translation>PID</translation>
     </message>
     <message>
-        <location filename="processgraphbuilder.cpp" line="169"/>
+        <location filename="processgraphbuilder.cpp" line="144"/>
         <source>Command</source>
         <translation>Команда</translation>
     </message>
     <message>
-        <location filename="processgraphbuilder.cpp" line="169"/>
+        <location filename="processgraphbuilder.cpp" line="144"/>
         <source>Arguments</source>
         <translation>Аргументы</translation>
     </message>
