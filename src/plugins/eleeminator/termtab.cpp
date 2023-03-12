@@ -25,6 +25,7 @@
 #include <qtermwidget.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
@@ -116,13 +117,9 @@ namespace LC::Eleeminator
 		void SetEnvironment (QTermWidget& term)
 		{
 			auto systemEnv = QProcessEnvironment::systemEnvironment ();
-			if (systemEnv.value ("TERM") != "xterm")
-				systemEnv.remove ("TERM");
-			if (!systemEnv.contains ("TERM"))
-			{
-				systemEnv.insert ("TERM", "xterm");
-				term.setEnvironment (systemEnv.toStringList ());
-			}
+
+			systemEnv.insert ("TERM"_qs, "xterm"_qs);
+			term.setEnvironment (systemEnv.toStringList ());
 		}
 	}
 
