@@ -106,15 +106,10 @@ namespace LC::Eleeminator
 		return { TermTabTC_ };
 	}
 
-	void Plugin::TabOpenRequested (const QByteArray& tc)
+	void Plugin::TabOpenRequested (const QByteArray&)
 	{
-		if (tc == TermTabTC_.TabClass_)
-			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TermTabTC_.VisibleName_,
-					new TermTab { ShortcutMgr_, TermTabTC_, *ColorSchemesMgr_, this });
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
-					<< tc;
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TermTabTC_.VisibleName_,
+				new TermTab { ShortcutMgr_, TermTabTC_, *ColorSchemesMgr_, this });
 	}
 
 	QMap<QByteArray, ActionInfo> Plugin::GetActionInfo () const
