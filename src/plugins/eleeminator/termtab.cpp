@@ -33,6 +33,7 @@
 #include "colorschemesmanager.h"
 #include "termcolorschemechooser.h"
 #include "termcontextmenubuilder.h"
+#include "termfontchooser.h"
 
 namespace LC::Eleeminator
 {
@@ -169,10 +170,6 @@ namespace LC::Eleeminator
 						HandleUrlActivatedInTerm (url);
 				});
 
-		const auto& savedFontVar = XmlSettingsManager::Instance ().property ("Font");
-		if (!savedFontVar.isNull () && savedFontVar.canConvert<QFont> ())
-			Term_.setTerminalFont (savedFontVar.value<QFont> ());
-
 		QTimer::singleShot (0,
 				&Term_,
 				qOverload<> (&QTermWidget::setFocus));
@@ -248,7 +245,7 @@ namespace LC::Eleeminator
 	void TermTab::SetupToolbar (Util::ShortcutManager *manager, const ColorSchemesManager& colorSchemes)
 	{
 		Toolbar_->addWidget (MakeColorChooser (Term_, colorSchemes).release ());
-		SetupFontsButton ();
+		Toolbar_->addAction (MakeFontChooser (Term_).release ());
 
 		Toolbar_->addSeparator ();
 
@@ -261,13 +258,6 @@ namespace LC::Eleeminator
 		manager->RegisterAction ("org.LeechCraft.Eleeminator.Clear", clearAct);
 	}
 
-	void TermTab::SetupFontsButton ()
-	{
-		const auto action = Toolbar_->addAction (tr ("Select font..."),
-				this, SLOT (selectFont ()));
-		action->setProperty ("ActionIcon", "preferences-desktop-font");
-	}
-
 	void TermTab::SetupShortcuts (Util::ShortcutManager *manager)
 	{
 		auto copySc = new QShortcut { {}, &Term_, &Term_, &QTermWidget::copyClipboard };
@@ -278,22 +268,6 @@ namespace LC::Eleeminator
 
 		auto closeSc = new QShortcut { {}, &Term_, this, &TermTab::Remove };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
-	}
-
-	void TermTab::selectFont ()
-	{
-		const auto& currentFont = Term_.getTerminalFont ();
-		auto savedFont = XmlSettingsManager::Instance ()
-				.Property ("Font", QVariant::fromValue (currentFont)).value<QFont> ();
-
-		bool ok = false;
-		const auto& font = QFontDialog::getFont (&ok, currentFont, this);
-		if (!ok)
-			return;
-
-		Term_.setTerminalFont (font);
-
-		XmlSettingsManager::Instance ().setProperty ("Font", QVariant::fromValue (font));
 	}
 
 	void TermTab::updateTitle ()
