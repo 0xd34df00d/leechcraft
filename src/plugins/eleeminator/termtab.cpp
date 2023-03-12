@@ -247,7 +247,7 @@ namespace LC::Eleeminator
 
 	void TermTab::SetupToolbar (Util::ShortcutManager *manager, const ColorSchemesManager& colorSchemes)
 	{
-		Toolbar_->addWidget (&MakeChooserButton (Term_, colorSchemes));
+		Toolbar_->addWidget (&MakeColorChooser (Term_, colorSchemes));
 		SetupFontsButton ();
 
 		Toolbar_->addSeparator ();

@@ -17,5 +17,5 @@ namespace LC::Eleeminator
 {
 	class ColorSchemesManager;
 
-	QToolButton& MakeChooserButton (QTermWidget&, const ColorSchemesManager&);
+	[[nodiscard]] QToolButton& MakeColorChooser (QTermWidget&, const ColorSchemesManager&);
 }

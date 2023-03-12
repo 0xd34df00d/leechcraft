@@ -76,7 +76,7 @@ namespace LC::Eleeminator
 		XmlSettingsManager::Instance ().setProperty ("LastColorScheme", schemeId);
 	}
 
-	QToolButton& MakeChooserButton (QTermWidget& term, const ColorSchemesManager& colorSchemes)
+	QToolButton& MakeColorChooser (QTermWidget& term, const ColorSchemesManager& colorSchemes)
 	{
 		auto& button = *new QToolButton;
 		button.setPopupMode (QToolButton::InstantPopup);
