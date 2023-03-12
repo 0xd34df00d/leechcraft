@@ -293,7 +293,7 @@ namespace LC::Eleeminator
 		emit changeTabName (title);
 	}
 
-	void TermTab::HandleBell (const QString&) const
+	void TermTab::HandleBell (const QString& message) const
 	{
 		auto e = Util::MakeAN ("Eleeminator"_qs,
 				tr ("Bell in terminal."),
@@ -302,7 +302,10 @@ namespace LC::Eleeminator
 				AN::CatTerminal,
 				AN::TypeTerminalBell,
 				"org.LeechCraft.Eleeminator.BellEvent"_qs,
-				{ "Eleeminator", tr ("Bell") });
+				{ "Eleeminator", tr ("Bell") },
+				1,
+				0,
+				message);
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::TerminalActive] = IsTabCurrent_;
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
