@@ -94,16 +94,16 @@ namespace LC::Eleeminator
 
 		Qt::KeyboardModifier GetModifier (const QString& str)
 		{
-			if (str == "Ctrl")
+			if (str == "Ctrl"_qs)
 				return Qt::ControlModifier;
-			else if (str == "Alt")
+			if (str == "Alt"_qs)
 				return Qt::AltModifier;
-			else if (str == "Shift")
+			if (str == "Shift"_qs)
 				return Qt::ShiftModifier;
-			else if (str == "Meta")
+			if (str == "Meta"_qs)
 				return Qt::MetaModifier;
-			else
-				return Qt::NoModifier;
+
+			return Qt::NoModifier;
 		}
 
 		void HandleUrlActivatedInTerm (const QUrl& url)
@@ -283,9 +283,13 @@ namespace LC::Eleeminator
 
 	void TermTab::HandleBell (const QString&) const
 	{
-		auto e = Util::MakeAN ("Eleeminator", tr ("Bell in terminal."), Priority::Info,
-				"org.LeechCraft.Eleeminator", AN::CatTerminal, AN::TypeTerminalBell,
-				"org.LeechCraft.Eleeminator.BellEvent",
+		auto e = Util::MakeAN ("Eleeminator"_qs,
+				tr ("Bell in terminal."),
+				Priority::Info,
+				"org.LeechCraft.Eleeminator"_qs,
+				AN::CatTerminal,
+				AN::TypeTerminalBell,
+				"org.LeechCraft.Eleeminator.BellEvent"_qs,
 				{ "Eleeminator", tr ("Bell") });
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::TerminalActive] = IsTabCurrent_;
