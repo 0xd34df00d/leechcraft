@@ -40,5 +40,7 @@ namespace LC::Eleeminator
 		timer->setTimerType (Qt::VeryCoarseTimer);
 		timer->callOnTimeout ([&] { UpdateTitle (term, tab); });
 		timer->start (3000);
+
+		QTimer::singleShot (0, &tab, [&] { UpdateTitle (term, tab); });
 	}
 }
