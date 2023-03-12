@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QObject>
+#include <memory>
 
 class QToolButton;
 class QTermWidget;
@@ -17,5 +17,5 @@ namespace LC::Eleeminator
 {
 	class ColorSchemesManager;
 
-	[[nodiscard]] QToolButton& MakeColorChooser (QTermWidget&, const ColorSchemesManager&);
+	[[nodiscard]] std::unique_ptr<QToolButton> MakeColorChooser (QTermWidget&, const ColorSchemesManager&);
 }

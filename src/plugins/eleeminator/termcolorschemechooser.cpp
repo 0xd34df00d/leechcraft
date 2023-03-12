@@ -76,12 +76,12 @@ namespace LC::Eleeminator
 		XmlSettingsManager::Instance ().setProperty ("LastColorScheme", schemeId);
 	}
 
-	QToolButton& MakeColorChooser (QTermWidget& term, const ColorSchemesManager& colorSchemes)
+	std::unique_ptr<QToolButton> MakeColorChooser (QTermWidget& term, const ColorSchemesManager& colorSchemes)
 	{
-		auto& button = *new QToolButton;
-		button.setPopupMode (QToolButton::InstantPopup);
-		button.setMenu ((new ChooserState { term, colorSchemes })->MakeMenu (button));
-		button.setProperty ("ActionIcon", "fill-color");
+		auto button = std::make_unique<QToolButton> ();
+		button->setPopupMode (QToolButton::InstantPopup);
+		button->setMenu ((new ChooserState { term, colorSchemes })->MakeMenu (*button));
+		button->setProperty ("ActionIcon", "fill-color");
 		return button;
 	}
 }
