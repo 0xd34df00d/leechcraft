@@ -12,7 +12,6 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoreproxy.h>
 
-class QMenu;
 class QTermWidget;
 
 namespace LC::Util
@@ -30,7 +29,6 @@ namespace LC::Eleeminator
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
-		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 
 		QToolBar * const Toolbar_;
@@ -39,7 +37,9 @@ namespace LC::Eleeminator
 
 		bool IsTabCurrent_ = false;
 	public:
-		TermTab (Util::ShortcutManager*, const TabClassInfo&, const ColorSchemesManager&, QObject*);
+		TermTab (Util::ShortcutManager*, const ColorSchemesManager&, QObject*);
+
+		static TabClassInfo GetStaticTabClassInfo ();
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

@@ -124,9 +124,8 @@ namespace LC::Eleeminator
 	}
 
 	TermTab::TermTab (Util::ShortcutManager *scMgr,
-			const TabClassInfo& tc, const ColorSchemesManager& colorSchemes, QObject *plugin)
-	: TC_ (tc)
-	, ParentPlugin_ { plugin }
+			const ColorSchemesManager& colorSchemes, QObject *plugin)
+	: ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
 	, Term_ { *new QTermWidget { false } }
 	{
@@ -198,9 +197,22 @@ namespace LC::Eleeminator
 				});
 	}
 
+	TabClassInfo TermTab::GetStaticTabClassInfo ()
+	{
+		return
+		{
+			"org.LeechCraft.Eleeminator.TermTab",
+			tr ("Terminal"),
+			tr ("Termianl emulator."),
+			GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon (),
+			15,
+			TFOpenableByRequest | TFOverridesTabClose
+		};
+	}
+
 	TabClassInfo TermTab::GetTabClassInfo () const
 	{
-		return TC_;
+		return GetStaticTabClassInfo ();
 	}
 
 	QObject* TermTab::ParentMultiTabs ()

@@ -34,8 +34,6 @@ namespace LC::Eleeminator
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Eleeminator")
 
-		TabClassInfo TermTabTC_;
-
 		Util::ShortcutManager *ShortcutMgr_;
 
 		Util::XmlSettingsDialog_ptr XSD_;

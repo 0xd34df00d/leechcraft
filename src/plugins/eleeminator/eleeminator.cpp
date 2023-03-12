@@ -59,16 +59,6 @@ namespace LC::Eleeminator
 
 		Util::InstallTranslator ("eleeminator"_qs);
 
-		TermTabTC_ =
-		{
-			GetUniqueID () + ".TermTab",
-			tr ("Terminal"),
-			tr ("Termianl emulator."),
-			GetIcon (),
-			15,
-			TFOpenableByRequest | TFOverridesTabClose
-		};
-
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "eleeminatorsettings.xml"_qs);
 	}
@@ -103,13 +93,13 @@ namespace LC::Eleeminator
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		return { TermTabTC_ };
+		return { TermTab::GetStaticTabClassInfo () };
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray&)
 	{
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TermTabTC_.VisibleName_,
-				new TermTab { ShortcutMgr_, TermTabTC_, *ColorSchemesMgr_, this });
+		const auto tab = new TermTab { ShortcutMgr_, *ColorSchemesMgr_, this };
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TermTab::GetStaticTabClassInfo ().VisibleName_, tab);
 	}
 
 	QMap<QByteArray, ActionInfo> Plugin::GetActionInfo () const
