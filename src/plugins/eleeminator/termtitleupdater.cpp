@@ -37,6 +37,7 @@ namespace LC::Eleeminator
 	void SetupTitleUpdater (QTermWidget& term, TermTab& tab)
 	{
 		auto timer = new QTimer { &tab };
+		timer->setTimerType (Qt::VeryCoarseTimer);
 		timer->callOnTimeout ([&] { UpdateTitle (term, tab); });
 		timer->start (3000);
 	}
