@@ -180,15 +180,12 @@ namespace LC::Eleeminator
 		SetupContextMenu (Term_);
 
 		connect (&Term_,
-				SIGNAL (bell (QString)),
+				&QTermWidget::bell,
 				this,
-				SLOT (handleBell (QString)));
+				&TermTab::HandleBell);
 
 		auto timer = new QTimer { this };
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (updateTitle ()));
+		timer->callOnTimeout (this, &TermTab::UpdateTitle);
 		timer->start (3000);
 
 		auto& xsm = XmlSettingsManager::Instance ();
@@ -270,7 +267,7 @@ namespace LC::Eleeminator
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
 	}
 
-	void TermTab::updateTitle ()
+	void TermTab::UpdateTitle ()
 	{
 		auto cwd = Term_.workingDirectory ();
 		while (cwd.endsWith ('/'))
@@ -287,7 +284,7 @@ namespace LC::Eleeminator
 		emit changeTabName (title);
 	}
 
-	void TermTab::handleBell (const QString&)
+	void TermTab::HandleBell (const QString&) const
 	{
 		auto e = Util::MakeAN ("Eleeminator", tr ("Bell in terminal."), Priority::Info,
 				"org.LeechCraft.Eleeminator", AN::CatTerminal, AN::TypeTerminalBell,

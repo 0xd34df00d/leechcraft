@@ -49,14 +49,12 @@ namespace LC::Eleeminator
 		void TabLostCurrent () override;
 	private:
 		void SetupToolbar (Util::ShortcutManager*, const ColorSchemesManager&);
-
 		void SetupShortcuts (Util::ShortcutManager*);
 
-		void RemoveTab ();
-	private slots:
-		void updateTitle ();
+		void UpdateTitle ();
+		void HandleBell (const QString&) const;
 
-		void handleBell (const QString&);
+		void RemoveTab ();
 	signals:
 		void changeTabName (const QString&) override;
 		void removeTab () override;
