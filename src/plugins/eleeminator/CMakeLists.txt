@@ -17,6 +17,7 @@ LC_DEFINE_PLUGIN (
 		termcolorschemechooser.cpp
 		termcontextmenubuilder.cpp
 		termfontchooser.cpp
+		termtitleupdater.cpp
 	SETTINGS eleeminatorsettings.xml
 	QT_COMPONENTS Widgets
 	LINK_LIBRARIES PkgConfig::QTermWidget

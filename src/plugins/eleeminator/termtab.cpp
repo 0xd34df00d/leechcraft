@@ -19,7 +19,6 @@
 #include <QProcessEnvironment>
 #include <QApplication>
 #include <QClipboard>
-#include <QTimer>
 #include <QKeyEvent>
 #include <QtDebug>
 #include <qtermwidget.h>
@@ -35,6 +34,7 @@
 #include "termcolorschemechooser.h"
 #include "termcontextmenubuilder.h"
 #include "termfontchooser.h"
+#include "termtitleupdater.h"
 
 namespace LC::Eleeminator
 {
@@ -172,17 +172,13 @@ namespace LC::Eleeminator
 
 		SetupToolbar (scMgr, colorSchemes);
 		SetupShortcuts (scMgr);
-
 		SetupContextMenu (Term_);
+		SetupTitleUpdater (Term_, *this);
 
 		connect (&Term_,
 				&QTermWidget::bell,
 				this,
 				&TermTab::HandleBell);
-
-		auto timer = new QTimer { this };
-		timer->callOnTimeout (this, &TermTab::UpdateTitle);
-		timer->start (3000);
 
 		auto& xsm = XmlSettingsManager::Instance ();
 		xsm.RegisterObject ({ "FiniteHistory", "HistorySize" },
@@ -274,23 +270,6 @@ namespace LC::Eleeminator
 
 		auto closeSc = new QShortcut { {}, &Term_, this, &TermTab::Remove };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
-	}
-
-	void TermTab::UpdateTitle ()
-	{
-		auto cwd = Term_.workingDirectory ();
-		while (cwd.endsWith ('/'))
-			cwd.chop (1);
-
-		const auto& tree = ProcessGraphBuilder { Term_.getShellPID () }.GetProcessTree ();
-		const auto& processName = tree.Children_.isEmpty () ?
-				tree.Command_ :
-				tree.Children_.value (0).Command_;
-
-		const auto& title = cwd.isEmpty () ?
-				processName :
-				(cwd.section ('/', -1, -1) + " : " + processName);
-		emit changeTabName (title);
 	}
 
 	void TermTab::HandleBell (const QString& message) const

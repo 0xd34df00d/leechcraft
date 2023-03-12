@@ -51,7 +51,6 @@ namespace LC::Eleeminator
 		void SetupToolbar (Util::ShortcutManager*, const ColorSchemesManager&);
 		void SetupShortcuts (Util::ShortcutManager*);
 
-		void UpdateTitle ();
 		void HandleBell (const QString&) const;
 
 		void RemoveTab ();
