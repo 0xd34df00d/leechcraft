@@ -16,21 +16,9 @@
 
 namespace LC::Eleeminator
 {
-	namespace
-	{
-		QDir GetProcDir ()
-		{
-			return { "/proc"_qs };
-		}
-	}
-
 	std::optional<int> GetParentPid (const QString& pidStr)
 	{
-		auto procDir = GetProcDir ();
-		if (!procDir.cd (pidStr))
-			return {};
-
-		QFile file { procDir.filePath ("status"_qs) };
+		QFile file { "/proc/" + pidStr + "/status" };
 		if (!file.open (QIODevice::ReadOnly))
 			return {};
 
@@ -58,7 +46,7 @@ namespace LC::Eleeminator
 		{
 			RawProcessGraph_t processGraph;
 
-			const auto& procDir = GetProcDir ();
+			const QDir procDir { "/proc"_qs };
 			if (!procDir.isReadable ())
 				return {};
 
