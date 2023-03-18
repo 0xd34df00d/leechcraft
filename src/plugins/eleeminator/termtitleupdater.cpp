@@ -14,33 +14,49 @@
 
 namespace LC::Eleeminator
 {
-	namespace
+	class TitleUpdater : public QObject
 	{
-		void UpdateTitle (QTermWidget& term, TermTab& tab)
-		{
-			auto cwd = term.workingDirectory ();
-			while (cwd.endsWith ('/'))
-				cwd.chop (1);
+		QTermWidget& Term_;
+		TermTab& Tab_;
 
-			const auto& tree = ProcessGraphBuilder { term.getShellPID () }.GetProcessTree ();
-			const auto& processName = tree.Children_.isEmpty () ?
-					tree.Command_ :
-					tree.Children_.value (0).Command_;
+		QTimer Timer_;
+	public:
+		TitleUpdater (QTermWidget& term, TermTab& tab);
+	private:
+		void UpdateTitle ();
+	};
 
-			const auto& title = cwd.isEmpty () ?
-					processName :
-					(cwd.section ('/', -1, -1) + " : " + processName);
-			emit tab.changeTabName (title);
-		}
+	TitleUpdater::TitleUpdater (QTermWidget& term, TermTab& tab)
+	: QObject { &tab }
+	, Term_ { term }
+	, Tab_ { tab }
+	{
+		Timer_.setTimerType (Qt::VeryCoarseTimer);
+		Timer_.callOnTimeout (this, &TitleUpdater::UpdateTitle);
+		Timer_.start (3000);
+
+		QTimer::singleShot (0, this, &TitleUpdater::UpdateTitle);
+	}
+
+	void TitleUpdater::UpdateTitle ()
+	{
+		auto cwd = Term_.workingDirectory ();
+		while (cwd.endsWith ('/'))
+			cwd.chop (1);
+
+		const auto& tree = ProcessGraphBuilder { Term_.getShellPID () }.GetProcessTree ();
+		const auto& processName = tree.Children_.isEmpty () ?
+				tree.Command_ :
+				tree.Children_.value (0).Command_;
+
+		const auto& title = cwd.isEmpty () ?
+				processName :
+				(cwd.section ('/', -1, -1) + " : " + processName);
+		emit Tab_.changeTabName (title);
 	}
 
 	void SetupTitleUpdater (QTermWidget& term, TermTab& tab)
 	{
-		auto timer = new QTimer { &tab };
-		timer->setTimerType (Qt::VeryCoarseTimer);
-		timer->callOnTimeout ([&] { UpdateTitle (term, tab); });
-		timer->start (3000);
-
-		QTimer::singleShot (0, &tab, [&] { UpdateTitle (term, tab); });
+		new TitleUpdater { term, tab };
 	}
 }
