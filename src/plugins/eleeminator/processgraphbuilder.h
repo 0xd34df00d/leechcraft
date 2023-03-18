@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <memory>
 #include "processinfo.h"
 
@@ -15,6 +16,8 @@ class QAbstractItemModel;
 
 namespace LC::Eleeminator
 {
+	std::optional<int> GetParentPid (const QString& pidStr);
+
 	class ProcessGraphBuilder
 	{
 		const ProcessInfo Root_;

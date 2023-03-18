@@ -18,38 +18,47 @@ namespace LC::Eleeminator
 {
 	namespace
 	{
-		std::optional<int> GetParentPid (QDir subdir, const QString& subdirName)
+		QDir GetProcDir ()
 		{
-			if (!subdir.cd (subdirName))
-				return {};
+			return { "/proc"_qs };
+		}
+	}
 
-			QFile file { subdir.filePath ("status"_qs) };
-			if (!file.open (QIODevice::ReadOnly))
-				return {};
-
-			static const QByteArray marker { "PPid:" };
-
-			for (auto line = file.readLine (); !line.isEmpty (); line = file.readLine ())
-			{
-				if (!line.startsWith (marker))
-					continue;
-
-				const auto& parentPidStr = line.mid (marker.size ()).trimmed ();
-				bool ok = false;
-				const auto parentPid = parentPidStr.toInt (&ok);
-				return ok ? parentPid : std::optional<int> {};
-			}
-
+	std::optional<int> GetParentPid (const QString& pidStr)
+	{
+		auto procDir = GetProcDir ();
+		if (!procDir.cd (pidStr))
 			return {};
+
+		QFile file { procDir.filePath ("status"_qs) };
+		if (!file.open (QIODevice::ReadOnly))
+			return {};
+
+		static const QByteArray marker { "PPid:" };
+
+		for (auto line = file.readLine (); !line.isEmpty (); line = file.readLine ())
+		{
+			if (!line.startsWith (marker))
+				continue;
+
+			const auto& parentPidStr = line.mid (marker.size ()).trimmed ();
+			bool ok = false;
+			const auto parentPid = parentPidStr.toInt (&ok);
+			return ok ? parentPid : std::optional<int> {};
 		}
 
+		return {};
+	}
+
+	namespace
+	{
 		using RawProcessGraph_t = QMap<int, QList<int>>;
 
 		RawProcessGraph_t BuildRawProcessGraph ()
 		{
 			RawProcessGraph_t processGraph;
 
-			const QDir procDir { "/proc"_qs };
+			const auto& procDir = GetProcDir ();
 			if (!procDir.isReadable ())
 				return {};
 
@@ -60,7 +69,7 @@ namespace LC::Eleeminator
 				if (!ok)
 					continue;
 
-				if (const auto& parentPid = GetParentPid (procDir, subdirName))
+				if (const auto& parentPid = GetParentPid (subdirName))
 					processGraph [*parentPid] << processPid;
 			}
 
