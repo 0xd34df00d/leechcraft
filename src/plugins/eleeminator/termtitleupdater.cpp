@@ -20,10 +20,19 @@ namespace LC::Eleeminator
 		TermTab& Tab_;
 
 		QTimer Timer_;
+
+		struct ChildProcessInfo
+		{
+			int Pid_;
+			QString Command_;
+		};
+
+		std::optional<ChildProcessInfo> CachedChild_;
 	public:
 		TitleUpdater (QTermWidget& term, TermTab& tab);
 	private:
 		void UpdateTitle ();
+		void RefreshCachedChild ();
 	};
 
 	TitleUpdater::TitleUpdater (QTermWidget& term, TermTab& tab)
@@ -44,15 +53,36 @@ namespace LC::Eleeminator
 		while (cwd.endsWith ('/'))
 			cwd.chop (1);
 
-		const auto& tree = ProcessGraphBuilder { Term_.getShellPID () }.GetProcessTree ();
-		const auto& processName = tree.Children_.isEmpty () ?
-				tree.Command_ :
-				tree.Children_.value (0).Command_;
+		RefreshCachedChild ();
 
+		const auto& cmd = CachedChild_ ?
+				CachedChild_->Command_ :
+				Tab_.GetTabClassInfo ().VisibleName_;
 		const auto& title = cwd.isEmpty () ?
-				processName :
-				(cwd.section ('/', -1, -1) + " : " + processName);
+				cmd :
+				(cwd.section ('/', -1, -1) + " : " + cmd);
+
 		emit Tab_.changeTabName (title);
+	}
+
+	void TitleUpdater::RefreshCachedChild ()
+	{
+		if (CachedChild_)
+		{
+			const auto& cachedChildParent = GetParentPid (QString::number (CachedChild_->Pid_));
+			if (cachedChildParent && *cachedChildParent == Term_.getShellPID ())
+				return;
+		}
+
+		const auto& tree = ProcessGraphBuilder { Term_.getShellPID () }.GetProcessTree ();
+		if (tree.Children_.isEmpty ())
+		{
+			CachedChild_.reset ();
+			return;
+		}
+
+		const auto& child = tree.Children_.value (0);
+		CachedChild_ = ChildProcessInfo { child.Pid_, child.Command_ };
 	}
 
 	void SetupTitleUpdater (QTermWidget& term, TermTab& tab)
