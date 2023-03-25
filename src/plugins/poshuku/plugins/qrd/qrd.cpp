@@ -146,7 +146,8 @@ namespace LC::Poshuku::QRd
 						label->deleteLater ();
 
 					return false;
-				}));
+				},
+				*label));
 	}
 }
 

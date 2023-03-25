@@ -25,8 +25,8 @@ namespace Util
 
 			using EventType_t = std::remove_pointer_t<std::decay_t<ArgType_t<F, 0>>>;
 		public:
-			LambdaEventFilter (F&& f, QObject *parent = nullptr)
-			: QObject { parent }
+			LambdaEventFilter (F&& f, QObject& parent)
+			: QObject { &parent }
 			, F_ { std::move (f) }
 			{
 			}
@@ -43,7 +43,7 @@ namespace Util
 	}
 
 	template<typename F>
-	auto MakeLambdaEventFilter (F&& f, QObject *parent = nullptr)
+	auto MakeLambdaEventFilter (F&& f, QObject& parent)
 	{
 		return new detail::LambdaEventFilter<std::decay_t<F>> { std::forward<F> (f), parent };
 	}

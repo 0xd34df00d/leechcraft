@@ -145,7 +145,7 @@ namespace Azoth
 
 					return false;
 				},
-				this));
+				*this));
 
 		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this, fontsWidget] (QWheelEvent *e)
 				{
@@ -172,7 +172,7 @@ namespace Azoth
 
 					return true;
 				},
-				this));
+				*this));
 
 		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QKeyEvent *ev)
 				{
@@ -185,7 +185,7 @@ namespace Azoth
 
 					return false;
 				},
-				this));
+				*this));
 
 		MUCEventLog_->installEventFilter (this);
 
