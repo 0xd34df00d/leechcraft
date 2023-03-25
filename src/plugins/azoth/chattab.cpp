@@ -29,6 +29,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/geometry.h>
 #include <util/gui/findnotificationwe.h>
+#include <util/gui/fontsizescrollchanger.h>
 #include <util/sll/lambdaeventfilter.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/scopeguards.h>
@@ -144,32 +145,23 @@ namespace Azoth
 				},
 				*this));
 
-		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::Wheel> ([this, fontsWidget] (QWheelEvent *e)
+		const auto settings = Ui_.View_->settings ();
+		Util::InstallFontSizeScrollChanger (*Ui_.View_,
 				{
-					if (!(e->modifiers () & Qt::ControlModifier))
-						return false;
-
-					int degrees = e->angleDelta ().y () / 8.;
-					int steps = static_cast<qreal> (degrees) / 15;
-
-					const auto settings = Ui_.View_->settings ();
-					const auto newFontSize = std::max (6, settings->fontSize (QWebEngineSettings::DefaultFontSize) + steps);
-					settings->setFontSize (QWebEngineSettings::DefaultFontSize, newFontSize);
-					settings->setFontSize (QWebEngineSettings::DefaultFixedFontSize, newFontSize);
-					settings->setFontSize (QWebEngineSettings::MinimumFontSize, newFontSize);
-
-					Ui_.View_->page ()->runJavaScript ("setTimeout(ScrollToBottom,0);");
-
-					if (e->modifiers () & Qt::ShiftModifier)
-					{
-						fontsWidget->SetSize (FontSize::DefaultFontSize, newFontSize);
-						fontsWidget->SetSize (FontSize::DefaultFixedFontSize, newFontSize);
-						fontsWidget->SetSize (FontSize::MinimumFontSize, newFontSize);
-					}
-
-					return true;
-				},
-				*this));
+					.GetViewFontSize_ = [settings] { return settings->fontSize (QWebEngineSettings::DefaultFontSize); },
+					.SetViewFontSize_ = [settings] (int newFontSize)
+							{
+								settings->setFontSize (QWebEngineSettings::DefaultFontSize, newFontSize);
+								settings->setFontSize (QWebEngineSettings::DefaultFixedFontSize, newFontSize);
+								settings->setFontSize (QWebEngineSettings::MinimumFontSize, newFontSize);
+							},
+					.SetDefaultFontSize_ = [fontsWidget] (int newFontSize)
+							{
+								fontsWidget->SetSize (FontSize::DefaultFontSize, newFontSize);
+								fontsWidget->SetSize (FontSize::DefaultFixedFontSize, newFontSize);
+								fontsWidget->SetSize (FontSize::MinimumFontSize, newFontSize);
+							},
+				});
 
 		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::KeyRelease> ([this] (QKeyEvent *ev)
 				{
