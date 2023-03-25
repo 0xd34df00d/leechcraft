@@ -28,6 +28,7 @@ set (GUI_SRCS
 	sslcertificateinfowidget.cpp
 	unhoverdeletemixin.cpp
 	util.cpp
+	fontsizescrollchanger.cpp
 	)
 set (GUI_FORMS
 	findnotification.ui
