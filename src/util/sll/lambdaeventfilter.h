@@ -12,9 +12,7 @@
 #include <QObject>
 #include "typegetter.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace detail
 	{
@@ -47,5 +45,4 @@ namespace Util
 	{
 		return new detail::LambdaEventFilter<std::decay_t<F>> { std::forward<F> (f), parent };
 	}
-}
 }
