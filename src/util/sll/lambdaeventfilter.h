@@ -16,7 +16,7 @@ namespace LC::Util
 {
 	namespace detail
 	{
-		template<typename F>
+		template<QEvent::Type Type, typename F>
 		class LambdaEventFilter : public QObject
 		{
 			const F F_;
@@ -31,6 +31,9 @@ namespace LC::Util
 
 			bool eventFilter (QObject*, QEvent *srcEv) override
 			{
+				if (Type != QEvent::None && Type != srcEv->type ())
+					return false;
+
 				const auto ev = dynamic_cast<EventType_t*> (srcEv);
 				if (!ev)
 					return false;
@@ -40,9 +43,9 @@ namespace LC::Util
 		};
 	}
 
-	template<typename F>
+	template<QEvent::Type Type = QEvent::None, typename F>
 	auto MakeLambdaEventFilter (F&& f, QObject& parent)
 	{
-		return new detail::LambdaEventFilter<std::decay_t<F>> { std::forward<F> (f), parent };
+		return new detail::LambdaEventFilter<Type, std::decay_t<F>> { std::forward<F> (f), parent };
 	}
 }
