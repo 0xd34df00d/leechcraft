@@ -171,7 +171,7 @@ namespace Azoth
 				},
 				*this));
 
-		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QKeyEvent *ev)
+		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::KeyRelease> ([this] (QKeyEvent *ev)
 				{
 					if (ev->matches (QKeySequence::Copy) &&
 						!Ui_.View_->page ()->selectedText ().isEmpty ())
