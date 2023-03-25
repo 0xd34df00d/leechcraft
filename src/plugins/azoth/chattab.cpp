@@ -135,11 +135,8 @@ namespace Azoth
 		for (const auto child : Ui_.View_->findChildren<QWidget*> ())
 			child->setFocusProxy (Ui_.MsgEdit_);
 
-		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QChildEvent *e)
+		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::ChildAdded> ([this] (QChildEvent *e)
 				{
-					if (e->type () != QEvent::ChildAdded)
-						return false;
-
 					if (const auto w = qobject_cast<QWidget*> (e->child ()))
 						w->setFocusProxy (Ui_.MsgEdit_);
 
@@ -147,7 +144,7 @@ namespace Azoth
 				},
 				*this));
 
-		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this, fontsWidget] (QWheelEvent *e)
+		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::Wheel> ([this, fontsWidget] (QWheelEvent *e)
 				{
 					if (!(e->modifiers () & Qt::ControlModifier))
 						return false;
