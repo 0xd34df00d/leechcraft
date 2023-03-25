@@ -9,6 +9,7 @@
 #pragma once
 
 #include <type_traits>
+#include <QEvent>
 #include <QObject>
 #include "typegetter.h"
 
