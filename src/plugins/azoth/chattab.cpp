@@ -146,7 +146,7 @@ namespace Azoth
 				*this));
 
 		const auto settings = Ui_.View_->settings ();
-		Util::InstallFontSizeScrollChanger (*Ui_.View_,
+		Util::InstallFontSizeChanger (*Ui_.View_,
 				{
 					.GetViewFontSize_ = [settings] { return settings->fontSize (QWebEngineSettings::DefaultFontSize); },
 					.SetViewFontSize_ = [settings] (int newFontSize)

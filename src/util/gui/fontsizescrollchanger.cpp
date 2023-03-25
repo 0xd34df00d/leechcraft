@@ -13,7 +13,7 @@
 
 namespace LC::Util
 {
-	void InstallFontSizeScrollChanger (QWidget& widget, const FontSizeScrollChangerMixingParams& params)
+	void InstallFontSizeChanger (QWidget& widget, const FontSizeChangerParams& params)
 	{
 		widget.installEventFilter (Util::MakeLambdaEventFilter<QEvent::Wheel> ([params] (QWheelEvent *e)
 				{

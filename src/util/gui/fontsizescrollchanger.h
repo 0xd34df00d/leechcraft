@@ -15,12 +15,12 @@ class QWidget;
 
 namespace LC::Util
 {
-	struct FontSizeScrollChangerMixingParams
+	struct FontSizeChangerParams
 	{
 		std::function<int ()> GetViewFontSize_;
 		std::function<void (int)> SetViewFontSize_;
 		std::function<void (int)> SetDefaultFontSize_;
 	};
 
-	UTIL_GUI_API void InstallFontSizeScrollChanger (QWidget&, const FontSizeScrollChangerMixingParams&);
+	UTIL_GUI_API void InstallFontSizeChanger (QWidget&, const FontSizeChangerParams&);
 }
