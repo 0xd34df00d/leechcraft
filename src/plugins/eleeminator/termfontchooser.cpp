@@ -15,6 +15,11 @@
 
 namespace LC::Eleeminator
 {
+	void SetDefaultFont (const QFont& font)
+	{
+		XmlSettingsManager::Instance ().setProperty ("Font", QVariant::fromValue (font));
+	}
+
 	namespace
 	{
 		std::optional<QFont> GetSavedFont ()
@@ -36,8 +41,7 @@ namespace LC::Eleeminator
 				return;
 
 			term.setTerminalFont (font);
-
-			XmlSettingsManager::Instance ().setProperty ("Font", QVariant::fromValue (font));
+			SetDefaultFont (font);
 		}
 	}
 

@@ -11,9 +11,12 @@
 #include <memory>
 
 class QAction;
+class QFont;
 class QTermWidget;
 
 namespace LC::Eleeminator
 {
+	void SetDefaultFont (const QFont&);
+
 	[[nodiscard]] std::unique_ptr<QAction> MakeFontChooser (QTermWidget&);
 }
