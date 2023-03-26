@@ -23,7 +23,10 @@ namespace LC::Util
 
 		auto AddSteps (QFont font, int steps)
 		{
-			font.setPixelSize (AddSteps (font.pixelSize (), steps));
+			if (const auto pts = font.pointSize (); pts > 0)
+				font.setPointSize (AddSteps (pts, steps));
+			else if (const auto pxs = font.pixelSize (); pxs > 0)
+				font.setPixelSize (AddSteps (pxs, steps));
 			return font;
 		}
 	}
