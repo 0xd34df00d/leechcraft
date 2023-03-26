@@ -9,18 +9,26 @@
 #pragma once
 
 #include <functional>
+#include <variant>
 #include "guiconfig.h"
 
 class QWidget;
+class QFont;
 
 namespace LC::Util
 {
-	struct FontSizeChangerParams
+	template<typename T>
+	struct FontSizeChangerMethods
 	{
-		std::function<int ()> GetViewFontSize_;
-		std::function<void (int)> SetViewFontSize_;
-		std::function<void (int)> SetDefaultFontSize_;
+		std::function<T ()> GetView_;
+		std::function<void (T)> SetView_;
+		std::function<void (T)> SetDefault_;
 	};
+
+	using PixelBasedParams = FontSizeChangerMethods<int>;
+	using FontBasedParams = FontSizeChangerMethods<QFont>;
+
+	using FontSizeChangerParams = std::variant<PixelBasedParams, FontBasedParams>;
 
 	UTIL_GUI_API void InstallFontSizeChanger (QWidget&, const FontSizeChangerParams&);
 }

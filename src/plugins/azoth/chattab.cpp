@@ -147,15 +147,16 @@ namespace Azoth
 
 		const auto settings = Ui_.View_->settings ();
 		Util::InstallFontSizeChanger (*Ui_.View_,
+				Util::PixelBasedParams
 				{
-					.GetViewFontSize_ = [settings] { return settings->fontSize (QWebEngineSettings::DefaultFontSize); },
-					.SetViewFontSize_ = [settings] (int newFontSize)
+					.GetView_ = [settings] { return settings->fontSize (QWebEngineSettings::DefaultFontSize); },
+					.SetView_ = [settings] (int newFontSize)
 							{
 								settings->setFontSize (QWebEngineSettings::DefaultFontSize, newFontSize);
 								settings->setFontSize (QWebEngineSettings::DefaultFixedFontSize, newFontSize);
 								settings->setFontSize (QWebEngineSettings::MinimumFontSize, newFontSize);
 							},
-					.SetDefaultFontSize_ = [fontsWidget] (int newFontSize)
+					.SetDefault_ = [fontsWidget] (int newFontSize)
 							{
 								fontsWidget->SetSize (FontSize::DefaultFontSize, newFontSize);
 								fontsWidget->SetSize (FontSize::DefaultFixedFontSize, newFontSize);

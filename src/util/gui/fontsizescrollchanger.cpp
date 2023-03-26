@@ -10,9 +10,24 @@
 #include <QWidget>
 #include <QWheelEvent>
 #include <util/sll/lambdaeventfilter.h>
+#include <util/sll/visitor.h>
 
 namespace LC::Util
 {
+	namespace
+	{
+		auto AddSteps (int size, int steps)
+		{
+			return std::max (6, size + steps);
+		}
+
+		auto AddSteps (QFont font, int steps)
+		{
+			font.setPixelSize (AddSteps (font.pixelSize (), steps));
+			return font;
+		}
+	}
+
 	void InstallFontSizeChanger (QWidget& widget, const FontSizeChangerParams& params)
 	{
 		widget.installEventFilter (Util::MakeLambdaEventFilter<QEvent::Wheel> ([params] (QWheelEvent *e)
@@ -23,11 +38,14 @@ namespace LC::Util
 					int degrees = e->angleDelta ().y () / 8.;
 					int steps = static_cast<qreal> (degrees) / 15;
 
-					const auto fontSize = std::max (6, params.GetViewFontSize_ () + steps);
-
-					params.SetViewFontSize_ (fontSize);
-					if (e->modifiers () & Qt::ShiftModifier)
-						params.SetDefaultFontSize_ (fontSize);
+					Visit (params,
+							[=] (const auto& methods)
+							{
+								const auto newFont = AddSteps (methods.GetView_ (), steps);
+								methods.SetView_ (newFont);
+								if (e->modifiers () & Qt::ShiftModifier)
+									methods.SetDefault_ (newFont);
+							});
 
 					return true;
 				},
