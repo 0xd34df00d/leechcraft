@@ -22,9 +22,10 @@
 #include <QKeyEvent>
 #include <QtDebug>
 #include <qtermwidget.h>
-#include <util/xpc/util.h>
+#include <util/gui/fontsizescrollchanger.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/qtutil.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
@@ -190,6 +191,14 @@ namespace LC::Eleeminator
 							xsm.property ("HistorySize").toInt () :
 							-1;
 					Term_.setHistorySize (linesCount);
+				});
+
+		Util::InstallFontSizeChanger (Term_,
+				Util::FontBasedParams
+				{
+					.GetView_ = [this] { return Term_.getTerminalFont (); },
+					.SetView_ = [this] (const QFont& font) { Term_.setTerminalFont (font); },
+					.SetDefault_ = &SetDefaultFont,
 				});
 	}
 
