@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <functional>
 #include <QCoreApplication>
 #include <QList>
 #include <QObject>

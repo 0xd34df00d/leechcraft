@@ -98,10 +98,7 @@ namespace LC::Aggregator
 					GetUserString (idxes, single, multiple),
 					QMessageBox::Yes | QMessageBox::No);
 		}
-	}
 
-	namespace
-	{
 		auto InvokeHandler (ChannelActions *pThis, const ChannelActions::Deps& deps,
 				std::invocable<ChannelActions*, QModelIndex> auto handler)
 		{
