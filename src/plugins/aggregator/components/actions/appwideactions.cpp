@@ -13,6 +13,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/iactionsexporter.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/qtutil.h>
 #include "addfeeddialog.h"
 #include "dbupdatethread.h"
 #include "dbutils.h"
@@ -25,7 +26,7 @@ namespace LC::Aggregator
 {
 	AppWideActions::AppWideActions (const Deps& deps, QObject *parent)
 	: QObject { parent }
-	, ToolsMenu_ { "Aggregator" }
+	, ToolsMenu_ { "Aggregator"_qs }
 	{
 		ToolsMenu_.setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 

@@ -16,6 +16,7 @@
 #include <QModelIndex>
 #include <interfaces/core/ientitymanager.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include "interfaces/aggregator/iitemsmodel.h"
@@ -188,7 +189,7 @@ namespace LC::Aggregator
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		const ITagsManager::tag_id impId = "_important";
+		const ITagsManager::tag_id impId = "_important"_qs;
 		for (const auto itemId : GetSelectedIds ())
 		{
 			auto tags = sb->GetItemTags (itemId);
@@ -205,7 +206,7 @@ namespace LC::Aggregator
 
 		if (QMessageBox::warning (Deps_.Parent_,
 					MessageBoxTitle,
-					tr ("Are you sure you want to remove %n items?", 0, ids.size ()),
+					tr ("Are you sure you want to remove %n items?", nullptr, ids.size ()),
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
