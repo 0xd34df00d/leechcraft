@@ -11,7 +11,6 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QSet>
-#include <QPair>
 #include <QIcon>
 #include <QThreadStorage>
 #include "interfaces/aggregator/iitemsmodel.h"
