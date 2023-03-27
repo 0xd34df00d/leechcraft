@@ -18,7 +18,8 @@ namespace LC::Util
 	{
 		auto AddSteps (int size, int steps)
 		{
-			return std::max (6, size + steps);
+			constexpr auto minFontSize = 6;
+			return std::max (minFontSize, size + steps);
 		}
 
 		auto AddSteps (QFont font, int steps)
@@ -38,8 +39,11 @@ namespace LC::Util
 					if (!(e->modifiers () & Qt::ControlModifier))
 						return false;
 
-					int degrees = e->angleDelta ().y () / 8.;
-					int steps = static_cast<qreal> (degrees) / 15;
+					constexpr qreal degreesPerDelta = 1 / 8.;
+					constexpr qreal degreesPerStep = 15.;
+
+					auto degrees = e->angleDelta ().y () * degreesPerDelta;
+					int steps = static_cast<int> (degrees / degreesPerStep);
 
 					Visit (params,
 							[=] (const auto& methods)
