@@ -247,7 +247,7 @@ namespace LC::Aggregator::Parsers
 			if (!str.contains ("&#"_ql))
 				return;
 
-			static thread_local const QRegularExpression rx { R"(&#\d+;)" };
+			static thread_local const QRegularExpression rx { R"(&#\d+;)"_qs };
 			for (auto match = rx.match (str); match.hasMatch (); match = rx.match (str, match.capturedStart (0) + 1))
 			{
 				const auto& matchingStr = match.capturedView ().mid (2).chopped (1);
@@ -265,7 +265,7 @@ namespace LC::Aggregator::Parsers
 	QString UnescapeHTML (QString&& str)
 	{
 		const static auto l1Replacements = std::to_array<std::pair<QLatin1String, QLatin1String>> ({
-					{ "&quot;"_ql, "\""_ql },
+					{ "&quot;"_ql, R"(")"_ql },
 					{ "&amp;"_ql, "&"_ql },
 					{ "&nbsp;"_ql, " "_ql },
 					{ "&lt;"_ql, "<"_ql },
