@@ -72,7 +72,7 @@ namespace Aggregator
 		std::unique_ptr<ItemsListModel> CurrentItemsModel_ {};
 		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_ {};
 		std::unique_ptr<Util::MergeModel> ItemLists_ {};
-		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ {};
+		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (Parent_);
 		std::unique_ptr<CategorySelector> ItemCategorySelector_ {};
 
 		QTimer *SelectedChecker_ = nullptr;
@@ -156,7 +156,6 @@ namespace Aggregator
 
 		Impl_->Ui_.Items_->setAcceptDrops (false);
 
-		Impl_->ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (this);
 		Impl_->ItemsFilterModel_->SetItemsWidget (this);
 		Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemLists_.get ());
 		Impl_->ItemsFilterModel_->setFilterKeyColumn (0);
