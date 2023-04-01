@@ -42,9 +42,15 @@ namespace LC::Aggregator
 
 		const auto mkSep = [&] { AllActions_ << Util::CreateSeparator (parent); };
 
+		const bool shouldHideRead = xsm.Property ("HideReadItems", false).toBool ();
+		deps.SetHideRead_ (shouldHideRead);
 		ToolbarActions_ << MakeAction (tr ("Hide read items"), "mail-mark-unread", "HideReadItems",
-				deps.SetHideRead_,
-				{ .Checked_ = xsm.Property ("HideReadItems", false).toBool () });
+				[&] (bool hide)
+				{
+					Deps_.SetHideRead_ (hide);
+					xsm.setProperty ("HideReadItems", hide);
+				},
+				{ .Checked_ = shouldHideRead });
 		ToolbarActions_ << MakeAction (tr ("Show items as tape"), "format-list-unordered", "ActionShowAsTape",
 				deps.SetShowTape_,
 				{ .Checked_ = xsm.Property ("ShowAsTape", false).toBool () });

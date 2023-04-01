@@ -319,7 +319,6 @@ namespace Aggregator
 	void ItemsWidget::SetHideRead (bool hide)
 	{
 		Impl_->ItemsFilterModel_->SetHideRead (hide);
-		XmlSettingsManager::Instance ()->setProperty ("HideReadItems", hide);
 	}
 
 	void ItemsWidget::Selected (const QModelIndex& index)
