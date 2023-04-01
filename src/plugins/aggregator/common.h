@@ -48,6 +48,8 @@ namespace LC::Aggregator
 	};
 
 	extern const QString MessageBoxTitle;
+
+	struct Item;
 }
 
 Q_DECLARE_METATYPE (LC::Aggregator::IDType_t)
