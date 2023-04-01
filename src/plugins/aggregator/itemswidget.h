@@ -9,8 +9,7 @@
 #pragma once
 
 #include <QWidget>
-#include "item.h"
-#include "channel.h"
+#include "common.h"
 
 class QModelIndex;
 class QToolBar;
