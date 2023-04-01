@@ -85,7 +85,7 @@ namespace LC::Aggregator
 				[this] { LinkCopy (); },
 				{ .Shortcut_ = { "C" } });
 
-		auto& nav = deps.ItemNavigator_;
+		auto& nav = Deps_.ItemNavigator_;
 		InvisibleActions_ << MakeAction (tr ("Previous unread item"), "go-first", "PrevUnreadItem",
 				[&nav] { nav.MoveToPrevUnread (); },
 				{ .Shortcut_ = { "Shift+K" }, .AddToAllActions_ = false });
