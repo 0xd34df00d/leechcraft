@@ -108,7 +108,7 @@ namespace Aggregator
 			.Parent_ = this,
 			.ShortcutsMgr_ = deps.ShortcutsMgr_,
 			.UpdatesManager_ = deps.UpdatesManager_,
-			.SetHideRead_ = [this] (bool hide) { SetHideRead (hide); },
+			.SetHideRead_ = [this] (bool hide) { Impl_->ItemsFilterModel_->SetHideRead (hide); },
 			.SetShowTape_ = [this] (bool tape) { SetTapeMode (tape); },
 			.GetSelection_ = [this] { return Impl_->Ui_.Items_->selectionModel ()->selectedRows (); },
 			.ItemNavigator_ = ItemNavigator
@@ -314,11 +314,6 @@ namespace Aggregator
 			else
 				AddSupplementaryModelFor (cid);
 		}
-	}
-
-	void ItemsWidget::SetHideRead (bool hide)
-	{
-		Impl_->ItemsFilterModel_->SetHideRead (hide);
 	}
 
 	void ItemsWidget::Selected (const QModelIndex& index)

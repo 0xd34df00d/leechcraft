@@ -83,7 +83,6 @@ namespace Aggregator
 			* @param[in] tags The list of tags to merge.
 			*/
 		void SetMergeModeTags (const QStringList& tags);
-		void SetHideRead (bool);
 		void Selected (const QModelIndex&);
 		IDType_t GetItemIDFromRow (int) const;
 		void CurrentChannelChanged (const QModelIndex&);
