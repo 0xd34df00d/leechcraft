@@ -65,6 +65,20 @@ namespace LC::Aggregator
 			if (!item.Categories_.isEmpty ())
 				result += item.Categories_.join ("; ") + "<br />"_qs;
 		}
+
+		void AddComments (QString& result, const Item& item)
+		{
+			if (item.NumComments_ < 0 && item.CommentsPageLink_.isEmpty ())
+				return;
+
+			const auto& text = item.NumComments_ >= 0 ?
+					TrContext::tr ("%n comment(s)", "", item.NumComments_) :
+					TrContext::tr ("View comments");
+			result += item.CommentsPageLink_.isEmpty () ?
+					text :
+					MakeLink (item.CommentsPageLink_, text);
+			result += "<br />"_qs;
+		}
 	}
 
 	QString ItemToHtml (const Item& item)
@@ -120,20 +134,7 @@ namespace LC::Aggregator
 		AddItemLink (result, item);
 		AddPublishedInfo (result, item);
 		AddCategories (result, item);
-
-		// Comments stuff
-		if (item.NumComments_ >= 0 && !item.CommentsPageLink_.isEmpty ())
-			result += TrContext::tr ("%n comment(s), <a href='%1'%2>view them</a><br />",
-					"", item.NumComments_)
-					.arg (item.CommentsPageLink_)
-					.arg (linw ? " target='_blank'" : "");
-		else if (item.NumComments_ >= 0)
-			result += TrContext::tr ("%n comment(s)", "", item.NumComments_) +
-					"<br />";
-		else if (!item.CommentsPageLink_.isEmpty ())
-			result += TrContext::tr ("<a href='%1'%2>View comments</a><br />")
-					.arg (item.CommentsPageLink_)
-					.arg (linw ? " target='_blank'" : "");
+		AddComments (result, item);
 
 		if (item.Latitude_ ||
 				item.Longitude_)
