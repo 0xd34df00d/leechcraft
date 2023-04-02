@@ -9,8 +9,6 @@
 #include "itemswidget.h"
 #include <memory>
 #include <algorithm>
-#include <limits>
-#include <QFileInfo>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
 #include <QUrl>
@@ -20,7 +18,6 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
-#include <util/xpc/util.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -44,7 +41,6 @@
 #include "uistatepersist.h"
 #include "storagebackendmanager.h"
 #include "itemutils.h"
-#include "dbutils.h"
 
 namespace LC
 {
