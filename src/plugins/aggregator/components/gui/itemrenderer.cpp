@@ -21,8 +21,6 @@ namespace LC::Aggregator
 	{
 		QString GetHex (QPalette::ColorRole role, QPalette::ColorGroup group = QPalette {}.currentColorGroup ())
 		{
-			static_assert (std::numeric_limits<int>::max () >= 0xffffffL, "int is too small :(");
-
 			int r, g, b;
 			QPalette {}.color (group, role).getRgb (&r, &g, &b);
 			int color = b + (g << 8) + (r << 16);
