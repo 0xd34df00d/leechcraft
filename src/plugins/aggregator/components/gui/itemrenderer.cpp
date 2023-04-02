@@ -21,12 +21,7 @@ namespace LC::Aggregator
 	{
 		QString GetHex (QPalette::ColorRole role, QPalette::ColorGroup group = QPalette {}.currentColorGroup ())
 		{
-			int r, g, b;
-			QPalette {}.color (group, role).getRgb (&r, &g, &b);
-			int color = b + (g << 8) + (r << 16);
-			QString result ("#%1");
-			// Fill spare space with zeros.
-			return result.arg (color, 6, 16, QChar ('0'));
+			return QPalette {}.color (group, role).name (QColor::HexArgb);
 		}
 
 		struct TrContext
