@@ -30,13 +30,16 @@ namespace LC::Aggregator
 			return QPalette {}.color (group, role).name (QColor::HexArgb);
 		}
 
-		void AddLink (QString& result, const Item& item)
+		QString MakeLink (const QString& link, const QString& text)
 		{
 			const bool useExternal = XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ();
 			const auto& target = useExternal ? " target='_blank'"_qs : QString {};
+			return "<a href='"_qs + link + '\'' + target + '>' + text + "</a>"_qs;
+		}
 
-			result += "<a href='"_qs + item.Link_ + '\'' + target + '>';
-			result += "<strong>"_qs + item.Title_ + "</strong></a><br />"_qs;
+		void AddItemLink (QString& result, const Item& item)
+		{
+			result += MakeLink (item.Link_, "<strong>"_qs + item.Title_ + "</strong>"_qs);
 		}
 
 		void AddPublishedInfo (QString& result, const Item& item)
@@ -114,7 +117,7 @@ namespace LC::Aggregator
 				)"_qs
 				.arg (headerBg, headerText);
 
-		AddLink (result, item);
+		AddItemLink (result, item);
 		AddPublishedInfo (result, item);
 		AddCategories (result, item);
 
