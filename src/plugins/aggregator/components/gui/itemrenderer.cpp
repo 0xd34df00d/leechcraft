@@ -29,6 +29,39 @@ namespace LC::Aggregator
 		{
 			return QPalette {}.color (group, role).name (QColor::HexArgb);
 		}
+
+		void AddLink (QString& result, const Item& item)
+		{
+			const bool useExternal = XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ();
+			const auto& target = useExternal ? " target='_blank'"_qs : QString {};
+
+			result += "<a href='"_qs + item.Link_ + '\'' + target + '>';
+			result += "<strong>"_qs + item.Title_ + "</strong></a><br />"_qs;
+		}
+
+		void AddPublishedInfo (QString& result, const Item& item)
+		{
+			if (!item.PubDate_.isValid () && item.Author_.isEmpty ())
+				return;
+
+			if (item.PubDate_.isValid () && !item.Author_.isEmpty ())
+				result += TrContext::tr ("Published on %1 by %2")
+						.arg (item.PubDate_.toString (), item.Author_);
+			else if (item.PubDate_.isValid ())
+				result += TrContext::tr ("Published on %1")
+						.arg (item.PubDate_.toString ());
+			else if (!item.Author_.isEmpty ())
+				result += TrContext::tr ("Published by %1")
+						.arg (item.Author_);
+
+			result += "<br />"_qs;
+		}
+
+		void AddCategories (QString& result, const Item& item)
+		{
+			if (!item.Categories_.isEmpty ())
+				result += item.Categories_.join ("; ") + "<br />"_qs;
+		}
 	}
 
 	QString ItemToHtml (const Item& item)
@@ -81,37 +114,9 @@ namespace LC::Aggregator
 				)"_qs
 				.arg (headerBg, headerText);
 
-		// Link
-		result += ("<a href='" +
-				item.Link_ +
-				"'");
-		if (linw)
-			result += " target='_blank'";
-		result += QString (">");
-		result += (QString ("<strong>") +
-				item.Title_ +
-				"</strong>" +
-				"</a><br />");
-
-		// Publication date and author
-		if (item.PubDate_.isValid () && !item.Author_.isEmpty ())
-			result += TrContext::tr ("Published on %1 by %2")
-					.arg (item.PubDate_.toString ())
-					.arg (item.Author_) +
-					"<br />";
-		else if (item.PubDate_.isValid ())
-			result += TrContext::tr ("Published on %1")
-					.arg (item.PubDate_.toString ()) +
-					"<br />";
-		else if (!item.Author_.isEmpty ())
-			result += TrContext::tr ("Published by %1")
-					.arg (item.Author_) +
-					"<br />";
-
-		// Categories
-		if (item.Categories_.size ())
-			result += item.Categories_.join ("; ") +
-					"<br />";
+		AddLink (result, item);
+		AddPublishedInfo (result, item);
+		AddCategories (result, item);
 
 		// Comments stuff
 		if (item.NumComments_ >= 0 && !item.CommentsPageLink_.isEmpty ())
