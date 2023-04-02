@@ -12,6 +12,7 @@
 #include <QPalette>
 #include <QUrl>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include "item.h"
 #include "xmlsettingsmanager.h"
 
@@ -37,45 +38,48 @@ namespace LC::Aggregator
 		const auto& headerText = GetHex (QPalette::WindowText);
 		const auto& alternateBg = GetHex (QPalette::AlternateBase);
 
-		QString firstStartBox = "<div style='background: %1; "
-								"color: COLOR; "
-								"padding-left: 2em; "
-								"padding-right: 2em; "
-								"padding-bottom: 0.5em;"
-								"border: 2px none green; "
-								"margin: 0px; "
-								"-webkit-border-top-left-radius: 1em; "
-								"-webkit-border-top-right-radius: 1em;'>";
-		firstStartBox.replace ("COLOR", headerText);
+		const bool linw = XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ();
 
-		bool linw = XmlSettingsManager::Instance ()->
-				property ("AlwaysUseExternalBrowser").toBool ();
+		auto result = R"(
+				<style>a { color: %2; } a.visited { color: %3 }</style>
+				<div style='background: %1;
+					margin-top: 0em;
+					margin-left: 0em;
+					margin-right: 0em;
+					margin-bottom: 0.5 em;
+					padding: 0px;
+					border: 2px solid %4;
+					-webkit-border-radius: 1em;'
+				>
+				)"_qs
+				.arg (GetHex (QPalette::Base),
+						GetHex (QPalette::Link),
+						GetHex (QPalette::LinkVisited),
+						borderColor);
 
-		QString result = QString (
-				"<style>a { color: %2; } a.visited { color: %3 }</style>"
-				"<div style='background: %1; "
-				"margin-top: 0em; "
-				"margin-left: 0em; "
-				"margin-right: 0em; "
-				"margin-bottom: 0.5 em; "
-				"padding: 0px; "
-				"border: 2px solid %4; "
-				"-webkit-border-radius: 1em;'>")
-				.arg (GetHex (QPalette::Base))
-				.arg (GetHex (QPalette::Link))
-				.arg (GetHex (QPalette::LinkVisited))
-				.arg (borderColor);
+		const auto& inpad = R"(
+				<div style='background: %1;
+					color: %2;
+					border: 1px solid #333333;
+					padding-top: 0.2em;
+					padding-bottom: 0.2em;
+					padding-left: 2em;
+					padding-right: 2em;
+					-webkit-border-radius: 1em;'>
+				)"_qs;
 
-		QString inpad = QString ("<div style='background: %1; "
-								 "color: %2; "
-								 "border: 1px solid #333333; "
-								 "padding-top: 0.2em; "
-								 "padding-bottom: 0.2em; "
-								 "padding-left: 2em; "
-								 "padding-right: 2em;"
-								 "-webkit-border-radius: 1em;'>");
-
-		result += firstStartBox.arg (headerBg);
+		result += R"(
+				<div style='background: %1;
+					color: %2;
+					padding-left: 2em;
+					padding-right: 2em;
+					padding-bottom: 0.5em;
+					border: 2px none green;
+					margin: 0px;
+					-webkit-border-top-left-radius: 1em;
+					-webkit-border-top-right-radius: 1em;'>
+				)"_qs
+				.arg (headerBg, headerText);
 
 		// Link
 		result += ("<a href='" +
