@@ -63,7 +63,7 @@ namespace LC::Aggregator
 		void AddCategories (QString& result, const Item& item)
 		{
 			if (!item.Categories_.isEmpty ())
-				result += item.Categories_.join ("; ") + "<br />"_qs;
+				result += item.Categories_.join ("; "_qs) + "<br />"_qs;
 		}
 
 		void AddComments (QString& result, const Item& item)
