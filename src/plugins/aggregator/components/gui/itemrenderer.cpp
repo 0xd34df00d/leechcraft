@@ -19,23 +19,23 @@ namespace LC::Aggregator
 {
 	namespace
 	{
-		QString GetHex (QPalette::ColorRole role, QPalette::ColorGroup group = QPalette {}.currentColorGroup ())
-		{
-			return QPalette {}.color (group, role).name (QColor::HexArgb);
-		}
-
 		struct TrContext
 		{
 			Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ItemToHtml)
 		};
+
+		QString GetHex (QPalette::ColorRole role, QPalette::ColorGroup group = QPalette {}.currentColorGroup ())
+		{
+			return QPalette {}.color (group, role).name (QColor::HexArgb);
+		}
 	}
 
 	QString ItemToHtml (const Item& item)
 	{
-		QString headerBg = GetHex (QPalette::Window);
-		QString borderColor = headerBg;
-		QString headerText = GetHex (QPalette::WindowText);
-		QString alternateBg = GetHex (QPalette::AlternateBase);
+		const auto& headerBg = GetHex (QPalette::Window);
+		const auto& borderColor = headerBg;
+		const auto& headerText = GetHex (QPalette::WindowText);
+		const auto& alternateBg = GetHex (QPalette::AlternateBase);
 
 		QString firstStartBox = "<div style='background: %1; "
 								"color: COLOR; "
