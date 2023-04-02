@@ -92,7 +92,6 @@ namespace Aggregator
 	private:
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);
-		QString ToHtml (const Item&);
 		void RestoreSplitter ();
 	private slots:
 		void invalidateMergeMode ();
