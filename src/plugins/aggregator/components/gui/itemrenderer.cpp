@@ -82,7 +82,7 @@ namespace LC::Aggregator
 
 		void AddGeolocation (QString& result, const Item& item)
 		{
-			if (!item.Latitude_ && !item.Longitude_)
+			if (!static_cast<bool> (item.Latitude_) && !static_cast<bool> (item.Longitude_))
 				return;
 
 			const auto& latStr = QString::number (item.Latitude_);
