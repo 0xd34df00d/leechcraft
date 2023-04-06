@@ -107,10 +107,7 @@ namespace LC::Aggregator
 		auto result = R"(
 				<style>a { color: %2; } a.visited { color: %3 }</style>
 				<div style='background: %1;
-					margin-top: 0em;
-					margin-left: 0em;
-					margin-right: 0em;
-					margin-bottom: 0.5 em;
+					margin: 0em 0em 0.5em 0em;
 					padding: 0px;
 					border: 2px solid %4;
 					-webkit-border-radius: 1em;'
@@ -125,10 +122,7 @@ namespace LC::Aggregator
 				<div style='background: %1;
 					color: %2;
 					border: 1px solid #333333;
-					padding-top: 0.2em;
-					padding-bottom: 0.2em;
-					padding-left: 2em;
-					padding-right: 2em;
+					padding: 0.2em 2em;
 					-webkit-border-radius: 1em;'>
 				)"_qs;
 
