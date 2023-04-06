@@ -79,6 +79,20 @@ namespace LC::Aggregator
 					MakeLink (item.CommentsPageLink_, text);
 			result += "<br />"_qs;
 		}
+
+		void AddGeolocation (QString& result, const Item& item)
+		{
+			if (!item.Latitude_ && !item.Longitude_)
+				return;
+
+			const auto& latStr = QString::number (item.Latitude_);
+			const auto& lonStr = QString::number (item.Longitude_);
+
+			const auto& link = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=%1+%2"_qs
+					.arg (latStr, lonStr);
+			const auto& text = TrContext::tr ("Geoposition: ") + latStr + ' ' + lonStr + "<br />"_qs;
+			result += MakeLink (link, text);
+		}
 	}
 
 	QString ItemToHtml (const Item& item)
@@ -135,20 +149,7 @@ namespace LC::Aggregator
 		AddPublishedInfo (result, item);
 		AddCategories (result, item);
 		AddComments (result, item);
-
-		if (item.Latitude_ ||
-				item.Longitude_)
-		{
-			QString link = QString ("http://maps.google.com/maps"
-									"?f=q&source=s_q&hl=en&geocode=&q=%1+%2")
-					.arg (item.Latitude_)
-					.arg (item.Longitude_);
-			result += TrContext::tr ("Geoposition: <a href='%3'%4 title='Google Maps'>%1 %2</a><br />")
-					.arg (item.Latitude_)
-					.arg (item.Longitude_)
-					.arg (link)
-					.arg (linw ? " target='_blank'" : "");
-		}
+		AddGeolocation (result, item);
 
 		// Description
 		result += QString ("</div><div style='color: %1;"
