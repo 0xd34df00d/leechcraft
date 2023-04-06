@@ -88,7 +88,7 @@ namespace LC::Aggregator
 			const auto& latStr = QString::number (item.Latitude_);
 			const auto& lonStr = QString::number (item.Longitude_);
 
-			const auto& link = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=%1+%2"_qs
+			const auto& link = "https://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=%1+%2"_qs
 					.arg (latStr, lonStr);
 			const auto& text = TrContext::tr ("Geoposition: ") + latStr + ' ' + lonStr + "<br />"_qs;
 			result += MakeLink (link, text);
