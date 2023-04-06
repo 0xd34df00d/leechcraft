@@ -93,6 +93,28 @@ namespace LC::Aggregator
 			const auto& text = TrContext::tr ("Geoposition: ") + latStr + ' ' + lonStr + "<br />"_qs;
 			result += MakeLink (link, text);
 		}
+
+		void AddHeader (QString& result, const Item& item, const QString& textColor, const QString& bgColor)
+		{
+			result += R"(
+					<div style='background: %1;
+						color: %2;
+						padding: 0em 2em 0.5em 2em;
+						border: 2px none green;
+						margin: 0px;
+						-webkit-border-top-left-radius: 1em;
+						-webkit-border-top-right-radius: 1em;'>
+					)"_qs
+					.arg (bgColor, textColor);
+
+			AddItemLink (result, item);
+			AddPublishedInfo (result, item);
+			AddCategories (result, item);
+			AddComments (result, item);
+			AddGeolocation (result, item);
+
+			result += "</div>"_qs;
+		}
 	}
 
 	QString ItemToHtml (const Item& item)
@@ -126,30 +148,15 @@ namespace LC::Aggregator
 					-webkit-border-radius: 1em;'>
 				)"_qs;
 
-		result += R"(
-				<div style='background: %1;
-					color: %2;
-					padding-left: 2em;
-					padding-right: 2em;
-					padding-bottom: 0.5em;
-					border: 2px none green;
-					margin: 0px;
-					-webkit-border-top-left-radius: 1em;
-					-webkit-border-top-right-radius: 1em;'>
-				)"_qs
-				.arg (headerBg, headerText);
-
-		AddItemLink (result, item);
-		AddPublishedInfo (result, item);
-		AddCategories (result, item);
-		AddComments (result, item);
-		AddGeolocation (result, item);
+		AddHeader (result, item, headerText, headerBg);
 
 		// Description
-		result += QString ("</div><div style='color: %1;"
-						   "padding-top: 0.5em; "
-						   "padding-left: 1em; "
-						   "padding-right: 1em;'>")
+		result += R"(
+				<div style='color: %1;
+					padding-top: 0.5em;
+					padding-left: 1em;
+					padding-right: 1em;'>
+				)"_qs
 				.arg (GetHex (QPalette::Text));
 		result += item.Description_;
 
