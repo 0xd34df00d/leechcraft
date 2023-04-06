@@ -72,7 +72,7 @@ namespace LC::Aggregator
 				return;
 
 			const auto& text = item.NumComments_ >= 0 ?
-					TrContext::tr ("%n comment(s)", "", item.NumComments_) :
+					TrContext::tr ("%n comment(s)", nullptr, item.NumComments_) :
 					TrContext::tr ("View comments");
 			result += item.CommentsPageLink_.isEmpty () ?
 					text :
