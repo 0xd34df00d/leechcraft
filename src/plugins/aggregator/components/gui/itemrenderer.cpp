@@ -112,6 +112,36 @@ namespace LC::Aggregator
 					.arg (color.Bg_, color.Fg_);
 		}
 
+		void AddEmbedImages (QString& result, const QList<Enclosure>& enclosures, const TextColor& color)
+		{
+			const auto embedImages = XmlSettingsManager::Instance ()->property ("EmbedMediaRSSImages").toBool ();
+
+			const auto& divStart = GetInnerPadding (color);
+			for (const auto& enclosure : enclosures)
+			{
+				result += divStart;
+
+				if (embedImages && enclosure.Type_.startsWith ("image/"_qs))
+					result += "<img src='%1' /><br/>"_qs
+							.arg (enclosure.URL_);
+
+				if (enclosure.Length_ > 0)
+					result += TrContext::tr ("File of type %1, size %2:")
+							.arg (enclosure.Type_, Util::MakePrettySize (enclosure.Length_));
+				else
+					result += TrContext::tr ("File of type %1:")
+							.arg (enclosure.Type_);
+				result += "<br />"_qs;
+
+				result += MakeLink (enclosure.URL_, QFileInfo { QUrl { enclosure.URL_ }.path () }.fileName ());
+				if (!enclosure.Lang_.isEmpty ())
+					result += "<br />"_qs +
+							TrContext::tr ("Specified language: %1").arg (enclosure.Lang_);
+
+				result += "</div>"_qs;
+			}
+		}
+
 		void AddHeader (QString& result, const Item& item, const TextColor& color)
 		{
 			result += R"(
@@ -176,33 +206,7 @@ namespace LC::Aggregator
 				.arg (GetHex (QPalette::Text));
 		result += item.Description_;
 
-		const auto embedImages = XmlSettingsManager::Instance ()->
-				property ("EmbedMediaRSSImages").toBool ();
-		for (const auto& enclosure : item.Enclosures_)
-		{
-			result += inpad.arg (headerBg)
-					.arg (headerText);
-
-			if (embedImages && enclosure.Type_.startsWith ("image/"))
-				result += QString ("<img src='%1' /><br/>")
-						.arg (enclosure.URL_);
-
-			if (enclosure.Length_ > 0)
-				result += TrContext::tr ("File of type %1, size %2:<br />")
-						.arg (enclosure.Type_)
-						.arg (Util::MakePrettySize (enclosure.Length_));
-			else
-				result += TrContext::tr ("File of type %1 and unknown length:<br />")
-						.arg (enclosure.Type_);
-
-			result += QString ("<a href='%1'>%2</a>")
-					.arg (enclosure.URL_)
-					.arg (QFileInfo (QUrl (enclosure.URL_).path ()).fileName ());
-			if (!enclosure.Lang_.isEmpty ())
-				result += TrContext::tr ("<br />Specified language: %1")
-						.arg (enclosure.Lang_);
-			result += "</div>";
-		}
+		AddEmbedImages (result, item.Enclosures_, { .Fg_ = headerText, .Bg_ = headerBg });
 
 		for (QList<MRSSEntry>::const_iterator entry = item.MRSSEntries_.begin (),
 				endEntry = item.MRSSEntries_.end (); entry != endEntry; ++entry)
