@@ -94,7 +94,13 @@ namespace LC::Aggregator
 			result += MakeLink (link, text);
 		}
 
-		void AddHeader (QString& result, const Item& item, const QString& textColor, const QString& bgColor)
+		struct TextColor
+		{
+			QString Fg_;
+			QString Bg_;
+		};
+
+		void AddHeader (QString& result, const Item& item, const TextColor& color)
 		{
 			result += R"(
 					<div style='background: %1;
@@ -105,7 +111,7 @@ namespace LC::Aggregator
 						-webkit-border-top-left-radius: 1em;
 						-webkit-border-top-right-radius: 1em;'>
 					)"_qs
-					.arg (bgColor, textColor);
+					.arg (color.Bg_, color.Fg_);
 
 			AddItemLink (result, item);
 			AddPublishedInfo (result, item);
@@ -148,7 +154,7 @@ namespace LC::Aggregator
 					-webkit-border-radius: 1em;'>
 				)"_qs;
 
-		AddHeader (result, item, headerText, headerBg);
+		AddHeader (result, item, { .Fg_ = headerText, .Bg_ = headerBg });
 
 		// Description
 		result += R"(
