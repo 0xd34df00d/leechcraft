@@ -100,6 +100,18 @@ namespace LC::Aggregator
 			QString Bg_;
 		};
 
+		QString GetInnerPadding (const TextColor& color)
+		{
+			return R"(
+					<div style='background: %1;
+						color: %2;
+						border: 1px solid #333333;
+						padding: 0.2em 2em;
+						-webkit-border-radius: 1em;'>
+					)"_qs
+					.arg (color.Bg_, color.Fg_);
+		}
+
 		void AddHeader (QString& result, const Item& item, const TextColor& color)
 		{
 			result += R"(
