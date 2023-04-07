@@ -186,14 +186,6 @@ namespace LC::Aggregator
 						GetHex (QPalette::LinkVisited),
 						borderColor);
 
-		const auto& inpad = R"(
-				<div style='background: %1;
-					color: %2;
-					border: 1px solid #333333;
-					padding: 0.2em 2em;
-					-webkit-border-radius: 1em;'>
-				)"_qs;
-
 		AddHeader (result, item, { .Fg_ = headerText, .Bg_ = headerBg });
 
 		// Description
@@ -211,8 +203,7 @@ namespace LC::Aggregator
 		for (QList<MRSSEntry>::const_iterator entry = item.MRSSEntries_.begin (),
 				endEntry = item.MRSSEntries_.end (); entry != endEntry; ++entry)
 		{
-			result += inpad.arg (headerBg)
-					.arg (headerText);
+			result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = headerBg });
 
 			QString url = entry->URL_;
 
@@ -248,8 +239,7 @@ namespace LC::Aggregator
 						.arg (pl.Type_);
 			if (peers.size ())
 			{
-				result += inpad.arg (alternateBg)
-						.arg (headerText);
+				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
 				result += QString ("<ul>%1</ul>")
 						.arg (peers);
 				result += "</div>";
@@ -357,8 +347,7 @@ namespace LC::Aggregator
 			if (scenes.size ())
 			{
 				result += TrContext::tr ("<strong>Scenes:</strong>");
-				result += inpad.arg (alternateBg)
-						.arg (headerText);
+				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
 				result += QString ("<ul>%1</ul>")
 						.arg (scenes);
 				result += "</div>";
@@ -415,8 +404,7 @@ namespace LC::Aggregator
 			if (!tech.isEmpty ())
 			{
 				result += TrContext::tr ("<strong>Technical information:</strong>");
-				result += inpad.arg (alternateBg)
-						.arg (headerText);
+				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
 				result += QString ("<ul>%1</ul>")
 						.arg (tech);
 				result += "</div>";
@@ -438,8 +426,7 @@ namespace LC::Aggregator
 			{
 				result += QString ("<strong>%1:</strong>")
 						.arg (type);
-				result += inpad.arg (alternateBg)
-						.arg (headerText);
+				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
 				result += QString ("<ul>%1</ul>")
 						.arg (comments [type]);
 				result += "</div>";
@@ -469,8 +456,7 @@ namespace LC::Aggregator
 			if (!credits.isEmpty ())
 			{
 				result += TrContext::tr ("<strong>Credits:</strong>");
-				result += inpad.arg (alternateBg)
-						.arg (headerText);
+				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
 				result += QString ("<ul>%1</ul>")
 						.arg (credits);
 				result += "</div>";
