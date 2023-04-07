@@ -130,8 +130,6 @@ namespace LC::Aggregator
 		const auto& headerText = GetHex (QPalette::WindowText);
 		const auto& alternateBg = GetHex (QPalette::AlternateBase);
 
-		const bool linw = XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ();
-
 		auto result = R"(
 				<style>a { color: %2; } a.visited { color: %3 }</style>
 				<div style='background: %1;
