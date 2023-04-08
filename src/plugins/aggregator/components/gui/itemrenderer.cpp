@@ -245,6 +245,19 @@ namespace LC::Aggregator
 			return nodes;
 		}
 
+		Nodes MakeMRSSField (const QString& text, const QString& contents)
+		{
+			if (contents.isEmpty ())
+				return {};
+
+			return
+			{
+				Tag::WithText ("strong"_qs, text + ':'),
+				' ' + contents,
+				Tags::Br
+			};
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -276,7 +289,9 @@ namespace LC::Aggregator
 			return MakeMRSSHeader (entry) +
 					MakeMRSSPeerLinks (entry.PeerLinks_, color) +
 					MakeMRSSDescription (entry) +
-					MakeMRSSThumbnails (entry.Thumbnails_);
+					MakeMRSSThumbnails (entry.Thumbnails_) +
+					MakeMRSSField (Writer::tr ("Keywords"), entry.Keywords_) +
+					MakeMRSSField (Writer::tr ("Language"), entry.Lang_);
 		}
 	}
 
@@ -323,14 +338,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			if (!entry.Keywords_.isEmpty ())
-				result += Writer::tr ("<strong>Keywords:</strong> <em>%1</em><br />")
-						.arg (entry.Keywords_);
-
-			if (!entry.Lang_.isEmpty ())
-				result += Writer::tr ("<strong>Language:</strong> %1<br />")
-						.arg (entry.Lang_);
-
 			if (entry.Expression_ == "sample")
 				result += Writer::tr ("Sample");
 			else if (entry.Expression_ == "nonstop")
