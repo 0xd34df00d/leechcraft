@@ -258,6 +258,19 @@ namespace LC::Aggregator
 			};
 		}
 
+		Nodes MakeMRSSExpression (const QString& expression)
+		{
+			QString label;
+			if (expression == "sample")
+				label = Writer::tr ("Sample");
+			else if (expression == "nonstop")
+				label = Writer::tr ("Continuous stream");
+			else
+				label = Writer::tr ("Full version");
+
+			return { std::move (label), Tags::Br };
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -291,7 +304,8 @@ namespace LC::Aggregator
 					MakeMRSSDescription (entry) +
 					MakeMRSSThumbnails (entry.Thumbnails_) +
 					MakeMRSSField (Writer::tr ("Keywords"), entry.Keywords_) +
-					MakeMRSSField (Writer::tr ("Language"), entry.Lang_);
+					MakeMRSSField (Writer::tr ("Language"), entry.Lang_) +
+					MakeMRSSExpression (entry.Expression_);
 		}
 	}
 
@@ -338,14 +352,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			if (entry.Expression_ == "sample")
-				result += Writer::tr ("Sample");
-			else if (entry.Expression_ == "nonstop")
-				result += Writer::tr ("Continuous stream");
-			else
-				result += Writer::tr ("Full version");
-			result += "<br />";
-
 			QString scenes;
 			for (const auto& sc : entry.Scenes_)
 			{
