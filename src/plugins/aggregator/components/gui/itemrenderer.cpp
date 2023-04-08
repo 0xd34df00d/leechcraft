@@ -223,6 +223,28 @@ namespace LC::Aggregator
 			return { entry.Description_, Tags::Br };
 		}
 
+		Nodes MakeMRSSThumbnails (const QList<MRSSThumbnail>& thumbs)
+		{
+			if (thumbs.isEmpty ())
+				return {};
+
+			constexpr auto nodesPerThumb = 2;
+			Nodes nodes { thumbs.size () * nodesPerThumb + 1 };
+			for (const auto& thumb : thumbs)
+			{
+				TagAttrs attrs { { "src"_qs, thumb.URL_ } };
+				if (thumb.Width_)
+					attrs.push_back ({ "width"_qs, QString::number (thumb.Width_) });
+				if (thumb.Height_)
+					attrs.push_back ({ "height"_qs, QString::number (thumb.Height_) });
+				if (!thumb.Time_.isEmpty ())
+					attrs.push_back ({ "alt"_qs, Writer::tr ("Thumbnail at %1").arg (thumb.Time_) });
+				nodes.push_back (Tag { .Name_ = "img", .Attrs_ = std::move (attrs) });
+			}
+			nodes.push_back (Tags::Br);
+			return nodes;
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -253,7 +275,8 @@ namespace LC::Aggregator
 		{
 			return MakeMRSSHeader (entry) +
 					MakeMRSSPeerLinks (entry.PeerLinks_, color) +
-					MakeMRSSDescription (entry);
+					MakeMRSSDescription (entry) +
+					MakeMRSSThumbnails (entry.Thumbnails_);
 		}
 	}
 
@@ -300,24 +323,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			for (const auto& thumb : entry.Thumbnails_)
-			{
-				if (!thumb.Time_.isEmpty ())
-					result += Writer::tr ("<hr />Thumbnail at %1:<br />")
-							.arg (thumb.Time_);
-				result += QString ("<img src='%1' ")
-						.arg (thumb.URL_);
-				if (thumb.Width_)
-					result += QString ("width='%1' ")
-							.arg (thumb.Width_);
-				if (thumb.Height_)
-					result += QString ("height='%1' ")
-							.arg (thumb.Height_);
-				result += "/>";
-			}
-
-			result += "<hr />";
-
 			if (!entry.Keywords_.isEmpty ())
 				result += Writer::tr ("<strong>Keywords:</strong> <em>%1</em><br />")
 						.arg (entry.Keywords_);
