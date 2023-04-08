@@ -171,6 +171,22 @@ namespace LC::Aggregator
 			}
 		}
 
+		void AddMRSSPeerLinks (QString& result, const QList<MRSSPeerLink>& links, const TextColor& color)
+		{
+			if (links.isEmpty ())
+				return;
+
+			QStringList linksDescrs;
+			for (const auto& link : links)
+				linksDescrs << MakeLink (link.Link_, link.Type_);
+
+			result += GetInnerPadding (color) +
+					TrContext::tr ("Also available as:") +
+					"<ul><li>"_qs +
+					linksDescrs.join ("</li><li>"_qs) +
+					"</li></ul></div>"_qs;
+		}
+
 		void AddHeader (QString& result, const Item& item, const TextColor& color)
 		{
 			result += R"(
@@ -234,19 +250,7 @@ namespace LC::Aggregator
 			result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = headerBg });
 
 			AddMRSSHeader (result, entry);
-
-			QString peers;
-			for (const auto& pl : entry.PeerLinks_)
-				peers += QString ("<li>Also available in <a href='%1'>P2P (%2)</a></li>")
-						.arg (pl.Link_)
-						.arg (pl.Type_);
-			if (peers.size ())
-			{
-				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
-				result += QString ("<ul>%1</ul>")
-						.arg (peers);
-				result += "</div>";
-			}
+			AddMRSSPeerLinks (result, entry.PeerLinks_, { .Fg_ = headerText, .Bg_ = alternateBg });
 
 			if (!entry.Description_.isEmpty ())
 				result += QString ("%1<br />")
