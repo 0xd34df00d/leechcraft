@@ -142,6 +142,35 @@ namespace LC::Aggregator
 			}
 		}
 
+		QString GetMRSSMedium (const QString& medium)
+		{
+			if (medium == "image"_ql)
+				return TrContext::tr ("Image");
+			if (medium == "audio"_ql)
+				return TrContext::tr ("Audio");
+			if (medium == "video"_ql)
+				return TrContext::tr ("Video");
+			if (medium == "document"_ql)
+				return TrContext::tr ("Document");
+			if (medium == "executable"_ql)
+				return TrContext::tr ("Executable");
+
+			return medium;
+		}
+
+		void AddMRSSHeader (QString& result, const MRSSEntry& entry)
+		{
+			result += GetMRSSMedium (entry.Medium_);
+			result += MakeLink (entry.URL_, entry.Title_.isEmpty () ? entry.URL_ : entry.Title_);
+			result += "<hr />"_qs;
+
+			if (entry.Size_ > 0)
+			{
+				result += Util::MakePrettySize (entry.Size_);
+				result += "<br />"_qs;
+			}
+		}
+
 		void AddHeader (QString& result, const Item& item, const TextColor& color)
 		{
 			result += R"(
@@ -204,32 +233,7 @@ namespace LC::Aggregator
 		{
 			result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = headerBg });
 
-			QString url = entry.URL_;
-
-			if (entry.Medium_ == "image")
-				result += TrContext::tr ("Image") + ' ';
-			else if (entry.Medium_ == "audio")
-				result += TrContext::tr ("Audio") + ' ';
-			else if (entry.Medium_ == "video")
-				result += TrContext::tr ("Video") + ' ';
-			else if (entry.Medium_ == "document")
-				result += TrContext::tr ("Document") + ' ';
-			else if (entry.Medium_ == "executable")
-				result += TrContext::tr ("Executable") + ' ';
-
-			if (entry.Title_.isEmpty ())
-				result += QString ("<a href='%1' target='_blank'>%1</a><hr />")
-						.arg (url);
-			else
-				result += QString ("<a href='%1' target='_blank'>%2</a><hr />")
-						.arg (url)
-						.arg (entry.Title_);
-
-			if (entry.Size_ > 0)
-			{
-				result += Util::MakePrettySize (entry.Size_);
-				result += "<br />";
-			}
+			AddMRSSHeader (result, entry);
 
 			QString peers;
 			for (const auto& pl : entry.PeerLinks_)
