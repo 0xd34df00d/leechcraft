@@ -200,40 +200,39 @@ namespace LC::Aggregator
 
 		AddEmbedImages (result, item.Enclosures_, { .Fg_ = headerText, .Bg_ = headerBg });
 
-		for (QList<MRSSEntry>::const_iterator entry = item.MRSSEntries_.begin (),
-				endEntry = item.MRSSEntries_.end (); entry != endEntry; ++entry)
+		for (const auto& entry : item.MRSSEntries_)
 		{
 			result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = headerBg });
 
-			QString url = entry->URL_;
+			QString url = entry.URL_;
 
-			if (entry->Medium_ == "image")
+			if (entry.Medium_ == "image")
 				result += TrContext::tr ("Image") + ' ';
-			else if (entry->Medium_ == "audio")
+			else if (entry.Medium_ == "audio")
 				result += TrContext::tr ("Audio") + ' ';
-			else if (entry->Medium_ == "video")
+			else if (entry.Medium_ == "video")
 				result += TrContext::tr ("Video") + ' ';
-			else if (entry->Medium_ == "document")
+			else if (entry.Medium_ == "document")
 				result += TrContext::tr ("Document") + ' ';
-			else if (entry->Medium_ == "executable")
+			else if (entry.Medium_ == "executable")
 				result += TrContext::tr ("Executable") + ' ';
 
-			if (entry->Title_.isEmpty ())
+			if (entry.Title_.isEmpty ())
 				result += QString ("<a href='%1' target='_blank'>%1</a><hr />")
 						.arg (url);
 			else
 				result += QString ("<a href='%1' target='_blank'>%2</a><hr />")
 						.arg (url)
-						.arg (entry->Title_);
+						.arg (entry.Title_);
 
-			if (entry->Size_ > 0)
+			if (entry.Size_ > 0)
 			{
-				result += Util::MakePrettySize (entry->Size_);
+				result += Util::MakePrettySize (entry.Size_);
 				result += "<br />";
 			}
 
 			QString peers;
-			for (const auto& pl : entry->PeerLinks_)
+			for (const auto& pl : entry.PeerLinks_)
 				peers += QString ("<li>Also available in <a href='%1'>P2P (%2)</a></li>")
 						.arg (pl.Link_)
 						.arg (pl.Type_);
@@ -245,15 +244,15 @@ namespace LC::Aggregator
 				result += "</div>";
 			}
 
-			if (!entry->Description_.isEmpty ())
+			if (!entry.Description_.isEmpty ())
 				result += QString ("%1<br />")
-						.arg (entry->Description_);
+						.arg (entry.Description_);
 
 			QList<int> sizes;
 			int num = 0;
-			for (int i = 0; i < entry->Thumbnails_.size (); ++i)
+			for (int i = 0; i < entry.Thumbnails_.size (); ++i)
 			{
-				int width = entry->Thumbnails_.at (i).Width_;
+				int width = entry.Thumbnails_.at (i).Width_;
 				if (!width)
 					break;
 
@@ -262,8 +261,8 @@ namespace LC::Aggregator
 				else
 				{
 					bool broke = false;;
-					for (int j = i + 1; j < entry->Thumbnails_.size (); ++j)
-						if (entry->Thumbnails_.at (j).Width_ == sizes.at (j % sizes.size ()))
+					for (int j = i + 1; j < entry.Thumbnails_.size (); ++j)
+						if (entry.Thumbnails_.at (j).Width_ == sizes.at (j % sizes.size ()))
 						{
 							broke = true;
 							break;
@@ -276,11 +275,11 @@ namespace LC::Aggregator
 				}
 			}
 
-			if (!num || num == entry->Thumbnails_.size ())
+			if (!num || num == entry.Thumbnails_.size ())
 				num = 3;
 
 			int cur = 1;
-			for (const auto& thumb : entry->Thumbnails_)
+			for (const auto& thumb : entry.Thumbnails_)
 			{
 				if (!thumb.Time_.isEmpty ())
 					result += TrContext::tr ("<hr />Thumbnail at %1:<br />")
@@ -306,24 +305,24 @@ namespace LC::Aggregator
 
 			result += "<hr />";
 
-			if (!entry->Keywords_.isEmpty ())
+			if (!entry.Keywords_.isEmpty ())
 				result += TrContext::tr ("<strong>Keywords:</strong> <em>%1</em><br />")
-						.arg (entry->Keywords_);
+						.arg (entry.Keywords_);
 
-			if (!entry->Lang_.isEmpty ())
+			if (!entry.Lang_.isEmpty ())
 				result += TrContext::tr ("<strong>Language:</strong> %1<br />")
-						.arg (entry->Lang_);
+						.arg (entry.Lang_);
 
-			if (entry->Expression_ == "sample")
+			if (entry.Expression_ == "sample")
 				result += TrContext::tr ("Sample");
-			else if (entry->Expression_ == "nonstop")
+			else if (entry.Expression_ == "nonstop")
 				result += TrContext::tr ("Continuous stream");
 			else
 				result += TrContext::tr ("Full version");
 			result += "<br />";
 
 			QString scenes;
-			for (const auto& sc : entry->Scenes_)
+			for (const auto& sc : entry.Scenes_)
 			{
 				QString current;
 				if (!sc.Title_.isEmpty ())
@@ -353,53 +352,53 @@ namespace LC::Aggregator
 				result += "</div>";
 			}
 
-			if (entry->Views_)
+			if (entry.Views_)
 				result += TrContext::tr ("<strong>Views:</strong> %1")
-						.arg (entry->Views_);
-			if (entry->Favs_)
+						.arg (entry.Views_);
+			if (entry.Favs_)
 				result += TrContext::tr ("<strong>Added to favorites:</strong> %n time(s)",
-						"", entry->Favs_);
-			if (entry->RatingAverage_)
+						"", entry.Favs_);
+			if (entry.RatingAverage_)
 				result += TrContext::tr ("<strong>Average rating:</strong> %1")
-						.arg (entry->RatingAverage_);
-			if (entry->RatingCount_)
+						.arg (entry.RatingAverage_);
+			if (entry.RatingCount_)
 				result += TrContext::tr ("<strong>Number of marks:</strong> %1")
-						.arg (entry->RatingCount_);
-			if (entry->RatingMin_)
+						.arg (entry.RatingCount_);
+			if (entry.RatingMin_)
 				result += TrContext::tr ("<strong>Minimal rating:</strong> %1")
-						.arg (entry->RatingMin_);
-			if (entry->RatingMax_)
+						.arg (entry.RatingMin_);
+			if (entry.RatingMax_)
 				result += TrContext::tr ("<strong>Maximal rating:</strong> %1")
-						.arg (entry->RatingMax_);
+						.arg (entry.RatingMax_);
 
-			if (!entry->Tags_.isEmpty ())
+			if (!entry.Tags_.isEmpty ())
 				result += TrContext::tr ("<strong>User tags:</strong> %1")
-						.arg (entry->Tags_);
+						.arg (entry.Tags_);
 
 			QString tech;
-			if (entry->Duration_)
+			if (entry.Duration_)
 				tech += TrContext::tr ("<li><strong>Duration:</strong> %1</li>")
-						.arg (entry->Channels_);
-			if (entry->Channels_)
+						.arg (entry.Channels_);
+			if (entry.Channels_)
 				tech += TrContext::tr ("<li><strong>Channels:</strong> %1</li>")
-						.arg (entry->Channels_);
-			if (entry->Width_ &&
-					entry->Height_)
+						.arg (entry.Channels_);
+			if (entry.Width_ &&
+					entry.Height_)
 				tech += TrContext::tr ("<li><strong>Size:</strong> %1x%2</li>")
-						.arg (entry->Width_)
-						.arg (entry->Height_);
-			if (entry->Bitrate_)
+						.arg (entry.Width_)
+						.arg (entry.Height_);
+			if (entry.Bitrate_)
 				tech += TrContext::tr ("<li><strong>Bitrate:</strong> %1 kbps</li>")
-						.arg (entry->Bitrate_);
-			if (entry->Framerate_)
+						.arg (entry.Bitrate_);
+			if (entry.Framerate_)
 				tech += TrContext::tr ("<li><strong>Framerate:</strong> %1</li>")
-						.arg (entry->Framerate_);
-			if (entry->SamplingRate_)
+						.arg (entry.Framerate_);
+			if (entry.SamplingRate_)
 				tech += TrContext::tr ("<li><strong>Sampling rate:</strong> %1</li>")
-						.arg (entry->SamplingRate_);
-			if (!entry->Type_.isEmpty ())
+						.arg (entry.SamplingRate_);
+			if (!entry.Type_.isEmpty ())
 				tech += TrContext::tr ("<li><strong>MIME type:</strong> %1</li>")
-						.arg (entry->Type_);
+						.arg (entry.Type_);
 
 			if (!tech.isEmpty ())
 			{
@@ -410,14 +409,14 @@ namespace LC::Aggregator
 				result += "</div>";
 			}
 
-			if (!entry->Rating_.isEmpty () &&
-					!entry->RatingScheme_.isEmpty ())
+			if (!entry.Rating_.isEmpty () &&
+					!entry.RatingScheme_.isEmpty ())
 				result += TrContext::tr ("<strong>Rating:</strong> %1 (according to %2 scheme)<br />")
-						.arg (entry->Rating_)
-						.arg (entry->RatingScheme_.mid (4));
+						.arg (entry.Rating_)
+						.arg (entry.RatingScheme_.mid (4));
 
 			QMap<QString, QString> comments;
-			for (const auto& cm : entry->Comments_)
+			for (const auto& cm : entry.Comments_)
 				comments [cm.Type_] += QString ("<li>%1</li>")
 						.arg (cm.Comment_);
 
@@ -432,22 +431,22 @@ namespace LC::Aggregator
 				result += "</div>";
 			}
 
-			if (!entry->CopyrightURL_.isEmpty ())
+			if (!entry.CopyrightURL_.isEmpty ())
 			{
-				if (!entry->CopyrightText_.isEmpty ())
+				if (!entry.CopyrightText_.isEmpty ())
 					result += TrContext::tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%2</a><br />")
-							.arg (entry->CopyrightURL_)
-							.arg (entry->CopyrightText_);
+							.arg (entry.CopyrightURL_)
+							.arg (entry.CopyrightText_);
 				else
 					result += TrContext::tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%1</a><br />")
-							.arg (entry->CopyrightURL_);
+							.arg (entry.CopyrightURL_);
 			}
-			else if (!entry->CopyrightText_.isEmpty ())
+			else if (!entry.CopyrightText_.isEmpty ())
 				result += TrContext::tr ("<strong>Copyright:</strong> %1<br />")
-						.arg (entry->CopyrightText_);
+						.arg (entry.CopyrightText_);
 
 			QString credits;
-			for (const auto& cr : entry->Credits_)
+			for (const auto& cr : entry.Credits_)
 				if (!cr.Role_.isEmpty ())
 					credits += QString ("<li>%1: %2</li>")
 							.arg (cr.Role_)
