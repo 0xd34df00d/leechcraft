@@ -198,6 +198,12 @@ namespace LC::Aggregator
 				nodes.push_back (Tags::Br);
 			}
 
+			if (!entry.Tags_.isEmpty ())
+			{
+				nodes.push_back (Writer::tr ("Tags") + ' ' + entry.Tags_);
+				nodes.push_back (Tags::Br);
+			}
+
 			return nodes;
 		}
 
