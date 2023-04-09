@@ -11,7 +11,6 @@
 #include <QFileInfo>
 #include <QPalette>
 #include <QUrl>
-#include <QXmlStreamWriter>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
