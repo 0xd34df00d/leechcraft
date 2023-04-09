@@ -187,6 +187,7 @@ namespace LC::Aggregator
 			Nodes nodes
 			{
 				GetMRSSMedium (entry.Medium_),
+				" "_qs,
 				MakeLink (entry.URL_, entry.Title_.isEmpty () ? entry.URL_ : entry.Title_),
 				Tags::Br,
 			};
