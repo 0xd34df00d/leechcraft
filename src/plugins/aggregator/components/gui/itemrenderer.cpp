@@ -270,6 +270,52 @@ namespace LC::Aggregator
 			return { std::move (label), Tags::Br };
 		}
 
+		Nodes MakeMRSSScene (const MRSSScene& scene)
+		{
+			const QVector<QPair<QString, QString>> rows
+			{
+				{ Writer::tr ("Title"), scene.Title_ },
+				{ Writer::tr ("Start time"), scene.StartTime_ },
+				{ Writer::tr ("End time"), scene.EndTime_ },
+			};
+
+			Nodes nodes;
+			nodes.reserve ((rows.size () + 1) * 2);
+
+			for (const auto& [title, contents] : rows)
+			{
+				if (contents.isEmpty ())
+					continue;
+
+				nodes.push_back (title + ": "_qs + contents);
+				nodes.push_back (Tags::Br);
+			}
+
+			if (!scene.Description_.isEmpty ())
+			{
+				nodes.push_back (scene.Description_);
+				nodes.push_back (Tags::Br);
+			}
+
+			return nodes;
+		}
+
+		Nodes MakeMRSSScenes (const QList<MRSSScene>& scenes, const TextColor& color)
+		{
+			if (scenes.isEmpty ())
+				return {};
+
+			Nodes nodes;
+			for (const auto& scene : scenes)
+				nodes.push_back (Tag { .Name_ = "li"_qs, .Children_ = MakeMRSSScene (scene) });
+
+			return
+			{
+				Tag::WithText ("strong"_qs, Writer::tr ("Scenes:")),
+				WithInnerPadding (color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes)} }),
+			};
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -304,7 +350,8 @@ namespace LC::Aggregator
 					MakeMRSSThumbnails (entry.Thumbnails_) +
 					MakeMRSSField (Writer::tr ("Keywords"), entry.Keywords_) +
 					MakeMRSSField (Writer::tr ("Language"), entry.Lang_) +
-					MakeMRSSExpression (entry.Expression_);
+					MakeMRSSExpression (entry.Expression_) +
+					MakeMRSSScenes (entry.Scenes_, color);
 		}
 	}
 
@@ -351,37 +398,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			QString scenes;
-			for (const auto& sc : entry.Scenes_)
-			{
-				QString current;
-				if (!sc.Title_.isEmpty ())
-					current += Writer::tr ("Title: %1<br />")
-							.arg (sc.Title_);
-				if (!sc.StartTime_.isEmpty ())
-					current += Writer::tr ("Start time: %1<br />")
-							.arg (sc.StartTime_);
-				if (!sc.EndTime_.isEmpty ())
-					current += Writer::tr ("End time: %1<br />")
-							.arg (sc.EndTime_);
-				if (!sc.Description_.isEmpty ())
-					current += QString ("%1<br />")
-							.arg (sc.Description_);
-
-				if (!current.isEmpty ())
-					scenes += QString ("<li>%1</li>")
-							.arg (current);
-			}
-
-			if (scenes.size ())
-			{
-				result += Writer::tr ("<strong>Scenes:</strong>");
-				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
-				result += QString ("<ul>%1</ul>")
-						.arg (scenes);
-				result += "</div>";
-			}
-
 			if (entry.Views_)
 				result += Writer::tr ("<strong>Views:</strong> %1")
 						.arg (entry.Views_);
