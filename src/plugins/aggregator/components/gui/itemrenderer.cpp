@@ -353,6 +353,49 @@ namespace LC::Aggregator
 			};
 		}
 
+		template<typename T>
+		requires std::integral<T> || std::floating_point<T>
+		QPair<QString, QString> IntRow (const QString& name, T value)
+		{
+			return { name, value ? QString::number (value) : QString {} };
+		}
+
+		Nodes MakeMRSSTechInfo (const MRSSEntry& entry, const TextColor& color)
+		{
+			QString size;
+			if (entry.Width_ && entry.Height_)
+				size = QString::number (entry.Width_) + 'x' + QString::number (entry.Height_);
+			const QVector<QPair<QString, QString>> rows
+			{
+				IntRow (Writer::tr ("Duration"), entry.Duration_),
+				IntRow (Writer::tr ("Channels"), entry.Channels_),
+				{ Writer::tr ("Size"), size },
+				{ Writer::tr ("Bitrate"), entry.Bitrate_ ? Writer::tr ("%1 kbps").arg (entry.Bitrate_) : QString {} },
+				IntRow (Writer::tr ("Framerate"), entry.Framerate_),
+				IntRow (Writer::tr ("Sampling rate"), entry.SamplingRate_),
+				{ Writer::tr ("MIME type"), entry.Type_ },
+			};
+
+			Nodes nodes;
+			nodes.reserve (rows.size ());
+			for (const auto& [label, value] : rows)
+			{
+				if (value.isEmpty ())
+					continue;
+
+				nodes.push_back (Tag { .Name_ = "li"_qs, .Children_ = { label + ": "_qs + value } });
+			}
+
+			if (nodes.isEmpty ())
+				return {};
+
+			return
+			{
+				Tag::WithText ("strong"_qs, Writer::tr ("Technical information:")),
+				WithInnerPadding (color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes) } }),
+			};
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -389,7 +432,8 @@ namespace LC::Aggregator
 					MakeMRSSField (Writer::tr ("Language"), entry.Lang_) +
 					MakeMRSSExpression (entry.Expression_) +
 					MakeMRSSScenes (entry.Scenes_, color) +
-					MakeMRSSStats (entry, color);
+					MakeMRSSStats (entry, color) +
+					MakeMRSSTechInfo (entry, color);
 		}
 	}
 
@@ -436,40 +480,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			QString tech;
-			if (entry.Duration_)
-				tech += Writer::tr ("<li><strong>Duration:</strong> %1</li>")
-						.arg (entry.Channels_);
-			if (entry.Channels_)
-				tech += Writer::tr ("<li><strong>Channels:</strong> %1</li>")
-						.arg (entry.Channels_);
-			if (entry.Width_ &&
-					entry.Height_)
-				tech += Writer::tr ("<li><strong>Size:</strong> %1x%2</li>")
-						.arg (entry.Width_)
-						.arg (entry.Height_);
-			if (entry.Bitrate_)
-				tech += Writer::tr ("<li><strong>Bitrate:</strong> %1 kbps</li>")
-						.arg (entry.Bitrate_);
-			if (entry.Framerate_)
-				tech += Writer::tr ("<li><strong>Framerate:</strong> %1</li>")
-						.arg (entry.Framerate_);
-			if (entry.SamplingRate_)
-				tech += Writer::tr ("<li><strong>Sampling rate:</strong> %1</li>")
-						.arg (entry.SamplingRate_);
-			if (!entry.Type_.isEmpty ())
-				tech += Writer::tr ("<li><strong>MIME type:</strong> %1</li>")
-						.arg (entry.Type_);
-
-			if (!tech.isEmpty ())
-			{
-				result += Writer::tr ("<strong>Technical information:</strong>");
-				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
-				result += QString ("<ul>%1</ul>")
-						.arg (tech);
-				result += "</div>";
-			}
-
 			if (!entry.Rating_.isEmpty () &&
 					!entry.RatingScheme_.isEmpty ())
 				result += Writer::tr ("<strong>Rating:</strong> %1 (according to %2 scheme)<br />")
