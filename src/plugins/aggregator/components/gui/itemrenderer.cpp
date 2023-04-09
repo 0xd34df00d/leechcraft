@@ -323,6 +323,36 @@ namespace LC::Aggregator
 			};
 		}
 
+		Nodes MakeMRSSStats (const MRSSEntry& entry, const TextColor& color)
+		{
+			const QVector<QPair<QString, int>> rows
+			{
+				{ Writer::tr ("Views"), entry.Views_ },
+				{ Writer::tr ("Bookmarks"), entry.Favs_ },
+				{ Writer::tr ("Averate rating"), entry.RatingAverage_ },
+				{ Writer::tr ("Votes"), entry.RatingCount_ },
+				{ Writer::tr ("Minimal rating"), entry.RatingMin_ },
+				{ Writer::tr ("Maximal rating"), entry.RatingMax_ },
+			};
+
+			Nodes nodes;
+			nodes.reserve (rows.size () * 2);
+			for (const auto& [label, value] : rows)
+			{
+				if (!value)
+					continue;
+
+				nodes.push_back (label + ": "_qs + QString::number (value));
+				nodes.push_back (Tags::Br);
+			}
+
+			return
+			{
+				Tag::WithText ("strong"_qs, Writer::tr ("Statistics:")),
+				WithInnerPadding (color, std::move (nodes)),
+			};
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -358,7 +388,8 @@ namespace LC::Aggregator
 					MakeMRSSField (Writer::tr ("Keywords"), entry.Keywords_) +
 					MakeMRSSField (Writer::tr ("Language"), entry.Lang_) +
 					MakeMRSSExpression (entry.Expression_) +
-					MakeMRSSScenes (entry.Scenes_, color);
+					MakeMRSSScenes (entry.Scenes_, color) +
+					MakeMRSSStats (entry, color);
 		}
 	}
 
@@ -405,29 +436,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			if (entry.Views_)
-				result += Writer::tr ("<strong>Views:</strong> %1")
-						.arg (entry.Views_);
-			if (entry.Favs_)
-				result += Writer::tr ("<strong>Added to favorites:</strong> %n time(s)",
-						"", entry.Favs_);
-			if (entry.RatingAverage_)
-				result += Writer::tr ("<strong>Average rating:</strong> %1")
-						.arg (entry.RatingAverage_);
-			if (entry.RatingCount_)
-				result += Writer::tr ("<strong>Number of marks:</strong> %1")
-						.arg (entry.RatingCount_);
-			if (entry.RatingMin_)
-				result += Writer::tr ("<strong>Minimal rating:</strong> %1")
-						.arg (entry.RatingMin_);
-			if (entry.RatingMax_)
-				result += Writer::tr ("<strong>Maximal rating:</strong> %1")
-						.arg (entry.RatingMax_);
-
-			if (!entry.Tags_.isEmpty ())
-				result += Writer::tr ("<strong>User tags:</strong> %1")
-						.arg (entry.Tags_);
-
 			QString tech;
 			if (entry.Duration_)
 				tech += Writer::tr ("<li><strong>Duration:</strong> %1</li>")
