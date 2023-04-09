@@ -405,6 +405,22 @@ namespace LC::Aggregator
 			return MakeSubblock (Writer::tr ("Technical information:"), color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes) } });
 		}
 
+		Nodes MakeMRSSComments (const QList<MRSSComment>& comments, const TextColor& color)
+		{
+			if (comments.isEmpty ())
+				return {};
+
+			QMap<QString, Nodes> grouped;
+			for (const auto& comment : comments)
+				grouped [comment.Type_].push_back (Tag { .Name_ = "li"_qs, .Children_ = { comment.Comment_ } });
+
+			Nodes nodes;
+			nodes.reserve (grouped.size () * 2);
+			for (auto&& [type, typeNodes] : Util::Stlize (grouped))
+				nodes += MakeSubblock (type, color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (typeNodes) } });
+			return nodes;
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -442,7 +458,8 @@ namespace LC::Aggregator
 					MakeMRSSExpression (entry.Expression_) +
 					MakeMRSSScenes (entry.Scenes_, color) +
 					MakeMRSSStats (entry, color) +
-					MakeMRSSTechInfo (entry, color);
+					MakeMRSSTechInfo (entry, color) +
+					MakeMRSSComments (entry.Comments_, color);
 		}
 	}
 
@@ -489,22 +506,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			QMap<QString, QString> comments;
-			for (const auto& cm : entry.Comments_)
-				comments [cm.Type_] += QString ("<li>%1</li>")
-						.arg (cm.Comment_);
-
-			QStringList cmTypes = comments.keys ();
-			for (const auto& type : cmTypes)
-			{
-				result += QString ("<strong>%1:</strong>")
-						.arg (type);
-				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
-				result += QString ("<ul>%1</ul>")
-						.arg (comments [type]);
-				result += "</div>";
-			}
-
 			if (!entry.CopyrightURL_.isEmpty ())
 			{
 				if (!entry.CopyrightText_.isEmpty ())
