@@ -204,6 +204,18 @@ namespace LC::Aggregator
 				nodes.push_back (Tags::Br);
 			}
 
+			if (!entry.Rating_.isEmpty ())
+			{
+				constexpr auto urnPrefixLength = 4; // "urn:"
+				const auto& scheme = entry.RatingScheme_.mid (urnPrefixLength);
+				auto rating = scheme.isEmpty () ?
+						entry.Rating_ :
+						Writer::tr ("%1 (as per %2)", "<rating> (as per <rating scheme>)")
+							.arg (entry.Rating_, scheme);
+				nodes.push_back (Writer::tr ("Rating") + ": "_qs + rating);
+				nodes.push_back (Tags::Br);
+			}
+
 			return nodes;
 		}
 
@@ -480,12 +492,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			if (!entry.Rating_.isEmpty () &&
-					!entry.RatingScheme_.isEmpty ())
-				result += Writer::tr ("<strong>Rating:</strong> %1 (according to %2 scheme)<br />")
-						.arg (entry.Rating_)
-						.arg (entry.RatingScheme_.mid (4));
-
 			QMap<QString, QString> comments;
 			for (const auto& cm : entry.Comments_)
 				comments [cm.Type_] += QString ("<li>%1</li>")
