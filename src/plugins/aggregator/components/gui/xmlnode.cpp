@@ -57,5 +57,10 @@ namespace LC::Aggregator
 		{
 			return { .Name_ = "li"_qs, .Children_ = std::move (children) };
 		}
+
+		Tag Ul (Nodes&& children)
+		{
+			return { .Name_ = "ul"_qs, .Children_ = std::move (children) };
+		}
 	}
 }

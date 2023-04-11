@@ -40,6 +40,7 @@ namespace LC::Aggregator
 
 		Tag Image (const QString& url);
 		Tag Li (Nodes&& children);
+		Tag Ul (Nodes&& children);
 	}
 
 	inline Nodes operator+ (Node&& node, Nodes&& nodes)
