@@ -52,5 +52,10 @@ namespace LC::Aggregator
 		{
 			return { .Name_ = "img"_qs, .Attrs_ = { { "src"_qs, url } } };
 		}
+
+		Tag Li (Nodes&& children)
+		{
+			return { .Name_ = "li"_qs, .Children_ = std::move (children) };
+		}
 	}
 }

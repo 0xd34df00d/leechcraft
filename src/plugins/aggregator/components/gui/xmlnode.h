@@ -39,6 +39,7 @@ namespace LC::Aggregator
 		extern const Tag Br;
 
 		Tag Image (const QString& url);
+		Tag Li (Nodes&& children);
 	}
 
 	inline Nodes operator+ (Node&& node, Nodes&& nodes)

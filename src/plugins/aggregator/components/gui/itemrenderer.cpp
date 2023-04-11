@@ -226,7 +226,7 @@ namespace LC::Aggregator
 
 			Nodes linksDescrs { links.size () };
 			for (const auto& link : links)
-				linksDescrs << Tag { .Name_ = "li"_qs, .Children_ = { MakeLink (link.Link_, link.Type_) } };
+				linksDescrs << Tags::Li ({ MakeLink (link.Link_, link.Type_) });
 
 			Nodes block
 			{
@@ -335,7 +335,7 @@ namespace LC::Aggregator
 
 			Nodes nodes;
 			for (const auto& scene : scenes)
-				nodes.push_back (Tag { .Name_ = "li"_qs, .Children_ = MakeMRSSScene (scene) });
+				nodes.push_back (Tags::Li (MakeMRSSScene (scene)));
 
 			return MakeSubblock (Writer::tr ("Scenes"), color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes)} });
 		}
@@ -395,12 +395,8 @@ namespace LC::Aggregator
 			Nodes nodes;
 			nodes.reserve (rows.size ());
 			for (const auto& [label, value] : rows)
-			{
-				if (value.isEmpty ())
-					continue;
-
-				nodes.push_back (Tag { .Name_ = "li"_qs, .Children_ = { label + ": "_qs + value } });
-			}
+				if (!value.isEmpty ())
+					nodes.push_back (Tags::Li ({ label + ": "_qs + value }));
 
 			if (nodes.isEmpty ())
 				return {};
@@ -415,7 +411,7 @@ namespace LC::Aggregator
 
 			QMap<QString, Nodes> grouped;
 			for (const auto& comment : comments)
-				grouped [comment.Type_].push_back (Tag { .Name_ = "li"_qs, .Children_ = { comment.Comment_ } });
+				grouped [comment.Type_].push_back (Tags::Li ({ comment.Comment_ }));
 
 			Nodes nodes;
 			nodes.reserve (grouped.size () * 2);
