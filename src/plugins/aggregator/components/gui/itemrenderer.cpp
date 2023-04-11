@@ -279,9 +279,9 @@ namespace LC::Aggregator
 		Nodes MakeMRSSExpression (const QString& expression)
 		{
 			QString label;
-			if (expression == "sample")
+			if (expression == "sample"_ql)
 				label = Writer::tr ("Sample");
-			else if (expression == "nonstop")
+			else if (expression == "nonstop"_ql)
 				label = Writer::tr ("Continuous stream");
 			else
 				label = Writer::tr ("Full version");
