@@ -363,6 +363,9 @@ namespace LC::Aggregator
 				nodes.push_back (Tags::Br);
 			}
 
+			if (nodes.isEmpty ())
+				return {};
+
 			return MakeSubblock (Writer::tr ("Statistics"), color, std::move (nodes));
 		}
 
