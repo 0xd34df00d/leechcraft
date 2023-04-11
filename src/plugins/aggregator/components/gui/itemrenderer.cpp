@@ -200,7 +200,7 @@ namespace LC::Aggregator
 
 			if (!entry.Tags_.isEmpty ())
 			{
-				nodes.push_back (Writer::tr ("Tags") + ' ' + entry.Tags_);
+				nodes.push_back (Writer::tr ("Tags") + ": "_qs + entry.Tags_);
 				nodes.push_back (Tags::Br);
 			}
 
