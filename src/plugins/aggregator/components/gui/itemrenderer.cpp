@@ -323,7 +323,7 @@ namespace LC::Aggregator
 		{
 			return
 			{
-				Tag::WithText ("strong"_qs, header),
+				Tag::WithText ("strong"_qs, header + ':'),
 				WithInnerPadding (color, std::move (children)),
 			};
 		}
@@ -337,7 +337,7 @@ namespace LC::Aggregator
 			for (const auto& scene : scenes)
 				nodes.push_back (Tag { .Name_ = "li"_qs, .Children_ = MakeMRSSScene (scene) });
 
-			return MakeSubblock (Writer::tr ("Scenes:"), color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes)} });
+			return MakeSubblock (Writer::tr ("Scenes"), color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes)} });
 		}
 
 		Nodes MakeMRSSStats (const MRSSEntry& entry, const TextColor& color)
@@ -363,7 +363,7 @@ namespace LC::Aggregator
 				nodes.push_back (Tags::Br);
 			}
 
-			return MakeSubblock (Writer::tr ("Statistics:"), color, std::move (nodes));
+			return MakeSubblock (Writer::tr ("Statistics"), color, std::move (nodes));
 		}
 
 		template<typename T>
@@ -402,7 +402,7 @@ namespace LC::Aggregator
 			if (nodes.isEmpty ())
 				return {};
 
-			return MakeSubblock (Writer::tr ("Technical information:"), color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes) } });
+			return MakeSubblock (Writer::tr ("Technical information"), color, { Tag { .Name_ = "ul"_qs, .Children_ = std::move (nodes) } });
 		}
 
 		Nodes MakeMRSSComments (const QList<MRSSComment>& comments, const TextColor& color)
