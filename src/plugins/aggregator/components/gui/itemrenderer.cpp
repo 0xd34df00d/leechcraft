@@ -420,6 +420,18 @@ namespace LC::Aggregator
 			return nodes;
 		}
 
+		Nodes MakeMRSSCopyright (const MRSSEntry& entry)
+		{
+			if (entry.CopyrightText_.isEmpty () && entry.CopyrightURL_.isEmpty ())
+				return {};
+
+			if (entry.CopyrightURL_.isEmpty ())
+				return MakeMRSSField (Writer::tr ("Copyright"), entry.CopyrightURL_);
+
+			const auto& copyrightText = entry.CopyrightText_.isEmpty () ? QStringLiteral ("©") : QString {};
+			return { MakeLink (entry.CopyrightURL_, copyrightText) };
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -458,7 +470,8 @@ namespace LC::Aggregator
 					MakeMRSSScenes (entry.Scenes_, color) +
 					MakeMRSSStats (entry, color) +
 					MakeMRSSTechInfo (entry, color) +
-					MakeMRSSComments (entry.Comments_, color);
+					MakeMRSSComments (entry.Comments_, color) +
+					MakeMRSSCopyright (entry);
 		}
 	}
 
@@ -505,20 +518,6 @@ namespace LC::Aggregator
 		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
 			/*
-			if (!entry.CopyrightURL_.isEmpty ())
-			{
-				if (!entry.CopyrightText_.isEmpty ())
-					result += Writer::tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%2</a><br />")
-							.arg (entry.CopyrightURL_)
-							.arg (entry.CopyrightText_);
-				else
-					result += Writer::tr ("<strong>Copyright:</strong> <a href='%1' target='_blank'>%1</a><br />")
-							.arg (entry.CopyrightURL_);
-			}
-			else if (!entry.CopyrightText_.isEmpty ())
-				result += Writer::tr ("<strong>Copyright:</strong> %1<br />")
-						.arg (entry.CopyrightText_);
-
 			QString credits;
 			for (const auto& cr : entry.Credits_)
 				if (!cr.Role_.isEmpty ())
