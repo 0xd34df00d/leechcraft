@@ -9,8 +9,10 @@ LC_DEFINE_PLUGIN (
 		components/actions/itemactions.cpp
 		components/gui/itemnavigator.cpp
 		components/gui/itemselectiontracker.cpp
-		components/gui/itemrenderer.cpp
-		components/gui/xmlnode.cpp
+		components/itemrender/item.cpp
+		components/itemrender/mrss.cpp
+		components/itemrender/utils.cpp
+		components/itemrender/xmlnode.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp

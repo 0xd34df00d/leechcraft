@@ -1,0 +1,308 @@
+/**********************************************************************
+ * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2006-2014  Georg Rudoy
+ *
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
+ **********************************************************************/
+
+#include "mrss.h"
+#include <util/sll/qtutil.h>
+#include "../../item.h"
+#include "utils.h"
+
+namespace LC::Aggregator
+{
+	namespace
+	{
+		QString GetMRSSMedium (const QString& medium)
+		{
+			if (medium == "image"_ql)
+				return TrCtx::tr ("Image");
+			if (medium == "audio"_ql)
+				return TrCtx::tr ("Audio");
+			if (medium == "video"_ql)
+				return TrCtx::tr ("Video");
+			if (medium == "document"_ql)
+				return TrCtx::tr ("Document");
+			if (medium == "executable"_ql)
+				return TrCtx::tr ("Executable");
+
+			return medium;
+		}
+
+		Nodes MakeMRSSField (const QString& label, const QString& contents)
+		{
+			return contents.isEmpty () ?
+					Nodes {} :
+					Nodes { label + ": "_qs + contents, Tags::Br };
+		}
+
+		Nodes MakeMRSSField (const QString& label, Nodes&& contents)
+		{
+			return contents.isEmpty () ?
+					Nodes {} :
+					(label + ": "_qs) + std::move (contents) + Tags::Br;
+		}
+
+		template<typename T>
+			requires requires { QString::number (T {}); }
+		Nodes MakeMRSSField (const QString& label, T value)
+		{
+			if (!value)
+				return {};
+
+			return MakeMRSSField (label, QString::number (value));
+		}
+
+		Nodes MakeMRSSRating (const MRSSEntry& entry)
+		{
+			if (entry.Rating_.isEmpty ())
+				return {};
+
+			constexpr auto urnPrefixLength = 4; // "urn:"
+			const auto& scheme = entry.RatingScheme_.mid (urnPrefixLength);
+			auto rating = scheme.isEmpty () ?
+					entry.Rating_ :
+					TrCtx::tr ("%1 (as per %2)", "<rating> (as per <rating scheme>)")
+							.arg (entry.Rating_, scheme);
+			return MakeMRSSField (TrCtx::tr ("Rating"), rating);
+		}
+
+		Nodes MakeMRSSHeader (const MRSSEntry& entry)
+		{
+			Nodes nodes
+			{
+				GetMRSSMedium (entry.Medium_),
+				" "_qs,
+				MakeLink (entry.URL_, entry.Title_.isEmpty () ? entry.URL_ : entry.Title_),
+				Tags::Br,
+			};
+
+			nodes += MakeMRSSField (TrCtx::tr ("Size"), entry.Size_);
+			nodes += MakeMRSSField (TrCtx::tr ("Tags"), entry.Tags_);
+			nodes += MakeMRSSField (TrCtx::tr ("Keywords"), entry.Keywords_);
+			nodes += MakeMRSSField (TrCtx::tr ("Language"), entry.Lang_);
+			nodes += MakeMRSSRating (entry);
+
+			return nodes;
+		}
+
+		Nodes MakeMRSSPeerLinks (const QList<MRSSPeerLink>& links, const TextColor& color)
+		{
+			if (links.isEmpty ())
+				return {};
+
+			Nodes linksDescrs { links.size () };
+			for (const auto& link : links)
+				linksDescrs << Tags::Li ({ MakeLink (link.Link_, link.Type_) });
+
+			Nodes block
+			{
+				TrCtx::tr ("Also available as:"),
+				Tags::Ul (std::move (linksDescrs)),
+			};
+			return { WithInnerPadding (color, std::move (block)) };
+		}
+
+		Nodes MakeMRSSDescription (const MRSSEntry& entry)
+		{
+			return { entry.Description_, Tags::Br };
+		}
+
+		Nodes MakeMRSSThumbnails (const QList<MRSSThumbnail>& thumbs)
+		{
+			if (thumbs.isEmpty ())
+				return {};
+
+			constexpr auto nodesPerThumb = 2;
+			Nodes nodes { thumbs.size () * nodesPerThumb + 1 };
+			for (const auto& thumb : thumbs)
+			{
+				TagAttrs attrs { { "src"_qs, thumb.URL_ } };
+				if (thumb.Width_)
+					attrs.push_back ({ "width"_qs, QString::number (thumb.Width_) });
+				if (thumb.Height_)
+					attrs.push_back ({ "height"_qs, QString::number (thumb.Height_) });
+				if (!thumb.Time_.isEmpty ())
+					attrs.push_back ({ "alt"_qs, TrCtx::tr ("Thumbnail at %1").arg (thumb.Time_) });
+				nodes.push_back (Tag { .Name_ = "img", .Attrs_ = std::move (attrs) });
+			}
+			nodes.push_back (Tags::Br);
+			return nodes;
+		}
+
+		Nodes MakeMRSSExpression (const QString& expression)
+		{
+			QString label;
+			if (expression == "sample"_ql)
+				label = TrCtx::tr ("Sample");
+			else if (expression == "nonstop"_ql)
+				label = TrCtx::tr ("Continuous stream");
+			else
+				label = TrCtx::tr ("Full version");
+
+			return { std::move (label), Tags::Br };
+		}
+
+		Nodes MakeMRSSScene (const MRSSScene& scene)
+		{
+			const QVector<QPair<QString, QString>> rows
+			{
+				{ TrCtx::tr ("Title"), scene.Title_ },
+				{ TrCtx::tr ("Start time"), scene.StartTime_ },
+				{ TrCtx::tr ("End time"), scene.EndTime_ },
+			};
+
+			Nodes nodes;
+			nodes.reserve ((rows.size () + 1) * 2);
+
+			for (const auto& [label, contents] : rows)
+				nodes += MakeMRSSField (label, contents);
+
+			if (!scene.Description_.isEmpty ())
+			{
+				nodes.push_back (scene.Description_);
+				nodes.push_back (Tags::Br);
+			}
+
+			return nodes;
+		}
+
+		Nodes MakeSubblock (const QString& header, const TextColor& color, Nodes&& children)
+		{
+			return
+			{
+				Tag::WithText ("strong"_qs, header + ':'),
+				WithInnerPadding (color, std::move (children)),
+			};
+		}
+
+		Nodes MakeMRSSScenes (const QList<MRSSScene>& scenes, const TextColor& color)
+		{
+			if (scenes.isEmpty ())
+				return {};
+
+			Nodes nodes;
+			for (const auto& scene : scenes)
+				nodes.push_back (Tags::Li (MakeMRSSScene (scene)));
+
+			return MakeSubblock (TrCtx::tr ("Scenes"), color, { Tags::Ul (std::move (nodes)) });
+		}
+
+		Nodes MakeMRSSStats (const MRSSEntry& entry, const TextColor& color)
+		{
+			const QVector<QPair<QString, int>> rows
+			{
+				{ TrCtx::tr ("Views"), entry.Views_ },
+				{ TrCtx::tr ("Bookmarks"), entry.Favs_ },
+				{ TrCtx::tr ("Averate rating"), entry.RatingAverage_ },
+				{ TrCtx::tr ("Votes"), entry.RatingCount_ },
+				{ TrCtx::tr ("Minimal rating"), entry.RatingMin_ },
+				{ TrCtx::tr ("Maximal rating"), entry.RatingMax_ },
+			};
+
+			Nodes nodes;
+			nodes.reserve (rows.size () * 2);
+			for (const auto& [label, value] : rows)
+				nodes += MakeMRSSField (label, value);
+
+			if (nodes.isEmpty ())
+				return {};
+
+			return MakeSubblock (TrCtx::tr ("Statistics"), color, std::move (nodes));
+		}
+
+		template<typename T>
+		requires std::integral<T> || std::floating_point<T>
+		QPair<QString, QString> IntRow (const QString& name, T value)
+		{
+			return { name, value ? QString::number (value) : QString {} };
+		}
+
+		Nodes MakeMRSSTechInfo (const MRSSEntry& entry, const TextColor& color)
+		{
+			QString size;
+			if (entry.Width_ && entry.Height_)
+				size = QString::number (entry.Width_) + 'x' + QString::number (entry.Height_);
+			const QVector<QPair<QString, QString>> rows
+			{
+				IntRow (TrCtx::tr ("Duration"), entry.Duration_),
+				IntRow (TrCtx::tr ("Channels"), entry.Channels_),
+				{ TrCtx::tr ("Size"), size },
+				{ TrCtx::tr ("Bitrate"), entry.Bitrate_ ? TrCtx::tr ("%1 kbps").arg (entry.Bitrate_) : QString {} },
+				IntRow (TrCtx::tr ("Framerate"), entry.Framerate_),
+				IntRow (TrCtx::tr ("Sampling rate"), entry.SamplingRate_),
+				{ TrCtx::tr ("MIME type"), entry.Type_ },
+			};
+
+			Nodes nodes;
+			nodes.reserve (rows.size ());
+			for (const auto& [label, value] : rows)
+				if (!value.isEmpty ())
+					nodes.push_back (Tags::Li (MakeMRSSField (label, value)));
+
+			if (nodes.isEmpty ())
+				return {};
+
+			return MakeSubblock (TrCtx::tr ("Technical information"), color, { Tags::Ul (std::move (nodes)) });
+		}
+
+		Nodes MakeMRSSComments (const QList<MRSSComment>& comments, const TextColor& color)
+		{
+			if (comments.isEmpty ())
+				return {};
+
+			QMap<QString, Nodes> grouped;
+			for (const auto& comment : comments)
+				grouped [comment.Type_].push_back (Tags::Li ({ comment.Comment_ }));
+
+			Nodes nodes;
+			nodes.reserve (grouped.size () * 2);
+			for (auto&& [type, typeNodes] : Util::Stlize (grouped))
+				nodes += MakeSubblock (type, color, { Tags::Ul (std::move (typeNodes)) });
+			return nodes;
+		}
+
+		Nodes MakeMRSSCopyright (const MRSSEntry& entry)
+		{
+			if (entry.CopyrightText_.isEmpty () && entry.CopyrightURL_.isEmpty ())
+				return {};
+
+			if (entry.CopyrightURL_.isEmpty ())
+				return MakeMRSSField (TrCtx::tr ("Copyright"), entry.CopyrightURL_);
+
+			const auto& copyrightText = entry.CopyrightText_.isEmpty () ? QStringLiteral ("©") : QString {};
+			return MakeMRSSField (TrCtx::tr ("Copyright"), { MakeLink (entry.CopyrightURL_, copyrightText) });
+		}
+
+		Nodes MakeMRSSCredits (const QList<MRSSCredit>& credits, const TextColor& color)
+		{
+			Nodes nodes;
+			nodes.reserve (credits.size ());
+			for (const auto& credit : credits)
+				if (!credit.Role_.isEmpty ())
+					nodes.push_back (Tags::Li ({ credit.Role_ + ": "_qs + credit.Who_ }));
+
+			if (nodes.isEmpty ())
+				return {};
+
+			return MakeSubblock (TrCtx::tr ("Credits"), color, { Tags::Ul (std::move (nodes)) });
+		}
+	}
+
+	Nodes MakeMRSSEntry (const MRSSEntry& entry, const TextColor& color)
+	{
+		return MakeMRSSHeader (entry) +
+				MakeMRSSPeerLinks (entry.PeerLinks_, color) +
+				MakeMRSSDescription (entry) +
+				MakeMRSSThumbnails (entry.Thumbnails_) +
+				MakeMRSSExpression (entry.Expression_) +
+				MakeMRSSScenes (entry.Scenes_, color) +
+				MakeMRSSStats (entry, color) +
+				MakeMRSSTechInfo (entry, color) +
+				MakeMRSSComments (entry.Comments_, color) +
+				MakeMRSSCopyright (entry) +
+				MakeMRSSCredits (entry.Credits_, color);
+	}
+}
