@@ -182,6 +182,27 @@ namespace LC::Aggregator
 			return medium;
 		}
 
+		Nodes MakeMRSSField (const QString& text, const QString& contents)
+		{
+			return contents.isEmpty () ?
+					Nodes {} :
+					Nodes { text + ": "_qs + contents, Tags::Br };
+		}
+
+		Nodes MakeMRSSRating (const MRSSEntry& entry)
+		{
+			if (entry.Rating_.isEmpty ())
+				return {};
+
+			constexpr auto urnPrefixLength = 4; // "urn:"
+			const auto& scheme = entry.RatingScheme_.mid (urnPrefixLength);
+			auto rating = scheme.isEmpty () ?
+					entry.Rating_ :
+					Writer::tr ("%1 (as per %2)", "<rating> (as per <rating scheme>)")
+							.arg (entry.Rating_, scheme);
+			return MakeMRSSField (Writer::tr ("Rating"), rating);
+		}
+
 		Nodes MakeMRSSHeader (const MRSSEntry& entry)
 		{
 			Nodes nodes
@@ -204,17 +225,7 @@ namespace LC::Aggregator
 				nodes.push_back (Tags::Br);
 			}
 
-			if (!entry.Rating_.isEmpty ())
-			{
-				constexpr auto urnPrefixLength = 4; // "urn:"
-				const auto& scheme = entry.RatingScheme_.mid (urnPrefixLength);
-				auto rating = scheme.isEmpty () ?
-						entry.Rating_ :
-						Writer::tr ("%1 (as per %2)", "<rating> (as per <rating scheme>)")
-							.arg (entry.Rating_, scheme);
-				nodes.push_back (Writer::tr ("Rating") + ": "_qs + rating);
-				nodes.push_back (Tags::Br);
-			}
+			nodes += MakeMRSSRating (entry);
 
 			return nodes;
 		}
@@ -261,13 +272,6 @@ namespace LC::Aggregator
 			}
 			nodes.push_back (Tags::Br);
 			return nodes;
-		}
-
-		Nodes MakeMRSSField (const QString& text, const QString& contents)
-		{
-			return contents.isEmpty () ?
-					Nodes {} :
-					Nodes { text + ": "_qs + contents, Tags::Br };
 		}
 
 		Nodes MakeMRSSExpression (const QString& expression)
