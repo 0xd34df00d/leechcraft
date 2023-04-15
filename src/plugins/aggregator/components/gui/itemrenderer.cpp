@@ -427,6 +427,20 @@ namespace LC::Aggregator
 			return MakeMRSSField (Writer::tr ("Copyright"), { MakeLink (entry.CopyrightURL_, copyrightText) });
 		}
 
+		Nodes MakeMRSSCredits (const QList<MRSSCredit>& credits, const TextColor& color)
+		{
+			Nodes nodes;
+			nodes.reserve (credits.size ());
+			for (const auto& credit : credits)
+				if (!credit.Role_.isEmpty ())
+					nodes.push_back (Tags::Li ({ credit.Role_ + ": "_qs + credit.Who_ }));
+
+			if (nodes.isEmpty ())
+				return {};
+
+			return MakeSubblock (Writer::tr ("Credits"), color, { Tags::Ul (std::move (nodes)) });
+		}
+
 		Tag MakeHeader (const Item& item, const TextColor& color)
 		{
 			auto headerStyle = R"(
@@ -464,7 +478,8 @@ namespace LC::Aggregator
 					MakeMRSSStats (entry, color) +
 					MakeMRSSTechInfo (entry, color) +
 					MakeMRSSComments (entry.Comments_, color) +
-					MakeMRSSCopyright (entry);
+					MakeMRSSCopyright (entry) +
+					MakeMRSSCredits (entry.Credits_, color);
 		}
 	}
 
@@ -508,26 +523,7 @@ namespace LC::Aggregator
 		result += MakeEmbedImages (item.Enclosures_, blockColor).ToHtml ();
 
 		for (const auto& entry : item.MRSSEntries_)
-		{
 			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
-			/*
-			QString credits;
-			for (const auto& cr : entry.Credits_)
-				if (!cr.Role_.isEmpty ())
-					credits += QString ("<li>%1: %2</li>")
-							.arg (cr.Role_)
-							.arg (cr.Who_);
-
-			if (!credits.isEmpty ())
-			{
-				result += Writer::tr ("<strong>Credits:</strong>");
-				result += GetInnerPadding ({ .Fg_ = headerText, .Bg_ = alternateBg });
-				result += QString ("<ul>%1</ul>")
-						.arg (credits);
-				result += "</div>";
-			}
-			*/
-		}
 
 		result += "</div>"_qs + "</div>"_qs;
 
