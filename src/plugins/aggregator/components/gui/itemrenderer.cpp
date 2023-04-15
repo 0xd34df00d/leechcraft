@@ -265,15 +265,9 @@ namespace LC::Aggregator
 
 		Nodes MakeMRSSField (const QString& text, const QString& contents)
 		{
-			if (contents.isEmpty ())
-				return {};
-
-			return
-			{
-				Tag::WithText ("strong"_qs, text + ':'),
-				' ' + contents,
-				Tags::Br
-			};
+			return contents.isEmpty () ?
+					Nodes {} :
+					Nodes { text + ": "_qs + contents, Tags::Br };
 		}
 
 		Nodes MakeMRSSExpression (const QString& expression)
