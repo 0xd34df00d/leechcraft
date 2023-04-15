@@ -225,6 +225,8 @@ namespace LC::Aggregator
 
 			nodes += MakeMRSSField (Writer::tr ("Size"), entry.Size_);
 			nodes += MakeMRSSField (Writer::tr ("Tags"), entry.Tags_);
+			nodes += MakeMRSSField (Writer::tr ("Keywords"), entry.Keywords_);
+			nodes += MakeMRSSField (Writer::tr ("Language"), entry.Lang_);
 			nodes += MakeMRSSRating (entry);
 
 			return nodes;
@@ -450,8 +452,6 @@ namespace LC::Aggregator
 					MakeMRSSPeerLinks (entry.PeerLinks_, color) +
 					MakeMRSSDescription (entry) +
 					MakeMRSSThumbnails (entry.Thumbnails_) +
-					MakeMRSSField (Writer::tr ("Keywords"), entry.Keywords_) +
-					MakeMRSSField (Writer::tr ("Language"), entry.Lang_) +
 					MakeMRSSExpression (entry.Expression_) +
 					MakeMRSSScenes (entry.Scenes_, color) +
 					MakeMRSSStats (entry, color) +
