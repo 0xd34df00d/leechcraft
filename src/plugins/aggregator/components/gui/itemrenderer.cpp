@@ -223,18 +223,8 @@ namespace LC::Aggregator
 				Tags::Br,
 			};
 
-			if (entry.Size_ > 0)
-			{
-				nodes.push_back (Util::MakePrettySize (entry.Size_));
-				nodes.push_back (Tags::Br);
-			}
-
-			if (!entry.Tags_.isEmpty ())
-			{
-				nodes.push_back (Writer::tr ("Tags") + ": "_qs + entry.Tags_);
-				nodes.push_back (Tags::Br);
-			}
-
+			nodes += MakeMRSSField (Writer::tr ("Size"), entry.Size_);
+			nodes += MakeMRSSField (Writer::tr ("Tags"), entry.Tags_);
 			nodes += MakeMRSSRating (entry);
 
 			return nodes;
@@ -309,14 +299,8 @@ namespace LC::Aggregator
 			Nodes nodes;
 			nodes.reserve ((rows.size () + 1) * 2);
 
-			for (const auto& [title, contents] : rows)
-			{
-				if (contents.isEmpty ())
-					continue;
-
-				nodes.push_back (title + ": "_qs + contents);
-				nodes.push_back (Tags::Br);
-			}
+			for (const auto& [label, contents] : rows)
+				nodes += MakeMRSSField (label, contents);
 
 			if (!scene.Description_.isEmpty ())
 			{
@@ -363,13 +347,7 @@ namespace LC::Aggregator
 			Nodes nodes;
 			nodes.reserve (rows.size () * 2);
 			for (const auto& [label, value] : rows)
-			{
-				if (!value)
-					continue;
-
-				nodes.push_back (label + ": "_qs + QString::number (value));
-				nodes.push_back (Tags::Br);
-			}
+				nodes += MakeMRSSField (label, value);
 
 			if (nodes.isEmpty ())
 				return {};
@@ -404,7 +382,7 @@ namespace LC::Aggregator
 			nodes.reserve (rows.size ());
 			for (const auto& [label, value] : rows)
 				if (!value.isEmpty ())
-					nodes.push_back (Tags::Li ({ label + ": "_qs + value }));
+					nodes.push_back (Tags::Li (MakeMRSSField (label, value)));
 
 			if (nodes.isEmpty ())
 				return {};
