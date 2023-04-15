@@ -182,11 +182,21 @@ namespace LC::Aggregator
 			return medium;
 		}
 
-		Nodes MakeMRSSField (const QString& text, const QString& contents)
+		Nodes MakeMRSSField (const QString& label, const QString& contents)
 		{
 			return contents.isEmpty () ?
 					Nodes {} :
-					Nodes { text + ": "_qs + contents, Tags::Br };
+					Nodes { label + ": "_qs + contents, Tags::Br };
+		}
+
+		template<typename T>
+			requires requires { QString::number (T {}); }
+		Nodes MakeMRSSField (const QString& label, T value)
+		{
+			if (!value)
+				return {};
+
+			return MakeMRSSField (label, QString::number (value));
 		}
 
 		Nodes MakeMRSSRating (const MRSSEntry& entry)
