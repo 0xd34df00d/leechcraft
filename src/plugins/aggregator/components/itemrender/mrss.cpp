@@ -46,8 +46,9 @@ namespace LC::Aggregator
 		}
 
 		template<typename T>
-			requires requires { QString::number (T {}); }
-		Nodes MakeMRSSField (const QString& label, T value)
+		concept QStringNumber = requires { QString::number (T {}); };
+
+		Nodes MakeMRSSField (const QString& label, QStringNumber auto value)
 		{
 			if (!value)
 				return {};
@@ -213,9 +214,7 @@ namespace LC::Aggregator
 			return MakeSubblock (TrCtx::tr ("Statistics"), color, std::move (nodes));
 		}
 
-		template<typename T>
-		requires std::integral<T> || std::floating_point<T>
-		QPair<QString, QString> IntRow (const QString& name, T value)
+		QPair<QString, QString> IntRow (const QString& name, QStringNumber auto value)
 		{
 			return { name, value ? QString::number (value) : QString {} };
 		}
