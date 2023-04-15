@@ -189,6 +189,13 @@ namespace LC::Aggregator
 					Nodes { label + ": "_qs + contents, Tags::Br };
 		}
 
+		Nodes MakeMRSSField (const QString& label, Nodes&& contents)
+		{
+			return contents.isEmpty () ?
+					Nodes {} :
+					(label + ": "_qs) + std::move (contents) + Tags::Br;
+		}
+
 		template<typename T>
 			requires requires { QString::number (T {}); }
 		Nodes MakeMRSSField (const QString& label, T value)
@@ -417,7 +424,7 @@ namespace LC::Aggregator
 				return MakeMRSSField (Writer::tr ("Copyright"), entry.CopyrightURL_);
 
 			const auto& copyrightText = entry.CopyrightText_.isEmpty () ? QStringLiteral ("©") : QString {};
-			return { MakeLink (entry.CopyrightURL_, copyrightText) };
+			return MakeMRSSField (Writer::tr ("Copyright"), { MakeLink (entry.CopyrightURL_, copyrightText) });
 		}
 
 		Tag MakeHeader (const Item& item, const TextColor& color)
