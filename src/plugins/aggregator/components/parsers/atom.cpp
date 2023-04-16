@@ -18,6 +18,18 @@ namespace LC::Aggregator::Parsers
 {
 	namespace
 	{
+		QString ParseAtomAuthor (const QDomElement& parent)
+		{
+			// TODO parse out email as per https://validator.w3.org/feed/docs/atom.html#person
+			// once the schema is adapted
+			const auto& authorElem = parent.firstChildElement ("author"_qs);
+			if (authorElem.isNull ())
+				return {};
+
+			const auto& nameElem = authorElem.firstChildElement ("name"_qs);
+			return nameElem.isNull () ? authorElem.text () : nameElem.text ();
+		}
+
 		Item_ptr ParseCommonAtomItem (const QDomElement& entry, IDType_t channelId)
 		{
 			auto item = ParseCommonItem (entry, channelId);
@@ -25,6 +37,10 @@ namespace LC::Aggregator::Parsers
 			item->Title_ = Atom::ParseEscapeAware (entry.firstChildElement ("title"_qs));
 			item->Link_ = GetLink (entry);
 			item->Guid_ = entry.firstChildElement ("id"_qs).text ();
+
+			if (const auto& atomAuthor = ParseAtomAuthor (entry);
+				!atomAuthor.isEmpty ())
+				item->Author_ = atomAuthor;
 
 			item->Description_ = Atom::ParseEscapeAware (GetBestDescription (entry, { "content"_qs, "summary"_qs }));
 
@@ -48,18 +64,6 @@ namespace LC::Aggregator::Parsers
 			auto item = ParseCommonAtomItem (entry, channelId);
 			item->PubDate_ = QDateTime::fromString (entry.firstChildElement ("updated"_qs).text (), Qt::ISODateWithMs);
 			return item;
-		}
-
-		QString ParseAtomAuthor (const QDomElement& root)
-		{
-			// TODO parse out email as per https://validator.w3.org/feed/docs/atom.html#person
-			// once the schema is adapted
-			const auto& authorElem = root.firstChildElement ("author"_qs);
-			if (authorElem.isNull ())
-				return {};
-
-			const auto& nameElem = authorElem.firstChildElement ("name"_qs);
-			return nameElem.isNull () ? authorElem.text () : nameElem.text ();
 		}
 
 		Channel_ptr ParseAtomChannelCommon (const QDomElement& root, IDType_t feedId)
