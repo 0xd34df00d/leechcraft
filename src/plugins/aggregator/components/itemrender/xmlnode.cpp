@@ -13,6 +13,23 @@
 
 namespace LC::Aggregator
 {
+	Nodes operator+ (Node&& node, Nodes&& nodes)
+	{
+		nodes.prepend (std::move (node));
+		return nodes;
+	}
+
+	Nodes operator+ (Nodes&& nodes, Node&& node)
+	{
+		nodes.push_back (std::move (node));
+		return nodes;
+	}
+
+	Nodes operator+ (Node&& n1, Node&& n2)
+	{
+		return { std::move (n1), std::move (n2) };
+	}
+
 	Tag Tag::WithText (const QString& name, const QString& contents)
 	{
 		return { .Name_ = name, .Children_ = { contents } };

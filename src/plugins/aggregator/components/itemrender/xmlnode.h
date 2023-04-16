@@ -22,6 +22,10 @@ namespace LC::Aggregator
 	using Node = std::variant<Tag, QString>;
 	using Nodes = QVector<Node>;
 
+	Nodes operator+ (Node&&, Nodes&&);
+	Nodes operator+ (Nodes&&, Node&&);
+	Nodes operator+ (Node&&, Node&&);
+
 	struct Tag
 	{
 		QString Name_;
@@ -41,22 +45,5 @@ namespace LC::Aggregator
 		Tag Image (const QString& url);
 		Tag Li (Nodes&& children);
 		Tag Ul (Nodes&& children);
-	}
-
-	inline Nodes operator+ (Node&& node, Nodes&& nodes)
-	{
-		nodes.prepend (std::move (node));
-		return nodes;
-	}
-
-	inline Nodes operator+ (Nodes&& nodes, Node&& node)
-	{
-		nodes.push_back (std::move (node));
-		return nodes;
-	}
-
-	inline Nodes operator+ (Node&& n1, Node&& n2)
-	{
-		return { std::move (n1), std::move (n2) };
 	}
 }
