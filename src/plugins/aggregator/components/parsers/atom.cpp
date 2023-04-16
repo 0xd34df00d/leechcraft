@@ -50,6 +50,18 @@ namespace LC::Aggregator::Parsers
 			return item;
 		}
 
+		QString ParseAtomAuthor (const QDomElement& root)
+		{
+			// TODO parse out email as per https://validator.w3.org/feed/docs/atom.html#person
+			// once the schema is adapted
+			const auto& authorElem = root.firstChildElement ("author"_qs);
+			if (authorElem.isNull ())
+				return {};
+
+			const auto& nameElem = authorElem.firstChildElement ("name"_qs);
+			return nameElem.isNull () ? authorElem.text () : nameElem.text ();
+		}
+
 		Channel_ptr ParseAtomChannelCommon (const QDomElement& root, IDType_t feedId)
 		{
 			auto chan = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
@@ -58,7 +70,9 @@ namespace LC::Aggregator::Parsers
 				chan->Title_ = QObject::tr ("(No title)");
 			chan->LastBuild_ = QDateTime::fromString (root.firstChildElement ("updated"_qs).text (), Qt::ISODateWithMs);
 			chan->Link_ = GetLink (root);
-			chan->Author_ = GetAuthor (root);
+			chan->Author_ = ParseAtomAuthor (root);
+			if (chan->Author_.isEmpty ())
+				chan->Author_ = GetAuthor (root);
 			return chan;
 		}
 
