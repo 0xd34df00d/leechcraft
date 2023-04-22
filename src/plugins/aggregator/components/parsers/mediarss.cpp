@@ -311,14 +311,11 @@ namespace LC::Aggregator::Parsers::MediaRSS
 
 		QList<MRSSEntry> ParseChildren (const QDomElement& parent, const Metadata& groupMetadata, IDType_t itemId)
 		{
-			const auto& entries = parent.elementsByTagNameNS (NS::MediaRSS, "content"_qs);
-			const auto size = entries.size ();
-
 			QList<MRSSEntry> result;
-			result.reserve (size);
-			for (int i = 0; i < size; ++i)
+			for (const auto& elem : Util::DomChildren (parent, "content"_qs))
 			{
-				const auto& elem = entries.at (i).toElement ();
+				if (elem.namespaceURI () != NS::MediaRSS)
+					continue;
 
 				auto entry = MRSSEntry::CreateForItem (itemId);
 
