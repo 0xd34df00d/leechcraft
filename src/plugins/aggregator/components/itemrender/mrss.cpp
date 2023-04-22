@@ -286,7 +286,7 @@ namespace LC::Aggregator
 			if (nodes.isEmpty ())
 				return {};
 
-			return MakeSubblock (TrCtx::tr ("Credits"), color, { Tags::Ul (std::move (nodes)) });
+			return MakeSubblock (TrCtx::tr ("Credits", "at the end of a video"), color, { Tags::Ul (std::move (nodes)) });
 		}
 	}
 
