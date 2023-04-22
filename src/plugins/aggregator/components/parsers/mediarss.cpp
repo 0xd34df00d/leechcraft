@@ -327,6 +327,8 @@ namespace LC::Aggregator::Parsers::MediaRSS
 
 				FillEntry (entry, elem);
 				FillWithMetadata (entry, elemMetadata);
+
+				result << entry;
 			}
 
 			return result;
