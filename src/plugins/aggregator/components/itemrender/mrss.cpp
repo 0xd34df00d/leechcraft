@@ -31,14 +31,14 @@ namespace LC::Aggregator
 			return medium;
 		}
 
-		Nodes MakeMRSSField (const QString& label, const QString& contents)
+		Nodes MakeField (const QString& label, const QString& contents)
 		{
 			return contents.isEmpty () ?
 					Nodes {} :
 					Nodes { label + ": "_qs + contents, Tags::Br };
 		}
 
-		Nodes MakeMRSSField (const QString& label, Nodes&& contents)
+		Nodes MakeField (const QString& label, Nodes&& contents)
 		{
 			return contents.isEmpty () ?
 					Nodes {} :
@@ -48,15 +48,15 @@ namespace LC::Aggregator
 		template<typename T>
 		concept QStringNumber = requires { QString::number (T {}); };
 
-		Nodes MakeMRSSField (const QString& label, QStringNumber auto value)
+		Nodes MakeField (const QString& label, QStringNumber auto value)
 		{
 			if (!value)
 				return {};
 
-			return MakeMRSSField (label, QString::number (value));
+			return MakeField (label, QString::number (value));
 		}
 
-		Nodes MakeMRSSRating (const MRSSEntry& entry)
+		Nodes MakeRating (const MRSSEntry& entry)
 		{
 			if (entry.Rating_.isEmpty ())
 				return {};
@@ -67,10 +67,10 @@ namespace LC::Aggregator
 					entry.Rating_ :
 					TrCtx::tr ("%1 (as per %2)", "<rating> (as per <rating scheme>)")
 							.arg (entry.Rating_, scheme);
-			return MakeMRSSField (TrCtx::tr ("Rating"), rating);
+			return MakeField (TrCtx::tr ("Rating"), rating);
 		}
 
-		Nodes MakeMRSSHeader (const MRSSEntry& entry)
+		Nodes MakeHeader (const MRSSEntry& entry)
 		{
 			Nodes nodes
 			{
@@ -80,16 +80,16 @@ namespace LC::Aggregator
 				Tags::Br,
 			};
 
-			nodes += MakeMRSSField (TrCtx::tr ("Size"), entry.Size_);
-			nodes += MakeMRSSField (TrCtx::tr ("Tags"), entry.Tags_);
-			nodes += MakeMRSSField (TrCtx::tr ("Keywords"), entry.Keywords_);
-			nodes += MakeMRSSField (TrCtx::tr ("Language"), entry.Lang_);
-			nodes += MakeMRSSRating (entry);
+			nodes += MakeField (TrCtx::tr ("Size"), entry.Size_);
+			nodes += MakeField (TrCtx::tr ("Tags"), entry.Tags_);
+			nodes += MakeField (TrCtx::tr ("Keywords"), entry.Keywords_);
+			nodes += MakeField (TrCtx::tr ("Language"), entry.Lang_);
+			nodes += MakeRating (entry);
 
 			return nodes;
 		}
 
-		Nodes MakeMRSSPeerLinks (const QList<MRSSPeerLink>& links, const TextColor& color)
+		Nodes MakePeerLinks (const QList<MRSSPeerLink>& links, const TextColor& color)
 		{
 			if (links.isEmpty ())
 				return {};
@@ -106,12 +106,12 @@ namespace LC::Aggregator
 			return { WithInnerPadding (color, std::move (block)) };
 		}
 
-		Nodes MakeMRSSDescription (const MRSSEntry& entry)
+		Nodes MakeDescription (const MRSSEntry& entry)
 		{
 			return { entry.Description_, Tags::Br };
 		}
 
-		Nodes MakeMRSSThumbnails (const QList<MRSSThumbnail>& thumbs)
+		Nodes MakeThumbnails (const QList<MRSSThumbnail>& thumbs)
 		{
 			if (thumbs.isEmpty ())
 				return {};
@@ -133,7 +133,7 @@ namespace LC::Aggregator
 			return nodes;
 		}
 
-		Nodes MakeMRSSExpression (const QString& expression)
+		Nodes MakeExpression (const QString& expression)
 		{
 			QString label;
 			if (expression == "sample"_ql)
@@ -146,7 +146,7 @@ namespace LC::Aggregator
 			return { std::move (label), Tags::Br };
 		}
 
-		Nodes MakeMRSSScene (const MRSSScene& scene)
+		Nodes MakeScene (const MRSSScene& scene)
 		{
 			const QVector<QPair<QString, QString>> rows
 			{
@@ -159,7 +159,7 @@ namespace LC::Aggregator
 			nodes.reserve ((rows.size () + 1) * 2);
 
 			for (const auto& [label, contents] : rows)
-				nodes += MakeMRSSField (label, contents);
+				nodes += MakeField (label, contents);
 
 			if (!scene.Description_.isEmpty ())
 			{
@@ -179,19 +179,19 @@ namespace LC::Aggregator
 			};
 		}
 
-		Nodes MakeMRSSScenes (const QList<MRSSScene>& scenes, const TextColor& color)
+		Nodes MakeScenes (const QList<MRSSScene>& scenes, const TextColor& color)
 		{
 			if (scenes.isEmpty ())
 				return {};
 
 			Nodes nodes;
 			for (const auto& scene : scenes)
-				nodes.push_back (Tags::Li (MakeMRSSScene (scene)));
+				nodes.push_back (Tags::Li (MakeScene (scene)));
 
 			return MakeSubblock (TrCtx::tr ("Scenes"), color, { Tags::Ul (std::move (nodes)) });
 		}
 
-		Nodes MakeMRSSStats (const MRSSEntry& entry, const TextColor& color)
+		Nodes MakeStats (const MRSSEntry& entry, const TextColor& color)
 		{
 			const QVector<QPair<QString, int>> rows
 			{
@@ -206,7 +206,7 @@ namespace LC::Aggregator
 			Nodes nodes;
 			nodes.reserve (rows.size () * 2);
 			for (const auto& [label, value] : rows)
-				nodes += MakeMRSSField (label, value);
+				nodes += MakeField (label, value);
 
 			if (nodes.isEmpty ())
 				return {};
@@ -219,7 +219,7 @@ namespace LC::Aggregator
 			return { name, value ? QString::number (value) : QString {} };
 		}
 
-		Nodes MakeMRSSTechInfo (const MRSSEntry& entry, const TextColor& color)
+		Nodes MakeTechInfo (const MRSSEntry& entry, const TextColor& color)
 		{
 			QString size;
 			if (entry.Width_ && entry.Height_)
@@ -239,7 +239,7 @@ namespace LC::Aggregator
 			nodes.reserve (rows.size ());
 			for (const auto& [label, value] : rows)
 				if (!value.isEmpty ())
-					nodes.push_back (Tags::Li (MakeMRSSField (label, value)));
+					nodes.push_back (Tags::Li (MakeField (label, value)));
 
 			if (nodes.isEmpty ())
 				return {};
@@ -247,7 +247,7 @@ namespace LC::Aggregator
 			return MakeSubblock (TrCtx::tr ("Technical information"), color, { Tags::Ul (std::move (nodes)) });
 		}
 
-		Nodes MakeMRSSComments (const QList<MRSSComment>& comments, const TextColor& color)
+		Nodes MakeComments (const QList<MRSSComment>& comments, const TextColor& color)
 		{
 			if (comments.isEmpty ())
 				return {};
@@ -263,19 +263,19 @@ namespace LC::Aggregator
 			return nodes;
 		}
 
-		Nodes MakeMRSSCopyright (const MRSSEntry& entry)
+		Nodes MakeCopyright (const MRSSEntry& entry)
 		{
 			if (entry.CopyrightText_.isEmpty () && entry.CopyrightURL_.isEmpty ())
 				return {};
 
 			if (entry.CopyrightURL_.isEmpty ())
-				return MakeMRSSField (TrCtx::tr ("Copyright"), entry.CopyrightURL_);
+				return MakeField (TrCtx::tr ("Copyright"), entry.CopyrightURL_);
 
 			const auto& copyrightText = entry.CopyrightText_.isEmpty () ? QStringLiteral ("©") : QString {};
-			return MakeMRSSField (TrCtx::tr ("Copyright"), { MakeLink (entry.CopyrightURL_, copyrightText) });
+			return MakeField (TrCtx::tr ("Copyright"), { MakeLink (entry.CopyrightURL_, copyrightText) });
 		}
 
-		Nodes MakeMRSSCredits (const QList<MRSSCredit>& credits, const TextColor& color)
+		Nodes MakeCredits (const QList<MRSSCredit>& credits, const TextColor& color)
 		{
 			Nodes nodes;
 			nodes.reserve (credits.size ());
@@ -292,16 +292,16 @@ namespace LC::Aggregator
 
 	Nodes MakeMRSSEntry (const MRSSEntry& entry, const TextColor& color)
 	{
-		return MakeMRSSHeader (entry) +
-				MakeMRSSPeerLinks (entry.PeerLinks_, color) +
-				MakeMRSSDescription (entry) +
-				MakeMRSSThumbnails (entry.Thumbnails_) +
-				MakeMRSSExpression (entry.Expression_) +
-				MakeMRSSScenes (entry.Scenes_, color) +
-				MakeMRSSStats (entry, color) +
-				MakeMRSSTechInfo (entry, color) +
-				MakeMRSSComments (entry.Comments_, color) +
-				MakeMRSSCopyright (entry) +
-				MakeMRSSCredits (entry.Credits_, color);
+		return MakeHeader (entry) +
+				MakePeerLinks (entry.PeerLinks_, color) +
+				MakeDescription (entry) +
+				MakeThumbnails (entry.Thumbnails_) +
+				MakeExpression (entry.Expression_) +
+				MakeScenes (entry.Scenes_, color) +
+				MakeStats (entry, color) +
+				MakeTechInfo (entry, color) +
+				MakeComments (entry.Comments_, color) +
+				MakeCopyright (entry) +
+				MakeCredits (entry.Credits_, color);
 	}
 }
