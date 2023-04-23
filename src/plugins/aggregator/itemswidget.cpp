@@ -320,22 +320,6 @@ namespace Aggregator
 		Impl_->SelectedChecker_->start (timeout);
 	}
 
-	IDType_t ItemsWidget::GetItemIDFromRow (int index) const
-	{
-		ItemsListModel *model = 0;
-		if (!Impl_->SupplementaryModels_.size ())
-			model = Impl_->CurrentItemsModel_.get ();
-		else
-		{
-			int starting = 0;
-			const auto i = Impl_->ItemLists_->GetModelForRow (index, &starting);
-			model = static_cast<ItemsListModel*> (i->data ());
-			index -= starting;
-		}
-
-		return model->GetItem (model->index (index, 0)).ItemID_;
-	}
-
 	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
 	{
 		if (Impl_->MergeMode_)

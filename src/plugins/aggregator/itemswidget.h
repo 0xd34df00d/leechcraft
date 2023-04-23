@@ -83,7 +83,6 @@ namespace Aggregator
 			*/
 		void SetMergeModeTags (const QStringList& tags);
 		void Selected (const QModelIndex&);
-		IDType_t GetItemIDFromRow (int) const;
 		void CurrentChannelChanged (const QModelIndex&);
 
 		void ConstructBrowser ();
