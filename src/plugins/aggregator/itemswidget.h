@@ -58,7 +58,6 @@ namespace Aggregator
 		explicit ItemsWidget (const Dependencies&, QWidget* = nullptr);
 		~ItemsWidget () override;
 
-		Item GetItem (const QModelIndex&) const;
 		QToolBar* GetToolBar () const;
 		void SetTapeMode (bool);
 

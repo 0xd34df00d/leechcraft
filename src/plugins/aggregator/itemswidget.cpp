@@ -231,15 +231,6 @@ namespace Aggregator
 		delete Impl_;
 	}
 
-	Item ItemsWidget::GetItem (const QModelIndex& index) const
-	{
-		const auto itemId = index.data (IItemsModel::ItemRole::ItemId);
-		if (itemId.isNull ())
-			return {};
-		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		return sb->GetItem (itemId.value<IDType_t> ()).value_or (Item {});
-	}
-
 	QToolBar* ItemsWidget::GetToolBar () const
 	{
 		return Impl_->ControlToolBar_;
@@ -436,6 +427,18 @@ namespace Aggregator
 			setProperty ("CategoriesSplitter2", sizes.at (1));
 	}
 
+	namespace
+	{
+		std::optional<Item> GetItem (const QModelIndex& index)
+		{
+			const auto itemId = index.data (IItemsModel::ItemRole::ItemId);
+			if (itemId.isNull ())
+				return {};
+			const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+			return sb->GetItem (itemId.value<IDType_t> ()).value_or (Item {});
+		}
+	}
+
 	void ItemsWidget::currentItemChanged ()
 	{
 		QString preHtml = R"(<html><head><meta charset="UTF-8" /><title>News</title></head><body bgcolor=")";
@@ -445,15 +448,13 @@ namespace Aggregator
 		{
 			QString html;
 			QUrl base;
-			for (int i = 0, size = Impl_->ItemsFilterModel_->rowCount ();
-					i < size; ++i)
-			{
-				const auto& item = GetItem (Impl_->ItemsFilterModel_->index (i, 0));
-				html += ItemToHtml (item);
-
-				if (base.isEmpty ())
-					base = item.Link_;
-			}
+			for (int i = 0, size = Impl_->ItemsFilterModel_->rowCount (); i < size; ++i)
+				if (const auto& item = GetItem (Impl_->ItemsFilterModel_->index (i, 0)))
+				{
+					html += ItemToHtml (*item);
+					if (base.isEmpty ())
+						base = item->Link_;
+				}
 
 			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", base);
 		}
@@ -464,17 +465,12 @@ namespace Aggregator
 
 			const auto& rows = Impl_->Ui_.Items_->selectionModel ()->selectedRows ();
 			for (const auto& selIndex : rows)
-			{
-				const QModelIndex& sindex = Impl_->
-						ItemsFilterModel_->mapToSource (selIndex);
-				if (!sindex.isValid ())
-					continue;
-
-				const auto& item = GetItem (sindex);
-				html += ItemToHtml (item);
-				if (!link.isValid ())
-					link = item.Link_;
-			}
+				if (const auto& item = GetItem (selIndex))
+				{
+					html += ItemToHtml (*item);
+					if (!link.isValid ())
+						link = item->Link_;
+				}
 
 			Impl_->Ui_.ItemView_->SetHtml (QString (), QUrl ());
 			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", link);
