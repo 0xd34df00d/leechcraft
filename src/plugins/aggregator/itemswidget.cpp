@@ -506,10 +506,22 @@ namespace Aggregator
 			Impl_->Ui_.Items_->scrollTo (item);
 	}
 
+	namespace
+	{
+		enum SearchSection
+		{
+			FixedString = 0,
+			Wildcard = 1,
+			Regexp = 2,
+			ImportantThisChannel = 3,
+			ImportantAllChannels = 4,
+		};
+	}
+
 	void ItemsWidget::updateItemsFilter ()
 	{
 		const int section = Impl_->Ui_.SearchType_->currentIndex ();
-		if (section == 4)
+		if (section == SearchSection::ImportantAllChannels)
 		{
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 			Impl_->CurrentItemsModel_->Reset (sb->GetItemsForTag ("_important"));
@@ -520,19 +532,23 @@ namespace Aggregator
 		const QString& text = Impl_->Ui_.SearchLine_->text ();
 		switch (section)
 		{
-		case 1:
+		case SearchSection::FixedString:
+			Impl_->ItemsFilterModel_->setFilterFixedString (text);
+			break;
+		case SearchSection::Wildcard:
 			Impl_->ItemsFilterModel_->setFilterWildcard (text);
 			break;
-		case 2:
+		case SearchSection::Regexp:
 			Impl_->ItemsFilterModel_->setFilterRegExp (text);
 			break;
 		default:
+			qWarning () << "ItemsWidget::updateItemsFilter(): unknown section" << section;
 			Impl_->ItemsFilterModel_->setFilterFixedString (text);
 			break;
 		}
 
 		QList<ITagsManager::tag_id> tags;
-		if (section == 3)
+		if (section == SearchSection::ImportantThisChannel)
 			tags << "_important";
 		Impl_->ItemsFilterModel_->SetItemTags (tags);
 	}
