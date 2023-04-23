@@ -23,6 +23,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <util/sll/containerconversions.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/curry.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -441,9 +442,9 @@ namespace Aggregator
 
 	void ItemsWidget::currentItemChanged ()
 	{
-		QString preHtml = R"(<html><head><meta charset="UTF-8" /><title>News</title></head><body bgcolor=")";
-		preHtml += palette ().color (QPalette::Base).name ();
-		preHtml += "\">";
+		const auto preHtml = R"(<html><head><meta charset="UTF-8" /><title>News</title></head><body bgcolor=")"_qs +
+				palette ().color (QPalette::Base).name () +
+				"\">"_qs;
 		if (Impl_->TapeMode_)
 		{
 			QString html;
@@ -456,7 +457,7 @@ namespace Aggregator
 						base = item->Link_;
 				}
 
-			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", base);
+			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, base);
 		}
 		else
 		{
@@ -473,7 +474,7 @@ namespace Aggregator
 				}
 
 			Impl_->Ui_.ItemView_->SetHtml (QString (), QUrl ());
-			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", link);
+			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, link);
 
 			if (!html.isEmpty ())
 			{
