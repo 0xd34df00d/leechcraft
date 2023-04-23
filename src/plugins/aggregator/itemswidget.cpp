@@ -24,7 +24,6 @@
 #include <util/util.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/curry.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
