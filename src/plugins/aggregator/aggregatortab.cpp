@@ -12,8 +12,6 @@
 #include <QSortFilterProxyModel>
 #include <interfaces/core/icoreproxy.h>
 #include <util/models/flattofoldersproxymodel.h>
-#include <util/sll/curry.h>
-#include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include "components/actions/appwideactions.h"
