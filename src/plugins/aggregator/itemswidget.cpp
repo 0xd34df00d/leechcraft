@@ -448,13 +448,11 @@ namespace Aggregator
 			for (int i = 0, size = Impl_->ItemsFilterModel_->rowCount ();
 					i < size; ++i)
 			{
-				QModelIndex index = Impl_->ItemsFilterModel_->index (i, 0);
-				QModelIndex mapped = Impl_->ItemsFilterModel_->mapToSource (index);
-				const auto& item = GetItem (mapped);
+				const auto& item = GetItem (Impl_->ItemsFilterModel_->index (i, 0));
+				html += ItemToHtml (item);
+
 				if (base.isEmpty ())
 					base = item.Link_;
-
-				html += ItemToHtml (item);
 			}
 
 			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", base);
