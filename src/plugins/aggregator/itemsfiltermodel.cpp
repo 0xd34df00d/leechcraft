@@ -83,9 +83,12 @@ namespace Aggregator
 				return false;
 		}
 
-		if (!TaggedItems_.isEmpty () &&
-				!TaggedItems_.contains (ItemsWidget_->GetItemIDFromRow (sourceRow)))
-			return false;
+		if (!TaggedItems_.isEmpty ())
+		{
+			const auto itemId = index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+			if (!TaggedItems_.contains (itemId))
+				return false;
+		}
 
 		return QSortFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent);
 	}
