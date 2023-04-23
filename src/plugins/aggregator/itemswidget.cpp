@@ -451,7 +451,7 @@ namespace Aggregator
 				QModelIndex index = Impl_->ItemsFilterModel_->index (i, 0);
 				QModelIndex mapped = Impl_->ItemsFilterModel_->mapToSource (index);
 				const auto& item = GetItem (mapped);
-				if (!i)
+				if (base.isEmpty ())
 					base = item.Link_;
 
 				html += ItemToHtml (item);
