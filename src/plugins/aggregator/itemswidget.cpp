@@ -429,58 +429,53 @@ namespace Aggregator
 
 	namespace
 	{
-		std::optional<Item> GetItem (const QModelIndex& index)
+		QVector<IDType_t> GetAllDisplayedItems (const QAbstractItemModel& model)
 		{
-			const auto itemId = index.data (IItemsModel::ItemRole::ItemId);
-			if (itemId.isNull ())
-				return {};
-			const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			return sb->GetItem (itemId.value<IDType_t> ()).value_or (Item {});
+			QVector<IDType_t> result;
+			const auto size = model.rowCount ();
+			result.reserve (size);
+			for (int i = 0; i < size; ++ i)
+				result << model.index (i, 0).data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+			return result;
+		}
+
+		QVector<IDType_t> ToItemIds (const QModelIndexList& idxes)
+		{
+			QVector<IDType_t> result;
+			result.reserve (idxes.size ());
+			for (const auto& idx : idxes)
+				result << idx.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+			return result;
 		}
 	}
 
 	void ItemsWidget::currentItemChanged ()
 	{
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		const auto& itemsToDisplay = Impl_->TapeMode_ ?
+				GetAllDisplayedItems (*Impl_->ItemsFilterModel_) :
+				ToItemIds (Impl_->Ui_.Items_->selectionModel ()->selectedRows ());
+
 		const auto preHtml = R"(<html><head><meta charset="UTF-8" /><title>News</title></head><body bgcolor=")"_qs +
 				palette ().color (QPalette::Base).name () +
 				"\">"_qs;
+
+		QString html;
+		QUrl base;
+		for (const auto itemId : itemsToDisplay)
+			if (const auto& item = sb->GetItem (itemId))
+			{
+				html += ItemToHtml (*item);
+				if (base.isEmpty ())
+					base = item->Link_;
+			}
+		Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, base);
+
 		if (Impl_->TapeMode_)
 		{
-			QString html;
-			QUrl base;
-			for (int i = 0, size = Impl_->ItemsFilterModel_->rowCount (); i < size; ++i)
-				if (const auto& item = GetItem (Impl_->ItemsFilterModel_->index (i, 0)))
-				{
-					html += ItemToHtml (*item);
-					if (base.isEmpty ())
-						base = item->Link_;
-				}
-
-			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, base);
-		}
-		else
-		{
-			QString html;
-			QUrl link;
-
-			const auto& rows = Impl_->Ui_.Items_->selectionModel ()->selectedRows ();
-			for (const auto& selIndex : rows)
-				if (const auto& item = GetItem (selIndex))
-				{
-					html += ItemToHtml (*item);
-					if (!link.isValid ())
-						link = item->Link_;
-				}
-
-			Impl_->Ui_.ItemView_->SetHtml (QString (), QUrl ());
-			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, link);
-
-			if (!html.isEmpty ())
+			auto sourceIndex = Impl_->Ui_.Items_->currentIndex ();
+			if (sourceIndex.isValid ())
 			{
-				auto sourceIndex = Impl_->Ui_.Items_->currentIndex ();
-				if (!sourceIndex.isValid ())
-					sourceIndex = rows.value (0);
-
 				const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
 				Selected (cIndex);
 			}
