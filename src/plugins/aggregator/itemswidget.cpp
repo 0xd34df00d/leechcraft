@@ -46,8 +46,6 @@ namespace LC
 {
 namespace Aggregator
 {
-	using LC::Util::CategorySelector;
-
 	struct ItemsWidget_Impl
 	{
 		ItemsWidget * const Parent_;
@@ -70,7 +68,7 @@ namespace Aggregator
 		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_ {};
 		std::unique_ptr<Util::MergeModel> ItemLists_ {};
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (Parent_);
-		std::unique_ptr<CategorySelector> ItemCategorySelector_ {};
+		std::unique_ptr<Util::CategorySelector> ItemCategorySelector_ {};
 
 		QTimer *SelectedChecker_ = nullptr;
 
@@ -191,15 +189,15 @@ namespace Aggregator
 				this,
 				&ItemsWidget::makeCurrentItemVisible);
 
-		Impl_->ItemCategorySelector_ = std::make_unique<CategorySelector> ();
+		Impl_->ItemCategorySelector_ = std::make_unique<Util::CategorySelector> ();
 		Impl_->ItemCategorySelector_->SetCaption (tr ("Items categories"));
 		Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 		Impl_->ItemCategorySelector_->hide ();
 		Impl_->ItemCategorySelector_->setMinimumHeight (0);
-		Impl_->ItemCategorySelector_->SetButtonsMode (CategorySelector::ButtonsMode::NoButtons);
+		Impl_->ItemCategorySelector_->SetButtonsMode (Util::CategorySelector::ButtonsMode::NoButtons);
 		connect (Impl_->ItemCategorySelector_.get (),
-				&CategorySelector::tagsSelectionChanged,
+				&Util::CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::categorySelectionChanged);
 
