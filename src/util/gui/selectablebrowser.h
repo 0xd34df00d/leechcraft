@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <variant>
 #include <QWidget>
 #include <QTextBrowser>
 #include <interfaces/iwebbrowser.h>
@@ -31,9 +32,9 @@ namespace LC::Util
 	 */
 	class UTIL_GUI_API SelectableBrowser : public QWidget
 	{
-		bool Internal_ = true;
-		std::unique_ptr<QTextBrowser> InternalBrowser_;
-		std::unique_ptr<IWebWidget> ExternalBrowser_;
+		using QTextBrowser_ptr = std::unique_ptr<QTextBrowser>;
+		using IWebWidget_ptr = std::unique_ptr<IWebWidget>;
+		std::variant<QTextBrowser_ptr, IWebWidget_ptr> Browser_;
 	public:
 		/** @brief Constructs the browser with the given parent.
 		 *

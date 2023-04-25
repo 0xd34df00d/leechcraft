@@ -8,6 +8,7 @@
 
 #include "selectablebrowser.h"
 #include <QVBoxLayout>
+#include <util/sll/visitor.h>
 
 namespace LC::Util
 {
@@ -24,46 +25,47 @@ namespace LC::Util
 
 	void SelectableBrowser::Construct (IWebBrowser *browser)
 	{
-		if (auto external = browser ? browser->CreateWidget () : std::unique_ptr<IWebWidget> {})
+		std::unique_ptr<IWebWidget> external;
+		if (browser)
+			external = browser->CreateWidget ();
+
+		if (external)
 		{
-			Internal_ = false;
-			InternalBrowser_.reset ();
-			ExternalBrowser_ = std::move (external);
-			layout ()->addWidget (ExternalBrowser_->GetQWidget ());
+			layout ()->addWidget (external->GetQWidget ());
+			Browser_ = std::move (external);
 		}
 		else
-		{
-			ExternalBrowser_.reset ();
 			PrepareInternal ();
-		}
 	}
 
 	void SelectableBrowser::SetHtml (const QString& html, const QUrl& base)
 	{
-		if (Internal_)
-			InternalBrowser_->setHtml (html);
-		else
-			ExternalBrowser_->SetHtml (html, base);
+		Util::Visit (Browser_,
+				[&] (IWebWidget_ptr& browser) { browser->SetHtml (html, base); },
+				[&] (QTextBrowser_ptr& browser) { browser->setHtml (html); });
 	}
 
 	void SelectableBrowser::SetNavBarVisible (bool visible)
 	{
-		if (!Internal_)
-			ExternalBrowser_->SetNavBarVisible (visible);
+		Util::Visit (Browser_,
+				[&] (IWebWidget_ptr& browser) { browser->SetNavBarVisible (visible); },
+				[&] (QTextBrowser_ptr&) {});
 	}
 
 	void SelectableBrowser::SetEverythingElseVisible (bool visible)
 	{
-		if (!Internal_)
-			ExternalBrowser_->SetEverythingElseVisible (visible);
+		Util::Visit (Browser_,
+				[&] (IWebWidget_ptr& browser) { browser->SetEverythingElseVisible (visible); },
+				[&] (QTextBrowser_ptr&) {});
 	}
 
 	void SelectableBrowser::PrepareInternal ()
 	{
-		Internal_ = true;
-		InternalBrowser_ = std::make_unique<QTextBrowser> ();
-		InternalBrowser_->setOpenExternalLinks (true);
-		InternalBrowser_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-		layout ()->addWidget (InternalBrowser_.get ());
+		auto browser = std::make_unique<QTextBrowser> ();
+		browser->setOpenExternalLinks (true);
+		browser->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		layout ()->addWidget (browser.get ());
+
+		Browser_ = std::move (browser);
 	}
 }
