@@ -31,6 +31,8 @@ namespace LC::Util
 
 		if (external)
 		{
+			external->SetNavBarVisible (NavBarVisible_);
+			external->SetEverythingElseVisible (EverythingElseVisible_);
 			layout ()->addWidget (external->GetQWidget ());
 			Browser_ = std::move (external);
 		}
@@ -47,6 +49,7 @@ namespace LC::Util
 
 	void SelectableBrowser::SetNavBarVisible (bool visible)
 	{
+		NavBarVisible_ = visible;
 		Util::Visit (Browser_,
 				[&] (IWebWidget_ptr& browser) { browser->SetNavBarVisible (visible); },
 				[&] (QTextBrowser_ptr&) {});
@@ -54,6 +57,7 @@ namespace LC::Util
 
 	void SelectableBrowser::SetEverythingElseVisible (bool visible)
 	{
+		EverythingElseVisible_ = visible;
 		Util::Visit (Browser_,
 				[&] (IWebWidget_ptr& browser) { browser->SetEverythingElseVisible (visible); },
 				[&] (QTextBrowser_ptr&) {});

@@ -32,6 +32,9 @@ namespace LC::Util
 	 */
 	class UTIL_GUI_API SelectableBrowser : public QWidget
 	{
+		bool NavBarVisible_ = true;
+		bool EverythingElseVisible_ = true;
+
 		using QTextBrowser_ptr = std::unique_ptr<QTextBrowser>;
 		using IWebWidget_ptr = std::unique_ptr<IWebWidget>;
 		std::variant<QTextBrowser_ptr, IWebWidget_ptr> Browser_;
