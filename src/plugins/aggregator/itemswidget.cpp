@@ -203,11 +203,14 @@ namespace Aggregator
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::categorySelectionChanged);
 
-		XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector",
-				this, "selectorVisiblityChanged");
-		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView",
-				this, "navBarVisibilityChanged");
-		selectorVisiblityChanged ();
+		XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector", this,
+				[this] (bool visible)
+				{
+					Impl_->ItemCategorySelector_->SelectAll ();
+					Impl_->ItemCategorySelector_->setVisible (visible);
+				});
+		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView", this,
+				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });
 
 		SelectionTracker_ = std::make_unique<ItemSelectionTracker> (*Impl_->Ui_.Items_, *Actions_, this);
 		connect (SelectionTracker_.get (),
@@ -353,7 +356,6 @@ namespace Aggregator
 	{
 		const auto browser = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 		Impl_->Ui_.ItemView_->Construct (browser);
-		navBarVisibilityChanged ();
 	}
 
 	void ItemsWidget::LoadUIState ()
@@ -545,25 +547,6 @@ namespace Aggregator
 		if (section == SearchSection::ImportantThisChannel)
 			tags << "_important";
 		Impl_->ItemsFilterModel_->SetItemTags (tags);
-	}
-
-	void ItemsWidget::selectorVisiblityChanged ()
-	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("ShowCategorySelector").toBool ())
-		{
-			Impl_->ItemCategorySelector_->SelectAll ();
-			Impl_->ItemCategorySelector_->hide ();
-		}
-		else if (Impl_->ItemCategorySelector_->GetSelections ().size ())
-			Impl_->ItemCategorySelector_->show ();
-	}
-
-	void ItemsWidget::navBarVisibilityChanged ()
-	{
-		Impl_->Ui_.ItemView_->
-			SetNavBarVisible (XmlSettingsManager::Instance ()->
-					property ("ShowNavBarInItemsView").toBool ());
 	}
 }
 }

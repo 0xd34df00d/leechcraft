@@ -101,8 +101,6 @@ namespace Aggregator
 		void checkSelected ();
 		void makeCurrentItemVisible ();
 		void updateItemsFilter ();
-		void selectorVisiblityChanged ();
-		void navBarVisibilityChanged ();
 	signals:
 		void movedToChannel (const QModelIndex&);
 	};
