@@ -225,10 +225,6 @@ namespace Aggregator
 				0,
 				this,
 				0);
-		disconnect (Impl_->ItemCategorySelector_.get (),
-				0,
-				this,
-				0);
 		delete Impl_;
 	}
 
