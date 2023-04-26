@@ -138,7 +138,7 @@ namespace LC::Util
 			const auto state = tags.contains (allTags [i]) ?
 					Qt::Checked :
 					Qt::Unchecked;
-			Model_.setData (Model_.index (i), Qt::CheckStateRole, state);
+			Model_.setData (Model_.index (i), state, Qt::CheckStateRole);
 		}
 	}
 
@@ -192,7 +192,7 @@ namespace LC::Util
 
 		const auto rowCount = Model_.stringList ().size ();
 		for (int i = 0; i < rowCount; ++i)
-			Model_.setData (Model_.index (i), Qt::CheckStateRole, Qt::Checked);
+			Model_.setData (Model_.index (i), Qt::Checked, Qt::CheckStateRole);
 	}
 
 	void CategorySelector::SelectNone ()
@@ -201,7 +201,7 @@ namespace LC::Util
 
 		const auto rowCount = Model_.stringList ().size ();
 		for (int i = 0; i < rowCount; ++i)
-			Model_.setData (Model_.index (i), Qt::CheckStateRole, Qt::Unchecked);
+			Model_.setData (Model_.index (i), Qt::Unchecked, Qt::CheckStateRole);
 	}
 
 	void CategorySelector::SetSelectionsFromString (const QString& text)
