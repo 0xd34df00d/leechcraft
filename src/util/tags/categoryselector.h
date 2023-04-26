@@ -13,8 +13,9 @@
 #include <util/sll/util.h>
 #include "tagsconfig.h"
 
-class QStringList;
 class QString;
+class QStringList;
+class QStringListModel;
 
 namespace Ui
 {
@@ -48,10 +49,13 @@ namespace LC::Util
 		Q_OBJECT
 
 		std::shared_ptr<Ui::CategorySelector> Ui_;
+		QStringListModel& Model_;
 
 		QString Caption_;
 		QString Separator_;
 		bool NotificationsEnabled_ = true;
+
+		friend class SelectorTagsModel;
 	public:
 		enum class ButtonsMode
 		{

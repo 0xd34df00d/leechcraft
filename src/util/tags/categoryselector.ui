@@ -15,12 +15,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeWidget" name="Tree_">
-     <column>
-      <property name="text">
-       <string notr="true"/>
-      </property>
-     </column>
+    <widget class="QTreeView" name="Tree_">
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
