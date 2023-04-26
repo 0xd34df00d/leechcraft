@@ -51,7 +51,6 @@ namespace LC::Util
 		std::shared_ptr<Ui::CategorySelector> Ui_;
 		QStringListModel& Model_;
 
-		QString Caption_;
 		QString Separator_;
 		bool NotificationsEnabled_ = true;
 

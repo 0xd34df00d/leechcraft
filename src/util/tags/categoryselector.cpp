@@ -85,7 +85,6 @@ namespace LC::Util
 	void CategorySelector::SetCaption (const QString& caption)
 	{
 		Model_.setHeaderData (0, Qt::Horizontal, caption, Qt::DisplayRole);
-		Caption_ = caption;
 	}
 
 	void CategorySelector::SetPossibleSelections (QStringList tags, bool sort)
