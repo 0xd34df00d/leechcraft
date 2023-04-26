@@ -35,7 +35,7 @@ namespace LC::Util
 
 		Qt::ItemFlags flags (const QModelIndex& index) const override
 		{
-			return QStringListModel::flags (index) & ~Qt::ItemFlag::ItemIsEditable;
+			return (QStringListModel::flags (index) & ~Qt::ItemIsEditable) | Qt::ItemIsUserCheckable;
 		}
 
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override
