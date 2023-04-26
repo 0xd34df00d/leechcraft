@@ -149,7 +149,7 @@ namespace LC::Util
 		 * @sa GetSelections()
 		 * @sa GetSelectedIndexes()
 		 */
-		void SetPossibleSelections (QStringList selections, bool sort = true);
+		virtual void SetPossibleSelections (QStringList selections, bool sort = true);
 
 		/** @brief Selects all variants.
 		 */
