@@ -26,6 +26,7 @@ namespace LC::Util
 	class SelectorTagsModel : public QStringListModel
 	{
 		CategorySelector& Selector_;
+		QSet<int> SelectedRows_;
 	public:
 		explicit SelectorTagsModel (CategorySelector& selector)
 		: QStringListModel { &selector }
@@ -38,12 +39,27 @@ namespace LC::Util
 			return (QStringListModel::flags (index) & ~Qt::ItemIsEditable) | Qt::ItemIsUserCheckable;
 		}
 
+		QVariant data (const QModelIndex& index, int role) const override
+		{
+			if (role == Qt::CheckStateRole)
+				return SelectedRows_.contains (index.row ()) ? Qt::Checked : Qt::Unchecked;
+
+			return QStringListModel::data (index, role);
+		}
+
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override
 		{
-			const auto result = QStringListModel::setData (index, value, role);
-			if (role == Qt::CheckStateRole)
-				Selector_.NotifyTagsSelection ();
-			return result;
+			if (role != Qt::CheckStateRole)
+				return false;
+
+			if (value.value<Qt::CheckState> () == Qt::Checked)
+				SelectedRows_ << index.row ();
+			else
+				SelectedRows_.remove (index.row ());
+			emit dataChanged (index, index, { Qt::CheckStateRole });
+			Selector_.NotifyTagsSelection ();
+			return true;
+		}
 		}
 	};
 
