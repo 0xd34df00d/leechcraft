@@ -97,6 +97,11 @@ namespace LC::Util
 		Model_.setStringList (tags);
 	}
 
+	QStringList CategorySelector::GetPossibleSelections () const
+	{
+		return Model_.stringList ();
+	}
+
 	QStringList CategorySelector::GetSelections () const
 	{
 		const auto& allTags = Model_.stringList ();

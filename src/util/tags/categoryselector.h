@@ -155,6 +155,8 @@ namespace LC::Util
 		 */
 		virtual void SetPossibleSelections (QStringList selections, bool sort = true);
 
+		QStringList GetPossibleSelections () const;
+
 		/** @brief Selects all variants.
 		 */
 		void SelectAll ();
