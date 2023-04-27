@@ -136,6 +136,7 @@ namespace LC::Util
 		if (sort)
 			tags.sort ();
 		Model_.setStringList (tags);
+		Model_.SelectNone ();
 	}
 
 	QStringList CategorySelector::GetPossibleSelections () const
