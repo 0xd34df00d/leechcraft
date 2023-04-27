@@ -27,11 +27,21 @@ namespace LC::Util
 	{
 		CategorySelector& Selector_;
 		QSet<int> SelectedRows_;
+
+		QString Header_;
 	public:
 		explicit SelectorTagsModel (CategorySelector& selector)
 		: QStringListModel { &selector }
 		, Selector_ { selector }
 		{
+		}
+
+		QVariant headerData (int section, Qt::Orientation orientation, int role) const override
+		{
+			if (role != Qt::DisplayRole || orientation != Qt::Horizontal || section)
+				return {};
+
+			return Header_;
 		}
 
 		Qt::ItemFlags flags (const QModelIndex& index) const override
@@ -87,6 +97,15 @@ namespace LC::Util
 
 			Selector_.NotifyTagsSelection ();
 		}
+
+		void SetHeader (QString header)
+		{
+			if (header == Header_)
+				return;
+
+			Header_ = std::move (header);
+			emit headerDataChanged (Qt::Horizontal, 0, 0);
+		}
 	};
 
 	CategorySelector::CategorySelector (QWidget *parent)
@@ -128,7 +147,7 @@ namespace LC::Util
 
 	void CategorySelector::SetCaption (const QString& caption)
 	{
-		Model_.setHeaderData (0, Qt::Horizontal, caption, Qt::DisplayRole);
+		Model_.SetHeader (caption);
 	}
 
 	void CategorySelector::SetPossibleSelections (QStringList tags, bool sort)
