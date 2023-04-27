@@ -17,7 +17,6 @@
 #include <QToolBar>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
-#include <util/tags/categoryselector.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -30,6 +29,7 @@
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "components/actions/itemactions.h"
+#include "components/gui/itemcategoryselector.h"
 #include "components/gui/itemnavigator.h"
 #include "components/gui/itemselectiontracker.h"
 #include "components/itemrender/item.h"
@@ -42,9 +42,7 @@
 #include "storagebackendmanager.h"
 #include "itemutils.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	struct ItemsWidget_Impl
 	{
@@ -68,7 +66,7 @@ namespace Aggregator
 		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_ {};
 		std::unique_ptr<Util::MergeModel> ItemLists_ {};
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (Parent_);
-		std::unique_ptr<Util::CategorySelector> ItemCategorySelector_ {};
+		std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ {};
 
 		QTimer *SelectedChecker_ = nullptr;
 
@@ -189,24 +187,13 @@ namespace Aggregator
 				this,
 				&ItemsWidget::makeCurrentItemVisible);
 
-		Impl_->ItemCategorySelector_ = std::make_unique<Util::CategorySelector> ();
-		Impl_->ItemCategorySelector_->SetCaption (tr ("Items categories"));
-		Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
+		Impl_->ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
-		Impl_->ItemCategorySelector_->hide ();
-		Impl_->ItemCategorySelector_->setMinimumHeight (0);
-		Impl_->ItemCategorySelector_->SetButtonsMode (Util::CategorySelector::ButtonsMode::NoButtons);
 		connect (Impl_->ItemCategorySelector_.get (),
 				&Util::CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::categorySelectionChanged);
 
-		XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector", this,
-				[this] (bool visible)
-				{
-					Impl_->ItemCategorySelector_->SelectAll ();
-					Impl_->ItemCategorySelector_->setVisible (visible);
-				});
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView", this,
 				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });
 
@@ -330,20 +317,7 @@ namespace Aggregator
 
 		const auto& items = Impl_->CurrentItemsModel_->GetAllItems ();
 		const auto& allCategories = ItemUtils::GetCategories (items).values ();
-		Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
-
-		if (!allCategories.isEmpty ())
-		{
-			Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
-			if (XmlSettingsManager::Instance ()->property ("ShowCategorySelector").toBool ())
-				Impl_->ItemCategorySelector_->show ();
-			RestoreSplitter ();
-		}
-		else
-		{
-			Impl_->ItemCategorySelector_->SetPossibleSelections ({});
-			Impl_->ItemCategorySelector_->hide ();
-		}
+		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
 	}
 
 	void ItemsWidget::ConstructBrowser ()
@@ -542,5 +516,4 @@ namespace Aggregator
 			tags << "_important";
 		Impl_->ItemsFilterModel_->SetItemTags (tags);
 	}
-}
 }

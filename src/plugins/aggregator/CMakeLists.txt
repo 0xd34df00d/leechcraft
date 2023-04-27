@@ -7,6 +7,7 @@ LC_DEFINE_PLUGIN (
 		components/actions/appwideactions.cpp
 		components/actions/channelactions.cpp
 		components/actions/itemactions.cpp
+		components/gui/itemcategoryselector.cpp
 		components/gui/itemnavigator.cpp
 		components/gui/itemselectiontracker.cpp
 		components/itemrender/item.cpp
