@@ -60,6 +60,32 @@ namespace LC::Util
 			Selector_.NotifyTagsSelection ();
 			return true;
 		}
+
+		void SelectAll ()
+		{
+			const int size = stringList ().size ();
+			if (!size)
+				return;
+
+			SelectedRows_.reserve (size);
+			for (int i = 0; i < size; ++i)
+				SelectedRows_ << i;
+
+			emit dataChanged (index (0), index (size - 1), { Qt::CheckStateRole });
+
+			NotifyTagsSelection ();
+		}
+
+		void SelectNone ()
+		{
+			const int size = stringList ().size ();
+			if (!size)
+				return;
+
+			SelectedRows_.clear ();
+			emit dataChanged (index (0), index (size - 1), { Qt::CheckStateRole });
+
+			NotifyTagsSelection ();
 		}
 	};
 
@@ -204,20 +230,12 @@ namespace LC::Util
 
 	void CategorySelector::SelectAll ()
 	{
-		auto guard = DisableNotifications ();
-
-		const auto rowCount = Model_.stringList ().size ();
-		for (int i = 0; i < rowCount; ++i)
-			Model_.setData (Model_.index (i), Qt::Checked, Qt::CheckStateRole);
+		Model_.SelectAll ();
 	}
 
 	void CategorySelector::SelectNone ()
 	{
-		auto guard = DisableNotifications ();
-
-		const auto rowCount = Model_.stringList ().size ();
-		for (int i = 0; i < rowCount; ++i)
-			Model_.setData (Model_.index (i), Qt::Unchecked, Qt::CheckStateRole);
+		Model_.SelectNone ();
 	}
 
 	void CategorySelector::SetSelectionsFromString (const QString& text)
