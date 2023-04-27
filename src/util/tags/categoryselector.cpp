@@ -73,7 +73,7 @@ namespace LC::Util
 
 			emit dataChanged (index (0), index (size - 1), { Qt::CheckStateRole });
 
-			NotifyTagsSelection ();
+			Selector_.NotifyTagsSelection ();
 		}
 
 		void SelectNone ()
@@ -85,7 +85,7 @@ namespace LC::Util
 			SelectedRows_.clear ();
 			emit dataChanged (index (0), index (size - 1), { Qt::CheckStateRole });
 
-			NotifyTagsSelection ();
+			Selector_.NotifyTagsSelection ();
 		}
 	};
 
