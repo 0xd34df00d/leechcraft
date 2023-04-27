@@ -23,7 +23,7 @@
 
 namespace LC::Util
 {
-	class SelectorTagsModel : public QStringListModel
+	class CategorySelector::SelectorTagsModel : public QStringListModel
 	{
 		CategorySelector& Selector_;
 		QSet<int> SelectedRows_;

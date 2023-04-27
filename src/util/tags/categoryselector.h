@@ -48,13 +48,13 @@ namespace LC::Util
 	{
 		Q_OBJECT
 
+		class SelectorTagsModel;
+
 		std::shared_ptr<Ui::CategorySelector> Ui_;
-		QStringListModel& Model_;
+		SelectorTagsModel& Model_;
 
 		QString Separator_;
 		bool NotificationsEnabled_ = true;
-
-		friend class SelectorTagsModel;
 	public:
 		enum class ButtonsMode
 		{
