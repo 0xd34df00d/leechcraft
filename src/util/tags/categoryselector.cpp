@@ -105,12 +105,14 @@ namespace LC::Util
 		setMinimumHeight (avail.height () / 3 * 2);
 
 		const auto all = new QAction (tr ("Select all"), this);
+		all->setProperty ("ActionIcon", "edit-select-all");
 		connect (all,
 				&QAction::triggered,
 				this,
 				&CategorySelector::SelectAll);
 
 		const auto none = new QAction (tr ("Select none"), this);
+		none->setProperty ("ActionIcon", "edit-select-none");
 		connect (none,
 				&QAction::triggered,
 				this,
