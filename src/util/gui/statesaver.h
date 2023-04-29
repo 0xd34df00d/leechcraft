@@ -10,6 +10,7 @@
 
 #include <optional>
 #include <string>
+#include <variant>
 #include <QVector>
 #include "guiconfig.h"
 
@@ -19,11 +20,21 @@ namespace LC::Util
 {
 	class BaseSettingsManager;
 
+	struct Widths : QVector<std::optional<int>>
+	{
+		using QVector::QVector;
+	};
+
+	struct Factors : QVector<int>
+	{
+		using QVector::QVector;
+	};
+
 	struct StateSaverParams
 	{
 		BaseSettingsManager& XSM_;
 		std::string Id_;
-		QVector<std::optional<int>> InitialWidths_;
+		std::variant<Widths, Factors> Initial_;
 	};
 
 	UTIL_GUI_API void SetupStateSaver (QSplitter&, const StateSaverParams&);

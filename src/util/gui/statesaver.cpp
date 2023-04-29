@@ -9,26 +9,38 @@
 #include "statesaver.h"
 #include <numeric>
 #include <QSplitter>
+#include <util/sll/visitor.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LC::Util
 {
 	namespace
 	{
-		QList<int> RedistributeWidths (int totalWidth, QVector<std::optional<int>> initialWidths)
+		QList<int> RedistributeWidths (int totalWidth, const Widths& widths)
 		{
-			const int occupiedWidth = std::accumulate (initialWidths.begin (), initialWidths.end (), 0,
+			const int occupiedWidth = std::accumulate (widths.begin (), widths.end (), 0,
 					[] (auto acc, auto elem) { return acc + elem.value_or (0); });
-			const int missingCount = std::count (initialWidths.begin (), initialWidths.end (), std::nullopt);
+			const int missingCount = std::count (widths.begin (), widths.end (), std::nullopt);
 
 			const auto widthPerMissing = missingCount ?
 					std::max (1, (totalWidth - occupiedWidth) / missingCount) :
 					0;
 
 			QList<int> result;
-			result.reserve (initialWidths.size ());
-			for (const auto& w : initialWidths)
+			result.reserve (widths.size ());
+			for (const auto& w : widths)
 				result << w.value_or (widthPerMissing);
+			return result;
+		}
+
+		QList<int> RedistributeWidths (int totalWidth, const Factors& factors)
+		{
+			const auto totalFactors = std::accumulate (factors.begin (), factors.end (), 0);
+
+			QList<int> result;
+			result.reserve (factors.size ());
+			for (auto size : factors)
+				result << size * totalWidth / totalFactors;
 			return result;
 		}
 
@@ -60,7 +72,8 @@ namespace LC::Util
 	{
 		auto widths = FromVariantList (params.XSM_.Property (params.Id_, {}).value<QVariantList> ());
 		if (widths.isEmpty ())
-			widths = RedistributeWidths (splitter.width (), params.InitialWidths_);
+			widths = Visit (params.Initial_,
+					[&] (const auto& value) { return RedistributeWidths (splitter.width (), value); });
 
 		splitter.setSizes (widths);
 
