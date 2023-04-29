@@ -191,7 +191,7 @@ namespace LC::Aggregator
 		Impl_->ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 		Util::SetupStateSaver (*Impl_->Ui_.CategoriesSplitter_,
-				{ .XSM_ = *XmlSettingsManager::Instance (), .Id_ = "CategoriesSplitter", .InitialWidths_ = { 3, 1 } });
+				{ .XSM_ = *XmlSettingsManager::Instance (), .Id_ = "CategoriesSplitter", .Initial_ = Util::Factors { 4, 1 } });
 		connect (Impl_->ItemCategorySelector_.get (),
 				&Util::CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
