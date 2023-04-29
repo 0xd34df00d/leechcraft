@@ -209,8 +209,6 @@ namespace LC::Aggregator
 
 	ItemsWidget::~ItemsWidget ()
 	{
-		on_CategoriesSplitter__splitterMoved ();
-
 		disconnect (Impl_->ItemsFilterModel_.get (),
 				0,
 				this,
@@ -359,23 +357,6 @@ namespace LC::Aggregator
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}
 
-	void ItemsWidget::RestoreSplitter ()
-	{
-		QList<int> sizes;
-		sizes << XmlSettingsManager::Instance ()->
-			Property ("CategoriesSplitter1", 0).toInt ();
-		sizes << XmlSettingsManager::Instance ()->
-			Property ("CategoriesSplitter2", 0).toInt ();
-		if (!sizes.at (0) &&
-				!sizes.at (1))
-		{
-			Impl_->Ui_.CategoriesSplitter_->setStretchFactor (0, 8);
-			Impl_->Ui_.CategoriesSplitter_->setStretchFactor (1, 1);
-		}
-		else
-			Impl_->Ui_.CategoriesSplitter_->setSizes (sizes);
-	}
-
 	void ItemsWidget::invalidateMergeMode ()
 	{
 		if (Impl_->MergeMode_)
@@ -389,15 +370,6 @@ namespace LC::Aggregator
 	{
 		Impl_->ItemsFilterModel_->setFilterCaseSensitivity (state ?
 				Qt::CaseSensitive : Qt::CaseInsensitive);
-	}
-
-	void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
-	{
-		QList<int> sizes = Impl_->Ui_.CategoriesSplitter_->sizes ();
-		XmlSettingsManager::Instance ()->
-			setProperty ("CategoriesSplitter1", sizes.at (0));
-		XmlSettingsManager::Instance ()->
-			setProperty ("CategoriesSplitter2", sizes.at (1));
 	}
 
 	namespace

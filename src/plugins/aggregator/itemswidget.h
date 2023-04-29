@@ -90,13 +90,11 @@ namespace Aggregator
 	private:
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);
-		void RestoreSplitter ();
 	private slots:
 		void invalidateMergeMode ();
 
 		void on_CaseSensitiveSearch__stateChanged (int);
 
-		void on_CategoriesSplitter__splitterMoved ();
 		void currentItemChanged ();
 		void checkSelected ();
 		void makeCurrentItemVisible ();
