@@ -29,6 +29,7 @@ set (GUI_SRCS
 	unhoverdeletemixin.cpp
 	util.cpp
 	fontsizescrollchanger.cpp
+	statesaver.cpp
 	)
 set (GUI_FORMS
 	findnotification.ui
