@@ -39,7 +39,10 @@ namespace LC::Util
 				if (!ev)
 					return false;
 
-				return F_ (ev);
+				if constexpr (requires { F_ (ev, static_cast<QObject&> (*this)); })
+					return F_ (ev, static_cast<QObject&> (*this));
+				else
+					return F_ (ev);
 			}
 		};
 	}
