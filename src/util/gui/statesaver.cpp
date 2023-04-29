@@ -9,6 +9,7 @@
 #include "statesaver.h"
 #include <numeric>
 #include <QSplitter>
+#include <util/sll/lambdaeventfilter.h>
 #include <util/sll/visitor.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -70,12 +71,22 @@ namespace LC::Util
 
 	void SetupStateSaver (QSplitter& splitter, const StateSaverParams& params)
 	{
-		auto widths = FromVariantList (params.XSM_.Property (params.Id_, {}).value<QVariantList> ());
-		if (widths.isEmpty ())
-			widths = Visit (params.Initial_,
-					[&] (const auto& value) { return RedistributeWidths (splitter.width (), value); });
+		auto restorer = [&splitter, params, firstTime = true] (QEvent*, QObject& pThis) mutable
+		{
+			if (!firstTime)
+				return false;
+			firstTime = false;
 
-		splitter.setSizes (widths);
+			auto widths = FromVariantList (params.XSM_.Property (params.Id_, {}).value<QVariantList> ());
+			if (widths.isEmpty ())
+				widths = Visit (params.Initial_,
+						[&] (const auto& value) { return RedistributeWidths (splitter.width (), value); });
+
+			splitter.setSizes (widths);
+			pThis.deleteLater ();
+			return false;
+		};
+		splitter.installEventFilter (MakeLambdaEventFilter<QEvent::Resize> (std::move (restorer), splitter));
 
 		QObject::connect (&splitter,
 				&QSplitter::splitterMoved,
