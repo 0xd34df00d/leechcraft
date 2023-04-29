@@ -20,7 +20,7 @@ namespace LC::Util
 		template<QEvent::Type Type, typename F>
 		class LambdaEventFilter : public QObject
 		{
-			const F F_;
+			F F_;
 
 			using EventType_t = std::remove_pointer_t<std::decay_t<ArgType_t<F, 0>>>;
 		public:
