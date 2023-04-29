@@ -19,6 +19,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/gui/statesaver.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <util/sll/containerconversions.h>
@@ -189,6 +190,8 @@ namespace LC::Aggregator
 
 		Impl_->ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
+		Util::SetupStateSaver (*Impl_->Ui_.CategoriesSplitter_,
+				{ .XSM_ = *XmlSettingsManager::Instance (), .Id_ = "CategoriesSplitter", .InitialWidths_ = { 3, 1 } });
 		connect (Impl_->ItemCategorySelector_.get (),
 				&Util::CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
