@@ -68,26 +68,34 @@ namespace LC::Util
 				result << num;
 			return result;
 		}
+
+		template<typename F>
+		auto SingleRun (F&& f)
+		{
+			return [f = std::forward<F> (f), firstTime = true] (QEvent*, QObject& pThis) mutable
+			{
+				if (firstTime)
+				{
+					firstTime = false;
+					std::invoke (std::forward<F> (f));
+					pThis.deleteLater ();
+				}
+				return false;
+			};
+		}
 	}
 
 	void SetupStateSaver (QSplitter& splitter, const StateSaverParams& params)
 	{
-		auto restorer = [&splitter, params, firstTime = true] (QEvent*, QObject& pThis) mutable
+		auto restorer = [&splitter, params]
 		{
-			if (!firstTime)
-				return false;
-			firstTime = false;
-
 			auto widths = FromVariantList (params.XSM_.Property (params.Id_, {}).value<QVariantList> ());
 			if (widths.isEmpty ())
 				widths = Visit (params.Initial_,
 						[&] (const auto& value) { return RedistributeWidths (splitter.width (), value); });
-
 			splitter.setSizes (widths);
-			pThis.deleteLater ();
-			return false;
 		};
-		splitter.installEventFilter (MakeLambdaEventFilter<QEvent::Resize> (std::move (restorer), splitter));
+		splitter.installEventFilter (MakeLambdaEventFilter<QEvent::Resize> (SingleRun (std::move (restorer)), splitter));
 
 		using namespace std::chrono_literals;
 		QObject::connect (&splitter,
