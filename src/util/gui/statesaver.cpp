@@ -8,6 +8,7 @@
 
 #include "statesaver.h"
 #include <numeric>
+#include <QHeaderView>
 #include <QSplitter>
 #include <util/sll/lambdaeventfilter.h>
 #include <util/sll/throttle.h>
@@ -106,9 +107,38 @@ namespace LC::Util
 		using namespace std::chrono_literals;
 		QObject::connect (&splitter,
 				&QSplitter::splitterMoved,
-				Throttled (1s, &splitter, [&xsm = params.XSM_, id = params.Id_, &splitter]
+				Throttled (1s, &splitter,
+					[&xsm = params.XSM_, id = params.Id_, &splitter]
 					{
 						xsm.setProperty (id.c_str (), ToVariantList (splitter.sizes ()));
 					}));
+	}
+
+	void SetupStateSaver (QHeaderView& header, const StateSaverParams& params)
+	{
+		OnResize (header,
+				[&header, params]
+				{
+					const auto state = params.XSM_.Property (params.Id_, QByteArray {}).toByteArray ();
+					if (state.isEmpty () || !header.restoreState (state))
+					{
+						const auto scrollWidth = header.style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
+						const auto slack = 10;
+						const auto totalWidth = header.width () - scrollWidth - slack;
+						const auto& widths = RedistributeWidths (totalWidth, params.Initial_);
+						for (int i = 0; i < widths.size (); ++i)
+							header.resizeSection (i, widths.at (i));
+					}
+				});
+
+		using namespace std::chrono_literals;
+		const auto saver = Throttled (5s, &header,
+				[&xsm = params.XSM_, id = params.Id_, &header] { xsm.setProperty (id.c_str (), header.saveState ()); });
+		QObject::connect (&header,
+				&QHeaderView::sectionMoved,
+				saver);
+		QObject::connect (&header,
+				&QHeaderView::sectionResized,
+				saver);
 	}
 }

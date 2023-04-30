@@ -14,6 +14,7 @@
 #include <QVector>
 #include "guiconfig.h"
 
+class QHeaderView;
 class QSplitter;
 
 namespace LC::Util
@@ -40,4 +41,6 @@ namespace LC::Util
 	};
 
 	UTIL_GUI_API void SetupStateSaver (QSplitter&, const StateSaverParams&);
+
+	UTIL_GUI_API void SetupStateSaver (QHeaderView&, const StateSaverParams&);
 }
