@@ -93,12 +93,10 @@ namespace Aggregator
 
 		LoadColumnWidth (Ui_.Feeds_, "feeds");
 		ItemsWidget_->ConstructBrowser ();
-		ItemsWidget_->LoadUIState ();
 
 		UiStateGuard_ = Util::MakeScopeGuard ([this]
 				{
 					SaveColumnWidth (Ui_.Feeds_, "feeds");
-					ItemsWidget_->SaveUIState ();
 				});
 
 		handleGroupChannels ();

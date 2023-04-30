@@ -85,8 +85,6 @@ namespace Aggregator
 		void CurrentChannelChanged (const QModelIndex&);
 
 		void ConstructBrowser ();
-		void LoadUIState ();
-		void SaveUIState ();
 	private:
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);

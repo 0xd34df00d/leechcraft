@@ -39,7 +39,6 @@
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
-#include "uistatepersist.h"
 #include "storagebackendmanager.h"
 #include "itemutils.h"
 
@@ -177,17 +176,6 @@ namespace LC::Aggregator
 
 		new Util::ClearLineEditAddon (proxy, Impl_->Ui_.SearchLine_);
 
-		const auto header = Impl_->Ui_.Items_->header ();
-		const auto& fm = fontMetrics ();
-		header->resizeSection (0,
-				fm.horizontalAdvance ("Average news article size is about this width or maybe bigger, because they are bigger"));
-		header->resizeSection (1,
-				fm.horizontalAdvance (QLocale {}.toString (QDateTime::currentDateTime (), QLocale::ShortFormat) + "__"));
-		connect (Impl_->Ui_.Items_->header (),
-				&QHeaderView::sectionClicked,
-				this,
-				&ItemsWidget::makeCurrentItemVisible);
-
 		Impl_->ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 		Util::SetupStateSaver (*Impl_->Ui_.CategoriesSplitter_,
@@ -205,6 +193,14 @@ namespace LC::Aggregator
 				&ItemSelectionTracker::refreshItemDisplay,
 				this,
 				&ItemsWidget::currentItemChanged);
+
+		const auto dateWidth = fontMetrics ().horizontalAdvance (QLocale {}.toString (QDateTime::currentDateTime (), QLocale::ShortFormat) + "__");
+		Util::SetupStateSaver (*Impl_->Ui_.Items_->header (),
+				{ .XSM_ = *XmlSettingsManager::Instance (), .Id_ = "ItemsHeader", .Initial_ = Util::Widths { {}, dateWidth } });
+		connect (Impl_->Ui_.Items_->header (),
+				&QHeaderView::sectionClicked,
+				this,
+				&ItemsWidget::makeCurrentItemVisible);
 	}
 
 	ItemsWidget::~ItemsWidget ()
@@ -325,16 +321,6 @@ namespace LC::Aggregator
 	{
 		const auto browser = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 		Impl_->Ui_.ItemView_->Construct (browser);
-	}
-
-	void ItemsWidget::LoadUIState ()
-	{
-		LoadColumnWidth (Impl_->Ui_.Items_, "items");
-	}
-
-	void ItemsWidget::SaveUIState ()
-	{
-		SaveColumnWidth (Impl_->Ui_.Items_, "items");
 	}
 
 	void ItemsWidget::ClearSupplementaryModels ()
