@@ -46,6 +46,11 @@ namespace LC::Util
 			return result;
 		}
 
+		QList<int> RedistributeWidths (int totalWidth, const InitialDistr& initial)
+		{
+			return Visit (initial, [&] (const auto& value) { return RedistributeWidths (totalWidth, value); });
+		}
+
 		QList<int> FromVariantList (const QVariantList& list)
 		{
 			QList<int> result;
@@ -83,19 +88,24 @@ namespace LC::Util
 				return false;
 			};
 		}
+
+		template<typename F>
+		void OnResize (QWidget& widget, F&& f)
+		{
+			widget.installEventFilter (MakeLambdaEventFilter<QEvent::Resize> (SingleRun (std::move (f)), widget));
+		}
 	}
 
 	void SetupStateSaver (QSplitter& splitter, const StateSaverParams& params)
 	{
-		auto restorer = [&splitter, params]
-		{
-			auto widths = FromVariantList (params.XSM_.Property (params.Id_, {}).value<QVariantList> ());
-			if (widths.isEmpty ())
-				widths = Visit (params.Initial_,
-						[&] (const auto& value) { return RedistributeWidths (splitter.width (), value); });
-			splitter.setSizes (widths);
-		};
-		splitter.installEventFilter (MakeLambdaEventFilter<QEvent::Resize> (SingleRun (std::move (restorer)), splitter));
+		OnResize (splitter,
+				[&splitter, params]
+				{
+					auto widths = FromVariantList (params.XSM_.Property (params.Id_, {}).value<QVariantList> ());
+					if (widths.isEmpty ())
+						widths = RedistributeWidths (splitter.width (), params.Initial_);
+					splitter.setSizes (widths);
+				});
 
 		using namespace std::chrono_literals;
 		QObject::connect (&splitter,

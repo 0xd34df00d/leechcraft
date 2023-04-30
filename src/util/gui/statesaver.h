@@ -30,11 +30,13 @@ namespace LC::Util
 		using QVector::QVector;
 	};
 
+	using InitialDistr = std::variant<Widths, Factors>;
+
 	struct StateSaverParams
 	{
 		BaseSettingsManager& XSM_;
 		std::string Id_;
-		std::variant<Widths, Factors> Initial_;
+		InitialDistr Initial_;
 	};
 
 	UTIL_GUI_API void SetupStateSaver (QSplitter&, const StateSaverParams&);
