@@ -77,14 +77,10 @@ namespace LC::Util
 		template<typename F>
 		auto SingleRun (F&& f)
 		{
-			return [f = std::forward<F> (f), firstTime = true] (QEvent*, QObject& pThis) mutable
+			return [f = std::forward<F> (f)] (QEvent*, QObject& pThis) mutable
 			{
-				if (firstTime)
-				{
-					firstTime = false;
-					std::invoke (std::forward<F> (f));
-					pThis.deleteLater ();
-				}
+				std::invoke (std::forward<F> (f));
+				pThis.deleteLater ();
 				return false;
 			};
 		}
