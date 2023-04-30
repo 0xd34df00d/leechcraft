@@ -33,6 +33,7 @@
 #include "components/gui/itemcategoryselector.h"
 #include "components/gui/itemnavigator.h"
 #include "components/gui/itemselectiontracker.h"
+#include "components/gui/util.h"
 #include "components/itemrender/item.h"
 #include "ui_itemswidget.h"
 #include "xmlsettingsmanager.h"
@@ -194,9 +195,12 @@ namespace LC::Aggregator
 				this,
 				&ItemsWidget::currentItemChanged);
 
-		const auto dateWidth = fontMetrics ().horizontalAdvance (QLocale {}.toString (QDateTime::currentDateTime (), QLocale::ShortFormat) + "__");
 		Util::SetupStateSaver (*Impl_->Ui_.Items_->header (),
-				{ .XSM_ = *XmlSettingsManager::Instance (), .Id_ = "ItemsHeader", .Initial_ = Util::Widths { {}, dateWidth } });
+				{
+					.XSM_ = *XmlSettingsManager::Instance (),
+					.Id_ = "ItemsHeader",
+					.Initial_ = Util::Widths { {}, GetDateColumnWidth (fontMetrics ()) },
+				});
 		connect (Impl_->Ui_.Items_->header (),
 				&QHeaderView::sectionClicked,
 				this,

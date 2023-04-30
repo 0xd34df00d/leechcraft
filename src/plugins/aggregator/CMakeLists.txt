@@ -10,6 +10,7 @@ LC_DEFINE_PLUGIN (
 		components/gui/itemcategoryselector.cpp
 		components/gui/itemnavigator.cpp
 		components/gui/itemselectiontracker.cpp
+		components/gui/util.cpp
 		components/itemrender/item.cpp
 		components/itemrender/mrss.cpp
 		components/itemrender/utils.cpp
