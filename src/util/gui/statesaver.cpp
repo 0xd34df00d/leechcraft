@@ -10,6 +10,7 @@
 #include <numeric>
 #include <QSplitter>
 #include <util/sll/lambdaeventfilter.h>
+#include <util/sll/throttle.h>
 #include <util/sll/visitor.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -88,11 +89,12 @@ namespace LC::Util
 		};
 		splitter.installEventFilter (MakeLambdaEventFilter<QEvent::Resize> (std::move (restorer), splitter));
 
+		using namespace std::chrono_literals;
 		QObject::connect (&splitter,
 				&QSplitter::splitterMoved,
-				[&xsm = params.XSM_, id = params.Id_, &splitter]
-				{
-					xsm.setProperty (id.c_str (), ToVariantList (splitter.sizes ()));
-				});
+				Throttled (1s, &splitter, [&xsm = params.XSM_, id = params.Id_, &splitter]
+					{
+						xsm.setProperty (id.c_str (), ToVariantList (splitter.sizes ()));
+					}));
 	}
 }
