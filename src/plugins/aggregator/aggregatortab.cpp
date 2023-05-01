@@ -11,13 +11,15 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <interfaces/core/icoreproxy.h>
+#include <util/gui/statesaver.h>
 #include <util/models/flattofoldersproxymodel.h>
+#include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
+#include "components/gui/util.h"
 #include "xmlsettingsmanager.h"
-#include "uistatepersist.h"
 #include "channelsmodel.h"
 #include "channelsfiltermodel.h"
 #include "itemswidget.h"
@@ -69,12 +71,6 @@ namespace Aggregator
 				this,
 				&AggregatorTab::handleFeedsContextMenuRequested);
 
-		const auto header = Ui_.Feeds_->header ();
-		const auto& fm = fontMetrics ();
-		header->resizeSection (0, fm.horizontalAdvance ("Average channel name"));
-		header->resizeSection (1, fm.horizontalAdvance ("_9999_"));
-		header->resizeSection (2, fm.horizontalAdvance (QLocale {}.toString (QDateTime::currentDateTime (), QLocale::ShortFormat) + "__"));
-
 		connect (Ui_.TagsLine_,
 				&QLineEdit::textChanged,
 				ChannelsFilterModel_,
@@ -91,23 +87,25 @@ namespace Aggregator
 				Ui_.Feeds_,
 				&QTreeView::expand);
 
-		LoadColumnWidth (Ui_.Feeds_, "feeds");
 		ItemsWidget_->ConstructBrowser ();
-
-		UiStateGuard_ = Util::MakeScopeGuard ([this]
-				{
-					SaveColumnWidth (Ui_.Feeds_, "feeds");
-				});
 
 		handleGroupChannels ();
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this, "handleGroupChannels");
 
 		currentChannelChanged ();
+
+		const auto& fm = fontMetrics ();
 		Util::SetupStateSaver (*Ui_.MainSplitter_,
 				{
 					.XSM_ = *XmlSettingsManager::Instance (),
 					.Id_ = "FeedsSplitter",
 					.Initial_ = Util::Factors { 1, 3 },
+				});
+		Util::SetupStateSaver (*Ui_.Feeds_->header (),
+				{
+					.XSM_ = *XmlSettingsManager::Instance (),
+					.Id_ = "FeedsHeader",
+					.Initial_ = Util::Widths { {}, fm.horizontalAdvance ("_9999_"_qs), GetDateColumnWidth (fm) },
 				});
 	}
 

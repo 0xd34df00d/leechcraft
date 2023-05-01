@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <QWidget>
-#include <util/sll/util.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "ui_mainwidget.h"
@@ -52,8 +51,6 @@ namespace Aggregator
 		ChannelsFilterModel * const ChannelsFilterModel_;
 
 		const std::unique_ptr<ItemsWidget> ItemsWidget_;
-
-		Util::DefaultScopeGuard UiStateGuard_;
 	public:
 		struct InitParams
 		{
