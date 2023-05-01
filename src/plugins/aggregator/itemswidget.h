@@ -88,12 +88,12 @@ namespace Aggregator
 	private:
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);
+		void RenderSelectedItems ();
 	private slots:
 		void invalidateMergeMode ();
 
 		void on_CaseSensitiveSearch__stateChanged (int);
 
-		void currentItemChanged ();
 		void checkSelected ();
 		void makeCurrentItemVisible ();
 		void updateItemsFilter ();

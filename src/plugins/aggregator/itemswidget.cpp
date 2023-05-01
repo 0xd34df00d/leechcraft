@@ -193,7 +193,7 @@ namespace LC::Aggregator
 		connect (SelectionTracker_.get (),
 				&ItemSelectionTracker::refreshItemDisplay,
 				this,
-				&ItemsWidget::currentItemChanged);
+				&ItemsWidget::RenderSelectedItems);
 
 		Util::SetupStateSaver (*Impl_->Ui_.Items_->header (),
 				{
@@ -230,7 +230,7 @@ namespace LC::Aggregator
 	{
 		Impl_->TapeMode_ = tape;
 		SelectionTracker_->SetItemDependsOnSelection (!tape);
-		currentItemChanged ();
+		RenderSelectedItems ();
 
 		XmlSettingsManager::Instance ()->setProperty ("ShowAsTape", tape);
 	}
@@ -311,7 +311,7 @@ namespace LC::Aggregator
 			Impl_->CurrentItemsModel_->Reset (IDNotFound);
 
 		Impl_->Ui_.Items_->scrollToTop ();
-		currentItemChanged ();
+		RenderSelectedItems ();
 
 		if (!isVisible ())
 			return;
@@ -384,7 +384,7 @@ namespace LC::Aggregator
 		}
 	}
 
-	void ItemsWidget::currentItemChanged ()
+	void ItemsWidget::RenderSelectedItems ()
 	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		const auto& itemsToDisplay = Impl_->TapeMode_ ?
