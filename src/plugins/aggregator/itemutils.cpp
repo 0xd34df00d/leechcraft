@@ -15,8 +15,7 @@ namespace LC::Aggregator::ItemUtils
 		QSet<QString> unique;
 		for (const auto& item : items)
 			for (const auto& category : item.Categories_)
-				if (!category.isEmpty ())
-					unique << category;
+				unique << category;
 
 		return unique;
 	}
