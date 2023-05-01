@@ -406,7 +406,7 @@ namespace LC::Aggregator
 			}
 		Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, base);
 
-		if (Impl_->TapeMode_)
+		if (!Impl_->TapeMode_)
 		{
 			auto sourceIndex = Impl_->Ui_.Items_->currentIndex ();
 			if (sourceIndex.isValid ())
