@@ -27,7 +27,6 @@ LC_DEFINE_PLUGIN (
 		channel.cpp
 		feed.cpp
 		xmlsettingsmanager.cpp
-		uistatepersist.cpp
 		channelsmodel.cpp
 		channelsfiltermodel.cpp
 		itemsfiltermodel.cpp
