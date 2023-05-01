@@ -313,9 +313,6 @@ namespace LC::Aggregator
 		Impl_->Ui_.Items_->scrollToTop ();
 		RenderSelectedItems ();
 
-		if (!isVisible ())
-			return;
-
 		const auto& items = Impl_->CurrentItemsModel_->GetAllItems ();
 		const auto& allCategories = ItemUtils::GetCategories (items).values ();
 		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
