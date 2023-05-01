@@ -121,6 +121,9 @@ namespace LC::Aggregator
 
 		Tag MakeEmbedImages (const QList<Enclosure>& enclosures, const TextColor& color)
 		{
+			if (enclosures.isEmpty ())
+				return {};
+
 			Nodes nodes;
 			nodes.reserve (enclosures.size ());
 			for (const auto& enclosure : enclosures)
