@@ -103,6 +103,12 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this, "handleGroupChannels");
 
 		currentChannelChanged ();
+		Util::SetupStateSaver (*Ui_.MainSplitter_,
+				{
+					.XSM_ = *XmlSettingsManager::Instance (),
+					.Id_ = "FeedsSplitter",
+					.Initial_ = Util::Factors { 1, 3 },
+				});
 	}
 
 	AggregatorTab::~AggregatorTab () = default;
