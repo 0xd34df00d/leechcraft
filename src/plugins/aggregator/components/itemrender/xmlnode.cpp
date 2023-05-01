@@ -55,6 +55,9 @@ namespace LC::Aggregator
 
 	QString Tag::ToHtml () const
 	{
+		if (Name_.isEmpty ())
+			return {};
+
 		QString result;
 		QXmlStreamWriter w { &result };
 		TagToHtml (*this, w);
