@@ -17,7 +17,7 @@ namespace LC::Aggregator
 	{
 		const auto sm = view.selectionModel ();
 
-		const auto commonHandler = [=, &actions]
+		const auto commonHandler = [&, sm]
 		{
 			const auto& rows = sm->selectedRows ();
 			actions.HandleSelectionChanged (rows);
@@ -39,7 +39,7 @@ namespace LC::Aggregator
 		connect (view.model (),
 				&QAbstractItemModel::dataChanged,
 				this,
-				[=, &actions] (const QModelIndex& from, const QModelIndex& to)
+				[&, sm] (const QModelIndex& from, const QModelIndex& to)
 				{
 					for (int row = from.row (); row <= to.row (); ++row)
 					{
