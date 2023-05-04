@@ -207,14 +207,7 @@ namespace LC::Aggregator
 				&ItemsWidget::makeCurrentItemVisible);
 	}
 
-	ItemsWidget::~ItemsWidget ()
-	{
-		disconnect (Impl_->ItemsFilterModel_.get (),
-				0,
-				this,
-				0);
-		delete Impl_;
-	}
+	ItemsWidget::~ItemsWidget () = default;
 
 	QToolBar* ItemsWidget::GetToolBar () const
 	{

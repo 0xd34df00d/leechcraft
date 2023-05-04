@@ -48,8 +48,8 @@ namespace Aggregator
 		Q_OBJECT
 
 		friend class Aggregator;
-		ItemsWidget_Impl *Impl_;
 
+		std::unique_ptr<ItemsWidget_Impl> Impl_;
 		std::unique_ptr<ItemActions> Actions_;
 		std::unique_ptr<ItemSelectionTracker> SelectionTracker_;
 	public:
