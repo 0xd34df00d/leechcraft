@@ -190,6 +190,7 @@ namespace LC::Aggregator
 				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });
 
 		SelectionTracker_ = std::make_unique<ItemSelectionTracker> (*Impl_->Ui_.Items_, *Actions_, this);
+		SelectionTracker_->SetTapeMode (Impl_->TapeMode_);
 		connect (SelectionTracker_.get (),
 				&ItemSelectionTracker::refreshItemDisplay,
 				this,
