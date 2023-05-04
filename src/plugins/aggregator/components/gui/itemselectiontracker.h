@@ -24,12 +24,12 @@ namespace LC::Aggregator
 	{
 		Q_OBJECT
 
-		bool EmitRefreshes_ = true;
+		bool TapeMode_ = false;
 		QSet<IDType_t> CurrentItems_;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
-		void SetItemDependsOnSelection (bool);
+		void SetTapeMode (bool);
 	private:
 		void SaveCurrentItems (const QList<QModelIndex>&);
 	signals:

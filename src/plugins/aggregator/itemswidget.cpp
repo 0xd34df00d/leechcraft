@@ -222,7 +222,7 @@ namespace LC::Aggregator
 	void ItemsWidget::SetTapeMode (bool tape)
 	{
 		Impl_->TapeMode_ = tape;
-		SelectionTracker_->SetItemDependsOnSelection (!tape);
+		SelectionTracker_->SetTapeMode (tape);
 		RenderSelectedItems ();
 
 		XmlSettingsManager::Instance ()->setProperty ("ShowAsTape", tape);

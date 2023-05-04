@@ -21,7 +21,7 @@ namespace LC::Aggregator
 		{
 			const auto& rows = sm->selectedRows ();
 			actions.HandleSelectionChanged (rows);
-			if (EmitRefreshes_)
+			if (!TapeMode_)
 				emit refreshItemDisplay ();
 
 			SaveCurrentItems (rows);
@@ -53,9 +53,9 @@ namespace LC::Aggregator
 				});
 	}
 
-	void ItemSelectionTracker::SetItemDependsOnSelection (bool depends)
+	void ItemSelectionTracker::SetTapeMode (bool tape)
 	{
-		EmitRefreshes_ = depends;
+		TapeMode_ = tape;
 	}
 
 	void ItemSelectionTracker::SaveCurrentItems (const QModelIndexList& rows)
