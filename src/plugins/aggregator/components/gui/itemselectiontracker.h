@@ -25,13 +25,13 @@ namespace LC::Aggregator
 		Q_OBJECT
 
 		bool EmitRefreshes_ = true;
-		QSet<IDType_t> LastSelection_;
+		QSet<IDType_t> CurrentItems_;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
 		void SetItemDependsOnSelection (bool);
 	private:
-		void SaveLastSelection (const QList<QModelIndex>&);
+		void SaveCurrentItems (const QList<QModelIndex>&);
 	signals:
 		void refreshItemDisplay ();
 	};

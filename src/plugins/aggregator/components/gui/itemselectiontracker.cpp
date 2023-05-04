@@ -24,7 +24,7 @@ namespace LC::Aggregator
 			if (EmitRefreshes_)
 				emit refreshItemDisplay ();
 
-			SaveLastSelection (rows);
+			SaveCurrentItems (rows);
 		};
 
 		connect (sm,
@@ -44,7 +44,7 @@ namespace LC::Aggregator
 					for (int row = from.row (); row <= to.row (); ++row)
 					{
 						const auto changedItemId = from.siblingAtRow (row).data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
-						if (LastSelection_.contains (changedItemId))
+						if (CurrentItems_.contains (changedItemId))
 						{
 							actions.HandleSelectionChanged (sm->selectedRows ());
 							return;
@@ -58,10 +58,10 @@ namespace LC::Aggregator
 		EmitRefreshes_ = depends;
 	}
 
-	void ItemSelectionTracker::SaveLastSelection (const QModelIndexList& rows)
+	void ItemSelectionTracker::SaveCurrentItems (const QModelIndexList& rows)
 	{
-		LastSelection_.clear ();
+		CurrentItems_.clear ();
 		for (const auto& row : rows)
-			LastSelection_ << row.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+			CurrentItems_ << row.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 	}
 }
