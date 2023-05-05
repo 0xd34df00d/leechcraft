@@ -59,7 +59,6 @@ namespace Aggregator
 		~ItemsWidget () override;
 
 		QToolBar* GetToolBar () const;
-		void SetTapeMode (bool);
 
 		QModelIndex GetUnfilteredSelectedIndex () const;
 
@@ -86,6 +85,8 @@ namespace Aggregator
 
 		void ConstructBrowser ();
 	private:
+		void SetTapeMode (bool);
+
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (IDType_t);
 		void RenderSelectedItems ();
