@@ -85,11 +85,11 @@ namespace LC::Aggregator
 		emit selectionChanged ();
 	}
 
-	void ItemSelectionTracker::HandleCurrentRowChanged (const QModelIndex&)
+	void ItemSelectionTracker::HandleCurrentRowChanged (const QModelIndex& current)
 	{
 		ReadMarkTimer_.stop ();
 
-		if (TapeMode_)
+		if (TapeMode_ || current.data (IItemsModel::ItemRole::IsRead).toBool ())
 			return;
 
 		const auto timeout = XmlSettingsManager::Instance ()->property ("MarkAsReadTimeout").toInt ();
