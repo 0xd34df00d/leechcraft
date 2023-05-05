@@ -12,7 +12,6 @@
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
 #include <QUrl>
-#include <QTimer>
 #include <QMessageBox>
 #include <QToolBar>
 #include <QtDebug>
@@ -69,11 +68,6 @@ namespace LC::Aggregator
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (Parent_);
 		std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ {};
 
-		QTimer *SelectedChecker_ = nullptr;
-
-		// The last selected index into the ItemLists_ model.
-		QModelIndex LastSelectedIndex_ {};
-
 		QModelIndex LastSelectedChannel_ {};
 
 		UpdatesManager *UpdatesManager_ = nullptr;
@@ -119,13 +113,6 @@ namespace LC::Aggregator
 		this)
 	}
 	{
-		Impl_->SelectedChecker_ = new QTimer (this);
-		Impl_->SelectedChecker_->setSingleShot (true);
-		connect (Impl_->SelectedChecker_,
-				&QTimer::timeout,
-				this,
-				&ItemsWidget::checkSelected);
-
 		Impl_->UpdatesManager_ = &deps.UpdatesManager_;
 
 		auto& cm = deps.ChannelsModel_;
@@ -282,16 +269,6 @@ namespace LC::Aggregator
 		}
 	}
 
-	void ItemsWidget::Selected (const QModelIndex& index)
-	{
-		Impl_->LastSelectedIndex_ = index;
-
-		Impl_->SelectedChecker_->stop ();
-		const auto timeout = XmlSettingsManager::Instance ()->
-				property ("MarkAsReadTimeout").toInt () * 1000;
-		Impl_->SelectedChecker_->start (timeout);
-	}
-
 	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
 	{
 		if (Impl_->MergeMode_)
@@ -398,27 +375,6 @@ namespace LC::Aggregator
 					base = item->Link_;
 			}
 		Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, base);
-
-		if (!Impl_->TapeMode_)
-		{
-			auto sourceIndex = Impl_->Ui_.Items_->currentIndex ();
-			if (sourceIndex.isValid ())
-			{
-				const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
-				Selected (cIndex);
-			}
-		}
-	}
-
-	void ItemsWidget::checkSelected ()
-	{
-		const auto& sourceIndex = Impl_->Ui_.Items_->currentIndex ();
-		const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
-		if (cIndex != Impl_->LastSelectedIndex_ || cIndex.data (IItemsModel::ItemRole::IsRead).toBool ())
-			return;
-
-		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		sb->SetItemUnread (cIndex.data (IItemsModel::ItemRole::ItemId).value<IDType_t> (), false);
 	}
 
 	void ItemsWidget::makeCurrentItemVisible ()

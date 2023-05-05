@@ -8,13 +8,21 @@
 
 #include "itemselectiontracker.h"
 #include <QAbstractItemView>
+#include <QTimer>
 #include "interfaces/aggregator/iitemsmodel.h"
+#include "storagebackendmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC::Aggregator
 {
 	ItemSelectionTracker::ItemSelectionTracker (QAbstractItemView& view, ItemActions& actions, QObject *parent)
 	: QObject { parent }
+	, View_ { view }
+	, ReadMarkTimer_ { *new QTimer { this } }
 	{
+		ReadMarkTimer_.callOnTimeout (this, &ItemSelectionTracker::MarkCurrentRead);
+		ReadMarkTimer_.setSingleShot (true);
+
 		const auto sm = view.selectionModel ();
 
 		const auto commonHandler = [&, sm]
@@ -26,6 +34,11 @@ namespace LC::Aggregator
 
 			SaveCurrentItems (rows);
 		};
+
+		connect (sm,
+				&QItemSelectionModel::currentRowChanged,
+				this,
+				&ItemSelectionTracker::HandleCurrentRowChanged);
 
 		connect (sm,
 				&QItemSelectionModel::selectionChanged,
@@ -70,5 +83,26 @@ namespace LC::Aggregator
 			CurrentItems_ << row.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 
 		emit selectionChanged ();
+	}
+
+	void ItemSelectionTracker::HandleCurrentRowChanged (const QModelIndex&)
+	{
+		ReadMarkTimer_.stop ();
+
+		if (TapeMode_)
+			return;
+
+		const auto timeout = XmlSettingsManager::Instance ()->property ("MarkAsReadTimeout").toInt ();
+		ReadMarkTimer_.start (std::chrono::seconds { timeout });
+	}
+
+	void ItemSelectionTracker::MarkCurrentRead ()
+	{
+		const auto& index = View_.currentIndex ();
+		if (!index.isValid () || index.data (IItemsModel::ItemRole::IsRead).toBool ())
+			return;
+
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		sb->SetItemUnread (index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> (), false);
 	}
 }

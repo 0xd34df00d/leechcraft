@@ -80,7 +80,6 @@ namespace Aggregator
 			* @param[in] tags The list of tags to merge.
 			*/
 		void SetMergeModeTags (const QStringList& tags);
-		void Selected (const QModelIndex&);
 		void CurrentChannelChanged (const QModelIndex&);
 
 		void ConstructBrowser ();
@@ -95,7 +94,6 @@ namespace Aggregator
 
 		void on_CaseSensitiveSearch__stateChanged (int);
 
-		void checkSelected ();
 		void makeCurrentItemVisible ();
 		void updateItemsFilter ();
 	signals:

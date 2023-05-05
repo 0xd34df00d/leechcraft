@@ -15,6 +15,7 @@
 
 class QAbstractItemView;
 class QModelIndex;
+class QTimer;
 
 namespace LC::Aggregator
 {
@@ -24,8 +25,11 @@ namespace LC::Aggregator
 	{
 		Q_OBJECT
 
+		QAbstractItemView& View_;
+
 		bool TapeMode_ = false;
 		QSet<IDType_t> CurrentItems_;
+		QTimer& ReadMarkTimer_;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
@@ -33,6 +37,8 @@ namespace LC::Aggregator
 		void SetTapeMode (bool);
 	private:
 		void SaveCurrentItems (const QList<QModelIndex>&);
+		void HandleCurrentRowChanged (const QModelIndex&);
+		void MarkCurrentRead ();
 	signals:
 		void refreshItemDisplay ();
 		void selectionChanged ();
