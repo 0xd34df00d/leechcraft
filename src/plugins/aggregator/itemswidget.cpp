@@ -182,7 +182,7 @@ namespace LC::Aggregator
 		connect (Impl_->ItemCategorySelector_.get (),
 				&Util::CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
-				&ItemsFilterModel::categorySelectionChanged);
+				&ItemsFilterModel::InvalidateCategorySelection);
 
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView", this,
 				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });

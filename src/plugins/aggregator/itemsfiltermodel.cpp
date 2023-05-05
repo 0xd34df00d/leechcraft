@@ -63,6 +63,16 @@ namespace Aggregator
 		invalidate ();
 	}
 
+	void ItemsFilterModel::InvalidateCategorySelection (const QStringList& categoriesList)
+	{
+		auto categories = Util::AsSet (categoriesList);
+		if (categories == ItemCategories_)
+			return;
+
+		ItemCategories_ = std::move (categories);
+		invalidateFilter ();
+	}
+
 	bool ItemsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
 		const auto& index = sourceModel ()->index (sourceRow, 0, sourceParent);
@@ -110,12 +120,6 @@ namespace Aggregator
 				return false;
 		}
 		return QSortFilterProxyModel::lessThan (left, right);
-	}
-
-	void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
-	{
-		ItemCategories_ = Util::AsSet (categories);
-		invalidateFilter ();
 	}
 }
 }

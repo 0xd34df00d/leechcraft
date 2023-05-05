@@ -35,11 +35,11 @@ namespace Aggregator
 		void SetItemsWidget (ItemsWidget*);
 		void SetHideRead (bool);
 		void SetItemTags (QList<ITagsManager::tag_id>);
+
+		void InvalidateCategorySelection (const QStringList&);
 	protected:
 		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
 		virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
-	public slots:
-		void categorySelectionChanged (const QStringList&);
 	};
 }
 }
