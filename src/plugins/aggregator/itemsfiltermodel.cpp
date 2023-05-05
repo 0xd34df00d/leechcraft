@@ -27,7 +27,7 @@ namespace Aggregator
 				[this] (bool unreadOnTop)
 				{
 					UnreadOnTop_ = unreadOnTop;
-					invalidateFilter ();
+					invalidate ();
 				});
 	}
 
