@@ -58,7 +58,7 @@ namespace LC::Aggregator
 
 		QToolBar *ControlToolBar_ = nullptr;
 
-		bool TapeMode_ = false;
+		bool TapeMode_ = XmlSettingsManager::Instance ()->Property ("ShowAsTape", false).toBool ();
 		bool MergeMode_ = false;
 
 		QAbstractItemModel *ChannelsModel_ = nullptr;
@@ -138,8 +138,6 @@ namespace LC::Aggregator
 				&QAbstractItemModel::rowsRemoved,
 				this,
 				&ItemsWidget::invalidateMergeMode);
-
-		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->Property ("ShowAsTape", false).toBool ();
 
 		Impl_->ControlToolBar_ = CreateToolbar (*Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
