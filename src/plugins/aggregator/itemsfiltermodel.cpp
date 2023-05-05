@@ -71,6 +71,12 @@ namespace LC::Aggregator
 		invalidateFilter ();
 	}
 
+	void ItemsFilterModel::InvalidateItemsSelection ()
+	{
+		if (HideRead_)
+			invalidateFilter ();
+	}
+
 	bool ItemsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
 		const auto& index = sourceModel ()->index (sourceRow, 0, sourceParent);

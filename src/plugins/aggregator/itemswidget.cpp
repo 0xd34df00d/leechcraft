@@ -193,6 +193,10 @@ namespace LC::Aggregator
 				&ItemSelectionTracker::refreshItemDisplay,
 				this,
 				&ItemsWidget::RenderSelectedItems);
+		connect (SelectionTracker_.get (),
+				&ItemSelectionTracker::selectionChanged,
+				Impl_->ItemsFilterModel_.get (),
+				&ItemsFilterModel::InvalidateItemsSelection);
 
 		Util::SetupStateSaver (*Impl_->Ui_.Items_->header (),
 				{

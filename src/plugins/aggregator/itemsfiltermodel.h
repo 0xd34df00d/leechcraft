@@ -33,6 +33,7 @@ namespace LC::Aggregator
 		void SetItemTags (QList<ITagsManager::tag_id>);
 
 		void InvalidateCategorySelection (const QStringList&);
+		void InvalidateItemsSelection ();
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const override;
