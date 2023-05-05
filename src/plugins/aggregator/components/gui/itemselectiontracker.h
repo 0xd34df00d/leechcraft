@@ -34,5 +34,6 @@ namespace LC::Aggregator
 		void SaveCurrentItems (const QList<QModelIndex>&);
 	signals:
 		void refreshItemDisplay ();
+		void selectionChanged ();
 	};
 }
