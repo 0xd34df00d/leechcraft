@@ -57,12 +57,14 @@ namespace LC::Aggregator
 			MoveToNextUnreadInChannel ();
 	}
 
+	namespace v = std::views;
+
 	bool ItemNavigator::MoveToPrevUnreadInChannel () const
 	{
 		const auto rc = View_.model ()->rowCount ();
 		const auto& current = View_.currentIndex ();
 		const auto endRow = current.isValid () ? current.row () : rc;
-		return MoveToUnreadSibling (std::views::iota (0, endRow - 1) | std::views::reverse);
+		return 0 <= endRow - 1 && MoveToUnreadSibling (v::iota (0, endRow - 1) | v::reverse);
 	}
 
 	bool ItemNavigator::MoveToNextUnreadInChannel () const
@@ -70,7 +72,7 @@ namespace LC::Aggregator
 		const auto rc = View_.model ()->rowCount ();
 		const auto& current = View_.currentIndex ();
 		const auto startRow = current.isValid () ? current.row () + 1 : 0;
-		return MoveToUnreadSibling (std::views::iota (startRow, rc - 1));
+		return startRow <= rc - 1 && MoveToUnreadSibling (v::iota (startRow, rc - 1));
 	}
 
 	bool ItemNavigator::SelectPrevUnreadChannel() const
@@ -80,8 +82,8 @@ namespace LC::Aggregator
 
 		const auto& chanRow = SelectedChannel_.row ();
 		const auto& rc = SelectedChannel_.model ()->rowCount ();
-		return SelectUnreadChannel (std::views::iota (0, chanRow - 1) | std::views::reverse) ||
-				SelectUnreadChannel (std::views::iota (chanRow + 1, rc - 1) | std::views::reverse);
+		return (0 <= chanRow - 1       && SelectUnreadChannel (v::iota (0, chanRow - 1) | v::reverse)) ||
+				(chanRow + 1 <= rc - 1 && SelectUnreadChannel (v::iota (chanRow + 1, rc - 1) | v::reverse));
 	}
 
 	bool ItemNavigator::SelectNextUnreadChannel() const
@@ -91,8 +93,8 @@ namespace LC::Aggregator
 
 		const auto& chanRow = SelectedChannel_.row ();
 		const auto& rc = SelectedChannel_.model ()->rowCount ();
-		return SelectUnreadChannel (std::views::iota (chanRow + 1, rc - 1)) ||
-				SelectUnreadChannel (std::views::iota (0, chanRow - 1));
+		return (chanRow + 1 <= rc - 1 && SelectUnreadChannel (v::iota (chanRow + 1, rc - 1))) ||
+				(0 <= chanRow - 1     && SelectUnreadChannel (v::iota (0, chanRow - 1)));
 	}
 
 	template<typename Range>
@@ -113,7 +115,7 @@ namespace LC::Aggregator
 	}
 
 	template<typename Range>
-	bool ItemNavigator::SelectUnreadChannel (Range && rows) const
+	bool ItemNavigator::SelectUnreadChannel (Range&& rows) const
 	{
 		for (auto row : rows)
 		{
