@@ -53,6 +53,11 @@ namespace LC::Aggregator
 				});
 	}
 
+	QSet<IDType_t> ItemSelectionTracker::GetSelectedItems () const
+	{
+		return CurrentItems_;
+	}
+
 	void ItemSelectionTracker::SetTapeMode (bool tape)
 	{
 		TapeMode_ = tape;
@@ -63,6 +68,7 @@ namespace LC::Aggregator
 		CurrentItems_.clear ();
 		for (const auto& row : rows)
 			CurrentItems_ << row.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+
 		emit selectionChanged ();
 	}
 }

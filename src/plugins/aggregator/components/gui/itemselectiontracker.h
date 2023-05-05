@@ -29,6 +29,7 @@ namespace LC::Aggregator
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
+		QSet<IDType_t> GetSelectedItems () const;
 		void SetTapeMode (bool);
 	private:
 		void SaveCurrentItems (const QList<QModelIndex>&);

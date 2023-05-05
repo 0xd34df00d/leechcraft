@@ -80,9 +80,10 @@ namespace LC::Aggregator
 	bool ItemsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
 		const auto& index = sourceModel ()->index (sourceRow, 0, sourceParent);
+		const auto itemId = index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 		if (HideRead_ &&
 				index.data (IItemsModel::ItemRole::IsRead).toBool () &&
-				ItemsWidget_->GetUnfilteredSelectedIndex () != index)
+				!ItemsWidget_->GetSelectedItems ().contains (itemId))
 			return false;
 
 		if (!ItemCategories_.isEmpty ())
@@ -97,12 +98,8 @@ namespace LC::Aggregator
 				return false;
 		}
 
-		if (!TaggedItems_.isEmpty ())
-		{
-			const auto itemId = index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
-			if (!TaggedItems_.contains (itemId))
-				return false;
-		}
+		if (!TaggedItems_.isEmpty () && !TaggedItems_.contains (itemId))
+			return false;
 
 		return QSortFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent);
 	}

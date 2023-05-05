@@ -60,7 +60,7 @@ namespace Aggregator
 
 		QToolBar* GetToolBar () const;
 
-		QModelIndex GetUnfilteredSelectedIndex () const;
+		QSet<IDType_t> GetSelectedItems () const;
 
 		/** Merge all that channels that are currently shown.
 			*

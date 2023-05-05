@@ -217,9 +217,9 @@ namespace LC::Aggregator
 		return Impl_->ControlToolBar_;
 	}
 
-	QModelIndex ItemsWidget::GetUnfilteredSelectedIndex () const
+	QSet<IDType_t> ItemsWidget::GetSelectedItems () const
 	{
-		return Impl_->LastSelectedIndex_;
+		return SelectionTracker_->GetSelectedItems ();
 	}
 
 	void ItemsWidget::SetTapeMode (bool tape)
