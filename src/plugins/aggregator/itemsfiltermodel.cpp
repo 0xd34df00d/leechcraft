@@ -14,9 +14,7 @@
 #include "xmlsettingsmanager.h"
 #include "storagebackendmanager.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	ItemsFilterModel::ItemsFilterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
@@ -114,12 +112,11 @@ namespace Aggregator
 			const bool rr = right.data (IItemsModel::ItemRole::IsRead).toBool ();
 			if (lr && !rr)
 				return true;
-			else if (lr == rr)
+			if (lr == rr)
 				return QSortFilterProxyModel::lessThan (left, right);
-			else
-				return false;
+
+			return false;
 		}
 		return QSortFilterProxyModel::lessThan (left, right);
 	}
-}
 }

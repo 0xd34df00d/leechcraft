@@ -6,31 +6,27 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ITEMSFILTERMODEL_H
-#define PLUGINS_AGGREGATOR_ITEMSFILTERMODEL_H
+#pragma once
+
 #include <QSortFilterProxyModel>
 #include <QSet>
 #include <QString>
 #include <interfaces/core/itagsmanager.h>
 #include "common.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class ItemsWidget;
 
 	class ItemsFilterModel : public QSortFilterProxyModel
 	{
-		Q_OBJECT
-
 		bool HideRead_ = false;
 		bool UnreadOnTop_ = false;
 		QSet<QString> ItemCategories_;
 		ItemsWidget *ItemsWidget_ = nullptr;
 		QSet<IDType_t> TaggedItems_;
 	public:
-		ItemsFilterModel (QObject* = 0);
+		explicit ItemsFilterModel (QObject* = nullptr);
 
 		void SetItemsWidget (ItemsWidget*);
 		void SetHideRead (bool);
@@ -38,10 +34,7 @@ namespace Aggregator
 
 		void InvalidateCategorySelection (const QStringList&);
 	protected:
-		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
-		virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
+		bool lessThan (const QModelIndex&, const QModelIndex&) const override;
 	};
 }
-}
-
-#endif
