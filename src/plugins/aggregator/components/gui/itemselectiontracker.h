@@ -39,6 +39,7 @@ namespace LC::Aggregator
 		void SaveCurrentItems (const QList<QModelIndex>&);
 		void HandleCurrentRowChanged (const QModelIndex&);
 		void MarkCurrentRead ();
+		void MarkRead (const QModelIndex&);
 	signals:
 		void refreshItemDisplay ();
 		void selectionChanged ();

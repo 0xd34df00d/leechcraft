@@ -95,15 +95,18 @@ namespace LC::Aggregator
 		if (const auto timeout = XmlSettingsManager::Instance ()->property ("MarkAsReadTimeout").toInt ())
 			ReadMarkTimer_.start (std::chrono::seconds { timeout });
 		else
-			MarkCurrentRead ();
+			MarkRead (current);
 	}
 
 	void ItemSelectionTracker::MarkCurrentRead ()
 	{
 		const auto& index = View_.currentIndex ();
-		if (!index.isValid () || index.data (IItemsModel::ItemRole::IsRead).toBool ())
-			return;
+		if (index.isValid () && !index.data (IItemsModel::ItemRole::IsRead).toBool ())
+			MarkRead (index);
+	}
 
+	void ItemSelectionTracker::MarkRead (const QModelIndex& index)
+	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		sb->SetItemUnread (index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> (), false);
 	}
