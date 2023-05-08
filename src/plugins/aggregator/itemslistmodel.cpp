@@ -142,11 +142,7 @@ namespace Aggregator
 		const auto& is = item.ToShort ();
 
 		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
-				[&item] (const ItemShort& itemShort)
-				{
-					return item.ItemID_ == itemShort.ItemID_ ||
-							(item.Title_ == itemShort.Title_ && item.Link_ == itemShort.URL_);
-				});
+				[&item] (const ItemShort& itemShort) { return item.ItemID_ == itemShort.ItemID_; });
 
 		// Item is new
 		if (pos == CurrentItems_.end ())
