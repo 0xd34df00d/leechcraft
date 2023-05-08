@@ -89,7 +89,7 @@ namespace LC::Aggregator
 	{
 		ReadMarkTimer_.stop ();
 
-		if (TapeMode_ || current.data (IItemsModel::ItemRole::IsRead).toBool ())
+		if (TapeMode_ || !current.isValid () || current.data (IItemsModel::ItemRole::IsRead).toBool ())
 			return;
 
 		if (const auto timeout = XmlSettingsManager::Instance ()->property ("MarkAsReadTimeout").toInt ())
