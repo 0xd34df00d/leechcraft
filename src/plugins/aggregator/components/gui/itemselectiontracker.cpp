@@ -92,8 +92,10 @@ namespace LC::Aggregator
 		if (TapeMode_ || current.data (IItemsModel::ItemRole::IsRead).toBool ())
 			return;
 
-		const auto timeout = XmlSettingsManager::Instance ()->property ("MarkAsReadTimeout").toInt ();
-		ReadMarkTimer_.start (std::chrono::seconds { timeout });
+		if (const auto timeout = XmlSettingsManager::Instance ()->property ("MarkAsReadTimeout").toInt ())
+			ReadMarkTimer_.start (std::chrono::seconds { timeout });
+		else
+			MarkCurrentRead ();
 	}
 
 	void ItemSelectionTracker::MarkCurrentRead ()
