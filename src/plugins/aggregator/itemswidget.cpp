@@ -141,10 +141,6 @@ namespace LC::Aggregator
 		Impl_->ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		Impl_->Ui_.Items_->setModel (Impl_->ItemsFilterModel_.get ());
 		Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
-		connect (Impl_->ItemLists_.get (),
-				&QAbstractItemModel::dataChanged,
-				Impl_->ItemsFilterModel_.get (),
-				&QSortFilterProxyModel::invalidate);
 
 		Impl_->Ui_.Items_->addActions (Actions_->GetAllActions ());
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
