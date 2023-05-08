@@ -139,7 +139,7 @@ namespace Aggregator
 
 	void ItemsListModel::ItemDataUpdated (const Item& item)
 	{
-		const auto& is = item.ToShort ();
+		auto is = item.ToShort ();
 
 		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
 				[&item] (const ItemShort& itemShort) { return item.ItemID_ == itemShort.ItemID_; });
@@ -147,19 +147,15 @@ namespace Aggregator
 		// Item is new
 		if (pos == CurrentItems_.end ())
 		{
-			auto insertPos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
-						[&item] (const ItemShort& is) { return item.PubDate_ > is.PubDate_; });
-
-			int shift = std::distance (CurrentItems_.begin (), insertPos);
-
-			beginInsertRows (QModelIndex (), shift, shift);
-			CurrentItems_.insert (insertPos, is);
+			int row = CurrentItems_.size ();
+			beginInsertRows ({}, row, row);
+			CurrentItems_.push_back (std::move (is));
 			endInsertRows ();
 		}
 		// Item exists already
 		else
 		{
-			*pos = is;
+			*pos = std::move (is);
 
 			int distance = std::distance (CurrentItems_.begin (), pos);
 			emit dataChanged (index (distance, 0), index (distance, 1));
