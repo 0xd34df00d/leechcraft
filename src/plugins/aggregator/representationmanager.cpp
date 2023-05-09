@@ -18,9 +18,9 @@ namespace LC::Aggregator
 {
 	namespace
 	{
-		QMenu& CreateMenu (const ChannelActions& channelActions, const AppWideActions& appWideActions)
+		QMenu& CreateMenu (const ChannelActions& channelActions, const AppWideActions& appWideActions, QWidget& parent)
 		{
-			auto menu = new QMenu;
+			auto menu = new QMenu { &parent };
 			menu->addActions (channelActions.GetAllActions ());
 			menu->addSeparator ();
 			menu->addActions (appWideActions.GetFastActions ());
@@ -47,7 +47,7 @@ namespace LC::Aggregator
 	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> (JobHolderRepresentation::Deps {
 				.Toolbar_ = *ReprWidget_->GetToolBar (),
 				.DetailsWidget_ = *ReprWidget_,
-				.RowMenu_ = CreateMenu (*ChannelActions_, deps.AppWideActions_),
+				.RowMenu_ = CreateMenu (*ChannelActions_, deps.AppWideActions_, *ReprWidget_),
 			})}
 	{
 		JobHolderRepresentation_->setSourceModel (&deps.ChannelsModel_);
