@@ -49,7 +49,6 @@ LC_DEFINE_PLUGIN (
 		dbupdatethread.cpp
 		dumbstorage.cpp
 		storagebackendmanager.cpp
-		channelsmodelrepresentationproxy.cpp
 		exportutils.cpp
 		itemutils.cpp
 		representationmanager.cpp

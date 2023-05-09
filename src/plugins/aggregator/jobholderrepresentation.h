@@ -9,21 +9,31 @@
 #pragma once
 
 #include <QSortFilterProxyModel>
-#include <QQueue>
 
-namespace LC
-{
-namespace Aggregator
+class QMenu;
+class QToolBar;
+
+namespace LC::Aggregator
 {
 	class JobHolderRepresentation : public QSortFilterProxyModel
 	{
 		QModelIndex Selected_;
 	public:
-		JobHolderRepresentation (QObject* = nullptr);
+		struct Deps
+		{
+			QToolBar& Toolbar_;
+			QWidget& DetailsWidget_;
+			QMenu& RowMenu_;
+		};
+	private:
+		Deps Deps_;
+	public:
+		explicit JobHolderRepresentation (const Deps&, QObject* = nullptr);
+
+		QVariant data (const QModelIndex&, int) const override;
 
 		QModelIndex SelectionChanged (const QModelIndex&);
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
-}
 }

@@ -12,11 +12,22 @@
 #include "components/actions/channelactions.h"
 #include "jobholderrepresentation.h"
 #include "itemswidget.h"
-#include "channelsmodelrepresentationproxy.h"
 #include "channelsmodel.h"
 
 namespace LC::Aggregator
 {
+	namespace
+	{
+		QMenu& CreateMenu (const ChannelActions& channelActions, const AppWideActions& appWideActions)
+		{
+			auto menu = new QMenu;
+			menu->addActions (channelActions.GetAllActions ());
+			menu->addSeparator ();
+			menu->addActions (appWideActions.GetFastActions ());
+			return *menu;
+		}
+	}
+
 	RepresentationManager::RepresentationManager (const Deps& deps)
 	: ChannelActions_ { std::make_unique<ChannelActions> (ChannelActions::Deps {
 				.ShortcutManager_ = deps.ShortcutManager_,
@@ -33,20 +44,13 @@ namespace LC::Aggregator
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
 			})}
-	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> () }
-	, ReprModel_ { std::make_unique<ChannelsModelRepresentationProxy> () }
+	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> (JobHolderRepresentation::Deps {
+				.Toolbar_ = *ReprWidget_->GetToolBar (),
+				.DetailsWidget_ = *ReprWidget_,
+				.RowMenu_ = CreateMenu (*ChannelActions_, deps.AppWideActions_),
+			})}
 	{
 		JobHolderRepresentation_->setSourceModel (&deps.ChannelsModel_);
-
-		ReprModel_->setSourceModel (JobHolderRepresentation_.get ());
-		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_.get ());
-
-		auto reprMenu = new QMenu;
-		reprMenu->addActions (ChannelActions_->GetAllActions ());
-		reprMenu->addSeparator ();
-		reprMenu->addActions (deps.AppWideActions_.GetFastActions ());
-		ReprModel_->SetMenu (reprMenu);
-
 		ReprWidget_->ConstructBrowser ();
 	}
 
@@ -54,12 +58,11 @@ namespace LC::Aggregator
 
 	QAbstractItemModel* RepresentationManager::GetRepresentation () const
 	{
-		return ReprModel_.get ();
+		return JobHolderRepresentation_.get ();
 	}
 
-	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& srcIdx)
+	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& index)
 	{
-		auto index = ReprModel_->mapToSource (srcIdx);
 		SelectedRepr_ = JobHolderRepresentation_->SelectionChanged (index);
 		ReprWidget_->CurrentChannelChanged (SelectedRepr_);
 	}

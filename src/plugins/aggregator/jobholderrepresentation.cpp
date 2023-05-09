@@ -7,26 +7,35 @@
  **********************************************************************/
 
 #include "jobholderrepresentation.h"
-#include <QTimer>
-#include <QtDebug>
-#include "aggregator.h"
+#include <QMenu>
+#include <QToolBar>
+#include "common.h"
 
-namespace LC
+namespace LC::Aggregator
 {
-namespace Aggregator
-{
-	JobHolderRepresentation::JobHolderRepresentation (QObject *parent)
-	: QSortFilterProxyModel (parent)
+	JobHolderRepresentation::JobHolderRepresentation (const Deps& deps, QObject *parent)
+	: QSortFilterProxyModel { parent }
+	, Deps_ { deps }
 	{
 		setDynamicSortFilter (true);
+	}
+
+	QVariant JobHolderRepresentation::data (const QModelIndex& index, int role) const
+	{
+		switch (role)
+		{
+		case RoleControls:
+			return QVariant::fromValue<QToolBar*> (&Deps_.Toolbar_);
+		case RoleAdditionalInfo:
+			return QVariant::fromValue<QWidget*> (&Deps_.DetailsWidget_);
+		case RoleContextMenu:
+			return QVariant::fromValue<QMenu*> (&Deps_.RowMenu_);
+		}
 	}
 	
 	QModelIndex JobHolderRepresentation::SelectionChanged (const QModelIndex& index)
 	{
-		if (index.isValid ())
-			Selected_ = mapToSource (index);
-		else
-			Selected_ = QModelIndex ();
+		Selected_ = index.isValid () ? mapToSource (index) : QModelIndex {};
 		invalidateFilter ();
 		return mapFromSource (Selected_);
 	}
@@ -41,5 +50,4 @@ namespace Aggregator
 				srcIdx.data (ChannelRoles::ErrorCount).toInt () ||
 				(Selected_.isValid () && row == Selected_.row ());
 	}
-}
 }
