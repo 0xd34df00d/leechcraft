@@ -30,6 +30,8 @@ namespace LC::Aggregator
 			return QVariant::fromValue<QWidget*> (&Deps_.DetailsWidget_);
 		case RoleContextMenu:
 			return QVariant::fromValue<QMenu*> (&Deps_.RowMenu_);
+		default:
+			return QSortFilterProxyModel::data (index, role);
 		}
 	}
 	
