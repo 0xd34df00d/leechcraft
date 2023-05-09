@@ -10,7 +10,6 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/isummaryrepresentation.h>
@@ -45,7 +44,6 @@ namespace Summary
 		void TabOpenRequested (const QByteArray&);
 
 		QModelIndex MapToSource (const QModelIndex&) const;
-		QTreeView* GetCurrentView () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>&);
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;

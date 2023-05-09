@@ -75,11 +75,6 @@ namespace Summary
 			MergeModel_->AddModel (plugin->GetRepresentation ());
 	}
 
-	QTreeView* Core::GetCurrentView () const
-	{
-		return Current_ ? Current_->GetUi ().PluginsTasksTree_ : 0;
-	}
-
 	bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 	{
 		const auto& mapped1 = MapToSourceRecursively (i1);

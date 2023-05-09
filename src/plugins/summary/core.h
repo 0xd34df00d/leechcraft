@@ -46,8 +46,6 @@ namespace Summary
 
 		void SecondInit ();
 
-		QTreeView* GetCurrentView () const;
-
 		/** Returns true if both indexes belong to the same model. If
 			* both indexes are invalid, true is returned.
 			*

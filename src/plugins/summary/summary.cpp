@@ -88,11 +88,6 @@ namespace Summary
 		return Core::Instance ().MapToSourceRecursively (index);
 	}
 
-	QTreeView* Summary::GetCurrentView () const
-	{
-		return Core::Instance ().GetCurrentView ();
-	}
-
 	void Summary::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
 		Core::Instance ().RecoverTabs (infos);
