@@ -36,7 +36,7 @@ namespace LC::Aggregator
 		std::unique_ptr<ItemsWidget> ReprWidget_;
 		std::unique_ptr<JobHolderRepresentation> JobHolderRepresentation_;
 
-		QModelIndex SelectedRepr_;
+		QModelIndex SelectedChannel_;
 	public:
 		struct Deps
 		{

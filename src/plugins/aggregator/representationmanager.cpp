@@ -34,8 +34,8 @@ namespace LC::Aggregator
 				.UpdatesManager_ = deps.UpdatesManager_,
 				.ResourcesFetcher_ = deps.ResourcesFetcher_,
 				.DBUpThread_ = deps.DBUpThread_,
-				.GetCurrentChannel_ = [this] { return SelectedRepr_; },
-				.GetAllSelectedChannels_ = [this] { return QList { SelectedRepr_ }; },
+				.GetCurrentChannel_ = [this] { return SelectedChannel_; },
+				.GetAllSelectedChannels_ = [this] { return QList { SelectedChannel_ }; },
 			}) }
 	, ReprWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
 				.ShortcutsMgr_ = deps.ShortcutManager_,
@@ -63,7 +63,8 @@ namespace LC::Aggregator
 
 	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& index)
 	{
-		SelectedRepr_ = JobHolderRepresentation_->SelectionChanged (index);
-		ReprWidget_->CurrentChannelChanged (SelectedRepr_);
+		SelectedChannel_ = JobHolderRepresentation_->mapToSource (index);
+		JobHolderRepresentation_->SelectionChanged (index);
+		ReprWidget_->CurrentChannelChanged (SelectedChannel_);
 	}
 }

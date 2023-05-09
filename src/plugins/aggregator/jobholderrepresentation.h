@@ -32,7 +32,7 @@ namespace LC::Aggregator
 
 		QVariant data (const QModelIndex&, int) const override;
 
-		QModelIndex SelectionChanged (const QModelIndex&);
+		void SelectionChanged (const QModelIndex&);
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};

@@ -33,11 +33,10 @@ namespace LC::Aggregator
 		}
 	}
 	
-	QModelIndex JobHolderRepresentation::SelectionChanged (const QModelIndex& index)
+	void JobHolderRepresentation::SelectionChanged (const QModelIndex& index)
 	{
 		Selected_ = index.isValid () ? mapToSource (index) : QModelIndex {};
 		invalidateFilter ();
-		return mapFromSource (Selected_);
 	}
 	
 	bool JobHolderRepresentation::filterAcceptsRow (int row, const QModelIndex&) const
