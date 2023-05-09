@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef INTERFACES_ISUMMARYREPRESENTATION_H
-#define INTERFACES_ISUMMARYREPRESENTATION_H
+#pragma once
+
 #include <QtPlugin>
 
 class QModelIndex;
@@ -16,12 +16,9 @@ class QTreeView;
 class Q_DECL_EXPORT ISummaryRepresentation
 {
 public:
-	virtual ~ISummaryRepresentation () {}
+	virtual ~ISummaryRepresentation () = default;
 
 	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
 };
 
 Q_DECLARE_INTERFACE (ISummaryRepresentation, "org.Deviant.LeechCraft.ISummaryRepresentation/1.0")
-
-#endif
-
