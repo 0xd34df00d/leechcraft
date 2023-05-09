@@ -47,6 +47,12 @@ namespace LC::Aggregator
 		ChannelLink,
 	};
 
+	enum class ChannelDirection
+	{
+		PreviousUnread,
+		NextUnread,
+	};
+
 	extern const QString MessageBoxTitle;
 
 	struct Item;

@@ -28,6 +28,7 @@ namespace LC::Aggregator
 	class ChannelActions;
 	class ResourcesFetcher;
 	class DBUpdateThread;
+	enum class ChannelDirection;
 
 	class RepresentationManager : public QObject
 								, public IJobHolderRepresentationHandler
@@ -54,5 +55,7 @@ namespace LC::Aggregator
 		QAbstractItemModel* GetRepresentation () const;
 
 		void HandleCurrentRowChanged (const QModelIndex&) override;
+	private:
+		bool NavigateChannel (ChannelDirection);
 	};
 }

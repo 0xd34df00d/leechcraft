@@ -43,6 +43,7 @@ namespace LC::Aggregator
 				.AppWideActions_ = deps.AppWideActions_,
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
+				.ChannelNavigator_ = [this] (auto dir) { return NavigateChannel (dir); },
 			})}
 	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> (JobHolderRepresentation::Deps {
 				.Toolbar_ = *ReprWidget_->GetToolBar (),
@@ -66,5 +67,10 @@ namespace LC::Aggregator
 		SelectedChannel_ = JobHolderRepresentation_->mapToSource (index);
 		JobHolderRepresentation_->SelectionChanged (index);
 		ReprWidget_->CurrentChannelChanged (SelectedChannel_);
+	}
+
+	bool RepresentationManager::NavigateChannel (ChannelDirection dir)
+	{
+		return false;
 	}
 }

@@ -33,6 +33,7 @@ namespace Aggregator
 	class UpdatesManager;
 	class ItemActions;
 	class ItemSelectionTracker;
+	enum class ChannelDirection;
 
 	struct ItemsWidgetDependencies
 	{
@@ -41,6 +42,7 @@ namespace Aggregator
 		const AppWideActions& AppWideActions_;
 		const ChannelActions& ChannelActions_;
 		UpdatesManager& UpdatesManager_;
+		std::function<bool (ChannelDirection)> ChannelNavigator_;
 	};
 
 	class ItemsWidget : public QWidget

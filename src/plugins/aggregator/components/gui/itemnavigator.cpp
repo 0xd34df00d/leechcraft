@@ -14,12 +14,9 @@
 
 namespace LC::Aggregator
 {
-	ItemNavigator::ItemNavigator (QAbstractItemView& view,
-			const QModelIndex& selectedChannel,
-			const std::function<void (QModelIndex)>& selectChannel)
+	ItemNavigator::ItemNavigator (QAbstractItemView& view, std::function<bool (ChannelDirection)> selectChannel)
 	: View_ { view }
-	, SelectedChannel_ { selectedChannel }
-	, SelectChannel_ { selectChannel }
+	, SelectChannel_ { std::move (selectChannel) }
 	{
 	}
 
@@ -45,7 +42,7 @@ namespace LC::Aggregator
 	{
 		if (MoveToPrevUnreadInChannel ())
 			return;
-		if (SelectPrevUnreadChannel ())
+		if (SelectChannel_ (ChannelDirection::PreviousUnread))
 			MoveToPrevUnreadInChannel ();
 	}
 
@@ -53,7 +50,7 @@ namespace LC::Aggregator
 	{
 		if (MoveToNextUnreadInChannel ())
 			return;
-		if (SelectNextUnreadChannel ())
+		if (SelectChannel_ (ChannelDirection::NextUnread))
 			MoveToNextUnreadInChannel ();
 	}
 
@@ -75,28 +72,6 @@ namespace LC::Aggregator
 		return startRow <= rc - 1 && MoveToUnreadSibling (v::iota (startRow, rc - 1));
 	}
 
-	bool ItemNavigator::SelectPrevUnreadChannel() const
-	{
-		if (!SelectedChannel_.isValid ())
-			return false;
-
-		const auto& chanRow = SelectedChannel_.row ();
-		const auto& rc = SelectedChannel_.model ()->rowCount ();
-		return (0 <= chanRow - 1       && SelectUnreadChannel (v::iota (0, chanRow - 1) | v::reverse)) ||
-				(chanRow + 1 <= rc - 1 && SelectUnreadChannel (v::iota (chanRow + 1, rc - 1) | v::reverse));
-	}
-
-	bool ItemNavigator::SelectNextUnreadChannel() const
-	{
-		if (!SelectedChannel_.isValid ())
-			return false;
-
-		const auto& chanRow = SelectedChannel_.row ();
-		const auto& rc = SelectedChannel_.model ()->rowCount ();
-		return (chanRow + 1 <= rc - 1 && SelectUnreadChannel (v::iota (chanRow + 1, rc - 1))) ||
-				(0 <= chanRow - 1     && SelectUnreadChannel (v::iota (0, chanRow - 1)));
-	}
-
 	template<typename Range>
 	bool ItemNavigator::MoveToUnreadSibling (Range&& rows) const
 	{
@@ -107,22 +82,6 @@ namespace LC::Aggregator
 			if (!index.data (IItemsModel::ItemRole::IsRead).toBool ())
 			{
 				View_.setCurrentIndex (index);
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	template<typename Range>
-	bool ItemNavigator::SelectUnreadChannel (Range&& rows) const
-	{
-		for (auto row : rows)
-		{
-			const auto& otherChannel = SelectedChannel_.sibling (row, ChannelsModel::ColumnUnread);
-			if (otherChannel.data ().toInt ())
-			{
-				SelectChannel_ (otherChannel);
 				return true;
 			}
 		}

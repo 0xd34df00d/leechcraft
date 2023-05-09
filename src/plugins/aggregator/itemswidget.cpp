@@ -102,12 +102,7 @@ namespace LC::Aggregator
 			.ItemNavigator_ = ItemNavigator
 			{
 				*Impl_->Ui_.Items_,
-				Impl_->LastSelectedChannel_,
-				[this] (const QModelIndex& newChan)
-				{
-					emit movedToChannel (newChan);
-					CurrentChannelChanged (newChan);
-				}
+				deps.ChannelNavigator_,
 			},
 		},
 		this)

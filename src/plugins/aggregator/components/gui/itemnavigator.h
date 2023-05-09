@@ -15,15 +15,14 @@ class QModelIndex;
 
 namespace LC::Aggregator
 {
+	enum class ChannelDirection;
+
 	class ItemNavigator
 	{
 		QAbstractItemView& View_;
-		const QModelIndex& SelectedChannel_;
-		const std::function<void (QModelIndex)> SelectChannel_;
+		const std::function<bool (ChannelDirection)> SelectChannel_;
 	public:
-		explicit ItemNavigator (QAbstractItemView&,
-				const QModelIndex&,
-				const std::function<void (QModelIndex)>&);
+		explicit ItemNavigator (QAbstractItemView& view, std::function<bool (ChannelDirection)>);
 
 		void MoveToPrev () const;
 		void MoveToNext () const;
@@ -36,13 +35,7 @@ namespace LC::Aggregator
 		bool MoveToPrevUnreadInChannel () const;
 		bool MoveToNextUnreadInChannel () const;
 
-		bool SelectPrevUnreadChannel () const;
-		bool SelectNextUnreadChannel () const;
-
 		template<typename Range>
 		bool MoveToUnreadSibling (Range&& r) const;
-
-		template<typename Range>
-		bool SelectUnreadChannel (Range&& r) const;
 	};
 }

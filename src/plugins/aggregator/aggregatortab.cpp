@@ -47,6 +47,7 @@ namespace Aggregator
 				.AppWideActions_ = deps.AppWideActions_,
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
+				.ChannelNavigator_ = [] (ChannelDirection dir) { return false; },
 			}) }
 	{
 		ChannelsFilterModel_->setSourceModel (&deps.ChannelsModel_);
