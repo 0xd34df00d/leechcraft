@@ -82,6 +82,7 @@ namespace LC::Aggregator
 		if (!index.isValid ())
 			return false;
 
+		// TODO notify the representation view about the new index
 		HandleCurrentRowChanged (index);
 		return true;
 	}
