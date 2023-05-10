@@ -74,25 +74,15 @@ namespace LC::Aggregator
 		if (!SelectedChannel_.isValid ())
 			return false;
 
-		const auto reprIdx = JobHolderRepresentation_->mapFromSource (SelectedChannel_);
-		if (!reprIdx.isValid ())
+		auto index = JobHolderRepresentation_->mapFromSource (SelectedChannel_);
+		if (!index.isValid ())
 			return false;
 
-		auto row = reprIdx.row ();
-		switch (dir)
-		{
-		case ChannelDirection::NextUnread:
-			++row;
-			break;
-		case ChannelDirection::PreviousUnread:
-			--row;
-			break;
-		}
-
-		if (row < 0 || row >= JobHolderRepresentation_->rowCount ())
+		index = index.siblingAtRow (index.row () + ToRowDelta (dir));
+		if (!index.isValid ())
 			return false;
 
-		HandleCurrentRowChanged (reprIdx.siblingAtRow (row));
+		HandleCurrentRowChanged (index);
 		return true;
 	}
 }
