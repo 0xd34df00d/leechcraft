@@ -71,6 +71,28 @@ namespace LC::Aggregator
 
 	bool RepresentationManager::NavigateChannel (ChannelDirection dir)
 	{
-		return false;
+		if (!SelectedChannel_.isValid ())
+			return false;
+
+		const auto reprIdx = JobHolderRepresentation_->mapFromSource (SelectedChannel_);
+		if (!reprIdx.isValid ())
+			return false;
+
+		auto row = reprIdx.row ();
+		switch (dir)
+		{
+		case ChannelDirection::NextUnread:
+			++row;
+			break;
+		case ChannelDirection::PreviousUnread:
+			--row;
+			break;
+		}
+
+		if (row < 0 || row >= JobHolderRepresentation_->rowCount ())
+			return false;
+
+		HandleCurrentRowChanged (reprIdx.siblingAtRow (row));
+		return true;
 	}
 }
