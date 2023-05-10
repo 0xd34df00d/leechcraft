@@ -46,6 +46,8 @@ namespace Aggregator
 		const TabClassInfo TabClass_;
 		QObject * const ParentPlugin_;
 
+		const AppWideActions& AppWideActions_;
+
 		const std::unique_ptr<const ChannelActions> ChannelActions_;
 		const std::unique_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 

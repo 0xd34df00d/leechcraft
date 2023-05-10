@@ -31,6 +31,7 @@ namespace Aggregator
 	AggregatorTab::AggregatorTab (const InitParams& deps, QObject *plugin)
 	: TabClass_ { deps.TabClass_ }
 	, ParentPlugin_ { plugin }
+	, AppWideActions_ { deps.AppWideActions_ }
 	, ChannelActions_ { std::make_unique<ChannelActions> (ChannelActions::Deps {
 				.ShortcutManager_ = deps.ShortcutManager_,
 				.UpdatesManager_ = deps.UpdatesManager_,
@@ -62,10 +63,6 @@ namespace Aggregator
 				&AggregatorTab::handleItemsMovedToChannel);
 
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
-
-		Ui_.Feeds_->addActions (ChannelActions_->GetAllActions ());
-		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addActions (deps.AppWideActions_.GetFastActions ());
 
 		connect (Ui_.Feeds_,
 				&QWidget::customContextMenuRequested,
@@ -230,19 +227,14 @@ namespace Aggregator
 
 	void AggregatorTab::handleFeedsContextMenuRequested (const QPoint& pos)
 	{
-		bool enable = Ui_.Feeds_->indexAt (pos).isValid ();
-		const auto& toToggle = ChannelActions_->GetAllActions ();
-
-		for (const auto act : toToggle)
-			act->setEnabled (enable);
-
-		QMenu *menu = new QMenu;
-		menu->setAttribute (Qt::WA_DeleteOnClose, true);
-		menu->addActions (Ui_.Feeds_->actions ());
-		menu->exec (Ui_.Feeds_->viewport ()->mapToGlobal (pos));
-
-		for (const auto act : toToggle)
-			act->setEnabled (true);
+		QMenu menu;
+		if (Ui_.Feeds_->indexAt (pos).isValid ())
+		{
+			menu.addActions (ChannelActions_->GetAllActions ());
+			menu.addAction (Util::CreateSeparator (&menu));
+		}
+		menu.addActions (AppWideActions_.GetFastActions ());
+		menu.exec (Ui_.Feeds_->viewport ()->mapToGlobal (pos));
 	}
 
 	void AggregatorTab::currentChannelChanged ()
