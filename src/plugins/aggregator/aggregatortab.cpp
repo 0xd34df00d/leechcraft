@@ -147,64 +147,6 @@ namespace Aggregator
 		return TabClass_.VisibleName_;
 	}
 
-	void AggregatorTab::keyPressEvent (QKeyEvent *e)
-	{
-		if (e->modifiers () & Qt::ControlModifier)
-		{
-			const auto channelSM = Ui_.Feeds_->selectionModel ();
-			const auto& currentChannel = channelSM->currentIndex ();
-			int numChannels = Ui_.Feeds_->model ()->rowCount (currentChannel.parent ());
-
-			auto chanSF = QItemSelectionModel::Select |
-					QItemSelectionModel::Clear |
-					QItemSelectionModel::Rows;
-
-			if (e->key () == Qt::Key_Less &&
-					currentChannel.isValid ())
-			{
-				if (currentChannel.row () > 0)
-				{
-					const auto& next = currentChannel.sibling (currentChannel.row () - 1, currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				else
-				{
-					const auto& next = currentChannel.sibling (numChannels - 1, currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				return;
-			}
-			else if (e->key () == Qt::Key_Greater &&
-					 currentChannel.isValid ())
-			{
-				if (currentChannel.row () < numChannels - 1)
-				{
-					const auto& next = currentChannel.sibling (currentChannel.row () + 1, currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				else
-				{
-					const auto& next = currentChannel.sibling (0, currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				return;
-			}
-			else if ((e->key () == Qt::Key_Greater ||
-					  e->key () == Qt::Key_Less) &&
-					 !currentChannel.isValid ())
-			{
-				const auto& next = Ui_.Feeds_->model ()->index (0, 0);
-				channelSM->select (next, chanSF);
-				channelSM->setCurrentIndex (next, chanSF);
-			}
-		}
-		e->ignore ();
-	}
-
 	namespace
 	{
 		bool HasUnreadItems (const QModelIndex& index)

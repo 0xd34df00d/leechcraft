@@ -77,8 +77,6 @@ namespace Aggregator
 		QByteArray GetTabRecoverData () const override;
 		QIcon GetTabRecoverIcon () const override;
 		QString GetTabRecoverName () const override;
-	protected:
-		void keyPressEvent (QKeyEvent*) override;
 	private:
 		bool NavigateChannel (ChannelDirection);
 	private slots:
