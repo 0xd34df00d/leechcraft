@@ -53,6 +53,8 @@ namespace LC::Aggregator
 		NextUnread,
 	};
 
+	int ToRowDelta (ChannelDirection);
+
 	extern const QString MessageBoxTitle;
 
 	struct Item;
