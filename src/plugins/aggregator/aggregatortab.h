@@ -32,6 +32,7 @@ namespace Aggregator
 	class ItemsWidget;
 	class ResourcesFetcher;
 	class UpdatesManager;
+	enum class ChannelDirection;
 
 	class AggregatorTab : public QWidget
 						, public ITabWidget
@@ -78,6 +79,8 @@ namespace Aggregator
 		QString GetTabRecoverName () const override;
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
+	private:
+		bool NavigateChannel (ChannelDirection);
 	private slots:
 		void handleItemsMovedToChannel (QModelIndex);
 		void handleFeedsContextMenuRequested (const QPoint&);

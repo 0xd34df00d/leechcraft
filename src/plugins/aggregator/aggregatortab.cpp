@@ -47,7 +47,7 @@ namespace Aggregator
 				.AppWideActions_ = deps.AppWideActions_,
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
-				.ChannelNavigator_ = [] (ChannelDirection dir) { return false; },
+				.ChannelNavigator_ = [this] (auto dir) { return NavigateChannel (dir); },
 			}) }
 	{
 		ChannelsFilterModel_->setSourceModel (&deps.ChannelsModel_);
@@ -203,6 +203,70 @@ namespace Aggregator
 			}
 		}
 		e->ignore ();
+	}
+
+	namespace
+	{
+		bool HasUnreadItems (const QModelIndex& index)
+		{
+			const auto model = index.model ();
+			const auto rc = model->rowCount (index);
+			if (!rc)
+				return index.data (ChannelRoles::UnreadCount).toInt ();
+
+			for (int r = 0; r < rc; ++r)
+				if (HasUnreadItems (model->index (r, 0, index)))
+					return true;
+
+			return false;
+		}
+
+		QModelIndex NavigateSibling (ChannelDirection dir, QModelIndex index)
+		{
+			const auto delta = ToRowDelta (dir);
+			do
+			{
+				index = index.siblingAtRow (index.row () + delta);
+			} while (index.isValid () && !HasUnreadItems (index));
+			return index;
+		}
+
+		QModelIndex NavigateViaParent (ChannelDirection dir, QModelIndex parent)
+		{
+			parent = NavigateSibling (dir, parent);
+			if (!parent.isValid ())
+				return {};
+
+			const auto model = parent.model ();
+
+			QModelIndex child;
+			switch (dir)
+			{
+			case ChannelDirection::NextUnread:
+				child = model->index (0, 0, parent);
+				break;
+			case ChannelDirection::PreviousUnread:
+				child = model->index (model->rowCount (parent) - 1, 0, parent);
+				break;
+			}
+
+			return HasUnreadItems (child) ? child : NavigateSibling (dir, child);
+		}
+	}
+
+	bool AggregatorTab::NavigateChannel (ChannelDirection dir)
+	{
+		const auto& index = Ui_.Feeds_->currentIndex ();
+
+		auto newIndex = NavigateSibling (dir, index);
+		if (!newIndex.isValid () && index.parent ().isValid ())
+			newIndex = NavigateViaParent (dir, index.parent ());
+
+		if (!newIndex.isValid ())
+			return false;
+
+		Ui_.Feeds_->setCurrentIndex (newIndex);
+		return true;
 	}
 
 	void AggregatorTab::handleItemsMovedToChannel (QModelIndex index)
