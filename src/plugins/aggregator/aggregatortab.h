@@ -81,11 +81,11 @@ namespace Aggregator
 		QString GetTabRecoverName () const override;
 	private:
 		bool NavigateChannel (ChannelDirection);
+		void SetGroupByTags (bool);
 	private slots:
 		void handleFeedsContextMenuRequested (const QPoint&);
 
 		void currentChannelChanged ();
-		void handleGroupChannels ();
 
 		void on_MergeItems__toggled (bool);
 	signals:

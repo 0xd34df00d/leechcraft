@@ -82,8 +82,8 @@ namespace Aggregator
 
 		ItemsWidget_->ConstructBrowser ();
 
-		handleGroupChannels ();
-		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this, "handleGroupChannels");
+		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this,
+				[this] (bool group) { SetGroupByTags (group); });
 
 		const auto& fm = fontMetrics ();
 		Util::SetupStateSaver (*Ui_.MainSplitter_,
@@ -226,9 +226,9 @@ namespace Aggregator
 			ItemsWidget_->CurrentChannelChanged (mapped);
 	}
 
-	void AggregatorTab::handleGroupChannels ()
+	void AggregatorTab::SetGroupByTags (bool group)
 	{
-		if (XmlSettingsManager::Instance ()->property ("GroupChannelsByTags").toBool ())
+		if (group)
 		{
 			FlatToFolders_->SetSourceModel (ChannelsFilterModel_);
 			Ui_.Feeds_->setModel (FlatToFolders_.get ());
@@ -238,6 +238,7 @@ namespace Aggregator
 			FlatToFolders_->SetSourceModel (nullptr);
 			Ui_.Feeds_->setModel (ChannelsFilterModel_);
 		}
+
 		connect (Ui_.Feeds_->selectionModel (),
 				&QItemSelectionModel::currentChanged,
 				this,
