@@ -82,7 +82,6 @@ namespace Aggregator
 	private:
 		bool NavigateChannel (ChannelDirection);
 	private slots:
-		void handleItemsMovedToChannel (QModelIndex);
 		void handleFeedsContextMenuRequested (const QPoint&);
 
 		void currentChannelChanged ();

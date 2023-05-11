@@ -98,8 +98,6 @@ namespace Aggregator
 
 		void makeCurrentItemVisible ();
 		void updateItemsFilter ();
-	signals:
-		void movedToChannel (const QModelIndex&);
 	};
 }
 }

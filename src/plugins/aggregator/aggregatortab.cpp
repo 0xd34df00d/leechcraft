@@ -57,11 +57,6 @@ namespace Aggregator
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->addWidget (ItemsWidget_.get ());
 
-		connect (ItemsWidget_.get (),
-				&ItemsWidget::movedToChannel,
-				this,
-				&AggregatorTab::handleItemsMovedToChannel);
-
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
 
 		connect (Ui_.Feeds_,
@@ -206,23 +201,6 @@ namespace Aggregator
 
 		Ui_.Feeds_->setCurrentIndex (newIndex);
 		return true;
-	}
-
-	void AggregatorTab::handleItemsMovedToChannel (QModelIndex index)
-	{
-		if (index.column ())
-			index = index.sibling (index.row (), 0);
-
-		if (FlatToFolders_->GetSourceModel ())
-		{
-			const auto& sourceIdx = FlatToFolders_->MapFromSource (index).value (0);
-			if (sourceIdx.isValid ())
-				index = sourceIdx;
-		}
-
-		Ui_.Feeds_->blockSignals (true);
-		Ui_.Feeds_->setCurrentIndex (index);
-		Ui_.Feeds_->blockSignals (false);
 	}
 
 	void AggregatorTab::handleFeedsContextMenuRequested (const QPoint& pos)
