@@ -61,7 +61,7 @@ namespace LC::Aggregator
 		const auto rc = View_.model ()->rowCount ();
 		const auto& current = View_.currentIndex ();
 		const auto endRow = current.isValid () ? current.row () : rc;
-		return 0 <= endRow - 1 && MoveToUnreadSibling (v::iota (0, endRow - 1) | v::reverse);
+		return 0 <= endRow && MoveToUnreadSibling (v::iota (0, endRow) | v::reverse);
 	}
 
 	bool ItemNavigator::MoveToNextUnreadInChannel () const
@@ -69,7 +69,7 @@ namespace LC::Aggregator
 		const auto rc = View_.model ()->rowCount ();
 		const auto& current = View_.currentIndex ();
 		const auto startRow = current.isValid () ? current.row () + 1 : 0;
-		return startRow <= rc - 1 && MoveToUnreadSibling (v::iota (startRow, rc - 1));
+		return startRow <= rc && MoveToUnreadSibling (v::iota (startRow, rc));
 	}
 
 	template<typename Range>
