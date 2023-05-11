@@ -14,9 +14,7 @@
 #include <QUrl>
 #include <QMessageBox>
 #include <QToolBar>
-#include <QtDebug>
 #include <interfaces/iwebbrowser.h>
-#include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/statesaver.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -62,9 +60,7 @@ namespace LC::Aggregator
 
 		QAbstractItemModel *ChannelsModel_ = nullptr;
 
-		std::unique_ptr<ItemsListModel> CurrentItemsModel_ {};
-		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_ {};
-		std::unique_ptr<Util::MergeModel> ItemLists_ {};
+		std::unique_ptr<ItemsListModel> ItemsModel_ {};
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (Parent_);
 		std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ {};
 
@@ -124,14 +120,12 @@ namespace LC::Aggregator
 		Impl_->ControlToolBar_ = CreateToolbar (*Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
 		const auto& proxy = GetProxyHolder ();
-		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
-		Impl_->ItemLists_ = std::make_unique<Util::MergeModel> (QStringList { tr ("Name"), tr ("Date") });
-		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
+		Impl_->ItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
 
 		Impl_->Ui_.Items_->setAcceptDrops (false);
 
 		Impl_->ItemsFilterModel_->SetItemsWidget (this);
-		Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemLists_.get ());
+		Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemsModel_.get ());
 		Impl_->ItemsFilterModel_->setFilterKeyColumn (0);
 		Impl_->ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		Impl_->Ui_.Items_->setModel (Impl_->ItemsFilterModel_.get ());
@@ -212,17 +206,14 @@ namespace LC::Aggregator
 	void ItemsWidget::SetMergeMode (bool merge)
 	{
 		Impl_->MergeMode_ = merge;
-		ClearSupplementaryModels ();
+		if (!Impl_->MergeMode_)
+			return;
 
-		if (Impl_->MergeMode_)
-		{
-			auto cm = Impl_->ChannelsModel_;
-			for (int i = 0, size = cm->rowCount (); i < size; ++i)
-			{
-				auto index = cm->index (i, 0);
-				AddSupplementaryModelFor (index.data (ChannelRoles::ChannelID).value<IDType_t> ());
-			}
-		}
+		auto cm = Impl_->ChannelsModel_;
+		QVector<IDType_t> channels;
+		for (int i = 0, size = cm->rowCount (); i < size; ++i)
+			channels << cm->index (i, 0).data (ChannelRoles::ChannelID).value<IDType_t> ();
+		Impl_->ItemsModel_->SetChannels (channels);
 	}
 
 	void ItemsWidget::SetMergeModeTags (const QStringList& tags)
@@ -230,34 +221,19 @@ namespace LC::Aggregator
 		if (Impl_->MergeMode_)
 			return;
 
-		ClearSupplementaryModels ();
-
 		const auto& tagsSet = Util::AsSet (tags);
 
-		bool added = false;
-
 		const auto cm = Impl_->ChannelsModel_;
+		QVector<IDType_t> channels;
 		for (int i = 0, size = cm->rowCount (); i < size; ++i)
 		{
 			const auto& index = cm->index (i, 0);
 			const auto& thisSet = index.data (RoleTags).toStringList ();
-			if (std::none_of (thisSet.begin (), thisSet.end (),
+			if (std::any_of (thisSet.begin (), thisSet.end (),
 					[&tagsSet] (const QString& tag) { return tagsSet.contains (tag); }))
-				continue;
-
-			auto cid = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
-
-			/** So that first one gets assigned to the
-			 * current items model.
-			 */
-			if (!added)
-			{
-				Impl_->CurrentItemsModel_->SetChannels ({ cid });
-				added = true;
-			}
-			else
-				AddSupplementaryModelFor (cid);
+				channels << index.data (ChannelRoles::ChannelID).value<IDType_t> ();
 		}
+		Impl_->ItemsModel_->SetChannels (channels);
 	}
 
 	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
@@ -265,19 +241,17 @@ namespace LC::Aggregator
 		if (Impl_->MergeMode_)
 			return;
 
-		ClearSupplementaryModels ();
-
 		Impl_->LastSelectedChannel_ = si;
 
 		if (si.isValid ())
-			Impl_->CurrentItemsModel_->SetChannels ({ si.data (ChannelRoles::ChannelID).value<IDType_t> () });
+			Impl_->ItemsModel_->SetChannels ({ si.data (ChannelRoles::ChannelID).value<IDType_t> () });
 		else
-			Impl_->CurrentItemsModel_->SetChannels ({});
+			Impl_->ItemsModel_->SetChannels ({});
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		RenderSelectedItems ();
 
-		const auto& items = Impl_->CurrentItemsModel_->GetAllItems ();
+		const auto& items = Impl_->ItemsModel_->GetAllItems ();
 		const auto& allCategories = ItemUtils::GetCategories (items).values ();
 		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
 	}
@@ -286,23 +260,6 @@ namespace LC::Aggregator
 	{
 		const auto browser = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 		Impl_->Ui_.ItemView_->Construct (browser);
-	}
-
-	void ItemsWidget::ClearSupplementaryModels ()
-	{
-		while (Impl_->SupplementaryModels_.size ())
-		{
-			Impl_->ItemLists_->RemoveModel (Impl_->SupplementaryModels_.at (0).get ());
-			Impl_->SupplementaryModels_.removeAt (0);
-		}
-	}
-
-	void ItemsWidget::AddSupplementaryModelFor (IDType_t channelId)
-	{
-		auto ilm = std::make_shared<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
-		ilm->SetChannels ({ channelId });
-		Impl_->SupplementaryModels_ << ilm;
-		Impl_->ItemLists_->AddModel (ilm.get ());
 	}
 
 	void ItemsWidget::invalidateMergeMode ()
@@ -390,7 +347,7 @@ namespace LC::Aggregator
 		if (section == SearchSection::ImportantAllChannels)
 		{
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			Impl_->CurrentItemsModel_->SetItems (sb->GetItemsForTag ("_important"));
+			Impl_->ItemsModel_->SetItems (sb->GetItemsForTag ("_important"));
 		}
 		else
 			CurrentChannelChanged (Impl_->LastSelectedChannel_);

@@ -88,8 +88,6 @@ namespace Aggregator
 	private:
 		void SetTapeMode (bool);
 
-		void ClearSupplementaryModels ();
-		void AddSupplementaryModelFor (IDType_t);
 		void RenderSelectedItems ();
 	private slots:
 		void invalidateMergeMode ();
