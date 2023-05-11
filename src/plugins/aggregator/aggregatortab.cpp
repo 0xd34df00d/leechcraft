@@ -85,8 +85,6 @@ namespace Aggregator
 		handleGroupChannels ();
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this, "handleGroupChannels");
 
-		currentChannelChanged ();
-
 		const auto& fm = fontMetrics ();
 		Util::SetupStateSaver (*Ui_.MainSplitter_,
 				{
