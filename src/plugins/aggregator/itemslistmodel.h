@@ -31,8 +31,8 @@ namespace Aggregator
 		Q_INTERFACES (LC::Aggregator::IItemsModel)
 
 		QStringList ItemHeaders_;
+		QVector<IDType_t> CurrentChannels_;
 		items_shorts_t CurrentItems_;
-		IDType_t CurrentChannel_ = -1;
 
 		const QIcon StarredIcon_;
 		const QIcon UnreadIcon_;
@@ -44,12 +44,10 @@ namespace Aggregator
 
 		QAbstractItemModel& GetQModel () override;
 
-		const IDType_t& GetCurrentChannel () const;
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;
-		void Reset (IDType_t) override;
-		void Reset (const QList<IDType_t>&);
-		void RemoveItems (const QSet<IDType_t>&);
+		void SetChannels (const QVector<IDType_t>&) override;
+		void SetItems (const QList<IDType_t>&);
 		void ItemDataUpdated (const Item&);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
@@ -60,6 +58,12 @@ namespace Aggregator
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 	private:
+		void RemoveItems (const QSet<IDType_t>&);
+		void RemoveChannel (IDType_t);
+		void RemoveFeed (IDType_t);
+		template<typename F>
+		void RemoveChunked (F&&);
+
 		StorageBackend_ptr GetSB () const;
 		void HandleItemReadStatusUpdated (IDType_t, IDType_t, bool);
 	};

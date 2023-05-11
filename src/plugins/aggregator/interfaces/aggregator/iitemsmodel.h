@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Qt>
+#include <QVector>
 #include "common.h"
 
 class QAbstractItemModel;
@@ -36,7 +37,7 @@ namespace Aggregator
 
 		virtual QAbstractItemModel& GetQModel () = 0;
 
-		virtual void Reset (IDType_t channelId) = 0;
+		virtual void SetChannels (const QVector<IDType_t>& channelIds) = 0;
 	};
 }
 }

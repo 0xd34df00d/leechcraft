@@ -32,23 +32,12 @@ namespace Aggregator
 
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::channelRemoved,
-				[this] (IDType_t id)
-				{
-					if (id == CurrentChannel_)
-						Reset (IDNotFound);
-				});
+				this,
+				&ItemsListModel::RemoveChannel);
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::feedRemoved,
-				[this] (IDType_t feedId)
-				{
-					if (CurrentChannel_ == IDNotFound)
-						return;
-
-					auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-					if (feedId == sb->GetChannel (CurrentChannel_).FeedID_)
-						Reset (IDNotFound);
-				});
-
+				this,
+				&ItemsListModel::RemoveFeed);
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::itemsRemoved,
 				this,
@@ -58,7 +47,7 @@ namespace Aggregator
 				this,
 				[this] (const Item& item)
 				{
-					if (item.ChannelID_ == CurrentChannel_)
+					if (CurrentChannels_.isEmpty () || CurrentChannels_.contains (item.ChannelID_))
 						ItemDataUpdated (item);
 				});
 		connect (&StorageBackendManager::Instance (),
@@ -72,11 +61,6 @@ namespace Aggregator
 		return *this;
 	}
 
-	const IDType_t& ItemsListModel::GetCurrentChannel () const
-	{
-		return CurrentChannel_;
-	}
-
 	const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const
 	{
 		return CurrentItems_ [index.row ()];
@@ -87,37 +71,37 @@ namespace Aggregator
 		return CurrentItems_;
 	}
 
-	void ItemsListModel::Reset (IDType_t channel)
+	void ItemsListModel::SetChannels (const QVector<IDType_t>& channels)
 	{
 		beginResetModel ();
 
-		CurrentChannel_ = channel;
+		CurrentChannels_ = channels;
+
 		CurrentItems_.clear ();
 
-		if (channel != IDNotFound)
-			CurrentItems_ = GetSB ()->GetItems (channel);
+		for (auto channel : channels)
+			CurrentItems_ += GetSB ()->GetItems (channel);
 
 		endResetModel ();
 	}
 
-	void ItemsListModel::Reset (const QList<IDType_t>& items)
+	void ItemsListModel::SetItems (const QList<IDType_t>& items)
 	{
 		beginResetModel ();
 
-		CurrentChannel_ = IDNotFound;
 		CurrentItems_.clear ();
 
 		const auto& sb = GetSB ();
 		for (const IDType_t& itemId : items)
 			if (const auto& item = sb->GetItem (itemId))
-				CurrentItems_.push_back (item->ToShort ());
+				CurrentItems_ << item->ToShort ();
 
 		endResetModel ();
 	}
 
 	void ItemsListModel::RemoveItems (const QSet<IDType_t>& ids)
 	{
-		int remainingCount = ids.size ();
+		auto remainingCount = ids.size ();
 
 		for (auto i = CurrentItems_.begin (); i != CurrentItems_.end () && remainingCount; )
 		{
@@ -133,6 +117,42 @@ namespace Aggregator
 			i = CurrentItems_.erase (i);
 			--remainingCount;
 
+			endRemoveRows ();
+		}
+	}
+
+	void ItemsListModel::RemoveChannel (IDType_t channelId)
+	{
+		RemoveChunked ([channelId] (const ItemShort& item) { return item.ChannelID_ == channelId; });
+	}
+
+	void ItemsListModel::RemoveFeed (IDType_t feedId)
+	{
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		sb->GetChannels (feedId);
+
+		QSet<IDType_t> channelIds;
+		for (const auto& chan : sb->GetChannels (feedId))
+			channelIds << chan.ChannelID_;
+
+		RemoveChunked ([&channelIds] (const ItemShort& item) { return channelIds.contains (item.ChannelID_); });
+	}
+
+	template<typename F>
+	void ItemsListModel::RemoveChunked (F&& filter)
+	{
+		auto pos = CurrentItems_.begin ();
+
+		while (true)
+		{
+			pos = std::find_if (pos, CurrentItems_.end (), filter);
+			if (pos == CurrentItems_.end ())
+				break;
+
+			const auto next = std::find_if (pos + 1, CurrentItems_.end (), std::not_fn (filter));
+
+			beginRemoveRows ({}, pos - CurrentItems_.begin (), next - CurrentItems_.begin ());
+			pos = CurrentItems_.erase (pos, next);
 			endRemoveRows ();
 		}
 	}
@@ -328,7 +348,7 @@ namespace Aggregator
 
 	void ItemsListModel::HandleItemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread)
 	{
-		if (channelId != CurrentChannel_)
+		if (!CurrentChannels_.isEmpty () && !CurrentChannels_.contains (channelId))
 			return;
 
 		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),

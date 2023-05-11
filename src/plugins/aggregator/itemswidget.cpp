@@ -252,7 +252,7 @@ namespace LC::Aggregator
 			 */
 			if (!added)
 			{
-				Impl_->CurrentItemsModel_->Reset (cid);
+				Impl_->CurrentItemsModel_->SetChannels ({ cid });
 				added = true;
 			}
 			else
@@ -270,9 +270,9 @@ namespace LC::Aggregator
 		Impl_->LastSelectedChannel_ = si;
 
 		if (si.isValid ())
-			Impl_->CurrentItemsModel_->Reset (si.data (ChannelRoles::ChannelID).value<IDType_t> ());
+			Impl_->CurrentItemsModel_->SetChannels ({ si.data (ChannelRoles::ChannelID).value<IDType_t> () });
 		else
-			Impl_->CurrentItemsModel_->Reset (IDNotFound);
+			Impl_->CurrentItemsModel_->SetChannels ({});
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		RenderSelectedItems ();
@@ -299,11 +299,8 @@ namespace LC::Aggregator
 
 	void ItemsWidget::AddSupplementaryModelFor (IDType_t channelId)
 	{
-		if (channelId == Impl_->CurrentItemsModel_->GetCurrentChannel ())
-			return;
-
 		auto ilm = std::make_shared<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
-		ilm->Reset (channelId);
+		ilm->SetChannels ({ channelId });
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}
@@ -393,7 +390,7 @@ namespace LC::Aggregator
 		if (section == SearchSection::ImportantAllChannels)
 		{
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			Impl_->CurrentItemsModel_->Reset (sb->GetItemsForTag ("_important"));
+			Impl_->CurrentItemsModel_->SetItems (sb->GetItemsForTag ("_important"));
 		}
 		else
 			CurrentChannelChanged (Impl_->LastSelectedChannel_);
