@@ -115,7 +115,7 @@ namespace Aggregator
 		void GetEnclosures (IDType_t, QList<Enclosure>&) const;
 		void WriteMRSSEntries (const QList<MRSSEntry>&);
 		void GetMRSSEntries (IDType_t, QList<MRSSEntry>&) const;
-		IDType_t GetHighestID (const QString&, const QString&) const;
+		IDType_t GetHighestID (const QByteArray&, const QByteArray&) const;
 	};
 }
 }

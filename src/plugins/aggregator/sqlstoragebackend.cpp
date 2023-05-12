@@ -15,6 +15,7 @@
 #include <QThread>
 #include <QVariant>
 #include <QSqlRecord>
+#include <QHash>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
@@ -514,67 +515,38 @@ namespace LC::Aggregator
 
 	IDType_t SQLStorageBackend::GetHighestID (const PoolType& type) const
 	{
-		QString field, table;
-		switch (type)
+		static const QHash<PoolType, QPair<QByteArray, QByteArray>> tables
 		{
-		case PTFeed:
-			field = "feed_id";
-			table = "feeds";
-			break;
-		case PTChannel:
-			field = "channel_id";
-			table = "channels";
-			break;
-		case PTItem:
-			field = "item_id";
-			table = "items";
-			break;
-		case PTEnclosure:
-			field = "enclosure_id";
-			table = "enclosures";
-			break;
-		case PTMRSSEntry:
-			field = "mrss_id";
-			table = "mrss";
-			break;
-		case PTMRSSThumbnail:
-			field = "mrss_thumb_id";
-			table = "mrss_thumbnails";
-			break;
-		case PTMRSSCredit:
-			field = "mrss_credits_id";
-			table = "mrss_credits";
-			break;
-		case PTMRSSComment:
-			field = "mrss_comment_id";
-			table = "mrss_comments";
-			break;
-		case PTMRSSPeerLink:
-			field = "mrss_peerlink_id";
-			table = "mrss_peerlinks";
-			break;
-		case PTMRSSScene:
-			field = "mrss_scene_id";
-			table = "mrss_scenes";
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "supplied unknown type"
-					<< type;
+			{ PTFeed, { "feed_id", "feeds" } },
+			{ PTChannel, { "channel_id", "channels" } },
+			{ PTItem, { "item_id", "items" } },
+			{ PTEnclosure, { "enclosure_id", "enclosures" } },
+			{ PTMRSSEntry, { "mrss_id", "mrss" } },
+			{ PTMRSSThumbnail, { "mrss_thumb_id", "mrss_thumbnails" } },
+			{ PTMRSSCredit, { "mrss_credits_id", "mrss_credits" } },
+			{ PTMRSSComment, { "mrss_comment_id", "mrss_comments" } },
+			{ PTMRSSPeerLink, { "mrss_peerlink_id", "mrss_peerlinks" } },
+			{ PTMRSSScene, { "mrss_scene_id", "mrss_scenes" } },
+		};
+
+		const auto& [field, table] = tables.value (type);
+		if (field.isEmpty ())
+		{
+			qWarning () << "GetHighestID(): unknown pool type" << type;
 			return 0;
 		}
 
 		return GetHighestID (field, table);
 	}
 
-	IDType_t SQLStorageBackend::GetHighestID (const QString& idName, const QString& tableName) const
+	IDType_t SQLStorageBackend::GetHighestID (const QByteArray& idName, const QByteArray& tableName) const
 	{
 		QSqlQuery findHighestID (DB_);
 		//due to some strange troubles with QSqlQuery::bindValue ()
 		//we'll bind values by ourselves. It should be safe as this is our
 		//internal function.
 		if (!findHighestID.exec (QString ("SELECT MAX (%1) FROM %2")
-						.arg (idName).arg (tableName)))
+						.arg (idName, tableName)))
 		{
 			Util::DBLock::DumpError (findHighestID);
 			return 0;
