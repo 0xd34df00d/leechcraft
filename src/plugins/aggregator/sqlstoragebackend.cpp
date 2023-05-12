@@ -380,7 +380,7 @@ namespace LC::Aggregator
 {
 	struct SQLStorageBackend::Item2TagsR
 	{
-		oral::References<&ItemR::ItemID_> ItemID_;
+		oral::References<&ItemR::ItemID_> ItemID_ {};
 		oral::NotNull<QString> Tag_;
 
 		static QString ClassName ()
@@ -555,10 +555,9 @@ namespace LC::Aggregator
 			return 0;
 		}
 
-		if (findHighestID.first ())
-			return findHighestID.value (0).value<IDType_t> ();
-		else
-			return 0;
+		return findHighestID.first () ?
+				findHighestID.value (0).value<IDType_t> () :
+				0;
 	}
 
 	Feed SQLStorageBackend::GetFeed (IDType_t feedId) const
