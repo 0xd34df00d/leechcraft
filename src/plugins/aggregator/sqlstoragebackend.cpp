@@ -23,6 +23,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/functor.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -94,7 +95,7 @@ namespace LC::Aggregator
 		}
 	};
 
-	const QString Tags::EmptyMarker_ = "<<<null>>>";
+	const QString Tags::EmptyMarker_ = "<<<null>>>"_qs;
 
 	struct Image
 	{
@@ -135,6 +136,8 @@ namespace LC::Aggregator
 		}
 	};
 
+	static const auto CatsSeparator = "<<<"_qs;
+
 	struct ItemCategories
 	{
 		QStringList Categories_;
@@ -155,12 +158,12 @@ namespace LC::Aggregator
 
 		BaseType ToBaseType () const
 		{
-			return Categories_.join ("<<<");
+			return Categories_.join (CatsSeparator);
 		}
 
 		static ItemCategories FromBaseType (const BaseType& var)
 		{
-			return { var.split ("<<<", Qt::SkipEmptyParts) };
+			return { var.split (CatsSeparator, Qt::SkipEmptyParts) };
 		}
 	};
 
@@ -230,7 +233,7 @@ namespace LC::Aggregator														\
 	{																					\
 		BOOST_PP_SEQ_FOR_EACH (DEFINE_FIELD, _, fields)									\
 																						\
-		static QString ClassName () { return className; }								\
+		static QString ClassName () { return className##_qs; }							\
 																						\
 		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;				\
 																						\
@@ -382,7 +385,7 @@ namespace LC::Aggregator
 
 		static QString ClassName ()
 		{
-			return "items2tags";
+			return "items2tags"_qs;
 		}
 
 		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;
@@ -395,7 +398,7 @@ namespace LC::Aggregator
 
 		static QString ClassName ()
 		{
-			return "feeds2tags";
+			return "feeds2tags"_qs;
 		}
 
 		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;
@@ -420,10 +423,10 @@ namespace LC::Aggregator
 		switch (Type_)
 		{
 		case SBSQLite:
-			strType = "QSQLITE";
+			strType = "QSQLITE"_qs;
 			break;
 		case SBPostgres:
-			strType = "QPSQL";
+			strType = "QPSQL"_qs;
 			break;
 		case SBMysql:
 			break;
@@ -435,8 +438,8 @@ namespace LC::Aggregator
 		{
 		case SBSQLite:
 		{
-			auto dir = Util::GetUserDir (Util::UserDir::LC, "aggregator");
-			DB_.setDatabaseName (dir.filePath ("aggregator.db"));
+			auto dir = Util::GetUserDir (Util::UserDir::LC, "aggregator"_qs);
+			DB_.setDatabaseName (dir.filePath ("aggregator.db"_qs));
 			break;
 		}
 		case SBPostgres:
@@ -456,7 +459,7 @@ namespace LC::Aggregator
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (DB_.lastError ());
-			throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
+			throw std::runtime_error (qPrintable ("Could not initialize database: %1"_qs
 						.arg (DB_.lastError ().text ())));
 		}
 
@@ -474,8 +477,8 @@ namespace LC::Aggregator
 	{
 		if (Type_ == SBSQLite)
 		{
-			Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
-			Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
+			Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;"_qs);
+			Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;"_qs);
 		}
 	}
 
@@ -545,8 +548,8 @@ namespace LC::Aggregator
 		//due to some strange troubles with QSqlQuery::bindValue ()
 		//we'll bind values by ourselves. It should be safe as this is our
 		//internal function.
-		if (!findHighestID.exec (QString ("SELECT MAX (%1) FROM %2")
-						.arg (idName, tableName)))
+		if (!findHighestID.exec ("SELECT MAX (%1) FROM %2"_qs
+					.arg (idName, tableName)))
 		{
 			Util::DBLock::DumpError (findHighestID);
 			return 0;
