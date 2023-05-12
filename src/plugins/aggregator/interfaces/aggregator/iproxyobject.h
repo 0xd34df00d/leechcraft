@@ -38,10 +38,7 @@ namespace Aggregator
 		virtual void AddItem (Item) = 0;
 
 		virtual QAbstractItemModel* GetChannelsModel () const = 0;
-		virtual QVector<Channel> GetAllChannels () const = 0;
 		virtual Channel GetChannel (IDType_t) const = 0;
-		virtual int CountUnreadItems (IDType_t) const = 0;
-		virtual QVector<Item_ptr> GetChannelItems (IDType_t) const = 0;
 
 		virtual std::optional<Item> GetItem (IDType_t) const = 0;
 		virtual void SetItemRead (IDType_t, bool) const = 0;
