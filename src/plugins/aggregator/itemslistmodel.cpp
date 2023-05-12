@@ -354,13 +354,7 @@ namespace Aggregator
 		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
 				[&itemId] (const ItemShort& itemShort) { return itemShort.ItemID_ == itemId; });
 		if (pos == CurrentItems_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find"
-					<< channelId
-					<< itemId;
 			return;
-		}
 
 		pos->Unread_ = unread;
 
