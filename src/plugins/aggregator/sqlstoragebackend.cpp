@@ -828,7 +828,11 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::SetItemUnread (IDType_t itemId, bool unread)
 	{
-		Items_->Update (sph::f<&ItemR::Unread_> = unread, sph::f<&ItemR::ItemID_> == itemId);
+		const bool affected = Items_->Update (sph::f<&ItemR::Unread_> = unread,
+				sph::f<&ItemR::ItemID_> == itemId &&
+				sph::f<&ItemR::Unread_> == !unread);
+		if (!affected)
+			return;
 
 		if (const auto& fullItem = GetItem (itemId))
 		{
