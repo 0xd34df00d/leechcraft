@@ -137,7 +137,7 @@ namespace WebAccess
 		ItemsFilter_->ClearCurrentItem ();
 
 		Util::InObjectThread (dynamic_cast<QObject&> (*SourceItemModel_),
-				[cid, &model = *SourceItemModel_] { model.Reset (cid); });
+				[cid, &model = *SourceItemModel_] { model.SetChannels ({ cid }); });
 	}
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx, const Wt::WMouseEvent& event)
