@@ -9,7 +9,6 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QSortFilterProxyModel>
-#include <QHeaderView>
 #include <QCompleter>
 #include <QPainter>
 #include <QMenu>
@@ -19,7 +18,6 @@
 #include <QTranslator>
 #include <QCursor>
 #include <QKeyEvent>
-#include <QInputDialog>
 #include <QXmlStreamReader>
 #include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -34,7 +32,6 @@
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
