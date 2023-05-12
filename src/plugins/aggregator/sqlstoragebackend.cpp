@@ -606,25 +606,6 @@ namespace LC::Aggregator
 		Feeds_->Update (sph::f<&FeedR::URL_> = url, sph::f<&FeedR::FeedID_> == feedId);
 	}
 
-	namespace
-	{
-		namespace detail
-		{
-			template<typename T, typename Tuple, std::size_t... Ixs>
-			auto AggregateFromTuple (Tuple&& tuple, std::index_sequence<Ixs...>)
-			{
-				return T { std::get<Ixs> (std::forward<Tuple> (tuple))... };
-			}
-		}
-
-		template<typename T, typename Tuple>
-		auto AggregateFromTuple (Tuple&& tuple)
-		{
-			constexpr auto indices = std::make_index_sequence<std::tuple_size_v<std::decay_t<Tuple>>> {};
-			return detail::AggregateFromTuple<T> (std::forward<Tuple> (tuple), indices);
-		}
-	}
-
 	channels_shorts_t SQLStorageBackend::GetChannels (IDType_t feedId) const
 	{
 		constexpr auto shortFields = sph::fields<
@@ -650,7 +631,7 @@ namespace LC::Aggregator
 		{
 			const auto cid = std::get<0> (shortTuple);
 
-			auto cs = AggregateFromTuple<ChannelShort> (std::move (shortTuple));
+			auto cs = std::make_from_tuple<ChannelShort> (std::move (shortTuple));
 			cs.Unread_ = GetUnreadItemsCount (cid);
 			shorts.push_back (std::move (cs));
 		}
@@ -790,7 +771,7 @@ namespace LC::Aggregator
 				>;
 		auto rawTuples = Items_->Select (shortFields, sph::f<&ItemR::ChannelID_> == channelId);
 		return Util::MapAs<QVector> (std::move (rawTuples),
-				[] (auto&& tup) { return AggregateFromTuple<ItemShort> (std::forward<decltype (tup)> (tup)); });
+				[]<typename Tup> (Tup&& tup) { return std::make_from_tuple<ItemShort> (std::forward<Tup> (tup)); });
 	}
 
 	int SQLStorageBackend::GetUnreadItemsCount (IDType_t channelId) const
