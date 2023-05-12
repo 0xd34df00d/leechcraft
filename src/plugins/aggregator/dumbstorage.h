@@ -44,7 +44,6 @@ namespace Aggregator
 		std::optional<IDType_t> FindItem (const QString&, const QString&, IDType_t) const override { return {}; }
 		std::optional<IDType_t> FindItemByTitle (const QString&, IDType_t) const override { return {}; }
 		std::optional<IDType_t> FindItemByLink (const QString&, IDType_t) const override { return {}; }
-		items_container_t GetFullItems (IDType_t) const override { return {}; }
 		void AddFeed (const Feed&) override {}
 		void AddChannel (const Channel&) override {}
 		void AddItem (const Item&) override {}

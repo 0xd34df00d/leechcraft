@@ -826,6 +826,7 @@ namespace LC::Aggregator
 		return Items_->Select (sph::count<>,
 				sph::f<&ItemR::ChannelID_> == channelId && sph::f<&ItemR::Unread_> == true);
 	}
+
 	int SQLStorageBackend::GetTotalItemsCount (IDType_t channelId) const
 	{
 		return Items_->Select (sph::count<>, sph::f<&ItemR::ChannelID_> == channelId);
@@ -842,24 +843,6 @@ namespace LC::Aggregator
 		GetMRSSEntries (itemId, item.MRSSEntries_);
 		emit hookItemLoad (std::make_shared<Util::DefaultHookProxy> (), &item);
 		return item;
-	}
-
-	items_container_t SQLStorageBackend::GetFullItems (IDType_t channelId) const
-	{
-		auto rawItems = Items_->Select (sph::f<&ItemR::ChannelID_> == channelId);
-
-		items_container_t items;
-		items.reserve (rawItems.size ());
-
-		for (auto& rawItem : rawItems)
-		{
-			auto item = std::make_shared<Item> (rawItem.ToOrig ());
-			GetEnclosures (item->ItemID_, item->Enclosures_);
-			GetMRSSEntries (item->ItemID_, item->MRSSEntries_);
-			items.push_back (std::move (item));
-		}
-
-		return items;
 	}
 
 	void SQLStorageBackend::AddFeed (const Feed& feed)

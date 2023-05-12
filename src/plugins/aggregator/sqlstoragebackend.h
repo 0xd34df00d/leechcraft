@@ -91,7 +91,6 @@ namespace Aggregator
 		std::optional<IDType_t> FindItem (const QString&, const QString&, IDType_t) const override;
 		std::optional<IDType_t> FindItemByLink (const QString&, IDType_t) const override;
 		std::optional<IDType_t> FindItemByTitle (const QString&, IDType_t) const override;
-		items_container_t GetFullItems (IDType_t) const override;
 
 		void AddFeed (const Feed&) override;
 		void UpdateItem (const Item&) override;

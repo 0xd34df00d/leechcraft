@@ -245,19 +245,6 @@ namespace Aggregator
 		 */
 		virtual std::optional<IDType_t> FindItemByLink (const QString& link, IDType_t channel) const = 0;
 
-		/** @brief Returns all items in the channel.
-		 *
-		 * Returns full information about all the items in the
-		 * channel identified by channel's ID. The returned
-		 * information is appended to the passed container.
-		 *
-		 * Usually you will use this only inside handleJobFinished().
-		 *
-		 * @param[in] id The channel's ID.
-		 * @return The container with items.
-		 */
-		virtual items_container_t GetFullItems (IDType_t id) const = 0;
-
 		/** @brief Puts a feed and all its child channels and items into the
 		 * storage.
 		 *
