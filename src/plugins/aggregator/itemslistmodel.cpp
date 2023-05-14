@@ -297,6 +297,8 @@ namespace Aggregator
 			return item.Categories_;
 		else if (role == ItemRole::ItemImportant)
 			return GetSB ()->GetItemTags (item.ItemID_).contains ("_important");
+		else if (role == ItemRole::ItemChannelId)
+			return item.ChannelID_;
 		else if (role == ItemRole::FullItem)
 		{
 			if (const auto maybeItem = GetSB ()->GetItem (item.ItemID_))

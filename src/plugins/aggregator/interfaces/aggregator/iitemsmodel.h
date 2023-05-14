@@ -31,6 +31,7 @@ namespace Aggregator
 			ItemShortDescr,
 			ItemCategories,
 			ItemImportant,
+			ItemChannelId,
 
 			FullItem,
 		};
