@@ -838,7 +838,7 @@ namespace LC::Aggregator
 		{
 			const auto channelId = fullItem->ChannelID_;
 			emit itemReadStatusUpdated (channelId, itemId, unread);
-			emit channelUnreadCountUpdated (channelId, GetUnreadItemsCount (channelId));
+			emit channelUnreadCountUpdated (channelId, UnreadDelta { unread ? 1 : -1 });
 		}
 	}
 
@@ -860,7 +860,8 @@ namespace LC::Aggregator
 		emit hookItemAdded (std::make_shared<Util::DefaultHookProxy> (), item);
 
 		emit itemDataUpdated (item);
-		emit channelUnreadCountUpdated (item.ChannelID_, GetUnreadItemsCount (item.ChannelID_));
+		if (item.Unread_)
+			emit channelUnreadCountUpdated (item.ChannelID_, UnreadDelta { 1 });
 	}
 
 	void SQLStorageBackend::RemoveItems (const QSet<IDType_t>& items)
@@ -868,15 +869,16 @@ namespace LC::Aggregator
 		Util::DBLock lock (DB_);
 		lock.Init ();
 
-		QList<IDType_t> modifiedChannels;
+		QHash<IDType_t, int> modifiedChannels;
 		for (const auto itemId : items)
 		{
-			const auto& cid = Items_->SelectOne (sph::fields<&ItemR::ChannelID_>, sph::f<&ItemR::ItemID_> == itemId);
-			if (!cid)
+			const auto& info = Items_->SelectOne (sph::fields<&ItemR::ChannelID_, &ItemR::Unread_>,
+					sph::f<&ItemR::ItemID_> == itemId);
+			if (!info)
 				continue;
 
-			if (!modifiedChannels.contains (*cid))
-				modifiedChannels << *cid;
+			auto [cid, unread] = *info;
+			modifiedChannels [cid] += unread;
 
 			Items_->DeleteBy (sph::f<&ItemR::ItemID_> == itemId);
 		}
@@ -885,8 +887,8 @@ namespace LC::Aggregator
 
 		emit itemsRemoved (items);
 
-		for (const auto& cid : modifiedChannels)
-			emit channelUnreadCountUpdated (cid, GetUnreadItemsCount (cid));
+		for (const auto& [cid, delta] : Util::Stlize (modifiedChannels))
+			emit channelUnreadCountUpdated (cid, UnreadDelta { delta });
 	}
 
 	void SQLStorageBackend::RemoveChannel (IDType_t channelId)
@@ -915,7 +917,7 @@ namespace LC::Aggregator
 		Items_->Update (sph::f<&ItemR::Unread_> = state,
 				sph::f<&ItemR::ChannelID_> == channelId);
 
-		emit channelUnreadCountUpdated (channelId, state ? oldItems.size () : 0);
+		emit channelUnreadCountUpdated (channelId, UnreadTotal { state ? oldItems.size () : 0 });
 
 		for (const auto& [itemId, oldState] : oldItems)
 			if (oldState != state)

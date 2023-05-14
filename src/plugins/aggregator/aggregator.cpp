@@ -71,6 +71,7 @@ namespace Aggregator
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
 		qRegisterMetaType<Channel> ("Channel");
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
+		qRegisterMetaType<UnreadChange> ("UnreadChange");
 
 		TabInfo_ = TabClassInfo
 		{

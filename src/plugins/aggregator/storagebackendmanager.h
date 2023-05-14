@@ -55,7 +55,7 @@ namespace Aggregator
 		 *
 		 * @param[out] channel Pointer to the updated channel.
 		 */
-		void channelUnreadCountUpdated (IDType_t channelId, int unreadCount) const;
+		void channelUnreadCountUpdated (IDType_t channelId, const UnreadChange& unreadCount) const;
 
 		void channelDataUpdated (const Channel&) const;
 

@@ -22,6 +22,7 @@ namespace LC
 namespace Aggregator
 {
 	class FeedsErrorManager;
+	struct UnreadChange;
 
 	class ChannelsModel : public QAbstractItemModel
 	{
@@ -58,7 +59,7 @@ namespace Aggregator
 
 		void HandleFeedErrorsChanged (IDType_t);
 
-		void UpdateChannelUnreadCount (IDType_t, int);
+		void UpdateChannelUnreadCount (IDType_t, const UnreadChange&);
 		void UpdateChannelData (const Channel&);
 
 		void AddChannel (const ChannelShort&);

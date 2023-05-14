@@ -317,14 +317,16 @@ namespace Aggregator
 				emit dataChanged (index (i, 0), index (i, columnCount () - 1));
 	}
 
-	void ChannelsModel::UpdateChannelUnreadCount (IDType_t cid, int count)
+	void ChannelsModel::UpdateChannelUnreadCount (IDType_t cid, const UnreadChange& count)
 	{
 		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
 				[cid] (const ChannelShort& cs) { return cs.ChannelID_ == cid; });
 		if (pos == Channels_.end ())
 			return;
 
-		pos->Unread_ = count;
+		Util::Visit (count,
+				[pos] (UnreadDelta d) { pos->Unread_ += d.delta; },
+				[pos] (UnreadTotal t) { pos->Unread_ = t.total; });
 
 		const auto idx = pos - Channels_.begin ();
 		emit dataChanged (index (idx, 0), index (idx, 2));

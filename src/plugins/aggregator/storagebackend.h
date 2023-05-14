@@ -9,6 +9,7 @@
 #pragma once
 
 #include <optional>
+#include <variant>
 #include <QObject>
 #include <QSet>
 #include <interfaces/core/ihookproxy.h>
@@ -20,7 +21,14 @@ namespace LC
 namespace Aggregator
 {
 	class StorageBackend;
-	typedef std::shared_ptr<StorageBackend> StorageBackend_ptr;
+	using StorageBackend_ptr = std::shared_ptr<StorageBackend>;
+
+	struct UnreadDelta { int delta; };
+	struct UnreadTotal { int total; };
+	struct UnreadChange : std::variant<UnreadDelta, UnreadTotal>
+	{
+		using variant::variant;
+	};
 
 	/** @brief Abstract base class for storage backends.
 	 *
@@ -401,7 +409,7 @@ namespace Aggregator
 		 *
 		 * @sa StorageBackendManager
 		 */
-		void channelUnreadCountUpdated (IDType_t channelId, int unreadCount) const;
+		void channelUnreadCountUpdated (IDType_t channelId, const UnreadChange& unreadChange) const;
 
 		void channelDataUpdated (const Channel&) const;
 
@@ -452,4 +460,6 @@ namespace Aggregator
 		void feedRemoved (IDType_t feedId);
 	};
 }
+
+Q_DECLARE_METATYPE (LC::Aggregator::UnreadChange)
 }
