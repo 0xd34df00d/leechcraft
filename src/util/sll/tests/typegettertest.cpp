@@ -72,5 +72,11 @@ namespace Util
 		const auto f = [&x] (int, const double) -> const int& { return x; };
 		static_assert (std::is_same_v<RetType_t<decltype (f)>, const int&>);
 	}
+
+	void TypeGetterTest::testArgCount ()
+	{
+		const auto f = [] (int, const double) {};
+		static_assert (ArgCount_v<decltype (f)> == 2);
+	}
 }
 }
