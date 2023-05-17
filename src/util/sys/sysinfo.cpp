@@ -198,6 +198,6 @@ namespace LC::Util::SysInfo
 		};
 #endif
 
-		return { .Arch_ = "Unknown arch", .Name_ = "Unknown OS", .Version_ = "Unknown version" };
+		return { .Arch_ = "Unknown arch", .Name_ = "Unknown OS", .Version_ = "Unknown version", .Flavour_ = {} };
 	}
 }
