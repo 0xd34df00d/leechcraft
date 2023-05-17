@@ -212,8 +212,9 @@ namespace Util
 				for (int i = 0; i < tab->count (); ++i)
 					tab->setTabEnabled (i, true);
 
-			for (auto child : widget->findChildren<QWidget*> () << widget)
+			for (auto child : widget->findChildren<QWidget*> ())
 				child->setEnabled (true);
+			widget->setEnabled (true);
 		}
 
 		bool HighlightWidget (QWidget *widget, const QString& query, ItemHandlerFactory *factory)
