@@ -19,15 +19,15 @@ namespace LC::DataSources
 	{
 		/** @brief The icon associated with this enum value.
 		 */
-		QIcon Icon_;
+		QIcon Icon_ {};
 
 		/** @brief The name of this enum value.
 		 */
-		QString Name_;
+		QString Name_ {};
 
 		/** @brief Arbitrary data.
 		 */
-		QVariant UserData_;
+		QVariant UserData_ {};
 	};
 
 	using EnumValueInfoGenerator = std::function<QList<EnumValueInfo> ()>;
