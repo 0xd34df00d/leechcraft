@@ -108,6 +108,8 @@ namespace LC::Aggregator
 	void ItemSelectionTracker::MarkRead (const QModelIndex& index)
 	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		sb->SetItemUnread (index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> (), false);
+		const auto channelId = index.data (IItemsModel::ItemRole::ItemChannelId).value<IDType_t> ();
+		const auto itemId = index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+		sb->SetItemUnread (channelId, itemId, false);
 	}
 }

@@ -307,7 +307,7 @@ namespace Aggregator
 		 * @param[in] item The unique ID of the item.
 		 * @param[in] unread Whether the item is unread.
 		 */
-		virtual void SetItemUnread (IDType_t item, bool unread) = 0;
+		virtual void SetItemUnread (IDType_t channel, IDType_t item, bool unread) = 0;
 
 		/** @brief Removes an already existing item.
 		 *

@@ -826,7 +826,7 @@ namespace LC::Aggregator
 		emit itemDataUpdated (item);
 	}
 
-	void SQLStorageBackend::SetItemUnread (IDType_t itemId, bool unread)
+	void SQLStorageBackend::SetItemUnread (IDType_t channelId, IDType_t itemId, bool unread)
 	{
 		const bool affected = Items_->Update (sph::f<&ItemR::Unread_> = unread,
 				sph::f<&ItemR::ItemID_> == itemId &&
@@ -834,12 +834,8 @@ namespace LC::Aggregator
 		if (!affected)
 			return;
 
-		if (const auto& fullItem = GetItem (itemId))
-		{
-			const auto channelId = fullItem->ChannelID_;
-			emit itemReadStatusUpdated (channelId, itemId, unread);
-			emit channelUnreadCountUpdated (channelId, UnreadDelta { unread ? 1 : -1 });
-		}
+		emit itemReadStatusUpdated (channelId, itemId, unread);
+		emit channelUnreadCountUpdated (channelId, UnreadDelta { unread ? 1 : -1 });
 	}
 
 	void SQLStorageBackend::AddChannel (const Channel& channel)

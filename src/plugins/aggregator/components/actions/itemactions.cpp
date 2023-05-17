@@ -187,8 +187,12 @@ namespace LC::Aggregator
 	void ItemActions::MarkSelectedReadStatus (bool read)
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto itemId : GetSelectedIds ())
-			sb->SetItemUnread (itemId, !read);
+		for (const auto& idx : Deps_.GetSelection_ ())
+		{
+			const auto channelId = idx.data (IItemsModel::ItemRole::ItemChannelId).value<IDType_t> ();
+			const auto itemId = idx.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
+			sb->SetItemUnread (channelId, itemId, !read);
+		}
 	}
 
 	void ItemActions::MarkSelectedAsImportant (bool important)
