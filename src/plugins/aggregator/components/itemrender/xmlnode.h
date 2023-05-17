@@ -29,9 +29,9 @@ namespace LC::Aggregator
 	struct Tag
 	{
 		QString Name_;
-		TagAttrs Attrs_;
+		TagAttrs Attrs_ {};
 
-		Nodes Children_;
+		Nodes Children_ {};
 
 		static Tag WithText (const QString& name, const QString& contents);
 

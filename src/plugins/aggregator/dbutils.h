@@ -22,7 +22,7 @@ namespace LC::Aggregator
 	{
 		QString URL_;
 		QStringList Tags_;
-		std::optional<Feed::FeedSettings> FeedSettings_;
+		std::optional<Feed::FeedSettings> FeedSettings_ {};
 
 		UpdatesManager& UpdatesManager_;
 	};
