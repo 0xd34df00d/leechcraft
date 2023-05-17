@@ -13,9 +13,7 @@
 #include <util/sll/eitherfwd.h>
 #include "storagebackend.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class StorageBackendManager : public QObject
 	{
@@ -99,5 +97,4 @@ namespace Aggregator
 		 */
 		void hookItemAdded (LC::IHookProxy_ptr proxy, const Item& item) const;
 	};
-}
 }

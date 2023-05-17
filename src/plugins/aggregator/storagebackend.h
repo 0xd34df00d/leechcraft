@@ -16,9 +16,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "feed.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class StorageBackend;
 	using StorageBackend_ptr = std::shared_ptr<StorageBackend>;
@@ -462,4 +460,3 @@ namespace Aggregator
 }
 
 Q_DECLARE_METATYPE (LC::Aggregator::UnreadChange)
-}

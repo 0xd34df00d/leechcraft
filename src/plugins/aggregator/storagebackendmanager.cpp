@@ -15,9 +15,7 @@
 #include "dumbstorage.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	StorageBackendManager& StorageBackendManager::Instance ()
 	{
@@ -147,5 +145,4 @@ namespace Aggregator
 				this,
 				&StorageBackendManager::hookItemAdded);
 	}
-}
 }

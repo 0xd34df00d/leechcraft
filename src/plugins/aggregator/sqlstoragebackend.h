@@ -14,9 +14,7 @@
 #include <util/db/oral/oralfwd.h>
 #include "storagebackend.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class SQLStorageBackend : public StorageBackend
 	{
@@ -117,5 +115,4 @@ namespace Aggregator
 		void GetMRSSEntries (IDType_t, QList<MRSSEntry>&) const;
 		IDType_t GetHighestID (const QByteArray&, const QByteArray&) const;
 	};
-}
 }
