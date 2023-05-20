@@ -79,6 +79,12 @@ namespace LC::Util
 			// TODO hack around QByteArrayLiteral
 			return QByteArray { Data_ };
 		}
+
+		QString ToString () const noexcept
+		{
+			// TODO do this at compile-time
+			return ToByteArray ();
+		}
 	};
 
 	template<size_t N1, size_t N2, typename Char>
