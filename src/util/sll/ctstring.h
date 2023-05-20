@@ -124,7 +124,10 @@ namespace LC::Util
 
 	constexpr auto Join (auto&& sep, auto&& first, auto&&... strings) noexcept
 	{
-		return first + ((sep + strings) + ...);
+		if constexpr (sizeof... (strings))
+			return first + ((sep + strings) + ...);
+		else
+			return first;
 	}
 
 	constexpr auto JoinTup (auto&& stringsTuple, auto&& sep) noexcept
