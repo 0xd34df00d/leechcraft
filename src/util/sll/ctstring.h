@@ -61,6 +61,18 @@ namespace LC::Util
 			return Data_;
 		}
 
+		consteval bool EndsWith (Char ch) const noexcept
+		{
+			return Data_ [N - 1] == ch;
+		}
+
+		template<size_t Count>
+			requires (Count <= N)
+		constexpr auto Chop () const noexcept
+		{
+			return CtString<N - Count, Char>::FromUnsized (Data_);
+		}
+
 		QByteArray ToByteArray () const noexcept
 			requires std::same_as<Char, char>
 		{
