@@ -96,3 +96,22 @@ namespace LC
 		return S;
 	}
 }
+
+namespace LC::Util
+{
+	constexpr auto Join (auto&&)
+	{
+		return ""_ct;
+	}
+
+	constexpr auto Join (auto&& sep, auto&& first, auto&&... strings) noexcept
+	{
+		return first + ((sep + strings) + ...);
+	}
+
+	constexpr auto JoinTup (auto&& stringsTuple, auto&& sep) noexcept
+	{
+		return std::apply ([&sep]<typename... Ts> (Ts&&... args) { return Join (sep, std::forward<Ts> (args)...); },
+				stringsTuple);
+	}
+}
