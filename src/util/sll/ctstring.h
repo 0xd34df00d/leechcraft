@@ -27,14 +27,14 @@ namespace LC::Util
 
 		Char Data_ [N] {};
 
-		consteval CtString () = default;
+		consteval CtString () noexcept = default;
 
-		consteval CtString (RawStr<N, Char> s)
+		consteval CtString (RawStr<N, Char> s) noexcept
 		{
 			std::copy (std::begin (s), std::end (s), Data_);
 		}
 
-		consteval static auto FromUnsized (const Char *s)
+		consteval static auto FromUnsized (const Char *s) noexcept
 		{
 			CtString result {};
 			std::copy (s, s + N, result.Data_);
@@ -42,7 +42,7 @@ namespace LC::Util
 		}
 
 		template<size_t N2>
-		consteval auto operator+ (const CtString<N2, Char>& s2) const
+		consteval auto operator+ (const CtString<N2, Char>& s2) const noexcept
 		{
 			CtString<N + N2 - 1, Char> result;
 			std::copy (std::begin (Data_), std::end (Data_) - 1, result.Data_);
@@ -51,17 +51,17 @@ namespace LC::Util
 		}
 
 		template<size_t N2>
-		consteval auto operator+ (RawStr<N2, Char> s2) const
+		consteval auto operator+ (RawStr<N2, Char> s2) const noexcept
 		{
 			return *this + CtString<N2, Char> { static_cast<RawStr<N2, Char>> (s2) };
 		}
 
-		constexpr RawStr<N, Char> GetRawSized () const
+		constexpr RawStr<N, Char> GetRawSized () const noexcept
 		{
 			return Data_;
 		}
 
-		QByteArray ToByteArray () const
+		QByteArray ToByteArray () const noexcept
 			requires std::same_as<Char, char>
 		{
 			// TODO hack around QByteArrayLiteral
@@ -70,13 +70,13 @@ namespace LC::Util
 	};
 
 	template<size_t N1, size_t N2, typename Char>
-	consteval auto operator+ (RawStr<N1, Char> s1, CtString<N2, Char> s2)
+	consteval auto operator+ (RawStr<N1, Char> s1, CtString<N2, Char> s2) noexcept
 	{
 		return CtString<N1, Char> { s1 } + s2;
 	}
 
 	template<typename Char>
-	consteval size_t StringBufSize (const Char *str)
+	consteval size_t StringBufSize (const Char *str) noexcept
 	{
 		size_t result = 0;
 		while (str [result++])
