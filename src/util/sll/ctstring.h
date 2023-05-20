@@ -27,14 +27,14 @@ namespace LC::Util
 
 		Char Data_ [N] {};
 
-		consteval CtString () noexcept = default;
+		constexpr CtString () noexcept = default;
 
-		consteval CtString (RawStr<N, Char> s) noexcept
+		constexpr CtString (RawStr<N, Char> s) noexcept
 		{
 			std::copy (std::begin (s), std::end (s), Data_);
 		}
 
-		consteval static auto FromUnsized (const Char *s) noexcept
+		constexpr static auto FromUnsized (const Char *s) noexcept
 		{
 			CtString result {};
 			std::copy (s, s + N, result.Data_);
@@ -42,7 +42,7 @@ namespace LC::Util
 		}
 
 		template<size_t N2>
-		consteval auto operator+ (const CtString<N2, Char>& s2) const noexcept
+		constexpr auto operator+ (const CtString<N2, Char>& s2) const noexcept
 		{
 			CtString<N + N2 - 1, Char> result;
 			std::copy (std::begin (Data_), std::end (Data_) - 1, result.Data_);
@@ -51,7 +51,7 @@ namespace LC::Util
 		}
 
 		template<size_t N2>
-		consteval auto operator+ (RawStr<N2, Char> s2) const noexcept
+		constexpr auto operator+ (RawStr<N2, Char> s2) const noexcept
 		{
 			return *this + CtString<N2, Char> { static_cast<RawStr<N2, Char>> (s2) };
 		}
@@ -61,7 +61,7 @@ namespace LC::Util
 			return Data_;
 		}
 
-		consteval bool EndsWith (Char ch) const noexcept
+		constexpr bool EndsWith (Char ch) const noexcept
 		{
 			return Data_ [N - 1] == ch;
 		}
@@ -88,13 +88,13 @@ namespace LC::Util
 	};
 
 	template<size_t N1, size_t N2, typename Char>
-	consteval auto operator+ (RawStr<N1, Char> s1, CtString<N2, Char> s2) noexcept
+	constexpr auto operator+ (RawStr<N1, Char> s1, CtString<N2, Char> s2) noexcept
 	{
 		return CtString<N1, Char> { s1 } + s2;
 	}
 
 	template<typename Char>
-	consteval size_t StringBufSize (const Char *str) noexcept
+	constexpr size_t StringBufSize (const Char *str) noexcept
 	{
 		size_t result = 0;
 		while (str [result++])
@@ -109,7 +109,7 @@ namespace LC::Util
 namespace LC
 {
 	template<Util::CtString S>
-	consteval auto operator""_ct ()
+	constexpr auto operator""_ct ()
 	{
 		return S;
 	}
