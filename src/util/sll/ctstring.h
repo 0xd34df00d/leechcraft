@@ -56,6 +56,11 @@ namespace LC::Util
 			return *this + CtString<N2, Char> { static_cast<RawStr<N2, Char>> (s2) };
 		}
 
+		constexpr bool IsEmpty () const noexcept
+		{
+			return N;
+		}
+
 		constexpr RawStr<N, Char> GetRawSized () const noexcept
 		{
 			return Data_;
