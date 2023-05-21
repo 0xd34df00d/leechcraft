@@ -416,6 +416,18 @@ namespace LC::Aggregator
 {
 	using Util::operator*;
 
+	namespace
+	{
+		template<typename F, typename... Args>
+		auto WithType (StorageBackend::Type type, F&& f)
+		{
+			if (type == StorageBackend::SBSQLite)
+				return std::forward<F> (f) (oral::SQLiteImplFactory {});
+			else
+				return std::forward<F> (f) (oral::PostgreSQLImplFactory {});
+		}
+	}
+
 	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
@@ -462,9 +474,7 @@ namespace LC::Aggregator
 		auto adaptedPtrs = std::tie (Feeds_, FeedsSettings_, Channels_, Items_, Enclosures_,
 				MRSSEntries_, MRSSThumbnails_, MRSSCredits_, MRSSComments_, MRSSPeerLinks_, MRSSScenes_,
 				Items2Tags_, Feeds2Tags_);
-		Type_ == SBSQLite ?
-				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, adaptedPtrs) :
-				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, adaptedPtrs);
+		WithType (Type_, [&]<typename Impl> (Impl) { oral::AdaptPtrs<Impl> (DB_, adaptedPtrs); });
 
 		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}
@@ -930,9 +940,8 @@ namespace LC::Aggregator
 
 				Util::RunTextQuery (DB_, "DROP TABLE " + Feed2TagsR::ClassName ());
 
-				Feeds2Tags_ = Type_ == SBSQLite ?
-						oral::AdaptPtr<Feed2TagsR, oral::SQLiteImplFactory> (DB_) :
-						oral::AdaptPtr<Feed2TagsR, oral::PostgreSQLImplFactory> (DB_);
+				Feeds2Tags_ = WithType (Type_,
+						[&]<typename Impl> (Impl) { return oral::AdaptPtr<Feed2TagsR, Impl> (DB_); });
 
 				for (const auto& [feedId, tags] : feedsTags)
 					SetFeedTags (*feedId, tags->TagsList_);
