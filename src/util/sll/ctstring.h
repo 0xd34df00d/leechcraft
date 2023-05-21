@@ -58,7 +58,7 @@ namespace LC::Util
 
 		constexpr bool IsEmpty () const noexcept
 		{
-			return N;
+			return !N;
 		}
 
 		constexpr RawStr<N, Char> GetRawSized () const noexcept
