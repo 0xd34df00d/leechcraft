@@ -122,7 +122,7 @@ namespace LC
 
 namespace LC::Util
 {
-	constexpr auto Join (auto&&)
+	constexpr auto Join (auto&&) noexcept
 	{
 		return ""_ct;
 	}
