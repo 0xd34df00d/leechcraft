@@ -23,8 +23,6 @@ namespace Aggregator
 			type = StorageBackend::SBSQLite;
 		else if (strType == "PostgreSQL")
 			type = StorageBackend::SBPostgres;
-		else if (strType == "MySQL")
-			type = StorageBackend::SBMysql;
 		else
 			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 						.arg (strType)));
@@ -41,8 +39,6 @@ namespace Aggregator
 		case SBPostgres:
 			result = std::make_shared<SQLStorageBackend> (type, id);
 			break;
-		case SBMysql:
-			throw std::runtime_error { "MySQL backend not supported yet, sorry" };
 		}
 		qDebug () << Q_FUNC_INFO
 				<< "created connection";

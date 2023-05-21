@@ -428,8 +428,6 @@ namespace LC::Aggregator
 		case SBPostgres:
 			strType = "QPSQL"_qs;
 			break;
-		case SBMysql:
-			break;
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType, Util::GenConnectionName ("org.LeechCraft.Aggregator" + id));
@@ -451,8 +449,6 @@ namespace LC::Aggregator
 			DB_.setPassword (XmlSettingsManager::Instance ()->property ("PostgresPassword").toString ());
 			break;
 		}
-		case SBMysql:
-			break;
 		}
 
 		if (!DB_.open ())

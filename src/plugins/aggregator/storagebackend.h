@@ -45,7 +45,6 @@ namespace LC::Aggregator
 		{
 			SBSQLite,
 			SBPostgres,
-			SBMysql
 		};
 
 		using QObject::QObject;
