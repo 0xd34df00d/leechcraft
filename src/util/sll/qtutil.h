@@ -144,10 +144,10 @@ namespace LC
 		template<Util::CtString S, size_t... Idxes>
 		QString MkString (std::index_sequence<Idxes...>)
 		{
-			static constexpr QStaticStringData<S.Size - 1> literal
+			static constexpr QStaticStringData<S.Size> literal
 			{
-				Q_STATIC_STRING_DATA_HEADER_INITIALIZER (S.Size - 1),
-				{ S.GetRawSized () [Idxes]... }
+				Q_STATIC_STRING_DATA_HEADER_INITIALIZER (S.Size),
+				{ S.Data_ [Idxes]..., 0 }
 			};
 			QStringDataPtr holder { literal.data_ptr () };
 			return QString { holder };
