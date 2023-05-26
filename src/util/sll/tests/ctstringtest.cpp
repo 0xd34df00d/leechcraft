@@ -42,6 +42,10 @@ namespace LC::Util
 		constexpr auto s3 = " how's life?"_ct;
 
 		constexpr auto concat = s1 + s2 + s3;
-		QCOMPARE (concat.ToString (), QString { "hello, world! how's life?" });
+		const QString expected { "hello, world! how's life?" };
+		QCOMPARE (concat.ToString (), expected);
+
+		constexpr auto concat2 = "hello, "_ct;
+		QCOMPARE ((concat2 + "world!" + " how's life?").ToString (), expected);
 	}
 }
