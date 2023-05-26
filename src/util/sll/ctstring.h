@@ -92,7 +92,7 @@ namespace LC::Util
 			requires std::same_as<Char, char>
 		{
 			// TODO hack around QByteArrayLiteral
-			return QByteArray { Data_ };
+			return QByteArray { Data_, Size };
 		}
 
 		QString ToString () const noexcept
