@@ -18,7 +18,7 @@ namespace LC::Util
 	void CtStringTest::testConstruction ()
 	{
 		constexpr CtString s { TEST_STR };
-		QCOMPARE (s.GetRawSized (), TEST_STR);
+		QCOMPARE (s.ToString (), QString { TEST_STR });
 	}
 
 	void CtStringTest::testUnsizedConstruction ()
@@ -26,13 +26,13 @@ namespace LC::Util
 		constexpr auto getStr = [] () constexpr { return TEST_STR; };
 
 		constexpr auto s = CtString<StringBufSize (getStr ())>::FromUnsized (getStr ());
-		QCOMPARE (s.GetRawSized (), TEST_STR);
+		QCOMPARE (s.ToString (), QString { TEST_STR });
 	}
 
 	void CtStringTest::testUDL ()
 	{
 		constexpr auto s = "test string"_ct;
-		QCOMPARE (s.GetRawSized (), TEST_STR);
+		QCOMPARE (s.ToString (), QString { TEST_STR });
 	}
 
 	void CtStringTest::testConcat ()
@@ -42,6 +42,6 @@ namespace LC::Util
 		constexpr auto s3 = " how's life?"_ct;
 
 		constexpr auto concat = s1 + s2 + s3;
-		QCOMPARE (concat.GetRawSized (), "hello, world! how's life?");
+		QCOMPARE (concat.ToString (), QString { "hello, world! how's life?" });
 	}
 }
