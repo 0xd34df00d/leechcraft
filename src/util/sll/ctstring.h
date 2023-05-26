@@ -23,7 +23,7 @@ namespace LC::Util
 	{
 		using Char_t = Char;
 
-		constexpr static size_t Size = N;
+		constexpr static size_t Size = N - 1;
 
 		Char Data_ [N] {};
 
@@ -38,15 +38,16 @@ namespace LC::Util
 		{
 			CtString result {};
 			std::copy (s, s + N, result.Data_);
+			result.Data_ [N - 1] = '\0';
 			return result;
 		}
 
 		template<size_t N2>
 		constexpr auto operator+ (const CtString<N2, Char>& s2) const noexcept
 		{
-			CtString<N + N2 - 1, Char> result;
-			std::copy (std::begin (Data_), std::end (Data_) - 1, result.Data_);
-			std::copy (std::begin (s2.Data_), std::end (s2.Data_), result.Data_ + N - 1);
+			CtString<Size + s2.Size + 1, Char> result;
+			std::copy (Data_, Data_ + Size, result.Data_);
+			std::copy (s2.Data_, s2.Data_ + s2.Size + 1, result.Data_ + Size);
 			return result;
 		}
 
@@ -58,7 +59,7 @@ namespace LC::Util
 
 		constexpr bool IsEmpty () const noexcept
 		{
-			return !N;
+			return !Size;
 		}
 
 		constexpr RawStr<N, Char> GetRawSized () const noexcept
@@ -67,12 +68,13 @@ namespace LC::Util
 		}
 
 		constexpr bool EndsWith (Char ch) const noexcept
+			requires (Size > 0)
 		{
-			return Data_ [N - 1] == ch;
+			return Data_ [Size - 1] == ch;
 		}
 
 		template<size_t Count>
-			requires (Count <= N)
+			requires (Count < N)
 		constexpr auto Chop () const noexcept
 		{
 			return CtString<N - Count, Char>::FromUnsized (Data_);
