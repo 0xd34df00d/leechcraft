@@ -18,11 +18,19 @@ namespace LC::Util
 	template<size_t N, typename Char = char>
 	using RawStr = const Char (&) [N];
 
+	/** 0-terminated compile-time string.
+	 *
+	 * @tparam N The length of the string in `Char`, _including_ the null character.
+	 * @tparam Char The underlying character type.
+	 */
 	template<size_t N, typename Char = char>
+			requires (N > 0)
 	struct CtString
 	{
 		using Char_t = Char;
 
+		/** The size of the string, _not_ including the 0-terminator.
+		 */
 		constexpr static size_t Size = N - 1;
 
 		Char Data_ [N] {};
@@ -54,7 +62,7 @@ namespace LC::Util
 		template<size_t N2>
 		constexpr auto operator+ (RawStr<N2, Char> s2) const noexcept
 		{
-			return *this + CtString<N2, Char> { static_cast<RawStr<N2, Char>> (s2) };
+			return *this + CtString<N2, Char> { s2 };
 		}
 
 		constexpr bool IsEmpty () const noexcept
