@@ -41,6 +41,8 @@ namespace LC::Util
 			std::copy (s, s + Size, Data_);
 		}
 
+		constexpr auto operator<=> (const CtString&) const = default;
+
 		constexpr static auto FromUnsized (const Char *s) noexcept
 		{
 			CtString result {};
