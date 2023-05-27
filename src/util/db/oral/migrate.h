@@ -10,18 +10,14 @@
 
 #include "util/db/oral/oral.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace oral
+namespace LC::Util::oral
 {
 	namespace detail
 	{
 		bool MatchesSchema (const QString& baseName, const QString& schema, QSqlDatabase& db)
 		{
 			auto result = Util::RunTextQuery (db,
-					QString { "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = '%1'" }
+					"SELECT sql FROM sqlite_master WHERE type = 'table' AND name = '%1'"_qs
 							.arg (baseName));
 			if (!result.next ())
 				return true;
@@ -68,21 +64,16 @@ namespace oral
 		const auto& fields = detail::GetFieldsNames<Record> {} ().join (", ");
 
 		Util::RunTextQuery (db,
-				QString { "INSERT INTO %2 (%1) SELECT %1 FROM %3;" }
-						.arg (fields)
-						.arg (thisName)
-						.arg (baseName));
+				"INSERT INTO %2 (%1) SELECT %1 FROM %3;"_qs
+						.arg (fields, thisName, baseName));
 
 		Util::RunTextQuery (db,
-				QString { "DROP TABLE %1;" }
+				"DROP TABLE %1;"_qs
 						.arg (baseName));
 		Util::RunTextQuery (db,
-				QString { "ALTER TABLE %1 RENAME TO %2;" }
-						.arg (thisName)
-						.arg (baseName));
+				"ALTER TABLE %1 RENAME TO %2;"_qs
+						.arg (thisName, baseName));
 
 		lock.Good ();
 	}
-}
-}
 }
