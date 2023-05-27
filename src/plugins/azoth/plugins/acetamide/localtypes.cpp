@@ -10,7 +10,7 @@
 
 namespace LC::Azoth::Acetamide::Lits
 {
-#define DEFINE_LIT(a) const auto a = QStringLiteral (#a);
+#define DEFINE_LIT(a) const QString a = QStringLiteral (#a);
 
 	DEFINE_LIT (HumanReadableName)
 	DEFINE_LIT (StoredName)
@@ -25,7 +25,7 @@ namespace LC::Azoth::Acetamide::Lits
 	DEFINE_LIT (Autojoin)
 	DEFINE_LIT (AccountID)
 
-	const auto AzothAcetamide = QStringLiteral ("Azoth Acetamide");
+	const QString AzothAcetamide = QStringLiteral ("Azoth Acetamide");
 }
 
 namespace LC::Azoth::Acetamide
