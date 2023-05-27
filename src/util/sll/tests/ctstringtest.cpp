@@ -9,6 +9,7 @@
 #include "ctstringtest.h"
 #include <QtTest>
 #include <ctstring.h>
+#include <ctstringutils.h>
 
 QTEST_APPLESS_MAIN (LC::Util::CtStringTest)
 
@@ -47,5 +48,15 @@ namespace LC::Util
 
 		constexpr auto concat2 = "hello, "_ct;
 		QCOMPARE ((concat2 + "world!" + " how's life?").ToString (), expected);
+	}
+
+	void CtStringTest::testNub ()
+	{
+		constexpr static std::tuple input { "hello"_ct, "world"_ct, "hello"_ct, "lc"_ct, "what's"_ct, "up"_ct, "lc"_ct, "lc"_ct };
+		constexpr std::tuple expected { "hello"_ct, "world"_ct, "lc"_ct, "what's"_ct, "up"_ct };
+
+		constexpr static auto F = [&] { return input; };
+		constexpr auto nubbed = Nub<F>();
+		static_assert (nubbed == expected);
 	}
 }

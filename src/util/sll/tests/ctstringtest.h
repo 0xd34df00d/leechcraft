@@ -20,5 +20,7 @@ namespace LC::Util
 		void testUnsizedConstruction ();
 		void testUDL ();
 		void testConcat ();
+
+		void testNub ();
 	};
 }

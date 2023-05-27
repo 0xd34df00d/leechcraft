@@ -43,4 +43,41 @@ namespace LC::Util
 			return std::tuple { (std::get<I> (tup1) + sep + std::get<I> (tup2))... };
 		} (std::make_index_sequence<Tup1Size> {});
 	}
+
+	namespace detail
+	{
+		template<typename T1, typename T2>
+		consteval bool JMEq (const T1& v1, const T2& v2)
+		{
+			if constexpr (!std::is_same_v<T1, T2>)
+				return false;
+			else
+				return v1 == v2;
+		}
+	}
+
+	template<const auto& F>
+	constexpr auto Nub ()
+	{
+		constexpr auto tup = F ();
+		constexpr auto indices = std::make_index_sequence<std::tuple_size_v<decltype (tup)>> {};
+
+		return [&]<std::size_t... Ix> (std::index_sequence<Ix...>)
+		{
+			return std::tuple_cat ([&]
+				{
+					constexpr auto thisIndex = Ix;
+					constexpr auto item = std::get<thisIndex> (tup);
+
+					constexpr auto itemResult = [&]<std::size_t... IxOther> (std::index_sequence<IxOther...>)
+					{
+						if constexpr (((detail::JMEq (item, std::get<IxOther> (tup)) && IxOther < thisIndex) || ...))
+							return std::tuple {};
+						else
+							return std::tuple { item };
+					} (indices);
+					return itemResult;
+				} ()...);
+		} (indices);
+	}
 }
