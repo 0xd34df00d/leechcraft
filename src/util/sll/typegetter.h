@@ -33,14 +33,14 @@ namespace LC::Util
 		using CallTypeGetter_t = std::decay_t<decltype (*detail::TypeGetter (*static_cast<F*> (nullptr)))>;
 	}
 
-	template<typename F, size_t Idx>
-	using ArgType_t = std::tuple_element_t<Idx + 1, detail::CallTypeGetter_t<F>>;
-
-	template<typename F>
-	using RetType_t = std::tuple_element_t<0, detail::CallTypeGetter_t<F>>;
-
 	template<typename F>
 	concept SomeInvokable = requires (F f) { detail::TypeGetter (f); };
+
+	template<SomeInvokable F, size_t Idx>
+	using ArgType_t = std::tuple_element_t<Idx + 1, detail::CallTypeGetter_t<F>>;
+
+	template<SomeInvokable F>
+	using RetType_t = std::tuple_element_t<0, detail::CallTypeGetter_t<F>>;
 
 	template<SomeInvokable F>
 	inline constexpr auto ArgCount_v = std::tuple_size_v<detail::CallTypeGetter_t<F>> - 1;
