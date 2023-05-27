@@ -97,26 +97,26 @@ namespace LC::Azoth::Acetamide
 
 	struct IrcMessageOptions
 	{
-		QString Nick_;
-		QString UserName_;
-		QString Host_;
-		QString Command_;
-		QString Message_;
-		QStringList Parameters_;
+		QString Nick_ {};
+		QString UserName_ {};
+		QString Host_ {};
+		QString Command_ {};
+		QString Message_ {};
+		QStringList Parameters_ {};
 	};
 
 	struct IrcBookmark
 	{
-		QString Name_;
-		QString ServerName_;
-		QString ServerPassword_;
-		QString ServerEncoding_;
-		QString NickName_;
-		QString ChannelName_;
-		QString ChannelPassword_;
-		int ServerPort_;
-		bool SSL_;
-		bool AutoJoin_;
+		QString Name_ {};
+		QString ServerName_ {};
+		QString ServerPassword_ {};
+		QString ServerEncoding_ {};
+		QString NickName_ {};
+		QString ChannelName_ {};
+		QString ChannelPassword_ {};
+		int ServerPort_ = 0;
+		bool SSL_ = false;
+		bool AutoJoin_ = false;
 	};
 
 	struct ChannelModes
