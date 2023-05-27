@@ -37,6 +37,9 @@ namespace LC::Util
 	using RetType_t = std::tuple_element_t<0, decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))>;
 
 	template<typename F>
+	concept IsInvokable_v = requires (F f) { std::declval<decltype (detail::TypeGetter (f))> (); };
+
+	template<IsInvokable_v F>
 	inline constexpr auto ArgCount_v = std::tuple_size_v<decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))> - 1;
 
 	namespace detail
