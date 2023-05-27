@@ -15,32 +15,35 @@ namespace LC::Util
 	namespace detail
 	{
 		template<typename R, typename... Args>
-		std::tuple<R, Args...> TypeGetter (R (*) (Args...));
+		std::tuple<R, Args...>* TypeGetter (R (*) (Args...));
 
 		template<typename F>
 		auto TypeGetter (F&& f) -> decltype (TypeGetter (+f));
 
 		template<typename C, typename R, typename... Args>
-		std::tuple<R, Args...> TypeGetter (R (C::*) (Args...) const);
+		std::tuple<R, Args...>* TypeGetter (R (C::*) (Args...) const);
 
 		template<typename C, typename R, typename... Args>
-		std::tuple<R, Args...> TypeGetter (R (C::*) (Args...));
+		std::tuple<R, Args...>* TypeGetter (R (C::*) (Args...));
 
 		template<typename C>
 		decltype (TypeGetter (&C::operator ())) TypeGetter (const C& c);
+
+		template<typename F>
+		using CallTypeGetter_t = std::decay_t<decltype (*detail::TypeGetter (*static_cast<F*> (nullptr)))>;
 	}
 
 	template<typename F, size_t Idx>
-	using ArgType_t = std::tuple_element_t<Idx + 1, decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))>;
+	using ArgType_t = std::tuple_element_t<Idx + 1, detail::CallTypeGetter_t<F>>;
 
 	template<typename F>
-	using RetType_t = std::tuple_element_t<0, decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))>;
+	using RetType_t = std::tuple_element_t<0, detail::CallTypeGetter_t<F>>;
 
 	template<typename F>
 	concept IsInvokable_v = requires (F f) { std::declval<decltype (detail::TypeGetter (f))> (); };
 
 	template<IsInvokable_v F>
-	inline constexpr auto ArgCount_v = std::tuple_size_v<decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))> - 1;
+	inline constexpr auto ArgCount_v = std::tuple_size_v<detail::CallTypeGetter_t<F>> - 1;
 
 	namespace detail
 	{
