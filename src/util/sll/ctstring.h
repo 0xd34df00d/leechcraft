@@ -53,7 +53,8 @@ namespace LC::Util
 		template<size_t N2>
 		constexpr auto operator+ (const CtString<N2, Char>& s2) const noexcept
 		{
-			CtString<Size + s2.Size, Char> result;
+			// TODO clang bug, use s2.Size otherwise
+			CtString<Size + CtString<N2, Char>::Size, Char> result;
 			std::copy (Data_, Data_ + Size, result.Data_);
 			std::copy (s2.Data_, s2.Data_ + s2.Size, result.Data_ + Size);
 			return result;
