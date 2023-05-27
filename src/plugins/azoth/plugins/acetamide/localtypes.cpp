@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "localtypes.h"
+#include <array>
 
 namespace LC::Azoth::Acetamide::Lits
 {
@@ -32,7 +33,7 @@ namespace LC::Azoth::Acetamide
 {
 	uint qHash (const ChannelOptions& opts)
 	{
-		std::initializer_list<QString> items { opts.ChannelName_, opts.ChannelPassword_, opts.ServerName_ };
+		std::array items { opts.ChannelName_, opts.ChannelPassword_, opts.ServerName_ };
 		return qHashRange (items.begin (), items.end (), qGlobalQHashSeed ());
 	}
 }
