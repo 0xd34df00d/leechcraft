@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ctstring.h"
+#include <QDebug>
 
 namespace LC::Util
 {
@@ -79,5 +80,16 @@ namespace LC::Util
 					return itemResult;
 				} ()...);
 		} (indices);
+	}
+
+	template<size_t N, typename Char>
+	QDebug operator<< (QDebug dbg, const CtString<N, Char>& str)
+	{
+		QDebugStateSaver saver { dbg };
+		dbg.nospace () << "CtString[" << N << "] { ";
+		for (size_t i = 0; i < N; ++i)
+			dbg.nospace () << str.Data_ [i];
+		dbg.nospace () << " }";
+		return dbg;
 	}
 }
