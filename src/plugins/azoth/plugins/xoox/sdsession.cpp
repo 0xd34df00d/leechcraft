@@ -191,9 +191,10 @@ namespace Xoox
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
 		QStandardItem *targetItem = Model_->itemFromIndex (sibling);
 
-		if (iq.identities ().size () == 1)
+		const auto& identities = iq.identities ();
+		if (identities.size () == 1)
 		{
-			const QXmppDiscoveryIq::Identity& id = iq.identities ().at (0);
+			const QXmppDiscoveryIq::Identity& id = identities.at (0);
 			const QString& text = id.name ();
 			if (!text.isEmpty ())
 				targetItem->setText (text);
@@ -238,7 +239,7 @@ namespace Xoox
 		}
 
 		tooltip += "<strong>" + tr ("Identities:") + "</strong><ul>";
-		for (const auto& id : iq.identities ())
+		for (const auto& id : identities)
 		{
 			if (id.name ().isEmpty ())
 				continue;
@@ -292,7 +293,8 @@ namespace Xoox
 		}
 
 		QPointer<SDSession> ptr (this);
-		for (const auto& item : iq.items ())
+		const auto& items = iq.items ();
+		for (const auto& item : items)
 		{
 			auto items = AppendRow (parentItem,
 					{ item.name (), item.jid (), item.node () },
@@ -302,17 +304,17 @@ namespace Xoox
 		}
 
 		auto requestBatch = std::make_shared<std::function<void (int)>> ();
-		*requestBatch = [ptr, iq, requestBatch] (int start)
+		*requestBatch = [&items, ptr, requestBatch] (int start)
 		{
 			if (!ptr ||
-					start >= iq.items ().size ())
+					start >= items.size ())
 				return;
 
 			const auto batchSize = 300;
 
-			for (int end = std::min (start + batchSize, iq.items ().size ()); start < end; ++start)
+			for (int end = std::min (start + batchSize, items.size ()); start < end; ++start)
 			{
-				const auto& item = iq.items ().at (start);
+				const auto& item = items.at (start);
 				ptr->Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
 						[ptr] (const QXmppDiscoveryIq& infoIq)
 						{
