@@ -84,6 +84,16 @@ namespace LC::Util
 			return CtString<N - Count, Char>::FromUnsized (Data_);
 		}
 
+		constexpr Char& operator[] (size_t pos) noexcept
+		{
+			return Data_ [pos];
+		}
+
+		constexpr Char operator[] (size_t pos) const noexcept
+		{
+			return Data_ [pos];
+		}
+
 		QByteArray ToByteArray () const noexcept
 			requires std::same_as<Char, char>
 		{
