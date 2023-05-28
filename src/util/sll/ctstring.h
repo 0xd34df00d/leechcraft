@@ -130,7 +130,7 @@ namespace LC::Util
 namespace LC
 {
 	template<Util::CtString S>
-	constexpr auto operator""_ct ()
+	constexpr auto operator""_ct () noexcept
 	{
 		return S;
 	}
