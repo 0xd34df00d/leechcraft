@@ -79,7 +79,7 @@ namespace LC::Util
 
 		template<size_t Count>
 			requires (Count <= Size)
-		constexpr auto Chop () const noexcept
+		[[nodiscard]] constexpr auto Chop () const noexcept
 		{
 			return CtString<N - Count, Char>::FromUnsized (Data_);
 		}
