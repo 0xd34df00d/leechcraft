@@ -35,10 +35,7 @@ namespace Poshuku
 		QString Title_;
 		QString URL_;
 
-		constexpr static auto ClassName ()
-		{
-			return "History"_ct;
-		}
+		constexpr static auto ClassName = "History"_ct;
 
 		using Indices = oral::Indices<
 				oral::Index<&History::Title_, &History::URL_>
@@ -66,10 +63,7 @@ namespace Poshuku
 		QString URL_;
 		QString Tags_;
 
-		constexpr static auto ClassName ()
-		{
-			return "Favorites"_ct;
-		}
+		constexpr static auto ClassName = "Favorites"_ct;
 
 		FavoritesModel::FavoritesItem ToFavoritesItem () const
 		{
@@ -96,10 +90,7 @@ namespace Poshuku
 	{
 		oral::PKey<QString, oral::NoAutogen> URL_;
 
-		constexpr static auto ClassName ()
-		{
-			return "Forms_Never"_ct;
-		}
+		constexpr static auto ClassName = "Forms_Never"_ct;
 	};
 }
 }

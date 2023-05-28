@@ -11,16 +11,14 @@
 
 QTEST_GUILESS_MAIN (LC::Util::OralTest)
 
+using LC::operator""_ct;
+
 struct AutogenPKeyRecord
 {
 	lco::PKey<int> ID_;
 	QString Value_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "AutogenPKeyRecord"_ct;
-	}
+	constexpr static auto ClassName = "AutogenPKeyRecord"_ct;
 
 	auto AsTuple () const
 	{
@@ -39,11 +37,7 @@ struct NoPKeyRecord
 	int ID_;
 	QString Value_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "NoPKeyRecord"_ct;
-	}
+	constexpr static auto ClassName = "NoPKeyRecord"_ct;
 
 	auto AsTuple () const
 	{
@@ -71,11 +65,7 @@ struct NonInPlaceConstructibleRecord
 		Q_UNUSED (someExtraArgument)
 	}
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "NonInPlaceConstructibleRecord"_ct;
-	}
+	constexpr static auto ClassName = "NonInPlaceConstructibleRecord"_ct;
 
 	auto AsTuple () const
 	{
@@ -96,11 +86,7 @@ struct ComplexConstraintsRecord
 	int Age_;
 	int Weight_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "ComplexConstraintsRecord"_ct;
-	}
+	constexpr static auto ClassName = "ComplexConstraintsRecord"_ct;
 
 	auto AsTuple () const
 	{

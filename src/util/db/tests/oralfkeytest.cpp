@@ -11,16 +11,14 @@
 
 QTEST_GUILESS_MAIN (LC::Util::OralFKeyTest)
 
+using LC::operator""_ct;
+
 struct Student
 {
 	lco::PKey<int> ID_;
 	QString Name_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "Student"_ct;
-	}
+	constexpr static auto ClassName = "Student"_ct;
 
 	auto AsTuple () const
 	{
@@ -41,11 +39,7 @@ struct StudentInfo
 	int Age_;
 	int Year_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "StudentInfo"_ct;
-	}
+	constexpr static auto ClassName = "StudentInfo"_ct;
 
 	auto AsTuple () const
 	{
@@ -66,11 +60,7 @@ struct Lecturer
 	lco::PKey<int> ID_;
 	QString Name_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "Lecturer"_ct;
-	}
+	constexpr static auto ClassName = "Lecturer"_ct;
 
 	auto AsTuple () const
 	{
@@ -90,11 +80,7 @@ struct Student2Lecturer
 	lco::References<&Student::ID_> StudentID_;
 	lco::References<&Lecturer::ID_> LecturerID_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "Student2Lecturer"_ct;
-	}
+	constexpr static auto ClassName = "Student2Lecturer"_ct;
 
 	auto AsTuple () const
 	{

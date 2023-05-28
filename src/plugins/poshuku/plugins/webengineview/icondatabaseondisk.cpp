@@ -22,10 +22,7 @@ namespace LC::Poshuku::WebEngineView
 		Util::oral::PKey<QUrl, Util::oral::NoAutogen> IconUrl_;
 		Util::oral::AsDataStream<QIcon> Icon_;
 
-		static QString ClassName ()
-		{
-			return "IconUrl2Icon";
-		}
+		constexpr static auto ClassName = "IconUrl2Icon"_ct;
 	};
 
 	struct IconDatabaseOnDisk::PageUrl2IconUrlRecord
@@ -34,10 +31,7 @@ namespace LC::Poshuku::WebEngineView
 		Util::oral::References<&IconUrl2IconRecord::IconUrl_> IconUrl_;
 		QDateTime LastUpdate_;
 
-		static QString ClassName ()
-		{
-			return "PageUrl2IconUrl";
-		}
+		constexpr static auto ClassName = "PageUrl2IconUrl"_ct;
 	};
 }
 
@@ -84,8 +78,8 @@ namespace LC::Poshuku::WebEngineView
 
 		const auto& now = QDateTime::currentDateTime ();
 
-		IconUrl2Icon_->Insert ({ iconUrl, icon }, Replace::PKey<IconUrl2IconRecord>);
-		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl, now }, Replace::PKey<PageUrl2IconUrlRecord>);
+		IconUrl2Icon_->Insert ({ iconUrl, icon }, Replace::PKey);
+		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl, now }, Replace::PKey);
 	}
 
 	QIcon IconDatabaseOnDisk::GetIcon (const QUrl& iconUrl)

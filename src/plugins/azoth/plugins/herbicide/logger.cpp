@@ -29,10 +29,7 @@ namespace Herbicide
 		Util::oral::Unique<QString> AccountID_;
 		QString AccountName_;
 
-		constexpr static auto ClassName ()
-		{
-			return "AccountRecord"_ct;
-		}
+		constexpr static auto ClassName = "AccountRecord"_ct;
 	};
 
 	struct Logger::EntryRecord
@@ -44,10 +41,7 @@ namespace Herbicide
 		QString EntryHumanReadableId_;
 		QString EntryName_;
 
-		constexpr static auto ClassName ()
-		{
-			return "EntryRecord"_ct;
-		}
+		constexpr static auto ClassName = "EntryRecord"_ct;
 	};
 
 	struct Logger::EventRecord
@@ -58,10 +52,7 @@ namespace Herbicide
 		Logger::Event Event_;
 		QString Reason_;
 
-		constexpr static auto ClassName ()
-		{
-			return "EventRecord"_ct;
-		}
+		constexpr static auto ClassName = "EventRecord"_ct;
 	};
 }
 }

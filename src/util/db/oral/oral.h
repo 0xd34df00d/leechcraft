@@ -108,7 +108,7 @@ namespace LC::Util::oral
 		template<typename S>
 		constexpr auto QualifiedFieldNames = []<size_t... Ix> (std::index_sequence<Ix...>) constexpr
 			{
-				return std::tuple { (S::ClassName () + "." + GetFieldName<S, Ix> ())... };
+				return std::tuple { (S::ClassName + "." + GetFieldName<S, Ix> ())... };
 			} (SeqIndices<S>);
 
 		template<typename S>
@@ -161,7 +161,7 @@ namespace LC::Util::oral
 		constexpr auto GetQualifiedFieldNamePtr () noexcept
 		{
 			using S = MemberPtrStruct_t<Ptr>;
-			return S::ClassName () + "." + GetFieldName<S, FieldIndex<Ptr> ()> ();
+			return S::ClassName + "." + GetFieldName<S, FieldIndex<Ptr> ()> ();
 		}
 
 		template<typename T>
@@ -225,7 +225,7 @@ namespace LC::Util::oral
 	{
 		constexpr auto operator() () const noexcept
 		{
-			constexpr auto className = MemberPtrStruct_t<Ptr>::ClassName ();
+			constexpr auto className = MemberPtrStruct_t<Ptr>::ClassName;
 			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
 					" REFERENCES " + className + " (" + detail::GetFieldNamePtr<Ptr> () + ") ON DELETE CASCADE";
 		}
@@ -409,7 +409,7 @@ namespace LC::Util::oral
 			constexpr static auto MakeQueryForAction (auto action)
 			{
 				return ImplFactory::GetInsertPrefix (action) +
-						" INTO " + Seq::ClassName () +
+						" INTO " + Seq::ClassName +
 						" (" + JoinTup (FieldNames<Seq>, ", ") + ") " +
 						"VALUES (" + JoinTup (BoundFieldNames<Seq>, ", ") + ") " +
 						MakeInsertSuffix<ImplFactory> (action);
@@ -448,7 +448,7 @@ namespace LC::Util::oral
 				if constexpr (HasPKey<Seq>)
 				{
 					constexpr auto index = PKeyIndex_v<Seq>;
-					constexpr auto del = "DELETE FROM " + Seq::ClassName () +
+					constexpr auto del = "DELETE FROM " + Seq::ClassName +
 							" WHERE " + std::get<index> (FieldNames<Seq>) + " = ?";
 					DeleteQuery_.prepare (del.ToString ());
 				}
@@ -711,7 +711,7 @@ namespace LC::Util::oral
 			template<typename Seq, CtString S>
 			constexpr static auto ToSql () noexcept
 			{
-				return MemberPtrStruct_t<Ptr>::ClassName () + "." + GetFieldName ();
+				return MemberPtrStruct_t<Ptr>::ClassName + "." + GetFieldName ();
 			}
 
 			template<typename Seq, CtString S>
@@ -732,7 +732,7 @@ namespace LC::Util::oral
 				if constexpr (std::is_same_v<Seq, T>)
 					return std::tuple {};
 				else
-					return std::tuple { Seq::ClassName () };
+					return std::tuple { Seq::ClassName };
 			}
 
 			template<typename T>
@@ -1434,9 +1434,9 @@ namespace LC::Util::oral
 			consteval static auto BuildFromClause () noexcept
 			{
 				if constexpr (Tree::template HasAdditionalTables<T> ())
-					return T::ClassName () + ", " + JoinTup (Nub<Tree::template AdditionalTables<T>> (), ", ");
+					return T::ClassName + ", " + JoinTup (Nub<Tree::template AdditionalTables<T>> (), ", ");
 				else
-					return T::ClassName ();
+					return T::ClassName;
 			}
 
 			constexpr static auto HandleOrder (OrderNone) noexcept
@@ -1490,7 +1490,7 @@ namespace LC::Util::oral
 				constexpr auto where = ExprTreeToSql<"", T, ExprTree<Type, L, R>> ();
 				const auto& binder = ExprTreeToBinder<"", T> (tree);
 
-				constexpr auto selectAll = "DELETE FROM " + T::ClassName () + " WHERE " + where;
+				constexpr auto selectAll = "DELETE FROM " + T::ClassName + " WHERE " + where;
 
 				QSqlQuery query { DB_ };
 				query.prepare (selectAll.ToString ());
@@ -1514,7 +1514,7 @@ namespace LC::Util::oral
 				{
 					constexpr auto pkeyIdx = PKeyIndex_v<T>;
 					constexpr auto statements = ZipWith (FieldNames<T>, " = ", BoundFieldNames<T>);
-					constexpr auto update = "UPDATE " + T::ClassName () +
+					constexpr auto update = "UPDATE " + T::ClassName +
 							" SET " + JoinTup (statements, ", ") +
 							" WHERE " + std::get<pkeyIdx> (statements);
 					UpdateByPKey_.prepare (update.ToString ());
@@ -1537,7 +1537,7 @@ namespace LC::Util::oral
 				constexpr auto whereClause = ExprTreeToSql<"where_", T, ExprTree<WType, WL, WR>> ();
 				const auto& whereBinder = ExprTreeToBinder<"where_", T> (where);
 
-				constexpr auto update = "UPDATE " + T::ClassName () +
+				constexpr auto update = "UPDATE " + T::ClassName +
 						" SET " + setClause +
 						" WHERE " + whereClause;
 
@@ -1614,7 +1614,7 @@ namespace LC::Util::oral
 		template<typename ImplFactory, typename T>
 		constexpr auto AdaptCreateTable () noexcept
 		{
-			return AdaptCreateTableNamed<T::ClassName (), ImplFactory, T> ();
+			return AdaptCreateTableNamed<T::ClassName, ImplFactory, T> ();
 		}
 	}
 
@@ -1635,7 +1635,7 @@ namespace LC::Util::oral
 	template<typename T, typename ImplFactory = detail::SQLite::ImplFactory>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
-		if (!db.tables ().contains (T::ClassName ().ToString (), Qt::CaseInsensitive))
+		if (!db.tables ().contains (T::ClassName.ToString (), Qt::CaseInsensitive))
 		{
 			constexpr auto query = detail::AdaptCreateTable<ImplFactory, T> ();
 			RunTextQuery (db, query.ToString ());

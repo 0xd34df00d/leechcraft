@@ -22,10 +22,7 @@ namespace LC
 		Util::oral::Unique<Util::oral::NotNull<QByteArray>> Id_;
 		Util::oral::NotNull<QString> Name_;
 
-		constexpr static auto ClassName ()
-		{
-			return "Tags"_ct;
-		}
+		constexpr static auto ClassName = "Tags"_ct;
 	};
 }
 

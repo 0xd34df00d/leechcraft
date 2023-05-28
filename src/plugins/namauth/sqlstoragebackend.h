@@ -32,10 +32,7 @@ namespace NamAuth
 			QString Login_;
 			QString Password_;
 
-			constexpr static auto ClassName ()
-			{
-				return "AuthRecords"_ct;
-			}
+			constexpr static auto ClassName = "AuthRecords"_ct;
 
 			template<Util::CtString Str>
 			constexpr static auto FieldNameMorpher ()

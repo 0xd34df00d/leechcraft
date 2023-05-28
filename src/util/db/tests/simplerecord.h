@@ -10,16 +10,14 @@
 
 #include "common.h"
 
+using LC::operator""_ct;
+
 struct SimpleRecord
 {
 	lco::PKey<int, lco::NoAutogen> ID_;
 	QString Value_;
 
-	constexpr static auto ClassName ()
-	{
-		using namespace LC;
-		return "SimpleRecord"_ct;
-	}
+	constexpr static auto ClassName = "SimpleRecord"_ct;
 
 	auto AsTuple () const
 	{

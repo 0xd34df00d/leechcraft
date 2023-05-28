@@ -26,10 +26,7 @@ namespace Murm
 		Util::oral::PKey<qulonglong, Util::oral::NoAutogen> UserNum_;
 		QByteArray BigPhotoUrl_;
 
-		constexpr static auto ClassName ()
-		{
-			return "PhotoUrls"_ct;
-		}
+		constexpr static auto ClassName = "PhotoUrls"_ct;
 	};
 }
 }

@@ -24,10 +24,7 @@ namespace Vader
 		Util::oral::PKey<QString, Util::oral::NoAutogen> Email_;
 		QDateTime TS_;
 
-		constexpr static auto ClassName ()
-		{
-			return "AvatarTimestamps"_ct;
-		}
+		constexpr static auto ClassName = "AvatarTimestamps"_ct;
 	};
 }
 }

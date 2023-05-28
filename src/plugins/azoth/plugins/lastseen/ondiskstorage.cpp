@@ -40,10 +40,7 @@ namespace LastSeen
 		{
 		}
 
-		constexpr static auto ClassName ()
-		{
-			return "EntryStats"_ct;
-		}
+		constexpr static auto ClassName = "EntryStats"_ct;
 	};
 }
 }

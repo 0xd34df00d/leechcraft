@@ -25,10 +25,7 @@ namespace Xoox
 		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QString VCardIq_;
 
-		constexpr static auto ClassName ()
-		{
-			return "VCards"_ct;
-		}
+		constexpr static auto ClassName = "VCards"_ct;
 	};
 
 	struct VCardStorageOnDisk::PhotoHashRecord
@@ -36,10 +33,7 @@ namespace Xoox
 		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QByteArray Hash_;
 
-		constexpr static auto ClassName ()
-		{
-			return "PhotoHashes"_ct;
-		}
+		constexpr static auto ClassName = "PhotoHashes"_ct;
 	};
 }
 }

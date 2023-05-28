@@ -23,10 +23,7 @@ namespace LC::Azoth
 		IHaveAvatars::Size Size_;
 		QByteArray ImageData_;
 
-		constexpr static auto ClassName ()
-		{
-			return "Record"_ct;
-		}
+		constexpr static auto ClassName = "Record"_ct;
 
 		using Constraints = Util::oral::Constraints<
 				Util::oral::UniqueSubset<1, 2>

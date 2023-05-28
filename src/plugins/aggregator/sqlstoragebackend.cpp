@@ -255,7 +255,7 @@ namespace LC::Aggregator																\
 	{																					\
 		BOOST_PP_SEQ_FOR_EACH (DEFINE_FIELD, _, fields)									\
 																						\
-		static constexpr auto ClassName () { return className##_ct; }					\
+		static constexpr auto ClassName = className##_ct;								\
 																						\
 		template<Util::CtString Str> static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher<Str>;								\
 																						\
@@ -405,10 +405,7 @@ namespace LC::Aggregator
 		oral::References<&ItemR::ItemID_> ItemID_ {};
 		oral::NotNull<QString> Tag_;
 
-		static constexpr auto ClassName ()
-		{
-			return "items2tags"_ct;
-		}
+		static constexpr auto ClassName = "items2tags"_ct;
 
 		template<Util::CtString Str>
 		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher<Str>;
@@ -419,10 +416,7 @@ namespace LC::Aggregator
 		oral::Unique<oral::References<&FeedR::FeedID_>> FeedID_;
 		oral::NotNull<Tags> Tags_;
 
-		static constexpr auto ClassName ()
-		{
-			return "feeds2tags"_ct;
-		}
+		static constexpr auto ClassName = "feeds2tags"_ct;
 
 		template<Util::CtString Str>
 		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher<Str>;
@@ -974,7 +968,7 @@ namespace LC::Aggregator
 
 				const auto& feedsTags = Feeds2Tags_->Select ();
 
-				Util::RunTextQuery (DB_, ("DROP TABLE " + Feed2TagsR::ClassName ()).ToByteArray ());
+				Util::RunTextQuery (DB_, ("DROP TABLE " + Feed2TagsR::ClassName).ToByteArray ());
 
 				Feeds2Tags_ = WithType (Type_,
 						[&]<typename Impl> (Impl) { return oral::AdaptPtr<Feed2TagsR, Impl> (DB_); });

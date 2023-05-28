@@ -39,7 +39,7 @@ namespace LC::Util::oral
 	template<typename Record, typename ImplFactory = SQLiteImplFactory>
 	void Migrate (QSqlDatabase& db)
 	{
-		constexpr auto baseName = Record::ClassName ();
+		constexpr auto baseName = Record::ClassName;
 		constexpr auto thisName = "copy" + baseName;
 		const auto& schema = detail::AdaptCreateTableNamed<thisName, ImplFactory, Record> ().ToString ();
 
