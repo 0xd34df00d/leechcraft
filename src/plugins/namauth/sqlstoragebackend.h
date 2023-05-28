@@ -13,6 +13,7 @@
 #include <QObject>
 #include <util/db/oral/oralfwd.h>
 #include <util/db/oral/oraltypes.h>
+#include <util/sll/ctstring.h>
 
 namespace LC
 {
@@ -31,14 +32,15 @@ namespace NamAuth
 			QString Login_;
 			QString Password_;
 
-			static QString ClassName ()
+			constexpr static auto ClassName ()
 			{
-				return "AuthRecords";
+				return "AuthRecords"_ct;
 			}
 
-			static QString FieldNameMorpher (const QString& str)
+			template<Util::CtString Str>
+			constexpr static auto FieldNameMorpher ()
 			{
-				return str;
+				return Str;
 			}
 
 			using Constraints = Util::oral::Constraints<

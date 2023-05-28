@@ -29,9 +29,9 @@ namespace Herbicide
 		Util::oral::Unique<QString> AccountID_;
 		QString AccountName_;
 
-		static QByteArray ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "AccountRecord";
+			return "AccountRecord"_ct;
 		}
 	};
 
@@ -44,9 +44,9 @@ namespace Herbicide
 		QString EntryHumanReadableId_;
 		QString EntryName_;
 
-		static QByteArray ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "EntryRecord";
+			return "EntryRecord"_ct;
 		}
 	};
 
@@ -58,9 +58,9 @@ namespace Herbicide
 		Logger::Event Event_;
 		QString Reason_;
 
-		static QByteArray ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "EventRecord";
+			return "EventRecord"_ct;
 		}
 	};
 }
@@ -94,7 +94,7 @@ namespace oral
 	template<typename ImplFactory>
 	struct Type2Name<ImplFactory, Azoth::Herbicide::Logger::Event>
 	{
-		auto operator() () const
+		constexpr auto operator() () const
 		{
 			return Type2Name<ImplFactory, QString> {} ();
 		}

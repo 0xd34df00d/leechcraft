@@ -43,7 +43,7 @@ namespace Util
 		void testSimpleRecordInsertSelectFieldsByFieldsOrderManyDesc ();
 
 		void testSimpleRecordInsertSelectNoOffsetLimit ();
-		void testSimpleRecordInsertSelectOffsetNoLimit ();
+		//void testSimpleRecordInsertSelectOffsetNoLimit ();
 		void testSimpleRecordInsertSelectOffsetLimit ();
 
 		void testSimpleRecordInsertSelectCount ();

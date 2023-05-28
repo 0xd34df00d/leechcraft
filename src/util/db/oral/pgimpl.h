@@ -10,79 +10,40 @@
 
 #include <util/sll/visitor.h>
 #include "oraltypes.h"
-#include "oraldetailfwd.h"
-#include "impldefs.h"
 
 namespace LC::Util::oral::detail::PostgreSQL
 {
-	class InsertQueryBuilder final : public IInsertQueryBuilder
+	struct ImplFactory
 	{
-		const QSqlDatabase DB_;
+		using IsImpl_t = void;
 
-		const QString InsertBase_;
-		const QString Updater_;
-	public:
-		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
-		: DB_ { db }
-		, InsertBase_ { "INSERT INTO " + data.Table_ +
-				" (" + data.Fields_.join (", ") + ") VALUES (" +
-				data.BoundFields_.join (", ") + ") " }
-		, Updater_ { Map (data.Fields_, [] (auto&& str) { return str + " = EXCLUDED." + str; }).join (", ") }
-		{
-		}
-
-		QSqlQuery GetQuery (InsertAction action) override
-		{
-			return Visit (action.Selector_,
-					[this] (InsertAction::DefaultTag) { return GetDefaultQuery (); },
-					[this] (InsertAction::IgnoreTag) { return GetIgnoreQuery (); },
-					[this] (InsertAction::Replace ct) { return MakeReplaceQuery (ct.Fields_); });
-		}
-	private:
-		QSqlQuery GetDefaultQuery ()
-		{
-			QSqlQuery query { DB_ };
-			query.prepare (InsertBase_);
-			return query;
-		}
-
-		QSqlQuery GetIgnoreQuery ()
-		{
-			QSqlQuery query { DB_ };
-			query.prepare (InsertBase_ + "ON CONFLICT DO NOTHING");
-			return query;
-		}
-
-		QSqlQuery MakeReplaceQuery (const QStringList& constraining)
-		{
-			QSqlQuery query { DB_ };
-			query.prepare (InsertBase_ + GetReplacer (constraining));
-			return query;
-		}
-
-		QString GetReplacer (const QStringList& constraining) const
-		{
-			return "ON CONFLICT (" +
-					constraining.join (", ") +
-					") DO UPDATE SET " +
-					Updater_;
-		}
-	};
-
-	class ImplFactory
-	{
-	public:
 		struct TypeLits
 		{
-			inline static const QString IntAutoincrement { "SERIAL PRIMARY KEY" };
-			inline static const QString Binary { "BYTEA" };
+			inline constexpr static CtString IntAutoincrement { "SERIAL PRIMARY KEY" };
+			inline constexpr static CtString Binary { "BYTEA" };
 		};
 
-		inline static const QString LimitNone { "ALL" };
+		inline constexpr static CtString LimitNone { "ALL" };
 
-		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
+		constexpr static auto GetInsertPrefix (auto)
 		{
-			return std::make_unique<InsertQueryBuilder> (db, data);
+			return "INSERT"_ct;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::DefaultTag)
+		{
+			return ""_ct;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::IgnoreTag)
+		{
+			return "ON CONFLICT DO NOTHING"_ct;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::Replace, auto conflictingFields, auto allFields)
+		{
+			return "ON CONFLICT (" + JoinTup (conflictingFields, ", ") +
+					") DO UPDATE SET " + JoinTup (ZipWith (allFields, " = EXCLUDED.", allFields), ", ");
 		}
 	};
 }

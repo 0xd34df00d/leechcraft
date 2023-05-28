@@ -34,23 +34,45 @@ namespace LC::Aggregator
 	namespace oral = Util::oral;
 	namespace sph = Util::oral::sph;
 
-	QString CommonFieldNameMorpher (QString str)
+	namespace
 	{
-		str.chop (1);
-
-		for (int i = 1; i < str.size (); ++i)
+		constexpr bool ShallInsert (auto str, size_t pos) noexcept
 		{
-			auto ch = str [i];
-			auto prev = str [i - 1];
+			auto ch = str.Data_ [pos];
+			auto prev = str.Data_ [pos - 1];
 
-			if (ch.isLetter () &&
-					prev.isLetter () &&
-					ch.isUpper () &&
-					prev.isLower ())
-				str.insert (i, '_');
+			return ch >= 'A' && ch <= 'Z' && prev >= 'a' && prev <= 'z';
 		}
 
-		return std::move (str).toLower ();
+		constexpr auto CountUnderscores (auto str) noexcept
+		{
+			size_t count = 0;
+			for (size_t i = 1; i < str.Size; ++i)
+				count += ShallInsert (str, i);
+			return count;
+		}
+
+		constexpr auto ToLower (char ch) noexcept
+		{
+			constexpr auto lowercaseBit = 0b00100000;
+			return ch >= 'A' && ch <= 'Z' ? ch | lowercaseBit : ch;
+		}
+	}
+
+	template<Util::CtString Str>
+	constexpr auto CommonFieldNameMorpher () noexcept
+	{
+		constexpr auto chopped = Str.template Chop<1> ();
+
+		Util::CtString<chopped.Size + CountUnderscores (chopped)> result;
+		result [0] = chopped [0];
+		for (size_t in = 1, out = 1; in < chopped.Size; ++in)
+		{
+			if (ShallInsert (chopped, in))
+				result [out++] = '_';
+			result [out++] = ToLower (chopped [in]);
+		}
+		return result;
 	}
 
 	using PKey_t = oral::PKey<IDType_t, oral::NoAutogen>;
@@ -227,15 +249,15 @@ namespace LC::Aggregator
 #define EXTRACT_NAME(_1, _2, triple) BOOST_PP_TUPLE_ELEM (1, triple),
 
 #define DEFINE_STRUCT(structName, className, origStructName, fields)					\
-namespace LC::Aggregator														\
+namespace LC::Aggregator																\
 {																						\
 	struct SQLStorageBackend::structName												\
 	{																					\
 		BOOST_PP_SEQ_FOR_EACH (DEFINE_FIELD, _, fields)									\
 																						\
-		static QString ClassName () { return className##_qs; }							\
+		static constexpr auto ClassName () { return className##_ct; }					\
 																						\
-		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;				\
+		template<Util::CtString Str> static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher<Str>;								\
 																						\
 		static structName FromOrig (const origStructName& orig)							\
 		{																				\
@@ -251,7 +273,7 @@ namespace LC::Aggregator														\
 	};																					\
 }																						\
 																						\
-BOOST_FUSION_ADAPT_STRUCT(LC::Aggregator::SQLStorageBackend::structName,		\
+BOOST_FUSION_ADAPT_STRUCT(LC::Aggregator::SQLStorageBackend::structName,				\
 		BOOST_PP_SEQ_FOR_EACH (EXTRACT_NAME, _, fields))
 
 #define SAME_NAME(type, name) (type, name, name)
@@ -383,12 +405,13 @@ namespace LC::Aggregator
 		oral::References<&ItemR::ItemID_> ItemID_ {};
 		oral::NotNull<QString> Tag_;
 
-		static QString ClassName ()
+		static constexpr auto ClassName ()
 		{
-			return "items2tags"_qs;
+			return "items2tags"_ct;
 		}
 
-		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;
+		template<Util::CtString Str>
+		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher<Str>;
 	};
 
 	struct SQLStorageBackend::Feed2TagsR
@@ -396,12 +419,13 @@ namespace LC::Aggregator
 		oral::Unique<oral::References<&FeedR::FeedID_>> FeedID_;
 		oral::NotNull<Tags> Tags_;
 
-		static QString ClassName ()
+		static constexpr auto ClassName ()
 		{
-			return "feeds2tags"_qs;
+			return "feeds2tags"_ct;
 		}
 
-		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;
+		template<Util::CtString Str>
+		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher<Str>;
 	};
 }
 
@@ -593,8 +617,13 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::SetFeedSettings (const Feed::FeedSettings& settings)
 	{
-		FeedsSettings_->Insert (FeedSettingsR::FromOrig (settings),
-				oral::InsertAction::Replace::Fields<&FeedSettingsR::FeedID_>);
+		WithType (Type_,
+				[&] (auto impl)
+				{
+					FeedsSettings_->Insert (impl,
+							FeedSettingsR::FromOrig (settings),
+							oral::InsertAction::Replace::Fields<&FeedSettingsR::FeedID_>);
+				});
 	}
 
 	std::optional<QStringList> SQLStorageBackend::GetFeedTags (IDType_t feedId) const
@@ -605,8 +634,13 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::SetFeedTags (IDType_t feedId, const QStringList& tags)
 	{
-		Feeds2Tags_->Insert (Feed2TagsR { feedId, tags },
-				oral::InsertAction::Replace::Fields<&Feed2TagsR::FeedID_>);
+		WithType (Type_,
+				[&] (auto impl)
+				{
+					Feeds2Tags_->Insert (impl,
+							Feed2TagsR { feedId, tags },
+							oral::InsertAction::Replace::Fields<&Feed2TagsR::FeedID_>);
+				});
 	}
 
 	void SQLStorageBackend::SetFeedURL (IDType_t feedId, const QString& url)
@@ -702,6 +736,7 @@ namespace LC::Aggregator
 	{
 		const auto& cutoff = QDateTime::currentDateTime ().addDays (-days);
 
+		constexpr auto removalLimit = 10000;
 		auto removeByDate = Items_->Select (sph::fields<&ItemR::ItemID_>,
 				sph::f<&ItemR::ChannelID_> == channelId &&
 				sph::f<&ItemR::Unread_> == false &&
@@ -710,6 +745,7 @@ namespace LC::Aggregator
 				.Select (sph::fields<&ItemR::ItemID_>)
 				.Where (sph::f<&ItemR::ChannelID_> == channelId && sph::f<&ItemR::Unread_> == false)
 				.Order (oral::OrderBy<sph::desc<&ItemR::PubDate_>>)
+				.Limit (removalLimit)
 				.Offset (number)
 				();
 
@@ -938,7 +974,7 @@ namespace LC::Aggregator
 
 				const auto& feedsTags = Feeds2Tags_->Select ();
 
-				Util::RunTextQuery (DB_, "DROP TABLE " + Feed2TagsR::ClassName ());
+				Util::RunTextQuery (DB_, ("DROP TABLE " + Feed2TagsR::ClassName ()).ToByteArray ());
 
 				Feeds2Tags_ = WithType (Type_,
 						[&]<typename Impl> (Impl) { return oral::AdaptPtr<Feed2TagsR, Impl> (DB_); });
@@ -973,8 +1009,12 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)
 	{
-		for (const auto& enclosure : enclosures)
-			Enclosures_->Insert (EnclosureR::FromOrig (enclosure), oral::InsertAction::Replace::PKey<EnclosureR>);
+		WithType (Type_,
+				[&] (auto impl)
+				{
+					for (const auto& enclosure : enclosures)
+						Enclosures_->Insert (impl, EnclosureR::FromOrig (enclosure), oral::InsertAction::Replace::PKey);
+				});
 	}
 
 	void SQLStorageBackend::GetEnclosures (IDType_t itemId, QList<Enclosure>& enclosures) const
@@ -984,25 +1024,29 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		template<typename RecType, typename OrigType>
-		void InsertList (const oral::ObjectInfo_ptr<RecType>& records, const QList<OrigType>& origs)
+		template<typename RecType>
+		void InsertList (auto impl, const oral::ObjectInfo_ptr<RecType>& records, const auto& origs)
 		{
 			for (const auto& orig : origs)
-				records->Insert (RecType::FromOrig (orig), oral::InsertAction::Replace::PKey<RecType>);
+				records->Insert (impl, RecType::FromOrig (orig), oral::InsertAction::Replace::PKey);
 		}
 	}
 
 	void SQLStorageBackend::WriteMRSSEntries (const QList<MRSSEntry>& entries)
 	{
-		for (const auto& e : entries)
-		{
-			MRSSEntries_->Insert (MRSSEntryR::FromOrig (e), oral::InsertAction::Replace::PKey<MRSSEntryR>);
-			InsertList (MRSSThumbnails_, e.Thumbnails_);
-			InsertList (MRSSCredits_, e.Credits_);
-			InsertList (MRSSComments_, e.Comments_);
-			InsertList (MRSSPeerLinks_, e.PeerLinks_);
-			InsertList (MRSSScenes_, e.Scenes_);
-		}
+		WithType (Type_,
+				[&] (auto impl)
+				{
+					for (const auto& e : entries)
+					{
+						MRSSEntries_->Insert (impl, MRSSEntryR::FromOrig (e), oral::InsertAction::Replace::PKey);
+						InsertList (impl, MRSSThumbnails_, e.Thumbnails_);
+						InsertList (impl, MRSSCredits_, e.Credits_);
+						InsertList (impl, MRSSComments_, e.Comments_);
+						InsertList (impl, MRSSPeerLinks_, e.PeerLinks_);
+						InsertList (impl, MRSSScenes_, e.Scenes_);
+					}
+				});
 	}
 
 	namespace

@@ -133,11 +133,11 @@ namespace oral
 	template<auto Ptr>
 	using ReferencesValue_t = typename References<Ptr>::value_type;
 
-	template<int... Fields>
-	struct PrimaryKey;
+	template<size_t... Fields>
+	struct PrimaryKey {};
 
-	template<int... Fields>
-	struct UniqueSubset;
+	template<size_t... Fields>
+	struct UniqueSubset {};
 
 	template<typename... Args>
 	using Constraints = Typelist<Args...>;
@@ -165,45 +165,19 @@ namespace oral
 
 	struct InsertAction
 	{
-		inline static struct DefaultTag {} Default;
-		inline static struct IgnoreTag {} Ignore;
+		constexpr inline static struct DefaultTag {} Default {};
+		constexpr inline static struct IgnoreTag {} Ignore {};
 
 		struct Replace
 		{
-			QStringList Fields_;
+			template<auto... Ptrs>
+			struct FieldsType {};
 
 			template<auto... Ptrs>
-			struct FieldsType
-			{
-				operator InsertAction::Replace () const;
-			};
+			constexpr inline static FieldsType<Ptrs...> Fields {};
 
-			template<auto... Ptrs>
-			inline static FieldsType<Ptrs...> Fields {};
-
-			template<typename Seq>
-			struct PKeyType
-			{
-				operator InsertAction::Replace () const;
-			};
-
-			template<typename Seq>
-			inline static PKeyType<Seq> PKey {};
+			constexpr inline static struct PKeyType {} PKey {};
 		};
-
-		constexpr static auto StaticCount ()
-		{
-			return 2;
-		}
-
-		using ActionSelector_t = std::variant<DefaultTag, IgnoreTag, Replace>;
-		ActionSelector_t Selector_;
-
-		template<typename Tag>
-		InsertAction (Tag tag)
-		: Selector_ { tag }
-		{
-		}
 	};
 }
 }

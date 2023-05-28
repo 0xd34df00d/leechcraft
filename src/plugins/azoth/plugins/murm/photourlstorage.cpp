@@ -26,9 +26,9 @@ namespace Murm
 		Util::oral::PKey<qulonglong, Util::oral::NoAutogen> UserNum_;
 		QByteArray BigPhotoUrl_;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "PhotoUrls";
+			return "PhotoUrls"_ct;
 		}
 	};
 }
@@ -77,7 +77,7 @@ namespace Murm
 
 	void PhotoUrlStorage::SetUserUrl (qulonglong userId, const QUrl& url)
 	{
-		AdaptedRecord_->Insert ({ userId, url.toEncoded () }, Util::oral::InsertAction::Replace::PKey<Record>);
+		AdaptedRecord_->Insert ({ userId, url.toEncoded () }, Util::oral::InsertAction::Replace::PKey);
 	}
 }
 }

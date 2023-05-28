@@ -35,9 +35,9 @@ namespace Poshuku
 		QString Title_;
 		QString URL_;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "History";
+			return "History"_ct;
 		}
 
 		using Indices = oral::Indices<
@@ -66,9 +66,9 @@ namespace Poshuku
 		QString URL_;
 		QString Tags_;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "Favorites";
+			return "Favorites"_ct;
 		}
 
 		FavoritesModel::FavoritesItem ToFavoritesItem () const
@@ -96,9 +96,9 @@ namespace Poshuku
 	{
 		oral::PKey<QString, oral::NoAutogen> URL_;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "Forms_Never";
+			return "Forms_Never"_ct;
 		}
 	};
 }
@@ -120,7 +120,8 @@ namespace LC
 namespace Poshuku
 {
 	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type type)
-	: DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
+	: Type_ { type }
+	, DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
 	{
 		QString strType;
 		switch (type)
@@ -229,7 +230,10 @@ namespace Poshuku
 
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)
 	{
-		History_->Insert (History::FromHistoryItem (item), oral::InsertAction::Replace::PKey<History>);
+		const auto& record = History::FromHistoryItem (item);
+		Type_ == SBSQLite ?
+				History_->Insert (oral::SQLiteImplFactory {}, record, oral::InsertAction::Replace::PKey) :
+				History_->Insert (oral::PostgreSQLImplFactory {}, record, oral::InsertAction::Replace::PKey);
 		emit added (item);
 	}
 

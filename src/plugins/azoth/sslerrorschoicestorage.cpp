@@ -28,9 +28,9 @@ namespace Azoth
 
 		using Constraints = Util::oral::Constraints<Util::oral::PrimaryKey<0, 1>>;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "SslErrors";
+			return "SslErrors"_ct;
 		}
 	};
 }

@@ -16,9 +16,10 @@ struct Student
 	lco::PKey<int> ID_;
 	QString Name_;
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "Student";
+		using namespace LC;
+		return "Student"_ct;
 	}
 
 	auto AsTuple () const
@@ -40,9 +41,10 @@ struct StudentInfo
 	int Age_;
 	int Year_;
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "StudentInfo";
+		using namespace LC;
+		return "StudentInfo"_ct;
 	}
 
 	auto AsTuple () const
@@ -64,9 +66,10 @@ struct Lecturer
 	lco::PKey<int> ID_;
 	QString Name_;
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "Lecturer";
+		using namespace LC;
+		return "Lecturer"_ct;
 	}
 
 	auto AsTuple () const
@@ -87,9 +90,10 @@ struct Student2Lecturer
 	lco::References<&Student::ID_> StudentID_;
 	lco::References<&Lecturer::ID_> LecturerID_;
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "Student2Lecturer";
+		using namespace LC;
+		return "Student2Lecturer"_ct;
 	}
 
 	auto AsTuple () const

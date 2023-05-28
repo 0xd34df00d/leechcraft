@@ -40,9 +40,9 @@ namespace LastSeen
 		{
 		}
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "EntryStats";
+			return "EntryStats"_ct;
 		}
 	};
 }
@@ -96,7 +96,7 @@ namespace LastSeen
 
 	void OnDiskStorage::SetEntryStats (const QString& entryId, const EntryStats& stats)
 	{
-		AdaptedRecord_->Insert ({ entryId, stats }, Util::oral::InsertAction::Replace::PKey<Record>);
+		AdaptedRecord_->Insert ({ entryId, stats }, Util::oral::InsertAction::Replace::PKey);
 	}
 
 	Util::DBLock OnDiskStorage::BeginTransaction ()

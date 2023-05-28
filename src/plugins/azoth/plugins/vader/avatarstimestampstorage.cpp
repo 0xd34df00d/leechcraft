@@ -24,9 +24,9 @@ namespace Vader
 		Util::oral::PKey<QString, Util::oral::NoAutogen> Email_;
 		QDateTime TS_;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "AvatarTimestamps";
+			return "AvatarTimestamps"_ct;
 		}
 	};
 }
@@ -74,7 +74,7 @@ namespace Vader
 
 	void AvatarsTimestampStorage::SetTimestamp (const QString& full, const QDateTime& dt)
 	{
-		Adapted_->Insert ({ full, dt }, Util::oral::InsertAction::Replace::PKey<AvatarTimestamp>);
+		Adapted_->Insert ({ full, dt }, Util::oral::InsertAction::Replace::PKey);
 	}
 }
 }

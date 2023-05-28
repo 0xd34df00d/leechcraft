@@ -13,9 +13,7 @@
 #include <util/db/oral/oral.h>
 #include <util/sys/paths.h>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	struct AvatarsStorageOnDisk::Record
 	{
@@ -25,16 +23,15 @@ namespace Azoth
 		IHaveAvatars::Size Size_;
 		QByteArray ImageData_;
 
-		static QByteArray ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "Record";
+			return "Record"_ct;
 		}
 
 		using Constraints = Util::oral::Constraints<
 				Util::oral::UniqueSubset<1, 2>
 			>;
 	};
-}
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::AvatarsStorageOnDisk::Record,
@@ -45,14 +42,12 @@ BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::AvatarsStorageOnDisk::Record,
 
 namespace LC
 {
-namespace Util
-{
-namespace oral
+namespace Util::oral
 {
 	template<typename ImplFactory>
 	struct Type2Name<ImplFactory, Azoth::IHaveAvatars::Size>
 	{
-		auto operator() () const
+		constexpr auto operator() () const noexcept
 		{
 			return Type2Name<ImplFactory, int> {} ();
 		}
@@ -75,7 +70,6 @@ namespace oral
 			return static_cast<Azoth::IHaveAvatars::Size> (var.toInt ());
 		}
 	};
-}
 }
 
 namespace Azoth

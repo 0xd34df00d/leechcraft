@@ -39,12 +39,13 @@ namespace LC::Util::oral
 	template<typename Record, typename ImplFactory = SQLiteImplFactory>
 	void Migrate (QSqlDatabase& db)
 	{
-		const auto& baseName = Record::ClassName ();
+		constexpr auto baseName = Record::ClassName ();
+		constexpr auto thisName = "copy" + baseName;
+		const auto& schema = detail::AdaptCreateTableNamed<thisName, ImplFactory, Record> ().ToString ();
 
-		const auto& thisName = "copy" + baseName;
-		const auto& schema = detail::AdaptCreateTable<ImplFactory, Record> (detail::BuildCachedFieldsData<Record> (thisName));
-
-		if (detail::MatchesSchema (baseName, schema, db))
+		const auto& baseNameStr = baseName.ToString ();
+		const auto& thisNameStr = thisName.ToString ();
+		if (detail::MatchesSchema (baseNameStr, schema, db))
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "not migrating"
@@ -61,18 +62,18 @@ namespace LC::Util::oral
 
 		Util::RunTextQuery (db, schema);
 
-		const auto& fields = detail::GetFieldsNames<Record> {} ().join (", ");
+		constexpr auto fields = JoinTup (detail::FieldNames<Record>, ", ");
 
 		Util::RunTextQuery (db,
 				"INSERT INTO %2 (%1) SELECT %1 FROM %3;"_qs
-						.arg (fields, thisName, baseName));
+						.arg (fields.ToString (), thisNameStr, baseNameStr));
 
 		Util::RunTextQuery (db,
 				"DROP TABLE %1;"_qs
-						.arg (baseName));
+						.arg (baseNameStr));
 		Util::RunTextQuery (db,
 				"ALTER TABLE %1 RENAME TO %2;"_qs
-						.arg (thisName, baseName));
+						.arg (thisNameStr, baseNameStr));
 
 		lock.Good ();
 	}

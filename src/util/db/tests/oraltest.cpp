@@ -16,9 +16,10 @@ struct AutogenPKeyRecord
 	lco::PKey<int> ID_;
 	QString Value_;
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "AutogenPKeyRecord";
+		using namespace LC;
+		return "AutogenPKeyRecord"_ct;
 	}
 
 	auto AsTuple () const
@@ -38,9 +39,10 @@ struct NoPKeyRecord
 	int ID_;
 	QString Value_;
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "NoPKeyRecord";
+		using namespace LC;
+		return "NoPKeyRecord"_ct;
 	}
 
 	auto AsTuple () const
@@ -69,9 +71,10 @@ struct NonInPlaceConstructibleRecord
 		Q_UNUSED (someExtraArgument)
 	}
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "NonInPlaceConstructibleRecord";
+		using namespace LC;
+		return "NonInPlaceConstructibleRecord"_ct;
 	}
 
 	auto AsTuple () const
@@ -93,9 +96,10 @@ struct ComplexConstraintsRecord
 	int Age_;
 	int Weight_;
 
-	static QString ClassName ()
+	constexpr static auto ClassName ()
 	{
-		return "ComplexConstraintsRecord";
+		using namespace LC;
+		return "ComplexConstraintsRecord"_ct;
 	}
 
 	auto AsTuple () const
@@ -117,6 +121,12 @@ BOOST_FUSION_ADAPT_STRUCT (ComplexConstraintsRecord,
 
 TOSTRING (ComplexConstraintsRecord)
 
+template<typename... Args>
+QDebug operator<< (QDebug dbg, const std::tuple<Args...>& tup)
+{
+	return std::apply ([&] (auto&&... args) { return ((dbg.nospace () << args << ' '), ...); }, tup);
+}
+
 namespace LC
 {
 namespace Util
@@ -125,6 +135,7 @@ namespace Util
 
 	void OralTest::testAutoPKeyRecordInsertSelect ()
 	{
+		qDebug () << oral::detail::FieldNames<AutogenPKeyRecord>;
 		auto adapted = PrepareRecords<AutogenPKeyRecord> (MakeDatabase ());
 		const auto& list = adapted->Select ();
 		QCOMPARE (list, (QList<AutogenPKeyRecord> { { 1, "0" }, { 2, "1" }, { 3, "2" } }));

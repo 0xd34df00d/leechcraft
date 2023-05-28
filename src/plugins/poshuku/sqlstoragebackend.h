@@ -19,6 +19,7 @@ namespace Poshuku
 {
 	class SQLStorageBackend : public StorageBackend
 	{
+		const Type Type_;
 		QSqlDatabase DB_;
 		const Util::DefaultScopeGuard DBGuard_;
 	public:

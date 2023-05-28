@@ -8,56 +8,46 @@
 
 #pragma once
 
-#include <util/sll/visitor.h>
 #include "oraltypes.h"
-#include "oraldetailfwd.h"
-#include "impldefs.h"
 
 namespace LC::Util::oral::detail::SQLite
 {
-	class InsertQueryBuilder final : public IInsertQueryBuilder
+	struct ImplFactory
 	{
-		const QSqlDatabase DB_;
-		const QString InsertSuffix_;
-	public:
-		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
-		: DB_ { db }
-		, InsertSuffix_ { " INTO " + data.Table_ +
-			" (" + data.Fields_.join (", ") + ") VALUES (" +
-			data.BoundFields_.join (", ") + ");" }
-		{
-		}
+		using IsImpl_t = void;
 
-		QSqlQuery GetQuery (InsertAction action) override
-		{
-			QSqlQuery query { DB_ };
-			query.prepare (GetInsertPrefix (action) + InsertSuffix_);
-			return query;
-		}
-	private:
-		QString GetInsertPrefix (InsertAction action)
-		{
-			return Visit (action.Selector_,
-					[] (InsertAction::DefaultTag) { return "INSERT"; },
-					[] (InsertAction::IgnoreTag) { return "INSERT OR IGNORE"; },
-					[] (InsertAction::Replace) { return "INSERT OR REPLACE"; });
-		}
-	};
-
-	class ImplFactory
-	{
-	public:
 		struct TypeLits
 		{
-			inline static const QString IntAutoincrement { "INTEGER PRIMARY KEY AUTOINCREMENT" };
-			inline static const QString Binary { "BLOB" };
+			inline constexpr static CtString IntAutoincrement { "INTEGER PRIMARY KEY AUTOINCREMENT" };
+			inline constexpr static CtString Binary { "BLOB" };
 		};
 
-		inline static const QString LimitNone { "-1" };
+		inline constexpr static CtString LimitNone { "-1" };
 
-		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
+		constexpr static auto GetInsertPrefix (InsertAction::DefaultTag)
 		{
-			return std::make_unique<InsertQueryBuilder> (db, data);
+			return "INSERT"_ct;
+		}
+
+		constexpr static auto GetInsertPrefix (InsertAction::IgnoreTag)
+		{
+			return "INSERT OR IGNORE"_ct;
+		}
+
+		constexpr static auto GetInsertPrefix (InsertAction::Replace::PKeyType)
+		{
+			return "INSERT OR REPLACE"_ct;
+		}
+
+		template<auto... Ptrs>
+		constexpr static auto GetInsertPrefix (InsertAction::Replace::FieldsType<Ptrs...>)
+		{
+			return "INSERT OR REPLACE"_ct;
+		}
+
+		constexpr static auto GetInsertSuffix (auto...)
+		{
+			return ""_ct;
 		}
 	};
 }

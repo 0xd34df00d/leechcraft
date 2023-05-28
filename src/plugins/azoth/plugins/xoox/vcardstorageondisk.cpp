@@ -25,9 +25,9 @@ namespace Xoox
 		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QString VCardIq_;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "VCards";
+			return "VCards"_ct;
 		}
 	};
 
@@ -36,9 +36,9 @@ namespace Xoox
 		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QByteArray Hash_;
 
-		static QString ClassName ()
+		constexpr static auto ClassName ()
 		{
-			return "PhotoHashes";
+			return "PhotoHashes"_ct;
 		}
 	};
 }
@@ -85,7 +85,7 @@ namespace Xoox
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
 	{
-		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::PKey<VCardRecord>);
+		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::PKey);
 	}
 
 	std::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
@@ -95,7 +95,7 @@ namespace Xoox
 
 	void VCardStorageOnDisk::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
 	{
-		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace::PKey<PhotoHashRecord>);
+		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace::PKey);
 	}
 
 	std::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
