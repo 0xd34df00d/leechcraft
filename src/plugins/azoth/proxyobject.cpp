@@ -69,6 +69,10 @@ namespace LC::Azoth
 					.replace ('\\', R"(\\)"_ql)
 					;
 		}
+
+		qWarning () << "EscapeBody(): unknown escape policy:"
+				<< static_cast<int> (escape);
+		return body;
 	}
 
 	QString FormatterProxyObject::FormatBody (QString body, QObject *obj, const QList<QColor>& coloring) const
