@@ -130,7 +130,7 @@ namespace LC
 				return {};
 
 			const auto& role = ColorRoleFromStr (str.section ('.', 1, 1));
-			const auto& color = QApplication::palette ().color (role);
+			const auto color = QApplication::palette ().color (role);
 			return Modify (color, str.section ('.', 2, 2));
 		}
 
