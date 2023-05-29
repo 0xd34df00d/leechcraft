@@ -31,7 +31,6 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
-#include "oraldetailfwd.h"
 #include "sqliteimpl.h"
 
 #ifndef ORAL_ADAPT_STRUCT
