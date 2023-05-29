@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <util/sll/visitor.h>
 #include "oraltypes.h"
 
 namespace LC::Util::oral::detail::PostgreSQL
