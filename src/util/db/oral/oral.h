@@ -40,6 +40,9 @@
 #include "oraldetailfwd.h"
 #include "sqliteimpl.h"
 
+#ifndef ORAL_ADAPT_STRUCT
+#define ORAL_ADAPT_STRUCT BOOST_FUSION_ADAPT_STRUCT
+#endif
 namespace LC::Util::oral
 {
 	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;

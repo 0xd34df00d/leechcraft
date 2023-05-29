@@ -273,8 +273,8 @@ namespace LC::Aggregator																\
 	};																					\
 }																						\
 																						\
-BOOST_FUSION_ADAPT_STRUCT(LC::Aggregator::SQLStorageBackend::structName,				\
-		BOOST_PP_SEQ_FOR_EACH (EXTRACT_NAME, _, fields))
+ORAL_ADAPT_STRUCT(LC::Aggregator::SQLStorageBackend::structName,						\
+		BOOST_PP_SEQ_FOR_EACH_I (EXTRACT_NAME, _, fields))
 
 #define SAME_NAME(type, name) (type, name, name)
 
@@ -423,10 +423,10 @@ namespace LC::Aggregator
 	};
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Aggregator::SQLStorageBackend::Item2TagsR,
+ORAL_ADAPT_STRUCT (LC::Aggregator::SQLStorageBackend::Item2TagsR,
 		ItemID_,
 		Tag_)
-BOOST_FUSION_ADAPT_STRUCT (LC::Aggregator::SQLStorageBackend::Feed2TagsR,
+ORAL_ADAPT_STRUCT (LC::Aggregator::SQLStorageBackend::Feed2TagsR,
 		FeedID_,
 		Tags_)
 

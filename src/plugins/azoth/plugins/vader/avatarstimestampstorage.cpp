@@ -30,7 +30,7 @@ namespace Vader
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp,
+ORAL_ADAPT_STRUCT (LC::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp,
 		Email_,
 		TS_)
 

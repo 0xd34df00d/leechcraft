@@ -58,19 +58,19 @@ namespace Herbicide
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::AccountRecord,
+ORAL_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::AccountRecord,
 		PKey_,
 		AccountID_,
 		AccountName_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EntryRecord,
+ORAL_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EntryRecord,
 		PKey_,
 		AccountID_,
 		EntryID_,
 		EntryHumanReadableId_,
 		EntryName_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EventRecord,
+ORAL_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EventRecord,
 		PKey_,
 		EntryID_,
 		Event_,

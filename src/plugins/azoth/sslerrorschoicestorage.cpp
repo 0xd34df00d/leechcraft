@@ -33,7 +33,7 @@ namespace Azoth
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::SslErrorsChoiceStorage::Record,
+ORAL_ADAPT_STRUCT (LC::Azoth::SslErrorsChoiceStorage::Record,
 		AccountID_,
 		Error_,
 		Action_)

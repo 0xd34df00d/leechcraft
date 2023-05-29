@@ -95,15 +95,15 @@ namespace Poshuku
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::History,
+ORAL_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::History,
 		Date_,
 		Title_,
 		URL_)
-BOOST_FUSION_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::Favorites,
+ORAL_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::Favorites,
 		Title_,
 		URL_,
 		Tags_)
-BOOST_FUSION_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::FormsNever,
+ORAL_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::FormsNever,
 		URL_)
 
 namespace LC

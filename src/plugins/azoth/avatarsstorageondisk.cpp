@@ -31,7 +31,7 @@ namespace LC::Azoth
 	};
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::AvatarsStorageOnDisk::Record,
+ORAL_ADAPT_STRUCT (LC::Azoth::AvatarsStorageOnDisk::Record,
 		ID_,
 		EntryID_,
 		Size_,

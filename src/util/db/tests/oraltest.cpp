@@ -26,7 +26,7 @@ struct AutogenPKeyRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (AutogenPKeyRecord,
+ORAL_ADAPT_STRUCT (AutogenPKeyRecord,
 		ID_,
 		Value_)
 
@@ -45,7 +45,7 @@ struct NoPKeyRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (NoPKeyRecord,
+ORAL_ADAPT_STRUCT (NoPKeyRecord,
 		ID_,
 		Value_)
 
@@ -73,7 +73,7 @@ struct NonInPlaceConstructibleRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (NonInPlaceConstructibleRecord,
+ORAL_ADAPT_STRUCT (NonInPlaceConstructibleRecord,
 		ID_,
 		Value_)
 
@@ -99,7 +99,7 @@ struct ComplexConstraintsRecord
 			>;
 };
 
-BOOST_FUSION_ADAPT_STRUCT (ComplexConstraintsRecord,
+ORAL_ADAPT_STRUCT (ComplexConstraintsRecord,
 		ID_,
 		Value_,
 		Age_,

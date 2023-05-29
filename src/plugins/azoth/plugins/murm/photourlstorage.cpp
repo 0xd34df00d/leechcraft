@@ -32,7 +32,7 @@ namespace Murm
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Murm::PhotoUrlStorage::Record,
+ORAL_ADAPT_STRUCT (LC::Azoth::Murm::PhotoUrlStorage::Record,
 		UserNum_,
 		BigPhotoUrl_)
 

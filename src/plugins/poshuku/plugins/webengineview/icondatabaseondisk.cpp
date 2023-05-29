@@ -37,11 +37,11 @@ namespace LC::Poshuku::WebEngineView
 
 using IDOD = LC::Poshuku::WebEngineView::IconDatabaseOnDisk;
 
-BOOST_FUSION_ADAPT_STRUCT (IDOD::IconUrl2IconRecord,
+ORAL_ADAPT_STRUCT (IDOD::IconUrl2IconRecord,
 		IconUrl_,
 		Icon_)
 
-BOOST_FUSION_ADAPT_STRUCT (IDOD::PageUrl2IconUrlRecord,
+ORAL_ADAPT_STRUCT (IDOD::PageUrl2IconUrlRecord,
 		PageUrl_,
 		IconUrl_,
 		LastUpdate_)

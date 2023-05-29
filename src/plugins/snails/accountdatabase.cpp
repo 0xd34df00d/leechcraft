@@ -123,7 +123,7 @@ namespace Snails
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Message,
+ORAL_ADAPT_STRUCT (LC::Snails::AccountDatabase::Message,
 		Id_,
 		UniqueId_,
 		IsRead_,
@@ -133,14 +133,14 @@ BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Message,
 		Refs_,
 		InReplyTos_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Address,
+ORAL_ADAPT_STRUCT (LC::Snails::AccountDatabase::Address,
 		Id_,
 		MsgId_,
 		AddressType_,
 		Name_,
 		Email_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Attachment,
+ORAL_ADAPT_STRUCT (LC::Snails::AccountDatabase::Attachment,
 		Id_,
 		MsgId_,
 		Name_,
@@ -149,23 +149,23 @@ BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Attachment,
 		Type_,
 		SubType_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::MessageBodies,
+ORAL_ADAPT_STRUCT (LC::Snails::AccountDatabase::MessageBodies,
 		Id_,
 		MsgId_,
 		PlainText_,
 		HTML_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Folder,
+ORAL_ADAPT_STRUCT (LC::Snails::AccountDatabase::Folder,
 		Id_,
 		FolderPath_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Msg2Folder,
+ORAL_ADAPT_STRUCT (LC::Snails::AccountDatabase::Msg2Folder,
 		Id_,
 		MsgId_,
 		FolderId_,
 		FolderMessageId_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::MsgHeader,
+ORAL_ADAPT_STRUCT (LC::Snails::AccountDatabase::MsgHeader,
 		Id_,
 		MsgUniqueId_,
 		Header_)

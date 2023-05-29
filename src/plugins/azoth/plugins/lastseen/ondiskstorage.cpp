@@ -48,7 +48,7 @@ namespace LastSeen
 
 using StatsRecord = LC::Azoth::LastSeen::OnDiskStorage::Record;
 
-BOOST_FUSION_ADAPT_STRUCT (StatsRecord,
+ORAL_ADAPT_STRUCT (StatsRecord,
 		EntryID_,
 		Available_,
 		Online_,

@@ -25,7 +25,7 @@ struct SimpleRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (SimpleRecord,
+ORAL_ADAPT_STRUCT (SimpleRecord,
 		ID_,
 		Value_)
 

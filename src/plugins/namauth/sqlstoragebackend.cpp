@@ -18,7 +18,7 @@
 #include <util/db/oral/oral.h>
 #include <util/sys/paths.h>
 
-BOOST_FUSION_ADAPT_STRUCT (LC::NamAuth::SQLStorageBackend::AuthRecord,
+ORAL_ADAPT_STRUCT (LC::NamAuth::SQLStorageBackend::AuthRecord,
 		RealmName_,
 		Context_,
 		Login_,

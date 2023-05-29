@@ -26,7 +26,7 @@ struct Student
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (Student,
+ORAL_ADAPT_STRUCT (Student,
 		ID_,
 		Name_)
 
@@ -47,7 +47,7 @@ struct StudentInfo
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (StudentInfo,
+ORAL_ADAPT_STRUCT (StudentInfo,
 		ID_,
 		StudentID_,
 		Age_,
@@ -68,7 +68,7 @@ struct Lecturer
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (Lecturer,
+ORAL_ADAPT_STRUCT (Lecturer,
 		ID_,
 		Name_)
 
@@ -88,7 +88,7 @@ struct Student2Lecturer
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (Student2Lecturer,
+ORAL_ADAPT_STRUCT (Student2Lecturer,
 		ID_,
 		StudentID_,
 		LecturerID_)

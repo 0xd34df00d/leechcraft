@@ -26,7 +26,7 @@ namespace LC
 	};
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::TagsStorage::Record,
+ORAL_ADAPT_STRUCT (LC::TagsStorage::Record,
 		Id_,
 		Name_)
 

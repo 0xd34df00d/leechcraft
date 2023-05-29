@@ -39,11 +39,11 @@ namespace Xoox
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorageOnDisk::VCardRecord,
+ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorageOnDisk::VCardRecord,
 		JID_,
 		VCardIq_)
 
-BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorageOnDisk::PhotoHashRecord,
+ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorageOnDisk::PhotoHashRecord,
 		JID_,
 		Hash_)
 
