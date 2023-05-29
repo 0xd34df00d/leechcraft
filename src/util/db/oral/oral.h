@@ -240,22 +240,19 @@ namespace LC::Util::oral
 	template<typename ImplFactory, typename T>
 	struct Type2Name<ImplFactory, Unique<T>>
 	{
-		constexpr static CtString Name_ = Type2Name<ImplFactory, T> () () + " UNIQUE";
-		constexpr auto operator() () const noexcept { return Name_; }
+		constexpr auto operator() () const noexcept { return Type2Name<ImplFactory, T> {} () + " UNIQUE"; }
 	};
 
 	template<typename ImplFactory, typename T>
 	struct Type2Name<ImplFactory, NotNull<T>>
 	{
-		constexpr static CtString Name_ = Type2Name<ImplFactory, T> () () + " NOT NULL";
-		constexpr auto operator() () const noexcept { return Name_; }
+		constexpr auto operator() () const noexcept { return Type2Name<ImplFactory, T> {} () + " NOT NULL"; }
 	};
 
 	template<typename ImplFactory, typename T, typename... Tags>
 	struct Type2Name<ImplFactory, PKey<T, Tags...>>
 	{
-		constexpr static CtString Name_ = Type2Name<ImplFactory, T> () () + " PRIMARY KEY";
-		constexpr auto operator() () const noexcept { return Name_; }
+		constexpr auto operator() () const noexcept { return Type2Name<ImplFactory, T> {} () + " PRIMARY KEY"; }
 	};
 
 	template<typename ImplFactory, typename... Tags>
