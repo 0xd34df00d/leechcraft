@@ -82,6 +82,15 @@ namespace LC::Util::oral																							\
 			BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD, (__VA_ARGS__))						\
 		}																											\
 	};																												\
+																													\
+	template<>																										\
+	struct FieldIndexAccess<sname>																					\
+	{																												\
+		template<auto Ptr>																							\
+		constexpr static size_t FieldIndex ();																		\
+																													\
+		BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD_INDEX, (sname, (__VA_ARGS__)))			\
+	};																												\
 }																													\
 
 #endif
@@ -121,6 +130,9 @@ namespace LC::Util::oral
 
 	template<typename>
 	struct FieldAccess {};
+
+	template<typename>
+	struct FieldIndexAccess {};
 
 	namespace detail
 	{
@@ -175,43 +187,11 @@ namespace LC::Util::oral
 				return std::tuple { (S::ClassName + "." + GetFieldName<S, Ix> ())... };
 			} (SeqIndices<S>);
 
-		template<typename S>
-		struct AddressOf
-		{
-			inline static S Obj_ {};
-
-			template<auto P>
-			constexpr static auto Ptr () noexcept
-			{
-				return &(Obj_.*P);
-			}
-
-			template<int Idx>
-			constexpr static auto Index () noexcept
-			{
-				return &boost::fusion::at_c<Idx> (Obj_);
-			}
-		};
-
-		template<auto Ptr, size_t Idx = 0>
+		template<auto Ptr>
 		constexpr size_t FieldIndex () noexcept
 		{
 			using S = MemberPtrStruct_t<Ptr>;
-
-			if constexpr (Idx == SeqSize<S>)
-				return -1;
-			else
-			{
-				constexpr auto direct = AddressOf<S>::template Ptr<Ptr> ();
-				constexpr auto indexed = AddressOf<S>::template Index<Idx> ();
-				if constexpr (std::is_same_v<decltype (direct), decltype (indexed)>)
-				{
-					if (indexed == direct)
-						return Idx;
-				}
-
-				return FieldIndex<Ptr, Idx + 1> ();
-			}
+			return FieldIndexAccess<S>::template FieldIndex<Ptr> ();
 		}
 
 		template<auto Ptr>
