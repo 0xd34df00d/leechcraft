@@ -246,7 +246,7 @@ namespace LC::Aggregator
 #define DEFINE_TO_FIELD(_1, _2, triple) \
 		res.BOOST_PP_TUPLE_ELEM (2, triple) = FromOralType (BOOST_PP_TUPLE_ELEM (1, triple));
 
-#define EXTRACT_NAME(_1, _2, triple) BOOST_PP_TUPLE_ELEM (1, triple),
+#define EXTRACT_NAME(_1, _2, index, triple) BOOST_PP_COMMA_IF (index) BOOST_PP_TUPLE_ELEM (1, triple)
 
 #define DEFINE_STRUCT(structName, className, origStructName, fields)					\
 namespace LC::Aggregator																\
