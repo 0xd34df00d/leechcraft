@@ -12,14 +12,8 @@
 #include <type_traits>
 #include <memory>
 #include <optional>
-#include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/include/fold.hpp>
-#include <boost/fusion/include/filter_if.hpp>
-#include <boost/fusion/container/vector.hpp>
-#include <boost/fusion/include/vector.hpp>
-#include <boost/fusion/include/transform.hpp>
-#include <boost/fusion/include/zip.hpp>
-#include <boost/fusion/container/generation/make_vector.hpp>
+#include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/tuple.hpp>
 #include <QStringList>
 #include <QDateTime>
 #include <QPair>
@@ -41,8 +35,57 @@
 #include "sqliteimpl.h"
 
 #ifndef ORAL_ADAPT_STRUCT
-#define ORAL_ADAPT_STRUCT BOOST_FUSION_ADAPT_STRUCT
+
+#define ORAL_STRING_FIELD(_, index, tuple)																			\
+	if constexpr (Idx == index)																						\
+		return CtString { BOOST_PP_STRINGIZE(BOOST_PP_TUPLE_ELEM(index, tuple)) };
+
+#define ORAL_GET_FIELD(_, index, tuple)																				\
+	if constexpr (Idx == index)																						\
+		return s.BOOST_PP_TUPLE_ELEM(index, tuple);
+
+#define ORAL_GET_FIELD_INDEX(_, index, args)																		\
+	template<>																										\
+	constexpr size_t FieldIndex<&BOOST_PP_TUPLE_ELEM(0, args)::BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args))> () \
+	{																												\
+		return index;																								\
+	}
+
+#define ORAL_ADAPT_STRUCT(sname, ...)																				\
+namespace LC::Util::oral																							\
+{																													\
+	template<>																										\
+	constexpr auto SeqSize<sname> = BOOST_PP_TUPLE_SIZE((__VA_ARGS__));												\
+																													\
+	template<>																										\
+	struct MemberNames<sname>																						\
+	{																												\
+		template<size_t Idx>																						\
+		constexpr static auto Get ()																				\
+		{																											\
+			BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_STRING_FIELD, (__VA_ARGS__))					\
+		}																											\
+	};																												\
+																													\
+	template<>																										\
+	struct FieldAccess<sname>																						\
+	{																												\
+		template<size_t Idx>																						\
+		constexpr static const auto& Get (const sname& s)															\
+		{																											\
+			BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD, (__VA_ARGS__))						\
+		}																											\
+																													\
+		template<size_t Idx>																						\
+		constexpr static auto& Get (sname& s)																		\
+		{																											\
+			BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD, (__VA_ARGS__))						\
+		}																											\
+	};																												\
+}																													\
+
 #endif
+
 namespace LC::Util::oral
 {
 	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
@@ -70,8 +113,29 @@ namespace LC::Util::oral
 		}
 	};
 
+	template<typename>
+	constexpr size_t SeqSize = -1;
+
+	template<typename>
+	struct MemberNames {};
+
+	template<typename>
+	struct FieldAccess {};
+
 	namespace detail
 	{
+		template<size_t Idx, typename Seq>
+		constexpr decltype (auto) Get (const Seq& seq)
+		{
+			return FieldAccess<Seq>::template Get<Idx> (seq);
+		}
+
+		template<size_t Idx, typename Seq>
+		constexpr decltype (auto) Get (Seq& seq)
+		{
+			return FieldAccess<Seq>::template Get<Idx> (seq);
+		}
+
 		template<typename T, CtString str>
 		consteval auto MorphFieldName ()
 		{
@@ -86,12 +150,9 @@ namespace LC::Util::oral
 		template<typename Seq, int Idx>
 		consteval auto GetFieldName ()
 		{
-			constexpr auto str = boost::fusion::extension::struct_member_name<Seq, Idx>::call ();
-			return MorphFieldName<Seq, CtString<StringBufSize (str)>::FromUnsized (str)> ();
+			constexpr auto str = MemberNames<Seq>::template Get<Idx> ();
+			return MorphFieldName<Seq, str> ();
 		}
-
-		template<typename S>
-		constexpr auto SeqSize = boost::fusion::result_of::size<S>::type::value;
 
 		template<typename S>
 		constexpr auto SeqIndices = std::make_index_sequence<SeqSize<S>> {};
@@ -277,7 +338,7 @@ namespace LC::Util::oral
 	namespace detail
 	{
 		template<typename Seq, int Idx>
-		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
+		using ValueAtC_t = std::decay_t<decltype (Get<Idx> (std::declval<Seq> ()))>;
 
 		template<typename T>
 		struct IsPKey : std::false_type {};
@@ -294,7 +355,7 @@ namespace LC::Util::oral
 		template<size_t Ix, typename Seq>
 		void BindAtIndex (const Seq& seq, QSqlQuery& query, bool bindPrimaryKey)
 		{
-			const auto& value = boost::fusion::at_c<Ix> (seq);
+			const auto& value = Get<Ix> (seq);
 			if (bindPrimaryKey || !IsPKey<ValueAtC_t<Seq, Ix>>::value)
 				query.bindValue (std::get<Ix> (BoundFieldNames<Seq>).ToString (), ToVariantF (value));
 		}
@@ -433,7 +494,7 @@ namespace LC::Util::oral
 
 					const auto& lastId = FromVariant<ValueAtC_t<Seq, index>> {} (query.lastInsertId ());
 					if constexpr (!std::is_const_v<T>)
-						boost::fusion::at_c<index> (t) = lastId;
+						Get<index> (t) = lastId;
 					else
 						return lastId;
 				}
@@ -460,7 +521,7 @@ namespace LC::Util::oral
 			void operator() (const Seq& seq) requires HasPKey<Seq>
 			{
 				constexpr auto index = PKeyIndex_v<Seq>;
-				DeleteQuery_.bindValue (0, ToVariantF (boost::fusion::at_c<index> (seq)));
+				DeleteQuery_.bindValue (0, ToVariantF (Get<index> (seq)));
 				if (!DeleteQuery_.exec ())
 					throw QueryException ("delete query execution failed", DeleteQuery_);
 			}
@@ -474,7 +535,7 @@ namespace LC::Util::oral
 			else
 			{
 				T t;
-				((boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), ...);
+				((Get<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), ...);
 				return t;
 			}
 		}

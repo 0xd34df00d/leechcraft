@@ -8,6 +8,7 @@
 
 #include "sqlstoragebackend.h"
 #include <stdexcept>
+#include <boost/preprocessor/seq.hpp>
 #include <QDir>
 #include <QDebug>
 #include <QBuffer>
