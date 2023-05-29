@@ -898,21 +898,6 @@ namespace LC::Util::oral
 			return MakeExprTree<ExprType::Or> (left, right);
 		}
 
-		template<typename F>
-		struct ExprTreeHandler
-		{
-			QString Sql_;
-			F Binder_;
-			int LastID_;
-
-			ExprTreeHandler (const QString& sql, F&& binder, int lastId) noexcept
-			: Sql_ { sql }
-			, Binder_ { std::move (binder) }
-			, LastID_ { lastId }
-			{
-			}
-		};
-
 		template<CtString BindPrefix, typename Seq, typename Tree>
 		constexpr auto ExprTreeToSql () noexcept
 		{
