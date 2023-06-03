@@ -490,10 +490,14 @@ namespace LC::Aggregator
 						.arg (DB_.lastError ().text ())));
 		}
 
-		auto adaptedPtrs = std::tie (Feeds_, FeedsSettings_, Channels_, Items_, Enclosures_,
-				MRSSEntries_, MRSSThumbnails_, MRSSCredits_, MRSSComments_, MRSSPeerLinks_, MRSSScenes_,
-				Items2Tags_, Feeds2Tags_);
-		WithType (Type_, [&]<typename Impl> (Impl) { oral::AdaptPtrs<Impl> (DB_, adaptedPtrs); });
+		WithType (Type_,
+				[&]<typename Impl> (Impl)
+				{
+					oral::AdaptPtrs<Impl> (DB_,
+							Feeds_, FeedsSettings_, Channels_, Items_, Enclosures_,
+							MRSSEntries_, MRSSThumbnails_, MRSSCredits_, MRSSComments_, MRSSPeerLinks_, MRSSScenes_,
+							Items2Tags_, Feeds2Tags_);
+				});
 
 		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}

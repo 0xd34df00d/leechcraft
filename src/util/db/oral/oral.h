@@ -1672,21 +1672,9 @@ namespace LC::Util::oral
 		return std::make_unique<ObjectInfo<T>> (Adapt<T, ImplFactory> (db));
 	}
 
-	namespace detail
+	template<typename ImplFactory, typename... Ts>
+	void AdaptPtrs (const QSqlDatabase& db, ObjectInfo_ptr<Ts>&... objects)
 	{
-		template<size_t Idx, typename Tuple>
-		using UnderlyingObject_t = typename std::decay_t<std::tuple_element_t<Idx, Tuple>>::element_type::ObjectType_t;
-
-		template<typename ImplFactory, typename Tuple, size_t... Idxs>
-		void AdaptPtrs (const QSqlDatabase& db, Tuple& tuple, std::index_sequence<Idxs...>)
-		{
-			((std::get<Idxs> (tuple) = AdaptPtr<UnderlyingObject_t<Idxs, Tuple>, ImplFactory> (db)), ...);
-		}
-	}
-
-	template<typename ImplFactory, typename Tuple>
-	void AdaptPtrs (const QSqlDatabase& db, Tuple& tuple)
-	{
-		detail::AdaptPtrs<ImplFactory> (db, tuple, std::make_index_sequence<std::tuple_size_v<Tuple>> {});
+		((objects = AdaptPtr<Ts, ImplFactory> (db)), ...);
 	}
 }

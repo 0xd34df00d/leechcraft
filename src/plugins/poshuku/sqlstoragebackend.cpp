@@ -157,10 +157,9 @@ namespace Poshuku
 		if (type == SBSQLite)
 			Util::RunTextQuery (DB_, "PRAGMA journal_model = WAL;");
 
-		auto adaptedPtrs = std::tie (History_, Favorites_, FormsNever_);
 		type == SBSQLite ?
-				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, adaptedPtrs) :
-				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, adaptedPtrs);
+				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, History_, Favorites_, FormsNever_) :
+				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, History_, Favorites_, FormsNever_);
 	}
 
 	SQLStorageBackend::~SQLStorageBackend () = default;
