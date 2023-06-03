@@ -904,8 +904,7 @@ namespace LC::Util::oral
 			return Tree::template ToSql<Seq, BindPrefix> ();
 		}
 
-		template<CtString BindPrefix, typename Seq, typename Tree,
-				typename = decltype (std::declval<Tree> ().template BoundValues<Seq, BindPrefix> ())>
+		template<CtString BindPrefix, typename Seq, typename Tree>
 		auto ExprTreeToBinder (const Tree& tree)
 		{
 			const auto& boundValues = tree.template BoundValues<Seq, BindPrefix> ();
