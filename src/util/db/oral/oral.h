@@ -23,7 +23,6 @@
 #include <QDateTime>
 #include <QtDebug>
 #include <util/sll/ctstringutils.h>
-#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/typelist.h>
 #include <util/sll/typegetter.h>
@@ -633,11 +632,10 @@ namespace LC::Util::oral
 			}
 
 			template<typename Seq, CtString S>
-			QHash<QString, QVariant> BoundValues () const noexcept
+			void BindValues (QSqlQuery& query) const noexcept
 			{
-				auto result = Left_.template BoundValues<Seq, S + "l"> ();
-				result.insert (Right_.template BoundValues<Seq, S + "r"> ());
-				return result;
+				Left_.template BindValues<Seq, S + "l"> (query);
+				Right_.template BindValues<Seq, S + "r"> (query);
 			}
 
 			template<typename OL, typename OR>
@@ -669,11 +667,10 @@ namespace LC::Util::oral
 			}
 
 			template<typename Seq, CtString S>
-			QHash<QString, QVariant> BoundValues () const noexcept
+			void BindValues (QSqlQuery& query) const noexcept
 			{
-				auto result = Left_.template BoundValues<Seq, S + "l"> ();
-				result.insert (Right_.template BoundValues<Seq, S + "r"> ());
-				return result;
+				Left_.template BindValues<Seq, S + "l"> (query);
+				Right_.template BindValues<Seq, S + "r"> (query);
 			}
 
 			template<typename T>
@@ -709,10 +706,10 @@ namespace LC::Util::oral
 			}
 
 			template<typename Seq, CtString S>
-			QHash<QString, QVariant> BoundValues () const noexcept
+			void BindValues (QSqlQuery& query) const noexcept
 			{
 				constexpr auto varName = ToSql<Seq, S> ();
-				return { { varName.ToString (), ToVariantF (Data_) } };
+				query.bindValue (varName.ToString (), ToVariantF (Data_));
 			}
 
 			template<typename>
@@ -755,9 +752,8 @@ namespace LC::Util::oral
 			}
 
 			template<typename Seq, CtString S>
-			QHash<QString, QVariant> BoundValues () const noexcept
+			void BindValues (QSqlQuery&) const noexcept
 			{
-				return {};
 			}
 
 			constexpr static auto GetFieldName () noexcept
@@ -798,9 +794,8 @@ namespace LC::Util::oral
 			}
 
 			template<typename, CtString>
-			QHash<QString, QVariant> BoundValues () const noexcept
+			void BindValues (QSqlQuery&) const noexcept
 			{
-				return {};
 			}
 
 			template<typename>
@@ -905,14 +900,9 @@ namespace LC::Util::oral
 		}
 
 		template<CtString BindPrefix, typename Seq, typename Tree>
-		auto ExprTreeToBinder (const Tree& tree)
+		void BindExprTree (const Tree& tree, QSqlQuery& query)
 		{
-			const auto& boundValues = tree.template BoundValues<Seq, BindPrefix> ();
-			return [boundValues] (QSqlQuery& query)
-			{
-				for (const auto& [name, value] : Stlize (boundValues))
-					query.bindValue (name, value);
-			};
+			tree.template BindValues<Seq, BindPrefix> (query);
 		}
 
 		enum class AggregateFunction
@@ -1413,10 +1403,9 @@ namespace LC::Util::oral
 						return " WHERE "_ct;
 				} ();
 				constexpr auto from = BuildFromClause<TreeType_t> ();
-				const auto& treeBinder = ExprTreeToBinder<"", T> (tree); // TODO inline in binder
 				const auto binder = [&] (QSqlQuery& query)
 				{
-					treeBinder (query);
+					BindExprTree<"", T> (tree, query);
 					BindLimitOffset (query, limit, offset);
 				};
 				using HS = HandleSelector<T, Selector>;
@@ -1512,13 +1501,12 @@ namespace LC::Util::oral
 			void operator() (const ExprTree<Type, L, R>& tree) const noexcept
 			{
 				constexpr auto where = ExprTreeToSql<"", T, ExprTree<Type, L, R>> ();
-				const auto& binder = ExprTreeToBinder<"", T> (tree);
 
 				constexpr auto selectAll = "DELETE FROM " + T::ClassName + " WHERE " + where;
 
 				QSqlQuery query { DB_ };
 				query.prepare (selectAll.ToString ());
-				binder (query);
+				BindExprTree<"", T> (tree, query);
 				query.exec ();
 			}
 		};
@@ -1557,9 +1545,7 @@ namespace LC::Util::oral
 						"joins in update statements are not supported by SQL");
 
 				constexpr auto setClause = ExprTreeToSql<"set_", T, AssignList<SL, SR>> ();
-				const auto& setBinder = ExprTreeToBinder<"set_", T> (set);
 				constexpr auto whereClause = ExprTreeToSql<"where_", T, ExprTree<WType, WL, WR>> ();
-				const auto& whereBinder = ExprTreeToBinder<"where_", T> (where);
 
 				constexpr auto update = "UPDATE " + T::ClassName +
 						" SET " + setClause +
@@ -1567,8 +1553,8 @@ namespace LC::Util::oral
 
 				QSqlQuery query { DB_ };
 				query.prepare (update.ToString ());
-				setBinder (query);
-				whereBinder (query);
+				BindExprTree<"set_", T> (set, query);
+				BindExprTree<"where_", T> (where, query);
 				if (!query.exec ())
 				{
 					qCritical () << "update query execution failed";
