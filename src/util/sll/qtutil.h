@@ -139,24 +139,9 @@ namespace LC
 		return QByteArray::fromRawData (str, static_cast<int> (size));
 	}
 
-	namespace
-	{
-		template<Util::CtString S, size_t... Idxes>
-		QString MkString (std::index_sequence<Idxes...>)
-		{
-			static constexpr QStaticStringData<S.Size> literal
-			{
-				Q_STATIC_STRING_DATA_HEADER_INITIALIZER (S.Size),
-				{ S.Data_ [Idxes]..., 0 }
-			};
-			QStringDataPtr holder { literal.data_ptr () };
-			return QString { holder };
-		}
-	}
-
 	template<Util::CtString S>
 	QString operator""_qs ()
 	{
-		return MkString<S> (std::make_index_sequence<S.Size> {});
+		return Util::ToString<S> ();
 	}
 }
