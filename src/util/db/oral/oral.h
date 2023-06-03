@@ -997,7 +997,7 @@ namespace LC::Util::oral
 	namespace detail
 	{
 		template<auto Ptr>
-		auto MemberFromVariant (const QVariant& var)
+		auto MemberFromVariant (const QVariant& var) noexcept
 		{
 			return FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (var);
 		}
@@ -1207,7 +1207,7 @@ namespace LC::Util::oral
 		public:
 			constexpr inline static auto Fields = JoinTup (SelectFields<FieldIndex<Ptrs> ()...> (), ", ");
 
-			static auto Initializer (const QSqlQuery& q, int startIdx)
+			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
 				return MakeIndexedQueryHandler (MemberPtrs<Ptrs...> {}, q, startIdx);
 			}
@@ -1240,7 +1240,7 @@ namespace LC::Util::oral
 		{
 			constexpr inline static auto Fields = Aggregate + "(" + GetQualifiedFieldNamePtr<Ptr> () + ")";
 
-			static auto Initializer (const QSqlQuery& q, int startIdx)
+			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
 				return MakeIndexedQueryHandler<Ptr> (q, startIdx);
 			}
@@ -1269,7 +1269,7 @@ namespace LC::Util::oral
 
 			constexpr inline static auto Fields = HL::Fields + ", " + HR::Fields;
 
-			static auto Initializer (const QSqlQuery& q, int startIdx)
+			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
 				constexpr auto shift = DetectShift<T, decltype (HL::Initializer (q, 0))>::Value;
 				return Combine (HL::Initializer (q, startIdx), HR::Initializer (q, startIdx + shift));
