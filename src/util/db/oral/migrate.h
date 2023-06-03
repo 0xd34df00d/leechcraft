@@ -9,6 +9,7 @@
 #pragma once
 
 #include "util/db/oral/oral.h"
+#include <util/sll/qtutil.h>
 
 namespace LC::Util::oral
 {

@@ -19,6 +19,7 @@
 #include <util/db/oral/oral.h>
 #include <util/db/oral/pgimpl.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
