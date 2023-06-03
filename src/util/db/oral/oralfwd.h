@@ -22,7 +22,7 @@ namespace oral
 	struct ObjectInfo;
 
 	template<typename T>
-	using ObjectInfo_ptr = std::shared_ptr<ObjectInfo<T>>;
+	using ObjectInfo_ptr = std::unique_ptr<ObjectInfo<T>>;
 }
 }
 }
