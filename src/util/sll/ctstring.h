@@ -100,13 +100,22 @@ namespace LC::Util
 			// TODO hack around QByteArrayLiteral
 			return QByteArray { Data_, Size };
 		}
-
-		QString ToString () const noexcept
-		{
-			// TODO do this at compile-time
-			return ToByteArray ();
-		}
 	};
+
+	template<CtString Str>
+	QString ToString ()
+	{
+		static constexpr auto literal = []<size_t... Idxes> (std::index_sequence<Idxes...>)
+		{
+			return QStaticStringData<Str.Size>
+			{
+				Q_STATIC_STRING_DATA_HEADER_INITIALIZER (Str.Size),
+				{ Str.Data_ [Idxes]..., 0 }
+			};
+		} (std::make_index_sequence<Str.Size> {});
+		QStringDataPtr holder { literal.data_ptr () };
+		return QString { holder };
+	}
 
 	template<size_t N1, size_t N2, typename Char>
 	constexpr auto operator+ (RawStr<N1, Char> s1, CtString<N2, Char> s2) noexcept

@@ -42,10 +42,10 @@ namespace LC::Util::oral
 	{
 		constexpr auto baseName = Record::ClassName;
 		constexpr auto thisName = "copy" + baseName;
-		const auto& schema = detail::AdaptCreateTableNamed<thisName, ImplFactory, Record> ().ToString ();
+		const auto& schema = ToString<detail::AdaptCreateTableNamed<thisName, ImplFactory, Record> ()> ();
 
-		const auto& baseNameStr = baseName.ToString ();
-		const auto& thisNameStr = thisName.ToString ();
+		const auto& baseNameStr = ToString<baseName> ();
+		const auto& thisNameStr = ToString<thisName> ();
 		if (detail::MatchesSchema (baseNameStr, schema, db))
 		{
 			qDebug () << Q_FUNC_INFO
@@ -67,7 +67,7 @@ namespace LC::Util::oral
 
 		Util::RunTextQuery (db,
 				"INSERT INTO %2 (%1) SELECT %1 FROM %3;"_qs
-						.arg (fields.ToString (), thisNameStr, baseNameStr));
+						.arg (ToString<fields> (), thisNameStr, baseNameStr));
 
 		Util::RunTextQuery (db,
 				"DROP TABLE %1;"_qs

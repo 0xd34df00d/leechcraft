@@ -330,9 +330,8 @@ namespace LC::Util::oral
 		template<size_t Ix, typename Seq>
 		void BindAtIndex (const Seq& seq, QSqlQuery& query, bool bindPrimaryKey)
 		{
-			const auto& value = Get<Ix> (seq);
 			if (bindPrimaryKey || !IsPKey<ValueAtC_t<Seq, Ix>>::value)
-				query.bindValue (std::get<Ix> (BoundFieldNames<Seq>).ToString (), ToVariantF (value));
+				query.bindValue (ToString<std::get<Ix> (BoundFieldNames<Seq>)> (), ToVariantF (Get<Ix> (seq)));
 		}
 
 		template<typename Seq>
@@ -459,7 +458,7 @@ namespace LC::Util::oral
 			{
 				QSqlQuery query { DB_ };
 				constexpr auto queryText = MakeQueryForAction<ImplFactory> (action);
-				query.prepare (queryText.ToString ());
+				query.prepare (ToString<queryText> ());
 
 				DoInsert (t, query, !HasAutogen_);
 
@@ -489,7 +488,7 @@ namespace LC::Util::oral
 					constexpr auto index = PKeyIndex_v<Seq>;
 					constexpr auto del = "DELETE FROM " + Seq::ClassName +
 							" WHERE " + std::get<index> (FieldNames<Seq>) + " = ?";
-					DeleteQuery_.prepare (del.ToString ());
+					DeleteQuery_.prepare (ToString<del> ());
 				}
 			}
 
@@ -709,7 +708,7 @@ namespace LC::Util::oral
 			void BindValues (QSqlQuery& query) const noexcept
 			{
 				constexpr auto varName = ToSql<Seq, S> ();
-				query.bindValue (varName.ToString (), ToVariantF (Data_));
+				query.bindValue (ToString<varName> (), ToVariantF (Data_));
 			}
 
 			template<typename>
@@ -1416,7 +1415,7 @@ namespace LC::Util::oral
 						HandleOrder (std::forward<Order> (order)) +
 						HandleGroup (std::forward<Group> (group)) +
 						LimitOffsetToString<Limit, Offset> ();
-				auto selectResult = Select<HS> (query.ToString (),
+				auto selectResult = Select<HS> (ToString<query> (),
 						binder);
 				return HandleResultBehaviour<HS::ResultBehaviour_v> (std::move (selectResult));
 			}
@@ -1505,7 +1504,7 @@ namespace LC::Util::oral
 				constexpr auto selectAll = "DELETE FROM " + T::ClassName + " WHERE " + where;
 
 				QSqlQuery query { DB_ };
-				query.prepare (selectAll.ToString ());
+				query.prepare (ToString<selectAll> ());
 				BindExprTree<"", T> (tree, query);
 				query.exec ();
 			}
@@ -1529,7 +1528,7 @@ namespace LC::Util::oral
 					constexpr auto update = "UPDATE " + T::ClassName +
 							" SET " + JoinTup (statements, ", ") +
 							" WHERE " + std::get<pkeyIdx> (statements);
-					UpdateByPKey_.prepare (update.ToString ());
+					UpdateByPKey_.prepare (ToString<update> ());
 				}
 			}
 
@@ -1552,7 +1551,7 @@ namespace LC::Util::oral
 						" WHERE " + whereClause;
 
 				QSqlQuery query { DB_ };
-				query.prepare (update.ToString ());
+				query.prepare (ToString<update> ());
 				BindExprTree<"set_", T> (set, query);
 				BindExprTree<"where_", T> (where, query);
 				if (!query.exec ())
@@ -1645,10 +1644,10 @@ namespace LC::Util::oral
 	template<typename T, typename ImplFactory = detail::SQLite::ImplFactory>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
-		if (!db.tables ().contains (T::ClassName.ToString (), Qt::CaseInsensitive))
+		if (!db.tables ().contains (ToString<T::ClassName> (), Qt::CaseInsensitive))
 		{
 			constexpr auto query = detail::AdaptCreateTable<ImplFactory, T> ();
-			RunTextQuery (db, query.ToString ());
+			RunTextQuery (db, ToString<query> ());
 		}
 
 		return
