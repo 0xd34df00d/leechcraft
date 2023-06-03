@@ -94,6 +94,8 @@ namespace Azoth
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
+	AvatarsStorageOnDisk::~AvatarsStorageOnDisk () = default;
+
 	void AvatarsStorageOnDisk::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& imageData) const
 	{

@@ -31,6 +31,7 @@ namespace Xoox
 		Util::oral::ObjectInfo_ptr<PhotoHashRecord> AdaptedPhotoHashes_;
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);
+		~VCardStorageOnDisk ();
 
 		void SetVCard (const QString& jid, const QString& vcard);
 		std::optional<QString> GetVCard (const QString& jid) const;

@@ -64,6 +64,8 @@ namespace Azoth
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
+	SslErrorsChoiceStorage::~SslErrorsChoiceStorage () = default;
+
 	namespace sph = Util::oral::sph;
 
 	auto SslErrorsChoiceStorage::GetAction (const QByteArray& id,

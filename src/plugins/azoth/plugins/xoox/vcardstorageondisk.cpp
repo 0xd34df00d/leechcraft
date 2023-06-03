@@ -77,6 +77,8 @@ namespace Xoox
 		AdaptedPhotoHashes_ = Util::oral::AdaptPtr<PhotoHashRecord> (DB_);
 	}
 
+	VCardStorageOnDisk::~VCardStorageOnDisk () = default;
+
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
 	{
 		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::PKey);

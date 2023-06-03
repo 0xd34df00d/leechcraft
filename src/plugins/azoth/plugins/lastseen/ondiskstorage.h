@@ -36,6 +36,7 @@ namespace LastSeen
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		OnDiskStorage (QObject* = nullptr);
+		~OnDiskStorage ();
 
 		std::optional<EntryStats> GetEntryStats (const QString&);
 		void SetEntryStats (const QString&, const EntryStats&);

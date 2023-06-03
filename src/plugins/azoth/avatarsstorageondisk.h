@@ -27,6 +27,7 @@ namespace Azoth
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		AvatarsStorageOnDisk (QObject* = nullptr);
+		~AvatarsStorageOnDisk ();
 
 		void SetAvatar (const QString& entryId, IHaveAvatars::Size size, const QByteArray& imageData) const;
 		std::optional<QByteArray> GetAvatar (const QString& entryId, IHaveAvatars::Size size) const;

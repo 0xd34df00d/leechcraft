@@ -27,6 +27,7 @@ namespace Azoth
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		SslErrorsChoiceStorage ();
+		~SslErrorsChoiceStorage ();
 
 		enum class Action
 		{

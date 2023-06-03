@@ -498,6 +498,8 @@ namespace LC::Aggregator
 		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}
 
+	SQLStorageBackend::~SQLStorageBackend () = default;
+
 	void SQLStorageBackend::Prepare ()
 	{
 		if (Type_ == SBSQLite)

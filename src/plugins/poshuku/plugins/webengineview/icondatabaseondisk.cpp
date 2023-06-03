@@ -70,6 +70,8 @@ namespace LC::Poshuku::WebEngineView
 		PageUrl2IconUrl_ = Util::oral::AdaptPtr<PageUrl2IconUrlRecord> (DB_);
 	}
 
+	IconDatabaseOnDisk::~IconDatabaseOnDisk () = default;
+
 	namespace sph = Util::oral::sph;
 
 	void IconDatabaseOnDisk::UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl)

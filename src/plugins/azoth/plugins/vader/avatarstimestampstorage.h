@@ -31,6 +31,7 @@ namespace Vader
 		Util::oral::ObjectInfo_ptr<AvatarTimestamp> Adapted_;
 	public:
 		AvatarsTimestampStorage ();
+		~AvatarsTimestampStorage ();
 
 		std::optional<QDateTime> GetTimestamp (const QString&);
 		void SetTimestamp (const QString&, const QDateTime&);

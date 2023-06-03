@@ -32,6 +32,7 @@ namespace Poshuku
 		Util::oral::ObjectInfo_ptr<FormsNever> FormsNever_;
 	public:
 		SQLStorageBackend (Type);
+		~SQLStorageBackend ();
 
 		void LoadHistory (history_items_t&) const override;
 		history_items_t LoadResemblingHistory (const QString&) const override;

@@ -163,6 +163,8 @@ namespace Poshuku
 				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, adaptedPtrs);
 	}
 
+	SQLStorageBackend::~SQLStorageBackend () = default;
+
 	void SQLStorageBackend::LoadHistory (history_items_t& items) const
 	{
 		for (const auto& item : History_->Select.Build ().Order (oral::OrderBy<sph::desc<&History::Date_>>) ())

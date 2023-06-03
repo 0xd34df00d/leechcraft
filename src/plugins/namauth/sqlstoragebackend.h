@@ -48,6 +48,7 @@ namespace NamAuth
 		Util::oral::ObjectInfo_ptr<AuthRecord> AdaptedRecord_;
 	public:
 		SQLStorageBackend ();
+		~SQLStorageBackend ();
 
 		static QString GetDBPath ();
 

@@ -28,6 +28,7 @@ namespace LC
 		Util::oral::ObjectInfo_ptr<Record> Record_;
 	public:
 		explicit TagsStorage (QObject* = nullptr);
+		~TagsStorage ();
 
 		using Id = QUuid;
 

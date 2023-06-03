@@ -28,6 +28,7 @@ namespace LC::Poshuku::WebEngineView
 		Util::oral::ObjectInfo_ptr<PageUrl2IconUrlRecord> PageUrl2IconUrl_;
 	public:
 		explicit IconDatabaseOnDisk ();
+		~IconDatabaseOnDisk ();
 
 		void UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl);
 		QIcon GetIcon (const QUrl& iconUrl);

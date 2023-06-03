@@ -84,6 +84,8 @@ namespace LastSeen
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
+	OnDiskStorage::~OnDiskStorage () = default;
+
 	std::optional<EntryStats> OnDiskStorage::GetEntryStats (const QString& entryId)
 	{
 		using Util::operator*;

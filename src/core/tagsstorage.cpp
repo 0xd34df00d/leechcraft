@@ -56,6 +56,8 @@ namespace LC
 		Record_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
+	TagsStorage::~TagsStorage () = default;
+
 	void TagsStorage::AddTag (const Id& id, const QString& name)
 	{
 		Record_->Insert ({ id.toByteArray (), name });

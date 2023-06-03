@@ -42,6 +42,8 @@ namespace NamAuth
 		AdaptedRecord_ = Util::oral::AdaptPtr<AuthRecord> (*DB_);
 	}
 
+	SQLStorageBackend::~SQLStorageBackend () = default;
+
 	QString SQLStorageBackend::GetDBPath ()
 	{
 		return Util::CreateIfNotExists ("core").filePath ("core.db");

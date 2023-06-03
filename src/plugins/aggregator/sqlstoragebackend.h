@@ -58,6 +58,7 @@ namespace LC::Aggregator
 		Util::oral::ObjectInfo_ptr<Feed2TagsR> Feeds2Tags_;
 	public:
 		SQLStorageBackend (Type, const QString&);
+		~SQLStorageBackend ();
 
 		void Prepare () override;
 
