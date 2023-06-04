@@ -609,7 +609,7 @@ namespace LC::Util::oral
 			L Left_;
 			R Right_;
 		public:
-			AssignList (const L& l, const R& r) noexcept
+			constexpr AssignList (const L& l, const R& r) noexcept
 			: Left_ { l }
 			, Right_ { r }
 			{
@@ -644,7 +644,7 @@ namespace LC::Util::oral
 			L Left_;
 			R Right_;
 		public:
-			ExprTree (const L& l, const R& r) noexcept
+			constexpr ExprTree (const L& l, const R& r) noexcept
 			: Left_ (l)
 			, Right_ (r)
 			{
@@ -687,7 +687,7 @@ namespace LC::Util::oral
 			template<typename>
 			using ValueType_t = T;
 
-			ExprTree (const T& t) noexcept
+			constexpr ExprTree (const T& t) noexcept
 			: Data_ (t)
 			{
 			}
