@@ -975,7 +975,7 @@ namespace LC::Aggregator
 
 				const auto& feedsTags = Feeds2Tags_->Select ();
 
-				Util::RunTextQuery (DB_, ("DROP TABLE " + Feed2TagsR::ClassName).ToByteArray ());
+				Util::RunTextQuery (DB_, Util::ToString<"DROP TABLE " + Feed2TagsR::ClassName> ());
 
 				Feeds2Tags_ = WithType (Type_,
 						[&]<typename Impl> (Impl) { return oral::AdaptPtr<Feed2TagsR, Impl> (DB_); });
