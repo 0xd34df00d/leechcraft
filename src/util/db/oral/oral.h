@@ -42,12 +42,12 @@
 	if constexpr (Idx == index)																						\
 		return s.BOOST_PP_TUPLE_ELEM(index, tuple);
 
-#define ORAL_GET_FIELD_INDEX(_, index, args)																		\
+#define ORAL_GET_FIELD_INDEX_IMPL(index, sname, field)																\
 	template<>																										\
-	constexpr size_t FieldIndex<&BOOST_PP_TUPLE_ELEM(0, args)::BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args))> () \
-	{																												\
-		return index;																								\
-	}
+	constexpr size_t FieldIndexAccess<sname>::FieldIndex<&sname::field> () { return index; }
+
+#define ORAL_GET_FIELD_INDEX(_, index, args) \
+	ORAL_GET_FIELD_INDEX_IMPL(index, BOOST_PP_TUPLE_ELEM(0, args), BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args)))
 
 #define ORAL_ADAPT_STRUCT(sname, ...)																				\
 namespace LC::Util::oral																							\
@@ -86,9 +86,9 @@ namespace LC::Util::oral																							\
 	{																												\
 		template<auto Ptr>																							\
 		constexpr static size_t FieldIndex ();																		\
-																													\
-		BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD_INDEX, (sname, (__VA_ARGS__)))			\
 	};																												\
+																													\
+	BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD_INDEX, (sname, (__VA_ARGS__)))				\
 }																													\
 
 #endif
