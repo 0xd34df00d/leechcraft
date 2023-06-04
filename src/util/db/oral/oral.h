@@ -1127,7 +1127,6 @@ namespace LC::Util::oral
 					auto&& binder) const
 			{
 				QSqlQuery query { DB_ };
-				qDebug () << queryStr;
 				query.prepare (queryStr);
 				binder (query);
 
