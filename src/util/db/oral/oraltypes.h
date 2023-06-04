@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <variant>
 #include <type_traits>
 #include <util/sll/typelist.h>
 #include <util/sll/typegetter.h>
