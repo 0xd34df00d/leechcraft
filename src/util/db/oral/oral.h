@@ -682,7 +682,7 @@ namespace LC::Util::oral
 		template<typename T>
 		class ExprTree<ExprType::LeafData, T, void>
 		{
-			T Data_;
+			const T& Data_;
 		public:
 			template<typename>
 			using ValueType_t = T;
