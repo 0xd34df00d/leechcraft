@@ -581,24 +581,18 @@ namespace LC::Util::oral
 				T,
 				WrapDirect<T>>::value_type;
 
-		template<typename Seq, typename L, typename R>
-		using ComparableDetector = decltype (std::declval<UnwrapIndirect_t<typename L::template ValueType_t<Seq>>> () ==
-				std::declval<UnwrapIndirect_t<typename R::template ValueType_t<Seq>>> ());
-
-		template<typename Seq, typename L, typename R>
-		constexpr auto AreComparableTypes = IsDetected_v<ComparableDetector, Seq, L, R> || IsDetected_v<ComparableDetector, Seq, R, L>;
-
-		template<typename Seq, typename L, typename R, typename = void>
-		struct RelationalTypesCheckerBase : std::false_type {};
-
-		template<typename Seq, typename L, typename R>
-		struct RelationalTypesCheckerBase<Seq, L, R, std::enable_if_t<AreComparableTypes<Seq, L, R>>> : std::true_type {};
-
-		template<ExprType Type, typename Seq, typename L, typename R, typename = void>
-		struct RelationalTypesChecker : std::true_type {};
-
 		template<ExprType Type, typename Seq, typename L, typename R>
-		struct RelationalTypesChecker<Type, Seq, L, R, std::enable_if_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
+		constexpr bool Typecheck ()
+		{
+			if constexpr (IsRelational (Type))
+			{
+				using LReal = UnwrapIndirect_t<typename L::template ValueType_t<Seq>>;
+				using RReal = UnwrapIndirect_t<typename R::template ValueType_t<Seq>>;
+				return requires (LReal l, RReal r) { l == r; };
+			}
+			else
+				return true;
+		}
 
 		template<ExprType Type, typename L = void, typename R = void>
 		class ExprTree;
@@ -659,7 +653,7 @@ namespace LC::Util::oral
 			template<typename Seq, CtString S>
 			constexpr static auto ToSql () noexcept
 			{
-				static_assert (RelationalTypesChecker<Type, Seq, L, R>::value,
+				static_assert (Typecheck<Type, Seq, L, R> (),
 						"Incompatible types passed to a relational operator.");
 
 				return L::template ToSql<Seq, S + "l"> () + " " + TypeToSql<Type> () + " " + R::template ToSql<Seq, S + "r"> ();
