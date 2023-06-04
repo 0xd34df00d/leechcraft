@@ -93,14 +93,22 @@ namespace LC::Util
 		{
 			return Data_ [pos];
 		}
-
-		QByteArray ToByteArray () const noexcept
-			requires std::same_as<Char, char>
-		{
-			// TODO hack around QByteArrayLiteral
-			return QByteArray { Data_, Size };
-		}
 	};
+
+	template<CtString Str>
+	QByteArray ToByteArray ()
+	{
+		static constexpr auto literal = []<size_t... Idxes> (std::index_sequence<Idxes...>)
+		{
+			return QStaticByteArrayData<Str.Size>
+			{
+				Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER (Str.Size),
+				{ Str.Data_ [Idxes]..., 0 }
+			};
+		} (std::make_index_sequence<Str.Size> {});
+		QByteArrayDataPtr holder { literal.data_ptr () };
+		return QByteArray { holder };
+	}
 
 	template<CtString Str>
 	QString ToString ()
