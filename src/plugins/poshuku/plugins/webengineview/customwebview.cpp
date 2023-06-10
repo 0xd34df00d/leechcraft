@@ -213,8 +213,7 @@ namespace LC::Poshuku::WebEngineView
 						QFile file { ":/qtwebchannel/qwebchannel.js"_qs };
 						if (!file.open (QIODevice::ReadOnly))
 						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to open WebChannel setup file"
+							qWarning () << "unable to open WebChannel setup file"
 									<< file.errorString ();
 							return;
 						}
@@ -240,8 +239,7 @@ namespace LC::Poshuku::WebEngineView
 	void CustomWebView::Print (bool preview)
 	{
 		if (preview)
-			qWarning () << Q_FUNC_INFO
-					<< "printing with preview is not supported yet";
+			qWarning () << "printing with preview is not supported yet";
 
 		auto printer = std::make_shared<QPrinter> ();
 		QPrintDialog dialog (printer.get (), this);

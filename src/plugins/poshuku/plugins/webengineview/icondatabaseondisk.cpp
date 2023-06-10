@@ -58,8 +58,7 @@ namespace LC::Poshuku::WebEngineView
 
 		if (!DB_.open ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open the database";
+			qWarning () << "cannot open the database";
 			Util::DBLock::DumpError (DB_.lastError ());
 			throw std::runtime_error { "Cannot create database" };
 		}

@@ -47,8 +47,7 @@ namespace LC::Poshuku::WebEngineView
 			}
 #undef LC_TYPE
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown type"
+			qWarning () << "unknown type"
 					<< type;
 
 			return IWebView::NavigationType::Other;

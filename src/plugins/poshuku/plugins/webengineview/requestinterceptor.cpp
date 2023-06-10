@@ -43,7 +43,7 @@ namespace LC::Poshuku::WebEngineView
 			HANDLE (PluginResource)
 			HANDLE (Unknown)
 			case QWebEngineUrlRequestInfo::ResourceTypeLast:
-				qWarning () << Q_FUNC_INFO << "got ResourceTypeLast";
+				qWarning () << "got ResourceTypeLast";
 				return IInterceptableRequests::ResourceType::Unknown;
 			}
 #undef HANDLE
