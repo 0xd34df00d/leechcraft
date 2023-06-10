@@ -843,17 +843,14 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::AddFeed (const Feed& feed)
 	{
-		Feeds_->Insert (FeedR::FromOrig (feed));
+		Util::DBLock lock { DB_ };
+		lock.Init ();
 
-		try
-		{
-			for (const auto& chan : feed.Channels_)
-				AddChannel (*chan);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO << e.what ();
-		}
+		Feeds_->Insert (FeedR::FromOrig (feed));
+		for (const auto& chan : feed.Channels_)
+			AddChannel (*chan);
+
+		lock.Good ();
 	}
 
 	void SQLStorageBackend::UpdateItem (const Item& item)
