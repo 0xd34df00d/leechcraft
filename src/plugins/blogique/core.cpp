@@ -14,6 +14,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/prelude.h>
@@ -123,11 +124,6 @@ namespace Blogique
 			if (acc->GetAccountID () == id)
 				return acc;
 		return 0;
-	}
-
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
 	}
 
 	void Core::DelayedProfilesUpdate ()
@@ -329,14 +325,14 @@ namespace Blogique
 
 		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open Link"),
-				[this, entries] ()
+				[entries]
 				{
 					auto urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
 							{},
 							OnlyHandle | FromUserInitiated);
-					SendEntity (urlEntity);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (urlEntity);
 				});
-		emit gotEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		acc->RequestStatistics ();
 		acc->RequestTags ();
 		emit entryPosted ();
@@ -348,7 +344,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		SendEntity (Util::MakeNotification ("Blogique",
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was removed successfully."),
 				Priority::Info));
 		acc->RequestStatistics ();
@@ -365,7 +361,7 @@ namespace Blogique
 		if (entries.isEmpty ())
 			return;
 
-		SendEntity (Util::MakeNotification ("Blogique",
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was updated successfully."),
 				Priority::Info));
 		acc->RequestStatistics ();

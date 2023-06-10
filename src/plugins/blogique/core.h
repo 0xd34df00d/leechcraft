@@ -61,7 +61,6 @@ namespace Blogique
 
 		IAccount* GetAccountByID (const QByteArray& id) const;
 
-		void SendEntity (const Entity& e);
 		void DelayedProfilesUpdate ();
 
 		StorageManager* GetStorageManager () const;
@@ -90,8 +89,6 @@ namespace Blogique
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
 		void accountValidated (QObject *account, bool validated);
-
-		void gotEntity (LC::Entity e);
 
 		void checkAutoSave ();
 

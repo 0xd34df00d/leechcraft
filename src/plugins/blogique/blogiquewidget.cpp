@@ -29,6 +29,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/imwproxy.h>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
@@ -843,7 +844,7 @@ namespace Blogique
 				<< "error text:"
 				<< errorString;
 
-		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique",
 				tr ("%1 (original message: %2)")
 					.arg (localizedErrorString, errorString),
 				Priority::Warning));
@@ -1090,7 +1091,7 @@ namespace Blogique
 		if (EntryUrl_.isEmpty ())
 			return;
 
-		Core::Instance ().SendEntity (Util::MakeEntity (EntryUrl_,
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (EntryUrl_,
 				{},
 				FromUserInitiated | OnlyHandle));
 	}

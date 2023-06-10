@@ -64,8 +64,6 @@ namespace Blogique
 	private:
 		void CreateTab ();
 	signals:
-		void gotEntity (const LC::Entity& e);
-
 		void gotActions (QList<QAction*> actions, LC::ActionsEmbedPlace area);
 	};
 }

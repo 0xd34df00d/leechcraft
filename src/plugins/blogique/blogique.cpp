@@ -47,11 +47,6 @@ namespace Blogique
 		};
 		TabClasses_ << tabClass;
 
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LC::Entity)),
-				this,
-				SIGNAL (gotEntity (LC::Entity)));
-
 		ExportAction_ = new QAction (proxy->GetIconThemeManager ()->GetIcon ("document-export"),
 				tr ("Export blog"), this);
 		connect (ExportAction_,
