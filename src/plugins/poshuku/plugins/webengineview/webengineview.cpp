@@ -9,8 +9,9 @@
 #include "webengineview.h"
 #include <QIcon>
 #include <QWebEngineProfile>
-#include <util/sys/sysinfo.h>
 #include <util/network/customcookiejar.h>
+#include <util/sll/qtutil.h>
+#include <util/sys/sysinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
@@ -40,12 +41,8 @@ namespace LC::Poshuku::WebEngineView
 
 			const auto& lcVersion = GetProxyHolder ()->GetVersion ();
 
-			return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%5 Chrome/%4 Safari/%3" }
-					.arg (platform)
-					.arg (osVersion)
-					.arg (wkVer)
-					.arg (chromeVer)
-					.arg (lcVersion.section ('-', 0, 0));
+			return "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%5 Chrome/%4 Safari/%3"_qs
+					.arg (platform, osVersion, wkVer, chromeVer, lcVersion.section ('-', 0, 0));
 		}
 	}
 
@@ -89,7 +86,7 @@ namespace LC::Poshuku::WebEngineView
 
 	QString Plugin::GetName () const
 	{
-		return "Poshuku WebEngineView";
+		return "Poshuku WebEngineView"_qs;
 	}
 
 	QString Plugin::GetInfo () const

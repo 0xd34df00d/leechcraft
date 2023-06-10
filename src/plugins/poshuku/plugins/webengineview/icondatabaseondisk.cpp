@@ -13,6 +13,7 @@
 #include <QSqlError>
 #include <util/db/oral/oral.h>
 #include <util/db/oral/utilitytypes.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 
 namespace LC::Poshuku::WebEngineView
@@ -52,8 +53,8 @@ namespace LC::Poshuku::WebEngineView
 	: DB_ { QSqlDatabase::addDatabase ("QSQLITE",
 			Util::GenConnectionName ("org.LeechCraft.Poshuku.WebEngineView.IconDB")) }
 	{
-		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "poshuku/webengineview");
-		DB_.setDatabaseName (cacheDir.filePath ("icons.db"));
+		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "poshuku/webengineview"_qs);
+		DB_.setDatabaseName (cacheDir.filePath ("icons.db"_qs));
 
 		if (!DB_.open ())
 		{
@@ -63,8 +64,8 @@ namespace LC::Poshuku::WebEngineView
 			throw std::runtime_error { "Cannot create database" };
 		}
 
-		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
-		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;"_qs);
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;"_qs);
 
 		IconUrl2Icon_ = Util::oral::AdaptPtr<IconUrl2IconRecord> (DB_);
 		PageUrl2IconUrl_ = Util::oral::AdaptPtr<PageUrl2IconUrlRecord> (DB_);

@@ -18,8 +18,9 @@
 #include <QContextMenuEvent>
 #include <QMouseEvent>
 #include <QAction>
-#include <util/sll/unreachable.h>
 #include <util/gui/findnotificationwe.h>
+#include <util/sll/unreachable.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/poshuku/iwebviewhistory.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebpage.h"
@@ -154,11 +155,11 @@ namespace LC::Poshuku::WebEngineView
 		std::function<void (QVariant)> modifiedHandler;
 		if (flags & EvaluateJSFlag::RecurseSubframes)
 		{
-			jsToRun = QString { R"(
+			jsToRun = R"(
 					(function(){
 						var result = [];
 						var f = function(document) {
-							var r = __FUNCTION__
+							var r = %1;
 							result.push(r);
 						};
 						f(document);
@@ -175,8 +176,7 @@ namespace LC::Poshuku::WebEngineView
 						recurse(document);
 						return result;
 					})();
-				)" };
-			jsToRun.replace ("__FUNCTION__", js);
+				)"_qs.arg (js);
 
 			modifiedHandler = [handler] (const QVariant& result)
 			{
@@ -205,12 +205,12 @@ namespace LC::Poshuku::WebEngineView
 			page ()->setWebChannel (channel);
 		}
 
-		EvaluateJS ("typeof QWebChannel === 'undefined'",
+		EvaluateJS ("typeof QWebChannel === 'undefined'"_qs,
 				[=] (const QVariant& res)
 				{
 					if (res.toBool ())
 					{
-						QFile file { ":/qtwebchannel/qwebchannel.js" };
+						QFile file { ":/qtwebchannel/qwebchannel.js"_qs };
 						if (!file.open (QIODevice::ReadOnly))
 						{
 							qWarning () << Q_FUNC_INFO
@@ -224,15 +224,15 @@ namespace LC::Poshuku::WebEngineView
 
 					channel->registerObject (id, object);
 
-					auto js = QString { R"(
+					auto js = R"(
 								new QWebChannel(qt.webChannelTransport,
 									function(channel) {
 										window.%1 = channel.objects.%1;
 										if (window.%1.init)
 											window.%1.init();
 									});
-							)" }.arg (id);
-					page ()->runJavaScript (js);
+							)"_qs.arg (id);
+					page->runJavaScript (js);
 				},
 				{});
 	}
@@ -266,7 +266,7 @@ namespace LC::Poshuku::WebEngineView
 
 	void CustomWebView::SetScrollPosition (const QPoint& point)
 	{
-		page ()->runJavaScript (QString { "window.scrollTo(%1, %2);" }.arg (point.x ()).arg (point.y ()));
+		page ()->runJavaScript ("window.scrollTo(%1, %2);"_qs.arg (point.x ()).arg (point.y ()));
 	}
 
 	double CustomWebView::GetZoomFactor () const
