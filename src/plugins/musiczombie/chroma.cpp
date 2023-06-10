@@ -80,7 +80,11 @@ namespace MusicZombie
 				throw std::runtime_error ("couldn't open the codec");
 		}
 
+#if LIBAVFORMAT_VERSION_MAJOR >= 59
+		const auto numChannels = stream->codecpar->ch_layout.nb_channels;
+#else
 		const auto numChannels = stream->codecpar->channels;
+#endif
 		if (numChannels <= 0)
 			throw std::runtime_error ("no channels found");
 
@@ -89,8 +93,13 @@ namespace MusicZombie
 		if (sampleFormat != AV_SAMPLE_FMT_S16)
 		{
 			swr.reset (swr_alloc (), AdaptDeleter (swr_free));
+#if LIBAVFORMAT_VERSION_MAJOR >= 59
+			av_opt_set_chlayout (swr.get (), "in_channel_layout", &stream->codecpar->ch_layout, 0);
+			av_opt_set_chlayout (swr.get (), "out_channel_layout", &stream->codecpar->ch_layout,  0);
+#else
 			av_opt_set_int (swr.get (), "in_channel_layout", stream->codecpar->channel_layout, 0);
 			av_opt_set_int (swr.get (), "out_channel_layout", stream->codecpar->channel_layout,  0);
+#endif
 			av_opt_set_int (swr.get (), "in_sample_rate", stream->codecpar->sample_rate, 0);
 			av_opt_set_int (swr.get (), "out_sample_rate", stream->codecpar->sample_rate, 0);
 			av_opt_set_sample_fmt (swr.get (), "in_sample_fmt", sampleFormat, 0);
