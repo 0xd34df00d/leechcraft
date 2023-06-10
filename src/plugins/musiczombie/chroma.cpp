@@ -80,7 +80,8 @@ namespace MusicZombie
 				throw std::runtime_error ("couldn't open the codec");
 		}
 
-		if (stream->codecpar->channels <= 0)
+		const auto numChannels = stream->codecpar->channels;
+		if (numChannels <= 0)
 			throw std::runtime_error ("no channels found");
 
 		std::shared_ptr<SwrContext> swr;
@@ -101,8 +102,8 @@ namespace MusicZombie
 		std::unique_ptr<AVPacket, decltype (packetDeleter)> packet { av_packet_alloc () };
 
 		const int maxLength = 120;
-		auto remaining = maxLength * stream->codecpar->channels * stream->codecpar->sample_rate;
-		chromaprint_start (Ctx_.get (), stream->codecpar->sample_rate, stream->codecpar->channels);
+		auto remaining = maxLength * numChannels * stream->codecpar->sample_rate;
+		chromaprint_start (Ctx_.get (), stream->codecpar->sample_rate, numChannels);
 
 		std::shared_ptr<AVFrame> frame (av_frame_alloc (), AdaptDeleter (&av_frame_free));
 		auto maxDstNbSamples = 0;
@@ -137,7 +138,7 @@ namespace MusicZombie
 					if (dstData [0])
 						av_freep (&dstData [0]);
 					int linesize = 0;
-					if (av_samples_alloc (dstData, &linesize, stream->codecpar->channels, frame->nb_samples, AV_SAMPLE_FMT_S16, 1) < 0)
+					if (av_samples_alloc (dstData, &linesize, numChannels, frame->nb_samples, AV_SAMPLE_FMT_S16, 1) < 0)
 						throw std::runtime_error ("cannot allocate memory for resampling");
 				}
 
@@ -149,7 +150,7 @@ namespace MusicZombie
 			else
 				data = frame->data;
 
-			auto length = std::min (remaining, frame->nb_samples * stream->codecpar->channels);
+			auto length = std::min (remaining, frame->nb_samples * numChannels);
 			if (!chromaprint_feed (Ctx_.get (),
 					reinterpret_cast<const int16_t*> (data [0]),
 					length))
