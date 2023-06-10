@@ -32,21 +32,21 @@ namespace LC::Poshuku::WebEngineView
 		setPage (page);
 
 		connect (page,
-				SIGNAL (loadFinished (bool)),
+				&CustomWebPage::loadFinished,
 				this,
-				SIGNAL (earliestViewLayout ()));
+				&CustomWebView::earliestViewLayout);
 		connect (page,
-				SIGNAL (loadFinished (bool)),
+				&CustomWebPage::loadFinished,
 				this,
-				SIGNAL (loadFinished (bool)));
+				&CustomWebView::loadFinished);
 		connect (page,
-				SIGNAL (iconChanged (const QIcon&)),
+				&CustomWebPage::iconChanged,
 				this,
-				SIGNAL (iconChanged ()));
+				&CustomWebView::iconChanged);
 		connect (page,
-				SIGNAL (windowCloseRequested ()),
+				&CustomWebPage::windowCloseRequested,
 				this,
-				SIGNAL (closeRequested ()));
+				&CustomWebView::closeRequested);
 		connect (page,
 				&QWebEnginePage::linkHovered,
 				this,
