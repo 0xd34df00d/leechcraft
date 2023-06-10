@@ -7,14 +7,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QFile>
-#include <QXmlStreamWriter>
-#include <QDomDocument>
-#include <QTimer>
-#include <QDir>
-#include <QXmppLogger.h>
-#include <util/sys/paths.h>
-#include <interfaces/azoth/iaccount.h>
 
 namespace LC
 {
@@ -44,11 +36,6 @@ namespace Xoox
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
-	}
-
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
 	}
 }
 }

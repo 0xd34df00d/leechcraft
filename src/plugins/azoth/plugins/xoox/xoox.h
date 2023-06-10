@@ -64,8 +64,6 @@ namespace Xoox
 	public slots:
 		void initPlugin (QObject*);
 	signals:
-		void gotEntity (const LC::Entity&);
-
 		void gotNewProtocols (const QList<QObject*>&);
 	};
 }

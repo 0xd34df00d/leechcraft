@@ -28,6 +28,8 @@
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"
@@ -185,10 +187,10 @@ namespace Xoox
 
 		if (Account_->GetState ().State_ == SOffline)
 		{
-			Entity e = LC::Util::MakeNotification ("Azoth",
+			auto e = LC::Util::MakeNotification ("Azoth",
 					tr ("Can't view info while offline"),
 					Priority::Critical);
-			Core::Instance ().SendEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 			return;
 		}

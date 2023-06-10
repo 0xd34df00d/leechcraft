@@ -11,6 +11,8 @@
 #include <QUrl>
 #include <QXmppDiscoveryManager.h>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "clientconnection.h"
 #include "util.h"
@@ -470,7 +472,7 @@ namespace Xoox
 		if (url.isValid () && !location.isEmpty ())
 		{
 			const auto& e = Util::MakeEntity (url, location, OnlyDownload);
-			Core::Instance ().SendEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
 		SendCompleted (sourceElem, NodeAddTask, sessionId);

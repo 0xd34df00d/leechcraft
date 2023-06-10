@@ -20,6 +20,8 @@
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "glooxaccount.h"
 #include "core.h"
 #include "joingroupchatwidget.h"
@@ -355,7 +357,7 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "malformed import info"
 					<< info;
-			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to import account: malformed import data."),
 						Priority::Critical));
 			return false;
@@ -364,7 +366,7 @@ namespace Xoox
 		for (auto acc : Accounts_)
 			if (acc->GetAccountName () == name)
 			{
-				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth",
 							tr ("Account %1 already exists, cannot import another one."),
 							Priority::Critical));
 				return false;

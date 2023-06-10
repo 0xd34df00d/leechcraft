@@ -8,6 +8,8 @@
 
 #include "clientconnectionerrormgr.h"
 #include <QTimer>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include "clientconnection.h"
@@ -88,7 +90,7 @@ namespace Xoox
 		const auto& e = Util::MakeNotification ("Azoth",
 				text,
 				Priority::Critical);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	QString ClientConnectionErrorMgr::HandleErrorCondition (QXmppStanza::Error::Condition condition)
@@ -178,7 +180,7 @@ namespace Xoox
 		const Entity& e = Util::MakeNotification ("Azoth",
 				typeText,
 				Priority::Critical);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 		const bool dontTryFurther = error.type () == QXmppStanza::Error::Cancel ||
 			(error.type () == QXmppStanza::Error::Auth &&
@@ -258,7 +260,7 @@ namespace Xoox
 				tr ("Account %1:").arg (ClientConn_->GetOurJID ()) +
 					' ' + str,
 				Priority::Critical);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void ClientConnectionErrorMgr::decrementErrAccumulators ()

@@ -35,11 +35,6 @@ namespace Xoox
 
 		Core::Instance ().SetProxy (proxy);
 
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LC::Entity)),
-				this,
-				SIGNAL (gotEntity (LC::Entity)));
-
 		const auto& progRep = proxy->GetPluginsManager ()->CreateLoadProgressReporter (this);
 		const auto capsDB = new CapsDatabase { progRep };
 

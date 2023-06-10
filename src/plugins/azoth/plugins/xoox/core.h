@@ -37,10 +37,6 @@ namespace Xoox
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
-		void SendEntity (const Entity&);
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 }
 }

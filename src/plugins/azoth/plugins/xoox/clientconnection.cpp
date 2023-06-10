@@ -25,6 +25,8 @@
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -357,7 +359,7 @@ namespace Xoox
 		if (RoomHandlers_.contains (jid))
 		{
 			if (!asAutojoin)
-				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth",
 						tr ("This room is already joined."),
 						Priority::Critical));
 			return nullptr;
