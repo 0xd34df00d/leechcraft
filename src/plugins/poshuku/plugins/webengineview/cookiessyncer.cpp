@@ -33,8 +33,10 @@ namespace LC::Poshuku::WebEngineView
 
 	void CookiesSyncer::HandleWebEngineCookieAdded (const QNetworkCookie& cookie)
 	{
+		using namespace std::chrono_literals;
+
 		if (WebEngine2LCQueue_.isEmpty ())
-			QTimer::singleShot (1000, Qt::VeryCoarseTimer, this,
+			QTimer::singleShot (1s, Qt::VeryCoarseTimer, this,
 					[this]
 					{
 						for (const auto& cookie : WebEngine2LCQueue_)
