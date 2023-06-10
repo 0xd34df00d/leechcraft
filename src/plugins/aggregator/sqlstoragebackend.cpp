@@ -989,17 +989,17 @@ namespace LC::Aggregator
 		return true;
 	}
 
-	bool SQLStorageBackend::UpdateChannelsStorage (int)
+	bool SQLStorageBackend::UpdateChannelsStorage (int version)
 	{
-		qCritical () << Q_FUNC_INFO
-				<< "support for old channel storage tables dropped";
+		qCritical () << "support for old channel storage tables dropped; asked for v."
+				<< version;
 		return false;
 	}
 
-	bool SQLStorageBackend::UpdateItemsStorage (int)
+	bool SQLStorageBackend::UpdateItemsStorage (int version)
 	{
-		qCritical () << Q_FUNC_INFO
-				<< "support for old items storage tables dropped";
+		qCritical () << "support for old items storage tables dropped; asked for v."
+				<< version;
 		return false;
 	}
 
