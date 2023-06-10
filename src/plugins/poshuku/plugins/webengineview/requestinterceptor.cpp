@@ -42,12 +42,10 @@ namespace LC::Poshuku::WebEngineView
 			HANDLE (CspReport)
 			HANDLE (PluginResource)
 			HANDLE (Unknown)
-			case QWebEngineUrlRequestInfo::ResourceTypeLast:
-				qWarning () << "got ResourceTypeLast";
-				return IInterceptableRequests::ResourceType::Unknown;
 			}
 #undef HANDLE
 
+			qWarning () << "got unknown type" << type;
 			return IInterceptableRequests::ResourceType::Unknown;
 		}
 	}
