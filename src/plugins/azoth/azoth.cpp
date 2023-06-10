@@ -24,6 +24,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
@@ -70,7 +71,6 @@ namespace Azoth
 		MW_ = new MainWidget {};
 
 		InitSettings ();
-		InitSignals ();
 		InitTabClasses ();
 	}
 
@@ -464,14 +464,6 @@ namespace Azoth
 				[] (bool floating) { XmlSettingsManager::Instance ().setProperty ("MWFloating", floating); });
 	}
 
-	void Plugin::InitSignals ()
-	{
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LC::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LC::Entity&)));
-	}
-
 	void Plugin::InitTabClasses ()
 	{
 		TabClassInfo chatTab =
@@ -580,7 +572,7 @@ namespace Azoth
 				"x-leechcraft/package-manager-action");
 		e.Additional_ ["Tags"] = tags;
 
-		emit gotEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

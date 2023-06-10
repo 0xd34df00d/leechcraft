@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iwebfilestorage.h>
 #include "interfaces/azoth/iclentry.h"
@@ -121,10 +122,11 @@ namespace Azoth
 				EntryVariant_, filename, Ui_.CommentEdit_->toPlainText ());
 		if (!job)
 		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+			const auto& e = Util::MakeNotification ("Azoth",
 						tr ("Unable to send file to %1.")
 							.arg (Entry_->GetEntryName ()),
-						Priority::Critical));
+						Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			return;
 		}
 		Core::Instance ().GetTransferJobManager ()->HandleJob (job);

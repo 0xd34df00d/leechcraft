@@ -1218,10 +1218,13 @@ namespace Azoth
 			InsertNick (nick);
 
 			if (!GetMucParticipants (EntryID_).contains (nick))
-				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
-							tr ("%1 isn't present in this conference at the moment.")
-								.arg ("<em>" + nick + "</em>"),
-							Priority::Warning));
+			{
+				const auto& e = Util::MakeNotification ("Azoth",
+						tr ("%1 isn't present in this conference at the moment.")
+							.arg ("<em>" + nick + "</em>"),
+						Priority::Warning);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+			}
 		}
 		else if (host == "sendentities")
 		{
@@ -1265,7 +1268,7 @@ namespace Azoth
 					e.Additional_ [key] = value;
 				}
 
-				Core::Instance ().SendEntity (e);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			}
 		}
 	}

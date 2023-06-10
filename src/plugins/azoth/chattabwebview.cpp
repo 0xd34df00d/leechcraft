@@ -13,6 +13,7 @@
 #include <QMenu>
 #include <QDesktopServices>
 #include <QUrlQuery>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/sll/util.h>
@@ -95,7 +96,7 @@ namespace LC::Azoth
 							const auto& e = Util::MakeEntity (url,
 									{},
 									OnlyHandle | FromUserInitiated);
-							Core::Instance ().SendEntity (e);
+							GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 						});
 
 			menu->addSeparator ();
@@ -158,7 +159,7 @@ namespace LC::Azoth
 					const auto& e = Util::MakeEntity (url,
 							{},
 							OnlyHandle | FromUserInitiated);
-					Core::Instance ().SendEntity (e);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				});
 		menu->addAction (tr ("Save..."),
 				this,
@@ -169,7 +170,7 @@ namespace LC::Azoth
 							FromUserInitiated);
 					static const QStringList semantics { QStringLiteral ("fetch"), QStringLiteral ("save") };
 					e.Additional_ [QStringLiteral ("AllowedSemantics")] = semantics;
-					Core::Instance ().SendEntity (e);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				});
 		menu->addAction (tr ("Open externally"),
 				this,

@@ -16,6 +16,8 @@
 #endif
 
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
@@ -121,7 +123,8 @@ namespace Azoth
 		const auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Accept"), [mediaCall] { mediaCall->Accept (); });
 		nh->AddFunction (tr ("Hangup"), [mediaCall] { mediaCall->Hangup (); });
-		Core::Instance ().SendEntity (e);
+
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void CallManager::handleCall (QObject *obj)

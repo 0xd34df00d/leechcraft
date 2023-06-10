@@ -16,6 +16,8 @@
 #include <QAction>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
@@ -318,7 +320,7 @@ namespace Azoth
 						"/" + job->GetName ();
 			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
 					"org.LC.AdvNotifications.Cancel";
-			Core::Instance ().SendEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 			emit jobNoLongerOffered (jobObj);
 		}
@@ -334,7 +336,7 @@ namespace Azoth
 		const auto& openEntity = Util::MakeEntity (fileUrl,
 				{},
 				IsDownloaded | FromUserInitiated | OnlyHandle);
-		auto opener = [openEntity] { Core::Instance ().SendEntity (openEntity); };
+		auto opener = [openEntity] { GetProxyHolder ()->GetEntityManager ()->HandleEntity (openEntity); };
 		if (XmlSettingsManager::Instance ().property ("AutoOpenIncomingFiles").toBool ())
 			opener ();
 
@@ -362,7 +364,7 @@ namespace Azoth
 		nh->AddFunction (tr ("Open externally"),
 				[fileUrl] { QDesktopServices::openUrl (fileUrl); });
 
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void TransferJobManager::handleFileOffered (QObject *jobObj)
@@ -415,7 +417,7 @@ namespace Azoth
 					nh->AddFunction (tr ("Deny"), [this, jobObj] { DenyJob (jobObj); });
 					nh->AddDependentObject (jobObj);
 
-					Core::Instance ().SendEntity (e);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				};
 	}
 
@@ -474,7 +476,7 @@ namespace Azoth
 		const Entity& e = Util::MakeNotification ("Azoth",
 				str,
 				error == TEAborted ? Priority::Warning : Priority::Critical);
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void TransferJobManager::handleStateChanged (TransferState state)
@@ -528,7 +530,7 @@ namespace Azoth
 			const Entity& e = Util::MakeNotification ("Azoth",
 					msg,
 					Priority::Info);
-			Core::Instance ().SendEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 		else
 		{

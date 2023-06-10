@@ -101,13 +101,10 @@ namespace Azoth
 		void InitShortcuts ();
 		void InitSettings ();
 		void InitMW ();
-		void InitSignals ();
 		void InitTabClasses ();
 	private slots:
 		void handleMoreThisStuff (const QString&);
 	signals:
-		void gotEntity (const LC::Entity&) override;
-
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }

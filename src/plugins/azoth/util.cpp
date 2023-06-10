@@ -18,6 +18,7 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
@@ -122,7 +123,7 @@ namespace Azoth
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void DenyAuthForEntry (ICLEntry *entry)
@@ -132,7 +133,7 @@ namespace Azoth
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	QObject* FindByHRId (IAccount *acc, const QString& hrId)
