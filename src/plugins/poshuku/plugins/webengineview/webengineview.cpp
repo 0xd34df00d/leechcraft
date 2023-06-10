@@ -23,8 +23,7 @@ namespace LC::Poshuku::WebEngineView
 {
 	namespace
 	{
-		QString GetDefaultUserAgent (const ICoreProxy_ptr& proxy,
-				const QString& wkVer, const QString& chromeVer)
+		QString GetDefaultUserAgent (const QString& wkVer, const QString& chromeVer)
 		{
 #if defined (Q_OS_WIN32)
 			const auto platform = "Windows";
@@ -39,7 +38,7 @@ namespace LC::Poshuku::WebEngineView
 			if (!osInfo.Arch_.isEmpty ())
 				osVersion += " " + osInfo.Arch_;
 
-			const auto& lcVersion = proxy->GetVersion ();
+			const auto& lcVersion = GetProxyHolder ()->GetVersion ();
 
 			return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%5 Chrome/%4 Safari/%3" }
 					.arg (platform)
@@ -50,10 +49,8 @@ namespace LC::Poshuku::WebEngineView
 		}
 	}
 
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
-
 		const auto prof = QWebEngineProfile::defaultProfile ();
 		const auto& uaParts = prof->httpUserAgent ().split (' ');
 		auto getVer = [&uaParts] (const QByteArray& marker)
@@ -62,14 +59,14 @@ namespace LC::Poshuku::WebEngineView
 		};
 		const auto& wkVer = getVer ("AppleWebKit/");
 		const auto& chromeVer = getVer ("Chrome/");
-		prof->setHttpUserAgent (GetDefaultUserAgent (proxy, wkVer, chromeVer));
+		prof->setHttpUserAgent (GetDefaultUserAgent (wkVer, chromeVer));
 
 		Interceptor_ = std::make_shared<RequestInterceptor> ();
 		prof->setUrlRequestInterceptor (Interceptor_.get ());
 
-		new DownloadItemHandler (proxy, prof);
+		new DownloadItemHandler (prof);
 
-		const auto cookieJar = proxy->GetNetworkAccessManager ()->cookieJar ();
+		const auto cookieJar = GetProxyHolder ()->GetNetworkAccessManager ()->cookieJar ();
 		new CookiesSyncer { qobject_cast<Util::CustomCookieJar*> (cookieJar), prof->cookieStore () };
 
 		IconDB_ = std::make_shared<IconDatabase> ();
@@ -114,7 +111,7 @@ namespace LC::Poshuku::WebEngineView
 
 	IWebView_ptr Plugin::CreateWebView ()
 	{
-		auto view = std::make_shared<CustomWebView> (Proxy_, PoshukuProxy_);
+		auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
 		HandleView (view.get ());
 		return view;
 	}

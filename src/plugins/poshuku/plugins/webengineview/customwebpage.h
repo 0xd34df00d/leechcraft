@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <QWebEnginePage>
-#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iwebview.h>
 #include <interfaces/poshuku/ilinkopenmodifier.h>
@@ -28,11 +27,10 @@ namespace WebEngineView
 		Q_OBJECT
 
 		CustomWebView * const View_;
-		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const PoshukuProxy_;
 		const ILinkOpenModifier_ptr LinkOpenModifier_;
 	public:
-		CustomWebPage (const ICoreProxy_ptr&, IProxyObject*, CustomWebView*);
+		CustomWebPage (IProxyObject*, CustomWebView*);
 	protected:
 		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
 	signals:

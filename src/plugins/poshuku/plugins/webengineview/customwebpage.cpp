@@ -14,10 +14,9 @@
 
 namespace LC::Poshuku::WebEngineView
 {
-	CustomWebPage::CustomWebPage (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy, CustomWebView *parent)
+	CustomWebPage::CustomWebPage (IProxyObject *poshukuProxy, CustomWebView *parent)
 	: QWebEnginePage { parent }
 	, View_ { parent }
-	, Proxy_ { proxy }
 	, PoshukuProxy_ { poshukuProxy }
 	, LinkOpenModifier_ { poshukuProxy->GetLinkOpenModifier () }
 	{
@@ -73,7 +72,7 @@ namespace LC::Poshuku::WebEngineView
 
 			if (suggestion.NewTab_)
 			{
-				auto view = std::make_shared<CustomWebView> (Proxy_, PoshukuProxy_);
+				auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
 				emit webViewCreated (view, suggestion.Invert_);
 
 				view->Load (url, {});

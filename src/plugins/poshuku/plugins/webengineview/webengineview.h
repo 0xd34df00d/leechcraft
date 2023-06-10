@@ -42,7 +42,6 @@ namespace WebEngineView
 
 		std::shared_ptr<RequestInterceptor> Interceptor_;
 
-		ICoreProxy_ptr Proxy_;
 		IProxyObject *PoshukuProxy_ = nullptr;
 
 		std::shared_ptr<IconDatabase> IconDB_;

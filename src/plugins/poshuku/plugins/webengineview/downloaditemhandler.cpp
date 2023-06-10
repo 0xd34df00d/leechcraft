@@ -15,9 +15,8 @@
 
 namespace LC::Poshuku::WebEngineView
 {
-	DownloadItemHandler::DownloadItemHandler (const ICoreProxy_ptr& proxy, QWebEngineProfile *prof, QObject *parent)
+	DownloadItemHandler::DownloadItemHandler (QWebEngineProfile *prof, QObject *parent)
 	: QObject { parent }
-	, Proxy_ { proxy }
 	{
 		connect (prof,
 				&QWebEngineProfile::downloadRequested,
@@ -36,7 +35,7 @@ namespace LC::Poshuku::WebEngineView
 		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
 
-		auto em = Proxy_->GetEntityManager ();
+		auto em = GetProxyHolder ()->GetEntityManager ();
 		em->HandleEntity (e);
 	}
 }

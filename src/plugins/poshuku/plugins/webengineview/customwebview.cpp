@@ -26,11 +26,9 @@
 
 namespace LC::Poshuku::WebEngineView
 {
-	CustomWebView::CustomWebView (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy)
-	: Proxy_ { proxy }
-	, PoshukuProxy_ { poshukuProxy }
+	CustomWebView::CustomWebView (IProxyObject *poshukuProxy)
 	{
-		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
+		const auto page = new CustomWebPage { poshukuProxy, this };
 		setPage (page);
 
 		connect (page,
@@ -61,7 +59,7 @@ namespace LC::Poshuku::WebEngineView
 
 	void CustomWebView::SurroundingsInitialized ()
 	{
-		FindDialog_ = new Util::FindNotificationWE { Proxy_, this };
+		FindDialog_ = new Util::FindNotificationWE { GetProxyHolder (), this };
 		FindDialog_->hide ();
 	}
 

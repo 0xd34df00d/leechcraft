@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxyfwd.h>
 
 class QWebEngineProfile;
 class QWebEngineDownloadItem;
@@ -18,9 +17,8 @@ namespace LC::Poshuku::WebEngineView
 {
 	class DownloadItemHandler : public QObject
 	{
-		const ICoreProxy_ptr Proxy_;
 	public:
-		DownloadItemHandler (const ICoreProxy_ptr&, QWebEngineProfile*, QObject* = nullptr);
+		DownloadItemHandler (QWebEngineProfile*, QObject* = nullptr);
 	private:
 		void HandleDownloadItem (QWebEngineDownloadItem*);
 	};
