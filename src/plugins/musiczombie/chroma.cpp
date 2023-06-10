@@ -34,14 +34,6 @@ namespace MusicZombie
 	Chroma::Chroma ()
 	: Ctx_ (chromaprint_new (CHROMAPRINT_ALGORITHM_DEFAULT), &chromaprint_free)
 	{
-#if LIBAVFORMAT_VERSION_INT <= AV_VERSION_INT (58, 9, 100)
-		static const auto registerGuard = []
-			{
-				av_register_all ();
-				return 0;
-			} ();
-		static_cast<void> (registerGuard);
-#endif
 	}
 
 	namespace
