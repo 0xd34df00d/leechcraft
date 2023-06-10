@@ -70,7 +70,11 @@ namespace MusicZombie
 				throw std::runtime_error ("could not find stream");
 		}
 
+#if LIBAVFORMAT_VERSION_MAJOR >= 59
+		const AVCodec *codec = nullptr;
+#else
 		AVCodec *codec = nullptr;
+#endif
 		const auto streamIndex = av_find_best_stream (formatCtx.get (), AVMEDIA_TYPE_AUDIO, -1, -1, &codec, 0);
 		if (streamIndex < 0)
 			throw std::runtime_error ("could not find audio stream");
