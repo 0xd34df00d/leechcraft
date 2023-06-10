@@ -484,7 +484,7 @@ namespace LC::Aggregator
 
 		if (!DB_.open ())
 		{
-			qWarning () << Q_FUNC_INFO;
+			qWarning () << "Aggregator::SQLStorageBackend";
 			Util::DBLock::DumpError (DB_.lastError ());
 			throw std::runtime_error (qPrintable ("Could not initialize database: %1"_qs
 						.arg (DB_.lastError ().text ())));
@@ -596,8 +596,7 @@ namespace LC::Aggregator
 		const auto maybeFeed = Feeds_->SelectOne (sph::f<&FeedR::FeedID_> == feedId);
 		if (!maybeFeed)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no feed found with"
+			qWarning () << "no feed found with"
 					<< feedId;
 			throw FeedNotFoundError {};
 		}
@@ -687,8 +686,7 @@ namespace LC::Aggregator
 		const auto maybeChannel = Channels_->SelectOne (sph::f<&ChannelR::ChannelID_> == channelId);
 		if (!maybeChannel)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find"
+			qWarning () << "unable to find"
 					<< channelId;
 			throw ChannelNotFoundError {};
 		}
