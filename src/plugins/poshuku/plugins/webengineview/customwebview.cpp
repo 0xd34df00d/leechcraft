@@ -206,7 +206,7 @@ namespace LC::Poshuku::WebEngineView
 		}
 
 		EvaluateJS ("typeof QWebChannel === 'undefined'"_qs,
-				[=] (const QVariant& res)
+				[=, page = page ()] (const QVariant& res)
 				{
 					if (res.toBool ())
 					{
@@ -218,7 +218,7 @@ namespace LC::Poshuku::WebEngineView
 							return;
 						}
 
-						page ()->runJavaScript (file.readAll ());
+						page->runJavaScript (file.readAll ());
 					}
 
 					channel->registerObject (id, object);
@@ -317,6 +317,14 @@ namespace LC::Poshuku::WebEngineView
 				{
 				}
 
+				~Item () override = default;
+
+				Item (const Item&) = delete;
+				Item (Item&&) = delete;
+
+				Item& operator= (const Item&) = delete;
+				Item& operator= (Item&&) = delete;
+
 				bool IsValid () const override
 				{
 					return Item_.isValid ();
@@ -345,10 +353,18 @@ namespace LC::Poshuku::WebEngineView
 
 			static constexpr quint64 Magic_ = 0x62067d73bc85b872;
 		public:
-			HistoryWrapper (QWebEngineHistory *history)
+			explicit HistoryWrapper (QWebEngineHistory *history)
 			: History_ { history }
 			{
 			}
+
+			~HistoryWrapper () override = default;
+
+			HistoryWrapper (const HistoryWrapper&) = delete;
+			HistoryWrapper (HistoryWrapper&&) = delete;
+
+			HistoryWrapper& operator= (const HistoryWrapper&) = delete;
+			HistoryWrapper& operator= (HistoryWrapper&&) = delete;
 
 			void Save (QDataStream& out) const override
 			{
@@ -357,7 +373,7 @@ namespace LC::Poshuku::WebEngineView
 
 			void Load (QDataStream& in) override
 			{
-				quint64 magic;
+				quint64 magic = 0;
 
 				in.startTransaction ();
 				in >> magic;
@@ -479,7 +495,7 @@ namespace LC::Poshuku::WebEngineView
 		if (event->type () != QEvent::MouseButtonPress)
 			return QWebEngineView::eventFilter (src, event);
 
-		switch (static_cast<QMouseEvent*> (event)->button ())
+		switch (dynamic_cast<QMouseEvent&> (*event).button ())
 		{
 		case Qt::BackButton:
 			pageAction (QWebEnginePage::Back)->trigger ();

@@ -32,7 +32,7 @@ namespace WebEngineView
 
 		Util::FindNotificationWE *FindDialog_ = nullptr;
 	public:
-		CustomWebView (IProxyObject*);
+		explicit CustomWebView (IProxyObject*);
 
 		void SurroundingsInitialized () override;
 

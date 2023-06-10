@@ -101,9 +101,7 @@ namespace LC::Poshuku::WebEngineView
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Poshuku.Plugins/1.0" };
 	}
 
 	IWebView_ptr Plugin::CreateWebView ()

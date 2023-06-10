@@ -60,7 +60,7 @@ namespace LC::Poshuku::WebEngineView
 					return view;
 			return {};
 		} ();
-		IInterceptableRequests::RequestInfo convertedInfo
+		const IInterceptableRequests::RequestInfo convertedInfo
 		{
 			info.requestUrl (),
 			pageUrl,
