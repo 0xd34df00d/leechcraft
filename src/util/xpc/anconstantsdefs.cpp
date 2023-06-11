@@ -11,6 +11,12 @@
 #include <interfaces/an/entityfields.h>
 #include <QVariant>
 
+namespace LC
+{
+	const QString IgnoreSelf { QStringLiteral ("IgnoreSelf") };
+	const QString AllowedSemantics { QStringLiteral ("AllowedSemantics") };
+}
+
 namespace LC::EF
 {
 	const QString Priority { QStringLiteral ("Priority") };

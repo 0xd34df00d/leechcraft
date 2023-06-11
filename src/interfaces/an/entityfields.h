@@ -160,3 +160,9 @@ namespace LC::AN::EF
 	Q_DECL_IMPORT extern const QString AssocColor;
 	Q_DECL_IMPORT extern const QString IsEnabled;
 }
+
+namespace LC
+{
+	Q_DECL_IMPORT extern const QString IgnoreSelf;
+	Q_DECL_IMPORT extern const QString AllowedSemantics;
+}
