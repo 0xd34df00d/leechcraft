@@ -57,6 +57,8 @@ namespace Poshuku
 			ServiceWorker,
 			CspReport,
 			PluginResource,
+			NavigationPreloadMainFrame,
+			NavigationPreloadSubFrame,
 			Other
 		};
 
