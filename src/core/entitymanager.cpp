@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "entitymanager.h"
-#include <functional>
 #include <algorithm>
 #include <QThread>
 #include <QFuture>
@@ -20,6 +19,7 @@
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
 #include "interfaces/entitytesthandleresult.h"
+#include "interfaces/an/entityfields.h"
 #include "core.h"
 #include "pluginmanager.h"
 #include "xmlsettingsmanager.h"
@@ -86,18 +86,20 @@ namespace LC
 			return result.last ();
 		}
 
-		QObjectList GetObjects (const Entity& e, int *downloaders = 0, int *handlers = 0)
+		QObjectList GetObjects (QObject *self, const Entity& e, int *downloaders = 0, int *handlers = 0)
 		{
 			if (Core::Instance ().IsShuttingDown ())
 				return {};
 
 			const auto& unwanted = e.Additional_ ["IgnorePlugins"].toStringList ();
-			auto removeUnwanted = [&unwanted] (QObjectList& handlers)
+			auto removeUnwanted = [&] (QObjectList& handlers)
 			{
 				const auto remBegin = std::remove_if (handlers.begin (), handlers.end (),
-						[&unwanted] (QObject *obj)
-							{ return unwanted.contains (qobject_cast<IInfo*> (obj)->GetUniqueID ()); });
+						[&] (QObject *obj) { return unwanted.contains (qobject_cast<IInfo*> (obj)->GetUniqueID ()); });
 				handlers.erase (remBegin, handlers.end ());
+
+				if (e.Additional_ [IgnoreSelf].toBool ())
+					handlers.removeOne (self);
 			};
 
 			QObjectList result;
@@ -195,13 +197,13 @@ namespace LC
 		}
 
 
-		bool GetPreparedObjectList (Entity& e, QObject *desired, QObjectList& handlers, bool handling)
+		bool GetPreparedObjectList (QObject *self, Entity& e, QObject *desired, QObjectList& handlers, bool handling)
 		{
 			int numDownloaders = 0, numHandlers = 0;
 			if (desired)
 				handlers << desired;
 			else
-				handlers = GetObjects (e, &numDownloaders, &numHandlers);
+				handlers = GetObjects (self, e, &numDownloaders, &numHandlers);
 
 			if (handlers.isEmpty () && !desired)
 				return handling ? NoHandlersAvailable (e) : false;
@@ -281,7 +283,7 @@ namespace LC
 
 		e.Parameters_ |= OnlyDownload;
 		QObjectList handlers;
-		const bool foundOk = GetPreparedObjectList (e, desired, handlers, false);
+		const bool foundOk = GetPreparedObjectList (Plugin_, e, desired, handlers, false);
 		if (!foundOk)
 			return {};
 
@@ -315,7 +317,7 @@ namespace LC
 			return false;
 		}
 
-		return !GetObjects (e).isEmpty ();
+		return !GetObjects (Plugin_, e).isEmpty ();
 	}
 
 	bool EntityManager::HandleEntity (Entity e, QObject *desired)
@@ -336,7 +338,7 @@ namespace LC
 			return false;
 
 		QObjectList handlers;
-		const bool foundOk = GetPreparedObjectList (e, desired, handlers, true);
+		const bool foundOk = GetPreparedObjectList (Plugin_, e, desired, handlers, true);
 		if (!foundOk || handlers.isEmpty ())
 			return false;
 		if (foundOk && handlers.isEmpty ())
@@ -373,6 +375,6 @@ namespace LC
 			return {};
 		}
 
-		return GetObjects (e);
+		return GetObjects (Plugin_, e);
 	}
 }
