@@ -30,11 +30,8 @@ namespace LC::Poshuku::WebEngineView
 
 		auto e = Util::MakeEntity (item->url (),
 				{},
-				FromUserInitiated,
+				FromUserInitiated | OnlyDownload,
 				item->mimeType ());
-		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
-
 		auto em = GetProxyHolder ()->GetEntityManager ();
 		em->HandleEntity (e);
 	}
