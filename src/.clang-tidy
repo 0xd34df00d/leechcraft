@@ -13,6 +13,7 @@ Checks: >
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-avoid-const-or-ref-data-members,
   -cppcoreguidelines-avoid-capture-default-when-capturing-this,
+  -cppcoreguidelines-macro-usage,
   -cppcoreguidelines-misleading-capture-default-by-value,
   -google-default-arguments,
   -misc-non-private-member-variables-in-classes,
