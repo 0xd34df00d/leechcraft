@@ -371,7 +371,7 @@ namespace LC
 
 	bool Core::handleGotEntity (Entity p)
 	{
-		return EntityManager ().HandleEntity (p);
+		return EntityManager { nullptr, nullptr }.HandleEntity (p);
 	}
 
 	void Core::queueEntity (const Entity& e)

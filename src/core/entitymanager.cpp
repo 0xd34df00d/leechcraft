@@ -27,8 +27,9 @@
 
 namespace LC
 {
-	EntityManager::EntityManager (QObject *parent)
-	: QObject (parent)
+	EntityManager::EntityManager (QObject *plugin, QObject *parent)
+	: QObject { parent }
+	, Plugin_ { plugin }
 	{
 	}
 
@@ -248,7 +249,7 @@ namespace LC
 		}
 
 		template<typename F>
-		bool CheckInitStage (const Entity& e, QObject *desired, F cont)
+		bool CheckInitStage (const Entity& e, QObject *desired, EntityManager& em, F cont)
 		{
 			const auto pm = Core::Instance ().GetPluginManager ();
 			if (pm->GetInitStage () != PluginManager::InitStage::BeforeFirst)
@@ -260,12 +261,12 @@ namespace LC
 			qWarning () << e.Additional_;
 			new Util::SlotClosure<Util::ChoiceDeletePolicy>
 			{
-				[=]
+				[=, &em]
 				{
 					if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
 						return Util::ChoiceDeletePolicy::Delete::No;
 
-					(EntityManager {}.*cont) (e, desired);
+					(em.*cont) (e, desired);
 					return Util::ChoiceDeletePolicy::Delete::Yes;
 				},
 				pm,
@@ -278,7 +279,7 @@ namespace LC
 
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
 	{
-		if (!CheckInitStage (e, desired, &EntityManager::DelegateEntity))
+		if (!CheckInitStage (e, desired, *this, &EntityManager::DelegateEntity))
 			return {};
 
 		e.Parameters_ |= OnlyDownload;
@@ -334,7 +335,7 @@ namespace LC
 			return res;
 		}
 
-		if (!CheckInitStage (e, desired, &EntityManager::HandleEntity))
+		if (!CheckInitStage (e, desired, *this, &EntityManager::HandleEntity))
 			return false;
 
 		QObjectList handlers;

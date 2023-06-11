@@ -766,7 +766,7 @@ void MainWindow::dragEnterEvent (QDragEnterEvent *event)
 				FromUserInitiated,
 				format);
 
-		if (EntityManager ().CouldHandle (e))
+		if (EntityManager { nullptr, nullptr }.CouldHandle (e))
 		{
 			event->acceptProposedAction ();
 			return;
@@ -786,7 +786,7 @@ void MainWindow::dropEvent (QDropEvent *event)
 				FromUserInitiated,
 				format);
 
-		if (EntityManager ().HandleEntity (e))
+		if (EntityManager { nullptr, nullptr }.HandleEntity (e))
 		{
 			event->acceptProposedAction ();
 			break;

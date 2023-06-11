@@ -73,8 +73,8 @@ namespace LC
 	};
 
 	CoreProxy::CoreProxy (Loaders::IPluginLoader_ptr loader)
-	: EM_ { new EntityManager { this } }
-	, IconThemeMgr_ { std::make_shared<IconThemeManagerProxy> (std::move (loader)) }
+	: EM_ { new EntityManager { loader->Instance (), this } }
+	, IconThemeMgr_ { std::make_shared<IconThemeManagerProxy> (loader) }
 	{
 	}
 

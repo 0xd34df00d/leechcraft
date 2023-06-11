@@ -18,8 +18,10 @@ namespace LC
 	{
 		Q_OBJECT
 		Q_INTERFACES (IEntityManager)
+
+		QObject * const Plugin_;
 	public:
-		explicit EntityManager (QObject* = nullptr);
+		explicit EntityManager (QObject *plugin, QObject *parent);
 
 		DelegationResult DelegateEntity (Entity, QObject* = nullptr) override;
 		Q_INVOKABLE bool HandleEntity (LC::Entity, QObject* = nullptr) override;

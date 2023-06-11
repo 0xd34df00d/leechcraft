@@ -22,7 +22,7 @@ namespace LC
 	class CoreProxy : public QObject
 					, public ICoreProxy
 	{
-		EntityManager *EM_;
+		EntityManager * const EM_;
 
 		const std::shared_ptr<IconThemeManagerProxy> IconThemeMgr_;
 	public:
