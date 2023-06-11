@@ -36,7 +36,7 @@ namespace LC
 	namespace
 	{
 		template<typename T, typename F>
-		QObjectList GetSubtype (const Entity& e, bool fullScan, const F& queryFunc)
+		QObjectList GetSubtype (const Entity& e, const F& queryFunc)
 		{
 			auto pm = Core::Instance ().GetPluginManager ();
 			QMap<int, QObjectList> result;
@@ -70,9 +70,6 @@ namespace LC
 					cutoffPriority = std::max (cutoffPriority, r.HandlePriority_);
 
 				result [r.HandlePriority_] << plugin;
-
-				if (!fullScan)
-					break;
 			}
 
 			if (cutoffPriority > 0)
@@ -106,8 +103,8 @@ namespace LC
 			QObjectList result;
 			if (!(e.Parameters_ & TaskParameter::OnlyHandle))
 			{
-				auto sub = GetSubtype<IDownload*> (e, true,
-						[] (Entity e, IDownload *dl) { return dl->CouldDownload (e); });
+				auto sub = GetSubtype<IDownload*> (e,
+						[] (const Entity& e, IDownload *dl) { return dl->CouldDownload (e); });
 				removeUnwanted (sub);
 				if (downloaders)
 					*downloaders = sub.size ();
@@ -115,8 +112,8 @@ namespace LC
 			}
 			if (!(e.Parameters_ & TaskParameter::OnlyDownload))
 			{
-				auto sub = GetSubtype<IEntityHandler*> (e, true,
-						[] (Entity e, IEntityHandler *eh) { return eh->CouldHandle (e); });
+				auto sub = GetSubtype<IEntityHandler*> (e,
+						[] (const Entity& e, IEntityHandler *eh) { return eh->CouldHandle (e); });
 				removeUnwanted (sub);
 				if (handlers)
 					*handlers = sub.size ();
