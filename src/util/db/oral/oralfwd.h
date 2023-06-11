@@ -12,17 +12,11 @@
 
 class QSqlDatabase;
 
-namespace LC
-{
-namespace Util
-{
-namespace oral
+namespace LC::Util::oral
 {
 	template<typename T>
 	struct ObjectInfo;
 
 	template<typename T>
 	using ObjectInfo_ptr = std::unique_ptr<ObjectInfo<T>>;
-}
-}
 }
