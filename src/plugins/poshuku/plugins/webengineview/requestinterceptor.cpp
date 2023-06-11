@@ -41,6 +41,8 @@ namespace LC::Poshuku::WebEngineView
 			HANDLE (ServiceWorker)
 			HANDLE (CspReport)
 			HANDLE (PluginResource)
+			HANDLE (NavigationPreloadMainFrame)
+			HANDLE (NavigationPreloadSubFrame)
 			HANDLE (Unknown)
 			}
 #undef HANDLE
