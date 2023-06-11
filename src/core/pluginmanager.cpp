@@ -390,8 +390,10 @@ namespace LC
 			try
 			{
 				qDebug () << "Initializing" << ii->GetName ();
-				auto proxy = std::make_shared<CoreProxy> (Obj2Loader_ [obj]);
-				ii->Init (proxy);
+				if (const auto& proxy = ii->GetProxy ())
+					ii->Init (proxy);
+				else
+					qFatal ("no proxy set yet");
 
 				const auto& path = GetPluginLibraryPath (obj);
 				if (path.isEmpty ())
