@@ -256,6 +256,7 @@ public:
 
 	// implementation details
 	virtual void SetProxy (ICoreProxy_ptr) = 0;
+	virtual const ICoreProxy_ptr& GetProxy () = 0;
 	virtual void SetPluginInstance (QObject*) = 0;
 };
 
@@ -294,6 +295,7 @@ QObject* GetPluginInstance ();
 	static QObject *S_Plugin_; \
 	LC_PUSH_OVERRIDE_WARNING \
 	void SetProxy (ICoreProxy_ptr proxy) { S_Proxy_ = std::move (proxy); } \
+	const ICoreProxy_ptr& GetProxy () { return S_Proxy_; } \
 	void SetPluginInstance (QObject *instance) { S_Plugin_ = instance; } \
 	LC_POP_OVERRIDE_WARNING \
 	friend const ICoreProxy_ptr& ::GetProxyHolder (); \

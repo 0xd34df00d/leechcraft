@@ -48,11 +48,14 @@ namespace LC
 		ShortcutManager *ShortcutManager_;
 
 		Util::ShortcutManager *CoreShortcutManager_;
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		CoreInstanceObject (QObject* = 0);
 
 		// IInfo
 		void SetProxy (ICoreProxy_ptr);
+		const ICoreProxy_ptr& GetProxy ();
 		void SetPluginInstance (QObject*);
 
 		void Init (ICoreProxy_ptr);

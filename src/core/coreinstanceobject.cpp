@@ -120,8 +120,14 @@ namespace LC
 				SLOT (handleSettingsButton (QString)));
 	}
 
-	void CoreInstanceObject::SetProxy (ICoreProxy_ptr)
+	void CoreInstanceObject::SetProxy (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+	}
+
+	const ICoreProxy_ptr& CoreInstanceObject::GetProxy ()
+	{
+		return Proxy_;
 	}
 
 	void CoreInstanceObject::SetPluginInstance (QObject*)
