@@ -163,8 +163,6 @@ namespace LC::Azoth
 		 */
 		QStringList GetChatGroups () const;
 
-		void SendEntity (const Entity&);
-
 		/** Returns contact list entry with the given id. The id is the
 		 * same as returned by ICLEntry::GetEntryID(). If no such entry
 		 * could be found, NULL is returned.
@@ -415,8 +413,6 @@ namespace LC::Azoth
 
 		void handleRIEXItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString);
 	signals:
-		void gotEntity (const LC::Entity&);
-
 		/** Convenient signal for rethrowing the event of an account
 		 * being added.
 		 */

@@ -37,6 +37,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iprotocolplugin.h"
 #include "interfaces/azoth/iprotocol.h"
@@ -532,7 +533,7 @@ namespace LC::Azoth
 				FromUserInitiated | OnlyHandle);
 		if (!raise)
 			e.Additional_ ["BackgroundHandle"] = true;
-		Core::Instance ().SendEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	const QObjectList& Core::GetProtocolPlugins () const
@@ -597,11 +598,6 @@ namespace LC::Azoth
 				result << group;
 		}
 		return result.values ();
-	}
-
-	void Core::SendEntity (const LC::Entity& e)
-	{
-		emit gotEntity (e);
 	}
 
 	QObject* Core::GetEntry (const QString& id) const
