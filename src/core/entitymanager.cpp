@@ -91,13 +91,8 @@ namespace LC
 			if (Core::Instance ().IsShuttingDown ())
 				return {};
 
-			const auto& unwanted = e.Additional_ ["IgnorePlugins"].toStringList ();
 			auto removeUnwanted = [&] (QObjectList& handlers)
 			{
-				const auto remBegin = std::remove_if (handlers.begin (), handlers.end (),
-						[&] (QObject *obj) { return unwanted.contains (qobject_cast<IInfo*> (obj)->GetUniqueID ()); });
-				handlers.erase (remBegin, handlers.end ());
-
 				if (e.Additional_ [IgnoreSelf].toBool ())
 					handlers.removeOne (self);
 			};
