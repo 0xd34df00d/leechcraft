@@ -164,6 +164,5 @@ namespace LC::AN::EF
 namespace LC
 {
 	Q_DECL_IMPORT extern const QString IgnoreSelf;
-	Q_DECL_IMPORT extern const QString IgnorePlugins;
 	Q_DECL_IMPORT extern const QString AllowedSemantics;
 }

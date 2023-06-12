@@ -14,7 +14,6 @@
 namespace LC
 {
 	const QString IgnoreSelf { QStringLiteral ("IgnoreSelf") };
-	const QString IgnorePlugins { QStringLiteral ("IgnorePlugins") };
 	const QString AllowedSemantics { QStringLiteral ("AllowedSemantics") };
 }
 
