@@ -36,6 +36,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
@@ -1422,7 +1423,7 @@ namespace BitTorrent
 		e.Parameters_ = IsDownloaded;
 		e.Location_ = torrent.TorrentFileName_;
 		e.Additional_ [" Tags"] = torrent.Tags_;
-		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.BitTorrent");
+		e.Additional_ [IgnoreSelf] = true;
 
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
