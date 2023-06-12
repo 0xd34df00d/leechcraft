@@ -47,6 +47,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -1174,7 +1175,7 @@ namespace Poshuku
 					e.Mime_ = "text/xml";
 					e.Parameters_ = FromUserInitiated |
 									OnlyHandle;
-					e.Additional_ ["IgnorePlugins"] = QStringList { "org.LeechCraft.Poshuku" };
+					e.Additional_ [IgnoreSelf] = true;
 					e.Additional_ ["URLData"] = html;
 					Proxy_->GetEntityManager ()->HandleEntity (e);
 

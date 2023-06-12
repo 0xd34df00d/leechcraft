@@ -10,6 +10,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <util/sll/slotclosure.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -160,7 +161,7 @@ namespace Poshuku
 										OnlyHandle;
 						e.Additional_ ["UserVisibleName"] = entity;
 						e.Additional_ ["LinkRel"] = rel;
-						e.Additional_ ["IgnorePlugins"] = QStringList { "org.LeechCraft.Poshuku" };
+						e.Additional_ [IgnoreSelf] = true;
 
 						if (entityMgr->CouldHandle (e))
 						{
