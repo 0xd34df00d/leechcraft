@@ -45,11 +45,6 @@ namespace LackMan
 
 		SettingsDialog_->SetDataSource ("RepositoryList",
 				Core::Instance ().GetRepositoryModel ());
-
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LC::Entity)),
-				this,
-				SIGNAL (gotEntity (LC::Entity)));
 	}
 
 	void Plugin::SecondInit ()

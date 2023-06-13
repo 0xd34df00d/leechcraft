@@ -20,6 +20,7 @@
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
@@ -37,6 +38,14 @@ namespace LC
 namespace LackMan
 {
 	QMap<Dependency::Relation, Comparator_t> Relation2comparator;
+
+	namespace
+	{
+		void SendEntity (const Entity& e)
+		{
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
+	}
 
 	Core::Core ()
 	: ExternalResourceManager_ (new ExternalResourceManager (this))
@@ -369,7 +378,7 @@ namespace LackMan
 						<< url.toString ();
 				qWarning () << Q_FUNC_INFO
 						<< str;
-				emit gotEntity (Util::MakeNotification (tr ("Error updating repository"),
+				SendEntity (Util::MakeNotification (tr ("Error updating repository"),
 						tr ("Unable to find repository with URL %1.")
 							.arg (url.toString ()),
 						Priority::Critical));
@@ -387,7 +396,7 @@ namespace LackMan
 					<< e.what ();
 			qWarning () << Q_FUNC_INFO
 					<< str;
-			emit gotEntity (Util::MakeNotification (tr ("Error updating repository"),
+			SendEntity (Util::MakeNotification (tr ("Error updating repository"),
 					tr ("While trying to update the repository: %1.")
 						.arg (str),
 					Priority::Critical));
@@ -415,7 +424,7 @@ namespace LackMan
 							<< url
 							<< "because of"
 							<< e.what ();
-					emit gotEntity (Util::MakeNotification (tr ("Error updating repository"),
+					SendEntity (Util::MakeNotification (tr ("Error updating repository"),
 							tr ("Unable to remove the component `%1` which "
 								"disappeared from the list of components for repo %2.")
 								.arg (oc)
@@ -462,7 +471,7 @@ namespace LackMan
 						<< str
 						<< "while installing"
 						<< packageId;
-				emit gotEntity (Util::MakeNotification (tr ("Unable to install package"),
+				SendEntity (Util::MakeNotification (tr ("Unable to install package"),
 							str,
 							Priority::Critical));
 				continue;
@@ -483,7 +492,7 @@ namespace LackMan
 						<< str
 						<< "while updating to"
 						<< packageId;
-				emit gotEntity (Util::MakeNotification (tr ("Unable to update package"),
+				SendEntity (Util::MakeNotification (tr ("Unable to update package"),
 							str,
 							Priority::Critical));
 				continue;
@@ -568,7 +577,7 @@ namespace LackMan
 							<< info.Name_
 							<< version
 							<< e.what ();
-					emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+					SendEntity (Util::MakeNotification (tr ("Error parsing component"),
 							tr ("Unable to load package ID for package `%1`-%2")
 								.arg (info.Name_)
 								.arg (version),
@@ -595,7 +604,7 @@ namespace LackMan
 							<< info.Name_
 							<< version
 							<< e.what ();
-					emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+					SendEntity (Util::MakeNotification (tr ("Error parsing component"),
 							tr ("Unable to save package location for "
 								"package `%1`-%2 and component %3")
 								.arg (info.Name_)
@@ -621,7 +630,7 @@ namespace LackMan
 		}
 
 		if (newPackages)
-			emit gotEntity (Util::MakeNotification (tr ("Repositories updated"),
+			SendEntity (Util::MakeNotification (tr ("Repositories updated"),
 					tr ("Got %n new or updated packages, "
 						"open LackMan tab to view them.",
 						0, newPackages),
@@ -642,7 +651,7 @@ namespace LackMan
 					<< str
 					<< "while removing"
 					<< packageId;
-			emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+			SendEntity (Util::MakeNotification (tr ("Unable to remove package"),
 						str,
 						Priority::Critical));
 			return;
@@ -686,7 +695,7 @@ namespace LackMan
 			qWarning () << Q_FUNC_INFO
 					<< "while trying to record installed package"
 					<< e.what ();
-			emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
+			SendEntity (Util::MakeNotification (tr ("Error installing package"),
 						tr ("Error recording package to the package DB."),
 						Priority::Critical));
 
@@ -719,7 +728,7 @@ namespace LackMan
 					<< "unable to remove from installed"
 					<< packageId
 					<< str;
-			emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+			SendEntity (Util::MakeNotification (tr ("Unable to remove package"),
 						str,
 						Priority::Critical));
 			return false;
@@ -889,7 +898,7 @@ namespace LackMan
 			qWarning () << Q_FUNC_INFO
 					<< "incorrect url"
 					<< str;
-			emit gotEntity (Util::MakeNotification (tr ("Repository addition error"),
+			SendEntity (Util::MakeNotification (tr ("Repository addition error"),
 					tr ("Incorrect URL %1.")
 						.arg (str),
 					Priority::Critical));
@@ -921,7 +930,7 @@ namespace LackMan
 					<< e.what ();
 			qWarning () << Q_FUNC_INFO
 					<< str;
-			emit gotEntity (Util::MakeNotification (tr ("Error adding/updating repository"),
+			SendEntity (Util::MakeNotification (tr ("Error adding/updating repository"),
 					tr ("While trying to add or update the repository: %1.")
 						.arg (str),
 					Priority::Critical));
@@ -960,7 +969,7 @@ namespace LackMan
 					<< "of"
 					<< repoId
 					<< e.what ();
-			emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+			SendEntity (Util::MakeNotification (tr ("Error parsing component"),
 					tr ("Unable to load component ID for component %1.")
 						.arg (component),
 					Priority::Critical));
@@ -979,7 +988,7 @@ namespace LackMan
 			qWarning () << Q_FUNC_INFO
 					<< "unable to get installed or present packages in component:"
 					<< e.what ();
-			emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
+			SendEntity (Util::MakeNotification (tr ("Error handling component"),
 					tr ("Unable to load packages already present in the component %1.")
 						.arg (component),
 					Priority::Critical));
@@ -998,7 +1007,7 @@ namespace LackMan
 				qWarning () << Q_FUNC_INFO
 						<< "unable to get present package:"
 						<< e.what ();
-				emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
+				SendEntity (Util::MakeNotification (tr ("Error handling component"),
 						tr ("Unable to load package already present in the component %1.")
 							.arg (component),
 						Priority::Critical));
@@ -1033,7 +1042,7 @@ namespace LackMan
 							<< component
 							<< presentPId
 							<< e.what ();
-					emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
+					SendEntity (Util::MakeNotification (tr ("Error handling component"),
 							tr ("Unable to remove package which has been removed upstream from %1.")
 								.arg (component),
 							Priority::Critical));
@@ -1082,7 +1091,7 @@ namespace LackMan
 			pInfo.Dump ();
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
-			emit gotEntity (Util::MakeNotification (tr ("Error retrieving package"),
+			SendEntity (Util::MakeNotification (tr ("Error retrieving package"),
 					tr ("Unable to save package %1.")
 						.arg (pInfo.Name_),
 					Priority::Critical));
@@ -1100,7 +1109,7 @@ namespace LackMan
 						<< "error fetching icon from"
 						<< pInfo.IconURL_
 						<< e.what ();
-				emit gotEntity (Util::MakeNotification (tr ("Error retrieving package icon"),
+				SendEntity (Util::MakeNotification (tr ("Error retrieving package icon"),
 						tr ("Unable to retrieve icon for package %1.")
 							.arg (pInfo.Name_),
 						Priority::Critical));
@@ -1129,7 +1138,7 @@ namespace LackMan
 		else
 			msg = prepared.arg (packageId).arg (error);
 
-		emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
+		SendEntity (Util::MakeNotification (tr ("Error installing package"),
 					msg,
 					Priority::Critical));
 	}
@@ -1156,7 +1165,7 @@ namespace LackMan
 			return;
 		}
 
-		emit gotEntity (Util::MakeNotification (tr ("Package installed"),
+		SendEntity (Util::MakeNotification (tr ("Package installed"),
 					tr ("Package %1 installed successfully.")
 						.arg ("<em>" + packageName + "</em>"),
 					Priority::Info));
@@ -1187,7 +1196,7 @@ namespace LackMan
 			return;
 		}
 
-		emit gotEntity (Util::MakeNotification (tr ("Package updated"),
+		SendEntity (Util::MakeNotification (tr ("Package updated"),
 					tr ("Package %1 updated successfully.")
 						.arg ("<em>" + packageName + "</em>"),
 					Priority::Info));

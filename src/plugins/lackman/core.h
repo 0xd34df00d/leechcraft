@@ -111,7 +111,6 @@ namespace LackMan
 		void handlePackageUpdated (int from, int to);
 		void handlePackageRemoved (int);
 	signals:
-		void gotEntity (const LC::Entity&);
 		void tagsUpdated (const QStringList&);
 		void packageRowActionFinished (int row);
 
