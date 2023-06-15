@@ -46,11 +46,6 @@ namespace OnlineBookmarks
 
 		if (XmlSettingsManager::Instance ()->Property ("UploadGroup", false).toBool ())
 			Core::Instance ().checkUploadPeriod ();
-
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LC::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LC::Entity&)));
 	}
 
 	void Plugin::Release ()

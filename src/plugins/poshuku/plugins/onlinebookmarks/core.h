@@ -89,8 +89,6 @@ namespace OnlineBookmarks
 
 		void checkDownloadPeriod ();
 		void checkUploadPeriod ();
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 }
 }

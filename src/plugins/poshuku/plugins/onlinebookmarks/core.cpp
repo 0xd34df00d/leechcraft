@@ -14,6 +14,7 @@
 #include <interfaces/ipersistentstorageplugin.h>
 #include <interfaces/iserviceplugin.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
@@ -251,13 +252,14 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		LC::Entity eBookmarks = Util::MakeEntity (QVariant (),
-				QString (),
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
+
+		auto eBookmarks = Util::MakeEntity ({},
+				{},
 				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/browser-import-data");
-
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
-		emit gotEntity (eBookmarks);
+		iem->HandleEntity (eBookmarks);
 
 		for (const auto& bookmark : importBookmarks)
 			Url2Account_ [bookmark.toMap () ["URL"].toString ()] = account;
@@ -266,10 +268,10 @@ namespace OnlineBookmarks
 		if (!ibs)
 			return;
 
-		LC::Entity e = Util::MakeNotification ("OnlineBookmarks",
+		auto e = Util::MakeNotification ("OnlineBookmarks",
 				ibs->GetServiceName () + ": bookmarks downloaded successfully",
 				Priority::Info);
-		emit gotEntity (e);
+		iem->HandleEntity (e);
 		AccountsSettings_->UpdateDates ();
 	}
 
@@ -279,10 +281,10 @@ namespace OnlineBookmarks
 		if (!ibs)
 			return;
 
-		LC::Entity e = Util::MakeNotification ("OnlineBookmarks",
+		auto e = Util::MakeNotification ("OnlineBookmarks",
 				ibs->GetServiceName () + ": bookmarks uploaded successfully",
 				Priority::Info);
-		emit gotEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		AccountsSettings_->UpdateDates ();
 	}
 

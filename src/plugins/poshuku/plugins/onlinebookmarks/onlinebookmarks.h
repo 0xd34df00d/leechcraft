@@ -57,8 +57,6 @@ namespace OnlineBookmarks
 	public slots:
 		void initPlugin (QObject*);
 		void hookMoreMenuFillEnd (LC::IHookProxy_ptr, QMenu*, QObject*);
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 }
 }
