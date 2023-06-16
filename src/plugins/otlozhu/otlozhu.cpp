@@ -94,11 +94,6 @@ namespace Otlozhu
 		{
 			auto tab = new TodoTab (TCTodo_, this);
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (TCTodo_.VisibleName_, tab);
-
-			connect (tab,
-					SIGNAL (gotEntity (LC::Entity)),
-					this,
-					SIGNAL (gotEntity (LC::Entity)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO

@@ -26,11 +26,6 @@ namespace Otlozhu
 	, Stager_ (new Util::Sync::Stager ("org.LeechCraft.Otlozhu", this))
 #endif
 	{
-		connect (TodoManager_,
-				SIGNAL (gotEntity (LC::Entity)),
-				this,
-				SIGNAL (gotEntity (LC::Entity)));
-
 #ifdef ENABLE_SYNC
 		auto stagerHandler = new StagerHandler (this);
 

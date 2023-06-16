@@ -15,6 +15,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompleter.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "todomanager.h"
 #include "addtododialog.h"
@@ -400,6 +401,8 @@ namespace Otlozhu
 				QDir::homePath (),
 				tr ("iCalendar files (*.ics)"));
 
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
+
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly))
 		{
@@ -407,7 +410,7 @@ namespace Otlozhu
 					<< "unable to open file"
 					<< filename
 					<< file.errorString ();
-			emit gotEntity (Util::MakeNotification ("Otlozhu",
+			iem->HandleEntity (Util::MakeNotification ("Otlozhu",
 						tr ("Unable to export to %1: %2.")
 							.arg (filename)
 							.arg (file.errorString ()),
@@ -422,7 +425,7 @@ namespace Otlozhu
 
 		file.write (gen ());
 
-		emit gotEntity (Util::MakeNotification ("Otlozhu",
+		iem->HandleEntity (Util::MakeNotification ("Otlozhu",
 					tr ("Todo items were successfully exported to %1.")
 						.arg (QFileInfo (filename).fileName ()),
 					Priority::Info));

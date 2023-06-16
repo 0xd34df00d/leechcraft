@@ -33,8 +33,6 @@ namespace Otlozhu
 	private slots:
 		void handleTimer ();
 		void readjustTimer ();
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 }
 }

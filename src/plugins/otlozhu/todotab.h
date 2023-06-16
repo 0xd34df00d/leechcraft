@@ -58,7 +58,6 @@ namespace Otlozhu
 		void handleExport ();
 	signals:
 		void removeTab ();
-		void gotEntity (const LC::Entity&);
 	};
 }
 }

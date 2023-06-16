@@ -69,8 +69,6 @@ namespace Otlozhu
 #ifdef ENABLE_SYNC
 		ISyncProxy* GetSyncProxy ();
 #endif
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 }
 }

@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <util/xpc/util.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/core/ientitymanager.h>
 #include "todostorage.h"
 
 namespace LC
@@ -57,7 +58,7 @@ namespace Otlozhu
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = notify;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
-		emit gotEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 		QTimer::singleShot (1100,
 				this,

@@ -25,11 +25,6 @@ namespace Otlozhu
 	, NotifMgr_ (new NotificationsManager (Storage_))
 	{
 		Model_->SetStorage (Storage_);
-
-		connect (NotifMgr_,
-				SIGNAL (gotEntity (LC::Entity)),
-				this,
-				SIGNAL (gotEntity (LC::Entity)));
 	}
 
 	TodoStorage* TodoManager::GetTodoStorage () const

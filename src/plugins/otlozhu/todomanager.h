@@ -35,8 +35,6 @@ namespace Otlozhu
 
 		TodoStorage* GetTodoStorage () const;
 		QAbstractItemModel* GetTodoModel () const;
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 }
 }
