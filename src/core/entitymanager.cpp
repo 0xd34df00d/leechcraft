@@ -40,13 +40,14 @@ namespace LC
 		{
 			auto pm = Core::Instance ().GetPluginManager ();
 			QMap<int, QObjectList> result;
-			int cutoffPriority = 0;
 			for (const auto& plugin : pm->GetAllCastableRoots<T> ())
 			{
 				EntityTestHandleResult r;
 				try
 				{
 					r = queryFunc (e, qobject_cast<T> (plugin));
+					if (r.HandlePriority_ > 0)
+						result [r.HandlePriority_] << plugin;
 				}
 				catch (const std::exception& e)
 				{
@@ -54,32 +55,14 @@ namespace LC
 						<< "could not query"
 						<< e.what ()
 						<< plugin;
-					continue;
 				}
 				catch (...)
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "could not query"
 						<< plugin;
-					continue;
 				}
-				if (r.HandlePriority_ <= 0)
-					continue;
-
-				if (r.CancelOthers_)
-					cutoffPriority = std::max (cutoffPriority, r.HandlePriority_);
-
-				result [r.HandlePriority_] << plugin;
 			}
-
-			if (cutoffPriority > 0)
-				while (!result.isEmpty ())
-				{
-					if (result.begin ().key () < cutoffPriority)
-						result.erase (result.begin ());
-					else
-						break;
-				}
 
 			if (result.isEmpty ())
 				return {};
