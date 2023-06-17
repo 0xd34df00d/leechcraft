@@ -6,8 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef INTERFACES_ENTITYTESTHANDLERESULT_H
-#define INTERFACES_ENTITYTESTHANDLERESULT_H
+#pragma once
 
 /** @brief The result of testing whether an entity could be handled by a
  * plugin.
@@ -25,10 +24,6 @@
  */
 struct EntityTestHandleResult
 {
-	/** @brief The priority with which an entity could be handled.
-	 */
-	int HandlePriority_;
-
 	/** @brief The typical values for the priority.
 	 */
 	enum Priority
@@ -40,33 +35,7 @@ struct EntityTestHandleResult
 		PNone = 0
 	};
 
-	/** @brief Whether other handlers should be canceled.
-	 *
-	 * If this is set to true, then other handlers won't be called to
-	 * handle the given entity.
+	/** @brief The priority with which an entity could be handled.
 	 */
-	bool CancelOthers_;
-
-	/** @brief Default-constructs a test result.
-	 *
-	 * The default-constructed entity test handle result can't handle
-	 * anything.
-	 */
-	EntityTestHandleResult ()
-	: HandlePriority_ ()
-	, CancelOthers_ (false)
-	{
-	}
-
-	/** @brief Constructs a test result with given predefined priority.
-	 *
-	 * @param[in] prio One of the predefined priorities.
-	 */
-	explicit EntityTestHandleResult (Priority prio)
-	: HandlePriority_ (prio)
-	, CancelOthers_ (false)
-	{
-	}
+	int HandlePriority_ = Priority::PNone;
 };
-
-#endif
