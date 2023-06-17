@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <QVector>
 #include "interfaces/core/ientitymanager.h"
 
 namespace LC
@@ -20,6 +21,14 @@ namespace LC
 		Q_INTERFACES (IEntityManager)
 
 		QObject * const Plugin_;
+
+		struct QueueEntry
+		{
+			Entity Entity_;
+			QObject *Desired_ = nullptr;
+		};
+		QVector<QueueEntry> DelegateAfterInit_;
+		QVector<QueueEntry> HandleAfterInit_;
 	public:
 		explicit EntityManager (QObject *plugin, QObject *parent);
 
@@ -27,5 +36,8 @@ namespace LC
 		Q_INVOKABLE bool HandleEntity (LC::Entity, QObject* = nullptr) override;
 		Q_INVOKABLE bool CouldHandle (const LC::Entity&) override;
 		QList<QObject*> GetPossibleHandlers (const Entity&) override;
+	private:
+		bool CheckInitStage (const Entity&, QObject*, QVector<QueueEntry>&);
+		void RunQueues ();
 	};
 }

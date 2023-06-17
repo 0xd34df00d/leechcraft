@@ -241,39 +241,11 @@ namespace LC
 
 			return true;
 		}
-
-		template<typename F>
-		bool CheckInitStage (const Entity& e, QObject *desired, EntityManager& em, F cont)
-		{
-			const auto pm = Core::Instance ().GetPluginManager ();
-			if (pm->GetInitStage () != PluginManager::InitStage::BeforeFirst)
-				return true;
-
-			qWarning () << Q_FUNC_INFO
-					<< "got an entity handle request before first init is complete:"
-					<< e.Entity_;
-			qWarning () << e.Additional_;
-			new Util::SlotClosure<Util::ChoiceDeletePolicy>
-			{
-				[=, &em]
-				{
-					if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
-						return Util::ChoiceDeletePolicy::Delete::No;
-
-					(em.*cont) (e, desired);
-					return Util::ChoiceDeletePolicy::Delete::Yes;
-				},
-				pm,
-				SIGNAL (initStageChanged (PluginManager::InitStage)),
-				pm
-			};
-			return false;
-		}
 	}
 
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
 	{
-		if (!CheckInitStage (e, desired, *this, &EntityManager::DelegateEntity))
+		if (!CheckInitStage (e, desired, DelegateAfterInit_))
 			return {};
 
 		e.Parameters_ |= OnlyDownload;
@@ -326,7 +298,7 @@ namespace LC
 			return res;
 		}
 
-		if (!CheckInitStage (e, desired, *this, &EntityManager::HandleEntity))
+		if (!CheckInitStage (e, desired, HandleAfterInit_))
 			return false;
 
 		QObjectList handlers;
@@ -368,5 +340,50 @@ namespace LC
 		}
 
 		return GetObjects (Plugin_, e);
+	}
+
+	namespace
+	{
+		constexpr auto AllowedStage = PluginManager::InitStage::BeforeSecond;
+	}
+
+	bool EntityManager::CheckInitStage (const Entity& e, QObject *desired, QVector<QueueEntry>& queue)
+	{
+		const auto pm = Core::Instance ().GetPluginManager ();
+		if (pm->GetInitStage () >= AllowedStage)
+			return true;
+
+		qWarning () << Q_FUNC_INFO
+				<< "got an entity handle request before first init is complete:"
+				<< e.Entity_;
+		qWarning () << e.Additional_;
+		queue << QueueEntry { e, desired };
+
+		if (DelegateAfterInit_.isEmpty () && HandleAfterInit_.isEmpty ())
+			connect (pm,
+					&PluginManager::initStageChanged,
+					this,
+					&EntityManager::RunQueues);
+
+		return false;
+	}
+
+	void EntityManager::RunQueues ()
+	{
+		const auto pm = Core::Instance ().GetPluginManager ();
+		if (pm->GetInitStage () != AllowedStage)
+			return;
+
+		disconnect (pm,
+				&PluginManager::initStageChanged,
+				this,
+				&EntityManager::RunQueues);
+
+		for (const auto& item : DelegateAfterInit_)
+			DelegateEntity (item.Entity_, item.Desired_);
+		for (const auto& item : HandleAfterInit_)
+			HandleEntity (item.Entity_, item.Desired_);
+		DelegateAfterInit_.clear ();
+		HandleAfterInit_.clear ();
 	}
 }
