@@ -295,10 +295,9 @@ namespace LC
 		{
 			bool res = false;
 			QMetaObject::invokeMethod (this,
-					"CouldHandle",
+					[=, this] { return CouldHandle (e); },
 					Qt::BlockingQueuedConnection,
-					Q_RETURN_ARG (bool, res),
-					Q_ARG (Entity, e));
+					&res);
 			return res;
 		}
 
@@ -321,11 +320,9 @@ namespace LC
 		{
 			bool res = false;
 			QMetaObject::invokeMethod (this,
-					"HandleEntity",
+					[=, this] { return HandleEntity (e, desired); },
 					Qt::BlockingQueuedConnection,
-					Q_RETURN_ARG (bool, res),
-					Q_ARG (Entity, e),
-					Q_ARG (QObject*, desired));
+					&res);
 			return res;
 		}
 
