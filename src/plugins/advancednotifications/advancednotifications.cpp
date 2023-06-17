@@ -110,9 +110,7 @@ namespace LC::AdvancedNotifications
 		if (!can)
 			return EntityTestHandleResult ();
 
-		EntityTestHandleResult result (EntityTestHandleResult::PIdeal);
-		result.CancelOthers_ = true;
-		return result;
+		return { EntityTestHandleResult::PIdeal };
 	}
 
 	void Plugin::Handle (Entity e)
