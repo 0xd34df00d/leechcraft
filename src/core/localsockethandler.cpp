@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <vector>
 #include <QDataStream>
+#include <QLocalServer>
 #include <QLocalSocket>
 #include <QUrl>
 #include <QFile>
@@ -30,6 +31,8 @@ namespace LC
 				this,
 				SLOT (handleNewLocalServerConnection ()));
 	}
+
+	LocalSocketHandler::~LocalSocketHandler () = default;
 
 	void LocalSocketHandler::handleNewLocalServerConnection ()
 	{

@@ -10,7 +10,9 @@
 
 #include <memory>
 #include <boost/program_options.hpp>
-#include <QLocalServer>
+#include <QObject>
+
+class QLocalServer;
 
 namespace LC
 {
@@ -22,7 +24,8 @@ namespace LC
 
 		const std::unique_ptr<QLocalServer> Server_;
 	public:
-		LocalSocketHandler ();
+		explicit LocalSocketHandler ();
+		~LocalSocketHandler ();
 	private slots:
 		void handleNewLocalServerConnection ();
 		void pullCommandLine ();
