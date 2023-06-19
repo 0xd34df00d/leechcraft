@@ -18,11 +18,13 @@
 #include "util/xpc/util.h"
 #include "interfaces/structures.h"
 #include "application.h"
+#include "entitymanager.h"
 
 namespace LC
 {
 	LocalSocketHandler::LocalSocketHandler ()
-	: Server_ (new QLocalServer)
+	: Server_ { std::make_unique<QLocalServer> () }
+	, EM_ { std::make_unique<EntityManager> (nullptr, nullptr) }
 	{
 		StartServer ();
 
@@ -178,7 +180,7 @@ namespace LC
 					tp);
 			e.Additional_ = addMap;
 			qDebug () << e.Entity_ << e.Additional_;
-			emit gotEntity (e);
+			EM_->HandleEntity (e);
 		}
 	}
 

@@ -87,10 +87,6 @@ namespace LC
 				this,
 				SLOT (handleSettingClicked (const QString&)));
 
-		connect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const LC::Entity&)),
-				this,
-				SLOT (queueEntity (const LC::Entity&)));
 		connect (NetworkAccessManager_.get (),
 				SIGNAL (error (const QString&)),
 				this,
@@ -212,23 +208,9 @@ namespace LC
 
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 
-		disconnect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const LC::Entity&)),
-				this,
-				SLOT (queueEntity (const LC::Entity&)));
-
-		connect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const LC::Entity&)),
-				this,
-				SLOT (handleGotEntity (const LC::Entity&)));
-
 		QTimer::singleShot (1000,
 				LocalSocketHandler_.get (),
 				SLOT (pullCommandLine ()));
-
-		QTimer::singleShot (2000,
-				this,
-				SLOT (pullEntityQueue ()));
 
 		QTimer::singleShot (10000,
 				this,
@@ -372,18 +354,6 @@ namespace LC
 	bool Core::handleGotEntity (Entity p)
 	{
 		return EntityManager { nullptr, nullptr }.HandleEntity (p);
-	}
-
-	void Core::queueEntity (const Entity& e)
-	{
-		QueuedEntities_ << e;
-	}
-
-	void Core::pullEntityQueue ()
-	{
-		for (const auto& e : QueuedEntities_)
-			handleGotEntity (e);
-		QueuedEntities_.clear ();
 	}
 
 	void Core::handlePluginLoadErrors ()

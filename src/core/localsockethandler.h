@@ -18,11 +18,14 @@ namespace LC
 {
 	struct Entity;
 
+	class EntityManager;
+
 	class LocalSocketHandler : public QObject
 	{
 		Q_OBJECT
 
 		const std::unique_ptr<QLocalServer> Server_;
+		const std::unique_ptr<EntityManager> EM_;
 	public:
 		explicit LocalSocketHandler ();
 		~LocalSocketHandler ();
@@ -32,7 +35,5 @@ namespace LC
 	private:
 		void DoLine (const boost::program_options::variables_map&, const QString&);
 		void StartServer ();
-	signals:
-		void gotEntity (const LC::Entity&);
 	};
 };

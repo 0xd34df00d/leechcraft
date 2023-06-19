@@ -47,7 +47,6 @@ namespace LC
 		std::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
 		std::shared_ptr<RootWindowsManager> RootWindowsManager_;
 		DockManager *DM_;
-		QList<Entity> QueuedEntities_;
 		bool IsShuttingDown_ = false;
 
 		Core ();
@@ -174,10 +173,6 @@ namespace LC
 		 */
 		bool handleGotEntity (LC::Entity entity);
 	private slots:
-		void queueEntity (const LC::Entity&);
-
-		void pullEntityQueue ();
-
 		void handlePluginLoadErrors ();
 	private:
 		/** Initializes IInfo's signals of the object.
