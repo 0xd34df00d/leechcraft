@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <QVector>
 #include "interfaces/core/ientitymanager.h"
@@ -37,6 +38,9 @@ namespace LC
 		Q_INVOKABLE bool CouldHandle (const LC::Entity&) override;
 		QList<QObject*> GetPossibleHandlers (const Entity&) override;
 	private:
+		template<typename F>
+		std::optional<bool> EnsureUiThread (F&&);
+
 		bool CheckInitStage (const Entity&, QObject*, QVector<QueueEntry>&);
 		void RunQueues ();
 	};

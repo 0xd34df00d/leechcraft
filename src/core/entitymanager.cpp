@@ -246,15 +246,8 @@ namespace LC
 
 	bool EntityManager::CouldHandle (const Entity& e)
 	{
-		if (QThread::currentThread () != thread ())
-		{
-			bool res = false;
-			QMetaObject::invokeMethod (this,
-					[=, this] { return CouldHandle (e); },
-					Qt::BlockingQueuedConnection,
-					&res);
-			return res;
-		}
+		if (const auto res = EnsureUiThread ([=, this] { return CouldHandle (e); }))
+			return *res;
 
 		const auto pm = Core::Instance ().GetPluginManager ();
 		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
@@ -271,15 +264,8 @@ namespace LC
 
 	bool EntityManager::HandleEntity (Entity e, QObject *desired)
 	{
-		if (QThread::currentThread () != thread ())
-		{
-			bool res = false;
-			QMetaObject::invokeMethod (this,
-					[=, this] { return HandleEntity (e, desired); },
-					Qt::BlockingQueuedConnection,
-					&res);
-			return res;
-		}
+		if (const auto res = EnsureUiThread ([=, this] { return HandleEntity (e, desired); }))
+			return *res;
 
 		if (!CheckInitStage (e, desired, HandleAfterInit_))
 			return false;
@@ -323,6 +309,20 @@ namespace LC
 		}
 
 		return GetObjects (Plugin_, e);
+	}
+
+	template<typename F>
+	std::optional<bool> EntityManager::EnsureUiThread (F&& cont)
+	{
+		if (QThread::currentThread () == thread ())
+			return {};
+
+		bool res = false;
+		QMetaObject::invokeMethod (this,
+				cont,
+				Qt::BlockingQueuedConnection,
+				&res);
+		return res;
 	}
 
 	namespace
