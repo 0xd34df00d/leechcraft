@@ -390,10 +390,7 @@ namespace LC
 			try
 			{
 				qDebug () << "Initializing" << ii->GetName ();
-				if (const auto& proxy = ii->GetProxy ())
-					ii->Init (proxy);
-				else
-					qFatal ("no proxy set yet");
+				ii->Init (ii->GetProxy ());
 
 				const auto& path = GetPluginLibraryPath (obj);
 				if (path.isEmpty ())
