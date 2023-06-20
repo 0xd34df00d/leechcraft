@@ -249,11 +249,6 @@ public:
 	 */
 	virtual ~IInfo () {}
 
-	virtual void gotEntity (const LC::Entity& entity)
-	{
-		Q_UNUSED (entity);
-	}
-
 	// implementation details
 	virtual void SetProxy (ICoreProxy_ptr) = 0;
 	virtual const ICoreProxy_ptr& GetProxy () = 0;
