@@ -370,10 +370,6 @@ namespace LC
 		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
 						"gotEntity (const LC::Entity&)"
 						).constData ()) != -1)
-			connect (plugin,
-					SIGNAL (gotEntity (const LC::Entity&)),
-					this,
-					SLOT (handleGotEntity (LC::Entity)),
-					Qt::QueuedConnection);
+			qWarning () << "obsolete gotEntity() signal use in" << plugin;
 	}
 }
