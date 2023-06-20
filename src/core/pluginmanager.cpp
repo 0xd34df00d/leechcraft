@@ -75,7 +75,7 @@ namespace LC
 			for (const auto& path : pluginPaths)
 			{
 				const QFileInfo fi { path };
-				const auto& toLoad = fi.isFile () && fi.isExecutable () ?
+				const auto& toLoad = fi.isFile () ?
 						QStringList { fi.absoluteFilePath () } :
 						allPluginsPaths.filter (path, Qt::CaseInsensitive);
 				for (const auto& single : toLoad)
