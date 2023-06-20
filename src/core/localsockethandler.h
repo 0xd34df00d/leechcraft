@@ -31,7 +31,6 @@ namespace LC
 		~LocalSocketHandler ();
 	private slots:
 		void handleNewLocalServerConnection ();
-		void pullCommandLine ();
 	private:
 		void DoLine (const boost::program_options::variables_map&, const QString&);
 		void StartServer ();

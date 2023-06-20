@@ -203,10 +203,6 @@ namespace LC
 
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 
-		QTimer::singleShot (1000,
-				LocalSocketHandler_.get (),
-				SLOT (pullCommandLine ()));
-
 		QTimer::singleShot (10000,
 				this,
 				SLOT (handlePluginLoadErrors ()));

@@ -32,6 +32,8 @@ namespace LC
 				SIGNAL (newConnection ()),
 				this,
 				SLOT (handleNewLocalServerConnection ()));
+
+		DoLine (qobject_cast<Application*> (qApp)->GetVarMap (), QDir::currentPath ());
 	}
 
 	LocalSocketHandler::~LocalSocketHandler () = default;
@@ -65,11 +67,6 @@ namespace LC
 		boost::program_options::wcommand_line_parser parser (strings);
 		auto map = qobject_cast<Application*> (qApp)->Parse (parser, &desc);
 		DoLine (map, foreignPath);
-	}
-
-	void LocalSocketHandler::pullCommandLine ()
-	{
-		DoLine (qobject_cast<Application*> (qApp)->GetVarMap (), QDir::currentPath ());
 	}
 
 	namespace
