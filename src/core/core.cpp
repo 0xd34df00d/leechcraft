@@ -183,11 +183,6 @@ namespace LC
 		return CoreInstanceObject_.get ();
 	}
 
-	void Core::Setup (QObject *plugin)
-	{
-		InitDynamicSignals (plugin);
-	}
-
 	void Core::PostSecondInit (QObject *plugin)
 	{
 		if (qobject_cast<IHaveTabs*> (plugin))
@@ -361,15 +356,5 @@ namespace LC
 		for (const auto& error : PluginManager_->GetPluginLoadErrors ())
 			handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
 					error, Priority::Critical));
-	}
-
-	void Core::InitDynamicSignals (const QObject *plugin)
-	{
-		const QMetaObject *qmo = plugin->metaObject ();
-
-		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"gotEntity (const LC::Entity&)"
-						).constData ()) != -1)
-			qWarning () << "obsolete gotEntity() signal use in" << plugin;
 	}
 }

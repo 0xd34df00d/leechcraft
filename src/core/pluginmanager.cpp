@@ -71,7 +71,7 @@ namespace LC
 		{
 			const auto& allPluginsPaths = FindPluginsPaths ();
 
-			qDebug () << Q_FUNC_INFO << "explicit paths given, entering forced loading mode";
+			qDebug () << "explicit paths given, entering forced loading mode";
 			for (const auto& path : pluginPaths)
 			{
 				const QFileInfo fi { path };
@@ -481,8 +481,6 @@ namespace LC
 		// initialize and the deps tree being recomputed,
 		// so we need to update the list of plugins to be initialized.
 		ordered = PluginTreeBuilder_->GetResult ();
-		for (const auto obj : ordered)
-			Core::Instance ().Setup (obj);
 
 		auto coreInstanceObj = Core::Instance ().GetCoreInstanceObject ();
 		for (auto obj : GetAllCastableRoots<IHaveShortcuts*> ())
@@ -661,8 +659,6 @@ namespace LC
 		try
 		{
 			qobject_cast<IInfo*> (object)->Init (CoreProxy::UnsafeWithoutDeps ());
-			Core::Instance ().Setup (object);
-
 			qobject_cast<IInfo*> (object)->SecondInit ();
 			Core::Instance ().PostSecondInit (object);
 

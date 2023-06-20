@@ -151,11 +151,6 @@ namespace LC
 		 */
 		NewTabMenuManager* GetNewTabMenuManager () const;
 
-		/** Sets up connections for the given object which is expected
-		 * to be a plugin instance.
-		 */
-		void Setup (QObject *object);
-
 		void PostSecondInit (QObject *object);
 	public slots:
 		/* Dispatcher of button clicks in the Settings Dialog (of the
@@ -174,10 +169,6 @@ namespace LC
 		bool handleGotEntity (LC::Entity entity);
 	private slots:
 		void handlePluginLoadErrors ();
-	private:
-		/** Initializes IInfo's signals of the object.
-		 */
-		void InitDynamicSignals (const QObject *object);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */
