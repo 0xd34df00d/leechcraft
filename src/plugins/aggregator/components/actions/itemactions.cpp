@@ -42,21 +42,6 @@ namespace LC::Aggregator
 
 		const auto mkSep = [&] { AllActions_ << Util::CreateSeparator (parent); };
 
-		const bool shouldHideRead = xsm.Property ("HideReadItems", false).toBool ();
-		deps.SetHideRead_ (shouldHideRead);
-		ToolbarActions_ << MakeAction (tr ("Hide read items"), "mail-mark-unread", "HideReadItems",
-				[&] (bool hide)
-				{
-					Deps_.SetHideRead_ (hide);
-					xsm.setProperty ("HideReadItems", hide);
-				},
-				{ .Checked_ = shouldHideRead });
-		ToolbarActions_ << MakeAction (tr ("Show items as tape"), "format-list-unordered", "ActionShowAsTape",
-				deps.SetShowTape_,
-				{ .Checked_ = xsm.Property ("ShowAsTape", false).toBool () });
-
-		mkSep ();
-
 		MarkUnread_ = MakeAction (tr ("Mark as unread"), {}, "MarkItemAsUnread",
 				[this] { MarkSelectedReadStatus (false); },
 				{ .Shortcut_ = { "U" } });
@@ -84,6 +69,21 @@ namespace LC::Aggregator
 		LinkCopy_ = MakeAction (tr ("Copy news item link"), "edit-copy", "ItemLinkCopy",
 				[this] { LinkCopy (); },
 				{ .Shortcut_ = { "C" } });
+
+		mkSep ();
+
+		const bool shouldHideRead = xsm.Property ("HideReadItems", false).toBool ();
+		deps.SetHideRead_ (shouldHideRead);
+		ToolbarActions_ << MakeAction (tr ("Hide read items"), "mail-mark-unread", "HideReadItems",
+				[&] (bool hide)
+				{
+					Deps_.SetHideRead_ (hide);
+					xsm.setProperty ("HideReadItems", hide);
+				},
+				{ .Checked_ = shouldHideRead });
+		ToolbarActions_ << MakeAction (tr ("Show items as tape"), "format-list-unordered", "ActionShowAsTape",
+				deps.SetShowTape_,
+				{ .Checked_ = xsm.Property ("ShowAsTape", false).toBool () });
 
 		auto& nav = Deps_.ItemNavigator_;
 		InvisibleActions_ << MakeAction (tr ("Previous unread item"), "go-first", "PrevUnreadItem",
