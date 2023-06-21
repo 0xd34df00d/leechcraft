@@ -36,14 +36,13 @@ namespace LC::Aggregator
 		};
 
 		connect (sm,
-				&QItemSelectionModel::currentRowChanged,
-				this,
-				&ItemSelectionTracker::HandleCurrentRowChanged);
-
-		connect (sm,
 				&QItemSelectionModel::selectionChanged,
 				this,
-				commonHandler);
+				[=, this]
+				{
+					commonHandler ();
+					HandleCurrentRowChanged (sm->currentIndex ());
+				});
 		connect (view.model (),
 				&QAbstractItemModel::modelReset,
 				this,
