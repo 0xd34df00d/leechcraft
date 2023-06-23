@@ -120,18 +120,6 @@ namespace LC
 		 */
 		void TryToAddJob (QString);
 
-		/** Returns true if both indexes belong to the same model. If
-		 * both indexes are invalid, true is returned.
-		 *
-		 * The passed indexes shouldn't be mapped to source from filter
-		 * model or merge model, Core will do it itself.
-		 *
-		 * @param[in] i1 The first index.
-		 * @param[in] i2 The second index.
-		 * @return Whether the indexes belong to the same model.
-		 */
-		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
-
 		/** Calculates and returns current upload/download speeds.
 		 */
 		QPair<qint64, qint64> GetSpeeds () const;
