@@ -14,7 +14,6 @@
 #include <QUrl>
 #include <QTextCodec>
 #include "util/util.h"
-#include "util/sll/slotclosure.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
@@ -36,7 +35,7 @@ namespace LC
 	namespace
 	{
 		template<typename T, typename F>
-		QObjectList GetSubtype (const Entity& e, const F& queryFunc)
+		QObjectList GetSubtype (const Entity& e, F&& queryFunc)
 		{
 			auto pm = Core::Instance ().GetPluginManager ();
 			QMap<int, QObjectList> result;
