@@ -152,11 +152,6 @@ namespace LC
 		return CoreInstanceObject_->GetShortcutProxy ();
 	}
 
-	QObjectList Core::GetSettables () const
-	{
-		return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
-	}
-
 	QList<QList<QAction*>> Core::GetActions2Embed () const
 	{
 		const auto& plugins = PluginManager_->GetAllCastableTo<IActionsExporter*> ();

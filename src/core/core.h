@@ -72,13 +72,6 @@ namespace LC
 		 */
 		IShortcutProxy* GetShortcutProxy () const;
 
-		/** Returns all plugins that implement IHaveSettings as
-		 * QObjectList.
-		 *
-		 * @return List of objects.
-		 */
-		QObjectList GetSettables () const;
-
 		/** Returns all the actions from plugins that implement
 		 * IToolBarEmbedder.
 		 *
