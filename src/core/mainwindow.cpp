@@ -328,13 +328,8 @@ void LC::MainWindow::WriteSettings ()
 
 void LC::MainWindow::on_ActionAddTask__triggered ()
 {
-	CommonJobAdder adder (this);
-	if (adder.exec () != QDialog::Accepted)
-		return;
-
-	QString name = adder.GetString ();
-	if (!name.isEmpty ())
-		Core::Instance ().TryToAddJob (name);
+	auto adder = new CommonJobAdder { this };
+	adder->show ();
 }
 
 void LC::MainWindow::on_ActionNewWindow__triggered ()

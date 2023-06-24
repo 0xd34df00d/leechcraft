@@ -116,10 +116,6 @@ namespace LC
 		 */
 		void DelayedInit ();
 
-		/** Tries to add a task from the Add Task Dialog.
-		 */
-		void TryToAddJob (QString);
-
 		/** Returns the app-wide network access manager.
 		 */
 		QNetworkAccessManager* GetNetworkAccessManager () const;

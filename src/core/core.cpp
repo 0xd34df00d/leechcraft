@@ -210,22 +210,6 @@ namespace LC
 		emit initialized ();
 	}
 
-	void Core::TryToAddJob (QString name)
-	{
-		Entity e;
-		if (QFile::exists (name))
-			e.Entity_ = QUrl::fromLocalFile (name);
-		else
-		{
-			const QUrl url (name);
-			e.Entity_ = url.isValid () ? url : name;
-		}
-		e.Parameters_ = FromUserInitiated;
-
-		if (!handleGotEntity (e))
-			emit error (tr ("No plugins are able to download \"%1\"").arg (name));
-	}
-
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	{
 		return NetworkAccessManager_.get ();

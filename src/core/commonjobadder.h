@@ -6,41 +6,23 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef COMMONJOBADDER_H
-#define COMMONJOBADDER_H
+#pragma once
+
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_commonjobadder.h"
 
 namespace LC
 {
-	/** Dialog for adding tasks directly via LeechCraft. Has two fields,
-	 * What and Where, corresponding to Entity_ and Location_ fields of
-	 * Entity respectively.
-	 */
-	class CommonJobAdder : public QDialog,
-						   private Ui::CommonJobAdder
+	class CommonJobAdder : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::CommonJobAdder)
+
+		Ui::CommonJobAdder Ui_;
 	public:
-		/** Creates the dialog and sets the what/where values to
-		 * previous ones.
-		 *
-		 * @param[in] parent The parent widget.
-		 */
-		CommonJobAdder (QWidget *parent = 0);
-
-		/** Returns the value of What field.
-		 *
-		 * @return The What.
-		 */
-		QString GetString () const;
-	private slots:
-		/** Handles clicking the Browse button near What field. Pops up
-		 * the QFileDialog::getOpenFileName dialog.
-		 */
-		void on_Browse__released ();
+		explicit CommonJobAdder (QWidget *parent = nullptr);
+	private:
+		void Browse ();
+		void AddJob ();
 	};
-};
-
-#endif
-
+}
