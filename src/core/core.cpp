@@ -226,40 +226,6 @@ namespace LC
 			emit error (tr ("No plugins are able to download \"%1\"").arg (name));
 	}
 
-	QPair<qint64, qint64> Core::GetSpeeds () const
-	{
-		qint64 download = 0;
-		qint64 upload = 0;
-
-		for (const auto plugin : PluginManager_->GetAllPlugins ())
-		{
-			IDownload *di = qobject_cast<IDownload*> (plugin);
-			if (di)
-			{
-				try
-				{
-					download += di->GetDownloadSpeed ();
-					upload += di->GetUploadSpeed ();
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "unable to get speeds"
-						<< e.what ()
-						<< plugin;
-				}
-				catch (...)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "unable to get speeds"
-						<< plugin;
-				}
-			}
-		}
-
-		return { download, upload };
-	}
-
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	{
 		return NetworkAccessManager_.get ();

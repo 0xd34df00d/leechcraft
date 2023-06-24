@@ -120,10 +120,6 @@ namespace LC
 		 */
 		void TryToAddJob (QString);
 
-		/** Calculates and returns current upload/download speeds.
-		 */
-		QPair<qint64, qint64> GetSpeeds () const;
-
 		/** Returns the app-wide network access manager.
 		 */
 		QNetworkAccessManager* GetNetworkAccessManager () const;
