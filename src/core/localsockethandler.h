@@ -9,7 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <boost/program_options.hpp>
 #include <QObject>
 
 class QLocalServer;
@@ -32,7 +31,6 @@ namespace LC
 	private slots:
 		void handleNewLocalServerConnection ();
 	private:
-		void DoLine (const boost::program_options::variables_map&, const QString&);
 		void StartServer ();
 	};
 };

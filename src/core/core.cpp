@@ -49,6 +49,7 @@
 #include "dockmanager.h"
 #include "entitymanager.h"
 #include "rootwindowsmanager.h"
+#include "clargs.h"
 
 using namespace LC::Util;
 
@@ -81,15 +82,8 @@ namespace LC
 				this,
 				SIGNAL (error (const QString&)));
 
-		QStringList paths;
-		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
-		if (map.count ("plugin"))
-		{
-			const auto& plugins = map ["plugin"].as<std::vector<std::string>> ();
-			for (const auto& plugin : plugins)
-				paths << QString::fromUtf8 (plugin.c_str ());
-		}
-		PluginManager_ = new PluginManager (paths, this);
+		const auto& plugins = qobject_cast<Application*> (qApp)->GetParsedArguments ().Plugins_;
+		PluginManager_ = new PluginManager (plugins, this);
 	}
 
 	Core& Core::Instance ()
@@ -175,15 +169,15 @@ namespace LC
 
 	void Core::DelayedInit ()
 	{
-		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
-		if (map.count ("list-plugins"))
+		const auto& args = qobject_cast<Application*> (qApp)->GetParsedArguments ();
+		if (args.ListPluginsRequested_)
 		{
 			for (auto loader : PluginManager_->GetAllAvailable ())
 				std::cout << "Found plugin: " << loader->GetFileName ().toUtf8 ().constData () << std::endl;
 			std::exit (0);
 		}
 
-		PluginManager_->Init (map.count ("safe-mode"));
+		PluginManager_->Init (args.SafeMode_);
 
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 

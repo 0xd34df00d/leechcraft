@@ -97,6 +97,7 @@ set (SRCS
 	loadprogressreporter.cpp
 	splashscreen.cpp
 	tagsstorage.cpp
+	clargs.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	)

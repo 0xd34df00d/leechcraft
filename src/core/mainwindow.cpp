@@ -41,6 +41,7 @@
 #include "entitymanager.h"
 #include "rootwindowsmanager.h"
 #include "mainwindowmenumanager.h"
+#include "clargs.h"
 
 using namespace LC;
 using namespace LC::Util;
@@ -540,7 +541,7 @@ void LC::MainWindow::showMain ()
 
 void MainWindow::showFirstTime ()
 {
-	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
+	if (!qobject_cast<Application*> (qApp)->GetParsedArguments ().Minimized_)
 	{
 		WasMaximized_ ? showMaximized () : showNormal ();
 		activateWindow ();

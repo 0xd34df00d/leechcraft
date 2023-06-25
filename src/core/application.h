@@ -8,9 +8,13 @@
 
 #pragma once
 
-#include <boost/program_options.hpp>
 #include <QApplication>
 #include <QStringList>
+
+namespace LC::CL
+{
+	struct Args;
+}
 
 namespace LC
 {
@@ -29,8 +33,7 @@ namespace LC
 		const QString DefaultSystemStyleName_;
 		QString PreviousLangName_;
 
-		boost::program_options::variables_map VarMap_;
-		bool CatchExceptions_ = true;
+		std::unique_ptr<CL::Args> CLArgs_;
 
 		SplashScreen *Splash_ = nullptr;
 	public:
@@ -52,6 +55,8 @@ namespace LC
 		 */
 		Application (int& argc, char **argv);
 
+		~Application () override;
+
 		/** Returns the cached copy of QCoreApplication::arguments().
 		 * Provided for performance reasons, as Qt docs say that calling
 		 * the original function is slow.
@@ -60,9 +65,7 @@ namespace LC
 		 */
 		const QStringList& Arguments () const;
 
-		boost::program_options::variables_map Parse (boost::program_options::wcommand_line_parser& parser,
-				boost::program_options::options_description *desc) const;
-		const boost::program_options::variables_map& GetVarMap () const;
+		const CL::Args& GetParsedArguments () const;
 
 		/** Returns the local socket name based on the user name/id and
 		 * such things.
@@ -92,12 +95,9 @@ namespace LC
 		/** Overloaded QApplication::notify() provided to catch exceptions
 		 * in slots.
 		 */
-		virtual bool notify (QObject*, QEvent*);
+		bool notify (QObject*, QEvent*) override;
 	private:
-		/** Parses command line and sets corresponding application-wide
-		 * options.
-		 */
-		void ParseCommandLine ();
+		void InstallMsgHandlers ();
 
 		void InitPluginsIconset ();
 

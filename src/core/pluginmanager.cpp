@@ -50,6 +50,7 @@
 #include "loaders/sopluginloader.h"
 #include "loadprocessbase.h"
 #include "splashscreen.h"
+#include "clargs.h"
 
 #ifdef WITH_DBUS_LOADERS
 #include "loaders/dbuspluginloader.h"
@@ -59,7 +60,7 @@ namespace LC
 {
 	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)
-	, DBusMode_ (static_cast<Application*> (qApp)->GetVarMap ().count ("multiprocess"))
+	, DBusMode_ (static_cast<Application*> (qApp)->GetParsedArguments ().Multiprocess_)
 	, PluginTreeBuilder_ (new PluginTreeBuilder)
 	{
 		Headers_ << tr ("Name")

@@ -55,17 +55,17 @@
 #include "tagsmanager.h"
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
+#include "clargs.h"
 #include "core.h"
 #include "coreinstanceobject.h"
 #include "rootwindowsmanager.h"
 #include "splashscreen.h"
 #include "config.h"
+#include "entitymanager.h"
 
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
 #endif
-
-namespace bpo = boost::program_options;
 
 namespace LC
 {
@@ -80,25 +80,17 @@ namespace LC
 		qputenv ("PX_MODULE_PATH", {});
 
 		Arguments_ = arguments ().mid (1);
-		bpo::options_description desc ("Allowed options");
+		CLArgs_ = std::make_unique<CL::Args> (CL::Parse (Arguments_, QDir::currentPath ()));
 
-		{
-			std::vector<std::wstring> strings;
-			for (const auto& arg : Arguments_)
-				strings.push_back (arg.toStdWString ());
-			bpo::wcommand_line_parser parser (strings);
-			VarMap_ = Parse (parser, &desc);
-		}
-
-		if (VarMap_.count ("help"))
+		if (CLArgs_->HelpRequested_)
 		{
 			std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (https://leechcraft.org)" << std::endl;
 			std::cout << std::endl;
-			std::cout << desc << std::endl;
+			std::cout << CL::GetHelp () << std::endl;
 			std::exit (EHelpRequested);
 		}
 
-		if (VarMap_.count ("version"))
+		if (CLArgs_->VersionRequested_)
 		{
 			std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (https://leechcraft.org)" << std::endl;
 #ifdef Q_OS_WIN32
@@ -109,16 +101,13 @@ namespace LC
 			std::exit (EVersionRequested);
 		}
 
-		if (VarMap_.count ("no-app-catch"))
-			CatchExceptions_ = false;
-
-		if (VarMap_.count ("clrsckt"))
+		if (CLArgs_->ClearSocket_)
 			QLocalServer::removeServer (GetSocketName ());
 
-		if (VarMap_.count ("no-resource-caching"))
-			setProperty ("NoResourceCaching", true);
+		if (CLArgs_->NoResourceCaching_)
+			setProperty ("no-resource-caching", true);
 
-		if (VarMap_.count ("restart"))
+		if (CLArgs_->Restart_)
 		{
 			Arguments_.removeAll ("--restart");
 			EnterRestartMode ();
@@ -126,7 +115,7 @@ namespace LC
 		}
 
 		// Sanity checks
-		if (!VarMap_.count ("plugin") && IsAlreadyRunning ())
+		if (CLArgs_->Plugins_.isEmpty () && IsAlreadyRunning ())
 			std::exit (EAlreadyRunning);
 
 		Util::InstallTranslator ("", "qt", "qt5");
@@ -171,9 +160,9 @@ namespace LC
 				"LeechCraft core has been built without Qwt support, Plot item is not available.");
 #endif
 
-		ParseCommandLine ();
+		InstallMsgHandlers ();
 
-		if (!VarMap_.count ("nolog"))
+		if (!CLArgs_->NoLog_)
 		{
 			// Say hello to logs
 			qDebug () << "======APPLICATION STARTUP======";
@@ -197,7 +186,7 @@ namespace LC
 
 		Splash_ = new SplashScreen { QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen };
 		Splash_->setUpdatesEnabled (true);
-		if (!VarMap_.count ("no-splash-screen"))
+		if (!CLArgs_->NoSplashScreen_)
 		{
 			Splash_->show ();
 			Splash_->repaint ();
@@ -210,60 +199,16 @@ namespace LC
 		InitSessionManager ();
 	}
 
+	Application::~Application () = default;
+
 	const QStringList& Application::Arguments () const
 	{
 		return Arguments_;
 	}
 
-	bpo::variables_map Application::Parse (bpo::wcommand_line_parser& parser,
-			bpo::options_description *desc) const
+	const CL::Args& Application::GetParsedArguments () const
 	{
-		bpo::variables_map vm;
-		bpo::options_description invisible ("Invisible options");
-		invisible.add_options ()
-				("entity,E", bpo::wvalue<std::vector<std::wstring>> (), "the entity to handle");
-
-		desc->add_options ()
-				("help", "show the help message")
-				("version,v", "print LC version")
-				("download,D", "only choose downloaders for the entity: it should be downloaded but not handled")
-				("handle,H", "only choose handlers for the entity: it should be handled but not downloaded")
-				("type,T", bpo::value<std::string> (), "the type of the entity: url, url_encoded, file (for file paths) and such")
-				("additional,A", bpo::value<std::vector<std::string>> (), "parameters for the Additional entity map in the form of name:value")
-				("automatic", "the entity is a result of some automatic stuff, not user's actions")
-				("bt", "print backtraces for warning messages into warning.log")
-				("plugin,P", bpo::value<std::vector<std::string>> (), "load only given plugin and ignore already running instances of LC")
-				("multiprocess,M", "load plugins in separate processes")
-				("nolog", "disable custom file logger and print everything to stdout/stderr")
-				("clrsckt", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
-				("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")
-				("safe-mode", "disable all plugins so that you can manually enable them in Settings later")
-				("list-plugins", "list all non-adapted plugins that were found and exit (this one doesn't check if plugins are valid and loadable)")
-				("no-resource-caching", "disable caching of dynamic loadable resources (useful for stuff like Azoth themes development)")
-				("autorestart", "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)")
-				("minimized", "start LC minimized to tray")
-				("no-splash-screen", "do not show the splash screen")
-				("restart", "restart the LC");
-		bpo::positional_options_description pdesc;
-		pdesc.add ("entity", -1);
-
-		bpo::options_description all;
-		all.add (*desc);
-		all.add (invisible);
-
-		bpo::store (parser
-				.options (all)
-				.positional (pdesc)
-				.allow_unregistered ()
-				.run (), vm);
-		bpo::notify (vm);
-
-		return vm;
-	}
-
-	const bpo::variables_map& Application::GetVarMap () const
-	{
-		return VarMap_;
+		return *CLArgs_;
 	}
 
 #ifdef Q_OS_WIN32
@@ -318,7 +263,7 @@ namespace LC
 		if (event->type () == QEvent::LanguageChange)
 			return true;
 
-		if (!CatchExceptions_)
+		if (!CLArgs_->CatchExceptions_)
 			return QApplication::notify (obj, event);
 
 		try
@@ -404,14 +349,14 @@ namespace LC
 		}
 	}
 
-	void Application::ParseCommandLine ()
+	void Application::InstallMsgHandlers ()
 	{
 		static const auto flags = [this]
 		{
 			DebugHandler::DebugWriteFlags flags = DebugHandler::DWFNone;
-			if (VarMap_.count ("nolog"))
+			if (CLArgs_->NoLog_)
 				flags |= DebugHandler::DWFNoFileLog;
-			if (VarMap_.count ("bt"))
+			if (CLArgs_->Backtrace_)
 				flags |= DebugHandler::DWFBacktrace;
 			return flags;
 		} ();
@@ -512,6 +457,9 @@ namespace LC
 		const auto win = rwm->GetMainWindow (0);
 		win->showFirstTime ();
 		Splash_->finish (win);
+
+		for (const auto& entity : CLArgs_->Entities_)
+			EntityManager { nullptr, nullptr }.HandleEntity (entity);
 	}
 
 #ifdef Q_OS_MAC
