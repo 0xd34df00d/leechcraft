@@ -16,11 +16,13 @@
 #include <QTimer>
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/defaulthookproxy.h>
-#include "core.h"
+#include <util/xpc/util.h>
 #include "xmlsettingsmanager.h"
 #include "mainwindow.h"
 #include "sslerrorshandler.h"
+#include "entitymanager.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
@@ -128,22 +130,28 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 
 void LC::NetworkAccessManager::saveCookies () const
 {
-	QDir dir = QDir::home ();
+	EntityManager em { nullptr, nullptr };
+
+	auto dir = QDir::home ();
 	dir.cd (".leechcraft");
-	if (!dir.exists ("core") &&
-			!dir.mkdir ("core"))
+	if (!dir.mkpath ("core"))
 	{
-		emit error (tr ("Could not create Core directory."));
+		em.HandleEntity (Util::MakeNotification ("LeechCraft"_qs,
+				tr ("Could not create Core directory at %1.")
+					.arg (dir.filePath ("core")),
+				Priority::Critical));
 		return;
 	}
+	dir.cd ("core");
 
-	QFile file (QDir::homePath () +
-			"/.leechcraft/core/cookies.txt");
+	QFile file { dir.filePath ("cookies.txt") };
 	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 	{
-		emit error (tr ("Could not save cookies, error opening cookie file."));
-		qWarning () << Q_FUNC_INFO
-			<< file.errorString ();
+		em.HandleEntity (Util::MakeNotification ("LeechCraft"_qs,
+				tr ("Could not save cookies, error opening cookie file at %1: %2.")
+					.arg (file.fileName (), file.errorString ()),
+				Priority::Critical));
+		qWarning () << file.errorString ();
 		return;
 	}
 

@@ -77,11 +77,6 @@ namespace LC
 				this,
 				SLOT (handleSettingClicked (const QString&)));
 
-		connect (NetworkAccessManager_.get (),
-				SIGNAL (error (const QString&)),
-				this,
-				SIGNAL (error (const QString&)));
-
 		const auto& plugins = qobject_cast<Application*> (qApp)->GetParsedArguments ().Plugins_;
 		PluginManager_ = new PluginManager (plugins, this);
 	}

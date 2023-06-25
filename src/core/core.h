@@ -131,15 +131,8 @@ namespace LC
 		 */
 		void handleSettingClicked (const QString&);
 	signals:
-		/** Notifies the user about an error by a pop-up message box.
-		 */
-		void error (QString error) const;
-
 		void initialized ();
 	};
 };
 
-
-
 #endif
-

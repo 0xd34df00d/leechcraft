@@ -47,7 +47,6 @@ namespace LC
 	signals:
 		void requestCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);
-		void error (const QString&) const;
 		void acceptableLanguagesChanged ();
 
 		void hookNAMCreateRequest (LC::IHookProxy_ptr proxy,
