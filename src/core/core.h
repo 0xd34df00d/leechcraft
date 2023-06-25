@@ -130,18 +130,6 @@ namespace LC
 		 * settings of type 'pushbutton').
 		 */
 		void handleSettingClicked (const QString&);
-
-		/** Handles the entity which could be anything - path to a file,
-		 * link, contents of a .torrent file etc. If the entity is a
-		 * string, this parameter is considered to be an UTF-8
-		 * representation of it.
-		 *
-		 * @param[in] entity Entity.
-		 * @return True if the entity was actually handled.
-		 */
-		bool handleGotEntity (LC::Entity entity);
-	private slots:
-		void handlePluginLoadErrors ();
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

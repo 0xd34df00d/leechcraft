@@ -181,9 +181,16 @@ namespace LC
 
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 
-		QTimer::singleShot (10000,
+		using namespace std::chrono_literals;
+		QTimer::singleShot (10s,
 				this,
-				SLOT (handlePluginLoadErrors ()));
+				[this]
+				{
+					EntityManager em { nullptr, nullptr };
+					for (const auto& error : PluginManager_->GetPluginLoadErrors ())
+						em.HandleEntity (Util::MakeNotification (tr ("Plugin load error"),
+								error, Priority::Critical));
+				});
 
 		emit initialized ();
 	}
@@ -268,17 +275,5 @@ namespace LC
 				contents = QCryptographicHash::hash (newPass.toUtf8 (), QCryptographicHash::Sha1).toHex ();
 			XmlSettingsManager::Instance ()->setProperty ("StartupPassword", contents);
 		}
-	}
-
-	bool Core::handleGotEntity (Entity p)
-	{
-		return EntityManager { nullptr, nullptr }.HandleEntity (p);
-	}
-
-	void Core::handlePluginLoadErrors ()
-	{
-		for (const auto& error : PluginManager_->GetPluginLoadErrors ())
-			handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
-					error, Priority::Critical));
 	}
 }
