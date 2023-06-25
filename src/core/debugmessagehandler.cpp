@@ -105,7 +105,7 @@ namespace
 				stream << "[CRT] ";
 				break;
 			case QtFatalMsg:
-				stream << "[FTL] (yay, really `faster than light`!) ";
+				stream << "[FTL] ";
 				break;
 			}
 			if (SupportsColors ())
