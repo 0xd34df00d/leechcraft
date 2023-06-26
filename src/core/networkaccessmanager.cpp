@@ -38,6 +38,31 @@ namespace
 			result << QRegExp { str };
 		return result;
 	}
+
+	std::unique_ptr<QFile> GetCookiesFile (QIODevice::OpenMode mode)
+	{
+		auto dir = QDir::home ();
+		const auto corePath = ".leechcraft/core"_qs;
+		if (!dir.mkpath (corePath))
+		{
+			qCritical () << "unable to create path"
+					<< dir.filePath (corePath);
+			return {};
+		}
+
+		dir.cd (corePath);
+		const auto& path = dir.filePath ("cookies.txt"_qs);
+
+		auto file = std::make_unique<QFile> (path);
+		if (!file->open (mode))
+		{
+			qCritical () << "unable to open file"
+					<< path
+					<< file->errorString ();
+			return {};
+		}
+		return file;
+	}
 }
 
 NetworkAccessManager::NetworkAccessManager (QObject *parent)
@@ -68,7 +93,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 
 	try
 	{
-		auto cache = new Util::NetworkDiskCache ("core", this);
+		auto cache = new Util::NetworkDiskCache ("core"_qs, this);
 		setCache (cache);
 
 		XmlSettingsManager::Instance ()->RegisterObject ("CacheSize",
@@ -82,15 +107,8 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			<< "so continuing without cache";
 	}
 
-	QFile file (QDir::homePath () +
-			"/.leechcraft/core/cookies.txt");
-	if (file.open (QIODevice::ReadOnly))
-		CookieJar_->Load (file.readAll ());
-	else
-		qWarning () << Q_FUNC_INFO
-			<< "could not open file"
-			<< file.fileName ()
-			<< file.errorString ();
+	if (const auto file = GetCookiesFile (QIODevice::ReadOnly))
+		CookieJar_->Load (file->readAll ());
 
 	using namespace std::chrono_literals;
 
@@ -135,31 +153,20 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 
 void LC::NetworkAccessManager::SaveCookies () const
 {
-	EntityManager em { nullptr, nullptr };
+	static int errorCount = 0;
 
-	auto dir = QDir::home ();
-	dir.cd (".leechcraft");
-	if (!dir.mkpath ("core"))
+	if (const auto file = GetCookiesFile (QIODevice::WriteOnly | QIODevice::Truncate))
 	{
-		em.HandleEntity (Util::MakeNotification ("LeechCraft"_qs,
-				tr ("Could not create Core directory at %1.")
-					.arg (dir.filePath ("core")),
-				Priority::Critical));
-		return;
-	}
-	dir.cd ("core");
+		const bool saveEnabled = !XmlSettingsManager::Instance ()->property ("DeleteCookiesOnExit").toBool ();
+		file->write (saveEnabled ? CookieJar_->Save () : QByteArray {});
 
-	QFile file { dir.filePath ("cookies.txt") };
-	if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		errorCount = 0;
+	}
+	else if (errorCount++ < 3)
 	{
+		EntityManager em { nullptr, nullptr };
 		em.HandleEntity (Util::MakeNotification ("LeechCraft"_qs,
-				tr ("Could not save cookies, error opening cookie file at %1: %2.")
-					.arg (file.fileName (), file.errorString ()),
+				tr ("Unable to save cookies."),
 				Priority::Critical));
-		qWarning () << file.errorString ();
-		return;
 	}
-
-	const bool saveEnabled = !XmlSettingsManager::Instance ()->property ("DeleteCookiesOnExit").toBool ();
-	file.write (saveEnabled ? CookieJar_->Save () : QByteArray {});
 }
