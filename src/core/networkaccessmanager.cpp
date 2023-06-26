@@ -27,35 +27,44 @@
 Q_DECLARE_METATYPE (QNetworkReply*);
 
 using namespace LC;
-using namespace LC::Util;
+
+namespace
+{
+	QList<QRegExp> GetRxList (const QStringList& rxStrings)
+	{
+		QList<QRegExp> result;
+		result.reserve (rxStrings.size ());
+		for (const auto& str : rxStrings)
+			result << QRegExp { str };
+		return result;
+	}
+}
 
 NetworkAccessManager::NetworkAccessManager (QObject *parent)
 : QNetworkAccessManager (parent)
+, CookieJar_ { std::make_unique<Util::CustomCookieJar> () }
 {
+	setCookieJar (CookieJar_.get ());
+
 	connect (this,
 			&QNetworkAccessManager::sslErrors,
 			[] (QNetworkReply *reply, const QList<QSslError>& errors) { new SslErrorsHandler { reply, errors }; });
 
-	CookieJar_ = new CustomCookieJar (this);
-	setCookieJar (CookieJar_);
-
 	XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
-			this,
-			"handleFilterTrackingCookies");
+			CookieJar_.get (),
+			&Util::CustomCookieJar::SetFilterTrackingCookies);
 	XmlSettingsManager::Instance ()->RegisterObject ("EnableCookies",
-			this,
-			"setCookiesEnabled");
+			CookieJar_.get (),
+			&Util::CustomCookieJar::SetEnabled);
 	XmlSettingsManager::Instance ()->RegisterObject ("MatchDomainExactly",
+			CookieJar_.get (),
+			&Util::CustomCookieJar::SetExactDomainMatch);
+	XmlSettingsManager::Instance ()->RegisterObject ("CookiesWhitelist",
 			this,
-			"setMatchDomainExactly");
-	XmlSettingsManager::Instance ()->RegisterObject ({ "CookiesWhitelist", "CookiesBlacklist" },
+			[this] (const QStringList& strs) { CookieJar_->SetWhitelist (GetRxList (strs)); });
+	XmlSettingsManager::Instance ()->RegisterObject ("CookiesBlacklist",
 			this,
-			"setCookiesLists");
-
-	handleFilterTrackingCookies ();
-	setCookiesEnabled ();
-	setMatchDomainExactly ();
-	setCookiesLists ();
+			[this] (const QStringList& strs) { CookieJar_->SetBlacklist (GetRxList (strs)); });
 
 	try
 	{
@@ -63,8 +72,8 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 		setCache (cache);
 
 		XmlSettingsManager::Instance ()->RegisterObject ("CacheSize",
-				this, "handleCacheSize");
-		handleCacheSize ();
+				this,
+				[cache] (int megabytes) { cache->setMaximumCacheSize (megabytes * 1024 * 1024); });
 	}
 	catch (const std::runtime_error& e)
 	{
@@ -86,13 +95,13 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	using namespace std::chrono_literals;
 
 	const auto saveTimer = new QTimer { this };
-	saveTimer->callOnTimeout (this, &NetworkAccessManager::saveCookies);
+	saveTimer->callOnTimeout (this, &NetworkAccessManager::SaveCookies);
 	saveTimer->start (10s);
 }
 
 NetworkAccessManager::~NetworkAccessManager ()
 {
-	saveCookies ();
+	SaveCookies ();
 }
 
 QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Operation op,
@@ -100,7 +109,7 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 {
 	QNetworkRequest r = req;
 
-	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
+	auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 	proxy->SetValue ("request", QVariant::fromValue<QNetworkRequest> (r));
 	emit hookNAMCreateRequest (proxy, this, &op, &out);
 
@@ -124,7 +133,7 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	return result;
 }
 
-void LC::NetworkAccessManager::saveCookies () const
+void LC::NetworkAccessManager::SaveCookies () const
 {
 	EntityManager em { nullptr, nullptr };
 
@@ -151,51 +160,6 @@ void LC::NetworkAccessManager::saveCookies () const
 		return;
 	}
 
-	const bool saveEnabled = !XmlSettingsManager::Instance ()->
-			property ("DeleteCookiesOnExit").toBool ();
-	file.write (saveEnabled ? CookieJar_->Save () : QByteArray ());
-}
-
-void LC::NetworkAccessManager::handleFilterTrackingCookies ()
-{
-	CookieJar_->SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
-				property ("FilterTrackingCookies").toBool ());
-}
-
-void NetworkAccessManager::setCookiesEnabled ()
-{
-	CookieJar_->SetEnabled (XmlSettingsManager::Instance ()->
-			property ("EnableCookies").toBool ());
-}
-
-void NetworkAccessManager::setMatchDomainExactly ()
-{
-	CookieJar_->SetExactDomainMatch (XmlSettingsManager::Instance ()->
-			property ("MatchDomainExactly").toBool ());
-}
-
-namespace
-{
-	QList<QRegExp> GetList (const QByteArray& setting)
-	{
-		const auto& stringList = XmlSettingsManager::Instance ()->
-				property (setting).toStringList ();
-		QList<QRegExp> result;
-		for (const auto& str : stringList)
-			result << QRegExp (str);
-		return result;
-	}
-}
-
-void NetworkAccessManager::setCookiesLists ()
-{
-	CookieJar_->SetWhitelist (GetList ("CookiesWhitelist"));
-	CookieJar_->SetBlacklist (GetList ("CookiesBlacklist"));
-}
-
-void NetworkAccessManager::handleCacheSize ()
-{
-	auto ourCache = qobject_cast<Util::NetworkDiskCache*> (cache ());
-	ourCache->setMaximumCacheSize (XmlSettingsManager::Instance ()->
-			property ("CacheSize").toInt () * 1048576);
+	const bool saveEnabled = !XmlSettingsManager::Instance ()->property ("DeleteCookiesOnExit").toBool ();
+	file.write (saveEnabled ? CookieJar_->Save () : QByteArray {});
 }

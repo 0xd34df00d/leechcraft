@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QNetworkAccessManager>
-#include <QLocale>
 #include "interfaces/core/ihookproxy.h"
 
 class QTimer;
@@ -27,21 +26,15 @@ namespace LC
 	{
 		Q_OBJECT
 
-		Util::CustomCookieJar *CookieJar_;
+		std::unique_ptr<Util::CustomCookieJar> CookieJar_;
 	public:
-		NetworkAccessManager (QObject* = 0);
+		explicit NetworkAccessManager (QObject* = nullptr);
 		virtual ~NetworkAccessManager ();
 	protected:
 		QNetworkReply* createRequest (Operation,
 				const QNetworkRequest&, QIODevice*);
-	private slots:
-		void saveCookies () const;
-		void handleFilterTrackingCookies ();
-		void setCookiesEnabled ();
-		void setMatchDomainExactly ();
-		void setCookiesLists ();
-
-		void handleCacheSize ();
+	private:
+		void SaveCookies () const;
 	signals:
 		void requestCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);
