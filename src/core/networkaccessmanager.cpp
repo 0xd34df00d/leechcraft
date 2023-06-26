@@ -31,7 +31,6 @@ using namespace LC::Util;
 
 NetworkAccessManager::NetworkAccessManager (QObject *parent)
 : QNetworkAccessManager (parent)
-, CookieSaveTimer_ (new QTimer (this))
 {
 	connect (this,
 			&QNetworkAccessManager::sslErrors,
@@ -87,11 +86,11 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			<< file.fileName ()
 			<< file.errorString ();
 
-	connect (CookieSaveTimer_,
-			SIGNAL (timeout ()),
-			this,
-			SLOT (saveCookies ()));
-	CookieSaveTimer_->start (10000);
+	using namespace std::chrono_literals;
+
+	const auto saveTimer = new QTimer { this };
+	saveTimer->callOnTimeout (this, &NetworkAccessManager::saveCookies);
+	saveTimer->start (10s);
 }
 
 NetworkAccessManager::~NetworkAccessManager ()

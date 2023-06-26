@@ -27,8 +27,6 @@ namespace LC
 	{
 		Q_OBJECT
 
-		QTimer * const CookieSaveTimer_;
-
 		Util::CustomCookieJar *CookieJar_;
 	public:
 		NetworkAccessManager (QObject* = 0);
