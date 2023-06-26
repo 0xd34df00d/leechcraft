@@ -15,8 +15,6 @@ class QTimer;
 
 namespace LC
 {
-	class SslErrorsDialog;
-
 	namespace Util
 	{
 		class CustomCookieJar;

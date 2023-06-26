@@ -8,7 +8,6 @@
 
 #include "networkaccessmanager.h"
 #include <stdexcept>
-#include <algorithm>
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>
