@@ -2,10 +2,6 @@ cmake_minimum_required (VERSION 3.10)
 
 project (leechcraft)
 
-set (CMAKE_CXX_STANDARD 20)
-set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set (CMAKE_CXX_EXTENSIONS OFF)
-
 if (MSVC)
 	set (CMAKE_CXX_FLAGS "/EHa /W3")
 	set (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
