@@ -42,9 +42,6 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
 			this,
 			"handleFilterTrackingCookies");
-	XmlSettingsManager::Instance ()->RegisterObject ("DeleteCookiesOnExit",
-			this,
-			"saveCookies");
 	XmlSettingsManager::Instance ()->RegisterObject ("EnableCookies",
 			this,
 			"setCookiesEnabled");
