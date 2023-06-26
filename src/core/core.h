@@ -51,14 +51,6 @@ namespace LC
 
 		Core ();
 	public:
-		enum FilterType
-		{
-			FTFixedString
-			, FTWildcard
-			, FTRegexp
-			, FTTags
-		};
-
 		static Core& Instance ();
 		void Release ();
 
