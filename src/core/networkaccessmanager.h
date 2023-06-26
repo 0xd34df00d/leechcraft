@@ -27,10 +27,9 @@ namespace LC
 		std::unique_ptr<Util::CustomCookieJar> CookieJar_;
 	public:
 		explicit NetworkAccessManager (QObject* = nullptr);
-		virtual ~NetworkAccessManager ();
+		~NetworkAccessManager () override;
 	protected:
-		QNetworkReply* createRequest (Operation,
-				const QNetworkRequest&, QIODevice*);
+		QNetworkReply* createRequest (Operation, const QNetworkRequest&, QIODevice*) override;
 	private:
 		void SaveCookies () const;
 	signals:
