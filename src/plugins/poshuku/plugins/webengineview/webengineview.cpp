@@ -19,6 +19,7 @@
 #include "cookiessyncer.h"
 #include "downloaditemhandler.h"
 #include "icondatabase.h"
+#include "lcschemehandler.h"
 
 namespace LC::Poshuku::WebEngineView
 {
@@ -60,6 +61,8 @@ namespace LC::Poshuku::WebEngineView
 
 		Interceptor_ = std::make_shared<RequestInterceptor> ();
 		prof->setUrlRequestInterceptor (Interceptor_.get ());
+
+		LcSchemeHandler::Register (*prof);
 
 		new DownloadItemHandler (prof);
 
