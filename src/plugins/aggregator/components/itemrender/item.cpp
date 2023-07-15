@@ -21,6 +21,12 @@
 
 namespace LC::Aggregator
 {
+	using Node = Util::Node;
+	using Nodes = Util::Nodes;
+	using Tag = Util::Tag;
+	using TagAttrs = Util::TagAttrs;
+	namespace Tags = Util::Tags;
+
 	namespace
 	{
 		QString GetHex (QPalette::ColorRole role, QPalette::ColorGroup group = QPalette {}.currentColorGroup ())

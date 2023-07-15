@@ -14,7 +14,6 @@ LC_DEFINE_PLUGIN (
 		components/itemrender/item.cpp
 		components/itemrender/mrss.cpp
 		components/itemrender/utils.cpp
-		components/itemrender/xmlnode.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp

@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "xmlnode.h"
+#include <util/sll/xmlnode.h>
 
 namespace LC::Aggregator
 {
 	struct MRSSEntry;
 	struct TextColor;
 
-	Nodes MakeMRSSEntry (const MRSSEntry& entry, const TextColor& color);
+	Util::Nodes MakeMRSSEntry (const MRSSEntry& entry, const TextColor& color);
 }

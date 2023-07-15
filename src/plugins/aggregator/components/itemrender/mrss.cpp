@@ -13,6 +13,11 @@
 
 namespace LC::Aggregator
 {
+	using Nodes = Util::Nodes;
+	using Tag = Util::Tag;
+	using TagAttrs = Util::TagAttrs;
+	namespace Tags = Util::Tags;
+
 	namespace
 	{
 		QString GetMRSSMedium (const QString& medium)

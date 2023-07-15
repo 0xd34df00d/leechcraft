@@ -11,7 +11,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 
-namespace LC::Aggregator
+namespace LC::Util
 {
 	Nodes operator+ (Node&& node, Nodes&& nodes)
 	{
@@ -66,7 +66,7 @@ namespace LC::Aggregator
 
 	namespace Tags
 	{
-		const Tag Br { .Name_ = QStringLiteral ("br") };
+		UTIL_SLL_API const Tag Br { .Name_ = QStringLiteral ("br") };
 
 		Tag Image (const QString& url)
 		{

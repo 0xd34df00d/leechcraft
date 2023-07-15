@@ -8,6 +8,7 @@ set (SLL_SRCS
 	qtutil.cpp
 	urlaccessor.cpp
 	serializejson.cpp
+	xmlnode.cpp
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)

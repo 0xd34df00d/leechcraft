@@ -12,8 +12,9 @@
 #include <variant>
 #include <QString>
 #include <QVector>
+#include "sllconfig.h"
 
-namespace LC::Aggregator
+namespace LC::Util
 {
 	using TagAttrs = QVector<std::pair<QString, QString>>;
 
@@ -22,9 +23,9 @@ namespace LC::Aggregator
 	using Node = std::variant<Tag, QString>;
 	using Nodes = QVector<Node>;
 
-	Nodes operator+ (Node&&, Nodes&&);
-	Nodes operator+ (Nodes&&, Node&&);
-	Nodes operator+ (Node&&, Node&&);
+	UTIL_SLL_API Nodes operator+ (Node&&, Nodes&&);
+	UTIL_SLL_API Nodes operator+ (Nodes&&, Node&&);
+	UTIL_SLL_API Nodes operator+ (Node&&, Node&&);
 
 	struct Tag
 	{
@@ -33,17 +34,18 @@ namespace LC::Aggregator
 
 		Nodes Children_ {};
 
-		static Tag WithText (const QString& name, const QString& contents);
+		UTIL_SLL_API static Tag WithText (const QString& name, const QString& contents);
 
-		[[nodiscard]] QString ToHtml () const;
+		[[nodiscard]]
+		UTIL_SLL_API QString ToHtml () const;
 	};
 
 	namespace Tags
 	{
 		extern const Tag Br;
 
-		Tag Image (const QString& url);
-		Tag Li (Nodes&& children);
-		Tag Ul (Nodes&& children);
+		UTIL_SLL_API Tag Image (const QString& url);
+		UTIL_SLL_API Tag Li (Nodes&& children);
+		UTIL_SLL_API Tag Ul (Nodes&& children);
 	}
 }

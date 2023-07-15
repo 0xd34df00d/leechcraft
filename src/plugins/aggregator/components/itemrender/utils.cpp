@@ -12,16 +12,16 @@
 
 namespace LC::Aggregator
 {
-	Tag MakeLink (const QString& target, Node contents)
+	Util::Tag MakeLink (const QString& target, Util::Node contents)
 	{
-		TagAttrs attrs { { "href"_qs, target } };
+		Util::TagAttrs attrs { { "href"_qs, target } };
 		if (XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
 			attrs.push_back ({ "target"_qs, "blank"_qs });
 
 		return { .Name_ = "a", .Attrs_ = std::move (attrs), .Children_ = { std::move (contents) } };
 	}
 
-	Tag WithInnerPadding (const TextColor& color, Nodes&& children)
+	Util::Tag WithInnerPadding (const TextColor& color, Util::Nodes&& children)
 	{
 		auto blockStyle = R"(
 					background: %1;

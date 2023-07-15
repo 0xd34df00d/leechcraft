@@ -10,7 +10,7 @@
 
 #include <QCoreApplication>
 #include <QString>
-#include "xmlnode.h"
+#include <util/sll/xmlnode.h>
 
 namespace LC::Aggregator
 {
@@ -25,6 +25,6 @@ namespace LC::Aggregator
 		QString Bg_;
 	};
 
-	Tag MakeLink (const QString& target, Node contents);
-	Tag WithInnerPadding (const TextColor& color, Nodes&& children);
+	Util::Tag MakeLink (const QString& target, Util::Node contents);
+	Util::Tag WithInnerPadding (const TextColor& color, Util::Nodes&& children);
 }
