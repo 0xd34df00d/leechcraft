@@ -31,6 +31,10 @@ namespace LC::Poshuku::SpeedDial
 		const size_t Rows = 2;
 		const size_t Cols = 4;
 
+		const QString ThumbPath = "/thumb"_qs;
+		const QString ThumbUrlBase = SpeedDialUrl + ThumbPath;
+		const QString ThumbUrlKey = "url"_qs;
+
 		QString GetPageHeader ()
 		{
 			return QObject::tr ("Speed dial");
@@ -46,8 +50,8 @@ namespace LC::Poshuku::SpeedDial
 
 		QString MakeThumbUrl (const QUrl& siteUrl)
 		{
-			QUrl url { "lc://speeddial/thumb"_qs };
-			url.setQuery (QUrlQuery { { { "url"_qs, siteUrl.toEncoded () } } });
+			QUrl url { ThumbUrlBase };
+			url.setQuery (QUrlQuery { { { ThumbUrlKey, siteUrl.toEncoded () } } });
 			return url.toString ();
 		}
 
