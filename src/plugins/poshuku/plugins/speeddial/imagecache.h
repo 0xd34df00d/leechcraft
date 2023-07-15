@@ -39,6 +39,7 @@ namespace LC::Poshuku::SpeedDial
 		QImage GetSnapshot (const QUrl&);
 		QSize GetThumbSize () const;
 	private:
+		void EnsureEnqueued (const QUrl&);
 		void StartNextLoad ();
 		void Render (QWidget*);
 	private slots:

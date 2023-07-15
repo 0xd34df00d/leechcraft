@@ -53,22 +53,26 @@ namespace LC::Poshuku::SpeedDial
 			QFile::remove (path);
 		}
 
-		if (QueuedLoads_.contains (url))
-			return {};
-
-		if (std::any_of (CurrentLoads_.begin (), CurrentLoads_.end (),
-				[&url] (const auto& pair) { return pair.second.first == url; }))
-			return {};
-
-		QueuedLoads_ << url;
-		StartNextLoad ();
-
+		EnsureEnqueued (url);
 		return {};
 	}
 
 	QSize ImageCache::GetThumbSize () const
 	{
 		return ThumbSize;
+	}
+
+	void ImageCache::EnsureEnqueued (const QUrl& url)
+	{
+		if (QueuedLoads_.contains (url))
+			return;
+
+		if (std::any_of (CurrentLoads_.begin (), CurrentLoads_.end (),
+				[&url] (const auto& pair) { return pair.second.first == url; }))
+			return;
+
+		QueuedLoads_ << url;
+		StartNextLoad ();
 	}
 
 	void ImageCache::StartNextLoad ()
