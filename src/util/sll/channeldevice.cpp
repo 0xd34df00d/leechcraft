@@ -32,23 +32,37 @@ namespace LC::Util
 
 	qint64 ChannelDevice::readData (char *data, qint64 maxSize)
 	{
-		const std::lock_guard g { Mutex_ };
+		QVector<QByteArray> consuming;
+
+		{
+			const std::lock_guard g { Mutex_ };
+			consuming.reserve (Chunks_.size ());
+
+			while (!Chunks_.empty ())
+			{
+				auto& chunk = Chunks_.front ();
+				if (chunk.size () <= maxSize)
+				{
+					maxSize -= chunk.size ();
+					consuming.push_back (std::move (chunk));
+					Chunks_.pop_front ();
+				}
+				else
+				{
+					consuming.push_back (chunk.left (maxSize));
+					chunk.remove (0, maxSize);
+					break;
+				}
+			}
+		}
 
 		qint64 read = 0;
-		while (!Chunks_.empty () && maxSize)
+		for (const auto& chunk : consuming)
 		{
-			auto& chunk = Chunks_.front ();
-			const auto toCopy = std::min<qint64> (chunk.size (), maxSize);
-			std::memcpy (data, chunk.constData (), toCopy);
-			if (chunk.size () < maxSize)
-				Chunks_.pop_front ();
-			else
-				chunk.remove (0, maxSize);
-
-			data += toCopy;
-			maxSize -= toCopy;
-			read += toCopy;
+			std::memcpy (data + read, chunk.constData (), chunk.size ());
+			read += chunk.size ();
 		}
+
 		return read;
 	}
 
