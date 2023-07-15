@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "xmlnode.h"
+#include <QSize>
 #include <QXmlStreamWriter>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
@@ -74,6 +75,17 @@ namespace LC::Util
 		Tag Image (const QString& url)
 		{
 			return { .Name_ = "img"_qs, .Attrs_ = { { "src"_qs, url } } };
+		}
+
+		Tag Image (const QString& url, const QSize& size)
+		{
+			const auto& w = QString::number (size.width ());
+			const auto& h = QString::number (size.height ());
+			return
+			{
+				.Name_ = "img"_qs,
+				.Attrs_ = { { "src"_qs, url }, { "width"_qs, w }, { "height"_qs, h } },
+			};
 		}
 
 		Tag Li (Nodes&& children)

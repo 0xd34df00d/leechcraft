@@ -14,6 +14,8 @@
 #include <QVector>
 #include "sllconfig.h"
 
+class QSize;
+
 namespace LC::Util
 {
 	using TagAttrs = QVector<std::pair<QString, QString>>;
@@ -49,6 +51,7 @@ namespace LC::Util
 		extern const Tag Br;
 
 		UTIL_SLL_API Tag Image (const QString& url);
+		UTIL_SLL_API Tag Image (const QString& url, const QSize&);
 		UTIL_SLL_API Tag Li (Nodes&& children);
 		UTIL_SLL_API Tag Ul (Nodes&& children);
 	}
