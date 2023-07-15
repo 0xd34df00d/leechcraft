@@ -27,6 +27,9 @@ namespace LC::Util
 	UTIL_SLL_API Nodes operator+ (Nodes&&, Node&&);
 	UTIL_SLL_API Nodes operator+ (Node&&, Node&&);
 
+	template<typename T>
+	concept HtmlRepr = std::is_same_v<T, QString> || std::is_same_v<T, QByteArray>;
+
 	struct Tag
 	{
 		QString Name_;
@@ -36,8 +39,9 @@ namespace LC::Util
 
 		UTIL_SLL_API static Tag WithText (const QString& name, const QString& contents);
 
+		template<HtmlRepr T = QString>
 		[[nodiscard]]
-		UTIL_SLL_API QString ToHtml () const;
+		UTIL_SLL_API T ToHtml () const;
 	};
 
 	namespace Tags
