@@ -10,6 +10,7 @@
 #include <cmath>
 #include <QUrlQuery>
 #include <QXmlStreamWriter>
+#include <util/sll/channeldevice.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/poshuku/istoragebackend.h>
@@ -242,6 +243,28 @@ namespace LC::Poshuku::SpeedDial
 					});
 			}
 		}
+
+		ReplyContents GetThumbnail (ImageCache& cache, const QUrl& pageUrl)
+		{
+			if (auto file = cache.GetSnapshotFile (pageUrl))
+				return file;
+
+			auto device = std::make_shared<Util::ChannelDevice> ();
+			device->open (QIODevice::ReadWrite);
+			QObject::connect (&cache,
+					&ImageCache::gotSnapshot,
+					device.get (),
+					[pageUrl, weakDevice = std::weak_ptr { device }] (const QUrl& url, const QImage& image)
+					{
+						if (pageUrl == url)
+							if (const auto device = weakDevice.lock ())
+							{
+								image.save (device.get (), "PNG");
+								device->FinishWrite ();
+							}
+					});
+			return device;
+		}
 	}
 
 	HandleResult HandleRequest (const QString& path, const QUrlQuery& query, const RootPageDeps& deps)
@@ -251,6 +274,20 @@ namespace LC::Poshuku::SpeedDial
 					.ContentType_ = "text/html",
 					.Contents_ = MakeRootPage (deps),
 				});
+
+		if (path == ThumbPath)
+		{
+			const auto& pageUrlStr = query.queryItemValue (ThumbUrlKey);
+			const auto& pageUrl = QUrl::fromEncoded (pageUrlStr.toUtf8 ());
+			if (pageUrl.isValid ())
+				return HandleResult::Right ({
+						.ContentType_ = "image/png",
+						.Contents_ = GetThumbnail (deps.ImageCache_, pageUrl),
+					});
+			else
+				qWarning () << "invalid thumb URL:"
+						<< query.toString ();
+		}
 
 		return HandleResult { IInternalSchemeHandler::Error::Unsupported };
 	}

@@ -12,6 +12,7 @@
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 
+class QIODevice;
 class QSize;
 class QImage;
 
@@ -36,7 +37,7 @@ namespace LC::Poshuku::SpeedDial
 		explicit ImageCache (IProxyObject&);
 		~ImageCache () override;
 
-		QImage GetSnapshot (const QUrl&);
+		std::unique_ptr<QIODevice> GetSnapshotFile (const QUrl&);
 		QSize GetThumbSize () const;
 	private:
 		void EnsureEnqueued (const QUrl&);

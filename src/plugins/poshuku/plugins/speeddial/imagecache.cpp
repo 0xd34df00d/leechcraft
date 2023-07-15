@@ -35,23 +35,24 @@ namespace LC::Poshuku::SpeedDial
 
 	ImageCache::~ImageCache () = default;
 
-	QImage ImageCache::GetSnapshot (const QUrl& url)
+	std::unique_ptr<QIODevice> ImageCache::GetSnapshotFile (const QUrl& url)
 	{
+		const auto validity = XmlSettingsManager::Instance ().property ("ValidFor").toInt ();
+
 		const auto& filename = QString::number (qHash (url)) + ".png";
 		const auto& path = CacheDir_.filePath (filename);
-		const QFileInfo info { path };
-		if (info.exists ())
+		if (const QFileInfo info { path };
+			info.exists () && info.lastModified ().daysTo (QDateTime::currentDateTime ()) <= validity)
 		{
-			const auto validity = XmlSettingsManager::Instance ().property ("ValidFor").toInt ();
-			if (info.lastModified ().daysTo (QDateTime::currentDateTime ()) <= validity)
-			{
-				QImage result { path };
-				if (!result.isNull ())
-					return result;
-			}
+			auto file = std::make_unique<QFile> (path);
+			if (file->open (QIODevice::ReadOnly))
+				return file;
 
-			QFile::remove (path);
+			qWarning () << "unable to open file"
+					<< path
+					<< file->errorString ();
 		}
+		QFile::remove (path);
 
 		EnsureEnqueued (url);
 		return {};
