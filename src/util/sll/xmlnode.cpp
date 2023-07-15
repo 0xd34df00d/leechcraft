@@ -54,19 +54,18 @@ namespace LC::Util
 	}
 
 	template<HtmlRepr T>
-	T Tag::ToHtml () const
+	T Tag::ToHtml (T result) const
 	{
 		if (Name_.isEmpty ())
 			return {};
 
-		T result;
 		QXmlStreamWriter w { &result };
 		TagToHtml (*this, w);
 		return result;
 	}
 
-	template QString Tag::ToHtml<QString> () const;
-	template QByteArray Tag::ToHtml<QByteArray> () const;
+	template QString Tag::ToHtml (QString) const;
+	template QByteArray Tag::ToHtml (QByteArray) const;
 
 	namespace Tags
 	{

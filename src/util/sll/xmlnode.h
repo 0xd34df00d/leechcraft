@@ -41,7 +41,7 @@ namespace LC::Util
 
 		template<HtmlRepr T = QString>
 		[[nodiscard]]
-		UTIL_SLL_API T ToHtml () const;
+		UTIL_SLL_API T ToHtml (T prefix = {}) const;
 	};
 
 	namespace Tags
