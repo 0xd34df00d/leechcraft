@@ -254,14 +254,13 @@ namespace LC::Poshuku::SpeedDial
 			QObject::connect (&cache,
 					&ImageCache::gotSnapshot,
 					device.get (),
-					[pageUrl, weakDevice = std::weak_ptr { device }] (const QUrl& url, const QImage& image)
+					[pageUrl, devPtr = device.get ()] (const QUrl& url, const QImage& image)
 					{
 						if (pageUrl == url)
-							if (const auto device = weakDevice.lock ())
-							{
-								image.save (device.get (), "PNG");
-								device->FinishWrite ();
-							}
+						{
+							image.save (devPtr, "PNG");
+							devPtr->FinishWrite ();
+						}
 					});
 			return device;
 		}
