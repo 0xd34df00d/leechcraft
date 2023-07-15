@@ -12,7 +12,7 @@
 #include <QVariantList>
 #include <QUrl>
 #include <QModelIndexList>
-#include "viewhandler.h"
+#include "requesthandler.h"
 
 class QStandardItemModel;
 

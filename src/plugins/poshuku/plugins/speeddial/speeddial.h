@@ -14,6 +14,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/poshuku/iinternalschemehandler.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LC::Poshuku
@@ -29,9 +30,10 @@ namespace SpeedDial
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public IInternalSchemeHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LC::Poshuku::IInternalSchemeHandler)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.SpeedDial")
 
@@ -52,6 +54,8 @@ namespace SpeedDial
 		QSet<QByteArray> GetPluginClasses () const override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
+
+		HandleResult HandleRequest (const Request&) override;
 	public slots:
 		void initPlugin (QObject*);
 

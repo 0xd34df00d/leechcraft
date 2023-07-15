@@ -8,13 +8,15 @@
 
 #include "speeddial.h"
 #include <QIcon>
+#include <QUrlQuery>
 #include <util/util.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
-#include "viewhandler.h"
+#include <interfaces/poshuku/iwebview.h>
 #include "imagecache.h"
 #include "customsitesmanager.h"
 #include "xmlsettingsmanager.h"
+#include "requesthandler.h"
 
 namespace LC::Poshuku::SpeedDial
 {
@@ -77,13 +79,22 @@ namespace LC::Poshuku::SpeedDial
 	void Plugin::hookBrowserWidgetInitialized (LC::IHookProxy_ptr,
 			QObject *browserWidget)
 	{
-		new ViewHandler { qobject_cast<IBrowserWidget*> (browserWidget), Cache_, CustomSites_, PoshukuProxy_ };
+		qobject_cast<IBrowserWidget*> (browserWidget)->GetWebView ()->Load (SpeedDialUrl);
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
 	}
+
+	auto Plugin::HandleRequest (const Request& request) -> HandleResult
+	{
+		if (request.Url_.host () != SpeedDialHost)
+			return HandleResult { Error::Unsupported };
+
+		return SpeedDial::HandleRequest (request.Url_.path (), QUrlQuery { request.Url_ },
+				{ .CustomSites_ = *CustomSites_, .PoshukuProxy_ = *PoshukuProxy_, .ImageCache_ = *Cache_ });
+	}
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LC::Poshuku::SpeedDial::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LC::Poshuku::SpeedDial::Plugin)
