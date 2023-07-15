@@ -254,11 +254,11 @@ namespace LC::Poshuku::SpeedDial
 			QObject::connect (&cache,
 					&ImageCache::gotSnapshot,
 					device.get (),
-					[pageUrl, devPtr = device.get ()] (const QUrl& url, const QImage& image)
+					[pageUrl, devPtr = device.get ()] (const QUrl& url, const QByteArray& data)
 					{
 						if (pageUrl == url)
 						{
-							image.save (devPtr, "PNG");
+							devPtr->write (data);
 							devPtr->FinishWrite ();
 						}
 					});

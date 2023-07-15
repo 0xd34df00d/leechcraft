@@ -46,6 +46,6 @@ namespace LC::Poshuku::SpeedDial
 	private slots:
 		void handleLoadFinished ();
 	signals:
-		void gotSnapshot (const QUrl&, const QImage&);
+		void gotSnapshot (const QUrl&, const QByteArray&);
 	};
 }

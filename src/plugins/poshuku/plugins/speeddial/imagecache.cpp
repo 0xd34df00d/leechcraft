@@ -15,6 +15,7 @@
 #include <QTimer>
 #include <QShowEvent>
 #include <QCoreApplication>
+#include <QBuffer>
 #include <QtDebug>
 #include <util/sys/paths.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
@@ -142,11 +143,18 @@ namespace LC::Poshuku::SpeedDial
 		webWidget->render (&painter);
 		painter.end ();
 
+		QBuffer buffer;
+		buffer.open (QIODevice::ReadWrite);
+
 		const auto& thumb = image.scaled (ThumbSize,
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		thumb.save (CacheDir_.filePath (QString::number (qHash (url))) + ".png");
+		thumb.save (&buffer, "PNG");
 
-		emit gotSnapshot (url, thumb);
+		QFile file { CacheDir_.filePath (QString::number (qHash (url))) + ".png" };
+		file.open (QIODevice::WriteOnly | QIODevice::Truncate);
+		file.write (buffer.data ());
+
+		emit gotSnapshot (url, buffer.data ());
 	}
 
 	void ImageCache::handleLoadFinished ()
