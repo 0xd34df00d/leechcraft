@@ -138,5 +138,23 @@ namespace LC::Util
 		{
 			return { .Name_ = "p"_qs, .Children_ = std::move (children) };
 		}
+
+		Nodes TableGrid (size_t rows, size_t cols, const std::function<Nodes (size_t, size_t)>& cell)
+		{
+			Nodes result;
+			result.reserve (rows);
+
+			for (size_t r = 0; r < rows; ++r)
+			{
+				Nodes rowCells;
+				rowCells.reserve (cols);
+				for (size_t c = 0; c < cols; ++c)
+					rowCells.push_back (Tag { .Name_ = "td"_qs, .Children_ = cell (r, c) });
+
+				result.push_back (Tag { .Name_ = "tr"_qs, .Children_ = std::move (rowCells) });
+			}
+
+			return result;
+		}
 	}
 }

@@ -65,5 +65,7 @@ namespace LC::Util
 		UTIL_SLL_API Tag Ul (Nodes&& children);
 
 		UTIL_SLL_API Tag P (Nodes&& children);
+
+		UTIL_SLL_API Nodes TableGrid (size_t rows, size_t cols, const std::function<Nodes (size_t, size_t)>& cell);
 	}
 }
