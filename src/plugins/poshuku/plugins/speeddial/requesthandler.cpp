@@ -8,11 +8,12 @@
 
 #include "requesthandler.h"
 #include <cmath>
+#include <functional>
 #include <QUrlQuery>
-#include <QXmlStreamWriter>
 #include <util/sll/channeldevice.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/xmlnode.h>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customsitesmanager.h"
@@ -56,106 +57,109 @@ namespace LC::Poshuku::SpeedDial
 			return url.toString ();
 		}
 
-		void WriteTable (ImageCache& cache, QXmlStreamWriter& w,
-				const TopList_t& items, size_t rows, size_t cols,
-				const QString& heading)
+		using Tag = Util::Tag;
+		using Node = Util::Node;
+		using Nodes = Util::Nodes;
+		namespace Tags = Util::Tags;
+
+		Tag MakeHead (ImageCache& cache)
 		{
+			const auto style = R"(
+					.centered {
+						margin-left: auto;
+						margin-right: auto;
+					}
+
+					.thumbimage {
+						display: block;
+						border: 1px solid black;
+					}
+
+					p {
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						margin: 20px;
+						text-align: center;
+					}
+
+					td > a {
+						text-decoration: none;
+						color: "#222";
+					}
+
+					table {
+						margin-top: 10px;
+					}
+
+					th {
+						text-align: center;
+						font-size: 1.5em;
+					}
+
+					td {
+						max-width: %1;
+						min-width: %1;
+						width: %1;
+					}
+				)"_qs;
 			const auto& thumbSize = cache.GetThumbSize ();
-
-			w.writeStartElement ("table");
-			w.writeAttribute ("class", "centered");
-			w.writeAttribute ("style", "margin-top: 10px");
-
-			w.writeStartElement ("th");
-			w.writeAttribute ("style", "text-align: center; font-size: 1.5em;");
-			w.writeAttribute ("colspan", QString::number (cols));
-			w.writeCharacters (heading);
-			w.writeEndElement ();
-
 			const auto& tdWidthStr = QString::number (thumbSize.width () + 20) + "px";
-
-			for (size_t r = 0; r < rows; ++r)
+			return
 			{
-				w.writeStartElement ("tr");
-				for (size_t c = 0; c < cols; ++c)
+				"head"_qs, {},
 				{
-					if (r * cols + c >= static_cast<size_t> (items.size ()))
-						continue;
-
-					const auto& item = items.at (r * cols + c);
-
-					w.writeStartElement ("td");
-						w.writeAttribute ("style",
-								QString { "max-width: %1; min-width: %1; width: %1;" }
-										.arg (tdWidthStr));
-						w.writeStartElement ("a");
-							w.writeAttribute ("href", item.first.toEncoded ());
-							w.writeAttribute ("class", "sdlink");
-
-							w.writeStartElement ("img");
-								w.writeAttribute ("src", MakeThumbUrl (item.first));
-								w.writeAttribute ("width", QString::number (thumbSize.width ()));
-								w.writeAttribute ("height", QString::number (thumbSize.height ()));
-								w.writeAttribute ("class", "thumbimage centered");
-							w.writeEndElement ();
-
-							w.writeStartElement ("p");
-								w.writeAttribute ("class", "thumbtext");
-								w.writeCharacters (item.second);
-							w.writeEndElement ();
-						w.writeEndElement ();
-					w.writeEndElement ();
+					Tags::Charset ("UTF-8"_qs),
+					Tags::Title (QObject::tr ("Speed dial")),
+					Tags::Style (style.arg (tdWidthStr)),
 				}
-				w.writeEndElement ();
-			}
-
-			w.writeEndElement ();
+			};
 		}
 
-
-		QByteArray MakeTables (ImageCache& cache, const QList<QPair<QString, TopList_t>>& tables)
+		Nodes MakeCell (ImageCache& cache, const TopList_t& items, size_t row, size_t col)
 		{
-			QByteArray html = "<!DOCTYPE html>";
-			QXmlStreamWriter w (&html);
-			w.writeStartElement ("html");
-			w.writeAttribute ("xmlns", "http://www.w3.org/1999/xhtml");
-				w.writeStartElement ("head");
-					w.writeStartElement ("meta");
-						w.writeAttribute ("charset", "UTF-8");
-					w.writeEndElement ();
-					w.writeTextElement ("title", QObject::tr ("Speed dial"));
-					w.writeTextElement ("style", R"delim(
-							.centered {
-								margin-left: auto;
-								margin-right: auto;
-							}
+			const auto idx = static_cast<int> (row * Cols + col);
+			if (idx >= items.size ())
+				return {};
 
-							.thumbimage {
-								display: block;
-								border: 1px solid black;
-							}
+			const auto& [url, name] = items.at (idx);
+			return
+			{
+				Tag
+				{
+					.Name_ = "a"_qs,
+					.Attrs_ = { { "href"_qs, url.toEncoded () } },
+					.Children_
+					{
+						Tags::Image (MakeThumbUrl (url), cache.GetThumbSize ())
+								.WithAttr ("class"_qs, "thumbimage centered"_qs),
+						Tags::P ({ name }),
+					},
+				}
+			};
+		}
 
-							.thumbtext {
-								white-space: nowrap;
-								overflow: hidden;
-								text-overflow: ellipsis;
-								margin: 20px;
-								text-align: center;
-							}
+		Node MakeTable (ImageCache& cache, const QPair<QString, TopList_t>& tableInfo)
+		{
+			const auto& heading = tableInfo.first;
+			const auto& items = tableInfo.second;
+			const auto& cellMaker = std::bind_front (&MakeCell, std::ref (cache), std::ref (items));
+			return Tag
+			{
+				.Name_ = "table"_qs,
+				.Attrs_ = { { "class"_qs, "centered"_qs } },
+				.Children_ =
+					Tag { "th"_qs, { { "colspan"_qs, QString::number (Cols) } }, { heading } } +
+					Util::Tags::TableGrid (Rows, Cols, cellMaker)
+			};
+		}
 
-							.sdlink {
-								text-decoration: none;
-								color: "#222";
-							}
-						)delim");
-				w.writeEndElement ();
-				w.writeStartElement ("body");
-					for (const auto& table : tables)
-						WriteTable (cache, w, table.second, Rows, Cols, table.first);
-				w.writeEndElement ();
-			w.writeEndElement ();
-
-			return html;
+		QByteArray MakePage (ImageCache& cache, const QList<QPair<QString, TopList_t>>& tables)
+		{
+			return Tags::Html ({
+					MakeHead (cache),
+					Tags::Body (Util::MapAs<QVector> (tables, std::bind_front (&MakeTable, std::ref (cache)))),
+				}).ToHtml (QByteArray { "<!DOCTYPE html>" });
 		}
 
 		double GetScore (const QDateTime& then, const QDateTime& now)
@@ -230,13 +234,13 @@ namespace LC::Poshuku::SpeedDial
 				const auto& topList = deps.CustomSites_.GetTopList ();
 				return topList.isEmpty () ?
 						MakeEmptyTopList () :
-						MakeTables (deps.ImageCache_, { { {}, topList } });
+						MakePage (deps.ImageCache_, { { {}, topList } });
 			}
 			else
 			{
 				const auto sb = deps.PoshukuProxy_.CreateStorageBackend ();
 				const auto& result = GetTopUrls (sb, Rows * Cols);
-				return MakeTables (deps.ImageCache_,
+				return MakePage (deps.ImageCache_,
 					{
 						{ QObject::tr ("Top pages"), result.TopPages_ },
 						{ QObject::tr ("Top sites"), result.TopHosts_ }
