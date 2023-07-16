@@ -7,6 +7,7 @@ LC_DEFINE_PLUGIN (
 		imagecache.cpp
 		customsitesmanager.cpp
 		xmlsettingsmanager.cpp
+		pagerenderer.cpp
 		requesthandler.cpp
 	SETTINGS poshukuspeeddialsettings.xml
 	QT_COMPONENTS Concurrent Widgets
