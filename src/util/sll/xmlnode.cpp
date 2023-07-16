@@ -68,6 +68,12 @@ namespace LC::Util
 	template QString Tag::ToHtml (QString) const;
 	template QByteArray Tag::ToHtml (QByteArray) const;
 
+	Tag& Tag::WithAttr (QString key, QString value) &&
+	{
+		Attrs_.push_back ({ std::move (key), std::move (value) });
+		return *this;
+	}
+
 	namespace Tags
 	{
 		UTIL_SLL_API const Tag Br { .Name_ = QStringLiteral ("br") };
