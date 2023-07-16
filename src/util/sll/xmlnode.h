@@ -45,7 +45,7 @@ namespace LC::Util
 		[[nodiscard]]
 		UTIL_SLL_API T ToHtml (T prefix = {}) const;
 
-		Tag& WithAttr (QString, QString) &&;
+		UTIL_SLL_API Tag& WithAttr (QString, QString) &&;
 	};
 
 	namespace Tags
