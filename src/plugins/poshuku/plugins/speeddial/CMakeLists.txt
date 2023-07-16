@@ -3,12 +3,12 @@ project (poshuku_speeddial)
 LC_DEFINE_PLUGIN (
 	SRCS
 		constants.cpp
-		speeddial.cpp
-		imagecache.cpp
 		customsitesmanager.cpp
-		xmlsettingsmanager.cpp
+		imagecache.cpp
 		pagerenderer.cpp
 		requesthandler.cpp
+		speeddial.cpp
+		xmlsettingsmanager.cpp
 	SETTINGS poshukuspeeddialsettings.xml
 	QT_COMPONENTS Concurrent Widgets
 	)
