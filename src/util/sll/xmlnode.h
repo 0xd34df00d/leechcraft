@@ -50,9 +50,18 @@ namespace LC::Util
 	{
 		extern const Tag Br;
 
+		UTIL_SLL_API Tag Html (Nodes&& children);
+		UTIL_SLL_API Tag Charset (const QString& charset);
+		UTIL_SLL_API Tag Title (const QString& title);
+		UTIL_SLL_API Tag Style (const QString& style);
+
+		UTIL_SLL_API Tag Body (Nodes&& children);
+
 		UTIL_SLL_API Tag Image (const QString& url);
 		UTIL_SLL_API Tag Image (const QString& url, const QSize&);
 		UTIL_SLL_API Tag Li (Nodes&& children);
 		UTIL_SLL_API Tag Ul (Nodes&& children);
+
+		UTIL_SLL_API Tag P (Nodes&& children);
 	}
 }

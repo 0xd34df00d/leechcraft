@@ -72,6 +72,36 @@ namespace LC::Util
 	{
 		UTIL_SLL_API const Tag Br { .Name_ = QStringLiteral ("br") };
 
+		Tag Html (Nodes&& children)
+		{
+			return
+			{
+				.Name_ = "html"_qs,
+				.Attrs_ = { { "xmlns"_qs, "http://www.w3.org/1999/xhtml" } },
+				.Children_ = std::move (children),
+			};
+		}
+
+		Tag Charset (const QString& charset)
+		{
+			return { .Name_ = "meta"_qs, .Attrs_ = { { "charset"_qs, charset } } };
+		}
+
+		Tag Title (const QString& title)
+		{
+			return { .Name_ = "title"_qs, .Children_ = { title } };
+		}
+
+		Tag Style (const QString& style)
+		{
+			return { .Name_ = "style"_qs, .Children_ = { style } };
+		}
+
+		Tag Body (Nodes&& children)
+		{
+			return { .Name_ = "body"_qs, .Children_ = std::move (children) };
+		}
+
 		Tag Image (const QString& url)
 		{
 			return { .Name_ = "img"_qs, .Attrs_ = { { "src"_qs, url } } };
@@ -96,6 +126,11 @@ namespace LC::Util
 		Tag Ul (Nodes&& children)
 		{
 			return { .Name_ = "ul"_qs, .Children_ = std::move (children) };
+		}
+
+		Tag P (Nodes&& children)
+		{
+			return { .Name_ = "p"_qs, .Children_ = std::move (children) };
 		}
 	}
 }
