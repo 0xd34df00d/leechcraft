@@ -12,7 +12,7 @@
 #include <QVariantList>
 #include <QUrl>
 #include <QModelIndexList>
-#include "requesthandler.h"
+#include "constants.h"
 
 class QStandardItemModel;
 

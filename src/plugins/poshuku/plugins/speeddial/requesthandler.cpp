@@ -16,27 +16,18 @@
 #include <util/sll/xmlnode.h>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
+#include "constants.h"
 #include "customsitesmanager.h"
 #include "imagecache.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Poshuku::SpeedDial
 {
-	extern const QString SpeedDialHost = "speeddial"_qs;
-	extern const QString SpeedDialUrl = "lc://speeddial"_qs;
-
 	using HandleResult = IInternalSchemeHandler::HandleResult;
 	using ReplyContents = IInternalSchemeHandler::ReplyContents;
 
 	namespace
 	{
-		const size_t Rows = 2;
-		const size_t Cols = 4;
-
-		const QString ThumbPath = "/thumb"_qs;
-		const QString ThumbUrlBase = SpeedDialUrl + ThumbPath;
-		const QString ThumbUrlKey = "url"_qs;
-
 		QString GetPageHeader ()
 		{
 			return QObject::tr ("Speed dial");

@@ -2,6 +2,7 @@ project (poshuku_speeddial)
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		constants.cpp
 		speeddial.cpp
 		imagecache.cpp
 		customsitesmanager.cpp

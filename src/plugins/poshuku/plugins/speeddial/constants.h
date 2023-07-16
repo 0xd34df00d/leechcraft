@@ -9,26 +9,21 @@
 #pragma once
 
 #include <QString>
-#include "interfaces/poshuku/iinternalschemehandler.h"
+#include <QList>
 
-class QUrlQuery;
-
-namespace LC::Poshuku
-{
-	class IProxyObject;
-}
+class QUrl;
 
 namespace LC::Poshuku::SpeedDial
 {
-	class CustomSitesManager;
-	class ImageCache;
+	extern const QString SpeedDialHost;
+	extern const QString SpeedDialUrl;
 
-	struct RootPageDeps
-	{
-		CustomSitesManager& CustomSites_;
-		IProxyObject& PoshukuProxy_;
-		ImageCache& ImageCache_;
-	};
+	extern const QString ThumbPath;
+	extern const QString ThumbUrlBase;
+	extern const QString ThumbUrlKey;
 
-	IInternalSchemeHandler::HandleResult HandleRequest (const QString& path, const QUrlQuery& query, const RootPageDeps& deps);
+	const size_t Rows = 2;
+	const size_t Cols = 4;
+
+	using TopList_t = QList<QPair<QUrl, QString>>;
 }
