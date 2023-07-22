@@ -17,5 +17,4 @@ namespace LC::Poshuku::SpeedDial
 	const QString ThumbPath = "/thumb"_qs;
 	const QString ThumbUrlBase = SpeedDialUrl + ThumbPath;
 	const QString ThumbUrlKey = "url"_qs;
-
 }
