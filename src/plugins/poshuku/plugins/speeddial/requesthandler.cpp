@@ -11,6 +11,7 @@
 #include <QUrlQuery>
 #include <util/sll/channeldevice.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "constants.h"
