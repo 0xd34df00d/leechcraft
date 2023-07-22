@@ -104,6 +104,12 @@ namespace Poshuku
 
 	void HistoryModel::addItem (QString title, QString url, QDateTime date)
 	{
+		if (title.isEmpty () || url.isEmpty ())
+			return;
+
+		if (url == "about:blank" || url.startsWith ("lc://"))
+			return;
+
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingToHistory (proxy, title, url, date);
 		if (proxy->IsCancelled ())

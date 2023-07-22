@@ -477,13 +477,9 @@ namespace Poshuku
 
 	void Core::HandleHistory (IWebView *view)
 	{
-		const auto& url = view->GetHumanReadableUrl ();
-
-		if (!view->GetTitle ().isEmpty () &&
-				!url.isEmpty () && url != "about:blank")
-			HistoryModel_->addItem (view->GetTitle (),
-					url,
-					QDateTime::currentDateTime ());
+		HistoryModel_->addItem (view->GetTitle (),
+				view->GetHumanReadableUrl (),
+				QDateTime::currentDateTime ());
 	}
 
 	void Core::SetupConnections (BrowserWidget *widget)
