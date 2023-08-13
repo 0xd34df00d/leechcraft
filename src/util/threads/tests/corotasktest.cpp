@@ -53,11 +53,12 @@ namespace LC::Util
 		{
 			using namespace std::chrono_literals;
 			co_await 100ms;
+			co_await Precise { 10ms };
 			co_return 42;
 		} ();
 
 		auto result = GetTaskResult (task);
 		QCOMPARE (result, 42);
-		QCOMPARE (timer.elapsed () > 90, true);
+		QCOMPARE (timer.elapsed () > 100, true);
 	}
 }

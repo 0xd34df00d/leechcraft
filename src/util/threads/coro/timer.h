@@ -18,6 +18,7 @@ namespace LC::Util
 		struct TimerAwaiter
 		{
 			std::chrono::milliseconds Duration_;
+			Qt::TimerType Precision_;
 
 			bool await_ready () const noexcept { return false; }
 
@@ -35,4 +36,19 @@ namespace LC::Util
 	{
 		return detail::TimerAwaiter { duration };
 	}
+
+	template<Qt::TimerType Precision>
+	struct WithPrecision
+	{
+		std::chrono::milliseconds Duration_;
+
+		auto operator co_await () const
+		{
+			return detail::TimerAwaiter { Duration_, Precision };
+		}
+	};
+
+	using Precise = WithPrecision<Qt::PreciseTimer>;
+	using Coarse = WithPrecision<Qt::CoarseTimer>;
+	using VeryCoarse = WithPrecision<Qt::VeryCoarseTimer>;
 }
