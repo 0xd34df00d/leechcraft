@@ -42,20 +42,6 @@ namespace LC::Util
 			}
 		};
 
-		struct TimerAwaiter
-		{
-			std::chrono::milliseconds Duration_;
-
-			bool await_ready () const noexcept { return false; }
-
-			void await_suspend (std::coroutine_handle<> handle) noexcept
-			{
-				QTimer::singleShot (Duration_, handle);
-			}
-
-			void await_resume () const noexcept {}
-		};
-
 		template<typename Promise>
 		struct TaskAwaiter
 		{
@@ -105,12 +91,6 @@ namespace LC::Util
 
 			void await_resume () const noexcept {}
 		};
-	}
-
-	template<typename Rep, typename Period>
-	auto operator co_await (std::chrono::duration<Rep, Period> duration)
-	{
-		return detail::TimerAwaiter { duration };
 	}
 
 	template<typename R>

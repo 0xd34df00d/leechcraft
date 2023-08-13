@@ -9,7 +9,7 @@
 #include "corotasktest.h"
 #include <QEventLoop>
 #include <QtTest>
-#include <corotask.h>
+#include <coro.h>
 
 QTEST_GUILESS_MAIN (LC::Util::CoroTaskTest)
 
