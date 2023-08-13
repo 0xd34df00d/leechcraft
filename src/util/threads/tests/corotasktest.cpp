@@ -42,10 +42,22 @@ namespace LC::Util
 		auto task = [] () -> Task<int> { co_return 42; } ();
 		auto result = GetTaskResult (task);
 		QCOMPARE (result, 42);
-		QCOMPARE (result, 42);
 	}
 
-	void CoroTaskTest::testFuture ()
+	void CoroTaskTest::testWait ()
 	{
+		QElapsedTimer timer;
+		timer.start ();
+
+		auto task = [] () -> Task<int>
+		{
+			using namespace std::chrono_literals;
+			co_await 100ms;
+			co_return 42;
+		} ();
+
+		auto result = GetTaskResult (task);
+		QCOMPARE (result, 42);
+		QCOMPARE (timer.elapsed () > 90, true);
 	}
 }

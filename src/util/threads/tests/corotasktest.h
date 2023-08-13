@@ -17,6 +17,6 @@ namespace LC::Util
 		Q_OBJECT
 	private slots:
 		void testReturn ();
-		void testFuture ();
+		void testWait ();
 	};
 }
