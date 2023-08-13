@@ -77,7 +77,6 @@ namespace LC::Util
 			explicit FinalSuspender (Promise& promise)
 			: Promise_ { promise }
 			{
-				Promise_.IncRef ();
 			}
 
 			bool await_ready () const noexcept { return false; }
@@ -105,7 +104,7 @@ namespace LC::Util
 	public:
 		struct promise_type : detail::PromiseRet<R>
 		{
-			size_t Refs_ = 0; // TODO make thread-safe
+			size_t Refs_ = 1; // TODO make thread-safe
 			QVector<std::coroutine_handle<>> WaitingHandles_;
 
 			Task get_return_object ()
