@@ -81,6 +81,7 @@ namespace LC::Util
 	public:
 		struct promise_type : detail::PromiseRet<R>
 		{
+			size_t Refs_ = 0; // TODO make thread-safe
 			QVector<std::coroutine_handle<>> WaitingHandles_;
 
 			Task get_return_object ()
@@ -91,15 +92,45 @@ namespace LC::Util
 			std::suspend_never initial_suspend () const noexcept { return {}; }
 			std::suspend_always final_suspend () const noexcept { return {}; }
 			void unhandled_exception () {}
+
+			void IncRef ()
+			{
+				++Refs_;
+			}
+
+			void DecRef ()
+			{
+				if (!--Refs_)
+					Handle_t::from_promise (*this).destroy ();
+			}
 		};
 
 		explicit Task (const std::coroutine_handle<promise_type>& handle)
 		: Handle_ { handle }
 		{
+			if (handle)
+				handle.promise ().IncRef ();
 		}
 
-		Task (const Task&) = delete;
-		Task& operator= (const Task&) = delete;
+		~Task () noexcept
+		{
+			if (Handle_)
+				Handle_.promise ().DecRef ();
+		}
+
+		Task (const Task& other)
+		: Handle_ { other.Handle_ }
+		{
+			if (Handle_)
+				Handle_.promise ().IncRef ();
+		}
+
+		Task& operator= (const Task& other)
+		{
+			Task task { other };
+			*this = std::move (task);
+			return *this;
+		}
 
 		Task (Task&& other) noexcept
 		{
