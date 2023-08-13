@@ -68,6 +68,30 @@ namespace LC::Util
 					return *Handle_.promise ().Ret_;
 			}
 		};
+
+		template<typename Promise>
+		struct FinalSuspender
+		{
+			Promise& Promise_;
+
+			explicit FinalSuspender (Promise& promise)
+			: Promise_ { promise }
+			{
+				Promise_.IncRef ();
+			}
+
+			bool await_ready () const noexcept { return false; }
+
+			void await_suspend (std::coroutine_handle<>) noexcept
+			{
+				for (auto& h : Promise_.WaitingHandles_)
+					h ();
+
+				Promise_.DecRef ();
+			}
+
+			void await_resume () const noexcept {}
+		};
 	}
 
 	template<typename R>
@@ -90,7 +114,11 @@ namespace LC::Util
 			}
 
 			std::suspend_never initial_suspend () const noexcept { return {}; }
-			std::suspend_always final_suspend () const noexcept { return {}; }
+
+			auto final_suspend () noexcept
+			{
+				return detail::FinalSuspender<promise_type> { *this };
+			}
 			void unhandled_exception () {}
 
 			void IncRef ()
