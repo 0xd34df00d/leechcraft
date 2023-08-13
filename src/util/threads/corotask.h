@@ -127,6 +127,8 @@ namespace LC::Util
 			size_t Refs_ = 1; // TODO make thread-safe
 			QVector<std::coroutine_handle<>> WaitingHandles_;
 
+			auto GetAddress () { return Handle_t::from_promise (*this).address (); }
+
 			Task get_return_object ()
 			{
 				return Task { Handle_t::from_promise (*this) };
