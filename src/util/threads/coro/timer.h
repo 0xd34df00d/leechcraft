@@ -34,7 +34,7 @@ namespace LC::Util
 	template<typename Rep, typename Period>
 	auto operator co_await (std::chrono::duration<Rep, Period> duration)
 	{
-		return detail::TimerAwaiter { duration };
+		return detail::TimerAwaiter { duration, Qt::CoarseTimer };
 	}
 
 	template<Qt::TimerType Precision>
