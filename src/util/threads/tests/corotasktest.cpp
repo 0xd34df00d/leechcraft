@@ -53,7 +53,7 @@ namespace LC::Util
 		{
 			using namespace std::chrono_literals;
 			co_await 100ms;
-			co_await Precise { 10ms };
+			co_await Precisely { 10ms };
 			co_return 42;
 		} ();
 

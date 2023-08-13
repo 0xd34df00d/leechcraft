@@ -48,7 +48,7 @@ namespace LC::Util
 		}
 	};
 
-	using Precise = WithPrecision<Qt::PreciseTimer>;
-	using Coarse = WithPrecision<Qt::CoarseTimer>;
-	using VeryCoarse = WithPrecision<Qt::VeryCoarseTimer>;
+	using Precisely = WithPrecision<Qt::PreciseTimer>;
+	using Coarsely = WithPrecision<Qt::CoarseTimer>;
+	using VeryCoarsely = WithPrecision<Qt::VeryCoarseTimer>;
 }
