@@ -97,7 +97,7 @@ namespace LC::Util
 
 			void await_suspend (std::coroutine_handle<>) noexcept
 			{
-				for (auto& h : Promise_.WaitingHandles_)
+				for (auto h : Promise_.WaitingHandles_)
 					h ();
 
 				Promise_.DecRef ();
