@@ -17,11 +17,6 @@ namespace LC::Util
 {
 	namespace
 	{
-		Task<int> CoroInt ()
-		{
-			co_return 42;
-		}
-
 		template<typename T>
 		T GetTaskResult (Task<T> task)
 		{
@@ -44,8 +39,9 @@ namespace LC::Util
 
 	void CoroTaskTest::testReturn ()
 	{
-		auto task = CoroInt ();
-		auto result = GetTaskResult (std::move (task));
+		auto task = [] () -> Task<int> { co_return 42; } ();
+		auto result = GetTaskResult (task);
+		QCOMPARE (result, 42);
 		QCOMPARE (result, 42);
 	}
 
