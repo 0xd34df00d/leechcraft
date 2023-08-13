@@ -45,7 +45,7 @@ namespace LC::Util
 	void CoroTaskTest::testReturn ()
 	{
 		auto task = CoroInt ();
-		auto result = GetTaskResult (task);
+		auto result = GetTaskResult (std::move (task));
 		QCOMPARE (result, 42);
 	}
 

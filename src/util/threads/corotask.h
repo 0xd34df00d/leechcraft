@@ -98,6 +98,20 @@ namespace LC::Util
 		{
 		}
 
+		Task (const Task&) = delete;
+		Task& operator= (const Task&) = delete;
+
+		Task (Task&& other) noexcept
+		{
+			std::swap (Handle_, other.Handle_);
+		}
+
+		Task& operator= (Task&& other) noexcept
+		{
+			std::swap (Handle_, other.Handle_);
+			return *this;
+		}
+
 		auto operator co_await () const noexcept
 		{
 			return detail::TaskAwaiter<promise_type> { Handle_ };
