@@ -146,23 +146,30 @@ namespace LC::Util
 			auto result = GetTaskResult (task);
 			QCOMPARE (result, data);
 		}
+
+		void ImmediateFinishMarker (MockReply& reply)
+		{
+			reply.setFinished (true);
+		}
+
+		void DelayedFinishMarker (MockReply& reply)
+		{
+			QTimer::singleShot (100ms,
+					[&]
+					{
+						reply.setFinished (true);
+						emit reply.finished ();
+					});
+		}
 	}
 
 	void CoroTaskTest::testNetworkReplyGoodNoWait ()
 	{
-		TestGoodReply ([] (auto& reply) { reply.setFinished (true); });
+		TestGoodReply (&ImmediateFinishMarker);
 	}
 
 	void CoroTaskTest::testNetworkReplyGoodWait ()
 	{
-		TestGoodReply ([] (auto& reply)
-				{
-					QTimer::singleShot (100ms,
-							[&]
-							{
-								reply.setFinished (true);
-								emit reply.finished ();
-							});
-				});
+		TestGoodReply (&DelayedFinishMarker);
 	}
 }
