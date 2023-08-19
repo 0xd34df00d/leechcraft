@@ -1,4 +1,6 @@
 set (THREADS_SRCS
+	coro/networkreply.cpp
+	coro/networkresult.cpp
 	coro/timer.cpp
 	futures.cpp
 	workerthreadbase.cpp
@@ -18,7 +20,7 @@ target_link_libraries (leechcraft-util-threads${LC_LIBSUFFIX}
 set_property (TARGET leechcraft-util-threads${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-threads${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-threads${LC_LIBSUFFIX} Core Concurrent)
+FindQtLibs (leechcraft-util-threads${LC_LIBSUFFIX} Core Concurrent Network)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
