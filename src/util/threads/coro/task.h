@@ -52,6 +52,9 @@ namespace LC::Util
 			bool await_ready () const noexcept
 			{
 				const auto& promise = Handle_.promise ();
+				if (promise.Exception_)
+					return true;
+
 				if constexpr (Promise::IsVoid)
 					return promise.Done_;
 				else
@@ -65,8 +68,12 @@ namespace LC::Util
 
 			auto await_resume () const
 			{
+				const auto& promise = Handle_.promise ();
+				if (promise.Exception_)
+					std::rethrow_exception (promise.Exception_);
+
 				if constexpr (!Promise::IsVoid)
-					return *Handle_.promise ().Ret_;
+					return *promise.Ret_;
 			}
 		};
 	}
@@ -84,6 +91,7 @@ namespace LC::Util
 		{
 			size_t Refs_ = 1; // TODO make thread-safe
 			QVector<std::coroutine_handle<>> WaitingHandles_;
+			std::exception_ptr Exception_;
 
 			auto GetAddress () { return Handle_t::from_promise (*this).address (); }
 
@@ -98,7 +106,11 @@ namespace LC::Util
 			{
 				return detail::FinalSuspender<promise_type> { *this };
 			}
-			void unhandled_exception () {}
+
+			void unhandled_exception ()
+			{
+				Exception_ = std::current_exception ();
+			}
 
 			void IncRef ()
 			{
