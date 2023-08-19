@@ -10,6 +10,7 @@
 
 #include <coroutine>
 #include <utility>
+#include "coro/finalsuspender.h"
 
 namespace LC::Util
 {
@@ -67,29 +68,6 @@ namespace LC::Util
 				if constexpr (!Promise::IsVoid)
 					return *Handle_.promise ().Ret_;
 			}
-		};
-
-		template<typename Promise>
-		struct FinalSuspender
-		{
-			Promise& Promise_;
-
-			explicit FinalSuspender (Promise& promise)
-			: Promise_ { promise }
-			{
-			}
-
-			bool await_ready () const noexcept { return false; }
-
-			void await_suspend (std::coroutine_handle<>) noexcept
-			{
-				for (auto h : Promise_.WaitingHandles_)
-					h ();
-
-				Promise_.DecRef ();
-			}
-
-			void await_resume () const noexcept {}
 		};
 	}
 
