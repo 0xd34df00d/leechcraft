@@ -63,7 +63,7 @@ namespace LC::Util
 				Handle_.promise ().WaitingHandles_.push_back (handle);
 			}
 
-			auto await_resume () const noexcept
+			auto await_resume () const
 			{
 				if constexpr (!Promise::IsVoid)
 					return *Handle_.promise ().Ret_;
