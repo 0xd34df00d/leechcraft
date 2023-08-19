@@ -1,4 +1,5 @@
 set (THREADS_SRCS
+	coro/timer.cpp
 	futures.cpp
 	workerthreadbase.cpp
 	)

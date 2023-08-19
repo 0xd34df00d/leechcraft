@@ -10,32 +10,25 @@
 
 #include <chrono>
 #include <coroutine>
+#include <Qt>
+#include "threadsconfig.h"
 
 namespace LC::Util
 {
 	namespace detail
 	{
-		struct TimerAwaiter
+		struct UTIL_THREADS_API TimerAwaiter
 		{
 			std::chrono::milliseconds Duration_;
 			Qt::TimerType Precision_;
 
-			bool await_ready () const noexcept { return false; }
-
-			void await_suspend (std::coroutine_handle<> handle) noexcept
-			{
-				QTimer::singleShot (Duration_, handle);
-			}
-
-			void await_resume () const noexcept {}
+			bool await_ready () const noexcept;
+			void await_suspend (std::coroutine_handle<> handle) noexcept;
+			void await_resume () const noexcept;
 		};
 	}
 
-	template<typename Rep, typename Period>
-	auto operator co_await (std::chrono::duration<Rep, Period> duration)
-	{
-		return detail::TimerAwaiter { duration, Qt::CoarseTimer };
-	}
+	UTIL_THREADS_API detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration);
 
 	template<Qt::TimerType Precision>
 	struct WithPrecision

@@ -7,3 +7,29 @@
  **********************************************************************/
 
 #include "timer.h"
+#include <QTimer>
+
+namespace LC::Util::detail
+{
+	bool TimerAwaiter::await_ready () const noexcept
+	{
+		return false;
+	}
+
+	void TimerAwaiter::await_suspend (std::coroutine_handle<> handle) noexcept
+	{
+		QTimer::singleShot (Duration_, handle);
+	}
+
+	void TimerAwaiter::await_resume () const noexcept
+	{
+	}
+}
+
+namespace LC::Util
+{
+	detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration)
+	{
+		return detail::TimerAwaiter { duration, Qt::CoarseTimer };
+	}
+}
