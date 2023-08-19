@@ -11,8 +11,11 @@
 #include <QtTest>
 #include <coro.h>
 #include <coro/networkresult.h>
+#include <util/sll/qtutil.h>
 
 QTEST_GUILESS_MAIN (LC::Util::CoroTaskTest)
+
+using namespace std::chrono_literals;
 
 namespace LC::Util
 {
@@ -52,7 +55,6 @@ namespace LC::Util
 
 		auto task = [] () -> Task<int>
 		{
-			using namespace std::chrono_literals;
 			co_await 100ms;
 			co_await Precisely { 10ms };
 			co_return 42;
@@ -128,5 +130,39 @@ namespace LC::Util
 			reply->SetData (data);
 			return reply;
 		}
+
+		void TestGoodReply (auto finishMarker)
+		{
+			const QByteArray data { "this is some test data" };
+			MockNAM nam { MkSuccessfulReply (data) };
+			finishMarker (nam.GetReply ());
+
+			auto task = [&nam] () -> Task<QByteArray>
+			{
+				auto reply = co_await *nam.get (QNetworkRequest { QUrl { "http://example.com/foo.txt"_qs } });
+				co_return reply.GetReplyData ();
+			} ();
+
+			auto result = GetTaskResult (task);
+			QCOMPARE (result, data);
+		}
+	}
+
+	void CoroTaskTest::testNetworkReplyGoodNoWait ()
+	{
+		TestGoodReply ([] (auto& reply) { reply.setFinished (true); });
+	}
+
+	void CoroTaskTest::testNetworkReplyGoodWait ()
+	{
+		TestGoodReply ([] (auto& reply)
+				{
+					QTimer::singleShot (100ms,
+							[&]
+							{
+								reply.setFinished (true);
+								emit reply.finished ();
+							});
+				});
 	}
 }

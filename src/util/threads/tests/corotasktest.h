@@ -18,5 +18,7 @@ namespace LC::Util
 	private slots:
 		void testReturn ();
 		void testWait ();
+		void testNetworkReplyGoodNoWait ();
+		void testNetworkReplyGoodWait ();
 	};
 }
