@@ -74,7 +74,7 @@ namespace LC::Util
 
 		auto result = GetTaskResult (task);
 		QCOMPARE (result, 42);
-		QCOMPARE (timer.elapsed () > 100, true);
+		QVERIFY (timer.elapsed () > 100);
 	}
 
 	void CoroTaskTest::testTaskDestr ()
