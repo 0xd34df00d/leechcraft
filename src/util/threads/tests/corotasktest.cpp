@@ -72,14 +72,14 @@ namespace LC::Util
 
 		auto task = [] () -> Task<int>
 		{
-			co_await 100ms;
+			co_await 50ms;
 			co_await Precisely { 10ms };
 			co_return 42;
 		} ();
 
 		auto result = GetTaskResult (task);
 		QCOMPARE (result, 42);
-		QVERIFY (timer.elapsed () > 100);
+		QVERIFY (timer.elapsed () > 50);
 	}
 
 	void CoroTaskTest::testTaskDestr ()
@@ -92,7 +92,7 @@ namespace LC::Util
 			continued = true;
 		} ();
 
-		QTRY_VERIFY_WITH_TIMEOUT (continued, 100);
+		QTRY_VERIFY_WITH_TIMEOUT (continued, 20);
 	}
 
 	namespace
@@ -206,7 +206,7 @@ namespace LC::Util
 
 		void DelayedFinishMarker (MockReply& reply)
 		{
-			QTimer::singleShot (100ms,
+			QTimer::singleShot (10ms,
 					[&]
 					{
 						reply.setFinished (true);
