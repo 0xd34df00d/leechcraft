@@ -147,7 +147,7 @@ namespace LC::Util
 		{
 			auto reply = std::make_unique<MockReply> ();
 			reply->setAttribute (QNetworkRequest::HttpStatusCodeAttribute, 404);
-			reply->setError (QNetworkReply::NetworkError::ContentAccessDenied, "well, 404!");
+			reply->setError (QNetworkReply::NetworkError::ContentAccessDenied, "well, 404!"_qs);
 			return reply;
 		}
 
