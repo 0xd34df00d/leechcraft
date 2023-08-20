@@ -26,16 +26,28 @@ namespace LC::Util
 		{
 			T result;
 
+			std::exception_ptr exception;
+
 			QEventLoop loop;
 			bool done = false;
 			[&] () -> Task<void>
 			{
-				result = co_await task;
+				try
+				{
+					result = co_await task;
+				}
+				catch (...)
+				{
+					exception = std::current_exception ();
+				}
 				done = true;
 				loop.quit ();
 			} ();
 			if (!done)
 				loop.exec ();
+
+			if (exception)
+				std::rethrow_exception (exception);
 
 			return result;
 		}
