@@ -77,6 +77,19 @@ namespace LC::Util
 		QCOMPARE (timer.elapsed () > 100, true);
 	}
 
+	void CoroTaskTest::testTaskDestr ()
+	{
+		bool continued = false;
+
+		[&] () -> Task<void>
+		{
+			co_await 10ms;
+			continued = true;
+		} ();
+
+		QTRY_VERIFY_WITH_TIMEOUT (continued, 100);
+	}
+
 	namespace
 	{
 		// almost the Public Morozov pattern
