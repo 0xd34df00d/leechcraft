@@ -143,6 +143,14 @@ namespace LC::Util
 			return reply;
 		}
 
+		auto MkErrorReply ()
+		{
+			auto reply = std::make_unique<MockReply> ();
+			reply->setAttribute (QNetworkRequest::HttpStatusCodeAttribute, 404);
+			reply->setError (QNetworkReply::NetworkError::ContentAccessDenied, "well, 404!");
+			return reply;
+		}
+
 		void TestGoodReply (auto finishMarker)
 		{
 			const QByteArray data { "this is some test data" };
@@ -157,6 +165,20 @@ namespace LC::Util
 
 			auto result = GetTaskResult (task);
 			QCOMPARE (result, data);
+		}
+
+		void TestBadReply (auto finishMarker)
+		{
+			MockNAM nam { MkErrorReply () };
+			finishMarker (nam.GetReply ());
+
+			auto task = [&nam] () -> Task<QByteArray>
+			{
+				auto reply = co_await *nam.get (QNetworkRequest { QUrl { "http://example.com/foo.txt"_qs } });
+				co_return reply.GetReplyData ();
+			} ();
+
+			QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::NetworkReplyErrorException);
 		}
 
 		void ImmediateFinishMarker (MockReply& reply)
@@ -183,5 +205,15 @@ namespace LC::Util
 	void CoroTaskTest::testNetworkReplyGoodWait ()
 	{
 		TestGoodReply (&DelayedFinishMarker);
+	}
+
+	void CoroTaskTest::testNetworkReplyBadNoWait ()
+	{
+		TestBadReply (&ImmediateFinishMarker);
+	}
+
+	void CoroTaskTest::testNetworkReplyBadWait ()
+	{
+		TestBadReply (&DelayedFinishMarker);
 	}
 }
