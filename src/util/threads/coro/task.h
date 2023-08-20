@@ -90,8 +90,8 @@ namespace LC::Util
 		struct promise_type : detail::PromiseRet<R>
 		{
 			size_t Refs_ = 1; // TODO make thread-safe
-			QVector<std::coroutine_handle<>> WaitingHandles_;
-			std::exception_ptr Exception_;
+			QVector<std::coroutine_handle<>> WaitingHandles_ {};
+			std::exception_ptr Exception_ {};
 
 			auto GetAddress () { return Handle_t::from_promise (*this).address (); }
 
