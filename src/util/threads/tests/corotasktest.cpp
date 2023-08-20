@@ -24,7 +24,8 @@ namespace LC::Util
 		template<typename T>
 		T GetTaskResult (Task<T> task)
 		{
-			T result;
+			constexpr bool isVoid = std::is_same_v<T, void>;
+			std::conditional_t<isVoid, void*, T> result;
 
 			std::exception_ptr exception;
 
@@ -34,7 +35,10 @@ namespace LC::Util
 			{
 				try
 				{
-					result = co_await task;
+					if constexpr (isVoid)
+						co_await task;
+					else
+						result = co_await task;
 				}
 				catch (...)
 				{
@@ -49,7 +53,8 @@ namespace LC::Util
 			if (exception)
 				std::rethrow_exception (exception);
 
-			return result;
+			if constexpr (!isVoid)
+				return result;
 		}
 	}
 
