@@ -21,8 +21,8 @@ namespace LC::Util
 {
 	namespace
 	{
-		template<typename T>
-		T GetTaskResult (Task<T> task)
+		template<typename T, template<typename> typename Extensions>
+		T GetTaskResult (Task<T, Extensions> task)
 		{
 			constexpr bool isVoid = std::is_same_v<T, void>;
 			std::conditional_t<isVoid, void*, T> result;
