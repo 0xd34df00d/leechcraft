@@ -15,11 +15,29 @@
 
 namespace LC::Util
 {
+	namespace detail
+	{
+		struct DeadObjectInfo
+		{
+			std::string ClassName_;
+			QString ObjectName_;
+		};
+
+		auto MakeDeadObjectMessage (const DeadObjectInfo& info)
+		{
+			const std::string prefix = "coroutine's context object " + info.ClassName_;
+			if (info.ObjectName_.isEmpty ())
+				return prefix + " died";
+			else
+				return prefix + " (" + info.ObjectName_.toStdString () + ") died";
+		}
+	}
+
 	class ContextDeadException : public std::runtime_error
 	{
 	public:
-		explicit ContextDeadException ()
-		: std::runtime_error { "coroutine's context object died" }
+		explicit ContextDeadException (const detail::DeadObjectInfo& info)
+		: std::runtime_error { detail::MakeDeadObjectMessage (info) }
 		{
 		}
 	};
@@ -55,8 +73,8 @@ namespace LC::Util
 
 			decltype (auto) await_resume ()
 			{
-				if (Promise_.ContextDead_)
-					throw ContextDeadException {};
+				if (!Promise_.DeadObjects_.isEmpty ())
+					throw ContextDeadException { Promise_.DeadObjects_.front () };
 				return Awaiter (Orig_).await_resume ();
 			}
 		};
@@ -68,7 +86,7 @@ namespace LC::Util
 		using HasContextExtensions = void;
 
 		QVector<QMetaObject::Connection> ContextConnections_;
-		bool ContextDead_ = false;
+		QVector<detail::DeadObjectInfo> DeadObjects_;
 
 		void FinalSuspend () noexcept
 		{
@@ -103,9 +121,10 @@ namespace LC::Util
 		{
 			auto conn = QObject::connect (&Context_,
 					&QObject::destroyed,
-					[handle]
+					[handle] (QObject *object)
 					{
-						handle.promise ().ContextDead_ = true;
+						auto className = object->metaObject ()->className ();
+						handle.promise ().DeadObjects_.push_back ({ className, object->objectName () });
 					});
 			handle.promise ().ContextConnections_.push_back (conn);
 			return false;
