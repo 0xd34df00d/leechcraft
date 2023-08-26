@@ -11,6 +11,7 @@
 #include <coroutine>
 #include <utility>
 #include "coro/finalsuspender.h"
+#include "taskfwd.h"
 
 namespace LC::Util
 {
@@ -76,12 +77,9 @@ namespace LC::Util
 					return *promise.Ret_;
 			}
 		};
-
-		template<typename>
-		struct NoExtensions {};
 	}
 
-	template<typename R, template<typename> typename Extensions = detail::NoExtensions>
+	template<typename R, template<typename> typename Extensions>
 	class Task
 	{
 	public:
@@ -173,5 +171,11 @@ namespace LC::Util
 			return detail::TaskAwaiter<promise_type> { Handle_ };
 		}
 	};
+
+	template<typename>
+	struct ContextExtensions;
+
+	template<typename R = void>
+	using ContextTask = Task<R, ContextExtensions>;
 }
 
