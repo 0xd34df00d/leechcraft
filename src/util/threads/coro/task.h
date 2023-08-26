@@ -76,9 +76,17 @@ namespace LC::Util
 					return *promise.Ret_;
 			}
 		};
+
+		template<typename>
+		struct NoExtensions
+		{
+			void FinalSuspend ()
+			{
+			}
+		};
 	}
 
-	template<typename R>
+	template<typename R, template<typename> typename Extensions = detail::NoExtensions>
 	class Task
 	{
 	public:
@@ -88,6 +96,7 @@ namespace LC::Util
 		Handle_t Handle_;
 	public:
 		struct promise_type : detail::PromiseRet<R>
+							, Extensions<promise_type>
 		{
 			size_t Refs_ = 1; // TODO make thread-safe
 			QVector<std::coroutine_handle<>> WaitingHandles_ {};
@@ -104,6 +113,7 @@ namespace LC::Util
 
 			auto final_suspend () noexcept
 			{
+				Extensions<promise_type>::FinalSuspend ();
 				return detail::FinalSuspender<promise_type> { *this };
 			}
 
