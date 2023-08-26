@@ -10,6 +10,7 @@
 #include <QEventLoop>
 #include <QtTest>
 #include <coro.h>
+#include <coro/context.h>
 #include <coro/networkresult.h>
 #include <util/sll/qtutil.h>
 
@@ -233,5 +234,32 @@ namespace LC::Util
 	void CoroTaskTest::testNetworkReplyBadWait ()
 	{
 		TestBadReply (&DelayedFinishMarker);
+	}
+
+	void CoroTaskTest::testContextDestrBeforeFinish ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto task = [] (QObject *context) -> Task<int, ContextExtensions>
+		{
+			co_await RegisterContext { *context };
+			co_await 10ms;
+			co_return context->children ().size ();
+		} (&*context);
+		context.reset ();
+
+		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+	}
+
+	void CoroTaskTest::testContextDestrAfterFinish ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto task = [] (QObject *context) -> Task<int, ContextExtensions>
+		{
+			co_await RegisterContext { *context };
+			co_await 10ms;
+			co_return context->children ().size ();
+		} (&*context);
+
+		QCOMPARE (GetTaskResult (task), 0);
 	}
 }

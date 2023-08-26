@@ -24,5 +24,8 @@ namespace LC::Util
 		void testNetworkReplyGoodWait ();
 		void testNetworkReplyBadNoWait ();
 		void testNetworkReplyBadWait ();
+
+		void testContextDestrBeforeFinish ();
+		void testContextDestrAfterFinish ();
 	};
 }
