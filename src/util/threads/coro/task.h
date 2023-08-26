@@ -78,12 +78,7 @@ namespace LC::Util
 		};
 
 		template<typename>
-		struct NoExtensions
-		{
-			void FinalSuspend ()
-			{
-			}
-		};
+		struct NoExtensions {};
 	}
 
 	template<typename R, template<typename> typename Extensions = detail::NoExtensions>
@@ -113,7 +108,8 @@ namespace LC::Util
 
 			auto final_suspend () noexcept
 			{
-				Extensions<promise_type>::FinalSuspend ();
+				if constexpr (requires { Extensions<promise_type>::FinalSuspend (); })
+					Extensions<promise_type>::FinalSuspend ();
 				return detail::FinalSuspender<promise_type> { *this };
 			}
 
