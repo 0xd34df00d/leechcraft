@@ -10,12 +10,6 @@
 
 namespace LC::Util
 {
-	namespace detail
-	{
-		template<typename>
-		struct NoExtensions {};
-	}
-
-	template<typename R, template<typename> typename Extensions = detail::NoExtensions>
+	template<typename R, template<typename> typename... Extensions>
 	class Task;
 }

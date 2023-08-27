@@ -13,8 +13,8 @@
 
 namespace LC::Util
 {
-	template<typename T, template<typename> typename Exts>
-	Task<QVector<T>, Exts> InParallel (QVector<Task<T, Exts>> tasks)
+	template<typename T, template<typename> typename... Exts>
+	Task<QVector<T>, Exts...> InParallel (QVector<Task<T, Exts...>> tasks)
 	{
 		QVector<T> result;
 		for (auto& task : tasks)
@@ -22,8 +22,8 @@ namespace LC::Util
 		co_return result;
 	}
 
-	template<template<typename> typename Exts, typename... Ts>
-	Task<std::tuple<Ts...>, Exts> InParallel (Task<Ts, Exts>... tasks)
+	template<typename... Ts, template<typename> typename... Exts>
+	Task<std::tuple<Ts...>, Exts...> InParallel (Task<Ts, Exts...>... tasks)
 	{
 		co_return std::tuple<Ts...> { co_await tasks... };
 	}
