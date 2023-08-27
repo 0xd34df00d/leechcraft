@@ -27,5 +27,8 @@ namespace LC::Util
 
 		void testContextDestrBeforeFinish ();
 		void testContextDestrAfterFinish ();
+
+		void testWaitMany ();
+		void testWaitManyTuple ();
 	};
 }

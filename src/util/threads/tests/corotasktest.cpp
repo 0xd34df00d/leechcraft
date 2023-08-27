@@ -11,6 +11,7 @@
 #include <QtTest>
 #include <coro.h>
 #include <coro/context.h>
+#include <coro/inparallel.h>
 #include <coro/networkresult.h>
 #include <util/sll/qtutil.h>
 
@@ -261,5 +262,53 @@ namespace LC::Util
 		} (&*context);
 
 		QCOMPARE (GetTaskResult (task), 0);
+	}
+
+	void CoroTaskTest::testWaitMany ()
+	{
+		constexpr auto max = 100;
+		auto mkTask = [] (int index) -> Task<int>
+		{
+			co_await Precisely { std::chrono::milliseconds { max - index } };
+			co_return index;
+		};
+
+		QElapsedTimer timer;
+		timer.start ();
+		QVector<Task<int>> tasks;
+		QVector<int> expected;
+		for (int i = 0; i < max; ++i)
+		{
+			tasks << mkTask (i);
+			expected << i;
+		}
+		const auto creationElapsed = timer.elapsed ();
+
+		timer.restart ();
+		auto result = GetTaskResult (InParallel (std::move (tasks)));
+		const auto executionElapsed = timer.elapsed ();
+
+		QCOMPARE (result, expected);
+		QVERIFY (creationElapsed < 1);
+		constexpr auto tolerance = 1.05;
+		QVERIFY (executionElapsed < max * tolerance);
+	}
+
+	void CoroTaskTest::testWaitManyTuple ()
+	{
+		auto mkTask = [] (int delay) -> Task<int>
+		{
+			co_await Precisely { std::chrono::milliseconds { delay } };
+			co_return delay;
+		};
+
+		QElapsedTimer timer;
+		timer.start ();
+		auto result = GetTaskResult (InParallel (mkTask (10), mkTask (9), mkTask (2), mkTask (1)));
+		const auto executionElapsed = timer.elapsed ();
+
+		QCOMPARE (result, (std::tuple { 10, 9, 2, 1 }));
+		constexpr auto tolerance = 1.05;
+		QVERIFY (executionElapsed < 10 * tolerance);
 	}
 }
