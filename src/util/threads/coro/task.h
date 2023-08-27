@@ -178,4 +178,3 @@ namespace LC::Util
 	template<typename R = void>
 	using ContextTask = Task<R, ContextExtensions>;
 }
-
