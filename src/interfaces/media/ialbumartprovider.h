@@ -54,9 +54,9 @@ namespace Media
 	 */
 	class Q_DECL_EXPORT IAlbumArtProvider
 	{
+	protected:
+		virtual ~IAlbumArtProvider () = default;
 	public:
-		virtual ~IAlbumArtProvider () {}
-
 		/** @brief The result of an album art search query.
 		 *
 		 * The result of an album art search query is either a string with a
