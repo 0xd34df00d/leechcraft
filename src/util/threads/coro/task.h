@@ -175,4 +175,27 @@ namespace LC::Util
 			return detail::TaskAwaiter<promise_type> { Handle_ };
 		}
 	};
+
+	namespace detail
+	{
+		template<typename R, template<typename> typename... Extensions>
+		struct GetPromise
+		{
+			using Promise = typename Task<R, Extensions...>::promise_type;
+			Promise *Promise_ = nullptr;
+
+			bool await_ready () const noexcept { return false; }
+
+			bool await_suspend (std::coroutine_handle<Promise> handle) const noexcept
+			{
+				Promise_ = &handle.promise ();
+				return false;
+			}
+
+			decltype (auto) await_resume () const noexcept
+			{
+				return *Promise_;
+			}
+		};
+	}
 }
