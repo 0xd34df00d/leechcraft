@@ -149,7 +149,6 @@ namespace LC::LMP
 		for (auto provObj : provs)
 		{
 			const auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
-			const auto proxy = prov->RequestAlbumArt (task.Info_);
 			Util::Sequence (this, prov->RequestAlbumArt (task.Info_)) >>
 					Util::Visitor
 					{
