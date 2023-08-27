@@ -241,7 +241,7 @@ namespace LC::Util
 		auto context = std::make_unique<QObject> ();
 		auto task = [] (QObject *context) -> Task<int, ContextExtensions>
 		{
-			co_await RegisterContext { *context };
+			co_await AddContextObject { *context };
 			co_await 10ms;
 			co_return context->children ().size ();
 		} (&*context);
@@ -255,7 +255,7 @@ namespace LC::Util
 		auto context = std::make_unique<QObject> ();
 		auto task = [] (QObject *context) -> Task<int, ContextExtensions>
 		{
-			co_await RegisterContext { *context };
+			co_await AddContextObject { *context };
 			co_await 10ms;
 			co_return context->children ().size ();
 		} (&*context);

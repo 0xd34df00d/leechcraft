@@ -101,11 +101,11 @@ namespace LC::Util
 		}
 	};
 
-	struct RegisterContext
+	struct AddContextObject
 	{
 		QObject& Context_;
 
-		explicit RegisterContext (QObject& context)
+		explicit AddContextObject (QObject& context)
 		: Context_ { context }
 		{
 		}
