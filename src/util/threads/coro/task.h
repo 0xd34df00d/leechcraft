@@ -10,7 +10,7 @@
 
 #include <coroutine>
 #include <utility>
-#include "coro/finalsuspender.h"
+#include "finalsuspender.h"
 #include "taskfwd.h"
 
 namespace LC::Util

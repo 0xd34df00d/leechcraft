@@ -10,7 +10,7 @@
 
 #include <variant>
 #include <QNetworkReply>
-#include "threadsconfig.h"
+#include "../threadsconfig.h"
 
 namespace LC::Util
 {

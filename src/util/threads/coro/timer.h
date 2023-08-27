@@ -11,7 +11,7 @@
 #include <chrono>
 #include <coroutine>
 #include <Qt>
-#include "threadsconfig.h"
+#include "../threadsconfig.h"
 
 namespace LC::Util
 {

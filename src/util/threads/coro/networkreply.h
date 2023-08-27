@@ -10,7 +10,7 @@
 
 #include <coroutine>
 #include <variant>
-#include "threadsconfig.h"
+#include "../threadsconfig.h"
 
 class QNetworkReply;
 
