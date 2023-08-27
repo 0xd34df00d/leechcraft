@@ -38,6 +38,8 @@ namespace LC::Util
 		const NetworkReplyError& GetError () const;
 	};
 
+	UTIL_THREADS_API QDebug operator<< (QDebug debug, const NetworkReplyErrorException&);
+
 	class UTIL_THREADS_API NetworkResult : public NRBase_t
 	{
 	public:

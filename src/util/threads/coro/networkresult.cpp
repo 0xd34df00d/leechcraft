@@ -22,6 +22,19 @@ namespace LC::Util
 		return Error_;
 	}
 
+	QDebug operator<< (QDebug dbg, const NetworkReplyErrorException& exception)
+	{
+		QDebugStateSaver saver { dbg };
+
+		const auto& error = exception.GetError ();
+		dbg.nospace () << "{ url: " << error.Reply_.url ()
+				<< "; error: " << error.Error_
+				<< "; text: " << error.ErrorText_
+				<< " }";
+
+		return dbg;
+	}
+
 	QByteArray NetworkResult::GetReplyData () const
 	{
 		return Visit (*this,
