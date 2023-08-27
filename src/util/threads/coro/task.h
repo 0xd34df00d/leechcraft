@@ -175,10 +175,4 @@ namespace LC::Util
 			return detail::TaskAwaiter<promise_type> { Handle_ };
 		}
 	};
-
-	template<typename>
-	struct ContextExtensions;
-
-	template<typename R = void>
-	using ContextTask = Task<R, ContextExtensions>;
 }

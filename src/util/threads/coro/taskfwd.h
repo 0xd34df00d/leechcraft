@@ -12,4 +12,10 @@ namespace LC::Util
 {
 	template<typename R, template<typename> typename... Extensions>
 	class Task;
+
+	template<typename>
+	struct ContextExtensions;
+
+	template<typename R = void>
+	using ContextTask = Task<R, ContextExtensions>;
 }
