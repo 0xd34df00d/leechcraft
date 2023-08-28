@@ -1,4 +1,5 @@
 set (THREADS_SRCS
+	coro/context.cpp
 	coro/networkreply.cpp
 	coro/networkresult.cpp
 	coro/timer.cpp

@@ -11,7 +11,9 @@
 #include <coroutine>
 #include <stdexcept>
 #include <QMetaObject>
+#include <QObject>
 #include <QVector>
+#include "../threadsconfig.h"
 
 namespace LC::Util
 {
@@ -22,24 +24,12 @@ namespace LC::Util
 			std::string ClassName_;
 			QString ObjectName_;
 		};
-
-		auto MakeDeadObjectMessage (const DeadObjectInfo& info)
-		{
-			const std::string prefix = "coroutine's context object " + info.ClassName_;
-			if (info.ObjectName_.isEmpty ())
-				return prefix + " died";
-			else
-				return prefix + " (" + info.ObjectName_.toStdString () + ") died";
-		}
 	}
 
-	class ContextDeadException : public std::runtime_error
+	class UTIL_THREADS_API ContextDeadException : public std::runtime_error
 	{
 	public:
-		explicit ContextDeadException (const detail::DeadObjectInfo& info)
-		: std::runtime_error { detail::MakeDeadObjectMessage (info) }
-		{
-		}
+		explicit ContextDeadException (const detail::DeadObjectInfo& info);
 	};
 
 	namespace detail
