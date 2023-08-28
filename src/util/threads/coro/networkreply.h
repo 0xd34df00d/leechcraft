@@ -9,7 +9,6 @@
 #pragma once
 
 #include <coroutine>
-#include <variant>
 #include "../threadsconfig.h"
 
 class QNetworkReply;
