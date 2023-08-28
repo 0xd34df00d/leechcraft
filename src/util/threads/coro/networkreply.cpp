@@ -40,9 +40,9 @@ namespace LC::Util::detail
 	}
 }
 
-namespace LC::Util
+namespace LC
 {
-	UTIL_THREADS_API detail::NRAwaiter operator co_await (QNetworkReply& reply)
+	UTIL_THREADS_API Util::detail::NRAwaiter operator co_await (QNetworkReply& reply)
 	{
 		return { reply };
 	}

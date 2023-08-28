@@ -28,8 +28,6 @@ namespace LC::Util
 		};
 	}
 
-	UTIL_THREADS_API detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration);
-
 	template<Qt::TimerType Precision>
 	struct WithPrecision
 	{
@@ -44,4 +42,9 @@ namespace LC::Util
 	using Precisely = WithPrecision<Qt::PreciseTimer>;
 	using Coarsely = WithPrecision<Qt::CoarseTimer>;
 	using VeryCoarsely = WithPrecision<Qt::VeryCoarseTimer>;
+}
+
+namespace LC
+{
+	UTIL_THREADS_API Util::detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration);
 }

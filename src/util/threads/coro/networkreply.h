@@ -28,6 +28,9 @@ namespace LC::Util
 			NetworkResult await_resume () const noexcept;
 		};
 	}
+}
 
-	UTIL_THREADS_API detail::NRAwaiter operator co_await (QNetworkReply& reply);
+namespace LC
+{
+	UTIL_THREADS_API Util::detail::NRAwaiter operator co_await (QNetworkReply& reply);
 }

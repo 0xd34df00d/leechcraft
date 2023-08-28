@@ -26,10 +26,10 @@ namespace LC::Util::detail
 	}
 }
 
-namespace LC::Util
+namespace LC
 {
-	detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration)
+	Util::detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration)
 	{
-		return detail::TimerAwaiter { duration, Qt::CoarseTimer };
+		return Util::detail::TimerAwaiter { duration, Qt::CoarseTimer };
 	}
 }
