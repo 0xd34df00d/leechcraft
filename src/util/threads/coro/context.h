@@ -45,6 +45,8 @@ namespace LC::Util
 				return obj;
 		}
 
+		UTIL_THREADS_API void CheckDeadObjects (const QVector<DeadObjectInfo>&);
+
 		template<typename Promise, typename T>
 		struct AwaitableWrapper
 		{
@@ -63,8 +65,7 @@ namespace LC::Util
 
 			decltype (auto) await_resume ()
 			{
-				if (!Promise_.DeadObjects_.isEmpty ())
-					throw ContextDeadException { Promise_.DeadObjects_.front () };
+				CheckDeadObjects (Promise_.DeadObjects_);
 				return Awaiter (Orig_).await_resume ();
 			}
 		};

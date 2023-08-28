@@ -26,4 +26,13 @@ namespace LC::Util
 	: std::runtime_error { MakeDeadObjectMessage (info) }
 	{
 	}
+
+	namespace detail
+	{
+		void CheckDeadObjects (const QVector<DeadObjectInfo>& deadObjects)
+		{
+			if (!deadObjects.isEmpty ())
+				throw ContextDeadException { deadObjects.front () };
+		}
+	}
 }
