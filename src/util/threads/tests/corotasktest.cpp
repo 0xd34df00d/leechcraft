@@ -27,7 +27,7 @@ namespace LC::Util
 		T GetTaskResult (Task<T, Extensions...> task)
 		{
 			constexpr bool isVoid = std::is_same_v<T, void>;
-			std::conditional_t<isVoid, void*, T> result;
+			std::unique_ptr<T> result;
 
 			std::exception_ptr exception;
 
@@ -40,7 +40,7 @@ namespace LC::Util
 					if constexpr (isVoid)
 						co_await task;
 					else
-						result = co_await task;
+						result = std::make_unique<T> (co_await task);
 				}
 				catch (...)
 				{
@@ -56,7 +56,7 @@ namespace LC::Util
 				std::rethrow_exception (exception);
 
 			if constexpr (!isVoid)
-				return result;
+				return *result;
 		}
 	}
 
