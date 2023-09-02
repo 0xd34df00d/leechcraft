@@ -15,7 +15,7 @@ namespace LC::Util
 	{
 		QDebugStateSaver saver { dbg };
 
-		dbg.nospace () << "{ url: " << error.Reply_->url ()
+		dbg.nospace () << "{ url: " << error.Url_
 				<< "; error: " << error.Error_
 				<< "; text: " << error.ErrorText_
 				<< " }";

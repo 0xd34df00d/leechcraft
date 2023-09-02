@@ -18,7 +18,7 @@ namespace LC::Util
 	{
 		QNetworkReply::NetworkError Error_;
 		QString ErrorText_;
-		QNetworkReply& Reply_;
+		QUrl Url_;
 	};
 
 	UTIL_THREADS_API QDebug operator<< (QDebug debug, const NetworkReplyError&);
@@ -26,7 +26,6 @@ namespace LC::Util
 	struct NetworkReplySuccess
 	{
 		QByteArray Data_;
-		QNetworkReply& Reply_;
 	};
 
 	using NRBase_t = std::variant<NetworkReplyError, NetworkReplySuccess>;

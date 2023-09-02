@@ -34,9 +34,9 @@ namespace LC::Util::detail
 	NetworkResult NRAwaiter::await_resume () const noexcept
 	{
 		if (Reply_.error () == QNetworkReply::NoError)
-			return NetworkReplySuccess { Reply_.readAll (), Reply_ };
+			return NetworkReplySuccess { Reply_.readAll () };
 		else
-			return NetworkReplyError { Reply_.error (), Reply_.errorString (), Reply_ };
+			return NetworkReplyError { Reply_.error (), Reply_.errorString (), Reply_.url () };
 	}
 }
 
