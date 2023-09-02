@@ -132,6 +132,11 @@ namespace LC::Util
 			}
 		};
 
+		using ResultType_t = R;
+
+		template<typename RR>
+		using ReplaceResult_t = Task<RR, Extensions...>;
+
 		explicit Task (const std::coroutine_handle<promise_type>& handle)
 		: Handle_ { handle }
 		{
