@@ -21,12 +21,17 @@ namespace LC::Util::detail
 	{
 		auto finishedConn = QObject::connect (&Reply_,
 				&QNetworkReply::finished,
-				handle);
+				[=, this]
+				{
+					Reply_.deleteLater ();
+					handle ();
+				});
 		QObject::connect (&Reply_,
 				&QNetworkReply::errorOccurred,
-				[=]
+				[=, this]
 				{
 					QObject::disconnect (finishedConn);
+					Reply_.deleteLater ();
 					handle ();
 				});
 	}
