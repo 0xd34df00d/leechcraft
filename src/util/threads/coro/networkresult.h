@@ -45,6 +45,7 @@ namespace LC::Util
 	public:
 		using NRBase_t::variant;
 
+		std::optional<NetworkReplyError> IsError () const;
 		QByteArray GetReplyData () const;
 	};
 }

@@ -35,6 +35,13 @@ namespace LC::Util
 		return dbg;
 	}
 
+	std::optional<NetworkReplyError> NetworkResult::IsError () const
+	{
+		if (const auto errPtr = std::get_if<NetworkReplyError> (this))
+			return *errPtr;
+		return {};
+	}
+
 	QByteArray NetworkResult::GetReplyData () const
 	{
 		return Visit (*this,
