@@ -21,6 +21,8 @@ namespace LC::Util
 		QNetworkReply& Reply_;
 	};
 
+	UTIL_THREADS_API QDebug operator<< (QDebug debug, const NetworkReplyError&);
+
 	struct NetworkReplySuccess
 	{
 		QByteArray Data_;
@@ -48,4 +50,6 @@ namespace LC::Util
 		std::optional<NetworkReplyError> IsError () const;
 		QByteArray GetReplyData () const;
 	};
+
+	UTIL_THREADS_API QDebug operator<< (QDebug debug, const NetworkResult&);
 }

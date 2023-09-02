@@ -11,6 +11,18 @@
 
 namespace LC::Util
 {
+	QDebug operator<< (QDebug dbg, const NetworkReplyError& error)
+	{
+		QDebugStateSaver saver { dbg };
+
+		dbg.nospace () << "{ url: " << error.Reply_->url ()
+				<< "; error: " << error.Error_
+				<< "; text: " << error.ErrorText_
+				<< " }";
+
+		return dbg;
+	}
+
 	NetworkReplyErrorException::NetworkReplyErrorException (NetworkReplyError error)
 	: std::runtime_error { "network reply returned an error: " + error.ErrorText_.toStdString () }
 	, Error_ { std::move (error) }
@@ -24,15 +36,7 @@ namespace LC::Util
 
 	QDebug operator<< (QDebug dbg, const NetworkReplyErrorException& exception)
 	{
-		QDebugStateSaver saver { dbg };
-
-		const auto& error = exception.GetError ();
-		dbg.nospace () << "{ url: " << error.Reply_.url ()
-				<< "; error: " << error.Error_
-				<< "; text: " << error.ErrorText_
-				<< " }";
-
-		return dbg;
+		return dbg << exception.GetError ();
 	}
 
 	std::optional<NetworkReplyError> NetworkResult::IsError () const
@@ -47,5 +51,16 @@ namespace LC::Util
 		return Visit (*this,
 				[] (const NetworkReplySuccess& success) { return success.Data_; },
 				[] (const NetworkReplyError& error) -> QByteArray { throw NetworkReplyErrorException { error }; });
+	}
+
+	QDebug operator<< (QDebug dbg, const NetworkResult& result)
+	{
+		QDebugStateSaver saver { dbg };
+
+		Visit (result,
+				[dbg] (const NetworkReplySuccess& success) { dbg << "success:" << success.Data_; },
+				[dbg] (const NetworkReplyError& error) { dbg << "error:" << error; });
+
+		return dbg;
 	}
 }
