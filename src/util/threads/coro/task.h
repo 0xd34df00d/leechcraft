@@ -20,6 +20,8 @@ namespace LC::Util
 		template<typename R>
 		struct PromiseRet
 		{
+			using ReturnType_t = R;
+
 			constexpr static bool IsVoid = false;
 
 			std::optional<R> Ret_;
