@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "networkresult.h"
+#include <util/sll/either.h>
 #include <util/sll/visitor.h>
 
 namespace LC::Util
@@ -51,6 +52,18 @@ namespace LC::Util
 		return Visit (*this,
 				[] (const NetworkReplySuccess& success) { return success.Data_; },
 				[] (const NetworkReplyError& error) -> QByteArray { throw NetworkReplyErrorException { error }; });
+	}
+
+	Either<QString, QByteArray> NetworkResult::ToEither (const QString& errorContext) const
+	{
+		using Result_t = Either<QString, QByteArray>;
+		return Visit (*this,
+				[] (const NetworkReplySuccess& success) { return Result_t { success.Data_ }; },
+				[&errorContext] (const NetworkReplyError& error)
+				{
+					qWarning () << errorContext << error;
+					return Result_t { errorContext + ' ' + error.ErrorText_ };
+				});
 	}
 
 	QDebug operator<< (QDebug dbg, const NetworkResult& result)

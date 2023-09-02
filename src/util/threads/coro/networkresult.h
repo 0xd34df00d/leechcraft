@@ -14,6 +14,7 @@
 
 namespace LC::Util
 {
+
 	struct NetworkReplyError
 	{
 		QNetworkReply::NetworkError Error_;
@@ -41,6 +42,9 @@ namespace LC::Util
 
 	UTIL_THREADS_API QDebug operator<< (QDebug debug, const NetworkReplyErrorException&);
 
+	template<typename, typename>
+	class Either;
+
 	class UTIL_THREADS_API NetworkResult : public NRBase_t
 	{
 	public:
@@ -48,6 +52,8 @@ namespace LC::Util
 
 		std::optional<NetworkReplyError> IsError () const;
 		QByteArray GetReplyData () const;
+
+		Either<QString, QByteArray> ToEither (const QString& errorContext) const;
 	};
 
 	UTIL_THREADS_API QDebug operator<< (QDebug debug, const NetworkResult&);
