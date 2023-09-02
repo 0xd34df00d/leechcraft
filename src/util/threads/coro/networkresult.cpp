@@ -57,9 +57,10 @@ namespace LC::Util
 	{
 		QDebugStateSaver saver { dbg };
 
+		dbg.noquote ();
 		Visit (result,
-				[dbg] (const NetworkReplySuccess& success) { dbg << "success:" << success.Data_; },
-				[dbg] (const NetworkReplyError& error) { dbg << "error:" << error; });
+				[&dbg] (const NetworkReplySuccess& success) { dbg << "success:" << success.Data_; },
+				[&dbg] (const NetworkReplyError& error) { dbg << "error:" << error; });
 
 		return dbg;
 	}
