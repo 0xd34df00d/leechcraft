@@ -30,5 +30,7 @@ namespace LC::Util
 
 		void testWaitMany ();
 		void testWaitManyTuple ();
+
+		void testEither ();
 	};
 }

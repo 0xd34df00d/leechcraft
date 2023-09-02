@@ -11,6 +11,7 @@
 #include <QtTest>
 #include <coro.h>
 #include <coro/context.h>
+#include <coro/either.h>
 #include <coro/inparallel.h>
 #include <coro/networkresult.h>
 #include <util/sll/qtutil.h>
@@ -310,5 +311,26 @@ namespace LC::Util
 		QCOMPARE (result, (std::tuple { 10, 9, 2, 1 }));
 		constexpr auto tolerance = 1.05;
 		QVERIFY (executionElapsed < 10 * tolerance);
+	}
+
+	void CoroTaskTest::testEither ()
+	{
+		using Result_t = Either<QString, bool>;
+
+		auto earlyFailing = [] () -> Task<Result_t>
+		{
+			const auto theInt = co_await Either<QString, int>::Left ("meh");
+			co_await 10ms;
+			co_return Result_t::Right (theInt > 420);
+		} ();
+		QCOMPARE (GetTaskResult (earlyFailing), Result_t::Left ("meh"));
+
+		auto successful = [] () -> Task<Result_t>
+		{
+			const auto theInt = co_await Either<QString, int>::Right (42);
+			co_await 10ms;
+			co_return Result_t::Right (theInt > 420);
+		} ();
+		QCOMPARE (GetTaskResult (successful), Result_t::Right (false));
 	}
 }
