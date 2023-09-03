@@ -25,7 +25,7 @@ namespace LC::Util
 
 		QVector<std::coroutine_handle<>> Queue_;
 	public:
-		explicit Throttle (std::chrono::milliseconds);
+		explicit Throttle (std::chrono::milliseconds, Qt::TimerType = Qt::TimerType::CoarseTimer);
 
 		std::chrono::milliseconds GetInterval () const;
 

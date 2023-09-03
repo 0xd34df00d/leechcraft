@@ -11,11 +11,12 @@
 
 namespace LC::Util
 {
-	Throttle::Throttle (std::chrono::milliseconds interval)
+	Throttle::Throttle (std::chrono::milliseconds interval, Qt::TimerType type)
 	: Interval_ { interval }
 	{
 		LastInvocation_.start ();
 
+		Timer_.setTimerType (type);
 		Timer_.setSingleShot (true);
 		Timer_.callOnTimeout ([this]
 				{
