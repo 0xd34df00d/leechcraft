@@ -28,7 +28,7 @@ namespace LC::Util
 		T GetTaskResult (Task<T, Extensions...> task)
 		{
 			constexpr bool isVoid = std::is_same_v<T, void>;
-			std::unique_ptr<T> result;
+			std::conditional_t<isVoid, void*, std::unique_ptr<T>> result;
 
 			std::exception_ptr exception;
 
