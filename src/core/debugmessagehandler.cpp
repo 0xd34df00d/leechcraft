@@ -385,6 +385,21 @@ namespace
 		return file;
 	}
 
+	QByteArray DetectFile (const QMessageLogContext& ctx)
+	{
+		if (!ctx.file)
+			return "<unk>";
+
+		QByteArray file { ctx.file };
+		const auto pos = file.lastIndexOf ('/');
+		return pos >= 0 ? file.mid (pos + 1) : file;
+	};
+
+	QByteArray DetectLine (const QMessageLogContext& ctx)
+	{
+		return ctx.line > 0 ? ':' + QByteArray::number (ctx.line) : QByteArray {};
+	}
+
 	auto MakeColorTable ()
 	{
 		static const auto colorfgbg = QString::fromLatin1 (qgetenv ("COLORFGBG")).section (';', 1);
@@ -446,7 +461,9 @@ namespace DebugHandler
 		const auto& thread = QString { "0x%1" }
 				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
 				.toStdString ();
-		const auto& module = Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx));
+		const auto& module = Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx))
+				+ ':' + Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectFile (ctx))
+				+ ':' + DetectLine (ctx);
 
 		QMutexLocker locker { &G_DbgMutex };
 
