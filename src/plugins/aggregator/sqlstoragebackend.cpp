@@ -880,11 +880,20 @@ namespace LC::Aggregator
 	{
 		Channels_->Insert (ChannelR::FromOrig (channel));
 		for (const auto& item : channel.Items_)
-			AddItem (*item);
+			WriteItem (*item);
 		emit channelAdded (channel);
 	}
 
 	void SQLStorageBackend::AddItem (const Item& item)
+	{
+		WriteItem (item);
+
+		emit itemDataUpdated (item);
+		if (item.Unread_)
+			emit channelUnreadCountUpdated (item.ChannelID_, UnreadDelta { 1 });
+	}
+
+	void SQLStorageBackend::WriteItem (const Item& item)
 	{
 		Items_->Insert (ItemR::FromOrig (item));
 
@@ -892,10 +901,6 @@ namespace LC::Aggregator
 		WriteMRSSEntries (item.MRSSEntries_);
 
 		emit hookItemAdded (std::make_shared<Util::DefaultHookProxy> (), item);
-
-		emit itemDataUpdated (item);
-		if (item.Unread_)
-			emit channelUnreadCountUpdated (item.ChannelID_, UnreadDelta { 1 });
 	}
 
 	void SQLStorageBackend::RemoveItems (const QSet<IDType_t>& items)

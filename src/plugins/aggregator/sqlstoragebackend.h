@@ -110,6 +110,7 @@ namespace LC::Aggregator
 
 		IDType_t GetHighestID (const PoolType&) const override;
 	private:
+		void WriteItem (const Item&);
 		void WriteEnclosures (const QList<Enclosure>&);
 		void GetEnclosures (IDType_t, QList<Enclosure>&) const;
 		void WriteMRSSEntries (const QList<MRSSEntry>&);
