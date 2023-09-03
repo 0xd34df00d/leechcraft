@@ -9,7 +9,6 @@
 #include "splashscreen.h"
 #include <QStyle>
 #include <QStyleOptionProgressBar>
-#include <util/sll/slotclosure.h>
 #include "loadprocessbase.h"
 
 namespace LC
@@ -20,21 +19,17 @@ namespace LC
 		repaint ();
 
 		connect (proc,
-				SIGNAL (changed ()),
+				&LoadProcessBase::changed,
 				this,
-				SLOT (repaint ()));
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, proc]
-			{
-				Processes_.removeOne (proc);
-				repaint ();
-			},
-			proc,
-			SIGNAL (destroyed (QObject*)),
-			this
-		};
+				&SplashScreen::repaint);
+		connect (proc,
+				&QObject::destroyed,
+				this,
+				[this, proc]
+				{
+					Processes_.removeOne (proc);
+					repaint ();
+				});
 	}
 
 	void SplashScreen::drawContents (QPainter *painter)
