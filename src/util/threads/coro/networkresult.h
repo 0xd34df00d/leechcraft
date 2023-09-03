@@ -14,7 +14,6 @@
 
 namespace LC::Util
 {
-
 	struct NetworkReplyError
 	{
 		QNetworkReply::NetworkError Error_;

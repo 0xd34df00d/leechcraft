@@ -33,4 +33,6 @@ namespace LC::Util
 		void await_suspend (std::coroutine_handle<>);
 		void await_resume () const;
 	};
+
+	using Throttle_ptr = std::shared_ptr<Throttle>;
 }
