@@ -14,6 +14,7 @@
 #include <coro/either.h>
 #include <coro/inparallel.h>
 #include <coro/networkresult.h>
+#include <coro/throttle.h>
 #include <util/sll/qtutil.h>
 
 QTEST_GUILESS_MAIN (LC::Util::CoroTaskTest)
@@ -332,5 +333,29 @@ namespace LC::Util
 			co_return Result_t::Right (theInt > 420);
 		} ();
 		QCOMPARE (GetTaskResult (successful), Result_t::Right (false));
+	}
+
+	void CoroTaskTest::testThrottleSameCoro ()
+	{
+		Throttle t { 10ms };
+		constexpr auto count = 10;
+
+		QElapsedTimer timer;
+		timer.start ();
+		auto task = [] (auto& t) -> Task<int>
+		{
+			int result = 0;
+			for (int i = 0; i < count; ++i)
+			{
+				co_await t;
+				result += i;
+			}
+			co_return result;
+		} (t);
+		const auto result = GetTaskResult (task);
+		const auto time = timer.elapsed ();
+
+		QCOMPARE (result, count * (count - 1) / 2);
+		QVERIFY (time >= count * t.GetInterval ().count ());
 	}
 }

@@ -32,5 +32,7 @@ namespace LC::Util
 		void testWaitManyTuple ();
 
 		void testEither ();
+
+		void testThrottleSameCoro ();
 	};
 }

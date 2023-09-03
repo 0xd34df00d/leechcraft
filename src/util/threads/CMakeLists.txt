@@ -3,6 +3,7 @@ set (THREADS_SRCS
 	coro/networkreply.cpp
 	coro/networkresult.cpp
 	coro/timer.cpp
+	coro/throttle.cpp
 	futures.cpp
 	workerthreadbase.cpp
 	)
