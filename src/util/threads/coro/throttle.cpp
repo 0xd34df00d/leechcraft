@@ -22,8 +22,8 @@ namespace LC::Util
 				{
 					LastInvocation_.restart ();
 
-					if (!Queue_.isEmpty ())
-						Timer_.start (Interval_);
+					if (Queue_.size () > 1)
+						StartTimer (Interval_);
 					Queue_.takeFirst () ();
 				});
 	}
