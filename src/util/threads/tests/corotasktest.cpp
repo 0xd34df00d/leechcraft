@@ -358,4 +358,48 @@ namespace LC::Util
 		QCOMPARE (result, count * (count - 1) / 2);
 		QVERIFY (time >= count * t.GetInterval ().count ());
 	}
+
+	void CoroTaskTest::testThrottleSameCoroSlow ()
+	{
+		Throttle t { 10ms };
+		constexpr auto count = 10;
+
+		QElapsedTimer timer;
+		timer.start ();
+		auto task = [] (auto& t) -> Task<void>
+		{
+			for (int i = 0; i < count; ++i)
+			{
+				co_await t;
+				if (i != count - 1)
+					co_await Precisely { 9ms };
+			}
+		} (t);
+		GetTaskResult (task);
+		const auto time = timer.elapsed ();
+
+		const auto expectedMinTime = count * t.GetInterval ().count ();
+		QVERIFY (time >= expectedMinTime);
+		QVERIFY (time - expectedMinTime <= expectedMinTime * 0.05);
+	}
+
+	void CoroTaskTest::testThrottleManyCoros ()
+	{
+		Throttle t { 1ms, Qt::TimerType::PreciseTimer };
+		constexpr auto count = 10;
+
+		QElapsedTimer timer;
+		timer.start ();
+		auto mkTask = [] (auto& t) -> Task<void>
+		{
+			for (int i = 0; i < count; ++i)
+				co_await t;
+		};
+		QVector tasks { mkTask (t), mkTask (t), mkTask (t) };
+		for (auto& task : tasks)
+			GetTaskResult (task);
+		const auto time = timer.elapsed ();
+
+		QVERIFY (time >= count * tasks.size () * t.GetInterval ().count ());
+	}
 }

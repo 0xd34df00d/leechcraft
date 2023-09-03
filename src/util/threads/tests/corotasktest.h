@@ -34,5 +34,7 @@ namespace LC::Util
 		void testEither ();
 
 		void testThrottleSameCoro ();
+		void testThrottleSameCoroSlow ();
+		void testThrottleManyCoros ();
 	};
 }
