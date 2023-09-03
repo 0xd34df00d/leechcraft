@@ -33,6 +33,11 @@ namespace LC::Util
 		return Interval_;
 	}
 
+	void Throttle::Backoff ()
+	{
+		BackoffFactor_ += 2;
+	}
+
 	bool Throttle::await_ready ()
 	{
 		const bool allowed = std::chrono::milliseconds { LastInvocation_.elapsed () } >= Interval_ && Queue_.isEmpty ();
@@ -44,12 +49,18 @@ namespace LC::Util
 	void Throttle::await_suspend (std::coroutine_handle<> handle)
 	{
 		if (Queue_.isEmpty ())
-			Timer_.start (Interval_ - std::chrono::milliseconds { LastInvocation_.elapsed () });
+			StartTimer (Interval_ - std::chrono::milliseconds { LastInvocation_.elapsed () });
 
 		Queue_ << handle;
 	}
 
 	void Throttle::await_resume () const
 	{
+	}
+
+	void Throttle::StartTimer (std::chrono::milliseconds timeout)
+	{
+		BackoffFactor_ = std::max (0, BackoffFactor_ - 1);
+		Timer_.start (timeout * (BackoffFactor_ + 1));
 	}
 }

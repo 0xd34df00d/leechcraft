@@ -24,14 +24,20 @@ namespace LC::Util
 		std::chrono::milliseconds Interval_;
 
 		QVector<std::coroutine_handle<>> Queue_;
+
+		int BackoffFactor_ = 0;
 	public:
 		explicit Throttle (std::chrono::milliseconds, Qt::TimerType = Qt::TimerType::CoarseTimer);
 
 		std::chrono::milliseconds GetInterval () const;
 
+		void Backoff ();
+
 		bool await_ready ();
 		void await_suspend (std::coroutine_handle<>);
 		void await_resume () const;
+	private:
+		void StartTimer (std::chrono::milliseconds);
 	};
 
 	using Throttle_ptr = std::shared_ptr<Throttle>;
