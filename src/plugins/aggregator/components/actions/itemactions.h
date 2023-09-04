@@ -60,6 +60,9 @@ namespace LC::Aggregator
 	private:
 		const Deps Deps_;
 	public:
+		enum class ActionId;
+		static void RegisterActions (Util::ShortcutManager&);
+
 		explicit ItemActions (const Deps&, QObject*);
 
 		QList<QAction*> GetAllActions () const;
@@ -70,9 +73,9 @@ namespace LC::Aggregator
 	private:
 		struct ActionInfo;
 
-		QAction* MakeAction (const QString& name,
-				const QByteArray& icon,
-				const QByteArray& objectNameSuffix,
+		QAction* MakeAction (ActionId,
+				auto handler);
+		QAction* MakeAction (ActionId,
 				auto handler,
 				const ActionInfo& info);
 

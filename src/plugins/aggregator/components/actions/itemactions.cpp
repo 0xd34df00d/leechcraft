@@ -23,16 +23,84 @@
 #include "../../dbutils.h"
 #include "storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
+#include "actiondefshelpers.h"
 
 namespace LC::Aggregator
 {
 	struct ItemActions::ActionInfo
 	{
-		QKeySequence Shortcut_ {};
 		std::optional<bool> Checked_ {};
-
-		bool AddToAllActions_ = true;
 	};
+
+	MAKE_ACTIONS (ItemActions,
+			MarkItemAsUnread,
+			MarkItemAsRead,
+			MarkItemAsUnimportant,
+			MarkItemAsImportant,
+			DeleteItem,
+			ItemCommentsSubscribe,
+			ItemLinkOpen,
+			ItemLinkCopy,
+			HideReadItems,
+			ShowAsTape,
+			PrevUnreadItem,
+			NextUnreadItem,
+			PrevItem,
+			NextItem
+	);
+
+	namespace
+	{
+		ActionInfo MakeInfo (const QString& text, const QByteArray& icon, const QString& shortcut = {})
+		{
+			return { .Text_ = text, .Seq_ = shortcut, .Icon_ = icon };
+		}
+
+		ActionInfo GetActionInfo (ItemActions::ActionId action)
+		{
+			using enum ItemActions::ActionId;
+			switch (action)
+			{
+			case MarkItemAsUnread:
+				return MakeInfo (ItemActions::tr ("Mark as unread"), {}, "U"_qs);
+			case MarkItemAsRead:
+				return MakeInfo (ItemActions::tr ("Mark as read"), {}, "R"_qs);
+			case MarkItemAsUnimportant:
+				return MakeInfo (ItemActions::tr ("Unimportant"), "rating-unrated", "I"_qs);
+			case MarkItemAsImportant:
+				return MakeInfo (ItemActions::tr ("Important"), "rating", "Shift+I"_qs);
+			case DeleteItem:
+				return MakeInfo (ItemActions::tr ("Delete"), "remove", "Delete"_qs);
+			case ItemCommentsSubscribe:
+				return MakeInfo (ItemActions::tr ("Subscribe to comments"), "news-subscribe");
+			case ItemLinkOpen:
+				return MakeInfo (ItemActions::tr ("Open in new tab"), "internet-web-browser", "O"_qs);
+			case ItemLinkCopy:
+				return MakeInfo (ItemActions::tr ("Copy news item link"), "edit-copy", "C"_qs);
+			case HideReadItems:
+				return MakeInfo (ItemActions::tr ("Hide read items"), "mail-mark-unread");
+			case ShowAsTape:
+				return MakeInfo (ItemActions::tr ("Show items as tape"), "format-list-unordered");
+			case PrevUnreadItem:
+				return MakeInfo (ItemActions::tr ("Previous unread item"), "go-first", "Shift+K"_qs);
+			case NextUnreadItem:
+				return MakeInfo (ItemActions::tr ("Next unread item"), "go-last", "Shift+J"_qs);
+			case PrevItem:
+				return MakeInfo (ItemActions::tr ("Previous item"), "go-previous", "K"_qs);
+			case NextItem:
+				return MakeInfo (ItemActions::tr ("Next item"), "go-next", "J"_qs);
+			}
+
+			qWarning () << "unknown action" << static_cast<int> (action);
+			return {};
+		}
+	}
+
+	void ItemActions::RegisterActions (Util::ShortcutManager& sm)
+	{
+		for (const auto actionId : AllActionIds ())
+			sm.RegisterActionInfo (ToString (actionId), GetActionInfo (actionId));
+	}
 
 	ItemActions::ItemActions (const Deps& deps, QObject *parent)
 	: QObject { parent }
@@ -42,62 +110,40 @@ namespace LC::Aggregator
 
 		const auto mkSep = [&] { AllActions_ << Util::CreateSeparator (parent); };
 
-		MarkUnread_ = MakeAction (tr ("Mark as unread"), {}, "MarkItemAsUnread",
-				[this] { MarkSelectedReadStatus (false); },
-				{ .Shortcut_ = { "U" } });
-		MarkRead_ = MakeAction (tr ("Mark as read"), {}, "MarkItemAsRead",
-				[this] { MarkSelectedReadStatus (true); },
-				{ .Shortcut_ = { "R" } });
+		using enum ActionId;
+		MarkUnread_ = MakeAction (MarkItemAsUnread, [this] { MarkSelectedReadStatus (false); });
+		MarkRead_ = MakeAction (MarkItemAsRead, [this] { MarkSelectedReadStatus (true); });
 		mkSep ();
-		MarkUnimportant_ = MakeAction (tr ("Unimportant"), "rating-unrated", "MarkItemAsUnimportant",
-				[this] { MarkSelectedAsImportant (false); },
-				{ .Shortcut_ = { "I" } });
-		MarkImportant_ = MakeAction (tr ("Important"), "rating", "MarkItemAsImportant",
-				[this] { MarkSelectedAsImportant (true); },
-				{ .Shortcut_ = { "Shift+I" } });
+		MarkUnimportant_ = MakeAction (MarkItemAsUnimportant, [this] { MarkSelectedAsImportant (false); });
+		MarkImportant_ = MakeAction (MarkItemAsImportant, [this] { MarkSelectedAsImportant (true); });
 		mkSep ();
-		Delete_ = MakeAction (tr ("Delete"), "remove", "DeleteItem",
-				[this] { DeleteSelected (); },
-				{ .Shortcut_ = { "Delete" } });
+		Delete_ = MakeAction (DeleteItem, [this] { DeleteSelected (); });
 		mkSep ();
-		SubComments_ = MakeAction (tr ("Subscribe to comments"), "news-subscribe", "ItemCommentsSubscribe",
-				[this] { SubscribeComments (); },
-				{});
-		LinkOpen_ = MakeAction (tr ("Open in new tab"), "internet-web-browser", "ItemLinkOpen",
-				[this] { LinkOpen (); },
-				{ .Shortcut_ = { "O" } });
-		LinkCopy_ = MakeAction (tr ("Copy news item link"), "edit-copy", "ItemLinkCopy",
-				[this] { LinkCopy (); },
-				{ .Shortcut_ = { "C" } });
+		SubComments_ = MakeAction (ItemCommentsSubscribe, [this] { SubscribeComments (); });
+		LinkOpen_ = MakeAction (ItemLinkOpen, [this] { LinkOpen (); });
+		LinkCopy_ = MakeAction (ItemLinkCopy, [this] { LinkCopy (); });
 
 		mkSep ();
 
 		const bool shouldHideRead = xsm.Property ("HideReadItems", false).toBool ();
 		deps.SetHideRead_ (shouldHideRead);
-		ToolbarActions_ << MakeAction (tr ("Hide read items"), "mail-mark-unread", "HideReadItems",
+		ToolbarActions_ << MakeAction (HideReadItems,
 				[&] (bool hide)
 				{
 					Deps_.SetHideRead_ (hide);
 					xsm.setProperty ("HideReadItems", hide);
 				},
 				{ .Checked_ = shouldHideRead });
-		ToolbarActions_ << MakeAction (tr ("Show items as tape"), "format-list-unordered", "ActionShowAsTape",
-				deps.SetShowTape_,
+		ToolbarActions_ << MakeAction (ShowAsTape, deps.SetShowTape_,
 				{ .Checked_ = xsm.Property ("ShowAsTape", false).toBool () });
 
 		auto& nav = Deps_.ItemNavigator_;
-		InvisibleActions_ << MakeAction (tr ("Previous unread item"), "go-first", "PrevUnreadItem",
-				[&nav] { nav.MoveToPrevUnread (); },
-				{ .Shortcut_ = { "Shift+K" }, .AddToAllActions_ = false });
-		InvisibleActions_ << MakeAction (tr ("Next unread item"), "go-last", "NextUnreadItem",
-				[&nav] { nav.MoveToNextUnread (); },
-				{ .Shortcut_ = { "Shift+J" }, .AddToAllActions_ = false });
-		InvisibleActions_ << MakeAction (tr ("Previous item"), "go-previous", "PrevItem",
-				[&nav] { nav.MoveToPrev (); },
-				{ .Shortcut_ = { "K" }, .AddToAllActions_ = false });
-		InvisibleActions_ << MakeAction (tr ("Next item"), "go-next", "NextItem",
-				[&nav] { nav.MoveToNext (); },
-				{ .Shortcut_ = { "J" }, .AddToAllActions_ = false });
+		InvisibleActions_ << MakeAction (PrevUnreadItem, [&nav] { nav.MoveToPrevUnread (); });
+		InvisibleActions_ << MakeAction (NextUnreadItem, [&nav] { nav.MoveToNextUnread (); });
+		InvisibleActions_ << MakeAction (PrevItem, [&nav] { nav.MoveToPrev (); });
+		InvisibleActions_ << MakeAction (NextItem, [&nav] { nav.MoveToNext (); });
+		for (auto act : InvisibleActions_)
+			AllActions_.removeOne (act);
 	}
 
 	QList<QAction*> ItemActions::GetAllActions () const
@@ -155,17 +201,17 @@ namespace LC::Aggregator
 		SubComments_->setEnabled (hasCommentsRss);
 	}
 
-	QAction* ItemActions::MakeAction (const QString& name,
-			const QByteArray& icon,
-			const QByteArray& objectNameSuffix,
+	QAction* ItemActions::MakeAction (ActionId actionId,
+			auto handler)
+	{
+		return MakeAction (actionId, handler, {});
+	}
+
+	QAction* ItemActions::MakeAction (ActionId actionId,
 			auto handler,
 			const ActionInfo& info)
 	{
-		const auto action = new QAction { name, parent () };
-		if (!icon.isEmpty ())
-			action->setProperty ("ActionIcon", icon);
-		if (!info.Shortcut_.isEmpty ())
-			action->setShortcut (info.Shortcut_);
+		const auto action = new QAction { parent () };
 		if (info.Checked_)
 		{
 			action->setCheckable (true);
@@ -176,11 +222,8 @@ namespace LC::Aggregator
 				this,
 				handler);
 
-		Deps_.ShortcutsMgr_.RegisterAction ("Action" + objectNameSuffix + "_", action);
-
-		if (info.AddToAllActions_)
-			AllActions_ << action;
-
+		Deps_.ShortcutsMgr_.RegisterAction (ToString (actionId), action);
+		AllActions_ << action;
 		return action;
 	}
 
