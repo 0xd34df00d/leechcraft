@@ -8,12 +8,13 @@
 
 #pragma once
 
+#include <variant>
 #include <QtPlugin>
-#include <QMultiMap>
 #include <QString>
 #include <QKeySequence>
 #include <QIcon>
 #include <QMetaType>
+#include <util/sll/void.h>
 
 class QAction;
 
@@ -31,46 +32,24 @@ namespace LC
 	struct ActionInfo
 	{
 		/// User-visible name of the action.
-		QString UserVisibleText_;
-		/// List of key sequences for this action.
-		QKeySequences_t Seqs_;
-		/// Icon of the action.
-		QIcon Icon_;
+		QString Text_ {};
+		/// The primary key sequence for this action.
+		QKeySequence Seq_ {};
+		/// Icon of the action, either a `QIcon` itself or its `ActionIcon`.
+		std::variant<Util::Void, QByteArray, QIcon> Icon_ { Util::Void {} };
+		/// The additional key sequences for this action.
+		QKeySequences_t AdditionalSeqs_ {};
 
-		/** @brief Default-constructs an action info.
-		 */
-		ActionInfo ()
+		QKeySequences_t GetAllShortcuts () const
 		{
-		}
+			if (AdditionalSeqs_.isEmpty ())
+				return { Seq_ };
 
-		/** @brief Constructs an action info.
-		 *
-		 * Constructs an info object for the given user-visible text
-		 * \em uvt, default key sequence \em seq and action icon
-		 * \em icon.
-		 */
-		ActionInfo (const QString& uvt,
-				const QKeySequence& seq,
-				const QIcon& icon)
-		: UserVisibleText_ (uvt)
-		, Icon_ (icon)
-		{
-			Seqs_ << seq;
-		}
-
-		/** @brief Constructs an action info.
-		 *
-		 * Constructs an info object for the given user-visible text
-		 * \em uvt, default key sequence list \em seqs and action icon
-		 * \em icon.
-		 */
-		ActionInfo (const QString& uvt,
-				const QKeySequences_t& seqs,
-				const QIcon& icon)
-		: UserVisibleText_ (uvt)
-		, Seqs_ (seqs)
-		, Icon_ (icon)
-		{
+			QKeySequences_t result;
+			result.reserve (AdditionalSeqs_.size () + 1);
+			result.push_back (Seq_);
+			result += AdditionalSeqs_;
+			return result;
 		}
 	};
 };

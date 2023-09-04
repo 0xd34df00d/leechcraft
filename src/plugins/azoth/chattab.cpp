@@ -1428,9 +1428,9 @@ namespace Azoth
 		const auto& infos = sm->GetActionInfo ();
 
 		const auto& clearInfo = infos ["org.LeechCraft.Azoth.ClearChat"];
-		QAction *clearAction = new QAction (clearInfo.UserVisibleText_, this);
+		QAction *clearAction = new QAction (clearInfo.Text_, this);
 		clearAction->setProperty ("ActionIcon", "edit-clear-history");
-		clearAction->setShortcuts (clearInfo.Seqs_);
+		clearAction->setShortcuts (clearInfo.GetAllShortcuts ());
 		connect (clearAction,
 				SIGNAL (triggered ()),
 				this,
@@ -1439,9 +1439,9 @@ namespace Azoth
 		sm->RegisterAction ("org.LeechCraft.Azoth.ClearChat", clearAction);
 
 		const auto& backInfo = infos ["org.LeechCraft.Azoth.ScrollHistoryBack"];
-		QAction *historyBack = new QAction (backInfo.UserVisibleText_, this);
+		QAction *historyBack = new QAction (backInfo.Text_, this);
 		historyBack->setProperty ("ActionIcon", "go-previous");
-		historyBack->setShortcuts (backInfo.Seqs_);
+		historyBack->setShortcuts (backInfo.GetAllShortcuts ());
 		connect (historyBack,
 				SIGNAL (triggered ()),
 				this,
@@ -1475,7 +1475,7 @@ namespace Azoth
 		const auto& quoteInfo = infos ["org.LeechCraft.Azoth.QuoteSelected"];
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
 		quoteSelection->setProperty ("ActionIcon", "mail-reply-sender");
-		quoteSelection->setShortcuts (quoteInfo.Seqs_);
+		quoteSelection->setShortcuts (quoteInfo.GetAllShortcuts ());
 		connect (quoteSelection,
 				SIGNAL (triggered ()),
 				this,
@@ -1487,7 +1487,7 @@ namespace Azoth
 		Ui_.View_->SetQuoteAction (quoteSelection);
 
 		const auto& openLinkInfo = infos ["org.LeechCraft.Azoth.OpenLastLink"];
-		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
+		auto shortcut = new QShortcut (openLinkInfo.Seq_,
 				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
 		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
 	}

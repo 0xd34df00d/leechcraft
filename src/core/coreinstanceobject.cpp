@@ -187,8 +187,9 @@ namespace LC
 		CoreShortcutManager_->RegisterActionInfo ("Find.Show",
 				{
 					tr ("Open find dialog (where applicable)"),
-					{ QString { "Ctrl+F" }, QString ("Ctrl+F3") },
-					iconMgr.GetIcon ("edit-find")
+					QString { "Ctrl+F" },
+					iconMgr.GetIcon ("edit-find"),
+					{ QString ("Ctrl+F3") }
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Find.Prev",
 				{

@@ -46,21 +46,28 @@ namespace LC::Util
 		{
 			const auto& info = ActionInfo_ [id];
 			if (act->text ().isEmpty ())
-				act->setText (info.UserVisibleText_);
-			if (act->icon ().isNull () &&
-					act->property ("ActionIcon").isNull ())
-				act->setIcon (info.Icon_);
+				act->setText (info.Text_);
+			if (act->icon ().isNull ())
+			{
+				auto icon = Util::Visit (info.Icon_,
+						[] (Util::Void) { return QIcon {}; },
+						[this] (const QByteArray& name) { return CoreProxy_->GetIconThemeManager ()->GetIcon (name); },
+						[] (const QIcon& icon) { return icon; });
+				act->setIcon (icon);
+			}
 		}
 		else
 		{
 			const auto& icon = act->icon ().isNull () ?
 					CoreProxy_->GetIconThemeManager ()->GetIcon (act->property ("ActionIcon").toString ()) :
 					act->icon ();
+			auto shortcuts = act->shortcuts ();
 			RegisterActionInfo (id,
 					{
 						act->text (),
-						act->shortcuts (),
-						icon
+						shortcuts.value (0),
+						icon,
+						shortcuts.size () > 1 ? shortcuts.mid (1) : QList<QKeySequence> {},
 					});
 		}
 
@@ -110,8 +117,8 @@ namespace LC::Util
 		e.Additional_ [Receiver] = QVariant::fromValue (target);
 		e.Additional_ [ActionID] = id;
 		e.Additional_ [Method] = method;
-		e.Additional_ [Shortcut] = QVariant::fromValue (info.Seqs_.value (0));
-		e.Additional_ [AltShortcuts] = Util::Map (info.Seqs_.mid (1), &QVariant::fromValue<QKeySequence>);
+		e.Additional_ [Shortcut] = QVariant::fromValue (info.Seq_);
+		e.Additional_ [AltShortcuts] = Util::Map (info.AdditionalSeqs_, &QVariant::fromValue<QKeySequence>);
 		Globals_ [id] = e;
 
 		ActionInfo_ [id] = info;
@@ -171,6 +178,6 @@ namespace LC::Util
 	bool ShortcutManager::HasActionInfo (const QByteArray& id) const
 	{
 		return ActionInfo_.contains (id) &&
-				!ActionInfo_ [id].UserVisibleText_.isEmpty ();
+				!ActionInfo_ [id].Text_.isEmpty ();
 	}
 }
