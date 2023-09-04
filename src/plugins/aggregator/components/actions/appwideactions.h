@@ -45,6 +45,9 @@ namespace LC::Aggregator
 			ChannelsModel& ChannelsModel_;
 		};
 
+		enum class ActionId;
+		static void RegisterActions (Util::ShortcutManager&);
+
 		explicit AppWideActions (const Deps&, QObject* = nullptr);
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;

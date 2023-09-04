@@ -21,77 +21,103 @@
 #include "updatesmanager.h"
 #include "opmladder.h"
 #include "xmlsettingsmanager.h"
+#include "actiondefshelpers.h"
 
 namespace LC::Aggregator
 {
+	MAKE_ACTIONS (AppWideActions,
+		AddFeed,
+		UpdateFeeds,
+		MarkAllChannelsRead,
+		ImportOPML,
+		ExportOPML,
+		ExportFB2
+	);
+
+	namespace
+	{
+		ActionInfo MakeInfo (const QString& text, const QByteArray& icon)
+		{
+			return { .Text_ = text, .Icon_ = icon };
+		}
+
+		ActionInfo GetActionInfo (AppWideActions::ActionId action)
+		{
+			using enum AppWideActions::ActionId;
+			switch (action)
+			{
+			case AddFeed:
+				return MakeInfo (AppWideActions::tr ("Add feed..."), "list-add");
+			case UpdateFeeds:
+				return MakeInfo (AppWideActions::tr ("Update all feeds"), "mail-receive");
+			case MarkAllChannelsRead:
+				return MakeInfo (AppWideActions::tr ("Mark all channels as read"), "mail-mark-read");
+			case ImportOPML:
+				return MakeInfo (AppWideActions::tr ("Import from OPML..."), "document-import");
+			case ExportOPML:
+				return MakeInfo (AppWideActions::tr ("Export to OPML..."), "document-export");
+			case ExportFB2:
+				return MakeInfo (AppWideActions::tr ("Export to FB2..."), "application-xml");
+			}
+
+			qWarning () << "unknown action" << static_cast<int> (action);
+			return {};
+		}
+
+		void RunAddFeed (UpdatesManager& um)
+		{
+			AddFeedDialog af;
+			if (af.exec () == QDialog::Accepted)
+				Aggregator::AddFeed ({
+						.URL_ = af.GetURL (),
+						.Tags_ = af.GetTags (),
+						.UpdatesManager_ = um,
+					});
+		}
+	}
+
+	void AppWideActions::RegisterActions (Util::ShortcutManager& sm)
+	{
+		for (const auto actionId : AllActionIds ())
+			sm.RegisterActionInfo (ToString (actionId), GetActionInfo (actionId));
+	}
+
 	AppWideActions::AppWideActions (const Deps& deps, QObject *parent)
 	: QObject { parent }
 	, ToolsMenu_ { "Aggregator"_qs }
 	{
 		ToolsMenu_.setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
-		const auto makeAction = [&] (const QString& title, const QByteArray& iconName)
+		const auto makeAction = [&] (ActionId actionId, auto handler)
 		{
-			const auto action = new QAction { title, parent };
-			action->setProperty ("ActionIcon", iconName);
+			const auto action = new QAction { parent };
+			deps.ShortcutManager_.RegisterAction (ToString (actionId), action);
 			ToolsMenu_.addAction (action);
 			AllActions_ << action;
+
+			connect (action,
+					&QAction::triggered,
+					this,
+					handler);
+
 			return action;
 		};
 
-		const auto addFeed = makeAction (tr ("Add feed..."), "list-add");
-		const auto updateFeeds = makeAction (tr ("Update all feeds"), "mail-receive");
+		using enum ActionId;
+		auto& um = deps.UpdatesManager_;
+		FastActions_ << makeAction (AddFeed, [&um] { RunAddFeed (um); });
+		FastActions_ << makeAction (UpdateFeeds, [&um] { um.UpdateFeeds (); });
 		ToolsMenu_.addSeparator ();
-		const auto markAllAsRead = makeAction (tr ("Mark all channels as read"), "mail-mark-read");
-		ToolsMenu_.addSection (tr ("Import/export"));
-		const auto importOpml = makeAction (tr ("Import from OPML..."), "document-import");
-		const auto exportOpml = makeAction (tr ("Export to OPML..."), "document-export");
-		const auto exportFb2 = makeAction (tr ("Export to FB2..."), "application-xml");
-
-		FastActions_ = { addFeed, updateFeeds };
-
-		deps.ShortcutManager_.RegisterActions ({
-					{ "ActionAddFeed", addFeed },
-					{ "ActionUpdateFeeds_", updateFeeds },
-					{ "ActionImportOPML_", importOpml },
-					{ "ActionExportOPML_", exportOpml },
-					{ "ActionExportFB2_", exportFb2 },
-				});
-
-		connect (addFeed,
-				&QAction::triggered,
-				this,
-				[deps]
-				{
-					AddFeedDialog af;
-					if (af.exec () == QDialog::Accepted)
-						AddFeed ({
-									.URL_ = af.GetURL (),
-									.Tags_ = af.GetTags (),
-									.UpdatesManager_ = deps.UpdatesManager_
-								});
-				});
-		connect (updateFeeds,
-				&QAction::triggered,
-				&deps.UpdatesManager_,
-				&UpdatesManager::UpdateFeeds);
-		connect (markAllAsRead,
-				&QAction::triggered,
-				this,
-				[deps]
+		makeAction (MarkAllChannelsRead,
+				[&dbup = deps.DBUpThread_]
 				{
 					if (ConfirmWithPersistence ("ConfirmMarkAllAsRead", tr ("Do you really want to mark all channels as read?")))
-						deps.DBUpThread_.SetAllChannelsRead ();
+						dbup.SetAllChannelsRead ();
 				});
-		connect (importOpml,
-				&QAction::triggered,
-				[deps] { Opml::HandleOpmlFile ({}, deps.UpdatesManager_); });
-		connect (exportOpml,
-				&QAction::triggered,
-				[] { ExportUtils::RunExportOPML (); });
-		connect (exportFb2,
-				&QAction::triggered,
-				[deps] { ExportUtils::RunExportFB2 (deps.ChannelsModel_); });
+		ToolsMenu_.addSection (tr ("Import/export"));
+		makeAction (ImportOPML, [&um] { Opml::HandleOpmlFile ({}, um); });
+		makeAction (ExportOPML, [] { ExportUtils::RunExportOPML (); });
+		makeAction (ExportFB2, [&cm = deps.ChannelsModel_] { ExportUtils::RunExportFB2 (cm); });
 
 		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);
 	}

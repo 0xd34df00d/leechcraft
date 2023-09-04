@@ -100,6 +100,7 @@ namespace Aggregator
 				});
 
 		ShortcutMgr_ = new Util::ShortcutManager (GetProxyHolder (), this);
+		AppWideActions::RegisterActions (*ShortcutMgr_);
 		ChannelActions::RegisterActions (*ShortcutMgr_);
 		ItemActions::RegisterActions (*ShortcutMgr_);
 
