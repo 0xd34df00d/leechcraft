@@ -43,15 +43,19 @@ namespace LC::Aggregator
 			std::function<QModelIndex ()> GetCurrentChannel_;
 			std::function<QList<QModelIndex> ()> GetAllSelectedChannels_;
 		};
+
+		enum class ActionId;
 	private:
 		const Deps Deps_;
 	public:
+		static void RegisterActions (Util::ShortcutManager&);
+
 		explicit ChannelActions (const Deps&, QObject* = nullptr);
 
 		QList<QAction*> GetAllActions () const;
 		QList<QAction*> GetToolbarActions () const;
 	private:
-		QAction* MakeAction (const QString& name, const QByteArray& icon, auto handler, const QByteArray& actionId = {});
+		QAction* MakeAction (ActionId, auto handler);
 
 		void MarkAsRead (const QList<QModelIndex>&);
 		void MarkAsUnread (const QList<QModelIndex>&);

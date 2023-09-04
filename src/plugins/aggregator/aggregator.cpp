@@ -99,6 +99,8 @@ namespace Aggregator
 				});
 
 		ShortcutMgr_ = new Util::ShortcutManager (GetProxyHolder (), this);
+		ChannelActions::RegisterActions (*ShortcutMgr_);
+
 		ChannelsModel_ = std::make_shared<ChannelsModel> (ErrorsManager_, GetProxyHolder ()->GetTagsManager ());
 		ResourcesFetcher_ = std::make_shared<ResourcesFetcher> (GetProxyHolder ()->GetEntityManager ());
 

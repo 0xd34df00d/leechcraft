@@ -15,6 +15,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/util.h>
+#include "actiondefshelpers.h"
 #include "channelsmodel.h"
 #include "dbupdatethread.h"
 #include "feedsettings.h"
@@ -25,22 +26,72 @@
 
 namespace LC::Aggregator
 {
+	MAKE_ACTIONS (ChannelActions,
+		MarkChannelAsRead,
+		MarkChannelAsUnread,
+		RemoveFeed,
+		UpdateSelectedFeed,
+		RenameFeed,
+		RemoveChannel,
+		ChannelSettings
+	);
+
+	namespace
+	{
+		ActionInfo MakeInfo (const QString& text, const QByteArray& icon)
+		{
+			return ActionInfo { .Text_ = text, .Icon_ = icon };
+		}
+
+		ActionInfo GetActionInfo (ChannelActions::ActionId action)
+		{
+			using enum ChannelActions::ActionId;
+			switch (action)
+			{
+			case MarkChannelAsRead:
+				return MakeInfo (ChannelActions::tr ("Mark channel as read"), "mail-mark-read");
+			case MarkChannelAsUnread:
+				return MakeInfo (ChannelActions::tr ("Mark channel as unread"), "mail-mark-unread");
+			case RemoveFeed:
+				return MakeInfo (ChannelActions::tr ("Remove feed"), "list-remove");
+			case UpdateSelectedFeed:
+				return MakeInfo (ChannelActions::tr ("Update selected feed"), "view-refresh");
+			case RenameFeed:
+				return MakeInfo (ChannelActions::tr ("Rename feed"), "edit-rename");
+			case RemoveChannel:
+				return MakeInfo (ChannelActions::tr ("Remove channel"), {});
+			case ChannelSettings:
+				return MakeInfo (ChannelActions::tr ("Settings..."), "configure");
+			}
+
+			qWarning () << "unknown action" << static_cast<int> (action);
+			return {};
+		}
+	}
+
+	void ChannelActions::RegisterActions (Util::ShortcutManager& sm)
+	{
+		for (const auto actionId : AllActionIds ())
+			sm.RegisterActionInfo (ToString (actionId), GetActionInfo (actionId));
+	}
+
 	ChannelActions::ChannelActions (const Deps& deps, QObject *parent)
 	: QObject { parent }
 	, Deps_ { deps }
 	{
 		const auto mkSep = [this] { AllActions_ << Util::CreateSeparator (this); };
 
-		MakeAction (tr ("Mark channel as read"), "mail-mark-read", &ChannelActions::MarkAsRead, "MarkChannelAsRead_");
-		MakeAction (tr ("Mark channel as unread"), "mail-mark-unread", &ChannelActions::MarkAsUnread, "MarkChannelAsUnread_");
+		using enum ActionId;
+		MakeAction (MarkChannelAsRead, &ChannelActions::MarkAsRead);
+		MakeAction (MarkChannelAsUnread, &ChannelActions::MarkAsUnread);
 		mkSep ();
-		ToolbarActions_ << MakeAction (tr ("Remove feed"), "list-remove", &ChannelActions::RemoveFeed, "RemoveFeed_");
-		ToolbarActions_ << MakeAction (tr ("Update selected feed"), "view-refresh", &ChannelActions::Update, "UpdateSelectedFeed_");
-		MakeAction (tr ("Rename feed"), "edit-rename", &ChannelActions::Rename);
+		ToolbarActions_ << MakeAction (RemoveFeed, &ChannelActions::RemoveFeed);
+		ToolbarActions_ << MakeAction (UpdateSelectedFeed, &ChannelActions::Update);
+		MakeAction (RenameFeed, &ChannelActions::Rename);
 		mkSep ();
-		MakeAction (tr ("Remove channel"), {}, &ChannelActions::RemoveChannel);
+		MakeAction (RemoveChannel, &ChannelActions::RemoveChannel);
 		mkSep ();
-		MakeAction (tr ("Settings..."), "configure", &ChannelActions::Settings, "ChannelSettings_");
+		MakeAction (ChannelSettings, &ChannelActions::Settings);
 
 		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);
 	}
@@ -122,16 +173,10 @@ namespace LC::Aggregator
 		}
 	}
 
-	QAction* ChannelActions::MakeAction (const QString& name,
-			const QByteArray& icon,
-			auto handler,
-			const QByteArray& actionId)
+	QAction* ChannelActions::MakeAction (ActionId actionId, auto handler)
 	{
-		const auto action = new QAction { name, parent () };
-		if (!icon.isEmpty ())
-			action->setProperty ("ActionIcon", icon);
-		if (!actionId.isEmpty ())
-			Deps_.ShortcutManager_.RegisterAction ("Action" + actionId, action);
+		const auto action = new QAction { parent () };
+		Deps_.ShortcutManager_.RegisterAction (ToString (actionId), action);
 
 		connect (action,
 				&QAction::triggered,
