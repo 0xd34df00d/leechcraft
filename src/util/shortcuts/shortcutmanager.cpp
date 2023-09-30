@@ -49,11 +49,17 @@ namespace LC::Util
 				act->setText (info.Text_);
 			if (act->icon ().isNull ())
 			{
-				auto icon = Util::Visit (info.Icon_,
-						[] (Util::Void) { return QIcon {}; },
-						[this] (const QByteArray& name) { return CoreProxy_->GetIconThemeManager ()->GetIcon (name); },
-						[] (const QIcon& icon) { return icon; });
-				act->setIcon (icon);
+				Util::Visit (info.Icon_,
+						[] (Util::Void) {},
+						[this, act] (const QByteArray& name)
+						{
+							act->setIcon (CoreProxy_->GetIconThemeManager ()->GetIcon (name));
+							act->setProperty ("ActionIcon", name);
+						},
+						[act] (const QIcon& icon)
+						{
+							return act->setIcon (icon);
+						});
 			}
 		}
 		else
