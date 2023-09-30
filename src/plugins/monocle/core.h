@@ -47,7 +47,7 @@ namespace Monocle
 	public:
 		static Core& Instance ();
 
-		void SetProxy (ICoreProxy_ptr);
+		void SetProxy (ICoreProxy_ptr, QObject*);
 		ICoreProxy_ptr GetProxy () const;
 
 		void AddPlugin (QObject*);

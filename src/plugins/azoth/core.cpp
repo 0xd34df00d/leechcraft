@@ -248,11 +248,11 @@ namespace LC::Azoth
 #endif
 	}
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
+	void Core::SetProxy (ICoreProxy_ptr proxy, QObject *pluginObject)
 	{
 		Proxy_ = proxy;
 
-		ShortcutManager_.reset (new Util::ShortcutManager (proxy));
+		ShortcutManager_.reset (new Util::ShortcutManager (proxy, pluginObject));
 		CustomStatusesManager_.reset (new CustomStatusesManager);
 
 		NotificationsManager_.reset (new NotificationsManager (proxy->GetEntityManager (), AvatarsManager_.get ()));

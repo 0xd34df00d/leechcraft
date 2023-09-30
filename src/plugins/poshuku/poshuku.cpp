@@ -44,8 +44,7 @@ namespace Poshuku
 		BrowserWidget::SetParentMultiTabs (this);
 		Core::Instance ().SetProxy (coreProxy);
 
-		ShortcutMgr_ = new Util::ShortcutManager { coreProxy };
-		ShortcutMgr_->SetObject (this);
+		ShortcutMgr_ = new Util::ShortcutManager { coreProxy, this };
 		Core::Instance ().SetShortcutManager (ShortcutMgr_);
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();

@@ -25,8 +25,7 @@ namespace LC::Eleeminator
 	{
 		const auto& proxy = GetProxyHolder ();
 
-		ShortcutMgr_ = new Util::ShortcutManager { proxy };
-		ShortcutMgr_->SetObject (this);
+		ShortcutMgr_ = new Util::ShortcutManager { proxy, this };
 
 		auto& itm = *proxy->GetIconThemeManager ();
 

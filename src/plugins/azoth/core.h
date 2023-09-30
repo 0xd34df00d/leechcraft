@@ -123,7 +123,7 @@ namespace LC::Azoth
 		static Core& Instance ();
 		void Release ();
 
-		void SetProxy (ICoreProxy_ptr);
+		void SetProxy (ICoreProxy_ptr, QObject*);
 		ICoreProxy_ptr GetProxy () const;
 		ProxyObject* GetPluginProxy () const;
 

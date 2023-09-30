@@ -70,18 +70,10 @@ namespace LC::Util
 		 *
 		 * @param[in] proxy The proxy object passed to IInfo::Init() of
 		 * your plugin.
-		 * @param[in] parent The parent object of this object.
+		 * @param[in] parent The parent object of this object,
+		 * which also serves as the context object.
 		 */
-		explicit ShortcutManager (const ICoreProxy_ptr& proxy, QObject *parent = nullptr);
-
-		/** @brief Sets the plugin instance object of this manager.
-		 *
-		 * The plugin instance object serves as a kind of "context" for
-		 * the shortcut manager.
-		 *
-		 * @param[in] pluginObj The plugin instance object.
-		 */
-		void SetObject (QObject *pluginObj);
+		explicit ShortcutManager (const ICoreProxy_ptr& proxy, QObject *parent);
 
 		/** @brief Registers the given QAction by the given id.
 		 *

@@ -39,12 +39,12 @@ namespace Monocle
 		return c;
 	}
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
+	void Core::SetProxy (ICoreProxy_ptr proxy, QObject *pluginObject)
 	{
 		Proxy_ = proxy;
 		DefaultBackendManager_->LoadSettings ();
 
-		ShortcutMgr_ = new Util::ShortcutManager { proxy };
+		ShortcutMgr_ = new Util::ShortcutManager { proxy, pluginObject };
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const

@@ -33,7 +33,7 @@ namespace Monocle
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");
 
-		Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy, this);
 
 		XSD_->SetDataSource ("DefaultBackends",
 				Core::Instance ().GetDefaultBackendManager ()->GetModel ());
@@ -49,7 +49,6 @@ namespace Monocle
 		};
 
 		const auto sm = Core::Instance ().GetShortcutManager ();
-		sm->SetObject (this);
 		sm->RegisterActionInfo ("org.LeechCraft.Monocle.PrevAnn",
 				{
 					tr ("Go to previous annotation"),

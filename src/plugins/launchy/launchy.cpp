@@ -42,7 +42,6 @@ namespace Launchy
 		RecentManager_ = new RecentManager;
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
-		ShortcutMgr_->SetObject (this);
 
 		FSLauncher_ = new QAction (tr ("Open fullscreen launcher..."), this);
 		FSLauncher_->setProperty ("ActionIcon", "system-run");

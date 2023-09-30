@@ -108,10 +108,8 @@ namespace LC
 	, XmlSettingsDialog_ (new Util::XmlSettingsDialog ())
 	, CorePlugin2Manager_ (new CorePlugin2Manager)
 	, ShortcutManager_ (new ShortcutManager)
-	, CoreShortcutManager_ (new Util::ShortcutManager (CoreProxy::UnsafeWithoutDeps ()))
+	, CoreShortcutManager_ (new Util::ShortcutManager (CoreProxy::UnsafeWithoutDeps (), this))
 	{
-		CoreShortcutManager_->SetObject (this);
-
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
 		connect (XmlSettingsDialog_.get (),

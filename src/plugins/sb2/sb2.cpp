@@ -36,7 +36,6 @@ namespace LC::SB2
 		Util::InstallTranslator (QStringLiteral ("sb2"));
 
 		ShortcutMgr_ = new Util::ShortcutManager (GetProxyHolder (), this);
-		ShortcutMgr_->SetObject (this);
 
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
 		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");

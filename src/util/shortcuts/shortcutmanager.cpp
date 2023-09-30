@@ -22,12 +22,8 @@ namespace LC::Util
 	ShortcutManager::ShortcutManager (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
 	, CoreProxy_ { proxy }
+	, ContextObj_ { parent }
 	{
-	}
-
-	void ShortcutManager::SetObject (QObject *obj)
-	{
-		ContextObj_ = obj;
 	}
 
 	void ShortcutManager::RegisterAction (const QByteArray& id, QAction *act)

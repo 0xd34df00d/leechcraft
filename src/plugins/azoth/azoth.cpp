@@ -64,7 +64,7 @@ namespace Azoth
 		ServiceDiscoveryWidget::SetParentMultiTabs (this);
 		SearchWidget::SetParentMultiTabs (this);
 
-		Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy, this);
 
 		InitShortcuts ();
 
@@ -309,7 +309,6 @@ namespace Azoth
 		auto proxy = Core::Instance ().GetProxy ();
 
 		auto sm = Core::Instance ().GetShortcutManager ();
-		sm->SetObject (this);
 
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.ClearChat",
 				ActionInfo (tr ("Clear chat window"),
