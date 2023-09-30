@@ -10,6 +10,7 @@
 
 #include <QWebEngineView>
 #include <interfaces/poshuku/iwebview.h>
+#include <interfaces/poshuku/iwebviewprovider.h>
 #include <interfaces/iwkfontssettable.h>
 
 namespace LC::Util
@@ -96,7 +97,7 @@ namespace WebEngineView
 		void iconChanged ();
 		void statusBarMessage (const QString&);
 
-		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
+		void webViewCreated (const std::shared_ptr<CustomWebView>&, NewWebViewBehavior::Enum);
 	};
 }
 }

@@ -22,7 +22,7 @@ namespace Poshuku
 		struct OpenBehaviourSuggestion
 		{
 			bool NewTab_ = false;
-			bool Invert_ = false;
+			bool IsBackground_ = false;
 		};
 
 		virtual OpenBehaviourSuggestion GetOpenBehaviourSuggestion () const = 0;

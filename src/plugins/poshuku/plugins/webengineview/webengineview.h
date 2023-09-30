@@ -65,7 +65,7 @@ namespace WebEngineView
 	public slots:
 		void initPlugin (QObject*);
 	signals:
-		void webViewCreated (const std::shared_ptr<IWebView>&, bool) override;
+		void webViewCreated (const std::shared_ptr<IWebView>&, LC::Poshuku::NewWebViewBehavior::Enum) override;
 	};
 }
 }

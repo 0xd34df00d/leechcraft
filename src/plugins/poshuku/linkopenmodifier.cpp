@@ -11,6 +11,7 @@
 #include <QChildEvent>
 #include <QWidget>
 #include <QtDebug>
+#include "xmlsettingsmanager.h"
 
 namespace LC::Poshuku
 {
@@ -21,11 +22,15 @@ namespace LC::Poshuku
 
 	auto LinkOpenModifier::GetOpenBehaviourSuggestion () const -> OpenBehaviourSuggestion
 	{
-		if (!(MouseButtons_ == Qt::MiddleButton ||
-				Modifiers_ & Qt::ControlModifier))
+		const auto newTabRequested = MouseButtons_ == Qt::MiddleButton ||
+				Modifiers_ & Qt::ControlModifier;
+		if (!newTabRequested)
 			return {};
 
-		return { true, static_cast<bool> (Modifiers_ & Qt::ShiftModifier) };
+		auto background = XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ();
+		if (Modifiers_ & Qt::ShiftModifier)
+			background = !background;
+		return { true, background };
 	}
 
 	void LinkOpenModifier::ResetSuggestionState ()

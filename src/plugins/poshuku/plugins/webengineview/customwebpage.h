@@ -13,6 +13,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iwebview.h>
 #include <interfaces/poshuku/ilinkopenmodifier.h>
+#include <interfaces/poshuku/iwebviewprovider.h>
 
 namespace LC::Poshuku
 {
@@ -34,7 +35,7 @@ namespace WebEngineView
 	protected:
 		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
 	signals:
-		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
+		void webViewCreated (const std::shared_ptr<CustomWebView>&, NewWebViewBehavior::Enum);
 
 		void hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy,
 				const QUrl& request,

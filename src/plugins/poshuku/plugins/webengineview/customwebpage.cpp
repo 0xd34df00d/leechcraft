@@ -71,8 +71,10 @@ namespace LC::Poshuku::WebEngineView
 
 			if (suggestion.NewTab_)
 			{
+				using namespace NewWebViewBehavior;
+
 				auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
-				emit webViewCreated (view, suggestion.Invert_);
+				emit webViewCreated (view, suggestion.IsBackground_ ? Background : None);
 
 				view->Load (url, {});
 

@@ -18,6 +18,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include "interfaces/poshuku/iwebviewprovider.h"
 #include "favoritesmodel.h"
 #include "historymodel.h"
 #include "storagebackend.h"
@@ -141,7 +142,7 @@ namespace Poshuku
 		void handleAddToFavorites (QString, QString);
 		void handleStatusBarChanged (const QString&);
 		void handleTooltipChanged (QWidget*);
-		void handleWebViewCreated (const std::shared_ptr<IWebView>&, bool);
+		void handleWebViewCreated (const std::shared_ptr<IWebView>&, LC::Poshuku::NewWebViewBehavior::Enum);
 		void favoriteTagsUpdated (const QStringList&);
 	signals:
 		void error (const QString&) const;

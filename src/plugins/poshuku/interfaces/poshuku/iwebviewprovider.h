@@ -12,12 +12,19 @@
 #include <QIcon>
 #include <QtPlugin>
 
-namespace LC
-{
-namespace Poshuku
+namespace LC::Poshuku
 {
 	class IWebView;
 	using IWebView_ptr = std::shared_ptr<IWebView>;
+
+	namespace NewWebViewBehavior
+	{
+		enum Enum
+		{
+			None = 0x00,
+			Background = 0x01,
+		};
+	}
 
 	class IWebViewProvider
 	{
@@ -30,9 +37,8 @@ namespace Poshuku
 
 		virtual QIcon GetDefaultUrlIcon () const = 0;
 	protected:
-		virtual void webViewCreated (const IWebView_ptr& view, bool invert) = 0;
+		virtual void webViewCreated (const IWebView_ptr& view, NewWebViewBehavior::Enum behavior = NewWebViewBehavior::None) = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Poshuku::IWebViewProvider,

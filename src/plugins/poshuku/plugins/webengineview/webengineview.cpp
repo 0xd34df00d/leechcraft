@@ -143,10 +143,10 @@ namespace LC::Poshuku::WebEngineView
 		connect (view,
 				&CustomWebView::webViewCreated,
 				this,
-				[this] (const std::shared_ptr<CustomWebView>& view, bool invert)
+				[this] (const std::shared_ptr<CustomWebView>& view, NewWebViewBehavior::Enum behavior)
 				{
 					HandleView (view.get ());
-					emit webViewCreated (view, invert);
+					emit webViewCreated (view, behavior);
 				});
 	}
 

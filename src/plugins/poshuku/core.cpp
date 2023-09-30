@@ -225,9 +225,9 @@ namespace Poshuku
 		{
 			WebViewProviders_ << iwvp;
 			connect (plugin,
-					SIGNAL (webViewCreated (std::shared_ptr<IWebView>, bool)),
+					SIGNAL (webViewCreated (std::shared_ptr<IWebView>, LC::Poshuku::NewWebViewBehavior::Enum)),
 					this,
-					SLOT (handleWebViewCreated (std::shared_ptr<IWebView>, bool)));
+					SLOT (handleWebViewCreated (std::shared_ptr<IWebView>, LC::Poshuku::NewWebViewBehavior::Enum)));
 		}
 	}
 
@@ -360,20 +360,12 @@ namespace Poshuku
 		return widget;
 	}
 
-	namespace
-	{
-		bool ShouldRaise (bool invert)
-		{
-			return invert == XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ();
-		}
-	}
-
-	IWebView* Core::MakeWebView (bool invert)
+	IWebView* Core::MakeWebView (bool raise)
 	{
 		if (!Initialized_)
 			return nullptr;
 
-		return NewURL (QUrl {}, ShouldRaise (invert))->GetWebView ();
+		return NewURL (QUrl {}, raise)->GetWebView ();
 	}
 
 	void Core::CheckFavorites ()
@@ -629,9 +621,9 @@ namespace Poshuku
 		emit bookmarkAdded (url);
 	}
 
-	void Core::handleWebViewCreated (const IWebView_ptr& view, bool invert)
+	void Core::handleWebViewCreated (const IWebView_ptr& view, NewWebViewBehavior::Enum behavior)
 	{
-		CreateBrowserWidget (view, {}, ShouldRaise (invert), {});
+		CreateBrowserWidget (view, {}, !(behavior & NewWebViewBehavior::Background), {});
 	}
 
 	void Core::favoriteTagsUpdated (const QStringList& tags)

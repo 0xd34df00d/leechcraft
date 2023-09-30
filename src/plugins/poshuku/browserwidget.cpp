@@ -1274,6 +1274,7 @@ namespace Poshuku
 				menu->addAction (actObj);
 		};
 
+		const auto raiseNewTabs = !XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ();
 		if (!info.LinkUrl_.isEmpty ())
 		{
 			if (XmlSettingsManager::Instance ()->
@@ -1307,7 +1308,7 @@ namespace Poshuku
 
 			addAction (tr ("Open &here"), [&] { SetURL (info.LinkUrl_); });
 			addAction (tr ("Open in new &tab"),
-					[&] { Core::Instance ().MakeWebView (false)->Load (info.LinkUrl_); });
+					[&] { Core::Instance ().MakeWebView (raiseNewTabs)->Load (info.LinkUrl_); });
 			menu->addSeparator ();
 			addWebAction (IWebView::PageAction::DownloadLinkToDisk);
 
@@ -1325,7 +1326,7 @@ namespace Poshuku
 					[&]
 					{
 						const auto& url = QUrl::fromUserInput (info.SelectedPageText_);
-						Core::Instance ().MakeWebView (false)->Load (url);
+						Core::Instance ().MakeWebView (raiseNewTabs)->Load (url);
 					});
 
 		emit hookWebViewContextMenu (proxy, WebView_.get (), info, menu, WVSAfterLink);
