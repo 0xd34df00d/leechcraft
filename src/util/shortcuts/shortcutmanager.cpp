@@ -44,7 +44,6 @@ namespace LC::Util
 			if (act->text ().isEmpty ())
 				act->setText (info.Text_);
 			if (act->icon ().isNull ())
-			{
 				Util::Visit (info.Icon_,
 						[] (Util::Void) {},
 						[this, act] (const QByteArray& name)
@@ -52,11 +51,7 @@ namespace LC::Util
 							act->setIcon (CoreProxy_->GetIconThemeManager ()->GetIcon (name));
 							act->setProperty ("ActionIcon", name);
 						},
-						[act] (const QIcon& icon)
-						{
-							return act->setIcon (icon);
-						});
-			}
+						[act] (const QIcon& icon) { act->setIcon (icon); });
 		}
 		else
 		{
