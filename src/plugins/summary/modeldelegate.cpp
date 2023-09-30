@@ -39,7 +39,7 @@ namespace Summary
 			pbo.minimum = 0;
 			pbo.maximum = total;
 			pbo.progress = done;
-			pbo.state = option.state;
+			pbo.state = option.state | QStyle::StateFlag::State_Horizontal;
 			pbo.text = Util::ElideProgressBarText (index.data ().toString (), option);
 			pbo.textVisible = true;
 			QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
