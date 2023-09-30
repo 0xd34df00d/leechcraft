@@ -47,12 +47,15 @@ namespace LC
 		opt.state = QStyle::StateFlag::State_Horizontal;
 		opt.textVisible = true;
 
+		constexpr QColor lcOrange { 0xFF, 0x3B, 0x00 };
+		constexpr QColor contrastingDark { 0x1B, 0x18, 0x1F };
 		auto& p = opt.palette;
 		p.setColor (QPalette::Base, Qt::transparent);
 		p.setColor (QPalette::Window, Qt::transparent);
-		p.setColor (QPalette::Highlight, "#FF3B00");
-		p.setColor (QPalette::Text, "#FF3B00");
-		p.setColor (QPalette::HighlightedText, "#1B181F");
+		p.setColor (QPalette::Highlight, lcOrange);
+		p.setColor (QPalette::Text, lcOrange);
+		p.setColor (QPalette::WindowText, lcOrange);
+		p.setColor (QPalette::HighlightedText, contrastingDark);
 
 		for (const auto proc : Processes_)
 		{
