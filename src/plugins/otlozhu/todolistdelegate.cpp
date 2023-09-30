@@ -85,7 +85,7 @@ namespace Otlozhu
 			pbo.minimum = 0;
 			pbo.maximum = 100;
 			pbo.progress = index.data ().toInt ();
-			pbo.state = option.state;
+			pbo.state = option.state | QStyle::StateFlag::State_Horizontal;
 			pbo.text = index.data ().toString () + '%';
 			pbo.textVisible = true;
 			View_->style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
