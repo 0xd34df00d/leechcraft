@@ -47,6 +47,7 @@ namespace LC::BitTorrent
 				const auto precision = 1000;
 
 				QStyleOptionProgressBar pbo;
+				pbo.state = QStyle::StateFlag::State_Horizontal;
 				pbo.rect = option.rect;
 				pbo.minimum = 0;
 				pbo.maximum = precision;

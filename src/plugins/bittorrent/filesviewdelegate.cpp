@@ -52,7 +52,7 @@ namespace LC::BitTorrent
 		}
 
 		QStyleOptionProgressBar progressBarOption;
-		progressBarOption.state = QStyle::State_Enabled;
+		progressBarOption.state = QStyle::StateFlag::State_Horizontal;
 		progressBarOption.direction = QApplication::layoutDirection ();
 		progressBarOption.rect = option.rect;
 		progressBarOption.fontMetrics = QApplication::fontMetrics ();
