@@ -84,4 +84,14 @@ namespace LC::Poshuku::WebEngineView
 
 		return QWebEnginePage::acceptNavigationRequest (url, type, isMainFrame);
 	}
+
+	QWebEnginePage* CustomWebPage::createWindow (QWebEnginePage::WebWindowType type)
+	{
+		using namespace NewWebViewBehavior;
+
+		const auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
+		emit webViewCreated (view,
+				type == QWebEnginePage::WebBrowserBackgroundTab ? Background : None);
+		return view->page ();
+	}
 }

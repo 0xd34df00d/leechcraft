@@ -34,6 +34,7 @@ namespace WebEngineView
 		CustomWebPage (IProxyObject*, CustomWebView*);
 	protected:
 		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
+		QWebEnginePage* createWindow (WebWindowType) override;
 	signals:
 		void webViewCreated (const std::shared_ptr<CustomWebView>&, NewWebViewBehavior::Enum);
 
