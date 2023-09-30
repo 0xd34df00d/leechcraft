@@ -44,6 +44,7 @@ namespace LC
 		opt.initFrom (this);
 		opt.rect.setWidth (width ());
 		opt.rect.setHeight (height);
+		opt.state = QStyle::StateFlag::State_Horizontal;
 		opt.textVisible = true;
 
 		auto& p = opt.palette;
