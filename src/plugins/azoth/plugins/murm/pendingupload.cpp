@@ -34,7 +34,7 @@ namespace Murm
 	, Entry_ { entry }
 	{
 		const auto nam = acc->GetCoreProxy ()->GetNetworkAccessManager ();
-		Conn_->QueueRequest ([=] (const QString& key, const VkConnection::UrlParams_t& params)
+		Conn_->QueueRequest ([=, this] (const QString& key, const VkConnection::UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/docs.getUploadServer");
 				Util::UrlOperator { url } ("access_token", key);

@@ -54,14 +54,14 @@ namespace Murm
 
 		const auto& future = iface.future ();
 		Pending_ [url] = future;
-		FetchQueue_->Schedule ([=] () mutable
+		FetchQueue_->Schedule ([=, this] () mutable
 				{
 					iface.reportStarted ();
 
 					const auto& reply = NAM_->get (QNetworkRequest (url));
 					new Util::SlotClosure<Util::DeleteLaterPolicy>
 					{
-						[=]
+						[=, this]
 						{
 							Pending_.remove (url);
 							HandleReplyFinished (reply, iface);

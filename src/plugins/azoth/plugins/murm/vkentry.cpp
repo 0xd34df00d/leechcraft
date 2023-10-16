@@ -623,7 +623,8 @@ namespace Murm
 		const auto photoUrlStorage = Account_->GetParentProtocol ()->GetPhotoUrlStorage ();
 
 		QTimer::singleShot (0, this,
-				[=] {
+				[=, this]
+				{
 					if (!safeThis)
 						return;
 

@@ -45,7 +45,7 @@ namespace Murm
 	void ServerMessagesSyncer::Request ()
 	{
 		QPointer<QObject> guard { this };
-		auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
+		auto getter = [=, this] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 		{
 			if (!guard)
 			{
@@ -70,7 +70,7 @@ namespace Murm
 
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
-				[=] { HandleFinished (reply); },
+				[=, this] { HandleFinished (reply); },
 				reply,
 				SIGNAL (finished ()),
 				this

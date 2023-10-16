@@ -37,7 +37,7 @@ namespace Murm
 			return;
 
 		LastQuery_ = query;
-		Conn_->QueueRequest ([=] (const QString& key, const VkConnection::UrlParams_t& params)
+		Conn_->QueueRequest ([=, this] (const QString& key, const VkConnection::UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/audio.search");
 				Util::UrlOperator { url }

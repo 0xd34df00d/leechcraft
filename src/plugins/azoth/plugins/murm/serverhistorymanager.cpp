@@ -72,7 +72,7 @@ namespace Murm
 		if (uidVar.isValid ())
 		{
 			const auto uid = uidVar.toULongLong ();
-			auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params)
+			auto getter = [=, this] (const QString& key, const VkConnection::UrlParams_t& params)
 				{
 					QUrl url ("https://api.vk.com/method/messages.getHistory");
 					Util::UrlOperator { url }
@@ -98,7 +98,7 @@ namespace Murm
 		else
 		{
 			const auto chatId = index.data (CustomHistRole::ChatUid).toULongLong ();
-			auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params)
+			auto getter = [=, this] (const QString& key, const VkConnection::UrlParams_t& params)
 				{
 					QUrl url ("https://api.vk.com/method/messages.getHistory");
 					Util::UrlOperator { url }
