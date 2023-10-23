@@ -136,7 +136,7 @@ namespace LC::PinTab
 			connect (action,
 					&QAction::triggered,
 					this,
-					[=] { UnPinTab (widget, windowId); });
+					[=, this] { UnPinTab (widget, windowId); });
 		}
 		else
 		{
@@ -145,7 +145,7 @@ namespace LC::PinTab
 			connect (action,
 					&QAction::triggered,
 					this,
-					[=] { PinTab (widget, windowId); });
+					[=, this] { PinTab (widget, windowId); });
 		}
 
 		menu->insertAction (tw->GetPermanentActions ().value (0), action);
