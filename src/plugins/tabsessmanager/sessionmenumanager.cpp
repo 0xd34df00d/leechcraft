@@ -47,19 +47,19 @@ namespace LC::TabSessManager
 
 		const auto loadAct = menu->addAction (tr ("Load"),
 				this,
-				[=] { SessMgr_->LoadCustomSession (name); });
+				[=, this] { SessMgr_->LoadCustomSession (name); });
 		loadAct->setProperty ("ActionIcon", "edit-find-replace");
 		loadAct->setToolTip (tr ("Load the session, replacing all currently opened tabs."));
 
 		const auto addAct = menu->addAction (tr ("Add"),
 				this,
-				[=] { SessMgr_->AddCustomSession (name); });
+				[=, this] { SessMgr_->AddCustomSession (name); });
 		addAct->setProperty ("ActionIcon", "list-add");
 		loadAct->setToolTip (tr ("Add the tabs from the session to the currently open ones."));
 
 		const auto deleteAct = menu->addAction (tr ("Delete"),
 				this,
-				[=]
+				[=, this]
 				{
 					Session2Menu_.remove (name);
 					SessMgr_->DeleteCustomSession (name);
@@ -78,7 +78,7 @@ namespace LC::TabSessManager
 				submenu->addAction (info.Icon_,
 						info.Name_,
 						this,
-						[=, obj = obj] { SessMgr_->OpenTabs ({ { obj, { info } } }); });
+						[=, this, obj = obj] { SessMgr_->OpenTabs ({ { obj, { info } } }); });
 		}
 	}
 }
