@@ -105,7 +105,7 @@ namespace LC::LMP::Graffiti
 		connect (recIterator,
 				&RecIterator::finished,
 				this,
-				[=]
+				[=, this]
 				{
 					recIterator->deleteLater ();
 					HandleDirIterateResults (recIterator->GetResult (), filename);
@@ -113,7 +113,7 @@ namespace LC::LMP::Graffiti
 		connect (recIterator,
 				&RecIterator::canceled,
 				this,
-				[=]
+				[=, this]
 				{
 					recIterator->deleteLater ();
 					setEnabled (true);
@@ -634,7 +634,7 @@ namespace LC::LMP::Graffiti
 		};
 
 		Util::Sequence (this, QtConcurrent::run (worker)) >>
-				[=] (const QList<MediaInfo>& infos)
+				[=, this] (const QList<MediaInfo>& infos)
 				{
 					FilesModel_->SetInfos (infos);
 					setEnabled (true);
