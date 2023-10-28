@@ -220,7 +220,7 @@ const findParent = (item, name) => {
 		{
 			auto act = addable->addAction (name,
 					this,
-					[=] { HandleHtmlCmdAction (cmd, arg); });
+					[=, this] { HandleHtmlCmdAction (cmd, arg); });
 			act->setProperty ("ActionIcon", icon);
 			if (arg.isEmpty ())
 				HtmlActions_.append ({ cmd, act });
@@ -242,7 +242,7 @@ const findParent = (item, name) => {
 		{
 			auto act = addable->addAction (name,
 					this,
-					[=] { HandleInlineCmd (cmd); });
+					[=, this] { HandleInlineCmd (cmd); });
 			act->setProperty ("ActionIcon", icon);
 			return act;
 		};
@@ -497,7 +497,7 @@ const findParent = (item, name) => {
 	{
 		auto act = ViewBar_->addAction ({},
 				this,
-				[=] { HandleInlineCmd (tagName, params); });
+				[=, this] { HandleInlineCmd (tagName, params); });
 		return act;
 	}
 
@@ -574,7 +574,7 @@ const findParent = (item, name) => {
 			{
 				fromCollection->addAction (service.Name_,
 						this,
-						[=]
+						[=, this]
 						{
 							connect (plugin->RequestImages (service.ID_)->GetQObject (),
 									SIGNAL (ready ()),
