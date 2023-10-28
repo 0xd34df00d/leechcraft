@@ -310,7 +310,7 @@ namespace LC
 
 	void RootWindowsManager::AddTab (const QString& name, QWidget *w, AddTabFlags flags)
 	{
-		auto raiseIfNeeded = [=] (int idx)
+		auto raiseIfNeeded = [=, this] (int idx)
 		{
 			if (!(flags & AddTabFlag::Background))
 				Windows_ [idx].TM_->bringToFront (w);
