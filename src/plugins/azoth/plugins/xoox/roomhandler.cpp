@@ -706,11 +706,11 @@ namespace Xoox
 		else if (pres.mucStatusCodes ().contains (301))
 			!us ?
 				MakeBanMessage (nick, reason) :
-				QTimer::singleShot (0, this, [=] { CLEntry_->beenBanned (reason); });
+				QTimer::singleShot (0, this, [=, this] { CLEntry_->beenBanned (reason); });
 		else if (pres.mucStatusCodes ().contains (307))
 			!us ?
 				MakeKickMessage (nick, reason) :
-				QTimer::singleShot (0, this, [=] { CLEntry_->beenKicked (reason); });
+				QTimer::singleShot (0, this, [=, this] { CLEntry_->beenKicked (reason); });
 		else
 			MakeLeaveMessage (pres, nick);
 

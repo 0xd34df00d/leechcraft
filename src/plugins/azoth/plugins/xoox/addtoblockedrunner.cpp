@@ -52,8 +52,8 @@ namespace Xoox
 	{
 		Conn_->GetPrivacyListsManager ()->QueryList (listName,
 				{
-					[=] (const QXmppIq&) { AddToList (listName, {}, activate); },
-					[=] (const PrivacyList& list) { AddToList (listName, list, activate); }
+					[=, this] (const QXmppIq&) { AddToList (listName, {}, activate); },
+					[=, this] (const PrivacyList& list) { AddToList (listName, list, activate); }
 				});
 	}
 

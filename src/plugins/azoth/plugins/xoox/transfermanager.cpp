@@ -52,7 +52,7 @@ namespace Xoox
 				this,
 				handleDetectedBSProxy);
 
-		auto updateFTSettings = [=]
+		auto updateFTSettings = [=, this]
 		{
 			Manager_.setSupportedMethods (settings->GetFTMethods ());
 			Manager_.setProxy (settings->GetUseSOCKS5Proxy () ? settings->GetSOCKS5Proxy () : QString {});
