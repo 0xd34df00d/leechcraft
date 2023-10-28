@@ -62,7 +62,7 @@ namespace LC::Azoth
 				this,
 				&ExpansionStateManager::ReexpandTree);
 
-		QTimer::singleShot (0, Qt::VeryCoarseTimer, this, [=] { View_.expandToDepth (0); });
+		QTimer::singleShot (0, Qt::VeryCoarseTimer, this, [=, this] { View_.expandToDepth (0); });
 
 		connect (&view,
 				&QTreeView::collapsed,
@@ -169,7 +169,7 @@ namespace LC::Azoth
 	void ExpansionStateManager::ExpandLater (const QModelIndex& idx)
 	{
 		QPersistentModelIndex pIdx { idx };
-		QTimer::singleShot (0, Qt::VeryCoarseTimer, this, [=] { ExpandIndex (pIdx); });
+		QTimer::singleShot (0, Qt::VeryCoarseTimer, this, [=, this] { ExpandIndex (pIdx); });
 	}
 
 	void ExpansionStateManager::ExpandIndex (const QPersistentModelIndex& pIdx)

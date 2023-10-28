@@ -102,7 +102,7 @@ namespace LC::Azoth
 		connect (tab,
 				&ChatTab::needToClose,
 				this,
-				[=] { CloseChatTab (tab, true); });
+				[this, tab] { CloseChatTab (tab, true); });
 		connect (tab,
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
