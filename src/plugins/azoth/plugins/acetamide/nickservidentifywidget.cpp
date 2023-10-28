@@ -30,11 +30,11 @@ namespace LC::Azoth::Acetamide
 					connect (nns,
 							&QDialog::accepted,
 							this,
-							[=] { emit identifyAdded (nns->GetIdentify ()); });
+							[=, this] { emit identifyAdded (nns->GetIdentify ()); });
 					connect (nns,
 							&QDialog::finished,
 							this,
-							[=] { DeleteInvalidatedDialogs_.removeOne (nns); });
+							[=, this] { DeleteInvalidatedDialogs_.removeOne (nns); });
 					DeleteInvalidatedDialogs_ << nns;
 				});
 		connect (Ui_.Delete_,
@@ -68,11 +68,11 @@ namespace LC::Azoth::Acetamide
 					connect (nns,
 							&QDialog::accepted,
 							this,
-							[=, row = index.row ()] { emit identifyEdited (row, nns->GetIdentify ()); });
+							[=, this, row = index.row ()] { emit identifyEdited (row, nns->GetIdentify ()); });
 					connect (nns,
 							&QDialog::finished,
 							this,
-							[=] { DeleteInvalidatedDialogs_.removeOne (nns); });
+							[=, this] { DeleteInvalidatedDialogs_.removeOne (nns); });
 					DeleteInvalidatedDialogs_ << nns;
 				});
 	}

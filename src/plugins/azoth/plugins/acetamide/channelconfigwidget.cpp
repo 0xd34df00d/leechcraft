@@ -135,13 +135,13 @@ namespace LC::Azoth::Acetamide
 		auto handleButtons = [this] (auto addButton, auto removeButton, auto updateButton,
 				auto textEdit, auto list, auto adder, auto remover)
 		{
-			auto addHandler = [=]
+			auto addHandler = [=, this]
 			{
 				const auto& text = textEdit->text ();
 				if (!text.isEmpty ())
 					(ChannelEntry_->*adder) (text);
 			};
-			auto removeHandler = [=]
+			auto removeHandler = [=, this]
 			{
 				const auto& idx = list->currentIndex ();
 				if (idx.isValid ())
