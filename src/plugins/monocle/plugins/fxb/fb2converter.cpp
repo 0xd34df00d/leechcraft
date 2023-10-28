@@ -440,7 +440,7 @@ namespace FXB
 		const auto currentSectionLevel = CurrentTOCStack_.size () - 1;
 		HandleMangleBlockFormat (tagElem,
 				[] (QTextBlockFormat&) {},
-				[=] (const QDomElement& e)
+				[=, this] (const QDomElement& e)
 				{
 					HandleMangleCharFormat (e,
 							[=] (QTextCharFormat& fmt)
