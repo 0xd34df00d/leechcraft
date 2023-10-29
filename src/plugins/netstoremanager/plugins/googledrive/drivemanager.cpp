@@ -339,7 +339,7 @@ namespace GoogleDrive
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[=] () mutable
+			[=, this] () mutable
 			{
 				reply->deleteLater ();
 
@@ -427,7 +427,7 @@ namespace GoogleDrive
 				GetNetworkAccessManager ()->post (request, Util::SerializeJson (map));
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[=] () mutable
+			[=, this] () mutable
 			{
 				reply->deleteLater ();
 
