@@ -155,7 +155,7 @@ namespace CleanWeb
 			const auto action = menu->addAction (tr ("Block image..."));
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
-				[=] { UserFilters_->BlockImage (iurl, view); },
+				[=, this] { UserFilters_->BlockImage (iurl, view); },
 				action,
 				SIGNAL (triggered ()),
 				action
@@ -470,7 +470,7 @@ namespace CleanWeb
 				Util::Visitor
 				{
 					[] (const IDownload::Error&) {},
-					[=] (IDownload::Success)
+					[=, this] (IDownload::Success)
 					{
 						Parse (path);
 						SubsModel_->SetSubData ({
