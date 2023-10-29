@@ -238,6 +238,10 @@ namespace Aggregator
 		check ("commentsPageLink", &Item::CommentsPageLink_);
 		check ("latitude", &Item::Latitude_);
 		check ("longitude", &Item::Longitude_);
+		if (!SameSets (i1.Enclosures_, i2.Enclosures_))
+			qDebug () << "enclsoures differ";
+		if (!SameSets (i1.MRSSEntries_, i2.MRSSEntries_))
+			qDebug () << "enclsoures differ";
 	}
 
 	bool IsModified (const Item& i1, const Item& i2)
