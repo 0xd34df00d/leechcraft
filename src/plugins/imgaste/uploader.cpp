@@ -61,7 +61,7 @@ namespace LC::Imgaste
 
 		const auto em = GetProxyHolder ()->GetEntityManager ();
 
-		const auto makeErrorNotification = [=] (const QString& text)
+		const auto makeErrorNotification = [=, this] (const QString& text)
 		{
 			auto e = Util::MakeNotification ("Imgaste", text, Priority::Critical);
 			const auto nah = new Util::NotificationActionHandler { e };
@@ -70,7 +70,7 @@ namespace LC::Imgaste
 					this,
 					&QObject::deleteLater);
 			nah->AddFunction (tr ("Try another service..."),
-					[=]
+					[=, this]
 					{
 						disconnect (guard);
 						TryAnotherService (serviceName);
