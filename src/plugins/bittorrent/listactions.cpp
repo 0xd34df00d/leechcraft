@@ -270,7 +270,7 @@ namespace LC::BitTorrent
 					connect (mtf,
 							&QDialog::accepted,
 							this,
-							[=]
+							[=, this]
 							{
 								const auto newDir = mtf->GetNewLocation ();
 
@@ -321,7 +321,7 @@ namespace LC::BitTorrent
 					connect (changer,
 							&QDialog::accepted,
 							this,
-							[=]
+							[=, this]
 							{
 								const auto& trackers = changer->GetTrackers ();
 								for (const auto& index : CurSelection_)

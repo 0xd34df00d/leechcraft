@@ -119,10 +119,10 @@ namespace LC::BitTorrent
 		};
 		connect (Ui_.MarkSelected_,
 				&QAction::triggered,
-				[=] { FilesModel_->MarkIndexes (selectedAsFilesModel ()); });
+				[=, this] { FilesModel_->MarkIndexes (selectedAsFilesModel ()); });
 		connect (Ui_.UnmarkSelected_,
 				&QAction::triggered,
-				[=] { FilesModel_->UnmarkIndexes (selectedAsFilesModel ()); });
+				[=, this] { FilesModel_->UnmarkIndexes (selectedAsFilesModel ()); });
 	}
 
 	void AddTorrent::SetFilename (const QString& filename)

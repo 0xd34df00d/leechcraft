@@ -28,7 +28,7 @@ namespace LC::BitTorrent
 
 		const auto chooser = [this, xsm] (const QString& header, QLineEdit *edit, const char *propName)
 		{
-			return [=]
+			return [=, this]
 			{
 				const auto& dir = QFileDialog::getExistingDirectory (this,
 						header,
