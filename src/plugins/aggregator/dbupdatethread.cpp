@@ -227,6 +227,10 @@ namespace LC::Aggregator
 				if (!IsModified (ourItem, item))
 					return false;
 
+				static const bool debugDiffs = qgetenv ("LC_AGGREGATOR_DUMP_DIFFS") == "1";
+				if (debugDiffs)
+					Diff (ourItem, item);
+
 				ourItem.Description_ = item.Description_;
 				ourItem.Categories_ = item.Categories_;
 				ourItem.NumComments_ = item.NumComments_;
