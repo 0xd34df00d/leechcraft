@@ -57,6 +57,6 @@ namespace LC::Poshuku::WebEngineView
 
 	void IconDatabase::MarkUrl (const QUrl& pageUrl, const QUrl& iconUrl)
 	{
-		WithRefs (pageUrl, [this, iconUrl] (const auto& refs) mutable { Trie_->Add (refs, std::move (iconUrl)); });
+		WithRefs (pageUrl, [this, iconUrl] (const auto& refs) mutable { Trie_->Add (refs, iconUrl); });
 	}
 }
