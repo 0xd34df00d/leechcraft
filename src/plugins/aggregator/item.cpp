@@ -218,72 +218,26 @@ namespace Aggregator
 	void Diff (const Item& i1, const Item& i2)
 	{
 		qDebug () << Q_FUNC_INFO << "for" << i1.Title_;
-		if (i1.Title_ != i2.Title_)
+		const auto check = [&] (const char *name, auto getter)
 		{
-			qDebug () << "title";
-			qDebug () << i1.Title_;
-			qDebug () << i2.Title_;
-		}
-		if (i1.Link_ != i2.Link_)
-		{
-			qDebug () << "link";
-			qDebug () << i1.Link_;
-			qDebug () << i2.Link_;
-		}
-		if (i1.Description_ != i2.Description_)
-		{
-			qDebug () << "description";
-			qDebug () << i1.Description_;
-			qDebug () << i2.Description_;
-		}
-		if (i1.Author_ != i2.Author_)
-		{
-			qDebug () << "author";
-			qDebug () << i1.Author_;
-			qDebug () << i2.Author_;
-		}
-		if (i1.Categories_ != i2.Categories_)
-		{
-			qDebug () << "categories";
-			qDebug () << i1.Categories_;
-			qDebug () << i2.Categories_;
-		}
-		if (i1.PubDate_ != i2.PubDate_)
-		{
-			qDebug () << "pubdate";
-			qDebug () << i1.PubDate_;
-			qDebug () << i2.PubDate_;
-		}
-		if (i1.NumComments_ != i2.NumComments_)
-		{
-			qDebug () << "numComments";
-			qDebug () << i1.NumComments_;
-			qDebug () << i2.NumComments_;
-		}
-		if (i1.CommentsLink_ != i2.CommentsLink_)
-		{
-			qDebug () << "commentsLink";
-			qDebug () << i1.CommentsLink_;
-			qDebug () << i2.CommentsLink_;
-		}
-		if (i1.CommentsPageLink_ != i2.CommentsPageLink_)
-		{
-			qDebug () << "commentsPageLink";
-			qDebug () << i1.CommentsPageLink_;
-			qDebug () << i2.CommentsPageLink_;
-		}
-		if (i1.Latitude_ != i2.Latitude_)
-		{
-			qDebug () << "latitude";
-			qDebug () << i1.Latitude_;
-			qDebug () << i2.Latitude_;
-		}
-		if (i1.Longitude_ != i2.Longitude_)
-		{
-			qDebug () << "longitude";
-			qDebug () << i1.Longitude_;
-			qDebug () << i2.Longitude_;
-		}
+			if (i1.*getter != i2.*getter)
+			{
+				qDebug () << name;
+				qDebug () << i1.*getter;
+				qDebug () << i2.*getter;
+			}
+		};
+		check ("title", &Item::Title_);
+		check ("link", &Item::Link_);
+		check ("description", &Item::Description_);
+		check ("author", &Item::Author_);
+		check ("categories", &Item::Categories_);
+		check ("pubdate", &Item::PubDate_);
+		check ("numComments", &Item::NumComments_);
+		check ("commentsLink", &Item::CommentsLink_);
+		check ("commentsPageLink", &Item::CommentsPageLink_);
+		check ("latitude", &Item::Latitude_);
+		check ("longitude", &Item::Longitude_);
 	}
 
 	bool IsModified (const Item& i1, const Item& i2)
