@@ -17,7 +17,8 @@
 namespace LC::Aggregator
 {
 	ItemsFilterModel::ItemsFilterModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
+	: QSortFilterProxyModel { parent }
+	, HideRead_ { XmlSettingsManager::Instance ()->Property ("HideReadItems", false).toBool () }
 	{
 		setDynamicSortFilter (true);
 
@@ -37,6 +38,7 @@ namespace LC::Aggregator
 	void ItemsFilterModel::SetHideRead (bool hide)
 	{
 		HideRead_ = hide;
+		XmlSettingsManager::Instance ()->setProperty ("HideReadItems", hide);
 		invalidate ();
 	}
 

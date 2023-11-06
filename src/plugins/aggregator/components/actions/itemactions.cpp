@@ -125,15 +125,9 @@ namespace LC::Aggregator
 
 		mkSep ();
 
-		const bool shouldHideRead = xsm.Property ("HideReadItems", false).toBool ();
-		deps.SetHideRead_ (shouldHideRead);
 		ToolbarActions_ << MakeAction (HideReadItems,
-				[&] (bool hide)
-				{
-					Deps_.SetHideRead_ (hide);
-					xsm.setProperty ("HideReadItems", hide);
-				},
-				{ .Checked_ = shouldHideRead });
+				Deps_.SetHideRead_,
+				{ .Checked_ = xsm.property ("HideReadItems").toBool () });
 		ToolbarActions_ << MakeAction (ShowAsTape, deps.SetShowTape_,
 				{ .Checked_ = xsm.Property ("ShowAsTape", false).toBool () });
 
