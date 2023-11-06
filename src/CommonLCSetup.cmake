@@ -116,13 +116,11 @@ function (LC_DEFINE_PLUGIN)
 QTEST_GUILESS_MAIN (TheTestObject)
 ")
 
-				add_executable (${_fullExecName} WIN32 ${_testRunner})
+				add_executable (${_fullExecName} WIN32 ${_testRunner} ${_testObjectDef}.cpp)
 
 				add_test (${_fullExecName} ${_fullExecName})
 				FindQtLibs (${_fullExecName} Test)
 				target_link_libraries (${_fullExecName} leechcraft_${PROJECT_NAME} ${LEECHCRAFT_LIBRARIES})
-
-				target_sources (leechcraft_${PROJECT_NAME} PRIVATE ${_testObjectDef}.cpp)
 			endif ()
 		endfunction ()
 	endif ()
