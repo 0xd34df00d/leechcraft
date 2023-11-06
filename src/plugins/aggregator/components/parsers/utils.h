@@ -51,7 +51,7 @@ namespace LC::Aggregator::Parsers
 
 	QList<Enclosure> GetEncEnclosures (const QDomElement& entry, IDType_t itemId);
 
-	QString UnescapeHTML (QString&&);
+	Q_DECL_EXPORT QString UnescapeHTML (QString&&);
 }
 
 namespace LC::Aggregator::Parsers::Atom
