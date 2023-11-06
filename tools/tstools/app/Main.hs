@@ -54,6 +54,9 @@ data Options w = Options
 
 instance ParseRecord (Options Wrapped)
 
+extensionIs :: FilePath -> String -> Bool
+extensionIs path ext = extension path == Just ext
+
 main :: IO ()
 main = do
   Options { .. } <- unwrapRecord "tstools"
@@ -66,11 +69,11 @@ main = do
        Nothing -> pure ()
 
   files <- lsif (\subpath -> pure $ basename subpath /= "plugins") "." `fold` F.list
-  let sources = filter (\file -> any (file `hasExtension`) ["cpp", "ui", "qml"]) files
+  let sources = filter (\file -> any (file `extensionIs`) ["cpp", "ui", "qml"]) files
   generated <- mkGenerated files
 
   tsFiles <- case languages of
-                  [] -> pure $ filter (`hasExtension` "ts") files
+                  [] -> pure $ filter (`extensionIs` "ts") files
                   _ -> do
                         tsBase <- guessTsBase <$> pwd
                         pure $ (\lang -> [i|#{toTextHR tsBase}_#{lang}.ts|]) <$> languages
