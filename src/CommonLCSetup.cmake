@@ -57,7 +57,7 @@ endfunction ()
 
 function (LC_DEFINE_PLUGIN)
 	set (options INSTALL_SHARE INSTALL_DESKTOP HAS_TESTS)
-	set (one_value_args RESOURCES)
+	set (one_value_args RESOURCES PLUGIN_VISIBLE_NAME)
 	set (multi_value_args SRCS SETTINGS QT_COMPONENTS LINK_LIBRARIES)
 	cmake_parse_arguments (P "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -78,6 +78,10 @@ function (LC_DEFINE_PLUGIN)
 		)
 	set_target_properties (${FULL_NAME} PROPERTIES AUTOUIC TRUE AUTORCC TRUE)
 	target_link_libraries (${FULL_NAME} ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
+
+	if (P_PLUGIN_VISIBLE_NAME)
+		target_compile_definitions (${FULL_NAME} PRIVATE PLUGIN_VISIBLE_NAME="${P_PLUGIN_VISIBLE_NAME}"_qs)
+	endif ()
 
 	install (TARGETS ${FULL_NAME} DESTINATION ${LC_PLUGINS_DEST})
 
