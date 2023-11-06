@@ -113,7 +113,7 @@ function (LC_DEFINE_PLUGIN)
 #include <${_testObjectDef}.h>
 #include <QtTest>
 
-QTEST_APPLESS_MAIN (TheTestObject)
+QTEST_GUILESS_MAIN (TheTestObject)
 ")
 
 				add_executable (${_fullExecName} WIN32 ${_testRunner})
