@@ -12,8 +12,9 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/threads/futures.h>
-#include <util/sll/visitor.h>
 #include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
@@ -53,7 +54,7 @@ namespace LC::Imgaste
 		if (!service)
 		{
 			QMessageBox::critical (nullptr,
-					"LeechCraft",
+					PLUGIN_VISIBLE_NAME,
 					tr ("Unknown upload service: %1.")
 						.arg (serviceName));
 			return;
@@ -63,7 +64,7 @@ namespace LC::Imgaste
 
 		const auto makeErrorNotification = [=, this] (const QString& text)
 		{
-			auto e = Util::MakeNotification ("Imgaste", text, Priority::Critical);
+			auto e = Util::MakeNotification (PLUGIN_VISIBLE_NAME, text, Priority::Critical);
 			const auto nah = new Util::NotificationActionHandler { e };
 			const auto guard = connect (nah,
 					&QObject::destroyed,
@@ -93,7 +94,7 @@ namespace LC::Imgaste
 
 							auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
 									.arg ("<em>" + url + "</em>");
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Info));
+							em->HandleEntity (Util::MakeNotification (PLUGIN_VISIBLE_NAME, text, Priority::Info));
 						}
 						else
 							Callback_ (url);
@@ -145,7 +146,7 @@ namespace LC::Imgaste
 
 		bool ok = false;
 		const auto& serviceName = QInputDialog::getItem (nullptr,
-				"Imgaste",
+				PLUGIN_VISIBLE_NAME,
 				tr ("Please select another service to try:"),
 				otherServices,
 				0,

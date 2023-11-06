@@ -3,6 +3,7 @@ project (imgaste)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (
+	PLUGIN_VISIBLE_NAME Imgaste
 	SRCS
 		imgaste.cpp
 		hostingservice.cpp

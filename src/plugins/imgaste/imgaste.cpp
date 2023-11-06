@@ -15,6 +15,7 @@
 #include <QImageReader>
 #include <QFile>
 #include <QFileInfo>
+#include <util/sll/qtutil.h>
 #include <util/sys/mimedetector.h>
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -45,7 +46,7 @@ namespace LC::Imgaste
 
 	QString Plugin::GetName () const
 	{
-		return "Imgaste";
+		return PLUGIN_VISIBLE_NAME;
 	}
 
 	QString Plugin::GetInfo () const
