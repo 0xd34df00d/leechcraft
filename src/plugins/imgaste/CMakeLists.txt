@@ -11,4 +11,7 @@ LC_DEFINE_PLUGIN (
 		requestbuilder.cpp
 		uploader.cpp
 	QT_COMPONENTS Network Widgets
+	HAS_TESTS
 	)
+
+AddImgasteTest (upload tests/uploadtest)
