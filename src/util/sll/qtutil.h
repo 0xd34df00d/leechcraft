@@ -9,9 +9,12 @@
 #pragma once
 
 #include "sllconfig.h"
+#include <memory>
 #include <utility>
 #include <QLatin1String>
 #include "ctstring.h"
+
+class QObject;
 
 namespace LC::Util
 {
@@ -119,6 +122,12 @@ namespace LC::Util
 			return { str, {} };
 
 		return { str.left (pos), str.mid (pos + 1) };
+	}
+
+	template<typename T>
+	void ReleaseInto (std::unique_ptr<T>&& ptr, QObject& parent)
+	{
+		ptr.release ()->setParent (&parent);
 	}
 }
 
