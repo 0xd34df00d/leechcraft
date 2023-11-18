@@ -7,11 +7,11 @@
  **********************************************************************/
 
 #include "corotasktest.h"
-#include <QEventLoop>
 #include <QtTest>
 #include <coro.h>
 #include <coro/context.h>
 #include <coro/either.h>
+#include <coro/getresult.h>
 #include <coro/inparallel.h>
 #include <coro/networkresult.h>
 #include <coro/throttle.h>
@@ -23,45 +23,6 @@ using namespace std::chrono_literals;
 
 namespace LC::Util
 {
-	namespace
-	{
-		template<typename T, template<typename> typename... Extensions>
-		T GetTaskResult (Task<T, Extensions...> task)
-		{
-			constexpr bool isVoid = std::is_same_v<T, void>;
-			std::conditional_t<isVoid, void*, std::unique_ptr<T>> result;
-
-			std::exception_ptr exception;
-
-			QEventLoop loop;
-			bool done = false;
-			[&] () -> Task<void>
-			{
-				try
-				{
-					if constexpr (isVoid)
-						co_await task;
-					else
-						result = std::make_unique<T> (co_await task);
-				}
-				catch (...)
-				{
-					exception = std::current_exception ();
-				}
-				done = true;
-				loop.quit ();
-			} ();
-			if (!done)
-				loop.exec ();
-
-			if (exception)
-				std::rethrow_exception (exception);
-
-			if constexpr (!isVoid)
-				return *result;
-		}
-	}
-
 	void CoroTaskTest::testReturn ()
 	{
 		auto task = [] () -> Task<int> { co_return 42; } ();
