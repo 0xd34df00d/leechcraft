@@ -38,10 +38,10 @@ namespace LC::Util::detail
 
 	NetworkResult NRAwaiter::await_resume () const noexcept
 	{
-		if (Reply_.error () == QNetworkReply::NoError)
-			return NetworkReplySuccess { Reply_.readAll () };
-		else
+		if (Reply_.error () != QNetworkReply::NoError)
 			return NetworkReplyError { Reply_.error (), Reply_.errorString (), Reply_.url () };
+
+		return NetworkReplySuccess { Reply_.readAll (), Reply_.header (QNetworkRequest::LocationHeader) };
 	}
 }
 

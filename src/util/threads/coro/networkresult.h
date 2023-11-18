@@ -26,6 +26,8 @@ namespace LC::Util
 	struct NetworkReplySuccess
 	{
 		QByteArray Data_;
+
+		QVariant HeaderLocation_;
 	};
 
 	using NRBase_t = std::variant<NetworkReplyError, NetworkReplySuccess>;
