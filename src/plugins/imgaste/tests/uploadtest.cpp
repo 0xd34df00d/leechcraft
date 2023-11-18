@@ -11,6 +11,7 @@
 #include <QImage>
 #include <QNetworkAccessManager>
 #include <QtDebug>
+#include <util/sll/either.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/getresult.h>
 #include <util/threads/coro/networkresult.h>
@@ -47,7 +48,14 @@ namespace LC::Imgaste
 				qDebug () << "testing" << service->GetName ();
 				const auto& result = co_await *service->Post (contents, Format::PNG, &nam);
 				if (const auto err = result.IsError ())
-					qDebug () << "got error:" << *err;
+				{
+					qCritical () << "got error:" << *err;
+					continue;
+				}
+
+				Util::Visit (service->GetLink (result.GetReplyData (), {}),
+						[&] (HostingService::Error) { qCritical () << "cannot get link:" << result.GetReplyData (); },
+						[] (const QString& link) { qDebug () << "got link:" << link; });
 			}
 		} ();
 
