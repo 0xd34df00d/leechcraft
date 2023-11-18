@@ -8,22 +8,29 @@
 
 #pragma once
 
-#include <QString>
+#include <memory>
+#include <QByteArray>
+
+class QHttpMultiPart;
 
 namespace LC::Imgaste
 {
-	class RequestBuilder
+	enum class Format;
+
+	struct File
 	{
-		QByteArray Result_;
-		QByteArray Boundary_;
-	public:
-		RequestBuilder ();
-
-		void AddPair (const QString&, const QString&);
-		void AddFile (const QString&, const QString&, const QByteArray&);
-
-		QByteArray Build () const;
-		int Size () const;
-		QString GetBoundary () const;
+		Format Format_;
+		QByteArray FieldName_;
+		QByteArray Data_;
 	};
+
+	using Params_t = std::initializer_list<std::pair<QByteArray, QByteArray>>;
+
+	struct MultipartRequest
+	{
+		QByteArray Boundary_;
+		QByteArray Data_;
+	};
+
+	std::unique_ptr<QHttpMultiPart> BuildRequest (const Params_t& params, const File& file);
 }

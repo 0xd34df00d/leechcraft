@@ -19,6 +19,8 @@ class QStandardItemModel;
 
 namespace LC::Imgaste
 {
+	enum class Format;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IEntityHandler
@@ -51,6 +53,6 @@ namespace LC::Imgaste
 		void UploadFile (const QString&, const Entity&);
 		void UploadImage (const QImage&, const Entity&);
 
-		void UploadImpl (const QByteArray&, const Entity&, const QString&);
+		void UploadImpl (const QByteArray&, const Entity&, Format);
 	};
 }

@@ -22,7 +22,7 @@ namespace LC::Imgaste
 {
 	SingleServiceUploader::SingleServiceUploader (const HostingService& service,
 			const QByteArray& data,
-			const QString& format,
+			Format format,
 			QStandardItemModel *reprModel,
 			QObject *parent)
 	: QObject { parent }

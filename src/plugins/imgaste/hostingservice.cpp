@@ -11,8 +11,10 @@
 #include <QNetworkReply>
 #include <QUrl>
 #include <QStringList>
+#include <QHttpMultiPart>
 #include <util/sll/either.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/udls.h>
 #include "requestbuilder.h"
 
@@ -23,15 +25,6 @@ namespace LC::Imgaste
 		bool CheckImage (const ImageInfo& info, quint64 sizeLimit)
 		{
 			return info.Size_ <= sizeLimit;
-		}
-
-		QNetworkRequest PrefillRequest (const QUrl& url, const RequestBuilder& builder)
-		{
-			QNetworkRequest request { url };
-			request.setHeader (QNetworkRequest::ContentTypeHeader,
-					QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
-			request.setHeader (QNetworkRequest::ContentLengthHeader, QString::number (builder.Size ()));
-			return request;
 		}
 
 		struct ImagebinService final : HostingService
@@ -46,26 +39,26 @@ namespace LC::Imgaste
 				return CheckImage (info, 15_mib);
 			}
 
-			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
+			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am) const override
 			{
-				QUrl url { "https://imagebin.ca/upload.php" };
+				const QUrl url { "https://imagebin.ca/upload.php"_qs };
 
-				RequestBuilder builder;
-				builder.AddPair ("t", "file");
+				auto mp = BuildRequest ({
+							{ "t"_qba, "file"_qba },
+							{ "title"_qba, ""_qba },
+							{ "description"_qba, ""_qba },
+							{ "tags"_qba, "leechcraft"_qba },
+							{ "category"_qba, "general"_qba },
+							{ "private"_qba, "true"_qba },
+						},
+						{ .Format_ = fmt, .FieldName_ = "file"_qba, .Data_ = data });
 
-				builder.AddPair ("title", "");
-				builder.AddPair ("description", "");
-				builder.AddPair ("tags", "leechcraft");
-				builder.AddPair ("category", "general");
-				builder.AddPair ("private", "true");
-				builder.AddFile (fmt, "file", data);
-
-				QByteArray formed = builder.Build ();
-
-				auto request = PrefillRequest (url, builder);
+				QNetworkRequest request { url };
 				request.setRawHeader ("Origin", "https://imagebin.ca");
 				request.setRawHeader ("Referer", "https://imagebin.ca/");
-				return am->post (request, formed);
+				auto reply = am->post (request, &*mp);
+				Util::ReleaseInto (std::move (mp), *reply);
+				return reply;
 			}
 
 			Result_t GetLink (const QString& contents, const Headers_t&) const override
@@ -98,21 +91,21 @@ namespace LC::Imgaste
 				return CheckImage (info, 75_mib);
 			}
 
-			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
+			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am) const override
 			{
 				QUrl url { "https://catbox.moe/user/api.php" };
 
-				RequestBuilder builder;
-				builder.AddPair ("reqtype", "fileupload");
-				builder.AddPair ("userhash", {});
-				builder.AddFile (fmt, "fileToUpload", data);
+				auto mp = BuildRequest ({
+						{ "reqtype"_qba, "fileupload"_qba },
+						{ "userhash"_qba, {} },
+					}, { .Format_ = fmt, .FieldName_ = "fileToUpload"_qba, .Data_ = data });
 
-				auto formed = builder.Build ();
-
-				auto request = PrefillRequest (url, builder);
+				QNetworkRequest request { url };
 				request.setRawHeader ("Origin", "https://catbox.moe");
 				request.setRawHeader ("Referer", "https://catbox.moe/");
-				return am->post (request, formed);
+				auto reply = am->post (request, &*mp);
+				Util::ReleaseInto (std::move (mp), *reply);
+				return reply;
 			}
 
 			Result_t GetLink (const QString& contents, const Headers_t&) const override
@@ -145,12 +138,12 @@ namespace LC::Imgaste
 				return CheckImage (info, 200_mib);
 			}
 
-			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
+			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am) const override
 			{
-				RequestBuilder builder;
-				builder.AddFile (fmt, "files[]", data);
-
-				return am->post (PrefillRequest (UploadUrl_, builder), builder.Build ());
+				auto mp = BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
+				auto reply = am->post (QNetworkRequest { UploadUrl_ }, &*mp);
+				Util::ReleaseInto (std::move (mp), *reply);
+				return reply;
 			}
 
 			Result_t GetLink (const QString& body, const Headers_t&) const override

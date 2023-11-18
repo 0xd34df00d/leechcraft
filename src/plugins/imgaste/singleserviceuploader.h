@@ -44,7 +44,7 @@ namespace Imgaste
 	public:
 		SingleServiceUploader (const HostingService& service,
 				const QByteArray& data,
-				const QString& format,
+				Format format,
 				QStandardItemModel* = nullptr,
 				QObject *parent = nullptr);
 

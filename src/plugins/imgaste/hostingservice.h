@@ -28,6 +28,12 @@ namespace LC::Imgaste
 		QSize Dim_;
 	};
 
+	enum class Format
+	{
+		JPG,
+		PNG,
+	};
+
 	struct HostingService
 	{
 		virtual ~HostingService () = default;
@@ -50,7 +56,7 @@ namespace LC::Imgaste
 		using Headers_t = QHash<QByteArray, QList<QByteArray>>;
 
 		virtual QNetworkReply* Post (const QByteArray& imageData,
-				const QString& format, QNetworkAccessManager *am) const = 0;
+				Format format, QNetworkAccessManager *am) const = 0;
 
 		virtual Result_t GetLink (const QString& contents, const Headers_t& headers) const = 0;
 	};

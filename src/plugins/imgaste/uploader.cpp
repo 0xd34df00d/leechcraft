@@ -25,11 +25,11 @@
 namespace LC::Imgaste
 {
 	Uploader::Uploader (QByteArray data,
-			QString format,
+			Format format,
 			DataFilterCallback_f callback,
 			QStandardItemModel *reprModel)
 	: Data_ { std::move (data) }
-	, Format_ { std::move (format) }
+	, Format_ { format }
 	, Callback_ { std::move (callback) }
 	, ReprModel_ { reprModel }
 	{
@@ -116,7 +116,7 @@ namespace LC::Imgaste
 									.arg (error.ErrorString_);
 							makeErrorNotification (text);
 						},
-						[=] (const SingleServiceUploader::ServiceAPIError&)
+						[=] (SingleServiceUploader::ServiceAPIError)
 						{
 							qWarning () << Q_FUNC_INFO
 									<< serviceName;

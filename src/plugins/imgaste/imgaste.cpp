@@ -145,6 +145,20 @@ namespace LC::Imgaste
 		return ReprModel_;
 	}
 
+	namespace
+	{
+		Format GuessFormat (const QString& format)
+		{
+			if (!format.compare ("png", Qt::CaseInsensitive))
+				return Format::PNG;
+			if (!format.compare ("jpg", Qt::CaseInsensitive))
+				return Format::JPG;
+
+			qWarning () << "unknown format:" << format;
+			return Format::PNG;
+		}
+	}
+
 	void Plugin::UploadFile (const QString& name, const Entity& e)
 	{
 		QFile file { name };
@@ -156,20 +170,20 @@ namespace LC::Imgaste
 			return;
 		}
 
-		const auto& format = QString::fromLatin1 (Util::DetectFileMime (name)).section ('/', 1, 1);
+		const auto& formatStr = QString::fromLatin1 (Util::DetectFileMime (name)).section ('/', 1, 1);
 
-		UploadImpl (file.readAll (), e, format);
+		UploadImpl (file.readAll (), e, GuessFormat (formatStr));
 	}
 
 	void Plugin::UploadImage (const QImage& img, const Entity& e)
 	{
-		const auto& format = e.Additional_.value ("Format", "PNG").toString ();
+		const auto& formatStr = e.Additional_.value ("Format", "PNG").toString ();
 
 		QByteArray bytes;
 		QBuffer buf (&bytes);
 		buf.open (QIODevice::ReadWrite);
 		if (!img.save (&buf,
-					qPrintable (format),
+					qPrintable (formatStr),
 					e.Additional_ ["Quality"].toInt ()))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -177,10 +191,10 @@ namespace LC::Imgaste
 			return;
 		}
 
-		UploadImpl (buf.data (), e, format);
+		UploadImpl (buf.data (), e, GuessFormat (formatStr));
 	}
 
-	void Plugin::UploadImpl (const QByteArray& data, const Entity& e, const QString& format)
+	void Plugin::UploadImpl (const QByteArray& data, const Entity& e, Format format)
 	{
 		const auto& callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
 
