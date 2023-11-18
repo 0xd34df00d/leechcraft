@@ -26,7 +26,7 @@ namespace LC::Imgaste
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("imgaste");
+		Util::InstallTranslator ("imgaste"_qs);
 
 		ReprModel_ = new QStandardItemModel { this };
 	}

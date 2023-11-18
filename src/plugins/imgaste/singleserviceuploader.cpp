@@ -48,8 +48,7 @@ namespace LC::Imgaste
 		{
 			Util::SetJobHolderProgress (reprRow, done, total,
 					tr ("%1 of %2")
-							.arg (Util::MakePrettySize (done))
-							.arg (Util::MakePrettySize (total)));
+							.arg (Util::MakePrettySize (done), Util::MakePrettySize (total)));
 		};
 		setUploadProgress (0, data.size ());
 

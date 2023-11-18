@@ -38,7 +38,7 @@ namespace LC::Imgaste
 		{
 			QString GetName () const override
 			{
-				return "imagebin.ca";
+				return "imagebin.ca"_qs;
 			}
 
 			bool Accepts (const ImageInfo& info) const override
