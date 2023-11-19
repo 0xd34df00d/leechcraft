@@ -11,12 +11,14 @@
 #include <memory>
 #include <QSize>
 #include <QString>
+#include <QUrl>
 #include <QVector>
 #include <util/sll/eitherfwd.h>
 
 class QByteArray;
-class QNetworkReply;
+class QHttpMultiPart;
 class QNetworkAccessManager;
+class QNetworkReply;
 
 template<typename, typename>
 class QHash;
@@ -41,10 +43,12 @@ namespace LC::Imgaste
 		using Result_t = Util::Either<Error, QString>;
 
 		QString Name_;
+		QUrl UploadUrl_;
 		std::function<bool (ImageInfo)> Accepts_;
-		std::function<QNetworkReply* (const QByteArray&, Format, QNetworkAccessManager*)> Post_;
+		std::function<std::unique_ptr<QHttpMultiPart> (const QByteArray&, Format)> MakeMultiPart_;
 		std::function<Result_t (const QString&)> GetLink_;
 	};
 
 	const QVector<HostingService>& GetAllServices ();
+	QNetworkReply* Post (const HostingService& service, const QByteArray&, Format, QNetworkAccessManager&);
 }

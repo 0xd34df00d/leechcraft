@@ -46,7 +46,7 @@ namespace LC::Imgaste
 			for (const auto& service : GetAllServices ())
 			{
 				qDebug () << "testing" << service.Name_;
-				const auto& result = co_await *service.Post_ (contents, Format::PNG, &nam);
+				const auto& result = co_await *Post (service, contents, Format::PNG, nam);
 				if (const auto err = result.IsError ())
 				{
 					qCritical () << "got error:" << *err;

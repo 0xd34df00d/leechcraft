@@ -128,7 +128,7 @@ namespace LC::Imgaste
 			ReprRow row { *ctx.ReprModel_ };
 			row.SetProgress (0, ctx.Data_.size ());
 
-			const auto reply = service.Post_ (ctx.Data_, ctx.Fmt_, GetProxyHolder ()->GetNetworkAccessManager ());
+			const auto reply = Post (service, ctx.Data_, ctx.Fmt_, *GetProxyHolder ()->GetNetworkAccessManager ());
 			QObject::connect (reply,
 					&QNetworkReply::uploadProgress,
 					&row,

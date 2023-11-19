@@ -23,18 +23,16 @@ namespace LC::Imgaste
 	namespace
 	{
 		template<quint64 SizeLimit>
-		auto CheckSize (const ImageInfo& info)
+		auto CheckSize (ImageInfo info)
 		{
 			return info.Size_ <= SizeLimit;
 		}
 
 		namespace Imagebin
 		{
-			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am)
+			auto MakeMultiPart (const QByteArray& data, Format fmt)
 			{
-				const QUrl url { "https://imagebin.ca/upload.php"_qs };
-
-				auto mp = BuildRequest ({
+				return BuildRequest ({
 							{ "t"_qba, "file"_qba },
 							{ "title"_qba, ""_qba },
 							{ "description"_qba, ""_qba },
@@ -43,13 +41,6 @@ namespace LC::Imgaste
 							{ "private"_qba, "true"_qba },
 						},
 						{ .Format_ = fmt, .FieldName_ = "file"_qba, .Data_ = data });
-
-				QNetworkRequest request { url };
-				request.setRawHeader ("Origin", "https://imagebin.ca");
-				request.setRawHeader ("Referer", "https://imagebin.ca/");
-				auto reply = am->post (request, &*mp);
-				Util::ReleaseInto (std::move (mp), *reply);
-				return reply;
 			}
 
 			HostingService::Result_t GetLink (const QString& contents)
@@ -73,21 +64,13 @@ namespace LC::Imgaste
 
 		namespace Catbox
 		{
-			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am)
+			auto MakeMultiPart (const QByteArray& data, Format fmt)
 			{
-				QUrl url { "https://catbox.moe/user/api.php" };
-
-				auto mp = BuildRequest ({
-						{ "reqtype"_qba, "fileupload"_qba },
-						{ "userhash"_qba, {} },
-				}, { .Format_ = fmt, .FieldName_ = "fileToUpload"_qba, .Data_ = data });
-
-				QNetworkRequest request { url };
-				request.setRawHeader ("Origin", "https://catbox.moe");
-				request.setRawHeader ("Referer", "https://catbox.moe/");
-				auto reply = am->post (request, &*mp);
-				Util::ReleaseInto (std::move (mp), *reply);
-				return reply;
+				return BuildRequest ({
+							{ "reqtype"_qba, "fileupload"_qba },
+							{ "userhash"_qba, {} },
+						},
+						{ .Format_ = fmt, .FieldName_ = "fileToUpload"_qba, .Data_ = data });
 			}
 
 			HostingService::Result_t GetLink (const QString& contents)
@@ -98,15 +81,9 @@ namespace LC::Imgaste
 
 		namespace PomfLike
 		{
-			auto Post (const QString& uploadUrl)
+			auto MakeMultiPart (const QByteArray& data, Format fmt)
 			{
-				return [=] (const QByteArray& data, Format fmt, QNetworkAccessManager *am)
-				{
-					auto mp = BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
-					auto reply = am->post (QNetworkRequest { uploadUrl }, &*mp);
-					Util::ReleaseInto (std::move (mp), *reply);
-					return reply;
-				};
+				return BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
 			}
 
 			auto GetLink (const QString& prefix)
@@ -130,11 +107,24 @@ namespace LC::Imgaste
 	{
 		static const QVector<HostingService> list
 		{
-			{ .Name_ = "imagebin.ca"_qs, .Accepts_ = CheckSize<15_mib>, .Post_ = Imagebin::Post, .GetLink_ = Imagebin::GetLink },
-			{ .Name_ = "catbox.moe"_qs, .Accepts_ = CheckSize<75_mib>, .Post_ = Catbox::Post, .GetLink_ = Catbox::GetLink },
-			{ .Name_ = "pomf.cat"_qs, .Accepts_ = CheckSize<200_mib>, .Post_ = PomfLike::Post ("https://pomf.cat/upload.php"), .GetLink_ = PomfLike::GetLink ("https://a.pomf.cat/") }
+			{ .Name_ = "imagebin.ca"_qs, .UploadUrl_ { "https://imagebin.ca/upload.php"_qs }, .Accepts_ = CheckSize<15_mib>, .MakeMultiPart_ = Imagebin::MakeMultiPart, .GetLink_ = Imagebin::GetLink },
+			{ .Name_ = "catbox.moe"_qs, .UploadUrl_ { "https://catbox.moe/user/api.php"_qs }, .Accepts_ = CheckSize<75_mib>, .MakeMultiPart_ = Catbox::MakeMultiPart, .GetLink_ = Catbox::GetLink },
+			{ .Name_ = "pomf.cat"_qs, .UploadUrl_ { "https://pomf.cat/upload.php"_qs }, .Accepts_ = CheckSize<200_mib>, .MakeMultiPart_ = PomfLike::MakeMultiPart, .GetLink_ = PomfLike::GetLink ("https://a.pomf.cat/") }
 		};
 
 		return list;
+	}
+
+	Q_DECL_EXPORT QNetworkReply* Post (const HostingService& service, const QByteArray& data, Format fmt, QNetworkAccessManager& am)
+	{
+		const auto& origin = service.UploadUrl_.toEncoded (QUrl::RemovePath | QUrl::RemoveQuery | QUrl::RemoveFragment);
+		auto mp = service.MakeMultiPart_ (data, fmt);
+
+		QNetworkRequest request { service.UploadUrl_ };
+		request.setRawHeader ("Origin", origin);
+		request.setRawHeader ("Referer", origin + '/');
+		auto reply = am.post (request, &*mp);
+		Util::ReleaseInto (std::move (mp), *reply);
+		return reply;
 	}
 }
