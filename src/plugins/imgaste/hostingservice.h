@@ -46,5 +46,5 @@ namespace LC::Imgaste
 		std::function<Result_t (const QString&)> GetLink_;
 	};
 
-	Q_DECL_EXPORT const QVector<HostingService>& GetAllServices ();
+	const QVector<HostingService>& GetAllServices ();
 }

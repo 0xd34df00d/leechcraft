@@ -125,7 +125,7 @@ namespace LC::Imgaste
 		}
 	}
 
-	const QVector<HostingService>& GetAllServices ()
+	Q_DECL_EXPORT const QVector<HostingService>& GetAllServices ()
 	{
 		static const QVector<HostingService> list
 		{
