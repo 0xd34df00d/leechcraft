@@ -54,19 +54,20 @@ namespace LC::Imgaste
 
 			HostingService::Result_t GetLink (const QString& contents)
 			{
-				const auto& lines = contents.split ('\n');
+				constexpr static QStringView urlMarker = u"url:"_qsv;
+
+				const auto& lines = contents.splitRef ('\n');
 				const auto pos = std::find_if (lines.begin (), lines.end (),
-						[] (const QString& line) { return line.startsWith ("url:"); });
+						[] (const QStringRef& line) { return line.startsWith (urlMarker); });
 
 				if (pos == lines.end ())
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "no URL:"
+					qWarning () << "no URL:"
 							<< contents;
 					return HostingService::Result_t::Left ({});
 				}
 
-				return HostingService::Result_t::Right (pos->section (':', 1));
+				return HostingService::Result_t::Right (pos->mid (urlMarker.size ()).toString ());
 			}
 		}
 
