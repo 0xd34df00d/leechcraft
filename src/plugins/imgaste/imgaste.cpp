@@ -15,6 +15,7 @@
 #include <QImageReader>
 #include <QFile>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <util/sll/qtutil.h>
 #include <util/sys/mimedetector.h>
 #include <util/util.h>
@@ -167,6 +168,10 @@ namespace LC::Imgaste
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open file:"
 					<< file.errorString ();
+			QMessageBox::critical (nullptr,
+					PLUGIN_VISIBLE_NAME,
+					tr ("Unable to open file: %1.")
+							.arg (file.errorString ()));
 			return;
 		}
 
@@ -188,6 +193,9 @@ namespace LC::Imgaste
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "save failed";
+			QMessageBox::critical (nullptr,
+					PLUGIN_VISIBLE_NAME,
+					tr ("Unable to serialize image."));
 			return;
 		}
 
