@@ -38,7 +38,7 @@ namespace LC::Imgaste
 			Format Fmt_;
 			QStandardItemModel *ReprModel_;
 			DataFilterCallback_f Callback_;
-			QHash<QString, std::shared_ptr<HostingService>> Services_;
+			QHash<QString, HostingService> Services_;
 
 			QString ServiceName_;
 		};
@@ -113,8 +113,8 @@ namespace LC::Imgaste
 
 		Util::Task<void> RunUpload (UploadContext ctx)
 		{
-			const auto service = ctx.Services_.value (ctx.ServiceName_);
-			if (!service)
+			const auto servicePos = ctx.Services_.find (ctx.ServiceName_);
+			if (servicePos == ctx.Services_.end ())
 			{
 				QMessageBox::critical (nullptr,
 						PLUGIN_VISIBLE_NAME,
@@ -123,10 +123,12 @@ namespace LC::Imgaste
 				co_return;
 			}
 
+			const auto& service = servicePos.value ();
+
 			ReprRow row { *ctx.ReprModel_ };
 			row.SetProgress (0, ctx.Data_.size ());
 
-			const auto reply = service->Post (ctx.Data_, ctx.Fmt_, GetProxyHolder ()->GetNetworkAccessManager ());
+			const auto reply = service.Post_ (ctx.Data_, ctx.Fmt_, GetProxyHolder ()->GetNetworkAccessManager ());
 			QObject::connect (reply,
 					&QNetworkReply::uploadProgress,
 					&row,
@@ -141,7 +143,7 @@ namespace LC::Imgaste
 				co_return NotifyError (ctx, text);
 			}
 
-			const auto& url = co_await Util::WithHandler (service->GetLink (result.GetReplyData (), {}),
+			const auto& url = co_await Util::WithHandler (service.GetLink_ (result.GetReplyData ()),
 					[&] (auto&&)
 					{
 						const auto& text = QObject::tr ("Image upload to %1 failed: service error.")
@@ -174,10 +176,10 @@ namespace LC::Imgaste
 		auto callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
 		auto dataFilter = e.Additional_ ["DataFilter"].toString ();
 
-		QHash<QString, std::shared_ptr<HostingService>> allServices;
+		QHash<QString, HostingService> allServices;
 		for (const auto& service : GetAllServices ())
-			if (service->Accepts ({ .Size_ = static_cast<quint64> (data.size ()), .Dim_ = dim }))
-				allServices [service->GetName ()] = service;
+			if (service.Accepts_ ({ .Size_ = static_cast<quint64> (data.size ()), .Dim_ = dim }))
+				allServices [service.Name_] = service;
 		RunUpload ({ data, fmt, reprModel, callback, allServices, dataFilter });
 	}
 }

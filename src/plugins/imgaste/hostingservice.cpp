@@ -22,24 +22,15 @@ namespace LC::Imgaste
 {
 	namespace
 	{
-		bool CheckImage (const ImageInfo& info, quint64 sizeLimit)
+		template<quint64 SizeLimit>
+		auto CheckSize (const ImageInfo& info)
 		{
-			return info.Size_ <= sizeLimit;
+			return info.Size_ <= SizeLimit;
 		}
 
-		struct ImagebinService final : HostingService
+		namespace Imagebin
 		{
-			QString GetName () const override
-			{
-				return "imagebin.ca"_qs;
-			}
-
-			bool Accepts (const ImageInfo& info) const override
-			{
-				return CheckImage (info, 15_mib);
-			}
-
-			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am) const override
+			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am)
 			{
 				const QUrl url { "https://imagebin.ca/upload.php"_qs };
 
@@ -61,7 +52,7 @@ namespace LC::Imgaste
 				return reply;
 			}
 
-			Result_t GetLink (const QString& contents, const Headers_t&) const override
+			HostingService::Result_t GetLink (const QString& contents)
 			{
 				const auto& lines = contents.split ('\n');
 				const auto pos = std::find_if (lines.begin (), lines.end (),
@@ -72,33 +63,23 @@ namespace LC::Imgaste
 					qWarning () << Q_FUNC_INFO
 							<< "no URL:"
 							<< contents;
-					return Result_t::Left ({});
+					return HostingService::Result_t::Left ({});
 				}
 
-				return Result_t::Right (pos->section (':', 1));
+				return HostingService::Result_t::Right (pos->section (':', 1));
 			}
-		};
+		}
 
-		struct CatboxService final : HostingService
+		namespace Catbox
 		{
-			QString GetName () const override
-			{
-				return "catbox.moe";
-			}
-
-			bool Accepts (const ImageInfo& info) const override
-			{
-				return CheckImage (info, 75_mib);
-			}
-
-			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am) const override
+			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am)
 			{
 				QUrl url { "https://catbox.moe/user/api.php" };
 
 				auto mp = BuildRequest ({
 						{ "reqtype"_qba, "fileupload"_qba },
 						{ "userhash"_qba, {} },
-					}, { .Format_ = fmt, .FieldName_ = "fileToUpload"_qba, .Data_ = data });
+				}, { .Format_ = fmt, .FieldName_ = "fileToUpload"_qba, .Data_ = data });
 
 				QNetworkRequest request { url };
 				request.setRawHeader ("Origin", "https://catbox.moe");
@@ -108,64 +89,49 @@ namespace LC::Imgaste
 				return reply;
 			}
 
-			Result_t GetLink (const QString& contents, const Headers_t&) const override
+			HostingService::Result_t GetLink (const QString& contents)
 			{
-				return Result_t::Right (contents);
+				return HostingService::Result_t::Right (contents);
 			}
-		};
+		}
 
-		class PomfLikeService final : public HostingService
+		namespace PomfLike
 		{
-			QString Name_;
-			QString Prefix_;
-			QUrl UploadUrl_;
-		public:
-			PomfLikeService (QString name, QString prefix, QUrl uploadUrl)
-			: Name_ { std::move (name) }
-			, Prefix_ { std::move (prefix) }
-			, UploadUrl_ { std::move (uploadUrl) }
+			auto Post (const QString& uploadUrl)
 			{
+				return [=] (const QByteArray& data, Format fmt, QNetworkAccessManager *am)
+				{
+					auto mp = BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
+					auto reply = am->post (QNetworkRequest { uploadUrl }, &*mp);
+					Util::ReleaseInto (std::move (mp), *reply);
+					return reply;
+				};
 			}
 
-			QString GetName () const override
+			auto GetLink (const QString& prefix)
 			{
-				return Name_;
-			}
+				return [=] (const QString& body)
+				{
+					const auto& json = Util::ParseJson (body.toUtf8 (), "LC::Imgaste::PomfLikeService::GetLink()");
+					if (json.isNull ())
+						return HostingService::Result_t::Left ({});
 
-			bool Accepts (const ImageInfo& info) const override
-			{
-				return CheckImage (info, 200_mib);
+					const auto filename = json.toMap () ["files"]
+							.toList ().value (0)
+							.toMap () ["url"].toString ();
+					return HostingService::Result_t::Right (prefix + filename);
+				};
 			}
-
-			QNetworkReply* Post (const QByteArray& data, Format fmt, QNetworkAccessManager *am) const override
-			{
-				auto mp = BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
-				auto reply = am->post (QNetworkRequest { UploadUrl_ }, &*mp);
-				Util::ReleaseInto (std::move (mp), *reply);
-				return reply;
-			}
-
-			Result_t GetLink (const QString& body, const Headers_t&) const override
-			{
-				const auto& json = Util::ParseJson (body.toUtf8 (), "LC::Imgaste::PomfLikeService::GetLink()");
-				if (json.isNull ())
-					return Result_t::Left ({});
-
-				const auto filename = json.toMap () ["files"]
-						.toList ().value (0)
-						.toMap () ["url"].toString ();
-				return Result_t::Right (Prefix_ + filename);
-			}
-		};
+		}
 	}
 
-	const QVector<std::shared_ptr<HostingService>>& GetAllServices ()
+	const QVector<HostingService>& GetAllServices ()
 	{
-		static const QVector<std::shared_ptr<HostingService>> list
+		static const QVector<HostingService> list
 		{
-			std::make_shared<ImagebinService> (),
-			std::make_shared<CatboxService> (),
-			std::make_shared<PomfLikeService> ("pomf.cat", "https://a.pomf.cat/", QUrl { "https://pomf.cat/upload.php" }),
+			{ .Name_ = "imagebin.ca"_qs, .Accepts_ = CheckSize<15_mib>, .Post_ = Imagebin::Post, .GetLink_ = Imagebin::GetLink },
+			{ .Name_ = "catbox.moe"_qs, .Accepts_ = CheckSize<75_mib>, .Post_ = Catbox::Post, .GetLink_ = Catbox::GetLink },
+			{ .Name_ = "pomf.cat"_qs, .Accepts_ = CheckSize<200_mib>, .Post_ = PomfLike::Post ("https://pomf.cat/upload.php"), .GetLink_ = PomfLike::GetLink ("https://a.pomf.cat/") }
 		};
 
 		return list;

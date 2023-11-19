@@ -37,30 +37,14 @@ namespace LC::Imgaste
 
 	struct HostingService
 	{
-		virtual ~HostingService () = default;
-
-		HostingService () = default;
-
-		HostingService (const HostingService&) = delete;
-		HostingService (HostingService&&) = delete;
-		HostingService& operator= (const HostingService&) = delete;
-		HostingService& operator= (HostingService&&) = delete;
-
-		virtual QString GetName () const = 0;
-
-		virtual bool Accepts (const ImageInfo&) const = 0;
-
 		struct Error {};
-
 		using Result_t = Util::Either<Error, QString>;
 
-		using Headers_t = QHash<QByteArray, QList<QByteArray>>;
-
-		virtual QNetworkReply* Post (const QByteArray& imageData,
-				Format format, QNetworkAccessManager *am) const = 0;
-
-		virtual Result_t GetLink (const QString& contents, const Headers_t& headers) const = 0;
+		QString Name_;
+		std::function<bool (ImageInfo)> Accepts_;
+		std::function<QNetworkReply* (const QByteArray&, Format, QNetworkAccessManager*)> Post_;
+		std::function<Result_t (const QString&)> GetLink_;
 	};
 
-	Q_DECL_EXPORT const QVector<std::shared_ptr<HostingService>>& GetAllServices ();
+	Q_DECL_EXPORT const QVector<HostingService>& GetAllServices ();
 }

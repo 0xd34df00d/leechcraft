@@ -45,15 +45,15 @@ namespace LC::Imgaste
 			QNetworkAccessManager nam;
 			for (const auto& service : GetAllServices ())
 			{
-				qDebug () << "testing" << service->GetName ();
-				const auto& result = co_await *service->Post (contents, Format::PNG, &nam);
+				qDebug () << "testing" << service.Name_;
+				const auto& result = co_await *service.Post_ (contents, Format::PNG, &nam);
 				if (const auto err = result.IsError ())
 				{
 					qCritical () << "got error:" << *err;
 					continue;
 				}
 
-				Util::Visit (service->GetLink (result.GetReplyData (), {}),
+				Util::Visit (service.GetLink_ (result.GetReplyData ()),
 						[&] (HostingService::Error) { qCritical () << "cannot get link:" << result.GetReplyData (); },
 						[] (const QString& link) { qDebug () << "got link:" << link; });
 			}

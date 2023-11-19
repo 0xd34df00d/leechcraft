@@ -103,10 +103,10 @@ namespace LC::Imgaste
 		std::optional<IDataFilter::FilterVariant> ToFilterVariant (const HostingService& service,
 				const ImageInfo& imageInfo)
 		{
-			if (!service.Accepts (imageInfo))
+			if (!service.Accepts_ (imageInfo))
 				return {};
 
-			const auto& str = service.GetName ();
+			const auto& str = service.Name_;
 			return { { str.toUtf8 (), str, {}, {} } };
 		}
 
@@ -136,7 +136,7 @@ namespace LC::Imgaste
 
 		QList<IDataFilter::FilterVariant> result;
 		for (const auto& item : GetAllServices ())
-			if (const auto res = ToFilterVariant (*item, info))
+			if (const auto res = ToFilterVariant (item, info))
 				result << *res;
 		return result;
 	}
