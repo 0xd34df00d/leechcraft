@@ -51,17 +51,17 @@ namespace LC::Util
 			template<typename Promise>
 			void await_suspend (std::coroutine_handle<Promise> handle)
 			{
-				[this] (auto& handle) -> Task<void>
+				[] (auto handle, auto either) -> Task<void>
 				{
-					auto& promise = handle.promise ();
+					auto& promise = handle->promise ();
 					if constexpr (Promise::IsVoid)
 						promise.return_void ();
 					else
-						promise.return_value (Promise::ReturnType_t::Left (Either_.GetLeft ()));
+						promise.return_value (Promise::ReturnType_t::Left (either->GetLeft ()));
 
 					co_await promise.final_suspend ();
-					handle.destroy ();
-				} (handle);
+					handle->destroy ();
+				} (&handle, &Either_);
 			}
 
 			R await_resume () const noexcept
