@@ -11,6 +11,7 @@
 #include <memory>
 #include <QSize>
 #include <QString>
+#include <QVector>
 #include <util/sll/eitherfwd.h>
 
 class QByteArray;
@@ -61,5 +62,5 @@ namespace LC::Imgaste
 		virtual Result_t GetLink (const QString& contents, const Headers_t& headers) const = 0;
 	};
 
-	Q_DECL_EXPORT const QList<std::shared_ptr<HostingService>>& GetAllServices ();
+	Q_DECL_EXPORT const QVector<std::shared_ptr<HostingService>>& GetAllServices ();
 }

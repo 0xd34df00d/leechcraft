@@ -11,153 +11,173 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <interfaces/ijobholder.h>
 #include <util/threads/futures.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/either.h>
+#include <util/threads/coro/networkresult.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
+#include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include "hostingservice.h"
-#include "singleserviceuploader.h"
 
 namespace LC::Imgaste
 {
-	Uploader::Uploader (QByteArray data,
-			Format format,
-			DataFilterCallback_f callback,
-			QStandardItemModel *reprModel)
-	: Data_ { std::move (data) }
-	, Format_ { format }
-	, Callback_ { std::move (callback) }
-	, ReprModel_ { reprModel }
-	{
-	}
-
 	namespace
 	{
-		const HostingService* FromString (const QString& name)
+		struct UploadContext
 		{
-			for (const auto& service : GetAllServices ())
-				if (service->GetName () == name)
-					return service.get ();
+			QByteArray Data_;
+			Format Fmt_;
+			QStandardItemModel *ReprModel_;
+			DataFilterCallback_f Callback_;
+			QHash<QString, std::shared_ptr<HostingService>> Services_;
 
-			return nullptr;
-		}
-	}
+			QString ServiceName_;
+		};
 
-	void Uploader::Upload (const QString& serviceName)
-	{
-		const auto service = FromString (serviceName);
-
-		if (!service)
+		struct ReprRow final : QObject
 		{
-			QMessageBox::critical (nullptr,
-					PLUGIN_VISIBLE_NAME,
-					tr ("Unknown upload service: %1.")
-						.arg (serviceName));
-			return;
-		}
+			QStandardItemModel& ReprModel_;
+			QList<QStandardItem*> ReprRow_;
 
-		const auto em = GetProxyHolder ()->GetEntityManager ();
+			ReprRow (QStandardItemModel& reprModel)
+			: ReprModel_ { reprModel }
+			{
+				ReprRow_ =
+				{
+					new QStandardItem { QObject::tr ("Image upload") },
+					new QStandardItem { QObject::tr ("Uploading...") },
+					new QStandardItem
+				};
 
-		const auto makeErrorNotification = [=, this] (const QString& text)
+				for (const auto item : ReprRow_)
+				{
+					item->setEditable (false);
+					item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+							CustomDataRoles::RoleJobHolderRow);
+				}
+				ReprModel_.appendRow (ReprRow_);
+			}
+
+			~ReprRow () override
+			{
+				ReprModel_.removeRow (ReprRow_.first ()->row ());
+			}
+
+			ReprRow (const ReprRow&) = delete;
+			ReprRow (ReprRow&&) = delete;
+			ReprRow& operator= (const ReprRow&) = delete;
+			ReprRow& operator= (ReprRow&&) = delete;
+
+			void SetProgress (qint64 done, qint64 total) const
+			{
+				Util::SetJobHolderProgress (ReprRow_, done, total,
+						QObject::tr ("%1 of %2")
+								.arg (Util::MakePrettySize (done), Util::MakePrettySize (total)));
+			}
+		};
+
+		void TryAnotherService (UploadContext);
+
+		void NotifyError (const UploadContext& ctx, const QString& text)
 		{
 			auto e = Util::MakeNotification (PLUGIN_VISIBLE_NAME, text, Priority::Critical);
 			const auto nah = new Util::NotificationActionHandler { e };
-			const auto guard = connect (nah,
-					&QObject::destroyed,
-					this,
-					&QObject::deleteLater);
-			nah->AddFunction (tr ("Try another service..."),
-					[=, this]
+			nah->AddFunction (QObject::tr ("Try another service..."),
+					[=] { TryAnotherService (ctx); });
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
+
+		void HandleSuccess (const QString& url, const UploadContext& ctx)
+		{
+			if (ctx.Callback_)
+				ctx.Callback_ (url);
+			else
+			{
+				QApplication::clipboard ()->setText (url, QClipboard::Clipboard);
+
+				const auto& text = QObject::tr ("Image pasted: %1, the URL was copied to the clipboard")
+						.arg ("<em>" + url + "</em>");
+				const auto& e = Util::MakeNotification (PLUGIN_VISIBLE_NAME, text, Priority::Info);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+			}
+		}
+
+		Util::Task<void> RunUpload (UploadContext ctx)
+		{
+			const auto service = ctx.Services_.value (ctx.ServiceName_);
+			if (!service)
+			{
+				QMessageBox::critical (nullptr,
+						PLUGIN_VISIBLE_NAME,
+						QObject::tr ("Unknown upload service: %1.")
+								.arg (ctx.ServiceName_));
+				co_return;
+			}
+
+			ReprRow row { *ctx.ReprModel_ };
+			row.SetProgress (0, ctx.Data_.size ());
+
+			const auto reply = service->Post (ctx.Data_, ctx.Fmt_, GetProxyHolder ()->GetNetworkAccessManager ());
+			QObject::connect (reply,
+					&QNetworkReply::uploadProgress,
+					&row,
+					&ReprRow::SetProgress);
+
+			const auto result = co_await *reply;
+			if (const auto error = result.IsError ())
+			{
+				qWarning () << ctx.ServiceName_ << "failed with" << *error;
+				const auto& text = QObject::tr ("Image upload failed: %1")
+						.arg (error->ErrorText_);
+				co_return NotifyError (ctx, text);
+			}
+
+			const auto& url = co_await Util::WithHandler (service->GetLink (result.GetReplyData (), {}),
+					[&] (auto&&)
 					{
-						disconnect (guard);
-						TryAnotherService (serviceName);
+						const auto& text = QObject::tr ("Image upload to %1 failed: service error.")
+								.arg ("<em>" + ctx.ServiceName_ + "</em>");
+						NotifyError (ctx, text);
 					});
-			em->HandleEntity (e);
-		};
 
-		auto uploader = new SingleServiceUploader (*service,
-				Data_,
-				Format_,
-				ReprModel_);
-		Util::Sequence (this, uploader->GetFuture ()) >>
-				Util::Visitor
-				{
-					[this, em] (const QString& url)
-					{
-						if (!Callback_)
-						{
-							QApplication::clipboard ()->setText (url, QClipboard::Clipboard);
+			HandleSuccess (url, ctx);
+		}
 
-							auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-									.arg ("<em>" + url + "</em>");
-							em->HandleEntity (Util::MakeNotification (PLUGIN_VISIBLE_NAME, text, Priority::Info));
-						}
-						else
-							Callback_ (url);
+		void TryAnotherService (UploadContext ctx)
+		{
+			ctx.Services_.remove (ctx.ServiceName_);
 
-						deleteLater ();
-					},
-					Util::Visitor
-					{
-						[=] (const SingleServiceUploader::NetworkRequestError& error)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "original URL:"
-									<< error.OriginalUrl_
-									<< error.NetworkError_
-									<< error.HttpCode_.value_or (-1)
-									<< error.ErrorString_;
-
-							const auto& text = tr ("Image upload failed: %1")
-									.arg (error.ErrorString_);
-							makeErrorNotification (text);
-						},
-						[=] (SingleServiceUploader::ServiceAPIError)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< serviceName;
-
-							const auto& text = tr ("Image upload to %1 failed: service error.")
-									.arg ("<em>" + serviceName + "</em>");
-							makeErrorNotification (text);
-						}
-					}
-				};
+			bool ok = false;
+			ctx.ServiceName_ = QInputDialog::getItem (nullptr,
+					PLUGIN_VISIBLE_NAME,
+					QObject::tr ("Please select another service to try:"),
+					ctx.Services_.keys (),
+					0,
+					false,
+					&ok);
+			if (ok)
+				RunUpload (ctx);
+		}
 	}
 
-	void Uploader::TryAnotherService (const QString& failedService)
+	void Upload (const QByteArray& data, QSize dim, const Entity& e, Format fmt, QStandardItemModel *reprModel)
 	{
-		const ImageInfo info { .Size_ = static_cast<quint64> (Data_.size ()), .Dim_ = {} };
+		auto callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
+		auto dataFilter = e.Additional_ ["DataFilter"].toString ();
 
-		QStringList otherServices;
+		QHash<QString, std::shared_ptr<HostingService>> allServices;
 		for (const auto& service : GetAllServices ())
-		{
-			if (!service->Accepts (info))
-				continue;
-
-			const auto& name = service->GetName ();
-			if (name != failedService)
-				otherServices << name;
-		}
-
-		bool ok = false;
-		const auto& serviceName = QInputDialog::getItem (nullptr,
-				PLUGIN_VISIBLE_NAME,
-				tr ("Please select another service to try:"),
-				otherServices,
-				0,
-				false,
-				&ok);
-		if (!ok || serviceName.isEmpty ())
-		{
-			deleteLater ();
-			return;
-		}
-
-		Upload (serviceName);
+			if (service->Accepts ({ .Size_ = static_cast<quint64> (data.size ()), .Dim_ = dim }))
+				allServices [service->GetName ()] = service;
+		RunUpload ({ data, fmt, reprModel, callback, allServices, dataFilter });
 	}
 }

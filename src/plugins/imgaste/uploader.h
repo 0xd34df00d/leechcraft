@@ -14,27 +14,14 @@
 
 class QStandardItemModel;
 
+namespace LC
+{
+	struct Entity;
+}
+
 namespace LC::Imgaste
 {
 	enum class Format;
 
-	class Uploader : public QObject
-	{
-		Q_DECLARE_TR_FUNCTIONS (LC::Imgaste::Uploader)
-
-		const QByteArray Data_;
-		const Format Format_;
-		const DataFilterCallback_f Callback_;
-
-		QStandardItemModel * const ReprModel_;
-	public:
-		explicit Uploader (QByteArray data,
-				Format format,
-				DataFilterCallback_f callback,
-				QStandardItemModel *reprModel);
-
-		void Upload (const QString& service);
-	private:
-		void TryAnotherService (const QString&);
-	};
+	void Upload (const QByteArray&, QSize, const Entity&, Format, QStandardItemModel*);
 }

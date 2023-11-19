@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		imgaste.cpp
 		hostingservice.cpp
-		singleserviceuploader.cpp
 		requestbuilder.cpp
 		uploader.cpp
 	QT_COMPONENTS Network Widgets

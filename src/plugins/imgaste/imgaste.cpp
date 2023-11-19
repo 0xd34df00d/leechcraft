@@ -176,8 +176,8 @@ namespace LC::Imgaste
 		}
 
 		const auto& formatStr = QString::fromLatin1 (Util::DetectFileMime (name)).section ('/', 1, 1);
-
-		UploadImpl (file.readAll (), e, GuessFormat (formatStr));
+		const auto& data = file.readAll ();
+		Upload (data, QImageReader { name }.size (), e, GuessFormat (formatStr), ReprModel_);
 	}
 
 	void Plugin::UploadImage (const QImage& img, const Entity& e)
@@ -199,15 +199,7 @@ namespace LC::Imgaste
 			return;
 		}
 
-		UploadImpl (buf.data (), e, GuessFormat (formatStr));
-	}
-
-	void Plugin::UploadImpl (const QByteArray& data, const Entity& e, Format format)
-	{
-		const auto& callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
-
-		const auto uploader = new Uploader { data, format, callback, ReprModel_ };
-		uploader->Upload (e.Additional_ ["DataFilter"].toString ());
+		Upload (buf.data (), img.size (), e, GuessFormat (formatStr), ReprModel_);
 	}
 }
 

@@ -110,7 +110,6 @@ namespace LC::Imgaste
 
 			Result_t GetLink (const QString& contents, const Headers_t&) const override
 			{
-				qDebug () << Q_FUNC_INFO << contents;
 				return Result_t::Right (contents);
 			}
 		};
@@ -160,9 +159,9 @@ namespace LC::Imgaste
 		};
 	}
 
-	const QList<std::shared_ptr<HostingService>>& GetAllServices ()
+	const QVector<std::shared_ptr<HostingService>>& GetAllServices ()
 	{
-		static const QList<std::shared_ptr<HostingService>> list
+		static const QVector<std::shared_ptr<HostingService>> list
 		{
 			std::make_shared<ImagebinService> (),
 			std::make_shared<CatboxService> (),

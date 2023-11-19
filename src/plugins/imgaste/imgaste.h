@@ -52,7 +52,5 @@ namespace LC::Imgaste
 	private:
 		void UploadFile (const QString&, const Entity&);
 		void UploadImage (const QImage&, const Entity&);
-
-		void UploadImpl (const QByteArray&, const Entity&, Format);
 	};
 }
