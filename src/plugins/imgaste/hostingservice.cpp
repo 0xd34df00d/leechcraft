@@ -109,7 +109,6 @@ namespace LC::Imgaste
 		{
 			{ .Name_ = "imagebin.ca"_qs, .UploadUrl_ { "https://imagebin.ca/upload.php"_qs }, .Accepts_ = CheckSize<15_mib>, .MakeMultiPart_ = Imagebin::MakeMultiPart, .GetLink_ = Imagebin::GetLink },
 			{ .Name_ = "catbox.moe"_qs, .UploadUrl_ { "https://catbox.moe/user/api.php"_qs }, .Accepts_ = CheckSize<75_mib>, .MakeMultiPart_ = Catbox::MakeMultiPart, .GetLink_ = Catbox::GetLink },
-			{ .Name_ = "pomf.cat"_qs, .UploadUrl_ { "https://pomf.cat/upload.php"_qs }, .Accepts_ = CheckSize<200_mib>, .MakeMultiPart_ = PomfLike::MakeMultiPart, .GetLink_ = PomfLike::GetLink ("https://a.pomf.cat/") }
 		};
 
 		return list;
