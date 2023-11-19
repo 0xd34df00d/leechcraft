@@ -14,21 +14,21 @@
 
 namespace LC::Imgaste
 {
-	namespace
+	QByteArray GetMimeType (Format fmt)
 	{
-		QByteArray GetFormatString (Format fmt)
+		switch (fmt)
 		{
-			switch (fmt)
-			{
-			case Format::JPG:
-				return "image/jpeg"_qba;
-			case Format::PNG:
-				return "image/png"_qba;
-			}
-
-			return {};
+		case Format::JPG:
+			return "image/jpeg"_qba;
+		case Format::PNG:
+			return "image/png"_qba;
 		}
 
+		return {};
+	}
+
+	namespace
+	{
 		QByteArray GetExtension (Format fmt)
 		{
 			switch (fmt)
@@ -55,7 +55,7 @@ namespace LC::Imgaste
 		}
 
 		QHttpPart imagePart;
-		imagePart.setHeader (QNetworkRequest::ContentTypeHeader, GetFormatString (file.Format_));
+		imagePart.setHeader (QNetworkRequest::ContentTypeHeader, GetMimeType (file.Format_));
 		imagePart.setHeader (QNetworkRequest::ContentDispositionHeader,
 				R"(form-data; name=")" + file.FieldName_ +
 				R"("; filename="screenshot.)"_qba + GetExtension (file.Format_) + '\"');

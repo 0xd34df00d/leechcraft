@@ -17,6 +17,8 @@ namespace LC::Imgaste
 {
 	enum class Format;
 
+	QByteArray GetMimeType (Format fmt);
+
 	struct File
 	{
 		Format Format_;
