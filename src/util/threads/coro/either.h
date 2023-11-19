@@ -38,10 +38,31 @@ namespace LC::Util
 
 	namespace detail
 	{
-		template<typename L, typename R>
+		template<typename ErrorHandler>
+		struct EitherAwaiterErrorHandler
+		{
+			ErrorHandler Handler_;
+
+			template<typename L>
+			void HandleError (L&& left)
+			{
+				Handler_ (std::forward<L> (left));
+			}
+		};
+
+		template<>
+		struct EitherAwaiterErrorHandler<void>
+		{
+			void HandleError (auto&&)
+			{
+			}
+		};
+
+		template<typename L, typename R, typename ErrorHandler = void>
 		struct EitherAwaiter
 		{
 			Either<L, R> Either_;
+			EitherAwaiterErrorHandler<ErrorHandler> Handler_ {};
 
 			bool await_ready () const noexcept
 			{
@@ -51,6 +72,8 @@ namespace LC::Util
 			template<typename Promise>
 			void await_suspend (std::coroutine_handle<Promise> handle)
 			{
+				Handler_.HandleError (Either_.GetLeft ());
+
 				[] (auto handle, auto either) -> Task<void>
 				{
 					auto& promise = handle->promise ();
@@ -69,6 +92,13 @@ namespace LC::Util
 				return Either_.GetRight ();
 			}
 		};
+	}
+
+	template<typename L, typename R, typename F>
+		requires std::invocable<F, const L&>
+	Util::detail::EitherAwaiter<L, R, F> WithHandler (const Util::Either<L, R>& either, F&& errorHandler)
+	{
+		return { either, { std::forward<F> (errorHandler) } };
 	}
 }
 
