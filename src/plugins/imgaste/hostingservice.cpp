@@ -128,14 +128,19 @@ namespace LC::Imgaste
 
 	Q_DECL_EXPORT QNetworkReply* Post (const HostingService& service, const QByteArray& data, Format fmt, QNetworkAccessManager& am)
 	{
-		const auto& origin = service.UploadUrl_.toEncoded (QUrl::RemovePath | QUrl::RemoveQuery | QUrl::RemoveFragment);
-		auto mp = service.MakeMultiPart_ (data, fmt);
+		return Util::Visit (service.Upload_,
+				[&] (const ReplyUploader& uploader) { return uploader (data, fmt, am); },
+				[&] (const MultipartUploader& uploader)
+				{
+					const auto& origin = service.UploadUrl_.toEncoded (QUrl::RemovePath | QUrl::RemoveQuery | QUrl::RemoveFragment);
+					auto mp = uploader (data, fmt);
 
-		QNetworkRequest request { service.UploadUrl_ };
-		request.setRawHeader ("Origin", origin);
-		request.setRawHeader ("Referer", origin + '/');
-		auto reply = am.post (request, &*mp);
-		Util::ReleaseInto (std::move (mp), *reply);
-		return reply;
+					QNetworkRequest request { service.UploadUrl_ };
+					request.setRawHeader ("Origin", origin);
+					request.setRawHeader ("Referer", origin + '/');
+					auto reply = am.post (request, &*mp);
+					Util::ReleaseInto (std::move (mp), *reply);
+					return reply;
+				});
 	}
 }

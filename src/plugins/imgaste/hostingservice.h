@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <variant>
 #include <QSize>
 #include <QString>
 #include <QUrl>
@@ -37,6 +38,10 @@ namespace LC::Imgaste
 		PNG,
 	};
 
+	using MultipartUploader = std::function<std::unique_ptr<QHttpMultiPart> (const QByteArray&, Format)>;
+	using ReplyUploader = std::function<QNetworkReply* (const QByteArray&, Format, QNetworkAccessManager&)>;
+	using Uploader = std::variant<MultipartUploader, ReplyUploader>;
+
 	struct HostingService
 	{
 		struct Error {};
@@ -45,7 +50,7 @@ namespace LC::Imgaste
 		QString Name_;
 		QUrl UploadUrl_;
 		std::function<bool (ImageInfo)> Accepts_;
-		std::function<std::unique_ptr<QHttpMultiPart> (const QByteArray&, Format)> MakeMultiPart_;
+		Uploader Upload_;
 		std::function<Result_t (const QString&)> GetLink_;
 	};
 
