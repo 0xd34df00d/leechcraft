@@ -30,7 +30,7 @@ namespace LC::Imgaste
 
 		namespace Imagebin
 		{
-			auto MakeMultiPart (const QByteArray& data, Format fmt)
+			auto Upload (const QByteArray& data, Format fmt)
 			{
 				return BuildRequest ({
 							{ "t"_qba, "file"_qba },
@@ -64,7 +64,7 @@ namespace LC::Imgaste
 
 		namespace Catbox
 		{
-			auto MakeMultiPart (const QByteArray& data, Format fmt)
+			auto Upload (const QByteArray& data, Format fmt)
 			{
 				return BuildRequest ({
 							{ "reqtype"_qba, "fileupload"_qba },
@@ -81,7 +81,7 @@ namespace LC::Imgaste
 
 		namespace PomfLike
 		{
-			auto MakeMultiPart (const QByteArray& data, Format fmt)
+			auto Upload (const QByteArray& data, Format fmt)
 			{
 				return BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
 			}
@@ -107,8 +107,20 @@ namespace LC::Imgaste
 	{
 		static const QVector<HostingService> list
 		{
-			{ .Name_ = "imagebin.ca"_qs, .UploadUrl_ { "https://imagebin.ca/upload.php"_qs }, .Accepts_ = CheckSize<15_mib>, .MakeMultiPart_ = Imagebin::MakeMultiPart, .GetLink_ = Imagebin::GetLink },
-			{ .Name_ = "catbox.moe"_qs, .UploadUrl_ { "https://catbox.moe/user/api.php"_qs }, .Accepts_ = CheckSize<75_mib>, .MakeMultiPart_ = Catbox::MakeMultiPart, .GetLink_ = Catbox::GetLink },
+			{
+				.Name_ = "imagebin.ca"_qs,
+				.UploadUrl_ { "https://imagebin.ca/upload.php"_qs },
+				.Accepts_ = CheckSize<15_mib>,
+				.Upload_ = Imagebin::Upload,
+				.GetLink_ = Imagebin::GetLink
+			},
+			{
+				.Name_ = "catbox.moe"_qs,
+				.UploadUrl_ { "https://catbox.moe/user/api.php"_qs },
+				.Accepts_ = CheckSize<75_mib>,
+				.Upload_ = Catbox::Upload,
+				.GetLink_ = Catbox::GetLink
+			},
 		};
 
 		return list;
