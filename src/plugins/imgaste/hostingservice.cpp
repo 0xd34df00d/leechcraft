@@ -79,6 +79,32 @@ namespace LC::Imgaste
 			}
 		}
 
+		namespace Tinystash
+		{
+			auto Upload (const QByteArray& data, Format fmt, QNetworkAccessManager& am)
+			{
+				QNetworkRequest req { QUrl { "https://tinystash.undef.im/upload/file"_qs } };
+				req.setRawHeader ("Origin", "https://tinystash.undef.im");
+				req.setRawHeader ("Referer", "https://tinystash.undef.im/");
+
+				req.setRawHeader ("app-id", "arbitrary string");
+				req.setHeader (QNetworkRequest::ContentTypeHeader, GetMimeType (fmt));
+				req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+				return am.post (req, data);
+			}
+
+			auto GetLink (QString body)
+			{
+				body = std::move (body).trimmed ();
+				if (QUrl { body }.isValid ())
+					return HostingService::Result_t::Right (body);
+
+				qWarning () << "unable to parse link from body"
+						<< body;
+				return HostingService::Result_t::Left ({});
+			}
+		}
+
 		namespace PomfLike
 		{
 			auto Upload (const QByteArray& data, Format fmt)
@@ -120,6 +146,13 @@ namespace LC::Imgaste
 				.Accepts_ = CheckSize<75_mib>,
 				.Upload_ = Catbox::Upload,
 				.GetLink_ = Catbox::GetLink
+			},
+			{
+				.Name_ = "tinystash.undef.im",
+				.UploadUrl_ { "https://tinystash.undef.im/upload/file"_qs },
+				.Accepts_ = CheckSize<20_mib>,
+				.Upload_ = Tinystash::Upload,
+				.GetLink_ = Tinystash::GetLink
 			},
 		};
 
