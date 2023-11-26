@@ -143,9 +143,11 @@ namespace LC::Imgaste
 				co_return NotifyError (ctx, text);
 			}
 
-			const auto& url = co_await Util::WithHandler (service.GetLink_ (result.GetReplyData ()),
+			const auto& replyBody = result.GetReplyData ();
+			const auto& url = co_await Util::WithHandler (service.GetLink_ (replyBody),
 					[&] (auto&&)
 					{
+						qWarning () << ctx.ServiceName_ << "unable to get link from" << replyBody;
 						const auto& text = QObject::tr ("Image upload to %1 failed: service error.")
 								.arg ("<em>" + ctx.ServiceName_ + "</em>");
 						NotifyError (ctx, text);

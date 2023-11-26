@@ -50,14 +50,8 @@ namespace LC::Imgaste
 				const auto& lines = contents.splitRef ('\n');
 				const auto pos = std::find_if (lines.begin (), lines.end (),
 						[] (const QStringRef& line) { return line.startsWith (urlMarker); });
-
 				if (pos == lines.end ())
-				{
-					qWarning () << "no URL:"
-							<< contents;
 					return HostingService::Result_t::Left ({});
-				}
-
 				return HostingService::Result_t::Right (pos->mid (urlMarker.size ()).toString ());
 			}
 		}
@@ -99,8 +93,6 @@ namespace LC::Imgaste
 				if (QUrl { body }.isValid ())
 					return HostingService::Result_t::Right (body);
 
-				qWarning () << "unable to parse link from body"
-						<< body;
 				return HostingService::Result_t::Left ({});
 			}
 		}
