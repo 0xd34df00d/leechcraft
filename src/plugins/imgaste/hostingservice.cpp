@@ -13,7 +13,7 @@
 #include <QStringList>
 #include <QHttpMultiPart>
 #include <util/sll/either.h>
-#include <util/sll/parsejson.h>
+#include <util/sll/json.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/udls.h>
 #include "requestbuilder.h"
@@ -104,19 +104,23 @@ namespace LC::Imgaste
 				return BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
 			}
 
-			auto GetLink (const QString& prefix)
+			[[maybe_unused]] auto GetLink (const QString& body)
 			{
-				return [=] (const QString& body)
+				try
 				{
-					const auto& json = Util::ParseJson (body.toUtf8 (), "LC::Imgaste::PomfLikeService::GetLink()");
-					if (json.isNull ())
-						return HostingService::Result_t::Left ({});
+					using Util::As;
+					using enum QJsonValue::Type;
 
-					const auto filename = json.toMap () ["files"]
-							.toList ().value (0)
-							.toMap () ["url"].toString ();
-					return HostingService::Result_t::Right (prefix + filename);
-				};
+					const auto& json = As<Object> (Util::ToJson (body.toUtf8 ()).GetRight ());
+					const auto& files = As<Array> (json [u"files"_qsv]);
+					const auto& file = As<Object> (files [0]);
+					const auto& filename = As<String> (file [u"url"_qsv]);
+					return HostingService::Result_t::Right (filename);
+				}
+				catch (const std::exception&)
+				{
+					return HostingService::Result_t::Left ({});
+				}
 			}
 		}
 	}
