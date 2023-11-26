@@ -132,13 +132,6 @@ namespace LC::Imgaste
 		static const QVector<HostingService> list
 		{
 			{
-				.Name_ = "imagebin.ca"_qs,
-				.UploadUrl_ { "https://imagebin.ca/upload.php"_qs },
-				.Accepts_ = CheckSize<15_mib>,
-				.Upload_ = Imagebin::Upload,
-				.GetLink_ = Imagebin::GetLink
-			},
-			{
 				.Name_ = "catbox.moe"_qs,
 				.UploadUrl_ { "https://catbox.moe/user/api.php"_qs },
 				.Accepts_ = CheckSize<75_mib>,
@@ -159,6 +152,13 @@ namespace LC::Imgaste
 				.Accepts_ = CheckSize<20_mib>,
 				.Upload_ = Tinystash::Upload,
 				.GetLink_ = GetLinkTrimmed
+			},
+			{
+				.Name_ = "imagebin.ca"_qs,
+				.UploadUrl_ { "https://imagebin.ca/upload.php"_qs },
+				.Accepts_ = CheckSize<15_mib>,
+				.Upload_ = Imagebin::Upload,
+				.GetLink_ = Imagebin::GetLink
 			},
 		};
 
