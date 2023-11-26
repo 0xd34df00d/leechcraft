@@ -73,6 +73,15 @@ namespace LC::Imgaste
 			}
 		}
 
+		auto GetLinkTrimmed (QString body)
+		{
+			body = std::move (body).trimmed ();
+			if (QUrl { body }.isValid ())
+				return HostingService::Result_t::Right (body);
+
+			return HostingService::Result_t::Left ({});
+		}
+
 		namespace Tinystash
 		{
 			auto Upload (const QByteArray& data, Format fmt, QNetworkAccessManager& am)
@@ -85,15 +94,6 @@ namespace LC::Imgaste
 				req.setHeader (QNetworkRequest::ContentTypeHeader, GetMimeType (fmt));
 				req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 				return am.post (req, data);
-			}
-
-			auto GetLink (QString body)
-			{
-				body = std::move (body).trimmed ();
-				if (QUrl { body }.isValid ())
-					return HostingService::Result_t::Right (body);
-
-				return HostingService::Result_t::Left ({});
 			}
 		}
 
@@ -123,6 +123,8 @@ namespace LC::Imgaste
 
 	Q_DECL_EXPORT const QVector<HostingService>& GetAllServices ()
 	{
+		using namespace std::chrono_literals;
+
 		static const QVector<HostingService> list
 		{
 			{
@@ -140,11 +142,19 @@ namespace LC::Imgaste
 				.GetLink_ = Catbox::GetLink
 			},
 			{
+				.Name_ = "uguu.se",
+				.UploadUrl_ { "https://uguu.se/upload?output=text"_qs },
+				.Expiration_ = { 3h },
+				.Accepts_ = CheckSize<64_mib>,
+				.Upload_ = PomfLike::Upload,
+				.GetLink_ = GetLinkTrimmed
+			},
+			{
 				.Name_ = "tinystash.undef.im",
 				.UploadUrl_ { "https://tinystash.undef.im/upload/file"_qs },
 				.Accepts_ = CheckSize<20_mib>,
 				.Upload_ = Tinystash::Upload,
-				.GetLink_ = Tinystash::GetLink
+				.GetLink_ = GetLinkTrimmed
 			},
 		};
 
