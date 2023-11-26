@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <variant>
 #include <QSize>
@@ -49,6 +50,9 @@ namespace LC::Imgaste
 
 		QString Name_;
 		QUrl UploadUrl_;
+
+		QVector<std::chrono::hours> Expiration_ {};
+
 		std::function<bool (ImageInfo)> Accepts_;
 		Uploader Upload_;
 		std::function<Result_t (const QString&)> GetLink_;
