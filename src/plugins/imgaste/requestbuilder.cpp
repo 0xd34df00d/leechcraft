@@ -43,6 +43,11 @@ namespace LC::Imgaste
 		}
 	}
 
+	std::unique_ptr<QHttpMultiPart> BuildRequest (const File& file)
+	{
+		return BuildRequest ({}, file);
+	}
+
 	std::unique_ptr<QHttpMultiPart> BuildRequest (const Params_t& params, const File& file)
 	{
 		auto multipart = std::make_unique<QHttpMultiPart> (QHttpMultiPart::FormDataType);

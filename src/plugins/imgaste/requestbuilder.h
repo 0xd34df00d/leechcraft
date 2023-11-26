@@ -34,5 +34,6 @@ namespace LC::Imgaste
 		QByteArray Data_;
 	};
 
+	std::unique_ptr<QHttpMultiPart> BuildRequest (const File& file);
 	std::unique_ptr<QHttpMultiPart> BuildRequest (const Params_t& params, const File& file);
 }

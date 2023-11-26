@@ -101,7 +101,7 @@ namespace LC::Imgaste
 		{
 			auto Upload (const QByteArray& data, Format fmt)
 			{
-				return BuildRequest ({}, { .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
+				return BuildRequest ({ .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
 			}
 
 			[[maybe_unused]] auto GetLink (const QString& body)
