@@ -77,6 +77,14 @@ namespace LC::Imgaste
 			return HostingService::Result_t::Left ({});
 		}
 
+		auto SimpleUpload (const QByteArray& fieldName)
+		{
+			return [=] (const QByteArray& data, Format fmt)
+			{
+				return BuildRequest ({ fmt, fieldName, data });
+			};
+		}
+
 		namespace Tinystash
 		{
 			auto Upload (const QByteArray& data, Format fmt, QNetworkAccessManager& am)
@@ -94,11 +102,6 @@ namespace LC::Imgaste
 
 		namespace PomfLike
 		{
-			auto Upload (const QByteArray& data, Format fmt)
-			{
-				return BuildRequest ({ .Format_ = fmt, .FieldName_ = "files[]"_qba, .Data_ = data });
-			}
-
 			[[maybe_unused]] auto GetLink (const QString& body)
 			{
 				try
@@ -138,7 +141,7 @@ namespace LC::Imgaste
 				.UploadUrl_ { "https://uguu.se/upload?output=text"_qs },
 				.Expiration_ = { 3h },
 				.Accepts_ = CheckSize<64_mib>,
-				.Upload_ = PomfLike::Upload,
+				.Upload_ = SimpleUpload ("files[]"),
 				.GetLink_ = GetLinkTrimmed
 			},
 			{
