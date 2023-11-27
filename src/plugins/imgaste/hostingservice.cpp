@@ -66,11 +66,6 @@ namespace LC::Imgaste
 						},
 						{ .Format_ = fmt, .FieldName_ = "fileToUpload"_qba, .Data_ = data });
 			}
-
-			HostingService::Result_t GetLink (const QString& contents)
-			{
-				return HostingService::Result_t::Right (contents);
-			}
 		}
 
 		auto GetLinkTrimmed (QString body)
@@ -136,7 +131,7 @@ namespace LC::Imgaste
 				.UploadUrl_ { "https://catbox.moe/user/api.php"_qs },
 				.Accepts_ = CheckSize<75_mib>,
 				.Upload_ = Catbox::Upload,
-				.GetLink_ = Catbox::GetLink
+				.GetLink_ = GetLinkTrimmed
 			},
 			{
 				.Name_ = "uguu.se",
