@@ -130,6 +130,13 @@ namespace LC::Imgaste
 		static const QVector<HostingService> list
 		{
 			{
+				.Name_ = "0x0.st"_qs,
+				.UploadUrl_ { "https://0x0.st/"_qs },
+				.Accepts_ = CheckSize<512_mib>,
+				.Upload_ = SimpleUpload ("file"),
+				.GetLink_ = GetLinkTrimmed
+			},
+			{
 				.Name_ = "catbox.moe"_qs,
 				.UploadUrl_ { "https://catbox.moe/user/api.php"_qs },
 				.Accepts_ = CheckSize<75_mib>,
