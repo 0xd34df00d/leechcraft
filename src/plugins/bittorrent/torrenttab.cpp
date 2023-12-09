@@ -52,7 +52,6 @@ namespace LC::BitTorrent
 				pbo.minimum = 0;
 				pbo.maximum = precision;
 				pbo.progress = std::round (progress * precision);
-				pbo.state = option.state;
 				pbo.text = Util::ElideProgressBarText (index.data ().toString (), option);
 				pbo.textVisible = true;
 				QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
