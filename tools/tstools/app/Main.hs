@@ -6,9 +6,9 @@ module Main where
 import qualified Control.Foldl as F
 import qualified Data.List as L
 import qualified Data.Text as T
+import qualified Data.Text.IO as T
 import Control.Arrow
 import Control.Monad
-import Data.Either
 import Data.FileEmbed
 import Data.Functor
 import Data.Maybe
@@ -26,21 +26,20 @@ mkGenerated allFiles
   | otherwise = do
       liftIO $ runManaged $ do
         xsltFile <- mktempfile "." "xxxxxx.xslt"
-        liftIO $ writeTextFile xsltFile xsltStyle
+        liftIO $ T.writeFile xsltFile xsltStyle
         output "dummy.cpp" $ cat $ procFile xsltFile <$> settingsFiles
       pure ["dummy.cpp"]
   where
-    toText' = fromRight undefined . toText
     settingsFiles = mapMaybe settingsExtractor allFiles
-    settingsExtractor str = first (const str) <$> L.find ((`T.isSuffixOf` toTextHR str) . fst) [ ("settings.xml", basename)
+    settingsExtractor str = first (const str) <$> L.find ((`T.isSuffixOf` T.pack str) . fst) [ ("settings.xml", basename)
                                                                                                , (".qml.settings", filename)
                                                                                                ]
-    procFile xsltFile (settingFile, contextFun) = sed ("__FILENAME__" $> toText' (contextFun settingFile))
+    procFile xsltFile (settingFile, contextFun) = sed ("__FILENAME__" $> T.pack (contextFun settingFile))
                                                 $ grep (has "QT_TRANSL")
-                                                $ inproc "xsltproc" [toText' xsltFile, toText' settingFile] empty
+                                                $ inproc "xsltproc" [T.pack xsltFile, T.pack settingFile] empty
 
 guessTsBase :: FilePath -> FilePath
-guessTsBase fullPath = go "leechcraft" $ tail $ dropWhile (/= "src") $ T.takeWhile (/= '/') . toTextHR <$> splitDirectories fullPath
+guessTsBase fullPath = go "leechcraft" $ tail $ dropWhile (/= "src") $ T.takeWhile (/= '/') . T.pack <$> splitDirectories fullPath
   where
     go acc [] = acc
     go acc ("plugins" : plugin : rest) = go [i|#{acc}_#{plugin}|] rest
@@ -76,12 +75,9 @@ main = do
                   [] -> pure $ filter (`extensionIs` "ts") files
                   _ -> do
                         tsBase <- guessTsBase <$> pwd
-                        pure $ (\lang -> [i|#{toTextHR tsBase}_#{lang}.ts|]) <$> languages
+                        pure $ (\lang -> [i|#{T.pack tsBase}_#{lang}.ts|]) <$> languages
   forM_ tsFiles $ \tsFile -> do
-    let lupdateArgs = noobsoleteArg <> fmap toTextHR (sources <> generated) <> ["-ts", toTextHR tsFile]
+    let lupdateArgs = noobsoleteArg <> fmap T.pack (sources <> generated) <> ["-ts", T.pack tsFile]
     view $ inproc "lupdate" lupdateArgs empty
 
   mapM_ rm generated
-
-toTextHR :: FilePath -> Text
-toTextHR = either id id . toText
