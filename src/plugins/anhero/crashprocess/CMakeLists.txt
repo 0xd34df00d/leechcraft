@@ -4,12 +4,9 @@ if (POLICY CMP0071)
 endif ()
 project (anhero_crashprocess)
 
-find_package (Boost REQUIRED COMPONENTS program_options)
-
 include_directories (
 	${LEECHCRAFT_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
 	)
 set (SRCS
 	main.cpp
@@ -33,7 +30,6 @@ add_executable (lc_anhero_crashprocess${EXECSUFFIX} WIN32
 	)
 target_link_libraries (lc_anhero_crashprocess${EXECSUFFIX}
 	${LEECHCRAFT_LIBRARIES}
-	${Boost_PROGRAM_OPTIONS_LIBRARY}
 	)
 install (TARGETS lc_anhero_crashprocess${EXECSUFFIX} DESTINATION ${LC_BINDIR})
 FindQtLibs (lc_anhero_crashprocess${EXECSUFFIX} Widgets)

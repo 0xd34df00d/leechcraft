@@ -6,14 +6,11 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include <stdexcept>
-#include <thread>
-#include <cstdlib>
-#include <iostream>
-#include <boost/program_options.hpp>
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QTranslator>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "appinfo.h"
 #include "crashdialog.h"
 
@@ -21,79 +18,71 @@ namespace CrashProcess = LC::AnHero::CrashProcess;
 
 namespace
 {
-	namespace bpo = boost::program_options;
-
-	void ShowHelp (const bpo::options_description& desc)
+	CrashProcess::AppInfo ParseOptions ()
 	{
-		std::cout << "LeechCraft (https://leechcraft.org)" << std::endl;
-		std::cout << std::endl;
-		std::cout << "This is the crash handler process and it is not "
-				<< "intended to be run manually." << std::endl;
-		std::cout << std::endl;
-		std::cout << desc << std::endl;
-		std::exit (3);
-	}
+		using namespace LC;
 
-	CrashProcess::AppInfo ParseOptions (int argc, char **argv)
-	{
-		bpo::options_description desc ("Known options");
-		desc.add_options ()
-				("signal", bpo::value<int> (), "the signal that triggered the crash handler")
-				("pid", bpo::value<uint64_t> ()->required (), "the PID of the crashed process")
-				("path", bpo::value<std::string> ()->required (), "the application path of the crashed process")
-				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash")
-				("suggest_restart", bpo::value<int> (), "suggest restarting LeechCraft (0 or 1)")
-				("cmdline", bpo::value<std::string> (), "the command line LeechCraft was started with")
-				("tsfile", bpo::value<std::string> (), "the translation file to use for translating UI strings")
-				("help", "show help message");
+		QCommandLineParser parser;
+		parser.setApplicationDescription ("LeechCraft crash handler process (which is not intended to be run manually)."_qs);
+		parser.addHelpOption ();
 
-		bpo::command_line_parser parser (argc, argv);
-		bpo::variables_map vm;
-		bpo::store (parser
-				.options (desc)
-				.allow_unregistered ()
-				.run (), vm);
-
-		if (vm.count ("help"))
-			ShowHelp (desc);
-
-		try
+		const auto mkOpt = [&] (const QCommandLineOption& option)
 		{
-			bpo::notify (vm);
-		}
-		catch (const bpo::required_option& e)
-		{
-			std::cout << "required option missing" << std::endl;
-			std::cout << e.what () << std::endl;
+			parser.addOption (option);
+			return option;
+		};
 
-			ShowHelp (desc);
-		}
-		catch (const bpo::error& e)
-		{
-			std::cout << "invalid options" << std::endl;
-			std::cout << e.what () << std::endl;
+		const auto strOpt = [&] (const QString& name, const QString& descr) { return mkOpt ({ name, descr, name }); };
+		const auto optSignal = strOpt ("signal"_qs, "The signal that triggered the crash handler."_qs);
+		const auto optPid = strOpt ("pid"_qs, "The PID of the crashed process."_qs);
+		const auto optPath = strOpt ("path"_qs, "The application path of the crashed process."_qs);
+		const auto optVersion = strOpt ("version"_qs, "The LeechCraft version at the moment of the crash."_qs);
+		const auto optCmdline = strOpt ("cmdline"_qs, "The command line LeechCraft was started with."_qs);
+		const auto optTsfile = strOpt ("tsfile"_qs, "The translation file to use for the UI strings."_qs);
+		const auto optRestart = mkOpt ({ "suggest_restart"_qs, "Suggest restarting LeechCraft."_qs, "0|1"_qs });
+		parser.process (*QCoreApplication::instance ());
 
-			ShowHelp (desc);
-		}
+		const auto require = [&] (const QCommandLineOption& option)
+		{
+			const auto& values = parser.values (option);
+			if (values.size () != 1)
+			{
+				qWarning () << "expected exactly one value for" << option.names ().value (0);
+				parser.showHelp ();
+			}
+			return values.value (0);
+		};
+		const auto getNum = [&] (auto getter, const QString& value)
+		{
+			bool ok = false;
+			const auto res = (value.*getter) (&ok, 10);
+			if (ok)
+				return res;
+			if (value.isEmpty ())
+				return decltype (res) {};
+
+			qWarning () << value << "unexpected";
+			parser.showHelp ();
+		};
 
 		return
 		{
-			.Signal_ = vm ["signal"].as<int> (),
-			.PID_ = vm ["pid"].as<uint64_t> (),
-			.Path_ = QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
-			.Version_ = vm ["version"].as<std::string> ().c_str (),
-			.ExecLine_ = vm ["cmdline"].as<std::string> ().c_str (),
-			.TsFile_ = vm ["tsfile"].as<std::string> ().c_str (),
-			.SuggestRestart_ = vm ["suggest_restart"].as<int> () != 0,
+			.Signal_ = getNum (&QString::toInt, parser.value (optSignal)),
+			.PID_ = getNum (&QString::toULongLong, require (optPid)),
+			.Path_ = require (optPath),
+			.Version_ = require (optVersion),
+			.ExecLine_ = parser.value (optCmdline),
+			.TsFile_ = parser.value (optTsfile),
+			.SuggestRestart_ = getNum (&QString::toInt, parser.value (optRestart)) != 0,
 		};
 	}
 }
 
 int main (int argc, char **argv)
 {
-	QApplication app (argc, argv);
+	const QApplication app { argc, argv };
 
-	const auto& info = ParseOptions (argc, argv);
+	const auto& info = ParseOptions ();
 
 	QTranslator translator;
 	if (!translator.load (info.TsFile_, {}, {}, ""))
