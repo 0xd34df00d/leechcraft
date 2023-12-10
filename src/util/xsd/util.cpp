@@ -7,9 +7,11 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QCoreApplication>
 #include <QDialogButtonBox>
 #include <QDialog>
 #include <QVBoxLayout>
+#include <QSettings>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LC::Util
@@ -50,5 +52,24 @@ namespace LC::Util
 		dia->show ();
 
 		return xsd;
+	}
+
+	UTIL_XSD_API std::shared_ptr<QSettings> MakeGroupSettings (const QString& suffix, const QString& groupName)
+	{
+		std::shared_ptr<QSettings> settings
+		{
+			new QSettings
+			{
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + '_' + suffix
+			},
+			[] (QSettings *settings)
+			{
+				settings->endGroup ();
+				delete settings;
+			}
+		};
+		settings->beginGroup (groupName);
+		return settings;
 	}
 }

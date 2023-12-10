@@ -9,7 +9,9 @@
 #pragma once
 
 #include "xsdconfig.h"
+#include <memory>
 
+class QSettings;
 class QString;
 
 namespace LC::Util
@@ -31,4 +33,6 @@ namespace LC::Util
 	 * @return The XML settings dialog.
 	 */
 	UTIL_XSD_API XmlSettingsDialog* OpenXSD (const QString& title, const QString& filename, Util::BaseSettingsManager *bsm);
+
+	UTIL_XSD_API std::shared_ptr<QSettings> MakeGroupSettings (const QString& suffix, const QString& groupName);
 }
