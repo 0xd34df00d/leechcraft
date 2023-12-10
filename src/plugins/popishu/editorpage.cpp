@@ -166,22 +166,19 @@ namespace Popishu
 		Ui_.Inject_->setEnabled (true);
 		Ui_.Release_->setEnabled (false);
 
-		XmlSettingsManager::Instance ()->
-				RegisterObject ("MonoFont", this, "handleMonoFontChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("MonoFont", this, "handleMonoFontChanged");
 
 		QList<QByteArray> visualWrapPrefs;
 		visualWrapPrefs << "EndLineFlag"
 				<< "StartLineFlag"
 				<< "WrappedIndent";
-		XmlSettingsManager::Instance ()->
-				RegisterObject (visualWrapPrefs, this, "handleVisualWrapFlags");
+		XmlSettingsManager::Instance ().RegisterObject (visualWrapPrefs, this, "handleVisualWrapFlags");
 		handleVisualWrapFlags ();
 
 		QList<QByteArray> otherPrefs;
 		otherPrefs << "TabWidget"
 				<< "IdentationWidth";
-		XmlSettingsManager::Instance ()->
-				RegisterObject (otherPrefs, this, "handleOtherPrefs");
+		XmlSettingsManager::Instance ().RegisterObject (otherPrefs, this, "handleOtherPrefs");
 		handleOtherPrefs ();
 
 		ShowConsole (false);
@@ -514,7 +511,7 @@ namespace Popishu
 		if (!lexer)
 			return;
 
-		auto font = XmlSettingsManager::Instance ()->property ("MonoFont").value<QFont> ();
+		auto font = XmlSettingsManager::Instance ().property ("MonoFont").value<QFont> ();
 		lexer->setFont (font);
 	}
 
@@ -533,18 +530,18 @@ namespace Popishu
 
 	void EditorPage::handleVisualWrapFlags ()
 	{
-		auto eflag = FlagFromName (XmlSettingsManager::Instance ()->property ("EndLineFlag").toString ());
-		auto sflag = FlagFromName (XmlSettingsManager::Instance ()->property ("StartLineFlag").toString ());
-		int indent = XmlSettingsManager::Instance ()->property ("WrappedIndent").toInt ();
+		auto& xsm = XmlSettingsManager::Instance ();
+		auto eflag = FlagFromName (xsm.property ("EndLineFlag").toString ());
+		auto sflag = FlagFromName (xsm.property ("StartLineFlag").toString ());
+		int indent = xsm.property ("WrappedIndent").toInt ();
 		Ui_.TextEditor_->setWrapVisualFlags (eflag, sflag, indent);
 	}
 
 	void EditorPage::handleOtherPrefs ()
 	{
-		Ui_.TextEditor_->setTabWidth (XmlSettingsManager::Instance ()->
-				property ("TabWidth").toInt ());
-		Ui_.TextEditor_->setTabWidth (XmlSettingsManager::Instance ()->
-				property ("IndentationWidth").toInt ());
+		auto& xsm = XmlSettingsManager::Instance ();
+		Ui_.TextEditor_->setTabWidth (xsm.property ("TabWidth").toInt ());
+		Ui_.TextEditor_->setTabWidth (xsm.property ("IndentationWidth").toInt ());
 	}
 
 	void EditorPage::checkInterpreters (QString language)
@@ -688,7 +685,7 @@ namespace Popishu
 			result = new QsciLexerXML (Ui_.TextEditor_);
 
 		if (result)
-			result->setFont (XmlSettingsManager::Instance ()->property ("MonoFont").value<QFont> ());
+			result->setFont (XmlSettingsManager::Instance ().property ("MonoFont").value<QFont> ());
 
 		return result;
 	}
@@ -724,8 +721,8 @@ namespace Popishu
 
 	void EditorPage::RestoreRecentFiles ()
 	{
-		auto recent = XmlSettingsManager::Instance ()->property ("RecentlyOpenedFiles").toStringList ();
-		int num = XmlSettingsManager::Instance ()->property ("NumRecentlyOpened").toInt ();
+		auto recent = XmlSettingsManager::Instance ().property ("RecentlyOpenedFiles").toStringList ();
+		int num = XmlSettingsManager::Instance ().property ("NumRecentlyOpened").toInt ();
 		while (recent.size () > num)
 			recent.removeAt (num);
 
@@ -802,7 +799,7 @@ namespace Popishu
 				}
 
 			RecentFilesMenu_->insertAction (currentActions.at (0), action);
-			int num = XmlSettingsManager::Instance ()->property ("NumRecentlyOpened").toInt ();
+			int num = XmlSettingsManager::Instance ().property ("NumRecentlyOpened").toInt ();
 			while (currentActions.size () + 1 > num)
 				delete currentActions.takeLast ();
 		}
@@ -811,7 +808,7 @@ namespace Popishu
 		{
 			currentActions.prepend (action);
 			const auto& recent = Util::Map (currentActions, [] (QAction *act) { return act->data ().toString (); });
-			XmlSettingsManager::Instance ()->setProperty ("RecentlyOpenedFiles", recent);
+			XmlSettingsManager::Instance ().setProperty ("RecentlyOpenedFiles", recent);
 		}
 	}
 
