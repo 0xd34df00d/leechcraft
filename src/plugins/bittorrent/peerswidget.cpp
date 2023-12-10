@@ -128,6 +128,7 @@ namespace LC::BitTorrent
 		QStringList sources;
 		const auto maxSourcesCount = 5;
 		sources.reserve (maxSourcesCount);
+		// TOOD move out
 		if (p.PI_->source & libtorrent::peer_info::tracker)
 			sources << QStringLiteral ("tracker");
 		if (p.PI_->source & libtorrent::peer_info::dht)

@@ -235,7 +235,7 @@ namespace LC::BitTorrent
 		std::vector<std::int64_t> prbytes;
 
 		libtorrent::torrent_handle::file_progress_flags_t flags {};
-		if (!XmlSettingsManager::Instance ()->property ("AccurateFileProgress").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("AccurateFileProgress").toBool ())
 			flags |= libtorrent::torrent_handle::piece_granularity;
 		handle.file_progress (prbytes, flags);
 

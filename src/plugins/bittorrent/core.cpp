@@ -225,7 +225,7 @@ namespace BitTorrent
 		{
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, this };
 
-			auto sstateVariant = XmlSettingsManager::Instance ()->property ("SessionState");
+			auto sstateVariant = XmlSettingsManager::Instance ().property ("SessionState");
 			if (sstateVariant.isValid () &&
 					!sstateVariant.toByteArray ().isEmpty ())
 			{
@@ -766,7 +766,7 @@ namespace BitTorrent
 	{
 		libtorrent::storage_mode_t GetCurrentStorageMode ()
 		{
-			auto sm = XmlSettingsManager::Instance ()->property ("AllocationMode").toString ();
+			auto sm = XmlSettingsManager::Instance ().property ("AllocationMode").toString ();
 			if (sm == "full")
 				return libtorrent::storage_mode_allocate;
 			else
@@ -1524,7 +1524,7 @@ namespace BitTorrent
 
 		QByteArray sessionStateBA;
 		libtorrent::bencode (std::back_inserter (sessionStateBA), sessionState);
-		XmlSettingsManager::Instance ()->setProperty ("SessionState", sessionStateBA);
+		XmlSettingsManager::Instance ().setProperty ("SessionState", sessionStateBA);
 
 		Session_->wait_for_alert (libtorrent::time_duration (5));
 

@@ -93,6 +93,7 @@ namespace LC::BitTorrent
 		if (!handle.is_valid ())
 			return;
 
+		// TODO move out
 		std::vector<libtorrent::partial_piece_info> queue;
 		handle.get_download_queue (queue);
 

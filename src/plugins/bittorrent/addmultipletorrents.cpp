@@ -19,16 +19,16 @@ namespace LC::BitTorrent
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		auto xsm = XmlSettingsManager::Instance ();
-		Ui_.OpenDirectory_->setText (xsm->property ("LastTorrentDirectory").toString ());
-		Ui_.SaveDirectory_->setText (xsm->property ("LastSaveDirectory").toString ());
+		auto& xsm = XmlSettingsManager::Instance ();
+		Ui_.OpenDirectory_->setText (xsm.property ("LastTorrentDirectory").toString ());
+		Ui_.SaveDirectory_->setText (xsm.property ("LastSaveDirectory").toString ());
 
 		new Util::TagsCompleter (Ui_.TagsEdit_);
 		Ui_.TagsEdit_->AddSelector ();
 
-		const auto chooser = [this, xsm] (const QString& header, QLineEdit *edit, const char *propName)
+		const auto chooser = [this, &xsm] (const QString& header, QLineEdit *edit, const char *propName)
 		{
-			return [=, this]
+			return [=, this, &xsm]
 			{
 				const auto& dir = QFileDialog::getExistingDirectory (this,
 						header,
@@ -36,7 +36,7 @@ namespace LC::BitTorrent
 				if (dir.isEmpty ())
 					return;
 
-				xsm->setProperty (propName, dir);
+				xsm.setProperty (propName, dir);
 				edit->setText (dir);
 			};
 		};

@@ -149,7 +149,7 @@ namespace LC::BitTorrent
 	{
 		delete TorrentTab_;
 		Core::Instance ()->Release ();
-		XmlSettingsManager::Instance ()->Release ();
+		XmlSettingsManager::Instance ().Release ();
 		XmlSettingsDialog_.reset ();
 	}
 
@@ -190,11 +190,11 @@ namespace LC::BitTorrent
 						!file.open (QIODevice::ReadOnly))
 					return {};
 
-				const auto xsm = XmlSettingsManager::Instance ();
-				if (file.size () > xsm->property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
+				auto& xsm = XmlSettingsManager::Instance ();
+				if (file.size () > xsm.property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
 				{
 					if (str.endsWith (".torrent"_ql, Qt::CaseInsensitive) &&
-							xsm->property ("NotifyAboutTooBig").toBool ())
+							xsm.property ("NotifyAboutTooBig").toBool ())
 					{
 						auto msg = TorrentPlugin::tr ("Rejecting file %1 because it's bigger than current auto limit.")
 								.arg (str);
@@ -248,7 +248,7 @@ namespace LC::BitTorrent
 		const auto tagsMgr = GetProxyHolder ()->GetTagsManager ();
 
 		const auto& suggestedTags = e.Additional_ [QStringLiteral (" Tags")].toStringList ();
-		const auto& autoTags = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
+		const auto& autoTags = XmlSettingsManager::Instance ().property ("AutomaticTags").toString ();
 		auto tagsIds = tagsMgr->SplitToIDs (autoTags) + tagsMgr->GetIDs (suggestedTags);
 
 		if (e.Entity_.canConvert<QUrl> ())
@@ -429,7 +429,7 @@ namespace LC::BitTorrent
 	void TorrentPlugin::SetupCore ()
 	{
 		XmlSettingsDialog_ = std::make_shared<XmlSettingsDialog> ();
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), QStringLiteral ("torrentsettings.xml"));
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), QStringLiteral ("torrentsettings.xml"));
 
 		Core::Instance ()->DoDelayedInit ();
 
@@ -459,7 +459,7 @@ namespace LC::BitTorrent
 				&FastSpeedControlWidget::speedsChanged,
 				this,
 				selectorsUpdater);
-		XmlSettingsManager::Instance ()->RegisterObject ("EnableFastSpeedControl",
+		XmlSettingsManager::Instance ().RegisterObject ("EnableFastSpeedControl",
 				this, [=] (auto) { selectorsUpdater (); });
 	}
 

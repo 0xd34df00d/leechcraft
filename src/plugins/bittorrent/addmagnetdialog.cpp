@@ -53,7 +53,7 @@ namespace LC::BitTorrent
 		if (magnet)
 			Ui_.Magnet_->setText (*magnet);
 
-		const auto& dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
+		const auto& dir = XmlSettingsManager::Instance ().property ("LastSaveDirectory").toString ();
 		Ui_.SavePath_->setText (dir);
 
 		const auto checkComplete = [this]
@@ -81,7 +81,7 @@ namespace LC::BitTorrent
 					if (dir.isEmpty ())
 						return;
 
-					XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
+					XmlSettingsManager::Instance ().setProperty ("LastSaveDirectory", dir);
 					Ui_.SavePath_->setText (dir);
 				});
 	}

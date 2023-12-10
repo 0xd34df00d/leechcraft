@@ -15,13 +15,13 @@ namespace LC::BitTorrent
 	QList<QWizardPage*> CreateStartupWizard (SessionSettingsManager *ssm)
 	{
 		QList<QWizardPage*> result;
-		int version = XmlSettingsManager::Instance ()->Property ("StartupVersion", 0).toInt ();
+		int version = XmlSettingsManager::Instance ().Property ("StartupVersion", 0).toInt ();
 		if (version < 1)
 		{
 			result << new StartupFirstPage (ssm);
 			++version;
 		}
-		XmlSettingsManager::Instance ()->setProperty ("StartupVersion", version);
+		XmlSettingsManager::Instance ().setProperty ("StartupVersion", version);
 		return result;
 	}
 }

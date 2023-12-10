@@ -29,13 +29,13 @@ namespace LC::BitTorrent
 	, ScrapeTimer_ { new QTimer { this } }
 	, SettingsSaveTimer_ { new QTimer { this } }
 	{
-		const auto xsm = XmlSettingsManager::Instance ();
+		auto& xsm = XmlSettingsManager::Instance ();
 
-		if (xsm->property ("EnablePEX").toBool ())
+		if (xsm.property ("EnablePEX").toBool ())
 			Session_->add_extension (&libtorrent::create_ut_pex_plugin);
-		if (xsm->property ("EnableUTMetadata").toBool ())
+		if (xsm.property ("EnableUTMetadata").toBool ())
 			Session_->add_extension (&libtorrent::create_ut_metadata_plugin);
-		if (xsm->property ("EnableSmartBan").toBool ())
+		if (xsm.property ("EnableSmartBan").toBool ())
 			Session_->add_extension (&libtorrent::create_smart_ban_plugin);
 
 		ScrapeTimer_->callOnTimeout (this, &SessionSettingsManager::scrapeRequested);
@@ -46,7 +46,7 @@ namespace LC::BitTorrent
 
 	void SessionSettingsManager::SetPreset (Preset sp)
 	{
-		const auto xsm = XmlSettingsManager::Instance ();
+		auto& xsm = XmlSettingsManager::Instance ();
 
 		switch (sp)
 		{
@@ -58,38 +58,38 @@ namespace LC::BitTorrent
 			// optimize_hashing_for_speed = false
 			// coalesce_reads = false
 			// coalesce_writes = false
-			xsm->setProperty ("WholePiecesThreshold", 2);
-			xsm->setProperty ("UseParoleMode", false);
-			xsm->setProperty ("PrioritizePartialPieces", true);
-			xsm->setProperty ("FilePoolSize", 4);
-			xsm->setProperty ("AllowMultipleConnectionsPerIP", false);
-			xsm->setProperty ("MaxFailcount", 2);
-			xsm->setProperty ("InactivityTimeout", 120);
-			xsm->setProperty ("MaxOutstandingDiskBytesPerConnection", 1);
-			xsm->setProperty ("SendBufferWatermark", 9);
-			xsm->setProperty ("CacheSize", 0);
-			xsm->setProperty ("UseReadCache", false);
-			xsm->setProperty ("CloseRedundantConnections", true);
-			xsm->setProperty ("MaxPeerListSize", 500);
-			xsm->setProperty ("PreferUDPTrackers", true);
-			xsm->setProperty ("MaxRejects", 10);
+			xsm.setProperty ("WholePiecesThreshold", 2);
+			xsm.setProperty ("UseParoleMode", false);
+			xsm.setProperty ("PrioritizePartialPieces", true);
+			xsm.setProperty ("FilePoolSize", 4);
+			xsm.setProperty ("AllowMultipleConnectionsPerIP", false);
+			xsm.setProperty ("MaxFailcount", 2);
+			xsm.setProperty ("InactivityTimeout", 120);
+			xsm.setProperty ("MaxOutstandingDiskBytesPerConnection", 1);
+			xsm.setProperty ("SendBufferWatermark", 9);
+			xsm.setProperty ("CacheSize", 0);
+			xsm.setProperty ("UseReadCache", false);
+			xsm.setProperty ("CloseRedundantConnections", true);
+			xsm.setProperty ("MaxPeerListSize", 500);
+			xsm.setProperty ("PreferUDPTrackers", true);
+			xsm.setProperty ("MaxRejects", 10);
 			break;
 		case Preset::HighPerfSeed:
 			// TODO read_cache_line_size = 512
 			// write_cache_line_size = 512
 			// optimize_hashing_for_speed = true
-			xsm->setProperty ("FilePoolSize", 500);
-			xsm->setProperty ("AllowMultipleConnectionsPerIP", true);
-			xsm->setProperty ("CacheSize", 512);
-			xsm->setProperty ("UseReadCache", true);
-			xsm->setProperty ("CacheExpiry", 60 * 60);
-			xsm->setProperty ("CloseRedundantConnections", true);
-			xsm->setProperty ("MaxRejects", 10);
-			xsm->setProperty ("RequestTimeout", 10);
-			xsm->setProperty ("PeerTimeout", 20);
-			xsm->setProperty ("InactivityTimeout", 20);
-			xsm->setProperty ("AutoUploadSlots", false);
-			xsm->setProperty ("MaxFailcount", 1);
+			xsm.setProperty ("FilePoolSize", 500);
+			xsm.setProperty ("AllowMultipleConnectionsPerIP", true);
+			xsm.setProperty ("CacheSize", 512);
+			xsm.setProperty ("UseReadCache", true);
+			xsm.setProperty ("CacheExpiry", 60 * 60);
+			xsm.setProperty ("CloseRedundantConnections", true);
+			xsm.setProperty ("MaxRejects", 10);
+			xsm.setProperty ("RequestTimeout", 10);
+			xsm.setProperty ("PeerTimeout", 20);
+			xsm.setProperty ("InactivityTimeout", 20);
+			xsm.setProperty ("AutoUploadSlots", false);
+			xsm.setProperty ("MaxFailcount", 1);
 			break;
 		case Preset::Default:
 			break;
@@ -145,45 +145,45 @@ namespace LC::BitTorrent
 	void SessionSettingsManager::SetOverallDownloadRate (int val)
 	{
 		WithSettings (Session_, val, SetOverallDownloadRateImpl);
-		XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
+		XmlSettingsManager::Instance ().setProperty ("DownloadRateLimit", val);
 	}
 
 	void SessionSettingsManager::SetOverallUploadRate (int val)
 	{
 		WithSettings (Session_, val, SetOverallUploadRateImpl);
-		XmlSettingsManager::Instance ()->setProperty ("UploadRateLimit", val);
+		XmlSettingsManager::Instance ().setProperty ("UploadRateLimit", val);
 	}
 
 	void SessionSettingsManager::SetMaxDownloadingTorrents (int val)
 	{
 		WithSettings (Session_, val, SetMaxDownloadingTorrentsImpl);
-		XmlSettingsManager::Instance ()->setProperty ("MaxDownloadingTorrents", val);
+		XmlSettingsManager::Instance ().setProperty ("MaxDownloadingTorrents", val);
 	}
 
 	void SessionSettingsManager::SetMaxUploadingTorrents (int val)
 	{
 		WithSettings (Session_, val, SetMaxUploadingTorrentsImpl);
-		XmlSettingsManager::Instance ()->setProperty ("MaxUploadingTorrents", val);
+		XmlSettingsManager::Instance ().setProperty ("MaxUploadingTorrents", val);
 	}
 
 	int SessionSettingsManager::GetOverallDownloadRate () const
 	{
-		return XmlSettingsManager::Instance ()->property ("DownloadRateLimit").toInt ();
+		return XmlSettingsManager::Instance ().property ("DownloadRateLimit").toInt ();
 	}
 
 	int SessionSettingsManager::GetOverallUploadRate () const
 	{
-		return XmlSettingsManager::Instance ()->property ("UploadRateLimit").toInt ();
+		return XmlSettingsManager::Instance ().property ("UploadRateLimit").toInt ();
 	}
 
 	int SessionSettingsManager::GetMaxDownloadingTorrents () const
 	{
-		return XmlSettingsManager::Instance ()->Property ("MaxDownloadingTorrents", -1).toInt ();
+		return XmlSettingsManager::Instance ().Property ("MaxDownloadingTorrents", -1).toInt ();
 	}
 
 	int SessionSettingsManager::GetMaxUploadingTorrents () const
 	{
-		return XmlSettingsManager::Instance ()->Property ("MaxUploadingTorrents", -1).toInt ();
+		return XmlSettingsManager::Instance ().Property ("MaxUploadingTorrents", -1).toInt ();
 	}
 
 	namespace
@@ -213,34 +213,34 @@ namespace LC::BitTorrent
 
 			QObject::connect (box,
 					&QMessageBox::accepted,
-					[] { XmlSettingsManager::Instance ()->setProperty ("NotificationStorage", true); });
+					[] { XmlSettingsManager::Instance ().setProperty ("NotificationStorage", true); });
 		}
 
 	}
 
 	void SessionSettingsManager::ManipulateSettings ()
 	{
-		const auto xsm = XmlSettingsManager::Instance ();
+		auto& xsm = XmlSettingsManager::Instance ();
 
 		WithSettings (Session_,
-				[xsm] (auto& settings)
+				[&xsm] (auto& settings)
 				{
-					SetOverallDownloadRateImpl (settings, xsm->Property ("DownloadRateLimit", 5000).toInt ());
-					SetOverallUploadRateImpl (settings, xsm->Property ("UploadRateLimit", 5000).toInt ());
-					SetMaxDownloadingTorrentsImpl (settings, xsm->Property ("MaxDownloadingTorrents", -1).toInt ());
-					SetMaxUploadingTorrentsImpl (settings, xsm->Property ("MaxUploadingTorrents", -1).toInt ());
+					SetOverallDownloadRateImpl (settings, xsm.Property ("DownloadRateLimit", 5000).toInt ());
+					SetOverallUploadRateImpl (settings, xsm.Property ("UploadRateLimit", 5000).toInt ());
+					SetMaxDownloadingTorrentsImpl (settings, xsm.Property ("MaxDownloadingTorrents", -1).toInt ());
+					SetMaxUploadingTorrentsImpl (settings, xsm.Property ("MaxUploadingTorrents", -1).toInt ());
 				});
 
-		XmlSettingsManager::Instance ()->RegisterObject ({ "TCPPortRange", "SSLPort", "EnableSSLPort" },
+		xsm.RegisterObject ({ "TCPPortRange", "SSLPort", "EnableSSLPort" },
 				this, [this] { TcpPortRangeChanged (); });
-		XmlSettingsManager::Instance ()->RegisterObject ("AutosaveInterval",
+		xsm.RegisterObject ("AutosaveInterval",
 				this,
 				[this] (const QVariant& val)
 				{
 					SettingsSaveTimer_->stop ();
 					SettingsSaveTimer_->start (val.toInt () * 1000);
 				});
-		XmlSettingsManager::Instance ()->RegisterObject ("MaxUploads",
+		xsm.RegisterObject ("MaxUploads",
 				this,
 				[this] (const QVariant& val)
 				{
@@ -250,7 +250,7 @@ namespace LC::BitTorrent
 								settings.set_int (libtorrent::settings_pack::unchoke_slots_limit, val.toInt ());
 							});
 				});
-		XmlSettingsManager::Instance ()->RegisterObject ("MaxConnections",
+		xsm.RegisterObject ("MaxConnections",
 				this,
 				[this] (const QVariant& val)
 				{
@@ -272,7 +272,7 @@ namespace LC::BitTorrent
 			"PeerProxyPort",
 			"PeerProxyAuth"
 		};
-		XmlSettingsManager::Instance ()->RegisterObject (proxySettings,
+		xsm.RegisterObject (proxySettings,
 				this, [this] { SetProxySettings (); });
 
 		const QList<QByteArray> generalSettings
@@ -331,7 +331,7 @@ namespace LC::BitTorrent
 			"PreferUDPTrackers",
 			"StrictSuperSeeding"
 		};
-		XmlSettingsManager::Instance ()->RegisterObject (generalSettings,
+		xsm.RegisterObject (generalSettings,
 				this, [this] { SetGeneralSettings (); });
 
 		const QList<QByteArray> dhtSettings
@@ -345,30 +345,29 @@ namespace LC::BitTorrent
 			"EnableUPNP",
 			"EnableNATPMP"
 		};
-		XmlSettingsManager::Instance ()->RegisterObject (dhtSettings,
+		xsm.RegisterObject (dhtSettings,
 				this, [this] { SetDHTSettings (); });
 
-		XmlSettingsManager::Instance ()->RegisterObject ({ "ScrapeInterval", "ScrapeEnabled" },
+		xsm.RegisterObject ({ "ScrapeInterval", "ScrapeEnabled" },
 				this,
-				[this]
+				[this, &xsm]
 				{
-					if (XmlSettingsManager::Instance ()->property ("ScrapeEnabled").toBool ())
+					if (xsm.property ("ScrapeEnabled").toBool ())
 					{
 						ScrapeTimer_->stop ();
-						ScrapeTimer_->start (XmlSettingsManager::Instance ()->
-								property ("ScrapeInterval").toInt () * 1000);
+						ScrapeTimer_->start (xsm.property ("ScrapeInterval").toInt () * 1000);
 					}
 					else
 						ScrapeTimer_->stop ();
 				});
 
-		XmlSettingsManager::Instance ()->RegisterObject ("NotificationStorage",
+		xsm.RegisterObject ("NotificationStorage",
 				this, &CheckStorageSettings, Util::BaseSettingsManager::EventFlag::Select);
 	}
 
 	void SessionSettingsManager::TcpPortRangeChanged ()
 	{
-		const auto& ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
+		const auto& ports = XmlSettingsManager::Instance ().property ("TCPPortRange").toList ();
 
 		auto settings = Session_->get_settings ();
 
@@ -376,9 +375,9 @@ namespace LC::BitTorrent
 		for (int port = ports.at (0).toInt (), endPort = ports.at (1).toInt (); port <= endPort; ++port)
 			portsList << "0.0.0.0:" + QString::number (port);
 
-		if (XmlSettingsManager::Instance ()->property ("EnableSSLPort").toBool ())
+		if (XmlSettingsManager::Instance ().property ("EnableSSLPort").toBool ())
 		{
-			const auto sslPort = XmlSettingsManager::Instance ()->property ("SSLPort").toInt ();
+			const auto sslPort = XmlSettingsManager::Instance ().property ("SSLPort").toInt ();
 			portsList << "0.0.0.0:" + QString::number (sslPort) + "s";
 		}
 
@@ -389,19 +388,19 @@ namespace LC::BitTorrent
 
 	void SessionSettingsManager::SetProxySettings ()
 	{
-		const auto xsm = XmlSettingsManager::Instance ();
+		auto& xsm = XmlSettingsManager::Instance ();
 
-		const auto& hostname = xsm->property ("PeerProxyAddress").toString ().toStdString ();
-		const auto port = xsm->property ("PeerProxyPort").toInt ();
-		const auto& auth = xsm->property ("PeerProxyAuth").toString ().split ('@');
+		const auto& hostname = xsm.property ("PeerProxyAddress").toString ().toStdString ();
+		const auto port = xsm.property ("PeerProxyPort").toInt ();
+		const auto& auth = xsm.property ("PeerProxyAuth").toString ().split ('@');
 		const auto& username = auth.value (0).toStdString ();
 		const auto& password = auth.value (1).toStdString ();
-		const auto& pt = xsm->property ("PeerProxyType").toString ();
+		const auto& pt = xsm.property ("PeerProxyType").toString ();
 
 		auto settings = Session_->get_settings ();
 		const auto settingsGuard = Util::MakeScopeGuard ([&settings, this] { Session_->apply_settings (settings); });
 
-		if (!xsm->property ("PeerProxyEnabled").toBool ())
+		if (!xsm.property ("PeerProxyEnabled").toBool ())
 		{
 			settings.set_int (libtorrent::settings_pack::proxy_type,
 					libtorrent::settings_pack::proxy_type_t::none);
@@ -433,19 +432,19 @@ namespace LC::BitTorrent
 	}
 
 #define LT_SET_BOOL_OPT(name, val) settings.set_bool (libtorrent::settings_pack::bool_types::name, \
-			xsm->property (val).toBool ())
+			xsm.property (val).toBool ())
 #define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
-			xsm->property (val).toInt ())
+			xsm.property (val).toInt ())
 #define LT_SET_PERCENT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
-			std::round (xsm->property (val).toDouble () * 100))
+			std::round (xsm.property (val).toDouble () * 100))
 #define LT_SET_INT_OPT2(name, val, mod) settings.set_int (libtorrent::settings_pack::int_types::name, \
-			xsm->property (val).toInt () mod)
+			xsm.property (val).toInt () mod)
 #define LT_SET_BARE_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, val)
 #define LT_SET_BARE_STR_OPT(name, val) settings.set_str (libtorrent::settings_pack::string_types::name, val)
 
 	void SessionSettingsManager::SetGeneralSettings ()
 	{
-		const auto xsm = XmlSettingsManager::Instance ();
+		auto& xsm = XmlSettingsManager::Instance ();
 
 		auto settings = Session_->get_settings ();
 
@@ -508,7 +507,7 @@ namespace LC::BitTorrent
 		LT_SET_BOOL_OPT (announce_to_all_tiers, "AnnounceToAllTiers");
 		LT_SET_BOOL_OPT (prefer_udp_trackers, "PreferUDPTrackers");
 
-		const auto& ports = xsm->property ("OutgoingPorts").toList ();
+		const auto& ports = xsm.property ("OutgoingPorts").toList ();
 		if (ports.size () == 2)
 		{
 			LT_SET_BARE_INT_OPT (outgoing_port, ports.at (0).toInt ());
@@ -516,7 +515,7 @@ namespace LC::BitTorrent
 		}
 
 		LT_SET_BARE_INT_OPT (active_limit, 16384);
-		LT_SET_BARE_STR_OPT (announce_ip, xsm->property ("AnnounceIP").toString ().toStdString ());
+		LT_SET_BARE_STR_OPT (announce_ip, xsm.property ("AnnounceIP").toString ().toStdString ());
 		LT_SET_BARE_STR_OPT (user_agent, "LeechCraft BitTorrent/" + GetProxyHolder ()->GetVersion ().toStdString ());
 
 		Session_->apply_settings (settings);
@@ -524,13 +523,13 @@ namespace LC::BitTorrent
 
 	void SessionSettingsManager::SetDHTSettings ()
 	{
-		const auto xsm = XmlSettingsManager::Instance ();
+		auto& xsm = XmlSettingsManager::Instance ();
 
 		auto settings = Session_->get_settings ();
 
-		auto setBool = [&settings, xsm] (int id, const char *name)
+		auto setBool = [&] (int id, const char *name)
 		{
-			const auto val = xsm->property (name).toBool ();
+			const auto val = xsm.property (name).toBool ();
 			settings.set_bool (id, val);
 			return val;
 		};
@@ -547,9 +546,9 @@ namespace LC::BitTorrent
 
 		libtorrent::dht_settings dhtSettings;
 
-		dhtSettings.max_peers_reply = xsm->property ("MaxPeersReply").toInt ();
-		dhtSettings.search_branching = xsm->property ("SearchBranching").toInt ();
-		dhtSettings.max_fail_count = xsm->property ("MaxDHTFailcount").toInt ();
+		dhtSettings.max_peers_reply = xsm.property ("MaxPeersReply").toInt ();
+		dhtSettings.search_branching = xsm.property ("SearchBranching").toInt ();
+		dhtSettings.max_fail_count = xsm.property ("MaxDHTFailcount").toInt ();
 
 		Session_->set_dht_settings (dhtSettings);
 	}

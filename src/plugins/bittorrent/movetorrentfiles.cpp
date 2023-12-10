@@ -27,9 +27,9 @@ namespace LC::BitTorrent
 			Ui_.OldLocation_->setPlaceholderText (tr ("Multiple directories"));
 		}
 
-		const auto xsm = XmlSettingsManager::Instance ();
-		const auto& saveDirectory = xsm->property ("LastSaveDirectory").toString ();
-		const auto& moveDirectory = xsm->Property ("LastMoveDirectory", saveDirectory).toString ();
+		auto& xsm = XmlSettingsManager::Instance ();
+		const auto& saveDirectory = xsm.property ("LastSaveDirectory").toString ();
+		const auto& moveDirectory = xsm.Property ("LastMoveDirectory", saveDirectory).toString ();
 
 		Ui_.NewLocation_->setText (moveDirectory);
 

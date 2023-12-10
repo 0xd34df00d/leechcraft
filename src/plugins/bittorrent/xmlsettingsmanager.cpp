@@ -17,10 +17,10 @@ namespace LC::BitTorrent
 		BaseSettingsManager::Init ();
 	}
 
-	XmlSettingsManager* XmlSettingsManager::Instance ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager manager;
-		return &manager;
+		return manager;
 	}
 
 	QSettings* XmlSettingsManager::BeginSettings () const

@@ -145,8 +145,8 @@ namespace LC::BitTorrent
 			registerField (RootPath, RootPath_);
 
 			Date_->setDateTime (QDateTime::currentDateTime ());
-			Output_->setText (XmlSettingsManager::Instance ()->property ("LastMakeTorrentDirectory").toString ());
-			RootPath_->setText (XmlSettingsManager::Instance ()->property ("LastAddDirectory").toString ());
+			Output_->setText (XmlSettingsManager::Instance ().property ("LastMakeTorrentDirectory").toString ());
+			RootPath_->setText (XmlSettingsManager::Instance ().property ("LastAddDirectory").toString ());
 			connect (RootPath_,
 					&QLineEdit::textChanged,
 					this,
@@ -190,7 +190,7 @@ namespace LC::BitTorrent
 
 		void FirstStep::BrowseOutput ()
 		{
-			auto last = XmlSettingsManager::Instance ()->property ("LastMakeTorrentDirectory").toString ();
+			auto last = XmlSettingsManager::Instance ().property ("LastMakeTorrentDirectory").toString ();
 			if (!last.endsWith ('/'))
 				last += '/';
 			if (!QFileInfo::exists (last))
@@ -203,7 +203,7 @@ namespace LC::BitTorrent
 				return;
 
 			Output_->setText (directory);
-			XmlSettingsManager::Instance ()->setProperty ("LastMakeTorrentDirectory",
+			XmlSettingsManager::Instance ().setProperty ("LastMakeTorrentDirectory",
 					QFileInfo { directory }.absolutePath ());
 		}
 
@@ -216,7 +216,7 @@ namespace LC::BitTorrent
 				return;
 
 			RootPath_->setText (path);
-			XmlSettingsManager::Instance ()->setProperty ("LastAddDirectory",
+			XmlSettingsManager::Instance ().setProperty ("LastAddDirectory",
 					QFileInfo { path }.absolutePath ());
 
 			emit completeChanged ();
@@ -231,7 +231,7 @@ namespace LC::BitTorrent
 				return;
 
 			RootPath_->setText (path);
-			XmlSettingsManager::Instance ()->setProperty ("LastAddDirectory", path);
+			XmlSettingsManager::Instance ().setProperty ("LastAddDirectory", path);
 
 			emit completeChanged ();
 		}

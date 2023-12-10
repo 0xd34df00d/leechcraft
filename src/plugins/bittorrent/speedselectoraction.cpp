@@ -55,8 +55,7 @@ namespace LC::BitTorrent
 
 	void SpeedSelectorAction::HandleSpeedsChanged ()
 	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("EnableFastSpeedControl").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("EnableFastSpeedControl").toBool ())
 		{
 			setVisible (false);
 			return;

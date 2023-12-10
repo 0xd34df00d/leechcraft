@@ -36,10 +36,10 @@ namespace LC::BitTorrent
 						Ui_.LowerPort_->value (),
 						Ui_.UpperPort_->value ()
 					};
-					const auto xsm = XmlSettingsManager::Instance ();
-					xsm->setProperty ("TCPPortRange", ports);
-					xsm->setProperty ("MaxUploads", Ui_.UploadConnections_->value ());
-					xsm->setProperty ("MaxConnections", Ui_.TotalConnections_->value ());
+					auto& xsm = XmlSettingsManager::Instance ();
+					xsm.setProperty ("TCPPortRange", ports);
+					xsm.setProperty ("MaxUploads", Ui_.UploadConnections_->value ());
+					xsm.setProperty ("MaxConnections", Ui_.TotalConnections_->value ());
 
 					const auto idx = Ui_.SettingsSet_->currentIndex ();
 					const auto preset = static_cast<SessionSettingsManager::Preset> (idx);

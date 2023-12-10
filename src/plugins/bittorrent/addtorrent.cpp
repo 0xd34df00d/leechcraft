@@ -60,7 +60,7 @@ namespace LC::BitTorrent
 				this,
 				&AddTorrent::UpdateSpaceDisplay);
 
-		Ui_.Destination_->setText (XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ());
+		Ui_.Destination_->setText (XmlSettingsManager::Instance ().property ("LastSaveDirectory").toString ());
 
 		auto markMenu = new QMenu { Ui_.MarkMenuButton_ };
 		markMenu->addActions ({
@@ -130,7 +130,7 @@ namespace LC::BitTorrent
 		if (filename.isEmpty ())
 			return;
 
-		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
+		XmlSettingsManager::Instance ().setProperty ("LastTorrentDirectory",
 				QFileInfo (filename).absolutePath ());
 		Ui_.TorrentFile_->setText (filename);
 
@@ -227,12 +227,12 @@ namespace LC::BitTorrent
 	{
 		const auto& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select torrent file"),
-				XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString (),
+				XmlSettingsManager::Instance ().property ("LastTorrentDirectory").toString (),
 				tr ("Torrents (*.torrent);;All files (*.*)"));
 		if (filename.isEmpty ())
 			return;
 
-		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
+		XmlSettingsManager::Instance ().setProperty ("LastTorrentDirectory",
 				QFileInfo { filename }.absolutePath ());
 		Ui_.TorrentFile_->setText (filename);
 
@@ -247,7 +247,7 @@ namespace LC::BitTorrent
 		if (dir.isEmpty ())
 			return;
 
-		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
+		XmlSettingsManager::Instance ().setProperty ("LastSaveDirectory", dir);
 		Ui_.Destination_->setText (dir);
 	}
 
