@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_LACKMAN_XMLSETTINGSMANAGER_H
-#define PLUGINS_LACKMAN_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LC
@@ -20,12 +20,10 @@ namespace LackMan
 
 		XmlSettingsManager ();
 	public:
-		static XmlSettingsManager* Instance ();
+		static XmlSettingsManager& Instance ();
 	protected:
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
-
-#endif

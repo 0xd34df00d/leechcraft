@@ -95,7 +95,7 @@ namespace LackMan
 		QTimer::singleShot (20000,
 				this,
 				SLOT (timeredUpdateAllRequested ()));
-		XmlSettingsManager::Instance ()->RegisterObject ("UpdatesCheckInterval",
+		XmlSettingsManager::Instance ().RegisterObject ("UpdatesCheckInterval",
 				this, "handleUpdatesIntervalChanged");
 	}
 
@@ -816,8 +816,7 @@ namespace LackMan
 
 	void Core::handleUpdatesIntervalChanged ()
 	{
-		const int hours = XmlSettingsManager::Instance ()->
-				property ("UpdatesCheckInterval").toInt ();
+		const int hours = XmlSettingsManager::Instance ().property ("UpdatesCheckInterval").toInt ();
 		if (hours && !UpdatesEnabled_)
 			timeredUpdateAllRequested ();
 		UpdatesEnabled_ = hours;
@@ -827,8 +826,7 @@ namespace LackMan
 	{
 		updateAllRequested ();
 
-		const int hours = XmlSettingsManager::Instance ()->
-				property ("UpdatesCheckInterval").toInt ();
+		const int hours = XmlSettingsManager::Instance ().property ("UpdatesCheckInterval").toInt ();
 		if (hours)
 			QTimer::singleShot (hours * 3600 * 1000,
 					this,
