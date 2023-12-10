@@ -30,7 +30,7 @@ namespace LC::Kinotify
 		Util::InstallTranslator (QStringLiteral ("kinotify"));
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				QStringLiteral ("kinotifysettings.xml"));
 
 		connect (SettingsDialog_.get (),
@@ -136,7 +136,7 @@ namespace LC::Kinotify
 
 	void Plugin::Handle (Entity e)
 	{
-		if (XmlSettingsManager::Instance ()->property ("RespectFullscreen").toBool () &&
+		if (XmlSettingsManager::Instance ().property ("RespectFullscreen").toBool () &&
 				IsCurrentWindowFullScreen ())
 			return;
 
@@ -160,7 +160,7 @@ namespace LC::Kinotify
 		if (sameDataPos != ActiveNotifications_.end () && sameIdPos == ActiveNotifications_.end ())
 			return;
 
-		const auto defaultTimeout = XmlSettingsManager::Instance ()->property ("MessageTimeout").toInt () * 1000;
+		const auto defaultTimeout = XmlSettingsManager::Instance ().property ("MessageTimeout").toInt () * 1000;
 		const auto timeout = e.Additional_.value (LC::EF::NotificationTimeout, defaultTimeout).toInt ();
 
 		auto notificationWidget = new KinotifyWidget (timeout);

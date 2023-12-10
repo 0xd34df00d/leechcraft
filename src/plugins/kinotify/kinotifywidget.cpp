@@ -154,7 +154,7 @@ namespace LC::Kinotify
 	{
 		QRect PreferredGeometry ()
 		{
-			const bool followMouse = XmlSettingsManager::Instance ()->property ("FollowMouse").toBool ();
+			const bool followMouse = XmlSettingsManager::Instance ().property ("FollowMouse").toBool ();
 
 			auto desktop = QApplication::desktop ();
 			auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
@@ -205,7 +205,7 @@ namespace LC::Kinotify
 		const auto& geometry = PreferredGeometry ();
 
 		QPoint point;
-		const auto& placeStr = XmlSettingsManager::Instance ()->property ("NotifyPosition").toString ();
+		const auto& placeStr = XmlSettingsManager::Instance ().property ("NotifyPosition").toString ();
 		const auto margin = 20;
 		if (placeStr.startsWith ("Top"_ql))
 			point.setY (geometry.top () + margin);
