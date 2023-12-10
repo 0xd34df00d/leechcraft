@@ -29,9 +29,9 @@ namespace GmailNotifier
 	{
 		Util::InstallTranslator ("gmailnotifier");
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"gmailnotifiersettings.xml");
-		XmlSettingsManager::Instance ()->RegisterObject ({ "Login",  "Password"},
+		XmlSettingsManager::Instance ().RegisterObject ({ "Login",  "Password"},
 				this,
 				"setAuthorization");
 
@@ -42,7 +42,7 @@ namespace GmailNotifier
 		applyInterval ();
 		UpdateTimer_->start ();
 
-		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval",
+		XmlSettingsManager::Instance ().RegisterObject ("UpdateInterval",
 				this,
 				"applyInterval");
 
@@ -117,13 +117,13 @@ namespace GmailNotifier
 
 	void GmailNotifier::setAuthorization ()
 	{
-		GmailChecker_->SetAuthSettings (XmlSettingsManager::Instance ()->property ("Login").toString (),
-				XmlSettingsManager::Instance ()->property ("Password").toString ());
+		GmailChecker_->SetAuthSettings (XmlSettingsManager::Instance ().property ("Login").toString (),
+				XmlSettingsManager::Instance ().property ("Password").toString ());
 	}
 
 	void GmailNotifier::applyInterval ()
 	{
-		const int secs = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ();
+		const int secs = XmlSettingsManager::Instance ().property ("UpdateInterval").toInt ();
 		UpdateTimer_->stop ();
 		UpdateTimer_->setInterval (secs * 1000);
 		UpdateTimer_->start ();

@@ -33,8 +33,7 @@ namespace GmailNotifier
 		if (infos.isEmpty ())
 			return;
 
-		const int fullShow = XmlSettingsManager::Instance ()->
-				property ("ShowLastNMessages").toInt ();
+		const int fullShow = XmlSettingsManager::Instance ().property ("ShowLastNMessages").toInt ();
 
 		auto textWFallback = [] (const QString& text, const QString& fallback)
 		{

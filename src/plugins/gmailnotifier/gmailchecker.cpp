@@ -63,12 +63,11 @@ namespace GmailNotifier
 
 	void GmailChecker::checkNow ()
 	{
-		if (!XmlSettingsManager::Instance ()->property ("CheckingEnabled").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("CheckingEnabled").toBool ())
 			return;
 
-		const bool isFirstRun = XmlSettingsManager::Instance ()->
-				Property ("FirstRun", true).toBool ();
-		XmlSettingsManager::Instance ()->setProperty ("FirstRun", false);
+		const bool isFirstRun = XmlSettingsManager::Instance ().Property ("FirstRun", true).toBool ();
+		XmlSettingsManager::Instance ().setProperty ("FirstRun", false);
 		if (Username_.isEmpty ())
 		{
 			if (isFirstRun)
