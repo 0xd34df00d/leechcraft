@@ -45,7 +45,7 @@ namespace Liznoo
 		Util::InstallTranslator ("liznoo");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
-		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 		Platform_ = std::make_shared<PlatformObjects> (proxy);
 		connect (Platform_.get (),
@@ -168,13 +168,14 @@ namespace Liznoo
 			return f (info) && !f (Battery2LastInfo_ [info.ID_]);
 		};
 
-		auto checkPerc = [] (const BatteryInfo& b, const QByteArray& prop)
+		auto& xsm = XmlSettingsManager::Instance ();
+
+		auto checkPerc = [&] (const BatteryInfo& b, const QByteArray& prop)
 		{
-			if (!XmlSettingsManager::Instance ()->property ("NotifyOn" + prop).toBool ())
+			if (!xsm.property ("NotifyOn" + prop).toBool ())
 				return false;
 
-			return b.Percentage_ <= XmlSettingsManager::Instance ()->
-					property (prop + "Level").toInt ();
+			return b.Percentage_ <= xsm.property (prop + "Level").toInt ();
 		};
 
 		const bool isExtremeLow = check ([checkPerc] (const BatteryInfo& b)
@@ -189,7 +190,7 @@ namespace Liznoo
 							.arg (static_cast<int> (info.Percentage_)),
 						isLow ? Priority::Info : Priority::Warning));
 
-		if (XmlSettingsManager::Instance ()->property ("NotifyOnPowerTransitions").toBool ())
+		if (xsm.property ("NotifyOnPowerTransitions").toBool ())
 		{
 			const bool startedCharging = check ([] (const BatteryInfo& b)
 					{ return b.TimeToFull_ && !b.TimeToEmpty_; });
