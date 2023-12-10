@@ -84,8 +84,8 @@ namespace LC::Aggregator
 		private:
 			void LoadFeedSettings ()
 			{
-				FeedSettings_.ItemAge_ = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
-				FeedSettings_.NumItems_ = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toUInt ();
+				FeedSettings_.ItemAge_ = XmlSettingsManager::Instance ().property ("ItemsMaxAge").toInt ();
+				FeedSettings_.NumItems_ = XmlSettingsManager::Instance ().property ("ItemsPerChannel").toUInt ();
 
 				const auto& settings = SB_->GetFeedSettings (FeedID_);
 				if (!settings)
@@ -213,7 +213,7 @@ namespace LC::Aggregator
 			void DownloadEnclosures (const QList<Enclosure>& enclosures, const QStringList& tags) const
 			{
 				const auto iem = GetProxyHolder ()->GetEntityManager ();
-				const auto& targetPath = XmlSettingsManager::Instance ()->property ("EnclosuresDownloadPath").toString ();
+				const auto& targetPath = XmlSettingsManager::Instance ().property ("EnclosuresDownloadPath").toString ();
 				for (const auto& enc : enclosures)
 				{
 					auto de = Util::MakeEntity (QUrl { enc.URL_ }, targetPath, {}, enc.Type_);
@@ -260,7 +260,7 @@ namespace LC::Aggregator
 
 			void NotifyUpdates (int newItems, int updatedItems, const Channel& channel) const
 			{
-				const auto& method = XmlSettingsManager::Instance ()->property ("NotificationsFeedUpdateBehavior").toString ();
+				const auto& method = XmlSettingsManager::Instance ().property ("NotificationsFeedUpdateBehavior").toString ();
 				if (method == "ShowNo")
 					return;
 				if (method == "ShowNew" && !newItems)

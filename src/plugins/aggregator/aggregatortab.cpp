@@ -57,7 +57,7 @@ namespace Aggregator
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->addWidget (ItemsWidget_.get ());
 
-		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
+		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ().Property ("MergeItems", false).toBool ());
 
 		connect (Ui_.Feeds_,
 				&QWidget::customContextMenuRequested,
@@ -82,19 +82,19 @@ namespace Aggregator
 
 		ItemsWidget_->ConstructBrowser ();
 
-		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this,
+		XmlSettingsManager::Instance ().RegisterObject ("GroupChannelsByTags", this,
 				[this] (bool group) { SetGroupByTags (group); });
 
 		const auto& fm = fontMetrics ();
 		Util::SetupStateSaver (*Ui_.MainSplitter_,
 				{
-					.XSM_ = *XmlSettingsManager::Instance (),
+					.XSM_ = XmlSettingsManager::Instance (),
 					.Id_ = "FeedsSplitter",
 					.Initial_ = Util::Factors { 1, 3 },
 				});
 		Util::SetupStateSaver (*Ui_.Feeds_->header (),
 				{
-					.XSM_ = *XmlSettingsManager::Instance (),
+					.XSM_ = XmlSettingsManager::Instance (),
 					.Id_ = "FeedsHeader",
 					.Initial_ = Util::Widths { {}, fm.horizontalAdvance ("_9999_"_qs), GetDateColumnWidth (fm) },
 				});
@@ -249,7 +249,7 @@ namespace Aggregator
 	void AggregatorTab::on_MergeItems__toggled (bool merge)
 	{
 		ItemsWidget_->SetMergeMode (merge);
-		XmlSettingsManager::Instance ()->setProperty ("MergeItems", merge);
+		XmlSettingsManager::Instance ().setProperty ("MergeItems", merge);
 	}
 }
 }

@@ -28,16 +28,16 @@ namespace Aggregator
 				this,
 				&StartupFirstPage::handleAccepted,
 				Qt::UniqueConnection);
-		XmlSettingsManager::Instance ()->
-				setProperty ("StartupVersion", 1);
+		XmlSettingsManager::Instance ().setProperty ("StartupVersion", 1);
 	}
 
 	void StartupFirstPage::handleAccepted ()
 	{
-		XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray", Ui_.ShowIconInTray_->isChecked ());
-		XmlSettingsManager::Instance ()->setProperty ("UpdateInterval", Ui_.UpdateInterval_->value ());
-		XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel", Ui_.ItemsPerChannel_->value ());
-		XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge", Ui_.ItemsMaxAge_->value ());
+		auto& xsm = XmlSettingsManager::Instance ();
+		xsm.setProperty ("ShowIconInTray", Ui_.ShowIconInTray_->isChecked ());
+		xsm.setProperty ("UpdateInterval", Ui_.UpdateInterval_->value ());
+		xsm.setProperty ("ItemsPerChannel", Ui_.ItemsPerChannel_->value ());
+		xsm.setProperty ("ItemsMaxAge", Ui_.ItemsMaxAge_->value ());
 	}
 }
 }

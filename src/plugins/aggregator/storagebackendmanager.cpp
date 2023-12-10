@@ -35,7 +35,7 @@ namespace LC::Aggregator
 
 	StorageBackendManager::StorageCreationResult_t StorageBackendManager::CreatePrimaryStorage ()
 	{
-		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toByteArray ();
+		const auto& strType = XmlSettingsManager::Instance ().property ("StorageType").toByteArray ();
 		try
 		{
 			PrimaryStorageBackend_ = StorageBackend::Create (strType);
@@ -53,14 +53,14 @@ namespace LC::Aggregator
 		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
 		{
 			const auto& fullPropName = strType + suffix;
-			const auto curVersion = XmlSettingsManager::Instance ()->Property (Util::AsStringView (fullPropName), targetVersion).toInt ();
+			const auto curVersion = XmlSettingsManager::Instance ().Property (Util::AsStringView (fullPropName), targetVersion).toInt ();
 			if (curVersion == targetVersion)
 				return true;
 
 			if (!std::invoke (updater, PrimaryStorageBackend_.get (), curVersion))
 				return false;
 
-			XmlSettingsManager::Instance ()->setProperty (fullPropName, targetVersion);
+			XmlSettingsManager::Instance ().setProperty (fullPropName, targetVersion);
 			return true;
 		};
 
@@ -86,7 +86,7 @@ namespace LC::Aggregator
 		if (QThread::currentThread () == qApp->thread ())
 			return PrimaryStorageBackend_;
 
-		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toString ();
+		const auto& strType = XmlSettingsManager::Instance ().property ("StorageType").toString ();
 		try
 		{
 			auto mgr = StorageBackend::Create (strType, "_AuxThread");

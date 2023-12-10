@@ -55,7 +55,7 @@ namespace LC::Aggregator
 
 		QToolBar *ControlToolBar_ = nullptr;
 
-		bool TapeMode_ = XmlSettingsManager::Instance ()->Property ("ShowAsTape", false).toBool ();
+		bool TapeMode_ = XmlSettingsManager::Instance ().Property ("ShowAsTape", false).toBool ();
 		bool MergeMode_ = false;
 
 		QAbstractItemModel *ChannelsModel_ = nullptr;
@@ -150,13 +150,13 @@ namespace LC::Aggregator
 		Impl_->ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 		Util::SetupStateSaver (*Impl_->Ui_.CategoriesSplitter_,
-				{ .XSM_ = *XmlSettingsManager::Instance (), .Id_ = "CategoriesSplitter", .Initial_ = Util::Factors { 4, 1 } });
+				{ .XSM_ = XmlSettingsManager::Instance (), .Id_ = "CategoriesSplitter", .Initial_ = Util::Factors { 4, 1 } });
 		connect (Impl_->ItemCategorySelector_.get (),
 				&Util::CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::InvalidateCategorySelection);
 
-		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView", this,
+		XmlSettingsManager::Instance ().RegisterObject ("ShowNavBarInItemsView", this,
 				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });
 
 		SelectionTracker_ = std::make_unique<ItemSelectionTracker> (*Impl_->Ui_.Items_, *Actions_, this);
@@ -172,7 +172,7 @@ namespace LC::Aggregator
 
 		Util::SetupStateSaver (*Impl_->Ui_.Items_->header (),
 				{
-					.XSM_ = *XmlSettingsManager::Instance (),
+					.XSM_ = XmlSettingsManager::Instance (),
 					.Id_ = "ItemsHeader",
 					.Initial_ = Util::Widths { {}, GetDateColumnWidth (fontMetrics ()) },
 				});
@@ -200,7 +200,7 @@ namespace LC::Aggregator
 		SelectionTracker_->SetTapeMode (tape);
 		RenderSelectedItems ();
 
-		XmlSettingsManager::Instance ()->setProperty ("ShowAsTape", tape);
+		XmlSettingsManager::Instance ().setProperty ("ShowAsTape", tape);
 	}
 
 	void ItemsWidget::SetMergeMode (bool merge)

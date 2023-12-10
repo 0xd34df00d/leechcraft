@@ -18,11 +18,11 @@ namespace LC::Aggregator
 {
 	ItemsFilterModel::ItemsFilterModel (QObject *parent)
 	: QSortFilterProxyModel { parent }
-	, HideRead_ { XmlSettingsManager::Instance ()->Property ("HideReadItems", false).toBool () }
+	, HideRead_ { XmlSettingsManager::Instance ().Property ("HideReadItems", false).toBool () }
 	{
 		setDynamicSortFilter (true);
 
-		XmlSettingsManager::Instance ()->RegisterObject ("UnreadOnTop", this,
+		XmlSettingsManager::Instance ().RegisterObject ("UnreadOnTop", this,
 				[this] (bool unreadOnTop)
 				{
 					UnreadOnTop_ = unreadOnTop;
@@ -38,7 +38,7 @@ namespace LC::Aggregator
 	void ItemsFilterModel::SetHideRead (bool hide)
 	{
 		HideRead_ = hide;
-		XmlSettingsManager::Instance ()->setProperty ("HideReadItems", hide);
+		XmlSettingsManager::Instance ().setProperty ("HideReadItems", hide);
 		invalidate ();
 	}
 

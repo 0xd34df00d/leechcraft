@@ -15,7 +15,7 @@ namespace Aggregator
 {
 	StartupSecondPage::StartupSecondPage (QWidget *parent)
 	: QWizardPage (parent)
-	, Selector_ (new Util::BackendSelector (XmlSettingsManager::Instance ()))
+	, Selector_ (new Util::BackendSelector (&XmlSettingsManager::Instance ()))
 	{
 		Ui_.setupUi (this);
 		QHBoxLayout *lay = new QHBoxLayout ();
@@ -35,7 +35,7 @@ namespace Aggregator
 				Selector_,
 				&Util::BackendSelector::accept,
 				Qt::UniqueConnection);
-		XmlSettingsManager::Instance ()->setProperty ("StartupVersion", 2);
+		XmlSettingsManager::Instance ().setProperty ("StartupVersion", 2);
 
 		wizard ()->setField ("Aggregator/StorageDirty", true);
 	}

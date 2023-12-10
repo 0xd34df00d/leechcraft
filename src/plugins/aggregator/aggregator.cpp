@@ -85,9 +85,9 @@ namespace Aggregator
 		};
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "aggregatorsettings.xml");
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorsettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
-				new Util::BackendSelector (XmlSettingsManager::Instance ()));
+				new Util::BackendSelector (&XmlSettingsManager::Instance ()));
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> ();
 
@@ -305,7 +305,7 @@ namespace Aggregator
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
 	{
 		QList<QWizardPage*> result;
-		int version = XmlSettingsManager::Instance ()->Property ("StartupVersion", 0).toInt ();
+		int version = XmlSettingsManager::Instance ().Property ("StartupVersion", 0).toInt ();
 		if (version <= 0)
 			result << new StartupFirstPage ();
 		if (version <= 1)

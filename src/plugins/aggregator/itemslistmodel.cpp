@@ -217,7 +217,7 @@ namespace Aggregator
 
 		QVariant GetItemForeground (const ItemShort& item)
 		{
-			auto& xsm = *XmlSettingsManager::Instance ();
+			auto& xsm = XmlSettingsManager::Instance ();
 			bool palette = xsm.property ("UsePaletteColors").toBool ();
 			if (item.Unread_)
 			{
@@ -256,9 +256,9 @@ namespace Aggregator
 			return GetItemForeground (item);
 		else if (role == Qt::FontRole &&
 				item.Unread_)
-			return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
+			return XmlSettingsManager::Instance ().property ("UnreadItemsFont");
 		else if (role == Qt::ToolTipRole &&
-				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
+				XmlSettingsManager::Instance ().property ("ShowItemsTooltips").toBool ())
 		{
 			const auto& maybeItem = GetSB ()->GetItem (item.ItemID_);
 			if (!maybeItem)

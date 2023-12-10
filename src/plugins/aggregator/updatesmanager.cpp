@@ -96,12 +96,14 @@ namespace LC::Aggregator
 				this,
 				&UpdatesManager::HandleCustomUpdates);
 
+		auto& xsm = XmlSettingsManager::Instance ();
+
 		auto now = QDateTime::currentDateTime ();
-		auto lastUpdated = XmlSettingsManager::Instance ()->Property ("LastUpdateDateTime", now).toDateTime ();
-		if (auto interval = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
+		auto lastUpdated = xsm.Property ("LastUpdateDateTime", now).toDateTime ();
+		if (auto interval = xsm.property ("UpdateInterval").toInt ())
 		{
 			auto updateDiff = lastUpdated.secsTo (now);
-			if (XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool () ||
+			if (xsm.property ("UpdateOnStartup").toBool () ||
 					updateDiff > interval * 60)
 				QTimer::singleShot (7000,
 						this,
@@ -110,7 +112,7 @@ namespace LC::Aggregator
 				UpdateTimer_->start (updateDiff * 1000);
 		}
 
-		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this,
+		xsm.RegisterObject ("UpdateInterval", this,
 				[this] (int min)
 				{
 					if (min)
@@ -140,8 +142,8 @@ namespace LC::Aggregator
 				if (!IsCustomTimer (*sb, id))
 					UpdateFeed (id);
 
-		XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-		if (int interval = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
+		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
+		if (int interval = XmlSettingsManager::Instance ().property ("UpdateInterval").toInt ())
 			UpdateTimer_->start (interval * 60 * 1000);
 	}
 

@@ -60,7 +60,7 @@ namespace Aggregator
 		wizard ()->setMinimumWidth (std::max (wizard ()->minimumWidth (), 800));
 		wizard ()->setMinimumHeight (std::max (wizard ()->minimumHeight (), 500));
 
-		XmlSettingsManager::Instance ()->setProperty ("StartupVersion", 3);
+		XmlSettingsManager::Instance ().setProperty ("StartupVersion", 3);
 	}
 
 	void StartupThirdPage::ParseFeedsSets ()

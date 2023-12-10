@@ -87,7 +87,7 @@ namespace LC::Aggregator::Opml
 			auto copyVal = [&e] (const QByteArray& name)
 			{
 				if (e.Additional_.contains (name))
-					XmlSettingsManager::Instance ()->setProperty (name, e.Additional_.value (name));
+					XmlSettingsManager::Instance ().setProperty (name, e.Additional_.value (name));
 			};
 			copyVal ("UpdateOnStartup");
 			copyVal ("UpdateTimeout");

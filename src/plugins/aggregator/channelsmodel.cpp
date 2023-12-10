@@ -91,11 +91,11 @@ namespace Aggregator
 	{
 		QVariant GetForegroundColor (const ChannelShort& cs)
 		{
-			bool palette = XmlSettingsManager::Instance ()->property ("UsePaletteColors").toBool ();
+			bool palette = XmlSettingsManager::Instance ().property ("UsePaletteColors").toBool ();
 			if (cs.Unread_)
 			{
-				if (XmlSettingsManager::Instance ()->property ("UnreadCustomColor").toBool ())
-					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor");
+				if (XmlSettingsManager::Instance ().property ("UnreadCustomColor").toBool ())
+					return XmlSettingsManager::Instance ().property ("UnreadItemsColor");
 				else
 					return palette ?
 							QApplication::palette ().link ().color () :
@@ -199,7 +199,7 @@ namespace Aggregator
 				return font;
 			}
 			else if (channel.Unread_)
-				return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
+				return XmlSettingsManager::Instance ().property ("UnreadItemsFont");
 			else
 				return {};
 		case Qt::ToolTipRole:

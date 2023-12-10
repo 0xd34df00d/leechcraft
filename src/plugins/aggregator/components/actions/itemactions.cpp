@@ -106,7 +106,7 @@ namespace LC::Aggregator
 	: QObject { parent }
 	, Deps_ { deps }
 	{
-		auto& xsm = *XmlSettingsManager::Instance ();
+		auto& xsm = XmlSettingsManager::Instance ();
 
 		const auto mkSep = [&] { AllActions_ << Util::CreateSeparator (parent); };
 
@@ -265,7 +265,7 @@ namespace LC::Aggregator
 	{
 		QStringList GetCommentTags ()
 		{
-			const auto& prop = XmlSettingsManager::Instance ()->property ("CommentsTags").toString ();
+			const auto& prop = XmlSettingsManager::Instance ().property ("CommentsTags").toString ();
 			return GetProxyHolder ()->GetTagsManager ()->Split (prop);
 		}
 	}

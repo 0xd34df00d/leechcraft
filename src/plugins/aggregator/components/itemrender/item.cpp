@@ -100,7 +100,7 @@ namespace LC::Aggregator
 			constexpr auto expectedMaxNodesCount = 7;
 			nodes.reserve (expectedMaxNodesCount);
 
-			const auto embedImages = XmlSettingsManager::Instance ()->property ("EmbedMediaRSSImages").toBool ();
+			const auto embedImages = XmlSettingsManager::Instance ().property ("EmbedMediaRSSImages").toBool ();
 			if (embedImages && enclosure.Type_.startsWith ("image/"_qs))
 			{
 				nodes.push_back (Tags::Image (enclosure.URL_));

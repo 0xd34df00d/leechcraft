@@ -15,7 +15,7 @@ namespace LC::Aggregator
 	Util::Tag MakeLink (const QString& target, Util::Node contents)
 	{
 		Util::TagAttrs attrs { { "href"_qs, target } };
-		if (XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
+		if (XmlSettingsManager::Instance ().property ("AlwaysUseExternalBrowser").toBool ())
 			attrs.push_back ({ "target"_qs, "blank"_qs });
 
 		return { .Name_ = "a", .Attrs_ = std::move (attrs), .Children_ = { std::move (contents) } };

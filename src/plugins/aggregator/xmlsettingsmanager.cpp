@@ -19,10 +19,10 @@ namespace LC::Aggregator
 		Util::BaseSettingsManager::Init ();
 	}
 
-	XmlSettingsManager* XmlSettingsManager::Instance ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager manager;
-		return &manager;
+		return manager;
 	}
 
 	QSettings* XmlSettingsManager::BeginSettings () const
@@ -39,7 +39,7 @@ namespace LC::Aggregator
 
 	bool ConfirmWithPersistence (const char *propName, const QString& questionMessage)
 	{
-		if (!XmlSettingsManager::Instance ()->property (propName).toBool ())
+		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
 			return true;
 
 		QMessageBox mbox
@@ -58,7 +58,7 @@ namespace LC::Aggregator
 			return false;
 
 		if (mbox.clickedButton () == &always)
-			XmlSettingsManager::Instance ()->setProperty (propName, false);
+			XmlSettingsManager::Instance ().setProperty (propName, false);
 		return true;
 	}
 }

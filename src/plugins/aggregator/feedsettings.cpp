@@ -63,7 +63,7 @@ namespace Aggregator
 				&QLabel::linkActivated,
 				[] (const QString& url)
 				{
-					if (XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
+					if (XmlSettingsManager::Instance ().property ("AlwaysUseExternalBrowser").toBool ())
 						QDesktopServices::openUrl ({ url });
 					else
 					{

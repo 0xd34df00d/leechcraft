@@ -19,7 +19,7 @@ namespace LC::Aggregator
 		setMinimumHeight (0);
 		SetButtonsMode (Util::CategorySelector::ButtonsMode::NoButtons);
 
-		XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector", this,
+		XmlSettingsManager::Instance ().RegisterObject ("ShowCategorySelector", this,
 				[this] (bool visible)
 				{
 					CanBeVisible_ = visible;
