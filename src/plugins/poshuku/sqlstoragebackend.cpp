@@ -139,11 +139,12 @@ namespace Poshuku
 		}
 		case SBPostgres:
 		{
-			DB_.setDatabaseName (XmlSettingsManager::Instance ()->property ("PostgresDBName").toString ());
-			DB_.setHostName (XmlSettingsManager::Instance ()->property ("PostgresHostname").toString ());
-			DB_.setPort (XmlSettingsManager::Instance ()->property ("PostgresPort").toInt ());
-			DB_.setUserName (XmlSettingsManager::Instance ()->property ("PostgresUsername").toString ());
-			DB_.setPassword (XmlSettingsManager::Instance ()->property ("PostgresPassword").toString ());
+			auto& xsm = XmlSettingsManager::Instance ();
+			DB_.setDatabaseName (xsm.property ("PostgresDBName").toString ());
+			DB_.setHostName (xsm.property ("PostgresHostname").toString ());
+			DB_.setPort (xsm.property ("PostgresPort").toInt ());
+			DB_.setUserName (xsm.property ("PostgresUsername").toString ());
+			DB_.setPassword (xsm.property ("PostgresPassword").toString ());
 			break;
 		}
 		}

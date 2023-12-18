@@ -155,8 +155,8 @@ namespace Poshuku
 
 		StorageBackend_.reset ();
 
-		XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
-		XmlSettingsManager::Instance ()->Release ();
+		XmlSettingsManager::Instance ().setProperty ("CleanShutdown", true);
+		XmlSettingsManager::Instance ().Release ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -493,7 +493,7 @@ namespace Poshuku
 		const QString& query = url.mid (pos + 1);
 
 		Entity e;
-		if (XmlSettingsManager::Instance ()->property ("UseSummaryForSearches").toBool ())
+		if (XmlSettingsManager::Instance ().property ("UseSummaryForSearches").toBool ())
 		{
 			e = Util::MakeEntity (query,
 					QString (),
@@ -526,8 +526,7 @@ namespace Poshuku
 
 	void Core::importXbel ()
 	{
-		QString suggestion = XmlSettingsManager::Instance ()->
-				Property ("LastXBELOpen", QDir::homePath ()).toString ();
+		QString suggestion = XmlSettingsManager::Instance ().Property ("LastXBELOpen", QDir::homePath ()).toString ();
 		QString filename = QFileDialog::getOpenFileName (0,
 				tr ("Select XBEL file"),
 				suggestion,
@@ -537,8 +536,7 @@ namespace Poshuku
 		if (filename.isEmpty ())
 			return;
 
-		XmlSettingsManager::Instance ()->setProperty ("LastXBELOpen",
-				QFileInfo (filename).absolutePath ());
+		XmlSettingsManager::Instance ().setProperty ("LastXBELOpen", QFileInfo (filename).absolutePath ());
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -568,8 +566,7 @@ namespace Poshuku
 
 	void Core::exportXbel ()
 	{
-		QString suggestion = XmlSettingsManager::Instance ()->
-				Property ("LastXBELSave", QDir::homePath ()).toString ();
+		QString suggestion = XmlSettingsManager::Instance ().Property ("LastXBELSave", QDir::homePath ()).toString ();
 		QString filename = QFileDialog::getSaveFileName (0,
 				tr ("Save XBEL file"),
 				suggestion,
@@ -582,8 +579,7 @@ namespace Poshuku
 		if (!filename.endsWith (".xbel"))
 			filename.append (".xbel");
 
-		XmlSettingsManager::Instance ()->setProperty ("LastXBELSave",
-				QFileInfo (filename).absolutePath ());
+		XmlSettingsManager::Instance ().setProperty ("LastXBELSave", QFileInfo (filename).absolutePath ());
 
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
@@ -611,7 +607,7 @@ namespace Poshuku
 		proxy->FillValue ("title", title);
 		proxy->FillValue ("url", url);
 
-		bool oneClick = XmlSettingsManager::Instance ()->property ("BookmarkInOneClick").toBool ();
+		bool oneClick = XmlSettingsManager::Instance ().property ("BookmarkInOneClick").toBool ();
 
 		const auto& index = FavoritesModel_->addItem (title, url, QStringList ());
 
@@ -628,7 +624,7 @@ namespace Poshuku
 
 	void Core::favoriteTagsUpdated (const QStringList& tags)
 	{
-		XmlSettingsManager::Instance ()->setProperty ("FavoriteTags", tags);
+		XmlSettingsManager::Instance ().setProperty ("FavoriteTags", tags);
 	}
 }
 }

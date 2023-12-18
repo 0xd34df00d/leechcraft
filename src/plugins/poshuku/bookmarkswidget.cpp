@@ -34,7 +34,7 @@ namespace Poshuku
 		const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
 		FlatToFolders_ = std::make_shared<Util::FlatToFoldersProxyModel> (itm);
 		handleGroupBookmarks ();
-		XmlSettingsManager::Instance ()->RegisterObject ("GroupBookmarksByTags",
+		XmlSettingsManager::Instance ().RegisterObject ("GroupBookmarksByTags",
 				this, "handleGroupBookmarks");
 
 		Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
@@ -193,8 +193,7 @@ namespace Poshuku
 
 	void BookmarksWidget::handleGroupBookmarks ()
 	{
-		if (XmlSettingsManager::Instance ()->
-				property ("GroupBookmarksByTags").toBool ())
+		if (XmlSettingsManager::Instance ().property ("GroupBookmarksByTags").toBool ())
 		{
 			FlatToFolders_->SetSourceModel (FavoritesFilterModel_.get ());
 			Ui_.FavoritesView_->setModel (FlatToFolders_.get ());

@@ -48,12 +48,12 @@ namespace Poshuku
 		Core::Instance ().SetShortcutManager (ShortcutMgr_);
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"poshukusettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
-				new Util::BackendSelector (XmlSettingsManager::Instance ()));
+				new Util::BackendSelector (&XmlSettingsManager::Instance ()));
 
-		FontsWidget_ = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
+		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
 		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
 		connect (&Core::Instance (),
 				SIGNAL (browserWidgetCreated (BrowserWidget*)),
@@ -307,14 +307,11 @@ namespace Poshuku
 
 	void Poshuku::createTabFirstTime ()
 	{
-		bool firstTime = XmlSettingsManager::Instance ()->
-				Property ("FirstTimeRun", true).toBool ();
-		bool startWithHome = XmlSettingsManager::Instance ()->
-				property ("StartWithHomeTab").toBool ();
+		bool firstTime = XmlSettingsManager::Instance ().Property ("FirstTimeRun", true).toBool ();
+		bool startWithHome = XmlSettingsManager::Instance ().property ("StartWithHomeTab").toBool ();
 		if (firstTime || startWithHome)
 			Core::Instance ().NewURL ("about:home", true);
-		XmlSettingsManager::Instance ()->
-				setProperty ("FirstTimeRun", false);
+		XmlSettingsManager::Instance ().setProperty ("FirstTimeRun", false);
 	}
 
 	void Poshuku::handleError (const QString& msg)

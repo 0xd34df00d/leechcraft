@@ -156,8 +156,7 @@ namespace Poshuku
 		NotifyWhenFinished_ = new QAction (tr ("Notify when finished loading"), this);
 		NotifyWhenFinished_->setCheckable (true);
 		NotifyWhenFinished_->setProperty ("ActionIcon", "preferences-desktop-notification");
-		NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
-				property ("NotifyFinishedByDefault").toBool ());
+		NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ().property ("NotifyFinishedByDefault").toBool ());
 
 		Add2Favorites_ = new QAction (tr ("Bookmark..."), this);
 		Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
@@ -1274,11 +1273,10 @@ namespace Poshuku
 				menu->addAction (actObj);
 		};
 
-		const auto raiseNewTabs = !XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ();
+		const auto raiseNewTabs = !XmlSettingsManager::Instance ().property ("BackgroundNewTabs").toBool ();
 		if (!info.LinkUrl_.isEmpty ())
 		{
-			if (XmlSettingsManager::Instance ()->
-					property ("TryToDetectRSSLinks").toBool ())
+			if (XmlSettingsManager::Instance ().property ("TryToDetectRSSLinks").toBool ())
 			{
 				bool hasAtom = info.LinkText_.contains ("Atom");
 				bool hasRSS = info.LinkText_.contains ("RSS");
@@ -1695,8 +1693,7 @@ namespace Poshuku
 
 	void BrowserWidget::SetSplitterSizes (int currentIndex)
 	{
-		int splitterSize = XmlSettingsManager::Instance ()->
-				Property ("HistoryBoormarksPanelSize", 250).toInt ();
+		int splitterSize = XmlSettingsManager::Instance ().Property ("HistoryBoormarksPanelSize", 250).toInt ();
 		int wSize = WebView_->GetQWidget ()->size ().width ();
 
 		if (!Ui_.Splitter_->sizes ().at (0))
@@ -1708,9 +1705,8 @@ namespace Poshuku
 			Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (currentIndex);
 		else
 		{
-			XmlSettingsManager::Instance ()->
-				setProperty ("HistoryBoormarksPanelSize", Ui_.Splitter_->sizes ().at (0));
-			Ui_.Splitter_->setSizes (QList<int> () <<  0 << wSize);
+			XmlSettingsManager::Instance ().setProperty ("HistoryBoormarksPanelSize", Ui_.Splitter_->sizes ().at (0));
+			Ui_.Splitter_->setSizes ({ 0, wSize });
 		}
 	}
 

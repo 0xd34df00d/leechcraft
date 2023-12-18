@@ -19,7 +19,7 @@ namespace Poshuku
 	: QObject { widget }
 	, View_ { widget->GetWebView () }
 	{
-		XmlSettingsManager::Instance ()->RegisterObject ({
+		XmlSettingsManager::Instance ().RegisterObject ({
 					"AutoLoadImages",
 					"AllowJavascript",
 					"AllowPlugins",
@@ -39,28 +39,22 @@ namespace Poshuku
 
 	void BrowserWidgetSettingsHandler::viewerSettingsChanged ()
 	{
-		auto xsm = XmlSettingsManager::Instance ();
-
-		View_->SetAttribute (IWebView::Attribute::AutoLoadImages,
-				xsm->property ("AutoLoadImages").toBool ());
-		View_->SetAttribute (IWebView::Attribute::JavascriptEnabled,
-				xsm->property ("AllowJavascript").toBool ());
-		View_->SetAttribute (IWebView::Attribute::PluginsEnabled,
-				xsm->property ("AllowPlugins").toBool ());
-		View_->SetAttribute (IWebView::Attribute::JavascriptCanOpenWindows,
-				xsm->property ("JavascriptCanOpenWindows").toBool ());
-		View_->SetAttribute (IWebView::Attribute::JavascriptCanAccessClipboard,
-				xsm->property ("JavascriptCanAccessClipboard").toBool ());
-		View_->SetAttribute (IWebView::Attribute::LocalStorageEnabled,
-				xsm->property ("LocalStorageDB").toBool ());
-		View_->SetAttribute (IWebView::Attribute::XSSAuditingEnabled,
-				xsm->property ("EnableXSSAuditing").toBool ());
-		View_->SetAttribute (IWebView::Attribute::HyperlinkAuditingEnabled,
-				xsm->property ("EnableHyperlinkAuditing").toBool ());
-		View_->SetAttribute (IWebView::Attribute::WebGLEnabled,
-				xsm->property ("EnableWebGL").toBool ());
-		View_->SetAttribute (IWebView::Attribute::ScrollAnimatorEnabled,
-				xsm->property ("EnableSmoothScrolling").toBool ());
+		auto& xsm = XmlSettingsManager::Instance ();
+		auto set = [&] (IWebView::Attribute attr, const char *prop)
+		{
+			View_->SetAttribute (attr, xsm.property (prop).toBool ());
+		};
+		using enum IWebView::Attribute;
+		set (AutoLoadImages, "AutoLoadImages");
+		set (JavascriptEnabled, "AllowJavascript");
+		set (PluginsEnabled, "AllowPlugins");
+		set (JavascriptCanOpenWindows, "JavascriptCanOpenWindows");
+		set (JavascriptCanAccessClipboard, "JavascriptCanAccessClipboard");
+		set (LocalStorageEnabled, "LocalStorageDB");
+		set (XSSAuditingEnabled, "EnableXSSAuditing");
+		set (HyperlinkAuditingEnabled, "EnableHyperlinkAuditing");
+		set (WebGLEnabled, "EnableWebGL");
+		set (ScrollAnimatorEnabled, "EnableSmoothScrolling");
 	}
 }
 }

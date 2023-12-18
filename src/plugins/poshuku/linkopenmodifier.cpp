@@ -27,7 +27,7 @@ namespace LC::Poshuku
 		if (!newTabRequested)
 			return {};
 
-		auto background = XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ();
+		auto background = XmlSettingsManager::Instance ().property ("BackgroundNewTabs").toBool ();
 		if (Modifiers_ & Qt::ShiftModifier)
 			background = !background;
 		return { true, background };

@@ -217,10 +217,8 @@ namespace Poshuku
 
 	void HistoryModel::collectGarbage ()
 	{
-		int age = XmlSettingsManager::Instance ()->
-			property ("HistoryClearOlderThan").toInt ();
-		int maxItems = XmlSettingsManager::Instance ()->
-			property ("HistoryKeepLessThan").toInt ();
+		int age = XmlSettingsManager::Instance ().property ("HistoryClearOlderThan").toInt ();
+		int maxItems = XmlSettingsManager::Instance ().property ("HistoryKeepLessThan").toInt ();
 		Core::Instance ().GetStorageBackend ()->ClearOldHistory (age, maxItems);
 	}
 }

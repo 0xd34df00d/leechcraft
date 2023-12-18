@@ -31,7 +31,7 @@ namespace Poshuku
 	std::shared_ptr<StorageBackend> StorageBackend::Create ()
 	{
 		StorageBackend::Type type;
-		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toString ();
+		const auto& strType = XmlSettingsManager::Instance ().property ("StorageType").toString ();
 		if (strType == "SQLite")
 			type = StorageBackend::SBSQLite;
 		else if (strType == "PostgreSQL")

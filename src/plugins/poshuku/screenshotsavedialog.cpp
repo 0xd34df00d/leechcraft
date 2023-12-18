@@ -80,12 +80,12 @@ namespace Poshuku
 		const auto& defLoc = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Save screenshot"),
-				XmlSettingsManager::Instance ()->Property ("ScreenshotsLocation",
+				XmlSettingsManager::Instance ().Property ("ScreenshotsLocation",
 					defLoc).toString ());
 		if (filename.isEmpty ())
 			return;
 
-		XmlSettingsManager::Instance ()->setProperty ("ScreenshotsLocation", filename);
+		XmlSettingsManager::Instance ().setProperty ("ScreenshotsLocation", filename);
 
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))

@@ -29,8 +29,7 @@ namespace Poshuku
 
 	QObject* ProxyObject::OpenInNewTab (const QUrl& url, bool inverted) const
 	{
-		bool raise = XmlSettingsManager::Instance ()->
-				property ("BackgroundNewTabs").toBool ();
+		bool raise = XmlSettingsManager::Instance ().property ("BackgroundNewTabs").toBool ();
 		if (inverted)
 			raise = !raise;
 		return Core::Instance ().NewURL (url, raise);
@@ -53,7 +52,7 @@ namespace Poshuku
 
 	QVariant ProxyObject::GetPoshukuConfigValue (const QByteArray& name) const
 	{
-		return XmlSettingsManager::Instance ()->property (name);
+		return XmlSettingsManager::Instance ().property (name);
 	}
 
 	ILinkOpenModifier_ptr ProxyObject::GetLinkOpenModifier () const
