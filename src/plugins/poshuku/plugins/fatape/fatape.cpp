@@ -82,7 +82,7 @@ namespace FatApe
 				SLOT (handleItemChanged (QStandardItem*)));
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"poshukufatapesettings.xml");
 		SettingsDialog_->SetCustomWidget ("UserScriptsManagerWidget",
 				new UserScriptsManagerWidget (Model_.get (), this));
@@ -166,7 +166,7 @@ namespace FatApe
 	void Plugin::EditScript (int scriptIndex)
 	{
 		const auto& script = UserScripts_.at (scriptIndex);
-		const auto& editor = XmlSettingsManager::Instance ()->property ("editor").toString ();
+		const auto& editor = XmlSettingsManager::Instance ().property ("editor").toString ();
 		if (!editor.isEmpty ())
 			QProcess::execute (editor, { script.Path () });
 		else

@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LC
@@ -22,7 +22,7 @@ namespace FatApe
 
 		XmlSettingsManager ();
 	public:
-		static XmlSettingsManager* Instance ();
+		static XmlSettingsManager& Instance ();
 	protected:
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
@@ -31,5 +31,3 @@ namespace FatApe
 }
 }
 }
-
-#endif

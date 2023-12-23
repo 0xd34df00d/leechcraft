@@ -45,7 +45,7 @@ namespace FatApe
 			Metadata_.insert ("include", "*");
 
 		const auto& propName = "disabled/" + std::to_string (qHash (Namespace ())) + std::to_string (qHash (Name ()));
-		Enabled_ = !XmlSettingsManager::Instance ()->Property (propName, false).toBool ();
+		Enabled_ = !XmlSettingsManager::Instance ().Property (propName, false).toBool ();
 	}
 
 	void UserScript::ParseMetadata ()
@@ -196,7 +196,7 @@ namespace FatApe
 				.arg (qHash (Namespace ()))
 				.arg (qHash (Name ()))
 				.toLatin1 ();
-		XmlSettingsManager::Instance ()->setProperty (propName, !value);
+		XmlSettingsManager::Instance ().setProperty (propName, !value);
 		Enabled_ = value;
 	}
 
@@ -293,7 +293,7 @@ namespace FatApe
 				}
 				resource.write (reply->readAll ());
 
-				XmlSettingsManager::Instance ()->setProperty (propName.toLatin1 (),
+				XmlSettingsManager::Instance ().setProperty (propName.toLatin1 (),
 						reply->header (QNetworkRequest::ContentTypeHeader));
 			},
 			reply,
