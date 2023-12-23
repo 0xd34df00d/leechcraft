@@ -313,7 +313,7 @@ namespace CleanWeb
 
 		bool ShouldReject (const IInterceptableRequests::RequestInfo& req, RejectInfo info)
 		{
-			if (!XmlSettingsManager::Instance ()->property ("EnableFiltering").toBool ())
+			if (!XmlSettingsManager::Instance ().property ("EnableFiltering").toBool ())
 				return false;
 
 			if (!req.PageUrl_.isValid ())
@@ -487,13 +487,11 @@ namespace CleanWeb
 
 	void Core::update ()
 	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("Autoupdate").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("Autoupdate").toBool ())
 			return;
 
 		const auto& current = QDateTime::currentDateTime ();
-		int days = XmlSettingsManager::Instance ()->
-			property ("UpdateInterval").toInt ();
+		int days = XmlSettingsManager::Instance ().property ("UpdateInterval").toInt ();
 		for (const auto& f : SubsModel_->GetAllFilters ())
 			if (f.SD_.LastDateTime_.daysTo (current) > days)
 				Load (f.SD_.URL_, f.SD_.Name_);
@@ -501,7 +499,7 @@ namespace CleanWeb
 
 	void Core::HandleViewLayout (IWebView *view)
 	{
-		if (!XmlSettingsManager::Instance ()->property ("EnableElementHiding").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("EnableElementHiding").toBool ())
 			return;
 
 		if (ScheduledHidings_.contains (view))
