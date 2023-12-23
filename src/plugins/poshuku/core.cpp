@@ -155,7 +155,6 @@ namespace Poshuku
 
 		StorageBackend_.reset ();
 
-		XmlSettingsManager::Instance ().setProperty ("CleanShutdown", true);
 		XmlSettingsManager::Instance ().Release ();
 	}
 
