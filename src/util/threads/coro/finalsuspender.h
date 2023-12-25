@@ -17,11 +17,6 @@ namespace LC::Util::detail
 	{
 		Promise& Promise_;
 
-		explicit FinalSuspender (Promise& promise)
-		: Promise_ { promise }
-		{
-		}
-
 		bool await_ready () const noexcept { return false; }
 
 		void await_suspend (std::coroutine_handle<>) noexcept
