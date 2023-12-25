@@ -51,11 +51,11 @@ namespace LC::Util
 	{
 		bool continued = false;
 
-		[&] () -> Task<void>
+		[] (auto& continued) -> Task<void>
 		{
 			co_await 10ms;
 			continued = true;
-		} ();
+		} (continued);
 
 		QTRY_VERIFY_WITH_TIMEOUT (continued, 20);
 	}
