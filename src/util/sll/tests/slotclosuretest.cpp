@@ -75,6 +75,8 @@ namespace Util
 		QCoreApplication::sendPostedEvents (nullptr, QEvent::DeferredDelete);
 
 		QCOMPARE (closurePtr.isNull (), false);
+
+		delete closure;
 	}
 
 	void SlotClosureTest::testChoiceDelete ()
