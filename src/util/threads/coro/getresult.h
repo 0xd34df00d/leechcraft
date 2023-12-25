@@ -24,7 +24,7 @@ namespace LC::Util
 
 		QEventLoop loop;
 		bool done = false;
-		[&] () -> Task<void>
+		[] (auto task, auto& result, auto& exception, auto& done, auto& loop) -> Task<void>
 		{
 			try
 			{
@@ -39,7 +39,7 @@ namespace LC::Util
 			}
 			done = true;
 			loop.quit ();
-		} ();
+		} (task, result, exception, done, loop);
 		if (!done)
 			loop.exec ();
 
