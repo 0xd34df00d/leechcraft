@@ -29,7 +29,7 @@ namespace OnlineBookmarks
 	{
 		Util::InstallTranslator ("poshuku_onlinebookmarks");
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
@@ -41,10 +41,10 @@ namespace OnlineBookmarks
 				Core::Instance ().GetAccountsSettingsWidget ());
 		Core::Instance ().GetAccountsSettingsWidget ()->InitServices ();
 
-		if (XmlSettingsManager::Instance ()->Property ("DownloadGroup", false).toBool ())
+		if (XmlSettingsManager::Instance ().Property ("DownloadGroup", false).toBool ())
 			Core::Instance ().checkDownloadPeriod ();
 
-		if (XmlSettingsManager::Instance ()->Property ("UploadGroup", false).toBool ())
+		if (XmlSettingsManager::Instance ().Property ("UploadGroup", false).toBool ())
 			Core::Instance ().checkUploadPeriod ();
 	}
 

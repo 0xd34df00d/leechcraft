@@ -310,7 +310,7 @@ namespace OnlineBookmarks
 		if (result.isEmpty ())
 			return;
 
-		const int type = XmlSettingsManager::Instance ()->Property ("UploadType", 0).toInt ();
+		const int type = XmlSettingsManager::Instance ().Property ("UploadType", 0).toInt ();
 		IBookmarksService *ibs = 0;
 		switch (type)
 		{
@@ -379,10 +379,8 @@ namespace OnlineBookmarks
 
 	void Core::checkDownloadPeriod ()
 	{
-		long downloadPeriod = XmlSettingsManager::Instance ()->
-				property ("DownloadPeriod").toInt () * 900;
-		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
-				Property ("LastDownloadCheck", 0).toInt ();
+		long downloadPeriod = XmlSettingsManager::Instance ().property ("DownloadPeriod").toInt () * 900;
+		long lastCheckTimeInSec = XmlSettingsManager::Instance ().Property ("LastDownloadCheck", 0).toInt ();
 
 		long diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentSecsSinceEpoch ();
 		if (diff > 0)
@@ -390,17 +388,15 @@ namespace OnlineBookmarks
 		else
 		{
 			downloadBookmarks ();
-			XmlSettingsManager::Instance ()->setProperty ("LastDownloadCheck", QDateTime::currentSecsSinceEpoch ());
+			XmlSettingsManager::Instance ().setProperty ("LastDownloadCheck", QDateTime::currentSecsSinceEpoch ());
 			DownloadTimer_->start (downloadPeriod * 1000);
 		}
 	}
 
 	void Core::checkUploadPeriod ()
 	{
-		long uploadPeriod = XmlSettingsManager::Instance ()->
-				property ("UploadPeriod").toInt () * 900;
-		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
-				Property ("LastUploadCheck", 0).toInt ();
+		long uploadPeriod = XmlSettingsManager::Instance ().property ("UploadPeriod").toInt () * 900;
+		long lastCheckTimeInSec = XmlSettingsManager::Instance ().Property ("LastUploadCheck", 0).toInt ();
 
 		long diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentSecsSinceEpoch ();
 		if (diff > 0)
@@ -408,11 +404,10 @@ namespace OnlineBookmarks
 		else
 		{
 			uploadBookmarks ();
-			XmlSettingsManager::Instance ()->setProperty ("LastUploadCheck", QDateTime::currentSecsSinceEpoch ());
+			XmlSettingsManager::Instance ().setProperty ("LastUploadCheck", QDateTime::currentSecsSinceEpoch ());
 			UploadTimer_->start (uploadPeriod * 1000);
 		}
 	}
-
 }
 }
 }

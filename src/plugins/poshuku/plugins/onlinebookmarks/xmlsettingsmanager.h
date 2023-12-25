@@ -25,7 +25,7 @@ namespace OnlineBookmarks
 		virtual void EndSettings (QSettings*) const;
 		virtual QSettings *BeginSettings () const;
 	public:
-		static XmlSettingsManager* Instance ();
+		static XmlSettingsManager& Instance ();
 	};
 }
 }

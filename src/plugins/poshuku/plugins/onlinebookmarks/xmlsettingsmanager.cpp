@@ -21,10 +21,10 @@ namespace OnlineBookmarks
 		Util::BaseSettingsManager::Init ();
 	}
 
-	XmlSettingsManager* XmlSettingsManager::Instance ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager xsm;
-		return &xsm;
+		return xsm;
 	}
 
 	void XmlSettingsManager::EndSettings (QSettings*) const
