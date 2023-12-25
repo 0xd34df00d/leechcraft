@@ -279,6 +279,13 @@ namespace LC::Util
 	{
 		using Result_t = Either<QString, bool>;
 
+		auto immediatelyFailing = [] () -> Task<Result_t>
+		{
+			const auto theInt = co_await Either<QString, int>::Left ("meh");
+			co_return Result_t::Right (theInt > 420);
+		} ();
+		QCOMPARE (GetTaskResult (immediatelyFailing), Result_t::Left ("meh"));
+
 		auto earlyFailing = [] () -> Task<Result_t>
 		{
 			const auto theInt = co_await Either<QString, int>::Left ("meh");
