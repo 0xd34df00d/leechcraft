@@ -120,8 +120,6 @@ namespace Xoox
 		void RemoveEntry (RoomParticipantEntry*);
 
 		void RemoveThis ();
-	signals:
-		void gotPendingForm (QXmppDataForm*, const QString&);
 	};
 }
 }

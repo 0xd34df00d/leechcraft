@@ -77,12 +77,6 @@ namespace Xoox
 				this,
 				SLOT (handleParticipantRemoved (const QString&)));
 
-		connect (this,
-				SIGNAL (gotPendingForm (QXmppDataForm*, const QString&)),
-				Account_->GetClientConnection ().get (),
-				SLOT (handlePendingForm (QXmppDataForm*, const QString&)),
-				Qt::QueuedConnection);
-
 		QTimer::singleShot (0, this, [this] { Room_->join (); });
 	}
 
