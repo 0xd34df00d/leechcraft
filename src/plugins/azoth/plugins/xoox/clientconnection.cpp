@@ -1023,6 +1023,22 @@ namespace Xoox
 		emit Account_->mucInvitationReceived (identifying, inviter, reason);
 	}
 
+	namespace
+	{
+		bool IsMundaneErrorCondition (QXmppStanza::Error::Condition cond)
+		{
+			using enum QXmppStanza::Error::Condition;
+			switch (cond)
+			{
+			case RemoteServerTimeout:
+			case RemoteServerNotFound:
+				return true;
+			default:
+				return false;
+			}
+		}
+	}
+
 	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
 	{
 		const QString& jid = pres.from ();
@@ -1059,12 +1075,13 @@ namespace Xoox
 				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);
 			else if (const auto entry = JID2CLEntry_.value (bare))
 			{
-				qDebug () << Q_FUNC_INFO
-						<< "got error presence for"
-						<< jid
-						<< pres.error ().type ()
-						<< pres.error ().condition ()
-						<< pres.error ().text ();
+				if (!IsMundaneErrorCondition (pres.error ().condition ()))
+					qDebug () << Q_FUNC_INFO
+							<< "got error presence for"
+							<< jid
+							<< pres.error ().type ()
+							<< pres.error ().condition ()
+							<< pres.error ().text ();
 				entry->SetErrorPresence (resource, pres);
 			}
 			break;
