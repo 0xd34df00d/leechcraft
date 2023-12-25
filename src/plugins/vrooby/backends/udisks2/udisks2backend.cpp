@@ -201,10 +201,14 @@ namespace UDisks2
 
 		const auto& slaveTo = partitionIface->property ("Table").value<QDBusObjectPath> ();
 		const bool isRemovable = driveIface->property ("Removable").toBool ();
-		qDebug () << str << slaveTo.path () << isPartition << isRemovable;
+
+		static const bool debugUdisks = qgetenv ("LC_VROOBY_DEBUG_UDISKS") == "1";
+		if (debugUdisks)
+			qDebug () << str << slaveTo.path () << isPartition << isRemovable;
 		if ((!isPartition && !isRemovable) || Unremovables_.contains (slaveTo.path ()))
 		{
-			qDebug () << "detected as unremovable";
+			if (debugUdisks)
+				qDebug () << "detected as unremovable";
 			Unremovables_ << str;
 			return false;
 		}
