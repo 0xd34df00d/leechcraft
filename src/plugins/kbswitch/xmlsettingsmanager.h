@@ -10,21 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::KBSwitch
 {
-	namespace KBSwitch
-{
-	class XmlSettingsManager : public
-			LC::Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"KBSwitch">;
 }

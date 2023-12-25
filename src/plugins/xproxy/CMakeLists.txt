@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		xproxy.cpp
 		proxyfactory.cpp
-		xmlsettingsmanager.cpp
 		proxiesconfigwidget.cpp
 		proxyconfigdialog.cpp
 		proxiesstorage.cpp

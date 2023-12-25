@@ -12,7 +12,6 @@ endif ()
 LC_DEFINE_PLUGIN (
 	SRCS
 		xtazy.cpp
-		xmlsettingsmanager.cpp
 		tunesourcebase.cpp
 		filesource.cpp
 		lcsource.cpp

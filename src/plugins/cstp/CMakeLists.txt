@@ -8,7 +8,6 @@ LC_DEFINE_PLUGIN (
 		core.cpp
 		task.cpp
 		addtask.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS cstpsettings.xml
 	QT_COMPONENTS Network Widgets
 	INSTALL_SHARE

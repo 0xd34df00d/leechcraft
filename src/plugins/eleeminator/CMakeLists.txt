@@ -11,7 +11,6 @@ LC_DEFINE_PLUGIN (
 		termtab.cpp
 		processgraphbuilder.cpp
 		processinfo.cpp
-		xmlsettingsmanager.cpp
 		closedialog.cpp
 		colorschemesmanager.cpp
 		termcolorschemechooser.cpp

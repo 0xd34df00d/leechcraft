@@ -10,7 +10,6 @@ LC_DEFINE_PLUGIN (
 		snails.cpp
 		core.cpp
 		mailtab.cpp
-		xmlsettingsmanager.cpp
 		accountslistwidget.cpp
 		account.cpp
 		accountconfigdialog.cpp

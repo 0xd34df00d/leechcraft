@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (
 		seekthru.cpp
 		core.cpp
 		description.cpp
-		xmlsettingsmanager.cpp
 		searcherslist.cpp
 		findproxy.cpp
 		searchhandler.cpp

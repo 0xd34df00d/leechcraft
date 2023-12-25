@@ -7,7 +7,6 @@ find_package (LibLaretz REQUIRED)
 LC_DEFINE_PLUGIN (
 	SRCS
 		syncer.cpp
-		xmlsettingsmanager.cpp
 		syncablemanager.cpp
 		singlesyncable.cpp
 	SETTINGS syncersettings.xml

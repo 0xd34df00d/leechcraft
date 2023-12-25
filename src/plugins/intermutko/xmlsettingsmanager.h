@@ -10,19 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Intermutko
 {
-namespace Intermutko
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		QSettings* BeginSettings () const;
-		void EndSettings (QSettings*) const;
-	};
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Intermutko">;
 }

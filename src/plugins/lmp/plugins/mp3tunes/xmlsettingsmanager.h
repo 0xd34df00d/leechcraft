@@ -10,23 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::LMP::MP3Tunes
 {
-namespace LMP
-{
-namespace MP3Tunes
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"LMP_MP3Tunes">;
 }

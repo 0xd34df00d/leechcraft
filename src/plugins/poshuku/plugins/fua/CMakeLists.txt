@@ -5,7 +5,6 @@ LC_DEFINE_PLUGIN (
 		fua.cpp
 		settings.cpp
 		changer.cpp
-		xmlsettingsmanager.cpp
 	RESOURCES poshukufuaresources.qrc
 	SETTINGS poshukufuasettings.xml
 	QT_COMPONENTS Widgets

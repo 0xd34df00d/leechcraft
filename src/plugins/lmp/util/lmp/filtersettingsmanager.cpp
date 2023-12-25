@@ -7,30 +7,19 @@
  **********************************************************************/
 
 #include "filtersettingsmanager.h"
-#include <QCoreApplication>
+#include <util/xsd/util.h>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	FilterSettingsManager::FilterSettingsManager (const QString& filterId, QObject *parent)
-	: BaseSettingsManager { false, parent }
+	: BaseSettingsManager { parent }
 	, FilterId_ { filterId }
 	{
 		BaseSettingsManager::Init ();
 	}
 
-	QSettings* FilterSettingsManager::BeginSettings () const
+	auto FilterSettingsManager::MakeSettings () const -> QSettings_ptr
 	{
-		auto settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_LMP_Effects");
-		settings->beginGroup (FilterId_);
-		return settings;
+		return Util::MakeGroupSettings ("LMP_Effects", FilterId_);
 	}
-
-	void FilterSettingsManager::EndSettings (QSettings *settings) const
-	{
-		settings->endGroup ();
-	}
-}
 }

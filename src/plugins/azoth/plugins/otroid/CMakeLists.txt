@@ -13,7 +13,6 @@ LC_DEFINE_PLUGIN (
 		initiateauthdialog.cpp
 		fpmanager.cpp
 		privkeymanager.cpp
-		xmlsettingsmanager.cpp
 		util.cpp
 	SETTINGS azothotroidsettings.xml
 	QT_COMPONENTS Concurrent Widgets

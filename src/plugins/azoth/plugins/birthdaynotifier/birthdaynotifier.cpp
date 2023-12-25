@@ -12,6 +12,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
@@ -22,7 +23,6 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/imetainfoentry.h>
 #include <interfaces/azoth/iextselfinfoaccount.h>
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -30,6 +30,8 @@ namespace Azoth
 {
 namespace BirthdayNotifier
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_BirthdayNotifier">;
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;

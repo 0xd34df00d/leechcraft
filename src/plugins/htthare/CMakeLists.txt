@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		htthare.cpp
-		xmlsettingsmanager.cpp
 		server.cpp
 		connection.cpp
 		requesthandler.cpp

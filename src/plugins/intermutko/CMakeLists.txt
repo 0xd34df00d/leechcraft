@@ -10,7 +10,6 @@ LC_DEFINE_PLUGIN (
 		localeentry.cpp
 		localesmodel.cpp
 		util.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS intermutkosettings.xml
 	QT_COMPONENTS Network Widgets
 	)

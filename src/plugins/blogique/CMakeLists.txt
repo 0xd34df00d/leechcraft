@@ -28,7 +28,6 @@ LC_DEFINE_PLUGIN (
 		tagsproxymodel.cpp
 		updateentriesdialog.cpp
 		utils.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS blogiquesettings.xml
 	QT_COMPONENTS PrintSupport QuickWidgets Sql Xml
 	INSTALL_SHARE

@@ -11,12 +11,12 @@
 #include <QIcon>
 #include <QMessageBox>
 #include <QTranslator>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/imessage.h>
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -24,6 +24,8 @@ namespace Azoth
 {
 namespace HiLi
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_HiLi">;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("azoth_hili");

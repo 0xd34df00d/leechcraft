@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		gmailnotifier.cpp
-		xmlsettingsmanager.cpp
 		gmailchecker.cpp
 		convinfo.cpp
 		notifier.cpp

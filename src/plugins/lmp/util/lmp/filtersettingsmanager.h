@@ -11,19 +11,14 @@
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "lmputilconfig.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class LMP_UTIL_API FilterSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
 		const QString FilterId_;
 	public:
 		FilterSettingsManager (const QString& filterId, QObject* = nullptr);
 	protected:
-		QSettings* BeginSettings () const;
-		void EndSettings (QSettings*) const;
+		QSettings_ptr MakeSettings () const override;
 	};
-}
 }

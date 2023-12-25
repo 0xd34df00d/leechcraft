@@ -5,7 +5,6 @@ LC_DEFINE_PLUGIN (
 		createscriptdialog.cpp
 		fatape.cpp
 		greasemonkey.cpp
-		xmlsettingsmanager.cpp
 		userscript.cpp
 		userscriptcreator.cpp
 		userscriptinstallerdialog.cpp

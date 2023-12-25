@@ -20,7 +20,6 @@ LC_DEFINE_PLUGIN (
 		groupmanager.cpp
 		smsdialog.cpp
 		selfavatarfetcher.cpp
-		xmlsettingsmanager.cpp
 		vcarddialog.cpp
 		avatarstimestampstorage.cpp
 		proto/headers.cpp

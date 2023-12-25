@@ -17,7 +17,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
 class QImage;
 
 namespace LC
@@ -36,7 +35,6 @@ namespace Modnok
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Modnok")
 
-		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
 		QString ConvScriptPath_;

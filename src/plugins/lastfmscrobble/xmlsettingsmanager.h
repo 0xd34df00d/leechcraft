@@ -11,20 +11,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Lastfmscrobble
 {
-namespace Lastfmscrobble
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		QSettings* BeginSettings () const;
-		void EndSettings (QSettings*) const;
-	};
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Lastfmscrobble">;
 }

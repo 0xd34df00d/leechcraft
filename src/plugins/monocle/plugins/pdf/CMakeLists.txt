@@ -12,7 +12,6 @@ LC_DEFINE_PLUGIN (
 		links.cpp
 		fields.cpp
 		annotations.cpp
-		xmlsettingsmanager.cpp
 		pendingfontinforequest.cpp
 	SETTINGS monoclepdfsettings.xml
 	QT_COMPONENTS Concurrent Gui Xml

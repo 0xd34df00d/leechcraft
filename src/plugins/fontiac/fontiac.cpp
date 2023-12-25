@@ -8,15 +8,17 @@
 
 #include "fontiac.h"
 #include <QIcon>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include "xmlsettingsmanager.h"
 #include "substsmanager.h"
 
 namespace LC
 {
 namespace Fontiac
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Fontiac">;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("fontiac");

@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		modnok.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS azothmodnoksettings.xml
 	QT_COMPONENTS Widgets
 	INSTALL_SHARE

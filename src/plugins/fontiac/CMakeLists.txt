@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		fontiac.cpp
 		substsmanager.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS fontiacsettings.xml
 	QT_COMPONENTS Gui
 	)

@@ -24,7 +24,6 @@ LC_DEFINE_PLUGIN (
 		sendmessagedialog.cpp
 		updatetypedialog.cpp
 		utils.cpp
-		xmlsettingsmanager.cpp
 	RESOURCES blogiquemetidaresources.qrc
 	SETTINGS blogiquemetidasettings.xml
 	QT_COMPONENTS Network Quick Sql Widgets Xml XmlPatterns

@@ -10,7 +10,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		kinotify.cpp
 		kinotifywidget.cpp
-		xmlsettingsmanager.cpp
 		$<$<PLATFORM_ID:Linux,FreeBSD>:fswinwatcher_x11.cpp>
 		$<$<PLATFORM_ID:Windows>:fswinwatcher_win.cpp>
 	SETTINGS kinotifysettings.xml

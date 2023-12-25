@@ -4,7 +4,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		cleanweb.cpp
 		core.cpp
-		xmlsettingsmanager.cpp
 		subscriptionsmanagerwidget.cpp
 		userfilters.cpp
 		userfiltersmodel.cpp

@@ -10,23 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Poshuku::WebKitView
 {
-namespace Poshuku
-{
-namespace WebKitView
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		QSettings* BeginSettings () const override;
-		void EndSettings (QSettings*) const override;
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Poshuku_WebKitView">;
 }

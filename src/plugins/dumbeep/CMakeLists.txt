@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		dumbeep.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS dumbeepsettings.xml
 	QT_COMPONENTS Core
 	)

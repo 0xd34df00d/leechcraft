@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include <QSettings>
-#include <QDynamicPropertyChangeEvent>
 #include <QCoreApplication>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
@@ -19,25 +18,16 @@ namespace LC
 		Util::BaseSettingsManager::Init ();
 	}
 
-	XmlSettingsManager::~XmlSettingsManager ()
-	{
-	}
-
 	XmlSettingsManager* XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager manager;
 		return &manager;
 	}
 
-	QSettings* XmlSettingsManager::BeginSettings () const
+	auto XmlSettingsManager::MakeSettings () const -> QSettings_ptr
 	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+		return std::make_shared<QSettings> (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
 	}
 };
 

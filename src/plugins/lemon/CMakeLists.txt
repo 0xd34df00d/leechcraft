@@ -13,7 +13,6 @@ LC_DEFINE_PLUGIN (
 		trafficdialog.cpp
 		platformbackend.cpp
 		linuxplatformbackend.cpp
-		xmlsettingsmanager.cpp
 		quarkproxy.cpp
 	SETTINGS lemonsettings.xml
 	QT_COMPONENTS Network Widgets

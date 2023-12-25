@@ -18,7 +18,6 @@ LC_DEFINE_PLUGIN (
 		wkplugins.cpp
 		notificationsext.cpp
 		spellcheckext.cpp
-		xmlsettingsmanager.cpp
 		${WRAPPED_QHEADERS}
 	SETTINGS wkpluginssettings.xml
 	QT_COMPONENTS WebKitWidgets

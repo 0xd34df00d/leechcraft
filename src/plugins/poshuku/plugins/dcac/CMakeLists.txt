@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 		effectprocessor.cpp
 		effects.cpp
 		viewsmanager.cpp
-		xmlsettingsmanager.cpp
 		invertcolors.cpp
 		reducelightness.cpp
 		colortemp.cpp

@@ -10,21 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Poshuku::CleanWeb
 {
-namespace Poshuku
-{
-namespace CleanWeb
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		QSettings* BeginSettings () const override;
-		void EndSettings (QSettings*) const override;
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"CleanWeb">;
 }

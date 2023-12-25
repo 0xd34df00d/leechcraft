@@ -10,21 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::NetStoreManager::DBox
 {
-namespace NetStoreManager
-{
-namespace DBox
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"NetStoreManager_DBox">;
 }

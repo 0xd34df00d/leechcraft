@@ -8,7 +8,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		netstoremanager.cpp
 		managertab.cpp
-		xmlsettingsmanager.cpp
 		accountsmanager.cpp
 		accountslistwidget.cpp
 		addaccountdialog.cpp

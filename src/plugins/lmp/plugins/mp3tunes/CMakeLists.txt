@@ -9,7 +9,6 @@ LC_DEFINE_PLUGIN (
 		authmanager.cpp
 		playlistmanager.cpp
 		uploader.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS lmpmp3tunessettings.xml
 	QT_COMPONENTS Gui Network Xml
 	)

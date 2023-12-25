@@ -28,7 +28,6 @@ LC_DEFINE_PLUGIN (
 		tocwidget.cpp
 		presenterwidget.cpp
 		pagesview.cpp
-		xmlsettingsmanager.cpp
 		pixmapcachemanager.cpp
 		recentlyopenedmanager.cpp
 		choosebackenddialog.cpp

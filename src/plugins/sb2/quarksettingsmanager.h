@@ -26,8 +26,8 @@ namespace LC::SB2
 	public slots:
 		void setSettingsValue (const QString& key, const QVariant& value);
 	protected:
-		QSettings* BeginSettings () const override;
-		void EndSettings (QSettings*) const override;
+		QSettings_ptr MakeSettings () const override;
+
 		void PropertyChanged (const QString&, const QVariant&) override;
 	};
 }

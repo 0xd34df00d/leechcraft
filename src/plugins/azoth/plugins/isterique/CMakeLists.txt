@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		isterique.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS azothisteriquesettings.xml
 	QT_COMPONENTS Core Widgets
 	INSTALL_SHARE

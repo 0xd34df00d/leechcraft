@@ -6,25 +6,18 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef XMLSETTINGSMANAGER_H
-#define XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LC
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-
 		XmlSettingsManager ();
 	public:
-		virtual ~XmlSettingsManager ();
 		static XmlSettingsManager* Instance ();
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		QSettings_ptr MakeSettings () const override;
 	};
-};
-
-#endif
-
+}

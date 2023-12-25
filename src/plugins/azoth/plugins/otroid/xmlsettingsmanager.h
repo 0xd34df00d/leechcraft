@@ -16,17 +16,7 @@ namespace Azoth
 {
 namespace OTRoid
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_OTRoid">;
 }
 }
 }

@@ -8,7 +8,6 @@ LC_DEFINE_PLUGIN (
 		pagerenderer.cpp
 		requesthandler.cpp
 		speeddial.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS poshukuspeeddialsettings.xml
 	QT_COMPONENTS Concurrent Widgets
 	)

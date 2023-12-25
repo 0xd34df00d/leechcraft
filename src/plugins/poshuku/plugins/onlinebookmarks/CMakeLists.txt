@@ -3,7 +3,6 @@ project (poshuku_onlinebookmarks)
 LC_DEFINE_PLUGIN (
 	SRCS
 		onlinebookmarks.cpp
-		xmlsettingsmanager.cpp
 		core.cpp
 		accountssettings.cpp
 		pluginmanager.cpp

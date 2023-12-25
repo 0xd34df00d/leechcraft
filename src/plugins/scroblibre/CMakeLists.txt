@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		scroblibre.cpp
-		xmlsettingsmanager.cpp
 		accountsmanager.cpp
 		authmanager.cpp
 		singleaccauth.cpp

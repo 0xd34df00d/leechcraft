@@ -8,12 +8,12 @@
 
 #include "isterique.h"
 #include <QIcon>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/imessage.h>
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -21,6 +21,8 @@ namespace Azoth
 {
 namespace Isterique
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_Isterique">;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("azoth_isterique");

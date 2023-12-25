@@ -13,7 +13,6 @@ LC_DEFINE_PLUGIN (
 		photofetcher.cpp
 		vcarddialog.cpp
 		georesolver.cpp
-		xmlsettingsmanager.cpp
 		longpollmanager.cpp
 		groupsmanager.cpp
 		mucjoinwidget.cpp

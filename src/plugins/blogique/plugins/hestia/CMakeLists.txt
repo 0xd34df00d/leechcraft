@@ -10,7 +10,6 @@ LC_DEFINE_PLUGIN (
 		hestia.cpp
 		localblogaccount.cpp
 		localbloggingplatform.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS blogiquehestiasettings.xml
 	QT_COMPONENTS Sql Widgets
 	)

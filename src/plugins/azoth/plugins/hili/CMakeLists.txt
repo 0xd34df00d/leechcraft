@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		hili.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS azothhilisettings.xml
 	QT_COMPONENTS Core Widgets
 	INSTALL_SHARE

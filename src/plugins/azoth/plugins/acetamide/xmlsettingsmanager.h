@@ -10,21 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Azoth::Acetamide
 {
-namespace Azoth
-{
-namespace Acetamide
-{
-	class XmlSettingsManager : public LC::Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		QSettings* BeginSettings () const override;
-		void EndSettings (QSettings*) const override;
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_Acetamide", true>;
 }

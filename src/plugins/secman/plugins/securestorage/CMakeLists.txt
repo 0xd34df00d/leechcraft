@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 		cryptosystem.cpp
 		ciphertextformat.cpp
 		settingswidget.cpp
-		xmlsettingsmanager.cpp
 		newpassworddialog.cpp
 	SETTINGS securestoragesettings.xml
 	QT_COMPONENTS Widgets

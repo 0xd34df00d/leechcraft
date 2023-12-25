@@ -12,13 +12,5 @@
 
 namespace LC::Azoth::Autopaste
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_Autopaste">;
 }

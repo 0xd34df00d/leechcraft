@@ -47,7 +47,7 @@ namespace LC
 
 		for (const auto& pair : Util::Stlize (pendings))
 		{
-			const auto& s = pair.first->GetSettings ();
+			const auto& s = pair.first->MakeSettings ();
 			for (const auto& p : pair.second)
 				s->setValue (p.first, p.second);
 		}

@@ -75,7 +75,6 @@ LC_DEFINE_PLUGIN (
 		pluginmanager.cpp
 		proxyobject.cpp
 		textedit.cpp
-		xmlsettingsmanager.cpp
 		transferjobmanager.cpp
 		addaccountwizardfirstpage.cpp
 		util.cpp

@@ -10,13 +10,12 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <QDebug>
-#include <QUrl>
 #include <util/util.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "keywordsmanagerwidget.h"
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -24,6 +23,8 @@ namespace Poshuku
 {
 namespace Keywords
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Poshuku_Keywords">;
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("poshuku_keywords");
@@ -50,7 +51,7 @@ namespace Keywords
 		}
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"poshukukeywordssettings.xml");
 		SettingsDialog_->SetCustomWidget ("KeywordsManagerWidget",
 				new KeywordsManagerWidget { model, this });

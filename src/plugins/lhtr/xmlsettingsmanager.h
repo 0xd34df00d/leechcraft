@@ -12,13 +12,5 @@
 
 namespace LC::LHTR
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		QSettings* BeginSettings () const override;
-		void EndSettings (QSettings*) const override;
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"LHTR">;
 }

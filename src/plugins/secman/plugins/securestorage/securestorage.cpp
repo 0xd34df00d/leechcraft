@@ -20,9 +20,9 @@
 #include <QMap>
 #include <QDataStream>
 #include <interfaces/secman/istorageplugin.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "settingswidget.h"
-#include "xmlsettingsmanager.h"
 
 namespace
 {
@@ -56,6 +56,8 @@ namespace SecureStorage
 		else
 			throw PasswordNotEnteredException ();
 	}
+
+	using XmlSettingsManager = Util::SingletonSettingsManager<"SecMan_SecureStorage">;
 
 	Plugin::Plugin ()
 	: Storage_ { std::make_shared<QSettings> (QSettings::IniFormat,
@@ -95,7 +97,7 @@ namespace SecureStorage
 				SLOT (clearSettings ()));
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"securestoragesettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("SettingsWidget", SettingsWidget_);
 		UpdateActionsStates ();

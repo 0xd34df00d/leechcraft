@@ -16,7 +16,9 @@
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
+#include <util/xsd/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iclentry.h>
@@ -288,31 +290,18 @@ namespace Herbicide
 		{
 			const QByteArray GroupName_;
 		public:
-			AccountSettingsManager (IAccount*, QObject*);
+			AccountSettingsManager (IAccount *acc, QObject *parent)
+			: Util::BaseSettingsManager { parent }
+			, GroupName_ { acc->GetAccountID () }
+			{
+				Util::BaseSettingsManager::Init ();
+			}
 		protected:
-			QSettings* BeginSettings () const override;
-			void EndSettings (QSettings*) const override;
+			QSettings_ptr MakeSettings () const override
+			{
+				return Util::MakeGroupSettings ("Azoth_Herbicide"_qs, GroupName_);
+			}
 		};
-
-		AccountSettingsManager::AccountSettingsManager (IAccount *acc, QObject *parent)
-		: Util::BaseSettingsManager { parent }
-		, GroupName_ { acc->GetAccountID () }
-		{
-			Util::BaseSettingsManager::Init ();
-		}
-
-		QSettings* AccountSettingsManager::BeginSettings () const
-		{
-			const auto settings = new QSettings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Azoth_Herbicide");
-			settings->beginGroup (GroupName_);
-			return settings;
-		}
-
-		void AccountSettingsManager::EndSettings (QSettings *settings) const
-		{
-			settings->endGroup ();
-		}
 	}
 
 	void Plugin::ShowAccountAntispamConfig (IAccount *acc)

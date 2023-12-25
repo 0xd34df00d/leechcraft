@@ -11,6 +11,8 @@
 #include <QQmlContext>
 #include <QFileInfo>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
+#include <util/xsd/util.h>
 
 namespace LC::SB2
 {
@@ -25,23 +27,15 @@ namespace LC::SB2
 
 	void QuarkSettingsManager::setSettingsValue (const QString& key, const QVariant& value)
 	{
-		auto s = GetSettings ();
+		auto s = MakeSettings ();
 		s->setValue (key, value);
 
 		PropertyChanged (key, value);
 	}
 
-	QSettings* QuarkSettingsManager::BeginSettings () const
+	auto QuarkSettingsManager::MakeSettings () const -> QSettings_ptr
 	{
-		auto settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2_Quarks");
-		settings->beginGroup (QFileInfo (QuarkURL_.path ()).fileName ());
-		return settings;
-	}
-
-	void QuarkSettingsManager::EndSettings (QSettings *settings) const
-	{
-		settings->endGroup ();
+		return Util::MakeGroupSettings ("SB2_Quarks"_qs, QFileInfo (QuarkURL_.path ()).fileName ());
 	}
 
 	namespace

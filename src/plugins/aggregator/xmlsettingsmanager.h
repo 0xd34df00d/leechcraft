@@ -12,15 +12,7 @@
 
 namespace LC::Aggregator
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		QSettings* BeginSettings () const override;
-		void EndSettings (QSettings*) const override;
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Aggregator">;
 
 	bool ConfirmWithPersistence (const char *propName, const QString& questionMessage);
 }

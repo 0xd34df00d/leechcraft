@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (
 		tracolor.cpp
 		entryeventsmanager.cpp
 		iconsmanager.cpp
-		xmlsettingsmanager.cpp
 		eventssettingsmanager.cpp
 	SETTINGS azothtracolorsettings.xml
 	QT_COMPONENTS Widgets

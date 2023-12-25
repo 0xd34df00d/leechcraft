@@ -21,10 +21,7 @@ namespace LC::SB2
 		public:
 			XmlViewSettingsManager (ViewManager*);
 		protected:
-			Settings_ptr GetSettings () const;
-
-			QSettings* BeginSettings () const;
-			void EndSettings (QSettings*) const;
+			Settings_ptr MakeSettings () const override;
 		};
 
 		XmlViewSettingsManager::XmlViewSettingsManager (ViewManager *view)
@@ -33,18 +30,9 @@ namespace LC::SB2
 			Util::BaseSettingsManager::Init ();
 		}
 
-		Settings_ptr XmlViewSettingsManager::GetSettings () const
+		Settings_ptr XmlViewSettingsManager::MakeSettings () const
 		{
 			return ViewMgr_->GetSettings ();
-		}
-
-		QSettings* XmlViewSettingsManager::BeginSettings () const
-		{
-			return nullptr;
-		}
-
-		void XmlViewSettingsManager::EndSettings (QSettings*) const
-		{
 		}
 	}
 

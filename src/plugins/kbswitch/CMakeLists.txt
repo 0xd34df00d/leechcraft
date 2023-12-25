@@ -9,7 +9,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		kbswitch.cpp
 		keyboardlayoutswitcher.cpp
-		xmlsettingsmanager.cpp
 		kbctl.cpp
 		quarkproxy.cpp
 		flagiconprovider.cpp

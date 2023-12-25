@@ -12,14 +12,6 @@
 
 namespace LC::Poshuku::SpeedDial
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	protected:
-		void EndSettings (QSettings*) const override;
-		QSettings *BeginSettings () const override;
-	public:
-		static XmlSettingsManager& Instance ();
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Poshuku_SpeedDial">;
 }
 

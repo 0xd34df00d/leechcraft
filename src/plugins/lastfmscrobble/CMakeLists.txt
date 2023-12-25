@@ -8,7 +8,6 @@ find_package (LastFM REQUIRED)
 LC_DEFINE_PLUGIN (
 	SRCS
 		lastfmsubmitter.cpp
-		xmlsettingsmanager.cpp
 		lastfmscrobble.cpp
 		pendingsimilarartists.cpp
 		albumartfetcher.cpp

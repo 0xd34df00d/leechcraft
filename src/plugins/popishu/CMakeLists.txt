@@ -9,7 +9,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		popishu.cpp
 		editorpage.cpp
-		xmlsettingsmanager.cpp
 		replacedialog.cpp
 	SETTINGS popishusettings.xml
 	QT_COMPONENTS Widgets

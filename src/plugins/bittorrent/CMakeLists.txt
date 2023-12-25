@@ -20,7 +20,6 @@ LC_DEFINE_PLUGIN (
 		addtorrent.cpp
 		newtorrentwizard.cpp
 		pieceswidget.cpp
-		xmlsettingsmanager.cpp
 		piecesmodel.cpp
 		torrentfilesmodel.cpp
 		peersmodel.cpp

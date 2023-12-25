@@ -10,7 +10,6 @@ LC_DEFINE_PLUGIN (
 		rosenthal.cpp
 		checker.cpp
 		knowndictsmanager.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS rosenthalsettings.xml
 	QT_COMPONENTS Gui
 	LINK_LIBRARIES PkgConfig::Hunspell

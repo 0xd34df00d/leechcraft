@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		fenet.cpp
 		wmfinder.cpp
-		xmlsettingsmanager.cpp
 		compfinder.cpp
 		compparamsmanager.cpp
 		compparamswidget.cpp

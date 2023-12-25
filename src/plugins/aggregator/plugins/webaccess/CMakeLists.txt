@@ -13,7 +13,6 @@ LC_DEFINE_PLUGIN (
 		q2wproxymodel.cpp
 		util.cpp
 		serverupdater.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS aggregatorwebaccesssettings.xml
 	QT_COMPONENTS Core
 	LINK_LIBRARIES

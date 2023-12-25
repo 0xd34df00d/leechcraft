@@ -11,7 +11,6 @@ LC_DEFINE_PLUGIN (
 		drivemanager.cpp
 		dropbox.cpp
 		uploadmanager.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS nsmdropboxsettings.xml
 	QT_COMPONENTS Network Widgets
 	INSTALL_SHARE

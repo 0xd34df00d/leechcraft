@@ -10,24 +10,8 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Azoth::Tracolor
 {
-namespace Azoth
-{
-namespace Tracolor
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_Tracolor">;
 }
 

@@ -18,7 +18,6 @@ LC_DEFINE_PLUGIN (
 		webviewrendersettingshandler.cpp
 		webviewsmoothscroller.cpp
 		webviewsslwatcherhandler.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS poshukuwebkitviewsettings.xml
 	QT_COMPONENTS PrintSupport WebKitWidgets
 	)

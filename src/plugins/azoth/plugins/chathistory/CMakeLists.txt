@@ -9,7 +9,6 @@ LC_DEFINE_PLUGIN (
 		chathistorywidget.cpp
 		historymessage.cpp
 		chatfindbox.cpp
-		xmlsettingsmanager.cpp
 		historyvieweventfilter.cpp
 		storagemanager.cpp
 		loggingstatekeeper.cpp

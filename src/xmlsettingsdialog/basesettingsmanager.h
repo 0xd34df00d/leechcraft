@@ -18,6 +18,7 @@
 #include <QDynamicPropertyChangeEvent>
 #include <QPointer>
 #include <util/sll/typegetter.h>
+#include <util/sll/ctstring.h>
 #include "xsdconfig.h"
 
 typedef std::shared_ptr<QSettings> Settings_ptr;
@@ -50,10 +51,12 @@ namespace Util
 
 		friend class LC::SettingsThread;
 	protected:
-		bool ReadAllKeys_ = false;
+		const bool ReadAllKeys_ = false;
+		const QString SettingsFileSuffix_ {};
 	public:
 		explicit BaseSettingsManager (QObject* = nullptr);
 		explicit BaseSettingsManager (bool readAllKeys, QObject* = nullptr);
+		explicit BaseSettingsManager (QString settingsFileSuffix, bool readAllKeys = false, QObject* = nullptr);
 
 		/** @brief Initalizes the settings manager.
 		 *
@@ -197,28 +200,16 @@ namespace Util
 	protected:
 		virtual bool event (QEvent*);
 
+		using QSettings_ptr = std::shared_ptr<QSettings>;
+
 		/*! @brief Allocates and returns a QSettings object suitable for
 		 * use.
 		 *
 		 * @return The created QSettings object.
-		 * @sa EndSettings
 		 */
-		virtual QSettings* BeginSettings () const = 0;
-
-		/*! @brief Correctly closes the QSettings object.
-		 *
-		 * Closes the QSettings object previously created by
-		 * BeginSettings. It should NOT delete it, BaseSettignsManager's
-		 * code would do that.
-		 *
-		 * @param[in] settings The QSettings object.
-		 * @sa BeginSettings
-		 */
-		virtual void EndSettings (QSettings *settings) const = 0;
+		virtual QSettings_ptr MakeSettings () const;
 
 		virtual void PropertyChanged (const QString&, const QVariant&);
-
-		virtual Settings_ptr GetSettings () const;
 	private:
 		void RegisterObjectImpl (const QByteArray&, QObject*, const PropHandler_t&, EventFlags);
 	private Q_SLOTS:
@@ -226,6 +217,23 @@ namespace Util
 		void cleanupObjects ();
 	Q_SIGNALS:
 		void showPageRequested (Util::BaseSettingsManager*, const QString&);
+	};
+
+	template<CtString Suffix, bool ReadAllKeys = false>
+	class SingletonSettingsManager : public BaseSettingsManager
+	{
+	public:
+		SingletonSettingsManager ()
+		: BaseSettingsManager { ToString<Suffix> (), ReadAllKeys }
+		{
+			BaseSettingsManager::Init ();
+		}
+
+		static auto& Instance ()
+		{
+			static SingletonSettingsManager xsm;
+			return xsm;
+		}
 	};
 }
 }

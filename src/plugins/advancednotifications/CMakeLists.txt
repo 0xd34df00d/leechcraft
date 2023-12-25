@@ -9,7 +9,6 @@ LC_DEFINE_PLUGIN (
 		concretehandlerbase.cpp
 		systemtrayhandler.cpp
 		notificationruleswidget.cpp
-		xmlsettingsmanager.cpp
 		notificationrule.cpp
 		fieldmatch.cpp
 		typedmatchers.cpp

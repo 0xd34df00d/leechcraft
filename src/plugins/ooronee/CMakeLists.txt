@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (
 		ooronee.cpp
 		droparea.cpp
 		quarkproxy.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS ooroneesettings.xml
 	QT_COMPONENTS Quick Widgets
 	INSTALL_SHARE

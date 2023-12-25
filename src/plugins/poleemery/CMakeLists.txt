@@ -19,7 +19,6 @@ LC_DEFINE_PLUGIN (
 		operationpropsdialog.cpp
 		entriesmodel.cpp
 		currenciesmanager.cpp
-		xmlsettingsmanager.cpp
 		graphstab.cpp
 		graphsfactory.cpp
 		entriesdelegate.cpp

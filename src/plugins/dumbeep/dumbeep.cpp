@@ -12,13 +12,15 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QProcess>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
 namespace Dumbeep
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Dumbeep">;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();

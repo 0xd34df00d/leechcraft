@@ -10,12 +10,12 @@
 #include <QIcon>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
-#include "xmlsettingsmanager.h"
 #include "3dparty/idle.h"
 
 namespace LC
@@ -24,6 +24,8 @@ namespace Azoth
 {
 namespace Autoidler
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_Autoidler">;
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		IdleSeconds_ = 0;

@@ -10,6 +10,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <util/sll/visitor.h>
+#include <QCoreApplication>
 #include "settingsthreadmanager.h"
 
 #define PROP2CHAR(a) (a.toUtf8 ().constData ())
@@ -17,13 +18,19 @@
 namespace LC::Util
 {
 	BaseSettingsManager::BaseSettingsManager (QObject *parent)
-	: QObject { parent }
+	: BaseSettingsManager ({}, false, parent)
 	{
 	}
 
 	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
+	: BaseSettingsManager ({}, readAllKeys, parent)
+	{
+	}
+
+	BaseSettingsManager::BaseSettingsManager (QString settingsFileSuffix, bool readAllKeys, QObject *parent)
 	: QObject { parent }
 	, ReadAllKeys_ { readAllKeys }
+	, SettingsFileSuffix_ { std::move (settingsFileSuffix) }
 	{
 	}
 
@@ -31,7 +38,7 @@ namespace LC::Util
 	{
 		IsInitializing_ = true;
 
-		auto settings = GetSettings ();
+		auto settings = MakeSettings ();
 		const auto& properties = ReadAllKeys_ ?
 				settings->allKeys () :
 				settings->childKeys ();
@@ -43,7 +50,7 @@ namespace LC::Util
 
 	void BaseSettingsManager::Release ()
 	{
-		auto settings = GetSettings ();
+		auto settings = MakeSettings ();
 
 		for (const auto& dProp : dynamicPropertyNames ())
 			settings->setValue (QString::fromUtf8 (dProp), property (dProp.constData ()));
@@ -96,12 +103,12 @@ namespace LC::Util
 
 	void BaseSettingsManager::SetRawValue (const QString& path, const QVariant& val)
 	{
-		GetSettings ()->setValue (path, val);
+		MakeSettings ()->setValue (path, val);
 	}
 
 	QVariant BaseSettingsManager::GetRawValue (const QString& path, const QVariant& def) const
 	{
-		return GetSettings ()->value (path, def);
+		return MakeSettings ()->value (path, def);
 	}
 
 	void BaseSettingsManager::ShowSettingsPage (const QString& optionName)
@@ -189,18 +196,14 @@ namespace LC::Util
 		return true;
 	}
 
-	void BaseSettingsManager::PropertyChanged (const QString&, const QVariant&)
+	auto BaseSettingsManager::MakeSettings () const -> QSettings_ptr
 	{
+		return std::make_shared<QSettings> (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + '_' + SettingsFileSuffix_);
 	}
 
-	Settings_ptr BaseSettingsManager::GetSettings () const
+	void BaseSettingsManager::PropertyChanged (const QString&, const QVariant&)
 	{
-		return Settings_ptr (BeginSettings (),
-				[this] (QSettings *settings)
-				{
-					EndSettings (settings);
-					delete settings;
-				});
 	}
 
 	void BaseSettingsManager::RegisterObjectImpl (const QByteArray& propName,

@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		herbicide.cpp
 		confwidget.cpp
-		xmlsettingsmanager.cpp
 		logger.cpp
 		listsholder.cpp
 	SETTINGS azothherbicidesettings.xml

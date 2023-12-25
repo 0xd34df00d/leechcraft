@@ -10,24 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Poshuku::DCAC
 {
-namespace Poshuku
-{
-namespace DCAC
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	protected:
-		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings () const;
-	public:
-		static XmlSettingsManager& Instance ();
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Poshuku_DCAC">;
 }
-}
-}
-

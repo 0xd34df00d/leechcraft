@@ -6,26 +6,11 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_KNOWHOW_XMLSETTINGSMANAGER_H
-#define PLUGINS_KNOWHOW_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::KnowHow
 {
-namespace KnowHow
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"KnowHow">;
 }
-}
-
-#endif

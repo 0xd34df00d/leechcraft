@@ -18,8 +18,8 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -27,9 +27,11 @@ namespace Azoth
 {
 namespace Modnok
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_Modnok">;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_modnok"));
+		Util::InstallTranslator ("azoth_modnok");
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

@@ -10,23 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Blogique::Hestia
 {
-namespace Blogique
-{
-namespace Hestia
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Blogique_Hestia">;
 }

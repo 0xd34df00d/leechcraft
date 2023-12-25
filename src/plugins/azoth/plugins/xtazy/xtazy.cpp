@@ -21,9 +21,9 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupporttune.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tracksharedialog.h"
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -31,6 +31,8 @@ namespace Azoth
 {
 namespace Xtazy
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_Xtazy">;
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("azoth_xtazy");

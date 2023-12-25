@@ -26,7 +26,6 @@ LC_DEFINE_PLUGIN (
 		itemsmergedialog.cpp
 		editcommentdialog.cpp
 		editdatedialog.cpp
-		xmlsettingsmanager.cpp
 		$<$<BOOL:${ENABLE_OTLOZHU_SYNC}>:
 			syncproxy.cpp
 			stager.cpp

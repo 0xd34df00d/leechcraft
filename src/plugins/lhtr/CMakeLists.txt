@@ -19,7 +19,6 @@ LC_DEFINE_PLUGIN (
 		imagedialog.cpp
 		finddialog.cpp
 		inserttabledialog.cpp
-		xmlsettingsmanager.cpp
 		htmlhighlighter.cpp
 		imagecollectiondialog.cpp
 		imageinfosmodel.cpp

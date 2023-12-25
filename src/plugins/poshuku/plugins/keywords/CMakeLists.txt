@@ -5,7 +5,6 @@ LC_DEFINE_PLUGIN (
 		keywords.cpp
 		keywordsmanagerwidget.cpp
 		editkeyworddialog.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS poshukukeywordssettings.xml
 	QT_COMPONENTS Widgets
 	INSTALL_SHARE

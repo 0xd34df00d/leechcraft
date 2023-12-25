@@ -10,24 +10,8 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
+namespace LC::Poshuku::OnlineBookmarks
 {
-namespace Poshuku
-{
-namespace OnlineBookmarks
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		Q_OBJECT
-		
-		XmlSettingsManager ();
-	protected:
-		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings () const;
-	public:
-		static XmlSettingsManager& Instance ();
-	};
-}
-}
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Poshuku_OnlineBookmarks", true>;
 }
 

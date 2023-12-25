@@ -8,7 +8,6 @@ LC_DEFINE_PLUGIN (
 		document.cpp
 		fb2converter.cpp
 		toclink.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS monoclefxbsettings.xml
 	QT_COMPONENTS Xml
 	LINK_LIBRARIES leechcraft_monocle

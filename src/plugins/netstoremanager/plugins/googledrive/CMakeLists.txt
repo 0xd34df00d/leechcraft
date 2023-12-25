@@ -10,7 +10,6 @@ LC_DEFINE_PLUGIN (
 		drivemanager.cpp
 		googledrive.cpp
 		uploadmanager.cpp
-		xmlsettingsmanager.cpp
 	SETTINGS nsmgoogledrivesettings.xml
 	QT_COMPONENTS Network Widgets
 	INSTALL_SHARE

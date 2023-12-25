@@ -14,20 +14,18 @@
 #include <QDir>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilmputilproxy.h>
-#include "xmlsettingsmanager.h"
 
-typedef std::shared_ptr<QFile> QFile_ptr;
+using QFile_ptr = std::shared_ptr<QFile>;
 
-namespace LC
+namespace LC::LMP::DumbSync
 {
-namespace LMP
-{
-namespace DumbSync
-{
+	using XmlSettingsManager = Util::SingletonSettingsManager<"LMP_DumbSync">;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("lmp_dumbsync");
@@ -199,8 +197,6 @@ namespace DumbSync
 
 		emit uploadFinished (file->fileName (), file->error (), file->errorString ());
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lmp_dumbsync, LC::LMP::DumbSync::Plugin);

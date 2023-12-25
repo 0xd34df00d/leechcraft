@@ -17,7 +17,6 @@ LC_DEFINE_PLUGIN (
 		batteryhistorydialog.cpp
 		platformobjects.cpp
 		quarkmanager.cpp
-		xmlsettingsmanager.cpp
 		platform/battery/batteryplatform.cpp
 		platform/events/platformlayer.cpp
 		platform/poweractions/platform.cpp

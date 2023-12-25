@@ -91,7 +91,6 @@ LC_DEFINE_PLUGIN (
 		xeps/xmppbobmanager.cpp
 		xeps/xmppcaptchaiq.cpp
 		xeps/xmppcaptchamanager.cpp
-		xmlsettingsmanager.cpp
 		captchamanager.cpp
 		xeps/xep0313manager.cpp
 		xeps/xep0313prefiq.cpp

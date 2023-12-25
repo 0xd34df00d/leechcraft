@@ -25,7 +25,6 @@ endif ()
 LC_DEFINE_PLUGIN (
 	SRCS
 		lmp.cpp
-		xmlsettingsmanager.cpp
 		playertab.cpp
 		player.cpp
 		core.cpp

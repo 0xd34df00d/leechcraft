@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		blasq.cpp
-		xmlsettingsmanager.cpp
 		accountswidget.cpp
 		newaccountwizardfirstpage.cpp
 		servicesmanager.cpp

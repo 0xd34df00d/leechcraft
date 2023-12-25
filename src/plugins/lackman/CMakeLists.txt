@@ -19,7 +19,6 @@ LC_DEFINE_PLUGIN (
 		packageprocessor.cpp
 		versioncomparator.cpp
 		typefilterproxymodel.cpp
-		xmlsettingsmanager.cpp
 		delegatebuttongroup.cpp
 		stringfiltermodel.cpp
 		updatesnotificationmanager.cpp

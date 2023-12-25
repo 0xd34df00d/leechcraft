@@ -12,13 +12,5 @@
 
 namespace LC::SeekThru
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
-	{
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const override;
-		virtual void EndSettings (QSettings*) const override;
-	};
+	using XmlSettingsManager = Util::SingletonSettingsManager<"SeekThru">;
 }

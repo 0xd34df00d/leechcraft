@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		certmgr.cpp
-		xmlsettingsmanager.cpp
 		acceptedrejecteddialog.cpp
 		manager.cpp
 		certsmodel.cpp

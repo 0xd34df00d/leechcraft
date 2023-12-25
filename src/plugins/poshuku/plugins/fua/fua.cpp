@@ -14,12 +14,12 @@
 #include <QCoreApplication>
 #include <util/util.h>
 #include <util/sll/parsejson.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "settings.h"
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -31,6 +31,8 @@ namespace Poshuku
 {
 namespace Fua
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Poshuku_FUA">;
+
 	void FUA::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("poshuku_fua");
@@ -39,7 +41,7 @@ namespace Fua
 		Model_->setHorizontalHeaderLabels ({ tr ("Domain"), tr ("Agent"), tr ("Identification string") });
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"poshukufuasettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("Settings", new Settings { Model_.get (), this });
 	}

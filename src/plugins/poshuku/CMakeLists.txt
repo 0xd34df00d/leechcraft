@@ -14,7 +14,6 @@ endif ()
 LC_DEFINE_PLUGIN (
 	SRCS
 		poshuku.cpp
-		xmlsettingsmanager.cpp
 		core.cpp
 		browserwidget.cpp
 		progresslineedit.cpp

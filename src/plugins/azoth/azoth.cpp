@@ -58,6 +58,11 @@ namespace Azoth
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<QColor> ("QColor");
+		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
+		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
+		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
+
 		Util::InstallTranslator ("azoth");
 
 		ChatTab::SetParentMultiTabs (this);

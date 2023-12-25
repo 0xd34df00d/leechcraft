@@ -18,8 +18,8 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -27,6 +27,8 @@ namespace Azoth
 {
 namespace SHX
 {
+	using XmlSettingsManager = Util::SingletonSettingsManager<"Azoth_SHX">;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("azoth_shx");

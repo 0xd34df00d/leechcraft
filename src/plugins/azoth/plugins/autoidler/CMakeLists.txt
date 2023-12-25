@@ -14,7 +14,6 @@ endif ()
 LC_DEFINE_PLUGIN (
 	SRCS
 		autoidler.cpp
-		xmlsettingsmanager.cpp
 		3dparty/idle.cpp
 		${X11_IMPL}
 		$<$<PLATFORM_ID:Win32>:3dparty/idle_win.cpp>

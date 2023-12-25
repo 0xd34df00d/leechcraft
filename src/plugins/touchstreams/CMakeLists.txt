@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		touchstreams.cpp
 		audiosearch.cpp
-		xmlsettingsmanager.cpp
 		albumsmanager.cpp
 		friendsmanager.cpp
 		authclosehandler.cpp
