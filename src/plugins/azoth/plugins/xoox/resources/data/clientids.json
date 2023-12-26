@@ -1,7 +1,7 @@
 {
   "partialMatches": [
     {
-      "node": "http://gajim.org",
+      "node": [ "http://gajim.org", "https://gajim.org" ],
       "id": "gajim",
       "name": "Gajim"
     },
@@ -183,7 +183,7 @@
       "name": "QIP PDA"
     },
     {
-      "node": [ "http://psi-dev.googlecode.com/caps", "http://psi-plus.com" ],
+      "node": [ "http://psi-dev.googlecode.com/caps", "http://psi-plus.com", "https://psi-plus.com" ],
       "id": "psiplus",
       "name": "Psi+"
     },
