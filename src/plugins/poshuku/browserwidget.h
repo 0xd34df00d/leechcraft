@@ -93,7 +93,6 @@ namespace Poshuku
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
 		bool HtmlMode_ = false;
-		bool Own_ = true;
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
 		const IWebView_ptr WebView_;
@@ -103,12 +102,17 @@ namespace Poshuku
 
 		static QObject* S_MultiTabsParent_;
 	public:
-		BrowserWidget (const IWebView_ptr&, Util::ShortcutManager*, const ICoreProxy_ptr&, QWidget* = nullptr);
+		enum class Kind
+		{
+			Own,
+			Embedded,
+		};
+	private:
+		Kind Kind_;
+	public:
+		BrowserWidget (Kind, const IWebView_ptr&, Util::ShortcutManager*, const ICoreProxy_ptr&, QWidget* = nullptr);
 		virtual ~BrowserWidget ();
 		static void SetParentMultiTabs (QObject*);
-
-		void Deown ();
-		void FinalizeInit ();
 
 		QLineEdit* GetURLEdit () const override;
 		IWebView* GetWebView () const override;

@@ -80,12 +80,13 @@ namespace Poshuku
 
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 
-	BrowserWidget::BrowserWidget (const IWebView_ptr& view,
+	BrowserWidget::BrowserWidget (Kind kind, const IWebView_ptr& view,
 			Util::ShortcutManager *sm, const ICoreProxy_ptr& coreProxy, QWidget *parent)
-	: QWidget (parent)
-	, ReloadTimer_ (new QTimer (this))
-	, WebView_ (view)
-	, Proxy_ (coreProxy)
+	: QWidget { parent }
+	, ReloadTimer_ { new QTimer { this } }
+	, WebView_ { view }
+	, Proxy_ { coreProxy }
+	, Kind_ { kind }
 	{
 		Ui_.setupUi (this);
 
@@ -438,11 +439,14 @@ namespace Poshuku
 		new BrowserWidgetSettingsHandler { this };
 
 		WebView_->SurroundingsInitialized ();
+
+		if (Kind_ == Kind::Own)
+			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	BrowserWidget::~BrowserWidget ()
 	{
-		if (Own_)
+		if (Kind_ == Kind::Own)
 			Core::Instance ().Unregister (this);
 
 		delete ToolBar_;
@@ -451,17 +455,6 @@ namespace Poshuku
 	void BrowserWidget::SetParentMultiTabs (QObject *parent)
 	{
 		S_MultiTabsParent_ = parent;
-	}
-
-	void BrowserWidget::Deown ()
-	{
-		Own_ = false;
-	}
-
-	void BrowserWidget::FinalizeInit ()
-	{
-		if (Own_)
-			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	QLineEdit* BrowserWidget::GetURLEdit () const
@@ -624,7 +617,7 @@ namespace Poshuku
 
 	QToolBar* BrowserWidget::GetToolBar () const
 	{
-		return Own_ ? ToolBar_ : 0;
+		return Kind_ == Kind::Own ? ToolBar_ : 0;
 	}
 
 	namespace
@@ -1449,13 +1442,13 @@ namespace Poshuku
 				this,
 				ok,
 				NotifyWhenFinished_->isChecked (),
-				Own_,
+				Kind_ == Kind::Own,
 				HtmlMode_);
 
 		proxy->FillValue ("ok", ok);
 
 		if (!NotifyWhenFinished_->isChecked () ||
-			!Own_ ||
+			Kind_ != Kind::Own ||
 			HtmlMode_ ||
 			isVisible ())
 			return;
