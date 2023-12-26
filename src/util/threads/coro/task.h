@@ -46,6 +46,8 @@ namespace LC::Util
 			}
 		};
 
+		struct EitherFailureAbort : std::exception {};
+
 		template<typename Promise>
 		struct TaskAwaiter
 		{
@@ -73,7 +75,13 @@ namespace LC::Util
 			{
 				const auto& promise = Handle_.promise ();
 				if (promise.Exception_)
-					std::rethrow_exception (promise.Exception_);
+					try
+					{
+						std::rethrow_exception (promise.Exception_);
+					}
+					catch (EitherFailureAbort)
+					{
+					}
 
 				if constexpr (!Promise::IsVoid)
 					return *promise.Ret_;

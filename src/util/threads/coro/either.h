@@ -74,17 +74,13 @@ namespace LC::Util
 			{
 				Handler_.HandleError (Either_.GetLeft ());
 
-				[] (auto handle, auto either) -> Task<void>
-				{
-					auto& promise = handle->promise ();
-					if constexpr (Promise::IsVoid)
-						promise.return_void ();
-					else
-						promise.return_value (Promise::ReturnType_t::Left (either->GetLeft ()));
+				auto& promise = handle.promise ();
+				if constexpr (Promise::IsVoid)
+					promise.return_void ();
+				else
+					promise.return_value (Promise::ReturnType_t::Left (Either_.GetLeft ()));
 
-					co_await promise.final_suspend ();
-					handle->destroy ();
-				} (&handle, &Either_);
+				throw EitherFailureAbort {};
 			}
 
 			R await_resume () const noexcept
