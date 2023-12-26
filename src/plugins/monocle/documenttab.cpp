@@ -700,6 +700,7 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		auto bmButton = new QToolButton;
+		bmButton->setToolTip (tr ("Bookmarks"));
 		bmButton->setPopupMode (QToolButton::InstantPopup);
 		bmButton->setMenu (DocBMManager_->GetMenu ());
 		bmButton->setProperty ("ActionIcon", "bookmarks");
