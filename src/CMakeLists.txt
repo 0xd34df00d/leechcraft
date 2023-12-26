@@ -207,7 +207,6 @@ SUBPLUGIN (TEXTOGROOSE "Build Text-o-Groose, script-based lyrics fetcher" ${WITH
 SUBPLUGIN (TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
 SUBPLUGIN (TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
 SUBPLUGIN (VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
-SUBPLUGIN (WKPLUGINS "Build WKPlugins for WebKit spellcheck and notifications" OFF)
 SUBPLUGIN (XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
 SUBPLUGIN (XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
 SUBPLUGIN (ZALIL "Build Zalil for uploading files to accountless filebin services" ${WITH_PLUGINS})
