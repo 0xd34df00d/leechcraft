@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/vader">
-    <file>resources/images/vader.svg</file>
-    <file>resources/images/mrim.svg</file>
-  </qresource>
-</RCC>
