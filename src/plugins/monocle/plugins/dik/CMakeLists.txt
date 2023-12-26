@@ -10,5 +10,5 @@ LC_DEFINE_PLUGIN (
 		util.cpp
 		document.cpp
 	QT_COMPONENTS Gui Xml
-	LINK_LIBRARIES leechcraft_monocle
+	LINK_LIBRARIES leechcraft-monocle-util
 	)

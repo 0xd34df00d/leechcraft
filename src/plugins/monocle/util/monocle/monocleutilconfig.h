@@ -10,7 +10,7 @@
 
 #include <QtGlobal>
 
-#ifdef leechcraft_monocle_EXPORTS
+#ifdef leechcraft_monocle_util_EXPORTS
 #  define MONOCLE_UTIL_API Q_DECL_EXPORT
 #else
 #  define MONOCLE_UTIL_API Q_DECL_IMPORT

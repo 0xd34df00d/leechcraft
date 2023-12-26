@@ -18,6 +18,13 @@ if (WITH_DOCS)
 	install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
 endif ()
 
+add_library (leechcraft-monocle-util SHARED
+	util/monocle/textdocumentadapter.cpp
+	)
+FindQtLibs (leechcraft-monocle-util Widgets)
+set_property (TARGET leechcraft-monocle-util PROPERTY SOVERSION ${LC_SOVERSION})
+install (TARGETS leechcraft-monocle-util DESTINATION ${LIBDIR} RENAME leechcraft-monocle-util${LC_LIBSUFFIX})
+
 LC_DEFINE_PLUGIN (
 	SRCS
 		monocle.cpp
@@ -56,7 +63,6 @@ LC_DEFINE_PLUGIN (
 		pagenumlabel.cpp
 		smoothscroller.cpp
 		common.cpp
-		util/monocle/textdocumentadapter.cpp
 	SETTINGS monoclesettings.xml
 	QT_COMPONENTS Concurrent PrintSupport Widgets Xml
 	INSTALL_SHARE

@@ -10,6 +10,6 @@ LC_DEFINE_PLUGIN (
 		toclink.cpp
 	SETTINGS monoclefxbsettings.xml
 	QT_COMPONENTS Xml
-	LINK_LIBRARIES leechcraft_monocle
+	LINK_LIBRARIES leechcraft-monocle-util
 	INSTALL_DESKTOP
 	)
