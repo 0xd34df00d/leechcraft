@@ -13,6 +13,7 @@ endif ()
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		components/tabui/focustracker.cpp
 		poshuku.cpp
 		core.cpp
 		browserwidget.cpp

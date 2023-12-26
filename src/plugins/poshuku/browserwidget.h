@@ -151,14 +151,11 @@ namespace Poshuku
 		void SetFontSize (FontSize type, int size) override;
 
 		void SetOnLoadScrollPoint (const QPoint&);
-	protected:
-		void keyReleaseEvent (QKeyEvent*) override;
 	private:
 		void SetActualReloadInterval (const QTime&);
 		void SetSplitterSizes (int);
 		void RegisterShortcuts (Util::ShortcutManager*);
 	public slots:
-		void focusLineEdit ();
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
 		QLineEdit* getAddressBar () const;
@@ -184,7 +181,6 @@ namespace Poshuku
 		void handleContextMenu (const QPoint&, const ContextMenuInfo&);
 
 		void setScrollPosition ();
-		void pageFocus ();
 		void handleLoadProgress (int);
 		void notifyLoadFinished (bool);
 		void handleChangeEncodingAboutToShow ();

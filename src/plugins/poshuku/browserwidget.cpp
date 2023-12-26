@@ -9,13 +9,10 @@
 #include "browserwidget.h"
 #include <limits>
 #include <cmath>
-#include <QKeyEvent>
 #include <QDesktopWidget>
 #include <QtDebug>
 #include <QToolBar>
 #include <QToolButton>
-#include <QBuffer>
-#include <QDial>
 #include <QMenu>
 #include <QMovie>
 #include <QWidgetAction>
@@ -23,7 +20,6 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDesktopServices>
 #include <QTextCodec>
 #include <QCursor>
 #include <QDomDocument>
@@ -54,8 +50,8 @@
 #include <interfaces/core/ishortcutproxy.h>
 #include "interfaces/poshuku/iwebview.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
+#include "components/tabui/focustracker.h"
 #include "core.h"
-#include "historymodel.h"
 #include "screenshotsavedialog.h"
 #include "xmlsettingsmanager.h"
 #include "sourceviewer.h"
@@ -378,10 +374,6 @@ namespace Poshuku
 		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
 				this,
-				SLOT (pageFocus ()));
-		connect (webViewWidget,
-				SIGNAL (loadFinished (bool)),
-				this,
 				SLOT (notifyLoadFinished (bool)));
 		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
@@ -420,10 +412,6 @@ namespace Poshuku
 				this,
 				SLOT (handleShortcutBookmarks ()));
 
-		QTimer::singleShot (100,
-				this,
-				SLOT (focusLineEdit ()));
-
 		RememberDialog_ = new PasswordRemember (WebView_->GetQWidget ());
 		RememberDialog_->hide ();
 
@@ -441,7 +429,10 @@ namespace Poshuku
 		WebView_->SurroundingsInitialized ();
 
 		if (Kind_ == Kind::Own)
+		{
+			new FocusTracker { *Ui_.URLFrame_->GetEdit (), WebView_, *this };
 			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (), this);
+		}
 	}
 
 	BrowserWidget::~BrowserWidget ()
@@ -758,14 +749,6 @@ namespace Poshuku
 		OnLoadPos_ = sp;
 	}
 
-	void BrowserWidget::keyReleaseEvent (QKeyEvent *event)
-	{
-		if (event->key () == Qt::Key_F6)
-			focusLineEdit ();
-		else
-			QWidget::keyReleaseEvent (event);
-	}
-
 	void BrowserWidget::SetActualReloadInterval (const QTime& value)
 	{
 		QTime null (0, 0, 0);
@@ -929,13 +912,6 @@ namespace Poshuku
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
 		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
-	void BrowserWidget::focusLineEdit ()
-	{
-		QLineEdit *edit = Ui_.URLFrame_->GetEdit ();
-		edit->setFocus (Qt::OtherFocusReason);
-		edit->selectAll ();
 	}
 
 	QLineEdit* BrowserWidget::getAddressBar () const
@@ -1381,12 +1357,6 @@ namespace Poshuku
 			WebView_->SetScrollPosition (OnLoadPos_);
 			OnLoadPos_ = QPoint ();
 		}
-	}
-
-	void BrowserWidget::pageFocus ()
-	{
-		if (!HtmlMode_ && isVisible ())
-			WebView_->GetQWidget ()->setFocus ();
 	}
 
 	void BrowserWidget::handleLoadProgress (int p)
