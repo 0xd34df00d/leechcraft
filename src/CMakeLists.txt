@@ -16,10 +16,18 @@ if (WIN32)
 	add_definitions (-DWINVER=0x0600)
 	add_definitions (-DNTDDI_VERSION=0x0600)
 endif ()
+
+option (USE_ASAN "Use address sanitizer" OFF)
+
 if (UNIX OR (WIN32 AND MINGW))
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -Wextra")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_DEPRECATED_WARNINGS -DQT_DISABLE_DEPRECATED_BEFORE='QT_VERSION_CHECK(5,15,0)'")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-enum-enum-conversion")
+
+	if (USE_ASAN)
+		add_compile_options (-fsanitize=address)
+		add_link_options (-fsanitize=address)
+	endif ()
 
 	add_definitions (-DQT_MESSAGELOGCONTEXT)
 
