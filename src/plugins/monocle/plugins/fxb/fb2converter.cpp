@@ -115,7 +115,7 @@ namespace FXB
 	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2, const Config& config)
 	: ParentDoc_ { doc }
 	, FB2_ { fb2 }
-	, Result_ { std::make_shared<QTextDocument> () }
+	, Result_ { std::make_unique<QTextDocument> () }
 	, Cursor_ { std::make_unique<QTextCursor> (Result_.get ()) }
 	, CursorCacher_ { std::make_unique<CursorCacher> (Cursor_.get ()) }
 	, Config_ { config }
@@ -230,13 +230,13 @@ namespace FXB
 
 	FB2Converter::~FB2Converter () = default;
 
-	FB2Converter::ConversionResult_t FB2Converter::GetResult () const
+	FB2Converter::ConversionResult_t FB2Converter::GetResult () &&
 	{
 		if (Error_)
 			return ConversionResult_t::Left (*Error_);
 		else
 			return ConversionResult_t::Right ({
-					Result_,
+					std::move (Result_),
 					DocInfo_,
 					TOC_,
 					GetLinks ()

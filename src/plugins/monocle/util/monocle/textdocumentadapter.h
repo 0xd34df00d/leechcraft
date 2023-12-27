@@ -38,7 +38,7 @@ namespace Monocle
 	protected:
 		/** @brief The adapted QTextDocument.
 		 */
-		std::shared_ptr<QTextDocument> Doc_;
+		std::unique_ptr<QTextDocument> Doc_;
 
 		QMap<int, QList<ILink_ptr>> Links_;
 	public:
@@ -48,9 +48,7 @@ namespace Monocle
 			QPair<int, int> ToSpan_;
 		};
 
-		/** @brief Constructs the TextDocumentAdapter over the \em document.
-		 */
-		TextDocumentAdapter (const std::shared_ptr<QTextDocument>& document = {});
+		~TextDocumentAdapter () override;
 
 		/** @brief Checks if a document is set.
 		 */
@@ -134,7 +132,7 @@ namespace Monocle
 		 *
 		 * @param[in] doc The document to use.
 		 */
-		void SetDocument (const std::shared_ptr<QTextDocument>& doc, const QList<InternalLink>& links = {});
+		void SetDocument (std::unique_ptr<QTextDocument>, const QList<InternalLink>& links);
 	};
 }
 }

@@ -43,7 +43,7 @@ namespace FXB
 
 		const QDomDocument& FB2_;
 
-		std::shared_ptr<QTextDocument> Result_;
+		std::unique_ptr<QTextDocument> Result_;
 		DocumentInfo DocInfo_;
 		TOCEntryLevel_t TOC_;
 
@@ -90,13 +90,13 @@ namespace FXB
 	public:
 		struct ConvertedDocument
 		{
-			std::shared_ptr<QTextDocument> Doc_;
+			std::unique_ptr<QTextDocument> Doc_;
 			DocumentInfo Info_;
 			TOCEntryLevel_t TOC_;
 			QList<TextDocumentAdapter::InternalLink> Links_;
 		};
 		using ConversionResult_t = Util::Either<Error_t, ConvertedDocument>;
-		ConversionResult_t GetResult () const;
+		ConversionResult_t GetResult () &&;
 	private:
 		QList<TextDocumentAdapter::InternalLink> GetLinks () const;
 

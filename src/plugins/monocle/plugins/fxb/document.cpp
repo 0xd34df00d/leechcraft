@@ -37,8 +37,8 @@ namespace FXB
 			return;
 		}
 
-		QDomDocument doc;
-		if (!doc.setContent (file.readAll (), true))
+		QDomDocument fb2;
+		if (!fb2.setContent (file.readAll (), true))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "malformed XML in"
@@ -61,18 +61,14 @@ namespace FXB
 		cfg.BackgroundColor_ = qApp->palette ().color (QPalette::Base);
 		cfg.LinkColor_ = qApp->palette ().color (QPalette::Link);
 
-		FB2Converter conv { this, doc, cfg };
-		Util::Visit (conv.GetResult (),
-				[this] (const FB2Converter::ConvertedDocument& result)
+		Util::Visit (FB2Converter { this, fb2 }.GetResult (),
+				[this] (FB2Converter::ConvertedDocument&& result)
 				{
-					SetDocument (result.Doc_, result.Links_);
+					SetDocument (std::move (result.Doc_), result.Links_);
 					Info_ = result.Info_;
 					TOC_ = result.TOC_;
 				},
-				Util::Visitor
-				{
-					[] (auto) {}
-				});
+				[] (const FB2Converter::Error_t&) {});
 	}
 
 	QObject* Document::GetBackendPlugin () const

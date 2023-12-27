@@ -83,7 +83,7 @@ namespace Dik
 			return;
 		}
 
-		auto doc = std::make_shared<MobiTextDocument> (Parser_);
+		auto doc = std::make_unique<MobiTextDocument> (Parser_);
 		doc->setPageSize (QSize (600, 800));
 		doc->setUndoRedoEnabled (false);
 
@@ -96,7 +96,7 @@ namespace Dik
 		format.setMargin (30);
 		doc->rootFrame ()->setFrameFormat (format);
 
-		SetDocument (doc);
+		SetDocument (std::move (doc), {});
 		Info_ = Parser_->GetDocInfo ();
 	}
 

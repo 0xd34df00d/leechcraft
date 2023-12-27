@@ -20,10 +20,7 @@ namespace LC
 {
 namespace Monocle
 {
-	TextDocumentAdapter::TextDocumentAdapter (const std::shared_ptr<QTextDocument>& doc)
-	{
-		SetDocument (doc);
-	}
+	TextDocumentAdapter::~TextDocumentAdapter () = default;
 
 	bool TextDocumentAdapter::IsValid () const
 	{
@@ -226,9 +223,9 @@ namespace Monocle
 		};
 	}
 
-	void TextDocumentAdapter::SetDocument (const std::shared_ptr<QTextDocument>& doc, const QList<InternalLink>& links)
+	void TextDocumentAdapter::SetDocument (std::unique_ptr<QTextDocument> doc, const QList<InternalLink>& links)
 	{
-		Doc_ = doc;
+		Doc_ = std::move (doc);
 		Links_.clear ();
 		if (!Doc_ || links.isEmpty ())
 			return;
