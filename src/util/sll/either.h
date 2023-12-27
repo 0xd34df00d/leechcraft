@@ -37,6 +37,11 @@ namespace Util
 		{
 		}
 
+		explicit Either (R&& r)
+		: This_ { std::move (r) }
+		{
+		}
+
 		explicit Either (const R& r)
 		: This_ { r }
 		{
@@ -85,9 +90,14 @@ namespace Util
 			return GetRight ();
 		}
 
-		std::variant<L, R> AsVariant () const
+		std::variant<L, R> AsVariant () const &
 		{
 			return This_;
+		}
+
+		std::variant<L, R> AsVariant () &&
+		{
+			return std::move (This_);
 		}
 
 		template<typename F>
@@ -109,6 +119,11 @@ namespace Util
 		static Either Left (const L& l)
 		{
 			return Either { l };
+		}
+
+		static Either Right (R&& r)
+		{
+			return Either { std::move (r) };
 		}
 
 		static Either Right (const R& r)
@@ -200,6 +215,12 @@ namespace Util
 	auto Visit (const Either<Left, Right>& either, Args&&... args)
 	{
 		return Visit (either.AsVariant (), std::forward<Args> (args)...);
+	}
+
+	template<typename Left, typename Right, typename... Args>
+	auto Visit (Either<Left, Right>&& either, Args&&... args)
+	{
+		return Visit (std::move (either).AsVariant (), std::forward<Args> (args)...);
 	}
 }
 }

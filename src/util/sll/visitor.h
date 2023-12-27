@@ -48,6 +48,12 @@ namespace Util
 		return std::visit (detail::Overloaded { std::forward<Args> (args)... }, v);
 	}
 
+	template<typename... Vars, typename... Args>
+	decltype (auto) Visit (std::variant<Vars...>&& v, Args&&... args)
+	{
+		return std::visit (detail::Overloaded { std::forward<Args> (args)... }, std::move (v));
+	}
+
 	namespace detail
 	{
 		struct VisitorFinallyTag {};
