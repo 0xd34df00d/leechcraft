@@ -61,7 +61,7 @@ namespace Monocle
 
 		/** @brief Checks if a document is set.
 		 */
-		bool IsValid () const;
+		bool IsValid () const override;
 
 		/** @brief Returns the pages count in the underlying document.
 		 *
@@ -69,7 +69,7 @@ namespace Monocle
 		 *
 		 * @return Pages count.
 		 */
-		int GetNumPages () const;
+		int GetNumPages () const override;
 
 		/** @brief Returns the size of the \em page.
 		 *
@@ -78,7 +78,7 @@ namespace Monocle
 		 * @param[in] page The index of the page to query.
 		 * @return The size of the given \em page in pixels.
 		 */
-		QSize GetPageSize (int page) const;
+		QSize GetPageSize (int page) const override;
 
 		/** @brief Renders the given \em page.
 		 *
@@ -94,7 +94,7 @@ namespace Monocle
 		 *
 		 * @sa SetRenderHint()
 		 */
-		QFuture<QImage> RenderPage (int page, double xScale, double yScale);
+		QFuture<QImage> RenderPage (int page, double xScale, double yScale) override;
 
 		/** @brief Returns the links found on the given \em page.
 		 *
@@ -106,7 +106,7 @@ namespace Monocle
 		 *
 		 * @return The list of links found on the \em page.
 		 */
-		QList<ILink_ptr> GetPageLinks (int page);
+		QList<ILink_ptr> GetPageLinks (int page) override;
 
 		/** @brief Paints the given \em page using the \em painter.
 		 *
@@ -123,7 +123,7 @@ namespace Monocle
 		 *
 		 * @sa SetRenderHint()
 		 */
-		void PaintPage (QPainter *painter, int page, double xScale, double yScale);
+		void PaintPage (QPainter *painter, int page, double xScale, double yScale) override;
 
 		/** @brief Searches for the given \em text and returns its positions.
 		 *
@@ -135,7 +135,7 @@ namespace Monocle
 		 * @return The list of positions of the given \em text string for
 		 * each page.
 		 */
-		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs);
+		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
 
 		/** @brief Toggles the render \em hint used during painting.
 		 *
