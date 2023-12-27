@@ -543,12 +543,17 @@ namespace FXB
 	void FB2Converter::Handle (const QDomElement& child)
 	{
 		const auto& tagName = child.tagName ();
-		Handlers_.value (tagName, [&tagName] (const QDomElement&)
+		Handlers_.value (tagName,
+				[this, &tagName] (const QDomElement&)
+				{
+					if (!UnhandledTags_.contains (tagName))
 					{
+						UnhandledTags_.insert (tagName);
 						qWarning () << Q_FUNC_INFO
 								<< "unhandled tag"
 								<< tagName;
-					}) (child);
+					}
+				}) (child);
 	}
 
 	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,
