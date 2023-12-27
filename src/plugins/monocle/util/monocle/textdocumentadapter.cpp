@@ -8,17 +8,13 @@
 
 #include "textdocumentadapter.h"
 #include <cmath>
+#include <QGuiApplication>
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextEdit>
-#include <QtDebug>
 #include <util/threads/futures.h>
-#include <util/sll/views.h>
-#include <util/sll/prelude.h>
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	TextDocumentAdapter::~TextDocumentAdapter () = default;
 
@@ -95,21 +91,22 @@ namespace Monocle
 
 	namespace
 	{
-		auto GetCursorsPositions (QTextDocument *doc, const QList<QPair<QTextCursor, QTextCursor>>& cursors)
+		auto GetCursorsPositions (QTextDocument& doc, const QVector<QPair<QTextCursor, QTextCursor>>& cursors)
 		{
-			const auto& pageSize = doc->pageSize ();
+			const auto& pageSize = doc.pageSize ();
 			const auto pageHeight = pageSize.height ();
 
 			QTextEdit hackyEdit;
 			hackyEdit.setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
 			hackyEdit.setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
-			hackyEdit.setFixedSize (doc->pageSize ().toSize ());
-			hackyEdit.setDocument (doc);
-			doc->setPageSize (pageSize);
+			hackyEdit.setFixedSize (doc.pageSize ().toSize ());
+			hackyEdit.setDocument (&doc);
+			doc.setPageSize (pageSize);
 
 			const QMatrix scale = QMatrix {}.scale (1 / pageSize.width (), 1 / pageSize.height ());
 
-			QList<QPair<int, QRectF>> result;
+			QVector<QPair<int, QRectF>> result;
+			result.reserve (cursors.size ());
 			for (const auto& pair : cursors)
 			{
 				auto rect = hackyEdit.cursorRect (pair.first);
@@ -133,7 +130,7 @@ namespace Monocle
 			return result;
 		}
 
-		QMap<int, QList<QRectF>> ListToMap (const QList<QPair<int, QRectF>>& list)
+		QMap<int, QList<QRectF>> ListToMap (const QVector<QPair<int, QRectF>>& list)
 		{
 			QMap<int, QList<QRectF>> result;
 			for (const auto& [page, rect] : list)
@@ -144,7 +141,7 @@ namespace Monocle
 
 	QMap<int, QList<QRectF>> TextDocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
-		QList<QPair<QTextCursor, QTextCursor>> cursors;
+		QVector<QPair<QTextCursor, QTextCursor>> cursors;
 
 		const auto tdFlags = cs == Qt::CaseSensitive ?
 				QTextDocument::FindCaseSensitively :
@@ -158,7 +155,7 @@ namespace Monocle
 			cursor = Doc_->find (text, cursor, tdFlags);
 		}
 
-		return ListToMap (GetCursorsPositions (Doc_.get (), cursors));
+		return ListToMap (GetCursorsPositions (*Doc_, cursors));
 	}
 
 	namespace
@@ -223,36 +220,37 @@ namespace Monocle
 		};
 	}
 
-	void TextDocumentAdapter::SetDocument (std::unique_ptr<QTextDocument> doc, const QList<InternalLink>& links)
+	void TextDocumentAdapter::SetDocument (std::unique_ptr<QTextDocument> doc, const QVector<InternalLink>& links)
 	{
 		Doc_ = std::move (doc);
+
 		Links_.clear ();
-		if (!Doc_ || links.isEmpty ())
-			return;
 
-		const auto& srcCursors = Util::Map (links,
-				[this] (const InternalLink& link)
-				{
-					QTextCursor start { Doc_.get () };
-					start.setPosition (link.FromSpan_.first);
-					QTextCursor end { Doc_.get () };
-					end.setPosition (link.FromSpan_.second);
-					return QPair { start, end };
-				});
-		const auto& dstCursors = Util::Map (links,
-				[this] (const InternalLink& link)
-				{
-					QTextCursor start { Doc_.get () };
-					start.setPosition (link.ToSpan_.first);
-					QTextCursor end { Doc_.get () };
-					end.setPosition (link.ToSpan_.second);
-					return QPair { start, end };
-				});
-		const auto& srcPositions = GetCursorsPositions (Doc_.get (), srcCursors);
-		const auto& dstPositions = GetCursorsPositions (Doc_.get (), dstCursors);
+		const auto makeCursor = [this] (int position)
+		{
+			QTextCursor cur { &*Doc_ };
+			cur.setPosition (position);
+			return cur;
+		};
 
-		for (const auto& [srcPos, dstPos] : Util::Views::Zip (srcPositions, dstPositions))
+		QVector<QPair<QTextCursor, QTextCursor>> srcCursors;
+		srcCursors.reserve (links.size ());
+		QVector<QPair<QTextCursor, QTextCursor>> dstCursors;
+		dstCursors.reserve (links.size ());
+		for (const auto& link : links)
+		{
+			srcCursors.push_back ({ makeCursor (link.FromSpan_.first), makeCursor (link.FromSpan_.second) });
+			dstCursors.push_back ({ makeCursor (link.ToSpan_.first), makeCursor (link.ToSpan_.second) });
+		}
+
+		const auto& srcPositions = GetCursorsPositions (*Doc_, srcCursors);
+		const auto& dstPositions = GetCursorsPositions (*Doc_, dstCursors);
+
+		for (int i = 0; i < srcPositions.size () && i < dstPositions.size (); ++i)
+		{
+			const auto& srcPos = srcPositions.at (i);
+			const auto& dstPos = dstPositions.at (i);
 			Links_ [srcPos.first] << std::make_shared<Link> (srcPos.second, dstPos.first, dstPos.second, this);
+		}
 	}
-}
 }

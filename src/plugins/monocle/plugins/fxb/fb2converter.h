@@ -75,8 +75,8 @@ namespace FXB
 			QPair<int, int> Span_;
 		};
 	private:
-		QList<LinkCtx> LinkSources_;
-		QList<LinkCtx> LinkTargets_;
+		QVector<LinkCtx> LinkSources_;
+		QVector<LinkCtx> LinkTargets_;
 	public:
 		FB2Converter (Document*, const QDomDocument&, const Config&);
 		~FB2Converter ();
@@ -93,12 +93,12 @@ namespace FXB
 			std::unique_ptr<QTextDocument> Doc_;
 			DocumentInfo Info_;
 			TOCEntryLevel_t TOC_;
-			QList<TextDocumentAdapter::InternalLink> Links_;
+			QVector<TextDocumentAdapter::InternalLink> Links_;
 		};
 		using ConversionResult_t = Util::Either<Error_t, ConvertedDocument>;
 		ConversionResult_t GetResult () &&;
 	private:
-		QList<TextDocumentAdapter::InternalLink> GetLinks () const;
+		QVector<TextDocumentAdapter::InternalLink> GetLinks () const;
 
 		QDomElement FindBinary (const QString&) const;
 

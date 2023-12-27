@@ -243,7 +243,7 @@ namespace FXB
 				});
 	}
 
-	QList<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const
+	QVector<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const
 	{
 		QHash<QString, QPair<int, int>> targetsHash;
 		for (const auto& target : LinkTargets_)
@@ -256,7 +256,8 @@ namespace FXB
 			targetsHash [target.Anchor_] = target.Span_;
 		}
 
-		QList<TextDocumentAdapter::InternalLink> result;
+		QVector<TextDocumentAdapter::InternalLink> result;
+		result.reserve (LinkSources_.size ());
 		for (const auto& source : LinkSources_)
 		{
 			if (!targetsHash.contains (source.Anchor_))
@@ -359,11 +360,11 @@ namespace FXB
 		class LinkCtxHandler
 		{
 			const QString Anchor_;
-			QList<FB2Converter::LinkCtx>& LinkCtxList_;
+			QVector<FB2Converter::LinkCtx>& LinkCtxList_;
 
 			std::optional<CursorSpanKeeper> SpanKeeper_;
 		public:
-			LinkCtxHandler (const QString& anchor, QList<FB2Converter::LinkCtx>& list,
+			LinkCtxHandler (const QString& anchor, QVector<FB2Converter::LinkCtx>& list,
 					CursorCacher& cacher, const QTextCursor& cursor)
 			: Anchor_ { anchor }
 			, LinkCtxList_ { list }

@@ -17,9 +17,7 @@
 
 class QTextDocument;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	/** @brief Provides an adapter of QTextDocument to Monocle's IDocument.
 	 *
@@ -128,11 +126,11 @@ namespace Monocle
 		 */
 		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
 	protected:
-		/** @brief Sets the underlying document to \em doc.
+		/** @brief Sets the underlying document and any additional information.
 		 *
-		 * @param[in] doc The document to use.
+		 * @param[in] doc The document.
+		 * @param[in] links The vector of `InternalLink` structures.
 		 */
-		void SetDocument (std::unique_ptr<QTextDocument>, const QList<InternalLink>& links);
+		void SetDocument (std::unique_ptr<QTextDocument> doc, const QVector<InternalLink>& links);
 	};
-}
 }
