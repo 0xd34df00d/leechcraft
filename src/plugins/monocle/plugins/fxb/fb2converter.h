@@ -19,6 +19,7 @@
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
 #include <util/monocle/textdocumentadapter.h>
+#include <util/monocle/textdocumentformatconfig.h>
 
 class QTextCharFormat;
 class QTextBlockFormat;
@@ -27,11 +28,7 @@ class QDomElement;
 class QDomDocument;
 class QTextDocument;
 
-namespace LC
-{
-namespace Monocle
-{
-namespace FXB
+namespace LC::Monocle::FXB
 {
 	class Document;
 
@@ -52,22 +49,12 @@ namespace FXB
 		std::unique_ptr<QTextCursor> Cursor_;
 		std::unique_ptr<CursorCacher> CursorCacher_;
 
-		typedef std::function<void (QDomElement)> Handler_f;
+		using Handler_f = std::function<void (QDomElement)>;
 		QHash<QString, Handler_f> Handlers_;
 
 		QHash<QString, int> UnhandledTags_;
-	public:
-		struct Config
-		{
-			QFont DefaultFont_;
-			QSize PageSize_;
-			QMargins Margins_;
 
-			QColor BackgroundColor_;
-			QColor LinkColor_;
-		};
-	private:
-		const Config Config_;
+		const TextDocumentPalette Palette_;
 	public:
 		struct LinkCtx
 		{
@@ -78,8 +65,8 @@ namespace FXB
 		QVector<LinkCtx> LinkSources_;
 		QVector<LinkCtx> LinkTargets_;
 	public:
-		FB2Converter (Document*, const QDomDocument&, const Config&);
-		~FB2Converter ();
+		FB2Converter (Document*, const QDomDocument&);
+		~FB2Converter () override;
 
 		struct NotAnFBDocument {};
 		struct UnsupportedVersion {};
@@ -127,6 +114,4 @@ namespace FXB
 
 		void FillPreamble ();
 	};
-}
-}
 }

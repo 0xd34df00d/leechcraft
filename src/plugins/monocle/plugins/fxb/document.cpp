@@ -46,21 +46,6 @@ namespace FXB
 			return;
 		}
 
-		FB2Converter::Config cfg {};
-		cfg.DefaultFont_ = XmlSettingsManager::Instance ().property ("DefaultFont").value<QFont> ();
-		cfg.PageSize_ = {
-				XmlSettingsManager::Instance ().property ("PageWidth").toInt (),
-				XmlSettingsManager::Instance ().property ("PageHeight").toInt ()
-			};
-		cfg.Margins_ = {
-				XmlSettingsManager::Instance ().property ("LeftMargin").toInt (),
-				XmlSettingsManager::Instance ().property ("TopMargin").toInt (),
-				XmlSettingsManager::Instance ().property ("RightMargin").toInt (),
-				XmlSettingsManager::Instance ().property ("BottomMargin").toInt ()
-			};
-		cfg.BackgroundColor_ = qApp->palette ().color (QPalette::Base);
-		cfg.LinkColor_ = qApp->palette ().color (QPalette::Link);
-
 		Util::Visit (FB2Converter { this, fb2 }.GetResult (),
 				[this] (FB2Converter::ConvertedDocument&& result)
 				{

@@ -34,4 +34,40 @@
 			</item>
 		</tab>
 	</page>
+	<page>
+		<label value="Text books" />
+		<groupbox>
+			<label value="Appearance" />
+			<item type="font" property="DefaultFont">
+				<label value="Default font:" />
+			</item>
+			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10">
+				<label value="Page width:" />
+				<suffix value=" px" />
+			</item>
+			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10">
+				<label value="Page height:" />
+				<suffix value=" px" />
+			</item>
+			<groupbox>
+				<label value="Margins" />
+				<item type="spinbox" property="LeftMargin" default="60" minimum="0" maximum="200">
+					<label value="Left margin:" />
+					<suffix value=" px" />
+				</item>
+				<item type="spinbox" property="TopMargin" default="80" minimum="0" maximum="200">
+					<label value="Top margin:" />
+					<suffix value=" px" />
+				</item>
+				<item type="spinbox" property="RightMargin" default="60" minimum="0" maximum="200">
+					<label value="Right margin:" />
+					<suffix value=" px" />
+				</item>
+				<item type="spinbox" property="BottomMargin" default="80" minimum="0" maximum="200">
+					<label value="Bottom margin:" />
+					<suffix value=" px" />
+				</item>
+			</groupbox>
+		</groupbox>
+	</page>
 </settings>

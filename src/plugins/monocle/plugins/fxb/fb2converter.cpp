@@ -22,6 +22,7 @@
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/monocle/textdocumentformatconfig.h>
 #include "toclink.h"
 
 namespace LC
@@ -112,17 +113,15 @@ namespace FXB
 		Text_.clear ();
 	}
 
-	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2, const Config& config)
+	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2)
 	: ParentDoc_ { doc }
 	, FB2_ { fb2 }
 	, Result_ { std::make_unique<QTextDocument> () }
 	, Cursor_ { std::make_unique<QTextCursor> (Result_.get ()) }
 	, CursorCacher_ { std::make_unique<CursorCacher> (Cursor_.get ()) }
-	, Config_ { config }
+	, Palette_ { TextDocumentFormatConfig::Instance ().GetPalette () }
 	{
-		Result_->setDefaultFont (config.DefaultFont_);
-		Result_->setPageSize (config.PageSize_);
-		Result_->setUndoRedoEnabled (false);
+		TextDocumentFormatConfig::Instance ().FormatDocument (*Result_);
 
 		const auto& docElem = FB2_.documentElement ();
 		if (docElem.tagName () != "FictionBook")
@@ -130,18 +129,6 @@ namespace FXB
 			Error_ = NotAnFBDocument {};
 			return;
 		}
-
-		const auto rootFrame = Result_->rootFrame ();
-
-		auto frameFmt = rootFrame->frameFormat ();
-
-		frameFmt.setLeftMargin (config.Margins_.left ());
-		frameFmt.setRightMargin (config.Margins_.right ());
-		frameFmt.setTopMargin (config.Margins_.top ());
-		frameFmt.setBottomMargin (config.Margins_.bottom ());
-
-		frameFmt.setBackground (config.BackgroundColor_);
-		rootFrame->setFrameFormat (frameFmt);
 
 		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };
 		Handlers_ ["title"] = [this] (const QDomElement& p) { HandleTitle (p); };
@@ -534,7 +521,7 @@ namespace FXB
 				[this] (QTextCharFormat& fmt)
 				{
 					fmt.setFontUnderline (true);
-					fmt.setForeground (Config_.LinkColor_);
+					fmt.setForeground (Palette_.Link_);
 				},
 				[this] (const QDomElement& p) { HandleParaWONL (p); });
 	}

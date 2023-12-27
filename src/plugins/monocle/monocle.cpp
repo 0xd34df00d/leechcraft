@@ -15,6 +15,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "util/monocle/textdocumentformatconfig.h"
 #include "core.h"
 #include "documenttab.h"
 #include "xmlsettingsmanager.h"
@@ -32,6 +33,8 @@ namespace Monocle
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");
+
+		TextDocumentFormatConfig::Instance ().SetXSM (XmlSettingsManager::Instance ());
 
 		Core::Instance ().SetProxy (proxy, this);
 

@@ -20,6 +20,7 @@ endif ()
 
 add_library (leechcraft-monocle-util SHARED
 	util/monocle/textdocumentadapter.cpp
+	util/monocle/textdocumentformatconfig.cpp
 	)
 FindQtLibs (leechcraft-monocle-util Widgets)
 set_property (TARGET leechcraft-monocle-util PROPERTY SOVERSION ${LC_SOVERSION})
@@ -65,6 +66,7 @@ LC_DEFINE_PLUGIN (
 		common.cpp
 	SETTINGS monoclesettings.xml
 	QT_COMPONENTS Concurrent PrintSupport Widgets Xml
+	LINK_LIBRARIES leechcraft-monocle-util
 	INSTALL_SHARE
 	)
 
