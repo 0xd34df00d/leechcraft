@@ -42,6 +42,13 @@ namespace Monocle
 		return size.toSize ();
 	}
 
+	namespace
+	{
+		constexpr auto DefaultHints = QPainter::RenderHint::Antialiasing |
+				QPainter::RenderHint::TextAntialiasing |
+				QPainter::RenderHint::SmoothPixmapTransform;
+	}
+
 	QFuture<QImage> TextDocumentAdapter::RenderPage (int page, double xScale, double yScale)
 	{
 		const auto& size = Doc_->pageSize ();
@@ -57,7 +64,7 @@ namespace Monocle
 
 		QPainter painter;
 		painter.begin (&image);
-		painter.setRenderHints (Hints_);
+		painter.setRenderHints (DefaultHints);
 		painter.scale (xScale, yScale);
 		painter.translate (0, rect.height () * (-page));
 		Doc_->drawContents (&painter, rect);
@@ -75,7 +82,7 @@ namespace Monocle
 	{
 		painter->save ();
 		const auto oldHints = painter->renderHints ();
-		painter->setRenderHints (Hints_);
+		painter->setRenderHints (DefaultHints);
 
 		painter->scale (xScale, yScale);
 
@@ -87,14 +94,6 @@ namespace Monocle
 
 		painter->setRenderHints (oldHints);
 		painter->restore ();
-	}
-
-	void TextDocumentAdapter::SetRenderHint (QPainter::RenderHint hint, bool enable)
-	{
-		if (enable)
-			Hints_ |= hint;
-		else
-			Hints_ &= ~hint;
 	}
 
 	namespace

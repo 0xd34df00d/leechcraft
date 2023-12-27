@@ -40,13 +40,6 @@ namespace Monocle
 		 */
 		std::shared_ptr<QTextDocument> Doc_;
 
-		/** @brief The hints used during rendering operations.
-		 *
-		 * These hints are set via SetRenderHint() calls and are used in
-		 * RenderPage() and PaintPage() implementations.
-		 */
-		QPainter::RenderHints Hints_;
-
 		QMap<int, QList<ILink_ptr>> Links_;
 	public:
 		struct InternalLink
@@ -136,19 +129,6 @@ namespace Monocle
 		 * each page.
 		 */
 		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
-
-		/** @brief Toggles the render \em hint used during painting.
-		 *
-		 * Sets the \em hint state to \em enable.
-		 *
-		 * The hints are used during RenderPage() and PaintPage() calls.
-		 *
-		 * @param[in] hint The hint to toggle.
-		 * @param[in] enable Whether the hint should be enabled.
-		 *
-		 * @sa RenderPage(), PaintPage()
-		 */
-		void SetRenderHint (QPainter::RenderHint hint, bool enable = true);
 	protected:
 		/** @brief Sets the underlying document to \em doc.
 		 *

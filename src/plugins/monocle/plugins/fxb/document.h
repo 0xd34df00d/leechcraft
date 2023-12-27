@@ -45,8 +45,6 @@ namespace FXB
 		TOCEntryLevel_t GetTOC ();
 
 		void RequestNavigation (int);
-	private:
-		void SetSettings ();
 	signals:
 		void navigateRequested (const QString&, const IDocument::Position&);
 		void printRequested (const QList<int>&);
