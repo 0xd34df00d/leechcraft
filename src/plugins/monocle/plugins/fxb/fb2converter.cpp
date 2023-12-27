@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <util/sll/util.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
 #include "toclink.h"
 
@@ -222,6 +223,9 @@ namespace FXB
 		TOC_ = entry.ChildLevel_;
 
 		CursorCacher_->Flush ();
+
+		for (const auto& [tag, count] : Util::Stlize (UnhandledTags_))
+			qWarning () << "unknown tag" << tag << "occurred" << count << "times";
 	}
 
 	FB2Converter::~FB2Converter () = default;
@@ -543,17 +547,8 @@ namespace FXB
 	void FB2Converter::Handle (const QDomElement& child)
 	{
 		const auto& tagName = child.tagName ();
-		Handlers_.value (tagName,
-				[this, &tagName] (const QDomElement&)
-				{
-					if (!UnhandledTags_.contains (tagName))
-					{
-						UnhandledTags_.insert (tagName);
-						qWarning () << Q_FUNC_INFO
-								<< "unhandled tag"
-								<< tagName;
-					}
-				}) (child);
+		const auto defaultHandler = [this, &tagName] (const QDomElement&) { ++UnhandledTags_ [tagName]; };
+		Handlers_.value (tagName, defaultHandler) (child);
 	}
 
 	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,

@@ -55,7 +55,7 @@ namespace FXB
 		typedef std::function<void (QDomElement)> Handler_f;
 		QHash<QString, Handler_f> Handlers_;
 
-		QSet<QString> UnhandledTags_;
+		QHash<QString, int> UnhandledTags_;
 	public:
 		struct Config
 		{
