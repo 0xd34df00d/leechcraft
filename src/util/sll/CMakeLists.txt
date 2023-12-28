@@ -10,6 +10,7 @@ set (SLL_SRCS
 	serializejson.cpp
 	xmlnode.cpp
 	json.cpp
+	timer.cpp
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
