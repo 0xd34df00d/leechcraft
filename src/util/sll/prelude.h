@@ -128,6 +128,12 @@ namespace Util
 	Container<T> Concat (const Container<Container<T>>& containers)
 	{
 		Container<T> result;
+
+		decltype (result.size ()) size {};
+		for (const auto& cont : containers)
+			size += cont.size ();
+		result.reserve (size);
+
 		for (const auto& cont : containers)
 			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
 		return result;
