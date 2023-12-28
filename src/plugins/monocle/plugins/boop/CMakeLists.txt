@@ -9,6 +9,7 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		boop.cpp
 		document.cpp
+		epubloader.cpp
 	QT_COMPONENTS Gui Xml
 	LINK_LIBRARIES PkgConfig::QuaZip leechcraft-monocle-util
 	)
