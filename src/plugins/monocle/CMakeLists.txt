@@ -70,6 +70,7 @@ LC_DEFINE_PLUGIN (
 	INSTALL_SHARE
 	)
 
+SUBPLUGIN (BOOP "Enable EPub backend for Monocle")
 SUBPLUGIN (DIK "Enable MOBI backend for Monocle")
 SUBPLUGIN (FXB "Enable FictionBook backend for Monocle")
 SUBPLUGIN (MU "Enable PDF backend for Monocle using the mupdf library" OFF)
