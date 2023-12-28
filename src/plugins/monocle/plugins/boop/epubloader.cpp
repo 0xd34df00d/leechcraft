@@ -9,6 +9,7 @@
 #include "epubloader.h"
 #include <QDomDocument>
 #include <QTextDocument>
+#include <QThread>
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
 #include <util/sll/domchildrenrange.h>
@@ -113,10 +114,26 @@ namespace LC::Monocle::Boop
 			return manifest;
 		}
 
+		void FixupLinks (const QDomElement& root, const QString& basePath)
+		{
+			auto images = root.elementsByTagName ("img"_qs);
+			const QUrl baseUrl { basePath };
+			for (int i = 0; i < images.size (); ++i)
+			{
+				auto image = images.at (i).toElement ();
+				const auto& src = image.attribute ("src"_qs);
+				if (src.isEmpty ())
+					continue;
+				image.setAttribute ("src"_qs, baseUrl.resolved (QUrl { src }).toString ());
+			}
+		}
+
 		QVector<QDomElement> ExtractBodyChildren (const QString& epubFile, const QString& subpath)
 		{
 			const auto& doc = GetXml (epubFile, subpath);
 			const auto& body = GetElem (doc.documentElement (), "body"_qs);
+
+			FixupLinks (body, subpath);
 
 			const auto& bodyChildren = body.childNodes ();
 			const auto childrenCount = bodyChildren.size ();
@@ -135,18 +152,14 @@ namespace LC::Monocle::Boop
 
 		QVector<QDomElement> CollectChildren (const QString& epubFile, const Manifest& manifest)
 		{
-			QVector<QString> paths;
+			QVector<QDomElement> bodiesChildren;
 			for (const auto& partId : manifest.Spine_)
 			{
 				const auto& item = manifest.Id2Item_.value (partId);
 				if (item.Path_.isEmpty ())
 					throw InvalidEpub { "unknown contents " + partId };
-				paths << item.Path_;
+				bodiesChildren += ExtractBodyChildren (epubFile, item.Path_);
 			}
-
-			QVector<QDomElement> bodiesChildren;
-			for (const auto& path : paths)
-				bodiesChildren += ExtractBodyChildren (epubFile, path);
 			return bodiesChildren;
 		}
 
@@ -164,21 +177,46 @@ namespace LC::Monocle::Boop
 			timer.Stamp ("uniting children");
 			return doc.toString ();
 		}
+
+		void LoadImages (const QString& epubFile, const Manifest& manifest, QTextDocument& textDoc)
+		{
+			for (const auto& item : manifest.Id2Item_)
+			{
+				if (!item.Mime_.startsWith ("image/"_ql))
+					continue;
+
+				QuaZipFile file { epubFile, item.Path_, QuaZip::csInsensitive };
+				if (!file.open (QIODevice::ReadOnly))
+					throw InvalidEpub { "unable to open " + item.Path_ + ": " + file.errorString () };
+
+				auto image = QImage::fromData (file.readAll ());
+				if (image.isNull ())
+				{
+					qWarning () << "null image from" << item.Path_;
+					continue;
+				}
+
+				textDoc.addResource (QTextDocument::ImageResource, QUrl { item.Path_ }, QVariant::fromValue (image));
+			}
+		}
 	}
 
 	IDocument_ptr LoadZip (const QString& epubFile, QObject *pluginObj)
 	{
 		try
 		{
+			auto textDoc = std::make_unique<QTextDocument> ();
+
 			const auto& opfFile = FindOpfFile (epubFile);
 			const auto& manifest = ParseManifest (epubFile, opfFile);
 			const auto& contents = LoadSpine (epubFile, manifest);
 
 			Util::Timer timer;
-			auto textDoc = std::make_unique<QTextDocument> ();
 			textDoc->setHtml (contents);
 			TextDocumentFormatConfig::Instance ().FormatDocument (*textDoc);
 			timer.Stamp ("creating doc");
+			LoadImages (epubFile, manifest, *textDoc);
+			timer.Stamp ("loading images");
 
 			return std::make_shared<Document> (std::move (textDoc), QUrl::fromLocalFile (epubFile), pluginObj);
 		}
