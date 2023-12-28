@@ -182,8 +182,8 @@ namespace LC::Monocle::Boop
 
 			Util::Timer timer;
 			auto textDoc = std::make_unique<QTextDocument> ();
-			TextDocumentFormatConfig::Instance ().FormatDocument (*textDoc);
 			textDoc->setHtml (contents);
+			TextDocumentFormatConfig::Instance ().FormatDocument (*textDoc);
 			timer.Stamp ("creating doc");
 
 			return std::make_shared<Document> (std::move (textDoc), QUrl::fromLocalFile (epubFile), pluginObj);
