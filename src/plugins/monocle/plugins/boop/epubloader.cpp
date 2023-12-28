@@ -9,7 +9,7 @@
 #include "epubloader.h"
 #include <QDomDocument>
 #include <QTextDocument>
-#include <QThread>
+#include <QtConcurrent>
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
 #include <util/sll/domchildrenrange.h>
@@ -180,24 +180,44 @@ namespace LC::Monocle::Boop
 
 		void LoadImages (const QString& epubFile, const Manifest& manifest, QTextDocument& textDoc)
 		{
-			for (const auto& item : manifest.Id2Item_)
+			struct LoadedImage
 			{
-				if (!item.Mime_.startsWith ("image/"_ql))
-					continue;
+				QString Path_;
+				QImage Image_;
+			};
 
-				QuaZipFile file { epubFile, item.Path_, QuaZip::csInsensitive };
-				if (!file.open (QIODevice::ReadOnly))
-					throw InvalidEpub { "unable to open " + item.Path_ + ": " + file.errorString () };
+			Util::Timer timer;
+			QVector<PathItem> imageItems;
+			imageItems.reserve (manifest.Id2Item_.size ());
+			std::copy_if (manifest.Id2Item_.begin (), manifest.Id2Item_.end (), std::back_inserter (imageItems),
+					[] (const PathItem& item) { return item.Mime_.startsWith ("image/"_ql); });
+			const auto& images = QtConcurrent::blockingMapped<QVector<std::optional<LoadedImage>>> (imageItems,
+					std::function
+					{
+						[&] (const PathItem& item) -> std::optional<LoadedImage>
+						{
+							QuaZipFile file { epubFile, item.Path_, QuaZip::csInsensitive };
+							if (!file.open (QIODevice::ReadOnly))
+								throw InvalidEpub { "unable to open " + item.Path_ + ": " + file.errorString () };
 
-				auto image = QImage::fromData (file.readAll ());
-				if (image.isNull ())
-				{
-					qWarning () << "null image from" << item.Path_;
-					continue;
-				}
+							auto image = QImage::fromData (file.readAll ());
+							if (image.isNull ())
+							{
+								qWarning () << "null image from" << item.Path_;
+								return {};
+							}
 
-				textDoc.addResource (QTextDocument::ImageResource, QUrl { item.Path_ }, QVariant::fromValue (image));
-			}
+							return LoadedImage { item.Path_, std::move (image) };
+						}
+					});
+			timer.Stamp ("parsing images");
+
+			for (const auto& loaded : images)
+				if (loaded)
+					textDoc.addResource (QTextDocument::ImageResource,
+							QUrl { loaded->Path_ },
+							QVariant::fromValue (loaded->Image_));
+			timer.Stamp ("adding images");
 		}
 	}
 
