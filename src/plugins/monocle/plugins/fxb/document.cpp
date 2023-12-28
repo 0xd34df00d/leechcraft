@@ -10,12 +10,9 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QTextDocument>
-#include <QApplication>
-#include <QPalette>
 #include <QtDebug>
 #include <util/sll/either.h>
 #include "fb2converter.h"
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
