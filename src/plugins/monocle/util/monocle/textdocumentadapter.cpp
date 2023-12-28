@@ -225,6 +225,8 @@ namespace LC::Monocle
 		Doc_ = std::move (doc);
 
 		Links_.clear ();
+		if (links.isEmpty ())
+			return;
 
 		const auto makeCursor = [this] (int position)
 		{
