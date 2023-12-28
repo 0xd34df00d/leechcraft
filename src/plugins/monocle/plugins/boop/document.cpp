@@ -9,10 +9,12 @@
 #include "document.h"
 #include <QDomDocument>
 #include <QTextDocument>
+#include <QtConcurrentMap>
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/timer.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/monocle/textdocumentformatconfig.h>
 
@@ -146,19 +148,37 @@ namespace LC::Monocle::Boop
 			return result;
 		}
 
-		QString LoadSpine (const QString& epubFile, const Manifest& manifest)
+		QVector<QDomElement> CollectChildren (const QString& epubFile, const Manifest& manifest)
 		{
-			Util::Timer timer;
-			QVector<QDomElement> bodiesChildren;
-
+			QVector<QString> paths;
 			for (const auto& partId : manifest.Spine_)
 			{
 				const auto& path = manifest.Id2Path_.value (partId);
 				if (path.isEmpty ())
 					throw InvalidEpub { "unknown ref " + path };
-
-				bodiesChildren += ExtractBodyChildren (epubFile, path);
+				paths << path;
 			}
+
+			using Elems_t = QVector<QDomElement>;
+
+			constexpr auto parallelThreshold = 50;
+			if (paths.size () > parallelThreshold)
+			{
+				auto subresults = QtConcurrent::blockingMapped<QVector<Elems_t>> (paths,
+						std::function { [&] (const QString& path) { return ExtractBodyChildren (epubFile, path); } });
+				return Util::Concat (std::move (subresults));
+			}
+
+			Elems_t bodiesChildren;
+			for (const auto& path : paths)
+				bodiesChildren += ExtractBodyChildren (epubFile, path);
+			return bodiesChildren;
+		}
+
+		QString LoadSpine (const QString& epubFile, const Manifest& manifest)
+		{
+			Util::Timer timer;
+			const auto& bodiesChildren = CollectChildren (epubFile, manifest);
 			timer.Stamp ("extracting children");
 
 			QDomDocument doc;
