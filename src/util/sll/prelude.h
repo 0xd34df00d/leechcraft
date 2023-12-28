@@ -139,6 +139,21 @@ namespace Util
 		return result;
 	}
 
+	template<template<typename> class Container, typename T>
+	Container<T> Concat (Container<Container<T>>&& containers)
+	{
+		Container<T> result;
+
+		decltype (result.size ()) size {};
+		for (const auto& cont : containers)
+			size += cont.size ();
+		result.reserve (size);
+
+		for (auto&& cont : containers)
+			std::move (cont.begin (), cont.end (), std::back_inserter (result));
+		return result;
+	}
+
 	template<template<typename...> class Container, typename... ContArgs>
 	auto Concat (const Container<ContArgs...>& containers) -> std::decay_t<decltype (*containers.begin ())>
 	{
