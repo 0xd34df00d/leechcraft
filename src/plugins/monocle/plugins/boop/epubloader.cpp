@@ -38,17 +38,22 @@ namespace LC::Monocle::Boop
 			InvalidEpub& operator= (InvalidEpub&&) = delete;
 		};
 
+		auto ParseXml (auto&& xmlable, const auto& context)
+		{
+			QDomDocument doc;
+			QString errorMsg;
+			if (!doc.setContent (xmlable, false, &errorMsg))
+				throw InvalidEpub { "unable to parse xml " + context };
+			return doc;
+		}
+
 		auto GetXml (const QString& epubFile, const QString& filename)
 		{
 			QuaZipFile file { epubFile, filename, QuaZip::csInsensitive };
 			if (!file.open (QIODevice::ReadOnly))
 				throw InvalidEpub { "unable to open " + filename + ": " + file.errorString () };
 
-			QDomDocument doc;
-			QString errorMsg;
-			if (!doc.setContent (&file, false, &errorMsg))
-				throw InvalidEpub { "unable to parse " + filename + ": " + errorMsg };
-			return doc;
+			return ParseXml (&file, filename);
 		}
 
 		auto GetElem (const QDomElement& parent, const QString& tag)
