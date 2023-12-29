@@ -423,9 +423,7 @@ namespace FXB
 
 		if (const auto emptyCount = GetEmptyLinesCount (tagElem))
 		{
-			CursorCacher_->insertText ("\n\n");
-			for (int i = 0; i < emptyCount; ++i)
-				CursorCacher_->insertText ("\n");
+			CursorCacher_->insertText (QString { emptyCount + 2 }.fill ('\n'));
 			return;
 		}
 
