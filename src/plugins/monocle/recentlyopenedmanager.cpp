@@ -76,14 +76,8 @@ namespace Monocle
 		for (const auto& path : OpenedDocs_)
 		{
 			const QFileInfo fi { path };
-
 			if (!fi.exists ())
-			{
-				qDebug () << Q_FUNC_INFO
-						<< "skipping non-existent"
-						<< path;
 				continue;
-			}
 
 			auto act = menu->addAction (fi.fileName (),
 					[handler, path] { handler (path); });
