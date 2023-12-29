@@ -31,6 +31,13 @@ namespace LC::Monocle
 		QColor Link_;
 	};
 
+	struct NonStyleSheetStyles
+	{
+		Qt::AlignmentFlag AlignP_;
+		Qt::AlignmentFlag AlignH1_;
+		Qt::AlignmentFlag AlignH2_;
+	};
+
 	class MONOCLE_UTIL_API TextDocumentFormatConfig
 	{
 		TextDocumentPalette Palette_;
@@ -41,6 +48,9 @@ namespace LC::Monocle
 
 		const TextDocumentPalette& GetPalette () const;
 		void FormatDocument (QTextDocument&) const;
+		QString GetStyleSheet () const;
+
+		NonStyleSheetStyles GetNonStyleSheetStyles () const;
 
 		void SetXSM (Util::BaseSettingsManager&);
 	private:
