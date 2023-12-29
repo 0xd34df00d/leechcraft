@@ -93,6 +93,12 @@ namespace LC::Util
 		{
 			return Data_ [pos];
 		}
+
+		constexpr operator QStringView () const noexcept
+			requires std::is_same_v<Char, char16_t>
+		{
+			return QStringView { Data_, Size };
+		}
 	};
 
 	template<CtString Str>
