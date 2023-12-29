@@ -44,6 +44,7 @@ namespace LC::Monocle
 		{
 			QPair<int, int> FromSpan_;
 			QPair<int, int> ToSpan_;
+			// Double-check Q_DECLARE_TYPEINFO when updating this type.
 		};
 
 		~TextDocumentAdapter () override;
@@ -134,3 +135,5 @@ namespace LC::Monocle
 		void SetDocument (std::unique_ptr<QTextDocument> doc, const QVector<InternalLink>& links);
 	};
 }
+
+Q_DECLARE_TYPEINFO (LC::Monocle::TextDocumentAdapter::InternalLink, Q_PRIMITIVE_TYPE);
