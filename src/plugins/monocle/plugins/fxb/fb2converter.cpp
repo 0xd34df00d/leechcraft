@@ -13,7 +13,6 @@
 #include <QTextDocument>
 #include <QTextCursor>
 #include <QTextFrame>
-#include <QUrl>
 #include <QImage>
 #include <QVariant>
 #include <QStringList>
@@ -25,11 +24,7 @@
 #include <util/monocle/textdocumentformatconfig.h>
 #include "toclink.h"
 
-namespace LC
-{
-namespace Monocle
-{
-namespace FXB
+namespace LC::Monocle::FXB
 {
 	class CursorCacher
 	{
@@ -41,6 +36,12 @@ namespace FXB
 		QTextCharFormat LastCharFormat_ = Cursor_->charFormat ();
 	public:
 		CursorCacher (QTextCursor *cursor);
+
+		CursorCacher (const CursorCacher&) = delete;
+		CursorCacher (CursorCacher&&) = delete;
+		CursorCacher& operator= (const CursorCacher&) = delete;
+		CursorCacher& operator= (CursorCacher&&) = delete;
+
 		~CursorCacher ();
 
 		const QTextBlockFormat& blockFormat () const;
@@ -78,7 +79,7 @@ namespace FXB
 	{
 		if (fmt == LastBlockFormat_)
 		{
-			Text_ += "\n";
+			Text_ += '\n';
 			return;
 		}
 
@@ -124,23 +125,23 @@ namespace FXB
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Result_);
 
 		const auto& docElem = FB2_.documentElement ();
-		if (docElem.tagName () != "FictionBook")
+		if (docElem.tagName () != "FictionBook"_ql)
 		{
 			Error_ = NotAnFBDocument {};
 			return;
 		}
 
-		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };
-		Handlers_ ["title"] = [this] (const QDomElement& p) { HandleTitle (p); };
-		Handlers_ ["subtitle"] = [this] (const QDomElement& p) { HandleTitle (p, 1); };
-		Handlers_ ["epigraph"] = [this] (const QDomElement& p) { HandleEpigraph (p); };
-		Handlers_ ["image"] = [this] (const QDomElement& p) { HandleImage (p); };
+		Handlers_ [u"section"] = [this] (const QDomElement& p) { HandleSection (p); };
+		Handlers_ [u"title"] = [this] (const QDomElement& p) { HandleTitle (p); };
+		Handlers_ [u"subtitle"] = [this] (const QDomElement& p) { HandleTitle (p, 1); };
+		Handlers_ [u"epigraph"] = [this] (const QDomElement& p) { HandleEpigraph (p); };
+		Handlers_ [u"image"] = [this] (const QDomElement& p) { HandleImage (p); };
 
-		Handlers_ ["p"] = [this] (const QDomElement& p) { HandlePara (p); };
-		Handlers_ ["poem"] = [this] (const QDomElement& p) { HandlePoem (p); };
-		Handlers_ ["empty-line"] = [this] (const QDomElement& p) { HandleEmptyLine (p); };
-		Handlers_ ["stanza"] = [this] (const QDomElement& p) { HandleStanza (p); };
-		Handlers_ ["v"] = [this] (const QDomElement& p)
+		Handlers_ [u"p"] = [this] (const QDomElement& p) { HandlePara (p); };
+		Handlers_ [u"poem"] = [this] (const QDomElement& p) { HandlePoem (p); };
+		Handlers_ [u"empty-line"] = [this] (const QDomElement& p) { HandleEmptyLine (p); };
+		Handlers_ [u"stanza"] = [this] (const QDomElement& p) { HandleStanza (p); };
+		Handlers_ [u"v"] = [this] (const QDomElement& p)
 		{
 			auto blockFmt = CursorCacher_->blockFormat ();
 			blockFmt.setTextIndent (50);
@@ -152,26 +153,26 @@ namespace FXB
 					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
 
-		Handlers_ ["emphasis"] = [this] (const QDomElement& p)
+		Handlers_ [u"emphasis"] = [this] (const QDomElement& p)
 		{
 			HandleMangleCharFormat (p,
 					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
 					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
-		Handlers_ ["strong"] = [this] (const QDomElement& p)
+		Handlers_ [u"strong"] = [this] (const QDomElement& p)
 		{
 			HandleMangleCharFormat (p,
 					[] (QTextCharFormat& fmt) { fmt.setFontWeight (QFont::Bold); },
 					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
-		Handlers_ ["strikethrough"] = [this] (const QDomElement& p)
+		Handlers_ [u"strikethrough"] = [this] (const QDomElement& p)
 		{
 			HandleMangleCharFormat (p,
 					[] (QTextCharFormat& fmt) { fmt.setFontStrikeOut (true); },
 					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
 
-		Handlers_ ["annotation"] = [this] (const QDomElement& p)
+		Handlers_ [u"annotation"] = [this] (const QDomElement& p)
 		{
 			HandleMangleBlockFormat (p,
 					[] (QTextBlockFormat& fmt)
@@ -186,24 +187,19 @@ namespace FXB
 								[this] (const QDomElement& p) { HandleChildren (p); });
 					});
 		};
-		Handlers_ ["style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
-		Handlers_ ["coverpage"] = [this] (const QDomElement& p) { HandleChildren (p); };
-		Handlers_ ["a"] = [this] (const QDomElement& p) { HandleLink (p); };
+		Handlers_ [u"style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
+		Handlers_ [u"coverpage"] = [this] (const QDomElement& p) { HandleChildren (p); };
+		Handlers_ [u"a"] = [this] (const QDomElement& p) { HandleLink (p); };
 
-		TOCEntry entry =
-		{
-			ILink_ptr (),
-			"root",
-			TOCEntryLevel_t ()
-		};
+		TOCEntry entry { {}, "root", {} };
 		CurrentTOCStack_.push (&entry);
 
 		for (const auto& elem : Util::DomChildren (docElem, {}))
 		{
 			const auto& tagName = elem.tagName ();
-			if (tagName == "description")
+			if (tagName == "description"_ql)
 				HandleDescription (elem);
-			else if (tagName == "body")
+			else if (tagName == "body"_ql)
 				HandleBody (elem);
 		}
 
@@ -221,13 +217,13 @@ namespace FXB
 	{
 		if (Error_)
 			return ConversionResult_t::Left (*Error_);
-		else
-			return ConversionResult_t::Right ({
-					std::move (Result_),
-					DocInfo_,
-					TOC_,
-					GetLinks ()
-				});
+
+		return ConversionResult_t::Right ({
+				std::move (Result_),
+				DocInfo_,
+				TOC_,
+				GetLinks ()
+			});
 	}
 
 	QVector<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const
@@ -262,11 +258,11 @@ namespace FXB
 
 	QDomElement FB2Converter::FindBinary (const QString& refId) const
 	{
-		const auto& binaries = FB2_.elementsByTagName ("binary");
+		const auto& binaries = FB2_.elementsByTagName ("binary"_qs);
 		for (int i = 0; i < binaries.size (); ++i)
 		{
 			const auto& elem = binaries.at (i).toElement ();
-			if (elem.attribute ("id") == refId)
+			if (elem.attribute ("id"_qs) == refId)
 				return elem;
 		}
 
@@ -292,25 +288,25 @@ namespace FXB
 			return result;
 		};
 
-		DocInfo_.Genres_ = getChildValues ("genre");
-		DocInfo_.Title_ = getChildValues ("book-title").value (0);
-		DocInfo_.Keywords_ = getChildValues ("keywords").value (0).split (' ', Qt::SkipEmptyParts);
+		DocInfo_.Genres_ = getChildValues ("genre"_qs);
+		DocInfo_.Title_ = getChildValues ("book-title"_qs).value (0);
+		DocInfo_.Keywords_ = getChildValues ("keywords"_qs).value (0).split (' ', Qt::SkipEmptyParts);
 
-		const auto& dateElem = elem.elementsByTagName ("date").at (0).toElement ();
-		DocInfo_.Date_.setDate (QDate::fromString (dateElem.attribute ("value"), Qt::ISODate));
+		const auto& dateElem = elem.elementsByTagName ("date"_qs).at (0).toElement ();
+		DocInfo_.Date_.setDate (QDate::fromString (dateElem.attribute ("value"_qs), Qt::ISODate));
 
-		DocInfo_.Author_ += getChildValues ("first-name").value (0) + " ";
-		DocInfo_.Author_ += getChildValues ("last-name").value (0) + " ";
-		const auto& email = getChildValues ("email").value (0);
+		DocInfo_.Author_ += getChildValues ("first-name"_qs).value (0) + ' ';
+		DocInfo_.Author_ += getChildValues ("last-name"_qs).value (0) + ' ';
+		const auto& email = getChildValues ("email"_qs).value (0);
 		if (!email.isEmpty ())
-			DocInfo_.Author_ += "<" + email + "> ";
-		DocInfo_.Author_ += getChildValues ("nickname").value (0);
+			DocInfo_.Author_ += '<' + email + "> ";
+		DocInfo_.Author_ += getChildValues ("nickname"_qs).value (0);
 
 		DocInfo_.Author_ = DocInfo_.Author_.trimmed ().simplified ();
 
 		FillPreamble ();
 
-		for (const auto& childElem : Util::DomChildren (elem.firstChildElement ("title-info"), {}))
+		for (const auto& childElem : Util::DomChildren (elem.firstChildElement ("title-info"_qs), {}))
 			if (!handledChildren.contains (childElem.tagName ()))
 				Handle (childElem);
 	}
@@ -332,9 +328,9 @@ namespace FXB
 			CursorSpanKeeper (CursorCacher& cacher, const QTextCursor& cursor)
 			: Cacher_ { cacher }
 			, Cursor_ { cursor }
+			, StartPosition_ { cursor.position () }
 			{
 				Cacher_.Flush ();
-				StartPosition_ = Cursor_.position ();
 			}
 
 			QPair<int, int> GetSpan () const
@@ -360,6 +356,11 @@ namespace FXB
 					SpanKeeper_.emplace (cacher, cursor);
 			}
 
+			LinkCtxHandler (const LinkCtxHandler&) = delete;
+			LinkCtxHandler (LinkCtxHandler&&) = delete;
+			LinkCtxHandler& operator= (const LinkCtxHandler&) = delete;
+			LinkCtxHandler& operator= (LinkCtxHandler&&) = delete;
+
 			~LinkCtxHandler ()
 			{
 				if (!SpanKeeper_)
@@ -372,7 +373,7 @@ namespace FXB
 
 	void FB2Converter::HandleSection (const QDomElement& tagElem)
 	{
-		LinkCtxHandler linkHandler { tagElem.attribute ("id"), LinkTargets_, *CursorCacher_, *Cursor_ };
+		const LinkCtxHandler linkHandler { tagElem.attribute ("id"_qs), LinkTargets_, *CursorCacher_, *Cursor_ };
 
 		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
@@ -387,7 +388,7 @@ namespace FXB
 		std::optional<QString> GetTitleName (const QDomElement& tagElem)
 		{
 			for (const auto& child : Util::DomChildren (tagElem, {}))
-				if (child.tagName () == "p")
+				if (child.tagName () == "p"_ql)
 					return child.text ();
 
 			return {};
@@ -402,7 +403,7 @@ namespace FXB
 			int emptyCount = 0;
 			for (const auto& child : Util::DomChildren (elem, {}))
 			{
-				if (child.tagName () != "empty-line")
+				if (child.tagName () != "empty-line"_ql)
 					return 0;
 				++emptyCount;
 			}
@@ -450,7 +451,7 @@ namespace FXB
 
 	void FB2Converter::HandleImage (const QDomElement& imageElem)
 	{
-		const auto& refId = imageElem.attribute ("href").mid (1);
+		const auto& refId = imageElem.attribute ("href"_qs).mid (1);
 		const auto& binary = FindBinary (refId);
 		const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
 		const auto& image = QImage::fromData (imageData);
@@ -460,7 +461,7 @@ namespace FXB
 				QVariant::fromValue (image));
 
 		CursorCacher_->Flush ();
-		Cursor_->insertHtml (QString ("<img src='image://%1'/>").arg (refId));
+		Cursor_->insertHtml ("<img src='image://%1'/>"_qs.arg (refId));
 	}
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
@@ -505,15 +506,15 @@ namespace FXB
 
 	void FB2Converter::HandleEmptyLine (const QDomElement&)
 	{
-		CursorCacher_->insertText ("\n\n");
+		CursorCacher_->insertText ("\n\n"_qs);
 	}
 
 	void FB2Converter::HandleLink (const QDomElement& tagElem)
 	{
-		auto target = tagElem.attribute ("href");
+		auto target = tagElem.attribute ("href"_qs);
 		if (target.size () > 1 && target [0] == '#')
 			target = target.mid (1);
-		LinkCtxHandler linkHandler { target, LinkSources_, *CursorCacher_, *Cursor_ };
+		const LinkCtxHandler linkHandler { target, LinkSources_, *CursorCacher_, *Cursor_ };
 
 		HandleMangleCharFormat (tagElem,
 				[this] (QTextCharFormat& fmt)
@@ -538,7 +539,7 @@ namespace FXB
 	}
 
 	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,
-			std::function<void (QTextBlockFormat&)> mangler, Handler_f next)
+			const std::function<void (QTextBlockFormat&)>& mangler, const Handler_f& next)
 	{
 		const auto origFmt = CursorCacher_->blockFormat ();
 
@@ -552,7 +553,7 @@ namespace FXB
 	}
 
 	void FB2Converter::HandleMangleCharFormat (const QDomElement& tagElem,
-			std::function<void (QTextCharFormat&)> mangler, Handler_f next)
+			const std::function<void (QTextCharFormat&)>& mangler, const Handler_f& next)
 	{
 		const auto origFmt = CursorCacher_->charFormat ();
 
@@ -602,6 +603,4 @@ namespace FXB
 
 		Cursor_->insertBlock ();
 	}
-}
-}
 }

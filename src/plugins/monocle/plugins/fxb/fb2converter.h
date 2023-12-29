@@ -50,7 +50,7 @@ namespace LC::Monocle::FXB
 		std::unique_ptr<CursorCacher> CursorCacher_;
 
 		using Handler_f = std::function<void (QDomElement)>;
-		QHash<QString, Handler_f> Handlers_;
+		QHash<QStringView, Handler_f> Handlers_;
 
 		QHash<QString, int> UnhandledTags_;
 
@@ -108,9 +108,9 @@ namespace LC::Monocle::FXB
 		void Handle (const QDomElement&);
 
 		void HandleMangleBlockFormat (const QDomElement&,
-				std::function<void (QTextBlockFormat&)>, Handler_f);
+				const std::function<void (QTextBlockFormat&)>&, const Handler_f&);
 		void HandleMangleCharFormat (const QDomElement&,
-				std::function<void (QTextCharFormat&)>, Handler_f);
+				const std::function<void (QTextCharFormat&)>&, const Handler_f&);
 
 		void FillPreamble ();
 	};
