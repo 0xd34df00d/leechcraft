@@ -95,8 +95,7 @@ namespace LC::Monocle
 		return
 		{
 			.AlignP_ = Qt::AlignJustify,
-			.AlignH1_ = Qt::AlignHCenter,
-			.AlignH2_ = Qt::AlignHCenter,
+			.AlignH_ = { Qt::AlignHCenter, Qt::AlignHCenter, Qt::AlignLeft, Qt::AlignLeft, Qt::AlignLeft, Qt::AlignLeft },
 		};
 	}
 

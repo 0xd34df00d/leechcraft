@@ -34,8 +34,7 @@ namespace LC::Monocle
 	struct NonStyleSheetStyles
 	{
 		Qt::AlignmentFlag AlignP_;
-		Qt::AlignmentFlag AlignH1_;
-		Qt::AlignmentFlag AlignH2_;
+		std::array<Qt::AlignmentFlag, 6> AlignH_;
 	};
 
 	class MONOCLE_UTIL_API TextDocumentFormatConfig

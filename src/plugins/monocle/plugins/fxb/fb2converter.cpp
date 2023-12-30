@@ -113,6 +113,17 @@ namespace LC::Monocle::FXB
 			return {};
 		}
 
+		std::optional<int> GetHeaderLevel (const QString& tagName)
+		{
+			if (tagName.size () != 2 || tagName [0] != 'h')
+				return {};
+
+			auto level = tagName [1].toLatin1 () - '0';
+			if (level < 1 || level > 6)
+				return {};
+			return level;
+		}
+
 		class Converter
 		{
 			QStack<QStringView> TagStack_;
@@ -163,7 +174,7 @@ namespace LC::Monocle::FXB
 
 			void Fixup (QDomElement elem)
 			{
-				static constexpr std::array overriddenAlignment
+				static const QSet overriddenAlignment
 				{
 					u"epigraph"_qsv,
 					u"cite"_qsv,
@@ -171,18 +182,14 @@ namespace LC::Monocle::FXB
 					u"stanza"_qsv
 				};
 				if (elem.tagName () == "p"_ql &&
-						!std::any_of (overriddenAlignment.begin (), overriddenAlignment.end (),
-								[&] (const auto& tag) { return TagStack_.contains (tag.toString ()); }))
+						!std::any_of (TagStack_.begin (), TagStack_.end (),
+								[&] (auto tag) { return overriddenAlignment.contains (tag); }))
 					elem.setAttribute ("align"_qs, ToString (Styles_.AlignP_));
 
-				if (elem.tagName () == "h1"_ql)
-					elem.setAttribute ("align"_qs, ToString (Styles_.AlignH1_));
-				if (elem.tagName () == "h2"_ql)
-					elem.setAttribute ("align"_qs, ToString (Styles_.AlignH2_));
-
-				const bool isHeader = elem.tagName ().startsWith ('h') && elem.tagName ().size () == 2;
-				if (isHeader)
+				if (const auto headerLevel = GetHeaderLevel (elem.tagName ()))
 				{
+					elem.setAttribute ("align"_qs, ToString (Styles_.AlignH_ [*headerLevel]));
+
 					auto owner = elem.ownerDocument ();
 					bool firstP = true;
 					for (auto p = elem.firstChildElement ("p"_qs); !p.isNull (); p = elem.firstChildElement ("p"_qs))
