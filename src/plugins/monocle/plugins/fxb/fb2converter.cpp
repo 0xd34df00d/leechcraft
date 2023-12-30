@@ -15,592 +15,227 @@
 #include <QTextFrame>
 #include <QImage>
 #include <QVariant>
+#include <QStack>
 #include <QStringList>
 #include <QtDebug>
 #include <util/sll/util.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/timer.h>
 #include <util/monocle/textdocumentformatconfig.h>
 #include "toclink.h"
 
 namespace LC::Monocle::FXB
 {
-	class CursorCacher
+	struct HtmlTag
 	{
-		QTextCursor * const Cursor_;
-
-		QString Text_;
-
-		QTextBlockFormat LastBlockFormat_ = Cursor_->blockFormat ();
-		QTextCharFormat LastCharFormat_ = Cursor_->charFormat ();
-	public:
-		CursorCacher (QTextCursor *cursor);
-
-		CursorCacher (const CursorCacher&) = delete;
-		CursorCacher (CursorCacher&&) = delete;
-		CursorCacher& operator= (const CursorCacher&) = delete;
-		CursorCacher& operator= (CursorCacher&&) = delete;
-
-		~CursorCacher ();
-
-		const QTextBlockFormat& blockFormat () const;
-		const QTextCharFormat& charFormat () const;
-
-		void insertBlock (const QTextBlockFormat&);
-		void insertText (const QString&);
-
-		void setCharFormat (const QTextCharFormat&);
-
-		void Flush ();
+		QString Tag_;
+		QString Class_ {};
+		QString Id_ {};
 	};
 
-	CursorCacher::CursorCacher (QTextCursor *cursor)
-	: Cursor_ (cursor)
+	namespace
 	{
-	}
+		using StackedConverter_t = std::function<HtmlTag (const QVector<QStringView>&)>;
+		using Converter_t = std::variant<HtmlTag, StackedConverter_t>;
 
-	CursorCacher::~CursorCacher ()
-	{
-		Flush ();
-	}
-
-	const QTextBlockFormat& CursorCacher::blockFormat () const
-	{
-		return LastBlockFormat_;
-	}
-
-	const QTextCharFormat& CursorCacher::charFormat () const
-	{
-		return LastCharFormat_;
-	}
-
-	void CursorCacher::insertBlock (const QTextBlockFormat& fmt)
-	{
-		if (fmt == LastBlockFormat_)
+		template<Util::CtString Str>
+		std::pair<QStringView, Converter_t> Identity ()
 		{
-			Text_ += '\n';
-			return;
+			return { Str, HtmlTag { .Tag_ = Util::ToString<Str> () } };
 		}
 
-		Flush ();
-
-		Cursor_->insertBlock (fmt);
-		LastBlockFormat_ = fmt;
-	}
-
-	void CursorCacher::insertText (const QString& text)
-	{
-		Text_ += text;
-	}
-
-	void CursorCacher::setCharFormat (const QTextCharFormat& fmt)
-	{
-		if (LastCharFormat_ == fmt)
-			return;
-
-		Flush ();
-
-		Cursor_->setCharFormat (fmt);
-		LastCharFormat_ = fmt;
-	}
-
-	void CursorCacher::Flush ()
-	{
-		if (Text_.isEmpty ())
-			return;
-
-		Cursor_->insertText (Text_);
-		Text_.clear ();
-	}
-
-	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2)
-	: ParentDoc_ { doc }
-	, FB2_ { fb2 }
-	, Result_ { std::make_unique<QTextDocument> () }
-	, Cursor_ { std::make_unique<QTextCursor> (Result_.get ()) }
-	, CursorCacher_ { std::make_unique<CursorCacher> (Cursor_.get ()) }
-	, Palette_ { TextDocumentFormatConfig::Instance ().GetPalette () }
-	{
-		TextDocumentFormatConfig::Instance ().FormatDocument (*Result_);
-
-		const auto& docElem = FB2_.documentElement ();
-		if (docElem.tagName () != "FictionBook"_ql)
+		template<int Base>
+		HtmlTag StackedTitle (const QVector<QStringView>& stack)
 		{
-			Error_ = NotAnFBDocument {};
-			return;
+			const auto depth = stack.count (u"section"_qsv) + stack.count (u"subsection"_qsv);
+			const auto maxH = 6;
+			return HtmlTag { .Tag_ = "h" + QString::number (std::min (Base + depth, maxH)) };
 		}
 
-		Handlers_ [u"section"] = [this] (const QDomElement& p) { HandleSection (p); };
-		Handlers_ [u"title"] = [this] (const QDomElement& p) { HandleTitle (p); };
-		Handlers_ [u"subtitle"] = [this] (const QDomElement& p) { HandleTitle (p, 1); };
-		Handlers_ [u"epigraph"] = [this] (const QDomElement& p) { HandleEpigraph (p); };
-		Handlers_ [u"image"] = [this] (const QDomElement& p) { HandleImage (p); };
-
-		Handlers_ [u"p"] = [this] (const QDomElement& p) { HandlePara (p); };
-		Handlers_ [u"poem"] = [this] (const QDomElement& p) { HandlePoem (p); };
-		Handlers_ [u"empty-line"] = [this] (const QDomElement& p) { HandleEmptyLine (p); };
-		Handlers_ [u"stanza"] = [this] (const QDomElement& p) { HandleStanza (p); };
-		Handlers_ [u"v"] = [this] (const QDomElement& p)
+		const QHash<QStringView, Converter_t> Converters
 		{
-			auto blockFmt = CursorCacher_->blockFormat ();
-			blockFmt.setTextIndent (50);
+			Identity<u"body"> (),
 
-			CursorCacher_->insertBlock (blockFmt);
+			{ u"coverpage", HtmlTag { .Tag_ ="div"_qs, .Class_ = "break-after" } },
 
-			HandleMangleCharFormat (p,
-					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
-					[this] (const QDomElement& p) { HandleParaWONL (p); });
+			{ u"section", HtmlTag { .Tag_ = "div"_qs, .Class_ = "section"_qs } },
+			{ u"title", &StackedTitle<1> },
+			{ u"subtitle", &StackedTitle<2> },
+			Identity<u"p"> (),
+			{ u"epigraph", HtmlTag { .Tag_ = "div"_qs, .Class_ = "epigraph"_qs } },
+
+			{ u"empty-line", HtmlTag { .Tag_ = "br"_qs } },
+
+			{ u"emphasis", HtmlTag { .Tag_ = "em"_qs } },
+			Identity<u"strong"> (),
+			{ u"strikethrough", HtmlTag { .Tag_ = "s"_qs } },
+
+			{ u"style", HtmlTag { .Tag_ = "span"_qs, .Class_ = "style-emphasis"_qs } },
+
+			{ u"cite", HtmlTag { .Tag_ = "blockquote"_qs, .Class_ = "cite-internal"_qs } },
+			{ u"poem", HtmlTag { .Tag_ = "div"_qs, .Class_ = "poem"_qs } },
+			{ u"stanza", HtmlTag { .Tag_ = "div"_qs, .Class_ = "stanza"_qs } },
+			{ u"v", HtmlTag { .Tag_ = "div"_qs } },
 		};
-
-		Handlers_ [u"emphasis"] = [this] (const QDomElement& p)
-		{
-			HandleMangleCharFormat (p,
-					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
-					[this] (const QDomElement& p) { HandleParaWONL (p); });
-		};
-		Handlers_ [u"strong"] = [this] (const QDomElement& p)
-		{
-			HandleMangleCharFormat (p,
-					[] (QTextCharFormat& fmt) { fmt.setFontWeight (QFont::Bold); },
-					[this] (const QDomElement& p) { HandleParaWONL (p); });
-		};
-		Handlers_ [u"strikethrough"] = [this] (const QDomElement& p)
-		{
-			HandleMangleCharFormat (p,
-					[] (QTextCharFormat& fmt) { fmt.setFontStrikeOut (true); },
-					[this] (const QDomElement& p) { HandleParaWONL (p); });
-		};
-
-		Handlers_ [u"annotation"] = [this] (const QDomElement& p)
-		{
-			HandleMangleBlockFormat (p,
-					[] (QTextBlockFormat& fmt)
-					{
-						fmt.setAlignment (Qt::AlignRight);
-						fmt.setLeftMargin (60);
-					},
-					[this] (const QDomElement& p)
-					{
-						HandleMangleCharFormat (p,
-								[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
-								[this] (const QDomElement& p) { HandleChildren (p); });
-					});
-		};
-		Handlers_ [u"style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
-		Handlers_ [u"coverpage"] = [this] (const QDomElement& p) { HandleChildren (p); };
-		Handlers_ [u"a"] = [this] (const QDomElement& p) { HandleLink (p); };
-
-		TOCEntry entry { {}, "root", {} };
-		CurrentTOCStack_.push (&entry);
-
-		for (const auto& elem : Util::DomChildren (docElem, {}))
-		{
-			const auto& tagName = elem.tagName ();
-			if (tagName == "description"_ql)
-				HandleDescription (elem);
-			else if (tagName == "body"_ql)
-				HandleBody (elem);
-		}
-
-		TOC_ = entry.ChildLevel_;
-
-		CursorCacher_->Flush ();
-
-		for (const auto& [tag, count] : Util::Stlize (UnhandledTags_))
-			qWarning () << "unknown tag" << tag << "occurred" << count << "times";
 	}
 
-	FB2Converter::~FB2Converter () = default;
-
-	FB2Converter::ConversionResult_t FB2Converter::GetResult () &&
+	std::optional<HtmlTag> ConvertFb2Tag (const QString& tagName, const QVector<QStringView>& tagStack)
 	{
-		if (Error_)
-			return ConversionResult_t::Left (*Error_);
+		const auto convIt = Converters.find (tagName);
+		if (convIt == Converters.end ())
+			return {};
 
-		return ConversionResult_t::Right ({
-				std::move (Result_),
-				DocInfo_,
-				TOC_,
-				GetLinks ()
-			});
-	}
-
-	QVector<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const
-	{
-		QHash<QString, QPair<int, int>> targetsHash;
-		for (const auto& target : LinkTargets_)
-		{
-			if (targetsHash.contains (target.Anchor_))
-				qWarning () << Q_FUNC_INFO
-						<< target.Anchor_
-						<< "is already present";
-
-			targetsHash [target.Anchor_] = target.Span_;
-		}
-
-		QVector<TextDocumentAdapter::InternalLink> result;
-		result.reserve (LinkSources_.size ());
-		for (const auto& source : LinkSources_)
-		{
-			if (!targetsHash.contains (source.Anchor_))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unknown target"
-						<< source.Anchor_;
-				continue;
-			}
-
-			result.push_back ({ source.Span_, targetsHash [source.Anchor_] });
-		}
-		return result;
-	}
-
-	QDomElement FB2Converter::FindBinary (const QString& refId) const
-	{
-		const auto& binaries = FB2_.elementsByTagName ("binary"_qs);
-		for (int i = 0; i < binaries.size (); ++i)
-		{
-			const auto& elem = binaries.at (i).toElement ();
-			if (elem.attribute ("id"_qs) == refId)
-				return elem;
-		}
-
-		return {};
-	}
-
-	void FB2Converter::HandleDescription (const QDomElement& elem)
-	{
-		QStringList handledChildren;
-		auto getChildValues = [&elem, &handledChildren] (const QString& nodeName) -> QStringList
-		{
-			handledChildren << nodeName;
-
-			QStringList result;
-			auto elems = elem.elementsByTagName (nodeName);
-			for (int i = 0; i < elems.size (); ++i)
-			{
-				const auto& elem = elems.at (i);
-				const auto& str = elem.toElement ().text ();
-				if (!str.isEmpty ())
-					result << str;
-			}
-			return result;
-		};
-
-		DocInfo_.Genres_ = getChildValues ("genre"_qs);
-		DocInfo_.Title_ = getChildValues ("book-title"_qs).value (0);
-		DocInfo_.Keywords_ = getChildValues ("keywords"_qs).value (0).split (' ', Qt::SkipEmptyParts);
-
-		const auto& dateElem = elem.elementsByTagName ("date"_qs).at (0).toElement ();
-		DocInfo_.Date_.setDate (QDate::fromString (dateElem.attribute ("value"_qs), Qt::ISODate));
-
-		DocInfo_.Author_ += getChildValues ("first-name"_qs).value (0) + ' ';
-		DocInfo_.Author_ += getChildValues ("last-name"_qs).value (0) + ' ';
-		const auto& email = getChildValues ("email"_qs).value (0);
-		if (!email.isEmpty ())
-			DocInfo_.Author_ += '<' + email + "> ";
-		DocInfo_.Author_ += getChildValues ("nickname"_qs).value (0);
-
-		DocInfo_.Author_ = DocInfo_.Author_.trimmed ().simplified ();
-
-		FillPreamble ();
-
-		for (const auto& childElem : Util::DomChildren (elem.firstChildElement ("title-info"_qs), {}))
-			if (!handledChildren.contains (childElem.tagName ()))
-				Handle (childElem);
-	}
-
-	void FB2Converter::HandleBody (const QDomElement& bodyElem)
-	{
-		HandleChildren (bodyElem);
+		return Util::Visit (*convIt,
+				[] (const HtmlTag& tag) { return tag; },
+				[&] (const StackedConverter_t& conv) { return conv (tagStack); });
 	}
 
 	namespace
 	{
-		class CursorSpanKeeper
+		QString ToString (Qt::AlignmentFlag flag)
 		{
-			CursorCacher& Cacher_;
-			const QTextCursor& Cursor_;
-
-			int StartPosition_;
-		public:
-			CursorSpanKeeper (CursorCacher& cacher, const QTextCursor& cursor)
-			: Cacher_ { cacher }
-			, Cursor_ { cursor }
-			, StartPosition_ { cursor.position () }
+			switch (flag)
 			{
-				Cacher_.Flush ();
+			case Qt::AlignLeft:
+				return "left"_qs;
+			case Qt::AlignRight:
+				return "right"_qs;
+			case Qt::AlignHCenter:
+				return "center"_qs;
+			case Qt::AlignJustify:
+				return "justify"_qs;
+			default:
+				break;
 			}
-
-			QPair<int, int> GetSpan () const
-			{
-				Cacher_.Flush ();
-				return { StartPosition_, Cursor_.position () };
-			}
-		};
-
-		class LinkCtxHandler
-		{
-			const QString Anchor_;
-			QVector<FB2Converter::LinkCtx>& LinkCtxList_;
-
-			std::optional<CursorSpanKeeper> SpanKeeper_;
-		public:
-			LinkCtxHandler (const QString& anchor, QVector<FB2Converter::LinkCtx>& list,
-					CursorCacher& cacher, const QTextCursor& cursor)
-			: Anchor_ { anchor }
-			, LinkCtxList_ { list }
-			{
-				if (!anchor.isEmpty ())
-					SpanKeeper_.emplace (cacher, cursor);
-			}
-
-			LinkCtxHandler (const LinkCtxHandler&) = delete;
-			LinkCtxHandler (LinkCtxHandler&&) = delete;
-			LinkCtxHandler& operator= (const LinkCtxHandler&) = delete;
-			LinkCtxHandler& operator= (LinkCtxHandler&&) = delete;
-
-			~LinkCtxHandler ()
-			{
-				if (!SpanKeeper_)
-					return;
-
-				LinkCtxList_ << FB2Converter::LinkCtx { Anchor_, SpanKeeper_->GetSpan () };
-			}
-		};
-	}
-
-	void FB2Converter::HandleSection (const QDomElement& tagElem)
-	{
-		const LinkCtxHandler linkHandler { tagElem.attribute ("id"_qs), LinkTargets_, *CursorCacher_, *Cursor_ };
-
-		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
-		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
-
-		HandleChildren (tagElem);
-
-		CurrentTOCStack_.pop ();
-	}
-
-	namespace
-	{
-		std::optional<QString> GetTitleName (const QDomElement& tagElem)
-		{
-			for (const auto& child : Util::DomChildren (tagElem, {}))
-				if (child.tagName () == "p"_ql)
-					return child.text ();
 
 			return {};
 		}
 
-		/** Returns 0 if there are no empty lines or there are elements
-		 * other than empty lines, returns the count of empty lines
-		 * otherwise.
-		 */
-		int GetEmptyLinesCount (const QDomElement& elem)
+		class Converter
 		{
-			int emptyCount = 0;
-			for (const auto& child : Util::DomChildren (elem, {}))
+			QStack<QStringView> TagStack_;
+			QHash<QString, int> UnhandledTags_;
+			NonStyleSheetStyles Styles_ = TextDocumentFormatConfig::Instance ().GetNonStyleSheetStyles ();
+		public:
+			QString operator() (const QDomElement& elem)
 			{
-				if (child.tagName () != "empty-line"_ql)
-					return 0;
-				++emptyCount;
+				Util::Timer timer;
+				RunConvert (elem);
+				timer.Stamp ("fb2 conversion");
+
+				if (!UnhandledTags_.isEmpty ())
+					qWarning () << "unhandled tags:" << UnhandledTags_;
+
+				QString html;
+				QTextStream htmlStream { &html };
+				elem.save (htmlStream, 0);
+				timer.Stamp ("html serialization");
+				return html;
 			}
-			return emptyCount;
-		}
-	}
-
-	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
-	{
-		if (CurrentTOCStack_.top ()->Name_.isEmpty ())
-			if (const auto name = GetTitleName (tagElem))
-				*CurrentTOCStack_.top () = TOCEntry
-						{
-							std::make_shared<TOCLink> (ParentDoc_, Result_->pageCount () - 1),
-							*name,
-							{}
-						};
-
-		if (const auto emptyCount = GetEmptyLinesCount (tagElem))
-		{
-			CursorCacher_->insertText (QString { emptyCount + 2 }.fill ('\n'));
-			return;
-		}
-
-		const auto currentSectionLevel = CurrentTOCStack_.size () - 1;
-		HandleMangleBlockFormat (tagElem,
-				[] (QTextBlockFormat&) {},
-				[=, this] (const QDomElement& e)
-				{
-					HandleMangleCharFormat (e,
-							[=] (QTextCharFormat& fmt)
-							{
-								const auto newSize = 18 - 2 * level - currentSectionLevel;
-								fmt.setFontPointSize (newSize);
-								fmt.setFontWeight (currentSectionLevel <= 1 ? QFont::Bold : QFont::DemiBold);
-							},
-							[this] (const QDomElement& e) { HandleParaWONL (e); });
-				});
-	}
-
-	void FB2Converter::HandleEpigraph (const QDomElement& tagElem)
-	{
-		HandleChildren (tagElem);
-	}
-
-	void FB2Converter::HandleImage (const QDomElement& imageElem)
-	{
-		const auto& refId = imageElem.attribute ("href"_qs).mid (1);
-		const auto& binary = FindBinary (refId);
-		const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
-		const auto& image = QImage::fromData (imageData);
-
-		Result_->addResource (QTextDocument::ImageResource,
-				{ "image://" + refId },
-				QVariant::fromValue (image));
-
-		CursorCacher_->Flush ();
-		Cursor_->insertHtml ("<img src='image://%1'/>"_qs.arg (refId));
-	}
-
-	void FB2Converter::HandlePara (const QDomElement& tagElem)
-	{
-		auto fmt = CursorCacher_->blockFormat ();
-		fmt.setTextIndent (20);
-		fmt.setAlignment (Qt::AlignJustify);
-		CursorCacher_->insertBlock (fmt);
-
-		HandleParaWONL (tagElem);
-	}
-
-	void FB2Converter::HandleParaWONL (const QDomElement& tagElem)
-	{
-		auto child = tagElem.firstChild ();
-		while (!child.isNull ())
-		{
-			const auto guard = Util::MakeScopeGuard ([&child] { child = child.nextSibling (); });
-
-			if (child.isText ())
+		private:
+			void RunConvert (QDomElement elem)
 			{
-				CursorCacher_->insertText (child.toText ().data ());
-				continue;
+				const auto& fb2tag = elem.tagName ();
+
+				for (const auto& child : Util::DomChildren (elem, {}))
+				{
+					TagStack_.push (fb2tag);
+					RunConvert (child);
+					TagStack_.pop ();
+				}
+
+				const auto& htmlTag = ConvertFb2Tag (fb2tag, TagStack_);
+				if (!htmlTag)
+				{
+					++UnhandledTags_ [fb2tag];
+					return;
+				}
+
+				if (htmlTag->Tag_ != fb2tag)
+					elem.setTagName (htmlTag->Tag_);
+				if (!htmlTag->Class_.isEmpty ())
+					elem.setAttribute ("class"_qs, htmlTag->Class_);
+
+				Fixup (elem);
 			}
 
-			if (!child.isElement ())
-				continue;
-
-			Handle (child.toElement ());
-		}
-	}
-
-	void FB2Converter::HandlePoem (const QDomElement& tagElem)
-	{
-		HandleChildren (tagElem);
-	}
-
-	void FB2Converter::HandleStanza (const QDomElement& tagElem)
-	{
-		HandleChildren (tagElem);
-	}
-
-	void FB2Converter::HandleEmptyLine (const QDomElement&)
-	{
-		CursorCacher_->insertText ("\n\n"_qs);
-	}
-
-	void FB2Converter::HandleLink (const QDomElement& tagElem)
-	{
-		auto target = tagElem.attribute ("href"_qs);
-		if (target.size () > 1 && target [0] == '#')
-			target = target.mid (1);
-		const LinkCtxHandler linkHandler { target, LinkSources_, *CursorCacher_, *Cursor_ };
-
-		HandleMangleCharFormat (tagElem,
-				[this] (QTextCharFormat& fmt)
+			void Fixup (QDomElement elem)
+			{
+				static constexpr std::array overriddenAlignment
 				{
-					fmt.setFontUnderline (true);
-					fmt.setForeground (Palette_.Link_);
-				},
-				[this] (const QDomElement& p) { HandleParaWONL (p); });
-	}
+					u"epigraph"_qsv,
+					u"cite"_qsv,
+					u"poem"_qsv,
+					u"stanza"_qsv
+				};
+				if (elem.tagName () == "p"_ql &&
+						!std::any_of (overriddenAlignment.begin (), overriddenAlignment.end (),
+								[&] (const auto& tag) { return TagStack_.contains (tag.toString ()); }))
+					elem.setAttribute ("align"_qs, ToString (Styles_.AlignP_));
 
-	void FB2Converter::HandleChildren (const QDomElement& tagElem)
-	{
-		for (const auto& elem : Util::DomChildren (tagElem, {}))
-			Handle (elem);
-	}
+				if (elem.tagName () == "h1"_ql)
+					elem.setAttribute ("align"_qs, ToString (Styles_.AlignH1_));
+				if (elem.tagName () == "h2"_ql)
+					elem.setAttribute ("align"_qs, ToString (Styles_.AlignH2_));
 
-	void FB2Converter::Handle (const QDomElement& child)
-	{
-		const auto& tagName = child.tagName ();
-		const auto defaultHandler = [this, &tagName] (const QDomElement&) { ++UnhandledTags_ [tagName]; };
-		Handlers_.value (tagName, defaultHandler) (child);
-	}
+				const bool isHeader = elem.tagName ().startsWith ('h') && elem.tagName ().size () == 2;
+				if (isHeader)
+				{
+					auto owner = elem.ownerDocument ();
+					bool firstP = true;
+					for (auto p = elem.firstChildElement ("p"_qs); !p.isNull (); p = elem.firstChildElement ("p"_qs))
+					{
+						auto subst = owner.createDocumentFragment ();
+						if (!firstP)
+							subst.appendChild (owner.createElement ("br"_qs));
+						firstP = false;
 
-	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,
-			const std::function<void (QTextBlockFormat&)>& mangler, const Handler_f& next)
-	{
-		const auto origFmt = CursorCacher_->blockFormat ();
+						const auto grandChildren = p.childNodes ();
+						for (int i = 0; i < grandChildren.size (); ++i)
+							subst.appendChild (grandChildren.at (i));
 
-		auto mangledFmt = origFmt;
-		mangler (mangledFmt);
-		CursorCacher_->insertBlock (mangledFmt);
+						elem.replaceChild (subst, p);
+					}
+				}
+			}
+		};
 
-		next ({ tagElem });
-
-		CursorCacher_->insertBlock (origFmt);
-	}
-
-	void FB2Converter::HandleMangleCharFormat (const QDomElement& tagElem,
-			const std::function<void (QTextCharFormat&)>& mangler, const Handler_f& next)
-	{
-		const auto origFmt = CursorCacher_->charFormat ();
-
-		auto mangledFmt = origFmt;
-		mangler (mangledFmt);
-		CursorCacher_->setCharFormat (mangledFmt);
-
-		next ({ tagElem });
-
-		CursorCacher_->setCharFormat (origFmt);
-	}
-
-	void FB2Converter::FillPreamble ()
-	{
-		CursorCacher_->Flush ();
-
-		auto topFrame = Cursor_->currentFrame ();
-
-		QTextFrameFormat format;
-		format.setBorder (2);
-		format.setPadding (8);
-		format.setBackground (QColor ("#6193CF"));
-
-		if (!DocInfo_.Title_.isEmpty ())
+		void CreateLinks (const QTextDocument& doc)
 		{
-			Cursor_->insertFrame (format);
-			QTextCharFormat charFmt;
-			charFmt.setFontPointSize (18);
-			charFmt.setFontWeight (QFont::Bold);
-			Cursor_->insertText (DocInfo_.Title_, charFmt);
+			for (auto block = doc.begin (), end = doc.end (); block != end; block = block.next ())
+			{
+				auto names = block.charFormat ().anchorNames ();
+				if (!names.isEmpty ())
+					qDebug () << names;
+			}
+		}
+	}
 
-			Cursor_->setPosition (topFrame->lastPosition ());
+	ConvertResult_t Convert (QDomDocument&& fb2)
+	{
+		const auto& fb2root = fb2.documentElement ();
+		const auto& body = fb2root.firstChildElement ("body"_qs);
+		if (fb2root.tagName () != "FictionBook"_ql || body.isNull ())
+		{
+			qWarning () << "not a FictionBook document";
+			return ConvertResult_t::Left (QObject::tr ("Not a FictionBook document."));
 		}
 
-		if (!DocInfo_.Author_.isEmpty ())
-		{
-			format.setBorder (1);
-			Cursor_->insertFrame (format);
+		const auto& html = Converter {} (body);
 
-			QTextCharFormat charFmt;
-			charFmt.setFontPointSize (12);
-			charFmt.setFontItalic (true);
-			Cursor_->insertText (DocInfo_.Author_, charFmt);
+		Util::Timer timer;
+		auto doc = std::make_unique<QTextDocument> ();
+		doc->setDefaultStyleSheet (TextDocumentFormatConfig::Instance ().GetStyleSheet ());
+		doc->setHtml (html);
+		TextDocumentFormatConfig::Instance ().FormatDocument (*doc);
+		timer.Stamp ("doc creation");
 
-			Cursor_->setPosition (topFrame->lastPosition ());
-		}
+		CreateLinks (*doc);
 
-		Cursor_->insertBlock ();
+		timer.Stamp ("links creation");
+
+		return ConvertResult_t::Right ({ std::move (doc) });
 	}
 }

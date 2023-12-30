@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QTextDocument>
+#include <QTextFrame>
 #include <QtDebug>
 #include <util/sll/either.h>
 #include "fb2converter.h"
@@ -35,7 +36,7 @@ namespace FXB
 		}
 
 		QDomDocument fb2;
-		if (!fb2.setContent (file.readAll (), true))
+		if (!fb2.setContent (file.readAll ()))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "malformed XML in"
@@ -43,14 +44,17 @@ namespace FXB
 			return;
 		}
 
-		Util::Visit (FB2Converter { this, fb2 }.GetResult (),
-				[this] (FB2Converter::ConvertedDocument&& result)
+		auto result = Convert (std::move (fb2));
+		Util::Visit (std::move (result),
+				[this] (ConvertedDocument&& result)
 				{
-					SetDocument (std::move (result.Doc_), result.Links_);
+					SetDocument (std::move (result.Doc_), {} /* result.Links_ */);
+					/*
 					Info_ = result.Info_;
 					TOC_ = result.TOC_;
+					 */
 				},
-				[] (const FB2Converter::Error_t&) {});
+				[] (const QString&) {});
 	}
 
 	QObject* Document::GetBackendPlugin () const
