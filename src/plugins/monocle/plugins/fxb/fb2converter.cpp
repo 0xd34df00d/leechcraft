@@ -209,6 +209,27 @@ namespace LC::Monocle::FXB
 			}
 		};
 
+		void LoadBinaries (QTextDocument& doc, const QDomDocument& fb2)
+		{
+			const auto& binaries = fb2.elementsByTagName ("binary"_qs);
+			for (int i = 0; i < binaries.size (); ++i)
+			{
+				const auto& binary = binaries.at (i).toElement ();
+				const auto& contentType = binary.attribute ("content-type"_qs);
+				if (!contentType.startsWith ("image/"_ql))
+				{
+					qWarning () << "unsupported content-type" << contentType;
+					continue;
+				}
+
+				const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
+				const auto& image = QImage::fromData (imageData);
+				doc.addResource (QTextDocument::ImageResource,
+						{ binary.attribute ("id"_qs) },
+						QVariant::fromValue (image));
+			}
+		}
+
 		void CreateLinks (const QTextDocument& doc)
 		{
 			for (auto block = doc.begin (), end = doc.end (); block != end; block = block.next ())
@@ -238,6 +259,9 @@ namespace LC::Monocle::FXB
 		doc->setHtml (html);
 		TextDocumentFormatConfig::Instance ().FormatDocument (*doc);
 		timer.Stamp ("doc creation");
+
+		LoadBinaries (*doc, fb2);
+		timer.Stamp ("binary loading");
 
 		CreateLinks (*doc);
 
