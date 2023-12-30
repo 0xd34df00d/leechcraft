@@ -18,7 +18,6 @@
 #include <QStack>
 #include <QStringList>
 #include <QtDebug>
-#include <util/sll/util.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
@@ -93,47 +92,14 @@ namespace LC::Monocle::FXB
 
 	namespace
 	{
-		QString ToString (Qt::AlignmentFlag flag)
-		{
-			switch (flag)
-			{
-			case Qt::AlignLeft:
-				return "left"_qs;
-			case Qt::AlignRight:
-				return "right"_qs;
-			case Qt::AlignHCenter:
-				return "center"_qs;
-			case Qt::AlignJustify:
-				return "justify"_qs;
-			default:
-				break;
-			}
-
-			return {};
-		}
-
-		std::optional<int> GetHeaderLevel (const QString& tagName)
-		{
-			if (tagName.size () != 2 || tagName [0] != 'h')
-				return {};
-
-			auto level = tagName [1].toLatin1 () - '0';
-			if (level < 1 || level > 6)
-				return {};
-			return level;
-		}
-
 		class Converter
 		{
 			QStack<QStringView> TagStack_;
 			QHash<QString, int> UnhandledTags_;
-			NonStyleSheetStyles Styles_ = TextDocumentFormatConfig::Instance ().GetNonStyleSheetStyles ();
 		public:
 			auto operator() (const QDomElement& elem)
 			{
-				Util::Timer timer;
 				RunConvert (elem);
-				timer.Stamp ("fb2 conversion");
 
 				if (!UnhandledTags_.isEmpty ())
 					qWarning () << "unhandled tags:" << UnhandledTags_;
@@ -167,24 +133,10 @@ namespace LC::Monocle::FXB
 				Fixup (elem);
 			}
 
-			void Fixup (QDomElement elem)
+			static void Fixup (QDomElement elem)
 			{
-				static const QSet overriddenAlignment
+				if (elem.tagName ().startsWith ('h'))
 				{
-					u"epigraph"_qsv,
-					u"cite"_qsv,
-					u"poem"_qsv,
-					u"stanza"_qsv
-				};
-				if (elem.tagName () == "p"_ql &&
-						!std::any_of (TagStack_.begin (), TagStack_.end (),
-								[&] (auto tag) { return overriddenAlignment.contains (tag); }))
-					elem.setAttribute ("align"_qs, ToString (Styles_.AlignP_));
-
-				if (const auto headerLevel = GetHeaderLevel (elem.tagName ()))
-				{
-					elem.setAttribute ("align"_qs, ToString (Styles_.AlignH_ [*headerLevel]));
-
 					auto owner = elem.ownerDocument ();
 					bool firstP = true;
 					for (auto p = elem.firstChildElement ("p"_qs); !p.isNull (); p = elem.firstChildElement ("p"_qs))
@@ -237,7 +189,6 @@ namespace LC::Monocle::FXB
 				const auto& image = QImage::fromData (imageData);
 				const auto& id = binary.attribute ("id"_qs);
 				images.push_back ({ id, image });
-
 			}
 
 			return images;
@@ -254,8 +205,11 @@ namespace LC::Monocle::FXB
 			return ConvertResult_t::Left (QObject::tr ("Not a FictionBook document."));
 		}
 
+		Util::Timer timer;
 		const auto& converted = Converter {} (body);
+		timer.Stamp ("converting fb2");
 		const auto& binaries = LoadImages (fb2);
+		timer.Stamp ("loading images");
 		return ConvertResult_t::Right ({ converted, binaries });
 	}
 }
