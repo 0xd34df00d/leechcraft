@@ -15,6 +15,7 @@
 #include <interfaces/monocle/isearchabledocument.h>
 #include "monocleutilconfig.h"
 
+class QDomElement;
 class QTextDocument;
 
 namespace LC::Monocle
@@ -46,6 +47,8 @@ namespace LC::Monocle
 			QPair<int, int> ToSpan_;
 			// Double-check Q_DECLARE_TYPEINFO when updating this type.
 		};
+
+		using ImagesList_t = QVector<QPair<QString, QImage>>;
 
 		~TextDocumentAdapter () override;
 
@@ -132,7 +135,7 @@ namespace LC::Monocle
 		 * @param[in] doc The document.
 		 * @param[in] links The vector of `InternalLink` structures.
 		 */
-		void SetDocument (std::unique_ptr<QTextDocument> doc, const QVector<InternalLink>& links);
+		void SetDocument (const QDomElement& doc, const ImagesList_t& images);
 	};
 }
 

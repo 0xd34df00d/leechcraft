@@ -48,9 +48,9 @@ namespace FXB
 		Util::Visit (std::move (result),
 				[this] (ConvertedDocument&& result)
 				{
-					SetDocument (std::move (result.Doc_), {} /* result.Links_ */);
-					/*
+					SetDocument (std::move (result.Doc_), std::move (result.Images_));
 					Info_ = result.Info_;
+					/*
 					TOC_ = result.TOC_;
 					 */
 				},

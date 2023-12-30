@@ -58,8 +58,6 @@ namespace LC::Monocle::FXB
 		{
 			Identity<u"body"> (),
 
-			{ u"coverpage", HtmlTag { .Tag_ ="div"_qs, .Class_ = "break-after" } },
-
 			{ u"section", HtmlTag { .Tag_ = "div"_qs, .Class_ = "section"_qs } },
 			{ u"title", &StackedTitle<1> },
 			{ u"subtitle", &StackedTitle<2> },
@@ -131,7 +129,7 @@ namespace LC::Monocle::FXB
 			QHash<QString, int> UnhandledTags_;
 			NonStyleSheetStyles Styles_ = TextDocumentFormatConfig::Instance ().GetNonStyleSheetStyles ();
 		public:
-			QString operator() (const QDomElement& elem)
+			auto operator() (const QDomElement& elem)
 			{
 				Util::Timer timer;
 				RunConvert (elem);
@@ -140,11 +138,7 @@ namespace LC::Monocle::FXB
 				if (!UnhandledTags_.isEmpty ())
 					qWarning () << "unhandled tags:" << UnhandledTags_;
 
-				QString html;
-				QTextStream htmlStream { &html };
-				elem.save (htmlStream, 0);
-				timer.Stamp ("html serialization");
-				return html;
+				return elem;
 			}
 		private:
 			void RunConvert (QDomElement elem)
@@ -222,12 +216,13 @@ namespace LC::Monocle::FXB
 					elem.setAttribute ("src"_qs, refId.mid (1));
 				}
 			}
-			}
 		};
 
-		void LoadBinaries (QTextDocument& doc, const QDomDocument& fb2)
+		TextDocumentAdapter::ImagesList_t LoadImages (const QDomDocument& fb2)
 		{
+			TextDocumentAdapter::ImagesList_t images;
 			const auto& binaries = fb2.elementsByTagName ("binary"_qs);
+			images.reserve (binaries.size ());
 			for (int i = 0; i < binaries.size (); ++i)
 			{
 				const auto& binary = binaries.at (i).toElement ();
@@ -240,20 +235,12 @@ namespace LC::Monocle::FXB
 
 				const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
 				const auto& image = QImage::fromData (imageData);
-				doc.addResource (QTextDocument::ImageResource,
-						{ binary.attribute ("id"_qs) },
-						QVariant::fromValue (image));
-			}
-		}
+				const auto& id = binary.attribute ("id"_qs);
+				images.push_back ({ id, image });
 
-		void CreateLinks (const QTextDocument& doc)
-		{
-			for (auto block = doc.begin (), end = doc.end (); block != end; block = block.next ())
-			{
-				auto names = block.charFormat ().anchorNames ();
-				if (!names.isEmpty ())
-					qDebug () << names;
 			}
+
+			return images;
 		}
 	}
 
@@ -267,22 +254,8 @@ namespace LC::Monocle::FXB
 			return ConvertResult_t::Left (QObject::tr ("Not a FictionBook document."));
 		}
 
-		const auto& html = Converter {} (body);
-
-		Util::Timer timer;
-		auto doc = std::make_unique<QTextDocument> ();
-		doc->setDefaultStyleSheet (TextDocumentFormatConfig::Instance ().GetStyleSheet ());
-		doc->setHtml (html);
-		TextDocumentFormatConfig::Instance ().FormatDocument (*doc);
-		timer.Stamp ("doc creation");
-
-		LoadBinaries (*doc, fb2);
-		timer.Stamp ("binary loading");
-
-		CreateLinks (*doc);
-
-		timer.Stamp ("links creation");
-
-		return ConvertResult_t::Right ({ std::move (doc) });
+		const auto& converted = Converter {} (body);
+		const auto& binaries = LoadImages (fb2);
+		return ConvertResult_t::Right ({ converted, binaries });
 	}
 }

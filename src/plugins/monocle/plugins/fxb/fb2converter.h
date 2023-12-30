@@ -8,23 +8,22 @@
 
 #pragma once
 
+#include <QDomElement>
 #include <QString>
 #include <util/sll/eitherfwd.h>
 #include <interfaces/monocle/idocument.h>
-#include <interfaces/monocle/ihavetoc.h>
 #include <util/monocle/textdocumentadapter.h>
 
-class QDomDocument;
 class QTextDocument;
 
 namespace LC::Monocle::FXB
 {
 	struct ConvertedDocument
 	{
-		std::unique_ptr<QTextDocument> Doc_;
+		QDomElement Doc_;
+		TextDocumentAdapter::ImagesList_t Images_;
+
 		DocumentInfo Info_;
-		TOCEntryLevel_t TOC_;
-		QVector<TextDocumentAdapter::InternalLink> Links_;
 	};
 
 	using ConvertResult_t = Util::Either<QString, ConvertedDocument>;

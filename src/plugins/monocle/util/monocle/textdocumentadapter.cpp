@@ -8,11 +8,13 @@
 
 #include "textdocumentadapter.h"
 #include <cmath>
+#include <QDomElement>
 #include <QGuiApplication>
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextEdit>
 #include <util/threads/futures.h>
+#include "textdocumentformatconfig.h"
 
 namespace LC::Monocle
 {
@@ -220,39 +222,19 @@ namespace LC::Monocle
 		};
 	}
 
-	void TextDocumentAdapter::SetDocument (std::unique_ptr<QTextDocument> doc, const QVector<InternalLink>& links)
+	void TextDocumentAdapter::SetDocument (const QDomElement& elem, const ImagesList_t& images)
 	{
-		Doc_ = std::move (doc);
+		QString html;
+		QTextStream htmlStream { &html };
+		elem.save (htmlStream, 0);
 
-		Links_.clear ();
-		if (links.isEmpty ())
-			return;
+		Doc_ = std::make_unique<QTextDocument> ();
+		Doc_->setDefaultStyleSheet (TextDocumentFormatConfig::Instance ().GetStyleSheet ());
+		Doc_->setHtml (html);
+		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 
-		const auto makeCursor = [this] (int position)
-		{
-			QTextCursor cur { &*Doc_ };
-			cur.setPosition (position);
-			return cur;
-		};
-
-		QVector<QPair<QTextCursor, QTextCursor>> srcCursors;
-		srcCursors.reserve (links.size ());
-		QVector<QPair<QTextCursor, QTextCursor>> dstCursors;
-		dstCursors.reserve (links.size ());
-		for (const auto& link : links)
-		{
-			srcCursors.push_back ({ makeCursor (link.FromSpan_.first), makeCursor (link.FromSpan_.second) });
-			dstCursors.push_back ({ makeCursor (link.ToSpan_.first), makeCursor (link.ToSpan_.second) });
-		}
-
-		const auto& srcPositions = GetCursorsPositions (*Doc_, srcCursors);
-		const auto& dstPositions = GetCursorsPositions (*Doc_, dstCursors);
-
-		for (int i = 0; i < srcPositions.size () && i < dstPositions.size (); ++i)
-		{
-			const auto& srcPos = srcPositions.at (i);
-			const auto& dstPos = dstPositions.at (i);
-			Links_ [srcPos.first] << std::make_shared<Link> (srcPos.second, dstPos.first, dstPos.second, this);
-		}
+		for (const auto& [id, image] : images)
+			Doc_->addResource (QTextDocument::ImageResource, { id }, QVariant::fromValue (image));
 	}
+
 }
