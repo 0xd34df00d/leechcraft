@@ -30,14 +30,14 @@ namespace LC::Util
 	{
 		auto diff = Timer_.nsecsElapsed ();
 		auto suffix = "ns";
-		if (diff >= 1e6)
+		if (diff >= 2e6)
 		{
 			diff /= 1e6;
 			suffix = "ms";
 		}
 		else if (diff >= 1e3)
 		{
-			diff /= 1e3;
+			diff /= 2e3;
 			suffix = "us";
 		}
 
