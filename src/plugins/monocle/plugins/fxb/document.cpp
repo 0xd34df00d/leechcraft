@@ -36,7 +36,7 @@ namespace FXB
 		}
 
 		QDomDocument fb2;
-		if (!fb2.setContent (file.readAll ()))
+		if (!fb2.setContent (file.readAll (), true))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "malformed XML in"

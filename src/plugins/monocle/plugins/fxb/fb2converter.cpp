@@ -65,6 +65,7 @@ namespace LC::Monocle::FXB
 			{ u"subtitle", &StackedTitle<2> },
 			Identity<u"p"> (),
 			{ u"epigraph", HtmlTag { .Tag_ = "div"_qs, .Class_ = "epigraph"_qs } },
+			{ u"image", HtmlTag { .Tag_ = "img"_qs } },
 
 			{ u"empty-line", HtmlTag { .Tag_ = "br"_qs } },
 
@@ -206,6 +207,21 @@ namespace LC::Monocle::FXB
 						elem.replaceChild (subst, p);
 					}
 				}
+
+				if (elem.tagName () == "img"_ql)
+				{
+					const auto& refId = elem.attribute ("href"_qs);
+					if (refId.isEmpty () || refId [0] != '#')
+					{
+						qWarning () << "unknown ref id"
+								<< refId;
+						return;
+					}
+
+					elem.removeAttribute ("href"_qs);
+					elem.setAttribute ("src"_qs, refId.mid (1));
+				}
+			}
 			}
 		};
 
