@@ -112,10 +112,12 @@ namespace LC::Monocle
 	void TextDocumentFormatConfig::UpdatePalette ()
 	{
 		// TODO make configurable
+		const auto& palette = qGuiApp->palette ();
 		Palette_ =
 		{
-			.Background_ = qGuiApp->palette ().color (QPalette::Base),
-			.Link_ = qGuiApp->palette ().color (QPalette::Link),
+			.Background_ = palette.color (QPalette::Base),
+			.Foreground_ = palette.color (QPalette::Text),
+			.Link_ = palette.color (QPalette::Link),
 		};
 	}
 }

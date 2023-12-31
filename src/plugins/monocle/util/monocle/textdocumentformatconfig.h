@@ -29,6 +29,10 @@ namespace LC::Monocle
 		 */
 		QColor Background_;
 
+		/** @brief The default foreground color of the whole page.
+		 */
+		QColor Foreground_;
+
 		/** @brief The link color.
 		 */
 		QColor Link_;
