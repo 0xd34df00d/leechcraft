@@ -77,21 +77,37 @@ namespace LC::Monocle::FXB
 			{ u"stanza", HtmlTag { .Tag_ = "div"_qs, .Class_ = "stanza"_qs } },
 			{ u"v", HtmlTag { .Tag_ = "div"_qs } },
 		};
-	}
 
-	std::optional<HtmlTag> ConvertFb2Tag (const QString& tagName, const QVector<QStringView>& tagStack)
-	{
-		const auto convIt = Converters.find (tagName);
-		if (convIt == Converters.end ())
-			return {};
+		std::optional<HtmlTag> ConvertFb2Tag (const QString& tagName, const QVector<QStringView>& tagStack)
+		{
+			const auto convIt = Converters.find (tagName);
+			if (convIt == Converters.end ())
+				return {};
 
-		return Util::Visit (*convIt,
-				[] (const HtmlTag& tag) { return tag; },
-				[&] (const StackedConverter_t& conv) { return conv (tagStack); });
-	}
+			return Util::Visit (*convIt,
+					[] (const HtmlTag& tag) { return tag; },
+					[&] (const StackedConverter_t& conv) { return conv (tagStack); });
+		}
 
-	namespace
-	{
+		void CollapsePs (QDomElement elem)
+		{
+			auto owner = elem.ownerDocument ();
+			bool firstP = true;
+			for (auto p = elem.firstChildElement ("p"_qs); !p.isNull (); p = elem.firstChildElement ("p"_qs))
+			{
+				auto subst = owner.createDocumentFragment ();
+				if (!firstP)
+					subst.appendChild (owner.createTextNode ({ '\n' }));
+				firstP = false;
+
+				const auto grandChildren = p.childNodes ();
+				for (int i = 0; i < grandChildren.size (); ++i)
+					subst.appendChild (grandChildren.at (i));
+
+				elem.replaceChild (subst, p);
+			}
+		}
+
 		class Converter
 		{
 			QStack<QStringView> TagStack_;
@@ -109,8 +125,9 @@ namespace LC::Monocle::FXB
 		private:
 			void RunConvert (QDomElement elem)
 			{
-				const auto& fb2tag = elem.tagName ();
+				Fixup (elem);
 
+				const auto& fb2tag = elem.tagName ();
 				for (const auto& child : Util::DomChildren (elem, {}))
 				{
 					TagStack_.push (fb2tag);
@@ -129,32 +146,15 @@ namespace LC::Monocle::FXB
 					elem.setTagName (htmlTag->Tag_);
 				if (!htmlTag->Class_.isEmpty ())
 					elem.setAttribute ("class"_qs, htmlTag->Class_);
-
-				Fixup (elem);
 			}
 
 			static void Fixup (QDomElement elem)
 			{
-				if (elem.tagName ().startsWith ('h'))
-				{
-					auto owner = elem.ownerDocument ();
-					bool firstP = true;
-					for (auto p = elem.firstChildElement ("p"_qs); !p.isNull (); p = elem.firstChildElement ("p"_qs))
-					{
-						auto subst = owner.createDocumentFragment ();
-						if (!firstP)
-							subst.appendChild (owner.createElement ("br"_qs));
-						firstP = false;
+				const auto& tagName = elem.tagName ();
+				if (tagName == "title"_ql || tagName == "subtitle"_ql || tagName == "epigraph"_qs)
+					CollapsePs (elem);
 
-						const auto grandChildren = p.childNodes ();
-						for (int i = 0; i < grandChildren.size (); ++i)
-							subst.appendChild (grandChildren.at (i));
-
-						elem.replaceChild (subst, p);
-					}
-				}
-
-				if (elem.tagName () == "img"_ql)
+				if (tagName == "image"_ql)
 				{
 					const auto& refId = elem.attribute ("href"_qs);
 					if (refId.isEmpty () || refId [0] != '#')
