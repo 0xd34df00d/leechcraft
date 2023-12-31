@@ -168,6 +168,10 @@ namespace LC::Monocle
 					};
 
 					set (&QTextCharFormat::setFontPointSize, charCfg->PointSize_);
+					set ([] (auto& fmt, bool bold) { fmt.setFontWeight (bold ? QFont::Bold : QFont::Normal); }, charCfg->IsBold_);
+					set (&QTextCharFormat::setFontItalic, charCfg->IsItalic_);
+					set (&QTextCharFormat::setFontUnderline, charCfg->IsUnderline_);
+					set (&QTextCharFormat::setFontStrikeOut, charCfg->IsStrikeThrough_);
 					return fmt;
 				}
 

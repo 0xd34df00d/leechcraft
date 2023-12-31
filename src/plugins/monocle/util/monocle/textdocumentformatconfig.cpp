@@ -87,9 +87,17 @@ namespace LC::Monocle
 			CharFormat cf
 			{
 				.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
+				.IsBold_ = true,
 			};
 			return cf;
 		}
+
+		if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
+			return CharFormat { .IsBold_ = true };
+		if (tagName == u"em"_qsv)
+			return CharFormat { .IsItalic_ = true };
+		if (tagName == u"s"_qsv)
+			return CharFormat { .IsStrikeThrough_ = true };
 
 		return {};
 	}

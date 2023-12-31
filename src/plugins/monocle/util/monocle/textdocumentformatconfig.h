@@ -54,6 +54,10 @@ namespace LC::Monocle
 	struct CharFormat
 	{
 		std::optional<qreal> PointSize_ {};
+		std::optional<bool> IsBold_ {};
+		std::optional<bool> IsItalic_ {};
+		std::optional<bool> IsUnderline_ {};
+		std::optional<bool> IsStrikeThrough_ {};
 	};
 
 	class MONOCLE_UTIL_API TextDocumentFormatConfig
