@@ -183,10 +183,10 @@ namespace LC::Monocle
 				const auto set = [&fmt] (auto setter, const auto& maybeVal)
 				{
 					if (maybeVal)
-						std::invoke (setter, fmt, *maybeVal);
+						(fmt.*setter) (*maybeVal);
 				};
 				set (&QTextCharFormat::setFontPointSize, charCfg->PointSize_);
-				set ([] (auto& fmt, bool bold) { fmt.setFontWeight (bold ? QFont::Bold : QFont::Normal); }, charCfg->IsBold_);
+				set (&QTextCharFormat::setFontWeight, charCfg->IsBold_);
 				set (&QTextCharFormat::setFontItalic, charCfg->IsItalic_);
 				set (&QTextCharFormat::setFontUnderline, charCfg->IsUnderline_);
 				set (&QTextCharFormat::setFontStrikeOut, charCfg->IsStrikeThrough_);
