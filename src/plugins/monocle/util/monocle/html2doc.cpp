@@ -160,7 +160,14 @@ namespace LC::Monocle
 				if (const auto& charCfg = Config_.GetCharFormat (elem.tagName (), elem.attribute ("class"_qs)))
 				{
 					QTextCharFormat fmt;
-					fmt.setFontPointSize (charCfg->PointSize_);
+
+					const auto set = [&fmt] (auto setter, const auto& maybeVal)
+					{
+						if (maybeVal)
+							std::invoke (setter, fmt, *maybeVal);
+					};
+
+					set (&QTextCharFormat::setFontPointSize, charCfg->PointSize_);
 					return fmt;
 				}
 

@@ -53,7 +53,7 @@ namespace LC::Monocle
 
 	struct CharFormat
 	{
-		qreal PointSize_;
+		std::optional<qreal> PointSize_ {};
 	};
 
 	class MONOCLE_UTIL_API TextDocumentFormatConfig
