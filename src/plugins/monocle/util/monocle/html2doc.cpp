@@ -35,6 +35,37 @@ namespace LC::Monocle
 			return blockElems.contains (tagName);
 		}
 
+		template<typename T>
+		class FormatKeeper final
+		{
+			T& Format_;
+			const T Saved_;
+			bool NeedRestore_ = false;
+		public:
+			FormatKeeper (T& toSave)
+			: Format_ { toSave }
+			, Saved_ { toSave }
+			{
+			}
+
+			~FormatKeeper ()
+			{
+				if (NeedRestore_)
+					Format_ = Saved_;
+			}
+
+			void SetFormat (T&& format)
+			{
+				Format_ = std::move (format);
+				NeedRestore_ = true;
+			}
+
+			FormatKeeper (const FormatKeeper&) = delete;
+			FormatKeeper (FormatKeeper&) = delete;
+			FormatKeeper& operator= (const FormatKeeper&) = delete;
+			FormatKeeper& operator= (FormatKeeper&) = delete;
+		};
+
 		class Converter
 		{
 			const TextDocumentFormatConfig& Config_ = TextDocumentFormatConfig::Instance ();
@@ -42,6 +73,8 @@ namespace LC::Monocle
 			QTextDocument& Doc_;
 			QTextFrame& BodyFrame_;
 			QTextCursor Cursor_;
+
+			QTextCharFormat CharFormat_;
 		public:
 			explicit Converter (QTextDocument& doc)
 			: Doc_ { doc }
@@ -60,8 +93,32 @@ namespace LC::Monocle
 		private:
 			void AppendElem (const QDomElement& elem)
 			{
-				HandleElem (elem);
+				FormatKeeper charKeeper { CharFormat_ };
+				if (IsBlockElem (elem.tagName ()))
+				{
+					auto [blockFmt, maybeCharFmt] = GetElemBlockFormat (elem);
+					if (maybeCharFmt)
+						charKeeper.SetFormat (*std::move (maybeCharFmt));
+					Cursor_.insertBlock (blockFmt, CharFormat_);
+				}
 
+				HandleElem (elem);
+				HandleChildren (elem);
+			}
+
+			void AppendText (const QDomText& textNode)
+			{
+				Cursor_.insertText (textNode.data ());
+			}
+
+			void HandleElem (const QDomElement& elem)
+			{
+				if (elem.tagName () == "br"_ql)
+					Cursor_.insertText (QString { '\n' });
+			}
+
+			void HandleChildren (const QDomElement& elem)
+			{
 				const auto& children = elem.childNodes ();
 				for (int i = 0; i < children.size (); ++i)
 				{
@@ -84,36 +141,11 @@ namespace LC::Monocle
 				}
 			}
 
-			void AppendText (const QDomText& textNode)
-			{
-				Cursor_.insertText (textNode.data ());
-			}
-
-			void HandleElem (const QDomElement& elem)
-			{
-				if (IsBlockElem (elem.tagName ()))
-				{
-					SetupBlock (elem);
-					return;
-				}
-
-				if (elem.tagName () == "br"_ql)
-					Cursor_.insertText (QString { '\n' });
-			}
-
-			void SetupBlock (const QDomElement& elem)
-			{
-				const auto& [blockFmt, maybeCharFmt] = GetElemBlockFormat (elem);
-				if (maybeCharFmt)
-					Cursor_.insertBlock (blockFmt, *maybeCharFmt);
-				else
-					Cursor_.insertBlock (blockFmt, {});
-			}
-
 			std::pair<QTextBlockFormat, std::optional<QTextCharFormat>> GetElemBlockFormat (const QDomElement& elem)
 			{
+				const auto& [blockCfg, maybeCharCfg] = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
+
 				QTextBlockFormat blockFmt;
-				const auto& [blockCfg, maybeCharCfg] = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"));
 				blockFmt.setAlignment (blockCfg.Align_);
 				blockFmt.setLeftMargin (blockCfg.Margins_.left ());
 				blockFmt.setTopMargin (blockCfg.Margins_.top ());
