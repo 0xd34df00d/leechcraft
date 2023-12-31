@@ -33,70 +33,57 @@ namespace LC::Monocle
 		const QSize pageSize { XSM_->property ("PageWidth").toInt (), XSM_->property ("PageHeight").toInt () };
 		doc.setPageSize (pageSize);
 		doc.setUndoRedoEnabled (false);
-
 		doc.setDefaultFont (XSM_->property ("DefaultFont").value<QFont> ());
+	}
 
-		const auto rootFrame = doc.rootFrame ();
-		auto frameFmt = rootFrame->frameFormat ();
+	QTextFrameFormat TextDocumentFormatConfig::GetBodyFrameFormat () const
+	{
 		const auto margin = [this] (const QByteArray& orient) { return XSM_->property (orient + "Margin").toInt (); };
-		frameFmt.setLeftMargin (margin ("Left"));
-		frameFmt.setRightMargin (margin ("Right"));
-		frameFmt.setTopMargin (margin ("Top"));
-		frameFmt.setBottomMargin (margin ("Bottom"));
-		frameFmt.setWidth (pageSize.width ());
-		rootFrame->setFrameFormat (frameFmt);
+		QTextFrameFormat fmt;
+		fmt.setLeftMargin (margin ("Left"));
+		fmt.setRightMargin (margin ("Right"));
+		fmt.setTopMargin (margin ("Top"));
+		fmt.setBottomMargin (margin ("Bottom"));
+		fmt.setWidth (XSM_->property ("PageWidth").toInt ());
+		return fmt;
 	}
 
-	QString TextDocumentFormatConfig::GetStyleSheet () const
+	namespace
 	{
-		const auto& palette = GetPalette ();
-
-		// TODO make much of this configurable
-		return R"(
-			body {
-				background-color: ${bgcolor};
-			}
-
-			p {
-				margin-top: 0px;
-				margin-bottom: 0px;
-				text-indent: 16px;
-			}
-
-			.break-after {
-				page-break-after: always;
-			}
-
-			.poem {
-				text-align: left;
-				font-style: italic;
-				margin-left: 4em;
-			}
-
-			.style-emphasis {
-				text-decoration: underline;
-			}
-
-			.stanza {
-				margin-top: 0.5em;
-			}
-
-			.epigraph {
-				text-align: right;
-			}
-		)"_qs
-			.replace ("${bgcolor}"_ql, palette.Background_.name ())
-			;
-	}
-
-	NonStyleSheetStyles TextDocumentFormatConfig::GetNonStyleSheetStyles () const
-	{
-		// TODO make configurable
-		return
+		std::optional<int> GetHeadingLevel (QStringView tagName)
 		{
-			.AlignP_ = Qt::AlignJustify,
-			.AlignH_ = { Qt::AlignHCenter, Qt::AlignHCenter, Qt::AlignLeft, Qt::AlignLeft, Qt::AlignLeft, Qt::AlignLeft },
-		};
+			if (tagName.size () != 2 || tagName [0] != 'h')
+				return {};
+
+			auto level = tagName [1].toLatin1 () - '0';
+			if (level < 1 || level > 6)
+				return {};
+			return level;
+		}
+	}
+
+	BlockFormat TextDocumentFormatConfig::GetBlockFormat (QStringView tagName, QStringView klass) const
+	{
+		if (tagName == u"p"_qsv)
+			return { { .Align_ = Qt::AlignJustify, .Indent_ = 15 }, {} };
+
+		if (const auto& heading = GetHeadingLevel (tagName))
+		{
+			BlockOnlyFormat bf;
+			bf.HeadingLevel_ = *heading;
+			if (*heading <= 2)
+				bf.Align_ = Qt::AlignHCenter;
+
+			const auto& defFont = XSM_->property ("DefaultFont").value<QFont> ();
+
+			CharFormat cf
+			{
+				.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
+			};
+			return { bf, cf };
+		}
+
+		return {};
 	}
 
 	void TextDocumentFormatConfig::SetXSM (Util::BaseSettingsManager& xsm)

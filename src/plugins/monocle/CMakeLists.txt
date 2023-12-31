@@ -19,10 +19,11 @@ if (WITH_DOCS)
 endif ()
 
 add_library (leechcraft-monocle-util SHARED
+	util/monocle/html2doc.cpp
 	util/monocle/textdocumentadapter.cpp
 	util/monocle/textdocumentformatconfig.cpp
 	)
-FindQtLibs (leechcraft-monocle-util Widgets)
+FindQtLibs (leechcraft-monocle-util Widgets Xml)
 set_property (TARGET leechcraft-monocle-util PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-monocle-util DESTINATION ${LIBDIR} RENAME leechcraft-monocle-util${LC_LIBSUFFIX})
 

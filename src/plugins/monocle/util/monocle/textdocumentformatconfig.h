@@ -8,10 +8,13 @@
 
 #pragma once
 
+#include <optional>
 #include <QColor>
+#include <QMargins>
 #include "monocleutilconfig.h"
 
 class QTextDocument;
+class QTextFrameFormat;
 
 namespace LC::Util
 {
@@ -31,11 +34,29 @@ namespace LC::Monocle
 		QColor Link_;
 	};
 
-	struct NonStyleSheetStyles
+	struct BlockOnlyFormat
 	{
-		Qt::AlignmentFlag AlignP_;
-		std::array<Qt::AlignmentFlag, 6> AlignH_;
+		Qt::AlignmentFlag Align_ = Qt::AlignLeft;
+
+		/** Margins in px.
+		 */
+		QMargins Margins_ { 0, 0, 0, 0 };
+
+		/** First line indent in px.
+		 */
+		int Indent_ = 0;
+
+		/** Heading level (as in h1-h6).
+		 */
+		int HeadingLevel_ = 0;
 	};
+
+	struct CharFormat
+	{
+		qreal PointSize_;
+	};
+
+	using BlockFormat = std::pair<BlockOnlyFormat, std::optional<CharFormat>>;
 
 	class MONOCLE_UTIL_API TextDocumentFormatConfig
 	{
@@ -47,9 +68,10 @@ namespace LC::Monocle
 
 		const TextDocumentPalette& GetPalette () const;
 		void FormatDocument (QTextDocument&) const;
-		QString GetStyleSheet () const;
 
-		NonStyleSheetStyles GetNonStyleSheetStyles () const;
+		QTextFrameFormat GetBodyFrameFormat () const;
+
+		BlockFormat GetBlockFormat (QStringView tagName, QStringView klass) const;
 
 		void SetXSM (Util::BaseSettingsManager&);
 	private:

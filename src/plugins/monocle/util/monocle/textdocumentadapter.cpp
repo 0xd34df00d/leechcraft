@@ -13,7 +13,9 @@
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextEdit>
+#include <util/sll/timer.h>
 #include <util/threads/futures.h>
+#include "html2doc.h"
 #include "textdocumentformatconfig.h"
 
 namespace LC::Monocle
@@ -224,14 +226,11 @@ namespace LC::Monocle
 
 	void TextDocumentAdapter::SetDocument (const QDomElement& elem, const ImagesList_t& images)
 	{
-		QString html;
-		QTextStream htmlStream { &html };
-		elem.save (htmlStream, 0);
-
 		Doc_ = std::make_unique<QTextDocument> ();
-		Doc_->setDefaultStyleSheet (TextDocumentFormatConfig::Instance ().GetStyleSheet ());
-		Doc_->setHtml (html);
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
+		Util::Timer timer;
+		Html2Doc (*Doc_, elem);
+		timer.Stamp ("html2doc");
 
 		for (const auto& [id, image] : images)
 			Doc_->addResource (QTextDocument::ImageResource, { id }, QVariant::fromValue (image));
