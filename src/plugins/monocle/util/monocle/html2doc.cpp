@@ -94,13 +94,11 @@ namespace LC::Monocle
 			void AppendElem (const QDomElement& elem)
 			{
 				FormatKeeper charKeeper { CharFormat_ };
+				if (auto maybeCharFmt = GetElemCharFormat (elem))
+					charKeeper.SetFormat (*std::move (maybeCharFmt));
+
 				if (IsBlockElem (elem.tagName ()))
-				{
-					auto [blockFmt, maybeCharFmt] = GetElemBlockFormat (elem);
-					if (maybeCharFmt)
-						charKeeper.SetFormat (*std::move (maybeCharFmt));
-					Cursor_.insertBlock (blockFmt, CharFormat_);
-				}
+					Cursor_.insertBlock (GetElemBlockFormat (elem), CharFormat_);
 
 				HandleElem (elem);
 				HandleChildren (elem);
@@ -108,7 +106,7 @@ namespace LC::Monocle
 
 			void AppendText (const QDomText& textNode)
 			{
-				Cursor_.insertText (textNode.data ());
+				Cursor_.insertText (textNode.data (), CharFormat_);
 			}
 
 			void HandleElem (const QDomElement& elem)
@@ -141,9 +139,9 @@ namespace LC::Monocle
 				}
 			}
 
-			std::pair<QTextBlockFormat, std::optional<QTextCharFormat>> GetElemBlockFormat (const QDomElement& elem)
+			QTextBlockFormat GetElemBlockFormat (const QDomElement& elem)
 			{
-				const auto& [blockCfg, maybeCharCfg] = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
+				const auto& blockCfg = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
 
 				QTextBlockFormat blockFmt;
 				blockFmt.setAlignment (blockCfg.Align_);
@@ -154,15 +152,19 @@ namespace LC::Monocle
 				blockFmt.setTextIndent (blockCfg.Indent_);
 				blockFmt.setHeadingLevel (blockCfg.HeadingLevel_);
 
-				std::optional<QTextCharFormat> maybeCharFmt;
-				if (maybeCharCfg)
+				return blockFmt;
+			}
+
+			std::optional<QTextCharFormat> GetElemCharFormat (const QDomElement& elem)
+			{
+				if (const auto& charCfg = Config_.GetCharFormat (elem.tagName (), elem.attribute ("class"_qs)))
 				{
 					QTextCharFormat fmt;
-					fmt.setFontPointSize (maybeCharCfg->PointSize_);
-					maybeCharFmt = fmt;
+					fmt.setFontPointSize (charCfg->PointSize_);
+					return fmt;
 				}
 
-				return { blockFmt, maybeCharFmt };
+				return {};
 			}
 		};
 	}

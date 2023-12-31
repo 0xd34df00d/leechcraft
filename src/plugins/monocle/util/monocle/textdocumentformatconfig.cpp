@@ -65,22 +65,30 @@ namespace LC::Monocle
 	BlockFormat TextDocumentFormatConfig::GetBlockFormat (QStringView tagName, QStringView klass) const
 	{
 		if (tagName == u"p"_qsv)
-			return { { .Align_ = Qt::AlignJustify, .Indent_ = 15 }, {} };
+			return { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
 
 		if (const auto& heading = GetHeadingLevel (tagName))
 		{
-			BlockOnlyFormat bf;
+			BlockFormat bf;
 			bf.HeadingLevel_ = *heading;
 			if (*heading <= 2)
 				bf.Align_ = Qt::AlignHCenter;
+			return { bf };
+		}
 
+		return {};
+	}
+
+	std::optional<CharFormat> TextDocumentFormatConfig::GetCharFormat (QStringView tagName, QStringView klass) const
+	{
+		if (const auto& heading = GetHeadingLevel (tagName))
+		{
 			const auto& defFont = XSM_->property ("DefaultFont").value<QFont> ();
-
 			CharFormat cf
 			{
 				.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
 			};
-			return { bf, cf };
+			return cf;
 		}
 
 		return {};

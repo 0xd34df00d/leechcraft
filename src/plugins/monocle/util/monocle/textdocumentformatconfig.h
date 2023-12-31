@@ -34,7 +34,7 @@ namespace LC::Monocle
 		QColor Link_;
 	};
 
-	struct BlockOnlyFormat
+	struct BlockFormat
 	{
 		Qt::AlignmentFlag Align_ = Qt::AlignLeft;
 
@@ -56,8 +56,6 @@ namespace LC::Monocle
 		qreal PointSize_;
 	};
 
-	using BlockFormat = std::pair<BlockOnlyFormat, std::optional<CharFormat>>;
-
 	class MONOCLE_UTIL_API TextDocumentFormatConfig
 	{
 		TextDocumentPalette Palette_;
@@ -72,6 +70,7 @@ namespace LC::Monocle
 		QTextFrameFormat GetBodyFrameFormat () const;
 
 		BlockFormat GetBlockFormat (QStringView tagName, QStringView klass) const;
+		std::optional<CharFormat> GetCharFormat (QStringView tagName, QStringView klass) const;
 
 		void SetXSM (Util::BaseSettingsManager&);
 	private:
