@@ -75,7 +75,6 @@ namespace LC::Monocle::FXB
 			{ u"cite", HtmlTag { .Tag_ = "blockquote"_qs, .Class_ = "cite-internal"_qs } },
 			{ u"poem", HtmlTag { .Tag_ = "div"_qs, .Class_ = "poem"_qs } },
 			{ u"stanza", HtmlTag { .Tag_ = "div"_qs, .Class_ = "stanza"_qs } },
-			{ u"v", HtmlTag { .Tag_ = "div"_qs, .Class_ = "verse"_qs } },
 		};
 
 		std::optional<HtmlTag> ConvertFb2Tag (const QString& tagName, const QVector<QStringView>& tagStack)
@@ -89,11 +88,11 @@ namespace LC::Monocle::FXB
 					[&] (const StackedConverter_t& conv) { return conv (tagStack); });
 		}
 
-		void CollapsePs (QDomElement elem)
+		void CollapseChildren (QDomElement elem, const QString& childName)
 		{
 			auto owner = elem.ownerDocument ();
 			bool firstP = true;
-			for (auto p = elem.firstChildElement ("p"_qs); !p.isNull (); p = elem.firstChildElement ("p"_qs))
+			for (auto p = elem.firstChildElement (childName); !p.isNull (); p = elem.firstChildElement (childName))
 			{
 				auto subst = owner.createDocumentFragment ();
 				if (!firstP)
@@ -152,7 +151,10 @@ namespace LC::Monocle::FXB
 			{
 				const auto& tagName = elem.tagName ();
 				if (tagName == "title"_ql || tagName == "subtitle"_ql || tagName == "epigraph"_qs)
-					CollapsePs (elem);
+					CollapseChildren (elem, "p"_qs);
+
+				if (tagName == "stanza"_ql)
+					CollapseChildren (elem, "v"_qs);
 
 				if (tagName == "image"_ql)
 				{
