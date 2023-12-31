@@ -74,6 +74,7 @@ namespace LC::Monocle
 			QTextFrame& BodyFrame_;
 			QTextCursor Cursor_;
 
+			QTextBlockFormat BlockFormat_;
 			QTextCharFormat CharFormat_;
 		public:
 			explicit Converter (QTextDocument& doc)
@@ -83,6 +84,7 @@ namespace LC::Monocle
 			{
 				auto rootFmt = Doc_.rootFrame ()->frameFormat ();
 				rootFmt.setBackground (Config_.GetPalette ().Background_);
+				rootFmt.setForeground (Config_.GetPalette ().Foreground_);
 				Doc_.rootFrame ()->setFrameFormat (rootFmt);
 			}
 
@@ -93,6 +95,9 @@ namespace LC::Monocle
 		private:
 			void AppendElem (const QDomElement& elem)
 			{
+				FormatKeeper blockKeeper { BlockFormat_ };
+				blockKeeper.SetFormat (GetElemBlockFormat (elem));
+
 				FormatKeeper charKeeper { CharFormat_ };
 				if (auto maybeCharFmt = GetElemCharFormat (elem))
 					charKeeper.SetFormat (*std::move (maybeCharFmt));
@@ -100,11 +105,11 @@ namespace LC::Monocle
 				if (IsBlockElem (elem.tagName ()))
 				{
 					if (!Cursor_.block ().text ().isEmpty ())
-						Cursor_.insertBlock (GetElemBlockFormat (elem), CharFormat_);
+						Cursor_.insertBlock (BlockFormat_, CharFormat_);
 					else
 					{
-						Cursor_.mergeBlockFormat (GetElemBlockFormat (elem));
-						Cursor_.mergeCharFormat (CharFormat_);
+						Cursor_.setBlockFormat (BlockFormat_);
+						Cursor_.setCharFormat (CharFormat_);
 					}
 				}
 
@@ -151,39 +156,41 @@ namespace LC::Monocle
 			{
 				const auto& blockCfg = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
 
-				QTextBlockFormat blockFmt;
-				blockFmt.setAlignment (blockCfg.Align_);
-				blockFmt.setLeftMargin (blockCfg.Margins_.left ());
-				blockFmt.setTopMargin (blockCfg.Margins_.top ());
-				blockFmt.setRightMargin (blockCfg.Margins_.right ());
-				blockFmt.setBottomMargin (blockCfg.Margins_.bottom ());
-				blockFmt.setTextIndent (blockCfg.Indent_);
-				blockFmt.setHeadingLevel (blockCfg.HeadingLevel_);
-
-				return blockFmt;
+				auto fmt = BlockFormat_;
+				const auto set = [&fmt] (auto setter, const auto& maybeVal)
+				{
+					if (maybeVal)
+						std::invoke (setter, fmt, *maybeVal);
+				};
+				set (&QTextBlockFormat::setAlignment, blockCfg.Align_);
+				set (&QTextBlockFormat::setAlignment, blockCfg.Align_);
+				set (&QTextBlockFormat::setLeftMargin, blockCfg.MarginLeft_);
+				set (&QTextBlockFormat::setTopMargin, blockCfg.MarginTop_);
+				set (&QTextBlockFormat::setRightMargin, blockCfg.MarginRight_);
+				set (&QTextBlockFormat::setBottomMargin, blockCfg.MarginBottom_);
+				set (&QTextBlockFormat::setTextIndent, blockCfg.Indent_);
+				set (&QTextBlockFormat::setHeadingLevel, blockCfg.HeadingLevel_);
+				return fmt;
 			}
 
 			std::optional<QTextCharFormat> GetElemCharFormat (const QDomElement& elem)
 			{
-				if (const auto& charCfg = Config_.GetCharFormat (elem.tagName (), elem.attribute ("class"_qs)))
+				const auto& charCfg = Config_.GetCharFormat (elem.tagName (), elem.attribute ("class"_qs));
+				if (!charCfg)
+					return {};
+
+				auto fmt = CharFormat_;
+				const auto set = [&fmt] (auto setter, const auto& maybeVal)
 				{
-					QTextCharFormat fmt;
-
-					const auto set = [&fmt] (auto setter, const auto& maybeVal)
-					{
-						if (maybeVal)
-							std::invoke (setter, fmt, *maybeVal);
-					};
-
-					set (&QTextCharFormat::setFontPointSize, charCfg->PointSize_);
-					set ([] (auto& fmt, bool bold) { fmt.setFontWeight (bold ? QFont::Bold : QFont::Normal); }, charCfg->IsBold_);
-					set (&QTextCharFormat::setFontItalic, charCfg->IsItalic_);
-					set (&QTextCharFormat::setFontUnderline, charCfg->IsUnderline_);
-					set (&QTextCharFormat::setFontStrikeOut, charCfg->IsStrikeThrough_);
-					return fmt;
-				}
-
-				return {};
+					if (maybeVal)
+						std::invoke (setter, fmt, *maybeVal);
+				};
+				set (&QTextCharFormat::setFontPointSize, charCfg->PointSize_);
+				set ([] (auto& fmt, bool bold) { fmt.setFontWeight (bold ? QFont::Bold : QFont::Normal); }, charCfg->IsBold_);
+				set (&QTextCharFormat::setFontItalic, charCfg->IsItalic_);
+				set (&QTextCharFormat::setFontUnderline, charCfg->IsUnderline_);
+				set (&QTextCharFormat::setFontStrikeOut, charCfg->IsStrikeThrough_);
+				return fmt;
 			}
 		};
 	}

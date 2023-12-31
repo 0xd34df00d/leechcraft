@@ -36,19 +36,22 @@ namespace LC::Monocle
 
 	struct BlockFormat
 	{
-		Qt::AlignmentFlag Align_ = Qt::AlignLeft;
+		std::optional<Qt::AlignmentFlag> Align_;
 
 		/** Margins in px.
 		 */
-		QMargins Margins_ { 0, 0, 0, 0 };
+		std::optional<int> MarginLeft_;
+		std::optional<int> MarginTop_;
+		std::optional<int> MarginRight_;
+		std::optional<int> MarginBottom_;
 
 		/** First line indent in px.
 		 */
-		int Indent_ = 0;
+		std::optional<int> Indent_;
 
 		/** Heading level (as in h1-h6).
 		 */
-		int HeadingLevel_ = 0;
+		std::optional<int> HeadingLevel_;
 	};
 
 	struct CharFormat
