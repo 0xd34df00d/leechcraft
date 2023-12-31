@@ -98,7 +98,15 @@ namespace LC::Monocle
 					charKeeper.SetFormat (*std::move (maybeCharFmt));
 
 				if (IsBlockElem (elem.tagName ()))
-					Cursor_.insertBlock (GetElemBlockFormat (elem), CharFormat_);
+				{
+					if (!Cursor_.block ().text ().isEmpty ())
+						Cursor_.insertBlock (GetElemBlockFormat (elem), CharFormat_);
+					else
+					{
+						Cursor_.mergeBlockFormat (GetElemBlockFormat (elem));
+						Cursor_.mergeCharFormat (CharFormat_);
+					}
+				}
 
 				HandleElem (elem);
 				HandleChildren (elem);
