@@ -60,26 +60,48 @@ namespace LC::Monocle
 				return {};
 			return level;
 		}
+
+		BlockFormat GetDefaultTagFormat (QStringView tagName)
+		{
+			if (tagName == u"p"_qsv)
+				return { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
+
+			if (const auto& heading = GetHeadingLevel (tagName))
+			{
+				BlockFormat bf;
+				bf.HeadingLevel_ = *heading;
+				if (*heading <= 2)
+					bf.Align_ = Qt::AlignHCenter;
+				return { bf };
+			}
+
+			if (tagName == u"blockquote"_qsv)
+				return { .MarginLeft_ = 100 };
+
+			return {};
+		}
+
+		BlockFormat WithClasses (const QList<QStringView> classes, BlockFormat fmt)
+		{
+			if (classes.isEmpty ())
+				return fmt;
+
+			if (classes.contains (u"poem"_qsv))
+				fmt.MarginLeft_ = 100;
+
+			if (classes.contains (u"stanza"_qsv))
+			{
+				fmt.MarginTop_ = 10;
+				fmt.MarginBottom_ = 10;
+			}
+
+			return fmt;
+		}
 	}
 
 	BlockFormat TextDocumentFormatConfig::GetBlockFormat (QStringView tagName, QStringView klass) const
 	{
-		if (tagName == u"p"_qsv)
-			return { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
-
-		if (const auto& heading = GetHeadingLevel (tagName))
-		{
-			BlockFormat bf;
-			bf.HeadingLevel_ = *heading;
-			if (*heading <= 2)
-				bf.Align_ = Qt::AlignHCenter;
-			return { bf };
-		}
-
-		if (tagName == u"blockquote"_qsv)
-			return { .MarginLeft_ = 100 };
-
-		return {};
+		return WithClasses (klass.split (' '), GetDefaultTagFormat (tagName));
 	}
 
 	std::optional<CharFormat> TextDocumentFormatConfig::GetCharFormat (QStringView tagName, QStringView klass) const
