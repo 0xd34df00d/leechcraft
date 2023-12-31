@@ -75,7 +75,7 @@ namespace LC::Monocle::FXB
 			{ u"cite", HtmlTag { .Tag_ = "blockquote"_qs, .Class_ = "cite-internal"_qs } },
 			{ u"poem", HtmlTag { .Tag_ = "div"_qs, .Class_ = "poem"_qs } },
 			{ u"stanza", HtmlTag { .Tag_ = "div"_qs, .Class_ = "stanza"_qs } },
-			{ u"v", HtmlTag { .Tag_ = "div"_qs } },
+			{ u"v", HtmlTag { .Tag_ = "div"_qs, .Class_ = "verse"_qs } },
 		};
 
 		std::optional<HtmlTag> ConvertFb2Tag (const QString& tagName, const QVector<QStringView>& tagStack)
