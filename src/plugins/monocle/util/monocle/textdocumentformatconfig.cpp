@@ -76,6 +76,9 @@ namespace LC::Monocle
 			return { bf };
 		}
 
+		if (tagName == u"blockquote"_qsv)
+			return { .MarginLeft_ = 100 };
+
 		return {};
 	}
 
@@ -94,7 +97,7 @@ namespace LC::Monocle
 
 		if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
 			return CharFormat { .IsBold_ = true };
-		if (tagName == u"em"_qsv)
+		if (tagName == u"em"_qsv || tagName == u"i"_qsv)
 			return CharFormat { .IsItalic_ = true };
 		if (tagName == u"s"_qsv)
 			return CharFormat { .IsStrikeThrough_ = true };
