@@ -118,6 +118,9 @@ namespace LC::Monocle
 				fmt.MarginBottom_ = 10;
 			}
 
+			if (classes.contains (u"epigraph"_qsv))
+				fmt.Align_ = Qt::AlignRight;
+
 			return fmt;
 		}
 
@@ -127,6 +130,9 @@ namespace LC::Monocle
 				return fmt;
 
 			if (classes.contains (u"poem"_qsv))
+				fmt.IsItalic_ = true;
+
+			if (classes.contains (u"epigraph"_qsv))
 				fmt.IsItalic_ = true;
 
 			return fmt;
