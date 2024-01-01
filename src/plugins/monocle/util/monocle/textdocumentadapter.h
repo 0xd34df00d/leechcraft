@@ -48,7 +48,8 @@ namespace LC::Monocle
 			// Double-check Q_DECLARE_TYPEINFO when updating this type.
 		};
 
-		using ImagesList_t = QVector<QPair<QString, QImage>>;
+		using LocatedImage_t = QPair<QString, QImage>;
+		using ImagesList_t = QVector<LocatedImage_t>;
 
 		~TextDocumentAdapter () override;
 

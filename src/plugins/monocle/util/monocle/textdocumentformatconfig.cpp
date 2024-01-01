@@ -86,20 +86,23 @@ namespace LC::Monocle
 			if (const auto& heading = GetHeadingLevel (tagName))
 			{
 				const auto& defFont = xsm.property ("DefaultFont").value<QFont> ();
-				CharFormat cf
+				return
 				{
 					.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
 					.IsBold_ = QFont::Weight::DemiBold,
 				};
-				return cf;
 			}
 
 			if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
-				return CharFormat { .IsBold_ = QFont::Weight::DemiBold };
+				return { .IsBold_ = QFont::Weight::DemiBold };
 			if (tagName == u"em"_qsv || tagName == u"i"_qsv)
-				return CharFormat { .IsItalic_ = true };
+				return { .IsItalic_ = true };
 			if (tagName == u"s"_qsv)
-				return CharFormat { .IsStrikeThrough_ = true };
+				return { .IsStrikeThrough_ = true };
+			if (tagName == u"sup"_qsv)
+				return { .VerticalAlignment_ = QTextCharFormat::AlignSuperScript };
+			if (tagName == u"sub"_qsv)
+				return { .VerticalAlignment_ = QTextCharFormat::AlignSubScript };
 
 			return {};
 		}

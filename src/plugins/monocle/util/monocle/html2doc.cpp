@@ -232,6 +232,7 @@ namespace LC::Monocle
 				set (&QTextCharFormat::setFontItalic, charCfg->IsItalic_);
 				set (&QTextCharFormat::setFontUnderline, charCfg->IsUnderline_);
 				set (&QTextCharFormat::setFontStrikeOut, charCfg->IsStrikeThrough_);
+				set (&QTextCharFormat::setVerticalAlignment, charCfg->VerticalAlignment_);
 				return fmt;
 			}
 		};

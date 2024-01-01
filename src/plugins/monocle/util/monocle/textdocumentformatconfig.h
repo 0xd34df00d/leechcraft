@@ -12,6 +12,7 @@
 #include <QColor>
 #include <QFont>
 #include <QMargins>
+#include <QTextCharFormat>
 #include "monocleutilconfig.h"
 
 class QTextDocument;
@@ -62,10 +63,13 @@ namespace LC::Monocle
 	struct CharFormat
 	{
 		std::optional<qreal> PointSize_ {};
+
 		std::optional<QFont::Weight> IsBold_ {};
 		std::optional<bool> IsItalic_ {};
 		std::optional<bool> IsUnderline_ {};
 		std::optional<bool> IsStrikeThrough_ {};
+
+		std::optional<QTextCharFormat::VerticalAlignment> VerticalAlignment_;
 	};
 
 	class MONOCLE_UTIL_API TextDocumentFormatConfig
