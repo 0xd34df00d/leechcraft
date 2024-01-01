@@ -165,65 +165,6 @@ namespace LC::Monocle
 
 	namespace
 	{
-		class Link : public ILink
-				   , public IPageLink
-		{
-			const QRectF LinkArea_;
-
-			const int TargetPage_;
-			const QRectF TargetArea_;
-
-			IDocument * const Doc_;
-		public:
-			Link (const QRectF& area, int targetPage, const QRectF& targetArea, IDocument *doc)
-			: LinkArea_ { area }
-			, TargetPage_ { targetPage }
-			, TargetArea_ { targetArea }
-			, Doc_ { doc }
-			{
-			}
-
-			LinkType GetLinkType () const override
-			{
-				return LinkType::PageLink;
-			}
-
-			QRectF GetArea () const override
-			{
-				return LinkArea_;
-			}
-
-			void Execute () override
-			{
-				Doc_->navigateRequested ({}, { TargetPage_, TargetArea_.topLeft () });
-			}
-
-			QString GetDocumentFilename () const override
-			{
-				return {};
-			}
-
-			int GetPageNumber () const override
-			{
-				return TargetPage_;
-			}
-
-			double NewX () const override
-			{
-				return TargetArea_.left ();
-			}
-
-			double NewY () const override
-			{
-				return TargetArea_.top ();
-			}
-
-			double NewZoom () const override
-			{
-				return 0;
-			}
-		};
-
 		void AddCoverImage (QTextDocument& doc, const TextDocumentAdapter::ImagesList_t& images, const QString& coverId)
 		{
 			if (coverId.isEmpty ())

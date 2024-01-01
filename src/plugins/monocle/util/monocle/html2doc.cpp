@@ -14,6 +14,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "textdocumentformatconfig.h"
+#include "stackkeeper.h"
 
 namespace LC::Monocle
 {
@@ -43,43 +44,6 @@ namespace LC::Monocle
 			};
 			return names.contains (tagName);
 		}
-
-		template<typename T>
-		class StackKeeper final
-		{
-			T& Current_;
-			T Saved_;
-			bool NeedRestore_ = false;
-		public:
-			StackKeeper (T& toSave)
-			: Current_ { toSave }
-			{
-			}
-
-			~StackKeeper ()
-			{
-				if (NeedRestore_)
-					Current_ = Saved_;
-			}
-
-			void Save (const T& val)
-			{
-				Saved_ = val;
-				NeedRestore_ = true;
-			}
-
-			void Set (T&& val)
-			{
-				Saved_ = Current_;
-				Current_ = std::move (val);
-				NeedRestore_ = true;
-			}
-
-			StackKeeper (const StackKeeper&) = delete;
-			StackKeeper (StackKeeper&) = delete;
-			StackKeeper& operator= (const StackKeeper&) = delete;
-			StackKeeper& operator= (StackKeeper&) = delete;
-		};
 
 		class Converter
 		{

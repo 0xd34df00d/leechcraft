@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QObject>
 #include <QRectF>
 #include <QMetaType>
 
