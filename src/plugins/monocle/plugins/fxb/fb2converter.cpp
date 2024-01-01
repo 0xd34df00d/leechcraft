@@ -8,7 +8,6 @@
 
 #include "fb2converter.h"
 #include <functional>
-#include <memory>
 #include <QDomDocument>
 #include <QTextDocument>
 #include <QTextCursor>
@@ -16,14 +15,11 @@
 #include <QImage>
 #include <QVariant>
 #include <QStack>
-#include <QStringList>
 #include <QtDebug>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/timer.h>
-#include <util/monocle/textdocumentformatconfig.h>
-#include "toclink.h"
 
 namespace LC::Monocle::FXB
 {
