@@ -134,9 +134,10 @@ namespace LC::Monocle
 		/** @brief Sets the underlying document and any additional information.
 		 *
 		 * @param[in] doc The document.
-		 * @param[in] links The vector of `InternalLink` structures.
+		 * @param[in] images The images that are referred in `doc`.
+		 * @param[in] coverImage One of the `images` to be used as the cover image.
 		 */
-		void SetDocument (const QDomElement& doc, const ImagesList_t& images);
+		void SetDocument (const QDomElement& doc, const ImagesList_t& images, const QString& coverId = {});
 	};
 }
 

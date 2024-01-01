@@ -14,6 +14,7 @@
 #include <QTextBlock>
 #include <QTextEdit>
 #include <util/sll/timer.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include "html2doc.h"
 #include "textdocumentformatconfig.h"
@@ -222,15 +223,41 @@ namespace LC::Monocle
 				return 0;
 			}
 		};
+
+		void AddCoverImage (QTextDocument& doc, const TextDocumentAdapter::ImagesList_t& images, const QString& coverId)
+		{
+			if (coverId.isEmpty ())
+				return;
+
+			const auto imagePos = std::find_if (images.begin (), images.end (),
+					[&] (const auto& pair) { return pair.first == coverId; });
+			if (imagePos == images.end ())
+			{
+				qWarning () << "unknown cover image"
+						<< coverId;
+				return;
+			}
+
+			const auto& upscaledId = coverId + ".upscaled";
+
+			QTextCursor cursor { &doc };
+			cursor.insertHtml ("<img src='%1' />"_qs.arg (upscaledId));
+
+			const auto& pageSize = doc.pageSize ().toSize ();
+			const auto& scaled = imagePos->second.scaled (pageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			doc.addResource (QTextDocument::ImageResource, { upscaledId }, scaled);
+		}
 	}
 
-	void TextDocumentAdapter::SetDocument (const QDomElement& elem, const ImagesList_t& images)
+	void TextDocumentAdapter::SetDocument (const QDomElement& elem, const ImagesList_t& images, const QString& coverId)
 	{
 		Doc_ = std::make_unique<QTextDocument> ();
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 		Util::Timer timer;
 		Html2Doc (*Doc_, elem);
 		timer.Stamp ("html2doc");
+
+		AddCoverImage (*Doc_, images, coverId);
 
 		for (const auto& [id, image] : images)
 			Doc_->addResource (QTextDocument::ImageResource, { id }, QVariant::fromValue (image));
