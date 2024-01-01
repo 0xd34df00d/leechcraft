@@ -21,9 +21,9 @@ namespace LC::Monocle::Boop
 				)
 
 		QObject * const PluginObject_;
-		QUrl Url_;
+		const QUrl Url_;
 	public:
-		explicit Document (std::unique_ptr<QTextDocument>, QUrl, QObject*);
+		explicit Document (QUrl, QObject*);
 
 		QObject* GetBackendPlugin () const override;
 		QObject* GetQObject () override;

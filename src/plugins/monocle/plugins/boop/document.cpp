@@ -11,11 +11,10 @@
 
 namespace LC::Monocle::Boop
 {
-	Document::Document (std::unique_ptr<QTextDocument> doc, QUrl url, QObject *pluginObj)
+	Document::Document (QUrl url, QObject *pluginObj)
 	: PluginObject_ { pluginObj }
 	, Url_ { std::move (url) }
 	{
-		SetDocument (std::move (doc), {});
 	}
 
 	QObject* Document::GetBackendPlugin () const

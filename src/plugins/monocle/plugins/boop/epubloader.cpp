@@ -163,7 +163,7 @@ namespace LC::Monocle::Boop
 			return bodiesChildren;
 		}
 
-		QString LoadSpine (const QString& epubFile, const Manifest& manifest)
+		QDomElement LoadSpine (const QString& epubFile, const Manifest& manifest)
 		{
 			Util::Timer timer;
 			const auto& bodiesChildren = CollectChildren (epubFile, manifest);
@@ -175,26 +175,23 @@ namespace LC::Monocle::Boop
 				body.appendChild (doc.importNode (elem, true));
 			doc.appendChild (body);
 			timer.Stamp ("uniting children");
-			return doc.toString ();
+			return body;
 		}
 
-		void LoadImages (const QString& epubFile, const Manifest& manifest, QTextDocument& textDoc)
+		TextDocumentAdapter::ImagesList_t LoadImages (const QString& epubFile, const Manifest& manifest)
 		{
-			struct LoadedImage
-			{
-				QString Path_;
-				QImage Image_;
-			};
-
 			Util::Timer timer;
 			QVector<PathItem> imageItems;
 			imageItems.reserve (manifest.Id2Item_.size ());
 			std::copy_if (manifest.Id2Item_.begin (), manifest.Id2Item_.end (), std::back_inserter (imageItems),
 					[] (const PathItem& item) { return item.Mime_.startsWith ("image/"_ql); });
-			const auto& images = QtConcurrent::blockingMapped<QVector<std::optional<LoadedImage>>> (imageItems,
+
+			using LocatedImage_t = TextDocumentAdapter::LocatedImage_t;
+			using MaybeImagesList_t = QVector<std::optional<LocatedImage_t>>;
+			const auto& images = QtConcurrent::blockingMapped<MaybeImagesList_t> (imageItems,
 					std::function
 					{
-						[&] (const PathItem& item) -> std::optional<LoadedImage>
+						[&] (const PathItem& item) -> std::optional<LocatedImage_t>
 						{
 							QuaZipFile file { epubFile, item.Path_, QuaZip::csInsensitive };
 							if (!file.open (QIODevice::ReadOnly))
@@ -207,17 +204,17 @@ namespace LC::Monocle::Boop
 								return {};
 							}
 
-							return LoadedImage { item.Path_, std::move (image) };
+							return LocatedImage_t { item.Path_, std::move (image) };
 						}
 					});
 			timer.Stamp ("parsing images");
 
-			for (const auto& loaded : images)
-				if (loaded)
-					textDoc.addResource (QTextDocument::ImageResource,
-							QUrl { loaded->Path_ },
-							QVariant::fromValue (loaded->Image_));
-			timer.Stamp ("adding images");
+			TextDocumentAdapter::ImagesList_t result;
+			result.reserve (images.size ());
+			for (const auto& maybeImage : images)
+				if (maybeImage)
+					result << *maybeImage;
+			return result;
 		}
 	}
 
@@ -225,20 +222,17 @@ namespace LC::Monocle::Boop
 	{
 		try
 		{
-			auto textDoc = std::make_unique<QTextDocument> ();
-
 			const auto& opfFile = FindOpfFile (epubFile);
 			const auto& manifest = ParseManifest (epubFile, opfFile);
-			const auto& contents = LoadSpine (epubFile, manifest);
+			const auto& body = LoadSpine (epubFile, manifest);
 
 			Util::Timer timer;
-			textDoc->setHtml (contents);
-			TextDocumentFormatConfig::Instance ().FormatDocument (*textDoc);
-			timer.Stamp ("creating doc");
-			LoadImages (epubFile, manifest, *textDoc);
+			const auto& images = LoadImages (epubFile, manifest);
 			timer.Stamp ("loading images");
 
-			return std::make_shared<Document> (std::move (textDoc), QUrl::fromLocalFile (epubFile), pluginObj);
+			const auto& doc = std::make_shared<Document> (QUrl::fromLocalFile (epubFile), pluginObj);
+			doc->SetDocument (body, images);
+			return doc;
 		}
 		catch (const InvalidEpub& error)
 		{
