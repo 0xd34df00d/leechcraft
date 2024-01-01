@@ -115,7 +115,19 @@ namespace LC::Monocle::FXB
 				if (!UnhandledTags_.isEmpty ())
 					qWarning () << "unhandled tags:" << UnhandledTags_;
 
-				return elem;
+				struct Result
+				{
+					QDomElement Body_;
+					QString CoverImageId_;
+				};
+				return Result
+				{
+					.Body_ = elem,
+					.CoverImageId_ = elem.ownerDocument ()
+									.elementsByTagName ("coverpage"_qs).at (0).toElement ()
+									.elementsByTagName ("image"_qs).at (0).toElement ()
+									.attribute ("href"_qs).mid (1),
+				};
 			}
 		private:
 			void RunConvert (QDomElement elem)
@@ -208,6 +220,6 @@ namespace LC::Monocle::FXB
 		timer.Stamp ("converting fb2");
 		const auto& binaries = LoadImages (fb2);
 		timer.Stamp ("loading images");
-		return ConvertResult_t::Right ({ converted, binaries });
+		return ConvertResult_t::Right ({ converted.Body_, binaries, converted.CoverImageId_ });
 	}
 }

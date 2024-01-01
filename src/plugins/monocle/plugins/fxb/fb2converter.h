@@ -22,6 +22,7 @@ namespace LC::Monocle::FXB
 	{
 		QDomElement Doc_;
 		TextDocumentAdapter::ImagesList_t Images_;
+		QString CoverImageId_;
 
 		DocumentInfo Info_;
 	};
