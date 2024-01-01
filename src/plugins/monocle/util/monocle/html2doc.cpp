@@ -150,6 +150,9 @@ namespace LC::Monocle
 			{
 				if (elem.tagName () == "br"_ql)
 					Cursor_.insertText (QString { '\n' });
+
+				if (elem.tagName () == "img"_ql)
+					Cursor_.insertImage (elem.attribute ("src"_qs));
 			}
 
 			void HandleChildren (const QDomElement& elem)
