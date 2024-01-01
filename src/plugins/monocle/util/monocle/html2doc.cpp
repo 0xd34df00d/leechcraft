@@ -19,11 +19,20 @@ namespace LC::Monocle
 {
 	namespace
 	{
-		bool IsBlockElem (QStringView tagName)
+		bool IsHierBlockElem (QStringView tagName)
 		{
-			static const QSet blockElems
+			static const QSet names
 			{
 				u"div"_qsv,
+				u"blockquote"_qsv,
+			};
+			return names.contains (tagName);
+		}
+
+		bool IsNonHierBlockElem (QStringView tagName)
+		{
+			static const QSet names
+			{
 				u"p"_qsv,
 				u"h1"_qsv,
 				u"h2"_qsv,
@@ -32,38 +41,44 @@ namespace LC::Monocle
 				u"h5"_qsv,
 				u"h6"_qsv,
 			};
-			return blockElems.contains (tagName);
+			return names.contains (tagName);
 		}
 
 		template<typename T>
-		class FormatKeeper final
+		class StackKeeper final
 		{
-			T& Format_;
-			const T Saved_;
+			T& Current_;
+			T Saved_;
 			bool NeedRestore_ = false;
 		public:
-			FormatKeeper (T& toSave)
-			: Format_ { toSave }
-			, Saved_ { toSave }
+			StackKeeper (T& toSave)
+			: Current_ { toSave }
 			{
 			}
 
-			~FormatKeeper ()
+			~StackKeeper ()
 			{
 				if (NeedRestore_)
-					Format_ = Saved_;
+					Current_ = Saved_;
 			}
 
-			void SetFormat (T&& format)
+			void Save (const T& val)
 			{
-				Format_ = std::move (format);
+				Saved_ = val;
 				NeedRestore_ = true;
 			}
 
-			FormatKeeper (const FormatKeeper&) = delete;
-			FormatKeeper (FormatKeeper&) = delete;
-			FormatKeeper& operator= (const FormatKeeper&) = delete;
-			FormatKeeper& operator= (FormatKeeper&) = delete;
+			void Set (T&& val)
+			{
+				Saved_ = Current_;
+				Current_ = std::move (val);
+				NeedRestore_ = true;
+			}
+
+			StackKeeper (const StackKeeper&) = delete;
+			StackKeeper (StackKeeper&) = delete;
+			StackKeeper& operator= (const StackKeeper&) = delete;
+			StackKeeper& operator= (StackKeeper&) = delete;
 		};
 
 		class Converter
@@ -74,7 +89,6 @@ namespace LC::Monocle
 			QTextFrame& BodyFrame_;
 			QTextCursor Cursor_;
 
-			QTextBlockFormat BlockFormat_;
 			QTextCharFormat CharFormat_;
 		public:
 			explicit Converter (QTextDocument& doc)
@@ -95,21 +109,31 @@ namespace LC::Monocle
 		private:
 			void AppendElem (const QDomElement& elem)
 			{
-				FormatKeeper blockKeeper { BlockFormat_ };
-				blockKeeper.SetFormat (GetElemBlockFormat (elem));
-
-				FormatKeeper charKeeper { CharFormat_ };
+				StackKeeper charKeeper { CharFormat_ };
 				if (auto maybeCharFmt = GetElemCharFormat (elem))
-					charKeeper.SetFormat (*std::move (maybeCharFmt));
+					charKeeper.Set (*std::move (maybeCharFmt));
 
-				if (IsBlockElem (elem.tagName ()))
+				StackKeeper cursorKeeper { Cursor_ };
+
+				if (IsHierBlockElem (elem.tagName ()))
 				{
+					const auto curFrame = Cursor_.currentFrame ();
+					const auto [frameFmt, blockFmt] = GetElemFrameBlockFormat (elem);
+					Cursor_.insertFrame (frameFmt);
+					Cursor_.setBlockFormat (blockFmt);
+					Cursor_.setBlockCharFormat (CharFormat_);
+
+					cursorKeeper.Save (curFrame->lastCursorPosition ());
+				}
+				else if (IsNonHierBlockElem (elem.tagName ()))
+				{
+					const auto& blockFmt = GetElemBlockFormat (elem);
 					if (!Cursor_.block ().text ().isEmpty ())
-						Cursor_.insertBlock (BlockFormat_, CharFormat_);
+						Cursor_.insertBlock (blockFmt, CharFormat_);
 					else
 					{
-						Cursor_.setBlockFormat (BlockFormat_);
-						Cursor_.setCharFormat (CharFormat_);
+						Cursor_.setBlockFormat (blockFmt);
+						Cursor_.setBlockCharFormat (CharFormat_);
 					}
 				}
 
@@ -152,25 +176,40 @@ namespace LC::Monocle
 				}
 			}
 
+			template<typename T>
+			void SetBlockConfig (T& marginsFmt, QTextBlockFormat& blockFmt, const BlockFormat& blockCfg)
+			{
+				const auto set = [] (auto& fmt, auto setter, const auto& maybeVal)
+				{
+					if (maybeVal)
+						(fmt.*setter) (*maybeVal);
+				};
+				set (marginsFmt, &T::setLeftMargin, blockCfg.MarginLeft_);
+				set (marginsFmt, &T::setTopMargin, blockCfg.MarginTop_);
+				set (marginsFmt, &T::setRightMargin, blockCfg.MarginRight_);
+				set (marginsFmt, &T::setBottomMargin, blockCfg.MarginBottom_);
+				set (blockFmt, &QTextBlockFormat::setAlignment, blockCfg.Align_);
+				set (blockFmt, &QTextBlockFormat::setTextIndent, blockCfg.Indent_);
+				set (blockFmt, &QTextBlockFormat::setHeadingLevel, blockCfg.HeadingLevel_);
+			}
+
+			std::pair<QTextFrameFormat, QTextBlockFormat> GetElemFrameBlockFormat (const QDomElement& elem)
+			{
+				const auto& blockCfg = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
+
+				QTextFrameFormat frameFmt;
+				QTextBlockFormat blockFmt;
+				SetBlockConfig (frameFmt, blockFmt, blockCfg);
+				return { frameFmt, blockFmt };
+			}
+
 			QTextBlockFormat GetElemBlockFormat (const QDomElement& elem)
 			{
 				const auto& blockCfg = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
 
-				auto fmt = BlockFormat_;
-				const auto set = [&fmt] (auto setter, const auto& maybeVal)
-				{
-					if (maybeVal)
-						std::invoke (setter, fmt, *maybeVal);
-				};
-				set (&QTextBlockFormat::setAlignment, blockCfg.Align_);
-				set (&QTextBlockFormat::setAlignment, blockCfg.Align_);
-				set (&QTextBlockFormat::setLeftMargin, blockCfg.MarginLeft_);
-				set (&QTextBlockFormat::setTopMargin, blockCfg.MarginTop_);
-				set (&QTextBlockFormat::setRightMargin, blockCfg.MarginRight_);
-				set (&QTextBlockFormat::setBottomMargin, blockCfg.MarginBottom_);
-				set (&QTextBlockFormat::setTextIndent, blockCfg.Indent_);
-				set (&QTextBlockFormat::setHeadingLevel, blockCfg.HeadingLevel_);
-				return fmt;
+				QTextBlockFormat blockFmt;
+				SetBlockConfig (blockFmt, blockFmt, blockCfg);
+				return blockFmt;
 			}
 
 			std::optional<QTextCharFormat> GetElemCharFormat (const QDomElement& elem)
