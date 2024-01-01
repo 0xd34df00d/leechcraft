@@ -61,7 +61,7 @@ namespace LC::Monocle
 			return level;
 		}
 
-		BlockFormat GetDefaultTagFormat (QStringView tagName)
+		BlockFormat GetDefaultTagBlockFormat (QStringView tagName, const Util::BaseSettingsManager&)
 		{
 			if (tagName == u"p"_qsv)
 				return { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
@@ -81,7 +81,30 @@ namespace LC::Monocle
 			return {};
 		}
 
-		BlockFormat WithClasses (const QList<QStringView> classes, BlockFormat fmt)
+		CharFormat GetDefaultTagCharFormat (QStringView tagName, const Util::BaseSettingsManager& xsm)
+		{
+			if (const auto& heading = GetHeadingLevel (tagName))
+			{
+				const auto& defFont = xsm.property ("DefaultFont").value<QFont> ();
+				CharFormat cf
+				{
+					.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
+					.IsBold_ = QFont::Weight::DemiBold,
+				};
+				return cf;
+			}
+
+			if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
+				return CharFormat { .IsBold_ = QFont::Weight::DemiBold };
+			if (tagName == u"em"_qsv || tagName == u"i"_qsv)
+				return CharFormat { .IsItalic_ = true };
+			if (tagName == u"s"_qsv)
+				return CharFormat { .IsStrikeThrough_ = true };
+
+			return {};
+		}
+
+		BlockFormat WithClasses (const QList<QStringView>& classes, BlockFormat fmt)
 		{
 			if (classes.isEmpty ())
 				return fmt;
@@ -97,34 +120,27 @@ namespace LC::Monocle
 
 			return fmt;
 		}
+
+		CharFormat WithClasses (const QList<QStringView>& classes, CharFormat fmt)
+		{
+			if (classes.isEmpty ())
+				return fmt;
+
+			if (classes.contains (u"poem"_qsv))
+				fmt.IsItalic_ = true;
+
+			return fmt;
+		}
 	}
 
 	BlockFormat TextDocumentFormatConfig::GetBlockFormat (QStringView tagName, QStringView klass) const
 	{
-		return WithClasses (klass.split (' '), GetDefaultTagFormat (tagName));
+		return WithClasses (klass.split (' '), GetDefaultTagBlockFormat (tagName, *XSM_));
 	}
 
 	std::optional<CharFormat> TextDocumentFormatConfig::GetCharFormat (QStringView tagName, QStringView klass) const
 	{
-		if (const auto& heading = GetHeadingLevel (tagName))
-		{
-			const auto& defFont = XSM_->property ("DefaultFont").value<QFont> ();
-			CharFormat cf
-			{
-				.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
-				.IsBold_ = QFont::Weight::DemiBold,
-			};
-			return cf;
-		}
-
-		if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
-			return CharFormat { .IsBold_ = QFont::Weight::DemiBold };
-		if (tagName == u"em"_qsv || tagName == u"i"_qsv)
-			return CharFormat { .IsItalic_ = true };
-		if (tagName == u"s"_qsv)
-			return CharFormat { .IsStrikeThrough_ = true };
-
-		return {};
+		return WithClasses (klass.split (' '), GetDefaultTagCharFormat (tagName, *XSM_));
 	}
 
 	void TextDocumentFormatConfig::SetXSM (Util::BaseSettingsManager& xsm)
