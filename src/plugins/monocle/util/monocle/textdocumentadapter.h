@@ -130,7 +130,7 @@ namespace LC::Monocle
 		 * each page.
 		 */
 		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
-	protected:
+
 		/** @brief Sets the underlying document and any additional information.
 		 *
 		 * @param[in] doc The document.

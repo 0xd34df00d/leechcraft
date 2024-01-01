@@ -29,8 +29,6 @@ namespace LC::Monocle::Boop
 		QObject* GetQObject () override;
 		DocumentInfo GetDocumentInfo () const override;
 		QUrl GetDocURL () const override;
-
-		using TextDocumentAdapter::SetDocument;
 	signals:
 		void navigateRequested (const QString&, const IDocument::Position&) override;
 		void printRequested (const QList<int>&) override;
