@@ -230,6 +230,61 @@ namespace LC::Monocle::FXB
 					.elementsByTagName ("image"_qs).at (0).toElement ()
 					.attribute ("href"_qs).mid (1);
 		}
+
+		struct Notes
+		{
+			QDomElement NotesPage_;
+			QHash<QString, QString> Id2Text_;
+		};
+
+		QString ExtractNoteText (const QDomElement& noteSection)
+		{
+			auto textFragment = QDomDocument {}.createDocumentFragment ();
+
+			Converter cvt;
+			for (const auto& p : Util::DomChildren (noteSection, "p"_qs))
+				textFragment.appendChild (cvt (p.cloneNode ().toElement ()));
+
+			QString html;
+			QTextStream htmlStream { &html };
+			textFragment.save (htmlStream, 0);
+			return html;
+		}
+
+		std::optional<Notes> GetNotes (QDomElement&& notesBody)
+		{
+			QHash<QString, QString> structured;
+			for (const auto& noteSection : Util::DomChildren (notesBody, "section"_qs))
+			{
+				const auto& id = noteSection.attribute ("id"_qs);
+				const auto& text = ExtractNoteText (noteSection);
+				if (!id.isEmpty () && !text.isEmpty ())
+					structured [id] = text;
+			}
+
+			auto elem = Converter {} (std::move (notesBody));
+			return Notes { .NotesPage_ = elem, .Id2Text_ = structured };
+		}
+
+		void AppendNotes (QDomElement& body, const Notes& notes)
+		{
+			auto notesNodes = notes.NotesPage_.childNodes ();
+			while (!notesNodes.isEmpty ())
+				body.appendChild (notesNodes.at (0));
+
+			const auto& links = body.elementsByTagName ("a"_qs);
+			for (int i = 0; i < links.size (); ++i)
+			{
+				auto link = links.at (i).toElement ();
+				auto href = link.attribute ("href"_qs);
+				if (href.startsWith ('#'))
+					href = href.mid (1);
+
+				const auto& text = notes.Id2Text_.value (href);
+				if (!text.isEmpty ())
+					link.setAttribute ("title"_qs, text);
+			}
+		}
 	}
 
 	ConvertResult_t Convert (QDomDocument&& fb2)
@@ -242,12 +297,18 @@ namespace LC::Monocle::FXB
 			return ConvertResult_t::Left (QObject::tr ("Not a FictionBook document."));
 		}
 
+		auto notesElem = fb2body.nextSiblingElement ("body"_qs);
+
 		Util::Timer timer;
 		auto body = Converter {} (std::move (fb2body));
 		timer.Stamp ("converting fb2");
 
 		auto binaries = LoadImages (fb2);
 		timer.Stamp ("loading images");
+
+		if (auto notes = GetNotes (std::move (notesElem)))
+			AppendNotes (body, *notes);
+		timer.Stamp ("converting notes and comments");
 
 		return ConvertResult_t::Right ({ body, std::move (binaries), GetCoverImageId (fb2) });
 	}
