@@ -33,7 +33,6 @@ namespace Dik
 		Document (const QString&, QObject*);
 
 		QObject* GetBackendPlugin () const;
-		QObject* GetQObject ();
 		DocumentInfo GetDocumentInfo () const;
 		QUrl GetDocURL () const;
 	};

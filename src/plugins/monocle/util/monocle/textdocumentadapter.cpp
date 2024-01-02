@@ -10,6 +10,7 @@
 #include <cmath>
 #include <QDomElement>
 #include <QGuiApplication>
+#include <QPainter>
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextEdit>
@@ -22,6 +23,11 @@
 namespace LC::Monocle
 {
 	TextDocumentAdapter::~TextDocumentAdapter () = default;
+
+	QObject* TextDocumentAdapter::GetQObject ()
+	{
+		return this;
+	}
 
 	bool TextDocumentAdapter::IsValid () const
 	{
@@ -195,17 +201,17 @@ namespace LC::Monocle
 		}
 	}
 
-	void TextDocumentAdapter::SetDocument (const QDomElement& elem, const ImagesList_t& images, const QString& coverId)
+	void TextDocumentAdapter::SetDocument (const HtmlDocument& info)
 	{
 		Doc_ = std::make_unique<QTextDocument> ();
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 		Util::Timer timer;
-		TOC_ = Html2Doc (*Doc_, elem, *this);
+		TOC_ = Html2Doc (*Doc_, info.BodyElem_, *this);
 		timer.Stamp ("html2doc");
 
-		AddCoverImage (*Doc_, images, coverId);
+		AddCoverImage (*Doc_, info.Images_, info.CoverId_);
 
-		for (const auto& [id, image] : images)
+		for (const auto& [id, image] : info.Images_)
 			Doc_->addResource (QTextDocument::ImageResource, { id }, QVariant::fromValue (image));
 	}
 

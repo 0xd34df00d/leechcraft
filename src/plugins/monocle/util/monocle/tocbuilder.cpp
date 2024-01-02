@@ -28,7 +28,6 @@ namespace LC::Monocle
 
 	namespace
 	{
-
 		class TOCLink : public ILink
 					  , public IPageLink
 		{

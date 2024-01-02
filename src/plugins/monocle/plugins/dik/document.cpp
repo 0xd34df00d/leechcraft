@@ -106,11 +106,6 @@ namespace Dik
 		return Plugin_;
 	}
 
-	QObject* Document::GetQObject ()
-	{
-		return this;
-	}
-
 	DocumentInfo Document::GetDocumentInfo () const
 	{
 		return Info_;

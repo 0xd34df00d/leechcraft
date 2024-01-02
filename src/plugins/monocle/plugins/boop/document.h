@@ -21,7 +21,6 @@ namespace LC::Monocle::Boop
 		explicit Document (QUrl, QObject*);
 
 		QObject* GetBackendPlugin () const override;
-		QObject* GetQObject () override;
 		DocumentInfo GetDocumentInfo () const override;
 		QUrl GetDocURL () const override;
 	};

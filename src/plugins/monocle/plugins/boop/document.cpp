@@ -22,11 +22,6 @@ namespace LC::Monocle::Boop
 		return PluginObject_;
 	}
 
-	QObject* Document::GetQObject ()
-	{
-		return this;
-	}
-
 	DocumentInfo Document::GetDocumentInfo () const
 	{
 		return {};

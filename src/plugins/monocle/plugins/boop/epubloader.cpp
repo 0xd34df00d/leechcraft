@@ -231,7 +231,7 @@ namespace LC::Monocle::Boop
 			timer.Stamp ("loading images");
 
 			const auto& doc = std::make_shared<Document> (QUrl::fromLocalFile (epubFile), pluginObj);
-			doc->SetDocument (body, images);
+			doc->SetDocument ({ .BodyElem_ = body, .Images_ = images });
 			return doc;
 		}
 		catch (const InvalidEpub& error)

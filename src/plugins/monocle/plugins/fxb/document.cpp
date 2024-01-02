@@ -10,7 +10,6 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QTextDocument>
-#include <QTextFrame>
 #include <QtDebug>
 #include <util/sll/either.h>
 #include "fb2converter.h"
@@ -48,7 +47,11 @@ namespace FXB
 		Util::Visit (result,
 				[this] (const ConvertedDocument& result)
 				{
-					SetDocument (result.Doc_, result.Images_, result.CoverImageId_);
+					SetDocument ({
+							.BodyElem_ = result.Doc_,
+							.Images_ = result.Images_,
+							.CoverId_ = result.CoverImageId_
+						});
 					Info_ = result.Info_;
 				},
 				[] (const QString&) {});
@@ -59,11 +62,6 @@ namespace FXB
 		return Plugin_;
 	}
 
-	QObject* Document::GetQObject ()
-	{
-		return this;
-	}
-
 	DocumentInfo Document::GetDocumentInfo () const
 	{
 		return Info_;
@@ -72,11 +70,6 @@ namespace FXB
 	QUrl Document::GetDocURL () const
 	{
 		return DocURL_;
-	}
-
-	void Document::RequestNavigation (int page)
-	{
-		emit navigateRequested ({}, { page, { 0, 0.4 } });
 	}
 }
 }

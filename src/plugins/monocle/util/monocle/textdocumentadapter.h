@@ -9,7 +9,7 @@
 #pragma once
 
 #include <memory>
-#include <QPainter>
+#include <QDomElement>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/isupportpainting.h>
@@ -17,6 +17,7 @@
 #include "monocleutilconfig.h"
 
 class QDomElement;
+class QPainter;
 class QTextDocument;
 
 namespace LC::Monocle
@@ -43,12 +44,8 @@ namespace LC::Monocle
 				LC::Monocle::ISearchableDocument
 				LC::Monocle::ISupportPainting)
 	protected:
-		/** @brief The adapted QTextDocument.
-		 */
 		std::unique_ptr<QTextDocument> Doc_;
-
 		TOCEntryLevel_t TOC_;
-
 		QMap<int, QList<ILink_ptr>> Links_;
 	public:
 		struct InternalLink
@@ -63,6 +60,7 @@ namespace LC::Monocle
 
 		~TextDocumentAdapter () override;
 
+		QObject* GetQObject () override;
 		bool IsValid () const override;
 		int GetNumPages () const override;
 		QSize GetPageSize (int page) const override;
@@ -75,13 +73,16 @@ namespace LC::Monocle
 
 		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
 
-		/** @brief Sets the underlying document and any additional information.
-		 *
-		 * @param[in] doc The document.
-		 * @param[in] images The images that are referred in `doc`.
-		 * @param[in] coverImage One of the `images` to be used as the cover image.
-		 */
-		void SetDocument (const QDomElement& doc, const ImagesList_t& images, const QString& coverId = {});
+		struct HtmlDocument
+		{
+			QDomElement BodyElem_;
+
+			ImagesList_t Images_;
+
+			QString CoverId_ = {};
+		};
+
+		void SetDocument (const HtmlDocument&);
 	signals:
 		void navigateRequested (const QString&, const IDocument::Position&) override;
 		void printRequested (const QList<int>&) override;

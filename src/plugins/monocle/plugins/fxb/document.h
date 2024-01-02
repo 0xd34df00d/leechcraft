@@ -27,12 +27,9 @@ namespace FXB
 	public:
 		Document (const QString&, QObject*);
 
-		QObject* GetBackendPlugin () const;
-		QObject* GetQObject ();
-		DocumentInfo GetDocumentInfo () const;
-		QUrl GetDocURL () const;
-
-		void RequestNavigation (int);
+		QObject* GetBackendPlugin () const override;
+		DocumentInfo GetDocumentInfo () const override;
+		QUrl GetDocURL () const override;
 	};
 }
 }

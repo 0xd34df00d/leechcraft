@@ -115,10 +115,7 @@ namespace LC::Monocle
 				Util::DefaultScopeGuard tocGuard;
 				if (const auto& sectionTitle = elem.attribute ("section-title"_qs);
 					!sectionTitle.isEmpty ())
-				{
-					//qDebug () << Doc_.pageCount () - 1;
 					tocGuard = TocBuilder_.MarkSection (sectionTitle);
-				}
 
 				HandleElem (elem);
 				HandleChildren (elem);
