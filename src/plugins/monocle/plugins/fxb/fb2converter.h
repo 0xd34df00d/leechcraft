@@ -12,7 +12,7 @@
 #include <QString>
 #include <util/sll/eitherfwd.h>
 #include <interfaces/monocle/idocument.h>
-#include <util/monocle/textdocumentadapter.h>
+#include <util/monocle/types.h>
 
 class QTextDocument;
 
@@ -21,7 +21,7 @@ namespace LC::Monocle::FXB
 	struct ConvertedDocument
 	{
 		QDomElement Doc_;
-		TextDocumentAdapter::ImagesList_t Images_;
+		ImagesList_t Images_;
 		QString CoverImageId_;
 
 		DocumentInfo Info_;

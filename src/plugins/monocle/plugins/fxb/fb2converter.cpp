@@ -211,9 +211,9 @@ namespace LC::Monocle::FXB
 			}
 		};
 
-		TextDocumentAdapter::ImagesList_t LoadImages (const QDomDocument& fb2)
+		ImagesList_t LoadImages (const QDomDocument& fb2)
 		{
-			TextDocumentAdapter::ImagesList_t images;
+			ImagesList_t images;
 			const auto& binaries = fb2.elementsByTagName ("binary"_qs);
 			images.reserve (binaries.size ());
 			for (int i = 0; i < binaries.size (); ++i)

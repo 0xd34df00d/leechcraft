@@ -15,6 +15,7 @@
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
 #include "monocleutilconfig.h"
+#include "types.h"
 
 class QDomElement;
 class QPainter;
@@ -48,16 +49,6 @@ namespace LC::Monocle
 		TOCEntryLevel_t TOC_;
 		QMap<int, QList<ILink_ptr>> Links_;
 	public:
-		struct InternalLink
-		{
-			QPair<int, int> FromSpan_;
-			QPair<int, int> ToSpan_;
-			// Double-check Q_DECLARE_TYPEINFO when updating this type.
-		};
-
-		using LocatedImage_t = QPair<QString, QImage>;
-		using ImagesList_t = QVector<LocatedImage_t>;
-
 		~TextDocumentAdapter () override;
 
 		QObject* GetQObject () override;
@@ -88,5 +79,3 @@ namespace LC::Monocle
 		void printRequested (const QList<int>&) override;
 	};
 }
-
-Q_DECLARE_TYPEINFO (LC::Monocle::TextDocumentAdapter::InternalLink, Q_PRIMITIVE_TYPE);

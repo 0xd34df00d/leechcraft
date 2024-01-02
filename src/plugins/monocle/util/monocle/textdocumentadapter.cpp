@@ -176,7 +176,7 @@ namespace LC::Monocle
 
 	namespace
 	{
-		void AddCoverImage (QTextDocument& doc, const TextDocumentAdapter::ImagesList_t& images, const QString& coverId)
+		void AddCoverImage (QTextDocument& doc, const ImagesList_t& images, const QString& coverId)
 		{
 			if (coverId.isEmpty ())
 				return;
