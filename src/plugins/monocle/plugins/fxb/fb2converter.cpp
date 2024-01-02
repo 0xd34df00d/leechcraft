@@ -49,34 +49,34 @@ namespace LC::Monocle::FXB
 			return HtmlTag { .Tag_ = "h" + QString::number (std::min (Base + depth, maxH)) };
 		}
 
-		const QHash<QStringView, Converter_t> Converters
-		{
-			Identity<u"body"> (),
-
-			{ u"section", HtmlTag { .Tag_ = "div"_qs, .Class_ = "section"_qs } },
-			{ u"title", &StackedTitle<1> },
-			{ u"subtitle", &StackedTitle<2> },
-			Identity<u"p"> (),
-			{ u"epigraph", HtmlTag { .Tag_ = "div"_qs, .Class_ = "epigraph"_qs } },
-			{ u"image", HtmlTag { .Tag_ = "img"_qs } },
-
-			{ u"empty-line", HtmlTag { .Tag_ = "br"_qs } },
-
-			{ u"emphasis", HtmlTag { .Tag_ = "em"_qs } },
-			Identity<u"strong"> (),
-			{ u"strikethrough", HtmlTag { .Tag_ = "s"_qs } },
-
-			{ u"style", HtmlTag { .Tag_ = "span"_qs, .Class_ = "style-emphasis"_qs } },
-
-			{ u"cite", HtmlTag { .Tag_ = "blockquote"_qs, .Class_ = "cite-internal"_qs } },
-			{ u"poem", HtmlTag { .Tag_ = "div"_qs, .Class_ = "poem"_qs } },
-			{ u"stanza", HtmlTag { .Tag_ = "div"_qs, .Class_ = "stanza"_qs } },
-		};
-
 		std::optional<HtmlTag> ConvertFb2Tag (const QString& tagName, const QVector<QStringView>& tagStack)
 		{
-			const auto convIt = Converters.find (tagName);
-			if (convIt == Converters.end ())
+			static const QHash<QStringView, Converter_t> converters
+			{
+				Identity<u"body"> (),
+
+				{ u"section", HtmlTag { .Tag_ = "div"_qs, .Class_ = "section"_qs } },
+				{ u"title", &StackedTitle<1> },
+				{ u"subtitle", &StackedTitle<2> },
+				Identity<u"p"> (),
+				{ u"epigraph", HtmlTag { .Tag_ = "div"_qs, .Class_ = "epigraph"_qs } },
+				{ u"image", HtmlTag { .Tag_ = "img"_qs } },
+
+				{ u"empty-line", HtmlTag { .Tag_ = "br"_qs } },
+
+				{ u"emphasis", HtmlTag { .Tag_ = "em"_qs } },
+				Identity<u"strong"> (),
+				{ u"strikethrough", HtmlTag { .Tag_ = "s"_qs } },
+				Identity<u"a"> (),
+
+				{ u"style", HtmlTag { .Tag_ = "span"_qs, .Class_ = "style-emphasis"_qs } },
+
+				{ u"cite", HtmlTag { .Tag_ = "blockquote"_qs, .Class_ = "cite-internal"_qs } },
+				{ u"poem", HtmlTag { .Tag_ = "div"_qs, .Class_ = "poem"_qs } },
+				{ u"stanza", HtmlTag { .Tag_ = "div"_qs, .Class_ = "stanza"_qs } },
+			};
+			const auto convIt = converters.find (tagName);
+			if (convIt == converters.end ())
 				return {};
 
 			return Util::Visit (*convIt,
@@ -131,31 +131,46 @@ namespace LC::Monocle::FXB
 			section.setAttribute ("section-title"_qs, sectionTitle);
 		}
 
+		void Fixup (QDomElement elem)
+		{
+			const auto& tagName = elem.tagName ();
+			if (tagName == "title"_ql || tagName == "subtitle"_ql || tagName == "epigraph"_qs)
+				CollapseChildren (elem, "p"_qs);
+
+			if (tagName == "stanza"_ql)
+				CollapseChildren (elem, "v"_qs);
+
+			if (tagName == "section"_ql || tagName == "subsection"_ql)
+				MarkSection (elem);
+
+			if (tagName == "image"_ql)
+			{
+				const auto& refId = elem.attribute ("href"_qs);
+				if (refId.isEmpty () || refId [0] != '#')
+				{
+					qWarning () << "unknown ref id"
+							<< refId;
+					return;
+				}
+
+				elem.removeAttribute ("href"_qs);
+				elem.setAttribute ("src"_qs, refId.mid (1));
+			}
+		}
+
 		class Converter
 		{
 			QStack<QStringView> TagStack_;
 			QHash<QString, int> UnhandledTags_;
 		public:
-			auto operator() (const QDomElement& elem)
+			auto operator() (QDomElement&& elem)
 			{
 				RunConvert (elem);
 
 				if (!UnhandledTags_.isEmpty ())
 					qWarning () << "unhandled tags:" << UnhandledTags_;
 
-				struct Result
-				{
-					QDomElement Body_;
-					QString CoverImageId_;
-				};
-				return Result
-				{
-					.Body_ = elem,
-					.CoverImageId_ = elem.ownerDocument ()
-									.elementsByTagName ("coverpage"_qs).at (0).toElement ()
-									.elementsByTagName ("image"_qs).at (0).toElement ()
-									.attribute ("href"_qs).mid (1),
-				};
+				return elem;
 			}
 		private:
 			void RunConvert (QDomElement elem)
@@ -182,33 +197,6 @@ namespace LC::Monocle::FXB
 				if (!htmlTag->Class_.isEmpty ())
 					elem.setAttribute ("class"_qs, htmlTag->Class_);
 			}
-
-			static void Fixup (QDomElement elem)
-			{
-				const auto& tagName = elem.tagName ();
-				if (tagName == "title"_ql || tagName == "subtitle"_ql || tagName == "epigraph"_qs)
-					CollapseChildren (elem, "p"_qs);
-
-				if (tagName == "stanza"_ql)
-					CollapseChildren (elem, "v"_qs);
-
-				if (tagName == "section"_ql || tagName == "subsection"_ql)
-					MarkSection (elem);
-
-				if (tagName == "image"_ql)
-				{
-					const auto& refId = elem.attribute ("href"_qs);
-					if (refId.isEmpty () || refId [0] != '#')
-					{
-						qWarning () << "unknown ref id"
-								<< refId;
-						return;
-					}
-
-					elem.removeAttribute ("href"_qs);
-					elem.setAttribute ("src"_qs, refId.mid (1));
-				}
-			}
 		};
 
 		TextDocumentAdapter::ImagesList_t LoadImages (const QDomDocument& fb2)
@@ -234,23 +222,33 @@ namespace LC::Monocle::FXB
 
 			return images;
 		}
+
+		QString GetCoverImageId (const QDomDocument& doc)
+		{
+			return doc
+					.elementsByTagName ("coverpage"_qs).at (0).toElement ()
+					.elementsByTagName ("image"_qs).at (0).toElement ()
+					.attribute ("href"_qs).mid (1);
+		}
 	}
 
 	ConvertResult_t Convert (QDomDocument&& fb2)
 	{
 		const auto& fb2root = fb2.documentElement ();
-		const auto& body = fb2root.firstChildElement ("body"_qs);
-		if (fb2root.tagName () != "FictionBook"_ql || body.isNull ())
+		auto fb2body = fb2root.firstChildElement ("body"_qs);
+		if (fb2root.tagName () != "FictionBook"_ql || fb2body.isNull ())
 		{
 			qWarning () << "not a FictionBook document";
 			return ConvertResult_t::Left (QObject::tr ("Not a FictionBook document."));
 		}
 
 		Util::Timer timer;
-		const auto& converted = Converter {} (body);
+		auto body = Converter {} (std::move (fb2body));
 		timer.Stamp ("converting fb2");
-		const auto& binaries = LoadImages (fb2);
+
+		auto binaries = LoadImages (fb2);
 		timer.Stamp ("loading images");
-		return ConvertResult_t::Right ({ converted.Body_, binaries, converted.CoverImageId_ });
+
+		return ConvertResult_t::Right ({ body, std::move (binaries), GetCoverImageId (fb2) });
 	}
 }
