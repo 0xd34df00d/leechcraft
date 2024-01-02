@@ -927,19 +927,23 @@ namespace Monocle
 
 	void DocumentTab::NavigateWithinDocument (const IDocument::Position& position)
 	{
-		SetCurrentPage (position.Page_);
-
-		auto page = Pages_.value (position.Page_);
+		const auto page = Pages_.value (position.Page_);
 		if (!page)
 			return;
 
 		if (const auto& rect = position.PagePosition_)
 		{
-			const auto& size = page->boundingRect ().size ();
-			const auto& topLeft = rect->topLeft ();
-			const auto& mapped = page->mapToScene (size.width () * topLeft.x (), size.height () * topLeft.y ());
+			const auto& renderedSize = page->boundingRect ().size ();
+
+			auto topLeft = rect->topLeft ();
+			topLeft.rx () *= renderedSize.width ();
+			topLeft.ry () *= renderedSize.height ();
+			const auto& mapped = page->mapToScene (topLeft);
+
 			Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
+		else
+			SetCurrentPage (position.Page_);
 	}
 
 	void DocumentTab::handleNavigateRequested (const QString& path, const IDocument::Position& pos)

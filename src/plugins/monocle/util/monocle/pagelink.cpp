@@ -96,13 +96,17 @@ namespace LC::Monocle
 
 		const auto spanRect = GetSpanRect (span, TextDoc_);
 		const auto shiftY = spanRect.toRect ().top ();
-		const auto pageHeight = static_cast<int> (TextDoc_.pageSize ().height ());
+		const auto pageSize = TextDoc_.pageSize ();
 
-		const auto quotrem = std::div (shiftY, pageHeight);
+		const auto quotrem = std::div (shiftY, static_cast<int> (pageSize.height ()));
 
 		auto pageArea = spanRect;
 		pageArea.moveTop (quotrem.rem);
-		qDebug () << quotrem.quot << pageArea;
+
+		pageArea.moveTop (pageArea.top () / pageSize.height ());
+		pageArea.setHeight (pageArea.height () / pageSize.height ());
+		pageArea.moveLeft (pageArea.height () / pageSize.width ());
+		pageArea.setWidth (pageArea.height () / pageSize.width ());
 
 		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = pageArea };
 		return *areaInfo;

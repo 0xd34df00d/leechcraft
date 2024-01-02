@@ -70,8 +70,8 @@ namespace Monocle
 
 		/** @brief Returns the area on the page of this link.
 		 *
-		 * The returned rectangle is in page's coordinates, that is, with
-		 * width from 0 to page width and height from 0 to page height.
+		 * The returned rectangle is in relative coordinates, that is, with
+		 * x, y, width and height all belonging to the `[0, 1]` range.
 		 *
 		 * If the link doesn't belong to a page (i. e. is a TOC link) the
 		 * return value isn't used and may be arbitrary.
@@ -121,9 +121,8 @@ namespace Monocle
 
 		/** @brief Returns the target rect of this link in the viewport.
 		 *
-		 * The returned value is in page's coordinates, that is, bounded
-		 * by the width and height as returned by `IDocument::GetPageSize()`
-		 * for the page at `GetPageNumber()`.
+		 * The returned rectangle is in relative coordinates, that is, with
+		 * x, y, width and height all belonging to the `[0, 1]` range.
 		 *
 		 * @return The target rect of the link.
 		 */

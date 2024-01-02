@@ -192,8 +192,7 @@ namespace Monocle
 
 			/** @brief The position within the page.
 			 *
-			 * The position is absolute, that is, between 0 and the bottom right
-			 * corner of the page as returned by `IDocument::GetPageSize()`.
+			 * The position is relative, that is, in the `[0, 1]` range.
 			 */
 			std::optional<QRectF> PagePosition_ {};
 		};
