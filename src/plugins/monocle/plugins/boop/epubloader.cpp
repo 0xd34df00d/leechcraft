@@ -178,7 +178,7 @@ namespace LC::Monocle::Boop
 			return body;
 		}
 
-		TextDocumentAdapter::ImagesList_t LoadImages (const QString& epubFile, const Manifest& manifest)
+		ImagesList_t LoadImages (const QString& epubFile, const Manifest& manifest)
 		{
 			Util::Timer timer;
 			QVector<PathItem> imageItems;
@@ -186,7 +186,7 @@ namespace LC::Monocle::Boop
 			std::copy_if (manifest.Id2Item_.begin (), manifest.Id2Item_.end (), std::back_inserter (imageItems),
 					[] (const PathItem& item) { return item.Mime_.startsWith ("image/"_ql); });
 
-			using LocatedImage_t = TextDocumentAdapter::LocatedImage_t;
+			using LocatedImage_t = LocatedImage_t;
 			using MaybeImagesList_t = QVector<std::optional<LocatedImage_t>>;
 			const auto& images = QtConcurrent::blockingMapped<MaybeImagesList_t> (imageItems,
 					std::function
@@ -204,12 +204,12 @@ namespace LC::Monocle::Boop
 								return {};
 							}
 
-							return LocatedImage_t { item.Path_, std::move (image) };
+							return LocatedImage_t { item.Path_, image };
 						}
 					});
 			timer.Stamp ("parsing images");
 
-			TextDocumentAdapter::ImagesList_t result;
+			ImagesList_t result;
 			result.reserve (images.size ());
 			for (const auto& maybeImage : images)
 				if (maybeImage)
