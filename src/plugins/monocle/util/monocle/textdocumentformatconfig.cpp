@@ -48,6 +48,25 @@ namespace LC::Monocle
 		return fmt;
 	}
 
+	void TextDocumentFormatConfig::SetXSM (Util::BaseSettingsManager& xsm)
+	{
+		XSM_ = &xsm;
+
+		UpdatePalette ();
+	}
+
+	void TextDocumentFormatConfig::UpdatePalette ()
+	{
+		// TODO make configurable
+		const auto& palette = qGuiApp->palette ();
+		Palette_ =
+		{
+			.Background_ = palette.color (QPalette::Base),
+			.Foreground_ = palette.color (QPalette::Text),
+			.Link_ = palette.color (QPalette::Link),
+		};
+	}
+
 	namespace
 	{
 		std::optional<int> GetHeadingLevel (QStringView tagName)
@@ -59,52 +78,6 @@ namespace LC::Monocle
 			if (level < 1 || level > 6)
 				return {};
 			return level;
-		}
-
-		BlockFormat GetDefaultTagBlockFormat (QStringView tagName, const Util::BaseSettingsManager&)
-		{
-			if (tagName == u"p"_qsv)
-				return { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
-
-			if (const auto& heading = GetHeadingLevel (tagName))
-			{
-				BlockFormat bf;
-				bf.HeadingLevel_ = *heading;
-				if (*heading <= 2)
-					bf.Align_ = Qt::AlignHCenter;
-				return { bf };
-			}
-
-			if (tagName == u"blockquote"_qsv)
-				return { .MarginLeft_ = 100 };
-
-			return {};
-		}
-
-		CharFormat GetDefaultTagCharFormat (QStringView tagName, const Util::BaseSettingsManager& xsm)
-		{
-			if (const auto& heading = GetHeadingLevel (tagName))
-			{
-				const auto& defFont = xsm.property ("DefaultFont").value<QFont> ();
-				return
-				{
-					.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
-					.IsBold_ = QFont::Weight::DemiBold,
-				};
-			}
-
-			if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
-				return { .IsBold_ = QFont::Weight::DemiBold };
-			if (tagName == u"em"_qsv || tagName == u"i"_qsv)
-				return { .IsItalic_ = true };
-			if (tagName == u"s"_qsv)
-				return { .IsStrikeThrough_ = true };
-			if (tagName == u"sup"_qsv)
-				return { .VerticalAlignment_ = QTextCharFormat::AlignSuperScript };
-			if (tagName == u"sub"_qsv)
-				return { .VerticalAlignment_ = QTextCharFormat::AlignSubScript };
-
-			return {};
 		}
 
 		BlockFormat WithClasses (const QList<QStringView>& classes, BlockFormat fmt)
@@ -144,30 +117,59 @@ namespace LC::Monocle
 
 	BlockFormat TextDocumentFormatConfig::GetBlockFormat (QStringView tagName, QStringView klass) const
 	{
-		return WithClasses (klass.split (' '), GetDefaultTagBlockFormat (tagName, *XSM_));
+		return WithClasses (klass.split (' '), GetDefaultTagBlockFormat (tagName));
 	}
 
 	std::optional<CharFormat> TextDocumentFormatConfig::GetCharFormat (QStringView tagName, QStringView klass) const
 	{
-		return WithClasses (klass.split (' '), GetDefaultTagCharFormat (tagName, *XSM_));
+		return WithClasses (klass.split (' '), GetDefaultTagCharFormat (tagName));
 	}
 
-	void TextDocumentFormatConfig::SetXSM (Util::BaseSettingsManager& xsm)
+	BlockFormat TextDocumentFormatConfig::GetDefaultTagBlockFormat (QStringView tagName) const
 	{
-		XSM_ = &xsm;
+		if (tagName == u"p"_qsv)
+			return { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
 
-		UpdatePalette ();
-	}
-
-	void TextDocumentFormatConfig::UpdatePalette ()
-	{
-		// TODO make configurable
-		const auto& palette = qGuiApp->palette ();
-		Palette_ =
+		if (const auto& heading = GetHeadingLevel (tagName))
 		{
-			.Background_ = palette.color (QPalette::Base),
-			.Foreground_ = palette.color (QPalette::Text),
-			.Link_ = palette.color (QPalette::Link),
-		};
+			BlockFormat bf;
+			bf.HeadingLevel_ = *heading;
+			if (*heading <= 2)
+				bf.Align_ = Qt::AlignHCenter;
+			return { bf };
+		}
+
+		if (tagName == u"blockquote"_qsv)
+			return { .MarginLeft_ = 100 };
+
+		return {};
+	}
+
+	CharFormat TextDocumentFormatConfig::GetDefaultTagCharFormat (QStringView tagName) const
+	{
+		if (const auto& heading = GetHeadingLevel (tagName))
+		{
+			const auto& defFont = XSM_->property ("DefaultFont").value<QFont> ();
+			return
+			{
+				.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
+				.IsBold_ = QFont::Weight::DemiBold,
+			};
+		}
+
+		if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
+			return { .IsBold_ = QFont::Weight::DemiBold };
+		if (tagName == u"em"_qsv || tagName == u"i"_qsv)
+			return { .IsItalic_ = true };
+		if (tagName == u"s"_qsv)
+			return { .IsStrikeThrough_ = true };
+		if (tagName == u"sup"_qsv)
+			return { .VerticalAlignment_ = QTextCharFormat::AlignSuperScript };
+		if (tagName == u"sub"_qsv)
+			return { .VerticalAlignment_ = QTextCharFormat::AlignSubScript };
+		if (tagName == u"a"_qsv)
+			return { .IsUnderline_ = true, .Foreground_ = Palette_.Link_ };
+
+		return {};
 	}
 }

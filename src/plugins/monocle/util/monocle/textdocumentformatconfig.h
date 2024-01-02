@@ -97,5 +97,8 @@ namespace LC::Monocle
 		void SetXSM (Util::BaseSettingsManager&);
 	private:
 		void UpdatePalette ();
+
+		BlockFormat GetDefaultTagBlockFormat (QStringView tagName) const;
+		CharFormat GetDefaultTagCharFormat (QStringView tagName) const;
 	};
 }
