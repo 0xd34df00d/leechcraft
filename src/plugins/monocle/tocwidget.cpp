@@ -31,11 +31,11 @@ namespace Monocle
 
 	namespace
 	{
-		auto Tuplize (const IPageLink_ptr& link)
+		auto Tuplize (const IPageLink& link)
 		{
-			return std::make_tuple (link->GetPageNumber (),
-					link->NewX (),
-					link->NewY ());
+			qreal x, y, w, h;
+			link.GetTargetArea ().value_or (QRectF {}).getRect (&x, &y, &w, &h);
+			return std::tuple { link.GetPageNumber (), x, y, w, h };
 		}
 	}
 
@@ -53,7 +53,7 @@ namespace Monocle
 		std::sort (IntraDocPageLinks_.begin (), IntraDocPageLinks_.end (),
 				[] (const auto& left, const auto& right)
 				{
-					return Tuplize (left) < Tuplize (right);
+					return Tuplize (*left) < Tuplize (*right);
 				});
 
 		Ui_.TOCTree_->expandToDepth (0);

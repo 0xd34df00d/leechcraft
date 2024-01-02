@@ -60,9 +60,8 @@ namespace PDF
 		QString GetDocumentFilename () const override;
 		int GetPageNumber () const override;
 
-		double NewX () const override;
-		double NewY () const override;
-		double NewZoom () const override;
+		std::optional<QRectF> GetTargetArea () const override;
+		std::optional<double> GetNewZoom () const override;
 	};
 }
 }

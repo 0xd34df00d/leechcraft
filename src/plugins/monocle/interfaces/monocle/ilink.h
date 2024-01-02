@@ -60,7 +60,7 @@ namespace Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~ILink () {}
+		virtual ~ILink () = default;
 
 		/** @brief Returns the link type.
 		 *
@@ -101,7 +101,7 @@ namespace Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IPageLink () {}
+		virtual ~IPageLink () = default;
 
 		/** @brief The name of the document to open.
 		 *
@@ -119,29 +119,21 @@ namespace Monocle
 		 */
 		virtual int GetPageNumber () const = 0;
 
-		/** @brief Returns the new \em x coordinate of the viewport.
+		/** @brief Returns the target rect of this link in the viewport.
 		 *
-		 * The returned value is in page's coordinates, that is, between
-		 * 0 and the width of the page it belongs to.
+		 * The returned value is in page's coordinates, that is, bounded
+		 * by the width and height as returned by `IDocument::GetPageSize()`
+		 * for the page at `GetPageNumber()`.
 		 *
-		 * @return The new \em x coordinate of the viewport in page.
+		 * @return The target rect of the link.
 		 */
-		virtual double NewX () const = 0;
-
-		/** @brief Returns the new \em x coordinate of the viewport.
-		 *
-		 * The returned value is in page's coordinates, that is, between
-		 * 0 and the width of the page it belongs to.
-		 *
-		 * @return The new \em x coordinate of the viewport in page.
-		 */
-		virtual double NewY () const = 0;
+		virtual std::optional<QRectF> GetTargetArea () const = 0;
 
 		/** @brief Returns the new zoom value for the page.
 		 *
 		 * @return The new zoom value.
 		 */
-		virtual double NewZoom () const = 0;
+		virtual std::optional<double> GetNewZoom () const = 0;
 	};
 }
 }

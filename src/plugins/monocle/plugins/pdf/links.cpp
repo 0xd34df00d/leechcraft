@@ -99,7 +99,7 @@ namespace PDF
 
 	QRectF TOCLink::GetArea () const
 	{
-		return QRectF ();
+		return {};
 	}
 
 	void TOCLink::Execute ()
@@ -117,25 +117,18 @@ namespace PDF
 		return Dest_->pageNumber () - 1;
 	}
 
-	double TOCLink::NewX () const
+	std::optional<QRectF> TOCLink::GetTargetArea () const
 	{
-		return Dest_->isChangeLeft () ?
-				Dest_->left () :
-				-1;
+		if (Dest_->isChangeLeft () && Dest_->isChangeTop ())
+			return QRectF { QPointF { Dest_->left (), Dest_->top () }, QSizeF {} };
+		return {};
 	}
 
-	double TOCLink::NewY () const
+	std::optional<double> TOCLink::GetNewZoom () const
 	{
-		return Dest_->isChangeTop () ?
-				Dest_->top () :
-				-1;
-	}
-
-	double TOCLink::NewZoom () const
-	{
-		return Dest_->isChangeZoom () ?
-				Dest_->zoom () :
-				-1;
+		if (Dest_->isChangeZoom ())
+			return Dest_->zoom ();
+		return {};
 	}
 }
 }

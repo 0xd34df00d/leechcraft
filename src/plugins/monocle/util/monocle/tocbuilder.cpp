@@ -54,7 +54,7 @@ namespace LC::Monocle
 
 			void Execute () override
 			{
-				Doc_.navigateRequested ({}, { .Page_ = GetPageNumber (), .PagePosition_ = { NewX (), NewY () } });
+				MonocleDoc_.navigateRequested ({}, { .Page_ = GetPageNumber (), .PagePosition_ = GetTargetArea () });
 			}
 
 			QString GetDocumentFilename () const override
@@ -70,19 +70,14 @@ namespace LC::Monocle
 				return shiftY / pageSize;
 			}
 
-			double NewX () const override
+			std::optional<QRectF> GetTargetArea () const override
 			{
-				return 0;
+				return {};
 			}
 
-			double NewY () const override
+			std::optional<double> GetNewZoom () const override
 			{
-				return 0;
-			}
-
-			double NewZoom () const override
-			{
-				return 0;
+				return {};
 			}
 		};
 	}

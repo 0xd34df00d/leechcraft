@@ -273,7 +273,7 @@ namespace Monocle
 			CurrentDocPath_,
 			{
 				pageNum,
-				position
+				QRectF { position, QSizeF {} }
 			}
 		};
 	}
@@ -933,11 +933,11 @@ namespace Monocle
 		if (!page)
 			return;
 
-		const auto& point = position.PagePosition_;
-		if (!point.isNull ())
+		if (const auto& rect = position.PagePosition_)
 		{
 			const auto& size = page->boundingRect ().size ();
-			const auto& mapped = page->mapToScene (size.width () * point.x (), size.height () * point.y ());
+			const auto& topLeft = rect->topLeft ();
+			const auto& mapped = page->mapToScene (size.width () * topLeft.x (), size.height () * topLeft.y ());
 			Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
 	}

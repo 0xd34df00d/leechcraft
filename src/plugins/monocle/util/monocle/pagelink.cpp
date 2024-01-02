@@ -31,7 +31,7 @@ namespace LC::Monocle
 
 	void PageLink::Execute ()
 	{
-		Doc_->navigateRequested ({}, { TargetPage_, TargetArea_.topLeft () });
+		Doc_.navigateRequested ({}, { GetPageNumber (), GetTargetArea () });
 	}
 
 	QString PageLink::GetDocumentFilename () const
@@ -44,18 +44,13 @@ namespace LC::Monocle
 		return TargetPage_;
 	}
 
-	double PageLink::NewX () const
+	std::optional<QRectF> PageLink::GetTargetArea () const
 	{
-		return TargetArea_.left ();
+		return TargetArea_;
 	}
 
-	double PageLink::NewY () const
+	std::optional<double> PageLink::GetNewZoom () const
 	{
-		return TargetArea_.top ();
-	}
-
-	double PageLink::NewZoom () const
-	{
-		return 0;
+		return {};
 	}
 }

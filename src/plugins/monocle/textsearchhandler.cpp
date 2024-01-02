@@ -164,9 +164,12 @@ namespace Monocle
 		if (pageIdx >= 0)
 		{
 			const auto& bounding = pageItem->boundingRect ();
-			const auto x = item->rect ().x () / bounding.width ();
-			const auto y = item->rect ().y () / bounding.height ();
-			emit navigateRequested ({ pageIdx, { x, y } });
+			auto rect = item->rect ();
+			rect.setLeft (rect.left () / bounding.width ());
+			rect.setTop (rect.top () / bounding.height ());
+			rect.setWidth (rect.width () / bounding.width ());
+			rect.setHeight (rect.height () / bounding.height ());
+			emit navigateRequested ({ pageIdx, rect });
 		}
 	}
 }

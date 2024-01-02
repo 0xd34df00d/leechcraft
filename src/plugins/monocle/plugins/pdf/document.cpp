@@ -299,7 +299,7 @@ namespace PDF
 
 	void Document::RequestNavigation (const QString& filename, int page, double x, double y)
 	{
-		emit navigateRequested (filename, { page, { x, y } });
+		emit navigateRequested (filename, { page, QRectF { QPointF { x, y }, QSizeF {} } });
 	}
 
 	void Document::RequestPrinting ()
