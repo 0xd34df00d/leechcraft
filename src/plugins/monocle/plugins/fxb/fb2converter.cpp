@@ -103,6 +103,34 @@ namespace LC::Monocle::FXB
 			}
 		}
 
+		QString ExtractTitle (const QDomElement& titleElem)
+		{
+			const auto& p = titleElem.firstChildElement ("p"_qs);
+			return !p.isNull () ? p.text () : titleElem.text ();
+		}
+
+		void MarkSection (QDomElement section)
+		{
+			QString sectionTitle;
+
+			const auto& title = section.firstChildElement ("title"_qs);
+			if (!title.isNull ())
+				sectionTitle = ExtractTitle (title);
+
+			if (sectionTitle.isEmpty ())
+			{
+				constexpr auto sectionNameSize = 50;
+				sectionTitle = section.text ();
+				if (sectionTitle.size () > sectionNameSize)
+				{
+					sectionTitle.truncate (sectionNameSize);
+					sectionTitle += u"…"_qs;
+				}
+			}
+
+			section.setAttribute ("section-title"_qs, sectionTitle);
+		}
+
 		class Converter
 		{
 			QStack<QStringView> TagStack_;
@@ -163,6 +191,9 @@ namespace LC::Monocle::FXB
 
 				if (tagName == "stanza"_ql)
 					CollapseChildren (elem, "v"_qs);
+
+				if (tagName == "section"_ql || tagName == "subsection"_ql)
+					MarkSection (elem);
 
 				if (tagName == "image"_ql)
 				{
