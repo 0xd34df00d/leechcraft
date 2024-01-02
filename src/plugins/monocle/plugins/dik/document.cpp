@@ -96,7 +96,8 @@ namespace Dik
 		format.setMargin (30);
 		doc->rootFrame ()->setFrameFormat (format);
 
-		SetDocument (std::move (doc), {});
+		// TODO
+		// SetDocument (std::move (doc), {});
 		Info_ = Parser_->GetDocInfo ();
 	}
 

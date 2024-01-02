@@ -13,13 +13,8 @@
 
 namespace LC::Monocle::Boop
 {
-	class Document : public QObject
-				   , public TextDocumentAdapter
+	class Document : public TextDocumentAdapter
 	{
-		Q_OBJECT
-		Q_INTERFACES (LC::Monocle::IDocument
-				)
-
 		QObject * const PluginObject_;
 		const QUrl Url_;
 	public:
@@ -29,9 +24,6 @@ namespace LC::Monocle::Boop
 		QObject* GetQObject () override;
 		DocumentInfo GetDocumentInfo () const override;
 		QUrl GetDocURL () const override;
-	signals:
-		void navigateRequested (const QString&, const IDocument::Position&) override;
-		void printRequested (const QList<int>&) override;
 	};
 
 	IDocument_ptr LoadZip (const QString& file, QObject *pluginObj);

@@ -21,14 +21,8 @@ namespace Dik
 {
 	class MobiParser;
 
-	class Document : public QObject
-				   , public TextDocumentAdapter
+	class Document : public TextDocumentAdapter
 	{
-		Q_OBJECT
-		Q_INTERFACES (LC::Monocle::IDocument
-				LC::Monocle::ISearchableDocument
-				LC::Monocle::ISupportPainting)
-
 		DocumentInfo Info_;
 		QUrl DocURL_;
 
@@ -42,9 +36,6 @@ namespace Dik
 		QObject* GetQObject ();
 		DocumentInfo GetDocumentInfo () const;
 		QUrl GetDocURL () const;
-	signals:
-		void navigateRequested (const QString&, const IDocument::Position&);
-		void printRequested (const QList<int>&);
 	};
 }
 }
