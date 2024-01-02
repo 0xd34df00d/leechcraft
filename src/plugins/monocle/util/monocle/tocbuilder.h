@@ -12,6 +12,7 @@
 #include <interfaces/monocle/ihavetoc.h>
 #include <util/sll/util.h>
 
+class QDomElement;
 class QTextCursor;
 
 namespace LC::Monocle
@@ -30,7 +31,7 @@ namespace LC::Monocle
 		explicit TocBuilder (const QTextCursor& cursor, IDocument& monocleDoc);
 
 		TOCEntryLevel_t GetTOC () const;
-		[[nodiscard]] Util::DefaultScopeGuard MarkSection (const QString& sectionTitle);
+		[[nodiscard]] Util::DefaultScopeGuard HandleElem (const QDomElement&);
 	};
 
 }

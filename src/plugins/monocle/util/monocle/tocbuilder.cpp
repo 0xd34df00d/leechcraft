@@ -8,8 +8,10 @@
 
 #include "tocbuilder.h"
 #include <QAbstractTextDocumentLayout>
+#include <QDomElement>
 #include <QTextBlock>
 #include <QTextCursor>
+#include <util/sll/qtutil.h>
 #include <interfaces/monocle/idocument.h>
 
 namespace LC::Monocle
@@ -85,8 +87,12 @@ namespace LC::Monocle
 		};
 	}
 
-	Util::DefaultScopeGuard TocBuilder::MarkSection (const QString& sectionTitle)
+	Util::DefaultScopeGuard TocBuilder::HandleElem (const QDomElement& elem)
 	{
+		const auto& sectionTitle = elem.attribute ("section-title"_qs);
+		if (sectionTitle.isEmpty ())
+			return {};
+
 		auto& curLevel = CurrentSectionPath_.top ()->ChildLevel_;
 		auto link = std::make_shared<TOCLink> (MonocleDoc_, Cursor_.block ());
 		curLevel.append ({ .Link_ = std::move (link), .Name_ = sectionTitle, .ChildLevel_ = {} });

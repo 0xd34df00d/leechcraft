@@ -112,10 +112,7 @@ namespace LC::Monocle
 					}
 				}
 
-				Util::DefaultScopeGuard tocGuard;
-				if (const auto& sectionTitle = elem.attribute ("section-title"_qs);
-					!sectionTitle.isEmpty ())
-					tocGuard = TocBuilder_.MarkSection (sectionTitle);
+				const auto tocGuard = TocBuilder_.HandleElem (elem);
 
 				HandleElem (elem);
 				HandleChildren (elem);
