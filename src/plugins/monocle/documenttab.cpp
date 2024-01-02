@@ -935,10 +935,10 @@ namespace Monocle
 		{
 			const auto& renderedSize = page->boundingRect ().size ();
 
-			auto topLeft = rect->topLeft ();
-			topLeft.rx () *= renderedSize.width ();
-			topLeft.ry () *= renderedSize.height ();
-			const auto& mapped = page->mapToScene (topLeft);
+			auto center = (rect->topLeft () + rect->bottomRight ()) / 2;
+			center.rx () *= renderedSize.width ();
+			center.ry () *= renderedSize.height ();
+			const auto& mapped = page->mapToScene (center);
 
 			Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
