@@ -9,29 +9,44 @@
 #pragma once
 
 #include <interfaces/monocle/ilink.h>
+#include "types.h"
+
+class QTextDocument;
 
 namespace LC::Monocle
 {
 	class IDocument;
 
+	struct AreaInfo
+	{
+		int Page_;
+		QRectF Area_;
+	};
+
 	class PageLink : public ILink
 				   , public IPageLink
 	{
-		const QRectF LinkArea_;
+		IDocument& MonocleDoc_;
 
-		const int TargetPage_;
-		const QRectF TargetArea_;
+		const QTextDocument& TextDoc_;
 
-		IDocument * const Doc_;
+		const Span TargetSpan_;
+		const std::optional<Span> SourceSpan_;
+
+		mutable std::optional<AreaInfo> CachedTarget_;
+		mutable std::optional<AreaInfo> CachedSource_;
 	public:
-		PageLink (const QRectF& area, int targetPage, const QRectF& targetArea, IDocument *doc);
+		PageLink (IDocument& monocleDoc, const QTextDocument& textDoc, Span targetSpan, std::optional<Span> sourceSpan = {});
 
 		LinkType GetLinkType () const override;
 		QRectF GetArea () const override;
 		void Execute () override;
+
 		QString GetDocumentFilename () const override;
 		int GetPageNumber () const override;
 		std::optional<QRectF> GetTargetArea () const override;
 		std::optional<double> GetNewZoom () const override;
+	private:
+		const AreaInfo& ComputeArea (Span, std::optional<AreaInfo>&) const;
 	};
 }

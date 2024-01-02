@@ -8,13 +8,11 @@
 
 #include "html2doc.h"
 #include <QDomElement>
-#include <QStack>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
-#include "pagelink.h"
 #include "stackkeeper.h"
 #include "textdocumentformatconfig.h"
 #include "tocbuilder.h"

@@ -7,15 +7,19 @@
  **********************************************************************/
 
 #include "pagelink.h"
+#include <QAbstractTextDocumentLayout>
+#include <QTextBlock>
+#include <QTextDocument>
+#include <QtDebug>
 #include <interfaces/monocle/idocument.h>
 
 namespace LC::Monocle
 {
-	PageLink::PageLink (const QRectF& area, int targetPage, const QRectF& targetArea, IDocument *doc)
-	: LinkArea_ { area }
-	, TargetPage_ { targetPage }
-	, TargetArea_ { targetArea }
-	, Doc_ { doc }
+	PageLink::PageLink (IDocument& monocleDoc, const QTextDocument& textDoc, Span targetSpan, std::optional<Span> sourceSpan)
+	: MonocleDoc_ { monocleDoc }
+	, TextDoc_ { textDoc }
+	, TargetSpan_ { targetSpan }
+	, SourceSpan_ { sourceSpan }
 	{
 	}
 
@@ -26,12 +30,15 @@ namespace LC::Monocle
 
 	QRectF PageLink::GetArea () const
 	{
-		return LinkArea_;
+		if (!SourceSpan_)
+			return {};
+
+		return ComputeArea (*SourceSpan_, CachedSource_).Area_;
 	}
 
 	void PageLink::Execute ()
 	{
-		Doc_.navigateRequested ({}, { GetPageNumber (), GetTargetArea () });
+		MonocleDoc_.navigateRequested ({}, { .Page_ = GetPageNumber (), .PagePosition_ = GetTargetArea () });
 	}
 
 	QString PageLink::GetDocumentFilename () const
@@ -39,18 +46,65 @@ namespace LC::Monocle
 		return {};
 	}
 
+	namespace
+	{
+		QRectF GetPosRect (int docPos, const QTextDocument& doc)
+		{
+			const auto docLayout = doc.documentLayout ();
+
+			const auto block = doc.findBlock (docPos);
+			const auto& blockRect = docLayout->blockBoundingRect (block);
+
+			const auto blockLayout = block.layout ();
+			const auto inBlockPos = docPos - block.position ();
+			const auto line = blockLayout->lineForTextPosition (inBlockPos);
+			if (!line.isValid ())
+				return QRectF { blockRect.topLeft (), QSizeF {} };
+
+			auto lineShift = line.position ();
+			const auto inLinePos = inBlockPos - line.textStart ();
+			lineShift.rx () += line.cursorToX (inLinePos);
+
+			return { blockRect.topLeft () + lineShift, QSizeF {} };
+		}
+
+		QRectF GetSpanRect (Span span, const QTextDocument& doc)
+		{
+			return GetPosRect (span.Start_, doc) | GetPosRect (span.End_, doc);
+		}
+	}
+
 	int PageLink::GetPageNumber () const
 	{
-		return TargetPage_;
+		return ComputeArea (TargetSpan_, CachedTarget_).Page_;
 	}
 
 	std::optional<QRectF> PageLink::GetTargetArea () const
 	{
-		return TargetArea_;
+		return ComputeArea (TargetSpan_, CachedTarget_).Area_;
 	}
 
 	std::optional<double> PageLink::GetNewZoom () const
 	{
 		return {};
+	}
+
+	const AreaInfo& PageLink::ComputeArea (Span span, std::optional<AreaInfo>& areaInfo) const
+	{
+		if (areaInfo)
+			return *areaInfo;
+
+		const auto spanRect = GetSpanRect (span, TextDoc_);
+		const auto shiftY = spanRect.toRect ().top ();
+		const auto pageHeight = static_cast<int> (TextDoc_.pageSize ().height ());
+
+		const auto quotrem = std::div (shiftY, pageHeight);
+
+		auto pageArea = spanRect;
+		pageArea.moveTop (quotrem.rem);
+		qDebug () << quotrem.quot << pageArea;
+
+		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = pageArea };
+		return *areaInfo;
 	}
 }

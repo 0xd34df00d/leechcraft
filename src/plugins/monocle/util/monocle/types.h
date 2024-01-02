@@ -17,8 +17,8 @@ namespace LC::Monocle
 {
 	struct Span
 	{
-		int From_;
-		int To_;
+		int Start_;
+		int End_;
 	};
 
 	struct InternalLink
