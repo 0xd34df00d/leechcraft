@@ -58,6 +58,9 @@ namespace LC::Monocle
 		/** Heading level (as in h1-h6).
 		 */
 		std::optional<int> HeadingLevel_;
+
+		std::optional<QBrush> Background_;
+		std::optional<QBrush> Foreground_;
 	};
 
 	struct CharFormat
@@ -70,6 +73,9 @@ namespace LC::Monocle
 		std::optional<bool> IsStrikeThrough_ {};
 
 		std::optional<QTextCharFormat::VerticalAlignment> VerticalAlignment_;
+
+		std::optional<QBrush> Background_;
+		std::optional<QBrush> Foreground_;
 	};
 
 	class MONOCLE_UTIL_API TextDocumentFormatConfig

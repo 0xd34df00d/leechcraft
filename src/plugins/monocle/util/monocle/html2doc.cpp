@@ -174,6 +174,8 @@ namespace LC::Monocle
 				set (blockFmt, &QTextBlockFormat::setAlignment, blockCfg.Align_);
 				set (blockFmt, &QTextBlockFormat::setTextIndent, blockCfg.Indent_);
 				set (blockFmt, &QTextBlockFormat::setHeadingLevel, blockCfg.HeadingLevel_);
+				set (blockFmt, &QTextBlockFormat::setForeground, blockCfg.Foreground_);
+				set (blockFmt, &QTextBlockFormat::setBackground, blockCfg.Background_);
 			}
 
 			std::pair<QTextFrameFormat, QTextBlockFormat> GetElemFrameBlockFormat (const QDomElement& elem)
@@ -213,6 +215,8 @@ namespace LC::Monocle
 				set (&QTextCharFormat::setFontUnderline, charCfg->IsUnderline_);
 				set (&QTextCharFormat::setFontStrikeOut, charCfg->IsStrikeThrough_);
 				set (&QTextCharFormat::setVerticalAlignment, charCfg->VerticalAlignment_);
+				set (&QTextCharFormat::setForeground, charCfg->Foreground_);
+				set (&QTextCharFormat::setBackground, charCfg->Background_);
 				return fmt;
 			}
 		};
