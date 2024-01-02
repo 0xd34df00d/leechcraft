@@ -131,7 +131,7 @@ namespace LC::Monocle::FXB
 			section.setAttribute ("section-title"_qs, sectionTitle);
 		}
 
-		void Fixup (QDomElement elem)
+		void Fixup (QDomElement& elem)
 		{
 			const auto& tagName = elem.tagName ();
 			if (tagName == "title"_ql || tagName == "subtitle"_ql || tagName == "epigraph"_qs)
@@ -155,6 +155,18 @@ namespace LC::Monocle::FXB
 
 				elem.removeAttribute ("href"_qs);
 				elem.setAttribute ("src"_qs, refId.mid (1));
+			}
+
+			if (tagName == "a"_ql && elem.attribute ("type"_qs) == "note"_ql)
+			{
+				auto parent = elem.parentNode ().toElement ();
+				if (parent.tagName () != "sup"_qs)
+				{
+					auto a = elem;
+					elem = elem.ownerDocument ().createElement ("sup"_qs);
+					elem.appendChild (a);
+					parent.appendChild (elem);
+				}
 			}
 		}
 
