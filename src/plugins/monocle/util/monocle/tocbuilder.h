@@ -8,14 +8,29 @@
 
 #pragma once
 
+#include <QStack>
 #include <interfaces/monocle/ihavetoc.h>
+#include <util/sll/util.h>
 
-class QDomElement;
-class QTextDocument;
+class QTextCursor;
 
 namespace LC::Monocle
 {
 	class IDocument;
 
-	TOCEntryLevel_t Html2Doc (QTextDocument& doc, const QDomElement&, IDocument&);
+	class TocBuilder
+	{
+		const QTextCursor& Cursor_;
+		IDocument& MonocleDoc_;
+
+		TOCEntry Root_;
+
+		QStack<TOCEntry*> CurrentSectionPath_;
+	public:
+		explicit TocBuilder (const QTextCursor& cursor, IDocument& monocleDoc);
+
+		TOCEntryLevel_t GetTOC () const;
+		[[nodiscard]] Util::DefaultScopeGuard MarkSection (const QString& sectionTitle);
+	};
+
 }

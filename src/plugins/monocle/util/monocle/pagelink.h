@@ -17,8 +17,6 @@ namespace LC::Monocle
 	class PageLink : public ILink
 				   , public IPageLink
 	{
-		Q_INTERFACES (LC::Monocle::ILink LC::Monocle::IPageLink)
-
 		const QRectF LinkArea_;
 
 		const int TargetPage_;

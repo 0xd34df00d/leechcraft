@@ -8,13 +8,16 @@
 
 #include "html2doc.h"
 #include <QDomElement>
+#include <QStack>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
-#include "textdocumentformatconfig.h"
+#include "pagelink.h"
 #include "stackkeeper.h"
+#include "textdocumentformatconfig.h"
+#include "tocbuilder.h"
 
 namespace LC::Monocle
 {
@@ -54,11 +57,14 @@ namespace LC::Monocle
 			QTextCursor Cursor_;
 
 			QTextCharFormat CharFormat_;
+
+			TocBuilder TocBuilder_;
 		public:
-			explicit Converter (QTextDocument& doc)
+			explicit Converter (QTextDocument& doc, IDocument& monocleDoc)
 			: Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
 			, Cursor_ { &BodyFrame_ }
+			, TocBuilder_ { Cursor_, monocleDoc }
 			{
 				auto rootFmt = Doc_.rootFrame ()->frameFormat ();
 				rootFmt.setBackground (Config_.GetPalette ().Background_);
@@ -69,6 +75,11 @@ namespace LC::Monocle
 			void operator() (const QDomElement& body)
 			{
 				AppendElem (body);
+			}
+
+			TOCEntryLevel_t GetTOC () const
+			{
+				return TocBuilder_.GetTOC ();
 			}
 		private:
 			void AppendElem (const QDomElement& elem)
@@ -99,6 +110,14 @@ namespace LC::Monocle
 						Cursor_.setBlockFormat (blockFmt);
 						Cursor_.setBlockCharFormat (CharFormat_);
 					}
+				}
+
+				Util::DefaultScopeGuard tocGuard;
+				if (const auto& sectionTitle = elem.attribute ("section-title"_qs);
+					!sectionTitle.isEmpty ())
+				{
+					//qDebug () << Doc_.pageCount () - 1;
+					tocGuard = TocBuilder_.MarkSection (sectionTitle);
 				}
 
 				HandleElem (elem);
@@ -202,8 +221,10 @@ namespace LC::Monocle
 		};
 	}
 
-	void Html2Doc (QTextDocument& doc, const QDomElement& body)
+	TOCEntryLevel_t Html2Doc (QTextDocument& doc, const QDomElement& body, IDocument& monocleDoc)
 	{
-		Converter { doc } (body);
+		Converter conv { doc, monocleDoc };
+		conv (body);
+		return conv.GetTOC ();
 	}
 }

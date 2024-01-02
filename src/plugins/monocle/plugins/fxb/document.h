@@ -10,7 +10,6 @@
 
 #include <QObject>
 #include <QUrl>
-#include <interfaces/monocle/ihavetoc.h>
 #include <util/monocle/textdocumentadapter.h>
 
 namespace LC
@@ -19,18 +18,9 @@ namespace Monocle
 {
 namespace FXB
 {
-	class Document : public QObject
-				   , public TextDocumentAdapter
-				   , public IHaveTOC
+	class Document : public TextDocumentAdapter
 	{
-		Q_OBJECT
-		Q_INTERFACES (LC::Monocle::IDocument
-				LC::Monocle::IHaveTOC
-				LC::Monocle::ISearchableDocument
-				LC::Monocle::ISupportPainting)
-
 		DocumentInfo Info_;
-		TOCEntryLevel_t TOC_;
 		QUrl DocURL_;
 
 		QObject *Plugin_;
@@ -42,12 +32,7 @@ namespace FXB
 		DocumentInfo GetDocumentInfo () const;
 		QUrl GetDocURL () const;
 
-		TOCEntryLevel_t GetTOC ();
-
 		void RequestNavigation (int);
-	signals:
-		void navigateRequested (const QString&, const IDocument::Position&);
-		void printRequested (const QList<int>&);
 	};
 }
 }

@@ -45,14 +45,11 @@ namespace FXB
 		}
 
 		auto result = Convert (std::move (fb2));
-		Util::Visit (std::move (result),
-				[this] (ConvertedDocument&& result)
+		Util::Visit (result,
+				[this] (const ConvertedDocument& result)
 				{
-					SetDocument (std::move (result.Doc_), std::move (result.Images_), result.CoverImageId_);
+					SetDocument (result.Doc_, result.Images_, result.CoverImageId_);
 					Info_ = result.Info_;
-					/*
-					TOC_ = result.TOC_;
-					 */
 				},
 				[] (const QString&) {});
 	}
@@ -75,11 +72,6 @@ namespace FXB
 	QUrl Document::GetDocURL () const
 	{
 		return DocURL_;
-	}
-
-	TOCEntryLevel_t Document::GetTOC ()
-	{
-		return TOC_;
 	}
 
 	void Document::RequestNavigation (int page)

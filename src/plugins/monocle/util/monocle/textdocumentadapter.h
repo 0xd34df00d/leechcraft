@@ -11,6 +11,7 @@
 #include <memory>
 #include <QPainter>
 #include <interfaces/monocle/idocument.h>
+#include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
 #include "monocleutilconfig.h"
@@ -30,14 +31,23 @@ namespace LC::Monocle
 	 * constructor or by calling the SetDocument() method. The adapter
 	 * owns the document.
 	 */
-	class MONOCLE_UTIL_API TextDocumentAdapter : public IDocument
+	class MONOCLE_UTIL_API TextDocumentAdapter : public QObject
+											   , public IDocument
+											   , public IHaveTOC
 											   , public ISupportPainting
 											   , public ISearchableDocument
 	{
+		Q_OBJECT
+		Q_INTERFACES (LC::Monocle::IDocument
+				LC::Monocle::IHaveTOC
+				LC::Monocle::ISearchableDocument
+				LC::Monocle::ISupportPainting)
 	protected:
 		/** @brief The adapted QTextDocument.
 		 */
 		std::unique_ptr<QTextDocument> Doc_;
+
+		TOCEntryLevel_t TOC_;
 
 		QMap<int, QList<ILink_ptr>> Links_;
 	public:
@@ -59,6 +69,8 @@ namespace LC::Monocle
 		QFuture<QImage> RenderPage (int page, double xScale, double yScale) override;
 		QList<ILink_ptr> GetPageLinks (int page) override;
 
+		TOCEntryLevel_t GetTOC () override;
+
 		void PaintPage (QPainter *painter, int page, double xScale, double yScale) override;
 
 		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
@@ -70,6 +82,9 @@ namespace LC::Monocle
 		 * @param[in] coverImage One of the `images` to be used as the cover image.
 		 */
 		void SetDocument (const QDomElement& doc, const ImagesList_t& images, const QString& coverId = {});
+	signals:
+		void navigateRequested (const QString&, const IDocument::Position&) override;
+		void printRequested (const QList<int>&) override;
 	};
 }
 

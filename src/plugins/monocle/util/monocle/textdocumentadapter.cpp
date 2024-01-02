@@ -76,6 +76,11 @@ namespace LC::Monocle
 		return Links_.value (page);
 	}
 
+	TOCEntryLevel_t TextDocumentAdapter::GetTOC ()
+	{
+		return TOC_;
+	}
+
 	void TextDocumentAdapter::PaintPage (QPainter *painter, int page, double xScale, double yScale)
 	{
 		painter->save ();
@@ -195,7 +200,7 @@ namespace LC::Monocle
 		Doc_ = std::make_unique<QTextDocument> ();
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 		Util::Timer timer;
-		Html2Doc (*Doc_, elem);
+		TOC_ = Html2Doc (*Doc_, elem, *this);
 		timer.Stamp ("html2doc");
 
 		AddCoverImage (*Doc_, images, coverId);

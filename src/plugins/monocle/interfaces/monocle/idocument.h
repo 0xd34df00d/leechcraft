@@ -195,7 +195,7 @@ namespace Monocle
 			 * The position is absolute, that is, between 0 and the bottom right
 			 * corner of the page as returned by IDocument::GetPageSize().
 			 */
-			QPointF PagePosition_;
+			QPointF PagePosition_ {};
 		};
 
 		/** @brief Emitted when navigation is requested.
