@@ -88,7 +88,7 @@ namespace Monocle
 		return QPoint (rect.width (), rect.height ()) / 2;
 	}
 
-	int PagesLayoutManager::GetCurrentPage() const
+	int PagesLayoutManager::GetCurrentPage () const
 	{
 		const auto& center = GetViewportCenter ();
 		auto item = View_->itemAt (center - QPoint (1, 1));
@@ -103,17 +103,16 @@ namespace Monocle
 		if (idx < 0 || idx >= Pages_.size ())
 			return;
 
-		auto page = Pages_.at (idx);
-		const auto& rect = page->boundingRect ();
-		const auto& pos = page->scenePos ();
-		int xCenter = pos.x () + rect.width () / 2;
-		const auto visibleHeight = std::min<int> (rect.height (), View_->viewport ()->contentsRect ().height ());
-		int yCenter = pos.y () + visibleHeight / 2;
+		const auto page = Pages_.at (idx);
+		auto center = page->boundingRect ().bottomRight ();
+		center.ry () = std::min (center.y (), static_cast<qreal> (View_->viewport ()->contentsRect ().height ()));
+		center /= 2;
 
+		const auto sceneCenter = page->mapToScene (center);
 		if (immediate)
-			View_->centerOn (xCenter, yCenter);
+			View_->centerOn (sceneCenter);
 		else
-			Scroller_->SmoothCenterOn (xCenter, yCenter);
+			Scroller_->SmoothCenterOn (sceneCenter.x (), sceneCenter.y ());
 	}
 
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)

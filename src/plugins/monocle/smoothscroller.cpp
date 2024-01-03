@@ -58,7 +58,7 @@ namespace Monocle
 	void SmoothScroller::HandleSmoothScroll (int frame)
 	{
 		const int endFrame = ScrollTimeline_->endFrame ();
-		auto interp = [frame, endFrame] (const QPair<qreal, qreal>& pair)
+		auto interp = [frame, endFrame] (QPair<qreal, qreal> pair)
 				{ return pair.first + (pair.second - pair.first) * frame / endFrame; };
 		View_->centerOn (interp (XPath_), interp (YPath_));
 	}
