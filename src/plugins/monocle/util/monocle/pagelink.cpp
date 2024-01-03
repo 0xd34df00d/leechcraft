@@ -65,7 +65,7 @@ namespace LC::Monocle
 			const auto inLinePos = inBlockPos - line.textStart ();
 			lineShift.rx () += line.cursorToX (inLinePos);
 
-			return { blockRect.topLeft () + lineShift, QSizeF {} };
+			return { blockRect.topLeft () + lineShift, QSizeF { 1, line.height () } };
 		}
 
 		QRectF GetSpanRect (Span span, const QTextDocument& doc)
