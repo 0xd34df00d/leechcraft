@@ -16,6 +16,13 @@ class QTextDocument;
 namespace LC::Monocle
 {
 	class IDocument;
+	struct InternalLink;
 
-	TOCEntryLevel_t Html2Doc (QTextDocument& doc, const QDomElement&, IDocument&);
+	struct DocStructure
+	{
+		TOCEntryLevel_t TOC_;
+		QVector<InternalLink> InternalLinks_;
+	};
+
+	DocStructure Html2Doc (QTextDocument& doc, const QDomElement&, IDocument&);
 }

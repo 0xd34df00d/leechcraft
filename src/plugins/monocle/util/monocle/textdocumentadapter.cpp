@@ -18,6 +18,7 @@
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include "html2doc.h"
+#include "pagelink.h"
 #include "textdocumentformatconfig.h"
 
 namespace LC::Monocle
@@ -199,6 +200,19 @@ namespace LC::Monocle
 			const auto& scaled = imagePos->second.scaled (pageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			doc.addResource (QTextDocument::ImageResource, { upscaledId }, scaled);
 		}
+
+		QHash<int, QList<ILink_ptr>> CreateLinks (const QTextDocument& textDoc,
+				IDocument& monocleDoc,
+				const QVector<InternalLink>& intLinks)
+		{
+			QHash<int, QList<ILink_ptr>> result;
+			for (const auto& intLink : intLinks)
+			{
+				auto pageLink = std::make_shared<PageLink> (monocleDoc, textDoc, intLink.Target_, intLink.Link_);
+				result [pageLink->GetSourcePage ()] << pageLink;
+			}
+			return result;
+		}
 	}
 
 	void TextDocumentAdapter::SetDocument (const HtmlDocument& info)
@@ -206,13 +220,17 @@ namespace LC::Monocle
 		Doc_ = std::make_unique<QTextDocument> ();
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 		Util::Timer timer;
-		TOC_ = Html2Doc (*Doc_, info.BodyElem_, *this);
+		auto docStructure = Html2Doc (*Doc_, info.BodyElem_, *this);
 		timer.Stamp ("html2doc");
+
+		TOC_ = std::move (docStructure.TOC_);
+		timer.Stamp ("toc");
+		Links_ = CreateLinks (*Doc_, *this, docStructure.InternalLinks_);
+		timer.Stamp ("links creation");
 
 		AddCoverImage (*Doc_, info.Images_, info.CoverId_);
 
 		for (const auto& [id, image] : info.Images_)
 			Doc_->addResource (QTextDocument::ImageResource, { id }, QVariant::fromValue (image));
 	}
-
 }

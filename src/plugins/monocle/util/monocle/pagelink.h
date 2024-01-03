@@ -46,6 +46,8 @@ namespace LC::Monocle
 		int GetPageNumber () const override;
 		std::optional<QRectF> GetTargetArea () const override;
 		std::optional<double> GetNewZoom () const override;
+
+		int GetSourcePage () const;
 	private:
 		const AreaInfo& ComputeArea (Span, std::optional<AreaInfo>&) const;
 	};

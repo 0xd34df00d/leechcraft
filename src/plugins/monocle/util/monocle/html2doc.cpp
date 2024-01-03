@@ -13,6 +13,7 @@
 #include <QTextFrame>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include "linksbuilder.h"
 #include "stackkeeper.h"
 #include "textdocumentformatconfig.h"
 #include "tocbuilder.h"
@@ -57,12 +58,14 @@ namespace LC::Monocle
 			QTextCharFormat CharFormat_;
 
 			TocBuilder TocBuilder_;
+			LinksBuilder LinksBuilder_;
 		public:
 			explicit Converter (QTextDocument& doc, IDocument& monocleDoc)
 			: Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
 			, Cursor_ { &BodyFrame_ }
 			, TocBuilder_ { Cursor_, monocleDoc }
+			, LinksBuilder_ { Cursor_ }
 			{
 				auto rootFmt = Doc_.rootFrame ()->frameFormat ();
 				rootFmt.setBackground (Config_.GetPalette ().Background_);
@@ -78,6 +81,11 @@ namespace LC::Monocle
 			TOCEntryLevel_t GetTOC () const
 			{
 				return TocBuilder_.GetTOC ();
+			}
+
+			QVector<InternalLink> GetInternalLinks () const
+			{
+				return LinksBuilder_.GetLinks ();
 			}
 		private:
 			void AppendElem (const QDomElement& elem)
@@ -111,6 +119,7 @@ namespace LC::Monocle
 				}
 
 				const auto tocGuard = TocBuilder_.HandleElem (elem);
+				const auto linkGuard = LinksBuilder_.HandleElem (elem);
 
 				HandleElem (elem);
 				HandleChildren (elem);
@@ -217,10 +226,10 @@ namespace LC::Monocle
 		};
 	}
 
-	TOCEntryLevel_t Html2Doc (QTextDocument& doc, const QDomElement& body, IDocument& monocleDoc)
+	DocStructure Html2Doc (QTextDocument& doc, const QDomElement& body, IDocument& monocleDoc)
 	{
 		Converter conv { doc, monocleDoc };
 		conv (body);
-		return conv.GetTOC ();
+		return { .TOC_ = conv.GetTOC (), .InternalLinks_ = conv.GetInternalLinks () };
 	}
 }

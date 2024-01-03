@@ -50,7 +50,7 @@ namespace FXB
 					SetDocument ({
 							.BodyElem_ = result.Doc_,
 							.Images_ = result.Images_,
-							.CoverId_ = result.CoverImageId_
+							.CoverId_ = result.CoverImageId_,
 						});
 					Info_ = result.Info_;
 				},

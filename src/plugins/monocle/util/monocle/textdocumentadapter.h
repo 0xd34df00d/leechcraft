@@ -47,7 +47,7 @@ namespace LC::Monocle
 	protected:
 		std::unique_ptr<QTextDocument> Doc_;
 		TOCEntryLevel_t TOC_;
-		QMap<int, QList<ILink_ptr>> Links_;
+		QHash<int, QList<ILink_ptr>> Links_;
 	public:
 		~TextDocumentAdapter () override;
 
@@ -67,9 +67,7 @@ namespace LC::Monocle
 		struct HtmlDocument
 		{
 			QDomElement BodyElem_;
-
 			ImagesList_t Images_;
-
 			QString CoverId_ = {};
 		};
 

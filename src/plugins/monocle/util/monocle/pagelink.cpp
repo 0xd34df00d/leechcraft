@@ -89,6 +89,17 @@ namespace LC::Monocle
 		return {};
 	}
 
+	int PageLink::GetSourcePage () const
+	{
+		if (!SourceSpan_)
+		{
+			qWarning () << "no source span";
+			return -1;
+		}
+
+		return ComputeArea (*SourceSpan_, CachedSource_).Page_;
+	}
+
 	const AreaInfo& PageLink::ComputeArea (Span span, std::optional<AreaInfo>& areaInfo) const
 	{
 		if (areaInfo)
