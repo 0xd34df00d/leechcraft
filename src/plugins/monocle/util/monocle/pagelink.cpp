@@ -53,19 +53,18 @@ namespace LC::Monocle
 			const auto docLayout = doc.documentLayout ();
 
 			const auto block = doc.findBlock (docPos);
-			const auto& blockRect = docLayout->blockBoundingRect (block);
+			const auto& blockPos = docLayout->blockBoundingRect (block).topLeft ();
 
 			const auto blockLayout = block.layout ();
 			const auto inBlockPos = docPos - block.position ();
 			const auto line = blockLayout->lineForTextPosition (inBlockPos);
 			if (!line.isValid ())
-				return QRectF { blockRect.topLeft (), QSizeF {} };
+				return QRectF { blockPos, QSizeF {} };
 
 			auto lineShift = line.position ();
-			const auto inLinePos = inBlockPos - line.textStart ();
-			lineShift.rx () += line.cursorToX (inLinePos);
+			lineShift.rx () += line.cursorToX (inBlockPos);
 
-			return { blockRect.topLeft () + lineShift, QSizeF { 1, line.height () } };
+			return { blockPos + lineShift, QSizeF { 1, line.height () } };
 		}
 
 		QRectF GetSpanRect (Span span, const QTextDocument& doc)
@@ -116,8 +115,8 @@ namespace LC::Monocle
 
 		pageArea.moveTop (pageArea.top () / pageSize.height ());
 		pageArea.setHeight (pageArea.height () / pageSize.height ());
-		pageArea.moveLeft (pageArea.height () / pageSize.width ());
-		pageArea.setWidth (pageArea.height () / pageSize.width ());
+		pageArea.moveLeft (pageArea.left () / pageSize.width ());
+		pageArea.setWidth (pageArea.width () / pageSize.width ());
 
 		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = pageArea };
 		return *areaInfo;
