@@ -114,26 +114,27 @@ namespace LC::Monocle::Boop
 			return manifest;
 		}
 
-		void FixupLinks (const QDomElement& root, const QString& basePath)
+		void ResolveLinks (const QString& tagName, const QString& linkAttr, const QDomElement& root, const QUrl& baseUrl)
 		{
-			auto images = root.elementsByTagName ("img"_qs);
-			const QUrl baseUrl { basePath };
+			auto images = root.elementsByTagName (tagName);
 			for (int i = 0; i < images.size (); ++i)
 			{
 				auto image = images.at (i).toElement ();
-				const auto& src = image.attribute ("src"_qs);
-				if (src.isEmpty ())
-					continue;
-				image.setAttribute ("src"_qs, baseUrl.resolved (QUrl { src }).toString ());
+				if (const auto& link = image.attribute (linkAttr);
+					!link.isEmpty ())
+					image.setAttribute (linkAttr, baseUrl.resolved (QUrl { link }).toString ());
 			}
 		}
 
 		QVector<QDomElement> ExtractBodyChildren (const QString& epubFile, const QString& subpath)
 		{
 			const auto& doc = GetXml (epubFile, subpath);
-			const auto& body = GetElem (doc.documentElement (), "body"_qs);
+			const auto& root = doc.documentElement ();
 
-			FixupLinks (body, subpath);
+			ResolveLinks ("img"_qs, "src"_qs, root, { subpath });
+			ResolveLinks ("link"_qs, "href"_qs, root, { subpath });
+
+			const auto& body = GetElem (root, "body"_qs);
 
 			const auto& bodyChildren = body.childNodes ();
 			const auto childrenCount = bodyChildren.size ();
