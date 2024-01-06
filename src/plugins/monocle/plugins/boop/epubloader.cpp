@@ -227,9 +227,7 @@ namespace LC::Monocle::Boop
 			const auto& manifest = ParseManifest (epubFile, opfFile);
 			const auto& body = LoadSpine (epubFile, manifest);
 
-			Util::Timer timer;
 			const auto& images = LoadImages (epubFile, manifest);
-			timer.Stamp ("loading images");
 
 			const auto& doc = std::make_shared<Document> (QUrl::fromLocalFile (epubFile), pluginObj);
 			doc->SetDocument ({ .BodyElem_ = body, .Images_ = images });
