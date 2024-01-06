@@ -151,14 +151,17 @@ namespace LC::Monocle::Boop::MicroCSS
 			if (!maybeSelector)
 				return result;
 
-			const auto& selector = *maybeSelector;
-
 			auto blockEnd = std::find (blockStart, chunks.end (), '}');
 			if (blockEnd == chunks.end ())
 				return result;
 
+			const auto& selector = *maybeSelector;
 			if (selectorFilter (selector))
-				result.Selectors_ [selector] += TryParseSelectorBlock (blockStart, blockEnd);
+			{
+				const auto& block = TryParseSelectorBlock (blockStart, blockEnd);
+				for (const auto& sub : selector.splitRef (',', Qt::SkipEmptyParts))
+					result.Selectors_ [sub.trimmed ().toString ()] += block;
+			}
 
 			pos = blockEnd + 1;
 		}
