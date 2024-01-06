@@ -19,10 +19,12 @@ namespace LC::Monocle
 	{
 		int Start_;
 		int End_;
+		// Double-check Q_DECLARE_TYPEINFO when updating this type.
 	};
 
 	struct InternalLink
 	{
+		QString LinkTitle_;
 		Span Link_;
 		Span Target_;
 		// Double-check Q_DECLARE_TYPEINFO when updating this type.
@@ -32,5 +34,8 @@ namespace LC::Monocle
 	using ImagesList_t = QVector<LocatedImage_t>;
 }
 
-Q_DECLARE_TYPEINFO (LC::Monocle::Span, Q_PRIMITIVE_TYPE);
-Q_DECLARE_TYPEINFO (LC::Monocle::InternalLink, Q_PRIMITIVE_TYPE);
+template<>
+class QTypeInfo<LC::Monocle::Span> : public QTypeInfo<int> {};
+
+template<>
+class QTypeInfo<LC::Monocle::InternalLink> : public QTypeInfoMerger<QString, LC::Monocle::Span> {};

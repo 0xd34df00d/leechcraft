@@ -21,7 +21,12 @@ namespace LC::Monocle
 	{
 		const QTextCursor& Cursor_;
 
-		QHash<QString, Span> Sources_;
+		struct SourceInfo
+		{
+			QString Title_;
+			Span Span_;
+		};
+		QHash<QString, SourceInfo> Sources_;
 		QHash<QString, Span> Targets_;
 	public:
 		explicit LinksBuilder (const QTextCursor&);

@@ -34,7 +34,12 @@ namespace LC::Monocle
 			return {};
 
 		const auto curPosition = Cursor_.position ();
-		auto link = std::make_shared<PageLink> (MonocleDoc_, *Cursor_.document (), Span { curPosition, curPosition });
+		auto link = std::make_shared<PageLink> (PageLink::LinkInfo
+				{
+					.MonocleDoc_ = MonocleDoc_,
+					.TextDoc_ = *Cursor_.document (),
+					.Target_ = Span { curPosition, curPosition },
+				});
 
 		auto& curLevel = CurrentSectionPath_.top ()->ChildLevel_;
 		curLevel.append ({ .Link_ = std::move (link), .Name_ = sectionTitle, .ChildLevel_ = {} });

@@ -15,11 +15,8 @@
 
 namespace LC::Monocle
 {
-	PageLink::PageLink (IDocument& monocleDoc, const QTextDocument& textDoc, Span targetSpan, std::optional<Span> sourceSpan)
-	: MonocleDoc_ { monocleDoc }
-	, TextDoc_ { textDoc }
-	, TargetSpan_ { targetSpan }
-	, SourceSpan_ { sourceSpan }
+	PageLink::PageLink (const LinkInfo& info)
+	: Info_ { info }
 	{
 	}
 
@@ -30,15 +27,20 @@ namespace LC::Monocle
 
 	QRectF PageLink::GetArea () const
 	{
-		if (!SourceSpan_)
+		if (!Info_.Source_)
 			return {};
 
-		return ComputeArea (*SourceSpan_, CachedSource_).Area_;
+		return ComputeArea (*Info_.Source_, CachedSource_).Area_;
 	}
 
 	void PageLink::Execute ()
 	{
-		MonocleDoc_.navigateRequested ({}, { .Page_ = GetPageNumber (), .PagePosition_ = GetTargetArea () });
+		Info_.MonocleDoc_.navigateRequested ({}, { .Page_ = GetPageNumber (), .PagePosition_ = GetTargetArea () });
+	}
+
+	QString PageLink::GetToolTip () const
+	{
+		return Info_.ToolTip_;
 	}
 
 	QString PageLink::GetDocumentFilename () const
@@ -75,12 +77,12 @@ namespace LC::Monocle
 
 	int PageLink::GetPageNumber () const
 	{
-		return ComputeArea (TargetSpan_, CachedTarget_).Page_;
+		return ComputeArea (Info_.Target_, CachedTarget_).Page_;
 	}
 
 	std::optional<QRectF> PageLink::GetTargetArea () const
 	{
-		return ComputeArea (TargetSpan_, CachedTarget_).Area_;
+		return ComputeArea (Info_.Target_, CachedTarget_).Area_;
 	}
 
 	std::optional<double> PageLink::GetNewZoom () const
@@ -90,13 +92,13 @@ namespace LC::Monocle
 
 	int PageLink::GetSourcePage () const
 	{
-		if (!SourceSpan_)
+		if (!Info_.Source_)
 		{
 			qWarning () << "no source span";
 			return -1;
 		}
 
-		return ComputeArea (*SourceSpan_, CachedSource_).Page_;
+		return ComputeArea (*Info_.Source_, CachedSource_).Page_;
 	}
 
 	const AreaInfo& PageLink::ComputeArea (Span span, std::optional<AreaInfo>& areaInfo) const
@@ -104,9 +106,9 @@ namespace LC::Monocle
 		if (areaInfo)
 			return *areaInfo;
 
-		const auto spanRect = GetSpanRect (span, TextDoc_);
+		const auto spanRect = GetSpanRect (span, Info_.TextDoc_);
 		const auto shiftY = spanRect.toRect ().top ();
-		const auto pageSize = TextDoc_.pageSize ();
+		const auto pageSize = Info_.TextDoc_.pageSize ();
 
 		const auto quotrem = std::div (shiftY, static_cast<int> (pageSize.height ()));
 

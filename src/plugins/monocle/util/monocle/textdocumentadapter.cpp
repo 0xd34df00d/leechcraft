@@ -208,7 +208,14 @@ namespace LC::Monocle
 			QHash<int, QList<ILink_ptr>> result;
 			for (const auto& intLink : intLinks)
 			{
-				auto pageLink = std::make_shared<PageLink> (monocleDoc, textDoc, intLink.Target_, intLink.Link_);
+				auto pageLink = std::make_shared<PageLink> (PageLink::LinkInfo
+						{
+							.MonocleDoc_ = monocleDoc,
+							.TextDoc_ = textDoc,
+							.Target_ = intLink.Target_,
+							.Source_ = intLink.Link_,
+							.ToolTip_ = intLink.LinkTitle_,
+						});
 				result [pageLink->GetSourcePage ()] << pageLink;
 			}
 			return result;

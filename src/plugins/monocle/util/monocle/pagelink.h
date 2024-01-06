@@ -26,21 +26,29 @@ namespace LC::Monocle
 	class PageLink : public ILink
 				   , public IPageLink
 	{
-		IDocument& MonocleDoc_;
+	public:
+		struct LinkInfo
+		{
+			IDocument& MonocleDoc_;
+			const QTextDocument& TextDoc_;
 
-		const QTextDocument& TextDoc_;
+			Span Target_;
+			std::optional<Span> Source_ {};
 
-		const Span TargetSpan_;
-		const std::optional<Span> SourceSpan_;
+			QString ToolTip_;
+		};
+	private:
+		LinkInfo Info_;
 
 		mutable std::optional<AreaInfo> CachedTarget_;
 		mutable std::optional<AreaInfo> CachedSource_;
 	public:
-		PageLink (IDocument& monocleDoc, const QTextDocument& textDoc, Span targetSpan, std::optional<Span> sourceSpan = {});
+		PageLink (const LinkInfo&);
 
 		LinkType GetLinkType () const override;
 		QRectF GetArea () const override;
 		void Execute () override;
+		QString GetToolTip () const override;
 
 		QString GetDocumentFilename () const override;
 		int GetPageNumber () const override;

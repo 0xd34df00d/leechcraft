@@ -33,7 +33,7 @@ namespace LC::Monocle
 	{
 		QVector<InternalLink> links;
 		links.reserve (Sources_.size ());
-		for (const auto& [id, sourceSpan] : Util::Stlize (Sources_))
+		for (const auto& [id, source] : Util::Stlize (Sources_))
 		{
 			const auto targetPos = Targets_.find (id);
 			if (targetPos == Targets_.end ())
@@ -42,17 +42,16 @@ namespace LC::Monocle
 				continue;
 			}
 
-			links.append ({ .Link_ = sourceSpan, .Target_ = *targetPos });
+			links.append ({ .LinkTitle_ = source.Title_, .Link_ = source.Span_, .Target_ = *targetPos });
 		}
 		return links;
 	}
 
 	Util::DefaultScopeGuard LinksBuilder::HandleTarget (const QString& anchorId)
 	{
-		return Util::MakeScopeGuard ([this, anchorId, start = Cursor_.position ()]
-				{
-					Targets_ [anchorId] = Span { start, Cursor_.position () };
-				});
+		const auto start = Cursor_.position ();
+		auto& target = Targets_ [anchorId] = Span { start, -1 };
+		return Util::MakeScopeGuard ([this, &target] { target.End_ = Cursor_.position (); });
 	}
 
 	Util::DefaultScopeGuard LinksBuilder::HandleLink (const QDomElement& elem)
@@ -61,9 +60,11 @@ namespace LC::Monocle
 		if (!href.startsWith ('#'))
 			return {};
 
-		return Util::MakeScopeGuard ([this, anchor = href.mid (1), start = Cursor_.position ()]
-				{
-					Sources_ [anchor] = Span { start, Cursor_.position () };
-				});
+		const auto& title = elem.attribute ("title"_qs);
+		const auto anchor = href.mid (1);
+		const auto start = Cursor_.position ();
+
+		auto& source = (Sources_ [anchor] = { title, { start, -1 } });
+		return Util::MakeScopeGuard ([this, &source] { source.Span_.End_ = Cursor_.position (); });
 	}
 }
