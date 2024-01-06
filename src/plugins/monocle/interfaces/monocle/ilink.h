@@ -86,6 +86,13 @@ namespace Monocle
 		 * execute the action related to the link.
 		 */
 		virtual void Execute () = 0;
+
+		/** @brief Returns the tooltip for the link.
+		 */
+		 virtual QString GetToolTip () const
+		 {
+			 return {};
+		 }
 	};
 	typedef std::shared_ptr<ILink> ILink_ptr;
 

@@ -22,6 +22,7 @@ namespace Monocle
 		setCursor (Qt::PointingHandCursor);
 		setPen (Qt::NoPen);
 		setFlag (QGraphicsItem::ItemHasNoContents);
+		setToolTip (link->GetToolTip ());
 	}
 
 	void LinkItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
