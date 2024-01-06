@@ -225,12 +225,16 @@ namespace LC::Monocle
 
 		TOC_ = std::move (docStructure.TOC_);
 		timer.Stamp ("toc");
-		Links_ = CreateLinks (*Doc_, *this, docStructure.InternalLinks_);
-		timer.Stamp ("links creation");
 
 		AddCoverImage (*Doc_, info.Images_, info.CoverId_);
 
 		for (const auto& [id, image] : info.Images_)
 			Doc_->addResource (QTextDocument::ImageResource, { id }, QVariant::fromValue (image));
+		timer.Stamp ("covers and resources");
+		Doc_->documentLayout ();
+		timer.Stamp ("layout");
+
+		Links_ = CreateLinks (*Doc_, *this, docStructure.InternalLinks_);
+		timer.Stamp ("links creation");
 	}
 }
