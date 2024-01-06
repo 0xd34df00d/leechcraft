@@ -127,7 +127,15 @@ namespace LC::Monocle
 
 			void AppendText (const QDomText& textNode)
 			{
-				Cursor_.insertText (textNode.data (), CharFormat_);
+				auto text = textNode.data ();
+				if (text.isEmpty ())
+					return;
+
+				if (auto simplified = std::move (text).simplified ();
+					!simplified.isEmpty ())
+					Cursor_.insertText (simplified, CharFormat_);
+				else
+					Cursor_.insertText (" "_qs, CharFormat_);
 			}
 
 			void HandleElem (const QDomElement& elem)
