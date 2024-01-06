@@ -86,7 +86,10 @@ namespace LC::Monocle
 				return fmt;
 
 			if (classes.contains (u"poem"_qsv))
-				fmt.MarginLeft_ = 100;
+			{
+				fmt.MarginLeft_ = 50;
+				fmt.MarginRight_ = 50;
+			}
 
 			if (classes.contains (u"stanza"_qsv))
 			{
@@ -95,6 +98,9 @@ namespace LC::Monocle
 			}
 
 			if (classes.contains (u"epigraph"_qsv))
+				fmt.Align_ = Qt::AlignRight;
+
+			if (classes.contains (u"subscript"_qsv))
 				fmt.Align_ = Qt::AlignRight;
 
 			return fmt;
@@ -109,6 +115,12 @@ namespace LC::Monocle
 				fmt.IsItalic_ = true;
 
 			if (classes.contains (u"epigraph"_qsv))
+				fmt.IsItalic_ = true;
+
+			if (classes.contains (u"emphasis"_qsv))
+				fmt.IsItalic_ = true;
+
+			if (classes.contains (u"subscript"_qsv))
 				fmt.IsItalic_ = true;
 
 			return fmt;
@@ -134,13 +146,13 @@ namespace LC::Monocle
 		{
 			BlockFormat bf;
 			bf.HeadingLevel_ = *heading;
-			if (*heading <= 2)
+			if (*heading <= 4)
 				bf.Align_ = Qt::AlignHCenter;
 			return { bf };
 		}
 
 		if (tagName == u"blockquote"_qsv)
-			return { .MarginLeft_ = 100 };
+			return { .MarginLeft_ = 50, .MarginRight_ = 50 };
 
 		return {};
 	}
@@ -152,7 +164,7 @@ namespace LC::Monocle
 			const auto& defFont = XSM_->property ("DefaultFont").value<QFont> ();
 			return
 			{
-				.PointSize_ = defFont.pointSize () * (2. - *heading / 10.),
+				.PointSize_ = defFont.pointSize () * (2.5 - (*heading - 1) / 3.),
 				.IsBold_ = QFont::Weight::DemiBold,
 			};
 		}
