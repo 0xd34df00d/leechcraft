@@ -67,13 +67,17 @@ namespace LC::Monocle::FXB
 				{ u"emphasis", HtmlTag { .Tag_ = "em"_qs } },
 				Identity<u"strong"> (),
 				{ u"strikethrough", HtmlTag { .Tag_ = "s"_qs } },
+				Identity<u"sub"> (),
+				Identity<u"sup"> (),
+
 				Identity<u"a"> (),
 
-				{ u"style", HtmlTag { .Tag_ = "span"_qs, .Class_ = "style-emphasis"_qs } },
+				{ u"style", HtmlTag { .Tag_ = "span"_qs, .Class_ = "emphasis"_qs } },
 
 				{ u"cite", HtmlTag { .Tag_ = "blockquote"_qs, .Class_ = "cite-internal"_qs } },
 				{ u"poem", HtmlTag { .Tag_ = "div"_qs, .Class_ = "poem"_qs } },
 				{ u"stanza", HtmlTag { .Tag_ = "div"_qs, .Class_ = "stanza"_qs } },
+				{ u"text-author", HtmlTag { .Tag_ = "div"_qs, .Class_ = "subscript"_qs }},
 			};
 			const auto convIt = converters.find (tagName);
 			if (convIt == converters.end ())
