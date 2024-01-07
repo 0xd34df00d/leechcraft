@@ -14,6 +14,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include "types.h"
 
 namespace LC::Monocle
 {

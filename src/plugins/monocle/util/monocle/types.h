@@ -9,8 +9,10 @@
 #pragma once
 
 #include <QImage>
-#include <QString>
 #include <QPair>
+#include <QStack>
+#include <QString>
+#include <QTextCharFormat>
 #include <QVector>
 
 namespace LC::Monocle
@@ -32,6 +34,48 @@ namespace LC::Monocle
 
 	using LocatedImage_t = QPair<QString, QImage>;
 	using ImagesList_t = QVector<LocatedImage_t>;
+
+	struct BlockFormat
+	{
+		std::optional<Qt::AlignmentFlag> Align_;
+
+		/** Margins in px.
+		 */
+		std::optional<int> MarginLeft_;
+		std::optional<int> MarginTop_;
+		std::optional<int> MarginRight_;
+		std::optional<int> MarginBottom_;
+
+		/** First line indent in px.
+		 */
+		std::optional<int> Indent_;
+
+		/** Heading level (as in h1-h6).
+		 */
+		std::optional<int> HeadingLevel_;
+
+		std::optional<QBrush> Background_;
+		std::optional<QBrush> Foreground_;
+
+		BlockFormat& operator+= (const BlockFormat&);
+	};
+
+	struct CharFormat
+	{
+		std::optional<qreal> PointSize_ {};
+
+		std::optional<QFont::Weight> IsBold_ {};
+		std::optional<bool> IsItalic_ {};
+		std::optional<bool> IsUnderline_ {};
+		std::optional<bool> IsStrikeThrough_ {};
+
+		std::optional<QTextCharFormat::VerticalAlignment> VerticalAlignment_;
+
+		std::optional<QBrush> Background_;
+		std::optional<QBrush> Foreground_;
+
+		CharFormat& operator+= (const CharFormat&);
+	};
 }
 
 template<>
