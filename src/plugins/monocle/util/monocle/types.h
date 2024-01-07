@@ -75,6 +75,8 @@ namespace LC::Monocle
 		std::optional<QBrush> Foreground_;
 
 		CharFormat& operator+= (const CharFormat&);
+
+		bool IsEmpty () const;
 	};
 }
 

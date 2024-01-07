@@ -50,4 +50,16 @@ namespace LC::Monocle
 
 		return *this;
 	}
+
+	bool CharFormat::IsEmpty () const
+	{
+		return PointSize_ ||
+				IsBold_ ||
+				IsItalic_ ||
+				IsUnderline_ ||
+				IsStrikeThrough_ ||
+				VerticalAlignment_ ||
+				Background_ ||
+				Foreground_;
+	}
 }
