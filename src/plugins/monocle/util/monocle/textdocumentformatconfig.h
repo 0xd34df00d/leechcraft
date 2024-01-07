@@ -10,8 +10,6 @@
 
 #include <optional>
 #include <QColor>
-#include <QFont>
-#include <QMargins>
 #include <QTextCharFormat>
 #include "monocleutilconfig.h"
 
@@ -43,6 +41,8 @@ namespace LC::Monocle
 	struct BlockFormat;
 	struct CharFormat;
 
+	struct StylingContext;
+
 	class MONOCLE_UTIL_API TextDocumentFormatConfig
 	{
 		TextDocumentPalette Palette_;
@@ -56,8 +56,8 @@ namespace LC::Monocle
 
 		QTextFrameFormat GetBodyFrameFormat () const;
 
-		BlockFormat GetBlockFormat (QStringView tagName, QStringView klass) const;
-		std::optional<CharFormat> GetCharFormat (QStringView tagName, QStringView klass) const;
+		BlockFormat GetBlockFormat (const StylingContext&) const;
+		std::optional<CharFormat> GetCharFormat (const StylingContext&) const;
 
 		void SetXSM (Util::BaseSettingsManager&);
 	private:

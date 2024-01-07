@@ -9,6 +9,7 @@
 #pragma once
 
 #include <interfaces/monocle/ihavetoc.h>
+#include <util/monocle/types.h>
 
 class QDomElement;
 class QTextDocument;
@@ -24,5 +25,5 @@ namespace LC::Monocle
 		QVector<InternalLink> InternalLinks_;
 	};
 
-	DocStructure Html2Doc (QTextDocument& doc, const QDomElement&, IDocument&);
+	DocStructure Html2Doc (QTextDocument& doc, const QDomElement&, const CustomStyler_f&, IDocument&);
 }

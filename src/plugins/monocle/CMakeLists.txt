@@ -25,6 +25,7 @@ add_library (leechcraft-monocle-util SHARED
 	util/monocle/textdocumentadapter.cpp
 	util/monocle/textdocumentformatconfig.cpp
 	util/monocle/tocbuilder.cpp
+	util/monocle/types.cpp
 	)
 FindQtLibs (leechcraft-monocle-util Widgets Xml)
 set_property (TARGET leechcraft-monocle-util PROPERTY SOVERSION ${LC_SOVERSION})

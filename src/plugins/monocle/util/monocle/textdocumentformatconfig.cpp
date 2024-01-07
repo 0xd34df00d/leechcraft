@@ -128,14 +128,14 @@ namespace LC::Monocle
 		}
 	}
 
-	BlockFormat TextDocumentFormatConfig::GetBlockFormat (QStringView tagName, QStringView klass) const
+	BlockFormat TextDocumentFormatConfig::GetBlockFormat (const StylingContext& ctx) const
 	{
-		return WithClasses (klass.split (' '), GetDefaultTagBlockFormat (tagName));
+		return WithClasses (ctx.Classes_, GetDefaultTagBlockFormat (ctx.Tag_));
 	}
 
-	std::optional<CharFormat> TextDocumentFormatConfig::GetCharFormat (QStringView tagName, QStringView klass) const
+	std::optional<CharFormat> TextDocumentFormatConfig::GetCharFormat (const StylingContext& ctx) const
 	{
-		return WithClasses (klass.split (' '), GetDefaultTagCharFormat (tagName));
+		return WithClasses (ctx.Classes_, GetDefaultTagCharFormat (ctx.Tag_));
 	}
 
 	BlockFormat TextDocumentFormatConfig::GetDefaultTagBlockFormat (QStringView tagName) const

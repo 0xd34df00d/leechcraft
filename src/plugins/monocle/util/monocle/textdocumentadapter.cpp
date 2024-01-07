@@ -227,7 +227,7 @@ namespace LC::Monocle
 		Doc_ = std::make_unique<QTextDocument> ();
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 		Util::Timer timer;
-		auto docStructure = Html2Doc (*Doc_, info.BodyElem_, *this);
+		auto docStructure = Html2Doc (*Doc_, info.BodyElem_, info.Styler_, *this);
 		timer.Stamp ("html2doc");
 
 		TOC_ = std::move (docStructure.TOC_);

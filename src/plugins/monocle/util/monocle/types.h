@@ -10,7 +10,6 @@
 
 #include <QImage>
 #include <QPair>
-#include <QStack>
 #include <QString>
 #include <QTextCharFormat>
 #include <QVector>
@@ -78,6 +77,14 @@ namespace LC::Monocle
 
 		bool IsEmpty () const;
 	};
+
+	struct StylingContext
+	{
+		QStringView Tag_;
+		QList<QStringView> Classes_;
+	};
+
+	using CustomStyler_f = std::function<std::pair<BlockFormat, CharFormat> (const StylingContext&)>;
 }
 
 template<>

@@ -69,6 +69,8 @@ namespace LC::Monocle
 			QDomElement BodyElem_;
 			ImagesList_t Images_;
 			QString CoverId_ = {};
+
+			CustomStyler_f Styler_ = {};
 		};
 
 		void SetDocument (const HtmlDocument&);

@@ -55,15 +55,20 @@ namespace LC::Monocle
 			QTextFrame& BodyFrame_;
 			QTextCursor Cursor_;
 
+			CustomStyler_f CustomStyler_;
+
 			QTextCharFormat CharFormat_;
 
 			TocBuilder TocBuilder_;
 			LinksBuilder LinksBuilder_;
+
+			StylingContext StylingCtx_;
 		public:
-			explicit Converter (QTextDocument& doc, IDocument& monocleDoc)
+			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, IDocument& monocleDoc)
 			: Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
 			, Cursor_ { &BodyFrame_ }
+			, CustomStyler_ { styler }
 			, TocBuilder_ { Cursor_, monocleDoc }
 			, LinksBuilder_ { Cursor_ }
 			{
@@ -90,8 +95,12 @@ namespace LC::Monocle
 		private:
 			void AppendElem (const QDomElement& elem)
 			{
+				StackKeeper stylingCtxKeeper { StylingCtx_ };
+				const auto& klass = elem.attribute ("class"_qs);
+				stylingCtxKeeper.Set ({ elem.tagName (), QStringView { klass }.split (' ') });
+
 				StackKeeper charKeeper { CharFormat_ };
-				if (auto maybeCharFmt = GetElemCharFormat (elem))
+				if (auto maybeCharFmt = GetCharFormat ())
 					charKeeper.Set (*std::move (maybeCharFmt));
 
 				StackKeeper cursorKeeper { Cursor_ };
@@ -99,7 +108,7 @@ namespace LC::Monocle
 				if (IsHierBlockElem (elem.tagName ()))
 				{
 					const auto curFrame = Cursor_.currentFrame ();
-					const auto [frameFmt, blockFmt] = GetElemFrameBlockFormat (elem);
+					const auto [frameFmt, blockFmt] = GetFrameBlockFormat ();
 					Cursor_.insertFrame (frameFmt);
 					Cursor_.setBlockFormat (blockFmt);
 					Cursor_.setBlockCharFormat (CharFormat_);
@@ -108,7 +117,7 @@ namespace LC::Monocle
 				}
 				else if (IsNonHierBlockElem (elem.tagName ()))
 				{
-					const auto& blockFmt = GetElemBlockFormat (elem);
+					const auto& blockFmt = GetBlockFormat ();
 					if (!Cursor_.block ().text ().isEmpty ())
 						Cursor_.insertBlock (blockFmt, CharFormat_);
 					else
@@ -190,9 +199,11 @@ namespace LC::Monocle
 				set (blockFmt, &QTextBlockFormat::setBackground, blockCfg.Background_);
 			}
 
-			std::pair<QTextFrameFormat, QTextBlockFormat> GetElemFrameBlockFormat (const QDomElement& elem)
+			std::pair<QTextFrameFormat, QTextBlockFormat> GetFrameBlockFormat ()
 			{
-				const auto& blockCfg = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
+				auto blockCfg = Config_.GetBlockFormat (StylingCtx_);
+				if (CustomStyler_)
+					blockCfg += CustomStyler_ (StylingCtx_).first;
 
 				QTextFrameFormat frameFmt;
 				QTextBlockFormat blockFmt;
@@ -200,20 +211,27 @@ namespace LC::Monocle
 				return { frameFmt, blockFmt };
 			}
 
-			QTextBlockFormat GetElemBlockFormat (const QDomElement& elem)
+			QTextBlockFormat GetBlockFormat ()
 			{
-				const auto& blockCfg = Config_.GetBlockFormat (elem.tagName (), elem.attribute ("class"_qs));
+				auto blockCfg = Config_.GetBlockFormat (StylingCtx_);
+				if (CustomStyler_)
+					blockCfg += CustomStyler_ (StylingCtx_).first;
 
 				QTextBlockFormat blockFmt;
 				SetBlockConfig (blockFmt, blockFmt, blockCfg);
 				return blockFmt;
 			}
 
-			std::optional<QTextCharFormat> GetElemCharFormat (const QDomElement& elem)
+			std::optional<QTextCharFormat> GetCharFormat ()
 			{
-				const auto& charCfg = Config_.GetCharFormat (elem.tagName (), elem.attribute ("class"_qs));
-				if (!charCfg)
+				auto charCfg = Config_.GetCharFormat (StylingCtx_);
+				const auto& custom = CustomStyler_ ? CustomStyler_ (StylingCtx_).second : CharFormat {};
+				if (!charCfg && custom.IsEmpty ())
 					return {};
+				else if (!charCfg)
+					charCfg.emplace (CharFormat {});
+
+				*charCfg += custom;
 
 				auto fmt = CharFormat_;
 				const auto set = [&fmt] (auto setter, const auto& maybeVal)
@@ -234,9 +252,12 @@ namespace LC::Monocle
 		};
 	}
 
-	DocStructure Html2Doc (QTextDocument& doc, const QDomElement& body, IDocument& monocleDoc)
+	DocStructure Html2Doc (QTextDocument& doc,
+			const QDomElement& body,
+			const CustomStyler_f& styler,
+			IDocument& monocleDoc)
 	{
-		Converter conv { doc, monocleDoc };
+		Converter conv { doc, styler, monocleDoc };
 		conv (body);
 		return { .TOC_ = conv.GetTOC (), .InternalLinks_ = conv.GetInternalLinks () };
 	}
