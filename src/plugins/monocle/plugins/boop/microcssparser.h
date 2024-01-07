@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <variant>
 #include <QHash>
 #include <QString>
 #include <QVector>
@@ -22,12 +23,44 @@ namespace LC::Monocle::Boop::MicroCSS
 
 	QDebug operator<< (QDebug, const Rule&);
 
+	struct AtSelector
+	{
+		QString Sel_;
+
+		bool operator== (const AtSelector&) const = default;
+	};
+
+	struct TagSelector
+	{
+		QString Sel_;
+
+		bool operator== (const TagSelector&) const = default;
+	};
+
+	struct ClassSelector
+	{
+		QString Sel_;
+
+		bool operator== (const ClassSelector&) const = default;
+	};
+
+	struct ComplexSelector
+	{
+		QString Sel_;
+
+		bool operator== (const ComplexSelector&) const = default;
+	};
+
+	using Selector = std::variant<AtSelector, TagSelector, ClassSelector, ComplexSelector>;
+
+	size_t qHash (const Selector&);
+
 	struct Stylesheet
 	{
-		QHash<QString, QVector<Rule>> Selectors_;
+		QHash<Selector, QVector<Rule>> Selectors_;
 
 		Stylesheet& operator+= (const Stylesheet&);
 	};
 
-	Stylesheet Parse (QStringView str, const std::function<bool (QString)>& selectorFilter);
+	Stylesheet Parse (QStringView str, const std::function<bool (const Selector&)>& selectorFilter);
 }

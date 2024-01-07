@@ -7,9 +7,11 @@
  **********************************************************************/
 
 #include "microcssparser.h"
+#include <algorithm>
 #include <deque>
 #include <QDebug>
 #include <QRegularExpression>
+#include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 
 namespace LC::Monocle::Boop::MicroCSS
@@ -135,9 +137,29 @@ namespace LC::Monocle::Boop::MicroCSS
 			}
 			return prevIgnored;
 		}
+
+		QVector<Selector> ParseSelectors (const QString& rawStr)
+		{
+			QVector<Selector> result;
+			result.reserve (rawStr.count (','));
+
+			for (const auto& sub : rawStr.splitRef (',', Qt::SkipEmptyParts))
+			{
+				if (sub.contains (' '))
+					result << ComplexSelector { sub.toString () };
+				else if (sub.startsWith ('@'))
+					result << AtSelector { sub.mid (1).toString () };
+				else if (sub.startsWith ('.'))
+					result << ClassSelector { sub.mid (1).toString () };
+				else
+					result << TagSelector { sub.toString () };
+			}
+
+			return result;
+		}
 	}
 
-	Stylesheet Parse (QStringView text, const std::function<bool (QString)>& selectorFilter)
+	Stylesheet Parse (QStringView text, const std::function<bool (const Selector&)>& selectorFilter)
 	{
 		Stylesheet result;
 
@@ -155,18 +177,25 @@ namespace LC::Monocle::Boop::MicroCSS
 			if (blockEnd == chunks.end ())
 				return result;
 
-			const auto& selector = *maybeSelector;
-			if (selectorFilter (selector))
+			const auto& selectors = ParseSelectors (*maybeSelector);
+			if (std::any_of (selectors.begin (), selectors.end (), selectorFilter))
 			{
 				const auto& block = TryParseSelectorBlock (blockStart, blockEnd);
-				for (const auto& sub : selector.splitRef (',', Qt::SkipEmptyParts))
-					result.Selectors_ [sub.trimmed ().toString ()] += block;
+				for (const auto& selector : selectors)
+					result.Selectors_ [selector] += block;
 			}
 
 			pos = blockEnd + 1;
 		}
 
 		return result;
+	}
+
+	size_t qHash (const Selector& sel)
+	{
+		const auto& selStr = Util::Visit (sel,
+				[] (const auto& item) -> decltype (auto) { return item.Sel_; });
+		return qHash (QPair<size_t, const QString&> { sel.index (), selStr });
 	}
 
 	Stylesheet& Stylesheet::operator+= (const Stylesheet& other)
