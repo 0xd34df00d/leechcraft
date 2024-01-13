@@ -19,62 +19,12 @@
 #include "document.h"
 #include "microcsshandler.h"
 #include "microcssparser.h"
+#include "util.h"
 
 namespace LC::Monocle::Boop
 {
 	namespace
 	{
-		struct InvalidEpub final : std::exception
-		{
-			QString Error_;
-
-			InvalidEpub (QString error)
-			: Error_ { std::move (error) }
-			{
-			}
-
-			~InvalidEpub () override = default;
-
-			InvalidEpub (const InvalidEpub&) = delete;
-			InvalidEpub (InvalidEpub&&) = delete;
-			InvalidEpub& operator= (const InvalidEpub&) = delete;
-			InvalidEpub& operator= (InvalidEpub&&) = delete;
-		};
-
-		auto ParseXml (auto&& xmlable, const auto& context)
-		{
-			QDomDocument doc;
-			QString errorMsg;
-			if (!doc.setContent (xmlable, false, &errorMsg))
-				throw InvalidEpub { "unable to parse xml " + context };
-			return doc;
-		}
-
-		auto GetXml (const QString& epubFile, const QString& filename)
-		{
-			QuaZipFile file { epubFile, filename, QuaZip::csInsensitive };
-			if (!file.open (QIODevice::ReadOnly))
-				throw InvalidEpub { "unable to open " + filename + ": " + file.errorString () };
-
-			return ParseXml (&file, filename);
-		}
-
-		auto GetElem (const QDomElement& parent, const QString& tag)
-		{
-			const auto& result = parent.firstChildElement (tag);
-			if (result.isNull ())
-				throw InvalidEpub { tag + " is empty" };
-			return result;
-		}
-
-		auto GetAttr (const QDomElement& elem, const QString& name)
-		{
-			const auto& attrValue = elem.attribute (name);
-			if (attrValue.isEmpty ())
-				throw InvalidEpub { name + " is empty" };
-			return attrValue;
-		}
-
 		QString FindOpfFile (const QString& epubFile)
 		{
 			const auto& doc = GetXml (epubFile, "META-INF/container.xml"_qs);

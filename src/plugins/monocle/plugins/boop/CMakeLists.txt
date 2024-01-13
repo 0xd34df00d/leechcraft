@@ -12,6 +12,7 @@ LC_DEFINE_PLUGIN (
 		epubloader.cpp
 		microcsshandler.cpp
 		microcssparser.cpp
+		util.cpp
 	QT_COMPONENTS Gui Xml
 	LINK_LIBRARIES PkgConfig::QuaZip leechcraft-monocle-util
 	)
