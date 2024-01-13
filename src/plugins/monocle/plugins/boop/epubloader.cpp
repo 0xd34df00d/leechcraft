@@ -123,7 +123,7 @@ namespace LC::Monocle::Boop
 			return result;
 		}
 
-		bool AcceptSelector (const MicroCSS::Selector& selector)
+		bool IsCssSelectorRelevant (const MicroCSS::Selector& selector)
 		{
 			return Util::Visit (selector,
 					[] (const MicroCSS::AtSelector&) { return false; },
@@ -137,7 +137,7 @@ namespace LC::Monocle::Boop
 
 			const auto& allStyles = root.elementsByTagName ("style"_qs);
 			for (int i = 0; i < allStyles.size (); ++i)
-				result += MicroCSS::Parse (allStyles.at (i).toElement ().text (), &AcceptSelector);
+				result += MicroCSS::Parse (allStyles.at (i).toElement ().text (), &IsCssSelectorRelevant);
 
 			return result;
 		}
@@ -147,8 +147,9 @@ namespace LC::Monocle::Boop
 			const auto& doc = GetXml (epubFile, subpath);
 			const auto& root = doc.documentElement ();
 
-			ResolveLinks ("img"_qs, "src"_qs, root, { subpath });
-			ResolveLinks ("link"_qs, "href"_qs, root, { subpath });
+			const QUrl chapterBaseUrl { subpath };
+			ResolveLinks ("img"_qs, "src"_qs, root, chapterBaseUrl);
+			ResolveLinks ("link"_qs, "href"_qs, root, chapterBaseUrl);
 
 			return { ExtractChapterBody (root), GetExternalStylesheets (root), GetInternalStylesheet (root) };
 		}
@@ -181,7 +182,7 @@ namespace LC::Monocle::Boop
 					continue;
 				}
 
-				result += MicroCSS::Parse (QString::fromUtf8 (file.readAll ()), &AcceptSelector);
+				result += MicroCSS::Parse (QString::fromUtf8 (file.readAll ()), &IsCssSelectorRelevant);
 			}
 			return result;
 		}
