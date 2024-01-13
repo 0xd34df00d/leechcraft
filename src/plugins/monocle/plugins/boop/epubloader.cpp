@@ -146,6 +146,38 @@ namespace LC::Monocle::Boop
 			return result;
 		}
 
+		QString FixupAnchor (QString anchor)
+		{
+			return anchor.replace ('#', '_').replace ('/', '_');
+		}
+
+		void FixupLinkHrefAnchors (const QDomElement &root)
+		{
+			const auto& allLinks = root.elementsByTagName ("a"_qs);
+			for (int i = 0; i < allLinks.size (); ++i)
+			{
+				auto link = allLinks.at (i).toElement ();
+				auto href = link.attribute ("href"_qs);
+				if (href.isEmpty () || !QUrl::fromEncoded (href.toUtf8 ()).isRelative ())
+					continue;
+
+				link.setAttribute ("href"_qs, FixupAnchor (std::move (href)).prepend ('#'));
+			}
+		}
+
+		void FixupIdAnchors (QDomElement elem, const QString& subpath)
+		{
+			if (const auto& id = elem.attribute ("id"_qs);
+				!id.isEmpty ())
+				elem.setAttribute ("id"_qs, FixupAnchor (subpath + '#' + id));
+
+			const auto& children = elem.childNodes ();
+			for (int i = 0; i < children.size (); ++i)
+				if (const auto& child = children.at (i);
+					child.isElement ())
+					FixupIdAnchors (child.toElement (), subpath);
+		}
+
 		LoadedChapters ExtractChapter (const QString& epubFile, const QString& subpath)
 		{
 			const auto& doc = GetXml (epubFile, subpath);
@@ -154,6 +186,10 @@ namespace LC::Monocle::Boop
 			const QUrl chapterBaseUrl { subpath };
 			ResolveLinks ("img"_qs, "src"_qs, root, chapterBaseUrl);
 			ResolveLinks ("link"_qs, "href"_qs, root, chapterBaseUrl);
+
+			ResolveLinks ("a"_qs, "href"_qs, root, chapterBaseUrl);
+			FixupLinkHrefAnchors (root);
+			FixupIdAnchors (root, subpath);
 
 			return { ExtractChapterBody (root), GetExternalStylesheets (root), GetInternalStylesheet (root) };
 		}
