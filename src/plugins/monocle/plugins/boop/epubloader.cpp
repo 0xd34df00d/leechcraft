@@ -74,7 +74,11 @@ namespace LC::Monocle::Boop
 				auto image = images.at (i).toElement ();
 				if (const auto& link = image.attribute (linkAttr);
 					!link.isEmpty ())
-					image.setAttribute (linkAttr, baseUrl.resolved (QUrl { link }).toString ());
+				{
+					const auto linkUrl = QUrl::fromEncoded (link.toLatin1 ());
+					if (linkUrl.isRelative ())
+						image.setAttribute (linkAttr, baseUrl.resolved (linkUrl).toString ());
+				}
 			}
 		}
 
