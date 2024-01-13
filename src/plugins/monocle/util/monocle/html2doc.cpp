@@ -8,6 +8,7 @@
 
 #include "html2doc.h"
 #include <QDomElement>
+#include <QRegularExpression>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextFrame>
@@ -45,6 +46,11 @@ namespace LC::Monocle
 				u"h6"_qsv,
 			};
 			return names.contains (tagName);
+		}
+
+		QString NormalizeSpaces (QString&& str)
+		{
+			return std::move (str).replace (QRegularExpression { "\\s+" }, " "_ql);
 		}
 
 		class Converter
@@ -140,7 +146,7 @@ namespace LC::Monocle
 				if (text.isEmpty ())
 					return;
 
-				if (auto simplified = std::move (text).simplified ();
+				if (auto simplified = NormalizeSpaces (std::move (text));
 					!simplified.isEmpty ())
 					Cursor_.insertText (simplified, CharFormat_);
 				else
