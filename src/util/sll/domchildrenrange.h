@@ -45,6 +45,11 @@ namespace LC::Util
 	{
 		struct Iterator
 		{
+			using difference_type = ptrdiff_t;
+			using value_type = QDomElement;
+			using reference = QDomElement&;
+			using iterator_category = std::forward_iterator_tag;
+
 			QDomElement Elem_;
 			const QString Tag_;
 
