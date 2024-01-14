@@ -171,11 +171,8 @@ namespace LC::Monocle::Boop
 				!id.isEmpty ())
 				elem.setAttribute ("id"_qs, FixupAnchor (subpath + '#' + id));
 
-			const auto& children = elem.childNodes ();
-			for (int i = 0; i < children.size (); ++i)
-				if (const auto& child = children.at (i);
-					child.isElement ())
-					FixupIdAnchors (child.toElement (), subpath);
+			for (const auto& child : Util::DomChildren (elem, {}))
+				FixupIdAnchors (child.toElement (), subpath);
 		}
 
 		LoadedChapters ExtractChapter (const QString& epubFile, const QString& subpath)
