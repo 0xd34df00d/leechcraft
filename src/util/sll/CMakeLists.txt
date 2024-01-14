@@ -1,6 +1,7 @@
 set (SLL_SRCS
 	buildtagstree.cpp
 	channeldevice.cpp
+	domchildrenrange.cpp
 	queuemanager.cpp
 	regexp.cpp
 	slotclosure.cpp

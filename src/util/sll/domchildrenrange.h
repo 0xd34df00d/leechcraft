@@ -75,14 +75,5 @@ namespace LC::Util
 		return Range { { firstChild, tag } };
 	}
 
-	inline auto DomDescendants (const QDomElement& parent, const QString& tag)
-	{
-		const auto& allElems = parent.elementsByTagName (tag);
-
-		QVector<QDomElement> result;
-		result.reserve (allElems.size ());
-		for (int i = 0; i < allElems.size (); ++i)
-			result << allElems.at (i).toElement ();
-		return result;
-	}
+	QVector<QDomElement> DomDescendants (const QDomElement& parent, const QString& tag);
 }
