@@ -36,8 +36,10 @@ namespace LC::Util
 	 * the element becomes null.
 	 *
 	 * @param parent The parent element whose children should be iterated over.
-	 * @param tag The tag name of the child nodes (or an empty string for .
+	 * @param tag The tag name of the child nodes (or an empty string for all children).
 	 * @return The range object representing the collection of the child nodes.
+	 *
+	 * @sa DomDescendants()
 	 */
 	inline auto DomChildren (const QDomNode& parent, const QString& tag)
 	{
@@ -75,5 +77,17 @@ namespace LC::Util
 		return Range { { firstChild, tag } };
 	}
 
+	/** @brief Creates a vector with all descendants of `parent` named `tag`.
+	 *
+	 * The returned vector is _not_ a live DOM node list, so modifying its elements
+	 * does not modify the vector. Thus it is also faster to iterate in case of
+	 * modifications.
+	 *
+	 * @param parent The parent element whose children should be iterated over.
+	 * @param tag The name of the tag that the returned descendants should have.
+	 * @return The vector with all descendants named `tag`.
+	 *
+	 * @sa DomChildren()
+	 */
 	QVector<QDomElement> DomDescendants (const QDomElement& parent, const QString& tag);
 }
