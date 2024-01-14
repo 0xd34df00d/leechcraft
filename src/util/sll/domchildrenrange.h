@@ -11,9 +11,7 @@
 #include <QDomElement>
 #include <QString>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Creates a range iterating over direct children named \em tag.
 	 *
@@ -76,5 +74,15 @@ namespace Util
 		auto firstChild = parent.firstChildElement (tag);
 		return Range { { firstChild, tag } };
 	}
-}
+
+	inline auto DomDescendants (const QDomElement& parent, const QString& tag)
+	{
+		const auto& allElems = parent.elementsByTagName (tag);
+
+		QVector<QDomElement> result;
+		result.reserve (allElems.size ());
+		for (int i = 0; i < allElems.size (); ++i)
+			result << allElems.at (i).toElement ();
+		return result;
+	}
 }
