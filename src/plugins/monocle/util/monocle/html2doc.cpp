@@ -50,7 +50,7 @@ namespace LC::Monocle
 
 		QString NormalizeSpaces (QString&& str)
 		{
-			return std::move (str).replace (QRegularExpression { "\\s+" }, " "_ql);
+			return std::move (str).replace (QRegularExpression { "\\s+"_qs }, " "_ql);
 		}
 
 		class Converter
