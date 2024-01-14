@@ -10,6 +10,7 @@
 
 #include <QDomElement>
 #include <QString>
+#include "sllconfig.h"
 
 namespace LC::Util
 {
@@ -94,5 +95,5 @@ namespace LC::Util
 	 *
 	 * @sa DomChildren()
 	 */
-	QVector<QDomElement> DomDescendants (const QDomElement& parent, const QString& tag);
+	UTIL_SLL_API QVector<QDomElement> DomDescendants (const QDomElement& parent, const QString& tag);
 }
