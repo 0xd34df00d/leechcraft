@@ -68,10 +68,7 @@ namespace LC::Monocle::Boop
 
 		void ResolveLinks (const QString& tagName, const QString& linkAttr, const QDomElement& root, const QUrl& baseUrl)
 		{
-			auto images = root.elementsByTagName (tagName);
-			for (int i = 0; i < images.size (); ++i)
-			{
-				auto image = images.at (i).toElement ();
+			for (auto image : Util::DomDescendants (root, tagName))
 				if (const auto& link = image.attribute (linkAttr);
 					!link.isEmpty ())
 				{
@@ -79,7 +76,6 @@ namespace LC::Monocle::Boop
 					if (linkUrl.isRelative ())
 						image.setAttribute (linkAttr, baseUrl.resolved (linkUrl).toString ());
 				}
-			}
 		}
 
 		using Stylesheet = MicroCSS::Stylesheet;
@@ -114,16 +110,10 @@ namespace LC::Monocle::Boop
 			static const auto cssMime = "text/css"_qs;
 
 			QSet<QString> result;
-			const auto& allLinks = root.elementsByTagName ("link"_qs);
-			for (int i = 0; i < allLinks.size (); ++i)
-			{
-				const auto& link = allLinks.at (i).toElement ();
-				if (link.attribute ("rel"_qs) != "stylesheet"_ql ||
-					link.attribute ("type"_qs, cssMime) != cssMime)
-					continue;
-
-				result << link.attribute ("href"_qs);
-			}
+			for (const auto& link : Util::DomDescendants (root, "link"_qs))
+				if (link.attribute ("rel"_qs) == "stylesheet"_ql ||
+					link.attribute ("type"_qs, cssMime) == cssMime)
+					result << link.attribute ("href"_qs);
 			return result;
 		}
 
@@ -138,11 +128,8 @@ namespace LC::Monocle::Boop
 		Stylesheet GetInternalStylesheet (const QDomElement& root)
 		{
 			Stylesheet result;
-
-			const auto& allStyles = root.elementsByTagName ("style"_qs);
-			for (int i = 0; i < allStyles.size (); ++i)
-				result += MicroCSS::Parse (allStyles.at (i).toElement ().text (), &IsCssSelectorRelevant);
-
+			for (const auto& style : Util::DomDescendants (root, "style"_qs))
+				result += MicroCSS::Parse (style.text (), &IsCssSelectorRelevant);
 			return result;
 		}
 
@@ -153,10 +140,8 @@ namespace LC::Monocle::Boop
 
 		void FixupLinkHrefAnchors (const QDomElement &root)
 		{
-			const auto& allLinks = root.elementsByTagName ("a"_qs);
-			for (int i = 0; i < allLinks.size (); ++i)
+			for (auto link : Util::DomDescendants (root, "a"_qs))
 			{
-				auto link = allLinks.at (i).toElement ();
 				auto href = link.attribute ("href"_qs);
 				if (href.isEmpty () || !QUrl::fromEncoded (href.toUtf8 ()).isRelative ())
 					continue;
