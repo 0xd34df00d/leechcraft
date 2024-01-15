@@ -166,7 +166,7 @@ namespace LC::Monocle
 			void HandleChildren (const QDomElement& elem)
 			{
 				const auto& children = elem.childNodes ();
-				for (int i = 0; i < children.size (); ++i)
+				for (int i = 0, size = children.size (); i < size; ++i)
 				{
 					const auto& child = children.at (i);
 					switch (child.nodeType ())
@@ -235,7 +235,7 @@ namespace LC::Monocle
 				const auto& custom = CustomStyler_ ? CustomStyler_ (StylingCtx_).second : CharFormat {};
 				if (!charCfg && custom.IsEmpty ())
 					return {};
-				else if (!charCfg)
+				if (!charCfg)
 					charCfg.emplace (CharFormat {});
 
 				*charCfg += custom;
