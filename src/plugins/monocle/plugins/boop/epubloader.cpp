@@ -17,6 +17,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include "document.h"
+#include "internallinks.h"
 #include "microcsshandler.h"
 #include "microcssparser.h"
 #include "util.h"
@@ -66,18 +67,6 @@ namespace LC::Monocle::Boop
 			return manifest;
 		}
 
-		void ResolveLinks (const QString& tagName, const QString& linkAttr, const QDomElement& root, const QUrl& baseUrl)
-		{
-			for (auto image : Util::DomDescendants (root, tagName))
-				if (const auto& link = image.attribute (linkAttr);
-					!link.isEmpty ())
-				{
-					const auto linkUrl = QUrl::fromEncoded (link.toLatin1 ());
-					if (linkUrl.isRelative ())
-						image.setAttribute (linkAttr, baseUrl.resolved (linkUrl).toString ());
-				}
-		}
-
 		using Stylesheet = MicroCSS::Stylesheet;
 
 		QVector<QDomElement> ExtractChapterBody (const QDomElement& root)
@@ -120,44 +109,6 @@ namespace LC::Monocle::Boop
 			for (const auto& style : Util::DomDescendants (root, "style"_qs))
 				result += MicroCSS::Parse (style.text (), &IsCssSelectorRelevant);
 			return result;
-		}
-
-		QString FixupAnchor (QString anchor)
-		{
-			return anchor.replace ('#', '_').replace ('/', '_');
-		}
-
-		void FixupLinkHrefAnchors (const QDomElement &root)
-		{
-			for (auto link : Util::DomDescendants (root, "a"_qs))
-			{
-				auto href = link.attribute ("href"_qs);
-				if (href.isEmpty () || !QUrl::fromEncoded (href.toUtf8 ()).isRelative ())
-					continue;
-
-				link.setAttribute ("href"_qs, FixupAnchor (std::move (href)).prepend ('#'));
-			}
-		}
-
-		void FixupIdAnchors (QDomElement elem, const QString& subpath)
-		{
-			if (const auto& id = elem.attribute ("id"_qs);
-				!id.isEmpty ())
-				elem.setAttribute ("id"_qs, FixupAnchor (subpath + '#' + id));
-
-			for (const auto& child : Util::DomChildren (elem, {}))
-				FixupIdAnchors (child.toElement (), subpath);
-		}
-
-		void FixLinks (const QDomElement& root, const QString& subpath)
-		{
-			const QUrl chapterBaseUrl { subpath };
-			ResolveLinks ("img"_qs, "src"_qs, root, chapterBaseUrl);
-			ResolveLinks ("link"_qs, "href"_qs, root, chapterBaseUrl);
-
-			ResolveLinks ("a"_qs, "href"_qs, root, chapterBaseUrl);
-			FixupLinkHrefAnchors (root);
-			FixupIdAnchors (root, subpath);
 		}
 
 		LoadedChapters ExtractChapter (const QString& epubFile, const QString& subpath)

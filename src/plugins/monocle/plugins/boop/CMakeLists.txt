@@ -10,6 +10,7 @@ LC_DEFINE_PLUGIN (
 		boop.cpp
 		document.cpp
 		epubloader.cpp
+		internallinks.cpp
 		microcsshandler.cpp
 		microcssparser.cpp
 		util.cpp
