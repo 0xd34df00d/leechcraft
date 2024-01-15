@@ -21,6 +21,7 @@
 #include "manifest.h"
 #include "microcsshandler.h"
 #include "microcssparser.h"
+#include "toc.h"
 #include "util.h"
 
 namespace LC::Monocle::Boop
@@ -178,7 +179,9 @@ namespace LC::Monocle::Boop
 		try
 		{
 			const auto& manifest = ParseManifest (epubFile);
-			const auto& [body, stylesheet] = LoadSpine (epubFile, manifest);
+			const auto& toc = LoadTocMap (epubFile, manifest);
+			auto [body, stylesheet] = LoadSpine (epubFile, manifest);
+			MarkTocTargets (body, toc);
 
 			const auto& images = LoadImages (epubFile, manifest);
 

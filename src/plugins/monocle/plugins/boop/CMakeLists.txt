@@ -14,6 +14,7 @@ LC_DEFINE_PLUGIN (
 		manifest.cpp
 		microcsshandler.cpp
 		microcssparser.cpp
+		toc.cpp
 		util.cpp
 	QT_COMPONENTS Gui Xml
 	LINK_LIBRARIES PkgConfig::QuaZip leechcraft-monocle-util
