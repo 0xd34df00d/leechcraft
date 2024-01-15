@@ -116,9 +116,14 @@ namespace LC::Monocle
 				{
 					const auto curFrame = Cursor_.currentFrame ();
 					const auto [frameFmt, blockFmt] = GetFrameBlockFormat ();
-					Cursor_.insertFrame (frameFmt);
-					Cursor_.setBlockFormat (blockFmt);
-					Cursor_.setBlockCharFormat (CharFormat_);
+					if (frameFmt != Cursor_.currentFrame ()->frameFormat ())
+					{
+						Cursor_.insertFrame (frameFmt);
+						Cursor_.setBlockFormat (blockFmt);
+						Cursor_.setBlockCharFormat (CharFormat_);
+					}
+					else
+						Cursor_.insertBlock (blockFmt, CharFormat_);
 
 					cursorKeeper.Save (curFrame->lastCursorPosition ());
 				}
