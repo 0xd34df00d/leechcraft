@@ -149,11 +149,8 @@ namespace LC::Monocle::Boop
 				FixupIdAnchors (child.toElement (), subpath);
 		}
 
-		LoadedChapters ExtractChapter (const QString& epubFile, const QString& subpath)
+		void FixLinks (const QDomElement& root, const QString& subpath)
 		{
-			const auto& doc = GetXml (epubFile, subpath);
-			const auto& root = doc.documentElement ();
-
 			const QUrl chapterBaseUrl { subpath };
 			ResolveLinks ("img"_qs, "src"_qs, root, chapterBaseUrl);
 			ResolveLinks ("link"_qs, "href"_qs, root, chapterBaseUrl);
@@ -161,6 +158,14 @@ namespace LC::Monocle::Boop
 			ResolveLinks ("a"_qs, "href"_qs, root, chapterBaseUrl);
 			FixupLinkHrefAnchors (root);
 			FixupIdAnchors (root, subpath);
+		}
+
+		LoadedChapters ExtractChapter (const QString& epubFile, const QString& subpath)
+		{
+			const auto& doc = GetXml (epubFile, subpath);
+			const auto& root = doc.documentElement ();
+
+			FixLinks (root, subpath);
 
 			return { ExtractChapterBody (root), GetExternalStylesheets (root), GetInternalStylesheet (root) };
 		}
