@@ -83,19 +83,8 @@ namespace LC::Monocle::Boop
 		QVector<QDomElement> ExtractChapterBody (const QDomElement& root)
 		{
 			const auto& body = GetElem (root, "body"_qs);
-
-			const auto& bodyChildren = body.childNodes ();
-			const auto childrenCount = bodyChildren.size ();
-
-			QVector<QDomElement> result;
-			result.reserve (childrenCount);
-			for (int i = 0; i < childrenCount; ++i)
-			{
-				const auto& node = bodyChildren.at (i);
-				if (node.isElement ())
-					result << node.toElement ();
-			}
-			return result;
+			const auto& childrenRange = Util::DomChildren (body, {});
+			return { childrenRange.begin (), childrenRange.end () };
 		}
 
 		struct LoadedChapters
