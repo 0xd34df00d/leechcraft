@@ -11,6 +11,7 @@ LC_DEFINE_PLUGIN (
 		document.cpp
 		epubloader.cpp
 		internallinks.cpp
+		manifest.cpp
 		microcsshandler.cpp
 		microcssparser.cpp
 		util.cpp
