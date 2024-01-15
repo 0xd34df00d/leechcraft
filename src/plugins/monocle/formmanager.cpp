@@ -23,14 +23,6 @@
 #include "interfaces/monocle/iformfield.h"
 #include "pagegraphicsitem.h"
 
-uint qHash (const QList<int>& list)
-{
-	QByteArray arr;
-	for (auto n : list)
-		arr += QByteArray::number (n) + " ";
-	return qHash (arr);
-}
-
 namespace LC
 {
 namespace Monocle
