@@ -52,9 +52,9 @@ namespace Monocle
 		QPointF PressedPos_;
 	public:
 		template<typename... TArgs>
-		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, TArgs... args)
+		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, TArgs&&... args)
 		: AnnBaseItem { ann }
-		, T { args... }
+		, T { std::forward<TArgs> (args)... }
 		{
 		}
 	protected:
