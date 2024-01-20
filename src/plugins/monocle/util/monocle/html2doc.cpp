@@ -90,7 +90,7 @@ namespace LC::Monocle
 			TocBuilder TocBuilder_;
 			LinksBuilder LinksBuilder_;
 
-			StylingContext StylingCtx_;
+			StylingContext StylingCtx_ { {}, {}, nullptr };
 		public:
 			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
 			: CustomStyler_ { styler }
@@ -126,7 +126,7 @@ namespace LC::Monocle
 			{
 				StackKeeper stylingCtxKeeper { StylingCtx_ };
 				const auto& klass = elem.attribute ("class"_qs);
-				stylingCtxKeeper.Set ({ elem.tagName (), QStringView { klass }.split (' ') });
+				stylingCtxKeeper.Set ({ elem.tagName (), QStringView { klass }.split (' '), &CharFormat_ });
 
 				StackKeeper charKeeper { CharFormat_ };
 				if (auto maybeCharFmt = GetCharFormat ())

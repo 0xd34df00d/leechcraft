@@ -97,6 +97,8 @@ namespace LC::Monocle
 	{
 		QStringView Tag_;
 		QList<QStringView> Classes_;
+
+		const QTextCharFormat *CurCharFormat_;
 	};
 
 	struct Style
