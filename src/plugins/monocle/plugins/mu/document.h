@@ -50,7 +50,6 @@ namespace Mu
 		QList<ILink_ptr> GetPageLinks (int);
 		QUrl GetDocURL () const;
 	signals:
-		void navigateRequested (const QString& , const IDocument::Position&);
 		void printRequested (const QList<int>&);
 	};
 }

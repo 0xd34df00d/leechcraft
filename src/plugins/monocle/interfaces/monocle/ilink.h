@@ -12,10 +12,9 @@
 #include <QObject>
 #include <QRectF>
 #include <QMetaType>
+#include <QUrl>
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	/** @brief Describes various link types known to Monocle.
 	 *
@@ -30,9 +29,10 @@ namespace Monocle
 		 * The link may refer both the document it belongs to as well as
 		 * some other document.
 		 *
-		 * Links of this type should implement IPageLink as well.
+		 * The ILink::GetLinkAction() for `PageLink`s is supposed to return a
+		 * `NavigationAction`.
 		 *
-		 * @sa IPageLink
+		 * @sa NavigationAction
 		 */
 		PageLink,
 
@@ -49,11 +49,69 @@ namespace Monocle
 		OtherLink
 	};
 
+	/** @brief A link action that represents navigating inside the document.
+	 */
+	struct NavigationAction
+	{
+		/** The (zero-based) index of the page this link refers to.
+		 */
+		int PageNumber_;
+
+		/** The target rect of this link in the viewport.
+		 *
+		 * The returned rectangle is in relative coordinates, that is, with
+		 * x, y, width and height all belonging to the `[0, 1]` range.
+		 */
+		std::optional<QRectF> TargetArea_ {};
+
+		/** The new zoom value for the page.
+		 */
+		std::optional<double> Zoom_ {};
+
+		bool operator== (const NavigationAction&) const = default;
+		bool operator< (const NavigationAction& other) const
+		{
+			const auto toTuple = [] (const NavigationAction& act)
+			{
+				qreal x {};
+				qreal y {};
+				qreal w {};
+				qreal h {};
+				act.TargetArea_.value_or (QRectF {}).getRect (&x, &y, &w, &h);
+				return std::tie (act.PageNumber_, x, y, w, h);  // don't care about the zoom
+			};
+
+			return toTuple (*this) < toTuple (other);
+		}
+	};
+
+	/** @brief A link action that represents navigating to a different document.
+	 */
+	struct ExternalNavigationAction
+	{
+		/** The name of the document to open.
+		 */
+		QString TargetDocument_ {};
+
+		/** The navigation action within the new document.
+		 */
+		NavigationAction DocumentNavigation_;
+	};
+
+	struct UrlAction
+	{
+		QUrl Url_;
+	};
+
+	using CustomAction = std::function<void ()>;
+
+	struct NoAction {};
+
+	using LinkAction = std::variant<NoAction, NavigationAction, ExternalNavigationAction, UrlAction, CustomAction>;
+
 	/** @brief Base interface for links.
 	 *
 	 * Links should implement this interface.
-	 *
-	 * @sa IPageLink
 	 */
 	class ILink
 	{
@@ -80,12 +138,9 @@ namespace Monocle
 		 */
 		virtual QRectF GetArea () const = 0;
 
-		/** @brief Executes the link.
-		 *
-		 * This method is called to indicate that the user has chosen to
-		 * execute the action related to the link.
+		/** @brief Returns the link action.
 		 */
-		virtual void Execute () = 0;
+		virtual LinkAction GetLinkAction () const = 0;
 
 		/** @brief Returns the tooltip for the link.
 		 */
@@ -95,54 +150,6 @@ namespace Monocle
 		 }
 	};
 	typedef std::shared_ptr<ILink> ILink_ptr;
-
-	/** @brief Additional interface for page links.
-	 *
-	 * Links of type LinkType::PageLink should implement this interface
-	 * in addition to ILink.
-	 *
-	 * @sa ILink
-	 */
-	class IPageLink
-	{
-	public:
-		/** @brief Virtual destructor.
-		 */
-		virtual ~IPageLink () = default;
-
-		/** @brief The name of the document to open.
-		 *
-		 * If the link is relative to the current document, this method
-		 * returns an empty string.
-		 *
-		 * @return The name of the document to open, or empty string for
-		 * current document.
-		 */
-		virtual QString GetDocumentFilename () const = 0;
-
-		/** @brief Returns the index of the page this link refers to.
-		 *
-		 * @return The index of the page this link refers to.
-		 */
-		virtual int GetPageNumber () const = 0;
-
-		/** @brief Returns the target rect of this link in the viewport.
-		 *
-		 * The returned rectangle is in relative coordinates, that is, with
-		 * x, y, width and height all belonging to the `[0, 1]` range.
-		 *
-		 * @return The target rect of the link.
-		 */
-		virtual std::optional<QRectF> GetTargetArea () const = 0;
-
-		/** @brief Returns the new zoom value for the page.
-		 *
-		 * @return The new zoom value.
-		 */
-		virtual std::optional<double> GetNewZoom () const = 0;
-	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Monocle::ILink, "org.LeechCraft.Monocle.ILink/1.0")
-Q_DECLARE_INTERFACE (LC::Monocle::IPageLink, "org.LeechCraft.Monocle.IPageLink/1.0")

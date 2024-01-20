@@ -11,9 +11,7 @@
 #include <QMetaType>
 #include "ilink.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	struct TOCEntry;
 
@@ -25,13 +23,9 @@ namespace Monocle
 	 */
 	struct TOCEntry
 	{
-		/** @brief The link action corresponding to this entry.
-		 *
-		 * This link should be executed when the entry is activated.
-		 *
-		 * @sa ILink
+		/** @brief The navigation action corresponding to this entry.
 		 */
-		ILink_ptr Link_;
+		NavigationAction Navigation_;
 
 		/** @brief The human-readable name of the entry.
 		 */
@@ -63,7 +57,6 @@ namespace Monocle
 		 */
 		virtual TOCEntryLevel_t GetTOC () = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Monocle::IHaveTOC,

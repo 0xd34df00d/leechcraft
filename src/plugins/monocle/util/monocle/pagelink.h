@@ -15,8 +15,6 @@ class QTextDocument;
 
 namespace LC::Monocle
 {
-	class IDocument;
-
 	struct AreaInfo
 	{
 		int Page_;
@@ -24,12 +22,10 @@ namespace LC::Monocle
 	};
 
 	class PageLink : public ILink
-				   , public IPageLink
 	{
 	public:
 		struct LinkInfo
 		{
-			IDocument& MonocleDoc_;
 			const QTextDocument& TextDoc_;
 
 			Span Target_;
@@ -47,16 +43,14 @@ namespace LC::Monocle
 
 		LinkType GetLinkType () const override;
 		QRectF GetArea () const override;
-		void Execute () override;
+		LinkAction GetLinkAction () const override;
 		QString GetToolTip () const override;
 
-		QString GetDocumentFilename () const override;
-		int GetPageNumber () const override;
-		std::optional<QRectF> GetTargetArea () const override;
-		std::optional<double> GetNewZoom () const override;
+		static NavigationAction GetNavigationAction (const LinkInfo&);
 
 		int GetSourcePage () const;
 	private:
 		const AreaInfo& ComputeArea (Span, std::optional<AreaInfo>&) const;
+		NavigationAction ComputeNavAction () const;
 	};
 }

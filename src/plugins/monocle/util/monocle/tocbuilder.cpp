@@ -15,9 +15,8 @@
 
 namespace LC::Monocle
 {
-	TocBuilder::TocBuilder (const QTextCursor& cursor, IDocument& monocleDoc)
+	TocBuilder::TocBuilder (const QTextCursor& cursor)
 	: Cursor_ { cursor }
-	, MonocleDoc_ { monocleDoc }
 	{
 		CurrentSectionPath_.push (&Root_);
 	}
@@ -34,15 +33,12 @@ namespace LC::Monocle
 			return {};
 
 		const auto curPosition = Cursor_.position ();
-		auto link = std::make_shared<PageLink> (PageLink::LinkInfo
-				{
-					.MonocleDoc_ = MonocleDoc_,
-					.TextDoc_ = *Cursor_.document (),
-					.Target_ = Span { curPosition, curPosition },
-				});
-
 		auto& curLevel = CurrentSectionPath_.top ()->ChildLevel_;
-		curLevel.append ({ .Link_ = std::move (link), .Name_ = sectionTitle, .ChildLevel_ = {} });
+		const auto& navigation = PageLink::GetNavigationAction ({
+				.TextDoc_ = *Cursor_.document (),
+				.Target_ = Span { curPosition, curPosition },
+			});
+		curLevel.append ({ .Navigation_ = navigation, .Name_ = sectionTitle, .ChildLevel_ = {} });
 		CurrentSectionPath_.push (&curLevel.back ());
 
 		return Util::MakeScopeGuard ([this] { CurrentSectionPath_.pop (); });

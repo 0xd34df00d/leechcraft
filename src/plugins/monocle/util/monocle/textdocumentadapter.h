@@ -75,7 +75,6 @@ namespace LC::Monocle
 
 		void SetDocument (const HtmlDocument&);
 	signals:
-		void navigateRequested (const QString&, const IDocument::Position&) override;
 		void printRequested (const QList<int>&) override;
 	};
 }

@@ -8,26 +8,11 @@
 
 #pragma once
 
-#include <QObject>
-#include "interfaces/monocle/idocument.h"
+#include "interfaces/monocle/ilink.h"
 
-class QGraphicsView;
-class QGraphicsScene;
-
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
-	class PageGraphicsItem;
 
-	class LinksManager : public QObject
-	{
-		DocumentTab& DocTab_;
-	public:
-		LinksManager (DocumentTab&);
-
-		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
-	};
-}
+	void ExecuteLinkAction (const LinkAction&, DocumentTab&);
 }

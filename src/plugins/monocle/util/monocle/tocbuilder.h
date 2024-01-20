@@ -22,13 +22,12 @@ namespace LC::Monocle
 	class TocBuilder
 	{
 		const QTextCursor& Cursor_;
-		IDocument& MonocleDoc_;
 
 		TOCEntry Root_;
 
 		QStack<TOCEntry*> CurrentSectionPath_;
 	public:
-		explicit TocBuilder (const QTextCursor& cursor, IDocument& monocleDoc);
+		explicit TocBuilder (const QTextCursor& cursor);
 
 		TOCEntryLevel_t GetTOC () const;
 		[[nodiscard]] Util::DefaultScopeGuard HandleElem (const QDomElement&);

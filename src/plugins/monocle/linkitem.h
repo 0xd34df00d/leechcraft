@@ -15,13 +15,16 @@ namespace LC
 {
 namespace Monocle
 {
+	class DocumentTab;
+
 	class LinkItem : public QGraphicsRectItem
 	{
+		DocumentTab& DocTab_;
 		const ILink_ptr Link_;
 
 		QPointF PressedPos_;
 	public:
-		LinkItem (const ILink_ptr&, QGraphicsItem*);
+		LinkItem (const ILink_ptr&, QGraphicsItem*, DocumentTab&);
 	protected:
 		void mousePressEvent (QGraphicsSceneMouseEvent*);
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);

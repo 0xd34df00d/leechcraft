@@ -10,12 +10,11 @@
 
 #include <memory>
 #include <QtPlugin>
+#include "ilink.h"
 
 class QRectF;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	/** @brief Describes the possible types of a form field.
 	 *
@@ -438,16 +437,15 @@ namespace Monocle
 		 */
 		virtual QList<int> GetButtonGroup () const = 0;
 
-		/** @brief Notifies the field that it has been triggered.
+		/** @brief Returns the action associated with this button.
 		 *
 		 * This method is invoked by Monocle when the corresponding field
 		 * is triggered. Currently it only means that a field of
 		 * Type::Pushbutton is activated by the user, and this method is
 		 * never invoked for other types of fields.
 		 */
-		virtual void HandleActivated () = 0;
+		virtual LinkAction GetActivationAction () const = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Monocle::IFormField,

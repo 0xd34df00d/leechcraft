@@ -22,6 +22,7 @@ namespace LC
 {
 namespace Monocle
 {
+	class DocumentTab;
 	class SmoothScroller;
 	class PageGraphicsItem;
 	class AnnBaseItem;
@@ -29,6 +30,8 @@ namespace Monocle
 	class AnnManager : public QObject
 	{
 		Q_OBJECT
+
+		DocumentTab& DocTab_;
 
 		SmoothScroller * const Scroller_;
 
@@ -53,7 +56,7 @@ namespace Monocle
 			AnnItem
 		};
 
-		AnnManager (SmoothScroller*, QObject* = nullptr);
+		AnnManager (SmoothScroller*, DocumentTab&);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 

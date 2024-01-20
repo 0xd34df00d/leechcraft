@@ -21,16 +21,18 @@
 #include <QtDebug>
 #include "interfaces/monocle/isupportforms.h"
 #include "interfaces/monocle/iformfield.h"
+#include "documenttab.h"
+#include "linkactionexecutor.h"
 #include "pagegraphicsitem.h"
 
 namespace LC
 {
 namespace Monocle
 {
-	FormManager::FormManager (QGraphicsView *view, QObject *parent)
-	: QObject (parent)
-	, View_ (view)
-	, Scene_ (view->scene ())
+	FormManager::FormManager (QGraphicsView *view, DocumentTab& docTab)
+	: QObject { &docTab }
+	, DocTab_ { docTab }
+	, Scene_ { view->scene () }
 	{
 	}
 
@@ -332,7 +334,7 @@ namespace Monocle
 	void FormManager::handleButtonReleased ()
 	{
 		auto button = qobject_cast<QPushButton*> (sender ());
-		Button2Field_ [button]->HandleActivated ();
+		ExecuteLinkAction (Button2Field_ [button]->GetActivationAction (), DocTab_);
 	}
 }
 }

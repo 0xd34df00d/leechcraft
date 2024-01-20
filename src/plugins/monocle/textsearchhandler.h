@@ -61,7 +61,7 @@ namespace Monocle
 
 		void SelectItem (int);
 	signals:
-		void navigateRequested (const IDocument::Position&);
+		void navigateRequested (const NavigationAction&);
 
 		void gotSearchResults (const TextSearchHandlerResults&);
 	};

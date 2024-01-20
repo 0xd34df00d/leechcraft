@@ -16,6 +16,61 @@ namespace Monocle
 {
 namespace PDF
 {
+	namespace
+	{
+		std::optional<QRectF> GetTargetArea (const Poppler::LinkDestination& dest)
+		{
+			if (dest.isChangeLeft () && dest.isChangeTop ())
+				return QRectF { { dest.left (), dest.top () }, QSizeF {} };
+			return {};
+		}
+	}
+
+	NavigationAction MakeNavigationAction (const Poppler::LinkDestination& dest)
+	{
+		return
+		{
+			.PageNumber_ = dest.pageNumber () - 1,
+			.TargetArea_ = GetTargetArea (dest),
+			.Zoom_ = dest.isChangeZoom () ? dest.zoom () : std::optional<double> {},
+		};
+	}
+
+	LinkAction MakeLinkAction (Document& doc, const Poppler::Link& link)
+	{
+		switch (link.linkType ())
+		{
+		case Poppler::Link::Goto:
+		{
+			const auto& gotoLink = dynamic_cast<const Poppler::LinkGoto&> (link);
+			const auto& dest = gotoLink.destination ();
+			if (!gotoLink.isExternal ())
+				return MakeNavigationAction (dest);
+			return ExternalNavigationAction
+			{
+				.TargetDocument_ = gotoLink.fileName (),
+				.DocumentNavigation_ = MakeNavigationAction (dest)
+			};
+		}
+		case Poppler::Link::Action:
+		{
+			const auto& actionLink = dynamic_cast<const Poppler::LinkAction&> (link);
+			switch (actionLink.actionType ())
+			{
+			case Poppler::LinkAction::Print:
+				doc.RequestPrinting ();
+				return CustomAction { [&doc] { doc.RequestPrinting (); } };
+			default:
+				qWarning () << "unknown link action" << actionLink.actionType ();
+				return NoAction {};
+			}
+		}
+		default:
+			qWarning () << "unsupported link type:" << link.linkType ();
+			return NoAction {};
+		}
+	}
+
 	Link::Link (Document *doc, Poppler::Link *link)
 	: Doc_ (doc)
 	, Link_ (link)
@@ -48,87 +103,9 @@ namespace PDF
 		return Link_->linkArea ();
 	}
 
-	void Link::Execute ()
+	LinkAction Link::GetLinkAction () const
 	{
-		switch (GetLinkType ())
-		{
-		case LinkType::PageLink:
-			ExecutePageLink ();
-			return;
-		case LinkType::Command:
-			ExecuteCommandLink ();
-			return;
-		default:
-			return;
-		}
-	}
-
-	void Link::ExecutePageLink ()
-	{
-		auto link = std::dynamic_pointer_cast<Poppler::LinkGoto> (Link_);
-		const QString& filename = link->isExternal () ?
-				link->fileName () :
-				QString ();
-		const auto& dest = link->destination ();
-		Doc_->RequestNavigation (filename, dest.pageNumber () - 1, dest.left (), dest.top ());
-	}
-
-	void Link::ExecuteCommandLink ()
-	{
-		auto link = std::dynamic_pointer_cast<Poppler::LinkAction> (Link_);
-		switch (link->actionType ())
-		{
-		case Poppler::LinkAction::Print:
-			Doc_->RequestPrinting ();
-			break;
-		default:
-			break;
-		}
-	}
-
-	TOCLink::TOCLink (Document *doc, std::unique_ptr<Poppler::LinkDestination> dest)
-	: Doc_ (doc)
-	, Dest_ (std::move (dest))
-	{
-	}
-
-	LinkType TOCLink::GetLinkType () const
-	{
-		return LinkType::PageLink;
-	}
-
-	QRectF TOCLink::GetArea () const
-	{
-		return {};
-	}
-
-	void TOCLink::Execute ()
-	{
-		Doc_->RequestNavigation (QString (), Dest_->pageNumber () - 1, Dest_->left (), Dest_->top ());
-	}
-
-	QString TOCLink::GetDocumentFilename () const
-	{
-		return {};
-	}
-
-	int TOCLink::GetPageNumber () const
-	{
-		return Dest_->pageNumber () - 1;
-	}
-
-	std::optional<QRectF> TOCLink::GetTargetArea () const
-	{
-		if (Dest_->isChangeLeft () && Dest_->isChangeTop ())
-			return QRectF { QPointF { Dest_->left (), Dest_->top () }, QSizeF {} };
-		return {};
-	}
-
-	std::optional<double> TOCLink::GetNewZoom () const
-	{
-		if (Dest_->isChangeZoom ())
-			return Dest_->zoom ();
-		return {};
+		return MakeLinkAction (*Doc_, *Link_);
 	}
 }
 }

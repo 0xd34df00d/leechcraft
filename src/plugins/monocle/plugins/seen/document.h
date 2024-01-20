@@ -76,7 +76,6 @@ namespace Seen
 		void TryGetPageInfo (int);
 		void RunRedrawQueue ();
 	signals:
-		void navigateRequested (const QString&, const IDocument::Position&);
 		void printRequested (const QList<int>&);
 
 		void pageSizeChanged (int);

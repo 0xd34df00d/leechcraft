@@ -9,6 +9,7 @@
 #include "linksmanager.h"
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include "documenttab.h"
 #include "linkitem.h"
 #include "pagegraphicsitem.h"
 
@@ -16,10 +17,9 @@ namespace LC
 {
 namespace Monocle
 {
-	LinksManager::LinksManager (QGraphicsView *view, QObject *parent)
-	: QObject { parent }
-	, View_ { view }
-	, Scene_ { view->scene () }
+	LinksManager::LinksManager (DocumentTab& docTab)
+	: QObject { &docTab }
+	, DocTab_ { docTab }
 	{
 	}
 
@@ -28,7 +28,7 @@ namespace Monocle
 		for (auto page : pages)
 			for (const auto& link : doc->GetPageLinks (page->GetPageNum ()))
 			{
-				auto item = new LinkItem (link, page);
+				auto item = new LinkItem (link, page, DocTab_);
 				page->RegisterChildRect (item, link->GetArea (),
 						[item] (const QRectF& rect) { item->setRect (rect); });
 			}

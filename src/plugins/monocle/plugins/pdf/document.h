@@ -96,12 +96,10 @@ namespace PDF
 		SaveQueryResult CanSave () const;
 		bool Save (const QString& path);
 
-		void RequestNavigation (const QString&, int, double, double);
 		void RequestPrinting ();
 	private:
 		void BuildTOC ();
 	signals:
-		void navigateRequested (const QString&, const IDocument::Position&);
 		void printRequested (const QList<int>&);
 	};
 }

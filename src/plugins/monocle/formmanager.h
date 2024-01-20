@@ -27,6 +27,7 @@ namespace LC
 {
 namespace Monocle
 {
+	class DocumentTab;
 	class PageGraphicsItem;
 	class IFormField;
 	class IFormFieldText;
@@ -37,7 +38,7 @@ namespace Monocle
 	{
 		Q_OBJECT
 
-		QGraphicsView * const View_;
+		DocumentTab& DocTab_;
 		QGraphicsScene * const Scene_;
 
 		QHash<QLineEdit*, std::shared_ptr<IFormFieldText>> Line2Field_;
@@ -50,7 +51,7 @@ namespace Monocle
 
 		QHash<QList<int>, QButtonGroup*> RadioGroups_;
 	public:
-		FormManager (QGraphicsView*, QObject* = 0);
+		FormManager (QGraphicsView*, DocumentTab&);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 	private:

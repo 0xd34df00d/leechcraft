@@ -182,39 +182,6 @@ namespace Monocle
 		 */
 		virtual QUrl GetDocURL () const = 0;
 
-		/** @brief Describes a position within a document.
-		 */
-		struct Position
-		{
-			/** @brief The index of the page in question.
-			 */
-			int Page_;
-
-			/** @brief The position within the page.
-			 *
-			 * The position is relative, that is, in the `[0, 1]` range.
-			 */
-			std::optional<QRectF> PagePosition_ {};
-		};
-
-		/** @brief Emitted when navigation is requested.
-		 *
-		 * For example, this signal is emitted when a navigation link in
-		 * a table of contents has been triggered.
-		 *
-		 * If \em filename is empty, \em pageNum, \em x and \em y are all
-		 * related to he current document. Otherwise \em filename should
-		 * be loaded first.
-		 *
-		 * @param[out] filename The filename of the document to navigate
-		 * to, or an empty string if the current document should be used.
-		 * @param[out] position The position within the document described by
-		 * \em filename.
-		 *
-		 * @sa Position
-		 */
-		virtual void navigateRequested (const QString& filename, const Position& position) = 0;
-
 		/** @brief Emitted when printing is requested.
 		 *
 		 * This signal is emitted when printing is requested, for
@@ -234,4 +201,3 @@ namespace Monocle
 
 Q_DECLARE_INTERFACE (LC::Monocle::IDocument,
 		"org.LeechCraft.Monocle.IDocument/1.0")
-Q_DECLARE_METATYPE (LC::Monocle::IDocument::Position)

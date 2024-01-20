@@ -61,6 +61,7 @@ LC_DEFINE_PLUGIN (
 		anntreedelegate.cpp
 		linkitem.cpp
 		linksmanager.cpp
+		linkactionexecutor.cpp
 		coreloadproxy.cpp
 		converteddoccleaner.cpp
 		searchtabwidget.cpp

@@ -71,12 +71,12 @@ namespace LC::Monocle
 
 			StylingContext StylingCtx_;
 		public:
-			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, IDocument& monocleDoc)
+			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler)
 			: Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
 			, Cursor_ { &BodyFrame_ }
 			, CustomStyler_ { styler }
-			, TocBuilder_ { Cursor_, monocleDoc }
+			, TocBuilder_ { Cursor_ }
 			, LinksBuilder_ { Cursor_ }
 			{
 				auto rootFmt = Doc_.rootFrame ()->frameFormat ();
@@ -260,10 +260,9 @@ namespace LC::Monocle
 
 	DocStructure Html2Doc (QTextDocument& doc,
 			const QDomElement& body,
-			const CustomStyler_f& styler,
-			IDocument& monocleDoc)
+			const CustomStyler_f& styler)
 	{
-		Converter conv { doc, styler, monocleDoc };
+		Converter conv { doc, styler };
 		conv (body);
 		return { .TOC_ = conv.GetTOC (), .InternalLinks_ = conv.GetInternalLinks () };
 	}

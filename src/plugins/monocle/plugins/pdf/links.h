@@ -13,13 +13,13 @@
 #include <poppler-qt5.h>
 #include <interfaces/monocle/ilink.h>
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	class Document;
+
+	NavigationAction MakeNavigationAction (const Poppler::LinkDestination&);
+
+	LinkAction MakeLinkAction (Document*, Poppler::Link*);
 
 	class Link : public QObject
 			   , public ILink
@@ -34,35 +34,6 @@ namespace PDF
 
 		LinkType GetLinkType () const override;
 		QRectF GetArea () const override;
-
-		void Execute () override;
-	private:
-		void ExecutePageLink ();
-		void ExecuteCommandLink ();
+		LinkAction GetLinkAction () const override;
 	};
-
-	class TOCLink : public QObject
-				  , public ILink
-				  , public IPageLink
-	{
-		Q_INTERFACES (LC::Monocle::ILink LC::Monocle::IPageLink)
-
-		Document * const Doc_;
-		std::unique_ptr<Poppler::LinkDestination> Dest_;
-	public:
-		TOCLink (Document*, std::unique_ptr<Poppler::LinkDestination>);
-
-		LinkType GetLinkType () const override;
-		QRectF GetArea () const override;
-
-		void Execute () override;
-
-		QString GetDocumentFilename () const override;
-		int GetPageNumber () const override;
-
-		std::optional<QRectF> GetTargetArea () const override;
-		std::optional<double> GetNewZoom () const override;
-	};
-}
-}
 }

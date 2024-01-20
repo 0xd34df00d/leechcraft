@@ -102,7 +102,7 @@ namespace Monocle
 
 		int PrevCurrentPage_;
 
-		IDocument::Position Onload_ { -1, {} };
+		NavigationAction Onload_ { -1, {} };
 
 		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
@@ -142,10 +142,17 @@ namespace Monocle
 
 		QPoint GetCurrentCenter () const;
 		void CenterOn (const QPoint&);
+
+		void Navigate (const NavigationAction&);
+		void Navigate (const ExternalNavigationAction&);
+
+		ExternalNavigationAction GetNavigationHistoryEntry () const;
 	protected:
 		void dragEnterEvent (QDragEnterEvent*) override;
 		void dropEvent (QDropEvent*) override;
 	private:
+		void SetPosition (const NavigationAction&);
+
 		void SetupToolbarOpen ();
 		void SetupToolbarRotate ();
 		void SetupToolbarNavigation ();
@@ -160,14 +167,8 @@ namespace Monocle
 
 		void RegenPageVisibility ();
 
-		NavigationHistory::Entry GetNavigationHistoryEntry () const;
-		void NavigateToPath (QString, const IDocument::Position&);
-		void NavigateWithinDocument (const IDocument::Position&);
-
 		void CheckCurrentPageChange ();
 	private slots:
-		void handleNavigateRequested (const QString&, const IDocument::Position&);
-
 		void handleLoaderReady (DocumentOpenOptions, const IDocument_ptr&, const QString&);
 
 		void handlePrintRequested ();

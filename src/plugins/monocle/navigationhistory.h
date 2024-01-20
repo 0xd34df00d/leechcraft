@@ -11,7 +11,7 @@
 #include <functional>
 #include <optional>
 #include <QList>
-#include "interfaces/monocle/idocument.h"
+#include "interfaces/monocle/ilink.h"
 
 class QMenu;
 class QAction;
@@ -20,26 +20,20 @@ namespace LC
 {
 namespace Monocle
 {
+	class DocumentTab;
+
 	class NavigationHistory : public QObject
 	{
 		Q_OBJECT
-	public:
-		struct Entry
-		{
-			QString Document_;
-			IDocument::Position Position_;
-		};
 
-		using EntryGetter_f = std::function<Entry ()>;
-	private:
-		const EntryGetter_f EntryGetter_;
+		DocumentTab& DocTab_;
 
 		QMenu * const BackwardMenu_;
 		QMenu * const ForwardMenu_;
 
 		std::optional<QAction*> CurrentAction_;
 	public:
-		NavigationHistory (const EntryGetter_f&, QObject* = nullptr);
+		NavigationHistory (DocumentTab&);
 
 		QMenu* GetBackwardMenu () const;
 		QMenu* GetForwardMenu () const;
@@ -47,18 +41,13 @@ namespace Monocle
 		void GoBack () const;
 		void GoForward () const;
 
-		void HandleSearchNavigationRequested ();
+		void SaveCurrentPos ();
 	private:
 		void GoSingleAction (QMenu*) const;
 
-		void AppendHistoryEntry ();
 		QAction* MakeCurrentPositionAction ();
-		void GoTo (QAction*, const Entry&);
-	public slots:
-		void handleDocumentNavigationRequested ();
+		void GoTo (QAction*, const ExternalNavigationAction&);
 	signals:
-		void entryNavigationRequested (const Entry&);
-
 		void backwardHistoryAvailabilityChanged (bool);
 		void forwardHistoryAvailabilityChanged (bool);
 	};

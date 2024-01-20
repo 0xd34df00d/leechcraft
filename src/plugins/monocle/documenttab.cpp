@@ -101,12 +101,12 @@ namespace Monocle
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
-	, TOCWidget_ (new TOCWidget ())
+	, TOCWidget_ (new TOCWidget (*this))
 	, DocBMManager_ (new DocumentBookmarksManager (this, this))
 	, BMWidget_ (new BookmarksWidget (DocBMManager_))
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
-	, NavHistory_ (new NavigationHistory ([this] { return GetNavigationHistoryEntry (); }, this))
+	, NavHistory_ (new NavigationHistory { *this })
 	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
 	{
 		Ui_.setupUi (this);
@@ -128,19 +128,15 @@ namespace Monocle
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
 		connect (SearchHandler_,
 				&TextSearchHandler::navigateRequested,
-				NavHistory_,
-				&NavigationHistory::HandleSearchNavigationRequested);
-		connect (SearchHandler_,
-				&TextSearchHandler::navigateRequested,
 				this,
-				&DocumentTab::NavigateWithinDocument);
+				qOverload<const NavigationAction&> (&DocumentTab::Navigate));
 
 		XmlSettingsManager::Instance ().RegisterObject ("InhibitScreensaver", this,
 				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
 
-		FormManager_ = new FormManager (Ui_.PagesView_, this);
-		AnnManager_ = new AnnManager (Scroller_, this);
-		LinksManager_ = new LinksManager (Ui_.PagesView_, this);
+		FormManager_ = new FormManager (Ui_.PagesView_, *this);
+		AnnManager_ = new AnnManager (Scroller_, *this);
+		LinksManager_ = new LinksManager (*this);
 
 		AnnWidget_ = new AnnWidget (AnnManager_);
 
@@ -237,19 +233,9 @@ namespace Monocle
 				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
 				ThumbsWidget_,
 				SLOT (updatePagesVisibility (QMap<int, QRect>)));
-
-		connect (NavHistory_,
-				&NavigationHistory::entryNavigationRequested,
-				[this] (const NavigationHistory::Entry& entry)
-				{
-					if (entry.Document_ == CurrentDocPath_)
-						NavigateWithinDocument (entry.Position_);
-					else
-						NavigateToPath (entry.Document_, entry.Position_);
-				});
 	}
 
-	NavigationHistory::Entry DocumentTab::GetNavigationHistoryEntry () const
+	ExternalNavigationAction DocumentTab::GetNavigationHistoryEntry () const
 	{
 		QPointF position;
 		auto pageNum = GetCurrentPage ();
@@ -824,10 +810,10 @@ namespace Monocle
 
 		LayoutManager_->Relayout ();
 
-		if (Onload_.Page_ >= 0)
+		if (Onload_.PageNumber_ >= 0)
 		{
-			NavigateWithinDocument (Onload_);
-			Onload_.Page_ = -1;
+			SetPosition (Onload_);
+			Onload_.PageNumber_ = -1;
 		}
 
 		CheckCurrentPageChange ();
@@ -915,23 +901,13 @@ namespace Monocle
 		emit pagesVisibilityChanged (rects);
 	}
 
-	void DocumentTab::NavigateToPath (QString path, const IDocument::Position& onload)
+	void DocumentTab::SetPosition (const NavigationAction& nav)
 	{
-		if (QFileInfo { path }.isRelative ())
-			path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
-
-		Onload_ = onload;
-		if (!SetDoc (path, DocumentOpenOptions {}))
-			Onload_.Page_ = -1;
-	}
-
-	void DocumentTab::NavigateWithinDocument (const IDocument::Position& position)
-	{
-		const auto page = Pages_.value (position.Page_);
+		const auto page = Pages_.value (nav.PageNumber_);
 		if (!page)
 			return;
 
-		if (const auto& rect = position.PagePosition_)
+		if (const auto& rect = nav.TargetArea_)
 		{
 			const auto& renderedSize = page->boundingRect ().size ();
 
@@ -943,15 +919,31 @@ namespace Monocle
 			Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
 		else
-			SetCurrentPage (position.Page_);
+			SetCurrentPage (nav.PageNumber_);
 	}
 
-	void DocumentTab::handleNavigateRequested (const QString& path, const IDocument::Position& pos)
+	void DocumentTab::Navigate (const NavigationAction& nav)
 	{
-		if (!path.isEmpty ())
-			NavigateToPath (path, pos);
-		else
-			NavigateWithinDocument (pos);
+		NavHistory_->SaveCurrentPos ();
+		SetPosition (nav);
+	}
+
+	void DocumentTab::Navigate (const ExternalNavigationAction& nav)
+	{
+		NavHistory_->SaveCurrentPos ();
+		if (nav.TargetDocument_ == CurrentDocPath_)
+		{
+			SetPosition (nav.DocumentNavigation_);
+			return;
+		}
+
+		auto path = nav.TargetDocument_;
+		if (QFileInfo { path }.isRelative ())
+			path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
+
+		Onload_ = nav.DocumentNavigation_;
+		if (!SetDoc (path, DocumentOpenOptions {}))
+			Onload_.PageNumber_ = -1;
 	}
 
 	void DocumentTab::handleLoaderReady (DocumentOpenOptions options,
@@ -1008,15 +1000,6 @@ namespace Monocle
 		auto toc = qobject_cast<IHaveTOC*> (docObj);
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
-		connect (docObj,
-				SIGNAL (navigateRequested (QString, IDocument::Position)),
-				NavHistory_,
-				SLOT (handleDocumentNavigationRequested ()));
-		connect (docObj,
-				SIGNAL (navigateRequested (QString, IDocument::Position)),
-				this,
-				SLOT (handleNavigateRequested (QString, IDocument::Position)),
-				Qt::QueuedConnection);
 		connect (docObj,
 				SIGNAL (printRequested (QList<int>)),
 				this,

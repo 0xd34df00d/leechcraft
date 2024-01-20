@@ -6,24 +6,19 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#pragma once
-
-#include <interfaces/monocle/ihavetoc.h>
-#include <util/monocle/types.h>
-
-class QDomElement;
-class QTextDocument;
+#include "linkactionexecutor.h"
+#include <util/sll/visitor.h>
+#include "documenttab.h"
 
 namespace LC::Monocle
 {
-	class IDocument;
-	struct InternalLink;
-
-	struct DocStructure
+	void ExecuteLinkAction (const LinkAction& action, DocumentTab& tab)
 	{
-		TOCEntryLevel_t TOC_;
-		QVector<InternalLink> InternalLinks_;
-	};
-
-	DocStructure Html2Doc (QTextDocument& doc, const QDomElement&, const CustomStyler_f&);
+		Util::Visit (action,
+				[] (NoAction) {},
+				[&] (const NavigationAction& nav) { tab.Navigate (nav); },
+				[&] (const ExternalNavigationAction& extNav) { tab.Navigate (extNav); },
+				[] (const UrlAction& url) {},
+				[] (const CustomAction& custom) { custom (); });
+	}
 }

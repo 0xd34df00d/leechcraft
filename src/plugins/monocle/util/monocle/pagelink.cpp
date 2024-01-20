@@ -33,19 +33,14 @@ namespace LC::Monocle
 		return ComputeArea (*Info_.Source_, CachedSource_).Area_;
 	}
 
-	void PageLink::Execute ()
+	LinkAction PageLink::GetLinkAction () const
 	{
-		Info_.MonocleDoc_.navigateRequested ({}, { .Page_ = GetPageNumber (), .PagePosition_ = GetTargetArea () });
+		return ComputeNavAction ();
 	}
 
 	QString PageLink::GetToolTip () const
 	{
 		return Info_.ToolTip_;
-	}
-
-	QString PageLink::GetDocumentFilename () const
-	{
-		return {};
 	}
 
 	namespace
@@ -75,19 +70,9 @@ namespace LC::Monocle
 		}
 	}
 
-	int PageLink::GetPageNumber () const
+	NavigationAction PageLink::GetNavigationAction (const LinkInfo& info)
 	{
-		return ComputeArea (Info_.Target_, CachedTarget_).Page_;
-	}
-
-	std::optional<QRectF> PageLink::GetTargetArea () const
-	{
-		return ComputeArea (Info_.Target_, CachedTarget_).Area_;
-	}
-
-	std::optional<double> PageLink::GetNewZoom () const
-	{
-		return {};
+		return PageLink { info }.ComputeNavAction ();
 	}
 
 	int PageLink::GetSourcePage () const
@@ -122,5 +107,11 @@ namespace LC::Monocle
 
 		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = pageArea };
 		return *areaInfo;
+	}
+
+	NavigationAction PageLink::ComputeNavAction () const
+	{
+		const auto& computed = ComputeArea (Info_.Target_, CachedTarget_);
+		return { .PageNumber_ = computed.Page_, .TargetArea_ = computed.Area_ };
 	}
 }

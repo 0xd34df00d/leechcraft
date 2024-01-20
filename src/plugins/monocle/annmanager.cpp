@@ -11,16 +11,18 @@
 #include <QtDebug>
 #include "interfaces/monocle/isupportannotations.h"
 #include "interfaces/monocle/iannotation.h"
-#include "pagegraphicsitem.h"
 #include "annitem.h"
+#include "documenttab.h"
+#include "pagegraphicsitem.h"
 #include "smoothscroller.h"
 
 namespace LC
 {
 namespace Monocle
 {
-	AnnManager::AnnManager (SmoothScroller *scroller, QObject *parent)
-	: QObject { parent }
+	AnnManager::AnnManager (SmoothScroller *scroller, DocumentTab& docTab)
+	: QObject { &docTab }
+	, DocTab_ { docTab }
 	, Scroller_ { scroller }
 	, AnnModel_ { new QStandardItemModel { this } }
 	{
@@ -57,7 +59,7 @@ namespace Monocle
 
 			for (const auto& ann : isa->GetAnnotations (page->GetPageNum ()))
 			{
-				const auto item = MakeItem (ann, page);
+				const auto item = MakeItem (ann, page, DocTab_);
 				if (!item)
 				{
 					qWarning () << Q_FUNC_INFO

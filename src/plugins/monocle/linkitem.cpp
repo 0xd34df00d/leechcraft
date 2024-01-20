@@ -10,13 +10,15 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QPen>
+#include "linkactionexecutor.h"
 
 namespace LC
 {
 namespace Monocle
 {
-	LinkItem::LinkItem (const ILink_ptr& link, QGraphicsItem *parent)
+	LinkItem::LinkItem (const ILink_ptr& link, QGraphicsItem *parent, DocumentTab& tab)
 	: QGraphicsRectItem { parent }
+	, DocTab_ { tab }
 	, Link_ { link }
 	{
 		setCursor (Qt::PointingHandCursor);
@@ -33,7 +35,7 @@ namespace Monocle
 	void LinkItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 	{
 		if ((event->pos () - PressedPos_).manhattanLength () < 4)
-			Link_->Execute ();
+			ExecuteLinkAction (Link_->GetLinkAction (), DocTab_);
 	}
 }
 }

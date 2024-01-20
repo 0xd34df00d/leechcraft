@@ -19,6 +19,8 @@ namespace LC
 {
 namespace Monocle
 {
+	class DocumentTab;
+
 	class AnnBaseItem
 	{
 	public:
@@ -43,7 +45,7 @@ namespace Monocle
 		QBrush GetBrush (bool selected) const;
 	};
 
-	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*);
+	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*, DocumentTab&);
 
 	template<typename T>
 	class AnnBaseGraphicsItem : public AnnBaseItem
@@ -125,7 +127,7 @@ namespace Monocle
 	class LinkAnnItem : public AnnRectGraphicsItem<LinkItem>
 	{
 	public:
-		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*);
+		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*, DocumentTab&);
 	};
 
 	class CaretAnnItem : public AnnRectGraphicsItem<QGraphicsRectItem>

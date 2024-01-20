@@ -9,14 +9,15 @@
 #include "navigationhistory.h"
 #include <QFileInfo>
 #include <QMenu>
+#include "documenttab.h"
 
 namespace LC
 {
 namespace Monocle
 {
-	NavigationHistory::NavigationHistory (const EntryGetter_f& getter, QObject *parent)
-	: QObject { parent }
-	, EntryGetter_ { getter }
+	NavigationHistory::NavigationHistory (DocumentTab& docTab)
+	: QObject { &docTab }
+	, DocTab_ { docTab }
 	, BackwardMenu_ { new QMenu }
 	, ForwardMenu_ { new QMenu }
 	{
@@ -42,29 +43,7 @@ namespace Monocle
 		GoSingleAction (ForwardMenu_);
 	}
 
-	void NavigationHistory::HandleSearchNavigationRequested ()
-	{
-		AppendHistoryEntry ();
-	}
-
-	void NavigationHistory::GoSingleAction (QMenu *menu) const
-	{
-		const auto& actions = menu->actions ();
-		if (!actions.isEmpty ())
-			actions.front ()->trigger ();
-	}
-
-	namespace
-	{
-		QString GetEntryText (const NavigationHistory::Entry& entry)
-		{
-			return NavigationHistory::tr ("Page %1 (%2)")
-					.arg (entry.Position_.Page_)
-					.arg (QFileInfo { entry.Document_ }.fileName ());
-		}
-	}
-
-	void NavigationHistory::AppendHistoryEntry ()
+	void NavigationHistory::SaveCurrentPos ()
 	{
 		CurrentAction_.reset ();
 
@@ -86,9 +65,26 @@ namespace Monocle
 		}
 	}
 
+	void NavigationHistory::GoSingleAction (QMenu *menu) const
+	{
+		const auto& actions = menu->actions ();
+		if (!actions.isEmpty ())
+			actions.front ()->trigger ();
+	}
+
+	namespace
+	{
+		QString GetEntryText (const ExternalNavigationAction& entry)
+		{
+			return NavigationHistory::tr ("Page %1 (%2)")
+					.arg (entry.DocumentNavigation_.PageNumber_)
+					.arg (QFileInfo { entry.TargetDocument_ }.fileName ());
+		}
+	}
+
 	QAction* NavigationHistory::MakeCurrentPositionAction ()
 	{
-		const auto& entry = EntryGetter_ ();
+		const auto& entry = DocTab_.GetNavigationHistoryEntry ();
 		const auto action = new QAction { GetEntryText (entry), this };
 		connect (action,
 				&QAction::triggered,
@@ -96,7 +92,7 @@ namespace Monocle
 		return action;
 	}
 
-	void NavigationHistory::GoTo (QAction *action, const Entry& entry)
+	void NavigationHistory::GoTo (QAction *action, const ExternalNavigationAction& entry)
 	{
 		auto backActions = BackwardMenu_->actions ();
 		auto fwdActions = ForwardMenu_->actions ();
@@ -124,12 +120,7 @@ namespace Monocle
 
 		CurrentAction_ = action;
 
-		emit entryNavigationRequested (entry);
-	}
-
-	void NavigationHistory::handleDocumentNavigationRequested ()
-	{
-		AppendHistoryEntry ();
+		DocTab_.Navigate (entry);
 	}
 }
 }

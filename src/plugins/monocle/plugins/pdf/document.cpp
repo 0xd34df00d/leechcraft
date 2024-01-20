@@ -297,11 +297,6 @@ namespace PDF
 		}
 	}
 
-	void Document::RequestNavigation (const QString& filename, int page, double x, double y)
-	{
-		emit navigateRequested (filename, { page, QRectF { QPointF { x, y }, QSizeF {} } });
-	}
-
 	void Document::RequestPrinting ()
 	{
 		emit printRequested ({});
@@ -309,21 +304,27 @@ namespace PDF
 
 	namespace
 	{
-		TOCEntryLevel_t BuildTOCLevel (Document *doc, const QVector<Poppler::OutlineItem>& level)
+		TOCEntryLevel_t BuildTOCLevel (const QVector<Poppler::OutlineItem>& level)
 		{
 			TOCEntryLevel_t result;
 
 			for (const auto& item : level)
 			{
-				ILink_ptr link;
-				if (const auto dest = item.destination ())
-					link = std::make_shared<TOCLink> (doc, std::make_unique<Poppler::LinkDestination> (*dest));
+				const auto& children = BuildTOCLevel (item.children ());
 
-				TOCEntry entry =
+				NavigationAction navAct;
+				if (item.destination ())
+					navAct = MakeNavigationAction (*item.destination ());
+				else if (!children.isEmpty ())
+					navAct = children.value (0).Navigation_;
+				else
+					continue;
+
+				TOCEntry entry
 				{
-					link,
+					navAct,
 					item.name (),
-					BuildTOCLevel (doc, item.children ()),
+					children,
 				};
 				result << entry;
 			}
@@ -334,7 +335,7 @@ namespace PDF
 
 	void Document::BuildTOC ()
 	{
-		TOC_ = BuildTOCLevel (this, PDocument_->outline ());
+		TOC_ = BuildTOCLevel (PDocument_->outline ());
 	}
 }
 }

@@ -223,14 +223,10 @@ namespace PDF
 		return ButtonGroup_;
 	}
 
-	void FormFieldButton::HandleActivated ()
+	LinkAction FormFieldButton::GetActivationAction () const
 	{
-		auto actLink = Field_->activationAction ();
-		if (!actLink)
-			return;
-
-		ILink_ptr link (new Link (Doc_, actLink));
-		link->Execute ();
+		const auto actLink = Field_->activationAction ();
+		return actLink ? MakeLinkAction (Doc_, actLink) : NoAction {};
 	}
 }
 }

@@ -19,21 +19,21 @@ namespace LC
 {
 namespace Monocle
 {
-	class IPageLink;
-	using IPageLink_ptr = std::shared_ptr<IPageLink>;
+	class DocumentTab;
 
 	class TOCWidget : public QWidget
 	{
 		Q_OBJECT
 
+		DocumentTab& DocTab_;
+
 		Ui::TOCWidget Ui_;
 		QStandardItemModel *Model_;
 
-		QHash<QStandardItem*, ILink_ptr> Item2Link_;
-		QHash<ILink_ptr, QStandardItem*> Link2Item_;
-		QList<IPageLink_ptr> IntraDocPageLinks_;
+		QHash<QStandardItem*, NavigationAction> Item2Link_;
+		QMap<NavigationAction, QStandardItem*> Link2Item_;
 	public:
-		TOCWidget (QWidget* = 0);
+		TOCWidget (DocumentTab&, QWidget* = 0);
 
 		void SetTOC (const TOCEntryLevel_t&);
 	private:

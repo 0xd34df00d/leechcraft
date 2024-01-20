@@ -114,7 +114,7 @@ namespace PDF
 
 		QList<int> GetButtonGroup () const;
 
-		void HandleActivated ();
+		LinkAction GetActivationAction () const;
 	};
 }
 }
