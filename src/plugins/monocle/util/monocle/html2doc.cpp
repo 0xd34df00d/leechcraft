@@ -159,7 +159,11 @@ namespace LC::Monocle
 					Cursor_.insertText (QString { '\n' });
 
 				if (elem.tagName () == "img"_ql)
-					Cursor_.insertImage (elem.attribute ("src"_qs));
+				{
+					QTextImageFormat img;
+					img.setName (elem.attribute ("src"_qs));
+					Cursor_.insertImage (img);
+				}
 			}
 
 			void HandleChildren (const QDomElement& elem)

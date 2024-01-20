@@ -8,25 +8,17 @@
 
 #pragma once
 
-#include <QDomElement>
-#include <QString>
-#include <util/sll/eitherfwd.h>
-#include <interfaces/monocle/idocument.h>
-#include <util/monocle/types.h>
+#include <QTextDocument>
+#include "types.h"
 
-class QTextDocument;
-
-namespace LC::Monocle::FXB
+namespace LC::Monocle
 {
-	struct ConvertedDocument
+	class ResourcedTextDocument : public QTextDocument
 	{
-		QDomElement Doc_;
-		LazyImages_t Images_;
-		QString CoverImageId_;
-
-		DocumentInfo Info_;
+		const LazyImages_t Images_;
+	public:
+		ResourcedTextDocument (const LazyImages_t& images);
+	protected:
+		QVariant loadResource (int type, const QUrl &name) override;
 	};
-
-	using ConvertResult_t = Util::Either<QString, ConvertedDocument>;
-	ConvertResult_t Convert (QDomDocument&& fb2);
 }

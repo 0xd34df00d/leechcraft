@@ -8,6 +8,7 @@
 
 #include "epubloader.h"
 #include <QDomDocument>
+#include <QImageReader>
 #include <QTextDocument>
 #include <QtConcurrent>
 #include <quazip/quazip.h>
@@ -134,7 +135,7 @@ namespace LC::Monocle::Boop
 			return { body, stylesheet };
 		}
 
-		ImagesList_t LoadImages (const QString& epubFile, const Manifest& manifest)
+		LazyImages_t LoadImages (const QString& epubFile, const Manifest& manifest)
 		{
 			Util::Timer timer;
 			QVector<PathItem> imageItems;
@@ -142,34 +143,44 @@ namespace LC::Monocle::Boop
 			std::copy_if (manifest.Id2Item_.begin (), manifest.Id2Item_.end (), std::back_inserter (imageItems),
 					[] (const PathItem& item) { return item.Mime_.startsWith ("image/"_ql); });
 
-			using LocatedImage_t = LocatedImage_t;
-			using MaybeImagesList_t = QVector<std::optional<LocatedImage_t>>;
+			using MaybeImagesList_t = QVector<std::optional<std::pair<QString, LazyImage>>>;
 			const auto& images = QtConcurrent::blockingMapped<MaybeImagesList_t> (imageItems,
 					std::function
 					{
-						[&] (const PathItem& item) -> std::optional<LocatedImage_t>
+						[&] (const PathItem& item) -> std::optional<std::pair<QString, LazyImage>>
 						{
 							QuaZipFile file { epubFile, item.Path_, QuaZip::csInsensitive };
 							if (!file.open (QIODevice::ReadOnly))
 								throw InvalidEpub { "unable to open " + item.Path_ + ": " + file.errorString () };
 
-							auto image = QImage::fromData (file.readAll ());
-							if (image.isNull ())
+							QImageReader reader { &file };
+							const auto& nativeSize = reader.size ();
+							if (nativeSize.isNull ())
 							{
 								qWarning () << "null image from" << item.Path_;
 								return {};
 							}
 
-							return LocatedImage_t { item.Path_, image };
+							const auto& image = reader.read ();
+
+							return std::pair
+							{
+								item.Path_,
+								LazyImage
+								{
+									nativeSize,
+									[image] (QSize size) { return image.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation); }
+								}
+							};
 						}
 					});
 			timer.Stamp ("parsing images");
 
-			ImagesList_t result;
+			LazyImages_t result;
 			result.reserve (images.size ());
-			for (const auto& maybeImage : images)
+			for (auto& maybeImage : images)
 				if (maybeImage)
-					result << *maybeImage;
+					result [maybeImage->first] = std::move (maybeImage->second);
 			return result;
 		}
 	}

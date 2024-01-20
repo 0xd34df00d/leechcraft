@@ -31,8 +31,17 @@ namespace LC::Monocle
 		// Double-check Q_DECLARE_TYPEINFO when updating this type.
 	};
 
-	using LocatedImage_t = QPair<QString, QImage>;
-	using ImagesList_t = QVector<LocatedImage_t>;
+	struct LazyImage
+	{
+		QSize NativeSize_;
+		std::function<QImage (QSize)> Load_;
+
+		explicit operator bool () const
+		{
+			return static_cast<bool> (Load_);
+		}
+	};
+	using LazyImages_t = QHash<QUrl, LazyImage>;
 
 	struct BlockFormat
 	{

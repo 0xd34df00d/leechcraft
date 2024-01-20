@@ -215,9 +215,9 @@ namespace LC::Monocle::FXB
 			}
 		};
 
-		ImagesList_t LoadImages (const QDomDocument& fb2)
+		LazyImages_t LoadImages (const QDomDocument& fb2)
 		{
-			ImagesList_t images;
+			LazyImages_t images;
 			const auto& binaries = fb2.elementsByTagName ("binary"_qs);
 			images.reserve (binaries.size ());
 			for (int i = 0; i < binaries.size (); ++i)
@@ -233,7 +233,11 @@ namespace LC::Monocle::FXB
 				const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
 				const auto& image = QImage::fromData (imageData);
 				const auto& id = binary.attribute ("id"_qs);
-				images.push_back ({ id, image });
+				images [id] = LazyImage
+						{
+							image.size (),
+							[image] (const QSize& size) { return image.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation); }
+						};
 			}
 
 			return images;

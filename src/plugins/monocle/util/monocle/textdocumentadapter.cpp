@@ -19,6 +19,7 @@
 #include <util/threads/futures.h>
 #include "html2doc.h"
 #include "pagelink.h"
+#include "resourcedtextdocument.h"
 #include "textdocumentformatconfig.h"
 
 namespace LC::Monocle
@@ -177,14 +178,13 @@ namespace LC::Monocle
 
 	namespace
 	{
-		void AddCoverImage (QTextDocument& doc, const ImagesList_t& images, const QString& coverId)
+		void AddCoverImage (QTextDocument& doc, const LazyImages_t& images, const QString& coverId)
 		{
 			if (coverId.isEmpty ())
 				return;
 
-			const auto imagePos = std::find_if (images.begin (), images.end (),
-					[&] (const auto& pair) { return pair.first == coverId; });
-			if (imagePos == images.end ())
+			const auto& image = images.value (coverId);
+			if (!image)
 			{
 				qWarning () << "unknown cover image"
 						<< coverId;
@@ -197,8 +197,7 @@ namespace LC::Monocle
 			cursor.insertHtml ("<img src='%1' />"_qs.arg (upscaledId));
 
 			const auto& pageSize = doc.pageSize ().toSize ();
-			const auto& scaled = imagePos->second.scaled (pageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			doc.addResource (QTextDocument::ImageResource, { upscaledId }, scaled);
+			doc.addResource (QTextDocument::ImageResource, { upscaledId }, image.Load_ (pageSize));
 		}
 
 		QHash<int, QList<ILink_ptr>> CreateLinks (const QTextDocument& textDoc,
@@ -241,16 +240,13 @@ namespace LC::Monocle
 
 	void TextDocumentAdapter::SetDocument (const HtmlDocument& info)
 	{
-		Doc_ = std::make_unique<QTextDocument> ();
+		Doc_ = std::make_unique<ResourcedTextDocument> (info.Images_);
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 		Util::Timer timer;
 		auto docStructure = Html2Doc (*Doc_, info.BodyElem_, info.Styler_);
 		timer.Stamp ("html2doc");
 
 		AddCoverImage (*Doc_, info.Images_, info.CoverId_);
-
-		for (const auto& [id, image] : info.Images_)
-			Doc_->addResource (QTextDocument::ImageResource, { id }, QVariant::fromValue (image));
 		timer.Stamp ("covers and resources");
 		Doc_->documentLayout ();
 		timer.Stamp ("layout");

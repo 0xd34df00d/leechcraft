@@ -67,7 +67,7 @@ namespace LC::Monocle
 		struct HtmlDocument
 		{
 			QDomElement BodyElem_;
-			ImagesList_t Images_;
+			LazyImages_t Images_;
 			QString CoverId_ = {};
 
 			CustomStyler_f Styler_ = {};
