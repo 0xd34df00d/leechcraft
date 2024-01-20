@@ -24,5 +24,5 @@ namespace LC::Monocle
 		QVector<InternalLink> InternalLinks_;
 	};
 
-	DocStructure Html2Doc (QTextDocument& doc, const QDomElement&, const CustomStyler_f&);
+	DocStructure Html2Doc (QTextDocument& doc, const QDomElement&, const CustomStyler_f&, const LazyImages_t&);
 }

@@ -58,11 +58,12 @@ namespace LC::Monocle
 		{
 			const TextDocumentFormatConfig& Config_ = TextDocumentFormatConfig::Instance ();
 
+			const CustomStyler_f& CustomStyler_;
+			const LazyImages_t& Images_;
+
 			QTextDocument& Doc_;
 			QTextFrame& BodyFrame_;
 			QTextCursor Cursor_;
-
-			CustomStyler_f CustomStyler_;
 
 			QTextCharFormat CharFormat_;
 
@@ -71,11 +72,12 @@ namespace LC::Monocle
 
 			StylingContext StylingCtx_;
 		public:
-			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler)
-			: Doc_ { doc }
+			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
+			: CustomStyler_ { styler }
+			, Images_ { images }
+			, Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
 			, Cursor_ { &BodyFrame_ }
-			, CustomStyler_ { styler }
 			, TocBuilder_ { Cursor_ }
 			, LinksBuilder_ { Cursor_ }
 			{
@@ -160,9 +162,14 @@ namespace LC::Monocle
 
 				if (elem.tagName () == "img"_ql)
 				{
-					QTextImageFormat img;
-					img.setName (elem.attribute ("src"_qs));
-					Cursor_.insertImage (img);
+					QTextImageFormat imgFmt;
+					imgFmt.setName (elem.attribute ("src"_qs));
+					if (const auto& lazyImage = Images_.value (imgFmt.name ()))
+					{
+						imgFmt.setWidth (lazyImage.NativeSize_.width ());
+						imgFmt.setHeight (lazyImage.NativeSize_.height ());
+					}
+					Cursor_.insertImage (imgFmt);
 				}
 			}
 
@@ -264,9 +271,10 @@ namespace LC::Monocle
 
 	DocStructure Html2Doc (QTextDocument& doc,
 			const QDomElement& body,
-			const CustomStyler_f& styler)
+			const CustomStyler_f& styler,
+			const LazyImages_t& images)
 	{
-		Converter conv { doc, styler };
+		Converter conv { doc, styler, images };
 		conv (body);
 		return { .TOC_ = conv.GetTOC (), .InternalLinks_ = conv.GetInternalLinks () };
 	}

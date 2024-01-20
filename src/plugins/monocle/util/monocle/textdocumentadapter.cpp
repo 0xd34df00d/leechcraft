@@ -243,7 +243,7 @@ namespace LC::Monocle
 		Doc_ = std::make_unique<ResourcedTextDocument> (info.Images_);
 		TextDocumentFormatConfig::Instance ().FormatDocument (*Doc_);
 		Util::Timer timer;
-		auto docStructure = Html2Doc (*Doc_, info.BodyElem_, info.Styler_);
+		auto docStructure = Html2Doc (*Doc_, info.BodyElem_, info.Styler_, info.Images_);
 		timer.Stamp ("html2doc");
 
 		AddCoverImage (*Doc_, info.Images_, info.CoverId_);
