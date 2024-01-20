@@ -54,6 +54,26 @@ namespace LC::Monocle
 			return std::move (str).replace (spaces, " "_ql);
 		}
 
+		std::optional<QSize> GetImageSize (const LazyImage& image, const CustomStyler_f& styler, const StylingContext& ctx)
+		{
+			if (!image)
+				return {};
+
+			if (!styler)
+				return image.NativeSize_;
+
+			const auto& imgFmt = styler (ctx).Img_;
+
+			if (imgFmt.Width_ && imgFmt.Height_)
+				return image.NativeSize_.scaled ({ static_cast<int> (*imgFmt.Width_), static_cast<int> (*imgFmt.Height_) }, Qt::KeepAspectRatio);
+			if (imgFmt.Width_)
+				return image.NativeSize_ * (*imgFmt.Width_ / image.NativeSize_.width ());
+			if (imgFmt.Height_)
+				return image.NativeSize_ * (*imgFmt.Height_ / image.NativeSize_.height ());
+
+			return image.NativeSize_;
+		}
+
 		class Converter
 		{
 			const TextDocumentFormatConfig& Config_ = TextDocumentFormatConfig::Instance ();
@@ -164,10 +184,13 @@ namespace LC::Monocle
 				{
 					QTextImageFormat imgFmt;
 					imgFmt.setName (elem.attribute ("src"_qs));
-					if (const auto& lazyImage = Images_.value (imgFmt.name ()))
+					const auto& image = Images_.value (imgFmt.name ());
+					if (!image)
+						qWarning () << "unknown image" << imgFmt.name ();
+					if (const auto& size = GetImageSize (image, CustomStyler_, StylingCtx_))
 					{
-						imgFmt.setWidth (lazyImage.NativeSize_.width ());
-						imgFmt.setHeight (lazyImage.NativeSize_.height ());
+						imgFmt.setWidth (size->width ());
+						imgFmt.setHeight (size->height ());
 					}
 					Cursor_.insertImage (imgFmt);
 				}
@@ -220,7 +243,7 @@ namespace LC::Monocle
 			{
 				auto blockCfg = Config_.GetBlockFormat (StylingCtx_);
 				if (CustomStyler_)
-					blockCfg += CustomStyler_ (StylingCtx_).first;
+					blockCfg += CustomStyler_ (StylingCtx_).Block_;
 
 				QTextFrameFormat frameFmt;
 				QTextBlockFormat blockFmt;
@@ -232,7 +255,7 @@ namespace LC::Monocle
 			{
 				auto blockCfg = Config_.GetBlockFormat (StylingCtx_);
 				if (CustomStyler_)
-					blockCfg += CustomStyler_ (StylingCtx_).first;
+					blockCfg += CustomStyler_ (StylingCtx_).Block_;
 
 				QTextBlockFormat blockFmt;
 				SetBlockConfig (blockFmt, blockFmt, blockCfg);
@@ -242,7 +265,7 @@ namespace LC::Monocle
 			std::optional<QTextCharFormat> GetCharFormat ()
 			{
 				auto charCfg = Config_.GetCharFormat (StylingCtx_);
-				const auto& custom = CustomStyler_ ? CustomStyler_ (StylingCtx_).second : CharFormat {};
+				const auto& custom = CustomStyler_ ? CustomStyler_ (StylingCtx_).Char_ : CharFormat {};
 				if (!charCfg && custom.IsEmpty ())
 					return {};
 				if (!charCfg)

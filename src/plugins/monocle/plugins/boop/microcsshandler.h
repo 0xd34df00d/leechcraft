@@ -19,13 +19,14 @@ namespace LC::Monocle
 	struct BlockFormat;
 
 	struct StylingContext;
+	struct Style;
 }
 
 namespace LC::Monocle::Boop::MicroCSS
 {
 	struct Stylesheet;
 
-	using CustomStyler_f = std::function<std::pair<BlockFormat, CharFormat> (const StylingContext&)>;
+	using CustomStyler_f = std::function<Style (const StylingContext&)>;
 
 	CustomStyler_f MakeStyler (const Stylesheet&);
 }

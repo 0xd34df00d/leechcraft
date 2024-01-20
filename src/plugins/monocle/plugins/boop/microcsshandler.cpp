@@ -44,15 +44,16 @@ namespace LC::Monocle::Boop::MicroCSS
 				ConvertRule (bfmt, cfmt, rule);
 		}
 
-		std::pair<BlockFormat, CharFormat> Match (const StylingContext& ctx, const Stylesheet& css)
+		Style Match (const StylingContext& ctx, const Stylesheet& css)
 		{
 			BlockFormat bfmt;
 			CharFormat cfmt;
+			ImageFormat ifmt;
 			ConvertRules (bfmt, cfmt, css.Selectors_ [TagSelector { ctx.Tag_.toString () }]);
 			for (const auto& klass : ctx.Classes_)
 				ConvertRules (bfmt, cfmt, css.Selectors_ [ClassSelector { klass.toString () }]);
 
-			return { bfmt, cfmt };
+			return { bfmt, cfmt, ifmt };
 		}
 	}
 

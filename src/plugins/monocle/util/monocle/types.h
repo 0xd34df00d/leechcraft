@@ -87,13 +87,26 @@ namespace LC::Monocle
 		bool IsEmpty () const;
 	};
 
+	struct ImageFormat
+	{
+		std::optional<qreal> Width_ {};
+		std::optional<qreal> Height_ {};
+	};
+
 	struct StylingContext
 	{
 		QStringView Tag_;
 		QList<QStringView> Classes_;
 	};
 
-	using CustomStyler_f = std::function<std::pair<BlockFormat, CharFormat> (const StylingContext&)>;
+	struct Style
+	{
+		BlockFormat Block_;
+		CharFormat Char_;
+		ImageFormat Img_;
+	};
+
+	using CustomStyler_f = std::function<Style (const StylingContext&)>;
 }
 
 template<>
