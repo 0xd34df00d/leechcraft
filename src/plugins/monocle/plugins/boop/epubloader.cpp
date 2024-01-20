@@ -153,15 +153,12 @@ namespace LC::Monocle::Boop
 							if (!file.open (QIODevice::ReadOnly))
 								throw InvalidEpub { "unable to open " + item.Path_ + ": " + file.errorString () };
 
-							QImageReader reader { &file };
-							const auto& nativeSize = reader.size ();
+							const auto& nativeSize = QImageReader { &file }.size ();
 							if (nativeSize.isNull ())
 							{
 								qWarning () << "null image from" << item.Path_;
 								return {};
 							}
-
-							const auto& image = reader.read ();
 
 							return std::pair
 							{
@@ -169,7 +166,16 @@ namespace LC::Monocle::Boop
 								LazyImage
 								{
 									nativeSize,
-									[image] (QSize size) { return image.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation); }
+									[epubFile, nativeSize, imagePath = item.Path_] (QSize size)
+									{
+										QuaZipFile file { epubFile, imagePath, QuaZip::csInsensitive };
+										if (!file.open (QIODevice::ReadOnly))
+											throw InvalidEpub { "unable to open " + imagePath + ": " + file.errorString () };
+										QImageReader reader { &file };
+										if (size != nativeSize)
+											reader.setScaledSize (nativeSize.scaled (size, Qt::KeepAspectRatio));
+										return reader.read ();
+									}
 								}
 							};
 						}
