@@ -21,7 +21,7 @@ namespace LC::Monocle
 		CurrentSectionPath_.push (&Root_);
 	}
 
-	TOCEntryLevel_t TocBuilder::GetTOC () const
+	TOCEntryLevelT<Span> TocBuilder::GetTOC () const
 	{
 		return Root_.ChildLevel_;
 	}
@@ -34,11 +34,7 @@ namespace LC::Monocle
 
 		const auto curPosition = Cursor_.position ();
 		auto& curLevel = CurrentSectionPath_.top ()->ChildLevel_;
-		const auto& navigation = PageLink::GetNavigationAction ({
-				.TextDoc_ = *Cursor_.document (),
-				.Target_ = Span { curPosition, curPosition },
-			});
-		curLevel.append ({ .Navigation_ = navigation, .Name_ = sectionTitle, .ChildLevel_ = {} });
+		curLevel.append ({ .Navigation_ = { curPosition, curPosition }, .Name_ = sectionTitle, .ChildLevel_ = {} });
 		CurrentSectionPath_.push (&curLevel.back ());
 
 		return Util::MakeScopeGuard ([this] { CurrentSectionPath_.pop (); });

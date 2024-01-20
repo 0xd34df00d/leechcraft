@@ -16,12 +16,11 @@ class QTextDocument;
 
 namespace LC::Monocle
 {
-	class IDocument;
 	struct InternalLink;
 
 	struct DocStructure
 	{
-		TOCEntryLevel_t TOC_;
+		TOCEntryLevelT<Span> TOC_;
 		QVector<InternalLink> InternalLinks_;
 	};
 

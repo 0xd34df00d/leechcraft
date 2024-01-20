@@ -218,6 +218,25 @@ namespace LC::Monocle
 			}
 			return result;
 		}
+
+		TOCEntryLevel_t MaterializeSpans (const TOCEntryLevelT<Span>& toc, QTextDocument& doc)
+		{
+			TOCEntryLevel_t result;
+			result.reserve (toc.size ());
+			for (const auto& spanned : toc)
+			{
+				const auto& nav = PageLink::GetNavigationAction ({
+						.TextDoc_ = doc,
+						.Target_ = spanned.Navigation_,
+					});
+				result.append ({
+						.Navigation_ = nav,
+						.Name_ = spanned.Name_,
+						.ChildLevel_ = MaterializeSpans (spanned.ChildLevel_, doc),
+					});
+			}
+			return result;
+		}
 	}
 
 	void TextDocumentAdapter::SetDocument (const HtmlDocument& info)
@@ -228,9 +247,6 @@ namespace LC::Monocle
 		auto docStructure = Html2Doc (*Doc_, info.BodyElem_, info.Styler_);
 		timer.Stamp ("html2doc");
 
-		TOC_ = std::move (docStructure.TOC_);
-		timer.Stamp ("toc");
-
 		AddCoverImage (*Doc_, info.Images_, info.CoverId_);
 
 		for (const auto& [id, image] : info.Images_)
@@ -238,6 +254,9 @@ namespace LC::Monocle
 		timer.Stamp ("covers and resources");
 		Doc_->documentLayout ();
 		timer.Stamp ("layout");
+
+		TOC_ = MaterializeSpans (docStructure.TOC_, *Doc_);
+		timer.Stamp ("toc");
 
 		Links_ = CreateLinks (*Doc_, docStructure.InternalLinks_);
 		timer.Stamp ("links creation");

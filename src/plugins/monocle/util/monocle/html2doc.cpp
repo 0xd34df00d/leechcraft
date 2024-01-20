@@ -90,7 +90,7 @@ namespace LC::Monocle
 				AppendElem (body);
 			}
 
-			TOCEntryLevel_t GetTOC () const
+			TOCEntryLevelT<Span> GetTOC () const
 			{
 				return TocBuilder_.GetTOC ();
 			}

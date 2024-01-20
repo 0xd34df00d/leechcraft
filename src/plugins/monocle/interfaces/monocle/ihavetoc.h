@@ -13,19 +13,22 @@
 
 namespace LC::Monocle
 {
-	struct TOCEntry;
+	template<typename T>
+	struct TOCEntryT;
 
 	/** @brief A list of table of contents entries.
 	 */
-	typedef QList<TOCEntry> TOCEntryLevel_t;
+	template<typename T>
+	using TOCEntryLevelT = QVector<TOCEntryT<T>>;
 
 	/** @brief A single table of contents entry.
 	 */
-	struct TOCEntry
+	template<typename T>
+	struct TOCEntryT
 	{
 		/** @brief The navigation action corresponding to this entry.
 		 */
-		NavigationAction Navigation_;
+		T Navigation_;
 
 		/** @brief The human-readable name of the entry.
 		 */
@@ -33,8 +36,11 @@ namespace LC::Monocle
 
 		/** @brief Child items of this entry.
 		 */
-		TOCEntryLevel_t ChildLevel_;
+		TOCEntryLevelT<T> ChildLevel_;
 	};
+
+	using TOCEntryLevel_t = TOCEntryLevelT<NavigationAction>;
+	using TOCEntry = TOCEntryT<NavigationAction>;
 
 	/** @brief Interface for documents supporting table of contents.
 	 *

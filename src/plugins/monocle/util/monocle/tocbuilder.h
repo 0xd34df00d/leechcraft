@@ -11,25 +11,24 @@
 #include <QStack>
 #include <interfaces/monocle/ihavetoc.h>
 #include <util/sll/util.h>
+#include "types.h"
 
 class QDomElement;
 class QTextCursor;
 
 namespace LC::Monocle
 {
-	class IDocument;
-
 	class TocBuilder
 	{
 		const QTextCursor& Cursor_;
 
-		TOCEntry Root_;
+		TOCEntryT<Span> Root_;
 
-		QStack<TOCEntry*> CurrentSectionPath_;
+		QStack<TOCEntryT<Span>*> CurrentSectionPath_;
 	public:
 		explicit TocBuilder (const QTextCursor& cursor);
 
-		TOCEntryLevel_t GetTOC () const;
+		TOCEntryLevelT<Span> GetTOC () const;
 		[[nodiscard]] Util::DefaultScopeGuard HandleElem (const QDomElement&);
 	};
 
