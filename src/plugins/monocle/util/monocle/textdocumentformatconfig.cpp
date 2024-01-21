@@ -130,12 +130,12 @@ namespace LC::Monocle
 
 	BlockFormat TextDocumentFormatConfig::GetBlockFormat (const StylingContext& ctx) const
 	{
-		return WithClasses (ctx.Classes_, GetDefaultTagBlockFormat (ctx.Tag_));
+		return WithClasses (ctx.Elem_.Classes_, GetDefaultTagBlockFormat (ctx.Elem_.Tag_));
 	}
 
 	std::optional<CharFormat> TextDocumentFormatConfig::GetCharFormat (const StylingContext& ctx) const
 	{
-		return WithClasses (ctx.Classes_, GetDefaultTagCharFormat (ctx.Tag_));
+		return WithClasses (ctx.Elem_.Classes_, GetDefaultTagCharFormat (ctx.Elem_.Tag_));
 	}
 
 	BlockFormat TextDocumentFormatConfig::GetDefaultTagBlockFormat (QStringView tagName) const

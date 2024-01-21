@@ -15,7 +15,7 @@
 
 namespace LC::Monocle
 {
-	struct StylingContext;
+	struct StylingContextElement;
 }
 
 namespace LC::Monocle::Boop::MicroCSS
@@ -57,13 +57,14 @@ namespace LC::Monocle::Boop::MicroCSS
 		bool operator== (const TagClassSelector&) const = default;
 	};
 
-	using ComplexSelector = std::function<bool (const StylingContext&)>;
+	using ComplexSelector = std::function<bool (const StylingContextElement&)>;
 
 	using SingleSelector = std::variant<AtSelector, TagSelector, ClassSelector, TagClassSelector, ComplexSelector>;
 
 	struct Selector
 	{
 		SingleSelector Head_;
+		// The context is stored in the reversed order: the rightmost (sub)selector is the first one.
 		QVector<SingleSelector> Context_;
 	};
 

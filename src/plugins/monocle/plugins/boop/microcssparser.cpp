@@ -168,13 +168,13 @@ namespace LC::Monocle::Boop::MicroCSS
 			// there are more components: a (potentially empty) tag name and several classes
 			tagAndClasses.pop_front ();
 			const auto& classes = Util::Map (tagAndClasses, &QStringRef::toString);
-			return [tag = tag.toString (), classes] (const StylingContext& ctx)
+			return [tag = tag.toString (), classes] (const StylingContextElement& elem)
 			{
-				if (!tag.isEmpty () && tag != ctx.Tag_)
+				if (!tag.isEmpty () && tag != elem.Tag_)
 					return false;
 
 				return std::all_of (classes.begin (), classes.end (),
-						[&] (auto klass) { return ctx.Classes_.contains (klass); });
+						[&] (auto klass) { return elem.Classes_.contains (klass); });
 			};
 		}
 

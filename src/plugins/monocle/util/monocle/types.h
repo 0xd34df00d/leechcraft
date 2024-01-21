@@ -93,12 +93,18 @@ namespace LC::Monocle
 		std::optional<qreal> Height_ {};
 	};
 
-	struct StylingContext
+	struct StylingContextElement
 	{
 		QStringView Tag_;
 		QList<QStringView> Classes_;
+	};
 
-		const QTextCharFormat *CurCharFormat_;
+	struct StylingContext
+	{
+		StylingContextElement Elem_;
+		QVector<StylingContextElement> Parents_;
+
+		const QTextCharFormat& CurCharFormat_;
 	};
 
 	struct Style

@@ -48,12 +48,13 @@ namespace LC::Monocle::Boop::MicroCSS
 			if (!selector.Context_.isEmpty ())
 				return false;
 
+			const auto& elem = ctx.Elem_;
 			return Util::Visit (selector.Head_,
 					[] (const AtSelector&) { return false; },
-					[&] (const TagSelector& s) { return ctx.Tag_ == s.Tag_; },
-					[&] (const ClassSelector& s) { return ctx.Classes_.contains (s.Class_); },
-					[&] (const TagClassSelector& s) { return ctx.Tag_ == s.Tag_ && ctx.Classes_.contains (s.Class_); },
-					[&] (const ComplexSelector& s) { return s (ctx); });
+					[&] (const TagSelector& s) { return elem.Tag_ == s.Tag_; },
+					[&] (const ClassSelector& s) { return elem.Classes_.contains (s.Class_); },
+					[&] (const TagClassSelector& s) { return elem.Tag_ == s.Tag_ && elem.Classes_.contains (s.Class_); },
+					[&] (const ComplexSelector& s) { return s (elem); });
 		}
 
 		Style Match (const StylingContext& ctx, const Stylesheet& css)

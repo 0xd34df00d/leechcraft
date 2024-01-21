@@ -74,6 +74,46 @@ namespace LC::Monocle
 			return image.NativeSize_;
 		}
 
+		class StylingContextKeeper
+		{
+			const QTextCharFormat& CharFormat_;
+
+			QString Tag_;
+			QString Classes_;
+
+			StylingContextElement CurrElem_;
+			QVector<StylingContextElement> Parents_;
+		public:
+			StylingContextKeeper (const QTextCharFormat& charFormat)
+			: CharFormat_ { charFormat }
+			{
+			}
+
+			auto HandleElem (const QDomElement& elem)
+			{
+				auto prevTag = Tag_;
+				auto prevClasses = Classes_;
+
+				Tag_ = elem.tagName ();
+				Classes_ = elem.attribute ("class"_qs);
+
+				Parents_.push_back (CurrElem_);
+				CurrElem_ = StylingContextElement { Tag_, QStringView { Classes_ }.split (' ', Qt::SkipEmptyParts) };
+
+				return Util::MakeScopeGuard ([this, prevTag, prevClasses]
+						{
+							CurrElem_ = Parents_.takeLast ();
+							Tag_ = prevTag;
+							Classes_ = prevClasses;
+						});
+			}
+
+			StylingContext GetContext () const
+			{
+				return { CurrElem_, Parents_, CharFormat_ };
+			}
+		};
+
 		class Converter
 		{
 			const TextDocumentFormatConfig& Config_ = TextDocumentFormatConfig::Instance ();
@@ -90,7 +130,7 @@ namespace LC::Monocle
 			TocBuilder TocBuilder_;
 			LinksBuilder LinksBuilder_;
 
-			StylingContext StylingCtx_ { {}, {}, nullptr };
+			StylingContextKeeper StylingCtxKeeper_ { CharFormat_ };
 		public:
 			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
 			: CustomStyler_ { styler }
@@ -124,9 +164,7 @@ namespace LC::Monocle
 		private:
 			void AppendElem (const QDomElement& elem)
 			{
-				StackKeeper stylingCtxKeeper { StylingCtx_ };
-				const auto& klass = elem.attribute ("class"_qs);
-				stylingCtxKeeper.Set ({ elem.tagName (), QStringView { klass }.split (' '), &CharFormat_ });
+				const auto ctxGuard = StylingCtxKeeper_.HandleElem (elem);
 
 				StackKeeper charKeeper { CharFormat_ };
 				if (auto maybeCharFmt = GetCharFormat ())
@@ -187,7 +225,7 @@ namespace LC::Monocle
 					const auto& image = Images_.value (imgFmt.name ());
 					if (!image)
 						qWarning () << "unknown image" << imgFmt.name ();
-					if (const auto& size = GetImageSize (image, CustomStyler_, StylingCtx_))
+					if (const auto& size = GetImageSize (image, CustomStyler_, StylingCtxKeeper_.GetContext ()))
 					{
 						imgFmt.setWidth (size->width ());
 						imgFmt.setHeight (size->height ());
@@ -241,9 +279,9 @@ namespace LC::Monocle
 
 			std::pair<QTextFrameFormat, QTextBlockFormat> GetFrameBlockFormat ()
 			{
-				auto blockCfg = Config_.GetBlockFormat (StylingCtx_);
+				auto blockCfg = Config_.GetBlockFormat (StylingCtxKeeper_.GetContext ());
 				if (CustomStyler_)
-					blockCfg += CustomStyler_ (StylingCtx_).Block_;
+					blockCfg += CustomStyler_ (StylingCtxKeeper_.GetContext ()).Block_;
 
 				QTextFrameFormat frameFmt;
 				QTextBlockFormat blockFmt;
@@ -253,9 +291,9 @@ namespace LC::Monocle
 
 			QTextBlockFormat GetBlockFormat ()
 			{
-				auto blockCfg = Config_.GetBlockFormat (StylingCtx_);
+				auto blockCfg = Config_.GetBlockFormat (StylingCtxKeeper_.GetContext ());
 				if (CustomStyler_)
-					blockCfg += CustomStyler_ (StylingCtx_).Block_;
+					blockCfg += CustomStyler_ (StylingCtxKeeper_.GetContext ()).Block_;
 
 				QTextBlockFormat blockFmt;
 				SetBlockConfig (blockFmt, blockFmt, blockCfg);
@@ -264,8 +302,8 @@ namespace LC::Monocle
 
 			std::optional<QTextCharFormat> GetCharFormat ()
 			{
-				auto charCfg = Config_.GetCharFormat (StylingCtx_);
-				const auto& custom = CustomStyler_ ? CustomStyler_ (StylingCtx_).Char_ : CharFormat {};
+				auto charCfg = Config_.GetCharFormat (StylingCtxKeeper_.GetContext ());
+				const auto& custom = CustomStyler_ ? CustomStyler_ (StylingCtxKeeper_.GetContext ()).Char_ : CharFormat {};
 				if (!charCfg && custom.IsEmpty ())
 					return {};
 				if (!charCfg)
