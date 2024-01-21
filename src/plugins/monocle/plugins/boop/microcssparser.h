@@ -13,6 +13,11 @@
 #include <QString>
 #include <QVector>
 
+namespace LC::Monocle
+{
+	struct StylingContext;
+}
+
 namespace LC::Monocle::Boop::MicroCSS
 {
 	struct Rule
@@ -32,35 +37,42 @@ namespace LC::Monocle::Boop::MicroCSS
 
 	struct TagSelector
 	{
-		QString Sel_;
+		QString Tag_;
 
 		bool operator== (const TagSelector&) const = default;
 	};
 
 	struct ClassSelector
 	{
-		QString Sel_;
+		QString Class_;
 
 		bool operator== (const ClassSelector&) const = default;
 	};
 
-	struct ComplexSelector
+	struct TagClassSelector
 	{
-		QString Sel_;
+		QString Tag_;
+		QString Class_;
 
-		bool operator== (const ComplexSelector&) const = default;
+		bool operator== (const TagClassSelector&) const = default;
 	};
 
-	using Selector = std::variant<AtSelector, TagSelector, ClassSelector, ComplexSelector>;
+	using ComplexSelector = std::function<bool (const StylingContext&)>;
 
-	size_t qHash (const Selector&);
+	using SingleSelector = std::variant<AtSelector, TagSelector, ClassSelector, TagClassSelector, ComplexSelector>;
+
+	struct Selector
+	{
+		SingleSelector Head_;
+		QVector<SingleSelector> Context_;
+	};
 
 	struct Stylesheet
 	{
-		QHash<Selector, QVector<Rule>> Selectors_;
+		QVector<std::pair<Selector, QVector<Rule>>> Selectors_;
 
 		Stylesheet& operator+= (const Stylesheet&);
 	};
 
-	Stylesheet Parse (QStringView str, const std::function<bool (const Selector&)>& selectorFilter);
+	Stylesheet Parse (QStringView str);
 }

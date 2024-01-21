@@ -11,8 +11,10 @@
 #include <deque>
 #include <QDebug>
 #include <QRegularExpression>
+#include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/monocle/types.h>
 
 namespace LC::Monocle::Boop::MicroCSS
 {
@@ -138,28 +140,71 @@ namespace LC::Monocle::Boop::MicroCSS
 			return prevIgnored;
 		}
 
-		QVector<Selector> ParseSelectors (const QString& rawStr)
+		SingleSelector ParseSingleSelector (QStringRef part)
+		{
+			if (part.startsWith ('@'))
+				return AtSelector { part.mid (1).toString () };
+
+			auto tagAndClasses = part.split ('.', Qt::KeepEmptyParts);
+
+			Q_ASSERT (!tagAndClasses.isEmpty ());
+
+			const auto tag = tagAndClasses [0];
+
+			// no dots, it's a class
+			if (tagAndClasses.size () == 1)
+				return TagSelector { tag.toString () };
+
+			// there are only two components: a (potentially empty) tag and a class
+			if (tagAndClasses.size () == 2)
+			{
+				const auto& klass = tagAndClasses [1];
+				if (tag.isEmpty ())
+					return ClassSelector { klass.toString () };
+				else
+					return TagClassSelector { .Tag_ = tag.toString (), .Class_ = klass.toString () };
+			}
+
+			// there are more components: a (potentially empty) tag name and several classes
+			tagAndClasses.pop_front ();
+			const auto& classes = Util::Map (tagAndClasses, &QStringRef::toString);
+			return [tag = tag.toString (), classes] (const StylingContext& ctx)
+			{
+				if (!tag.isEmpty () && tag != ctx.Tag_)
+					return false;
+
+				return std::all_of (classes.begin (), classes.end (),
+						[&] (auto klass) { return ctx.Classes_.contains (klass); });
+			};
+		}
+
+		auto ParseSelectors (const QString& rawStr)
 		{
 			QVector<Selector> result;
-			result.reserve (rawStr.count (','));
+			result.reserve (rawStr.count (',') + 1);
 
-			for (const auto& sub : rawStr.splitRef (',', Qt::SkipEmptyParts))
+			for (auto sub : rawStr.splitRef (',', Qt::SkipEmptyParts))
 			{
-				if (sub.contains (' '))
-					result << ComplexSelector { sub.toString () };
-				else if (sub.startsWith ('@'))
-					result << AtSelector { sub.mid (1).toString () };
-				else if (sub.startsWith ('.'))
-					result << ClassSelector { sub.mid (1).toString () };
-				else
-					result << TagSelector { sub.toString () };
+				sub = sub.trimmed ();
+				QVector<SingleSelector> parts;
+				parts.reserve (sub.count (' ') + 1);
+				for (const auto& part : sub.split (' ', Qt::SkipEmptyParts))
+					parts << ParseSingleSelector (part);
+
+				if (parts.isEmpty ())
+					continue;
+
+				auto head = parts.back ();
+				parts.pop_back ();
+				std::reverse (parts.begin (), parts.end ());
+				result << Selector { head, std::move (parts) };
 			}
 
 			return result;
 		}
 	}
 
-	Stylesheet Parse (QStringView text, const std::function<bool (const Selector&)>& selectorFilter)
+	Stylesheet Parse (QStringView text)
 	{
 		Stylesheet result;
 
@@ -178,12 +223,9 @@ namespace LC::Monocle::Boop::MicroCSS
 				return result;
 
 			const auto& selectors = ParseSelectors (*maybeSelector);
-			if (std::any_of (selectors.begin (), selectors.end (), selectorFilter))
-			{
-				const auto& block = TryParseSelectorBlock (blockStart, blockEnd);
-				for (const auto& selector : selectors)
-					result.Selectors_ [selector] += block;
-			}
+			const auto& block = TryParseSelectorBlock (blockStart, blockEnd);
+			for (const auto& selector : selectors)
+				result.Selectors_.push_back ({ selector, block });
 
 			pos = blockEnd + 1;
 		}
@@ -191,17 +233,9 @@ namespace LC::Monocle::Boop::MicroCSS
 		return result;
 	}
 
-	size_t qHash (const Selector& sel)
-	{
-		const auto& selStr = Util::Visit (sel,
-				[] (const auto& item) -> decltype (auto) { return item.Sel_; });
-		return qHash (QPair<size_t, const QString&> { sel.index (), selStr });
-	}
-
 	Stylesheet& Stylesheet::operator+= (const Stylesheet& other)
 	{
-		for (const auto& [selector, rules] : Util::Stlize (other.Selectors_))
-			Selectors_ [selector] += rules;
+		Selectors_ += other.Selectors_;
 		return *this;
 	}
 

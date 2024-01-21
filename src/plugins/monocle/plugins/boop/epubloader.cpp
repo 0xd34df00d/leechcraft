@@ -15,7 +15,6 @@
 #include <quazip/quazipfile.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/timer.h>
-#include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include "document.h"
 #include "internallinks.h"
@@ -57,19 +56,11 @@ namespace LC::Monocle::Boop
 			return result;
 		}
 
-		bool IsCssSelectorRelevant (const MicroCSS::Selector& selector)
-		{
-			return Util::Visit (selector,
-					[] (const MicroCSS::AtSelector&) { return false; },
-					[] (const MicroCSS::ComplexSelector&) { return false; },
-					[] (const auto&) { return true; });
-		}
-
 		Stylesheet GetInternalStylesheet (const QDomElement& root)
 		{
 			Stylesheet result;
 			for (const auto& style : Util::DomDescendants (root, "style"_qs))
-				result += MicroCSS::Parse (style.text (), &IsCssSelectorRelevant);
+				result += MicroCSS::Parse (style.text ());
 			return result;
 		}
 
@@ -111,7 +102,7 @@ namespace LC::Monocle::Boop
 					continue;
 				}
 
-				result += MicroCSS::Parse (QString::fromUtf8 (file.readAll ()), &IsCssSelectorRelevant);
+				result += MicroCSS::Parse (QString::fromUtf8 (file.readAll ()));
 			}
 			return result;
 		}

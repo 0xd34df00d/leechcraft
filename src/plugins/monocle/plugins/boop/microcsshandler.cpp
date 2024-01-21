@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "microcsshandler.h"
+#include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/monocle/types.h>
 #include "microcssparser.h"
@@ -29,19 +30,30 @@ namespace LC::Monocle::Boop::MicroCSS
 			return {};
 		}
 
-		void ConvertRule (BlockFormat& bfmt, CharFormat&, const Rule& rule)
+		void ConvertRule (const StylingContext& ctx, BlockFormat& bfmt, CharFormat&, ImageFormat& ifmt, const Rule& rule)
 		{
 			if (rule.Property_ == "text-align"_ql)
-			{
-				if (const auto align = ParseAlign (rule.Value_))
-					bfmt.Align_ = align;
-			}
+				bfmt.Align_ = ParseAlign (rule.Value_);
 		}
 
-		void ConvertRules (BlockFormat& bfmt, CharFormat& cfmt, const QVector<Rule>& rules)
+		void ConvertRules (const StylingContext& ctx, BlockFormat& bfmt, CharFormat& cfmt, ImageFormat& ifmt, const QVector<Rule>& rules)
 		{
 			for (const auto& rule : rules)
-				ConvertRule (bfmt, cfmt, rule);
+				ConvertRule (ctx, bfmt, cfmt, ifmt, rule);
+		}
+
+		bool SelectorMatches (const Selector& selector, const StylingContext& ctx)
+		{
+			// TODO
+			if (!selector.Context_.isEmpty ())
+				return false;
+
+			return Util::Visit (selector.Head_,
+					[] (const AtSelector&) { return false; },
+					[&] (const TagSelector& s) { return ctx.Tag_ == s.Tag_; },
+					[&] (const ClassSelector& s) { return ctx.Classes_.contains (s.Class_); },
+					[&] (const TagClassSelector& s) { return ctx.Tag_ == s.Tag_ && ctx.Classes_.contains (s.Class_); },
+					[&] (const ComplexSelector& s) { return s (ctx); });
 		}
 
 		Style Match (const StylingContext& ctx, const Stylesheet& css)
@@ -49,9 +61,9 @@ namespace LC::Monocle::Boop::MicroCSS
 			BlockFormat bfmt;
 			CharFormat cfmt;
 			ImageFormat ifmt;
-			ConvertRules (bfmt, cfmt, css.Selectors_ [TagSelector { ctx.Tag_.toString () }]);
-			for (const auto& klass : ctx.Classes_)
-				ConvertRules (bfmt, cfmt, css.Selectors_ [ClassSelector { klass.toString () }]);
+			for (const auto& [selector, rules] : css.Selectors_)
+				if (SelectorMatches (selector, ctx))
+					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 
 			return { bfmt, cfmt, ifmt };
 		}
