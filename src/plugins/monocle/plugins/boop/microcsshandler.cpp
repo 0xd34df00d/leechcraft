@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "microcsshandler.h"
+#include <QTextCursor>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/monocle/types.h>
@@ -30,10 +31,42 @@ namespace LC::Monocle::Boop::MicroCSS
 			return {};
 		}
 
+		std::optional<qreal> ParseDim (const StylingContext& ctx, QStringView str)
+		{
+			if (str.endsWith ("px"_ql))
+			{
+				bool ok = false;
+				auto val = str.chopped (2).toDouble (&ok);
+				if (!ok)
+					return {};
+				return val;
+			}
+			if (str.endsWith ("em"_ql))
+			{
+				bool ok = false;
+				auto val = str.chopped (2).toDouble (&ok);
+				if (!ok)
+					return {};
+
+				auto font = ctx.Cursor_.charFormat ().font ();
+				if (font.pointSize () > 0)
+					return font.pointSize () * val;
+				if (font.pixelSize () > 0)
+					return font.pixelSize () * val;
+				return {};
+			}
+
+			return {};
+		}
+
 		void ConvertRule (const StylingContext& ctx, BlockFormat& bfmt, CharFormat&, ImageFormat& ifmt, const Rule& rule)
 		{
 			if (rule.Property_ == "text-align"_ql)
 				bfmt.Align_ = ParseAlign (rule.Value_);
+			if (rule.Property_ == "height"_ql)
+				ifmt.Height_ = ParseDim (ctx, rule.Value_);
+			if (rule.Property_ == "width"_ql)
+				ifmt.Width_ = ParseDim (ctx, rule.Value_);
 		}
 
 		void ConvertRules (const StylingContext& ctx, BlockFormat& bfmt, CharFormat& cfmt, ImageFormat& ifmt, const QVector<Rule>& rules)
