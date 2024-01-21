@@ -194,6 +194,16 @@ namespace LC::Monocle::Boop::MicroCSS
 
 			return result;
 		}
+
+		QString GetTag (const SingleSelector& selector)
+		{
+			return Util::Visit (selector,
+					[] (const AtSelector&) { return QString {}; },
+					[] (const TagSelector& s) { return s.Tag_; },
+					[] (const ClassSelector&) { return QString {}; },
+					[] (const TagClassSelector& s) { return s.Tag_; },
+					[] (const ManyClassesSelector& s) { return s.Tag_; });
+		}
 	}
 
 	Stylesheet Parse (QStringView text)
@@ -231,6 +241,8 @@ namespace LC::Monocle::Boop::MicroCSS
 								else
 									result.ManyClassesByTag_ [s.Tag_].push_back ({ s, block });
 							});
+				else if (const auto& tag = GetTag (selector.Head_); !tag.isEmpty ())
+					result.ComplexByTag_ [tag].push_back ({ selector, block });
 				else
 					result.Others_.push_back ({ selector, block });
 			}
@@ -262,6 +274,7 @@ namespace LC::Monocle::Boop::MicroCSS
 		ByClass_.insert (other.ByClass_);
 		ByTagAndClass_.insert (other.ByTagAndClass_);
 		ManyClassesByTag_.insert (other.ManyClassesByTag_);
+		ComplexByTag_.insert (other.ComplexByTag_);
 		Others_ += other.Others_;
 		return *this;
 	}

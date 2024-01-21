@@ -127,6 +127,9 @@ namespace LC::Monocle::Boop::MicroCSS
 					if (SelectorMatches (selector, ctx.Elem_))
 						ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 			}
+			for (const auto& [selector, rules] : css.ComplexByTag_ [tag])
+				if (SelectorMatches (selector, ctx))
+					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 			for (const auto& [selector, rules] : css.Others_)
 				if (SelectorMatches (selector, ctx))
 					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);

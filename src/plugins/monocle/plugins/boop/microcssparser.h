@@ -82,6 +82,8 @@ namespace LC::Monocle::Boop::MicroCSS
 		QVector<SingleSelector> Context_;
 	};
 
+	using ComplexRules_t = QVector<std::pair<Selector, QVector<Rule>>>;
+
 	struct Stylesheet
 	{
 		QHash<TagSelector, QVector<Rule>> ByTag_;
@@ -89,7 +91,9 @@ namespace LC::Monocle::Boop::MicroCSS
 		QHash<TagClassSelector, QVector<Rule>> ByTagAndClass_;
 
 		QHash<QString, QVector<std::pair<ManyClassesSelector, QVector<Rule>>>> ManyClassesByTag_;
-		QVector<std::pair<Selector, QVector<Rule>>> Others_;
+
+		QHash<QString, ComplexRules_t> ComplexByTag_;
+		ComplexRules_t Others_;
 
 		Stylesheet& operator+= (const Stylesheet&);
 	};

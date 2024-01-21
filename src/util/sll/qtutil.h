@@ -129,6 +129,11 @@ namespace LC::Util
 	{
 		ptr.release ()->setParent (&parent);
 	}
+
+	inline QString UnsafeFromView (QStringView sv)
+	{
+		return QString::fromRawData (sv.data (), sv.size ());
+	}
 }
 
 namespace LC
