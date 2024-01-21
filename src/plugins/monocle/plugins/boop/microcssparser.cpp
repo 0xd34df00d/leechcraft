@@ -196,7 +196,6 @@ namespace LC::Monocle::Boop::MicroCSS
 
 				auto head = parts.back ();
 				parts.pop_back ();
-				std::reverse (parts.begin (), parts.end ());
 				result << Selector { head, std::move (parts) };
 			}
 

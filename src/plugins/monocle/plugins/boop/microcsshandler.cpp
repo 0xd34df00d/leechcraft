@@ -44,17 +44,29 @@ namespace LC::Monocle::Boop::MicroCSS
 
 		bool SelectorMatches (const Selector& selector, const StylingContext& ctx)
 		{
-			// TODO
-			if (!selector.Context_.isEmpty ())
-				return false;
-
 			const auto& elem = ctx.Elem_;
-			return Util::Visit (selector.Head_,
+			const auto thisMatches = Util::Visit (selector.Head_,
 					[] (const AtSelector&) { return false; },
 					[&] (const TagSelector& s) { return elem.Tag_ == s.Tag_; },
 					[&] (const ClassSelector& s) { return elem.Classes_.contains (s.Class_); },
 					[&] (const TagClassSelector& s) { return elem.Tag_ == s.Tag_ && elem.Classes_.contains (s.Class_); },
 					[&] (const ComplexSelector& s) { return s (elem); });
+			if (!thisMatches)
+				return false;
+
+			if (selector.Context_.isEmpty ())
+				return true;
+
+			if (ctx.Parents_.isEmpty ())
+				return false;
+
+			auto subcontext = selector.Context_;
+			auto subhead = subcontext.takeLast ();
+
+			auto subparents = ctx.Parents_;
+			auto subelem = subparents.takeLast ();
+
+			return SelectorMatches ({ subhead, subcontext }, { subelem, subparents, ctx.CurCharFormat_ });
 		}
 
 		Style Match (const StylingContext& ctx, const Stylesheet& css)
