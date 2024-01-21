@@ -63,9 +63,17 @@ namespace LC::Monocle::Boop::MicroCSS
 
 	quint64 qHash (const TagClassSelector&);
 
-	using ComplexSelector = std::function<bool (const StylingContextElement&)>;
+	struct ManyClassesSelector
+	{
+		QString Tag_;
+		QVector<QString> Classes_;
 
-	using SingleSelector = std::variant<AtSelector, TagSelector, ClassSelector, TagClassSelector, ComplexSelector>;
+		bool operator== (const ManyClassesSelector&) const = default;
+	};
+
+	quint64 qHash (const ManyClassesSelector&);
+
+	using SingleSelector = std::variant<AtSelector, TagSelector, ClassSelector, TagClassSelector, ManyClassesSelector>;
 
 	struct Selector
 	{
@@ -79,6 +87,8 @@ namespace LC::Monocle::Boop::MicroCSS
 		QHash<TagSelector, QVector<Rule>> ByTag_;
 		QHash<ClassSelector, QVector<Rule>> ByClass_;
 		QHash<TagClassSelector, QVector<Rule>> ByTagAndClass_;
+
+		QHash<QString, QVector<std::pair<ManyClassesSelector, QVector<Rule>>>> ManyClassesByTag_;
 		QVector<std::pair<Selector, QVector<Rule>>> Others_;
 
 		Stylesheet& operator+= (const Stylesheet&);

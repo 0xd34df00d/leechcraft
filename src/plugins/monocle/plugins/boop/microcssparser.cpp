@@ -168,14 +168,7 @@ namespace LC::Monocle::Boop::MicroCSS
 			// there are more components: a (potentially empty) tag name and several classes
 			tagAndClasses.pop_front ();
 			const auto& classes = Util::Map (tagAndClasses, &QStringRef::toString);
-			return [tag = tag.toString (), classes] (const StylingContextElement& elem)
-			{
-				if (!tag.isEmpty () && tag != elem.Tag_)
-					return false;
-
-				return std::all_of (classes.begin (), classes.end (),
-						[&] (auto klass) { return elem.Classes_.contains (klass); });
-			};
+			return ManyClassesSelector { tag.toString (), classes };
 		}
 
 		auto ParseSelectors (const QString& rawStr)
@@ -231,7 +224,13 @@ namespace LC::Monocle::Boop::MicroCSS
 							[&] (const TagSelector& s) { result.ByTag_ [s] += block; },
 							[&] (const ClassSelector& s) { result.ByClass_ [s] += block; },
 							[&] (const TagClassSelector& s) { result.ByTagAndClass_ [s] += block; },
-							[&] (const auto&) { result.Others_.push_back ({ selector, block }); });
+							[&] (const ManyClassesSelector& s)
+							{
+								if (s.Tag_.isEmpty ())
+									result.Others_.push_back ({ selector, block });
+								else
+									result.ManyClassesByTag_ [s.Tag_].push_back ({ s, block });
+							});
 				else
 					result.Others_.push_back ({ selector, block });
 			}
@@ -262,6 +261,7 @@ namespace LC::Monocle::Boop::MicroCSS
 		ByTag_.insert (other.ByTag_);
 		ByClass_.insert (other.ByClass_);
 		ByTagAndClass_.insert (other.ByTagAndClass_);
+		ManyClassesByTag_.insert (other.ManyClassesByTag_);
 		Others_ += other.Others_;
 		return *this;
 	}

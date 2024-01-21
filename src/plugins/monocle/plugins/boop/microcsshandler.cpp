@@ -75,6 +75,15 @@ namespace LC::Monocle::Boop::MicroCSS
 				ConvertRule (ctx, bfmt, cfmt, ifmt, rule);
 		}
 
+		bool SelectorMatches (const ManyClassesSelector& s, const StylingContextElement& elem)
+		{
+			if (!s.Tag_.isEmpty () && s.Tag_ != elem.Tag_)
+				return false;
+
+			return std::all_of (s.Classes_.begin (), s.Classes_.end (),
+					[&] (auto klass) { return elem.Classes_.contains (klass); });
+		}
+
 		bool SelectorMatches (const Selector& selector, const StylingContext& ctx)
 		{
 			const auto& elem = ctx.Elem_;
@@ -83,7 +92,7 @@ namespace LC::Monocle::Boop::MicroCSS
 					[&] (const TagSelector& s) { return elem.Tag_ == s.Tag_; },
 					[&] (const ClassSelector& s) { return elem.Classes_.contains (s.Class_); },
 					[&] (const TagClassSelector& s) { return elem.Tag_ == s.Tag_ && elem.Classes_.contains (s.Class_); },
-					[&] (const ComplexSelector& s) { return s (elem); });
+					[&] (const ManyClassesSelector& s) { return SelectorMatches (s, elem); });
 			if (!thisMatches)
 				return false;
 
@@ -114,6 +123,9 @@ namespace LC::Monocle::Boop::MicroCSS
 				const auto& klass = Util::UnsafeFromView (klassView);
 				ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByClass_ [ClassSelector { klass }]);
 				ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByTagAndClass_ [TagClassSelector { tag, klass }]);
+				for (const auto& [selector, rules] : css.ManyClassesByTag_ [tag])
+					if (SelectorMatches (selector, ctx.Elem_))
+						ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 			}
 			for (const auto& [selector, rules] : css.Others_)
 				if (SelectorMatches (selector, ctx))
