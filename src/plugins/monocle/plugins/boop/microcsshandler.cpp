@@ -107,7 +107,15 @@ namespace LC::Monocle::Boop::MicroCSS
 			BlockFormat bfmt;
 			CharFormat cfmt;
 			ImageFormat ifmt;
-			for (const auto& [selector, rules] : css.Selectors_)
+			const auto& tag = Util::UnsafeFromView (ctx.Elem_.Tag_);
+			ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByTag_ [TagSelector { tag }]);
+			for (const auto& klassView : ctx.Elem_.Classes_)
+			{
+				const auto& klass = Util::UnsafeFromView (klassView);
+				ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByClass_ [ClassSelector { klass }]);
+				ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByTagAndClass_ [TagClassSelector { tag, klass }]);
+			}
+			for (const auto& [selector, rules] : css.Others_)
 				if (SelectorMatches (selector, ctx))
 					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 

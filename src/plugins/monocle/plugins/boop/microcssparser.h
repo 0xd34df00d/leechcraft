@@ -42,12 +42,16 @@ namespace LC::Monocle::Boop::MicroCSS
 		bool operator== (const TagSelector&) const = default;
 	};
 
+	quint64 qHash (const TagSelector&);
+
 	struct ClassSelector
 	{
 		QString Class_;
 
 		bool operator== (const ClassSelector&) const = default;
 	};
+
+	quint64 qHash (const ClassSelector&);
 
 	struct TagClassSelector
 	{
@@ -56,6 +60,8 @@ namespace LC::Monocle::Boop::MicroCSS
 
 		bool operator== (const TagClassSelector&) const = default;
 	};
+
+	quint64 qHash (const TagClassSelector&);
 
 	using ComplexSelector = std::function<bool (const StylingContextElement&)>;
 
@@ -70,7 +76,10 @@ namespace LC::Monocle::Boop::MicroCSS
 
 	struct Stylesheet
 	{
-		QVector<std::pair<Selector, QVector<Rule>>> Selectors_;
+		QHash<TagSelector, QVector<Rule>> ByTag_;
+		QHash<ClassSelector, QVector<Rule>> ByClass_;
+		QHash<TagClassSelector, QVector<Rule>> ByTagAndClass_;
+		QVector<std::pair<Selector, QVector<Rule>>> Others_;
 
 		Stylesheet& operator+= (const Stylesheet&);
 	};

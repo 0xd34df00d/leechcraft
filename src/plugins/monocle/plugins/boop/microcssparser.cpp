@@ -224,7 +224,17 @@ namespace LC::Monocle::Boop::MicroCSS
 			const auto& selectors = ParseSelectors (*maybeSelector);
 			const auto& block = TryParseSelectorBlock (blockStart, blockEnd);
 			for (const auto& selector : selectors)
-				result.Selectors_.push_back ({ selector, block });
+			{
+				if (selector.Context_.isEmpty ())
+					Util::Visit (selector.Head_,
+							[] (const AtSelector&) {},
+							[&] (const TagSelector& s) { result.ByTag_ [s] += block; },
+							[&] (const ClassSelector& s) { result.ByClass_ [s] += block; },
+							[&] (const TagClassSelector& s) { result.ByTagAndClass_ [s] += block; },
+							[&] (const auto&) { result.Others_.push_back ({ selector, block }); });
+				else
+					result.Others_.push_back ({ selector, block });
+			}
 
 			pos = blockEnd + 1;
 		}
@@ -232,9 +242,27 @@ namespace LC::Monocle::Boop::MicroCSS
 		return result;
 	}
 
+	quint64 qHash (const TagSelector& s)
+	{
+		return qHash (s.Tag_);
+	}
+
+	quint64 qHash (const ClassSelector& s)
+	{
+		return qHash (s.Class_);
+	}
+
+	quint64 qHash (const TagClassSelector& s)
+	{
+		return qHash (QPair { s.Tag_, s.Class_ });
+	}
+
 	Stylesheet& Stylesheet::operator+= (const Stylesheet& other)
 	{
-		Selectors_ += other.Selectors_;
+		ByTag_.insert (other.ByTag_);
+		ByClass_.insert (other.ByClass_);
+		ByTagAndClass_.insert (other.ByTagAndClass_);
+		Others_ += other.Others_;
 		return *this;
 	}
 
