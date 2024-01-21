@@ -66,7 +66,7 @@ namespace LC::Monocle::Boop::MicroCSS
 			auto subparents = ctx.Parents_;
 			auto subelem = subparents.takeLast ();
 
-			return SelectorMatches ({ subhead, subcontext }, { subelem, subparents, ctx.CurCharFormat_ });
+			return SelectorMatches ({ subhead, subcontext }, { subelem, subparents, ctx.Cursor_ });
 		}
 
 		Style Match (const StylingContext& ctx, const Stylesheet& css)

@@ -104,7 +104,7 @@ namespace LC::Monocle
 		StylingContextElement Elem_;
 		QVector<StylingContextElement> Parents_;
 
-		const QTextCharFormat& CurCharFormat_;
+		const QTextCursor& Cursor_;
 	};
 
 	struct Style

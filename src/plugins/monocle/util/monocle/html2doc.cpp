@@ -76,7 +76,7 @@ namespace LC::Monocle
 
 		class StylingContextKeeper
 		{
-			const QTextCharFormat& CharFormat_;
+			const QTextCursor& Cursor_;
 
 			QString Tag_;
 			QString Classes_;
@@ -84,8 +84,8 @@ namespace LC::Monocle
 			StylingContextElement CurrElem_;
 			QVector<StylingContextElement> Parents_;
 		public:
-			StylingContextKeeper (const QTextCharFormat& charFormat)
-			: CharFormat_ { charFormat }
+			StylingContextKeeper (const QTextCursor& cursor)
+			: Cursor_ { cursor }
 			{
 			}
 
@@ -110,7 +110,7 @@ namespace LC::Monocle
 
 			StylingContext GetContext () const
 			{
-				return { CurrElem_, Parents_, CharFormat_ };
+				return { CurrElem_, Parents_, Cursor_ };
 			}
 		};
 
@@ -130,7 +130,7 @@ namespace LC::Monocle
 			TocBuilder TocBuilder_;
 			LinksBuilder LinksBuilder_;
 
-			StylingContextKeeper StylingCtxKeeper_ { CharFormat_ };
+			StylingContextKeeper StylingCtxKeeper_ { Cursor_ };
 		public:
 			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
 			: CustomStyler_ { styler }
