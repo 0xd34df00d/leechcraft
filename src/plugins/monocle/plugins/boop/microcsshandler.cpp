@@ -59,7 +59,23 @@ namespace LC::Monocle::Boop::MicroCSS
 			return {};
 		}
 
-		void ConvertRule (const StylingContext& ctx, BlockFormat& bfmt, CharFormat&, ImageFormat& ifmt, const Rule& rule)
+		std::optional<QTextCharFormat::VerticalAlignment> ParseVerticalAlignment (QStringView str)
+		{
+			static const QHash<QStringView, std::optional<QTextCharFormat::VerticalAlignment>> values
+			{
+				{ u"middle"_qsv, QTextCharFormat::VerticalAlignment::AlignMiddle },
+				{ u"baseline"_qsv, QTextCharFormat::VerticalAlignment::AlignBaseline },
+				{ u"sub"_qsv, QTextCharFormat::VerticalAlignment::AlignSubScript },
+				{ u"super"_qsv, QTextCharFormat::VerticalAlignment::AlignSuperScript },
+				{ u"bottom"_qsv, QTextCharFormat::VerticalAlignment::AlignBottom },
+				{ u"top"_qsv, QTextCharFormat::VerticalAlignment::AlignTop },
+				{ u"initial"_qsv, QTextCharFormat::VerticalAlignment::AlignNormal },
+				{ u"revert"_qsv, QTextCharFormat::VerticalAlignment::AlignNormal },
+			};
+			return values.value (str);
+		}
+
+		void ConvertRule (const StylingContext& ctx, BlockFormat& bfmt, CharFormat& cfmt, ImageFormat& ifmt, const Rule& rule)
 		{
 			if (rule.Property_ == "text-align"_ql)
 				bfmt.Align_ = ParseAlign (rule.Value_);
@@ -67,6 +83,8 @@ namespace LC::Monocle::Boop::MicroCSS
 				ifmt.Height_ = ParseDim (ctx, rule.Value_);
 			if (rule.Property_ == "width"_ql)
 				ifmt.Width_ = ParseDim (ctx, rule.Value_);
+			if (rule.Property_ == "vertical-align"_ql)
+				cfmt.VerticalAlignment_ = ParseVerticalAlignment (rule.Value_);
 		}
 
 		void ConvertRules (const StylingContext& ctx, BlockFormat& bfmt, CharFormat& cfmt, ImageFormat& ifmt, const QVector<Rule>& rules)
