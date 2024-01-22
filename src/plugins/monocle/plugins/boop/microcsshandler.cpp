@@ -84,10 +84,45 @@ namespace LC::Monocle::Boop::MicroCSS
 					[&] (auto klass) { return elem.Classes_.contains (klass); });
 		}
 
-		bool SelectorMatches (const Selector& selector, const StylingContext& ctx)
+		template<typename Item>
+		struct TailView
+		{
+			const Item& Elem_;
+
+			QVector<Item>::const_iterator Begin_;
+			QVector<Item>::const_iterator End_;
+
+			TailView (const Item& elem, QVector<Item>::const_iterator begin, QVector<Item>::const_iterator end)
+			: Elem_ { elem }
+			, Begin_ { begin }
+			, End_ { end }
+			{
+			}
+
+			TailView (const Item& elem, const QVector<Item>& rest)
+			: Elem_ { elem }
+			, Begin_ { rest.begin () }
+			, End_ { rest.end () }
+			{
+			}
+
+			bool IsTailEmpty () const
+			{
+				return Begin_ == End_;
+			}
+
+			TailView Pop () const
+			{
+				auto newEnd = End_ - 1;
+				return { *newEnd, Begin_, newEnd };
+			}
+		};
+
+		bool SelectorMatches (const TailView<SingleSelector>& selector,
+				const TailView<StylingContextElement>& ctx)
 		{
 			const auto& elem = ctx.Elem_;
-			const auto thisMatches = Util::Visit (selector.Head_,
+			const auto thisMatches = Util::Visit (selector.Elem_,
 					[] (const AtSelector&) { return false; },
 					[&] (const TagSelector& s) { return elem.Tag_ == s.Tag_; },
 					[&] (const ClassSelector& s) { return elem.Classes_.contains (s.Class_); },
@@ -96,19 +131,13 @@ namespace LC::Monocle::Boop::MicroCSS
 			if (!thisMatches)
 				return false;
 
-			if (selector.Context_.isEmpty ())
+			if (selector.IsTailEmpty ())
 				return true;
 
-			if (ctx.Parents_.isEmpty ())
+			if (ctx.IsTailEmpty ())
 				return false;
 
-			auto subcontext = selector.Context_;
-			auto subhead = subcontext.takeLast ();
-
-			auto subparents = ctx.Parents_;
-			auto subelem = subparents.takeLast ();
-
-			return SelectorMatches ({ subhead, subcontext }, { subelem, subparents, ctx.Cursor_ });
+			return SelectorMatches (selector.Pop (), ctx.Pop ());
 		}
 
 		Style Match (const StylingContext& ctx, const Stylesheet& css)
@@ -128,10 +157,10 @@ namespace LC::Monocle::Boop::MicroCSS
 						ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 			}
 			for (const auto& [selector, rules] : css.ComplexByTag_ [tag])
-				if (SelectorMatches (selector, ctx))
+				if (SelectorMatches ({ selector.Head_, selector.Context_ }, { ctx.Elem_, ctx.Parents_ }))
 					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 			for (const auto& [selector, rules] : css.Others_)
-				if (SelectorMatches (selector, ctx))
+				if (SelectorMatches ({ selector.Head_, selector.Context_ }, { ctx.Elem_, ctx.Parents_ }))
 					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 
 			return { bfmt, cfmt, ifmt };
