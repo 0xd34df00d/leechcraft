@@ -54,6 +54,25 @@ namespace LC::Monocle
 			return std::move (str).replace (spaces, " "_ql);
 		}
 
+		template<typename T>
+		void SetBlockConfig (T& marginsFmt, QTextBlockFormat& blockFmt, const BlockFormat& blockCfg)
+		{
+			const auto set = [] (auto& fmt, auto setter, const auto& maybeVal)
+			{
+				if (maybeVal)
+					(fmt.*setter) (*maybeVal);
+			};
+			set (marginsFmt, &T::setLeftMargin, blockCfg.MarginLeft_);
+			set (marginsFmt, &T::setTopMargin, blockCfg.MarginTop_);
+			set (marginsFmt, &T::setRightMargin, blockCfg.MarginRight_);
+			set (marginsFmt, &T::setBottomMargin, blockCfg.MarginBottom_);
+			set (blockFmt, &QTextBlockFormat::setAlignment, blockCfg.Align_);
+			set (blockFmt, &QTextBlockFormat::setTextIndent, blockCfg.Indent_);
+			set (blockFmt, &QTextBlockFormat::setHeadingLevel, blockCfg.HeadingLevel_);
+			set (blockFmt, &QTextBlockFormat::setForeground, blockCfg.Foreground_);
+			set (blockFmt, &QTextBlockFormat::setBackground, blockCfg.Background_);
+		}
+
 		std::optional<QSize> GetImageSize (const LazyImage& image, const CustomStyler_f& styler, const StylingContext& ctx)
 		{
 			if (!image)
@@ -258,26 +277,7 @@ namespace LC::Monocle
 				}
 			}
 
-			template<typename T>
-			void SetBlockConfig (T& marginsFmt, QTextBlockFormat& blockFmt, const BlockFormat& blockCfg)
-			{
-				const auto set = [] (auto& fmt, auto setter, const auto& maybeVal)
-				{
-					if (maybeVal)
-						(fmt.*setter) (*maybeVal);
-				};
-				set (marginsFmt, &T::setLeftMargin, blockCfg.MarginLeft_);
-				set (marginsFmt, &T::setTopMargin, blockCfg.MarginTop_);
-				set (marginsFmt, &T::setRightMargin, blockCfg.MarginRight_);
-				set (marginsFmt, &T::setBottomMargin, blockCfg.MarginBottom_);
-				set (blockFmt, &QTextBlockFormat::setAlignment, blockCfg.Align_);
-				set (blockFmt, &QTextBlockFormat::setTextIndent, blockCfg.Indent_);
-				set (blockFmt, &QTextBlockFormat::setHeadingLevel, blockCfg.HeadingLevel_);
-				set (blockFmt, &QTextBlockFormat::setForeground, blockCfg.Foreground_);
-				set (blockFmt, &QTextBlockFormat::setBackground, blockCfg.Background_);
-			}
-
-			std::pair<QTextFrameFormat, QTextBlockFormat> GetFrameBlockFormat ()
+			std::pair<QTextFrameFormat, QTextBlockFormat> GetFrameBlockFormat () const
 			{
 				auto blockCfg = Config_.GetBlockFormat (StylingCtxKeeper_.GetContext ());
 				if (CustomStyler_)
@@ -289,7 +289,7 @@ namespace LC::Monocle
 				return { frameFmt, blockFmt };
 			}
 
-			QTextBlockFormat GetBlockFormat ()
+			QTextBlockFormat GetBlockFormat () const
 			{
 				auto blockCfg = Config_.GetBlockFormat (StylingCtxKeeper_.GetContext ());
 				if (CustomStyler_)
@@ -300,7 +300,7 @@ namespace LC::Monocle
 				return blockFmt;
 			}
 
-			std::optional<QTextCharFormat> GetCharFormat ()
+			std::optional<QTextCharFormat> GetCharFormat () const
 			{
 				auto charCfg = Config_.GetCharFormat (StylingCtxKeeper_.GetContext ());
 				const auto& custom = CustomStyler_ ? CustomStyler_ (StylingCtxKeeper_.GetContext ()).Char_ : CharFormat {};
