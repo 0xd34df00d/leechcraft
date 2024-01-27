@@ -19,10 +19,11 @@
 
 class QDomElement;
 class QPainter;
-class QTextDocument;
 
 namespace LC::Monocle
 {
+	class ResourcedTextDocument;
+
 	/** @brief Provides an adapter of QTextDocument to Monocle's IDocument.
 	 *
 	 * This class provides implementations for most of the IDocument's
@@ -45,7 +46,7 @@ namespace LC::Monocle
 				LC::Monocle::ISearchableDocument
 				LC::Monocle::ISupportPainting)
 	protected:
-		std::unique_ptr<QTextDocument> Doc_;
+		std::unique_ptr<ResourcedTextDocument> Doc_;
 		TOCEntryLevel_t TOC_;
 		QHash<int, QList<ILink_ptr>> Links_;
 	public:

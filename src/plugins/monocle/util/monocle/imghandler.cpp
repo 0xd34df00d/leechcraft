@@ -23,6 +23,11 @@ namespace LC::Monocle
 	{
 	}
 
+	QHash<QUrl, QSize> ImgHandler::GetMaxSizes () const
+	{
+		return Image2MaxSize_;
+	}
+
 	namespace
 	{
 		std::optional<QSize> GetImageSize (const LazyImage& image, const CustomStyler_f& styler, const StylingContext& ctx)
@@ -48,16 +53,23 @@ namespace LC::Monocle
 
 	void ImgHandler::HandleImg (const QDomElement& elem, const StylingContext& ctx)
 	{
+		const auto& name = elem.attribute ("src"_qs);
+
 		QTextImageFormat imgFmt;
-		imgFmt.setName (elem.attribute ("src"_qs));
-		const auto& image = Images_.value (imgFmt.name ());
+		imgFmt.setName (name);
+		const auto& image = Images_.value (name);
 		if (!image)
-			qWarning () << "unknown image" << imgFmt.name ();
+			qWarning () << "unknown image" << name;
+
 		if (const auto& size = GetImageSize (image, Styler_, ctx))
 		{
 			imgFmt.setWidth (size->width ());
 			imgFmt.setHeight (size->height ());
+
+			auto& maxSize = Image2MaxSize_ [QUrl::fromEncoded (name.toUtf8 ())];
+			maxSize = maxSize.expandedTo (*size);
 		}
+
 		Cursor_.insertImage (imgFmt);
 	}
 }

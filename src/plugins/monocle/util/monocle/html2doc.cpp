@@ -16,6 +16,7 @@
 #include <util/sll/qtutil.h>
 #include "imghandler.h"
 #include "linksbuilder.h"
+#include "resourcedtextdocument.h"
 #include "stackkeeper.h"
 #include "textdocumentformatconfig.h"
 #include "tocbuilder.h"
@@ -120,7 +121,7 @@ namespace LC::Monocle
 
 			const CustomStyler_f& CustomStyler_;
 
-			QTextDocument& Doc_;
+			ResourcedTextDocument& Doc_;
 			QTextFrame& BodyFrame_;
 			QTextCursor Cursor_;
 
@@ -132,7 +133,7 @@ namespace LC::Monocle
 
 			StylingContextKeeper StylingCtxKeeper_ { Cursor_ };
 		public:
-			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
+			explicit Converter (ResourcedTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
 			: CustomStyler_ { styler }
 			, Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
@@ -150,6 +151,7 @@ namespace LC::Monocle
 			void operator() (const QDomElement& body)
 			{
 				AppendElem (body);
+				Doc_.SetMaxImageSizes (ImgHandler_.GetMaxSizes ());
 			}
 
 			TOCEntryLevelT<Span> GetTOC () const
@@ -299,7 +301,7 @@ namespace LC::Monocle
 		};
 	}
 
-	DocStructure Html2Doc (QTextDocument& doc,
+	DocStructure Html2Doc (ResourcedTextDocument& doc,
 			const QDomElement& body,
 			const CustomStyler_f& styler,
 			const LazyImages_t& images)

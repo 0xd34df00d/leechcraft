@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "document.h"
-#include <QTextDocument>
+#include <util/monocle/resourcedtextdocument.h>
 
 namespace LC::Monocle::Boop
 {

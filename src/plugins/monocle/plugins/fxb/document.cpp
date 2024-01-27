@@ -9,9 +9,9 @@
 #include "document.h"
 #include <QFile>
 #include <QDomDocument>
-#include <QTextDocument>
 #include <QtDebug>
 #include <util/sll/either.h>
+#include <util/monocle/resourcedtextdocument.h>
 #include "fb2converter.h"
 
 namespace LC

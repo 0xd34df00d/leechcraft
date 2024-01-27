@@ -10,9 +10,9 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QtDebug>
-#include <QTextDocument>
 #include <QTextFrameFormat>
 #include <QTextFrame>
+#include <util/monocle/resourcedtextdocument.h>
 #include "mobiparser.h"
 
 namespace LC

@@ -21,8 +21,12 @@ namespace LC::Monocle
 		QTextCursor& Cursor_;
 		const CustomStyler_f& Styler_;
 		const LazyImages_t& Images_;
+
+		QHash<QUrl, QSize> Image2MaxSize_;
 	public:
 		explicit ImgHandler (QTextCursor&, const CustomStyler_f&, const LazyImages_t&);
+
+		QHash<QUrl, QSize> GetMaxSizes () const;
 
 		void HandleImg (const QDomElement&, const StylingContext&);
 	};

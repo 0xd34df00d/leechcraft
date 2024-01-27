@@ -16,8 +16,12 @@ namespace LC::Monocle
 	class ResourcedTextDocument : public QTextDocument
 	{
 		const LazyImages_t Images_;
+
+		QHash<QUrl, QSize> MaxImageSizes_;
 	public:
 		ResourcedTextDocument (const LazyImages_t& images);
+
+		void SetMaxImageSizes (const QHash<QUrl, QSize>&);
 	protected:
 		QVariant loadResource (int type, const QUrl &name) override;
 	};

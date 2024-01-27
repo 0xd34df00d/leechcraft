@@ -7,12 +7,18 @@
  **********************************************************************/
 
 #include "resourcedtextdocument.h"
+#include <QtDebug>
 
 namespace LC::Monocle
 {
 	ResourcedTextDocument::ResourcedTextDocument (const LazyImages_t& images)
 	: Images_ { images }
 	{
+	}
+
+	void ResourcedTextDocument::SetMaxImageSizes (const QHash<QUrl, QSize>& sizes)
+	{
+		MaxImageSizes_ = sizes;
 	}
 
 	QVariant ResourcedTextDocument::loadResource (int type, const QUrl& name)
@@ -24,6 +30,7 @@ namespace LC::Monocle
 		if (!image.Load_)
 			return QTextDocument::loadResource (type, name);
 
-		return image.Load_ (image.NativeSize_);
+		const auto& maxSize = MaxImageSizes_.value (name);
+		return image.Load_ (maxSize.isValid () ? maxSize : image.NativeSize_);
 	}
 }
