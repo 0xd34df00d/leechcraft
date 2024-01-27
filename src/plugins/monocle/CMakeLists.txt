@@ -20,6 +20,7 @@ endif ()
 
 add_library (leechcraft-monocle-util SHARED
 	util/monocle/html2doc.cpp
+	util/monocle/imghandler.cpp
 	util/monocle/linksbuilder.cpp
 	util/monocle/pagelink.cpp
 	util/monocle/resourcedtextdocument.cpp

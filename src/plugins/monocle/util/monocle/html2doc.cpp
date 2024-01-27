@@ -14,6 +14,7 @@
 #include <QTextFrame>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include "imghandler.h"
 #include "linksbuilder.h"
 #include "stackkeeper.h"
 #include "textdocumentformatconfig.h"
@@ -73,26 +74,6 @@ namespace LC::Monocle
 			set (blockFmt, &QTextBlockFormat::setBackground, blockCfg.Background_);
 		}
 
-		std::optional<QSize> GetImageSize (const LazyImage& image, const CustomStyler_f& styler, const StylingContext& ctx)
-		{
-			if (!image)
-				return {};
-
-			if (!styler)
-				return image.NativeSize_;
-
-			const auto& imgFmt = styler (ctx).Img_;
-
-			if (imgFmt.Width_ && imgFmt.Height_)
-				return image.NativeSize_.scaled ({ static_cast<int> (*imgFmt.Width_), static_cast<int> (*imgFmt.Height_) }, Qt::KeepAspectRatio);
-			if (imgFmt.Width_)
-				return image.NativeSize_ * (*imgFmt.Width_ / image.NativeSize_.width ());
-			if (imgFmt.Height_)
-				return image.NativeSize_ * (*imgFmt.Height_ / image.NativeSize_.height ());
-
-			return image.NativeSize_;
-		}
-
 		class StylingContextKeeper
 		{
 			const QTextCursor& Cursor_;
@@ -138,7 +119,6 @@ namespace LC::Monocle
 			const TextDocumentFormatConfig& Config_ = TextDocumentFormatConfig::Instance ();
 
 			const CustomStyler_f& CustomStyler_;
-			const LazyImages_t& Images_;
 
 			QTextDocument& Doc_;
 			QTextFrame& BodyFrame_;
@@ -148,17 +128,18 @@ namespace LC::Monocle
 
 			TocBuilder TocBuilder_;
 			LinksBuilder LinksBuilder_;
+			ImgHandler ImgHandler_;
 
 			StylingContextKeeper StylingCtxKeeper_ { Cursor_ };
 		public:
 			explicit Converter (QTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
 			: CustomStyler_ { styler }
-			, Images_ { images }
 			, Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
 			, Cursor_ { &BodyFrame_ }
 			, TocBuilder_ { Cursor_ }
 			, LinksBuilder_ { Cursor_ }
+			, ImgHandler_ { Cursor_, styler, images }
 			{
 				auto rootFmt = Doc_.rootFrame ()->frameFormat ();
 				rootFmt.setBackground (Config_.GetPalette ().Background_);
@@ -238,19 +219,7 @@ namespace LC::Monocle
 					Cursor_.insertText (QString { '\n' });
 
 				if (elem.tagName () == "img"_ql)
-				{
-					QTextImageFormat imgFmt;
-					imgFmt.setName (elem.attribute ("src"_qs));
-					const auto& image = Images_.value (imgFmt.name ());
-					if (!image)
-						qWarning () << "unknown image" << imgFmt.name ();
-					if (const auto& size = GetImageSize (image, CustomStyler_, StylingCtxKeeper_.GetContext ()))
-					{
-						imgFmt.setWidth (size->width ());
-						imgFmt.setHeight (size->height ());
-					}
-					Cursor_.insertImage (imgFmt);
-				}
+					ImgHandler_.HandleImg (elem, StylingCtxKeeper_.GetContext ());
 			}
 
 			void HandleChildren (const QDomElement& elem)
