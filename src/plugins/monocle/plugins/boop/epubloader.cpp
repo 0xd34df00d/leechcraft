@@ -64,6 +64,22 @@ namespace LC::Monocle::Boop
 			return result;
 		}
 
+		QVector<QDomElement> SetScope (QVector<QDomElement>&& elems, const QString& path)
+		{
+			const auto& klass = path.toUtf8 ().toBase64 ();
+			for (auto& elem : elems)
+				elem.setAttribute ("class"_qs, elem.attribute ("class"_qs) + ' ' + klass);
+			return elems;
+		}
+
+		QVector<Stylesheet> SetScope (QVector<Stylesheet>&& stylesheets, const QString& path)
+		{
+			const auto& klass = path.toUtf8 ().toBase64 ();
+			for (auto& css : stylesheets)
+				css.Scope_ = MicroCSS::ClassSelector { klass };
+			return stylesheets;
+		}
+
 		LoadedChapters ExtractChapter (const QString& epubFile, const QString& subpath)
 		{
 			const auto& doc = GetXml (epubFile, subpath);
@@ -71,7 +87,12 @@ namespace LC::Monocle::Boop
 
 			FixLinks (root, subpath);
 
-			return { ExtractChapterBody (root), GetExternalStylesheets (root), GetInternalStylesheet (root) };
+			return
+			{
+				SetScope (ExtractChapterBody (root), subpath),
+				GetExternalStylesheets (root),
+				SetScope (GetInternalStylesheet (root), subpath)
+			};
 		}
 
 		LoadedChapters CollectChapters (const QString& epubFile, const Manifest& manifest)
