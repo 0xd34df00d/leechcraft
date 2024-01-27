@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCache>
 #include <QTextDocument>
 #include "types.h"
 
@@ -18,6 +19,7 @@ namespace LC::Monocle
 		const LazyImages_t Images_;
 
 		QHash<QUrl, QSize> MaxImageSizes_;
+		QCache<QUrl, QImage> ImagesCache_;
 	public:
 		ResourcedTextDocument (const LazyImages_t& images);
 

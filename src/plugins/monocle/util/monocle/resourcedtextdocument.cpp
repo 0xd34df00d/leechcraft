@@ -8,17 +8,20 @@
 
 #include "resourcedtextdocument.h"
 #include <QtDebug>
+#include <util/sll/udls.h>
 
 namespace LC::Monocle
 {
 	ResourcedTextDocument::ResourcedTextDocument (const LazyImages_t& images)
 	: Images_ { images }
+	, ImagesCache_ { 10_mib }
 	{
 	}
 
 	void ResourcedTextDocument::SetMaxImageSizes (const QHash<QUrl, QSize>& sizes)
 	{
 		MaxImageSizes_ = sizes;
+		ImagesCache_.clear ();
 	}
 
 	QVariant ResourcedTextDocument::loadResource (int type, const QUrl& name)
@@ -26,11 +29,16 @@ namespace LC::Monocle
 		if (type != QTextDocument::ImageResource)
 			return QTextDocument::loadResource (type, name);
 
+		if (const auto image = ImagesCache_ [name])
+			return *image;
+
 		const auto& image = Images_.value (name);
-		if (!image.Load_)
+		if (!image)
 			return QTextDocument::loadResource (type, name);
 
 		const auto& maxSize = MaxImageSizes_.value (name);
-		return image.Load_ (maxSize.isValid () ? maxSize : image.NativeSize_);
+		const auto& loaded = image.Load_ (maxSize.isValid () ? maxSize : image.NativeSize_);
+		ImagesCache_.insert (name, new QImage { loaded }, loaded.sizeInBytes ());
+		return loaded;
 	}
 }
