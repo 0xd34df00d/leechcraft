@@ -15,6 +15,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "imghandler.h"
+#include "formatutils.h"
 #include "linksbuilder.h"
 #include "resourcedtextdocument.h"
 #include "stackkeeper.h"
@@ -54,25 +55,6 @@ namespace LC::Monocle
 		{
 			static const QRegularExpression spaces { "\\s+"_qs };
 			return std::move (str).replace (spaces, " "_ql);
-		}
-
-		template<typename T>
-		void SetBlockConfig (T& marginsFmt, QTextBlockFormat& blockFmt, const BlockFormat& blockCfg)
-		{
-			const auto set = [] (auto& fmt, auto setter, const auto& maybeVal)
-			{
-				if (maybeVal)
-					(fmt.*setter) (*maybeVal);
-			};
-			set (marginsFmt, &T::setLeftMargin, blockCfg.MarginLeft_);
-			set (marginsFmt, &T::setTopMargin, blockCfg.MarginTop_);
-			set (marginsFmt, &T::setRightMargin, blockCfg.MarginRight_);
-			set (marginsFmt, &T::setBottomMargin, blockCfg.MarginBottom_);
-			set (blockFmt, &QTextBlockFormat::setAlignment, blockCfg.Align_);
-			set (blockFmt, &QTextBlockFormat::setTextIndent, blockCfg.Indent_);
-			set (blockFmt, &QTextBlockFormat::setHeadingLevel, blockCfg.HeadingLevel_);
-			set (blockFmt, &QTextBlockFormat::setForeground, blockCfg.Foreground_);
-			set (blockFmt, &QTextBlockFormat::setBackground, blockCfg.Background_);
 		}
 
 		class StylingContextKeeper
@@ -283,19 +265,7 @@ namespace LC::Monocle
 				*charCfg += custom;
 
 				auto fmt = CharFormat_;
-				const auto set = [&fmt] (auto setter, const auto& maybeVal)
-				{
-					if (maybeVal)
-						(fmt.*setter) (*maybeVal);
-				};
-				set (&QTextCharFormat::setFontPointSize, charCfg->PointSize_);
-				set (&QTextCharFormat::setFontWeight, charCfg->IsBold_);
-				set (&QTextCharFormat::setFontItalic, charCfg->IsItalic_);
-				set (&QTextCharFormat::setFontUnderline, charCfg->IsUnderline_);
-				set (&QTextCharFormat::setFontStrikeOut, charCfg->IsStrikeThrough_);
-				set (&QTextCharFormat::setVerticalAlignment, charCfg->VerticalAlignment_);
-				set (&QTextCharFormat::setForeground, charCfg->Foreground_);
-				set (&QTextCharFormat::setBackground, charCfg->Background_);
+				SetCharConfig (fmt, *charCfg);
 				return fmt;
 			}
 		};
