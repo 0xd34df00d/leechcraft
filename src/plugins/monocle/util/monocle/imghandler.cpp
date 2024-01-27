@@ -15,6 +15,7 @@
 #include <QUrl>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include "formatutils.h"
 
 namespace LC::Monocle
 {
@@ -32,13 +33,8 @@ namespace LC::Monocle
 
 	namespace
 	{
-		QSize GetImageSize (const LazyImage& image, const CustomStyler_f& styler, const StylingContext& ctx)
+		QSize GetImageSize (const LazyImage& image, const ImageFormat& imgFmt)
 		{
-			if (!styler)
-				return image.NativeSize_;
-
-			const auto& imgFmt = styler (ctx).Img_;
-
 			if (imgFmt.Width_ && imgFmt.Height_)
 				return image.NativeSize_.scaled ({ static_cast<int> (*imgFmt.Width_), static_cast<int> (*imgFmt.Height_) }, Qt::KeepAspectRatio);
 			if (imgFmt.Width_)
@@ -75,11 +71,14 @@ namespace LC::Monocle
 	{
 		const auto& name = elem.attribute ("src"_qs);
 
+		auto style = Styler_ ? Styler_ (ctx) : Style {};
+
 		QTextImageFormat imgFmt;
 		imgFmt.setName (name);
+		SetCharConfig (imgFmt, style.Char_);
 		if (const auto& image = Images_.value (name))
 		{
-			const auto& size = BoundedToBlockArea (GetImageSize (image, Styler_, ctx), Cursor_);
+			const auto& size = BoundedToBlockArea (GetImageSize (image, style.Img_), Cursor_);
 
 			imgFmt.setWidth (size.width ());
 			imgFmt.setHeight (size.height ());
