@@ -102,6 +102,16 @@ namespace LC::Monocle::Boop::MicroCSS
 					[&] (auto klass) { return elem.Classes_.contains (klass); });
 		}
 
+		bool SelectorMatches (const SingleSelector& s, const StylingContextElement& elem)
+		{
+			return Util::Visit (s,
+					[] (const AtSelector&) { return false; },
+					[&] (const TagSelector& s) { return elem.Tag_ == s.Tag_; },
+					[&] (const ClassSelector& s) { return elem.Classes_.contains (s.Class_); },
+					[&] (const TagClassSelector& s) { return elem.Tag_ == s.Tag_ && elem.Classes_.contains (s.Class_); },
+					[&] (const ManyClassesSelector& s) { return SelectorMatches (s, elem); });
+		}
+
 		template<typename Item>
 		struct TailView
 		{
@@ -136,56 +146,61 @@ namespace LC::Monocle::Boop::MicroCSS
 			}
 		};
 
-		bool SelectorMatches (const TailView<SingleSelector>& selector,
-				const TailView<StylingContextElement>& ctx)
+		bool SelectorMatches (const TailView<SingleSelector>& selector, const TailView<StylingContextElement>& ctx)
 		{
-			const auto& elem = ctx.Elem_;
-			const auto thisMatches = Util::Visit (selector.Elem_,
-					[] (const AtSelector&) { return false; },
-					[&] (const TagSelector& s) { return elem.Tag_ == s.Tag_; },
-					[&] (const ClassSelector& s) { return elem.Classes_.contains (s.Class_); },
-					[&] (const TagClassSelector& s) { return elem.Tag_ == s.Tag_ && elem.Classes_.contains (s.Class_); },
-					[&] (const ManyClassesSelector& s) { return SelectorMatches (s, elem); });
-			if (!thisMatches)
+			if (!SelectorMatches (selector.Elem_, ctx.Elem_))
 				return false;
-
 			if (selector.IsTailEmpty ())
 				return true;
-
 			if (ctx.IsTailEmpty ())
 				return false;
-
 			return SelectorMatches (selector.Pop (), ctx.Pop ());
 		}
 
-		Style Match (const StylingContext& ctx, const Stylesheet& css)
+		bool InScope (const StylingContext& ctx, const std::optional<SingleSelector>& scope)
+		{
+			if (!scope)
+				return true;
+
+			return std::any_of (ctx.Parents_.begin (), ctx.Parents_.end (),
+					[&] (const StylingContextElement& elem) { return SelectorMatches (*scope, elem); });
+		}
+
+		Style Match (const StylingContext& ctx, const QVector<Stylesheet>& stylesheets)
 		{
 			BlockFormat bfmt;
 			CharFormat cfmt;
 			ImageFormat ifmt;
 			const auto& tag = Util::UnsafeFromView (ctx.Elem_.Tag_);
-			ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByTag_ [TagSelector { tag }]);
-			for (const auto& klassView : ctx.Elem_.Classes_)
+
+			for (const auto& css : stylesheets)
 			{
-				const auto& klass = Util::UnsafeFromView (klassView);
-				ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByClass_ [ClassSelector { klass }]);
-				ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByTagAndClass_ [TagClassSelector { tag, klass }]);
-				for (const auto& [selector, rules] : css.ManyClassesByTag_ [tag])
-					if (SelectorMatches (selector, ctx.Elem_))
+				if (!InScope (ctx, css.Scope_))
+					continue;
+
+				ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByTag_ [TagSelector { tag }]);
+				for (const auto& klassView : ctx.Elem_.Classes_)
+				{
+					const auto& klass = Util::UnsafeFromView (klassView);
+					ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByClass_ [ClassSelector { klass }]);
+					ConvertRules (ctx, bfmt, cfmt, ifmt, css.ByTagAndClass_ [TagClassSelector { tag, klass }]);
+					for (const auto& [selector, rules] : css.ManyClassesByTag_ [tag])
+						if (SelectorMatches (selector, ctx.Elem_))
+							ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
+				}
+				for (const auto& [selector, rules] : css.ComplexByTag_ [tag])
+					if (SelectorMatches ({ selector.Head_, selector.Context_ }, { ctx.Elem_, ctx.Parents_ }))
+						ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
+				for (const auto& [selector, rules] : css.Others_)
+					if (SelectorMatches ({ selector.Head_, selector.Context_ }, { ctx.Elem_, ctx.Parents_ }))
 						ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 			}
-			for (const auto& [selector, rules] : css.ComplexByTag_ [tag])
-				if (SelectorMatches ({ selector.Head_, selector.Context_ }, { ctx.Elem_, ctx.Parents_ }))
-					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
-			for (const auto& [selector, rules] : css.Others_)
-				if (SelectorMatches ({ selector.Head_, selector.Context_ }, { ctx.Elem_, ctx.Parents_ }))
-					ConvertRules (ctx, bfmt, cfmt, ifmt, rules);
 
 			return { bfmt, cfmt, ifmt };
 		}
 	}
 
-	CustomStyler_f MakeStyler (const Stylesheet& css)
+	CustomStyler_f MakeStyler (const QVector<Stylesheet>& css)
 	{
 		return [css] (const StylingContext& ctx) { return Match (ctx, css); };
 	}

@@ -13,6 +13,9 @@
 class QTextCharFormat;
 class QTextBlockFormat;
 
+template<typename>
+class QVector;
+
 namespace LC::Monocle
 {
 	struct CharFormat;
@@ -28,5 +31,5 @@ namespace LC::Monocle::Boop::MicroCSS
 
 	using CustomStyler_f = std::function<Style (const StylingContext&)>;
 
-	CustomStyler_f MakeStyler (const Stylesheet&);
+	CustomStyler_f MakeStyler (const QVector<Stylesheet>&);
 }

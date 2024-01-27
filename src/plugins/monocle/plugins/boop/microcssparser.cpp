@@ -268,17 +268,6 @@ namespace LC::Monocle::Boop::MicroCSS
 		return qHash (QPair { s.Tag_, s.Class_ });
 	}
 
-	Stylesheet& Stylesheet::operator+= (const Stylesheet& other)
-	{
-		ByTag_.insert (other.ByTag_);
-		ByClass_.insert (other.ByClass_);
-		ByTagAndClass_.insert (other.ByTagAndClass_);
-		ManyClassesByTag_.insert (other.ManyClassesByTag_);
-		ComplexByTag_.insert (other.ComplexByTag_);
-		Others_ += other.Others_;
-		return *this;
-	}
-
 	QDebug operator<< (QDebug debug, const Rule& rule)
 	{
 		QDebugStateSaver saver { debug };

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <variant>
 #include <QHash>
 #include <QString>
@@ -24,6 +25,8 @@ namespace LC::Monocle::Boop::MicroCSS
 	{
 		QString Property_;
 		QString Value_;
+
+		bool operator== (const Rule&) const = default;
 	};
 
 	QDebug operator<< (QDebug, const Rule&);
@@ -86,6 +89,8 @@ namespace LC::Monocle::Boop::MicroCSS
 
 	struct Stylesheet
 	{
+		std::optional<SingleSelector> Scope_;
+
 		QHash<TagSelector, QVector<Rule>> ByTag_;
 		QHash<ClassSelector, QVector<Rule>> ByClass_;
 		QHash<TagClassSelector, QVector<Rule>> ByTagAndClass_;
@@ -94,8 +99,6 @@ namespace LC::Monocle::Boop::MicroCSS
 
 		QHash<QString, ComplexRules_t> ComplexByTag_;
 		ComplexRules_t Others_;
-
-		Stylesheet& operator+= (const Stylesheet&);
 	};
 
 	Stylesheet Parse (QStringView str);

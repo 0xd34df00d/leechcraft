@@ -41,7 +41,7 @@ namespace LC::Monocle::Boop
 		{
 			QVector<QDomElement> AllChildren_;
 			QSet<QString> ExternalStylesheets_;
-			Stylesheet InternalStylesheet_;
+			QVector<Stylesheet> InternalStylesheets_;
 		};
 
 		QSet<QString> GetExternalStylesheets (const QDomElement& root)
@@ -56,11 +56,11 @@ namespace LC::Monocle::Boop
 			return result;
 		}
 
-		Stylesheet GetInternalStylesheet (const QDomElement& root)
+		QVector<Stylesheet> GetInternalStylesheet (const QDomElement& root)
 		{
-			Stylesheet result;
+			QVector<Stylesheet> result;
 			for (const auto& style : Util::DomDescendants (root, "style"_qs))
-				result += MicroCSS::Parse (style.text ());
+				result << MicroCSS::Parse (style.text ());
 			return result;
 		}
 
@@ -85,36 +85,37 @@ namespace LC::Monocle::Boop
 				auto loadedChapter = ExtractChapter (epubFile, item.Path_);
 				chapters.AllChildren_ += loadedChapter.AllChildren_;
 				chapters.ExternalStylesheets_.unite (loadedChapter.ExternalStylesheets_);
-				chapters.InternalStylesheet_ += loadedChapter.InternalStylesheet_;
+				chapters.InternalStylesheets_ += loadedChapter.InternalStylesheets_;
 			}
 			return chapters;
 		}
 
-		Stylesheet LoadStylesheets (const QString& epubFile, const QSet<QString>& stylesheets)
+		QVector<Stylesheet> LoadStylesheets (const QString& epubFile, const QSet<QString>& paths)
 		{
-			Stylesheet result;
-			for (const auto& ssFile : stylesheets)
+			QVector<Stylesheet> result;
+			result.reserve (paths.size ());
+			for (const auto& path : paths)
 			{
-				QuaZipFile file { epubFile, ssFile, QuaZip::csInsensitive };
+				QuaZipFile file { epubFile, path, QuaZip::csInsensitive };
 				if (!file.open (QIODevice::ReadOnly))
 				{
-					qWarning () << "unable to open" << ssFile << ":" << file.errorString ();
+					qWarning () << "unable to open" << path << ":" << file.errorString ();
 					continue;
 				}
 
-				result += MicroCSS::Parse (QString::fromUtf8 (file.readAll ()));
+				result << MicroCSS::Parse (QString::fromUtf8 (file.readAll ()));
 			}
 			return result;
 		}
 
-		std::pair<QDomElement, Stylesheet> LoadSpine (const QString& epubFile, const Manifest& manifest)
+		std::pair<QDomElement, QVector<Stylesheet>> LoadSpine (const QString& epubFile, const Manifest& manifest)
 		{
 			Util::Timer timer;
 			const auto& chapters = CollectChapters (epubFile, manifest);
 			timer.Stamp ("extracting children");
 
 			auto stylesheet = LoadStylesheets (epubFile, chapters.ExternalStylesheets_);
-			stylesheet += chapters.InternalStylesheet_;
+			stylesheet << chapters.InternalStylesheets_;
 			timer.Stamp ("loading stylesheets");
 
 			QDomDocument doc;
@@ -188,7 +189,7 @@ namespace LC::Monocle::Boop
 		{
 			const auto& manifest = ParseManifest (epubFile);
 			const auto& toc = LoadTocMap (epubFile, manifest);
-			auto [body, stylesheet] = LoadSpine (epubFile, manifest);
+			auto [body, stylesheets] = LoadSpine (epubFile, manifest);
 			MarkTocTargets (body, toc);
 
 			const auto& images = LoadImages (epubFile, manifest);
@@ -197,7 +198,7 @@ namespace LC::Monocle::Boop
 			doc->SetDocument ({
 					.BodyElem_ = body,
 					.Images_ = images,
-					.Styler_ = MicroCSS::MakeStyler (stylesheet)
+					.Styler_ = MicroCSS::MakeStyler (stylesheets)
 				});
 			return doc;
 		}
