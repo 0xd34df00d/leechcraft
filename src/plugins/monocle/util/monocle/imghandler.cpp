@@ -9,6 +9,8 @@
 #include "imghandler.h"
 #include <QDomElement>
 #include <QTextCursor>
+#include <QTextDocument>
+#include <QTextFrame>
 #include <QTextImageFormat>
 #include <QUrl>
 #include <QtDebug>
@@ -30,11 +32,8 @@ namespace LC::Monocle
 
 	namespace
 	{
-		std::optional<QSize> GetImageSize (const LazyImage& image, const CustomStyler_f& styler, const StylingContext& ctx)
+		QSize GetImageSize (const LazyImage& image, const CustomStyler_f& styler, const StylingContext& ctx)
 		{
-			if (!image)
-				return {};
-
 			if (!styler)
 				return image.NativeSize_;
 
@@ -49,6 +48,27 @@ namespace LC::Monocle
 
 			return image.NativeSize_;
 		}
+
+		QMarginsF ToMargins (const auto& fmt)
+		{
+			return { fmt.leftMargin (), fmt.topMargin (), fmt.rightMargin (), fmt.bottomMargin () };
+		}
+
+		QMarginsF GetFramesMargins (const QTextFrame *frame)
+		{
+			if (!frame)
+				return {};
+			return ToMargins (frame->frameFormat ()) + GetFramesMargins (frame->parentFrame ());
+		}
+
+		QSize BoundedToBlockArea (QSize size, const QTextCursor& cursor)
+		{
+			const auto margins = GetFramesMargins (cursor.currentFrame ()) + ToMargins (cursor.blockFormat ());
+			const auto& areaSize = cursor.document ()->pageSize ().shrunkBy (margins);
+			if (size.width () <= areaSize.width () && size.height () <= areaSize.height ())
+				return size;
+			return size.scaled (areaSize.toSize (), Qt::KeepAspectRatio);
+		}
 	}
 
 	void ImgHandler::HandleImg (const QDomElement& elem, const StylingContext& ctx)
@@ -57,18 +77,18 @@ namespace LC::Monocle
 
 		QTextImageFormat imgFmt;
 		imgFmt.setName (name);
-		const auto& image = Images_.value (name);
-		if (!image)
-			qWarning () << "unknown image" << name;
-
-		if (const auto& size = GetImageSize (image, Styler_, ctx))
+		if (const auto& image = Images_.value (name))
 		{
-			imgFmt.setWidth (size->width ());
-			imgFmt.setHeight (size->height ());
+			const auto& size = BoundedToBlockArea (GetImageSize (image, Styler_, ctx), Cursor_);
+
+			imgFmt.setWidth (size.width ());
+			imgFmt.setHeight (size.height ());
 
 			auto& maxSize = Image2MaxSize_ [QUrl::fromEncoded (name.toUtf8 ())];
-			maxSize = maxSize.expandedTo (*size);
+			maxSize = maxSize.expandedTo (size);
 		}
+		else
+			qWarning () << "unknown image" << name;
 
 		Cursor_.insertImage (imgFmt);
 	}
