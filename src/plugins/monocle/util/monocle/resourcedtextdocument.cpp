@@ -137,7 +137,7 @@ namespace LC::Monocle
 				Magick::CharPixel,
 				image.constBits ()
 			};
-			magick.filterType (MagickCore::Lanczos2SharpFilter);
+			magick.filterType (MagickCore::LanczosRadiusFilter);
 			magick.resize (ToMagick (size));
 			magick.sharpen (2, 2);
 
