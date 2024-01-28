@@ -167,22 +167,23 @@ namespace LC::Monocle
 			{
 				.PointSize_ = defFont.pointSize () * (2.5 - (*heading - 1) / 3.),
 				.IsBold_ = QFont::Weight::DemiBold,
+				.Foreground_ = Palette_.Foreground_,
 			};
 		}
 
 		if (tagName == u"b"_qsv || tagName == u"strong"_qsv)
-			return { .IsBold_ = QFont::Weight::DemiBold };
+			return { .IsBold_ = QFont::Weight::DemiBold, .Foreground_ = Palette_.Foreground_ };
 		if (tagName == u"em"_qsv || tagName == u"i"_qsv)
-			return { .IsItalic_ = true };
+			return { .IsItalic_ = true, .Foreground_ = Palette_.Foreground_ };
 		if (tagName == u"s"_qsv)
-			return { .IsStrikeThrough_ = true };
+			return { .IsStrikeThrough_ = true, .Foreground_ = Palette_.Foreground_ };
 		if (tagName == u"sup"_qsv)
-			return { .VerticalAlignment_ = QTextCharFormat::AlignSuperScript };
+			return { .VerticalAlignment_ = QTextCharFormat::AlignSuperScript, .Foreground_ = Palette_.Foreground_ };
 		if (tagName == u"sub"_qsv)
-			return { .VerticalAlignment_ = QTextCharFormat::AlignSubScript };
+			return { .VerticalAlignment_ = QTextCharFormat::AlignSubScript, .Foreground_ = Palette_.Foreground_ };
 		if (tagName == u"a"_qsv)
 			return { .IsUnderline_ = true, .Foreground_ = Palette_.Link_ };
 
-		return {};
+		return { .Foreground_ = Palette_.Foreground_ };
 	}
 }
