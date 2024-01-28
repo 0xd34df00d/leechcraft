@@ -10,6 +10,7 @@
 #include <QtDebug>
 #include <Magick++.h>
 #include <util/sll/udls.h>
+#include "textdocumentformatconfig.h"
 
 namespace LC::Monocle
 {
@@ -44,6 +45,79 @@ namespace LC::Monocle
 				qWarning () << "unsupported fmt" << fmt;
 				throw std::runtime_error { "unsupported ToMagick fmt" };
 			}
+		}
+
+		bool IsSupportedFormat (QImage::Format fmt)
+		{
+			switch (fmt)
+			{
+			case QImage::Format_RGB32:
+			case QImage::Format_ARGB32:
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		int GetLightness (QRgb rgb)
+		{
+			return QColor { rgb }.lightness ();
+		}
+
+		/** Returns the fraction of the pixels that are brighter than bgColor.
+		 */
+		double GetBrightFraction (const QImage& image, const QColor& bgColor)
+		{
+			const auto bgLightness = GetLightness (bgColor.rgb ());
+
+			const auto totalPixels = image.sizeInBytes () / 4;
+			int brightCount = 0;
+
+			const auto& rgbs = reinterpret_cast<const QRgb*> (image.constBits ());
+			for (int i = 0; i < totalPixels; ++i)
+				if (GetLightness (rgbs [i]) > bgLightness)
+					++brightCount;
+			return static_cast<double> (brightCount) / totalPixels;
+		}
+
+		QRgb ComputeSubtrahend (QColor bgColor)
+		{
+			int bgR = 0;
+			int bgG = 0;
+			int bgB = 0;
+			bgColor.getRgb (&bgR, &bgG, &bgB);
+			return qRgba (0xff - bgR, 0xff - bgG, 0xff - bgB, 0);
+		}
+
+		using Components = std::array<unsigned char, 4>;
+
+		auto ToComponents (QRgb rgb)
+		{
+			return std::bit_cast<Components> (rgb);
+		}
+
+		QImage AdjustColors (QImage&& image)
+		{
+			if (!IsSupportedFormat (image.format ()))
+			{
+				qWarning () << "unsupported image format" << image.format ();
+				return image;
+			}
+
+			const auto& palette = TextDocumentFormatConfig::Instance ().GetPalette ();
+			if (palette.Background_ == Qt::white)
+				return image;
+
+			if (GetBrightFraction (image, palette.Background_) < 0.1) // TODO make configurable
+				return image;
+
+			const auto subtrahend = ToComponents (ComputeSubtrahend (palette.Background_));
+			auto bytes = image.bits ();
+			for (int i = 0, totalBytes = image.sizeInBytes (); i < totalBytes; i += 4)
+				for (int j = 0; j < 4; ++j)
+					bytes [i + j] -= std::min (subtrahend [j], bytes [i + j]);
+
+			return image;
 		}
 
 		QImage Downscale (QImage&& image, QSize size)
@@ -86,8 +160,12 @@ namespace LC::Monocle
 			return QTextDocument::loadResource (type, name);
 
 		const auto& maxSize = MaxImageSizes_.value (name);
-		const auto& loaded = Downscale (image.Load_ (image.NativeSize_), maxSize.isValid () ? maxSize : image.NativeSize_);
-		ImagesCache_.insert (name, new QImage { loaded }, loaded.sizeInBytes ());
-		return loaded;
+
+		auto loaded = image.Load_ (image.NativeSize_);
+		auto colorAdjusted = AdjustColors (std::move (loaded));
+		const auto& processed = Downscale (std::move (colorAdjusted), maxSize.isValid () ? maxSize : image.NativeSize_);
+		ImagesCache_.insert (name, new QImage { processed }, processed.sizeInBytes ());
+
+		return processed;
 	}
 }
