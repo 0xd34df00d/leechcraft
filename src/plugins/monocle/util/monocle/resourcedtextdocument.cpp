@@ -97,6 +97,21 @@ namespace LC::Monocle
 			return image;
 		}
 
+		QImage AddBackground (QImage&& image, QColor bg)
+		{
+			if (bg == Qt::black)
+				return image;
+
+			bg.setAlpha (0);
+			const auto addend = std::bit_cast<Components> (bg.rgba ());
+
+			auto bytes = image.bits ();
+			for (int i = 0, totalBytes = image.sizeInBytes (); i < totalBytes; i += 4)
+				for (int j = 0; j < 4; ++j)
+					bytes [i + j] += std::min (addend [j], static_cast<uchar> (0xff - bytes [i + j]));
+			return image;
+		}
+
 		QImage SubtractBackground (QImage&& image, QColor bg)
 		{
 			const auto subtrahend = std::bit_cast<Components> (ComputeSubtrahend (bg));
@@ -123,7 +138,7 @@ namespace LC::Monocle
 				return image;
 
 			return palette.Background_.lightness () < palette.Foreground_.lightness () ?
-					InvertColors (std::move (image)) :
+					AddBackground (InvertColors (std::move (image)), palette.Background_) :
 					SubtractBackground (std::move (image), palette.Background_);
 		}
 
