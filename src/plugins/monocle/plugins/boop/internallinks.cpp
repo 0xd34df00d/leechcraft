@@ -77,6 +77,20 @@ namespace LC::Monocle::Boop
 				link.setAttribute ("href"_qs, '#' + InternalizeLinkTarget (resolvedHref));
 			}
 		}
+
+		void MarkChapterElem (QDomElement root)
+		{
+			auto body = root.elementsByTagName ("body"_qs).at (0);
+			auto firstElem = body.firstChildElement ();
+			if (!firstElem.hasAttribute ("id"_qs))
+				firstElem.setAttribute ("id"_qs, RootMarker);
+			else
+			{
+				auto dummyChapterElem = root.ownerDocument ().createElement ("div"_qs);
+				dummyChapterElem.setAttribute ("id"_qs, RootMarker);
+				body.insertBefore (dummyChapterElem, firstElem);
+			}
+		}
 	}
 
 	void FixDocumentLinks (const QDomElement& root, const QString& subpath)
@@ -86,9 +100,7 @@ namespace LC::Monocle::Boop
 		ResolveLinks ("link"_qs, "href"_qs, root, chapterBaseUrl);
 		ResolveLinks ("a"_qs, "href"_qs, root, chapterBaseUrl);
 
-		auto firstElem = root.elementsByTagName ("body"_qs).at (0).firstChildElement ();
-		if (!firstElem.hasAttribute ("id"_qs))
-			firstElem.setAttribute ("id"_qs, RootMarker);
+		MarkChapterElem (root);
 
 		FixupHrefTargets (root, chapterBaseUrl);
 
