@@ -21,26 +21,34 @@ namespace LC::Monocle::Boop
 	Toc_t LoadNcxTocMap (const QString& epubFile, const QString& ncxSubpath)
 	{
 		const auto& ncx = GetXml (epubFile, ncxSubpath);
-		const auto& navMap = ncx.documentElement ().firstChildElement ("navMap"_qs);
+		QVector<QDomElement> navMapQueue;
+		navMapQueue << ncx.documentElement ().firstChildElement ("navMap"_qs);
 		const QUrl ncxSubpathUrl { ncxSubpath };
 
 		Toc_t toc;
-		for (const auto& navPoint : Util::DomChildren (navMap, "navPoint"_qs))
+		while (!navMapQueue.isEmpty ())
 		{
-			const auto& label = navPoint
-					.firstChildElement ("navLabel"_qs)
-					.firstChildElement ("text"_qs)
-					.text ();
-			const auto& src = navPoint
-					.firstChildElement ("content"_qs)
-					.attribute ("src"_qs);
-			if (label.isEmpty () || src.isEmpty ())
+			const auto& elem = navMapQueue.takeLast ();
+
+			for (const auto& navPoint : Util::DomChildren (elem, "navPoint"_qs))
 			{
-				qWarning () << "invalid nav point";
-				continue;
+				const auto& label = navPoint
+						.firstChildElement ("navLabel"_qs)
+						.firstChildElement ("text"_qs)
+						.text ();
+				const auto& src = navPoint
+						.firstChildElement ("content"_qs)
+						.attribute ("src"_qs);
+				if (label.isEmpty () || src.isEmpty ())
+				{
+					qWarning () << "invalid nav point";
+					continue;
+				}
+				const auto& target = ncxSubpathUrl.resolved (src).toString ();
+				toc [InternalizeLinkTarget (target)] = label;
+
+				navMapQueue << navPoint;
 			}
-			const auto& target = ncxSubpathUrl.resolved (src).toString ();
-			toc [InternalizeLinkTarget (target)] = label;
 		}
 		return toc;
 	}
