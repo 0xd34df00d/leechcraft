@@ -91,6 +91,22 @@ namespace LC::Monocle
 
 		using Components = std::array<unsigned char, 4>;
 
+		QImage InvertColors (QImage&& image)
+		{
+			image.invertPixels ();
+			return image;
+		}
+
+		QImage SubtractBackground (QImage&& image, QColor bg)
+		{
+			const auto subtrahend = std::bit_cast<Components> (ComputeSubtrahend (bg));
+			auto bytes = image.bits ();
+			for (int i = 0, totalBytes = image.sizeInBytes (); i < totalBytes; i += 4)
+				for (int j = 0; j < 4; ++j)
+					bytes [i + j] -= std::min (subtrahend [j], bytes [i + j]);
+			return image;
+		}
+
 		QImage AdjustColors (QImage&& image)
 		{
 			if (!IsSupportedFormat (image.format ()))
@@ -106,13 +122,9 @@ namespace LC::Monocle
 			if (GetBrightFraction (image, palette.Background_) < 0.1) // TODO make configurable
 				return image;
 
-			const auto subtrahend = std::bit_cast<Components> (ComputeSubtrahend (palette.Background_));
-			auto bytes = image.bits ();
-			for (int i = 0, totalBytes = image.sizeInBytes (); i < totalBytes; i += 4)
-				for (int j = 0; j < 4; ++j)
-					bytes [i + j] -= std::min (subtrahend [j], bytes [i + j]);
-
-			return image;
+			return palette.Background_.lightness () < palette.Foreground_.lightness () ?
+					InvertColors (std::move (image)) :
+					SubtractBackground (std::move (image), palette.Background_);
 		}
 
 		QImage Downscale (QImage&& image, QSize size)
