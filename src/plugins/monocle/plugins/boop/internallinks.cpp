@@ -71,8 +71,10 @@ namespace LC::Monocle::Boop
 				if (href.isEmpty () || !QUrl::fromEncoded (href.toUtf8 ()).isRelative ())
 					continue;
 
-				const auto& resolvedHref = baseUrl.resolved (QUrl::fromEncoded (href.toUtf8 ()));
-				link.setAttribute ("href"_qs, InternalizeLinkTarget (resolvedHref));
+				const auto& resolvedHref = href.startsWith ('#') ?
+						baseUrl.resolved (QUrl::fromEncoded (href.toUtf8 ())) :
+						href;
+				link.setAttribute ("href"_qs, '#' + InternalizeLinkTarget (resolvedHref));
 			}
 		}
 	}
