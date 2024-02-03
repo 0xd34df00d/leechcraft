@@ -163,7 +163,7 @@ namespace LC::Monocle
 			magick.resize (ToMagick (size));
 			magick.sharpen (2, 2);
 
-			QImage result { size, QImage::Format_ARGB32 };
+			QImage result { size, QImage::Format_RGB32 };
 			magick.write (0, 0, size.width (), size.height (), ToMagick (result.format ()), Magick::CharPixel, result.bits ());
 			return result;
 		}
