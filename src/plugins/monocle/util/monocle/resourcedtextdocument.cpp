@@ -91,11 +91,6 @@ namespace LC::Monocle
 
 		using Components = std::array<unsigned char, 4>;
 
-		auto ToComponents (QRgb rgb)
-		{
-			return std::bit_cast<Components> (rgb);
-		}
-
 		QImage AdjustColors (QImage&& image)
 		{
 			if (!IsSupportedFormat (image.format ()))
@@ -111,7 +106,7 @@ namespace LC::Monocle
 			if (GetBrightFraction (image, palette.Background_) < 0.1) // TODO make configurable
 				return image;
 
-			const auto subtrahend = ToComponents (ComputeSubtrahend (palette.Background_));
+			const auto subtrahend = std::bit_cast<Components> (ComputeSubtrahend (palette.Background_));
 			auto bytes = image.bits ();
 			for (int i = 0, totalBytes = image.sizeInBytes (); i < totalBytes; i += 4)
 				for (int j = 0; j < 4; ++j)
