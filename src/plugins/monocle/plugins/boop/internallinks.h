@@ -14,7 +14,7 @@ class QDomElement;
 
 namespace LC::Monocle::Boop
 {
-	QString InternalizeAnchor (QString anchor);
+	QString InternalizeLinkTarget (QString anchor);
 
-	void FixLinks (const QDomElement& root, const QString& subpath);
+	void FixDocumentLinks (const QDomElement& root, const QString& subpath);
 }

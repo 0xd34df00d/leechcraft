@@ -27,16 +27,43 @@ namespace LC::Monocle::Boop
 						image.setAttribute (linkAttr, baseUrl.resolved (linkUrl).toString ());
 				}
 		}
+
+		QString NormalizeForId (QString id)
+		{
+			return id.replace ('/', '_').replace ('.', '_');
+		}
+
+		static const QString RootMarker = "lc_chapter_root"_qs;
+
+		QString InternalizeLinkTarget (const QUrl& url)
+		{
+			const auto& fragment = url.hasFragment () ? url.fragment (QUrl::FullyEncoded) : RootMarker;
+			const auto& path = url.path (QUrl::FullyEncoded);
+			return NormalizeForId (path) + '_' + fragment;
+		}
 	}
 
-	QString InternalizeAnchor (QString anchor)
+	QString InternalizeLinkTarget (QString target)
 	{
-		return anchor.replace ('#', '_').replace ('/', '_');
+		auto url = QUrl::fromEncoded (target.toUtf8 ());
+		if (!url.host ().isEmpty ())
+			return target;
+		return InternalizeLinkTarget (url);
 	}
 
 	namespace
 	{
-		void FixupLinkHrefAnchors (const QDomElement &root)
+		void FixupIdAnchors (QDomElement elem, const QString& normalizedSubpath)
+		{
+			if (const auto& id = elem.attribute ("id"_qs);
+				!id.isEmpty ())
+				elem.setAttribute ("id"_qs, normalizedSubpath + '_' + id);
+
+			for (const auto& child : Util::DomChildren (elem, {}))
+				FixupIdAnchors (child.toElement (), normalizedSubpath);
+		}
+
+		void FixupHrefTargets (const QDomElement &root, const QUrl& baseUrl)
 		{
 			for (auto link : Util::DomDescendants (root, "a"_qs))
 			{
@@ -44,29 +71,25 @@ namespace LC::Monocle::Boop
 				if (href.isEmpty () || !QUrl::fromEncoded (href.toUtf8 ()).isRelative ())
 					continue;
 
-				link.setAttribute ("href"_qs, InternalizeAnchor (std::move (href)).prepend ('#'));
+				const auto& resolvedHref = baseUrl.resolved (QUrl::fromEncoded (href.toUtf8 ()));
+				link.setAttribute ("href"_qs, InternalizeLinkTarget (resolvedHref));
 			}
-		}
-
-		void FixupIdAnchors (QDomElement elem, const QString& subpath)
-		{
-			if (const auto& id = elem.attribute ("id"_qs);
-					!id.isEmpty ())
-				elem.setAttribute ("id"_qs, InternalizeAnchor (subpath + '#' + id));
-
-			for (const auto& child : Util::DomChildren (elem, {}))
-				FixupIdAnchors (child.toElement (), subpath);
 		}
 	}
 
-	void FixLinks (const QDomElement& root, const QString& subpath)
+	void FixDocumentLinks (const QDomElement& root, const QString& subpath)
 	{
 		const QUrl chapterBaseUrl { subpath };
 		ResolveLinks ("img"_qs, "src"_qs, root, chapterBaseUrl);
 		ResolveLinks ("link"_qs, "href"_qs, root, chapterBaseUrl);
-
 		ResolveLinks ("a"_qs, "href"_qs, root, chapterBaseUrl);
-		FixupLinkHrefAnchors (root);
-		FixupIdAnchors (root, subpath);
+
+		auto firstElem = root.elementsByTagName ("body"_qs).at (0).firstChildElement ();
+		if (!firstElem.hasAttribute ("id"_qs))
+			firstElem.setAttribute ("id"_qs, RootMarker);
+
+		FixupHrefTargets (root, chapterBaseUrl);
+
+		FixupIdAnchors (root, NormalizeForId (subpath));
 	}
 }

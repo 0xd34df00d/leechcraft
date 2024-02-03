@@ -85,7 +85,7 @@ namespace LC::Monocle::Boop
 			const auto& doc = GetXml (epubFile, subpath);
 			const auto& root = doc.documentElement ();
 
-			FixLinks (root, subpath);
+			FixDocumentLinks (root, subpath);
 
 			return
 			{

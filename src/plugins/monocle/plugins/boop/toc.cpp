@@ -40,7 +40,7 @@ namespace LC::Monocle::Boop
 				continue;
 			}
 			const auto& target = ncxSubpathUrl.resolved (src).toString ();
-			toc [InternalizeAnchor (target)] = label;
+			toc [InternalizeLinkTarget (target)] = label;
 		}
 		return toc;
 	}
