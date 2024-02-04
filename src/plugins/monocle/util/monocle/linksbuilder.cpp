@@ -35,7 +35,7 @@ namespace LC::Monocle
 	{
 		QVector<InternalLink> links;
 		links.reserve (Sources_.size ());
-		for (const auto& [id, source] : Util::Stlize (Sources_))
+		for (const auto& [id, anchorSources] : Util::Stlize (Sources_))
 		{
 			const auto targetPos = Targets_.find (id);
 			if (targetPos == Targets_.end ())
@@ -44,7 +44,8 @@ namespace LC::Monocle
 				continue;
 			}
 
-			links.append ({ .LinkTitle_ = source.Title_, .Link_ = source.Span_, .Target_ = *targetPos });
+			for (const auto& source : anchorSources)
+				links.append ({ .LinkTitle_ = source.Title_, .Link_ = source.Span_, .Target_ = *targetPos });
 		}
 		return links;
 	}
@@ -66,7 +67,12 @@ namespace LC::Monocle
 		const auto anchor = href.mid (1);
 		const auto start = Cursor_.position ();
 
-		auto& source = (Sources_ [anchor] = { title, { start, -1 } });
-		return Util::MakeScopeGuard ([this, &source] { source.Span_.End_ = Cursor_.position (); });
+		auto& anchorSources = Sources_ [anchor];
+		const auto srcIdx = anchorSources.size ();
+		anchorSources.push_back ({ title, { start, -1 } });
+		return Util::MakeScopeGuard ([this, anchor, srcIdx]
+				{
+					Sources_ [anchor] [srcIdx].Span_.End_ = Cursor_.position ();
+				});
 	}
 }

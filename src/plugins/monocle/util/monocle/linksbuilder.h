@@ -26,7 +26,7 @@ namespace LC::Monocle
 			QString Title_;
 			Span Span_;
 		};
-		QHash<QString, SourceInfo> Sources_;
+		QHash<QString, QVector<SourceInfo>> Sources_;
 		QHash<QString, Span> Targets_;
 	public:
 		explicit LinksBuilder (const QTextCursor&);
