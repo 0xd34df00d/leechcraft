@@ -8,7 +8,9 @@
 
 #include "resourcedtextdocument.h"
 #include <QtDebug>
+#ifdef WITH_IMAGEMAGICK
 #include <Magick++.h>
+#endif
 #include <util/sll/udls.h>
 #include "textdocumentformatconfig.h"
 
@@ -28,6 +30,7 @@ namespace LC::Monocle
 
 	namespace
 	{
+#ifdef WITH_IMAGEMAGICK
 		Magick::Geometry ToMagick (QSize size)
 		{
 			return { static_cast<size_t> (size.width ()), static_cast<size_t> (size.height ()) };
@@ -46,6 +49,7 @@ namespace LC::Monocle
 				throw std::runtime_error { "unsupported ToMagick fmt" };
 			}
 		}
+#endif
 
 		bool IsSupportedFormat (QImage::Format fmt)
 		{
@@ -147,6 +151,9 @@ namespace LC::Monocle
 			if (size == image.size ())
 				return image;
 
+#ifndef WITH_IMAGEMAGICK
+			return image.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+#else
 			const auto noSharpenFactor = 2;
 			if (size.width () * noSharpenFactor > image.width () || size.height () * noSharpenFactor > image.height ())
 				return image.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -166,6 +173,7 @@ namespace LC::Monocle
 			QImage result { size, QImage::Format_RGB32 };
 			magick.write (0, 0, size.width (), size.height (), ToMagick (result.format ()), Magick::CharPixel, result.bits ());
 			return result;
+#endif
 		}
 	}
 

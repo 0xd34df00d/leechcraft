@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.10)
 project (monocle)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
+option (WITH_MONOCLE_IMAGEMAGICK "Use imagemagick for enhancing images quality" OFF)
+
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
 if (WITH_DOCS)
 	find_package (Doxygen REQUIRED)
@@ -18,9 +20,6 @@ if (WITH_DOCS)
 	install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
 endif ()
 
-find_package (PkgConfig)
-pkg_check_modules (MagickPP REQUIRED IMPORTED_TARGET Magick++)
-
 add_library (leechcraft-monocle-util SHARED
 	util/monocle/html2doc.cpp
 	util/monocle/imghandler.cpp
@@ -35,7 +34,12 @@ add_library (leechcraft-monocle-util SHARED
 	)
 FindQtLibs (leechcraft-monocle-util Widgets Xml)
 set_property (TARGET leechcraft-monocle-util PROPERTY SOVERSION ${LC_SOVERSION})
-target_link_libraries (leechcraft-monocle-util PkgConfig::MagickPP)
+if (WITH_MONOCLE_IMAGEMAGICK)
+	find_package (PkgConfig)
+	pkg_check_modules (MagickPP REQUIRED IMPORTED_TARGET Magick++)
+	target_link_libraries (leechcraft-monocle-util PkgConfig::MagickPP)
+	target_compile_definitions (leechcraft-monocle-util PRIVATE WITH_IMAGEMAGICK)
+endif ()
 install (TARGETS leechcraft-monocle-util DESTINATION ${LIBDIR} RENAME leechcraft-monocle-util${LC_LIBSUFFIX})
 
 LC_DEFINE_PLUGIN (
