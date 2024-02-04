@@ -21,12 +21,14 @@ namespace LC::Monocle
 
 	Util::DefaultScopeGuard LinksBuilder::HandleElem (const QDomElement& elem)
 	{
+		Util::DefaultScopeGuard targetGuard;
+		Util::DefaultScopeGuard linkGuard;
 		if (const auto& id = elem.attribute ("id"_qs); !id.isEmpty ())
-			return HandleTarget (id);
+			targetGuard = HandleTarget (id);
 		if (elem.tagName () == "a"_ql)
-			return HandleLink (elem);
+			linkGuard = HandleLink (elem);
 
-		return {};
+		return Util::DefaultScopeGuard { std::move (targetGuard), std::move (linkGuard) };
 	}
 
 	QVector<InternalLink> LinksBuilder::GetLinks () const
