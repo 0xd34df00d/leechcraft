@@ -56,6 +56,25 @@ namespace Util
 			{
 			}
 
+			template<typename F1, typename F2>
+				requires std::is_same_v<F, DefaultScopeGuardDeleter>
+			explicit ScopeGuard (ScopeGuard<F1>&& g1, ScopeGuard<F2>&& g2)
+			: F_
+			{
+				[f1 = std::move (g1.F_), p1 = g1.Perform_, f2 = std::move (g2.F_), p2 = g2.Perform_]
+				{
+					if (p1)
+						f1 ();
+					if (p2)
+						f2 ();
+				}
+			}
+			, Perform_ { g1.Perform_ || g2.Perform_ }
+			{
+				g1.Perform_ = false;
+				g2.Perform_ = false;
+			}
+
 			ScopeGuard (const ScopeGuard&) = delete;
 			ScopeGuard& operator= (const ScopeGuard&) = delete;
 
