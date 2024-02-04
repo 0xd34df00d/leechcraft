@@ -60,6 +60,8 @@ namespace LC::Monocle
 
 			auto lineShift = line.position ();
 			lineShift.rx () += line.cursorToX (inBlockPos);
+			if (!line.lineNumber ())
+				lineShift.rx () -= block.blockFormat ().textIndent ();
 
 			return { blockPos + lineShift, QSizeF { 1, line.height () } };
 		}
