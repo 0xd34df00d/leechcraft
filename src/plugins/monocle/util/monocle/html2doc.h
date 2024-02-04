@@ -26,5 +26,13 @@ namespace LC::Monocle
 
 	class ResourcedTextDocument;
 
-	DocStructure Html2Doc (ResourcedTextDocument& doc, const QDomElement&, const CustomStyler_f&, const LazyImages_t&);
+	struct HtmlConvContext
+	{
+		ResourcedTextDocument& Doc_;
+		const QDomElement& Body_;
+		const CustomStyler_f& Styler_;
+		const LazyImages_t& Images_;
+	};
+
+	DocStructure Html2Doc (const HtmlConvContext&);
 }

@@ -271,13 +271,10 @@ namespace LC::Monocle
 		};
 	}
 
-	DocStructure Html2Doc (ResourcedTextDocument& doc,
-			const QDomElement& body,
-			const CustomStyler_f& styler,
-			const LazyImages_t& images)
+	DocStructure Html2Doc (const HtmlConvContext& ctx)
 	{
-		Converter conv { doc, styler, images };
-		conv (body);
+		Converter conv { ctx.Doc_, ctx.Styler_, ctx.Images_ };
+		conv (ctx.Body_);
 		return { .TOC_ = conv.GetTOC (), .InternalLinks_ = conv.GetInternalLinks () };
 	}
 }
