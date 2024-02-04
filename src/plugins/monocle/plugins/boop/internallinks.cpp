@@ -18,13 +18,13 @@ namespace LC::Monocle::Boop
 	{
 		void ResolveLinks (const QString& tagName, const QString& linkAttr, const QDomElement& root, const QUrl& baseUrl)
 		{
-			for (auto image : Util::DomDescendants (root, tagName))
-				if (const auto& link = image.attribute (linkAttr);
+			for (auto tag : Util::DomDescendants (root, tagName))
+				if (const auto& link = tag.attribute (linkAttr);
 					!link.isEmpty ())
 				{
 					const auto linkUrl = QUrl::fromEncoded (link.toLatin1 ());
 					if (linkUrl.isRelative ())
-						image.setAttribute (linkAttr, baseUrl.resolved (linkUrl).toString ());
+						tag.setAttribute (linkAttr, baseUrl.resolved (linkUrl).toString ());
 				}
 		}
 
