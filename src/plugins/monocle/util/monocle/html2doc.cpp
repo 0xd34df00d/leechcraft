@@ -115,12 +115,15 @@ namespace LC::Monocle
 
 			StylingContextKeeper StylingCtxKeeper_ { Cursor_ };
 		public:
-			explicit Converter (ResourcedTextDocument& doc, const CustomStyler_f& styler, const LazyImages_t& images)
+			explicit Converter (ResourcedTextDocument& doc,
+					const TOCEntryID& tocStructure,
+					const CustomStyler_f& styler,
+					const LazyImages_t& images)
 			: CustomStyler_ { styler }
 			, Doc_ { doc }
 			, BodyFrame_ { *QTextCursor { &doc }.insertFrame (Config_.GetBodyFrameFormat ()) }
 			, Cursor_ { &BodyFrame_ }
-			, TocBuilder_ { Cursor_ }
+			, TocBuilder_ { tocStructure, Cursor_ }
 			, LinksBuilder_ { Cursor_ }
 			, ImgHandler_ { Cursor_, styler, images }
 			{
@@ -183,7 +186,7 @@ namespace LC::Monocle
 					}
 				}
 
-				const auto tocGuard = TocBuilder_.HandleElem (elem);
+				TocBuilder_.HandleElem (elem);
 				const auto linkGuard = LinksBuilder_.HandleElem (elem);
 
 				HandleElem (elem);
@@ -273,7 +276,7 @@ namespace LC::Monocle
 
 	DocStructure Html2Doc (const HtmlConvContext& ctx)
 	{
-		Converter conv { ctx.Doc_, ctx.Styler_, ctx.Images_ };
+		Converter conv { ctx.Doc_, ctx.TocStructure_, ctx.Styler_, ctx.Images_ };
 		conv (ctx.Body_);
 		return { .TOC_ = conv.GetTOC (), .InternalLinks_ = conv.GetInternalLinks () };
 	}

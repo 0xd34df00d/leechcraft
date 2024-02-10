@@ -7,9 +7,12 @@
  **********************************************************************/
 
 #include "types.h"
+#include <util/sll/qtutil.h>
 
 namespace LC::Monocle
 {
+	const QString TocSectionIdAttr = "section-id"_qs;
+
 	BlockFormat& BlockFormat::operator+= (const BlockFormat& other)
 	{
 		const auto merge = [&] (auto accessor)

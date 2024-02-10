@@ -8,9 +8,7 @@
 
 #pragma once
 
-#include <QStack>
 #include <interfaces/monocle/ihavetoc.h>
-#include <util/sll/util.h>
 #include "types.h"
 
 class QDomElement;
@@ -23,13 +21,11 @@ namespace LC::Monocle
 		const QTextCursor& Cursor_;
 
 		TOCEntryT<Span> Root_;
-
-		QStack<TOCEntryT<Span>*> CurrentSectionPath_;
+		QHash<QByteArray, TOCEntryT<Span>*> Id2Entry_;
 	public:
-		explicit TocBuilder (const QTextCursor& cursor);
+		explicit TocBuilder (const TOCEntryID& tocStructure, const QTextCursor& cursor);
 
 		TOCEntryLevelT<Span> GetTOC () const;
-		[[nodiscard]] Util::DefaultScopeGuard HandleElem (const QDomElement&);
+		void HandleElem (const QDomElement&);
 	};
-
 }

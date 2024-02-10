@@ -9,16 +9,32 @@
 #include "tocbuilder.h"
 #include <QDomElement>
 #include <QTextCursor>
-#include <util/sll/qtutil.h>
+#include <QtDebug>
 #include <interfaces/monocle/idocument.h>
 #include "pagelink.h"
 
 namespace LC::Monocle
 {
-	TocBuilder::TocBuilder (const QTextCursor& cursor)
+	namespace
+	{
+		void TransformStructure (const TOCEntryID& toc,
+				TOCEntryT<Span>& spanLevel,
+				QHash<QByteArray, TOCEntryT<Span>*>& id2entry)
+		{
+			spanLevel.Name_ = toc.Name_;
+			id2entry [toc.Navigation_] = &spanLevel;
+
+			const auto childCount = toc.ChildLevel_.size ();
+			spanLevel.ChildLevel_.resize (childCount);
+			for (int i = 0; i < childCount; ++i)
+				TransformStructure (toc.ChildLevel_ [i], spanLevel.ChildLevel_ [i], id2entry);
+		}
+	}
+
+	TocBuilder::TocBuilder (const TOCEntryID& tocStructure, const QTextCursor& cursor)
 	: Cursor_ { cursor }
 	{
-		CurrentSectionPath_.push (&Root_);
+		TransformStructure (tocStructure, Root_, Id2Entry_);
 	}
 
 	TOCEntryLevelT<Span> TocBuilder::GetTOC () const
@@ -26,17 +42,21 @@ namespace LC::Monocle
 		return Root_.ChildLevel_;
 	}
 
-	Util::DefaultScopeGuard TocBuilder::HandleElem (const QDomElement& elem)
+	void TocBuilder::HandleElem (const QDomElement& elem)
 	{
-		const auto& sectionTitle = elem.attribute ("section-title"_qs);
-		if (sectionTitle.isEmpty ())
-			return {};
+		const auto& sectionId = elem.attribute (TocSectionIdAttr);
+		if (sectionId.isEmpty ())
+			return;
+
+		const auto entry = Id2Entry_.value (sectionId.toLatin1 ());
+		if (!entry)
+		{
+			qWarning () << "unknown id"
+					<< sectionId;
+			return;
+		}
 
 		const auto curPosition = Cursor_.position ();
-		auto& curLevel = CurrentSectionPath_.top ()->ChildLevel_;
-		curLevel.append ({ .Navigation_ = { curPosition, curPosition }, .Name_ = sectionTitle, .ChildLevel_ = {} });
-		CurrentSectionPath_.push (&curLevel.back ());
-
-		return Util::MakeScopeGuard ([this] { CurrentSectionPath_.pop (); });
+		entry->Navigation_ = { curPosition, curPosition };
 	}
 }

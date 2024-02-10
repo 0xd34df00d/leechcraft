@@ -16,6 +16,8 @@
 
 namespace LC::Monocle
 {
+	Q_DECL_IMPORT extern const QString TocSectionIdAttr;
+
 	struct Span
 	{
 		int Start_;

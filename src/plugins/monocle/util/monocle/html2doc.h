@@ -30,6 +30,7 @@ namespace LC::Monocle
 	{
 		ResourcedTextDocument& Doc_;
 		const QDomElement& Body_;
+		const TOCEntryID& TocStructure_;
 		const CustomStyler_f& Styler_;
 		const LazyImages_t& Images_;
 	};

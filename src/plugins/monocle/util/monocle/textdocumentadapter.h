@@ -68,6 +68,7 @@ namespace LC::Monocle
 		struct HtmlDocument
 		{
 			QDomElement BodyElem_;
+			TOCEntryID TocStructure_;
 			LazyImages_t Images_;
 			QString CoverId_ = {};
 
