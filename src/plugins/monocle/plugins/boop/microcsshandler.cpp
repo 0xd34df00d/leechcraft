@@ -85,6 +85,8 @@ namespace LC::Monocle::Boop::MicroCSS
 				ifmt.Width_ = ParseDim (ctx, rule.Value_);
 			if (rule.Property_ == "vertical-align"_ql)
 				cfmt.VerticalAlignment_ = ParseVerticalAlignment (rule.Value_);
+			if (rule.Property_ == "font-size"_ql)
+				cfmt.PointSize_ = ParseDim (ctx, rule.Value_);
 		}
 
 		void ConvertRules (const StylingContext& ctx, BlockFormat& bfmt, CharFormat& cfmt, ImageFormat& ifmt, const QVector<Rule>& rules)
