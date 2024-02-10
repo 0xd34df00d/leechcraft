@@ -474,23 +474,43 @@ namespace Util
 		WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 	}
 
+	namespace
+	{
+		std::optional<QString> GetUserTextUntranslated (const QDomElement& parent, const QString& textAttr)
+		{
+			if (parent.hasAttribute (textAttr))
+				return parent.attribute (textAttr);
+
+			const auto& elem = parent.firstChildElement (textAttr);
+			if (elem.hasAttribute ("value"))
+				return elem.attribute ("value");
+
+			if (!elem.text ().isEmpty ())
+				return elem.text ();
+
+			return {};
+		}
+
+		std::optional<QString> GetUserText (const QDomElement& parent, const QString& textAttr, const QString& trCtx)
+		{
+			const auto& value = GetUserTextUntranslated (parent, textAttr);
+			if (!value)
+				return {};
+
+			return QCoreApplication::translate (qPrintable (trCtx),
+					value->toUtf8 ().constData (),
+					nullptr);
+		}
+	}
+
 	QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 	{
-		QString result;
-		const auto& label = item.firstChildElement ("label");
-		if (!label.isNull ())
-			result = label.attribute ("value");
-		return QCoreApplication::translate (qPrintable (TrContext_),
-				result.toUtf8 ().constData (),
-				0);
+		return GetUserText (item, "label", TrContext_).value_or (QString {});
 	}
 
 	QString XmlSettingsDialog::GetDescription (const QDomElement& item) const
 	{
-		const auto& label = item.firstChildElement ("tooltip");
-		const auto& text = label.text ().simplified ();
-		return QCoreApplication::translate (qPrintable (TrContext_),
-				text.toUtf8 ().constData ());
+		return GetUserText (item, "tooltip", TrContext_).value_or (QString {});
 	}
 
 	void XmlSettingsDialog::SetTooltip (QWidget *widget, const QDomElement& from) const
@@ -502,22 +522,12 @@ namespace Util
 
 	XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
 	{
-		LangElements elements;
-		auto getElem = [&parent, this] (const QString& elemName) -> std::optional<QString>
+		return
 		{
-			const auto& label = parent.firstChildElement (elemName);
-			if (label.isNull ())
-				return {};
-
-			return QCoreApplication::translate (qPrintable (TrContext_),
-					label.attribute ("value").toUtf8 ().constData (),
-					0);
+			.Label_ = GetUserText (parent, "label", TrContext_),
+			.Suffix_ = GetUserText (parent, "suffix", TrContext_),
+			.SpecialValue_ = GetUserText (parent, "specialValue", TrContext_),
 		};
-
-		elements.Label_ = getElem ("label");
-		elements.Suffix_ = getElem ("suffix");
-		elements.SpecialValue_ = getElem ("specialValue");
-		return elements;
 	}
 
 	QString XmlSettingsDialog::GetBasename () const
