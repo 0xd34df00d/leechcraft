@@ -55,8 +55,8 @@ namespace Util
 	{
 		Basename_ = QFileInfo (basename).baseName ();
 		TrContext_ = basename.endsWith (".xml") ?
-				Basename_ :
-				QFileInfo (basename).fileName ();
+				Basename_.toUtf8 () :
+				QFileInfo { basename }.fileName ().toUtf8 ();
 		WorkingObject_ = obj;
 		QString filename;
 		if (QFile::exists (basename))
@@ -491,13 +491,13 @@ namespace Util
 			return {};
 		}
 
-		std::optional<QString> GetUserText (const QDomElement& parent, const QString& textAttr, const QString& trCtx)
+		std::optional<QString> GetUserText (const QDomElement& parent, const QString& textAttr, const QByteArray& trCtx)
 		{
 			const auto& value = GetUserTextUntranslated (parent, textAttr);
 			if (!value)
 				return {};
 
-			return QCoreApplication::translate (qPrintable (trCtx),
+			return QCoreApplication::translate (trCtx.constData (),
 					value->toUtf8 ().constData (),
 					nullptr);
 		}

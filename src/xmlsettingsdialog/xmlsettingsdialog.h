@@ -49,7 +49,7 @@ namespace Util
 		ItemHandlerFactory * const HandlersManager_;
 
 		QString Basename_;
-		QString TrContext_;
+		QByteArray TrContext_;
 	public:
 		struct LangElements
 		{
