@@ -20,6 +20,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/timer.h>
+#include "tocbuilder.h"
 
 namespace LC::Monocle::FXB
 {
@@ -107,34 +108,6 @@ namespace LC::Monocle::FXB
 			}
 		}
 
-		QString ExtractTitle (const QDomElement& titleElem)
-		{
-			const auto& p = titleElem.firstChildElement ("p"_qs);
-			return !p.isNull () ? p.text () : titleElem.text ();
-		}
-
-		void MarkSection (QDomElement section)
-		{
-			QString sectionTitle;
-
-			const auto& title = section.firstChildElement ("title"_qs);
-			if (!title.isNull ())
-				sectionTitle = ExtractTitle (title);
-
-			if (sectionTitle.isEmpty ())
-			{
-				constexpr auto sectionNameSize = 50;
-				sectionTitle = section.text ();
-				if (sectionTitle.size () > sectionNameSize)
-				{
-					sectionTitle.truncate (sectionNameSize);
-					sectionTitle += u"…"_qs;
-				}
-			}
-
-			section.setAttribute ("section-title"_qs, sectionTitle);
-		}
-
 		void Fixup (QDomElement& elem)
 		{
 			const auto& tagName = elem.tagName ();
@@ -143,9 +116,6 @@ namespace LC::Monocle::FXB
 
 			if (tagName == "stanza"_ql)
 				CollapseChildren (elem, "v"_qs);
-
-			if (tagName == "section"_ql || tagName == "subsection"_ql)
-				MarkSection (elem);
 
 			if (tagName == "image"_ql)
 			{
@@ -178,6 +148,8 @@ namespace LC::Monocle::FXB
 		{
 			QStack<QStringView> TagStack_;
 			QHash<QString, int> UnhandledTags_;
+
+			TocBuilder TocBuilder_;
 		public:
 			auto operator() (QDomElement&& elem)
 			{
@@ -188,9 +160,16 @@ namespace LC::Monocle::FXB
 
 				return elem;
 			}
+
+			TOCEntryID GetToc () const
+			{
+				return TocBuilder_.GetToc ();
+			}
 		private:
 			void RunConvert (QDomElement elem)
 			{
+				const auto tocGuard = TocBuilder_.HandleElem (elem);
+
 				Fixup (elem);
 
 				const auto& fb2tag = elem.tagName ();
@@ -319,8 +298,10 @@ namespace LC::Monocle::FXB
 
 		auto notesElem = fb2body.nextSiblingElement ("body"_qs);
 
+		Converter cvt;
+
 		Util::Timer timer;
-		auto body = Converter {} (std::move (fb2body));
+		auto body = cvt (std::move (fb2body));
 		timer.Stamp ("converting fb2");
 
 		auto binaries = LoadImages (fb2);
@@ -330,6 +311,6 @@ namespace LC::Monocle::FXB
 			AppendNotes (body, *notes);
 		timer.Stamp ("converting notes and comments");
 
-		return ConvertResult_t::Right ({ body, std::move (binaries), GetCoverImageId (fb2) });
+		return ConvertResult_t::Right ({ body, cvt.GetToc (), std::move (binaries), GetCoverImageId (fb2) });
 	}
 }

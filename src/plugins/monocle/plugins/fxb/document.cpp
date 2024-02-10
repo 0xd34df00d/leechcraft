@@ -49,6 +49,7 @@ namespace FXB
 				{
 					SetDocument ({
 							.BodyElem_ = result.Doc_,
+							.TocStructure_ = result.Toc_,
 							.Images_ = result.Images_,
 							.CoverId_ = result.CoverImageId_,
 						});

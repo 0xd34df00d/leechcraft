@@ -7,6 +7,7 @@ LC_DEFINE_PLUGIN (
 		fxb.cpp
 		document.cpp
 		fb2converter.cpp
+		tocbuilder.cpp
 	SETTINGS monoclefxbsettings.xml
 	QT_COMPONENTS Xml
 	LINK_LIBRARIES leechcraft-monocle-util

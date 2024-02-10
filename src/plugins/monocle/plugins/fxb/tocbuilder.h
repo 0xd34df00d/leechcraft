@@ -8,27 +8,24 @@
 
 #pragma once
 
-#include <QDomElement>
-#include <QString>
-#include <util/sll/eitherfwd.h>
-#include <interfaces/monocle/idocument.h>
+#include <QStack>
 #include <interfaces/monocle/ihavetoc.h>
-#include <util/monocle/types.h>
+#include <util/sll/util.h>
 
-class QTextDocument;
+class QDomElement;
 
 namespace LC::Monocle::FXB
 {
-	struct ConvertedDocument
+	class TocBuilder
 	{
-		QDomElement Doc_;
-		TOCEntryID Toc_;
-		LazyImages_t Images_;
-		QString CoverImageId_;
+		TOCEntryID Root_;
+		QStack<TOCEntryID*> CurrentEntryPath_;
+		int IdCounter_ = 0;
+	public:
+		explicit TocBuilder ();
 
-		DocumentInfo Info_;
+		TOCEntryID GetToc () const;
+
+		[[nodiscard]] Util::DefaultScopeGuard HandleElem (QDomElement);
 	};
-
-	using ConvertResult_t = Util::Either<QString, ConvertedDocument>;
-	ConvertResult_t Convert (QDomDocument&& fb2);
 }
