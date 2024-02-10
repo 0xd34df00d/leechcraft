@@ -60,15 +60,12 @@ namespace LC
 				box->setSuffix (item.attribute ("suffix"));
 
 			const auto& langs = XSD_->GetLangElements (item);
-			if (langs.Valid_)
-			{
-				if (langs.Label_.first)
-					label->setText (langs.Label_.second);
-				if (langs.Suffix_.first)
-					box->setSuffix (langs.Suffix_.second);
-				if (langs.SpecialValue_.first)
-					box->setSpecialValueText (langs.SpecialValue_.second);
-			}
+			if (langs.Label_)
+				label->setText (*langs.Label_);
+			if (langs.Suffix_)
+				box->setSuffix (*langs.Suffix_);
+			if (langs.SpecialValue_)
+				box->setSpecialValueText (*langs.SpecialValue_);
 
 			QVariant value = XSD_->GetValue (item);
 

@@ -11,7 +11,6 @@
 #include <memory>
 #include <QObject>
 #include <QStringList>
-#include <QMap>
 #include <QVariant>
 #include "xsdconfig.h"
 
@@ -54,10 +53,9 @@ namespace Util
 	public:
 		struct LangElements
 		{
-			bool Valid_;
-			QPair<bool, QString> Label_;
-			QPair<bool, QString> Suffix_;
-			QPair<bool, QString> SpecialValue_;
+			std::optional<QString> Label_;
+			std::optional<QString> Suffix_;
+			std::optional<QString> SpecialValue_;
 		};
 
 		XmlSettingsDialog ();

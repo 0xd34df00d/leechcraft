@@ -502,28 +502,22 @@ namespace Util
 
 	XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
 	{
-		LangElements returning;
-		returning.Valid_ = true;
-
-		auto getElem = [&parent, this] (const QString& elemName) -> QPair<bool, QString>
+		LangElements elements;
+		auto getElem = [&parent, this] (const QString& elemName) -> std::optional<QString>
 		{
 			const auto& label = parent.firstChildElement (elemName);
 			if (label.isNull ())
 				return {};
 
-			return
-			{
-				true,
-				QCoreApplication::translate (qPrintable (TrContext_),
-						label.attribute ("value").toUtf8 ().constData (),
-						0)
-			};
+			return QCoreApplication::translate (qPrintable (TrContext_),
+					label.attribute ("value").toUtf8 ().constData (),
+					0);
 		};
 
-		returning.Label_ = getElem ("label");
-		returning.Suffix_ = getElem ("suffix");
-		returning.SpecialValue_ = getElem ("specialValue");
-		return returning;
+		elements.Label_ = getElem ("label");
+		elements.Suffix_ = getElem ("suffix");
+		elements.SpecialValue_ = getElem ("specialValue");
+		return elements;
 	}
 
 	QString XmlSettingsDialog::GetBasename () const
