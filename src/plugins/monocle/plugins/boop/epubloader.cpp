@@ -218,6 +218,7 @@ namespace LC::Monocle::Boop
 			const auto& doc = std::make_shared<Document> (QUrl::fromLocalFile (epubFile), pluginObj);
 			doc->SetDocument ({
 					.BodyElem_ = body,
+					.TocStructure_ = toc,
 					.Images_ = images,
 					.Styler_ = MicroCSS::MakeStyler (stylesheets)
 				});

@@ -12,25 +12,18 @@
 #include <QUrl>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/qtutil.h>
+#include <util/monocle/types.h>
 #include "internallinks.h"
 #include "manifest.h"
 #include "util.h"
 
 namespace LC::Monocle::Boop
 {
-	Toc_t LoadNcxTocMap (const QString& epubFile, const QString& ncxSubpath)
+	namespace
 	{
-		const auto& ncx = GetXml (epubFile, ncxSubpath);
-		QVector<QDomElement> navMapQueue;
-		navMapQueue << ncx.documentElement ().firstChildElement ("navMap"_qs);
-		const QUrl ncxSubpathUrl { ncxSubpath };
-
-		Toc_t toc;
-		while (!navMapQueue.isEmpty ())
+		void BuildMap (const QUrl& ncxSubpathUrl, TOCEntryID& root, const QDomElement& navMap)
 		{
-			const auto& elem = navMapQueue.takeLast ();
-
-			for (const auto& navPoint : Util::DomChildren (elem, "navPoint"_qs))
+			for (const auto& navPoint : Util::DomChildren (navMap, "navPoint"_qs))
 			{
 				const auto& label = navPoint
 						.firstChildElement ("navLabel"_qs)
@@ -45,15 +38,22 @@ namespace LC::Monocle::Boop
 					continue;
 				}
 				const auto& target = ncxSubpathUrl.resolved (src).toString ();
-				toc [InternalizeLinkTarget (target)] = label;
-
-				navMapQueue << navPoint;
+				TOCEntryID entry { .Navigation_ = InternalizeLinkTarget (target).toLatin1 (), .Name_ = label };
+				BuildMap (ncxSubpathUrl, entry, navPoint);
+				root.ChildLevel_ << entry;
 			}
 		}
-		return toc;
+
+		TOCEntryID LoadNcxTocMap (const QString& epubFile, const QString& ncxSubpath)
+		{
+			const auto& ncx = GetXml (epubFile, ncxSubpath);
+			TOCEntryID toc;
+			BuildMap (QUrl { ncxSubpath }, toc, ncx.documentElement ().firstChildElement ("navMap"_qs));
+			return toc;
+		}
 	}
 
-	Toc_t LoadTocMap (const QString& epubFile, const Manifest& manifest)
+	TOCEntryID LoadTocMap (const QString& epubFile, const Manifest& manifest)
 	{
 		static constexpr auto NcxMime = "application/x-dtbncx+xml"_ql;
 
@@ -64,17 +64,36 @@ namespace LC::Monocle::Boop
 		return {};
 	}
 
-	void MarkTocTargets (QDomElement elem, const Toc_t& toc)
+	namespace
 	{
-		const auto& id = elem.attribute ("id"_qs);
-		if (!id.isEmpty ())
+		QSet<QString> GetEntriesIds (const TOCEntryID& root)
 		{
-			const auto& label = toc.value (id);
-			if (!label.isEmpty ())
-				elem.setAttribute ("section-title"_qs, label);
+			QSet<QString> result;
+
+			auto entries = root.ChildLevel_;
+			while (!entries.isEmpty ())
+			{
+				const auto& entry = entries.takeLast ();
+				result << entry.Navigation_;
+				entries += entry.ChildLevel_;
+			}
+
+			return result;
 		}
 
-		for (const auto& child : Util::DomChildren (elem, {}))
-			MarkTocTargets (child, toc);
+		void MarkTocTargets (QDomElement elem, const QSet<QString>& ids)
+		{
+			const auto& id = elem.attribute ("id"_qs);
+			if (!id.isEmpty () && ids.contains (id))
+				elem.setAttribute (TocSectionIdAttr, id);
+
+			for (const auto& child : Util::DomChildren (elem, {}))
+				MarkTocTargets (child, ids);
+		}
+	}
+
+	void MarkTocTargets (const QDomElement& elem, const TOCEntryID& toc)
+	{
+		MarkTocTargets (elem, GetEntriesIds (toc));
 	}
 }

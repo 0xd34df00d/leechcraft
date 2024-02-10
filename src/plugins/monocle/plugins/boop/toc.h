@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include <QHash>
-#include <QString>
+#include <interfaces/monocle/ihavetoc.h>
 
 class QDomElement;
 
@@ -17,9 +16,7 @@ namespace LC::Monocle::Boop
 {
 	struct Manifest;
 
-	using Toc_t = QHash<QString, QString>;
+	TOCEntryID LoadTocMap (const QString& epubFile, const Manifest& manifest);
 
-	Toc_t LoadTocMap (const QString& epubFile, const Manifest& manifest);
-
-	void MarkTocTargets (QDomElement elem, const Toc_t& toc);
+	void MarkTocTargets (const QDomElement& elem, const TOCEntryID&);
 }
