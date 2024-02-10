@@ -9,9 +9,6 @@
 #include "fb2converter.h"
 #include <functional>
 #include <QDomDocument>
-#include <QTextDocument>
-#include <QTextCursor>
-#include <QTextFrame>
 #include <QImage>
 #include <QVariant>
 #include <QStack>
