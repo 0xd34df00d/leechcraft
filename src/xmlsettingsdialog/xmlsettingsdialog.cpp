@@ -122,8 +122,6 @@ namespace Util
 
 		obj->installEventFilter (this);
 
-		UpdateXml (true);
-
 		connect (obj,
 				SIGNAL (showPageRequested (Util::BaseSettingsManager*, QString)),
 				this,
@@ -138,56 +136,6 @@ namespace Util
 	QWidget* XmlSettingsDialog::GetWidget () const
 	{
 		return Widget_;
-	}
-
-	QString XmlSettingsDialog::GetXml () const
-	{
-		return Document_->toString ();
-	}
-
-	void XmlSettingsDialog::MergeXml (const QByteArray& newXml)
-	{
-		QDomDocument newDoc;
-		if (!newDoc.setContent (newXml))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse XML"
-					<< newXml;
-			return;
-		}
-
-		QList<QByteArray> props = WorkingObject_->dynamicPropertyNames ();
-
-		QDomNodeList nodes = newDoc.elementsByTagName ("item");
-		for (int i = 0; i < nodes.size (); ++i)
-		{
-			const QDomElement& elem = nodes.at (i).toElement ();
-			if (elem.isNull ())
-				continue;
-
-			const QString& propName = elem.attribute ("property");
-			if (!props.contains (propName.toLatin1 ()))
-				continue;
-
-			const QVariant& value = GetValue (elem);
-			if (value.isNull ())
-				continue;
-
-			WorkingObject_->setProperty (propName.toLatin1 ().constData (), value);
-
-			QWidget *object = findChild<QWidget*> (propName);
-			if (!object)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not find object for property"
-					<< propName;
-				continue;
-			}
-			HandlersManager_->SetValue (object, value);
-		}
-
-		UpdateXml ();
-		HandlersManager_->ClearNewValues ();
 	}
 
 	namespace
@@ -573,53 +521,6 @@ namespace Util
 		return result;
 	}
 
-	void XmlSettingsDialog::UpdateXml (bool whole)
-	{
-		const auto& nodes = Document_->elementsByTagName ("item");
-		if (whole)
-			for (int i = 0; i < nodes.size (); ++i)
-			{
-				auto elem = nodes.at (i).toElement ();
-				if (!elem.hasAttribute ("property"))
-					continue;
-
-				const auto& name = elem.attribute ("property");
-				const auto& value = WorkingObject_->property (name.toLatin1 ().constData ());
-
-				UpdateSingle (name, value, elem);
-			}
-		else
-			for (const auto& pair : Util::Stlize (HandlersManager_->GetNewValues ()))
-			{
-				QDomElement element;
-				const auto& name = pair.first;
-				for (int j = 0, size = nodes.size (); j < size; ++j)
-				{
-					const auto& e = nodes.at (j).toElement ();
-					if (e.isNull ())
-						continue;
-					if (e.attribute ("property") == name)
-					{
-						element = e;
-						break;
-					}
-				}
-				if (element.isNull ())
-				{
-					qWarning () << Q_FUNC_INFO << "element for property" << name << "not found";
-					return;
-				}
-
-				UpdateSingle (name, pair.second, element);
-			}
-	}
-
-	void XmlSettingsDialog::UpdateSingle (const QString&,
-			const QVariant& value, QDomElement& element)
-	{
-		HandlersManager_->UpdateSingle (element, value);
-	}
-
 	void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
 	{
 		HandlersManager_->SetValue (object, value);
@@ -644,8 +545,6 @@ namespace Util
 	{
 		for (const auto& pair : Util::Stlize (HandlersManager_->GetNewValues ()))
 			WorkingObject_->setProperty (pair.first.toLatin1 ().constData (), pair.second);
-
-		UpdateXml ();
 
 		HandlersManager_->ClearNewValues ();
 

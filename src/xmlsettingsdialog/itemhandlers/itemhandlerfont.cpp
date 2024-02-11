@@ -79,12 +79,6 @@ namespace LC
 		fontPicker->SetCurrentFont (value.value<QFont> ());
 	}
 
-	void ItemHandlerFont::UpdateValue (QDomElement& element,
-			const QVariant& value) const
-	{
-		element.setAttribute ("default", value.value<QFont> ().toString ());
-	}
-
 	QVariant ItemHandlerFont::GetObjectValue (QObject *object) const
 	{
 		FontPicker *fontPicker = qobject_cast<FontPicker*> (object);

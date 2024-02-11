@@ -22,7 +22,6 @@ namespace LC
 	public:
 		using ItemHandlerBase::ItemHandlerBase;
 
-		void UpdateValue (QDomElement&, const QVariant& value) const override;
 		QVariant GetValue (const QDomElement& element, QVariant value) const override;
 	};
 }

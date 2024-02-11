@@ -66,23 +66,6 @@ namespace Util
 
 		QWidget* GetWidget () const;
 
-		/** @brief Returns the current XML.
-		 *
-		 * Returns the XML with the default settings set to current
-		 * settings.
-		 *
-		 * @return String with the current XML.
-		 */
-		QString GetXml () const;
-
-		/** @brief Sets the settings to XML's ones.
-		 *
-		 * Sets settings to defaults of the passed XML.
-		 *
-		 * @param[in] xml The XML to take data from.
-		 */
-		void MergeXml (const QByteArray& xml);
-
 		QList<int> HighlightMatches (const QString& query);
 
 		/** @brief Sets custom widget mentioned in the XML.
@@ -229,8 +212,6 @@ namespace Util
 		void HandleDeclaration (const QDomElement&);
 		void ParsePage (const QDomElement&);
 		void ParseItem (const QDomElement&, QWidget*);
-		void UpdateXml (bool = false);
-		void UpdateSingle (const QString&, const QVariant&, QDomElement&);
 		void SetValue (QWidget*, const QVariant&);
 	protected:
 		bool eventFilter (QObject*, QEvent*);

@@ -10,25 +10,6 @@
 
 namespace LC
 {
-	void ItemHandlerOptionsSetValue::UpdateValue (QDomElement& element,
-			const QVariant& value) const
-	{
-		QDomNodeList options = element.elementsByTagName ("option");
-		for (int i = 0; i < options.size (); ++i)
-			options.at (i).toElement ().removeAttribute ("default");
-
-		const QString& optName = value.toString ();
-		for (int i = 0; i < options.size (); ++i)
-		{
-			QDomElement option = options.at (i).toElement ();
-			if (option.attribute ("name") == optName)
-			{
-				option.setAttribute ("default", "true");
-				break;
-			}
-		}
-	}
-
 	QVariant ItemHandlerOptionsSetValue::GetValue (const QDomElement& item,
 			QVariant value) const
 	{

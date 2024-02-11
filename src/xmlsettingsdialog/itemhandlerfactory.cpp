@@ -85,19 +85,6 @@ namespace LC
 		base->SetValue (widget, value);
 	}
 
-	bool ItemHandlerFactory::UpdateSingle (QDomElement& element,
-			const QVariant& value) const
-	{
-		for (const auto& handler : Handlers_)
-			if (handler->CanHandle (element))
-			{
-				handler->UpdateValue (element, value);
-				return true;
-			}
-
-		return false;
-	}
-
 	QVariant ItemHandlerFactory::GetValue (const QDomElement& element,
 			const QVariant& value) const
 	{

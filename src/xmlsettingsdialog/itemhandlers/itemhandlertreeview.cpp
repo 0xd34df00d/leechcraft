@@ -64,10 +64,6 @@ namespace LC
 	{
 	}
 
-	void ItemHandlerTreeView::UpdateValue (QDomElement&, const QVariant&) const
-	{
-	}
-
 	QVariant ItemHandlerTreeView::GetObjectValue (QObject*) const
 	{
 		return QVariant ();

@@ -83,20 +83,6 @@ namespace LC
 		rw->SetRange (value);
 	}
 
-	void ItemHandlerSpinboxRange::UpdateValue (QDomElement& element,
-			const QVariant& value) const
-	{
-		const QStringList& vals = value.toStringList ();
-		if (vals.size () != 2)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "spinboxrange value error, not 2 elems in list"
-				<< value;
-			return;
-		}
-		element.setAttribute ("default", vals.at (0) + ':' + vals.at (1));
-	}
-
 	QVariant ItemHandlerSpinboxRange::GetObjectValue (QObject *object) const
 	{
 		RangeWidget *widget = qobject_cast<RangeWidget*> (object);

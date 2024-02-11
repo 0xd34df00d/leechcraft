@@ -69,7 +69,6 @@ namespace LC
 		 * @param[in] value The new value for this widget.
 		 */
 		void SetValue (QWidget *widget, const QVariant& value) const;
-		bool UpdateSingle (QDomElement& element, const QVariant& value) const;
 		QVariant GetValue (const QDomElement& element, const QVariant& value) const;
 
 		/** @brief Returns the list of all changed properties.

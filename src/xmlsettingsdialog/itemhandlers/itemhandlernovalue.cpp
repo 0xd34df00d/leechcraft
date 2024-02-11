@@ -19,10 +19,6 @@ namespace LC
 	{
 	}
 
-	void ItemHandlerNoValue::UpdateValue (QDomElement&, const QVariant&) const
-	{
-	}
-
 	QVariant ItemHandlerNoValue::GetObjectValue (QObject*) const
 	{
 		return QVariant ();

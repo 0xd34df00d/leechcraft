@@ -61,10 +61,6 @@ namespace LC
 	{
 	}
 
-	void ItemHandlerListView::UpdateValue (QDomElement&, const QVariant&) const
-	{
-	}
-
 	QVariant ItemHandlerListView::GetObjectValue (QObject*) const
 	{
 		return {};

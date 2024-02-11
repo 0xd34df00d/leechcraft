@@ -21,7 +21,6 @@ namespace LC
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;
 		QVariant GetValue (const QDomElement&, QVariant) const;
-		void UpdateValue (QDomElement&, const QVariant&) const;
 	protected:
 		QVariant GetObjectValue (QObject *object) const;
 	};

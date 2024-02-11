@@ -29,7 +29,6 @@ namespace LC
 		void Handle (const QDomElement&, QWidget*) override;
 		QVariant GetValue (const QDomElement&, QVariant) const override;
 		void SetValue (QWidget*, const QVariant&) const override;
-		void UpdateValue (QDomElement&, const QVariant&) const override;
 	protected:
 		QVariant GetObjectValue (QObject*) const override;
 	private:

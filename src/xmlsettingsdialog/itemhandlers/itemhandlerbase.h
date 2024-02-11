@@ -79,16 +79,6 @@ namespace LC
 		 */
 		virtual void SetValue (QWidget *widget, const QVariant& value) const = 0;
 
-		/** @brief Update the value of the given element.
-		 *
-		 * This function should update the current default \em value of
-		 * the given \em element to a new value.
-		 *
-		 * @param[in,out] element The element which should be updated.
-		 * @param[in] value The new value for this element.
-		 */
-		virtual void UpdateValue (QDomElement& element, const QVariant& value) const = 0;
-
 		/** @brief Returns the list of the changed properties for
 		 * widgets that are managed by this item handler.
 		 *

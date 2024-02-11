@@ -69,11 +69,6 @@ namespace LC
 		colorPicker->SetCurrentColor (value.value<QColor> ());
 	}
 
-	void ItemHandlerColor::UpdateValue (QDomElement& element, const QVariant& value) const
-	{
-		element.setAttribute ("default", value.value<QColor> ().name ());
-	}
-
 	QVariant ItemHandlerColor::GetObjectValue (QObject *object) const
 	{
 		ColorPicker *colorPicker = qobject_cast<ColorPicker*> (object);
