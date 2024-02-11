@@ -10,7 +10,7 @@
 			<item type="combobox" property="SelectedCompositor" mayHaveDataSource="true">
 				<label value="Compositor:" />
 			</item>
-			<item type="customwidget" name="CompositorProps" label="own" />
+			<item type="customwidget" name="CompositorProps" />
 		</item>
 	</page>
 </settings>

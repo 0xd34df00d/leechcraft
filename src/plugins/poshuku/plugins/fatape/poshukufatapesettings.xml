@@ -2,7 +2,7 @@
 <settings>
 	<page>
         <label lang="en" value="FatApe scripts management" />
-        <item type="customwidget" name="UserScriptsManagerWidget" label="own" /> 
+        <item type="customwidget" name="UserScriptsManagerWidget" />
         <item type="path" pickerType="openFileName" property="editor">
             <label lang="en" value="Script editor path:" />
         </item>

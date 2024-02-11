@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label value="Accounts" />
-		<item type="customwidget" name="AccountsWidget" label="own" />
+		<item type="customwidget" name="AccountsWidget" />
 	</page>
 	<page>
 		<label value="Behavior" />
@@ -14,7 +14,7 @@
 		<label value="Synchronization" />
 		<tab>
 			<label value="Directories" />
-			<item type="customwidget" name="SyncWidget" label="own" />
+			<item type="customwidget" name="SyncWidget" />
 		</tab>
 		<tab>
 			<label value="Exceptions" />

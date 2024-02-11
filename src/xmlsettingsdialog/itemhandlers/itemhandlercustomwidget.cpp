@@ -25,14 +25,10 @@ namespace LC
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setContentsMargins (0, 0, 0, 0);
 		widget->setLayout (layout);
-		widget->setSizePolicy (QSizePolicy::Expanding,
-				QSizePolicy::Expanding);
+		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		if (item.attribute ("label") == "own")
-		{
-			const auto rc = lay->rowCount ();
-			lay->setRowStretch (rc, 1);
-			lay->addWidget (widget, rc, 0, 1, -1);
-		}
+		const auto rc = lay->rowCount ();
+		lay->setRowStretch (rc, 1);
+		lay->addWidget (widget, rc, 0, 1, -1);
 	}
 }

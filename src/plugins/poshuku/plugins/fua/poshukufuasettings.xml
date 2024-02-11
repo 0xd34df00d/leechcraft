@@ -2,6 +2,6 @@
 <settings>
 	<page>
 		<label lang="en" value="FUA settings" />
-		<item type="customwidget" name="Settings" label="own" />
+		<item type="customwidget" name="Settings" />
 	</page>
 </settings>

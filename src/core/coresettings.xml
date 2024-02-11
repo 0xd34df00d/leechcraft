@@ -131,13 +131,13 @@
 			<icon>theme://configure-shortcuts</icon>
 		</icons>
 		<label lang="en" value="Shortcuts" />
-		<item type="customwidget" label="own" name="ShortcutManager" />
+		<item type="customwidget" name="ShortcutManager" />
 	</page>
 	<page>
 		<label lang="en" value="Tags" />
 		<groupbox>
 			<label lang="en" value="Tags manager" />
-			<item type="customwidget" label="own" name="TagsViewer" />
+			<item type="customwidget" name="TagsViewer" />
 		</groupbox>
 	</page>
 	<page>
@@ -201,7 +201,7 @@
 		<label lang="en" value="Plugins" />
 		<groupbox>
 			<label lang="en" value="Plugins manager" />
-			<item type="customwidget" label="own" name="PluginManager" />
+			<item type="customwidget" name="PluginManager" />
 			<item type="pushbutton" name="EnableAllPlugins">
 				<label value="Enable all plugins" />
 			</item>

@@ -13,6 +13,6 @@
 	</page>
 	<page>
 		<label value="Proxies" />
-		<item type="customwidget" name="Proxies" label="own" />
+		<item type="customwidget" name="Proxies" />
 	</page>
 </settings>

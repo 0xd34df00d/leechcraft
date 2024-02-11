@@ -107,7 +107,7 @@
 		</tab>
 		<tab>
 			<label lang="en" value="Storage" />
-			<item type="customwidget" label="own" name="BackendSelector" />
+			<item type="customwidget" name="BackendSelector" />
 		</tab>
 	</page>
 </settings>

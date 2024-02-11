@@ -17,7 +17,7 @@
 		</tab>
 		<tab>
 			<label value="User rules" />
-			<item type="customwidget" name="UserFilters" label="own" />
+			<item type="customwidget" name="UserFilters" />
 		</tab>
 		<tab>
 			<label value="Subscriptions" />
@@ -28,7 +28,7 @@
 					<suffix value=" days" />
 				</item>
 			</item>
-			<item type="customwidget" name="SubscriptionsManager" label="own" />
+			<item type="customwidget" name="SubscriptionsManager" />
 		</tab>
 	</page>
 </settings>

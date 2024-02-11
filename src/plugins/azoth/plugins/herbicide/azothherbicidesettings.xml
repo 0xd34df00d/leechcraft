@@ -6,7 +6,7 @@
 			<label value="Quest" />
 			<item type="groupbox" property="EnableQuest" checkable="true" default="off">
 				<label value="Enable quest" />
-				<item type="customwidget" label="own" name="ConfWidget" />
+				<item type="customwidget" name="ConfWidget" />
 			</item>
 			<item type="lineedit" property="QuestPrefix">
 				<label value="Question prefix:" />

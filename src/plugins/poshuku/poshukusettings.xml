@@ -74,7 +74,7 @@
 		</tab>
 		<tab>
 			<label lang="en" value="Storage" />
-			<item type="customwidget" label="own" name="BackendSelector" />
+			<item type="customwidget" name="BackendSelector" />
 		</tab>
 	</page>
 	<page>
@@ -110,7 +110,7 @@
 			<label lang="en" value="Fonts" />
 			<groupbox>
 				<label value="Font families" />
-				<item type="customwidget" label="own" name="FontsSelector" />
+				<item type="customwidget" name="FontsSelector" />
 			</groupbox>
 		</tab>
 	</page>

@@ -3,7 +3,7 @@
 	<page>
 		<label value="OnlineBookmarks" />
 			<label value="Accounts" />
-		<item type="customwidget" label="own" name="Accounts" />
+		<item type="customwidget" name="Accounts" />
 		<item type="combobox" property="UploadType">
 			<label value="Bookmarks sync mode:"/>
 			<option name="0" default="true">

@@ -26,7 +26,7 @@
 		<label value="NickServ" />
 			<groupbox>
 				<label value="NickServ identify" />
-				<item type="customwidget" label="own" name="NickServIdentifyWidget" />
+				<item type="customwidget" name="NickServIdentifyWidget" />
 			</groupbox>
 	</page>
 </settings>

@@ -6,7 +6,7 @@
 			<label value="Message viewer" />
 			<groupbox>
 				<label value="Fonts" />
-				<item type="customwidget" label="own" name="FontsSelector" />
+				<item type="customwidget" name="FontsSelector" />
 			</groupbox>
 		</tab>
 		<tab>
@@ -67,10 +67,10 @@
 	</page>
 	<page>
 		<label value="Accounts" />
-		<item type="customwidget" name="AccountsWidget" label="own" />
+		<item type="customwidget" name="AccountsWidget" />
 	</page>
 	<page>
 		<label value="Templates" />
-		<item type="customwidget" name="TemplatesWidget" label="own" />
+		<item type="customwidget" name="TemplatesWidget" />
 	</page>
 </settings>

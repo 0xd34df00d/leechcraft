@@ -6,7 +6,7 @@
 			<label lang="en" value="Searchers" />
 			<groupbox>
 				<label lang="en" value="Searchers" />
-				<item type="customwidget" name="SearchersList" label="own" />
+				<item type="customwidget" name="SearchersList" />
 			</groupbox>
 		</tab>
 		<tab>
