@@ -23,11 +23,4 @@
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@default"/>")
 		<xsl:apply-templates/>
 	</xsl:template>
-
-	<xsl:template match="lang[@value='en']">
-		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="label/@value"/>");
-		<xsl:if test="suffix">
-			QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="suffix/@value"/>");
-		</xsl:if>
-	</xsl:template>
 </xsl:stylesheet>
