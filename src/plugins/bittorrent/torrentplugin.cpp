@@ -355,25 +355,6 @@ namespace LC::BitTorrent
 		return std::make_shared<Handler> (this);
 	}
 
-	void TorrentPlugin::ImportSettings (const QByteArray& settings)
-	{
-		XmlSettingsDialog_->MergeXml (settings);
-	}
-
-	void TorrentPlugin::ImportData (const QByteArray&)
-	{
-	}
-
-	QByteArray TorrentPlugin::ExportSettings () const
-	{
-		return XmlSettingsDialog_->GetXml ().toUtf8 ();
-	}
-
-	QByteArray TorrentPlugin::ExportData () const
-	{
-		return QByteArray ();
-	}
-
 	void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
 	{
 		auto& model = *Core::Instance ();

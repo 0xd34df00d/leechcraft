@@ -12,7 +12,6 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
-#include <interfaces/iimportexport.h>
 #include <interfaces/itaggablejobs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -41,7 +40,6 @@ namespace LC::BitTorrent
 						, public IInfo
 						, public IDownload
 						, public IJobHolder
-						, public IImportExport
 						, public ITaggableJobs
 						, public IHaveSettings
 						, public IHaveShortcuts
@@ -55,7 +53,6 @@ namespace LC::BitTorrent
 		Q_INTERFACES (IInfo
 				IDownload
 				IJobHolder
-				IImportExport
 				ITaggableJobs
 				IHaveSettings
 				IHaveShortcuts
@@ -97,12 +94,6 @@ namespace LC::BitTorrent
 		// IJobHolder
 		QAbstractItemModel* GetRepresentation () const override;
 		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
-
-		// IImportExport
-		void ImportSettings (const QByteArray&) override;
-		void ImportData (const QByteArray&) override;
-		QByteArray ExportSettings () const override;
-		QByteArray ExportData () const override;
 
 		// ITaggableJobs
 		void SetTags (int, const QStringList&) override;
