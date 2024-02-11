@@ -1,71 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label value="Monocle" />
-		<tab>
-			<label value="Appearance" />
+	<page label="Monocle">
+		<tab label="Appearance">
 			<item type="spinbox" property="RecentlyOpenedListSize" default="10" minimum="1" maximum="100">
-				<label value="Maximum number of items in Recently Opened list:" />
+				<label>Maximum number of items in Recently Opened list:</label>
 			</item>
 		</tab>
-		<tab>
-			<label value="Behaviour" />
+		<tab label="Behaviour">
 			<item type="checkbox" property="InvertedPageNumLabel" default="true">
-				<label value="Inverted page number label behaviour" />
+				<label>Inverted page number label behaviour</label>
 			</item>
 			<item type="checkbox" property="InhibitScreensaver" default="true">
-				<label value="Inhibit screensaver while a Monocle tab is active" />
+				<label>Inhibit screensaver while a Monocle tab is active</label>
 			</item>
 		</tab>
-		<tab>
-			<label value="Performance" />
-			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024">
-				<label value="Pixmap cache size:" />
-				<suffix value=" MiB" />
+		<tab label="Performance">
+			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" suffix=" MiB">
+				<label>Pixmap cache size:</label>
 			</item>
 			<item type="checkbox" property="SmoothScrolling" default="true">
-				<label value="Smooth scrolling" />
+				<label>Smooth scrolling</label>
 			</item>
 		</tab>
-		<tab>
-			<label value="Default backends" />
-			<item type="dataview" property="DefaultBackends" addEnabled="false">
-				<label value="Default backends:" />
-			</item>
+		<tab label="Default backends">
+			<item type="dataview" property="DefaultBackends" addEnabled="false" />
 		</tab>
 	</page>
-	<page>
-		<label value="Text books" />
-		<groupbox>
-			<label value="Appearance" />
+	<page label="Text books">
+		<groupbox label="Appearance">
 			<item type="font" property="DefaultFont">
-				<label value="Default font:" />
+				<label>Default font:</label>
 			</item>
-			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10">
-				<label value="Page width:" />
-				<suffix value=" px" />
+			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10" suffix=" px">
+				<label>Page width:</label>
 			</item>
-			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10">
-				<label value="Page height:" />
-				<suffix value=" px" />
+			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10" suffix=" px">
+				<label>Page height:</label>
 			</item>
-			<groupbox>
-				<label value="Margins" />
-				<item type="spinbox" property="LeftMargin" default="60" minimum="0" maximum="200">
-					<label value="Left margin:" />
-					<suffix value=" px" />
+			<groupbox label="Margins">
+				<item type="spinbox" property="LeftMargin" default="60" minimum="0" maximum="200" suffix=" px">
+					<label>Left margin:</label>
 				</item>
-				<item type="spinbox" property="TopMargin" default="80" minimum="0" maximum="200">
-					<label value="Top margin:" />
-					<suffix value=" px" />
+				<item type="spinbox" property="TopMargin" default="80" minimum="0" maximum="200" suffix=" px">
+					<label>Top margin:</label>
 				</item>
-				<item type="spinbox" property="RightMargin" default="60" minimum="0" maximum="200">
-					<label value="Right margin:" />
-					<suffix value=" px" />
+				<item type="spinbox" property="RightMargin" default="60" minimum="0" maximum="200" suffix=" px">
+					<label>Right margin:</label>
 				</item>
-				<item type="spinbox" property="BottomMargin" default="80" minimum="0" maximum="200">
-					<label value="Bottom margin:" />
-					<suffix value=" px" />
+				<item type="spinbox" property="BottomMargin" default="80" minimum="0" maximum="200" suffix=" px">
+					<label>Bottom margin:</label>
 				</item>
 			</groupbox>
 		</groupbox>
