@@ -31,6 +31,7 @@ set (SRCS
 	itemhandlers/itemhandlercombobox.cpp
 	itemhandlers/itemhandlerlineedit.cpp
 	itemhandlers/itemhandlermultiline.cpp
+	itemhandlers/itemhandlerspinboxbase.cpp
 	itemhandlers/itemhandlerspinbox.cpp
 	itemhandlers/itemhandlerspinboxdouble.cpp
 	itemhandlers/itemhandlernovalue.cpp

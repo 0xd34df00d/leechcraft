@@ -11,11 +11,10 @@
 namespace LC
 {
 	ItemHandlerSpinbox::ItemHandlerSpinbox (Util::XmlSettingsDialog *xsd)
-	: ItemHandlerSpinboxBase<QSpinBox, int>
+	: ItemHandlerSpinboxBase
 	{
-		[] (const QString& str) { return str.toInt (); },
+		+[] (const QString& str) { return str.toInt (); },
 		"spinbox",
-		SIGNAL (valueChanged (int)),
 		xsd
 	}
 	{

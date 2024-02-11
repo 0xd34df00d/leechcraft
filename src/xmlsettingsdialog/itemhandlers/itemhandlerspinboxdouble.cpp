@@ -11,11 +11,10 @@
 namespace LC
 {
 	ItemHandlerSpinboxDouble::ItemHandlerSpinboxDouble (Util::XmlSettingsDialog *xsd)
-	: ItemHandlerSpinboxBase<QDoubleSpinBox, double>
+	: ItemHandlerSpinboxBase
 	{
-		[] (QString str) { return str.toDouble (); },
+		+[] (const QString& str) { return str.toDouble (); },
 		"doublespinbox",
-		SIGNAL (valueChanged (double)),
 		xsd
 	}
 	{
