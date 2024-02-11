@@ -6,32 +6,32 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_RADIOGROUP_H
-#define XMLSETTINGSDIALOG_RADIOGROUP_H
-#include <QWidget>
+#pragma once
+
+#include <QGroupBox>
 
 class QButtonGroup;
 class QRadioButton;
+class QVBoxLayout;
 
 namespace LC
 {
-	class RadioGroup : public QWidget
+	class RadioGroup : public QGroupBox
 	{
 		Q_OBJECT
 
+		QButtonGroup& Group_;
+		QVBoxLayout& Layout_;
 		QString Value_;
-		QButtonGroup *Group_;
+
+		QHash<QString, QRadioButton*> Value2Button_;
 	public:
-		RadioGroup (QWidget *parent = 0);
-		void AddButton (QRadioButton*, bool def = false);
+		explicit RadioGroup (const QString& title, QWidget *parent = nullptr);
+
+		void AddButton (const QString& value, const QString& label, const QString& descr, bool isSelected);
 		QString GetValue () const;
 		void SetValue (const QString&);
-	private slots:
-		void handleToggled (bool);
 	signals:
 		void valueChanged ();
 	};
-};
-
-#endif
-
+}

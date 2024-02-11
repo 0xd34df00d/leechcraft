@@ -12,7 +12,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QtDebug>
-#include "../radiogroup.h"
+#include "../widgets/radiogroup.h"
 
 namespace LC
 {
@@ -24,40 +24,33 @@ namespace LC
 	void ItemHandlerRadio::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		RadioGroup *group = new RadioGroup (XSD_->GetWidget ());
+		const auto& groupLabel = XSD_->GetLabel (item);
+		RadioGroup *group = new RadioGroup (groupLabel, XSD_->GetWidget ());
 		group->setObjectName (item.attribute ("property"));
 
 		QStringList searchTerms;
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
 		{
-			QRadioButton *button = new QRadioButton (XSD_->GetLabel (option));
-			searchTerms << button->text ();
-			XSD_->SetTooltip (button, option);
-			button->setObjectName (option.attribute ("name"));
-			group->AddButton (button,
-					option.hasAttribute ("default") &&
+			const auto& text = XSD_->GetLabel (option);
+			searchTerms << text;
+			group->AddButton (option.attribute ("name"),
+					text,
+					XSD_->GetDescription (option),
 					option.attribute ("default") == "true");
 			option = option.nextSiblingElement ("option");
 		}
-
-		QVariant value = XSD_->GetValue (item);
 
 		connect (group,
 				SIGNAL (valueChanged ()),
 				this,
 				SLOT (updatePreferences ()));
 
-		QGroupBox *box = new QGroupBox (XSD_->GetLabel (item));
-		QVBoxLayout *layout = new QVBoxLayout ();
-		box->setLayout (layout);
-		layout->addWidget (group);
-
-		searchTerms << box->title ();
+		searchTerms << groupLabel;
 		group->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
 		group->setProperty ("SearchTerms", searchTerms);
 
-		lay->addWidget (box, lay->rowCount (), 0);
+		lay->addWidget (group, lay->rowCount (), 0);
 	}
 
 	void ItemHandlerRadio::SetValue (QWidget *widget, const QVariant& value) const

@@ -7,7 +7,6 @@ set (SRCS
     xmlsettingsdialog.cpp
 	rangewidget.cpp
 	filepicker.cpp
-	radiogroup.cpp
 	scripter.cpp
 	settings.cpp
 	basesettingsmanager.cpp
@@ -41,6 +40,7 @@ set (SRCS
 	itemhandlers/itemhandlerlistview.cpp
 	itemhandlers/itemhandlertreeview.cpp
 	widgets/dataviewwidget.cpp
+	widgets/radiogroup.cpp
 	)
 set (FORMS
 	widgets/dataviewwidget.ui
