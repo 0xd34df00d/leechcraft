@@ -1,3 +1,6 @@
-resolver: nightly-2023-11-30
+resolver: nightly-2024-01-07
 packages:
 - .
+extra-deps:
+- optparse-generic-1.5.2
+allow-newer: true
