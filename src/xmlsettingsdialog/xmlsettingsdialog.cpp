@@ -113,9 +113,6 @@ namespace Util
 		{
 			auto initGuard = obj->EnterInitMode ();
 
-			for (const auto& declaration : Util::DomChildren (root, "declare"))
-				HandleDeclaration (declaration);
-
 			for (const auto& pageChild : Util::DomChildren (root, "page"))
 				ParsePage (pageChild);
 		}
@@ -286,12 +283,6 @@ namespace Util
 		}
 
 		return {};
-	}
-
-	void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
-	{
-		if (decl.hasAttribute ("defaultlang"))
-			DefaultLang_ = decl.attribute ("defaultlang");
 	}
 
 	void XmlSettingsDialog::ParsePage (const QDomElement& page)

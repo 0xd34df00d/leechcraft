@@ -43,7 +43,6 @@ namespace Util
 		QList<QStringList> IconNames_;
 
 		BaseSettingsManager *WorkingObject_ = nullptr;
-		QString DefaultLang_ = "en";
 		std::shared_ptr<QDomDocument> Document_;
 		QList<QWidget*> Customs_;
 		ItemHandlerFactory * const HandlersManager_;
@@ -209,7 +208,6 @@ namespace Util
 		 */
 		QString GetBasename () const;
 	private:
-		void HandleDeclaration (const QDomElement&);
 		void ParsePage (const QDomElement&);
 		void ParseItem (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&);
