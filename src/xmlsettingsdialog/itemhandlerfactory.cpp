@@ -25,7 +25,6 @@
 #include "itemhandlers/itemhandlerpushbutton.h"
 #include "itemhandlers/itemhandlercustomwidget.h"
 #include "itemhandlers/itemhandlerdataview.h"
-#include "itemhandlers/itemhandlertreeview.h"
 
 namespace LC
 {
@@ -46,7 +45,6 @@ namespace LC
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerFont (xsd));
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerColor (xsd));
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerDataView (this, xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerTreeView (this, xsd));
 	}
 
 	bool ItemHandlerFactory::Handle (const QDomElement& element,
