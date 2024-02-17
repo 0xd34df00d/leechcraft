@@ -22,15 +22,15 @@ namespace LC
 
 		const QString Title_;
 		QColor Color_;
-		QLabel * const Label_;
-		QPushButton * const ChooseButton_;
+		QLabel& ColorLabel_;
+		QLabel& NameLabel_;
 	public:
 		ColorPicker (const QString& = {}, QWidget* = nullptr);
 
 		void SetCurrentColor (const QColor&);
 		QColor GetCurrentColor () const;
-	private slots:
-		void chooseColor ();
+	private:
+		QSize GetPixmapSize () const;
 	signals:
 		void currentColorChanged (const QColor&);
 	};

@@ -19,30 +19,41 @@ namespace LC
 	ColorPicker::ColorPicker (const QString& title, QWidget *parent)
 	: QWidget { parent }
 	, Title_ { title.isEmpty () ? tr ("Choose color") : title }
-	, Label_ { new QLabel { this } }
-	, ChooseButton_ { new QPushButton { tr ("Choose...") } }
+	, ColorLabel_ { *new QLabel { this } }
+	, NameLabel_ { *new QLabel { this } }
 	{
 		const auto lay = new QHBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
-		lay->addWidget (Label_);
-		lay->addWidget (ChooseButton_);
+		lay->addWidget (&ColorLabel_);
+		lay->addWidget (&NameLabel_);
+		const auto chooseButton = new QPushButton { tr ("Choose...") };
+		lay->addWidget (chooseButton);
 		setLayout (lay);
-		connect (ChooseButton_,
-				SIGNAL (released ()),
+
+		connect (chooseButton,
+				&QPushButton::released,
 				this,
-				SLOT (chooseColor ()));
-		Label_->setMinimumWidth (fontMetrics ().horizontalAdvance ("  #RRRRGGGGBBBB  "));
+				[this]
+				{
+					const auto& color = QColorDialog::getColor (Color_, this, Title_);
+					if (color == Color_ ||
+							!color.isValid ())
+						return;
+
+					SetCurrentColor (color);
+					emit currentColorChanged (Color_);
+				});
 	}
 
 	void ColorPicker::SetCurrentColor (const QColor& color)
 	{
 		Color_ = color;
 
-		int height = QApplication::fontMetrics ().height ();
-		int width = 1.62 * height;
-		QPixmap pixmap { width, height };
+		NameLabel_.setText (color.name (QColor::HexRgb));
+
+		QPixmap pixmap { GetPixmapSize () };
 		pixmap.fill (Color_);
-		Label_->setPixmap (pixmap);
+		ColorLabel_.setPixmap (pixmap);
 	}
 
 	QColor ColorPicker::GetCurrentColor () const
@@ -50,17 +61,10 @@ namespace LC
 		return Color_;
 	}
 
-	void ColorPicker::chooseColor ()
+	QSize ColorPicker::GetPixmapSize () const
 	{
-		const auto& color = QColorDialog::getColor (Color_,
-				this,
-				Title_);
-
-		if (color == Color_ ||
-				!color.isValid ())
-			return;
-
-		SetCurrentColor (color);
-		emit currentColorChanged (Color_);
+		auto height = fontMetrics ().height ();
+		auto width = 1.62 * height;
+		return { static_cast<int> (width), height };
 	}
 }
