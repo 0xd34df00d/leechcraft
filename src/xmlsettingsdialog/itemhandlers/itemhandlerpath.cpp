@@ -12,7 +12,7 @@
 #include <QtDebug>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
-#include "../filepicker.h"
+#include "../widgets/filepicker.h"
 
 namespace LC
 {

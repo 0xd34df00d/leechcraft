@@ -11,7 +11,7 @@
 #include <QGridLayout>
 #include <QApplication>
 #include <util/sll/qtutil.h>
-#include "../fontpicker.h"
+#include "../widgets/fontpicker.h"
 
 namespace LC
 {

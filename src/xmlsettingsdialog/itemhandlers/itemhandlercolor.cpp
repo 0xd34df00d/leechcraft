@@ -9,7 +9,7 @@
 #include "itemhandlercolor.h"
 #include <QColor>
 #include <util/sll/qtutil.h>
-#include "../colorpicker.h"
+#include "../widgets/colorpicker.h"
 
 namespace LC
 {

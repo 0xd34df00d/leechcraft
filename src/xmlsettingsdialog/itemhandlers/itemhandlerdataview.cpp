@@ -20,9 +20,9 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include "../widgets/dataviewwidget.h"
-#include "../filepicker.h"
+#include "../widgets/filepicker.h"
+#include "../widgets/colorpicker.h"
 #include "../itemhandlerfactory.h"
-#include "../colorpicker.h"
 #include "../datasourceroles.h"
 #include "../xmlsettingsdialog.h"
 

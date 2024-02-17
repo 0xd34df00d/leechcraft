@@ -9,7 +9,7 @@
 #include "itemhandlerspinboxrange.h"
 #include <QtDebug>
 #include <util/sll/qtutil.h>
-#include "../rangewidget.h"
+#include "../widgets/rangewidget.h"
 
 namespace LC
 {

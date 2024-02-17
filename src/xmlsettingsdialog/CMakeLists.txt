@@ -5,13 +5,9 @@ include_directories (${Boost_INCLUDE_DIRS}
 
 set (SRCS
     xmlsettingsdialog.cpp
-	rangewidget.cpp
-	filepicker.cpp
 	scripter.cpp
 	settings.cpp
 	basesettingsmanager.cpp
-	fontpicker.cpp
-	colorpicker.cpp
 	settingsthreadmanager.cpp
 	settingsthread.cpp
 	itemhandlerfactory.cpp
@@ -31,8 +27,12 @@ set (SRCS
 	itemhandlers/itemhandlerpushbutton.cpp
 	itemhandlers/itemhandlercustomwidget.cpp
 	itemhandlers/itemhandlerdataview.cpp
+	widgets/colorpicker.cpp
 	widgets/dataviewwidget.cpp
+	widgets/filepicker.cpp
+	widgets/fontpicker.cpp
 	widgets/radiogroup.cpp
+	widgets/rangewidget.cpp
 	)
 set (FORMS
 	widgets/dataviewwidget.ui
