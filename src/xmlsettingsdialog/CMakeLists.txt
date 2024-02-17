@@ -37,7 +37,6 @@ set (SRCS
 	itemhandlers/itemhandlerpushbutton.cpp
 	itemhandlers/itemhandlercustomwidget.cpp
 	itemhandlers/itemhandlerdataview.cpp
-	itemhandlers/itemhandlerlistview.cpp
 	itemhandlers/itemhandlertreeview.cpp
 	widgets/dataviewwidget.cpp
 	widgets/radiogroup.cpp
