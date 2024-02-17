@@ -149,8 +149,6 @@ namespace LC
 			if (info.Setter_)
 				info.Setter_ (value);
 		}
-		else
-			qWarning () << "no property info for" << propName;
 	}
 
 	void ItemHandlerFactory::Accept ()

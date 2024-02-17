@@ -9,11 +9,9 @@
 #include "basesettingsmanager.h"
 #include <QtDebug>
 #include <QTimer>
-#include <util/sll/visitor.h>
 #include <QCoreApplication>
+#include <util/sll/visitor.h>
 #include "settingsthreadmanager.h"
-
-#define PROP2CHAR(a) (a.toUtf8 ().constData ())
 
 namespace LC::Util
 {
@@ -43,7 +41,7 @@ namespace LC::Util
 				settings->allKeys () :
 				settings->childKeys ();
 		for (const auto& prop : properties)
-			setProperty (PROP2CHAR (prop), settings->value (prop));
+			setProperty (prop.toUtf8 ().constData (), settings->value (prop));
 
 		IsInitializing_ = false;
 	}

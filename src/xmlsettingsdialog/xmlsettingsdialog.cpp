@@ -412,13 +412,6 @@ namespace LC::Util
 		return GetUserText (item, "tooltip", TrContext_).value_or (QString {});
 	}
 
-	void XmlSettingsDialog::SetTooltip (QWidget *widget, const QDomElement& from) const
-	{
-		const auto& descr = GetDescription (from);
-		if (!descr.isEmpty ())
-			widget->setToolTip (descr);
-	}
-
 	XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
 	{
 		return
@@ -444,6 +437,7 @@ namespace LC::Util
 		if (event->type () == QEvent::DynamicPropertyChange)
 		{
 			const auto& name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
+			qDebug () << name << obj->property (name);
 			HandlersManager_->SetValue (name, obj->property (name));
 			return false;
 		}

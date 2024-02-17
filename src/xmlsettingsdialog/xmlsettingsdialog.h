@@ -151,8 +151,6 @@ namespace Util
 
 		QString GetDescription (const QDomElement& element) const;
 
-		void SetTooltip (QWidget *widget, const QDomElement& element) const;
-
 		/** @brief Returns the stored value for the given property.
 		 *
 		 * This function checks the object associated with this
