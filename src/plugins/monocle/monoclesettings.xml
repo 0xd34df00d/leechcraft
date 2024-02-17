@@ -27,7 +27,7 @@
 		</tab>
 	</page>
 	<page label="Text books">
-		<groupbox label="Appearance">
+		<tab label="Appearance">
 			<item type="font" property="DefaultFont">
 				<label>Default font:</label>
 			</item>
@@ -37,20 +37,19 @@
 			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10" suffix=" px">
 				<label>Page height:</label>
 			</item>
-			<groupbox label="Margins">
-				<item type="spinbox" property="LeftMargin" default="60" minimum="0" maximum="200" suffix=" px">
-					<label>Left margin:</label>
-				</item>
-				<item type="spinbox" property="TopMargin" default="80" minimum="0" maximum="200" suffix=" px">
-					<label>Top margin:</label>
-				</item>
-				<item type="spinbox" property="RightMargin" default="60" minimum="0" maximum="200" suffix=" px">
-					<label>Right margin:</label>
-				</item>
-				<item type="spinbox" property="BottomMargin" default="80" minimum="0" maximum="200" suffix=" px">
-					<label>Bottom margin:</label>
-				</item>
+			<item type="groupbox" checkable="true" property="CustomColors" default="false" label="Custom colors">
+				<item type="color" property="ColorBackground" default="#ebdbb2" label="Background color:" />
+				<item type="color" property="ColorForeground" default="black" label="Foreground color:" />
+				<item type="color" property="ColorLink" default="#83a598" label="Link color:"/>
+			</item>
+		</tab>
+		<tab label="Indents">
+			<groupbox label="Page">
+				<item type="spinbox" property="LeftMargin" def="60" min="0" max="200" suf=" px" label="Left margin:" />
+				<item type="spinbox" property="TopMargin" def="80" min="0" max="200" suf=" px" label="Top margin:" />
+				<item type="spinbox" property="RightMargin" def="60" min="0" max="200" suf=" px" label="Right margin:" />
+				<item type="spinbox" property="BottomMargin" def="80" min="0" max="200" suf=" px" label="Bottom margin:" />
 			</groupbox>
-		</groupbox>
+		</tab>
 	</page>
 </settings>

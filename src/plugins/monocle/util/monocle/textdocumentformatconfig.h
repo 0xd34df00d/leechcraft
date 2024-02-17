@@ -43,7 +43,7 @@ namespace LC::Monocle
 
 	struct StylingContext;
 
-	class MONOCLE_UTIL_API TextDocumentFormatConfig
+	class MONOCLE_UTIL_API TextDocumentFormatConfig : public QObject
 	{
 		TextDocumentPalette Palette_;
 

@@ -53,19 +53,31 @@ namespace LC::Monocle
 	{
 		XSM_ = &xsm;
 
-		UpdatePalette ();
+		xsm.RegisterObject ({ "CustomColors", "ColorBackground", "ColorForeground", "ColorLink" },
+				this, [this] { UpdatePalette (); });
 	}
 
 	void TextDocumentFormatConfig::UpdatePalette ()
 	{
-		// TODO make configurable
-		const auto& palette = qGuiApp->palette ();
-		Palette_ =
+		if (XSM_->property ("CustomColors").toBool ())
 		{
-			.Background_ = palette.color (QPalette::Base),
-			.Foreground_ = palette.color (QPalette::Text),
-			.Link_ = palette.color (QPalette::Link),
-		};
+			Palette_ =
+			{
+				.Background_ = XSM_->property ("ColorBackground").value<QColor> (),
+				.Foreground_ = XSM_->property ("ColorForeground").value<QColor> (),
+				.Link_ = XSM_->property ("ColorLink").value<QColor> (),
+			};
+		}
+		else
+		{
+			const auto& palette = qGuiApp->palette ();
+			Palette_ =
+			{
+				.Background_ = palette.color (QPalette::Base),
+				.Foreground_ = palette.color (QPalette::Text),
+				.Link_ = palette.color (QPalette::Link),
+			};
+		}
 	}
 
 	namespace
