@@ -7,92 +7,42 @@
  **********************************************************************/
 
 #include "itemhandlerspinboxrange.h"
-#include <QLabel>
-#include <QGridLayout>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "../rangewidget.h"
 
 namespace LC
 {
-	bool ItemHandlerSpinboxRange::CanHandle (const QDomElement& element) const
+	namespace
 	{
-		return element.attribute ("type") == "spinboxrange";
-	}
-
-	void ItemHandlerSpinboxRange::Handle (const QDomElement& item,
-			QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QLabel *label = new QLabel (XSD_->GetLabel (item));
-		label->setWordWrap (false);
-
-		RangeWidget *widget = new RangeWidget ();
-		XSD_->SetTooltip (widget, item);
-		widget->setObjectName (item.attribute ("property"));
-		widget->SetMinimum (item.attribute ("minimum").toInt ());
-		widget->SetMaximum (item.attribute ("maximum").toInt ());
-
-		const QVariant& value = XSD_->GetValue (item);
-
-		widget->SetRange (value);
-		connect (widget,
-				SIGNAL (changed ()),
-				this,
-				SLOT (updatePreferences ()));
-
-		widget->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		widget->setProperty ("SearchTerms", label->text ());
-
-		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0, Qt::AlignRight);
-		lay->addWidget (widget, row, 1);
-	}
-
-	QVariant ItemHandlerSpinboxRange::GetValue (const QDomElement& item,
-			QVariant value) const
-	{
-		if (!value.isValid () ||
-				value.isNull () ||
-				!value.canConvert<QList<QVariant>> ())
+		QVariant GetDefaultRange (const QDomElement& item)
 		{
-			const QStringList& parts = item.attribute ("default").split (":");
-			QList<QVariant> result;
+			const auto& parts = item.attribute ("default"_qs).split (':');
 			if (parts.size () != 2)
 			{
 				qWarning () << "spinboxrange parse error, wrong default value";
-				return QVariant ();
+				return {};
 			}
-			result << parts.at (0).toInt () << parts.at (1).toInt ();
-			value = result;
+			return QList<QVariant> { parts.at (0).toInt (), parts.at (1).toInt () };
 		}
-		return value;
 	}
 
-	void ItemHandlerSpinboxRange::SetValue (QWidget *widget,
-			const QVariant& value) const
+	ItemRepresentation HandleSpinboxRange (const ItemContext& ctx)
 	{
-		RangeWidget *rw = qobject_cast<RangeWidget*> (widget);
-		if (!rw)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a RangeWidget"
-				<< widget;
-			return;
-		}
+		const auto& item = ctx.Elem_;
 
-		rw->SetRange (value);
-	}
+		const auto range = new RangeWidget;
+		range->SetMinimum (item.attribute ("minimum"_qs).toInt ());
+		range->SetMaximum (item.attribute ("maximum"_qs).toInt ());
 
-	QVariant ItemHandlerSpinboxRange::GetObjectValue (QObject *object) const
-	{
-		RangeWidget *widget = qobject_cast<RangeWidget*> (object);
-		if (!widget)
+		SetChangedSignal (ctx, range, &RangeWidget::changed);
+
+		return
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a RangeWidget"
-				<< object;
-			return QVariant ();
-		}
-		return widget->GetRange ();
+			.Widget_ = range,
+			.DefaultValue_ = GetDefaultRange (item),
+			.Getter_ = [range] { return range->GetRange (); },
+			.Setter_ = [range] (const QVariant& value) { range->SetRange (value); },
+		};
 	}
 }

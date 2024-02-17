@@ -7,8 +7,13 @@
  **********************************************************************/
 
 #include "itemhandlerfactory.h"
-#include <QWidget>
+#include <QFormLayout>
+#include <QLabel>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
+#include <util/sll/util.h>
+#include "basesettingsmanager.h"
+#include "xmlsettingsdialog.h"
 #include "itemhandlers/itemhandlerspinboxrange.h"
 #include "itemhandlers/itemhandlerpath.h"
 #include "itemhandlers/itemhandlerfont.h"
@@ -19,8 +24,6 @@
 #include "itemhandlers/itemhandlercombobox.h"
 #include "itemhandlers/itemhandlerlineedit.h"
 #include "itemhandlers/itemhandlermultiline.h"
-#include "itemhandlers/itemhandlerspinboxbase.h"
-#include "itemhandlers/itemhandlerspinboxdouble.h"
 #include "itemhandlers/itemhandlerspinbox.h"
 #include "itemhandlers/itemhandlerpushbutton.h"
 #include "itemhandlers/itemhandlercustomwidget.h"
@@ -28,100 +31,216 @@
 
 namespace LC
 {
-	ItemHandlerFactory::ItemHandlerFactory (Util::XmlSettingsDialog *xsd)
+	ItemHandlerFactory::PropInfo::operator bool () const
 	{
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCheckbox (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerLineEdit (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerMultiLine (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerGroupbox (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinbox (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxDouble (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerRadio (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCombobox (this, xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxRange (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerPushButton (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCustomWidget (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerPath (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerFont (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerColor (xsd));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerDataView (this, xsd));
+		return Widget_;
 	}
 
-	bool ItemHandlerFactory::Handle (const QDomElement& element,
-			QWidget* widget)
+	ItemHandlerFactory::ItemHandlerFactory (Util::XmlSettingsDialog *xsd)
+	: XSD_ { *xsd }
+	, Handlers_
+		{
+			{ "checkbox", &HandleCheckbox },
+			{ "color", &HandleColor },
+			{ "combobox", &HandleCombobox },
+			{ "customwidget", &HandleCustomWidget },
+			{ "dataview", &HandleDataView },
+			{ "font", &HandleFont },
+			{ "groupbox", &HandleGroupbox },
+			{ "lineedit", &HandleLineEdit },
+			{ "multiline", &HandleMultiline },
+			{ "path", &HandlePath },
+			{ "pushbutton", &HandlePushButton },
+			{ "radio", &HandleRadio },
+			{ "spinbox", &HandleSpinbox },
+			{ "spinboxdouble", &HandleSpinboxDouble },
+			{ "spinboxrange", &HandleSpinboxRange },
+		}
 	{
-		for (const auto& handler : Handlers_)
-			if (handler->CanHandle (element))
+	}
+
+	auto ItemHandlerFactory::ExpectPropChange (const QString& propName) const
+	{
+		ExpectedPropChanges_ << propName;
+		return Util::MakeScopeGuard ([this, propName] { ExpectedPropChanges_.remove (propName); });
+	}
+
+	namespace
+	{
+		void AddToLayout (const ItemRepresentation& repr, const QString& label, QFormLayout& layout)
+		{
+			if (label.isEmpty ())
 			{
-				handler->Handle (element, widget);
-				return true;
+				layout.addRow (repr.Widget_);
+				return;
 			}
 
-		qWarning () << Q_FUNC_INFO
-			<< "unhandled element of type"
-			<< element.attribute ("type");
-
-		return false;
-	}
-
-	void ItemHandlerFactory::SetValue (QWidget *widget,
-			const QVariant& value) const
-	{
-		QObject *object = widget->
-				property ("ItemHandler").value<QObject*> ();
-		if (!object)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "ItemHandler property for widget is not set"
-				<< widget;
-			return;
-		}
-		ItemHandlerBase *base =
-				static_cast<ItemHandlerBase*> (object);
-		base->SetValue (widget, value);
-	}
-
-	QVariant ItemHandlerFactory::GetValue (const QDomElement& element,
-			const QVariant& value) const
-	{
-		for (const auto& handler : Handlers_)
-			if (handler->CanHandle (element))
-				return handler->GetValue (element, value);
-		return QVariant ();
-	}
-
-	ItemHandlerBase::Prop2NewValue_t ItemHandlerFactory::GetNewValues () const
-	{
-		ItemHandlerBase::Prop2NewValue_t result;
-		for (const auto& handler : Handlers_)
-			result.insert (handler->GetChangedProperties ());
-		return result;
-	}
-
-	void ItemHandlerFactory::ClearNewValues ()
-	{
-		for (const auto& handler : Handlers_)
-			handler->ClearChangedProperties ();
-	}
-
-	void ItemHandlerFactory::SetDataSource (const QString& property,
-			QAbstractItemModel *model, Util::XmlSettingsDialog *xsd)
-	{
-		if (!Propname2DataSourceSetter_.contains (property))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "there is no such registered datasource setter for property"
-					<< property
-					<< "; registered datasources:"
-					<< Propname2DataSourceSetter_.keys ();
-			return;
+			switch (repr.LabelPosition_)
+			{
+			case LabelPosition::Default:
+				layout.addRow (label, repr.Widget_);
+				break;
+			case LabelPosition::Wrap:
+				layout.addRow (new QLabel { label });
+				layout.addRow (repr.Widget_);
+				break;
+			case LabelPosition::None:
+				layout.addRow (repr.Widget_);
+				break;
+			}
 		}
 
-		Propname2DataSourceSetter_ [property] (property, model, xsd);
+		void SetSearchTerms (const ItemRepresentation& repr, const QString& label)
+		{
+			QStringList searchTerms;
+			if (repr.SearchTerms_)
+				searchTerms << *repr.SearchTerms_;
+			if (!label.isEmpty ())
+				searchTerms << label;
+			repr.Widget_->setProperty ("SearchTerms", searchTerms);
+		}
 	}
 
-	void ItemHandlerFactory::RegisterDatasourceSetter (const QString& prop, ItemHandlerFactory::DataSourceSetter_t setter)
+	std::optional<QVariant> ItemHandlerFactory::Handle (const QDomElement& element, QFormLayout& baseLayout)
 	{
-		Propname2DataSourceSetter_ [prop] = setter;
+		const auto& prop = element.attribute ("property"_qs);
+		const auto& type = element.attribute ("type"_qs).toLatin1 ();
+		const auto& handler = Handlers_.value (type);
+		if (!handler)
+		{
+			qWarning () << "unhandled element of type" << type << prop;
+			return {};
+		}
+
+		const auto& label = XSD_.GetLabel (element);
+
+		const auto repr = handler ({
+				.Elem_ = element,
+				.Label_ = label,
+				.XSD_ = XSD_,
+				.Prop_ = prop,
+				.MarkChanged_ = [this, prop] { MarkChanged (prop); },
+			});
+
+		auto widget = repr.Widget_;
+		widget->setToolTip (XSD_.GetDescription (element));
+		Prop2Info_ [prop] = PropInfo {
+			.Widget_ = widget,
+			.Prop_ = prop,
+			.Getter_ = repr.Getter_,
+			.Setter_ = repr.Setter_,
+			.DefaultValue_ = repr.DefaultValue_
+		};
+
+		if (repr.DataSourceSetter_)
+			Prop2DataSourceSetter_ [prop] = repr.DataSourceSetter_;
+		else
+			SetReprValue (prop);
+
+		SetSearchTerms (repr, label);
+		AddToLayout (repr, label, baseLayout);
+		return repr.DefaultValue_;
+	}
+
+	void ItemHandlerFactory::SetValue (const QString& propName, const QVariant& value) const
+	{
+		if (const auto& info = Prop2Info_ [propName])
+		{
+			if (info.Setter_)
+				info.Setter_ (value);
+		}
+		else
+			qWarning () << "no property info for" << propName;
+	}
+
+	void ItemHandlerFactory::Accept ()
+	{
+		const auto storage = XSD_.GetManagerObject ();
+		for (const auto& [prop, val] : Util::Stlize (Prop2NewVal_))
+			storage->setProperty (prop.toLatin1 ().constData (), val);
+		Prop2NewVal_.clear ();
+
+		for (auto widget : CustomWidgets_)
+			QMetaObject::invokeMethod (widget, "accept");
+	}
+
+	void ItemHandlerFactory::Reject ()
+	{
+		const auto storage = XSD_.GetManagerObject ();
+		for (const auto& [prop, _] : Util::Stlize (Prop2NewVal_))
+		{
+			const auto& info = Prop2Info_ [prop];
+			const auto guard = ExpectPropChange (prop);
+			info.Setter_ (storage->property (prop.toLatin1 ().constData ()));
+		}
+
+		Prop2NewVal_.clear ();
+
+		for (const auto widget : CustomWidgets_)
+			QMetaObject::invokeMethod (widget, "reject");
+	}
+
+	void ItemHandlerFactory::SetDataSource (const QString& prop, QAbstractItemModel *model)
+	{
+		if (const auto setter = Prop2DataSourceSetter_.value (prop))
+		{
+			setter (*model);
+			SetReprValue (prop);
+		}
+		else
+			qWarning () << "there is no registered datasource setter for" << prop
+					<< "; registered datasources:" << Prop2DataSourceSetter_.keys ();
+	}
+
+	void ItemHandlerFactory::SetCustomWidget (const QString& name, QWidget *widget)
+	{
+		const auto& container = Prop2Info_.value (name).Widget_;
+		if (!container)
+		{
+			qWarning () << "unknown custom widget" << name << widget;
+			return;
+		}
+
+		container->layout ()->addWidget (widget);
+		CustomWidgets_ << widget;
+		connect (widget,
+				&QWidget::destroyed,
+				this,
+				[this, widget] { CustomWidgets_.removeOne (widget); });
+	}
+
+	void ItemHandlerFactory::SetReprValue (const QString& prop) const
+	{
+		const auto& info = Prop2Info_ [prop];
+		if (!info)
+		{
+			qWarning () << "no info for" << prop;
+			return;
+		}
+
+		if (!info.Setter_)
+			return;
+
+		const auto expectGuard = ExpectPropChange (prop);
+		if (const auto& stored = XSD_.GetStoredValue (prop);
+			!stored.isNull ())
+			info.Setter_ (stored);
+		else
+			info.Setter_ (info.DefaultValue_);
+	}
+
+	void ItemHandlerFactory::MarkChanged (const QString& propName)
+	{
+		const auto& info = Prop2Info_.value (propName);
+		if (!info)
+		{
+			qWarning () << "unknown prop" << propName;
+			return;
+		}
+
+		const auto& value = info.Getter_ ();
+		XSD_.GetManagerObject ()->OptionSelected (info.Prop_.toLatin1 (), value);
+		if (!ExpectedPropChanges_.contains (propName))
+			Prop2NewVal_ [info.Prop_] = value;
 	}
 }

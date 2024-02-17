@@ -30,7 +30,7 @@
 			<label lang="en" value="Fast speed control" />
 			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" state="off">
 				<label lang="en" value="Enable fast speed control" />
-				<item type="customwidget" name="FastSpeedControl" />
+				<item type="customwidget" property="FastSpeedControl" />
 			</item>
 		</tab>
 		<tab>

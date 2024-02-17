@@ -8,20 +8,9 @@
 
 #pragma once
 
-#include "itemhandlerstringsetvalue.h"
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerPath : public ItemHandlerStringSetValue
-	{
-	public:
-		using ItemHandlerStringSetValue::ItemHandlerStringSetValue;
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		QVariant GetValue (const QDomElement&, QVariant) const;
-		void SetValue (QWidget*, const QVariant&) const;
-	protected:
-		QVariant GetObjectValue (QObject*) const;
-	};
+	ItemRepresentation HandlePath (const ItemContext&);
 }

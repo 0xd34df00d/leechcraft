@@ -8,20 +8,12 @@
 
 #pragma once
 
-#include "itemhandlerbase.h"
+class QByteArray;
+class QDomElement;
+class QVariant;
 
 namespace LC
 {
-	/* This is the base handle for those items whose values are
-	 * represented by a list of options:
-	 * - radio
-	 * - combobox
-	 */
-	class ItemHandlerOptionsSetValue : public ItemHandlerBase
-	{
-	public:
-		using ItemHandlerBase::ItemHandlerBase;
-
-		QVariant GetValue (const QDomElement& element, QVariant value) const override;
-	};
+	QVariant GetDefaultBooleanValue (const QDomElement&);
+	QVariant GetDefaultStringValue (const QDomElement&, const QByteArray& trCtx);
 }

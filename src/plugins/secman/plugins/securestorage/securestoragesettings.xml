@@ -2,6 +2,6 @@
 <settings>
 	<page>
 		<label value="SecMan SecureStorage" />
-		<item type="customwidget" name="SettingsWidget" />
+		<item type="customwidget" property="SettingsWidget" />
 	</page>
 </settings>

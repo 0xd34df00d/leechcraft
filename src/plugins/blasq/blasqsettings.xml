@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label value="Accounts" />
-		<item type="customwidget" name="AccountsWidget" />
+		<item type="customwidget" property="AccountsWidget" />
 	</page>
 	<page>
 		<label value="Advanced" />

@@ -8,7 +8,7 @@
 				<label value="Primary language:" />
 			</item>
 			<item type="dataview" property="Dictionaries" addEnabled="false" modifyEnabled="false" removeEnabled="false" />
-			<item type="pushbutton" name="InstallDicts">
+			<item type="pushbutton" property="InstallDicts">
 				<label value="Download and install dictionaries..." />
 			</item>
 		</groupbox>

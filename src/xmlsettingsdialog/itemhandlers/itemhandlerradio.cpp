@@ -7,75 +7,45 @@
  **********************************************************************/
 
 #include "itemhandlerradio.h"
-#include <QLabel>
-#include <QGridLayout>
-#include <QGroupBox>
 #include <QRadioButton>
-#include <QtDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
+#include "../xmlsettingsdialog.h"
 #include "../widgets/radiogroup.h"
 
 namespace LC
 {
-	bool ItemHandlerRadio::CanHandle (const QDomElement& element) const
+	ItemRepresentation HandleRadio (const ItemContext& ctx)
 	{
-		return element.attribute ("type") == "radio";
-	}
+		const auto group = new RadioGroup { ctx.Label_ };
 
-	void ItemHandlerRadio::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		const auto& groupLabel = XSD_->GetLabel (item);
-		RadioGroup *group = new RadioGroup (groupLabel, XSD_->GetWidget ());
-		group->setObjectName (item.attribute ("property"));
+		QVariant defOption;
 
-		QStringList searchTerms;
-		QDomElement option = item.firstChildElement ("option");
-		while (!option.isNull ())
+		QStringList searchTerms {};
+		for (const auto& option : Util::DomChildren (ctx.Elem_, "option"_qs))
 		{
-			const auto& text = XSD_->GetLabel (option);
-			searchTerms << text;
-			group->AddButton (option.attribute ("name"),
-					text,
-					XSD_->GetDescription (option),
-					option.attribute ("default") == "true");
-			option = option.nextSiblingElement ("option");
+			const auto& optLabel = ctx.XSD_.GetLabel (option);
+			searchTerms << optLabel;
+			const auto& optDescr = ctx.XSD_.GetDescription (option);
+
+			const auto& name = option.attribute ("name"_qs);
+
+			const auto isDefault = option.attribute ("default"_qs) == "true"_ql;
+			if (isDefault || defOption.isNull ())
+				defOption = name;
+			group->AddButton (name, optLabel, optDescr, isDefault);
 		}
 
-		connect (group,
-				SIGNAL (valueChanged ()),
-				this,
-				SLOT (updatePreferences ()));
+		SetChangedSignal (ctx, group, &RadioGroup::valueChanged);
 
-		searchTerms << groupLabel;
-		group->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		group->setProperty ("SearchTerms", searchTerms);
-
-		lay->addWidget (group, lay->rowCount (), 0);
-	}
-
-	void ItemHandlerRadio::SetValue (QWidget *widget, const QVariant& value) const
-	{
-		RadioGroup *radiogroup = qobject_cast<RadioGroup*> (widget);
-		if (!radiogroup)
+		return
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a RadioGroup"
-				<< widget;
-			return;
-		}
-		radiogroup->SetValue (value.toString ());
-	}
+			.Widget_ = group,
+			.SearchTerms_ = searchTerms,
 
-	QVariant ItemHandlerRadio::GetObjectValue (QObject *object) const
-	{
-		RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
-		if (!radiogroup)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a RadioGroup"
-				<< object;
-			return QVariant ();
-		}
-		return radiogroup->GetValue ();
+			.DefaultValue_ = defOption,
+			.Getter_ = [group] { return group->GetValue (); },
+			.Setter_ = [group] (const QVariant& value) { group->SetValue (value.toString ()); },
+		};
 	}
 }

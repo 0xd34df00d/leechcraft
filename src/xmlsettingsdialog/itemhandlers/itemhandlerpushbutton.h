@@ -8,16 +8,9 @@
 
 #pragma once
 
-#include "itemhandlernovalue.h"
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerPushButton : public ItemHandlerNoValue
-	{
-	public:
-		using ItemHandlerNoValue::ItemHandlerNoValue;
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-	};
+	ItemRepresentation HandlePushButton (const ItemContext&);
 }

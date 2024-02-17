@@ -8,16 +8,9 @@
 
 #pragma once
 
-#include "itemhandlernovalue.h"
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerCustomWidget : public ItemHandlerNoValue
-	{
-	public:
-		using ItemHandlerNoValue::ItemHandlerNoValue;
-
-		bool CanHandle (const QDomElement&) const override;
-		void Handle (const QDomElement&, QWidget*) override;
-	};
+	ItemRepresentation HandleCustomWidget (const ItemContext&);
 }

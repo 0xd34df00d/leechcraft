@@ -48,11 +48,11 @@
 		</tab>
 		<tab>
 			<label value="Layouts" />
-			<item type="customwidget" name="LayoutsConfigWidget" />
+			<item type="customwidget" property="LayoutsConfigWidget" />
 		</tab>
 		<tab>
 			<label value="Options" />
-			<item type="customwidget" name="OptionsConfigWidget" />
+			<item type="customwidget" property="OptionsConfigWidget" />
 		</tab>
 	</page>
 </settings>

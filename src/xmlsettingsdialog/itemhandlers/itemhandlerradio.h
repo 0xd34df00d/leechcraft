@@ -8,19 +8,9 @@
 
 #pragma once
 
-#include "itemhandleroptionssetvalue.h"
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerRadio : public ItemHandlerOptionsSetValue
-	{
-	public:
-		using ItemHandlerOptionsSetValue::ItemHandlerOptionsSetValue;
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
-	protected:
-		QVariant GetObjectValue (QObject*) const;
-	};
+	ItemRepresentation HandleRadio (const ItemContext&);
 }

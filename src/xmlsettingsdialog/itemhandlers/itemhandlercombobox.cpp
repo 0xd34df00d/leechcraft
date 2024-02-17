@@ -7,61 +7,132 @@
  **********************************************************************/
 
 #include "itemhandlercombobox.h"
-#include <QLabel>
-#include <QGridLayout>
-#include <QHBoxLayout>
+#include <QFormLayout>
 #include <QComboBox>
-#include <QPushButton>
 #include <QtDebug>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
+#include <util/sys/resourceloader.h>
 #include "../scripter.h"
-#include "../itemhandlerfactory.h"
+#include "../xmlsettingsdialog.h"
 
 namespace LC
 {
-	ItemHandlerCombobox::ItemHandlerCombobox (ItemHandlerFactory *factory, Util::XmlSettingsDialog *xsd)
-	: ItemHandlerOptionsSetValue { xsd }
-	, Factory_ { factory }
+	namespace
 	{
-	}
-
-	bool ItemHandlerCombobox::CanHandle (const QDomElement& element) const
-	{
-		return element.attribute ("type") == "combobox";
-	}
-
-	void ItemHandlerCombobox::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-
-		QHBoxLayout *hboxLay = new QHBoxLayout;
-		QComboBox *box = new QComboBox (XSD_->GetWidget ());
-
-		hboxLay->addWidget (box);
-
-		XSD_->SetTooltip (box, item);
-		box->setObjectName (item.attribute ("property"));
-		box->setSizeAdjustPolicy (QComboBox::AdjustToContents);
-		if (item.hasAttribute ("maxVisibleItems"))
-			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
-
-		bool mayHaveDataSource = item.hasAttribute ("mayHaveDataSource") &&
-				item.attribute ("mayHaveDataSource").toLower () == "true";
-		if (mayHaveDataSource)
+		QVector<QImage> GetImages (const QDomElement& item)
 		{
-			const QString& prop = item.attribute ("property");
-			Factory_->RegisterDatasourceSetter (prop,
-					[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog *xsd)
-						{ SetDataSource (str, m, xsd); });
-			Propname2Combobox_ [prop] = box;
-			Propname2Item_ [prop] = item;
+			QVector<QImage> result;
+
+			Util::ResourceLoader loader { {} };
+			loader.AddGlobalPrefix ();
+			loader.AddLocalPrefix ();
+
+			for (const auto& binary : Util::DomChildren (item, "binary"_qs))
+			{
+				if (binary.attribute ("type"_qs) != "image"_ql)
+					continue;
+
+				const auto& place = binary.attribute ("place");
+
+				QImage image;
+				if (place == "rcc"_ql)
+					image.load (binary.text ());
+				else if (place == "share"_ql)
+					image = loader.LoadPixmap (binary.text ()).toImage ();
+				else
+					image = QImage::fromData (QByteArray::fromBase64 (binary.text ().toLatin1 ()));
+
+				if (!image.isNull ())
+					result << image;
+			}
+			return result;
 		}
 
-		hboxLay->addStretch ();
+		QVariant PopulateOptions (QComboBox& box, const QDomElement& item, const Util::XmlSettingsDialog& xsd)
+		{
+			QVariant defValue;
 
+			for (const auto& option : Util::DomChildren (item, "option"_qs))
+			{
+				const auto& name = option.attribute ("name"_qs);
+				auto label = xsd.GetLabel (option);
+				if (label.isEmpty ())
+					label = name;
+
+				if (defValue.isNull () || option.attribute ("default"_qs) == "true"_ql)
+					defValue = name;
+
+				if (const auto& images = GetImages (option);
+					!images.isEmpty ())
+					box.addItem (QPixmap::fromImage (images.at (0)), label, name);
+				else
+					box.addItem (label, name);
+
+				auto setColor = [&] (const QString& attr, Qt::ItemDataRole role)
+				{
+					if (option.hasAttribute (attr))
+					{
+						const QColor color (option.attribute (attr));
+						box.setItemData (box.count () - 1, color, role);
+					}
+				};
+				setColor ("color"_qs, Qt::ForegroundRole);
+				setColor ("bgcolor"_qs, Qt::BackgroundRole);
+			}
+
+			if (auto scriptContainer = item.firstChildElement ("scripts");
+					!scriptContainer.isNull ())
+			{
+				Scripter scripter { scriptContainer };
+				for (const auto& elm : scripter.GetOptions ())
+					box.addItem (scripter.HumanReadableOption (elm), elm);
+			}
+
+			return defValue;
+		}
+
+		QVariant GetComboboxValue (QComboBox *box)
+		{
+			auto result = box->currentData ();
+			if (result.isNull ())
+				result = box->currentText ();
+			return result;
+		}
+
+		void SetComboboxValue (QComboBox *box, const QVariant& value)
+		{
+			int pos = box->findData (value);
+			if (pos == -1)
+				pos = box->findText (value.toString ());
+
+			if (pos != -1)
+				box->setCurrentIndex (pos);
+			else
+				qWarning () << value
+						<< "not found";
+		}
+	}
+
+	ItemRepresentation HandleCombobox (const ItemContext& ctx)
+	{
+		const auto& item = ctx.Elem_;
+
+		const auto box = new QComboBox;
+		box->setSizeAdjustPolicy (QComboBox::AdjustToContents);
+		if (item.hasAttribute ("maxVisibleItems"_qs))
+			box->setMaxVisibleItems (item.attribute ("maxVisibleItems"_qs).toInt ());
+
+		auto defValue = PopulateOptions (*box, item, ctx.XSD_);
+
+		SetChangedSignal (ctx, box, &QComboBox::currentIndexChanged);
+
+		/* TODO
 		if (item.hasAttribute ("moreThisStuff"))
 		{
-			QPushButton *moreButt = new QPushButton (tr ("More stuff..."));
+			const auto hboxLay = new QHBoxLayout;
+			const auto moreButt = new QPushButton (tr ("Get more..."));
 			hboxLay->addWidget (moreButt);
 
 			moreButt->setObjectName (item.attribute ("moreThisStuff"));
@@ -70,148 +141,22 @@ namespace LC
 					XSD_,
 					SLOT (handleMoreThisStuffRequested ()));
 		}
+		 */
 
-		QDomElement option = item.firstChildElement ("option");
-		while (!option.isNull ())
+		const auto dataSourceSetter = item.attribute ("mayHaveDataSource"_qs).toLower () == "true"_ql ?
+				[box] (QAbstractItemModel& m) { box->setModel (&m); } :
+				DataSourceSetter {};
+
+		return
 		{
-			const auto& images = XSD_->GetImages (option);
-			const auto& name = option.attribute ("name");
+			.Widget_ = box,
+			.Label_ = ctx.Label_,
 
-			auto label = XSD_->GetLabel (option);
-			if (label.isEmpty ())
-				label = name;
+			.DefaultValue_ = defValue,
+			.Getter_ = [box] { return GetComboboxValue (box); },
+			.Setter_ = [box] (const QVariant& value) { SetComboboxValue (box, value); },
 
-			if (!images.isEmpty ())
-				box->addItem (QPixmap::fromImage (images.at (0)), label, name);
-			else
-				box->addItem (label, name);
-
-			auto setColor = [&option, box] (const QString& attr, Qt::ItemDataRole role) -> void
-			{
-				if (option.hasAttribute (attr))
-				{
-					const QColor color (option.attribute (attr));
-					box->setItemData (box->count () - 1, color, role);
-				}
-			};
-			setColor ("color", Qt::ForegroundRole);
-			setColor ("bgcolor", Qt::BackgroundRole);
-
-			option = option.nextSiblingElement ("option");
-		}
-
-		connect (box,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (updatePreferences ()));
-
-		QDomElement scriptContainer = item.firstChildElement ("scripts");
-		if (!scriptContainer.isNull ())
-		{
-			Scripter scripter (scriptContainer);
-
-			for (const auto& elm : scripter.GetOptions ())
-				box->addItem (scripter.HumanReadableOption (elm), elm);
-		}
-
-		int pos = box->findData (XSD_->GetValue (item));
-		if (pos != -1)
-			box->setCurrentIndex (pos);
-		else if (!mayHaveDataSource)
-			qWarning () << Q_FUNC_INFO
-				<< box
-				<< XSD_->GetValue (item)
-				<< "not found (and this item may not have a datasource)";
-
-		QLabel *label = new QLabel (XSD_->GetLabel (item));
-		label->setWordWrap (false);
-
-		box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		box->setProperty ("SearchTerms", label->text ());
-
-		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0, Qt::AlignRight);
-		lay->addLayout (hboxLay, row, 1);
-	}
-
-	void ItemHandlerCombobox::SetValue (QWidget *widget, const QVariant& value) const
-	{
-		QComboBox *combobox = qobject_cast<QComboBox*> (widget);
-		if (!combobox)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QComboBox"
-				<< widget;
-			return;
-		}
-
-		int pos = combobox->findData (value);
-		if (pos == -1)
-		{
-			QString text = value.toString ();
-			if (!text.isNull ())
-				pos = combobox->findText (text);
-		}
-
-		if (pos != -1)
-			combobox->setCurrentIndex (pos);
-		else
-			qWarning () << Q_FUNC_INFO
-				<< combobox
-				<< value
-				<< "not found";
-	}
-
-	QVariant ItemHandlerCombobox::GetObjectValue (QObject *object) const
-	{
-		QComboBox *combobox = qobject_cast<QComboBox*> (object);
-		if (!combobox)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QComboBox"
-				<< object;
-			return QVariant ();
-		}
-		QVariant result = combobox->itemData (combobox->currentIndex ());
-		if (result.isNull ())
-			result = combobox->currentText ();
-		return result;
-	}
-
-	void ItemHandlerCombobox::SetDataSource (const QString& prop, QAbstractItemModel *model, Util::XmlSettingsDialog *xsd)
-	{
-		QComboBox *box = Propname2Combobox_ [prop];
-		if (!box)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "combobox for property"
-					<< prop
-					<< "not found";
-			return;
-		}
-
-		box->setModel (model);
-
-		const QVariant& data = xsd->GetValue (Propname2Item_ [prop]);
-		int pos = box->findData (data);
-		if (pos == -1)
-		{
-			QString text = data.toString ();
-			if (!text.isNull ())
-				pos = box->findText (text);
-		}
-
-		if (pos != -1)
-			box->setCurrentIndex (pos);
-		else
-			qWarning () << Q_FUNC_INFO
-					<< box
-					<< box->count ()
-					<< box->currentIndex ()
-					<< data
-					<< "not found";
-
-		if (!data.toString ().isEmpty ())
-			ChangedProperties_.remove (prop);
+			.DataSourceSetter_ = dataSourceSetter,
+		};
 	}
 }

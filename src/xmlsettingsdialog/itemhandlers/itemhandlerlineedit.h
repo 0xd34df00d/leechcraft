@@ -8,19 +8,9 @@
 
 #pragma once
 
-#include "itemhandlerstringgetvalue.h"
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerLineEdit : public ItemHandlerStringGetValue
-	{
-	public:
-		using ItemHandlerStringGetValue::ItemHandlerStringGetValue;
-
-		bool CanHandle (const QDomElement&) const override;
-		void Handle (const QDomElement&, QWidget*) override;
-		void SetValue (QWidget*, const QVariant&) const override;
-	protected:
-		QVariant GetObjectValue (QObject*) const override;
-	};
+	ItemRepresentation HandleLineEdit (const ItemContext&);
 }

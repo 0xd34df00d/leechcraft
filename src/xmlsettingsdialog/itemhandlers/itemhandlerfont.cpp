@@ -10,85 +10,40 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QApplication>
-#include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "../fontpicker.h"
 
 namespace LC
 {
-	bool ItemHandlerFont::CanHandle (const QDomElement& element) const
+	namespace
 	{
-		return element.attribute ("type") == "font";
-	}
-
-	void ItemHandlerFont::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		const QString& labelString = XSD_->GetLabel (item);
-		QLabel *label = new QLabel (labelString);
-		label->setWordWrap (false);
-
-		FontPicker *picker = new FontPicker (labelString, XSD_->GetWidget ());
-		picker->setObjectName (item.attribute ("property"));
-		picker->SetCurrentFont (XSD_->GetValue (item).value<QFont> ());
-
-		connect (picker,
-				SIGNAL (currentFontChanged (const QFont&)),
-				this,
-				SLOT (updatePreferences ()));
-
-		picker->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		picker->setProperty ("SearchTerms", labelString);
-
-		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0);
-		lay->addWidget (picker, row, 1);
-	}
-
-	QVariant ItemHandlerFont::GetValue (const QDomElement& element,
-			QVariant value) const
-	{
-		if (value.isNull () ||
-				!value.canConvert<QFont> ())
+		QVariant GetDefaultFont (const QDomElement& elem)
 		{
-			if (element.hasAttribute ("default"))
-			{
-				QFont font;
-				const QString& defStr = element.attribute ("default");
-				if (font.fromString (defStr))
-					value = font;
-				else
-					value = QFont (defStr);
-			}
-			else
-				value = QApplication::font ();
+			if (!elem.hasAttribute ("default"_qs))
+				return QGuiApplication::font ();
+
+			const auto& defStr = elem.attribute ("default"_qs);
+			if (QFont font;
+				font.fromString (defStr))
+				return font;
+
+			return QFont { defStr };
 		}
-		return value;
 	}
 
-	void ItemHandlerFont::SetValue (QWidget *widget,
-			const QVariant& value) const
+	ItemRepresentation HandleFont (const ItemContext& ctx)
 	{
-		FontPicker *fontPicker = qobject_cast<FontPicker*> (widget);
-		if (!fontPicker)
+		const auto picker = new FontPicker { ctx.Label_ };
+		SetChangedSignal (ctx, picker, &FontPicker::currentFontChanged);
+		return
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a FontPicker"
-				<< widget;
-			return;
-		}
-		fontPicker->SetCurrentFont (value.value<QFont> ());
-	}
+			.Widget_ = picker,
+			.Label_ = ctx.Label_,
 
-	QVariant ItemHandlerFont::GetObjectValue (QObject *object) const
-	{
-		FontPicker *fontPicker = qobject_cast<FontPicker*> (object);
-		if (!fontPicker)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a FontPicker"
-				<< object;
-			return QVariant ();
-		}
-		return fontPicker->GetCurrentFont ();
+			.DefaultValue_ = GetDefaultFont (ctx.Elem_),
+
+			.Getter_ = [picker] { return picker->GetCurrentFont (); },
+			.Setter_ = [picker] (const QVariant& value) { picker->SetCurrentFont (value.value<QFont> ()); },
+		};
 	}
-};
+}

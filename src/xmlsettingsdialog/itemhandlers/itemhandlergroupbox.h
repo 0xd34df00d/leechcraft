@@ -8,19 +8,9 @@
 
 #pragma once
 
-#include "itemhandlerbooleangetvalue.h"
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerGroupbox : public ItemHandlerBooleanGetValue
-	{
-	public:
-		using ItemHandlerBooleanGetValue::ItemHandlerBooleanGetValue;
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
-	protected:
-		QVariant GetObjectValue (QObject*) const;
-	};
+	ItemRepresentation HandleGroupbox (const ItemContext&);
 }

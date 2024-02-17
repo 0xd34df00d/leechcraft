@@ -28,10 +28,10 @@
 	</page>
 	<page>
 		<label value="Debug" />
-		<item type="pushbutton" name="TestSleep">
+		<item type="pushbutton" property="TestSleep">
 			<label value="Send sleep event to other plugins" />
 		</item>
-		<item type="pushbutton" name="TestWake">
+		<item type="pushbutton" property="TestWake">
 			<label value="Send wake up event to other plugins" />
 		</item>
 	</page>

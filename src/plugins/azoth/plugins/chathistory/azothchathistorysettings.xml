@@ -10,7 +10,7 @@
 		</groupbox>
 		<groupbox>
 			<label value="Service" />
-			<item type="pushbutton" name="RegenUsersCache">
+			<item type="pushbutton" property="RegenUsersCache">
 				<label value="Regenerate users cache" />
 			</item>
 		</groupbox>

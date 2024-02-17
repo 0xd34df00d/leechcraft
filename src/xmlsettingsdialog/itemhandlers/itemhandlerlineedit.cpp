@@ -7,72 +7,33 @@
  **********************************************************************/
 
 #include "itemhandlerlineedit.h"
-#include <QLabel>
 #include <QLineEdit>
-#include <QGridLayout>
 #include <QApplication>
-#include <QtDebug>
+#include <util/sll/qtutil.h>
+#include "../xmlsettingsdialog.h"
+#include "defaultvaluegetters.h"
 
 namespace LC
 {
-	bool ItemHandlerLineEdit::CanHandle (const QDomElement& element) const
+	ItemRepresentation HandleLineEdit (const ItemContext& ctx)
 	{
-		return element.attribute ("type") == "lineedit";
-	}
+		const auto& item = ctx.Elem_;
 
-	void ItemHandlerLineEdit::Handle (const QDomElement& item,
-			QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QLabel *label = new QLabel (XSD_->GetLabel (item));
-		label->setWordWrap (false);
-
-		const QVariant& value = XSD_->GetValue (item);
-
-		QLineEdit *edit = new QLineEdit (value.toString ());
-		XSD_->SetTooltip (edit, item);
-		edit->setObjectName (item.attribute ("property"));
-		edit->setMinimumWidth (QApplication::fontMetrics ().horizontalAdvance ("thisismaybeadefaultsetting"));
-		if (item.hasAttribute ("password"))
+		const auto edit = new QLineEdit;
+		edit->setMinimumWidth (QApplication::fontMetrics ().horizontalAdvance ("thisismaybeadefaultsetting"_qs));
+		if (item.hasAttribute ("password"_qs))
 			edit->setEchoMode (QLineEdit::Password);
-		if (item.hasAttribute ("inputMask"))
-			edit->setInputMask (item.attribute ("inputMask"));
-		connect (edit,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (updatePreferences ()));
+		if (item.hasAttribute ("inputMask"_qs))
+			edit->setInputMask (item.attribute ("inputMask"_qs));
 
-		edit->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		edit->setProperty ("SearchTerms", label->text ());
+		SetChangedSignal (ctx, edit, &QLineEdit::textChanged);
 
-		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0, Qt::AlignRight);
-		lay->addWidget (edit, row, 1);
-	}
-
-	void ItemHandlerLineEdit::SetValue (QWidget *widget, const QVariant& value) const
-	{
-		QLineEdit *edit = qobject_cast<QLineEdit*> (widget);
-		if (!edit)
+		return
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QLineEdit"
-				<< widget;
-			return;
-		}
-		edit->setText (value.toString ());
+			.Widget_ = edit,
+			.DefaultValue_ = GetDefaultStringValue (ctx.Elem_, ctx.XSD_.GetTrContext ()),
+			.Getter_ = [edit] { return edit->text (); },
+			.Setter_ = [edit] (const QVariant& value) { edit->setText (value.toString ()); },
+		};
 	}
-
-	QVariant ItemHandlerLineEdit::GetObjectValue (QObject *object) const
-	{
-		QLineEdit *edit = qobject_cast<QLineEdit*> (object);
-		if (!edit)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QLineEdit"
-				<< object;
-			return QVariant ();
-		}
-		return edit->text ();
-	}
-};
+}

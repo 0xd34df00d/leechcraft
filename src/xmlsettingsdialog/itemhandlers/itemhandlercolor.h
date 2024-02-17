@@ -12,16 +12,5 @@
 
 namespace LC
 {
-	class ItemHandlerColor : public ItemHandlerBase
-	{
-	public:
-		using ItemHandlerBase::ItemHandlerBase;
-
-		bool CanHandle (const QDomElement&) const override;
-		void Handle (const QDomElement&, QWidget*) override;
-		QVariant GetValue (const QDomElement&, QVariant) const override;
-		void SetValue (QWidget*, const QVariant&) const override;
-	protected:
-		QVariant GetObjectValue (QObject*) const override;
-	};
+	ItemRepresentation HandleColor (const ItemContext&);
 }

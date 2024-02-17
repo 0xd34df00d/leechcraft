@@ -7,68 +7,33 @@
  **********************************************************************/
 
 #include "itemhandlergroupbox.h"
-#include <QLabel>
 #include <QGroupBox>
-#include <QGridLayout>
-#include <QtDebug>
+#include <QFormLayout>
+#include "../xmlsettingsdialog.h"
+#include "defaultvaluegetters.h"
 
 namespace LC
 {
-	bool ItemHandlerGroupbox::CanHandle (const QDomElement& element) const
+	ItemRepresentation HandleGroupbox (const ItemContext& ctx)
 	{
-		return element.attribute ("type") == "groupbox" &&
-				element.attribute ("checkable") == "true";
-	}
+		const auto box = new QGroupBox { ctx.Label_ };
+		box->setCheckable (true);
+		SetChangedSignal (ctx, box, &QGroupBox::toggled);
 
-	void ItemHandlerGroupbox::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGroupBox *box = new QGroupBox (XSD_->GetLabel (item));
-		box->setObjectName (item.attribute ("property"));
-		QGridLayout *groupLayout = new QGridLayout ();
+		const auto groupLayout = new QFormLayout;
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
-		box->setCheckable (true);
 
-		const QVariant& value = XSD_->GetValue (item);
+		ctx.XSD_.ParseEntity (ctx.Elem_, *groupLayout);
 
-		box->setChecked (value.toBool ());
-		connect (box,
-				SIGNAL (toggled (bool)),
-				this,
-				SLOT (updatePreferences ()));
-		box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		box->setProperty ("SearchTerms", box->title ());
-
-		XSD_->ParseEntity (item, box);
-
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		lay->addWidget (box, lay->rowCount (), 0, 1, 2);
-	}
-
-	void ItemHandlerGroupbox::SetValue (QWidget *widget,
-			const QVariant& value) const
-	{
-		QGroupBox *groupbox = qobject_cast<QGroupBox*> (widget);
-		if (!groupbox)
+		return
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QGroupBox"
-				<< widget;
-			return;
-		}
-		groupbox->setChecked (value.toBool ());
-	}
+			.Widget_ = box,
+			.LabelPosition_ = LabelPosition::None,
 
-	QVariant ItemHandlerGroupbox::GetObjectValue (QObject *object) const
-	{
-		QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
-		if (!groupbox)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QGroupBox"
-				<< object;
-			return QVariant ();
-		}
-		return groupbox->isChecked ();
+			.DefaultValue_ = GetDefaultBooleanValue (ctx.Elem_),
+			.Getter_ = [box] { return box->isChecked (); },
+			.Setter_ = [box] (const QVariant& value) { box->setChecked (value.toBool ()); },
+		};
 	}
 }

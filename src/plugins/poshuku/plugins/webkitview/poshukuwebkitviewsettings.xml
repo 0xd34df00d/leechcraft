@@ -55,7 +55,7 @@
 					<label value="Offline storage default quota:" />
 					<suffix value=" KB" />
 				</item>
-				<item type="pushbutton" name="ClearIconDatabase">
+				<item type="pushbutton" property="ClearIconDatabase">
 					<label lang="en" value="Clear favicon database" />
 				</item>
 			</groupbox>
@@ -79,7 +79,7 @@
 					<label value="Total capacity:" />
 					<suffix value=" MB" />
 				</item>
-				<item type="pushbutton" name="ClearMemoryCaches">
+				<item type="pushbutton" property="ClearMemoryCaches">
 					<label value="Clear in-memory caches" />
 				</item>
 			</groupbox>

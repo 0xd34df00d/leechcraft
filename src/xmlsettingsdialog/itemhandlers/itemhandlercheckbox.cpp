@@ -8,63 +8,22 @@
 
 #include "itemhandlercheckbox.h"
 #include <QCheckBox>
-#include <QLabel>
-#include <QGridLayout>
-#include <QtDebug>
+#include "defaultvaluegetters.h"
 
 namespace LC
 {
-	bool ItemHandlerCheckbox::CanHandle (const QDomElement& element) const
+	ItemRepresentation HandleCheckbox (const ItemContext& ctx)
 	{
-		return element.attribute ("type") == "checkbox";
-	}
-
-	void ItemHandlerCheckbox::Handle (const QDomElement& item,
-			QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QCheckBox *box = new QCheckBox (XSD_->GetLabel (item));
-		XSD_->SetTooltip (box, item);
-		box->setObjectName (item.attribute ("property"));
-
-		const QVariant& value = XSD_->GetValue (item);
-
-		box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
-		connect (box,
-				SIGNAL (stateChanged (int)),
-				this,
-				SLOT (updatePreferences ()));
-
-		box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		box->setProperty ("SearchTerms", QStringList (box->text ()));
-
-		lay->addWidget (box, lay->rowCount (), 0, 1, 2, Qt::AlignTop);
-	}
-
-	void ItemHandlerCheckbox::SetValue (QWidget *widget,
-			const QVariant& value) const
-	{
-		QCheckBox *checkbox = qobject_cast<QCheckBox*> (widget);
-		if (!checkbox)
+		const auto box = new QCheckBox { ctx.Label_ };
+		SetChangedSignal (ctx, box, &QCheckBox::stateChanged);
+		return
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QCheckBox"
-				<< widget;
-			return;
-		}
-		checkbox->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
-	}
+			.Widget_ = box,
+			.LabelPosition_ = LabelPosition::None,
 
-	QVariant ItemHandlerCheckbox::GetObjectValue (QObject *object) const
-	{
-		QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
-		if (!checkbox)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "not a QCheckBox"
-				<< object;
-			return QVariant ();
-		}
-		return checkbox->checkState () == Qt::Checked;
+			.DefaultValue_ = GetDefaultBooleanValue (ctx.Elem_),
+			.Getter_ = [box] { return box->checkState () == Qt::Checked; },
+			.Setter_ = [box] (const QVariant& val) { box->setCheckState (val.toBool () ? Qt::Checked : Qt::Unchecked); },
+		};
 	}
 }

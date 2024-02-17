@@ -11,19 +11,13 @@
 #include <QFile>
 #include <QtDebug>
 #include <QGroupBox>
-#include <QPushButton>
-#include <QListWidget>
 #include <QStackedWidget>
-#include <QGridLayout>
+#include <QFormLayout>
 #include <QApplication>
-#include <QUrl>
 #include <QScrollArea>
-#include <QComboBox>
-#include <QTextDocument>
 #include <QDomNodeList>
-#include <QtScript>
+#include <QTabWidget>
 #include <util/util.h>
-#include <util/sll/qtutil.h>
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/domchildrenrange.h>
@@ -31,9 +25,7 @@
 #include "itemhandlerfactory.h"
 #include "basesettingsmanager.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	XmlSettingsDialog::XmlSettingsDialog ()
 	: Widget_ { new QWidget }
@@ -47,9 +39,7 @@ namespace Util
 		Widget_->setLayout (mainLay);
 	}
 
-	XmlSettingsDialog::~XmlSettingsDialog ()
-	{
-	}
+	XmlSettingsDialog::~XmlSettingsDialog () = default;
 
 	void XmlSettingsDialog::RegisterObject (BaseSettingsManager *obj, const QString& basename)
 	{
@@ -237,26 +227,12 @@ namespace Util
 
 	void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 	{
-		const auto& widgets = Widget_->findChildren<QWidget*> (name);
-		if (!widgets.size ())
-			throw std::runtime_error (qPrintable (QString ("Widget %1 not "
-							"found").arg (name)));
-		if (widgets.size () > 1)
-			throw std::runtime_error (qPrintable (QString ("Widget %1 "
-							"appears to exist more than once").arg (name)));
-
-		widgets.at (0)->layout ()->addWidget (widget);
-		Customs_ << widget;
-		connect (widget,
-				&QWidget::destroyed,
-				this,
-				[this, widget] { Customs_.removeAll (widget); });
+		HandlersManager_->SetCustomWidget (name, widget);
 	}
 
-	void XmlSettingsDialog::SetDataSource (const QString& property,
-			QAbstractItemModel *dataSource)
+	void XmlSettingsDialog::SetDataSource (const QString& property, QAbstractItemModel *dataSource)
 	{
-		HandlersManager_->SetDataSource (property, dataSource, this);
+		HandlersManager_->SetDataSource (property, dataSource);
 	}
 
 	void XmlSettingsDialog::SetPage (int page)
@@ -298,43 +274,29 @@ namespace Util
 
 		const auto baseWidget = new QWidget;
 		Pages_->addWidget (baseWidget);
-		const auto lay = new QGridLayout;
-		lay->setContentsMargins (0, 0, 0, 0);
+		const auto lay = new QFormLayout;
+		lay->setContentsMargins ({});
 		baseWidget->setLayout (lay);
 
-		ParseEntity (page, baseWidget);
-
-		bool foundExpanding = false;
-
-		for (const auto w : baseWidget->findChildren<QWidget*> ())
-			if (w->sizePolicy ().verticalPolicy () & QSizePolicy::ExpandFlag)
-			{
-				foundExpanding = true;
-				break;
-			}
-
-		if (!foundExpanding)
-			lay->addItem (new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding),
-					lay->rowCount (), 0, 1, 2);
+		ParseEntity (page, *lay);
 	}
 
-	void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWidget)
+	void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QFormLayout& baseLayout)
 	{
 		for (const auto& item : Util::DomChildren (entity, "item"))
-			ParseItem (item, baseWidget);
+			ParseItem (item, baseLayout);
 
 		for (const auto& gbox : Util::DomChildren (entity, "groupbox"))
 		{
 			const auto box = new QGroupBox (GetLabel (gbox));
 			box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
-			const auto groupLayout = new QGridLayout ();
+			const auto groupLayout = new QFormLayout;
 			groupLayout->setContentsMargins (2, 2, 2, 2);
 			box->setLayout (groupLayout);
 
-			ParseEntity (gbox, box);
+			ParseEntity (gbox, *groupLayout);
 
-			const auto lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
-			lay->addWidget (box, lay->rowCount (), 0, 1, 2);
+			baseLayout.addRow (box);
 		}
 
 		for (const auto& scroll : Util::DomChildren (entity, "scrollarea"))
@@ -361,56 +323,54 @@ namespace Util
 
 			const auto areaWidget = new QFrame;
 			areaWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-			const auto areaLayout = new QGridLayout;
+			const auto areaLayout = new QFormLayout;
 			areaWidget->setLayout (areaLayout);
-			ParseEntity (scroll, areaWidget);
+			ParseEntity (scroll, *areaLayout);
 			area->setWidget (areaWidget);
 			area->setWidgetResizable (true);
 			areaWidget->show ();
 
-			const auto lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
-			const auto thisRow = lay->rowCount ();
-			lay->addWidget (area, thisRow, 0, 1, 2);
-			lay->setRowStretch (thisRow, 1);
+			baseLayout.addRow (area);
 		}
 
-		QTabWidget *tabs = nullptr;
-
-		for (const auto& tab : Util::DomChildren (entity, "tab"))
+		if (!entity.firstChildElement ("tab").isNull ())
 		{
-			if (!tabs)
+			auto tabs = new QTabWidget;
+			baseLayout.addRow (tabs);
+
+			for (const auto& tab : Util::DomChildren (entity, "tab"))
 			{
-				tabs = new QTabWidget;
-
-				const auto lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
-				lay->addWidget (tabs, lay->rowCount (), 0, 1, 2);
+				const auto page = new QWidget;
+				const auto widgetLay = new QFormLayout;
+				widgetLay->setContentsMargins (0, 0, 0, 0);
+				page->setLayout (widgetLay);
+				tabs->addTab (page, GetLabel (tab));
+				ParseEntity (tab, *widgetLay);
 			}
-
-			const auto page = new QWidget;
-			const auto widgetLay = new QGridLayout;
-			widgetLay->setContentsMargins (0, 0, 0, 0);
-			page->setLayout (widgetLay);
-			tabs->addTab (page, GetLabel (tab));
-			ParseEntity (tab, page);
-
-			widgetLay->addItem (new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding),
-					widgetLay->rowCount (), 0, 1, 1);
 		}
 	}
 
-	void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
+	void XmlSettingsDialog::ParseItem (const QDomElement& item, QFormLayout& baseLayout)
 	{
-		const QString& type = item.attribute ("type");
+		const auto& type = item.attribute ("type");
+		const auto& property = item.attribute ("property");
 
-		const QString& property = item.attribute ("property");
-
-		if (type.isEmpty () || type.isNull ())
+		if (type.isEmpty ())
+		{
+			qWarning () << "invalid type for prop"
+					<< property;
 			return;
+		}
 
-		if (!HandlersManager_->Handle (item, baseWidget))
+		const auto& defaultValue = HandlersManager_->Handle (item, baseLayout);
+		if (!defaultValue)
+		{
 			qWarning () << Q_FUNC_INFO << "unhandled type" << type;
+			return;
+		}
 
-		WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
+		if (GetStoredValue (property).isNull ())
+			WorkingObject_->setProperty (property.toLatin1 ().constData (), *defaultValue);
 	}
 
 	namespace
@@ -469,52 +429,14 @@ namespace Util
 		};
 	}
 
-	QString XmlSettingsDialog::GetBasename () const
+	QByteArray XmlSettingsDialog::GetTrContext () const
 	{
-		return Basename_;
+		return TrContext_;
 	}
 
-	QVariant XmlSettingsDialog::GetValue (const QDomElement& item) const
+	QVariant XmlSettingsDialog::GetStoredValue (const QString& property) const
 	{
-		const auto& property = item.attribute ("property");
-
-		const auto& tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
-		if (tmpValue.isValid ())
-			return tmpValue;
-
-		return HandlersManager_->GetValue (item, {});
-	}
-
-	QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
-	{
-		QList<QImage> result;
-
-		Util::ResourceLoader loader { {} };
-		loader.AddGlobalPrefix ();
-		loader.AddLocalPrefix ();
-
-		for (const auto& binary : Util::DomChildren (item, "binary"))
-		{
-			if (binary.attribute ("type") != "image")
-				continue;
-
-			QImage image;
-			if (binary.attribute ("place") == "rcc")
-				image.load (binary.text ());
-			else if (binary.attribute ("place") == "share")
-				image = loader.LoadPixmap (binary.text ()).toImage ();
-			else
-				image = QImage::fromData (QByteArray::fromBase64 (binary.text ().toLatin1 ()));
-
-			if (!image.isNull ())
-				result << image;
-		}
-		return result;
-	}
-
-	void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
-	{
-		HandlersManager_->SetValue (object, value);
+		return WorkingObject_->property (property.toLatin1 ().constData ());
 	}
 
 	bool XmlSettingsDialog::eventFilter (QObject *obj, QEvent *event)
@@ -522,48 +444,20 @@ namespace Util
 		if (event->type () == QEvent::DynamicPropertyChange)
 		{
 			const auto& name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
-
-			if (const auto widget = findChild<QWidget*> (name))
-				SetValue (widget, obj->property (name));
-
+			HandlersManager_->SetValue (name, obj->property (name));
 			return false;
 		}
-		else
-			return QObject::eventFilter (obj, event);
+		return QObject::eventFilter (obj, event);
 	}
 
 	void XmlSettingsDialog::accept ()
 	{
-		for (const auto& pair : Util::Stlize (HandlersManager_->GetNewValues ()))
-			WorkingObject_->setProperty (pair.first.toLatin1 ().constData (), pair.second);
-
-		HandlersManager_->ClearNewValues ();
-
-		for (auto widget : Customs_)
-			QMetaObject::invokeMethod (widget, "accept");
+		HandlersManager_->Accept ();
 	}
 
 	void XmlSettingsDialog::reject ()
 	{
-		for (const auto& pair : Util::Stlize (HandlersManager_->GetNewValues ()))
-		{
-			const auto object = findChild<QWidget*> (pair.first);
-			if (!object)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not find object for property"
-					<< pair.first;
-				continue;
-			}
-
-			SetValue (object,
-					WorkingObject_->property (pair.first.toLatin1 ().constData ()));
-		}
-
-		HandlersManager_->ClearNewValues ();
-
-		for (const auto widget : Customs_)
-			QMetaObject::invokeMethod (widget, "reject");
+		HandlersManager_->Reject ();
 	}
 
 	void XmlSettingsDialog::handleMoreThisStuffRequested ()
@@ -612,5 +506,4 @@ namespace Util
 				tw->setCurrentWidget (lastTabChild);
 		}
 	}
-}
 }

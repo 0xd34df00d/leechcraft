@@ -8,14 +8,10 @@
 
 #pragma once
 
-#include "itemhandlerspinboxbase.h"
-#include <QSpinBox>
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerSpinbox : public ItemHandlerSpinboxBase<QSpinBox, int>
-	{
-	public:
-		ItemHandlerSpinbox (Util::XmlSettingsDialog*);
-	};
+	ItemRepresentation HandleSpinbox (const ItemContext&);
+	ItemRepresentation HandleSpinboxDouble (const ItemContext&);
 }

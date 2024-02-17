@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label value="Accounts" />
-		<item type="customwidget" name="AccountsWidget" />
+		<item type="customwidget" property="AccountsWidget" />
 	</page>
 	<page>
 		<label value="Appearance" />
@@ -197,12 +197,12 @@
 			</item>
 			<item type="groupbox" checkable="true" property="OverrideHashColors">
 				<label value="Override color list" />
-				<item type="customwidget" name="ColorListEditor" />
+				<item type="customwidget" property="ColorListEditor" />
 			</item>
 		</tab>
 		<tab>
 			<label value="Fonts" />
-			<item type="customwidget" name="FontsSelector" />
+			<item type="customwidget" property="FontsSelector" />
 		</tab>
 	</page>
 	<page>

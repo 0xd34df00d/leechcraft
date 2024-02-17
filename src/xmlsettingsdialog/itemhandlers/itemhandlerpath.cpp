@@ -8,110 +8,80 @@
 
 #include "itemhandlerpath.h"
 #include <QDir>
-#include <QLabel>
-#include <QGridLayout>
-#include <QtDebug>
 #include <QStandardPaths>
+#include <QtDebug>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
 #include "../filepicker.h"
 
 namespace LC
 {
-	bool ItemHandlerPath::CanHandle (const QDomElement& element) const
+	namespace
 	{
-		return element.attribute ("type") == "path";
-	}
-
-	void ItemHandlerPath::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QLabel *label = new QLabel (XSD_->GetLabel (item));
-		label->setWordWrap (false);
-
-		FilePicker::Type type = FilePicker::Type::ExistingDirectory;
-		if (item.attribute ("pickerType") == "openFileName")
-			type = FilePicker::Type::OpenFileName;
-		else if (item.attribute ("pickerType") == "saveFileName")
-			type = FilePicker::Type::SaveFileName;
-
-		FilePicker *picker = new FilePicker (type, XSD_->GetWidget ());
-		const QVariant& value = XSD_->GetValue (item);
-		picker->SetText (value.toString ());
-		picker->setObjectName (item.attribute ("property"));
-		if (item.attribute ("onCancel") == "clear")
-			picker->SetClearOnCancel (true);
-		if (item.hasAttribute ("filter"))
-			picker->SetFilter (item.attribute ("filter"));
-
-		connect (picker,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (updatePreferences ()));
-
-		picker->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
-		picker->setProperty ("SearchTerms", label->text ());
-
-		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0);
-		lay->addWidget (picker, row, 1);
-	}
-
-	QVariant ItemHandlerPath::GetValue (const QDomElement& item, QVariant value) const
-	{
-		if (!value.toString ().isEmpty ())
-			return value;
-
-		if (item.attribute ("defaultHomePath") == "true")
-			return QDir::homePath ();
-		if (!item.hasAttribute ("default"))
-			return {};
-
-		static const QMap<QString, QString> str2loc
+		FilePicker::Type GetPickerType (const QDomElement& item)
 		{
-			{ "DOCUMENTS", QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation) },
-			{ "DESKTOP", QStandardPaths::writableLocation (QStandardPaths::DesktopLocation) },
-			{ "MUSIC", QStandardPaths::writableLocation (QStandardPaths::MusicLocation) },
-			{ "MOVIES", QStandardPaths::writableLocation (QStandardPaths::MoviesLocation) },
-			{ "LCDIR", Util::GetUserDir (Util::UserDir::LC, {}).absolutePath () },
-			{ "CACHEDIR", Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath () }
-		};
+			const auto& typeAttr = item.attribute ("pickerType"_qs);
+			if (typeAttr.isEmpty ())
+				return FilePicker::Type::ExistingDirectory;
+			if (typeAttr == "openFileName"_ql)
+				return FilePicker::Type::OpenFileName;
+			if (typeAttr == "saveFileName"_ql)
+				return FilePicker::Type::SaveFileName;
 
-		auto text = item.attribute ("default");
-		for (const auto& pair : Util::Stlize (str2loc))
-			if (text.startsWith ("{" + pair.first + "}"))
+			qWarning () << "unknown picker type"
+					<< typeAttr;
+
+			return FilePicker::Type::ExistingDirectory;
+		}
+
+		QString GetDefaultPath (const QDomElement& item)
+		{
+			if (item.attribute ("defaultHomePath"_qs) == "true"_ql)
+				return QDir::homePath ();
+			if (!item.hasAttribute ("default"_qs))
+				return {};
+
+			static const QVector<QPair<QString, QString>> str2loc
 			{
-				text.replace (0, pair.first.length () + 2, pair.second);
-				break;
-			}
+				{ "DOCUMENTS", QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation) },
+				{ "DESKTOP", QStandardPaths::writableLocation (QStandardPaths::DesktopLocation) },
+				{ "MUSIC", QStandardPaths::writableLocation (QStandardPaths::MusicLocation) },
+				{ "MOVIES", QStandardPaths::writableLocation (QStandardPaths::MoviesLocation) },
+				{ "LCDIR", Util::GetUserDir (Util::UserDir::LC, {}).absolutePath () },
+				{ "CACHEDIR", Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath () }
+			};
 
-		return text;
+			auto text = item.attribute ("default"_qs);
+			for (const auto& [pattern, path] : str2loc)
+				if (text.startsWith ("{" + pattern + "}"))
+				{
+					text.replace (0, pattern.length () + 2, path);
+					break;
+				}
+
+			return text;
+		}
 	}
 
-	void ItemHandlerPath::SetValue (QWidget *widget,
-			const QVariant& value) const
+	ItemRepresentation HandlePath (const ItemContext& ctx)
 	{
-		FilePicker *picker = qobject_cast<FilePicker*> (widget);
-		if (!picker)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "not a FilePicker"
-					<< widget;
-			return;
-		}
-		picker->SetText (value.toString ());
-	}
+		const auto& item = ctx.Elem_;
 
-	QVariant ItemHandlerPath::GetObjectValue (QObject *object) const
-	{
-		FilePicker *picker = qobject_cast<FilePicker*> (object);
-		if (!picker)
+		const auto picker = new FilePicker { GetPickerType (item) };
+		if (item.attribute ("onCancel"_qs) == "clear"_ql)
+			picker->SetClearOnCancel (true);
+		if (item.hasAttribute ("filter"_qs))
+			picker->SetFilter (item.attribute ("filter"_qs));
+
+		SetChangedSignal (ctx, picker, &FilePicker::textChanged);
+
+		return
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "not a FilePicker"
-					<< object;
-			return QVariant ();
-		}
-		return picker->GetText ();
+			.Widget_ = picker,
+
+			.DefaultValue_ = GetDefaultPath (item),
+			.Getter_ = [picker] { return picker->GetText (); },
+			.Setter_ = [picker] (const QVariant& value) { picker->SetText (value.toString ()); },
+		};
 	}
 }

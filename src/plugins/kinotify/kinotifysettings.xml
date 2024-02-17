@@ -30,7 +30,7 @@
 					<label value="Bottom right" />
 				</option>
 			</item>
-			<item type="pushbutton" name="TestNotification">
+			<item type="pushbutton" property="TestNotification">
 				<label value="Display an example notification" />
 			</item>
 		</groupbox>

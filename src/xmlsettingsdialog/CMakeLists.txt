@@ -15,12 +15,9 @@ set (SRCS
 	settingsthreadmanager.cpp
 	settingsthread.cpp
 	itemhandlerfactory.cpp
+	itemhandlers/defaultvaluegetters.cpp
 	itemhandlers/itemhandlerbase.cpp
 	itemhandlers/itemhandlerspinboxrange.cpp
-	itemhandlers/itemhandleroptionssetvalue.cpp
-	itemhandlers/itemhandlerstringsetvalue.cpp
-	itemhandlers/itemhandlerbooleangetvalue.cpp
-	itemhandlers/itemhandlerstringgetvalue.cpp
 	itemhandlers/itemhandlerpath.cpp
 	itemhandlers/itemhandlerfont.cpp
 	itemhandlers/itemhandlercolor.cpp
@@ -30,10 +27,7 @@ set (SRCS
 	itemhandlers/itemhandlercombobox.cpp
 	itemhandlers/itemhandlerlineedit.cpp
 	itemhandlers/itemhandlermultiline.cpp
-	itemhandlers/itemhandlerspinboxbase.cpp
 	itemhandlers/itemhandlerspinbox.cpp
-	itemhandlers/itemhandlerspinboxdouble.cpp
-	itemhandlers/itemhandlernovalue.cpp
 	itemhandlers/itemhandlerpushbutton.cpp
 	itemhandlers/itemhandlercustomwidget.cpp
 	itemhandlers/itemhandlerdataview.cpp

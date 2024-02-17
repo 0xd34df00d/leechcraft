@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label value="Rules" />
-		<item type="customwidget" name="RulesWidget" />
+		<item type="customwidget" property="RulesWidget" />
 	</page>
 	<page>
 		<label value="Methods" />

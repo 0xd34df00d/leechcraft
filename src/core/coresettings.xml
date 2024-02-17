@@ -115,7 +115,7 @@
 			<item type="checkbox" property="FallbackExternalHandlers" default="false">
 				<label value="Try external applications when no plugins can handle an entity" />
 			</item>
-			<item type="pushbutton" name="SetStartupPassword">
+			<item type="pushbutton" property="SetStartupPassword">
 				<label value="Set startup password" />
 			</item>
 		</groupbox>
@@ -131,13 +131,13 @@
 			<icon>theme://configure-shortcuts</icon>
 		</icons>
 		<label lang="en" value="Shortcuts" />
-		<item type="customwidget" name="ShortcutManager" />
+		<item type="customwidget" property="ShortcutManager" />
 	</page>
 	<page>
 		<label lang="en" value="Tags" />
 		<groupbox>
 			<label lang="en" value="Tags manager" />
-			<item type="customwidget" name="TagsViewer" />
+			<item type="customwidget" property="TagsViewer" />
 		</groupbox>
 	</page>
 	<page>
@@ -151,7 +151,7 @@
 				<label value="Cache size:" />
 				<suffix value=" MB" />
 			</item>
-			<item type="pushbutton" name="ClearCache">
+			<item type="pushbutton" property="ClearCache">
 				<label lang="en" value="Clear cache" />
 			</item>
 		</tab>
@@ -177,7 +177,7 @@
 					<tooltip>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</tooltip>
 				</item>
 			</item>
-			<item type="pushbutton" name="ClearCookies">
+			<item type="pushbutton" property="ClearCookies">
 				<label lang="en" value="Clear cookies" />
 			</item>
 			<item type="groupbox" property="SetDNT" default="false" checkable="true">
@@ -201,11 +201,11 @@
 		<label lang="en" value="Plugins" />
 		<groupbox>
 			<label lang="en" value="Plugins manager" />
-			<item type="customwidget" name="PluginManager" />
-			<item type="pushbutton" name="EnableAllPlugins">
+			<item type="customwidget" property="PluginManager" />
+			<item type="pushbutton" property="EnableAllPlugins">
 				<label value="Enable all plugins" />
 			</item>
-			<item type="pushbutton" name="DisableAllPlugins">
+			<item type="pushbutton" property="DisableAllPlugins">
 				<label value="Disable all plugins" />
 			</item>
 		</groupbox>

@@ -8,30 +8,9 @@
 
 #pragma once
 
-#include "itemhandleroptionssetvalue.h"
-#include <QHash>
-
-class QComboBox;
+#include "itemhandlerbase.h"
 
 namespace LC
 {
-	class ItemHandlerFactory;
-
-	class ItemHandlerCombobox : public ItemHandlerOptionsSetValue
-	{
-		ItemHandlerFactory * const Factory_;
-
-		QHash<QString, QComboBox*> Propname2Combobox_;
-		QHash<QString, QDomElement> Propname2Item_;
-	public:
-		ItemHandlerCombobox (ItemHandlerFactory*, Util::XmlSettingsDialog*);
-
-		bool CanHandle (const QDomElement&) const override;
-		void Handle (const QDomElement&, QWidget*) override;
-		void SetValue (QWidget*, const QVariant&) const override;
-	protected:
-		QVariant GetObjectValue (QObject*) const override;
-	private:
-		void SetDataSource (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*);
-	};
+	ItemRepresentation HandleCombobox (const ItemContext&);
 }

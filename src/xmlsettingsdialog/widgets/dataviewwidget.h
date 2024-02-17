@@ -18,12 +18,21 @@ namespace LC
 		Q_OBJECT
 
 		Ui::DataViewWidget Ui_;
-	public:
-		DataViewWidget (QWidget* = 0);
 
-		void DisableAddition ();
-		void DisableModification ();
-		void DisableRemoval ();
+		const bool Autoresize_;
+	public:
+		enum Option
+		{
+			None       = 0b0000,
+			Autoresize = 0b0001,
+			NoAdd      = 0b0010,
+			NoModify   = 0b0100,
+			NoRemove   = 0b1000,
+		};
+		Q_DECLARE_FLAGS (Options, Option)
+		Q_FLAGS (Options)
+
+		explicit DataViewWidget (Options opts, QWidget* = nullptr);
 
 		void AddCustomButton (const QByteArray& id, const QString& text);
 
@@ -33,8 +42,6 @@ namespace LC
 		QModelIndexList GetSelectedRows () const;
 	public slots:
 		void resizeColumns ();
-	private slots:
-		void handleCustomButtonReleased ();
 	signals:
 		void addRequested ();
 		void modifyRequested ();

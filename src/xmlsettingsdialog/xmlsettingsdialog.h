@@ -14,14 +14,12 @@
 #include <QVariant>
 #include "xsdconfig.h"
 
-class QWidget;
-class QStackedWidget;
-class QListWidget;
-class QPushButton;
-class QDomElement;
-class QGridLayout;
-class QDomDocument;
 class QAbstractItemModel;
+class QDomElement;
+class QDomDocument;
+class QFormLayout;
+class QStackedWidget;
+class QWidget;
 
 namespace LC
 {
@@ -44,7 +42,6 @@ namespace Util
 
 		BaseSettingsManager *WorkingObject_ = nullptr;
 		std::shared_ptr<QDomDocument> Document_;
-		QList<QWidget*> Customs_;
 		ItemHandlerFactory * const HandlersManager_;
 
 		QString Basename_;
@@ -58,7 +55,7 @@ namespace Util
 		};
 
 		XmlSettingsDialog ();
-		virtual ~XmlSettingsDialog ();
+		~XmlSettingsDialog () override;
 
 		void RegisterObject (BaseSettingsManager*, const QString&);
 		BaseSettingsManager* GetManagerObject () const;
@@ -156,38 +153,26 @@ namespace Util
 
 		void SetTooltip (QWidget *widget, const QDomElement& element) const;
 
-		/** @brief Returns the current value for the given element.
+		/** @brief Returns the stored value for the given property.
 		 *
 		 * This function checks the object associated with this
-		 * settings dialog and returns a value previously stored or
-		 * default value if no previously set value exists.
+		 * settings dialog and returns a value previously stored,
+		 * or a null variant if no stored value exists.
 		 *
-		 * @param[in] element The element for which the preferences
+		 * @param[in] property The property for which the settings
 		 * value should be returned.
-		 * @return The current preferences value for the element.
+		 * @return The current stored settings value for the element.
 		 */
-		QVariant GetValue (const QDomElement& element) const;
-
-		/** @brief Returns the list of images associated with the
-		 * given element.
-		 *
-		 * This function iterates over all children with name
-		 * "binary" and creates the list of images that could be
-		 * retreieved from those binary children.
-		 *
-		 * @param[in] element The element to collect images from.
-		 * @return The list of images, if any.
-		 */
-		QList<QImage> GetImages (const QDomElement& element) const;
+		QVariant GetStoredValue (const QString& property) const;
 
 		/** @brief Parses the given element under the given parent
 		 * widget.
 		 *
 		 * @param[in] element The element to inspect.
-		 * @param[in] parent The parent widget under which to build
-		 * up the representation.
+		 * @param[in] parentLayout The layout of the parent widget
+		 * under which to build up the representation.
 		 */
-		void ParseEntity (const QDomElement& element, QWidget *parent);
+		void ParseEntity (const QDomElement& element, QFormLayout& parentLayout);
 
 		/** @brief Get other human-readable messages from the
 		 * element.
@@ -204,15 +189,14 @@ namespace Util
 		 */
 		LangElements GetLangElements (const QDomElement& element) const;
 
-		/** @brief Get XML base name of this XML settings dialog.
+		/** @brief Get the translation context of this XML dialog.
 		 */
-		QString GetBasename () const;
+		QByteArray GetTrContext () const;
 	private:
 		void ParsePage (const QDomElement&);
-		void ParseItem (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&);
+		void ParseItem (const QDomElement&, QFormLayout&);
 	protected:
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	public Q_SLOTS:
 		virtual void accept ();
 		virtual void reject ();

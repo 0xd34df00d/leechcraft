@@ -2,10 +2,10 @@
 <settings>
 	<page>
 		<label value="Certificates" />
-		<item type="pushbutton" name="AcceptedRejected">
+		<item type="pushbutton" property="AcceptedRejected">
 			<label value="Accepted/rejected connections" />
 		</item>
-		<item type="pushbutton" name="Certificates">
+		<item type="pushbutton" property="Certificates">
 			<label value="Certificates" />
 		</item>
 	</page>

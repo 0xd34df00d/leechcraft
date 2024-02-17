@@ -12,16 +12,5 @@
 
 namespace LC
 {
-	class ItemHandlerSpinboxRange : public ItemHandlerBase
-	{
-	public:
-		using ItemHandlerBase::ItemHandlerBase;
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
-		QVariant GetValue (const QDomElement&, QVariant) const;
-	protected:
-		QVariant GetObjectValue (QObject *object) const;
-	};
+	ItemRepresentation HandleSpinboxRange (const ItemContext&);
 }

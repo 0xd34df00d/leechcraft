@@ -9,39 +9,8 @@
 #pragma once
 
 #include "itemhandlerbase.h"
-#include <QHash>
 
 namespace LC
 {
-	class ItemHandlerFactory;
-	class DataViewWidget;
-
-	class ItemHandlerDataView : public ItemHandlerBase
-	{
-		Q_OBJECT
-
-		ItemHandlerFactory *Factory_;
-		QHash<QString, DataViewWidget*> Propname2DataView_;
-	public:
-		ItemHandlerDataView (ItemHandlerFactory*, Util::XmlSettingsDialog*);
-
-		bool CanHandle (const QDomElement&) const override;
-		void Handle (const QDomElement&, QWidget*) override;
-		QVariant GetValue (const QDomElement&, QVariant) const override;
-		void SetValue (QWidget*, const QVariant&) const override;
-	protected:
-		QVariant GetObjectValue (QObject*) const override;
-	private:
-		void SetDataSource (const QString&, QAbstractItemModel*, bool);
-
-		QVariantList GetAddVariants (QAbstractItemModel*, const QVariantList& = QVariantList ());
-
-		void AddCustomButtons (const QDomElement&, DataViewWidget*);
-	private slots:
-		void handleAddRequested ();
-		void handleModifyRequested ();
-		void handleRemoveRequested ();
-
-		void handleCustomButton (const QByteArray&);
-	};
+	ItemRepresentation HandleDataView (const ItemContext& ctx);
 }

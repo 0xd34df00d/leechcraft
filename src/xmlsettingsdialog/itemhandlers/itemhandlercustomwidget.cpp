@@ -7,28 +7,25 @@
  **********************************************************************/
 
 #include "itemhandlercustomwidget.h"
-#include <QGridLayout>
-#include <QLabel>
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace LC
 {
-	bool ItemHandlerCustomWidget::CanHandle (const QDomElement& element) const
+	ItemRepresentation HandleCustomWidget (const ItemContext&)
 	{
-		return element.attribute ("type") == "customwidget";
-	}
-
-	void ItemHandlerCustomWidget::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QWidget *widget = new QWidget (XSD_->GetWidget ());
-		widget->setObjectName (item.attribute ("name"));
-		QVBoxLayout *layout = new QVBoxLayout ();
+		const auto widget = new QWidget {};
+		const auto layout = new QVBoxLayout {};
 		layout->setContentsMargins (0, 0, 0, 0);
 		widget->setLayout (layout);
 		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		const auto rc = lay->rowCount ();
-		lay->setRowStretch (rc, 1);
-		lay->addWidget (widget, rc, 0, 1, -1);
+		return
+		{
+			.Widget_ = widget,
+			.LabelPosition_ = LabelPosition::None,
+			.Getter_ = [] { return QVariant {}; },
+			.Setter_ = [] (const QVariant&) {},
+		};
 	}
 }

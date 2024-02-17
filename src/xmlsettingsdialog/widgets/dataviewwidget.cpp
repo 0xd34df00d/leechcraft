@@ -10,8 +10,9 @@
 
 namespace LC
 {
-	DataViewWidget::DataViewWidget (QWidget *parent)
-	: QWidget (parent)
+	DataViewWidget::DataViewWidget (Options opts, QWidget *parent)
+	: QWidget { parent }
+	, Autoresize_ { static_cast<bool> (opts & Option::Autoresize) }
 	{
 		Ui_.setupUi (this);
 		Ui_.Add_->setProperty ("ActionIcon", "list-add");
@@ -20,50 +21,56 @@ namespace LC
 
 		setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+		if (opts & Option::NoAdd)
+			Ui_.Add_->setEnabled (false);
+		if (opts & Option::NoModify)
+			Ui_.Modify_->setEnabled (false);
+		if (opts & Option::NoRemove)
+			Ui_.Remove_->setEnabled (false);
+
 		connect (Ui_.Add_,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				this,
-				SIGNAL (addRequested ()));
+				&DataViewWidget::addRequested);
 		connect (Ui_.Modify_,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				this,
-				SIGNAL (modifyRequested ()));
+				&DataViewWidget::modifyRequested);
 		connect (Ui_.Remove_,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				this,
-				SIGNAL (removeRequested ()));
-	}
-
-	void DataViewWidget::DisableAddition ()
-	{
-		Ui_.Add_->setEnabled (false);
-	}
-
-	void DataViewWidget::DisableModification ()
-	{
-		Ui_.Modify_->setEnabled (false);
-	}
-
-	void DataViewWidget::DisableRemoval ()
-	{
-		Ui_.Remove_->setEnabled (false);
+				&DataViewWidget::removeRequested);
 	}
 
 	void DataViewWidget::AddCustomButton (const QByteArray& id, const QString& text)
 	{
 		auto button = new QPushButton (text);
-		button->setProperty ("XSD/Id", id);
 		Ui_.ButtonsLayout_->insertWidget (Ui_.ButtonsLayout_->count () - 1, button);
 
 		connect (button,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				this,
-				SLOT (handleCustomButtonReleased ()));
+				[this, id] { emit customButtonReleased (id); });
 	}
 
 	void DataViewWidget::SetModel (QAbstractItemModel *model)
 	{
+		if (const auto prevModel = Ui_.View_->model ())
+			disconnect (prevModel, nullptr, this, nullptr);
+
 		Ui_.View_->setModel (model);
+		if (Autoresize_)
+		{
+			connect (model,
+					&QAbstractItemModel::rowsInserted,
+					this,
+					&DataViewWidget::resizeColumns);
+			connect (model,
+					&QAbstractItemModel::dataChanged,
+					this,
+					&DataViewWidget::resizeColumns);
+		}
+		resizeColumns ();
 	}
 
 	QAbstractItemModel* DataViewWidget::GetModel () const
@@ -86,11 +93,5 @@ namespace LC
 		Ui_.View_->expandAll ();
 		for (auto i = 0; i < GetModel ()->columnCount (); ++i)
 			Ui_.View_->resizeColumnToContents (i);
-	}
-
-	void DataViewWidget::handleCustomButtonReleased ()
-	{
-		auto button = qobject_cast<QPushButton*> (sender ());
-		emit customButtonReleased (button->property ("XSD/Id").toByteArray ());
 	}
 }
