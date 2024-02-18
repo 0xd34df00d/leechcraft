@@ -12,47 +12,48 @@
 #include <QPushButton>
 #include <QFontDialog>
 #include <QHBoxLayout>
-#include <QApplication>
+#include <util/sll/qtutil.h>
 
 namespace LC
 {
 	FontPicker::FontPicker (const QString& title, QWidget *parent)
-	: QWidget (parent)
-	, Title_ (title)
+	: QWidget { parent }
+	, Title_ { title.isEmpty () ? tr ("Choose font") : title }
+	, Label_ { *new QLabel }
+	, ChooseButton_ { *new QPushButton { tr ("Choose") } }
 	{
-		if (Title_.isEmpty ())
-			Title_ = tr ("Choose font");
-		Label_ = new QLabel (this);
-		ChooseButton_ = new QPushButton (tr ("Choose..."));
-		QHBoxLayout *lay = new QHBoxLayout;
+		const auto lay = new QHBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
-		lay->addWidget (Label_);
-		lay->addWidget (ChooseButton_);
+		lay->addWidget (&Label_);
+		lay->addWidget (&ChooseButton_);
 		setLayout (lay);
-		connect (ChooseButton_,
-				SIGNAL (released ()),
+		connect (&ChooseButton_,
+				&QPushButton::released,
 				this,
-				SLOT (chooseFont ()));
+				&FontPicker::ChooseFont);
 
-		const auto fontNameWidth = fontMetrics ().horizontalAdvance (QApplication::font ().toString ());
-		Label_->setMinimumWidth (1.5 * fontNameWidth);
+		const auto fontNameWidth = fontMetrics ().horizontalAdvance (Label_.font ().toString ());
+		Label_.setMinimumWidth (1.5 * fontNameWidth);
 	}
 
 	void FontPicker::SetCurrentFont (const QFont& font)
 	{
 		Font_ = font;
-		QString text = Font_.family ();
-		text += tr (", %1 pt")
-			.arg (QFontInfo (Font_).pointSize ());
+
+		QStringList props
+		{
+			Font_.family (),
+			tr ("%1 pt").arg (QFontInfo { Font_ }.pointSize ()),
+		};
 		if (Font_.bold ())
-			text += tr (", bold");
+			props << tr ("bold");
 		if (Font_.italic ())
-			text += tr (", italic");
+			props << tr ("italic");
 		if (Font_.underline ())
-			text += tr (", underlined");
+			props << tr ("underlined");
 		if (Font_.strikeOut ())
-			text += tr (", striken out");
-		Label_->setText (text);
+			props << tr ("striken out");
+		Label_.setText (props.join (", "_qs));
 	}
 
 	QFont FontPicker::GetCurrentFont () const
@@ -60,16 +61,11 @@ namespace LC
 		return Font_;
 	}
 
-	void FontPicker::chooseFont ()
+	void FontPicker::ChooseFont ()
 	{
 		bool ok = false;
-		QFont font = QFontDialog::getFont (&ok,
-				Font_,
-				this,
-				Title_);
-
-		if (!ok ||
-				font == Font_)
+		auto font = QFontDialog::getFont (&ok, Font_, this, Title_);
+		if (!ok || font == Font_)
 			return;
 
 		SetCurrentFont (font);

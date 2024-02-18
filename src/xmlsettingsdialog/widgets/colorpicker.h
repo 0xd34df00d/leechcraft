@@ -25,7 +25,7 @@ namespace LC
 		QLabel& ColorLabel_;
 		QLabel& NameLabel_;
 	public:
-		ColorPicker (const QString& = {}, QWidget* = nullptr);
+		explicit ColorPicker (const QString& = {}, QWidget* = nullptr);
 
 		void SetCurrentColor (const QColor&);
 		QColor GetCurrentColor () const;

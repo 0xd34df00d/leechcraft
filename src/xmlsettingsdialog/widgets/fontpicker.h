@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_FONTPICKER_H
-#define XMLSETTINGSDIALOG_FONTPICKER_H
+#pragma once
+
 #include <QWidget>
 #include <QFont>
 
@@ -22,18 +22,16 @@ namespace LC
 
 		QString Title_;
 		QFont Font_;
-		QLabel *Label_;
-		QPushButton *ChooseButton_;
+		QLabel& Label_;
+		QPushButton& ChooseButton_;
 	public:
-		FontPicker (const QString& = QString (), QWidget* = 0);
+		explicit FontPicker (const QString& = {}, QWidget* = nullptr);
+
 		void SetCurrentFont (const QFont&);
 		QFont GetCurrentFont () const;
-	private slots:
-		void chooseFont ();
+	private:
+		void ChooseFont ();
 	signals:
 		void currentFontChanged (const QFont&);
 	};
-};
-
-#endif
-
+}
