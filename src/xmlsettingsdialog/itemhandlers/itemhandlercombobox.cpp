@@ -9,6 +9,7 @@
 #include "itemhandlercombobox.h"
 #include <QFormLayout>
 #include <QComboBox>
+#include <QPushButton>
 #include <QtDebug>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/domchildrenrange.h>
@@ -110,8 +111,28 @@ namespace LC
 			if (pos != -1)
 				box->setCurrentIndex (pos);
 			else
-				qWarning () << value
-						<< "not found";
+				qWarning () << value << "not found";
+		}
+
+		QWidget* HandleMoreThisStuff (QComboBox *box, const QDomElement& item, Util::XmlSettingsDialog& xsd)
+		{
+			const auto& name = item.attribute ("moreThisStuff"_qs);
+			if (name.isEmpty ())
+				return box;
+
+			const auto hbox = new QHBoxLayout;
+			hbox->addWidget (box);
+
+			const auto moreButt = new QPushButton (QObject::tr ("Get more..."));
+			QObject::connect (moreButt,
+					&QPushButton::released,
+					&xsd,
+					[&xsd, name] { emit xsd.moreThisStuffRequested (name); });
+			hbox->addWidget (moreButt);
+
+			const auto combined = new QWidget;
+			combined->setLayout (hbox);
+			return combined;
 		}
 	}
 
@@ -128,28 +149,13 @@ namespace LC
 
 		SetChangedSignal (ctx, box, &QComboBox::currentIndexChanged);
 
-		/* TODO
-		if (item.hasAttribute ("moreThisStuff"))
-		{
-			const auto hboxLay = new QHBoxLayout;
-			const auto moreButt = new QPushButton (tr ("Get more..."));
-			hboxLay->addWidget (moreButt);
-
-			moreButt->setObjectName (item.attribute ("moreThisStuff"));
-			connect (moreButt,
-					SIGNAL (released ()),
-					XSD_,
-					SLOT (handleMoreThisStuffRequested ()));
-		}
-		 */
-
 		const auto dataSourceSetter = item.attribute ("mayHaveDataSource"_qs).toLower () == "true"_ql ?
 				[box] (QAbstractItemModel& m) { box->setModel (&m); } :
 				DataSourceSetter {};
 
 		return
 		{
-			.Widget_ = box,
+			.Widget_ = HandleMoreThisStuff (box, item, ctx.XSD_),
 			.Label_ = ctx.Label_,
 
 			.DefaultValue_ = defValue,
