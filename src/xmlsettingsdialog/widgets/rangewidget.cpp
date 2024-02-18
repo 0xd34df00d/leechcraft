@@ -11,78 +11,61 @@
 #include <QSpinBox>
 #include "rangewidget.h"
 
-using namespace LC;
-
-RangeWidget::RangeWidget (QWidget *parent)
-: QWidget (parent)
+namespace LC
 {
-	Lower_ = new QSpinBox;
-	Higher_ = new QSpinBox;
+	RangeWidget::RangeWidget (QWidget *parent)
+	: QWidget { parent }
+	, Lower_ { *new QSpinBox }
+	, Higher_ { *new QSpinBox }
+	{
+		const auto lay = new QHBoxLayout;
+		lay->setContentsMargins (0, 0, 0, 0);
+		lay->addWidget (&Lower_);
+		lay->addWidget (&Higher_);
+		lay->addStretch (1);
+		setLayout (lay);
 
-	QHBoxLayout *lay = new QHBoxLayout;
-	lay->setContentsMargins (0, 0, 0, 0);
-	lay->addWidget (Lower_);
-	lay->addWidget (Higher_);
-	lay->addStretch (1);
+		connect (&Lower_,
+				&QSpinBox::valueChanged,
+				&Higher_,
+				&QSpinBox::setMinimum);
+		connect (&Higher_,
+				&QSpinBox::valueChanged,
+				&Lower_,
+				&QSpinBox::setMaximum);
+		connect (&Lower_,
+				&QSpinBox::valueChanged,
+				this,
+				&RangeWidget::changed);
+		connect (&Higher_,
+				&QSpinBox::valueChanged,
+				this,
+				&RangeWidget::changed);
+	}
 
-	connect (Lower_, SIGNAL (valueChanged (int)), this, SLOT (lowerChanged (int)));
-	connect (Higher_, SIGNAL (valueChanged (int)), this, SLOT (upperChanged (int)));
-	connect (Lower_, SIGNAL (valueChanged (int)), this, SIGNAL (changed ()));
-	connect (Higher_, SIGNAL (valueChanged (int)), this, SIGNAL (changed ()));
-	
-	setLayout (lay);
+	void RangeWidget::SetBounds (int min, int max)
+	{
+		Lower_.setRange (min, max);
+		Higher_.setRange (min, max);
+	}
+
+	void RangeWidget::SetRange (const QVariant& variant)
+	{
+		const auto& list = variant.toList ();
+		if (list.size () != 2)
+			return;
+
+		const auto low = list [0].toInt ();
+		const auto high = list [1].toInt ();
+		if (low > high)
+			return;
+
+		Lower_.setValue (low);
+		Higher_.setValue (high);
+	}
+
+	QVariant RangeWidget::GetRange () const
+	{
+		return QList<QVariant> { Lower_.value (), Higher_.value () };
+	}
 }
-
-void RangeWidget::SetMinimum (int val)
-{
-	Lower_->setMinimum (val);
-	Higher_->setMinimum (val);
-}
-
-void RangeWidget::SetMaximum (int val)
-{
-	Lower_->setMaximum (val);
-	Higher_->setMaximum (val);
-}
-
-void RangeWidget::SetLower (int val)
-{
-	Lower_->setValue (val);
-	Higher_->setMinimum (val);
-}
-
-void RangeWidget::SetHigher (int val)
-{
-	Higher_->setValue (val);
-	Lower_->setMaximum (val);
-}
-
-void RangeWidget::SetRange (const QVariant& variant)
-{
-	if (!variant.canConvert<QList<QVariant>> ())
-		return;
-
-	QList<QVariant> list = variant.toList ();
-	if (list.size () != 2)
-		return;
-	SetLower (list.at (0).toInt ());
-	SetHigher (list.at (1).toInt ());
-}
-
-QVariant RangeWidget::GetRange () const
-{
-	QList<QVariant> result;
-	result << Lower_->value () << Higher_->value ();
-	return result;
-}
-
-void RangeWidget::lowerChanged (int val)
-{
-	Higher_->setMinimum (val);
-}
-
-void RangeWidget::upperChanged (int val)
-{
-	Lower_->setMaximum (val);
-}
-

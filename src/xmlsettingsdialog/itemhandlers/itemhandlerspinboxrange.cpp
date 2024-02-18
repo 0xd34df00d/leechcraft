@@ -32,8 +32,7 @@ namespace LC
 		const auto& item = ctx.Elem_;
 
 		const auto range = new RangeWidget;
-		range->SetMinimum (item.attribute ("minimum"_qs).toInt ());
-		range->SetMaximum (item.attribute ("maximum"_qs).toInt ());
+		range->SetBounds (item.attribute ("minimum"_qs).toInt (), item.attribute ("maximum"_qs).toInt ());
 
 		SetChangedSignal (ctx, range, &RangeWidget::changed);
 

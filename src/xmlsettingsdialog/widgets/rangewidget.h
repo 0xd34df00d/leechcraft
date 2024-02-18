@@ -18,18 +18,14 @@ namespace LC
 	{
 		Q_OBJECT
 
-		QSpinBox *Lower_, *Higher_;
+		QSpinBox& Lower_;
+		QSpinBox& Higher_;
 	public:
-		RangeWidget (QWidget *parent = 0);
-		void SetMinimum (int);
-		void SetMaximum (int);
-		void SetLower (int);
-		void SetHigher (int);
+		explicit RangeWidget (QWidget *parent = nullptr);
+
+		void SetBounds (int, int);
 		void SetRange (const QVariant&);
 		QVariant GetRange () const;
-	private slots:
-		void lowerChanged (int);
-		void upperChanged (int);
 	signals:
 		void changed ();
 	};
