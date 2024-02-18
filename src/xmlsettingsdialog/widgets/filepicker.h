@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_FILEPICKER_H
-#define XMLSETTINGSDIALOG_FILEPICKER_H
+#pragma once
+
 #include <QWidget>
 
 class QLineEdit;
@@ -19,9 +19,9 @@ namespace LC
 	{
 		Q_OBJECT
 
-		QLineEdit *LineEdit_;
-		QPushButton *BrowseButton_;
-		bool ClearOnCancel_;
+		QLineEdit& LineEdit_;
+		QPushButton& BrowseButton_;
+		bool ClearOnCancel_ = false;
 		QString Filter_;
 	public:
 		enum class Type
@@ -31,19 +31,19 @@ namespace LC
 			SaveFileName
 		};
 	private:
-		Type Type_;
+		const Type Type_;
 	public:
-		FilePicker (Type = Type::ExistingDirectory, QWidget* = 0);
-		void SetText (QString);
+		explicit FilePicker (Type = Type::ExistingDirectory, QWidget* = nullptr);
+
+		void SetText (const QString&);
 		QString GetText () const;
+
 		void SetClearOnCancel (bool);
+
 		void SetFilter (const QString&);
-	private slots:
-		void chooseFile ();
+	private:
+		void ChooseFile ();
 	signals:
 		void textChanged (const QString&);
 	};
-};
-
-#endif
-
+}
