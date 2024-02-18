@@ -9,6 +9,7 @@
 #include "itemhandlermultiline.h"
 #include <QApplication>
 #include <QTextEdit>
+#include <util/sll/qtutil.h>
 #include "../xmlsettingsdialog.h"
 #include "defaultvaluegetters.h"
 
@@ -19,11 +20,11 @@ namespace LC
 		const auto& item = ctx.Elem_;
 
 		const auto edit = new QTextEdit;
-		edit->setMinimumWidth (QApplication::fontMetrics ().horizontalAdvance ("thisismaybeadefaultsetting"));
+		edit->setMinimumWidth (edit->fontMetrics ().horizontalAdvance ("thisismaybeadefaultsetting"_qs));
 		SetChangedSignal (ctx, edit, &QTextEdit::textChanged);
 
 		auto labelPos = LabelPosition::Default;
-		if (item.attribute ("position") == "bottom")
+		if (item.attribute ("position"_qs) == "bottom"_ql)
 			labelPos = LabelPosition::Wrap;
 
 		return

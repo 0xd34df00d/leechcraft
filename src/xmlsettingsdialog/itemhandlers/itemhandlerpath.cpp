@@ -28,8 +28,7 @@ namespace LC
 			if (typeAttr == "saveFileName"_ql)
 				return FilePicker::Type::SaveFileName;
 
-			qWarning () << "unknown picker type"
-					<< typeAttr;
+			qWarning () << "unknown picker type" << typeAttr;
 
 			return FilePicker::Type::ExistingDirectory;
 		}

@@ -34,7 +34,7 @@ namespace LC
 				if (binary.attribute ("type"_qs) != "image"_ql)
 					continue;
 
-				const auto& place = binary.attribute ("place");
+				const auto& place = binary.attribute ("place"_qs);
 
 				QImage image;
 				if (place == "rcc"_ql)
@@ -82,7 +82,7 @@ namespace LC
 				setColor ("bgcolor"_qs, Qt::BackgroundRole);
 			}
 
-			if (auto scriptContainer = item.firstChildElement ("scripts");
+			if (auto scriptContainer = item.firstChildElement ("scripts"_qs);
 					!scriptContainer.isNull ())
 			{
 				Scripter scripter { scriptContainer };

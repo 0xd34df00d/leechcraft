@@ -15,10 +15,12 @@ namespace LC
 {
 	ItemRepresentation HandlePushButton (const ItemContext& ctx)
 	{
+		auto& xsd = ctx.XSD_;
+
 		const auto button = new QPushButton { ctx.Label_ };
 		QObject::connect (button,
 				&QPushButton::released,
-				[prop = ctx.Prop_, &xsd = ctx.XSD_] { emit xsd.pushButtonClicked (prop); });
+				[prop = ctx.Prop_, &xsd] { emit xsd.pushButtonClicked (prop); });
 		return
 		{
 			.Widget_ = button,
