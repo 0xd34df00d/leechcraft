@@ -454,16 +454,6 @@ namespace LC::Util
 		HandlersManager_->Reject ();
 	}
 
-	void XmlSettingsDialog::handleMoreThisStuffRequested ()
-	{
-		emit moreThisStuffRequested (sender ()->objectName ());
-	}
-
-	void XmlSettingsDialog::handlePushButtonReleased ()
-	{
-		emit pushButtonClicked (sender ()->objectName ());
-	}
-
 	void XmlSettingsDialog::handleShowPageRequested (BaseSettingsManager *bsm, const QString& name)
 	{
 		emit showPageRequested (bsm, name);
