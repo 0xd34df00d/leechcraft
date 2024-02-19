@@ -104,6 +104,11 @@ namespace LC::Util
 		{
 			return QStringView { Data_, Size };
 		}
+
+		constexpr auto Data () const noexcept
+		{
+			return Data_;
+		}
 	};
 
 	template<CtString Str>
