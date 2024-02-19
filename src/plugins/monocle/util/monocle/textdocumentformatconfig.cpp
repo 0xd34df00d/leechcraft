@@ -12,6 +12,7 @@
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QtDebug>
+#include <util/sll/ctstring.h>
 #include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "types.h"
@@ -39,12 +40,14 @@ namespace LC::Monocle
 
 	QTextFrameFormat TextDocumentFormatConfig::GetBodyFrameFormat () const
 	{
-		const auto margin = [this] (const QByteArray& orient) { return XSM_->property (orient + "Margin").toInt (); };
+		constexpr auto side = [] (char side) consteval { return "PageMargin"_ct + side; };
+
+		const auto margin = [this] (auto side) { return XSM_->property (side.Data ()).toInt (); };
 		QTextFrameFormat fmt;
-		fmt.setLeftMargin (margin ("Left"));
-		fmt.setRightMargin (margin ("Right"));
-		fmt.setTopMargin (margin ("Top"));
-		fmt.setBottomMargin (margin ("Bottom"));
+		fmt.setLeftMargin (margin (side ('L')));
+		fmt.setRightMargin (margin (side ('R')));
+		fmt.setTopMargin (margin (side ('T')));
+		fmt.setBottomMargin (margin (side ('B')));
 		fmt.setWidth (XSM_->property ("PageWidth").toInt ());
 		return fmt;
 	}

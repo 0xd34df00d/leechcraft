@@ -45,10 +45,10 @@
 		</tab>
 		<tab label="Indents">
 			<groupbox label="Page">
-				<item type="spinbox" property="LeftMargin" def="60" min="0" max="200" suf=" px" label="Left margin:" />
-				<item type="spinbox" property="TopMargin" def="80" min="0" max="200" suf=" px" label="Top margin:" />
-				<item type="spinbox" property="RightMargin" def="60" min="0" max="200" suf=" px" label="Right margin:" />
-				<item type="spinbox" property="BottomMargin" def="80" min="0" max="200" suf=" px" label="Bottom margin:" />
+				<item type="spinbox" property="PageMarginL" def="60" min="0" max="200" suf=" px" label="Left margin:" />
+				<item type="spinbox" property="PageMarginT" def="80" min="0" max="200" suf=" px" label="Top margin:" />
+				<item type="spinbox" property="PageMarginR" def="60" min="0" max="200" suf=" px" label="Right margin:" />
+				<item type="spinbox" property="PageMarginB" def="80" min="0" max="200" suf=" px" label="Bottom margin:" />
 			</groupbox>
 		</tab>
 	</page>
