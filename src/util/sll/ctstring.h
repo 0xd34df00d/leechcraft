@@ -66,6 +66,11 @@ namespace LC::Util
 			return *this + CtString<N2 - 1, Char> { s2 };
 		}
 
+		constexpr auto operator+ (Char ch) const noexcept
+		{
+			return *this + CtString<1, Char> { { ch } };
+		}
+
 		constexpr bool IsEmpty () const noexcept
 		{
 			return !Size;
