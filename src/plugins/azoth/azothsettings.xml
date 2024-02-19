@@ -142,7 +142,7 @@
 				<item type="spinbox" property="MsgEditFontSize" default="5" minimum="5" maximum="72">
 					<label value="Message editor font size:" />
 					<suffix value=" px" />
-					<specialValue value="system default" />
+					<special value="system default" />
 				</item>
 				<item type="spinbox" property="ShortenURLLength" default="100" minimum="10" maximum="1000">
 					<label value="Shorten URLs longer than:" />

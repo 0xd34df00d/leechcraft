@@ -418,7 +418,7 @@ namespace LC::Util
 		{
 			.Label_ = GetUserText (parent, "label", TrContext_),
 			.Suffix_ = GetUserText (parent, "suffix", TrContext_),
-			.SpecialValue_ = GetUserText (parent, "specialValue", TrContext_),
+			.SpecialValue_ = GetUserText (parent, "special", TrContext_),
 		};
 	}
 
