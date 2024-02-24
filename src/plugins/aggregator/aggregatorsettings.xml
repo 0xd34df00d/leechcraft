@@ -6,13 +6,13 @@
 			<label lang="en" value="Behavior" />
 			<groupbox>
 				<label lang="en" value="Behavior" />
-				<item type="checkbox" property="BeSilent" state="on">
+				<item type="checkbox" property="BeSilent" default="true">
 					<label lang="en" value="Be silent" />
 				</item>
-				<item type="checkbox" property="AlwaysUseExternalBrowser" state="on">
+				<item type="checkbox" property="AlwaysUseExternalBrowser" default="true">
 					<label lang="en" value="Always use external browser" />
 				</item>
-				<item type="checkbox" property="UnreadOnTop" state="off">
+				<item type="checkbox" property="UnreadOnTop" default="false">
 					<label lang="en" value="Show unread items on top" />
 				</item>
 				<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0">
@@ -40,16 +40,16 @@
 			<label lang="en" value="Appearance" />
 			<groupbox>
 				<label lang="en" value="Appearance" />
-				<item type="checkbox" property="GroupChannelsByTags" state="on">
+				<item type="checkbox" property="GroupChannelsByTags" default="true">
 					<label lang="en" value="Group channels by tags" />
 				</item>
-				<item type="checkbox" property="ShowCategorySelector" state="on">
+				<item type="checkbox" property="ShowCategorySelector" default="true">
 					<label lang="en" value="Show items category selector" />
 				</item>
 				<item type="checkbox" property="ShowItemsTooltips" default="true">
 					<label value="Show tooltips for news items" />
 				</item>
-				<item type="checkbox" property="ShowNavBarInItemsView" state="off">
+				<item type="checkbox" property="ShowNavBarInItemsView" default="false">
 					<label lang="en" value="Show navigation bar when showing the news item" />
 				</item>
 				<item type="checkbox" property="EmbedMediaRSSImages" default="true">
@@ -76,7 +76,7 @@
 			<label lang="en" value="Feeds handling" />
 			<groupbox>
 				<label lang="en" value="Updates" />
-				<item type="checkbox" property="UpdateOnStartup" state="off">
+				<item type="checkbox" property="UpdateOnStartup" default="false">
 					<label lang="en" value="Update feeds on startup" />
 				</item>
 				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5">

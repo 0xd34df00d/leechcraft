@@ -4,34 +4,34 @@
 		<label lang="en" value="Browser settings" />
 		<tab>
 			<label lang="en" value="Behavior" />
-			<item type="checkbox" property="RestorePreviousSession" state="on">
+			<item type="checkbox" property="RestorePreviousSession" default="true">
 				<label lang="en" value="Restore previous session" />
 			</item>
-			<item type="checkbox" property="StartWithHomeTab" state="off">
+			<item type="checkbox" property="StartWithHomeTab" default="false">
 				<label lang="en" value="Always open home tab" />
 			</item>
-			<item type="checkbox" property="BackgroundNewTabs" state="on">
+			<item type="checkbox" property="BackgroundNewTabs" default="true">
 				<label lang="en" value="Open new tabs in the background" />
 			</item>
-			<item type="checkbox" property="GroupBookmarksByTags" state="on">
+			<item type="checkbox" property="GroupBookmarksByTags" default="true">
 				<label lang="en" value="Group bookmarks by tags" />
 			</item>
-			<item type="checkbox" property="ParanoidDownloadsDetection" state="off">
+			<item type="checkbox" property="ParanoidDownloadsDetection" default="false">
 				<label lang="en" value="Paranoid downloads detection" />
 			</item>
-			<item type="checkbox" property="DifferLocationsByExtension" state="on">
+			<item type="checkbox" property="DifferLocationsByExtension" default="true">
 				<label lang="en" value="Differ download locations by file extension" />
 			</item>
 			<item type="checkbox" property="UseSummaryForSearches" default="false">
 				<label value="Use Summary for displaying search results" />
 			</item>
-			<item type="checkbox" property="TryToDetectRSSLinks" state="on">
+			<item type="checkbox" property="TryToDetectRSSLinks" default="true">
 				<label lang="en" value="Try to detect links to RSS/Atom feeds" />
 			</item>
-			<item type="checkbox" property="GenerateTooltips" state="on">
+			<item type="checkbox" property="GenerateTooltips" default="true">
 				<label lang="en" value="Generate tooltips" />
 			</item>
-			<item type="checkbox" property="NotifyFinishedByDefault" state="off">
+			<item type="checkbox" property="NotifyFinishedByDefault" default="false">
 				<label lang="en" value="Notify about finished loads by default" />
 			</item>
 			<item type="checkbox" property="CloseEmptyDelegatedPages" default="on">
@@ -56,7 +56,7 @@
 					<label value="Enable hyperlink auditing" />
 					<tooltip>Enable sending hyperlink auditing pings.</tooltip>
 				</item>
-				<item type="checkbox" property="LocalStorageDB" state="on">
+				<item type="checkbox" property="LocalStorageDB" default="true">
 					<label lang="en" value="Local storage database" />
 				</item>
 				<item type="spinbox" property="HistoryClearOlderThan" minimum="0" maximum="10000" default="30">
@@ -83,19 +83,19 @@
 			<label lang="en" value="Dynamic content" />
 			<groupbox>
 				<label lang="en" value="Dynamic content" />
-				<item type="checkbox" property="AutoLoadImages" state="on">
+				<item type="checkbox" property="AutoLoadImages" default="true">
 					<label lang="en" value="Load images automatically" />
 				</item>
-				<item type="checkbox" property="AllowJavascript" state="on">
+				<item type="checkbox" property="AllowJavascript" default="true">
 					<label lang="en" value="Allow Javascript" />
 				</item>
-				<item type="checkbox" property="AllowPlugins" state="on">
+				<item type="checkbox" property="AllowPlugins" default="true">
 					<label lang="en" value="Allow plugins" />
 				</item>
-				<item type="checkbox" property="JavascriptCanOpenWindows" state="on">
+				<item type="checkbox" property="JavascriptCanOpenWindows" default="true">
 					<label lang="en" value="Javascript programs can open new windows" />
 				</item>
-				<item type="checkbox" property="JavascriptCanAccessClipboard" state="on">
+				<item type="checkbox" property="JavascriptCanAccessClipboard" default="true">
 					<label lang="en" value="Javascript programs can access clipboard" />
 				</item>
 				<item type="checkbox" property="EnableWebGL" default="true">

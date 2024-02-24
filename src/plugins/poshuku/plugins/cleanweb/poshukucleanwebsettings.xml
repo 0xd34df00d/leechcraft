@@ -21,7 +21,7 @@
 		</tab>
 		<tab>
 			<label value="Subscriptions" />
-			<item type="groupbox" checkable="true" state="on" property="Autoupdate">
+			<item type="groupbox" checkable="true" default="true" property="Autoupdate">
 				<label value="Update subscriptions" />
 				<item type="spinbox" property="UpdateInterval" minimum="1" maximum="65535" default="5">
 					<label value="Update interval:" />

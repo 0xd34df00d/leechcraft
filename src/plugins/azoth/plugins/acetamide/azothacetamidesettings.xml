@@ -4,16 +4,16 @@
 		<label value="Behavior" />
 			<groupbox>
 				<label value="Acetamide" />
-				<item type="checkbox" property="AutoDisconnectFromServer" state="off">
+				<item type="checkbox" property="AutoDisconnectFromServer" default="false">
 						<label value="Autodisconnect from server when no channels are active" />
 				</item>
-				<item type="checkbox" property="ShowInviteDialog" state="off">
+				<item type="checkbox" property="ShowInviteDialog" default="false">
 						<label value="Show invite dialog" />
 				</item>
-				<item type="checkbox" property="ServerDuplicateCommandAnswer" state="off">
+				<item type="checkbox" property="ServerDuplicateCommandAnswer" default="false">
 					<label value="Duplicate command answer in server's tab" />
 				</item>
-				<item type="groupbox" property="AutoWhoRequest" state="on" checkable="true">
+				<item type="groupbox" property="AutoWhoRequest" default="true" checkable="true">
 					<label lang="en" value="Use WHO request for checking AWAY status" />
 					<item type="spinbox" property="AutoWhoPeriod" default="1" step="1" minimum="1" maximum="360" >
 						<label lang="en" value="Period for WHO request:" />

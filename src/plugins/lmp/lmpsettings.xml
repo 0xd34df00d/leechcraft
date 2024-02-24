@@ -138,7 +138,7 @@
 	</page>
 	<page>
 		<label value="Plugin communication" />
-		<item type="groupbox" property="TestOnly" state="on" checkable="true">
+		<item type="groupbox" property="TestOnly" default="true" checkable="true">
 			<label value="Test only these extensions" />
 			<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 mp4 ogg">
 				<label value="Extenstions list:" />

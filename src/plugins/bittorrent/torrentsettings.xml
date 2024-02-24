@@ -28,14 +28,14 @@
 		</tab>
 		<tab>
 			<label lang="en" value="Fast speed control" />
-			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" state="off">
+			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" default="false">
 				<label lang="en" value="Enable fast speed control" />
 				<item type="customwidget" property="FastSpeedControl" />
 			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Proxy" />
-			<item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
+			<item type="groupbox" property="PeerProxyEnabled" checkable="true" default="false">
 				<label lang="en" value="Proxy:" />
 				<item type="lineedit" property="PeerProxyHost">
 					<label lang="en" value="Host:" />
@@ -65,7 +65,7 @@
 		<label lang="en" value="Advanced network" />
 		<tab>
 			<label lang="en" value="DHT" />
-			<item type="groupbox" property="DHTEnabled" state="on" checkable="true">
+			<item type="groupbox" property="DHTEnabled" default="true" checkable="true">
 				<label lang="en" value="DHT" />
 				<item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10">
 					<label lang="en" value="Maximum peers in reply:" />
@@ -79,7 +79,7 @@
 			</item>
 			<groupbox>
 				<label lang="en" value="DHT-related options" />
-				<item type="checkbox" property="UseDHTAsFallback" state="on">
+				<item type="checkbox" property="UseDHTAsFallback" default="true">
 					<label lang="en" value="Use DHT as fallback" />
 				</item>
 			</groupbox>
@@ -126,7 +126,7 @@
 		<tab>
 			<label lang="en" value="Advanced" />
 			<scrollarea horizontalScroll="off">
-				<item type="groupbox" property="ScrapeEnabled" checkable="true" state="off">
+				<item type="groupbox" property="ScrapeEnabled" checkable="true" default="false">
 					<label lang="en" value="Scrape enabled" />
 					<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
 						<label value="Scrape interval" />
@@ -138,13 +138,13 @@
 					<item type="lineedit" property="AnnounceIP" default="">
 						<label lang="en" value="Announce IP:" />
 					</item>
-					<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
+					<item type="checkbox" property="AllowMultipleConnectionsPerIP" default="false">
 						<label lang="en" value="Allow multiple connections per IP" />
 					</item>
 					<item type="checkbox" property="DontCountSlowTorrents" default="true">
 						<label lang="en" value="Don't count slow torrents" />
 					</item>
-					<item type="checkbox" property="SendRedundantHave" state="off">
+					<item type="checkbox" property="SendRedundantHave" default="false">
 						<label lang="en" value="Send redundant have messages" />
 					</item>
 					<item type="checkbox" property="AutoUploadSlots" default="true">
@@ -333,10 +333,10 @@
 		<tab>
 			<label lang="en" value="Advanced" />
 			<scrollarea horizontalScroll="off">
-				<item type="checkbox" property="AccurateFileProgress" state="off">
+				<item type="checkbox" property="AccurateFileProgress" default="false">
 					<label lang="en" value="Accurate but slow file progress calculation" />
 				</item>
-				<item type="checkbox" property="UseReadCache" state="on">
+				<item type="checkbox" property="UseReadCache" default="true">
 					<label lang="en" value="Use read cache" />
 				</item>
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true">

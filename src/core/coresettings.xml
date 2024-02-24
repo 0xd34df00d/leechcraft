@@ -119,7 +119,7 @@
 				<label value="Set startup password" />
 			</item>
 		</groupbox>
-		<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">
+		<item type="groupbox" property="ShowPluginMenuInTabs" default="true" checkable="true">
 			<label lang="en" value="Show plugin-dependent actions in tab bar context menu" />
 			<item type="checkbox" property="ShowPluginMenuInTabsAsSubmenu" default="off">
 				<label lang="en" value="Show as a submenu" />
