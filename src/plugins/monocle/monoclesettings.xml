@@ -43,12 +43,19 @@
 				<item type="color" property="ColorLink" default="#83a598" label="Link color:"/>
 			</item>
 		</tab>
-		<tab label="Indents">
+		<tab label="Margins and indents">
 			<groupbox label="Page">
 				<item type="spinbox" property="PageMarginL" def="60" min="0" max="200" suf=" px" label="Left margin:" />
 				<item type="spinbox" property="PageMarginT" def="80" min="0" max="200" suf=" px" label="Top margin:" />
 				<item type="spinbox" property="PageMarginR" def="60" min="0" max="200" suf=" px" label="Right margin:" />
 				<item type="spinbox" property="PageMarginB" def="80" min="0" max="200" suf=" px" label="Bottom margin:" />
+			</groupbox>
+			<groupbox label="Paragraph">
+				<item type="spinbox" property="ParaMarginL" def="-1" min="-1" max="200" suf=" px" special="default" label="Left margin:" />
+				<item type="spinbox" property="ParaMarginT" def="-1" min="-1" max="200" suf=" px" special="default" label="Top margin:" />
+				<item type="spinbox" property="ParaMarginR" def="-1" min="-1" max="200" suf=" px" special="default" label="Right margin:" />
+				<item type="spinbox" property="ParaMarginB" def="-1" min="-1" max="200" suf=" px" special="default" label="Bottom margin:" />
+				<item type="spinbox" property="ParaIndent" def="20" min="-1" max="200" suf=" px" special="default" label="First line indent:" />
 			</groupbox>
 		</tab>
 	</page>

@@ -12,6 +12,7 @@
 #include <QColor>
 #include <QTextCharFormat>
 #include "monocleutilconfig.h"
+#include "types.h"
 
 class QTextDocument;
 class QTextFrameFormat;
@@ -47,6 +48,8 @@ namespace LC::Monocle
 	{
 		TextDocumentPalette Palette_;
 
+		BlockFormat FormatP_ { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
+
 		Util::BaseSettingsManager *XSM_ = nullptr;
 	public:
 		static TextDocumentFormatConfig& Instance ();
@@ -62,6 +65,7 @@ namespace LC::Monocle
 		void SetXSM (Util::BaseSettingsManager&);
 	private:
 		void UpdatePalette ();
+		void UpdateParaBlockFormat ();
 
 		BlockFormat GetDefaultTagBlockFormat (QStringView tagName) const;
 		CharFormat GetDefaultTagCharFormat (QStringView tagName) const;

@@ -38,16 +38,31 @@ namespace LC::Monocle
 		doc.setDefaultFont (XSM_->property ("DefaultFont").value<QFont> ());
 	}
 
+	namespace
+	{
+		template<Util::CtString Prefix>
+		QMargins GetMargins (Util::BaseSettingsManager& xsm)
+		{
+			constexpr auto side = [] (char side) consteval { return Prefix + side + '\0'; };
+			const auto margin = [&xsm] (auto side) { return xsm.property (side.Data ()).toInt (); };
+			return
+			{
+				margin (side ('L')),
+				margin (side ('T')),
+				margin (side ('R')),
+				margin (side ('B')),
+			};
+		}
+	}
+
 	QTextFrameFormat TextDocumentFormatConfig::GetBodyFrameFormat () const
 	{
-		constexpr auto side = [] (char side) consteval { return "PageMargin"_ct + side; };
-
-		const auto margin = [this] (auto side) { return XSM_->property (side.Data ()).toInt (); };
+		const auto& margins = GetMargins<"PageMargin"_ct> (*XSM_);
 		QTextFrameFormat fmt;
-		fmt.setLeftMargin (margin (side ('L')));
-		fmt.setRightMargin (margin (side ('R')));
-		fmt.setTopMargin (margin (side ('T')));
-		fmt.setBottomMargin (margin (side ('B')));
+		fmt.setLeftMargin (margins.left ());
+		fmt.setRightMargin (margins.right ());
+		fmt.setTopMargin (margins.top ());
+		fmt.setBottomMargin (margins.bottom ());
 		fmt.setWidth (XSM_->property ("PageWidth").toInt ());
 		return fmt;
 	}
@@ -58,6 +73,8 @@ namespace LC::Monocle
 
 		xsm.RegisterObject ({ "CustomColors", "ColorBackground", "ColorForeground", "ColorLink" },
 				this, [this] { UpdatePalette (); });
+		xsm.RegisterObject ({ "ParaMarginL", "ParaMarginR", "ParaMarginT", "ParaMarginB", "ParaIndent" },
+				this, [this] { UpdateParaBlockFormat (); });
 	}
 
 	void TextDocumentFormatConfig::UpdatePalette ()
@@ -81,6 +98,23 @@ namespace LC::Monocle
 				.Link_ = palette.color (QPalette::Link),
 			};
 		}
+	}
+
+	void TextDocumentFormatConfig::UpdateParaBlockFormat ()
+	{
+		const auto setNonDefault = [] (auto& optional, auto value)
+		{
+			if (value >= 0)
+				optional = value;
+		};
+
+		const auto& margins = GetMargins<"ParaMargin"_ct> (*XSM_);
+		setNonDefault (FormatP_.MarginLeft_, margins.left ());
+		setNonDefault (FormatP_.MarginRight_, margins.right ());
+		setNonDefault (FormatP_.MarginTop_, margins.top ());
+		setNonDefault (FormatP_.MarginBottom_, margins.bottom ());
+
+		setNonDefault (FormatP_.Indent_, XSM_->property ("ParaIndent").toInt ());
 	}
 
 	namespace
@@ -156,7 +190,7 @@ namespace LC::Monocle
 	BlockFormat TextDocumentFormatConfig::GetDefaultTagBlockFormat (QStringView tagName) const
 	{
 		if (tagName == u"p"_qsv)
-			return { .Align_ = Qt::AlignJustify, .Indent_ = 15 };
+			return FormatP_;
 
 		if (const auto& heading = GetHeadingLevel (tagName))
 		{
