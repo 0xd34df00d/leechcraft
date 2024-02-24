@@ -17,4 +17,6 @@ namespace LC::Monocle::Boop
 	QString InternalizeLinkTarget (QString anchor);
 
 	void FixDocumentLinks (const QDomElement& root, const QString& subpath);
+
+	void EnrichLinkTitles (const QDomElement& root);
 }

@@ -33,4 +33,6 @@ namespace LC::Monocle::Boop
 	QDomDocument GetXml (const QString& epubFile, const QString& filename);
 	QDomElement GetElem (const QDomElement& parent, const QString& tag);
 	QString GetAttr (const QDomElement& elem, const QString& name);
+
+	QHash<QString, QDomElement> BuildId2ElementMap (const QDomElement& root);
 }

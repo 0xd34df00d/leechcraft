@@ -9,6 +9,8 @@
 #include "util.h"
 #include <QDomDocument>
 #include <quazip/quazipfile.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/domchildrenrange.h>
 
 namespace LC::Monocle::Boop
 {
@@ -52,5 +54,25 @@ namespace LC::Monocle::Boop
 		if (attrValue.isEmpty ())
 			throw InvalidEpub { name + " is empty" };
 		return attrValue;
+	}
+
+	namespace
+	{
+		void BuildId2ElementMap (const QDomElement& elem, QHash<QString, QDomElement>& result)
+		{
+			if (const auto& id = elem.attribute ("id"_qs); !id.isEmpty ())
+				result [id] = elem;
+
+			for (const auto& child : Util::DomChildren (elem, {}))
+				BuildId2ElementMap (child, result);
+		}
+	}
+
+	QHash<QString, QDomElement> BuildId2ElementMap (const QDomElement& root)
+	{
+		QHash<QString, QDomElement> result;
+		// TODO C++23 deducing this
+		BuildId2ElementMap (root, result);
+		return result;
 	}
 }

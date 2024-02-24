@@ -8,9 +8,12 @@
 
 #include "internallinks.h"
 #include <QDomElement>
+#include <QHash>
 #include <QUrl>
+#include <QtDebug>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/qtutil.h>
+#include "util.h"
 
 namespace LC::Monocle::Boop
 {
@@ -105,5 +108,22 @@ namespace LC::Monocle::Boop
 		FixupHrefTargets (root, chapterBaseUrl);
 
 		FixupIdAnchors (root, NormalizeForId (subpath));
+	}
+
+	void EnrichLinkTitles (const QDomElement& root)
+	{
+		const auto& id2elem = BuildId2ElementMap (root);
+		for (auto link : Util::DomDescendants (root, "a"_qs))
+		{
+			const auto& linkTarget = QUrl::fromEncoded (link.attribute ("href"_qs).toUtf8 ());
+			if (!linkTarget.isRelative ())
+				continue;
+
+			const auto& targetElem = id2elem [linkTarget.fragment ()];
+			if (!targetElem.isNull ())
+				link.setAttribute ("title"_qs, targetElem.text ());
+			else
+				qWarning () << "unknown target" << linkTarget;
+		}
 	}
 }

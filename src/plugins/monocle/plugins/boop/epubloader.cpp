@@ -150,21 +150,23 @@ namespace LC::Monocle::Boop
 
 		LazyImages_t LoadImages (const QString& epubFile, const Manifest& manifest)
 		{
-			Util::Timer timer;
 			QVector<PathItem> imageItems;
 			imageItems.reserve (manifest.Id2Item_.size ());
 			std::copy_if (manifest.Id2Item_.begin (), manifest.Id2Item_.end (), std::back_inserter (imageItems),
 					[] (const PathItem& item) { return item.Mime_.startsWith ("image/"_ql); });
 
 			using MaybeImagesList_t = QVector<std::optional<std::pair<QString, LazyImage>>>;
-			const auto& images = QtConcurrent::blockingMapped<MaybeImagesList_t> (imageItems,
+			auto images = QtConcurrent::blockingMapped<MaybeImagesList_t> (manifest.Id2Item_,
 					std::function
 					{
 						[&] (const PathItem& item) -> std::optional<std::pair<QString, LazyImage>>
 						{
 							QuaZipFile file { epubFile, item.Path_, QuaZip::csInsensitive };
 							if (!file.open (QIODevice::ReadOnly))
-								throw InvalidEpub { "unable to open " + item.Path_ + ": " + file.errorString () };
+							{
+								qWarning () << "unable to open" << item.Path_ << file.errorString ();
+								return {};
+							}
 
 							const auto& nativeSize = QImageReader { &file }.size ();
 							if (nativeSize.isNull ())
@@ -193,7 +195,6 @@ namespace LC::Monocle::Boop
 							};
 						}
 					});
-			timer.Stamp ("parsing images");
 
 			LazyImages_t result;
 			result.reserve (images.size ());
@@ -211,9 +212,16 @@ namespace LC::Monocle::Boop
 			const auto& manifest = ParseManifest (epubFile);
 			const auto& toc = LoadTocMap (epubFile, manifest);
 			auto [body, stylesheets] = LoadSpine (epubFile, manifest);
+
+			Util::Timer timer;
 			MarkTocTargets (body, toc);
+			timer.Stamp ("marking toc targets");
+
+			EnrichLinkTitles (body);
+			timer.Stamp ("enriching link titles");
 
 			const auto& images = LoadImages (epubFile, manifest);
+			timer.Stamp ("preloading images");
 
 			const auto& doc = std::make_shared<Document> (QUrl::fromLocalFile (epubFile), pluginObj);
 			doc->SetDocument ({

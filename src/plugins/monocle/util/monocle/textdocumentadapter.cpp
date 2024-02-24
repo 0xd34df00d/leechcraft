@@ -200,8 +200,7 @@ namespace LC::Monocle
 			doc.addResource (QTextDocument::ImageResource, { upscaledId }, image.Load_ (pageSize));
 		}
 
-		QHash<int, QList<ILink_ptr>> CreateLinks (const QTextDocument& textDoc,
-				const QVector<InternalLink>& intLinks)
+		QHash<int, QList<ILink_ptr>> CreateLinks (const QTextDocument& textDoc, const QVector<InternalLink>& intLinks)
 		{
 			QHash<int, QList<ILink_ptr>> result;
 			for (const auto& intLink : intLinks)
