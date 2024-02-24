@@ -75,11 +75,13 @@ namespace Monocle
 		case Qt::Key_Enter:
 			deleteLater ();
 			return;
+		case Qt::Key_K:
 		case Qt::Key_Backspace:
 		case Qt::Key_PageUp:
 		case Qt::Key_Left:
 			NavigateTo (CurrentPage_ - 1);
 			break;
+		case Qt::Key_J:
 		case Qt::Key_Space:
 		case Qt::Key_PageDown:
 		case Qt::Key_Right:
