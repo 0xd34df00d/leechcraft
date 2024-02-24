@@ -214,10 +214,12 @@ namespace LC::Monocle::Boop
 			auto [body, stylesheets] = LoadSpine (epubFile, manifest);
 
 			Util::Timer timer;
-			MarkTocTargets (body, toc);
+			const auto& id2elem = BuildId2ElementMap (body);
+			timer.Stamp ("precomputing the id mapping");
+			MarkTocTargets (toc, id2elem);
 			timer.Stamp ("marking toc targets");
 
-			EnrichLinkTitles (body);
+			EnrichLinkTitles (body, id2elem);
 			timer.Stamp ("enriching link titles");
 
 			const auto& images = LoadImages (epubFile, manifest);

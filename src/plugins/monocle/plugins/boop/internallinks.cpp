@@ -13,7 +13,6 @@
 #include <QtDebug>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/qtutil.h>
-#include "util.h"
 
 namespace LC::Monocle::Boop
 {
@@ -110,9 +109,8 @@ namespace LC::Monocle::Boop
 		FixupIdAnchors (root, NormalizeForId (subpath));
 	}
 
-	void EnrichLinkTitles (const QDomElement& root)
+	void EnrichLinkTitles (const QDomElement& root, const QHash<QString, QDomElement>& id2elem)
 	{
-		const auto& id2elem = BuildId2ElementMap (root);
 		for (auto link : Util::DomDescendants (root, "a"_qs))
 		{
 			const auto& linkTarget = QUrl::fromEncoded (link.attribute ("href"_qs).toUtf8 ());

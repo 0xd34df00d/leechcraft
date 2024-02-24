@@ -18,5 +18,5 @@ namespace LC::Monocle::Boop
 
 	void FixDocumentLinks (const QDomElement& root, const QString& subpath);
 
-	void EnrichLinkTitles (const QDomElement& root);
+	void EnrichLinkTitles (const QDomElement& root, const QHash<QString, QDomElement>&);
 }

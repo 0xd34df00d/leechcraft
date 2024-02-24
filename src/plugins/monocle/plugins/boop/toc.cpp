@@ -64,36 +64,18 @@ namespace LC::Monocle::Boop
 		return {};
 	}
 
-	namespace
+	void MarkTocTargets (const TOCEntryID& level, const QHash<QString, QDomElement>& id2elem)
 	{
-		QSet<QString> GetEntriesIds (const TOCEntryID& root)
+		if (!level.Navigation_.isEmpty ())
 		{
-			QSet<QString> result;
-
-			auto entries = root.ChildLevel_;
-			while (!entries.isEmpty ())
-			{
-				const auto& entry = entries.takeLast ();
-				result << entry.Navigation_;
-				entries += entry.ChildLevel_;
-			}
-
-			return result;
+			auto elem = id2elem [level.Navigation_];
+			if (elem.isNull ())
+				qWarning () << "unknown TOC target" << level.Navigation_;
+			else
+				elem.setAttribute (TocSectionIdAttr, QString::fromUtf8 (level.Navigation_));
 		}
 
-		void MarkTocTargets (QDomElement elem, const QSet<QString>& ids)
-		{
-			const auto& id = elem.attribute ("id"_qs);
-			if (!id.isEmpty () && ids.contains (id))
-				elem.setAttribute (TocSectionIdAttr, id);
-
-			for (const auto& child : Util::DomChildren (elem, {}))
-				MarkTocTargets (child, ids);
-		}
-	}
-
-	void MarkTocTargets (const QDomElement& elem, const TOCEntryID& toc)
-	{
-		MarkTocTargets (elem, GetEntriesIds (toc));
+		for (const auto& item : level.ChildLevel_)
+			MarkTocTargets (item, id2elem);
 	}
 }

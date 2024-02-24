@@ -18,5 +18,5 @@ namespace LC::Monocle::Boop
 
 	TOCEntryID LoadTocMap (const QString& epubFile, const Manifest& manifest);
 
-	void MarkTocTargets (const QDomElement& elem, const TOCEntryID&);
+	void MarkTocTargets (const TOCEntryID&, const QHash<QString, QDomElement>&);
 }
