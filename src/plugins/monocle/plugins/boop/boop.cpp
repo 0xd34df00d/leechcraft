@@ -38,7 +38,7 @@ namespace LC::Monocle::Boop
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("EPub backend for Monocle.");
+		return tr ("ePub backend for Monocle.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -73,7 +73,7 @@ namespace LC::Monocle::Boop
 		return
 		{
 			{
-				tr ("EPub files"),
+				tr ("ePub files"),
 				{ "epub" }
 			}
 		};
