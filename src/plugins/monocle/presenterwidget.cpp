@@ -13,22 +13,19 @@
 #include <QTimer>
 #include <util/threads/futures.h>
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	PresenterWidget::PresenterWidget (IDocument_ptr doc)
-	: QWidget (0, Qt::Window | Qt::WindowStaysOnTopHint)
-	, PixmapLabel_ (new QLabel)
-	, Doc_ (doc)
-	, CurrentPage_ (0)
+	: QWidget { nullptr, Qt::Window | Qt::WindowStaysOnTopHint }
+	, PixmapLabel_ { *new QLabel }
+	, Doc_ { std::move (doc) }
 	{
 		setStyleSheet ("background-color: black;");
 
-		auto lay = new QHBoxLayout ();
+		auto lay = new QHBoxLayout;
 		lay->setSpacing (0);
 		lay->setContentsMargins (0, 0, 0, 0);
-		lay->addWidget (PixmapLabel_, 0, Qt::AlignVCenter | Qt::AlignHCenter);
+		lay->addWidget (&PixmapLabel_, 0, Qt::AlignVCenter | Qt::AlignHCenter);
 		setLayout (lay);
 
 		showFullScreen ();
@@ -56,8 +53,8 @@ namespace Monocle
 		Util::Sequence (this, Doc_->RenderPage (page, scale, scale)) >>
 				[&] (const QImage& img)
 				{
-					PixmapLabel_->setFixedSize (img.size ());
-					PixmapLabel_->setPixmap (QPixmap::fromImage (img));
+					PixmapLabel_.setFixedSize (img.size ());
+					PixmapLabel_.setPixmap (QPixmap::fromImage (img));
 				};
 	}
 
@@ -102,5 +99,4 @@ namespace Monocle
 	{
 		NavigateTo (CurrentPage_);
 	}
-}
 }

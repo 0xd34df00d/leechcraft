@@ -13,26 +13,23 @@
 
 class QLabel;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class PresenterWidget : public QWidget
 	{
 		Q_OBJECT
 
-		QLabel *PixmapLabel_;
+		QLabel& PixmapLabel_;
 		IDocument_ptr Doc_;
-		int CurrentPage_;
+		int CurrentPage_ = 0;
 	public:
-		PresenterWidget (IDocument_ptr);
+		explicit PresenterWidget (IDocument_ptr);
 
 		void NavigateTo (int);
 	protected:
-		void closeEvent (QCloseEvent*);
-		void keyPressEvent (QKeyEvent*);
+		void closeEvent (QCloseEvent*) override;
+		void keyPressEvent (QKeyEvent*) override;
 	private slots:
 		void delayedShowInit ();
 	};
-}
 }
