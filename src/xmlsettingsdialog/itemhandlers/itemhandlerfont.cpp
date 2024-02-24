@@ -17,12 +17,11 @@ namespace LC
 {
 	namespace
 	{
-		QVariant GetDefaultFont (const QDomElement& elem)
+		QVariant GetDefaultFont (const QString& defStr)
 		{
-			if (!elem.hasAttribute ("default"_qs))
+			if (defStr.isEmpty ())
 				return QGuiApplication::font ();
 
-			const auto& defStr = elem.attribute ("default"_qs);
 			if (QFont font;
 				font.fromString (defStr))
 				return font;
@@ -40,7 +39,7 @@ namespace LC
 			.Widget_ = picker,
 			.Label_ = ctx.Label_,
 
-			.DefaultValue_ = GetDefaultFont (ctx.Elem_),
+			.DefaultValue_ = GetDefaultFont (ctx.Default_),
 
 			.Getter_ = [picker] { return picker->GetCurrentFont (); },
 			.Setter_ = [picker] (const QVariant& value) { picker->SetCurrentFont (value.value<QFont> ()); },

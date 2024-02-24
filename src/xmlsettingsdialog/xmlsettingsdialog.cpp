@@ -357,15 +357,14 @@ namespace LC::Util
 
 		if (type.isEmpty ())
 		{
-			qWarning () << "invalid type for prop"
-					<< property;
+			qWarning () << "invalid type for prop" << property;
 			return;
 		}
 
 		const auto& defaultValue = HandlersManager_->Handle (item, baseLayout);
 		if (!defaultValue)
 		{
-			qWarning () << Q_FUNC_INFO << "unhandled type" << type;
+			qWarning () << "unhandled type" << type;
 			return;
 		}
 
@@ -463,10 +462,7 @@ namespace LC::Util
 		auto child = findChild<QWidget*> (name);
 		if (!child)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< Basename_
-					<< "cannot find child"
-					<< name;
+			qWarning () << Basename_ << "cannot find child" << name;
 			return;
 		}
 

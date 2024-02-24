@@ -32,7 +32,7 @@ namespace LC
 			.Widget_ = edit,
 			.LabelPosition_ = labelPos,
 
-			.DefaultValue_ = GetDefaultStringValue (item, ctx.XSD_.GetTrContext ()),
+			.DefaultValue_ = GetDefaultStringValue (ctx.Default_, ctx.XSD_.GetTrContext ()),
 			.Getter_ = [edit] { return edit->toPlainText ().split ('\n', Qt::SkipEmptyParts); },
 			.Setter_ = [edit] (const QVariant& value) { edit->setPlainText (value.toStringList ().join ('\n')); },
 		};

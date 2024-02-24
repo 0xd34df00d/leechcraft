@@ -9,11 +9,11 @@
 #pragma once
 
 class QByteArray;
-class QDomElement;
+class QString;
 class QVariant;
 
 namespace LC
 {
-	QVariant GetDefaultBooleanValue (const QDomElement&);
-	QVariant GetDefaultStringValue (const QDomElement&, const QByteArray& trCtx);
+	QVariant GetDefaultBooleanValue (const QString&);
+	QVariant GetDefaultStringValue (const QString&, const QByteArray& trCtx);
 }

@@ -14,30 +14,13 @@
 
 namespace LC
 {
-	QVariant GetDefaultBooleanValue (const QDomElement& item)
+	QVariant GetDefaultBooleanValue (const QString& def)
 	{
-		if (item.hasAttribute ("default"_qs))
-		{
-			const auto& attrVal = item.attribute ("default"_qs);
-			return attrVal == "on"_ql || attrVal == "true"_ql;
-		}
-		if (item.hasAttribute ("state"_qs))
-			return item.attribute ("state"_qs) == "on"_ql;
-
-		return {};
+		return def == "on"_ql || def == "true"_ql;
 	}
 
-	QVariant GetDefaultStringValue (const QDomElement& item, const QByteArray& trCtx)
+	QVariant GetDefaultStringValue (const QString& def, const QByteArray& trCtx)
 	{
-		const auto& defChild = item.firstChildElement ("default"_qs);
-		if (!defChild.isNull ())
-			return QCoreApplication::translate (trCtx.constData (),
-					defChild.text ().toUtf8 ().constData ());
-
-		auto def = item.attribute ("default"_qs);
-		if (item.attribute ("translatable"_qs) == "true"_ql)
-			def = QCoreApplication::translate (trCtx.constData (),
-					def.toUtf8 ().constData ());
-		return def;
+		return QCoreApplication::translate (trCtx.constData (), def.toUtf8 ().constData ());
 	}
 }

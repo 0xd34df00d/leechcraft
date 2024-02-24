@@ -99,6 +99,18 @@ namespace LC
 				searchTerms << label;
 			repr.Widget_->setProperty ("SearchTerms", searchTerms);
 		}
+
+		QString GetDefault (const QDomElement& element)
+		{
+			if (element.hasAttribute ("def"_qs))
+				return element.attribute ("def"_qs);
+			if (element.hasAttribute ("default"_qs))
+				return element.attribute ("default"_qs);
+			if (const auto& defChild = element.firstChildElement ("default"_qs); !defChild.isNull ())
+				return defChild.text ();
+
+			return {};
+		}
 	}
 
 	std::optional<QVariant> ItemHandlerFactory::Handle (const QDomElement& element, QFormLayout& baseLayout)
@@ -119,6 +131,7 @@ namespace LC
 				.Label_ = label,
 				.XSD_ = XSD_,
 				.Prop_ = prop,
+				.Default_ = GetDefault (element),
 				.MarkChanged_ = [this, prop] { MarkChanged (prop); },
 			});
 

@@ -31,7 +31,7 @@ namespace LC
 		return
 		{
 			.Widget_ = edit,
-			.DefaultValue_ = GetDefaultStringValue (ctx.Elem_, ctx.XSD_.GetTrContext ()),
+			.DefaultValue_ = GetDefaultStringValue (ctx.Default_, ctx.XSD_.GetTrContext ()),
 			.Getter_ = [edit] { return edit->text (); },
 			.Setter_ = [edit] (const QVariant& value) { edit->setText (value.toString ()); },
 		};

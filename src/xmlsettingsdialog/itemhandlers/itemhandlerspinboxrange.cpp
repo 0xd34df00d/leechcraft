@@ -15,9 +15,9 @@ namespace LC
 {
 	namespace
 	{
-		QVariant GetDefaultRange (const QDomElement& item)
+		QVariant GetDefaultRange (const QString& def)
 		{
-			const auto& parts = item.attribute ("default"_qs).splitRef (':');
+			const auto& parts = def.splitRef (':');
 			if (parts.size () != 2)
 			{
 				qWarning () << "spinboxrange parse error, wrong default value";
@@ -39,7 +39,7 @@ namespace LC
 		return
 		{
 			.Widget_ = range,
-			.DefaultValue_ = GetDefaultRange (item),
+			.DefaultValue_ = GetDefaultRange (ctx.Default_),
 			.Getter_ = [range] { return range->GetRange (); },
 			.Setter_ = [range] (const QVariant& value) { range->SetRange (value); },
 		};

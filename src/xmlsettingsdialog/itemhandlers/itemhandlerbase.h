@@ -52,7 +52,10 @@ namespace LC
 		QDomElement Elem_;
 		QString Label_;
 		Util::XmlSettingsDialog& XSD_;
+
 		QString Prop_;
+		QString Default_;
+
 		std::function<void ()> MarkChanged_;
 	};
 

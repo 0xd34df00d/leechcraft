@@ -31,7 +31,7 @@ namespace LC
 			.Widget_ = box,
 			.LabelPosition_ = LabelPosition::None,
 
-			.DefaultValue_ = GetDefaultBooleanValue (ctx.Elem_),
+			.DefaultValue_ = GetDefaultBooleanValue (ctx.Default_),
 			.Getter_ = [box] { return box->isChecked (); },
 			.Setter_ = [box] (const QVariant& value) { box->setChecked (value.toBool ()); },
 		};

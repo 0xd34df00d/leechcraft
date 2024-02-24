@@ -33,11 +33,12 @@ namespace LC
 			return FilePicker::Type::ExistingDirectory;
 		}
 
-		QString GetDefaultPath (const QDomElement& item)
+		QString GetDefaultPath (const QDomElement& item, QString def)
 		{
 			if (item.attribute ("defaultHomePath"_qs) == "true"_ql)
 				return QDir::homePath ();
-			if (!item.hasAttribute ("default"_qs))
+
+			if (def.isEmpty ())
 				return {};
 
 			static const QVector<QPair<QString, QString>> str2loc
@@ -50,15 +51,14 @@ namespace LC
 				{ "CACHEDIR", Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath () }
 			};
 
-			auto text = item.attribute ("default"_qs);
 			for (const auto& [pattern, path] : str2loc)
-				if (text.startsWith ("{" + pattern + "}"))
+				if (def.startsWith ("{" + pattern + "}"))
 				{
-					text.replace (0, pattern.length () + 2, path);
+					def.replace (0, pattern.length () + 2, path);
 					break;
 				}
 
-			return text;
+			return def;
 		}
 	}
 
@@ -78,7 +78,7 @@ namespace LC
 		{
 			.Widget_ = picker,
 
-			.DefaultValue_ = GetDefaultPath (item),
+			.DefaultValue_ = GetDefaultPath (item, ctx.Default_),
 			.Getter_ = [picker] { return picker->GetText (); },
 			.Setter_ = [picker] (const QVariant& value) { picker->SetText (value.toString ()); },
 		};

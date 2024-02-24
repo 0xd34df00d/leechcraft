@@ -21,7 +21,7 @@ namespace LC
 		{
 			.Widget_ = picker,
 
-			.DefaultValue_ = QColor { ctx.Elem_.attribute ("default"_qs) },
+			.DefaultValue_ = QColor { ctx.Default_ },
 			.Getter_ = [picker] { return picker->GetCurrentColor (); },
 			.Setter_ = [picker] (const QVariant& val) { picker->SetCurrentColor (val.value<QColor> ()); },
 		};

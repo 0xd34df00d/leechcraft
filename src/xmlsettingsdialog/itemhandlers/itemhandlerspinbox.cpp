@@ -54,7 +54,7 @@ namespace LC
 			{
 				.Widget_ = box,
 
-				.DefaultValue_ = cvt (item.attribute ("default"_qs)),
+				.DefaultValue_ = cvt (ctx.Default_),
 				.Getter_ = [box] { return box->value (); },
 				.Setter_ = [box] (const QVariant& value) { box->setValue (value.value<ValueType> ()); },
 			};
