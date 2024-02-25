@@ -113,7 +113,11 @@ namespace LC::Monocle::Boop
 	{
 		for (auto link : Util::DomDescendants (root, "a"_qs))
 		{
-			const auto& linkTarget = QUrl::fromEncoded (link.attribute ("href"_qs).toUtf8 ());
+			const auto& linkTargetStr = link.attribute ("href"_qs).toUtf8 ();
+			if (linkTargetStr.isEmpty ())
+				continue;
+
+			const auto& linkTarget = QUrl::fromEncoded (linkTargetStr);
 			if (!linkTarget.isRelative ())
 				continue;
 
