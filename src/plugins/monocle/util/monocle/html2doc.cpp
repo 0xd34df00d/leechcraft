@@ -158,9 +158,7 @@ namespace LC::Monocle
 				if (auto maybeCharFmt = GetCharFormat ())
 					charKeeper.Set (*std::move (maybeCharFmt));
 
-				StackKeeper cursorKeeper { Cursor_ };
-
-				HandleFormatContext (elem, cursorKeeper);
+				const auto formatGuard = HandleFormatContext (elem);
 
 				TocBuilder_.HandleElem (elem);
 				const auto linkGuard = LinksBuilder_.HandleElem (elem);
@@ -169,15 +167,17 @@ namespace LC::Monocle
 				HandleChildren (elem);
 			}
 
-			void HandleFormatContext (const QDomElement& elem, auto& cursorKeeper)
+			Util::DefaultScopeGuard HandleFormatContext (const QDomElement& elem)
 			{
 				if (IsHierBlockElem (elem.tagName ()))
-					CreateFrame (cursorKeeper);
+					return CreateFrame ();
 				if (IsNonHierBlockElem (elem.tagName ()))
-					CreateBlock ();
+					return CreateBlock ();
+
+				return {};
 			}
 
-			void CreateFrame (auto& cursorKeeper)
+			Util::DefaultScopeGuard CreateFrame ()
 			{
 				const auto curFrame = Cursor_.currentFrame ();
 				const auto [frameFmt, blockFmt] = GetFrameBlockFormat ();
@@ -190,10 +190,10 @@ namespace LC::Monocle
 				else
 					Cursor_.insertBlock (blockFmt, CharFormat_);
 
-				cursorKeeper.Save (curFrame->lastCursorPosition ());
+				return Util::MakeScopeGuard ([this, curFrame] { Cursor_ = curFrame->lastCursorPosition (); });
 			}
 
-			void CreateBlock ()
+			Util::DefaultScopeGuard CreateBlock ()
 			{
 				const auto& blockFmt = GetBlockFormat ();
 				if (!Cursor_.block ().text ().isEmpty ())
@@ -203,6 +203,8 @@ namespace LC::Monocle
 					Cursor_.setBlockFormat (blockFmt);
 					Cursor_.setBlockCharFormat (CharFormat_);
 				}
+
+				return {};
 			}
 
 			void HandleElem (const QDomElement& elem)
