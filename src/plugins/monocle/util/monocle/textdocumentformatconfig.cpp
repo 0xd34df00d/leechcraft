@@ -106,6 +106,8 @@ namespace LC::Monocle
 		{
 			if (value >= 0)
 				optional = value;
+			else
+				optional.reset ();
 		};
 
 		const auto& margins = GetMargins<"ParaMargin"_ct> (*XSM_);
