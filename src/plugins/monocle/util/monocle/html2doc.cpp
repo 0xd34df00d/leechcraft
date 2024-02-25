@@ -12,7 +12,6 @@
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextFrame>
-#include <QTextList>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "imghandler.h"
@@ -20,6 +19,7 @@
 #include "linksbuilder.h"
 #include "resourcedtextdocument.h"
 #include "stackkeeper.h"
+#include "tablehandler.h"
 #include "textdocumentformatconfig.h"
 #include "tocbuilder.h"
 
@@ -115,6 +115,8 @@ namespace LC::Monocle
 			ImgHandler ImgHandler_;
 
 			StylingContextKeeper StylingCtxKeeper_ { CharFormat_ };
+
+			std::list<TableHandler> TableHandlers_;
 		public:
 			explicit Converter (ResourcedTextDocument& doc,
 					const TOCEntryID& tocStructure,
@@ -160,6 +162,9 @@ namespace LC::Monocle
 
 				const auto formatGuard = HandleFormatContext (elem);
 
+				if (!TableHandlers_.empty ())
+					TableHandlers_.back ().HandleElem (elem);
+
 				TocBuilder_.HandleElem (elem);
 				const auto linkGuard = LinksBuilder_.HandleElem (elem);
 
@@ -169,12 +174,20 @@ namespace LC::Monocle
 
 			Util::DefaultScopeGuard HandleFormatContext (const QDomElement& elem)
 			{
+				if (elem.tagName () == "table"_ql)
+					return CreateTable (elem);
 				if (IsHierBlockElem (elem.tagName ()))
 					return CreateFrame ();
 				if (IsNonHierBlockElem (elem.tagName ()))
 					return CreateBlock ();
 
 				return {};
+			}
+
+			Util::DefaultScopeGuard CreateTable (const QDomElement& tableElem)
+			{
+				TableHandlers_.emplace_back (tableElem, Cursor_, GetFrameBlockFormat ().first);
+				return Util::MakeScopeGuard ([this] { TableHandlers_.pop_back (); });
 			}
 
 			Util::DefaultScopeGuard CreateFrame ()
