@@ -223,7 +223,16 @@ namespace LC::Monocle
 			void HandleElem (const QDomElement& elem)
 			{
 				if (elem.tagName () == "br"_ql)
-					Cursor_.insertText (QString { '\n' });
+				{
+					auto curFmt = Cursor_.blockFormat ();
+
+					QTextBlockFormat noBottomMargin;
+					noBottomMargin.setBottomMargin (0);
+					Cursor_.mergeBlockFormat (noBottomMargin);
+
+					curFmt.setTopMargin (0);
+					Cursor_.insertBlock (curFmt, CharFormat_);
+				}
 
 				if (elem.tagName () == "img"_ql)
 					ImgHandler_.HandleImg (elem, StylingCtxKeeper_.GetContext ());
