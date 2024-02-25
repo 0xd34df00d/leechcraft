@@ -159,32 +159,7 @@ namespace LC::Monocle
 
 				StackKeeper cursorKeeper { Cursor_ };
 
-				if (IsHierBlockElem (elem.tagName ()))
-				{
-					const auto curFrame = Cursor_.currentFrame ();
-					const auto [frameFmt, blockFmt] = GetFrameBlockFormat ();
-					if (frameFmt != Cursor_.currentFrame ()->frameFormat ())
-					{
-						Cursor_.insertFrame (frameFmt);
-						Cursor_.setBlockFormat (blockFmt);
-						Cursor_.setBlockCharFormat (CharFormat_);
-					}
-					else
-						Cursor_.insertBlock (blockFmt, CharFormat_);
-
-					cursorKeeper.Save (curFrame->lastCursorPosition ());
-				}
-				else if (IsNonHierBlockElem (elem.tagName ()))
-				{
-					const auto& blockFmt = GetBlockFormat ();
-					if (!Cursor_.block ().text ().isEmpty ())
-						Cursor_.insertBlock (blockFmt, CharFormat_);
-					else
-					{
-						Cursor_.setBlockFormat (blockFmt);
-						Cursor_.setBlockCharFormat (CharFormat_);
-					}
-				}
+				HandleFormatContext (elem, cursorKeeper);
 
 				TocBuilder_.HandleElem (elem);
 				const auto linkGuard = LinksBuilder_.HandleElem (elem);
@@ -193,11 +168,40 @@ namespace LC::Monocle
 				HandleChildren (elem);
 			}
 
-			void AppendText (const QDomText& textNode)
+			void HandleFormatContext (const QDomElement& elem, auto& cursorKeeper)
 			{
-				auto text = textNode.data ();
-				if (!text.isEmpty ())
-					Cursor_.insertText (NormalizeSpaces (std::move (text)), CharFormat_);
+				if (IsHierBlockElem (elem.tagName ()))
+					CreateFrame (cursorKeeper);
+				if (IsNonHierBlockElem (elem.tagName ()))
+					CreateBlock ();
+			}
+
+			void CreateFrame (auto& cursorKeeper)
+			{
+				const auto curFrame = Cursor_.currentFrame ();
+				const auto [frameFmt, blockFmt] = GetFrameBlockFormat ();
+				if (frameFmt != curFrame->frameFormat ())
+				{
+					Cursor_.insertFrame (frameFmt);
+					Cursor_.setBlockFormat (blockFmt);
+					Cursor_.setBlockCharFormat (CharFormat_);
+				}
+				else
+					Cursor_.insertBlock (blockFmt, CharFormat_);
+
+				cursorKeeper.Save (curFrame->lastCursorPosition ());
+			}
+
+			void CreateBlock ()
+			{
+				const auto& blockFmt = GetBlockFormat ();
+				if (!Cursor_.block ().text ().isEmpty ())
+					Cursor_.insertBlock (blockFmt, CharFormat_);
+				else
+				{
+					Cursor_.setBlockFormat (blockFmt);
+					Cursor_.setBlockCharFormat (CharFormat_);
+				}
 			}
 
 			void HandleElem (const QDomElement& elem)
@@ -221,7 +225,8 @@ namespace LC::Monocle
 						AppendElem (child.toElement ());
 						break;
 					case QDomNode::TextNode:
-						AppendText (child.toText ());
+						if (auto text = child.toText ().data (); !text.isEmpty ())
+							Cursor_.insertText (NormalizeSpaces (std::move (text)), CharFormat_);
 						break;
 					case QDomNode::AttributeNode:
 						break;
