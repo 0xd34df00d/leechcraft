@@ -48,7 +48,7 @@ namespace LC::Monocle::Boop::MicroCSS
 				if (!ok)
 					return {};
 
-				auto font = ctx.Cursor_.charFormat ().font ();
+				auto font = ctx.CharFormat_.font ();
 				if (font.pointSize () > 0)
 					return font.pointSize () * val;
 				if (font.pixelSize () > 0)

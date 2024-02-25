@@ -12,6 +12,7 @@
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextFrame>
+#include <QTextList>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "imghandler.h"
@@ -59,7 +60,7 @@ namespace LC::Monocle
 
 		class StylingContextKeeper
 		{
-			const QTextCursor& Cursor_;
+			const QTextCharFormat& CharFormat_;
 
 			QString Tag_;
 			QString Classes_;
@@ -67,8 +68,8 @@ namespace LC::Monocle
 			StylingContextElement CurrElem_;
 			QVector<StylingContextElement> Parents_;
 		public:
-			StylingContextKeeper (const QTextCursor& cursor)
-			: Cursor_ { cursor }
+			StylingContextKeeper (const QTextCharFormat& cfmt)
+			: CharFormat_ { cfmt }
 			{
 			}
 
@@ -93,7 +94,7 @@ namespace LC::Monocle
 
 			StylingContext GetContext () const
 			{
-				return { CurrElem_, Parents_, Cursor_ };
+				return { CurrElem_, Parents_, CharFormat_ };
 			}
 		};
 
@@ -113,7 +114,7 @@ namespace LC::Monocle
 			LinksBuilder LinksBuilder_;
 			ImgHandler ImgHandler_;
 
-			StylingContextKeeper StylingCtxKeeper_ { Cursor_ };
+			StylingContextKeeper StylingCtxKeeper_ { CharFormat_ };
 		public:
 			explicit Converter (ResourcedTextDocument& doc,
 					const TOCEntryID& tocStructure,
