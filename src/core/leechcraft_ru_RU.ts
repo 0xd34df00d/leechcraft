@@ -174,69 +174,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft</name>
-    <message>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation>Параметры</translation>
-    </message>
-    <message>
-        <source>Add task</source>
-        <translation>Добавить задачу</translation>
-    </message>
-    <message>
-        <source>Quit</source>
-        <translation>Выход</translation>
-    </message>
-    <message>
-        <source>Fullscreen mode</source>
-        <translation>Полноэкранный режим</translation>
-    </message>
-    <message>
-        <source>New tab</source>
-        <translation>Новая вкладка</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
-    </message>
-    <message>
-        <source>About LeechCraft...</source>
-        <translation>О LeechCraft...</translation>
-    </message>
-    <message>
-        <source>About Qt...</source>
-        <translation>О Qt...</translation>
-    </message>
-    <message>
-        <source>Show status bar</source>
-        <translation>Показывать строку состояния</translation>
-    </message>
-    <message>
-        <source>Close tab</source>
-        <translation>Закрыть вкладку</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
-        <source>F10</source>
-        <translation>F10</translation>
-    </message>
-    <message>
-        <source>Restart LeechCraft...</source>
-        <translation>Перезапустить LeechCraft...</translation>
-    </message>
-    <message>
-        <source>New window</source>
-        <translation>Новое окно</translation>
-    </message>
-</context>
-<context>
     <name>LC::AboutDialog</name>
     <message>
         <source>Years: %1</source>
@@ -248,14 +185,6 @@
     <message>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Невозможно создать путь %1/.leechcraft</translation>
-    </message>
-    <message>
-        <source>Initializing LeechCraft...</source>
-        <translation>Инициализация LeechCraft...</translation>
-    </message>
-    <message>
-        <source>Finalizing...</source>
-        <translation>Последние штрихи...</translation>
     </message>
     <message>
         <source>Startup password</source>
@@ -291,13 +220,13 @@
         <source>Select file</source>
         <translation>Выберите файл</translation>
     </message>
-</context>
-<context>
-    <name>LC::Core</name>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет модулей, способных загрузить «%1»</translation>
     </message>
+</context>
+<context>
+    <name>LC::Core</name>
     <message>
         <source>Do you really want to clear the network cache?</source>
         <translation>Вы действительно хотите очистить кэш?</translation>
@@ -396,28 +325,28 @@
         <translation>Выберите шрифт</translation>
     </message>
     <message>
-        <source>Choose...</source>
-        <translation>Выбрать...</translation>
+        <source>Choose</source>
+        <translation>Выбрать</translation>
     </message>
     <message>
-        <source>, %1 pt</source>
-        <translation>, %1 pt</translation>
+        <source>%1 pt</source>
+        <translation>%1 pt</translation>
     </message>
     <message>
-        <source>, bold</source>
-        <translation>, жирный</translation>
+        <source>bold</source>
+        <translation>жирный</translation>
     </message>
     <message>
-        <source>, italic</source>
-        <translation>, курсив</translation>
+        <source>italic</source>
+        <translation>курсив</translation>
     </message>
     <message>
-        <source>, underlined</source>
-        <translation>, подчёркнутый</translation>
+        <source>underlined</source>
+        <translation>подчёркнутый</translation>
     </message>
     <message>
-        <source>, striken out</source>
-        <translation>, зачёркнутый</translation>
+        <source>striken out</source>
+        <translation>зачёркнутый</translation>
     </message>
 </context>
 <context>
@@ -425,13 +354,6 @@
     <message>
         <source>Select save location</source>
         <translation>Выберите место сохранения</translation>
-    </message>
-</context>
-<context>
-    <name>LC::ItemHandlerCombobox</name>
-    <message>
-        <source>More stuff...</source>
-        <translation>Больше такого...</translation>
     </message>
 </context>
 <context>
@@ -443,11 +365,6 @@
     <message>
         <source>Always</source>
         <translation>Всегда</translation>
-    </message>
-    <message>
-        <source>F11</source>
-        <comment>FullScreen</comment>
-        <translation>F11</translation>
     </message>
     <message>
         <source>Do you really want to restart?</source>
@@ -472,12 +389,8 @@
 <context>
     <name>LC::NetworkAccessManager</name>
     <message>
-        <source>Could not create Core directory.</source>
-        <translation>Невозможно создать каталог Ядра.</translation>
-    </message>
-    <message>
-        <source>Could not save cookies, error opening cookie file.</source>
-        <translation>Невозможно сохранить cookies, ошибка открытия cookie-файла.</translation>
+        <source>Unable to save cookies.</source>
+        <translation>Невозможно сохранить cookies.</translation>
     </message>
 </context>
 <context>
@@ -520,14 +433,6 @@
     <message>
         <source>Description</source>
         <translation>Описание</translation>
-    </message>
-    <message>
-        <source>Initializing %1: stage one...</source>
-        <translation>Инициализация %1: первая стадия...</translation>
-    </message>
-    <message>
-        <source>Initializing %1: stage two...</source>
-        <translation>Инициализация %1: вторая стадия...</translation>
     </message>
     <message>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
@@ -788,6 +693,14 @@
         <source>VK.com authentication for %1 failed because of error %2. Report upstream please.</source>
         <translation>Авторизация ВКонтакте для %1 не может быть осуществлена из-за ошибки %2. Пожалуйста, сообщите об этой ошибке.</translation>
     </message>
+    <message>
+        <source>VK.com authentication</source>
+        <translation>Аутентификация ВКонтакте</translation>
+    </message>
+    <message>
+        <source>Could not authenticate %1 since authentication requires a browser plugin. Consider installing one like Poshuku.</source>
+        <translation>Невозможно аутентифицировать %1, так как требуется модуль браузера (например, такой как Poshuku).</translation>
+    </message>
 </context>
 <context>
     <name>LC::Util::SvcAuth::VkCaptchaDialog</name>
@@ -809,6 +722,57 @@ If you have read and really understood all these letters, click Cancel button in
 LeechCraft для Windows — довольно экспериментальная и непроверенная штука, некоторые сборки могут использовать нестабильные версии других библиотек, и, более того, LeechCraft точно имеет больше ошибок и меньше возможностей под Windows чем под другими, более вменяемыми системами. Это потому, что у нас не так уж много разработчиков использует Windows, и большинство пользователей пользуется другими ОС. Приносим свои извинения и надеемся, что Вы нас поймете.
 
 Если Вы прочли и действительно поняли все, что тут написано, нажмите кнопку «Отмена» в этом диалоге, чтобы он больше не возникал.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft</name>
+    <message>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Параметры</translation>
+    </message>
+    <message>
+        <source>Add task</source>
+        <translation>Добавить задачу</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>Выход</translation>
+    </message>
+    <message>
+        <source>Fullscreen mode</source>
+        <translation>Полноэкранный режим</translation>
+    </message>
+    <message>
+        <source>New tab</source>
+        <translation>Новая вкладка</translation>
+    </message>
+    <message>
+        <source>About LeechCraft...</source>
+        <translation>О LeechCraft...</translation>
+    </message>
+    <message>
+        <source>About Qt...</source>
+        <translation>О Qt...</translation>
+    </message>
+    <message>
+        <source>Show status bar</source>
+        <translation>Показывать строку состояния</translation>
+    </message>
+    <message>
+        <source>Close tab</source>
+        <translation>Закрыть вкладку</translation>
+    </message>
+    <message>
+        <source>Restart LeechCraft...</source>
+        <translation>Перезапустить LeechCraft...</translation>
+    </message>
+    <message>
+        <source>New window</source>
+        <translation>Новое окно</translation>
     </message>
 </context>
 <context>
@@ -1331,6 +1295,138 @@ LeechCraft для Windows — довольно экспериментальна�
         <comment>Short one-character unit for gigabytes.</comment>
         <translation>Г</translation>
     </message>
+    <message>
+        <source>News</source>
+        <translation>Новости</translation>
+    </message>
+    <message>
+        <source>News source got updated</source>
+        <translation>Источник новостей был обновлен</translation>
+    </message>
+    <message>
+        <source>News source is detected to be broken</source>
+        <translation>Источник новостей сломался</translation>
+    </message>
+    <message>
+        <source>no error</source>
+        <translation>нет ошибки</translation>
+    </message>
+    <message>
+        <source>not found</source>
+        <translation>не найдено</translation>
+    </message>
+    <message>
+        <source>gone forever</source>
+        <translation>ресурс исчез навсегда</translation>
+    </message>
+    <message>
+        <source>access denied</source>
+        <translation>доступ запрещен</translation>
+    </message>
+    <message>
+        <source>authentication required</source>
+        <translation>требуется аутентификация</translation>
+    </message>
+    <message>
+        <source>protocol error</source>
+        <translation>ошибка протокола</translation>
+    </message>
+    <message>
+        <source>network error</source>
+        <translation>ошибка сети</translation>
+    </message>
+    <message>
+        <source>content error</source>
+        <translation>ошибка содержимого</translation>
+    </message>
+    <message>
+        <source>proxy error</source>
+        <translation>ошибка прокси</translation>
+    </message>
+    <message>
+        <source>server error</source>
+        <translation>ошибка сервера</translation>
+    </message>
+    <message>
+        <source>local error</source>
+        <translation>локальнаяошибка</translation>
+    </message>
+    <message>
+        <source>user canceled the download</source>
+        <translation>пользователь отменил закачку</translation>
+    </message>
+    <message>
+        <source>Track title</source>
+        <translation>Название трека</translation>
+    </message>
+    <message>
+        <source>The track that the contact is currently listening to.</source>
+        <translation>Трек, прослушиваемый контактом.</translation>
+    </message>
+    <message>
+        <source>Track album</source>
+        <translation>Альбом трека</translation>
+    </message>
+    <message>
+        <source>The album that the contact is currently listening to.</source>
+        <translation>Альбом, прослушиваемый контактом.</translation>
+    </message>
+    <message>
+        <source>Track artist</source>
+        <translation>Исполнитель трека</translation>
+    </message>
+    <message>
+        <source>The artist the contact is currently listening to.</source>
+        <translation>Исполнитель, прослушиваемый контактом.</translation>
+    </message>
+    <message>
+        <source>Track length</source>
+        <translation>Длина трека</translation>
+    </message>
+    <message>
+        <source>Length of the track the contact is currently listening to.</source>
+        <translation>Длина трека, прослушиваемого контактом.</translation>
+    </message>
+    <message>
+        <source>Locality</source>
+        <translation>Местоположение</translation>
+    </message>
+    <message>
+        <source>News source name</source>
+        <translation>Имя источника новостей</translation>
+    </message>
+    <message>
+        <source>The name of the news source that caused the notification.</source>
+        <translation>Имя источника новостей, вызвавшего уведомление.</translation>
+    </message>
+    <message>
+        <source>News source URL</source>
+        <translation>URL источника новостей</translation>
+    </message>
+    <message>
+        <source>The URL of the news source that caused the notification.</source>
+        <translation>URL источника новостей, вызвавшего уведомление.</translation>
+    </message>
+    <message>
+        <source>incorrect socket state</source>
+        <translation>неверное состояние сокета</translation>
+    </message>
+    <message>
+        <source>SSL internal error</source>
+        <translation>внутренняя ошибка SSL</translation>
+    </message>
+    <message>
+        <source>invalid SSL data, like certificate, key or cypher</source>
+        <translation>неверные данные SSL, таккие как сертификат, ключ или шифр</translation>
+    </message>
+    <message>
+        <source>temporary error</source>
+        <translation>временная ошибка</translation>
+    </message>
+    <message>
+        <source>Get more...</source>
+        <translation>Получить еще…</translation>
+    </message>
 </context>
 <context>
     <name>ShortcutManager</name>
@@ -1462,10 +1558,6 @@ LeechCraft для Windows — довольно экспериментальна�
 <context>
     <name>WizardTypeChoicePage</name>
     <message>
-        <source>WizardPage</source>
-        <translation>WizardPage</translation>
-    </message>
-    <message>
         <source>Select wizard type</source>
         <translation>Выберите тип мастера</translation>
     </message>
@@ -1533,8 +1625,8 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Фиксированной ширины:</translation>
     </message>
     <message>
-        <source>Font zoom:</source>
-        <translation>Масштаб шрифтов:</translation>
+        <source> px</source>
+        <translation> px</translation>
     </message>
 </context>
 <context>
