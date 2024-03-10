@@ -45,6 +45,7 @@ namespace LC
 			{ "combobox", &HandleCombobox },
 			{ "customwidget", &HandleCustomWidget },
 			{ "dataview", &HandleDataView },
+			{ "doublespinbox", &HandleSpinboxDouble },
 			{ "font", &HandleFont },
 			{ "groupbox", &HandleGroupbox },
 			{ "lineedit", &HandleLineEdit },
@@ -53,7 +54,6 @@ namespace LC
 			{ "pushbutton", &HandlePushButton },
 			{ "radio", &HandleRadio },
 			{ "spinbox", &HandleSpinbox },
-			{ "spinboxdouble", &HandleSpinboxDouble },
 			{ "spinboxrange", &HandleSpinboxRange },
 		}
 	{
