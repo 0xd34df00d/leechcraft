@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>WizardPage</string>
+   <string notr="true">WizardPage</string>
   </property>
   <property name="title">
    <string>Select wizard type</string>
