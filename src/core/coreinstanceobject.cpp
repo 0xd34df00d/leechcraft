@@ -139,54 +139,53 @@ namespace LC
 #else
 		const auto sysModifier = Qt::ALT;
 #endif
-		auto& iconMgr = IconThemeEngine::Instance ();
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
 				{
 					tr ("Switch to previously active tab"),
 					sysModifier + Qt::Key_Space,
-					iconMgr.GetIcon ("edit-undo")
+					"edit-undo"
 				});
 		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
 				{
 					tr ("Toggle fullscreen"),
 					QString ("F11"),
-					iconMgr.GetIcon ("view-fullscreen")
+					"view-fullscreen"
 				});
 		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
 				{
 					tr ("Close tab"),
 					QString ("Ctrl+W"),
-					iconMgr.GetIcon ("tab-close")
+					"tab-close"
 				});
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToLeftTab",
 				{
 					tr ("Switch to tab to the left"),
 					QString ("Ctrl+PgUp"),
-					iconMgr.GetIcon ("go-previous")
+					"go-previous"
 				});
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToRightTab",
 				{
 					tr ("Switch to tab to the right"),
 					QString ("Ctrl+PgDown"),
-					iconMgr.GetIcon ("go-next")
+					"go-next"
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Settings",
 				{
 					tr ("Settings"),
 					QString ("Ctrl+P"),
-					iconMgr.GetIcon ("configure")
+					"configure"
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Quit",
 				{
 					tr ("Quit LeechCraft"),
 					QString ("F10"),
-					iconMgr.GetIcon ("application-exit")
+					"application-exit"
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Find.Show",
 				{
 					tr ("Open find dialog (where applicable)"),
 					QString { "Ctrl+F" },
-					iconMgr.GetIcon ("edit-find"),
+					"edit-find",
 					{ QString ("Ctrl+F3") }
 				});
 		CoreShortcutManager_->RegisterActionInfo ("Find.Prev",
