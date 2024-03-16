@@ -48,11 +48,6 @@ namespace LC
 			Engine_.ManageWidget (w);
 		}
 
-		void RegisterChangeHandler (const std::function<void ()>& handler) override
-		{
-			Engine_.RegisterChangeHandler (handler);
-		}
-
 		QIcon GetPluginIcon () override
 		{
 			if (!Loader_)

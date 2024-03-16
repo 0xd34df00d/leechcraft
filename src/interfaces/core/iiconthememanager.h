@@ -77,14 +77,6 @@ public:
 	 */
 	virtual void ManageWidget (QWidget *widget) = 0;
 
-	/** @brief Registers the theme change handler.
-	 *
-	 * The given \em function will be invoked after each icon theme change.
-	 *
-	 * @param[in] function The function to invoke after theme change.
-	 */
-	virtual void RegisterChangeHandler (const std::function<void ()>& function) = 0;
-
 	virtual QIcon GetPluginIcon () = 0;
 
 	virtual QIcon GetPluginIcon (const QString& name) = 0;
