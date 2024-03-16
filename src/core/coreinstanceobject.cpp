@@ -101,6 +101,76 @@ namespace LC
 			}
 			return model;
 		}
+
+		void RegisterActions (Util::ShortcutManager& mgr)
+		{
+#ifndef Q_OS_MAC
+			const auto sysModifier = Qt::CTRL;
+#else
+			const auto sysModifier = Qt::ALT;
+#endif
+			mgr.RegisterActionInfo ("SwitchToPrevTab",
+					{
+						CoreInstanceObject::tr ("Switch to previously active tab"),
+						sysModifier + Qt::Key_Space,
+						"edit-undo"
+					});
+			mgr.RegisterActionInfo ("FullScreen",
+					{
+						CoreInstanceObject::tr ("Toggle fullscreen"),
+						QString ("F11"),
+						"view-fullscreen"
+					});
+			mgr.RegisterActionInfo ("CloseTab",
+					{
+						CoreInstanceObject::tr ("Close tab"),
+						QString ("Ctrl+W"),
+						"tab-close"
+					});
+			mgr.RegisterActionInfo ("SwitchToLeftTab",
+					{
+						CoreInstanceObject::tr ("Switch to tab to the left"),
+						QString ("Ctrl+PgUp"),
+						"go-previous"
+					});
+			mgr.RegisterActionInfo ("SwitchToRightTab",
+					{
+						CoreInstanceObject::tr ("Switch to tab to the right"),
+						QString ("Ctrl+PgDown"),
+						"go-next"
+					});
+			mgr.RegisterActionInfo ("Settings",
+					{
+						CoreInstanceObject::tr ("Settings"),
+						QString ("Ctrl+P"),
+						"configure"
+					});
+			mgr.RegisterActionInfo ("Quit",
+					{
+						CoreInstanceObject::tr ("Quit LeechCraft"),
+						QString ("F10"),
+						"application-exit"
+					});
+			mgr.RegisterActionInfo ("Find.Show",
+					{
+						CoreInstanceObject::tr ("Open find dialog (where applicable)"),
+						QString { "Ctrl+F" },
+						"edit-find",
+						{ QString ("Ctrl+F3") }
+					});
+			mgr.RegisterActionInfo ("Find.Prev",
+					{
+						CoreInstanceObject::tr ("Find previous (where applicable)"),
+						QString { "Shift+F3" },
+						{}
+					});
+			mgr.RegisterActionInfo ("Find.Next",
+					{
+						CoreInstanceObject::tr ("Find next (where applicable)"),
+						QString { "F3" },
+						{}
+					});
+		}
 	}
 
 	CoreInstanceObject::CoreInstanceObject (QObject *parent)
@@ -110,8 +180,9 @@ namespace LC
 	, ShortcutManager_ (new ShortcutManager)
 	, CoreShortcutManager_ (new Util::ShortcutManager (CoreProxy::UnsafeWithoutDeps (), this))
 	{
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"coresettings.xml");
+		RegisterActions (*CoreShortcutManager_);
+
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "coresettings.xml");
 		connect (XmlSettingsDialog_.get (),
 				SIGNAL (pushButtonClicked (QString)),
 				this,
@@ -134,73 +205,6 @@ namespace LC
 
 	void CoreInstanceObject::Init (ICoreProxy_ptr)
 	{
-#ifndef Q_OS_MAC
-		const auto sysModifier = Qt::CTRL;
-#else
-		const auto sysModifier = Qt::ALT;
-#endif
-		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
-				{
-					tr ("Switch to previously active tab"),
-					sysModifier + Qt::Key_Space,
-					"edit-undo"
-				});
-		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
-				{
-					tr ("Toggle fullscreen"),
-					QString ("F11"),
-					"view-fullscreen"
-				});
-		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
-				{
-					tr ("Close tab"),
-					QString ("Ctrl+W"),
-					"tab-close"
-				});
-		CoreShortcutManager_->RegisterActionInfo ("SwitchToLeftTab",
-				{
-					tr ("Switch to tab to the left"),
-					QString ("Ctrl+PgUp"),
-					"go-previous"
-				});
-		CoreShortcutManager_->RegisterActionInfo ("SwitchToRightTab",
-				{
-					tr ("Switch to tab to the right"),
-					QString ("Ctrl+PgDown"),
-					"go-next"
-				});
-		CoreShortcutManager_->RegisterActionInfo ("Settings",
-				{
-					tr ("Settings"),
-					QString ("Ctrl+P"),
-					"configure"
-				});
-		CoreShortcutManager_->RegisterActionInfo ("Quit",
-				{
-					tr ("Quit LeechCraft"),
-					QString ("F10"),
-					"application-exit"
-				});
-		CoreShortcutManager_->RegisterActionInfo ("Find.Show",
-				{
-					tr ("Open find dialog (where applicable)"),
-					QString { "Ctrl+F" },
-					"edit-find",
-					{ QString ("Ctrl+F3") }
-				});
-		CoreShortcutManager_->RegisterActionInfo ("Find.Prev",
-				{
-					tr ("Find previous (where applicable)"),
-					QString { "Shift+F3" },
-					{}
-				});
-		CoreShortcutManager_->RegisterActionInfo ("Find.Next",
-				{
-					tr ("Find next (where applicable)"),
-					QString { "F3" },
-					{}
-				});
-
 		Classes_ << SettingsTab::GetStaticTabClassInfo ();
 
 		XmlSettingsDialog_->SetCustomWidget ("PluginManager", new PluginManagerDialog);
