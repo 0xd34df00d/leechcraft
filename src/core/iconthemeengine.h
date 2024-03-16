@@ -44,8 +44,6 @@ namespace LC
 		QHash<QString, QIcon> PluginIconCache_;
 		std::shared_ptr<Util::ResourceLoader> PluginIconLoader_;
 
-		QList<std::function<void ()>> Handlers_;
-
 		IconThemeEngine ();
 	public:
 		static IconThemeEngine& Instance ();
@@ -56,8 +54,6 @@ namespace LC
 		void UpdateIconset (const QList<QToolButton*>&);
 
 		void ManageWidget (QWidget*);
-
-		void RegisterChangeHandler (const std::function<void ()>&);
 
 		QStringList ListIcons () const;
 
@@ -71,5 +67,7 @@ namespace LC
 		void FindIcons ();
 	private slots:
 		void flushCaches ();
+	signals:
+		void iconsetChanged ();
 	};
 };
