@@ -29,6 +29,7 @@ namespace LC
 		explicit SMFilterProxyModel (QObject *parent = nullptr)
 		: QSortFilterProxyModel { parent }
 		{
+			setDynamicSortFilter (true);
 		}
 	protected:
 		bool filterAcceptsRow (int row, const QModelIndex& parent) const override
