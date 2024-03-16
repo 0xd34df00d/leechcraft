@@ -187,6 +187,7 @@ namespace LC
 	, CoreShortcutManager_ (new Util::ShortcutManager (CoreProxy::UnsafeWithoutDeps (), this))
 	{
 		RegisterActions (*CoreShortcutManager_);
+		GetShortcutManager ()->AddObject (this);
 
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "coresettings.xml");
 		connect (XmlSettingsDialog_.get (),
