@@ -91,6 +91,22 @@ namespace LC
 		AddObject (object, ii->GetName (), ii->GetInfo (), ii->GetIcon ());
 	}
 
+	namespace
+	{
+		auto MakeSettings ()
+		{
+			auto deleter = [] (QSettings *s)
+			{
+				s->endGroup ();
+				delete s;
+			};
+			std::unique_ptr<QSettings, decltype (deleter)> settings { new QSettings { "Deviant"_qs, "Leechcraft"_qs } };
+			settings->beginGroup ("Shortcuts"_qs);
+
+			return settings;
+		}
+	}
+
 	void ShortcutManager::AddObject (QObject *object,
 			const QString& objName, const QString& objDescr,
 			const QIcon& objIcon)
@@ -108,8 +124,7 @@ namespace LC
 			return;
 		}
 
-		QSettings settings ("Deviant", "Leechcraft");
-		settings.beginGroup ("Shortcuts");
+		auto settings = MakeSettings ();
 
 		auto deEdit = [] (const QList<QStandardItem*>& items) -> void
 		{
@@ -130,12 +145,12 @@ namespace LC
 
 		const auto& info = ihs->GetActionInfo ();
 
-		settings.beginGroup (objName);
+		settings->beginGroup (objName);
 		for (const auto& pair : Util::Stlize (info))
 		{
 			const auto& name = pair.first;
 			const auto& value = pair.second;
-			const auto& sequences = settings.value (name,
+			const auto& sequences = settings->value (name,
 					QVariant::fromValue (value.GetAllShortcuts ())).value<QKeySequences_t> ();
 
 			auto first = new QStandardItem (value.Text_);
@@ -164,8 +179,7 @@ namespace LC
 
 		Model_->appendRow (parentRow);
 
-		settings.endGroup ();
-		settings.endGroup ();
+		settings->endGroup ();
 
 		Ui_.Tree_->resizeColumnToContents (0);
 		Ui_.Tree_->expand (parentRow.at (0)->index ());
@@ -241,18 +255,17 @@ namespace LC
 
 	void ShortcutManager::accept ()
 	{
-		QSettings settings ("Deviant", "Leechcraft");
-		settings.beginGroup ("Shortcuts");
+		auto settings = MakeSettings ();
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
 			auto objectItem = Model_->item (i);
 
 			for (int j = 0, namesSize = objectItem->rowCount (); j < namesSize; ++j)
 			{
-				QObject *o = objectItem->data (Roles::Object).value<QObject*> ();
-				IInfo *ii = qobject_cast<IInfo*> (o);
-				IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (o);
-				settings.beginGroup (ii->GetName ());
+				const auto o = objectItem->data (Roles::Object).value<QObject*> ();
+				const auto ii = qobject_cast<IInfo*> (o);
+				const auto ihs = qobject_cast<IHaveShortcuts*> (o);
+				settings->beginGroup (ii->GetName ());
 
 				auto item = objectItem->child (j);
 				if (!item->data (Roles::OldSequence).isNull ())
@@ -260,15 +273,14 @@ namespace LC
 					const auto& name = item->data (Roles::OriginalName).toByteArray ();
 					const auto& sequences = item->data (Roles::Sequence).value<QKeySequences_t> ();
 
-					settings.setValue (name, QVariant::fromValue<QKeySequences_t> (sequences));
+					settings->setValue (name, QVariant::fromValue<QKeySequences_t> (sequences));
 					item->setData (QVariant (), Roles::OldSequence);
 					ihs->SetShortcut (name, sequences);
 				}
 
-				settings.endGroup ();
+				settings->endGroup ();
 			}
 		}
-		settings.endGroup ();
 	}
 
 	void ShortcutManager::reject ()
