@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QAction>
 #include <QObject>
 #include <QIcon>
 #include <interfaces/iinfo.h>
@@ -33,7 +34,7 @@ namespace LC::Azoth::Depester
 		QHash<QObject*, QString> Entry2Nick_;
 		QSet<QString> IgnoredNicks_;
 
-		QIcon IgnoredIcon_;
+		QAction IgnoredAction_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;

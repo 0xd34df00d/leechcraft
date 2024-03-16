@@ -30,12 +30,8 @@ namespace LC::Azoth::Depester
 
 		LoadIgnores ();
 
-		const auto iconMgr = GetProxyHolder ()->GetIconThemeManager ();
-
-		auto changeHandler = [this, iconMgr] { IgnoredIcon_ = iconMgr->GetIcon ("irc-unvoice"); };
-		changeHandler ();
-
-		iconMgr->RegisterChangeHandler (changeHandler);
+		IgnoredAction_.setProperty ("ActionIcon", "irc-unvoice");
+		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset ({ &IgnoredAction_ });
 	}
 
 	void Plugin::SecondInit ()
@@ -209,7 +205,7 @@ namespace LC::Azoth::Depester
 		if (!IgnoredNicks_.contains (entry->GetEntryName ()))
 			return;
 
-		icons.prepend (IgnoredIcon_);
+		icons.prepend (IgnoredAction_.icon ());
 	}
 
 	void Plugin::handleNameChanged (const QString& name)
