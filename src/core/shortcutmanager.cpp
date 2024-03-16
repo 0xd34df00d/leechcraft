@@ -26,35 +26,32 @@ namespace LC
 	class SMFilterProxyModel : public QSortFilterProxyModel
 	{
 	public:
-		SMFilterProxyModel (QObject *parent = 0)
-		: QSortFilterProxyModel (parent)
+		explicit SMFilterProxyModel (QObject *parent = nullptr)
+		: QSortFilterProxyModel { parent }
 		{
 		}
 	protected:
-		bool filterAcceptsRow (int row, const QModelIndex& parent) const
+		bool filterAcceptsRow (int row, const QModelIndex& parent) const override
 		{
 			if (!parent.isValid ())
 				return true;
 
-			const QString& filter = filterRegExp ().pattern ();
+			const auto& filter = filterRegExp ().pattern ();
 			if (filter.isEmpty ())
 				return true;
 
 			auto checkStr = [row, parent, &filter, this] (int col)
 			{
-				return sourceModel ()->index (row, col, parent).data ()
-						.toString ().contains (filter, Qt::CaseInsensitive);
+				return sourceModel ()->index (row, col, parent).data ().toString ().contains (filter, Qt::CaseInsensitive);
 			};
-			if (checkStr (0) || checkStr (1))
-				return true;
-			return false;
+			return checkStr (0) || checkStr (1);
 		}
 	};
 
 	ShortcutManager::ShortcutManager (QWidget *parent)
-	: QWidget (parent)
-	, Model_ (new QStandardItemModel (this))
-	, Filter_ (new SMFilterProxyModel (this))
+	: QWidget { parent }
+	, Model_ { new QStandardItemModel { this } }
+	, Filter_ { new SMFilterProxyModel { this } }
 	{
 		Filter_->setDynamicSortFilter (true);
 		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Shortcut"), tr ("Alternate") });
@@ -64,13 +61,13 @@ namespace LC
 		Ui_.setupUi (this);
 		Ui_.Tree_->setModel (Filter_);
 		connect (Ui_.FilterLine_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				Filter_,
-				SLOT (setFilterFixedString (QString)));
+				&QSortFilterProxyModel::setFilterFixedString);
 		connect (Ui_.FilterLine_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				Ui_.Tree_,
-				SLOT (expandAll ()));
+				&QTreeView::expandAll);
 	}
 
 	bool ShortcutManager::HasObject (QObject *object) const
@@ -80,12 +77,10 @@ namespace LC
 
 	void ShortcutManager::AddObject (QObject *object)
 	{
-		IInfo *ii = qobject_cast<IInfo*> (object);
+		const auto ii = qobject_cast<IInfo*> (object);
 		if (!ii)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< object
-				<< "couldn't be casted to IInfo";
+			qWarning () << object << "couldn't be casted to IInfo";
 			return;
 		}
 		AddObject (object, ii->GetName (), ii->GetInfo (), ii->GetIcon ());
@@ -126,7 +121,7 @@ namespace LC
 
 		auto settings = MakeSettings ();
 
-		auto deEdit = [] (const QList<QStandardItem*>& items) -> void
+		auto deEdit = [] (const QList<QStandardItem*>& items)
 		{
 			for (const auto item : items)
 				item->setEditable (false);
@@ -136,7 +131,7 @@ namespace LC
 		parentFirst->setIcon (objIcon);
 		parentFirst->setData (QVariant::fromValue<QObject*> (object), Roles::Object);
 
-		QList<QStandardItem*> parentRow
+		const QList<QStandardItem*> parentRow
 		{
 			parentFirst,
 			new QStandardItem (objDescr)
@@ -156,7 +151,7 @@ namespace LC
 			auto first = new QStandardItem (value.Text_);
 
 			auto icon = Util::Visit (value.Icon_,
-					[] (Util::Void) { return IconThemeEngine::Instance ().GetIcon ("configure-shortcuts"); },
+					[] (Util::Void) { return IconThemeEngine::Instance ().GetIcon ("configure-shortcuts"_qs); },
 					[] (const QIcon& icon) { return icon; },
 					[] (const QByteArray& name) { return IconThemeEngine::Instance ().GetIcon (name); });
 			first->setIcon (icon);
@@ -164,7 +159,7 @@ namespace LC
 			first->setData (name, Roles::OriginalName);
 			first->setData (QVariant::fromValue (sequences), Roles::Sequence);
 
-			QList<QStandardItem*> itemRow
+			const QList<QStandardItem*> itemRow
 			{
 				first,
 				new QStandardItem (sequences.value (0).toString (QKeySequence::NativeText)),
@@ -185,8 +180,7 @@ namespace LC
 		Ui_.Tree_->expand (parentRow.at (0)->index ());
 	}
 
-	QKeySequences_t ShortcutManager::GetShortcuts (QObject *object,
-			const QByteArray& originalName)
+	QKeySequences_t ShortcutManager::GetShortcuts (QObject *object, const QByteArray& originalName)
 	{
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
@@ -211,8 +205,7 @@ namespace LC
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
 			const auto objectItem = Model_->item (i);
-			const auto o = objectItem->data (Roles::Object).value<QObject*> ();
-			if (o == object)
+			if (objectItem->data (Roles::Object).value<QObject*> () == object)
 				return i;
 		}
 

@@ -35,14 +35,13 @@ namespace LC
 			OldSequence
 		};
 
-		ShortcutManager (QWidget* = 0);
+		explicit ShortcutManager (QWidget* = nullptr);
 
-		bool HasObject (QObject*) const;
+		bool HasObject (QObject*) const override;
 
 		void AddObject (QObject*);
-		void AddObject (QObject*, const QString&,
-				const QString&, const QIcon&);
-		QList<QKeySequence> GetShortcuts (QObject*, const QByteArray&);
+		void AddObject (QObject*, const QString&, const QString&, const QIcon&);
+		QList<QKeySequence> GetShortcuts (QObject*, const QByteArray&) override;
 	private:
 		int GetObjectRow (QObject*) const;
 	public slots:
