@@ -117,6 +117,7 @@ void LC::MainWindow::Init ()
 			0);
 	sm->RegisterShortcut ("CloseTab", {}, CloseTabShortcut_);
 
+	sm->RegisterAction ("NewTab", Ui_.ActionNewTab_);
 	sm->RegisterAction ("Settings", Ui_.ActionSettings_);
 	sm->RegisterAction ("Quit", Ui_.ActionQuit_);
 

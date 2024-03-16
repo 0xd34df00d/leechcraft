@@ -121,6 +121,12 @@ namespace LC
 						QString ("F11"),
 						"view-fullscreen"
 					});
+			mgr.RegisterActionInfo ("NewTab",
+					{
+						CoreInstanceObject::tr ("New tab"),
+						QString ("Ctrl+T"),
+						"tab-new"
+					});
 			mgr.RegisterActionInfo ("CloseTab",
 					{
 						CoreInstanceObject::tr ("Close tab"),
