@@ -9,10 +9,12 @@
 #pragma once
 
 #include <QDialog>
+#include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/ishortcutproxy.h"
 #include "ui_shortcutmanager.h"
 
 class QSortFilterProxyModel;
+class QStandardItem;
 class QStandardItemModel;
 
 namespace LC
@@ -26,6 +28,10 @@ namespace LC
 		Ui::ShortcutManager Ui_;
 		QStandardItemModel *Model_;
 		QSortFilterProxyModel *Filter_;
+	public:
+		using IconsList_t = QVector<QPair<QStandardItem*, ActionInfo::Icon_t>>;
+	private:
+		IconsList_t Icons_;
 	public:
 		enum Roles
 		{

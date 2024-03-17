@@ -33,10 +33,15 @@ namespace LC
 	{
 		/// User-visible name of the action.
 		QString Text_ {};
+
 		/// The primary key sequence for this action.
 		QKeySequence Seq_ {};
+
+		using Icon_t = std::variant<Util::Void, QByteArray, QIcon>;
+
 		/// Icon of the action, either a `QIcon` itself or its `ActionIcon`.
-		std::variant<Util::Void, QByteArray, QIcon> Icon_ { Util::Void {} };
+		Icon_t Icon_ { Util::Void {} };
+
 		/// The additional key sequences for this action.
 		QKeySequences_t AdditionalSeqs_ {};
 

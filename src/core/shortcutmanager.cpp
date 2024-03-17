@@ -49,6 +49,21 @@ namespace LC
 		}
 	};
 
+	namespace
+	{
+		void UpdateIcons (const ShortcutManager::IconsList_t& icons)
+		{
+			for (const auto& [item, iconDescr] : icons)
+			{
+				auto icon = Util::Visit (iconDescr,
+						[] (Util::Void) { return IconThemeEngine::Instance ().GetIcon ("configure-shortcuts"_qs); },
+						[] (const QIcon& icon) { return icon; },
+						[] (const QByteArray& name) { return IconThemeEngine::Instance ().GetIcon (name); });
+				item->setIcon (icon);
+			}
+		}
+	}
+
 	ShortcutManager::ShortcutManager (QWidget *parent)
 	: QWidget { parent }
 	, Model_ { new QStandardItemModel { this } }
@@ -69,6 +84,11 @@ namespace LC
 				&QLineEdit::textChanged,
 				Ui_.Tree_,
 				&QTreeView::expandAll);
+
+		connect (&IconThemeEngine::Instance (),
+				&IconThemeEngine::iconsetChanged,
+				this,
+				[this] { UpdateIcons (Icons_); });
 	}
 
 	bool ShortcutManager::HasObject (QObject *object) const
@@ -142,6 +162,10 @@ namespace LC
 		const auto& info = ihs->GetActionInfo ();
 
 		settings->beginGroup (objName);
+
+		IconsList_t newIcons;
+		newIcons.reserve (info.size ());
+
 		for (const auto& pair : Util::Stlize (info))
 		{
 			const auto& name = pair.first;
@@ -151,12 +175,7 @@ namespace LC
 
 			auto first = new QStandardItem (value.Text_);
 
-			auto icon = Util::Visit (value.Icon_,
-					[] (Util::Void) { return IconThemeEngine::Instance ().GetIcon ("configure-shortcuts"_qs); },
-					[] (const QIcon& icon) { return icon; },
-					[] (const QByteArray& name) { return IconThemeEngine::Instance ().GetIcon (name); });
-			first->setIcon (icon);
-
+			newIcons.push_back ({ first, value.Icon_ });
 			first->setData (name, Roles::OriginalName);
 			first->setData (QVariant::fromValue (sequences), Roles::Sequence);
 
@@ -172,6 +191,9 @@ namespace LC
 			if (sequences != value.GetAllShortcuts ())
 				ihs->SetShortcut (name, sequences);
 		}
+
+		UpdateIcons (newIcons);
+		Icons_ << newIcons;
 
 		Model_->appendRow (parentRow);
 
