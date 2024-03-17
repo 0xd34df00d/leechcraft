@@ -17,7 +17,6 @@
 #include <QDockWidget>
 #include <QScreen>
 #include <QWidgetAction>
-#include <QMimeData>
 #include <QToolBar>
 #include <util/gui/util.h>
 #include <util/xpc/util.h>
@@ -89,8 +88,7 @@ void LC::MainWindow::Init ()
 {
 	hide ();
 
-	Core::Instance ().GetCoreInstanceObject ()->
-			GetCorePluginManager ()->RegisterHookable (this);
+	Core::Instance ().GetCoreInstanceObject ()->GetCorePluginManager ()->RegisterHookable (this);
 
 	InitializeInterface ();
 
@@ -103,7 +101,7 @@ void LC::MainWindow::Init ()
 
 	auto sm = Core::Instance ().GetCoreInstanceObject ()->GetCoreShortcutManager ();
 
-	FullScreenShortcut_ = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
+	FullScreenShortcut_ = new QShortcut (this);
 	FullScreenShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
 	connect (FullScreenShortcut_,
 			SIGNAL (activated ()),
@@ -111,10 +109,11 @@ void LC::MainWindow::Init ()
 			SLOT (handleShortcutFullscreenMode ()));
 	sm->RegisterShortcut ("FullScreen", {}, FullScreenShortcut_);
 
-	CloseTabShortcut_ = new QShortcut (QString ("Ctrl+W"),
+	CloseTabShortcut_ = new QShortcut (this);
+	connect (CloseTabShortcut_,
+			SIGNAL (activated ()),
 			this,
-			SLOT (handleCloseCurrentTab ()),
-			0);
+			SLOT (handleCloseCurrentTab ()));
 	sm->RegisterShortcut ("CloseTab", {}, CloseTabShortcut_);
 
 	sm->RegisterAction ("NewTab", Ui_.ActionNewTab_);

@@ -54,9 +54,6 @@
    <property name="text">
     <string>Settings</string>
    </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+P</string>
-   </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
    </property>
@@ -64,9 +61,6 @@
   <action name="ActionQuit_">
    <property name="text">
     <string>Quit</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">F10</string>
    </property>
    <property name="menuRole">
     <enum>QAction::QuitRole</enum>
@@ -112,9 +106,6 @@
   <action name="ActionNewTab_">
    <property name="text">
     <string>New tab</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+T</string>
    </property>
   </action>
   <action name="ActionRestart_">
