@@ -175,10 +175,10 @@ namespace LC
 
 		CheckStartupPass ();
 
+		InitPluginsIconset ();
+
 		Core::Instance ();
 		InitSettings ();
-
-		InitPluginsIconset ();
 
 		setWindowIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"));
 
