@@ -233,8 +233,7 @@ void LC::MainWindow::InitializeInterface ()
 	Ui_.ActionSettings_->setMenuRole (QAction::PreferencesRole);
 	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "help-about");
 	Ui_.ActionAboutLeechCraft_->setMenuRole (QAction::AboutRole);
-	Ui_.ActionAboutQt_->setIcon (qApp->style ()->
-			standardIcon (QStyle::SP_MessageBoxQuestion).pixmap (32, 32));
+	Ui_.ActionAboutQt_->setIcon (style ()->standardIcon (QStyle::SP_MessageBoxQuestion).pixmap (32, 32));
 	Ui_.ActionAboutQt_->setMenuRole (QAction::AboutQtRole);
 	Ui_.ActionQuit_->setProperty ("ActionIcon", "application-exit");
 	Ui_.ActionQuit_->setMenuRole (QAction::QuitRole);
