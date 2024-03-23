@@ -195,7 +195,10 @@ namespace LC
 	{
 		if (const auto setter = Prop2DataSourceSetter_.value (prop))
 		{
-			setter (*model);
+			{
+				const auto expectGuard = ExpectPropChange (prop);
+				setter (*model);
+			}
 			SetReprValue (prop);
 		}
 		else
