@@ -58,6 +58,11 @@ namespace LC::BitTorrent
 				QString::fromStdString (range.last.to_string ())
 			};
 		}
+
+		bool IsBlocked (uint32_t flags)
+		{
+			return static_cast<bool> (flags & libtorrent::ip_filter::blocked);
+		}
 	}
 
 	BanList_t GetFilter (const libtorrent::session& session)
@@ -66,9 +71,9 @@ namespace LC::BitTorrent
 
 		QList<QPair<BanRange_t, bool>> result;
 		for (const auto& range : v4)
-			result.push_back ({ GetBanRange (range), range.flags });
+			result.push_back ({ GetBanRange (range), IsBlocked (range.flags) });
 		for (const auto& range : v6)
-			result.push_back ({ GetBanRange (range), range.flags });
+			result.push_back ({ GetBanRange (range), IsBlocked (range.flags) });
 		return result;
 	}
 
