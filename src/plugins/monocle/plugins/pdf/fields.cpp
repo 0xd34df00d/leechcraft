@@ -226,7 +226,7 @@ namespace PDF
 	LinkAction FormFieldButton::GetActivationAction () const
 	{
 		const auto actLink = Field_->activationAction ();
-		return actLink ? MakeLinkAction (Doc_, actLink) : NoAction {};
+		return actLink ? MakeLinkAction (*Doc_, *actLink) : NoAction {};
 	}
 }
 }

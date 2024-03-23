@@ -19,7 +19,7 @@ namespace LC::Monocle::PDF
 
 	NavigationAction MakeNavigationAction (const Poppler::LinkDestination&);
 
-	LinkAction MakeLinkAction (Document*, Poppler::Link*);
+	LinkAction MakeLinkAction (Document&, const Poppler::Link&);
 
 	class Link : public QObject
 			   , public ILink
