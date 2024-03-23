@@ -11,7 +11,9 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QTimer>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
+#include <util/monocle/textdocumentformatconfig.h>
 
 namespace LC::Monocle
 {
@@ -20,7 +22,8 @@ namespace LC::Monocle
 	, PixmapLabel_ { *new QLabel }
 	, Doc_ { std::move (doc) }
 	{
-		setStyleSheet ("background-color: black;");
+		const auto& bgColor = TextDocumentFormatConfig::Instance ().GetPalette ().Background_;
+		setStyleSheet ("background-color: %1;"_qs.arg (bgColor.name ()));
 
 		auto lay = new QHBoxLayout;
 		lay->setSpacing (0);
