@@ -89,10 +89,10 @@ namespace LC::Azoth::StatusChange
 		return result;
 	}
 
-	QString GetStatusText (State state, const QString& override)
+	QString GetStatusText (State state, const QString& custom)
 	{
-		if (!override.isEmpty ())
-			return override;
+		if (!custom.isEmpty ())
+			return custom;
 
 		const auto& propName = "DefaultStatus" + QString::number (state);
 		return XmlSettingsManager::Instance ()
