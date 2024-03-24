@@ -7,18 +7,30 @@
  **********************************************************************/
 
 #include "linkactionexecutor.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/sll/visitor.h>
+#include <util/xpc/util.h>
 #include "documenttab.h"
 
 namespace LC::Monocle
 {
+	namespace
+	{
+		void OpenUrl (const QUrl& url)
+		{
+			auto e = Util::MakeEntity (url, {}, FromUserInitiated);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
+	}
+
 	void ExecuteLinkAction (const LinkAction& action, DocumentTab& tab)
 	{
 		Util::Visit (action,
 				[] (NoAction) {},
 				[&] (const NavigationAction& nav) { tab.Navigate (nav); },
 				[&] (const ExternalNavigationAction& extNav) { tab.Navigate (extNav); },
-				[] (const UrlAction& url) {},
+				[] (const UrlAction& url) { OpenUrl (url.Url_); },
 				[] (const CustomAction& custom) { custom (); });
 	}
 }
