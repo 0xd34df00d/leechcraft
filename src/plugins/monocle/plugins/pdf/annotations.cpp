@@ -76,10 +76,7 @@ namespace PDF
 	{
 		QList<QPolygonF> result;
 		for (const auto& quad : HighAnn_->highlightQuads ())
-		{
-			const auto pts = quad.points;
-			result.append ({ { pts [0], pts [1], pts [2], pts [3] } });
-		}
+			result.append ({ { std::begin (quad.points), std::end (quad.points) } });
 		return result;
 	}
 
