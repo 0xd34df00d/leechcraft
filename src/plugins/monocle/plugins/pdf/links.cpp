@@ -8,6 +8,8 @@
 
 #include "links.h"
 #include <QtDebug>
+#include "qt5compat.h"
+#include <poppler-qt5.h>
 #include "document.h"
 
 namespace LC::Monocle::PDF
@@ -67,40 +69,43 @@ namespace LC::Monocle::PDF
 		}
 	}
 
-	Link::Link (Document *doc, Poppler::Link *link)
-	: Doc_ (doc)
-	, Link_ (link)
+	namespace
 	{
+		auto FromPoppler (Poppler::Link::LinkType type)
+		{
+			switch (type)
+			{
+			case Poppler::Link::Goto:
+				return LinkType::PageLink;
+			case Poppler::Link::Browse:
+				return LinkType::URL;
+			case Poppler::Link::Action:
+				return LinkType::Command;
+			default:
+				return LinkType::OtherLink;
+			}
+		}
 	}
 
-	Link::Link (Document *doc, Poppler::Link *link, const std::shared_ptr<void>& ptr)
-	: Doc_ (doc)
-	, Link_ (ptr, link)
+	Link::Link (Document& doc, const Poppler::Link& link)
+	: Type_ { FromPoppler (link.linkType ()) }
+	, Area_ { link.linkArea () }
+	, Action_ { MakeLinkAction (doc, link) }
 	{
 	}
 
 	LinkType Link::GetLinkType () const
 	{
-		switch (Link_->linkType ())
-		{
-		case Poppler::Link::Goto:
-			return LinkType::PageLink;
-		case Poppler::Link::Browse:
-			return LinkType::URL;
-		case Poppler::Link::Action:
-			return LinkType::Command;
-		default:
-			return LinkType::OtherLink;
-		}
+		return Type_;
 	}
 
 	QRectF Link::GetArea () const
 	{
-		return Link_->linkArea ();
+		return Area_;
 	}
 
 	LinkAction Link::GetLinkAction () const
 	{
-		return MakeLinkAction (*Doc_, *Link_);
+		return Action_;
 	}
 }

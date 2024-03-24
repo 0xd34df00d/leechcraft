@@ -9,9 +9,13 @@
 #pragma once
 
 #include <QObject>
-#include "qt5compat.h"
-#include <poppler-qt5.h>
 #include <interfaces/monocle/ilink.h>
+
+namespace Poppler
+{
+	class Link;
+	class LinkDestination;
+}
 
 namespace LC::Monocle::PDF
 {
@@ -26,11 +30,11 @@ namespace LC::Monocle::PDF
 	{
 		Q_INTERFACES (LC::Monocle::ILink)
 
-		Document * const Doc_;
-		std::shared_ptr<Poppler::Link> Link_;
+		LinkType Type_;
+		QRectF Area_;
+		LinkAction Action_;
 	public:
-		explicit Link (Document*, Poppler::Link*);
-		explicit Link (Document*, Poppler::Link*, const std::shared_ptr<void>&);
+		explicit Link (Document&, const Poppler::Link&);
 
 		LinkType GetLinkType () const override;
 		QRectF GetArea () const override;

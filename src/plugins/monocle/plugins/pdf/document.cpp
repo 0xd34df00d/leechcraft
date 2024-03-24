@@ -117,7 +117,7 @@ namespace PDF
 			return result;
 
 		for (const auto link : page->links ())
-			result << std::make_shared<Link> (this, link);
+			result << std::make_shared<Link> (*this, *link);
 
 		return result;
 	}

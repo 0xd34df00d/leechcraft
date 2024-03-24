@@ -76,7 +76,7 @@ namespace LC::Monocle::PDF
 	LinkAnnotation::LinkAnnotation (Document *doc, Poppler::LinkAnnotation *ann)
 	: AnnotationBase { ann }
 	, LinkAnn_ { ann }
-	, Link_ { new Link { doc, LinkAnn_->linkDestination (), {} } }
+	, Link_ { new Link { *doc, *LinkAnn_->linkDestination () } }
 	{
 	}
 
