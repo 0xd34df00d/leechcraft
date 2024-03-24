@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QObject>
 #include <interfaces/monocle/iformfield.h>
 
 namespace Poppler
@@ -23,30 +22,38 @@ namespace LC::Monocle::PDF
 {
 	class Document;
 
-	class FormField : public QObject
-					, public IFormField
+	template<typename T>
+	class FormField : public IFormField
 	{
-		Q_OBJECT
-		Q_INTERFACES (LC::Monocle::IFormField)
-
-		std::shared_ptr<Poppler::FormField> BaseField_;
 	protected:
-		FormField (std::shared_ptr<Poppler::FormField>);
+		std::shared_ptr<T> Field_;
 	public:
-		int GetID () const override;
-		QRectF GetRect () const override;
-		QString GetName () const override;
+		explicit FormField (const std::shared_ptr<Poppler::FormField>& field)
+		: Field_ { std::dynamic_pointer_cast<T> (field) }
+		{
+		}
+
+		int GetID () const override
+		{
+			return Field_->id ();
+		}
+
+		QRectF GetRect () const override
+		{
+			return Field_->rect ();
+		}
+
+		QString GetName () const override
+		{
+			return Field_->uiName ();
+		}
 	};
 
-	class FormFieldText final : public FormField
+	class FormFieldText final : public FormField<Poppler::FormFieldText>
 							  , public IFormFieldText
 	{
-		Q_INTERFACES (LC::Monocle::IFormField
-				LC::Monocle::IFormFieldText)
-
-		std::shared_ptr<Poppler::FormFieldText> Field_;
 	public:
-		FormFieldText (std::shared_ptr<Poppler::FormField>);
+		using FormField::FormField;
 
 		FormType GetType () const override;
 		Qt::Alignment GetAlignment () const override;
@@ -60,15 +67,12 @@ namespace LC::Monocle::PDF
 		bool IsRichText () const override;
 	};
 
-	class FormFieldChoice final : public FormField
+	class FormFieldChoice final : public FormField<Poppler::FormFieldChoice>
 								, public IFormFieldChoice
 	{
-		Q_INTERFACES (LC::Monocle::IFormField
-				LC::Monocle::IFormFieldChoice)
-
 		std::shared_ptr<Poppler::FormFieldChoice> Field_;
 	public:
-		FormFieldChoice (std::shared_ptr<Poppler::FormField>);
+		using FormField::FormField;
 
 		FormType GetType () const override;
 		Qt::Alignment GetAlignment () const override;
@@ -86,17 +90,14 @@ namespace LC::Monocle::PDF
 		bool IsEditable () const override;
 	};
 
-	class FormFieldButton final : public FormField
+	class FormFieldButton final : public FormField<Poppler::FormFieldButton>
 						        , public IFormFieldButton
 	{
-		Q_INTERFACES (LC::Monocle::IFormField
-				LC::Monocle::IFormFieldButton)
-
 		std::shared_ptr<Poppler::FormFieldButton> Field_;
 		Document * const Doc_;
 		QList<int> ButtonGroup_;
 	public:
-		FormFieldButton (std::shared_ptr<Poppler::FormField>, Document*);
+		FormFieldButton (const std::shared_ptr<Poppler::FormField>&, Document*);
 
 		FormType GetType () const override;
 		Qt::Alignment GetAlignment () const override;

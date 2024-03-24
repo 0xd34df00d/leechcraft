@@ -16,32 +16,6 @@
 
 namespace LC::Monocle::PDF
 {
-	FormField::FormField (std::shared_ptr<Poppler::FormField> field)
-	: BaseField_ { std::move (field) }
-	{
-	}
-
-	int FormField::GetID () const
-	{
-		return BaseField_->id ();
-	}
-
-	QRectF FormField::GetRect () const
-	{
-		return BaseField_->rect ();
-	}
-
-	QString FormField::GetName () const
-	{
-		return BaseField_->uiName ();
-	}
-
-	FormFieldText::FormFieldText (std::shared_ptr<Poppler::FormField> field)
-	: FormField (field)
-	, Field_ (std::dynamic_pointer_cast<Poppler::FormFieldText> (field))
-	{
-	}
-
 	FormType FormFieldText::GetType () const
 	{
 		return FormType::Text;
@@ -90,12 +64,6 @@ namespace LC::Monocle::PDF
 	bool FormFieldText::IsRichText () const
 	{
 		return Field_->isRichText ();
-	}
-
-	FormFieldChoice::FormFieldChoice (std::shared_ptr<Poppler::FormField> field)
-	: FormField (field)
-	, Field_ (std::dynamic_pointer_cast<Poppler::FormFieldChoice> (field))
-	{
 	}
 
 	FormType FormFieldChoice::GetType () const
@@ -152,11 +120,10 @@ namespace LC::Monocle::PDF
 		return Field_->isEditable ();
 	}
 
-	FormFieldButton::FormFieldButton (std::shared_ptr<Poppler::FormField> field, Document *doc)
-	: FormField (field)
-	, Field_ (std::dynamic_pointer_cast<Poppler::FormFieldButton> (field))
-	, Doc_ (doc)
-	, ButtonGroup_ (Field_->siblings ())
+	FormFieldButton::FormFieldButton (const std::shared_ptr<Poppler::FormField>& field, Document *doc)
+	: FormField<Poppler::FormFieldButton> { field }
+	, Doc_ { doc }
+	, ButtonGroup_ { Field_->siblings () }
 	{
 		if (!ButtonGroup_.isEmpty ())
 		{
