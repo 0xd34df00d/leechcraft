@@ -63,6 +63,11 @@ namespace LC::Monocle::PDF
 				return NoAction {};
 			}
 		}
+		case Poppler::Link::Browse:
+		{
+			const auto& browseLink = dynamic_cast<const Poppler::LinkBrowse&> (link);
+			return UrlAction { browseLink.url () };
+		}
 		default:
 			qWarning () << "unsupported link type:" << link.linkType ();
 			return NoAction {};
