@@ -16,11 +16,7 @@
 #include <interfaces/monocle/ibackendplugin.h>
 #include <interfaces/monocle/iknowfileextensions.h>
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -42,28 +38,26 @@ namespace PDF
 
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		QString GetDiagInfoString () const;
+		QString GetDiagInfoString () const override;
 
-		LoadCheckResult CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
+		LoadCheckResult CanLoadDocument (const QString&) override;
+		IDocument_ptr LoadDocument (const QString&) override;
 
-		QStringList GetSupportedMimes () const;
-		bool IsThreaded () const;
+		QStringList GetSupportedMimes () const override;
+		bool IsThreaded () const override;
 
-		QList<ExtInfo> GetKnownFileExtensions () const;
+		QList<ExtInfo> GetKnownFileExtensions () const override;
 	};
-}
-}
 }

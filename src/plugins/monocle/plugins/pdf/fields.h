@@ -19,11 +19,7 @@ namespace Poppler
 	class FormFieldButton;
 }
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	class Document;
 
@@ -37,9 +33,9 @@ namespace PDF
 	protected:
 		FormField (std::shared_ptr<Poppler::FormField>);
 	public:
-		int GetID () const;
-		QRectF GetRect () const;
-		QString GetName () const;
+		int GetID () const override;
+		QRectF GetRect () const override;
+		QString GetName () const override;
 	};
 
 	class FormFieldText final : public FormField
@@ -52,16 +48,16 @@ namespace PDF
 	public:
 		FormFieldText (std::shared_ptr<Poppler::FormField>);
 
-		FormType GetType () const;
-		Qt::Alignment GetAlignment () const;
+		FormType GetType () const override;
+		Qt::Alignment GetAlignment () const override;
 
-		QString GetText () const;
-		void SetText (const QString&);
-		Type GetTextType () const;
+		QString GetText () const override;
+		void SetText (const QString&) override;
+		Type GetTextType () const override;
 
-		int GetMaximumLength () const;
-		bool IsPassword () const;
-		bool IsRichText () const;
+		int GetMaximumLength () const override;
+		bool IsPassword () const override;
+		bool IsRichText () const override;
 	};
 
 	class FormFieldChoice final : public FormField
@@ -74,20 +70,20 @@ namespace PDF
 	public:
 		FormFieldChoice (std::shared_ptr<Poppler::FormField>);
 
-		FormType GetType () const;
-		Qt::Alignment GetAlignment () const;
+		FormType GetType () const override;
+		Qt::Alignment GetAlignment () const override;
 
-		Type GetChoiceType () const;
+		Type GetChoiceType () const override;
 
-		QStringList GetAllChoices () const;
+		QStringList GetAllChoices () const override;
 
-		QList<int> GetCurrentChoices () const;
-		void SetCurrentChoices (const QList<int>&);
+		QList<int> GetCurrentChoices () const override;
+		void SetCurrentChoices (const QList<int>&) override;
 
-		QString GetEditChoice () const;
-		void SetEditChoice (const QString&);
+		QString GetEditChoice () const override;
+		void SetEditChoice (const QString&) override;
 
-		bool IsEditable () const;
+		bool IsEditable () const override;
 	};
 
 	class FormFieldButton final : public FormField
@@ -102,20 +98,18 @@ namespace PDF
 	public:
 		FormFieldButton (std::shared_ptr<Poppler::FormField>, Document*);
 
-		FormType GetType () const;
-		Qt::Alignment GetAlignment () const;
+		FormType GetType () const override;
+		Qt::Alignment GetAlignment () const override;
 
-		Type GetButtonType () const;
+		Type GetButtonType () const override;
 
-		QString GetCaption () const;
+		QString GetCaption () const override;
 
-		bool IsChecked () const;
-		void SetChecked (bool);
+		bool IsChecked () const override;
+		void SetChecked (bool) override;
 
-		QList<int> GetButtonGroup () const;
+		QList<int> GetButtonGroup () const override;
 
-		LinkAction GetActivationAction () const;
+		LinkAction GetActivationAction () const override;
 	};
-}
-}
 }

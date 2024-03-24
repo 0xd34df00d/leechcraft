@@ -17,11 +17,7 @@ namespace Poppler
 	class Document;
 }
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	class PendingFontInfoRequest final : public QObject
 									   , public IPendingFontInfoRequest
@@ -38,6 +34,4 @@ namespace PDF
 	signals:
 		void ready () override;
 	};
-}
-}
 }

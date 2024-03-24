@@ -13,11 +13,7 @@
 #include <poppler-version.h>
 #include "links.h"
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	IAnnotation_ptr MakeAnnotation (Document *doc, Poppler::Annotation *ann)
 	{
@@ -38,10 +34,7 @@ namespace PDF
 			break;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown"
-				<< ann->subType ();
-
+		qWarning () << "unknown" << ann->subType ();
 		return {};
 	}
 
@@ -106,6 +99,4 @@ namespace PDF
 	{
 		return AnnotationType::Caret;
 	}
-}
-}
 }

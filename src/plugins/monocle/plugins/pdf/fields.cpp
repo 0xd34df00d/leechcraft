@@ -14,14 +14,10 @@
 #include <util/sll/unreachable.h>
 #include "links.h"
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	FormField::FormField (std::shared_ptr<Poppler::FormField> field)
-	: BaseField_ (field)
+	: BaseField_ { std::move (field) }
 	{
 	}
 
@@ -122,9 +118,7 @@ namespace PDF
 			return Type::ListBox;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown choice type"
-				<< Field_->choiceType ();
+		qWarning () << "unknown choice type" << Field_->choiceType ();
 		return Type::Combobox;
 	}
 
@@ -193,9 +187,7 @@ namespace PDF
 			return Type::Radiobutton;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown button type"
-				<< Field_->buttonType ();
+		qWarning () << "unknown button type" << Field_->buttonType ();
 		return Type::Pushbutton;
 	}
 
@@ -228,6 +220,4 @@ namespace PDF
 		const auto actLink = Field_->activationAction ();
 		return actLink ? MakeLinkAction (*Doc_, *actLink) : NoAction {};
 	}
-}
-}
 }

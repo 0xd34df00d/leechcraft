@@ -10,11 +10,7 @@
 #include <QtDebug>
 #include "document.h"
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	namespace
 	{
@@ -107,6 +103,4 @@ namespace PDF
 	{
 		return MakeLinkAction (*Doc_, *Link_);
 	}
-}
-}
 }

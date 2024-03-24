@@ -10,24 +10,21 @@
 #include <QIcon>
 #include <poppler-version.h>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "document.h"
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("monocle_pdf");
+		Util::InstallTranslator ("monocle_pdf"_qs);
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclepdfsettings.xml");
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclepdfsettings.xml"_qs);
 	}
 
 	void Plugin::SecondInit ()
@@ -45,7 +42,7 @@ namespace PDF
 
 	QString Plugin::GetName () const
 	{
-		return "Monocle PDF";
+		return "Monocle PDF"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -60,9 +57,7 @@ namespace PDF
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
+		return { "org.LeechCraft.Monocle.IBackendPlugin" };
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -89,7 +84,7 @@ namespace PDF
 
 	QStringList Plugin::GetSupportedMimes () const
 	{
-		return { "application/pdf" };
+		return { "application/pdf"_qs };
 	}
 
 	bool Plugin::IsThreaded () const
@@ -103,12 +98,10 @@ namespace PDF
 		{
 			{
 				tr ("PDF files"),
-				{ "pdf" }
+				{ "pdf"_qs }
 			}
 		};
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_monocle_pdf, LC::Monocle::PDF::Plugin);

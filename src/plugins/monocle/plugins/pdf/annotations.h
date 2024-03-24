@@ -19,11 +19,7 @@ namespace Poppler
 	class TextAnnotation;
 }
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	class Document;
 
@@ -39,7 +35,7 @@ namespace PDF
 		{
 		}
 
-		virtual ~AnnotationBase () {}
+		~AnnotationBase () override = default;
 
 		QString GetAuthor () const override
 		{
@@ -100,6 +96,4 @@ namespace PDF
 
 		AnnotationType GetAnnotationType () const override;
 	};
-}
-}
 }
