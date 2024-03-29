@@ -55,7 +55,7 @@ namespace Monocle
 		QMap<QGraphicsItem*, RectInfo> Item2RectInfo_;
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = nullptr);
-		~PageGraphicsItem ();
+		~PageGraphicsItem () override;
 
 		void SetLayoutManager (PagesLayoutManager*);
 
@@ -77,13 +77,13 @@ namespace Monocle
 
 		void SetRenderingEnabled (bool);
 
-		QRectF boundingRect () const;
-		QPainterPath shape () const;
+		QRectF boundingRect () const override;
+		QPainterPath shape () const override;
 	protected:
-		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
-		void mousePressEvent (QGraphicsSceneMouseEvent*);
-		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
-		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
+		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
+		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
+		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
+		void contextMenuEvent (QGraphicsSceneContextMenuEvent*) override;
 	private:
 		bool ShouldRender () const;
 		QPixmap GetEmptyPixmap (bool fill) const;
