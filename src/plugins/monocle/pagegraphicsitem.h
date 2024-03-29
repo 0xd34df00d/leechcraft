@@ -93,8 +93,6 @@ namespace Monocle
 		void requestRotation (double);
 
 		void updateRotation (double, int);
-	signals:
-		void rotateRequested (double);
 	};
 }
 }
