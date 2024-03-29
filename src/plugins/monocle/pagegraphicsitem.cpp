@@ -200,10 +200,6 @@ namespace Monocle
 				SIGNAL (valueChanged (double)),
 				this,
 				SLOT (requestRotation (double)));
-		connect (LayoutManager_,
-				SIGNAL (rotationUpdated (double, int)),
-				this,
-				SLOT (updateRotation (double, int)));
 		auto actionWidget = new QWidgetAction (arbMenu);
 		actionWidget->setDefaultWidget (ArbWidget_);
 		arbMenu->addAction (actionWidget);
@@ -283,17 +279,6 @@ namespace Monocle
 	void PageGraphicsItem::requestRotation (double rotation)
 	{
 		LayoutManager_->SetRotation (rotation, PageNum_);
-	}
-
-	void PageGraphicsItem::updateRotation (double rotation, int page)
-	{
-		if (page != PageNum_)
-			return;
-
-		if (!ArbWidget_)
-			return;
-
-		ArbWidget_->setValue (rotation + LayoutManager_->GetRotation ());
 	}
 }
 }

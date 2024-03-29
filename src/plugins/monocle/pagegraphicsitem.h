@@ -91,8 +91,6 @@ namespace Monocle
 		void rotateCCW ();
 		void rotateCW ();
 		void requestRotation (double);
-
-		void updateRotation (double, int);
 	};
 }
 }
