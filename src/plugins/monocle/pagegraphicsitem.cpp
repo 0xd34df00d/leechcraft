@@ -213,17 +213,12 @@ namespace LC::Monocle
 	bool PageGraphicsItem::IsDisplayed () const
 	{
 		const auto& thisMapped = mapToScene (boundingRect ()).boundingRect ();
-
-		for (auto view : scene ()->views ())
-		{
-			const auto& rect = view->viewport ()->rect ();
-			const auto& mapped = view->mapToScene (rect).boundingRect ();
-
-			if (mapped.intersects (thisMapped))
-				return true;
-		}
-
-		return false;
+		return std::ranges::any_of (scene ()->views (),
+				[&thisMapped] (auto view)
+				{
+					const auto& rect = view->viewport ()->rect ();
+					return view->mapToScene (rect).boundingRect ().intersects (thisMapped);
+				});
 	}
 
 	void PageGraphicsItem::SetRenderingEnabled (bool enabled)
