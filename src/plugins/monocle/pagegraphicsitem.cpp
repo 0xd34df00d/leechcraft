@@ -206,10 +206,7 @@ namespace Monocle
 
 	QPixmap PageGraphicsItem::GetEmptyPixmap () const
 	{
-		auto size = Doc_->GetPageSize (PageNum_);
-		size.rwidth () *= XScale_;
-		size.rheight () *= YScale_;
-		QPixmap px { size };
+		QPixmap px { boundingRect ().size ().toSize () };
 		px.fill ();
 		return px;
 	}
