@@ -244,7 +244,7 @@ namespace Monocle
 
 	QRectF PageGraphicsItem::boundingRect () const
 	{
-		auto size = Doc_->GetPageSize (PageNum_);
+		QSizeF size { Doc_->GetPageSize (PageNum_) };
 		size.rwidth () *= XScale_;
 		size.rheight () *= YScale_;
 		return QRectF { offset (), size };
