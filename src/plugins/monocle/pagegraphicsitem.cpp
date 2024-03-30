@@ -180,11 +180,11 @@ namespace Monocle
 		QMenu rotateMenu;
 
 		auto ccwAction = rotateMenu.addAction (tr ("Rotate 90 degrees counter-clockwise"),
-				this, SLOT (rotateCCW ()));
+				this, [this] { LayoutManager_->AddRotation (-90, PageNum_); });
 		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
 
 		auto cwAction = rotateMenu.addAction (tr ("Rotate 90 degrees clockwise"),
-				this, SLOT (rotateCW ()));
+				this, [this] { LayoutManager_->AddRotation (90, PageNum_); });
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
 		auto arbAction = rotateMenu.addAction (tr ("Rotate arbitrarily..."));
@@ -194,12 +194,11 @@ namespace Monocle
 		arbAction->setMenu (arbMenu);
 
 		ArbWidget_ = new ArbitraryRotationWidget;
-		ArbWidget_->setValue (LayoutManager_->GetRotation () +
-				LayoutManager_->GetRotation (PageNum_));
+		ArbWidget_->setValue (LayoutManager_->GetRotation () + LayoutManager_->GetRotation (PageNum_));
 		connect (ArbWidget_,
-				SIGNAL (valueChanged (double)),
+				&ArbitraryRotationWidget::valueChanged,
 				this,
-				SLOT (requestRotation (double)));
+				[this] (double rotation) { LayoutManager_->SetRotation (rotation, PageNum_); });
 		auto actionWidget = new QWidgetAction (arbMenu);
 		actionWidget->setDefaultWidget (ArbWidget_);
 		arbMenu->addAction (actionWidget);
@@ -264,21 +263,6 @@ namespace Monocle
 		QPainterPath path;
 		path.addRect (boundingRect ());
 		return path;
-	}
-
-	void PageGraphicsItem::rotateCCW ()
-	{
-		LayoutManager_->AddRotation (-90, PageNum_);
-	}
-
-	void PageGraphicsItem::rotateCW ()
-	{
-		LayoutManager_->AddRotation (90, PageNum_);
-	}
-
-	void PageGraphicsItem::requestRotation (double rotation)
-	{
-		LayoutManager_->SetRotation (rotation, PageNum_);
 	}
 }
 }

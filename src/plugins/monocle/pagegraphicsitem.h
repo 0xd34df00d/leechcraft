@@ -87,10 +87,6 @@ namespace Monocle
 	private:
 		bool ShouldRender () const;
 		QPixmap GetEmptyPixmap (bool fill) const;
-	private slots:
-		void rotateCCW ();
-		void rotateCW ();
-		void requestRotation (double);
 	};
 }
 }
