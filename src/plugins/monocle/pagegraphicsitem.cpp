@@ -9,13 +9,9 @@
 #include "pagegraphicsitem.h"
 #include <limits>
 #include <cmath>
-#include <QtDebug>
-#include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QMatrix>
-#include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QMenu>
