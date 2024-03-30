@@ -18,9 +18,7 @@
 template<typename T>
 class QFutureWatcher;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class PagesLayoutManager;
 	class ArbitraryRotationWidget;
@@ -46,7 +44,7 @@ namespace Monocle
 
 		QPointer<ArbitraryRotationWidget> ArbWidget_;
 	public:
-		typedef std::function<void (QRectF)> RectSetter_f;
+		using RectSetter_f = std::function<void (QRectF)>;
 	private:
 		struct RectInfo
 		{
@@ -89,5 +87,4 @@ namespace Monocle
 		bool ShouldRender () const;
 		QPixmap GetEmptyPixmap () const;
 	};
-}
 }

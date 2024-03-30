@@ -23,14 +23,12 @@
 #include "arbitraryrotationwidget.h"
 #include "pageslayoutmanager.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	PageGraphicsItem::PageGraphicsItem (IDocument_ptr doc, int page, QGraphicsItem *parent)
-	: QGraphicsPixmapItem (parent)
-	, Doc_ (doc)
-	, PageNum_ (page)
+	: QGraphicsPixmapItem { parent }
+	, Doc_ { std::move (doc) }
+	, PageNum_ { page }
 	{
 		setTransformationMode (Qt::SmoothTransformation);
 		setShapeMode (QGraphicsPixmapItem::BoundingRectShape);
@@ -50,7 +48,7 @@ namespace Monocle
 
 	void PageGraphicsItem::SetReleaseHandler (std::function<void (int, QPointF)> handler)
 	{
-		ReleaseHandler_ = handler;
+		ReleaseHandler_ = std::move (handler);
 	}
 
 	void PageGraphicsItem::SetScale (double xs, double ys)
@@ -100,14 +98,13 @@ namespace Monocle
 		};
 	}
 
-	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item,
-			const QRectF& srcRect, RectSetter_f setter)
+	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item, const QRectF& srcRect, RectSetter_f setter)
 	{
 		const auto& pageRect = MapToDoc (boundingRect ());
 
 		const auto& docRect = QMatrix {}.scale (pageRect.width (), pageRect.height ()).mapRect (srcRect);
 
-		Item2RectInfo_ [item] = { docRect, setter };
+		Item2RectInfo_ [item] = { docRect, std::move (setter) };
 		setter (MapFromDoc (docRect));
 	}
 
@@ -175,12 +172,14 @@ namespace Monocle
 	{
 		QMenu rotateMenu;
 
+		constexpr auto RotationStep = 90;
+
 		auto ccwAction = rotateMenu.addAction (tr ("Rotate 90 degrees counter-clockwise"),
-				this, [this] { LayoutManager_->AddRotation (-90, PageNum_); });
+				this, [this] { LayoutManager_->AddRotation (-RotationStep, PageNum_); });
 		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
 
 		auto cwAction = rotateMenu.addAction (tr ("Rotate 90 degrees clockwise"),
-				this, [this] { LayoutManager_->AddRotation (90, PageNum_); });
+				this, [this] { LayoutManager_->AddRotation (RotationStep, PageNum_); });
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
 		auto arbAction = rotateMenu.addAction (tr ("Rotate arbitrarily..."));
@@ -256,5 +255,4 @@ namespace Monocle
 		path.addRect (boundingRect ());
 		return path;
 	}
-}
 }
