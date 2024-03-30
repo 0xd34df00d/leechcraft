@@ -12,16 +12,11 @@
 #include <memory>
 #include <QCoreApplication>
 #include <QGraphicsPixmapItem>
-#include <QPointer>
 #include "interfaces/monocle/idocument.h"
-
-template<typename T>
-class QFutureWatcher;
 
 namespace LC::Monocle
 {
 	class PagesLayoutManager;
-	class ArbitraryRotationWidget;
 
 	class PageGraphicsItem : public QObject
 						   , public QGraphicsPixmapItem
@@ -41,8 +36,6 @@ namespace LC::Monocle
 		std::function<void (int, QPointF)> ReleaseHandler_;
 
 		PagesLayoutManager *LayoutManager_ = nullptr;
-
-		QPointer<ArbitraryRotationWidget> ArbWidget_;
 	public:
 		using RectSetter_f = std::function<void (QRectF)>;
 	private:

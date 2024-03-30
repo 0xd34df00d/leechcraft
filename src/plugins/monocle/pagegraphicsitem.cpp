@@ -182,21 +182,20 @@ namespace LC::Monocle
 				this, [this] { LayoutManager_->AddRotation (RotationStep, PageNum_); });
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
+		QMenu arbMenu;
 		auto arbAction = rotateMenu.addAction (tr ("Rotate arbitrarily..."));
 		arbAction->setProperty ("ActionIcon", "transform-rotate");
+		arbAction->setMenu (&arbMenu);
 
-		auto arbMenu = new QMenu ();
-		arbAction->setMenu (arbMenu);
-
-		ArbWidget_ = new ArbitraryRotationWidget;
-		ArbWidget_->setValue (LayoutManager_->GetRotation () + LayoutManager_->GetRotation (PageNum_));
-		connect (ArbWidget_,
+		auto arbWidget = new ArbitraryRotationWidget;
+		arbWidget->setValue (LayoutManager_->GetRotation () + LayoutManager_->GetRotation (PageNum_));
+		connect (arbWidget,
 				&ArbitraryRotationWidget::valueChanged,
 				this,
 				[this] (double rotation) { LayoutManager_->SetRotation (rotation, PageNum_); });
-		auto actionWidget = new QWidgetAction (arbMenu);
-		actionWidget->setDefaultWidget (ArbWidget_);
-		arbMenu->addAction (actionWidget);
+		QWidgetAction actionWidget { nullptr };
+		actionWidget.setDefaultWidget (arbWidget);
+		arbMenu.addAction (&actionWidget);
 
 		Core::Instance ().GetProxy ()->GetIconThemeManager ()->ManageWidget (&rotateMenu);
 
