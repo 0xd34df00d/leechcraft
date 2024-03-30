@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <memory>
+#include <QCoreApplication>
 #include <QGraphicsPixmapItem>
 #include <QPointer>
 #include "interfaces/monocle/idocument.h"
@@ -27,7 +28,7 @@ namespace Monocle
 	class PageGraphicsItem : public QObject
 						   , public QGraphicsPixmapItem
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::PageGraphicsItem)
 
 		bool IsRenderingEnabled_ = true;
 
