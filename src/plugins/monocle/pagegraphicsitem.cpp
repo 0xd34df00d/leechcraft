@@ -104,8 +104,8 @@ namespace LC::Monocle
 
 		const auto& docRect = QMatrix {}.scale (pageRect.width (), pageRect.height ()).mapRect (srcRect);
 
-		Item2RectInfo_ [item] = { docRect, std::move (setter) };
 		setter (MapFromDoc (docRect));
+		Item2RectInfo_ [item] = { docRect, std::move (setter) };
 	}
 
 	void PageGraphicsItem::UnregisterChildRect (QGraphicsItem *item)
