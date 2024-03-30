@@ -87,7 +87,7 @@ namespace Monocle
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*) override;
 	private:
 		bool ShouldRender () const;
-		QPixmap GetEmptyPixmap (bool fill) const;
+		QPixmap GetEmptyPixmap () const;
 	};
 }
 }
