@@ -69,6 +69,15 @@ namespace LC::Monocle
 							[url] { OpenUrl (url.Url_); });
 					open->setProperty ("ActionIcon", "document-open-remote");
 
+					auto download = menu.addAction (QObject::tr ("Download %1").arg (url.Url_.toString ()),
+							&tab,
+							[url]
+							{
+								auto e = Util::MakeEntity (url.Url_, {}, FromUserInitiated | OnlyDownload);
+								GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+							});
+					download->setProperty ("ActionIcon", "download");
+
 					auto copy = menu.addAction (QObject::tr ("Copy URL to the clipboard"),
 							&tab,
 							[url] { QGuiApplication::clipboard ()->setText (url.Url_.toString ()); });
