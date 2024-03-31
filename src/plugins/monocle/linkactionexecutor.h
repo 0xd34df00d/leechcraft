@@ -18,4 +18,5 @@ namespace LC::Monocle
 
 	void ExecuteLinkAction (const LinkAction&, DocumentTab&);
 	void AddLinkMenuActions (const LinkAction&, QMenu&, DocumentTab&);
+	QString GetLinkTooltip (const LinkAction&);
 }

@@ -28,6 +28,33 @@ namespace LC::Monocle
 		struct LinkActionMenu
 		{
 			Q_DECLARE_TR_FUNCTIONS (LC::Monocle::LinkActionMenu)
+		public:
+			static QString GetPrimaryActionLabel (NoAction)
+			{
+				return {};
+			}
+
+			static QString GetPrimaryActionLabel (const NavigationAction& nav)
+			{
+				return tr ("Navigate to page %1").arg (nav.PageNumber_ + 1);
+			}
+
+			static QString GetPrimaryActionLabel (const ExternalNavigationAction& extNav)
+			{
+				return tr ("Navigate to page %1 of %2")
+						.arg (extNav.DocumentNavigation_.PageNumber_ + 1)
+						.arg (extNav.TargetDocument_);
+			}
+
+			static QString GetPrimaryActionLabel (const UrlAction& url)
+			{
+				return tr ("Open URL %1").arg (url.Url_.toString ());
+			}
+
+			static QString GetPrimaryActionLabel (const CustomAction&)
+			{
+				return tr ("Execute custom action");
+			}
 		};
 	}
 
@@ -47,17 +74,14 @@ namespace LC::Monocle
 				[] (NoAction) {},
 				[&] (const NavigationAction& nav)
 				{
-					auto navigate = menu.addAction (LinkActionMenu::tr ("Navigate to page %1").arg (nav.PageNumber_ + 1),
+					auto navigate = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (nav),
 							&tab,
 							[&tab, nav] { tab.Navigate (nav); });
 					navigate->setProperty ("ActionIcon", "quickopen");
 				},
 				[&] (const ExternalNavigationAction& extNav)
 				{
-					const auto& navLabel = LinkActionMenu::tr ("Navigate to page %1 of %2")
-							.arg (extNav.DocumentNavigation_.PageNumber_ + 1)
-							.arg (extNav.TargetDocument_);
-					auto navigate = menu.addAction (navLabel,
+					auto navigate = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (extNav),
 							&tab,
 							[&tab, extNav] { tab.Navigate (extNav); });
 					navigate->setProperty ("ActionIcon", "quickopen-file");
@@ -69,7 +93,7 @@ namespace LC::Monocle
 				},
 				[&] (const UrlAction& url)
 				{
-					auto open = menu.addAction (LinkActionMenu::tr ("Open URL %1").arg (url.Url_.toString ()),
+					auto open = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (url),
 							&tab,
 							[url] { OpenUrl (url.Url_); });
 					open->setProperty ("ActionIcon", "document-open-remote");
@@ -90,10 +114,16 @@ namespace LC::Monocle
 				},
 				[&] (const CustomAction& custom)
 				{
-					auto exec = menu.addAction (LinkActionMenu::tr ("Execute custom action"),
+					auto exec = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (custom),
 							&tab,
 							custom);
 					exec->setProperty ("ActionIcon", "document-open-remote");
 				});
+	}
+
+	QString GetLinkTooltip (const LinkAction& action)
+	{
+		return Util::Visit (action,
+				[] (const auto& action) { return LinkActionMenu::GetPrimaryActionLabel (action); });
 	}
 }
