@@ -57,7 +57,7 @@ namespace LC::Monocle
 							[&tab, extNav] { tab.Navigate (extNav); });
 					navigate->setProperty ("ActionIcon", "quickopen-file");
 
-					auto copy = menu.addAction (QObject::tr ("Copy target document name into clipboard"),
+					auto copy = menu.addAction (QObject::tr ("Copy target document name to the clipboard"),
 							&tab,
 							[extNav] { QGuiApplication::clipboard ()->setText (extNav.TargetDocument_); });
 					copy->setProperty ("ActionIcon", "edit-copy");
@@ -69,7 +69,7 @@ namespace LC::Monocle
 							[url] { OpenUrl (url.Url_); });
 					open->setProperty ("ActionIcon", "document-open-remote");
 
-					auto copy = menu.addAction (QObject::tr ("Copy URL into clipboard"),
+					auto copy = menu.addAction (QObject::tr ("Copy URL to the clipboard"),
 							&tab,
 							[url] { QGuiApplication::clipboard ()->setText (url.Url_.toString ()); });
 					copy->setProperty ("ActionIcon", "edit-copy");
