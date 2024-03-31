@@ -10,9 +10,12 @@
 
 #include "interfaces/monocle/ilink.h"
 
+class QMenu;
+
 namespace LC::Monocle
 {
 	class DocumentTab;
 
 	void ExecuteLinkAction (const LinkAction&, DocumentTab&);
+	void AddLinkMenuActions (const LinkAction&, QMenu&, DocumentTab&);
 }
