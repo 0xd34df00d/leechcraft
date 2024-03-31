@@ -15,12 +15,8 @@
 			</item>
 		</tab>
 		<tab label="Performance">
-			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" suffix=" MiB">
-				<label>Pixmap cache size:</label>
-			</item>
-			<item type="checkbox" property="SmoothScrolling" default="true">
-				<label>Smooth scrolling</label>
-			</item>
+			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" label="Pixmap cache size:" suffix=" MiB" />
+			<item type="checkbox" property="SmoothScrolling" default="true" label="Smooth scrolling" />
 		</tab>
 		<tab label="Default backends">
 			<item type="dataview" property="DefaultBackends" addEnabled="false" />
@@ -28,15 +24,9 @@
 	</page>
 	<page label="Text books">
 		<tab label="Appearance">
-			<item type="font" property="DefaultFont">
-				<label>Default font:</label>
-			</item>
-			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10" suffix=" px">
-				<label>Page width:</label>
-			</item>
-			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10" suffix=" px">
-				<label>Page height:</label>
-			</item>
+			<item type="font" property="DefaultFont" label="Default font:" />
+			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10" label="Page width:" suffix=" px" />
+			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10" label="Page height:" suffix=" px" />
 			<item type="groupbox" checkable="true" property="CustomColors" default="false" label="Custom colors">
 				<item type="color" property="ColorBackground" default="#ebdbb2" label="Background color:" />
 				<item type="color" property="ColorForeground" default="black" label="Foreground color:" />
