@@ -13,12 +13,28 @@
 #include <QPen>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/sll/qtutil.h>
 #include "linkactionexecutor.h"
 
 namespace LC
 {
 namespace Monocle
 {
+	namespace
+	{
+		QString CombineTooltips (const QString& action, const QString& link)
+		{
+			if (action.isEmpty () && link.isEmpty ())
+				return {};
+			if (action.isEmpty ())
+				return link;
+			if (link.isEmpty ())
+				return action;
+
+			return link + "<hr/>"_qs + action;
+		}
+	}
+
 	LinkItem::LinkItem (const ILink_ptr& link, QGraphicsItem *parent, DocumentTab& tab)
 	: QGraphicsRectItem { parent }
 	, DocTab_ { tab }
@@ -27,7 +43,10 @@ namespace Monocle
 		setCursor (Qt::PointingHandCursor);
 		setPen (Qt::NoPen);
 		setFlag (QGraphicsItem::ItemHasNoContents);
-		setToolTip (link->GetToolTip ());
+
+		const auto& actionTooltip = GetLinkActionTooltip (link->GetLinkAction ());
+		const auto& linkTooltip = link->GetToolTip ();
+		setToolTip (CombineTooltips (actionTooltip, linkTooltip));
 	}
 
 	void LinkItem::contextMenuEvent (QGraphicsSceneContextMenuEvent *event)

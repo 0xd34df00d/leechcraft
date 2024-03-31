@@ -121,7 +121,7 @@ namespace LC::Monocle
 				});
 	}
 
-	QString GetLinkTooltip (const LinkAction& action)
+	QString GetLinkActionTooltip (const LinkAction& action)
 	{
 		return Util::Visit (action,
 				[] (const auto& action) { return LinkActionMenu::GetPrimaryActionLabel (action); });
