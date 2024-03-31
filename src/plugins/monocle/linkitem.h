@@ -26,6 +26,7 @@ namespace Monocle
 	public:
 		LinkItem (const ILink_ptr&, QGraphicsItem*, DocumentTab&);
 	protected:
+		void contextMenuEvent (QGraphicsSceneContextMenuEvent*) override;
 		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
 	};

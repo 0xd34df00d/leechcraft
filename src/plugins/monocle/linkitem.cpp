@@ -7,9 +7,12 @@
  **********************************************************************/
 
 #include "linkitem.h"
-#include <QGraphicsSceneMouseEvent>
 #include <QCursor>
+#include <QGraphicsSceneMouseEvent>
+#include <QMenu>
 #include <QPen>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "linkactionexecutor.h"
 
 namespace LC
@@ -25,6 +28,14 @@ namespace Monocle
 		setPen (Qt::NoPen);
 		setFlag (QGraphicsItem::ItemHasNoContents);
 		setToolTip (link->GetToolTip ());
+	}
+
+	void LinkItem::contextMenuEvent (QGraphicsSceneContextMenuEvent *event)
+	{
+		QMenu menu;
+		AddLinkMenuActions (Link_->GetLinkAction (), menu, DocTab_);
+		GetProxyHolder ()->GetIconThemeManager ()->ManageWidget (&menu);
+		menu.exec (event->screenPos ());
 	}
 
 	void LinkItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
