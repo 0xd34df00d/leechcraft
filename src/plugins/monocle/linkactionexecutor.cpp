@@ -56,6 +56,11 @@ namespace LC::Monocle
 							&tab,
 							[&tab, extNav] { tab.Navigate (extNav); });
 					navigate->setProperty ("ActionIcon", "quickopen-file");
+
+					auto copy = menu.addAction (QObject::tr ("Copy target document name into clipboard"),
+							&tab,
+							[extNav] { QGuiApplication::clipboard ()->setText (extNav.TargetDocument_); });
+					copy->setProperty ("ActionIcon", "edit-copy");
 				},
 				[&] (const UrlAction& url)
 				{
