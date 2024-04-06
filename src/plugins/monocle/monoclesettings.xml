@@ -3,12 +3,13 @@
 	<page label="Monocle">
 		<tab label="Appearance">
 			<item type="spinbox" property="RecentlyOpenedListSize" default="10" minimum="1" maximum="100">
-				<label>Maximum number of items in Recently Opened list:</label>
+				<label>Maximum number of items in the Recently Opened list:</label>
 			</item>
 		</tab>
 		<tab label="Behaviour">
 			<item type="checkbox" property="InvertedPageNumLabel" default="true">
-				<label>Inverted page number label behaviour</label>
+				<label>Invert keyboard scroll direction of the page number indicator</label>
+				<tooltip>Changes the scroll direction when the value of the page indicator is changed using the keyboard, for example, via the up/down arrows and Page Up/Page Down keys.</tooltip>
 			</item>
 			<item type="checkbox" property="InhibitScreensaver" default="true">
 				<label>Inhibit screensaver while a Monocle tab is active</label>
