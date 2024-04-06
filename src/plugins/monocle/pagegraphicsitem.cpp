@@ -197,7 +197,7 @@ namespace LC::Monocle
 		actionWidget.setDefaultWidget (arbWidget);
 		arbMenu.addAction (&actionWidget);
 
-		Core::Instance ().GetProxy ()->GetIconThemeManager ()->ManageWidget (&rotateMenu);
+		GetProxyHolder ()->GetIconThemeManager ()->ManageWidget (&rotateMenu);
 
 		rotateMenu.exec (event->screenPos ());
 	}
