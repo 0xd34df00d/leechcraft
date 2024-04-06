@@ -19,7 +19,7 @@ namespace LC::Monocle::PDF
 		std::optional<QRectF> GetTargetArea (const Poppler::LinkDestination& dest)
 		{
 			if (dest.isChangeLeft () && dest.isChangeTop ())
-				return QRectF { { dest.left (), dest.top () }, QSizeF {} };
+				return QRectF { { dest.left (), dest.top () }, QSizeF { 0, 0 } };
 			return {};
 		}
 	}
