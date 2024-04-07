@@ -314,12 +314,6 @@ namespace Monocle
 		return tf.mapRect (QRectF { { 0, 0 }, origSize }).size ();
 	}
 
-	void PagesLayoutManager::scheduleSetRotation (double angle)
-	{
-		SetRotation (angle);
-		emit rotationUpdated (angle);
-	}
-
 	void PagesLayoutManager::scheduleRelayout ()
 	{
 		if (RelayoutScheduled_)

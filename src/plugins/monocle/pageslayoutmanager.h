@@ -83,8 +83,6 @@ namespace Monocle
 	private:
 		QSizeF GetRotatedSize (int page) const;
 	public slots:
-		void scheduleSetRotation (double);
-
 		void scheduleRelayout ();
 		void handleRelayout ();
 	private slots:

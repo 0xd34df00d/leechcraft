@@ -546,13 +546,13 @@ namespace Monocle
 
 		auto arbWidget = new ArbitraryRotationWidget;
 		connect (arbWidget,
-				SIGNAL (valueChanged (double)),
+				&ArbitraryRotationWidget::valueChanged,
 				LayoutManager_,
-				SLOT (scheduleSetRotation (double)));
+				qOverload<double> (&PagesLayoutManager::SetRotation));
 		connect (LayoutManager_,
-				SIGNAL (rotationUpdated (double)),
+				qOverload<double> (&PagesLayoutManager::rotationUpdated),
 				arbWidget,
-				SLOT (setValue (double)));
+				&ArbitraryRotationWidget::setValue);
 		auto actionWidget = new QWidgetAction (this);
 		actionWidget->setDefaultWidget (arbWidget);
 		arbMenu->addAction (actionWidget);
