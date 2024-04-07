@@ -227,6 +227,20 @@ namespace LC::Util
 		QCOMPARE (GetTaskResult (task), 0);
 	}
 
+	namespace
+	{
+		void CompareDouble (double actual, double expected, double delta)
+		{
+			const auto diff = std::abs (actual - expected);
+			const auto midpoint = (actual + expected) / 2;
+			if (diff / midpoint >= delta)
+			{
+				auto message = std::to_string (actual) + " is too different from the expected " + std::to_string (expected);
+				QFAIL (message.c_str ());
+			}
+		}
+	}
+
 	void CoroTaskTest::testWaitMany ()
 	{
 		constexpr auto max = 100;
@@ -253,8 +267,7 @@ namespace LC::Util
 
 		QCOMPARE (result, expected);
 		QVERIFY (creationElapsed < 1);
-		constexpr auto tolerance = 1.05;
-		QVERIFY (executionElapsed < max * tolerance);
+		CompareDouble (executionElapsed, max, 0.05);
 	}
 
 	void CoroTaskTest::testWaitManyTuple ()
@@ -271,8 +284,7 @@ namespace LC::Util
 		const auto executionElapsed = timer.elapsed ();
 
 		QCOMPARE (result, (std::tuple { 10, 9, 2, 1 }));
-		constexpr auto tolerance = 1.05;
-		QVERIFY (executionElapsed < 10 * tolerance);
+		CompareDouble (executionElapsed, 10, 0.05);
 	}
 
 	void CoroTaskTest::testEither ()
