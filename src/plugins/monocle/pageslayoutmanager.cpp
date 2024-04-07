@@ -136,7 +136,7 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return 1;
 
-		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter) -> double
+		auto calcRatio = [this] (auto dimGetter)
 		{
 			if (Pages_.isEmpty ())
 				return 1.0;
@@ -144,7 +144,7 @@ namespace Monocle
 			if (pageIdx < 0)
 				pageIdx = 0;
 
-			double dim = dimGetter (GetRotatedSize (pageIdx).toSize () + QSize (2 * HorMargin_, 2 * VertMargin_));
+			auto dim = dimGetter (GetRotatedSize (pageIdx) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
 			auto size = View_->maximumViewportSize ();
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();
@@ -161,17 +161,17 @@ namespace Monocle
 		{
 		case ScaleMode::FitWidth:
 		{
-			auto ratio = calcRatio ([] (const QSize& size) { return size.width (); });
+			auto ratio = calcRatio ([] (QSizeF size) { return size.width (); });
 			if (LayMode_ != LayoutMode::OnePage)
 				ratio /= 2;
 			return ratio;
 		}
 		case ScaleMode::FitPage:
 		{
-			auto wRatio = calcRatio ([] (const QSize& size) { return size.width (); });
+			auto wRatio = calcRatio ([] (QSizeF size) { return size.width (); });
 			if (LayMode_ != LayoutMode::OnePage)
 				wRatio /= 2;
-			auto hRatio = calcRatio ([] (const QSize& size) { return size.height (); });
+			auto hRatio = calcRatio ([] (QSizeF size) { return size.height (); });
 			return std::min (wRatio, hRatio);
 		}
 		case ScaleMode::Fixed:
