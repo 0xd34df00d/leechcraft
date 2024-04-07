@@ -94,8 +94,9 @@ namespace Monocle
 		auto item = View_->itemAt (center - QPoint (1, 1));
 		if (!item)
 			item = View_->itemAt (center - QPoint (10, 10));
-		auto pos = std::find_if (Pages_.begin (), Pages_.end (), [item] (const auto& e) { return e == item; });
-		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
+		if (!item)
+			return -1;
+		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
 	}
 
 	void PagesLayoutManager::SetCurrentPage (int idx, bool immediate)
