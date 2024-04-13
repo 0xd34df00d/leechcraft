@@ -267,11 +267,13 @@ namespace LC::Monocle
 		if (Pages_.isEmpty ())
 			return;
 
+		constexpr auto HorizMargin = Margin / 3;
+
 		qreal currentY = 0;
 		if (firstSeparate)
 		{
 			const auto [pos, size] = GetPagePos (0, scale);
-			Pages_ [0]->setPos (pos + QPointF { 0, currentY });
+			Pages_ [0]->setPos (pos + QPointF { (size.width () + HorizMargin) / 2, currentY });
 			currentY += size.height () + Margin;
 		}
 
@@ -284,7 +286,7 @@ namespace LC::Monocle
 				break;
 
 			const auto [rightPos, rightSize] = GetPagePos (i + 1, scale);
-			Pages_ [i + 1]->setPos (rightPos + QPointF { leftSize.width () + Margin / 3, currentY });
+			Pages_ [i + 1]->setPos (rightPos + QPointF { leftSize.width () + HorizMargin, currentY });
 
 			currentY += std::max (leftSize.height (), rightSize.height ()) + Margin;
 		}
