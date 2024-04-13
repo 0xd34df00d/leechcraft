@@ -22,7 +22,7 @@
 
 namespace LC::Monocle
 {
-	const int Margin = 10;
+	const int Margin = 12;
 
 	PagesLayoutManager::PagesLayoutManager (PagesView *view, SmoothScroller *scroller, QObject *parent)
 	: QObject (parent)
