@@ -14,9 +14,7 @@
 
 class QGraphicsScene;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	enum class LayoutMode;
 	enum class ScaleMode;
@@ -82,16 +80,11 @@ namespace Monocle
 		void Relayout ();
 	private:
 		QSizeF GetRotatedSize (int page) const;
-	public slots:
-		void scheduleRelayout ();
-		void handleRelayout ();
-	private slots:
-		void handlePageSizeChanged (int);
+		void ScheduleRelayout ();
 	signals:
 		void scheduledRelayoutFinished ();
 		void rotationUpdated (double);
 		void rotationUpdated (double, int);
 		void layoutModeChanged ();
 	};
-}
 }

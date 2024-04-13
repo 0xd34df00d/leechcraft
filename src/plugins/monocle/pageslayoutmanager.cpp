@@ -11,6 +11,7 @@
 #include <QScrollBar>
 #include <QTimer>
 #include <QtDebug>
+#include <util/sll/slotclosure.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/monocle/idynamicdocument.h"
 #include "pagesview.h"
@@ -18,9 +19,7 @@
 #include "smoothscroller.h"
 #include "common.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	const int Margin = 10;
 
@@ -33,15 +32,15 @@ namespace Monocle
 	, ScaleMode_ (ScaleMode::FitWidth)
 	{
 		connect (View_,
-				SIGNAL (sizeChanged ()),
+				&PagesView::sizeChanged,
 				this,
-				SLOT (scheduleRelayout ()),
+				&PagesLayoutManager::ScheduleRelayout,
 				Qt::QueuedConnection);
 	}
 
 	void PagesLayoutManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
 	{
-		CurrentDoc_ = doc;
+		CurrentDoc_ = std::move (doc);
 		Pages_ = pages;
 		Rotation_ = 0;
 		emit rotationUpdated (0);
@@ -52,10 +51,13 @@ namespace Monocle
 			page->SetLayoutManager (this);
 
 		if (CurrentDoc_ && qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
-			connect (CurrentDoc_->GetQObject (),
-					SIGNAL (pageSizeChanged (int)),
-					this,
-					SLOT (handlePageSizeChanged (int)));
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[this] { ScheduleRelayout (); },
+				CurrentDoc_->GetQObject (),
+				SIGNAL (pageSizeChanged (int)),
+				CurrentDoc_->GetQObject ()
+			};
 	}
 
 	const QList<PageGraphicsItem*>& PagesLayoutManager::GetPages () const
@@ -232,7 +234,7 @@ namespace Monocle
 		{
 			const auto& pagePos = pageObj->mapFromScene (View_->mapToScene (GetViewportCenter ()));
 			const auto& bounding = pageObj->boundingRect ();
-			if (bounding.width () && bounding.height ())
+			if (bounding.isValid ())
 				oldPageCenter = QPointF { pagePos.x () / bounding.width (),
 						pagePos.y () / bounding.height () };
 		}
@@ -249,8 +251,7 @@ namespace Monocle
 		}
 
 		qreal currentY = 0;
-		qreal lastWidth = 0;
-		qreal lastHeight = 0;
+		QSizeF prevSize {};
 		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
 		{
 			auto page = Pages_ [i];
@@ -258,7 +259,6 @@ namespace Monocle
 			const auto& size = GetRotatedSize (i) * scale;
 			const auto& srcSize = CurrentDoc_->GetPageSize (i) * scale;
 			const auto yDiff = (size.height () - srcSize.height ()) / 2;
-
 			switch (LayMode_)
 			{
 			case LayoutMode::OnePage:
@@ -273,14 +273,13 @@ namespace Monocle
 						!(i % 2);
 				if (isLeftPage)
 				{
-					page->setPos (lastWidth + Margin / 3, currentY + yDiff);
-					currentY += std::max (lastHeight, size.height ()) + Margin;
+					page->setPos (prevSize.width () + Margin / 3, currentY + yDiff);
+					currentY += std::max (prevSize.height (), size.height ()) + Margin;
 				}
 				else
 				{
 					page->setPos (0, currentY + yDiff);
-					lastWidth = size.width ();
-					lastHeight = size.height ();
+					prevSize = size;
 				}
 				break;
 			}
@@ -300,10 +299,8 @@ namespace Monocle
 		}
 
 		if (RelayoutScheduled_)
-		{
-			RelayoutScheduled_ = false;
 			emit scheduledRelayoutFinished ();
-		}
+		RelayoutScheduled_ = false;
 	}
 
 	QSizeF PagesLayoutManager::GetRotatedSize (int page) const
@@ -315,29 +312,18 @@ namespace Monocle
 		return tf.mapRect (QRectF { { 0, 0 }, origSize }).size ();
 	}
 
-	void PagesLayoutManager::scheduleRelayout ()
+	void PagesLayoutManager::ScheduleRelayout ()
 	{
 		if (RelayoutScheduled_)
 			return;
 
 		QTimer::singleShot (500,
 				this,
-				SLOT (handleRelayout ()));
+				[this]
+				{
+					Relayout ();
+					emit scheduledRelayoutFinished ();
+				});
 		RelayoutScheduled_ = true;
 	}
-
-	void PagesLayoutManager::handleRelayout ()
-	{
-		if (!RelayoutScheduled_)
-			return;
-
-		Relayout ();
-		emit scheduledRelayoutFinished ();
-	}
-
-	void PagesLayoutManager::handlePageSizeChanged (int)
-	{
-		scheduleRelayout ();
-	}
-}
 }
