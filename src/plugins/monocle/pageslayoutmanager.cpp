@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "pageslayoutmanager.h"
+#include <cmath>
 #include <QGraphicsScene>
 #include <QScrollBar>
 #include <QTimer>
@@ -183,8 +184,25 @@ namespace LC::Monocle
 		Util::Unreachable ();
 	}
 
+	namespace
+	{
+		double LimitAngle (double angle)
+		{
+			constexpr double MinAngle = -180;
+			constexpr double MaxAngle = 180;
+			if (angle >= MinAngle && angle <= MaxAngle)
+				return angle;
+
+			angle -= MinAngle;
+			angle = std::remainderf (angle, MaxAngle - MinAngle);
+			angle += MinAngle;
+			return angle;
+		}
+	}
+
 	void PagesLayoutManager::SetRotation (double angle)
 	{
+		angle = LimitAngle (angle);
 		Rotation_ = angle;
 		Relayout ();
 		emit rotationUpdated (angle);
@@ -202,6 +220,7 @@ namespace LC::Monocle
 
 	void PagesLayoutManager::SetRotation (double angle, int page)
 	{
+		angle = LimitAngle (angle);
 		PageRotations_ [page] = angle;
 		Relayout ();
 		emit rotationUpdated (angle, page);
