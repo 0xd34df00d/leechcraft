@@ -15,6 +15,7 @@ Checks: >
   -cppcoreguidelines-avoid-capture-default-when-capturing-this,
   -cppcoreguidelines-macro-usage,
   -google-default-arguments,
+  -misc-include-cleaner,
   -misc-non-private-member-variables-in-classes,
   -modernize-use-nodiscard,
   -modernize-use-trailing-return-type,
