@@ -79,6 +79,11 @@ namespace LC::Monocle
 
 		void Relayout ();
 	private:
+		std::pair<QPointF, QSizeF> GetPagePos (int pageIdx, double scale) const;
+
+		void LayoutOneCol (double scale) const;
+		void LayoutTwoCols (double scale, bool firstSeparate) const;
+
 		QSizeF GetRotatedSize (int page) const;
 		void ScheduleRelayout ();
 	signals:

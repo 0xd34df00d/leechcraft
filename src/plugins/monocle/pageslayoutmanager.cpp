@@ -242,6 +242,54 @@ namespace LC::Monocle
 		VertMargin_ = vertical;
 	}
 
+	std::pair<QPointF, QSizeF> PagesLayoutManager::GetPagePos (int pageIdx, double scale) const
+	{
+		const auto& size = GetRotatedSize (pageIdx) * scale;
+		const auto& srcSize = CurrentDoc_->GetPageSize (pageIdx) * scale;
+		const auto yDiff = (size.height () - srcSize.height ()) / 2;
+		return { { 0, yDiff }, size };
+	}
+
+	void PagesLayoutManager::LayoutOneCol (double scale) const
+	{
+		qreal currentY = 0;
+		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
+		{
+			const auto page = Pages_ [i];
+			const auto [pos, size] = GetPagePos (i, scale);
+			page->setPos (pos + QPointF { 0, currentY });
+			currentY += size.height () + Margin;
+		}
+	}
+
+	void PagesLayoutManager::LayoutTwoCols (double scale, bool firstSeparate) const
+	{
+		if (Pages_.isEmpty ())
+			return;
+
+		qreal currentY = 0;
+		if (firstSeparate)
+		{
+			const auto [pos, size] = GetPagePos (0, scale);
+			Pages_ [0]->setPos (pos + QPointF { 0, currentY });
+			currentY += size.height () + Margin;
+		}
+
+		for (int i = firstSeparate ? 1 : 0, pagesCount = Pages_.size (); i < pagesCount; i += 2)
+		{
+			const auto [leftPos, leftSize] = GetPagePos (i, scale);
+			Pages_ [i]->setPos (leftPos + QPointF { 0, currentY });
+
+			if (i == pagesCount - 1)
+				break;
+
+			const auto [rightPos, rightSize] = GetPagePos (i + 1, scale);
+			Pages_ [i + 1]->setPos (rightPos + QPointF { leftSize.width () + Margin / 3, currentY });
+
+			currentY += std::max (leftSize.height (), rightSize.height ()) + Margin;
+		}
+	}
+
 	void PagesLayoutManager::Relayout ()
 	{
 		const auto scale = GetCurrentScale ();
@@ -269,40 +317,17 @@ namespace LC::Monocle
 			item->SetScale (scale, scale);
 		}
 
-		qreal currentY = 0;
-		QSizeF prevSize {};
-		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
+		switch (LayMode_)
 		{
-			auto page = Pages_ [i];
-
-			const auto& size = GetRotatedSize (i) * scale;
-			const auto& srcSize = CurrentDoc_->GetPageSize (i) * scale;
-			const auto yDiff = (size.height () - srcSize.height ()) / 2;
-			switch (LayMode_)
-			{
-			case LayoutMode::OnePage:
-				page->setPos (0, currentY + yDiff);
-				currentY += size.height () + Margin;
-				break;
-			case LayoutMode::TwoPages:
-			case LayoutMode::TwoPagesShifted:
-			{
-				bool isLeftPage = LayMode_ == LayoutMode::TwoPages ?
-						i % 2 :
-						!(i % 2);
-				if (isLeftPage)
-				{
-					page->setPos (prevSize.width () + Margin / 3, currentY + yDiff);
-					currentY += std::max (prevSize.height (), size.height ()) + Margin;
-				}
-				else
-				{
-					page->setPos (0, currentY + yDiff);
-					prevSize = size;
-				}
-				break;
-			}
-			}
+		case LayoutMode::OnePage:
+			LayoutOneCol (scale);
+			break;
+		case LayoutMode::TwoPages:
+			LayoutTwoCols (scale, false);
+			break;
+		case LayoutMode::TwoPagesShifted:
+			LayoutTwoCols (scale, true);
+			break;
 		}
 
 		Scene_->setSceneRect (Scene_->itemsBoundingRect ()
