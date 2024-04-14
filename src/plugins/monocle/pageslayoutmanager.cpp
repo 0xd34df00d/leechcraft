@@ -141,11 +141,9 @@ namespace LC::Monocle
 		{
 			if (Pages_.isEmpty ())
 				return 1.0;
-			int pageIdx = GetCurrentPage ();
-			if (pageIdx < 0)
-				pageIdx = 0;
 
-			auto dim = dimGetter (GetRotatedSize (pageIdx) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
+			const int pageIdx = std::max (GetCurrentPage (), 0);
+			const auto dim = dimGetter (GetRotatedSize (pageIdx) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
 			auto size = View_->maximumViewportSize ();
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();

@@ -9,6 +9,7 @@
 #include "common.h"
 #include <QString>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 
 namespace LC::Monocle
@@ -18,11 +19,11 @@ namespace LC::Monocle
 		switch (mode)
 		{
 		case LayoutMode::OnePage:
-			return "one";
+			return "one"_qs;
 		case LayoutMode::TwoPages:
-			return "two";
+			return "two"_qs;
 		case LayoutMode::TwoPagesShifted:
-			return "twoshifted";
+			return "twoshifted"_qs;
 		}
 
 		Util::Unreachable ();
@@ -30,16 +31,14 @@ namespace LC::Monocle
 
 	LayoutMode Name2LayoutMode (const QString& name)
 	{
-		if (name == "one")
+		if (name == "one"_qs)
 			return LayoutMode::OnePage;
-		if (name == "two")
+		if (name == "two"_qs)
 			return LayoutMode::TwoPages;
-		if (name == "twoshifted")
+		if (name == "twoshifted"_qs)
 			return LayoutMode::TwoPagesShifted;
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown layout mode"
-				<< name;
+		qWarning () << "unknown layout mode" << name;
 		return LayoutMode::OnePage;
 	}
 }

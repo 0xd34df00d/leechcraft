@@ -10,9 +10,8 @@
 
 class QString;
 
-namespace LC
-{
-namespace Monocle
+
+namespace LC::Monocle
 {
 	enum class LayoutMode
 	{
@@ -30,5 +29,4 @@ namespace Monocle
 
 	QString LayoutMode2Name (LayoutMode mode);
 	LayoutMode Name2LayoutMode (const QString&);
-}
 }
