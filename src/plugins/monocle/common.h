@@ -8,13 +8,14 @@
 
 #pragma once
 
+#include <cstdint>
 #include <variant>
 
 class QString;
 
 namespace LC::Monocle
 {
-	enum class LayoutMode
+	enum class LayoutMode : std::uint8_t
 	{
 		OnePage,
 		TwoPages,
