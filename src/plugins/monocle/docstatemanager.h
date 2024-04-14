@@ -12,9 +12,7 @@
 #include <QDir>
 #include "common.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocStateManager : public QObject
 	{
@@ -27,10 +25,9 @@ namespace Monocle
 			ScaleMode ScaleMode_;
 		};
 
-		DocStateManager (QObject* = 0);
+		explicit DocStateManager (QObject* = nullptr);
 
 		void SetState (const QString&, const State&);
 		State GetState (const QString&) const;
 	};
-}
 }

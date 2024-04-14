@@ -14,11 +14,8 @@
 #include <util/sll/typegetter.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
-#include "common.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	namespace
 	{
@@ -29,8 +26,8 @@ namespace Monocle
 	}
 
 	DocStateManager::DocStateManager (QObject *parent)
-	: QObject (parent)
-	, DocDir_ (Util::CreateIfNotExists ("monocle/docstate"))
+	: QObject { parent }
+	, DocDir_ { Util::CreateIfNotExists ("monocle/docstate") }
 	{
 	}
 
@@ -107,5 +104,4 @@ namespace Monocle
 
 		return result;
 	}
-}
 }
