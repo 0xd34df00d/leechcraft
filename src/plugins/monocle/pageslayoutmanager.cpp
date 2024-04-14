@@ -159,10 +159,6 @@ namespace LC::Monocle
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();
 
-			const int margin = 3;
-			size.rwidth () -= 2 * margin;
-			size.rheight () -= 2 * margin;
-
 			const auto res = dimGetter (size) / dim;
 			return res > 0 ? res : 1;
 		};
