@@ -192,7 +192,7 @@ namespace LC::Monocle
 				return angle;
 
 			angle -= MinAngle;
-			angle = std::remainderf (angle, MaxAngle - MinAngle);
+			angle = std::remainder (angle, MaxAngle - MinAngle);
 			angle += MinAngle;
 			return angle;
 		}
