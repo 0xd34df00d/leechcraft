@@ -94,9 +94,7 @@ namespace LC::Monocle
 	int PagesLayoutManager::GetCurrentPage () const
 	{
 		const auto& center = GetViewportCenter ();
-		auto item = View_->itemAt (center - QPoint (1, 1));
-		if (!item)
-			item = View_->itemAt (center - QPoint (10, 10));
+		const auto item = View_->itemAt (center - QPoint (10, 10));
 		if (!item)
 			return -1;
 		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
