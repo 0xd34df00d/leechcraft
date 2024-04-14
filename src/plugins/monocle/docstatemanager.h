@@ -10,14 +10,12 @@
 
 #include <QObject>
 #include <QDir>
+#include "common.h"
 
 namespace LC
 {
 namespace Monocle
 {
-	enum class LayoutMode;
-	enum class ScaleMode;
-
 	class DocStateManager : public QObject
 	{
 		QDir DocDir_;
@@ -26,7 +24,6 @@ namespace Monocle
 		{
 			int CurrentPage_;
 			LayoutMode Lay_;
-			double CurrentScale_;
 			ScaleMode ScaleMode_;
 		};
 

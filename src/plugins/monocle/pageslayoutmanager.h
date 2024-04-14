@@ -11,14 +11,12 @@
 #include <QObject>
 #include <QVector>
 #include "interfaces/monocle/idocument.h"
+#include "common.h"
 
 class QGraphicsScene;
 
 namespace LC::Monocle
 {
-	enum class LayoutMode;
-	enum class ScaleMode;
-
 	class PagesView;
 	class SmoothScroller;
 	class PageGraphicsItem;
@@ -36,10 +34,8 @@ namespace LC::Monocle
 		QList<PageGraphicsItem*> Pages_;
 		QVector<double> PageRotations_;
 
-		LayoutMode LayMode_;
-
-		ScaleMode ScaleMode_;
-		double FixedScale_ = 1;
+		LayoutMode LayMode_ = LayoutMode::OnePage;
+		ScaleMode ScaleMode_ = FitWidth {};
 
 		bool RelayoutScheduled_ = false;
 
@@ -62,9 +58,8 @@ namespace LC::Monocle
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool);
 
-		void SetScaleMode (ScaleMode);
+		void SetScaleMode (const ScaleMode&);
 		ScaleMode GetScaleMode () const;
-		void SetFixedScale (double);
 		double GetCurrentScale () const;
 
 		void SetRotation (double);

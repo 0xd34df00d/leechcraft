@@ -27,7 +27,7 @@ namespace Monocle
 		auto scroller = new SmoothScroller { Ui_.ThumbsView_, this };
 
 		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, scroller, this);
-		LayoutMgr_->SetScaleMode (ScaleMode::FitWidth);
+		LayoutMgr_->SetScaleMode (FitWidth {});
 		LayoutMgr_->SetMargins (10, 0);
 
 		connect (LayoutMgr_,
@@ -109,4 +109,3 @@ namespace Monocle
 	}
 }
 }
-

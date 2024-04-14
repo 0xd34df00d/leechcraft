@@ -8,8 +8,9 @@
 
 #pragma once
 
-class QString;
+#include <variant>
 
+class QString;
 
 namespace LC::Monocle
 {
@@ -20,12 +21,14 @@ namespace LC::Monocle
 		TwoPagesShifted
 	};
 
-	enum class ScaleMode
+	struct FitWidth {};
+	struct FitPage {};
+	struct FixedScale
 	{
-		Fixed,
-		FitWidth,
-		FitPage
+		double Scale_ = 1;
 	};
+
+	using ScaleMode = std::variant<FitWidth, FitPage, FixedScale>;
 
 	QString LayoutMode2Name (LayoutMode mode);
 	LayoutMode Name2LayoutMode (const QString&);

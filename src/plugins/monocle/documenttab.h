@@ -18,6 +18,7 @@
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
 #include "navigationhistory.h"
+#include "common.h"
 #include "ui_documenttab.h"
 
 class QDockWidget;
@@ -28,8 +29,6 @@ namespace LC
 {
 namespace Monocle
 {
-	enum class LayoutMode;
-
 	class PagesLayoutManager;
 	class PageGraphicsItem;
 	class TextSearchHandler;

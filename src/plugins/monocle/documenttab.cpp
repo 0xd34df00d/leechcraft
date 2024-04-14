@@ -36,6 +36,7 @@
 #include <util/gui/findnotification.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/visitor.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -378,9 +379,7 @@ namespace Monocle
 		in >> version;
 		if (version != 1)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown state version"
-					<< version;
+			qWarning () << "unknown state version" << version;
 			return;
 		}
 
@@ -396,8 +395,7 @@ namespace Monocle
 		LayoutManager_->SetLayoutMode (Name2LayoutMode (modeStr));
 
 		SetDoc (path, DocumentOpenOptions {});
-		LayoutManager_->SetScaleMode (ScaleMode::Fixed);
-		LayoutManager_->SetFixedScale (scale);
+		LayoutManager_->SetScaleMode (FixedScale { scale });
 		Relayout ();
 
 		QTimer::singleShot (0, this, [point, this] { CenterOn (point); });
@@ -962,8 +960,7 @@ namespace Monocle
 			return;
 		}
 
-		const auto& state = Core::Instance ()
-				.GetDocStateManager ()->GetState (QFileInfo (path).fileName ());
+		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (QFileInfo (path).fileName ());
 
 		Core::Instance ().GetROManager ()->RecordOpened (path);
 
@@ -1061,7 +1058,6 @@ namespace Monocle
 				{
 					GetCurrentPage (),
 					LayoutManager_->GetLayoutMode (),
-					LayoutManager_->GetCurrentScale (),
 					LayoutManager_->GetScaleMode ()
 				});
 	}
@@ -1325,29 +1321,15 @@ namespace Monocle
 
 	void DocumentTab::recoverDocState (DocStateManager::State state)
 	{
-		if (state.CurrentScale_ <= 0)
-			return;
-
 		LayoutManager_->SetLayoutMode (state.Lay_);
 		LayoutManager_->SetScaleMode (state.ScaleMode_);
-		LayoutManager_->SetFixedScale (state.CurrentScale_);
 
-		switch (state.ScaleMode_)
-		{
-		case ScaleMode::FitWidth:
-			ScalesBox_->setCurrentIndex (0);
-			break;
-		case ScaleMode::FitPage:
-			ScalesBox_->setCurrentIndex (1);
-			break;
-		case ScaleMode::Fixed:
-		{
-			const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
-			if (scaleIdx >= 0)
-				ScalesBox_->setCurrentIndex (scaleIdx);
-			break;
-		}
-		}
+		const auto scaleBoxIndex = Util::Visit (state.ScaleMode_,
+				[] (FitWidth) { return 0; },
+				[] (FitPage) { return 1; },
+				[&] (FixedScale fixed) { return ScalesBox_->findData (fixed.Scale_); });
+		if (scaleBoxIndex >= 0)
+			ScalesBox_->setCurrentIndex (scaleBoxIndex);
 
 		const auto action = [this]
 		{
@@ -1436,14 +1418,13 @@ namespace Monocle
 		switch (idx)
 		{
 		case 0:
-			LayoutManager_->SetScaleMode (ScaleMode::FitWidth);
+			LayoutManager_->SetScaleMode (FitWidth {});
 			break;
 		case 1:
-			LayoutManager_->SetScaleMode (ScaleMode::FitPage);
+			LayoutManager_->SetScaleMode (FitPage {});
 			break;
 		default:
-			LayoutManager_->SetScaleMode (ScaleMode::Fixed);
-			LayoutManager_->SetFixedScale (ScalesBox_->itemData (idx).toDouble ());
+			LayoutManager_->SetScaleMode (FixedScale { ScalesBox_->itemData (idx).toDouble () });
 			break;
 		}
 
@@ -1472,8 +1453,7 @@ namespace Monocle
 
 		num /= 100;
 
-		LayoutManager_->SetScaleMode (ScaleMode::Fixed);
-		LayoutManager_->SetFixedScale (num);
+		LayoutManager_->SetScaleMode (FixedScale { num });
 
 		Relayout ();
 		scheduleSaveState ();

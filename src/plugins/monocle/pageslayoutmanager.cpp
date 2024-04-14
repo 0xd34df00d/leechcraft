@@ -13,7 +13,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
-#include <util/sll/unreachable.h>
+#include <util/sll/visitor.h>
 #include "interfaces/monocle/idynamicdocument.h"
 #include "pagesview.h"
 #include "pagegraphicsitem.h"
@@ -29,8 +29,6 @@ namespace LC::Monocle
 	, View_ (view)
 	, Scroller_ (scroller)
 	, Scene_ (view->scene ())
-	, LayMode_ (LayoutMode::OnePage)
-	, ScaleMode_ (ScaleMode::FitWidth)
 	{
 		connect (View_,
 				&PagesView::sizeChanged,
@@ -117,7 +115,7 @@ namespace LC::Monocle
 			Scroller_->SmoothCenterOn (sceneCenter.x (), sceneCenter.y ());
 	}
 
-	void PagesLayoutManager::SetScaleMode (ScaleMode mode)
+	void PagesLayoutManager::SetScaleMode (const ScaleMode& mode)
 	{
 		ScaleMode_ = mode;
 	}
@@ -125,11 +123,6 @@ namespace LC::Monocle
 	ScaleMode PagesLayoutManager::GetScaleMode () const
 	{
 		return ScaleMode_;
-	}
-
-	void PagesLayoutManager::SetFixedScale (double scale)
-	{
-		FixedScale_ = scale;
 	}
 
 	double PagesLayoutManager::GetCurrentScale () const
@@ -156,28 +149,23 @@ namespace LC::Monocle
 			return res > 0 ? res : 1;
 		};
 
-		switch (ScaleMode_)
-		{
-		case ScaleMode::FitWidth:
-		{
-			auto ratio = calcRatio ([] (QSizeF size) { return size.width (); });
-			if (LayMode_ != LayoutMode::OnePage)
-				ratio /= 2;
-			return ratio;
-		}
-		case ScaleMode::FitPage:
-		{
-			auto wRatio = calcRatio ([] (QSizeF size) { return size.width (); });
-			if (LayMode_ != LayoutMode::OnePage)
-				wRatio /= 2;
-			auto hRatio = calcRatio ([] (QSizeF size) { return size.height (); });
-			return std::min (wRatio, hRatio);
-		}
-		case ScaleMode::Fixed:
-			return FixedScale_;
-		}
-
-		Util::Unreachable ();
+		return Util::Visit (ScaleMode_,
+				[&] (FitWidth)
+				{
+					auto ratio = calcRatio ([] (QSizeF size) { return size.width (); });
+					if (LayMode_ != LayoutMode::OnePage)
+						ratio /= 2;
+					return ratio;
+				},
+				[&] (FitPage)
+				{
+					auto wRatio = calcRatio ([] (QSizeF size) { return size.width (); });
+					if (LayMode_ != LayoutMode::OnePage)
+						wRatio /= 2;
+					auto hRatio = calcRatio ([] (QSizeF size) { return size.height (); });
+					return std::min (wRatio, hRatio);
+				},
+				[] (FixedScale fixed) { return fixed.Scale_; });
 	}
 
 	namespace

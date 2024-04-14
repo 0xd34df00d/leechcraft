@@ -10,6 +10,7 @@
 #include <util/sll/serializejson.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/typegetter.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
@@ -41,31 +42,25 @@ namespace Monocle
 
 		QVariantMap stateMap
 		{
-			{ "page", state.CurrentPage_ },
-			{ "scale", state.CurrentScale_ },
-			{ "layout", LayoutMode2Name (state.Lay_) }
+			{ "page"_qs, state.CurrentPage_ },
+			{ "layout"_qs, LayoutMode2Name (state.Lay_) }
 		};
 
-		auto& scaleModeStr = stateMap ["scaleMode"];
-		switch (state.ScaleMode_)
-		{
-		case ScaleMode::FitWidth:
-			scaleModeStr = "fitWidth";
-			break;
-		case ScaleMode::FitPage:
-			scaleModeStr = "fitPage";
-			break;
-		case ScaleMode::Fixed:
-			scaleModeStr = "fixed";
-			break;
-		}
+		stateMap ["scaleMode"_qs] = Util::Visit (state.ScaleMode_,
+				[] (FitPage) { return "fitPage"_qs; },
+				[] (FitWidth) { return "fitWidth"_qs; },
+				[&] (FixedScale fixed)
+				{
+					stateMap ["scale"_qs] = fixed.Scale_;
+					return "fixed"_qs;
+				});
 
 		Util::SerializeJsonToFile (filename, stateMap);
 	}
 
 	auto DocStateManager::GetState (const QString& id) const -> State
 	{
-		State result = { 0, LayoutMode::OnePage, -1, ScaleMode::FitWidth };
+		State result = { 0, LayoutMode::OnePage, FitWidth {} };
 		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
 		if (!QFile::exists (filename))
 			return result;
@@ -73,8 +68,7 @@ namespace Monocle
 		QFile file { filename };
 		if (!file.open (QIODevice::ReadOnly))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "error reading"
+			qWarning () << "error reading"
 					<< filename
 					<< file.errorString ();
 			return result;
@@ -89,9 +83,7 @@ namespace Monocle
 			if (var.canConvert<Type_t> ())
 				field = var.value<Type_t> ();
 		};
-
-		set (result.CurrentPage_, "page");
-		set (result.CurrentScale_, "scale");
+		set (result.CurrentPage_, "page"_qs);
 
 		auto setF = [&set] (auto& field, const QString& name, auto cvt)
 		{
@@ -99,16 +91,18 @@ namespace Monocle
 			set (storedValue, name);
 			field = cvt (std::move (storedValue));
 		};
-		setF (result.Lay_, "layout", &Name2LayoutMode);
-		setF (result.ScaleMode_, "scaleMode",
-				[] (QString str)
+		setF (result.Lay_, "layout"_qs, &Name2LayoutMode);
+		setF (result.ScaleMode_, "scaleMode"_qs,
+				[&] (const QString& str) -> ScaleMode
 				{
-					if (str == "fitWidth")
-						return ScaleMode::FitWidth;
-					else if (str == "fitPage")
-						return ScaleMode::FitPage;
-					else
-						return ScaleMode::Fixed;
+					if (str == "fitWidth"_qs)
+						return FitWidth {};
+					if (str == "fitPage"_qs)
+						return FitPage {};
+
+					FixedScale s;
+					set (s.Scale_, "scale"_qs);
+					return s;
 				});
 
 		return result;
