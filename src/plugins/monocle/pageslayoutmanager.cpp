@@ -125,18 +125,36 @@ namespace LC::Monocle
 		return ScaleMode_;
 	}
 
+	constexpr auto HorizTwoPageMargin = Margin / 3;
+
 	double PagesLayoutManager::GetCurrentScale () const
 	{
 		if (!CurrentDoc_)
 			return 1;
 
-		auto calcRatio = [this] (auto dimGetter)
+		auto adjustForLayout = [this] (QSizeF size)
+		{
+			switch (LayMode_)
+			{
+			case LayoutMode::OnePage:
+				return size;
+			case LayoutMode::TwoPages:
+			case LayoutMode::TwoPagesShifted:
+				return QSizeF
+				{
+					size.width () * 2 + HorizTwoPageMargin,
+					size.height (),
+				};
+			}
+		};
+
+		auto calcRatio = [&] (auto dimGetter)
 		{
 			if (Pages_.isEmpty ())
 				return 1.0;
 
 			const int pageIdx = std::max (GetCurrentPage (), 0);
-			const auto dim = dimGetter (GetRotatedSize (pageIdx) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
+			const auto dim = dimGetter (adjustForLayout (GetRotatedSize (pageIdx)) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
 			auto size = View_->maximumViewportSize ();
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();
@@ -152,17 +170,12 @@ namespace LC::Monocle
 		return Util::Visit (ScaleMode_,
 				[&] (FitWidth)
 				{
-					auto ratio = calcRatio ([] (QSizeF size) { return size.width (); });
-					if (LayMode_ != LayoutMode::OnePage)
-						ratio /= 2;
-					return ratio;
+					return calcRatio ([] (QSizeF size) { return size.width (); });
 				},
 				[&] (FitPage)
 				{
-					auto wRatio = calcRatio ([] (QSizeF size) { return size.width (); });
-					if (LayMode_ != LayoutMode::OnePage)
-						wRatio /= 2;
-					auto hRatio = calcRatio ([] (QSizeF size) { return size.height (); });
+					const auto wRatio = calcRatio ([] (QSizeF size) { return size.width (); });
+					const auto hRatio = calcRatio ([] (QSizeF size) { return size.height (); });
 					return std::min (wRatio, hRatio);
 				},
 				[] (FixedScale fixed) { return fixed.Scale_; });
@@ -251,13 +264,11 @@ namespace LC::Monocle
 		if (Pages_.isEmpty ())
 			return;
 
-		constexpr auto HorizMargin = Margin / 3;
-
 		qreal currentY = 0;
 		if (firstSeparate)
 		{
 			const auto [pos, size] = GetPagePos (0, scale);
-			Pages_ [0]->setPos (pos + QPointF { (size.width () + HorizMargin) / 2, currentY });
+			Pages_ [0]->setPos (pos + QPointF { (size.width () + HorizTwoPageMargin) / 2, currentY });
 			currentY += size.height () + Margin;
 		}
 
@@ -270,7 +281,7 @@ namespace LC::Monocle
 				break;
 
 			const auto [rightPos, rightSize] = GetPagePos (i + 1, scale);
-			Pages_ [i + 1]->setPos (rightPos + QPointF { leftSize.width () + HorizMargin, currentY });
+			Pages_ [i + 1]->setPos (rightPos + QPointF { leftSize.width () + HorizTwoPageMargin, currentY });
 
 			currentY += std::max (leftSize.height (), rightSize.height ()) + Margin;
 		}
