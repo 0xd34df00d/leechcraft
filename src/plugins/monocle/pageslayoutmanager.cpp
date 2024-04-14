@@ -157,7 +157,6 @@ namespace LC::Monocle
 			const auto dim = dimGetter (adjustForLayout (GetRotatedSize (pageIdx)) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
 			auto size = View_->maximumViewportSize ();
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
-			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();
 
 			const auto res = dimGetter (size) / dim;
 			return res > 0 ? res : 1;
