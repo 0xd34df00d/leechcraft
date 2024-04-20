@@ -39,8 +39,7 @@ namespace LC::Monocle
 
 		bool RelayoutScheduled_ = false;
 
-		double HorMargin_ = 0;
-		double VertMargin_ = 0;
+		QSizeF Margins_ {};
 
 		double Rotation_ = 0;
 	public:
@@ -70,7 +69,7 @@ namespace LC::Monocle
 		void AddRotation (double, int);
 		double GetRotation (int) const;
 
-		void SetMargins (double horizontal, double vertical);
+		void SetMargins (QSizeF);
 
 		void Relayout ();
 	private:

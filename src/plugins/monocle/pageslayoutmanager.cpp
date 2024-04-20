@@ -154,7 +154,7 @@ namespace LC::Monocle
 				return 1.0;
 
 			const int pageIdx = std::max (GetCurrentPage (), 0);
-			const auto pageDim = dimGetter (adjustForLayout (GetRotatedSize (pageIdx)) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
+			const auto pageDim = dimGetter (adjustForLayout (GetRotatedSize (pageIdx)) + 2 * Margins_);
 			auto viewSize = View_->maximumViewportSize ();
 			viewSize.rwidth () -= View_->style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
 
@@ -228,10 +228,9 @@ namespace LC::Monocle
 		return PageRotations_ [page];
 	}
 
-	void PagesLayoutManager::SetMargins (double horizontal, double vertical)
+	void PagesLayoutManager::SetMargins (QSizeF margins)
 	{
-		HorMargin_ = horizontal;
-		VertMargin_ = vertical;
+		Margins_ = margins;
 	}
 
 	std::pair<QPointF, QSizeF> PagesLayoutManager::GetPagePos (int pageIdx, double scale) const
@@ -321,7 +320,7 @@ namespace LC::Monocle
 		}
 
 		Scene_->setSceneRect (Scene_->itemsBoundingRect ()
-					.adjusted (-HorMargin_, -VertMargin_, 0, 0));
+					.adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
 
 		SetCurrentPage (std::max (pageWas, 0), true);
 		if (pageWas >= 0)

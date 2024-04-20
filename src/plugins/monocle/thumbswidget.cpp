@@ -28,7 +28,7 @@ namespace Monocle
 
 		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, scroller, this);
 		LayoutMgr_->SetScaleMode (FitWidth {});
-		LayoutMgr_->SetMargins (10, 0);
+		LayoutMgr_->SetMargins ({ 10, 0 });
 
 		connect (LayoutMgr_,
 				SIGNAL (scheduledRelayoutFinished ()),
