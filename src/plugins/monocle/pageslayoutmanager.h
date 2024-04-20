@@ -75,6 +75,8 @@ namespace LC::Monocle
 	private:
 		std::pair<QPointF, QSizeF> GetPagePos (int pageIdx, double scale) const;
 
+		void ApplyPagesGeometry (double scale);
+
 		void LayoutOneCol (double scale) const;
 		void LayoutTwoCols (double scale, bool firstSeparate) const;
 

@@ -281,6 +281,18 @@ namespace LC::Monocle
 		}
 	}
 
+	void PagesLayoutManager::ApplyPagesGeometry (double scale)
+	{
+		for (auto item : Pages_)
+		{
+			const auto pageRotation = PageRotations_ [item->GetPageNum ()] + Rotation_;
+			const auto& bounding = item->boundingRect ();
+			item->setTransformOriginPoint (bounding.width () / 2, bounding.height () / 2);
+			item->setRotation (pageRotation);
+			item->SetScale (scale, scale);
+		}
+	}
+
 	void PagesLayoutManager::Relayout ()
 	{
 		const auto scale = GetCurrentScale ();
@@ -297,14 +309,7 @@ namespace LC::Monocle
 						pagePos.y () / bounding.height () };
 		}
 
-		for (auto item : Pages_)
-		{
-			const auto pageRotation = PageRotations_ [item->GetPageNum ()] + Rotation_;
-			const auto& bounding = item->boundingRect ();
-			item->setTransformOriginPoint (bounding.width () / 2, bounding.height () / 2);
-			item->setRotation (pageRotation);
-			item->SetScale (scale, scale);
-		}
+		ApplyPagesGeometry (scale);
 
 		switch (LayMode_)
 		{
