@@ -154,11 +154,11 @@ namespace LC::Monocle
 				return 1.0;
 
 			const int pageIdx = std::max (GetCurrentPage (), 0);
-			const auto dim = dimGetter (adjustForLayout (GetRotatedSize (pageIdx)) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
-			auto size = View_->maximumViewportSize ();
-			size.rwidth () -= View_->style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
+			const auto pageDim = dimGetter (adjustForLayout (GetRotatedSize (pageIdx)) + QSizeF { 2 * HorMargin_, 2 * VertMargin_ });
+			auto viewSize = View_->maximumViewportSize ();
+			viewSize.rwidth () -= View_->style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
 
-			const auto res = dimGetter (size) / dim;
+			const auto res = dimGetter (viewSize) / pageDim;
 			return res > 0 ? res : 1;
 		};
 
@@ -303,9 +303,7 @@ namespace LC::Monocle
 			const auto pageRotation = PageRotations_ [item->GetPageNum ()] + Rotation_;
 			const auto& bounding = item->boundingRect ();
 			item->setTransformOriginPoint (bounding.width () / 2, bounding.height () / 2);
-
 			item->setRotation (pageRotation);
-
 			item->SetScale (scale, scale);
 		}
 
