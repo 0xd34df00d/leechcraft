@@ -91,11 +91,8 @@ namespace LC::Monocle
 
 	int PagesLayoutManager::GetCurrentPage () const
 	{
-		const auto& center = GetViewportCenter ();
-		const auto item = View_->itemAt (center - QPoint (10, 10));
-		if (!item)
-			return -1;
-		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
+		const auto& rect = View_->viewport ()->contentsRect ();
+		return PosTracker_.GetNearbyPage (View_->mapToScene (QPoint { 0, rect.height () / 2 }));
 	}
 
 	void PagesLayoutManager::SetCurrentPage (int idx, bool immediate)
@@ -324,8 +321,9 @@ namespace LC::Monocle
 			break;
 		}
 
-		Scene_->setSceneRect (Scene_->itemsBoundingRect ()
-					.adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
+		PosTracker_.Update ();
+
+		Scene_->setSceneRect (Scene_->itemsBoundingRect ().adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
 
 		SetCurrentPage (std::max (pageWas, 0), true);
 		if (pageWas >= 0)

@@ -45,6 +45,7 @@ install (TARGETS leechcraft-monocle-util DESTINATION ${LIBDIR} RENAME leechcraft
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		components/layout/positiontracker.cpp
 		monocle.cpp
 		documenttab.cpp
 		core.cpp
