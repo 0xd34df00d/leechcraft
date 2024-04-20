@@ -23,7 +23,7 @@ namespace Monocle
 	{
 	}
 
-	void LinksManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
+	void LinksManager::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		for (auto page : pages)
 			for (const auto& link : doc->GetPageLinks (page->GetPageNum ()))

@@ -28,7 +28,7 @@ namespace Monocle
 	{
 	}
 
-	void TextSearchHandler::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
+	void TextSearchHandler::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		Doc_ = doc;
 		Pages_ = pages;

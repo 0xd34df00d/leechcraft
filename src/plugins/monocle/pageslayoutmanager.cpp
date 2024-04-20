@@ -37,7 +37,7 @@ namespace LC::Monocle
 				Qt::QueuedConnection);
 	}
 
-	void PagesLayoutManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
+	void PagesLayoutManager::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		CurrentDoc_ = std::move (doc);
 		Pages_ = pages;
@@ -59,7 +59,7 @@ namespace LC::Monocle
 			};
 	}
 
-	const QList<PageGraphicsItem*>& PagesLayoutManager::GetPages () const
+	const QVector<PageGraphicsItem*>& PagesLayoutManager::GetPages () const
 	{
 		return Pages_;
 	}

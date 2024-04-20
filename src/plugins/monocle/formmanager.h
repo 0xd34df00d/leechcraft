@@ -53,7 +53,7 @@ namespace Monocle
 	public:
 		FormManager (QGraphicsView*, DocumentTab&);
 
-		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
 	private:
 		QGraphicsProxyWidget* AddTextField (std::shared_ptr<IFormField>);
 		QGraphicsProxyWidget* AddChoiceField (std::shared_ptr<IFormField>);

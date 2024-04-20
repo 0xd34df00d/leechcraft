@@ -94,7 +94,7 @@ namespace Monocle
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
-		QList<PageGraphicsItem*> Pages_;
+		QVector<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
 
 		bool SaveStateScheduled_ = false;

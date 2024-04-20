@@ -47,7 +47,7 @@ namespace Monocle
 	void SearchTabWidget::handleSearchResults (const TextSearchHandlerResults& results)
 	{
 		if (std::all_of (results.Positions_.begin (), results.Positions_.end (),
-				[] (const QList<QRectF>& list) { return list.isEmpty (); }))
+				[] (const auto& list) { return list.isEmpty (); }))
 			return;
 
 		QList<QStandardItem*> pageItems;
@@ -129,4 +129,3 @@ namespace Monocle
 	}
 }
 }
-

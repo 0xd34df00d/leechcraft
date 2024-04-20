@@ -36,7 +36,7 @@ namespace Monocle
 	{
 	}
 
-	void FormManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
+	void FormManager::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		Line2Field_.clear ();
 		Multiline2Field_.clear ();

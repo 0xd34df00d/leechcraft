@@ -40,7 +40,7 @@ namespace Monocle
 
 		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
 
-		QList<IAnnotation_ptr> Annotations_;
+		QVector<IAnnotation_ptr> Annotations_;
 		int CurrentAnn_ = -1;
 	public:
 		enum Role
@@ -58,7 +58,7 @@ namespace Monocle
 
 		AnnManager (SmoothScroller*, DocumentTab&);
 
-		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
 
 		QAbstractItemModel* GetModel () const;
 	private:

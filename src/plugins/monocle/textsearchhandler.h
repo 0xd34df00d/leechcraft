@@ -40,16 +40,16 @@ namespace Monocle
 		PagesLayoutManager * const LayoutMgr_;
 
 		IDocument_ptr Doc_;
-		QList<PageGraphicsItem*> Pages_;
+		QVector<PageGraphicsItem*> Pages_;
 
 		QString CurrentSearchString_;
 
-		QList<QGraphicsRectItem*> CurrentHighlights_;
+		QVector<QGraphicsRectItem*> CurrentHighlights_;
 		int CurrentRectIndex_;
 	public:
 		TextSearchHandler (QGraphicsView*, PagesLayoutManager*, QObject* = 0);
 
-		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
 
 		bool Search (const QString&, Util::FindNotification::FindFlags);
 		void SetPreparedResults (const TextSearchHandlerResults&, int selectedItem);

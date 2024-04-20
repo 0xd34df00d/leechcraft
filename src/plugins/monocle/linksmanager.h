@@ -27,7 +27,7 @@ namespace Monocle
 	public:
 		LinksManager (DocumentTab&);
 
-		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
 	};
 }
 }

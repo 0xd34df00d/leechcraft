@@ -28,7 +28,7 @@ namespace Monocle
 	{
 	}
 
-	void AnnManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
+	void AnnManager::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		if (const auto rc = AnnModel_->rowCount ())
 			AnnModel_->removeRows (0, rc);

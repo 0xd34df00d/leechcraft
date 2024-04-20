@@ -45,8 +45,10 @@ namespace Monocle
 		if (!doc)
 			return;
 
-		QList<PageGraphicsItem*> pages;
-		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
+		const auto numPages = CurrentDoc_->GetNumPages ();
+		QVector<PageGraphicsItem*> pages;
+		pages.reserve (numPages);
+		for (int i = 0; i < numPages; ++i)
 		{
 			auto item = new PageGraphicsItem (CurrentDoc_, i);
 			Scene_.addItem (item);
