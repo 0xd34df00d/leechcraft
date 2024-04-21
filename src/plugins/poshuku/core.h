@@ -140,8 +140,6 @@ namespace Poshuku
 		void exportXbel ();
 	private slots:
 		void handleAddToFavorites (QString, QString);
-		void handleStatusBarChanged (const QString&);
-		void handleTooltipChanged (QWidget*);
 		void handleWebViewCreated (const std::shared_ptr<IWebView>&, LC::Poshuku::NewWebViewBehavior::Enum);
 		void favoriteTagsUpdated (const QStringList&);
 	signals:
