@@ -170,8 +170,6 @@ namespace Monocle
 	private slots:
 		void handleLoaderReady (DocumentOpenOptions, const IDocument_ptr&, const QString&);
 
-		void handlePrintRequested ();
-
 		void handlePageContentsChanged (int);
 
 		void scheduleSaveState ();
