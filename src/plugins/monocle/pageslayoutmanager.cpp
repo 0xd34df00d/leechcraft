@@ -112,7 +112,7 @@ namespace LC::Monocle
 			Scroller_->SmoothCenterOn (sceneCenter.x (), sceneCenter.y ());
 	}
 
-	void PagesLayoutManager::SetScaleMode (const ScaleMode& mode)
+	void PagesLayoutManager::SetScaleMode (ScaleMode mode)
 	{
 		ScaleMode_ = mode;
 	}

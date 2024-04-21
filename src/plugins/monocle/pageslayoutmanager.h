@@ -60,7 +60,7 @@ namespace LC::Monocle
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool);
 
-		void SetScaleMode (const ScaleMode&);
+		void SetScaleMode (ScaleMode);
 		ScaleMode GetScaleMode () const;
 		double GetCurrentScale () const;
 
