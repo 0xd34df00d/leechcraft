@@ -179,9 +179,7 @@ namespace Monocle
 
 		void selectFile ();
 		void handleSave ();
-		void handleExportPDF ();
 
-		void handlePrint ();
 		void handlePresentation ();
 
 		void zoomOut ();

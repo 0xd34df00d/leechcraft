@@ -11,11 +11,8 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QFileDialog>
-#include <QLineEdit>
 #include <QMenu>
 #include <QToolButton>
-#include <QPrinter>
-#include <QPrintDialog>
 #include <QMessageBox>
 #include <QDockWidget>
 #include <QClipboard>
@@ -34,6 +31,7 @@
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/gui/findnotification.h>
+#include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include <util/sll/visitor.h>
@@ -50,6 +48,7 @@
 #include "interfaces/monocle/isupportpainting.h"
 #include "interfaces/monocle/iknowfileextensions.h"
 #include "interfaces/monocle/ihaveoptionalcontent.h"
+#include "components/actions/export.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -239,7 +238,7 @@ namespace Monocle
 	ExternalNavigationAction DocumentTab::GetNavigationHistoryEntry () const
 	{
 		QPointF position;
-		auto pageNum = GetCurrentPage ();
+		auto pageNum = LayoutManager_->GetCurrentPage ();
 		if (pageNum >= 0)
 		{
 			const auto page = Pages_.value (pageNum);
@@ -628,9 +627,13 @@ namespace Monocle
 		auto print = new QAction (tr ("Print..."), this);
 		print->setProperty ("ActionIcon", "document-print");
 		connect (print,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handlePrint ()));
+				[this]
+				{
+					if (CurrentDoc_)
+						Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this);
+				});
 		Toolbar_->addAction (print);
 
 		SaveAction_ = new QAction (tr ("Save"), this);
@@ -647,9 +650,13 @@ namespace Monocle
 		ExportPDFAction_->setProperty ("ActionIcon", "application-pdf");
 		ExportPDFAction_->setEnabled (false);
 		connect (ExportPDFAction_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleExportPDF ()));
+				[this]
+				{
+					if (CurrentDoc_)
+						ExportToPdf (*CurrentDoc_, *this);
+				});
 		Toolbar_->addAction (ExportPDFAction_);
 
 		Toolbar_->addSeparator ();
@@ -997,11 +1004,17 @@ namespace Monocle
 		auto toc = qobject_cast<IHaveTOC*> (docObj);
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
-		connect (docObj,
-				SIGNAL (printRequested (QList<int>)),
-				this,
-				SLOT (handlePrintRequested ()),
-				Qt::QueuedConnection);
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this]
+			{
+				if (CurrentDoc_)
+					Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this);
+			},
+			docObj,
+			SIGNAL (printRequested (QList<int>)),
+			this
+		};
 
 		emit fileLoaded (path);
 
@@ -1030,11 +1043,6 @@ namespace Monocle
 		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
 	}
 
-	void DocumentTab::handlePrintRequested ()
-	{
-		handlePrint ();
-	}
-
 	void DocumentTab::handlePageContentsChanged (int idx)
 	{
 		auto pageItem = Pages_.at (idx);
@@ -1056,7 +1064,7 @@ namespace Monocle
 		const auto& filename = QFileInfo (CurrentDocPath_).fileName ();
 		Core::Instance ().GetDocStateManager ()->SetState (filename,
 				{
-					GetCurrentPage (),
+					LayoutManager_->GetCurrentPage (),
 					LayoutManager_->GetLayoutMode (),
 					LayoutManager_->GetScaleMode ()
 				});
@@ -1128,121 +1136,13 @@ namespace Monocle
 		saveable->Save (CurrentDocPath_);
 	}
 
-	void DocumentTab::handleExportPDF ()
-	{
-		if (!CurrentDoc_ || !CurrentDoc_->GetNumPages ())
-			return;
-
-		auto paintable = qobject_cast<ISupportPainting*> (CurrentDoc_->GetQObject ());
-		if (!paintable)
-			return;
-
-		const auto& path = QFileDialog::getSaveFileName (this,
-				tr ("Export to PDF"),
-				QDir::homePath ());
-		if (path.isEmpty ())
-			return;
-
-		QPrinter printer;
-		printer.setOutputFormat (QPrinter::PdfFormat);
-		printer.setOutputFileName (path);
-		printer.setPageMargins (QMarginsF { 0, 0, 0, 0 }, QPageLayout::Point);
-		printer.setPageSize (QPageSize { CurrentDoc_->GetPageSize (0) });
-		printer.setFontEmbeddingEnabled (true);
-
-		QPainter painter (&printer);
-		painter.setRenderHint (QPainter::Antialiasing);
-		painter.setRenderHint (QPainter::TextAntialiasing);
-		painter.setRenderHint (QPainter::SmoothPixmapTransform);
-
-		for (int i = 0, numPages = CurrentDoc_->GetNumPages (); i < numPages; ++i)
-		{
-			paintable->PaintPage (&painter, i, 1, 1);
-			if (i != numPages - 1)
-			{
-				printer.newPage ();
-				painter.translate (0, -CurrentDoc_->GetPageSize (i).height ());
-			}
-		}
-		painter.end ();
-	}
-
-	void DocumentTab::handlePrint ()
-	{
-		if (!CurrentDoc_)
-			return;
-
-		const int numPages = CurrentDoc_->GetNumPages ();
-
-		QPrinter printer { QPrinter::HighResolution };
-		printer.setFullPage (true);
-		QPrintDialog dia { &printer, this };
-		dia.setMinMax (1, numPages);
-		dia.setOption (QAbstractPrintDialog::PrintToFile);
-		dia.setOption (QAbstractPrintDialog::PrintCurrentPage);
-		dia.setOption (QAbstractPrintDialog::PrintShowPageSize);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		const auto& pageRect = printer.pageRect (QPrinter::Point);
-		const auto& pageSize = pageRect.size ();
-		const auto resScale = printer.resolution () / 72.0;
-
-		const auto& range = dia.printRange ();
-		int start = 0, end = 0;
-		switch (range)
-		{
-		case QAbstractPrintDialog::AllPages:
-			start = 0;
-			end = numPages;
-			break;
-		case QAbstractPrintDialog::Selection:
-			return;
-		case QAbstractPrintDialog::PageRange:
-			start = printer.fromPage () - 1;
-			end = printer.toPage ();
-			break;
-		case QAbstractPrintDialog::CurrentPage:
-			start = GetCurrentPage ();
-			end = start + 1;
-			if (start < 0)
-				return;
-			break;
-		}
-
-		const auto isp = qobject_cast<ISupportPainting*> (CurrentDoc_->GetQObject ());
-
-		QPainter painter (&printer);
-		painter.setRenderHint (QPainter::Antialiasing);
-		painter.setRenderHint (QPainter::TextAntialiasing);
-		painter.setRenderHint (QPainter::SmoothPixmapTransform);
-		for (int i = start; i < end; ++i)
-		{
-			const auto& size = CurrentDoc_->GetPageSize (i);
-			const auto scale = std::min (static_cast<double> (pageSize.width ()) / size.width (),
-					static_cast<double> (pageSize.height ()) / size.height ());
-
-			if (isp)
-				isp->PaintPage (&painter, i, resScale * scale, resScale * scale);
-			else
-			{
-				const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale).result ();
-				painter.drawImage (0, 0, img);
-			}
-
-			if (i != end - 1)
-				printer.newPage ();
-		}
-		painter.end ();
-	}
-
 	void DocumentTab::handlePresentation ()
 	{
 		if (!CurrentDoc_)
 			return;
 
 		auto presenter = new PresenterWidget (CurrentDoc_);
-		presenter->NavigateTo (GetCurrentPage ());
+		presenter->NavigateTo (LayoutManager_->GetCurrentPage ());
 	}
 
 	void DocumentTab::CheckCurrentPageChange ()
@@ -1252,7 +1152,7 @@ namespace Monocle
 
 		RegenPageVisibility ();
 
-		auto current = GetCurrentPage ();
+		auto current = LayoutManager_->GetCurrentPage ();
 		if (PrevCurrentPage_ == current)
 			return;
 
