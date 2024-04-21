@@ -96,7 +96,8 @@ namespace LC::Monocle
 		QPrintDialog dia { &printer, &parent };
 		dia.setMinMax (1, numPages);
 		dia.setOption (QAbstractPrintDialog::PrintToFile);
-		dia.setOption (QAbstractPrintDialog::PrintCurrentPage);
+		if (curPage >= 0)
+			dia.setOption (QAbstractPrintDialog::PrintCurrentPage);
 		dia.setOption (QAbstractPrintDialog::PrintShowPageSize);
 		if (dia.exec () != QDialog::Accepted)
 			return;
