@@ -8,9 +8,11 @@
 
 #include "common.h"
 #include <QString>
+#include <QToolBar>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/visitor.h>
 
 namespace LC::Monocle
 {
@@ -40,5 +42,13 @@ namespace LC::Monocle
 
 		qWarning () << "unknown layout mode" << name;
 		return LayoutMode::OnePage;
+	}
+
+	void AddToolbarEntries (QToolBar& toolbar, const QVector<ToolbarEntry>& entries)
+	{
+		for (const auto& entry : entries)
+			Util::Visit (entry,
+					[&] (QAction *action) { toolbar.addAction (action); },
+					[&] (QWidget *widget) { toolbar.addWidget (widget); });
 	}
 }

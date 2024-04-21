@@ -11,7 +11,13 @@
 #include <cstdint>
 #include <variant>
 
+class QAction;
 class QString;
+class QToolBar;
+class QWidget;
+
+template<typename>
+class QVector;
 
 namespace LC::Monocle
 {
@@ -33,4 +39,8 @@ namespace LC::Monocle
 
 	QString LayoutMode2Name (LayoutMode mode);
 	LayoutMode Name2LayoutMode (const QString&);
+
+	using ToolbarEntry = std::variant<QWidget*, QAction*>;
+
+	void AddToolbarEntries (QToolBar&, const QVector<ToolbarEntry>&);
 }
