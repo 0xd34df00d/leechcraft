@@ -17,7 +17,7 @@
 namespace LC::Monocle
 {
 	constexpr float Percent = 100;
-	constexpr int NonFixedModesCount = 2;
+	constexpr int NonFixedModesCount = 3;
 	constexpr std::array ZoomLevels = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2., 3., 4., 5., 7.5, 10. };
 
 	namespace
@@ -46,6 +46,9 @@ namespace LC::Monocle
 			case 0:
 				return FitWidth {};
 			case 1:
+				return FitPage {};
+			case 2:
+				qWarning () << "unexpected separator idx";
 				return FitPage {};
 			default:
 				return FixedScale { scales.itemData (idx).toDouble () };
@@ -104,6 +107,7 @@ namespace LC::Monocle
 		Scales_->setInsertPolicy (QComboBox::NoInsert);
 		Scales_->addItem (tr ("Fit width"));
 		Scales_->addItem (tr ("Fit page"));
+		Scales_->insertSeparator (Scales_->count ());
 		Q_ASSERT (Scales_->count () == NonFixedModesCount);
 		for (auto scale : ZoomLevels)
 			Scales_->addItem (QString::number (scale * Percent) + '%', scale);
