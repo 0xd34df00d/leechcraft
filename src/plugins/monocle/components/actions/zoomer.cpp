@@ -11,12 +11,14 @@
 #include <QComboBox>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include <util/sll/unreachable.h>
 #include <util/sll/visitor.h>
 
 namespace LC::Monocle
 {
 	constexpr float Percent = 100;
-	constexpr std::array Scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2., 3., 4., 5., 7.5, 10. };
+	constexpr int NonFixedModesCount = 2;
+	constexpr std::array ZoomLevels = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2., 3., 4., 5., 7.5, 10. };
 
 	namespace
 	{
@@ -49,6 +51,46 @@ namespace LC::Monocle
 				return FixedScale { scales.itemData (idx).toDouble () };
 			}
 		}
+
+		enum class ZoomDelta : std::int8_t
+		{
+			Out = -1,
+			In = 1,
+		};
+
+		std::optional<int> GetNearZoomIndexUnclamped (double curZoom, ZoomDelta delta)
+		{
+			const auto pos = std::lower_bound (ZoomLevels.begin (), ZoomLevels.end (), curZoom);
+			if (pos == ZoomLevels.end () || *pos == curZoom)
+				return (pos - ZoomLevels.begin ()) + static_cast<int> (delta);
+
+			switch (delta)
+			{
+			case ZoomDelta::Out:
+				return (pos - ZoomLevels.begin ()) - 1;
+			case ZoomDelta::In:
+				return (pos - ZoomLevels.begin ());
+			}
+			Util::Unreachable ();
+		}
+
+		std::optional<int> ClampToZoomLevelsCount (int idx)
+		{
+			if (idx < 0 || idx >= static_cast<int> (ZoomLevels.size ()))
+				return {};
+			return idx;
+		}
+
+		std::optional<int> GetNearScaleBoxIndex (QComboBox& scalesBox, double curZoom, ZoomDelta delta)
+		{
+			const auto curIdx = scalesBox.currentIndex ();
+			if (curIdx >= NonFixedModesCount)
+				return ClampToZoomLevelsCount (curIdx - NonFixedModesCount + static_cast<int> (delta))
+						.transform ([] (int val) { return val + NonFixedModesCount; });
+
+			return GetNearZoomIndexUnclamped (curZoom, delta)
+					.and_then (&ClampToZoomLevelsCount);
+		}
 	}
 
 	Zoomer::Zoomer (const ScaleGetter& scaleGetter, QObject *parent)
@@ -62,7 +104,8 @@ namespace LC::Monocle
 		Scales_->setInsertPolicy (QComboBox::NoInsert);
 		Scales_->addItem (tr ("Fit width"));
 		Scales_->addItem (tr ("Fit page"));
-		for (auto scale : Scales)
+		Q_ASSERT (Scales_->count () == NonFixedModesCount);
+		for (auto scale : ZoomLevels)
 			Scales_->addItem (QString::number (scale * Percent) + '%', scale);
 		Scales_->setCurrentIndex (0);
 		connect (&*Scales_,
@@ -84,14 +127,22 @@ namespace LC::Monocle
 		connect (&*ZoomOut_,
 				&QAction::triggered,
 				this,
-				&Zoomer::ZoomOut);
+				[this]
+				{
+					if (const auto idx = GetNearScaleBoxIndex (*Scales_, ScaleGetter_ (), ZoomDelta::Out))
+						Scales_->setCurrentIndex (*idx);
+				});
 
 		ZoomIn_->setProperty ("ActionIcon", "zoom-in");
 		ZoomIn_->setShortcut ("Ctrl+="_qs);
 		connect (&*ZoomIn_,
 				&QAction::triggered,
 				this,
-				&Zoomer::ZoomIn);
+				[this]
+				{
+					if (const auto idx = GetNearScaleBoxIndex (*Scales_, ScaleGetter_ (), ZoomDelta::In))
+						Scales_->setCurrentIndex (*idx);
+				});
 	}
 
 	Zoomer::~Zoomer () = default;
@@ -111,65 +162,12 @@ namespace LC::Monocle
 			Scales_->setCurrentIndex (scaleBoxIndex);
 	}
 
-	void Zoomer::ZoomOut ()
-	{
-		auto currentMatchingIndex = Scales_->currentIndex ();
-		const int minIdx = 2;
-		switch (Scales_->currentIndex ())
-		{
-		case 0:
-		case 1:
-		{
-			const auto scale = ScaleGetter_ ();
-			for (auto i = minIdx; i < Scales_->count (); ++i)
-				if (Scales_->itemData (i).toDouble () > scale)
-				{
-					currentMatchingIndex = i;
-					break;
-				}
-
-			if (currentMatchingIndex == Scales_->currentIndex ())
-				currentMatchingIndex = Scales_->count () - 1;
-			break;
-		}
-		}
-
-		auto newIndex = std::max (currentMatchingIndex - 1, minIdx);
-		Scales_->setCurrentIndex (newIndex);
-
-		ZoomOut_->setEnabled (newIndex > minIdx);
-		ZoomIn_->setEnabled (true);
-	}
-
-	void Zoomer::ZoomIn ()
-	{
-		const auto maxIdx = Scales_->count () - 1;
-
-		auto newIndex = std::min (Scales_->currentIndex () + 1, maxIdx);
-		switch (Scales_->currentIndex ())
-		{
-		case 0:
-		case 1:
-			const auto scale = ScaleGetter_ ();
-			for (auto i = 2; i <= maxIdx; ++i)
-				if (Scales_->itemData (i).toDouble () > scale)
-				{
-					newIndex = i;
-					break;
-				}
-			if (Scales_->currentIndex () == newIndex)
-				newIndex = maxIdx;
-			break;
-		}
-
-		Scales_->setCurrentIndex (newIndex);
-
-		ZoomOut_->setEnabled (true);
-		ZoomIn_->setEnabled (newIndex < maxIdx);
-	}
-
 	void Zoomer::NotifyScaleSelected (ScaleMode scale)
 	{
 		emit scaleModeChanged (scale);
+
+		const auto curScale = ScaleGetter_ ();
+		ZoomOut_->setEnabled (GetNearScaleBoxIndex (*Scales_, curScale, ZoomDelta::Out).has_value ());
+		ZoomIn_->setEnabled (GetNearScaleBoxIndex (*Scales_, curScale, ZoomDelta::In).has_value ());
 	}
 }
