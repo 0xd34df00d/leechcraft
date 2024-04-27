@@ -35,6 +35,20 @@ namespace LC::Monocle
 
 			return FixedScale { num / Percent };
 		}
+
+		ScaleMode GetComboScaleMode (QComboBox& scales)
+		{
+			const auto idx = scales.currentIndex ();
+			switch (idx)
+			{
+			case 0:
+				return FitWidth {};
+			case 1:
+				return FitPage {};
+			default:
+				return FixedScale { scales.itemData (idx).toDouble () };
+			}
+		}
 	}
 
 	Zoomer::Zoomer (const ScaleGetter& scaleGetter, QObject *parent)
@@ -52,9 +66,9 @@ namespace LC::Monocle
 			Scales_->addItem (QString::number (scale * Percent) + '%', scale);
 		Scales_->setCurrentIndex (0);
 		connect (&*Scales_,
-				&QComboBox::activated,
+				&QComboBox::currentIndexChanged,
 				this,
-				&Zoomer::HandleScaleChosen);
+				[this] { NotifyScaleSelected (GetComboScaleMode (*Scales_)); });
 		connect (&*Scales_,
 				&QComboBox::editTextChanged,
 				this,
@@ -62,7 +76,7 @@ namespace LC::Monocle
 				{
 					if (Scales_->findText (str) == -1)
 						if (const auto scale = ScaleFromString (str))
-							emit scaleModeChanged (*scale);
+							NotifyScaleSelected (*scale);
 				});
 
 		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
@@ -84,7 +98,7 @@ namespace LC::Monocle
 
 	QVector<ToolbarEntry> Zoomer::GetToolbarEntries () const
 	{
-		return { &*Scales_, &*ZoomIn_, &*ZoomOut_ };
+		return { &*Scales_, &*ZoomOut_, &*ZoomIn_ };
 	}
 
 	void Zoomer::SetScaleMode (ScaleMode scaleMode)
@@ -95,22 +109,6 @@ namespace LC::Monocle
 				[&] (FixedScale fixed) { return Scales_->findData (fixed.Scale_); });
 		if (scaleBoxIndex >= 0)
 			Scales_->setCurrentIndex (scaleBoxIndex);
-	}
-
-	void Zoomer::HandleScaleChosen (int idx)
-	{
-		switch (idx)
-		{
-		case 0:
-			emit scaleModeChanged (FitWidth {});
-			break;
-		case 1:
-			emit scaleModeChanged (FitPage {});
-			break;
-		default:
-			emit scaleModeChanged (FixedScale { Scales_->itemData (idx).toDouble () });
-			break;
-		}
 	}
 
 	void Zoomer::ZoomOut ()
@@ -138,7 +136,6 @@ namespace LC::Monocle
 
 		auto newIndex = std::max (currentMatchingIndex - 1, minIdx);
 		Scales_->setCurrentIndex (newIndex);
-		HandleScaleChosen (newIndex);
 
 		ZoomOut_->setEnabled (newIndex > minIdx);
 		ZoomIn_->setEnabled (true);
@@ -166,9 +163,13 @@ namespace LC::Monocle
 		}
 
 		Scales_->setCurrentIndex (newIndex);
-		HandleScaleChosen (newIndex);
 
 		ZoomOut_->setEnabled (true);
 		ZoomIn_->setEnabled (newIndex < maxIdx);
+	}
+
+	void Zoomer::NotifyScaleSelected (ScaleMode scale)
+	{
+		emit scaleModeChanged (scale);
 	}
 }

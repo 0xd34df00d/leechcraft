@@ -39,9 +39,10 @@ namespace LC::Monocle
 
 		void SetScaleMode (ScaleMode);
 	private:
-		void HandleScaleChosen (int);
 		void ZoomOut ();
 		void ZoomIn ();
+
+		void NotifyScaleSelected (ScaleMode);
 	signals:
 		void scaleModeChanged (ScaleMode);
 	};
