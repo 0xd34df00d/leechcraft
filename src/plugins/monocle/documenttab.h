@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QWidget>
-#include <QComboBox>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
@@ -44,6 +43,7 @@ namespace Monocle
 	class DocumentBookmarksManager;
 	class PageNumLabel;
 	class SmoothScroller;
+	class Zoomer;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -59,9 +59,6 @@ namespace Monocle
 		QObject *ParentPlugin_;
 
 		QToolBar *Toolbar_;
-		QComboBox *ScalesBox_ = nullptr;
-		QAction *ZoomOut_ = nullptr;
-		QAction *ZoomIn_ = nullptr;
 		PageNumLabel *PageNumLabel_ = nullptr;
 
 		QAction *LayOnePage_ = nullptr;
@@ -92,6 +89,8 @@ namespace Monocle
 
 		NavigationHistory * const NavHistory_;
 
+		std::unique_ptr<Zoomer> Zoomer_;
+
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
 		QVector<PageGraphicsItem*> Pages_;
@@ -113,6 +112,7 @@ namespace Monocle
 		using DocumentOpenOptions = Util::BitFlags<DocumentOpenOption>;
 
 		DocumentTab (const TabClassInfo&, QObject*);
+		~DocumentTab () override;
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;
@@ -180,9 +180,6 @@ namespace Monocle
 
 		void handlePresentation ();
 
-		void zoomOut ();
-		void zoomIn ();
-
 		void recoverDocState (DocStateManager::State);
 
 		void setMoveMode (bool);
@@ -193,9 +190,6 @@ namespace Monocle
 		void handleCopyAsText ();
 
 		void showDocInfo ();
-
-		void handleScaleChosen (int);
-		void handleCustomScale (QString);
 	signals:
 		void changeTabName (const QString&) override;
 		void removeTab () override;

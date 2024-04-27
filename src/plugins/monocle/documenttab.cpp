@@ -9,7 +9,6 @@
 #include "documenttab.h"
 #include <functional>
 #include <QToolBar>
-#include <QComboBox>
 #include <QFileDialog>
 #include <QMenu>
 #include <QToolButton>
@@ -49,6 +48,7 @@
 #include "interfaces/monocle/iknowfileextensions.h"
 #include "interfaces/monocle/ihaveoptionalcontent.h"
 #include "components/actions/export.h"
+#include "components/actions/zoomer.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -107,6 +107,7 @@ namespace Monocle
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
 	, NavHistory_ (new NavigationHistory { *this })
+	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_->GetCurrentScale (); }) }
 	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
 	{
 		Ui_.setupUi (this);
@@ -122,6 +123,16 @@ namespace Monocle
 				{
 					for (const auto page : Pages_)
 						page->SetRenderingEnabled (!isScrolling);
+				});
+
+		connect (&*Zoomer_,
+				&Zoomer::scaleModeChanged,
+				this,
+				[this] (ScaleMode mode)
+				{
+					LayoutManager_->SetScaleMode (mode);
+					Relayout ();
+					scheduleSaveState ();
 				});
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, Scroller_, this);
@@ -234,6 +245,8 @@ namespace Monocle
 				ThumbsWidget_,
 				SLOT (updatePagesVisibility (QMap<int, QRect>)));
 	}
+
+	DocumentTab::~DocumentTab () = default;
 
 	ExternalNavigationAction DocumentTab::GetNavigationHistoryEntry () const
 	{
@@ -699,41 +712,7 @@ namespace Monocle
 
 		Toolbar_->addSeparator ();
 
-		ScalesBox_ = new QComboBox ();
-		ScalesBox_->setEditable (true);
-		ScalesBox_->setInsertPolicy (QComboBox::NoInsert);
-		ScalesBox_->addItem (tr ("Fit width"));
-		ScalesBox_->addItem (tr ("Fit page"));
-		for (auto scale : { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2., 3., 4., 5., 7.5, 10. })
-			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
-		ScalesBox_->setCurrentIndex (0);
-		connect (ScalesBox_,
-				SIGNAL (activated (int)),
-				this,
-				SLOT (handleScaleChosen (int)));
-		connect (ScalesBox_,
-				SIGNAL (editTextChanged (QString)),
-				this,
-				SLOT (handleCustomScale (QString)));
-		Toolbar_->addWidget (ScalesBox_);
-
-		ZoomOut_ = new QAction (tr ("Zoom out"), this);
-		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
-		ZoomOut_->setShortcut (QString ("Ctrl+-"));
-		connect (ZoomOut_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (zoomOut ()));
-		Toolbar_->addAction(ZoomOut_);
-
-		ZoomIn_ = new QAction (tr ("Zoom in"), this);
-		ZoomIn_->setProperty ("ActionIcon", "zoom-in");
-		ZoomIn_->setShortcut (QString ("Ctrl+="));
-		connect (ZoomIn_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (zoomIn ()));
-		Toolbar_->addAction (ZoomIn_);
+		AddToolbarEntries (*Toolbar_, Zoomer_->GetToolbarEntries ());
 
 		SetupToolbarRotate ();
 
@@ -1160,76 +1139,11 @@ namespace Monocle
 		emit currentPageChanged (current);
 	}
 
-	void DocumentTab::zoomOut ()
-	{
-		auto currentMatchingIndex = ScalesBox_->currentIndex ();
-		const int minIdx = 2;
-		switch (ScalesBox_->currentIndex ())
-		{
-		case 0:
-		case 1:
-		{
-			const auto scale = LayoutManager_->GetCurrentScale ();
-			for (auto i = minIdx; i < ScalesBox_->count (); ++i)
-				if (ScalesBox_->itemData (i).toDouble () > scale)
-				{
-					currentMatchingIndex = i;
-					break;
-				}
-
-			if (currentMatchingIndex == ScalesBox_->currentIndex ())
-				currentMatchingIndex = ScalesBox_->count () - 1;
-			break;
-		}
-		}
-
-		auto newIndex = std::max (currentMatchingIndex - 1, minIdx);
-		ScalesBox_->setCurrentIndex (newIndex);
-		handleScaleChosen (newIndex);
-
-		ZoomOut_->setEnabled (newIndex > minIdx);
-		ZoomIn_->setEnabled (true);
-	}
-
-	void DocumentTab::zoomIn ()
-	{
-		const auto maxIdx = ScalesBox_->count () - 1;
-
-		auto newIndex = std::min (ScalesBox_->currentIndex () + 1, maxIdx);
-		switch (ScalesBox_->currentIndex ())
-		{
-		case 0:
-		case 1:
-			const auto scale = LayoutManager_->GetCurrentScale ();
-			for (auto i = 2; i <= maxIdx; ++i)
-				if (ScalesBox_->itemData (i).toDouble () > scale)
-				{
-					newIndex = i;
-					break;
-				}
-			if (ScalesBox_->currentIndex () == newIndex)
-				newIndex = maxIdx;
-			break;
-		}
-
-		ScalesBox_->setCurrentIndex (newIndex);
-		handleScaleChosen (newIndex);
-
-		ZoomOut_->setEnabled (true);
-		ZoomIn_->setEnabled (newIndex < maxIdx);
-	}
-
 	void DocumentTab::recoverDocState (DocStateManager::State state)
 	{
 		LayoutManager_->SetLayoutMode (state.Lay_);
 		LayoutManager_->SetScaleMode (state.ScaleMode_);
-
-		const auto scaleBoxIndex = Util::Visit (state.ScaleMode_,
-				[] (FitWidth) { return 0; },
-				[] (FitPage) { return 1; },
-				[&] (FixedScale fixed) { return ScalesBox_->findData (fixed.Scale_); });
-		if (scaleBoxIndex >= 0)
-			ScalesBox_->setCurrentIndex (scaleBoxIndex);
+		Zoomer_->SetScaleMode (state.ScaleMode_);
 
 		const auto action = [this]
 		{
@@ -1311,52 +1225,6 @@ namespace Monocle
 		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
-	}
-
-	void DocumentTab::handleScaleChosen (int idx)
-	{
-		switch (idx)
-		{
-		case 0:
-			LayoutManager_->SetScaleMode (FitWidth {});
-			break;
-		case 1:
-			LayoutManager_->SetScaleMode (FitPage {});
-			break;
-		default:
-			LayoutManager_->SetScaleMode (FixedScale { ScalesBox_->itemData (idx).toDouble () });
-			break;
-		}
-
-		Relayout ();
-		scheduleSaveState ();
-	}
-
-	void DocumentTab::handleCustomScale (QString str)
-	{
-		if (ScalesBox_->findText (str) >= 0)
-			return;
-
-		str.remove ('%');
-		str = str.trimmed ();
-
-		bool ok = false;
-		auto num = str.toDouble (&ok);
-		if (!ok)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not convert"
-					<< str
-					<< "to number";
-			return;
-		}
-
-		num /= 100;
-
-		LayoutManager_->SetScaleMode (FixedScale { num });
-
-		Relayout ();
-		scheduleSaveState ();
 	}
 }
 }
