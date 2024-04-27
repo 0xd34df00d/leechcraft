@@ -27,7 +27,7 @@ namespace LC::Monocle
 
 			bool ok = false;
 			auto num = str.toDouble (&ok);
-			if (!ok)
+			if (!ok || num < 1)
 			{
 				qWarning () << "could not convert" << str << "to number";
 				return {};
