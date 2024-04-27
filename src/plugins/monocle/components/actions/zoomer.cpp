@@ -60,8 +60,9 @@ namespace LC::Monocle
 				this,
 				[this] (const QString& str)
 				{
-					if (const auto scale = ScaleFromString (str))
-						emit scaleModeChanged (*scale);
+					if (Scales_->findText (str) == -1)
+						if (const auto scale = ScaleFromString (str))
+							emit scaleModeChanged (*scale);
 				});
 
 		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
