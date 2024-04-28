@@ -10,7 +10,6 @@
 
 #include <QObject>
 #include <QPointer>
-#include <interfaces/core/icoreproxy.h>
 
 class QAbstractItemModel;
 
@@ -29,13 +28,11 @@ namespace HotSensors
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
-
 		QString Context_;
 		SensorsFilterModel *Filter_;
 		QPointer<Util::UnhideListViewBase> CurrentList_;
 	public:
-		ContextWrapper (QAbstractItemModel*, ICoreProxy_ptr, QObject* = nullptr);
+		ContextWrapper (QAbstractItemModel*, QObject* = nullptr);
 	private:
 		QStringList LoadHiddenNames () const;
 		void SaveHiddenNames (const QStringList&) const;

@@ -42,7 +42,7 @@ namespace HotSensors
 					HistoryMgr_.get (),
 					SLOT (handleReadings (Readings_t)));
 
-		PlotMgr_ = std::make_unique<PlotManager> (proxy);
+		PlotMgr_ = std::make_unique<PlotManager> ();
 		connect (HistoryMgr_.get (),
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),

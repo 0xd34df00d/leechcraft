@@ -23,9 +23,8 @@ namespace LC
 {
 namespace HotSensors
 {
-	PlotManager::PlotManager (ICoreProxy_ptr proxy, QObject *parent)
+	PlotManager::PlotManager (QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, Model_ (new SensorsGraphModel (this))
 	{
 	}
@@ -37,7 +36,7 @@ namespace HotSensors
 
 	std::unique_ptr<QObject> PlotManager::CreateContextWrapper ()
 	{
-		return std::make_unique<ContextWrapper> (GetModel (), Proxy_ );
+		return std::make_unique<ContextWrapper> (GetModel ());
 	}
 
 	void PlotManager::handleHistoryUpdated (const ReadingsHistory_t& history)

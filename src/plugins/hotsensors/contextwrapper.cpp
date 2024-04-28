@@ -52,9 +52,8 @@ namespace HotSensors
 		}
 	};
 
-	ContextWrapper::ContextWrapper (QAbstractItemModel *model, ICoreProxy_ptr proxy, QObject *parent)
+	ContextWrapper::ContextWrapper (QAbstractItemModel *model, QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, Filter_ (new SensorsFilterModel (this))
 	{
 		Filter_->setDynamicSortFilter (true);
@@ -112,7 +111,7 @@ namespace HotSensors
 		if (items.isEmpty ())
 			return;
 
-		auto list = new Util::UnhideListViewBase (Proxy_,
+		auto list = new Util::UnhideListViewBase (GetProxyHolder (),
 				[&items] (QStandardItemModel *model)
 					{ model->invisibleRootItem ()->appendRows (items); });
 		connect (list,

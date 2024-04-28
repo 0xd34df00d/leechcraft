@@ -9,10 +9,8 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
 #include "structures.h"
 
-class QDeclarativeImageProvider;
 class QAbstractItemModel;
 class QStandardItemModel;
 
@@ -24,11 +22,9 @@ namespace HotSensors
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
-
 		QStandardItemModel * const Model_;
 	public:
-		PlotManager (ICoreProxy_ptr, QObject* = 0);
+		PlotManager (QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
 
