@@ -188,7 +188,7 @@ namespace LC::Monocle
 		arbAction->setMenu (&arbMenu);
 
 		auto arbWidget = new ArbitraryRotationWidget;
-		arbWidget->setValue (LayoutManager_->GetRotation () + LayoutManager_->GetRotation (PageNum_));
+		arbWidget->setValue (LayoutManager_->GetPageRotation (PageNum_));
 		connect (arbWidget,
 				&ArbitraryRotationWidget::valueChanged,
 				this,
