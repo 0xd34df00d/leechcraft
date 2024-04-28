@@ -12,6 +12,8 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include "backend.h"
+#include "plotmanager.h"
 
 namespace LC
 {
@@ -30,7 +32,7 @@ namespace HotSensors
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.HotSensors")
 
-		std::shared_ptr<Backend> SensorsMgr_;
+		std::unique_ptr<Backend> SensorsMgr_;
 		std::unique_ptr<HistoryManager> HistoryMgr_;
 		std::unique_ptr<PlotManager> PlotMgr_;
 	public:

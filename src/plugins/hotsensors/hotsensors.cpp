@@ -19,22 +19,21 @@
 #endif
 
 #include "historymanager.h"
-#include "plotmanager.h"
 
 namespace LC
 {
 namespace HotSensors
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("hotsensors");
 
 		HistoryMgr_ = std::make_unique<HistoryManager> ();
 
 #ifdef Q_OS_LINUX
-		SensorsMgr_ = std::make_shared<LmSensorsBackend> ();
+		SensorsMgr_ = std::make_unique<LmSensorsBackend> ();
 #elif defined (Q_OS_MAC)
-		SensorsMgr_ = std::make_shared<MacOsBackend> ();
+		SensorsMgr_ = std::make_unique<MacOsBackend> ();
 #endif
 
 		if (SensorsMgr_)
