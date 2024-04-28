@@ -12,9 +12,7 @@
 #include <QHash>
 #include "structures.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	class HistoryManager : public QObject
 	{
@@ -22,13 +20,12 @@ namespace HotSensors
 
 		ReadingsHistory_t History_;
 	public:
-		HistoryManager (QObject* = 0);
+		using QObject::QObject;
 
 		static int GetMaxHistorySize ();
-	public slots:
-		void handleReadings (const Readings_t&);
+
+		void HandleReadings (const Readings_t&);
 	signals:
 		void historyChanged (const ReadingsHistory_t&);
 	};
-}
 }

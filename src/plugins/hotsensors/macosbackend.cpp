@@ -13,9 +13,7 @@
 #include <QtDebug>
 #include <IOKit/IOKitLib.h>
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	namespace
 	{
@@ -290,5 +288,4 @@ namespace HotSensors
 
 		emit gotReadings (readings);
 	}
-}
 }

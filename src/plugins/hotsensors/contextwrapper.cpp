@@ -11,17 +11,14 @@
 #include <QSettings>
 #include <QStringList>
 #include <QCoreApplication>
-#include <QtDebug>
-#include <util/qml/unhidelistviewbase.h>
-#include <util/qml/unhidelistmodel.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/models/rolenamesmixin.h>
-#include "plotmanager.h"
+#include <util/qml/unhidelistviewbase.h>
+#include <util/qml/unhidelistmodel.h>
+#include <util/sll/qtutil.h>
 #include "sensorsgraphmodel.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	class SensorsFilterModel : public Util::RoleNamesMixin<QSortFilterProxyModel>
 	{
@@ -43,9 +40,8 @@ namespace HotSensors
 			Hidden_ = hidden;
 			invalidateFilter ();
 		}
-
 	protected:
-		bool filterAcceptsRow (int row, const QModelIndex&) const
+		bool filterAcceptsRow (int row, const QModelIndex&) const override
 		{
 			const auto& idx = sourceModel ()->index (row, 0);
 			return !Hidden_.contains (idx.data (SensorsGraphModel::Role::SensorName).toString ());
@@ -53,8 +49,8 @@ namespace HotSensors
 	};
 
 	ContextWrapper::ContextWrapper (QAbstractItemModel *model, QObject *parent)
-	: QObject (parent)
-	, Filter_ (new SensorsFilterModel (this))
+	: QObject { parent }
+	, Filter_ { new SensorsFilterModel { this } }
 	{
 		Filter_->setDynamicSortFilter (true);
 		Filter_->SetSourceWithRoles (model);
@@ -64,7 +60,7 @@ namespace HotSensors
 	{
 		QSettings settings (qApp->organizationName (), qApp->applicationName () + "_HotSensors");
 		settings.beginGroup (Context_);
-		const auto& list = settings.value ("Hidden").toStringList ();
+		const auto& list = settings.value ("Hidden"_qs).toStringList ();
 		settings.endGroup ();
 		return list;
 	}
@@ -73,7 +69,7 @@ namespace HotSensors
 	{
 		QSettings settings (qApp->organizationName (), qApp->applicationName () + "_HotSensors");
 		settings.beginGroup (Context_);
-		settings.setValue ("Hidden", names);
+		settings.setValue ("Hidden"_qs, names);
 		settings.endGroup ();
 	}
 
@@ -112,25 +108,21 @@ namespace HotSensors
 			return;
 
 		auto list = new Util::UnhideListViewBase (GetProxyHolder (),
-				[&items] (QStandardItemModel *model)
-					{ model->invisibleRootItem ()->appendRows (items); });
+				[&items] (QStandardItemModel *model) { model->invisibleRootItem ()->appendRows (items); });
 		connect (list,
-				SIGNAL (itemUnhideRequested (QString)),
+				&Util::UnhideListViewBase::itemUnhideRequested,
 				this,
-				SLOT (unhideSensor (QString)));
+				[this] (const QString& name)
+				{
+					if (auto list = LoadHiddenNames (); list.removeAll (name))
+					{
+						SaveHiddenNames (list);
+						Filter_->SetHidden (list);
+					}
+				});
 		new Util::AutoResizeMixin ({ x, y }, [rect] () { return rect; }, list);
 		list->show ();
 		CurrentList_ = list;
-	}
-
-	void ContextWrapper::unhideSensor (const QString& name)
-	{
-		auto list = LoadHiddenNames ();
-		if (!list.removeAll (name))
-			return;
-
-		SaveHiddenNames (list);
-		Filter_->SetHidden (list);
 	}
 
 	void ContextWrapper::hideSensor (const QString& name)
@@ -142,5 +134,4 @@ namespace HotSensors
 
 		Filter_->SetHidden (list);
 	}
-}
 }

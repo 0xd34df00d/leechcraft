@@ -10,22 +10,19 @@
 
 #include "backend.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	struct StoredTemp;
 
 	class LmSensorsBackend : public Backend
 	{
-		QList<StoredTemp> Features_;
+		QVector<StoredTemp> Features_;
 	public:
 		LmSensorsBackend (QObject* = nullptr);
-		~LmSensorsBackend ();
+		~LmSensorsBackend () override;
 
 		void update () override;
 	private:
 		void EnumerateSensors ();
 	};
-}
 }

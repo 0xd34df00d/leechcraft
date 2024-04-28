@@ -7,11 +7,6 @@
  **********************************************************************/
 
 #include "plotmanager.h"
-#include <QStandardItemModel>
-#include <QPainter>
-#include <QUrl>
-#include <QFile>
-#include <QDir>
 #include <util/sll/qtutil.h>
 #include "contextwrapper.h"
 #include "sensorsgraphmodel.h"
@@ -19,13 +14,11 @@
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	PlotManager::PlotManager (QObject *parent)
-	: QObject (parent)
-	, Model_ (new SensorsGraphModel (this))
+	: QObject { parent }
+	, Model_ { new SensorsGraphModel { this } }
 	{
 	}
 
@@ -39,7 +32,7 @@ namespace HotSensors
 		return std::make_unique<ContextWrapper> (GetModel ());
 	}
 
-	void PlotManager::handleHistoryUpdated (const ReadingsHistory_t& history)
+	void PlotManager::Replot (const ReadingsHistory_t& history)
 	{
 		QHash<QString, QStandardItem*> existing;
 		for (int i = 0; i < Model_->rowCount (); ++i)
@@ -54,7 +47,8 @@ namespace HotSensors
 		{
 			const auto& name = pair.first;
 
-			double max = 0, crit = 0;
+			double max = 0;
+			double crit = 0;
 			QList<QPointF> points;
 			QList<QPointF> maxPoints;
 			for (const auto& item : pair.second)
@@ -75,7 +69,7 @@ namespace HotSensors
 			const auto lastTemp = pair.second.empty () ?
 					0 :
 					static_cast<int> (pair.second.back ().Value_);
-			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
+			item->setData (u"%1°C"_qs.arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
 			item->setData (QVariant::fromValue (maxPoints), SensorsGraphModel::MaxPointsList);
@@ -92,5 +86,4 @@ namespace HotSensors
 		if (!items.isEmpty ())
 			Model_->invisibleRootItem ()->appendRows (items);
 	}
-}
 }

@@ -8,23 +8,16 @@
 
 #include "historymanager.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	const auto PointsCount = 300;
-
-	HistoryManager::HistoryManager (QObject *parent)
-	: QObject (parent)
-	{
-	}
 
 	int HistoryManager::GetMaxHistorySize ()
 	{
 		return PointsCount;
 	}
 
-	void HistoryManager::handleReadings (const Readings_t& readings)
+	void HistoryManager::HandleReadings (const Readings_t& readings)
 	{
 		for (auto i = History_.begin (); i != History_.end (); )
 		{
@@ -46,5 +39,4 @@ namespace HotSensors
 
 		emit historyChanged (History_);
 	}
-}
 }

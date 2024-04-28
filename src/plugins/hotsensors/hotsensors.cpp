@@ -10,7 +10,7 @@
 #include <QIcon>
 #include <QAbstractItemModel>
 #include <util/util.h>
-#include <util/sys/paths.h>
+#include <util/sll/qtutil.h>
 
 #ifdef Q_OS_LINUX
 #include "lmsensorsbackend.h"
@@ -20,13 +20,11 @@
 
 #include "historymanager.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("hotsensors");
+		Util::InstallTranslator ("hotsensors"_qs);
 
 		HistoryMgr_ = std::make_unique<HistoryManager> ();
 
@@ -38,15 +36,15 @@ namespace HotSensors
 
 		if (SensorsMgr_)
 			connect (SensorsMgr_.get (),
-					SIGNAL (gotReadings (Readings_t)),
+					&Backend::gotReadings,
 					HistoryMgr_.get (),
-					SLOT (handleReadings (Readings_t)));
+					&HistoryManager::HandleReadings);
 
 		PlotMgr_ = std::make_unique<PlotManager> ();
 		connect (HistoryMgr_.get (),
-				SIGNAL (historyChanged (ReadingsHistory_t)),
+				&HistoryManager::historyChanged,
 				PlotMgr_.get (),
-				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
+				&PlotManager::Replot);
 	}
 
 	void Plugin::SecondInit ()
@@ -65,7 +63,7 @@ namespace HotSensors
 
 	QString Plugin::GetName () const
 	{
-		return "HotSensors";
+		return "HotSensors"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -75,16 +73,16 @@ namespace HotSensors
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return {};
 	}
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-		auto component = std::make_shared<QuarkComponent> ("hotsensors", "HSQuark.qml");
-		component->ContextProps_.push_back ({ "HS_plotManager", PlotMgr_->CreateContextWrapper () });
+		auto component = std::make_shared<QuarkComponent> ("hotsensors"_qs, "HSQuark.qml"_qs);
+		component->ContextProps_.emplace_back ("HS_plotManager"_qs, PlotMgr_->CreateContextWrapper ());
 		return { component };
 	}
 }
-}
+
 
 LC_EXPORT_PLUGIN (leechcraft_hotsensors, LC::HotSensors::Plugin);

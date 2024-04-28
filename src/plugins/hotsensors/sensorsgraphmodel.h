@@ -11,9 +11,7 @@
 #include <QStandardItemModel>
 #include <util/models/rolenamesmixin.h>
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	class SensorsGraphModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
@@ -29,7 +27,6 @@ namespace HotSensors
 			MaxPointsCount
 		};
 
-		SensorsGraphModel (QObject*);
+		explicit SensorsGraphModel (QObject*);
 	};
-}
 }

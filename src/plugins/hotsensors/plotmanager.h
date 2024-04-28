@@ -14,23 +14,17 @@
 class QAbstractItemModel;
 class QStandardItemModel;
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	class PlotManager : public QObject
 	{
-		Q_OBJECT
-
 		QStandardItemModel * const Model_;
 	public:
-		PlotManager (QObject* = 0);
+		explicit PlotManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
-
 		std::unique_ptr<QObject> CreateContextWrapper ();
-	public slots:
-		void handleHistoryUpdated (const ReadingsHistory_t&);
+
+		void Replot (const ReadingsHistory_t&);
 	};
-}
 }

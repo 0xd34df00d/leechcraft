@@ -10,17 +10,14 @@
 
 #include "backend.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	class MacOsBackend : public Backend
 	{
 		Q_OBJECT
 	public:
-		MacOsBackend (QObject* = nullptr);
+		explicit MacOsBackend (QObject* = nullptr);
 	public slots:
 		void update ();
 	};
-}
 }

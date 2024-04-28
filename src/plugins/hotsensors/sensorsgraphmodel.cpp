@@ -8,22 +8,19 @@
 
 #include "sensorsgraphmodel.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	SensorsGraphModel::SensorsGraphModel (QObject *parent)
 	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [LastTemp] = "lastTemp";
-		roleNames [SensorName] = "sensorName";
-		roleNames [PointsList] = "pointsList";
-		roleNames [MaxPointsList] = "maxPointsList";
-		roleNames [MaxTemp] = "maxTemp";
-		roleNames [CritTemp] = "critTemp";
-		roleNames [MaxPointsCount] = "maxPointsCount";
-		setRoleNames (roleNames);
+		setRoleNames ({
+				{ LastTemp, "lastTemp" },
+				{ SensorName, "sensorName" },
+				{ PointsList, "pointsList" },
+				{ MaxPointsList, "maxPointsList" },
+				{ MaxTemp, "maxTemp" },
+				{ CritTemp, "critTemp" },
+				{ MaxPointsCount, "maxPointsCount" },
+			});
 	}
-}
 }

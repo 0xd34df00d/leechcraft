@@ -13,14 +13,12 @@
 
 class QAbstractItemModel;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UnhideListViewBase;
 }
 
-namespace HotSensors
+namespace LC::HotSensors
 {
 	class SensorsFilterModel;
 
@@ -32,7 +30,7 @@ namespace HotSensors
 		SensorsFilterModel *Filter_;
 		QPointer<Util::UnhideListViewBase> CurrentList_;
 	public:
-		ContextWrapper (QAbstractItemModel*, QObject* = nullptr);
+		explicit ContextWrapper (QAbstractItemModel*, QObject* = nullptr);
 	private:
 		QStringList LoadHiddenNames () const;
 		void SaveHiddenNames (const QStringList&) const;
@@ -41,8 +39,6 @@ namespace HotSensors
 		QObject* getModel () const;
 
 		void sensorUnhideListRequested (int x, int y, const QRect&);
-		void unhideSensor (const QString&);
 		void hideSensor (const QString&);
 	};
-}
 }

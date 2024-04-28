@@ -11,19 +11,16 @@
 #include <QObject>
 #include "structures.h"
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	class Backend : public QObject
 	{
 		Q_OBJECT
 	public:
-		Backend (QObject* = nullptr);
+		explicit Backend (QObject* = nullptr);
 	public slots:
 		virtual void update () = 0;
 	signals:
 		void gotReadings (const Readings_t&);
 	};
-}
 }

@@ -9,10 +9,9 @@
 #include "lmsensorsbackend.h"
 #include <QtDebug>
 #include <sensors/sensors.h>
+#include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	struct StoredChipName
 	{
@@ -42,10 +41,10 @@ namespace HotSensors
 	};
 
 	StoredChipName::StoredChipName (const sensors_chip_name *chipName)
-	: Prefix_ (chipName->prefix)
-	, Bus_ (chipName->bus)
-	, Addr_ (chipName->addr)
-	, Path_ (chipName->path)
+	: Prefix_ { chipName->prefix }
+	, Bus_ { chipName->bus }
+	, Addr_ { chipName->addr }
+	, Path_ { chipName->path }
 	{
 	}
 
@@ -55,7 +54,7 @@ namespace HotSensors
 	}
 
 	LmSensorsBackend::LmSensorsBackend (QObject *parent)
-	: Backend (parent)
+	: Backend { parent }
 	{
 		sensors_init (nullptr);
 
@@ -88,9 +87,7 @@ namespace HotSensors
 					100,
 					100,
 					{},
-					QString ("%1/%2")
-							.arg (chipName->prefix)
-							.arg (sensors_get_label (chipName, feature)),
+					"%1/%2"_qs.arg (chipName->prefix, sensors_get_label (chipName, feature)),
 				};
 				while ((subfeature = sensors_get_all_subfeatures (chipName, feature, &sfnr)))
 				{
@@ -128,5 +125,4 @@ namespace HotSensors
 		}
 		emit gotReadings (readings);
 	}
-}
 }

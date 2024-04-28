@@ -9,9 +9,7 @@
 #include "backend.h"
 #include <QTimer>
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	Backend::Backend (QObject *parent)
 	: QObject { parent }
@@ -23,9 +21,8 @@ namespace HotSensors
 		timer->start (1000);
 #endif
 		connect (timer,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (update ()));
+				&Backend::update);
 	}
-}
 }

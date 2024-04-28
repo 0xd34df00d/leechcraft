@@ -13,9 +13,7 @@
 #include <QList>
 #include <QMap>
 
-namespace LC
-{
-namespace HotSensors
+namespace LC::HotSensors
 {
 	struct Reading
 	{
@@ -28,5 +26,4 @@ namespace HotSensors
 	using Readings_t = boost::circular_buffer<Reading>;
 
 	using ReadingsHistory_t = QMap<QString, Readings_t>;
-}
 }
