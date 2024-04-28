@@ -32,7 +32,7 @@ namespace LC::Monocle
 	private:
 		const ScaleGetter ScaleGetter_;
 	public:
-		explicit Zoomer (const ScaleGetter&, QObject* = nullptr);
+		explicit Zoomer (ScaleGetter, QObject* = nullptr);
 		~Zoomer () override;
 
 		QVector<ToolbarEntry> GetToolbarEntries () const;

@@ -96,12 +96,12 @@ namespace LC::Monocle
 		}
 	}
 
-	Zoomer::Zoomer (const ScaleGetter& scaleGetter, QObject *parent)
+	Zoomer::Zoomer (ScaleGetter scaleGetter, QObject *parent)
 	: QObject { parent }
 	, Scales_ { std::make_unique<QComboBox> () }
 	, ZoomOut_ { std::make_unique<QAction> (tr ("Zoom out")) }
 	, ZoomIn_ { std::make_unique<QAction> (tr ("Zoom in")) }
-	, ScaleGetter_ { scaleGetter }
+	, ScaleGetter_ { std::move (scaleGetter) }
 	{
 		Scales_->setEditable (true);
 		Scales_->setInsertPolicy (QComboBox::NoInsert);
