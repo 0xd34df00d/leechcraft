@@ -28,19 +28,24 @@ namespace LC::Monocle
 		TwoPagesShifted
 	};
 
+	QString LayoutMode2Name (LayoutMode mode);
+	LayoutMode Name2LayoutMode (const QString&);
+
 	struct FitWidth {};
 	struct FitPage {};
 	struct FixedScale
 	{
 		double Scale_ = 1;
 	};
-
 	using ScaleMode = std::variant<FitWidth, FitPage, FixedScale>;
-
-	QString LayoutMode2Name (LayoutMode mode);
-	LayoutMode Name2LayoutMode (const QString&);
 
 	using ToolbarEntry = std::variant<QWidget*, QAction*>;
 
 	void AddToolbarEntries (QToolBar&, const QVector<ToolbarEntry>&);
+
+	enum class RotationChange : std::uint8_t
+	{
+		Set,
+		Add,
+	};
 }

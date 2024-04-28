@@ -175,11 +175,11 @@ namespace LC::Monocle
 		constexpr auto RotationStep = 90;
 
 		auto ccwAction = rotateMenu.addAction (tr ("Rotate 90 degrees counter-clockwise"),
-				this, [this] { LayoutManager_->AddRotation (-RotationStep, PageNum_); });
+				this, [this] { LayoutManager_->SetPageRotation (-RotationStep, RotationChange::Add, PageNum_); });
 		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
 
 		auto cwAction = rotateMenu.addAction (tr ("Rotate 90 degrees clockwise"),
-				this, [this] { LayoutManager_->AddRotation (RotationStep, PageNum_); });
+				this, [this] { LayoutManager_->SetPageRotation (RotationStep, RotationChange::Add, PageNum_); });
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
 		QMenu arbMenu;
@@ -192,7 +192,7 @@ namespace LC::Monocle
 		connect (arbWidget,
 				&ArbitraryRotationWidget::valueChanged,
 				this,
-				[this] (double rotation) { LayoutManager_->SetRotation (rotation, PageNum_); });
+				[this] (double rotation) { LayoutManager_->SetPageRotation (rotation, RotationChange::Set, PageNum_); });
 		QWidgetAction actionWidget { nullptr };
 		actionWidget.setDefaultWidget (arbWidget);
 		arbMenu.addAction (&actionWidget);

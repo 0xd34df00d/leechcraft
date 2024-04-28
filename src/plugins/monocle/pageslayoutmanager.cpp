@@ -14,6 +14,7 @@
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
+#include <util/sll/unreachable.h>
 #include "interfaces/monocle/idynamicdocument.h"
 #include "pagesview.h"
 #include "pagegraphicsitem.h"
@@ -187,19 +188,25 @@ namespace LC::Monocle
 			angle += MinAngle;
 			return angle;
 		}
+
+		double ComputeRotationChange (double curValue, double arg, RotationChange change)
+		{
+			switch (change)
+			{
+			case RotationChange::Set:
+				return arg;
+			case RotationChange::Add:
+				return curValue + arg;
+			}
+			Util::Unreachable ();
+		}
 	}
 
-	void PagesLayoutManager::SetRotation (double angle)
+	void PagesLayoutManager::SetRotation (double value, RotationChange change)
 	{
-		angle = LimitAngle (angle);
-		Rotation_ = angle;
+		Rotation_ = LimitAngle (ComputeRotationChange (Rotation_, value, change));
 		Relayout ();
-		emit rotationUpdated (angle);
-	}
-
-	void PagesLayoutManager::AddRotation (double dAngle)
-	{
-		SetRotation (GetRotation () + dAngle);
+		emit rotationUpdated (Rotation_);
 	}
 
 	double PagesLayoutManager::GetRotation () const
@@ -207,20 +214,15 @@ namespace LC::Monocle
 		return Rotation_;
 	}
 
-	void PagesLayoutManager::SetRotation (double angle, int page)
+	void PagesLayoutManager::SetPageRotation (double value, RotationChange change, int page)
 	{
-		angle = LimitAngle (angle);
-		PageRotations_ [page] = angle;
+		auto& rotation = PageRotations_ [page];
+		rotation = LimitAngle (ComputeRotationChange (rotation, value, change));
 		Relayout ();
-		emit rotationUpdated (angle, page);
+		emit rotationUpdated (rotation, page);
 	}
 
-	void PagesLayoutManager::AddRotation (double dAngle, int page)
-	{
-		SetRotation (dAngle + GetRotation (page), page);
-	}
-
-	double PagesLayoutManager::GetRotation (int page) const
+	double PagesLayoutManager::GetPageRotation (int page) const
 	{
 		return PageRotations_ [page];
 	}

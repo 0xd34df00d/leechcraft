@@ -541,11 +541,11 @@ namespace Monocle
 		auto rotateMenu = new QMenu ();
 
 		auto ccwAction = rotateMenu->addAction (tr ("Rotate 90 degrees counter-clockwise"),
-				[this] { LayoutManager_->AddRotation (-90); });
+				[this] { LayoutManager_->SetRotation (-90, RotationChange::Add); });
 		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
 
 		auto cwAction = rotateMenu->addAction (tr ("Rotate 90 degrees clockwise"),
-				[this] { LayoutManager_->AddRotation (90); });
+				[this] { LayoutManager_->SetRotation (90, RotationChange::Add); });
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
 		auto arbAction = rotateMenu->addAction (tr ("Rotate arbitrarily..."));
@@ -558,7 +558,7 @@ namespace Monocle
 		connect (arbWidget,
 				&ArbitraryRotationWidget::valueChanged,
 				LayoutManager_,
-				qOverload<double> (&PagesLayoutManager::SetRotation));
+				[this] (double value) { LayoutManager_->SetRotation (value, RotationChange::Set); });
 		connect (LayoutManager_,
 				qOverload<double> (&PagesLayoutManager::rotationUpdated),
 				arbWidget,

@@ -64,13 +64,11 @@ namespace LC::Monocle
 		ScaleMode GetScaleMode () const;
 		double GetCurrentScale () const;
 
-		void SetRotation (double);
-		void AddRotation (double);
+		void SetRotation (double, RotationChange);
 		double GetRotation () const;
 
-		void SetRotation (double, int);
-		void AddRotation (double, int);
-		double GetRotation (int) const;
+		void SetPageRotation (double, RotationChange, int);
+		double GetPageRotation (int) const;
 
 		void SetMargins (QSizeF);
 
