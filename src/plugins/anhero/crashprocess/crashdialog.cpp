@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QProcess>
+#include <QScreen>
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
@@ -40,6 +41,9 @@ namespace LC::AnHero::CrashProcess
 	, Info_ (info)
 	{
 		Ui_.setupUi (this);
+
+		const auto& screenSize = screen ()->availableSize ();
+		resize (screenSize * 3 / 4);
 
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
 
