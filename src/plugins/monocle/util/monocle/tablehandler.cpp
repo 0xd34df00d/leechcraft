@@ -45,12 +45,8 @@ namespace LC::Monocle
 		auto GetTableDimensions (const QDomElement& table)
 		{
 			auto tableDims = GetElemDimensions (table);
-			if (const auto& thead = table.firstChildElement ("thead"_qs);
-				!thead.isNull ())
-				tableDims += GetElemDimensions (thead);
-			if (const auto& tbody = table.firstChildElement ("tbody"_qs);
-				!tbody.isNull ())
-				tableDims += GetElemDimensions (tbody);
+			tableDims += GetElemDimensions (table.firstChildElement ("thead"_qs));
+			tableDims += GetElemDimensions (table.firstChildElement ("tbody"_qs));
 			return tableDims;
 		}
 
