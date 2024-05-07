@@ -15,11 +15,11 @@ namespace LC::Monocle
 {
 	namespace
 	{
-		auto GetTableDimensions (const QDomElement& tableElem)
+		auto GetElemDimensions (const QDomElement& elem)
 		{
 			int rows = 0;
 			int cols = 0;
-			for (const auto& row : Util::DomChildren (tableElem, "tr"_qs))
+			for (const auto& row : Util::DomChildren (elem, "tr"_qs))
 			{
 				++rows;
 				const auto& colsElems = Util::DomChildren (row, "td"_qs);
@@ -31,8 +31,24 @@ namespace LC::Monocle
 			{
 				int Rows_;
 				int Cols_;
+
+				TableDims& operator+= (TableDims other)
+				{
+					Rows_ += other.Rows_;
+					Cols_ = std::max (Cols_, other.Cols_);
+					return *this;
+				}
 			};
 			return TableDims { rows, cols };
+		}
+
+		auto GetTableDimensions (const QDomElement& table)
+		{
+			auto tableDims = GetElemDimensions (table);
+			if (const auto& tbody = table.firstChildElement ("tbody"_qs);
+				!tbody.isNull ())
+				tableDims += GetElemDimensions (tbody);
+			return tableDims;
 		}
 
 		QTextTableFormat MakeTableFormat (const QTextFrameFormat& styledFrameFmt)
