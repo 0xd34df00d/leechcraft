@@ -12,7 +12,7 @@
 
 namespace LC::Monocle
 {
-	class DocumentTab;
+	class IDocument;
 
 	class PagesView : public QGraphicsView
 	{
@@ -21,11 +21,11 @@ namespace LC::Monocle
 		bool ShowReleaseMenu_ = false;
 		bool ShowOnNextRelease_ = false;
 
-		DocumentTab *DocTab_ = nullptr;
+		IDocument *Doc_ = nullptr;
 	public:
 		using QGraphicsView::QGraphicsView;
 
-		void SetDocumentTab (DocumentTab*);
+		void SetDocument (IDocument*);
 		void SetShowReleaseMenu (bool);
 
 		QPointF GetCurrentCenter () const;

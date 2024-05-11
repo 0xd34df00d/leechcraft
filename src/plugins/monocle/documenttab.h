@@ -134,8 +134,6 @@ namespace Monocle
 		void ReloadDoc (const QString&);
 		bool SetDoc (const QString&, DocumentOpenOptions);
 
-		void CreateViewCtxMenuActions (QMenu*);
-
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool immediate = false);
 
@@ -161,9 +159,6 @@ namespace Monocle
 		void Relayout ();
 		void SetLayoutMode (LayoutMode);
 
-		QImage GetSelectionImg ();
-		QString GetSelectionText () const;
-
 		void RegenPageVisibility ();
 
 		void CheckCurrentPageChange ();
@@ -184,10 +179,6 @@ namespace Monocle
 
 		void setMoveMode (bool);
 		void setSelectionMode (bool);
-
-		void handleCopyAsImage ();
-		void handleSaveAsImage ();
-		void handleCopyAsText ();
 
 		void showDocInfo ();
 	signals:

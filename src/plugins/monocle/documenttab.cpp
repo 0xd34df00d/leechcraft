@@ -114,7 +114,6 @@ namespace Monocle
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
-		Ui_.PagesView_->SetDocumentTab (this);
 
 		Scroller_ = new SmoothScroller { Ui_.PagesView_, this };
 		connect (Scroller_,
@@ -446,37 +445,6 @@ namespace Monocle
 		return true;
 	}
 
-	void DocumentTab::CreateViewCtxMenuActions (QMenu *menu)
-	{
-		auto copyAsImage = menu->addAction (tr ("Copy selection as image"),
-				this, SLOT (handleCopyAsImage ()));
-		copyAsImage->setProperty ("ActionIcon", "image-x-generic");
-
-		auto saveAsImage = menu->addAction (tr ("Save selection as image..."),
-				this, SLOT (handleSaveAsImage ()));
-		saveAsImage->setProperty ("ActionIcon", "document-save");
-
-		new Util::StdDataFilterMenuCreator (GetSelectionImg (),
-					Core::Instance ().GetProxy ()->GetEntityManager (),
-					menu);
-
-		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
-		{
-			menu->addSeparator ();
-
-			const auto& selText = GetSelectionText ();
-
-			auto copyAsText = menu->addAction (tr ("Copy selection as text"),
-					this, SLOT (handleCopyAsText ()));
-			copyAsText->setProperty ("Monocle/Text", selText);
-			copyAsText->setProperty ("ActionIcon", "edit-copy");
-
-			new Util::StdDataFilterMenuCreator (selText,
-					Core::Instance ().GetProxy ()->GetEntityManager (),
-					menu);
-		}
-	}
-
 	int DocumentTab::GetCurrentPage () const
 	{
 		return LayoutManager_->GetCurrentPage ();
@@ -786,56 +754,6 @@ namespace Monocle
 		scheduleSaveState ();
 	}
 
-	QImage DocumentTab::GetSelectionImg ()
-	{
-		const auto& bounding = Scene_.selectionArea ().boundingRect ();
-		if (bounding.isEmpty ())
-			return QImage ();
-
-		QImage image (bounding.size ().toSize (), QImage::Format_ARGB32);
-		QPainter painter (&image);
-		Scene_.render (&painter, QRectF (), bounding);
-		painter.end ();
-		return image;
-	}
-
-	QString DocumentTab::GetSelectionText () const
-	{
-		auto ihtc = qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ());
-		if (!ihtc)
-			return QString ();
-
-		const auto& selectionBound = Scene_.selectionArea ().boundingRect ();
-
-		auto bounding = Ui_.PagesView_->mapFromScene (selectionBound).boundingRect ();
-		if (bounding.isEmpty () ||
-				bounding.width () < 4 ||
-				bounding.height () < 4)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "selection area is empty";
-			return QString ();
-		}
-
-		auto item = Ui_.PagesView_->itemAt (bounding.topLeft ());
-		auto pageItem = dynamic_cast<PageGraphicsItem*> (item);
-		if (!pageItem)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "page item is null for"
-					<< bounding.topLeft ();
-			return QString ();
-		}
-
-		bounding = item->mapFromScene (selectionBound).boundingRect ().toRect ();
-
-		const auto scale = LayoutManager_->GetCurrentScale ();
-		bounding.moveTopLeft (bounding.topLeft () / scale);
-		bounding.setSize (bounding.size () / scale);
-
-		return ihtc->GetTextContent (pageItem->GetPageNum (), bounding);
-	}
-
 	void DocumentTab::RegenPageVisibility ()
 	{
 		if (receivers (SIGNAL (pagesVisibilityChanged (QMap<int, QRect>))) <= 0)
@@ -945,6 +863,7 @@ namespace Monocle
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
 		AnnManager_->HandleDoc (CurrentDoc_, Pages_);
 		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
+		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
 
 		recoverDocState (state);
@@ -1153,43 +1072,6 @@ namespace Monocle
 
 		Ui_.PagesView_->SetShowReleaseMenu (true);
 		Ui_.PagesView_->setDragMode (QGraphicsView::RubberBandDrag);
-	}
-
-	void DocumentTab::handleCopyAsImage ()
-	{
-		QApplication::clipboard ()->setImage (GetSelectionImg ());
-	}
-
-	void DocumentTab::handleSaveAsImage ()
-	{
-		const auto& image = GetSelectionImg ();
-		if (image.isNull ())
-			return;
-
-		const auto& previous = XmlSettingsManager::Instance ()
-				.Property ("SelectionImageSavePath", QDir::homePath ()).toString ();
-		const auto& filename = QFileDialog::getSaveFileName (this,
-				tr ("Save selection as"),
-				previous,
-				tr ("PNG images (*.png)"));
-		if (filename.isEmpty ())
-			return;
-
-		const QFileInfo saveFI (filename);
-		XmlSettingsManager::Instance ().setProperty ("SelectionImageSavePath",
-				saveFI.absoluteFilePath ());
-		const auto& userSuffix = saveFI.suffix ().toLatin1 ();
-		const auto& supported = QImageWriter::supportedImageFormats ();
-		const auto suffix = supported.contains (userSuffix) ?
-				userSuffix :
-				QByteArray ("PNG");
-		image.save (filename, suffix, 100);
-	}
-
-	void DocumentTab::handleCopyAsText ()
-	{
-		const auto& text = sender ()->property ("Monocle/Text").toString ();
-		QApplication::clipboard ()->setText (text);
 	}
 
 	void DocumentTab::showDocInfo ()
