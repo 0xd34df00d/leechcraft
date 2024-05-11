@@ -18,6 +18,7 @@
 #include <sys/wait.h>
 #include <cerrno>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 
@@ -68,7 +69,7 @@ namespace LC::AnHero
 			{
 				constexpr auto maxLen = 10;
 				std::array<char, maxLen> arr { { 0 } };
-				std::to_chars (&arr [0], &arr [0] + maxLen, val);
+				std::to_chars (arr.begin (), arr.end (), val);
 				return arr;
 			}
 		}
@@ -148,10 +149,10 @@ namespace LC::AnHero
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		auto translator = Util::InstallTranslator ("anhero");
+		auto translator = Util::InstallTranslator ("anhero"_qs);
 
 		auto args = QCoreApplication::arguments ();
-		if (args.contains ("-noanhero"))
+		if (args.contains ("-noanhero"_qs))
 			return;
 
 #ifdef Q_OS_MAC
@@ -164,7 +165,7 @@ namespace LC::AnHero
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
 		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();
 		AppVersion_ = proxy->GetVersion ().toUtf8 ();
-		AppArgs_ = args.join (" ").toUtf8 ();
+		AppArgs_ = args.join (' ').toUtf8 ();
 		TsFile_ = translator->filePath ().toUtf8 ();
 		SetCrashHandler (DefaultCrashHandler);
 	}
@@ -184,7 +185,7 @@ namespace LC::AnHero
 
 	QString Plugin::GetName () const
 	{
-		return QStringLiteral ("AnHero");
+		return "AnHero"_qs;
 	}
 
 	QString Plugin::GetInfo () const
