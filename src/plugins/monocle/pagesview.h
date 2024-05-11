@@ -10,9 +10,7 @@
 
 #include <QGraphicsView>
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
 
@@ -25,18 +23,17 @@ namespace Monocle
 
 		DocumentTab *DocTab_ = nullptr;
 	public:
-		PagesView (QWidget* = nullptr);
+		using QGraphicsView::QGraphicsView;
 
 		void SetDocumentTab (DocumentTab*);
 		void SetShowReleaseMenu (bool);
 
 		QPointF GetCurrentCenter () const;
 	protected:
-		void mouseMoveEvent (QMouseEvent*);
-		void mouseReleaseEvent (QMouseEvent*);
-		void resizeEvent (QResizeEvent*);
+		void mouseMoveEvent (QMouseEvent*) override;
+		void mouseReleaseEvent (QMouseEvent*) override;
+		void resizeEvent (QResizeEvent*) override;
 	signals:
 		void sizeChanged ();
 	};
-}
 }

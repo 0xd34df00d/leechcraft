@@ -11,15 +11,8 @@
 #include <QMouseEvent>
 #include "documenttab.h"
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
-	PagesView::PagesView (QWidget *parent)
-	: QGraphicsView (parent)
-	{
-	}
-
 	void PagesView::SetDocumentTab (DocumentTab *tab)
 	{
 		DocTab_ = tab;
@@ -49,16 +42,16 @@ namespace Monocle
 	{
 		QGraphicsView::mouseReleaseEvent (event);
 
-		if (ShowOnNextRelease_)
-		{
-			auto menu = new QMenu (this);
-			DocTab_->CreateViewCtxMenuActions (menu);
-			menu->popup (event->globalPos ());
-			menu->setAttribute (Qt::WA_DeleteOnClose);
-			menu->show ();
+		if (!ShowOnNextRelease_)
+			return;
 
-			ShowOnNextRelease_ = false;
-		}
+		auto menu = new QMenu { this };
+		DocTab_->CreateViewCtxMenuActions (menu);
+		menu->popup (event->globalPos ());
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+		menu->show ();
+
+		ShowOnNextRelease_ = false;
 	}
 
 	void PagesView::resizeEvent (QResizeEvent *e)
@@ -66,5 +59,4 @@ namespace Monocle
 		QGraphicsView::resizeEvent (e);
 		emit sizeChanged ();
 	}
-}
 }
