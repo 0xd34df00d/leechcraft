@@ -18,6 +18,7 @@
 #include <QWidgetAction>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/threads/futures.h>
+#include "components/actions/rotatemenu.h"
 #include "core.h"
 #include "pixmapcachemanager.h"
 #include "arbitraryrotationwidget.h"
@@ -170,36 +171,10 @@ namespace LC::Monocle
 
 	void PageGraphicsItem::contextMenuEvent (QGraphicsSceneContextMenuEvent *event)
 	{
-		QMenu rotateMenu;
-
-		constexpr auto RotationStep = 90;
-
-		auto ccwAction = rotateMenu.addAction (tr ("Rotate 90 degrees counter-clockwise"),
-				this, [this] { LayoutManager_->SetPageRotation (-RotationStep, RotationChange::Add, PageNum_); });
-		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
-
-		auto cwAction = rotateMenu.addAction (tr ("Rotate 90 degrees clockwise"),
-				this, [this] { LayoutManager_->SetPageRotation (RotationStep, RotationChange::Add, PageNum_); });
-		cwAction->setProperty ("ActionIcon", "object-rotate-right");
-
-		QMenu arbMenu;
-		auto arbAction = rotateMenu.addAction (tr ("Rotate arbitrarily..."));
-		arbAction->setProperty ("ActionIcon", "transform-rotate");
-		arbAction->setMenu (&arbMenu);
-
-		auto arbWidget = new ArbitraryRotationWidget;
-		arbWidget->setValue (LayoutManager_->GetPageRotation (PageNum_));
-		connect (arbWidget,
-				&ArbitraryRotationWidget::valueChanged,
-				this,
-				[this] (double rotation) { LayoutManager_->SetPageRotation (rotation, RotationChange::Set, PageNum_); });
-		QWidgetAction actionWidget { nullptr };
-		actionWidget.setDefaultWidget (arbWidget);
-		arbMenu.addAction (&actionWidget);
-
-		GetProxyHolder ()->GetIconThemeManager ()->ManageWidget (&rotateMenu);
-
-		rotateMenu.exec (event->screenPos ());
+		auto rotateMenu = CreateRotateMenu (InitAngle { LayoutManager_->GetPageRotation (PageNum_) },
+				std::bind_front (&PagesLayoutManager::SetPageRotation, LayoutManager_, PageNum_));
+		GetProxyHolder ()->GetIconThemeManager ()->ManageWidget (rotateMenu.get ());
+		rotateMenu->exec (event->screenPos ());
 	}
 
 	QPixmap PageGraphicsItem::GetEmptyPixmap () const

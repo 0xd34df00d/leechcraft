@@ -48,6 +48,7 @@
 #include "interfaces/monocle/iknowfileextensions.h"
 #include "interfaces/monocle/ihaveoptionalcontent.h"
 #include "components/actions/export.h"
+#include "components/actions/rotatemenu.h"
 #include "components/actions/zoomer.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
@@ -538,38 +539,12 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbarRotate ()
 	{
-		auto rotateMenu = new QMenu ();
-
-		auto ccwAction = rotateMenu->addAction (tr ("Rotate 90 degrees counter-clockwise"),
-				[this] { LayoutManager_->SetRotation (-90, RotationChange::Add); });
-		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
-
-		auto cwAction = rotateMenu->addAction (tr ("Rotate 90 degrees clockwise"),
-				[this] { LayoutManager_->SetRotation (90, RotationChange::Add); });
-		cwAction->setProperty ("ActionIcon", "object-rotate-right");
-
-		auto arbAction = rotateMenu->addAction (tr ("Rotate arbitrarily..."));
-		arbAction->setProperty ("ActionIcon", "transform-rotate");
-
-		auto arbMenu = new QMenu ();
-		arbAction->setMenu (arbMenu);
-
-		auto arbWidget = new ArbitraryRotationWidget;
-		connect (arbWidget,
-				&ArbitraryRotationWidget::valueChanged,
-				LayoutManager_,
-				[this] (double value) { LayoutManager_->SetRotation (value, RotationChange::Set); });
-		connect (LayoutManager_,
-				qOverload<double> (&PagesLayoutManager::rotationUpdated),
-				arbWidget,
-				&ArbitraryRotationWidget::setValue);
-		auto actionWidget = new QWidgetAction (this);
-		actionWidget->setDefaultWidget (arbWidget);
-		arbMenu->addAction (actionWidget);
+		auto rotateMenu = CreateRotateMenu (AngleNotifier { *LayoutManager_, &PagesLayoutManager::rotationUpdated },
+				std::bind_front (&PagesLayoutManager::SetRotation, LayoutManager_));
 
 		auto rotateButton = new QToolButton ();
-		rotateButton->setDefaultAction (arbAction);
-		rotateButton->setMenu (rotateMenu);
+		rotateButton->setProperty ("ActionIcon", "transform-rotate");
+		rotateButton->setMenu (rotateMenu.release ());
 		rotateButton->setPopupMode (QToolButton::InstantPopup);
 
 		Toolbar_->addWidget (rotateButton);

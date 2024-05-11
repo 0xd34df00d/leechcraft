@@ -214,7 +214,7 @@ namespace LC::Monocle
 		return Rotation_;
 	}
 
-	void PagesLayoutManager::SetPageRotation (double value, RotationChange change, int page)
+	void PagesLayoutManager::SetPageRotation (int page, double value, RotationChange change)
 	{
 		auto& rotation = PageRotations_ [page];
 		rotation = LimitAngle (ComputeRotationChange (rotation, value, change));

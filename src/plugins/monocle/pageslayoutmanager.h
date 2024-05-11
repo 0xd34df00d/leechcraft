@@ -67,7 +67,7 @@ namespace LC::Monocle
 		void SetRotation (double, RotationChange);
 		double GetRotation () const;
 
-		void SetPageRotation (double, RotationChange, int);
+		void SetPageRotation (int, double, RotationChange);
 		double GetPageRotation (int) const;
 
 		void SetMargins (QSizeF);
