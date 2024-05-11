@@ -136,20 +136,20 @@ namespace LC::Monocle
 				menu);
 
 		if (const auto ihtc = qobject_cast<IHaveTextContent*> (Doc_->GetQObject ()))
-		{
-			menu->addSeparator ();
+			if (const auto& selText = GetSelectionText (*this, *ihtc);
+				!selText.isEmpty ())
+			{
+				menu->addSeparator ();
 
-			const auto& selText = GetSelectionText (*this, *ihtc);
+				auto copyAsText = menu->addAction (tr ("Copy selection as text"),
+						this,
+						[selText] { QGuiApplication::clipboard ()->setText (selText); });
+				copyAsText->setProperty ("ActionIcon", "edit-copy");
 
-			auto copyAsText = menu->addAction (tr ("Copy selection as text"),
-					this,
-					[selText] { QGuiApplication::clipboard ()->setText (selText); });
-			copyAsText->setProperty ("ActionIcon", "edit-copy");
-
-			new Util::StdDataFilterMenuCreator (selText,
-					GetProxyHolder ()->GetEntityManager (),
-					menu);
-		}
+				new Util::StdDataFilterMenuCreator (selText,
+						GetProxyHolder ()->GetEntityManager (),
+						menu);
+			}
 
 		menu->popup (event->globalPos ());
 		menu->setAttribute (Qt::WA_DeleteOnClose);
