@@ -8,6 +8,7 @@
 
 #include "tablehandler.h"
 #include <QTextTable>
+#include <QtDebug>
 #include "util/sll/domchildrenrange.h"
 #include "util/sll/qtutil.h"
 
@@ -38,6 +39,11 @@ namespace LC::Monocle
 					Cols_ = std::max (Cols_, other.Cols_);
 					return *this;
 				}
+
+				explicit operator bool () const
+				{
+					return Rows_ && Cols_;
+				}
 			};
 			return TableDims { rows, cols };
 		}
@@ -47,6 +53,16 @@ namespace LC::Monocle
 			auto tableDims = GetElemDimensions (table);
 			tableDims += GetElemDimensions (table.firstChildElement ("thead"_qs));
 			tableDims += GetElemDimensions (table.firstChildElement ("tbody"_qs));
+			if (!tableDims)
+			{
+				QByteArray str;
+				QTextStream stream { &str };
+				table.save (stream, 2);
+				qWarning () << "table has no dimensions\n" << str;
+
+				tableDims.Rows_ = 1;
+				tableDims.Cols_ = 1;
+			}
 			return tableDims;
 		}
 
