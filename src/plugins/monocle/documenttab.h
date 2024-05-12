@@ -104,7 +104,7 @@ namespace Monocle
 
 		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
-		enum class DocumentOpenOption
+		enum class DocumentOpenOption : std::uint8_t
 		{
 			None = 0x0,
 			IgnoreErrors = 0x1
