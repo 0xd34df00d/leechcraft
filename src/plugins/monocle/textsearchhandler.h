@@ -14,8 +14,6 @@
 #include "interfaces/monocle/idocument.h"
 
 class QGraphicsRectItem;
-class QGraphicsView;
-class QGraphicsScene;
 
 namespace LC
 {
@@ -34,18 +32,15 @@ namespace Monocle
 	{
 		Q_OBJECT
 
-		QGraphicsView * const View_;
-		QGraphicsScene * const Scene_;
-
 		IDocument_ptr Doc_;
 		QVector<PageGraphicsItem*> Pages_;
 
 		QString CurrentSearchString_;
 
 		QVector<QGraphicsRectItem*> CurrentHighlights_;
-		int CurrentRectIndex_;
+		int CurrentRectIndex_ = -1;
 	public:
-		TextSearchHandler (QGraphicsView*, QObject* = 0);
+		using QObject::QObject;
 
 		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
 

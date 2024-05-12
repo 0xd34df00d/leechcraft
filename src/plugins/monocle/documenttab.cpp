@@ -127,7 +127,7 @@ namespace Monocle
 				});
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, Scroller_, this);
-		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, this);
+		SearchHandler_ = new TextSearchHandler (this);
 		connect (SearchHandler_,
 				&TextSearchHandler::navigateRequested,
 				this,

@@ -7,26 +7,17 @@
  **********************************************************************/
 
 #include "textsearchhandler.h"
-#include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <QPen>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "interfaces/monocle/isearchabledocument.h"
 #include "pagegraphicsitem.h"
-#include "pageslayoutmanager.h"
 
 namespace LC
 {
 namespace Monocle
 {
-	TextSearchHandler::TextSearchHandler (QGraphicsView *view, QObject *parent)
-	: QObject (parent)
-	, View_ (view)
-	, Scene_ (view->scene ())
-	, CurrentRectIndex_ (-1)
-	{
-	}
-
 	void TextSearchHandler::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		Doc_ = doc;
@@ -137,7 +128,6 @@ namespace Monocle
 		{
 			auto parentPage = static_cast<PageGraphicsItem*> (item->parentItem ());
 			parentPage->UnregisterChildRect (item);
-			Scene_->removeItem (item);
 			delete item;
 		}
 
