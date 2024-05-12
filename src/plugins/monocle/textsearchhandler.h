@@ -15,9 +15,7 @@
 
 class QGraphicsRectItem;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class PageGraphicsItem;
 
@@ -42,7 +40,7 @@ namespace Monocle
 	public:
 		using QObject::QObject;
 
-		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
+		void HandleDoc (const IDocument_ptr&, const QVector<PageGraphicsItem*>&);
 
 		bool Search (const QString&, Util::FindNotification::FindFlags);
 		void SetPreparedResults (const TextSearchHandlerResults&, int selectedItem);
@@ -58,5 +56,4 @@ namespace Monocle
 
 		void gotSearchResults (const TextSearchHandlerResults&);
 	};
-}
 }

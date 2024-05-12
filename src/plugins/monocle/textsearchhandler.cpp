@@ -14,11 +14,9 @@
 #include "interfaces/monocle/isearchabledocument.h"
 #include "pagegraphicsitem.h"
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
-	void TextSearchHandler::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
+	void TextSearchHandler::HandleDoc (const IDocument_ptr& doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		Doc_ = doc;
 		Pages_ = pages;
@@ -111,10 +109,10 @@ namespace Monocle
 	void TextSearchHandler::BuildHighlights (const QMap<int, QList<QRectF>>& map)
 	{
 		const QBrush brush (Qt::yellow);
-		for (const auto& pair : Util::Stlize (map))
+		for (const auto& [pageIdx, rects] : Util::Stlize (map))
 		{
-			const auto page = Pages_.at (pair.first);
-			for (const auto& rect : pair.second)
+			const auto page = Pages_ [pageIdx];
+			for (const auto& rect : rects)
 			{
 				const auto item = new QGraphicsRectItem (page);
 				item->setBrush (brush);
@@ -132,8 +130,8 @@ namespace Monocle
 	{
 		for (auto item : CurrentHighlights_)
 		{
-			auto parentPage = static_cast<PageGraphicsItem*> (item->parentItem ());
-			parentPage->UnregisterChildRect (item);
+			auto& parentPage = dynamic_cast<PageGraphicsItem&> (*item->parentItem ());
+			parentPage.UnregisterChildRect (item);
 			delete item;
 		}
 
@@ -146,7 +144,7 @@ namespace Monocle
 		{
 			auto oldHili = CurrentHighlights_.at (CurrentRectIndex_);
 			oldHili->setOpacity (InactiveOpacity);
-			oldHili->setPen (QPen ());
+			oldHili->setPen ({});
 		}
 
 		auto item = CurrentHighlights_.at (index);
@@ -154,9 +152,9 @@ namespace Monocle
 		item->setPen ({ Qt::black });
 		CurrentRectIndex_ = index;
 
-		auto pageItem = static_cast<PageGraphicsItem*> (item->parentItem ());
-		const auto pageIdx = pageItem->GetPageNum ();
-		const auto& bounding = pageItem->boundingRect ();
+		auto& pageItem = dynamic_cast<PageGraphicsItem&> (*item->parentItem ());
+		const auto pageIdx = pageItem.GetPageNum ();
+		const auto& bounding = pageItem.boundingRect ();
 
 		auto rect = item->rect ();
 		rect.setLeft (rect.left () / bounding.width ());
@@ -165,5 +163,4 @@ namespace Monocle
 		rect.setHeight (rect.height () / bounding.height ());
 		emit navigateRequested ({ pageIdx, rect });
 	}
-}
 }
