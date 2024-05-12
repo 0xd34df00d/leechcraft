@@ -103,7 +103,6 @@ namespace Monocle
 	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_->GetCurrentScale (); }) }
 	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
 	{
-		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 

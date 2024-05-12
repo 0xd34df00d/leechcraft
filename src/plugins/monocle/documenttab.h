@@ -12,6 +12,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
+#include <util/gui/uiinit.h>
 #include <util/sll/bitflags.h>
 #include <util/xpc/screensaverprohibitor.h>
 #include "interfaces/monocle/idocument.h"
@@ -54,6 +55,7 @@ namespace Monocle
 		Q_INTERFACES (ITabWidget IRecoverableTab IDNDTab)
 
 		Ui::DocumentTab Ui_;
+		Util::UiInit UiInit_ { Ui_, *this };
 
 		TabClassInfo TC_;
 		QObject *ParentPlugin_;
