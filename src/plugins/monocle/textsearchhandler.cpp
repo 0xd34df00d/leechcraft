@@ -102,6 +102,12 @@ namespace Monocle
 		return !CurrentHighlights_.isEmpty ();
 	}
 
+	namespace
+	{
+		constexpr double InactiveOpacity = 0.2;
+		constexpr double ActiveOpacity = 0.6;
+	}
+
 	void TextSearchHandler::BuildHighlights (const QMap<int, QList<QRectF>>& map)
 	{
 		const QBrush brush (Qt::yellow);
@@ -113,7 +119,7 @@ namespace Monocle
 				const auto item = new QGraphicsRectItem (page);
 				item->setBrush (brush);
 				item->setZValue (1);
-				item->setOpacity (0.2);
+				item->setOpacity (InactiveOpacity);
 				CurrentHighlights_ << item;
 
 				page->RegisterChildRect (item, rect,
@@ -139,12 +145,12 @@ namespace Monocle
 		if (CurrentRectIndex_ >= 0 && CurrentRectIndex_ < CurrentHighlights_.size ())
 		{
 			auto oldHili = CurrentHighlights_.at (CurrentRectIndex_);
-			oldHili->setOpacity (0.2);
+			oldHili->setOpacity (InactiveOpacity);
 			oldHili->setPen (QPen ());
 		}
 
 		auto item = CurrentHighlights_.at (index);
-		item->setOpacity (0.6);
+		item->setOpacity (ActiveOpacity);
 		item->setPen ({ Qt::black });
 		CurrentRectIndex_ = index;
 
