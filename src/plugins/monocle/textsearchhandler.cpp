@@ -19,11 +19,10 @@ namespace LC
 {
 namespace Monocle
 {
-	TextSearchHandler::TextSearchHandler (QGraphicsView *view, PagesLayoutManager *mgr, QObject *parent)
+	TextSearchHandler::TextSearchHandler (QGraphicsView *view, QObject *parent)
 	: QObject (parent)
 	, View_ (view)
 	, Scene_ (view->scene ())
-	, LayoutMgr_ (mgr)
 	, CurrentRectIndex_ (-1)
 	{
 	}
@@ -160,17 +159,15 @@ namespace Monocle
 		CurrentRectIndex_ = index;
 
 		auto pageItem = static_cast<PageGraphicsItem*> (item->parentItem ());
-		const auto pageIdx = LayoutMgr_->GetPages ().indexOf (pageItem);
-		if (pageIdx >= 0)
-		{
-			const auto& bounding = pageItem->boundingRect ();
-			auto rect = item->rect ();
-			rect.setLeft (rect.left () / bounding.width ());
-			rect.setTop (rect.top () / bounding.height ());
-			rect.setWidth (rect.width () / bounding.width ());
-			rect.setHeight (rect.height () / bounding.height ());
-			emit navigateRequested ({ pageIdx, rect });
-		}
+		const auto pageIdx = pageItem->GetPageNum ();
+		const auto& bounding = pageItem->boundingRect ();
+
+		auto rect = item->rect ();
+		rect.setLeft (rect.left () / bounding.width ());
+		rect.setTop (rect.top () / bounding.height ());
+		rect.setWidth (rect.width () / bounding.width ());
+		rect.setHeight (rect.height () / bounding.height ());
+		emit navigateRequested ({ pageIdx, rect });
 	}
 }
 }

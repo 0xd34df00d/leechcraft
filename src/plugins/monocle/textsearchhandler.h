@@ -22,7 +22,6 @@ namespace LC
 namespace Monocle
 {
 	class PageGraphicsItem;
-	class PagesLayoutManager;
 
 	struct TextSearchHandlerResults
 	{
@@ -37,7 +36,6 @@ namespace Monocle
 
 		QGraphicsView * const View_;
 		QGraphicsScene * const Scene_;
-		PagesLayoutManager * const LayoutMgr_;
 
 		IDocument_ptr Doc_;
 		QVector<PageGraphicsItem*> Pages_;
@@ -47,7 +45,7 @@ namespace Monocle
 		QVector<QGraphicsRectItem*> CurrentHighlights_;
 		int CurrentRectIndex_;
 	public:
-		TextSearchHandler (QGraphicsView*, PagesLayoutManager*, QObject* = 0);
+		TextSearchHandler (QGraphicsView*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
 
