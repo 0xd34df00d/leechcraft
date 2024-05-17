@@ -99,6 +99,18 @@ namespace LC::Monocle
 		};
 	}
 
+	QRectF PageGraphicsItem::MapToRelative (const QRectF& rect) const
+	{
+		const auto& bounding = boundingRect ();
+		return
+		{
+			rect.x () / bounding.width (),
+			rect.y () / bounding.height (),
+			rect.width () / bounding.width (),
+			rect.height () / bounding.height (),
+		};
+	}
+
 	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item, const QRectF& srcRect, RectSetter_f setter)
 	{
 		const auto& pageRect = MapToDoc (boundingRect ());

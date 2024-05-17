@@ -59,6 +59,8 @@ namespace LC::Monocle
 		QRectF MapFromDoc (const QRectF&) const;
 		QRectF MapToDoc (const QRectF&) const;
 
+		QRectF MapToRelative (const QRectF&) const;
+
 		void RegisterChildRect (QGraphicsItem*, const QRectF&, RectSetter_f);
 		void UnregisterChildRect (QGraphicsItem*);
 
