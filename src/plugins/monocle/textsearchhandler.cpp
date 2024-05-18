@@ -154,13 +154,7 @@ namespace LC::Monocle
 
 		auto& pageItem = dynamic_cast<PageGraphicsItem&> (*item->parentItem ());
 		const auto pageIdx = pageItem.GetPageNum ();
-		const auto& bounding = pageItem.boundingRect ();
-
-		auto rect = item->rect ();
-		rect.setLeft (rect.left () / bounding.width ());
-		rect.setTop (rect.top () / bounding.height ());
-		rect.setWidth (rect.width () / bounding.width ());
-		rect.setHeight (rect.height () / bounding.height ());
+		const auto rect = pageItem.MapToRelative (item->rect ());
 		emit navigateRequested ({ pageIdx, rect });
 	}
 }
