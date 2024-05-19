@@ -79,7 +79,6 @@ LC_DEFINE_PLUGIN (
 		linksmanager.cpp
 		linkactionexecutor.cpp
 		coreloadproxy.cpp
-		converteddoccleaner.cpp
 		searchtabwidget.cpp
 		documentbookmarksmanager.cpp
 		navigationhistory.cpp
