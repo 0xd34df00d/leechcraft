@@ -20,9 +20,7 @@ class QUrl;
 template<typename>
 class QFuture;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	/** @brief Document metadata.
 	 *
@@ -55,6 +53,8 @@ namespace Monocle
 		QDateTime Date_;
 	};
 
+	class DocumentSignals;
+
 	/** @brief Basic interface for documents.
 	 *
 	 * This interface is the basic interface for documents returned from
@@ -82,7 +82,7 @@ namespace Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IDocument () {}
+		virtual ~IDocument () = default;
 
 		/** @brief Returns the parent backend plugin.
 		 *
@@ -182,22 +182,21 @@ namespace Monocle
 		 */
 		virtual QUrl GetDocURL () const = 0;
 
-		/** @brief Emitted when printing is requested.
+		/** @brief Returns the type-safe connector for various document signals.
 		 *
-		 * This signal is emitted when printing is requested, for
-		 * example, by a link action.
+		 * The returned pointer might be `nullptr` if this document never emits anything.
 		 *
-		 * @param[out] pages The list of pages to print, or an empty list
-		 * to print all pages.
+		 * @return The signals connector for `IDocument` signals, or `nullptr`.
+		 * @sa DocumentSignals
 		 */
-		virtual void printRequested (const QList<int>& pages) = 0;
+		virtual const DocumentSignals* GetDocumentSignals () const = 0;
 	};
 
 	/** @brief Shared pointer to a document.
 	 */
 	typedef std::shared_ptr<IDocument> IDocument_ptr;
 }
-}
+
 
 Q_DECLARE_INTERFACE (LC::Monocle::IDocument,
 		"org.LeechCraft.Monocle.IDocument/1.0")

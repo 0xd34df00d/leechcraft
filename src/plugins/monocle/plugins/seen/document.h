@@ -64,6 +64,7 @@ namespace Seen
 		QFuture<QImage> RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
 		QUrl GetDocURL () const;
+		const DocumentSignals* GetDocumentSignals () const;
 
 		ddjvu_document_t* GetNativeDoc () const;
 
@@ -76,8 +77,6 @@ namespace Seen
 		void TryGetPageInfo (int);
 		void RunRedrawQueue ();
 	signals:
-		void printRequested (const QList<int>&);
-
 		void pageSizeChanged (int);
 		void pageContentsChanged (int);
 	};

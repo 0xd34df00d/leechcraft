@@ -84,6 +84,11 @@ namespace LC::Monocle
 		return Links_.value (page);
 	}
 
+	const DocumentSignals* TextDocumentAdapter::GetDocumentSignals () const
+	{
+		return nullptr;
+	}
+
 	TOCEntryLevel_t TextDocumentAdapter::GetTOC ()
 	{
 		return TOC_;

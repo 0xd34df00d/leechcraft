@@ -21,6 +21,7 @@
 #include <interfaces/monocle/isaveabledocument.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/ihaveoptionalcontent.h>
+#include <util/monocle/documentsignals.h>
 
 namespace Poppler
 {
@@ -64,6 +65,8 @@ namespace PDF
 		QUrl DocURL_;
 
 		QObject *Plugin_;
+
+		DocumentSignals Signals_;
 	public:
 		Document (const QString&, QObject*);
 
@@ -76,6 +79,7 @@ namespace PDF
 		QFuture<QImage> RenderPage (int, double, double);
 		QList<ILink_ptr> GetPageLinks (int);
 		QUrl GetDocURL () const;
+		const DocumentSignals* GetDocumentSignals () const;
 
 		TOCEntryLevel_t GetTOC ();
 
@@ -99,8 +103,6 @@ namespace PDF
 		void RequestPrinting ();
 	private:
 		void BuildTOC ();
-	signals:
-		void printRequested (const QList<int>&);
 	};
 }
 }

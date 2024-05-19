@@ -26,7 +26,6 @@
 #include <QFuture>
 #include <util/util.h>
 #include <util/gui/findnotification.h>
-#include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include <interfaces/imwproxy.h>
@@ -40,6 +39,7 @@
 #include "interfaces/monocle/isupportpainting.h"
 #include "interfaces/monocle/iknowfileextensions.h"
 #include "interfaces/monocle/ihaveoptionalcontent.h"
+#include "util/monocle/documentsignals.h"
 #include "components/actions/export.h"
 #include "components/actions/rotatemenu.h"
 #include "components/actions/zoomer.h"
@@ -868,17 +868,15 @@ namespace Monocle
 		auto toc = qobject_cast<IHaveTOC*> (docObj);
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this]
-			{
-				if (CurrentDoc_)
-					Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this);
-			},
-			docObj,
-			SIGNAL (printRequested (QList<int>)),
-			this
-		};
+		if (const auto docSignals = CurrentDoc_->GetDocumentSignals ())
+			connect (docSignals,
+					&DocumentSignals::printRequested,
+					this,
+					[this]
+					{
+						if (CurrentDoc_)
+							Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this);
+					});
 
 		emit fileLoaded (path);
 

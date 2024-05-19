@@ -189,7 +189,7 @@ namespace Monocle
 
 		void tabRecoverDataChanged () override;
 
-		void fileLoaded (const QString&);
+		void fileLoaded (const QString& path, IDocument *doc, const QVector<PageGraphicsItem*>& pages);
 
 		void currentPageChanged (int);
 		void pagesVisibilityChanged (const QMap<int, QRect>&);

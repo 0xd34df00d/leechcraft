@@ -21,6 +21,7 @@ if (WITH_DOCS)
 endif ()
 
 add_library (leechcraft-monocle-util SHARED
+	util/monocle/documentsignals.cpp
 	util/monocle/html2doc.cpp
 	util/monocle/imghandler.cpp
 	util/monocle/formatutils.cpp

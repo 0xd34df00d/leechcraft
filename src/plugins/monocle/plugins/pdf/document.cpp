@@ -127,6 +127,11 @@ namespace PDF
 		return DocURL_;
 	}
 
+	const DocumentSignals* Document::GetDocumentSignals () const
+	{
+		return &Signals_;
+	}
+
 	TOCEntryLevel_t Document::GetTOC ()
 	{
 		return TOC_;
@@ -299,7 +304,7 @@ namespace PDF
 
 	void Document::RequestPrinting ()
 	{
-		emit printRequested ({});
+		emit Signals_.printRequested ({});
 	}
 
 	namespace

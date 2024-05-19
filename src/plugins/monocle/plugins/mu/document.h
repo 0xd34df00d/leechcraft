@@ -49,8 +49,6 @@ namespace Mu
 		QImage RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
 		QUrl GetDocURL () const;
-	signals:
-		void printRequested (const QList<int>&);
 	};
 }
 }

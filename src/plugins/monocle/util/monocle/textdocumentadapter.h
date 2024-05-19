@@ -58,6 +58,7 @@ namespace LC::Monocle
 		QSize GetPageSize (int page) const override;
 		QFuture<QImage> RenderPage (int page, double xScale, double yScale) override;
 		QList<ILink_ptr> GetPageLinks (int page) override;
+		const DocumentSignals* GetDocumentSignals () const override;
 
 		TOCEntryLevel_t GetTOC () override;
 
@@ -76,7 +77,5 @@ namespace LC::Monocle
 		};
 
 		void SetDocument (const HtmlDocument&);
-	signals:
-		void printRequested (const QList<int>&) override;
 	};
 }

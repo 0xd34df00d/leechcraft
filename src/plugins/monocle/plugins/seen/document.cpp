@@ -119,6 +119,11 @@ namespace Seen
 		return DocURL_;
 	}
 
+	const DocumentSignals* Document::GetDocumentSignals () const
+	{
+		return nullptr;
+	}
+
 	ddjvu_document_t* Document::GetNativeDoc () const
 	{
 		return Doc_;
