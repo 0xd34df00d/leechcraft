@@ -56,7 +56,6 @@ namespace LC::Monocle::PDF
 			switch (actionLink.actionType ())
 			{
 			case Poppler::LinkAction::Print:
-				doc.RequestPrinting ();
 				return CustomAction { [&doc] { doc.RequestPrinting (); } };
 			default:
 				qWarning () << "unknown link action" << actionLink.actionType ();
