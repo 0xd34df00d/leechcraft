@@ -68,13 +68,14 @@ namespace Monocle
 
 		Doc_ = doc;
 
-		QObject::connect (doc->GetQObject (),
-				&QObject::destroyed,
-				[path]
-				{
-					qDebug () << "removing" << path;
-					QFile::remove (path);
-				});
+		if (doc)
+			QObject::connect (doc->GetQObject (),
+					&QObject::destroyed,
+					[path]
+					{
+						qDebug () << "removing" << path;
+						QFile::remove (path);
+					});
 
 		emitReady ();
 	}
