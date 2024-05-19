@@ -12,9 +12,8 @@
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ibackendplugin.h"
 
-namespace LC
-{
-namespace Monocle
+
+namespace LC::Monocle
 {
 	class CoreLoadProxy : public QObject
 	{
@@ -24,16 +23,13 @@ namespace Monocle
 		IDocument_ptr Doc_;
 		IRedirectProxy_ptr Proxy_;
 	public:
-		CoreLoadProxy (const IDocument_ptr&);
-		CoreLoadProxy (const IRedirectProxy_ptr&);
-
-		IDocument_ptr GetDocument () const;
+		explicit CoreLoadProxy (const IDocument_ptr&);
+		explicit CoreLoadProxy (const IRedirectProxy_ptr&);
+	private:
+		void EmitReady ();
 	private slots:
 		void handleRedirected (const QString& target);
-		void handleSubproxy (const IDocument_ptr&, const QString&);
-		void emitReady ();
 	signals:
 		void ready (IDocument_ptr, const QString&);
 	};
-}
 }

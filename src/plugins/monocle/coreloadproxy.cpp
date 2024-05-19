@@ -14,9 +14,8 @@
 #include "interfaces/monocle/iredirectproxy.h"
 #include "core.h"
 
-namespace LC
-{
-namespace Monocle
+
+namespace LC::Monocle
 {
 	CoreLoadProxy::CoreLoadProxy (const IDocument_ptr& doc)
 	: SourcePath_ { doc->GetDocURL ().toLocalFile () }
@@ -24,7 +23,7 @@ namespace Monocle
 	{
 		QTimer::singleShot (0,
 				this,
-				SLOT (emitReady ()));
+				&CoreLoadProxy::EmitReady);
 	}
 
 	CoreLoadProxy::CoreLoadProxy (const IRedirectProxy_ptr& proxy)
@@ -37,9 +36,10 @@ namespace Monocle
 				SLOT (handleRedirected (QString)));
 	}
 
-	IDocument_ptr CoreLoadProxy::GetDocument () const
+	void CoreLoadProxy::EmitReady ()
 	{
-		return Doc_;
+		emit ready (Doc_, SourcePath_);
+		deleteLater ();
 	}
 
 	void CoreLoadProxy::handleRedirected (const QString& target)
@@ -47,43 +47,34 @@ namespace Monocle
 		auto subProxy = Core::Instance ().LoadDocument (target);
 		if (!subProxy)
 		{
-			emitReady ();
+			EmitReady ();
 			return;
 		}
 
 		connect (subProxy,
-				SIGNAL (ready (IDocument_ptr, QString)),
+				&CoreLoadProxy::ready,
 				this,
-				SLOT (handleSubproxy (IDocument_ptr, QString)));
+				[this] (const IDocument_ptr& doc, const QString& path)
+				{
+					qDebug () << Q_FUNC_INFO;
+					if (!doc)
+						qWarning () << "redirection failed from"
+								<< SourcePath_
+								<< "to"
+								<< path;
+
+					Doc_ = doc;
+
+					if (doc)
+						QObject::connect (doc->GetQObject (),
+								&QObject::destroyed,
+								[path]
+								{
+									qDebug () << "removing" << path;
+									QFile::remove (path);
+								});
+
+					EmitReady ();
+				});
 	}
-
-	void CoreLoadProxy::handleSubproxy (const IDocument_ptr& doc, const QString& path)
-	{
-		qDebug () << Q_FUNC_INFO;
-		if (!doc)
-			qWarning () << "redirection failed from"
-					<< SourcePath_
-					<< "to"
-					<< path;
-
-		Doc_ = doc;
-
-		if (doc)
-			QObject::connect (doc->GetQObject (),
-					&QObject::destroyed,
-					[path]
-					{
-						qDebug () << "removing" << path;
-						QFile::remove (path);
-					});
-
-		emitReady ();
-	}
-
-	void CoreLoadProxy::emitReady ()
-	{
-		emit ready (Doc_, SourcePath_);
-		deleteLater ();
-	}
-}
 }
