@@ -7,12 +7,12 @@
  **********************************************************************/
 
 #include "coreloadproxy.h"
+#include <QFile>
 #include <QTimer>
 #include <QUrl>
 #include <QtDebug>
 #include "interfaces/monocle/iredirectproxy.h"
 #include "core.h"
-#include "converteddoccleaner.h"
 
 namespace LC
 {
@@ -61,14 +61,20 @@ namespace Monocle
 	{
 		qDebug () << Q_FUNC_INFO;
 		if (!doc)
-			qWarning () << Q_FUNC_INFO
-					<< "redirection failed from"
+			qWarning () << "redirection failed from"
 					<< SourcePath_
 					<< "to"
 					<< path;
 
 		Doc_ = doc;
-		new ConvertedDocCleaner { Doc_ };
+
+		QObject::connect (doc->GetQObject (),
+				&QObject::destroyed,
+				[path]
+				{
+					qDebug () << "removing" << path;
+					QFile::remove (path);
+				});
 
 		emitReady ();
 	}
