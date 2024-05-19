@@ -872,11 +872,7 @@ namespace Monocle
 			connect (docSignals,
 					&DocumentSignals::printRequested,
 					this,
-					[this]
-					{
-						if (CurrentDoc_)
-							Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this);
-					});
+					[this] { Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this); });
 			connect (docSignals,
 					&DocumentSignals::pageContentsChanged,
 					this,
