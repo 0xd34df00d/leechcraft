@@ -33,7 +33,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
-#include "interfaces/monocle/idynamicdocument.h"
 #include "interfaces/monocle/isaveabledocument.h"
 #include "interfaces/monocle/isearchabledocument.h"
 #include "interfaces/monocle/isupportpainting.h"
@@ -869,6 +868,7 @@ namespace Monocle
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
 		if (const auto docSignals = CurrentDoc_->GetDocumentSignals ())
+		{
 			connect (docSignals,
 					&DocumentSignals::printRequested,
 					this,
@@ -877,16 +877,15 @@ namespace Monocle
 						if (CurrentDoc_)
 							Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this);
 					});
+			connect (docSignals,
+					&DocumentSignals::pageContentsChanged,
+					this,
+					[this] (int idx) { Pages_ [idx]->UpdatePixmap (); });
+		}
 
-		emit fileLoaded (path);
+		emit fileLoaded (path, CurrentDoc_.get (), Pages_);
 
 		emit tabRecoverDataChanged ();
-
-		if (qobject_cast<IDynamicDocument*> (docObj))
-			connect (docObj,
-					SIGNAL (pageContentsChanged (int)),
-					this,
-					SLOT (handlePageContentsChanged (int)));
 
 		DocBMManager_->HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
@@ -903,12 +902,6 @@ namespace Monocle
 		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
 
 		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
-	}
-
-	void DocumentTab::handlePageContentsChanged (int idx)
-	{
-		auto pageItem = Pages_.at (idx);
-		pageItem->UpdatePixmap ();
 	}
 
 	void DocumentTab::saveState ()

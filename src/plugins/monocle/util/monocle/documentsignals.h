@@ -28,5 +28,23 @@ namespace LC::Monocle
 		 * to print all pages.
 		 */
 		void printRequested (const QList<int>& pages);
+
+		/** @brief Emitted when the size of the given _page_ is changed.
+		 *
+		 * The signal is emitted after the new size is known, so
+		 * `IDocument::GetPageSize(page)` should already
+		 * return the new value.
+		 *
+		 * @param[out] page The index of the page that has been changed.
+		 */
+		void pageSizeChanged (int page);
+
+		/** @brief Emitted when contents of the given _page_ are changed.
+		 *
+		 * The _page_ should typically be re-rendered after this signal.
+		 *
+		 * @param[out] page The index of the page that has been changed.
+		 */
+		void pageContentsChanged (int page);
 	};
 }

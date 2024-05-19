@@ -12,10 +12,9 @@
 #include <QStyle>
 #include <QTimer>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
 #include <util/sll/unreachable.h>
-#include "interfaces/monocle/idynamicdocument.h"
+#include <util/monocle/documentsignals.h>
 #include "pagesview.h"
 #include "pagegraphicsitem.h"
 #include "smoothscroller.h"
@@ -50,14 +49,11 @@ namespace LC::Monocle
 		for (auto page : pages)
 			page->SetLayoutManager (this);
 
-		if (CurrentDoc_ && qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[this] { ScheduleRelayout (); },
-				CurrentDoc_->GetQObject (),
-				SIGNAL (pageSizeChanged (int)),
-				CurrentDoc_->GetQObject ()
-			};
+		if (const auto docSignals = CurrentDoc_ ? CurrentDoc_->GetDocumentSignals () : nullptr)
+			connect (docSignals,
+					&DocumentSignals::pageSizeChanged,
+					this,
+					&PagesLayoutManager::ScheduleRelayout);
 	}
 
 	const QVector<PageGraphicsItem*>& PagesLayoutManager::GetPages () const

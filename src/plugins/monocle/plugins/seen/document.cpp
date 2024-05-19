@@ -121,7 +121,7 @@ namespace Seen
 
 	const DocumentSignals* Document::GetDocumentSignals () const
 	{
-		return nullptr;
+		return &Signals_;
 	}
 
 	ddjvu_document_t* Document::GetNativeDoc () const
@@ -184,7 +184,7 @@ namespace Seen
 			return;
 
 		Sizes_ [pageNum] = QSize (info.width, info.height);
-		emit pageSizeChanged (pageNum);
+		emit Signals_.pageSizeChanged (pageNum);
 	}
 
 	void Document::RunRedrawQueue ()

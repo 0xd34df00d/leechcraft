@@ -73,7 +73,7 @@ namespace LC::Monocle
 	 * details.
 	 *
 	 * @sa IBackendPlugin::LoadDocument()
-	 * @sa IDynamicDocument, IHaveTextContent, ISaveableDocument
+	 * @sa IHaveTextContent, ISaveableDocument
 	 * @sa ISearchableDocument, ISupportAnnotations, ISupportForms
 	 * @sa IHaveTOC, ISupportPainting
 	 */

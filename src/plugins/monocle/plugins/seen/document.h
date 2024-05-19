@@ -15,7 +15,7 @@
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 #include <interfaces/monocle/idocument.h>
-#include <interfaces/monocle/idynamicdocument.h>
+#include <util/monocle/documentsignals.h>
 
 namespace LC
 {
@@ -27,10 +27,9 @@ namespace Seen
 
 	class Document : public QObject
 				   , public IDocument
-				   , public IDynamicDocument
 	{
 		Q_OBJECT
-		Q_INTERFACES (LC::Monocle::IDocument LC::Monocle::IDynamicDocument)
+		Q_INTERFACES (LC::Monocle::IDocument)
 
 		ddjvu_context_t *Context_;
 		ddjvu_document_t *Doc_;
@@ -51,6 +50,8 @@ namespace Seen
 		QUrl DocURL_;
 
 		QObject *Plugin_;
+
+		DocumentSignals Signals_;
 	public:
 		Document (const QString&, ddjvu_context_t*, QObject*, DocManager*);
 		~Document ();
@@ -76,9 +77,6 @@ namespace Seen
 		void TryUpdateSizes ();
 		void TryGetPageInfo (int);
 		void RunRedrawQueue ();
-	signals:
-		void pageSizeChanged (int);
-		void pageContentsChanged (int);
 	};
 }
 }

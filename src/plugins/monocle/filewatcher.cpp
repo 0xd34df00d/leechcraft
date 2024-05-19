@@ -9,8 +9,8 @@
 #include "filewatcher.h"
 #include <QTimer>
 #include <QFileInfo>
-#include <QDir>
 #include "documenttab.h"
+#include "pagegraphicsitem.h"
 
 namespace LC
 {
