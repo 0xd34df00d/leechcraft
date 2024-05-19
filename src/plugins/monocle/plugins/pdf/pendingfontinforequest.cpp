@@ -12,11 +12,7 @@
 #include <poppler-qt5.h>
 #include <util/threads/futures.h>
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	PendingFontInfoRequest::PendingFontInfoRequest (const std::shared_ptr<Poppler::Document>& doc)
 	{
@@ -43,6 +39,4 @@ namespace PDF
 	{
 		return Result_;
 	}
-}
-}
 }

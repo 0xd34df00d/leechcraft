@@ -18,6 +18,7 @@
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include "links.h"
 #include "fields.h"
@@ -25,11 +26,7 @@
 #include "xmlsettingsmanager.h"
 #include "pendingfontinforequest.h"
 
-namespace LC
-{
-namespace Monocle
-{
-namespace PDF
+namespace LC::Monocle::PDF
 {
 	Document::Document (const QString& path, QObject *plugin)
 	: PDocument_ (Poppler::Document::load (path))
@@ -51,9 +48,9 @@ namespace PDF
 
 		const auto& enhanceMode = XmlSettingsManager::Instance ()
 				.property ("ThinLineEnhancement").toString ();
-		if (enhanceMode == "Solid")
+		if (enhanceMode == "Solid"_qs)
 			PDocument_->setRenderHint (Poppler::Document::ThinLineSolid);
-		else if (enhanceMode == "Shape")
+		else if (enhanceMode == "Shape"_qs)
 			PDocument_->setRenderHint (Poppler::Document::ThinLineShape);
 
 		BuildTOC ();
@@ -80,9 +77,9 @@ namespace PDF
 		if (!PDocument_)
 			return info;
 
-		info.Title_ = PDocument_->info ("Title");
-		info.Subject_ = PDocument_->info ("Subject");
-		info.Author_ = PDocument_->info ("Author");
+		info.Title_ = PDocument_->info ("Title"_qs);
+		info.Subject_ = PDocument_->info ("Subject"_qs);
+		info.Author_ = PDocument_->info ("Author"_qs);
 		return info;
 	}
 
@@ -95,18 +92,23 @@ namespace PDF
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
 		if (!page)
-			return QSize ();
+			return {};
 
 		return page->pageSize ();
 	}
 
+	namespace
+	{
+		constexpr auto DPI = 72;
+	}
+
 	QFuture<QImage> Document::RenderPage (int num, double xScale, double yScale)
 	{
-		std::shared_ptr<Poppler::Page> page (PDocument_->page (num));
+		const std::shared_ptr<Poppler::Page> page (PDocument_->page (num));
 		if (!page)
 			return Util::MakeReadyFuture (QImage {});
 
-		return QtConcurrent::run ([=] { return page->renderToImage (72 * xScale, 72 * yScale); });
+		return QtConcurrent::run ([=] { return page->renderToImage (DPI * xScale, DPI * yScale); });
 	}
 
 	QList<ILink_ptr> Document::GetPageLinks (int num)
@@ -141,7 +143,7 @@ namespace PDF
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
 		if (!page)
-			return QString ();
+			return {};
 
 		return page->text (rect);
 	}
@@ -175,14 +177,15 @@ namespace PDF
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
 		if (!page)
-			return IFormFields_t ();
+			return {};
 
 		QList<std::shared_ptr<Poppler::FormField>> popplerFields;
 		for (auto field : page->formFields ())
 			popplerFields << std::shared_ptr<Poppler::FormField> (field);
 
 		IFormFields_t fields;
-		for (auto field : popplerFields)
+		fields.reserve (popplerFields.size ());
+		for (const auto& field : popplerFields)
 		{
 			if (!field->isVisible ())
 				continue;
@@ -212,15 +215,14 @@ namespace PDF
 		if (backend != Poppler::Document::ArthurBackend)
 		{
 			PDocument_->setRenderBackend (Poppler::Document::ArthurBackend);
-			guard = Util::MakeScopeGuard ([this, backend]
-					{ PDocument_->setRenderBackend (backend); });
+			guard = Util::MakeScopeGuard ([this, backend] { PDocument_->setRenderBackend (backend); });
 		}
 
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
 		if (!page)
 			return;
 
-		page->renderToPainter (painter, 72 * xScale, 72 * yScale);
+		page->renderToPainter (painter, DPI * xScale, DPI * yScale);
 	}
 
 	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
@@ -235,8 +237,6 @@ namespace PDF
 
 		QVector<QList<QRectF>> resVec;
 		resVec.resize (numPages);
-
-		std::vector<std::thread> threads;
 
 		auto worker = [&resVec, &searchFlags, &text, this] (int start, int count)
 		{
@@ -253,6 +253,9 @@ namespace PDF
 			}
 		};
 		const auto threadCount = QThread::idealThreadCount ();
+
+		std::vector<std::thread> threads;
+		threads.reserve (threadCount);
 		const auto packSize = numPages / threadCount;
 		for (int i = 0; i < threadCount; ++i)
 			threads.emplace_back (worker, i * packSize, (i == threadCount - 1) ? (numPages % threadCount) : packSize);
@@ -280,26 +283,24 @@ namespace PDF
 		std::unique_ptr<Poppler::PDFConverter> conv (PDocument_->pdfConverter ());
 		conv->setPDFOptions (Poppler::PDFConverter::WithChanges);
 
-		if (path == DocURL_.toLocalFile ())
-		{
-			QBuffer buffer;
-			buffer.open (QIODevice::WriteOnly);
-			conv->setOutputDevice (&buffer);
-			if (!conv->convert ())
-				return false;
-
-			QFile file (path);
-			if (!file.open (QIODevice::WriteOnly))
-				return false;
-
-			file.write (buffer.buffer ());
-			return true;
-		}
-		else
+		if (path != DocURL_.toLocalFile ())
 		{
 			conv->setOutputFileName (path);
 			return conv->convert ();
 		}
+
+		QBuffer buffer;
+		buffer.open (QIODevice::WriteOnly);
+		conv->setOutputDevice (&buffer);
+		if (!conv->convert ())
+			return false;
+
+		QFile file (path);
+		if (!file.open (QIODevice::WriteOnly))
+			return false;
+
+		file.write (buffer.buffer ());
+		return true;
 	}
 
 	void Document::RequestPrinting ()
@@ -325,13 +326,11 @@ namespace PDF
 				else
 					continue;
 
-				TOCEntry entry
-				{
-					navAct,
-					item.name (),
-					children,
-				};
-				result << entry;
+				result.push_back ({
+						navAct,
+						item.name (),
+						children,
+					});
 			}
 
 			return result;
@@ -342,6 +341,4 @@ namespace PDF
 	{
 		TOC_ = BuildTOCLevel (PDocument_->outline ());
 	}
-}
-}
 }

@@ -28,13 +28,9 @@ namespace Poppler
 	class Document;
 }
 
-namespace LC
+namespace LC::Monocle::PDF
 {
-namespace Monocle
-{
-namespace PDF
-{
-	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
+	using PDocument_ptr = std::shared_ptr<Poppler::Document>;
 
 	class Document : public QObject
 				   , public IDocument
@@ -70,40 +66,38 @@ namespace PDF
 	public:
 		Document (const QString&, QObject*);
 
-		QObject* GetBackendPlugin () const;
-		QObject* GetQObject ();
-		bool IsValid () const;
-		DocumentInfo GetDocumentInfo () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QFuture<QImage> RenderPage (int, double, double);
-		QList<ILink_ptr> GetPageLinks (int);
-		QUrl GetDocURL () const;
-		const DocumentSignals* GetDocumentSignals () const;
+		QObject* GetBackendPlugin () const override;
+		QObject* GetQObject () override;
+		bool IsValid () const override;
+		DocumentInfo GetDocumentInfo () const override;
+		int GetNumPages () const override;
+		QSize GetPageSize (int) const override;
+		QFuture<QImage> RenderPage (int, double, double) override;
+		QList<ILink_ptr> GetPageLinks (int) override;
+		QUrl GetDocURL () const override;
+		const DocumentSignals* GetDocumentSignals () const override;
 
-		TOCEntryLevel_t GetTOC ();
+		TOCEntryLevel_t GetTOC () override;
 
-		QString GetTextContent (int, const QRect&);
+		QString GetTextContent (int, const QRect&) override;
 
-		QAbstractItemModel* GetOptContentModel ();
+		QAbstractItemModel* GetOptContentModel () override;
 
-		IPendingFontInfoRequest* RequestFontInfos () const;
+		IPendingFontInfoRequest* RequestFontInfos () const override;
 
-		QList<IAnnotation_ptr> GetAnnotations (int);
+		QList<IAnnotation_ptr> GetAnnotations (int) override;
 
-		IFormFields_t GetFormFields (int);
+		IFormFields_t GetFormFields (int) override;
 
-		void PaintPage (QPainter*, int, double, double);
+		void PaintPage (QPainter*, int, double, double) override;
 
-		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity);
+		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity) override;
 
-		SaveQueryResult CanSave () const;
-		bool Save (const QString& path);
+		SaveQueryResult CanSave () const override;
+		bool Save (const QString& path) override;
 
 		void RequestPrinting ();
 	private:
 		void BuildTOC ();
 	};
-}
-}
 }
