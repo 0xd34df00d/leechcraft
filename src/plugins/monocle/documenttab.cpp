@@ -227,9 +227,9 @@ namespace Monocle
 				ThumbsWidget_,
 				SLOT (handleCurrentPage (int)));
 		connect (this,
-				SIGNAL (currentPageChanged (int)),
+				&DocumentTab::currentPageChanged,
 				TOCWidget_,
-				SLOT (updateCurrentPage (int)));
+				&TOCWidget::SetCurrentPage);
 		connect (this,
 				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
 				ThumbsWidget_,

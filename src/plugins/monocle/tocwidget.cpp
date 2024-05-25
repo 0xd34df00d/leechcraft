@@ -11,9 +11,7 @@
 #include <QtDebug>
 #include "documenttab.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	TOCWidget::TOCWidget (DocumentTab& docTab, QWidget *parent)
 	: QWidget { parent }
@@ -22,6 +20,22 @@ namespace Monocle
 	{
 		Ui_.setupUi (this);
 		Ui_.TOCTree_->setModel (Model_);
+
+		connect (Ui_.TOCTree_,
+				&QTreeView::activated,
+				this,
+				[this] (const QModelIndex& index)
+				{
+					auto item = Model_->itemFromIndex (index);
+					auto linkPos = Item2Link_.find (item);
+					if (linkPos == Item2Link_.end ())
+					{
+						qWarning () << "no link for item" << item << index;
+						return;
+					}
+
+					DocTab_.Navigate (*linkPos);
+				});
 	}
 
 	void TOCWidget::SetTOC (const TOCEntryLevel_t& topLevel)
@@ -35,6 +49,16 @@ namespace Monocle
 		AddWorker (Model_, topLevel);
 
 		Ui_.TOCTree_->expandToDepth (0);
+	}
+
+	void TOCWidget::SetCurrentPage (int index)
+	{
+		const auto linkPos = Link2Item_.upperBound ({ .PageNumber_ = index });
+		if (linkPos == Link2Item_.begin ())
+			return;
+
+		const auto item = *(linkPos - 1);
+		Ui_.TOCTree_->setCurrentIndex (item->index ());
 	}
 
 	namespace
@@ -65,31 +89,4 @@ namespace Monocle
 			addable->appendRow (item);
 		}
 	}
-
-	void TOCWidget::updateCurrentPage (int index)
-	{
-		const auto linkPos = Link2Item_.upperBound ({ .PageNumber_ = index });
-		if (linkPos == Link2Item_.begin ())
-			return;
-
-		const auto item = *(linkPos - 1);
-		Ui_.TOCTree_->setCurrentIndex (item->index ());
-	}
-
-	void TOCWidget::on_TOCTree__activated (const QModelIndex& index)
-	{
-		auto item = Model_->itemFromIndex (index);
-		auto linkPos = Item2Link_.find (item);
-		if (linkPos == Item2Link_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no link for item"
-					<< item
-					<< index;
-			return;
-		}
-
-		DocTab_.Navigate (*linkPos);
-	}
-}
 }

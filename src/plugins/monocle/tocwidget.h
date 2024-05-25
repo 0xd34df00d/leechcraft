@@ -15,9 +15,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
 
@@ -33,16 +31,13 @@ namespace Monocle
 		QHash<QStandardItem*, NavigationAction> Item2Link_;
 		QMap<NavigationAction, QStandardItem*> Link2Item_;
 	public:
-		TOCWidget (DocumentTab&, QWidget* = 0);
+		explicit TOCWidget (DocumentTab&, QWidget* = nullptr);
 
 		void SetTOC (const TOCEntryLevel_t&);
+
+		void SetCurrentPage (int);
 	private:
 		template<typename T>
 		void AddWorker (T, const TOCEntryLevel_t&);
-	public slots:
-		void updateCurrentPage (int);
-	private slots:
-		void on_TOCTree__activated (const QModelIndex&);
 	};
-}
 }
