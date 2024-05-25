@@ -8,25 +8,19 @@
 
 #pragma once
 
+#include <QToolBar>
 #include <QWidget>
 #include "ui_bookmarkswidget.h"
 
-class QToolBar;
-
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentBookmarksManager;
 
 	class BookmarksWidget : public QWidget
 	{
-		Q_OBJECT
-
 		Ui::BookmarksWidget Ui_;
-		QToolBar *Toolbar_;
+		QToolBar Toolbar_;
 	public:
-		BookmarksWidget (DocumentBookmarksManager*, QWidget* = nullptr);
+		explicit BookmarksWidget (DocumentBookmarksManager&, QWidget* = nullptr);
 	};
-}
 }

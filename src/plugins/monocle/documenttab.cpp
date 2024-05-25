@@ -92,9 +92,9 @@ namespace Monocle
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
+	, DocBMManager_ { *new DocumentBookmarksManager { this, this } }
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
-	, DocBMManager_ (new DocumentBookmarksManager (this, this))
 	, BMWidget_ (new BookmarksWidget (DocBMManager_))
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
@@ -643,7 +643,7 @@ namespace Monocle
 		auto bmButton = new QToolButton;
 		bmButton->setToolTip (tr ("Bookmarks"));
 		bmButton->setPopupMode (QToolButton::InstantPopup);
-		bmButton->setMenu (DocBMManager_->GetMenu ());
+		bmButton->setMenu (DocBMManager_.GetMenu ());
 		bmButton->setProperty ("ActionIcon", "bookmarks");
 		Toolbar_->addWidget (bmButton);
 
@@ -887,7 +887,7 @@ namespace Monocle
 
 		emit tabRecoverDataChanged ();
 
-		DocBMManager_->HandleDoc (CurrentDoc_);
+		DocBMManager_.HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
 		SearchTabWidget_->HandleDoc (CurrentDoc_);
 

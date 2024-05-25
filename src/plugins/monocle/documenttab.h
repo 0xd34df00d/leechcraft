@@ -79,10 +79,10 @@ namespace Monocle
 		FormManager *FormManager_ = nullptr;
 		AnnManager *AnnManager_ = nullptr;
 		LinksManager *LinksManager_ = nullptr;
+		DocumentBookmarksManager& DocBMManager_;
 
 		QDockWidget *DockWidget_ = nullptr;
 		TOCWidget *TOCWidget_ = nullptr;
-		DocumentBookmarksManager *DocBMManager_ = nullptr;
 		BookmarksWidget *BMWidget_ = nullptr;
 		ThumbsWidget *ThumbsWidget_ = nullptr;
 		AnnWidget *AnnWidget_ = nullptr;
