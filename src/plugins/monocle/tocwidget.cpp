@@ -9,6 +9,7 @@
 #include "tocwidget.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 
 namespace LC::Monocle
 {
@@ -64,8 +65,8 @@ namespace LC::Monocle
 		QString NormalizeName (QString name)
 		{
 			return name
-					.replace ("\r\n", "\n")
-					.replace ("\r", "\n");
+					.replace ("\r\n"_qs, "\n"_qs)
+					.replace ('\r', '\n');
 		}
 	}
 
