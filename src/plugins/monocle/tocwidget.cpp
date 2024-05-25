@@ -9,13 +9,11 @@
 #include "tocwidget.h"
 #include <QStandardItemModel>
 #include <QtDebug>
-#include "documenttab.h"
 
 namespace LC::Monocle
 {
-	TOCWidget::TOCWidget (DocumentTab& docTab, QWidget *parent)
+	TOCWidget::TOCWidget (QWidget *parent)
 	: QWidget { parent }
-	, DocTab_ { docTab }
 	, Model_ { new QStandardItemModel { this } }
 	{
 		Ui_.setupUi (this);
@@ -34,7 +32,7 @@ namespace LC::Monocle
 						return;
 					}
 
-					DocTab_.Navigate (*linkPos);
+					emit navigationRequested (*linkPos);
 				});
 	}
 

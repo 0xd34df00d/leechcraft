@@ -17,13 +17,9 @@ class QStandardItem;
 
 namespace LC::Monocle
 {
-	class DocumentTab;
-
 	class TOCWidget : public QWidget
 	{
 		Q_OBJECT
-
-		DocumentTab& DocTab_;
 
 		Ui::TOCWidget Ui_;
 		QStandardItemModel *Model_;
@@ -31,7 +27,7 @@ namespace LC::Monocle
 		QHash<QStandardItem*, NavigationAction> Item2Link_;
 		QMap<NavigationAction, QStandardItem*> Link2Item_;
 	public:
-		explicit TOCWidget (DocumentTab&, QWidget* = nullptr);
+		explicit TOCWidget (QWidget* = nullptr);
 
 		void SetTOC (const TOCEntryLevel_t&);
 
@@ -39,5 +35,7 @@ namespace LC::Monocle
 	private:
 		template<typename T>
 		void AddWorker (T, const TOCEntryLevel_t&);
+	signals:
+		void navigationRequested (const NavigationAction&);
 	};
 }

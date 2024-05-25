@@ -93,7 +93,7 @@ namespace Monocle
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
-	, TOCWidget_ (new TOCWidget (*this))
+	, TOCWidget_ (new TOCWidget ())
 	, DocBMManager_ (new DocumentBookmarksManager (this, this))
 	, BMWidget_ (new BookmarksWidget (DocBMManager_))
 	, ThumbsWidget_ (new ThumbsWidget ())
@@ -230,6 +230,10 @@ namespace Monocle
 				&DocumentTab::currentPageChanged,
 				TOCWidget_,
 				&TOCWidget::SetCurrentPage);
+		connect (TOCWidget_,
+				&TOCWidget::navigationRequested,
+				this,
+				qOverload<const NavigationAction&> (&DocumentTab::Navigate));
 		connect (this,
 				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
 				ThumbsWidget_,
