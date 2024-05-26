@@ -30,6 +30,7 @@ set (GUI_SRCS
 	util.cpp
 	fontsizescrollchanger.cpp
 	statesaver.cpp
+	menumodeladapter.cpp
 	)
 set (GUI_FORMS
 	findnotification.ui
