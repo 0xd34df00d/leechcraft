@@ -865,7 +865,7 @@ namespace Monocle
 
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
-			auto item = new PageGraphicsItem (CurrentDoc_, i);
+			auto item = new PageGraphicsItem { *CurrentDoc_, i };
 			Scene_.addItem (item);
 			Pages_ << item;
 		}

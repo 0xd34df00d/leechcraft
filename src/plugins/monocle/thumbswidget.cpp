@@ -50,7 +50,7 @@ namespace Monocle
 		pages.reserve (numPages);
 		for (int i = 0; i < numPages; ++i)
 		{
-			auto item = new PageGraphicsItem (CurrentDoc_, i);
+			auto item = new PageGraphicsItem { *doc, i };
 			Scene_.addItem (item);
 			item->SetReleaseHandler ([this] (int page, const QPointF&) { emit pageClicked (page); });
 			pages << item;

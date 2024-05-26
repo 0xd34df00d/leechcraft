@@ -26,14 +26,14 @@
 
 namespace LC::Monocle
 {
-	PageGraphicsItem::PageGraphicsItem (IDocument_ptr doc, int page, QGraphicsItem *parent)
+	PageGraphicsItem::PageGraphicsItem (IDocument& doc, int page, QGraphicsItem *parent)
 	: QGraphicsPixmapItem { parent }
-	, Doc_ { std::move (doc) }
+	, Doc_ { doc }
 	, PageNum_ { page }
 	{
 		setTransformationMode (Qt::SmoothTransformation);
 		setShapeMode (QGraphicsPixmapItem::BoundingRectShape);
-		setPixmap (QPixmap (Doc_->GetPageSize (page)));
+		setPixmap (QPixmap { Doc_.GetPageSize (page) });
 		setAcceptHoverEvents (true);
 	}
 
@@ -150,7 +150,7 @@ namespace LC::Monocle
 			if (ShouldRender ())
 			{
 				Invalid_ = false;
-				Util::Sequence (this, Doc_->RenderPage (PageNum_, XScale_, YScale_)) >>
+				Util::Sequence (this, Doc_.RenderPage (PageNum_, XScale_, YScale_)) >>
 						[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
 						{
 							setPixmap (QPixmap::fromImage (img));
@@ -224,7 +224,7 @@ namespace LC::Monocle
 
 	QRectF PageGraphicsItem::boundingRect () const
 	{
-		QSizeF size { Doc_->GetPageSize (PageNum_) };
+		QSizeF size { Doc_.GetPageSize (PageNum_) };
 		size.rwidth () *= XScale_;
 		size.rheight () *= YScale_;
 		return QRectF { offset (), size };

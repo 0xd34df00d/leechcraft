@@ -25,7 +25,7 @@ namespace LC::Monocle
 
 		bool IsRenderingEnabled_ = true;
 
-		IDocument_ptr Doc_;
+		IDocument& Doc_;
 		const int PageNum_;
 
 		qreal XScale_ = 1;
@@ -46,7 +46,7 @@ namespace LC::Monocle
 		};
 		QMap<QGraphicsItem*, RectInfo> Item2RectInfo_;
 	public:
-		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = nullptr);
+		PageGraphicsItem (IDocument&, int, QGraphicsItem* = nullptr);
 		~PageGraphicsItem () override;
 
 		void SetLayoutManager (PagesLayoutManager*);
