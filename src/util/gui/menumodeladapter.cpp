@@ -122,16 +122,17 @@ namespace LC::Util
 				if (!CheckRootParent (parent))
 					return;
 
-				const auto& actions = MakeActionsForRange (first, last);
-				const auto curActionsCount = Menu_.actions ().size ();
+				const auto& newActions = MakeActionsForRange (first, last);
+				const auto& existing = Menu_.actions ();
+				const auto curActionsCount = existing.size ();
 				if (first == curActionsCount)
-					Menu_.addActions (actions);
+					Menu_.addActions (newActions);
 				else if (first < curActionsCount)
-					Menu_.insertActions (Menu_.actions () [first], actions);
+					Menu_.insertActions (existing [first], newActions);
 				else
 				{
 					qWarning () << "invalid actions position" << &Menu_ << &Model_ << curActionsCount << first << last;
-					qDeleteAll (actions);
+					qDeleteAll (newActions);
 				}
 			}
 
