@@ -37,9 +37,9 @@ namespace LC::Monocle
 				Qt::QueuedConnection);
 	}
 
-	void PagesLayoutManager::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
+	void PagesLayoutManager::HandleDoc (IDocument *doc, const QVector<PageGraphicsItem*>& pages)
 	{
-		CurrentDoc_ = std::move (doc);
+		CurrentDoc_ = doc;
 		Pages_ = pages;
 		Rotation_ = 0;
 		PageRotations_ = QVector<double> (pages.size (), 0);

@@ -56,7 +56,7 @@ namespace Monocle
 			pages << item;
 		}
 
-		LayoutMgr_->HandleDoc (CurrentDoc_, pages);
+		LayoutMgr_->HandleDoc (CurrentDoc_.get (), pages);
 		LayoutMgr_->Relayout ();
 	}
 

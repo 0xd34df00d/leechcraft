@@ -870,7 +870,7 @@ namespace Monocle
 			Pages_ << item;
 		}
 
-		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
+		LayoutManager_->HandleDoc (CurrentDoc_.get (), Pages_);
 		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
 		AnnManager_->HandleDoc (CurrentDoc_, Pages_);
