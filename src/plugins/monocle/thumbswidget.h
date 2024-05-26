@@ -9,13 +9,13 @@
 #pragma once
 
 #include <QWidget>
-#include "interfaces/monocle/idocument.h"
 #include "ui_thumbswidget.h"
 
 namespace LC
 {
 namespace Monocle
 {
+	class IDocument;
 	class PagesLayoutManager;
 
 	class ThumbsWidget : public QWidget
@@ -26,8 +26,6 @@ namespace Monocle
 		QGraphicsScene Scene_;
 
 		PagesLayoutManager *LayoutMgr_;
-
-		IDocument_ptr CurrentDoc_;
 
 		QList<QGraphicsRectItem*> CurrentAreaRects_;
 		QMap<int, QRect> LastVisibleAreas_;

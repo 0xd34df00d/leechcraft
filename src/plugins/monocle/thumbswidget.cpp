@@ -8,6 +8,7 @@
 
 #include "thumbswidget.h"
 #include <QtDebug>
+#include "interfaces/monocle/idocument.h"
 #include "pageslayoutmanager.h"
 #include "pagegraphicsitem.h"
 #include "smoothscroller.h"
@@ -40,12 +41,10 @@ namespace Monocle
 	{
 		Scene_.clear ();
 		CurrentAreaRects_.clear ();
-		CurrentDoc_ = doc;
-
 		if (!doc)
 			return;
 
-		const auto numPages = CurrentDoc_->GetNumPages ();
+		const auto numPages = doc->GetNumPages ();
 		QVector<PageGraphicsItem*> pages;
 		pages.reserve (numPages);
 		for (int i = 0; i < numPages; ++i)
@@ -56,7 +55,7 @@ namespace Monocle
 			pages << item;
 		}
 
-		LayoutMgr_->HandleDoc (CurrentDoc_.get (), pages);
+		LayoutMgr_->HandleDoc (doc, pages);
 		LayoutMgr_->Relayout ();
 	}
 
