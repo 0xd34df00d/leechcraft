@@ -15,7 +15,7 @@ LC_DEFINE_PLUGIN (
 		pendingfontinforequest.cpp
 	SETTINGS monoclepdfsettings.xml
 	QT_COMPONENTS Concurrent Gui Xml
-	LINK_LIBRARIES PkgConfig::PopplerQt5
+	LINK_LIBRARIES PkgConfig::PopplerQt5 leechcraft-monocle-util
 	INSTALL_SHARE
 	INSTALL_DESKTOP
 	)
