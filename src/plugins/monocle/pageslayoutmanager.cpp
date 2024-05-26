@@ -42,9 +42,8 @@ namespace LC::Monocle
 		CurrentDoc_ = std::move (doc);
 		Pages_ = pages;
 		Rotation_ = 0;
-		emit rotationUpdated (0);
-
 		PageRotations_ = QVector<double> (pages.size (), 0);
+		emit rotationUpdated (0);
 
 		for (auto page : pages)
 			page->SetLayoutManager (this);
