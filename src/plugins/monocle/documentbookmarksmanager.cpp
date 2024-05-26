@@ -8,16 +8,13 @@
 
 #include "documentbookmarksmanager.h"
 #include <QStandardItemModel>
-#include <QMenu>
 #include <util/sll/prelude.h>
 #include "core.h"
 #include "bookmarksmanager.h"
 #include "bookmark.h"
 #include "documenttab.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	namespace
 	{
@@ -31,18 +28,12 @@ namespace Monocle
 	: QObject { parent }
 	, Tab_ { tab }
 	, Model_ { new QStandardItemModel { this } }
-	, Menu_ { new QMenu }
 	{
 	}
 
 	QAbstractItemModel* DocumentBookmarksManager::GetModel () const
 	{
 		return Model_;
-	}
-
-	QMenu* DocumentBookmarksManager::GetMenu () const
-	{
-		return Menu_;
 	}
 
 	bool DocumentBookmarksManager::HasDoc () const
@@ -55,9 +46,7 @@ namespace Monocle
 		Doc_ = doc;
 		ReloadBookmarks ();
 
-		const auto hasDoc = HasDoc ();
-		Menu_->setEnabled (hasDoc);
-		emit docAvailable (hasDoc);
+		emit docAvailable (HasDoc ());
 	}
 
 	void DocumentBookmarksManager::AddBookmark ()
@@ -79,7 +68,6 @@ namespace Monocle
 		if (!idx.isValid ())
 			return;
 
-		idx = idx.sibling (idx.row (), 0);
 		const auto& bm = idx.data (Roles::RBookmark).value<Bookmark> ();
 		Core::Instance ().GetBookmarksManager ()->RemoveBookmark (Doc_, bm);
 
@@ -88,7 +76,7 @@ namespace Monocle
 
 	void DocumentBookmarksManager::Navigate (const QModelIndex& idx)
 	{
-		const auto& bm = idx.sibling (idx.row (), 0).data (Roles::RBookmark).value<Bookmark> ();
+		const auto& bm = idx.data (Roles::RBookmark).value<Bookmark> ();
 		Tab_->CenterOn (bm.GetPosition ());
 	}
 
@@ -96,8 +84,6 @@ namespace Monocle
 	{
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Name") });
-
-		Menu_->clear ();
 
 		if (!Doc_)
 			return;
@@ -116,17 +102,6 @@ namespace Monocle
 			item->setEditable (false);
 			item->setData (QVariant::fromValue<Bookmark> (bm), Roles::RBookmark);
 			Model_->appendRow (item);
-
-			Menu_->addAction (bm.GetName (),
-					this,
-					[this, bm] { Tab_->CenterOn (bm.GetPosition ()); });
 		}
-
-		Menu_->addSeparator ();
-		Menu_->addAction (QIcon::fromTheme ("bookmark-new"),
-				tr ("Add bookmark"),
-				this,
-				&DocumentBookmarksManager::AddBookmark);
 	}
-}
 }

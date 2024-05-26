@@ -26,6 +26,7 @@
 #include <QFuture>
 #include <util/util.h>
 #include <util/gui/findnotification.h>
+#include <util/gui/menumodeladapter.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include <interfaces/imwproxy.h>
@@ -643,7 +644,24 @@ namespace Monocle
 		auto bmButton = new QToolButton;
 		bmButton->setToolTip (tr ("Bookmarks"));
 		bmButton->setPopupMode (QToolButton::InstantPopup);
-		bmButton->setMenu (DocBMManager_.GetMenu ());
+		const auto bmMenu = new QMenu;
+		const auto addAction = new QAction { tr ("Add bookmark") };
+		connect (addAction,
+				&QAction::triggered,
+				&DocBMManager_,
+				&DocumentBookmarksManager::AddBookmark);
+		addAction->setProperty ("ActionIcon", "bookmark-new");
+		Util::SetMenuModel (*bmMenu, *DocBMManager_.GetModel (),
+				[this] (const QModelIndex& idx) { DocBMManager_.Navigate (idx); },
+				{
+					.AdditionalActions_ = { addAction }
+				});
+		connect (&DocBMManager_,
+				&DocumentBookmarksManager::docAvailable,
+				bmMenu,
+				&QMenu::setEnabled);
+		bmMenu->setEnabled (DocBMManager_.HasDoc ());
+		bmButton->setMenu (bmMenu);
 		bmButton->setProperty ("ActionIcon", "bookmarks");
 		Toolbar_->addWidget (bmButton);
 
