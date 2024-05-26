@@ -9,11 +9,20 @@
 #pragma once
 
 #include "guiconfig.h"
+#include <QList>
 
 class QAbstractItemModel;
+class QAction;
 class QMenu;
 
 namespace LC::Util
 {
-	UTIL_GUI_API void SetMenuModel (QMenu&, QAbstractItemModel&);
+	struct MenuModelOptions
+	{
+		QList<QAction*> AdditionalActions_ {};
+	};
+
+	UTIL_GUI_API void SetMenuModel (QMenu& menu,
+			QAbstractItemModel& model,
+			MenuModelOptions options = {});
 }

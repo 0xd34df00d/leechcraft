@@ -19,11 +19,16 @@ namespace LC::Util
 		{
 			QMenu& Menu_;
 			QAbstractItemModel& Model_;
+
+			const MenuModelOptions Options_;
 		public:
-			explicit MenuModelManager (QMenu& menu, QAbstractItemModel& model)
+			explicit MenuModelManager (QMenu& menu,
+					QAbstractItemModel& model,
+					MenuModelOptions options)
 			: QObject { &menu }
 			, Menu_ { menu }
 			, Model_ { model }
+			, Options_ { std::move (options) }
 			{
 				connect (&model,
 						&QObject::destroyed,
@@ -34,8 +39,8 @@ namespace LC::Util
 
 				connect (&model,
 						&QAbstractItemModel::modelReset,
-						&menu,
-						&QMenu::clear);
+						this,
+						&MenuModelManager::RegenerateMenu);
 				connect (&model,
 						&QAbstractItemModel::rowsMoved,
 						this,
@@ -54,8 +59,15 @@ namespace LC::Util
 			{
 				Menu_.clear ();
 
-				if (const auto rc = Model_.rowCount ())
+				const auto rc = Model_.rowCount ();
+				if (rc)
 					Menu_.addActions (MakeActionsForRange (0, rc - 1));
+
+				if (!Options_.AdditionalActions_.isEmpty ())
+				{
+					Menu_.addSeparator ();
+					Menu_.addActions (Options_.AdditionalActions_);
+				}
 			}
 
 			void MoveRows (const QModelIndex& parent, int start, int end,
@@ -143,8 +155,10 @@ namespace LC::Util
 		};
 	}
 
-	void SetMenuModel (QMenu& menu, QAbstractItemModel& model)
+	void SetMenuModel (QMenu& menu,
+			QAbstractItemModel& model,
+			MenuModelOptions options)
 	{
-		new MenuModelManager { menu, model };
+		new MenuModelManager { menu, model, std::move (options) };
 	}
 }
