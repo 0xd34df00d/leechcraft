@@ -17,6 +17,7 @@ namespace LC::Util
 	{
 		class MenuModelManager : public QObject
 		{
+			const std::function<void (QModelIndex)> ClickHandler_;
 			QMenu& Menu_;
 			QAbstractItemModel& Model_;
 
@@ -24,8 +25,10 @@ namespace LC::Util
 		public:
 			explicit MenuModelManager (QMenu& menu,
 					QAbstractItemModel& model,
+					std::function<void (QModelIndex)> clickHandler,
 					MenuModelOptions options)
 			: QObject { &menu }
+			, ClickHandler_ { std::move (clickHandler) }
 			, Menu_ { menu }
 			, Model_ { model }
 			, Options_ { std::move (options) }
@@ -105,6 +108,10 @@ namespace LC::Util
 
 					const auto act = new QAction { icon, text, &Menu_ };
 					act->setToolTip (tooltip);
+					connect (act,
+							&QAction::triggered,
+							this,
+							[this, idx = QPersistentModelIndex { idx }] { ClickHandler_ (idx); });
 					actions << act;
 				}
 				return actions;
@@ -157,8 +164,9 @@ namespace LC::Util
 
 	void SetMenuModel (QMenu& menu,
 			QAbstractItemModel& model,
+			std::function<void (QModelIndex)> clickHandler,
 			MenuModelOptions options)
 	{
-		new MenuModelManager { menu, model, std::move (options) };
+		new MenuModelManager { menu, model, std::move (clickHandler), std::move (options) };
 	}
 }

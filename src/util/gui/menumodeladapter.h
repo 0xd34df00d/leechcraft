@@ -13,6 +13,7 @@
 
 class QAbstractItemModel;
 class QAction;
+class QModelIndex;
 class QMenu;
 
 namespace LC::Util
@@ -24,5 +25,6 @@ namespace LC::Util
 
 	UTIL_GUI_API void SetMenuModel (QMenu& menu,
 			QAbstractItemModel& model,
+			std::function<void (QModelIndex)> clickHandler,
 			MenuModelOptions options = {});
 }
