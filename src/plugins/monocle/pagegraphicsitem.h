@@ -23,19 +23,18 @@ namespace LC::Monocle
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::PageGraphicsItem)
 
-		bool IsRenderingEnabled_ = true;
+		std::function<void (int, QPointF)> ReleaseHandler_;
 
 		IDocument& Doc_;
-		const int PageNum_;
+		PagesLayoutManager *LayoutManager_ = nullptr;
 
 		qreal XScale_ = 1;
 		qreal YScale_ = 1;
 
+		const int PageNum_;
+
 		bool Invalid_ = true;
-
-		std::function<void (int, QPointF)> ReleaseHandler_;
-
-		PagesLayoutManager *LayoutManager_ = nullptr;
+		bool IsRenderingEnabled_ = true;
 	public:
 		using RectSetter_f = std::function<void (QRectF)>;
 	private:
