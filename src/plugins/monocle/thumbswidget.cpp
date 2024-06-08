@@ -23,7 +23,7 @@ namespace LC::Monocle
 		Ui_.ThumbsView_->setScene (&Scene_);
 		Ui_.ThumbsView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
-		auto scroller = new SmoothScroller { Ui_.ThumbsView_, this };
+		auto scroller = new SmoothScroller { *Ui_.ThumbsView_, this };
 
 		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, scroller, this);
 		LayoutMgr_->SetScaleMode (FitWidth {});

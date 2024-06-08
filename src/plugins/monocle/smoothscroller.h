@@ -21,12 +21,12 @@ namespace LC::Monocle
 	{
 		Q_OBJECT
 
-		PagesView * const View_;
-		QTimeLine * const ScrollTimeline_;
+		PagesView& View_;
+		QTimeLine& ScrollTimeline_;
 
 		QPair<QPointF, QPointF> ScrollPath_;
 	public:
-		SmoothScroller (PagesView*, QObject* = nullptr);
+		explicit SmoothScroller (PagesView&, QObject* = nullptr);
 
 		bool IsCurrentlyScrolling () const;
 

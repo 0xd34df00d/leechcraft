@@ -13,50 +13,54 @@
 
 namespace LC::Monocle
 {
-	SmoothScroller::SmoothScroller (PagesView *view, QObject *parent)
+	constexpr auto Duration = 400;
+	constexpr auto StepsCount = 100;
+
+	SmoothScroller::SmoothScroller (PagesView& view, QObject *parent)
 	: QObject { parent }
 	, View_ { view }
-	, ScrollTimeline_ { new QTimeLine { 400, this } }
+	, ScrollTimeline_ { *new QTimeLine { Duration, this } }
 	{
-		ScrollTimeline_->setFrameRange (0, 100);
-		connect (ScrollTimeline_,
+		ScrollTimeline_.setFrameRange (0, StepsCount);
+		connect (&ScrollTimeline_,
 				&QTimeLine::frameChanged,
 				this,
 				&SmoothScroller::HandleSmoothScroll);
 
-		connect (ScrollTimeline_,
+		connect (&ScrollTimeline_,
 				&QTimeLine::finished,
+				this,
 				[this] { emit isCurrentlyScrollingChanged (false); });
 	}
 
 	bool SmoothScroller::IsCurrentlyScrolling () const
 	{
-		return ScrollTimeline_->state () == QTimeLine::Running;
+		return ScrollTimeline_.state () == QTimeLine::Running;
 	}
 
 	void SmoothScroller::SmoothCenterOn (QPointF p)
 	{
 		if (!XmlSettingsManager::Instance ().property ("SmoothScrolling").toBool ())
 		{
-			View_->centerOn (p);
+			View_.centerOn (p);
 			return;
 		}
 
-		const auto& current = View_->GetCurrentCenter ();
+		const auto& current = View_.GetCurrentCenter ();
 		ScrollPath_ = qMakePair (current, p);
 
-		if (ScrollTimeline_->state () != QTimeLine::NotRunning)
-			ScrollTimeline_->stop ();
+		if (ScrollTimeline_.state () != QTimeLine::NotRunning)
+			ScrollTimeline_.stop ();
 
 		emit isCurrentlyScrollingChanged (true);
-		ScrollTimeline_->start ();
+		ScrollTimeline_.start ();
 	}
 
 	void SmoothScroller::HandleSmoothScroll (int frame)
 	{
-		const int endFrame = ScrollTimeline_->endFrame ();
+		const int endFrame = ScrollTimeline_.endFrame ();
 		auto interp = [frame, endFrame] (const auto& pair)
 				{ return pair.first + (pair.second - pair.first) * frame / endFrame; };
-		View_->centerOn (interp (ScrollPath_));
+		View_.centerOn (interp (ScrollPath_));
 	}
 }

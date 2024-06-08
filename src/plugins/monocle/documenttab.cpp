@@ -106,7 +106,7 @@ namespace Monocle
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
-		Scroller_ = new SmoothScroller { Ui_.PagesView_, this };
+		Scroller_ = new SmoothScroller { *Ui_.PagesView_, this };
 		connect (Scroller_,
 				&SmoothScroller::isCurrentlyScrollingChanged,
 				this,
