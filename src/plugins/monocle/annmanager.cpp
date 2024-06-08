@@ -18,10 +18,9 @@
 
 namespace LC::Monocle
 {
-	AnnManager::AnnManager (SmoothScroller *scroller, DocumentTab& docTab)
+	AnnManager::AnnManager (DocumentTab& docTab)
 	: QObject { &docTab }
 	, DocTab_ { docTab }
-	, Scroller_ { scroller }
 	, AnnModel_ { new QStandardItemModel { this } }
 	{
 	}
@@ -69,11 +68,7 @@ namespace LC::Monocle
 
 				Ann2GraphicsItem_ [ann] = item;
 
-				item->SetHandler ([this] (const IAnnotation_ptr& ann)
-						{
-							EmitSelected (ann);
-							SelectAnnotation (ann);
-						});
+				item->SetHandler ([this] (const IAnnotation_ptr& ann) { SelectAnnotation (ann); });
 
 				page->RegisterChildRect (item->GetItem (), ann->GetBoundary (),
 						[item] (const QRectF& rect) { item->UpdateRect (rect); });
@@ -104,30 +99,25 @@ namespace LC::Monocle
 		return AnnModel_;
 	}
 
-	void AnnManager::EmitSelected (const IAnnotation_ptr& ann)
+	void AnnManager::SelectAnnotation (const IAnnotation_ptr& ann)
 	{
 		if (const auto item = Ann2Item_ [ann])
 			emit annotationSelected (item->index ());
-	}
 
-	void AnnManager::CenterOn (const IAnnotation_ptr& ann)
-	{
-		const auto item = Ann2GraphicsItem_.value (ann);
-		if (!item)
-			return;
-
-		const auto graphicsItem = item->GetItem ();
-		const auto& mapped = graphicsItem->scenePos ();
-		Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
-	}
-
-	void AnnManager::SelectAnnotation (const IAnnotation_ptr& ann)
-	{
-		const auto modelItem = Ann2Item_ [ann];
-		if (!modelItem)
+		const auto newAnn = Annotations_.indexOf (ann);
+		if (newAnn == CurrentAnn_)
 			return;
 
 		const auto graphicsItem = Ann2GraphicsItem_ [ann];
+		if (!graphicsItem)
+		{
+			const auto type = static_cast<int> (ann->GetAnnotationType ());
+			qWarning () << "no item for the annotation" << type << ann->GetText ();
+			return;
+		}
+
+		emit navigationRequested (graphicsItem->GetItem ()->scenePos ());
+
 		if (graphicsItem->IsSelected ())
 			return;
 
@@ -139,7 +129,7 @@ namespace LC::Monocle
 			}
 
 		graphicsItem->SetSelected (true);
-		CurrentAnn_ = Annotations_.indexOf (ann);
+		CurrentAnn_ = newAnn;
 	}
 
 	void AnnManager::selectPrev ()
@@ -150,11 +140,7 @@ namespace LC::Monocle
 		if (--CurrentAnn_ < 0)
 			CurrentAnn_ = Annotations_.size () - 1;
 
-		const auto& ann = Annotations_.at (CurrentAnn_);
-
-		EmitSelected (ann);
-		CenterOn (ann);
-		SelectAnnotation (ann);
+		SelectAnnotation (Annotations_.at (CurrentAnn_));
 	}
 
 	void AnnManager::selectNext ()
@@ -165,11 +151,7 @@ namespace LC::Monocle
 		if (CurrentAnn_ == -1 || ++CurrentAnn_ >= Annotations_.size ())
 			CurrentAnn_ = 0;
 
-		const auto& ann = Annotations_.at (CurrentAnn_);
-
-		EmitSelected (ann);
-		CenterOn (ann);
-		SelectAnnotation (ann);
+		SelectAnnotation (Annotations_.at (CurrentAnn_));
 	}
 
 	void AnnManager::selectAnnotation (const QModelIndex& idx)
@@ -177,15 +159,7 @@ namespace LC::Monocle
 		if (idx.data (Role::ItemType).toInt () != ItemTypes::AnnItem)
 			return;
 
-		const auto& ann = idx.data (Role::Annotation).value<IAnnotation_ptr> ();
-		if (!ann)
-			return;
-
-		CenterOn (ann);
-
-		if (Annotations_.indexOf (ann) == CurrentAnn_)
-			return;
-
-		SelectAnnotation (ann);
+		if (const auto& ann = idx.data (Role::Annotation).value<IAnnotation_ptr> ())
+			SelectAnnotation (ann);
 	}
 }

@@ -137,9 +137,13 @@ namespace Monocle
 				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
 
 		FormManager_ = new FormManager (Ui_.PagesView_, *this);
-		AnnManager_ = new AnnManager (Scroller_, *this);
+		AnnManager_ = new AnnManager (*this);
 		LinksManager_ = new LinksManager (*this);
 
+		connect (AnnManager_,
+				&AnnManager::navigationRequested,
+				Scroller_,
+				[this] (QPointF p) { Scroller_->SmoothCenterOn (p.x (), p.y ()); });
 		AnnWidget_ = new AnnWidget (AnnManager_);
 
 		SearchTabWidget_ = new SearchTabWidget (SearchHandler_);

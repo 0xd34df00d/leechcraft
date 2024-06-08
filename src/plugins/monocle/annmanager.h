@@ -21,7 +21,6 @@ class QStandardItem;
 namespace LC::Monocle
 {
 	class DocumentTab;
-	class SmoothScroller;
 	class PageGraphicsItem;
 	class AnnBaseItem;
 
@@ -30,8 +29,6 @@ namespace LC::Monocle
 		Q_OBJECT
 
 		DocumentTab& DocTab_;
-
-		SmoothScroller * const Scroller_;
 
 		QStandardItemModel * const AnnModel_;
 		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
@@ -54,14 +51,12 @@ namespace LC::Monocle
 			AnnItem
 		};
 
-		AnnManager (SmoothScroller*, DocumentTab&);
+		explicit AnnManager (DocumentTab&);
 
 		void HandleDoc (IDocument&, const QVector<PageGraphicsItem*>&);
 
 		QAbstractItemModel* GetModel () const;
 	private:
-		void EmitSelected (const IAnnotation_ptr&);
-		void CenterOn (const IAnnotation_ptr&);
 		void SelectAnnotation (const IAnnotation_ptr&);
 	public slots:
 		void selectPrev ();
@@ -69,5 +64,6 @@ namespace LC::Monocle
 		void selectAnnotation (const QModelIndex&);
 	signals:
 		void annotationSelected (const QModelIndex&);
+		void navigationRequested (QPointF);
 	};
 }
