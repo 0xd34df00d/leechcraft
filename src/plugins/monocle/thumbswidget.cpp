@@ -14,12 +14,10 @@
 #include "smoothscroller.h"
 #include "common.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	ThumbsWidget::ThumbsWidget (QWidget *parent)
-	: QWidget (parent)
+	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
 		Ui_.ThumbsView_->setScene (&Scene_);
@@ -32,12 +30,12 @@ namespace Monocle
 		LayoutMgr_->SetMargins ({ 10, 0 });
 
 		connect (LayoutMgr_,
-				SIGNAL (scheduledRelayoutFinished ()),
+				&PagesLayoutManager::scheduledRelayoutFinished,
 				this,
-				SLOT (handleRelayouted ()));
+				[this] { UpdatePagesVisibility (LastVisibleAreas_); });
 	}
 
-	void ThumbsWidget::HandleDoc (IDocument_ptr doc)
+	void ThumbsWidget::HandleDoc (IDocument *doc)
 	{
 		Scene_.clear ();
 		CurrentAreaRects_.clear ();
@@ -59,7 +57,7 @@ namespace Monocle
 		LayoutMgr_->Relayout ();
 	}
 
-	void ThumbsWidget::updatePagesVisibility (const QMap<int, QRect>& page2rect)
+	void ThumbsWidget::UpdatePagesVisibility (const QMap<int, QRect>& page2rect)
 	{
 		LastVisibleAreas_ = page2rect;
 
@@ -99,14 +97,8 @@ namespace Monocle
 		}
 	}
 
-	void ThumbsWidget::handleCurrentPage (int page)
+	void ThumbsWidget::SetCurrentPage (int page)
 	{
 		LayoutMgr_->SetCurrentPage (page, false);
 	}
-
-	void ThumbsWidget::handleRelayouted ()
-	{
-		updatePagesVisibility (LastVisibleAreas_);
-	}
-}
 }

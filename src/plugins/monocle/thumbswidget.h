@@ -11,9 +11,7 @@
 #include <QWidget>
 #include "ui_thumbswidget.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class IDocument;
 	class PagesLayoutManager;
@@ -30,16 +28,13 @@ namespace Monocle
 		QList<QGraphicsRectItem*> CurrentAreaRects_;
 		QMap<int, QRect> LastVisibleAreas_;
 	public:
-		ThumbsWidget (QWidget* = 0);
+		explicit ThumbsWidget (QWidget* = nullptr);
 
-		void HandleDoc (IDocument_ptr);
-	public slots:
-		void updatePagesVisibility (const QMap<int, QRect>&);
-		void handleCurrentPage (int);
-	private slots:
-		void handleRelayouted ();
+		void HandleDoc (IDocument*);
+
+		void UpdatePagesVisibility (const QMap<int, QRect>&);
+		void SetCurrentPage (int);
 	signals:
 		void pageClicked (int);
 	};
-}
 }
