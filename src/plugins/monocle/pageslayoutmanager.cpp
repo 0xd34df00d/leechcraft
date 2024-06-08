@@ -105,7 +105,7 @@ namespace LC::Monocle
 		if (immediate)
 			View_->centerOn (sceneCenter);
 		else
-			Scroller_->SmoothCenterOn (sceneCenter.x (), sceneCenter.y ());
+			Scroller_->SmoothCenterOn (sceneCenter);
 	}
 
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)

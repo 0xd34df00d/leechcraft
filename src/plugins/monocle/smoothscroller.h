@@ -9,12 +9,11 @@
 #pragma once
 
 #include <QObject>
+#include <QPointF>
 
 class QTimeLine;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class PagesView;
 
@@ -25,18 +24,16 @@ namespace Monocle
 		PagesView * const View_;
 		QTimeLine * const ScrollTimeline_;
 
-		QPair<qreal, qreal> XPath_;
-		QPair<qreal, qreal> YPath_;
+		QPair<QPointF, QPointF> ScrollPath_;
 	public:
 		SmoothScroller (PagesView*, QObject* = nullptr);
 
 		bool IsCurrentlyScrolling () const;
 
-		void SmoothCenterOn (qreal, qreal);
+		void SmoothCenterOn (QPointF);
 	private:
 		void HandleSmoothScroll (int);
 	signals:
 		void isCurrentlyScrollingChanged (bool);
 	};
-}
 }

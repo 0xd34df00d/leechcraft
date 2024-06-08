@@ -143,7 +143,7 @@ namespace Monocle
 		connect (AnnManager_,
 				&AnnManager::navigationRequested,
 				Scroller_,
-				[this] (QPointF p) { Scroller_->SmoothCenterOn (p.x (), p.y ()); });
+				&SmoothScroller::SmoothCenterOn);
 		AnnWidget_ = new AnnWidget (AnnManager_);
 
 		SearchTabWidget_ = new SearchTabWidget (SearchHandler_);
@@ -461,7 +461,7 @@ namespace Monocle
 
 	void DocumentTab::CenterOn (const QPoint& point)
 	{
-		Scroller_->SmoothCenterOn (point.x (), point.y ());
+		Scroller_->SmoothCenterOn (point);
 	}
 
 	void DocumentTab::dragEnterEvent (QDragEnterEvent *event)
@@ -807,9 +807,7 @@ namespace Monocle
 			auto center = (rect->topLeft () + rect->bottomRight ()) / 2;
 			center.rx () *= renderedSize.width ();
 			center.ry () *= renderedSize.height ();
-			const auto& mapped = page->mapToScene (center);
-
-			Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
+			Scroller_->SmoothCenterOn (page->mapToScene (center));
 		}
 		else
 			SetCurrentPage (nav.PageNumber_);
