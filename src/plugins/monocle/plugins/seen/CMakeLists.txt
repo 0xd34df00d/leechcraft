@@ -11,6 +11,6 @@ LC_DEFINE_PLUGIN (
 		docmanager.cpp
 		document.cpp
 	QT_COMPONENTS Concurrent Gui
-	LINK_LIBRARIES PkgConfig::DjVuLibre
+	LINK_LIBRARIES PkgConfig::DjVuLibre leechcraft-monocle-util
 	INSTALL_DESKTOP
 	)
