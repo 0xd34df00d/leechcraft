@@ -16,9 +16,7 @@
 #include "pagegraphicsitem.h"
 #include "smoothscroller.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	AnnManager::AnnManager (SmoothScroller *scroller, DocumentTab& docTab)
 	: QObject { &docTab }
@@ -28,7 +26,7 @@ namespace Monocle
 	{
 	}
 
-	void AnnManager::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
+	void AnnManager::HandleDoc (IDocument& doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		if (const auto rc = AnnModel_->rowCount ())
 			AnnModel_->removeRows (0, rc);
@@ -38,20 +36,19 @@ namespace Monocle
 		Annotations_.clear ();
 		CurrentAnn_ = -1;
 
-		const auto isa = qobject_cast<ISupportAnnotations*> (doc->GetQObject ());
+		const auto isa = qobject_cast<ISupportAnnotations*> (doc.GetQObject ());
 		if (!isa)
 			return;
 
 		for (auto page : pages)
 		{
 			QStandardItem *pageItem = nullptr;
-			auto createItem = [&pageItem, page, this] () -> void
+			auto createItem = [&pageItem, page, this]
 			{
 				if (pageItem)
 					return;
 
-				pageItem = new QStandardItem (tr ("Page %1")
-							.arg (page->GetPageNum () + 1));
+				pageItem = new QStandardItem { tr ("Page %1").arg (page->GetPageNum () + 1) };
 				pageItem->setData (ItemTypes::PageItem, Role::ItemType);
 				pageItem->setEditable (false);
 				AnnModel_->appendRow (pageItem);
@@ -72,7 +69,7 @@ namespace Monocle
 
 				Ann2GraphicsItem_ [ann] = item;
 
-				item->SetHandler ([this] (const IAnnotation_ptr& ann) -> void
+				item->SetHandler ([this] (const IAnnotation_ptr& ann)
 						{
 							EmitSelected (ann);
 							SelectAnnotation (ann);
@@ -191,5 +188,4 @@ namespace Monocle
 
 		SelectAnnotation (ann);
 	}
-}
 }

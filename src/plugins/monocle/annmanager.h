@@ -18,9 +18,7 @@ class QModelIndex;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
 	class SmoothScroller;
@@ -43,13 +41,13 @@ namespace Monocle
 		QVector<IAnnotation_ptr> Annotations_;
 		int CurrentAnn_ = -1;
 	public:
-		enum Role
+		enum Role : std::uint16_t
 		{
 			ItemType = Qt::UserRole + 1,
 			Annotation
 		};
 
-		enum ItemTypes
+		enum ItemTypes : std::uint8_t
 		{
 			PageItem,
 			AnnHeaderItem,
@@ -58,7 +56,7 @@ namespace Monocle
 
 		AnnManager (SmoothScroller*, DocumentTab&);
 
-		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
+		void HandleDoc (IDocument&, const QVector<PageGraphicsItem*>&);
 
 		QAbstractItemModel* GetModel () const;
 	private:
@@ -72,5 +70,4 @@ namespace Monocle
 	signals:
 		void annotationSelected (const QModelIndex&);
 	};
-}
 }

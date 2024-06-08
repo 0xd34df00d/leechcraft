@@ -873,7 +873,7 @@ namespace Monocle
 		LayoutManager_->HandleDoc (CurrentDoc_.get (), Pages_);
 		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
-		AnnManager_->HandleDoc (CurrentDoc_, Pages_);
+		AnnManager_->HandleDoc (*CurrentDoc_, Pages_);
 		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
 		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
