@@ -104,13 +104,6 @@ namespace Monocle
 	void SearchTabWidget::on_ResultsTree__activated (const QModelIndex& index)
 	{
 		const auto item = Model_->itemFromIndex (index);
-		if (!item)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown index"
-					<< index;
-			return;
-		}
 
 		auto root = item;
 		while (const auto parent = root->parent ())
