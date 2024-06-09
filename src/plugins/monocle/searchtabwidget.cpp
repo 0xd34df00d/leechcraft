@@ -12,39 +12,42 @@
 #include <util/sll/qtutil.h>
 #include "textsearchhandler.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	namespace
 	{
-		enum class SearchModelRole
+		enum class SearchModelRole : std::uint16_t
 		{
 			PageFirstIdx = Qt::UserRole + 1,
 			OverallIdx
 		};
 	}
 
-	SearchTabWidget::SearchTabWidget (TextSearchHandler *handler, QWidget *parent)
+	SearchTabWidget::SearchTabWidget (TextSearchHandler& handler, QWidget *parent)
 	: QWidget { parent }
-	, Model_ { new QStandardItemModel { this } }
+	, Model_ { *new QStandardItemModel { this } }
 	, SearchHandler_ { handler }
 	{
 		Ui_.setupUi (this);
-		Ui_.ResultsTree_->setModel (Model_);
-		connect (handler,
-				SIGNAL (gotSearchResults (TextSearchHandlerResults)),
+		Ui_.ResultsTree_->setModel (&Model_);
+
+		connect (&handler,
+				&TextSearchHandler::gotSearchResults,
 				this,
-				SLOT (handleSearchResults (TextSearchHandlerResults)));
+				&SearchTabWidget::AddSearchResults);
+		connect (Ui_.ResultsTree_,
+				&QTreeView::activated,
+				this,
+				&SearchTabWidget::SetResultsFromHistory);
 	}
 
-	void SearchTabWidget::HandleDoc (const IDocument_ptr&)
+	void SearchTabWidget::Reset ()
 	{
-		Model_->clear ();
+		Model_.clear ();
 		Root2Results_.clear ();
 	}
 
-	void SearchTabWidget::handleSearchResults (const TextSearchHandlerResults& results)
+	void SearchTabWidget::AddSearchResults (const TextSearchHandlerResults& results)
 	{
 		if (std::all_of (results.Positions_.begin (), results.Positions_.end (),
 				[] (const auto& list) { return list.isEmpty (); }))
@@ -52,13 +55,12 @@ namespace Monocle
 
 		QList<QStandardItem*> pageItems;
 		int globalPosIdx = 0;
-		for (const auto& pair : Util::Stlize (results.Positions_))
+		for (const auto& [pageNum, posList] : Util::Stlize (results.Positions_))
 		{
-			const auto& posList = pair.second;
 			if (posList.isEmpty ())
 				continue;
 
-			const auto pageItem = new QStandardItem { tr ("Page %1").arg (pair.first + 1) };
+			const auto pageItem = new QStandardItem { tr ("Page %1").arg (pageNum + 1) };
 			pageItem->setData (globalPosIdx, static_cast<int> (SearchModelRole::PageFirstIdx));
 			pageItem->setEditable (false);
 			for (int i = 0; i < posList.size (); ++i, ++globalPosIdx)
@@ -81,7 +83,7 @@ namespace Monocle
 
 		Root2Results_ [searchItem] = results;
 
-		Model_->insertRow (0, searchItem);
+		Model_.insertRow (0, searchItem);
 		Ui_.ResultsTree_->expand (searchItem->index ());
 	}
 
@@ -101,9 +103,9 @@ namespace Monocle
 		}
 	}
 
-	void SearchTabWidget::on_ResultsTree__activated (const QModelIndex& index)
+	void SearchTabWidget::SetResultsFromHistory (const QModelIndex& index)
 	{
-		const auto item = Model_->itemFromIndex (index);
+		const auto item = Model_.itemFromIndex (index);
 
 		auto root = item;
 		while (const auto parent = root->parent ())
@@ -111,14 +113,11 @@ namespace Monocle
 
 		if (!Root2Results_.contains (root))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown root index for"
-					<< index;
+			qWarning () << "unknown root index for" << index;
 			return;
 		}
 
 		const auto results = Root2Results_.value (root);
-		SearchHandler_->SetPreparedResults (results, GetPosIdx (item));
+		SearchHandler_.SetPreparedResults (results, GetPosIdx (item));
 	}
-}
 }

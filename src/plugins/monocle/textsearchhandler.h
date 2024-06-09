@@ -17,6 +17,7 @@ class QGraphicsRectItem;
 
 namespace LC::Monocle
 {
+	class ISearchableDocument;
 	class PageGraphicsItem;
 
 	struct TextSearchHandlerResults
@@ -30,7 +31,7 @@ namespace LC::Monocle
 	{
 		Q_OBJECT
 
-		IDocument_ptr Doc_;
+		ISearchableDocument *SearchableDoc_;
 		QVector<PageGraphicsItem*> Pages_;
 
 		QString CurrentSearchString_;
@@ -40,7 +41,7 @@ namespace LC::Monocle
 	public:
 		using QObject::QObject;
 
-		void HandleDoc (const IDocument_ptr&, const QVector<PageGraphicsItem*>&);
+		void HandleDoc (IDocument&, const QVector<PageGraphicsItem*>&);
 
 		bool Search (const QString&, Util::FindNotification::FindFlags);
 		void SetPreparedResults (const TextSearchHandlerResults&, int selectedItem);

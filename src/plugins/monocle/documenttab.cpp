@@ -146,7 +146,7 @@ namespace Monocle
 				&SmoothScroller::SmoothCenterOn);
 		AnnWidget_ = new AnnWidget (AnnManager_);
 
-		SearchTabWidget_ = new SearchTabWidget (SearchHandler_);
+		SearchTabWidget_ = new SearchTabWidget { *SearchHandler_ };
 
 		FindDialog_ = new FindDialog (SearchHandler_, Ui_.PagesView_);
 		FindDialog_->hide ();
@@ -873,7 +873,7 @@ namespace Monocle
 		}
 
 		LayoutManager_->HandleDoc (CurrentDoc_.get (), Pages_);
-		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
+		SearchHandler_->HandleDoc (*CurrentDoc_, Pages_);
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
 		AnnManager_->HandleDoc (*CurrentDoc_, Pages_);
 		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
@@ -909,7 +909,7 @@ namespace Monocle
 
 		DocBMManager_.HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
-		SearchTabWidget_->HandleDoc (CurrentDoc_);
+		SearchTabWidget_->Reset ();
 
 		if (const auto ihoc = qobject_cast<IHaveOptionalContent*> (docObj))
 			OptContentsWidget_->setModel (ihoc->GetOptContentModel ());

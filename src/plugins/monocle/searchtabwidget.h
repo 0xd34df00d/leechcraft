@@ -15,15 +15,10 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class TextSearchHandler;
 	struct TextSearchHandlerResults;
-
-	class IDocument;
-	typedef std::shared_ptr<IDocument> IDocument_ptr;
 
 	class SearchTabWidget : public QWidget
 	{
@@ -31,17 +26,16 @@ namespace Monocle
 
 		Ui::SearchTabWidget Ui_;
 
-		QStandardItemModel * const Model_;
-		TextSearchHandler * const SearchHandler_;
+		QStandardItemModel& Model_;
+		TextSearchHandler& SearchHandler_;
 
 		QMap<QStandardItem*, TextSearchHandlerResults> Root2Results_;
 	public:
-		SearchTabWidget (TextSearchHandler*, QWidget* = nullptr);
+		explicit SearchTabWidget (TextSearchHandler&, QWidget* = nullptr);
 
-		void HandleDoc (const IDocument_ptr&);
-	private slots:
-		void handleSearchResults (const TextSearchHandlerResults&);
-		void on_ResultsTree__activated (const QModelIndex&);
+		void Reset ();
+	private:
+		void AddSearchResults (const TextSearchHandlerResults&);
+		void SetResultsFromHistory (const QModelIndex&);
 	};
-}
 }

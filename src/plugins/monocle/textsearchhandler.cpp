@@ -16,19 +16,19 @@
 
 namespace LC::Monocle
 {
-	void TextSearchHandler::HandleDoc (const IDocument_ptr& doc, const QVector<PageGraphicsItem*>& pages)
+	void TextSearchHandler::HandleDoc (IDocument& doc, const QVector<PageGraphicsItem*>& pages)
 	{
-		Doc_ = doc;
-		Pages_ = pages;
-
 		CurrentHighlights_.clear ();
 		CurrentRectIndex_ = -1;
 		CurrentSearchString_.clear ();
+		Pages_ = pages;
+
+		SearchableDoc_ = qobject_cast<ISearchableDocument*> (doc.GetQObject ());
 	}
 
 	bool TextSearchHandler::Search (const QString& text, Util::FindNotification::FindFlags flags)
 	{
-		if (!Doc_)
+		if (!SearchableDoc_)
 			return false;
 
 		if (text != CurrentSearchString_)
@@ -80,16 +80,15 @@ namespace LC::Monocle
 	bool TextSearchHandler::RequestSearch (const QString& text, Util::FindNotification::FindFlags flags)
 	{
 		ClearHighlights ();
-		CurrentSearchString_ = text;
 
-		const auto searchable = qobject_cast<ISearchableDocument*> (Doc_->GetQObject ());
-		if (!searchable)
+		if (!SearchableDoc_)
 			return false;
 
+		CurrentSearchString_ = text;
 		const auto cs = flags & Util::FindNotification::FindCaseSensitively ?
 				Qt::CaseSensitive :
 				Qt::CaseInsensitive;
-		const auto& map = searchable->GetTextPositions (text, cs);
+		const auto& map = SearchableDoc_->GetTextPositions (text, cs);
 		emit gotSearchResults ({ text, flags, map });
 
 		BuildHighlights (map);
