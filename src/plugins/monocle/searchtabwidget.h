@@ -22,7 +22,7 @@ namespace LC::Monocle
 
 	class SearchTabWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::SearchTabWidget)
 
 		Ui::SearchTabWidget Ui_;
 
