@@ -13,7 +13,6 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QMessageBox>
-#include <QDockWidget>
 #include <QtDebug>
 #include <QMimeData>
 #include <QDragMoveEvent>
@@ -38,15 +37,14 @@
 #include "interfaces/monocle/isearchabledocument.h"
 #include "interfaces/monocle/isupportpainting.h"
 #include "interfaces/monocle/iknowfileextensions.h"
-#include "interfaces/monocle/ihaveoptionalcontent.h"
 #include "util/monocle/documentsignals.h"
 #include "components/actions/export.h"
 #include "components/actions/rotatemenu.h"
 #include "components/actions/zoomer.h"
+#include "components/gui/dock.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
-#include "tocwidget.h"
 #include "presenterwidget.h"
 #include "recentlyopenedmanager.h"
 #include "common.h"
@@ -55,15 +53,11 @@
 #include "xmlsettingsmanager.h"
 #include "bookmarkswidget.h"
 #include "pageslayoutmanager.h"
-#include "thumbswidget.h"
 #include "textsearchhandler.h"
 #include "formmanager.h"
 #include "annmanager.h"
 #include "linksmanager.h"
-#include "annwidget.h"
 #include "coreloadproxy.h"
-#include "core.h"
-#include "searchtabwidget.h"
 #include "documentbookmarksmanager.h"
 #include "pagenumlabel.h"
 #include "smoothscroller.h"
@@ -75,17 +69,17 @@ namespace Monocle
 {
 	class FindDialog final : public Util::FindNotification
 	{
-		TextSearchHandler * const SearchHandler_;
+		TextSearchHandler& SearchHandler_;
 	public:
-		FindDialog (TextSearchHandler *searchHandler, QWidget *parent)
-		: Util::FindNotification (Core::Instance ().GetProxy (), parent)
-		, SearchHandler_ (searchHandler)
+		FindDialog (TextSearchHandler& searchHandler, QWidget *parent)
+		: Util::FindNotification { GetProxyHolder (), parent }
+		, SearchHandler_ { searchHandler }
 		{
 		}
 	protected:
 		void HandleNext (const QString& text, FindFlags flags) override
 		{
-			SetSuccessful (SearchHandler_->Search (text, flags));
+			SetSuccessful (SearchHandler_.Search (text, flags));
 		}
 	};
 
@@ -93,12 +87,15 @@ namespace Monocle
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
+	, AnnManager_ { *new AnnManager { *this } }
 	, DocBMManager_ { *new DocumentBookmarksManager { this, this } }
-	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
-	, TOCWidget_ (new TOCWidget ())
-	, BMWidget_ (new BookmarksWidget (DocBMManager_))
-	, ThumbsWidget_ (new ThumbsWidget ())
-	, OptContentsWidget_ (new QTreeView)
+	, SearchHandler_ { *new TextSearchHandler { this } }
+	, DockWidget_ { new Dock { {
+		.DocTab_ = *this,
+		.AnnotationsMgr_ = AnnManager_,
+		.BookmarksMgr_ = DocBMManager_,
+		.SearchHandler_ = SearchHandler_
+	} } }
 	, NavHistory_ (new NavigationHistory { *this })
 	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_->GetCurrentScale (); }) }
 	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
@@ -127,8 +124,7 @@ namespace Monocle
 				});
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, Scroller_, this);
-		SearchHandler_ = new TextSearchHandler (this);
-		connect (SearchHandler_,
+		connect (&SearchHandler_,
 				&TextSearchHandler::navigateRequested,
 				this,
 				qOverload<const NavigationAction&> (&DocumentTab::Navigate));
@@ -137,75 +133,22 @@ namespace Monocle
 				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
 
 		FormManager_ = new FormManager (Ui_.PagesView_, *this);
-		AnnManager_ = new AnnManager (*this);
 		LinksManager_ = new LinksManager (*this);
 
-		connect (AnnManager_,
+		connect (&AnnManager_,
 				&AnnManager::navigationRequested,
 				Scroller_,
 				&SmoothScroller::SmoothCenterOn);
-		AnnWidget_ = new AnnWidget (AnnManager_);
 
-		SearchTabWidget_ = new SearchTabWidget { *SearchHandler_ };
-
-		FindDialog_ = new FindDialog (SearchHandler_, Ui_.PagesView_);
+		FindDialog_ = new FindDialog { SearchHandler_, Ui_.PagesView_ };
 		FindDialog_->hide ();
 
 		SetupToolbar ();
 
 		new FileWatcher (this);
 
-		const auto mgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
-		const auto& tocIcon = mgr->GetIcon ("view-table-of-contents-ltr");
-
-		auto dockTabWidget = new QTabWidget;
-		dockTabWidget->setTabPosition (QTabWidget::West);
-		dockTabWidget->addTab (TOCWidget_, tocIcon, tr ("Table of contents"));
-		dockTabWidget->addTab (BMWidget_, mgr->GetIcon ("favorites"), tr ("Bookmarks"));
-		dockTabWidget->addTab (ThumbsWidget_, mgr->GetIcon ("view-preview"), tr ("Thumbnails"));
-		dockTabWidget->addTab (AnnWidget_, mgr->GetIcon ("view-pim-notes"), tr ("Annotations"));
-		dockTabWidget->addTab (SearchTabWidget_, mgr->GetIcon ("edit-find"), tr ("Search"));
-		dockTabWidget->addTab (OptContentsWidget_, mgr->GetIcon ("configure"), tr ("Optional contents"));
-
-		connect (AnnManager_,
-				&AnnManager::annotationSelected,
-				[this, dockTabWidget] { dockTabWidget->setCurrentWidget (AnnWidget_); });
-
-		connect (ThumbsWidget_,
-				&ThumbsWidget::pageClicked,
-				[this] (int num) { SetCurrentPage (num); });
-
-		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
-		DockWidget_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-		DockWidget_->setWidget (dockTabWidget);
-
-		DockWidget_->setWindowIcon (tocIcon);
-		DockWidget_->toggleViewAction ()->setIcon (tocIcon);
-
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockWidget_->toggleViewAction ());
-
-		auto dwa = static_cast<Qt::DockWidgetArea> (XmlSettingsManager::Instance ()
-				.Property ("DockWidgetArea", Qt::RightDockWidgetArea).toInt ());
-		if (dwa == Qt::NoDockWidgetArea)
-			dwa = Qt::RightDockWidgetArea;
-
-		auto mw = Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
-		mw->AddDockWidget (DockWidget_, { .Area_ = dwa, .SizeContext_ = "MonocleDockWidget" });
-		mw->AssociateDockWidget (DockWidget_, this);
-		mw->ToggleViewActionVisiblity (DockWidget_, false);
-		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
-			mw->SetDockWidgetVisibility (DockWidget_, false);
-		connect (DockWidget_,
-				&QDockWidget::dockLocationChanged,
-				[] (Qt::DockWidgetArea area)
-				{
-					if (area != Qt::AllDockWidgetAreas && area != Qt::NoDockWidgetArea)
-						XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
-				});
-		connect (DockWidget_,
-				&QDockWidget::visibilityChanged,
-				[] (bool visible) { XmlSettingsManager::Instance ().setProperty ("DockWidgetVisible", visible); });
 
 		connect (this,
 				&DocumentTab::currentPageChanged,
@@ -226,23 +169,6 @@ namespace Monocle
 				&DocumentTab::currentPageChanged,
 				this,
 				&DocumentTab::scheduleSaveState);
-
-		connect (this,
-				SIGNAL (currentPageChanged (int)),
-				ThumbsWidget_,
-				SLOT (handleCurrentPage (int)));
-		connect (this,
-				&DocumentTab::currentPageChanged,
-				TOCWidget_,
-				&TOCWidget::SetCurrentPage);
-		connect (TOCWidget_,
-				&TOCWidget::navigationRequested,
-				this,
-				qOverload<const NavigationAction&> (&DocumentTab::Navigate));
-		connect (this,
-				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
-				ThumbsWidget_,
-				SLOT (updatePagesVisibility (QMap<int, QRect>)));
 	}
 
 	DocumentTab::~DocumentTab () = default;
@@ -292,9 +218,6 @@ namespace Monocle
 
 		Scene_.clear ();
 
-		delete TOCWidget_;
-		delete BMWidget_;
-		delete ThumbsWidget_;
 		delete DockWidget_->widget ();
 		delete DockWidget_;
 
@@ -873,9 +796,9 @@ namespace Monocle
 		}
 
 		LayoutManager_->HandleDoc (CurrentDoc_.get (), Pages_);
-		SearchHandler_->HandleDoc (*CurrentDoc_, Pages_);
+		SearchHandler_.HandleDoc (*CurrentDoc_, Pages_);
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
-		AnnManager_->HandleDoc (*CurrentDoc_, Pages_);
+		AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
 		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
 		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
@@ -887,9 +810,6 @@ namespace Monocle
 		CheckCurrentPageChange ();
 
 		auto docObj = CurrentDoc_->GetQObject ();
-
-		auto toc = qobject_cast<IHaveTOC*> (docObj);
-		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
 		if (const auto docSignals = CurrentDoc_->GetDocumentSignals ())
 		{
@@ -908,13 +828,6 @@ namespace Monocle
 		emit tabRecoverDataChanged ();
 
 		DocBMManager_.HandleDoc (CurrentDoc_);
-		ThumbsWidget_->HandleDoc (CurrentDoc_);
-		SearchTabWidget_->Reset ();
-
-		if (const auto ihoc = qobject_cast<IHaveOptionalContent*> (docObj))
-			OptContentsWidget_->setModel (ihoc->GetOptContentModel ());
-		else
-			OptContentsWidget_->setModel (nullptr);
 
 		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
 

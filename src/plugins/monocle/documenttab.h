@@ -21,7 +21,6 @@
 #include "common.h"
 #include "ui_documenttab.h"
 
-class QDockWidget;
 class QTreeView;
 class QMenu;
 
@@ -32,19 +31,15 @@ namespace Monocle
 	class PagesLayoutManager;
 	class PageGraphicsItem;
 	class TextSearchHandler;
-	class TOCWidget;
-	class BookmarksWidget;
-	class ThumbsWidget;
-	class AnnWidget;
 	class FindDialog;
 	class FormManager;
 	class LinksManager;
 	class AnnManager;
-	class SearchTabWidget;
 	class DocumentBookmarksManager;
 	class PageNumLabel;
 	class SmoothScroller;
 	class Zoomer;
+	class Dock;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -75,19 +70,13 @@ namespace Monocle
 		SmoothScroller *Scroller_ = nullptr;
 
 		PagesLayoutManager *LayoutManager_ = nullptr;
-		TextSearchHandler *SearchHandler_ = nullptr;
 		FormManager *FormManager_ = nullptr;
-		AnnManager *AnnManager_ = nullptr;
 		LinksManager *LinksManager_ = nullptr;
+		AnnManager& AnnManager_;
 		DocumentBookmarksManager& DocBMManager_;
+		TextSearchHandler& SearchHandler_;
 
-		QDockWidget *DockWidget_ = nullptr;
-		TOCWidget *TOCWidget_ = nullptr;
-		BookmarksWidget *BMWidget_ = nullptr;
-		ThumbsWidget *ThumbsWidget_ = nullptr;
-		AnnWidget *AnnWidget_ = nullptr;
-		SearchTabWidget *SearchTabWidget_ = nullptr;
-		QTreeView *OptContentsWidget_ = nullptr;
+		Dock *DockWidget_ = nullptr;
 
 		NavigationHistory * const NavHistory_;
 
