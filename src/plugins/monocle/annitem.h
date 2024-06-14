@@ -33,6 +33,8 @@ namespace Monocle
 	public:
 		AnnBaseItem (const IAnnotation_ptr&);
 
+		virtual ~AnnBaseItem () = default;
+
 		QGraphicsItem* GetItem ();
 		void SetHandler (const Handler_f&);
 
