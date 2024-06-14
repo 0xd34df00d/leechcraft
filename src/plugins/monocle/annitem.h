@@ -15,25 +15,28 @@
 #include "interfaces/monocle/iannotation.h"
 #include "linkitem.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
 
 	class AnnBaseItem
 	{
 	public:
-		typedef std::function<void (IAnnotation_ptr)> Handler_f;
+		using Handler_f = std::function<void (IAnnotation_ptr)>;
 	protected:
 		const IAnnotation_ptr BaseAnn_;
 		Handler_f Handler_;
 
 		bool IsSelected_ = false;
 	public:
-		AnnBaseItem (const IAnnotation_ptr&);
+		AnnBaseItem (IAnnotation_ptr);
 
 		virtual ~AnnBaseItem () = default;
+
+		AnnBaseItem (const AnnBaseItem&) = delete;
+		AnnBaseItem (AnnBaseItem&&) = delete;
+		AnnBaseItem& operator= (const AnnBaseItem&) = delete;
+		AnnBaseItem& operator= (AnnBaseItem&&) = delete;
 
 		QGraphicsItem* GetItem ();
 		void SetHandler (const Handler_f&);
@@ -43,8 +46,8 @@ namespace Monocle
 
 		virtual void UpdateRect (QRectF rect) = 0;
 	protected:
-		QPen GetPen (bool selected) const;
-		QBrush GetBrush (bool selected) const;
+		static QPen GetPen (bool selected);
+		static QBrush GetBrush (bool selected);
 	};
 
 	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*, DocumentTab&);
@@ -62,14 +65,14 @@ namespace Monocle
 		{
 		}
 	protected:
-		void mousePressEvent (QGraphicsSceneMouseEvent *event)
+		void mousePressEvent (QGraphicsSceneMouseEvent *event) override
 		{
 			PressedPos_ = event->pos ();
 			T::mousePressEvent (event);
 			event->accept ();
 		}
 
-		void mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
+		void mouseReleaseEvent (QGraphicsSceneMouseEvent *event) override
 		{
 			if (Handler_ &&
 					(event->pos () - PressedPos_).manhattanLength () < 4)
@@ -85,7 +88,7 @@ namespace Monocle
 	public:
 		using AnnBaseGraphicsItem<T>::AnnBaseGraphicsItem;
 
-		void SetSelected (bool selected)
+		void SetSelected (bool selected) override
 		{
 			AnnBaseItem::SetSelected (selected);
 
@@ -93,7 +96,7 @@ namespace Monocle
 			this->setBrush (this->GetBrush (selected));
 		}
 
-		void UpdateRect (QRectF rect)
+		void UpdateRect (QRectF rect) override
 		{
 			this->setPos (rect.topLeft ());
 			this->setRect (0, 0, rect.width (), rect.height ());
@@ -119,9 +122,9 @@ namespace Monocle
 	public:
 		HighAnnItem (const IHighlightAnnotation_ptr&, QGraphicsItem*);
 
-		void SetSelected (bool);
+		void SetSelected (bool) override;
 
-		void UpdateRect (QRectF rect);
+		void UpdateRect (QRectF rect) override;
 	private:
 		static QList<PolyData> ToPolyData (const QList<QPolygonF>&);
 	};
@@ -137,5 +140,4 @@ namespace Monocle
 	public:
 		using AnnRectGraphicsItem<QGraphicsRectItem>::AnnRectGraphicsItem;
 	};
-}
 }

@@ -12,12 +12,10 @@
 #include <QTimer>
 #include <QtDebug>
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
-	AnnBaseItem::AnnBaseItem (const IAnnotation_ptr& ann)
-	: BaseAnn_ { ann }
+	AnnBaseItem::AnnBaseItem (IAnnotation_ptr ann)
+	: BaseAnn_ { std::move (ann) }
 	{
 		QTimer::singleShot (0, [this] { SetSelected (false); });
 	}
@@ -42,12 +40,12 @@ namespace Monocle
 		IsSelected_ = selected;
 	}
 
-	QPen AnnBaseItem::GetPen (bool selected) const
+	QPen AnnBaseItem::GetPen (bool selected)
 	{
 		return selected ? QPen { QColor { 255, 93, 0 }, 2 } : Qt::NoPen;
 	}
 
-	QBrush AnnBaseItem::GetBrush (bool selected) const
+	QBrush AnnBaseItem::GetBrush (bool selected)
 	{
 		return QBrush { selected ? QColor { 255, 213, 0, 64 } : QColor { 255, 213, 0, 32 } };
 	}
@@ -65,18 +63,11 @@ namespace Monocle
 		case AnnotationType::Caret:
 			return new CaretAnnItem (std::dynamic_pointer_cast<ICaretAnnotation> (ann), parent);
 		case AnnotationType::Other:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown annotation type with contents"
-					<< ann->GetText ();
+			qWarning () << "unknown annotation type with contents" << ann->GetText ();
 			return nullptr;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unhandled annotation type "
-				<< static_cast<int> (ann->GetAnnotationType ())
-				<< "with contents"
-				<< ann->GetText ();
-
+		qWarning () << "unhandled annotation type" << static_cast<int> (ann->GetAnnotationType ()) << ann->GetText ();
 		return nullptr;
 	}
 
@@ -137,5 +128,4 @@ namespace Monocle
 	: AnnRectGraphicsItem { ann, ann->GetLink (), item, docTab }
 	{
 	}
-}
 }
