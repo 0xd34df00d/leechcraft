@@ -99,7 +99,7 @@ namespace LC::Monocle
 		}
 	}
 
-	void HighAnnItem::UpdateRect (QRectF rect)
+	void HighAnnItem::UpdateRect (const QRectF& rect)
 	{
 		setPos (rect.topLeft ());
 
