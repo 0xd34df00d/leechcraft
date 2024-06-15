@@ -322,7 +322,6 @@ namespace LC::Monocle
 
 		Scene_->setSceneRect (Scene_->itemsBoundingRect ().adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
 
-		SetCurrentPage (std::max (pageWas, 0), true);
 		if (pageWas >= 0)
 		{
 			const auto& bounding = pageObj->boundingRect ();
