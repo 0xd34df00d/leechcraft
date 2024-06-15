@@ -44,7 +44,7 @@ namespace LC::Monocle
 	, Toc_ { *new TOCWidget }
 	, Bookmarks_ { *new BookmarksWidget { deps.BookmarksMgr_ } }
 	, Thumbnails_ { *new ThumbsWidget {} }
-	, Annotations_ { *new AnnWidget { &deps.AnnotationsMgr_ } }
+	, Annotations_ { *new AnnWidget { deps.AnnotationsMgr_ } }
 	, Search_ { *new SearchTabWidget { deps.SearchHandler_ } }
 	, OptionalContents_ { *new QTreeView }
 	{

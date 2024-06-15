@@ -11,30 +11,34 @@
 #include <QClipboard>
 #include <QToolBar>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "annmanager.h"
 #include "anntreedelegate.h"
 #include "core.h"
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
-	AnnWidget::AnnWidget (AnnManager *mgr, QWidget *parent)
+	AnnWidget::AnnWidget (AnnManager& mgr, QWidget *parent)
 	: QWidget { parent }
 	, Mgr_ { mgr }
 	{
 		Ui_.setupUi (this);
 
+		connect (Ui_.AnnTree_,
+				&QTreeView::customContextMenuRequested,
+				this,
+				&AnnWidget::ShowContextMenu);
+
 		const auto sm = Core::Instance ().GetShortcutManager ();
 		auto toolbar = new QToolBar;
 		auto prevAct = toolbar->addAction (tr ("Previous annotation"),
-				mgr, SLOT (selectPrev ()));
+				&mgr, &AnnManager::selectPrev);
 		prevAct->setProperty ("ActionIcon", "go-previous");
 		sm->RegisterAction ("org.LeechCraft.Monocle.PrevAnn", prevAct);
 
 		auto nextAct = toolbar->addAction (tr ("Next annotation"),
-				mgr, SLOT (selectNext ()));
+				&mgr, &AnnManager::selectNext);
 		nextAct->setProperty ("ActionIcon", "go-next");
 		sm->RegisterAction ("org.LeechCraft.Monocle.NextAnn", nextAct);
 
@@ -42,39 +46,38 @@ namespace Monocle
 		Ui_.AnnWidgetLayout_->insertWidget (treeIdx, toolbar);
 
 		Ui_.AnnTree_->setItemDelegate (new AnnTreeDelegate { Ui_.AnnTree_, this });
-		Ui_.AnnTree_->setModel (Mgr_->GetModel ());
+		Ui_.AnnTree_->setModel (Mgr_.GetModel ());
 
-		connect (Mgr_,
-				SIGNAL (annotationSelected (QModelIndex)),
+		connect (&Mgr_,
+				&AnnManager::annotationSelected,
 				this,
-				SLOT (focusOnAnnotation (QModelIndex)));
+				&AnnWidget::FocusOnAnnotation);
 		connect (Ui_.AnnTree_,
-				SIGNAL (activated (QModelIndex)),
-				Mgr_,
-				SLOT (selectAnnotation (QModelIndex)));
+				&QTreeView::activated,
+				&Mgr_,
+				&AnnManager::selectAnnotation);
 	}
 
-	void AnnWidget::on_AnnTree__customContextMenuRequested (const QPoint& point)
+	void AnnWidget::ShowContextMenu (QPoint point)
 	{
 		const auto& idx = Ui_.AnnTree_->indexAt (point);
-		if (!idx.isValid () ||
-				idx.data (AnnManager::Role::ItemType).toInt () == AnnManager::ItemTypes::PageItem)
+		if (!idx.isValid () || idx.data (AnnManager::Role::ItemType).toInt () == AnnManager::ItemTypes::PageItem)
 			return;
 
-		const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
 
 		QMenu menu;
-		menu.addAction (itm->GetIcon ("edit-copy"),
+		menu.addAction (itm->GetIcon ("edit-copy"_qs),
 				tr ("Copy annotation text"),
 				[&idx]
 				{
 					const auto& ann = idx.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();
-					qApp->clipboard ()->setText (ann->GetText ());
+					qGuiApp->clipboard ()->setText (ann->GetText ());
 				});
 		menu.exec (Ui_.AnnTree_->viewport ()->mapToGlobal (point));
 	}
 
-	void AnnWidget::focusOnAnnotation (const QModelIndex& index)
+	void AnnWidget::FocusOnAnnotation (const QModelIndex& index)
 	{
 		QList<QModelIndex> expandList;
 		auto parent = index.parent ();
@@ -90,5 +93,4 @@ namespace Monocle
 		Ui_.AnnTree_->setCurrentIndex (index);
 		Ui_.AnnTree_->selectionModel ()->select (index, QItemSelectionModel::SelectCurrent);
 	}
-}
 }

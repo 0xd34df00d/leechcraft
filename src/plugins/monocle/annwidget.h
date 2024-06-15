@@ -9,25 +9,23 @@
 #pragma once
 
 #include <QWidget>
+#include <QCoreApplication>
 #include "ui_annwidget.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class AnnManager;
 
 	class AnnWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::AnnWidget)
 
 		Ui::AnnWidget Ui_;
-		AnnManager * const Mgr_;
+		AnnManager& Mgr_;
 	public:
-		AnnWidget (AnnManager*, QWidget* = nullptr);
-	private slots:
-		void on_AnnTree__customContextMenuRequested (const QPoint&);
-		void focusOnAnnotation (const QModelIndex&);
+		explicit AnnWidget (AnnManager&, QWidget* = nullptr);
+	private:
+		void ShowContextMenu (QPoint);
+		void FocusOnAnnotation (const QModelIndex&);
 	};
-}
 }
