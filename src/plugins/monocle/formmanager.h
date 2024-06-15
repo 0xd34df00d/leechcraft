@@ -14,60 +14,30 @@
 
 class QGraphicsView;
 class QGraphicsScene;
-class QLineEdit;
-class QTextEdit;
-class QComboBox;
-class QTreeWidget;
-class QCheckBox;
-class QRadioButton;
-class QPushButton;
 class QButtonGroup;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	struct LinkExecutionContext;
 	class PageGraphicsItem;
+
+	class IDocument;
 	class IFormField;
-	class IFormFieldText;
-	class IFormFieldChoice;
 	class IFormFieldButton;
 
 	class FormManager : public QObject
 	{
-		Q_OBJECT
-
 		LinkExecutionContext& ExecutionContext_;
 		QGraphicsScene * const Scene_;
 
-		QHash<QLineEdit*, std::shared_ptr<IFormFieldText>> Line2Field_;
-		QHash<QTextEdit*, std::shared_ptr<IFormFieldText>> Multiline2Field_;
-		QHash<QComboBox*, std::shared_ptr<IFormFieldChoice>> Combo2Field_;
-		QHash<QTreeWidget*, std::shared_ptr<IFormFieldChoice>> List2Field_;
-		QHash<QCheckBox*, std::shared_ptr<IFormFieldButton>> Check2Field_;
-		QHash<QRadioButton*, std::shared_ptr<IFormFieldButton>> Radio2Field_;
-		QHash<QPushButton*, std::shared_ptr<IFormFieldButton>> Button2Field_;
-
 		QHash<QList<int>, QButtonGroup*> RadioGroups_;
 	public:
-		FormManager (QGraphicsView*, LinkExecutionContext&);
+		explicit FormManager (QGraphicsView*, LinkExecutionContext&);
 
-		void HandleDoc (IDocument_ptr, const QVector<PageGraphicsItem*>&);
+		void HandleDoc (IDocument&, const QVector<PageGraphicsItem*>&);
 	private:
-		QGraphicsProxyWidget* AddTextField (std::shared_ptr<IFormField>);
-		QGraphicsProxyWidget* AddChoiceField (std::shared_ptr<IFormField>);
-		QGraphicsProxyWidget* AddButtonField (std::shared_ptr<IFormField>);
-	private slots:
-		void handleLineEditChanged (const QString&);
-		void handleTextEditChanged ();
-
-		void handleComboChanged ();
-		void handleListChanged ();
-
-		void handleCheckboxChanged ();
-		void handleRadioChanged ();
-		void handleButtonReleased ();
+		QGraphicsProxyWidget* AddTextField (const std::shared_ptr<IFormField>&);
+		QGraphicsProxyWidget* AddChoiceField (const std::shared_ptr<IFormField>&);
+		QGraphicsProxyWidget* AddButtonField (const std::shared_ptr<IFormField>&);
 	};
-}
 }

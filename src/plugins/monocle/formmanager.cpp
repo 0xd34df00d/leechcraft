@@ -12,7 +12,6 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QComboBox>
-#include <QAbstractItemView>
 #include <QTreeWidget>
 #include <QCheckBox>
 #include <QPushButton>
@@ -24,9 +23,7 @@
 #include "linkactionexecutor.h"
 #include "pagegraphicsitem.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	FormManager::FormManager (QGraphicsView *view, LinkExecutionContext& ec)
 	: QObject { view }
@@ -35,27 +32,19 @@ namespace Monocle
 	{
 	}
 
-	void FormManager::HandleDoc (IDocument_ptr doc, const QVector<PageGraphicsItem*>& pages)
+	void FormManager::HandleDoc (IDocument& doc, const QVector<PageGraphicsItem*>& pages)
 	{
-		Line2Field_.clear ();
-		Multiline2Field_.clear ();
-		Combo2Field_.clear ();
-		List2Field_.clear ();
-		Check2Field_.clear ();
-		Radio2Field_.clear ();
-		Button2Field_.clear ();
-
-		qDeleteAll (RadioGroups_.values ());
+		qDeleteAll (RadioGroups_);
 		RadioGroups_.clear ();
 
-		auto formsDoc = dynamic_cast<ISupportForms*> (doc.get ());
+		auto formsDoc = dynamic_cast<ISupportForms*> (&doc);
 		if (!formsDoc)
 			return;
 
 		for (auto page : pages)
-			for (auto field : formsDoc->GetFormFields (page->GetPageNum ()))
+			for (const auto& field : formsDoc->GetFormFields (page->GetPageNum ()))
 			{
-				QGraphicsProxyWidget *proxy = 0;
+				QGraphicsProxyWidget *proxy = nullptr;
 				switch (field->GetType ())
 				{
 				case FormType::Text:
@@ -83,14 +72,14 @@ namespace Monocle
 			}
 	}
 
-	QGraphicsProxyWidget* FormManager::AddTextField (std::shared_ptr<IFormField> baseField)
+	QGraphicsProxyWidget* FormManager::AddTextField (const std::shared_ptr<IFormField>& baseField)
 	{
 		const auto field = std::dynamic_pointer_cast<IFormFieldText> (baseField);
 		switch (field->GetTextType ())
 		{
 		case IFormFieldText::Type::SingleLine:
 		{
-			auto edit = new QLineEdit ();
+			auto edit = new QLineEdit;
 			edit->setText (field->GetText ());
 			if (field->IsPassword ())
 				edit->setEchoMode (QLineEdit::Password);
@@ -98,39 +87,34 @@ namespace Monocle
 				edit->setMaxLength (field->GetMaximumLength ());
 			edit->setAlignment (baseField->GetAlignment ());
 
-			Line2Field_ [edit] = field;
 			connect (edit,
-					SIGNAL (textChanged (QString)),
+					&QLineEdit::textChanged,
 					this,
-					SLOT (handleLineEditChanged (QString)));
+					[field] (const QString& text) { field->SetText (text); });
 
 			return Scene_->addWidget (edit);
 		}
 		case IFormFieldText::Type::Multiline:
 		{
-			auto edit = new QTextEdit ();
+			auto edit = new QTextEdit;
 			edit->setText (field->GetText ());
 			edit->setAcceptRichText (field->IsRichText ());
 			edit->setAlignment (baseField->GetAlignment ());
 
-			Multiline2Field_ [edit] = field;
 			connect (edit,
-					SIGNAL (textChanged ()),
+					&QTextEdit::textChanged,
 					this,
-					SLOT (handleTextEditChanged ()));
+					[=] { field->SetText (edit->toPlainText ()); });
 
 			return Scene_->addWidget (edit);
 		}
 		case IFormFieldText::Type::File:
-			qWarning () << Q_FUNC_INFO
-					<< "unsupported File field type, please send the file to upstream";
-			return 0;
+			qWarning () << "unsupported File field type, please send the file to upstream";
+			return nullptr;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unsupported type";
-
-		return 0;
+		qWarning () << "unsupported type" << static_cast<int> (field->GetTextType ());
+		return nullptr;
 	}
 
 	namespace
@@ -141,13 +125,13 @@ namespace Monocle
 			double PrevOrder_;
 		public:
 			PopupZOrderFixer (QGraphicsProxyWidget *item)
-			: QObject (item)
-			, Item_ (item)
-			, PrevOrder_ (item->zValue ())
+			: QObject { item }
+			, Item_ { item }
+			, PrevOrder_ { item->zValue () }
 			{
 			}
 
-			bool eventFilter (QObject*, QEvent *event)
+			bool eventFilter (QObject*, QEvent *event) override
 			{
 				switch (event->type ())
 				{
@@ -166,14 +150,14 @@ namespace Monocle
 		};
 	}
 
-	QGraphicsProxyWidget* FormManager::AddChoiceField (std::shared_ptr<IFormField> baseField)
+	QGraphicsProxyWidget* FormManager::AddChoiceField (const std::shared_ptr<IFormField>& baseField)
 	{
 		const auto field = std::dynamic_pointer_cast<IFormFieldChoice> (baseField);
 		switch (field->GetChoiceType ())
 		{
 		case IFormFieldChoice::Type::Combobox:
 		{
-			auto edit = new QComboBox ();
+			auto edit = new QComboBox;
 			edit->setSizeAdjustPolicy (QComboBox::AdjustToContentsOnFirstShow);
 			edit->addItems (field->GetAllChoices ());
 			edit->setEditable (field->IsEditable ());
@@ -183,22 +167,27 @@ namespace Monocle
 			else if (!field->GetCurrentChoices ().isEmpty ())
 				edit->setCurrentIndex (field->GetCurrentChoices ().first ());
 
-			Combo2Field_ [edit] = field;
+			auto updateField = [=]
+			{
+				field->SetEditChoice (edit->currentText ());
+				if (const auto idx = edit->currentIndex (); idx >= 0)
+					field->SetCurrentChoices ({ idx });
+			};
 			connect (edit,
-					SIGNAL (currentIndexChanged (int)),
+					&QComboBox::currentIndexChanged,
 					this,
-					SLOT (handleComboChanged ()));
+					updateField);
 			connect (edit,
-					SIGNAL (editTextChanged (QString)),
+					&QComboBox::editTextChanged,
 					this,
-					SLOT (handleComboChanged ()));
+					updateField);
 
 			auto proxy = Scene_->addWidget (edit);
 			edit->view ()->installEventFilter (new PopupZOrderFixer (proxy));
 			return proxy;
 		}
 		case IFormFieldChoice::Type::ListBox:
-			auto edit = new QTreeWidget ();
+			auto edit = new QTreeWidget;
 			for (const auto& choice : field->GetAllChoices ())
 				edit->addTopLevelItem (new QTreeWidgetItem ({ choice }));
 
@@ -206,134 +195,78 @@ namespace Monocle
 			for (int i = 0; i < edit->topLevelItemCount (); ++i)
 				edit->topLevelItem (i)->setCheckState (0, current.contains (i) ? Qt::Checked : Qt::Unchecked);
 
-			List2Field_ [edit] = field;
 			connect (edit,
-					SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+					&QTreeWidget::itemChanged,
 					this,
-					SLOT (handleListChanged ()));
+					[=]
+					{
+						QList<int> choices;
+						for (int i = 0; i < edit->topLevelItemCount (); ++i)
+							if (edit->topLevelItem (i)->checkState (0) == Qt::Checked)
+								choices << i;
+						field->SetCurrentChoices (choices);
+					});
 
 			return Scene_->addWidget (edit);
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unsupported type";
-
+		qWarning () << "unsupported type" << static_cast<int> (field->GetChoiceType ());
 		return 0;
 	}
 
-	QGraphicsProxyWidget* FormManager::AddButtonField (std::shared_ptr<IFormField> baseField)
+	QGraphicsProxyWidget* FormManager::AddButtonField (const std::shared_ptr<IFormField>& baseField)
 	{
 		const auto field = std::dynamic_pointer_cast<IFormFieldButton> (baseField);
 		switch (field->GetButtonType ())
 		{
 		case IFormFieldButton::Type::Pushbutton:
 		{
-			auto button = new QPushButton ();
+			auto button = new QPushButton;
 			button->setText (field->GetCaption ());
-
-			Button2Field_ [button] = field;
 			connect (button,
-					SIGNAL (released ()),
+					&QPushButton::released,
 					this,
-					SLOT (handleButtonReleased ()));
+					[this, field] { ExecuteLinkAction (field->GetActivationAction (), ExecutionContext_); });
 
 			return Scene_->addWidget (button);
 		}
 		case IFormFieldButton::Type::Checkbox:
 		{
-			auto box = new QCheckBox ();
+			auto box = new QCheckBox;
 			box->setText (field->GetCaption ());
 			box->setCheckState (field->IsChecked () ? Qt::Checked : Qt::Unchecked);
 
-			Check2Field_ [box] = field;
 			connect (box,
-					SIGNAL (stateChanged (int)),
+					&QCheckBox::stateChanged,
 					this,
-					SLOT (handleCheckboxChanged ()));
+					[field] (int state) { field->SetChecked (state == Qt::Checked); });
 
 			return Scene_->addWidget (box);
 		}
 		case IFormFieldButton::Type::Radiobutton:
 		{
-			auto radio = new QRadioButton ();
+			auto radio = new QRadioButton;
 			radio->setText (field->GetCaption ());
 			radio->setChecked (field->IsChecked ());
 
-			const auto& groupID = field->GetButtonGroup ();
-			if (!groupID.isEmpty ())
+			if (const auto& groupID = field->GetButtonGroup ();
+				!groupID.isEmpty ())
 			{
 				if (!RadioGroups_.contains (groupID))
 					RadioGroups_ [groupID] = new QButtonGroup;
 				RadioGroups_ [groupID]->addButton (radio);
 			}
 
-			Radio2Field_ [radio] = field;
 			connect (radio,
-					SIGNAL (toggled (bool)),
+					&QRadioButton::toggled,
 					this,
-					SLOT (handleRadioChanged ()));
+					[field] (bool checked) { field->SetChecked (checked); });
 
 			return Scene_->addWidget (radio);
 		}
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unsupported type";
-
-		return 0;
+		qWarning () << "unsupported type" << static_cast<int> (field->GetButtonType ());
+		return nullptr;
 	}
-
-	void FormManager::handleLineEditChanged (const QString& text)
-	{
-		Line2Field_ [static_cast<QLineEdit*> (sender ())]->SetText (text);
-	}
-
-	void FormManager::handleTextEditChanged ()
-	{
-		auto edit = qobject_cast<QTextEdit*> (sender ());
-		Multiline2Field_ [edit]->SetText (edit->toPlainText ());
-	}
-
-	void FormManager::handleComboChanged ()
-	{
-		auto box = qobject_cast<QComboBox*> (sender ());
-		auto field = Combo2Field_ [box];
-
-		const auto& text = box->currentText ();
-		field->SetEditChoice (text);
-
-		if (box->currentIndex () >= 0)
-			field->SetCurrentChoices ({ box->currentIndex () });
-	}
-
-	void FormManager::handleListChanged ()
-	{
-		auto edit = qobject_cast<QTreeWidget*> (sender ());
-
-		QList<int> choices;
-		for (int i = 0; i < edit->topLevelItemCount (); ++i)
-			if (edit->topLevelItem (i)->checkState (0) == Qt::Checked)
-				choices << i;
-
-		List2Field_ [edit]->SetCurrentChoices (choices);
-	}
-
-	void FormManager::handleCheckboxChanged ()
-	{
-		auto box = qobject_cast<QCheckBox*> (sender ());
-		Check2Field_ [box]->SetChecked (box->checkState () == Qt::Checked);
-	}
-
-	void FormManager::handleRadioChanged ()
-	{
-		auto radio = qobject_cast<QRadioButton*> (sender ());
-		Radio2Field_ [radio]->SetChecked (radio->isChecked ());
-	}
-
-	void FormManager::handleButtonReleased ()
-	{
-		auto button = qobject_cast<QPushButton*> (sender ());
-		ExecuteLinkAction (Button2Field_ [button]->GetActivationAction (), ExecutionContext_);
-	}
-}
 }
