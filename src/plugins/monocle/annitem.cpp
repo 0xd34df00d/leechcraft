@@ -103,7 +103,7 @@ namespace LC::Monocle
 	{
 		setPos (rect.topLeft ());
 
-		if (!Bounding_.width () || !Bounding_.height ())
+		if (Bounding_.isEmpty ())
 			return;
 
 		const auto xScale = rect.width () / Bounding_.width ();
