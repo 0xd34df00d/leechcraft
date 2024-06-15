@@ -85,7 +85,7 @@ namespace Monocle
 		DocumentBookmarksManager& DocBMManager_;
 		TextSearchHandler& SearchHandler_;
 
-		Dock *DockWidget_ = nullptr;
+		std::unique_ptr<Dock> DockWidget_;
 
 		NavigationHistory * const NavHistory_;
 

@@ -106,12 +106,12 @@ namespace Monocle
 	, AnnManager_ { *new AnnManager { LinkExecutionContext_, this } }
 	, DocBMManager_ { *new DocumentBookmarksManager { this, this } }
 	, SearchHandler_ { *new TextSearchHandler { this } }
-	, DockWidget_ { new Dock { {
+	, DockWidget_ { std::make_unique<Dock> (Dock::Deps {
 		.DocTab_ = *this,
 		.AnnotationsMgr_ = AnnManager_,
 		.BookmarksMgr_ = DocBMManager_,
 		.SearchHandler_ = SearchHandler_
-	} } }
+		}) }
 	, NavHistory_ (new NavigationHistory { *this })
 	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_->GetCurrentScale (); }) }
 	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
@@ -228,12 +228,6 @@ namespace Monocle
 	void DocumentTab::Remove ()
 	{
 		emit removeTab ();
-
-		Scene_.clear ();
-
-		delete DockWidget_->widget ();
-		delete DockWidget_;
-
 		deleteLater ();
 	}
 
