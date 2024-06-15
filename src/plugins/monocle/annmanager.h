@@ -20,7 +20,7 @@ class QStandardItem;
 
 namespace LC::Monocle
 {
-	class DocumentTab;
+	struct LinkExecutionContext;
 	class PageGraphicsItem;
 	class AnnBaseItem;
 
@@ -28,14 +28,13 @@ namespace LC::Monocle
 	{
 		Q_OBJECT
 
-		DocumentTab& DocTab_;
-
-		QStandardItemModel * const AnnModel_;
 		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
-
 		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
 
 		QVector<IAnnotation_ptr> Annotations_;
+
+		QStandardItemModel * const AnnModel_;
+		LinkExecutionContext& ExecutionContext_;
 		int CurrentAnn_ = -1;
 	public:
 		enum Role : std::uint16_t
@@ -51,7 +50,7 @@ namespace LC::Monocle
 			AnnItem
 		};
 
-		explicit AnnManager (DocumentTab&);
+		explicit AnnManager (LinkExecutionContext&, QObject* = nullptr);
 
 		void HandleDoc (IDocument&, const QVector<PageGraphicsItem*>&);
 

@@ -15,21 +15,22 @@ namespace LC::Monocle
 {
 	class IDocument;
 	class PageGraphicsItem;
-	class DocumentTab;
+
+	struct LinkExecutionContext;
 
 	class LinkItem : public QGraphicsRectItem
 	{
-		DocumentTab& DocTab_;
+		LinkExecutionContext& ExecutionContext_;
 		const ILink_ptr Link_;
 
 		QPointF PressedPos_;
 	public:
-		LinkItem (const ILink_ptr&, QGraphicsItem*, DocumentTab&);
+		explicit LinkItem (const ILink_ptr&, QGraphicsItem*, LinkExecutionContext&);
 	protected:
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*) override;
 		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
 	};
 
-	void CreateLinksItems (DocumentTab&, IDocument&, const QVector<PageGraphicsItem*>&);
+	void CreateLinksItems (LinkExecutionContext&, IDocument&, const QVector<PageGraphicsItem*>&);
 }

@@ -14,7 +14,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/qtutil.h>
-#include "interfaces/monocle/idocument.h"
 #include "linkactionexecutor.h"
 #include "pagegraphicsitem.h"
 
@@ -35,9 +34,9 @@ namespace LC::Monocle
 		}
 	}
 
-	LinkItem::LinkItem (const ILink_ptr& link, QGraphicsItem *parent, DocumentTab& tab)
+	LinkItem::LinkItem (const ILink_ptr& link, QGraphicsItem *parent, LinkExecutionContext& ec)
 	: QGraphicsRectItem { parent }
-	, DocTab_ { tab }
+	, ExecutionContext_ { ec }
 	, Link_ { link }
 	{
 		setCursor (Qt::PointingHandCursor);
@@ -52,7 +51,7 @@ namespace LC::Monocle
 	void LinkItem::contextMenuEvent (QGraphicsSceneContextMenuEvent *event)
 	{
 		QMenu menu;
-		AddLinkMenuActions (Link_->GetLinkAction (), menu, DocTab_);
+		AddLinkMenuActions (Link_->GetLinkAction (), menu, ExecutionContext_);
 		GetProxyHolder ()->GetIconThemeManager ()->ManageWidget (&menu);
 		menu.exec (event->screenPos ());
 	}
@@ -65,10 +64,10 @@ namespace LC::Monocle
 	void LinkItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 	{
 		if ((event->pos () - PressedPos_).manhattanLength () < 4)
-			ExecuteLinkAction (Link_->GetLinkAction (), DocTab_);
+			ExecuteLinkAction (Link_->GetLinkAction (), ExecutionContext_);
 	}
 
-	void CreateLinksItems (DocumentTab& docTab, IDocument& doc, const QVector<PageGraphicsItem*>& pages)
+	void CreateLinksItems (LinkExecutionContext& docTab, IDocument& doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		for (auto page : pages)
 			for (const auto& link : doc.GetPageLinks (page->GetPageNum ()))

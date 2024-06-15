@@ -12,16 +12,14 @@
 #include "interfaces/monocle/isupportannotations.h"
 #include "interfaces/monocle/iannotation.h"
 #include "annitem.h"
-#include "documenttab.h"
 #include "pagegraphicsitem.h"
-#include "smoothscroller.h"
 
 namespace LC::Monocle
 {
-	AnnManager::AnnManager (DocumentTab& docTab)
-	: QObject { &docTab }
-	, DocTab_ { docTab }
+	AnnManager::AnnManager (LinkExecutionContext& ec, QObject *parent)
+	: QObject { parent }
 	, AnnModel_ { new QStandardItemModel { this } }
+	, ExecutionContext_ { ec }
 	{
 	}
 
@@ -55,7 +53,7 @@ namespace LC::Monocle
 
 			for (const auto& ann : isa->GetAnnotations (page->GetPageNum ()))
 			{
-				const auto item = MakeItem (ann, page, DocTab_);
+				const auto item = MakeItem (ann, page, ExecutionContext_);
 				if (!item)
 				{
 					qWarning () << Q_FUNC_INFO

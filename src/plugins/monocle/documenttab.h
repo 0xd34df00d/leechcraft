@@ -18,6 +18,7 @@
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
 #include "navigationhistory.h"
+#include "linkactionexecutor.h"
 #include "common.h"
 #include "ui_documenttab.h"
 
@@ -68,8 +69,18 @@ namespace Monocle
 
 		SmoothScroller *Scroller_ = nullptr;
 
+		struct TabExecutionContext final : LinkExecutionContext
+		{
+			DocumentTab& Tab_;
+
+			TabExecutionContext (DocumentTab& tab);
+
+			void Navigate (const NavigationAction& act) override;
+			void Navigate (const ExternalNavigationAction& act) override;
+		} LinkExecutionContext_ { *this };
+
 		PagesLayoutManager *LayoutManager_ = nullptr;
-		FormManager *FormManager_ = nullptr;
+		FormManager& FormManager_;
 		AnnManager& AnnManager_;
 		DocumentBookmarksManager& DocBMManager_;
 		TextSearchHandler& SearchHandler_;

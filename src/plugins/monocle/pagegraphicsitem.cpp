@@ -15,7 +15,6 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QMenu>
-#include <QWidgetAction>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/threads/futures.h>
 #include "components/actions/rotatemenu.h"

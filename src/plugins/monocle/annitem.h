@@ -17,8 +17,6 @@
 
 namespace LC::Monocle
 {
-	class DocumentTab;
-
 	class AnnBaseItem
 	{
 	public:
@@ -50,7 +48,7 @@ namespace LC::Monocle
 		static QBrush GetBrush (bool selected);
 	};
 
-	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*, DocumentTab&);
+	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*, LinkExecutionContext&);
 
 	template<typename T>
 	class AnnBaseGraphicsItem : public AnnBaseItem
@@ -132,7 +130,7 @@ namespace LC::Monocle
 	class LinkAnnItem : public AnnRectGraphicsItem<LinkItem>
 	{
 	public:
-		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*, DocumentTab&);
+		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*, LinkExecutionContext&);
 	};
 
 	class CaretAnnItem : public AnnRectGraphicsItem<QGraphicsRectItem>

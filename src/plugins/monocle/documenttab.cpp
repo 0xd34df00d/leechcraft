@@ -83,11 +83,27 @@ namespace Monocle
 		}
 	};
 
+	DocumentTab::TabExecutionContext::TabExecutionContext (DocumentTab& tab)
+	: Tab_ { tab }
+	{
+	}
+
+	void DocumentTab::TabExecutionContext::Navigate (const NavigationAction& act)
+	{
+		Tab_.Navigate (act);
+	}
+
+	void DocumentTab::TabExecutionContext::Navigate (const ExternalNavigationAction& act)
+	{
+		Tab_.Navigate (act);
+	}
+
 	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
-	, AnnManager_ { *new AnnManager { *this } }
+	, FormManager_ { *new FormManager { Ui_.PagesView_, LinkExecutionContext_ }}
+	, AnnManager_ { *new AnnManager { LinkExecutionContext_, this } }
 	, DocBMManager_ { *new DocumentBookmarksManager { this, this } }
 	, SearchHandler_ { *new TextSearchHandler { this } }
 	, DockWidget_ { new Dock { {
@@ -131,8 +147,6 @@ namespace Monocle
 
 		XmlSettingsManager::Instance ().RegisterObject ("InhibitScreensaver", this,
 				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
-
-		FormManager_ = new FormManager (Ui_.PagesView_, *this);
 
 		connect (&AnnManager_,
 				&AnnManager::navigationRequested,
@@ -796,12 +810,12 @@ namespace Monocle
 
 		LayoutManager_->HandleDoc (CurrentDoc_.get (), Pages_);
 		SearchHandler_.HandleDoc (*CurrentDoc_, Pages_);
-		FormManager_->HandleDoc (CurrentDoc_, Pages_);
+		FormManager_.HandleDoc (CurrentDoc_, Pages_);
 		AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
 		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
 
-		CreateLinksItems (*this, *CurrentDoc_, Pages_);
+		CreateLinksItems (LinkExecutionContext_, *CurrentDoc_, Pages_);
 
 		recoverDocState (state);
 		Relayout ();

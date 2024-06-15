@@ -50,7 +50,7 @@ namespace LC::Monocle
 		return QBrush { selected ? QColor { 255, 213, 0, 64 } : QColor { 255, 213, 0, 32 } };
 	}
 
-	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent, DocumentTab& docTab)
+	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent, LinkExecutionContext& ec)
 	{
 		switch (ann->GetAnnotationType ())
 		{
@@ -59,7 +59,7 @@ namespace LC::Monocle
 		case AnnotationType::Highlight:
 			return new HighAnnItem (std::dynamic_pointer_cast<IHighlightAnnotation> (ann), parent);
 		case AnnotationType::Link:
-			return new LinkAnnItem (std::dynamic_pointer_cast<ILinkAnnotation> (ann), parent, docTab);
+			return new LinkAnnItem (std::dynamic_pointer_cast<ILinkAnnotation> (ann), parent, ec);
 		case AnnotationType::Caret:
 			return new CaretAnnItem (std::dynamic_pointer_cast<ICaretAnnotation> (ann), parent);
 		case AnnotationType::Other:
@@ -124,8 +124,8 @@ namespace LC::Monocle
 		return result;
 	}
 
-	LinkAnnItem::LinkAnnItem (const ILinkAnnotation_ptr& ann, QGraphicsItem *item, DocumentTab& docTab)
-	: AnnRectGraphicsItem { ann, ann->GetLink (), item, docTab }
+	LinkAnnItem::LinkAnnItem (const ILinkAnnotation_ptr& ann, QGraphicsItem *item, LinkExecutionContext& ec)
+	: AnnRectGraphicsItem { ann, ann->GetLink (), item, ec }
 	{
 	}
 }

@@ -16,7 +16,24 @@ namespace LC::Monocle
 {
 	class DocumentTab;
 
-	void ExecuteLinkAction (const LinkAction&, DocumentTab&);
-	void AddLinkMenuActions (const LinkAction&, QMenu&, DocumentTab&);
+	struct LinkExecutionContext
+	{
+		LinkExecutionContext () = default;
+
+		LinkExecutionContext (const LinkExecutionContext&) = delete;
+		LinkExecutionContext (LinkExecutionContext&&) = delete;
+		LinkExecutionContext& operator= (const LinkExecutionContext&) = delete;
+		LinkExecutionContext& operator= (LinkExecutionContext&&) = delete;
+
+		virtual void Navigate (const NavigationAction&) = 0;
+		virtual void Navigate (const ExternalNavigationAction&) = 0;
+	protected:
+		// Objects of derived classes are not intended to be destroyed via
+		// `delete` through the pointer to them.
+		~LinkExecutionContext () = default;
+	};
+
+	void ExecuteLinkAction (const LinkAction&, LinkExecutionContext&);
+	void AddLinkMenuActions (const LinkAction&, QMenu&, LinkExecutionContext&);
 	QString GetLinkActionTooltip (const LinkAction&);
 }
