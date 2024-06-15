@@ -33,7 +33,6 @@ namespace Monocle
 	class TextSearchHandler;
 	class FindDialog;
 	class FormManager;
-	class LinksManager;
 	class AnnManager;
 	class DocumentBookmarksManager;
 	class PageNumLabel;
@@ -71,7 +70,6 @@ namespace Monocle
 
 		PagesLayoutManager *LayoutManager_ = nullptr;
 		FormManager *FormManager_ = nullptr;
-		LinksManager *LinksManager_ = nullptr;
 		AnnManager& AnnManager_;
 		DocumentBookmarksManager& DocBMManager_;
 		TextSearchHandler& SearchHandler_;

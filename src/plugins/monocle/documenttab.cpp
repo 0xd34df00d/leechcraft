@@ -56,7 +56,7 @@
 #include "textsearchhandler.h"
 #include "formmanager.h"
 #include "annmanager.h"
-#include "linksmanager.h"
+#include "linkitem.h"
 #include "coreloadproxy.h"
 #include "documentbookmarksmanager.h"
 #include "pagenumlabel.h"
@@ -133,7 +133,6 @@ namespace Monocle
 				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
 
 		FormManager_ = new FormManager (Ui_.PagesView_, *this);
-		LinksManager_ = new LinksManager (*this);
 
 		connect (&AnnManager_,
 				&AnnManager::navigationRequested,
@@ -799,9 +798,10 @@ namespace Monocle
 		SearchHandler_.HandleDoc (*CurrentDoc_, Pages_);
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
 		AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
-		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
 		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
+
+		CreateLinksItems (*this, *CurrentDoc_, Pages_);
 
 		recoverDocState (state);
 		Relayout ();

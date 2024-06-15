@@ -14,11 +14,11 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/qtutil.h>
+#include "interfaces/monocle/idocument.h"
 #include "linkactionexecutor.h"
+#include "pagegraphicsitem.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	namespace
 	{
@@ -67,5 +67,15 @@ namespace Monocle
 		if ((event->pos () - PressedPos_).manhattanLength () < 4)
 			ExecuteLinkAction (Link_->GetLinkAction (), DocTab_);
 	}
-}
+
+	void CreateLinksItems (DocumentTab& docTab, IDocument& doc, const QVector<PageGraphicsItem*>& pages)
+	{
+		for (auto page : pages)
+			for (const auto& link : doc.GetPageLinks (page->GetPageNum ()))
+			{
+				auto item = new LinkItem { link, page, docTab };
+				page->RegisterChildRect (item, link->GetArea (),
+						[item] (const QRectF& rect) { item->setRect (rect); });
+			}
+	}
 }

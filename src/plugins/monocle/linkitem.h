@@ -11,10 +11,10 @@
 #include <QGraphicsRectItem>
 #include "interfaces/monocle/ilink.h"
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
+	class IDocument;
+	class PageGraphicsItem;
 	class DocumentTab;
 
 	class LinkItem : public QGraphicsRectItem
@@ -30,5 +30,6 @@ namespace Monocle
 		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
 	};
-}
+
+	void CreateLinksItems (DocumentTab&, IDocument&, const QVector<PageGraphicsItem*>&);
 }

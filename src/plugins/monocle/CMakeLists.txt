@@ -78,7 +78,6 @@ LC_DEFINE_PLUGIN (
 		annwidget.cpp
 		anntreedelegate.cpp
 		linkitem.cpp
-		linksmanager.cpp
 		linkactionexecutor.cpp
 		coreloadproxy.cpp
 		searchtabwidget.cpp
