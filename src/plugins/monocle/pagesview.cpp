@@ -40,6 +40,14 @@ namespace LC::Monocle
 		return mapToScene (QPoint (rectSize.width (), rectSize.height ()));
 	}
 
+	QPointF PagesView::GetViewportTrimmedCenter (const QGraphicsItem& item) const
+	{
+		auto center = item.boundingRect ().bottomRight ();
+		center.ry () = std::min (center.y (), static_cast<qreal> (viewport ()->contentsRect ().height ()));
+		center /= 2;
+		return item.mapToScene (center);
+	}
+
 	void PagesView::mouseMoveEvent (QMouseEvent *event)
 	{
 		if (event->buttons () != Qt::NoButton && ShowReleaseMenu_)

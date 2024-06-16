@@ -29,6 +29,8 @@ namespace LC::Monocle
 		void SetShowReleaseMenu (bool);
 
 		QPointF GetCurrentCenter () const;
+
+		QPointF GetViewportTrimmedCenter (const QGraphicsItem&) const;
 	protected:
 		void mouseMoveEvent (QMouseEvent*) override;
 		void mouseReleaseEvent (QMouseEvent*) override;
