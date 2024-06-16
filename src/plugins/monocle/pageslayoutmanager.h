@@ -47,7 +47,6 @@ namespace LC::Monocle
 		explicit PagesLayoutManager (PagesView*, QObject* = nullptr);
 
 		void HandleDoc (IDocument*, const QVector<PageGraphicsItem*>&);
-		const QVector<PageGraphicsItem*>& GetPages () const;
 
 		LayoutMode GetLayoutMode () const;
 		void SetLayoutMode (LayoutMode);

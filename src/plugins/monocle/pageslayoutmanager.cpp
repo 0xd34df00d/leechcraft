@@ -53,11 +53,6 @@ namespace LC::Monocle
 					&PagesLayoutManager::ScheduleRelayout);
 	}
 
-	const QVector<PageGraphicsItem*>& PagesLayoutManager::GetPages () const
-	{
-		return Pages_;
-	}
-
 	LayoutMode PagesLayoutManager::GetLayoutMode () const
 	{
 		return LayMode_;
