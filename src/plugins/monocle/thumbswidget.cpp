@@ -78,17 +78,14 @@ namespace LC::Monocle
 			}
 		}
 
-		const auto& pages = LayoutMgr_->GetPages ();
-
 		int rectIdx = 0;
 		for (auto i = page2rect.begin (); i != page2rect.end (); ++i, ++rectIdx)
 		{
 			const auto pageNum = i.key ();
-			if (pageNum >= pages.size ())
+			if (pageNum >= Pages_.size ())
 				continue;
 
-			auto page = pages.at (pageNum);
-
+			const auto page = Pages_ [pageNum];
 			const auto& docRect = *i;
 			const auto& sceneRect = page->mapToScene (page->MapFromDoc (docRect)).boundingRect ();
 			CurrentAreaRects_ [rectIdx]->setRect (sceneRect);
