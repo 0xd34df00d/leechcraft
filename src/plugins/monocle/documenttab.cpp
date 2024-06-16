@@ -269,7 +269,7 @@ namespace Monocle
 		out << static_cast<quint8> (1)
 			<< CurrentDocPath_
 			<< LayoutManager_->GetCurrentScale ()
-			<< Ui_.PagesView_->mapToScene (GetViewportCenter ()).toPoint ()
+			<< Ui_.PagesView_->GetCurrentCenter ().toPoint ()
 			<< LayoutMode2Name (LayoutManager_->GetLayoutMode ());
 		return result;
 	}
@@ -665,11 +665,6 @@ namespace Monocle
 				this,
 				SLOT (showDocInfo ()));
 		Toolbar_->addAction (infoAction);
-	}
-
-	QPoint DocumentTab::GetViewportCenter () const
-	{
-		return LayoutManager_->GetViewportCenter ();
 	}
 
 	void DocumentTab::Relayout ()

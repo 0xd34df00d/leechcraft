@@ -77,12 +77,6 @@ namespace LC::Monocle
 		return LayMode_ == LayoutMode::OnePage ? 1 : 2;
 	}
 
-	QPoint PagesLayoutManager::GetViewportCenter () const
-	{
-		const auto& rect = View_->viewport ()->contentsRect ();
-		return QPoint (rect.width (), rect.height ()) / 2;
-	}
-
 	int PagesLayoutManager::GetCurrentPage () const
 	{
 		const auto& rect = View_->viewport ()->contentsRect ();
@@ -277,7 +271,7 @@ namespace LC::Monocle
 		QPointF oldPageCenter;
 		if (pageWas >= 0)
 		{
-			const auto& pagePos = pageObj->mapFromScene (View_->mapToScene (GetViewportCenter ()));
+			const auto& pagePos = pageObj->mapFromScene (View_->GetCurrentCenter ());
 			const auto& bounding = pageObj->boundingRect ();
 			if (bounding.isValid ())
 				oldPageCenter = QPointF { pagePos.x () / bounding.width (),

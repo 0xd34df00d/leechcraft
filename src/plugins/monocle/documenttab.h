@@ -154,7 +154,6 @@ namespace Monocle
 		void SetupToolbarNavigation ();
 		void SetupToolbar ();
 
-		QPoint GetViewportCenter () const;
 		void Relayout ();
 		void SetLayoutMode (LayoutMode);
 
