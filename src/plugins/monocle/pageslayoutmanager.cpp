@@ -91,23 +91,6 @@ namespace LC::Monocle
 		return PosTracker_.GetNearbyPage (View_->mapToScene (QPoint { 0, rect.height () / 2 }));
 	}
 
-	void PagesLayoutManager::SetCurrentPage (int idx, bool immediate)
-	{
-		if (idx < 0 || idx >= Pages_.size ())
-			return;
-
-		const auto page = Pages_.at (idx);
-		auto center = page->boundingRect ().bottomRight ();
-		center.ry () = std::min (center.y (), static_cast<qreal> (View_->viewport ()->contentsRect ().height ()));
-		center /= 2;
-
-		const auto sceneCenter = page->mapToScene (center);
-		if (immediate)
-			View_->centerOn (sceneCenter);
-		else
-			Scroller_->SmoothCenterOn (sceneCenter);
-	}
-
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)
 	{
 		ScaleMode_ = mode;

@@ -18,14 +18,12 @@ namespace LC::Monocle
 {
 	ThumbsWidget::ThumbsWidget (QWidget *parent)
 	: QWidget { parent }
+	, Scroller_ { *new SmoothScroller { *Ui_.ThumbsView_, this } }
 	{
-		Ui_.setupUi (this);
 		Ui_.ThumbsView_->setScene (&Scene_);
 		Ui_.ThumbsView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
-		auto scroller = new SmoothScroller { *Ui_.ThumbsView_, this };
-
-		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, scroller, this);
+		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, &Scroller_, this);
 		LayoutMgr_->SetScaleMode (FitWidth {});
 		LayoutMgr_->SetMargins ({ 10, 0 });
 
@@ -38,22 +36,22 @@ namespace LC::Monocle
 	void ThumbsWidget::HandleDoc (IDocument *doc)
 	{
 		Scene_.clear ();
+		Pages_.clear ();
 		CurrentAreaRects_.clear ();
 		if (!doc)
 			return;
 
 		const auto numPages = doc->GetNumPages ();
-		QVector<PageGraphicsItem*> pages;
-		pages.reserve (numPages);
+		Pages_.reserve (numPages);
 		for (int i = 0; i < numPages; ++i)
 		{
 			auto item = new PageGraphicsItem { *doc, i };
 			Scene_.addItem (item);
 			item->SetReleaseHandler ([this] (int page, const QPointF&) { emit pageClicked (page); });
-			pages << item;
+			Pages_ << item;
 		}
 
-		LayoutMgr_->HandleDoc (doc, pages);
+		LayoutMgr_->HandleDoc (doc, Pages_);
 		LayoutMgr_->Relayout ();
 	}
 
@@ -99,6 +97,6 @@ namespace LC::Monocle
 
 	void ThumbsWidget::SetCurrentPage (int page)
 	{
-		LayoutMgr_->SetCurrentPage (page, false);
+		Scroller_.SmoothCenterOn (*Pages_ [page]);
 	}
 }

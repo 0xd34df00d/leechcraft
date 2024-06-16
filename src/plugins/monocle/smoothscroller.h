@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QPointF>
 
+class QGraphicsItem;
 class QTimeLine;
 
 namespace LC::Monocle
@@ -30,7 +31,8 @@ namespace LC::Monocle
 
 		bool IsCurrentlyScrolling () const;
 
-		void SmoothCenterOn (QPointF);
+		void SmoothCenterOn (const QGraphicsItem&);
+		void SmoothCenterOnPoint (QPointF);
 	private:
 		void HandleSmoothScroll (int);
 	signals:

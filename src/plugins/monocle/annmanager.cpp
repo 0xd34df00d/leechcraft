@@ -56,9 +56,7 @@ namespace LC::Monocle
 				const auto item = MakeItem (ann, page, ExecutionContext_);
 				if (!item)
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "unhandled annotation type"
-							<< static_cast<int> (ann->GetAnnotationType ());
+					qWarning () << "unhandled annotation type" << static_cast<int> (ann->GetAnnotationType ());
 					continue;
 				}
 
@@ -114,7 +112,7 @@ namespace LC::Monocle
 			return;
 		}
 
-		emit navigationRequested (graphicsItem->GetItem ()->scenePos ());
+		emit navigationRequested (*graphicsItem->GetItem ());
 
 		if (graphicsItem->IsSelected ())
 			return;

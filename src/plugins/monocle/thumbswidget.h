@@ -9,23 +9,30 @@
 #pragma once
 
 #include <QWidget>
+#include <util/gui/uiinit.h>
 #include "ui_thumbswidget.h"
 
 namespace LC::Monocle
 {
 	class IDocument;
+	class PageGraphicsItem;
 	class PagesLayoutManager;
+	class SmoothScroller;
 
 	class ThumbsWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::ThumbsWidget Ui_;
+		Util::UiInit UiInit_ { Ui_, *this };
+
 		QGraphicsScene Scene_;
+		SmoothScroller& Scroller_;
 
 		PagesLayoutManager *LayoutMgr_;
 
-		QList<QGraphicsRectItem*> CurrentAreaRects_;
+		QVector<QGraphicsRectItem*> CurrentAreaRects_;
+		QVector<PageGraphicsItem*> Pages_;
 		QMap<int, QRect> LastVisibleAreas_;
 	public:
 		explicit ThumbsWidget (QWidget* = nullptr);

@@ -14,6 +14,7 @@
 #include "interfaces/monocle/iannotation.h"
 
 class QAbstractItemModel;
+class QGraphicsItem;
 class QModelIndex;
 class QStandardItemModel;
 class QStandardItem;
@@ -63,6 +64,6 @@ namespace LC::Monocle
 		void selectAnnotation (const QModelIndex&);
 	signals:
 		void annotationSelected (const QModelIndex&);
-		void navigationRequested (QPointF);
+		void navigationRequested (const QGraphicsItem&);
 	};
 }

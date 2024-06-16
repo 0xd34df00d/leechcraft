@@ -58,7 +58,6 @@ namespace LC::Monocle
 		QPoint GetViewportCenter () const;
 
 		int GetCurrentPage () const;
-		void SetCurrentPage (int, bool);
 
 		void SetScaleMode (ScaleMode);
 		ScaleMode GetScaleMode () const;

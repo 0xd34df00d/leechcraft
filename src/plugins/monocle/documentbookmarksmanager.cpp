@@ -77,7 +77,7 @@ namespace LC::Monocle
 	void DocumentBookmarksManager::Navigate (const QModelIndex& idx)
 	{
 		const auto& bm = idx.data (Roles::RBookmark).value<Bookmark> ();
-		Tab_->CenterOn (bm.GetPosition ());
+		// TODO this is broken anyway, store page instead of position Tab_->CenterOn (bm.GetPosition ());
 	}
 
 	void DocumentBookmarksManager::ReloadBookmarks ()

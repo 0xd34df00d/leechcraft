@@ -38,7 +38,12 @@ namespace LC::Monocle
 		return ScrollTimeline_.state () == QTimeLine::Running;
 	}
 
-	void SmoothScroller::SmoothCenterOn (QPointF p)
+	void SmoothScroller::SmoothCenterOn (const QGraphicsItem& item)
+	{
+		SmoothCenterOnPoint (View_.GetViewportTrimmedCenter (item));
+	}
+
+	void SmoothScroller::SmoothCenterOnPoint (QPointF p)
 	{
 		if (!XmlSettingsManager::Instance ().property ("SmoothScrolling").toBool ())
 		{

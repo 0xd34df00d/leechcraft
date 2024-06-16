@@ -340,7 +340,7 @@ namespace Monocle
 		LayoutManager_->SetScaleMode (FixedScale { scale });
 		Relayout ();
 
-		QTimer::singleShot (0, this, [point, this] { CenterOn (point); });
+		QTimer::singleShot (0, this, [point, this] { Ui_.PagesView_->centerOn (point); });
 	}
 
 	void DocumentTab::ReloadDoc (const QString& doc)
@@ -380,19 +380,14 @@ namespace Monocle
 		return LayoutManager_->GetCurrentPage ();
 	}
 
-	void DocumentTab::SetCurrentPage (int idx, bool immediate)
+	void DocumentTab::SetCurrentPage (int idx)
 	{
-		LayoutManager_->SetCurrentPage (idx, immediate);
+		Scroller_->SmoothCenterOn (*Pages_ [idx]);
 	}
 
 	QPoint DocumentTab::GetCurrentCenter () const
 	{
 		return Ui_.PagesView_->GetCurrentCenter ().toPoint ();
-	}
-
-	void DocumentTab::CenterOn (const QPoint& point)
-	{
-		Scroller_->SmoothCenterOn (point);
 	}
 
 	void DocumentTab::dragEnterEvent (QDragEnterEvent *event)
@@ -738,7 +733,7 @@ namespace Monocle
 			auto center = (rect->topLeft () + rect->bottomRight ()) / 2;
 			center.rx () *= renderedSize.width ();
 			center.ry () *= renderedSize.height ();
-			Scroller_->SmoothCenterOn (page->mapToScene (center));
+			Scroller_->SmoothCenterOnPoint (page->mapToScene (center));
 		}
 		else
 			SetCurrentPage (nav.PageNumber_);
