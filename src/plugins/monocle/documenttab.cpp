@@ -227,6 +227,7 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
+		saveState ();
 		emit removeTab ();
 		deleteLater ();
 	}
