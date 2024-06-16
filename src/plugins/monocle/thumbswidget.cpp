@@ -23,7 +23,7 @@ namespace LC::Monocle
 		Ui_.ThumbsView_->setScene (&Scene_);
 		Ui_.ThumbsView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
-		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, &Scroller_, this);
+		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, this);
 		LayoutMgr_->SetScaleMode (FitWidth {});
 		LayoutMgr_->SetMargins ({ 10, 0 });
 

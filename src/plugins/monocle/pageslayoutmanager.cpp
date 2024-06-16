@@ -17,17 +17,15 @@
 #include <util/monocle/documentsignals.h>
 #include "pagesview.h"
 #include "pagegraphicsitem.h"
-#include "smoothscroller.h"
 #include "common.h"
 
 namespace LC::Monocle
 {
 	const int Margin = 12;
 
-	PagesLayoutManager::PagesLayoutManager (PagesView *view, SmoothScroller *scroller, QObject *parent)
+	PagesLayoutManager::PagesLayoutManager (PagesView *view, QObject *parent)
 	: QObject (parent)
 	, View_ (view)
-	, Scroller_ (scroller)
 	, Scene_ (view->scene ())
 	{
 		connect (View_,

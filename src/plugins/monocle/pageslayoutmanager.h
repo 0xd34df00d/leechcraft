@@ -19,7 +19,6 @@ class QGraphicsScene;
 namespace LC::Monocle
 {
 	class PagesView;
-	class SmoothScroller;
 	class PageGraphicsItem;
 
 	class PagesLayoutManager : public QObject
@@ -27,7 +26,6 @@ namespace LC::Monocle
 		Q_OBJECT
 
 		PagesView * const View_;
-		SmoothScroller * const Scroller_;
 		QGraphicsScene * const Scene_;
 
 		IDocument *CurrentDoc_ = nullptr;
@@ -46,7 +44,7 @@ namespace LC::Monocle
 
 		double Rotation_ = 0;
 	public:
-		PagesLayoutManager (PagesView*, SmoothScroller*, QObject* = nullptr);
+		explicit PagesLayoutManager (PagesView*, QObject* = nullptr);
 
 		void HandleDoc (IDocument*, const QVector<PageGraphicsItem*>&);
 		const QVector<PageGraphicsItem*>& GetPages () const;

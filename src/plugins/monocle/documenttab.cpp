@@ -139,7 +139,7 @@ namespace Monocle
 					scheduleSaveState ();
 				});
 
-		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, Scroller_, this);
+		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
 		connect (&SearchHandler_,
 				&TextSearchHandler::navigateRequested,
 				this,
