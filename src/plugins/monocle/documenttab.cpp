@@ -811,6 +811,8 @@ namespace Monocle
 
 		CreateLinksItems (LinkExecutionContext_, *CurrentDoc_, Pages_);
 
+		emit fileLoaded (path, CurrentDoc_.get (), Pages_);
+
 		recoverDocState (state);
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, true);
@@ -830,8 +832,6 @@ namespace Monocle
 					this,
 					[this] (int idx) { Pages_ [idx]->UpdatePixmap (); });
 		}
-
-		emit fileLoaded (path, CurrentDoc_.get (), Pages_);
 
 		emit tabRecoverDataChanged ();
 
