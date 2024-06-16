@@ -815,8 +815,6 @@ namespace Monocle
 		emit fileLoaded (path, CurrentDoc_.get (), Pages_);
 
 		recoverDocState (state);
-		Relayout ();
-		SetCurrentPage (state.CurrentPage_, true);
 
 		CheckCurrentPageChange ();
 
@@ -962,6 +960,10 @@ namespace Monocle
 		LayoutManager_->SetLayoutMode (state.Lay_);
 		LayoutManager_->SetScaleMode (state.ScaleMode_);
 		Zoomer_->SetScaleMode (state.ScaleMode_);
+
+		Relayout ();
+
+		Ui_.PagesView_->centerOn (Ui_.PagesView_->GetViewportTrimmedCenter (*Pages_ [state.CurrentPage_]));
 
 		const auto action = [this]
 		{
