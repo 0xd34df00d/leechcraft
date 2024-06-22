@@ -51,6 +51,7 @@ LC_DEFINE_PLUGIN (
 		components/actions/zoomer.cpp
 		components/gui/dock.cpp
 		components/layout/positiontracker.cpp
+		components/layout/positions.cpp
 		monocle.cpp
 		documenttab.cpp
 		core.cpp
