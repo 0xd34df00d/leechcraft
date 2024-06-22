@@ -47,7 +47,7 @@ namespace LC::Monocle
 		{
 			auto item = new PageGraphicsItem { *doc, i };
 			Scene_.addItem (item);
-			item->SetReleaseHandler ([this] (int page, const QPointF&) { emit pageClicked (page); });
+			item->SetReleaseHandler ([this] (int page, auto&&) { emit pageClicked (page); });
 			Pages_ << item;
 		}
 
