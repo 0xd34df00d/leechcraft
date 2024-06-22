@@ -40,7 +40,7 @@ namespace LC::Monocle
 
 		bool RelayoutScheduled_ = false;
 
-		QSizeF Margins_ {};
+		QSizeF Margins_ { 0, 0 };
 
 		double Rotation_ = 0;
 	public:
