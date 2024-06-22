@@ -119,7 +119,14 @@ namespace LC::Monocle
 			const int pageIdx = std::max (GetCurrentPage (), 0);
 			const auto pageDim = dimGetter (adjustForLayout (GetRotatedSize (pageIdx)) + 2 * Margins_);
 			auto viewSize = View_->maximumViewportSize ();
-			viewSize.rwidth () -= View_->style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
+
+			const auto& margins = View_->contentsMargins ();
+			const auto scrollBarWidth = View_->style ()->pixelMetric (QStyle::PM_ScrollBarExtent);
+			// Margins might already include the scrollbar width on the second and subsequent relayouts,
+			// so we need to ignore that to avoid making margins too big and ugly.
+			// Hence, we take the minimum of the left/right margins,
+			// since at least one of them won't include the scrollbar.
+			viewSize.rwidth () -= scrollBarWidth + std::min (margins.left (), margins.right ()) * 2;
 
 			const auto res = dimGetter (viewSize) / pageDim;
 			return res > 0 ? res : 1;
