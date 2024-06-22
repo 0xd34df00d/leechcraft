@@ -23,6 +23,18 @@ namespace LC::Monocle
 	{
 		QPointF P_ {};
 
+		[[nodiscard]]
+		T ClearedX () const
+		{
+			return { QPointF { 0, P_.y () } };
+		}
+
+		[[nodiscard]]
+		T ClearedY () const
+		{
+			return { QPointF { P_.x (), 0 } };
+		}
+
 		QPointF ToPointF () const
 		{
 			return P_;
