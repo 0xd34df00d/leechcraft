@@ -54,11 +54,13 @@ namespace LC::Monocle
 		if (!Doc_)
 			return;
 
+		/* TODO this is broken, ensure relative center is stored
 		const auto page = Tab_->GetCurrentPage ();
 		const auto& center = Tab_->GetCurrentCenter ();
 
 		Bookmark bm (tr ("Page %1").arg (page + 1), page, center);
 		Core::Instance ().GetBookmarksManager ()->AddBookmark (Doc_, bm);
+		 */
 
 		ReloadBookmarks ();
 	}
