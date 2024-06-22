@@ -134,10 +134,7 @@ namespace Monocle
 		void ReloadDoc (const QString&);
 		bool SetDoc (const QString&, DocumentOpenOptions);
 
-		int GetCurrentPage () const;
 		void SetCurrentPage (int);
-
-		QPoint GetCurrentCenter () const;
 
 		void Navigate (const NavigationAction&);
 		void Navigate (const ExternalNavigationAction&);

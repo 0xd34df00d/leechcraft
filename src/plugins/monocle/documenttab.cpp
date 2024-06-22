@@ -375,19 +375,9 @@ namespace Monocle
 		return true;
 	}
 
-	int DocumentTab::GetCurrentPage () const
-	{
-		return LayoutManager_->GetCurrentPage ();
-	}
-
 	void DocumentTab::SetCurrentPage (int idx)
 	{
 		Scroller_->SmoothCenterOn (*Pages_ [idx]);
-	}
-
-	QPoint DocumentTab::GetCurrentCenter () const
-	{
-		return Ui_.PagesView_->GetCurrentCenter ().toPoint ();
 	}
 
 	void DocumentTab::dragEnterEvent (QDragEnterEvent *event)
