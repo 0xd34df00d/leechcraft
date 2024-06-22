@@ -270,15 +270,9 @@ namespace LC::Monocle
 		const auto pageWas = GetCurrentPage ();
 		const auto pageObj = Pages_.value (pageWas);
 
-		QPointF oldPageCenter;
+		PageRelativePos oldPageCenter;
 		if (pageWas >= 0)
-		{
-			const auto& pagePos = pageObj->mapFromScene (View_->GetCurrentCenter ());
-			const auto& bounding = pageObj->boundingRect ();
-			if (bounding.isValid ())
-				oldPageCenter = QPointF { pagePos.x () / bounding.width (),
-						pagePos.y () / bounding.height () };
-		}
+			oldPageCenter = View_->GetCurrentCenter ().ToPageRelative (*pageObj);
 
 		ApplyPagesGeometry (scale);
 
@@ -300,12 +294,7 @@ namespace LC::Monocle
 		Scene_->setSceneRect (Scene_->itemsBoundingRect ().adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
 
 		if (pageWas >= 0)
-		{
-			const auto& bounding = pageObj->boundingRect ();
-			const QPointF newCenter { bounding.width () * oldPageCenter.x (),
-					bounding.height () * oldPageCenter.y () };
-			View_->centerOn (pageObj->mapToScene (newCenter));
-		}
+			View_->CenterOn (oldPageCenter.ToSceneAbsolute (*pageObj));
 
 		if (RelayoutScheduled_)
 			emit scheduledRelayoutFinished ();

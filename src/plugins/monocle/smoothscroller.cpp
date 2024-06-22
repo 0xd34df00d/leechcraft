@@ -43,11 +43,11 @@ namespace LC::Monocle
 		SmoothCenterOnPoint (View_.GetViewportTrimmedCenter (item));
 	}
 
-	void SmoothScroller::SmoothCenterOnPoint (QPointF p)
+	void SmoothScroller::SmoothCenterOnPoint (SceneAbsolutePos p)
 	{
 		if (!XmlSettingsManager::Instance ().property ("SmoothScrolling").toBool ())
 		{
-			View_.centerOn (p);
+			View_.centerOn (p.ToPointF ());
 			return;
 		}
 
@@ -66,6 +66,6 @@ namespace LC::Monocle
 		const int endFrame = ScrollTimeline_.endFrame ();
 		auto interp = [frame, endFrame] (const auto& pair)
 				{ return pair.first + (pair.second - pair.first) * frame / endFrame; };
-		View_.centerOn (interp (ScrollPath_));
+		View_.CenterOn (interp (ScrollPath_));
 	}
 }

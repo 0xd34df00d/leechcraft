@@ -188,29 +188,17 @@ namespace Monocle
 
 	ExternalNavigationAction DocumentTab::GetNavigationHistoryEntry () const
 	{
-		QPointF position;
+		PageRelativePos position;
 		auto pageNum = LayoutManager_->GetCurrentPage ();
 		if (pageNum >= 0)
-		{
-			const auto page = Pages_.value (pageNum);
-			const auto& size = page->boundingRect ().size ();
-			position = page->mapFromScene (Ui_.PagesView_->GetCurrentCenter ());
-			position.rx () /= size.width ();
-			position.ry () /= size.height ();
-
-			if (position.rx () > 1 && LayoutManager_->GetLayoutModeCount () == 2)
-			{
-				--position.rx ();
-				++pageNum;
-			}
-		}
+			position = Ui_.PagesView_->GetCurrentCenter ().ToPageRelative (*Pages_ [pageNum]);
 
 		return
 		{
 			CurrentDocPath_,
 			{
 				pageNum,
-				QRectF { position, QSizeF {} }
+				QRectF { position.ToPointF (), QSizeF {} }
 			}
 		};
 	}
@@ -269,7 +257,7 @@ namespace Monocle
 		out << static_cast<quint8> (1)
 			<< CurrentDocPath_
 			<< LayoutManager_->GetCurrentScale ()
-			<< Ui_.PagesView_->GetCurrentCenter ().toPoint ()
+			<< Ui_.PagesView_->GetCurrentCenter ().ToPointF ().toPoint ()
 			<< LayoutMode2Name (LayoutManager_->GetLayoutMode ());
 		return result;
 	}
@@ -713,12 +701,8 @@ namespace Monocle
 
 		if (const auto& rect = nav.TargetArea_)
 		{
-			const auto& renderedSize = page->boundingRect ().size ();
-
-			auto center = (rect->topLeft () + rect->bottomRight ()) / 2;
-			center.rx () *= renderedSize.width ();
-			center.ry () *= renderedSize.height ();
-			Scroller_->SmoothCenterOnPoint (page->mapToScene (center));
+			auto center = PageRelativePos { (rect->topLeft () + rect->bottomRight ()) / 2 };
+			Scroller_->SmoothCenterOnPoint (center.ToSceneAbsolute (*page));
 		}
 		else
 			SetCurrentPage (nav.PageNumber_);
@@ -943,7 +927,7 @@ namespace Monocle
 
 		Relayout ();
 
-		Ui_.PagesView_->centerOn (Ui_.PagesView_->GetViewportTrimmedCenter (*Pages_ [state.CurrentPage_]));
+		Ui_.PagesView_->CenterOn (Ui_.PagesView_->GetViewportTrimmedCenter (*Pages_ [state.CurrentPage_]));
 
 		const auto action = [this]
 		{

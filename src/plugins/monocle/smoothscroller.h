@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QPointF>
+#include "components/layout/positions.h"
 
 class QGraphicsItem;
 class QTimeLine;
@@ -25,14 +26,14 @@ namespace LC::Monocle
 		PagesView& View_;
 		QTimeLine& ScrollTimeline_;
 
-		QPair<QPointF, QPointF> ScrollPath_;
+		QPair<SceneAbsolutePos, SceneAbsolutePos> ScrollPath_;
 	public:
 		explicit SmoothScroller (PagesView&, QObject* = nullptr);
 
 		bool IsCurrentlyScrolling () const;
 
 		void SmoothCenterOn (const QGraphicsItem&);
-		void SmoothCenterOnPoint (QPointF);
+		void SmoothCenterOnPoint (SceneAbsolutePos);
 	private:
 		void HandleSmoothScroll (int);
 	signals:

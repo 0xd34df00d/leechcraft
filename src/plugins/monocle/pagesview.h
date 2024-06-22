@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QGraphicsView>
+#include "components/layout/positions.h"
 
 namespace LC::Monocle
 {
@@ -28,9 +29,10 @@ namespace LC::Monocle
 		void SetDocument (IDocument*);
 		void SetShowReleaseMenu (bool);
 
-		QPointF GetCurrentCenter () const;
+		void CenterOn (SceneAbsolutePos);
 
-		QPointF GetViewportTrimmedCenter (const QGraphicsItem&) const;
+		SceneAbsolutePos GetCurrentCenter () const;
+		SceneAbsolutePos GetViewportTrimmedCenter (const QGraphicsItem&) const;
 	protected:
 		void mouseMoveEvent (QMouseEvent*) override;
 		void mouseReleaseEvent (QMouseEvent*) override;
