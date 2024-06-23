@@ -12,9 +12,9 @@
 
 namespace LC::Monocle
 {
-	PositionTracker::BottomRightCorner::BottomRightCorner (QPointF point)
-	: Y_ { point.y () }
-	, X_ { point.x () }
+	PositionTracker::BottomRightCorner::BottomRightCorner (SceneAbsolutePos p)
+	: Y_ { p.ToPointF ().y () }
+	, X_ { p.ToPointF ().x () }
 	{
 	}
 
@@ -30,12 +30,12 @@ namespace LC::Monocle
 		for (int i = 0, size = Pages_.size (); i < size; ++i)
 		{
 			const auto page = Pages_.at (i);
-			const auto& pos = page->pos ();
-			Corner2PageInfo_ [BottomRightCorner { pos + page->boundingRect ().bottomRight () }] = i;
+			const auto sceneCornerPos = PageAbsolutePos { page->boundingRect ().bottomRight () }.ToSceneAbsolute (*page);
+			Corner2PageInfo_ [BottomRightCorner { sceneCornerPos }] = i;
 		}
 	}
 
-	int PositionTracker::GetNearbyPage (QPointF pos) const
+	int PositionTracker::GetNearbyPage (SceneAbsolutePos pos) const
 	{
 		if (Corner2PageInfo_.isEmpty ())
 			return -1;

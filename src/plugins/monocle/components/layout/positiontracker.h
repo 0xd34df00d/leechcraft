@@ -11,6 +11,7 @@
 #include <QMap>
 #include <QPointF>
 #include <QVector>
+#include "positions.h"
 
 namespace LC::Monocle
 {
@@ -23,7 +24,7 @@ namespace LC::Monocle
 			double Y_;
 			double X_;
 
-			explicit BottomRightCorner (QPointF);
+			explicit BottomRightCorner (SceneAbsolutePos);
 
 			auto operator<=> (const BottomRightCorner&) const = default;
 		};
@@ -34,6 +35,6 @@ namespace LC::Monocle
 		explicit PositionTracker (const QVector<PageGraphicsItem*>&);
 
 		void Update ();
-		int GetNearbyPage (QPointF) const;
+		int GetNearbyPage (SceneAbsolutePos) const;
 	};
 }

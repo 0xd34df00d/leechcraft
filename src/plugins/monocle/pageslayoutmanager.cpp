@@ -74,8 +74,7 @@ namespace LC::Monocle
 
 	int PagesLayoutManager::GetCurrentPage () const
 	{
-		const auto& rect = View_->viewport ()->contentsRect ();
-		return PosTracker_.GetNearbyPage (View_->mapToScene (QPoint { 0, rect.height () / 2 }));
+		return PosTracker_.GetNearbyPage (View_->GetCurrentCenter ().ClearedX ());
 	}
 
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)
