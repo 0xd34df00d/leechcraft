@@ -175,9 +175,10 @@ namespace LC::Monocle
 
 	void PageGraphicsItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 	{
-		QGraphicsItem::mouseReleaseEvent (event);
 		if (ReleaseHandler_)
 			ReleaseHandler_ (PageNum_, event->pos ());
+		else
+			QGraphicsItem::mouseReleaseEvent (event);
 	}
 
 	void PageGraphicsItem::contextMenuEvent (QGraphicsSceneContextMenuEvent *event)
