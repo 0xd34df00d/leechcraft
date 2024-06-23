@@ -52,6 +52,7 @@ LC_DEFINE_PLUGIN (
 		components/gui/dock.cpp
 		components/layout/positiontracker.cpp
 		components/layout/positions.cpp
+		components/viewitems/nondragclickfilter.cpp
 		monocle.cpp
 		documenttab.cpp
 		core.cpp

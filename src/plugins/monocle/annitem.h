@@ -54,7 +54,7 @@ namespace LC::Monocle
 	class AnnBaseGraphicsItem : public AnnBaseItem
 							  , public T
 	{
-		QPointF PressedPos_;
+		NonDragClickFilter NonDragFilter_;
 	public:
 		template<typename... TArgs>
 		AnnBaseGraphicsItem (const IAnnotation_ptr& ann, TArgs&&... args)
@@ -65,15 +65,14 @@ namespace LC::Monocle
 	protected:
 		void mousePressEvent (QGraphicsSceneMouseEvent *event) override
 		{
-			PressedPos_ = event->pos ();
+			NonDragFilter_.RecordPressed (event);
 			T::mousePressEvent (event);
 			event->accept ();
 		}
 
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent *event) override
 		{
-			if (Handler_ &&
-					(event->pos () - PressedPos_).manhattanLength () < 4)
+			if (Handler_ && NonDragFilter_.IsNonDragRelease (event))
 				Handler_ (BaseAnn_);
 
 			T::mouseReleaseEvent (event);

@@ -10,6 +10,7 @@
 
 #include <QGraphicsRectItem>
 #include "interfaces/monocle/ilink.h"
+#include "components/viewitems/nondragclickfilter.h"
 
 namespace LC::Monocle
 {
@@ -23,7 +24,7 @@ namespace LC::Monocle
 		LinkExecutionContext& ExecutionContext_;
 		const ILink_ptr Link_;
 
-		QPointF PressedPos_;
+		NonDragClickFilter NonDragFilter_;
 	public:
 		explicit LinkItem (const ILink_ptr&, QGraphicsItem*, LinkExecutionContext&);
 	protected:

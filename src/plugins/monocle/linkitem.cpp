@@ -58,12 +58,12 @@ namespace LC::Monocle
 
 	void LinkItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
 	{
-		PressedPos_ = event->pos ();
+		NonDragFilter_.RecordPressed (event);
 	}
 
 	void LinkItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 	{
-		if ((event->pos () - PressedPos_).manhattanLength () < 4)
+		if (NonDragFilter_.IsNonDragRelease (event))
 			ExecuteLinkAction (Link_->GetLinkAction (), ExecutionContext_);
 	}
 
