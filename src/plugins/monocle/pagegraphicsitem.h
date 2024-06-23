@@ -23,8 +23,6 @@ namespace LC::Monocle
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::PageGraphicsItem)
 
-		std::function<void (int, QPointF)> ReleaseHandler_;
-
 		IDocument& Doc_;
 		PagesLayoutManager *LayoutManager_ = nullptr;
 
@@ -37,7 +35,10 @@ namespace LC::Monocle
 		bool IsRenderingEnabled_ = true;
 	public:
 		using RectSetter_f = std::function<void (QRectF)>;
+		using ReleaseHandler_f = std::function<void (int, QPointF)>;
 	private:
+		ReleaseHandler_f ReleaseHandler_;
+
 		struct RectInfo
 		{
 			QRectF DocRect_;
@@ -50,7 +51,7 @@ namespace LC::Monocle
 
 		void SetLayoutManager (PagesLayoutManager*);
 
-		void SetReleaseHandler (std::function<void (int, QPointF)>);
+		void SetReleaseHandler (ReleaseHandler_f);
 
 		void SetScale (double, double);
 		int GetPageNum () const;

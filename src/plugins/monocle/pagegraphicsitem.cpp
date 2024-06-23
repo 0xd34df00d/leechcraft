@@ -46,7 +46,7 @@ namespace LC::Monocle
 		LayoutManager_ = manager;
 	}
 
-	void PageGraphicsItem::SetReleaseHandler (std::function<void (int, QPointF)> handler)
+	void PageGraphicsItem::SetReleaseHandler (ReleaseHandler_f handler)
 	{
 		ReleaseHandler_ = std::move (handler);
 	}
