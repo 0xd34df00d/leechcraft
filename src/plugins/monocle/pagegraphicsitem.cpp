@@ -176,7 +176,7 @@ namespace LC::Monocle
 	void PageGraphicsItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 	{
 		if (ReleaseHandler_)
-			ReleaseHandler_ (PageNum_, event->pos ());
+			ReleaseHandler_ (PageNum_, PageAbsolutePos { event->pos () });
 		else
 			QGraphicsItem::mouseReleaseEvent (event);
 	}

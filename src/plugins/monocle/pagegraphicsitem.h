@@ -17,6 +17,7 @@
 namespace LC::Monocle
 {
 	class PagesLayoutManager;
+	struct PageAbsolutePos;
 
 	class PageGraphicsItem : public QObject
 						   , public QGraphicsPixmapItem
@@ -35,7 +36,7 @@ namespace LC::Monocle
 		bool IsRenderingEnabled_ = true;
 	public:
 		using RectSetter_f = std::function<void (QRectF)>;
-		using ReleaseHandler_f = std::function<void (int, QPointF)>;
+		using ReleaseHandler_f = std::function<void (int, PageAbsolutePos)>;
 	private:
 		ReleaseHandler_f ReleaseHandler_;
 
