@@ -76,6 +76,11 @@ namespace LC::Monocle
 		return PageNum_;
 	}
 
+	void PageGraphicsItem::setPos (const SceneAbsolutePos& pos)
+	{
+		QGraphicsItem::setPos (pos.ToPointF ());
+	}
+
 	QRectF PageGraphicsItem::MapFromDoc (const QRectF& rect) const
 	{
 		return

@@ -203,12 +203,12 @@ namespace LC::Monocle
 		Margins_ = margins;
 	}
 
-	std::pair<QPointF, QSizeF> PagesLayoutManager::GetPagePos (int pageIdx, double scale) const
+	std::pair<SceneAbsolutePos, QSizeF> PagesLayoutManager::GetPagePos (int pageIdx, double scale) const
 	{
 		const auto& size = GetRotatedSize (pageIdx) * scale;
 		const auto& srcSize = CurrentDoc_->GetPageSize (pageIdx) * scale;
 		const auto yDiff = (size.height () - srcSize.height ()) / 2;
-		return { { 0, yDiff }, size };
+		return { { QPointF { 0, yDiff } }, size };
 	}
 
 	void PagesLayoutManager::LayoutOneCol (double scale) const
@@ -218,7 +218,7 @@ namespace LC::Monocle
 		{
 			const auto page = Pages_ [i];
 			const auto [pos, size] = GetPagePos (i, scale);
-			page->setPos (pos + QPointF { 0, currentY });
+			page->setPos (pos.Shifted (0, currentY));
 			currentY += size.height () + Margin;
 		}
 	}
@@ -232,20 +232,20 @@ namespace LC::Monocle
 		if (firstSeparate)
 		{
 			const auto [pos, size] = GetPagePos (0, scale);
-			Pages_ [0]->setPos (pos + QPointF { (size.width () + HorizTwoPageMargin) / 2, currentY });
+			Pages_ [0]->setPos (pos.Shifted ((size.width () + HorizTwoPageMargin) / 2, currentY));
 			currentY += size.height () + Margin;
 		}
 
 		for (int i = firstSeparate ? 1 : 0, pagesCount = Pages_.size (); i < pagesCount; i += 2)
 		{
 			const auto [leftPos, leftSize] = GetPagePos (i, scale);
-			Pages_ [i]->setPos (leftPos + QPointF { 0, currentY });
+			Pages_ [i]->setPos (leftPos.Shifted (0, currentY));
 
 			if (i == pagesCount - 1)
 				break;
 
 			const auto [rightPos, rightSize] = GetPagePos (i + 1, scale);
-			Pages_ [i + 1]->setPos (rightPos + QPointF { leftSize.width () + HorizTwoPageMargin, currentY });
+			Pages_ [i + 1]->setPos (rightPos.Shifted (leftSize.width () + HorizTwoPageMargin, currentY));
 
 			currentY += std::max (leftSize.height (), rightSize.height ()) + Margin;
 		}

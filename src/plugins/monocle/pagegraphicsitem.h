@@ -18,6 +18,7 @@ namespace LC::Monocle
 {
 	class PagesLayoutManager;
 	struct PageAbsolutePos;
+	struct SceneAbsolutePos;
 
 	class PageGraphicsItem : public QObject
 						   , public QGraphicsPixmapItem
@@ -56,6 +57,8 @@ namespace LC::Monocle
 
 		void SetScale (double, double);
 		int GetPageNum () const;
+
+		void setPos (const SceneAbsolutePos&);
 
 		/** Maps the `rect` from the document's absolute coordinates to this item coordinates.
 		 *

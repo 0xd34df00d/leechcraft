@@ -68,7 +68,7 @@ namespace LC::Monocle
 
 		void Relayout ();
 	private:
-		std::pair<QPointF, QSizeF> GetPagePos (int pageIdx, double scale) const;
+		std::pair<SceneAbsolutePos, QSizeF> GetPagePos (int pageIdx, double scale) const;
 
 		void ApplyPagesGeometry (double scale);
 
