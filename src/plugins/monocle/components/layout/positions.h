@@ -35,6 +35,12 @@ namespace LC::Monocle
 			return { QPointF { P_.x (), 0 } };
 		}
 
+		[[nodiscard]]
+		T Shifted (qreal dx, qreal dy) const
+		{
+			return { P_ + QPointF { dx, dy } };
+		}
+
 		QPointF ToPointF () const
 		{
 			return P_;
