@@ -78,7 +78,7 @@ namespace LC::Monocle
 		QSizeF GetRotatedSize (int page) const;
 		void ScheduleRelayout ();
 	signals:
-		void scheduledRelayoutFinished ();
+		void layoutFinished ();
 		void rotationUpdated (double);
 		void rotationUpdated (double, int);
 		void layoutModeChanged ();

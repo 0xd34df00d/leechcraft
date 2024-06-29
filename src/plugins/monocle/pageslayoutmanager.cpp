@@ -295,8 +295,7 @@ namespace LC::Monocle
 		if (pageWas >= 0)
 			View_->CenterOn (oldPageCenter.ToSceneAbsolute (*pageObj));
 
-		if (RelayoutScheduled_)
-			emit scheduledRelayoutFinished ();
+		emit layoutFinished ();
 		RelayoutScheduled_ = false;
 	}
 
@@ -316,10 +315,7 @@ namespace LC::Monocle
 
 		QTimer::singleShot (500,
 				this,
-				[this]
-				{
-					Relayout ();
-				});
+				&PagesLayoutManager::Relayout);
 		RelayoutScheduled_ = true;
 	}
 }

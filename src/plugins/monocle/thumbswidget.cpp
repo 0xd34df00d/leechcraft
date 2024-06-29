@@ -28,7 +28,7 @@ namespace LC::Monocle
 		LayoutMgr_->SetMargins ({ 10, 0 });
 
 		connect (LayoutMgr_,
-				&PagesLayoutManager::scheduledRelayoutFinished,
+				&PagesLayoutManager::layoutFinished,
 				this,
 				[this] { UpdatePagesVisibility (LastVisibleAreas_); });
 	}
