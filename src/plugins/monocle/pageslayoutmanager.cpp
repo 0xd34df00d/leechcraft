@@ -266,11 +266,10 @@ namespace LC::Monocle
 	void PagesLayoutManager::Relayout ()
 	{
 		const auto scale = GetCurrentScale ();
-		const auto pageWas = GetCurrentPage ();
-		const auto pageObj = Pages_.value (pageWas);
+		const auto pageObj = Pages_.value (GetCurrentPage ());
 
 		PageRelativePos oldPageCenter;
-		if (pageWas >= 0)
+		if (pageObj)
 			oldPageCenter = View_->GetCurrentCenter ().ToPageRelative (*pageObj);
 
 		ApplyPagesGeometry (scale);
@@ -292,7 +291,7 @@ namespace LC::Monocle
 
 		Scene_->setSceneRect (Scene_->itemsBoundingRect ().adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
 
-		if (pageWas >= 0)
+		if (pageObj)
 			View_->CenterOn (oldPageCenter.ToSceneAbsolute (*pageObj));
 
 		emit layoutFinished ();
