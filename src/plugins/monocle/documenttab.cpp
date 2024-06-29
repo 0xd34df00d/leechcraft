@@ -135,7 +135,7 @@ namespace Monocle
 				[this] (ScaleMode mode)
 				{
 					LayoutManager_->SetScaleMode (mode);
-					Relayout ();
+					LayoutManager_->Relayout ();
 					scheduleSaveState ();
 				});
 
@@ -330,7 +330,7 @@ namespace Monocle
 
 		SetDoc (path, DocumentOpenOptions {});
 		LayoutManager_->SetScaleMode (FixedScale { scale });
-		Relayout ();
+		LayoutManager_->Relayout ();
 
 		QTimer::singleShot (0, this, [point, this] { Ui_.PagesView_->centerOn (point); });
 	}
@@ -651,18 +651,10 @@ namespace Monocle
 		Toolbar_->addAction (infoAction);
 	}
 
-	void DocumentTab::Relayout ()
-	{
-		if (!CurrentDoc_)
-			return;
-
-		LayoutManager_->Relayout ();
-	}
-
 	void DocumentTab::SetLayoutMode (LayoutMode mode)
 	{
 		LayoutManager_->SetLayoutMode (mode);
-		Relayout ();
+		LayoutManager_->Relayout ();
 
 		scheduleSaveState ();
 	}
@@ -919,9 +911,9 @@ namespace Monocle
 	{
 		LayoutManager_->SetLayoutMode (state.Lay_);
 		LayoutManager_->SetScaleMode (state.ScaleMode_);
-		Zoomer_->SetScaleMode (state.ScaleMode_);
+		LayoutManager_->Relayout ();
 
-		Relayout ();
+		Zoomer_->SetScaleMode (state.ScaleMode_);
 
 		Ui_.PagesView_->CenterOn (Ui_.PagesView_->GetViewportTrimmedCenter (*Pages_ [state.CurrentPage_]));
 

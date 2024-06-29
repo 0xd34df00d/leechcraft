@@ -149,7 +149,6 @@ namespace Monocle
 		void SetupToolbarNavigation ();
 		void SetupToolbar ();
 
-		void Relayout ();
 		void SetLayoutMode (LayoutMode);
 
 		void RegenPageVisibility ();
