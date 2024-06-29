@@ -56,7 +56,7 @@ namespace LC::Monocle
 		ReloadTimer_.callOnTimeout ([this]
 				{
 					Tab_.ReloadDoc (CurrentFile_);
-					ResetWatcher ();
+					LastIdentity_ = MakeIdentity (CurrentFile_);
 				});
 	}
 
@@ -68,8 +68,6 @@ namespace LC::Monocle
 
 		Watcher_.addPath (CurrentFile_);
 		Watcher_.addPath (QFileInfo { CurrentFile_ }.dir ().path ());
-
-		LastIdentity_ = MakeIdentity (CurrentFile_);
 	}
 
 	void FileWatcher::CheckReload ()
