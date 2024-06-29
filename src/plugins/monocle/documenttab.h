@@ -100,8 +100,6 @@ namespace Monocle
 
 		int PrevCurrentPage_;
 
-		NavigationAction Onload_ { -1, {} };
-
 		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
 		enum class DocumentOpenOption : std::uint8_t
@@ -132,7 +130,7 @@ namespace Monocle
 		void RecoverState (const QByteArray&);
 
 		void ReloadDoc (const QString&);
-		bool SetDoc (const QString&, DocumentOpenOptions);
+		bool SetDoc (const QString&, DocumentOpenOptions, const std::optional<NavigationAction>& = {});
 
 		void SetCurrentPage (int);
 
@@ -157,9 +155,12 @@ namespace Monocle
 		void RegenPageVisibility ();
 
 		void CheckCurrentPageChange ();
-	private slots:
-		void handleLoaderReady (DocumentOpenOptions, const IDocument_ptr&, const QString&);
 
+		void HandleLoaderReady (DocumentOpenOptions,
+				const IDocument_ptr&,
+				const QString&,
+				const std::optional<NavigationAction>&);
+	private slots:
 		void scheduleSaveState ();
 		void saveState ();
 

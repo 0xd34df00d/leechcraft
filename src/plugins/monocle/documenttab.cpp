@@ -336,7 +336,9 @@ namespace Monocle
 		SetDoc (doc, DocumentOpenOption::IgnoreErrors);
 	}
 
-	bool DocumentTab::SetDoc (const QString& path, DocumentOpenOptions options)
+	bool DocumentTab::SetDoc (const QString& path,
+			DocumentOpenOptions options,
+			const std::optional<NavigationAction>& targetPos)
 	{
 		if (SaveStateScheduled_)
 			saveState ();
@@ -358,7 +360,7 @@ namespace Monocle
 		connect (document,
 				&CoreLoadProxy::ready,
 				this,
-				[options, this] (auto ptr, auto path) { handleLoaderReady (options, ptr, path); });
+				[=, this] (auto ptr, auto path) { HandleLoaderReady (options, ptr, path, targetPos); });
 
 		return true;
 	}
@@ -651,13 +653,6 @@ namespace Monocle
 			return;
 
 		LayoutManager_->Relayout ();
-
-		if (Onload_.PageNumber_ >= 0)
-		{
-			SetPosition (Onload_);
-			Onload_.PageNumber_ = -1;
-		}
-
 		CheckCurrentPageChange ();
 	}
 
@@ -726,14 +721,11 @@ namespace Monocle
 		auto path = nav.TargetDocument_;
 		if (QFileInfo { path }.isRelative ())
 			path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
-
-		Onload_ = nav.DocumentNavigation_;
-		if (!SetDoc (path, DocumentOpenOptions {}))
-			Onload_.PageNumber_ = -1;
+		SetDoc (path, DocumentOpenOptions {}, nav.DocumentNavigation_);
 	}
 
-	void DocumentTab::handleLoaderReady (DocumentOpenOptions options,
-			const IDocument_ptr& document, const QString& path)
+	void DocumentTab::HandleLoaderReady (DocumentOpenOptions options,
+			const IDocument_ptr& document, const QString& path, const std::optional<NavigationAction>& targetPos)
 	{
 		if (!document || !document->IsValid ())
 		{
@@ -806,6 +798,9 @@ namespace Monocle
 		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
 
 		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
+
+		if (targetPos)
+			Navigate (*targetPos);
 	}
 
 	void DocumentTab::saveState ()
