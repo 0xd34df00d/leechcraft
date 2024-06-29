@@ -319,7 +319,6 @@ namespace LC::Monocle
 				[this]
 				{
 					Relayout ();
-					emit scheduledRelayoutFinished ();
 				});
 		RelayoutScheduled_ = true;
 	}
