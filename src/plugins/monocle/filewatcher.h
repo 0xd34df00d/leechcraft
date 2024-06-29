@@ -33,7 +33,7 @@ namespace LC::Monocle
 	public:
 		explicit FileWatcher (DocumentTab&);
 	private:
-		void ResetWatcher ();
+		void SetWatchedFile (const QString&);
 		void CheckReload ();
 	};
 }

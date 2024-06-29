@@ -9,6 +9,7 @@
 #include "filewatcher.h"
 #include <QTimer>
 #include <QFileInfo>
+#include <QtDebug>
 #include "documenttab.h"
 #include "pagegraphicsitem.h"
 
@@ -30,14 +31,7 @@ namespace LC::Monocle
 		connect (&tab,
 				&DocumentTab::fileLoaded,
 				this,
-				[this] (const QString& file)
-				{
-					if (CurrentFile_ != file)
-					{
-						CurrentFile_ = file;
-						ResetWatcher ();
-					}
-				});
+				&FileWatcher::SetWatchedFile);
 
 		connect (&Watcher_,
 				&QFileSystemWatcher::directoryChanged,
@@ -60,14 +54,20 @@ namespace LC::Monocle
 				});
 	}
 
-	void FileWatcher::ResetWatcher ()
+	void FileWatcher::SetWatchedFile (const QString& file)
 	{
+		if (CurrentFile_ == file)
+			return;
+
+		CurrentFile_ = file;
+
 		if (const auto& existing = Watcher_.directories () + Watcher_.files ();
 			!existing.isEmpty ())
 			Watcher_.removePaths (existing);
 
-		Watcher_.addPath (CurrentFile_);
-		Watcher_.addPath (QFileInfo { CurrentFile_ }.dir ().path ());
+		const auto failed = Watcher_.addPaths ({ CurrentFile_, QFileInfo { CurrentFile_ }.dir ().path () });
+		if (!failed.isEmpty ())
+			qWarning () << "failed to watch" << failed;
 	}
 
 	void FileWatcher::CheckReload ()
