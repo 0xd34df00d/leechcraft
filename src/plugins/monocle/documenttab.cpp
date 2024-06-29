@@ -178,6 +178,10 @@ namespace Monocle
 					if (!isScrolling)
 						CheckCurrentPageChange ();
 				});
+		connect (LayoutManager_,
+				&PagesLayoutManager::layoutFinished,
+				this,
+				&DocumentTab::CheckCurrentPageChange);
 		connect (this,
 				&DocumentTab::currentPageChanged,
 				this,
@@ -653,7 +657,6 @@ namespace Monocle
 			return;
 
 		LayoutManager_->Relayout ();
-		CheckCurrentPageChange ();
 	}
 
 	void DocumentTab::SetLayoutMode (LayoutMode mode)
@@ -771,8 +774,6 @@ namespace Monocle
 		emit fileLoaded (path, CurrentDoc_.get (), Pages_);
 
 		recoverDocState (state);
-
-		CheckCurrentPageChange ();
 
 		auto docObj = CurrentDoc_->GetQObject ();
 
