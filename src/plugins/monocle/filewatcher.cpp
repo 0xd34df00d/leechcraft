@@ -12,18 +12,32 @@
 #include "documenttab.h"
 #include "pagegraphicsitem.h"
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
-	FileWatcher::FileWatcher (DocumentTab *tab)
-	: QObject (tab)
-	, Tab_ (tab)
+	namespace
 	{
-		connect (tab,
+		auto MakeIdentity (const QString& path)
+		{
+			const QFileInfo fi { path };
+			return FileWatcher::FileIdentity_t { fi.size (), fi.lastModified () };
+		}
+	}
+
+	FileWatcher::FileWatcher (DocumentTab& tab)
+	: QObject { &tab }
+	, Tab_ { tab }
+	{
+		connect (&tab,
 				&DocumentTab::fileLoaded,
 				this,
-				&FileWatcher::SetWatched);
+				[this] (const QString& file)
+				{
+					if (CurrentFile_ != file)
+					{
+						CurrentFile_ = file;
+						ResetWatcher ();
+					}
+				});
 
 		connect (&Watcher_,
 				&QFileSystemWatcher::directoryChanged,
@@ -34,27 +48,22 @@ namespace Monocle
 				this,
 				&FileWatcher::CheckReload);
 
-		connect (&ReloadTimer_,
-				&QTimer::timeout,
-				this,
-				&FileWatcher::DoReload);
-		ReloadTimer_.setSingleShot (true);
-		ReloadTimer_.setInterval (750);
-	}
+		using namespace std::chrono_literals;
+		constexpr auto ReloadTimerInterval = 750ms;
 
-	namespace
-	{
-		auto MakeIdentity (const QString& path)
-		{
-			const QFileInfo fi { path };
-			return FileWatcher::FileIdentity_t { fi.size (), fi.lastModified () };
-		}
+		ReloadTimer_.setSingleShot (true);
+		ReloadTimer_.setInterval (ReloadTimerInterval);
+		ReloadTimer_.callOnTimeout ([this]
+				{
+					Tab_.ReloadDoc (CurrentFile_);
+					ResetWatcher ();
+				});
 	}
 
 	void FileWatcher::ResetWatcher ()
 	{
-		const auto& existing = Watcher_.directories () + Watcher_.files ();
-		if (!existing.isEmpty ())
+		if (const auto& existing = Watcher_.directories () + Watcher_.files ();
+			!existing.isEmpty ())
 			Watcher_.removePaths (existing);
 
 		Watcher_.addPath (CurrentFile_);
@@ -70,23 +79,6 @@ namespace Monocle
 			return;
 
 		LastIdentity_ = newIdentity;
-
 		ReloadTimer_.start ();
 	}
-
-	void FileWatcher::DoReload ()
-	{
-		Tab_->ReloadDoc (CurrentFile_);
-		ResetWatcher ();
-	}
-
-	void FileWatcher::SetWatched (const QString& file)
-	{
-		if (CurrentFile_ == file)
-			return;
-
-		CurrentFile_ = file;
-		ResetWatcher ();
-	}
-}
 }

@@ -14,15 +14,13 @@
 #include <QFileSystemWatcher>
 #include <QTimer>
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
 
 	class FileWatcher : public QObject
 	{
-		DocumentTab *Tab_;
+		DocumentTab& Tab_;
 
 		QString CurrentFile_;
 		QFileSystemWatcher Watcher_;
@@ -33,12 +31,9 @@ namespace Monocle
 	private:
 		FileIdentity_t LastIdentity_;
 	public:
-		FileWatcher (DocumentTab*);
+		explicit FileWatcher (DocumentTab&);
 	private:
 		void ResetWatcher ();
 		void CheckReload ();
-		void DoReload ();
-		void SetWatched (const QString&);
 	};
-}
 }

@@ -158,7 +158,7 @@ namespace Monocle
 
 		SetupToolbar ();
 
-		new FileWatcher (this);
+		new FileWatcher { *this };
 
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockWidget_->toggleViewAction ());
