@@ -110,7 +110,8 @@ namespace Monocle
 	, SearchHandler_ { *new TextSearchHandler { this } }
 	, ViewPosTracker_ { *new ViewPositionTracker { *Ui_.PagesView_, LayoutManager_, this } }
 	, DockWidget_ { std::make_unique<Dock> (Dock::Deps {
-			.DocTab_ = *this,
+			.LinkContext_ = LinkExecutionContext_,
+			.TabWidget_ = *this,
 			.AnnotationsMgr_ = AnnManager_,
 			.BookmarksMgr_ = DocBMManager_,
 			.SearchHandler_ = SearchHandler_,

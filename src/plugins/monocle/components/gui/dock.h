@@ -14,13 +14,12 @@ class QTreeView;
 
 namespace LC::Monocle
 {
-	class DocumentTab;
-
 	class AnnManager;
 	class AnnWidget;
 	class BookmarksWidget;
-	class IDocument;
 	class DocumentBookmarksManager;
+	class IDocument;
+	struct LinkExecutionContext;
 	class SearchTabWidget;
 	class TextSearchHandler;
 	class ThumbsWidget;
@@ -38,7 +37,8 @@ namespace LC::Monocle
 	public:
 		struct Deps
 		{
-			DocumentTab& DocTab_;
+			LinkExecutionContext& LinkContext_;
+			QWidget& TabWidget_;
 
 			AnnManager& AnnotationsMgr_;
 			DocumentBookmarksManager& BookmarksMgr_;
@@ -50,7 +50,7 @@ namespace LC::Monocle
 
 		void HandleDoc (IDocument&);
 	private:
-		void SetupToc (ViewPositionTracker&, DocumentTab&);
-		void SetupThumbnails (ViewPositionTracker&, DocumentTab&);
+		void SetupToc (ViewPositionTracker&, LinkExecutionContext&);
+		void SetupThumbnails (ViewPositionTracker&, LinkExecutionContext&);
 	};
 }

@@ -19,7 +19,7 @@
 #include "annmanager.h"
 #include "annwidget.h"
 #include "bookmarkswidget.h"
-#include "documenttab.h"
+#include "linkactionexecutor.h"
 #include "pagegraphicsitem.h"
 #include "searchtabwidget.h"
 #include "thumbswidget.h"
@@ -75,8 +75,8 @@ namespace LC::Monocle
 		tabs->addTab (&OptionalContents_, mgr->GetIcon ("configure"_qs), tr ("Optional contents"));
 		setWidget (tabs);
 
-		SetupToc (deps.ViewPosTracker_, deps.DocTab_);
-		SetupThumbnails (deps.ViewPosTracker_, deps.DocTab_);
+		SetupToc (deps.ViewPosTracker_, deps.LinkContext_);
+		SetupThumbnails (deps.ViewPosTracker_, deps.LinkContext_);
 
 		connect (&deps.AnnotationsMgr_,
 				&AnnManager::annotationSelected,
@@ -85,7 +85,7 @@ namespace LC::Monocle
 
 		auto mw = GetProxyHolder ()->GetRootWindowsManager ()->GetMWProxy (0);
 		mw->AddDockWidget (this, { .Area_ = GetLastDockWidgetArea (), .SizeContext_ = "MonocleDockWidget" });
-		mw->AssociateDockWidget (this, &deps.DocTab_);
+		mw->AssociateDockWidget (this, &deps.TabWidget_);
 		mw->ToggleViewActionVisiblity (this, false);
 		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
 			mw->SetDockWidgetVisibility (this, false);
@@ -107,7 +107,7 @@ namespace LC::Monocle
 			OptionalContents_.setModel (nullptr);
 	}
 
-	void Dock::SetupToc (ViewPositionTracker& viewPosTracker, DocumentTab& docTab)
+	void Dock::SetupToc (ViewPositionTracker& viewPosTracker, LinkExecutionContext& linkCtx)
 	{
 		connect (&viewPosTracker,
 				&ViewPositionTracker::currentPageChanged,
@@ -115,11 +115,10 @@ namespace LC::Monocle
 				&TOCWidget::SetCurrentPage);
 		connect (&Toc_,
 				&TOCWidget::navigationRequested,
-				&docTab,
-				qOverload<const NavigationAction&> (&DocumentTab::Navigate));
+				[&linkCtx] (const NavigationAction& act) { linkCtx.Navigate (act); });
 	}
 
-	void Dock::SetupThumbnails (ViewPositionTracker& viewPosTracker, DocumentTab& docTab)
+	void Dock::SetupThumbnails (ViewPositionTracker& viewPosTracker, LinkExecutionContext& linkCtx)
 	{
 		connect (&viewPosTracker,
 				&ViewPositionTracker::currentPageChanged,
@@ -131,7 +130,6 @@ namespace LC::Monocle
 				&ThumbsWidget::UpdatePagesVisibility);
 		connect (&Thumbnails_,
 				&ThumbsWidget::pageClicked,
-				&docTab,
-				[&] (int page) { docTab.SetCurrentPage (page); });
+				[&linkCtx] (int page) { linkCtx.Navigate (NavigationAction { page }); });
 	}
 }
