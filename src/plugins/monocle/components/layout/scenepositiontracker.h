@@ -17,7 +17,7 @@ namespace LC::Monocle
 {
 	class PageGraphicsItem;
 
-	class PositionTracker
+	class ScenePositionTracker
 	{
 		struct BottomRightCorner
 		{
@@ -32,7 +32,7 @@ namespace LC::Monocle
 		const QVector<PageGraphicsItem*>& Pages_;
 		QMap<BottomRightCorner, int> Corner2PageInfo_;
 	public:
-		explicit PositionTracker (const QVector<PageGraphicsItem*>&);
+		explicit ScenePositionTracker (const QVector<PageGraphicsItem*>&);
 
 		void Update ();
 		int GetNearbyPage (SceneAbsolutePos) const;

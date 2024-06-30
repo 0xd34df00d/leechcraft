@@ -12,7 +12,7 @@
 #include <QVector>
 #include "interfaces/monocle/idocument.h"
 #include "common.h"
-#include "components/layout/positiontracker.h"
+#include "components/layout/scenepositiontracker.h"
 
 class QGraphicsScene;
 
@@ -36,7 +36,7 @@ namespace LC::Monocle
 		LayoutMode LayMode_ = LayoutMode::OnePage;
 		ScaleMode ScaleMode_ = FitWidth {};
 
-		PositionTracker PosTracker_ { Pages_ };
+		ScenePositionTracker PosTracker_ { Pages_ };
 
 		bool RelayoutScheduled_ = false;
 

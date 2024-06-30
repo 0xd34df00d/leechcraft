@@ -6,24 +6,24 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "positiontracker.h"
+#include "scenepositiontracker.h"
 #include <QtDebug>
 #include "pagegraphicsitem.h"
 
 namespace LC::Monocle
 {
-	PositionTracker::BottomRightCorner::BottomRightCorner (SceneAbsolutePos p)
+	ScenePositionTracker::BottomRightCorner::BottomRightCorner (SceneAbsolutePos p)
 	: Y_ { p.ToPointF ().y () }
 	, X_ { p.ToPointF ().x () }
 	{
 	}
 
-	PositionTracker::PositionTracker (const QVector<PageGraphicsItem*>& pages)
+	ScenePositionTracker::ScenePositionTracker (const QVector<PageGraphicsItem*>& pages)
 	: Pages_ { pages }
 	{
 	}
 
-	void PositionTracker::Update ()
+	void ScenePositionTracker::Update ()
 	{
 		Corner2PageInfo_.clear ();
 
@@ -35,7 +35,7 @@ namespace LC::Monocle
 		}
 	}
 
-	int PositionTracker::GetNearbyPage (SceneAbsolutePos pos) const
+	int ScenePositionTracker::GetNearbyPage (SceneAbsolutePos pos) const
 	{
 		if (Corner2PageInfo_.isEmpty ())
 			return -1;
