@@ -78,25 +78,6 @@ namespace LC::Monocle
 		SetupToc (deps.ViewPosTracker_, deps.DocTab_);
 		SetupThumbnails (deps.ViewPosTracker_, deps.DocTab_);
 
-		connect (&deps.DocTab_,
-				&DocumentTab::fileLoaded,
-				this,
-				[this] (const QString&, IDocument *doc, const auto&)
-				{
-					if (const auto toc = qobject_cast<IHaveTOC*> (doc->GetQObject ()))
-						Toc_.SetTOC (toc->GetTOC ());
-					else
-						Toc_.SetTOC ({});
-
-					Thumbnails_.HandleDoc (doc);
-					Search_.Reset ();
-
-					if (const auto ihoc = qobject_cast<IHaveOptionalContent*> (doc->GetQObject ()))
-						OptionalContents_.setModel (ihoc->GetOptContentModel ());
-					else
-						OptionalContents_.setModel (nullptr);
-				});
-
 		connect (&deps.AnnotationsMgr_,
 				&AnnManager::annotationSelected,
 				this,
@@ -108,6 +89,22 @@ namespace LC::Monocle
 		mw->ToggleViewActionVisiblity (this, false);
 		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
 			mw->SetDockWidgetVisibility (this, false);
+	}
+
+	void Dock::HandleDoc (IDocument& doc)
+	{
+		if (const auto toc = qobject_cast<IHaveTOC*> (doc.GetQObject ()))
+			Toc_.SetTOC (toc->GetTOC ());
+		else
+			Toc_.SetTOC ({});
+
+		Thumbnails_.HandleDoc (doc);
+		Search_.Reset ();
+
+		if (const auto ihoc = qobject_cast<IHaveOptionalContent*> (doc.GetQObject ()))
+			OptionalContents_.setModel (ihoc->GetOptContentModel ());
+		else
+			OptionalContents_.setModel (nullptr);
 	}
 
 	void Dock::SetupToc (ViewPositionTracker& viewPosTracker, DocumentTab& docTab)

@@ -19,6 +19,7 @@ namespace LC::Monocle
 	class AnnManager;
 	class AnnWidget;
 	class BookmarksWidget;
+	class IDocument;
 	class DocumentBookmarksManager;
 	class SearchTabWidget;
 	class TextSearchHandler;
@@ -46,6 +47,8 @@ namespace LC::Monocle
 		};
 
 		explicit Dock (const Deps&);
+
+		void HandleDoc (IDocument&);
 	private:
 		void SetupToc (ViewPositionTracker&, DocumentTab&);
 		void SetupThumbnails (ViewPositionTracker&, DocumentTab&);

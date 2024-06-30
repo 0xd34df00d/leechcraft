@@ -33,25 +33,23 @@ namespace LC::Monocle
 				[this] { UpdatePagesVisibility (LastVisibleAreas_); });
 	}
 
-	void ThumbsWidget::HandleDoc (IDocument *doc)
+	void ThumbsWidget::HandleDoc (IDocument& doc)
 	{
 		Scene_.clear ();
 		Pages_.clear ();
 		CurrentAreaRects_.clear ();
-		if (!doc)
-			return;
 
-		const auto numPages = doc->GetNumPages ();
+		const auto numPages = doc.GetNumPages ();
 		Pages_.reserve (numPages);
 		for (int i = 0; i < numPages; ++i)
 		{
-			auto item = new PageGraphicsItem { *doc, i };
+			auto item = new PageGraphicsItem { doc, i };
 			Scene_.addItem (item);
 			item->SetReleaseHandler ([this] (int page, auto&&) { emit pageClicked (page); });
 			Pages_ << item;
 		}
 
-		LayoutMgr_->HandleDoc (doc, Pages_);
+		LayoutMgr_->HandleDoc (&doc, Pages_);
 		LayoutMgr_->Relayout ();
 	}
 

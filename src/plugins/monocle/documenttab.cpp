@@ -728,6 +728,7 @@ namespace Monocle
 		AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
 		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
+		DockWidget_->HandleDoc (*CurrentDoc_);
 
 		CreateLinksItems (LinkExecutionContext_, *CurrentDoc_, Pages_);
 

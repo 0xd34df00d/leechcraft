@@ -37,7 +37,7 @@ namespace LC::Monocle
 	public:
 		explicit ThumbsWidget (QWidget* = nullptr);
 
-		void HandleDoc (IDocument*);
+		void HandleDoc (IDocument&);
 
 		void UpdatePagesVisibility (const QMap<int, QRect>&);
 		void SetCurrentPage (int);
