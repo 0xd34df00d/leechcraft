@@ -14,8 +14,6 @@
 #include "common.h"
 #include "components/layout/scenepositiontracker.h"
 
-class QGraphicsScene;
-
 namespace LC::Monocle
 {
 	class PagesView;
@@ -26,7 +24,6 @@ namespace LC::Monocle
 		Q_OBJECT
 
 		PagesView * const View_;
-		QGraphicsScene * const Scene_;
 
 		IDocument *CurrentDoc_ = nullptr;
 

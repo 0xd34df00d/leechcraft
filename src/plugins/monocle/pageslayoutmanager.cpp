@@ -24,9 +24,8 @@ namespace LC::Monocle
 	const int Margin = 12;
 
 	PagesLayoutManager::PagesLayoutManager (PagesView *view, QObject *parent)
-	: QObject (parent)
-	, View_ (view)
-	, Scene_ (view->scene ())
+	: QObject { parent }
+	, View_ { view }
 	{
 		connect (View_,
 				&PagesView::sizeChanged,
@@ -289,7 +288,8 @@ namespace LC::Monocle
 
 		PosTracker_.Update ();
 
-		Scene_->setSceneRect (Scene_->itemsBoundingRect ().adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
+		auto scene = View_->scene ();
+		scene->setSceneRect (scene->itemsBoundingRect ().adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
 
 		if (pageObj)
 			View_->CenterOn (oldPageCenter.ToSceneAbsolute (*pageObj));
