@@ -42,6 +42,7 @@
 #include "components/actions/rotatemenu.h"
 #include "components/actions/zoomer.h"
 #include "components/gui/dock.h"
+#include "components/layout/viewpositiontracker.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -102,18 +103,21 @@ namespace Monocle
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
+	, LayoutManager_ { *new PagesLayoutManager { Ui_.PagesView_, this } }
 	, FormManager_ { *new FormManager { Ui_.PagesView_, LinkExecutionContext_ }}
 	, AnnManager_ { *new AnnManager { LinkExecutionContext_, this } }
 	, DocBMManager_ { *new DocumentBookmarksManager { this, this } }
 	, SearchHandler_ { *new TextSearchHandler { this } }
+	, ViewPosTracker_ { *new ViewPositionTracker { *Ui_.PagesView_, LayoutManager_, this } }
 	, DockWidget_ { std::make_unique<Dock> (Dock::Deps {
-		.DocTab_ = *this,
-		.AnnotationsMgr_ = AnnManager_,
-		.BookmarksMgr_ = DocBMManager_,
-		.SearchHandler_ = SearchHandler_
+			.DocTab_ = *this,
+			.AnnotationsMgr_ = AnnManager_,
+			.BookmarksMgr_ = DocBMManager_,
+			.SearchHandler_ = SearchHandler_,
+			.ViewPosTracker_ = ViewPosTracker_,
 		}) }
 	, NavHistory_ (new NavigationHistory { *this })
-	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_->GetCurrentScale (); }) }
+	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_.GetCurrentScale (); }) }
 	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
 	{
 		Ui_.PagesView_->setScene (&Scene_);
@@ -134,12 +138,11 @@ namespace Monocle
 				this,
 				[this] (ScaleMode mode)
 				{
-					LayoutManager_->SetScaleMode (mode);
-					LayoutManager_->Relayout ();
+					LayoutManager_.SetScaleMode (mode);
+					LayoutManager_.Relayout ();
 					scheduleSaveState ();
 				});
 
-		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
 		connect (&SearchHandler_,
 				&TextSearchHandler::navigateRequested,
 				this,
@@ -163,29 +166,18 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockWidget_->toggleViewAction ());
 
-		connect (this,
-				&DocumentTab::currentPageChanged,
-				PageNumLabel_,
-				&PageNumLabel::SetCurrentPage);
-		connect (Ui_.PagesView_->verticalScrollBar (),
-				&QScrollBar::valueChanged,
+		connect (&ViewPosTracker_,
+				&ViewPositionTracker::currentPageChanged,
 				this,
-				&DocumentTab::CheckCurrentPageChange);
+				[this] (int current)
+				{
+					PageNumLabel_->SetCurrentPage (current);
+					scheduleSaveState ();
+				});
 		connect (Scroller_,
 				&SmoothScroller::isCurrentlyScrollingChanged,
-				[this] (bool isScrolling)
-				{
-					if (!isScrolling)
-						CheckCurrentPageChange ();
-				});
-		connect (LayoutManager_,
-				&PagesLayoutManager::layoutFinished,
-				this,
-				&DocumentTab::CheckCurrentPageChange);
-		connect (this,
-				&DocumentTab::currentPageChanged,
-				this,
-				&DocumentTab::scheduleSaveState);
+				&ViewPosTracker_,
+				[this] (bool scrolling) { ViewPosTracker_.SetUpdatesEnabled (!scrolling); });
 	}
 
 	DocumentTab::~DocumentTab () = default;
@@ -193,7 +185,7 @@ namespace Monocle
 	ExternalNavigationAction DocumentTab::GetNavigationHistoryEntry () const
 	{
 		PageRelativePos position;
-		auto pageNum = LayoutManager_->GetCurrentPage ();
+		auto pageNum = LayoutManager_.GetCurrentPage ();
 		if (pageNum >= 0)
 			position = Ui_.PagesView_->GetCurrentCenter ().ToPageRelative (*Pages_ [pageNum]);
 
@@ -260,9 +252,9 @@ namespace Monocle
 		QDataStream out (&result, QIODevice::WriteOnly);
 		out << static_cast<quint8> (1)
 			<< CurrentDocPath_
-			<< LayoutManager_->GetCurrentScale ()
+			<< LayoutManager_.GetCurrentScale ()
 			<< Ui_.PagesView_->GetCurrentCenter ().ToPointF ().toPoint ()
-			<< LayoutMode2Name (LayoutManager_->GetLayoutMode ());
+			<< LayoutMode2Name (LayoutManager_.GetLayoutMode ());
 		return result;
 	}
 
@@ -326,11 +318,11 @@ namespace Monocle
 			>> point
 			>> modeStr;
 
-		LayoutManager_->SetLayoutMode (Name2LayoutMode (modeStr));
+		LayoutManager_.SetLayoutMode (Name2LayoutMode (modeStr));
 
 		SetDoc (path, DocumentOpenOptions {});
-		LayoutManager_->SetScaleMode (FixedScale { scale });
-		LayoutManager_->Relayout ();
+		LayoutManager_.SetScaleMode (FixedScale { scale });
+		LayoutManager_.Relayout ();
 
 		QTimer::singleShot (0, this, [point, this] { Ui_.PagesView_->centerOn (point); });
 	}
@@ -416,8 +408,8 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbarRotate ()
 	{
-		auto rotateMenu = CreateRotateMenu (AngleNotifier { *LayoutManager_, &PagesLayoutManager::rotationUpdated },
-				std::bind_front (&PagesLayoutManager::SetRotation, LayoutManager_));
+		auto rotateMenu = CreateRotateMenu (AngleNotifier { LayoutManager_, &PagesLayoutManager::rotationUpdated },
+				std::bind_front (&PagesLayoutManager::SetRotation, &LayoutManager_));
 
 		auto rotateButton = new QToolButton ();
 		rotateButton->setProperty ("ActionIcon", "transform-rotate");
@@ -458,9 +450,9 @@ namespace Monocle
 					SetCurrentPage (value - 1);
 					scheduleSaveState ();
 				});
-		connect (LayoutManager_,
+		connect (&LayoutManager_,
 				&PagesLayoutManager::layoutModeChanged,
-				[this] { PageNumLabel_->setSingleStep (LayoutManager_->GetLayoutModeCount ()); });
+				[this] { PageNumLabel_->setSingleStep (LayoutManager_.GetLayoutModeCount ()); });
 		Toolbar_->addWidget (PageNumLabel_);
 
 		{
@@ -497,7 +489,7 @@ namespace Monocle
 				[this]
 				{
 					if (CurrentDoc_)
-						Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this);
+						Print (LayoutManager_.GetCurrentPage (), *CurrentDoc_, *this);
 				});
 		Toolbar_->addAction (print);
 
@@ -653,34 +645,10 @@ namespace Monocle
 
 	void DocumentTab::SetLayoutMode (LayoutMode mode)
 	{
-		LayoutManager_->SetLayoutMode (mode);
-		LayoutManager_->Relayout ();
+		LayoutManager_.SetLayoutMode (mode);
+		LayoutManager_.Relayout ();
 
 		scheduleSaveState ();
-	}
-
-	void DocumentTab::RegenPageVisibility ()
-	{
-		if (receivers (SIGNAL (pagesVisibilityChanged (QMap<int, QRect>))) <= 0)
-			return;
-
-		const auto& viewRect = Ui_.PagesView_->viewport ()->rect ();
-		const auto& visibleRect = Ui_.PagesView_->mapToScene (viewRect);
-
-		QMap<int, QRect> rects;
-		for (auto item : Ui_.PagesView_->items (viewRect))
-		{
-			auto page = dynamic_cast<PageGraphicsItem*> (item);
-			if (!page)
-				continue;
-
-			const auto& pageRect = page->mapToScene (page->boundingRect ());
-			const auto& xsect = visibleRect.intersected (pageRect);
-			const auto& pageXsect = page->MapToDoc (page->mapFromScene (xsect).boundingRect ());
-			rects [page->GetPageNum ()] = pageXsect.toAlignedRect ();
-		}
-
-		emit pagesVisibilityChanged (rects);
 	}
 
 	void DocumentTab::SetPosition (const NavigationAction& nav)
@@ -754,7 +722,7 @@ namespace Monocle
 			Pages_ << item;
 		}
 
-		LayoutManager_->HandleDoc (CurrentDoc_.get (), Pages_);
+		LayoutManager_.HandleDoc (CurrentDoc_.get (), Pages_);
 		SearchHandler_.HandleDoc (*CurrentDoc_, Pages_);
 		FormManager_.HandleDoc (*CurrentDoc_, Pages_);
 		AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
@@ -774,7 +742,7 @@ namespace Monocle
 			connect (docSignals,
 					&DocumentSignals::printRequested,
 					this,
-					[this] { Print (LayoutManager_->GetCurrentPage (), *CurrentDoc_, *this); });
+					[this] { Print (LayoutManager_.GetCurrentPage (), *CurrentDoc_, *this); });
 			connect (docSignals,
 					&DocumentSignals::pageContentsChanged,
 					this,
@@ -811,9 +779,9 @@ namespace Monocle
 		const auto& filename = QFileInfo (CurrentDocPath_).fileName ();
 		Core::Instance ().GetDocStateManager ()->SetState (filename,
 				{
-					LayoutManager_->GetCurrentPage (),
-					LayoutManager_->GetLayoutMode (),
-					LayoutManager_->GetScaleMode ()
+					LayoutManager_.GetCurrentPage (),
+					LayoutManager_.GetLayoutMode (),
+					LayoutManager_.GetScaleMode ()
 				});
 	}
 
@@ -889,29 +857,14 @@ namespace Monocle
 			return;
 
 		auto presenter = new PresenterWidget (CurrentDoc_);
-		presenter->NavigateTo (LayoutManager_->GetCurrentPage ());
-	}
-
-	void DocumentTab::CheckCurrentPageChange ()
-	{
-		if (Scroller_->IsCurrentlyScrolling ())
-			return;
-
-		RegenPageVisibility ();
-
-		auto current = LayoutManager_->GetCurrentPage ();
-		if (PrevCurrentPage_ == current)
-			return;
-
-		PrevCurrentPage_ = current;
-		emit currentPageChanged (current);
+		presenter->NavigateTo (LayoutManager_.GetCurrentPage ());
 	}
 
 	void DocumentTab::recoverDocState (DocStateManager::State state)
 	{
-		LayoutManager_->SetLayoutMode (state.Lay_);
-		LayoutManager_->SetScaleMode (state.ScaleMode_);
-		LayoutManager_->Relayout ();
+		LayoutManager_.SetLayoutMode (state.Lay_);
+		LayoutManager_.SetScaleMode (state.ScaleMode_);
+		LayoutManager_.Relayout ();
 
 		Zoomer_->SetScaleMode (state.ScaleMode_);
 
@@ -919,7 +872,7 @@ namespace Monocle
 
 		const auto action = [this]
 		{
-			switch (LayoutManager_->GetLayoutMode ())
+			switch (LayoutManager_.GetLayoutMode ())
 			{
 			case LayoutMode::OnePage:
 				return LayOnePage_;

@@ -38,8 +38,9 @@ namespace Monocle
 	class DocumentBookmarksManager;
 	class PageNumLabel;
 	class SmoothScroller;
-	class Zoomer;
 	class Dock;
+	class ViewPositionTracker;
+	class Zoomer;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -79,11 +80,12 @@ namespace Monocle
 			void Navigate (const ExternalNavigationAction& act) override;
 		} LinkExecutionContext_ { *this };
 
-		PagesLayoutManager *LayoutManager_ = nullptr;
+		PagesLayoutManager& LayoutManager_;
 		FormManager& FormManager_;
 		AnnManager& AnnManager_;
 		DocumentBookmarksManager& DocBMManager_;
 		TextSearchHandler& SearchHandler_;
+		ViewPositionTracker& ViewPosTracker_;
 
 		std::unique_ptr<Dock> DockWidget_;
 
@@ -151,10 +153,6 @@ namespace Monocle
 
 		void SetLayoutMode (LayoutMode);
 
-		void RegenPageVisibility ();
-
-		void CheckCurrentPageChange ();
-
 		void HandleLoaderReady (DocumentOpenOptions,
 				const IDocument_ptr&,
 				const QString&,
@@ -181,9 +179,6 @@ namespace Monocle
 		void tabRecoverDataChanged () override;
 
 		void fileLoaded (const QString& path, IDocument *doc, const QVector<PageGraphicsItem*>& pages);
-
-		void currentPageChanged (int);
-		void pagesVisibilityChanged (const QMap<int, QRect>&);
 	};
 }
 }

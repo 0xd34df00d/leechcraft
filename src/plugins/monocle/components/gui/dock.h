@@ -24,6 +24,7 @@ namespace LC::Monocle
 	class TextSearchHandler;
 	class ThumbsWidget;
 	class TOCWidget;
+	class ViewPositionTracker;
 
 	class Dock : public QDockWidget
 	{
@@ -41,11 +42,12 @@ namespace LC::Monocle
 			AnnManager& AnnotationsMgr_;
 			DocumentBookmarksManager& BookmarksMgr_;
 			TextSearchHandler& SearchHandler_;
+			ViewPositionTracker& ViewPosTracker_;
 		};
 
 		explicit Dock (const Deps&);
 	private:
-		void SetupToc (DocumentTab&);
-		void SetupThumbnails (DocumentTab&);
+		void SetupToc (ViewPositionTracker&, DocumentTab&);
+		void SetupThumbnails (ViewPositionTracker&, DocumentTab&);
 	};
 }

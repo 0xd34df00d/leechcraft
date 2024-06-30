@@ -15,6 +15,7 @@
 #include <interfaces/imwproxy.h>
 #include <util/sll/qtutil.h>
 #include "interfaces/monocle/ihaveoptionalcontent.h"
+#include "components/layout/viewpositiontracker.h"
 #include "annmanager.h"
 #include "annwidget.h"
 #include "bookmarkswidget.h"
@@ -74,8 +75,8 @@ namespace LC::Monocle
 		tabs->addTab (&OptionalContents_, mgr->GetIcon ("configure"_qs), tr ("Optional contents"));
 		setWidget (tabs);
 
-		SetupToc (deps.DocTab_);
-		SetupThumbnails (deps.DocTab_);
+		SetupToc (deps.ViewPosTracker_, deps.DocTab_);
+		SetupThumbnails (deps.ViewPosTracker_, deps.DocTab_);
 
 		connect (&deps.DocTab_,
 				&DocumentTab::fileLoaded,
@@ -109,10 +110,10 @@ namespace LC::Monocle
 			mw->SetDockWidgetVisibility (this, false);
 	}
 
-	void Dock::SetupToc (DocumentTab& docTab)
+	void Dock::SetupToc (ViewPositionTracker& viewPosTracker, DocumentTab& docTab)
 	{
-		connect (&docTab,
-				&DocumentTab::currentPageChanged,
+		connect (&viewPosTracker,
+				&ViewPositionTracker::currentPageChanged,
 				&Toc_,
 				&TOCWidget::SetCurrentPage);
 		connect (&Toc_,
@@ -121,14 +122,14 @@ namespace LC::Monocle
 				qOverload<const NavigationAction&> (&DocumentTab::Navigate));
 	}
 
-	void Dock::SetupThumbnails (DocumentTab& docTab)
+	void Dock::SetupThumbnails (ViewPositionTracker& viewPosTracker, DocumentTab& docTab)
 	{
-		connect (&docTab,
-				&DocumentTab::currentPageChanged,
+		connect (&viewPosTracker,
+				&ViewPositionTracker::currentPageChanged,
 				&Thumbnails_,
 				&ThumbsWidget::SetCurrentPage);
-		connect (&docTab,
-				&DocumentTab::pagesVisibilityChanged,
+		connect (&viewPosTracker,
+				&ViewPositionTracker::pagesVisibilityChanged,
 				&Thumbnails_,
 				&ThumbsWidget::UpdatePagesVisibility);
 		connect (&Thumbnails_,
