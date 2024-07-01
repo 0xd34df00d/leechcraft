@@ -100,8 +100,6 @@ namespace Monocle
 
 		bool SaveStateScheduled_ = false;
 
-		int PrevCurrentPage_;
-
 		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
 		enum class DocumentOpenOption : std::uint8_t
