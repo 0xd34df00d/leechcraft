@@ -337,8 +337,7 @@ namespace Monocle
 			DocumentOpenOptions options,
 			const std::optional<NavigationAction>& targetPos)
 	{
-		if (SaveStateScheduled_)
-			saveState ();
+		saveState ();
 
 		auto document = Core::Instance ().LoadDocument (path);
 		if (!document)
