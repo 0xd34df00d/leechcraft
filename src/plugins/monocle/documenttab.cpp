@@ -62,7 +62,6 @@
 #include "documentbookmarksmanager.h"
 #include "pagenumlabel.h"
 #include "smoothscroller.h"
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
