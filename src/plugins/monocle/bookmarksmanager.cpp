@@ -63,9 +63,9 @@ namespace Monocle
 		Save ();
 	}
 
-	QList<Bookmark> BookmarksManager::GetBookmarks (IDocument_ptr doc) const
+	QVector<Bookmark> BookmarksManager::GetBookmarks (IDocument_ptr doc) const
 	{
-		QList<Bookmark> result;
+		QVector<Bookmark> result;
 
 		auto fileElem = GetDocElem (GetDocID (doc));
 		auto bmElem = fileElem.firstChildElement ("bm");

@@ -27,7 +27,7 @@ namespace Monocle
 		void AddBookmark (IDocument_ptr, const Bookmark&);
 		void RemoveBookmark (IDocument_ptr, const Bookmark&);
 
-		QList<Bookmark> GetBookmarks (IDocument_ptr) const;
+		QVector<Bookmark> GetBookmarks (IDocument_ptr) const;
 	private:
 		QDomElement GetDocElem (const QString&) const;
 		QDomElement GetDocElem (const QString&);
