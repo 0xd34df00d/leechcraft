@@ -24,10 +24,10 @@ namespace Monocle
 	public:
 		BookmarksManager (QObject* = nullptr);
 
-		void AddBookmark (IDocument_ptr, const Bookmark&);
-		void RemoveBookmark (IDocument_ptr, const Bookmark&);
+		void AddBookmark (const IDocument&, const Bookmark&);
+		void RemoveBookmark (const IDocument&, const Bookmark&);
 
-		QVector<Bookmark> GetBookmarks (IDocument_ptr) const;
+		QVector<Bookmark> GetBookmarks (const IDocument&) const;
 	private:
 		QDomElement GetDocElem (const QString&) const;
 		QDomElement GetDocElem (const QString&);

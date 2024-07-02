@@ -26,17 +26,17 @@ namespace Monocle
 
 	namespace
 	{
-		QString GetDocID (IDocument_ptr doc)
+		QString GetDocID (const IDocument& doc)
 		{
-			const auto& info = doc->GetDocumentInfo ();
+			const auto& info = doc.GetDocumentInfo ();
 			if (!info.Title_.trimmed ().isEmpty ())
 				return info.Title_;
 
-			return QFileInfo (doc->GetDocURL ().path ()).fileName ();
+			return QFileInfo (doc.GetDocURL ().path ()).fileName ();
 		}
 	}
 
-	void BookmarksManager::AddBookmark (IDocument_ptr doc, const Bookmark& bm)
+	void BookmarksManager::AddBookmark (const IDocument& doc, const Bookmark& bm)
 	{
 		auto fileElem = GetDocElem (GetDocID (doc));
 
@@ -47,7 +47,7 @@ namespace Monocle
 		Save ();
 	}
 
-	void BookmarksManager::RemoveBookmark (IDocument_ptr doc, const Bookmark& bm)
+	void BookmarksManager::RemoveBookmark (const IDocument& doc, const Bookmark& bm)
 	{
 		auto fileElem = GetDocElem (GetDocID (doc));
 
@@ -63,7 +63,7 @@ namespace Monocle
 		Save ();
 	}
 
-	QVector<Bookmark> BookmarksManager::GetBookmarks (IDocument_ptr doc) const
+	QVector<Bookmark> BookmarksManager::GetBookmarks (const IDocument& doc) const
 	{
 		QVector<Bookmark> result;
 

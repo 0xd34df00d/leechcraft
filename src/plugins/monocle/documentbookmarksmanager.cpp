@@ -71,7 +71,7 @@ namespace LC::Monocle
 			return;
 
 		const auto& bm = idx.data (Roles::RBookmark).value<Bookmark> ();
-		Core::Instance ().GetBookmarksManager ()->RemoveBookmark (Doc_, bm);
+		Core::Instance ().GetBookmarksManager ()->RemoveBookmark (*Doc_, bm);
 
 		ReloadBookmarks ();
 	}
@@ -90,7 +90,7 @@ namespace LC::Monocle
 		if (!Doc_)
 			return;
 
-		auto bookmarks = Core::Instance ().GetBookmarksManager ()->GetBookmarks (Doc_);
+		auto bookmarks = Core::Instance ().GetBookmarksManager ()->GetBookmarks (*Doc_);
 		std::sort (bookmarks.begin (), bookmarks.end (),
 				Util::ComparingBy ([] (const Bookmark& bm)
 				{
