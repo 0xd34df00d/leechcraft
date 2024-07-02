@@ -28,8 +28,6 @@ namespace LC::Monocle
 	{
 		Util::InstallTranslator ("monocle");
 
-		qRegisterMetaType<QList<int>> ("QList<int>");
-
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");
 
