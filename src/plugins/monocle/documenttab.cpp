@@ -565,7 +565,7 @@ namespace Monocle
 				&DocumentBookmarksManager::docAvailable,
 				bmMenu,
 				&QMenu::setEnabled);
-		bmMenu->setEnabled (DocBMManager_.HasDoc ());
+		bmMenu->setEnabled (false);
 		bmButton->setMenu (bmMenu);
 		bmButton->setProperty ("ActionIcon", "bookmarks");
 		Toolbar_->addWidget (bmButton);
