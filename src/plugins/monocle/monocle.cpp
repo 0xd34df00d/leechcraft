@@ -14,6 +14,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "util/monocle/textdocumentformatconfig.h"
 #include "core.h"
@@ -21,9 +22,7 @@
 #include "xmlsettingsmanager.h"
 #include "defaultbackendmanager.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -31,15 +30,14 @@ namespace Monocle
 
 		qRegisterMetaType<QList<int>> ("QList<int>");
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");
 
 		TextDocumentFormatConfig::Instance ().SetXSM (XmlSettingsManager::Instance ());
 
 		Core::Instance ().SetProxy (proxy, this);
 
-		XSD_->SetDataSource ("DefaultBackends",
-				Core::Instance ().GetDefaultBackendManager ()->GetModel ());
+		XSD_->SetDataSource ("DefaultBackends", Core::Instance ().GetDefaultBackendManager ()->GetModel ());
 
 		DocTabInfo_ =
 		{
@@ -81,7 +79,7 @@ namespace Monocle
 
 	QString Plugin::GetName () const
 	{
-		return "Monocle";
+		return "Monocle"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -97,22 +95,22 @@ namespace Monocle
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		if (!(e.Parameters_ & FromUserInitiated))
-			return EntityTestHandleResult ();
+			return {};
 
 		if (!e.Entity_.canConvert<QUrl> ())
-			return EntityTestHandleResult ();
+			return {};
 
 		const auto& url = e.Entity_.toUrl ();
-		if (url.scheme () != "file")
-			return EntityTestHandleResult ();
+		if (url.scheme () != "file"_qs)
+			return {};
 
 		const auto& local = url.toLocalFile ();
 		if (!QFile::exists (local))
-			return EntityTestHandleResult ();
+			return {};
 
 		return Core::Instance ().CanLoadDocument (local) ?
-				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-				EntityTestHandleResult ();
+				EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
+				EntityTestHandleResult {};
 	}
 
 	namespace
@@ -145,16 +143,12 @@ namespace Monocle
 		if (id == DocTabInfo_.TabClass_)
 			AddTab (new DocumentTab (DocTabInfo_, this));
 		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
-					<< id;
+			qWarning () << "unknown tab class" << id;
 	}
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
+		return { "org.LeechCraft.Monocle.IBackendPlugin" };
 	}
 
 	void Plugin::AddPlugin (QObject *pluginObj)
@@ -199,7 +193,6 @@ namespace Monocle
 		Core::Instance ().GetShortcutManager ()->SetShortcut (id, sequences);
 	}
 }
-}
+
 
 LC_EXPORT_PLUGIN (leechcraft_monocle, LC::Monocle::Plugin);
-

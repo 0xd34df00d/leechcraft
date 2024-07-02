@@ -17,9 +17,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
 
@@ -47,31 +45,29 @@ namespace Monocle
 
 		TabClassInfo DocTabInfo_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const override;
+		void Handle (Entity) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog() const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		QSet<QByteArray> GetExpectedPluginClasses () const override;
+		void AddPlugin (QObject*) override;
 
-		void RecoverTabs (const QList<TabRecoverInfo>& infos);
-		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
+		void RecoverTabs (const QList<TabRecoverInfo>& infos) override;
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 
-		QMap<QByteArray, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QByteArray&, const QKeySequences_t&);
+		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
 	};
 }
-}
-
