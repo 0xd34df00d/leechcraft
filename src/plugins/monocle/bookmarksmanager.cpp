@@ -45,6 +45,8 @@ namespace Monocle
 		fileElem.appendChild (elem);
 
 		Save ();
+
+		emit documentBookmarksChanged (&doc);
 	}
 
 	void BookmarksManager::RemoveBookmark (const IDocument& doc, const Bookmark& bm)
@@ -61,6 +63,8 @@ namespace Monocle
 		}
 
 		Save ();
+
+		emit documentBookmarksChanged (&doc);
 	}
 
 	QVector<Bookmark> BookmarksManager::GetBookmarks (const IDocument& doc) const

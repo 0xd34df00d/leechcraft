@@ -20,6 +20,8 @@ namespace Monocle
 
 	class BookmarksManager : public QObject
 	{
+		Q_OBJECT
+
 		QDomDocument BookmarksDOM_;
 	public:
 		BookmarksManager (QObject* = nullptr);
@@ -35,6 +37,8 @@ namespace Monocle
 		void Load ();
 		bool LoadSaved ();
 		void Save () const;
+	signals:
+		void documentBookmarksChanged (const IDocument*);
 	};
 }
 }
