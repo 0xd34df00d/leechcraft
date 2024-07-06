@@ -94,13 +94,13 @@ namespace LC::Monocle
 		std::sort (bookmarks.begin (), bookmarks.end (),
 				Util::ComparingBy ([] (const Bookmark& bm)
 				{
-					const auto& pos = bm.GetPosition ();
+					const auto& pos = bm.Position_;
 					return std::make_tuple (pos.x (), pos.y ());
 				}));
 
 		for (const auto& bm : bookmarks)
 		{
-			auto item = new QStandardItem (bm.GetName ());
+			auto item = new QStandardItem (bm.Name_);
 			item->setEditable (false);
 			item->setData (QVariant::fromValue<Bookmark> (bm), Roles::RBookmark);
 			Model_->appendRow (item);

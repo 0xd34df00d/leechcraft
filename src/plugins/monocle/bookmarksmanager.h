@@ -16,7 +16,7 @@ namespace LC
 {
 namespace Monocle
 {
-	class Bookmark;
+	struct Bookmark;
 
 	class BookmarksManager : public QObject
 	{

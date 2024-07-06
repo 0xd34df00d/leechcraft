@@ -12,47 +12,8 @@
 #include <QtDebug>
 #include "interfaces/monocle/ilink.h"
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
-	Bookmark::Bookmark (const QString& name, int page, const QPointF& position)
-	: Name_ (name)
-	, Page_ (page)
-	, Position_ (position)
-	{
-	}
-
-	QString Bookmark::GetName () const
-	{
-		return Name_;
-	}
-
-	void Bookmark::SetName (const QString& name)
-	{
-		Name_ = name;
-	}
-
-	int Bookmark::GetPage () const
-	{
-		return Page_;
-	}
-
-	void Bookmark::SetPage (int page)
-	{
-		Page_ = page;
-	}
-
-	QPointF Bookmark::GetPosition () const
-	{
-		return Position_;
-	}
-
-	void Bookmark::SetPosition (const QPointF& p)
-	{
-		Position_ = p;
-	}
-
 	NavigationAction Bookmark::ToNavigationAction () const
 	{
 		const QRectF targetArea { Position_, QSizeF { 1, 1 } };
@@ -88,8 +49,6 @@ namespace Monocle
 
 	bool operator== (const Bookmark& b1, const Bookmark& b2)
 	{
-		return b1.GetPosition () == b2.GetPosition () &&
-			b1.GetName () == b2.GetName ();
+		return b1.Position_ == b2.Position_ && b1.Name_ == b2.Name_;
 	}
-}
 }

@@ -8,34 +8,22 @@
 
 #pragma once
 
-#include <QPoint>
+#include <QPointF>
 #include <QString>
 #include <QMetaType>
 
 class QDomElement;
 class QDomDocument;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	struct NavigationAction;
 
-	class Bookmark
+	struct Bookmark
 	{
 		QString Name_;
 		int Page_ = 0;
 		QPointF Position_;
-	public:
-		Bookmark () = default;
-		Bookmark (const QString&, int page, const QPointF& position);
-
-		QString GetName () const;
-		void SetName (const QString&);
-		int GetPage () const;
-		void SetPage (int);
-		QPointF GetPosition () const;
-		void SetPosition (const QPointF& p);
 
 		NavigationAction ToNavigationAction () const;
 
@@ -45,6 +33,6 @@ namespace Monocle
 
 	bool operator== (const Bookmark&, const Bookmark&);
 }
-}
+
 
 Q_DECLARE_METATYPE (LC::Monocle::Bookmark)
