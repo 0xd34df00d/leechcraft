@@ -19,6 +19,8 @@ namespace LC
 {
 namespace Monocle
 {
+	struct NavigationAction;
+
 	class Bookmark
 	{
 		QString Name_;
@@ -34,6 +36,8 @@ namespace Monocle
 		void SetPage (int);
 		QPoint GetPosition () const;
 		void SetPosition (const QPoint& p);
+
+		NavigationAction ToNavigationAction () const;
 
 		void ToXML (QDomElement&, QDomDocument&) const;
 		static Bookmark FromXML (const QDomElement&);

@@ -10,6 +10,7 @@
 #include <QDataStream>
 #include <QDomElement>
 #include <QtDebug>
+#include "interfaces/monocle/ilink.h"
 
 namespace LC
 {
@@ -50,6 +51,12 @@ namespace Monocle
 	void Bookmark::SetPosition (const QPoint& p)
 	{
 		Position_ = p;
+	}
+
+	NavigationAction Bookmark::ToNavigationAction () const
+	{
+		const QRectF targetArea { Position_, QSizeF { 1, 1 } };
+		return { .PageNumber_ = Page_, .TargetArea_ = targetArea };
 	}
 
 	void Bookmark::ToXML (QDomElement& elem, QDomDocument& doc) const
