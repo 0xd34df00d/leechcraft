@@ -84,4 +84,13 @@ namespace LC::Monocle
 		PageAbsolutePos ToPageAbsolute (const PageGraphicsItem&) const;
 		PageRelativePos ToPageRelative (const PageGraphicsItem&) const;
 	};
+
+	template<typename T>
+	struct PageWithPos
+	{
+		int Page_;
+		T Pos_;
+	};
+
+	using PageWithRelativePos = PageWithPos<PageRelativePos>;
 }
