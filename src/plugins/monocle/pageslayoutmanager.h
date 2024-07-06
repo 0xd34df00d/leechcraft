@@ -49,6 +49,8 @@ namespace LC::Monocle
 		void SetLayoutMode (LayoutMode);
 		int GetLayoutModeCount () const;
 
+		std::optional<PageWithRelativePos> GetCurrentPagePos () const;
+
 		int GetCurrentPage () const;
 
 		void SetScaleMode (ScaleMode);

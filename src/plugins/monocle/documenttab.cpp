@@ -184,18 +184,15 @@ namespace Monocle
 
 	ExternalNavigationAction DocumentTab::GetNavigationHistoryEntry () const
 	{
-		PageRelativePos position;
-		auto pageNum = LayoutManager_.GetCurrentPage ();
-		if (pageNum >= 0)
-			position = Ui_.PagesView_->GetCurrentCenter ().ToPageRelative (*Pages_ [pageNum]);
+		// TODO properly handle lack of current page
+		const auto pos = LayoutManager_.GetCurrentPagePos ();
+		if (!pos)
+			return {};
 
 		return
 		{
 			CurrentDocPath_,
-			{
-				pageNum,
-				QRectF { position.ToPointF (), QSizeF {} }
-			}
+			{ pos->Page_, QRectF { pos->Pos_.ToPointF (), QSizeF {} } }
 		};
 	}
 

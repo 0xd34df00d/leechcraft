@@ -71,6 +71,19 @@ namespace LC::Monocle
 		return LayMode_ == LayoutMode::OnePage ? 1 : 2;
 	}
 
+	std::optional<PageWithRelativePos> PagesLayoutManager::GetCurrentPagePos () const
+	{
+		const auto pageIdx = PosTracker_.GetNearbyPage (View_->GetCurrentCenter ().ClearedX ());
+		if (pageIdx < 0)
+			return {};
+
+		return PageWithRelativePos
+		{
+			.Page_ = pageIdx,
+			.Pos_ = View_->GetCurrentCenter ().ToPageRelative (*Pages_ [pageIdx]),
+		};
+	}
+
 	int PagesLayoutManager::GetCurrentPage () const
 	{
 		return PosTracker_.GetNearbyPage (View_->GetCurrentCenter ().ClearedX ());
@@ -265,11 +278,7 @@ namespace LC::Monocle
 	void PagesLayoutManager::Relayout ()
 	{
 		const auto scale = GetCurrentScale ();
-		const auto pageObj = Pages_.value (GetCurrentPage ());
-
-		PageRelativePos oldPageCenter;
-		if (pageObj)
-			oldPageCenter = View_->GetCurrentCenter ().ToPageRelative (*pageObj);
+		const auto& curPagePos = GetCurrentPagePos ();
 
 		ApplyPagesGeometry (scale);
 
@@ -291,8 +300,8 @@ namespace LC::Monocle
 		auto scene = View_->scene ();
 		scene->setSceneRect (scene->itemsBoundingRect ().adjusted (-Margins_.width (), -Margins_.height (), 0, 0));
 
-		if (pageObj)
-			View_->CenterOn (oldPageCenter.ToSceneAbsolute (*pageObj));
+		if (curPagePos)
+			View_->CenterOn (curPagePos->Pos_.ToSceneAbsolute (*Pages_.value (curPagePos->Page_)));
 
 		emit layoutFinished ();
 		RelayoutScheduled_ = false;
