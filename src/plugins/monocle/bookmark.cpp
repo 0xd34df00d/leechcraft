@@ -16,7 +16,7 @@ namespace LC
 {
 namespace Monocle
 {
-	Bookmark::Bookmark (const QString& name, int page, const QPoint& position)
+	Bookmark::Bookmark (const QString& name, int page, const QPointF& position)
 	: Name_ (name)
 	, Page_ (page)
 	, Position_ (position)
@@ -43,12 +43,12 @@ namespace Monocle
 		Page_ = page;
 	}
 
-	QPoint Bookmark::GetPosition () const
+	QPointF Bookmark::GetPosition () const
 	{
 		return Position_;
 	}
 
-	void Bookmark::SetPosition (const QPoint& p)
+	void Bookmark::SetPosition (const QPointF& p)
 	{
 		Position_ = p;
 	}
@@ -82,7 +82,7 @@ namespace Monocle
 		{
 			name,
 			page,
-			{ posElem.attribute ("x").toInt (), posElem.attribute ("y").toInt () }
+			{ posElem.attribute ("x").toDouble (), posElem.attribute ("y").toDouble () }
 		};
 	}
 

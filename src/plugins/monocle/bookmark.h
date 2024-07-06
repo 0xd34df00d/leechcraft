@@ -25,17 +25,17 @@ namespace Monocle
 	{
 		QString Name_;
 		int Page_ = 0;
-		QPoint Position_;
+		QPointF Position_;
 	public:
 		Bookmark () = default;
-		Bookmark (const QString&, int page, const QPoint& position);
+		Bookmark (const QString&, int page, const QPointF& position);
 
 		QString GetName () const;
 		void SetName (const QString&);
 		int GetPage () const;
 		void SetPage (int);
-		QPoint GetPosition () const;
-		void SetPosition (const QPoint& p);
+		QPointF GetPosition () const;
+		void SetPosition (const QPointF& p);
 
 		NavigationAction ToNavigationAction () const;
 
