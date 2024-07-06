@@ -18,7 +18,7 @@
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
 #include "navigationhistory.h"
-#include "linkactionexecutor.h"
+#include "linkexecutioncontext.h"
 #include "common.h"
 #include "ui_documenttab.h"
 

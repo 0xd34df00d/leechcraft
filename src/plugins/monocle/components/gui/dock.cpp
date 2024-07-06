@@ -19,7 +19,7 @@
 #include "annmanager.h"
 #include "annwidget.h"
 #include "bookmarkswidget.h"
-#include "linkactionexecutor.h"
+#include "linkexecutioncontext.h"
 #include "pagegraphicsitem.h"
 #include "searchtabwidget.h"
 #include "thumbswidget.h"
