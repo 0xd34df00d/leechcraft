@@ -168,6 +168,11 @@ namespace LC::Util
 			std::function<void (QModelIndex)> clickHandler,
 			MenuModelOptions options)
 	{
-		new MenuModelManager { menu, model, std::move (clickHandler), std::move (options) };
+		static QHash<QMenu*, MenuModelManager*> menu2manager;
+		if (auto mgr = menu2manager.take (&menu))
+			delete mgr;
+
+		const auto mgr = new MenuModelManager { menu, model, std::move (clickHandler), std::move (options) };
+		menu2manager [&menu] = mgr;
 	}
 }
