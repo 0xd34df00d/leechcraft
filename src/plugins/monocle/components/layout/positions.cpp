@@ -35,7 +35,11 @@ namespace LC::Monocle
 
 	PageAbsolutePos SceneAbsolutePos::ToPageAbsolute (const PageGraphicsItem& item) const
 	{
-		return { item.mapFromScene (P_) };
+		auto pagePos = item.mapFromScene (P_);
+		const auto& itemSize = item.boundingRect ().size ();
+		pagePos.rx () = std::clamp (pagePos.x (), 0.0, itemSize.width ());
+		pagePos.ry () = std::clamp (pagePos.y (), 0.0, itemSize.height ());
+		return { pagePos };
 	}
 
 	PageRelativePos SceneAbsolutePos::ToPageRelative (const PageGraphicsItem& item) const
