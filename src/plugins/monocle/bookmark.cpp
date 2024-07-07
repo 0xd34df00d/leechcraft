@@ -16,9 +16,4 @@ namespace LC::Monocle
 		const QRectF targetArea { Position_, QSizeF { 1, 1 } };
 		return { .PageNumber_ = Page_, .TargetArea_ = targetArea };
 	}
-
-	bool operator== (const Bookmark& b1, const Bookmark& b2)
-	{
-		return b1.Position_ == b2.Position_ && b1.Name_ == b2.Name_;
-	}
 }

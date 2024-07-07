@@ -26,9 +26,9 @@ namespace LC::Monocle
 		QPointF Position_;
 
 		NavigationAction ToNavigationAction () const;
-	};
 
-	bool operator== (const Bookmark&, const Bookmark&);
+		bool operator== (const Bookmark&) const = default;
+	};
 }
 
 
