@@ -29,6 +29,8 @@ namespace LC::Monocle
 
 		bool operator== (const Bookmark&) const = default;
 	};
+
+	QDebug operator<< (QDebug, const Bookmark&);
 }
 
 

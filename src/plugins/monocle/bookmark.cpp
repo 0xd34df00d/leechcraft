@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "bookmark.h"
+#include <QDebug>
 #include "interfaces/monocle/ilink.h"
 
 namespace LC::Monocle
@@ -15,5 +16,12 @@ namespace LC::Monocle
 	{
 		const QRectF targetArea { Position_, QSizeF { 1, 1 } };
 		return { .PageNumber_ = Page_, .TargetArea_ = targetArea };
+	}
+
+	QDebug operator<< (QDebug dbg, const Bookmark& bm)
+	{
+		const QDebugStateSaver saver { dbg };
+		dbg.nospace () << "{ page: " << bm.Page_ << "; pos: " << bm.Position_ << "; name: " << bm.Name_ << " }";
+		return dbg;
 	}
 }
