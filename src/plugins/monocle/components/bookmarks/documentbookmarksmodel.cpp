@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "documentbookmarksmodel.h"
+#include <QtDebug>
 
 namespace LC::Monocle
 {
@@ -76,6 +77,12 @@ namespace LC::Monocle
 	void DocumentBookmarksModel::RemoveBookmark (const Bookmark& bookmark, ListPasskey)
 	{
 		const auto idx = Bookmarks_.indexOf (bookmark);
+		if (idx < 0)
+		{
+			qWarning () << "no bookmark" << bookmark << "found";
+			return;
+		}
+
 		beginRemoveRows ({}, idx, idx);
 		Bookmarks_.removeAt (idx);
 		endRemoveRows ();
