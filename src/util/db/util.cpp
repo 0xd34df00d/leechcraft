@@ -7,10 +7,14 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QDir>
 #include <QFile>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QThread>
 #include <QRandomGenerator>
+#include <util/sys/paths.h>
+#include <util/sll/qtutil.h>
 #include "dblock.h"
 
 namespace LC::Util
@@ -53,5 +57,22 @@ namespace LC::Util
 		return (base + ".%1_%2")
 				.arg (QRandomGenerator::global ()->generate ())
 				.arg (std::bit_cast<uintptr_t> (QThread::currentThread ()));
+	}
+
+	QSqlDatabase OpenSqliteDatabase (const SqliteDatabaseConfig& config)
+	{
+		auto db = QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName (config.Connection_));
+		db.setDatabaseName (Util::GetUserDir (config.DirKind_, config.Dir_).filePath (config.Filename_));
+		if (!db.open ())
+		{
+			qWarning () << "cannot open the database";
+			Util::DBLock::DumpError (db.lastError ());
+			throw std::runtime_error { "cannot create database" };
+		}
+
+		RunTextQuery (db, "PRAGMA synchronous = NORMAL;"_qs);
+		RunTextQuery (db, "PRAGMA journal_mode = WAL;"_qs);
+
+		return db;
 	}
 }

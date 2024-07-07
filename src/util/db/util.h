@@ -121,4 +121,16 @@ namespace LC::Util
 	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API QString GenConnectionName (const QString& base);
+
+	enum class UserDir;
+
+	struct SqliteDatabaseConfig
+	{
+		QString Connection_;
+		UserDir DirKind_;
+		QString Dir_;
+		QString Filename_;
+	};
+
+	UTIL_DB_API QSqlDatabase OpenSqliteDatabase (const SqliteDatabaseConfig&);
 }
