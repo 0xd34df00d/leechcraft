@@ -39,7 +39,6 @@ namespace Monocle
 		RecentlyOpenedManager *ROManager_;
 		DefaultBackendManager *DefaultBackendManager_;
 		DocStateManager *DocStateManager_;
-		BookmarksManager *BookmarksManager_;
 
 		Util::ShortcutManager *ShortcutMgr_;
 
@@ -60,7 +59,6 @@ namespace Monocle
 		RecentlyOpenedManager* GetROManager () const;
 		DefaultBackendManager* GetDefaultBackendManager () const;
 		DocStateManager* GetDocStateManager () const;
-		BookmarksManager* GetBookmarksManager () const;
 
 		Util::ShortcutManager* GetShortcutManager () const;
 	};

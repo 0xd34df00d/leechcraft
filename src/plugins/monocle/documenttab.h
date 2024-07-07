@@ -35,12 +35,13 @@ namespace Monocle
 	class FindDialog;
 	class FormManager;
 	class AnnManager;
-	class DocumentBookmarksManager;
 	class PageNumLabel;
 	class SmoothScroller;
 	class Dock;
 	class ViewPositionTracker;
 	class Zoomer;
+	class BookmarksStorage;
+	class DocumentBookmarksModel;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -70,6 +71,9 @@ namespace Monocle
 
 		SmoothScroller *Scroller_ = nullptr;
 
+		BookmarksStorage& BookmarksStorage_;
+		std::shared_ptr<DocumentBookmarksModel> BookmarksModel_;
+
 		struct TabExecutionContext final : LinkExecutionContext
 		{
 			DocumentTab& Tab_;
@@ -83,7 +87,6 @@ namespace Monocle
 		PagesLayoutManager& LayoutManager_;
 		FormManager& FormManager_;
 		AnnManager& AnnManager_;
-		DocumentBookmarksManager& DocBMManager_;
 		TextSearchHandler& SearchHandler_;
 		ViewPositionTracker& ViewPosTracker_;
 
@@ -109,7 +112,7 @@ namespace Monocle
 		};
 		using DocumentOpenOptions = Util::BitFlags<DocumentOpenOption>;
 
-		DocumentTab (const TabClassInfo&, QObject*);
+		DocumentTab (BookmarksStorage&, const TabClassInfo&, QObject*);
 		~DocumentTab () override;
 
 		TabClassInfo GetTabClassInfo () const override;
@@ -155,6 +158,8 @@ namespace Monocle
 				const IDocument_ptr&,
 				const QString&,
 				const std::optional<NavigationAction>&);
+
+		void AddBookmark ();
 	private slots:
 		void scheduleSaveState ();
 		void saveState ();

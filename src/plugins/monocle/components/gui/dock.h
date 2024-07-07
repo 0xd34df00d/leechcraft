@@ -16,8 +16,9 @@ namespace LC::Monocle
 {
 	class AnnManager;
 	class AnnWidget;
+	struct Bookmark;
+	class BookmarksStorage;
 	class BookmarksWidget;
-	class DocumentBookmarksManager;
 	class IDocument;
 	struct LinkExecutionContext;
 	class SearchTabWidget;
@@ -28,6 +29,8 @@ namespace LC::Monocle
 
 	class Dock : public QDockWidget
 	{
+		Q_OBJECT
+
 		TOCWidget& Toc_;
 		BookmarksWidget& Bookmarks_;
 		ThumbsWidget& Thumbnails_;
@@ -41,7 +44,7 @@ namespace LC::Monocle
 			QWidget& TabWidget_;
 
 			AnnManager& AnnotationsMgr_;
-			DocumentBookmarksManager& BookmarksMgr_;
+			BookmarksStorage& BookmarksStorage_;
 			TextSearchHandler& SearchHandler_;
 			ViewPositionTracker& ViewPosTracker_;
 		};
@@ -52,5 +55,10 @@ namespace LC::Monocle
 	private:
 		void SetupToc (ViewPositionTracker&, LinkExecutionContext&);
 		void SetupThumbnails (ViewPositionTracker&, LinkExecutionContext&);
+		void SetupBookmarks ();
+	signals:
+		void addBookmarkRequested ();
+		void removeBookmarkRequested (const Bookmark&);
+		void bookmarkActivated (const Bookmark&);
 	};
 }

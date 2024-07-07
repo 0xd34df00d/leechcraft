@@ -41,6 +41,8 @@
 #include "components/actions/export.h"
 #include "components/actions/rotatemenu.h"
 #include "components/actions/zoomer.h"
+#include "components/bookmarks/bookmarksstorage.h"
+#include "components/bookmarks/documentbookmarksmodel.h"
 #include "components/gui/dock.h"
 #include "components/layout/viewpositiontracker.h"
 #include "core.h"
@@ -59,7 +61,6 @@
 #include "annmanager.h"
 #include "linkitem.h"
 #include "coreloadproxy.h"
-#include "documentbookmarksmanager.h"
 #include "pagenumlabel.h"
 #include "smoothscroller.h"
 
@@ -98,21 +99,21 @@ namespace Monocle
 		Tab_.Navigate (act);
 	}
 
-	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject *parent)
+	DocumentTab::DocumentTab (BookmarksStorage& bmStorage, const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
+	, BookmarksStorage_ { bmStorage }
 	, LayoutManager_ { *new PagesLayoutManager { Ui_.PagesView_, this } }
 	, FormManager_ { *new FormManager { Ui_.PagesView_, LinkExecutionContext_ }}
 	, AnnManager_ { *new AnnManager { LinkExecutionContext_, this } }
-	, DocBMManager_ { *new DocumentBookmarksManager { this, this } }
 	, SearchHandler_ { *new TextSearchHandler { this } }
 	, ViewPosTracker_ { *new ViewPositionTracker { *Ui_.PagesView_, LayoutManager_, this } }
 	, DockWidget_ { std::make_unique<Dock> (Dock::Deps {
 			.LinkContext_ = LinkExecutionContext_,
 			.TabWidget_ = *this,
 			.AnnotationsMgr_ = AnnManager_,
-			.BookmarksMgr_ = DocBMManager_,
+			.BookmarksStorage_ = bmStorage,
 			.SearchHandler_ = SearchHandler_,
 			.ViewPosTracker_ = ViewPosTracker_,
 		}) }
@@ -178,6 +179,23 @@ namespace Monocle
 				&SmoothScroller::isCurrentlyScrollingChanged,
 				&ViewPosTracker_,
 				[this] (bool scrolling) { ViewPosTracker_.SetUpdatesEnabled (!scrolling); });
+
+		connect (&*DockWidget_,
+				&Dock::addBookmarkRequested,
+				this,
+				&DocumentTab::AddBookmark);
+		connect (&*DockWidget_,
+				&Dock::removeBookmarkRequested,
+				this,
+				[this] (const Bookmark& bm)
+				{
+					if (CurrentDoc_)
+						BookmarksStorage_.RemoveBookmark (*CurrentDoc_, bm);
+				});
+		connect (&*DockWidget_,
+				&Dock::bookmarkActivated,
+				this,
+				[this] (const Bookmark& bm) { Navigate (bm.ToNavigationAction ()); });
 	}
 
 	DocumentTab::~DocumentTab () = default;
@@ -550,18 +568,22 @@ namespace Monocle
 		const auto addAction = new QAction { tr ("Add bookmark") };
 		connect (addAction,
 				&QAction::triggered,
-				&DocBMManager_,
-				&DocumentBookmarksManager::AddBookmark);
+				this,
+				&DocumentTab::AddBookmark);
 		addAction->setProperty ("ActionIcon", "bookmark-new");
-		Util::SetMenuModel (*bmMenu, *DocBMManager_.GetModel (),
-				[this] (const QModelIndex& idx) { DocBMManager_.Navigate (idx); },
-				{
-					.AdditionalActions_ = { addAction }
-				});
-		connect (&DocBMManager_,
-				&DocumentBookmarksManager::docAvailable,
+		connect (this,
+				&DocumentTab::fileLoaded,
 				bmMenu,
-				&QMenu::setEnabled);
+				[this, bmMenu, addAction] (const QString&, IDocument *doc)
+				{
+					BookmarksModel_ = BookmarksStorage_.GetDocumentBookmarksModel (*doc);
+					Util::SetMenuModel (*bmMenu, *BookmarksModel_,
+							[this] (const QModelIndex& idx) { Navigate (BookmarksModel_->GetBookmark (idx).ToNavigationAction ()); },
+							{
+									.AdditionalActions_ = { addAction }
+							});
+					bmMenu->setEnabled (true);
+				});
 		bmMenu->setEnabled (false);
 		bmButton->setMenu (bmMenu);
 		bmButton->setProperty ("ActionIcon", "bookmarks");
@@ -748,8 +770,6 @@ namespace Monocle
 
 		emit tabRecoverDataChanged ();
 
-		DocBMManager_.HandleDoc (CurrentDoc_);
-
 		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
 
 		auto saveable = qobject_cast<ISaveableDocument*> (docObj);
@@ -780,6 +800,18 @@ namespace Monocle
 					LayoutManager_.GetLayoutMode (),
 					LayoutManager_.GetScaleMode ()
 				});
+	}
+
+	void DocumentTab::AddBookmark ()
+	{
+		const auto pos = LayoutManager_.GetCurrentPagePos ();
+		if (pos && CurrentDoc_)
+		{
+			const Bookmark bm { tr ("Page %1").arg (pos->Page_ + 1), pos->Page_, pos->Pos_.ToPointF () };
+			BookmarksStorage_.AddBookmark (*CurrentDoc_, bm);
+		}
+		else
+			qCritical () << "no current doc or position";
 	}
 
 	void DocumentTab::scheduleSaveState ()

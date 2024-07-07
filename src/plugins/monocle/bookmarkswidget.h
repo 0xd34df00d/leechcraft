@@ -10,17 +10,34 @@
 
 #include <QToolBar>
 #include <QWidget>
+#include "components/layout/positions.h"
 #include "ui_bookmarkswidget.h"
 
 namespace LC::Monocle
 {
-	class DocumentBookmarksManager;
+	struct Bookmark;
+	class BookmarksStorage;
+	class DocumentBookmarksModel;
+	class IDocument;
+
+	struct LinkExecutionContext;
 
 	class BookmarksWidget : public QWidget
 	{
+		Q_OBJECT
+
 		Ui::BookmarksWidget Ui_;
 		QToolBar Toolbar_;
+
+		std::shared_ptr<DocumentBookmarksModel> Model_;
+		BookmarksStorage& Storage_;
 	public:
-		explicit BookmarksWidget (DocumentBookmarksManager&, QWidget* = nullptr);
+		explicit BookmarksWidget (BookmarksStorage&, QWidget* = nullptr);
+
+		void HandleDoc (const IDocument&);
+	signals:
+		void addBookmarkRequested ();
+		void removeBookmarkRequested (const Bookmark&);
+		void bookmarkActivated (const Bookmark&);
 	};
 }

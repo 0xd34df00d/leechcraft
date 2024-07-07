@@ -7,35 +7,42 @@
  **********************************************************************/
 
 #include "bookmarkswidget.h"
-#include "documentbookmarksmanager.h"
+#include "components/bookmarks/bookmarksstorage.h"
+#include "components/bookmarks/documentbookmarksmodel.h"
+#include "linkexecutioncontext.h"
 
 namespace LC::Monocle
 {
-	BookmarksWidget::BookmarksWidget (DocumentBookmarksManager& mgr, QWidget *parent)
+	BookmarksWidget::BookmarksWidget (BookmarksStorage& storage, QWidget *parent)
 	: QWidget { parent }
+	, Storage_ { storage }
 	{
 		Ui_.setupUi (this);
-		Ui_.BookmarksView_->setModel (mgr.GetModel ());
 		Ui_.MainLayout_->insertWidget (0, &Toolbar_);
 
-		setEnabled (mgr.HasDoc ());
-		connect (&mgr,
-				&DocumentBookmarksManager::docAvailable,
-				this,
-				&QWidget::setEnabled);
+		setEnabled (false);
 
-		auto addBm = Toolbar_.addAction (tr ("Add bookmark"), &mgr, &DocumentBookmarksManager::AddBookmark);
+		auto addBm = Toolbar_.addAction (tr ("Add bookmark"),
+				this,
+				&BookmarksWidget::addBookmarkRequested);
 		addBm->setProperty ("ActionIcon", "bookmark-new");
 
 		auto removeBookmark = Toolbar_.addAction (tr ("Remove bookmark"),
-				&mgr,
-				[&mgr, this] { mgr.RemoveBookmark (Ui_.BookmarksView_->currentIndex ()); });
+				this,
+				[this] { emit removeBookmarkRequested (Model_->GetBookmark (Ui_.BookmarksView_->currentIndex ())); });
 		removeBookmark->setProperty ("ActionIcon", "list-remove");
 		Ui_.BookmarksView_->addAction (removeBookmark);
 
 		connect (Ui_.BookmarksView_,
 				&QTreeView::activated,
-				&mgr,
-				&DocumentBookmarksManager::Navigate);
+				this,
+				[this] (const QModelIndex& index) { emit bookmarkActivated (Model_->GetBookmark (index)); });
+	}
+
+	void BookmarksWidget::HandleDoc (const IDocument& doc)
+	{
+		setEnabled (true);
+		Model_ = Storage_.GetDocumentBookmarksModel (doc);
+		Ui_.BookmarksView_->setModel (&*Model_);
 	}
 }

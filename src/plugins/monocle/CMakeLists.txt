@@ -49,6 +49,8 @@ LC_DEFINE_PLUGIN (
 		components/actions/export.cpp
 		components/actions/rotatemenu.cpp
 		components/actions/zoomer.cpp
+		components/bookmarks/bookmarksstorage.cpp
+		components/bookmarks/documentbookmarksmodel.cpp
 		components/gui/dock.cpp
 		components/layout/positions.cpp
 		components/layout/scenepositiontracker.cpp
@@ -69,7 +71,6 @@ LC_DEFINE_PLUGIN (
 		docstatemanager.cpp
 		docinfodialog.cpp
 		bookmarkswidget.cpp
-		bookmarksmanager.cpp
 		bookmark.cpp
 		thumbswidget.cpp
 		pageslayoutmanager.cpp
@@ -84,13 +85,12 @@ LC_DEFINE_PLUGIN (
 		linkactionexecutor.cpp
 		coreloadproxy.cpp
 		searchtabwidget.cpp
-		documentbookmarksmanager.cpp
 		navigationhistory.cpp
 		pagenumlabel.cpp
 		smoothscroller.cpp
 		common.cpp
 	SETTINGS monoclesettings.xml
-	QT_COMPONENTS Concurrent PrintSupport Widgets Xml
+	QT_COMPONENTS Concurrent PrintSupport Sql Widgets Xml
 	LINK_LIBRARIES leechcraft-monocle-util
 	INSTALL_SHARE
 	)

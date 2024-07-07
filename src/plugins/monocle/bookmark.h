@@ -26,9 +26,6 @@ namespace LC::Monocle
 		QPointF Position_;
 
 		NavigationAction ToNavigationAction () const;
-
-		void ToXML (QDomElement&, QDomDocument&) const;
-		static Bookmark FromXML (const QDomElement&);
 	};
 
 	bool operator== (const Bookmark&, const Bookmark&);

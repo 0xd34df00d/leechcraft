@@ -43,11 +43,11 @@ namespace LC::Monocle
 	Dock::Dock (const Deps& deps)
 	: QDockWidget { tr ("Monocle dock") }
 	, Toc_ { *new TOCWidget }
-	, Bookmarks_ { *new BookmarksWidget { deps.BookmarksMgr_ } }
+	, Bookmarks_ { *new BookmarksWidget { deps.BookmarksStorage_ } }
 	, Thumbnails_ { *new ThumbsWidget {} }
 	, Annotations_ { *new AnnWidget { deps.AnnotationsMgr_ } }
 	, Search_ { *new SearchTabWidget { deps.SearchHandler_ } }
-	, OptionalContents_ { *new QTreeView }
+	, OptionalContents_ { *new QTreeView {} }
 	{
 		connect (this,
 				&QDockWidget::dockLocationChanged,
@@ -77,6 +77,7 @@ namespace LC::Monocle
 
 		SetupToc (deps.ViewPosTracker_, deps.LinkContext_);
 		SetupThumbnails (deps.ViewPosTracker_, deps.LinkContext_);
+		SetupBookmarks ();
 
 		connect (&deps.AnnotationsMgr_,
 				&AnnManager::annotationSelected,
@@ -98,6 +99,7 @@ namespace LC::Monocle
 		else
 			Toc_.SetTOC ({});
 
+		Bookmarks_.HandleDoc (doc);
 		Thumbnails_.HandleDoc (doc);
 		Search_.Reset ();
 
@@ -131,5 +133,21 @@ namespace LC::Monocle
 		connect (&Thumbnails_,
 				&ThumbsWidget::pageClicked,
 				[&linkCtx] (int page) { linkCtx.Navigate (NavigationAction { page }); });
+	}
+
+	void Dock::SetupBookmarks ()
+	{
+		connect (&Bookmarks_,
+				&BookmarksWidget::addBookmarkRequested,
+				this,
+				&Dock::addBookmarkRequested);
+		connect (&Bookmarks_,
+				&BookmarksWidget::removeBookmarkRequested,
+				this,
+				&Dock::removeBookmarkRequested);
+		connect (&Bookmarks_,
+				&BookmarksWidget::bookmarkActivated,
+				this,
+				&Dock::bookmarkActivated);
 	}
 }
