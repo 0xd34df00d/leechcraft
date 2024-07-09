@@ -20,7 +20,6 @@
 #include <QTimer>
 #include <QScrollBar>
 #include <QShortcut>
-#include <QTreeView>
 #include <QUrl>
 #include <QFuture>
 #include <util/util.h>
@@ -28,8 +27,6 @@
 #include <util/gui/menumodeladapter.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
-#include <interfaces/imwproxy.h>
-#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
