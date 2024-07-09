@@ -29,7 +29,6 @@
 #include <util/sll/unreachable.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "interfaces/monocle/ihavetoc.h"
 #include "interfaces/monocle/isaveabledocument.h"
 #include "interfaces/monocle/isearchabledocument.h"
 #include "interfaces/monocle/isupportpainting.h"
