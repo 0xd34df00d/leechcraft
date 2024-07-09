@@ -14,9 +14,9 @@
 #include <util/sll/prelude.h>
 #include <util/sll/scopeguards.h>
 #include <interfaces/iinfo.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "choosebackenddialog.h"
-#include "core.h"
 
 namespace LC
 {
@@ -85,7 +85,7 @@ namespace Monocle
 		auto set = key.split ('|');
 		set.removeAll ({});
 
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto pm = GetProxyHolder ()->GetPluginsManager ();
 		auto getName = [pm] (const QByteArray& id)
 		{
 			auto plugin = pm->GetPluginByID (id);

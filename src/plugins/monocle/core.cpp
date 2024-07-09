@@ -44,11 +44,6 @@ namespace Monocle
 		ShortcutMgr_ = new Util::ShortcutManager { proxy, pluginObject };
 	}
 
-	ICoreProxy_ptr Core::GetProxy () const
-	{
-		return Proxy_;
-	}
-
 	void Core::AddPlugin (QObject *pluginObj)
 	{
 		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);

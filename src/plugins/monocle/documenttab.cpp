@@ -116,7 +116,7 @@ namespace Monocle
 		}) }
 	, NavHistory_ (new NavigationHistory { *this })
 	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_.GetCurrentScale (); }) }
-	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
+	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
@@ -824,8 +824,7 @@ namespace Monocle
 
 	void DocumentTab::selectFile ()
 	{
-		const auto& extPlugins = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<IKnowFileExtensions*> ();
+		const auto& extPlugins = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IKnowFileExtensions*> ();
 		QStringList filters;
 		QList<QString> allExts;
 		for (const auto plugin : extPlugins)
