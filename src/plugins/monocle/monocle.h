@@ -16,7 +16,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
-#include "components/bookmarks/bookmarksstorage.h"
+#include "components/navigation/bookmarksstorage.h"
 
 namespace LC::Monocle
 {

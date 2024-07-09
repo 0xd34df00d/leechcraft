@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "bookmarkswidget.h"
-#include "components/bookmarks/bookmarksstorage.h"
-#include "components/bookmarks/documentbookmarksmodel.h"
+#include "components/navigation/bookmarksstorage.h"
+#include "components/navigation/documentbookmarksmodel.h"
 #include "linkexecutioncontext.h"
 
 namespace LC::Monocle

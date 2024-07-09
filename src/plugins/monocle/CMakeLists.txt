@@ -49,12 +49,13 @@ LC_DEFINE_PLUGIN (
 		components/actions/export.cpp
 		components/actions/rotatemenu.cpp
 		components/actions/zoomer.cpp
-		components/bookmarks/bookmarksstorage.cpp
-		components/bookmarks/documentbookmarksmodel.cpp
 		components/gui/dock.cpp
 		components/layout/positions.cpp
 		components/layout/scenepositiontracker.cpp
 		components/layout/viewpositiontracker.cpp
+		components/navigation/bookmark.cpp
+		components/navigation/bookmarksstorage.cpp
+		components/navigation/documentbookmarksmodel.cpp
 		components/viewitems/nondragclickfilter.cpp
 		monocle.cpp
 		documenttab.cpp
@@ -71,7 +72,6 @@ LC_DEFINE_PLUGIN (
 		docstatemanager.cpp
 		docinfodialog.cpp
 		bookmarkswidget.cpp
-		bookmark.cpp
 		thumbswidget.cpp
 		pageslayoutmanager.cpp
 		textsearchhandler.cpp
