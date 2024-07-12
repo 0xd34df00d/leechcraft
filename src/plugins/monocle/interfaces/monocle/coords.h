@@ -36,13 +36,13 @@ namespace LC::Monocle
 		[[nodiscard]]
 		T ClearedX () const
 		{
-			return T { Type { 0, P_.y () } };
+			return T { 0, P_.y () };
 		}
 
 		[[nodiscard]]
 		T ClearedY () const
 		{
-			return T { Type { P_.x (), 0 } };
+			return T { P_.x (), 0 };
 		}
 
 		[[nodiscard]]
