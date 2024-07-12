@@ -134,12 +134,12 @@ namespace LC::Monocle
 			return;
 
 		auto menu = new QMenu { this };
-		auto copyAsImage = menu->addAction (tr ("Copy selection as image"),
+		auto copyAsImage = menu->addAction (tr ("Copy as image"),
 				this,
 				[selectedImage] { QGuiApplication::clipboard ()->setImage (selectedImage); });
 		copyAsImage->setProperty ("ActionIcon", "image-x-generic");
 
-		auto saveAsImage = menu->addAction (tr ("Save selection as image..."),
+		auto saveAsImage = menu->addAction (tr ("Save as image..."),
 				this,
 				[selectedImage, this] { SaveImage (selectedImage, this); });
 		saveAsImage->setProperty ("ActionIcon", "document-save");
@@ -154,7 +154,7 @@ namespace LC::Monocle
 			{
 				menu->addSeparator ();
 
-				auto copyAsText = menu->addAction (tr ("Copy selection as text"),
+				auto copyAsText = menu->addAction (tr ("Copy as text"),
 						this,
 						[selText] { QGuiApplication::clipboard ()->setText (selText); });
 				copyAsText->setProperty ("ActionIcon", "edit-copy");
