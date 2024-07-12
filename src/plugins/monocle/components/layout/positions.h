@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QPointF>
+#include <interfaces/monocle/coords.h>
 
 namespace LC::Monocle
 {
@@ -18,56 +19,7 @@ namespace LC::Monocle
 	struct PageAbsolutePos;
 	struct SceneAbsolutePos;
 
-	template<typename T>
-	struct Pos
-	{
-		QPointF P_ {};
-
-		[[nodiscard]]
-		T ClearedX () const
-		{
-			return { QPointF { 0, P_.y () } };
-		}
-
-		[[nodiscard]]
-		T ClearedY () const
-		{
-			return { QPointF { P_.x (), 0 } };
-		}
-
-		[[nodiscard]]
-		T Shifted (qreal dx, qreal dy) const
-		{
-			return { P_ + QPointF { dx, dy } };
-		}
-
-		QPointF ToPointF () const
-		{
-			return P_;
-		}
-
-		friend T operator+ (T p1, T p2)
-		{
-			return { p1.P_ + p2.P_ };
-		}
-
-		friend T operator- (T p1, T p2)
-		{
-			return { p1.P_ - p2.P_ };
-		}
-
-		friend T operator* (T p, qreal factor)
-		{
-			return { p.P_ * factor };
-		}
-
-		friend T operator/ (T p, qreal factor)
-		{
-			return { p.P_ / factor };
-		}
-	};
-
-	struct PageRelativePos : Pos<PageRelativePos>
+	struct PageRelativePos : PageRelativePosBase
 	{
 		PageAbsolutePos ToPageAbsolute (const PageGraphicsItem&) const;
 		SceneAbsolutePos ToSceneAbsolute (const PageGraphicsItem&) const;
