@@ -42,7 +42,7 @@ namespace LC::Monocle
 	SceneAbsolutePos PagesView::GetCurrentCenter () const
 	{
 		const auto& rectSize = viewport ()->contentsRect ().size () / 2;
-		return { mapToScene (QPoint { rectSize.width (), rectSize.height () }) };
+		return SceneAbsolutePos { mapToScene (QPoint { rectSize.width (), rectSize.height () }) };
 	}
 
 	SceneAbsolutePos PagesView::GetViewportTrimmedCenter (const QGraphicsItem& item) const
@@ -50,7 +50,7 @@ namespace LC::Monocle
 		auto center = item.boundingRect ().bottomRight ();
 		center.ry () = std::min (center.y (), static_cast<qreal> (viewport ()->contentsRect ().height ()));
 		center /= 2;
-		return { item.mapToScene (center) };
+		return SceneAbsolutePos { item.mapToScene (center) };
 	}
 
 	void PagesView::mouseMoveEvent (QMouseEvent *event)

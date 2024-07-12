@@ -103,7 +103,7 @@ namespace LC::Monocle
 	{
 		Bookmark ToBookmark (const BookmarksStorage::BookmarkRecord& r)
 		{
-			return { .Name_ = r.Name_, .Page_ = r.Page_, .Position_ = { PageRelativePos::Type { r.X_, r.Y_ } } };
+			return { .Name_ = r.Name_, .Page_ = r.Page_, .Position_ = PageRelativePos { r.X_, r.Y_ } };
 		}
 
 		BookmarksStorage::BookmarkRecord FromBookmark (const QString& id, const Bookmark& bm)

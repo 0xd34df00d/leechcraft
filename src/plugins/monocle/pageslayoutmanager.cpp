@@ -220,7 +220,7 @@ namespace LC::Monocle
 		const auto& size = GetRotatedSize (pageIdx) * scale;
 		const auto& srcSize = CurrentDoc_->GetPageSize (pageIdx) * scale;
 		const auto yDiff = (size.height () - srcSize.height ()) / 2;
-		return { { SceneAbsolutePos::Type { 0, yDiff } }, size };
+		return { SceneAbsolutePos { 0, yDiff }, size };
 	}
 
 	void PagesLayoutManager::LayoutOneCol (double scale) const

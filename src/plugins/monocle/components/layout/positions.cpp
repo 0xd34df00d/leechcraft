@@ -14,7 +14,7 @@ namespace LC::Monocle
 	PageAbsolutePos PageRelativePos::ToPageAbsolute (const PageGraphicsItem& item) const
 	{
 		const auto& rect = item.boundingRect ();
-		return { PageAbsolutePos::Type { P_.x () * rect.width (), P_.y () * rect.height () } };
+		return PageAbsolutePos { P_.x () * rect.width (), P_.y () * rect.height () };
 	}
 
 	SceneAbsolutePos PageRelativePos::ToSceneAbsolute (const PageGraphicsItem& item) const
@@ -25,12 +25,12 @@ namespace LC::Monocle
 	PageRelativePos PageAbsolutePos::ToPageRelative (const PageGraphicsItem& item) const
 	{
 		const auto& rect = item.boundingRect ();
-		return { PageAbsolutePos::Type { P_.x () / rect.width (), P_.y () / rect.height () } };
+		return PageRelativePos { P_.x () / rect.width (), P_.y () / rect.height () };
 	}
 
 	SceneAbsolutePos PageAbsolutePos::ToSceneAbsolute (const PageGraphicsItem& item) const
 	{
-		return { item.mapToScene (P_) };
+		return SceneAbsolutePos { item.mapToScene (P_) };
 	}
 
 	PageAbsolutePos SceneAbsolutePos::ToPageAbsolute (const PageGraphicsItem& item) const
@@ -39,7 +39,7 @@ namespace LC::Monocle
 		const auto& itemSize = item.boundingRect ().size ();
 		pagePos.rx () = std::clamp (pagePos.x (), 0.0, itemSize.width ());
 		pagePos.ry () = std::clamp (pagePos.y (), 0.0, itemSize.height ());
-		return { pagePos };
+		return PageAbsolutePos { pagePos };
 	}
 
 	PageRelativePos SceneAbsolutePos::ToPageRelative (const PageGraphicsItem& item) const
