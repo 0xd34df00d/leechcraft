@@ -19,6 +19,8 @@ namespace LC::Monocle
 
 		Type P_ {};
 
+		auto operator<=> (const Pos&) const = default;
+
 		[[nodiscard]]
 		T ClearedX () const
 		{
