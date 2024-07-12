@@ -14,14 +14,14 @@ namespace LC::Monocle
 {
 	NavigationAction Bookmark::ToNavigationAction () const
 	{
-		const QRectF targetArea { Position_, QSizeF { 1, 1 } };
+		const QRectF targetArea { Position_.ToPointF (), QSizeF { 1, 1 } };
 		return { .PageNumber_ = Page_, .TargetArea_ = targetArea };
 	}
 
 	QDebug operator<< (QDebug dbg, const Bookmark& bm)
 	{
 		const QDebugStateSaver saver { dbg };
-		dbg.nospace () << "{ page: " << bm.Page_ << "; pos: " << bm.Position_ << "; name: " << bm.Name_ << " }";
+		dbg.nospace () << "{ page: " << bm.Page_ << "; pos: " << bm.Position_.ToPointF () << "; name: " << bm.Name_ << " }";
 		return dbg;
 	}
 }

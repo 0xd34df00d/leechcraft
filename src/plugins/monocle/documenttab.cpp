@@ -803,7 +803,7 @@ namespace Monocle
 		const auto pos = LayoutManager_.GetCurrentPagePos ();
 		if (pos && CurrentDoc_)
 		{
-			const Bookmark bm { tr ("Page %1").arg (pos->Page_ + 1), pos->Page_, pos->Pos_.ToPointF () };
+			const Bookmark bm { tr ("Page %1").arg (pos->Page_ + 1), pos->Page_, pos->Pos_ };
 			BookmarksStorage_.AddBookmark (*CurrentDoc_, bm);
 		}
 		else

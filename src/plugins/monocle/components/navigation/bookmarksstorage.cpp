@@ -103,12 +103,12 @@ namespace LC::Monocle
 	{
 		Bookmark ToBookmark (const BookmarksStorage::BookmarkRecord& r)
 		{
-			return { .Name_ = r.Name_, .Page_ = r.Page_, .Position_ = QPointF { r.X_, r.Y_ } };
+			return { .Name_ = r.Name_, .Page_ = r.Page_, .Position_ = { PageRelativePos::Type { r.X_, r.Y_ } } };
 		}
 
 		BookmarksStorage::BookmarkRecord FromBookmark (const QString& id, const Bookmark& bm)
 		{
-			const auto& pos = bm.Position_;
+			const auto& pos = bm.Position_.ToPointF ();
 			return { .DocId_ = id, .Name_ = bm.Name_, .Page_ = bm.Page_, .X_ = pos.x (), .Y_ = pos.y () };
 		}
 	}
@@ -128,7 +128,7 @@ namespace LC::Monocle
 		// name omitted deliberately
 		Bookmarks_->DeleteBy (sph::f<&BookmarkRecord::DocId_> == id &&
 				sph::f<&BookmarkRecord::Page_> == bookmark.Page_ &&
-				sph::f<&BookmarkRecord::X_> == bookmark.Position_.x () &&
-				sph::f<&BookmarkRecord::Y_> == bookmark.Position_.y ());
+				sph::f<&BookmarkRecord::X_> == bookmark.Position_.ToPointF ().x () &&
+				sph::f<&BookmarkRecord::Y_> == bookmark.Position_.ToPointF ().y ());
 	}
 }

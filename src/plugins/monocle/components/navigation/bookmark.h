@@ -11,6 +11,7 @@
 #include <QPointF>
 #include <QString>
 #include <QMetaType>
+#include "components/layout/positions.h"
 
 class QDomElement;
 class QDomDocument;
@@ -23,7 +24,7 @@ namespace LC::Monocle
 	{
 		QString Name_;
 		int Page_ = 0;
-		QPointF Position_;
+		PageRelativePos Position_;
 
 		NavigationAction ToNavigationAction () const;
 
