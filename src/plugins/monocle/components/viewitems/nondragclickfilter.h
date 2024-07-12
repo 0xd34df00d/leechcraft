@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QPointF>
+#include "components/layout/positions.h"
 
 class QGraphicsSceneMouseEvent;
 
@@ -16,7 +16,7 @@ namespace LC::Monocle
 {
 	class NonDragClickFilter
 	{
-		QPointF Pressed_ {};
+		SceneAbsolutePos Pressed_;
 	public:
 		void RecordPressed (QGraphicsSceneMouseEvent*);
 		bool IsNonDragRelease (QGraphicsSceneMouseEvent*) const;

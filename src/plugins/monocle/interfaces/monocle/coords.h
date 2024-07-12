@@ -21,7 +21,7 @@ namespace LC::Monocle
 
 		Pos () = default;
 
-		explicit Pos (QPointF p)
+		explicit Pos (Type p)
 		: P_ { p }
 		{
 		}

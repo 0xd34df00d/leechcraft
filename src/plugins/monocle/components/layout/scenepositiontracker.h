@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QMap>
-#include <QPointF>
 #include <QVector>
 #include "positions.h"
 

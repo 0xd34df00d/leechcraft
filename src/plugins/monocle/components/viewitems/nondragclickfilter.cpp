@@ -11,13 +11,21 @@
 
 namespace LC::Monocle
 {
+	namespace
+	{
+		auto ToPos (QGraphicsSceneMouseEvent& ev)
+		{
+			return SceneAbsolutePos { ev.scenePos () };
+		}
+	}
+
 	void NonDragClickFilter::RecordPressed (QGraphicsSceneMouseEvent *ev)
 	{
-		Pressed_ = ev->pos ();
+		Pressed_ = ToPos (*ev);
 	}
 
 	bool NonDragClickFilter::IsNonDragRelease (QGraphicsSceneMouseEvent *ev) const
 	{
-		return (Pressed_ - ev->pos ()).manhattanLength () < 4;
+		return (Pressed_ - ToPos (*ev)).ToPointF ().manhattanLength () < 4;
 	}
 }

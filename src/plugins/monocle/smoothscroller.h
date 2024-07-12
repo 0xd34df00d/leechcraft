@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <QPointF>
 #include "components/layout/positions.h"
 
 class QGraphicsItem;

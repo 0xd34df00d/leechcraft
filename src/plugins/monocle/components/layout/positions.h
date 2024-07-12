@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QPointF>
 #include <interfaces/monocle/coords.h>
 
 namespace LC::Monocle

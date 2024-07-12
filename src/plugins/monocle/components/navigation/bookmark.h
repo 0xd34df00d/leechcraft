@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QPointF>
 #include <QString>
 #include <QMetaType>
 #include "components/layout/positions.h"
