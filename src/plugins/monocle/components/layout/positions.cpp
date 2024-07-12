@@ -14,7 +14,7 @@ namespace LC::Monocle
 	PageAbsolutePos PageRelativePos::ToPageAbsolute (const PageGraphicsItem& item) const
 	{
 		const auto& rect = item.boundingRect ();
-		return { QPointF { P_.x () * rect.width (), P_.y () * rect.height () } };
+		return { PageAbsolutePos::Type { P_.x () * rect.width (), P_.y () * rect.height () } };
 	}
 
 	SceneAbsolutePos PageRelativePos::ToSceneAbsolute (const PageGraphicsItem& item) const
@@ -25,7 +25,7 @@ namespace LC::Monocle
 	PageRelativePos PageAbsolutePos::ToPageRelative (const PageGraphicsItem& item) const
 	{
 		const auto& rect = item.boundingRect ();
-		return { QPointF { P_.x () / rect.width (), P_.y () / rect.height () } };
+		return { PageAbsolutePos::Type { P_.x () / rect.width (), P_.y () / rect.height () } };
 	}
 
 	SceneAbsolutePos PageAbsolutePos::ToSceneAbsolute (const PageGraphicsItem& item) const

@@ -15,27 +15,29 @@ namespace LC::Monocle
 	template<typename T>
 	struct Pos
 	{
-		QPointF P_ {};
+		using Type = QPointF;
+
+		Type P_ {};
 
 		[[nodiscard]]
 		T ClearedX () const
 		{
-			return { QPointF { 0, P_.y () } };
+			return { Type { 0, P_.y () } };
 		}
 
 		[[nodiscard]]
 		T ClearedY () const
 		{
-			return { QPointF { P_.x (), 0 } };
+			return { Type { P_.x (), 0 } };
 		}
 
 		[[nodiscard]]
 		T Shifted (qreal dx, qreal dy) const
 		{
-			return { P_ + QPointF { dx, dy } };
+			return { P_ + Type { dx, dy } };
 		}
 
-		QPointF ToPointF () const
+		Type ToPointF () const
 		{
 			return P_;
 		}
