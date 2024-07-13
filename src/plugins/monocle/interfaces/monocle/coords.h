@@ -129,6 +129,11 @@ namespace LC::Monocle
 		{
 			return R_;
 		}
+
+		bool IsEmpty () const
+		{
+			return R_.isEmpty ();
+		}
 	};
 
 	struct PageRelativeRectBase : Rect<PageRelativeRectBase, Relativity::PageRelative>
