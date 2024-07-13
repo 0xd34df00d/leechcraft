@@ -18,15 +18,15 @@ namespace LC::Monocle
 	struct PageAbsolutePos;
 	struct SceneAbsolutePos;
 
-	struct PageRelativePos : PageRelativePosBase
+	struct PageRelativePos : Pos<PageRelativePos, Relativity::PageRelative>
 	{
-		using PageRelativePosBase::PageRelativePosBase;
+		using Pos::Pos;
 
 		PageAbsolutePos ToPageAbsolute (const PageGraphicsItem&) const;
 		SceneAbsolutePos ToSceneAbsolute (const PageGraphicsItem&) const;
 	};
 
-	struct PageAbsolutePos : Pos<PageAbsolutePos>
+	struct PageAbsolutePos : Pos<PageAbsolutePos, Relativity::PageAbsolute>
 	{
 		using Pos::Pos;
 
@@ -34,7 +34,7 @@ namespace LC::Monocle
 		SceneAbsolutePos ToSceneAbsolute (const PageGraphicsItem&) const;
 	};
 
-	struct SceneAbsolutePos : Pos<SceneAbsolutePos>
+	struct SceneAbsolutePos : Pos<SceneAbsolutePos, Relativity::SceneAbsolute>
 	{
 		using Pos::Pos;
 

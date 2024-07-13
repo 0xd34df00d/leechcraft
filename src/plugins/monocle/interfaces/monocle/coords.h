@@ -9,12 +9,22 @@
 #pragma once
 
 #include <QPointF>
+#include <QRectF>
 
 namespace LC::Monocle
 {
-	template<typename T>
+	enum class Relativity
+	{
+		PageRelative,
+		PageAbsolute,
+		SceneAbsolute,
+	};
+
+	template<typename T, Relativity R>
 	struct Pos
 	{
+		static constexpr auto Relativity = R;
+
 		using Type = QPointF;
 
 		Type P_ {};
@@ -75,10 +85,5 @@ namespace LC::Monocle
 		{
 			return T { p.P_ / factor };
 		}
-	};
-
-	struct PageRelativePosBase : Pos<PageRelativePosBase>
-	{
-		using Pos::Pos;
 	};
 }
