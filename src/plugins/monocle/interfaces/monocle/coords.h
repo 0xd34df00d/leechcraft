@@ -86,4 +86,51 @@ namespace LC::Monocle
 			return T { p.P_ / factor };
 		}
 	};
+
+	template<typename T, Relativity R>
+	struct Rect
+	{
+		static constexpr auto Relativity = R;
+
+		using Type = QRectF;
+
+		Type R_ {};
+
+		Rect () = default;
+
+		explicit Rect (const Type& r)
+		: R_ { r }
+		{
+		}
+
+		template<typename K>
+		explicit Rect (Pos<K, R> topLeft, Pos<K, R> bottomRight)
+		: R_ { topLeft.ToPointF (), bottomRight.ToPointF () }
+		{
+		}
+
+		template<typename P>
+			requires (P::Relativity == R)
+		P TopLeft () const
+		{
+			return P { R_.topLeft () };
+		}
+
+		template<typename P>
+			requires (P::Relativity == R)
+		P BottomRight () const
+		{
+			return P { R_.bottomRight () };
+		}
+
+		Type ToRectF () const
+		{
+			return R_;
+		}
+	};
+
+	struct PageRelativeRectBase : Rect<PageRelativeRectBase, Relativity::PageRelative>
+	{
+		using Rect::Rect;
+	};
 }
