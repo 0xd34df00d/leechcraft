@@ -50,4 +50,35 @@ namespace LC::Monocle
 	};
 
 	using PageWithRelativePos = PageWithPos<PageRelativePos>;
+
+
+	struct PageRelativeRect;
+	struct PageAbsoluteRect;
+	struct SceneAbsoluteRect;
+
+	struct PageRelativeRect : PageRelativeRectBase
+	{
+		using PageRelativeRectBase::PageRelativeRectBase;
+
+		PageRelativeRect (const PageRelativeRectBase&);
+
+		PageAbsoluteRect ToPageAbsolute (const PageGraphicsItem&) const;
+		SceneAbsoluteRect ToSceneAbsolute (const PageGraphicsItem&) const;
+	};
+
+	struct PageAbsoluteRect : Rect<PageAbsolutePos, Relativity::PageAbsolute>
+	{
+		using Rect::Rect;
+
+		PageRelativeRect ToPageRelative (const PageGraphicsItem&) const;
+		SceneAbsoluteRect ToSceneAbsolute (const PageGraphicsItem&) const;
+	};
+
+	struct SceneAbsoluteRect : Rect<SceneAbsoluteRect, Relativity::SceneAbsolute>
+	{
+		using Rect::Rect;
+
+		PageAbsoluteRect ToPageAbsolute (const PageGraphicsItem&) const;
+		PageRelativeRect ToPageRelative (const PageGraphicsItem&) const;
+	};
 }

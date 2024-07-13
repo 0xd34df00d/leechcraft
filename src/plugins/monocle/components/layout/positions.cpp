@@ -46,4 +46,48 @@ namespace LC::Monocle
 	{
 		return ToPageAbsolute (item).ToPageRelative (item);
 	}
+
+	PageRelativeRect::PageRelativeRect (const PageRelativeRectBase& rb)
+	: PageRelativeRectBase { rb }
+	{
+	}
+
+	namespace
+	{
+		template<typename Target, typename SrcPos, typename TargetPos, typename Source>
+		Target Convert (TargetPos (SrcPos::*posConvert) (const PageGraphicsItem&) const, const Source& src, const PageGraphicsItem& item)
+		{
+			return Target { (src.template TopLeft<SrcPos> ().*posConvert) (item), (src.template BottomRight<SrcPos> ().*posConvert) (item) };
+		}
+	}
+
+	PageAbsoluteRect PageRelativeRect::ToPageAbsolute (const PageGraphicsItem& item) const
+	{
+		return Convert<PageAbsoluteRect> (&PageRelativePos::ToPageAbsolute, *this, item);
+	}
+
+	SceneAbsoluteRect PageRelativeRect::ToSceneAbsolute (const PageGraphicsItem& item) const
+	{
+		return Convert<SceneAbsoluteRect> (&PageRelativePos::ToSceneAbsolute, *this, item);
+	}
+
+	PageRelativeRect PageAbsoluteRect::ToPageRelative (const PageGraphicsItem& item) const
+	{
+		return Convert<PageRelativeRect> (&PageAbsolutePos::ToPageRelative, *this, item);
+	}
+
+	SceneAbsoluteRect PageAbsoluteRect::ToSceneAbsolute (const PageGraphicsItem& item) const
+	{
+		return Convert<SceneAbsoluteRect> (&PageAbsolutePos::ToSceneAbsolute, *this, item);
+	}
+
+	PageAbsoluteRect SceneAbsoluteRect::ToPageAbsolute (const PageGraphicsItem& item) const
+	{
+		return Convert<PageAbsoluteRect> (&SceneAbsolutePos::ToPageAbsolute, *this, item);
+	}
+
+	PageRelativeRect SceneAbsoluteRect::ToPageRelative (const PageGraphicsItem& item) const
+	{
+		return Convert<PageRelativeRect> (&SceneAbsolutePos::ToPageRelative, *this, item);
+	}
 }
