@@ -112,7 +112,7 @@ namespace LC::Monocle
 		const auto yTran = - Bounding_.y () * yScale;
 		const QMatrix transform { xScale, 0, 0, yScale, xTran, yTran };
 
-		for (auto data : Polys_)
+		for (const auto& data : Polys_)
 			data.Item_->setPolygon (data.Poly_ * transform);
 	}
 
