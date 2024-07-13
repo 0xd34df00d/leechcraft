@@ -109,6 +109,8 @@ namespace LC::Monocle
 		{
 		}
 
+		auto operator<=> (const Rect&) const = default;
+
 		template<typename P>
 			requires (P::Relativity == R)
 		P TopLeft () const
