@@ -206,7 +206,7 @@ namespace Monocle
 		return
 		{
 			CurrentDocPath_,
-			{ pos->Page_, QRectF { pos->Pos_.ToPointF (), QSizeF {} } }
+			{ pos->Page_, PageRelativeRectBase { pos->Pos_, pos->Pos_ } }
 		};
 	}
 
@@ -673,7 +673,7 @@ namespace Monocle
 
 		if (const auto& rect = nav.TargetArea_)
 		{
-			auto center = PageRelativePos { (rect->topLeft () + rect->bottomRight ()) / 2 };
+			auto center = (rect->TopLeft<PageRelativePos> () + rect->BottomRight<PageRelativePos> ()) / 2;
 			Scroller_->SmoothCenterOnPoint (center.ToSceneAbsolute (*page));
 		}
 		else

@@ -12,6 +12,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "interfaces/monocle/isearchabledocument.h"
+#include "components/layout/positions.h"
 #include "pagegraphicsitem.h"
 
 namespace LC::Monocle
@@ -105,7 +106,7 @@ namespace LC::Monocle
 		constexpr double ActiveOpacity = 0.6;
 	}
 
-	void TextSearchHandler::BuildHighlights (const QMap<int, QList<QRectF>>& map)
+	void TextSearchHandler::BuildHighlights (const QMap<int, QList<PageRelativeRectBase>>& map)
 	{
 		const QBrush brush (Qt::yellow);
 		for (const auto& [pageIdx, rects] : Util::Stlize (map))
@@ -117,18 +118,19 @@ namespace LC::Monocle
 				item->setBrush (brush);
 				item->setZValue (1);
 				item->setOpacity (InactiveOpacity);
-				CurrentHighlights_ << item;
+				CurrentHighlights_.push_back ({ item, rect, pageIdx });
 
 				page->RegisterChildRect (item, rect,
-						[item] (const QRectF& rect) { item->setRect (rect); });
+						[item] (const PageAbsoluteRect& rect) { item->setRect (rect.ToRectF ()); });
 			}
 		}
 	}
 
 	void TextSearchHandler::ClearHighlights ()
 	{
-		for (auto item : CurrentHighlights_)
+		for (const auto& highlight : CurrentHighlights_)
 		{
+			const auto item = highlight.Item_;
 			auto& parentPage = dynamic_cast<PageGraphicsItem&> (*item->parentItem ());
 			parentPage.UnregisterChildRect (item);
 			delete item;
@@ -141,19 +143,16 @@ namespace LC::Monocle
 	{
 		if (CurrentRectIndex_ >= 0 && CurrentRectIndex_ < CurrentHighlights_.size ())
 		{
-			auto oldHili = CurrentHighlights_.at (CurrentRectIndex_);
+			auto oldHili = CurrentHighlights_.at (CurrentRectIndex_).Item_;
 			oldHili->setOpacity (InactiveOpacity);
 			oldHili->setPen ({});
 		}
 
-		auto item = CurrentHighlights_.at (index);
+		auto [item, rect, pageIdx] = CurrentHighlights_.at (index);
 		item->setOpacity (ActiveOpacity);
 		item->setPen ({ Qt::black });
 		CurrentRectIndex_ = index;
 
-		auto& pageItem = dynamic_cast<PageGraphicsItem&> (*item->parentItem ());
-		const auto pageIdx = pageItem.GetPageNum ();
-		const auto rect = pageItem.MapToRelative (item->rect ());
 		emit navigateRequested ({ pageIdx, rect });
 	}
 }

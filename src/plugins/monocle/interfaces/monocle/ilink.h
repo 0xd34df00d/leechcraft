@@ -10,9 +10,9 @@
 
 #include <memory>
 #include <QObject>
-#include <QRectF>
 #include <QMetaType>
 #include <QUrl>
+#include "coords.h"
 
 namespace LC::Monocle
 {
@@ -58,11 +58,8 @@ namespace LC::Monocle
 		int PageNumber_;
 
 		/** The target rect of this link in the viewport.
-		 *
-		 * The returned rectangle is in relative coordinates, that is, with
-		 * x, y, width and height all belonging to the `[0, 1]` range.
 		 */
-		std::optional<QRectF> TargetArea_ {};
+		std::optional<PageRelativeRectBase> TargetArea_ {};
 
 		/** The new zoom value for the page.
 		 */
@@ -77,7 +74,7 @@ namespace LC::Monocle
 				qreal y {};
 				qreal w {};
 				qreal h {};
-				act.TargetArea_.value_or (QRectF {}).getRect (&x, &y, &w, &h);
+				act.TargetArea_.value_or (PageRelativeRectBase {}).ToRectF ().getRect (&x, &y, &w, &h);
 				return std::tie (act.PageNumber_, x, y, w, h);  // don't care about the zoom
 			};
 
@@ -128,15 +125,12 @@ namespace LC::Monocle
 
 		/** @brief Returns the area on the page of this link.
 		 *
-		 * The returned rectangle is in relative coordinates, that is, with
-		 * x, y, width and height all belonging to the `[0, 1]` range.
-		 *
 		 * If the link doesn't belong to a page (i. e. is a TOC link) the
 		 * return value isn't used and may be arbitrary.
 		 *
 		 * @return The area of this link on its page.
 		 */
-		virtual QRectF GetArea () const = 0;
+		virtual PageRelativeRectBase GetArea () const = 0;
 
 		/** @brief Returns the link action.
 		 */

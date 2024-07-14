@@ -24,7 +24,7 @@ namespace LC::Monocle
 	{
 		QString Text_;
 		Util::FindNotification::FindFlags FindFlags_;
-		QMap<int, QList<QRectF>> Positions_;
+		QMap<int, QList<PageRelativeRectBase>> Positions_;
 	};
 
 	class TextSearchHandler : public QObject
@@ -36,7 +36,14 @@ namespace LC::Monocle
 
 		QString CurrentSearchString_;
 
-		QVector<QGraphicsRectItem*> CurrentHighlights_;
+		struct Highlight
+		{
+			QGraphicsRectItem *Item_ = nullptr;
+			PageRelativeRectBase Rect_;
+			int PageIdx_ = 0;
+		};
+
+		QVector<Highlight> CurrentHighlights_;
 		int CurrentRectIndex_ = -1;
 	public:
 		using QObject::QObject;
@@ -48,7 +55,7 @@ namespace LC::Monocle
 	private:
 		bool RequestSearch (const QString&, Util::FindNotification::FindFlags);
 
-		void BuildHighlights (const QMap<int, QList<QRectF>>&);
+		void BuildHighlights (const QMap<int, QList<PageRelativeRectBase>>&);
 		void ClearHighlights ();
 
 		void SelectItem (int);

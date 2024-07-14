@@ -25,6 +25,12 @@
 
 namespace LC::Monocle
 {
+	struct PageGraphicsItem::RectInfo
+	{
+		PageRelativeRect Rect_;
+		RectSetter_f Setter_;
+	};
+
 	PageGraphicsItem::PageGraphicsItem (IDocument& doc, int page, QGraphicsItem *parent)
 	: QGraphicsPixmapItem { parent }
 	, Doc_ { doc }
@@ -68,7 +74,7 @@ namespace LC::Monocle
 			prepareGeometryChange ();
 
 		for (const auto& info : Item2RectInfo_)
-			info.Setter_ (MapFromDoc (info.DocRect_));
+			info.Setter_ (info.Rect_.ToPageAbsolute (*this));
 	}
 
 	int PageGraphicsItem::GetPageNum () const
@@ -115,14 +121,10 @@ namespace LC::Monocle
 		};
 	}
 
-	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item, const QRectF& srcRect, RectSetter_f setter)
+	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item, const PageRelativeRect& srcRect, RectSetter_f setter)
 	{
-		const auto& pageRect = MapToDoc (boundingRect ());
-
-		const auto& docRect = QMatrix {}.scale (pageRect.width (), pageRect.height ()).mapRect (srcRect);
-
-		setter (MapFromDoc (docRect));
-		Item2RectInfo_ [item] = { docRect, std::move (setter) };
+		setter (srcRect.ToPageAbsolute (*this));
+		Item2RectInfo_ [item] = { srcRect, std::move (setter) };
 	}
 
 	void PageGraphicsItem::UnregisterChildRect (QGraphicsItem *item)

@@ -17,8 +17,9 @@
 #include <poppler-qt5.h>
 #include <poppler-form.h>
 #include <poppler-version.h>
-#include <util/sll/util.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include <util/threads/futures.h>
 #include "links.h"
 #include "fields.h"
@@ -225,17 +226,16 @@ namespace LC::Monocle::PDF
 		page->renderToPainter (painter, DPI * xScale, DPI * yScale);
 	}
 
-	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
+	QMap<int, QList<PageRelativeRectBase>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
-		typedef QMap<int, QList<QRectF>> Result_t;
-		Result_t result;
+		QMap<int, QList<PageRelativeRectBase>> result;
 		Poppler::Page::SearchFlags searchFlags;
 		if (cs != Qt::CaseSensitive)
 			searchFlags |= Poppler::Page::SearchFlag::IgnoreCase;
 
 		const auto numPages = PDocument_->numPages ();
 
-		QVector<QList<QRectF>> resVec;
+		QVector<QList<PageRelativeRectBase>> resVec;
 		resVec.resize (numPages);
 
 		auto worker = [&resVec, &searchFlags, &text, this] (int start, int count)
@@ -243,13 +243,13 @@ namespace LC::Monocle::PDF
 			std::unique_ptr<Poppler::Document> doc (Poppler::Document::load (DocURL_.toLocalFile ()));
 			for (auto i = start, end = start + count; i < end; ++i)
 			{
-				std::unique_ptr<Poppler::Page> p (doc->page (i));
-				resVec [i] = p->search (text, searchFlags);
+				std::unique_ptr<Poppler::Page> p { doc->page (i) };
 
 				const auto& size = p->pageSizeF ();
-				auto scaleMat = QMatrix {}.scale (1 / size.width (), 1 / size.height ());
-				for (auto& res : resVec [i])
-					res = scaleMat.mapRect (res);
+				const auto scaleMat = QMatrix {}.scale (1 / size.width (), 1 / size.height ());
+
+				resVec [i] = Util::Map (p->search (text, searchFlags),
+						[&] (const auto& rect) { return PageRelativeRectBase { scaleMat.mapRect (rect) }; });
 			}
 		};
 		const auto threadCount = QThread::idealThreadCount ();

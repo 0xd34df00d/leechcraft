@@ -25,7 +25,7 @@ namespace LC::Monocle
 		return LinkType::PageLink;
 	}
 
-	QRectF PageLink::GetArea () const
+	PageRelativeRectBase PageLink::GetArea () const
 	{
 		if (!Info_.Source_)
 			return {};
@@ -107,7 +107,7 @@ namespace LC::Monocle
 		pageArea.moveLeft (pageArea.left () / pageSize.width ());
 		pageArea.setWidth (pageArea.width () / pageSize.width ());
 
-		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = pageArea };
+		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = PageRelativeRectBase { pageArea } };
 		return *areaInfo;
 	}
 

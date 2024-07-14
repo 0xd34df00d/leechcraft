@@ -13,7 +13,6 @@
 #include <QMetaType>
 #include "ilink.h"
 
-class QRectF;
 class QDateTime;
 class QPolygonF;
 
@@ -84,13 +83,9 @@ namespace Monocle
 
 		/** @brief Returns the bounding rectangle of the annotation.
 		 *
-		 * This method should return the bounding rectangle in page
-		 * coordinates, where (0; 0) is the top left corner, and (1; 1)
-		 * is the bottom right corner.
-		 *
 		 * @return The annotation rect in page coordinates.
 		 */
-		virtual QRectF GetBoundary () const = 0;
+		virtual PageRelativeRectBase GetBoundary () const = 0;
 
 		/** @brief Returns the type of the annotation.
 		 *

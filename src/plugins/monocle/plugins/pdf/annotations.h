@@ -47,9 +47,9 @@ namespace LC::Monocle::PDF
 			return Ann_->creationDate ();
 		}
 
-		QRectF GetBoundary () const override
+		PageRelativeRectBase GetBoundary () const override
 		{
-			return Ann_->boundary ();
+			return PageRelativeRectBase { Ann_->boundary () };
 		}
 
 		QString GetText () const override

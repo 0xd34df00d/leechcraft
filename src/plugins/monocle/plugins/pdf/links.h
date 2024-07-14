@@ -31,13 +31,13 @@ namespace LC::Monocle::PDF
 		Q_INTERFACES (LC::Monocle::ILink)
 
 		LinkType Type_;
-		QRectF Area_;
+		PageRelativeRectBase Area_;
 		LinkAction Action_;
 	public:
 		explicit Link (Document&, const Poppler::Link&);
 
 		LinkType GetLinkType () const override;
-		QRectF GetArea () const override;
+		PageRelativeRectBase GetArea () const override;
 		LinkAction GetLinkAction () const override;
 	};
 }

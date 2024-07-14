@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include "interfaces/monocle/isupportforms.h"
 #include "interfaces/monocle/iformfield.h"
+#include "components/layout/positions.h"
 #include "linkactionexecutor.h"
 #include "pagegraphicsitem.h"
 
@@ -63,8 +64,9 @@ namespace LC::Monocle
 
 				proxy->setParentItem (page);
 				page->RegisterChildRect (proxy, field->GetRect (),
-						[proxy] (const QRectF& rect)
+						[proxy] (const PageAbsoluteRect& pageRect)
 						{
+							const auto& rect = pageRect.ToRectF ();
 							proxy->setGeometry (rect);
 							proxy->setMinimumSize (rect.size ());
 							proxy->setMaximumSize (rect.size ());

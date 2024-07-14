@@ -64,7 +64,7 @@ namespace LC::Monocle
 
 		void PaintPage (QPainter *painter, int page, double xScale, double yScale) override;
 
-		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
+		QMap<int, QList<PageRelativeRectBase>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) override;
 
 		struct HtmlDocument
 		{

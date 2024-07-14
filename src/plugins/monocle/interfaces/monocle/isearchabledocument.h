@@ -11,6 +11,7 @@
 #include <QRectF>
 #include <QMap>
 #include <QtPlugin>
+#include "coords.h"
 
 namespace LC
 {
@@ -36,10 +37,7 @@ namespace Monocle
 		 * pages containing the given \em text and with each value
 		 * corresponding to a key being a list of rectangles containing
 		 * the \em text on the page.
-		 * 
-		 * Rectangles should be in page coordinates, that is, with width
-		 * from 0 to page's width and height from 0 to page's height.
-		 * 
+		 *
 		 * If a page doesn't contain any occurrences of \em text it
 		 * should better be omitted from the map for performance reasons.
 		 * 
@@ -48,7 +46,7 @@ namespace Monocle
 		 * @return The map from page indexes to list of rectangles
 		 * containing \em text for those indexes.
 		 */
-		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) = 0;
+		virtual QMap<int, QList<PageRelativeRectBase>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) = 0;
 	};
 }
 }

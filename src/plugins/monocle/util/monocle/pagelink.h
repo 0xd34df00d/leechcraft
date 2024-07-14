@@ -18,7 +18,7 @@ namespace LC::Monocle
 	struct AreaInfo
 	{
 		int Page_;
-		QRectF Area_;
+		PageRelativeRectBase Area_;
 	};
 
 	class PageLink : public ILink
@@ -42,7 +42,7 @@ namespace LC::Monocle
 		PageLink (LinkInfo);
 
 		LinkType GetLinkType () const override;
-		QRectF GetArea () const override;
+		PageRelativeRectBase GetArea () const override;
 		LinkAction GetLinkAction () const override;
 		QString GetToolTip () const override;
 

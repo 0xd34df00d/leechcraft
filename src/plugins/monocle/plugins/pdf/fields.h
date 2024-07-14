@@ -38,9 +38,9 @@ namespace LC::Monocle::PDF
 			return Field_->id ();
 		}
 
-		QRectF GetRect () const override
+		PageRelativeRectBase GetRect () const override
 		{
-			return Field_->rect ();
+			return PageRelativeRectBase { Field_->rect () };
 		}
 
 		QString GetName () const override

@@ -16,10 +16,10 @@ namespace LC::Monocle::PDF
 {
 	namespace
 	{
-		std::optional<QRectF> GetTargetArea (const Poppler::LinkDestination& dest)
+		std::optional<PageRelativeRectBase> GetTargetArea (const Poppler::LinkDestination& dest)
 		{
 			if (dest.isChangeLeft () && dest.isChangeTop ())
-				return QRectF { { dest.left (), dest.top () }, QSizeF { 0, 0 } };
+				return PageRelativeRectBase { { { dest.left (), dest.top () }, QSizeF { 0, 0 } } };
 			return {};
 		}
 	}
@@ -103,7 +103,7 @@ namespace LC::Monocle::PDF
 		return Type_;
 	}
 
-	QRectF Link::GetArea () const
+	PageRelativeRectBase Link::GetArea () const
 	{
 		return Area_;
 	}

@@ -14,8 +14,7 @@ namespace LC::Monocle
 {
 	NavigationAction Bookmark::ToNavigationAction () const
 	{
-		const QRectF targetArea { Position_.ToPointF (), QSizeF { 1, 1 } };
-		return { .PageNumber_ = Page_, .TargetArea_ = targetArea };
+		return { .PageNumber_ = Page_, .TargetArea_ = PageRelativeRectBase { Position_, Position_ } };
 	}
 
 	QDebug operator<< (QDebug dbg, const Bookmark& bm)

@@ -42,7 +42,7 @@ namespace LC::Monocle
 		bool IsSelected () const;
 		virtual void SetSelected (bool) = 0;
 
-		virtual void UpdateRect (const QRectF& rect) = 0;
+		virtual void UpdateRect (const PageAbsoluteRect& rect) = 0;
 	protected:
 		static QPen GetPen (bool selected);
 		static QBrush GetBrush (bool selected);
@@ -93,10 +93,11 @@ namespace LC::Monocle
 			this->setBrush (this->GetBrush (selected));
 		}
 
-		void UpdateRect (const QRectF& rect) override
+		void UpdateRect (const PageAbsoluteRect& rect) override
 		{
-			this->setPos (rect.topLeft ());
-			this->setRect (0, 0, rect.width (), rect.height ());
+			const auto& rr = rect.ToRectF ();
+			this->setPos (rr.topLeft ());
+			this->setRect (0, 0, rr.width (), rr.height ());
 		}
 	};
 
@@ -115,13 +116,13 @@ namespace LC::Monocle
 		};
 		const QList<PolyData> Polys_;
 
-		QRectF Bounding_;
+		const PageRelativeRect Bounding_;
 	public:
 		HighAnnItem (const IHighlightAnnotation_ptr&, QGraphicsItem*);
 
 		void SetSelected (bool) override;
 
-		void UpdateRect (const QRectF& rect) override;
+		void UpdateRect (const PageAbsoluteRect& rect) override;
 	private:
 		static QList<PolyData> ToPolyData (const QList<QPolygonF>&);
 	};

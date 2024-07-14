@@ -128,7 +128,7 @@ namespace LC::Monocle
 
 			const QMatrix scale = QMatrix {}.scale (1 / pageSize.width (), 1 / pageSize.height ());
 
-			QVector<QPair<int, QRectF>> result;
+			QVector<QPair<int, PageRelativeRectBase>> result;
 			result.reserve (cursors.size ());
 			for (const auto& pair : cursors)
 			{
@@ -145,24 +145,22 @@ namespace LC::Monocle
 					endRect.setX (0);
 				}
 				QRectF bounding { rect | endRect };
-
-				bounding = scale.mapRect (bounding);
-
-				result << QPair { pageNum, bounding };
+				result << QPair { pageNum, PageRelativeRectBase { scale.mapRect (bounding) } };
 			}
 			return result;
 		}
 
-		QMap<int, QList<QRectF>> ListToMap (const QVector<QPair<int, QRectF>>& list)
+		template<typename T>
+		QMap<int, QList<T>> ListToMap (const QVector<QPair<int, T>>& list)
 		{
-			QMap<int, QList<QRectF>> result;
+			QMap<int, QList<T>> result;
 			for (const auto& [page, rect] : list)
 				result [page] << rect;
 			return result;
 		}
 	}
 
-	QMap<int, QList<QRectF>> TextDocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
+	QMap<int, QList<PageRelativeRectBase>> TextDocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
 		QVector<QPair<QTextCursor, QTextCursor>> cursors;
 

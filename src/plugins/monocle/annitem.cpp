@@ -11,6 +11,7 @@
 #include <QCursor>
 #include <QTimer>
 #include <QtDebug>
+#include "components/layout/positions.h"
 
 namespace LC::Monocle
 {
@@ -71,17 +72,26 @@ namespace LC::Monocle
 		return nullptr;
 	}
 
+	namespace
+	{
+		PageRelativeRect GetBoundingRect (const QList<QPolygonF>& polys)
+		{
+			QRectF bounding {};
+			for (const auto& poly : polys)
+				bounding |= poly.boundingRect ();
+			return PageRelativeRect { bounding };
+		}
+	}
+
 	HighAnnItem::HighAnnItem (const IHighlightAnnotation_ptr& ann, QGraphicsItem *parent)
 	: AnnBaseGraphicsItem { ann, parent }
 	, Polys_ { ToPolyData (ann->GetPolygons ()) }
+	, Bounding_ { GetBoundingRect (ann->GetPolygons ()) }
 	{
 		for (const auto& data : Polys_)
 		{
 			addToGroup (data.Item_);
 			data.Item_->setPen (Qt::NoPen);
-
-			Bounding_ |= data.Poly_.boundingRect ();
-
 			data.Item_->setCursor (Qt::PointingHandCursor);
 		}
 	}
@@ -99,17 +109,17 @@ namespace LC::Monocle
 		}
 	}
 
-	void HighAnnItem::UpdateRect (const QRectF& rect)
+	void HighAnnItem::UpdateRect (const PageAbsoluteRect& rect)
 	{
-		setPos (rect.topLeft ());
+		setPos (rect.ToRectF ().topLeft ());
 
-		if (Bounding_.isEmpty ())
+		if (Bounding_.IsEmpty ())
 			return;
 
-		const auto xScale = rect.width () / Bounding_.width ();
-		const auto yScale = rect.height () / Bounding_.height ();
-		const auto xTran = - Bounding_.x () * xScale;
-		const auto yTran = - Bounding_.y () * yScale;
+		const auto xScale = rect.ToRectF ().width () / Bounding_.ToRectF ().width ();
+		const auto yScale = rect.ToRectF ().height () / Bounding_.ToRectF ().height ();
+		const auto xTran = - Bounding_.ToRectF ().x () * xScale;
+		const auto yTran = - Bounding_.ToRectF ().y () * yScale;
 		const QMatrix transform { xScale, 0, 0, yScale, xTran, yTran };
 
 		for (const auto& data : Polys_)

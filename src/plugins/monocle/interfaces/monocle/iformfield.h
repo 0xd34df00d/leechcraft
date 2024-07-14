@@ -12,8 +12,6 @@
 #include <QtPlugin>
 #include "ilink.h"
 
-class QRectF;
-
 namespace LC::Monocle
 {
 	/** @brief Describes the possible types of a form field.
@@ -94,15 +92,10 @@ namespace LC::Monocle
 		 * shrink depending on their content. This method returns the
 		 * rectangle of the area that this field should occupy.
 		 *
-		 * The returned rectangle is expected to be in \em relative page
-		 * coordinates — that is, with width and height in
-		 * <em>[0; 1]</em> range, 0 meaning left or top and 1 meaning
-		 * right or bottom.
-		 *
 		 * @return The rectangle this field occupies in relative page
 		 * coordinates.
 		 */
-		virtual QRectF GetRect () const = 0;
+		virtual PageRelativeRectBase GetRect () const = 0;
 
 		/** @brief Returns the alignment of the contents of this field.
 		 *

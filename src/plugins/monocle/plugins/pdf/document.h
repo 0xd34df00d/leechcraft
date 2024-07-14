@@ -91,7 +91,7 @@ namespace LC::Monocle::PDF
 
 		void PaintPage (QPainter*, int, double, double) override;
 
-		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity) override;
+		QMap<int, QList<PageRelativeRectBase>> GetTextPositions (const QString&, Qt::CaseSensitivity) override;
 
 		SaveQueryResult CanSave () const override;
 		bool Save (const QString& path) override;

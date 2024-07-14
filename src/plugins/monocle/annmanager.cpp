@@ -67,7 +67,7 @@ namespace LC::Monocle
 				item->SetHandler ([this] (const IAnnotation_ptr& ann) { SelectAnnotation (ann); });
 
 				page->RegisterChildRect (item->GetItem (), ann->GetBoundary (),
-						[item] (const QRectF& rect) { item->UpdateRect (rect); });
+						[item] (const PageAbsoluteRect& rect) { item->UpdateRect (rect); });
 
 				auto annItem = new QStandardItem (ann->GetText ());
 				annItem->setToolTip (ann->GetText ());

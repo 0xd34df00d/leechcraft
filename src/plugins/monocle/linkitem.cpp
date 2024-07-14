@@ -74,7 +74,7 @@ namespace LC::Monocle
 			{
 				auto item = new LinkItem { link, page, docTab };
 				page->RegisterChildRect (item, link->GetArea (),
-						[item] (const QRectF& rect) { item->setRect (rect); });
+						[item] (const PageAbsoluteRect& rect) { item->setRect (rect.ToRectF ()); });
 			}
 	}
 }

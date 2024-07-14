@@ -18,6 +18,8 @@ namespace LC::Monocle
 {
 	class PagesLayoutManager;
 	struct PageAbsolutePos;
+	struct PageAbsoluteRect;
+	struct PageRelativeRect;
 	struct SceneAbsolutePos;
 
 	class PageGraphicsItem : public QObject
@@ -36,16 +38,12 @@ namespace LC::Monocle
 		bool Invalid_ = true;
 		bool IsRenderingEnabled_ = true;
 	public:
-		using RectSetter_f = std::function<void (QRectF)>;
+		using RectSetter_f = std::function<void (PageAbsoluteRect)>;
 		using ReleaseHandler_f = std::function<void (int, PageAbsolutePos)>;
 	private:
 		ReleaseHandler_f ReleaseHandler_;
 
-		struct RectInfo
-		{
-			QRectF DocRect_;
-			RectSetter_f Setter_;
-		};
+		struct RectInfo;
 		QMap<QGraphicsItem*, RectInfo> Item2RectInfo_;
 	public:
 		PageGraphicsItem (IDocument&, int, QGraphicsItem* = nullptr);
@@ -81,7 +79,7 @@ namespace LC::Monocle
 		 */
 		QRectF MapToRelative (const QRectF& rect) const;
 
-		void RegisterChildRect (QGraphicsItem*, const QRectF&, RectSetter_f);
+		void RegisterChildRect (QGraphicsItem*, const PageRelativeRect&, RectSetter_f);
 		void UnregisterChildRect (QGraphicsItem*);
 
 		void ClearPixmap ();
