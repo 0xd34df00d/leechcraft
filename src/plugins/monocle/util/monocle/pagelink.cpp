@@ -15,8 +15,8 @@
 
 namespace LC::Monocle
 {
-	PageLink::PageLink (const LinkInfo& info)
-	: Info_ { info }
+	PageLink::PageLink (LinkInfo info)
+	: Info_ { std::move (info) }
 	{
 	}
 

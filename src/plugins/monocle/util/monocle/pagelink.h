@@ -39,7 +39,7 @@ namespace LC::Monocle
 		mutable std::optional<AreaInfo> CachedTarget_;
 		mutable std::optional<AreaInfo> CachedSource_;
 	public:
-		PageLink (const LinkInfo&);
+		PageLink (LinkInfo);
 
 		LinkType GetLinkType () const override;
 		QRectF GetArea () const override;
