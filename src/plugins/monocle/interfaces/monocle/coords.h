@@ -134,6 +134,16 @@ namespace LC::Monocle
 		{
 			return R_.isEmpty ();
 		}
+
+		friend T operator| (const T& r1, const T& r2)
+		{
+			return T { r1.R_ | r2.R_ };
+		}
+
+		friend T operator& (const T& r1, const T& r2)
+		{
+			return T { r1.R_ & r2.R_ };
+		}
 	};
 
 	struct PageRelativeRectBase : Rect<PageRelativeRectBase, Relativity::PageRelative>
