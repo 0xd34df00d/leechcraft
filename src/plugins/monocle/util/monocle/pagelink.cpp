@@ -12,6 +12,7 @@
 #include <QTextDocument>
 #include <QtDebug>
 #include <interfaces/monocle/idocument.h>
+#include "components/layout/positions.h"
 
 namespace LC::Monocle
 {
@@ -45,7 +46,7 @@ namespace LC::Monocle
 
 	namespace
 	{
-		QRectF GetPosRect (int docPos, const QTextDocument& doc)
+		PageAbsoluteRect::Type GetPosRect (int docPos, const QTextDocument& doc)
 		{
 			const auto docLayout = doc.documentLayout ();
 
@@ -56,7 +57,7 @@ namespace LC::Monocle
 			const auto inBlockPos = docPos - block.position ();
 			const auto line = blockLayout->lineForTextPosition (inBlockPos);
 			if (!line.isValid ())
-				return QRectF { blockPos, QSizeF {} };
+				return { blockPos, QSizeF {} };
 
 			auto lineShift = line.position ();
 			lineShift.rx () += line.cursorToX (inBlockPos);
@@ -66,9 +67,19 @@ namespace LC::Monocle
 			return { blockPos + lineShift, QSizeF { 1, line.height () } };
 		}
 
-		QRectF GetSpanRect (Span span, const QTextDocument& doc)
+		PageAbsoluteRect GetSpanRect (Span span, const QTextDocument& doc)
 		{
-			return GetPosRect (span.Start_, doc) | GetPosRect (span.End_, doc);
+			return PageAbsoluteRect { GetPosRect (span.Start_, doc) | GetPosRect (span.End_, doc) };
+		}
+
+		PageRelativeRect ToPageRelative (const PageAbsoluteRect& r, QSizeF pageSize)
+		{
+			auto rect = r.ToRectF ();
+			rect.moveTop (rect.top () / pageSize.height ());
+			rect.setHeight (rect.height () / pageSize.height ());
+			rect.moveLeft (rect.left () / pageSize.width ());
+			rect.setWidth (rect.width () / pageSize.width ());
+			return PageRelativeRect { rect };
 		}
 	}
 
@@ -93,21 +104,13 @@ namespace LC::Monocle
 		if (areaInfo)
 			return *areaInfo;
 
-		const auto spanRect = GetSpanRect (span, Info_.TextDoc_);
-		const auto shiftY = spanRect.toRect ().top ();
+		auto spanRect = GetSpanRect (span, Info_.TextDoc_);
+		const auto shiftY = spanRect.ToRectF ().toRect ().top ();
 		const auto pageSize = Info_.TextDoc_.pageSize ();
 
 		const auto quotrem = std::div (shiftY, static_cast<int> (pageSize.height ()));
-
-		auto pageArea = spanRect;
-		pageArea.moveTop (quotrem.rem);
-
-		pageArea.moveTop (pageArea.top () / pageSize.height ());
-		pageArea.setHeight (pageArea.height () / pageSize.height ());
-		pageArea.moveLeft (pageArea.left () / pageSize.width ());
-		pageArea.setWidth (pageArea.width () / pageSize.width ());
-
-		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = PageRelativeRectBase { pageArea } };
+		spanRect.R_.moveTop (quotrem.rem);
+		areaInfo = AreaInfo { .Page_ = quotrem.quot, .Area_ = ToPageRelative (spanRect, pageSize) };
 		return *areaInfo;
 	}
 

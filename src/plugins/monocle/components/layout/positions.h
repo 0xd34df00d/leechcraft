@@ -72,8 +72,6 @@ namespace LC::Monocle
 
 		PageRelativeRect ToPageRelative (const PageGraphicsItem&) const;
 		SceneAbsoluteRect ToSceneAbsolute (const PageGraphicsItem&) const;
-
-		PageRelativeRect ToPageRelative (QSizeF) const;
 	};
 
 	struct SceneAbsoluteRect : Rect<SceneAbsoluteRect, Relativity::SceneAbsolute>
