@@ -81,6 +81,16 @@ namespace LC::Monocle
 		return Convert<SceneAbsoluteRect> (&PageAbsolutePos::ToSceneAbsolute, *this, item);
 	}
 
+	PageRelativeRect PageAbsoluteRect::ToPageRelative (QSizeF pageSize) const
+	{
+		auto rect = R_;
+		rect.moveTop (rect.top () / pageSize.height ());
+		rect.setHeight (rect.height () / pageSize.height ());
+		rect.moveLeft (rect.left () / pageSize.width ());
+		rect.setWidth (rect.width () / pageSize.width ());
+		return PageRelativeRect { rect };
+	}
+
 	PageAbsoluteRect SceneAbsoluteRect::ToPageAbsolute (const PageGraphicsItem& item) const
 	{
 		return Convert<PageAbsoluteRect> (&SceneAbsolutePos::ToPageAbsolute, *this, item);
