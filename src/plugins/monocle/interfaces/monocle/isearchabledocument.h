@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QRectF>
 #include <QMap>
 #include <QtPlugin>
 #include "coords.h"
