@@ -71,7 +71,7 @@ namespace LC::Monocle
 
 			QImage image { bounding.size ().toSize (), QImage::Format_ARGB32 };
 			QPainter painter (&image);
-			scene.render (&painter, QRectF (), bounding);
+			scene.render (&painter, {}, bounding);
 			painter.end ();
 			return image;
 		}
