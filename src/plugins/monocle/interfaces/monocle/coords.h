@@ -18,6 +18,7 @@ namespace LC::Monocle
 		PageRelative,
 		PageAbsolute,
 		SceneAbsolute,
+		ViewAbsolute,
 	};
 
 	template<typename T, Relativity R>
