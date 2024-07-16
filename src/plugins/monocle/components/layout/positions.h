@@ -10,6 +10,8 @@
 
 #include <interfaces/monocle/coords.h>
 
+class QGraphicsView;
+
 namespace LC::Monocle
 {
 	class PageGraphicsItem;
@@ -80,5 +82,14 @@ namespace LC::Monocle
 
 		PageAbsoluteRect ToPageAbsolute (const PageGraphicsItem&) const;
 		PageRelativeRect ToPageRelative (const PageGraphicsItem&) const;
+	};
+
+	struct ViewAbsoluteRect : Rect<ViewAbsoluteRect, Relativity::ViewAbsolute>
+	{
+		using Rect::Rect;
+
+		explicit ViewAbsoluteRect (const QGraphicsView&);
+
+		SceneAbsoluteRect ToSceneAbsolute (const QGraphicsView&) const;
 	};
 }

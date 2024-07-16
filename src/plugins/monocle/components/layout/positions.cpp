@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "positions.h"
+#include <QGraphicsView>
 #include "pagegraphicsitem.h"
 
 namespace LC::Monocle
@@ -89,5 +90,15 @@ namespace LC::Monocle
 	PageRelativeRect SceneAbsoluteRect::ToPageRelative (const PageGraphicsItem& item) const
 	{
 		return Convert<PageRelativeRect> (&SceneAbsolutePos::ToPageRelative, *this, item);
+	}
+
+	ViewAbsoluteRect::ViewAbsoluteRect (const QGraphicsView& view)
+	: Rect { view.viewport ()->rect () }
+	{
+	}
+
+	SceneAbsoluteRect ViewAbsoluteRect::ToSceneAbsolute (const QGraphicsView& view) const
+	{
+		return SceneAbsoluteRect { view.mapToScene (R_.toRect ()).boundingRect () };
 	}
 }
