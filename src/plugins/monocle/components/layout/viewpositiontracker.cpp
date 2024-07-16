@@ -56,20 +56,17 @@ namespace LC::Monocle
 
 	void ViewPositionTracker::RegenPageVisibility ()
 	{
-		const auto& viewRect = View_.viewport ()->rect ();
-		const auto& visibleRect = View_.mapToScene (viewRect);
+		const auto& visibleRect = ViewAbsoluteRect { View_ }.ToSceneAbsolute (View_);
 
-		QMap<int, QRect> rects;
-		for (auto item : View_.items (viewRect))
+		QMap<int, PageRelativeRect> rects;
+		for (auto item : View_.scene ()->items (visibleRect.ToRectF ()))
 		{
 			auto page = dynamic_cast<PageGraphicsItem*> (item);
 			if (!page)
 				continue;
 
-			const auto& pageRect = page->mapToScene (page->boundingRect ());
-			const auto& xsect = visibleRect.intersected (pageRect);
-			const auto& pageXsect = page->MapToDoc (page->mapFromScene (xsect).boundingRect ());
-			rects [page->GetPageNum ()] = pageXsect.toAlignedRect ();
+			const auto& pageRect = PageAbsoluteRect { page->boundingRect () }.ToSceneAbsolute (*page);
+			rects [page->GetPageNum ()] = (visibleRect & pageRect).ToPageRelative (*page);
 		}
 
 		emit pagesVisibilityChanged (rects);

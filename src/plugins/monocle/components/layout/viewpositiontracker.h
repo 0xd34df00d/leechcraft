@@ -14,6 +14,7 @@ namespace LC::Monocle
 {
 	class PagesLayoutManager;
 	class PagesView;
+	struct PageRelativeRect;
 
 	class ViewPositionTracker : public QObject
 	{
@@ -34,6 +35,6 @@ namespace LC::Monocle
 		void RegenPageVisibility ();
 	signals:
 		void currentPageChanged (int);
-		void pagesVisibilityChanged (const QMap<int, QRect>&);
+		void pagesVisibilityChanged (const QMap<int, PageRelativeRect>&);
 	};
 }
