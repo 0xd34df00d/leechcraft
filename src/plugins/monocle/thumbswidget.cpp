@@ -53,7 +53,7 @@ namespace LC::Monocle
 		LayoutMgr_->Relayout ();
 	}
 
-	void ThumbsWidget::UpdatePagesVisibility (const QMap<int, PageRelativeRect>& page2rect)
+	void ThumbsWidget::UpdatePagesVisibility (const QMap<int, SceneAbsoluteRect>& page2rect)
 	{
 		LastVisibleAreas_ = page2rect;
 
@@ -78,15 +78,7 @@ namespace LC::Monocle
 
 		int rectIdx = 0;
 		for (auto i = page2rect.begin (); i != page2rect.end (); ++i, ++rectIdx)
-		{
-			const auto pageNum = i.key ();
-			if (pageNum >= Pages_.size ())
-				continue;
-
-			const auto page = Pages_ [pageNum];
-			const auto& pageRect = *i;
-			CurrentAreaRects_ [rectIdx]->setRect (pageRect.ToSceneAbsolute (*page).ToRectF ());
-		}
+			CurrentAreaRects_ [rectIdx]->setRect (i->ToRectF ());
 	}
 
 	void ThumbsWidget::SetCurrentPage (int page)

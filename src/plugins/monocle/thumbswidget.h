@@ -33,13 +33,13 @@ namespace LC::Monocle
 
 		QVector<QGraphicsRectItem*> CurrentAreaRects_;
 		QVector<PageGraphicsItem*> Pages_;
-		QMap<int, PageRelativeRect> LastVisibleAreas_;
+		QMap<int, SceneAbsoluteRect> LastVisibleAreas_;
 	public:
 		explicit ThumbsWidget (QWidget* = nullptr);
 
 		void HandleDoc (IDocument&);
 
-		void UpdatePagesVisibility (const QMap<int, PageRelativeRect>&);
+		void UpdatePagesVisibility (const QMap<int, SceneAbsoluteRect>&);
 		void SetCurrentPage (int);
 	signals:
 		void pageClicked (int);
