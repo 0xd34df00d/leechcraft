@@ -58,27 +58,6 @@ namespace LC::Monocle
 
 		void setPos (const SceneAbsolutePos&);
 
-		/** Maps the `rect` from the document's absolute coordinates to this item coordinates.
-		 *
-		 * @param rect A rectangle in the document's absolute coordinates.
-		 * @return A rectangle in this item's coordinates.
-		 */
-		QRectF MapFromDoc (const QRectF& rect) const;
-
-		/** Maps the `rect` to the document's absolute coordinates from this item coordinates.
-		 *
-		 * @param rect A rectangle in this item's coordinates.
-		 * @return A rectangle in the document's absolute coordinates.
-		 */
-		QRectF MapToDoc (const QRectF& rect) const;
-
-		/** Maps the `rect` to the document's relative coordinates (in [0; 1] range).
-		 *
-		 * @param rect A rectangle in this item's coordinates.
-		 * @return A rectangle in the document's relative coordinates.
-		 */
-		QRectF MapToRelative (const QRectF& rect) const;
-
 		void RegisterChildRect (QGraphicsItem*, const PageRelativeRect&, RectSetter_f);
 		void UnregisterChildRect (QGraphicsItem*);
 

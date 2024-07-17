@@ -87,40 +87,6 @@ namespace LC::Monocle
 		QGraphicsItem::setPos (pos.ToPointF ());
 	}
 
-	QRectF PageGraphicsItem::MapFromDoc (const QRectF& rect) const
-	{
-		return
-		{
-			rect.x () * XScale_,
-			rect.y () * YScale_,
-			rect.width () * XScale_,
-			rect.height () * YScale_
-		};
-	}
-
-	QRectF PageGraphicsItem::MapToDoc (const QRectF& rect) const
-	{
-		return
-		{
-			rect.x () / XScale_,
-			rect.y () / YScale_,
-			rect.width () / XScale_,
-			rect.height () / YScale_
-		};
-	}
-
-	QRectF PageGraphicsItem::MapToRelative (const QRectF& rect) const
-	{
-		const auto& bounding = boundingRect ();
-		return
-		{
-			rect.x () / bounding.width (),
-			rect.y () / bounding.height (),
-			rect.width () / bounding.width (),
-			rect.height () / bounding.height (),
-		};
-	}
-
 	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item, const PageRelativeRect& srcRect, RectSetter_f setter)
 	{
 		setter (srcRect.ToPageAbsolute (*this));
