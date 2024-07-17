@@ -140,13 +140,17 @@ namespace LC::Monocle::PDF
 		return TOC_;
 	}
 
-	QString Document::GetTextContent (int pageNum, const QRect& rect)
+	QString Document::GetTextContent (int pageNum, const PageRelativeRectBase& rect)
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
 		if (!page)
 			return {};
 
-		return page->text (rect);
+		const auto& r = rect.ToRectF ();
+		const auto& size = page->pageSizeF ();
+		const auto w = size.width ();
+		const auto h = size.height ();
+		return page->text ({ r.x () * w, r.y () * h, r.width () * w, r.height () * h });
 	}
 
 	QAbstractItemModel* Document::GetOptContentModel ()

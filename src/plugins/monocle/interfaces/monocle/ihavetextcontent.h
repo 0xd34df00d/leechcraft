@@ -36,10 +36,6 @@ namespace Monocle
 		 * no text in this \em rect or the document doesn't contain any
 		 * text information.
 		 *
-		 * The \em rect is expected to be in absolute page coordinates,
-		 * that is, from 0 to page width and page height correspondingly
-		 * as returned by IDocument::GetPageSize().
-		 *
 		 * If \em rect is empty or null, the text from the whole page
 		 * should be returned.
 		 *
@@ -47,7 +43,7 @@ namespace Monocle
 		 * @param[in] rect The rectangle on the \em page to query.
 		 * @return The text in \em rect at \em page.
 		 */
-		virtual QString GetTextContent (int page, const QRect& rect) = 0;
+		virtual QString GetTextContent (int page, const PageRelativeRectBase& rect) = 0;
 	};
 }
 }

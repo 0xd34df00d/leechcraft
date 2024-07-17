@@ -79,7 +79,7 @@ namespace LC::Monocle::PDF
 
 		TOCEntryLevel_t GetTOC () override;
 
-		QString GetTextContent (int, const QRect&) override;
+		QString GetTextContent (int, const PageRelativeRectBase&) override;
 
 		QAbstractItemModel* GetOptContentModel () override;
 

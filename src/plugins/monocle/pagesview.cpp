@@ -107,8 +107,9 @@ namespace LC::Monocle
 				if (!pageItem)
 					continue;
 
-				const auto& docRect = pageItem->MapToDoc (pageItem->mapRectFromScene (selectionBound));
-				pageContents [pageItem->GetPageNum ()] = ihtc.GetTextContent (pageItem->GetPageNum (), docRect.toRect ());
+				const auto& docRect = pageItem->MapToRelative (pageItem->mapRectFromScene (selectionBound));
+				const auto idx = pageItem->GetPageNum ();
+				pageContents [idx] = ihtc.GetTextContent (idx, PageRelativeRectBase { docRect });
 			}
 			return QStringList { pageContents.begin (), pageContents.end () }.join ('\n');
 		}
