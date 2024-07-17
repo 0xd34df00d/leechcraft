@@ -96,20 +96,19 @@ namespace LC::Monocle
 			image.save (filename, suffix, 100);
 		}
 
-		QString GetSelectionText (QGraphicsView& view, IHaveTextContent& ihtc)
+		QString GetSelectionText (const QGraphicsScene& scene, IHaveTextContent& ihtc)
 		{
-			const auto& selectionBound = view.scene ()->selectionArea ().boundingRect ();
+			const auto& selectionBound = SceneAbsoluteRect { scene.selectionArea ().boundingRect () };
 
 			QMap<int, QString> pageContents;
-			for (const auto item : view.scene ()->items (selectionBound))
+			for (const auto item : scene.items (selectionBound.ToRectF ()))
 			{
 				const auto pageItem = dynamic_cast<PageGraphicsItem*> (item);
 				if (!pageItem)
 					continue;
 
-				const auto& docRect = pageItem->MapToRelative (pageItem->mapRectFromScene (selectionBound));
 				const auto idx = pageItem->GetPageNum ();
-				pageContents [idx] = ihtc.GetTextContent (idx, PageRelativeRectBase { docRect });
+				pageContents [idx] = ihtc.GetTextContent (idx, selectionBound.ToPageRelative (*pageItem));
 			}
 			return QStringList { pageContents.begin (), pageContents.end () }.join ('\n');
 		}
@@ -142,7 +141,7 @@ namespace LC::Monocle
 				menu);
 
 		if (const auto ihtc = qobject_cast<IHaveTextContent*> (Doc_->GetQObject ()))
-			if (const auto& selText = GetSelectionText (*this, *ihtc);
+			if (const auto& selText = GetSelectionText (*scene (), *ihtc);
 				!selText.isEmpty ())
 			{
 				menu->addSeparator ();
