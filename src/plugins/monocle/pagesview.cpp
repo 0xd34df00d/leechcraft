@@ -100,25 +100,17 @@ namespace LC::Monocle
 		{
 			const auto& selectionBound = view.scene ()->selectionArea ().boundingRect ();
 
-			const auto& viewRect = view.mapFromScene (selectionBound).boundingRect ();
-			if (viewRect.isEmpty () ||
-					viewRect.width () < 4 ||
-					viewRect.height () < 4)
+			QMap<int, QString> pageContents;
+			for (const auto item : view.scene ()->items (selectionBound))
 			{
-				qWarning () << "selection area is empty";
-				return {};
-			}
+				const auto pageItem = dynamic_cast<PageGraphicsItem*> (item);
+				if (!pageItem)
+					continue;
 
-			auto item = view.itemAt (viewRect.topLeft ());
-			auto pageItem = dynamic_cast<PageGraphicsItem*> (item);
-			if (!pageItem)
-			{
-				qWarning () << "page item is null for" << viewRect.topLeft ();
-				return {};
+				const auto& docRect = pageItem->MapToDoc (pageItem->mapRectFromScene (selectionBound));
+				pageContents [pageItem->GetPageNum ()] = ihtc.GetTextContent (pageItem->GetPageNum (), docRect.toRect ());
 			}
-
-			const auto& docRect = pageItem->MapToDoc (pageItem->mapRectFromScene (selectionBound));
-			return ihtc.GetTextContent (pageItem->GetPageNum (), docRect.toRect ());
+			return QStringList { pageContents.begin (), pageContents.end () }.join ('\n');
 		}
 	}
 
