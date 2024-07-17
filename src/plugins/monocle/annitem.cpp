@@ -76,7 +76,7 @@ namespace LC::Monocle
 	{
 		PageRelativeRect GetBoundingRect (const QList<QPolygonF>& polys)
 		{
-			QRectF bounding {};
+			PageRelativeRect::Type bounding {};
 			for (const auto& poly : polys)
 				bounding |= poly.boundingRect ();
 			return PageRelativeRect { bounding };
