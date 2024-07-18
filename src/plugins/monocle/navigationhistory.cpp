@@ -11,9 +11,7 @@
 #include <QMenu>
 #include "documenttab.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	NavigationHistory::NavigationHistory (DocumentTab& docTab)
 	: QObject { &docTab }
@@ -33,14 +31,24 @@ namespace Monocle
 		return ForwardMenu_;
 	}
 
+	namespace
+	{
+		void GoSingleAction (QMenu& menu)
+		{
+			const auto& actions = menu.actions ();
+			if (!actions.isEmpty ())
+				actions.front ()->trigger ();
+		}
+	}
+
 	void NavigationHistory::GoBack () const
 	{
-		GoSingleAction (BackwardMenu_);
+		GoSingleAction (*BackwardMenu_);
 	}
 
 	void NavigationHistory::GoForward () const
 	{
-		GoSingleAction (ForwardMenu_);
+		GoSingleAction (*ForwardMenu_);
 	}
 
 	void NavigationHistory::SaveCurrentPos ()
@@ -65,13 +73,6 @@ namespace Monocle
 		}
 	}
 
-	void NavigationHistory::GoSingleAction (QMenu *menu) const
-	{
-		const auto& actions = menu->actions ();
-		if (!actions.isEmpty ())
-			actions.front ()->trigger ();
-	}
-
 	namespace
 	{
 		QString GetEntryText (const ExternalNavigationAction& entry)
@@ -88,6 +89,7 @@ namespace Monocle
 		const auto action = new QAction { GetEntryText (entry), this };
 		connect (action,
 				&QAction::triggered,
+				this,
 				[entry, action, this] { GoTo (action, entry); });
 		return action;
 	}
@@ -122,5 +124,4 @@ namespace Monocle
 
 		DocTab_.Navigate (entry);
 	}
-}
 }

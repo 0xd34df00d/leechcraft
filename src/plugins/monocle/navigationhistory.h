@@ -16,9 +16,7 @@
 class QMenu;
 class QAction;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class DocumentTab;
 
@@ -33,7 +31,7 @@ namespace Monocle
 
 		std::optional<QAction*> CurrentAction_;
 	public:
-		NavigationHistory (DocumentTab&);
+		explicit NavigationHistory (DocumentTab&);
 
 		QMenu* GetBackwardMenu () const;
 		QMenu* GetForwardMenu () const;
@@ -43,13 +41,10 @@ namespace Monocle
 
 		void SaveCurrentPos ();
 	private:
-		void GoSingleAction (QMenu*) const;
-
 		QAction* MakeCurrentPositionAction ();
 		void GoTo (QAction*, const ExternalNavigationAction&);
 	signals:
 		void backwardHistoryAvailabilityChanged (bool);
 		void forwardHistoryAvailabilityChanged (bool);
 	};
-}
 }
