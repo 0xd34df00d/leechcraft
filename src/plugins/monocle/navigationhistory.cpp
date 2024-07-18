@@ -53,13 +53,19 @@ namespace LC::Monocle
 
 	void NavigationHistory::SaveCurrentPos ()
 	{
-		CurrentAction_.reset ();
-
 		const auto& backActions = BackwardMenu_->actions ();
 		BackwardMenu_->insertAction (backActions.value (0), MakeCurrentPositionAction (entry));
 		emit backwardHistoryAvailabilityChanged (true);
 
+		if (CurrentAction_)
+		{
+			delete *CurrentAction_;
+			CurrentAction_.reset ();
+		}
+
+		const auto& fwdActions = ForwardMenu_->actions ();
 		ForwardMenu_->clear ();
+		qDeleteAll (fwdActions);
 		emit forwardHistoryAvailabilityChanged (false);
 	}
 
