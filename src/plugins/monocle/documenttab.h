@@ -17,7 +17,6 @@
 #include <util/xpc/screensaverprohibitor.h>
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
-#include "navigationhistory.h"
 #include "linkexecutioncontext.h"
 #include "common.h"
 #include "ui_documenttab.h"
@@ -42,6 +41,7 @@ namespace Monocle
 	class Zoomer;
 	class BookmarksStorage;
 	class DocumentBookmarksModel;
+	class NavigationHistory;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget

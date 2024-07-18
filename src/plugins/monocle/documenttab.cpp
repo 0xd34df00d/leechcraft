@@ -41,6 +41,7 @@
 #include "components/layout/viewpositiontracker.h"
 #include "components/navigation/bookmarksstorage.h"
 #include "components/navigation/documentbookmarksmodel.h"
+#include "components/navigation/navigationhistory.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
