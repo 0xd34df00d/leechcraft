@@ -90,34 +90,32 @@ namespace LC::Monocle
 		return action;
 	}
 
+	namespace
+	{
+		template<typename T>
+		QList<T> MaybeToList (const std::optional<T>& maybe)
+		{
+			return maybe ? QList { *maybe } : QList<T> {};
+		}
+	}
+
 	void NavigationHistory::GoTo (QAction *action, const ExternalNavigationAction& entry)
 	{
-		auto backActions = BackwardMenu_->actions ();
-		auto fwdActions = ForwardMenu_->actions ();
+		const auto& allActions = BackwardMenu_->actions () + MaybeToList (CurrentAction_) + ForwardMenu_->actions ();
+		const auto actIdx = allActions.indexOf (action);
 
-		const auto isBack = backActions.contains (action);
-		auto& from = isBack ? backActions : fwdActions;
-		auto& to = isBack ? fwdActions : backActions;
-
-		auto fromIdx = from.indexOf (action);
-		std::copy (from.begin (), from.begin () + fromIdx, std::front_inserter (to));
-		from.erase (from.begin (), from.begin () + fromIdx + 1);
-
-		if (CurrentAction_)
-			to.push_front (*CurrentAction_);
-		else
-			to.push_front (MakeCurrentPositionAction ());
+		const auto& backActions = allActions.mid (0, actIdx);
+		const auto& fwdActions = allActions.mid (actIdx + 1);
 
 		BackwardMenu_->clear ();
 		BackwardMenu_->addActions (backActions);
 		ForwardMenu_->clear ();
 		ForwardMenu_->addActions (fwdActions);
 
-		emit backwardHistoryAvailabilityChanged (!backActions.isEmpty ());
-		emit forwardHistoryAvailabilityChanged (!fwdActions.isEmpty ());
-
 		CurrentAction_ = action;
 
+		emit backwardHistoryAvailabilityChanged (!backActions.isEmpty ());
+		emit forwardHistoryAvailabilityChanged (!fwdActions.isEmpty ());
 		emit navigationRequested (entry);
 	}
 }
