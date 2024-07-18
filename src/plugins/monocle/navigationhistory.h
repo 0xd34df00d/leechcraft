@@ -18,20 +18,16 @@ class QAction;
 
 namespace LC::Monocle
 {
-	class DocumentTab;
-
 	class NavigationHistory : public QObject
 	{
 		Q_OBJECT
-
-		DocumentTab& DocTab_;
 
 		QMenu * const BackwardMenu_;
 		QMenu * const ForwardMenu_;
 
 		std::optional<QAction*> CurrentAction_;
 	public:
-		explicit NavigationHistory (DocumentTab&);
+		explicit NavigationHistory (QObject* = nullptr);
 
 		QMenu* GetBackwardMenu () const;
 		QMenu* GetForwardMenu () const;
@@ -39,9 +35,9 @@ namespace LC::Monocle
 		void GoBack () const;
 		void GoForward () const;
 
-		void SaveCurrentPos ();
+		void SaveCurrentPos (const ExternalNavigationAction&);
 	private:
-		QAction* MakeCurrentPositionAction ();
+		QAction* MakeCurrentPositionAction (const ExternalNavigationAction&);
 		void GoTo (QAction*, const ExternalNavigationAction&);
 	signals:
 		void backwardHistoryAvailabilityChanged (bool);

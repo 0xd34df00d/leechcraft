@@ -113,7 +113,7 @@ namespace Monocle
 			.SearchHandler_ = SearchHandler_,
 			.ViewPosTracker_ = ViewPosTracker_,
 		}) }
-	, NavHistory_ (new NavigationHistory { *this })
+	, NavHistory_ (new NavigationHistory { this })
 	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_.GetCurrentScale (); }) }
 	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
@@ -687,13 +687,13 @@ namespace Monocle
 
 	void DocumentTab::Navigate (const NavigationAction& nav)
 	{
-		NavHistory_->SaveCurrentPos ();
+		NavHistory_->SaveCurrentPos (GetNavigationHistoryEntry ());
 		SetPosition (nav);
 	}
 
 	void DocumentTab::Navigate (const ExternalNavigationAction& nav)
 	{
-		NavHistory_->SaveCurrentPos ();
+		NavHistory_->SaveCurrentPos (GetNavigationHistoryEntry ());
 		if (nav.TargetDocument_ == CurrentDocPath_)
 		{
 			SetPosition (nav.DocumentNavigation_);

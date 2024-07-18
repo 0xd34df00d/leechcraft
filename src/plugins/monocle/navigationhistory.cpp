@@ -13,9 +13,8 @@
 
 namespace LC::Monocle
 {
-	NavigationHistory::NavigationHistory (DocumentTab& docTab)
-	: QObject { &docTab }
-	, DocTab_ { docTab }
+	NavigationHistory::NavigationHistory (QObject *parent)
+	: QObject { parent }
 	, BackwardMenu_ { new QMenu }
 	, ForwardMenu_ { new QMenu }
 	{
@@ -51,7 +50,7 @@ namespace LC::Monocle
 		GoSingleAction (*ForwardMenu_);
 	}
 
-	void NavigationHistory::SaveCurrentPos ()
+	void NavigationHistory::SaveCurrentPos (const ExternalNavigationAction& entry)
 	{
 		const auto& backActions = BackwardMenu_->actions ();
 		BackwardMenu_->insertAction (backActions.value (0), MakeCurrentPositionAction (entry));
@@ -79,9 +78,8 @@ namespace LC::Monocle
 		}
 	}
 
-	QAction* NavigationHistory::MakeCurrentPositionAction ()
+	QAction* NavigationHistory::MakeCurrentPositionAction (const ExternalNavigationAction& entry)
 	{
-		const auto& entry = DocTab_.GetNavigationHistoryEntry ();
 		const auto action = new QAction { GetEntryText (entry), this };
 		connect (action,
 				&QAction::triggered,
