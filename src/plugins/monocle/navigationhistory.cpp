@@ -55,22 +55,12 @@ namespace LC::Monocle
 	{
 		CurrentAction_.reset ();
 
-		const auto action = MakeCurrentPositionAction ();
-
 		const auto& backActions = BackwardMenu_->actions ();
-		if (backActions.isEmpty ())
-		{
-			BackwardMenu_->addAction (action);
-			emit backwardHistoryAvailabilityChanged (true);
-		}
-		else
-			BackwardMenu_->insertAction (backActions.front (), action);
+		BackwardMenu_->insertAction (backActions.value (0), MakeCurrentPositionAction (entry));
+		emit backwardHistoryAvailabilityChanged (true);
 
-		if (!ForwardMenu_->actions ().isEmpty ())
-		{
-			ForwardMenu_->clear ();
-			emit forwardHistoryAvailabilityChanged (false);
-		}
+		ForwardMenu_->clear ();
+		emit forwardHistoryAvailabilityChanged (false);
 	}
 
 	namespace
