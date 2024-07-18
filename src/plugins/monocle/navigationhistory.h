@@ -46,5 +46,7 @@ namespace LC::Monocle
 	signals:
 		void backwardHistoryAvailabilityChanged (bool);
 		void forwardHistoryAvailabilityChanged (bool);
+
+		void navigationRequested (const ExternalNavigationAction&);
 	};
 }

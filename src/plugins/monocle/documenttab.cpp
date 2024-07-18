@@ -140,6 +140,11 @@ namespace Monocle
 					scheduleSaveState ();
 				});
 
+		connect (NavHistory_,
+				&NavigationHistory::navigationRequested,
+				this,
+				qOverload<const ExternalNavigationAction&> (&DocumentTab::Navigate));
+
 		connect (&SearchHandler_,
 				&TextSearchHandler::navigateRequested,
 				this,

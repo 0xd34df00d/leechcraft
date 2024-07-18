@@ -122,6 +122,6 @@ namespace LC::Monocle
 
 		CurrentAction_ = action;
 
-		DocTab_.Navigate (entry);
+		emit navigationRequested (entry);
 	}
 }
