@@ -89,10 +89,9 @@ namespace Monocle
 		AnnManager& AnnManager_;
 		TextSearchHandler& SearchHandler_;
 		ViewPositionTracker& ViewPosTracker_;
+		NavigationHistory& NavHistory_;
 
 		std::unique_ptr<Dock> DockWidget_;
-
-		NavigationHistory * const NavHistory_;
 
 		std::unique_ptr<Zoomer> Zoomer_;
 

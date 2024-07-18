@@ -106,6 +106,7 @@ namespace Monocle
 	, AnnManager_ { *new AnnManager { LinkExecutionContext_, this } }
 	, SearchHandler_ { *new TextSearchHandler { this } }
 	, ViewPosTracker_ { *new ViewPositionTracker { *Ui_.PagesView_, LayoutManager_, this } }
+	, NavHistory_ { *new NavigationHistory { this } }
 	, DockWidget_ { std::make_unique<Dock> (Dock::Deps {
 			.LinkContext_ = LinkExecutionContext_,
 			.TabWidget_ = *this,
@@ -114,7 +115,6 @@ namespace Monocle
 			.SearchHandler_ = SearchHandler_,
 			.ViewPosTracker_ = ViewPosTracker_,
 		}) }
-	, NavHistory_ (new NavigationHistory { this })
 	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_.GetCurrentScale (); }) }
 	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
@@ -141,7 +141,7 @@ namespace Monocle
 					scheduleSaveState ();
 				});
 
-		connect (NavHistory_,
+		connect (&NavHistory_,
 				&NavigationHistory::navigationRequested,
 				this,
 				qOverload<const ExternalNavigationAction&> (&DocumentTab::Navigate));
@@ -445,15 +445,15 @@ namespace Monocle
 			backAction->setEnabled (false);
 			connect (backAction,
 					&QAction::triggered,
-					NavHistory_,
+					&NavHistory_,
 					&NavigationHistory::GoBack);
-			connect (NavHistory_,
+			connect (&NavHistory_,
 					&NavigationHistory::backwardHistoryAvailabilityChanged,
 					backAction,
 					&QAction::setEnabled);
 
 			backButton->setDefaultAction (backAction);
-			backButton->setMenu (NavHistory_->GetBackwardMenu ());
+			backButton->setMenu (NavHistory_.GetBackwardMenu ());
 			backButton->setPopupMode (QToolButton::MenuButtonPopup);
 			Toolbar_->addWidget (backButton);
 		}
@@ -479,15 +479,15 @@ namespace Monocle
 			fwdAction->setEnabled (false);
 			connect (fwdAction,
 					&QAction::triggered,
-					NavHistory_,
+					&NavHistory_,
 					&NavigationHistory::GoForward);
-			connect (NavHistory_,
+			connect (&NavHistory_,
 					&NavigationHistory::forwardHistoryAvailabilityChanged,
 					fwdAction,
 					&QAction::setEnabled);
 
 			fwdButton->setDefaultAction (fwdAction);
-			fwdButton->setMenu (NavHistory_->GetForwardMenu ());
+			fwdButton->setMenu (NavHistory_.GetForwardMenu ());
 			fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
 			Toolbar_->addWidget (fwdButton);
 		}
@@ -688,13 +688,13 @@ namespace Monocle
 
 	void DocumentTab::Navigate (const NavigationAction& nav)
 	{
-		NavHistory_->SaveCurrentPos (GetNavigationHistoryEntry ());
+		NavHistory_.SaveCurrentPos (GetNavigationHistoryEntry ());
 		SetPosition (nav);
 	}
 
 	void DocumentTab::Navigate (const ExternalNavigationAction& nav)
 	{
-		NavHistory_->SaveCurrentPos (GetNavigationHistoryEntry ());
+		NavHistory_.SaveCurrentPos (GetNavigationHistoryEntry ());
 		if (nav.TargetDocument_ == CurrentDocPath_)
 		{
 			SetPosition (nav.DocumentNavigation_);
