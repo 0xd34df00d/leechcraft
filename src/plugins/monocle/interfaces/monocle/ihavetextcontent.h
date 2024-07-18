@@ -11,7 +11,6 @@
 #include <QtPlugin>
 
 class QString;
-class QRect;
 
 namespace LC
 {
