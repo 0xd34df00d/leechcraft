@@ -13,10 +13,9 @@
 namespace LC::Util
 {
 	template<typename T>
+		requires std::is_enum_v<T>
 	class BitFlags
 	{
-		static_assert (std::is_enum_v<T>, "The instantiating type should be a enumeration");
-
 		using St_t = std::underlying_type_t<T>;
 		St_t Storage_ = 0;
 	public:
