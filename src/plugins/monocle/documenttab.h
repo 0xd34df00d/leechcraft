@@ -131,7 +131,6 @@ namespace Monocle
 
 		void RecoverState (const QByteArray&);
 
-		void ReloadDoc (const QString&);
 		bool SetDoc (const QString&, DocumentOpenOptions, const std::optional<NavigationAction>& = {});
 
 		void SetCurrentPage (int);

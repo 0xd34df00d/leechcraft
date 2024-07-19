@@ -164,7 +164,20 @@ namespace Monocle
 
 		SetupToolbar ();
 
-		new FileWatcher { *this };
+		auto watcher = new FileWatcher { this };
+		connect (this,
+				&DocumentTab::fileLoaded,
+				watcher,
+				&FileWatcher::SetWatchedFile);
+		connect (watcher,
+				&FileWatcher::reloadNeeded,
+				this,
+				[this] (const QString& doc)
+				{
+					if (doc != CurrentDocPath_)
+						qWarning () << "path mismatch" << doc << CurrentDocPath_;
+					SetDoc (doc, DocumentOpenOption::IgnoreErrors);
+				});
 
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockWidget_->toggleViewAction ());
@@ -342,11 +355,6 @@ namespace Monocle
 		LayoutManager_.Relayout ();
 
 		QTimer::singleShot (0, this, [point, this] { Ui_.PagesView_->centerOn (point); });
-	}
-
-	void DocumentTab::ReloadDoc (const QString& doc)
-	{
-		SetDoc (doc, DocumentOpenOption::IgnoreErrors);
 	}
 
 	bool DocumentTab::SetDoc (const QString& path,

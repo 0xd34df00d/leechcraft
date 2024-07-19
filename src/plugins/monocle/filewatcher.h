@@ -16,11 +16,9 @@
 
 namespace LC::Monocle
 {
-	class DocumentTab;
-
 	class FileWatcher : public QObject
 	{
-		DocumentTab& Tab_;
+		Q_OBJECT
 
 		QString CurrentFile_;
 		QFileSystemWatcher Watcher_;
@@ -31,9 +29,12 @@ namespace LC::Monocle
 	private:
 		FileIdentity_t LastIdentity_;
 	public:
-		explicit FileWatcher (DocumentTab&);
-	private:
+		explicit FileWatcher (QObject* = nullptr);
+
 		void SetWatchedFile (const QString&);
+	private:
 		void CheckReload ();
+	signals:
+		void reloadNeeded (const QString&);
 	};
 }

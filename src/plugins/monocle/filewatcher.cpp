@@ -24,15 +24,9 @@ namespace LC::Monocle
 		}
 	}
 
-	FileWatcher::FileWatcher (DocumentTab& tab)
-	: QObject { &tab }
-	, Tab_ { tab }
+	FileWatcher::FileWatcher (QObject *parent)
+	: QObject { parent }
 	{
-		connect (&tab,
-				&DocumentTab::fileLoaded,
-				this,
-				&FileWatcher::SetWatchedFile);
-
 		connect (&Watcher_,
 				&QFileSystemWatcher::directoryChanged,
 				this,
@@ -49,7 +43,7 @@ namespace LC::Monocle
 		ReloadTimer_.setInterval (ReloadTimerInterval);
 		ReloadTimer_.callOnTimeout ([this]
 				{
-					Tab_.ReloadDoc (CurrentFile_);
+					emit reloadNeeded (CurrentFile_);
 					LastIdentity_ = MakeIdentity (CurrentFile_);
 				});
 	}
