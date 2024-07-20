@@ -41,7 +41,12 @@ namespace LC::Monocle
 		connect (&Actions_->Back_,
 				&QAction::triggered,
 				this,
-				[this] { GoSingleAction (Actions_->BackMenu_); });
+				[this]
+				{
+					if (!CurrentAction_)
+						CurrentAction_ = MakeCurrentPositionAction ();
+					GoSingleAction (Actions_->BackMenu_);
+				});
 
 		Actions_->Forward_.setEnabled (false);
 		connect (&Actions_->Forward_,
