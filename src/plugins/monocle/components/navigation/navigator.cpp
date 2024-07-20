@@ -36,7 +36,7 @@ namespace LC::Monocle
 	Navigator::Navigator (const PagesLayoutManager& layoutMgr, QObject *parent)
 	: QObject { parent }
 	, Layout_ { layoutMgr }
-	, History_ { *new NavigationHistory { this } }
+	, History_ { *new NavigationHistory { [this] { return GetCurrentPosition (); }, this } }
 	, Watcher_ { *new FileWatcher { this } }
 	{
 		connect (&History_,
@@ -75,7 +75,7 @@ namespace LC::Monocle
 
 	void Navigator::Navigate (const NavigationAction& nav)
 	{
-		History_.SaveCurrentPos (GetCurrentPosition ());
+		History_.SaveCurrentPos ();
 		emit positionRequested (nav);
 	}
 

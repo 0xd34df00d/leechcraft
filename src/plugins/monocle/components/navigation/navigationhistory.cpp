@@ -32,9 +32,10 @@ namespace LC::Monocle
 		}
 	}
 
-	NavigationHistory::NavigationHistory (QObject *parent)
+	NavigationHistory::NavigationHistory (PositionGetter posGetter, QObject *parent)
 	: QObject { parent }
 	, Actions_ { std::make_unique<Actions> () }
+	, PosGetter_ { std::move (posGetter) }
 	{
 		Actions_->Back_.setEnabled (false);
 		connect (&Actions_->Back_,
@@ -54,10 +55,10 @@ namespace LC::Monocle
 		return *Actions_;
 	}
 
-	void NavigationHistory::SaveCurrentPos (const ExternalNavigationAction& entry)
+	void NavigationHistory::SaveCurrentPos ()
 	{
 		const auto& backActions = Actions_->BackMenu_.actions ();
-		Actions_->BackMenu_.insertAction (backActions.value (0), MakeCurrentPositionAction (entry));
+		Actions_->BackMenu_.insertAction (backActions.value (0), MakeCurrentPositionAction ());
 		Actions_->Back_.setEnabled (true);
 
 		if (CurrentAction_)
@@ -82,8 +83,10 @@ namespace LC::Monocle
 		}
 	}
 
-	QAction* NavigationHistory::MakeCurrentPositionAction (const ExternalNavigationAction& entry)
+	QAction* NavigationHistory::MakeCurrentPositionAction ()
 	{
+		const auto& entry = PosGetter_ ();
+
 		const auto action = new QAction { GetEntryText (entry), this };
 		connect (action,
 				&QAction::triggered,

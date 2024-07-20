@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <optional>
 #include <QObject>
@@ -44,13 +45,17 @@ namespace LC::Monocle
 
 		std::optional<QAction*> CurrentAction_;
 	public:
-		explicit NavigationHistory (QObject* = nullptr);
+		using PositionGetter = std::function<ExternalNavigationAction ()>;
+	private:
+		const PositionGetter PosGetter_;
+	public:
+		explicit NavigationHistory (PositionGetter, QObject* = nullptr);
 
 		Actions& GetActions () const;
 
-		void SaveCurrentPos (const ExternalNavigationAction&);
+		void SaveCurrentPos ();
 	private:
-		QAction* MakeCurrentPositionAction (const ExternalNavigationAction&);
+		QAction* MakeCurrentPositionAction ();
 		void GoTo (QAction*, const ExternalNavigationAction&);
 	signals:
 		void navigationRequested (const ExternalNavigationAction&);
