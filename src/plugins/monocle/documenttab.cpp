@@ -58,7 +58,6 @@
 #include "formmanager.h"
 #include "annmanager.h"
 #include "linkitem.h"
-#include "coreloadproxy.h"
 #include "pagenumlabel.h"
 #include "smoothscroller.h"
 
