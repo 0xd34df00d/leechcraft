@@ -123,7 +123,7 @@ namespace LC::Monocle
 	{
 		auto tab = new DocumentTab { BookmarksStorage_, DocTabInfo_, this };
 		AddTab (tab);
-		tab->SetDoc (e.Entity_.toUrl ().toLocalFile (), DocumentTab::DocumentOpenOptions {});
+		tab->SetDoc (e.Entity_.toUrl ().toLocalFile ());
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

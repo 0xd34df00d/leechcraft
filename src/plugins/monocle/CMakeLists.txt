@@ -56,6 +56,8 @@ LC_DEFINE_PLUGIN (
 		components/navigation/bookmark.cpp
 		components/navigation/bookmarksstorage.cpp
 		components/navigation/documentbookmarksmodel.cpp
+		components/navigation/navigationhistory.cpp
+		components/navigation/navigator.cpp
 		components/viewitems/nondragclickfilter.cpp
 		monocle.cpp
 		documenttab.cpp
@@ -85,7 +87,6 @@ LC_DEFINE_PLUGIN (
 		linkactionexecutor.cpp
 		coreloadproxy.cpp
 		searchtabwidget.cpp
-		navigationhistory.cpp
 		pagenumlabel.cpp
 		smoothscroller.cpp
 		common.cpp

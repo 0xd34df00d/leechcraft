@@ -8,9 +8,11 @@
 
 #pragma once
 
-#include <functional>
+#include <memory>
 #include <optional>
+#include <QObject>
 #include <QList>
+#include <QMenu>
 
 class QMenu;
 class QAction;
@@ -23,27 +25,34 @@ namespace LC::Monocle
 	{
 		Q_OBJECT
 
-		QMenu * const BackwardMenu_;
-		QMenu * const ForwardMenu_;
+		struct Actions
+		{
+			QAction Back_;
+			QMenu BackMenu_;
+			QAction Forward_;
+			QMenu ForwardMenu_;
+
+			explicit Actions ();
+
+			Actions (const Actions&) = delete;
+			Actions (Actions&&) = delete;
+			Actions& operator= (const Actions&) = delete;
+			Actions& operator= (Actions&&) = delete;
+		};
+
+		std::unique_ptr<Actions> Actions_;
 
 		std::optional<QAction*> CurrentAction_;
 	public:
 		explicit NavigationHistory (QObject* = nullptr);
 
-		QMenu* GetBackwardMenu () const;
-		QMenu* GetForwardMenu () const;
-
-		void GoBack () const;
-		void GoForward () const;
+		Actions& GetActions () const;
 
 		void SaveCurrentPos (const ExternalNavigationAction&);
 	private:
 		QAction* MakeCurrentPositionAction (const ExternalNavigationAction&);
 		void GoTo (QAction*, const ExternalNavigationAction&);
 	signals:
-		void backwardHistoryAvailabilityChanged (bool);
-		void forwardHistoryAvailabilityChanged (bool);
-
 		void navigationRequested (const ExternalNavigationAction&);
 	};
 }

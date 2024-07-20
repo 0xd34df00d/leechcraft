@@ -26,6 +26,7 @@
 #include <util/gui/findnotification.h>
 #include <util/gui/menumodeladapter.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -41,10 +42,10 @@
 #include "components/layout/viewpositiontracker.h"
 #include "components/navigation/bookmarksstorage.h"
 #include "components/navigation/documentbookmarksmodel.h"
+#include "components/navigation/navigator.h"
 #include "components/navigation/navigationhistory.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
-#include "filewatcher.h"
 #include "presenterwidget.h"
 #include "recentlyopenedmanager.h"
 #include "common.h"
@@ -81,34 +82,19 @@ namespace Monocle
 		}
 	};
 
-	DocumentTab::TabExecutionContext::TabExecutionContext (DocumentTab& tab)
-	: Tab_ { tab }
-	{
-	}
-
-	void DocumentTab::TabExecutionContext::Navigate (const NavigationAction& act)
-	{
-		Tab_.Navigate (act);
-	}
-
-	void DocumentTab::TabExecutionContext::Navigate (const ExternalNavigationAction& act)
-	{
-		Tab_.Navigate (act);
-	}
-
 	DocumentTab::DocumentTab (BookmarksStorage& bmStorage, const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, BookmarksStorage_ { bmStorage }
 	, LayoutManager_ { *new PagesLayoutManager { Ui_.PagesView_, this } }
-	, FormManager_ { *new FormManager { Ui_.PagesView_, LinkExecutionContext_ }}
-	, AnnManager_ { *new AnnManager { LinkExecutionContext_, this } }
+	, Navigator_ { *new Navigator { LayoutManager_, this } }
+	, FormManager_ { *new FormManager { Ui_.PagesView_, Navigator_.GetNavigationContext () }}
+	, AnnManager_ { *new AnnManager { Navigator_.GetNavigationContext (), this } }
 	, SearchHandler_ { *new TextSearchHandler { this } }
 	, ViewPosTracker_ { *new ViewPositionTracker { *Ui_.PagesView_, LayoutManager_, this } }
-	, NavHistory_ { *new NavigationHistory { this } }
 	, DockWidget_ { std::make_unique<Dock> (Dock::Deps {
-			.LinkContext_ = LinkExecutionContext_,
+			.LinkContext_ = Navigator_.GetNavigationContext (),
 			.TabWidget_ = *this,
 			.AnnotationsMgr_ = AnnManager_,
 			.BookmarksStorage_ = bmStorage,
@@ -120,6 +106,24 @@ namespace Monocle
 	{
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
+
+		connect (&Navigator_,
+				&Navigator::positionRequested,
+				this,
+				&DocumentTab::SetPosition);
+		connect (&Navigator_,
+				&Navigator::loaded,
+				this,
+				&DocumentTab::HandleDocumentLoaded);
+		connect (&Navigator_,
+				&Navigator::loadingFailed,
+				this,
+				[this] (const QString& path)
+				{
+					QMessageBox::critical (this,
+							"Monocle"_qs,
+							tr ("Unable to open document %1.").arg ("<em>" + path + "</em>"));
+				});
 
 		Scroller_ = new SmoothScroller { *Ui_.PagesView_, this };
 		connect (Scroller_,
@@ -141,15 +145,10 @@ namespace Monocle
 					scheduleSaveState ();
 				});
 
-		connect (&NavHistory_,
-				&NavigationHistory::navigationRequested,
-				this,
-				qOverload<const ExternalNavigationAction&> (&DocumentTab::Navigate));
-
 		connect (&SearchHandler_,
 				&TextSearchHandler::navigateRequested,
-				this,
-				qOverload<const NavigationAction&> (&DocumentTab::Navigate));
+				&Navigator_,
+				&Navigator::Navigate);
 
 		XmlSettingsManager::Instance ().RegisterObject ("InhibitScreensaver", this,
 				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
@@ -163,21 +162,6 @@ namespace Monocle
 		FindDialog_->hide ();
 
 		SetupToolbar ();
-
-		auto watcher = new FileWatcher { this };
-		connect (this,
-				&DocumentTab::fileLoaded,
-				watcher,
-				&FileWatcher::SetWatchedFile);
-		connect (watcher,
-				&FileWatcher::reloadNeeded,
-				this,
-				[this] (const QString& doc)
-				{
-					if (doc != CurrentDocPath_)
-						qWarning () << "path mismatch" << doc << CurrentDocPath_;
-					SetDoc (doc, DocumentOpenOption::IgnoreErrors);
-				});
 
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockWidget_->toggleViewAction ());
@@ -210,24 +194,10 @@ namespace Monocle
 		connect (&*DockWidget_,
 				&Dock::bookmarkActivated,
 				this,
-				[this] (const Bookmark& bm) { Navigate (bm.ToNavigationAction ()); });
+				[this] (const Bookmark& bm) { Navigator_.Navigate (bm.ToNavigationAction ()); });
 	}
 
 	DocumentTab::~DocumentTab () = default;
-
-	ExternalNavigationAction DocumentTab::GetNavigationHistoryEntry () const
-	{
-		// TODO properly handle lack of current page
-		const auto pos = LayoutManager_.GetCurrentPagePos ();
-		if (!pos)
-			return {};
-
-		return
-		{
-			CurrentDocPath_,
-			{ pos->Page_, PageRelativeRectBase { pos->Pos_, pos->Pos_ } }
-		};
-	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
 	{
@@ -324,7 +294,7 @@ namespace Monocle
 		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
 			return;
 
-		SetDoc (url.toLocalFile (), DocumentOpenOptions {});
+		Navigator_.OpenDocument (url.toLocalFile ());
 		event->acceptProposedAction ();
 	}
 
@@ -350,39 +320,16 @@ namespace Monocle
 
 		LayoutManager_.SetLayoutMode (Name2LayoutMode (modeStr));
 
-		SetDoc (path, DocumentOpenOptions {});
+		Navigator_.OpenDocument (path);
 		LayoutManager_.SetScaleMode (FixedScale { scale });
 		LayoutManager_.Relayout ();
 
 		QTimer::singleShot (0, this, [point, this] { Ui_.PagesView_->centerOn (point); });
 	}
 
-	bool DocumentTab::SetDoc (const QString& path,
-			DocumentOpenOptions options,
-			const std::optional<NavigationAction>& targetPos)
+	void DocumentTab::SetDoc (const QString& path)
 	{
-		saveState ();
-
-		auto document = Core::Instance ().LoadDocument (path);
-		if (!document)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to"
-					<< path;
-			if (!(options & DocumentOpenOption::IgnoreErrors))
-				QMessageBox::critical (this,
-						"LeechCraft",
-						tr ("Unable to open document %1.")
-							.arg ("<em>" + path + "</em>"));
-			return false;
-		}
-
-		connect (document,
-				&CoreLoadProxy::ready,
-				this,
-				[=, this] (auto ptr, auto path) { HandleLoaderReady (options, ptr, path, targetPos); });
-
-		return true;
+		Navigator_.OpenDocument (path);
 	}
 
 	void DocumentTab::SetCurrentPage (int idx)
@@ -420,7 +367,7 @@ namespace Monocle
 								tr ("Seems like file %1 doesn't exist anymore.")
 										.arg ("<em>" + fi.fileName () + "</em>"));
 					else
-						SetDoc (path, DocumentOpenOptions {});
+						Navigator_.OpenDocument (path);
 				});
 
 		auto openButton = new QToolButton ();
@@ -445,23 +392,11 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbarNavigation ()
 	{
+		auto& actions = Navigator_.GetNavigationHistory ().GetActions ();
 		{
 			auto backButton = new QToolButton;
-
-			const auto backAction = new QAction { tr ("Go back") };
-			backAction->setProperty ("ActionIcon", "go-previous");
-			backAction->setEnabled (false);
-			connect (backAction,
-					&QAction::triggered,
-					&NavHistory_,
-					&NavigationHistory::GoBack);
-			connect (&NavHistory_,
-					&NavigationHistory::backwardHistoryAvailabilityChanged,
-					backAction,
-					&QAction::setEnabled);
-
-			backButton->setDefaultAction (backAction);
-			backButton->setMenu (NavHistory_.GetBackwardMenu ());
+			backButton->setDefaultAction (&actions.Back_);
+			backButton->setMenu (&actions.BackMenu_);
 			backButton->setPopupMode (QToolButton::MenuButtonPopup);
 			Toolbar_->addWidget (backButton);
 		}
@@ -481,21 +416,8 @@ namespace Monocle
 
 		{
 			auto fwdButton = new QToolButton;
-
-			const auto fwdAction = new QAction { tr ("Go forward") };
-			fwdAction->setProperty ("ActionIcon", "go-next");
-			fwdAction->setEnabled (false);
-			connect (fwdAction,
-					&QAction::triggered,
-					&NavHistory_,
-					&NavigationHistory::GoForward);
-			connect (&NavHistory_,
-					&NavigationHistory::forwardHistoryAvailabilityChanged,
-					fwdAction,
-					&QAction::setEnabled);
-
-			fwdButton->setDefaultAction (fwdAction);
-			fwdButton->setMenu (NavHistory_.GetForwardMenu ());
+			fwdButton->setDefaultAction (&actions.Forward_);
+			fwdButton->setMenu (&actions.ForwardMenu_);
 			fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
 			Toolbar_->addWidget (fwdButton);
 		}
@@ -588,7 +510,10 @@ namespace Monocle
 				{
 					BookmarksModel_ = BookmarksStorage_.GetDocumentBookmarksModel (*doc);
 					Util::SetMenuModel (*bmMenu, *BookmarksModel_,
-							[this] (const QModelIndex& idx) { Navigate (BookmarksModel_->GetBookmark (idx).ToNavigationAction ()); },
+							[this] (const QModelIndex& idx)
+							{
+								Navigator_.Navigate (BookmarksModel_->GetBookmark (idx).ToNavigationAction ());
+							},
 							{
 									.AdditionalActions_ = { addAction }
 							});
@@ -694,46 +619,11 @@ namespace Monocle
 			SetCurrentPage (nav.PageNumber_);
 	}
 
-	void DocumentTab::Navigate (const NavigationAction& nav)
+	void DocumentTab::HandleDocumentLoaded (const IDocument_ptr& document, const QString& path)
 	{
-		NavHistory_.SaveCurrentPos (GetNavigationHistoryEntry ());
-		SetPosition (nav);
-	}
+		saveState ();
 
-	void DocumentTab::Navigate (const ExternalNavigationAction& nav)
-	{
-		NavHistory_.SaveCurrentPos (GetNavigationHistoryEntry ());
-		if (nav.TargetDocument_ == CurrentDocPath_)
-		{
-			SetPosition (nav.DocumentNavigation_);
-			return;
-		}
-
-		auto path = nav.TargetDocument_;
-		if (QFileInfo { path }.isRelative ())
-			path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
-		SetDoc (path, DocumentOpenOptions {}, nav.DocumentNavigation_);
-	}
-
-	void DocumentTab::HandleLoaderReady (DocumentOpenOptions options,
-			const IDocument_ptr& document, const QString& path, const std::optional<NavigationAction>& targetPos)
-	{
-		if (!document || !document->IsValid ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to"
-					<< path;
-			if (!(options & DocumentOpenOption::IgnoreErrors))
-				QMessageBox::critical (this,
-						"LeechCraft",
-						tr ("Unable to open document %1.")
-							.arg ("<em>" + path + "</em>"));
-			return;
-		}
-
-		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (QFileInfo (path).fileName ());
-
-		Core::Instance ().GetROManager ()->RecordOpened (path);
+		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (QFileInfo { path }.fileName ());
 
 		Scene_.clear ();
 		Pages_.clear ();
@@ -758,7 +648,7 @@ namespace Monocle
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
 		DockWidget_->HandleDoc (*CurrentDoc_);
 
-		CreateLinksItems (LinkExecutionContext_, *CurrentDoc_, Pages_);
+		CreateLinksItems (Navigator_.GetNavigationContext (), *CurrentDoc_, Pages_);
 
 		emit fileLoaded (path, CurrentDoc_.get (), Pages_);
 
@@ -786,9 +676,6 @@ namespace Monocle
 		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
 
 		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
-
-		if (targetPos)
-			Navigate (*targetPos);
 	}
 
 	void DocumentTab::saveState ()
@@ -864,7 +751,7 @@ namespace Monocle
 		XmlSettingsManager::Instance ()
 				.setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
 
-		SetDoc (path, DocumentOpenOptions {});
+		Navigator_.OpenDocument (path);
 	}
 
 	void DocumentTab::handleSave ()

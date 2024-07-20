@@ -13,7 +13,6 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
 #include <util/gui/uiinit.h>
-#include <util/sll/bitflags.h>
 #include <util/xpc/screensaverprohibitor.h>
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
@@ -41,7 +40,7 @@ namespace Monocle
 	class Zoomer;
 	class BookmarksStorage;
 	class DocumentBookmarksModel;
-	class NavigationHistory;
+	class Navigator;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -74,22 +73,13 @@ namespace Monocle
 		BookmarksStorage& BookmarksStorage_;
 		std::shared_ptr<DocumentBookmarksModel> BookmarksModel_;
 
-		struct TabExecutionContext final : LinkExecutionContext
-		{
-			DocumentTab& Tab_;
-
-			TabExecutionContext (DocumentTab& tab);
-
-			void Navigate (const NavigationAction& act) override;
-			void Navigate (const ExternalNavigationAction& act) override;
-		} LinkExecutionContext_ { *this };
-
 		PagesLayoutManager& LayoutManager_;
+		Navigator& Navigator_;
+
 		FormManager& FormManager_;
 		AnnManager& AnnManager_;
 		TextSearchHandler& SearchHandler_;
 		ViewPositionTracker& ViewPosTracker_;
-		NavigationHistory& NavHistory_;
 
 		std::unique_ptr<Dock> DockWidget_;
 
@@ -104,13 +94,6 @@ namespace Monocle
 
 		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
-		enum class DocumentOpenOption : std::uint8_t
-		{
-			None = 0x0,
-			IgnoreErrors = 0x1
-		};
-		using DocumentOpenOptions = Util::BitFlags<DocumentOpenOption>;
-
 		DocumentTab (BookmarksStorage&, const TabClassInfo&, QObject*);
 		~DocumentTab () override;
 
@@ -131,14 +114,9 @@ namespace Monocle
 
 		void RecoverState (const QByteArray&);
 
-		bool SetDoc (const QString&, DocumentOpenOptions, const std::optional<NavigationAction>& = {});
+		void SetDoc (const QString&);
 
 		void SetCurrentPage (int);
-
-		void Navigate (const NavigationAction&);
-		void Navigate (const ExternalNavigationAction&);
-
-		ExternalNavigationAction GetNavigationHistoryEntry () const;
 	protected:
 		void dragEnterEvent (QDragEnterEvent*) override;
 		void dropEvent (QDropEvent*) override;
@@ -152,10 +130,7 @@ namespace Monocle
 
 		void SetLayoutMode (LayoutMode);
 
-		void HandleLoaderReady (DocumentOpenOptions,
-				const IDocument_ptr&,
-				const QString&,
-				const std::optional<NavigationAction>&);
+		void HandleDocumentLoaded (const IDocument_ptr&, const QString&);
 
 		void AddBookmark ();
 	private slots:

@@ -14,21 +14,12 @@
 
 namespace LC::Monocle
 {
-	NavigationHistory::NavigationHistory (QObject *parent)
-	: QObject { parent }
-	, BackwardMenu_ { new QMenu }
-	, ForwardMenu_ { new QMenu }
+	NavigationHistory::Actions::Actions ()
+	: Back_ { NavigationHistory::tr ("Go back") }
+	, Forward_ { NavigationHistory::tr ("Go forward") }
 	{
-	}
-
-	QMenu* NavigationHistory::GetBackwardMenu () const
-	{
-		return BackwardMenu_;
-	}
-
-	QMenu* NavigationHistory::GetForwardMenu () const
-	{
-		return ForwardMenu_;
+		Back_.setProperty ("ActionIcon", "go-previous");
+		Forward_.setProperty ("ActionIcon", "go-next");
 	}
 
 	namespace
@@ -41,21 +32,33 @@ namespace LC::Monocle
 		}
 	}
 
-	void NavigationHistory::GoBack () const
+	NavigationHistory::NavigationHistory (QObject *parent)
+	: QObject { parent }
+	, Actions_ { std::make_unique<Actions> () }
 	{
-		GoSingleAction (*BackwardMenu_);
+		Actions_->Back_.setEnabled (false);
+		connect (&Actions_->Back_,
+				&QAction::triggered,
+				this,
+				[this] { GoSingleAction (Actions_->BackMenu_); });
+
+		Actions_->Forward_.setEnabled (false);
+		connect (&Actions_->Forward_,
+				&QAction::triggered,
+				this,
+				[this] { GoSingleAction (Actions_->ForwardMenu_); });
 	}
 
-	void NavigationHistory::GoForward () const
+	NavigationHistory::Actions& NavigationHistory::GetActions () const
 	{
-		GoSingleAction (*ForwardMenu_);
+		return *Actions_;
 	}
 
 	void NavigationHistory::SaveCurrentPos (const ExternalNavigationAction& entry)
 	{
-		const auto& backActions = BackwardMenu_->actions ();
-		BackwardMenu_->insertAction (backActions.value (0), MakeCurrentPositionAction (entry));
-		emit backwardHistoryAvailabilityChanged (true);
+		const auto& backActions = Actions_->BackMenu_.actions ();
+		Actions_->BackMenu_.insertAction (backActions.value (0), MakeCurrentPositionAction (entry));
+		Actions_->Back_.setEnabled (true);
 
 		if (CurrentAction_)
 		{
@@ -63,10 +66,10 @@ namespace LC::Monocle
 			CurrentAction_.reset ();
 		}
 
-		const auto& fwdActions = ForwardMenu_->actions ();
-		ForwardMenu_->clear ();
+		const auto& fwdActions = Actions_->ForwardMenu_.actions ();
+		Actions_->ForwardMenu_.clear ();
 		qDeleteAll (fwdActions);
-		emit forwardHistoryAvailabilityChanged (false);
+		Actions_->Forward_.setEnabled (false);
 	}
 
 	namespace
@@ -100,21 +103,21 @@ namespace LC::Monocle
 
 	void NavigationHistory::GoTo (QAction *action, const ExternalNavigationAction& entry)
 	{
-		const auto& allActions = BackwardMenu_->actions () + MaybeToList (CurrentAction_) + ForwardMenu_->actions ();
+		const auto& allActions = Actions_->BackMenu_.actions () + MaybeToList (CurrentAction_) + Actions_->ForwardMenu_.actions ();
 		const auto actIdx = allActions.indexOf (action);
 
 		const auto& backActions = allActions.mid (0, actIdx);
 		const auto& fwdActions = allActions.mid (actIdx + 1);
 
-		BackwardMenu_->clear ();
-		BackwardMenu_->addActions (backActions);
-		ForwardMenu_->clear ();
-		ForwardMenu_->addActions (fwdActions);
+		Actions_->BackMenu_.clear ();
+		Actions_->BackMenu_.addActions (backActions);
+		Actions_->ForwardMenu_.clear ();
+		Actions_->ForwardMenu_.addActions (fwdActions);
 
 		CurrentAction_ = action;
 
-		emit backwardHistoryAvailabilityChanged (!backActions.isEmpty ());
-		emit forwardHistoryAvailabilityChanged (!fwdActions.isEmpty ());
+		Actions_->Back_.setEnabled (!backActions.isEmpty ());
+		Actions_->Forward_.setEnabled (!fwdActions.isEmpty ());
 		emit navigationRequested (entry);
 	}
 }
