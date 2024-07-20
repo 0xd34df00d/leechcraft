@@ -11,13 +11,14 @@
 #include <functional>
 #include <optional>
 #include <QList>
-#include "interfaces/monocle/ilink.h"
 
 class QMenu;
 class QAction;
 
 namespace LC::Monocle
 {
+	struct ExternalNavigationAction;
+
 	class NavigationHistory : public QObject
 	{
 		Q_OBJECT
