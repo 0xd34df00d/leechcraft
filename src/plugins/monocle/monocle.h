@@ -74,5 +74,7 @@ namespace LC::Monocle
 
 		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
 		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
+	private:
+		DocumentTab* CreateTab ();
 	};
 }

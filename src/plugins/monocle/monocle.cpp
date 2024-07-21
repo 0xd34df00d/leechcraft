@@ -126,7 +126,7 @@ namespace LC::Monocle
 
 	void Plugin::Handle (Entity e)
 	{
-		auto tab = new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this };
+		auto tab = CreateTab ();
 		AddTab (tab);
 		tab->SetDoc (e.Entity_.toUrl ().toLocalFile ());
 	}
@@ -144,7 +144,7 @@ namespace LC::Monocle
 	void Plugin::TabOpenRequested (const QByteArray& id)
 	{
 		if (id == DocTabInfo_.TabClass_)
-			AddTab (new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this });
+			AddTab (CreateTab ());
 		else
 			qWarning () << "unknown tab class" << id;
 	}
@@ -163,12 +163,10 @@ namespace LC::Monocle
 	{
 		for (const auto& info : infos)
 		{
-			auto tab = new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this };
+			auto tab = CreateTab ();
 			for (const auto& pair : info.DynProperties_)
 				tab->setProperty (pair.first, pair.second);
-
 			AddTab (tab);
-
 			tab->RecoverState (info.Data_);
 		}
 	}
@@ -194,6 +192,11 @@ namespace LC::Monocle
 	void Plugin::SetShortcut (const QByteArray& id, const QKeySequences_t& sequences)
 	{
 		Core::Instance ().GetShortcutManager ()->SetShortcut (id, sequences);
+	}
+
+	DocumentTab* Plugin::CreateTab ()
+	{
+		return new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this };
 	}
 }
 
