@@ -9,9 +9,10 @@
 #include "navigator.h"
 #include <QDir>
 #include <QFileInfo>
+#include "components/services/coreloadproxy.h"
+#include "components/services/documentloader.h"
 #include "navigationhistory.h"
 #include "core.h"
-#include "coreloadproxy.h"
 #include "pageslayoutmanager.h"
 #include "recentlyopenedmanager.h"
 #include "filewatcher.h"
@@ -33,8 +34,9 @@ namespace LC::Monocle
 		Nav_.StartLoading (act.TargetDocument_, {}, act.DocumentNavigation_);
 	}
 
-	Navigator::Navigator (const PagesLayoutManager& layoutMgr, QObject *parent)
+	Navigator::Navigator (const PagesLayoutManager& layoutMgr, DocumentLoader& loader, QObject *parent)
 	: QObject { parent }
+	, Loader_ { loader }
 	, Layout_ { layoutMgr }
 	, History_ { *new NavigationHistory { [this] { return GetCurrentPosition (); }, this } }
 	, Watcher_ { *new FileWatcher { this } }
@@ -91,7 +93,7 @@ namespace LC::Monocle
 		if (!CurrentPath_.isEmpty () && QFileInfo { path }.isRelative ())
 			path = QFileInfo { CurrentPath_ }.dir ().absoluteFilePath (path);
 
-		auto document = Core::Instance ().LoadDocument (path);
+		auto document = Loader_.LoadDocument (path);
 		if (!document)
 		{
 			qWarning () << "unable to navigate to" << path;

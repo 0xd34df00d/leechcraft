@@ -29,8 +29,6 @@ namespace Monocle
 	public:
 		DefaultBackendManager (QObject* = 0);
 
-		void LoadSettings ();
-
 		QAbstractItemModel* GetModel () const;
 		QObject* GetBackend (const QList<QObject*>&);
 	private:

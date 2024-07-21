@@ -16,6 +16,7 @@
 
 namespace LC::Monocle
 {
+	class DocumentLoader;
 	class FileWatcher;
 	struct NavigationAction;
 	class NavigationHistory;
@@ -25,6 +26,7 @@ namespace LC::Monocle
 	{
 		Q_OBJECT
 
+		DocumentLoader& Loader_;
 		const PagesLayoutManager& Layout_;
 		NavigationHistory& History_;
 		FileWatcher& Watcher_;
@@ -48,7 +50,7 @@ namespace LC::Monocle
 		};
 		using DocumentOpenOptions = Util::BitFlags<DocumentOpenOption>;
 
-		explicit Navigator (const PagesLayoutManager&, QObject* = nullptr);
+		explicit Navigator (const PagesLayoutManager&, DocumentLoader&, QObject* = nullptr);
 
 		LinkExecutionContext& GetNavigationContext ();
 		const NavigationHistory& GetNavigationHistory () const;

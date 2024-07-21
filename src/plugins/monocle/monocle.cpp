@@ -18,6 +18,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "util/monocle/textdocumentformatconfig.h"
 #include "components/navigation/bookmarksstorage.h"
+#include "components/services/documentloader.h"
 #include "core.h"
 #include "documenttab.h"
 #include "xmlsettingsmanager.h"
@@ -28,6 +29,7 @@ namespace LC::Monocle
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		BookmarksStorage_ = std::make_shared<BookmarksStorage> ();
+		Loader_ = std::make_shared<DocumentLoader> ();
 
 		Util::InstallTranslator ("monocle");
 
@@ -38,7 +40,7 @@ namespace LC::Monocle
 
 		Core::Instance ().SetProxy (proxy, this);
 
-		XSD_->SetDataSource ("DefaultBackends", Core::Instance ().GetDefaultBackendManager ()->GetModel ());
+		XSD_->SetDataSource ("DefaultBackends", Loader_->GetDefaultBackendManager ().GetModel ());
 
 		DocTabInfo_ =
 		{
@@ -109,7 +111,7 @@ namespace LC::Monocle
 		if (!QFile::exists (local))
 			return {};
 
-		return Core::Instance ().CanLoadDocument (local) ?
+		return Loader_->CanLoadDocument (local) ?
 				EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
 				EntityTestHandleResult {};
 	}
@@ -124,7 +126,7 @@ namespace LC::Monocle
 
 	void Plugin::Handle (Entity e)
 	{
-		auto tab = new DocumentTab { *BookmarksStorage_, DocTabInfo_, this };
+		auto tab = new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this };
 		AddTab (tab);
 		tab->SetDoc (e.Entity_.toUrl ().toLocalFile ());
 	}
@@ -142,7 +144,7 @@ namespace LC::Monocle
 	void Plugin::TabOpenRequested (const QByteArray& id)
 	{
 		if (id == DocTabInfo_.TabClass_)
-			AddTab (new DocumentTab { *BookmarksStorage_, DocTabInfo_, this });
+			AddTab (new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this });
 		else
 			qWarning () << "unknown tab class" << id;
 	}
@@ -154,14 +156,14 @@ namespace LC::Monocle
 
 	void Plugin::AddPlugin (QObject *pluginObj)
 	{
-		Core::Instance ().AddPlugin (pluginObj);
+		Loader_->AddPlugin (pluginObj);
 	}
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
 		for (const auto& info : infos)
 		{
-			auto tab = new DocumentTab { *BookmarksStorage_, DocTabInfo_, this };
+			auto tab = new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this };
 			for (const auto& pair : info.DynProperties_)
 				tab->setProperty (pair.first, pair.second);
 
@@ -194,6 +196,5 @@ namespace LC::Monocle
 		Core::Instance ().GetShortcutManager ()->SetShortcut (id, sequences);
 	}
 }
-
 
 LC_EXPORT_PLUGIN (leechcraft_monocle, LC::Monocle::Plugin);

@@ -23,9 +23,7 @@ namespace Monocle
 {
 	class RecentlyOpenedManager;
 	class PixmapCacheManager;
-	class DefaultBackendManager;
 	class DocStateManager;
-	class BookmarksManager;
 	class CoreLoadProxy;
 
 	class Core : public QObject
@@ -33,11 +31,9 @@ namespace Monocle
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QList<QObject*> Backends_;
 
 		PixmapCacheManager *CacheManager_;
 		RecentlyOpenedManager *ROManager_;
-		DefaultBackendManager *DefaultBackendManager_;
 		DocStateManager *DocStateManager_;
 
 		Util::ShortcutManager *ShortcutMgr_;
@@ -48,15 +44,8 @@ namespace Monocle
 
 		void SetProxy (ICoreProxy_ptr, QObject*);
 
-		void AddPlugin (QObject*);
-
-		bool CanHandleMime (const QString&);
-		bool CanLoadDocument (const QString&);
-		CoreLoadProxy* LoadDocument (const QString&);
-
 		PixmapCacheManager* GetPixmapCacheManager () const;
 		RecentlyOpenedManager* GetROManager () const;
-		DefaultBackendManager* GetDefaultBackendManager () const;
 		DocStateManager* GetDocStateManager () const;
 
 		Util::ShortcutManager* GetShortcutManager () const;

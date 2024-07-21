@@ -58,6 +58,8 @@ LC_DEFINE_PLUGIN (
 		components/navigation/documentbookmarksmodel.cpp
 		components/navigation/navigationhistory.cpp
 		components/navigation/navigator.cpp
+		components/services/coreloadproxy.cpp
+		components/services/documentloader.cpp
 		components/viewitems/nondragclickfilter.cpp
 		monocle.cpp
 		documenttab.cpp
@@ -85,7 +87,6 @@ LC_DEFINE_PLUGIN (
 		anntreedelegate.cpp
 		linkitem.cpp
 		linkactionexecutor.cpp
-		coreloadproxy.cpp
 		searchtabwidget.cpp
 		pagenumlabel.cpp
 		smoothscroller.cpp

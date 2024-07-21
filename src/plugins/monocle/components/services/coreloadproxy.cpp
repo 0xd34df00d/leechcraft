@@ -11,14 +11,14 @@
 #include <QTimer>
 #include <QUrl>
 #include <QtDebug>
+#include "documentloader.h"
 #include "interfaces/monocle/iredirectproxy.h"
-#include "core.h"
-
 
 namespace LC::Monocle
 {
-	CoreLoadProxy::CoreLoadProxy (const IDocument_ptr& doc)
-	: SourcePath_ { doc->GetDocURL ().toLocalFile () }
+	CoreLoadProxy::CoreLoadProxy (DocumentLoader& loader, const IDocument_ptr& doc)
+	: Loader_ { loader }
+	, SourcePath_ { doc->GetDocURL ().toLocalFile () }
 	, Doc_ { doc }
 	{
 		QTimer::singleShot (0,
@@ -26,8 +26,9 @@ namespace LC::Monocle
 				&CoreLoadProxy::EmitReady);
 	}
 
-	CoreLoadProxy::CoreLoadProxy (const IRedirectProxy_ptr& proxy)
-	: SourcePath_ { proxy->GetRedirectSource () }
+	CoreLoadProxy::CoreLoadProxy (DocumentLoader& loader, const IRedirectProxy_ptr& proxy)
+	: Loader_ { loader }
+	, SourcePath_ { proxy->GetRedirectSource () }
 	, Proxy_ { proxy }
 	{
 		connect (proxy->GetQObject (),
@@ -44,7 +45,7 @@ namespace LC::Monocle
 
 	void CoreLoadProxy::handleRedirected (const QString& target)
 	{
-		auto subProxy = Core::Instance ().LoadDocument (target);
+		auto subProxy = Loader_.LoadDocument (target);
 		if (!subProxy)
 		{
 			EmitReady ();

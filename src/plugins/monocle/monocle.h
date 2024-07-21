@@ -21,6 +21,7 @@ namespace LC::Monocle
 {
 	class BookmarksStorage;
 	class DocumentTab;
+	class DocumentLoader;
 
 	class Plugin : public QObject
 					, public IInfo
@@ -47,6 +48,7 @@ namespace LC::Monocle
 		TabClassInfo DocTabInfo_;
 
 		std::shared_ptr<BookmarksStorage> BookmarksStorage_;
+		std::shared_ptr<DocumentLoader> Loader_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;

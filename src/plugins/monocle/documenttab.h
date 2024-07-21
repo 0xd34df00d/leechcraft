@@ -27,6 +27,7 @@ namespace LC
 {
 namespace Monocle
 {
+	class DocumentLoader;
 	class PagesLayoutManager;
 	class PageGraphicsItem;
 	class TextSearchHandler;
@@ -71,6 +72,8 @@ namespace Monocle
 		SmoothScroller *Scroller_ = nullptr;
 
 		BookmarksStorage& BookmarksStorage_;
+		DocumentLoader& Loader_;
+
 		std::shared_ptr<DocumentBookmarksModel> BookmarksModel_;
 
 		PagesLayoutManager& LayoutManager_;
@@ -94,7 +97,7 @@ namespace Monocle
 
 		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
-		DocumentTab (BookmarksStorage&, const TabClassInfo&, QObject*);
+		DocumentTab (BookmarksStorage&, DocumentLoader&, const TabClassInfo&, QObject*);
 		~DocumentTab () override;
 
 		TabClassInfo GetTabClassInfo () const override;

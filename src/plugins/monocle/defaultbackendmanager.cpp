@@ -27,10 +27,7 @@ namespace Monocle
 	, Model_ (new QStandardItemModel (this))
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Backends"), tr ("Choice") });
-	}
 
-	void DefaultBackendManager::LoadSettings ()
-	{
 		QSettings settings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Monocle");
 		settings.beginGroup ("BackendChoices");
 		for (const auto& key : settings.childKeys ())

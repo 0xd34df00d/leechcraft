@@ -44,6 +44,7 @@
 #include "components/navigation/documentbookmarksmodel.h"
 #include "components/navigation/navigator.h"
 #include "components/navigation/navigationhistory.h"
+#include "components/services/documentloader.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "presenterwidget.h"
@@ -81,13 +82,14 @@ namespace Monocle
 		}
 	};
 
-	DocumentTab::DocumentTab (BookmarksStorage& bmStorage, const TabClassInfo& tc, QObject *parent)
+	DocumentTab::DocumentTab (BookmarksStorage& bmStorage, DocumentLoader& loader, const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, BookmarksStorage_ { bmStorage }
+	, Loader_ { loader }
 	, LayoutManager_ { *new PagesLayoutManager { Ui_.PagesView_, this } }
-	, Navigator_ { *new Navigator { LayoutManager_, this } }
+	, Navigator_ { *new Navigator { LayoutManager_, loader, this } }
 	, FormManager_ { *new FormManager { Ui_.PagesView_, Navigator_.GetNavigationContext () }}
 	, AnnManager_ { *new AnnManager { Navigator_.GetNavigationContext (), this } }
 	, SearchHandler_ { *new TextSearchHandler { this } }
@@ -269,7 +271,6 @@ namespace Monocle
 	void DocumentTab::HandleDragEnter (QDragMoveEvent *event)
 	{
 		auto data = event->mimeData ();
-
 		if (!data->hasUrls ())
 			return;
 
@@ -278,14 +279,13 @@ namespace Monocle
 			return;
 
 		const auto& localPath = url.toLocalFile ();
-		if (Core::Instance ().CanLoadDocument (localPath))
+		if (Loader_.CanLoadDocument (localPath))
 			event->acceptProposedAction ();
 	}
 
 	void DocumentTab::HandleDrop (QDropEvent *event)
 	{
 		auto data = event->mimeData ();
-
 		if (!data->hasUrls ())
 			return;
 
