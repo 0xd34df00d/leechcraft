@@ -98,23 +98,23 @@ namespace LC::Monocle
 			const auto doc = qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
 			return doc ? new CoreLoadProxy { *this, doc } : nullptr;
 		}
-		else if (!loaders.isEmpty ())
+		if (!loaders.isEmpty ())
 		{
 			if (const auto backend = BackendManager_.GetBackend (loaders))
 			{
 				const auto doc = qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
 				return doc ? new CoreLoadProxy { *this, doc } : nullptr;
 			}
-			else
-				return nullptr;
+			return nullptr;
 		}
-		else if (!redirectors.isEmpty ())
+
+		if (!redirectors.isEmpty ())
 		{
 			const auto backend = qobject_cast<IBackendPlugin*> (redirectors.first ());
 			const auto redir = backend->GetRedirection (path);
 			return redir ? new CoreLoadProxy { *this, redir } : nullptr;
 		}
-		else
-			return nullptr;
+
+		return nullptr;
 	}
 }
