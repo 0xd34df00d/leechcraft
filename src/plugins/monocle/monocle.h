@@ -16,10 +16,10 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
-#include "components/navigation/bookmarksstorage.h"
 
 namespace LC::Monocle
 {
+	class BookmarksStorage;
 	class DocumentTab;
 
 	class Plugin : public QObject
@@ -46,7 +46,7 @@ namespace LC::Monocle
 
 		TabClassInfo DocTabInfo_;
 
-		BookmarksStorage BookmarksStorage_;
+		std::shared_ptr<BookmarksStorage> BookmarksStorage_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;

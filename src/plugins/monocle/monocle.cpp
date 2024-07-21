@@ -17,6 +17,7 @@
 #include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "util/monocle/textdocumentformatconfig.h"
+#include "components/navigation/bookmarksstorage.h"
 #include "core.h"
 #include "documenttab.h"
 #include "xmlsettingsmanager.h"
@@ -26,6 +27,8 @@ namespace LC::Monocle
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		BookmarksStorage_ = std::make_shared<BookmarksStorage> ();
+
 		Util::InstallTranslator ("monocle");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
@@ -121,7 +124,7 @@ namespace LC::Monocle
 
 	void Plugin::Handle (Entity e)
 	{
-		auto tab = new DocumentTab { BookmarksStorage_, DocTabInfo_, this };
+		auto tab = new DocumentTab { *BookmarksStorage_, DocTabInfo_, this };
 		AddTab (tab);
 		tab->SetDoc (e.Entity_.toUrl ().toLocalFile ());
 	}
@@ -139,7 +142,7 @@ namespace LC::Monocle
 	void Plugin::TabOpenRequested (const QByteArray& id)
 	{
 		if (id == DocTabInfo_.TabClass_)
-			AddTab (new DocumentTab { BookmarksStorage_, DocTabInfo_, this });
+			AddTab (new DocumentTab { *BookmarksStorage_, DocTabInfo_, this });
 		else
 			qWarning () << "unknown tab class" << id;
 	}
@@ -158,7 +161,7 @@ namespace LC::Monocle
 	{
 		for (const auto& info : infos)
 		{
-			auto tab = new DocumentTab { BookmarksStorage_, DocTabInfo_, this };
+			auto tab = new DocumentTab { *BookmarksStorage_, DocTabInfo_, this };
 			for (const auto& pair : info.DynProperties_)
 				tab->setProperty (pair.first, pair.second);
 
