@@ -499,7 +499,7 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Appearance</source>
         <translation>Appearance</translation>
     </message>
@@ -537,97 +537,112 @@
         <translation>Performance</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="10"/>
+        <source>Pixmap cache size:</source>
+        <translation>Pixmap cache size:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
         <source>Text books</source>
         <translation>Text books</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>Default font:</source>
         <translation>Default font:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
         <location filename="dummy.cpp" line="17"/>
+        <source>Page width:</source>
+        <translation>Page width:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="20"/>
         <source> px</source>
         <translation> px</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="19"/>
+        <source>Page height:</source>
+        <translation>Page height:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="21"/>
         <source>Custom colors</source>
         <translation>Custom colors</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="19"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>Background color:</source>
         <translation>Background color:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="20"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Foreground color:</source>
         <translation>Foreground color:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Link color:</source>
         <translation>Link color:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Margins and indents</source>
         <translation>Margins and indents</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>Page</source>
         <translation>Page</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Left margin:</source>
         <translation>Left margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Top margin:</source>
         <translation>Top margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Right margin:</source>
         <translation>Right margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Bottom margin:</source>
         <translation>Bottom margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Paragraph</source>
         <translation>Paragraph</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>First line indent:</source>
         <translation>First line indent:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="11"/>
         <source> MiB</source>
         <translation> MiB</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="12"/>
         <source>Smooth scrolling</source>
         <translation>Smooth scrolling</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Default backends</source>
         <translation>Default backends</translation>
     </message>

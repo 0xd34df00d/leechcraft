@@ -499,7 +499,7 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Appearance</source>
         <translation>Внешний вид</translation>
     </message>
@@ -537,97 +537,112 @@
         <translation>Производительность</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="10"/>
+        <source>Pixmap cache size:</source>
+        <translation>Размер кеша изображений:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
         <source>Text books</source>
         <translation>Текстовые книги</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>Default font:</source>
         <translation>Шрифт по умолчанию:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
         <location filename="dummy.cpp" line="17"/>
+        <source>Page width:</source>
+        <translation>Ширина страницы:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="20"/>
         <source> px</source>
         <translation> пикселей</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="19"/>
+        <source>Page height:</source>
+        <translation>Высота страницы:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="21"/>
         <source>Custom colors</source>
         <translation>Особые цвета</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="19"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>Background color:</source>
         <translation>Цвет фона:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="20"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Foreground color:</source>
         <translation>Цвет текста:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Link color:</source>
         <translation>Цвет ссылок:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Margins and indents</source>
         <translation>Отступы</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>Page</source>
         <translation>Страница</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Left margin:</source>
         <translation>Левый отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Top margin:</source>
         <translation>Правый отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Right margin:</source>
         <translation>Верхний отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Bottom margin:</source>
         <translation>Нижний отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Paragraph</source>
         <translation>Параграф</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>First line indent:</source>
         <translation>Отступ красной строки:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="11"/>
         <source> MiB</source>
         <translation> МБ</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="12"/>
         <source>Smooth scrolling</source>
         <translation>Плавная прокрутка</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Default backends</source>
         <translation>Модули по умолчанию</translation>
     </message>
