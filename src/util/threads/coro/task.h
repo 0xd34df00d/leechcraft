@@ -26,7 +26,7 @@ namespace LC::Util
 
 			std::optional<R> Ret_;
 
-			template<typename U>
+			template<typename U = R>
 			void return_value (U&& val)
 			{
 				Ret_.emplace (std::forward<U> (val));
