@@ -8,11 +8,9 @@
 
 #include "core.h"
 #include <util/shortcuts/shortcutmanager.h>
-#include "interfaces/monocle/iredirectproxy.h"
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
 #include "docstatemanager.h"
-#include "components/services/coreloadproxy.h"
 
 namespace LC
 {

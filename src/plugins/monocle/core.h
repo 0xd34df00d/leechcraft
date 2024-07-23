@@ -24,7 +24,6 @@ namespace Monocle
 	class RecentlyOpenedManager;
 	class PixmapCacheManager;
 	class DocStateManager;
-	class CoreLoadProxy;
 
 	class Core : public QObject
 	{
