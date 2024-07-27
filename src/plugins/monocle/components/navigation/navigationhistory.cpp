@@ -10,7 +10,6 @@
 #include <QFileInfo>
 #include <QMenu>
 #include "interfaces/monocle/ilink.h"
-#include "documenttab.h"
 
 namespace LC::Monocle
 {

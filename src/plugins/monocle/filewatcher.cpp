@@ -10,7 +10,6 @@
 #include <QTimer>
 #include <QFileInfo>
 #include <QtDebug>
-#include "documenttab.h"
 #include "pagegraphicsitem.h"
 
 namespace LC::Monocle
