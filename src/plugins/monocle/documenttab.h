@@ -20,9 +20,6 @@
 #include "common.h"
 #include "ui_documenttab.h"
 
-class QTreeView;
-class QMenu;
-
 namespace LC
 {
 namespace Monocle
