@@ -54,6 +54,8 @@ namespace Monocle
 		Ui::DocumentTab Ui_;
 		Util::UiInit UiInit_ { Ui_, *this };
 
+		QGraphicsScene Scene_;
+
 		TabClassInfo TC_;
 		QObject *ParentPlugin_;
 
@@ -91,7 +93,6 @@ namespace Monocle
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
 		QVector<PageGraphicsItem*> Pages_;
-		QGraphicsScene Scene_;
 
 		bool SaveStateScheduled_ = false;
 
