@@ -56,6 +56,13 @@ instance ParseRecord (Options Wrapped)
 extensionIs :: FilePath -> String -> Bool
 extensionIs path ext = extension path == Just ext
 
+find'lupdate :: MonadIO io => io (Maybe FilePath)
+find'lupdate = do
+  inPath <- which "lupdate"
+  case inPath of
+    Just path -> pure $ Just path
+    Nothing -> listToMaybe <$> testfile `filterM` [ "/usr/lib/qt5/bin/lupdate", "/usr/lib64/qt5/bin/lupdate" ]
+
 main :: IO ()
 main = do
   Options { .. } <- unwrapRecord "tstools"
@@ -76,8 +83,9 @@ main = do
                   _ -> do
                         tsBase <- guessTsBase <$> pwd
                         pure $ (\lang -> [i|#{T.pack tsBase}_#{lang}.ts|]) <$> languages
+  lupdate <- find'lupdate >>= maybe (fail "`lupdate` not found; is it in your path?") (pure . T.pack)
   forM_ tsFiles $ \tsFile -> do
     let lupdateArgs = noobsoleteArg <> fmap T.pack (sources <> generated) <> ["-ts", T.pack tsFile]
-    view $ inproc "lupdate" lupdateArgs empty
+    view $ inproc lupdate lupdateArgs empty
 
   mapM_ rm generated
