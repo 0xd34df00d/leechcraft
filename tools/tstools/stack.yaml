@@ -1,6 +1,4 @@
 resolver: nightly-2024-07-27
 packages:
 - .
-extra-deps:
-- optparse-generic-1.5.2
 allow-newer: true
