@@ -2,6 +2,7 @@ set (THREADS_SRCS
 	coro/context.cpp
 	coro/networkreply.cpp
 	coro/networkresult.cpp
+	coro/process.cpp
 	coro/timer.cpp
 	coro/throttle.cpp
 	futures.cpp
