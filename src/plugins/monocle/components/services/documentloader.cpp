@@ -17,11 +17,6 @@
 
 namespace LC::Monocle
 {
-	DocumentLoader::DocumentLoader (QObject *parent)
-	: QObject { parent }
-	{
-	}
-
 	void DocumentLoader::AddPlugin (QObject *pluginObj)
 	{
 		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);

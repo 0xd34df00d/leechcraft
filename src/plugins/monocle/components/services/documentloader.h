@@ -20,7 +20,7 @@ namespace LC::Monocle
 		DefaultBackendManager BackendManager_;
 		QObjectList Backends_;
 	public:
-		explicit DocumentLoader (QObject* = nullptr);
+		using QObject::QObject;
 
 		void AddPlugin (QObject*);
 
