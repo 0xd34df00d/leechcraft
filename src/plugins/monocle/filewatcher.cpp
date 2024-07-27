@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "filewatcher.h"
+#include <QDir>
 #include <QTimer>
 #include <QFileInfo>
 #include <QtDebug>
