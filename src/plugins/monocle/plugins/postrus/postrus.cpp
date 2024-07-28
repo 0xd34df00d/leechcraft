@@ -11,19 +11,16 @@
 #include <QIcon>
 #include <QProcess>
 #include <QTemporaryFile>
-#include <util/threads/coro/process.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/mimedetector.h>
+#include <util/threads/coro/process.h>
 #include <util/util.h>
 
-namespace LC
-{
-namespace Monocle
-{
-namespace Postrus
+namespace LC::Monocle::Postrus
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("monocle_postrus");
+		Util::InstallTranslator ("monocle_postrus"_qs);
 	}
 
 	void Plugin::SecondInit ()
@@ -41,7 +38,7 @@ namespace Postrus
 
 	QString Plugin::GetName () const
 	{
-		return "Monocle Postrus";
+		return "Monocle Postrus"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -51,20 +48,18 @@ namespace Postrus
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return {};
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
+		return { "org.LeechCraft.Monocle.IBackendPlugin" };
 	}
 
 	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
 		const auto& mime = Util::MimeDetector {} (file);
-		return mime == "application/postscript" ?
+		return GetSupportedMimes ().contains (mime) ?
 				LoadCheckResult::Redirect :
 				LoadCheckResult::Cannot;
 	}
@@ -76,7 +71,7 @@ namespace Postrus
 
 	QString Plugin::GetRedirectionMime (const QString& filename)
 	{
-		return CanLoadDocument (filename) == LoadCheckResult::Redirect ? "application/pdf" : QString {};
+		return CanLoadDocument (filename) == LoadCheckResult::Redirect ? "application/pdf"_qs : QString {};
 	}
 
 	namespace
@@ -101,7 +96,15 @@ namespace Postrus
 
 		qDebug () << filename << *target;
 		QProcess process;
-		process.start ("ps2pdf", { "-dPDFSETTINGS=/prepress", "-dEmbedAllFonts=true", "-dSubsetFonts=false", "-r600", filename, *target });
+		process.start ("ps2pdf"_qs,
+				{
+					"-dPDFSETTINGS=/prepress"_qs,
+					"-dEmbedAllFonts=true"_qs,
+					"-dSubsetFonts=false"_qs,
+					"-r600"_qs,
+					filename,
+					*target
+				});
 		co_await process;
 
 		qDebug () << process.exitStatus () << process.exitCode () << process.error ();
@@ -114,7 +117,7 @@ namespace Postrus
 
 	QStringList Plugin::GetSupportedMimes () const
 	{
-		return { "application/postscript" };
+		return { "application/postscript"_qs };
 	}
 
 	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const
@@ -123,12 +126,10 @@ namespace Postrus
 		{
 			{
 				tr ("PostScript files"),
-				{ "ps", "eps" }
+				{ "ps"_qs, "eps"_qs }
 			}
 		};
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_monocle_postrus, LC::Monocle::Postrus::Plugin);

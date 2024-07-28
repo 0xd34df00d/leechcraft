@@ -14,11 +14,7 @@
 #include <interfaces/monocle/ibackendplugin.h>
 #include <interfaces/monocle/iknowfileextensions.h>
 
-namespace LC
-{
-namespace Monocle
-{
-namespace Postrus
+namespace LC::Monocle::Postrus
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -34,24 +30,22 @@ namespace Postrus
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Postrus")
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		LoadCheckResult CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-		QString GetRedirectionMime (const QString&);
-		Util::Task<std::optional<RedirectionResult>> GetRedirection (const QString&);
-		QStringList GetSupportedMimes () const;
+		LoadCheckResult CanLoadDocument (const QString&) override;
+		IDocument_ptr LoadDocument (const QString&) override;
+		QString GetRedirectionMime (const QString&) override;
+		Util::Task<std::optional<RedirectionResult>> GetRedirection (const QString&) override;
+		QStringList GetSupportedMimes () const override;
 
-		QList<ExtInfo> GetKnownFileExtensions () const;
+		QList<ExtInfo> GetKnownFileExtensions () const override;
 	};
-}
-}
 }
