@@ -7,10 +7,13 @@
  **********************************************************************/
 
 #include "postrus.h"
+#include <QDir>
 #include <QIcon>
+#include <QProcess>
+#include <QTemporaryFile>
+#include <util/threads/coro/process.h>
 #include <util/sys/mimedetector.h>
 #include <util/util.h>
-#include "redirector.h"
 
 namespace LC
 {
@@ -71,9 +74,42 @@ namespace Postrus
 		return {};
 	}
 
-	IRedirectProxy_ptr Plugin::GetRedirection (const QString& filename)
+	QString Plugin::GetRedirectionMime (const QString& filename)
 	{
-		return std::make_shared<Redirector> (filename);
+		return CanLoadDocument (filename) == LoadCheckResult::Redirect ? "application/pdf" : QString {};
+	}
+
+	namespace
+	{
+		std::optional<QString> GetTemporaryName ()
+		{
+			QTemporaryFile file { QDir::tempPath () + "/lc_monocle_postrus.XXXXXX.pdf" };
+			if (!file.open ())
+			{
+				qWarning () << "unable to create a temporarty file" << file.fileName () << file.errorString ();
+				return {};
+			}
+			return file.fileName ();
+		}
+	}
+
+	Util::Task<std::optional<RedirectionResult>> Plugin::GetRedirection (const QString& filename)
+	{
+		const auto& target = GetTemporaryName ();
+		if (!target)
+			co_return {};
+
+		qDebug () << filename << *target;
+		QProcess process;
+		process.start ("ps2pdf", { "-dPDFSETTINGS=/prepress", "-dEmbedAllFonts=true", "-dSubsetFonts=false", "-r600", filename, *target });
+		co_await process;
+
+		qDebug () << process.exitStatus () << process.exitCode () << process.error ();
+
+		if (process.exitStatus () == QProcess::NormalExit && !process.exitCode ())
+			co_return RedirectionResult { .TargetPath_ = *target };
+
+		co_return {};
 	}
 
 	QStringList Plugin::GetSupportedMimes () const

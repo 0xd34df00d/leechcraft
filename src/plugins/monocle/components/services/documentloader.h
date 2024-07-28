@@ -9,12 +9,12 @@
 #pragma once
 
 #include <QObject>
+#include <util/threads/coro/taskfwd.h>
+#include "interfaces/monocle/idocument.h"
 #include "defaultbackendmanager.h"
 
 namespace LC::Monocle
 {
-	class CoreLoadProxy;
-
 	class DocumentLoader : public QObject
 	{
 		DefaultBackendManager BackendManager_;
@@ -28,6 +28,6 @@ namespace LC::Monocle
 
 		bool CanHandleMime (const QString&) const;
 		bool CanLoadDocument (const QString&) const;
-		CoreLoadProxy* LoadDocument (const QString&);
+		Util::ContextTask<IDocument_ptr> LoadDocument (QString);
 	};
 }

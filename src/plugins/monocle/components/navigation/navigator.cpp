@@ -9,7 +9,8 @@
 #include "navigator.h"
 #include <QDir>
 #include <QFileInfo>
-#include "components/services/coreloadproxy.h"
+#include <util/threads/coro.h>
+#include <util/threads/coro/context.h>
 #include "components/services/documentloader.h"
 #include "navigationhistory.h"
 #include "core.h"
@@ -93,42 +94,26 @@ namespace LC::Monocle
 		if (!CurrentPath_.isEmpty () && QFileInfo { path }.isRelative ())
 			path = QFileInfo { CurrentPath_ }.dir ().absoluteFilePath (path);
 
-		auto document = Loader_.LoadDocument (path);
-		if (!document)
+		[] (auto pThis, auto path, auto options, auto targetPos) -> Util::ContextTask<>
 		{
-			qWarning () << "unable to navigate to" << path;
-			if (!(options & DocumentOpenOption::IgnoreErrors))
-				emit loadingFailed (path);
-			return;
-		}
+			co_await Util::AddContextObject (*pThis);
+			const auto& document = co_await pThis->Loader_.LoadDocument (path);
+			if (!document || !document->IsValid ())
+			{
+				qWarning () << "unable to navigate to" << path;
+				if (!(options & DocumentOpenOption::IgnoreErrors))
+					emit pThis->loadingFailed (path);
+				co_return;
+			}
 
-		connect (document,
-				&CoreLoadProxy::ready,
-				this,
-				[=, this] (auto ptr, auto path) { HandleLoaderReady (options, ptr, path, targetPos); });
-	}
+			Core::Instance ().GetROManager ()->RecordOpened (path);
+			pThis->Watcher_.SetWatchedFile (path);
+			pThis->CurrentPath_ = path;
 
-	void Navigator::HandleLoaderReady (DocumentOpenOptions options,
-			const IDocument_ptr& document,
-			const QString& path,
-			const std::optional<NavigationAction>& targetPos)
-	{
-		if (!document || !document->IsValid ())
-		{
-			qWarning () << "unable to navigate to" << path;
-			if (!(options & DocumentOpenOption::IgnoreErrors))
-				emit loadingFailed (path);
-			return;
-		}
-
-		Core::Instance ().GetROManager ()->RecordOpened (path);
-		Watcher_.SetWatchedFile (path);
-
-		CurrentPath_ = path;
-
-		emit loaded (document, CurrentPath_);
-		if (targetPos)
-			emit positionRequested (*targetPos);
+			emit pThis->loaded (document, path);
+			if (targetPos)
+				emit pThis->positionRequested (*targetPos);
+		} (this, path, options, targetPos);
 	}
 
 	ExternalNavigationAction Navigator::GetCurrentPosition () const

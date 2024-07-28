@@ -60,10 +60,6 @@ namespace LC::Monocle
 		void OpenDocument (const QString&);
 	private:
 		void StartLoading (QString, DocumentOpenOptions, const std::optional<NavigationAction>&);
-		void HandleLoaderReady (DocumentOpenOptions,
-				const IDocument_ptr&,
-				const QString&,
-				const std::optional<NavigationAction>&);
 
 		ExternalNavigationAction GetCurrentPosition () const;
 	signals:

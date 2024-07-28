@@ -10,14 +10,17 @@
 
 #include <QString>
 #include <QMetaType>
+#include <util/threads/coro.h>
 #include "idocument.h"
 
 namespace LC
 {
 namespace Monocle
 {
-	class IRedirectProxy;
-	typedef std::shared_ptr<IRedirectProxy> IRedirectProxy_ptr;
+	struct RedirectionResult
+	{
+		QString TargetPath_;
+	};
 
 	/** @brief Basic interface for plugins providing support for various
 	 * document formats for Monocle.
@@ -131,9 +134,14 @@ namespace Monocle
 		 * @return The redirect proxy for \em filename, or null pointer.
 		 *
 		 * @sa LoadDocument()
-		 * @sa IRedirectProxy
 		 */
-		virtual IRedirectProxy_ptr GetRedirection (const QString& filename)
+		virtual Util::Task<std::optional<RedirectionResult>> GetRedirection (const QString& filename)
+		{
+			Q_UNUSED (filename)
+			co_return {};
+		}
+
+		virtual QString GetRedirectionMime (const QString& filename)
 		{
 			Q_UNUSED (filename)
 			return {};

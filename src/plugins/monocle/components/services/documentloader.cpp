@@ -10,9 +10,9 @@
 #include <algorithm>
 #include <QFile>
 #include <interfaces/iplugin2.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/context.h>
 #include "interfaces/monocle/ibackendplugin.h"
-#include "interfaces/monocle/iredirectproxy.h"
-#include "coreloadproxy.h"
 #include "defaultbackendmanager.h"
 
 namespace LC::Monocle
@@ -61,15 +61,15 @@ namespace LC::Monocle
 				[&path, this] (QObject *redirectorObj)
 				{
 					const auto redirector = qobject_cast<IBackendPlugin*> (redirectorObj);
-					const auto redirect = redirector->GetRedirection (path);
-					return CanHandleMime (redirect->GetRedirectedMime ());
+					const auto redirectedMime = redirector->GetRedirectionMime (path);
+					return !redirectedMime.isEmpty () && CanHandleMime (redirectedMime);
 				});
 	}
 
-	CoreLoadProxy* DocumentLoader::LoadDocument (const QString& path)
+	Util::ContextTask<IDocument_ptr> DocumentLoader::LoadDocument (QString path)
 	{
 		if (!QFile::exists (path))
-			return nullptr;
+			co_return {};
 
 		QObjectList loaders;
 		QObjectList redirectors;
@@ -89,27 +89,46 @@ namespace LC::Monocle
 		}
 
 		if (loaders.size () == 1)
-		{
-			const auto doc = qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
-			return doc ? new CoreLoadProxy { *this, doc } : nullptr;
-		}
+			co_return qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
+
 		if (!loaders.isEmpty ())
 		{
 			if (const auto backend = BackendManager_.GetBackend (loaders))
-			{
-				const auto doc = qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
-				return doc ? new CoreLoadProxy { *this, doc } : nullptr;
-			}
-			return nullptr;
+				co_return qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
+			co_return {};
 		}
 
-		if (!redirectors.isEmpty ())
+		co_await Util::AddContextObject { *this };
+
+		for (const auto redirector : redirectors)
 		{
-			const auto backend = qobject_cast<IBackendPlugin*> (redirectors.first ());
-			const auto redir = backend->GetRedirection (path);
-			return redir ? new CoreLoadProxy { *this, redir } : nullptr;
+			const auto backend = qobject_cast<IBackendPlugin*> (redirector);
+			const auto& redirection = co_await backend->GetRedirection (path);
+			if (!redirection)
+				continue;
+
+			const auto& target = redirection->TargetPath_;
+
+			auto cleanupConverted = [target]
+			{
+				qDebug () << "removing" << target;
+				QFile::remove (target);
+			};
+
+			const auto& doc = co_await LoadDocument (target);
+			if (!doc || !doc->IsValid ())
+			{
+				qWarning () << "unable to load document after conversion";
+				cleanupConverted ();
+				continue;
+			}
+
+			QObject::connect (doc->GetQObject (),
+					&QObject::destroyed,
+					cleanupConverted);
+			co_return doc;
 		}
 
-		return nullptr;
+		co_return {};
 	}
 }

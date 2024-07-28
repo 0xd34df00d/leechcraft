@@ -46,7 +46,8 @@ namespace Postrus
 
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
-		IRedirectProxy_ptr GetRedirection (const QString&);
+		QString GetRedirectionMime (const QString&);
+		Util::Task<std::optional<RedirectionResult>> GetRedirection (const QString&);
 		QStringList GetSupportedMimes () const;
 
 		QList<ExtInfo> GetKnownFileExtensions () const;
