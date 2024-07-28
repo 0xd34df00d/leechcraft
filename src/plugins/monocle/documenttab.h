@@ -28,7 +28,6 @@ namespace Monocle
 	class PageGraphicsItem;
 	class FindDialog;
 	class PageNumLabel;
-	class SmoothScroller;
 	class BookmarksStorage;
 	class DocumentBookmarksModel;
 
@@ -59,8 +58,6 @@ namespace Monocle
 		QAction *ExportPDFAction_ = nullptr;
 		QAction *FindAction_ = nullptr;
 		FindDialog *FindDialog_ = nullptr;
-
-		SmoothScroller *Scroller_ = nullptr;
 
 		BookmarksStorage& BookmarksStorage_;
 		DocumentLoader& Loader_;

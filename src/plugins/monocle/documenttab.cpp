@@ -93,6 +93,7 @@ namespace Monocle
 		ViewPositionTracker ViewPosTracker_;
 		Dock DockWidget_;
 		Zoomer Zoomer_;
+		SmoothScroller Scroller_;
 
 		explicit Components (DocumentTab& tab, DocumentLoader& loader, BookmarksStorage& bmStorage)
 		: LayoutManager_ { tab.Ui_.PagesView_ }
@@ -109,6 +110,7 @@ namespace Monocle
 				.ViewPosTracker_ = ViewPosTracker_,
 		} }
 		, Zoomer_ { [this] { return LayoutManager_.GetCurrentScale (); } }
+		, Scroller_ { *tab.Ui_.PagesView_ }
 		{
 		}
 	};
@@ -143,8 +145,7 @@ namespace Monocle
 							tr ("Unable to open document %1.").arg ("<em>" + path + "</em>"));
 				});
 
-		Scroller_ = new SmoothScroller { *Ui_.PagesView_, this };
-		connect (Scroller_,
+		connect (&C_->Scroller_,
 				&SmoothScroller::isCurrentlyScrollingChanged,
 				this,
 				[this] (bool isScrolling)
@@ -173,7 +174,7 @@ namespace Monocle
 
 		connect (&C_->AnnManager_,
 				&AnnManager::navigationRequested,
-				Scroller_,
+				&C_->Scroller_,
 				&SmoothScroller::SmoothCenterOn);
 
 		FindDialog_ = new FindDialog { C_->SearchHandler_, Ui_.PagesView_ };
@@ -192,7 +193,7 @@ namespace Monocle
 					PageNumLabel_->SetCurrentPage (current);
 					scheduleSaveState ();
 				});
-		connect (Scroller_,
+		connect (&C_->Scroller_,
 				&SmoothScroller::isCurrentlyScrollingChanged,
 				&C_->ViewPosTracker_,
 				[this] (bool scrolling) { C_->ViewPosTracker_.SetUpdatesEnabled (!scrolling); });
@@ -349,7 +350,7 @@ namespace Monocle
 
 	void DocumentTab::SetCurrentPage (int idx)
 	{
-		Scroller_->SmoothCenterOn (*Pages_ [idx]);
+		C_->Scroller_.SmoothCenterOn (*Pages_ [idx]);
 	}
 
 	void DocumentTab::dragEnterEvent (QDragEnterEvent *event)
@@ -628,7 +629,7 @@ namespace Monocle
 		if (const auto& rect = nav.TargetArea_)
 		{
 			auto center = (rect->TopLeft<PageRelativePos> () + rect->BottomRight<PageRelativePos> ()) / 2;
-			Scroller_->SmoothCenterOnPoint (center.ToSceneAbsolute (*page));
+			C_->Scroller_.SmoothCenterOnPoint (center.ToSceneAbsolute (*page));
 		}
 		else
 			SetCurrentPage (nav.PageNumber_);
