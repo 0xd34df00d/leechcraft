@@ -25,20 +25,12 @@ namespace LC
 namespace Monocle
 {
 	class DocumentLoader;
-	class PagesLayoutManager;
 	class PageGraphicsItem;
-	class TextSearchHandler;
 	class FindDialog;
-	class FormManager;
-	class AnnManager;
 	class PageNumLabel;
 	class SmoothScroller;
-	class Dock;
-	class ViewPositionTracker;
-	class Zoomer;
 	class BookmarksStorage;
 	class DocumentBookmarksModel;
-	class Navigator;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -75,17 +67,8 @@ namespace Monocle
 
 		std::shared_ptr<DocumentBookmarksModel> BookmarksModel_;
 
-		PagesLayoutManager& LayoutManager_;
-		Navigator& Navigator_;
-
-		FormManager& FormManager_;
-		AnnManager& AnnManager_;
-		TextSearchHandler& SearchHandler_;
-		ViewPositionTracker& ViewPosTracker_;
-
-		std::unique_ptr<Dock> DockWidget_;
-
-		std::unique_ptr<Zoomer> Zoomer_;
+		struct Components;
+		std::unique_ptr<Components> C_;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;

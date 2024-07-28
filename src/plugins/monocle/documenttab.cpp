@@ -82,41 +82,58 @@ namespace Monocle
 		}
 	};
 
+	struct DocumentTab::Components
+	{
+		PagesLayoutManager LayoutManager_;
+		Navigator Navigator_;
+
+		FormManager FormManager_;
+		AnnManager AnnManager_;
+		TextSearchHandler SearchHandler_;
+		ViewPositionTracker ViewPosTracker_;
+		Dock DockWidget_;
+		Zoomer Zoomer_;
+
+		explicit Components (DocumentTab& tab, DocumentLoader& loader, BookmarksStorage& bmStorage)
+		: LayoutManager_ { tab.Ui_.PagesView_ }
+		, Navigator_ { LayoutManager_, loader }
+		, FormManager_ { tab.Ui_.PagesView_, Navigator_.GetNavigationContext () }
+		, AnnManager_ { Navigator_.GetNavigationContext () }
+		, ViewPosTracker_ { *tab.Ui_.PagesView_, LayoutManager_ }
+		, DockWidget_ { {
+				.LinkContext_ = Navigator_.GetNavigationContext (),
+				.TabWidget_ = tab,
+				.AnnotationsMgr_ = AnnManager_,
+				.BookmarksStorage_ = bmStorage,
+				.SearchHandler_ = SearchHandler_,
+				.ViewPosTracker_ = ViewPosTracker_,
+		} }
+		, Zoomer_ { [this] { return LayoutManager_.GetCurrentScale (); } }
+		{
+		}
+	};
+
 	DocumentTab::DocumentTab (BookmarksStorage& bmStorage, DocumentLoader& loader, const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, BookmarksStorage_ { bmStorage }
 	, Loader_ { loader }
-	, LayoutManager_ { *new PagesLayoutManager { Ui_.PagesView_, this } }
-	, Navigator_ { *new Navigator { LayoutManager_, loader, this } }
-	, FormManager_ { *new FormManager { Ui_.PagesView_, Navigator_.GetNavigationContext () }}
-	, AnnManager_ { *new AnnManager { Navigator_.GetNavigationContext (), this } }
-	, SearchHandler_ { *new TextSearchHandler { this } }
-	, ViewPosTracker_ { *new ViewPositionTracker { *Ui_.PagesView_, LayoutManager_, this } }
-	, DockWidget_ { std::make_unique<Dock> (Dock::Deps {
-			.LinkContext_ = Navigator_.GetNavigationContext (),
-			.TabWidget_ = *this,
-			.AnnotationsMgr_ = AnnManager_,
-			.BookmarksStorage_ = bmStorage,
-			.SearchHandler_ = SearchHandler_,
-			.ViewPosTracker_ = ViewPosTracker_,
-		}) }
-	, Zoomer_ { std::make_unique<Zoomer> ([this] { return LayoutManager_.GetCurrentScale (); }) }
+	, C_ { std::make_unique<Components> (*this, loader, bmStorage) }
 	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
-		connect (&Navigator_,
+		connect (&C_->Navigator_,
 				&Navigator::positionRequested,
 				this,
 				&DocumentTab::SetPosition);
-		connect (&Navigator_,
+		connect (&C_->Navigator_,
 				&Navigator::loaded,
 				this,
 				&DocumentTab::HandleDocumentLoaded);
-		connect (&Navigator_,
+		connect (&C_->Navigator_,
 				&Navigator::loadingFailed,
 				this,
 				[this] (const QString& path)
@@ -136,38 +153,38 @@ namespace Monocle
 						page->SetRenderingEnabled (!isScrolling);
 				});
 
-		connect (&*Zoomer_,
+		connect (&C_->Zoomer_,
 				&Zoomer::scaleModeChanged,
 				this,
 				[this] (ScaleMode mode)
 				{
-					LayoutManager_.SetScaleMode (mode);
-					LayoutManager_.Relayout ();
+					C_->LayoutManager_.SetScaleMode (mode);
+					C_->LayoutManager_.Relayout ();
 					scheduleSaveState ();
 				});
 
-		connect (&SearchHandler_,
+		connect (&C_->SearchHandler_,
 				&TextSearchHandler::navigateRequested,
-				&Navigator_,
+				&C_->Navigator_,
 				&Navigator::Navigate);
 
 		XmlSettingsManager::Instance ().RegisterObject ("InhibitScreensaver", this,
 				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
 
-		connect (&AnnManager_,
+		connect (&C_->AnnManager_,
 				&AnnManager::navigationRequested,
 				Scroller_,
 				&SmoothScroller::SmoothCenterOn);
 
-		FindDialog_ = new FindDialog { SearchHandler_, Ui_.PagesView_ };
+		FindDialog_ = new FindDialog { C_->SearchHandler_, Ui_.PagesView_ };
 		FindDialog_->hide ();
 
 		SetupToolbar ();
 
 		Toolbar_->addSeparator ();
-		Toolbar_->addAction (DockWidget_->toggleViewAction ());
+		Toolbar_->addAction (C_->DockWidget_.toggleViewAction ());
 
-		connect (&ViewPosTracker_,
+		connect (&C_->ViewPosTracker_,
 				&ViewPositionTracker::currentPageChanged,
 				this,
 				[this] (int current)
@@ -177,14 +194,14 @@ namespace Monocle
 				});
 		connect (Scroller_,
 				&SmoothScroller::isCurrentlyScrollingChanged,
-				&ViewPosTracker_,
-				[this] (bool scrolling) { ViewPosTracker_.SetUpdatesEnabled (!scrolling); });
+				&C_->ViewPosTracker_,
+				[this] (bool scrolling) { C_->ViewPosTracker_.SetUpdatesEnabled (!scrolling); });
 
-		connect (&*DockWidget_,
+		connect (&C_->DockWidget_,
 				&Dock::addBookmarkRequested,
 				this,
 				&DocumentTab::AddBookmark);
-		connect (&*DockWidget_,
+		connect (&C_->DockWidget_,
 				&Dock::removeBookmarkRequested,
 				this,
 				[this] (const Bookmark& bm)
@@ -192,10 +209,10 @@ namespace Monocle
 					if (CurrentDoc_)
 						BookmarksStorage_.RemoveBookmark (*CurrentDoc_, bm);
 				});
-		connect (&*DockWidget_,
+		connect (&C_->DockWidget_,
 				&Dock::bookmarkActivated,
 				this,
-				[this] (const Bookmark& bm) { Navigator_.Navigate (bm.ToNavigationAction ()); });
+				[this] (const Bookmark& bm) { C_->Navigator_.Navigate (bm.ToNavigationAction ()); });
 	}
 
 	DocumentTab::~DocumentTab () = default;
@@ -253,9 +270,9 @@ namespace Monocle
 		QDataStream out (&result, QIODevice::WriteOnly);
 		out << static_cast<quint8> (1)
 			<< CurrentDocPath_
-			<< LayoutManager_.GetCurrentScale ()
+			<< C_->LayoutManager_.GetCurrentScale ()
 			<< Ui_.PagesView_->GetCurrentCenter ().ToPointF ().toPoint ()
-			<< LayoutMode2Name (LayoutManager_.GetLayoutMode ());
+			<< LayoutMode2Name (C_->LayoutManager_.GetLayoutMode ());
 		return result;
 	}
 
@@ -293,7 +310,7 @@ namespace Monocle
 		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
 			return;
 
-		Navigator_.OpenDocument (url.toLocalFile ());
+		C_->Navigator_.OpenDocument (url.toLocalFile ());
 		event->acceptProposedAction ();
 	}
 
@@ -317,18 +334,17 @@ namespace Monocle
 			>> point
 			>> modeStr;
 
-		LayoutManager_.SetLayoutMode (Name2LayoutMode (modeStr));
-
-		Navigator_.OpenDocument (path);
-		LayoutManager_.SetScaleMode (FixedScale { scale });
-		LayoutManager_.Relayout ();
+		C_->LayoutManager_.SetLayoutMode (Name2LayoutMode (modeStr));
+		C_->LayoutManager_.SetScaleMode (FixedScale { scale });
+		C_->Navigator_.OpenDocument (path);
+		C_->LayoutManager_.Relayout ();
 
 		QTimer::singleShot (0, this, [point, this] { Ui_.PagesView_->centerOn (point); });
 	}
 
 	void DocumentTab::SetDoc (const QString& path)
 	{
-		Navigator_.OpenDocument (path);
+		C_->Navigator_.OpenDocument (path);
 	}
 
 	void DocumentTab::SetCurrentPage (int idx)
@@ -366,7 +382,7 @@ namespace Monocle
 								tr ("Seems like file %1 doesn't exist anymore.")
 										.arg ("<em>" + fi.fileName () + "</em>"));
 					else
-						Navigator_.OpenDocument (path);
+						C_->Navigator_.OpenDocument (path);
 				});
 
 		auto openButton = new QToolButton ();
@@ -378,8 +394,8 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbarRotate ()
 	{
-		auto rotateMenu = CreateRotateMenu (AngleNotifier { LayoutManager_, &PagesLayoutManager::rotationUpdated },
-				std::bind_front (&PagesLayoutManager::SetRotation, &LayoutManager_));
+		auto rotateMenu = CreateRotateMenu (AngleNotifier { C_->LayoutManager_, &PagesLayoutManager::rotationUpdated },
+				std::bind_front (&PagesLayoutManager::SetRotation, &C_->LayoutManager_));
 
 		auto rotateButton = new QToolButton ();
 		rotateButton->setProperty ("ActionIcon", "transform-rotate");
@@ -391,7 +407,7 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbarNavigation ()
 	{
-		auto& actions = Navigator_.GetNavigationHistory ().GetActions ();
+		auto& actions = C_->Navigator_.GetNavigationHistory ().GetActions ();
 		{
 			auto backButton = new QToolButton;
 			backButton->setDefaultAction (&actions.Back_);
@@ -408,9 +424,9 @@ namespace Monocle
 					SetCurrentPage (value - 1);
 					scheduleSaveState ();
 				});
-		connect (&LayoutManager_,
+		connect (&C_->LayoutManager_,
 				&PagesLayoutManager::layoutModeChanged,
-				[this] { PageNumLabel_->setSingleStep (LayoutManager_.GetLayoutModeCount ()); });
+				[this] { PageNumLabel_->setSingleStep (C_->LayoutManager_.GetLayoutModeCount ()); });
 		Toolbar_->addWidget (PageNumLabel_);
 
 		{
@@ -434,7 +450,7 @@ namespace Monocle
 				[this]
 				{
 					if (CurrentDoc_)
-						Print (LayoutManager_.GetCurrentPage (), *CurrentDoc_, *this);
+						Print (C_->LayoutManager_.GetCurrentPage (), *CurrentDoc_, *this);
 				});
 		Toolbar_->addAction (print);
 
@@ -511,7 +527,7 @@ namespace Monocle
 					Util::SetMenuModel (*bmMenu, *BookmarksModel_,
 							[this] (const QModelIndex& idx)
 							{
-								Navigator_.Navigate (BookmarksModel_->GetBookmark (idx).ToNavigationAction ());
+								C_->Navigator_.Navigate (BookmarksModel_->GetBookmark (idx).ToNavigationAction ());
 							},
 							{
 									.AdditionalActions_ = { addAction }
@@ -525,7 +541,7 @@ namespace Monocle
 
 		Toolbar_->addSeparator ();
 
-		AddToolbarEntries (*Toolbar_, Zoomer_->GetToolbarEntries ());
+		AddToolbarEntries (*Toolbar_, C_->Zoomer_.GetToolbarEntries ());
 
 		SetupToolbarRotate ();
 
@@ -597,8 +613,8 @@ namespace Monocle
 
 	void DocumentTab::SetLayoutMode (LayoutMode mode)
 	{
-		LayoutManager_.SetLayoutMode (mode);
-		LayoutManager_.Relayout ();
+		C_->LayoutManager_.SetLayoutMode (mode);
+		C_->LayoutManager_.Relayout ();
 
 		scheduleSaveState ();
 	}
@@ -639,15 +655,15 @@ namespace Monocle
 			Pages_ << item;
 		}
 
-		LayoutManager_.HandleDoc (CurrentDoc_.get (), Pages_);
-		SearchHandler_.HandleDoc (*CurrentDoc_, Pages_);
-		FormManager_.HandleDoc (*CurrentDoc_, Pages_);
-		AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
+		C_->LayoutManager_.HandleDoc (CurrentDoc_.get (), Pages_);
+		C_->SearchHandler_.HandleDoc (*CurrentDoc_, Pages_);
+		C_->FormManager_.HandleDoc (*CurrentDoc_, Pages_);
+		C_->AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
 		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
-		DockWidget_->HandleDoc (*CurrentDoc_);
+		C_->DockWidget_.HandleDoc (*CurrentDoc_);
 
-		CreateLinksItems (Navigator_.GetNavigationContext (), *CurrentDoc_, Pages_);
+		CreateLinksItems (C_->Navigator_.GetNavigationContext (), *CurrentDoc_, Pages_);
 
 		emit fileLoaded (path, CurrentDoc_.get (), Pages_);
 
@@ -660,7 +676,7 @@ namespace Monocle
 			connect (docSignals,
 					&DocumentSignals::printRequested,
 					this,
-					[this] { Print (LayoutManager_.GetCurrentPage (), *CurrentDoc_, *this); });
+					[this] { Print (C_->LayoutManager_.GetCurrentPage (), *CurrentDoc_, *this); });
 			connect (docSignals,
 					&DocumentSignals::pageContentsChanged,
 					this,
@@ -692,15 +708,15 @@ namespace Monocle
 		const auto& filename = QFileInfo (CurrentDocPath_).fileName ();
 		Core::Instance ().GetDocStateManager ()->SetState (filename,
 				{
-					LayoutManager_.GetCurrentPage (),
-					LayoutManager_.GetLayoutMode (),
-					LayoutManager_.GetScaleMode ()
+					C_->LayoutManager_.GetCurrentPage (),
+					C_->LayoutManager_.GetLayoutMode (),
+					C_->LayoutManager_.GetScaleMode ()
 				});
 	}
 
 	void DocumentTab::AddBookmark ()
 	{
-		const auto pos = LayoutManager_.GetCurrentPagePos ();
+		const auto pos = C_->LayoutManager_.GetCurrentPagePos ();
 		if (pos && CurrentDoc_)
 		{
 			const Bookmark bm { tr ("Page %1").arg (pos->Page_ + 1), pos->Page_, pos->Pos_ };
@@ -750,7 +766,7 @@ namespace Monocle
 		XmlSettingsManager::Instance ()
 				.setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
 
-		Navigator_.OpenDocument (path);
+		C_->Navigator_.OpenDocument (path);
 	}
 
 	void DocumentTab::handleSave ()
@@ -781,22 +797,22 @@ namespace Monocle
 			return;
 
 		auto presenter = new PresenterWidget (CurrentDoc_);
-		presenter->NavigateTo (LayoutManager_.GetCurrentPage ());
+		presenter->NavigateTo (C_->LayoutManager_.GetCurrentPage ());
 	}
 
 	void DocumentTab::recoverDocState (DocStateManager::State state)
 	{
-		LayoutManager_.SetLayoutMode (state.Lay_);
-		LayoutManager_.SetScaleMode (state.ScaleMode_);
-		LayoutManager_.Relayout ();
+		C_->LayoutManager_.SetLayoutMode (state.Lay_);
+		C_->LayoutManager_.SetScaleMode (state.ScaleMode_);
+		C_->LayoutManager_.Relayout ();
 
-		Zoomer_->SetScaleMode (state.ScaleMode_);
+		C_->Zoomer_.SetScaleMode (state.ScaleMode_);
 
 		Ui_.PagesView_->CenterOn (Ui_.PagesView_->GetViewportTrimmedCenter (*Pages_ [state.CurrentPage_]));
 
 		const auto action = [this]
 		{
-			switch (LayoutManager_.GetLayoutMode ())
+			switch (C_->LayoutManager_.GetLayoutMode ())
 			{
 			case LayoutMode::OnePage:
 				return LayOnePage_;
