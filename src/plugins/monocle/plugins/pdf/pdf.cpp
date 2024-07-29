@@ -57,7 +57,7 @@ namespace LC::Monocle::PDF
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		return { "org.LeechCraft.Monocle.IBackendPlugin" };
+		return { PluginClass };
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

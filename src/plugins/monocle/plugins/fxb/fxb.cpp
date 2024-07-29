@@ -57,9 +57,7 @@ namespace FXB
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
+		return { PluginClass };
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

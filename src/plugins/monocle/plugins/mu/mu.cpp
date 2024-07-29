@@ -51,9 +51,7 @@ namespace Mu
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
+		return { PluginClass };
 	}
 
 	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult

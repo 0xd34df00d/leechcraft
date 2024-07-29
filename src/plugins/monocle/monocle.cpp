@@ -16,6 +16,8 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "interfaces/monocle/ibackendplugin.h"
+#include "interfaces/monocle/iredirectorplugin.h"
 #include "util/monocle/textdocumentformatconfig.h"
 #include "components/navigation/bookmarksstorage.h"
 #include "components/services/documentloader.h"
@@ -151,7 +153,7 @@ namespace LC::Monocle
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
-		return { "org.LeechCraft.Monocle.IBackendPlugin", "org.LeechCraft.Monocle.IRedirectPlugin" };
+		return { IBackendPlugin::PluginClass, IRedirectorPlugin::PluginClass };
 	}
 
 	void Plugin::AddPlugin (QObject *pluginObj)

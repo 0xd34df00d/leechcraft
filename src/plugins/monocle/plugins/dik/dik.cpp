@@ -52,9 +52,7 @@ namespace Dik
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
+		return { PluginClass };
 	}
 
 	bool Plugin::CanLoadDocument (const QString& file)

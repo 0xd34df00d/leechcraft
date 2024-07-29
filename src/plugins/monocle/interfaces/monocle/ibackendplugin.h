@@ -33,6 +33,8 @@ namespace LC::Monocle
 	class IBackendPlugin
 	{
 	public:
+		static inline QByteArray PluginClass = "org.LeechCraft.Monocle.IBackendPlugin";
+
 		/** @brief Virtual destructor.
 		 */
 		virtual ~IBackendPlugin () = default;

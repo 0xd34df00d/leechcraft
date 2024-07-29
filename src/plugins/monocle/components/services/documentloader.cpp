@@ -22,9 +22,9 @@ namespace LC::Monocle
 	{
 		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);
 		const auto& classes = plugin2->GetPluginClasses ();
-		if (classes.contains ("org.LeechCraft.Monocle.IBackendPlugin"))
+		if (classes.contains (IBackendPlugin::PluginClass))
 			Backends_ << pluginObj;
-		if (classes.contains ("org.LeechCraft.Monocle.IRedirectPlugin"))
+		if (classes.contains (IRedirectorPlugin::PluginClass))
 			Redirectors_ << pluginObj;
 	}
 

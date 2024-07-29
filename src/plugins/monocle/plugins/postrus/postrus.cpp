@@ -53,7 +53,7 @@ namespace LC::Monocle::Postrus
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		return { "org.LeechCraft.Monocle.IRedirectPlugin" };
+		return { PluginClass };
 	}
 
 	bool Plugin::CanRedirectDocument (const QString& file) const

@@ -48,7 +48,7 @@ namespace LC::Monocle::Boop
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		return { "org.LeechCraft.Monocle.IBackendPlugin" };
+		return { PluginClass };
 	}
 
 	bool Plugin::CanLoadDocument (const QString& file)

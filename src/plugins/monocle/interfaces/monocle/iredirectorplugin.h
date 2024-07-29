@@ -22,6 +22,8 @@ namespace LC::Monocle
 	class IRedirectorPlugin
 	{
 	public:
+		static inline QByteArray PluginClass = "org.LeechCraft.Monocle.IRedirectorPlugin";
+
 		virtual bool CanRedirectDocument (const QString& filename) const = 0;
 
 		virtual QString GetRedirectionMime (const QString& filename) const = 0;
