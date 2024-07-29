@@ -13,9 +13,7 @@
 #include <util/threads/coro.h>
 #include "idocument.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	struct RedirectionResult
 	{
@@ -43,14 +41,14 @@ namespace Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IBackendPlugin () {}
+		virtual ~IBackendPlugin () = default;
 
 		/** @brief Describes the result of checking whether a file can be
 		 * loaded.
 		 *
 		 * @sa CanLoadDocument()
 		 */
-		enum class LoadCheckResult
+		enum class LoadCheckResult : std::uint8_t
 		{
 			/** @brief The file cannot be loaded by this backend.
 			 */
@@ -178,7 +176,6 @@ namespace Monocle
 			return false;
 		}
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Monocle::IBackendPlugin,
