@@ -56,7 +56,6 @@ namespace LC::Monocle::PDF
 		IDocument_ptr LoadDocument (const QString&) override;
 
 		QStringList GetSupportedMimes () const override;
-		bool IsThreaded () const override;
 
 		QList<ExtInfo> GetKnownFileExtensions () const override;
 	};

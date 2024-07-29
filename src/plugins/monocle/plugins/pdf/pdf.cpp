@@ -87,11 +87,6 @@ namespace LC::Monocle::PDF
 		return { "application/pdf"_qs };
 	}
 
-	bool Plugin::IsThreaded () const
-	{
-		return true;
-	}
-
 	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const
 	{
 		return

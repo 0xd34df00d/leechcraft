@@ -160,21 +160,6 @@ namespace LC::Monocle
 		 * @return The list of MIMEs the backend supports.
 		 */
 		virtual QStringList GetSupportedMimes () const = 0;
-
-		/** @brief Returns whether the backend supports threads.
-		 *
-		 * This function returns true if the implementation supports
-		 * threaded pages rendering.
-		 *
-		 * The default implementation simply returns false.
-		 *
-		 * @return Whether threaded rendering is supported by this
-		 * backend.
-		 */
-		virtual bool IsThreaded () const
-		{
-			return false;
-		}
 	};
 }
 
