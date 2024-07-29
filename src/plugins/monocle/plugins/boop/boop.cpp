@@ -51,11 +51,9 @@ namespace LC::Monocle::Boop
 		return { "org.LeechCraft.Monocle.IBackendPlugin" };
 	}
 
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
+	bool Plugin::CanLoadDocument (const QString& file)
 	{
-		return file.endsWith (".epub"_ql, Qt::CaseInsensitive) ?
-				LoadCheckResult::Can :
-				LoadCheckResult::Cannot;
+		return file.endsWith (".epub"_ql, Qt::CaseInsensitive);
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)

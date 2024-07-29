@@ -19,6 +19,7 @@ namespace LC::Monocle
 	{
 		DefaultBackendManager BackendManager_;
 		QObjectList Backends_;
+		QObjectList Redirectors_;
 	public:
 		using QObject::QObject;
 

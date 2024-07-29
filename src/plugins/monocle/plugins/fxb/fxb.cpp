@@ -67,11 +67,9 @@ namespace FXB
 		return XSD_;
 	}
 
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
+	bool Plugin::CanLoadDocument (const QString& file)
 	{
-		return file.toLower ().endsWith (".fb2") ?
-				LoadCheckResult::Can :
-				LoadCheckResult::Cannot;
+		return file.toLower ().endsWith (".fb2");
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)

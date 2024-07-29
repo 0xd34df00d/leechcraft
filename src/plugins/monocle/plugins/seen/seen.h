@@ -51,7 +51,7 @@ namespace Seen
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		LoadCheckResult CanLoadDocument (const QString&);
+		bool CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 		QStringList GetSupportedMimes () const;
 

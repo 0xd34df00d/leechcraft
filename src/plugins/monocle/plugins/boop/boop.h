@@ -40,7 +40,7 @@ namespace LC::Monocle::Boop
 
 		QSet<QByteArray> GetPluginClasses () const override;
 
-		LoadCheckResult CanLoadDocument (const QString&) override;
+		bool CanLoadDocument (const QString&) override;
 		IDocument_ptr LoadDocument (const QString&) override;
 		QStringList GetSupportedMimes () const override;
 

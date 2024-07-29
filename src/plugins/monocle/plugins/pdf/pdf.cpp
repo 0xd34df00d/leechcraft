@@ -70,11 +70,9 @@ namespace LC::Monocle::PDF
 		return QString { "Built with poppler " POPPLER_VERSION };
 	}
 
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
+	bool Plugin::CanLoadDocument (const QString& file)
 	{
-		return Document (file, this).IsValid () ?
-				LoadCheckResult::Can :
-				LoadCheckResult::Cannot;
+		return Document (file, this).IsValid ();
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)

@@ -13,6 +13,7 @@
 #include <util/threads/coro.h>
 #include <util/threads/coro/context.h>
 #include "interfaces/monocle/ibackendplugin.h"
+#include "interfaces/monocle/iredirectorplugin.h"
 #include "defaultbackendmanager.h"
 
 namespace LC::Monocle
@@ -23,6 +24,8 @@ namespace LC::Monocle
 		const auto& classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Monocle.IBackendPlugin"))
 			Backends_ << pluginObj;
+		if (classes.contains ("org.LeechCraft.Monocle.IRedirectPlugin"))
+			Redirectors_ << pluginObj;
 	}
 
 	DefaultBackendManager& DocumentLoader::GetDefaultBackendManager ()
@@ -41,26 +44,17 @@ namespace LC::Monocle
 
 	bool DocumentLoader::CanLoadDocument (const QString& path) const
 	{
-		QObjectList redirectors;
 		for (auto backend : Backends_)
 		{
 			const auto ibp = qobject_cast<IBackendPlugin*> (backend);
-			switch (ibp->CanLoadDocument (path))
-			{
-			case IBackendPlugin::LoadCheckResult::Can:
+			if (ibp->CanLoadDocument (path))
 				return true;
-			case IBackendPlugin::LoadCheckResult::Redirect:
-				redirectors << backend;
-				break;
-			case IBackendPlugin::LoadCheckResult::Cannot:
-				break;
-			}
 		}
 
-		return std::any_of (redirectors.begin (), redirectors.end (),
+		return std::any_of (Redirectors_.begin (), Redirectors_.end (),
 				[&path, this] (QObject *redirectorObj)
 				{
-					const auto redirector = qobject_cast<IBackendPlugin*> (redirectorObj);
+					const auto redirector = qobject_cast<IRedirectorPlugin*> (redirectorObj);
 					const auto redirectedMime = redirector->GetRedirectionMime (path);
 					return !redirectedMime.isEmpty () && CanHandleMime (redirectedMime);
 				});
@@ -72,21 +66,14 @@ namespace LC::Monocle
 			co_return {};
 
 		QObjectList loaders;
-		QObjectList redirectors;
 		for (auto backend : Backends_)
-		{
-			switch (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
-			{
-			case IBackendPlugin::LoadCheckResult::Can:
+			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
 				loaders << backend;
-				break;
-			case IBackendPlugin::LoadCheckResult::Redirect:
-				redirectors << backend;
-				break;
-			case IBackendPlugin::LoadCheckResult::Cannot:
-				break;
-			}
-		}
+
+		QObjectList redirectors;
+		for (auto redirector : Redirectors_)
+			if (qobject_cast<IRedirectorPlugin*> (redirector)->CanRedirectDocument (path))
+				redirectors << redirector;
 
 		if (loaders.size () == 1)
 			co_return qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
@@ -102,7 +89,7 @@ namespace LC::Monocle
 
 		for (const auto redirector : redirectors)
 		{
-			const auto backend = qobject_cast<IBackendPlugin*> (redirector);
+			const auto backend = qobject_cast<IRedirectorPlugin*> (redirector);
 			const auto& redirection = co_await backend->GetRedirection (path);
 			if (!redirection)
 				continue;

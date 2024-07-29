@@ -51,7 +51,7 @@ namespace FXB
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		LoadCheckResult CanLoadDocument (const QString&);
+		bool CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 		QStringList GetSupportedMimes () const;
 

@@ -11,21 +11,21 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/monocle/ibackendplugin.h>
 #include <interfaces/monocle/iknowfileextensions.h>
+#include <interfaces/monocle/iredirectorplugin.h>
 
 namespace LC::Monocle::Postrus
 {
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
-				 , public IBackendPlugin
+				 , public IRedirectorPlugin
 				 , public IKnowFileExtensions
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LC::Monocle::IBackendPlugin
+				LC::Monocle::IRedirectorPlugin
 				LC::Monocle::IKnowFileExtensions)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Postrus")
@@ -40,11 +40,9 @@ namespace LC::Monocle::Postrus
 
 		QSet<QByteArray> GetPluginClasses () const override;
 
-		LoadCheckResult CanLoadDocument (const QString&) override;
-		IDocument_ptr LoadDocument (const QString&) override;
-		QString GetRedirectionMime (const QString&) override;
+		bool CanRedirectDocument (const QString&) const override;
+		QString GetRedirectionMime (const QString&) const override;
 		Util::Task<std::optional<RedirectionResult>> GetRedirection (const QString&) override;
-		QStringList GetSupportedMimes () const override;
 
 		QList<ExtInfo> GetKnownFileExtensions () const override;
 	};

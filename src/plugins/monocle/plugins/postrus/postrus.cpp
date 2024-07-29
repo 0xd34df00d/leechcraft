@@ -53,25 +53,18 @@ namespace LC::Monocle::Postrus
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		return { "org.LeechCraft.Monocle.IBackendPlugin" };
+		return { "org.LeechCraft.Monocle.IRedirectPlugin" };
 	}
 
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
+	bool Plugin::CanRedirectDocument (const QString& file) const
 	{
 		const auto& mime = Util::MimeDetector {} (file);
-		return GetSupportedMimes ().contains (mime) ?
-				LoadCheckResult::Redirect :
-				LoadCheckResult::Cannot;
+		return mime == "application/postscript";
 	}
 
-	IDocument_ptr Plugin::LoadDocument (const QString&)
+	QString Plugin::GetRedirectionMime (const QString& filename) const
 	{
-		return {};
-	}
-
-	QString Plugin::GetRedirectionMime (const QString& filename)
-	{
-		return CanLoadDocument (filename) == LoadCheckResult::Redirect ? "application/pdf"_qs : QString {};
+		return CanRedirectDocument (filename) ? "application/pdf"_qs : QString {};
 	}
 
 	namespace
@@ -113,11 +106,6 @@ namespace LC::Monocle::Postrus
 			co_return RedirectionResult { .TargetPath_ = *target };
 
 		co_return {};
-	}
-
-	QStringList Plugin::GetSupportedMimes () const
-	{
-		return { "application/postscript"_qs };
 	}
 
 	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const

@@ -151,7 +151,7 @@ namespace LC::Monocle
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
-		return { "org.LeechCraft.Monocle.IBackendPlugin" };
+		return { "org.LeechCraft.Monocle.IBackendPlugin", "org.LeechCraft.Monocle.IRedirectPlugin" };
 	}
 
 	void Plugin::AddPlugin (QObject *pluginObj)

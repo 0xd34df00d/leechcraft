@@ -10,16 +10,10 @@
 
 #include <QString>
 #include <QMetaType>
-#include <util/threads/coro.h>
 #include "idocument.h"
 
 namespace LC::Monocle
 {
-	struct RedirectionResult
-	{
-		QString TargetPath_;
-	};
-
 	/** @brief Basic interface for plugins providing support for various
 	 * document formats for Monocle.
 	 *
@@ -42,27 +36,6 @@ namespace LC::Monocle
 		/** @brief Virtual destructor.
 		 */
 		virtual ~IBackendPlugin () = default;
-
-		/** @brief Describes the result of checking whether a file can be
-		 * loaded.
-		 *
-		 * @sa CanLoadDocument()
-		 */
-		enum class LoadCheckResult : std::uint8_t
-		{
-			/** @brief The file cannot be loaded by this backend.
-			 */
-			Cannot,
-
-			/** @brief The file can be loaded by this backend.
-			 */
-			Can,
-
-			/** @brief The file cannot be loaded by this backend, but can
-			 * be converted to another format.
-			 */
-			Redirect
-		};
 
 		/** @brief Checks whether the given document can be loaded.
 		 *
@@ -89,7 +62,7 @@ namespace LC::Monocle
 		 * @sa LoadDocument()
 		 * @sa GetRedirection()
 		 */
-		virtual LoadCheckResult CanLoadDocument (const QString& filename) = 0;
+		virtual bool CanLoadDocument (const QString& filename) = 0;
 
 		/** @brief Loads the given document.
 		 *
@@ -115,40 +88,7 @@ namespace LC::Monocle
 		 */
 		virtual IDocument_ptr LoadDocument (const QString& filename) = 0;
 
-		/** @brief Returns the redirection proxy for the given document.
-		 *
-		 * This function should return a redirect proxy for the document
-		 * at \em filename, or a null pointer if the document cannot be
-		 * redirected (for example, if it is invalid or can be handled
-		 * directly by this module). However, a null pointer can be
-		 * returned only if CanLoadDocument() returned
-		 * LoadCheckResult::Can or LoadCheckResult::Cannot for the same
-		 * document.
-		 *
-		 * The default implementation simply does nothing and returns a
-		 * null pointer.
-		 *
-		 * @param[in] filename The document to redirect.
-		 * @return The redirect proxy for \em filename, or null pointer.
-		 *
-		 * @sa LoadDocument()
-		 */
-		virtual Util::Task<std::optional<RedirectionResult>> GetRedirection (const QString& filename)
-		{
-			Q_UNUSED (filename)
-			co_return {};
-		}
-
-		virtual QString GetRedirectionMime (const QString& filename)
-		{
-			Q_UNUSED (filename)
-			return {};
-		}
-
 		/** @brief Returns the MIME types supported by the backend.
-		 *
-		 * Only those MIMEs that can be handled directly (by the
-		 * LoadDocument() method) should be returned.
 		 *
 		 * The returned MIME types are only considered when dealing with
 		 * redirections. CanLoadDocument() and LoadDocument() methods can
@@ -163,5 +103,4 @@ namespace LC::Monocle
 	};
 }
 
-Q_DECLARE_INTERFACE (LC::Monocle::IBackendPlugin,
-		"org.LeechCraft.Monocle.IBackendPlugin/1.0")
+Q_DECLARE_INTERFACE (LC::Monocle::IBackendPlugin, "org.LeechCraft.Monocle.IBackendPlugin/1.0")

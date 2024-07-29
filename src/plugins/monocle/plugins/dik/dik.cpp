@@ -57,14 +57,11 @@ namespace Dik
 		return result;
 	}
 
-	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
+	bool Plugin::CanLoadDocument (const QString& file)
 	{
 		const auto& lower = file.toLower ();
-		const bool isGood = lower.endsWith (".mobi") ||
+		return lower.endsWith (".mobi") ||
 				lower.endsWith (".prc");
-		return isGood ?
-				LoadCheckResult::Can :
-				LoadCheckResult::Cannot;
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
@@ -92,4 +89,3 @@ namespace Dik
 }
 
 LC_EXPORT_PLUGIN (leechcraft_monocle_dik, LC::Monocle::Dik::Plugin);
-
