@@ -31,7 +31,7 @@ namespace LC::Monocle
 	{
 	}
 
-	void DocStateManager::SetState (const QString& id, const State& state)
+	void DocStateManager::SaveState (const QString& id, const State& state)
 	{
 		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
 		if (!DocDir_.exists (id.at (0)))

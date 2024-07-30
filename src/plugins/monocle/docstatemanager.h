@@ -27,7 +27,7 @@ namespace LC::Monocle
 
 		explicit DocStateManager (QObject* = nullptr);
 
-		void SetState (const QString&, const State&);
+		void SaveState (const QString&, const State&);
 		State GetState (const QString&) const;
 	};
 }

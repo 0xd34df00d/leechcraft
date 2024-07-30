@@ -707,7 +707,7 @@ namespace Monocle
 			return;
 
 		const auto& filename = QFileInfo (CurrentDocPath_).fileName ();
-		Core::Instance ().GetDocStateManager ()->SetState (filename,
+		Core::Instance ().GetDocStateManager ()->SaveState (filename,
 				{
 					C_->LayoutManager_.GetCurrentPage (),
 					C_->LayoutManager_.GetLayoutMode (),
