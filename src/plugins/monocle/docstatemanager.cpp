@@ -19,9 +19,23 @@ namespace LC::Monocle
 {
 	namespace
 	{
-		QString GetFileName (const QString& id)
+		std::unique_ptr<QFile> GetStateFile (const QDir& docDir, const QString& docPath, QIODevice::OpenModeFlag mode)
 		{
-			return id.at (0) + '/' + id + ".json";
+			const auto& docName = QFileInfo { docPath }.fileName ();
+			const auto& subdir = docName.at (0);
+			docDir.mkpath (subdir);
+			const auto& stateFileName = docDir.absoluteFilePath (subdir + '/' + docName + ".json");
+
+			if (mode == QIODevice::ReadOnly && !QFile::exists (stateFileName))
+				return {};
+
+			auto file = std::make_unique<QFile> (stateFileName);
+			if (!file->open (mode))
+			{
+				qWarning () << "error opening" << stateFileName << file->errorString ();
+				return {};
+			}
+			return file;
 		}
 	}
 
@@ -31,11 +45,11 @@ namespace LC::Monocle
 	{
 	}
 
-	void DocStateManager::SaveState (const QString& id, const State& state)
+	void DocStateManager::SaveState (const QString& docPath, const State& state)
 	{
-		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
-		if (!DocDir_.exists (id.at (0)))
-			DocDir_.mkdir (id.at (0));
+		auto file = GetStateFile (DocDir_, docPath, QIODevice::WriteOnly);
+		if (!file)
+			return;
 
 		QVariantMap stateMap
 		{
@@ -52,26 +66,17 @@ namespace LC::Monocle
 					return "fixed"_qs;
 				});
 
-		Util::SerializeJsonToFile (filename, stateMap);
+		file->write (Util::SerializeJson (stateMap));
 	}
 
-	auto DocStateManager::GetState (const QString& id) const -> State
+	auto DocStateManager::GetState (const QString& docPath) const -> State
 	{
 		State result = { 0, LayoutMode::OnePage, FitWidth {} };
-		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
-		if (!QFile::exists (filename))
+		auto file = GetStateFile (DocDir_, docPath, QIODevice::ReadOnly);
+		if (!file)
 			return result;
 
-		QFile file { filename };
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << "error reading"
-					<< filename
-					<< file.errorString ();
-			return result;
-		}
-
-		const auto& map = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
+		const auto& map = Util::ParseJson (&*file, Q_FUNC_INFO).toMap ();
 
 		auto set = [&map] (auto& field, const QString& name)
 		{

@@ -639,7 +639,7 @@ namespace Monocle
 	{
 		saveState ();
 
-		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (QFileInfo { path }.fileName ());
+		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (path);
 
 		Scene_.clear ();
 		Pages_.clear ();
@@ -706,8 +706,7 @@ namespace Monocle
 		if (CurrentDocPath_.isEmpty ())
 			return;
 
-		const auto& filename = QFileInfo (CurrentDocPath_).fileName ();
-		Core::Instance ().GetDocStateManager ()->SaveState (filename,
+		Core::Instance ().GetDocStateManager ()->SaveState (CurrentDocPath_,
 				{
 					C_->LayoutManager_.GetCurrentPage (),
 					C_->LayoutManager_.GetLayoutMode (),
