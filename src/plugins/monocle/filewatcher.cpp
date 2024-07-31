@@ -11,7 +11,6 @@
 #include <QTimer>
 #include <QFileInfo>
 #include <QtDebug>
-#include "pagegraphicsitem.h"
 
 namespace LC::Monocle
 {
