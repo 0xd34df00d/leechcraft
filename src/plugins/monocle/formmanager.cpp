@@ -21,8 +21,8 @@
 #include "interfaces/monocle/isupportforms.h"
 #include "interfaces/monocle/iformfield.h"
 #include "components/layout/positions.h"
+#include "components/viewitems/pagegraphicsitem.h"
 #include "linkactionexecutor.h"
-#include "pagegraphicsitem.h"
 
 namespace LC::Monocle
 {

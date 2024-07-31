@@ -45,8 +45,9 @@
 #include "components/navigation/navigator.h"
 #include "components/navigation/navigationhistory.h"
 #include "components/services/documentloader.h"
+#include "components/viewitems/linkitem.h"
+#include "components/viewitems/pagegraphicsitem.h"
 #include "core.h"
-#include "pagegraphicsitem.h"
 #include "presenterwidget.h"
 #include "recentlyopenedmanager.h"
 #include "common.h"
@@ -58,7 +59,6 @@
 #include "textsearchhandler.h"
 #include "formmanager.h"
 #include "annmanager.h"
-#include "linkitem.h"
 #include "pagenumlabel.h"
 #include "smoothscroller.h"
 

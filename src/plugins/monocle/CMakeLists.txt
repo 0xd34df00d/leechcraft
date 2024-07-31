@@ -59,11 +59,13 @@ LC_DEFINE_PLUGIN (
 		components/navigation/navigationhistory.cpp
 		components/navigation/navigator.cpp
 		components/services/documentloader.cpp
+		components/viewitems/annitem.cpp
+		components/viewitems/linkitem.cpp
 		components/viewitems/nondragclickfilter.cpp
+		components/viewitems/pagegraphicsitem.cpp
 		monocle.cpp
 		documenttab.cpp
 		core.cpp
-		pagegraphicsitem.cpp
 		filewatcher.cpp
 		tocwidget.cpp
 		presenterwidget.cpp
@@ -81,10 +83,8 @@ LC_DEFINE_PLUGIN (
 		formmanager.cpp
 		arbitraryrotationwidget.cpp
 		annmanager.cpp
-		annitem.cpp
 		annwidget.cpp
 		anntreedelegate.cpp
-		linkitem.cpp
 		linkactionexecutor.cpp
 		searchtabwidget.cpp
 		pagenumlabel.cpp

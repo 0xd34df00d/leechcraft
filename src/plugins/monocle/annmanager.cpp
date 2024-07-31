@@ -11,8 +11,8 @@
 #include <QtDebug>
 #include "interfaces/monocle/isupportannotations.h"
 #include "interfaces/monocle/iannotation.h"
-#include "annitem.h"
-#include "pagegraphicsitem.h"
+#include "components/viewitems/annitem.h"
+#include "components/viewitems/pagegraphicsitem.h"
 
 namespace LC::Monocle
 {

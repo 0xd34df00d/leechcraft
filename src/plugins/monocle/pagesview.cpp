@@ -18,7 +18,7 @@
 #include <util/xpc/stddatafiltermenucreator.h>
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavetextcontent.h"
-#include "pagegraphicsitem.h"
+#include "components/viewitems/pagegraphicsitem.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Monocle

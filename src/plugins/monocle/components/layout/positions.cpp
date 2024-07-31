@@ -8,7 +8,7 @@
 
 #include "positions.h"
 #include <QGraphicsView>
-#include "pagegraphicsitem.h"
+#include "components/viewitems/pagegraphicsitem.h"
 
 namespace LC::Monocle
 {

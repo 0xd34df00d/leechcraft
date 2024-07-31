@@ -16,11 +16,11 @@
 #include <util/sll/qtutil.h>
 #include "interfaces/monocle/ihaveoptionalcontent.h"
 #include "components/layout/viewpositiontracker.h"
+#include "components/viewitems/pagegraphicsitem.h"
 #include "annmanager.h"
 #include "annwidget.h"
 #include "bookmarkswidget.h"
 #include "linkexecutioncontext.h"
-#include "pagegraphicsitem.h"
 #include "searchtabwidget.h"
 #include "thumbswidget.h"
 #include "tocwidget.h"

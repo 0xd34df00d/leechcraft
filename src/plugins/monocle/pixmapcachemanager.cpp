@@ -9,8 +9,8 @@
 #include "pixmapcachemanager.h"
 #include <numeric>
 #include <QtDebug>
+#include "components/viewitems/pagegraphicsitem.h"
 #include "xmlsettingsmanager.h"
-#include "pagegraphicsitem.h"
 
 namespace LC
 {

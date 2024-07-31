@@ -10,7 +10,7 @@
 
 #include <QGraphicsRectItem>
 #include "interfaces/monocle/ilink.h"
-#include "components/viewitems/nondragclickfilter.h"
+#include "nondragclickfilter.h"
 
 namespace LC::Monocle
 {

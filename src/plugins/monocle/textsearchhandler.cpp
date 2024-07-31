@@ -13,7 +13,7 @@
 #include <util/sll/qtutil.h>
 #include "interfaces/monocle/isearchabledocument.h"
 #include "components/layout/positions.h"
-#include "pagegraphicsitem.h"
+#include "components/viewitems/pagegraphicsitem.h"
 
 namespace LC::Monocle
 {

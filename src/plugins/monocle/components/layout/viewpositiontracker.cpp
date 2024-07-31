@@ -8,7 +8,7 @@
 
 #include "viewpositiontracker.h"
 #include <QScrollBar>
-#include "pagegraphicsitem.h"
+#include "components/viewitems/pagegraphicsitem.h"
 #include "pageslayoutmanager.h"
 #include "pagesview.h"
 

@@ -15,8 +15,8 @@
 #include <util/sll/visitor.h>
 #include <util/sll/unreachable.h>
 #include <util/monocle/documentsignals.h>
+#include "components/viewitems/pagegraphicsitem.h"
 #include "pagesview.h"
-#include "pagegraphicsitem.h"
 #include "common.h"
 
 namespace LC::Monocle

@@ -9,8 +9,8 @@
 #include "thumbswidget.h"
 #include <QtDebug>
 #include "interfaces/monocle/idocument.h"
+#include "components/viewitems/pagegraphicsitem.h"
 #include "pageslayoutmanager.h"
-#include "pagegraphicsitem.h"
 #include "smoothscroller.h"
 #include "common.h"
 

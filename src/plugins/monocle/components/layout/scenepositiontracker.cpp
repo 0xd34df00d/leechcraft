@@ -8,7 +8,7 @@
 
 #include "scenepositiontracker.h"
 #include <QtDebug>
-#include "pagegraphicsitem.h"
+#include "components/viewitems/pagegraphicsitem.h"
 
 namespace LC::Monocle
 {
