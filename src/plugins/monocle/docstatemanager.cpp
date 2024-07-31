@@ -101,10 +101,15 @@ namespace LC::Monocle
 						return FitWidth {};
 					if (str == "fitPage"_qs)
 						return FitPage {};
+					if (str == "fixed"_qs)
+					{
+						FixedScale s;
+						set (s.Scale_, "scale"_qs);
+						return s;
+					}
 
-					FixedScale s;
-					set (s.Scale_, "scale"_qs);
-					return s;
+					qWarning () << "unknown scale mode" << str;
+					return FitWidth {};
 				});
 
 		return result;
