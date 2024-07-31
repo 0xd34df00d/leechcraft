@@ -49,7 +49,6 @@ LC_DEFINE_PLUGIN (
 		components/actions/export.cpp
 		components/actions/rotatemenu.cpp
 		components/actions/zoomer.cpp
-		components/gui/dock.cpp
 		components/layout/positions.cpp
 		components/layout/scenepositiontracker.cpp
 		components/layout/viewpositiontracker.cpp
@@ -63,6 +62,7 @@ LC_DEFINE_PLUGIN (
 		components/viewitems/linkitem.cpp
 		components/viewitems/nondragclickfilter.cpp
 		components/viewitems/pagegraphicsitem.cpp
+		components/widgets/dock.cpp
 		monocle.cpp
 		documenttab.cpp
 		core.cpp
