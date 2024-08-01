@@ -82,16 +82,19 @@ namespace LC::Monocle
 		{
 			using Type_t = std::decay_t<decltype (field)>;
 			const auto& var = map.value (name);
-			if (var.canConvert<Type_t> ())
-				field = var.value<Type_t> ();
+			if (!var.canConvert<Type_t> ())
+				return false;
+
+			field = var.value<Type_t> ();
+			return true;
 		};
 		set (result.CurrentPage_, "page"_qs);
 
 		auto setF = [&set] (auto& field, const QString& name, auto cvt)
 		{
-			std::decay_t<Util::ArgType_t<decltype (cvt), 0>> storedValue;
-			set (storedValue, name);
-			field = cvt (std::move (storedValue));
+			std::decay_t<Util::ArgType_t<decltype (cvt), 0>> storedValue {};
+			if (set (storedValue, name))
+				field = cvt (std::move (storedValue));
 		};
 		setF (result.Lay_, "layout"_qs, &Name2LayoutMode);
 		setF (result.ScaleMode_, "scaleMode"_qs,
