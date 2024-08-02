@@ -265,15 +265,12 @@ namespace Monocle
 	QByteArray DocumentTab::GetTabRecoverData () const
 	{
 		if (CurrentDocPath_.isEmpty ())
-			return QByteArray ();
+			return {};
 
 		QByteArray result;
-		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (1)
-			<< CurrentDocPath_
-			<< C_->LayoutManager_.GetCurrentScale ()
-			<< Ui_.PagesView_->GetCurrentCenter ().ToPointF ().toPoint ()
-			<< LayoutMode2Name (C_->LayoutManager_.GetLayoutMode ());
+		QDataStream out { &result, QIODevice::WriteOnly };
+		out << static_cast<quint8> (2)
+				<< CurrentDocPath_;
 		return result;
 	}
 
@@ -317,30 +314,19 @@ namespace Monocle
 
 	void DocumentTab::RecoverState (const QByteArray& data)
 	{
-		QDataStream in (data);
+		QDataStream in { data };
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << "unknown state version" << version;
 			return;
 		}
 
 		QString path;
-		double scale = 0;
-		QPoint point;
-		QByteArray modeStr;
-		in >> path
-			>> scale
-			>> point
-			>> modeStr;
+		in >> path;
 
-		C_->LayoutManager_.SetLayoutMode (Name2LayoutMode (modeStr));
-		C_->LayoutManager_.SetScaleMode (FixedScale { scale });
 		C_->Navigator_.OpenDocument (path);
-		C_->LayoutManager_.Relayout ();
-
-		QTimer::singleShot (0, this, [point, this] { Ui_.PagesView_->centerOn (point); });
 	}
 
 	void DocumentTab::SetDoc (const QString& path)
