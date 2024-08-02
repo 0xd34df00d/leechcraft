@@ -708,9 +708,9 @@ namespace Monocle
 
 		Core::Instance ().GetDocStateManager ()->SaveState (CurrentDocPath_,
 				{
-					C_->LayoutManager_.GetCurrentPage (),
+					C_->LayoutManager_.GetCurrentPagePos (),
 					C_->LayoutManager_.GetLayoutMode (),
-					C_->LayoutManager_.GetScaleMode ()
+					C_->LayoutManager_.GetScaleMode (),
 				});
 	}
 
@@ -808,7 +808,11 @@ namespace Monocle
 
 		C_->Zoomer_.SetScaleMode (state.ScaleMode_);
 
-		Ui_.PagesView_->CenterOn (Ui_.PagesView_->GetViewportTrimmedCenter (*Pages_ [state.CurrentPage_]));
+		if (state.CurrentPagePos_)
+		{
+			const auto& page = *Pages_ [state.CurrentPagePos_->Page_];
+			Ui_.PagesView_->CenterOn (state.CurrentPagePos_->Pos_.ToSceneAbsolute (page));
+		}
 
 		const auto action = [this]
 		{

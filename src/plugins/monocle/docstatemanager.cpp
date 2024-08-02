@@ -45,6 +45,23 @@ namespace LC::Monocle
 	{
 	}
 
+	namespace
+	{
+		QVariantMap SerializePagePos (const std::optional<PageWithRelativePos>& pagePos)
+		{
+			if (!pagePos)
+				return {};
+
+			const auto& p = pagePos->Pos_.ToPointF ();
+			return
+			{
+				{ "page"_qs, pagePos->Page_ },
+				{ "pagePosX"_qs, p.x () },
+				{ "pagePosY"_qs, p.y () },
+			};
+		}
+	}
+
 	void DocStateManager::SaveState (const QString& docPath, const State& state)
 	{
 		auto file = GetStateFile (DocDir_, docPath, QIODevice::WriteOnly);
@@ -53,10 +70,9 @@ namespace LC::Monocle
 
 		QVariantMap stateMap
 		{
-			{ "page"_qs, state.CurrentPage_ },
-			{ "layout"_qs, LayoutMode2Name (state.Lay_) }
+			{ "layout"_qs, LayoutMode2Name (state.Lay_) },
 		};
-
+		stateMap.insert (SerializePagePos (state.CurrentPagePos_));
 		stateMap ["scaleMode"_qs] = Util::Visit (state.ScaleMode_,
 				[] (FitPage) { return "fitPage"_qs; },
 				[] (FitWidth) { return "fitWidth"_qs; },
@@ -69,9 +85,29 @@ namespace LC::Monocle
 		file->write (Util::SerializeJson (stateMap));
 	}
 
+	namespace
+	{
+		std::optional<PageWithRelativePos> ParsePosition (const QVariantMap& map)
+		{
+			const auto& pageVar = map.value ("page"_qs);
+			if (!pageVar.canConvert<int> ())
+				return {};
+
+			const int page = pageVar.value<int> ();
+
+			PageRelativePos::Type p { 0, 0 };
+			const auto& xVar = map.value ("pagePosX"_qs);
+			const auto& yVar = map.value ("pagePosY"_qs);
+			if (xVar.canConvert<qreal> () && yVar.canConvert<qreal> ())
+				p = PageRelativePos::Type { xVar.value<qreal> (), yVar.value<qreal> () };
+
+			return PageWithRelativePos { page, PageRelativePos { p } };
+		}
+	}
+
 	auto DocStateManager::GetState (const QString& docPath) const -> State
 	{
-		State result = { 0, LayoutMode::OnePage, FitWidth {} };
+		State result = { {}, LayoutMode::OnePage, FitWidth {} };
 		auto file = GetStateFile (DocDir_, docPath, QIODevice::ReadOnly);
 		if (!file)
 			return result;
@@ -88,7 +124,8 @@ namespace LC::Monocle
 			field = var.value<Type_t> ();
 			return true;
 		};
-		set (result.CurrentPage_, "page"_qs);
+
+		result.CurrentPagePos_ = ParsePosition (map);
 
 		auto setF = [&set] (auto& field, const QString& name, auto cvt)
 		{

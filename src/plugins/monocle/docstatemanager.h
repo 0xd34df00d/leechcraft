@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QDir>
+#include "components/layout/positions.h"
 #include "common.h"
 
 namespace LC::Monocle
@@ -20,7 +21,7 @@ namespace LC::Monocle
 	public:
 		struct State
 		{
-			int CurrentPage_;
+			std::optional<PageWithRelativePos> CurrentPagePos_;
 			LayoutMode Lay_;
 			ScaleMode ScaleMode_;
 		};
