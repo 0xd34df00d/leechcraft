@@ -687,8 +687,6 @@ namespace Monocle
 
 		SaveStateScheduled_ = false;
 
-		emit tabRecoverDataChanged ();
-
 		if (CurrentDocPath_.isEmpty ())
 			return;
 
