@@ -14,7 +14,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/qtutil.h>
-#include "linkactionexecutor.h"
+#include "components/services/linkactionexecutor.h"
 #include "pagegraphicsitem.h"
 
 namespace LC::Monocle

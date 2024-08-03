@@ -12,7 +12,7 @@
 #include <QObject>
 #include <util/sll/bitflags.h>
 #include "interfaces/monocle/idocument.h"
-#include "linkexecutioncontext.h"
+#include "components/services/linkexecutioncontext.h"
 
 namespace LC::Monocle
 {

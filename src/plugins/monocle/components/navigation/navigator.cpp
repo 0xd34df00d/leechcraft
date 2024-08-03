@@ -12,10 +12,10 @@
 #include <util/threads/coro.h>
 #include <util/threads/coro/context.h>
 #include "components/services/documentloader.h"
+#include "components/services/recentlyopenedmanager.h"
 #include "navigationhistory.h"
 #include "core.h"
 #include "pageslayoutmanager.h"
-#include "recentlyopenedmanager.h"
 #include "filewatcher.h"
 
 namespace LC::Monocle

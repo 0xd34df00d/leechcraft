@@ -17,8 +17,8 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/threads/futures.h>
 #include "components/actions/rotatemenu.h"
+#include "components/services/pixmapcachemanager.h"
 #include "core.h"
-#include "pixmapcachemanager.h"
 #include "arbitraryrotationwidget.h"
 #include "pageslayoutmanager.h"
 

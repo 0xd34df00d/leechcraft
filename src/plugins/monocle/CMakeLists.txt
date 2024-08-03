@@ -57,7 +57,11 @@ LC_DEFINE_PLUGIN (
 		components/navigation/documentbookmarksmodel.cpp
 		components/navigation/navigationhistory.cpp
 		components/navigation/navigator.cpp
+		components/services/docstatemanager.cpp
 		components/services/documentloader.cpp
+		components/services/linkactionexecutor.cpp
+		components/services/pixmapcachemanager.cpp
+		components/services/recentlyopenedmanager.cpp
 		components/viewitems/annitem.cpp
 		components/viewitems/linkitem.cpp
 		components/viewitems/nondragclickfilter.cpp
@@ -70,11 +74,8 @@ LC_DEFINE_PLUGIN (
 		tocwidget.cpp
 		presenterwidget.cpp
 		pagesview.cpp
-		pixmapcachemanager.cpp
-		recentlyopenedmanager.cpp
 		choosebackenddialog.cpp
 		defaultbackendmanager.cpp
-		docstatemanager.cpp
 		docinfodialog.cpp
 		bookmarkswidget.cpp
 		thumbswidget.cpp
@@ -85,7 +86,6 @@ LC_DEFINE_PLUGIN (
 		annmanager.cpp
 		annwidget.cpp
 		anntreedelegate.cpp
-		linkactionexecutor.cpp
 		searchtabwidget.cpp
 		pagenumlabel.cpp
 		smoothscroller.cpp

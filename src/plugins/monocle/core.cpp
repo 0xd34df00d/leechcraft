@@ -8,9 +8,9 @@
 
 #include "core.h"
 #include <util/shortcuts/shortcutmanager.h>
-#include "pixmapcachemanager.h"
-#include "recentlyopenedmanager.h"
-#include "docstatemanager.h"
+#include "components/services/pixmapcachemanager.h"
+#include "components/services/recentlyopenedmanager.h"
+#include "components/services/docstatemanager.h"
 
 namespace LC
 {

@@ -15,8 +15,8 @@
 #include <util/gui/uiinit.h>
 #include <util/xpc/screensaverprohibitor.h>
 #include "interfaces/monocle/idocument.h"
-#include "docstatemanager.h"
-#include "linkexecutioncontext.h"
+#include "components/services/linkexecutioncontext.h"
+#include "components/services/docstatemanager.h"
 #include "common.h"
 #include "ui_documenttab.h"
 

@@ -9,7 +9,7 @@
 #include "bookmarkswidget.h"
 #include "components/navigation/bookmarksstorage.h"
 #include "components/navigation/documentbookmarksmodel.h"
-#include "linkexecutioncontext.h"
+#include "components/services/linkexecutioncontext.h"
 
 namespace LC::Monocle
 {
