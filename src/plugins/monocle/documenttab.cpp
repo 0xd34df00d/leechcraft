@@ -406,11 +406,7 @@ namespace Monocle
 		PageNumLabel_ = new PageNumLabel;
 		connect (PageNumLabel_,
 				qOverload<int> (&QSpinBox::valueChanged),
-				[this] (int value)
-				{
-					SetCurrentPage (value - 1);
-					scheduleSaveState ();
-				});
+				[this] (int value) { SetCurrentPage (value - 1); });
 		connect (&C_->LayoutManager_,
 				&PagesLayoutManager::layoutModeChanged,
 				[this] { PageNumLabel_->setSingleStep (C_->LayoutManager_.GetLayoutModeCount ()); });
