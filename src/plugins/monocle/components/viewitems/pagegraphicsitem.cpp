@@ -11,7 +11,6 @@
 #include <cmath>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
-#include <QMatrix>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QMenu>
