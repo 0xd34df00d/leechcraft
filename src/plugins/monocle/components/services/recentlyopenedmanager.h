@@ -15,9 +15,7 @@
 
 class QMenu;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class RecentlyOpenedManager : public QObject
 	{
@@ -28,12 +26,11 @@ namespace Monocle
 	private:
 		QHash<QMenu*, PathHandler_t> Handlers_;
 	public:
-		RecentlyOpenedManager (QObject* = nullptr);
+		explicit RecentlyOpenedManager (QObject* = nullptr);
 
 		QMenu* CreateOpenMenu (QWidget*, const PathHandler_t&);
 		void RecordOpened (const QString&);
 	private:
 		void UpdateMenu (QMenu*) const;
 	};
-}
 }

@@ -13,12 +13,10 @@
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	RecentlyOpenedManager::RecentlyOpenedManager (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
 		OpenedDocs_ = XmlSettingsManager::Instance ().property ("RecentlyOpened").toStringList ();
 	}
@@ -76,10 +74,8 @@ namespace Monocle
 			if (!fi.exists ())
 				continue;
 
-			auto act = menu->addAction (fi.fileName (),
-					[handler, path] { handler (path); });
+			auto act = menu->addAction (fi.fileName (), [handler, path] { handler (path); });
 			act->setToolTip (path);
 		}
 	}
-}
 }
