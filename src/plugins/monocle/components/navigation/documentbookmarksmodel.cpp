@@ -11,10 +11,24 @@
 
 namespace LC::Monocle
 {
+	namespace
+	{
+		auto ToTuple (const Bookmark& bm)
+		{
+			return std::tuple { bm.Page_, bm.Position_.ToPointF ().y () };
+		}
+
+		bool BookmarkEarlier (const Bookmark& l, const Bookmark& r)
+		{
+			return ToTuple (l) < ToTuple (r);
+		}
+	}
+
 	DocumentBookmarksModel::DocumentBookmarksModel (QVector<Bookmark> bookmarks, QObject *parent)
 	: QAbstractItemModel { parent }
 	, Bookmarks_ { std::move (bookmarks) }
 	{
+		std::sort (Bookmarks_.begin (), Bookmarks_.end (), &BookmarkEarlier);
 	}
 
 	QModelIndex DocumentBookmarksModel::index (int row, int column, const QModelIndex& parent) const
