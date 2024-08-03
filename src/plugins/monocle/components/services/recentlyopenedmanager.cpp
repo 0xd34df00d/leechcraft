@@ -7,13 +7,11 @@
  **********************************************************************/
 
 #include "recentlyopenedmanager.h"
-#include <QSettings>
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QMenu>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
 namespace LC
 {
@@ -22,9 +20,7 @@ namespace Monocle
 	RecentlyOpenedManager::RecentlyOpenedManager (QObject *parent)
 	: QObject (parent)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Monocle");
-		OpenedDocs_ = settings.value ("RecentlyOpened").toStringList ();
+		OpenedDocs_ = XmlSettingsManager::Instance ().property ("RecentlyOpened").toStringList ();
 	}
 
 	QMenu* RecentlyOpenedManager::CreateOpenMenu (QWidget *docTab, const PathHandler_t& handler)
@@ -58,14 +54,11 @@ namespace Monocle
 			OpenedDocs_.removeAll (path);
 		OpenedDocs_.prepend (path);
 
-		const int listLength = XmlSettingsManager::Instance ()
-				.property ("RecentlyOpenedListSize").toInt ();
+		const int listLength = XmlSettingsManager::Instance ().property ("RecentlyOpenedListSize").toInt ();
 		if (OpenedDocs_.size () > listLength)
 			OpenedDocs_.erase (OpenedDocs_.begin () + listLength, OpenedDocs_.end ());
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Monocle");
-		settings.setValue ("RecentlyOpened", OpenedDocs_);
+		XmlSettingsManager::Instance ().setProperty ("RecentlyOpened", OpenedDocs_);
 
 		for (const auto& menu : Menus_)
 			UpdateMenu (menu);
