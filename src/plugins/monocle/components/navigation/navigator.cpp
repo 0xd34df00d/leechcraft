@@ -9,12 +9,11 @@
 #include "navigator.h"
 #include <QDir>
 #include <QFileInfo>
+#include <QtDebug>
 #include <util/threads/coro.h>
 #include <util/threads/coro/context.h>
 #include "components/services/documentloader.h"
-#include "components/services/recentlyopenedmanager.h"
 #include "navigationhistory.h"
-#include "core.h"
 #include "pageslayoutmanager.h"
 #include "filewatcher.h"
 
@@ -106,7 +105,6 @@ namespace LC::Monocle
 				co_return;
 			}
 
-			Core::Instance ().GetROManager ()->RecordOpened (path);
 			pThis->Watcher_.SetWatchedFile (path);
 			pThis->CurrentPath_ = path;
 

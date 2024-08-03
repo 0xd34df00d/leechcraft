@@ -620,6 +620,8 @@ namespace Monocle
 	{
 		saveState ();
 
+		Core::Instance ().GetROManager ()->RecordOpened (path);
+
 		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (path);
 
 		Scene_.clear ();
