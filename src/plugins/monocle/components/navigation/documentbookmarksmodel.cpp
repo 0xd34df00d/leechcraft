@@ -83,8 +83,11 @@ namespace LC::Monocle
 
 	void DocumentBookmarksModel::AddBookmark (const Bookmark& bookmark, ListPasskey)
 	{
-		beginInsertRows ({}, Bookmarks_.size (), Bookmarks_.size ());
-		Bookmarks_ << bookmark;
+		const auto pos = std::upper_bound (Bookmarks_.begin (), Bookmarks_.end (), bookmark, &BookmarkEarlier);
+		const auto idx = static_cast<int> (pos - Bookmarks_.begin ());
+
+		beginInsertRows ({}, idx, idx);
+		Bookmarks_.insert (pos, bookmark);
 		endInsertRows ();
 	}
 
