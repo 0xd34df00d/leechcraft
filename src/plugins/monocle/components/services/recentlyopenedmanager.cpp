@@ -10,6 +10,7 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QMenu>
+#include <QMimeDatabase>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
@@ -66,6 +67,7 @@ namespace LC::Monocle
 	{
 		menu->clear ();
 
+		const QMimeDatabase mimeDb;
 		const auto& handler = Handlers_ [menu];
 
 		for (const auto& path : OpenedDocs_)
@@ -75,6 +77,7 @@ namespace LC::Monocle
 				continue;
 
 			auto act = menu->addAction (fi.fileName (), [handler, path] { handler (path); });
+			act->setIcon (QIcon::fromTheme (mimeDb.mimeTypeForName (path).iconName ()));
 			act->setToolTip (path);
 		}
 	}
