@@ -41,7 +41,11 @@ namespace Monocle
 		connect (docTab,
 				&QObject::destroyed,
 				this,
-				[this, docTab] { Menus_.remove (docTab); });
+				[this, docTab]
+				{
+					auto menu = Menus_.take (docTab);
+					Handlers_.remove (menu);
+				});
 		return result;
 	}
 
