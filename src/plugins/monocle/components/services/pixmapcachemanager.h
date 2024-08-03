@@ -31,8 +31,6 @@ namespace Monocle
 		void PixmapDeleted (PageGraphicsItem*);
 	private:
 		void CheckCache ();
-	private slots:
-		void handleCacheSizeChanged ();
 	};
 }
 }

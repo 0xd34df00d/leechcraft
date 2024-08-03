@@ -20,8 +20,12 @@ namespace Monocle
 	: QObject (parent)
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("PixmapCacheSize",
-				this, "handleCacheSizeChanged");
-		handleCacheSizeChanged ();
+				this,
+				[this] (qint64 size)
+				{
+					MaxSize_ = size * 1024 * 1024;
+					CheckCache ();
+				});
 	}
 
 	namespace
@@ -85,13 +89,6 @@ namespace Monocle
 					<< "for"
 					<< RecentlyUsed_.size ()
 					<< "pages";
-	}
-
-	void PixmapCacheManager::handleCacheSizeChanged ()
-	{
-		MaxSize_ = XmlSettingsManager::Instance ().property ("PixmapCacheSize").value<qint64> () * 1024 * 1024;
-
-		CheckCache ();
 	}
 }
 }
