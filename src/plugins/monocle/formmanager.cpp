@@ -253,9 +253,10 @@ namespace LC::Monocle
 			if (const auto& groupID = field->GetButtonGroup ();
 				!groupID.isEmpty ())
 			{
-				if (!RadioGroups_.contains (groupID))
-					RadioGroups_ [groupID] = std::make_shared<QButtonGroup> ();
-				RadioGroups_ [groupID]->addButton (radio);
+				auto& group = RadioGroups_ [groupID];
+				if (!group)
+					group = std::make_shared<QButtonGroup> ();
+				group->addButton (radio);
 			}
 
 			connect (radio,
