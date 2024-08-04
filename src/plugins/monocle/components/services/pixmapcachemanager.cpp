@@ -12,25 +12,25 @@
 #include "components/viewitems/pagegraphicsitem.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	PixmapCacheManager::PixmapCacheManager (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
+		constexpr auto megabytes = 1024 * 1024;
+
 		XmlSettingsManager::Instance ().RegisterObject ("PixmapCacheSize",
 				this,
 				[this] (qint64 size)
 				{
-					MaxSize_ = size * 1024 * 1024;
+					MaxSize_ = size * megabytes;
 					CheckCache ();
 				});
 	}
 
 	namespace
 	{
-		quint64 GetPixmapSize (const QPixmap& px)
+		qint64 GetPixmapSize (const QPixmap& px)
 		{
 			if (px.isNull ())
 				return 0;
@@ -49,8 +49,7 @@ namespace Monocle
 	{
 		if (RecentlyUsed_.removeAll (item))
 			CurrentSize_ = std::accumulate (RecentlyUsed_.begin (), RecentlyUsed_.end (), 0,
-					[] (qint64 size, const PageGraphicsItem *item)
-						{ return size + GetPixmapSize (item->pixmap ()); });
+					[] (qint64 size, const PageGraphicsItem *item) { return size + GetPixmapSize (item->pixmap ()); });
 
 		RecentlyUsed_ << item;
 		CurrentSize_ += GetPixmapSize (item->pixmap ());
@@ -74,8 +73,7 @@ namespace Monocle
 				continue;
 			}
 
-			const quint64 pxSize = GetPixmapSize (page->pixmap ());
-			CurrentSize_ -= pxSize;
+			CurrentSize_ -= GetPixmapSize (page->pixmap ());
 			page->ClearPixmap ();
 			i = RecentlyUsed_.erase (i);
 		}
@@ -90,5 +88,4 @@ namespace Monocle
 					<< RecentlyUsed_.size ()
 					<< "pages";
 	}
-}
 }

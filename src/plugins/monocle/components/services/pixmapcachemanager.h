@@ -10,21 +10,17 @@
 
 #include <QObject>
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	class PageGraphicsItem;
 
 	class PixmapCacheManager : public QObject
 	{
-		Q_OBJECT
-
 		qint64 CurrentSize_ = 0;
 		qint64 MaxSize_ = 0;
 		QList<PageGraphicsItem*> RecentlyUsed_;
 	public:
-		PixmapCacheManager (QObject* = 0);
+		explicit PixmapCacheManager (QObject* = nullptr);
 
 		void PixmapPainted (PageGraphicsItem*);
 		void PixmapChanged (PageGraphicsItem*);
@@ -32,5 +28,4 @@ namespace Monocle
 	private:
 		void CheckCache ();
 	};
-}
 }
