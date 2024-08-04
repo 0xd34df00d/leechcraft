@@ -30,7 +30,7 @@ namespace LC::Monocle
 		LinkExecutionContext& ExecutionContext_;
 		QGraphicsScene * const Scene_;
 
-		QHash<QList<int>, QButtonGroup*> RadioGroups_;
+		QHash<QList<int>, std::shared_ptr<QButtonGroup>> RadioGroups_;
 	public:
 		explicit FormManager (QGraphicsView*, LinkExecutionContext&);
 

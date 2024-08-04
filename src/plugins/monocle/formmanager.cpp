@@ -35,7 +35,6 @@ namespace LC::Monocle
 
 	void FormManager::HandleDoc (IDocument& doc, const QVector<PageGraphicsItem*>& pages)
 	{
-		qDeleteAll (RadioGroups_);
 		RadioGroups_.clear ();
 
 		auto formsDoc = dynamic_cast<ISupportForms*> (&doc);
@@ -255,7 +254,7 @@ namespace LC::Monocle
 				!groupID.isEmpty ())
 			{
 				if (!RadioGroups_.contains (groupID))
-					RadioGroups_ [groupID] = new QButtonGroup;
+					RadioGroups_ [groupID] = std::make_shared<QButtonGroup> ();
 				RadioGroups_ [groupID]->addButton (radio);
 			}
 
