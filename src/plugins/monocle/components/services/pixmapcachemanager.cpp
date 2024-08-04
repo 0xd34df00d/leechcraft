@@ -41,13 +41,13 @@ namespace LC::Monocle
 
 	void PixmapCacheManager::PixmapPainted (PageGraphicsItem *item)
 	{
-		RecentlyUsed_.removeAll (item);
+		RecentlyUsed_.removeOne (item);
 		RecentlyUsed_ << item;
 	}
 
 	void PixmapCacheManager::PixmapChanged (PageGraphicsItem *item)
 	{
-		if (RecentlyUsed_.removeAll (item))
+		if (RecentlyUsed_.removeOne (item))
 			CurrentSize_ = std::accumulate (RecentlyUsed_.begin (), RecentlyUsed_.end (), 0,
 					[] (qint64 size, const PageGraphicsItem *item) { return size + GetPixmapSize (item->pixmap ()); });
 
@@ -59,7 +59,7 @@ namespace LC::Monocle
 	void PixmapCacheManager::PixmapDeleted (PageGraphicsItem *item)
 	{
 		CurrentSize_ -= GetPixmapSize (item->pixmap ());
-		RecentlyUsed_.removeAll (item);
+		RecentlyUsed_.removeOne (item);
 	}
 
 	void PixmapCacheManager::CheckCache ()
