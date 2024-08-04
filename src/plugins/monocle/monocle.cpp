@@ -20,6 +20,7 @@
 #include "interfaces/monocle/iredirectorplugin.h"
 #include "util/monocle/textdocumentformatconfig.h"
 #include "components/navigation/bookmarksstorage.h"
+#include "components/services/docstatemanager.h"
 #include "components/services/documentloader.h"
 #include "components/services/recentlyopenedmanager.h"
 #include "core.h"
@@ -32,6 +33,7 @@ namespace LC::Monocle
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		BookmarksStorage_ = std::make_shared<BookmarksStorage> ();
+		DocStateManager_ = std::make_shared<DocStateManager> ();
 		Loader_ = std::make_shared<DocumentLoader> ();
 		RecentlyOpenedManager_ = std::make_shared<RecentlyOpenedManager> ();
 
@@ -200,7 +202,11 @@ namespace LC::Monocle
 
 	DocumentTab* Plugin::CreateTab ()
 	{
-		return new DocumentTab { { *BookmarksStorage_, *Loader_, *RecentlyOpenedManager_, DocTabInfo_ }, this };
+		return new DocumentTab
+		{
+			{ *BookmarksStorage_, *DocStateManager_, *Loader_, *RecentlyOpenedManager_, DocTabInfo_ },
+			this
+		};
 	}
 }
 

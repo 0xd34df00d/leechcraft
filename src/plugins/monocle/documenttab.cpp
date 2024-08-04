@@ -120,6 +120,7 @@ namespace Monocle
 	, ParentPlugin_ { parent }
 	, Toolbar_ { new QToolBar { "Monocle" } }
 	, BookmarksStorage_ { deps.BookmarksStorage_ }
+	, DocStateManager_ { deps.DocStateManager_ }
 	, Loader_ { deps.Loader_ }
 	, RecentlyOpenedManager_ { deps.RecentlyOpenedManager_ }
 	, C_ { std::make_unique<Components> (*this, Loader_, BookmarksStorage_) }
@@ -626,7 +627,7 @@ namespace Monocle
 
 		RecentlyOpenedManager_.RecordOpened (path);
 
-		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (path);
+		const auto& state = DocStateManager_.GetState (path);
 
 		Scene_.clear ();
 		Pages_.clear ();
@@ -691,7 +692,7 @@ namespace Monocle
 		if (CurrentDocPath_.isEmpty ())
 			return;
 
-		Core::Instance ().GetDocStateManager ()->SaveState (CurrentDocPath_,
+		DocStateManager_.SaveState (CurrentDocPath_,
 				{
 					C_->LayoutManager_.GetCurrentPagePos (),
 					C_->LayoutManager_.GetLayoutMode (),

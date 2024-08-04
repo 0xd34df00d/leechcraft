@@ -9,7 +9,6 @@
 #include "core.h"
 #include <util/shortcuts/shortcutmanager.h>
 #include "components/services/pixmapcachemanager.h"
-#include "components/services/docstatemanager.h"
 
 namespace LC
 {
@@ -17,7 +16,6 @@ namespace Monocle
 {
 	Core::Core ()
 	: CacheManager_ (new PixmapCacheManager (this))
-	, DocStateManager_ (new DocStateManager (this))
 	{
 	}
 
@@ -36,11 +34,6 @@ namespace Monocle
 	PixmapCacheManager* Core::GetPixmapCacheManager () const
 	{
 		return CacheManager_;
-	}
-
-	DocStateManager* Core::GetDocStateManager () const
-	{
-		return DocStateManager_;
 	}
 
 	Util::ShortcutManager* Core::GetShortcutManager () const

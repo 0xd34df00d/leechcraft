@@ -20,6 +20,7 @@
 namespace LC::Monocle
 {
 	class BookmarksStorage;
+	class DocStateManager;
 	class DocumentTab;
 	class DocumentLoader;
 	class RecentlyOpenedManager;
@@ -49,6 +50,7 @@ namespace LC::Monocle
 		TabClassInfo DocTabInfo_;
 
 		std::shared_ptr<BookmarksStorage> BookmarksStorage_;
+		std::shared_ptr<DocStateManager> DocStateManager_;
 		std::shared_ptr<DocumentLoader> Loader_;
 		std::shared_ptr<RecentlyOpenedManager> RecentlyOpenedManager_;
 	public:

@@ -28,6 +28,7 @@ namespace Monocle
 	class PageGraphicsItem;
 	class FindDialog;
 	class PageNumLabel;
+	class DocStateManager;
 	class BookmarksStorage;
 	class DocumentBookmarksModel;
 	class RecentlyOpenedManager;
@@ -61,6 +62,7 @@ namespace Monocle
 		FindDialog *FindDialog_ = nullptr;
 
 		BookmarksStorage& BookmarksStorage_;
+		DocStateManager& DocStateManager_;
 		DocumentLoader& Loader_;
 		RecentlyOpenedManager& RecentlyOpenedManager_;
 
@@ -80,6 +82,7 @@ namespace Monocle
 		struct Deps
 		{
 			BookmarksStorage& BookmarksStorage_;
+			DocStateManager& DocStateManager_;
 			DocumentLoader& Loader_;
 			RecentlyOpenedManager& RecentlyOpenedManager_;
 			const TabClassInfo& TC_;
