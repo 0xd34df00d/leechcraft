@@ -30,6 +30,7 @@ namespace Monocle
 	class PageNumLabel;
 	class BookmarksStorage;
 	class DocumentBookmarksModel;
+	class RecentlyOpenedManager;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -61,6 +62,7 @@ namespace Monocle
 
 		BookmarksStorage& BookmarksStorage_;
 		DocumentLoader& Loader_;
+		RecentlyOpenedManager& RecentlyOpenedManager_;
 
 		std::shared_ptr<DocumentBookmarksModel> BookmarksModel_;
 
@@ -79,6 +81,7 @@ namespace Monocle
 		{
 			BookmarksStorage& BookmarksStorage_;
 			DocumentLoader& Loader_;
+			RecentlyOpenedManager& RecentlyOpenedManager_;
 			const TabClassInfo& TC_;
 		};
 

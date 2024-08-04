@@ -21,6 +21,7 @@
 #include "util/monocle/textdocumentformatconfig.h"
 #include "components/navigation/bookmarksstorage.h"
 #include "components/services/documentloader.h"
+#include "components/services/recentlyopenedmanager.h"
 #include "core.h"
 #include "documenttab.h"
 #include "xmlsettingsmanager.h"
@@ -32,6 +33,7 @@ namespace LC::Monocle
 	{
 		BookmarksStorage_ = std::make_shared<BookmarksStorage> ();
 		Loader_ = std::make_shared<DocumentLoader> ();
+		RecentlyOpenedManager_ = std::make_shared<RecentlyOpenedManager> ();
 
 		Util::InstallTranslator ("monocle");
 
@@ -198,7 +200,7 @@ namespace LC::Monocle
 
 	DocumentTab* Plugin::CreateTab ()
 	{
-		return new DocumentTab { { *BookmarksStorage_, *Loader_, DocTabInfo_ }, this };
+		return new DocumentTab { { *BookmarksStorage_, *Loader_, *RecentlyOpenedManager_, DocTabInfo_ }, this };
 	}
 }
 

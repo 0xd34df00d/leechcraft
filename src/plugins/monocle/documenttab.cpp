@@ -121,6 +121,7 @@ namespace Monocle
 	, Toolbar_ { new QToolBar { "Monocle" } }
 	, BookmarksStorage_ { deps.BookmarksStorage_ }
 	, Loader_ { deps.Loader_ }
+	, RecentlyOpenedManager_ { deps.RecentlyOpenedManager_ }
 	, C_ { std::make_unique<Components> (*this, Loader_, BookmarksStorage_) }
 	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
@@ -361,7 +362,7 @@ namespace Monocle
 				this,
 				SLOT (selectFile ()));
 
-		auto roMenu = Core::Instance ().GetROManager ()->CreateOpenMenu (this,
+		auto roMenu = RecentlyOpenedManager_.CreateOpenMenu (this,
 				[this] (const QString& path)
 				{
 					const QFileInfo fi { path };
@@ -623,7 +624,7 @@ namespace Monocle
 	{
 		saveState ();
 
-		Core::Instance ().GetROManager ()->RecordOpened (path);
+		RecentlyOpenedManager_.RecordOpened (path);
 
 		const auto& state = Core::Instance ().GetDocStateManager ()->GetState (path);
 

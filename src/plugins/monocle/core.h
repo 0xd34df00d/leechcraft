@@ -21,7 +21,6 @@ class ShortcutManager;
 
 namespace Monocle
 {
-	class RecentlyOpenedManager;
 	class PixmapCacheManager;
 	class DocStateManager;
 
@@ -32,7 +31,6 @@ namespace Monocle
 		ICoreProxy_ptr Proxy_;
 
 		PixmapCacheManager *CacheManager_;
-		RecentlyOpenedManager *ROManager_;
 		DocStateManager *DocStateManager_;
 
 		Util::ShortcutManager *ShortcutMgr_;
@@ -44,7 +42,6 @@ namespace Monocle
 		void SetProxy (ICoreProxy_ptr, QObject*);
 
 		PixmapCacheManager* GetPixmapCacheManager () const;
-		RecentlyOpenedManager* GetROManager () const;
 		DocStateManager* GetDocStateManager () const;
 
 		Util::ShortcutManager* GetShortcutManager () const;

@@ -9,7 +9,6 @@
 #include "core.h"
 #include <util/shortcuts/shortcutmanager.h>
 #include "components/services/pixmapcachemanager.h"
-#include "components/services/recentlyopenedmanager.h"
 #include "components/services/docstatemanager.h"
 
 namespace LC
@@ -18,7 +17,6 @@ namespace Monocle
 {
 	Core::Core ()
 	: CacheManager_ (new PixmapCacheManager (this))
-	, ROManager_ (new RecentlyOpenedManager (this))
 	, DocStateManager_ (new DocStateManager (this))
 	{
 	}
@@ -38,11 +36,6 @@ namespace Monocle
 	PixmapCacheManager* Core::GetPixmapCacheManager () const
 	{
 		return CacheManager_;
-	}
-
-	RecentlyOpenedManager* Core::GetROManager () const
-	{
-		return ROManager_;
 	}
 
 	DocStateManager* Core::GetDocStateManager () const
