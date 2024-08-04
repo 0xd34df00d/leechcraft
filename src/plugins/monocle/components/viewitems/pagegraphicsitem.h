@@ -15,7 +15,6 @@
 
 namespace LC::Monocle
 {
-	class PagesLayoutManager;
 	struct PageAbsolutePos;
 	struct PageAbsoluteRect;
 	struct PageRelativeRect;
@@ -27,7 +26,6 @@ namespace LC::Monocle
 		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::PageGraphicsItem)
 
 		IDocument& Doc_;
-		PagesLayoutManager *LayoutManager_ = nullptr;
 
 		qreal XScale_ = 1;
 		qreal YScale_ = 1;
@@ -47,8 +45,6 @@ namespace LC::Monocle
 	public:
 		PageGraphicsItem (IDocument&, int, QGraphicsItem* = nullptr);
 		~PageGraphicsItem () override;
-
-		void SetLayoutManager (PagesLayoutManager*);
 
 		void SetReleaseHandler (ReleaseHandler_f);
 

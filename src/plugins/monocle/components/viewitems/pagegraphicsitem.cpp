@@ -13,9 +13,9 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <util/threads/futures.h>
+#include "components/layout/positions.h"
 #include "components/services/pixmapcachemanager.h"
 #include "core.h"
-#include "pageslayoutmanager.h"
 
 namespace LC::Monocle
 {
@@ -39,11 +39,6 @@ namespace LC::Monocle
 	PageGraphicsItem::~PageGraphicsItem ()
 	{
 		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
-	}
-
-	void PageGraphicsItem::SetLayoutManager (PagesLayoutManager *manager)
-	{
-		LayoutManager_ = manager;
 	}
 
 	void PageGraphicsItem::SetReleaseHandler (ReleaseHandler_f handler)

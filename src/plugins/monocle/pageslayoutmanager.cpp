@@ -42,9 +42,6 @@ namespace LC::Monocle
 		PageRotations_ = QVector<double> (pages.size (), 0);
 		emit rotationUpdated (0);
 
-		for (auto page : pages)
-			page->SetLayoutManager (this);
-
 		if (const auto docSignals = CurrentDoc_ ? CurrentDoc_->GetDocumentSignals () : nullptr)
 			connect (docSignals,
 					&DocumentSignals::pageSizeChanged,
