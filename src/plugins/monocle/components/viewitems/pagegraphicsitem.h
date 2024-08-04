@@ -9,7 +9,6 @@
 #pragma once
 
 #include <functional>
-#include <memory>
 #include <QCoreApplication>
 #include <QGraphicsPixmapItem>
 #include "interfaces/monocle/idocument.h"
@@ -74,7 +73,6 @@ namespace LC::Monocle
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
-		void contextMenuEvent (QGraphicsSceneContextMenuEvent*) override;
 	private:
 		bool ShouldRender () const;
 		QPixmap GetEmptyPixmap () const;

@@ -10,16 +10,11 @@
 #include <limits>
 #include <cmath>
 #include <QGraphicsSceneMouseEvent>
-#include <QCursor>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QMenu>
-#include <interfaces/core/iiconthememanager.h>
 #include <util/threads/futures.h>
-#include "components/actions/rotatemenu.h"
 #include "components/services/pixmapcachemanager.h"
 #include "core.h"
-#include "arbitraryrotationwidget.h"
 #include "pageslayoutmanager.h"
 
 namespace LC::Monocle
@@ -151,14 +146,6 @@ namespace LC::Monocle
 			ReleaseHandler_ (PageNum_, PageAbsolutePos { event->pos () });
 		else
 			QGraphicsItem::mouseReleaseEvent (event);
-	}
-
-	void PageGraphicsItem::contextMenuEvent (QGraphicsSceneContextMenuEvent *event)
-	{
-		auto rotateMenu = CreateRotateMenu (InitAngle { LayoutManager_->GetPageRotation (PageNum_) },
-				std::bind_front (&PagesLayoutManager::SetPageRotation, LayoutManager_, PageNum_));
-		GetProxyHolder ()->GetIconThemeManager ()->ManageWidget (rotateMenu.get ());
-		rotateMenu->exec (event->screenPos ());
 	}
 
 	QPixmap PageGraphicsItem::GetEmptyPixmap () const

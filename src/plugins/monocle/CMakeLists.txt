@@ -66,6 +66,7 @@ LC_DEFINE_PLUGIN (
 		components/viewitems/linkitem.cpp
 		components/viewitems/nondragclickfilter.cpp
 		components/viewitems/pagegraphicsitem.cpp
+		components/viewitems/pagescontextmenuhandler.cpp
 		components/widgets/dock.cpp
 		monocle.cpp
 		documenttab.cpp

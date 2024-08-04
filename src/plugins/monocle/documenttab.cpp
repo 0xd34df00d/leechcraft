@@ -47,6 +47,7 @@
 #include "components/services/recentlyopenedmanager.h"
 #include "components/viewitems/linkitem.h"
 #include "components/viewitems/pagegraphicsitem.h"
+#include "components/viewitems/pagescontextmenuhandler.h"
 #include "components/widgets/dock.h"
 #include "core.h"
 #include "presenterwidget.h"
@@ -125,6 +126,8 @@ namespace Monocle
 	{
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
+
+		HandlePagesContextMenus (*Ui_.PagesView_, C_->LayoutManager_);
 
 		connect (&C_->Navigator_,
 				&Navigator::positionRequested,
