@@ -75,7 +75,14 @@ namespace Monocle
 
 		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
-		DocumentTab (BookmarksStorage&, DocumentLoader&, const TabClassInfo&, QObject*);
+		struct Deps
+		{
+			BookmarksStorage& BookmarksStorage_;
+			DocumentLoader& Loader_;
+			const TabClassInfo& TC_;
+		};
+
+		DocumentTab (const Deps&, QObject*);
 		~DocumentTab () override;
 
 		TabClassInfo GetTabClassInfo () const override;

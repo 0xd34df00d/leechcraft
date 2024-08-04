@@ -115,13 +115,13 @@ namespace Monocle
 		}
 	};
 
-	DocumentTab::DocumentTab (BookmarksStorage& bmStorage, DocumentLoader& loader, const TabClassInfo& tc, QObject *parent)
-	: TC_ (tc)
-	, ParentPlugin_ (parent)
-	, Toolbar_ (new QToolBar ("Monocle"))
-	, BookmarksStorage_ { bmStorage }
-	, Loader_ { loader }
-	, C_ { std::make_unique<Components> (*this, loader, bmStorage) }
+	DocumentTab::DocumentTab (const Deps& deps, QObject *parent)
+	: TC_ { deps.TC_ }
+	, ParentPlugin_ { parent }
+	, Toolbar_ { new QToolBar { "Monocle" } }
+	, BookmarksStorage_ { deps.BookmarksStorage_ }
+	, Loader_ { deps.Loader_ }
+	, C_ { std::make_unique<Components> (*this, Loader_, BookmarksStorage_) }
 	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
 		Ui_.PagesView_->setScene (&Scene_);

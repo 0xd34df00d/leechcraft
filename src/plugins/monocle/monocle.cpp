@@ -198,7 +198,7 @@ namespace LC::Monocle
 
 	DocumentTab* Plugin::CreateTab ()
 	{
-		return new DocumentTab { *BookmarksStorage_, *Loader_, DocTabInfo_, this };
+		return new DocumentTab { { *BookmarksStorage_, *Loader_, DocTabInfo_ }, this };
 	}
 }
 
