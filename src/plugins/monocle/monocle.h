@@ -23,6 +23,7 @@ namespace LC::Monocle
 	class DocStateManager;
 	class DocumentTab;
 	class DocumentLoader;
+	class PixmapCacheManager;
 	class RecentlyOpenedManager;
 
 	class Plugin : public QObject
@@ -52,6 +53,7 @@ namespace LC::Monocle
 		std::shared_ptr<BookmarksStorage> BookmarksStorage_;
 		std::shared_ptr<DocStateManager> DocStateManager_;
 		std::shared_ptr<DocumentLoader> Loader_;
+		std::shared_ptr<PixmapCacheManager> PixmapCacheManager_;
 		std::shared_ptr<RecentlyOpenedManager> RecentlyOpenedManager_;
 	public:
 		void Init (ICoreProxy_ptr) override;

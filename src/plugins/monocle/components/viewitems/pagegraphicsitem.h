@@ -20,12 +20,15 @@ namespace LC::Monocle
 	struct PageRelativeRect;
 	struct SceneAbsolutePos;
 
+	class PixmapCacheManager;
+
 	class PageGraphicsItem : public QObject
 						   , public QGraphicsPixmapItem
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::PageGraphicsItem)
 
 		IDocument& Doc_;
+		PixmapCacheManager& PxCache_;
 
 		qreal XScale_ = 1;
 		qreal YScale_ = 1;
@@ -43,7 +46,7 @@ namespace LC::Monocle
 		struct RectInfo;
 		QMap<QGraphicsItem*, RectInfo> Item2RectInfo_;
 	public:
-		PageGraphicsItem (IDocument&, int, QGraphicsItem* = nullptr);
+		PageGraphicsItem (IDocument&, PixmapCacheManager&, int, QGraphicsItem* = nullptr);
 		~PageGraphicsItem () override;
 
 		void SetReleaseHandler (ReleaseHandler_f);

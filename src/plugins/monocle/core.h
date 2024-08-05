@@ -21,15 +21,11 @@ class ShortcutManager;
 
 namespace Monocle
 {
-	class PixmapCacheManager;
-
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-
-		PixmapCacheManager *CacheManager_;
 
 		Util::ShortcutManager *ShortcutMgr_;
 
@@ -38,8 +34,6 @@ namespace Monocle
 		static Core& Instance ();
 
 		void SetProxy (ICoreProxy_ptr, QObject*);
-
-		PixmapCacheManager* GetPixmapCacheManager () const;
 
 		Util::ShortcutManager* GetShortcutManager () const;
 	};

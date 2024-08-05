@@ -44,7 +44,7 @@ namespace LC::Monocle
 	: QDockWidget { tr ("Monocle dock") }
 	, Toc_ { *new TOCWidget }
 	, Bookmarks_ { *new BookmarksWidget { deps.BookmarksStorage_ } }
-	, Thumbnails_ { *new ThumbsWidget {} }
+	, Thumbnails_ { *new ThumbsWidget { deps.PixmapCacheManager_ } }
 	, Annotations_ { *new AnnWidget { deps.AnnotationsMgr_ } }
 	, Search_ { *new SearchTabWidget { deps.SearchHandler_ } }
 	, OptionalContents_ { *new QTreeView {} }

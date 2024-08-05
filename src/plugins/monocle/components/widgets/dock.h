@@ -22,6 +22,7 @@ namespace LC::Monocle
 	class IDocument;
 	struct LinkExecutionContext;
 	class SearchTabWidget;
+	class PixmapCacheManager;
 	class TextSearchHandler;
 	class ThumbsWidget;
 	class TOCWidget;
@@ -45,6 +46,7 @@ namespace LC::Monocle
 
 			AnnManager& AnnotationsMgr_;
 			BookmarksStorage& BookmarksStorage_;
+			PixmapCacheManager& PixmapCacheManager_;
 			TextSearchHandler& SearchHandler_;
 			ViewPositionTracker& ViewPosTracker_;
 		};

@@ -8,14 +8,12 @@
 
 #include "core.h"
 #include <util/shortcuts/shortcutmanager.h>
-#include "components/services/pixmapcachemanager.h"
 
 namespace LC
 {
 namespace Monocle
 {
 	Core::Core ()
-	: CacheManager_ (new PixmapCacheManager (this))
 	{
 	}
 
@@ -29,11 +27,6 @@ namespace Monocle
 	{
 		Proxy_ = proxy;
 		ShortcutMgr_ = new Util::ShortcutManager { proxy, pluginObject };
-	}
-
-	PixmapCacheManager* Core::GetPixmapCacheManager () const
-	{
-		return CacheManager_;
 	}
 
 	Util::ShortcutManager* Core::GetShortcutManager () const

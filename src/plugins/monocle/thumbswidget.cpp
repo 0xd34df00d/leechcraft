@@ -16,8 +16,9 @@
 
 namespace LC::Monocle
 {
-	ThumbsWidget::ThumbsWidget (QWidget *parent)
+	ThumbsWidget::ThumbsWidget (PixmapCacheManager& pxCache, QWidget *parent)
 	: QWidget { parent }
+	, PxCache_ { pxCache }
 	, Scroller_ { *new SmoothScroller { *Ui_.ThumbsView_, this } }
 	{
 		Ui_.ThumbsView_->setScene (&Scene_);
@@ -43,7 +44,7 @@ namespace LC::Monocle
 		Pages_.reserve (numPages);
 		for (int i = 0; i < numPages; ++i)
 		{
-			auto item = new PageGraphicsItem { doc, i };
+			auto item = new PageGraphicsItem { doc, PxCache_, i };
 			Scene_.addItem (item);
 			item->SetReleaseHandler ([this] (int page, auto&&) { emit pageClicked (page); });
 			Pages_ << item;

@@ -25,9 +25,10 @@ namespace LC::Monocle
 		RectSetter_f Setter_;
 	};
 
-	PageGraphicsItem::PageGraphicsItem (IDocument& doc, int page, QGraphicsItem *parent)
+	PageGraphicsItem::PageGraphicsItem (IDocument& doc, PixmapCacheManager& pxCache, int page, QGraphicsItem *parent)
 	: QGraphicsPixmapItem { parent }
 	, Doc_ { doc }
+	, PxCache_ { pxCache }
 	, PageNum_ { page }
 	{
 		setTransformationMode (Qt::SmoothTransformation);
@@ -38,7 +39,7 @@ namespace LC::Monocle
 
 	PageGraphicsItem::~PageGraphicsItem ()
 	{
-		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
+		PxCache_.PixmapDeleted (this);
 	}
 
 	void PageGraphicsItem::SetReleaseHandler (ReleaseHandler_f handler)
@@ -120,13 +121,13 @@ namespace LC::Monocle
 								std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
 								UpdatePixmap ();
 							else
-								Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
+								PxCache_.PixmapChanged (this);
 						};
 			}
 		}
 
 		QGraphicsPixmapItem::paint (painter, option, w);
-		Core::Instance ().GetPixmapCacheManager ()->PixmapPainted (this);
+		PxCache_.PixmapPainted (this);
 	}
 
 	void PageGraphicsItem::mousePressEvent (QGraphicsSceneMouseEvent *event)

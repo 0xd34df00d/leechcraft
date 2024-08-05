@@ -17,6 +17,7 @@ namespace LC::Monocle
 	class IDocument;
 	class PageGraphicsItem;
 	class PagesLayoutManager;
+	class PixmapCacheManager;
 	class SmoothScroller;
 
 	class ThumbsWidget : public QWidget
@@ -25,6 +26,8 @@ namespace LC::Monocle
 
 		Ui::ThumbsWidget Ui_;
 		Util::UiInit UiInit_ { Ui_, *this };
+
+		PixmapCacheManager& PxCache_;
 
 		QGraphicsScene Scene_;
 		SmoothScroller& Scroller_;
@@ -35,7 +38,7 @@ namespace LC::Monocle
 		QVector<PageGraphicsItem*> Pages_;
 		QMap<int, SceneAbsoluteRect> LastVisibleAreas_;
 	public:
-		explicit ThumbsWidget (QWidget* = nullptr);
+		explicit ThumbsWidget (PixmapCacheManager&, QWidget* = nullptr);
 
 		void HandleDoc (IDocument&);
 

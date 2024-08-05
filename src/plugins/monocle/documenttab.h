@@ -31,6 +31,7 @@ namespace Monocle
 	class DocStateManager;
 	class BookmarksStorage;
 	class DocumentBookmarksModel;
+	class PixmapCacheManager;
 	class RecentlyOpenedManager;
 
 	class DocumentTab : public QWidget
@@ -64,6 +65,7 @@ namespace Monocle
 		BookmarksStorage& BookmarksStorage_;
 		DocStateManager& DocStateManager_;
 		DocumentLoader& Loader_;
+		PixmapCacheManager& PixmapCacheManager_;
 		RecentlyOpenedManager& RecentlyOpenedManager_;
 
 		std::shared_ptr<DocumentBookmarksModel> BookmarksModel_;
@@ -84,6 +86,7 @@ namespace Monocle
 			BookmarksStorage& BookmarksStorage_;
 			DocStateManager& DocStateManager_;
 			DocumentLoader& Loader_;
+			PixmapCacheManager& PixmapCacheManager_;
 			RecentlyOpenedManager& RecentlyOpenedManager_;
 			const TabClassInfo& TC_;
 		};

@@ -95,7 +95,10 @@ namespace Monocle
 		Zoomer Zoomer_;
 		SmoothScroller Scroller_;
 
-		explicit Components (DocumentTab& tab, DocumentLoader& loader, BookmarksStorage& bmStorage)
+		explicit Components (DocumentTab& tab,
+				DocumentLoader& loader,
+				BookmarksStorage& bmStorage,
+				PixmapCacheManager& pxCache)
 		: LayoutManager_ { tab.Ui_.PagesView_ }
 		, Navigator_ { LayoutManager_, loader }
 		, FormManager_ { tab.Ui_.PagesView_, Navigator_.GetNavigationContext () }
@@ -106,6 +109,7 @@ namespace Monocle
 				.TabWidget_ = tab,
 				.AnnotationsMgr_ = AnnManager_,
 				.BookmarksStorage_ = bmStorage,
+				.PixmapCacheManager_ = pxCache,
 				.SearchHandler_ = SearchHandler_,
 				.ViewPosTracker_ = ViewPosTracker_,
 		} }
@@ -122,8 +126,9 @@ namespace Monocle
 	, BookmarksStorage_ { deps.BookmarksStorage_ }
 	, DocStateManager_ { deps.DocStateManager_ }
 	, Loader_ { deps.Loader_ }
+	, PixmapCacheManager_ { deps.PixmapCacheManager_ }
 	, RecentlyOpenedManager_ { deps.RecentlyOpenedManager_ }
-	, C_ { std::make_unique<Components> (*this, Loader_, BookmarksStorage_) }
+	, C_ { std::make_unique<Components> (*this, Loader_, BookmarksStorage_, PixmapCacheManager_) }
 	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
 		Ui_.PagesView_->setScene (&Scene_);
@@ -639,7 +644,7 @@ namespace Monocle
 
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
-			auto item = new PageGraphicsItem { *CurrentDoc_, i };
+			auto item = new PageGraphicsItem { *CurrentDoc_, PixmapCacheManager_, i };
 			Scene_.addItem (item);
 			Pages_ << item;
 		}

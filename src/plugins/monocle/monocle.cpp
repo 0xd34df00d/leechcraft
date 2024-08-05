@@ -22,6 +22,7 @@
 #include "components/navigation/bookmarksstorage.h"
 #include "components/services/docstatemanager.h"
 #include "components/services/documentloader.h"
+#include "components/services/pixmapcachemanager.h"
 #include "components/services/recentlyopenedmanager.h"
 #include "core.h"
 #include "documenttab.h"
@@ -35,6 +36,7 @@ namespace LC::Monocle
 		BookmarksStorage_ = std::make_shared<BookmarksStorage> ();
 		DocStateManager_ = std::make_shared<DocStateManager> ();
 		Loader_ = std::make_shared<DocumentLoader> ();
+		PixmapCacheManager_ = std::make_shared<PixmapCacheManager> ();
 		RecentlyOpenedManager_ = std::make_shared<RecentlyOpenedManager> ();
 
 		Util::InstallTranslator ("monocle");
@@ -204,7 +206,14 @@ namespace LC::Monocle
 	{
 		return new DocumentTab
 		{
-			{ *BookmarksStorage_, *DocStateManager_, *Loader_, *RecentlyOpenedManager_, DocTabInfo_ },
+			{
+				*BookmarksStorage_,
+				*DocStateManager_,
+				*Loader_,
+				*PixmapCacheManager_,
+				*RecentlyOpenedManager_,
+				DocTabInfo_,
+			},
 			this
 		};
 	}
