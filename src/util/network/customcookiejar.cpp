@@ -95,7 +95,10 @@ namespace LC::Util
 	void CustomCookieJar::CollectGarbage ()
 	{
 		const auto& cookies = allCookies ();
+
 		QList<QNetworkCookie> result;
+		result.reserve (cookies.size ());
+
 		const auto& now = QDateTime::currentDateTime ();
 
 		QList<QNetworkCookie> removed;
