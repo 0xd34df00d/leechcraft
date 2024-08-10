@@ -97,10 +97,15 @@ namespace LC::Util
 		const auto& cookies = allCookies ();
 		QList<QNetworkCookie> result;
 		const auto& now = QDateTime::currentDateTime ();
+
+		QList<QNetworkCookie> removed;
 		for (const auto& cookie : cookies)
 		{
 			if (IsExpired (cookie, now))
+			{
+				removed << cookie;
 				continue;
+			}
 
 			if (result.contains (cookie))
 				continue;
@@ -109,6 +114,9 @@ namespace LC::Util
 		}
 		qDebug () << Q_FUNC_INFO << cookies.size () << result.size ();
 		setAllCookies (result);
+
+		if (!removed.isEmpty ())
+			emit cookiesRemoved (removed);
 	}
 
 	QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
