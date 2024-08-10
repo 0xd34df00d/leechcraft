@@ -59,7 +59,7 @@ namespace LC::Util
 		for (const auto& cookie : cookies)
 		{
 			result += cookie.toRawForm ();
-			result += "\n";
+			result += '\n';
 		}
 		return result;
 	}
