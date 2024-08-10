@@ -175,8 +175,8 @@ namespace LC::Util
 				const QList<QNetworkCookie>& currentList)
 		{
 			using Set_t = std::set<QNetworkCookie, CookieLess>;
-			Set_t previous { previousList.begin (), previousList.end () };
-			Set_t current { currentList.begin (), currentList.end () };
+			const Set_t previous { previousList.begin (), previousList.end () };
+			const Set_t current { currentList.begin (), currentList.end () };
 
 			CookiesDiff diff;
 			std::set_difference (previous.begin (), previous.end (),
