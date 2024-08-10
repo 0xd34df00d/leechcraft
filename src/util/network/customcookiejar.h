@@ -103,6 +103,8 @@ namespace LC::Util
 		 */
 		[[nodiscard]] QByteArray Save () const;
 
+		[[nodiscard]] static QByteArray Save (const QList<QNetworkCookie>&);
+
 		/** Restores the cookies from the array previously obtained
 		 * from Save().
 		 *

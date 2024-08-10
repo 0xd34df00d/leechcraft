@@ -50,7 +50,11 @@ namespace LC::Util
 
 	QByteArray CustomCookieJar::Save () const
 	{
-		auto cookies = allCookies ();
+		return Save (allCookies ());
+	}
+
+	QByteArray CustomCookieJar::Save (const QList<QNetworkCookie>& cookies)
+	{
 		QByteArray result;
 		for (const auto& cookie : cookies)
 		{
