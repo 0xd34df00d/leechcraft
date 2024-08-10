@@ -51,6 +51,7 @@ if (WITH_X11 AND NOT APPLE)
 endif ()
 
 set (SRCS
+	components/network/networkaccessmanager.cpp
 	mainwindow.cpp
 	commonjobadder.cpp
 	core.cpp
@@ -67,7 +68,6 @@ set (SRCS
 	handlerchoicedialog.cpp
 	shortcutmanager.cpp
 	keysequencer.cpp
-	networkaccessmanager.cpp
 	coreproxy.cpp
 	tagsmanager.cpp
 	tagsviewer.cpp

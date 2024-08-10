@@ -33,6 +33,7 @@
 #include <interfaces/isummaryrepresentation.h>
 #include <interfaces/structures.h>
 #include <interfaces/entitytesthandleresult.h>
+#include "components/network/networkaccessmanager.h"
 #include "application.h"
 #include "pluginmanager.h"
 #include "core.h"
@@ -41,7 +42,6 @@
 #include "tagsmanager.h"
 #include "application.h"
 #include "newtabmenumanager.h"
-#include "networkaccessmanager.h"
 #include "tabmanager.h"
 #include "localsockethandler.h"
 #include "coreinstanceobject.h"
