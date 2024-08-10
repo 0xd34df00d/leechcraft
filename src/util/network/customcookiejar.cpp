@@ -12,9 +12,7 @@
 #include <QNetworkCookie>
 #include <QtDebug>
 #include <QDateTime>
-#include <QtConcurrentRun>
 #include <util/sll/util.h>
-#include <util/threads/futures.h>
 
 namespace LC::Util
 {
@@ -235,14 +233,13 @@ namespace LC::Util
 		if (existing.isEmpty ())
 			emit cookiesAdded (filtered);
 		else
-			Util::Sequence (this, QtConcurrent::run (CheckDifferences, existing, filtered)) >>
-					[this] (const CookiesDiff& diff)
-					{
-						if (!diff.Removed_.isEmpty ())
-							emit cookiesRemoved (diff.Removed_);
-						if (!diff.Added_.isEmpty ())
-							emit cookiesAdded (diff.Added_);
-					};
+		{
+			const auto& diff = CheckDifferences (existing, filtered);
+			if (!diff.Removed_.isEmpty ())
+				emit cookiesRemoved (diff.Removed_);
+			if (!diff.Added_.isEmpty ())
+				emit cookiesAdded (diff.Added_);
+		}
 
 		return QNetworkCookieJar::setCookiesFromUrl (filtered, url);
 	}
