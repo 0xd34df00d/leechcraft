@@ -12,6 +12,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QStyleOptionGraphicsItem>
 #include <util/threads/futures.h>
 #include "components/layout/positions.h"
 #include "components/services/pixmapcachemanager.h"
@@ -33,8 +34,9 @@ namespace LC::Monocle
 	{
 		setTransformationMode (Qt::SmoothTransformation);
 		setShapeMode (QGraphicsPixmapItem::BoundingRectShape);
-		setPixmap (QPixmap { Doc_.GetPageSize (page) });
 		setAcceptHoverEvents (true);
+
+		ClearPixmap ();
 	}
 
 	PageGraphicsItem::~PageGraphicsItem ()
@@ -90,7 +92,7 @@ namespace LC::Monocle
 
 	void PageGraphicsItem::ClearPixmap ()
 	{
-		setPixmap (QPixmap { QSize { 1, 1 } });
+		setPixmap (QPixmap {});
 
 		Invalid_ = true;
 	}
@@ -102,32 +104,43 @@ namespace LC::Monocle
 			update ();
 	}
 
-	void PageGraphicsItem::paint (QPainter *painter,
-			const QStyleOptionGraphicsItem *option, QWidget *w)
+	namespace
 	{
-		if (Invalid_ && IsDisplayed ())
+		void DrawEmptyPixmap (QPainter& painter, const QStyleOptionGraphicsItem& option)
 		{
-			setPixmap (GetEmptyPixmap ());
+			painter.fillRect (option.rect, QBrush { Qt::white });
+		}
+	}
 
-			if (ShouldRender ())
-			{
-				Invalid_ = false;
-				Util::Sequence (this, Doc_.RenderPage (PageNum_, XScale_, YScale_)) >>
-						[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
-						{
-							setPixmap (QPixmap::fromImage (img));
-
-							if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
-								std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
-								UpdatePixmap ();
-							else
-								PxCache_.PixmapChanged (this);
-						};
-			}
+	void PageGraphicsItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
+	{
+		PxCache_.PixmapPainted (this);
+		if (!Invalid_ && !pixmap ().isNull ())
+		{
+			QGraphicsPixmapItem::paint (painter, option, w);
+			return;
 		}
 
-		QGraphicsPixmapItem::paint (painter, option, w);
-		PxCache_.PixmapPainted (this);
+		if (!IsDisplayed ())
+			return;
+
+		DrawEmptyPixmap (*painter, *option);
+
+		if (IsRenderingEnabled_ && Invalid_)
+		{
+			Invalid_ = false;
+			Util::Sequence (this, Doc_.RenderPage (PageNum_, XScale_, YScale_)) >>
+					[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
+					{
+						setPixmap (QPixmap::fromImage (img));
+
+						if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
+							std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
+							UpdatePixmap ();
+						else
+							PxCache_.PixmapChanged (this);
+					};
+		}
 	}
 
 	void PageGraphicsItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
@@ -142,13 +155,6 @@ namespace LC::Monocle
 			ReleaseHandler_ (PageNum_, PageAbsolutePos { event->pos () });
 		else
 			QGraphicsItem::mouseReleaseEvent (event);
-	}
-
-	QPixmap PageGraphicsItem::GetEmptyPixmap () const
-	{
-		QPixmap px { boundingRect ().size ().toSize () };
-		px.fill ();
-		return px;
 	}
 
 	bool PageGraphicsItem::IsDisplayed () const

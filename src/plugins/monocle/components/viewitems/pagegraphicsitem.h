@@ -74,6 +74,5 @@ namespace LC::Monocle
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
 	private:
 		bool ShouldRender () const;
-		QPixmap GetEmptyPixmap () const;
 	};
 }
