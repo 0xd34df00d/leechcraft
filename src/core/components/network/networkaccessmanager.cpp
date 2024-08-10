@@ -9,21 +9,14 @@
 #include "networkaccessmanager.h"
 #include <stdexcept>
 #include <QNetworkRequest>
-#include <QDir>
-#include <QFile>
 #include <QNetworkReply>
-#include <QTimer>
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/defaulthookproxy.h>
-#include <util/xpc/util.h>
-#include "xmlsettingsmanager.h"
-#include "mainwindow.h"
+#include "cookiesaver.h"
 #include "sslerrorshandler.h"
-#include "entitymanager.h"
-
-Q_DECLARE_METATYPE (QNetworkReply*);
+#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -38,35 +31,12 @@ namespace LC
 			return result;
 		}
 
-		std::unique_ptr<QFile> GetCookiesFile (QIODevice::OpenMode mode)
-		{
-			auto dir = QDir::home ();
-			const auto corePath = ".leechcraft/core"_qs;
-			if (!dir.mkpath (corePath))
-			{
-				qCritical () << "unable to create path"
-						<< dir.filePath (corePath);
-				return {};
-			}
-
-			dir.cd (corePath);
-			const auto& path = dir.filePath ("cookies.txt"_qs);
-
-			auto file = std::make_unique<QFile> (path);
-			if (!file->open (mode))
-			{
-				qCritical () << "unable to open file"
-						<< path
-						<< file->errorString ();
-				return {};
-			}
-			return file;
-		}
 	}
 
 	NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	: QNetworkAccessManager (parent)
 	, CookieJar_ { std::make_unique<Util::CustomCookieJar> () }
+	, CookieSaver_ { std::make_unique<CookieSaver> (*CookieJar_)}
 	{
 		setCookieJar (CookieJar_.get ());
 
@@ -105,21 +75,9 @@ namespace LC
 				<< e.what ()
 				<< "so continuing without cache";
 		}
-
-		if (const auto file = GetCookiesFile (QIODevice::ReadOnly))
-			CookieJar_->Load (file->readAll ());
-
-		using namespace std::chrono_literals;
-
-		const auto saveTimer = new QTimer { this };
-		saveTimer->callOnTimeout (this, &NetworkAccessManager::SaveCookies);
-		saveTimer->start (10s);
 	}
 
-	NetworkAccessManager::~NetworkAccessManager ()
-	{
-		SaveCookies ();
-	}
+	NetworkAccessManager::~NetworkAccessManager () = default;
 
 	QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Operation op,
 			const QNetworkRequest& req, QIODevice *out)
@@ -148,25 +106,5 @@ namespace LC
 		QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
 		emit requestCreated (op, r, result);
 		return result;
-	}
-
-	void NetworkAccessManager::SaveCookies () const
-	{
-		static int errorCount = 0;
-
-		if (const auto file = GetCookiesFile (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			const bool saveEnabled = !XmlSettingsManager::Instance ()->property ("DeleteCookiesOnExit").toBool ();
-			file->write (saveEnabled ? CookieJar_->Save () : QByteArray {});
-
-			errorCount = 0;
-		}
-		else if (errorCount++ < 3)
-		{
-			EntityManager em { nullptr, nullptr };
-			em.HandleEntity (Util::MakeNotification ("LeechCraft"_qs,
-					tr ("Unable to save cookies."),
-					Priority::Critical));
-		}
 	}
 }

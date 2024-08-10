@@ -11,27 +11,26 @@
 #include <QNetworkAccessManager>
 #include "interfaces/core/ihookproxy.h"
 
-class QTimer;
+namespace LC::Util
+{
+	class CustomCookieJar;
+}
 
 namespace LC
 {
-	namespace Util
-	{
-		class CustomCookieJar;
-	}
+	class CookieSaver;
 
 	class NetworkAccessManager : public QNetworkAccessManager
 	{
 		Q_OBJECT
 
 		std::unique_ptr<Util::CustomCookieJar> CookieJar_;
+		std::unique_ptr<CookieSaver> CookieSaver_;
 	public:
 		explicit NetworkAccessManager (QObject* = nullptr);
 		~NetworkAccessManager () override;
 	protected:
 		QNetworkReply* createRequest (Operation, const QNetworkRequest&, QIODevice*) override;
-	private:
-		void SaveCookies () const;
 	signals:
 		void requestCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);

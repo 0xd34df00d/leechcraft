@@ -51,6 +51,7 @@ if (WITH_X11 AND NOT APPLE)
 endif ()
 
 set (SRCS
+	components/network/cookiesaver.cpp
 	components/network/networkaccessmanager.cpp
 	mainwindow.cpp
 	commonjobadder.cpp
