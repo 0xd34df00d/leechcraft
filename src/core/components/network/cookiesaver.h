@@ -10,6 +10,8 @@
 
 #include <QObject>
 
+class QNetworkCookie;
+
 namespace LC::Util
 {
 	class CustomCookieJar;
@@ -20,10 +22,18 @@ namespace LC
 	class CookieSaver : public QObject
 	{
 		Util::CustomCookieJar& Jar_;
+
+		QList<QNetworkCookie> AppendQueue_;
+
+		bool SaveScheduled_ = false;
+		bool HasRemovedCookies_ = false;
 	public:
 		explicit CookieSaver (Util::CustomCookieJar&, QObject* = nullptr);
 		~CookieSaver () override;
 	private:
-		void SaveCookies ();
+		void ScheduleSave ();
+		void Save ();
+
+		void FullSave ();
 	};
 }

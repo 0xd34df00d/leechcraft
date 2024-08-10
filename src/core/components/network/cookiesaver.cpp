@@ -10,19 +10,26 @@
 #include <QDir>
 #include <QFile>
 #include <QTimer>
+#include <QNetworkCookie>
 #include <QtDebug>
 #include <util/network/customcookiejar.h>
 #include <util/sll/qtutil.h>
-#include <util/xpc/util.h>
-#include "entitymanager.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
 {
 	namespace
 	{
+		bool IsSaveEnabled ()
+		{
+			return !XmlSettingsManager::Instance ()->property ("DeleteCookiesOnExit").toBool ();
+		}
+
 		std::unique_ptr<QFile> GetCookiesFile (QIODevice::OpenMode mode)
 		{
+			if (!IsSaveEnabled ())
+				return {};
+
 			auto dir = QDir::home ();
 			const auto corePath = ".leechcraft/core"_qs;
 			if (!dir.mkpath (corePath))
@@ -51,35 +58,58 @@ namespace LC
 		if (const auto file = GetCookiesFile (QIODevice::ReadOnly))
 			Jar_.Load (file->readAll ());
 
-		using namespace std::chrono_literals;
-
-		const auto saveTimer = new QTimer { this };
-		saveTimer->callOnTimeout (this, &CookieSaver::SaveCookies);
-		saveTimer->start (10s);
+		connect (&Jar_,
+				&Util::CustomCookieJar::cookiesAdded,
+				this,
+				[this] (const QList<QNetworkCookie>& cookies)
+				{
+					AppendQueue_ += cookies;
+					ScheduleSave ();
+				});
+		connect (&Jar_,
+				&Util::CustomCookieJar::cookiesRemoved,
+				this,
+				[this]
+				{
+					HasRemovedCookies_ = true;
+					ScheduleSave ();
+				});
 	}
 
 	CookieSaver::~CookieSaver ()
 	{
-		SaveCookies ();
+		FullSave ();
 	}
 
-	void CookieSaver::SaveCookies ()
+	void CookieSaver::ScheduleSave ()
 	{
-		static int errorCount = 0;
+		if (SaveScheduled_)
+			return;
 
+		SaveScheduled_ = true;
+
+		using namespace std::chrono_literals;
+		QTimer::singleShot (10s,
+				this,
+				&CookieSaver::Save);
+	}
+
+	void CookieSaver::Save ()
+	{
+		SaveScheduled_ = false;
+
+		if (HasRemovedCookies_)
+			FullSave ();
+		else if (const auto file = GetCookiesFile (QIODevice::WriteOnly | QIODevice::Append))
+			file->write (Util::CustomCookieJar::Save (AppendQueue_));
+
+		HasRemovedCookies_ = false;
+		AppendQueue_.clear ();
+	}
+
+	void CookieSaver::FullSave ()
+	{
 		if (const auto file = GetCookiesFile (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			const bool saveEnabled = !XmlSettingsManager::Instance ()->property ("DeleteCookiesOnExit").toBool ();
-			file->write (saveEnabled ? Jar_.Save () : QByteArray {});
-
-			errorCount = 0;
-		}
-		else if (errorCount++ < 3)
-		{
-			EntityManager em { nullptr, nullptr };
-			em.HandleEntity (Util::MakeNotification ("LeechCraft"_qs,
-					tr ("Unable to save cookies."),
-					Priority::Critical));
-		}
+			file->write (Jar_.Save ());
 	}
 }
