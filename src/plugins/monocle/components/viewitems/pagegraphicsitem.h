@@ -62,6 +62,8 @@ namespace LC::Monocle
 		void ClearPixmap ();
 		void UpdatePixmap ();
 
+		int GetMemorySize () const;
+
 		bool IsDisplayed () const;
 
 		void SetRenderingEnabled (bool);

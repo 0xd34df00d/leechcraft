@@ -157,6 +157,15 @@ namespace LC::Monocle
 			QGraphicsItem::mouseReleaseEvent (event);
 	}
 
+	int PageGraphicsItem::GetMemorySize () const
+	{
+		const auto& px = pixmap ();
+		if (px.isNull ())
+			return 0;
+
+		return px.width () * px.height () * px.defaultDepth () / 8 * 1.5;
+	}
+
 	bool PageGraphicsItem::IsDisplayed () const
 	{
 		const auto& thisMapped = mapToScene (boundingRect ()).boundingRect ();
