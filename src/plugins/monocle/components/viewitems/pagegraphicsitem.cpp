@@ -27,13 +27,11 @@ namespace LC::Monocle
 	};
 
 	PageGraphicsItem::PageGraphicsItem (IDocument& doc, PixmapCacheManager& pxCache, int page, QGraphicsItem *parent)
-	: QGraphicsPixmapItem { parent }
+	: QGraphicsItem { parent }
 	, Doc_ { doc }
 	, PxCache_ { pxCache }
 	, PageNum_ { page }
 	{
-		setTransformationMode (Qt::SmoothTransformation);
-		setShapeMode (QGraphicsPixmapItem::BoundingRectShape);
 		setAcceptHoverEvents (true);
 
 		ClearPixmap ();
@@ -58,7 +56,7 @@ namespace LC::Monocle
 		XScale_ = xs;
 		YScale_ = ys;
 
-		Invalid_ = true;
+		ClearPixmap ();
 
 		if (ShouldRender ())
 			update ();
@@ -92,14 +90,12 @@ namespace LC::Monocle
 
 	void PageGraphicsItem::ClearPixmap ()
 	{
-		setPixmap (QPixmap {});
-
-		Invalid_ = true;
+		Image_ = QImage {};
 	}
 
 	void PageGraphicsItem::UpdatePixmap ()
 	{
-		Invalid_ = true;
+		ClearPixmap ();
 		if (ShouldRender ())
 			update ();
 	}
@@ -112,12 +108,12 @@ namespace LC::Monocle
 		}
 	}
 
-	void PageGraphicsItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
+	void PageGraphicsItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
 		PxCache_.PixmapPainted (this);
-		if (!Invalid_ && !pixmap ().isNull ())
+		if (!Image_.isNull ())
 		{
-			QGraphicsPixmapItem::paint (painter, option, w);
+			painter->drawImage (option->rect, Image_);
 			return;
 		}
 
@@ -126,13 +122,15 @@ namespace LC::Monocle
 
 		DrawEmptyPixmap (*painter, *option);
 
-		if (IsRenderingEnabled_ && Invalid_)
+		if (IsRenderingEnabled_ && !IsRenderingScheduled_)
 		{
-			Invalid_ = false;
+			IsRenderingScheduled_ = true;
 			Util::Sequence (this, Doc_.RenderPage (PageNum_, XScale_, YScale_)) >>
-					[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
+					[&, prevXScale = XScale_, prevYScale = YScale_] (QImage img)
 					{
-						setPixmap (QPixmap::fromImage (img));
+						IsRenderingScheduled_ = false;
+
+						Image_ = std::move (img);
 
 						if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
 							std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
@@ -159,11 +157,10 @@ namespace LC::Monocle
 
 	int PageGraphicsItem::GetMemorySize () const
 	{
-		const auto& px = pixmap ();
-		if (px.isNull ())
+		if (Image_.isNull ())
 			return 0;
 
-		return px.width () * px.height () * px.defaultDepth () / 8 * 1.5;
+		return Image_.width () * Image_.height () * Image_.depth () / 8 * 1.5;
 	}
 
 	bool PageGraphicsItem::IsDisplayed () const
@@ -197,7 +194,7 @@ namespace LC::Monocle
 		QSizeF size { Doc_.GetPageSize (PageNum_) };
 		size.rwidth () *= XScale_;
 		size.rheight () *= YScale_;
-		return QRectF { offset (), size };
+		return { { 0, 0 }, size };
 	}
 
 	QPainterPath PageGraphicsItem::shape () const

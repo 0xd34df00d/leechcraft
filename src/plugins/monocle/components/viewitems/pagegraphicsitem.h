@@ -10,7 +10,7 @@
 
 #include <functional>
 #include <QCoreApplication>
-#include <QGraphicsPixmapItem>
+#include <QGraphicsItem>
 #include "interfaces/monocle/idocument.h"
 
 namespace LC::Monocle
@@ -23,20 +23,21 @@ namespace LC::Monocle
 	class PixmapCacheManager;
 
 	class PageGraphicsItem : public QObject
-						   , public QGraphicsPixmapItem
+						   , public QGraphicsItem
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::PageGraphicsItem)
 
 		IDocument& Doc_;
 		PixmapCacheManager& PxCache_;
+		QImage Image_;
 
 		qreal XScale_ = 1;
 		qreal YScale_ = 1;
 
 		const int PageNum_;
 
-		bool Invalid_ = true;
 		bool IsRenderingEnabled_ = true;
+		bool IsRenderingScheduled_ = false;
 	public:
 		using RectSetter_f = std::function<void (PageAbsoluteRect)>;
 		using ReleaseHandler_f = std::function<void (int, PageAbsolutePos)>;
