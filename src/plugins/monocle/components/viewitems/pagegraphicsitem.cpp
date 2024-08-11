@@ -53,15 +53,12 @@ namespace LC::Monocle
 			std::abs (ys - YScale_) < std::numeric_limits<double>::epsilon ())
 			return;
 
+		prepareGeometryChange ();
+
 		XScale_ = xs;
 		YScale_ = ys;
 
-		ClearPixmap ();
-
-		if (ShouldRender ())
-			update ();
-		else
-			prepareGeometryChange ();
+		UpdatePixmap ();
 
 		for (const auto& info : Item2RectInfo_)
 			info.Setter_ (info.Rect_.ToPageAbsolute (*this));
