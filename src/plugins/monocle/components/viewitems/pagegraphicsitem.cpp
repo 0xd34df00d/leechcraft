@@ -129,8 +129,8 @@ namespace LC::Monocle
 					[&, prevXScale = XScale_, prevYScale = YScale_] (QImage img)
 					{
 						IsRenderingScheduled_ = false;
-
 						Image_ = std::move (img);
+						update ();
 
 						if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
 							std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
