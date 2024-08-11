@@ -30,24 +30,28 @@ namespace LC::Monocle
 
 	void PixmapCacheManager::PixmapPainted (PageGraphicsItem *item)
 	{
+		if (!RecentlyUsed_.isEmpty () && RecentlyUsed_.last () == item)
+			return;
+
 		RecentlyUsed_.removeOne (item);
 		RecentlyUsed_ << item;
 	}
 
 	void PixmapCacheManager::PixmapChanged (PageGraphicsItem *item)
 	{
-		if (RecentlyUsed_.removeOne (item))
-			CurrentSize_ = std::accumulate (RecentlyUsed_.begin (), RecentlyUsed_.end (), 0,
-					[] (qint64 size, const PageGraphicsItem *item) { return size + item->GetMemorySize (); });
-
+		RecentlyUsed_.removeOne (item);
 		RecentlyUsed_ << item;
+
+		CurrentSize_ -= ItemsSizes_ [item];
 		CurrentSize_ += item->GetMemorySize ();
+		ItemsSizes_ [item] = item->GetMemorySize ();
+
 		CheckCache ();
 	}
 
 	void PixmapCacheManager::PixmapDeleted (PageGraphicsItem *item)
 	{
-		CurrentSize_ -= item->GetMemorySize ();
+		CurrentSize_ -= ItemsSizes_.take (item);
 		RecentlyUsed_.removeOne (item);
 	}
 
@@ -62,7 +66,7 @@ namespace LC::Monocle
 				continue;
 			}
 
-			CurrentSize_ -= page->GetMemorySize ();
+			CurrentSize_ -= ItemsSizes_.take (page);
 			page->ClearPixmap ();
 			i = RecentlyUsed_.erase (i);
 		}

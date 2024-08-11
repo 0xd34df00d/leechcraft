@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 
 namespace LC::Monocle
 {
@@ -18,7 +19,9 @@ namespace LC::Monocle
 	{
 		qint64 CurrentSize_ = 0;
 		qint64 MaxSize_ = 0;
-		QList<PageGraphicsItem*> RecentlyUsed_;
+
+		QVector<PageGraphicsItem*> RecentlyUsed_;
+		QHash<PageGraphicsItem*, int> ItemsSizes_;
 	public:
 		explicit PixmapCacheManager (QObject* = nullptr);
 
