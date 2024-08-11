@@ -160,7 +160,7 @@ namespace LC::Monocle
 		if (Image_.isNull ())
 			return 0;
 
-		return Image_.width () * Image_.height () * Image_.depth () / 8 * 1.5;
+		return Image_.width () * Image_.height () * Image_.depth () / 8;
 	}
 
 	bool PageGraphicsItem::IsDisplayed () const
