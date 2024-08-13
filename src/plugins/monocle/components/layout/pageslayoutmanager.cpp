@@ -16,8 +16,9 @@
 #include <util/sll/unreachable.h>
 #include "util/monocle/documentsignals.h"
 #include "components/viewitems/pagegraphicsitem.h"
-#include "pagesview.h"
 #include "common.h"
+#include "pagesview.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC::Monocle
 {
@@ -319,7 +320,10 @@ namespace LC::Monocle
 			return;
 
 		using namespace std::chrono_literals;
-		QTimer::singleShot (10ms,
+		const auto timeout = XmlSettingsManager::Instance ().property ("FastRelayoutOnSizeChange").toBool () ?
+				10ms :
+				500ms;
+		QTimer::singleShot (timeout,
 				this,
 				&PagesLayoutManager::Relayout);
 		RelayoutScheduled_ = true;

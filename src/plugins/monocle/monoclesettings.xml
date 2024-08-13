@@ -18,6 +18,9 @@
 		<tab label="Performance">
 			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" label="Pixmap cache size:" suffix=" MiB" />
 			<item type="checkbox" property="SmoothScrolling" default="true" label="Smooth scrolling" />
+			<item type="checkbox" property="FastRelayoutOnSizeChange" default="true" label="Fast relayout on size changes">
+				<tooltip>If enabled, the pages view will be updated with a smaller delay after window size change or dock splitter dragging. This results in a smoother experience at the cost of higher CPU usage during such resizes.</tooltip>
+			</item>
 		</tab>
 		<tab label="Default backends">
 			<item type="dataview" property="DefaultBackends" addEnabled="false" />
