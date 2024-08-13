@@ -318,7 +318,8 @@ namespace LC::Monocle
 		if (RelayoutScheduled_)
 			return;
 
-		QTimer::singleShot (500,
+		using namespace std::chrono_literals;
+		QTimer::singleShot (10ms,
 				this,
 				&PagesLayoutManager::Relayout);
 		RelayoutScheduled_ = true;
