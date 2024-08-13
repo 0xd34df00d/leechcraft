@@ -9,6 +9,7 @@
 #include "thumbswidget.h"
 #include <QtDebug>
 #include "interfaces/monocle/idocument.h"
+#include "components/services/pixmapcachemanager.h"
 #include "components/viewitems/pagegraphicsitem.h"
 #include "pageslayoutmanager.h"
 #include "smoothscroller.h"
@@ -44,7 +45,8 @@ namespace LC::Monocle
 		Pages_.reserve (numPages);
 		for (int i = 0; i < numPages; ++i)
 		{
-			auto item = new PageGraphicsItem { doc, PxCache_, i };
+			auto item = new PageGraphicsItem { doc, i };
+			PxCache_.RegisterPage (*item);
 			Scene_.addItem (item);
 			item->SetReleaseHandler ([this] (int page, auto&&) { emit pageClicked (page); });
 			Pages_ << item;

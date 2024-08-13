@@ -45,6 +45,7 @@
 #include "components/navigation/navigationhistory.h"
 #include "components/services/documentloader.h"
 #include "components/services/recentlyopenedmanager.h"
+#include "components/services/pixmapcachemanager.h"
 #include "components/viewitems/linkitem.h"
 #include "components/viewitems/pagegraphicsitem.h"
 #include "components/viewitems/pagescontextmenuhandler.h"
@@ -644,7 +645,8 @@ namespace Monocle
 
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
-			auto item = new PageGraphicsItem { *CurrentDoc_, PixmapCacheManager_, i };
+			auto item = new PageGraphicsItem { *CurrentDoc_, i };
+			PixmapCacheManager_.RegisterPage (*item);
 			Scene_.addItem (item);
 			Pages_ << item;
 		}

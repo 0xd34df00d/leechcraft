@@ -25,10 +25,9 @@ namespace LC::Monocle
 	public:
 		explicit PixmapCacheManager (QObject* = nullptr);
 
-		void PixmapPainted (PageGraphicsItem*);
-		void PixmapChanged (PageGraphicsItem*);
-		void PixmapDeleted (PageGraphicsItem*);
+		void RegisterPage (PageGraphicsItem&);
 	private:
+		void BumpPage (PageGraphicsItem&);
 		void CheckCache ();
 	};
 }

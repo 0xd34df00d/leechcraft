@@ -15,8 +15,6 @@
 #include <QStyleOptionGraphicsItem>
 #include <util/threads/futures.h>
 #include "components/layout/positions.h"
-#include "components/services/pixmapcachemanager.h"
-#include "core.h"
 
 namespace LC::Monocle
 {
@@ -26,10 +24,9 @@ namespace LC::Monocle
 		RectSetter_f Setter_;
 	};
 
-	PageGraphicsItem::PageGraphicsItem (IDocument& doc, PixmapCacheManager& pxCache, int page, QGraphicsItem *parent)
+	PageGraphicsItem::PageGraphicsItem (IDocument& doc, int page, QGraphicsItem *parent)
 	: QGraphicsItem { parent }
 	, Doc_ { doc }
-	, PxCache_ { pxCache }
 	, PageNum_ { page }
 	{
 		setAcceptHoverEvents (true);
@@ -37,10 +34,7 @@ namespace LC::Monocle
 		ClearPixmap ();
 	}
 
-	PageGraphicsItem::~PageGraphicsItem ()
-	{
-		PxCache_.PixmapDeleted (this);
-	}
+	PageGraphicsItem::~PageGraphicsItem () = default;
 
 	void PageGraphicsItem::SetReleaseHandler (ReleaseHandler_f handler)
 	{
@@ -107,7 +101,8 @@ namespace LC::Monocle
 
 	void PageGraphicsItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
-		PxCache_.PixmapPainted (this);
+		emit itemPainted ();
+
 		if (!Image_.isNull ())
 		{
 			painter->drawImage (option->rect, Image_);
@@ -129,11 +124,11 @@ namespace LC::Monocle
 						Image_ = std::move (img);
 						update ();
 
+						emit itemPixmapChanged ();
+
 						if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
 							std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
 							UpdatePixmap ();
-						else
-							PxCache_.PixmapChanged (this);
 					};
 		}
 	}

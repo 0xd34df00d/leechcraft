@@ -28,31 +28,42 @@ namespace LC::Monocle
 				});
 	}
 
-	void PixmapCacheManager::PixmapPainted (PageGraphicsItem *item)
+	void PixmapCacheManager::RegisterPage (PageGraphicsItem& page)
 	{
-		if (!RecentlyUsed_.isEmpty () && RecentlyUsed_.last () == item)
+		connect (&page,
+				&PageGraphicsItem::itemPainted,
+				this,
+				[&] { BumpPage (page); });
+		connect (&page,
+				&PageGraphicsItem::itemPixmapChanged,
+				this,
+				[&]
+				{
+					BumpPage (page);
+
+					CurrentSize_ -= ItemsSizes_ [&page];
+					CurrentSize_ += page.GetMemorySize ();
+					ItemsSizes_ [&page] = page.GetMemorySize ();
+
+					CheckCache ();
+				});
+		connect (&page,
+				&QObject::destroyed,
+				this,
+				[&]
+				{
+					CurrentSize_ -= ItemsSizes_.take (&page);
+					RecentlyUsed_.removeOne (&page);
+				});
+	}
+
+	void PixmapCacheManager::BumpPage (PageGraphicsItem& page)
+	{
+		if (!RecentlyUsed_.isEmpty () && RecentlyUsed_.last () == &page)
 			return;
 
-		RecentlyUsed_.removeOne (item);
-		RecentlyUsed_ << item;
-	}
-
-	void PixmapCacheManager::PixmapChanged (PageGraphicsItem *item)
-	{
-		RecentlyUsed_.removeOne (item);
-		RecentlyUsed_ << item;
-
-		CurrentSize_ -= ItemsSizes_ [item];
-		CurrentSize_ += item->GetMemorySize ();
-		ItemsSizes_ [item] = item->GetMemorySize ();
-
-		CheckCache ();
-	}
-
-	void PixmapCacheManager::PixmapDeleted (PageGraphicsItem *item)
-	{
-		CurrentSize_ -= ItemsSizes_.take (item);
-		RecentlyUsed_.removeOne (item);
+		RecentlyUsed_.removeOne (&page);
+		RecentlyUsed_ << &page;
 	}
 
 	void PixmapCacheManager::CheckCache ()
