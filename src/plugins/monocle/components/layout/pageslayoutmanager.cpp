@@ -14,7 +14,7 @@
 #include <QtDebug>
 #include <util/sll/visitor.h>
 #include <util/sll/unreachable.h>
-#include <util/monocle/documentsignals.h>
+#include "util/monocle/documentsignals.h"
 #include "components/viewitems/pagegraphicsitem.h"
 #include "pagesview.h"
 #include "common.h"

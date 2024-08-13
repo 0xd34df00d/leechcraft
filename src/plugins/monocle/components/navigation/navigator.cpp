@@ -12,9 +12,9 @@
 #include <QtDebug>
 #include <util/threads/coro.h>
 #include <util/threads/coro/context.h>
+#include "components/layout/pageslayoutmanager.h"
 #include "components/services/documentloader.h"
 #include "navigationhistory.h"
-#include "pageslayoutmanager.h"
 #include "filewatcher.h"
 
 namespace LC::Monocle

@@ -14,8 +14,8 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/lambdaeventfilter.h>
 #include "components/actions/rotatemenu.h"
+#include "components/layout/pageslayoutmanager.h"
 #include "pagegraphicsitem.h"
-#include "pageslayoutmanager.h"
 
 namespace LC::Monocle
 {

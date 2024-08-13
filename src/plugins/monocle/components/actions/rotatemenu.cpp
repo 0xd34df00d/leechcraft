@@ -11,8 +11,8 @@
 #include <QMenu>
 #include <QWidgetAction>
 #include <util/sll/visitor.h>
+#include "components/layout/pageslayoutmanager.h"
 #include "arbitraryrotationwidget.h"
-#include "pageslayoutmanager.h"
 
 namespace LC::Monocle
 {

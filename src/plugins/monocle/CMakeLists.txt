@@ -49,6 +49,7 @@ LC_DEFINE_PLUGIN (
 		components/actions/export.cpp
 		components/actions/rotatemenu.cpp
 		components/actions/zoomer.cpp
+		components/layout/pageslayoutmanager.cpp
 		components/layout/positions.cpp
 		components/layout/scenepositiontracker.cpp
 		components/layout/viewpositiontracker.cpp
@@ -80,7 +81,6 @@ LC_DEFINE_PLUGIN (
 		docinfodialog.cpp
 		bookmarkswidget.cpp
 		thumbswidget.cpp
-		pageslayoutmanager.cpp
 		textsearchhandler.cpp
 		formmanager.cpp
 		arbitraryrotationwidget.cpp
