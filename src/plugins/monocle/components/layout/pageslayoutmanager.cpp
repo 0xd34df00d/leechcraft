@@ -89,7 +89,11 @@ namespace LC::Monocle
 
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)
 	{
+		if (mode == ScaleMode_)
+			return;
+
 		ScaleMode_ = mode;
+		emit scaleModeChanged ();
 	}
 
 	ScaleMode PagesLayoutManager::GetScaleMode () const
