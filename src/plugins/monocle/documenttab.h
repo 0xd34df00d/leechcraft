@@ -53,9 +53,7 @@ namespace Monocle
 		QToolBar *Toolbar_;
 		PageNumLabel *PageNumLabel_ = nullptr;
 
-		QAction *LayOnePage_ = nullptr;
-		QAction *LayTwoPages_ = nullptr;
-		QAction *LayTwoPagesShifted_ = nullptr;
+		std::array<QAction*, 3> LayoutActions_;
 
 		QAction *SaveAction_ = nullptr;
 		QAction *ExportPDFAction_ = nullptr;

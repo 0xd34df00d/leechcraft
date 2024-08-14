@@ -540,33 +540,25 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		auto viewGroup = new QActionGroup (this);
-		LayOnePage_ = new QAction (tr ("One page"), this);
-		LayOnePage_->setProperty ("ActionIcon", "page-simple");
-		LayOnePage_->setCheckable (true);
-		LayOnePage_->setChecked (true);
-		LayOnePage_->setActionGroup (viewGroup);
-		connect (LayOnePage_,
-				&QAction::triggered,
-				[this] { SetLayoutMode (LayoutMode::OnePage); });
-		Toolbar_->addAction (LayOnePage_);
-
-		LayTwoPages_ = new QAction (tr ("Two pages"), this);
-		LayTwoPages_->setProperty ("ActionIcon", "page-2sides");
-		LayTwoPages_->setCheckable (true);
-		LayTwoPages_->setActionGroup (viewGroup);
-		connect (LayTwoPages_,
-				&QAction::triggered,
-				[this] { SetLayoutMode (LayoutMode::TwoPages); });
-		Toolbar_->addAction (LayTwoPages_);
-
-		LayTwoPagesShifted_ = new QAction (tr ("Two pages (first page separate)"), this);
-		LayTwoPagesShifted_->setProperty ("ActionIcon", "page-3sides");
-		LayTwoPagesShifted_->setCheckable (true);
-		LayTwoPagesShifted_->setActionGroup (viewGroup);
-		connect (LayTwoPagesShifted_,
-				&QAction::triggered,
-				[this] { SetLayoutMode (LayoutMode::TwoPagesShifted); });
-		Toolbar_->addAction (LayTwoPagesShifted_);
+		auto mkAction = [this, viewGroup] (const QString& title, const char *icon, LayoutMode mode)
+		{
+			auto act = new QAction { title, this };
+			act->setProperty ("ActionIcon", icon);
+			act->setCheckable (true);
+			act->setActionGroup (viewGroup);
+			connect (act,
+					&QAction::triggered,
+					this,
+					[this, mode] { SetLayoutMode (mode); });
+			Toolbar_->addAction (act);
+			return act;
+		};
+		LayoutActions_ =
+		{
+			mkAction (tr ("One page"), "page-simple", LayoutMode::OnePage),
+			mkAction (tr ("Two pages"), "page-2sides", LayoutMode::TwoPages),
+			mkAction (tr ("Two pages (first page separate)"), "page-3sides", LayoutMode::TwoPagesShifted),
+		};
 
 		Toolbar_->addSeparator ();
 
@@ -806,21 +798,7 @@ namespace Monocle
 			Ui_.PagesView_->CenterOn (state.CurrentPagePos_->Pos_.ToSceneAbsolute (page));
 		}
 
-		const auto action = [this]
-		{
-			switch (C_->LayoutManager_.GetLayoutMode ())
-			{
-			case LayoutMode::OnePage:
-				return LayOnePage_;
-			case LayoutMode::TwoPages:
-				return LayTwoPages_;
-			case LayoutMode::TwoPagesShifted:
-				return LayTwoPagesShifted_;
-			}
-
-			Util::Unreachable ();
-		} ();
-		action->setChecked (true);
+		LayoutActions_ [static_cast<int> (C_->LayoutManager_.GetLayoutMode ())]->setChecked (true);
 	}
 
 	void DocumentTab::setMoveMode (bool enable)
