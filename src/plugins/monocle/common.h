@@ -31,11 +31,19 @@ namespace LC::Monocle
 	QString LayoutMode2Name (LayoutMode mode);
 	LayoutMode Name2LayoutMode (const QString&);
 
-	struct FitWidth {};
-	struct FitPage {};
+	struct FitWidth
+	{
+		auto operator<=> (const FitWidth&) const = default;
+	};
+	struct FitPage
+	{
+		auto operator<=> (const FitPage&) const = default;
+	};
 	struct FixedScale
 	{
 		double Scale_ = 1;
+
+		auto operator<=> (const FixedScale&) const = default;
 	};
 	using ScaleMode = std::variant<FitWidth, FitPage, FixedScale>;
 
