@@ -55,13 +55,13 @@ namespace LC::Monocle
 		return LayMode_;
 	}
 
-	void PagesLayoutManager::SetLayoutMode (LayoutMode layMode)
+	void PagesLayoutManager::SetLayoutMode (LayoutMode mode)
 	{
-		if (layMode == LayMode_)
+		if (mode == LayMode_)
 			return;
 
-		LayMode_ = layMode;
-		emit layoutModeChanged ();
+		LayMode_ = mode;
+		emit layoutModeChanged (mode);
 	}
 
 	int PagesLayoutManager::GetLayoutModeCount () const
@@ -93,7 +93,7 @@ namespace LC::Monocle
 			return;
 
 		ScaleMode_ = mode;
-		emit scaleModeChanged ();
+		emit scaleModeChanged (mode);
 	}
 
 	ScaleMode PagesLayoutManager::GetScaleMode () const

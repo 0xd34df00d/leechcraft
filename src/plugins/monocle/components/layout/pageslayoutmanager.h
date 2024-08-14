@@ -81,7 +81,7 @@ namespace LC::Monocle
 		void rotationUpdated (double);
 		void rotationUpdated (double, int);
 
-		void layoutModeChanged ();
-		void scaleModeChanged ();
+		void layoutModeChanged (LayoutMode);
+		void scaleModeChanged (ScaleMode);
 	};
 }
