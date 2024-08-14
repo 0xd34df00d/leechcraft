@@ -58,15 +58,15 @@ namespace LC::Monocle
 	{
 		const auto& visibleRect = ViewAbsoluteRect { View_ }.ToSceneAbsolute (View_);
 
-		QMap<int, SceneAbsoluteRect> rects;
+		QMap<int, PageRelativeRect> rects;
 		for (auto item : View_.scene ()->items (visibleRect.ToRectF ()))
 		{
 			auto page = dynamic_cast<PageGraphicsItem*> (item);
 			if (!page)
 				continue;
 
-			const auto& pageRect = PageAbsoluteRect { page->boundingRect () }.ToSceneAbsolute (*page);
-			rects [page->GetPageNum ()] = visibleRect & pageRect;
+			const auto& pageRect = PageAbsoluteRect { page->boundingRect () }.ToPageRelative (*page);
+			rects [page->GetPageNum ()] = visibleRect.ToPageRelative (*page) & pageRect;
 		}
 
 		emit pagesVisibilityChanged (rects);
