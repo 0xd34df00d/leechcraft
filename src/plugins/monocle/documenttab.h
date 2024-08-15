@@ -123,8 +123,6 @@ namespace Monocle
 		void SetupToolbarNavigation ();
 		void SetupToolbar ();
 
-		void SetLayoutMode (LayoutMode);
-
 		void HandleDocumentLoaded (const IDocument_ptr&, const QString&);
 
 		void AddBookmark ();

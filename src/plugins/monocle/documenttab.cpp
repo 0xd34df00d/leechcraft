@@ -558,7 +558,12 @@ namespace Monocle
 			connect (act,
 					&QAction::triggered,
 					this,
-					[this, mode] { SetLayoutMode (mode); });
+					[this, mode]
+					{
+						C_->LayoutManager_.SetLayoutMode (mode);
+						C_->LayoutManager_.Relayout ();
+						scheduleSaveState ();
+					});
 			Toolbar_->addAction (act);
 			return act;
 		};
@@ -602,14 +607,6 @@ namespace Monocle
 				this,
 				SLOT (showDocInfo ()));
 		Toolbar_->addAction (infoAction);
-	}
-
-	void DocumentTab::SetLayoutMode (LayoutMode mode)
-	{
-		C_->LayoutManager_.SetLayoutMode (mode);
-		C_->LayoutManager_.Relayout ();
-
-		scheduleSaveState ();
 	}
 
 	void DocumentTab::SetPosition (const NavigationAction& nav)
@@ -756,8 +753,7 @@ namespace Monocle
 		if (path.isEmpty ())
 			return;
 
-		XmlSettingsManager::Instance ()
-				.setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
+		XmlSettingsManager::Instance ().setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
 
 		C_->Navigator_.OpenDocument (path);
 	}
