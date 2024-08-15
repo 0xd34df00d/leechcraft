@@ -163,6 +163,11 @@ namespace Monocle
 						page->SetRenderingEnabled (!isScrolling);
 				});
 
+		connect (&C_->LayoutManager_,
+				&PagesLayoutManager::layoutModeChanged,
+				this,
+				[this] (LayoutMode mode) { LayoutActions_ [static_cast<int> (mode)]->setChecked (true); });
+
 		connect (&C_->Zoomer_,
 				&Zoomer::scaleModeChanged,
 				this,
@@ -172,6 +177,10 @@ namespace Monocle
 					C_->LayoutManager_.Relayout ();
 					scheduleSaveState ();
 				});
+		connect (&C_->LayoutManager_,
+				&PagesLayoutManager::scaleModeChanged,
+				&C_->Zoomer_,
+				&Zoomer::SetScaleMode);
 
 		connect (&C_->SearchHandler_,
 				&TextSearchHandler::navigateRequested,
@@ -790,15 +799,11 @@ namespace Monocle
 		C_->LayoutManager_.SetScaleMode (state.ScaleMode_);
 		C_->LayoutManager_.Relayout ();
 
-		C_->Zoomer_.SetScaleMode (state.ScaleMode_);
-
 		if (state.CurrentPagePos_)
 		{
 			const auto& page = *Pages_ [state.CurrentPagePos_->Page_];
 			Ui_.PagesView_->CenterOn (state.CurrentPagePos_->Pos_.ToSceneAbsolute (page));
 		}
-
-		LayoutActions_ [static_cast<int> (C_->LayoutManager_.GetLayoutMode ())]->setChecked (true);
 	}
 
 	void DocumentTab::setMoveMode (bool enable)
