@@ -72,7 +72,8 @@ namespace LC::Util
 
 	void CustomCookieJar::Load (const QByteArray& data)
 	{
-		QList<QNetworkCookie> cookies, filteredCookies;
+		QList<QNetworkCookie> cookies;
+		QList<QNetworkCookie> filteredCookies;
 		for (const auto& ba : data.split ('\n'))
 			cookies << QNetworkCookie::parseCookies (ba);
 
