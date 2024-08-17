@@ -23,6 +23,11 @@ namespace LC::Monocle
 	{
 	}
 
+	void ScenePositionTracker::Clear ()
+	{
+		Corner2PageInfo_.clear ();
+	}
+
 	void ScenePositionTracker::Update ()
 	{
 		Corner2PageInfo_.clear ();

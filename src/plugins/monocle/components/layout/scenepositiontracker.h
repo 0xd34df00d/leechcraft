@@ -33,6 +33,7 @@ namespace LC::Monocle
 	public:
 		explicit ScenePositionTracker (const QVector<PageGraphicsItem*>&);
 
+		void Clear ();
 		void Update ();
 		int GetNearbyPage (SceneAbsolutePos) const;
 	};

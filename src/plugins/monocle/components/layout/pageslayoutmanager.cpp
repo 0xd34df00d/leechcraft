@@ -39,9 +39,12 @@ namespace LC::Monocle
 	{
 		CurrentDoc_ = doc;
 		Pages_ = pages;
+
 		Rotation_ = 0;
 		PageRotations_ = QVector<double> (pages.size (), 0);
 		emit rotationUpdated (0);
+
+		PosTracker_.Clear ();
 
 		if (const auto docSignals = CurrentDoc_ ? CurrentDoc_->GetDocumentSignals () : nullptr)
 			connect (docSignals,
