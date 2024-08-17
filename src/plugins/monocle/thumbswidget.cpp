@@ -40,6 +40,7 @@ namespace LC::Monocle
 		Scene_.clear ();
 		Pages_.clear ();
 		CurrentAreaRects_.clear ();
+		LastVisibleAreas_.clear ();
 
 		const auto numPages = doc.GetNumPages ();
 		Pages_.reserve (numPages);
