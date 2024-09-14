@@ -9,13 +9,12 @@
 #include "docinfodialog.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavefontinfo.h"
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	DocInfoDialog::DocInfoDialog (IDocument& doc, QWidget *parent)
 	: QDialog { parent }
@@ -32,8 +31,8 @@ namespace Monocle
 		Ui_.Title_->setText (info.Title_);
 		Ui_.Subject_->setText (info.Subject_);
 		Ui_.Author_->setText (info.Author_);
-		Ui_.Genres_->setText (info.Genres_.join ("; "));
-		Ui_.Keywords_->setText (info.Keywords_.join ("; "));
+		Ui_.Genres_->setText (info.Genres_.join ("; "_qs));
+		Ui_.Keywords_->setText (info.Keywords_.join ("; "_qs));
 		Ui_.Date_->setText (info.Date_.toString ());
 
 		const auto ihf = qobject_cast<IHaveFontInfo*> (doc.GetQObject ());
@@ -69,5 +68,4 @@ namespace Monocle
 			FontsModel_->appendRow (row);
 		}
 	}
-}
 }

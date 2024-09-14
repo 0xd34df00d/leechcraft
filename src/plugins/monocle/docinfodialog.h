@@ -14,12 +14,9 @@
 
 class QStandardItemModel;
 
-namespace LC
-{
-namespace Monocle
+namespace LC::Monocle
 {
 	struct FontInfo;
-
 	class IDocument;
 
 	class DocInfoDialog : public QDialog
@@ -33,5 +30,4 @@ namespace Monocle
 	private slots:
 		void HandleFontsInfo (const QList<FontInfo>&);
 	};
-}
 }
