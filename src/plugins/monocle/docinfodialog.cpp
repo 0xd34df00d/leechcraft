@@ -17,7 +17,7 @@ namespace LC
 {
 namespace Monocle
 {
-	DocInfoDialog::DocInfoDialog (const QString& filepath, const IDocument_ptr& doc, QWidget *parent)
+	DocInfoDialog::DocInfoDialog (const IDocument_ptr& doc, QWidget *parent)
 	: QDialog { parent }
 	, FontsModel_ { new QStandardItemModel { this } }
 	{
@@ -25,7 +25,8 @@ namespace Monocle
 
 		Ui_.FontsView_->setModel (FontsModel_);
 
-		Ui_.FilePath_->setText (filepath);
+		const auto& url = doc->GetDocURL ();
+		Ui_.FilePath_->setText (url.isLocalFile () ? url.toLocalFile () : url.toString ());
 
 		const auto& info = doc->GetDocumentInfo ();
 		Ui_.Title_->setText (info.Title_);

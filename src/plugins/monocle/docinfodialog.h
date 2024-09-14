@@ -30,7 +30,7 @@ namespace Monocle
 		Ui::DocInfoDialog Ui_;
 		QStandardItemModel * const FontsModel_;
 	public:
-		DocInfoDialog (const QString&, const IDocument_ptr&, QWidget* = 0);
+		DocInfoDialog (const IDocument_ptr&, QWidget* = 0);
 	private slots:
 		void HandleFontsInfo (const QList<FontInfo>&);
 	};
