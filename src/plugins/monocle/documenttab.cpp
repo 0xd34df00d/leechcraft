@@ -400,7 +400,7 @@ namespace Monocle
 	void DocumentTab::SetupToolbarRotate ()
 	{
 		auto rotateMenu = CreateRotateMenu (AngleNotifier { C_->LayoutManager_, &PagesLayoutManager::rotationUpdated },
-				std::bind_front (&PagesLayoutManager::SetRotation, &C_->LayoutManager_));
+				[this] (double val, RotationChange ch) { C_->LayoutManager_.SetRotation (val, ch); });
 
 		auto rotateButton = new QToolButton ();
 		rotateButton->setProperty ("ActionIcon", "transform-rotate");
