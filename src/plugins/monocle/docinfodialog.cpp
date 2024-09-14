@@ -17,7 +17,7 @@ namespace LC
 {
 namespace Monocle
 {
-	DocInfoDialog::DocInfoDialog (const IDocument_ptr& doc, QWidget *parent)
+	DocInfoDialog::DocInfoDialog (IDocument& doc, QWidget *parent)
 	: QDialog { parent }
 	, FontsModel_ { new QStandardItemModel { this } }
 	{
@@ -25,10 +25,10 @@ namespace Monocle
 
 		Ui_.FontsView_->setModel (FontsModel_);
 
-		const auto& url = doc->GetDocURL ();
+		const auto& url = doc.GetDocURL ();
 		Ui_.FilePath_->setText (url.isLocalFile () ? url.toLocalFile () : url.toString ());
 
-		const auto& info = doc->GetDocumentInfo ();
+		const auto& info = doc.GetDocumentInfo ();
 		Ui_.Title_->setText (info.Title_);
 		Ui_.Subject_->setText (info.Subject_);
 		Ui_.Author_->setText (info.Author_);
@@ -36,7 +36,7 @@ namespace Monocle
 		Ui_.Keywords_->setText (info.Keywords_.join ("; "));
 		Ui_.Date_->setText (info.Date_.toString ());
 
-		const auto ihf = qobject_cast<IHaveFontInfo*> (doc->GetQObject ());
+		const auto ihf = qobject_cast<IHaveFontInfo*> (doc.GetQObject ());
 		Ui_.TabWidget_->setTabEnabled (Ui_.TabWidget_->indexOf (Ui_.FontsTab_), ihf);
 
 		if (ihf)

@@ -21,7 +21,6 @@ namespace Monocle
 	struct FontInfo;
 
 	class IDocument;
-	typedef std::shared_ptr<IDocument> IDocument_ptr;
 
 	class DocInfoDialog : public QDialog
 	{
@@ -30,7 +29,7 @@ namespace Monocle
 		Ui::DocInfoDialog Ui_;
 		QStandardItemModel * const FontsModel_;
 	public:
-		DocInfoDialog (const IDocument_ptr&, QWidget* = 0);
+		explicit DocInfoDialog (IDocument&, QWidget* = nullptr);
 	private slots:
 		void HandleFontsInfo (const QList<FontInfo>&);
 	};
