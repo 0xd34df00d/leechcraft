@@ -137,8 +137,6 @@ namespace Monocle
 
 		void setMoveMode (bool);
 		void setSelectionMode (bool);
-
-		void showDocInfo ();
 	signals:
 		void changeTabName (const QString&) override;
 		void removeTab () override;

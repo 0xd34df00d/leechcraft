@@ -7,89 +7,34 @@
  **********************************************************************/
 
 #include "documentactions.h"
-#include <QDir>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QToolBar>
-#include <QToolButton>
-#include <util/sll/prelude.h>
-#include <util/sll/qtutil.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
-#include "components/navigation/navigator.h"
-#include "components/services/recentlyopenedmanager.h"
-#include "interfaces/monocle/iknowfileextensions.h"
-#include "xmlsettingsmanager.h"
+#include <QAction>
+#include "interfaces/monocle/idocument.h"
+#include "docinfodialog.h"
 
 namespace LC::Monocle
 {
-	DocumentActions::DocumentActions (QToolBar& bar, const Deps& deps)
+	DocumentActions::DocumentActions (IDocument& doc, const Deps& deps)
 	: Deps_ { deps }
+	, Doc_ { doc }
 	{
-		bar.addWidget (MakeOpenButton ());
-	}
+		Entries_ << Separator {};
 
-	void DocumentActions::HandleDocument (const IDocument& doc)
-	{
-	}
-
-	QWidget* DocumentActions::MakeOpenButton ()
-	{
-		auto open = new QAction (tr ("Open..."), this);
-		open->setProperty ("ActionIcon", "document-open");
-		open->setShortcut (QString ("Ctrl+O"));
-		connect (open,
+		auto infoAction = new QAction (tr ("Document info..."), this);
+		infoAction->setProperty ("ActionIcon", "dialog-information");
+		connect (infoAction,
 				&QAction::triggered,
 				this,
-				&DocumentActions::RunOpenDialog);
-
-		auto roMenu = Deps_.RecentlyOpenedManager_.CreateOpenMenu (&Deps_.DocTabWidget_,
-				[this] (const QString& path)
+				[this]
 				{
-					const QFileInfo fi { path };
-					if (!fi.exists ())
-						QMessageBox::critical (&Deps_.DocTabWidget_,
-								"Monocle"_qs,
-								tr ("Seems like file %1 doesn't exist anymore.")
-										.arg ("<em>" + fi.fileName () + "</em>"));
-					else
-						Deps_.Navigator_.OpenDocument (path);
+					auto dia = new DocInfoDialog { Doc_, &Deps_.DocTabWidget_ };
+					dia->setAttribute (Qt::WA_DeleteOnClose);
+					dia->show ();
 				});
-
-		auto openButton = new QToolButton;
-		openButton->setDefaultAction (open);
-		openButton->setMenu (roMenu);
-		openButton->setPopupMode (QToolButton::MenuButtonPopup);
-		return openButton;
+		Entries_ << infoAction;
 	}
 
-	void DocumentActions::RunOpenDialog ()
+	const QVector<DocumentActions::Entry>& DocumentActions::GetEntries () const
 	{
-		const auto& extPlugins = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IKnowFileExtensions*> ();
-		QStringList filters;
-		QList<QString> allExts;
-		for (const auto plugin : extPlugins)
-			for (const auto& info : plugin->GetKnownFileExtensions ())
-			{
-				const auto& mapped = Util::Map (info.Extensions_,
-						[] (const QString& str) { return "*." + str; });
-				allExts += mapped;
-				filters << info.Description_ + " (" + QStringList { mapped }.join (' ') + ")";
-			}
-		if (!allExts.isEmpty ())
-			filters.prepend (tr ("Known files") + " (" + QStringList { allExts }.join (' ') + ")");
-		filters << tr ("All files") + " (*.*)";
-
-		constexpr auto LastOpen = "LastOpenFileName";
-		const auto& prevPath = XmlSettingsManager::Instance ().Property (LastOpen, QDir::homePath ()).toString ();
-		const auto& path = QFileDialog::getOpenFileName (&Deps_.DocTabWidget_,
-				tr ("Select file"),
-				prevPath,
-				filters.join (";;"_qs));
-		if (path.isEmpty ())
-			return;
-
-		XmlSettingsManager::Instance ().setProperty (LastOpen, QFileInfo (path).absolutePath ());
-		Deps_.Navigator_.OpenDocument (path);
+		return Entries_;
 	}
 }

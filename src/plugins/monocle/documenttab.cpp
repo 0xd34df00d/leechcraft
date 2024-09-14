@@ -24,18 +24,16 @@
 #include <util/util.h>
 #include <util/gui/findnotification.h>
 #include <util/gui/menumodeladapter.h>
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/monocle/isaveabledocument.h"
 #include "interfaces/monocle/isearchabledocument.h"
 #include "interfaces/monocle/isupportpainting.h"
-#include "interfaces/monocle/iknowfileextensions.h"
 #include "util/monocle/documentsignals.h"
-#include "components/actions/documentactions.h"
 #include "components/actions/export.h"
 #include "components/actions/rotatemenu.h"
+#include "components/actions/toolbaractions.h"
 #include "components/actions/zoomer.h"
 #include "components/layout/pageslayoutmanager.h"
 #include "components/layout/viewpositiontracker.h"
@@ -52,7 +50,6 @@
 #include "components/widgets/dock.h"
 #include "presenterwidget.h"
 #include "common.h"
-#include "docinfodialog.h"
 #include "xmlsettingsmanager.h"
 #include "bookmarkswidget.h"
 #include "textsearchhandler.h"
@@ -94,7 +91,7 @@ namespace Monocle
 		Zoomer Zoomer_;
 		SmoothScroller Scroller_;
 
-		DocumentActions Actions_;
+		ToolbarActions Actions_;
 
 		explicit Components (DocumentTab& tab, QToolBar& toolbar, const DocumentTab::Deps& deps)
 		: LayoutManager_ { tab.Ui_.PagesView_ }
@@ -568,16 +565,6 @@ namespace Monocle
 				this,
 				SLOT (setSelectionMode (bool)));
 		Toolbar_->addAction (selectModeAction);
-
-		Toolbar_->addSeparator ();
-
-		auto infoAction = new QAction (tr ("Document info..."), this);
-		infoAction->setProperty ("ActionIcon", "dialog-information");
-		connect (infoAction,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showDocInfo ()));
-		Toolbar_->addAction (infoAction);
 	}
 
 	void DocumentTab::SetPosition (const NavigationAction& nav)
@@ -626,6 +613,7 @@ namespace Monocle
 		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
 		C_->DockWidget_.HandleDoc (*CurrentDoc_);
+		C_->Actions_.HandleDoc (*CurrentDoc_);
 
 		CreateLinksItems (C_->Navigator_.GetNavigationContext (), *CurrentDoc_, Pages_);
 
@@ -758,16 +746,6 @@ namespace Monocle
 
 		Ui_.PagesView_->SetShowReleaseMenu (true);
 		Ui_.PagesView_->setDragMode (QGraphicsView::RubberBandDrag);
-	}
-
-	void DocumentTab::showDocInfo ()
-	{
-		if (!CurrentDoc_)
-			return;
-
-		auto dia = new DocInfoDialog (*CurrentDoc_, this);
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
 	}
 }
 }

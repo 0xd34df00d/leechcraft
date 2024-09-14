@@ -8,37 +8,32 @@
 
 #pragma once
 
-#include <QAction>
-#include <QCoreApplication>
+#include <variant>
+#include <QObject>
 
-class QToolBar;
+class QAction;
 
 namespace LC::Monocle
 {
 	class IDocument;
 
-	class Navigator;
-	class RecentlyOpenedManager;
-
 	class DocumentActions : public QObject
 	{
-		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::DocumentActions)
 	public:
 		struct Deps
 		{
-			Navigator& Navigator_;
-			RecentlyOpenedManager& RecentlyOpenedManager_;
-
 			QWidget& DocTabWidget_;
 		};
+
+		struct Separator {};
+		using Entry = std::variant<QAction*, QWidget*, Separator>;
 	private:
 		Deps Deps_;
+		IDocument& Doc_;
+		QVector<Entry> Entries_;
 	public:
-		explicit DocumentActions (QToolBar&, const Deps&);
+		explicit DocumentActions (IDocument& doc, const Deps&);
 
-		void HandleDocument (const IDocument&);
-	private:
-		QWidget* MakeOpenButton ();
-		void RunOpenDialog ();
+		const QVector<Entry>& GetEntries () const;
 	};
 }

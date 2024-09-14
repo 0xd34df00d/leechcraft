@@ -49,6 +49,7 @@ LC_DEFINE_PLUGIN (
 		components/actions/documentactions.cpp
 		components/actions/export.cpp
 		components/actions/rotatemenu.cpp
+		components/actions/toolbaractions.cpp
 		components/actions/zoomer.cpp
 		components/layout/pageslayoutmanager.cpp
 		components/layout/positions.cpp
