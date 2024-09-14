@@ -9,7 +9,6 @@
 #include "documenttab.h"
 #include <functional>
 #include <QToolBar>
-#include <QFileDialog>
 #include <QMenu>
 #include <QToolButton>
 #include <QMessageBox>
@@ -27,7 +26,6 @@
 #include <util/gui/menumodeladapter.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/unreachable.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/monocle/isaveabledocument.h"
@@ -35,6 +33,7 @@
 #include "interfaces/monocle/isupportpainting.h"
 #include "interfaces/monocle/iknowfileextensions.h"
 #include "util/monocle/documentsignals.h"
+#include "components/actions/documentactions.h"
 #include "components/actions/export.h"
 #include "components/actions/rotatemenu.h"
 #include "components/actions/zoomer.h"
@@ -95,12 +94,11 @@ namespace Monocle
 		Zoomer Zoomer_;
 		SmoothScroller Scroller_;
 
-		explicit Components (DocumentTab& tab,
-				DocumentLoader& loader,
-				BookmarksStorage& bmStorage,
-				PixmapCacheManager& pxCache)
+		DocumentActions Actions_;
+
+		explicit Components (DocumentTab& tab, QToolBar& toolbar, const DocumentTab::Deps& deps)
 		: LayoutManager_ { tab.Ui_.PagesView_ }
-		, Navigator_ { LayoutManager_, loader }
+		, Navigator_ { LayoutManager_, deps.Loader_ }
 		, FormManager_ { tab.Ui_.PagesView_, Navigator_.GetNavigationContext () }
 		, AnnManager_ { Navigator_.GetNavigationContext () }
 		, ViewPosTracker_ { *tab.Ui_.PagesView_, LayoutManager_ }
@@ -108,13 +106,18 @@ namespace Monocle
 				.LinkContext_ = Navigator_.GetNavigationContext (),
 				.TabWidget_ = tab,
 				.AnnotationsMgr_ = AnnManager_,
-				.BookmarksStorage_ = bmStorage,
-				.PixmapCacheManager_ = pxCache,
+				.BookmarksStorage_ = deps.BookmarksStorage_,
+				.PixmapCacheManager_ = deps.PixmapCacheManager_,
 				.SearchHandler_ = SearchHandler_,
 				.ViewPosTracker_ = ViewPosTracker_,
 		} }
 		, Zoomer_ { [this] { return LayoutManager_.GetCurrentScale (); } }
 		, Scroller_ { *tab.Ui_.PagesView_ }
+		, Actions_ { toolbar, {
+				.Navigator_ = Navigator_,
+				.RecentlyOpenedManager_ = deps.RecentlyOpenedManager_,
+				.DocTabWidget_ = tab,
+		} }
 		{
 		}
 	};
@@ -128,7 +131,7 @@ namespace Monocle
 	, Loader_ { deps.Loader_ }
 	, PixmapCacheManager_ { deps.PixmapCacheManager_ }
 	, RecentlyOpenedManager_ { deps.RecentlyOpenedManager_ }
-	, C_ { std::make_unique<Components> (*this, Loader_, BookmarksStorage_, PixmapCacheManager_) }
+	, C_ { std::make_unique<Components> (*this, *Toolbar_, deps) }
 	, ScreensaverProhibitor_ (GetProxyHolder ()->GetEntityManager ())
 	{
 		Ui_.PagesView_->setScene (&Scene_);
@@ -367,36 +370,6 @@ namespace Monocle
 		HandleDrop (event);
 	}
 
-	void DocumentTab::SetupToolbarOpen ()
-	{
-		auto open = new QAction (tr ("Open..."), this);
-		open->setProperty ("ActionIcon", "document-open");
-		open->setShortcut (QString ("Ctrl+O"));
-		connect (open,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (selectFile ()));
-
-		auto roMenu = RecentlyOpenedManager_.CreateOpenMenu (this,
-				[this] (const QString& path)
-				{
-					const QFileInfo fi { path };
-					if (!fi.exists ())
-						QMessageBox::critical (this,
-								"LeechCraft",
-								tr ("Seems like file %1 doesn't exist anymore.")
-										.arg ("<em>" + fi.fileName () + "</em>"));
-					else
-						C_->Navigator_.OpenDocument (path);
-				});
-
-		auto openButton = new QToolButton ();
-		openButton->setDefaultAction (open);
-		openButton->setMenu (roMenu);
-		openButton->setPopupMode (QToolButton::MenuButtonPopup);
-		Toolbar_->addWidget (openButton);
-	}
-
 	void DocumentTab::SetupToolbarRotate ()
 	{
 		auto rotateMenu = CreateRotateMenu (AngleNotifier { C_->LayoutManager_, &PagesLayoutManager::rotationUpdated },
@@ -441,8 +414,6 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbar ()
 	{
-		SetupToolbarOpen ();
-
 		auto print = new QAction (tr ("Print..."), this);
 		print->setProperty ("ActionIcon", "document-print");
 		connect (print,
@@ -725,37 +696,6 @@ namespace Monocle
 				this,
 				SLOT (saveState ()));
 		SaveStateScheduled_ = true;
-	}
-
-	void DocumentTab::selectFile ()
-	{
-		const auto& extPlugins = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IKnowFileExtensions*> ();
-		QStringList filters;
-		QList<QString> allExts;
-		for (const auto plugin : extPlugins)
-			for (const auto& info : plugin->GetKnownFileExtensions ())
-			{
-				const auto& mapped = Util::Map (info.Extensions_,
-						[] (const QString& str) { return "*." + str; });
-				allExts += mapped;
-				filters << info.Description_ + " (" + QStringList { mapped }.join (" ") + ")";
-			}
-		if (!allExts.isEmpty ())
-			filters.prepend (tr ("Known files") + " (" + QStringList { allExts }.join (" ") + ")");
-		filters << tr ("All files") + " (*.*)";
-
-		const auto& prevPath = XmlSettingsManager::Instance ()
-				.Property ("LastOpenFileName", QDir::homePath ()).toString ();
-		const auto& path = QFileDialog::getOpenFileName (this,
-					tr ("Select file"),
-					prevPath,
-					filters.join (";;"));
-		if (path.isEmpty ())
-			return;
-
-		XmlSettingsManager::Instance ().setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
-
-		C_->Navigator_.OpenDocument (path);
 	}
 
 	void DocumentTab::handleSave ()

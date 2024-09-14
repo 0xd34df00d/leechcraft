@@ -118,7 +118,6 @@ namespace Monocle
 	private:
 		void SetPosition (const NavigationAction&);
 
-		void SetupToolbarOpen ();
 		void SetupToolbarRotate ();
 		void SetupToolbarNavigation ();
 		void SetupToolbar ();
@@ -130,7 +129,6 @@ namespace Monocle
 		void scheduleSaveState ();
 		void saveState ();
 
-		void selectFile ();
 		void handleSave ();
 
 		void handlePresentation ();
