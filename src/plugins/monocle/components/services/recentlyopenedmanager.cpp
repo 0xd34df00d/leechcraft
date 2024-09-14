@@ -12,6 +12,7 @@
 #include <QMenu>
 #include <QMimeDatabase>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "xmlsettingsmanager.h"
 
 namespace LC::Monocle
@@ -22,26 +23,16 @@ namespace LC::Monocle
 		OpenedDocs_ = XmlSettingsManager::Instance ().property ("RecentlyOpened").toStringList ();
 	}
 
-	QMenu* RecentlyOpenedManager::CreateOpenMenu (QWidget *docTab, const PathHandler_t& handler)
+	QMenu* RecentlyOpenedManager::CreateOpenMenu (QWidget *parent, const PathHandler_t& handler)
 	{
-		if (const auto menu = Menus_ [docTab])
-			return menu;
-
-		auto result = new QMenu (tr ("Recently opened"), docTab);
-		Menus_ [docTab] = result;
-		Handlers_ [result] = handler;
-
-		UpdateMenu (result);
-
-		connect (docTab,
+		auto menu = new QMenu (tr ("Recently opened"), parent);
+		Handlers_ [menu] = handler;
+		UpdateMenu (menu, handler);
+		connect (menu,
 				&QObject::destroyed,
 				this,
-				[this, docTab]
-				{
-					auto menu = Menus_.take (docTab);
-					Handlers_.remove (menu);
-				});
-		return result;
+				[this, menu] { Handlers_.remove (menu); });
+		return menu;
 	}
 
 	void RecentlyOpenedManager::RecordOpened (const QString& path)
@@ -59,17 +50,15 @@ namespace LC::Monocle
 
 		XmlSettingsManager::Instance ().setProperty ("RecentlyOpened", OpenedDocs_);
 
-		for (const auto& menu : Menus_)
-			UpdateMenu (menu);
+		for (const auto& [menu, handler] : Util::Stlize (Handlers_))
+			UpdateMenu (menu, handler);
 	}
 
-	void RecentlyOpenedManager::UpdateMenu (QMenu *menu) const
+	void RecentlyOpenedManager::UpdateMenu (QMenu *menu, const PathHandler_t& handler) const
 	{
 		menu->clear ();
 
 		const QMimeDatabase mimeDb;
-		const auto& handler = Handlers_ [menu];
-
 		for (const auto& path : OpenedDocs_)
 		{
 			const QFileInfo fi { path };

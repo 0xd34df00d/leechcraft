@@ -20,7 +20,6 @@ namespace LC::Monocle
 	class RecentlyOpenedManager : public QObject
 	{
 		QStringList OpenedDocs_;
-		QHash<QWidget*, QMenu*> Menus_;
 	public:
 		using PathHandler_t = std::function<void (QString)>;
 	private:
@@ -31,6 +30,6 @@ namespace LC::Monocle
 		QMenu* CreateOpenMenu (QWidget*, const PathHandler_t&);
 		void RecordOpened (const QString&);
 	private:
-		void UpdateMenu (QMenu*) const;
+		void UpdateMenu (QMenu*, const PathHandler_t&) const;
 	};
 }
