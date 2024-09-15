@@ -21,7 +21,7 @@ namespace LC::Monocle
 	{
 		QTextCursor& Cursor_;
 		QTextFrame& OrigFrame_;
-		QTextTable& Table_;
+		QTextTable * const Table_;
 
 		int Row_ = -1;
 		int Col_ = -1;

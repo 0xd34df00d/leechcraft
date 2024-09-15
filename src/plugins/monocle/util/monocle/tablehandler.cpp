@@ -59,9 +59,6 @@ namespace LC::Monocle
 				QTextStream stream { &str };
 				table.save (stream, 2);
 				qWarning () << "table has no dimensions\n" << str;
-
-				tableDims.Rows_ = 1;
-				tableDims.Cols_ = 1;
 			}
 			return tableDims;
 		}
@@ -100,11 +97,13 @@ namespace LC::Monocle
 			return nextChild.isNull () ? IgnoreNonTableTags (firstChild) : table;
 		}
 
-		QTextTable& CreateTable (QDomElement table, QTextCursor& cursor, const QTextFrameFormat& frameFmt)
+		QTextTable* CreateTable (QDomElement table, QTextCursor& cursor, const QTextFrameFormat& frameFmt)
 		{
 			table = IgnoreNonTableTags (table);
 			const auto& dims = GetTableDimensions (table);
-			return *cursor.insertTable (dims.Rows_, dims.Cols_, MakeTableFormat (frameFmt));
+			if (!dims)
+				return nullptr;
+			return cursor.insertTable (dims.Rows_, dims.Cols_, MakeTableFormat (frameFmt));
 		}
 	}
 
@@ -122,6 +121,9 @@ namespace LC::Monocle
 
 	void TableHandler::HandleElem (const QDomElement& elem)
 	{
+		if (!Table_)
+			return;
+
 		if (elem.tagName () == "tr"_ql)
 		{
 			++Row_;
@@ -130,7 +132,7 @@ namespace LC::Monocle
 		if (elem.tagName () == "td"_ql)
 		{
 			++Col_;
-			Cursor_ = Table_.cellAt (Row_, Col_).firstCursorPosition ();
+			Cursor_ = Table_->cellAt (Row_, Col_).firstCursorPosition ();
 		}
 	}
 }
