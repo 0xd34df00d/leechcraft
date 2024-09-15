@@ -86,8 +86,23 @@ namespace LC::Monocle
 			return result;
 		}
 
-		QTextTable& CreateTable (const QDomElement& table, QTextCursor& cursor, const QTextFrameFormat& frameFmt)
+		QDomElement IgnoreNonTableTags (QDomElement table)
 		{
+			if (table.isNull ())
+				return table;
+
+			auto firstChild = table.firstChildElement ();
+			const auto& name = firstChild.tagName ();
+			if (name == "thead"_qs || name == "tbody"_qs || name == "tr"_qs)
+				return table;
+
+			auto nextChild = firstChild.nextSiblingElement ();
+			return nextChild.isNull () ? IgnoreNonTableTags (firstChild) : table;
+		}
+
+		QTextTable& CreateTable (QDomElement table, QTextCursor& cursor, const QTextFrameFormat& frameFmt)
+		{
+			table = IgnoreNonTableTags (table);
 			const auto& dims = GetTableDimensions (table);
 			return *cursor.insertTable (dims.Rows_, dims.Cols_, MakeTableFormat (frameFmt));
 		}
