@@ -270,9 +270,7 @@ namespace Monocle
 
 	QString DocumentTab::GetTabRecoverName () const
 	{
-		return CurrentDocPath_.isEmpty () ?
-				QString () :
-				"Monocle: " + QFileInfo (CurrentDocPath_).fileName ();
+		return QFileInfo { CurrentDocPath_ }.fileName ();
 	}
 
 	QIcon DocumentTab::GetTabRecoverIcon () const
