@@ -83,7 +83,7 @@ namespace LC::Monocle::PDF
 
 		QAbstractItemModel* GetOptContentModel () override;
 
-		IPendingFontInfoRequest* RequestFontInfos () const override;
+		Util::Task<QList<FontInfo>> RequestFontInfos () const override;
 
 		QList<IAnnotation_ptr> GetAnnotations (int) override;
 

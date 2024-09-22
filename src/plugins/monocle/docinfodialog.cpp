@@ -8,9 +8,8 @@
 
 #include "docinfodialog.h"
 #include <QStandardItemModel>
-#include <QtDebug>
 #include <util/sll/qtutil.h>
-#include <util/sll/slotclosure.h>
+#include <util/threads/coro/context.h>
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavefontinfo.h"
 
@@ -39,16 +38,11 @@ namespace LC::Monocle
 		Ui_.TabWidget_->setTabEnabled (Ui_.TabWidget_->indexOf (Ui_.FontsTab_), ihf);
 
 		if (ihf)
-		{
-			const auto pending = ihf->RequestFontInfos ();
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			[] (IHaveFontInfo *ihf, DocInfoDialog *pThis) -> Util::ContextTask<>
 			{
-				[this, pending] { HandleFontsInfo (pending->GetFontInfos ()); },
-				pending->GetQObject (),
-				SIGNAL (ready ()),
-				this
-			};
-		}
+				co_await Util::AddContextObject { *pThis };
+				pThis->HandleFontsInfo (co_await ihf->RequestFontInfos ());
+			} (ihf, this);
 	}
 
 	void DocInfoDialog::HandleFontsInfo (const QList<FontInfo>& infos)

@@ -20,12 +20,12 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
+#include <util/threads/coro/future.h>
 #include <util/threads/futures.h>
 #include "links.h"
 #include "fields.h"
 #include "annotations.h"
 #include "xmlsettingsmanager.h"
-#include "pendingfontinforequest.h"
 
 namespace LC::Monocle::PDF
 {
@@ -160,9 +160,16 @@ namespace LC::Monocle::PDF
 				nullptr;
 	}
 
-	IPendingFontInfoRequest* Document::RequestFontInfos () const
+	Util::Task<QList<FontInfo>> Document::RequestFontInfos () const
 	{
-		return new PendingFontInfoRequest (PDocument_);
+		QList<FontInfo> result;
+		for (const auto& item : co_await QtConcurrent::run ([doc = PDocument_] { return doc->fonts (); }))
+			result.append ({
+					item.name (),
+					item.file (),
+					item.isEmbedded ()
+				});
+		co_return result;
 	}
 
 	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum)
