@@ -7,14 +7,17 @@
  **********************************************************************/
 
 #include "corotasktest.h"
+#include <QtConcurrentRun>
 #include <QtTest>
 #include <coro.h>
 #include <coro/context.h>
 #include <coro/either.h>
+#include <coro/future.h>
 #include <coro/getresult.h>
 #include <coro/inparallel.h>
 #include <coro/networkresult.h>
 #include <coro/throttle.h>
+#include <util/threads/futures.h>
 #include <util/sll/qtutil.h>
 
 QTEST_GUILESS_MAIN (LC::Util::CoroTaskTest)
@@ -225,6 +228,31 @@ namespace LC::Util
 		} (&*context);
 
 		QCOMPARE (GetTaskResult (task), 0);
+	}
+
+	void CoroTaskTest::testFutureAwaiter ()
+	{
+		auto delayed = [] () -> Task<int>
+		{
+			co_return co_await QtConcurrent::run ([]
+					{
+						QThread::msleep (1);
+						return 42;
+					});
+		} ();
+		QCOMPARE (GetTaskResult (delayed), 42);
+
+		auto immediate = [] () -> Task<int>
+		{
+			co_return co_await QtConcurrent::run ([] { return 42; });
+		} ();
+		QCOMPARE (GetTaskResult (immediate), 42);
+
+		auto ready = [] () -> Task<int>
+		{
+			co_return co_await MakeReadyFuture (42);
+		} ();
+		QCOMPARE (GetTaskResult (ready), 42);
 	}
 
 	namespace
