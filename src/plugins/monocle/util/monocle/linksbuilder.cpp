@@ -9,6 +9,7 @@
 #include "linksbuilder.h"
 #include <QDomElement>
 #include <QTextCursor>
+#include <QUrl>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 
@@ -59,7 +60,7 @@ namespace LC::Monocle
 
 	Util::DefaultScopeGuard LinksBuilder::HandleLink (const QDomElement& elem)
 	{
-		const auto& href = elem.attribute ("href"_qs);
+		const auto& href = QUrl::fromPercentEncoding (elem.attribute ("href"_qs).toUtf8 ());
 		if (!href.startsWith ('#'))
 			return {};
 

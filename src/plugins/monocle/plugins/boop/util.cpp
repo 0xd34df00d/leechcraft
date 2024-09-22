@@ -8,6 +8,7 @@
 
 #include "util.h"
 #include <QDomDocument>
+#include <QUrl>
 #include <quazip/quazipfile.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
@@ -61,7 +62,7 @@ namespace LC::Monocle::Boop
 		void BuildId2ElementMap (const QDomElement& elem, QHash<QString, QDomElement>& result)
 		{
 			if (const auto& id = elem.attribute ("id"_qs); !id.isEmpty ())
-				result [id] = elem;
+				result [QUrl::fromPercentEncoding (id.toUtf8 ())] = elem;
 
 			for (const auto& child : Util::DomChildren (elem, {}))
 				BuildId2ElementMap (child, result);

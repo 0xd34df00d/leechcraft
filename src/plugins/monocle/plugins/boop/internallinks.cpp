@@ -39,8 +39,8 @@ namespace LC::Monocle::Boop
 
 		QString InternalizeLinkTarget (const QUrl& url)
 		{
-			const auto& fragment = url.hasFragment () ? url.fragment (QUrl::FullyEncoded) : RootMarker;
-			const auto& path = url.path (QUrl::FullyEncoded);
+			const auto& fragment = url.hasFragment () ? url.fragment (QUrl::FullyDecoded) : RootMarker;
+			const auto& path = url.path (QUrl::FullyDecoded);
 			return NormalizeForId (path) + '_' + fragment;
 		}
 	}
@@ -59,7 +59,7 @@ namespace LC::Monocle::Boop
 		{
 			if (const auto& id = elem.attribute ("id"_qs);
 				!id.isEmpty ())
-				elem.setAttribute ("id"_qs, normalizedSubpath + '_' + id);
+				elem.setAttribute ("id"_qs, QUrl::fromPercentEncoding ((normalizedSubpath + '_' + id).toUtf8 ()));
 
 			for (const auto& child : Util::DomChildren (elem, {}))
 				FixupIdAnchors (child.toElement (), normalizedSubpath);
@@ -121,7 +121,7 @@ namespace LC::Monocle::Boop
 			if (!linkTarget.isRelative ())
 				continue;
 
-			const auto& targetElem = id2elem [linkTarget.fragment ()];
+			const auto& targetElem = id2elem [linkTarget.fragment (QUrl::FullyDecoded)];
 			if (!targetElem.isNull ())
 				link.setAttribute ("title"_qs, targetElem.text ());
 			else
