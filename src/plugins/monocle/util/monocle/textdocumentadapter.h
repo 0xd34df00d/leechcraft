@@ -11,6 +11,7 @@
 #include <memory>
 #include <QDomElement>
 #include <interfaces/monocle/idocument.h>
+#include <interfaces/monocle/ihavetextcontent.h>
 #include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
@@ -36,12 +37,14 @@ namespace LC::Monocle
 	 */
 	class MONOCLE_UTIL_API TextDocumentAdapter : public QObject
 											   , public IDocument
+											   , public IHaveTextContent
 											   , public IHaveTOC
 											   , public ISupportPainting
 											   , public ISearchableDocument
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Monocle::IDocument
+				LC::Monocle::IHaveTextContent
 				LC::Monocle::IHaveTOC
 				LC::Monocle::ISearchableDocument
 				LC::Monocle::ISupportPainting)
@@ -59,6 +62,8 @@ namespace LC::Monocle
 		QFuture<QImage> RenderPage (int page, double xScale, double yScale) override;
 		QList<ILink_ptr> GetPageLinks (int page) override;
 		const DocumentSignals* GetDocumentSignals () const override;
+
+		QString GetTextContent (int page, const PageRelativeRectBase& rect) override;
 
 		TOCEntryLevel_t GetTOC () override;
 

@@ -8,6 +8,7 @@
 
 #include "textdocumentadapter.h"
 #include <cmath>
+#include <QAbstractTextDocumentLayout>
 #include <QDomElement>
 #include <QGuiApplication>
 #include <QPainter>
@@ -87,6 +88,36 @@ namespace LC::Monocle
 	const DocumentSignals* TextDocumentAdapter::GetDocumentSignals () const
 	{
 		return nullptr;
+	}
+
+	namespace
+	{
+		QPointF ToDocPoint (int page, QPointF rel, QSizeF pageSize)
+		{
+			return { rel.x () * pageSize.width (), (page + rel.y ()) * pageSize.height () };
+		}
+
+		int GetCursorPosition (int page, QPointF rel, QTextDocument& doc)
+		{
+			const auto docPoint = ToDocPoint (page, rel, doc.pageSize ());
+			return doc.documentLayout ()->hitTest (docPoint, Qt::FuzzyHit);
+		}
+	}
+
+	QString TextDocumentAdapter::GetTextContent (int page, const PageRelativeRectBase& rect)
+	{
+		const auto startPos = GetCursorPosition (page, rect.R_.topLeft (), *Doc_);
+		const auto endPos = GetCursorPosition (page, rect.R_.bottomRight (), *Doc_);
+		if (startPos < 0 || endPos < 0 || startPos >= endPos)
+		{
+			qWarning () << "invalid positions" << page << rect.R_ << startPos << endPos;
+			return {};
+		}
+
+		QTextCursor cursor { Doc_.get () };
+		cursor.movePosition (QTextCursor::NextCharacter, QTextCursor::MoveAnchor, startPos);
+		cursor.movePosition (QTextCursor::NextCharacter, QTextCursor::KeepAnchor, endPos - startPos);
+		return cursor.selectedText ();
 	}
 
 	TOCEntryLevel_t TextDocumentAdapter::GetTOC ()
