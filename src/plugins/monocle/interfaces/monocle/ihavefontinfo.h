@@ -50,8 +50,6 @@ namespace LC::Monocle
 		/** @brief Requests the font information for the document.
 		 *
 		 * @return The pending font info request.
-		 *
-		 * @sa IPendingFontInfoRequest
 		 */
 		virtual Util::Task<QList<FontInfo>> RequestFontInfos () const = 0;
 	};
