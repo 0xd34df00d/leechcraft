@@ -26,6 +26,7 @@
 namespace Poppler
 {
 	class Document;
+	class Page;
 }
 
 namespace LC::Monocle::PDF
@@ -98,6 +99,8 @@ namespace LC::Monocle::PDF
 
 		void RequestPrinting ();
 	private:
+		std::unique_ptr<Poppler::Page> GetPage (int) const;
+
 		void BuildTOC ();
 	};
 }

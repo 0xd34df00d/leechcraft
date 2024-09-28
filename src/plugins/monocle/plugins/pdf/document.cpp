@@ -91,11 +91,8 @@ namespace LC::Monocle::PDF
 
 	QSize Document::GetPageSize (int num) const
 	{
-		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
-		if (!page)
-			return {};
-
-		return page->pageSize ();
+		const auto page = GetPage (num);
+		return page ? page->pageSize () : QSize {};
 	}
 
 	namespace
@@ -114,11 +111,11 @@ namespace LC::Monocle::PDF
 
 	QList<ILink_ptr> Document::GetPageLinks (int num)
 	{
-		QList<ILink_ptr> result;
-		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
+		const auto page = GetPage (num);
 		if (!page)
-			return result;
+			return {};
 
+		QList<ILink_ptr> result;
 		for (const auto link : page->links ())
 			result << std::make_shared<Link> (*this, *link);
 
@@ -142,7 +139,7 @@ namespace LC::Monocle::PDF
 
 	QString Document::GetTextContent (int pageNum, const PageRelativeRectBase& rect)
 	{
-		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
+		const auto page = GetPage (pageNum);
 		if (!page)
 			return {};
 
@@ -174,7 +171,7 @@ namespace LC::Monocle::PDF
 
 	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum)
 	{
-		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
+		const auto page = GetPage (pageNum);
 		if (!page)
 			return {};
 
@@ -187,7 +184,7 @@ namespace LC::Monocle::PDF
 
 	IFormFields_t Document::GetFormFields (int pageNum)
 	{
-		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
+		const auto page = GetPage (pageNum);
 		if (!page)
 			return {};
 
@@ -230,11 +227,8 @@ namespace LC::Monocle::PDF
 			guard = Util::MakeScopeGuard ([this, backend] { PDocument_->setRenderBackend (backend); });
 		}
 
-		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
-		if (!page)
-			return;
-
-		page->renderToPainter (painter, DPI * xScale, DPI * yScale);
+		if (const auto page = GetPage (num))
+			page->renderToPainter (painter, DPI * xScale, DPI * yScale);
 	}
 
 	QMap<int, QList<PageRelativeRectBase>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
@@ -317,6 +311,11 @@ namespace LC::Monocle::PDF
 	void Document::RequestPrinting ()
 	{
 		emit Signals_.printRequested ({});
+	}
+
+	std::unique_ptr<Poppler::Page> Document::GetPage (int pageNum) const
+	{
+		return std::unique_ptr<Poppler::Page> (PDocument_->page (pageNum));
 	}
 
 	namespace
