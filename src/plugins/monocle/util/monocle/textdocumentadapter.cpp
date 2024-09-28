@@ -115,8 +115,8 @@ namespace LC::Monocle
 		}
 
 		QTextCursor cursor { Doc_.get () };
-		cursor.movePosition (QTextCursor::NextCharacter, QTextCursor::MoveAnchor, startPos);
-		cursor.movePosition (QTextCursor::NextCharacter, QTextCursor::KeepAnchor, endPos - startPos);
+		cursor.setPosition (startPos, QTextCursor::MoveAnchor);
+		cursor.setPosition (endPos, QTextCursor::KeepAnchor);
 		return cursor.selectedText ();
 	}
 
