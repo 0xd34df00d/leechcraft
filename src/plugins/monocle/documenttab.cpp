@@ -619,8 +619,6 @@ namespace Monocle
 
 		recoverDocState (state);
 
-		auto docObj = CurrentDoc_->GetQObject ();
-
 		if (const auto docSignals = CurrentDoc_->GetDocumentSignals ())
 		{
 			connect (docSignals,
@@ -635,6 +633,7 @@ namespace Monocle
 
 		emit tabRecoverDataChanged ();
 
+		auto docObj = CurrentDoc_->GetQObject ();
 		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
 
 		auto saveable = qobject_cast<ISaveableDocument*> (docObj);
