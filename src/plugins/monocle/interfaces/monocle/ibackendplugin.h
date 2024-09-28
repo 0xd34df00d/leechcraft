@@ -32,13 +32,10 @@ namespace LC::Monocle
 	 */
 	class IBackendPlugin
 	{
+	protected:
+		virtual ~IBackendPlugin () = default;
 	public:
 		static inline QByteArray PluginClass = "org.LeechCraft.Monocle.IBackendPlugin";
-
-		/** @brief Virtual destructor.
-		 */
-		virtual ~IBackendPlugin () = default;
-
 		/** @brief Checks whether the given document can be loaded.
 		 *
 		 * This method should return LoadCheckResult::Can if the document

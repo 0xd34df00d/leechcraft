@@ -29,11 +29,9 @@ namespace Monocle
 	 */
 	class ISaveableDocument
 	{
-	public:
-		/** @brief Virtual destructor.
-		 */
+	protected:
 		virtual ~ISaveableDocument () = default;
-
+	public:
 		/** @brief Describes the result of check for the possibility of
 		 * saving.
 		 */

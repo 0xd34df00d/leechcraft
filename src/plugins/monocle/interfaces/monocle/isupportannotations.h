@@ -27,9 +27,9 @@ namespace Monocle
 	 */
 	class ISupportAnnotations
 	{
-	public:
+	protected:
 		virtual ~ISupportAnnotations () = default;
-
+	public:
 		/** @brief Returns the list of annotations on the given page.
 		 *
 		 * @param[in] page The page to query.

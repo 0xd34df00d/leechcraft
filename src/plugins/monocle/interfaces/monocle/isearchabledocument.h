@@ -25,11 +25,9 @@ namespace Monocle
 	 */
 	class ISearchableDocument
 	{
-	public:
-		/** @brief Virtual destructor.
-		 */
+	protected:
 		virtual ~ISearchableDocument () = default;
-
+	public:
 		/** @brief Returns the search results for the \em text.
 		 * 
 		 * This function should return the map where keys are indexes of

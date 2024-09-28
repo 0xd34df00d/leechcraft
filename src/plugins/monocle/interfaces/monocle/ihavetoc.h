@@ -52,11 +52,9 @@ namespace LC::Monocle
 	 */
 	class IHaveTOC
 	{
-	public:
-		/** @brief Virtual destructor.
-		 */
+	protected:
 		virtual ~IHaveTOC () = default;
-
+	public:
 		/** @brief Returns the root level of the TOC.
 		 *
 		 * If the root level is empty, there is no table of contents for

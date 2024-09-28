@@ -24,9 +24,9 @@ namespace Monocle
 	 */
 	class ISupportPainting
 	{
-	public:
+	protected:
 		virtual ~ISupportPainting () = default;
-
+	public:
 		/** @brief Paints a given page to the given painter.
 		 *
 		 * @param[in] painter The painter to paint on.
