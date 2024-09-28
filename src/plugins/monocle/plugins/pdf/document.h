@@ -81,6 +81,7 @@ namespace LC::Monocle::PDF
 		TOCEntryLevel_t GetTOC () override;
 
 		QString GetTextContent (int, const PageRelativeRectBase&) override;
+		QVector<TextBox> GetTextBoxes (int) override;
 
 		QAbstractItemModel* GetOptContentModel () override;
 

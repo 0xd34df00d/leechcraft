@@ -64,6 +64,7 @@ namespace LC::Monocle
 		const DocumentSignals* GetDocumentSignals () const override;
 
 		QString GetTextContent (int page, const PageRelativeRectBase& rect) override;
+		QVector<TextBox> GetTextBoxes (int page) override;
 
 		TOCEntryLevel_t GetTOC () override;
 

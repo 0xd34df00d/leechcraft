@@ -12,10 +12,14 @@
 
 class QString;
 
-namespace LC
+namespace LC::Monocle
 {
-namespace Monocle
-{
+	struct TextBox
+	{
+		QString Text_;
+		PageRelativeRectBase Rect_;
+	};
+
 	/** @brief Interface for documents supporting querying text contents.
 	 *
 	 * This interface should be implemented by the documents of formats
@@ -33,17 +37,16 @@ namespace Monocle
 		 * no text in this \em rect or the document doesn't contain any
 		 * text information.
 		 *
-		 * If \em rect is empty or null, the text from the whole page
-		 * should be returned.
-		 *
 		 * @param[in] page The index of the page to query.
 		 * @param[in] rect The rectangle on the \em page to query.
 		 * @return The text in \em rect at \em page.
 		 */
 		virtual QString GetTextContent (int page, const PageRelativeRectBase& rect) = 0;
+
+		virtual QVector<TextBox> GetTextBoxes (int page) = 0;
 	};
 }
-}
+
 
 Q_DECLARE_INTERFACE (LC::Monocle::IHaveTextContent,
 		"org.LeechCraft.Monocle.IHaveTextContent/1.0")

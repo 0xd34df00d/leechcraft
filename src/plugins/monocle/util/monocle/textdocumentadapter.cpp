@@ -120,6 +120,11 @@ namespace LC::Monocle
 		return cursor.selectedText ();
 	}
 
+	QVector<TextBox> TextDocumentAdapter::GetTextBoxes (int page)
+	{
+		return {};
+	}
+
 	TOCEntryLevel_t TextDocumentAdapter::GetTOC ()
 	{
 		return TOC_;

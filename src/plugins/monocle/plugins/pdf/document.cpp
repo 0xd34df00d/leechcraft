@@ -118,7 +118,6 @@ namespace LC::Monocle::PDF
 		QList<ILink_ptr> result;
 		for (const auto link : page->links ())
 			result << std::make_shared<Link> (*this, *link);
-
 		return result;
 	}
 
@@ -148,6 +147,38 @@ namespace LC::Monocle::PDF
 		const auto w = size.width ();
 		const auto h = size.height ();
 		return page->text ({ r.x () * w, r.y () * h, r.width () * w, r.height () * h });
+	}
+
+	QVector<TextBox> Document::GetTextBoxes (int pageNum)
+	{
+		const auto page = GetPage (pageNum);
+		if (!page)
+			return {};
+
+		const auto& size = page->pageSizeF ();
+
+		const auto& popplerBoxes = page->textList ();
+
+		QVector<TextBox> result;
+		result.reserve (popplerBoxes.size ());
+		for (const auto textBox : popplerBoxes)
+		{
+			const auto& bounding = textBox->boundingBox ();
+			const PageRelativeRectBase boundingRelative
+			{
+				{
+					bounding.x () / size.width (),
+					bounding.y () / size.height (),
+					bounding.width () / size.width (),
+					bounding.height () / size.height ()
+				}
+			};
+			result.push_back ({ textBox->text (), boundingRelative });
+		}
+
+		qDeleteAll (popplerBoxes);
+
+		return result;
 	}
 
 	QAbstractItemModel* Document::GetOptContentModel ()
