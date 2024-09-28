@@ -55,7 +55,7 @@ namespace LC::Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IHaveTOC () {}
+		virtual ~IHaveTOC () = default;
 
 		/** @brief Returns the root level of the TOC.
 		 *

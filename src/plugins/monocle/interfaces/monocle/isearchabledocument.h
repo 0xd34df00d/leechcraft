@@ -28,7 +28,7 @@ namespace Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~ISearchableDocument () {}
+		virtual ~ISearchableDocument () = default;
 
 		/** @brief Returns the search results for the \em text.
 		 * 

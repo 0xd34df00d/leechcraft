@@ -23,11 +23,9 @@ namespace Monocle
 	 */
 	class IHaveTextContent
 	{
+	protected:
+		virtual ~IHaveTextContent () = default;
 	public:
-		/** @brief Virtual destructor.
-		 */
-		virtual ~IHaveTextContent () {}
-
 		/** @brief Returns the text in the given rectangle.
 		 *
 		 * This function should return the text contained in the given

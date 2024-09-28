@@ -64,7 +64,7 @@ namespace LC::Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IFormField () {}
+		virtual ~IFormField () = default;
 
 		/** @brief Returns the type of this field.
 		 *
@@ -142,7 +142,7 @@ namespace LC::Monocle
 
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IFormFieldText () {}
+		virtual ~IFormFieldText () = default;
 
 		/** @brief Returns the current text value of this field.
 		 *
@@ -229,7 +229,7 @@ namespace LC::Monocle
 
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IFormFieldChoice () {}
+		virtual ~IFormFieldChoice () = default;
 
 		/** @brief Returns the exact type of this choice field.
 		 *
@@ -339,7 +339,7 @@ namespace LC::Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~IFormFieldButton () {}
+		virtual ~IFormFieldButton () = default;
 
 		/** @brief Describes various types of button fields.
 		 *

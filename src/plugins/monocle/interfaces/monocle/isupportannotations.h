@@ -28,7 +28,7 @@ namespace Monocle
 	class ISupportAnnotations
 	{
 	public:
-		virtual ~ISupportAnnotations () {}
+		virtual ~ISupportAnnotations () = default;
 
 		/** @brief Returns the list of annotations on the given page.
 		 *

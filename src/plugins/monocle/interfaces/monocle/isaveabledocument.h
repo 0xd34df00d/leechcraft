@@ -32,7 +32,7 @@ namespace Monocle
 	public:
 		/** @brief Virtual destructor.
 		 */
-		virtual ~ISaveableDocument () {}
+		virtual ~ISaveableDocument () = default;
 
 		/** @brief Describes the result of check for the possibility of
 		 * saving.

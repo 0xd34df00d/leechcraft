@@ -29,7 +29,7 @@ namespace Monocle
 	class IKnowFileExtensions
 	{
 	protected:
-		virtual ~IKnowFileExtensions () {}
+		virtual ~IKnowFileExtensions () = default;
 	public:
 		/** @brief Describes a single typical file type.
 		 *

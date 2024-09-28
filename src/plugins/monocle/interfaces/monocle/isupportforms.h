@@ -37,7 +37,7 @@ namespace Monocle
 	class ISupportForms
 	{
 	public:
-		virtual ~ISupportForms () {}
+		virtual ~ISupportForms () = default;
 
 		/** @brief Returns the list of fields for the given page.
 		 *
