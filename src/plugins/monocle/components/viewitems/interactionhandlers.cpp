@@ -26,10 +26,16 @@ namespace LC::Monocle
 	struct InteractionHandler::ViewConfig
 	{
 		QGraphicsView::DragMode DragMode_;
+		std::optional<Qt::CursorShape> Cursor_ {};
 	};
 
 	InteractionHandler::InteractionHandler (PagesView& view, const ViewConfig& cfg)
 	{
+		if (cfg.Cursor_)
+			view.setCursor (*cfg.Cursor_);
+		else
+			view.unsetCursor ();
+
 		view.setDragMode (cfg.DragMode_);
 	}
 
