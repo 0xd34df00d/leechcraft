@@ -22,17 +22,13 @@ namespace LC::Monocle
 	{
 		Q_OBJECT
 
-		std::unique_ptr<InteractionHandler> InteractionHandler_;
+		std::unique_ptr<InteractionHandler> InteractionHandler_ = std::make_unique<MovingInteraction> (*this);
 
 		IDocument *Doc_ = nullptr;
-
-		bool ShowReleaseMenu_ = false;
-		bool ShowOnNextRelease_ = false;
 	public:
 		using QGraphicsView::QGraphicsView;
 
 		void SetDocument (IDocument*);
-		void SetShowReleaseMenu (bool);
 
 		template<typename T>
 		void SetInteractionHandler ()

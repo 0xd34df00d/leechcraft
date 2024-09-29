@@ -8,14 +8,20 @@
 
 #pragma once
 
+#include <QCoreApplication>
+
+class QMouseEvent;
+
 namespace LC::Monocle
 {
+	class IDocument;
 	class PagesView;
 
-	class InteractionHandler
+	class InteractionHandler : public QObject
 	{
 	public:
-		virtual ~InteractionHandler () = default;
+		virtual void Moved (QMouseEvent&, IDocument&) {}
+		virtual void Released (QMouseEvent&, IDocument&) {}
 	};
 
 	class MovingInteraction final : public InteractionHandler
@@ -26,7 +32,14 @@ namespace LC::Monocle
 
 	class AreaSelectionInteraction final : public InteractionHandler
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::AreaSelectionInteraction)
+
+		PagesView& View_;
+		bool ShowOnNextRelease_ = false;
 	public:
 		explicit AreaSelectionInteraction (PagesView&);
+
+		void Moved (QMouseEvent&, IDocument&) override;
+		void Released (QMouseEvent&, IDocument&) override;
 	};
 }
