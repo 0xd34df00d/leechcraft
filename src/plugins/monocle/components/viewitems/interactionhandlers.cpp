@@ -13,7 +13,6 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMouseEvent>
-#include <QPainterPath>
 #include <interfaces/core/icoreproxy.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include "interfaces/monocle/idocument.h"
@@ -24,15 +23,25 @@
 
 namespace LC::Monocle
 {
-	MovingInteraction::MovingInteraction (PagesView& view)
+	struct InteractionHandler::ViewConfig
 	{
-		view.setDragMode (QGraphicsView::ScrollHandDrag);
+		QGraphicsView::DragMode DragMode_;
+	};
+
+	InteractionHandler::InteractionHandler (PagesView& view, const ViewConfig& cfg)
+	{
+		view.setDragMode (cfg.DragMode_);
+	}
+
+	MovingInteraction::MovingInteraction (PagesView& view)
+	: InteractionHandler { view, { .DragMode_ = QGraphicsView::ScrollHandDrag } }
+	{
 	}
 
 	AreaSelectionInteraction::AreaSelectionInteraction (PagesView& view)
-	: View_ { view }
+	: InteractionHandler { view, { .DragMode_ = QGraphicsView::RubberBandDrag } }
+	, View_ { view }
 	{
-		view.setDragMode (QGraphicsView::RubberBandDrag);
 	}
 
 	void AreaSelectionInteraction::Moved (QMouseEvent& ev, IDocument&)

@@ -19,6 +19,10 @@ namespace LC::Monocle
 
 	class InteractionHandler : public QObject
 	{
+	protected:
+		struct ViewConfig;
+
+		explicit InteractionHandler (PagesView&, const ViewConfig&);
 	public:
 		virtual void Moved (QMouseEvent&, IDocument&) {}
 		virtual void Released (QMouseEvent&, IDocument&) {}
