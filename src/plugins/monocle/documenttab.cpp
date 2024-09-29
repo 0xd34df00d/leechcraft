@@ -549,9 +549,9 @@ namespace Monocle
 		moveModeAction->setChecked (true);
 		moveModeAction->setActionGroup (mouseModeGroup);
 		connect (moveModeAction,
-				SIGNAL (triggered (bool)),
+				&QAction::triggered,
 				this,
-				SLOT (setMoveMode (bool)));
+				[this] { Ui_.PagesView_->SetInteractionHandler<MovingInteraction> (); });
 		Toolbar_->addAction (moveModeAction);
 
 		auto selectModeAction = new QAction (tr ("Selection mode"), this);
@@ -559,9 +559,9 @@ namespace Monocle
 		selectModeAction->setCheckable (true);
 		selectModeAction->setActionGroup (mouseModeGroup);
 		connect (selectModeAction,
-				SIGNAL (triggered (bool)),
+				&QAction::triggered,
 				this,
-				SLOT (setSelectionMode (bool)));
+				[this] { Ui_.PagesView_->SetInteractionHandler<AreaSelectionInteraction> (); });
 		Toolbar_->addAction (selectModeAction);
 	}
 
@@ -725,24 +725,6 @@ namespace Monocle
 			const auto& page = *Pages_ [state.CurrentPagePos_->Page_];
 			Ui_.PagesView_->CenterOn (state.CurrentPagePos_->Pos_.ToSceneAbsolute (page));
 		}
-	}
-
-	void DocumentTab::setMoveMode (bool enable)
-	{
-		if (!enable)
-			return;
-
-		Ui_.PagesView_->SetShowReleaseMenu (false);
-		Ui_.PagesView_->setDragMode (QGraphicsView::ScrollHandDrag);
-	}
-
-	void DocumentTab::setSelectionMode (bool enable)
-	{
-		if (!enable)
-			return;
-
-		Ui_.PagesView_->SetShowReleaseMenu (true);
-		Ui_.PagesView_->setDragMode (QGraphicsView::RubberBandDrag);
 	}
 }
 }

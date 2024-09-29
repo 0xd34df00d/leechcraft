@@ -134,9 +134,6 @@ namespace Monocle
 		void handlePresentation ();
 
 		void recoverDocState (DocStateManager::State);
-
-		void setMoveMode (bool);
-		void setSelectionMode (bool);
 	signals:
 		void changeTabName (const QString&) override;
 		void removeTab () override;

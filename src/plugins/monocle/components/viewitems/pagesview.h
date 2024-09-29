@@ -8,26 +8,37 @@
 
 #pragma once
 
+#include <memory>
 #include <QGraphicsView>
 #include "components/layout/positions.h"
+#include "components/viewitems/interactionhandlers.h"
 
 namespace LC::Monocle
 {
 	class IDocument;
+	class InteractionHandler;
 
 	class PagesView : public QGraphicsView
 	{
 		Q_OBJECT
 
-		bool ShowReleaseMenu_ = false;
-		bool ShowOnNextRelease_ = false;
+		std::unique_ptr<InteractionHandler> InteractionHandler_;
 
 		IDocument *Doc_ = nullptr;
+
+		bool ShowReleaseMenu_ = false;
+		bool ShowOnNextRelease_ = false;
 	public:
 		using QGraphicsView::QGraphicsView;
 
 		void SetDocument (IDocument*);
 		void SetShowReleaseMenu (bool);
+
+		template<typename T>
+		void SetInteractionHandler ()
+		{
+			InteractionHandler_ = std::make_unique<T> (*this);
+		}
 
 		void CenterOn (SceneAbsolutePos);
 

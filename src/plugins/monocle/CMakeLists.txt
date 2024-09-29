@@ -66,6 +66,7 @@ LC_DEFINE_PLUGIN (
 		components/services/pixmapcachemanager.cpp
 		components/services/recentlyopenedmanager.cpp
 		components/viewitems/annitem.cpp
+		components/viewitems/interactionhandlers.cpp
 		components/viewitems/linkitem.cpp
 		components/viewitems/nondragclickfilter.cpp
 		components/viewitems/pagegraphicsitem.cpp
