@@ -30,6 +30,7 @@ namespace LC::Monocle
 	};
 
 	InteractionHandler::InteractionHandler (PagesView& view, const ViewConfig& cfg)
+	: View_ { view }
 	{
 		if (cfg.Cursor_)
 			view.setCursor (*cfg.Cursor_);
@@ -46,7 +47,6 @@ namespace LC::Monocle
 
 	AreaSelectionInteraction::AreaSelectionInteraction (PagesView& view)
 	: InteractionHandler { view, { .DragMode_ = QGraphicsView::RubberBandDrag } }
-	, View_ { view }
 	{
 	}
 

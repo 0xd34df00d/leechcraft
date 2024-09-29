@@ -20,6 +20,8 @@ namespace LC::Monocle
 	class InteractionHandler : public QObject
 	{
 	protected:
+		PagesView& View_;
+
 		struct ViewConfig;
 
 		explicit InteractionHandler (PagesView&, const ViewConfig&);
@@ -39,7 +41,6 @@ namespace LC::Monocle
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::AreaSelectionInteraction)
 
-		PagesView& View_;
 		bool ShowOnNextRelease_ = false;
 	public:
 		explicit AreaSelectionInteraction (PagesView&);
