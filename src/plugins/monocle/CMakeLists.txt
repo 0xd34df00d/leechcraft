@@ -70,6 +70,7 @@ LC_DEFINE_PLUGIN (
 		components/viewitems/nondragclickfilter.cpp
 		components/viewitems/pagegraphicsitem.cpp
 		components/viewitems/pagescontextmenuhandler.cpp
+		components/viewitems/pagesview.cpp
 		components/widgets/dock.cpp
 		monocle.cpp
 		documenttab.cpp
@@ -77,7 +78,6 @@ LC_DEFINE_PLUGIN (
 		filewatcher.cpp
 		tocwidget.cpp
 		presenterwidget.cpp
-		pagesview.cpp
 		choosebackenddialog.cpp
 		defaultbackendmanager.cpp
 		docinfodialog.cpp

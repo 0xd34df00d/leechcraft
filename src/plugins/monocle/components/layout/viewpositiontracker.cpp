@@ -9,8 +9,8 @@
 #include "viewpositiontracker.h"
 #include <QScrollBar>
 #include "components/viewitems/pagegraphicsitem.h"
+#include "components/viewitems/pagesview.h"
 #include "pageslayoutmanager.h"
-#include "pagesview.h"
 
 namespace LC::Monocle
 {

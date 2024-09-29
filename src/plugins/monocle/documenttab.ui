@@ -39,7 +39,7 @@
   <customwidget>
    <class>LC::Monocle::PagesView</class>
    <extends>QGraphicsView</extends>
-   <header>pagesview.h</header>
+   <header>components/viewitems/pagesview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

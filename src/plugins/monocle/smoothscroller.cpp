@@ -8,7 +8,7 @@
 
 #include "smoothscroller.h"
 #include <QTimeLine>
-#include "pagesview.h"
+#include "components/viewitems/pagesview.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Monocle
