@@ -41,6 +41,7 @@ namespace LC::Monocle
 		SceneAbsolutePos GetCurrentCenter () const;
 		SceneAbsolutePos GetViewportTrimmedCenter (const QGraphicsItem&) const;
 	protected:
+		void mousePressEvent(QMouseEvent*) override;
 		void mouseMoveEvent (QMouseEvent*) override;
 		void mouseReleaseEvent (QMouseEvent*) override;
 		void resizeEvent (QResizeEvent*) override;

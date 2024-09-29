@@ -24,6 +24,7 @@ namespace LC::Monocle
 
 		explicit InteractionHandler (PagesView&, const ViewConfig&);
 	public:
+		virtual void Pressed (QMouseEvent&, IDocument&) {}
 		virtual void Moved (QMouseEvent&, IDocument&) {}
 		virtual void Released (QMouseEvent&, IDocument&) {}
 	};

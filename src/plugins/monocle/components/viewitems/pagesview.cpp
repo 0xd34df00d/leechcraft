@@ -37,11 +37,18 @@ namespace LC::Monocle
 		return SceneAbsolutePos { item.mapToScene (center) };
 	}
 
+	void PagesView::mousePressEvent (QMouseEvent *event)
+	{
+		QGraphicsView::mousePressEvent (event);
+		if (Doc_)
+			InteractionHandler_->Pressed (*event, *Doc_);
+	}
+
 	void PagesView::mouseMoveEvent (QMouseEvent *event)
 	{
+		QGraphicsView::mouseMoveEvent (event);
 		if (Doc_)
 			InteractionHandler_->Moved (*event, *Doc_);
-		QGraphicsView::mouseMoveEvent (event);
 	}
 
 	void PagesView::mouseReleaseEvent (QMouseEvent *event)
