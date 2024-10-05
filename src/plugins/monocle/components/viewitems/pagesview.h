@@ -22,7 +22,9 @@ namespace LC::Monocle
 	{
 		Q_OBJECT
 
-		std::unique_ptr<InteractionHandler> InteractionHandler_ = std::make_unique<MovingInteraction> (*this);
+		using InteractionHandler_ptr = std::unique_ptr<InteractionHandler>;
+		std::function<InteractionHandler_ptr ()> InteractionHandlerFactory_ { [this] { return std::make_unique<MovingInteraction> (*this); } };
+		InteractionHandler_ptr InteractionHandler_ = InteractionHandlerFactory_ ();
 
 		IDocument *Doc_ = nullptr;
 	public:
@@ -33,7 +35,13 @@ namespace LC::Monocle
 		template<typename T>
 		void SetInteractionHandler ()
 		{
-			InteractionHandler_ = std::make_unique<T> (*this);
+			InteractionHandlerFactory_ = [this] () -> InteractionHandler_ptr
+			{
+				if (!Doc_)
+					return std::make_unique<MovingInteraction> (*this);
+				return std::make_unique<T> (*this, *Doc_);
+			};
+			InteractionHandler_ = InteractionHandlerFactory_ ();
 		}
 
 		void CenterOn (SceneAbsolutePos);

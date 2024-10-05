@@ -16,6 +16,7 @@ namespace LC::Monocle
 	void PagesView::SetDocument (IDocument *doc)
 	{
 		Doc_ = doc;
+		InteractionHandler_ = InteractionHandlerFactory_ ();
 	}
 
 	void PagesView::CenterOn (SceneAbsolutePos p)
@@ -40,22 +41,19 @@ namespace LC::Monocle
 	void PagesView::mousePressEvent (QMouseEvent *event)
 	{
 		QGraphicsView::mousePressEvent (event);
-		if (Doc_)
-			InteractionHandler_->Pressed (*event, *Doc_);
+		InteractionHandler_->Pressed (*event);
 	}
 
 	void PagesView::mouseMoveEvent (QMouseEvent *event)
 	{
 		QGraphicsView::mouseMoveEvent (event);
-		if (Doc_)
-			InteractionHandler_->Moved (*event, *Doc_);
+		InteractionHandler_->Moved (*event);
 	}
 
 	void PagesView::mouseReleaseEvent (QMouseEvent *event)
 	{
 		QGraphicsView::mouseReleaseEvent (event);
-		if (Doc_)
-			InteractionHandler_->Released (*event, *Doc_);
+		InteractionHandler_->Released (*event);
 	}
 
 	void PagesView::resizeEvent (QResizeEvent *e)

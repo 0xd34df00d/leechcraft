@@ -26,26 +26,28 @@ namespace LC::Monocle
 
 		explicit InteractionHandler (PagesView&, const ViewConfig&);
 	public:
-		virtual void Pressed (QMouseEvent&, IDocument&) {}
-		virtual void Moved (QMouseEvent&, IDocument&) {}
-		virtual void Released (QMouseEvent&, IDocument&) {}
+		virtual void Pressed (QMouseEvent&) {}
+		virtual void Moved (QMouseEvent&) {}
+		virtual void Released (QMouseEvent&) {}
 	};
 
 	class MovingInteraction final : public InteractionHandler
 	{
 	public:
 		explicit MovingInteraction (PagesView&);
+		explicit MovingInteraction (PagesView&, IDocument&);
 	};
 
 	class AreaSelectionInteraction final : public InteractionHandler
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::AreaSelectionInteraction)
 
+		IDocument& Doc_;
 		bool ShowOnNextRelease_ = false;
 	public:
-		explicit AreaSelectionInteraction (PagesView&);
+		explicit AreaSelectionInteraction (PagesView&, IDocument&);
 
-		void Moved (QMouseEvent&, IDocument&) override;
-		void Released (QMouseEvent&, IDocument&) override;
+		void Moved (QMouseEvent&) override;
+		void Released (QMouseEvent&) override;
 	};
 }

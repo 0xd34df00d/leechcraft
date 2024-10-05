@@ -45,12 +45,18 @@ namespace LC::Monocle
 	{
 	}
 
-	AreaSelectionInteraction::AreaSelectionInteraction (PagesView& view)
-	: InteractionHandler { view, { .DragMode_ = QGraphicsView::RubberBandDrag } }
+	MovingInteraction::MovingInteraction (PagesView& view, IDocument&)
+	: MovingInteraction { view }
 	{
 	}
 
-	void AreaSelectionInteraction::Moved (QMouseEvent& ev, IDocument&)
+	AreaSelectionInteraction::AreaSelectionInteraction (PagesView& view, IDocument& doc)
+	: InteractionHandler { view, { .DragMode_ = QGraphicsView::RubberBandDrag } }
+	, Doc_ { doc }
+	{
+	}
+
+	void AreaSelectionInteraction::Moved (QMouseEvent& ev)
 	{
 		if (ev.buttons () != Qt::NoButton)
 			ShowOnNextRelease_ = true;
@@ -109,7 +115,7 @@ namespace LC::Monocle
 		}
 	}
 
-	void AreaSelectionInteraction::Released (QMouseEvent& ev, IDocument& doc)
+	void AreaSelectionInteraction::Released (QMouseEvent& ev)
 	{
 		if (!ShowOnNextRelease_)
 			return;
@@ -134,7 +140,7 @@ namespace LC::Monocle
 				GetProxyHolder ()->GetEntityManager (),
 				menu);
 
-		if (const auto ihtc = qobject_cast<IHaveTextContent*> (doc.GetQObject ()))
+		if (const auto ihtc = qobject_cast<IHaveTextContent*> (Doc_.GetQObject ()))
 			if (const auto& selText = GetSelectionText (*View_.scene (), *ihtc);
 				!selText.isEmpty ())
 			{
