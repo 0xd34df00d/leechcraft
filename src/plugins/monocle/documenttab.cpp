@@ -554,8 +554,8 @@ namespace Monocle
 				[this] { Ui_.PagesView_->SetInteractionHandler<MovingInteraction> (); });
 		Toolbar_->addAction (moveModeAction);
 
-		auto selectModeAction = new QAction (tr ("Selection mode"), this);
-		selectModeAction->setProperty ("ActionIcon", "edit-select");
+		auto selectModeAction = new QAction (tr ("Area selection mode"), this);
+		selectModeAction->setProperty ("ActionIcon", "select-rectangular");
 		selectModeAction->setCheckable (true);
 		selectModeAction->setActionGroup (mouseModeGroup);
 		connect (selectModeAction,
