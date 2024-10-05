@@ -52,6 +52,7 @@ namespace LC::Monocle
 	};
 
 	using PageWithRelativePos = PageWithPos<PageRelativePos>;
+	using PageWithAbsolutePos = PageWithPos<PageAbsolutePos>;
 
 
 	struct PageRelativeRect;
