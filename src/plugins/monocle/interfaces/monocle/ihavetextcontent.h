@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QtPlugin>
+#include "coords.h"
 
 class QString;
 
