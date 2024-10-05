@@ -37,9 +37,17 @@ namespace LC::Monocle
 		{
 			InteractionHandlerFactory_ = [this] () -> InteractionHandler_ptr
 			{
-				if (!Doc_)
-					return std::make_unique<MovingInteraction> (*this);
-				return std::make_unique<T> (*this, *Doc_);
+				try
+				{
+					if (Doc_)
+						return std::make_unique<T> (*this, *Doc_);
+				}
+				catch (const std::exception& e)
+				{
+					qCritical () << Q_FUNC_INFO << "unable to create the interaction handler:" << e.what ();
+				}
+
+				return std::make_unique<MovingInteraction> (*this);
 			};
 			InteractionHandler_ = InteractionHandlerFactory_ ();
 		}
