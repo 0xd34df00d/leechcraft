@@ -9,7 +9,10 @@
 #pragma once
 
 #include <QCoreApplication>
+#include "interfaces/monocle/ihavetextcontent.h"
+#include "components/layout/positions.h"
 
+class QGraphicsRectItem;
 class QMouseEvent;
 
 namespace LC::Monocle
@@ -49,5 +52,33 @@ namespace LC::Monocle
 
 		void Moved (QMouseEvent&) override;
 		void Released (QMouseEvent&) override;
+	};
+
+	class TextSelectionInteraction final : public InteractionHandler
+	{
+		struct BoxInfo
+		{
+			TextBox Box_;
+			QGraphicsRectItem *Item_;
+			bool IsSelected_ = false;
+		};
+		QMap<int, std::vector<BoxInfo>> Boxes_;
+
+		using PageAndPos = std::pair<PageGraphicsItem*, PageRelativePos>;
+		std::optional<PageAndPos> FirstPos_;
+
+		IHaveTextContent& IHTC_;
+	public:
+		explicit TextSelectionInteraction (PagesView&, IDocument&);
+
+		void Pressed (QMouseEvent&) override;
+		void Moved (QMouseEvent&) override;
+		void Released (QMouseEvent&) override;
+	private:
+		void EnsureFirstPos (QPointF);
+
+		void LoadBoxes (PageGraphicsItem&);
+
+		std::optional<PageAndPos> GetPageInfo (QPointF);
 	};
 }

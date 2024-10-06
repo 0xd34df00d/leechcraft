@@ -160,4 +160,145 @@ namespace LC::Monocle
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 		menu->show ();
 	}
+
+	namespace
+	{
+		IHaveTextContent& GetIHTC (IDocument& doc)
+		{
+			const auto ptr = qobject_cast<IHaveTextContent*> (doc.GetQObject ());
+			if (!ptr)
+				throw std::runtime_error { "the document is not an IHaveTextContent" };
+
+			return *ptr;
+		}
+	}
+
+	TextSelectionInteraction::TextSelectionInteraction (PagesView& view, IDocument& doc)
+	: InteractionHandler { view, { .DragMode_ = QGraphicsView::NoDrag, .Cursor_ = Qt::IBeamCursor } }
+	, IHTC_ { GetIHTC (doc) }
+	{
+	}
+
+	namespace
+	{
+		PageGraphicsItem* GetItemAt (QPointF pos, QGraphicsScene& scene)
+		{
+			for (const auto item : scene.items (pos))
+				if (const auto page = dynamic_cast<PageGraphicsItem*> (item))
+					return page;
+
+			return nullptr;
+		}
+	}
+
+	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
+	{
+		FirstPos_.reset ();
+		EnsureFirstPos (ev.localPos ());
+	}
+
+	namespace
+	{
+		bool ContainedFirstLine (const PageRelativePos& topLeft, const PageRelativeRect& rect)
+		{
+			return false;
+		}
+
+		bool ContainedLastLine (const PageRelativePos& bottomRight, const PageRelativeRect& rect)
+		{
+			return false;
+		}
+
+		bool IsSelected (const PageRelativeRect& item, PageRelativePos selTopLeft, PageRelativePos selBottomRight)
+		{
+			const auto topY = selTopLeft.P_.y ();
+			const auto bottomY = selBottomRight.P_.y ();
+
+			const bool fullyContainedVertically = topY <= item.R_.top () && item.R_.bottom () <= bottomY;
+
+			return fullyContainedVertically ||
+					item.R_.intersects (QRectF { selTopLeft.P_, selBottomRight.P_ });
+		}
+	}
+
+	void TextSelectionInteraction::Moved (QMouseEvent& ev)
+	{
+		if (ev.buttons () == Qt::NoButton)
+			return;
+
+		EnsureFirstPos (ev.localPos ());
+
+		const auto& pageAndPos = GetPageInfo (ev.localPos ());
+		if (!pageAndPos)
+			return;
+
+		const auto& [page, curPos] = *pageAndPos;
+
+		for (auto& box : Boxes_ [page->GetPageNum ()])
+		{
+			box.IsSelected_ = IsSelected (box.Box_.Rect_, FirstPos_->second, curPos);
+			if (box.IsSelected_)
+				box.Item_->setBrush (Qt::black);
+			else
+				box.Item_->setBrush ({});
+		}
+	}
+
+	void TextSelectionInteraction::Released (QMouseEvent&)
+	{
+	}
+
+	void TextSelectionInteraction::EnsureFirstPos (QPointF pos)
+	{
+		if (FirstPos_)
+			return;
+
+		FirstPos_ = GetPageInfo (pos);
+		if (!FirstPos_)
+			return;
+
+		LoadBoxes (*FirstPos_->first);
+	}
+
+	void TextSelectionInteraction::LoadBoxes (PageGraphicsItem& item)
+	{
+		const auto pageNum = item.GetPageNum ();
+
+		auto& infos = Boxes_ [pageNum];
+		if (!infos.empty ())
+			return;
+
+		connect (&item,
+				&QObject::destroyed,
+				this,
+				[this, pageNum] { Boxes_.remove (pageNum); });
+
+		const auto& boxes = IHTC_.GetTextBoxes (pageNum);
+		infos.reserve (boxes.size ());
+		for (const auto& box : boxes)
+		{
+			auto rectItem = new QGraphicsRectItem { &item };
+			rectItem->setPen (QPen { Qt::black });
+			rectItem->setVisible (true);
+			rectItem->setZValue (1);
+
+			item.RegisterChildRect (rectItem,
+					box.Rect_,
+					[rectItem] (const PageAbsoluteRect& rect) { rectItem->setRect (rect.ToRectF ()); });
+			infos.emplace_back (box, rectItem);
+		}
+	}
+
+	auto TextSelectionInteraction::GetPageInfo (QPointF pos) -> std::optional<PageAndPos>
+	{
+		const auto item = GetItemAt (pos, *View_.scene ());
+		if (!item)
+			return {};
+
+		return PageAndPos
+		{
+			item,
+			SceneAbsolutePos { pos }.ToPageRelative (*item),
+		};
+	}
 }
