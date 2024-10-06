@@ -16,6 +16,7 @@ namespace LC::Monocle::Boop
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("monocle_boop"_qs);
 	}
 
 	void Plugin::SecondInit ()
