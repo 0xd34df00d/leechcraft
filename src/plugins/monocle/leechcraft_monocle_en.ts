@@ -120,6 +120,24 @@
     </message>
 </context>
 <context>
+    <name>LC::Monocle::AreaSelectionInteraction</name>
+    <message>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="129"/>
+        <source>Copy as image</source>
+        <translation>Copy as image</translation>
+    </message>
+    <message>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="134"/>
+        <source>Save as image...</source>
+        <translation>Save as image...</translation>
+    </message>
+    <message>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="149"/>
+        <source>Copy as text</source>
+        <translation>Copy as text</translation>
+    </message>
+</context>
+<context>
     <name>LC::Monocle::BookmarksWidget</name>
     <message>
         <location filename="bookmarkswidget.cpp" line="25"/>
@@ -148,17 +166,17 @@
 <context>
     <name>LC::Monocle::DocInfoDialog</name>
     <message>
-        <location filename="docinfodialog.cpp" line="56"/>
+        <location filename="docinfodialog.cpp" line="50"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="docinfodialog.cpp" line="56"/>
+        <location filename="docinfodialog.cpp" line="50"/>
         <source>Path</source>
         <translation>Path</translation>
     </message>
     <message>
-        <location filename="docinfodialog.cpp" line="63"/>
+        <location filename="docinfodialog.cpp" line="57"/>
         <source>embedded</source>
         <translation>embedded</translation>
     </message>
@@ -166,45 +184,53 @@
 <context>
     <name>LC::Monocle::Dock</name>
     <message>
-        <location filename="components/gui/dock.cpp" line="44"/>
+        <location filename="components/widgets/dock.cpp" line="44"/>
         <source>Monocle dock</source>
         <translation>Monocle dock</translation>
     </message>
     <message>
-        <location filename="components/gui/dock.cpp" line="70"/>
+        <location filename="components/widgets/dock.cpp" line="70"/>
         <source>Table of contents</source>
         <translation>Table of contents</translation>
     </message>
     <message>
-        <location filename="components/gui/dock.cpp" line="71"/>
+        <location filename="components/widgets/dock.cpp" line="71"/>
         <source>Bookmarks</source>
         <translation>Bookmarks</translation>
     </message>
     <message>
-        <location filename="components/gui/dock.cpp" line="72"/>
+        <location filename="components/widgets/dock.cpp" line="72"/>
         <source>Thumbnails</source>
         <translation>Thumbnails</translation>
     </message>
     <message>
-        <location filename="components/gui/dock.cpp" line="73"/>
+        <location filename="components/widgets/dock.cpp" line="73"/>
         <source>Annotations</source>
         <translation>Annotations</translation>
     </message>
     <message>
-        <location filename="components/gui/dock.cpp" line="74"/>
+        <location filename="components/widgets/dock.cpp" line="74"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="components/gui/dock.cpp" line="75"/>
+        <location filename="components/widgets/dock.cpp" line="75"/>
         <source>Optional contents</source>
         <translation>Optional contents</translation>
     </message>
 </context>
 <context>
+    <name>LC::Monocle::DocumentActions</name>
+    <message>
+        <location filename="components/actions/documentactions.cpp" line="22"/>
+        <source>Document info...</source>
+        <translation>Document info...</translation>
+    </message>
+</context>
+<context>
     <name>LC::Monocle::DocumentBookmarksModel</name>
     <message>
-        <location filename="components/navigation/documentbookmarksmodel.cpp" line="59"/>
+        <location filename="components/navigation/documentbookmarksmodel.cpp" line="73"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
@@ -212,146 +238,122 @@
 <context>
     <name>LC::Monocle::DocumentTab</name>
     <message>
-        <location filename="documenttab.cpp" line="351"/>
-        <source>Open...</source>
-        <translation>Open...</translation>
-    </message>
-    <message>
-        <location filename="documenttab.cpp" line="429"/>
+        <location filename="documenttab.cpp" line="412"/>
         <source>Print...</source>
         <translation>Print...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="441"/>
+        <location filename="documenttab.cpp" line="424"/>
         <source>Save</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="451"/>
+        <location filename="documenttab.cpp" line="434"/>
         <source>Export as PDF...</source>
         <translation>Export as PDF...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="466"/>
+        <location filename="documenttab.cpp" line="449"/>
         <source>Find...</source>
         <translation>Find...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="481"/>
+        <location filename="documenttab.cpp" line="464"/>
         <source>Presentation...</source>
         <translation>Presentation...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="535"/>
+        <location filename="documenttab.cpp" line="538"/>
         <source>One page</source>
         <translation>One page</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="545"/>
+        <location filename="documenttab.cpp" line="539"/>
         <source>Two pages</source>
         <translation>Two pages</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="554"/>
+        <location filename="documenttab.cpp" line="540"/>
         <source>Two pages (first page separate)</source>
         <translation>Two pages (first page separate)</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="566"/>
+        <location filename="documenttab.cpp" line="546"/>
         <source>Move mode</source>
+        <oldsource>Move</oldsource>
         <translation>Move mode</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="577"/>
-        <source>Selection mode</source>
-        <translation>Selection mode</translation>
+        <location filename="documenttab.cpp" line="557"/>
+        <source>Area selection mode</source>
+        <translation>Area selection mode</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="706"/>
+        <location filename="documenttab.cpp" line="567"/>
+        <source>Text selection mode</source>
+        <translation>Text selection mode</translation>
+    </message>
+    <message>
+        <location filename="documenttab.cpp" line="678"/>
         <source>Page %1</source>
         <translation>Page %1</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="738"/>
-        <source>Known files</source>
-        <translation>Known files</translation>
-    </message>
-    <message>
-        <location filename="documenttab.cpp" line="739"/>
-        <source>All files</source>
-        <translation>All files</translation>
-    </message>
-    <message>
-        <location filename="documenttab.cpp" line="770"/>
+        <location filename="documenttab.cpp" line="710"/>
         <source>Can&apos;t save document: %1.</source>
         <translation>Can&apos;t save document: %1.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="124"/>
+        <location filename="documenttab.cpp" line="154"/>
         <source>Unable to open document %1.</source>
         <translation>Unable to open document %1.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="496"/>
+        <location filename="documenttab.cpp" line="479"/>
         <source>Bookmarks</source>
         <translation>Bookmarks</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="589"/>
-        <source>Document info...</source>
-        <translation>Document info...</translation>
-    </message>
-    <message>
-        <location filename="documenttab.cpp" line="366"/>
-        <source>Seems like file %1 doesn&apos;t exist anymore.</source>
-        <translation>Seems like file %1 doesn&apos;t exist anymore.</translation>
-    </message>
-    <message>
-        <location filename="documenttab.cpp" line="499"/>
+        <location filename="documenttab.cpp" line="482"/>
         <source>Add bookmark</source>
         <translation>Add bookmark</translation>
-    </message>
-    <message>
-        <location filename="documenttab.cpp" line="744"/>
-        <source>Select file</source>
-        <translation>Select file</translation>
     </message>
 </context>
 <context>
     <name>LC::Monocle::LinkActionMenu</name>
     <message>
-        <location filename="linkactionexecutor.cpp" line="39"/>
+        <location filename="components/services/linkactionexecutor.cpp" line="39"/>
         <source>Navigate to page %1</source>
         <translation>Navigate to page %1</translation>
     </message>
     <message>
-        <location filename="linkactionexecutor.cpp" line="44"/>
+        <location filename="components/services/linkactionexecutor.cpp" line="44"/>
         <source>Navigate to page %1 of %2</source>
         <translation>Navigate to page %1 of %2</translation>
     </message>
     <message>
-        <location filename="linkactionexecutor.cpp" line="87"/>
+        <location filename="components/services/linkactionexecutor.cpp" line="87"/>
         <source>Copy the linked document name to the clipboard</source>
         <oldsource>Copy target document name to the clipboard</oldsource>
         <translation>Copy the linked document name to the clipboard</translation>
     </message>
     <message>
-        <location filename="linkactionexecutor.cpp" line="51"/>
+        <location filename="components/services/linkactionexecutor.cpp" line="51"/>
         <source>Open URL %1</source>
         <translation>Open URL %1</translation>
     </message>
     <message>
-        <location filename="linkactionexecutor.cpp" line="97"/>
+        <location filename="components/services/linkactionexecutor.cpp" line="97"/>
         <source>Download %1</source>
         <translation>Download %1</translation>
     </message>
     <message>
-        <location filename="linkactionexecutor.cpp" line="105"/>
+        <location filename="components/services/linkactionexecutor.cpp" line="105"/>
         <source>Copy URL to the clipboard</source>
         <translation>Copy URL to the clipboard</translation>
     </message>
     <message>
-        <location filename="linkactionexecutor.cpp" line="56"/>
+        <location filename="components/services/linkactionexecutor.cpp" line="56"/>
         <source>Execute custom action</source>
         <translation>Execute custom action</translation>
     </message>
@@ -359,17 +361,17 @@
 <context>
     <name>LC::Monocle::NavigationHistory</name>
     <message>
-        <location filename="components/navigation/navigationhistory.cpp" line="18"/>
+        <location filename="components/navigation/navigationhistory.cpp" line="17"/>
         <source>Go back</source>
         <translation>Go back</translation>
     </message>
     <message>
-        <location filename="components/navigation/navigationhistory.cpp" line="19"/>
+        <location filename="components/navigation/navigationhistory.cpp" line="18"/>
         <source>Go forward</source>
         <translation>Go forward</translation>
     </message>
     <message>
-        <location filename="components/navigation/navigationhistory.cpp" line="85"/>
+        <location filename="components/navigation/navigationhistory.cpp" line="84"/>
         <source>Page %1 (%2)</source>
         <translation>Page %1 (%2)</translation>
     </message>
@@ -377,45 +379,30 @@
 <context>
     <name>LC::Monocle::PagesView</name>
     <message>
-        <location filename="pagesview.cpp" line="83"/>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="84"/>
         <source>Save selection as</source>
         <translation>Save selection as</translation>
     </message>
     <message>
-        <location filename="pagesview.cpp" line="85"/>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="86"/>
         <source>PNG images (*.png)</source>
         <translation>PNG images (*.png)</translation>
-    </message>
-    <message>
-        <location filename="pagesview.cpp" line="129"/>
-        <source>Copy as image</source>
-        <translation>Copy as image</translation>
-    </message>
-    <message>
-        <location filename="pagesview.cpp" line="134"/>
-        <source>Save as image...</source>
-        <translation>Save as image...</translation>
-    </message>
-    <message>
-        <location filename="pagesview.cpp" line="149"/>
-        <source>Copy as text</source>
-        <translation>Copy as text</translation>
     </message>
 </context>
 <context>
     <name>LC::Monocle::Plugin</name>
     <message>
-        <location filename="monocle.cpp" line="53"/>
+        <location filename="monocle.cpp" line="66"/>
         <source>Go to previous annotation</source>
         <translation>Go to previous annotation</translation>
     </message>
     <message>
-        <location filename="monocle.cpp" line="59"/>
+        <location filename="monocle.cpp" line="72"/>
         <source>Go to next annotation</source>
         <translation>Go to next annotation</translation>
     </message>
     <message>
-        <location filename="monocle.cpp" line="85"/>
+        <location filename="monocle.cpp" line="98"/>
         <source>Modular document viewer for LeechCraft.</source>
         <translation>Modular document viewer for LeechCraft.</translation>
     </message>
@@ -423,7 +410,7 @@
 <context>
     <name>LC::Monocle::RecentlyOpenedManager</name>
     <message>
-        <location filename="recentlyopenedmanager.cpp" line="35"/>
+        <location filename="components/services/recentlyopenedmanager.cpp" line="28"/>
         <source>Recently opened</source>
         <translation>Recently opened</translation>
     </message>
@@ -457,6 +444,34 @@
         <location filename="searchtabwidget.cpp" line="68"/>
         <source>Occurrence %1</source>
         <translation>Occurrence %1</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Monocle::ToolbarActions</name>
+    <message>
+        <location filename="components/actions/toolbaractions.cpp" line="51"/>
+        <source>Open...</source>
+        <translation>Open...</translation>
+    </message>
+    <message>
+        <location filename="components/actions/toolbaractions.cpp" line="66"/>
+        <source>Seems like file %1 doesn&apos;t exist anymore.</source>
+        <translation>Seems like file %1 doesn&apos;t exist anymore.</translation>
+    </message>
+    <message>
+        <location filename="components/actions/toolbaractions.cpp" line="93"/>
+        <source>Known files</source>
+        <translation>Known files</translation>
+    </message>
+    <message>
+        <location filename="components/actions/toolbaractions.cpp" line="94"/>
+        <source>All files</source>
+        <translation>All files</translation>
+    </message>
+    <message>
+        <location filename="components/actions/toolbaractions.cpp" line="99"/>
+        <source>Select file</source>
+        <translation>Select file</translation>
     </message>
 </context>
 <context>
@@ -499,7 +514,7 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Appearance</source>
         <translation>Appearance</translation>
     </message>
@@ -542,92 +557,102 @@
         <translation>Pixmap cache size:</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>Smaller rendering delay on size changes</source>
+        <translation>Smaller rendering delay on size changes</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="14"/>
+        <source>If enabled, the pages view will be updated with a smaller delay after window size change or dock splitter dragging. This results in a smoother experience at the cost of higher CPU usage during such resizes.</source>
+        <translation>If enabled, the pages view will be updated with a smaller delay after window size change or dock splitter dragging. This results in a smoother experience at the cost of higher CPU usage during such resizes.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
         <source>Text books</source>
         <translation>Text books</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Default font:</source>
         <translation>Default font:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="17"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>Page width:</source>
         <translation>Page width:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="18"/>
         <location filename="dummy.cpp" line="20"/>
+        <location filename="dummy.cpp" line="22"/>
         <source> px</source>
         <translation> px</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="19"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Page height:</source>
         <translation>Page height:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Custom colors</source>
         <translation>Custom colors</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Background color:</source>
         <translation>Background color:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Foreground color:</source>
         <translation>Foreground color:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>Link color:</source>
         <translation>Link color:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Margins and indents</source>
         <translation>Margins and indents</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Page</source>
         <translation>Page</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Left margin:</source>
         <translation>Left margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Top margin:</source>
         <translation>Top margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>Right margin:</source>
         <translation>Right margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Bottom margin:</source>
         <translation>Bottom margin:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Paragraph</source>
         <translation>Paragraph</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>First line indent:</source>
         <translation>First line indent:</translation>
     </message>
@@ -642,7 +667,7 @@
         <translation>Smooth scrolling</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Default backends</source>
         <translation>Default backends</translation>
     </message>
