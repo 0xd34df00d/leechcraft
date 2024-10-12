@@ -200,7 +200,7 @@ namespace LC::Monocle
 			return nullptr;
 		}
 
-		auto GetSelectedRange (const std::vector<TextSelectionInteraction::BoxInfo>& boxes,
+		auto GetSelectedRange (std::vector<TextSelectionInteraction::BoxInfo>& boxes,
 				PageRelativePos firstPos, PageRelativePos lastPos)
 		{
 			const auto begin = std::find_if (boxes.begin (), boxes.end (),
@@ -219,6 +219,11 @@ namespace LC::Monocle
 
 			return std::pair { begin, lastSelected.base () };
 		}
+
+		auto ToTuple (const TextSelectionInteraction::SelectionCornerInfo& info)
+		{
+			return std::tuple { info.first->GetPageNum (), info.second.P_.y (), info.second.P_.x () };
+		}
 	}
 
 	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
@@ -234,21 +239,33 @@ namespace LC::Monocle
 
 		EnsureHasSelectionStart (ev.localPos ());
 
-		const auto& selectinEndInfo = GetPageInfo (ev.localPos ());
-		if (!selectinEndInfo)
+		const auto& selectionEnd = GetPageInfo (ev.localPos ());
+		if (!SelectionStart_ || !selectionEnd)
 			return;
 
-		const auto [page, endPos] = *selectinEndInfo;
+		const auto [selTopLeft, selBottomRight] = std::minmax (*SelectionStart_, *selectionEnd,
+				[] (const auto& l, const auto& r) { return ToTuple (l) < ToTuple (r); });
+
+		const auto [page, endPos] = selBottomRight;
 
 		auto& boxes = LoadBoxes (*page);
 
-		const auto [selBegin, selEnd] = GetSelectedRange (boxes, SelectionStart_->second, endPos);
-		for (const auto& box : std::ranges::subrange (boxes.begin (), selBegin))
+		const auto [selBegin, selEnd] = GetSelectedRange (boxes, selTopLeft.second, endPos);
+		for (auto& box : std::ranges::subrange (boxes.begin (), selBegin))
+		{
 			box.Item_->setBrush ({});
-		for (const auto& box : std::ranges::subrange (selBegin, selEnd))
+			box.IsSelected_ = false;
+		}
+		for (auto& box : std::ranges::subrange (selBegin, selEnd))
+		{
 			box.Item_->setBrush (Qt::black);
-		for (const auto& box : std::ranges::subrange (selEnd, boxes.end ()))
+			box.IsSelected_ = true;
+		}
+		for (auto& box : std::ranges::subrange (selEnd, boxes.end ()))
+		{
 			box.Item_->setBrush ({});
+			box.IsSelected_ = false;
+		}
 	}
 
 	void TextSelectionInteraction::Released (QMouseEvent&)

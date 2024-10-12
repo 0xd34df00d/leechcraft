@@ -58,12 +58,11 @@ namespace LC::Monocle
 	{
 	public:
 		struct BoxInfo;
-	private:
-		QMap<int, std::vector<BoxInfo>> Boxes_;
 
 		using SelectionCornerInfo = std::pair<PageGraphicsItem*, PageRelativePos>;
+	private:
+		QMap<int, std::vector<BoxInfo>> Boxes_;
 		std::optional<SelectionCornerInfo> SelectionStart_;
-
 		IHaveTextContent& IHTC_;
 	public:
 		explicit TextSelectionInteraction (PagesView&, IDocument&);
