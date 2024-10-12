@@ -197,30 +197,6 @@ namespace LC::Monocle
 		EnsureFirstPos (ev.localPos ());
 	}
 
-	namespace
-	{
-		bool ContainedFirstLine (const PageRelativePos& topLeft, const PageRelativeRect& rect)
-		{
-			return false;
-		}
-
-		bool ContainedLastLine (const PageRelativePos& bottomRight, const PageRelativeRect& rect)
-		{
-			return false;
-		}
-
-		bool IsSelected (const PageRelativeRect& item, PageRelativePos selTopLeft, PageRelativePos selBottomRight)
-		{
-			const auto topY = selTopLeft.P_.y ();
-			const auto bottomY = selBottomRight.P_.y ();
-
-			const bool fullyContainedVertically = topY <= item.R_.top () && item.R_.bottom () <= bottomY;
-
-			return fullyContainedVertically ||
-					item.R_.intersects (QRectF { selTopLeft.P_, selBottomRight.P_ });
-		}
-	}
-
 	void TextSelectionInteraction::Moved (QMouseEvent& ev)
 	{
 		if (ev.buttons () == Qt::NoButton)
@@ -234,14 +210,25 @@ namespace LC::Monocle
 
 		const auto& [page, curPos] = *pageAndPos;
 
-		for (auto& box : Boxes_ [page->GetPageNum ()])
-		{
-			box.IsSelected_ = IsSelected (box.Box_.Rect_, FirstPos_->second, curPos);
-			if (box.IsSelected_)
-				box.Item_->setBrush (Qt::black);
-			else
-				box.Item_->setBrush ({});
-		}
+		auto& boxes = Boxes_ [page->GetPageNum ()];
+		const auto firstSelected = std::find_if (boxes.begin (), boxes.end (),
+				[&] (const BoxInfo& boxInfo)
+				{
+					return boxInfo.Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (FirstPos_->second);
+				});
+		const auto firstUnselected = std::find_if (firstSelected, boxes.end (),
+				[&] (const BoxInfo& boxInfo)
+				{
+					const auto& rect = boxInfo.Box_.Rect_;
+					const auto& midPoint = (rect.TopLeft<PageRelativePos> () + rect.BottomRight<PageRelativePos> ()) / 2;
+					return midPoint.BothGeqThan (pageAndPos->second);
+				});
+		for (const auto& box : std::ranges::subrange (boxes.begin (), firstSelected))
+			box.Item_->setBrush ({});
+		for (const auto& box : std::ranges::subrange (firstSelected, firstUnselected))
+			box.Item_->setBrush (Qt::black);
+		for (const auto& box : std::ranges::subrange (firstUnselected, boxes.end ()))
+			box.Item_->setBrush ({});
 	}
 
 	void TextSelectionInteraction::Released (QMouseEvent&)
