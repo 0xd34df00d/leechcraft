@@ -56,12 +56,9 @@ namespace LC::Monocle
 
 	class TextSelectionInteraction final : public InteractionHandler
 	{
-		struct BoxInfo
-		{
-			TextBox Box_;
-			QGraphicsRectItem *Item_;
-			bool IsSelected_ = false;
-		};
+	public:
+		struct BoxInfo;
+	private:
 		QMap<int, std::vector<BoxInfo>> Boxes_;
 
 		using PageAndPos = std::pair<PageGraphicsItem*, PageRelativePos>;
@@ -70,6 +67,7 @@ namespace LC::Monocle
 		IHaveTextContent& IHTC_;
 	public:
 		explicit TextSelectionInteraction (PagesView&, IDocument&);
+		~TextSelectionInteraction () override;
 
 		void Pressed (QMouseEvent&) override;
 		void Moved (QMouseEvent&) override;

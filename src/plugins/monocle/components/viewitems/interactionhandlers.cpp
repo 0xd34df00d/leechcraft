@@ -173,11 +173,20 @@ namespace LC::Monocle
 		}
 	}
 
+	struct TextSelectionInteraction::BoxInfo
+	{
+		TextBox Box_;
+		QGraphicsRectItem *Item_;
+		bool IsSelected_ = false;
+	};
+
 	TextSelectionInteraction::TextSelectionInteraction (PagesView& view, IDocument& doc)
 	: InteractionHandler { view, { .DragMode_ = QGraphicsView::NoDrag, .Cursor_ = Qt::IBeamCursor } }
 	, IHTC_ { GetIHTC (doc) }
 	{
 	}
+
+	TextSelectionInteraction::~TextSelectionInteraction () = default;
 
 	namespace
 	{
