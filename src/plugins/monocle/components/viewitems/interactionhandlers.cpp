@@ -246,11 +246,17 @@ namespace LC::Monocle
 		const auto [selTopLeft, selBottomRight] = std::minmax (*SelectionStart_, *selectionEnd,
 				[] (const auto& l, const auto& r) { return ToTuple (l) < ToTuple (r); });
 
-		const auto [page, endPos] = selBottomRight;
+		const auto [startPage, startPos] = selTopLeft;
+		const auto [endPage, endPos] = selBottomRight;
 
-		auto& boxes = LoadBoxes (*page);
+		SelectOnPage (*startPage, startPos, endPos);
+	}
 
-		const auto [selBegin, selEnd] = GetSelectedRange (boxes, selTopLeft.second, endPos);
+	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos)
+	{
+		auto& boxes = LoadBoxes (page);
+
+		const auto [selBegin, selEnd] = GetSelectedRange (boxes, startPos, endPos);
 		for (auto& box : std::ranges::subrange (boxes.begin (), selBegin))
 		{
 			box.Item_->setBrush ({});

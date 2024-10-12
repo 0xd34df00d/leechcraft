@@ -72,6 +72,7 @@ namespace LC::Monocle
 		void Moved (QMouseEvent&) override;
 		void Released (QMouseEvent&) override;
 	private:
+		void SelectOnPage (PageGraphicsItem&, PageRelativePos, PageRelativePos);
 
 		void EnsureHasSelectionStart (ViewAbsolutePos pos);
 		std::vector<BoxInfo>& LoadBoxes (PageGraphicsItem&);
