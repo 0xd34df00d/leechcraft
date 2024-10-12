@@ -86,6 +86,16 @@ namespace LC::Monocle
 		{
 			return T { p.P_ / factor };
 		}
+
+		bool BothGeqThan (T p) const
+		{
+			return P_.x () >= p.P_.x () && P_.y () >= p.P_.y ();
+		}
+
+		bool BothLeqThan (T p) const
+		{
+			return P_.x () <= p.P_.x () && P_.y () <= p.P_.y ();
+		}
 	};
 
 	template<typename T, Relativity R>
