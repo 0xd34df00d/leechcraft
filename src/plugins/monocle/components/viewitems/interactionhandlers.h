@@ -61,8 +61,8 @@ namespace LC::Monocle
 	private:
 		QMap<int, std::vector<BoxInfo>> Boxes_;
 
-		using PageAndPos = std::pair<PageGraphicsItem*, PageRelativePos>;
-		std::optional<PageAndPos> FirstPos_;
+		using SelectionCornerInfo = std::pair<PageGraphicsItem*, PageRelativePos>;
+		std::optional<SelectionCornerInfo> SelectionStart_;
 
 		IHaveTextContent& IHTC_;
 	public:
@@ -73,10 +73,10 @@ namespace LC::Monocle
 		void Moved (QMouseEvent&) override;
 		void Released (QMouseEvent&) override;
 	private:
-		void EnsureFirstPos (QPointF);
+		void EnsureHasSelectionStart (QPointF pos);
 
-		void LoadBoxes (PageGraphicsItem&);
+		std::vector<BoxInfo>& LoadBoxes (PageGraphicsItem&);
 
-		std::optional<PageAndPos> GetPageInfo (QPointF);
+		std::optional<SelectionCornerInfo> GetPageInfo (QPointF);
 	};
 }

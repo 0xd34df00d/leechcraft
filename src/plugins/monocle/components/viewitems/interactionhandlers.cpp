@@ -223,8 +223,8 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
 	{
-		FirstPos_.reset ();
-		EnsureFirstPos (ev.localPos ());
+		SelectionStart_.reset ();
+		EnsureHasSelectionStart (ev.localPos ());
 	}
 
 	void TextSelectionInteraction::Moved (QMouseEvent& ev)
@@ -232,16 +232,17 @@ namespace LC::Monocle
 		if (ev.buttons () == Qt::NoButton)
 			return;
 
-		EnsureFirstPos (ev.localPos ());
+		EnsureHasSelectionStart (ev.localPos ());
 
-		const auto& pageAndPos = GetPageInfo (ev.localPos ());
-		if (!pageAndPos)
+		const auto& selectinEndInfo = GetPageInfo (ev.localPos ());
+		if (!selectinEndInfo)
 			return;
 
-		const auto& [page, endPos] = *pageAndPos;
+		const auto [page, endPos] = *selectinEndInfo;
 
-		auto& boxes = Boxes_ [page->GetPageNum ()];
-		const auto [selBegin, selEnd] = GetSelectedRange (boxes, FirstPos_->second, endPos);
+		auto& boxes = LoadBoxes (*page);
+
+		const auto [selBegin, selEnd] = GetSelectedRange (boxes, SelectionStart_->second, endPos);
 		for (const auto& box : std::ranges::subrange (boxes.begin (), selBegin))
 			box.Item_->setBrush ({});
 		for (const auto& box : std::ranges::subrange (selBegin, selEnd))
@@ -254,25 +255,19 @@ namespace LC::Monocle
 	{
 	}
 
-	void TextSelectionInteraction::EnsureFirstPos (QPointF pos)
+	void TextSelectionInteraction::EnsureHasSelectionStart (QPointF pos)
 	{
-		if (FirstPos_)
-			return;
-
-		FirstPos_ = GetPageInfo (pos);
-		if (!FirstPos_)
-			return;
-
-		LoadBoxes (*FirstPos_->first);
+		if (!SelectionStart_)
+			SelectionStart_ = GetPageInfo (pos);
 	}
 
-	void TextSelectionInteraction::LoadBoxes (PageGraphicsItem& item)
+	auto TextSelectionInteraction::LoadBoxes (PageGraphicsItem& item) -> std::vector<BoxInfo>&
 	{
 		const auto pageNum = item.GetPageNum ();
 
 		auto& infos = Boxes_ [pageNum];
 		if (!infos.empty ())
-			return;
+			return infos;
 
 		connect (&item,
 				&QObject::destroyed,
@@ -293,15 +288,17 @@ namespace LC::Monocle
 					[rectItem] (const PageAbsoluteRect& rect) { rectItem->setRect (rect.ToRectF ()); });
 			infos.emplace_back (box, rectItem);
 		}
+
+		return infos;
 	}
 
-	auto TextSelectionInteraction::GetPageInfo (QPointF pos) -> std::optional<PageAndPos>
+	auto TextSelectionInteraction::GetPageInfo (QPointF pos) -> std::optional<SelectionCornerInfo>
 	{
 		const auto item = GetItemAt (pos, *View_.scene ());
 		if (!item)
 			return {};
 
-		return PageAndPos
+		return SelectionCornerInfo
 		{
 			item,
 			SceneAbsolutePos { pos }.ToPageRelative (*item),
