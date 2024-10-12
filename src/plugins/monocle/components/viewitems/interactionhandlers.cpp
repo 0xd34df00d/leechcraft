@@ -191,9 +191,9 @@ namespace LC::Monocle
 
 	namespace
 	{
-		PageGraphicsItem* GetItemAt (QPointF pos, QGraphicsScene& scene)
+		PageGraphicsItem* GetItemAt (SceneAbsolutePos pos, QGraphicsScene& scene)
 		{
-			for (const auto item : scene.items (pos))
+			for (const auto item : scene.items (pos.ToPointF ()))
 				if (const auto page = dynamic_cast<PageGraphicsItem*> (item))
 					return page;
 
@@ -229,7 +229,7 @@ namespace LC::Monocle
 	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
 	{
 		SelectionStart_.reset ();
-		EnsureHasSelectionStart (ev.localPos ());
+		EnsureHasSelectionStart (ViewAbsolutePos { ev.localPos () });
 	}
 
 	void TextSelectionInteraction::Moved (QMouseEvent& ev)
@@ -237,9 +237,9 @@ namespace LC::Monocle
 		if (ev.buttons () == Qt::NoButton)
 			return;
 
-		EnsureHasSelectionStart (ev.localPos ());
+		EnsureHasSelectionStart (ViewAbsolutePos { ev.localPos () });
 
-		const auto& selectionEnd = GetPageInfo (ev.localPos ());
+		const auto& selectionEnd = GetPageInfo (ViewAbsolutePos { ev.localPos () });
 		if (!SelectionStart_ || !selectionEnd)
 			return;
 
@@ -272,7 +272,7 @@ namespace LC::Monocle
 	{
 	}
 
-	void TextSelectionInteraction::EnsureHasSelectionStart (QPointF pos)
+	void TextSelectionInteraction::EnsureHasSelectionStart (ViewAbsolutePos pos)
 	{
 		if (!SelectionStart_)
 			SelectionStart_ = GetPageInfo (pos);
@@ -309,16 +309,17 @@ namespace LC::Monocle
 		return infos;
 	}
 
-	auto TextSelectionInteraction::GetPageInfo (QPointF pos) -> std::optional<SelectionCornerInfo>
+	auto TextSelectionInteraction::GetPageInfo (ViewAbsolutePos viewPos) -> std::optional<SelectionCornerInfo>
 	{
-		const auto item = GetItemAt (pos, *View_.scene ());
+		const auto& scenePos = viewPos.ToSceneAbsolute (View_);
+		const auto item = GetItemAt (scenePos, *View_.scene ());
 		if (!item)
 			return {};
 
 		return SelectionCornerInfo
 		{
 			item,
-			SceneAbsolutePos { pos }.ToPageRelative (*item),
+			scenePos.ToPageRelative (*item),
 		};
 	}
 }
