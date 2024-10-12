@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "interactionhandlers.h"
+#include <ranges>
 #include <QClipboard>
 #include <QGuiApplication>
 #include <QImageWriter>
@@ -198,6 +199,26 @@ namespace LC::Monocle
 
 			return nullptr;
 		}
+
+		auto GetSelectedRange (const std::vector<TextSelectionInteraction::BoxInfo>& boxes,
+				PageRelativePos firstPos, PageRelativePos lastPos)
+		{
+			const auto begin = std::find_if (boxes.begin (), boxes.end (),
+					[&] (const TextSelectionInteraction::BoxInfo& boxInfo)
+					{
+						return boxInfo.Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (firstPos);
+					});
+			if (begin == boxes.end ())
+				return std::pair { boxes.end (), boxes.end () };
+
+			auto lastSelected = std::find_if (boxes.rbegin (), std::reverse_iterator { std::next (begin) },
+					[&] (const TextSelectionInteraction::BoxInfo& boxInfo)
+					{
+						return boxInfo.Box_.Rect_.TopLeft<PageRelativePos> ().BothLeqThan (lastPos);
+					});
+
+			return std::pair { begin, lastSelected.base () };
+		}
 	}
 
 	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
@@ -217,26 +238,15 @@ namespace LC::Monocle
 		if (!pageAndPos)
 			return;
 
-		const auto& [page, curPos] = *pageAndPos;
+		const auto& [page, endPos] = *pageAndPos;
 
 		auto& boxes = Boxes_ [page->GetPageNum ()];
-		const auto firstSelected = std::find_if (boxes.begin (), boxes.end (),
-				[&] (const BoxInfo& boxInfo)
-				{
-					return boxInfo.Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (FirstPos_->second);
-				});
-		const auto firstUnselected = std::find_if (firstSelected, boxes.end (),
-				[&] (const BoxInfo& boxInfo)
-				{
-					const auto& rect = boxInfo.Box_.Rect_;
-					const auto& midPoint = (rect.TopLeft<PageRelativePos> () + rect.BottomRight<PageRelativePos> ()) / 2;
-					return midPoint.BothGeqThan (pageAndPos->second);
-				});
-		for (const auto& box : std::ranges::subrange (boxes.begin (), firstSelected))
+		const auto [selBegin, selEnd] = GetSelectedRange (boxes, FirstPos_->second, endPos);
+		for (const auto& box : std::ranges::subrange (boxes.begin (), selBegin))
 			box.Item_->setBrush ({});
-		for (const auto& box : std::ranges::subrange (firstSelected, firstUnselected))
+		for (const auto& box : std::ranges::subrange (selBegin, selEnd))
 			box.Item_->setBrush (Qt::black);
-		for (const auto& box : std::ranges::subrange (firstUnselected, boxes.end ()))
+		for (const auto& box : std::ranges::subrange (selEnd, boxes.end ()))
 			box.Item_->setBrush ({});
 	}
 
