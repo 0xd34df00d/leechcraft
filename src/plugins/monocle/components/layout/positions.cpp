@@ -48,6 +48,11 @@ namespace LC::Monocle
 		return ToPageAbsolute (item).ToPageRelative (item);
 	}
 
+	SceneAbsolutePos ViewAbsolutePos::ToSceneAbsolute (const QGraphicsView& view) const
+	{
+		return SceneAbsolutePos { view.mapToScene (P_.toPoint ()) };
+	}
+
 	PageRelativeRect::PageRelativeRect (const PageRelativeRectBase& rb)
 	: PageRelativeRectBase { rb }
 	{

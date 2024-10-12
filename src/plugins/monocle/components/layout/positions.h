@@ -44,6 +44,13 @@ namespace LC::Monocle
 		PageRelativePos ToPageRelative (const PageGraphicsItem&) const;
 	};
 
+	struct ViewAbsolutePos : Pos<ViewAbsolutePos, Relativity::ViewAbsolute>
+	{
+		using Pos::Pos;
+
+		SceneAbsolutePos ToSceneAbsolute (const QGraphicsView&) const;
+	};
+
 	template<typename T>
 	struct PageWithPos
 	{
