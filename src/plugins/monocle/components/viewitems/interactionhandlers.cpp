@@ -15,6 +15,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <interfaces/core/icoreproxy.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavetextcontent.h"
@@ -285,6 +286,13 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Released (QMouseEvent&)
 	{
+		for (const auto& [pageIdx, boxes] : Util::Stlize (Boxes_))
+			for (const auto& box : boxes)
+			{
+				Pages_ [pageIdx]->UnregisterChildRect (box.Item_);
+				delete box.Item_;
+			}
+		Boxes_.clear ();
 	}
 
 	void TextSelectionInteraction::EnsureHasSelectionStart (ViewAbsolutePos pos)
