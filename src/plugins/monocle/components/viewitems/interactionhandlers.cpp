@@ -46,12 +46,12 @@ namespace LC::Monocle
 	{
 	}
 
-	MovingInteraction::MovingInteraction (PagesView& view, IDocument&)
+	MovingInteraction::MovingInteraction (PagesView& view, IDocument&, const QVector<PageGraphicsItem*>&)
 	: MovingInteraction { view }
 	{
 	}
 
-	AreaSelectionInteraction::AreaSelectionInteraction (PagesView& view, IDocument& doc)
+	AreaSelectionInteraction::AreaSelectionInteraction (PagesView& view, IDocument& doc, const QVector<PageGraphicsItem*>&)
 	: InteractionHandler { view, { .DragMode_ = QGraphicsView::RubberBandDrag } }
 	, Doc_ { doc }
 	{
@@ -181,9 +181,10 @@ namespace LC::Monocle
 		bool IsSelected_ = false;
 	};
 
-	TextSelectionInteraction::TextSelectionInteraction (PagesView& view, IDocument& doc)
+	TextSelectionInteraction::TextSelectionInteraction (PagesView& view, IDocument& doc, const QVector<PageGraphicsItem*>& pages)
 	: InteractionHandler { view, { .DragMode_ = QGraphicsView::NoDrag, .Cursor_ = Qt::IBeamCursor } }
 	, IHTC_ { GetIHTC (doc) }
+	, Pages_ { pages }
 	{
 	}
 

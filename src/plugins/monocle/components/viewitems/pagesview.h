@@ -23,14 +23,17 @@ namespace LC::Monocle
 		Q_OBJECT
 
 		using InteractionHandler_ptr = std::unique_ptr<InteractionHandler>;
-		std::function<InteractionHandler_ptr ()> InteractionHandlerFactory_ { [this] { return std::make_unique<MovingInteraction> (*this); } };
+		using InteractionHandlerFactory = std::function<InteractionHandler_ptr ()>;
+
+		InteractionHandlerFactory InteractionHandlerFactory_ { [this] { return std::make_unique<MovingInteraction> (*this); } };
 		InteractionHandler_ptr InteractionHandler_ = InteractionHandlerFactory_ ();
 
-		IDocument *Doc_ = nullptr;
+		IDocument *Doc_;
+		QVector<PageGraphicsItem*> Pages_;
 	public:
 		using QGraphicsView::QGraphicsView;
 
-		void SetDocument (IDocument*);
+		void HandleDoc (IDocument*, const QVector<PageGraphicsItem*>&);
 
 		template<typename T>
 		void SetInteractionHandler ()
@@ -40,7 +43,7 @@ namespace LC::Monocle
 				try
 				{
 					if (Doc_)
-						return std::make_unique<T> (*this, *Doc_);
+						return std::make_unique<T> (*this, *Doc_, Pages_);
 				}
 				catch (const std::exception& e)
 				{

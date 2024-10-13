@@ -608,7 +608,7 @@ namespace Monocle
 		C_->SearchHandler_.HandleDoc (*CurrentDoc_, Pages_);
 		C_->FormManager_.HandleDoc (*CurrentDoc_, Pages_);
 		C_->AnnManager_.HandleDoc (*CurrentDoc_, Pages_);
-		Ui_.PagesView_->SetDocument (CurrentDoc_.get ());
+		Ui_.PagesView_->HandleDoc (CurrentDoc_.get (), Pages_);
 		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
 		C_->DockWidget_.HandleDoc (*CurrentDoc_);
 		C_->Actions_.HandleDoc (*CurrentDoc_);

@@ -38,7 +38,7 @@ namespace LC::Monocle
 	{
 	public:
 		explicit MovingInteraction (PagesView&);
-		explicit MovingInteraction (PagesView&, IDocument&);
+		explicit MovingInteraction (PagesView&, IDocument&, const QVector<PageGraphicsItem*>&);
 	};
 
 	class AreaSelectionInteraction final : public InteractionHandler
@@ -48,7 +48,7 @@ namespace LC::Monocle
 		IDocument& Doc_;
 		bool ShowOnNextRelease_ = false;
 	public:
-		explicit AreaSelectionInteraction (PagesView&, IDocument&);
+		explicit AreaSelectionInteraction (PagesView&, IDocument&, const QVector<PageGraphicsItem*>&);
 
 		void Moved (QMouseEvent&) override;
 		void Released (QMouseEvent&) override;
@@ -64,8 +64,9 @@ namespace LC::Monocle
 		QMap<int, std::vector<BoxInfo>> Boxes_;
 		std::optional<SelectionCornerInfo> SelectionStart_;
 		IHaveTextContent& IHTC_;
+		const QVector<PageGraphicsItem*> Pages_;
 	public:
-		explicit TextSelectionInteraction (PagesView&, IDocument&);
+		explicit TextSelectionInteraction (PagesView&, IDocument&, const QVector<PageGraphicsItem*>&);
 		~TextSelectionInteraction () override;
 
 		void Pressed (QMouseEvent&) override;

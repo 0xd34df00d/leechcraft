@@ -13,9 +13,10 @@
 
 namespace LC::Monocle
 {
-	void PagesView::SetDocument (IDocument *doc)
+	void PagesView::HandleDoc (IDocument *doc, const QVector<PageGraphicsItem*>& pages)
 	{
 		Doc_ = doc;
+		Pages_ = pages;
 		InteractionHandler_ = InteractionHandlerFactory_ ();
 	}
 
