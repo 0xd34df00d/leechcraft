@@ -250,7 +250,15 @@ namespace LC::Monocle
 		const auto [startPage, startPos] = selTopLeft;
 		const auto [endPage, endPos] = selBottomRight;
 
-		SelectOnPage (*startPage, startPos, endPos);
+		if (startPage == endPage)
+			SelectOnPage (*startPage, startPos, endPos);
+		else
+		{
+			SelectOnPage (*startPage, startPos, PageRelativePos { 1, 1 });
+			for (int i = startPage->GetPageNum () + 1; i < endPage->GetPageNum (); ++i)
+				SelectOnPage (*Pages_ [i], PageRelativePos { 0, 0 }, PageRelativePos { 1, 1 });
+			SelectOnPage (*endPage, PageRelativePos { 0, 0 }, endPos);
+		}
 	}
 
 	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos)
