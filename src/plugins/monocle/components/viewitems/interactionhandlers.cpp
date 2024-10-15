@@ -283,9 +283,31 @@ namespace LC::Monocle
 			box.Item_->setVisible (false);
 	}
 
-	void TextSelectionInteraction::Released (QMouseEvent&)
+	void TextSelectionInteraction::Released (QMouseEvent& ev)
 	{
+		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
+				[] (int acc, auto&& boxes)
+				{
+					return acc + std::ranges::count_if (boxes, [] (auto&& box) { return box.Item_->isVisible (); });
+				});
+
+		QStringList textBits;
+		textBits.reserve (selectedBoxesCount);
+
+		for (const auto& boxes : Boxes_)
+			for (auto& box : boxes)
+				if (box.Item_->isVisible ())
+					textBits << box.Box_.Text_;
+
 		ClearBoxes ();
+
+		const auto& text = textBits.join (QStringView {}).trimmed ();
+		if (text.isEmpty ())
+			return;
+
+		QMenu menu { &View_ };
+		FillMenuForText (menu, text);
+		menu.exec (ev.globalPos ());
 	}
 
 	void TextSelectionInteraction::EnsureHasSelectionStart (ViewAbsolutePos pos)
