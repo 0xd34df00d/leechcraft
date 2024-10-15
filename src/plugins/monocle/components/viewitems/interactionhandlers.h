@@ -78,5 +78,7 @@ namespace LC::Monocle
 		void EnsureHasSelectionStart (ViewAbsolutePos pos);
 		std::vector<BoxInfo>& LoadBoxes (PageGraphicsItem&);
 		std::optional<SelectionCornerInfo> GetPageInfo (ViewAbsolutePos);
+
+		void ClearBoxes ();
 	};
 }
