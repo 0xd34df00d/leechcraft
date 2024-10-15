@@ -173,7 +173,10 @@ namespace LC::Monocle::PDF
 					bounding.height () / size.height ()
 				}
 			};
-			result.push_back ({ textBox->text (), boundingRelative });
+			const auto& text = textBox->hasSpaceAfter () ?
+					textBox->text () + ' ' :
+					textBox->text ();
+			result.push_back ({ text, boundingRelative });
 		}
 
 		qDeleteAll (popplerBoxes);
