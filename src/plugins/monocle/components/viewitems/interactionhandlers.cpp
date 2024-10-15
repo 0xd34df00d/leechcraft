@@ -179,7 +179,6 @@ namespace LC::Monocle
 	{
 		TextBox Box_;
 		QGraphicsRectItem *Item_;
-		bool IsSelected_ = false;
 	};
 
 	TextSelectionInteraction::TextSelectionInteraction (PagesView& view, IDocument& doc, const QVector<PageGraphicsItem*>& pages)
@@ -218,7 +217,6 @@ namespace LC::Monocle
 					{
 						return boxInfo.Box_.Rect_.TopLeft<PageRelativePos> ().BothLeqThan (lastPos);
 					});
-
 			return std::pair { begin, lastSelected.base () };
 		}
 
@@ -268,20 +266,11 @@ namespace LC::Monocle
 
 		const auto [selBegin, selEnd] = GetSelectedRange (boxes, startPos, endPos);
 		for (auto& box : std::ranges::subrange (boxes.begin (), selBegin))
-		{
-			box.Item_->setBrush ({});
-			box.IsSelected_ = false;
-		}
+			box.Item_->setVisible (false);
 		for (auto& box : std::ranges::subrange (selBegin, selEnd))
-		{
-			box.Item_->setBrush (Qt::black);
-			box.IsSelected_ = true;
-		}
+			box.Item_->setVisible (true);
 		for (auto& box : std::ranges::subrange (selEnd, boxes.end ()))
-		{
-			box.Item_->setBrush ({});
-			box.IsSelected_ = false;
-		}
+			box.Item_->setVisible (false);
 	}
 
 	void TextSelectionInteraction::Released (QMouseEvent&)
@@ -319,9 +308,10 @@ namespace LC::Monocle
 		for (const auto& box : boxes)
 		{
 			auto rectItem = new QGraphicsRectItem { &item };
-			rectItem->setPen (QPen { Qt::black });
-			rectItem->setVisible (true);
 			rectItem->setZValue (1);
+			rectItem->setOpacity (0.5);
+			rectItem->setBrush (View_.palette ().brush (QPalette::ColorRole::Highlight));
+			rectItem->setVisible (false);
 
 			item.RegisterChildRect (rectItem,
 					box.Rect_,
