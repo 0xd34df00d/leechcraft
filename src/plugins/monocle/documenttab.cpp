@@ -563,6 +563,16 @@ namespace Monocle
 				this,
 				[this] { Ui_.PagesView_->SetInteractionHandler<AreaSelectionInteraction> (); });
 		Toolbar_->addAction (selectModeAction);
+
+		auto textModeAction = new QAction (tr ("Text selection mode"), this);
+		textModeAction->setProperty ("ActionIcon", "edit-select");
+		textModeAction->setCheckable (true);
+		textModeAction->setActionGroup (mouseModeGroup);
+		connect (textModeAction,
+				&QAction::triggered,
+				this,
+				[this] { Ui_.PagesView_->SetInteractionHandler<TextSelectionInteraction> (); });
+		Toolbar_->addAction (textModeAction);
 	}
 
 	void DocumentTab::SetPosition (const NavigationAction& nav)
