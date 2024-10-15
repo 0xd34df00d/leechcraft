@@ -259,10 +259,12 @@ namespace LC::Monocle
 			SelectOnPage (*endPage, PageRelativePos { 0, 0 }, endPos);
 		}
 
-		for (const auto& [pageNum, boxes] : Util::Stlize (Boxes_))
-			if (pageNum < startPage->GetPageNum () || pageNum > endPage->GetPageNum ())
-				for (auto& box : boxes)
-					box.Item_->setVisible (false);
+		for (auto& boxes : std::ranges::subrange (Boxes_.begin (), Boxes_.find (startPage->GetPageNum ())))
+			for (auto& box : boxes)
+				box.Item_->setVisible (false);
+		for (auto& boxes : std::ranges::subrange (std::next (Boxes_.find (endPage->GetPageNum ())), Boxes_.end ()))
+			for (auto& box : boxes)
+				box.Item_->setVisible (false);
 	}
 
 	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos)
