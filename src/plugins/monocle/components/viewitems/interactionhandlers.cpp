@@ -115,6 +115,17 @@ namespace LC::Monocle
 			}
 			return QStringList { pageContents.begin (), pageContents.end () }.join ('\n');
 		}
+
+		void FillMenuForText (QMenu& menu, const QString& text)
+		{
+			auto copyAsText = menu.addAction (AreaSelectionInteraction::tr ("Copy as text"),
+					[text] { QGuiApplication::clipboard ()->setText (text); });
+			copyAsText->setProperty ("ActionIcon", "edit-copy");
+
+			new Util::StdDataFilterMenuCreator (text,
+					GetProxyHolder ()->GetEntityManager (),
+					&menu);
+		}
 	}
 
 	void AreaSelectionInteraction::Released (QMouseEvent& ev)
@@ -147,15 +158,7 @@ namespace LC::Monocle
 				!selText.isEmpty ())
 			{
 				menu->addSeparator ();
-
-				auto copyAsText = menu->addAction (tr ("Copy as text"),
-						this,
-						[selText] { QGuiApplication::clipboard ()->setText (selText); });
-				copyAsText->setProperty ("ActionIcon", "edit-copy");
-
-				new Util::StdDataFilterMenuCreator (selText,
-						GetProxyHolder ()->GetEntityManager (),
-						menu);
+				FillMenuForText (*menu, selText);
 			}
 
 		menu->popup (ev.globalPos ());
