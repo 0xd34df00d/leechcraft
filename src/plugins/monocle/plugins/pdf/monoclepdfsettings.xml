@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page value="Monocle PDF">
-		<groupbox value="Rendering">
+		<groupbox label="Rendering">
 			<item type="checkbox" property="EnableAntialiasing" default="true" label="Antialiasing" />
 			<item type="checkbox" property="EnableTextAntialiasing" default="true" label="Text antialiasing" />
 			<item type="checkbox" property="EnableTextHinting" default="true" label="Text hinting" />
 			<item type="checkbox" property="EnableSlightTextHinting" default="false" label="Slight text hinting" />
 			<item type="combobox" property="ThinLineEnhancement" label="Thin line enhancement:">
-				<option name="None" default="true" value="none" />
-				<option name="Solid" value="solid" />
-				<option name="Shape" value="shape" />
+				<option name="None" default="true" label="none" />
+				<option name="Solid" label="solid" />
+				<option name="Shape" label="shape" />
 			</item>
 		</groupbox>
 	</page>
