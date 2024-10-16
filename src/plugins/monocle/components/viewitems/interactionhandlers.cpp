@@ -16,6 +16,7 @@
 #include <QMouseEvent>
 #include <interfaces/core/icoreproxy.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavetextcontent.h"
@@ -285,6 +286,8 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Released (QMouseEvent& ev)
 	{
+		const auto guard = Util::MakeScopeGuard ([this] { ClearBoxes (); });
+
 		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
 				[] (int acc, auto&& boxes)
 				{
@@ -298,8 +301,6 @@ namespace LC::Monocle
 			for (auto& box : boxes)
 				if (box.Item_->isVisible ())
 					textBits << box.Box_.Text_;
-
-		ClearBoxes ();
 
 		const auto& text = textBits.join (QStringView {}).trimmed ();
 		if (text.isEmpty ())
