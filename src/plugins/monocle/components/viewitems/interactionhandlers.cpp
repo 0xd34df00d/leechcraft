@@ -330,6 +330,8 @@ namespace LC::Monocle
 				this,
 				[this, pageNum] { Boxes_.remove (pageNum); });
 
+		auto boxBrush = View_.palette ().brush (QPalette::ColorRole::Highlight);
+
 		const auto& boxes = IHTC_.GetTextBoxes (pageNum);
 		infos.reserve (boxes.size ());
 		for (const auto& box : boxes)
@@ -337,7 +339,7 @@ namespace LC::Monocle
 			auto rectItem = new QGraphicsRectItem { &item };
 			rectItem->setZValue (1);
 			rectItem->setOpacity (0.5);
-			rectItem->setBrush (View_.palette ().brush (QPalette::ColorRole::Highlight));
+			rectItem->setBrush (boxBrush);
 			rectItem->setVisible (false);
 
 			item.RegisterChildRect (rectItem,
