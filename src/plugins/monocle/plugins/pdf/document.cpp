@@ -149,13 +149,31 @@ namespace LC::Monocle::PDF
 		return page->text ({ r.x () * w, r.y () * h, r.width () * w, r.height () * h });
 	}
 
+	namespace
+	{
+		PageRelativeRectBase ToPageRelative (const QRectF& rect, const Poppler::Page& page)
+		{
+			const auto& size = page.pageSizeF ();
+			const auto w = size.width ();
+			const auto h = size.height ();
+
+			return PageRelativeRectBase
+			{
+				{
+					rect.x () / w,
+					rect.y () / h,
+					rect.width () / w,
+					rect.height () / h,
+				}
+			};
+		}
+	}
+
 	QVector<TextBox> Document::GetTextBoxes (int pageNum)
 	{
 		const auto page = GetPage (pageNum);
 		if (!page)
 			return {};
-
-		const auto& size = page->pageSizeF ();
 
 		const auto& popplerBoxes = page->textList ();
 
@@ -163,20 +181,13 @@ namespace LC::Monocle::PDF
 		result.reserve (popplerBoxes.size ());
 		for (const auto textBox : popplerBoxes)
 		{
-			const auto& bounding = textBox->boundingBox ();
-			const PageRelativeRectBase boundingRelative
-			{
-				{
-					bounding.x () / size.width (),
-					bounding.y () / size.height (),
-					bounding.width () / size.width (),
-					bounding.height () / size.height ()
-				}
-			};
-			const auto& text = textBox->hasSpaceAfter () ?
-					textBox->text () + ' ' :
-					textBox->text ();
-			result.push_back ({ text, boundingRelative });
+			auto text = textBox->text ();
+			if (text.isEmpty ())
+				continue;
+
+			if (textBox->hasSpaceAfter ())
+				text += ' ';
+			result.push_back ({ text, ToPageRelative (textBox->boundingBox (), *page) });
 		}
 
 		qDeleteAll (popplerBoxes);
