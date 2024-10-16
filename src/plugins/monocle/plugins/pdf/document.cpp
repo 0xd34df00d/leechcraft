@@ -177,17 +177,34 @@ namespace LC::Monocle::PDF
 
 		const auto& popplerBoxes = page->textList ();
 
+		const auto charLevelPrecision = XmlSettingsManager::Instance ().property ("CharPreciseSelection").toBool ();
+
+		const auto resultSize = charLevelPrecision ?
+				std::accumulate (popplerBoxes.begin (), popplerBoxes.end (), 0,
+						[] (int acc, auto textBox) { return acc + textBox->text ().size (); }) :
+				popplerBoxes.size ();
+
 		QVector<TextBox> result;
-		result.reserve (popplerBoxes.size ());
+		result.reserve (resultSize);
 		for (const auto textBox : popplerBoxes)
 		{
 			auto text = textBox->text ();
 			if (text.isEmpty ())
 				continue;
 
-			if (textBox->hasSpaceAfter ())
-				text += ' ';
-			result.push_back ({ text, ToPageRelative (textBox->boundingBox (), *page) });
+			if (charLevelPrecision)
+			{
+				const auto last = text.size () - 1;
+				for (int i = 0; i < last; ++i)
+					result.push_back ({ QString { text.at (i) }, ToPageRelative (textBox->charBoundingBox (i), *page) });
+				result.push_back ({ QString { text.at (last) } + ' ', ToPageRelative (textBox->charBoundingBox (last), *page) });
+			}
+			else
+			{
+				if (textBox->hasSpaceAfter ())
+					text += ' ';
+				result.push_back ({ text, ToPageRelative (textBox->boundingBox (), *page) });
+			}
 		}
 
 		qDeleteAll (popplerBoxes);

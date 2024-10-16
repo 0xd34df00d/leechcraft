@@ -12,5 +12,10 @@
 				<option name="Shape" label="shape" />
 			</item>
 		</groupbox>
+		<groupbox label="Performance">
+			<item type="checkbox" property="CharPreciseSelection" default="false" label="Character-precise text selection">
+				<tooltip>When enabled, the text selection tool allows for more precise, character-level text selection at the cost of slightly higher CPU and memory use during selection. When disabled, only whole words can be selected.</tooltip>
+			</item>
+		</groupbox>
 	</page>
 </settings>
