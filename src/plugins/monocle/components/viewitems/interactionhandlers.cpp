@@ -330,6 +330,7 @@ namespace LC::Monocle
 				this,
 				[this, pageNum] { Boxes_.remove (pageNum); });
 
+		QPen boxPen { Qt::transparent };
 		auto boxBrush = View_.palette ().brush (QPalette::ColorRole::Highlight);
 
 		const auto& boxes = IHTC_.GetTextBoxes (pageNum);
@@ -339,6 +340,7 @@ namespace LC::Monocle
 			auto rectItem = new QGraphicsRectItem { &item };
 			rectItem->setZValue (1);
 			rectItem->setOpacity (0.5);
+			rectItem->setPen (boxPen);
 			rectItem->setBrush (boxBrush);
 			rectItem->setVisible (false);
 
