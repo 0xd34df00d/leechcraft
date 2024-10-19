@@ -335,7 +335,7 @@ namespace LC::Monocle
 				this,
 				[this, pageNum] { Boxes_.remove (pageNum); });
 
-		QPen boxPen { Qt::transparent };
+		const QPen boxPen { Qt::transparent };
 		auto boxBrush = View_.palette ().brush (QPalette::ColorRole::Highlight);
 
 		const auto& boxes = IHTC_.GetTextBoxes (pageNum);
