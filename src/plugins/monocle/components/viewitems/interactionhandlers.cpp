@@ -211,15 +211,20 @@ namespace LC::Monocle
 			const auto begin = std::find_if (boxes.begin (), boxes.end (),
 					[&] (const TextSelectionInteraction::BoxInfo& boxInfo)
 					{
-						return boxInfo.Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (firstPos);
+						const auto& bottomRight = boxInfo.Box_.Rect_.BottomRight<PageRelativePos> ();
+						return bottomRight.BothGeqThan (firstPos) || bottomRight.BothGeqThan (lastPos);
 					});
 			if (begin == boxes.end ())
 				return std::pair { boxes.end (), boxes.end () };
 
-			auto lastSelected = std::find_if (boxes.rbegin (), std::reverse_iterator { std::next (begin) },
+			const auto contraPos = begin->Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (firstPos) ?
+					lastPos :
+					firstPos;
+
+			const auto lastSelected = std::find_if (boxes.rbegin (), std::reverse_iterator { std::next (begin) },
 					[&] (const TextSelectionInteraction::BoxInfo& boxInfo)
 					{
-						return boxInfo.Box_.Rect_.TopLeft<PageRelativePos> ().BothLeqThan (lastPos);
+						return boxInfo.Box_.Rect_.TopLeft<PageRelativePos> ().BothLeqThan (contraPos);
 					});
 			return std::pair { begin, lastSelected.base () };
 		}
