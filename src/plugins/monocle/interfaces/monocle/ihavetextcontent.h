@@ -19,6 +19,7 @@ namespace LC::Monocle
 	{
 		QString Text_;
 		PageRelativeRectBase Rect_;
+		bool HasSpaceAfter_;
 	};
 
 	/** @brief Interface for documents supporting querying text contents.

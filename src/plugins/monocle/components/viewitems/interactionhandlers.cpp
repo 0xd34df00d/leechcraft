@@ -291,6 +291,8 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Released (QMouseEvent& ev)
 	{
+		const QString space { ' ' };
+
 		const auto guard = Util::MakeScopeGuard ([this] { ClearBoxes (); });
 
 		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
@@ -300,12 +302,16 @@ namespace LC::Monocle
 				});
 
 		QStringList textBits;
-		textBits.reserve (selectedBoxesCount);
+		textBits.reserve (selectedBoxesCount * 2);
 
 		for (const auto& boxes : Boxes_)
 			for (auto& box : boxes)
 				if (box.Item_->isVisible ())
+				{
 					textBits << box.Box_.Text_;
+					if (box.Box_.HasSpaceAfter_)
+						textBits << space;
+				}
 
 		const auto& text = textBits.join (QStringView {}).trimmed ();
 		if (text.isEmpty ())
