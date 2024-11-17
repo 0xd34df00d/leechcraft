@@ -57,11 +57,11 @@ namespace LC::Monocle
 	class TextSelectionInteraction final : public InteractionHandler
 	{
 	public:
-		struct BoxInfo;
+		struct BoxRepr;
 
 		using SelectionCornerInfo = std::pair<PageGraphicsItem*, PageRelativePos>;
 	private:
-		QMap<int, std::vector<BoxInfo>> Boxes_;
+		QMap<int, std::vector<BoxRepr>> Boxes_;
 		std::optional<SelectionCornerInfo> SelectionStart_;
 		IHaveTextContent& IHTC_;
 		const QVector<PageGraphicsItem*> Pages_;
@@ -76,7 +76,7 @@ namespace LC::Monocle
 		void SelectOnPage (PageGraphicsItem&, PageRelativePos, PageRelativePos);
 
 		void EnsureHasSelectionStart (ViewAbsolutePos pos);
-		std::vector<BoxInfo>& LoadBoxes (PageGraphicsItem&);
+		std::vector<BoxRepr>& LoadBoxes (PageGraphicsItem&);
 		std::optional<SelectionCornerInfo> GetPageInfo (ViewAbsolutePos);
 
 		void ClearBoxes ();

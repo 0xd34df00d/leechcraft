@@ -179,7 +179,7 @@ namespace LC::Monocle
 		}
 	}
 
-	struct TextSelectionInteraction::BoxInfo
+	struct TextSelectionInteraction::BoxRepr
 	{
 		TextBox Box_;
 		QGraphicsRectItem *Item_;
@@ -205,28 +205,28 @@ namespace LC::Monocle
 			return nullptr;
 		}
 
-		auto GetSelectedRange (std::vector<TextSelectionInteraction::BoxInfo>& boxes,
+		auto GetSelectedRange (std::vector<TextSelectionInteraction::BoxRepr>& boxes,
 				PageRelativePos firstPos, PageRelativePos lastPos)
 		{
-			const auto begin = std::find_if (boxes.begin (), boxes.end (),
-					[&] (const TextSelectionInteraction::BoxInfo& boxInfo)
+			const auto first = std::find_if (boxes.begin (), boxes.end (),
+					[&] (const TextSelectionInteraction::BoxRepr& boxRepr)
 					{
-						const auto& bottomRight = boxInfo.Box_.Rect_.BottomRight<PageRelativePos> ();
+						const auto& bottomRight = boxRepr.Box_.Rect_.BottomRight<PageRelativePos> ();
 						return bottomRight.BothGeqThan (firstPos) || bottomRight.BothGeqThan (lastPos);
 					});
-			if (begin == boxes.end ())
+			if (first == boxes.end ())
 				return std::pair { boxes.end (), boxes.end () };
 
-			const auto contraPos = begin->Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (firstPos) ?
+			const auto contraPos = first->Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (firstPos) ?
 					lastPos :
 					firstPos;
 
-			const auto lastSelected = std::find_if (boxes.rbegin (), std::reverse_iterator { std::next (begin) },
-					[&] (const TextSelectionInteraction::BoxInfo& boxInfo)
+			const auto last = std::find_if (boxes.rbegin (), std::reverse_iterator { std::next (first) },
+					[&] (const TextSelectionInteraction::BoxRepr& boxRepr)
 					{
-						return boxInfo.Box_.Rect_.TopLeft<PageRelativePos> ().BothLeqThan (contraPos);
-					});
-			return std::pair { begin, lastSelected.base () };
+						return boxRepr.Box_.Rect_.TopLeft<PageRelativePos> ().BothLeqThan (contraPos);
+					}).base ();
+			return std::pair { first, last };
 		}
 
 		auto ToTuple (const TextSelectionInteraction::SelectionCornerInfo& info)
@@ -276,11 +276,11 @@ namespace LC::Monocle
 				box.Item_->setVisible (false);
 	}
 
-	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos)
+	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos start, PageRelativePos end)
 	{
 		auto& boxes = LoadBoxes (page);
 
-		const auto [selBegin, selEnd] = GetSelectedRange (boxes, startPos, endPos);
+		const auto [selBegin, selEnd] = GetSelectedRange (boxes, start, end);
 		for (auto& box : std::ranges::subrange (boxes.begin (), selBegin))
 			box.Item_->setVisible (false);
 		for (auto& box : std::ranges::subrange (selBegin, selEnd))
@@ -328,7 +328,7 @@ namespace LC::Monocle
 			SelectionStart_ = GetPageInfo (pos);
 	}
 
-	auto TextSelectionInteraction::LoadBoxes (PageGraphicsItem& item) -> std::vector<BoxInfo>&
+	auto TextSelectionInteraction::LoadBoxes (PageGraphicsItem& item) -> std::vector<BoxRepr>&
 	{
 		const auto pageNum = item.GetPageNum ();
 
