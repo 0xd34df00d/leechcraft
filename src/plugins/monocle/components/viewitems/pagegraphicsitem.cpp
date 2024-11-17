@@ -74,6 +74,16 @@ namespace LC::Monocle
 		Item2RectInfo_ [item] = { srcRect, std::move (setter) };
 	}
 
+	void PageGraphicsItem::SetChildRect (QGraphicsItem *item, const PageRelativeRect& rect)
+	{
+		const auto pos = Item2RectInfo_.find (item);
+		if (pos == Item2RectInfo_.end ())
+			return;
+
+		pos->Rect_ = rect;
+		pos->Setter_ (rect.ToPageAbsolute (*this));
+	}
+
 	void PageGraphicsItem::UnregisterChildRect (QGraphicsItem *item)
 	{
 		Item2RectInfo_.remove (item);

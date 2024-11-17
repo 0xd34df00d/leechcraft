@@ -56,6 +56,7 @@ namespace LC::Monocle
 		void setPos (const SceneAbsolutePos&);
 
 		void RegisterChildRect (QGraphicsItem*, const PageRelativeRect&, RectSetter_f);
+		void SetChildRect (QGraphicsItem*, const PageRelativeRect&);
 		void UnregisterChildRect (QGraphicsItem*);
 
 		void ClearPixmap ();
