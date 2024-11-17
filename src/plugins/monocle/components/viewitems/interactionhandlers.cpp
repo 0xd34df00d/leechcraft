@@ -205,27 +205,31 @@ namespace LC::Monocle
 			return nullptr;
 		}
 
-		auto GetSelectedRange (std::vector<TextSelectionInteraction::BoxRepr>& boxes,
-				PageRelativePos firstPos, PageRelativePos lastPos)
+		template<typename T, typename F = std::identity>
+		auto GetSelectedRange (T& boxes,
+				PageRelativePos firstPos, PageRelativePos lastPos,
+				const F& proj = {})
 		{
-			const auto first = std::find_if (boxes.begin (), boxes.end (),
-					[&] (const TextSelectionInteraction::BoxRepr& boxRepr)
+			const auto first = std::ranges::find_if (boxes.begin (), boxes.end (),
+					[&] (const PageRelativeRect& rect)
 					{
-						const auto& bottomRight = boxRepr.Box_.Rect_.BottomRight<PageRelativePos> ();
+						const auto& bottomRight = rect.BottomRight<PageRelativePos> ();
 						return bottomRight.BothGeqThan (firstPos) || bottomRight.BothGeqThan (lastPos);
-					});
+					},
+					proj);
 			if (first == boxes.end ())
 				return std::pair { boxes.end (), boxes.end () };
 
-			const auto contraPos = first->Box_.Rect_.BottomRight<PageRelativePos> ().BothGeqThan (firstPos) ?
+			const auto contraPos = proj (*first).template BottomRight<PageRelativePos> ().BothGeqThan (firstPos) ?
 					lastPos :
 					firstPos;
 
-			const auto last = std::find_if (boxes.rbegin (), std::reverse_iterator { std::next (first) },
-					[&] (const TextSelectionInteraction::BoxRepr& boxRepr)
+			const auto last = std::ranges::find_if (boxes.rbegin (), std::reverse_iterator { std::next (first) },
+					[&] (const PageRelativeRect& rect)
 					{
-						return boxRepr.Box_.Rect_.TopLeft<PageRelativePos> ().BothLeqThan (contraPos);
-					}).base ();
+						return rect.TopLeft<PageRelativePos> ().BothLeqThan (contraPos);
+					},
+					proj).base ();
 			return std::pair { first, last };
 		}
 
@@ -280,7 +284,8 @@ namespace LC::Monocle
 	{
 		auto& boxes = LoadBoxes (page);
 
-		const auto [selBegin, selEnd] = GetSelectedRange (boxes, start, end);
+		const auto [selBegin, selEnd] = GetSelectedRange (boxes, start, end,
+				[] (const TextSelectionInteraction::BoxRepr& boxRepr) { return boxRepr.Box_.Rect_; });
 		for (auto& box : std::ranges::subrange (boxes.begin (), selBegin))
 			box.Item_->setVisible (false);
 		for (auto& box : std::ranges::subrange (selBegin, selEnd))
