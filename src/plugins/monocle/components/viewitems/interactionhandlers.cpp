@@ -183,6 +183,8 @@ namespace LC::Monocle
 	{
 		TextBox Box_;
 		QGraphicsRectItem *Item_;
+
+		bool IsWordPart_ = false;
 	};
 
 	TextSelectionInteraction::TextSelectionInteraction (PagesView& view, IDocument& doc, const QVector<PageGraphicsItem*>& pages)
@@ -280,11 +282,77 @@ namespace LC::Monocle
 				box.Item_->setVisible (false);
 	}
 
-	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos start, PageRelativePos end)
+	namespace
+	{
+		void UndoWordPart (PageGraphicsItem& page, TextSelectionInteraction::BoxRepr& repr)
+		{
+			if (repr.IsWordPart_)
+			{
+				repr.IsWordPart_ = false;
+				page.SetChildRect (repr.Item_, repr.Box_.Rect_);
+			}
+		}
+
+		enum class SelectMidWordOpts : std::uint8_t
+		{
+			None,
+			ForceBeginIncluded,
+			ForceEndIncluded,
+		};
+
+		void SelectMidWord (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos,
+				TextSelectionInteraction::BoxRepr& repr,
+				SelectMidWordOpts opts = SelectMidWordOpts::None)
+		{
+			if (!repr.Box_.Letters_)
+				return;
+
+			const auto& firstWordLetters = *repr.Box_.Letters_;
+
+			auto [firstWordBegin, firstWordEnd] = GetSelectedRange (firstWordLetters, startPos, endPos);
+			if (opts == SelectMidWordOpts::ForceBeginIncluded)
+				firstWordBegin = firstWordLetters.begin ();
+			if (opts == SelectMidWordOpts::ForceEndIncluded)
+				firstWordEnd = firstWordLetters.end ();
+
+			if (firstWordBegin == firstWordLetters.begin () && firstWordEnd == firstWordLetters.end ())
+				UndoWordPart (page, repr);
+			else
+			{
+				repr.IsWordPart_ = true;
+				page.SetChildRect (repr.Item_, PageRelativeRect { *firstWordBegin | *(firstWordEnd - 1) });
+			}
+		}
+
+		void SelectMidWords (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos,
+				std::vector<TextSelectionInteraction::BoxRepr>::iterator selBegin,
+				std::vector<TextSelectionInteraction::BoxRepr>::iterator selEnd)
+		{
+			if (selBegin == selEnd)
+				return;
+
+			const auto postBegin = selBegin + 1;
+			const auto preEnd = selEnd - 1;
+
+			if (postBegin <= preEnd)
+				for (auto& repr : std::ranges::subrange (postBegin, preEnd))
+					UndoWordPart (page, repr);
+
+			if (selEnd - selBegin == 1)
+				SelectMidWord (page, startPos, endPos, *selBegin);
+			else
+			{
+				SelectMidWord (page, startPos, endPos, *selBegin, SelectMidWordOpts::ForceEndIncluded);
+				SelectMidWord (page, startPos, endPos, *preEnd, SelectMidWordOpts::ForceBeginIncluded);
+			}
+		}
+	}
+
+	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos)
 	{
 		auto& boxes = LoadBoxes (page);
 
-		const auto [selBegin, selEnd] = GetSelectedRange (boxes, start, end,
+		const auto [selBegin, selEnd] = GetSelectedRange (boxes, startPos, endPos,
 				[] (const TextSelectionInteraction::BoxRepr& boxRepr) { return boxRepr.Box_.Rect_; });
 		for (auto& box : std::ranges::subrange (boxes.begin (), selBegin))
 			box.Item_->setVisible (false);
@@ -292,6 +360,8 @@ namespace LC::Monocle
 			box.Item_->setVisible (true);
 		for (auto& box : std::ranges::subrange (selEnd, boxes.end ()))
 			box.Item_->setVisible (false);
+
+		SelectMidWords (page, startPos, endPos, selBegin, selEnd);
 	}
 
 	void TextSelectionInteraction::Released (QMouseEvent& ev)
