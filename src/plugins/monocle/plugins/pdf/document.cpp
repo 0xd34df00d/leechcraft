@@ -188,23 +188,25 @@ namespace LC::Monocle::PDF
 		result.reserve (resultSize);
 		for (const auto textBox : popplerBoxes)
 		{
-			auto text = textBox->text ();
+			const auto& text = textBox->text ();
 			if (text.isEmpty ())
 				continue;
 
+			TextBox box
+			{
+				.Text_ = text,
+				.Rect_ = ToPageRelative (textBox->boundingBox (), *page),
+				.HasSpaceAfter_ = textBox->hasSpaceAfter (),
+			};
 			if (charLevelPrecision)
 			{
-				const auto last = text.size () - 1;
-				for (int i = 0; i < last; ++i)
-					result.push_back ({ QString { text.at (i) }, ToPageRelative (textBox->charBoundingBox (i), *page) });
-				result.push_back ({ QString { text.at (last) } + ' ', ToPageRelative (textBox->charBoundingBox (last), *page) });
+				QVector<PageRelativeRectBase> letters;
+				letters.reserve (text.size ());
+				for (int i = 0; i < text.size (); ++i)
+					letters << ToPageRelative (textBox->charBoundingBox (i), *page);
+				box.Letters_ = std::move (letters);
 			}
-			else
-			{
-				if (textBox->hasSpaceAfter ())
-					text += ' ';
-				result.push_back ({ text, ToPageRelative (textBox->boundingBox (), *page) });
-			}
+			result.push_back (std::move (box));
 		}
 
 		qDeleteAll (popplerBoxes);
