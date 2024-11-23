@@ -13,7 +13,7 @@
 
 namespace LC::Monocle
 {
-	enum class Relativity
+	enum class Relativity : std::uint8_t
 	{
 		PageRelative,
 		PageAbsolute,
