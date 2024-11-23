@@ -36,7 +36,7 @@ namespace LC::Monocle
 
 		/** @brief Child items of this entry.
 		 */
-		TOCEntryLevelT<T> ChildLevel_;
+		TOCEntryLevelT<T> ChildLevel_ {};
 	};
 
 	using TOCEntryLevel_t = TOCEntryLevelT<NavigationAction>;

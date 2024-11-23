@@ -31,7 +31,7 @@ namespace LC::Monocle
 			Span Target_;
 			std::optional<Span> Source_ {};
 
-			QString ToolTip_;
+			QString ToolTip_ {};
 		};
 	private:
 		LinkInfo Info_;

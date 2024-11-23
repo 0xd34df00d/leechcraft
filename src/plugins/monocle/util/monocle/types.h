@@ -47,25 +47,25 @@ namespace LC::Monocle
 
 	struct BlockFormat
 	{
-		std::optional<Qt::AlignmentFlag> Align_;
+		std::optional<Qt::AlignmentFlag> Align_ {};
 
 		/** Margins in px.
 		 */
-		std::optional<int> MarginLeft_;
-		std::optional<int> MarginTop_;
-		std::optional<int> MarginRight_;
-		std::optional<int> MarginBottom_;
+		std::optional<int> MarginLeft_ {};
+		std::optional<int> MarginTop_ {};
+		std::optional<int> MarginRight_ {};
+		std::optional<int> MarginBottom_ {};
 
 		/** First line indent in px.
 		 */
-		std::optional<int> Indent_;
+		std::optional<int> Indent_ {};
 
 		/** Heading level (as in h1-h6).
 		 */
-		std::optional<int> HeadingLevel_;
+		std::optional<int> HeadingLevel_ {};
 
-		std::optional<QBrush> Background_;
-		std::optional<QBrush> Foreground_;
+		std::optional<QBrush> Background_ {};
+		std::optional<QBrush> Foreground_ {};
 
 		BlockFormat& operator+= (const BlockFormat&);
 	};
@@ -79,10 +79,10 @@ namespace LC::Monocle
 		std::optional<bool> IsUnderline_ {};
 		std::optional<bool> IsStrikeThrough_ {};
 
-		std::optional<QTextCharFormat::VerticalAlignment> VerticalAlignment_;
+		std::optional<QTextCharFormat::VerticalAlignment> VerticalAlignment_ {};
 
-		std::optional<QBrush> Background_;
-		std::optional<QBrush> Foreground_;
+		std::optional<QBrush> Background_ {};
+		std::optional<QBrush> Foreground_ {};
 
 		CharFormat& operator+= (const CharFormat&);
 
