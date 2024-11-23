@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QtPlugin>
-#include "coords.h"
+#include "coordsbase.h"
 
 class QString;
 

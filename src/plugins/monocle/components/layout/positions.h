@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <interfaces/monocle/coords.h>
+#include <interfaces/monocle/coordsbase.h>
 
 class QGraphicsView;
 

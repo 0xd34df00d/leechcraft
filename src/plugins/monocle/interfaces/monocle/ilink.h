@@ -12,7 +12,7 @@
 #include <QObject>
 #include <QMetaType>
 #include <QUrl>
-#include "coords.h"
+#include "coordsbase.h"
 
 namespace LC::Monocle
 {
