@@ -34,7 +34,7 @@ namespace Util
 	};
 
 	template<template<typename U> class Container, typename T1, typename T2, typename F>
-	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> WrapType_t<Container<std::decay_t<std::result_of_t<F (T1, T2)>>>>
+	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f)
 	{
 		WrapType_t<Container<std::decay_t<std::result_of_t<F (T1, T2)>>>> result;
 
