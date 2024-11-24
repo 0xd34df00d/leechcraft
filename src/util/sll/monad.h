@@ -90,7 +90,7 @@ namespace Util
 	struct InstanceMonad<std::optional<T>>
 	{
 		template<typename F>
-		using BindResult_t = std::result_of_t<F (T)>;
+		using BindResult_t = std::invoke_result_t<F, T>;
 
 		template<typename F>
 		static BindResult_t<F> Bind (const std::optional<T>& value, const F& f)
@@ -106,7 +106,7 @@ namespace Util
 	struct InstanceMonad<Either<L, R>>
 	{
 		template<typename F>
-		using BindResult_t = std::result_of_t<F (R)>;
+		using BindResult_t = std::invoke_result_t<F, R>;
 
 		template<typename F>
 		static BindResult_t<F> Bind (const Either<L, R>& value, const F& f)

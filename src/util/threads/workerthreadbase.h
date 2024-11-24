@@ -35,9 +35,9 @@ namespace LC::Util
 		void SetPaused (bool);
 
 		template<typename F>
-		QFuture<std::result_of_t<F ()>> ScheduleImpl (F func)
+		QFuture<std::invoke_result_t<F>> ScheduleImpl (F func)
 		{
-			QFutureInterface<std::result_of_t<F ()>> iface;
+			QFutureInterface<std::invoke_result_t<F>> iface;
 			iface.reportStarted ();
 
 			auto reporting = [func, iface] () mutable
@@ -56,7 +56,7 @@ namespace LC::Util
 		}
 
 		template<typename F, typename... Args>
-		QFuture<std::result_of_t<F (Args...)>> ScheduleImpl (F f, Args&&... args)
+		QFuture<std::invoke_result_t<F, Args...>> ScheduleImpl (F f, Args&&... args)
 		{
 			return ScheduleImpl ([f, args...] () mutable { return std::invoke (f, args...); });
 		}
@@ -172,7 +172,7 @@ namespace LC::Util
 		using WorkerThreadBase::ScheduleImpl;
 
 		template<typename F, typename... Args>
-		QFuture<std::result_of_t<F (WorkerType*, Args...)>> ScheduleImpl (F f, Args&&... args)
+		QFuture<std::invoke_result_t<F, WorkerType*, Args...>> ScheduleImpl (F f, Args&&... args)
 		{
 			const auto fWrapped = [f, this] (auto... args) mutable { return std::invoke (f, Worker_.get (), args...); };
 			return WorkerThreadBase::ScheduleImpl (fWrapped, std::forward<Args> (args)...);

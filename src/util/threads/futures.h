@@ -318,10 +318,10 @@ namespace LC::Util
 			}
 
 			template<typename F1, typename Ret1>
-			using ReturnsFutureDetector_t = UnwrapFutureType_t<std::result_of_t<F1 (Ret1)>>;
+			using ReturnsFutureDetector_t = UnwrapFutureType_t<std::invoke_result_t<F1, Ret1>>;
 
 			template<typename F, typename... Args>
-			using ReturnsVoidDetector_t = std::result_of_t<F (Args...)>;
+			using ReturnsVoidDetector_t = std::invoke_result_t<F, Args...>;
 		public:
 			using Ret_t = Ret;
 
@@ -384,7 +384,7 @@ namespace LC::Util
 			}
 
 			template<typename F>
-			SequenceProxy<Ret, Future, std::result_of_t<F ()>> DestructionValue (F&& f)
+			SequenceProxy<Ret, Future, std::invoke_result_t<F>> DestructionValue (F&& f)
 			{
 				static_assert (std::is_same<DestructionTag, EmptyDestructionTag>::value,
 						"Destruction handling function has been already set.");

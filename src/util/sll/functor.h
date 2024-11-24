@@ -214,7 +214,7 @@ namespace Util
 	struct InstanceFunctor<std::optional<T>>
 	{
 		template<typename F>
-		using FmapResult_t = std::optional<detail::WrapVoidResult_t<std::decay_t<std::result_of_t<F (T)>>>>;
+		using FmapResult_t = std::optional<detail::WrapVoidResult_t<std::decay_t<std::invoke_result_t<F, T>>>>;
 
 		template<typename F>
 		static FmapResult_t<F> Apply (const std::optional<T>& t, const F& f)
@@ -236,7 +236,7 @@ namespace Util
 	struct InstanceFunctor<Either<L, R>>
 	{
 		template<typename F>
-		using FmapResult_t = Either<L, std::result_of_t<F (R)>>;
+		using FmapResult_t = Either<L, std::invoke_result_t<F, R>>;
 
 		template<typename F>
 		static FmapResult_t<F> Apply (const Either<L, R>& either, const F& f)
