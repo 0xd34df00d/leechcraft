@@ -353,6 +353,8 @@ namespace LC
 			.Widget_ = view,
 			.LabelPosition_ = LabelPosition::None,
 			.DefaultValue_ = {},
+			.Getter_ = {},
+			.Setter_ = {},
 			.DataSourceSetter_ = [view] (QAbstractItemModel& m) { view->SetModel (&m); },
 		};
 	}
