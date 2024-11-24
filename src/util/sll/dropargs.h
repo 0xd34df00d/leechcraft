@@ -84,7 +84,7 @@ namespace Util
 			}
 
 			template<typename... Args>
-			auto operator() (Args... args) -> typename InvokableResGetter<F, decltype (GetInvokablePart<F, Args...> ())>::RetType_t
+			auto operator() (Args... args)
 			{
 				auto invokableList = GetInvokablePart<F, Args...> ();
 				auto ignoreList = Drop<Length (decltype (invokableList) {})> (Typelist<Args...> {});
@@ -92,7 +92,7 @@ namespace Util
 			}
 		private:
 			template<typename... InvokableArgs, typename... Rest>
-			auto Invoke (Typelist<InvokableArgs...>, Typelist<Rest...>, Dumbify<InvokableArgs>... args, Dumbify<Rest>...) -> std::result_of_t<F (InvokableArgs...)>
+			auto Invoke (Typelist<InvokableArgs...>, Typelist<Rest...>, Dumbify<InvokableArgs>... args, Dumbify<Rest>...)
 			{
 				return F_ (std::forward<InvokableArgs> (args)...);
 			}
