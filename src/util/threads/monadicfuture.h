@@ -18,7 +18,7 @@ namespace LC::Util
 	struct InstanceFunctor<QFuture<T>>
 	{
 		template<typename F>
-		using FmapResult_t = QFuture<std::decay_t<std::result_of_t<F (T)>>>;
+		using FmapResult_t = QFuture<std::decay_t<std::invoke_result_t<F, T>>>;
 
 		template<typename F>
 		static FmapResult_t<F> Apply (const QFuture<T>& fut, const F& func)

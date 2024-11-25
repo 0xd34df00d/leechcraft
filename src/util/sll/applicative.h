@@ -58,7 +58,7 @@ namespace Util
 		template<typename V>
 		struct GSLResult<std::optional<V>>
 		{
-			using Type_t = std::optional<std::result_of_t<T (const V&)>>;
+			using Type_t = std::optional<std::invoke_result_t<T, const V&>>;
 		};
 
 		template<typename U>
@@ -88,7 +88,7 @@ namespace Util
 		template<typename V>
 		struct GSLResult<Either<L, V>>
 		{
-			using Type_t = Either<L, std::result_of_t<R (const V&)>>;
+			using Type_t = Either<L, std::invoke_result_t<R, const V&>>;
 		};
 
 		template<typename RP>

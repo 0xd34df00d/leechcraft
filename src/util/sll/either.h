@@ -182,7 +182,7 @@ namespace Util
 		}
 	};
 
-	template<typename L, typename R, typename F, typename = std::result_of_t<F ()>>
+	template<typename L, typename R, typename F, typename = std::invoke_result_t<F>>
 	R RightOr (const Either<L, R>& either, F&& f)
 	{
 		return either.IsRight () ?

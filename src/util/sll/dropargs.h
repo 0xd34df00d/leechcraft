@@ -70,7 +70,7 @@ namespace Util
 		template<typename F, template<typename...> class List, typename... Args>
 		struct InvokableResGetter<F, List<Args...>>
 		{
-			using RetType_t = std::result_of_t<F (Args...)>;
+			using RetType_t = std::invoke_result_t<F, Args...>;
 		};
 
 		template<typename F>
