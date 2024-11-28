@@ -157,8 +157,70 @@ namespace LC::Monocle
 		}
 	};
 
+	struct PageRelativePosBase;
+	struct PageAbsolutePosBase;
+
+	struct PageRelativePosBase : Pos<PageRelativePosBase, Relativity::PageRelative>
+	{
+		using Pos::Pos;
+
+		PageAbsolutePosBase ToPageAbsolute (QSizeF) const;
+	};
+
+	struct PageAbsolutePosBase : Pos<PageAbsolutePosBase, Relativity::PageAbsolute>
+	{
+		using Pos::Pos;
+
+		PageRelativePosBase ToPageRelative (QSizeF) const;
+	};
+
+	inline PageAbsolutePosBase PageRelativePosBase::ToPageAbsolute (QSizeF size) const
+	{
+		return PageAbsolutePosBase { P_.x () * size.width (), P_.y () * size.height () };
+	}
+
+	inline PageRelativePosBase PageAbsolutePosBase::ToPageRelative (QSizeF size) const
+	{
+		return PageRelativePosBase { P_.x () / size.width (), P_.y () / size.height () };
+	}
+
+	struct PageRelativeRectBase;
+	struct PageAbsoluteRectBase;
+
 	struct PageRelativeRectBase : Rect<PageRelativeRectBase, Relativity::PageRelative>
 	{
 		using Rect::Rect;
+
+		PageAbsoluteRectBase ToPageAbsolute (QSizeF) const;
 	};
+
+	struct PageAbsoluteRectBase : Rect<PageAbsolutePosBase, Relativity::PageAbsolute>
+	{
+		using Rect::Rect;
+
+		PageRelativeRectBase ToPageRelative (QSizeF) const;
+	};
+
+	namespace detail
+	{
+		template<typename Target, typename SrcPos, typename TargetPos, typename Source, typename Ctx>
+		Target Convert (TargetPos (SrcPos::*posConvert) (Ctx) const, const Source& src, const auto& context)
+		{
+			return Target
+			{
+				(src.template TopLeft<SrcPos> ().*posConvert) (context),
+				(src.template BottomRight<SrcPos> ().*posConvert) (context)
+			};
+		}
+	}
+
+	inline PageAbsoluteRectBase PageRelativeRectBase::ToPageAbsolute (QSizeF size) const
+	{
+		return detail::Convert<PageAbsoluteRectBase> (&PageRelativePosBase::ToPageAbsolute, *this, size);
+	}
+
+	inline PageRelativeRectBase PageAbsoluteRectBase::ToPageRelative (QSizeF size) const
+	{
+		return detail::Convert<PageRelativeRectBase> (&PageAbsolutePosBase::ToPageRelative, *this, size);
+	}
 }

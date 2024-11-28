@@ -12,10 +12,19 @@
 
 namespace LC::Monocle
 {
+	PageRelativePos::PageRelativePos (PageRelativePosBase base)
+	: PageRelativePosBase { base }
+	{
+	}
+
+	PageAbsolutePos::PageAbsolutePos (PageAbsolutePosBase base)
+	: PageAbsolutePosBase { base }
+	{
+	}
+
 	PageAbsolutePos PageRelativePos::ToPageAbsolute (const PageGraphicsItem& item) const
 	{
-		const auto& rect = item.boundingRect ();
-		return PageAbsolutePos { P_.x () * rect.width (), P_.y () * rect.height () };
+		return PageRelativePosBase::ToPageAbsolute (item.boundingRect ().size ());
 	}
 
 	SceneAbsolutePos PageRelativePos::ToSceneAbsolute (const PageGraphicsItem& item) const
@@ -25,8 +34,7 @@ namespace LC::Monocle
 
 	PageRelativePos PageAbsolutePos::ToPageRelative (const PageGraphicsItem& item) const
 	{
-		const auto& rect = item.boundingRect ();
-		return PageRelativePos { P_.x () / rect.width (), P_.y () / rect.height () };
+		return PageAbsolutePosBase::ToPageRelative (item.boundingRect ().size ());
 	}
 
 	SceneAbsolutePos PageAbsolutePos::ToSceneAbsolute (const PageGraphicsItem& item) const
@@ -53,8 +61,13 @@ namespace LC::Monocle
 		return SceneAbsolutePos { view.mapToScene (P_.toPoint ()) };
 	}
 
-	PageRelativeRect::PageRelativeRect (const PageRelativeRectBase& rb)
-	: PageRelativeRectBase { rb }
+	PageRelativeRect::PageRelativeRect (const PageRelativeRectBase& base)
+	: PageRelativeRectBase { base }
+	{
+	}
+
+	PageAbsoluteRect::PageAbsoluteRect (const PageAbsoluteRectBase& base)
+	: PageAbsoluteRectBase { base }
 	{
 	}
 

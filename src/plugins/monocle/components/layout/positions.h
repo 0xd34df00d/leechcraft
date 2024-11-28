@@ -20,17 +20,21 @@ namespace LC::Monocle
 	struct PageAbsolutePos;
 	struct SceneAbsolutePos;
 
-	struct PageRelativePos : Pos<PageRelativePos, Relativity::PageRelative>
+	struct PageRelativePos : PageRelativePosBase
 	{
-		using Pos::Pos;
+		using PageRelativePosBase::PageRelativePosBase;
+
+		PageRelativePos (PageRelativePosBase);
 
 		PageAbsolutePos ToPageAbsolute (const PageGraphicsItem&) const;
 		SceneAbsolutePos ToSceneAbsolute (const PageGraphicsItem&) const;
 	};
 
-	struct PageAbsolutePos : Pos<PageAbsolutePos, Relativity::PageAbsolute>
+	struct PageAbsolutePos : PageAbsolutePosBase
 	{
-		using Pos::Pos;
+		using PageAbsolutePosBase::PageAbsolutePosBase;
+
+		PageAbsolutePos (PageAbsolutePosBase);
 
 		PageRelativePos ToPageRelative (const PageGraphicsItem&) const;
 		SceneAbsolutePos ToSceneAbsolute (const PageGraphicsItem&) const;
@@ -76,9 +80,11 @@ namespace LC::Monocle
 		SceneAbsoluteRect ToSceneAbsolute (const PageGraphicsItem&) const;
 	};
 
-	struct PageAbsoluteRect : Rect<PageAbsolutePos, Relativity::PageAbsolute>
+	struct PageAbsoluteRect : PageAbsoluteRectBase
 	{
-		using Rect::Rect;
+		using PageAbsoluteRectBase::PageAbsoluteRectBase;
+
+		PageAbsoluteRect (const PageAbsoluteRectBase&);
 
 		PageRelativeRect ToPageRelative (const PageGraphicsItem&) const;
 		SceneAbsoluteRect ToSceneAbsolute (const PageGraphicsItem&) const;
