@@ -584,7 +584,7 @@ namespace Monocle
 		if (const auto& rect = nav.TargetArea_)
 		{
 			auto center = (rect->TopLeft<PageRelativePos> () + rect->BottomRight<PageRelativePos> ()) / 2;
-			C_->Scroller_.SmoothCenterOnPoint (PageRelativePos { center }.ToSceneAbsolute (*page));
+			C_->Scroller_.SmoothCenterOnPoint (center.ToSceneAbsolute (*page));
 		}
 		else
 			SetCurrentPage (nav.PageNumber_);

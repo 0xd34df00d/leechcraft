@@ -21,7 +21,7 @@ namespace LC::Monocle
 		ViewAbsolute,
 	};
 
-	template<typename T, Relativity R>
+	template<Relativity R>
 	struct Pos
 	{
 		static constexpr auto Relativity = R;
@@ -44,22 +44,25 @@ namespace LC::Monocle
 
 		auto operator<=> (const Pos&) const = default;
 
+		template<typename Self>
 		[[nodiscard]]
-		T ClearedX () const
+		auto ClearedX (this const Self& self)
 		{
-			return T { 0, P_.y () };
+			return Self { 0, self.P_.y () };
 		}
 
+		template<typename Self>
 		[[nodiscard]]
-		T ClearedY () const
+		auto ClearedY (this const Self& self)
 		{
-			return T { P_.x (), 0 };
+			return Self { self.P_.x (), 0 };
 		}
 
+		template<typename Self>
 		[[nodiscard]]
-		T Shifted (qreal dx, qreal dy) const
+		Self Shifted (this const Self& self, qreal dx, qreal dy)
 		{
-			return T { P_ + Type { dx, dy } };
+			return Self { self.P_ + Type { dx, dy } };
 		}
 
 		Type ToPointF () const
@@ -67,32 +70,36 @@ namespace LC::Monocle
 			return P_;
 		}
 
-		friend T operator+ (T p1, T p2)
+		template<typename Self>
+		Self operator+ (this Self p1, Self p2)
 		{
-			return T { p1.P_ + p2.P_ };
+			return Self { p1.P_ + p2.P_ };
 		}
 
-		friend T operator- (T p1, T p2)
+		template<typename Self>
+		Self operator- (this Self p1, Self p2)
 		{
-			return T { p1.P_ - p2.P_ };
+			return Self { p1.P_ - p2.P_ };
 		}
 
-		friend T operator* (T p, qreal factor)
+		template<typename Self>
+		Self operator* (this Self p, qreal factor)
 		{
-			return T { p.P_ * factor };
+			return Self { p.P_ * factor };
 		}
 
-		friend T operator/ (T p, qreal factor)
+		template<typename Self>
+		Self operator/ (this Self p, qreal factor)
 		{
-			return T { p.P_ / factor };
+			return Self { p.P_ / factor };
 		}
 
-		bool BothGeqThan (T p) const
+		bool BothGeqThan (Pos p) const
 		{
 			return P_.x () >= p.P_.x () && P_.y () >= p.P_.y ();
 		}
 
-		bool BothLeqThan (T p) const
+		bool BothLeqThan (Pos p) const
 		{
 			return P_.x () <= p.P_.x () && P_.y () <= p.P_.y ();
 		}
@@ -114,8 +121,7 @@ namespace LC::Monocle
 		{
 		}
 
-		template<typename K>
-		explicit Rect (Pos<K, R> topLeft, Pos<K, R> bottomRight)
+		explicit Rect (Pos<R> topLeft, Pos<R> bottomRight)
 		: R_ { topLeft.ToPointF (), bottomRight.ToPointF () }
 		{
 		}
@@ -160,14 +166,14 @@ namespace LC::Monocle
 	struct PageRelativePosBase;
 	struct PageAbsolutePosBase;
 
-	struct PageRelativePosBase : Pos<PageRelativePosBase, Relativity::PageRelative>
+	struct PageRelativePosBase : Pos<Relativity::PageRelative>
 	{
 		using Pos::Pos;
 
 		PageAbsolutePosBase ToPageAbsolute (QSizeF) const;
 	};
 
-	struct PageAbsolutePosBase : Pos<PageAbsolutePosBase, Relativity::PageAbsolute>
+	struct PageAbsolutePosBase : Pos<Relativity::PageAbsolute>
 	{
 		using Pos::Pos;
 
