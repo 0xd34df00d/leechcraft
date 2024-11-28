@@ -90,7 +90,7 @@ namespace LC::Monocle
 		SceneAbsoluteRect ToSceneAbsolute (const PageGraphicsItem&) const;
 	};
 
-	struct SceneAbsoluteRect : Rect<SceneAbsoluteRect, Relativity::SceneAbsolute>
+	struct SceneAbsoluteRect : Rect<Relativity::SceneAbsolute>
 	{
 		using Rect::Rect;
 
@@ -98,7 +98,7 @@ namespace LC::Monocle
 		PageRelativeRect ToPageRelative (const PageGraphicsItem&) const;
 	};
 
-	struct ViewAbsoluteRect : Rect<ViewAbsoluteRect, Relativity::ViewAbsolute>
+	struct ViewAbsoluteRect : Rect<Relativity::ViewAbsolute>
 	{
 		using Rect::Rect;
 

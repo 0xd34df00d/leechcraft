@@ -105,7 +105,7 @@ namespace LC::Monocle
 		}
 	};
 
-	template<typename T, Relativity R>
+	template<Relativity R>
 	struct Rect
 	{
 		static constexpr auto Relativity = R;
@@ -152,14 +152,16 @@ namespace LC::Monocle
 			return R_.isEmpty ();
 		}
 
-		friend T operator| (const T& r1, const T& r2)
+		template<typename Self>
+		Self operator| (this const Self& r1, const Self& r2)
 		{
-			return T { r1.R_ | r2.R_ };
+			return Self { r1.R_ | r2.R_ };
 		}
 
-		friend T operator& (const T& r1, const T& r2)
+		template<typename Self>
+		Self operator& (this const Self& r1, const Self& r2)
 		{
-			return T { r1.R_ & r2.R_ };
+			return Self { r1.R_ & r2.R_ };
 		}
 	};
 
@@ -193,14 +195,14 @@ namespace LC::Monocle
 	struct PageRelativeRectBase;
 	struct PageAbsoluteRectBase;
 
-	struct PageRelativeRectBase : Rect<PageRelativeRectBase, Relativity::PageRelative>
+	struct PageRelativeRectBase : Rect<Relativity::PageRelative>
 	{
 		using Rect::Rect;
 
 		PageAbsoluteRectBase ToPageAbsolute (QSizeF) const;
 	};
 
-	struct PageAbsoluteRectBase : Rect<PageAbsolutePosBase, Relativity::PageAbsolute>
+	struct PageAbsoluteRectBase : Rect<Relativity::PageAbsolute>
 	{
 		using Rect::Rect;
 
