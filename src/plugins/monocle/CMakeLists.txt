@@ -29,6 +29,7 @@ add_library (leechcraft-monocle-util SHARED
 	util/monocle/pagelink.cpp
 	util/monocle/resourcedtextdocument.cpp
 	util/monocle/tablehandler.cpp
+	util/monocle/textboxesdetector.cpp
 	util/monocle/textdocumentadapter.cpp
 	util/monocle/textdocumentformatconfig.cpp
 	util/monocle/tocbuilder.cpp
