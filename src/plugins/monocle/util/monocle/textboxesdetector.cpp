@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "textboxesdetector.h"
-#include <QPagedPaintDevice>
-#include <QPaintEngine>
+#include <QAbstractTextDocumentLayout>
+#include <QTextBlock>
 #include <QTextDocument>
 #include <interfaces/monocle/ihavetextcontent.h>
 
@@ -16,139 +16,65 @@ namespace LC::Monocle
 {
 	namespace
 	{
-		class TextBoxesDetector;
-
-		class TextRecordingPaintEngine : public QPaintEngine
+		QVector<TextBox> HandleBlock (const QTextBlock& block, const QRectF& blockRect, const QRectF& pageRect)
 		{
-			const QSizeF PageSize_;
-			QVector<QVector<TextBox>> Page2Boxes_;
-		public:
-			explicit TextRecordingPaintEngine (QSizeF pageSize)
-			: PageSize_ { pageSize }
+			QVector<TextBox> result;
+			result.reserve (block.text ().count (' '));
+
+			const auto& text = block.text ();
+
+			const auto layout = block.layout ();
+			for (int i = 0, lc = layout->lineCount (); i < lc; ++i)
 			{
-			}
+				const auto line = layout->lineAt (i);
+				const auto& lineRectInDoc = line.rect ().translated (blockRect.topLeft ());
+				if (!lineRectInDoc.intersects (pageRect))
+					continue;
 
-			const QVector<QVector<TextBox>>& GetBoxes () const
-			{
-				return Page2Boxes_;
-			}
+				const auto lineXPos = lineRectInDoc.left () - (line.lineNumber () ? 0 : block.blockFormat ().textIndent ());
 
-			bool begin (QPaintDevice*) override { return true; }
-			bool end () override { return true; }
-			void updateState (const QPaintEngineState&) override {}
-			Type type () const override { return Type::User; }
-
-			void drawEllipse (const QRect&) override {}
-			void drawEllipse (const QRectF&) override {}
-			void drawImage (const QRectF&, const QImage&, const QRectF&, Qt::ImageConversionFlags) override {}
-			void drawLines (const QLine*, int) override {}
-			void drawLines (const QLineF*, int) override {}
-			void drawPath (const QPainterPath&) override {}
-			void drawPixmap (const QRectF&, const QPixmap&, const QRectF&) override {}
-			void drawPoints (const QPoint*, int) override {}
-			void drawPoints (const QPointF*, int) override {}
-			void drawPolygon (const QPoint*, int, QPaintEngine::PolygonDrawMode) override {}
-			void drawPolygon (const QPointF*, int, QPaintEngine::PolygonDrawMode) override {}
-			void drawRects (const QRect*, int) override {}
-			void drawRects (const QRectF*, int) override {}
-			void drawTiledPixmap (const QRectF&, const QPixmap&, const QPointF&) override {}
-
-			void drawTextItem (const QPointF& srcPos, const QTextItem& text) override
-			{
-				auto pos = srcPos;
-				const auto [page, yPos] = std::div (static_cast<int> (pos.y ()), static_cast<int> (PageSize_.height ()));
-				pos.setY (yPos);
-
-				Page2Boxes_.resize (page + 1);
-				auto& boxes = Page2Boxes_ [page];
-
-				const QFontMetrics fm { text.font () };
-				const auto spaceWidth = fm.horizontalAdvance (' ');
-
-				bool trimLastSpace = false;
-
-				for (const auto& word : text.text ().split (' ', Qt::KeepEmptyParts))
+				const auto lineEnd = text.begin () + line.textStart () + line.textLength ();
+				auto wordEnd = text.begin () + line.textStart ();
+				while (true)
 				{
-					if (word.isEmpty ())
-					{
-						trimLastSpace = false;
-						continue;
-					}
+					const auto wordStart = std::find_if (wordEnd, lineEnd, [] (QChar ch) { return !ch.isSpace (); });
+					if (wordStart == lineEnd)
+						break;
+					wordEnd = std::find_if (wordStart + 1, lineEnd, [] (QChar ch) { return ch.isSpace (); });
 
-					PageAbsoluteRectBase absRect { fm.boundingRect (word).translated (pos.toPoint ()) };
+					const auto textStartPos = static_cast<int> (wordStart - text.begin ());
+					const auto len = static_cast<int> (wordEnd - wordStart);
 
-					boxes << TextBox { .Text_ = word, .Rect_ = absRect.ToPageRelative (PageSize_), .HasSpaceAfter_ = true };
-					pos.rx () += fm.horizontalAdvance (word) + spaceWidth;
-					trimLastSpace = true;
+					PageAbsoluteRectBase wordRect { lineRectInDoc.translated (-pageRect.topLeft ()) };
+					wordRect.SetLeft (line.cursorToX (textStartPos) + lineXPos);
+					wordRect.SetRight (line.cursorToX (textStartPos + len) + lineXPos);
+
+					result.push_back ({
+							.Text_ = text.mid (textStartPos, len),
+							.Rect_ = wordRect.ToPageRelative (pageRect.size ()),
+							.HasSpaceAfter_ = wordEnd != lineEnd,
+						});
 				}
-
-				if (trimLastSpace)
-					boxes.last ().HasSpaceAfter_ = false;
-			}
-		};
-
-		class TextBoxesDetector : public QPagedPaintDevice
-		{
-			mutable TextRecordingPaintEngine PaintEngine_;
-			const QSizeF PageSize_;
-		public:
-			explicit TextBoxesDetector (QSizeF pageSize)
-			: PaintEngine_ {pageSize }
-			{
 			}
 
-			bool newPage () override
-			{
-				return true;
-			}
-
-			QPaintEngine* paintEngine () const override
-			{
-				return &PaintEngine_;
-			}
-
-			const QVector<QVector<TextBox>>& GetBoxes () const
-			{
-				return PaintEngine_.GetBoxes ();
-			}
-		protected:
-			int metric (QPaintDevice::PaintDeviceMetric metric) const override
-			{
-				constexpr auto dpi = 72;
-
-				switch (metric)
-				{
-				case QPaintDevice::PdmWidth:
-					return static_cast<int> (PageSize_.width ());
-				case QPaintDevice::PdmHeight:
-					return static_cast<int> (PageSize_.height ());
-				case QPaintDevice::PdmWidthMM:
-				case QPaintDevice::PdmHeightMM:
-					break;
-				case QPaintDevice::PdmNumColors:
-					return 256;
-				case QPaintDevice::PdmDepth:
-					return 8;
-				case QPaintDevice::PdmDpiX:
-				case QPaintDevice::PdmDpiY:
-				case QPaintDevice::PdmPhysicalDpiX:
-				case QPaintDevice::PdmPhysicalDpiY:
-					return dpi;
-				case QPaintDevice::PdmDevicePixelRatio:
-					return 1;
-				case QPaintDevice::PdmDevicePixelRatioScaled:
-					return static_cast<int> (devicePixelRatioFScale ());
-				}
-
-				return QPagedPaintDevice::metric (metric);
-			}
-		};
+			return result;
+		}
 	}
 
-	QVector<QVector<TextBox>> DetectTextBoxes (const QTextDocument& doc)
+	QVector<TextBox> DetectTextBoxes (QTextDocument& doc, int page)
 	{
-		TextBoxesDetector detector { doc.pageSize () };
-		doc.print (&detector);
-		return detector.GetBoxes ();
+		const auto& pageSize = doc.pageSize ();
+		const QRectF pageRect { QPointF { 0, pageSize.height () * page }, pageSize };
+
+		const auto docLayout = doc.documentLayout ();
+
+		QVector<TextBox> result;
+		for (auto block = doc.begin (); block != doc.end (); block = block.next ())
+		{
+			const auto& blockRect = docLayout->blockBoundingRect (block);
+			if (blockRect.intersects (pageRect))
+				result += HandleBlock (block, blockRect, pageRect);
+		}
+		return result;
 	}
 }

@@ -17,5 +17,5 @@ namespace LC::Monocle
 {
 	struct TextBox;
 
-	QVector<QVector<TextBox>> DetectTextBoxes (const QTextDocument&);
+	QVector<TextBox> DetectTextBoxes (QTextDocument&, int);
 }
