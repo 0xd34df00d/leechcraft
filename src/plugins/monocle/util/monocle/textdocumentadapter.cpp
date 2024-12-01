@@ -21,6 +21,7 @@
 #include "html2doc.h"
 #include "pagelink.h"
 #include "resourcedtextdocument.h"
+#include "textboxesdetector.h"
 #include "textdocumentformatconfig.h"
 
 namespace LC::Monocle
@@ -122,7 +123,7 @@ namespace LC::Monocle
 
 	QVector<TextBox> TextDocumentAdapter::GetTextBoxes (int page)
 	{
-		return {};
+		return DetectTextBoxes (*Doc_, page);
 	}
 
 	TOCEntryLevel_t TextDocumentAdapter::GetTOC ()
