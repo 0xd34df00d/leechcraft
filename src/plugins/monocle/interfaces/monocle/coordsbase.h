@@ -142,6 +142,16 @@ namespace LC::Monocle
 			return P { R_.bottomRight () };
 		}
 
+		void SetLeft (qreal x)
+		{
+			R_.setLeft (x);
+		}
+
+		void SetRight (qreal x)
+		{
+			R_.setRight (x);
+		}
+
 		Type ToRectF () const
 		{
 			return R_;
