@@ -17,11 +17,11 @@ namespace LC::Monocle
 	namespace
 	{
 		template<typename It>
-		auto GetNextSymbol (It wordEnd, It lineEnd, It blockEnd)
+		auto GetNextSymbol (It nextWordStart, It lineEnd, It blockEnd)
 		{
-			if (wordEnd == lineEnd)
+			if (nextWordStart == lineEnd)
 				return NextSpaceKind::NewLine;
-			if (wordEnd == blockEnd)
+			if (nextWordStart == blockEnd)
 				return NextSpaceKind::NewPara;
 
 			return NextSpaceKind::Space;
@@ -45,13 +45,11 @@ namespace LC::Monocle
 				const auto lineXPos = lineRectInDoc.left () - (line.lineNumber () ? 0 : block.blockFormat ().textIndent ());
 
 				const auto lineEnd = text.begin () + line.textStart () + line.textLength ();
-				auto wordEnd = text.begin () + line.textStart ();
-				while (true)
+				auto nextWordStart = text.begin () + line.textStart ();
+				while (nextWordStart != lineEnd)
 				{
-					const auto wordStart = std::find_if (wordEnd, lineEnd, [] (QChar ch) { return !ch.isSpace (); });
-					if (wordStart == lineEnd)
-						break;
-					wordEnd = std::find_if (wordStart + 1, lineEnd, [] (QChar ch) { return ch.isSpace (); });
+					const auto wordStart = nextWordStart;
+					const auto wordEnd = std::find_if (nextWordStart + 1, lineEnd, [] (QChar ch) { return ch.isSpace (); });
 
 					const auto textStartPos = static_cast<int> (wordStart - text.begin ());
 					const auto len = static_cast<int> (wordEnd - wordStart);
@@ -60,10 +58,12 @@ namespace LC::Monocle
 					wordRect.SetLeft (line.cursorToX (textStartPos) + lineXPos);
 					wordRect.SetRight (line.cursorToX (textStartPos + len) + lineXPos);
 
+					nextWordStart = std::find_if (wordEnd, lineEnd, [] (QChar ch) { return !ch.isSpace (); });
+
 					result.push_back ({
 							.Text_ = text.mid (textStartPos, len),
 							.Rect_ = wordRect.ToPageRelative (pageRect.size ()),
-							.NextSpaceKind_ = GetNextSymbol (wordEnd, lineEnd, text.end ()),
+							.NextSpaceKind_ = GetNextSymbol (nextWordStart, lineEnd, text.end ()),
 						});
 				}
 			}
