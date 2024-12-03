@@ -396,7 +396,7 @@ namespace LC::Util
 				return {};
 
 			return QCoreApplication::translate (trCtx.constData (),
-					value->toUtf8 ().constData (),
+					value->toUtf8 ().replace ('\t', QByteArray {}).constData (),
 					nullptr);
 		}
 	}
