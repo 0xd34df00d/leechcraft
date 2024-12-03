@@ -15,11 +15,19 @@ class QString;
 
 namespace LC::Monocle
 {
+	enum class NextSpaceKind : std::uint8_t
+	{
+		None,
+		Space,
+		NewLine,
+		NewPara,
+	};
+
 	struct TextBox
 	{
 		QString Text_;
 		PageRelativeRectBase Rect_;
-		bool HasSpaceAfter_;
+		NextSpaceKind NextSpaceKind_;
 
 		std::optional<QVector<PageRelativeRectBase>> Letters_ {};
 	};

@@ -16,6 +16,17 @@ namespace LC::Monocle
 {
 	namespace
 	{
+		template<typename It>
+		auto GetNextSymbol (It wordEnd, It lineEnd, It blockEnd)
+		{
+			if (wordEnd == lineEnd)
+				return NextSpaceKind::NewLine;
+			if (wordEnd == blockEnd)
+				return NextSpaceKind::NewPara;
+
+			return NextSpaceKind::Space;
+		}
+
 		QVector<TextBox> HandleBlock (const QTextBlock& block, const QRectF& blockRect, const QRectF& pageRect)
 		{
 			QVector<TextBox> result;
@@ -52,7 +63,7 @@ namespace LC::Monocle
 					result.push_back ({
 							.Text_ = text.mid (textStartPos, len),
 							.Rect_ = wordRect.ToPageRelative (pageRect.size ()),
-							.HasSpaceAfter_ = wordEnd != lineEnd,
+							.NextSpaceKind_ = GetNextSymbol (wordEnd, lineEnd, text.end ()),
 						});
 				}
 			}

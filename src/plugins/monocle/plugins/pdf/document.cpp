@@ -196,7 +196,7 @@ namespace LC::Monocle::PDF
 			{
 				.Text_ = text,
 				.Rect_ = ToPageRelative (textBox->boundingBox (), *page),
-				.HasSpaceAfter_ = textBox->hasSpaceAfter (),
+				.NextSpaceKind_ = textBox->hasSpaceAfter () ? NextSpaceKind::Space : NextSpaceKind::None,
 			};
 			if (charLevelPrecision)
 			{

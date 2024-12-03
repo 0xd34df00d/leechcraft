@@ -364,10 +364,30 @@ namespace LC::Monocle
 		SelectMidWords (page, startPos, endPos, selBegin, selEnd);
 	}
 
+	namespace
+	{
+		std::optional<QString> GetNextSpace (NextSpaceKind kind)
+		{
+			static const QString space { ' ' };
+			static const QString newline { '\n' };
+
+			switch (kind)
+			{
+			case NextSpaceKind::Space:
+				return space;
+			case NextSpaceKind::NewLine:
+			case NextSpaceKind::NewPara:
+				return newline;
+			case NextSpaceKind::None:
+				break;
+			}
+
+			return {};
+		}
+	}
+
 	void TextSelectionInteraction::Released (QMouseEvent& ev)
 	{
-		const QString space { ' ' };
-
 		const auto guard = Util::MakeScopeGuard ([this] { ClearBoxes (); });
 
 		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
@@ -384,8 +404,8 @@ namespace LC::Monocle
 				if (box.Item_->isVisible ())
 				{
 					textBits << box.Box_.Text_;
-					if (box.Box_.HasSpaceAfter_)
-						textBits << space;
+					if (const auto nextSym = GetNextSpace (box.Box_.NextSpaceKind_))
+						textBits << *nextSym;
 				}
 
 		const auto& text = textBits.join (QStringView {}).trimmed ();
