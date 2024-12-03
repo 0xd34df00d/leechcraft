@@ -2,18 +2,13 @@
 <settings>
 	<page label="Monocle">
 		<tab label="Appearance">
-			<item type="spinbox" property="RecentlyOpenedListSize" default="10" minimum="1" maximum="100">
-				<label>Maximum number of items in the Recently Opened list:</label>
-			</item>
+			<item type="spinbox" property="RecentlyOpenedListSize" default="10" minimum="1" maximum="100" label="Maximum number of items in the Recently Opened list:" />
 		</tab>
 		<tab label="Behaviour">
-			<item type="checkbox" property="InvertedPageNumLabel" default="true">
-				<label>Invert keyboard scroll direction of the page number indicator</label>
+			<item type="checkbox" property="InvertedPageNumLabel" default="true" label="Invert keyboard scroll direction of the page number indicator">
 				<tooltip>Changes the scroll direction when the value of the page indicator is changed using the keyboard, for example, via the up/down arrows and Page Up/Page Down keys.</tooltip>
 			</item>
-			<item type="checkbox" property="InhibitScreensaver" default="true">
-				<label>Inhibit screensaver while a Monocle tab is active</label>
-			</item>
+			<item type="checkbox" property="InhibitScreensaver" default="true" label="Inhibit screensaver while a Monocle tab is active" />
 		</tab>
 		<tab label="Performance">
 			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" label="Pixmap cache size:" suffix=" MiB" />
