@@ -242,3 +242,19 @@ namespace LC::Monocle
 		return detail::Convert<PageRelativeRectBase> (&PageAbsolutePosBase::ToPageRelative, *this, size);
 	}
 }
+
+template<LC::Monocle::Relativity R>
+class QTypeInfo<LC::Monocle::Pos<R>> : public QTypeInfo<QPointF> {};
+
+template<LC::Monocle::Relativity R>
+class QTypeInfo<LC::Monocle::Rect<R>> : public QTypeInfo<QRectF> {};
+
+template<>
+class QTypeInfo<LC::Monocle::PageRelativePosBase> : public QTypeInfo<QPointF> {};
+template<>
+class QTypeInfo<LC::Monocle::PageAbsolutePosBase> : public QTypeInfo<QPointF> {};
+
+template<>
+class QTypeInfo<LC::Monocle::PageRelativeRectBase> : public QTypeInfo<QRectF> {};
+template<>
+class QTypeInfo<LC::Monocle::PageAbsoluteRectBase> : public QTypeInfo<QRectF> {};
