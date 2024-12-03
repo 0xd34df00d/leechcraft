@@ -111,6 +111,14 @@ namespace LC
 
 			return {};
 		}
+
+		QString FixupTooltipMarkup (QString tooltip)
+		{
+			if (!tooltip.contains ("</") || tooltip.startsWith ("<qt>"))
+				return tooltip;
+
+			return "<qt>" + tooltip.replace ('\n', "<br/>") + "</qt>";
+		}
 	}
 
 	std::optional<QVariant> ItemHandlerFactory::Handle (const QDomElement& element, QFormLayout& baseLayout)
@@ -136,7 +144,7 @@ namespace LC
 			});
 
 		auto widget = repr.Widget_;
-		widget->setToolTip (XSD_.GetDescription (element));
+		widget->setToolTip (FixupTooltipMarkup (XSD_.GetDescription (element)));
 		Prop2Info_ [prop] = PropInfo {
 			.Widget_ = widget,
 			.Prop_ = prop,
