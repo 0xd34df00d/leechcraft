@@ -28,7 +28,7 @@ namespace LC::Monocle
 {
 	struct InteractionHandler::ViewConfig
 	{
-		QGraphicsView::DragMode DragMode_;
+		QGraphicsView::DragMode DragMode_ {};
 		std::optional<Qt::CursorShape> Cursor_ {};
 	};
 
@@ -97,7 +97,8 @@ namespace LC::Monocle
 			const auto suffix = supported.contains (userSuffix) ?
 					userSuffix :
 					QByteArray { "PNG" };
-			image.save (filename, suffix, 100);
+			constexpr auto compression = 100;
+			image.save (filename, suffix, compression);
 		}
 
 		QString GetSelectionText (const QGraphicsScene& scene, IHaveTextContent& ihtc)
@@ -370,7 +371,7 @@ namespace LC::Monocle
 		{
 			static const QString space { ' ' };
 			static const QString newline { '\n' };
-			static const QString newpara { "\n\n" };
+			static const QString newpara = "\n\n"_qs;
 
 			switch (kind)
 			{
