@@ -320,7 +320,7 @@ namespace LC::Monocle
 			else
 			{
 				repr.IsWordPart_ = true;
-				page.SetChildRect (repr.Item_, PageRelativeRect { *firstWordBegin | *(firstWordEnd - 1) });
+				page.SetChildRect (repr.Item_, *firstWordBegin | *(firstWordEnd - 1));
 			}
 		}
 
