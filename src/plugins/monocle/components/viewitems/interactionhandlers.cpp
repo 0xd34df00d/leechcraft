@@ -370,14 +370,16 @@ namespace LC::Monocle
 		{
 			static const QString space { ' ' };
 			static const QString newline { '\n' };
+			static const QString newpara { "\n\n" };
 
 			switch (kind)
 			{
 			case NextSpaceKind::Space:
 				return space;
 			case NextSpaceKind::NewLine:
-			case NextSpaceKind::NewPara:
 				return newline;
+			case NextSpaceKind::NewPara:
+				return newpara;
 			case NextSpaceKind::None:
 				break;
 			}
