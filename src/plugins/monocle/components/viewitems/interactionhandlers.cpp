@@ -388,9 +388,10 @@ namespace LC::Monocle
 			return {};
 		}
 
-		bool ShouldPreserveNewlines ()
+		bool ShouldPreserveNewlines (const QMouseEvent& ev)
 		{
-			return XmlSettingsManager::Instance ().property ("PreserveParaNewlines").toBool ();
+			const auto invert = static_cast<bool> (ev.modifiers () & Qt::AltModifier);
+			return invert ^ XmlSettingsManager::Instance ().property ("PreserveParaNewlines").toBool ();
 		}
 	}
 
@@ -407,7 +408,7 @@ namespace LC::Monocle
 		QStringList textBits;
 		textBits.reserve (selectedBoxesCount * 2);
 
-		const auto preserveNewlines = ShouldPreserveNewlines ();
+		const auto preserveNewlines = ShouldPreserveNewlines (ev);
 		for (const auto& boxes : Boxes_)
 			for (auto& box : boxes)
 				if (box.Item_->isVisible ())
