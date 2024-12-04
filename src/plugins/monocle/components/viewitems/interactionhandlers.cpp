@@ -367,7 +367,7 @@ namespace LC::Monocle
 
 	namespace
 	{
-		std::optional<QString> GetNextSpace (NextSpaceKind kind)
+		std::optional<QString> GetNextSpace (NextSpaceKind kind, bool preserveNewlines)
 		{
 			static const QString space { ' ' };
 			static const QString newline { '\n' };
@@ -378,7 +378,7 @@ namespace LC::Monocle
 			case NextSpaceKind::Space:
 				return space;
 			case NextSpaceKind::NewLine:
-				return newline;
+				return preserveNewlines ? newline : space;
 			case NextSpaceKind::NewPara:
 				return newpara;
 			case NextSpaceKind::None:
@@ -386,6 +386,11 @@ namespace LC::Monocle
 			}
 
 			return {};
+		}
+
+		bool ShouldPreserveNewlines ()
+		{
+			return XmlSettingsManager::Instance ().property ("PreserveParaNewlines").toBool ();
 		}
 	}
 
@@ -402,12 +407,13 @@ namespace LC::Monocle
 		QStringList textBits;
 		textBits.reserve (selectedBoxesCount * 2);
 
+		const auto preserveNewlines = ShouldPreserveNewlines ();
 		for (const auto& boxes : Boxes_)
 			for (auto& box : boxes)
 				if (box.Item_->isVisible ())
 				{
 					textBits << box.Box_.Text_;
-					if (const auto nextSym = GetNextSpace (box.Box_.NextSpaceKind_))
+					if (const auto nextSym = GetNextSpace (box.Box_.NextSpaceKind_, preserveNewlines))
 						textBits << *nextSym;
 				}
 
