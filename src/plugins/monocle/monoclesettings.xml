@@ -9,7 +9,15 @@
 				<tooltip>Changes the scroll direction when the value of the page indicator is changed using the keyboard, for example, via the up/down arrows and Page Up/Page Down keys.</tooltip>
 			</item>
 			<item type="checkbox" property="InhibitScreensaver" default="true" label="Inhibit screensaver while a Monocle tab is active" />
-			<item type="checkbox" property="PreserveParaNewlines" default="false" label="Preserve line breaks within paragraphs when using the text selection tool" />
+			<item type="checkbox" property="PreserveParaNewlines" default="false" label="Preserve line breaks within paragraphs when using the text selection tool">
+				<tooltip>
+					When enabled, line breaks within a paragraph are preserved when copying text to the clipboard. When disabled, line breaks are replaced with spaces.
+
+					To temporarily toggle this behavior for a specific selection, hold the &lt;strong>Alt&lt;/strong> key while selecting text.
+
+					Please note: this feature may not be supported by all format backends (e.g., the PDF one does not support it).
+				</tooltip>
+			</item>
 		</tab>
 		<tab label="Performance">
 			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" label="Pixmap cache size:" suffix=" MiB" />
