@@ -35,7 +35,6 @@ mkGenerated allFiles
                                                                                                , (".qml.settings", filename)
                                                                                                ]
     procFile xsltFile (settingFile, contextFun) = sed ("__FILENAME__" $> T.pack (contextFun settingFile))
-                                                $ grep (has "QT_TRANSL")
                                                 $ inproc "xsltproc" [T.pack xsltFile, T.pack settingFile] empty
 
 guessTsBase :: FilePath -> FilePath
