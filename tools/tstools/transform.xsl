@@ -29,7 +29,7 @@
 	</xsl:template>
 
 	<xsl:template match="tooltip">
-		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="text()" disable-output-escaping="yes" />")
+    QT_TRANSLATE_NOOP("__FILENAME__", R"(<xsl:value-of select="text()" disable-output-escaping="yes" />)")
 	</xsl:template>
 	<xsl:template match="default">
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="text()" disable-output-escaping="yes" />")
