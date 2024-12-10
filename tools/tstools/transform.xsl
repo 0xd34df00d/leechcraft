@@ -24,7 +24,11 @@
 	</xsl:template>
 
 	<xsl:template match="tooltip">
-    QT_TRANSLATE_NOOP("__FILENAME__", R"(<xsl:value-of select="translate(text(), '&#x9;', '')" disable-output-escaping="yes" />)")
+    <xsl:variable name="no-tabs" select="translate(text(), '&#x9;', '')" />
+    <xsl:variable name="is-start-space" select="substring($no-tabs, 1, 1) = '&#xA;'" />
+    <xsl:variable name="is-end-space"   select="substring($no-tabs, string-length($no-tabs), 1) = '&#xA;'" />
+    <xsl:variable name="trimmed"        select="substring($no-tabs, $is-start-space + 1, string-length($no-tabs) - $is-start-space - $is-end-space)" />
+    QT_TRANSLATE_NOOP("__FILENAME__", R"(<xsl:value-of select="$trimmed" disable-output-escaping="yes" />)")
 	</xsl:template>
 	<xsl:template match="default">
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="text()" disable-output-escaping="yes" />")
