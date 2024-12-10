@@ -7,8 +7,13 @@
 
   <xsl:template match="label[@translatable='false']"/>
 	<xsl:template match="*[@label or @suffix]">
-    QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@label | @suffix"/>")
-    <xsl:apply-templates/>
+    <xsl:if test="@label">
+      QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@label"/>")
+    </xsl:if>
+    <xsl:if test="@suffix">
+      QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@suffix"/>")
+    </xsl:if>
+		<xsl:apply-templates/>
 	</xsl:template>
 	<xsl:template match="label[@value]">
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@value"/>")
