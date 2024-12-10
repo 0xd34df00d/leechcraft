@@ -122,17 +122,17 @@
 <context>
     <name>LC::Monocle::AreaSelectionInteraction</name>
     <message>
-        <location filename="components/viewitems/interactionhandlers.cpp" line="129"/>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="144"/>
         <source>Copy as image</source>
         <translation>Скопировать как изображение</translation>
     </message>
     <message>
-        <location filename="components/viewitems/interactionhandlers.cpp" line="134"/>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="149"/>
         <source>Save as image...</source>
         <translation>Сохранить как изображение...</translation>
     </message>
     <message>
-        <location filename="components/viewitems/interactionhandlers.cpp" line="149"/>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="123"/>
         <source>Copy as text</source>
         <translation>Скопировать как текст</translation>
     </message>
@@ -379,12 +379,12 @@
 <context>
     <name>LC::Monocle::PagesView</name>
     <message>
-        <location filename="components/viewitems/interactionhandlers.cpp" line="84"/>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="87"/>
         <source>Save selection as</source>
         <translation>Сохранить выделение как</translation>
     </message>
     <message>
-        <location filename="components/viewitems/interactionhandlers.cpp" line="86"/>
+        <location filename="components/viewitems/interactionhandlers.cpp" line="89"/>
         <source>PNG images (*.png)</source>
         <translation>Изображения PNG (*.png)</translation>
     </message>
@@ -508,166 +508,183 @@
 <context>
     <name>monoclesettings</name>
     <message>
-        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Monocle</source>
         <translation>Monocle</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
-        <location filename="dummy.cpp" line="17"/>
+        <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Appearance</source>
         <translation>Внешний вид</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Maximum number of items in the Recently Opened list:</source>
         <oldsource>Maximum number of items in Recently Opened list:</oldsource>
         <translation>Максимальное число документов в списке недавно открытых:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Behaviour</source>
         <translation>Поведение</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Invert keyboard scroll direction of the page number indicator</source>
         <oldsource>Invert page number label keyboard scroll direction</oldsource>
         <translation>Инвертировать направление прокрутки с клавиатуры в индикаторе страниц</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="7"/>
-        <source>Changes the scroll direction when the value of the page indicator is changed using the keyboard, for example, via the up/down arrows and Page Up/Page Down keys.</source>
-        <oldsource>Changes the scroll direction when the value of the page indicator from keyboard, for example, via the up/down arrows and page up/page down keys.</oldsource>
-        <translation>Изменяет направление прокрутки, когда значение индикатора текущей страницы изменяется с клавиатуры, например, при помощи стрелок вверх/вниз и клавиш Page Up/Page Down.</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Inhibit screensaver while a Monocle tab is active</source>
         <translation>Подавлять хранитель экрана при активной вкладке Monocle</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Performance</source>
         <translation>Производительность</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Pixmap cache size:</source>
         <translation>Размер кеша изображений:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Smaller rendering delay on size changes</source>
         <translation>Уменьшенная задержка рендеринга при изменении размера</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>If enabled, the pages view will be updated with a smaller delay after window size change or dock splitter dragging. This results in a smoother experience at the cost of higher CPU usage during such resizes.</source>
         <translation>Если включено, то страницы обновляются с меньшей задержкой после изменения размера окна или перемещения боковой панели. Это повышает плавность ценой большего использования процессора во время таких изменений размера.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Text books</source>
         <translation>Текстовые книги</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Default font:</source>
         <translation>Шрифт по умолчанию:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="19"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Page width:</source>
         <translation>Ширина страницы:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="20"/>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="53"/>
         <source> px</source>
         <translation> пикселей</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="15"/>
+        <source>Changes the scroll direction when the value of the page indicator is changed using the keyboard, for example, via the up/down arrows and &lt;strong&gt;Page Up&lt;/strong&gt;/&lt;strong&gt;Page Down&lt;/strong&gt; keys.</source>
+        <translation>Изменяет направление прокрутки, когда значение индикатора текущей страницы изменяется с клавиатуры, например, при помощи стрелок вверх/вниз и клавиш &lt;strong&gt;Page Up&lt;/strong&gt;/&lt;strong&gt;Page Down&lt;/strong&gt;.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="19"/>
+        <source>Preserve line breaks within paragraphs when using the text selection tool</source>
+        <translation>Сохранять переводы строк внутри параграфов при использовании выделения текста</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="21"/>
+        <source>When enabled, line breaks within a paragraph are preserved when copying text to the clipboard. When disabled, line breaks are replaced with spaces.
+
+To temporarily toggle this behavior for a specific selection, hold the &lt;strong&gt;Alt&lt;/strong&gt; key while selecting text.
+
+Please note: this feature may not be supported by all format backends (e.g., the PDF one does not support it).</source>
+        <translation>Если эта опция включена, переводы строк внутри параграфа сохраняются при копировании текста в буфер обмена. Если опция выключена, то переводы строк заменяются на пробелы.
+
+Для временного изменения этого поведения зажмите клавишу &lt;strong&gt;Alt&lt;/strong&gt; при выделении текста.
+
+Обратите внимание, что эта функция может не поддерживаться некоторыми модулями поддержки форматов (например, PDF).</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="51"/>
         <source>Page height:</source>
         <translation>Высота страницы:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Custom colors</source>
         <translation>Особые цвета</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Background color:</source>
         <translation>Цвет фона:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Foreground color:</source>
         <translation>Цвет текста:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Link color:</source>
         <translation>Цвет ссылок:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>Margins and indents</source>
         <translation>Отступы</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Page</source>
         <translation>Страница</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="77"/>
         <source>Left margin:</source>
         <translation>Левый отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="79"/>
         <source>Top margin:</source>
         <translation>Правый отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="81"/>
         <source>Right margin:</source>
         <translation>Верхний отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="83"/>
         <source>Bottom margin:</source>
         <translation>Нижний отступ:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>Paragraph</source>
         <translation>Параграф</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="85"/>
         <source>First line indent:</source>
         <translation>Отступ красной строки:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="31"/>
         <source> MiB</source>
         <translation> МБ</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Smooth scrolling</source>
         <translation>Плавная прокрутка</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Default backends</source>
         <translation>Модули по умолчанию</translation>
     </message>
