@@ -368,6 +368,8 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Released (QMouseEvent& ev)
 	{
+		UpdateSelection (ViewAbsolutePos { ev.localPos () });
+
 		const auto guard = Util::MakeScopeGuard ([this] { ClearBoxes (); });
 
 		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
