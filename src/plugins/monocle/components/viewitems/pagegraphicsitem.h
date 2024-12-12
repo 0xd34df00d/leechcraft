@@ -74,6 +74,7 @@ namespace LC::Monocle
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 		void mousePressEvent (QGraphicsSceneMouseEvent*) override;
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*) override;
+		QVariant itemChange (QGraphicsItem::GraphicsItemChange, const QVariant&) override;
 	private:
 		bool ShouldRender () const;
 	signals:

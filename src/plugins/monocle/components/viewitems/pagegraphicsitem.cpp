@@ -157,6 +157,13 @@ namespace LC::Monocle
 			QGraphicsItem::mouseReleaseEvent (event);
 	}
 
+	QVariant PageGraphicsItem::itemChange (QGraphicsItem::GraphicsItemChange change, const QVariant& value)
+	{
+		if (change == ItemChildRemovedChange)
+			Item2RectInfo_.remove (value.value<QGraphicsItem*> ());
+		return QGraphicsItem::itemChange (change, value);
+	}
+
 	int PageGraphicsItem::GetMemorySize () const
 	{
 		if (Image_.isNull ())
