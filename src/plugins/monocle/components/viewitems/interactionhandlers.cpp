@@ -246,6 +246,8 @@ namespace LC::Monocle
 	{
 		HasMoved_ = false;
 
+		ClearBoxes ();
+
 		SelectionStart_.reset ();
 		EnsureHasSelectionStart (ViewAbsolutePos { ev.localPos () });
 	}
