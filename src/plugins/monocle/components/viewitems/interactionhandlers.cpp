@@ -244,6 +244,8 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
 	{
+		HasMoved_ = false;
+
 		SelectionStart_.reset ();
 		EnsureHasSelectionStart (ViewAbsolutePos { ev.localPos () });
 	}
@@ -251,7 +253,10 @@ namespace LC::Monocle
 	void TextSelectionInteraction::Moved (QMouseEvent& ev)
 	{
 		if (ev.buttons () != Qt::NoButton)
+		{
+			HasMoved_ = true;
 			UpdateSelection (ViewAbsolutePos { ev.localPos () });
+		}
 	}
 
 	namespace
@@ -368,9 +373,12 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Released (QMouseEvent& ev)
 	{
-		UpdateSelection (ViewAbsolutePos { ev.localPos () });
-
 		const auto guard = Util::MakeScopeGuard ([this] { ClearBoxes (); });
+
+		if (!HasMoved_)
+			return;
+
+		UpdateSelection (ViewAbsolutePos { ev.localPos () });
 
 		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
 				[] (int acc, auto&& boxes)
