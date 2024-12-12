@@ -70,6 +70,12 @@ namespace LC::Monocle
 
 	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item, const PageRelativeRect& srcRect, RectSetter_f setter)
 	{
+		if (item->parentItem () != this)
+		{
+			qWarning () << "reparenting child item:" << item << item->parentItem () << static_cast<QObject*> (this);
+			item->setParentItem (this);
+		}
+
 		setter (srcRect.ToPageAbsolute (*this));
 		Item2RectInfo_ [item] = { srcRect, std::move (setter) };
 	}
