@@ -74,6 +74,8 @@ namespace LC::Monocle
 		void Moved (QMouseEvent&) override;
 		void Released (QMouseEvent&) override;
 	private:
+		void UpdateSelection (ViewAbsolutePos);
+
 		void SelectOnPage (PageGraphicsItem&, PageRelativePos, PageRelativePos);
 
 		void EnsureHasSelectionStart (ViewAbsolutePos pos);

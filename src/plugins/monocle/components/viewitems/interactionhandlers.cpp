@@ -250,37 +250,8 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Moved (QMouseEvent& ev)
 	{
-		if (ev.buttons () == Qt::NoButton)
-			return;
-
-		EnsureHasSelectionStart (ViewAbsolutePos { ev.localPos () });
-
-		const auto& selectionEnd = GetPageInfo (ViewAbsolutePos { ev.localPos () });
-		if (!SelectionStart_ || !selectionEnd)
-			return;
-
-		const auto [selTopLeft, selBottomRight] = std::minmax (*SelectionStart_, *selectionEnd,
-				[] (const auto& l, const auto& r) { return ToTuple (l) < ToTuple (r); });
-
-		const auto [startPage, startPos] = selTopLeft;
-		const auto [endPage, endPos] = selBottomRight;
-
-		if (startPage == endPage)
-			SelectOnPage (*startPage, startPos, endPos);
-		else
-		{
-			SelectOnPage (*startPage, startPos, PageRelativePos { 1, 1 });
-			for (int i = startPage->GetPageNum () + 1; i < endPage->GetPageNum (); ++i)
-				SelectOnPage (*Pages_ [i], PageRelativePos { 0, 0 }, PageRelativePos { 1, 1 });
-			SelectOnPage (*endPage, PageRelativePos { 0, 0 }, endPos);
-		}
-
-		for (auto& boxes : std::ranges::subrange (Boxes_.begin (), Boxes_.find (startPage->GetPageNum ())))
-			for (auto& box : boxes)
-				box.Item_->setVisible (false);
-		for (auto& boxes : std::ranges::subrange (std::next (Boxes_.find (endPage->GetPageNum ())), Boxes_.end ()))
-			for (auto& box : boxes)
-				box.Item_->setVisible (false);
+		if (ev.buttons () != Qt::NoButton)
+			UpdateSelection (ViewAbsolutePos { ev.localPos () });
 	}
 
 	namespace
@@ -425,6 +396,38 @@ namespace LC::Monocle
 		QMenu menu { &View_ };
 		FillMenuForText (menu, text);
 		menu.exec (ev.globalPos ());
+	}
+
+	void TextSelectionInteraction::UpdateSelection (ViewAbsolutePos pos)
+	{
+		EnsureHasSelectionStart (pos);
+
+		const auto& selectionEnd = GetPageInfo (pos);
+		if (!SelectionStart_ || !selectionEnd)
+			return;
+
+		const auto [selTopLeft, selBottomRight] = std::minmax (*SelectionStart_, *selectionEnd,
+				[] (const auto& l, const auto& r) { return ToTuple (l) < ToTuple (r); });
+
+		const auto [startPage, startPos] = selTopLeft;
+		const auto [endPage, endPos] = selBottomRight;
+
+		if (startPage == endPage)
+			SelectOnPage (*startPage, startPos, endPos);
+		else
+		{
+			SelectOnPage (*startPage, startPos, PageRelativePos { 1, 1 });
+			for (int i = startPage->GetPageNum () + 1; i < endPage->GetPageNum (); ++i)
+				SelectOnPage (*Pages_ [i], PageRelativePos { 0, 0 }, PageRelativePos { 1, 1 });
+			SelectOnPage (*endPage, PageRelativePos { 0, 0 }, endPos);
+		}
+
+		for (auto& boxes : std::ranges::subrange (Boxes_.begin (), Boxes_.find (startPage->GetPageNum ())))
+			for (auto& box : boxes)
+				box.Item_->setVisible (false);
+		for (auto& boxes : std::ranges::subrange (std::next (Boxes_.find (endPage->GetPageNum ())), Boxes_.end ()))
+			for (auto& box : boxes)
+				box.Item_->setVisible (false);
 	}
 
 	void TextSelectionInteraction::EnsureHasSelectionStart (ViewAbsolutePos pos)
