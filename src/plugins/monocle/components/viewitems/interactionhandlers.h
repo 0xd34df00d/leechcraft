@@ -32,6 +32,7 @@ namespace LC::Monocle
 		virtual void Pressed (QMouseEvent&) {}
 		virtual void Moved (QMouseEvent&) {}
 		virtual void Released (QMouseEvent&) {}
+		virtual void DoubleClicked (QMouseEvent&) {}
 	};
 
 	class MovingInteraction final : public InteractionHandler

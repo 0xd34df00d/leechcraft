@@ -57,6 +57,12 @@ namespace LC::Monocle
 		InteractionHandler_->Released (*event);
 	}
 
+	void PagesView::mouseDoubleClickEvent (QMouseEvent *event)
+	{
+		QGraphicsView::mouseDoubleClickEvent (event);
+		InteractionHandler_->DoubleClicked (*event);
+	}
+
 	void PagesView::resizeEvent (QResizeEvent *e)
 	{
 		QGraphicsView::resizeEvent (e);
