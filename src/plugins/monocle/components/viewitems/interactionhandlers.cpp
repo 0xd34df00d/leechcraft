@@ -490,15 +490,9 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::ClearBoxes ()
 	{
-		for (const auto& [pageIdx, boxes] : Util::Stlize (Boxes_))
-		{
-			const auto page = Pages_ [pageIdx];
+		for (const auto& boxes : Boxes_)
 			for (const auto& box : boxes)
-			{
-				page->UnregisterChildRect (box.Item_);
 				delete box.Item_;
-			}
-		}
 		Boxes_.clear ();
 	}
 }

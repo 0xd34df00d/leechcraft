@@ -129,12 +129,7 @@ namespace LC::Monocle
 	void TextSearchHandler::ClearHighlights ()
 	{
 		for (const auto& highlight : CurrentHighlights_)
-		{
-			const auto item = highlight.Item_;
-			auto& parentPage = dynamic_cast<PageGraphicsItem&> (*item->parentItem ());
-			parentPage.UnregisterChildRect (item);
-			delete item;
-		}
+			delete highlight.Item_;
 
 		CurrentHighlights_.clear ();
 	}

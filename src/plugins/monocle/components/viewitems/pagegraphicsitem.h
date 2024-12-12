@@ -57,7 +57,6 @@ namespace LC::Monocle
 
 		void RegisterChildRect (QGraphicsItem*, const PageRelativeRect&, RectSetter_f);
 		void SetChildRect (QGraphicsItem*, const PageRelativeRect&);
-		void UnregisterChildRect (QGraphicsItem*);
 
 		void ClearPixmap ();
 		void UpdatePixmap ();

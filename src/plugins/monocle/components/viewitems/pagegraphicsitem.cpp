@@ -84,11 +84,6 @@ namespace LC::Monocle
 		pos->Setter_ (rect.ToPageAbsolute (*this));
 	}
 
-	void PageGraphicsItem::UnregisterChildRect (QGraphicsItem *item)
-	{
-		Item2RectInfo_.remove (item);
-	}
-
 	void PageGraphicsItem::ClearPixmap ()
 	{
 		Image_ = QImage {};
