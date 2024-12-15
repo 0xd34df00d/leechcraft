@@ -244,7 +244,7 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
 	{
-		HasMoved_ = false;
+		IsSelectionGesture_ = false;
 
 		ClearBoxes ();
 
@@ -256,7 +256,7 @@ namespace LC::Monocle
 	{
 		if (ev.buttons () != Qt::NoButton)
 		{
-			HasMoved_ = true;
+			IsSelectionGesture_ = true;
 			UpdateSelection (ViewAbsolutePos { ev.localPos () });
 		}
 	}
@@ -377,7 +377,7 @@ namespace LC::Monocle
 	{
 		const auto guard = Util::MakeScopeGuard ([this] { ClearBoxes (); });
 
-		if (!HasMoved_)
+		if (!IsSelectionGesture_)
 			return;
 
 		UpdateSelection (ViewAbsolutePos { ev.localPos () });

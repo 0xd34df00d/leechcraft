@@ -66,7 +66,7 @@ namespace LC::Monocle
 		std::optional<SelectionCornerInfo> SelectionStart_;
 		IHaveTextContent& IHTC_;
 		const QVector<PageGraphicsItem*> Pages_;
-		bool HasMoved_ = false;
+		bool IsSelectionGesture_ = false;
 	public:
 		explicit TextSelectionInteraction (PagesView&, IDocument&, const QVector<PageGraphicsItem*>&);
 		~TextSelectionInteraction () override;
