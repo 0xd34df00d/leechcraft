@@ -183,7 +183,7 @@ namespace LC::Monocle
 	struct TextSelectionInteraction::BoxRepr
 	{
 		TextBox Box_;
-		QGraphicsRectItem *Item_;
+		std::shared_ptr<QGraphicsRectItem> Item_;
 
 		bool IsWordPart_ = false;
 	};
@@ -268,7 +268,7 @@ namespace LC::Monocle
 			if (repr.IsWordPart_)
 			{
 				repr.IsWordPart_ = false;
-				page.SetChildRect (repr.Item_, repr.Box_.Rect_);
+				page.SetChildRect (repr.Item_.get (), repr.Box_.Rect_);
 			}
 		}
 
@@ -299,7 +299,7 @@ namespace LC::Monocle
 			else
 			{
 				repr.IsWordPart_ = true;
-				page.SetChildRect (repr.Item_, *firstWordBegin | *(firstWordEnd - 1));
+				page.SetChildRect (repr.Item_.get (), *firstWordBegin | *(firstWordEnd - 1));
 			}
 		}
 
@@ -468,17 +468,17 @@ namespace LC::Monocle
 		infos.reserve (boxes.size ());
 		for (const auto& box : boxes)
 		{
-			auto rectItem = new QGraphicsRectItem { &item };
+			auto rectItem = std::make_shared<QGraphicsRectItem> (&item);
 			rectItem->setZValue (1);
 			rectItem->setOpacity (0.5);
 			rectItem->setPen (boxPen);
 			rectItem->setBrush (boxBrush);
 			rectItem->setVisible (false);
 
-			item.RegisterChildRect (rectItem,
+			item.RegisterChildRect (rectItem.get (),
 					box.Rect_,
-					[rectItem] (const PageAbsoluteRect& rect) { rectItem->setRect (rect.ToRectF ()); });
-			infos.emplace_back (box, rectItem);
+					[&rectItem] (const PageAbsoluteRect& rect) { rectItem->setRect (rect.ToRectF ()); });
+			infos.emplace_back (box, std::move (rectItem));
 		}
 
 		return infos;
@@ -500,9 +500,6 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::ClearBoxes ()
 	{
-		for (const auto& boxes : Boxes_)
-			for (const auto& box : boxes)
-				delete box.Item_;
 		Boxes_.clear ();
 	}
 }
