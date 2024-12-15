@@ -83,7 +83,8 @@ namespace LC::Monocle
 		for (auto block = doc.begin (); block != doc.end (); block = block.next ())
 		{
 			const auto& blockRect = docLayout->blockBoundingRect (block);
-			if (blockRect.intersects (pageRect))
+			const auto& innerTopLeft = block.layout ()->boundingRect ().topLeft ();
+			if (blockRect.translated (innerTopLeft).intersects (pageRect))
 				result += HandleBlock (block, blockRect, pageRect);
 		}
 		return result;
