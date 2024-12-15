@@ -410,6 +410,12 @@ namespace LC::Monocle
 		menu.exec (ev.globalPos ());
 	}
 
+	void TextSelectionInteraction::DoubleClicked (QMouseEvent& ev)
+	{
+		IsSelectionGesture_ = true;
+		UpdateSelection (ViewAbsolutePos { ev.localPos () });
+	}
+
 	void TextSelectionInteraction::UpdateSelection (ViewAbsolutePos pos)
 	{
 		EnsureHasSelectionStart (pos);

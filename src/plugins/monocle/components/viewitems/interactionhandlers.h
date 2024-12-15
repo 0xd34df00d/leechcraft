@@ -74,6 +74,8 @@ namespace LC::Monocle
 		void Pressed (QMouseEvent&) override;
 		void Moved (QMouseEvent&) override;
 		void Released (QMouseEvent&) override;
+
+		void DoubleClicked (QMouseEvent&) override;
 	private:
 		void UpdateSelection (ViewAbsolutePos);
 
