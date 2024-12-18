@@ -13,9 +13,7 @@
 
 QTEST_MAIN (LC::Util::PreludeTest)
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
@@ -33,12 +31,14 @@ namespace Util
 		QCOMPARE (otherList, (QStringList { "1", "2", "3" }));
 	}
 
+	using SizeType = decltype (QString {}.size ());
+
 	void PreludeTest::testMapMap ()
 	{
 		const auto& map = GetSimpleMap ();
 		const auto& otherList = Map (map, [] (const QString& v) { return v.size (); });
 
-		QCOMPARE (otherList, (QList<int> { 3, 3, 3 }));
+		QCOMPARE (otherList, (QList<SizeType> { 3, 3, 3 }));
 	}
 
 	void PreludeTest::testMapStringList ()
@@ -46,7 +46,7 @@ namespace Util
 		const QStringList list { "aaa", "bbb", "ccc" };
 		const auto& result = Map (list, [] (const QString& s) { return s.size (); });
 
-		QCOMPARE (result, (QList<int> { 3, 3, 3 }));
+		QCOMPARE (result, (QList<SizeType> { 3, 3, 3 }));
 	}
 
 	void PreludeTest::testMapMapStlized ()
@@ -114,5 +114,4 @@ namespace Util
 		const auto& concat = Concat (listOfSets);
 		QCOMPARE (concat, (QSet<int> { 1, 2, 3, 4, 5, 6 }));
 	}
-}
 }
