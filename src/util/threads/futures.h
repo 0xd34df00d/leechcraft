@@ -14,6 +14,7 @@
 #include <optional>
 #include <QFutureInterface>
 #include <QFutureWatcher>
+#include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include <util/sll/detector.h>
 #include "threadsconfig.h"
