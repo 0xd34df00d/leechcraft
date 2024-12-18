@@ -109,6 +109,14 @@ namespace LC::Util
 		{
 			return Data_;
 		}
+
+		template<typename NewChar>
+		constexpr CtString<N, NewChar> CastChars () const noexcept
+		{
+			CtString<N, NewChar> result;
+			std::copy (Data_, Data_ + N, result.Data_);
+			return result;
+		}
 	};
 
 	template<CtString Str>
