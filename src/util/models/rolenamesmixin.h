@@ -13,11 +13,10 @@
 
 namespace LC::Util
 {
-	/** @brief Wraps differences between role names handling in Qt4 and
-	 * Qt5.
+	/** @brief Provides Qt4-style role names setters.
 	 *
 	 * Qt4 uses QAbstractItemModel::setRoleNames() to set role names for
-	 * a (non-virtual) QAbstractItemModel::roleNames() method. Qt5, on
+	 * a (non-virtual) QAbstractItemModel::roleNames() method. Newer Qt, on
 	 * the other hand, just suggests overriding the (virtual) roleNames()
 	 * method. This class provides an uniform interface. This class
 	 * provides an uniform interface for role names setting.

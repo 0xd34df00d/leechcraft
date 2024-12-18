@@ -24,9 +24,6 @@ namespace LC::Util
 	 * compatible with the QtConcurrent framework, which requires all
 	 * exceptions to be derived from a Qt's base exception class.
 	 *
-	 * This class wraps differences between Qt4's QtConcurrent::Exception
-	 * and Qt5's QException and provides an uniform interface.
-	 *
 	 * @tparam T The base type of the exception.
 	 */
 	template<typename T>

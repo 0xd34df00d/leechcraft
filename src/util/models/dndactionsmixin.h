@@ -13,8 +13,7 @@
 
 namespace LC::Util
 {
-	/** @brief Abstracts away differences between Qt4 and Qt5 in model
-	 * DnD support.
+	/** @brief Qt4-style getters and setters for DnD actions.
 	 *
 	 * Derive from this class (and parametrize the template by desired
 	 * base class like QStandardItemModel or QAbstractItemModel) to
