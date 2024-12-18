@@ -14,7 +14,6 @@
 #include <QLocale>
 #include <QTime>
 #include <QSettings>
-#include <QTextCodec>
 #include <QUrl>
 #include <QAction>
 #include <QBuffer>
