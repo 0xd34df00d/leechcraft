@@ -62,10 +62,6 @@ namespace LC::Util
 		/** @brief Creates the network access manager with the given
 		 * \em parent.
 		 *
-		 * This function implements a pure virtual in Qt's base factory
-		 * class (QDeclarativeNetworkAccessManagerFactory for Qt4 or
-		 * QQmlNetworkAccessManagerFactory for Qt5).
-		 *
 		 * The ownership of the returned QNetworkAccessManager is passed
 		 * to the caller.
 		 *

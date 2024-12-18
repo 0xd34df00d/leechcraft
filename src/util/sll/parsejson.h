@@ -20,9 +20,6 @@ namespace Util
 {
 	/** @brief Parses JSON content in the given bytearray.
 	 *
-	 * This functions uses QJson on Qt4 (don't forget to link to it!) and
-	 * Qt's native JSON parsers on Qt5.
-	 *
 	 * @param[in] bytes The byte array to parse JSON from.
 	 * @param[in] context The context string to be used in logging
 	 * messages.

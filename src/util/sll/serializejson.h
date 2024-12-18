@@ -22,10 +22,6 @@ namespace Util
 {
 	/** @brief Serializes the given \em var to JSON representation.
 	 *
-	 * This function abstracts away differences between Qt4 and Qt5. It
-	 * uses QJson on Qt4 (don't forget to link to it!) and native JSON
-	 * functions on Qt5.
-	 *
 	 * @param[in] var The recursive variant to be serialized to JSON.
 	 * @param[in] compact Whether the output should be compacitified
 	 * (this parameter may have no effect).

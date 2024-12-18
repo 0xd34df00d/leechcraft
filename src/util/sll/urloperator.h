@@ -18,10 +18,6 @@ namespace Util
 {
 	/** @brief Manipulates query part of an QUrl object.
 	 *
-	 * This class abstracts away differences between Qt4 and Qt5 QUrl and
-	 * QUrlQuery handling, and it should be used in all new code instead
-	 * of direct calls to Qt API.
-	 *
 	 * This class is used as follows:
 	 * -# An object of this class is constructed on a (named) QUrl object.
 	 * -# New URL query parameters are added by calling this object with a

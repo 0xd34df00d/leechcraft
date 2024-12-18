@@ -39,8 +39,6 @@ namespace LC::Util
 	 * via a functor returning the rectangle. The functor is invoked each
 	 * time the widget is to be refit.
 	 *
-	 * This class also supports Qt5's QWindow objects.
-	 *
 	 * @ingroup GuiUtil
 	 */
 	class AutoResizeMixin : public QObject
