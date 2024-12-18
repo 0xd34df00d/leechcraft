@@ -53,9 +53,7 @@ namespace LC::Util::SysInfo
 			if (!QFile::exists (osReleaseFile))
 				return {};
 
-			QSettings relFile { osReleaseFile, QSettings::IniFormat };
-			relFile.setIniCodec ("UTF-8");
-
+			const QSettings relFile { osReleaseFile, QSettings::IniFormat };
 			const auto& prettyName = relFile.value (QStringLiteral ("PRETTY_NAME")).toString ();
 			const auto& name = relFile.value (QStringLiteral ("NAME")).toString ();
 			const auto& version = relFile.value (QStringLiteral ("VERSION")).toString ();
