@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <concepts>
+#include <QString>
 
 class QByteArray;
 
