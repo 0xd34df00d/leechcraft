@@ -99,7 +99,7 @@ namespace LC::Util
 		int GetWindowDesktop (Window);
 		void MoveWindowToDesktop (Window, int);
 
-		QRect GetAvailableGeometry (int screen = -1);
+		QRect GetAvailableGeometry (QScreen&);
 		QRect GetAvailableGeometry (QWidget*);
 
 		/** @brief Returns the atom denoting the given string.

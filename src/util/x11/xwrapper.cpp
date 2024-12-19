@@ -633,13 +633,10 @@ namespace LC::Util
 					1);
 	}
 
-	QRect XWrapper::GetAvailableGeometry (int screenIdx)
+	QRect XWrapper::GetAvailableGeometry (QScreen& screen)
 	{
-		const auto& screens = QGuiApplication::screens ();
-		auto screen = screens.value (screenIdx, QGuiApplication::primaryScreen ());
-
-		auto available = screen->geometry ();
-		const auto deskGeom = screen->virtualGeometry ();
+		auto available = screen.geometry ();
+		const auto deskGeom = screen.virtualGeometry ();
 
 		for (const auto wid : GetWindows ())
 		{
@@ -696,7 +693,7 @@ namespace LC::Util
 
 	QRect XWrapper::GetAvailableGeometry (QWidget *widget)
 	{
-		return GetAvailableGeometry (QApplication::desktop ()->screenNumber (widget));
+		return GetAvailableGeometry (*widget->screen ());
 	}
 
 	Atom XWrapper::GetAtom (std::string_view name)
