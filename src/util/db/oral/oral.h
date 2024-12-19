@@ -99,25 +99,10 @@ namespace LC::Util::oral
 
 	class QueryException : public std::runtime_error
 	{
-		const QSqlQuery Query_;
 	public:
-		QueryException (const std::string& str, const QSqlQuery_ptr& q)
-		: QueryException { str, *q }
-		{
-		}
-
-		QueryException (const std::string& str, const QSqlQuery& q)
-		: std::runtime_error { str }
-		, Query_ { q }
-		{
-		}
+		using std::runtime_error::runtime_error;
 
 		~QueryException () noexcept = default;
-
-		const QSqlQuery& GetQuery () const
-		{
-			return Query_;
-		}
 	};
 
 	template<typename>
@@ -346,7 +331,7 @@ namespace LC::Util::oral
 			{
 				qCritical () << "insert query execution failed";
 				DBLock::DumpError (insertQuery);
-				throw QueryException ("insert query execution failed", insertQuery);
+				throw QueryException ("insert query execution failed");
 			}
 		}
 
@@ -497,7 +482,7 @@ namespace LC::Util::oral
 				constexpr auto index = PKeyIndex_v<Seq>;
 				DeleteQuery_.bindValue (0, ToVariantF (Get<index> (seq)));
 				if (!DeleteQuery_.exec ())
-					throw QueryException ("delete query execution failed", DeleteQuery_);
+					throw QueryException ("delete query execution failed");
 			}
 		};
 
@@ -1134,7 +1119,7 @@ namespace LC::Util::oral
 				{
 					qCritical () << "select query execution failed";
 					DBLock::DumpError (query);
-					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
+					throw QueryException ("fetch query execution failed");
 				}
 
 				return query;
@@ -1551,7 +1536,7 @@ namespace LC::Util::oral
 				{
 					qCritical () << "update query execution failed";
 					DBLock::DumpError (query);
-					throw QueryException ("update query execution failed", std::make_shared<QSqlQuery> (query));
+					throw QueryException ("update query execution failed");
 				}
 
 				return query.numRowsAffected ();
