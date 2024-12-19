@@ -635,13 +635,11 @@ namespace LC::Util
 
 	QRect XWrapper::GetAvailableGeometry (int screenIdx)
 	{
-		auto dw = QApplication::desktop ();
-
 		const auto& screens = QGuiApplication::screens ();
 		auto screen = screens.value (screenIdx, QGuiApplication::primaryScreen ());
 
 		auto available = screen->geometry ();
-		const auto deskGeom = dw->rect ();
+		const auto deskGeom = screen->virtualGeometry ();
 
 		for (const auto wid : GetWindows ())
 		{
