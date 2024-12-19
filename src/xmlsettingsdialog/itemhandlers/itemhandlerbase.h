@@ -40,11 +40,11 @@ namespace LC
 
 		LabelPosition LabelPosition_ = LabelPosition::Default;
 
-		QVariant DefaultValue_;
-		ItemValueGetter Getter_;
-		ItemValueSetter Setter_;
+		QVariant DefaultValue_ {};
+		ItemValueGetter Getter_ {};
+		ItemValueSetter Setter_ {};
 
-		DataSourceSetter DataSourceSetter_;
+		DataSourceSetter DataSourceSetter_ {};
 	};
 
 	struct ItemContext
