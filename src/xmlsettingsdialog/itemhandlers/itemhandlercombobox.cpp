@@ -15,7 +15,6 @@
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/qtutil.h>
 #include <util/sys/resourceloader.h>
-#include "../scripter.h"
 #include "../xmlsettingsdialog.h"
 
 namespace LC
@@ -81,14 +80,6 @@ namespace LC
 				};
 				setColor ("color"_qs, Qt::ForegroundRole);
 				setColor ("bgcolor"_qs, Qt::BackgroundRole);
-			}
-
-			if (auto scriptContainer = item.firstChildElement ("scripts"_qs);
-					!scriptContainer.isNull ())
-			{
-				Scripter scripter { scriptContainer };
-				for (const auto& elm : scripter.GetOptions ())
-					box.addItem (scripter.HumanReadableOption (elm), elm);
 			}
 
 			return defValue;

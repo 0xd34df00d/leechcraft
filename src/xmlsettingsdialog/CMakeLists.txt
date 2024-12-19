@@ -5,7 +5,6 @@ include_directories (${Boost_INCLUDE_DIRS}
 
 set (SRCS
     xmlsettingsdialog.cpp
-	scripter.cpp
 	settings.cpp
 	basesettingsmanager.cpp
 	settingsthreadmanager.cpp
@@ -60,7 +59,6 @@ target_link_libraries (leechcraft-xsd${LC_LIBSUFFIX}
 	Qt5::Xml
 	Qt5::Sql
 	Qt5::Widgets
-	Qt5::Script
 	Qt5::Network
 	)
 
