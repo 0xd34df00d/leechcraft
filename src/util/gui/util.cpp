@@ -9,7 +9,6 @@
 #include "util.h"
 #include <QSize>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QKeyEvent>
 #include <QTimer>
 #include <QLabel>

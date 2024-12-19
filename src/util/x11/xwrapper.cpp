@@ -15,7 +15,6 @@
 #include <QIcon>
 #include <QApplication>
 #include <QWidget>
-#include <QDesktopWidget>
 #include <QAbstractEventDispatcher>
 #include <QtDebug>
 #include <QScreen>

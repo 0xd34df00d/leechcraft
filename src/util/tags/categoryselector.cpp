@@ -13,8 +13,6 @@
 #include <QVariant>
 #include <QVBoxLayout>
 #include <QMoveEvent>
-#include <QApplication>
-#include <QDesktopWidget>
 #include <QStringListModel>
 #include <QAction>
 #include <QtDebug>
@@ -120,7 +118,7 @@ namespace LC::Util
 		Ui_->setupUi (this);
 		Ui_->Tree_->setModel (&Model_);
 
-		const auto& avail = QApplication::desktop ()->availableGeometry (this);
+		const auto& avail = screen ()->availableGeometry ();
 		setMinimumHeight (avail.height () / 3 * 2);
 
 		const auto all = new QAction (tr ("Select all"), this);
@@ -238,7 +236,7 @@ namespace LC::Util
 	{
 		QWidget::moveEvent (e);
 		QPoint pos = e->pos ();
-		QRect avail = QApplication::desktop ()->availableGeometry (this);
+		QRect avail = screen ()->availableGeometry ();
 		int dx = 0, dy = 0;
 		if (pos.x () + width () > avail.width ())
 			dx = width () + pos.x () - avail.width ();
