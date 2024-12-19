@@ -21,14 +21,14 @@ namespace LC::Util
 {
 	class BaseSettingsManager;
 
-	struct Widths : QVector<std::optional<int>>
+	struct Widths : QList<std::optional<int>>
 	{
-		using QVector::QVector;
+		using QList::QList;
 	};
 
-	struct Factors : QVector<int>
+	struct Factors : QList<int>
 	{
-		using QVector::QVector;
+		using QList::QList;
 	};
 
 	using InitialDistr = std::variant<Widths, Factors>;
