@@ -8,12 +8,8 @@
 
 #pragma once
 
+#include <QStringList>
 #include "xdgconfig.h"
-
-template<typename T>
-class QList;
-
-class QStringList;
 
 namespace LC::Util::XDG
 {

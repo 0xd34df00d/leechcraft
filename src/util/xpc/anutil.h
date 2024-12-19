@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include <QStringList>
 #include "xpcconfig.h"
 
 class QString;
-class QStringList;
 
 template<typename K, typename V>
 class QMap;

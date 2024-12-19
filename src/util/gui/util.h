@@ -11,6 +11,7 @@
 #include <QPoint>
 #include <QPalette>
 #include <QMimeData>
+#include <QIODevice>
 #include "guiconfig.h"
 
 class QSize;
