@@ -36,12 +36,12 @@ namespace LC::Util
 		MatchDomainExactly_ = enabled;
 	}
 
-	void CustomCookieJar::SetWhitelist (const QList<QRegExp>& list)
+	void CustomCookieJar::SetWhitelist (const QList<QRegularExpression>& list)
 	{
 		WL_ = list;
 	}
 
-	void CustomCookieJar::SetBlacklist (const QList<QRegExp>& list)
+	void CustomCookieJar::SetBlacklist (const QList<QRegularExpression>& list)
 	{
 		BL_ = list;
 	}
@@ -153,10 +153,10 @@ namespace LC::Util
 			return idx > 0 && domain.at (idx - 1) == '.';
 		}
 
-		bool Check (const QList<QRegExp>& list, const QString& str)
+		bool Check (const QList<QRegularExpression>& list, const QString& str)
 		{
 			return std::any_of (list.begin (), list.end (),
-					[&str] (const auto& rx) { return str == rx.pattern () || rx.exactMatch (str); });
+					[&str] (const auto& rx) { return str == rx.pattern () || rx.match (str).hasMatch (); });
 		}
 
 		struct CookiesDiff

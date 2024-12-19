@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QByteArray>
-#include <QRegExp>
+#include <QRegularExpression>
 #include "networkconfig.h"
 
 namespace LC::Util
@@ -30,8 +31,8 @@ namespace LC::Util
 		bool Enabled_ = true;
 		bool MatchDomainExactly_ = false;
 
-		QList<QRegExp> WL_;
-		QList<QRegExp> BL_;
+		QList<QRegularExpression> WL_;
+		QList<QRegularExpression> BL_;
 	public:
 		/** @brief Constructs the cookie jar.
 		 *
@@ -80,7 +81,7 @@ namespace LC::Util
 		 *
 		 * @sa SetBlacklist()
 		 */
-		void SetWhitelist (const QList<QRegExp>& list);
+		void SetWhitelist (const QList<QRegularExpression>& list);
 
 		/** @brief Sets the cookies blacklist.
 		 *
@@ -92,7 +93,7 @@ namespace LC::Util
 		 *
 		 * @sa SetWhitelist()
 		 */
-		void SetBlacklist (const QList<QRegExp>& list);
+		void SetBlacklist (const QList<QRegularExpression>& list);
 
 		/** Serializes the cookie jar contents into a QByteArray
 		 * suitable for storage.
