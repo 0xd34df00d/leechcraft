@@ -115,7 +115,8 @@ namespace LC::Util
 		e.Additional_ [ActionID] = id;
 		e.Additional_ [Method] = method;
 		e.Additional_ [Shortcut] = QVariant::fromValue (info.Seq_);
-		e.Additional_ [AltShortcuts] = Util::Map (info.AdditionalSeqs_, &QVariant::fromValue<QKeySequence>);
+		e.Additional_ [AltShortcuts] = Util::Map (info.AdditionalSeqs_,
+				[] (const QKeySequence& seq) { return QVariant::fromValue (seq); });
 		Globals_ [id] = e;
 
 		ActionInfo_ [id] = info;
@@ -156,7 +157,7 @@ namespace LC::Util
 			auto& e = Globals_ [id];
 			e.Additional_ [QStringLiteral ("Shortcut")] = QVariant::fromValue (seqs.value (0));
 			e.Additional_ [QStringLiteral ("AltShortcuts")] = Util::Map (seqs.mid (1),
-					&QVariant::fromValue<QKeySequence>);
+					[] (const QKeySequence& seq) { return QVariant::fromValue (seq); });
 			CoreProxy_->GetEntityManager ()->HandleEntity (e);
 		}
 	}
