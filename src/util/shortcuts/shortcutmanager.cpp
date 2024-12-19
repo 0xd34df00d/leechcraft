@@ -9,6 +9,7 @@
 #include "shortcutmanager.h"
 #include <QAction>
 #include <QShortcut>
+#include <QWidget>
 #include <interfaces/entityconstants.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
