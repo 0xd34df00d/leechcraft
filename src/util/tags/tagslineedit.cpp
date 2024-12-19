@@ -205,7 +205,7 @@ namespace LC::Util
 		auto rxStr = Separator_;
 		rxStr.replace (' ', R"(\s*)"_ql);
 
-		QRegExp rx (rxStr);
+		QRegularExpression rx { rxStr };
 
 		QString wtext = text ();
 		int pos = cursorPosition () - 1;
