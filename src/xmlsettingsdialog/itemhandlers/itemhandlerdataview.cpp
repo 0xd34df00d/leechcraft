@@ -58,7 +58,7 @@ namespace LC
 				const auto& valGen = atRole (DataSourceRole::FieldValuesGenerator).value<EnumValueInfoGenerator> ();
 				const auto& values = valuesVar.isEmpty () && valGen ?
 						valGen () :
-						Util::Map (valuesVar, &QVariant::value<EnumValueInfo>);
+						Util::Map (valuesVar, [] (const QVariant& var) { return var.value<EnumValueInfo> (); });
 
 				const bool isConst = atRole (DataSourceRole::FieldNonModifiable).toBool ();
 				infos.push_back ({ type, values, name, isConst });
