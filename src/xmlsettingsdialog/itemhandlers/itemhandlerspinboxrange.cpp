@@ -17,7 +17,7 @@ namespace LC
 	{
 		QVariant GetDefaultRange (const QString& def)
 		{
-			const auto& parts = def.splitRef (':');
+			const auto& parts = QStringView { def }.split (':');
 			if (parts.size () != 2)
 			{
 				qWarning () << "spinboxrange parse error, wrong default value";
