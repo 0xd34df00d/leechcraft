@@ -11,7 +11,7 @@ set (DB_FORMS
 	backendselector.ui
 	)
 
-qt5_wrap_ui (DB_UIS_H ${DB_FORMS})
+qt_wrap_ui (DB_UIS_H ${DB_FORMS})
 
 foreach (SRC ${DB_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/db/${SRC}")

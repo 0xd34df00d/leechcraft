@@ -13,7 +13,7 @@ set (XSD_FORMS
 	wkfontswidget.ui
 	)
 
-qt5_wrap_ui (XSD_UIS_H ${XSD_FORMS})
+qt_wrap_ui (XSD_UIS_H ${XSD_FORMS})
 
 foreach (SRC ${XSD_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/xsd/${SRC}")

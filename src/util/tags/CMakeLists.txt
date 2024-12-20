@@ -11,7 +11,7 @@ set (TAGS_FORMS
 	categoryselector.ui
 	)
 
-qt5_wrap_ui (TAGS_UIS_H ${TAGS_FORMS})
+qt_wrap_ui (TAGS_UIS_H ${TAGS_FORMS})
 
 foreach (SRC ${TAGS_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/tags/${SRC}")

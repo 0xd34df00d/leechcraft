@@ -39,7 +39,7 @@ set (GUI_FORMS
 
 add_compile_definitions ($<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>)
 
-qt5_wrap_ui (GUI_UIS_H ${GUI_FORMS})
+qt_wrap_ui (GUI_UIS_H ${GUI_FORMS})
 
 foreach (SRC ${GUI_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/gui/${SRC}")

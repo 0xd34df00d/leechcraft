@@ -7,7 +7,7 @@ set (SVCAUTH_FORMS
 	vkcaptchadialog.ui
 	)
 
-qt5_wrap_ui (SVCAUTH_UIS_H ${SVCAUTH_FORMS})
+qt_wrap_ui (SVCAUTH_UIS_H ${SVCAUTH_FORMS})
 
 foreach (SRC ${SVCAUTH_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/svcauth/${SRC}")

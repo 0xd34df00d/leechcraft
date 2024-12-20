@@ -37,7 +37,7 @@ set (FORMS
 	widgets/dataviewwidget.ui
 	)
 
-QT5_WRAP_UI (UIS_H ${FORMS})
+qt_wrap_ui (UIS_H ${FORMS})
 
 foreach (SRC ${SRCS})
 	set (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
