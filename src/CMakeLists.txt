@@ -99,6 +99,28 @@ enable_testing ()
 
 set (LC_SOVERSION 0.6.75)
 
+function (add_util_library name)
+	cmake_parse_arguments (ARG "" "" "SOURCES;USES;DEPENDS" ${ARGN})
+	set (lib_name "leechcraft-${name}")
+
+	add_library (${lib_name} SHARED ${ARG_SOURCES})
+	set_target_properties (${lib_name} PROPERTIES
+		OUTPUT_NAME "${lib_name}${LC_LIBSUFFIX}"
+		SOVERSION "${LC_SOVERSION}"
+	)
+	install (TARGETS ${lib_name} DESTINATION "${LIBDIR}")
+
+	if (ARG_DEPENDS)
+		target_link_libraries (${lib_name} ${ARG_DEPENDS})
+	endif ()
+
+	if (ARG_USES)
+		FindQtLibs (${lib_name} ${ARG_USES})
+	else ()
+		FindQtLibs (${lib_name} Core)
+	endif ()
+endfunction ()
+
 add_subdirectory (util)
 add_subdirectory (xmlsettingsdialog)
 
