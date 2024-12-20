@@ -17,7 +17,7 @@ set (SRCS
 set (FORMS
 	crashdialog.ui
 	)
-QtWrapUi (UIS_H "${FORMS}")
+qt_wrap_ui (UIS_H ${FORMS})
 
 set (EXECSUFFIX)
 if (NOT APPLE)
