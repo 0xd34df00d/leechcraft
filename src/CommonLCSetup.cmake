@@ -7,19 +7,6 @@ set (CMAKE_CXX_STANDARD 23)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
-# Qt support helpers
-macro (QtWrapUi outfiles)
-	set (UIS_H)
-	QT5_WRAP_UI (UIS_H ${ARGN})
-	set (${outfiles} ${${outfiles}} ${UIS_H})
-endmacro ()
-
-macro (QtAddResources outfiles)
-	set (RCCS)
-	QT5_ADD_RESOURCES (RCCS ${ARGN} OPTIONS -compress-algo best -threshold 0)
-	set (${outfiles} ${${outfiles}} ${RCCS})
-endmacro ()
-
 macro (FindQtLibs Target)
 	cmake_policy (SET CMP0043 NEW)
 	set (CMAKE_INCLUDE_CURRENT_DIR ON)
