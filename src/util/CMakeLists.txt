@@ -74,12 +74,6 @@ endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
-add_definitions(${QT_DEFINITIONS})
-add_definitions(-DQT_PLUGIN)
-add_definitions(-DQT_NO_DEBUG)
-add_definitions(-DQT_SHARED)
-add_definitions(-DQT_GUI_LIB)
-
 add_library (leechcraft-util${LC_LIBSUFFIX} SHARED
 	${SRCS}
 	)
