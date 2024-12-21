@@ -51,26 +51,16 @@ foreach (FORM ${GUI_FORMS})
 endforeach ()
 set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
-add_library (leechcraft-util-gui${LC_LIBSUFFIX} SHARED
-	${GUI_SRCS}
-	${GUI_UIS_H}
-	)
-target_link_libraries (leechcraft-util-gui${LC_LIBSUFFIX}
-	leechcraft-util-network${LC_LIBSUFFIX}
-	leechcraft-util-shortcuts${LC_LIBSUFFIX}
-	leechcraft-util-sll${LC_LIBSUFFIX}
-	)
-set_property (TARGET leechcraft-util-gui${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
-install (TARGETS leechcraft-util-gui${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
-
-FindQtLibs (leechcraft-util-gui${LC_LIBSUFFIX}
-	${MAYBE_DBUS_DEP}
-	Network
-	Widgets
+add_util_library (util-gui
+	SOURCES ${GUI_SRCS} ${GUI_UIS_H}
+	DEPENDS
+		leechcraft-util-network
+		leechcraft-util-shortcuts
+		leechcraft-util-sll
+	USES ${MAYBE_DBUS_DEP} Network Widgets
 	)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
-
-	AddUtilTest (gui_util tests/utiltest.cpp UtilGuiUtilTest leechcraft-util-gui${LC_LIBSUFFIX})
+	AddUtilTest (gui_util tests/utiltest.cpp UtilGuiUtilTest leechcraft-util-gui)
 endif ()
