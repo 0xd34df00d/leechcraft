@@ -12,12 +12,7 @@ foreach (SRC ${MODELS_SRCS})
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
-add_library (leechcraft-util-models${LC_LIBSUFFIX} SHARED
-	${MODELS_SRCS}
+add_util_library (util-models
+	SOURCES ${MODELS_SRCS}
+	USES Widgets
 	)
-target_link_libraries (leechcraft-util-models${LC_LIBSUFFIX}
-	)
-set_property (TARGET leechcraft-util-models${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
-install (TARGETS leechcraft-util-models${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
-
-FindQtLibs (leechcraft-util-models${LC_LIBSUFFIX} Widgets)
