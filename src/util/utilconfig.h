@@ -10,7 +10,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_EXPORTS) || defined(leechcraft_util_qt5_EXPORTS)
+#if defined(leechcraft_util_EXPORTS)
 #  define UTIL_API Q_DECL_EXPORT
 #else
 #  define UTIL_API Q_DECL_IMPORT

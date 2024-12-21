@@ -74,14 +74,7 @@ endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
-add_library (leechcraft-util${LC_LIBSUFFIX} SHARED
-	${SRCS}
+add_util_library (util
+	SOURCES ${SRCS}
+	USES Widgets
 	)
-target_link_libraries (leechcraft-util${LC_LIBSUFFIX}
-	${QT_LIBRARIES}
-	${ADDITIONAL_LIBS}
-	)
-set_property (TARGET leechcraft-util${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
-
-FindQtLibs (leechcraft-util${LC_LIBSUFFIX} Widgets)
