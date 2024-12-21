@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QWidget>
 
 namespace LC::Util
 {
