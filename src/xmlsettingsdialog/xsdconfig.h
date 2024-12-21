@@ -10,7 +10,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_xsd_EXPORTS) || defined(leechcraft_xsd_qt5_EXPORTS)
+#if defined(leechcraft_xsd_EXPORTS)
 #  define XMLSETTINGSMANAGER_API Q_DECL_EXPORT
 # else
 #  define XMLSETTINGSMANAGER_API Q_DECL_IMPORT
