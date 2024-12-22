@@ -10,7 +10,7 @@
 
 #include <QtGlobal>
 
-#if defined(leechcraft_util_threads_EXPORTS) || defined(leechcraft_util_threads_qt5_EXPORTS)
+#if defined(leechcraft_util_threads_EXPORTS)
 #  define UTIL_THREADS_API Q_DECL_EXPORT
 #else
 #  define UTIL_THREADS_API Q_DECL_IMPORT
