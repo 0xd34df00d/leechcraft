@@ -12,19 +12,14 @@ foreach (SRC ${XDG_SRCS})
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
-add_library (leechcraft-util-xdg${LC_LIBSUFFIX} SHARED
-	${XDG_SRCS}
+add_util_library (util-xdg
+	SOURCES ${XDG_SRCS}
+	DEPENDS leechcraft-util-xpc
+	USES Concurrent Widgets
 	)
-target_link_libraries (leechcraft-util-xdg${LC_LIBSUFFIX}
-	leechcraft-util-xpc${LC_LIBSUFFIX}
-	)
-set_property (TARGET leechcraft-util-xdg${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-xdg${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
-
-FindQtLibs (leechcraft-util-xdg${LC_LIBSUFFIX} Concurrent Widgets)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
 
-	AddUtilTest (xdg_desktopparser tests/desktopparsertest.cpp UtilXdgDesktopParserTest leechcraft-util-xdg${LC_LIBSUFFIX})
+	AddUtilTest (xdg_desktopparser tests/desktopparsertest.cpp UtilXdgDesktopParserTest leechcraft-util-xdg)
 endif ()
