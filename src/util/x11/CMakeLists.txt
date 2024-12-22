@@ -10,13 +10,8 @@ foreach (SRC ${X11_SRCS})
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
-add_library (leechcraft-util-x11${LC_LIBSUFFIX} SHARED
-	${X11_SRCS}
+add_util_library (util-x11
+	SOURCES ${X11_SRCS}
+	DEPENDS PkgConfig::UtilXParts
+	USES Widgets
 	)
-target_link_libraries (leechcraft-util-x11${LC_LIBSUFFIX}
-	PkgConfig::UtilXParts
-	)
-set_property (TARGET leechcraft-util-x11${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-x11${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
-
-FindQtLibs (leechcraft-util-x11${LC_LIBSUFFIX} X11Extras Widgets)
