@@ -142,8 +142,8 @@ endforeach ()
 
 CreateTrs (COMPILED_TRANSLATIONS)
 
-QT5_WRAP_UI (UIS_H ${FORMS})
-QT5_ADD_RESOURCES (RCC ${RESOURCES})
+qt_wrap_ui (UIS_H ${FORMS})
+qt_add_resources (RCC ${RESOURCES})
 
 set (WIN_RESOURCES)
 if (WIN32)
