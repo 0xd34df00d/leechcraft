@@ -50,6 +50,6 @@ set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
 
 add_util_library (xsd
 	SOURCES ${SRCS} ${UIS_H}
-	DEPENDS leechcraft-util-sys${LC_LIBSUFFIX}
+	DEPENDS leechcraft-util-sys
 	USES Network Sql Widgets Xml
 	)

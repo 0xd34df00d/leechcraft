@@ -24,15 +24,10 @@ endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
-add_library (leechcraft-util-xsd${LC_LIBSUFFIX} SHARED
-	${XSD_SRCS}
-	${XSD_UIS_H}
+add_util_library (util-xsd
+	SOURCES ${XSD_SRCS} ${XSD_UIS_H}
+	DEPENDS
+		leechcraft-xsd
+		leechcraft-util-network
+	USES Network Widgets
 	)
-target_link_libraries (leechcraft-util-xsd${LC_LIBSUFFIX}
-	leechcraft-xsd${LC_LIBSUFFIX}
-	leechcraft-util-network${LC_LIBSUFFIX}
-	)
-set_property (TARGET leechcraft-util-xsd${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
-install (TARGETS leechcraft-util-xsd${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
-
-FindQtLibs (leechcraft-util-xsd${LC_LIBSUFFIX} Network Widgets)
