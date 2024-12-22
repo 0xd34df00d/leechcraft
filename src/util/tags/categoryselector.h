@@ -10,11 +10,10 @@
 
 #include <memory>
 #include <QDialog>
+#include <QStringList>
 #include <util/sll/util.h>
 #include "tagsconfig.h"
 
-class QString;
-class QStringList;
 class QStringListModel;
 
 namespace Ui
