@@ -36,26 +36,26 @@ add_subdirectory (xsd)
 
 if (WITH_X11 AND NOT APPLE)
 	add_subdirectory (x11)
-	set (LEECHCRAFT_UTIL_LIBRARIES leechcraft-util-x11${LC_LIBSUFFIX})
+	set (LEECHCRAFT_UTIL_LIBRARIES leechcraft-util-x11)
 endif ()
 
 set (LEECHCRAFT_UTIL_LIBRARIES
 	${LEECHCRAFT_UTIL_LIBRARIES}
-	leechcraft-util${LC_LIBSUFFIX}
-	leechcraft-util-db${LC_LIBSUFFIX}
-	leechcraft-util-gui${LC_LIBSUFFIX}
-	leechcraft-util-models${LC_LIBSUFFIX}
-	leechcraft-util-network${LC_LIBSUFFIX}
-	leechcraft-util-qml${LC_LIBSUFFIX}
-	leechcraft-util-shortcuts${LC_LIBSUFFIX}
-	leechcraft-util-sll${LC_LIBSUFFIX}
-	leechcraft-util-svcauth${LC_LIBSUFFIX}
-	leechcraft-util-sys${LC_LIBSUFFIX}
-	leechcraft-util-tags${LC_LIBSUFFIX}
-	leechcraft-util-threads${LC_LIBSUFFIX}
-	leechcraft-util-xdg${LC_LIBSUFFIX}
-	leechcraft-util-xpc${LC_LIBSUFFIX}
-	leechcraft-util-xsd${LC_LIBSUFFIX}
+	leechcraft-util
+	leechcraft-util-db
+	leechcraft-util-gui
+	leechcraft-util-models
+	leechcraft-util-network
+	leechcraft-util-qml
+	leechcraft-util-shortcuts
+	leechcraft-util-sll
+	leechcraft-util-svcauth
+	leechcraft-util-sys
+	leechcraft-util-tags
+	leechcraft-util-threads
+	leechcraft-util-xdg
+	leechcraft-util-xpc
+	leechcraft-util-xsd
 	)
 
 set (LEECHCRAFT_UTIL_LIBRARIES ${LEECHCRAFT_UTIL_LIBRARIES} PARENT_SCOPE)
