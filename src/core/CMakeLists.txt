@@ -149,13 +149,7 @@ if (WIN32)
 	set (WIN_RESOURCES ../../../tools/win32/leechcraft.rc)
 endif ()
 
-if (NOT APPLE)
-	set (LC_EXEC_SUFFIX ${LC_LIBSUFFIX})
-else ()
-	set (LC_EXEC_SUFFIX "")
-endif ()
-
-add_executable (leechcraft${LC_EXEC_SUFFIX} WIN32
+add_executable (leechcraft WIN32
 	../config.h
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -163,30 +157,35 @@ add_executable (leechcraft${LC_EXEC_SUFFIX} WIN32
 	${RCC}
 	${WIN_RESOURCES}
 	)
+if (NOT APPLE)
+	set_target_properties (leechcraft PROPERTIES
+		OUTPUT_NAME leechcraft${LC_LIBSUFFIX}
+		)
+endif ()
 
-target_link_libraries (leechcraft${LC_EXEC_SUFFIX}
+target_link_libraries (leechcraft
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
 		)
 
 if (APPLE AND USE_UNIX_LAYOUT)
-	get_property (_core_link_flags TARGET leechcraft${LC_EXEC_SUFFIX} PROPERTY LINK_FLAGS)
+	get_property (_core_link_flags TARGET leechcraft PROPERTY LINK_FLAGS)
 	set (_core_link_flags "${_core_link_flags} -sectcreate __TEXT __info_plist ${CMAKE_CURRENT_BINARY_DIR}/../Info.plist")
 	message (STATUS "Setting Core link flags to: ${_core_link_flags}")
-	set_target_properties (leechcraft${LC_EXEC_SUFFIX} PROPERTIES LINK_FLAGS ${_core_link_flags})
+	set_target_properties (leechcraft PROPERTIES LINK_FLAGS ${_core_link_flags})
 endif ()
 
-install (TARGETS leechcraft${LC_EXEC_SUFFIX} DESTINATION ${LC_BINDIR})
+install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft${LC_EXEC_SUFFIX} Gui Network Widgets Xml Quick Qml Script Concurrent Svg)
+FindQtLibs (leechcraft Gui Network Widgets Xml Quick Qml Concurrent Svg)
 
 if (WITH_X11 AND NOT APPLE)
-	FindQtLibs (leechcraft${LC_EXEC_SUFFIX} X11Extras)
+	FindQtLibs (leechcraft X11Extras)
 endif ()
 
 if (WITH_DBUS_LOADERS)
 	add_subdirectory (loaders/dbus)
-	FindQtLibs (leechcraft${LC_EXEC_SUFFIX} DBus)
+	FindQtLibs (leechcraft DBus)
 endif ()
