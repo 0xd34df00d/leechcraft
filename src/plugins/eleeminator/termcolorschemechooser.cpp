@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "termcolorschemechooser.h"
+#include <QActionGroup>
 #include <QMenu>
 #include <QToolButton>
 #include <qtermwidget.h>
