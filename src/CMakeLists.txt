@@ -127,7 +127,7 @@ add_subdirectory (xmlsettingsdialog)
 
 set (LEECHCRAFT_LIBRARIES
 		${LEECHCRAFT_UTIL_LIBRARIES}
-		leechcraft-xsd${LC_LIBSUFFIX})
+		leechcraft-xsd)
 
 # Various options
 option (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)
