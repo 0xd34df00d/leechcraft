@@ -1,6 +1,6 @@
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package (Qt5Widgets)
-find_package (Qt5LinguistTools REQUIRED)
+find_package (Qt${LC_QT_VERSION}Widgets)
+find_package (Qt${LC_QT_VERSION}LinguistTools REQUIRED)
 
 set (CMAKE_AUTOMOC TRUE)
 set (CMAKE_CXX_STANDARD 23)
@@ -17,13 +17,13 @@ macro (FindQtLibs Target)
 			list (APPEND _TARGET_QT_COMPONENTS ${V})
 		endif ()
 	endforeach ()
-	find_package (Qt5 COMPONENTS ${_TARGET_QT_COMPONENTS})
+	find_package (Qt${LC_QT_VERSION} COMPONENTS ${_TARGET_QT_COMPONENTS})
 
-	set (_TARGET_LINK_QT5_LIBS "")
+	set (_TARGET_LINK_QT_LIBS "")
 	foreach (V ${ARGN})
-		list (APPEND _TARGET_LINK_QT5_LIBS "Qt5::${V}")
+		list (APPEND _TARGET_LINK_QT_LIBS "Qt${LC_QT_VERSION}::${V}")
 	endforeach ()
-	target_link_libraries (${Target} ${_TARGET_LINK_QT5_LIBS})
+	target_link_libraries (${Target} ${_TARGET_LINK_QT_LIBS})
 endmacro ()
 
 # Plugin definition helpers
@@ -32,7 +32,7 @@ function (CreateTrs CompiledTranVar)
 	if (TS_SOURCES)
 		list (TRANSFORM TS_SOURCES REPLACE "(.*)\\.ts" "\\1.qm" OUTPUT_VARIABLE QM_RESULTS)
 		add_custom_command (OUTPUT ${QM_RESULTS}
-			COMMAND Qt5::lrelease ${TS_SOURCES}
+			COMMAND Qt${LC_QT_VERSION}::lrelease ${TS_SOURCES}
 			DEPENDS ${TS_SOURCES}
 			)
 		install (FILES ${QM_RESULTS} DESTINATION ${LC_TRANSLATIONS_DEST})

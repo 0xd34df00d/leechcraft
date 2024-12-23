@@ -56,7 +56,7 @@ if (UNIX AND (NOT APPLE OR USE_UNIX_LAYOUT))
 	endif ()
 
 	set (LC_BINDIR "bin")
-	set (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins-qt5")
+	set (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins-${LC_LIBSUFFIX}")
 	set (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 	set (LC_SETTINGS_DEST "share/leechcraft/settings")
 	set (LC_SHARE_DEST "share/leechcraft")
@@ -260,9 +260,9 @@ if (NOT DEFINED LEECHCRAFT_VERSION)
 endif ()
 
 configure_file (config.h.in config.h)
-configure_file (FindLeechCraft.cmake.in FindLeechCraft-qt5.cmake @ONLY)
+configure_file (FindLeechCraft.cmake.in FindLeechCraft${LC_LIBSUFFIX}.cmake @ONLY)
 install (FILES
-	${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft-qt5.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft${LC_LIBSUFFIX}.cmake
 	CommonLCSetup.cmake
 	DESTINATION ${LC_SHARE_DEST}/cmake/)
 
@@ -288,7 +288,7 @@ install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
 	install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
-	install (FILES freedesktop/leechcraft-qt5.desktop DESTINATION share/applications)
+	install (FILES freedesktop/leechcraft${LC_LIBSUFFIX}.desktop DESTINATION share/applications)
 	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
 		WORLD_EXECUTE WORLD_READ)
@@ -299,7 +299,7 @@ if (UNIX AND NOT APPLE)
 	if (NOT SKIP_MAN_COMPRESS)
 		add_custom_target (data_leechcraft_gz ALL
 			"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
-			DEPENDS data/leechcraft-qt5.1
+			DEPENDS data/leechcraft${LC_LIBSUFFIX}.1
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
 			)
 		install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")

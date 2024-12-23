@@ -12,7 +12,7 @@ set (QML_SRCS
 
 if (WITH_QWT)
 	find_package (PkgConfig)
-	pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt5Qwt Qt5Qwt6)
+	pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt${LC_QT_VERSION}Qwt6 Qt${LC_QT_VERSION}Qwt)
 	set (ADDITIONAL_LIBS PkgConfig::Qwt)
 	add_definitions (-DWITH_QWT)
 

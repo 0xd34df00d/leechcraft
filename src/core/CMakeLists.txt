@@ -151,7 +151,7 @@ if (WIN32)
 endif ()
 
 if (NOT APPLE)
-	set (LC_EXEC_SUFFIX "-qt5")
+	set (LC_EXEC_SUFFIX ${LC_LIBSUFFIX})
 else ()
 	set (LC_EXEC_SUFFIX "")
 endif ()
