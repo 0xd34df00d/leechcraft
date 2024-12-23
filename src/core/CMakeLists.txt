@@ -19,7 +19,6 @@ if (WITH_QWT)
 endif ()
 
 add_definitions (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
-add_definitions (${QT_DEFINITIONS})
 
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
 option (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
