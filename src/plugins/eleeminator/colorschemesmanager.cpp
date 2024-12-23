@@ -26,7 +26,6 @@ namespace LC::Eleeminator
 		MaybeScheme_t ParseScheme (const QString& filename)
 		{
 			QSettings settings { filename, QSettings::IniFormat };
-			settings.setIniCodec ("UTF-8");
 			auto name = settings.value ("Description"_qs).toString ();
 			if (name.isEmpty ())
 				name = QFileInfo { filename }.baseName ();
