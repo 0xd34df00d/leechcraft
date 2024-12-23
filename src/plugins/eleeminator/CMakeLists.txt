@@ -3,7 +3,7 @@ project (eleeminator)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (QTermWidget REQUIRED IMPORTED_TARGET qtermwidget5)
+pkg_check_modules (QTermWidget REQUIRED IMPORTED_TARGET qtermwidget${LC_QT_VERSION})
 
 LC_DEFINE_PLUGIN (
 	SRCS
