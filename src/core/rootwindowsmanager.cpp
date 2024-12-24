@@ -22,7 +22,8 @@
 
 #if defined (Q_OS_UNIX) && defined (HAVE_X11)
 #include <X11/Xutil.h>
-#include <QX11Info>
+
+#include <util/x11/xwrapper.h>
 #endif
 
 namespace LC
@@ -298,7 +299,7 @@ namespace LC
 			XClassHint hint;
 			hint.res_class = name.data ();
 			hint.res_name = strdup ("leechcraft");
-			XSetClassHint (QX11Info::display (), w->winId (), &hint);
+			XSetClassHint (Util::XWrapper::Instance ().GetDisplay (), w->winId (), &hint);
 			free (hint.res_name);
 		}
 #else
