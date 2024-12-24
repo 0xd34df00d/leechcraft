@@ -12,7 +12,6 @@
 #include <QFuture>
 #include <QDesktopServices>
 #include <QUrl>
-#include <QTextCodec>
 #include "util/util.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
@@ -145,9 +144,9 @@ namespace LC
 				string = p.Additional_ ["UserVisibleName"].toString ();
 			else if (p.Entity_.canConvert<QByteArray> ())
 			{
-				QByteArray entity = p.Entity_.toByteArray ();
+				const auto& entity = p.Entity_.toByteArray ();
 				if (entity.size () < 100)
-					string = QTextCodec::codecForName ("UTF-8")->toUnicode (entity);
+					string = QString::fromUtf8 (entity);
 			}
 			else if (p.Entity_.canConvert<QUrl> ())
 			{

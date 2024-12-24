@@ -26,7 +26,6 @@
 #include <QProcess>
 #include <QTimer>
 #include <QCryptographicHash>
-#include <QTextCodec>
 #include <QtQml>
 #include <QStyle>
 
