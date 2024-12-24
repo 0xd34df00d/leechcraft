@@ -112,7 +112,7 @@ namespace LC
 			mgr.RegisterActionInfo ("SwitchToPrevTab",
 					{
 						CoreInstanceObject::tr ("Switch to previously active tab"),
-						sysModifier + Qt::Key_Space,
+						sysModifier | Qt::Key_Space,
 						"edit-undo"
 					});
 			mgr.RegisterActionInfo ("FullScreen",

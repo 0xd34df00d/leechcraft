@@ -688,11 +688,11 @@ void LC::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateRight ()));
-	connect (new QShortcut (QKeySequence (sysModifier + Qt::Key_Tab), this),
+	connect (new QShortcut (QKeySequence (sysModifier | Qt::Key_Tab), this),
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateRight ()));
-	connect (new QShortcut (QKeySequence (sysModifier + Qt::SHIFT + Qt::Key_Tab), this),
+	connect (new QShortcut (QKeySequence (sysModifier | Qt::SHIFT | Qt::Key_Tab), this),
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateLeft ()));
@@ -710,12 +710,12 @@ void LC::MainWindow::InitializeShortcuts ()
 			SLOT (rotateRight ()));
 	sm->RegisterShortcut ("SwitchToRightTab", {}, rightShortcut);
 
-	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_T), this),
+	connect (new QShortcut (QKeySequence (Qt::CTRL | Qt::Key_T), this),
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (handleNewTabShortcutActivated ()));
 
-	auto prevTabSC = new QShortcut (QKeySequence (sysModifier + Qt::Key_Space), this);
+	auto prevTabSC = new QShortcut (QKeySequence (sysModifier | Qt::Key_Space), this);
 	sm->RegisterShortcut ("SwitchToPrevTab", ActionInfo (), prevTabSC);
 	connect (prevTabSC,
 			SIGNAL (activated ()),
@@ -790,4 +790,3 @@ void MainWindow::dropEvent (QDropEvent *event)
 
 	QWidget::dropEvent (event);
 }
-
