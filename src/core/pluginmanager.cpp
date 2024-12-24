@@ -804,12 +804,12 @@ namespace LC
 #else
 		QString libdir (PLUGINS_LIBDIR);
 	#if defined (INSTALL_PREFIX)
-		scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins-qt5")
+		scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins" LC_LIBSUFFIX)
 				.arg (libdir));
 	#else
-		scan (QString { "/usr/local/%1/leechcraft/plugins-qt5" }
+		scan (QString { "/usr/local/%1/leechcraft/plugins" LC_LIBSUFFIX }
 				.arg (libdir));
-		scan (QString { "/usr/%1/leechcraft/plugins-qt5" }
+		scan (QString { "/usr/%1/leechcraft/plugins" LC_LIBSUFFIX }
 				.arg (libdir));
 	#endif
 #endif

@@ -117,7 +117,7 @@ namespace LC
 		if (CLArgs_->Plugins_.isEmpty () && IsAlreadyRunning ())
 			std::exit (EAlreadyRunning);
 
-		Util::InstallTranslator ("", "qt", "qt5");
+		Util::InstallTranslator ("", "qt", "qt" QT_STRINGIFY (QT_VERSION_MAJOR));
 
 		QDir home = QDir::home ();
 		if (!home.exists (".leechcraft"))
