@@ -22,15 +22,14 @@ namespace LC
 {
 	namespace
 	{
-		QList<QRegExp> GetRxList (const QStringList& rxStrings)
+		QList<QRegularExpression> GetRxList (const QStringList& rxStrings)
 		{
-			QList<QRegExp> result;
+			QList<QRegularExpression> result;
 			result.reserve (rxStrings.size ());
 			for (const auto& str : rxStrings)
-				result << QRegExp { str };
+				result << QRegularExpression { str };
 			return result;
 		}
-
 	}
 
 	NetworkAccessManager::NetworkAccessManager (QObject *parent)
