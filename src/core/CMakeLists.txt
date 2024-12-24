@@ -168,6 +168,7 @@ target_link_libraries (leechcraft-core
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
 		)
+target_compile_definitions (leechcraft-core PRIVATE LC_LIBSUFFIX="${LC_LIBSUFFIX}")
 
 if (APPLE AND USE_UNIX_LAYOUT)
 	get_property (_core_link_flags TARGET leechcraft-core PROPERTY LINK_FLAGS)
