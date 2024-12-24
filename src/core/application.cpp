@@ -435,8 +435,6 @@ namespace LC
 
 	void Application::InitSessionManager ()
 	{
-		setFallbackSessionManagementEnabled (false);
-
 		connect (this,
 				&QGuiApplication::saveStateRequest,
 				this,
