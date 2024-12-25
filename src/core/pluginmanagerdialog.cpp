@@ -97,7 +97,7 @@ namespace LC
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex&) const
 			{
-				const QString& filter = filterRegExp ().pattern ();
+				const QString& filter = filterRegularExpression ().pattern ();
 				if (filter.isEmpty ())
 					return true;
 

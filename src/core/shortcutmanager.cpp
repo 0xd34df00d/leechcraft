@@ -37,7 +37,7 @@ namespace LC
 			if (!parent.isValid ())
 				return true;
 
-			const auto& filter = filterRegExp ().pattern ();
+			const auto& filter = filterRegularExpression ().pattern ();
 			if (filter.isEmpty ())
 				return true;
 
