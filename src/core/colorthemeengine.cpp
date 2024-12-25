@@ -91,7 +91,8 @@ namespace LC
 		template<typename F>
 		void WithValue (QColor& color, F&& f)
 		{
-			qreal h, s, v, a;
+			// TODO replace decltype with float when migration to Qt6 is complete
+			decltype (color.hsvHueF ()) h, s, v, a;
 			color.getHsvF (&h, &s, &v, &a);
 			v = f (v);
 			color.setHsvF (h, s, v, a);
