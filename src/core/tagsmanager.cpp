@@ -84,7 +84,7 @@ ITagsManager::tag_id TagsManager::GetID (const QString& tag)
 
 QString TagsManager::GetTag (ITagsManager::tag_id id) const
 {
-	return Tags_ [id];
+	return Tags_ [QUuid { id }];
 }
 
 QStringList TagsManager::GetAllTags () const
