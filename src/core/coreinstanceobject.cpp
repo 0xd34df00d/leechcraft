@@ -247,7 +247,7 @@ namespace LC
 
 		const auto& lang = XmlSettingsManager::Instance ()->property ("Language").toString ();
 		if (lang != "system")
-			QLocale::setDefault ({ lang });
+			QLocale::setDefault (QLocale { lang });
 	}
 
 	void CoreInstanceObject::SecondInit ()
