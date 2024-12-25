@@ -139,7 +139,7 @@ void TagsManager::RemoveTag (const QModelIndex& index)
 	if (!index.isValid ())
 		return;
 
-	const auto pos = Tags_.begin () + index.row ();
+	const auto pos = std::next (Tags_.begin (), index.row ());
 
 	Storage_.DeleteTag (pos.key ());
 
@@ -155,7 +155,7 @@ void TagsManager::SetTag (const QModelIndex& index, const QString& newTag)
 	if (!index.isValid ())
 		return;
 
-	auto pos = Tags_.begin () + index.row ();
+	auto pos = std::next (Tags_.begin (), index.row ());
 	*pos = newTag;
 
 	Storage_.SetTagName (pos.key (), newTag);
