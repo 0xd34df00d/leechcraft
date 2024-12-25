@@ -828,8 +828,9 @@ namespace LC
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 
-		for (const QFileInfo fileinfo : paths)
+		for (const auto& path : paths)
 		{
+			const QFileInfo fileinfo { path };
 			auto name = fileinfo.canonicalFilePath ();
 			settings.beginGroup (name);
 
