@@ -966,27 +966,27 @@ namespace LMP
 					{
 						{
 							AN::Field::MediaPlaybackStatus,
-							ANStringFieldValue { state }
+							AN::StringFieldValue { state }
 						},
 						{
 							AN::Field::MediaArtist,
-							ANStringFieldValue { info.Artist_ }
+							AN::StringFieldValue { info.Artist_ }
 						},
 						{
 							AN::Field::MediaAlbum,
-							ANStringFieldValue { info.Album_ }
+							AN::StringFieldValue { info.Album_ }
 						},
 						{
 							AN::Field::MediaTitle,
-							ANStringFieldValue { info.Title_ }
+							AN::StringFieldValue { info.Title_ }
 						},
 						{
 							AN::Field::MediaLength,
-							ANIntFieldValue { info.Length_, ANIntFieldValue::OEqual }
+							AN::IntFieldValue { info.Length_, AN::IntFieldValue::OEqual }
 						},
 						{
 							AN::Field::MediaPlayerURL,
-							ANStringFieldValue { url.toEncoded () }
+							AN::StringFieldValue { url.toEncoded () }
 						}
 					});
 			proxy->GetEntityManager ()->HandleEntity (e);

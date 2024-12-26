@@ -1516,7 +1516,7 @@ namespace Azoth
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",
-						ANStringFieldValue { entry->GetEntryID () }
+						AN::StringFieldValue { entry->GetEntryID () }
 					}
 				});
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
@@ -1545,11 +1545,11 @@ namespace Azoth
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",
-						ANStringFieldValue { entry->GetEntryID () }
+						AN::StringFieldValue { entry->GetEntryID () }
 					},
 					{
 						"org.LC.Plugins.Azoth.NewStatus",
-						ANStringFieldValue
+						AN::StringFieldValue
 						{
 							Core::Instance ().GetPluginProxy ()->StateToString (SOnline)
 						}
@@ -1589,11 +1589,11 @@ namespace Azoth
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceName",
-						ANStringFieldValue { nickname }
+						AN::StringFieldValue { nickname }
 					},
 					{
 						"org.LC.Plugins.Azoth.ParentSourceID",
-						ANStringFieldValue { entry->GetEntryID () }
+						AN::StringFieldValue { entry->GetEntryID () }
 					}
 				});
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);

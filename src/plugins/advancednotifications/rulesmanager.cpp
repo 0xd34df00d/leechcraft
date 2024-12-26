@@ -220,7 +220,7 @@ namespace LC::AdvancedNotifications
 		for (const auto& type : types)
 			stdFieldData += Util::GetStdANFields (type);
 
-		auto tryAddFieldMatch = [&e, &rule, sender] (const ANFieldData& field, bool standard)
+		auto tryAddFieldMatch = [&e, &rule, sender] (const AN::FieldData& field, bool standard)
 		{
 			if (!e.Additional_.contains (field.ID_))
 				return;
@@ -228,8 +228,8 @@ namespace LC::AdvancedNotifications
 			const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
 
 			const auto& fieldValVar = e.Additional_ [field.ID_];
-			if (fieldValVar.canConvert<ANFieldValue> ())
-				valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+			if (fieldValVar.canConvert<AN::FieldValue> ())
+				valMatcher->SetValue (e.Additional_ [field.ID_].value<AN::FieldValue> ());
 			else
 				valMatcher->SetValue (e.Additional_ [field.ID_]);
 
@@ -398,7 +398,7 @@ namespace LC::AdvancedNotifications
 		{
 			FieldMatch match (QVariant::Bool);
 			match.SetFieldName (AN::Field::TerminalActive);
-			match.GetMatcher ()->SetValue (ANBoolFieldValue { false });
+			match.GetMatcher ()->SetValue (AN::BoolFieldValue { false });
 
 			NotificationRule inactiveBell (tr ("Bell in inactive terminal"), AN::CatTerminal,
 					{ AN::TypeTerminalBell });

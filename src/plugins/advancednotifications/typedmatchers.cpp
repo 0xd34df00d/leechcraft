@@ -32,7 +32,7 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	TypedMatcherBase_ptr TypedMatcherBase::Create (QVariant::Type type, const ANFieldData& fieldData)
+	TypedMatcherBase_ptr TypedMatcherBase::Create (QVariant::Type type, const AN::FieldData& fieldData)
 	{
 		switch (type)
 		{
@@ -83,7 +83,7 @@ namespace LC::AdvancedNotifications
 	namespace
 	{
 		template<typename T>
-		void SetValueFromVariant (T& value, const ANFieldValue& variant)
+		void SetValueFromVariant (T& value, const AN::FieldValue& variant)
 		{
 			Util::Visit (variant,
 					[&value] (const T& val) { value = val; },
@@ -91,7 +91,7 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	void StringLikeMatcher::SetValue (const ANFieldValue& variant)
+	void StringLikeMatcher::SetValue (const AN::FieldValue& variant)
 	{
 		SetValueFromVariant (Value_, variant);
 	}
@@ -102,7 +102,7 @@ namespace LC::AdvancedNotifications
 		Value_.Contains_ = true;
 	}
 
-	ANFieldValue StringLikeMatcher::GetValue () const
+	AN::FieldValue StringLikeMatcher::GetValue () const
 	{
 		return Value_;
 	}
@@ -134,8 +134,7 @@ namespace LC::AdvancedNotifications
 	{
 		if (!CW_)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "called with null CW";
+			qWarning () << "called with null CW";
 			return;
 		}
 
@@ -299,7 +298,7 @@ namespace LC::AdvancedNotifications
 		Value_.IsSet_ = map.value (Keys::IsSet).toBool ();
 	}
 
-	void BoolMatcher::SetValue (const ANFieldValue& variant)
+	void BoolMatcher::SetValue (const AN::FieldValue& variant)
 	{
 		SetValueFromVariant (Value_, variant);
 	}
@@ -309,7 +308,7 @@ namespace LC::AdvancedNotifications
 		Value_.IsSet_ = variant.toBool ();
 	}
 
-	ANFieldValue BoolMatcher::GetValue () const
+	AN::FieldValue BoolMatcher::GetValue () const
 	{
 		return Value_;
 	}
@@ -367,11 +366,11 @@ namespace LC::AdvancedNotifications
 
 	IntMatcher::IntMatcher ()
 	{
-		Ops2pos_ [ANIntFieldValue::OGreater] = 0;
-		Ops2pos_ [ANIntFieldValue::OEqual | ANIntFieldValue::OGreater] = 1;
-		Ops2pos_ [ANIntFieldValue::OEqual] = 2;
-		Ops2pos_ [ANIntFieldValue::OEqual | ANIntFieldValue::OLess] = 3;
-		Ops2pos_ [ANIntFieldValue::OLess] = 4;
+		Ops2pos_ [AN::IntFieldValue::OGreater] = 0;
+		Ops2pos_ [AN::IntFieldValue::OEqual | AN::IntFieldValue::OGreater] = 1;
+		Ops2pos_ [AN::IntFieldValue::OEqual] = 2;
+		Ops2pos_ [AN::IntFieldValue::OEqual | AN::IntFieldValue::OLess] = 3;
+		Ops2pos_ [AN::IntFieldValue::OLess] = 4;
 	}
 
 	namespace Keys
@@ -392,10 +391,10 @@ namespace LC::AdvancedNotifications
 	void IntMatcher::Load (const QVariantMap& map)
 	{
 		Value_.Boundary_ = map [Keys::Boundary].toInt ();
-		Value_.Ops_ = static_cast<ANIntFieldValue::Operations> (map [Keys::Ops].value<quint16> ());
+		Value_.Ops_ = static_cast<AN::IntFieldValue::Operations> (map [Keys::Ops].value<quint16> ());
 	}
 
-	void IntMatcher::SetValue (const ANFieldValue& variant)
+	void IntMatcher::SetValue (const AN::FieldValue& variant)
 	{
 		SetValueFromVariant (Value_, variant);
 	}
@@ -403,10 +402,10 @@ namespace LC::AdvancedNotifications
 	void IntMatcher::SetValue (const QVariant& variant)
 	{
 		Value_.Boundary_ = variant.toInt ();
-		Value_.Ops_ = ANIntFieldValue::OEqual;
+		Value_.Ops_ = AN::IntFieldValue::OEqual;
 	}
 
-	ANFieldValue IntMatcher::GetValue () const
+	AN::FieldValue IntMatcher::GetValue () const
 	{
 		return Value_;
 	}
@@ -418,11 +417,11 @@ namespace LC::AdvancedNotifications
 
 		const int val = var.toInt ();
 
-		if ((Value_.Ops_ & ANIntFieldValue::OEqual) && val == Value_.Boundary_)
+		if ((Value_.Ops_ & AN::IntFieldValue::OEqual) && val == Value_.Boundary_)
 			return true;
-		if ((Value_.Ops_ & ANIntFieldValue::OGreater) && val > Value_.Boundary_)
+		if ((Value_.Ops_ & AN::IntFieldValue::OGreater) && val > Value_.Boundary_)
 			return true;
-		if ((Value_.Ops_ & ANIntFieldValue::OLess) && val < Value_.Boundary_)
+		if ((Value_.Ops_ & AN::IntFieldValue::OLess) && val < Value_.Boundary_)
 			return true;
 
 		return false;
@@ -430,15 +429,15 @@ namespace LC::AdvancedNotifications
 
 	QString IntMatcher::GetHRDescription () const
 	{
-		if (Value_.Ops_ == ANIntFieldValue::OEqual)
+		if (Value_.Ops_ == AN::IntFieldValue::OEqual)
 			return QObject::tr ("equals to %1").arg (Value_.Boundary_);
 
 		QString op;
-		if ((Value_.Ops_ & ANIntFieldValue::OGreater))
+		if ((Value_.Ops_ & AN::IntFieldValue::OGreater))
 			op += ">"_ql;
-		if ((Value_.Ops_ & ANIntFieldValue::OLess))
+		if ((Value_.Ops_ & AN::IntFieldValue::OLess))
 			op += "<"_ql;
-		if ((Value_.Ops_ & ANIntFieldValue::OEqual))
+		if ((Value_.Ops_ & AN::IntFieldValue::OEqual))
 			op += "="_ql;
 
 		return QObject::tr ("is %1 then %2")
@@ -464,8 +463,7 @@ namespace LC::AdvancedNotifications
 	{
 		if (!CW_)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "called with null CW";
+			qWarning () << "called with null CW";
 			return;
 		}
 
@@ -477,8 +475,7 @@ namespace LC::AdvancedNotifications
 	{
 		if (!CW_)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "called with null CW";
+			qWarning () << "called with null CW";
 			return;
 		}
 

@@ -14,11 +14,12 @@ template<typename T>
 class QList;
 class QString;
 
-namespace LC
+namespace LC::AN
 {
-struct ANFieldData;
+	struct FieldData;
+}
 
-namespace Util
+namespace LC::Util
 {
 	/** @brief Returns the list of the standard AN fields for the given
 	 * \em category.
@@ -31,8 +32,7 @@ namespace Util
 	 * @return The descriptions of the standard fields used by events in
 	 * the given category.
 	 *
-	 * @sa ANFieldData
+	 * @sa LC::AN::FieldData
 	 */
-	UTIL_XPC_API QList<ANFieldData> GetStdANFields (const QString& category);
-}
+	UTIL_XPC_API QList<LC::AN::FieldData> GetStdANFields (const QString& category);
 }

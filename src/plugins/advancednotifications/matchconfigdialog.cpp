@@ -15,7 +15,7 @@
 
 namespace LC::AdvancedNotifications
 {
-	MatchConfigDialog::MatchConfigDialog (const QHash<QObject*, QList<ANFieldData>>& map, QWidget *parent)
+	MatchConfigDialog::MatchConfigDialog (const QHash<QObject*, QList<AN::FieldData>>& map, QWidget *parent)
 	: QDialog (parent)
 	, FieldsMap_ (map)
 	{
@@ -52,7 +52,7 @@ namespace LC::AdvancedNotifications
 
 		CurrentMatcher_->SyncToWidget ();
 
-		const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<ANFieldData> ();
+		const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<AN::FieldData> ();
 
 		FieldMatch result (data.Type_, CurrentMatcher_);
 		if (const auto plugin = Ui_.SourcePlugin_->itemData (sourceIdx).value<QObject*> ())
@@ -122,7 +122,7 @@ namespace LC::AdvancedNotifications
 		return tryIdx (0);
 	}
 
-	void MatchConfigDialog::AddFields (const QList<ANFieldData>& fields)
+	void MatchConfigDialog::AddFields (const QList<AN::FieldData>& fields)
 	{
 		for (const auto& data : fields)
 			Ui_.FieldName_->addItem (data.Name_, QVariant::fromValue (data));
@@ -138,7 +138,7 @@ namespace LC::AdvancedNotifications
 
 	void MatchConfigDialog::ShowField (int idx)
 	{
-		const auto& data = Ui_.FieldName_->itemData (idx).value<ANFieldData> ();
+		const auto& data = Ui_.FieldName_->itemData (idx).value<AN::FieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
 		QLayout *lay = Ui_.ConfigWidget_->layout ();

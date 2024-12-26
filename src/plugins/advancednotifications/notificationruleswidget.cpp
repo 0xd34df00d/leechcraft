@@ -258,7 +258,7 @@ namespace LC::AdvancedNotifications
 
 	namespace
 	{
-		QList<ANFieldData> GetPluginFields (const QByteArray& pluginId)
+		QList<AN::FieldData> GetPluginFields (const QByteArray& pluginId)
 		{
 			if (pluginId.isEmpty ())
 				return {};
@@ -294,9 +294,9 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	QHash<QObject*, QList<ANFieldData>> NotificationRulesWidget::GetRelevantANFieldsWPlugins () const
+	QHash<QObject*, QList<AN::FieldData>> NotificationRulesWidget::GetRelevantANFieldsWPlugins () const
 	{
-		QHash<QObject*, QList<ANFieldData>> result;
+		QHash<QObject*, QList<AN::FieldData>> result;
 		result [nullptr] += Util::GetStdANFields (GetCurrentCat ());
 		for (const auto& type : GetSelectedTypes ())
 			result [nullptr] += Util::GetStdANFields (type);
@@ -313,9 +313,9 @@ namespace LC::AdvancedNotifications
 		return result;
 	}
 
-	QList<ANFieldData> NotificationRulesWidget::GetRelevantANFields () const
+	QList<AN::FieldData> NotificationRulesWidget::GetRelevantANFields () const
 	{
-		QList<ANFieldData> result;
+		QList<AN::FieldData> result;
 		for (const auto& sublist : GetRelevantANFieldsWPlugins ())
 			result += sublist;
 		return result;

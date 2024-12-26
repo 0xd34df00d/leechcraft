@@ -84,7 +84,7 @@ namespace LC::Util
 	 * @param[in] openConfiguration Whether the configuration widget for
 	 * the just created rule should be opened automatically.
 	 * @param[in] fields The list of pairs of a field ID (as in
-	 * ANFieldData::ID_) and corresponding field value as ANFieldValue.
+	 * LC::AN::FieldData::ID_) and corresponding field value as ANFieldValue.
 	 * @return The Entity object describing a notifications rule for the
 	 * passed parameters.
 	 *
@@ -96,7 +96,7 @@ namespace LC::Util
 			const QStringList& types,
 			AN::NotifyFlags flags = AN::NotifyNone,
 			bool openConfiguration = false,
-			const QList<QPair<QString, ANFieldValue>>& fields = {});
+			const QList<QPair<QString, AN::FieldValue>>& fields = {});
 
 	/** @brief Returns the data filter plugins that can handle \em data.
 	 *

@@ -285,7 +285,7 @@ namespace LC::Azoth
 		return PluginProxyObject_.get ();
 	}
 
-	QList<ANFieldData> Core::GetANFields () const
+	QList<AN::FieldData> Core::GetANFields () const
 	{
 		return ANFields_;
 	}
@@ -1519,7 +1519,7 @@ namespace LC::Azoth
 			AN::TypeIMEventLocationChange
 		};
 
-		ANFields_ = QList<ANFieldData>
+		ANFields_ = QList<AN::FieldData>
 		{
 			{
 				"org.LC.Plugins.Azoth.Msg",

@@ -304,7 +304,7 @@ namespace Azoth
 		return Core::Instance ().GetShortcutManager ()->GetActionInfo ();
 	}
 
-	QList<ANFieldData> Plugin::GetANFields () const
+	QList<AN::FieldData> Plugin::GetANFields () const
 	{
 		return Core::Instance ().GetANFields ();
 	}

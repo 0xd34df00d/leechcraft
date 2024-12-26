@@ -96,7 +96,7 @@ namespace Azoth
 		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
 		QMap<QByteArray, ActionInfo> GetActionInfo() const override;
 
-		QList<ANFieldData> GetANFields () const override;
+		QList<AN::FieldData> GetANFields () const override;
 	private:
 		void InitShortcuts ();
 		void InitSettings ();

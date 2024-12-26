@@ -14,9 +14,9 @@
 
 namespace LC::Util
 {
-	QList<ANFieldData> GetStdANFields (const QString& type)
+	QList<AN::FieldData> GetStdANFields (const QString& type)
 	{
-		static const QMap<QString, QList<ANFieldData>> values
+		static const QMap<QString, QList<AN::FieldData>> values
 		{
 			{
 				AN::TypeIMEventTuneChange,
@@ -265,7 +265,7 @@ namespace LC::Util
 		if (!type.isEmpty ())
 			return values.value (type);
 
-		QList<ANFieldData> result;
+		QList<AN::FieldData> result;
 		for (const auto& list : values)
 			result << list;
 		return result;

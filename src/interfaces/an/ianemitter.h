@@ -13,7 +13,7 @@
 #include <QVariant>
 #include <QStringList>
 
-namespace LC
+namespace LC::AN
 {
 	/** @brief A single additional AdvancedNotifications field.
 	 *
@@ -25,7 +25,7 @@ namespace LC
 	 * This structure also carries information about field name, type,
 	 * description and such.
 	 */
-	struct ANFieldData
+	struct FieldData
 	{
 		/** @brief The field ID.
 		 *
@@ -80,18 +80,18 @@ namespace LC
 
 	/** @brief Describes a field with boolean values.
 	 */
-	struct ANBoolFieldValue
+	struct BoolFieldValue
 	{
 		/** @brief Whether the field should be set.
 		 */
 		bool IsSet_;
 
-		auto operator<=> (const ANBoolFieldValue&) const = default;
+		auto operator<=> (const BoolFieldValue&) const = default;
 	};
 
 	/** @brief Describes a field with integer values.
 	 */
-	struct ANIntFieldValue
+	struct IntFieldValue
 	{
 		/** @brief The boundary of the field.
 		 */
@@ -122,12 +122,12 @@ namespace LC
 		 */
 		Operations Ops_;
 
-		bool operator== (const ANIntFieldValue&) const = default;
+		bool operator== (const IntFieldValue&) const = default;
 	};
 
 	/** @brief Describes a field with QString values.
 	 */
-	struct ANStringFieldValue
+	struct StringFieldValue
 	{
 		/** @brief The regular expression the values should (not) match.
 		 */
@@ -146,7 +146,7 @@ namespace LC
 		 * @param[in] contains Whether the string should or should not
 		 * match \em rx.
 		 */
-		ANStringFieldValue (const QRegExp& rx, bool contains)
+		StringFieldValue (const QRegExp& rx, bool contains)
 		: Rx_ { rx }
 		, Contains_ { contains }
 		{
@@ -164,18 +164,18 @@ namespace LC
 		 * @param[in] contains Whether the string should or should not
 		 * contain \em str.
 		 */
-		ANStringFieldValue (const QString& str, bool contains = true)
+		StringFieldValue (const QString& str, bool contains = true)
 		: Rx_ { str, Qt::CaseSensitive, QRegExp::FixedString }
 		, Contains_ { contains }
 		{
 		}
 
-		bool operator== (const ANStringFieldValue&) const = default;
+		bool operator== (const StringFieldValue&) const = default;
 	};
 
 	/** @brief A combination of all possible descriptions.
 	 */
-	using ANFieldValue = std::variant<ANBoolFieldValue, ANIntFieldValue, ANStringFieldValue>;
+	using FieldValue = std::variant<BoolFieldValue, IntFieldValue, StringFieldValue>;
 }
 
 /** @brief Interface for plugins emitting AdvancedNotifications entries.
@@ -190,7 +190,7 @@ namespace LC
  * If a plugin doesn't define any additional fields, it may choose to
  * not implement this interface.
  *
- * @sa LC::ANFieldData
+ * @sa LC::AN::FieldData
  */
 class Q_DECL_EXPORT IANEmitter
 {
@@ -205,19 +205,19 @@ public:
 	 *
 	 * This list must not change during single run session.
 	 *
-	 * Please refer to the documentation of the LC::ANFieldData
+	 * Please refer to the documentation of the LC::AN::FieldData
 	 * structure for more information.
 	 *
 	 * @return The list of additional AdvancedNotifications fields.
 	 *
-	 * @sa LC::ANFieldData
+	 * @sa LC::AN::FieldData
 	 */
-	virtual QList<LC::ANFieldData> GetANFields () const = 0;
+	virtual QList<LC::AN::FieldData> GetANFields () const = 0;
 };
 
 Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0")
-Q_DECLARE_METATYPE (LC::ANFieldData)
-Q_DECLARE_METATYPE (LC::ANFieldValue)
-Q_DECLARE_METATYPE (QList<LC::ANFieldValue>)
+Q_DECLARE_METATYPE (LC::AN::FieldData)
+Q_DECLARE_METATYPE (LC::AN::FieldValue)
+Q_DECLARE_METATYPE (QList<LC::AN::FieldValue>)
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LC::ANIntFieldValue::Operations)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::AN::IntFieldValue::Operations)

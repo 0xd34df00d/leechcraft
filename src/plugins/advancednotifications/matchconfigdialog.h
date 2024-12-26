@@ -15,11 +15,12 @@
 #include <interfaces/an/ianemitter.h>
 #include "ui_matchconfigdialog.h"
 
-namespace LC
+namespace LC::AN
 {
-struct ANFieldData;
+	struct FieldData;
+}
 
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class TypedMatcherBase;
 	using TypedMatcherBase_ptr = std::shared_ptr<TypedMatcherBase>;
@@ -35,17 +36,16 @@ namespace AdvancedNotifications
 		QSet<QString> Types_;
 		TypedMatcherBase_ptr CurrentMatcher_;
 
-		const QHash<QObject*, QList<ANFieldData>> FieldsMap_;
+		const QHash<QObject*, QList<AN::FieldData>> FieldsMap_;
 	public:
-		explicit MatchConfigDialog (const QHash<QObject*, QList<ANFieldData>>&, QWidget* = nullptr);
+		explicit MatchConfigDialog (const QHash<QObject*, QList<AN::FieldData>>&, QWidget* = nullptr);
 
 		FieldMatch GetFieldMatch () const;
 		void SetFieldMatch (const FieldMatch&);
 	private:
 		int SelectPlugin (const QByteArray&, const QString&);
-		void AddFields (const QList<ANFieldData>&);
+		void AddFields (const QList<AN::FieldData>&);
 		void ShowPluginFields (int);
 		void ShowField (int);
 	};
-}
 }

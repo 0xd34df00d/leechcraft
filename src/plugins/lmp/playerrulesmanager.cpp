@@ -52,7 +52,7 @@ namespace LMP
 		{
 			const QString Value_;
 
-			bool operator() (const ANStringFieldValue& value) const
+			bool operator() (const AN::StringFieldValue& value) const
 			{
 				return value.Rx_.exactMatch (Value_) == value.Contains_;
 			}
@@ -68,11 +68,11 @@ namespace LMP
 		{
 			const int Value_;
 
-			bool operator() (const ANIntFieldValue& value) const
+			bool operator() (const AN::IntFieldValue& value) const
 			{
-				return ((value.Ops_ & ANIntFieldValue::OEqual) && Value_ == value.Boundary_) ||
-						((value.Ops_ & ANIntFieldValue::OGreater) && Value_ > value.Boundary_) ||
-						((value.Ops_ & ANIntFieldValue::OLess) && Value_ < value.Boundary_);
+				return ((value.Ops_ & AN::IntFieldValue::OEqual) && Value_ == value.Boundary_) ||
+						((value.Ops_ & AN::IntFieldValue::OGreater) && Value_ > value.Boundary_) ||
+						((value.Ops_ & AN::IntFieldValue::OLess) && Value_ < value.Boundary_);
 			}
 
 			template<typename T>
@@ -106,7 +106,7 @@ namespace LMP
 					return true;
 
 				hadSome = true;
-				auto variant = wrapped.value<ANFieldValue> ();
+				auto variant = wrapped.value<AN::FieldValue> ();
 				return std::visit (U { value }, variant);
 			}
 

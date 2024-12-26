@@ -16,11 +16,12 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
+namespace LC::AN
 {
-struct ANFieldData;
+	struct FieldData;
+}
 
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class RulesManager;
 	class AudioThemeManager;
@@ -53,8 +54,8 @@ namespace AdvancedNotifications
 
 		NotificationRule GetRuleFromUI (QModelIndex = {}) const;
 
-		QHash<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
-		QList<ANFieldData> GetRelevantANFields () const;
+		QHash<QObject*, QList<AN::FieldData>> GetRelevantANFieldsWPlugins () const;
+		QList<AN::FieldData> GetRelevantANFields () const;
 		QString GetArgumentText ();
 
 		void HandleItemSelected (const QModelIndex&, const QModelIndex&);
@@ -76,5 +77,4 @@ namespace AdvancedNotifications
 		void PopulateCategories ();
 		void ResetAudioFileBox ();
 	};
-}
 }
