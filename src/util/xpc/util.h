@@ -84,7 +84,7 @@ namespace LC::Util
 	 * @param[in] openConfiguration Whether the configuration widget for
 	 * the just created rule should be opened automatically.
 	 * @param[in] fields The list of pairs of a field ID (as in
-	 * LC::AN::FieldData::ID_) and corresponding field value as ANFieldValue.
+	 * LC::AN::FieldData::ID_) and corresponding field value as LC::AN::FieldValue.
 	 * @return The Entity object describing a notifications rule for the
 	 * passed parameters.
 	 *

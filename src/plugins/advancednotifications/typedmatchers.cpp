@@ -7,12 +7,14 @@
  **********************************************************************/
 
 #include "typedmatchers.h"
+#include <QRegExp>
 #include <QStringList>
 #include <QWidget>
 #include <QtDebug>
 #include <QUrl>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/xpc/anutil.h>
 #include "ui_boolmatcherconfigwidget.h"
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
@@ -69,14 +71,42 @@ namespace LC::AdvancedNotifications
 	{
 		return
 		{
-			{ Keys::Rx, Value_.Rx_ },
+			{ Keys::Rx, Util::AN::ToVariant (Value_.Rx_) },
 			{ Keys::Contains, Value_.Contains_ }
 		};
 	}
 
+	namespace
+	{
+		AN::StringMatcher Convert (const QRegExp& rx)
+		{
+			const auto& pattern = rx.pattern ();
+			switch (rx.patternSyntax ())
+			{
+			case QRegExp::FixedString:
+				return AN::Substring { pattern };
+			case QRegExp::Wildcard:
+			case QRegExp::WildcardUnix:
+				return AN::Wildcard { pattern };
+			case QRegExp::RegExp:
+			case QRegExp::RegExp2:
+				return QRegularExpression { pattern };
+			default:
+				qWarning () << "unknown pattern syntax" << rx.patternSyntax ();
+				return AN::Substring { pattern };
+			}
+		}
+	}
+
 	void StringLikeMatcher::Load (const QVariantMap& map)
 	{
-		Value_.Rx_ = map [Keys::Rx].toRegExp ();
+		const auto& rxVar = map [Keys::Rx];
+		// TODO get rid of this post Qt6 migration and some grace period (say, in June 2025)
+		if (rxVar.canConvert<QRegExp> ())
+			Value_.Rx_ = Convert (rxVar.value<QRegExp> ());
+		else
+			Value_.Rx_ = Util::AN::StringMatcherFromVariant (rxVar);
+
 		Value_.Contains_ = map [Keys::Contains].toBool ();
 	}
 
@@ -98,7 +128,20 @@ namespace LC::AdvancedNotifications
 
 	void StringLikeMatcher::SetValue (const QVariant& variant)
 	{
-		Value_.Rx_ = QRegExp { variant.toString (), Qt::CaseSensitive, QRegExp::FixedString };
+		if (const auto str = get_if<QString> (&variant))
+			Value_.Rx_ = AN::Substring { *str };
+		else if (const auto em = get_if<AN::Substring> (&variant))
+			Value_.Rx_ = *em;
+		else if (const auto wc = get_if<AN::Wildcard> (&variant))
+			Value_.Rx_ = *wc;
+		else if (const auto rx = get_if<QRegularExpression> (&variant))
+			Value_.Rx_ = *rx;
+		else
+		{
+			qWarning () << "unsupported type:" << variant;
+			throw std::runtime_error { "unsupported type" };
+		}
+
 		Value_.Contains_ = true;
 	}
 
@@ -141,78 +184,76 @@ namespace LC::AdvancedNotifications
 		Value_.Contains_ = Ui_->ContainsBox_->currentIndex () == 0;
 		if (Allowed_.isEmpty ())
 		{
-			QRegExp::PatternSyntax pattern = QRegExp::FixedString;
+			const auto& text = Ui_->RegexpEditor_->text ();
 			switch (Ui_->RegexType_->currentIndex ())
 			{
 			case 0:
+				Value_.Rx_ = AN::Substring { text };
 				break;
 			case 1:
-				pattern = QRegExp::Wildcard;
+				Value_.Rx_ = AN::Wildcard { text };
 				break;
 			case 2:
-				pattern = QRegExp::RegExp;
+				Value_.Rx_ = QRegularExpression { text };
 				break;
 			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unknown regexp type"
-						<< Ui_->RegexType_->currentIndex ();
+				qWarning () << "unknown regexp type" << Ui_->RegexType_->currentIndex ();
 				break;
 			}
-
-			Value_.Rx_ = QRegExp (Ui_->RegexpEditor_->text (),
-					Qt::CaseInsensitive, pattern);
 		}
 		else
-			Value_.Rx_ = QRegExp (Ui_->VariantsBox_->currentText (),
-					Qt::CaseSensitive, QRegExp::FixedString);
+			Value_.Rx_ = AN::Substring { Ui_->VariantsBox_->currentText () };
 	}
 
 	void StringLikeMatcher::SyncWidgetTo ()
 	{
 		if (!CW_)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "called with null CW";
+			qWarning () << "called with null CW";
 			return;
 		}
 
 		Ui_->ContainsBox_->setCurrentIndex (!Value_.Contains_);
 		if (Allowed_.isEmpty ())
 		{
-			Ui_->RegexpEditor_->setText (Value_.Rx_.pattern ());
-
-			switch (Value_.Rx_.patternSyntax ())
-			{
-			case QRegExp::FixedString:
-				Ui_->RegexType_->setCurrentIndex (0);
-				break;
-			case QRegExp::Wildcard:
-			case QRegExp::WildcardUnix:
-				Ui_->RegexType_->setCurrentIndex (1);
-				break;
-			case QRegExp::RegExp:
-			case QRegExp::RegExp2:
-				Ui_->RegexType_->setCurrentIndex (2);
-				break;
-			case QRegExp::W3CXmlSchema11:
-				qWarning () << Q_FUNC_INFO
-						<< "unexpected regexp type"
-						<< Value_.Rx_.patternSyntax ();
-				break;
-			}
+			const auto [idx, pattern] = Util::Visit (Value_.Rx_,
+					[] (const QRegularExpression& rx) { return std::pair { 2, rx.pattern () }; },
+					[] (const AN::Wildcard& wc) { return std::pair { 1, wc.Pattern_ }; },
+					[] (const AN::Substring& em) { return std::pair { 0, em.Pattern_ }; });
+			Ui_->RegexpEditor_->setText (pattern);
+			Ui_->RegexType_->setCurrentIndex (idx);
 		}
 		else
 		{
-			const auto& pattern = Value_.Rx_.pattern ();
+			const auto& pattern = Util::Visit (Value_.Rx_,
+					[] (const AN::Substring& em) { return em.Pattern_; },
+					[]<typename T> (const T&)
+					{
+						qWarning () << "unexpected rx type" << QMetaType::fromType<T> ().name ();
+						return QString {};
+					});
 			const auto idx = Ui_->VariantsBox_->findText (pattern);
 			if (idx == -1)
-				qWarning () << Q_FUNC_INFO
-						<< "cannot find pattern"
-						<< pattern
-						<< "in"
-						<< Allowed_;
+				qWarning () << "cannot find" << pattern << "in" << Allowed_;
 			else
 				Ui_->VariantsBox_->setCurrentIndex (idx);
+		}
+	}
+
+	namespace
+	{
+		bool GenericMatch (auto&& val, const AN::StringMatcher& pattern)
+		{
+			const auto pos = Util::Visit (pattern,
+					[&val] (const QRegularExpression& rx) { return val.indexOf (rx); },
+					[&val] (const AN::Substring& em) { return val.indexOf (em.Pattern_); },
+					[&val] (const AN::Wildcard& wc) { return val.indexOf (wc.Compiled_); });
+			return pos >= 0;
+		}
+
+		bool GenericMatch (auto&& val, const AN::StringFieldValue& ref)
+		{
+			return GenericMatch (val, ref) == ref.Contains_;
 		}
 	}
 
@@ -220,19 +261,52 @@ namespace LC::AdvancedNotifications
 	{
 		if (!var.canConvert<QString> ())
 			return false;
+		return GenericMatch (var.toString (), Value_);
+	}
 
-		bool res = Value_.Rx_.indexIn (var.toString ()) != -1;
-		if (!Value_.Contains_)
-			res = !res;
-		return res;
+	namespace
+	{
+		struct Descriptions
+		{
+			Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::Descriptions)
+		public:
+			static QString ForMatcher (const AN::StringMatcher& matcher)
+			{
+				return Util::Visit (matcher,
+						[] (const QRegularExpression& rx) { return tr ("regular expression `%1`").arg (rx.pattern ()); },
+						[] (const AN::Substring& str) { return tr ("substring `%1`").arg (str.Pattern_); },
+						[] (const AN::Wildcard& wc) { return tr ("wildcard `%1`").arg (wc.Pattern_); });
+			}
+
+			static QString ForStringMatcher (const AN::StringFieldValue& value)
+			{
+				const auto& p = ForMatcher (value.Rx_);
+				return value.Contains_ ?
+						tr ("contains %1").arg (p) :
+						tr ("doesn't contain %1").arg (p);
+			}
+
+			static QString ForStringListMatcher (const AN::StringFieldValue& value)
+			{
+				const auto& p = ForMatcher (value.Rx_);
+				return value.Contains_ ?
+						tr ("contains element matching %1").arg (p) :
+						tr ("doesn't contain element matching %1").arg (p);
+			}
+
+			static QString ForUrlMatcher (const AN::StringFieldValue& value)
+			{
+				const auto& p = ForMatcher (value.Rx_);
+				return value.Contains_ ?
+						tr ("URL matches %1").arg (p) :
+						tr ("URL doesn't match %1").arg (p);
+			}
+		};
 	}
 
 	QString StringMatcher::GetHRDescription () const
 	{
-		const QString& p = Value_.Rx_.pattern ();
-		return Value_.Contains_ ?
-				QObject::tr ("contains pattern `%1`").arg (p) :
-				QObject::tr ("doesn't contain pattern `%1`").arg (p);
+		return Descriptions::ForStringMatcher (Value_);
 	}
 
 	StringListMatcher::StringListMatcher (const QStringList& list)
@@ -244,19 +318,12 @@ namespace LC::AdvancedNotifications
 	{
 		if (!var.canConvert<QStringList> ())
 			return false;
-
-		bool res = var.toStringList ().indexOf (Value_.Rx_) == -1;
-		if (!Value_.Contains_)
-			res = !res;
-		return res;
+		return GenericMatch (var.toStringList (), Value_);
 	}
 
 	QString StringListMatcher::GetHRDescription () const
 	{
-		const QString& p = Value_.Rx_.pattern ();
-		return Value_.Contains_ ?
-				QObject::tr ("contains element matching %1").arg (p) :
-				QObject::tr ("doesn't contain element matching %1").arg (p);
+		return Descriptions::ForStringListMatcher (Value_);
 	}
 
 	bool UrlMatcher::Match (const QVariant& var) const
@@ -265,17 +332,14 @@ namespace LC::AdvancedNotifications
 			return false;
 
 		const auto& url = var.toUrl ();
-		const auto contains = url.toString ().indexOf (Value_.Rx_) != -1 ||
-				QString::fromUtf8 (url.toEncoded ()).indexOf (Value_.Rx_) != -1;
+		const auto contains = GenericMatch (url.toString (), Value_.Rx_) ||
+				GenericMatch (QString::fromUtf8 (url.toEncoded ()), Value_.Rx_);
 		return contains == Value_.Contains_;
 	}
 
 	QString UrlMatcher::GetHRDescription () const
 	{
-		const QString& p = Value_.Rx_.pattern ();
-		return Value_.Contains_ ?
-				QObject::tr ("matches URL or pattern `%1`").arg (p) :
-				QObject::tr ("doesn't match URL or pattern `%1`").arg (p);
+		return Descriptions::ForUrlMatcher (Value_);
 	}
 
 	BoolMatcher::BoolMatcher (const QString& fieldName)

@@ -9,7 +9,10 @@
 #include "anutil.h"
 #include <QObject>
 #include <QMap>
+#include <interfaces/an/ianemitter.h>
 #include <interfaces/an/constants.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 
 namespace LC::Util::AN
 {
@@ -151,5 +154,36 @@ namespace LC::Util::AN
 			{ LAN::TypeGeneric, QObject::tr ("Generic") }
 		};
 		return type2hr.value (type, type);
+	}
+
+	QVariant ToVariant (const LC::AN::StringMatcher& matcher)
+	{
+		const auto value = Util::Visit (matcher,
+				[] (const QRegularExpression& expr) { return QVariant { expr }; },
+				[] (const auto& wrapper) { return QVariant { wrapper.Pattern_ }; });
+		return QVariantMap
+		{
+			{ "index"_qs, static_cast<int> (matcher.index ()) },
+			{ "value"_qs, value },
+		};
+	}
+
+	LC::AN::StringMatcher StringMatcherFromVariant (const QVariant& var)
+	{
+		const auto& map = var.toMap ();
+		const auto idx = map ["index"_qs].toInt ();
+		const auto value = map ["value"_qs];
+		switch (idx)
+		{
+		case 0:
+			return LC::AN::Substring { value.toString () };
+		case 1:
+			return LC::AN::Wildcard { value.toString () };
+		case 2:
+			return value.toRegularExpression ();
+		default:
+			qWarning () << "unknown type index" << idx << map;
+			return LC::AN::Substring {};
+		}
 	}
 }

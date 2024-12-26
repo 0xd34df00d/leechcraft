@@ -125,13 +125,32 @@ namespace LC::AN
 		bool operator== (const IntFieldValue&) const = default;
 	};
 
+	struct Substring
+	{
+		QString Pattern_;
+		bool operator== (const Substring&) const = default;
+	};
+
+	struct Wildcard
+	{
+		QString Pattern_;
+		QRegularExpression Compiled_ = QRegularExpression::fromWildcard (Pattern_);
+
+		bool operator== (const Wildcard&) const = default;
+	};
+
+	struct StringMatcher : std::variant<Substring, Wildcard, QRegularExpression>
+	{
+		using variant::variant;
+	};
+
 	/** @brief Describes a field with QString values.
 	 */
 	struct StringFieldValue
 	{
-		/** @brief The regular expression the values should (not) match.
+		/** @brief The pattern the values should (not) match.
 		 */
-		QRegExp Rx_;
+		StringMatcher Rx_;
 
 		/** @brief Whether the values should match or not match Rx_.
 		 *
@@ -146,8 +165,8 @@ namespace LC::AN
 		 * @param[in] contains Whether the string should or should not
 		 * match \em rx.
 		 */
-		StringFieldValue (const QRegExp& rx, bool contains)
-		: Rx_ { rx }
+		StringFieldValue (QRegularExpression rx, bool contains)
+		: Rx_ { std::move (rx) }
 		, Contains_ { contains }
 		{
 		}
@@ -156,16 +175,14 @@ namespace LC::AN
 		 *
 		 * This constructor constructs a field matcher that matches (or
 		 * does not match if \em contains is false) when the string in
-		 * question contains the \em str. It is analogous to the previous
-		 * constructor if the regular expression object is constructed as
-		 * <code>QRegExp { str, Qt::CaseSensitive, QRegExp::FixedString }</code>.
+		 * question contains the \em str.
 		 *
 		 * @param[in] str The string that should be looked for.
 		 * @param[in] contains Whether the string should or should not
 		 * contain \em str.
 		 */
 		StringFieldValue (const QString& str, bool contains = true)
-		: Rx_ { str, Qt::CaseSensitive, QRegExp::FixedString }
+		: Rx_ { Substring { str } }
 		, Contains_ { contains }
 		{
 		}
