@@ -25,7 +25,7 @@ namespace LC::Util
 						AN::Field::MediaTitle,
 						QObject::tr ("Track title"),
 						QObject::tr ("The track that the contact is currently listening to."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventTuneChange
 						}
@@ -34,7 +34,7 @@ namespace LC::Util
 						AN::Field::MediaAlbum,
 						QObject::tr ("Track album"),
 						QObject::tr ("The album that the contact is currently listening to."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventTuneChange
 						}
@@ -43,7 +43,7 @@ namespace LC::Util
 						AN::Field::MediaArtist,
 						QObject::tr ("Track artist"),
 						QObject::tr ("The artist the contact is currently listening to."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventTuneChange
 						}
@@ -52,7 +52,7 @@ namespace LC::Util
 						AN::Field::MediaLength,
 						QObject::tr ("Track length"),
 						QObject::tr ("Length of the track the contact is currently listening to."),
-						QVariant::Int,
+						QMetaType::Int,
 						{
 							AN::TypeIMEventTuneChange
 						}
@@ -66,7 +66,7 @@ namespace LC::Util
 						AN::Field::IMActivityGeneral,
 						QObject::tr ("General activity"),
 						QObject::tr ("General activity of the contact."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventActivityChange
 						}
@@ -75,7 +75,7 @@ namespace LC::Util
 						AN::Field::IMActivitySpecific,
 						QObject::tr ("Specific activity"),
 						QObject::tr ("Specific activity of the contact within the given general activity."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventActivityChange
 						}
@@ -84,7 +84,7 @@ namespace LC::Util
 						AN::Field::IMActivityText,
 						QObject::tr ("Activity text"),
 						QObject::tr ("The comment set by the contact."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventActivityChange
 						}
@@ -98,7 +98,7 @@ namespace LC::Util
 						AN::Field::IMMoodGeneral,
 						QObject::tr ("Mood"),
 						QObject::tr ("The mood of the contact."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventMoodChange
 						}
@@ -107,7 +107,7 @@ namespace LC::Util
 						AN::Field::IMMoodText,
 						QObject::tr ("Mood explanation text"),
 						QObject::tr ("The text accompanying the mood set by the contact."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventMoodChange
 						}
@@ -121,7 +121,7 @@ namespace LC::Util
 						AN::Field::IMLocationLatitude,
 						QObject::tr ("Latitude"),
 						QObject::tr ("The latitude of the contact's current position."),
-						QVariant::Double,
+						QMetaType::Double,
 						{
 							AN::TypeIMEventLocationChange
 						}
@@ -130,7 +130,7 @@ namespace LC::Util
 						AN::Field::IMLocationLongitude,
 						QObject::tr ("Longitude"),
 						QObject::tr ("The longitude of the contact's current position."),
-						QVariant::Double,
+						QMetaType::Double,
 						{
 							AN::TypeIMEventLocationChange
 						}
@@ -139,7 +139,7 @@ namespace LC::Util
 						AN::Field::IMLocationCountry,
 						QObject::tr ("Country"),
 						QObject::tr ("The country the contact is currently in."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventLocationChange
 						}
@@ -148,7 +148,7 @@ namespace LC::Util
 						AN::Field::IMLocationLocality,
 						QObject::tr ("Locality"),
 						QObject::tr ("The the exact locality (like a city or a town) the contact is currently in."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeIMEventLocationChange
 						}
@@ -162,7 +162,7 @@ namespace LC::Util
 						AN::Field::MediaPlayerURL,
 						QObject::tr ("File URL"),
 						QObject::tr ("URL to the file being played."),
-						QVariant::Url,
+						QMetaType::QUrl,
 						{
 							AN::TypeMediaPlaybackStatus
 						}
@@ -171,7 +171,7 @@ namespace LC::Util
 						AN::Field::MediaPlaybackStatus,
 						QObject::tr ("Playback status"),
 						QObject::tr ("The status of the currently playing media file."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeMediaPlaybackStatus
 						},
@@ -185,7 +185,7 @@ namespace LC::Util
 						AN::Field::MediaTitle,
 						QObject::tr ("Title metadata"),
 						QObject::tr ("Title of the track being played."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeMediaPlaybackStatus
 						}
@@ -194,7 +194,7 @@ namespace LC::Util
 						AN::Field::MediaAlbum,
 						QObject::tr ("Album metadata"),
 						QObject::tr ("Album of the track being played."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeMediaPlaybackStatus
 						}
@@ -203,7 +203,7 @@ namespace LC::Util
 						AN::Field::MediaArtist,
 						QObject::tr ("Artist metadata"),
 						QObject::tr ("Artist of the track being played."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeMediaPlaybackStatus
 						}
@@ -212,7 +212,7 @@ namespace LC::Util
 						AN::Field::MediaLength,
 						QObject::tr ("Length metadata"),
 						QObject::tr ("Length of the track being played."),
-						QVariant::Int,
+						QMetaType::Int,
 						{
 							AN::TypeMediaPlaybackStatus
 						}
@@ -226,7 +226,7 @@ namespace LC::Util
 						AN::Field::NewsSourceName,
 						QObject::tr ("News source name"),
 						QObject::tr ("The name of the news source that caused the notification."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeNewsSourceBroken,
 							AN::TypeNewsSourceUpdated
@@ -236,7 +236,7 @@ namespace LC::Util
 						AN::Field::NewsSourceURL,
 						QObject::tr ("News source URL"),
 						QObject::tr ("The URL of the news source that caused the notification."),
-						QVariant::String,
+						QMetaType::QString,
 						{
 							AN::TypeNewsSourceBroken,
 							AN::TypeNewsSourceUpdated
@@ -251,7 +251,7 @@ namespace LC::Util
 						AN::Field::TerminalActive,
 						QObject::tr ("Terminal is active"),
 						QObject::tr ("The terminal tab that caused the notification is active."),
-						QVariant::Bool,
+						QMetaType::Bool,
 						{
 							AN::TypeTerminalBell,
 							AN::TypeTerminalActivity,

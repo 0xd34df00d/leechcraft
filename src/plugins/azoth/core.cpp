@@ -1525,7 +1525,7 @@ namespace LC::Azoth
 				"org.LC.Plugins.Azoth.Msg",
 				tr ("Message body"),
 				tr ("Original human-readable message body."),
-				QVariant::String,
+				QMetaType::QString,
 				[&]
 				{
 					auto res = havingMsgField + havingSourceFields;
@@ -1537,42 +1537,42 @@ namespace LC::Azoth
 				"org.LC.Plugins.Azoth.SourceName",
 				tr ("Sender name"),
 				tr ("Human-readable name of the sender of the message."),
-				QVariant::String,
+				QMetaType::QString,
 				havingSourceFields
 			},
 			{
 				"org.LC.Plugins.Azoth.SourceID",
 				tr ("Sender ID"),
 				tr ("Non-human-readable ID of the sender (protocol-specific)."),
-				QVariant::String,
+				QMetaType::QString,
 				havingSourceFields
 			},
 			{
 				"org.LC.Plugins.Azoth.ParentSourceName",
 				tr ("Sender's parent entry name"),
 				tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
-				QVariant::String,
+				QMetaType::QString,
 				havingSourceFields
 			},
 			{
 				"org.LC.Plugins.Azoth.ParentSourceID",
 				tr ("Sender's parent ID"),
 				tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
-				QVariant::String,
+				QMetaType::QString,
 				havingSourceFields
 			},
 			{
 				"org.LC.Plugins.Azoth.SourceGroups",
 				tr ("Sender groups"),
 				tr ("Groups to which the sender belongs."),
-				QVariant::StringList,
+				QMetaType::QStringList,
 				havingSourceFields
 			},
 			{
 				"org.LC.Plugins.Azoth.NewStatus",
 				tr ("New status"),
 				tr ("The new status string of the contact."),
-				QVariant::String,
+				QMetaType::QString,
 				{ AN::TypeIMStatusChange }
 			}
 		};

@@ -34,24 +34,22 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	TypedMatcherBase_ptr TypedMatcherBase::Create (QVariant::Type type, const AN::FieldData& fieldData)
+	TypedMatcherBase_ptr TypedMatcherBase::Create (QMetaType::Type type, const AN::FieldData& fieldData)
 	{
 		switch (type)
 		{
-		case QVariant::Bool:
+		case QMetaType::Bool:
 			return std::make_shared<BoolMatcher> (fieldData.Name_);
-		case QVariant::Int:
+		case QMetaType::Int:
 			return std::make_shared<IntMatcher> ();
-		case QVariant::String:
+		case QMetaType::QString:
 			return std::make_shared<StringMatcher> (ToTList<QString> (fieldData.AllowedValues_));
-		case QVariant::StringList:
+		case QMetaType::QStringList:
 			return std::make_shared<StringListMatcher> (ToTList<QString> (fieldData.AllowedValues_));
-		case QVariant::Url:
+		case QMetaType::QUrl:
 			return std::make_shared<UrlMatcher> ();
 		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown type"
-					<< type;
+			qWarning () << "unknown type" << type;
 			return {};
 		}
 	}

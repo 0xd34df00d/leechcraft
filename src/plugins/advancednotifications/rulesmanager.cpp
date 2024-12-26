@@ -68,9 +68,7 @@ namespace LC::AdvancedNotifications
 	, RulesModel_ (new RulesModel (this))
 	{
 		qRegisterMetaType<NotificationRule> ("LC::AdvancedNotifications::NotificationRule");
-		qRegisterMetaTypeStreamOperators<NotificationRule> ("LC::AdvancedNotifications::NotificationRule");
 		qRegisterMetaType<QList<NotificationRule>> ("QList<LC::AdvancedNotifications::NotificationRule>");
-		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LC::AdvancedNotifications::NotificationRule>");
 
 		LoadSettings ();
 
@@ -396,7 +394,7 @@ namespace LC::AdvancedNotifications
 
 		if (version == -1 || version == 5)
 		{
-			FieldMatch match (QVariant::Bool);
+			FieldMatch match (QMetaType::Bool);
 			match.SetFieldName (AN::Field::TerminalActive);
 			match.GetMatcher ()->SetValue (AN::BoolFieldValue { false });
 

@@ -56,7 +56,7 @@ namespace LC::AN
 		 * For now only QVariant::Int, QVariant::String and
 		 * QVariant::StringList are supported.
 		 */
-		QVariant::Type Type_ = QVariant::Invalid;
+		QMetaType::Type Type_ = QMetaType::UnknownType;
 
 		/** @brief The types of the event that contain this field.
 		 *

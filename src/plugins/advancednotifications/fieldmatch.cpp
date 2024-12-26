@@ -13,13 +13,13 @@
 
 namespace LC::AdvancedNotifications
 {
-	FieldMatch::FieldMatch (QVariant::Type type)
+	FieldMatch::FieldMatch (QMetaType::Type type)
 	: FieldType_ (type)
 	, Matcher_ (TypedMatcherBase::Create (type))
 	{
 	}
 
-	FieldMatch::FieldMatch (QVariant::Type type, TypedMatcherBase_ptr matcher)
+	FieldMatch::FieldMatch (QMetaType::Type type, TypedMatcherBase_ptr matcher)
 	: FieldType_ (type)
 	, Matcher_ (std::move (matcher))
 	{
@@ -45,12 +45,12 @@ namespace LC::AdvancedNotifications
 		FieldName_ = name;
 	}
 
-	QVariant::Type FieldMatch::GetType () const
+	QMetaType::Type FieldMatch::GetType () const
 	{
 		return FieldType_;
 	}
 
-	void FieldMatch::SetType (QVariant::Type type)
+	void FieldMatch::SetType (QMetaType::Type type)
 	{
 		FieldType_ = type;
 		Matcher_ = TypedMatcherBase::Create (type);

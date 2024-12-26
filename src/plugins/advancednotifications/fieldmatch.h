@@ -9,8 +9,8 @@
 #pragma once
 
 #include <memory>
+#include <QMetaType>
 #include <QString>
-#include <QVariant>
 
 namespace LC::AdvancedNotifications
 {
@@ -23,13 +23,13 @@ namespace LC::AdvancedNotifications
 		QString PluginID_;
 		QString FieldName_;
 
-		QVariant::Type FieldType_ = QVariant::Invalid;
+		QMetaType::Type FieldType_ = QMetaType::UnknownType;
 
 		TypedMatcherBase_ptr Matcher_;
 	public:
 		FieldMatch () = default;
-		explicit FieldMatch (QVariant::Type);
-		FieldMatch (QVariant::Type, TypedMatcherBase_ptr);
+		explicit FieldMatch (QMetaType::Type);
+		FieldMatch (QMetaType::Type, TypedMatcherBase_ptr);
 
 		QString GetPluginID () const;
 		void SetPluginID (const QString&);
@@ -37,8 +37,8 @@ namespace LC::AdvancedNotifications
 		QString GetFieldName () const;
 		void SetFieldName (const QString&);
 
-		QVariant::Type GetType () const;
-		void SetType (QVariant::Type);
+		QMetaType::Type GetType () const;
+		void SetType (QMetaType::Type);
 
 		TypedMatcherBase_ptr GetMatcher () const;
 
