@@ -21,11 +21,25 @@ namespace LC::Aggregator
 	class StorageBackend;
 	using StorageBackend_ptr = std::shared_ptr<StorageBackend>;
 
-	struct UnreadDelta { int delta; };
-	struct UnreadTotal { int total; };
+	struct UnreadDelta
+	{
+		int delta;
+
+		auto operator<=> (const UnreadDelta&) const = default;
+	};
+
+	struct UnreadTotal
+	{
+		int total;
+
+		auto operator<=> (const UnreadTotal&) const = default;
+	};
+
 	struct UnreadChange : std::variant<UnreadDelta, UnreadTotal>
 	{
 		using variant::variant;
+
+		auto operator<=> (const UnreadChange&) const = default;
 	};
 
 	/** @brief Abstract base class for storage backends.
