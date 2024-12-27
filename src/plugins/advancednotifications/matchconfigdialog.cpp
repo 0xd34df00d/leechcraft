@@ -153,6 +153,6 @@ namespace LC::AdvancedNotifications
 			lay->addWidget (CurrentMatcher_->GetConfigWidget ());
 		else
 			lay->addWidget (new QLabel (tr ("Invalid matcher type %1.")
-						.arg (QVariant::typeToName (data.Type_))));
+						.arg (QMetaType { data.Type_ }.name ())));
 	}
 }
