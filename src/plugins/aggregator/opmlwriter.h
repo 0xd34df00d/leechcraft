@@ -8,13 +8,12 @@
 
 #pragma once
 
-#include <QString>
+#include <QStringList>
 #include "feed.h"
 
 class QDomElement;
 class QDomDocument;
 class QDomNode;
-class QStringList;
 
 class ITagsManager;
 

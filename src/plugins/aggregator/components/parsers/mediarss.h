@@ -11,7 +11,6 @@
 #include "common.h"
 
 class QDomElement;
-class QStringList;
 
 namespace LC::Aggregator
 {

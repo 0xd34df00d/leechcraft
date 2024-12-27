@@ -10,10 +10,10 @@
 
 #include <memory>
 #include <optional>
+#include <QStringList>
 #include "common.h"
 
 class QDomElement;
-class QStringList;
 
 namespace LC::Aggregator
 {
