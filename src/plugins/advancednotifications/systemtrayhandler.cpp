@@ -127,9 +127,10 @@ namespace LC::AdvancedNotifications
 		Events_ [eventId].ExtendedText_ = e.Additional_ [AN::EF::ExtendedText].toString ();
 		Events_ [eventId].FullText_ = e.Additional_ [AN::EF::FullText].toString ();
 
+		// TODO migrate to co_await
 		const auto& pxFuture = GetPixmap (e);
 		if (pxFuture.isFinished ())
-			Events_ [eventId].Pixmap_ = pxFuture;
+			Events_ [eventId].Pixmap_ = pxFuture.result ();
 		else
 			Util::Sequence (this, pxFuture) >>
 					[eventId, this] (const QPixmap& px)
