@@ -178,7 +178,7 @@ namespace LC::Aggregator::Parsers
 		for (const auto& itemDescr : Util::DomChildren (root, "item"_qs))
 		{
 			const auto& about = itemDescr.attributeNS (NS::RDF, "about"_qs);
-			auto& chan = item2Channel.value (about);
+			const auto chan = item2Channel.value (about);
 			if (!chan)
 				continue;
 
