@@ -14,7 +14,6 @@
 #include <QMessageBox>
 #include <QModelIndex>
 #include <QUrl>
-#include <QTextCodec>
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ijobholderrepresentationhandler.h>

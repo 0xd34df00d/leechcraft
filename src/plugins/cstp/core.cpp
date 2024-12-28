@@ -13,7 +13,6 @@
 #include <QDir>
 #include <QTimer>
 #include <QMetaType>
-#include <QTextCodec>
 #include <QStringList>
 #include <QtDebug>
 #include <QRegExp>
