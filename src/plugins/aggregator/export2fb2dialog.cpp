@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <QUuid>
 #include <QDate>
+#include <QRegularExpression>
 #include <QTextDocument>
 #include <QTextFrame>
 #include <QTextCursor>
@@ -78,40 +79,26 @@ namespace Aggregator
 	{
 		QString FixContents (QString descr)
 		{
-			descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
+			descr.replace (QRegularExpression { "</p>\\s*<p>" }, "<br/>");
 			descr.remove ("<p>");
 			descr.remove ("</p>");
 
 			// Remove images, links and frames
-			QRegExp imgRx ("<img *>", Qt::CaseSensitive, QRegExp::Wildcard);
-			imgRx.setMinimal (true);
-			descr.remove (imgRx);
+			descr.remove (QRegularExpression { "<img .*?>" });
 			descr.remove ("</img>");
 
 			// Remove tables
 			if (descr.contains ("<table", Qt::CaseInsensitive))
-			{
-				QRegExp tableRx ("<table.*/table>", Qt::CaseInsensitive);
-				tableRx.setMinimal (true);
-				descr.remove (tableRx);
-			}
+				descr.remove (QRegularExpression { "<table.*?/table>", QRegularExpression::CaseInsensitiveOption });
 
 			// Objects
 			if (descr.contains ("<object", Qt::CaseInsensitive))
-			{
-				QRegExp objRx ("<object.*/object>", Qt::CaseInsensitive);
-				objRx.setMinimal (true);
-				descr.remove (objRx);
-			}
+				descr.remove (QRegularExpression { "<object.*?/object>", QRegularExpression::CaseInsensitiveOption });
 
-			QRegExp linkRx ("<a.*>");
-			linkRx.setMinimal (true);
-			descr.remove (linkRx);
+			descr.remove (QRegularExpression { "<a.*?>" });
 			descr.remove ("</a>");
 
-			QRegExp iframeRx ("<iframe .*/iframe>");
-			iframeRx.setMinimal (true);
-			descr.remove (iframeRx);
+			descr.remove (QRegularExpression { "<iframe .*?/iframe>" });
 
 			// Replace HTML entities with corresponding stuff
 			descr.replace ("&qout;", "\"");
@@ -121,12 +108,12 @@ namespace Aggregator
 
 			// Remove the rest
 			descr.replace ("&amp;", "&&");
-			descr.remove (QRegExp ("&\\w*;"));
+			descr.remove (QRegularExpression ("&\\w*;"));
 			descr.replace ("&&", "&amp;");
 
 			// Fix some common errors
 			descr.replace ("<br>", "<br/>");
-			descr.replace (QRegExp ("<br\\s+/>"), "<br/>");
+			descr.replace (QRegularExpression ("<br\\s+/>"), "<br/>");
 
 			// Replace multilines
 			while (descr.contains ("<br/><br/>"))
@@ -146,23 +133,22 @@ namespace Aggregator
 				descr.chop (5);
 
 			// Remove unclosed tags
-			QRegExp unclosedRx ("<(\\w+)[^/]*>");
-			unclosedRx.setMinimal (true);
+			QRegularExpression unclosedRx { "<(\\w+?)[^/]*?>" };
 			int pos = 0;
-			while ((pos = unclosedRx.indexIn (descr, pos)) != -1)
+			for (auto match = unclosedRx.match (descr, pos); match.hasMatch (); match = unclosedRx.match (descr, pos))
 			{
-				QRegExp closedFinder ("</" + unclosedRx.cap (1) + ">");
-				if (closedFinder.indexIn (descr, pos + unclosedRx.matchedLength ()) != -1)
+				auto closeTag = "</" + match.captured (1) + ">";
+				if (descr.contains (closeTag))
 				{
-					pos += unclosedRx.matchedLength ();
+					pos += match.capturedLength ();
 					continue;
 				}
-				descr.remove (pos, unclosedRx.matchedLength ());
+				descr.remove (pos, match.capturedLength ());
 			}
 
 			// Normalize empty lines - needs to be done after removing
 			// unclosed, otherwise last <p> would get dropped.
-			descr.replace (QRegExp ("<br/>\\s*</p>"), "</p>");
+			descr.replace (QRegularExpression ("<br/>\\s*</p>"), "</p>");
 			descr.replace ("<br/>", "</p><p>");
 
 			descr.remove ("\r");
@@ -350,14 +336,10 @@ namespace Aggregator
 				cursor.setCharFormat (origCharFmt);
 
 				auto descr = item.Description_;
-				QRegExp imgRx ("<img *>", Qt::CaseSensitive, QRegExp::Wildcard);
-				imgRx.setMinimal (true);
-				descr.remove (imgRx);
+				descr.remove (QRegularExpression { "<img .*?>" });
 				descr.remove ("</img>");
 
-				QRegExp linkRx ("<a.*></a>");
-				linkRx.setMinimal (true);
-				descr.remove (linkRx);
+				descr.remove (QRegularExpression { "<a.*?></a>" });
 				descr += "<br/><br/>";
 
 				descr.prepend (QString ("<div style='font-size: %1pt; font-family: %2;'>")

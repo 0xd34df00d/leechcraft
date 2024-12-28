@@ -362,7 +362,7 @@ namespace LC::Aggregator
 			Impl_->ItemsFilterModel_->setFilterWildcard (text);
 			break;
 		case SearchSection::Regexp:
-			Impl_->ItemsFilterModel_->setFilterRegExp (text);
+			Impl_->ItemsFilterModel_->setFilterRegularExpression (text);
 			break;
 		default:
 			qWarning () << "ItemsWidget::updateItemsFilter(): unknown section" << section;
