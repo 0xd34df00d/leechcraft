@@ -8,7 +8,6 @@
 
 #include "startupthirdpage.h"
 #include <QLineEdit>
-#include <QTextCodec>
 #include <QDomDocument>
 #include <QFile>
 #include <QtDebug>
