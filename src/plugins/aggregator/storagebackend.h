@@ -30,7 +30,7 @@ namespace LC::Aggregator
 
 	struct UnreadTotal
 	{
-		int total;
+		qsizetype total;
 
 		auto operator<=> (const UnreadTotal&) const = default;
 	};
