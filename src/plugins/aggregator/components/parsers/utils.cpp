@@ -197,7 +197,7 @@ namespace LC::Aggregator::Parsers
 
 		if (const auto& pointStr = GetFirstNodeText (parent, NS::GeoRSSSimple, "point"_qs))
 		{
-			const auto& splitted = pointStr->splitRef (' ');
+			const auto& splitted = QStringView { *pointStr }.split (' ');
 			if (splitted.size () == 2)
 				return { splitted.at (0).toDouble (), splitted.at (1).toDouble () };
 		}
