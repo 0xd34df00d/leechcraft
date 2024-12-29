@@ -19,29 +19,24 @@ set (FORMS
 	)
 qt_wrap_ui (UIS_H ${FORMS})
 
-set (EXECSUFFIX)
-if (NOT APPLE)
-	set (EXECSUFFIX ${LC_LIBSUFFIX})
-endif ()
-
 add_executable (lc_anhero_crashprocess WIN32
 	${SRCS}
 	${UIS_H}
 	)
-set_target_properties (lc_anhero_crashprocess PROPERTIES OUTPUT_NAME lc_anhero_crashprocess${EXECSUFFIX})
+set_target_properties (lc_anhero_crashprocess PROPERTIES OUTPUT_NAME lc_anhero_crashprocess${LC_LIBSUFFIX})
 target_link_libraries (lc_anhero_crashprocess ${LEECHCRAFT_LIBRARIES})
 install (TARGETS lc_anhero_crashprocess DESTINATION ${LC_BINDIR})
 FindQtLibs (lc_anhero_crashprocess Widgets)
 
 if (UNIX AND NOT APPLE)
 	if (NOT SKIP_MAN_COMPRESS)
-		add_custom_target (data_lc_anhero_crashprocess_gz${EXECSUFFIX} ALL
-			"${CMAKE_CURRENT_SOURCE_DIR}/data/compress" "lc_anhero_crashprocess${EXECSUFFIX}.1"
-			DEPENDS data/lc_anhero_crashprocess${EXECSUFFIX}.1
+		add_custom_target (data_lc_anhero_crashprocess_gz${LC_LIBSUFFIX} ALL
+			"${CMAKE_CURRENT_SOURCE_DIR}/data/compress" "lc_anhero_crashprocess${LC_LIBSUFFIX}.1"
+			DEPENDS data/lc_anhero_crashprocess${LC_LIBSUFFIX}.1
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
 			)
-		install (FILES data/lc_anhero_crashprocess${EXECSUFFIX}.1.gz DESTINATION share/man/man1)
+		install (FILES data/lc_anhero_crashprocess${LC_LIBSUFFIX}.1.gz DESTINATION share/man/man1)
 	else ()
-		install (FILES data/lc_anhero_crashprocess${EXECSUFFIX}.1 DESTINATION share/man/man1)
+		install (FILES data/lc_anhero_crashprocess${LC_LIBSUFFIX}.1 DESTINATION share/man/man1)
 	endif ()
 endif ()
