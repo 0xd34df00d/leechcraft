@@ -37,7 +37,7 @@ namespace LC::AnHero::CrashProcess
 				if (matchIdx == -1)
 					continue;
 
-				const auto nextPos = matchIdx + matcher.pattern ().size ();
+				const int nextPos = matchIdx + matcher.pattern ().size ();
 				minNextPos = minNextPos ? std::min (*minNextPos, nextPos) : nextPos;
 			}
 
