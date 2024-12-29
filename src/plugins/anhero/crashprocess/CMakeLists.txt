@@ -24,15 +24,14 @@ if (NOT APPLE)
 	set (EXECSUFFIX ${LC_LIBSUFFIX})
 endif ()
 
-add_executable (lc_anhero_crashprocess${EXECSUFFIX} WIN32
+add_executable (lc_anhero_crashprocess WIN32
 	${SRCS}
 	${UIS_H}
 	)
-target_link_libraries (lc_anhero_crashprocess${EXECSUFFIX}
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS lc_anhero_crashprocess${EXECSUFFIX} DESTINATION ${LC_BINDIR})
-FindQtLibs (lc_anhero_crashprocess${EXECSUFFIX} Widgets)
+set_target_properties (lc_anhero_crashprocess PROPERTIES OUTPUT_NAME lc_anhero_crashprocess${EXECSUFFIX})
+target_link_libraries (lc_anhero_crashprocess ${LEECHCRAFT_LIBRARIES})
+install (TARGETS lc_anhero_crashprocess DESTINATION ${LC_BINDIR})
+FindQtLibs (lc_anhero_crashprocess Widgets)
 
 if (UNIX AND NOT APPLE)
 	if (NOT SKIP_MAN_COMPRESS)
