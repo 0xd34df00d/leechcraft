@@ -85,7 +85,7 @@ namespace LC::AnHero
 
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 			char crashprocess [1024] = { 0 };
-			sprintf (crashprocess, "%s/lc_anhero_crashprocess-qt5", AppDir_.constData ());
+			sprintf (crashprocess, "%s/lc_anhero_crashprocess" LC_LIBSUFFIX, AppDir_.constData ());
 #endif
 
 			const char *argv [] =
@@ -93,7 +93,7 @@ namespace LC::AnHero
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 				crashprocess,
 #else
-				"lc_anhero_crashprocess-qt5",
+				"lc_anhero_crashprocess" LC_LIBSUFFIX,
 #endif
 				"--signal",
 				&sigtxt [0],

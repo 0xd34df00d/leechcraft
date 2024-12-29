@@ -21,7 +21,7 @@ qt_wrap_ui (UIS_H ${FORMS})
 
 set (EXECSUFFIX)
 if (NOT APPLE)
-	set (EXECSUFFIX "-qt5")
+	set (EXECSUFFIX ${LC_LIBSUFFIX})
 endif ()
 
 add_executable (lc_anhero_crashprocess${EXECSUFFIX} WIN32
