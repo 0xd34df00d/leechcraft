@@ -161,6 +161,10 @@ if (NOT APPLE)
 	set_target_properties (leechcraft-core PROPERTIES
 		OUTPUT_NAME leechcraft${LC_LIBSUFFIX}
 		)
+else ()
+	set_target_properties (leechcraft-core PROPERTIES
+		OUTPUT_NAME leechcraft
+		)
 endif ()
 
 target_link_libraries (leechcraft-core
