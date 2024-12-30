@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "tagsfiltermodel.h"
+#include <QRegularExpression>
 #include <QStringList>
-#include <QtDebug>
 #include <util/sll/unreachable.h>
 #include "util.h"
 
@@ -56,7 +56,7 @@ namespace LC::Util
 		if (index.isValid () && sourceModel ()->rowCount (index))
 			return true;
 
-		const auto& pattern = filterRegExp ().pattern ();
+		const auto& pattern = filterRegularExpression ().pattern ();
 		if (pattern.isEmpty ())
 			return true;
 
@@ -64,7 +64,7 @@ namespace LC::Util
 		{
 			const auto& rowIdx = sourceModel ()->index (sourceRow, i, index);
 			const auto& str = rowIdx.data ().toString ();
-			if (str.contains (pattern) || filterRegExp ().exactMatch (str))
+			if (str.contains (pattern) || filterRegularExpression ().match (str).hasMatch ())
 				return true;
 		}
 
@@ -74,7 +74,7 @@ namespace LC::Util
 	bool TagsFilterModel::FilterTagsMode (int sourceRow, const QModelIndex&) const
 	{
 		QList<QStringView> filterTags;
-		const auto& pattern = filterRegExp ().pattern ();
+		const auto& pattern = filterRegularExpression ().pattern ();
 		for (const auto& s : QStringView { pattern }.split (Separator_, Qt::SkipEmptyParts))
 			filterTags << s.trimmed ();
 
