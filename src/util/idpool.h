@@ -11,6 +11,7 @@
 #include "utilconfig.h"
 #include <QByteArray>
 #include <QSet>
+#include <QIODevice>
 #include <QDataStream>
 #include <QtDebug>
 
