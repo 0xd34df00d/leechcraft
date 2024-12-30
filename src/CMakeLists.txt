@@ -138,7 +138,7 @@ set (LEECHCRAFT_LIBRARIES
 		leechcraft-xsd)
 
 # Various options
-option (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)
+option (STRICT_LICENSING "Informs LeechCraft some artwork might be missing (due to licensing restrictions)" OFF)
 
 if (STRICT_LICENSING)
 	add_definitions (-DSTRICT_LICENSING)
