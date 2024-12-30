@@ -97,6 +97,7 @@ set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_D
 
 set (CMAKE_MODULE_PATH
 	"${CMAKE_CURRENT_SOURCE_DIR}"
+	"${CMAKE_CURRENT_BINARY_DIR}"
 	/usr/local/share/apps/cmake/modules
 	/usr/share/apps/cmake/modules
 	"${CMAKE_MODULE_PATH}"
