@@ -3,5 +3,5 @@ if (NOT LEECHCRAFT_LIBRARIES)
 	set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
 
 	find_package (Boost REQUIRED)
-	find_package (LeechCraft-qt5 REQUIRED)
+	find_package (LeechCraft@LC_LIBSUFFIX@ REQUIRED)
 endif ()

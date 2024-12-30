@@ -94,6 +94,7 @@ endif ()
 
 set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
+configure_file (InitLCPlugin.cmake.in InitLCPlugin.cmake @ONLY)
 
 set (CMAKE_MODULE_PATH
 	"${CMAKE_CURRENT_SOURCE_DIR}"
