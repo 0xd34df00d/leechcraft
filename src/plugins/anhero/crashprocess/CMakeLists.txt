@@ -29,14 +29,15 @@ install (TARGETS lc_anhero_crashprocess DESTINATION ${LC_BINDIR})
 FindQtLibs (lc_anhero_crashprocess Widgets)
 
 if (UNIX AND NOT APPLE)
+	configure_file (data/lc_anhero_crashprocess.1.in lc_anhero_crashprocess${LC_LIBSUFFIX}.1 @ONLY)
 	if (NOT SKIP_MAN_COMPRESS)
 		add_custom_target (data_lc_anhero_crashprocess_gz${LC_LIBSUFFIX} ALL
 			"${CMAKE_CURRENT_SOURCE_DIR}/data/compress" "lc_anhero_crashprocess${LC_LIBSUFFIX}.1"
-			DEPENDS data/lc_anhero_crashprocess${LC_LIBSUFFIX}.1
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
+			DEPENDS lc_anhero_crashprocess${LC_LIBSUFFIX}.1
+			BYPRODUCTS lc_anhero_crashprocess${LC_LIBSUFFIX}.1.gz
 			)
-		install (FILES data/lc_anhero_crashprocess${LC_LIBSUFFIX}.1.gz DESTINATION share/man/man1)
+		install (FILES "${CMAKE_CURRENT_BINARY_DIR}/lc_anhero_crashprocess${LC_LIBSUFFIX}.1.gz" DESTINATION share/man/man1)
 	else ()
-		install (FILES data/lc_anhero_crashprocess${LC_LIBSUFFIX}.1 DESTINATION share/man/man1)
+		install (FILES "${CMAKE_CURRENT_BINARY_DIR}/lc_anhero_crashprocess${LC_LIBSUFFIX}.1" DESTINATION share/man/man1)
 	endif ()
 endif ()
