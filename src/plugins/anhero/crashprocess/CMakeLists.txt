@@ -32,7 +32,7 @@ if (UNIX AND NOT APPLE)
 	configure_file (data/lc_anhero_crashprocess.1.in lc_anhero_crashprocess${LC_LIBSUFFIX}.1 @ONLY)
 	if (NOT SKIP_MAN_COMPRESS)
 		add_custom_target (data_lc_anhero_crashprocess_gz${LC_LIBSUFFIX} ALL
-			"${CMAKE_CURRENT_SOURCE_DIR}/data/compress" "lc_anhero_crashprocess${LC_LIBSUFFIX}.1"
+			gzip -kf9 lc_anhero_crashprocess${LC_LIBSUFFIX}.1
 			DEPENDS lc_anhero_crashprocess${LC_LIBSUFFIX}.1
 			BYPRODUCTS lc_anhero_crashprocess${LC_LIBSUFFIX}.1.gz
 			)
