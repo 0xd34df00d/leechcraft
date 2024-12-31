@@ -267,7 +267,7 @@ if (NOT DEFINED LEECHCRAFT_VERSION)
 	message (STATUS "Detected LeechCraft version: ${LEECHCRAFT_VERSION}")
 endif ()
 
-configure_file (config.h.in config.h)
+configure_file (lcconfig.h.in lcconfig.h)
 configure_file (FindLeechCraft.cmake.in FindLeechCraft${LC_LIBSUFFIX}.cmake @ONLY)
 install (FILES
 	${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft${LC_LIBSUFFIX}.cmake
@@ -289,7 +289,7 @@ install (FILES xmlsettingsdialog/xmlsettingsdialog.h DESTINATION include/leechcr
 install (FILES xmlsettingsdialog/basesettingsmanager.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 install (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 install (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraft/xmlsettingsdialog/)
-install (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
+install (FILES ${CMAKE_CURRENT_BINARY_DIR}/lcconfig.h DESTINATION include/leechcraft/)
 
 install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 

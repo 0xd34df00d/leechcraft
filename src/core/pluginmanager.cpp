@@ -41,7 +41,7 @@
 #include "xmlsettingsmanager.h"
 #include "coreproxy.h"
 #include "plugintreebuilder.h"
-#include "config.h"
+#include "lcconfig.h"
 #include "coreinstanceobject.h"
 #include "shortcutmanager.h"
 #include "application.h"

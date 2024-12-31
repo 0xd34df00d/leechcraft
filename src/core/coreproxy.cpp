@@ -16,7 +16,7 @@
 #include "iconthemeengine.h"
 #include "tagsmanager.h"
 #include "entitymanager.h"
-#include "config.h"
+#include "lcconfig.h"
 #include "colorthemeengine.h"
 #include "rootwindowsmanager.h"
 

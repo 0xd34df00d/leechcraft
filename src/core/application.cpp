@@ -59,7 +59,7 @@
 #include "coreinstanceobject.h"
 #include "rootwindowsmanager.h"
 #include "splashscreen.h"
-#include "config.h"
+#include "lcconfig.h"
 #include "entitymanager.h"
 
 #ifdef Q_OS_WIN32
