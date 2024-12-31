@@ -4,9 +4,4 @@
 #define LEECHCRAFT_VERSION "${LEECHCRAFT_VERSION}"
 #define PLUGINS_LIBDIR "${LIBDIR}"
 
-#ifndef ELIDED_URL_WIDTH
-#define ELIDED_URL_WIDTH 300
 #endif
-
-#endif
-
