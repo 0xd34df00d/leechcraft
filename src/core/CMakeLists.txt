@@ -129,16 +129,6 @@ set (FORMS
 	)
 set (RESOURCES mainresources.qrc)
 
-set (UTILITY_SRCS)
-foreach (ITEM IN LISTS UTIL_SRCS XSD_SRCS)
-	list (APPEND UTILITY_SRCS "../${ITEM}")
-endforeach ()
-
-set (UTILITY_FORMS)
-foreach (ITEM IN LISTS UTIL_FORMS XSD_FORMS)
-	list (APPEND UTILITY_FORMS "../${ITEM}")
-endforeach ()
-
 CreateTrs (COMPILED_TRANSLATIONS)
 
 qt_wrap_ui (UIS_H ${FORMS})
