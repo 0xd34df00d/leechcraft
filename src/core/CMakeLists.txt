@@ -140,7 +140,6 @@ if (WIN32)
 endif ()
 
 add_executable (leechcraft-core WIN32
-	../config.h
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
