@@ -50,6 +50,7 @@ if (WITH_X11 AND NOT APPLE)
 endif ()
 
 set (CMAKE_AUTORCC TRUE)
+set (CMAKE_AUTOUIC TRUE)
 
 set (SRCS
 	components/network/cookiesaver.cpp
@@ -115,25 +116,9 @@ if (WITH_DBUS_LOADERS)
 	)
 endif ()
 
-set (FORMS
-	commonjobadder.ui
-	leechcraft.ui
-	pluginmanagerdialog.ui
-	sslerrorsdialog.ui
-	handlerchoicedialog.ui
-	shortcutmanager.ui
-	keysequencer.ui
-	tagsviewer.ui
-	aboutdialog.ui
-	wizardtypechoicepage.ui
-	settingstab.ui
-	settingswidget.ui
-	)
 set (RESOURCES mainresources.qrc)
 
 CreateTrs (COMPILED_TRANSLATIONS)
-
-qt_wrap_ui (UIS_H ${FORMS})
 
 if (WIN32)
 	set (RESORUCES ${RESOURCES} ../../../tools/win32/leechcraft.rc)
@@ -142,7 +127,6 @@ endif ()
 add_executable (leechcraft-core WIN32
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${UIS_H}
 	${RESOURCES}
 	)
 if (NOT APPLE)
