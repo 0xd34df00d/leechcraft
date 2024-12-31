@@ -49,6 +49,8 @@ if (WITH_X11 AND NOT APPLE)
 	endif ()
 endif ()
 
+set (CMAKE_AUTORCC TRUE)
+
 set (SRCS
 	components/network/cookiesaver.cpp
 	components/network/networkaccessmanager.cpp
@@ -132,19 +134,16 @@ set (RESOURCES mainresources.qrc)
 CreateTrs (COMPILED_TRANSLATIONS)
 
 qt_wrap_ui (UIS_H ${FORMS})
-qt_add_resources (RCC ${RESOURCES})
 
-set (WIN_RESOURCES)
 if (WIN32)
-	set (WIN_RESOURCES ../../../tools/win32/leechcraft.rc)
+	set (RESORUCES ${RESOURCES} ../../../tools/win32/leechcraft.rc)
 endif ()
 
 add_executable (leechcraft-core WIN32
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
-	${RCC}
-	${WIN_RESOURCES}
+	${RESOURCES}
 	)
 if (NOT APPLE)
 	set_target_properties (leechcraft-core PROPERTIES
