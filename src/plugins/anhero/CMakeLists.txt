@@ -9,5 +9,3 @@ LC_DEFINE_PLUGIN (
 	QT_COMPONENTS Gui
 	INSTALL_SHARE
 	)
-
-target_compile_definitions (leechcraft_anhero PRIVATE LC_LIBSUFFIX="${LC_LIBSUFFIX}")
