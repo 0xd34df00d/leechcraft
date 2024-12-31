@@ -1,7 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#pragma once
 
 #define LEECHCRAFT_VERSION "${LEECHCRAFT_VERSION}"
 #define PLUGINS_LIBDIR "${LIBDIR}"
 
-#endif
