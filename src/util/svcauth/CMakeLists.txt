@@ -1,4 +1,3 @@
-include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set (SVCAUTH_SRCS
 	vkauthmanager.cpp
 	vkcaptchadialog.cpp
