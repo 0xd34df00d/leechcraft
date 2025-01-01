@@ -15,15 +15,6 @@ set (XSD_FORMS
 
 qt_wrap_ui (XSD_UIS_H ${XSD_FORMS})
 
-foreach (SRC ${XSD_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/xsd/${SRC}")
-endforeach ()
-foreach (FORM ${XSD_FORMS})
-	set (UTIL_FORMS "${UTIL_FORMS};util/xsd/${FORM}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
-
 add_util_library (util-xsd
 	SOURCES ${XSD_SRCS} ${XSD_UIS_H}
 	DEPENDS

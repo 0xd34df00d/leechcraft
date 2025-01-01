@@ -23,11 +23,6 @@ if (WITH_PCRE)
 	set (PCRE_IMPORTED_TARGET PkgConfig::PCRE)
 endif ()
 
-foreach (SRC ${SLL_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/sll/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
 add_util_library (util-sll
 	SOURCES ${SLL_SRCS}
 	DEPENDS ${PCRE_IMPORTED_TARGET}

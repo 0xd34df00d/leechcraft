@@ -41,16 +41,6 @@ add_compile_definitions ($<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>)
 
 qt_wrap_ui (GUI_UIS_H ${GUI_FORMS})
 
-foreach (SRC ${GUI_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/gui/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
-foreach (FORM ${GUI_FORMS})
-	set (UTIL_FORMS "${UTIL_FORMS};util/gui/${FORM}")
-endforeach ()
-set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
-
 add_util_library (util-gui
 	SOURCES ${GUI_SRCS} ${GUI_UIS_H}
 	DEPENDS

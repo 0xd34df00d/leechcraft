@@ -13,16 +13,6 @@ set (DB_FORMS
 
 qt_wrap_ui (DB_UIS_H ${DB_FORMS})
 
-foreach (SRC ${DB_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/db/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
-foreach (FORM ${DB_FORMS})
-	set (UTIL_FORMS "${UTIL_FORMS};util/db/${FORM}")
-endforeach ()
-set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
-
 add_util_library (util-db
 	SOURCES ${DB_SRCS} ${DB_UIS_H}
 	DEPENDS leechcraft-xsd

@@ -7,11 +7,6 @@ set (XDG_SRCS
 	xdg.cpp
 	)
 
-foreach (SRC ${XDG_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/xdg/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
 add_util_library (util-xdg
 	SOURCES ${XDG_SRCS}
 	DEPENDS leechcraft-util-xpc

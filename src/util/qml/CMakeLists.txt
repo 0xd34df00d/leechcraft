@@ -19,11 +19,6 @@ if (WITH_QWT)
 	set (QML_SRCS ${QML_SRCS} plotitem.cpp)
 endif ()
 
-foreach (SRC ${QML_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/qml/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
 add_util_library (util-qml
 	SOURCES ${QML_SRCS}
 	DEPENDS

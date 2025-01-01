@@ -9,11 +9,6 @@ set (THREADS_SRCS
 	workerthreadbase.cpp
 	)
 
-foreach (SRC ${THREADS_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/threads/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
 add_util_library (util-threads
 	SOURCES ${THREADS_SRCS}
 	DEPENDS leechcraft-util-sll

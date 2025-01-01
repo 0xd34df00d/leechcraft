@@ -14,11 +14,6 @@ set (XPC_SRCS
 	downloaderrorstrings.cpp
 	)
 
-foreach (SRC ${XPC_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/xpc/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
 add_util_library (util-xpc
 	SOURCES ${XPC_SRCS}
 	DEPENDS

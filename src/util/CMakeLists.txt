@@ -65,15 +65,6 @@ set (SRCS
 	structuresops.cpp
 	)
 
-foreach (SRC ${SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
-endforeach ()
-foreach (FORM ${FORMS})
-	set (UTIL_FORMS "${UTIL_FORMS};util/${FORM}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
-
 add_util_library (util
 	SOURCES ${SRCS}
 	USES Widgets

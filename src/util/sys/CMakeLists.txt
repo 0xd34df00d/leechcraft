@@ -10,11 +10,6 @@ set (SYS_SRCS
 	timer.cpp
 	)
 
-foreach (SRC ${SYS_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/sys/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
 add_util_library (util-sys
 	SOURCES ${SYS_SRCS}
 	DEPENDS

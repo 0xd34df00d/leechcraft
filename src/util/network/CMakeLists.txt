@@ -10,11 +10,6 @@ set (NETWORK_SRCS
 	sslerror2treeitem.cpp
 	)
 
-foreach (SRC ${NETWORK_SRCS})
-	set (UTIL_SRCS "${UTIL_SRCS};util/network/${SRC}")
-endforeach ()
-set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-
 add_util_library (util-network
 	SOURCES ${NETWORK_SRCS}
 	DEPENDS
