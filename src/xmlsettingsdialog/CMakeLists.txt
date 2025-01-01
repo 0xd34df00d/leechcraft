@@ -39,15 +39,6 @@ set (FORMS
 
 qt_wrap_ui (UIS_H ${FORMS})
 
-foreach (SRC ${SRCS})
-	set (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
-endforeach ()
-foreach (FORM ${FORMS})
-	set (XSD_FORMS "${XSD_FORMS};xmlsettingsdialog/${FORM}")
-endforeach ()
-set (XSD_SRCS ${XSD_SRCS} PARENT_SCOPE)
-set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
-
 add_util_library (xsd
 	SOURCES ${SRCS} ${UIS_H}
 	DEPENDS leechcraft-util-sys
