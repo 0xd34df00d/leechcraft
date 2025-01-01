@@ -8,17 +8,17 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	)
 
 option (WITH_DBUS_LOADERS "Build D-Bus loaders on UNIX" OFF)
-
-if (WITH_DBUS_LOADERS)
-	add_definitions (-DWITH_DBUS_LOADERS)
-endif ()
-
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
-if (WITH_QWT)
-	add_definitions (-DWITH_QWT)
+option (WITH_X11 "Enable X11 support on Linux" ON)
+if (WITH_X11 AND NOT APPLE)
+	find_package (X11)
 endif ()
 
-add_definitions (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
+add_compile_definitions (BOOST_PROGRAM_OPTIONS_DYN_LINK
+	$<$<BOOL:${WITH_DBUS_LOADERS}>:WITH_DBUS_LOADERS>
+	$<$<BOOL:${WITH_QWT}>:WITH_QWT>
+	$<$<BOOL:${X11_FOUND}>:HAVE_X11>
+	)
 
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
 option (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
@@ -36,16 +36,6 @@ if (WITH_DOCS)
 	)
 	if (WITH_DOCS_INSTALL)
 		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-core-${LEECHCRAFT_VERSION}")
-	endif ()
-endif ()
-
-option (WITH_X11 "Enable X11 support on Linux" ON)
-if (WITH_X11 AND NOT APPLE)
-	find_package (X11)
-
-	if (X11_FOUND)
-		add_definitions (-DHAVE_X11)
-		set (ADDITIONAL_LIBS ${X11_X11_LIB})
 	endif ()
 endif ()
 
@@ -137,7 +127,7 @@ endif ()
 target_link_libraries (leechcraft-core
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
-		${ADDITIONAL_LIBS}
+		$<$<BOOL:${X11_FOUND}>:${X11_X11_LIB}>
 		)
 
 if (APPLE AND USE_UNIX_LAYOUT)
