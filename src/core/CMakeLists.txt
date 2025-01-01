@@ -103,26 +103,21 @@ set (SRCS
 	clargs.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
-	)
-
-if (WITH_DBUS_LOADERS)
-	set (SRCS
-		${SRCS}
+	$<$<BOOL:${WITH_DBUS_LOADERS}>:
 		loaders/dbuspluginloader.cpp
 		loaders/infoproxy.cpp
 		loaders/dbus/marshalling.cpp
 		loaders/dbus/coreproxyserverwrapper.cpp
 		loaders/dbus/coreproxyproxy.cpp
+		>
 	)
-endif ()
 
-set (RESOURCES mainresources.qrc)
+set (RESOURCES
+	mainresources.qrc
+	$<$<PLATFORM_ID:Windows>:../../../tools/win32/leechcraft.rc>
+	)
 
 CreateTrs (COMPILED_TRANSLATIONS)
-
-if (WIN32)
-	set (RESORUCES ${RESOURCES} ../../../tools/win32/leechcraft.rc)
-endif ()
 
 add_executable (leechcraft-core WIN32
 	${COMPILED_TRANSLATIONS}
