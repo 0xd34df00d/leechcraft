@@ -1,5 +1,3 @@
-include_directories (${CMAKE_CURRENT_BINARY_DIR})
-
 set (IS_FREEDESKTOP_PLATFORM 0)
 set (MAYBE_DBUS_DEP "")
 # A generator expression (like with PLATFORM_ID) does not work in this case,

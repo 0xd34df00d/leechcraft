@@ -1,4 +1,3 @@
-include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set (DB_SRCS
 	backendselector.cpp
 	dblock.cpp
