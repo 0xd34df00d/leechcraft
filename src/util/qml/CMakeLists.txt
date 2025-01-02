@@ -8,15 +8,13 @@ set (QML_SRCS
 	unhidelistviewbase.cpp
 	util.cpp
 	widthiconprovider.cpp
+	$<$<BOOL:${WITH_QWT}>:plotitem.cpp>
 	)
 
 if (WITH_QWT)
 	find_package (PkgConfig)
 	pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt${LC_QT_VERSION}Qwt6 Qt${LC_QT_VERSION}Qwt)
-	set (ADDITIONAL_LIBS PkgConfig::Qwt)
-	add_definitions (-DWITH_QWT)
-
-	set (QML_SRCS ${QML_SRCS} plotitem.cpp)
+	add_compile_definitions (WITH_QWT)
 endif ()
 
 add_util_library (util-qml
@@ -26,6 +24,6 @@ add_util_library (util-qml
 		leechcraft-util-network
 		leechcraft-util-sll
 		leechcraft-util-sys
-		${ADDITIONAL_LIBS}
+		$<$<BOOL:WITH_QWT>:PkgConfig::Qwt>
 	USES Network Quick QuickWidgets
 	)
