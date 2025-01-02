@@ -30,14 +30,9 @@ set (SRCS
 	widgets/radiogroup.cpp
 	widgets/rangewidget.cpp
 	)
-set (FORMS
-	widgets/dataviewwidget.ui
-	)
-
-qt_wrap_ui (UIS_H ${FORMS})
 
 add_util_library (xsd
-	SOURCES ${SRCS} ${UIS_H}
+	SOURCES ${SRCS}
 	DEPENDS leechcraft-util-sys
 	USES Network Sql Widgets Xml
 	)

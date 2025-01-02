@@ -40,7 +40,6 @@ if (WITH_DOCS)
 endif ()
 
 set (CMAKE_AUTORCC TRUE)
-set (CMAKE_AUTOUIC TRUE)
 
 set (SRCS
 	components/network/cookiesaver.cpp

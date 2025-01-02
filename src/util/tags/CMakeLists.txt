@@ -6,14 +6,9 @@ set (TAGS_SRCS
 	tagsfiltermodel.cpp
 	util.cpp
 	)
-set (TAGS_FORMS
-	categoryselector.ui
-	)
-
-qt_wrap_ui (TAGS_UIS_H ${TAGS_FORMS})
 
 add_util_library (util-tags
-	SOURCES ${TAGS_SRCS} ${TAGS_UIS_H}
+	SOURCES ${TAGS_SRCS}
 	DEPENDS leechcraft-util-gui
 	USES Widgets
 	)

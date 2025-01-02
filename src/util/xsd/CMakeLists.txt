@@ -5,16 +5,9 @@ set (XSD_SRCS
 	util.cpp
 	wkfontswidget.cpp
 	)
-set (XSD_FORMS
-	fontchooserwidget.ui
-	massfontchangedialog.ui
-	wkfontswidget.ui
-	)
-
-qt_wrap_ui (XSD_UIS_H ${XSD_FORMS})
 
 add_util_library (util-xsd
-	SOURCES ${XSD_SRCS} ${XSD_UIS_H}
+	SOURCES ${XSD_SRCS}
 	DEPENDS
 		leechcraft-xsd
 		leechcraft-util-network

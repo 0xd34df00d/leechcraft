@@ -30,17 +30,11 @@ set (GUI_SRCS
 	statesaver.cpp
 	menumodeladapter.cpp
 	)
-set (GUI_FORMS
-	findnotification.ui
-	sslcertificateinfowidget.ui
-	)
 
 add_compile_definitions ($<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>)
 
-qt_wrap_ui (GUI_UIS_H ${GUI_FORMS})
-
 add_util_library (util-gui
-	SOURCES ${GUI_SRCS} ${GUI_UIS_H}
+	SOURCES ${GUI_SRCS}
 	DEPENDS
 		leechcraft-util-network
 		leechcraft-util-shortcuts

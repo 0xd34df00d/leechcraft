@@ -6,14 +6,9 @@ set (DB_SRCS
 	dumper.cpp
 	consistencychecker.cpp
 	)
-set (DB_FORMS
-	backendselector.ui
-	)
-
-qt_wrap_ui (DB_UIS_H ${DB_FORMS})
 
 add_util_library (util-db
-	SOURCES ${DB_SRCS} ${DB_UIS_H}
+	SOURCES ${DB_SRCS}
 	DEPENDS leechcraft-xsd
 	USES Concurrent Sql Widgets
 	)
