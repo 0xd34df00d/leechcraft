@@ -14,18 +14,8 @@ set (SLL_SRCS
 	timer.cpp
 	)
 
-option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
-set (PCRE_IMPORTED_TARGET)
-if (WITH_PCRE)
-	find_package (PkgConfig)
-	pkg_check_modules (PCRE REQUIRED IMPORTED_TARGET libpcre)
-	add_definitions (-DUSE_PCRE)
-	set (PCRE_IMPORTED_TARGET PkgConfig::PCRE)
-endif ()
-
 add_util_library (util-sll
 	SOURCES ${SLL_SRCS}
-	DEPENDS ${PCRE_IMPORTED_TARGET}
 	USES Concurrent Xml
 	)
 

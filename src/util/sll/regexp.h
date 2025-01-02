@@ -12,16 +12,16 @@
 #include <memory>
 #include <QString>
 #include <QMetaType>
+#include <QRegularExpression>
 
 namespace LC
 {
 namespace Util
 {
-	struct RegExpImpl;
-
+	// TODO mark this deprecated once Qt6 port is complete
 	class UTIL_SLL_API RegExp
 	{
-		std::shared_ptr<RegExpImpl> Impl_;
+		QRegularExpression Rx_;
 	public:
 		static bool IsFast ();
 
