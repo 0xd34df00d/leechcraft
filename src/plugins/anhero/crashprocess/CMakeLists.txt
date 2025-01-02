@@ -14,15 +14,8 @@ set (SRCS
 	crashdialog.cpp
 	highlighter.cpp
 	)
-set (FORMS
-	crashdialog.ui
-	)
-qt_wrap_ui (UIS_H ${FORMS})
 
-add_executable (lc_anhero_crashprocess WIN32
-	${SRCS}
-	${UIS_H}
-	)
+add_executable (lc_anhero_crashprocess WIN32 ${SRCS})
 set_target_properties (lc_anhero_crashprocess PROPERTIES OUTPUT_NAME lc_anhero_crashprocess${LC_LIBSUFFIX})
 target_link_libraries (lc_anhero_crashprocess ${LEECHCRAFT_LIBRARIES})
 install (TARGETS lc_anhero_crashprocess DESTINATION ${LC_BINDIR})
