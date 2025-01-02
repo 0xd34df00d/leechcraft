@@ -1,7 +1,4 @@
-include_directories (${Boost_INCLUDE_DIRS}
-	${CMAKE_CURRENT_BINARY_DIR}
-	..
-	)
+include_directories (../)
 
 set (SRCS
     xmlsettingsdialog.cpp
