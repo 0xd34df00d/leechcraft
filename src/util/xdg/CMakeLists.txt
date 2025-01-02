@@ -1,14 +1,11 @@
-set (XDG_SRCS
-	desktopparser.cpp
-	item.cpp
-	itemsdatabase.cpp
-	itemsfinder.cpp
-	itemtypes.cpp
-	xdg.cpp
-	)
-
 add_util_library (util-xdg
-	SOURCES ${XDG_SRCS}
+	SOURCES
+		desktopparser.cpp
+		item.cpp
+		itemsdatabase.cpp
+		itemsfinder.cpp
+		itemtypes.cpp
+		xdg.cpp
 	DEPENDS leechcraft-util-xpc
 	USES Concurrent Widgets
 	)

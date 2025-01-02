@@ -1,21 +1,18 @@
-set (SLL_SRCS
-	buildtagstree.cpp
-	channeldevice.cpp
-	domchildrenrange.cpp
-	queuemanager.cpp
-	regexp.cpp
-	slotclosure.cpp
-	urloperator.cpp
-	qtutil.cpp
-	urlaccessor.cpp
-	serializejson.cpp
-	xmlnode.cpp
-	json.cpp
-	timer.cpp
-	)
-
 add_util_library (util-sll
-	SOURCES ${SLL_SRCS}
+	SOURCES
+		buildtagstree.cpp
+		channeldevice.cpp
+		domchildrenrange.cpp
+		queuemanager.cpp
+		regexp.cpp
+		slotclosure.cpp
+		urloperator.cpp
+		qtutil.cpp
+		urlaccessor.cpp
+		serializejson.cpp
+		xmlnode.cpp
+		json.cpp
+		timer.cpp
 	USES Concurrent Xml
 	)
 

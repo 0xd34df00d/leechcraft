@@ -1,13 +1,10 @@
-set (XSD_SRCS
-	addressesmodelmanager.cpp
-	fontchooserwidget.cpp
-	massfontchangedialog.cpp
-	util.cpp
-	wkfontswidget.cpp
-	)
-
 add_util_library (util-xsd
-	SOURCES ${XSD_SRCS}
+	SOURCES
+		addressesmodelmanager.cpp
+		fontchooserwidget.cpp
+		massfontchangedialog.cpp
+		util.cpp
+		wkfontswidget.cpp
 	DEPENDS
 		leechcraft-xsd
 		leechcraft-util-network

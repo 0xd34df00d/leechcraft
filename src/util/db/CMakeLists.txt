@@ -1,14 +1,11 @@
-set (DB_SRCS
-	backendselector.cpp
-	dblock.cpp
-	util.cpp
-	closingdb.cpp
-	dumper.cpp
-	consistencychecker.cpp
-	)
-
 add_util_library (util-db
-	SOURCES ${DB_SRCS}
+	SOURCES
+		backendselector.cpp
+		dblock.cpp
+		util.cpp
+		closingdb.cpp
+		dumper.cpp
+		consistencychecker.cpp
 	DEPENDS leechcraft-xsd
 	USES Concurrent Sql Widgets
 	)

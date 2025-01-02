@@ -1,10 +1,7 @@
-set (SVCAUTH_SRCS
-	vkauthmanager.cpp
-	vkcaptchadialog.cpp
-	)
-
 add_util_library (util-svcauth
-	SOURCES ${SVCAUTH_SRCS}
+	SOURCES
+		vkauthmanager.cpp
+		vkcaptchadialog.cpp
 	DEPENDS
 		leechcraft-util-network
 		leechcraft-util-sll

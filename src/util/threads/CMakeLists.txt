@@ -1,16 +1,13 @@
-set (THREADS_SRCS
-	coro/context.cpp
-	coro/networkreply.cpp
-	coro/networkresult.cpp
-	coro/process.cpp
-	coro/timer.cpp
-	coro/throttle.cpp
-	futures.cpp
-	workerthreadbase.cpp
-	)
-
 add_util_library (util-threads
-	SOURCES ${THREADS_SRCS}
+	SOURCES
+		coro/context.cpp
+		coro/networkreply.cpp
+		coro/networkresult.cpp
+		coro/process.cpp
+		coro/timer.cpp
+		coro/throttle.cpp
+		futures.cpp
+		workerthreadbase.cpp
 	DEPENDS leechcraft-util-sll
 	USES Concurrent Network
 	)

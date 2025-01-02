@@ -9,32 +9,29 @@ if ("${CMAKE_SYSTEM_NAME}" IN_LIST FREEDESKTOP_PLATFORMS)
 	set (MAYBE_DBUS_DEP DBus)
 endif ()
 
-set (GUI_SRCS
-	autoresizemixin.cpp
-	clearlineeditaddon.cpp
-	colorbutton.cpp
-	fancytrayicon.cpp
-	fancytrayiconfallback.cpp
-	$<${IS_FREEDESKTOP_PLATFORM}:fancytrayiconfreedesktop.cpp>
-	fancytrayiconimpl.cpp
-	findnotification.cpp
-	flowlayout.cpp
-	geometry.cpp
-	lineeditbuttonmanager.cpp
-	pagenotification.cpp
-	selectablebrowser.cpp
-	sslcertificateinfowidget.cpp
-	unhoverdeletemixin.cpp
-	util.cpp
-	fontsizescrollchanger.cpp
-	statesaver.cpp
-	menumodeladapter.cpp
-	)
-
 add_compile_definitions ($<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>)
 
 add_util_library (util-gui
-	SOURCES ${GUI_SRCS}
+	SOURCES
+		autoresizemixin.cpp
+		clearlineeditaddon.cpp
+		colorbutton.cpp
+		fancytrayicon.cpp
+		fancytrayiconfallback.cpp
+		$<${IS_FREEDESKTOP_PLATFORM}:fancytrayiconfreedesktop.cpp>
+		fancytrayiconimpl.cpp
+		findnotification.cpp
+		flowlayout.cpp
+		geometry.cpp
+		lineeditbuttonmanager.cpp
+		pagenotification.cpp
+		selectablebrowser.cpp
+		sslcertificateinfowidget.cpp
+		unhoverdeletemixin.cpp
+		util.cpp
+		fontsizescrollchanger.cpp
+		statesaver.cpp
+		menumodeladapter.cpp
 	DEPENDS
 		leechcraft-util-network
 		leechcraft-util-shortcuts

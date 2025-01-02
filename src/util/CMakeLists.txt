@@ -59,12 +59,9 @@ set (LEECHCRAFT_UTIL_LIBRARIES
 
 set (LEECHCRAFT_UTIL_LIBRARIES ${LEECHCRAFT_UTIL_LIBRARIES} PARENT_SCOPE)
 
-set (SRCS
-	util.cpp
-	structuresops.cpp
-	)
-
 add_util_library (util
-	SOURCES ${SRCS}
+	SOURCES
+		util.cpp
+		structuresops.cpp
 	USES Widgets
 	)
