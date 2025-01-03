@@ -27,7 +27,7 @@ namespace LC::Monocle
 		QStandardItemModel * const FontsModel_;
 	public:
 		explicit DocInfoDialog (IDocument&, QWidget* = nullptr);
-	private slots:
+	private:
 		void HandleFontsInfo (const QList<FontInfo>&);
 	};
 }
