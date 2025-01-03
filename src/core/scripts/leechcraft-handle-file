@@ -1,3 +1,0 @@
-#! /bin/sh
-
-env leechcraft-qt6 -T file -H "$1"

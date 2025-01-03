@@ -2,15 +2,15 @@
 .SH NAME
 \fBLeechCraft\fR \- Extensible modular internet-client.
 .SH SYNOPSIS
-.B leechcraft-add-file \fIfilepath\fR\fB\fR
+.B leechcraft@LC_LIBSUFFIX@-handle-file \fIfilepath\fR\fB\fR
 .SH DESCRIPTION
-.B leechcraft-add-file
-is a helper scripts to download a file from a local path, like a .torrent file.
+.B leechcraft@LC_LIBSUFFIX@-handle-file
+is a helper scripts to handle a file by a local path, like a .pdf file.
 .PP
 The script passes its sole argument to LeechCraft with the \fB-T file\fR and
-\fB-D\fR arguments. That is, it is equivalent to calling
+\fB-H\fR arguments. That is, it is equivalent to calling
 .IP
-.B leechcraft -D -T file \fIfilepath\fR\fB\fR
+.B leechcraft@LC_LIBSUFFIX@ -H -T file \fIfilepath\fR\fB\fR
 .PP
 This script is useful to be invoked from applications that don't support passing
 additional parameters, like the Firefox browser.

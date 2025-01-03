@@ -147,33 +147,30 @@ if (WITH_DBUS_LOADERS)
 endif ()
 
 if (UNIX AND NOT APPLE)
+	configure_file (scripts/leechcraft-add-file.in leechcraft${LC_LIBSUFFIX}-add-file @ONLY)
+	configure_file (scripts/leechcraft-handle-file.in leechcraft${LC_LIBSUFFIX}-handle-file @ONLY)
+	install (PROGRAMS
+		${CMAKE_CURRENT_BINARY_DIR}/leechcraft${LC_LIBSUFFIX}-add-file
+		${CMAKE_CURRENT_BINARY_DIR}/leechcraft${LC_LIBSUFFIX}-handle-file
+		DESTINATION ${LC_BINDIR}
+		)
+
 	configure_file (data/leechcraft.1.in leechcraft${LC_LIBSUFFIX}.1 @ONLY)
-	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
-		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
-		WORLD_EXECUTE WORLD_READ)
-	install (FILES scripts/leechcraft-handle-file DESTINATION bin PERMISSIONS
-		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
-		WORLD_EXECUTE WORLD_READ)
-
+	configure_file (data/leechcraft-add-file.1.in leechcraft${LC_LIBSUFFIX}-add-file.1 @ONLY)
+	configure_file (data/leechcraft-handle-file.1.in leechcraft${LC_LIBSUFFIX}-handle-file.1 @ONLY)
+	set (MAN_FILES leechcraft${LC_LIBSUFFIX}.1 leechcraft${LC_LIBSUFFIX}-add-file.1 leechcraft${LC_LIBSUFFIX}-handle-file.1)
 	if (NOT SKIP_MAN_COMPRESS)
+		list (TRANSFORM MAN_FILES APPEND .gz OUTPUT_VARIABLE MAN_FILES_GZ)
+		list (TRANSFORM MAN_FILES_GZ PREPEND ${CMAKE_CURRENT_BINARY_DIR}/ OUTPUT_VARIABLE ABSOLUTE_MAN_FILES_GZ)
 		add_custom_target (data_leechcraft_gz ALL
-			gzip -kf9 *.1 ${CMAKE_CURRENT_SOURCE_DIR}/data/*.1
-			DEPENDS leechcraft${LC_LIBSUFFIX}.1 data/leechcraft-add-file.1 data/leechcraft-handle-file.1
-			BYPRODUCTS leechcraft${LC_LIBSUFFIX}.1.gz data/leechcraft-add-file.1.gz data/leechcraft-handle-file.1.gz
+			gzip -kf9 *.1
+			DEPENDS ${MAN_FILES}
+			BYPRODUCTS ${MAN_FILES_GZ}
 			)
 
-		install (FILES
-			${CMAKE_CURRENT_BINARY_DIR}/leechcraft${LC_LIBSUFFIX}.1
-			data/leechcraft-add-file.1.gz
-			data/leechcraft-handle-file.1.gz
-			DESTINATION share/man/man1
-			)
+		install (FILES ${ABSOLUTE_MAN_FILES_GZ} DESTINATION share/man/man1)
 	else ()
-		install (FILES
-			${CMAKE_CURRENT_BINARY_DIR}/leechcraft${LC_LIBSUFFIX}.1
-			data/leechcraft-add-file.1
-			data/leechcraft-handle-file.1
-			DESTINATION share/man/man1
-			)
+		list (TRANSFORM MAN_FILES PREPEND ${CMAKE_CURRENT_BINARY_DIR}/ OUTPUT_VARIABLE ABSOLUTE_MAN_FILES)
+		install (FILES ${ABSOLUTE_MAN_FILES} DESTINATION share/man/man1)
 	endif ()
 endif ()
