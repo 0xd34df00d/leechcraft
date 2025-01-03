@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=LeechCraft (Qt5)
+Name=LeechCraft (Qt @LC_QT_VERSION@)
 GenericName=Live environment
 GenericName[ru]=Рабочая среда
 Icon=leechcraft_main
-Exec=leechcraft-qt5
+Exec=leechcraft@LC_LIBSUFFIX@
 Categories=Network;FileTransfer;News;P2P;IRCClient;Qt;
 Terminal=false
 X-StandardInstall=true

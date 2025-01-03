@@ -147,6 +147,10 @@ if (WITH_DBUS_LOADERS)
 endif ()
 
 if (UNIX AND NOT APPLE)
+	configure_file (freedesktop/leechcraft.desktop.in leechcraft${LC_LIBSUFFIX}.desktop @ONLY)
+	install (FILES ${CMAKE_CURRENT_BINARY_DIR}/leechcraft${LC_LIBSUFFIX}.desktop DESTINATION share/applications)
+	install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
+
 	configure_file (scripts/leechcraft-add-file.in leechcraft${LC_LIBSUFFIX}-add-file @ONLY)
 	configure_file (scripts/leechcraft-handle-file.in leechcraft${LC_LIBSUFFIX}-handle-file @ONLY)
 	install (PROGRAMS

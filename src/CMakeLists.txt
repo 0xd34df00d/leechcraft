@@ -293,9 +293,4 @@ install (FILES ${CMAKE_CURRENT_BINARY_DIR}/lcconfig.h DESTINATION include/leechc
 
 install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 
-install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
-
-if (UNIX AND NOT APPLE)
-	install (FILES freedesktop/leechcraft${LC_LIBSUFFIX}.desktop DESTINATION share/applications)
-endif ()
