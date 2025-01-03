@@ -21,7 +21,7 @@ namespace LC::Monocle
 
 	class DocInfoDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::DocInfoDialog)
 
 		Ui::DocInfoDialog Ui_;
 		QStandardItemModel * const FontsModel_;
