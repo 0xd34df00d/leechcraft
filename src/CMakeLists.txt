@@ -295,6 +295,8 @@ install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
+	configure_file (data/leechcraft.1.in leechcraft${LC_LIBSUFFIX}.1 @ONLY)
+
 	install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 	install (FILES freedesktop/leechcraft${LC_LIBSUFFIX}.desktop DESTINATION share/applications)
 	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
@@ -306,12 +308,12 @@ if (UNIX AND NOT APPLE)
 
 	if (NOT SKIP_MAN_COMPRESS)
 		add_custom_target (data_leechcraft_gz ALL
-			"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
-			DEPENDS data/leechcraft${LC_LIBSUFFIX}.1
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
+			gzip -kf9 *.1
+			DEPENDS leechcraft${LC_LIBSUFFIX}.1 data/leechcraft-add-file.1 data/leechcraft-handle-file.1
+			BYPRODUCTS leechcraft${LC_LIBSUFFIX}.1.gz
 			)
-		install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
+		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1.gz")
 	else ()
-		install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1")
+		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1")
 	endif ()
 endif ()
