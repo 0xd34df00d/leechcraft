@@ -145,3 +145,35 @@ if (WITH_DBUS_LOADERS)
 	add_subdirectory (loaders/dbus)
 	FindQtLibs (leechcraft-core DBus)
 endif ()
+
+if (UNIX AND NOT APPLE)
+	configure_file (data/leechcraft.1.in leechcraft${LC_LIBSUFFIX}.1 @ONLY)
+	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
+		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+		WORLD_EXECUTE WORLD_READ)
+	install (FILES scripts/leechcraft-handle-file DESTINATION bin PERMISSIONS
+		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+		WORLD_EXECUTE WORLD_READ)
+
+	if (NOT SKIP_MAN_COMPRESS)
+		add_custom_target (data_leechcraft_gz ALL
+			gzip -kf9 *.1 ${CMAKE_CURRENT_SOURCE_DIR}/data/*.1
+			DEPENDS leechcraft${LC_LIBSUFFIX}.1 data/leechcraft-add-file.1 data/leechcraft-handle-file.1
+			BYPRODUCTS leechcraft${LC_LIBSUFFIX}.1.gz data/leechcraft-add-file.1.gz data/leechcraft-handle-file.1.gz
+			)
+
+		install (FILES
+			${CMAKE_CURRENT_BINARY_DIR}/leechcraft${LC_LIBSUFFIX}.1
+			data/leechcraft-add-file.1.gz
+			data/leechcraft-handle-file.1.gz
+			DESTINATION share/man/man1
+			)
+	else ()
+		install (FILES
+			${CMAKE_CURRENT_BINARY_DIR}/leechcraft${LC_LIBSUFFIX}.1
+			data/leechcraft-add-file.1
+			data/leechcraft-handle-file.1
+			DESTINATION share/man/man1
+			)
+	endif ()
+endif ()

@@ -294,26 +294,8 @@ install (FILES ${CMAKE_CURRENT_BINARY_DIR}/lcconfig.h DESTINATION include/leechc
 install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
+install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
+
 if (UNIX AND NOT APPLE)
-	configure_file (data/leechcraft.1.in leechcraft${LC_LIBSUFFIX}.1 @ONLY)
-
-	install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 	install (FILES freedesktop/leechcraft${LC_LIBSUFFIX}.desktop DESTINATION share/applications)
-	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
-		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
-		WORLD_EXECUTE WORLD_READ)
-	install (FILES scripts/leechcraft-handle-file DESTINATION bin PERMISSIONS
-		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
-		WORLD_EXECUTE WORLD_READ)
-
-	if (NOT SKIP_MAN_COMPRESS)
-		add_custom_target (data_leechcraft_gz ALL
-			gzip -kf9 *.1
-			DEPENDS leechcraft${LC_LIBSUFFIX}.1 data/leechcraft-add-file.1 data/leechcraft-handle-file.1
-			BYPRODUCTS leechcraft${LC_LIBSUFFIX}.1.gz
-			)
-		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1.gz")
-	else ()
-		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1")
-	endif ()
 endif ()
