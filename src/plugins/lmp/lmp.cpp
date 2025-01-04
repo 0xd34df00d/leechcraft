@@ -90,12 +90,13 @@ namespace LMP
 		gst_init (&argc, &argv);
 
 		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
-		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
-
 		qRegisterMetaType<SavedFilterInfo> ("LC::LMP::SavedFilterInfo");
-		qRegisterMetaTypeStreamOperators<SavedFilterInfo> ();
 		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LC::LMP::SavedFilterInfo>");
+#if QT_VERSION_MAJOR < 6
+		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
+		qRegisterMetaTypeStreamOperators<SavedFilterInfo> ();
 		qRegisterMetaTypeStreamOperators<QList<SavedFilterInfo>> ();
+#endif
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");

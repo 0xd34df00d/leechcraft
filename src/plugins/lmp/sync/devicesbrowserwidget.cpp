@@ -161,9 +161,11 @@ namespace LMP
 	void DevicesBrowserWidget::LoadLastParams ()
 	{
 		qRegisterMetaType<TranscodingParams> ("TranscodingParams");
-		qRegisterMetaTypeStreamOperators<TranscodingParams> ();
 		qRegisterMetaType<QMap<QString, TranscodingParams>> ("QMap<QString, TranscodingParams>");
+#if QT_VERSION_MAJOR < 6
+		qRegisterMetaTypeStreamOperators<TranscodingParams> ();
 		qRegisterMetaTypeStreamOperators<QMap<QString, TranscodingParams>> ();
+#endif
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_LMP_Transcoding");
