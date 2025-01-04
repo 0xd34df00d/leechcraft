@@ -66,4 +66,7 @@ namespace LC::Util::AN
 
 	UTIL_XPC_API QVariant ToVariant (const LC::AN::StringMatcher& matcher);
 	UTIL_XPC_API LC::AN::StringMatcher StringMatcherFromVariant (const QVariant& variant);
+
+	UTIL_XPC_API bool Matches (const QString& string, const LC::AN::StringMatcher& matcher);
+	UTIL_XPC_API bool Matches (const QStringList& strings, const LC::AN::StringMatcher& matcher);
 }

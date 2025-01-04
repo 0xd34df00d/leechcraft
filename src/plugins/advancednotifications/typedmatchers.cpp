@@ -240,18 +240,9 @@ namespace LC::AdvancedNotifications
 
 	namespace
 	{
-		bool GenericMatch (auto&& val, const AN::StringMatcher& pattern)
-		{
-			const auto pos = Util::Visit (pattern,
-					[&val] (const QRegularExpression& rx) { return val.indexOf (rx); },
-					[&val] (const AN::Substring& em) { return val.indexOf (em.Pattern_); },
-					[&val] (const AN::Wildcard& wc) { return val.indexOf (wc.Compiled_); });
-			return pos >= 0;
-		}
-
 		bool GenericMatch (auto&& val, const AN::StringFieldValue& ref)
 		{
-			return GenericMatch (val, ref) == ref.Contains_;
+			return Util::AN::Matches (val, ref.Rx_) == ref.Contains_;
 		}
 	}
 
@@ -330,8 +321,8 @@ namespace LC::AdvancedNotifications
 			return false;
 
 		const auto& url = var.toUrl ();
-		const auto contains = GenericMatch (url.toString (), Value_.Rx_) ||
-				GenericMatch (QString::fromUtf8 (url.toEncoded ()), Value_.Rx_);
+		const auto contains = Util::AN::Matches (url.toString (), Value_.Rx_) ||
+				Util::AN::Matches (QString::fromUtf8 (url.toEncoded ()), Value_.Rx_);
 		return contains == Value_.Contains_;
 	}
 

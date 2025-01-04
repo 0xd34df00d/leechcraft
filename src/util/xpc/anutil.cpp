@@ -186,4 +186,26 @@ namespace LC::Util::AN
 			return LC::AN::Substring {};
 		}
 	}
+
+	namespace
+	{
+		bool GenericMatch (auto&& val, const LC::AN::StringMatcher& pattern)
+		{
+			const auto pos = Util::Visit (pattern,
+					[&val] (const QRegularExpression& rx) { return val.indexOf (rx); },
+					[&val] (const LC::AN::Substring& em) { return val.indexOf (em.Pattern_); },
+					[&val] (const LC::AN::Wildcard& wc) { return val.indexOf (wc.Compiled_); });
+			return pos >= 0;
+		}
+	}
+
+	bool Matches (const QString& string, const LC::AN::StringMatcher& pattern)
+	{
+		return GenericMatch (string, pattern);
+	}
+
+	bool Matches (const QStringList& strings, const LC::AN::StringMatcher& pattern)
+	{
+		return GenericMatch (strings, pattern);
+	}
 }
