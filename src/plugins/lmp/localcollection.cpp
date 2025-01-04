@@ -543,7 +543,7 @@ namespace LC::LMP
 						const auto guard = CollectionModel_->AppendTracks (LocalCollectionModel::AppendTracksByIds {
 								.ArtistID_ = artist.ID_,
 								.AlbumID_ = presentAlbum->ID_,
-								.NewTracksCount_ = album->Tracks_.size (),
+								.NewTracksCount_ = static_cast<int> (album->Tracks_.size ()),
 							});
 						presentAlbum->Tracks_ << album->Tracks_;
 					}
