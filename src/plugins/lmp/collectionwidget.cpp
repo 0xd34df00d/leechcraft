@@ -45,7 +45,7 @@ namespace LC::LMP
 				if (source.data (LocalCollectionModel::Role::IsIgnored).toBool ())
 					return false;
 
-				const auto& pattern = filterRegExp ().pattern ();
+				const auto& pattern = filterRegularExpression ().pattern ();
 				if (pattern.isEmpty ())
 					return true;
 

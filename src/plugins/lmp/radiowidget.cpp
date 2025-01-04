@@ -40,7 +40,7 @@ namespace LMP
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const
 			{
-				const auto& pat = this->filterRegExp ().pattern ();
+				const auto& pat = filterRegularExpression ().pattern ();
 				if (pat.isEmpty ())
 					return true;
 

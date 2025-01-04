@@ -9,6 +9,7 @@
 #include "formats.h"
 #include <algorithm>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QtDebug>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
@@ -279,7 +280,7 @@ namespace LMP
 		EnabledFormats_ = Util::Filter (Formats_,
 				[] (const Format_ptr& format)
 				{
-					return S_FFmpegCodecs_.contains (QRegExp (".EA... " + format->GetCodecName ()));
+					return S_FFmpegCodecs_.contains (QRegularExpression { ".EA... " + format->GetCodecName () });
 				});
 	}
 
