@@ -20,6 +20,7 @@
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/xpc/anutil.h>
 #include "player.h"
 
 Q_DECLARE_METATYPE (QList<LC::Entity>)
@@ -52,9 +53,9 @@ namespace LMP
 		{
 			const QString Value_;
 
-			bool operator() (const AN::StringFieldValue& value) const
+			bool operator() (const AN::StringFieldValue& ref) const
 			{
-				return value.Rx_.exactMatch (Value_) == value.Contains_;
+				return Util::AN::Matches (Value_, ref.Rx_) == ref.Contains_;
 			}
 
 			template<typename T>
