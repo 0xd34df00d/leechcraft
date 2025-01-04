@@ -9,18 +9,8 @@
 #include "gstutil.h"
 #include <QMap>
 #include <QString>
-#include <QTextCodec>
 #include <QtDebug>
-
-#ifdef WITH_LIBGUESS
-extern "C"
-{
-#include <libguess/libguess.h>
-}
-#endif
-
 #include <gst/gst.h>
-#include "../../xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -37,48 +27,11 @@ namespace GstUtil
 		gst_object_unref (pad);
 	}
 
-	QString FixEncoding (const QString& str, const QString& region)
-	{
-#ifdef WITH_LIBGUESS
-		const auto& iso88591 = QTextCodec::codecForName ("ISO-8859-1")->fromUnicode (str);
-		if (iso88591.isEmpty ())
-			return str;
-
-		const auto encoding = libguess_determine_encoding (iso88591.constData (),
-				iso88591.size (), region.toUtf8 ().constData ());
-		if (!encoding)
-			return str;
-
-		auto codec = QTextCodec::codecForName (encoding);
-		if (!codec)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no codec for encoding"
-					<< encoding;
-			return str;
-		}
-
-		const auto& proper = codec->toUnicode (iso88591.constData ());
-		if (proper.isEmpty ())
-			return str;
-
-		const auto origQCount = std::count (str.begin (), str.end (), '?');
-
-		return origQCount >= proper.count ('?') ?
-				proper :
-				str;
-#else
-		Q_UNUSED (region);
-		return str;
-#endif
-	}
-
 	namespace
 	{
 		struct TagFunctionData
 		{
 			TagMap_t& Map_;
-			QString Region_;
 		};
 
 		void TagFunction (const GstTagList *list, const gchar *tag, gpointer rawData)
@@ -96,12 +49,6 @@ namespace GstUtil
 				gchar *str = nullptr;
 				gst_tag_list_get_string (list, tag, &str);
 				valList = QString::fromUtf8 (str);
-
-				const auto recodingEnabled = !data->Region_.isEmpty ();
-				if (recodingEnabled &&
-						(tagName == "title" || tagName == "album" || tagName == "artist"))
-					valList = FixEncoding (valList, data->Region_);
-
 				g_free (str);
 				break;
 			}
@@ -153,7 +100,7 @@ namespace GstUtil
 		if (!tagList)
 			return false;
 
-		TagFunctionData data { map, region };
+		TagFunctionData data { map };
 
 		gst_tag_list_foreach (tagList,
 				TagFunction,

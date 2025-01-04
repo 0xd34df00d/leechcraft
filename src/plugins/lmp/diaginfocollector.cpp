@@ -22,11 +22,6 @@ namespace LC::LMP
 					.arg (GST_VERSION_MINOR)
 					.arg (GST_VERSION_MICRO)
 					.arg (QString::fromUtf8 (gst_version_string ())),
-#ifdef WITH_LIBGUESS
-			QStringLiteral ("Built WITH libguess"),
-#else
-			QStringLiteral ("Built WITHOUT libguess"),
-#endif
 			QStringLiteral ("Built with Taglib %1.%2.%3")
 					.arg (TAGLIB_MAJOR_VERSION)
 					.arg (TAGLIB_MINOR_VERSION)

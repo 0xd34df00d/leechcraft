@@ -9,14 +9,6 @@ pkg_check_modules (GStreamer REQUIRED IMPORTED_TARGET gstreamer-1.0)
 
 cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32" OFF)
 
-option (ENABLE_LMP_LIBGUESS "Enable tags recoding using the LibGuess library" ON)
-set (LIBGUESS_IMPORTED_TARGET)
-if (ENABLE_LMP_LIBGUESS)
-	add_definitions (-DWITH_LIBGUESS)
-	pkg_check_modules (LibGuess REQUIRED IMPORTED_TARGET libguess)
-	set (LIBGUESS_IMPORTED_TARGET PkgConfig::LibGuess)
-endif ()
-
 if (ENABLE_LMP_MPRIS)
 	add_definitions (-DENABLE_MPRIS)
 	set (EXTRA_DBUS_LIB DBus)
@@ -147,7 +139,6 @@ LC_DEFINE_PLUGIN (
 	LINK_LIBRARIES
 		PkgConfig::TagLib
 		PkgConfig::GStreamer
-		${LIBGUESS_IMPORTED_TARGET}
 		$<$<PLATFORM_ID:Darwin>:"-framework Foundation -framework CoreServices">
 	INSTALL_SHARE
 	INSTALL_DESKTOP
