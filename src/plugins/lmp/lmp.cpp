@@ -195,7 +195,7 @@ namespace LMP
 		auto& e = GlobAction2Entity_ [id];
 		e.Additional_ [EF::GlobalAction::Shortcut] = QVariant::fromValue (sequences.value (0));
 		e.Additional_ [EF::GlobalAction::AltShortcuts] = Util::Map (sequences.mid (1),
-				&QVariant::fromValue<QKeySequence>);
+				[] (const auto& seq) { return QVariant::fromValue (seq); });
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 

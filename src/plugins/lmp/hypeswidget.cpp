@@ -77,7 +77,7 @@ namespace LC::LMP
 				[] { return 50_mib; },
 				HypesView_->engine ());
 
-		auto objVar = &QVariant::fromValue<QObject*>;
+		auto objVar = [] (QObject *obj) { return QVariant::fromValue (obj); };
 		HypesView_->rootContext ()->setContextProperties ({
 					{ QStringLiteral ("newArtistsModel"), objVar (NewArtistsModel_) },
 					{ QStringLiteral ("newTracksModel"), objVar (NewTracksModel_) },
