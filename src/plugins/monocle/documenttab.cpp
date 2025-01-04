@@ -8,6 +8,7 @@
 
 #include "documenttab.h"
 #include <functional>
+#include <QActionGroup>
 #include <QToolBar>
 #include <QMenu>
 #include <QToolButton>

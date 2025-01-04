@@ -10,14 +10,12 @@
 
 #include <cstdint>
 #include <variant>
+#include <QVector>
 
 class QAction;
 class QString;
 class QToolBar;
 class QWidget;
-
-template<typename>
-class QVector;
 
 namespace LC::Monocle
 {

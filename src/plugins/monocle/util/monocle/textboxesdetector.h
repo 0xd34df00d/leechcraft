@@ -8,8 +8,7 @@
 
 #pragma once
 
-template<typename>
-class QVector;
+#include <QVector>
 
 class QTextDocument;
 
