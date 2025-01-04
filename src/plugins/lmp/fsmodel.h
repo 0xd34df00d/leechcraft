@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QFileIconProvider>
 #include <QFileSystemModel>
 #include <util/models/dndactionsmixin.h>
 
