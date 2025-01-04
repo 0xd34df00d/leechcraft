@@ -56,7 +56,7 @@ if (UNIX AND (NOT APPLE OR USE_UNIX_LAYOUT))
 	endif ()
 
 	set (LC_BINDIR "bin")
-	set (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins-${LC_LIBSUFFIX}")
+	set (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins${LC_LIBSUFFIX}")
 	set (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 	set (LC_SETTINGS_DEST "share/leechcraft/settings")
 	set (LC_SHARE_DEST "share/leechcraft")
