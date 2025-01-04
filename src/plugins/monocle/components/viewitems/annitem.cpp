@@ -120,7 +120,7 @@ namespace LC::Monocle
 		const auto yScale = rect.ToRectF ().height () / Bounding_.ToRectF ().height ();
 		const auto xTran = - Bounding_.ToRectF ().x () * xScale;
 		const auto yTran = - Bounding_.ToRectF ().y () * yScale;
-		const QMatrix transform { xScale, 0, 0, yScale, xTran, yTran };
+		const QTransform transform { xScale, 0, 0, yScale, xTran, yTran };
 
 		for (const auto& data : Polys_)
 			data.Item_->setPolygon (data.Poly_ * transform);

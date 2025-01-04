@@ -163,7 +163,7 @@ namespace LC::Monocle
 			hackyEdit.setDocument (&doc);
 			doc.setPageSize (pageSize);
 
-			const QMatrix scale = QMatrix {}.scale (1 / pageSize.width (), 1 / pageSize.height ());
+			const auto scale = QTransform {}.scale (1 / pageSize.width (), 1 / pageSize.height ());
 
 			QVector<QPair<int, PageRelativeRectBase>> result;
 			result.reserve (cursors.size ());
