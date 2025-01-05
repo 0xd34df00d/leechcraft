@@ -10,13 +10,6 @@
 
 #include <global.h>
 #include <misc.h>
-
-#if LASTFM_MAJOR_VERSION < 1
-
-#include <lastfm.h>
-
-#else
-
 #include <ws.h>
 #include <Xspf.h>
 #include <Track.h>
@@ -24,5 +17,3 @@
 #include <Audioscrobbler.h>
 #include <RadioTuner.h>
 #include <RadioStation.h>
-
-#endif
