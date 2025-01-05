@@ -73,7 +73,7 @@ namespace LC::LMP::BrainSlugz
 
 		CheckView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
-		constexpr auto obj = &QVariant::fromValue<QObject*>;
+		constexpr auto obj = [] (QObject *obj) { return QVariant::fromValue (obj); };
 		CheckView_->rootContext ()->setContextProperties ({
 					{ QStringLiteral ("colorProxy"), obj (new Util::ColorThemeProxy { GetProxyHolder ()->GetColorThemeManager (), this }) },
 					{ QStringLiteral ("artistsModel"), obj (Model_) },
