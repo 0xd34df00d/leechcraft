@@ -38,51 +38,6 @@
 			<item type="path" property="CoversStoragePath" default="{CACHEDIR}/lmp/covers">
 				<label value="Album art storage path:" />
 			</item>
-			<groupbox>
-				<label value="Tags recoding" />
-				<item type="combobox" property="TagsRecodingRegion">
-					<label value="Tags region:" />
-					<option name="arabic">
-						<label value="arabic" />
-					</option>
-					<option name="baltic">
-						<label value="baltic" />
-					</option>
-					<option name="chinese">
-						<label value="chinese" />
-					</option>
-					<option name="greek">
-						<label value="greek" />
-					</option>
-					<option name="hebrew">
-						<label value="hebrew" />
-					</option>
-					<option name="japanese">
-						<label value="japanese" />
-					</option>
-					<option name="korean">
-						<label value="korean" />
-					</option>
-					<option name="polish">
-						<label value="polish" />
-					</option>
-					<option name="russian" default="true">
-						<label value="russian" />
-					</option>
-					<option name="taiwanese">
-						<label value="taiwanese" />
-					</option>
-					<option name="turkish">
-						<label value="turkish" />
-					</option>
-				</item>
-				<item type="checkbox" property="EnableTagsRecoding" default="false">
-					<label value="Enable stream tags recoding" />
-				</item>
-				<item type="checkbox" property="EnableLocalTagsRecoding" default="false">
-					<label value="Enable local tags recoding" />
-				</item>
-			</groupbox>
 		</tab>
 		<tab>
 			<label value="Audio" />
