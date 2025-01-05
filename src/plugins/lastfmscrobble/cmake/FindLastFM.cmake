@@ -8,23 +8,17 @@
 #  For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
 
-if (LastFM_LIBRARY AND LastFM_INCLUDE_DIR)
-	set (LastFM_FOUND TRUE)
-else ()
-	find_library (LastFM_LIBRARY NAMES lastfm-qt5 lastfm5 lastfm)
-	find_path (LastFM_INCLUDE_DIR NAMES global.h PATH_SUFFIXES lastfm5 lastfm)
-
-	if (LastFM_INCLUDE_DIR AND LastFM_LIBRARY)
-		set (LastFM_FOUND TRUE)
-		message (STATUS "Found lastfm libraries at ${LastFM_LIBRARY}")
-		message (STATUS "Found lastfm headers at ${LastFM_INCLUDE_DIR}")
-		mark_as_advanced(LastFM_LIBRARY LastFM_INCLUDE_DIR)
+foreach (QT_VER 5 6)
+	if (NOT (LastFM${QT_VER}_LIBRARY OR LastFM${QT_VER}_INCLUDE_DIR))
+		find_library (LastFM${QT_VER}_LIBRARY NAMES lastfm-qt${QT_VER} lastfm${QT_VER} lastfm)
+		find_path (LastFM${QT_VER}_INCLUDE_DIR NAMES global.h PATH_SUFFIXES lastfm${QT_VER} lastfm)
+		message (STATUS "Looking for LastFM (Qt ${QT_VER})… libraries: ${LastFM${QT_VER}_LIBRARY}; includes: ${LastFM${QT_VER}_INCLUDE_DIR}")
 	endif ()
-endif ()
 
-if (LastFM_FOUND)
-	add_library (LastFM::LastFM UNKNOWN IMPORTED)
-	set_target_properties (LastFM::LastFM PROPERTIES
-		IMPORTED_LOCATION "${LastFM_LIBRARY}"
-		INTERFACE_INCLUDE_DIRECTORIES "${LastFM_INCLUDE_DIR}")
-endif ()
+	if (LastFM${QT_VER}_LIBRARY AND LastFM${QT_VER}_INCLUDE_DIR)
+		add_library (LastFM::LastFM${QT_VER} UNKNOWN IMPORTED)
+		set_target_properties (LastFM::LastFM${QT_VER} PROPERTIES
+			IMPORTED_LOCATION "${LastFM${QT_VER}_LIBRARY}"
+			INTERFACE_INCLUDE_DIRECTORIES "${LastFM${QT_VER}_INCLUDE_DIR}")
+	endif ()
+endforeach ()

@@ -28,5 +28,5 @@ LC_DEFINE_PLUGIN (
 	RESOURCES lastfmscrobbleresources.qrc
 	SETTINGS lastfmscrobblesettings.xml
 	QT_COMPONENTS Gui Network Xml
-	LINK_LIBRARIES LastFM::LastFM
+	LINK_LIBRARIES LastFM::LastFM${LC_QT_VERSION}
 	)
