@@ -337,8 +337,8 @@ namespace LC::LMP::Graffiti
 
 		TotalItems_ = SplitQueue_.size ();
 
-		const auto concurrency = std::max (QThread::idealThreadCount (), 1);
-		for (int i = 0, cnt = std::min (SplitQueue_.size (), concurrency); i < cnt; ++i)
+		const int concurrency = std::max (QThread::idealThreadCount (), 1);
+		for (int i = 0, cnt = std::min (static_cast<int> (SplitQueue_.size ()), concurrency); i < cnt; ++i)
 			ScheduleNext ();
 	}
 

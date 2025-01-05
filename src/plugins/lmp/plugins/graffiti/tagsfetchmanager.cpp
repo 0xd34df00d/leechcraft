@@ -38,7 +38,7 @@ namespace LC::LMP::Graffiti
 			Media::ITagsFetcher *prov, FilesModel *filesModel, QObject *parent)
 	: QObject { parent }
 	, FilesModel_ { filesModel }
-	, TotalTags_ { paths.size () }
+	, TotalTags_ { static_cast<int> (paths.size ()) }
 	{
 		for (const auto& path : paths)
 			Util::Sequence (this, prov->FetchTags (path)) >>

@@ -91,7 +91,7 @@ namespace MP3Tunes
 		QList<QStandardItem*> items;
 		for (const auto& idx : indices)
 			items << AccModel_->itemFromIndex (idx);
-		items.removeAll (0);
+		items.removeAll (nullptr);
 
 		for (auto item : items)
 			AccModel_->removeRow (item->row ());
