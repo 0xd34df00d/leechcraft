@@ -79,7 +79,7 @@ namespace Lastfmscrobble
 		for (const auto& album : Util::DomChildren (docElem.firstChildElement ("albums"), "album"))
 		{
 			const auto& relDate = album.attribute ("releasedate");
-			const auto& strs = relDate.splitRef (' ', Qt::SkipEmptyParts);
+			const auto& strs = QStringView { relDate }.split (' ', Qt::SkipEmptyParts);
 			const int day = strs.value (1).toInt ();
 			const int month = std::distance (monthsBegin,
 						std::find (monthsBegin, monthsEnd, strs.value (2))) + 1;
