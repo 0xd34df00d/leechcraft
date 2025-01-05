@@ -7,11 +7,11 @@
  **********************************************************************/
 
 #pragma once
+
+#include <QStringList>
 #include "bandinfo.h"
 
 class QByteArray;
-
-class QStringList;
 
 namespace LC
 {
