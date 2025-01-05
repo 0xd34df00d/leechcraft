@@ -9,8 +9,7 @@
 #include "tracksselectordialog.h"
 #include <numeric>
 #include <QAbstractItemModel>
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QShortcut>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
@@ -435,8 +434,7 @@ namespace LC::LMP::PPL
 		if (totalWidth < size ().width ())
 			return;
 
-		const auto desktop = qApp->desktop ();
-		const auto& availableGeometry = desktop->availableGeometry (this);
+		const auto& availableGeometry = screen ()->availableGeometry ();
 		if (totalWidth > availableGeometry.width ())
 			return;
 
