@@ -33,8 +33,6 @@ namespace GstUtil
 
 	LMP_UTIL_API void DebugPrintState (GstElement*, GstClockTime = 0.1 * GST_SECOND);
 
-	LMP_UTIL_API QString FixEncoding (const QString& str, const QString& region);
-
 	LMP_UTIL_API const char* GetTeePadTemplateName ();
 }
 }

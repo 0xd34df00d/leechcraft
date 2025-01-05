@@ -52,14 +52,7 @@ namespace LMP
 
 		auto audio = r.audioProperties ();
 
-		auto& xsm = XmlSettingsManager::Instance ();
-		const auto& region = xsm.property ("EnableLocalTagsRecoding").toBool () ?
-				xsm.property ("TagsRecodingRegion").toString () :
-				QString {};
-		auto ftl = [&region] (const TagLib::String& str)
-		{
-			return GstUtil::FixEncoding (QString::fromUtf8 (str.toCString (true)), region);
-		};
+		auto ftl = [] (const TagLib::String& str) { return QString::fromUtf8 (str.toCString (true)); };
 
 		const auto& genres = ftl (tag->genre ()).split ('/', Qt::SkipEmptyParts);
 
