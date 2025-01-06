@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=LeechCraft LMP (Qt5)
+Name=LeechCraft LMP (Qt @LC_QT_VERSION@)
 GenericName=Enqueue in LMP
 GenericName[cs]=Zařadit do fronty v LMP
 GenericName[de]=Zur LMP-Wiedergabeliste hinzufügen
@@ -16,7 +16,7 @@ Comment[uk]=Додати файл(и) до переліку програванн
 Comment[zh_CN]=添加一个或多个文件到 LMP 播放列表
 Comment[zh_TW]=添加一個或多個檔案到 LMP 播放清單
 Comment[he]=הוסף קבצים אל רשימת הניגון של LMP
-Exec=leechcraft-qt5 -T file -A Action:AudioPlayback %F
+Exec=leechcraft@LC_LIBSUFFIX@ -T file -A Action:AudioPlayback %F
 Icon=leechcraft_main
 Categories=AudioVideo;Player;Audio;Qt;
 MimeType=application/x-ogg;audio/mp3;audio/mpeg;audio/flac;audio/x-mp3;audio/x-mpeg;audio/x-ms-wma;audio/x-musepack;application/ogg;audio/x-vorbis+ogg;audio/x-scpls;audio/x-mpegurl;audio/x-it;audio/x-mod;audio/x-ape;application/x-cue;audio/x-ffmpeg-shorten;inode/directory;
