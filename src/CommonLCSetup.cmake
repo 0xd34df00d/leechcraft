@@ -58,6 +58,7 @@ function (LC_DEFINE_PLUGIN)
 
 	set (FULL_NAME leechcraft_${PROJECT_NAME})
 	string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
+	string (REPLACE "_" "-" PROJECT_NAME_DASHES ${PROJECT_NAME})
 
 	add_library (${FULL_NAME} SHARED
 		${QM_RESULTS}
@@ -82,9 +83,9 @@ function (LC_DEFINE_PLUGIN)
 	endif ()
 
 	if (P_INSTALL_DESKTOP AND UNIX AND NOT APPLE)
-		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/freedesktop/leechcraft-${PROJECT_NAME}.desktop.in)
-			set (CONFIGURED_DESKTOP_FILE leechcraft-${PROJECT_NAME}${LC_LIBSUFFIX}.desktop)
-			configure_file (freedesktop/leechcraft-${PROJECT_NAME}.desktop.in ${CONFIGURED_DESKTOP_FILE} @ONLY)
+		if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/freedesktop/leechcraft-${PROJECT_NAME_DASHES}.desktop.in)
+			set (CONFIGURED_DESKTOP_FILE leechcraft-${PROJECT_NAME_DASHES}${LC_LIBSUFFIX}.desktop)
+			configure_file (freedesktop/leechcraft-${PROJECT_NAME_DASHES}.desktop.in ${CONFIGURED_DESKTOP_FILE} @ONLY)
 			install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${CONFIGURED_DESKTOP_FILE} DESTINATION share/applications)
 		else ()
 			install (DIRECTORY freedesktop/ DESTINATION share/applications)
