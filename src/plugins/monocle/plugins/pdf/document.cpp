@@ -285,9 +285,9 @@ namespace LC::Monocle::PDF
 	{
 		const auto backend = PDocument_->renderBackend ();
 		Util::DefaultScopeGuard guard;
-		if (backend != Poppler::Document::ArthurBackend)
+		if (backend != Poppler::Document::QPainterBackend)
 		{
-			PDocument_->setRenderBackend (Poppler::Document::ArthurBackend);
+			PDocument_->setRenderBackend (Poppler::Document::QPainterBackend);
 			guard = Util::MakeScopeGuard ([this, backend] { PDocument_->setRenderBackend (backend); });
 		}
 
