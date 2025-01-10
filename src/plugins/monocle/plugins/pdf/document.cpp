@@ -13,8 +13,12 @@
 #include <QBuffer>
 #include <QFile>
 #include <QtConcurrentRun>
+#if QT_VERSION_MAJOR < 6
 #include "qt5compat.h"
 #include <poppler-qt5.h>
+#else
+#include <poppler-qt6.h>
+#endif
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include <util/sll/prelude.h>
@@ -116,7 +120,7 @@ namespace LC::Monocle::PDF
 			return {};
 
 		QList<ILink_ptr> result;
-		for (const auto link : page->links ())
+		for (const auto& link : page->links ())
 			result << std::make_shared<Link> (*this, *link);
 		return result;
 	}
@@ -181,12 +185,12 @@ namespace LC::Monocle::PDF
 
 		const auto resultSize = charLevelPrecision ?
 				std::accumulate (popplerBoxes.begin (), popplerBoxes.end (), 0,
-						[] (int acc, auto textBox) { return acc + textBox->text ().size (); }) :
+						[] (int acc, auto&& textBox) { return acc + textBox->text ().size (); }) :
 				popplerBoxes.size ();
 
 		QVector<TextBox> result;
 		result.reserve (resultSize);
-		for (const auto textBox : popplerBoxes)
+		for (const auto& textBox : popplerBoxes)
 		{
 			const auto& text = textBox->text ();
 			if (text.isEmpty ())
@@ -209,7 +213,9 @@ namespace LC::Monocle::PDF
 			result.push_back (std::move (box));
 		}
 
+#if QT_VERSION_MAJOR < 6
 		qDeleteAll (popplerBoxes);
+#endif
 
 		return result;
 	}
@@ -241,7 +247,11 @@ namespace LC::Monocle::PDF
 
 		QList<IAnnotation_ptr> annotations;
 		for (auto&& ann : page->annotations ())
+#if QT_VERSION_MAJOR >= 6
+			if (const auto wrapper = MakeAnnotation (this, std::move (ann)))
+#else
 			if (const auto wrapper = MakeAnnotation (this, std::unique_ptr { ann }))
+#endif
 				annotations << wrapper;
 		return annotations;
 	}
@@ -252,9 +262,10 @@ namespace LC::Monocle::PDF
 		if (!page)
 			return {};
 
+		// TODO remove this intermediate step after porting to Qt 6
 		QList<std::shared_ptr<Poppler::FormField>> popplerFields;
-		for (auto field : page->formFields ())
-			popplerFields << std::shared_ptr<Poppler::FormField> (field);
+		for (auto&& field : page->formFields ())
+			popplerFields << std::shared_ptr<Poppler::FormField> (std::move (field));
 
 		IFormFields_t fields;
 		fields.reserve (popplerFields.size ());
@@ -315,7 +326,7 @@ namespace LC::Monocle::PDF
 				std::unique_ptr<Poppler::Page> p { doc->page (i) };
 
 				const auto& size = p->pageSizeF ();
-				const auto scaleMat = QMatrix {}.scale (1 / size.width (), 1 / size.height ());
+				const auto scaleMat = QTransform {}.scale (1 / size.width (), 1 / size.height ());
 
 				resVec [i] = Util::Map (p->search (text, searchFlags),
 						[&] (const auto& rect) { return PageRelativeRectBase { scaleMat.mapRect (rect) }; });

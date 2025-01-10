@@ -9,7 +9,9 @@
 #pragma once
 
 #include <memory>
+#if QT_VERSION_MAJOR == 5
 #include "qt5compat.h"
+#endif
 #include <poppler-annotation.h>
 #include <interfaces/monocle/iannotation.h>
 

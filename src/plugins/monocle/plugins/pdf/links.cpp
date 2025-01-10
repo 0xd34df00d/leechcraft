@@ -8,8 +8,12 @@
 
 #include "links.h"
 #include <QtDebug>
+#if QT_VERSION_MAJOR == 5
 #include "qt5compat.h"
 #include <poppler-qt5.h>
+#else
+#include <poppler-qt6.h>
+#endif
 #include "document.h"
 
 namespace LC::Monocle::PDF
