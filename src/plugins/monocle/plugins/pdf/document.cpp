@@ -240,8 +240,8 @@ namespace LC::Monocle::PDF
 			return {};
 
 		QList<IAnnotation_ptr> annotations;
-		for (const auto ann : page->annotations ())
-			if (const auto wrapper = MakeAnnotation (this, ann))
+		for (auto&& ann : page->annotations ())
+			if (const auto wrapper = MakeAnnotation (this, std::unique_ptr { ann }))
 				annotations << wrapper;
 		return annotations;
 	}

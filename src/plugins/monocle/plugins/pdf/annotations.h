@@ -23,15 +23,16 @@ namespace LC::Monocle::PDF
 {
 	class Document;
 
-	IAnnotation_ptr MakeAnnotation (Document*, Poppler::Annotation*);
+	IAnnotation_ptr MakeAnnotation (Document*, std::unique_ptr<Poppler::Annotation>);
 
-	template<typename T>
+	template<typename T, typename PT>
 	class AnnotationBase : public T
 	{
-		const std::unique_ptr<Poppler::Annotation> Ann_;
+	protected:
+		const std::unique_ptr<PT> Ann_;
 	public:
-		AnnotationBase (Poppler::Annotation *ann)
-		: Ann_ { ann }
+		AnnotationBase (std::unique_ptr<PT> ann)
+		: Ann_ { std::move (ann) }
 		{
 		}
 
@@ -58,41 +59,38 @@ namespace LC::Monocle::PDF
 		}
 	};
 
-	class TextAnnotation : public AnnotationBase<ITextAnnotation>
+	class TextAnnotation : public AnnotationBase<ITextAnnotation, Poppler::TextAnnotation>
 	{
-		Poppler::TextAnnotation * const TextAnn_;
 	public:
-		TextAnnotation (Poppler::TextAnnotation*);
+		using AnnotationBase::AnnotationBase;
 
 		AnnotationType GetAnnotationType () const override;
 		bool IsInline () const override;
 	};
 
-	class HighlightAnnotation : public AnnotationBase<IHighlightAnnotation>
+	class HighlightAnnotation : public AnnotationBase<IHighlightAnnotation, Poppler::HighlightAnnotation>
 	{
-		Poppler::HighlightAnnotation * const HighAnn_;
 	public:
-		HighlightAnnotation (Poppler::HighlightAnnotation*);
+		using AnnotationBase::AnnotationBase;
 
 		AnnotationType GetAnnotationType () const override;
 		QList<QPolygonF> GetPolygons () const override;
 	};
 
-	class LinkAnnotation : public AnnotationBase<ILinkAnnotation>
+	class LinkAnnotation : public AnnotationBase<ILinkAnnotation, Poppler::LinkAnnotation>
 	{
-		Poppler::LinkAnnotation * const LinkAnn_;
 		ILink_ptr Link_;
 	public:
-		LinkAnnotation (Document*, Poppler::LinkAnnotation*);
+		LinkAnnotation (Document*, std::unique_ptr<Poppler::LinkAnnotation>);
 
 		AnnotationType GetAnnotationType () const override;
 		ILink_ptr GetLink () const override;
 	};
 
-	class CaretAnnotation : public AnnotationBase<ICaretAnnotation>
+	class CaretAnnotation : public AnnotationBase<ICaretAnnotation, Poppler::CaretAnnotation>
 	{
 	public:
-		CaretAnnotation (Poppler::CaretAnnotation*);
+		using AnnotationBase::AnnotationBase;
 
 		AnnotationType GetAnnotationType () const override;
 	};
