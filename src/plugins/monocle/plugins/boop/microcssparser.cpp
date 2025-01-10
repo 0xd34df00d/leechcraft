@@ -140,7 +140,7 @@ namespace LC::Monocle::Boop::MicroCSS
 			return prevIgnored;
 		}
 
-		SingleSelector ParseSingleSelector (QStringRef part)
+		SingleSelector ParseSingleSelector (QStringView part)
 		{
 			if (part.startsWith ('@'))
 				return AtSelector { part.mid (1).toString () };
@@ -167,16 +167,16 @@ namespace LC::Monocle::Boop::MicroCSS
 
 			// there are more components: a (potentially empty) tag name and several classes
 			tagAndClasses.pop_front ();
-			const auto& classes = Util::Map (tagAndClasses, &QStringRef::toString);
+			const auto& classes = Util::Map (tagAndClasses, &QStringView::toString);
 			return ManyClassesSelector { tag.toString (), classes };
 		}
 
-		auto ParseSelectors (const QString& rawStr)
+		auto ParseSelectors (QStringView rawStr)
 		{
 			QVector<Selector> result;
 			result.reserve (rawStr.count (',') + 1);
 
-			for (auto sub : rawStr.splitRef (',', Qt::SkipEmptyParts))
+			for (auto sub : rawStr.split (',', Qt::SkipEmptyParts))
 			{
 				sub = sub.trimmed ();
 				QVector<SingleSelector> parts;
