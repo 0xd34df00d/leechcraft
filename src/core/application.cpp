@@ -145,9 +145,11 @@ namespace LC
 		qRegisterMetaType<Entity> ("Entity");
 		qRegisterMetaType<IHookProxy_ptr> ("LC::IHookProxy_ptr");
 		qRegisterMetaType<QKeySequences_t> ("QKeySequences_t");
+#if QT_VERSION_MAJOR < 6
 		qRegisterMetaTypeStreamOperators<QKeySequences_t> ("QKeySequences_t");
 		qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LC::TagsManager::TagsDictionary_t");
 		qRegisterMetaTypeStreamOperators<Entity> ("LC::Entity");
+#endif
 
 		qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
 
