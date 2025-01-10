@@ -9,12 +9,10 @@
 #pragma once
 
 #include <functional>
+#include <QVector>
 
 class QTextCharFormat;
 class QTextBlockFormat;
-
-template<typename>
-class QVector;
 
 namespace LC::Monocle
 {
