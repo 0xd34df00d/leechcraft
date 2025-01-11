@@ -64,8 +64,9 @@ namespace LC::Aggregator::Parsers
 
 		namespace
 		{
-			QDateTime ParseRfc822Lax (const QString& str)
+			QDateTime ParseRfc822Lax (QStringView str)
 			{
+				str = str.trimmed ();
 				if (str.isEmpty ())
 					return {};
 
