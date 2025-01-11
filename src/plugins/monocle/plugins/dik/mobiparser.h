@@ -12,9 +12,8 @@
 #include <QList>
 #include <QFile>
 #include <QHash>
+#include <QStringDecoder>
 #include <interfaces/monocle/idocument.h>
-
-class QTextCodec;
 
 namespace LC
 {
@@ -42,7 +41,7 @@ namespace Dik
 
 		quint16 FirstImgRec_ = 0;
 
-		QTextCodec *Codec_ = 0;
+		std::unique_ptr<QStringDecoder> Codec_;
 
 		DocumentInfo DocInfo_;
 	public:

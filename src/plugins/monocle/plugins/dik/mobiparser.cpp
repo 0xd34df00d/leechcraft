@@ -10,7 +10,6 @@
 #include <QFile>
 #include <QtDebug>
 #include <QtEndian>
-#include <QTextCodec>
 #include <QBuffer>
 #include <QImageReader>
 #include "decompressor.h"
@@ -79,7 +78,7 @@ namespace Dik
 
 			result += decompressed;
 		}
-		return Codec_->toUnicode (result);
+		return Codec_->decode (result);
 	}
 
 	int MobiParser::GetImageCount () const
@@ -172,9 +171,8 @@ namespace Dik
 		TextRecordsCount_ = twoBytes (8);
 		MaxRecordSize_ = twoBytes (10);
 
-		Codec_ = headrec.size () > 31 && Read32 (headrec, 28) == 65001 ?
-				QTextCodec::codecForName ("UTF-8") :
-				QTextCodec::codecForName ("CP1252");
+		const auto isUnicode = headrec.size () > 31 && Read32 (headrec, 28) == 65001;
+		Codec_ = std::make_unique<QStringDecoder> (isUnicode ? "UTF-8" : "CP1252");
 
 		if (headrec.size () > 176)
 			ParseEXTH (headrec);
@@ -184,13 +182,13 @@ namespace Dik
 
 	namespace
 	{
-		QString ReadEXTHField (const QByteArray& data, quint32& offset, QTextCodec *codec)
+		QString ReadEXTHField (const QByteArray& data, quint32& offset, QStringDecoder& codec)
 		{
 			auto len = Read32 (data, offset);
 			offset += 4;
 			len -= 8;
 
-			const auto& result = codec->toUnicode (data.mid (offset, len));
+			const auto& result = codec.decode (data.mid (offset, len));
 			offset += len;
 			return result;
 		}
@@ -203,7 +201,7 @@ namespace Dik
 			const auto nameOffset = Read32 (rec, 0x54);
 			const auto nameLen = Read32 (rec, 0x58);
 			if (nameOffset + nameLen < static_cast<quint32> (rec.size ()))
-				DocInfo_.Title_ = Codec_->toUnicode (rec.mid (nameOffset, nameLen));
+				DocInfo_.Title_ = Codec_->decode (rec.mid (nameOffset, nameLen));
 		}
 
 		const auto exthOff = Read32 (rec, 0x14) + 16;
@@ -222,16 +220,16 @@ namespace Dik
 			switch (type)
 			{
 			case 100:
-				DocInfo_.Author_ = ReadEXTHField (rec, offset, Codec_);
+				DocInfo_.Author_ = ReadEXTHField (rec, offset, *Codec_);
 				break;
 			case 103:
-				DocInfo_.Description_ = ReadEXTHField (rec, offset, Codec_);
+				DocInfo_.Description_ = ReadEXTHField (rec, offset, *Codec_);
 				break;
 			case 105:
-				DocInfo_.Subject_ = ReadEXTHField (rec, offset, Codec_);
+				DocInfo_.Subject_ = ReadEXTHField (rec, offset, *Codec_);
 				break;
 			case 109:
-				DocInfo_.Author_ = ReadEXTHField (rec, offset, Codec_);
+				DocInfo_.Author_ = ReadEXTHField (rec, offset, *Codec_);
 				break;
 			}
 		}
