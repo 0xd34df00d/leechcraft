@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=LeechCraft Monocle (Qt5)
+Name=LeechCraft Monocle (Qt @LC_QT_VERSION@)
 GenericName=Document Viewer
 GenericName[ar]=عارض المستندات
 GenericName[ast]=Visor de documentos
@@ -63,7 +63,7 @@ GenericName[x-test]=xxDocument Viewerxx
 GenericName[zh_CN]=文档查看器
 GenericName[zh_TW]=文件檢視器
 Icon=leechcraft_main
-Exec=leechcraft-qt5 -H %U
+Exec=leechcraft@LC_LIBSUFFIX@ -H %U
 Categories=Office;Qt;Viewer;
 Terminal=false
 X-StandardInstall=true
