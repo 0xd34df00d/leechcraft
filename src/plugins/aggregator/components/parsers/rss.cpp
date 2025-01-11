@@ -71,6 +71,8 @@ namespace LC::Aggregator::Parsers
 
 				auto result = QDateTime::fromString (str, Qt::RFC2822Date);
 				if (!result.isValid ())
+					result = QDateTime::fromString (str, "ddd, dd MMM yyyy HH:mm:ss t"_qs);
+				if (!result.isValid ())
 					result = QDateTime::fromString (str, "yyyy-MM-dd"_qs);
 				if (!result.isValid ())
 				{
