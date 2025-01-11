@@ -36,14 +36,17 @@ add_library (leechcraft-monocle-util SHARED
 	util/monocle/types.cpp
 	)
 FindQtLibs (leechcraft-monocle-util Widgets Xml)
-set_property (TARGET leechcraft-monocle-util PROPERTY SOVERSION ${LC_SOVERSION})
+set_target_properties (leechcraft-monocle-util PROPERTIES
+	OUTPUT_NAME "leechcraft-monocle-util${LC_LIBSUFFIX}"
+	SOVERSION ${LC_SOVERSION}
+	)
 if (WITH_MONOCLE_IMAGEMAGICK)
 	find_package (PkgConfig)
 	pkg_check_modules (MagickPP REQUIRED IMPORTED_TARGET Magick++)
 	target_link_libraries (leechcraft-monocle-util PkgConfig::MagickPP)
 	target_compile_definitions (leechcraft-monocle-util PRIVATE WITH_IMAGEMAGICK)
 endif ()
-install (TARGETS leechcraft-monocle-util DESTINATION ${LIBDIR} RENAME leechcraft-monocle-util${LC_LIBSUFFIX})
+install (TARGETS leechcraft-monocle-util DESTINATION ${LIBDIR})
 
 LC_DEFINE_PLUGIN (
 	SRCS
