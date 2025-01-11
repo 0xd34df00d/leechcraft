@@ -42,8 +42,8 @@ namespace LC::Monocle::FXB
 		template<int Base>
 		HtmlTag StackedTitle (const QVector<QStringView>& stack)
 		{
-			const auto depth = stack.count (u"section"_qsv) + stack.count (u"subsection"_qsv);
-			const auto maxH = 6;
+			const int depth = stack.count (u"section"_qsv) + stack.count (u"subsection"_qsv);
+			const int maxH = 6;
 			return HtmlTag { .Tag_ = "h" + QString::number (std::min (Base + depth, maxH)) };
 		}
 
