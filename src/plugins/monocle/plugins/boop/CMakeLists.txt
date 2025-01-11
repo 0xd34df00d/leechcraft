@@ -18,4 +18,5 @@ LC_DEFINE_PLUGIN (
 		util.cpp
 	QT_COMPONENTS Gui Xml
 	LINK_LIBRARIES PkgConfig::QuaZip leechcraft-monocle-util
+	INSTALL_DESKTOP
 	)
