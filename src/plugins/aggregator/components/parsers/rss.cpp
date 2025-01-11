@@ -69,18 +69,24 @@ namespace LC::Aggregator::Parsers
 				if (str.isEmpty ())
 					return {};
 
-				auto result = QDateTime::fromString (str, Qt::RFC2822Date);
-				if (!result.isValid ())
-					result = QDateTime::fromString (str, "ddd, dd MMM yyyy HH:mm:ss t"_qs);
-				if (!result.isValid ())
-					result = QDateTime::fromString (str, "yyyy-MM-dd"_qs);
-				if (!result.isValid ())
+				if (auto result = QDateTime::fromString (str, Qt::RFC2822Date);
+					result.isValid ())
+					return result;
+
+				const auto formats =
 				{
-					qWarning () << "Can't parse RSS item pubDate: "
-							<< str;
-					result = QDateTime::currentDateTime ();
+					"ddd, dd MMM yyyy HH:mm:ss t"_qs,
+					"yyyy-MM-dd"_qs,
+				};
+				for (const auto& fmt : formats)
+				{
+					const auto& result = QDateTime::fromString (str, fmt);
+					if (result.isValid ())
+						return result;
 				}
-				return result;
+
+				qWarning () << "Can't parse RSS item pubDate:" << str;
+				return QDateTime::currentDateTime ();
 			}
 		}
 
