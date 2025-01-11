@@ -55,12 +55,10 @@ namespace Dik
 
 		QString Fix (QString markup)
 		{
-			QRegExp imgRx ("<img.*recindex=\"([\\d]*)\".*>", Qt::CaseInsensitive);
-			imgRx.setMinimal (true);
+			QRegularExpression imgRx ("<img.*?recindex=\"([\\d]*?)\".*?>");
+			imgRx.setPatternOptions (QRegularExpression::CaseInsensitiveOption);
 			markup.replace (imgRx, "<img src='rec:/\\1' />");
-
 			markup.replace ("<mbp:pagebreak/>", "<p style='page-break-after: always' />");
-
 			return markup;
 		}
 	}
