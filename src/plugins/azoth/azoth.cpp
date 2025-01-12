@@ -59,9 +59,11 @@ namespace Azoth
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		qRegisterMetaType<QColor> ("QColor");
-		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
 		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
+#if QT_VERSION_MAJOR < 6
+		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
 		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
+#endif
 
 		Util::InstallTranslator ("azoth");
 

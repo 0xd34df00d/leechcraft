@@ -9,12 +9,11 @@
 #pragma once
 
 #include <memory>
+#include <QSslError>
 #include <QtPlugin>
 
 template<typename>
 class QList;
-
-class QSslError;
 
 namespace LC
 {

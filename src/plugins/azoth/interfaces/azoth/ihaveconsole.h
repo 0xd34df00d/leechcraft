@@ -6,13 +6,12 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IHAVECONSOLE_H
-#define PLUGINS_AZOTH_INTERFACES_IHAVECONSOLE_H
-#include <QMetaType>
+#pragma once
 
-namespace LC
-{
-namespace Azoth
+#include <QMetaType>
+#include <QtPlugin>
+
+namespace LC::Azoth
 {
 	/** @brief Interface for accounts that support protocol consoles.
 	 *
@@ -114,9 +113,6 @@ namespace Azoth
 				PacketDirection direction, const QString& hrEntryId) = 0;
 	};
 }
-}
 
 Q_DECLARE_INTERFACE (LC::Azoth::IHaveConsole,
 		"org.Deviant.LeechCraft.Azoth.IHaveConsole/1.0")
-
-#endif

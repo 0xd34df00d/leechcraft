@@ -364,7 +364,7 @@ namespace Azoth
 		if (!isMUC && ShowClientIcons_)
 		{
 			const auto& iconsMap = ResourcesManager::Instance ().GetClientIconForEntry (entry);
-			for (int i = 0; i < std::min (vars.size (), 4); ++i)
+			for (int i = 0; i < std::min (static_cast<int> (vars.size ()), 4); ++i)
 				clientIcons << iconsMap [vars.at (i)];
 
 			clientIcons.erase (std::remove_if (clientIcons.begin (), clientIcons.end (),

@@ -9,12 +9,12 @@
 #pragma once
 
 #include <QDialog>
+#include <QSslError>
 #include "ui_sslerrorsdialog.h"
 #include "sslerrorshandler.h"
 
 template<typename T>
 class QList;
-class QSslError;
 
 namespace LC
 {

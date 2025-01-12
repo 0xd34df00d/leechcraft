@@ -741,7 +741,7 @@ namespace Azoth
 			}
 		}
 
-		result.removeAll (0);
+		result.removeAll (nullptr);
 
 		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (result);
 
