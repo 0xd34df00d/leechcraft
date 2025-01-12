@@ -11,6 +11,9 @@
 #include "findnotification.h"
 #include <QWebEnginePage>
 #include <QWebEngineView>
+#if QT_VERSION_MAJOR >= 6
+#include <QWebEngineFindTextResult>
+#endif
 
 namespace LC::Util
 {
@@ -82,8 +85,13 @@ namespace LC::Util
 				PreviousFindText_ = text;
 			}
 
+#if QT_VERSION_MAJOR >= 6
+			WebView_->page ()->findText (text, ToPageFlags (findFlags),
+					[this] (const QWebEngineFindTextResult& found) { SetSuccessful (found.numberOfMatches ()); });
+#else
 			WebView_->page ()->findText (text, ToPageFlags (findFlags),
 					[this] (bool found) { SetSuccessful (found); });
+#endif
 		}
 
 		void Reject () override
