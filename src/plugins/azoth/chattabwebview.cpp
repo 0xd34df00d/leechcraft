@@ -8,7 +8,11 @@
 
 #include "chattabwebview.h"
 #include <QContextMenuEvent>
+#if QT_VERSION_MAJOR >= 6
+#include <QWebEngineContextMenuRequest>
+#else
 #include <QWebEngineContextMenuData>
+#endif
 #include <QPointer>
 #include <QMenu>
 #include <QDesktopServices>
@@ -67,7 +71,11 @@ namespace LC::Azoth
 		QPointer<QMenu> menu (new QMenu (this));
 		const auto menuGuard = Util::MakeScopeGuard ([&menu] { delete menu; });
 
+#if QT_VERSION_MAJOR >= 6
+		const auto& r = *lastContextMenuRequest ();
+#else
 		const auto& r = page ()->contextMenuData ();
+#endif
 
 		if (!r.linkUrl ().isEmpty ())
 		{
@@ -111,7 +119,11 @@ namespace LC::Azoth
 					Core::Instance ().GetProxy ()->GetEntityManager (), menu);
 		}
 
+#if QT_VERSION_MAJOR >= 6
+		if (r.mediaType () == QWebEngineContextMenuRequest::MediaTypeImage)
+#else
 		if (r.mediaType () == QWebEngineContextMenuData::MediaTypeImage)
+#endif
 			menu->addAction (pageAction (QWebEnginePage::CopyImageToClipboard));
 
 		/* TODO
