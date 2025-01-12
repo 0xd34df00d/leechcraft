@@ -194,8 +194,8 @@ namespace Azoth
 			}
 		}
 		else
-			for (const auto& str : coloring.splitRef (' ', Qt::SkipEmptyParts))
-				result << QColor (str);
+			for (const auto& str : QStringView { coloring }.split (' ', Qt::SkipEmptyParts))
+				result << QColor { str };
 
 		return result;
 	}
