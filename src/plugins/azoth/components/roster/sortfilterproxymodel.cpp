@@ -183,9 +183,10 @@ namespace LC::Azoth
 	bool SortFilterProxyModel::FilterAcceptsNonMucMode (int row, const QModelIndex& parent) const
 	{
 		const auto& idx = sourceModel ()->index (row, 0, parent);
-		if (!filterRegExp ().isEmpty ())
+		const auto& pattern = filterRegularExpression ().pattern ();
+		if (!pattern.isEmpty ())
 			return GetType (idx) == CLETContact ?
-					idx.data ().toString ().contains (filterRegExp ()) :
+					idx.data ().toString ().contains (pattern) :
 					true;
 
 		if (idx.data (CLRUnreadMsgCount).toInt ())

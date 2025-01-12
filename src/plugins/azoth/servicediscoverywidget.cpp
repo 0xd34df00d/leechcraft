@@ -42,7 +42,7 @@ namespace Azoth
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const
 			{
-				const auto& filter = filterRegExp ().pattern ();
+				const auto& filter = filterRegularExpression ().pattern ();
 				if (filter.isEmpty ())
 					return true;
 
