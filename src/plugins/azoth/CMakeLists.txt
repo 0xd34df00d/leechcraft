@@ -27,8 +27,7 @@ endif ()
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
 
 if (ENABLE_CRYPT)
-	find_package(PkgConfig)
-	pkg_check_modules(QCA2 REQUIRED IMPORTED_TARGET qca2-qt5)
+  find_package(Qca-qt${LC_QT_VERSION} REQUIRED)
 
 	add_definitions (-DENABLE_CRYPT)
 endif ()
@@ -121,7 +120,7 @@ LC_DEFINE_PLUGIN (
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
 	QT_COMPONENTS Concurrent Network Sql WebEngineWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
-	LINK_LIBRARIES $<$<BOOL:${ENABLE_CRYPT}>:PkgConfig::QCA2>
+	LINK_LIBRARIES $<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
 	INSTALL_SHARE
 	)
 
