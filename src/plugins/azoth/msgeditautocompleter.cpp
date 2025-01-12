@@ -87,7 +87,7 @@ namespace Azoth
 
 	struct NickReplacement
 	{
-		int Length_;
+		qsizetype Length_;
 		QString NewText_;
 	};
 
