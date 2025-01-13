@@ -271,14 +271,12 @@ namespace LC::Azoth::Acetamide
 
 		for (const auto& nsi : list)
 		{
-			QRegExp authRegExp (nsi.AuthString_,
-					Qt::CaseInsensitive,
-					QRegExp::Wildcard);
-			if (authRegExp.indexIn (msg) == -1)
-				continue;
-
-			SendMessage2Server (nsi.AuthMessage_);
-			return;
+			const auto authRegExp = QRegularExpression::fromWildcard (nsi.AuthString_, Qt::CaseInsensitive);
+			if (msg.contains (authRegExp))
+			{
+				SendMessage2Server (nsi.AuthMessage_);
+				break;
+			}
 		}
 	}
 

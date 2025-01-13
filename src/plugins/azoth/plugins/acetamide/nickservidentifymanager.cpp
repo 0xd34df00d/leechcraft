@@ -61,7 +61,7 @@ namespace LC::Azoth::Acetamide
 		for (const auto& nsi : Model_->GetItems ())
 			if (nsi.Server_ == server &&
 					nsi.Nick_ == nick &&
-					QRegExp { nsi.NickServNick_, Qt::CaseInsensitive, QRegExp::Wildcard }.indexIn (nickserv) == 0)
+					nickserv.indexOf (QRegularExpression::fromWildcard (nsi.NickServNick_, Qt::CaseInsensitive)) == 0)
 				list << nsi;
 		return list;
 	}

@@ -93,7 +93,7 @@ namespace LC::Azoth::Acetamide
 		connect (Ui_.Filter_,
 				&QLineEdit::textChanged,
 				filterModel,
-				qOverload<const QString&> (&ChannelsListFilterProxyModel::setFilterRegExp));
+				qOverload<const QString&> (&ChannelsListFilterProxyModel::setFilterRegularExpression));
 		connect (Ui_.ChannelsList_,
 				&QTreeView::activated,
 				this,

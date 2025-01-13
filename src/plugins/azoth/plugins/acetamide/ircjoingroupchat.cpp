@@ -7,10 +7,10 @@
  **********************************************************************/
 
 #include "ircjoingroupchat.h"
-#include <util/sll/qtutil.h>
 #include <QComboBox>
 #include <QTextCodec>
 #include <QValidator>
+#include <util/sll/qtutil.h>
 #include "ircaccount.h"
 #include "localtypes.h"
 
@@ -26,8 +26,8 @@ namespace LC::Azoth::Acetamide
 		Ui_.Encoding_->model ()->sort (0);
 		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (QStringLiteral ("UTF-8")));
 
-		QRegExp rx { R"(^([\#,\&,\!,\+]?)([^\,,\a,\s]+))" };
-		const auto validator = new QRegExpValidator (rx, this);
+		QRegularExpression rx { R"(^([\#,\&,\!,\+]?)([^\,,\a,\s]+))" };
+		const auto validator = new QRegularExpressionValidator (rx, this);
 		Ui_.Channel_->setValidator (validator);
 	}
 

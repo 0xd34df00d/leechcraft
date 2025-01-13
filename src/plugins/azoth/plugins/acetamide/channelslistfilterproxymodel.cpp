@@ -22,6 +22,6 @@ namespace LC::Azoth::Acetamide
 	bool ChannelsListFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
 		const auto& index = sourceModel()->index (sourceRow, 0, sourceParent);
-		return sourceModel ()->data (index).toString ().contains (filterRegExp ());
+		return sourceModel ()->data (index).toString ().contains (filterRegularExpression ());
 	}
 }
