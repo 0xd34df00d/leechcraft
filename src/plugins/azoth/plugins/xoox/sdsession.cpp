@@ -312,7 +312,8 @@ namespace Xoox
 
 			const auto batchSize = 300;
 
-			for (int end = std::min (start + batchSize, items.size ()); start < end; ++start)
+			// TODO remove the cast after done migrating to Qt 6
+			for (int end = std::min (start + batchSize, static_cast<int> (items.size ())); start < end; ++start)
 			{
 				const auto& item = items.at (start);
 				ptr->Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),

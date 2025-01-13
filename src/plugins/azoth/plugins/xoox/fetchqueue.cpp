@@ -68,7 +68,8 @@ namespace Xoox
 
 	void FetchQueue::handleFetch ()
 	{
-		int num = std::min (PerShot_, Queue_.size ());
+		// TODO change PerShot_ type when done migrating to Qt 6
+		int num = std::min (PerShot_, static_cast<int> (Queue_.size ()));
 		while (num--)
 		{
 			const auto& str = Queue_.takeFirst ();
