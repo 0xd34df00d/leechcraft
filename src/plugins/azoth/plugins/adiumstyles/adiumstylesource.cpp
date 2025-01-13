@@ -10,6 +10,7 @@
 #include <QWebEnginePage>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
+#include <util/sll/regexp.h>
 #include <util/sll/qtutil.h>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -77,9 +78,7 @@ namespace AdiumStyles
 	{
 		void FixSelfClosing (QString& str)
 		{
-			QRegExp rx ("<div([^>]*)/>");
-			rx.setMinimal (true);
-			str.replace (rx, "<div\\1></div>");
+			str.replace (QRegularExpression { "<div([^>]*?)/>" }, "<div\\1></div>");
 		}
 
 		void FormatTime (QString& templ, const QString& elem, const QDateTime& dt)
@@ -459,7 +458,7 @@ namespace AdiumStyles
 
 	void AdiumStyleSource::PercentTemplate (QString& result, const QMap<QString, QString>& map) const
 	{
-		QRegExp rx ("(?:%@){1}");
+		QRegularExpression rx ("(?:%@){1}");
 		const int count = result.count (rx);
 
 		QStringList rpls (map ["Path"]);
@@ -469,14 +468,17 @@ namespace AdiumStyles
 			<< map ["Header"]
 			<< map ["Footer"];
 
-		int i = 0;
-		int pos = 0;
-		while ((pos = rx.indexIn (result, pos)) != -1 && i < rpls.size ())
-		{
-			result.replace (pos, 2, rpls [i]);
-			pos += rpls [i].length ();
-			i++;
-		}
+		Util::ReplaceByRegexp (result, rx,
+				[&rpls, i = 0] (QString& result, const QRegularExpressionMatch& match) mutable -> Util::ReplacerResult
+				{
+					const auto pos = match.capturedStart (0);
+					if (i >= rpls.size ())
+						return Util::StopReplace {};
+
+					const auto& replacement = rpls [i++];
+					result.replace (pos, 2, replacement);
+					return Util::ReplaceAdvance { replacement.size () };
+				});
 	}
 
 	void AdiumStyleSource::SubstituteUserIcon (QString& templ,
@@ -600,18 +602,17 @@ namespace AdiumStyles
 					QString ());
 
 		// %textbackgroundcolor{X}%
-		QRegExp bgColorRx ("%textbackgroundcolor\\{([^}]*)\\}%");
-		int pos = 0;
 		const QString& highColor = isHighlightMsg ?
-				Proxy_->GetSettingsManager ()->
-						property ("HighlightColor").toString () :
+				Proxy_->GetSettingsManager ()->property ("HighlightColor").toString () :
 				"inherit";
 		bool hasHighBackground = false;
-		while ((pos = bgColorRx.indexIn (templ, pos)) != -1)
-		{
-			templ.replace (pos, bgColorRx.matchedLength (), highColor);
-			hasHighBackground = true;
-		}
+		Util::ReplaceByRegexp (templ, QRegularExpression { "%textbackgroundcolor\\{([^}]*)\\}%" },
+				[&] (QString& templ, const QRegularExpressionMatch& match)
+				{
+					templ.replace (match.capturedStart (), match.capturedLength (), highColor);
+					hasHighBackground = true;
+					return Util::ReplaceAdvance { highColor.size () };
+				});
 
 		// %senderStatusIcon%
 		if (templ.contains ("%senderStatusIcon%"))
@@ -636,14 +637,13 @@ namespace AdiumStyles
 		templ.replace ("%senderColor%", nickColor);
 
 		// %senderColor{N}%
-		QRegExp senderColorRx ("%senderColor(?:\\{([^}]*)\\})?%");
-		pos = 0;
-		while ((pos = senderColorRx.indexIn (templ, pos)) != -1)
-		{
-			QColor color (nickColor);
-			color = color.lighter (senderColorRx.cap (1).toInt ());
-			templ.replace (pos, senderColorRx.matchedLength (), color.name ());
-		}
+		Util::ReplaceByRegexp (templ, QRegularExpression { "%senderColor(?:\\{([^}]*)\\})?%" },
+				[&nickColor] (QString& templ, const QRegularExpressionMatch& match)
+				{
+					const auto& color = QColor { nickColor }.lighter (match.capturedView (1).toInt ()).name ();
+					templ.replace (match.capturedStart (), match.capturedLength (), color);
+					return Util::ReplaceAdvance { color.size () };
+				});
 
 		// %stateElementId%
 		if (templ.contains ("%stateElementId%"))
