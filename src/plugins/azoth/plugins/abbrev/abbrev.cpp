@@ -8,6 +8,7 @@
 
 #include "abbrev.h"
 #include <QIcon>
+#include <QWidget>
 #include <util/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
@@ -22,8 +23,10 @@ namespace LC::Azoth::Abbrev
 	{
 		qRegisterMetaType<Abbreviation> ("LC::Azoth::Abbrev::Abbreviation");
 		qRegisterMetaType<QList<Abbreviation>> ("QList<LC::Azoth::Abbrev::Abbreviation>");
+#if QT_VERSION_MAJOR < 6
 		qRegisterMetaTypeStreamOperators<Abbreviation> ();
 		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
+#endif
 
 		Util::InstallTranslator (QStringLiteral ("azoth_abbrev"));
 

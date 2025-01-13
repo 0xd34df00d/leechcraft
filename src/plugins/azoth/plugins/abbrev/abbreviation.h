@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <QString>
+#include <QList>
 #include <QMetaType>
+#include <QString>
 
 class QDataStream;
 
