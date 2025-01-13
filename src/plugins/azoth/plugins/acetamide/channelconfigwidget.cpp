@@ -31,11 +31,8 @@ namespace LC::Azoth::Acetamide
 		{
 			connect (edit,
 					&QLineEdit::textChanged,
-					[model] (const QString& text)
-					{
-						model->setFilterRegExp (QRegExp { text, Qt::CaseInsensitive, QRegExp::FixedString });
-						model->setFilterKeyColumn (1);
-					});
+					model,
+					&QSortFilterProxyModel::setFilterFixedString);
 		};
 		handleSearch (Ui_.BanSearch_, BanFilterModel_);
 		handleSearch (Ui_.ExceptSearch_, ExceptFilterModel_);
@@ -51,30 +48,24 @@ namespace LC::Azoth::Acetamide
 
 		SetupListButtons ();
 
-		BanModel_->setColumnCount (3);
 		BanModel_->setHorizontalHeaderLabels ({ tr ("Ban mask"), tr ("Set by"), tr ("Date") });
-
-		ExceptModel_->setColumnCount (3);
 		ExceptModel_->setHorizontalHeaderLabels ({ tr ("Except mask"), tr ("Set by"), tr ("Date") });
-
-		InviteModel_->setColumnCount (3);
 		InviteModel_->setHorizontalHeaderLabels ({ tr ("Invite mask"), tr ("Set by"), tr ("Date") });
 
-		Ui_.BanList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-		Ui_.ExceptList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-		Ui_.InviteList_->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-		Ui_.BanList_->setModel (BanFilterModel_);
-		Ui_.ExceptList_->setModel (ExceptFilterModel_);
-		Ui_.InviteList_->setModel (InviteFilterModel_);
-		BanFilterModel_->setSourceModel (BanModel_);
-		BanFilterModel_->setDynamicSortFilter (true);
-		BanFilterModel_->setFilterKeyColumn (-1);
-		ExceptFilterModel_->setSourceModel (ExceptModel_);
-		ExceptFilterModel_->setDynamicSortFilter (true);
-		ExceptFilterModel_->setFilterKeyColumn (-1);
-		InviteFilterModel_->setSourceModel (InviteModel_);
-		InviteFilterModel_->setDynamicSortFilter (true);
-		InviteFilterModel_->setFilterKeyColumn (-1);
+		using Section = std::tuple<QTableView*, QStandardItemModel*, QSortFilterProxyModel*>;
+		for (const auto [view, model, filter] : std::to_array<Section> ({
+					{ Ui_.BanList_, BanModel_, BanFilterModel_ },
+					{ Ui_.ExceptList_, ExceptModel_, ExceptFilterModel_ },
+					{ Ui_.InviteList_, InviteModel_, InviteFilterModel_ },
+				}))
+		{
+			filter->setDynamicSortFilter (true);
+			filter->setFilterKeyColumn (1);
+			filter->setFilterCaseSensitivity (Qt::CaseInsensitive);
+			filter->setSourceModel (model);
+			view->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+			view->setModel (filter);
+		}
 
 		ChannelMode_ = ChannelEntry_->GetChannelModes ();
 		HandleNewChannelModes (ChannelMode_);
