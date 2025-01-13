@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=LeechCraft Azoth (Qt5)
+Name=LeechCraft Azoth (Qt @LC_QT_VERSION@)
 GenericName=Instant Messenger
 GenericName[ar]=مراسل فوري
 GenericName[ast]=Mensaxería nel intre
@@ -154,7 +154,7 @@ Comment[zh_CN]=即时通讯客户程序
 Comment[zh_HK]=即時通訊程式
 Comment[zh_TW]=即時訊息客戶端程式
 Icon=leechcraft_main
-Exec=leechcraft-qt5 -H %U
+Exec=leechcraft@LC_LIBSUFFIX@ -H %U
 Categories=Qt;Network;InstantMessaging;
 Terminal=false
 X-StandardInstall=true
