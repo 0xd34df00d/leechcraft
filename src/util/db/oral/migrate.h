@@ -29,7 +29,7 @@ namespace LC::Util::oral
 			{
 				auto firstOpen = str.indexOf ('(');
 				auto lastClose = str.lastIndexOf (')');
-				return str.midRef (firstOpen, lastClose - firstOpen);
+				return QStringView { str }.mid (firstOpen, lastClose - firstOpen);
 			};
 			auto existing = figureOutFields (existingDDL);
 			auto suggested = figureOutFields (schema);
