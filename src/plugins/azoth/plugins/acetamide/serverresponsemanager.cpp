@@ -333,7 +333,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Parameters_.isEmpty () || opts.Message_.isEmpty ())
 			return;
 
-		const auto& ctcpArgs = opts.Message_.midRef (1, opts.Message_.length () - 2);
+		const auto& ctcpArgs = QStringView { opts.Message_ }.mid (1, opts.Message_.length () - 2);
 		if (ctcpArgs.isEmpty ())
 			return;
 
@@ -361,10 +361,14 @@ namespace LC::Azoth::Acetamide
 			sendReply (fullVersion ());
 		else if (command == "CLIENTINFO")
 			sendReply (fullVersion () + " - Supported tags: VERSION PING TIME SOURCE CLIENTINFO");
-		else if (command == "ACTION" && commandArg.size ())
+		else if (command == "ACTION" && !commandArg.isEmpty ())
+		{
+			auto msg = "/me "_qs;
+			msg += commandArg;
 			ISH_->IncomingMessage (opts.Nick_,
 					opts.Parameters_.last (),
-					QStringLiteral ("/me ") + commandArg);
+					msg);
+		}
 	}
 
 	void ServerResponseManager::GotCTCPRequestResult (const IrcMessageOptions& opts)
@@ -375,7 +379,7 @@ namespace LC::Azoth::Acetamide
 		if (opts.Message_.isEmpty ())
 			return;
 
-		const auto& ctcpArg = opts.Message_.midRef (1, opts.Message_.length () - 2);
+		const auto& ctcpArg = QStringView { opts.Message_ }.mid (1, opts.Message_.length () - 2);
 		if (ctcpArg.isEmpty ())
 			return;
 
@@ -435,7 +439,7 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotUserHost (const IrcMessageOptions& opts)
 	{
-		for (const auto& str : opts.Message_.splitRef (' '))
+		for (const auto& str : QStringView { opts.Message_ }.split (' '))
 		{
 			const auto& [user, host] = Util::BreakAt (str, '=');
 			ISH_->ShowUserHost (user.toString (), host.toString ());
@@ -444,7 +448,7 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotIson (const IrcMessageOptions& opts)
 	{
-		for (const auto& str : opts.Message_.splitRef (' '))
+		for (const auto& str : QStringView { opts.Message_ }.split (' '))
 			ISH_->ShowIsUserOnServer (str.toString ());
 	}
 
@@ -987,4 +991,3 @@ namespace LC::Azoth::Acetamide
 
 
 }
-

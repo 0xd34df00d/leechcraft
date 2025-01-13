@@ -18,7 +18,7 @@ namespace LC::Azoth::Acetamide
 		if (firstSpace < 0)
 			return {};
 
-		const auto& withoutNick = reply.midRef (firstSpace + 1);
+		const auto& withoutNick = QStringView { reply }.mid (firstSpace + 1);
 		const auto endMarker = u" :are supported by this server"_qsv;
 		if (!withoutNick.endsWith (endMarker))
 			return {};

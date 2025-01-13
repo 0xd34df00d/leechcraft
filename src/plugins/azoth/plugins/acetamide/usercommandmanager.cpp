@@ -83,9 +83,9 @@ namespace LC::Azoth::Acetamide
 	QByteArray UserCommandManager::VerifyMessage (const QString& msg, const QString& channelName) const
 	{
 		const int pos = msg.indexOf (' ');
-		auto cmd = (msg.startsWith ('/') ? msg.midRef (1, pos) : msg.leftRef (pos))
-				.toUtf8 ()
+		auto cmd = (msg.startsWith ('/') ? QStringView { msg }.mid (1, pos) : QStringView { msg }.left (pos))
 				.trimmed ()
+				.toUtf8 ()
 				.toLower ();
 
 		auto serverCommand = ServerHash (Util::AsStringView (cmd));
