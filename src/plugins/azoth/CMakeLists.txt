@@ -27,7 +27,7 @@ endif ()
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
 
 if (ENABLE_CRYPT)
-  find_package(Qca-qt${LC_QT_VERSION} REQUIRED)
+	find_package(Qca-qt${LC_QT_VERSION} REQUIRED)
 
 	add_definitions (-DENABLE_CRYPT)
 endif ()

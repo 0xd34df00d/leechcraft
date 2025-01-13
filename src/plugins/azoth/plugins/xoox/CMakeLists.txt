@@ -3,12 +3,11 @@ project (azoth_xoox)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET qxmpp>=1.3.0)
+pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET QXmppQt${LC_QT_VERSION}>=1.9.0)
 
 add_compile_definitions (
 	$<$<BOOL:${ENABLE_CRYPT}>:ENABLE_CRYPT>
 	$<$<BOOL:${ENABLE_MEDIACALLS}>:ENABLE_MEDIACALLS>
-	QXMPP_DISABLE_DEPRECATED_BEFORE=0x010400
 	)
 
 LC_DEFINE_PLUGIN (
@@ -122,7 +121,6 @@ LC_DEFINE_PLUGIN (
 	RESOURCES azothxooxresources.qrc
 	SETTINGS azothxooxsettings.xml
 	QT_COMPONENTS Concurrent Network Sql Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
-	LINK_LIBRARIES PkgConfig::QXMPP $<$<BOOL:${ENABLE_CRYPT}>:PkgConfig::QCA2>
+	LINK_LIBRARIES PkgConfig::QXMPP $<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
 	INSTALL_DESKTOP
 	)
-
