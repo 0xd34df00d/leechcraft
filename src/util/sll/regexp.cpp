@@ -10,9 +10,7 @@
 #include <QDataStream>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
@@ -58,7 +56,6 @@ namespace Util
 				Qt::CaseInsensitive :
 				Qt::CaseSensitive;
 	}
-}
 }
 
 QDataStream& operator<< (QDataStream& out, const LC::Util::RegExp& rx)

@@ -13,10 +13,9 @@
 #include <QString>
 #include <QMetaType>
 #include <QRegularExpression>
+#include "visitor.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	// TODO mark this deprecated once Qt6 port is complete
 	class UTIL_SLL_API RegExp
@@ -34,7 +33,40 @@ namespace Util
 		QString GetPattern () const;
 		Qt::CaseSensitivity GetCaseSensitivity () const;
 	};
-}
+
+	struct StopReplace {};
+
+	struct ReplaceAdvance
+	{
+		qsizetype Shift_;
+
+		explicit ReplaceAdvance (qsizetype shift)
+		: Shift_ { std::max<qsizetype> (shift, 1) }
+		{
+		}
+	};
+
+	using ReplacerResult = std::variant<StopReplace, ReplaceAdvance>;
+
+	template<typename R>
+	void ReplaceByRegexp (QString& body,
+			const QRegularExpression& rx,
+			R&& replacer)
+		requires requires { { replacer (body, QRegularExpressionMatch {}) } -> std::convertible_to<ReplacerResult>; }
+	{
+		int pos = 0;
+		bool keepGoing = true;
+		while (keepGoing)
+		{
+			const auto& match = rx.match (body, pos);
+			if (!match.hasMatch ())
+				return;
+
+			Util::Visit (ReplacerResult { replacer (body, match) },
+					[&] (StopReplace) { keepGoing = false; },
+					[&] (ReplaceAdvance adv) { pos = match.capturedStart (0) + adv.Shift_; });
+		}
+	}
 }
 
 UTIL_SLL_API QDataStream& operator<< (QDataStream&, const LC::Util::RegExp&);
