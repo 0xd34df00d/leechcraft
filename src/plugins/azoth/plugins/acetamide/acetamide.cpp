@@ -24,7 +24,9 @@ namespace LC::Azoth::Acetamide
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+#if QT_VERSION_MAJOR < 6
 		qRegisterMetaTypeStreamOperators<QList<QStringList>> ("QList<QStringList>");
+#endif
 
 		Util::InstallTranslator (QStringLiteral ("azoth_acetamide"));
 
