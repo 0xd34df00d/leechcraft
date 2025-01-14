@@ -26,7 +26,9 @@ namespace LC::Azoth::Depester
 	{
 		Util::InstallTranslator ("azoth_depester");
 		qRegisterMetaType<QSet<QString>> ("QSet<QString>");
+#if QT_VERSION_MAJOR < 6
 		qRegisterMetaTypeStreamOperators<QSet<QString>> ("QSet<QString>");
+#endif
 
 		LoadIgnores ();
 
