@@ -8,7 +8,6 @@
 
 #include "ircjoingroupchat.h"
 #include <QComboBox>
-#include <QTextCodec>
 #include <QValidator>
 #include <util/sll/qtutil.h>
 #include "ircaccount.h"
@@ -21,8 +20,7 @@ namespace LC::Azoth::Acetamide
 	{
 		Ui_.setupUi (this);
 
-		for (const auto& codec : QTextCodec::availableCodecs ())
-			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
+		Ui_.Encoding_->addItems (QStringConverter::availableCodecs ());
 		Ui_.Encoding_->model ()->sort (0);
 		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (QStringLiteral ("UTF-8")));
 

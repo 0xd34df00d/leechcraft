@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "ircserverhandler.h"
-#include <QTextCodec>
 #include <QTimer>
 #include <util/util.h>
 #include <util/sll/prelude.h>

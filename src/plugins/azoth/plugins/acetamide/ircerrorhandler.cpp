@@ -8,7 +8,6 @@
 
 
 #include "ircerrorhandler.h"
-#include <QTextCodec>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>

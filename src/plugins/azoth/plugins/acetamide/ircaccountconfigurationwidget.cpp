@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "ircaccountconfigurationwidget.h"
-#include <QTextCodec>
 
 namespace LC::Azoth::Acetamide
 {
@@ -16,8 +15,7 @@ namespace LC::Azoth::Acetamide
 	{
 		Ui_.setupUi (this);
 
-		for (const auto& codec : QTextCodec::availableCodecs ())
-			Ui_.DefaultEncoding_->addItem (QString::fromUtf8 (codec));
+		Ui_.DefaultEncoding_->addItems (QStringConverter::availableCodecs ());
 		Ui_.DefaultEncoding_->model ()->sort (0);
 		Ui_.DefaultEncoding_->setCurrentIndex (Ui_.DefaultEncoding_->findText (QStringLiteral ("UTF-8")));
 	}

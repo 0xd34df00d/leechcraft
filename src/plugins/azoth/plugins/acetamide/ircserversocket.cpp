@@ -9,7 +9,6 @@
 
 #include "ircserversocket.h"
 #include <QTcpSocket>
-#include <QTextCodec>
 #include <QTimer>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
@@ -21,6 +20,51 @@
 namespace LC::Azoth::Acetamide
 {
 	constexpr int MaxRetriesCount = 10;
+
+	class IrcServerSocket::Converter
+	{
+		QString Name_;
+		QStringEncoder Encoder_;
+		QStringDecoder Decoder_;
+	public:
+		struct UnknownEncoding : std::exception {};
+
+		Converter ()
+		: Name_ { "System" }
+		, Encoder_ { QStringConverter::System }
+		, Decoder_ { QStringConverter::System }
+		{
+		}
+
+		explicit Converter (QAnyStringView encoding)
+		: Name_ { encoding.toString () }
+		, Encoder_ { encoding }
+		, Decoder_ { encoding }
+		{
+			if (!Encoder_.isValid () || !Decoder_.isValid ())
+				throw UnknownEncoding {};
+		}
+
+		QString ToUnicode (const QByteArray& data)
+		{
+			return Decoder_.decode (data);
+		}
+
+		QByteArray FromUnicode (const QString& data)
+		{
+			return Encoder_.encode (data);
+		}
+
+		QString GetName () const
+		{
+			return Name_;
+		}
+
+		static std::unique_ptr<Converter> DefaultConverter ()
+		{
+			return std::make_unique<Converter> ();
+		}
+	};
 
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject { ish }
@@ -57,7 +101,7 @@ namespace LC::Azoth::Acetamide
 					RetryTimer_->stop ();
 
 					while (socket->canReadLine ())
-						ISH_->ReadReply (GetCodec ()->toUnicode (socket->readLine ()));
+						ISH_->ReadReply (GetCodec ().ToUnicode (socket->readLine ()));
 				});
 
 		connect (socket,
@@ -135,7 +179,7 @@ namespace LC::Azoth::Acetamide
 			return;
 		}
 
-		if (socket->write (GetCodec ()->fromUnicode (message)) == -1)
+		if (socket->write (GetCodec ().FromUnicode (message)) == -1)
 			qWarning () << Q_FUNC_INFO
 					<< socket->error ()
 					<< socket->errorString ();
@@ -146,41 +190,29 @@ namespace LC::Azoth::Acetamide
 		GetSocketPtr ()->close ();
 	}
 
-	QTextCodec* IrcServerSocket::GetCodec ()
+	IrcServerSocket::Converter& IrcServerSocket::GetCodec ()
 	{
 		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
-		if (LastCodec_ && LastCodec_->name () == encoding)
-			return LastCodec_;
+		if (LastConverter_ && LastConverter_->GetName () == encoding)
+			return *LastConverter_;
 
-		const auto newCodec = encoding == "System"_ql ?
-				QTextCodec::codecForLocale () :
-				QTextCodec::codecForName (encoding.toLatin1 ());
-		if (newCodec)
+		try
 		{
-			LastCodec_ = newCodec;
-			return LastCodec_;
+			LastConverter_ = std::make_unique<Converter> (encoding);
+		}
+		catch (const Converter::UnknownEncoding&)
+		{
+			qWarning () << "unknown encoding" << encoding << QStringConverter::availableCodecs ();
+			const auto& notify = Util::MakeNotification (Lits::AzothAcetamide,
+					tr ("Unknown encoding %1.")
+						.arg ("<em>" + encoding + "</em>"),
+					Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (notify);
+
+			LastConverter_ = Converter::DefaultConverter ();
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unable to create codec for encoding `"
-				<< encoding.toUtf8 ()
-				<< "`; known codecs:"
-				<< QTextCodec::availableCodecs ();
-
-		const auto& notify = Util::MakeNotification (Lits::AzothAcetamide,
-				tr ("Unknown encoding %1.")
-					.arg ("<em>" + encoding + "</em>"),
-				Priority::Critical);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (notify);
-
-		if (LastCodec_)
-			return LastCodec_;
-
-		qWarning () << Q_FUNC_INFO
-				<< "no codec is set, will fall back to locale-default codec";
-
-		LastCodec_ = QTextCodec::codecForLocale ();
-		return LastCodec_;
+		return *LastConverter_;
 	}
 
 	QTcpSocket* IrcServerSocket::GetSocketPtr () const

@@ -10,6 +10,8 @@
 
 #include <memory>
 #include <variant>
+#include <QStringDecoder>
+#include <QStringEncoder>
 #include <QObject>
 #include <QAbstractSocket>
 #include <interfaces/azoth/icanhavesslerrors.h>
@@ -33,7 +35,8 @@ namespace LC::Azoth::Acetamide
 		using Ssl_ptr = std::shared_ptr<QSslSocket>;
 		std::variant<Tcp_ptr, Ssl_ptr> Socket_;
 
-		QTextCodec *LastCodec_ = nullptr;
+		class Converter;
+		std::unique_ptr<Converter> LastConverter_ {};
 
 		QString Host_;
 		int Port_ = 0;
@@ -48,7 +51,7 @@ namespace LC::Azoth::Acetamide
 		void Send (const QString&);
 		void Close ();
 	private:
-		QTextCodec* GetCodec ();
+		Converter& GetCodec ();
 		QTcpSocket* GetSocketPtr () const;
 		void HandleSslErrors (const QList<QSslError>& errors);
 	signals:

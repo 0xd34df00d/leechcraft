@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "bookmarkeditwidget.h"
-#include <QTextCodec>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "localtypes.h"
@@ -18,8 +17,7 @@ namespace LC::Azoth::Acetamide
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		for (const auto& codec : QTextCodec::availableCodecs ())
-			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
+		Ui_.Encoding_->addItems (QStringConverter::availableCodecs ());
 		Ui_.Encoding_->model ()->sort (0);
 	}
 
