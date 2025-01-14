@@ -47,7 +47,9 @@ namespace LastSeen
 		Util::InstallTranslator ("azoth_lastseen");
 
 		qRegisterMetaType<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");
+#endif
 
 		Storage_ = std::make_shared<OnDiskStorage> ();
 
