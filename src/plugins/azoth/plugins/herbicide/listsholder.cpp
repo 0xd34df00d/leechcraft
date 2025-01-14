@@ -33,29 +33,28 @@ namespace Herbicide
 		}
 	}
 
-	QSet<QRegExp> ListsHolder::GetWhitelist (IAccount *acc)
+	QSet<QRegularExpression> ListsHolder::GetWhitelist (IAccount *acc)
 	{
 		return PreloadList (acc).White_;
 	}
 
-	QSet<QRegExp> ListsHolder::GetBlacklist (IAccount *acc)
+	QSet<QRegularExpression> ListsHolder::GetBlacklist (IAccount *acc)
 	{
 		return PreloadList (acc).Black_;
 	}
 
 	namespace
 	{
-		QSet<QRegExp> GetRegexps (const QVariant& var)
+		QSet<QRegularExpression> GetRegexps (const QVariant& var)
 		{
-			QSet<QRegExp> result;
+			QSet<QRegularExpression> result;
 
-			const auto& strings = var.toStringList ();
-			for (auto string : strings)
+			auto strings = var.toStringList ();
+			for (auto&& string : strings)
 			{
-				string = string.trimmed ();
-				if (string.isEmpty ())
-					continue;
-				result << QRegExp (string);
+				string = std::move (string).trimmed ();
+				if (!string.isEmpty ())
+					result << QRegularExpression (string);
 			}
 
 			return result;

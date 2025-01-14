@@ -217,10 +217,10 @@ namespace Herbicide
 
 		const auto& id = entry->GetHumanReadableID ();
 
-		const auto checkRxList = [&id] (const QSet<QRegExp>& rxList)
+		const auto checkRxList = [&id] (const QSet<QRegularExpression>& rxList)
 		{
-			return std::any_of (rxList.begin (), rxList.end (),
-					[&id] (const QRegExp& rx) { return rx.exactMatch (id); });
+			return std::ranges::any_of (rxList,
+					[&id] (const QRegularExpression& rx) { return rx.match (id).hasMatch (); });
 		};
 
 		const auto acc = entry->GetParentAccount ();

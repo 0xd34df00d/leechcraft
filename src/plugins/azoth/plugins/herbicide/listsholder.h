@@ -10,7 +10,7 @@
 
 #include <functional>
 #include <QSet>
-#include <QRegExp>
+#include <QRegularExpression>
 
 class QVariant;
 
@@ -28,16 +28,16 @@ namespace Herbicide
 
 		struct ListInfo
 		{
-			QSet<QRegExp> White_;
-			QSet<QRegExp> Black_;
+			QSet<QRegularExpression> White_;
+			QSet<QRegularExpression> Black_;
 		};
 
 		QHash<QByteArray, ListInfo> Acc2ListInfo_;
 	public:
 		ListsHolder (const std::function<QVariant (IAccount*, QByteArray)>&);
 
-		QSet<QRegExp> GetWhitelist (IAccount*);
-		QSet<QRegExp> GetBlacklist (IAccount*);
+		QSet<QRegularExpression> GetWhitelist (IAccount*);
+		QSet<QRegularExpression> GetBlacklist (IAccount*);
 
 		void ReloadLists (IAccount*);
 	private:
