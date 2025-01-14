@@ -139,7 +139,6 @@ SUBPLUGIN (EMBEDMEDIA "Build EmbedMedia  enables embedding different media objec
 SUBPLUGIN (HERBICIDE "Build Herbicide, a basic antispam plugin")
 SUBPLUGIN (HILI "Build HiLi, plugin for customizing conference highlights")
 SUBPLUGIN (ISTERIQUE "Build Isterique, plugin for decapitalizing all-caps text")
-SUBPLUGIN (JUICK "Build plugin for the juick.com microblogging service")
 SUBPLUGIN (KEESO "Build Keeso for TrAnSfOrMiNg TeXt LiKe ThIs")
 SUBPLUGIN (LASTSEEN "Build plugin for keeping track of the date of contacts' being online")
 SUBPLUGIN (METACONTACTS "Build support for metacontacts")
