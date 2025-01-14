@@ -11,9 +11,9 @@
 #include <QObject>
 #include <QHash>
 #include <QList>
+#include <QStringList>
 
 class QAction;
-class QStringList;
 
 namespace LC::Azoth::Autopaste
 {

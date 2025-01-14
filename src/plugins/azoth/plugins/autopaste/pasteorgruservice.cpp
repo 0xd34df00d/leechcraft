@@ -10,7 +10,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
-#include <QRegExp>
 
 namespace LC::Azoth::Autopaste
 {
