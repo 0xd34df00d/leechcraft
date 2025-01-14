@@ -140,7 +140,7 @@ namespace BirthdayNotifier
 			return;
 
 		const auto& rangesStr = XmlSettingsManager::Instance ().property ("NotificationDays").toString ();
-		const auto& ranges = rangesStr.splitRef (',', Qt::SkipEmptyParts);
+		const auto& ranges = QStringView { rangesStr }.split (',', Qt::SkipEmptyParts);
 
 		QList<int> allowedDays;
 		for (const auto& range : ranges)
