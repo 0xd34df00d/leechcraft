@@ -111,12 +111,8 @@ namespace HiLi
 		for (auto&& string : strings)
 		{
 			string = std::move (string).trimmed ();
-			if (string.isEmpty ())
-				continue;
-
-			string.prepend (".*");
-			string.append (".*");
-			RegexpsCache_ << QRegularExpression { string, QRegularExpression::CaseInsensitiveOption };
+			if (!string.isEmpty ())
+				RegexpsCache_ << QRegularExpression { string, QRegularExpression::CaseInsensitiveOption };
 		}
 	}
 }
