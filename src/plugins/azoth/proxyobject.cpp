@@ -15,6 +15,7 @@
 #include <util/sys/sysinfo.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/regexp.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -29,8 +30,7 @@
 namespace LC::Azoth
 {
 	FormatterProxyObject::FormatterProxyObject ()
-	: LinkRegexp_ (R"(((?:(?:\w+://)|(?:xmpp:|mailto:|www\.|magnet:|irc:))[^\s<]+))",
-			Qt::CaseInsensitive)
+	: LinkRegexp_ { R"(((?:(?:\w+://)|(?:xmpp:|mailto:|www\.|magnet:|irc:))[^\s<]+))", QRegularExpression::CaseInsensitiveOption }
 	{
 	}
 
@@ -120,63 +120,57 @@ namespace LC::Azoth
 
 	const auto MaxBodySize4Links = 10 * 1024;
 
+	namespace
+	{
+		bool IsLinkEscaped (const QString& body, int pos)
+		{
+			return pos > 0 && std::ranges::contains (R"("=\)", body.at (pos - 1));
+		}
+	}
+
 	void FormatterProxyObject::FormatLinks (QString& body)
 	{
 		if (body.size () > MaxBodySize4Links)
 			return;
 
-		int pos = 0;
-		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
-		{
-			const auto& link = LinkRegexp_.cap (1);
-			if (pos > 0 &&
-					(body.at (pos - 1) == '"' ||
-						body.at (pos - 1) == '=' ||
-						body.at (pos - 1) == '\''))
-			{
-				pos += link.size ();
-				continue;
-			}
+		Util::ReplaceByRegexp (body, LinkRegexp_,
+				[] (QString& body, const QRegularExpressionMatch& match)
+				{
+					const auto& link = match.captured (1);
 
-			auto trimmed = link.trimmed ();
-			if (trimmed.startsWith ("www."_ql))
-				trimmed.prepend ("http://");
+					const auto pos = match.capturedStart (1);
+					if (IsLinkEscaped (body, pos))
+						return Util::ReplaceAdvance { link.size () };
 
-			auto shortened = trimmed;
-			const auto length = XmlSettingsManager::Instance ()
-					.property ("ShortenURLLength").toInt ();
-			if (shortened.size () > length)
-				shortened = trimmed.left (length / 2) + "..." + trimmed.right (length / 2);
+					auto trimmed = link.trimmed ();
+					if (trimmed.startsWith ("www."_ql))
+						trimmed.prepend ("http://");
 
-			const auto& str = "<a href=\"" + trimmed + "\" title=\"" + trimmed + "\">" + shortened + "</a>";
-			body.replace (pos, link.length (), str);
+					const auto length = XmlSettingsManager::Instance ().property ("ShortenURLLength").toInt ();
+					const auto& shortened = trimmed.size () > length ?
+							trimmed.left (length / 2) + "..." + trimmed.right (length / 2) :
+							trimmed;
 
-			pos += str.length ();
-		}
+					const auto& str = "<a href=\"" + trimmed + "\" title=\"" + trimmed + "\">" + shortened + "</a>";
+					body.replace (pos, link.length (), str);
+					return Util::ReplaceAdvance { str.size () };
+				});
 	}
 
 	QStringList FormatterProxyObject::FindLinks (const QString& body)
 	{
-		QStringList result;
-
 		if (body.size () > MaxBodySize4Links)
-			return result;
+			return {};
 
-		int pos = 0;
-		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+		QStringList result;
+		for (const auto& match : LinkRegexp_.globalMatch (body))
 		{
-			const auto& link = LinkRegexp_.cap (1);
-			if (pos > 0 &&
-					(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
-			{
-				pos += link.size ();
+			const auto pos = match.capturedStart (1);
+			if (IsLinkEscaped (body, pos))
 				continue;
-			}
 
-			result << link.trimmed ();
-			pos += link.size ();
+			result << match.captured (1);
 		}
-
 		return result;
 	}
 

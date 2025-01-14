@@ -13,7 +13,7 @@
 #include <QIcon>
 #include <QColor>
 #include <QDateTime>
-#include <QRegExp>
+#include <QRegularExpression>
 #include "interfaces/azoth/iproxyobject.h"
 
 namespace LC
@@ -22,7 +22,7 @@ namespace Azoth
 {
 	class FormatterProxyObject : public IFormatterProxyObject
 	{
-		QRegExp LinkRegexp_;
+		QRegularExpression LinkRegexp_;
 	public:
 		FormatterProxyObject ();
 
