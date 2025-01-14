@@ -9,7 +9,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_HILI_HILI_H
 #define PLUGINS_AZOTH_PLUGINS_HILI_HILI_H
 #include <QObject>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
@@ -32,7 +32,7 @@ namespace HiLi
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.HiLi")
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		QList<QRegExp> RegexpsCache_;
+		QList<QRegularExpression> RegexpsCache_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

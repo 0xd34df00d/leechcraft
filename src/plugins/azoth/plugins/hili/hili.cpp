@@ -97,8 +97,7 @@ namespace HiLi
 			return;
 		}
 
-		if (std::any_of (RegexpsCache_.begin (), RegexpsCache_.end (),
-				[&body] (const QRegExp& rx) { return body.contains (rx); }))
+		if (std::ranges::any_of (RegexpsCache_, [&body] (const QRegularExpression& rx) { return body.contains (rx); }))
 		{
 			proxy->CancelDefault ();
 			proxy->SetReturnValue (true);
@@ -108,16 +107,16 @@ namespace HiLi
 	void Plugin::handleRegexpsChanged ()
 	{
 		RegexpsCache_.clear ();
-		const auto& strings = XmlSettingsManager::Instance ().property ("HighlightRegexps").toStringList ();
-		for (auto string : strings)
+		auto strings = XmlSettingsManager::Instance ().property ("HighlightRegexps").toStringList ();
+		for (auto&& string : strings)
 		{
-			string = string.trimmed ();
+			string = std::move (string).trimmed ();
 			if (string.isEmpty ())
 				continue;
 
 			string.prepend (".*");
 			string.append (".*");
-			RegexpsCache_ << QRegExp (string, Qt::CaseInsensitive, QRegExp::RegExp2);
+			RegexpsCache_ << QRegularExpression { string, QRegularExpression::CaseInsensitiveOption };
 		}
 	}
 }
