@@ -351,7 +351,7 @@ namespace LC::Azoth::StandardStyles
 			str.remove (' ');
 			str.remove (QStringLiteral ("rgb("));
 			str.remove (')');
-			const auto& vals = str.splitRef (',', Qt::SkipEmptyParts);
+			const auto& vals = QStringView { str }.split (',', Qt::SkipEmptyParts);
 
 			QColor color;
 			if (vals.size () == 3)
