@@ -388,8 +388,7 @@ namespace Murm
 
 		QString ProcessMessageBody (QString body)
 		{
-			QRegExp rx { "\\[([a-z]+[0-9]+)\\|(.*)\\]", Qt::CaseInsensitive, QRegExp::RegExp2 };
-			rx.setMinimal (true);
+			QRegularExpression rx { "\\[([a-z]+[0-9]+?)\\|(.*?)\\]", QRegularExpression::CaseInsensitiveOption };
 			body.replace (rx, "<a href='https://vk.com/\\1'>\\2</a>");
 
 			return body;

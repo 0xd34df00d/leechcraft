@@ -1268,7 +1268,7 @@ namespace Murm
 
 		const auto& str = data.toMap () ["response"].toString ();
 		QList<qulonglong> ids;
-		for (const auto& sub : str.splitRef (",", Qt::SkipEmptyParts))
+		for (const auto& sub : QString { str }.split (",", Qt::SkipEmptyParts))
 		{
 			bool ok = false;
 			const auto id = sub.toULongLong (&ok);

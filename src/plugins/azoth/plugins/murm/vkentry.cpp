@@ -300,9 +300,9 @@ namespace Murm
 			{
 				QString pattern;
 				if (known > 0xffff)
-					pattern.append (known >> 16).append (known & 0xffff);
+					pattern.append (static_cast<quint16> (known >> 16)).append (static_cast<quint16> (known & 0xffff));
 				else
-					pattern.append (known);
+					pattern.append (static_cast<quint16> (known));
 
 				text.replace (pattern,
 						QString ("<img src='http://vk.com/images/emoji/%1.png'/>")
