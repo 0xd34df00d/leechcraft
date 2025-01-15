@@ -270,7 +270,7 @@ namespace MuCommands
 				}
 
 				if (rx.Pat_)
-					urls = urls.filter (QRegExp { QString::fromStdString (*rx.Pat_) });
+					urls = urls.filter (QRegularExpression { QString::fromStdString (*rx.Pat_) });
 
 				for (const auto& url : urls)
 				{
