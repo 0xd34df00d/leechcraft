@@ -17,8 +17,8 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQuickItem>
+#include <QScreen>
 #include <QClipboard>
-#include <QDesktopWidget>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -495,7 +495,7 @@ namespace Blasq
 			ImagesView_->rootObject ()->setProperty ("imageZoom", Zooms [value]);
 		else
 		{
-			const auto width = qApp->desktop ()->screenGeometry (this).width ();
+			const auto width = screen ()->geometry ().width ();
 			const int lowest = width / 20.;
 			const int highest = width / 5.;
 

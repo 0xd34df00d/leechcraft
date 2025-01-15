@@ -10,7 +10,6 @@
 #include <QDialog>
 #include <QToolBar>
 #include <QDialogButtonBox>
-#include <QDesktopWidget>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/gui/geometry.h>
 #include "photostab.h"
