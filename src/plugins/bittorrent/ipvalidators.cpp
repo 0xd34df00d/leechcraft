@@ -13,7 +13,7 @@ namespace LC::BitTorrent
 {
 	QValidator::State ValidateIPv4::validate (QString& input, int&) const
 	{
-		const auto& octets = input.splitRef ('.', Qt::SkipEmptyParts);
+		const auto& octets = QStringView { input }.split ('.', Qt::SkipEmptyParts);
 		if (octets.size () != 4)
 			return Invalid;
 		for (const auto& octet : octets)
@@ -32,7 +32,7 @@ namespace LC::BitTorrent
 		if (input.count (QStringLiteral ("::")) > 1)
 			return Intermediate;
 
-		const auto& octets = input.split (':', Qt::SkipEmptyParts);
+		const auto& octets = QStringView { input }.split (':', Qt::SkipEmptyParts);
 		if (octets.size () != 8)
 			return Invalid;
 		for (const auto& octet : octets)

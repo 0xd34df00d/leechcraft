@@ -184,7 +184,7 @@ namespace LC::BitTorrent
 	bool IsValidTorrent (const QByteArray& data)
 	{
 		libtorrent::error_code ec;
-		libtorrent::torrent_info result { data.constData (), data.size (), ec };
+		libtorrent::torrent_info result { data.constData (), static_cast<int> (data.size ()), ec };
 		return !ec;
 	}
 

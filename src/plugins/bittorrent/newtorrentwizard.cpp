@@ -105,9 +105,9 @@ namespace LC::BitTorrent
 		result.Date_ = field (Date).toDate ();
 		result.Comment_ = field (Comment).toString ();
 		result.Path_ = field (RootPath).toString ();
-		result.URLSeeds_ = field (URLSeeds).toString ().split (QRegExp ("\\s+"));
+		result.URLSeeds_ = field (URLSeeds).toString ().split (QRegularExpression ("\\s+"));
 		result.DHTEnabled_ = field (DHTEnabled).toBool ();
-		result.DHTNodes_ = field (DHTNodes).toString ().split (QRegExp ("\\s+"));
+		result.DHTNodes_ = field (DHTNodes).toString ().split (QRegularExpression ("\\s+"));
 		result.PieceSize_ = GetPieceSize (field (PieceSize).toInt ());
 
 		if (result.Path_.endsWith ('/'))

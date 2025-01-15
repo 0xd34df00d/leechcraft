@@ -48,7 +48,7 @@ namespace LC::BitTorrent
 			try
 			{
 
-				libtorrent::torrent_info torrent { torrentData.constData (), torrentData.size () };
+				libtorrent::torrent_info torrent { torrentData.constData (), static_cast<int> (torrentData.size ()) };
 				const auto& files = torrent.files ();
 				switch (files.num_files ())
 				{
@@ -216,22 +216,22 @@ namespace LC::BitTorrent
 
 		MoveUp_ = Toolbar_->addAction (tr ("Move up"), this,
 				[this] { Core::Instance ()->MoveUp (GetSelectedHandlesIndices ()); });
-		MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
+		MoveUp_->setShortcut (Qt::CTRL | Qt::Key_Up);
 		MoveUp_->setProperty ("ActionIcon", "go-up");
 
 		MoveDown_ = Toolbar_->addAction (tr ("Move down"), this,
 				[this] { Core::Instance ()->MoveDown (GetSelectedHandlesIndices ()); });
-		MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
+		MoveDown_->setShortcut (Qt::CTRL | Qt::Key_Down);
 		MoveDown_->setProperty ("ActionIcon", "go-down");
 
 		MoveToTop_ = Toolbar_->addAction (tr ("Move to top"), this,
 				[this] { Core::Instance ()->MoveToTop (GetSelectedHandlesIndices ()); });
-		MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
+		MoveToTop_->setShortcut (Qt::CTRL | Qt::SHIFT | Qt::Key_Up);
 		MoveToTop_->setProperty ("ActionIcon", "go-top");
 
 		MoveToBottom_ = Toolbar_->addAction (tr ("Move to bottom"), this,
 				[this] { Core::Instance ()->MoveToBottom (GetSelectedHandlesIndices ()); });
-		MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
+		MoveToBottom_->setShortcut (Qt::CTRL | Qt::SHIFT | Qt::Key_Down);
 		MoveToBottom_->setProperty ("ActionIcon", "go-bottom");
 
 		Toolbar_->addSeparator ();

@@ -34,7 +34,7 @@ namespace LC::BitTorrent
 			{
 				const auto& idx = sourceModel ()->index (row, TorrentFilesModel::ColumnPath, parent);
 
-				if (idx.data ().toString ().contains (filterRegExp ().pattern (), Qt::CaseInsensitive))
+				if (idx.data ().toString ().contains (filterRegularExpression ().pattern (), Qt::CaseInsensitive))
 					return true;
 
 				const auto rc = sourceModel ()->rowCount (idx);

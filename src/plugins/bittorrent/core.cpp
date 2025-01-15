@@ -76,7 +76,7 @@ namespace BitTorrent
 		auto BuildFingerprint (const ICoreProxy_ptr& proxy)
 		{
 			auto ver = proxy->GetVersion ().section ('-', 0, 0);
-			const auto& vers = ver.splitRef ('.', Qt::SkipEmptyParts);
+			const auto& vers = QStringView { ver }.split ('.', Qt::SkipEmptyParts);
 			if (vers.size () != 3)
 				throw std::runtime_error ("Malformed version string " + ver.toStdString ());
 			ver = QStringLiteral ("%1%2")

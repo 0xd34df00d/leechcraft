@@ -39,7 +39,7 @@ namespace LC::BitTorrent
 			break;
 		}
 
-		const auto& pattern = filterRegExp ().pattern ();
+		const auto& pattern = filterRegularExpression ().pattern ();
 		if (pattern.isEmpty ())
 			return true;
 

@@ -9,13 +9,11 @@
 #pragma once
 
 #include <cstdint>
+#include <QPair>
 
 class QByteArray;
 class QModelIndex;
 class QString;
-
-template<typename, typename>
-class QPair;
 
 template<typename, typename>
 class QMap;
