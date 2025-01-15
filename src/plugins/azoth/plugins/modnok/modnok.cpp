@@ -11,6 +11,7 @@
 #include <QTextDocument>
 #include <QProcess>
 #include <QTranslator>
+#include <QRegularExpression>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/imessage.h>
@@ -18,6 +19,7 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/void.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -114,7 +116,7 @@ namespace Modnok
 	{
 		bool IsSecure (const QString& formula)
 		{
-			static QRegExp rx ("\\\\(def|let|futurelet|newcommand|renewcomment|else|fi|write|input|include"
+			static QRegularExpression rx ("\\\\(def|let|futurelet|newcommand|renewcomment|else|fi|write|input|include"
 					"|chardef|catcode|makeatletter|noexpand|toksdef|every|errhelp|errorstopmode|scrollmode|nonstopmode|batchmode"
 					"|read|csname|newhelp|relax|afterground|afterassignment|expandafter|noexpand|special|command|loop|repeat|toks"
 					"|output|line|mathcode|name|item|section|mbox|DeclareRobustCommand)[^a-zA-Z]");
@@ -159,57 +161,49 @@ namespace Modnok
 		return img;
 	}
 
+	std::optional<QString> Plugin::NormalizeAndRender (QString formula)
+	{
+		formula = formula
+				.remove ("$$")
+				.replace ("&lt;", "<")
+				.replace ("&gt;", ">")
+				.replace ("&quot;", "\"")
+				.replace ("&amp;", "&")
+				.trimmed ();
+		if (formula.isEmpty () || !IsSecure (formula))
+			return {};
+
+		const auto& rendered = GetRenderedImage (formula);
+		if (rendered.isNull ())
+			return {};
+
+		return Util::GetAsBase64Src (rendered);
+	}
+
 	QString Plugin::HandleBody (QString body)
 	{
-		QRegExp rx ("\\$\\$.+\\$\\$");
-		rx.setMinimal (true);
-
-		int pos = 0;
-
 		QMap<QString, QString> replaceMap;
-		while (pos >= 0 && pos < body.size ())
+		for (const auto& match : QRegularExpression { "\\$\\$.+?\\$\\$" }.globalMatch (body))
 		{
-			pos = rx.indexIn (body, pos);
-
-			if (pos < 0)
-				break;
-
-			const QString& match = rx.cap (0);
-			pos += rx.matchedLength ();
-
-			if (replaceMap.contains (match))
-				continue;
-
-			QString formula = match;
-			formula.remove ("$$");
-			formula = formula.trimmed ();
-			if (formula.isEmpty () || !IsSecure (formula))
-				continue;
-
-			formula.replace ("&lt;", "<");
-			formula.replace ("&gt;", ">");
-			formula.replace ("&quot;", "\"");
-			formula.replace ("&amp;", "&");
-
-			const QImage& rendered = GetRenderedImage (formula);
-			if (rendered.isNull ())
-				continue;
-
-			replaceMap [match] = Util::GetAsBase64Src (rendered);
+			const auto& formula = match.captured (0);
+			if (!replaceMap.contains (formula))
+				NormalizeAndRender (formula)
+					.transform ([&] (const QString& rendered)
+						{
+							replaceMap [formula] = rendered;
+							return Util::Void {};
+						});
 		}
 
-		if (replaceMap.isEmpty ())
-			return body;
-
-		for (const auto& pair : Util::Stlize (replaceMap))
+		for (const auto& [formula, image] : Util::Stlize (replaceMap))
 		{
-			auto escFormula = pair.first;
+			auto escFormula = formula;
 			escFormula.replace ('\"', "&quot;");
 			escFormula.remove ("$$");
-			const QString img = QString ("<img src=\"%1\" alt=\"%2\" style=\"vertical-align: middle;\" />")
-					.arg (pair.second)
+			const QString& imgTag = QString ("<img src=\"%1\" alt=\"%2\" style=\"vertical-align: middle;\" />")
+					.arg (image)
 					.arg (escFormula.trimmed ().simplified ());
-			body.replace (pair.first, img);
+			body.replace (formula, imgTag);
 		}
 
 		return body;

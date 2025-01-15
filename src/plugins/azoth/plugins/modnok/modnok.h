@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <QRegExp>
 #include <QCache>
 #include <QImage>
 #include <interfaces/iinfo.h>
@@ -53,6 +52,7 @@ namespace Modnok
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		QImage GetRenderedImage (const QString&);
+		std::optional<QString> NormalizeAndRender (QString);
 		QString HandleBody (QString);
 	public slots:
 		void hookFormatBodyEnd (LC::IHookProxy_ptr proxy,
