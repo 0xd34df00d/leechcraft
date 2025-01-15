@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=LeechCraft BitTorrent (Qt5)
+Name=LeechCraft BitTorrent (Qt @LC_QT_VERSION@)
 GenericName=BitTorrent Client
 Icon=leechcraft_main
-Exec=leechcraft-qt5 -D %U
+Exec=leechcraft@LC_LIBSUFFIX@ -D %U
 Categories=Network;FileTransfer;P2P;Qt;
 Terminal=false
 X-StandardInstall=true
