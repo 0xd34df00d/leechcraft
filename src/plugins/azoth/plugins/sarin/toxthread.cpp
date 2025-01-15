@@ -470,29 +470,29 @@ namespace LC::Azoth::Sarin
 	{
 		Tox_Options opts
 		{
-			Config_.AllowIPv6_,
-			Config_.AllowUDP_,
-			Config_.AllowLocalDiscovery_,
-			true,		// TODO
-			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
-			Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),
-			static_cast<uint16_t> (Config_.ProxyPort_),
-			0,			// TODO
-			0,			// TODO
-			0,			// TODO
-			Config_.UdpHolePunching_,
-			ToxState_.isEmpty () ? TOX_SAVEDATA_TYPE_NONE : TOX_SAVEDATA_TYPE_TOX_SAVE,
-			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
-			static_cast<size_t> (ToxState_.size ()),
-			[] (Tox*,
+			.ipv6_enabled = Config_.AllowIPv6_,
+			.udp_enabled = Config_.AllowUDP_,
+			.local_discovery_enabled = Config_.AllowLocalDiscovery_,
+			.dht_announcements_enabled = true,		// TODO
+			.proxy_type = Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
+			.proxy_host = Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),	// this leaks the string
+			.proxy_port = static_cast<uint16_t> (Config_.ProxyPort_),
+			.start_port = 0,			// TODO
+			.end_port = 0,			// TODO
+			.tcp_port = 0,			// TODO
+			.hole_punching_enabled = Config_.UdpHolePunching_,
+			.savedata_type = ToxState_.isEmpty () ? TOX_SAVEDATA_TYPE_NONE : TOX_SAVEDATA_TYPE_TOX_SAVE,
+			.savedata_data = reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
+			.savedata_length = static_cast<size_t> (ToxState_.size ()),
+			.log_callback = [] (Tox*,
 					TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func, const char *message,
 					void *udata)
 			{
 				static_cast<ToxLogger*> (udata)->Log (level, file, line, func, message);
 			},
-			Logger_.get (),
-			false,
-			nullptr,
+			.log_user_data = Logger_.get (),
+			.experimental_thread_safety = false,
+			.experimental_groups_persistence = false,
 		};
 
 		TOX_ERR_NEW creationError {};
