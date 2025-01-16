@@ -8,7 +8,11 @@
 
 #include "downloaditemhandler.h"
 #include <QWebEngineProfile>
+#if QT_VERSION_MAJOR >= 6
+#include <QWebEngineDownloadRequest>
+#else
 #include <QWebEngineDownloadItem>
+#endif
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -21,18 +25,16 @@ namespace LC::Poshuku::WebEngineView
 		connect (prof,
 				&QWebEngineProfile::downloadRequested,
 				this,
-				&DownloadItemHandler::HandleDownloadItem);
-	}
+				[] (auto item)
+				{
+					item->cancel ();
 
-	void DownloadItemHandler::HandleDownloadItem (QWebEngineDownloadItem *item)
-	{
-		item->cancel ();
-
-		auto e = Util::MakeEntity (item->url (),
-				{},
-				FromUserInitiated | OnlyDownload,
-				item->mimeType ());
-		auto em = GetProxyHolder ()->GetEntityManager ();
-		em->HandleEntity (e);
+					auto e = Util::MakeEntity (item->url (),
+							{},
+							FromUserInitiated | OnlyDownload,
+							item->mimeType ());
+					auto em = GetProxyHolder ()->GetEntityManager ();
+					em->HandleEntity (e);
+				});
 	}
 }

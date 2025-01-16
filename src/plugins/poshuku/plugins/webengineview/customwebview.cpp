@@ -11,7 +11,11 @@
 #include <QFile>
 #include <QWebEngineSettings>
 #include <QWebEngineHistory>
+#if QT_VERSION_MAJOR >= 6
+#include <QWebEngineContextMenuRequest>
+#else
 #include <QWebEngineContextMenuData>
+#endif
 #include <QWebChannel>
 #include <QPrinter>
 #include <QPrintDialog>
@@ -248,7 +252,8 @@ namespace LC::Poshuku::WebEngineView
 		if (dialog.exec () != QDialog::Accepted)
 			return;
 
-		page ()->print (printer.get (), [printer] (bool) {});
+		// TODO port to Qt 6
+		// page ()->print (printer.get (), [printer] (bool) {});
 	}
 
 	QPixmap CustomWebView::MakeFullPageSnapshot ()
@@ -297,7 +302,11 @@ namespace LC::Poshuku::WebEngineView
 
 	QMenu* CustomWebView::CreateStandardContextMenu ()
 	{
+#if QT_VERSION_MAJOR >= 6
+		return createStandardContextMenu ();
+#else
 		return page ()->createStandardContextMenu ();
+#endif
 	}
 
 	namespace
@@ -478,7 +487,11 @@ namespace LC::Poshuku::WebEngineView
 
 	void CustomWebView::contextMenuEvent (QContextMenuEvent *event)
 	{
+#if QT_VERSION_MAJOR >= 6
+		const auto& data = *lastContextMenuRequest ();
+#else
 		const auto& data = page ()->contextMenuData ();
+#endif
 		emit contextMenuRequested (event->globalPos (),
 				{
 					data.isContentEditable (),

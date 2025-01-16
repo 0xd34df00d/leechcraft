@@ -19,7 +19,5 @@ namespace LC::Poshuku::WebEngineView
 	{
 	public:
 		explicit DownloadItemHandler (QWebEngineProfile*, QObject* = nullptr);
-	private:
-		void HandleDownloadItem (QWebEngineDownloadItem*);
 	};
 }
