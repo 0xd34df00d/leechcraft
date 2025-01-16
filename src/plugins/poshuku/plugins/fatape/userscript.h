@@ -9,8 +9,7 @@
 #pragma once
 
 #include <QMultiMap>
-#include <QReadWriteLock>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <interfaces/poshuku/iproxyobject.h>
 
 class QNetworkAccessManager;
@@ -26,7 +25,7 @@ namespace FatApe
 	class UserScript
 	{
 		QString ScriptPath_;
-		QRegExp MetadataRX_;
+		QRegularExpression MetadataRX_;
 		QMultiMap<QString, QString> Metadata_;
 		bool Enabled_;
 	public:
@@ -50,7 +49,6 @@ namespace FatApe
 		void Delete ();
 	private:
 		void ParseMetadata ();
-		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
 		void DownloadResource (const QString& resource, QNetworkAccessManager *networkManager);
 		void DownloadRequired (const QString& required, QNetworkAccessManager *networkManager);
     };

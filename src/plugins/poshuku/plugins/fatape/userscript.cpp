@@ -16,13 +16,13 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QStandardPaths>
 #include <QDir>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/poshuku/iwebview.h>
 #include "greasemonkey.h"
 #include "xmlsettingsmanager.h"
@@ -38,7 +38,7 @@ namespace FatApe
 
 	UserScript::UserScript (const QString& scriptPath)
 	: ScriptPath_ { scriptPath }
-	, MetadataRX_ { "//\\s+@(\\S*)\\s+(.*)", Qt::CaseInsensitive }
+	, MetadataRX_ { "//\\s+@(\\S*)\\s+(.*)", QRegularExpression::CaseInsensitiveOption }
 	{
 		ParseMetadata ();
 		if (!Metadata_.count ("include"))
@@ -63,47 +63,42 @@ namespace FatApe
 		}
 
 		QTextStream content { &script };
-		QString line;
-
-		content.setCodec (QTextCodec::codecForName ("UTF-8"));
+		content.setEncoding (QStringConverter::Utf8);
 		if (content.readLine () != MetadataStart)
 			return;
 
+		QString line;
 		while ((line = content.readLine ()) != MetadataEnd && !content.atEnd ())
 		{
-			if (MetadataRX_.indexIn (line) == -1)
+			const auto& match = MetadataRX_.match (line);
+			if (!match.hasMatch ())
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "incorrect format of"
-						<< line;
+				qWarning () << "incorrect format of" << line;
 				continue;
 			}
 
-			const auto& key = MetadataRX_.cap (1).trimmed ();
-			const auto& value = MetadataRX_.cap (2).trimmed ();
-			Metadata_.insert (key, value);
+			const auto& key = match.capturedView (1).trimmed ();
+			const auto& value = match.capturedView (2).trimmed ();
+			Metadata_.insert (key.toString (), value.toString ());
 		}
 	}
 
-	void UserScript::BuildPatternsList (QList<QRegExp>& list, bool include) const
+	namespace
 	{
-		const QString key { include ? "include" : "exclude" };
-		list = Util::Map (Metadata_.values (key),
-				[] (const QString& pattern) { return QRegExp { pattern, Qt::CaseInsensitive, QRegExp::Wildcard }; });
+		QList<QRegularExpression> BuildPatternsList (const QList<QString>& patterns)
+		{
+			return Util::Map (patterns,
+					[] (const QString& pattern) { return QRegularExpression::fromWildcard (pattern, Qt::CaseInsensitive); });
+		}
 	}
 
 	bool UserScript::MatchToPage (const QString& pageUrl) const
 	{
-		QList<QRegExp> include;
-		QList<QRegExp> exclude;
-		auto match = [pageUrl] (QRegExp& rx)
-				{ return rx.indexIn (pageUrl, 0, QRegExp::CaretAtZero) != -1; };
-
-		BuildPatternsList (include);
-		BuildPatternsList (exclude, false);
-
-		return std::any_of (include.begin (), include.end (), match) &&
-				!std::any_of (exclude.begin (), exclude.end (), match);
+		const auto& include = BuildPatternsList (Metadata_.values ("include"_qs));
+		const auto& exclude = BuildPatternsList (Metadata_.values ("exclude"_qs));
+		auto match = [pageUrl] (const QRegularExpression& rx) { return pageUrl.contains (rx); };
+		return std::ranges::any_of (include, match) &&
+				!std::ranges::any_of (exclude, match);
 	}
 
 	void UserScript::Inject (IWebView *view, IProxyObject *proxy) const
@@ -161,7 +156,7 @@ namespace FatApe
 	QString UserScript::GetResourcePath (const QString& resourceName) const
 	{
 		const auto& resource = QStringList { Metadata_.values ("resource") }
-				.filter (QRegExp { QString ("%1\\s.*").arg (resourceName) })
+				.filter (QRegularExpression { QString ("%1\\s.*").arg (resourceName) })
 				.value (0)
 				.mid (resourceName.length ())
 				.trimmed ();
@@ -310,4 +305,3 @@ namespace FatApe
 }
 }
 }
-
