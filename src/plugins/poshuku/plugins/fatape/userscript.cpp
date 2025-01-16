@@ -41,11 +41,22 @@ namespace FatApe
 	, MetadataRX_ { "//\\s+@(\\S*)\\s+(.*)", QRegularExpression::CaseInsensitiveOption }
 	{
 		ParseMetadata ();
-		if (!Metadata_.count ("include"))
-			Metadata_.insert ("include", "*");
-
 		const auto& propName = "disabled/" + std::to_string (qHash (Namespace ())) + std::to_string (qHash (Name ()));
 		Enabled_ = !XmlSettingsManager::Instance ().Property (propName, false).toBool ();
+	}
+
+	namespace
+	{
+		QList<QRegularExpression> BuildPatternsList (const QList<QString>& patterns)
+		{
+			return Util::Map (patterns,
+					[] (const QString& pattern)
+					{
+						auto rx = QRegularExpression::fromWildcard (pattern, Qt::CaseInsensitive);
+						rx.optimize ();
+						return rx;
+					});
+		}
 	}
 
 	void UserScript::ParseMetadata ()
@@ -81,24 +92,17 @@ namespace FatApe
 			const auto& value = match.capturedView (2).trimmed ();
 			Metadata_.insert (key.toString (), value.toString ());
 		}
-	}
 
-	namespace
-	{
-		QList<QRegularExpression> BuildPatternsList (const QList<QString>& patterns)
-		{
-			return Util::Map (patterns,
-					[] (const QString& pattern) { return QRegularExpression::fromWildcard (pattern, Qt::CaseInsensitive); });
-		}
+		IncludeUrls_ = BuildPatternsList (Metadata_.values ("include"_qs));
+		ExcludeUrls_ = BuildPatternsList (Metadata_.values ("exclude"_qs));
 	}
 
 	bool UserScript::MatchToPage (const QString& pageUrl) const
 	{
-		const auto& include = BuildPatternsList (Metadata_.values ("include"_qs));
-		const auto& exclude = BuildPatternsList (Metadata_.values ("exclude"_qs));
 		auto match = [pageUrl] (const QRegularExpression& rx) { return pageUrl.contains (rx); };
-		return std::ranges::any_of (include, match) &&
-				!std::ranges::any_of (exclude, match);
+		if (std::ranges::any_of (ExcludeUrls_, match))
+			return false;
+		return IncludeUrls_.isEmpty () || std::ranges::any_of (IncludeUrls_, match);
 	}
 
 	void UserScript::Inject (IWebView *view, IProxyObject *proxy) const

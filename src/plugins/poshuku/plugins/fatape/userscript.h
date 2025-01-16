@@ -27,6 +27,10 @@ namespace FatApe
 		QString ScriptPath_;
 		QRegularExpression MetadataRX_;
 		QMultiMap<QString, QString> Metadata_;
+
+		QList<QRegularExpression> IncludeUrls_;
+		QList<QRegularExpression> ExcludeUrls_;
+
 		bool Enabled_;
 	public:
 		explicit UserScript (const QString& scriptPath);
