@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "deliciousaccount.h"
+#include <QIODevice>
 #include <QDataStream>
 #include <QtDebug>
 #include <QIcon>

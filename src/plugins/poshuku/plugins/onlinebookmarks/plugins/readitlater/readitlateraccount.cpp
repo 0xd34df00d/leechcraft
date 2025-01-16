@@ -8,6 +8,7 @@
 
 #include "readitlateraccount.h"
 #include <QDataStream>
+#include <QIODevice>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sll/prelude.h>
