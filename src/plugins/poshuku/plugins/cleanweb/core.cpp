@@ -14,7 +14,6 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <QTimer>
-#include <QTextCodec>
 #include <QDir>
 #include <QCoreApplication>
 #include <QtConcurrentRun>

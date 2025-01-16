@@ -11,7 +11,6 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QString>
-#include <QRegExp>
 #include <QAction>
 #include <QMessageBox>
 #include <QtDebug>
@@ -52,8 +51,10 @@ namespace CleanWeb
 	{
 		qRegisterMetaType<FilterItem> ("LC::Poshuku::CleanWeb::FilterItem");
 		qRegisterMetaType<QList<FilterItem>> ("QList<LC::Poshuku::CleanWeb::FilterItem>");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<FilterItem> ("LC::Poshuku::CleanWeb::FilterItem");
 		qRegisterMetaTypeStreamOperators<QList<FilterItem>> ("QList<LC::Poshuku::CleanWeb::FilterItem>");
+#endif
 
 		ReadSettings ();
 	}

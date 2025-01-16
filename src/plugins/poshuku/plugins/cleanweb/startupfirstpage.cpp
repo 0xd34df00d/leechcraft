@@ -9,7 +9,6 @@
 #include "startupfirstpage.h"
 #include <typeinfo>
 #include <QLineEdit>
-#include <QTextCodec>
 #include <QComboBox>
 #include <QMessageBox>
 #include <QRadioButton>

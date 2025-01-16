@@ -8,7 +8,6 @@
 
 #include "cleanweb.h"
 #include <QIcon>
-#include <QTextCodec>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/entitytesthandleresult.h>
