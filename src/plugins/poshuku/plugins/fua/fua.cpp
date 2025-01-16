@@ -93,8 +93,8 @@ namespace Fua
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
 			const auto item = Model_->item (i);
-			QRegExp re { item->text (), Qt::CaseSensitive, QRegExp::Wildcard };
-			if (re.exactMatch (host))
+			const auto& re = QRegularExpression::fromWildcard (item->text ());
+			if (re.match (host).hasMatch ())
 			{
 				proxy->CancelDefault ();
 				proxy->SetReturnValue (Model_->item (i, 2)->text ());
