@@ -142,24 +142,16 @@ namespace CleanWeb
 	{
 		quint8 version = 0;
 		in >> version;
-		if (version < 1 || version > 2)
+		if (version != 2)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< version;
+			qWarning () << "unknown version" << version;
 			return in;
 		}
 
 		QString origStr;
 		in >> origStr;
 		item.PlainMatcher_ = origStr.toUtf8 ();
-		if (version == 1)
-		{
-			QRegExp rx;
-			in >> rx;
-			item.RegExp_ = Util::RegExp (rx.pattern (), rx.caseSensitivity ());
-		}
-		else if (version == 2)
+		if (version == 2)
 		{
 			QString str;
 			quint8 cs;
