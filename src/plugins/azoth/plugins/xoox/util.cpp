@@ -114,17 +114,27 @@ namespace XooxUtil
 		{
 			const auto& nodeVar = map ["node"];
 
-			const auto& nodes = nodeVar.canConvert<QVariantList> () ?
-					Util::Map (nodeVar.toList (), &QVariant::toString) :
-					QStringList { nodeVar.toString () };
+			const auto nodes = [&nodeVar] () -> QStringList
+			{
+				switch (nodeVar.metaType ().id ())
+				{
+				case QMetaType::QString:
+					return { nodeVar.toString () };
+				case QMetaType::QStringList:
+					return nodeVar.toStringList ();
+				case QMetaType::QVariantList:
+					return Util::Map (nodeVar.toList (), &QVariant::toString);
+				default:
+					qWarning () << "unsupported node field" << nodeVar;
+					return {};
+				}
+			} ();
 
 			const auto& id = map ["id"].toString ();
 			const auto& name = map ["name"].toString ();
 
 			if (nodes.isEmpty () || id.isEmpty () || name.isEmpty ())
-				qWarning () << Q_FUNC_INFO
-						<< "missing data for map"
-						<< map;
+				qWarning () << "missing data for map" << map;
 
 			return { nodes, { id, name } };
 		}
@@ -139,9 +149,7 @@ namespace XooxUtil
 				QFile file { ":/azoth/xoox/resources/data/clientids.json" };
 				if (!file.open (QIODevice::ReadOnly))
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to open file:"
-							<< file.errorString ();
+					qWarning () << "unable to open file:" << file.errorString ();
 					return;
 				}
 

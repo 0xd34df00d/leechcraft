@@ -46,8 +46,9 @@ namespace LC::Util
 		const QString expected { "hello, world! how's life?" };
 		QCOMPARE (ToString<concat> (), expected);
 
-		constexpr auto concat2 = "hello, "_ct;
-		QCOMPARE (ToString<concat2 + "world!" + " how's life?"> (), expected);
+		QCOMPARE (ToString<"hello, "_ct + "world!" + " how's life?"> (), expected);
+
+		QCOMPARE (ToString<"hello, " + "world!"_ct + " how's life?"> (), expected);
 	}
 
 	void CtStringTest::testNub ()
