@@ -26,5 +26,5 @@ LC_DEFINE_PLUGIN (
 		utils.cpp
 	RESOURCES blogiquemetidaresources.qrc
 	SETTINGS blogiquemetidasettings.xml
-	QT_COMPONENTS Network Quick Sql Widgets Xml XmlPatterns
+	QT_COMPONENTS Network Quick Sql Widgets Xml
 	)
