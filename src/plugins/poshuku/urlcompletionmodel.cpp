@@ -47,7 +47,7 @@ namespace Poshuku
 		else if (role == Qt::DecorationRole)
 			return Core::Instance ().GetIcon (QUrl (Items_ [index.row ()].URL_));
 		else if (role == Qt::EditRole)
-			return Base_ + index.row ();
+			return Base_;
 		else if (role == RoleURL)
 			return Items_ [index.row ()].URL_;
 		else
