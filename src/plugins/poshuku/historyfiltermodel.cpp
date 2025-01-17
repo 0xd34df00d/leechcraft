@@ -23,7 +23,7 @@ namespace Poshuku
 		if (sourceModel ()->rowCount (sourceModel ()->index (row, 0, parent)))
 			return true;
 		
-		const auto& filter = filterRegExp ().pattern ();
+		const auto& filter = filterRegularExpression ().pattern ();
 		if (filter.isEmpty ())
 			return true;
 		

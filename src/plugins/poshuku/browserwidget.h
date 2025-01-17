@@ -184,7 +184,6 @@ namespace Poshuku
 		void handleLoadProgress (int);
 		void notifyLoadFinished (bool);
 		void handleChangeEncodingAboutToShow ();
-		void handleChangeEncodingTriggered (QAction*);
 		void updateLogicalPath ();
 		void handleUrlChanged (const QUrl&);
 

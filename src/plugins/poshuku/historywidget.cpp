@@ -71,7 +71,7 @@ namespace Poshuku
 			HistoryFilterModel_->setFilterWildcard (text);
 			break;
 		case 2:
-			HistoryFilterModel_->setFilterRegExp (text);
+			HistoryFilterModel_->setFilterRegularExpression (text);
 			break;
 		default:
 			HistoryFilterModel_->setFilterFixedString (text);

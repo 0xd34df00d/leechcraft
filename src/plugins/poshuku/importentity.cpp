@@ -32,7 +32,7 @@ namespace Poshuku
 				QObject::tr ("Importing history..."),
 				QObject::tr ("Abort"),
 				0,
-				history.size (),
+				static_cast<int> (history.size ()),
 				rootWM->GetPreferredWindow ()
 			};
 			qDebug () << Q_FUNC_INFO << history.size ();
@@ -65,7 +65,7 @@ namespace Poshuku
 				QObject::tr ("Importing bookmarks..."),
 				QObject::tr ("Abort"),
 				0,
-				bookmarks.size (),
+				static_cast<int> (bookmarks.size ()),
 				rootWM->GetPreferredWindow ()
 			};
 			qDebug () << "Bookmarks" << bookmarks.size ();

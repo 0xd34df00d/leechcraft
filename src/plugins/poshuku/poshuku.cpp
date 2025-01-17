@@ -11,7 +11,6 @@
 #include <QHeaderView>
 #include <QToolBar>
 #include <QUrl>
-#include <QTextCodec>
 #include <QInputDialog>
 #include <QMenu>
 #include <QMainWindow>
@@ -287,15 +286,15 @@ namespace Poshuku
 		REG ("Cut_", tr ("Cut"), "edit-cut", tr ("Ctrl+X"));
 		REG ("Copy_", tr ("Copy"), "edit-copy", tr ("Ctrl+C"));
 		REG ("Paste_", tr ("Paste"), "edit-paste", tr ("Ctrl+V"));
-		REG ("Back_", tr ("Back"), "go-previous", Qt::ALT + Qt::Key_Left);
-		REG ("Forward_", tr ("Forward"), "go-next", Qt::ALT + Qt::Key_Right);
+		REG ("Back_", tr ("Back"), "go-previous", Qt::ALT | Qt::Key_Left);
+		REG ("Forward_", tr ("Forward"), "go-next", Qt::ALT | Qt::Key_Right);
 		REG ("Reload_", tr ("Reload"), "view-refresh", Qt::Key_F5);
 		REG ("Stop_", tr ("Stop"), "process-stop", Qt::Key_Escape);
-		REG ("ZoomIn_", tr ("Zoom in"), "zoom-in", Qt::CTRL + Qt::Key_Plus);
-		REG ("ZoomOut_", tr ("Zoom out"), "zoom-out", Qt::CTRL + Qt::Key_Minus);
+		REG ("ZoomIn_", tr ("Zoom in"), "zoom-in", Qt::CTRL | Qt::Key_Plus);
+		REG ("ZoomOut_", tr ("Zoom out"), "zoom-out", Qt::CTRL | Qt::Key_Minus);
 		REG ("ZoomReset_", tr ("Reset zoom"), "zoom-original", tr ("Ctrl+0"));
-		REG ("TextZoomIn_", tr ("Text zoom in"), {}, Qt::CTRL + Qt::SHIFT + Qt::Key_Plus);
-		REG ("TextZoomOut_", tr ("Text zoom out"), {}, Qt::CTRL + Qt::SHIFT + Qt::Key_Minus);
+		REG ("TextZoomIn_", tr ("Text zoom in"), {}, Qt::CTRL | Qt::SHIFT | Qt::Key_Plus);
+		REG ("TextZoomOut_", tr ("Text zoom out"), {}, Qt::CTRL | Qt::SHIFT | Qt::Key_Minus);
 		REG ("TextZoomReset_", tr ("Reset text zoom"), {}, tr ("Ctrl+Shift+0"));
 		REG ("Add2Favorites_", tr ("Bookmark..."), "bookmark-new", tr ("Ctrl+D"));
 		REG ("Print_", tr ("Print..."), "document-print", tr ("Ctrl+P"));

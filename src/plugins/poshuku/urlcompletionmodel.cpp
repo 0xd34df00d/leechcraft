@@ -42,16 +42,19 @@ namespace Poshuku
 		if (!index.isValid ())
 			return {};
 
-		if (role == Qt::DisplayRole)
+		switch (role)
+		{
+		case Qt::DisplayRole:
 			return Items_ [index.row ()].Title_ + " [" + Items_ [index.row ()].URL_ + "]";
-		else if (role == Qt::DecorationRole)
+		case Qt::DecorationRole:
 			return Core::Instance ().GetIcon (QUrl (Items_ [index.row ()].URL_));
-		else if (role == Qt::EditRole)
+		case Qt::EditRole:
 			return Base_;
-		else if (role == RoleURL)
+		case RoleURL:
 			return Items_ [index.row ()].URL_;
-		else
+		default:
 			return {};
+		}
 	}
 
 	Qt::ItemFlags URLCompletionModel::flags (const QModelIndex&) const

@@ -137,7 +137,7 @@ namespace Poshuku
 			break;
 		case 2:
 			FavoritesFilterModel_->SetTagsMode (false);
-			FavoritesFilterModel_->setFilterRegExp (text);
+			FavoritesFilterModel_->setFilterRegularExpression (text);
 			break;
 		case 3:
 			FavoritesFilterModel_->SetTagsMode (true);

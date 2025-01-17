@@ -9,7 +9,6 @@
 #include "browserwidget.h"
 #include <limits>
 #include <cmath>
-#include <QDesktopWidget>
 #include <QtDebug>
 #include <QToolBar>
 #include <QToolButton>
@@ -20,12 +19,10 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QTextCodec>
 #include <QCursor>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDataStream>
-#include <QRegExp>
 #include <QKeySequence>
 #include <QLabel>
 #include <QXmlStreamWriter>
@@ -260,10 +257,6 @@ namespace Poshuku
 				SIGNAL (aboutToShow ()),
 				this,
 				SLOT (handleChangeEncodingAboutToShow ()));
-		connect (ChangeEncoding_,
-				SIGNAL (triggered (QAction*)),
-				this,
-				SLOT (handleChangeEncodingTriggered (QAction*)));
 
 		QWidgetAction *addressBar = new QWidgetAction (this);
 		addressBar->setDefaultWidget (Ui_.URLFrame_);
@@ -1167,7 +1160,7 @@ namespace Poshuku
 
 	namespace
 	{
-		const QRegExp UrlInText (R"(://|www\.|\w\.\w)");
+		const QRegularExpression UrlInText (R"(://|www\.|\w\.\w)");
 
 		void SavePixmap (const QPixmap& px, const QUrl& url, IEntityManager *iem)
 		{
@@ -1454,52 +1447,30 @@ namespace Poshuku
 	{
 		ChangeEncoding_->clear ();
 
+#if QT_VERSION_MAJOR >= 6
+		auto codecs = QStringConverter::availableCodecs ();
+#else
 		QStringList codecs;
-		QList<int> mibs = QTextCodec::availableMibs ();
-		QMap<QString, int> name2mib;
-		for (const auto mib : mibs)
-		{
-			const auto& name = QTextCodec::codecForMib (mib)->name ();
-			codecs << name;
-			name2mib [name] = mib;
-		}
+#endif
 		codecs.sort ();
 
-		const auto& defaultEncoding = WebView_->GetDefaultTextEncoding ();
-		const int currentCodec = codecs.indexOf (defaultEncoding);
+		const auto& curEncoding = WebView_->GetDefaultTextEncoding ();
 
-		QAction *def = ChangeEncoding_->addAction (tr ("Default"));
-		def->setData (-1);
+		const auto def = ChangeEncoding_->addAction (tr ("Default"),
+				this,
+				[this] { WebView_->SetDefaultTextEncoding ({}); });
 		def->setCheckable (true);
-		if (currentCodec == -1)
-			def->setChecked (true);
+		def->setChecked (!codecs.contains (curEncoding));
 		ChangeEncoding_->addSeparator ();
 
-		for (int i = 0; i < codecs.count (); ++i)
+		for (const auto& codec : codecs)
 		{
-			QAction *cdc = ChangeEncoding_->addAction (codecs.at (i));
-			cdc->setData (name2mib [codecs.at (i)]);
+			const auto cdc = ChangeEncoding_->addAction (codec,
+					this,
+					[this, codec] { WebView_->SetDefaultTextEncoding (codec); });
 			cdc->setCheckable (true);
-			if (currentCodec == i)
-				cdc->setChecked (true);
+			cdc->setChecked (curEncoding == codec);
 		}
-	}
-
-	void BrowserWidget::handleChangeEncodingTriggered (QAction *action)
-	{
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "action is null";
-			return;
-		}
-
-		int mib = action->data ().toInt ();
-		QString encoding;
-		if (mib >= 0)
-			encoding = QTextCodec::codecForMib (mib)->name ();
-		WebView_->SetDefaultTextEncoding (encoding);
-		Reload_->trigger ();
 	}
 
 	void BrowserWidget::updateLogicalPath ()

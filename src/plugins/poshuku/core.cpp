@@ -14,23 +14,16 @@
 #include <QString>
 #include <QUrl>
 #include <QWidget>
-#include <QTextCodec>
 #include <QIcon>
 #include <QFile>
 #include <QFileInfo>
-#include <QNetworkCookieJar>
 #include <QDir>
 #include <QMenu>
-#include <QInputDialog>
-#include <QNetworkReply>
-#include <QSslSocket>
-#include <QAuthenticator>
-#include <QNetworkProxy>
-#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtDebug>
 #include <QMainWindow>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/introspectable.h>
@@ -64,12 +57,13 @@ namespace Poshuku
 	, FavoritesModel_ (new FavoritesModel (this))
 	{
 		qRegisterMetaType<BrowserWidgetSettings> ("LC::Poshuku::BrowserWidgetSettings");
-		qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LC::Poshuku::BrowserWidgetSettings");
-
 		qRegisterMetaType<ElementData> ("LC::Poshuku::ElementData");
-		qRegisterMetaTypeStreamOperators<ElementData> ("LC::Poshuku::ElementData");
 		qRegisterMetaType<ElementsData_t> ("LC::Poshuku::ElementsData_t");
+#if QT_VERSION_MAJOR == 5
+		qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LC::Poshuku::BrowserWidgetSettings");
+		qRegisterMetaTypeStreamOperators<ElementData> ("LC::Poshuku::ElementData");
 		qRegisterMetaTypeStreamOperators<ElementsData_t> ("LC::Poshuku::ElementsData_t");
+#endif
 
 		Util::Introspectable::Instance ().Register<ElementData> (&ToVariantMap);
 
@@ -109,8 +103,7 @@ namespace Poshuku
 		}
 		catch (const std::runtime_error& s)
 		{
-			emit error (QTextCodec::codecForName ("UTF-8")->
-					toUnicode (s.what ()));
+			emit error (QString::fromUtf8 (s.what ()));
 			throw;
 		}
 		catch (...)
@@ -258,7 +251,7 @@ namespace Poshuku
 		// If the url without percent signs and two following characters is
 		// a valid url (it should not be percent-encoded), then treat source
 		// url as percent-encoded, otherwise treat as not percent-encoded.
-		const auto isPercentEncoded = url.contains (QRegExp { "%??", Qt::CaseInsensitive, QRegExp::Wildcard });
+		const auto isPercentEncoded = url.contains (QRegularExpression::fromWildcard (u"%??"));
 		auto result = isPercentEncoded ?
 				QUrl::fromEncoded (url.toUtf8 ()) :
 				QUrl { url };

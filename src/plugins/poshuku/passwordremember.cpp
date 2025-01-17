@@ -68,7 +68,7 @@ namespace Poshuku
 
 		for (const auto& pair : Util::Stlize (TempData_))
 			storage->Set ("org.LeechCraft.Poshuku.Forms.InputByName/" + pair.first.toUtf8 (),
-					Util::Map (pair.second, &QVariant::fromValue<ElementData>));
+					Util::Map (pair.second, [] (const ElementData& ed) { return QVariant::fromValue (ed); }));
 	}
 
 	void PasswordRemember::on_NotNow__released ()
