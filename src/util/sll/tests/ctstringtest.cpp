@@ -59,4 +59,12 @@ namespace LC::Util
 		constexpr auto nubbed = Nub<F>();
 		static_assert (nubbed == expected);
 	}
+
+	constexpr bool TestUB ()
+	{
+		constexpr auto str = "hello, " + "world!"_ct + " how's life?";
+		return true;
+	}
+
+	static_assert (TestUB ());
 }
