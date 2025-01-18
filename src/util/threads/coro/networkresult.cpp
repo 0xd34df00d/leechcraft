@@ -62,7 +62,7 @@ namespace LC::Util
 				[&errorContext] (const NetworkReplyError& error)
 				{
 					qWarning () << errorContext << error;
-					return Result_t { errorContext + ' ' + error.ErrorText_ };
+					return Result_t { error.ErrorText_ };
 				});
 	}
 
