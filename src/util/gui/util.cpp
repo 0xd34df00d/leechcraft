@@ -68,7 +68,7 @@ namespace LC::Util
 			px.size ().height () > availSize.height ())
 			px = px.scaled (availSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-		auto topLeftPos = centerPos - (availGeom.bottomRight () - availGeom.topLeft ()) /2;
+		auto topLeftPos = centerPos - QPoint { px.size ().width (), px.size ().height () } /2;
 		if (!availGeom.contains (topLeftPos))
 		{
 			topLeftPos.setX (std::max (topLeftPos.x (), availGeom.left ()));
