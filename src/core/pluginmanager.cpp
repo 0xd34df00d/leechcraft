@@ -27,6 +27,7 @@
 #include <QMainWindow>
 #include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/scopeguards.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/iinfo.h>
@@ -782,6 +783,40 @@ namespace LC
 		emit initStageChanged (stage);
 	}
 
+	namespace
+	{
+		bool IsBuildDirMode ()
+		{
+			auto appDir = QDir { QCoreApplication::applicationDirPath () };
+			if (!appDir.cdUp ())
+				return false;
+
+			return appDir.exists ("CMakeCache.txt"_qs);
+		}
+
+		QStringList ScanBuildHierarchy (QDir dir)
+		{
+			QStringList result;
+			for (const auto& pluginFile : dir.entryList ({ "libleechcraft_*.so"_qs }, QDir::Files))
+				result << dir.filePath (pluginFile);
+
+			if (!dir.cd ("plugins"_qs))
+				return result;
+			for (const auto& pluginName : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+				if (auto pluginDir = dir; pluginDir.cd (pluginName))
+					result += ScanBuildHierarchy (pluginDir);
+
+			return result;
+		}
+
+		QStringList ScanBuildDir ()
+		{
+			QDir dir { QCoreApplication::applicationDirPath () };
+			dir.cdUp ();
+			return ScanBuildHierarchy (dir);
+		}
+	}
+
 	QStringList PluginManager::FindPluginsPaths () const
 	{
 		QStringList result;
@@ -802,15 +837,23 @@ namespace LC
 #elif defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 		scan (QApplication::applicationDirPath () + "/../PlugIns");
 #else
-		QString libdir (PLUGINS_LIBDIR);
-	#if defined (INSTALL_PREFIX)
-		scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins" LC_LIBSUFFIX)
-				.arg (libdir));
-	#else
-		scan (QString { "/usr/local/%1/leechcraft/plugins" LC_LIBSUFFIX }
-				.arg (libdir));
-		scan (QString { "/usr/%1/leechcraft/plugins" LC_LIBSUFFIX }
-				.arg (libdir));
+		if (IsBuildDirMode ())
+		{
+			qDebug () << "detected build dir mode";
+			return ScanBuildDir ();
+		}
+		else
+		{
+			QString libdir (PLUGINS_LIBDIR);
+#if defined (INSTALL_PREFIX)
+			scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins" LC_LIBSUFFIX)
+					.arg (libdir));
+#else
+			scan (QString { "/usr/local/%1/leechcraft/plugins" LC_LIBSUFFIX }
+					.arg (libdir));
+			scan (QString { "/usr/%1/leechcraft/plugins" LC_LIBSUFFIX }
+					.arg (libdir));
+		}
 	#endif
 #endif
 
