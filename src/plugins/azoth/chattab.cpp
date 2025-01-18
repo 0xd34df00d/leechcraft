@@ -1168,6 +1168,11 @@ namespace Azoth
 
 	void ChatTab::handleViewLinkClicked (QUrl url, bool raise)
 	{
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
+		emit hookLinkClicked (proxy, this, url);
+		if (proxy->IsCancelled ())
+			return;
+
 		if (url.scheme () != "azoth")
 		{
 			Core::Instance ().HandleURLGeneric (url, raise, GetEntry<ICLEntry> ());

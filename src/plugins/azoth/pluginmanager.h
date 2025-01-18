@@ -35,6 +35,9 @@ namespace Azoth
 				QObject *chatTab,
 				QObject *entry,
 				QWebEngineView *webView);
+		void hookLinkClicked (LC::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				const QUrl& linkUrl);
 
 		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 
