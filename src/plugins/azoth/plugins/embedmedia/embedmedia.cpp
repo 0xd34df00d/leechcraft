@@ -13,6 +13,7 @@
 #include <QImageReader>
 #include <QLabel>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -109,6 +110,23 @@ namespace LC::Azoth::EmbedMedia
 			co_await Util::AddContextObject { *chatTab };
 
 			const auto reply = GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest { url });
+
+			QProgressDialog dia;
+			dia.setMinimumDuration (1000);
+			dia.setLabelText (tr ("Downloading image..."));
+			connect (reply,
+					&QNetworkReply::downloadProgress,
+					&dia,
+					[&dia] (qint64 received, qint64 total)
+					{
+						dia.setMaximum (total);
+						dia.setValue (received);
+					});
+			connect (&dia,
+					&QProgressDialog::canceled,
+					reply,
+					&QNetworkReply::abort);
+
 			const auto result = co_await *reply;
 			const auto data = co_await Util::WithHandler (result.ToEither ("Azoth EmbedMedia"_qs),
 					[chatTab] (const QString& error)
