@@ -10,12 +10,9 @@
 
 #include <QObject>
 #include <QString>
-#include <QWebEngineScript>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
-
-class QWebEngineView;
 
 namespace LC::Azoth::EmbedMedia
 {
@@ -27,8 +24,6 @@ namespace LC::Azoth::EmbedMedia
 		Q_INTERFACES (IInfo IPlugin2)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.EmbedMedia")
-
-		QWebEngineScript Script_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -39,9 +34,8 @@ namespace LC::Azoth::EmbedMedia
 		QIcon GetIcon () const override;
 		QSet<QByteArray> GetPluginClasses () const override;
 	private slots:
-		void hookChatTabCreated (LC::IHookProxy_ptr proxy,
+		void hookLinkClicked (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QObject *entry,
-				QWebEngineView *webView);
+				const QUrl& url);
 	};
 }

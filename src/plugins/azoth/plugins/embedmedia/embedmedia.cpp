@@ -8,36 +8,28 @@
 
 #include "embedmedia.h"
 #include <QDebug>
-#include <QFile>
+#include <QFileInfo>
 #include <QIcon>
-#include <QWebEnginePage>
-#include <QWebEngineScript>
-#include <QWebEngineScriptCollection>
-#include <QWebEngineView>
+#include <QImageReader>
+#include <QLabel>
+#include <QMessageBox>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/sys/resourceloader.h>
+#include <util/gui/util.h>
+#include <util/sll/either.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
+#include <util/xpc/util.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/either.h>
+#include <util/threads/coro/networkresult.h>
 
 namespace LC::Azoth::EmbedMedia
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::ResourceLoader loader { QStringLiteral ("azoth/embedmedia") };
-		loader.AddGlobalPrefix ();
-		loader.AddLocalPrefix ();
-
-		auto embedderJS = loader.Load (QStringLiteral ("embedder.js"), true);
-
-		if (!embedderJS || !embedderJS->isOpen ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find script file";
-			return;
-		}
-
-		Script_.setSourceCode (embedderJS->readAll ());
-		Script_.setName (GetUniqueID ());
-		Script_.setInjectionPoint (QWebEngineScript::DocumentReady);
 	}
 
 	void Plugin::SecondInit ()
@@ -55,7 +47,7 @@ namespace LC::Azoth::EmbedMedia
 
 	QString Plugin::GetName () const
 	{
-		return QStringLiteral ("Azoth EmbedMedia");
+		return "Azoth EmbedMedia"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -73,17 +65,60 @@ namespace LC::Azoth::EmbedMedia
 		return { "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin" };
 	}
 
-	void Plugin::hookChatTabCreated (LC::IHookProxy_ptr,
-			QObject*, QObject*, QWebEngineView *webView)
+	namespace
 	{
-		webView->page ()->scripts ().insert (Script_);
-		/* TODO
-		const auto frame = webView->page ()->mainFrame ();
-		frame->evaluateJavaScript (ScriptContent_);
-		connect (frame,
-				&QWebFrame::initialLayoutCompleted,
-				[frame, this] { frame->evaluateJavaScript (ScriptContent_); });
-				*/
+		bool IsImageLink (const QUrl& url)
+		{
+			if (url.scheme () != "http" && url.scheme () != "https")
+				return false;
+
+			static const QStringList imageExts { "gif"_qs, "png"_qs, "jpg"_qs, "jpeg"_qs, "webp"_qs };
+
+			const auto& ext = QFileInfo { url.path () }.suffix ();
+			return imageExts.contains (ext, Qt::CaseInsensitive);
+		}
+
+		void HandleImageData (const QByteArray& data, const QUrl& url, QWidget *parent)
+		{
+			const auto& px = QPixmap::fromImage (QImage::fromData (data));
+			if (px.isNull ())
+			{
+				const auto& e = Util::MakeEntity (url, {}, FromUserInitiated | OnlyHandle);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				return;
+			}
+
+			const auto& pos = parent ?
+					(parent->geometry ().topLeft () + parent->geometry ().bottomRight ()) / 2 :
+					QPoint {};
+			Util::ShowPixmapLabel (px, pos)->setWindowTitle (url.toString ());
+		}
+	}
+
+	void Plugin::hookLinkClicked (IHookProxy_ptr proxy, QObject *chatTabObj, const QUrl& url)
+	{
+		const auto chatTab = qobject_cast<QWidget*> (chatTabObj);
+
+		if (!IsImageLink (url) || !chatTab)
+			return;
+
+		proxy->CancelDefault ();
+
+		[] (QUrl url, QWidget *chatTab) -> Util::ContextTask<>
+		{
+			co_await Util::AddContextObject { *chatTab };
+
+			const auto reply = GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest { url });
+			const auto result = co_await *reply;
+			const auto data = co_await Util::WithHandler (result.ToEither ("Azoth EmbedMedia"_qs),
+					[chatTab] (const QString& error)
+					{
+						QMessageBox::critical (chatTab,
+								"Azoth EmbedMedia"_qs,
+								tr ("Unable to fetch the image: %1").arg (error));
+					});
+			HandleImageData (data, url, chatTab);
+		} (url, chatTab);
 	}
 }
 
