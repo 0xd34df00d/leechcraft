@@ -35,38 +35,38 @@ namespace LC::Util
 	namespace detail
 	{
 		template<typename T>
-		auto Awaiter (T& obj)
+		auto Awaiter (T&& obj)
 		{
-			if constexpr (requires { operator co_await (obj); })
-				return operator co_await (obj);
-			else if constexpr (requires { obj.operator co_await (); })
-				return obj.operator co_await ();
+			if constexpr (requires { operator co_await (std::forward<T> (obj)); })
+				return operator co_await (std::forward<T> (obj));
+			else if constexpr (requires { std::forward<T> (obj).operator co_await (); })
+				return std::forward<T> (obj).operator co_await ();
 			else
-				return obj;
+				return std::forward<T> (obj);
 		}
 
 		UTIL_THREADS_API void CheckDeadObjects (const QVector<DeadObjectInfo>&);
 
-		template<typename Promise, typename T>
+		template<typename Promise, typename OrigAwaiter>
 		struct AwaitableWrapper
 		{
 			Promise& Promise_;
-			T Orig_;
+			OrigAwaiter Orig_;
 
 			bool await_ready ()
 			{
-				return Awaiter (Orig_).await_ready ();
+				return Orig_.await_ready ();
 			}
 
 			decltype (auto) await_suspend (auto handle)
 			{
-				return Awaiter (Orig_).await_suspend (handle);
+				return Orig_.await_suspend (handle);
 			}
 
 			decltype (auto) await_resume ()
 			{
 				CheckDeadObjects (Promise_.DeadObjects_);
-				return Awaiter (Orig_).await_resume ();
+				return Orig_.await_resume ();
 			}
 		};
 	}
@@ -88,7 +88,7 @@ namespace LC::Util
 		template<typename T>
 		auto await_transform (T&& awaitable)
 		{
-			return detail::AwaitableWrapper<ContextExtensions, T> { *this, std::forward<T> (awaitable) };
+			return detail::AwaitableWrapper { *this, detail::Awaiter (std::forward<T> (awaitable)) };
 		}
 	};
 
