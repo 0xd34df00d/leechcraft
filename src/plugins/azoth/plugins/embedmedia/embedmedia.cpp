@@ -89,9 +89,13 @@ namespace LC::Azoth::EmbedMedia
 				return;
 			}
 
-			const auto& pos = parent ?
-					(parent->geometry ().topLeft () + parent->geometry ().bottomRight ()) / 2 :
-					QPoint {};
+			QPoint pos;
+			if (parent)
+			{
+				const auto& topLeft = parent->mapToGlobal (parent->geometry ().topLeft ());
+				const auto& bottomRight = parent->mapToGlobal (parent->geometry ().bottomRight ());
+				pos = (topLeft + bottomRight) / 2;
+			}
 			Util::ShowPixmapLabel (px, pos)->setWindowTitle (url.toString ());
 		}
 	}
