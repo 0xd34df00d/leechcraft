@@ -57,15 +57,23 @@ namespace LC::Util
 		};
 	}
 
-	QLabel* ShowPixmapLabel (const QPixmap& srcPx, const QPoint& pos)
+	QLabel* ShowPixmapLabel (const QPixmap& srcPx, const QPoint& centerPos)
 	{
 		const auto scaleFactor = 0.9;
-		const auto& availGeom = AvailableGeometry (pos).size () * scaleFactor;
+		const auto& availGeom = AvailableGeometry (centerPos);
+		const auto& availSize = availGeom.size () * scaleFactor;
 
 		auto px = srcPx;
-		if (px.size ().width () > availGeom.width () ||
-			px.size ().height () > availGeom.height ())
-			px = px.scaled (availGeom, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		if (px.size ().width () > availSize.width () ||
+			px.size ().height () > availSize.height ())
+			px = px.scaled (availSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+		auto topLeftPos = centerPos - (availGeom.bottomRight () - availGeom.topLeft ()) /2;
+		if (!availGeom.contains (topLeftPos))
+		{
+			topLeftPos.setX (std::max (topLeftPos.x (), availGeom.left ()));
+			topLeftPos.setY (std::max (topLeftPos.y (), availGeom.top ()));
+		}
 
 		const auto label = new QLabel;
 		label->setWindowFlags (Qt::Tool);
@@ -75,7 +83,7 @@ namespace LC::Util
 		label->show ();
 		label->activateWindow ();
 		label->installEventFilter (new AADisplayEventFilter (label));
-		label->move (pos);
+		label->move (topLeftPos);
 		return label;
 	}
 
