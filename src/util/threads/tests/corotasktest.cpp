@@ -230,6 +230,25 @@ namespace LC::Util
 		QCOMPARE (GetTaskResult (task), 0);
 	}
 
+	void CoroTaskTest::testContextDestrDoesntWaitTimer ()
+	{
+		QElapsedTimer timer;
+		timer.start ();
+
+		auto context = std::make_unique<QObject> ();
+		auto task = [] (QObject *context) -> ContextTask<void>
+		{
+			co_await AddContextObject { *context };
+			co_await 1000ms;
+		} (&*context);
+
+		QTimer::singleShot (10ms, [&] { context.reset (); });
+
+		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+
+		QVERIFY (timer.elapsed () < 100);
+	}
+
 	void CoroTaskTest::testFutureAwaiter ()
 	{
 		auto delayed = [] () -> Task<int>
