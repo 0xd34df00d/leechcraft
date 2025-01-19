@@ -24,7 +24,11 @@ namespace Blogique
 		update ();
 	}
 
+#if QT_VERSION_MAJOR >= 6
+	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, QDate date) const
+#else
 	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
+#endif
 	{
 		QCalendarWidget::paintCell (painter, rect, date);
 		

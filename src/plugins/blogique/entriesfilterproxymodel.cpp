@@ -22,7 +22,7 @@ namespace Blogique
 			const QModelIndex& sourceParent) const
 	{
 		const QModelIndex& index = sourceModel ()->index (sourceRow, 1, sourceParent);
-		return sourceModel ()->data (index).toString ().contains (filterRegExp ());
+		return sourceModel ()->data (index).toString ().contains (filterRegularExpression ());
 	}
 }
 }

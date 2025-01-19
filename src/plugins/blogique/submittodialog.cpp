@@ -72,7 +72,7 @@ namespace Blogique
 			QString target;
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
 				target = targetItem->data (SelectTargetDelegate::TargetRole).toString ();
-			result << qMakePair<IAccount*, QString> (account, target);
+			result << QPair { account, target };
 		}
 
 		return result;

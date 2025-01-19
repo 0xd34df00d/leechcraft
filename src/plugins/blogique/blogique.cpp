@@ -24,7 +24,9 @@ namespace Blogique
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		qRegisterMetaType<LC::Blogique::CommentsWidget::CommentIDs_t> ("LC::Blogique::CommentIDs_t");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<LC::Blogique::CommentsWidget::CommentIDs_t> ();
+#endif
 
 		Util::InstallTranslator ("blogique");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);

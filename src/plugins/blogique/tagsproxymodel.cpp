@@ -23,18 +23,14 @@ namespace Blogique
 	bool TagsProxyModel::filterAcceptsRow (int sourceRow,
 			const QModelIndex& sourceParent) const
 	{
-		QModelIndex index = sourceModel ()->index (sourceRow, 0, sourceParent);
-
-		return sourceModel ()->data (index).toString ()
-				.startsWith (filterRegExp ().pattern ());
+		auto index = sourceModel ()->index (sourceRow, 0, sourceParent);
+		return sourceModel ()->data (index).toString ().startsWith (filterRegularExpression ().pattern ());
 	}
 
 	bool TagsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		const int leftData = sourceModel ()->data (left, BlogiqueWidget::TagFrequency)
-				.toInt ();
-		const int rightData = sourceModel ()->data (right, BlogiqueWidget::TagFrequency)
-				.toInt ();
+		const int leftData = sourceModel ()->data (left, BlogiqueWidget::TagFrequency).toInt ();
+		const int rightData = sourceModel ()->data (right, BlogiqueWidget::TagFrequency).toInt ();
 
 		return leftData > rightData;
 	}

@@ -102,7 +102,7 @@ namespace Blogique
 					const auto platforms = qobject_cast<IBloggingPlatformPlugin*> (bpp)->GetBloggingPlatforms ();
 					return Util::Map (platforms, [] (auto obj) { return qobject_cast<IBloggingPlatform*> (obj); });
 				});
-		result.removeAll (0);
+		result.removeAll (nullptr);
 		return result;
 	}
 
@@ -114,7 +114,7 @@ namespace Blogique
 					return Util::Map (bp->GetRegisteredAccounts (),
 							[] (auto obj) { return qobject_cast<IAccount*> (obj); });
 				});
-		result.removeAll (0);
+		result.removeAll (nullptr);
 		return result;
 	}
 
@@ -383,4 +383,3 @@ namespace Blogique
 	}
 }
 }
-
