@@ -12,9 +12,10 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QUrl>
-#include <QXmlQuery>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/blasq/iservice.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include "fotobilderaccount.h"
 #include "util.h"
@@ -251,6 +252,27 @@ namespace DeathNote
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	namespace
+	{
+		std::optional<QString> GetChallenge (const QDomDocument& doc)
+		{
+			const auto& replyStruct = doc.documentElement ()
+					.firstChildElement ("methodResponse"_qs)
+					.firstChildElement ("params"_qs)
+					.firstChildElement ("param"_qs)
+					.firstChildElement ("value"_qs)
+					.firstChildElement ("struct"_qs);
+			for (const auto& member : Util::DomChildren (replyStruct, "member"_qs))
+				if (member.firstChildElement ("name"_qs).text () == "challenge")
+					return member
+							.firstChildElement ("value"_qs)
+							.firstChildElement ("string"_qs)
+							.text ();
+
+			return {};
+		}
+	}
+
 	void SelectGroupsDialog::handleChallengeReplyFinished ()
 	{
 		QDomDocument document;
@@ -259,15 +281,14 @@ namespace DeathNote
 		if (content.isEmpty ())
 			return;
 
-		QXmlQuery query;
-		query.setFocus (content);
-
-		QString challenge;
-		query.setQuery ("/methodResponse/params/param/value/struct/member[name='challenge']/value/string/text()");
-		if (!query.evaluateTo (&challenge))
+		const auto& maybeChallenge = GetChallenge (document);
+		if (!maybeChallenge)
+		{
+			qWarning () << "unable to determine challenge from" << content;
 			return;
+		}
 
-		FriendsGroupsRequest (challenge.simplified ());
+		FriendsGroupsRequest (maybeChallenge->simplified ());
 	}
 
 	void SelectGroupsDialog::handleNetworkError (QNetworkReply::NetworkError error)
@@ -328,4 +349,3 @@ namespace DeathNote
 }
 }
 }
-

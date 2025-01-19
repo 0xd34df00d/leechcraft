@@ -16,13 +16,14 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QUuid>
-#include <QXmlQuery>
 #include <QFileInfo>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/xpc/util.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 #include <util/sll/util.h>
+#include <util/xpc/util.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
 #include "util.h"
@@ -261,40 +262,58 @@ namespace DeathNote
 			CallsQueue_.dequeue () (QString ());
 	}
 
+	namespace
+	{
+		struct Error
+		{
+			int Code_;
+			QString Text_;
+		};
+
+		std::optional<Error> GetChildError (const QDomElement& elem)
+		{
+			const auto errorElem = elem.firstChildElement ("Error");
+			if (errorElem.isNull ())
+				return {};
+			return Error { errorElem.attribute ("code"_qs).toInt (), errorElem.text () };
+		}
+
+		std::optional<Error> GetError (const QDomElement& fbResponse)
+		{
+			if (const auto err = GetChildError (fbResponse))
+				return err;
+
+			for (const auto& child : Util::DomChildren (fbResponse, {}))
+				if (const auto err = GetChildError (child))
+					return err;
+
+			return {};
+		}
+	}
+
 	bool FotoBilderAccount::IsErrorReply (const QByteArray& content)
 	{
-		QXmlQuery query;
-		query.setFocus (content);
-
-		QString code;
-		query.setQuery ("/FBResponse/Error/@code/data(.)");
-		if (!query.evaluateTo (&code))
+		QDomDocument doc;
+		if (!doc.setContent (content))
 		{
-			query.setQuery ("/FBResponse/CreateGalsResponse/Error/@code/data(.)");
-			if (!query.evaluateTo (&code))
-				return false;
+			qWarning () << "unable to parse XML:" << content;
+			return true;
 		}
-		code = code.simplified ();
 
-		QString string;
-		query.setQuery ("/FBResponse/Error/text()");
-		if (!query.evaluateTo (&string))
+		const auto& fbResponse = doc.documentElement ().firstChildElement ("FBResponse");
+		if (fbResponse.isNull ())
 		{
-			query.setQuery ("/FBResponse/CreateGalsResponse/Error/text()");
-			if (!query.evaluateTo (&string))
-				return false;
+			qWarning () << "no FBResponse in" << content;
+			return true;
 		}
-		string = string.simplified ();
 
-		if (code.isEmpty () || string.isEmpty ())
+		const auto err = GetError (fbResponse);
+		if (!err)
 			return false;
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq DeathNote",
-				tr ("%1 (original message: %2)")
-						.arg (LocalizedErrorFromCode (code.toInt ()))
-						.arg (string),
+				tr ("%1 (original message: %2)").arg (LocalizedErrorFromCode (err->Code_), err->Text_),
 				Priority::Warning));
-
 		return true;
 	}
 
@@ -497,14 +516,14 @@ namespace DeathNote
 		if (content.isEmpty ())
 			return;
 
-		QXmlQuery query;
-		query.setFocus (content);
-
-		QString challenge;
-		query.setQuery ("/FBResponse/GetChallengeResponse/Challenge/text()");
-		if (!query.evaluateTo (&challenge))
+		const auto& challengeElem = document.documentElement ()
+				.firstChildElement ("FBResponse")
+				.firstChildElement ("GetChallengeResponse")
+				.firstChildElement ("Challenge");
+		if (challengeElem.isNull ())
 			return;
 
+		const auto& challenge = challengeElem.text ();
 		if (!CallsQueue_.isEmpty ())
 			CallsQueue_.dequeue () (challenge.trimmed ());
 	}

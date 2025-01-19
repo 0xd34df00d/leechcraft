@@ -12,5 +12,5 @@ LC_DEFINE_PLUGIN (
 		selectgroupsdialog.cpp
 		util.cpp
 	RESOURCES blasqdeathnoteresources.qrc
-	QT_COMPONENTS Network Widgets Xml XmlPatterns
+	QT_COMPONENTS Network Widgets Xml
 	)
