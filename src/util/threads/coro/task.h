@@ -10,6 +10,7 @@
 
 #include <coroutine>
 #include <utility>
+#include <QVector>
 #include "finalsuspender.h"
 #include "taskfwd.h"
 
