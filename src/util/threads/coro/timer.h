@@ -10,7 +10,7 @@
 
 #include <chrono>
 #include <coroutine>
-#include <Qt>
+#include <QTimer>
 #include "../threadsconfig.h"
 
 namespace LC::Util
@@ -19,8 +19,9 @@ namespace LC::Util
 	{
 		struct UTIL_THREADS_API TimerAwaiter
 		{
-			std::chrono::milliseconds Duration_;
-			Qt::TimerType Precision_;
+			QTimer Timer_;
+
+			explicit TimerAwaiter (std::chrono::milliseconds duration, Qt::TimerType precision);
 
 			bool await_ready () const noexcept;
 			void await_suspend (std::coroutine_handle<> handle) noexcept;

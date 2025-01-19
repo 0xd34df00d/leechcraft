@@ -11,6 +11,13 @@
 
 namespace LC::Util::detail
 {
+	TimerAwaiter::TimerAwaiter (std::chrono::milliseconds duration, Qt::TimerType precision)
+	{
+		Timer_.setSingleShot (true);
+		Timer_.setInterval (duration);
+		Timer_.setTimerType (precision);
+	}
+
 	bool TimerAwaiter::await_ready () const noexcept
 	{
 		return false;
@@ -18,7 +25,14 @@ namespace LC::Util::detail
 
 	void TimerAwaiter::await_suspend (std::coroutine_handle<> handle) noexcept
 	{
-		QTimer::singleShot (Duration_, handle);
+		QObject::connect (&Timer_,
+				&QTimer::timeout,
+				[handle]
+				{
+					if (!handle.done ())
+						handle ();
+				});
+		Timer_.start ();
 	}
 
 	void TimerAwaiter::await_resume () const noexcept
