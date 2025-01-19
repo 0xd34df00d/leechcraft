@@ -203,52 +203,6 @@ namespace LC::Util
 		TestBadReply (&DelayedFinishMarker);
 	}
 
-	void CoroTaskTest::testContextDestrBeforeFinish ()
-	{
-		auto context = std::make_unique<QObject> ();
-		auto task = [] (QObject *context) -> Task<int, ContextExtensions>
-		{
-			co_await AddContextObject { *context };
-			co_await 10ms;
-			co_return context->children ().size ();
-		} (&*context);
-		context.reset ();
-
-		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
-	}
-
-	void CoroTaskTest::testContextDestrAfterFinish ()
-	{
-		auto context = std::make_unique<QObject> ();
-		auto task = [] (QObject *context) -> Task<int, ContextExtensions>
-		{
-			co_await AddContextObject { *context };
-			co_await 10ms;
-			co_return context->children ().size ();
-		} (&*context);
-
-		QCOMPARE (GetTaskResult (task), 0);
-	}
-
-	void CoroTaskTest::testContextDestrDoesntWaitTimer ()
-	{
-		QElapsedTimer timer;
-		timer.start ();
-
-		auto context = std::make_unique<QObject> ();
-		auto task = [] (QObject *context) -> ContextTask<void>
-		{
-			co_await AddContextObject { *context };
-			co_await 1000ms;
-		} (&*context);
-
-		QTimer::singleShot (10ms, [&] { context.reset (); });
-
-		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
-
-		QVERIFY (timer.elapsed () < 100);
-	}
-
 	void CoroTaskTest::testFutureAwaiter ()
 	{
 		auto delayed = [] () -> Task<int>
@@ -428,5 +382,51 @@ namespace LC::Util
 		const auto time = timer.elapsed ();
 
 		QVERIFY (time >= count * tasks.size () * t.GetInterval ().count ());
+	}
+
+	void CoroTaskTest::testContextDestrBeforeFinish ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto task = [] (QObject *context) -> ContextTask<int>
+		{
+			co_await AddContextObject { *context };
+			co_await 1000ms;
+			co_return context->children ().size ();
+		} (&*context);
+		context.reset ();
+
+		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+	}
+
+	void CoroTaskTest::testContextDestrAfterFinish ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto task = [] (QObject *context) -> ContextTask<int>
+		{
+			co_await AddContextObject { *context };
+			co_await 10ms;
+			co_return context->children ().size ();
+		} (&*context);
+
+		QCOMPARE (GetTaskResult (task), 0);
+	}
+
+	void CoroTaskTest::testContextDestrDoesntWaitTimer ()
+	{
+		QElapsedTimer timer;
+		timer.start ();
+
+		auto context = std::make_unique<QObject> ();
+		auto task = [] (QObject *context) -> ContextTask<void>
+		{
+			co_await AddContextObject { *context };
+			co_await 1000ms;
+		} (&*context);
+
+		QTimer::singleShot (10ms, [&] { context.reset (); });
+
+		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+
+		QVERIFY (timer.elapsed () < 100);
 	}
 }

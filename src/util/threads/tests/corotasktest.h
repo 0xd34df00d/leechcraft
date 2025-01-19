@@ -25,10 +25,6 @@ namespace LC::Util
 		void testNetworkReplyBadNoWait ();
 		void testNetworkReplyBadWait ();
 
-		void testContextDestrBeforeFinish ();
-		void testContextDestrAfterFinish ();
-		void testContextDestrDoesntWaitTimer ();
-
 		void testFutureAwaiter ();
 
 		void testWaitMany ();
@@ -39,5 +35,9 @@ namespace LC::Util
 		void testThrottleSameCoro ();
 		void testThrottleSameCoroSlow ();
 		void testThrottleManyCoros ();
+
+		void testContextDestrBeforeFinish ();
+		void testContextDestrAfterFinish ();
+		void testContextDestrDoesntWaitTimer ();
 	};
 }
