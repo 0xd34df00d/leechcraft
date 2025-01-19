@@ -116,6 +116,7 @@ namespace LC::Util
 					{
 						auto className = object->metaObject ()->className ();
 						handle.promise ().DeadObjects_.push_back ({ className, object->objectName () });
+						handle.resume ();
 					});
 			handle.promise ().ContextConnections_.push_back (conn);
 			return false;
