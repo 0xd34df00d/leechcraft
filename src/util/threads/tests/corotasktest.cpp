@@ -100,16 +100,16 @@ namespace LC::Util
 
 		class MockNAM : public QNetworkAccessManager
 		{
-			MockReply * const Reply_;
+			QPointer<MockReply> Reply_;
 		public:
 			explicit MockNAM (MockReply *reply)
 			: Reply_ { reply }
 			{
 			}
 
-			MockReply& GetReply ()
+			MockReply* GetReply ()
 			{
-				return *Reply_;
+				return Reply_;
 			}
 		protected:
 			QNetworkReply* createRequest (Operation op, const QNetworkRequest& req, QIODevice*) override
@@ -141,7 +141,7 @@ namespace LC::Util
 		{
 			const QByteArray data { "this is some test data" };
 			MockNAM nam { MkSuccessfulReply (data) };
-			finishMarker (nam.GetReply ());
+			finishMarker (*nam.GetReply ());
 
 			auto task = [&nam] () -> Task<QByteArray>
 			{
@@ -156,7 +156,7 @@ namespace LC::Util
 		void TestBadReply (auto finishMarker)
 		{
 			MockNAM nam { MkErrorReply () };
-			finishMarker (nam.GetReply ());
+			finishMarker (*nam.GetReply ());
 
 			auto task = [&nam] () -> Task<QByteArray>
 			{
