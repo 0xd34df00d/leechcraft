@@ -466,6 +466,24 @@ namespace LC::Util
 				}, &*nam));
 	}
 
+	void CoroTaskTest::testContextDestrDoesntWaitProcess ()
+	{
+		WithDestroyTimer (WithContext ([] (QObject *context) -> ContextTask<>
+				{
+					co_await AddContextObject { *context };
+
+					const auto process = new QProcess {};
+					const auto delay = std::chrono::duration_cast<std::chrono::milliseconds> (LongDelay);
+					process->start ("sleep", { QString::number (delay.count () / 1000.0) });
+					connect (process,
+							&QProcess::finished,
+							process,
+							&QObject::deleteLater);
+
+					co_await *process;
+				}));
+	}
+
 	void CoroTaskTest::cleanupTestCase ()
 	{
 		bool done = false;

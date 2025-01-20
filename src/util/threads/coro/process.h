@@ -9,6 +9,7 @@
 #pragma once
 
 #include <coroutine>
+#include <QMetaObject>
 #include "../threadsconfig.h"
 
 class QProcess;
@@ -18,6 +19,11 @@ namespace LC::Util::detail
 	struct UTIL_THREADS_API ProcessAwaiter
 	{
 		QProcess& Process_;
+
+		QMetaObject::Connection FinishedConn_ {};
+		QMetaObject::Connection ErrorConn_ {};
+
+		~ProcessAwaiter () noexcept;
 
 		bool await_ready () const noexcept;
 		void await_suspend (std::coroutine_handle<> handle) noexcept;
