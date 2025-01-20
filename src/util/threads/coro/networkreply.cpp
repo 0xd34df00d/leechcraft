@@ -14,10 +14,8 @@ namespace LC::Util::detail
 {
 	NRAwaiter::~NRAwaiter () noexcept
 	{
-		if (FinishedConn_)
-			QObject::disconnect (FinishedConn_);
-		if (ErrorConn_)
-			QObject::disconnect (ErrorConn_);
+		QObject::disconnect (FinishedConn_);
+		QObject::disconnect (ErrorConn_);
 
 		Reply_.deleteLater ();
 	}
