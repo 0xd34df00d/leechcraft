@@ -9,5 +9,6 @@
 #pragma once
 
 #include "coro/networkreply.h"
+#include "coro/process.h"
 #include "coro/task.h"
 #include "coro/timer.h"

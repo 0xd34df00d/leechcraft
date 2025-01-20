@@ -10,7 +10,6 @@
 
 #include <coroutine>
 #include <QMetaObject>
-
 #include "../threadsconfig.h"
 
 class QNetworkReply;
