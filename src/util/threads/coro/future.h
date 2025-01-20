@@ -39,7 +39,8 @@ namespace LC::Util::detail
 
 		R await_resume () const noexcept
 		{
-			return Future_.result ();
+			if constexpr (!std::is_same_v<R, void>)
+				return Future_.result ();
 		}
 	};
 }
