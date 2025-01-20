@@ -442,6 +442,34 @@ namespace LC::Util
 		QVERIFY (timer.elapsed () < DelayThreshold.count ());
 	}
 
+	void CoroTaskTest::testContextDestrDoesntWaitNetwork ()
+	{
+		QElapsedTimer timer;
+		timer.start ();
+
+		const QByteArray data { "this is some test data" };
+		auto nam = std::make_shared<MockNAM> (MkSuccessfulReply (data));
+		QTimer::singleShot (LongDelay,
+				[nam]
+				{
+					if (const auto reply = nam->GetReply ())
+					{
+						reply->setFinished (true);
+						emit reply->finished ();
+					}
+				});
+
+		const auto task = WithContext ([] (QObject *context, QNetworkAccessManager *nam) -> ContextTask<QByteArray>
+				{
+					co_await AddContextObject { *context };
+					const auto reply = co_await *nam->get (QNetworkRequest { QUrl { "http://example.com/foo.txt"_qs } });
+					co_return reply.GetReplyData ();
+				}, &*nam);
+
+		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+		QVERIFY (timer.elapsed () < DelayThreshold.count ());
+	}
+
 	void CoroTaskTest::cleanupTestCase ()
 	{
 		bool done = false;
