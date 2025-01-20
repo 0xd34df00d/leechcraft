@@ -17,30 +17,29 @@ namespace LC::Util::detail
 	template<typename R>
 	struct FutureAwaiter
 	{
-		QFuture<R> Future_;
+		QFutureWatcher<R> Watcher_;
+
+		FutureAwaiter (const QFuture<R>& future)
+		{
+			Watcher_.setFuture (future);
+		}
 
 		bool await_ready () const noexcept
 		{
-			return Future_.isFinished ();
+			return Watcher_.future ().isFinished ();
 		}
 
-		void await_suspend (std::coroutine_handle<> cont) noexcept
+		void await_suspend (std::coroutine_handle<> handle) noexcept
 		{
-			auto watcher = new QFutureWatcher<R> {};
-			watcher->setFuture (Future_);
-			QObject::connect (watcher,
+			QObject::connect (&Watcher_,
 					&QFutureWatcher<R>::finished,
-					[=]
-					{
-						watcher->deleteLater ();
-						cont ();
-					});
+					handle);
 		}
 
 		R await_resume () const noexcept
 		{
 			if constexpr (!std::is_same_v<R, void>)
-				return Future_.result ();
+				return Watcher_.future ().result ();
 		}
 	};
 }
@@ -50,6 +49,6 @@ namespace LC
 	template<typename R>
 	Util::detail::FutureAwaiter<R> operator co_await (QFuture<R> future)
 	{
-		return { std::move (future) };
+		return { future };
 	}
 }

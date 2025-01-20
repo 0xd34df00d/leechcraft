@@ -10,9 +10,9 @@
 #include <QtConcurrentRun>
 #include <QtTest>
 #include <coro.h>
+#include <coro/future.h>
 #include <coro/context.h>
 #include <coro/either.h>
-#include <coro/future.h>
 #include <coro/getresult.h>
 #include <coro/inparallel.h>
 #include <coro/networkresult.h>
@@ -481,6 +481,15 @@ namespace LC::Util
 							&QObject::deleteLater);
 
 					co_await *process;
+				}));
+	}
+
+	void CoroTaskTest::testContextDestrDoesntWaitFuture ()
+	{
+		WithDestroyTimer (WithContext ([] (QObject *context) -> ContextTask<>
+				{
+					co_await AddContextObject { *context };
+					co_await QtConcurrent::run ([] { QThread::sleep (LongDelay); });
 				}));
 	}
 

@@ -41,6 +41,7 @@ namespace LC::Util
 		void testContextDestrDoesntWaitTimer ();
 		void testContextDestrDoesntWaitNetwork ();
 		void testContextDestrDoesntWaitProcess ();
+		void testContextDestrDoesntWaitFuture ();
 
 		void cleanupTestCase ();
 	};
