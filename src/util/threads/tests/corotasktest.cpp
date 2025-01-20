@@ -425,28 +425,27 @@ namespace LC::Util
 			QTimer::singleShot (ShortDelay, [context = std::move (context)] () mutable { context.reset (); });
 			return task;
 		}
+
+		void WithDestroyTimer (auto task)
+		{
+			QElapsedTimer timer;
+			timer.start ();
+			QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+			QVERIFY (timer.elapsed () < DelayThreshold.count ());
+		}
 	}
 
 	void CoroTaskTest::testContextDestrDoesntWaitTimer ()
 	{
-		QElapsedTimer timer;
-		timer.start ();
-
-		const auto task = WithContext ([] (QObject *context) -> ContextTask<void>
+		WithDestroyTimer (WithContext ([] (QObject *context) -> ContextTask<void>
 				{
 					co_await AddContextObject { *context };
 					co_await LongDelay;
-				});
-
-		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
-		QVERIFY (timer.elapsed () < DelayThreshold.count ());
+				}));
 	}
 
 	void CoroTaskTest::testContextDestrDoesntWaitNetwork ()
 	{
-		QElapsedTimer timer;
-		timer.start ();
-
 		const QByteArray data { "this is some test data" };
 		auto nam = std::make_shared<MockNAM> (MkSuccessfulReply (data));
 		QTimer::singleShot (LongDelay,
@@ -459,15 +458,12 @@ namespace LC::Util
 					}
 				});
 
-		const auto task = WithContext ([] (QObject *context, QNetworkAccessManager *nam) -> ContextTask<QByteArray>
+		WithDestroyTimer (WithContext ([] (QObject *context, QNetworkAccessManager *nam) -> ContextTask<QByteArray>
 				{
 					co_await AddContextObject { *context };
 					const auto reply = co_await *nam->get (QNetworkRequest { QUrl { "http://example.com/foo.txt"_qs } });
 					co_return reply.GetReplyData ();
-				}, &*nam);
-
-		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
-		QVERIFY (timer.elapsed () < DelayThreshold.count ());
+				}, &*nam));
 	}
 
 	void CoroTaskTest::cleanupTestCase ()
