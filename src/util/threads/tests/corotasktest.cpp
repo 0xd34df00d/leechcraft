@@ -440,4 +440,11 @@ namespace LC::Util
 		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
 		QVERIFY (timer.elapsed () < DelayThreshold.count ());
 	}
+
+	void CoroTaskTest::cleanupTestCase ()
+	{
+		bool done = false;
+		QTimer::singleShot (LongDelay * 2, [&done] { done = true; });
+		QTRY_VERIFY (done);
+	}
 }
