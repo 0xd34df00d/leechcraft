@@ -9,6 +9,8 @@
 #pragma once
 
 #include <coroutine>
+#include <QMetaObject>
+
 #include "../threadsconfig.h"
 
 class QNetworkReply;
@@ -22,6 +24,11 @@ namespace LC::Util
 		struct UTIL_THREADS_API NRAwaiter
 		{
 			QNetworkReply& Reply_;
+
+			QMetaObject::Connection FinishedConn_ {};
+			QMetaObject::Connection ErrorConn_ {};
+
+			~NRAwaiter () noexcept;
 
 			bool await_ready () const noexcept;
 			void await_suspend (std::coroutine_handle<> handle) noexcept;

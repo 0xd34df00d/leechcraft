@@ -12,6 +12,16 @@
 
 namespace LC::Util::detail
 {
+	NRAwaiter::~NRAwaiter () noexcept
+	{
+		if (FinishedConn_)
+			QObject::disconnect (FinishedConn_);
+		if (ErrorConn_)
+			QObject::disconnect (ErrorConn_);
+
+		Reply_.deleteLater ();
+	}
+
 	bool NRAwaiter::await_ready () const noexcept
 	{
 		return Reply_.isFinished ();
@@ -19,19 +29,14 @@ namespace LC::Util::detail
 
 	void NRAwaiter::await_suspend (std::coroutine_handle<> handle) noexcept
 	{
-		auto finishedConn = QObject::connect (&Reply_,
+		FinishedConn_ = QObject::connect (&Reply_,
 				&QNetworkReply::finished,
-				[=, this]
-				{
-					Reply_.deleteLater ();
-					handle ();
-				});
-		QObject::connect (&Reply_,
+				handle);
+		ErrorConn_ = QObject::connect (&Reply_,
 				&QNetworkReply::errorOccurred,
-				[=, this]
+				[this, handle]
 				{
-					QObject::disconnect (finishedConn);
-					Reply_.deleteLater ();
+					QObject::disconnect (FinishedConn_);
 					handle ();
 				});
 	}
