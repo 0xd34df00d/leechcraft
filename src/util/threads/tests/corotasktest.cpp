@@ -100,10 +100,10 @@ namespace LC::Util
 
 		class MockNAM : public QNetworkAccessManager
 		{
-			std::unique_ptr<MockReply> Reply_;
+			MockReply * const Reply_;
 		public:
-			explicit MockNAM (std::unique_ptr<MockReply> reply)
-			: Reply_ { std::move (reply) }
+			explicit MockNAM (MockReply *reply)
+			: Reply_ { reply }
 			{
 			}
 
@@ -117,13 +117,13 @@ namespace LC::Util
 				Reply_->setUrl (req.url ());
 				Reply_->setOperation (op);
 				Reply_->setRequest (req);
-				return Reply_.get ();
+				return Reply_;
 			}
 		};
 
 		auto MkSuccessfulReply (const QByteArray& data)
 		{
-			auto reply = std::make_unique<MockReply> ();
+			auto reply = new MockReply;
 			reply->setAttribute (QNetworkRequest::HttpStatusCodeAttribute, 200);
 			reply->SetData (data);
 			return reply;
@@ -131,7 +131,7 @@ namespace LC::Util
 
 		auto MkErrorReply ()
 		{
-			auto reply = std::make_unique<MockReply> ();
+			auto reply = new MockReply;
 			reply->setAttribute (QNetworkRequest::HttpStatusCodeAttribute, 404);
 			reply->setError (QNetworkReply::NetworkError::ContentAccessDenied, "well, 404!"_qs);
 			return reply;
@@ -417,10 +417,11 @@ namespace LC::Util
 
 	namespace
 	{
-		auto WithContext (auto&& taskGen)
+		template<typename... Ts>
+		auto WithContext (auto&& taskGen, Ts&&... taskArgs)
 		{
 			auto context = std::make_unique<QObject> ();
-			auto task = taskGen (&*context);
+			auto task = taskGen (&*context, std::forward<Ts> (taskArgs)...);
 			QTimer::singleShot (ShortDelay, [context = std::move (context)] () mutable { context.reset (); });
 			return task;
 		}
