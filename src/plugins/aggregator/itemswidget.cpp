@@ -10,9 +10,7 @@
 #include <memory>
 #include <algorithm>
 #include <QHeaderView>
-#include <QSortFilterProxyModel>
 #include <QUrl>
-#include <QMessageBox>
 #include <QToolBar>
 #include <interfaces/iwebbrowser.h>
 #include <util/gui/clearlineeditaddon.h>
