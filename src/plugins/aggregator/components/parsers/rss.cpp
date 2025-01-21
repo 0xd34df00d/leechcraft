@@ -77,6 +77,7 @@ namespace LC::Aggregator::Parsers
 				const auto formats =
 				{
 					"ddd, dd MMM yyyy HH:mm:ss t"_qs,
+					"dd MMM yyyy HH:mm:ss t"_qs,
 					"yyyy-MM-dd"_qs,
 				};
 				for (const auto& fmt : formats)
