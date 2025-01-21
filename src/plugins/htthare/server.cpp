@@ -29,22 +29,21 @@ namespace HttHare
 		{
 			try
 			{
-				const ip::tcp::endpoint endpoint = *resolver.resolve ({ pair.first.toStdString (), pair.second.toStdString () });
+				const auto endpoints = resolver.resolve (pair.first.toStdString (), pair.second.toStdString ());
+				for (const ip::tcp::endpoint endpoint : endpoints)
+				{
+					auto accPtr = std::make_unique<ip::tcp::acceptor> (IoService_);
+					accPtr->open (endpoint.protocol ());
+					accPtr->set_option (ip::tcp::acceptor::reuse_address (true));
+					accPtr->bind (endpoint);
+					accPtr->listen ();
 
-				auto accPtr = std::make_unique<ip::tcp::acceptor> (IoService_);
-				accPtr->open (endpoint.protocol ());
-				accPtr->set_option (ip::tcp::acceptor::reuse_address (true));
-				accPtr->bind (endpoint);
-				accPtr->listen ();
-
-				Acceptors_.emplace_back (std::move (accPtr));
+					Acceptors_.emplace_back (std::move (accPtr));
+				}
 			}
 			catch (const std::exception& e)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "error binding"
-						<< pair
-						<< e.what ();
+				qWarning () << "error binding" << pair << e.what ();
 			}
 		}
 

@@ -14,7 +14,7 @@ namespace LC
 {
 namespace HttHare
 {
-	Connection::Connection (boost::asio::io_service& service,
+	Connection::Connection (boost::asio::io_context& service,
 			const StorageManager& stMgr, IconResolver *resolver, TrManager *trMgr)
 	: Strand_ { service }
 	, Socket_ { service }
@@ -30,7 +30,7 @@ namespace HttHare
 		return Socket_;
 	}
 
-	boost::asio::io_service::strand& Connection::GetStrand ()
+	boost::asio::io_context::strand& Connection::GetStrand ()
 	{
 		return Strand_;
 	}

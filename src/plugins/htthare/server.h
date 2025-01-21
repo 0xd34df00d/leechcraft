@@ -26,7 +26,7 @@ namespace HttHare
 
 	class Server
 	{
-		boost::asio::io_service IoService_;
+		boost::asio::io_context IoService_;
 		std::vector<std::unique_ptr<boost::asio::ip::tcp::acceptor>> Acceptors_;
 
 		StorageManager StorageMgr_;
