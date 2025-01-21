@@ -11,6 +11,7 @@
 #include <QDialog>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <util/threads/coro/taskfwd.h>
 #include "ui_selectgroupsdialog.h"
 
 class QStandardItemModel;
@@ -40,7 +41,7 @@ namespace DeathNote
 
 	class SelectGroupsDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Blasq::DeathNote::SelectGroupsDialog)
 
 		Ui::SelectGroupsDialog Ui_;
 		QStandardItemModel * const Model_;
@@ -52,14 +53,10 @@ namespace DeathNote
 
 		uint GetSelectedGroupId () const;
 	private:
-		void RequestFriendsGroups ();
-		void FriendsGroupsRequest (const QString& challenge);
-		void GenerateChallenge ();
+		Util::ContextTask<> RequestFriendsGroups ();
+		Util::ContextTask<> FriendsGroupsRequest (const QString& challenge);
 		QNetworkRequest CreateNetworkRequest ();
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleNetworkError (QNetworkReply::NetworkError error);
-		void handleRequestFriendsGroupsFinished ();
+		QByteArray GetFriendsGroupsRequestBody (const QString& challenge);
 	};
 }
 }

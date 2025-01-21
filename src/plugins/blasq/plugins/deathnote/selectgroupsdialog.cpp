@@ -12,10 +12,16 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QUrl>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/blasq/iservice.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/qtutil.h>
+#include <util/svcauth/ljutils.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/either.h>
+#include <util/threads/coro/networkresult.h>
 #include <util/xpc/util.h>
 #include "fotobilderaccount.h"
 #include "util.h"
@@ -47,9 +53,42 @@ namespace DeathNote
 				.value (0).data (Qt::UserRole + 1).toUInt ();
 	}
 
-	void SelectGroupsDialog::RequestFriendsGroups ()
+	namespace
 	{
-		GenerateChallenge ();
+		void NotifyError (const QString& msg)
+		{
+			const auto entity = Util::MakeNotification ("Blasq", msg, Priority::Warning);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+		}
+
+		using ParseFriendsGroupsResult = Util::Either<QString, QList<FriendsGroup>>;
+		ParseFriendsGroupsResult ParseFriendsGroupsResponse (const QByteArray& response);
+	}
+
+	Util::ContextTask<> SelectGroupsDialog::RequestFriendsGroups ()
+	{
+		co_await Util::AddContextObject { *this };
+
+		const auto& challengeResponse = co_await Util::LJ::RequestChallenge ({
+				.NAM_ = *GetProxyHolder ()->GetNetworkAccessManager (),
+				.UserAgent_ = "LeechCraft Blasq " + GetProxyHolder ()->GetVersion ().toUtf8 (),
+			});
+		const auto& challenge = co_await Util::WithHandler (challengeResponse,
+				[&] (const auto& error) { NotifyError (tr ("Unable to get challenge.") + ' ' + error.Text_); });
+
+		const auto& request = GetFriendsGroupsRequestBody (challenge);
+
+		const auto reply = GetProxyHolder ()->GetNetworkAccessManager ()->post (CreateNetworkRequest (), request);
+		const auto response = co_await *reply;
+		const auto responseBody = co_await Util::WithHandler (response.ToEither ("Request friends groups"), NotifyError);
+		const auto groups = co_await Util::WithHandler (ParseFriendsGroupsResponse (responseBody), NotifyError);
+		for (const auto& group : groups)
+		{
+			const auto item = new QStandardItem { group.Name_ };
+			item->setData (group.Id_);
+			item->setEditable (false);
+			Model_->appendRow (item);
+		}
 	}
 
 	QNetworkRequest SelectGroupsDialog::CreateNetworkRequest ()
@@ -105,29 +144,6 @@ namespace DeathNote
 			return member;
 		}
 
-		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
-		{
-			if (!reply)
-				return QByteArray ();
-
-			const auto& content = reply->readAll ();
-			reply->deleteLater ();
-			QString errorMsg;
-			int errorLine = -1, errorColumn = -1;
-			if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< errorMsg
-						<< "in line:"
-						<< errorLine
-						<< "column:"
-						<< errorColumn;
-				return QByteArray ();
-			}
-
-			return content;
-		}
-
 		QVariantList ParseValue (const QDomNode& node);
 
 		ParsedMember ParseMember (const QDomNode& node)
@@ -181,9 +197,39 @@ namespace DeathNote
 
 			return result;
 		}
+
+		ParseFriendsGroupsResult ParseFriendsGroupsResponse (const QByteArray& response)
+		{
+			QDomDocument document;
+			if (!document.setContent (response))
+			{
+				qWarning () << "unable to parse" << response;
+				return ParseFriendsGroupsResult::Left (SelectGroupsDialog::tr ("Unable to parse network response."));
+			}
+
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (!firstStructElement.at (0).isElement ())
+			{
+				qWarning () << "no groups" << response;
+				return ParseFriendsGroupsResult::Left (SelectGroupsDialog::tr ("Empty friends groups response."));
+			}
+
+			QList<FriendsGroup> groups;
+			for (const auto& member : Util::DomChildren (firstStructElement.at (0).toElement (), "member"_qs))
+			{
+				auto res = ParseMember (member);
+				if (res.Name_ != "friendgroups")
+					continue;
+
+				for (const auto& element : res.Value_)
+					groups << CreateGroup (element.toList ());
+			}
+
+			return ParseFriendsGroupsResult::Right (groups);
+		}
 	}
 
-	void SelectGroupsDialog::FriendsGroupsRequest (const QString& challenge)
+	QByteArray SelectGroupsDialog::GetFriendsGroupsRequestBody (const QString& challenge)
 	{
 		QDomDocument doc ("GetFriendsGroups");
 		QDomElement methodCall = doc.createElement ("methodCall");
@@ -200,152 +246,17 @@ namespace DeathNote
 		param.appendChild (value);
 		QDomElement structElem = doc.createElement ("struct");
 		value.appendChild (structElem);
-		structElem.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", doc));
-		structElem.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, doc));
-		structElem.appendChild (GetSimpleMemberElement ("username", "string",
-				Login_, doc));
+		structElem.appendChild (GetSimpleMemberElement ("auth_method", "string", "challenge", doc));
+		structElem.appendChild (GetSimpleMemberElement ("auth_challenge", "string", challenge, doc));
+		structElem.appendChild (GetSimpleMemberElement ("username", "string", Login_, doc));
 
-		const auto& password = GetAccountPassword (Account_->GetID (), Account_->GetName (), Account_->GetProxy ());
-		structElem.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetHashedChallenge (password, challenge), doc));
+		const auto& password = GetAccountPassword (Account_->GetID (), Account_->GetName (), GetProxyHolder ());
+		structElem.appendChild (GetSimpleMemberElement ("auth_response", "string", GetHashedChallenge (password, challenge), doc));
 
-		structElem.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", doc));
+		structElem.appendChild (GetSimpleMemberElement ("ver", "int", "1", doc));
 
-		QNetworkReply *reply = Account_->GetProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						doc.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleRequestFriendsGroupsFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+		return doc.toByteArray ();
 	}
-
-	void SelectGroupsDialog::GenerateChallenge ()
-	{
-		QDomDocument document ("GenerateChallenge");
-		QDomElement methodCall = document.createElement ("methodCall");
-		document.appendChild (methodCall);
-
-		QDomElement methodName = document.createElement ("methodName");
-		methodCall.appendChild (methodName);
-		QDomText methodNameText = document.createTextNode ("LJ.XMLRPC.getchallenge");
-		methodName.appendChild (methodNameText);
-
-		QNetworkReply *reply = Account_->GetProxy ()->GetNetworkAccessManager ()->
-				post (CreateNetworkRequest (), document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleChallengeReplyFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
-	}
-
-	namespace
-	{
-		std::optional<QString> GetChallenge (const QDomDocument& doc)
-		{
-			const auto& replyStruct = doc.documentElement ()
-					.firstChildElement ("methodResponse"_qs)
-					.firstChildElement ("params"_qs)
-					.firstChildElement ("param"_qs)
-					.firstChildElement ("value"_qs)
-					.firstChildElement ("struct"_qs);
-			for (const auto& member : Util::DomChildren (replyStruct, "member"_qs))
-				if (member.firstChildElement ("name"_qs).text () == "challenge")
-					return member
-							.firstChildElement ("value"_qs)
-							.firstChildElement ("string"_qs)
-							.text ();
-
-			return {};
-		}
-	}
-
-	void SelectGroupsDialog::handleChallengeReplyFinished ()
-	{
-		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
-				document);
-		if (content.isEmpty ())
-			return;
-
-		const auto& maybeChallenge = GetChallenge (document);
-		if (!maybeChallenge)
-		{
-			qWarning () << "unable to determine challenge from" << content;
-			return;
-		}
-
-		FriendsGroupsRequest (maybeChallenge->simplified ());
-	}
-
-	void SelectGroupsDialog::handleNetworkError (QNetworkReply::NetworkError error)
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-		reply->deleteLater ();
-		qWarning () << Q_FUNC_INFO
-				<< "error code:"
-				<< error
-				<< "error text:"
-				<< reply->errorString ();
-
-		Account_->GetProxy ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-				reply->errorString (),
-				Priority::Warning));
-	}
-
-	void SelectGroupsDialog::handleRequestFriendsGroupsFinished ()
-	{
-		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
-				document);
-		if (content.isEmpty ())
-			return;
-
-		QList<FriendsGroup> groups;
-		const auto& firstStructElement = document.elementsByTagName ("struct");
-		if (firstStructElement.at (0).isNull ())
-			return;
-
-		const auto& members = firstStructElement.at (0).childNodes ();
-		for (int i = 0, count = members.count (); i < count; ++i)
-		{
-			const QDomNode& member = members.at (i);
-			if (!member.isElement () ||
-					member.toElement ().tagName () != "member")
-				continue;
-
-			auto res = ParseMember (member);
-			if (res.Name_ != "friendgroups")
-				continue;
-
-			for (const auto& element : res.Value_)
-				groups << CreateGroup (element.toList ());
-		}
-
-		for (const auto& group : groups)
-		{
-			QStandardItem *item = new QStandardItem (group.Name_);
-			item->setData (group.Id_);
-			item->setEditable (false);
-			Model_->appendRow (item);
-		}
-	}
-
 }
 }
 }
