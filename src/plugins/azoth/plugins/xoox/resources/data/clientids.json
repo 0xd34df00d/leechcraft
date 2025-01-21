@@ -31,7 +31,7 @@
       "name": "Tkabber"
     },
     {
-      "node": "http://psi-im.org",
+      "node": [ "http://psi-im.org", "https://psi-im.org" ],
       "id": "psi",
       "name": "Psi"
     }
