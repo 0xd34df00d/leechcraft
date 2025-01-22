@@ -13,13 +13,18 @@
 #include <QDateTime>
 #include <QFile>
 #include <QTemporaryFile>
-#include <QXmlQuery>
 #include <QStandardPaths>
 #include <util/sys/sysinfo.h>
 #include <util/xpc/util.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/urloperator.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/svcauth/ljutils.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/either.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"
@@ -359,27 +364,25 @@ namespace Metida
 		}
 	}
 
-	void LJXmlRPC::GenerateChallenge () const
+	Util::ContextTask<> LJXmlRPC::GenerateChallenge ()
 	{
-		QDomDocument document ("GenerateChallenge");
-		QDomElement methodCall = document.createElement ("methodCall");
-		document.appendChild (methodCall);
+		co_await Util::AddContextObject { *this };
 
-		QDomElement methodName = document.createElement ("methodName");
-		methodCall.appendChild (methodName);
-		QDomText methodNameText = document.createTextNode ("LJ.XMLRPC.getchallenge");
-		methodName.appendChild (methodNameText);
+		const auto result = co_await Util::LJ::RequestChallenge ({
+					.NAM_ = *GetProxyHolder ()->GetNetworkAccessManager (),
+					.UserAgent_ = "LeechCraft Blogique " + GetProxyHolder ()->GetVersion ().toUtf8 (),
+				});
+		const auto challenge = co_await Util::WithHandler (result,
+				[] (const auto& error)
+				{
+					const auto e = Util::MakeNotification ("Blogique",
+						tr ("Unable to get authentication challenge.") + ' ' + error.Text_,
+						Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 
-		auto reply = Post (Proxy_, document);
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleChallengeReplyFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+		if (!ApiCallQueue_.isEmpty ())
+			ApiCallQueue_.dequeue () (challenge);
 	}
 
 	void LJXmlRPC::ValidateAccountData (const QString& login,
@@ -1228,22 +1231,51 @@ namespace Metida
 
 	void LJXmlRPC::ParseForError (const QByteArray& content)
 	{
-		//TODO code and message together
-		QXmlQuery query;
-		query.setFocus (content);
-		QString errorCode;
-		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultCode']/value/int/text()");
-		if (!query.evaluateTo (&errorCode))
-			errorCode = QString ();
+		QDomDocument doc;
+		if (!doc.setContent (content))
+		{
+			qWarning () << "unable to parse XML:" << content;
+			return;
+		}
 
-		QString errorString;
-		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
-		if (!query.evaluateTo (&errorString))
-			errorString = QString ();
+		const auto& faultStruct = doc.documentElement ()
+				.firstChildElement ("methodResponse"_qs)
+				.firstChildElement ("fault"_qs)
+				.firstChildElement ("value"_qs)
+				.firstChildElement ("struct"_qs);
+		if (faultStruct.isNull ())
+			return;
 
-		if (!errorCode.isEmpty () && !errorString.isEmpty ())
-			emit error (errorCode.toInt (), errorString,
-					MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
+		std::optional<int> errorCode;
+		std::optional<QString> errorString;
+
+		for (const auto& member : Util::DomChildren (faultStruct, "member"_qs))
+		{
+			const auto& name = member.firstChildElement ("name").text ();
+			if (name == "faultCode"_qs)
+			{
+				bool ok;
+				errorCode = member
+						.firstChildElement ("value"_qs)
+						.firstChildElement ("int"_qs)
+						.text ().toInt (&ok);
+				if (!ok)
+					errorCode.reset ();
+			}
+
+			if (name == "faultString"_qs)
+			{
+				const auto& str = member
+						.firstChildElement ("value"_qs)
+						.firstChildElement ("string"_qs).text ();
+				if (!str.isEmpty ())
+					errorString = str;
+			}
+		}
+
+		if (errorCode)
+			emit error (*errorCode, errorString.value_or ("unknown error"_qs),
+					MetidaUtils::GetLocalizedErrorMessage (*errorCode));
 	}
 
 	namespace
@@ -1546,26 +1578,6 @@ namespace Metida
 
 			return content;
 		}
-	}
-
-	void LJXmlRPC::handleChallengeReplyFinished ()
-	{
-		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
-				document);
-		if (content.isEmpty ())
-			return;
-
-		QXmlQuery query;
-		query.setFocus (content);
-
-		QString challenge;
-		query.setQuery ("/methodResponse/params/param/value/struct/member[name='challenge']/value/string/text()");
-		if (!query.evaluateTo (&challenge))
-			return;
-
-		if (!ApiCallQueue_.isEmpty ())
-			ApiCallQueue_.dequeue () (challenge.simplified ());
 	}
 
 	namespace
@@ -2417,4 +2429,3 @@ namespace Metida
 }
 }
 }
-

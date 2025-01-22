@@ -13,8 +13,8 @@
 #include <QQueue>
 #include <QPair>
 #include <QDomElement>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/core/icoreproxyfwd.h>
 #include "profiletypes.h"
 #include "ljaccount.h"
@@ -50,7 +50,6 @@ namespace Metida
 
 		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
 		QMap<QPair<int, int>, LJCommentEntry> Id2CommentEntry_;
-
 	public:
 		LJXmlRPC (LJAccount *acc, const ICoreProxy_ptr& proxy, QObject *parent = 0);
 
@@ -89,11 +88,10 @@ namespace Metida
 		void AddComment (const CommentEntry& comment);
 
 		void RequestTags ();
-
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void CallNextFunctionFromQueue ();
-		void GenerateChallenge () const;
+		Util::ContextTask<> GenerateChallenge ();
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
 		void RequestFriendsInfo (const QString& login,
@@ -139,9 +137,7 @@ namespace Metida
 
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
-
 	private slots:
-		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();
 		void handleRequestFriendsInfoFinished ();
 		void handleAddNewFriendReplyFinished ();
@@ -165,7 +161,6 @@ namespace Metida
 		void handleGetUserTagsReplyFinished ();
 
 		void handleNetworkError (QNetworkReply::NetworkError error);
-
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
