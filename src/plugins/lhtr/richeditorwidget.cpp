@@ -9,6 +9,7 @@
 #include "richeditorwidget.h"
 #include <memory>
 #include <optional>
+#include <QActionGroup>
 #include <QWebEnginePage>
 #include <QWebEngineScriptCollection>
 #include <QWebEngineSettings>
