@@ -22,7 +22,9 @@ namespace Intermutko
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		qRegisterMetaType<QList<LocaleEntry>> ("QList<LocaleEntry>");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<QList<LocaleEntry>> ();
+#endif
 
 		Util::InstallTranslator ("intermutko");
 
