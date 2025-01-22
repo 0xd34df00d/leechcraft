@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "hostingservice.h"
+#include <algorithm>
 #include <QtDebug>
 #include <QNetworkReply>
 #include <QUrl>
@@ -43,13 +44,12 @@ namespace LC::Imgaste
 						{ .Format_ = fmt, .FieldName_ = "file"_qba, .Data_ = data });
 			}
 
-			HostingService::Result_t GetLink (const QString& contents)
+			HostingService::Result_t GetLink (QStringView contents)
 			{
 				constexpr static QStringView urlMarker = u"url:"_qsv;
 
-				const auto& lines = contents.splitRef ('\n');
-				const auto pos = std::find_if (lines.begin (), lines.end (),
-						[] (const QStringRef& line) { return line.startsWith (urlMarker); });
+				const auto& lines = contents.split ('\n');
+				const auto pos = std::ranges::find_if (lines, [] (auto line) { return line.startsWith (urlMarker); });
 				if (pos == lines.end ())
 					return HostingService::Result_t::Left ({});
 				return HostingService::Result_t::Right (pos->mid (urlMarker.size ()).toString ());
