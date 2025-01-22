@@ -9,6 +9,7 @@
 #include "postoptionswidget.h"
 #include <QDir>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -209,32 +210,41 @@ namespace Metida
 
 		if (map.contains ("content"))
 		{
-			QRegExp rxp ("<lj-like\\s?(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>", Qt::CaseInsensitive);
-			QStringList likes;
-			if (rxp.indexIn (map ["content"].toString ()) != -1)
-				likes = rxp.cap (2).split (',');
-
-			if (rxp.capturedTexts ().count () == 1)
-				likes = QStringList { "repost", "vkontakte", "facebook",
-						"google", "livejournal", "twitter", "tumblr" "surfingbird" };
-
-			Ui_.VkontakteLike_->setChecked (likes.contains ("vkontakte"));
-			Ui_.FacebookLike_->setChecked (likes.contains ("facebook"));
-			Ui_.GoogleLike_->setChecked (likes.contains ("google"));
-			Ui_.LiveJournalReward_->setChecked (likes.contains ("livejournal"));
-			Ui_.LiveJournalRepost_->setChecked (likes.contains ("repost"));
-			Ui_.TwitterLike_->setChecked (likes.contains ("twitter"));
-			Ui_.TumblrLike_->setChecked (likes.contains ("tumblr"));
-			Ui_.SurfingbirdLike_->setChecked (likes.contains ("surfingbird"));
-			if (Ui_.VkontakteLike_->isChecked () &&
-					Ui_.FacebookLike_->isChecked () &&
-					Ui_.GoogleLike_->isChecked () &&
-					Ui_.LiveJournalReward_->isChecked () &&
-					Ui_.LiveJournalRepost_->isChecked () &&
-					Ui_.TwitterLike_->isChecked () &&
-					Ui_.TumblrLike_->isChecked () &&
-					Ui_.SurfingbirdLike_->isChecked ())
+			static const QRegularExpression rxp
+			{
+				"<lj-like\\s?(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>",
+				QRegularExpression::CaseInsensitiveOption
+			};
+			const auto& match = rxp.match (map ["content"].toString ());
+			if (match.capturedTexts ().count () == 1)
+			{
+				for (const auto button : { Ui_.VkontakteLike_, Ui_.FacebookLike_, Ui_.GoogleLike_,
+											Ui_.LiveJournalReward_, Ui_.LiveJournalRepost_, Ui_.TwitterLike_,
+											Ui_.TumblrLike_, Ui_.SurfingbirdLike_ })
+					button->setChecked (true);
 				Ui_.AllLike_->setChecked (true);
+			}
+			else if (match.hasMatch ())
+			{
+				const auto likes = match.capturedView (2).split (',');
+				Ui_.VkontakteLike_->setChecked (likes.contains (u"vkontakte"_qsv));
+				Ui_.FacebookLike_->setChecked (likes.contains (u"facebook"_qsv));
+				Ui_.GoogleLike_->setChecked (likes.contains (u"google"_qsv));
+				Ui_.LiveJournalReward_->setChecked (likes.contains (u"livejournal"_qsv));
+				Ui_.LiveJournalRepost_->setChecked (likes.contains (u"repost"_qsv));
+				Ui_.TwitterLike_->setChecked (likes.contains (u"twitter"_qsv));
+				Ui_.TumblrLike_->setChecked (likes.contains (u"tumblr"_qsv));
+				Ui_.SurfingbirdLike_->setChecked (likes.contains (u"surfingbird"_qsv));
+				if (Ui_.VkontakteLike_->isChecked () &&
+						Ui_.FacebookLike_->isChecked () &&
+						Ui_.GoogleLike_->isChecked () &&
+						Ui_.LiveJournalReward_->isChecked () &&
+						Ui_.LiveJournalRepost_->isChecked () &&
+						Ui_.TwitterLike_->isChecked () &&
+						Ui_.TumblrLike_->isChecked () &&
+						Ui_.SurfingbirdLike_->isChecked ())
+					Ui_.AllLike_->setChecked (true);
+			}
 		}
 	}
 
