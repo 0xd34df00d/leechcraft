@@ -43,8 +43,10 @@ namespace Metida
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
 		qRegisterMetaTypeStreamOperators<QList<LJMood>> ("QList<LJMood>");
+#endif
 
 		connect (LJXmlRpc_,
 				SIGNAL (validatingFinished (bool)),
@@ -227,8 +229,7 @@ namespace Metida
 
 		QString ToLJTags (const QString& content)
 		{
-			QRegExp rexpOpen ("<lj-poll name=\"(.+)\">\\s*</lj-poll>");
-			rexpOpen.setMinimal (true);
+			static const QRegularExpression rexpOpen ("<lj-poll name=\"(.+?)\">\\s*?</lj-poll>");
 			QString entry = content;
 			entry.replace (rexpOpen, "<lj-poll-\\1></lj-poll-\\1>");
 			return entry;
@@ -270,12 +271,10 @@ namespace Metida
 
 		QString FromLJTags (const QString& content)
 		{
-			QRegExp rexpOpen ("<lj-poll-(.+)>");
-			QRegExp rexpClose ("</lj-poll-(.+)>");
-			rexpOpen.setMinimal (true);
-			rexpClose.setMinimal (true);
+			static const QRegularExpression rexpOpen ("<lj-poll-(.+?)>");
+			static const QRegularExpression rexpClose ("</lj-poll-(.+?)>");
 			QString entry = content;
-			if (rexpClose.indexIn (entry) != -1)
+			if (entry.contains (rexpClose))
 			{
 				entry.replace (rexpOpen, "<lj-poll name=\"\\1\">");
 				entry.replace (rexpClose, "</lj-poll>");
@@ -558,10 +557,14 @@ namespace Metida
 		ljEvent.Props_ = props;
 		ljEvent.Event_.append ("\n<em style=\"font-size: 0.8em;\">Posted via <a href=\"https://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
 
-		QRegExp rxp ("(<lj-like.+(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>).+(</lj-like>)?", Qt::CaseInsensitive);
+		static const QRegularExpression rxp
+		{
+			"(<lj-like.+(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>).+(</lj-like>)?",
+			QRegularExpression::CaseInsensitiveOption
+		};
 		QString buttons = QString ("<lj-like buttons=\"%1\" />")
 				.arg (props.LikeButtons_.join (","));
-		if (rxp.indexIn (entry.Content_) != -1)
+		if (entry.Content_.contains (rxp))
 			ljEvent.Event_.replace (rxp, buttons);
 		else if (!ljEvent.Props_.LikeButtons_.isEmpty ())
 		{

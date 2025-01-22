@@ -110,7 +110,7 @@ namespace Metida
 				in >> ba;
 				data.Friends_ << LJFriendEntry::Deserialize (ba);
 			}
-			data.Friends_.removeAll (0);
+			data.Friends_.removeAll (nullptr);
 		}
 
 		if (version >= 3)

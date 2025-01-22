@@ -8,6 +8,7 @@
 
 #include "ljfriendentry.h"
 #include <QDataStream>
+#include <QIODevice>
 #include <QtDebug>
 
 namespace LC

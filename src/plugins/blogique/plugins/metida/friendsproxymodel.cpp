@@ -23,12 +23,14 @@ namespace Metida
 
 	bool FriendsProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
-		if (filterRegExp ().isEmpty ())
+		const auto& pattern = filterRegularExpression ().pattern ();
+		if (pattern.isEmpty ())
 			return true;
+
 		const auto& nick = sourceModel ()->index (sourceRow, CNickname, sourceParent).data ().toString ();
 		const auto& name = sourceModel ()->index (sourceRow, CUsername, sourceParent).data ().toString ();
 		const auto& birthday = sourceModel ()->index (sourceRow, CBirthday, sourceParent).data ().toString ();
-		return nick.contains (filterRegExp ()) || name.contains (filterRegExp ()) || birthday.contains (filterRegExp ());
+		return nick.contains (pattern) || name.contains (pattern) || birthday.contains (pattern);
 	}
 
 	bool FriendsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
@@ -59,7 +61,6 @@ namespace Metida
 		default:
 			return true;
 		}
-		return true;
 	}
 
 }
