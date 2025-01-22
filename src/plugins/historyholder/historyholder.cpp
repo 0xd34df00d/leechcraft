@@ -23,7 +23,9 @@ namespace HistoryHolder
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		qRegisterMetaType<HistoryEntry> ("LC::Plugins::HistoryHolder::Core::HistoryEntry");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<HistoryEntry> ("LC::Plugins::HistoryHolder::Core::HistoryEntry");
+#endif
 
 		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager (),
 				proxy->GetPluginsManager ()->CreateLoadProgressReporter (this));

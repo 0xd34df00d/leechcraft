@@ -29,7 +29,7 @@ namespace HistoryHolder
 			setFilterWildcard (r.String_);
 			break;
 		case Request::RTRegexp:
-			setFilterRegExp (r.String_);
+			setFilterRegularExpression (r.String_);
 			break;
 		default:
 			setFilterFixedString (r.String_);

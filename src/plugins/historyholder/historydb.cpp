@@ -13,7 +13,6 @@
 #include <QDataStream>
 #include <QDir>
 #include <QSettings>
-#include <QTextCodec>
 #include <QCoreApplication>
 #include <QUrl>
 #include <QSqlQueryModel>
@@ -148,7 +147,7 @@ namespace HistoryHolder
 			{
 				const auto& entity = e.Entity_.toByteArray ();
 				if (entity.size () < 250)
-					stren = QTextCodec::codecForName ("UTF-8")->toUnicode (entity);
+					stren = QString::fromUtf8 (entity);
 			}
 			else
 				stren = HistoryDB::tr ("Binary data");
