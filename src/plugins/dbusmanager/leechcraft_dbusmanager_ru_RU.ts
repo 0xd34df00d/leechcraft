@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru_RU">
 <context>
-    <name>LC::DBusManager::Core</name>
-    <message>
-        <source>LeechCraft D-Bus general interface</source>
-        <translation>Основной интерфейс LeechCraft для системы D-Bus</translation>
-    </message>
-</context>
-<context>
     <name>LC::DBusManager::DBusManager</name>
     <message>
         <source>General DBus support for LeechCraft.</source>
