@@ -51,7 +51,7 @@ static int qxt_x_errhandler(Display* display, XErrorEvent *event)
     }
 }
 
-bool QxtGlobalShortcutPrivate::nativeEventFilter (const QByteArray& eventType, void *msg, long*)
+bool QxtGlobalShortcutPrivate::nativeEventFilter (const QByteArray& eventType, void *msg, qintptr*)
 {
 	if (eventType != "xcb_generic_event_t")
 		return false;

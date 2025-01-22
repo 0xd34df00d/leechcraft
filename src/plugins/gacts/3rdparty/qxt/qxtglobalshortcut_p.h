@@ -52,7 +52,7 @@ public:
 #ifndef Q_OS_MAC
 	static int ref;
 	static QList<QxtGlobalShortcutPrivate*> allPrivates;
-	bool nativeEventFilter (const QByteArray&, void*, long*) override;
+	bool nativeEventFilter (const QByteArray&, void*, qintptr*) override;
 #endif // Q_OS_MAC
 
 	static void activateShortcut(quint32 nativeKey, quint32 nativeMods);
