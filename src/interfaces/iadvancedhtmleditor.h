@@ -11,7 +11,7 @@
 #include <functional>
 #include <QPair>
 #include <QList>
-#include <QRegExp>
+#include <QRegularExpression>
 
 class QDomElement;
 
@@ -38,7 +38,7 @@ class Q_DECL_EXPORT IAdvancedHTMLEditor
 public:
 	virtual ~IAdvancedHTMLEditor () {}
 
-	typedef QPair<QRegExp, QString> Replacement_t;
+	typedef QPair<QRegularExpression, QString> Replacement_t;
 	typedef QList<Replacement_t> Replacements_t;
 
 	/** @brief Describes a single custom tag.
