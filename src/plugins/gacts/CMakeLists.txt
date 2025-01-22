@@ -7,7 +7,6 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qxt)
 if (UNIX AND NOT APPLE)
 	find_package (PkgConfig)
 	pkg_check_modules (X11 REQUIRED IMPORTED_TARGET x11)
-	set (GACTS_X11_EXTRAS X11Extras)
 endif ()
 
 LC_DEFINE_PLUGIN (
@@ -17,7 +16,7 @@ LC_DEFINE_PLUGIN (
 		$<$<PLATFORM_ID:Linux,FreeBSD>:3rdparty/qxt/qxtglobalshortcut_x11.cpp>
 		$<$<PLATFORM_ID:Darwin>:3rdparty/qxt/qxtglobalshortcut_mac.cpp>
 		$<$<PLATFORM_ID:Windows>:3rdparty/qxt/qxtglobalshortcut_win.cpp>
-	QT_COMPONENTS Core ${GACTS_X11_EXTRAS}
+	QT_COMPONENTS Core
 	LINK_LIBRARIES
 		$<$<PLATFORM_ID:Linux,FreeBSD>:PkgConfig::X11>
 		$<$<PLATFORM_ID:Darwin>:"-framework CoreFoundation -framework Carbon">

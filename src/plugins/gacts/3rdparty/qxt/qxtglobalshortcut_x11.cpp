@@ -23,9 +23,9 @@
  **
  ****************************************************************************/
 #include "qxtglobalshortcut_p.h"
-#include <QX11Info>
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
+#include <util/x11/xwrapper.h>
 #include "keymapper_x11.h"
 
 static int (*original_x_errhandler)(Display* display, XErrorEvent* event);
@@ -93,6 +93,12 @@ quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifier
     return native;
 }
 
+std::pair<Display*, Window> GetX11DW ()
+{
+    const auto& inst = LC::Util::XWrapper::Instance ();
+    return { inst.GetDisplay (), inst.GetRootWindow () };
+}
+
 quint32 QxtGlobalShortcutPrivate::nativeKeycode(Qt::Key key)
 {
     // (davidsansome) Try the table from QKeyMapper first - this seems to be
@@ -112,14 +118,12 @@ quint32 QxtGlobalShortcutPrivate::nativeKeycode(Qt::Key key)
       keysym = XStringToKeysym(QKeySequence(key).toString().toLatin1().data());
     }
 
-    Display* display = QX11Info::display();
-    return XKeysymToKeycode(display, keysym);
+    return XKeysymToKeycode(GetX11DW ().first, keysym);
 }
 
 bool QxtGlobalShortcutPrivate::registerShortcut(quint32 nativeKey, quint32 nativeMods)
 {
-    Display* display = QX11Info::display();
-    Window window = QX11Info::appRootWindow();
+    auto [display, window] = GetX11DW ();
     Bool owner = True;
     int pointer = GrabModeAsync;
     int keyboard = GrabModeAsync;
@@ -134,8 +138,7 @@ bool QxtGlobalShortcutPrivate::registerShortcut(quint32 nativeKey, quint32 nativ
 
 bool QxtGlobalShortcutPrivate::unregisterShortcut(quint32 nativeKey, quint32 nativeMods)
 {
-    Display* display = QX11Info::display();
-    Window window = QX11Info::appRootWindow();
+    auto [display, window] = GetX11DW ();
     error = false;
     original_x_errhandler = XSetErrorHandler(qxt_x_errhandler);
     XUngrabKey(display, nativeKey, nativeMods, window);
