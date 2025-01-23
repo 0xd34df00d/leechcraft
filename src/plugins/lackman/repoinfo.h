@@ -26,7 +26,7 @@ namespace LackMan
 
 	using MaintainerInfoList = QList<MaintainerInfo>;
 
-	class RepoInfo
+	struct RepoInfo
 	{
 		QUrl URL_;
 		QString Name_;
@@ -35,24 +35,6 @@ namespace LackMan
 
 		MaintainerInfo Maintainer_;
 		QStringList Components_;
-	public:
-		explicit RepoInfo ();
-		explicit RepoInfo (const QUrl&);
-		RepoInfo (const QUrl& url, const QString& name,
-				const QString& shortDescr, const QStringList& components);
-
-		const QUrl& GetUrl () const;
-		void SetUrl (const QUrl&);
-		const QString& GetName () const;
-		void SetName (const QString&);
-		const QString& GetShortDescr () const;
-		void SetShortDescr (const QString&);
-		const QString& GetLongDescr () const;
-		void SetLongDescr (const QString&);
-		const MaintainerInfo& GetMaintainer () const;
-		void SetMaintainer (const MaintainerInfo&);
-		const QStringList& GetComponents () const;
-		void SetComponents (const QStringList&);
 	};
 
 	struct PackageShortInfo

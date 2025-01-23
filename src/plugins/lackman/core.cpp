@@ -302,15 +302,14 @@ namespace LackMan
 
 		for (auto [repoId, components] : Util::Stlize (repo2cmpt))
 		{
-			RepoInfo ri = Storage_->GetRepo (repoId);
-			QUrl url = ri.GetUrl ();
-			QString path = url.path ();
+			const auto& ri = Storage_->GetRepo (repoId);
+			auto path = ri.URL_.path ();
 			if (!path.endsWith ('/'))
 				path += '/';
 
 			for (const auto& component : components)
 			{
-				QUrl tmp = url;
+				auto tmp = ri.URL_;
 				tmp.setPath (path + pathAddition.arg (component));
 				result << tmp;
 			}
@@ -791,7 +790,7 @@ namespace LackMan
 			try
 			{
 				int id = Storage_->FindRepo (url);
-				components = Storage_->GetRepo (id).GetComponents ();
+				components = Storage_->GetRepo (id).Components_;
 			}
 			catch (const std::exception& e)
 			{
@@ -913,7 +912,7 @@ namespace LackMan
 		int repoId = -1;
 		try
 		{
-			repoId = Storage_->FindRepo (ri.GetUrl ());
+			repoId = Storage_->FindRepo (ri.URL_);
 			if (repoId == -1)
 				repoId = Storage_->AddRepo (ri);
 		}
@@ -922,8 +921,8 @@ namespace LackMan
 			QString str;
 			QDebug debug (&str);
 			debug << "unable to find/add repo"
-					<< ri.GetName ()
-					<< ri.GetUrl ()
+					<< ri.URL_
+					<< ri.Name_
 					<< "with error"
 					<< e.what ();
 			qWarning () << Q_FUNC_INFO
@@ -938,12 +937,12 @@ namespace LackMan
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to add repo"
-					<< ri.GetUrl ()
-					<< ri.GetName ();
+					<< ri.URL_
+					<< ri.Name_;
 			return;
 		}
 
-		UpdateRepo (ri.GetUrl (), ri.GetComponents ());
+		UpdateRepo (ri.URL_, ri.Components_);
 	}
 
 	void Core::handleComponentFetched (const PackageShortInfoList& shortInfos,
@@ -957,7 +956,7 @@ namespace LackMan
 			if (componentId == -1)
 				componentId = Storage_->AddComponent (repoId, component);
 
-			repoUrl = Storage_->GetRepo (repoId).GetUrl ();
+			repoUrl = Storage_->GetRepo (repoId).URL_;
 		}
 		catch (const std::exception& e)
 		{

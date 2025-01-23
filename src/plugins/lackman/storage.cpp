@@ -180,12 +180,12 @@ namespace LackMan
 			throw;
 		}
 
-		QueryAddRepo_.bindValue (":url", Slashize (ri.GetUrl ()).toEncoded ());
-		QueryAddRepo_.bindValue (":name", ri.GetName ());
-		QueryAddRepo_.bindValue (":description", ri.GetShortDescr ());
-		QueryAddRepo_.bindValue (":longdescr", ri.GetLongDescr ());
-		QueryAddRepo_.bindValue (":maint_name", ri.GetMaintainer ().Name_);
-		QueryAddRepo_.bindValue (":maint_email", ri.GetMaintainer ().Email_);
+		QueryAddRepo_.bindValue (":url", Slashize (ri.URL_).toEncoded ());
+		QueryAddRepo_.bindValue (":name", ri.Name_);
+		QueryAddRepo_.bindValue (":description", ri.ShortDescr_);
+		QueryAddRepo_.bindValue (":longdescr", ri.LongDescr_);
+		QueryAddRepo_.bindValue (":maint_name", ri.Maintainer_.Name_);
+		QueryAddRepo_.bindValue (":maint_email", ri.Maintainer_.Email_);
 		if (!QueryAddRepo_.exec ())
 		{
 			Util::DBLock::DumpError (QueryAddRepo_);
@@ -194,7 +194,7 @@ namespace LackMan
 
 		QueryAddRepo_.finish ();
 
-		int repoId = FindRepo (Slashize (ri.GetUrl ()));
+		int repoId = FindRepo (Slashize (ri.URL_));
 		if (repoId == -1)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -202,7 +202,7 @@ namespace LackMan
 			throw std::runtime_error ("Just inserted repo cannot be found.");
 		}
 
-		for (const auto& component : ri.GetComponents ())
+		for (const auto& component : ri.Components_)
 			AddComponent (repoId, component);
 
 		lock.Good ();
@@ -240,19 +240,15 @@ namespace LackMan
 		}
 		RepoInfo result (QUrl::fromEncoded (QueryGetRepo_.value (0).toString ().toUtf8 ()));
 
-		result.SetName (QueryGetRepo_.value (1).toString ());
-		result.SetShortDescr (QueryGetRepo_.value (2).toString ());
-		result.SetLongDescr (QueryGetRepo_.value (3).toString ());
-		MaintainerInfo info =
-		{
-			QueryGetRepo_.value (4).toString (),
-			QueryGetRepo_.value (5).toString ()
-		};
-		result.SetMaintainer (info);
+		result.Name_ = QueryGetRepo_.value (1).toString ();
+		result.ShortDescr_ = QueryGetRepo_.value (2).toString ();
+		result.LongDescr_ = QueryGetRepo_.value (3).toString ();
+		result.Maintainer_.Name_ = QueryGetRepo_.value (4).toString ();
+		result.Maintainer_.Email_ = QueryGetRepo_.value (5).toString ();
 
 		QueryGetRepo_.finish ();
 
-		result.SetComponents (GetComponents (repoId));
+		result.Components_ = GetComponents (repoId);
 
 		return result;
 	}

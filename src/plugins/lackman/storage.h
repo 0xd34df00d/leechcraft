@@ -19,7 +19,7 @@ namespace LC
 {
 namespace LackMan
 {
-	class RepoInfo;
+	struct RepoInfo;
 	struct PackageInfo;
 
 	class Storage : public QObject

@@ -24,43 +24,41 @@ namespace LackMan
 		QXmlQuery query;
 		query.setFocus (data);
 
-		RepoInfo info (url);
+		RepoInfo info;
+		info.URL_ = url;
 
 		QString out;
 		query.setQuery ("/repo/name/text()");
 		if (!query.evaluateTo (&out))
 			throw QObject::tr ("Could not get repo name.");
-		info.SetName (out.simplified ());
+		info.Name_ = out.simplified ();
 
 		query.setQuery ("/repo/description/short/text()");
 		if (!query.evaluateTo (&out))
 			throw QObject::tr ("Could not get repo description.");
-		info.SetShortDescr (out.simplified ());
+		info.ShortDescr_ = out.simplified ();
 
 		query.setQuery ("/repo/description/long/text()");
 		if (!query.evaluateTo (&out))
 			throw QObject::tr ("Could not get long repo description.");
-		info.SetLongDescr (out.simplified ());
+		info.LongDescr_ = out.simplified ();
 
-		MaintainerInfo maintInfo;
 		query.setQuery ("/repo/maintainer/name/text()");
 		if (!query.evaluateTo (&out))
 			throw QObject::tr ("Could not get maintainer name.");
-		maintInfo.Name_ = out.simplified ();
+		info.Maintainer_.Name_ = out.simplified ();
 
 		query.setQuery ("/repo/maintainer/email/text()");
 		if (!query.evaluateTo (&out))
 			throw QObject::tr ("Could not get maintainer email.");
-		maintInfo.Email_ = out.simplified ();
-
-		info.SetMaintainer (maintInfo);
+		info.Maintainer_.Email_ = out.simplified ();
 
 		QStringList components;
 		query.setQuery ("/repo/components/component/text()");
 		if (query.evaluateTo (&components))
-			info.SetComponents (components);
+			info.Components_ = components;
 		else if (query.evaluateTo (&out))
-			info.SetComponents (QStringList (out));
+			info.Components_ = QStringList (out);
 		else
 			throw QObject::tr ("Could not get components.");
 
