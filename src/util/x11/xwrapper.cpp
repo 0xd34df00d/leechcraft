@@ -32,7 +32,8 @@ namespace LC::Util
 	const int StateAdd = 1;
 
 	XWrapper::XWrapper ()
-	: Display_ (QX11Info::display ())
+	: Conn_ (QX11Info::connection ())
+	, Display_ (QX11Info::display ())
 	, AppWin_ (QX11Info::appRootWindow ())
 	{
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
@@ -43,7 +44,7 @@ namespace LC::Util
 				XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 				XCB_EVENT_MASK_PROPERTY_CHANGE
 		};
-		xcb_change_window_attributes (QX11Info::connection (),
+		xcb_change_window_attributes (Conn_,
 				AppWin_, XCB_CW_EVENT_MASK, rootEvents);
 	}
 
@@ -51,6 +52,11 @@ namespace LC::Util
 	{
 		static XWrapper w;
 		return w;
+	}
+
+	xcb_connection_t* XWrapper::GetConnection () const
+	{
+		return Conn_;
 	}
 
 	Display* XWrapper::GetDisplay () const
@@ -622,7 +628,7 @@ namespace LC::Util
 	void XWrapper::MoveWindowToDesktop (Window wid, int num)
 	{
 		unsigned long data = num;
-		XChangeProperty (QX11Info::display (),
+		XChangeProperty (Display_,
 					wid,
 					GetAtom ("_NET_WM_DESKTOP"),
 					XA_CARDINAL,

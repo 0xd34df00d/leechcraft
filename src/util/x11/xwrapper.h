@@ -28,6 +28,8 @@ using Window = unsigned long;
 
 using XEvent = union _XEvent;
 
+struct xcb_connection_t;
+
 namespace LC::Util
 {
 	class UTIL_X11_API XWrapper : public QObject
@@ -35,6 +37,7 @@ namespace LC::Util
 	{
 		Q_OBJECT
 
+		xcb_connection_t *Conn_ = nullptr;
 		Display *Display_;
 		Window AppWin_;
 
@@ -51,6 +54,7 @@ namespace LC::Util
 
 		static XWrapper& Instance ();
 
+		xcb_connection_t* GetConnection () const;
 		Display* GetDisplay () const;
 		Window GetRootWindow () const;
 
