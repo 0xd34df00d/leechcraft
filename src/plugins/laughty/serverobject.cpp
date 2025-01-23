@@ -122,7 +122,7 @@ namespace Laughty
 
 	void ServerObject::CloseNotification (uint id)
 	{
-		const auto& e = Util::MakeANCancel (LaughtyID, LaughtyID + '/' + id);
+		const auto& e = Util::MakeANCancel (LaughtyID, LaughtyID + '/' + QString::number (id));
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		emit NotificationClosed (id, 3);
