@@ -8,12 +8,14 @@
 
 #include "xmlparsers.h"
 #include <stdexcept>
+#include <QObject>
 #include <QUrl>
 #include <QString>
-#include <QXmlQuery>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QtDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
 
 namespace LC
 {
@@ -21,46 +23,32 @@ namespace LackMan
 {
 	RepoInfo ParseRepoInfo (const QUrl& url, const QString& data)
 	{
-		QXmlQuery query;
-		query.setFocus (data);
+		QDomDocument doc;
+		if (!doc.setContent (data))
+			throw QObject::tr ("Could not parse repo data.");
 
-		RepoInfo info;
-		info.URL_ = url;
+		const auto& repo = doc.documentElement ().firstChildElement ("repo"_qs);
+		const auto& descr = repo.firstChildElement ("description"_qs);
+		const auto& maint = repo.firstChildElement ("maintainer"_qs);
 
-		QString out;
-		query.setQuery ("/repo/name/text()");
-		if (!query.evaluateTo (&out))
-			throw QObject::tr ("Could not get repo name.");
-		info.Name_ = out.simplified ();
+		RepoInfo info
+		{
+			.URL_ = url,
+			.Name_ = repo.firstChildElement ("name"_qs).text (),
+			.ShortDescr_ = descr.firstChildElement ("short"_qs).text (),
+			.LongDescr_ = descr.firstChildElement ("long"_qs).text (),
+			.Maintainer_ =
+				{
+					.Name_ = maint.firstChildElement ("name"_qs).text (),
+					.Email_ = maint.firstChildElement ("email"_qs).text (),
+				},
+		};
 
-		query.setQuery ("/repo/description/short/text()");
-		if (!query.evaluateTo (&out))
-			throw QObject::tr ("Could not get repo description.");
-		info.ShortDescr_ = out.simplified ();
+		for (const auto& component : Util::DomChildren (repo.firstChildElement ("components"_qs), "component"_qs))
+			info.Components_ << component.text ();
 
-		query.setQuery ("/repo/description/long/text()");
-		if (!query.evaluateTo (&out))
-			throw QObject::tr ("Could not get long repo description.");
-		info.LongDescr_ = out.simplified ();
-
-		query.setQuery ("/repo/maintainer/name/text()");
-		if (!query.evaluateTo (&out))
-			throw QObject::tr ("Could not get maintainer name.");
-		info.Maintainer_.Name_ = out.simplified ();
-
-		query.setQuery ("/repo/maintainer/email/text()");
-		if (!query.evaluateTo (&out))
-			throw QObject::tr ("Could not get maintainer email.");
-		info.Maintainer_.Email_ = out.simplified ();
-
-		QStringList components;
-		query.setQuery ("/repo/components/component/text()");
-		if (query.evaluateTo (&components))
-			info.Components_ = components;
-		else if (query.evaluateTo (&out))
-			info.Components_ = QStringList (out);
-		else
-			throw QObject::tr ("Could not get components.");
+		if (!info.IsValid ())
+			throw QObject::tr ("Incomplete repo information.");
 
 		return info;
 	}

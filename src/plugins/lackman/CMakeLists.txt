@@ -25,7 +25,7 @@ LC_DEFINE_PLUGIN (
 		lackmanutil.cpp
 	RESOURCES lackmanresources.qrc
 	SETTINGS lackmansettings.xml
-	QT_COMPONENTS Network Sql Widgets Xml XmlPatterns
+	QT_COMPONENTS Network Sql Widgets Xml
 	INSTALL_SHARE
 	)
 
