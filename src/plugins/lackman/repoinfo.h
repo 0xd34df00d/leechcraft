@@ -35,6 +35,8 @@ namespace LackMan
 
 		MaintainerInfo Maintainer_;
 		QStringList Components_;
+
+		bool IsValid () const;
 	};
 
 	struct PackageShortInfo

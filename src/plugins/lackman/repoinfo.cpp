@@ -14,6 +14,11 @@ namespace LC
 {
 namespace LackMan
 {
+	bool RepoInfo::IsValid () const
+	{
+		return !Name_.isEmpty () && !Components_.isEmpty ();
+	}
+
 	bool operator== (const Dependency& dep1, const Dependency& dep2)
 	{
 		return dep1.Type_ == dep2.Type_ &&
