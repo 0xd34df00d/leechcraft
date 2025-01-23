@@ -16,7 +16,7 @@ LC_DEFINE_PLUGIN (
 		layoutsconfigwidget.cpp
 		optionsconfigwidget.cpp
 	SETTINGS kbswitchsettings.xml
-	QT_COMPONENTS QuickWidgets X11Extras
+	QT_COMPONENTS QuickWidgets
 	LINK_LIBRARIES PkgConfig::KBSwitchXParts
 	INSTALL_SHARE
 	)

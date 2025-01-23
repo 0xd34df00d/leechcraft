@@ -9,8 +9,8 @@
 #include "keyboardlayoutswitcher.h"
 #include <QtDebug>
 #include <QWidget>
-#include <QX11Info>
 #include <util/sll/unreachable.h>
+#include <util/x11/xwrapper.h>
 #include <interfaces/ihavetabs.h>
 #include "xmlsettingsmanager.h"
 
@@ -81,7 +81,7 @@ namespace KBSwitch
 		if (LastCurrentWidget_ == current)
 			return;
 
-		const auto display = QX11Info::display ();
+		const auto display = Util::XWrapper::Instance ().GetDisplay ();
 
 		if (const auto prevItw = qobject_cast<ITabWidget*> (prev))
 		{

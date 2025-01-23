@@ -34,7 +34,7 @@ namespace LC
 namespace KBSwitch
 {
 	KBCtl::KBCtl ()
-	: Display_ { QX11Info::display () }
+	: Display_ { Util::XWrapper::Instance ().GetDisplay () }
 	, Rules_ { new RulesStorage { Display_ } }
 	{
 		if (!InitDisplay ())
@@ -42,7 +42,7 @@ namespace KBSwitch
 
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
 
-		const auto conn = QX11Info::connection ();
+		const auto conn = Util::XWrapper::Instance ().GetConnection ();
 
 		const uint32_t rootEvents [] =
 		{
@@ -100,7 +100,7 @@ namespace KBSwitch
 
 	bool KBCtl::InitDisplay ()
 	{
-		const auto conn = QX11Info::connection ();
+		const auto conn = Util::XWrapper::Instance ().GetConnection ();
 		const auto reply = xcb_get_extension_data (conn, &xcb_xkb_id);
 
 		if (!reply || !reply->present)
