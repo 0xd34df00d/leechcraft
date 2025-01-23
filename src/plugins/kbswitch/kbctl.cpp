@@ -226,7 +226,7 @@ namespace KBSwitch
 		return Rules_;
 	}
 
-	bool KBCtl::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
+	bool KBCtl::nativeEventFilter (const QByteArray& eventType, void *msg, qintptr*)
 	{
 		if (!Available_)
 			return false;
