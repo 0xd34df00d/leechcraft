@@ -9,7 +9,6 @@
 #include "kinotifywidget.h"
 #include <algorithm>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QPainterPath>
 #include <QTimer>
@@ -156,11 +155,10 @@ namespace LC::Kinotify
 		{
 			const bool followMouse = XmlSettingsManager::Instance ().property ("FollowMouse").toBool ();
 
-			auto desktop = QApplication::desktop ();
 			auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 			return followMouse ?
 					Util::AvailableGeometry (QCursor::pos ()) :
-					desktop->availableGeometry (rootWM->GetPreferredWindow ());
+					rootWM->GetPreferredWindow ()->screen ()->availableGeometry ();
 		}
 	}
 
