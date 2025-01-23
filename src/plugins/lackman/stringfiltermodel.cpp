@@ -27,7 +27,7 @@ namespace LackMan
 		if (QSortFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent))
 			return true;
 
-		const QString& filterString = filterRegExp ().pattern ();
+		const QString& filterString = filterRegularExpression ().pattern ();
 		const QModelIndex& idx = sourceModel ()->index (sourceRow, 0, sourceParent);
 
 		if (sourceModel ()->data (idx, PackagesModel::PMRShortDescription)
