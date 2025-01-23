@@ -8,8 +8,8 @@
 
 #include "fswinwatcher.h"
 #include <optional>
-#include <QX11Info>
 #include <QMainWindow>
+#include <util/x11/xwrapper.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
@@ -30,7 +30,8 @@ namespace LC::Kinotify
 
 	bool IsCurrentWindowFullScreen ()
 	{
-		auto display = QX11Info::display ();
+		auto& xwrapper = Util::XWrapper::Instance ();
+		auto display = xwrapper.GetDisplay ();
 		if (!display)
 			return false;
 
@@ -43,7 +44,7 @@ namespace LC::Kinotify
 			if (rootWM->GetMainWindow (i)->effectiveWinId () == focusWin)
 				return false;
 
-		const auto rootSize = GetSize (display, RootWindow (display, QX11Info::appScreen ()));
+		const auto rootSize = GetSize (display, xwrapper.GetRootWindow ());
 		const auto focusSize = GetSize (display, focusWin);
 		return rootSize && focusSize && *rootSize == *focusSize;
 	}
