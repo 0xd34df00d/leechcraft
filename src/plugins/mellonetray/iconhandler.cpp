@@ -43,9 +43,9 @@ namespace Mellonetray
 		emit widChanged ();
 	}
 
-	void IconHandler::geometryChanged (const QRectF& rect, const QRectF& oldRect)
+	void IconHandler::geometryChange (const QRectF& rect, const QRectF& oldRect)
 	{
-		QQuickItem::geometryChanged (rect, oldRect);
+		QQuickItem::geometryChange (rect, oldRect);
 
 		if (!window ())
 			return;

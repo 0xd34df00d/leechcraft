@@ -222,7 +222,7 @@ namespace Mellonetray
 		emit updateRequired (wid);
 	}
 
-	bool TrayModel::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
+	bool TrayModel::nativeEventFilter (const QByteArray& eventType, void *msg, qintptr*)
 	{
 		if (eventType != "xcb_generic_event_t")
 			return false;

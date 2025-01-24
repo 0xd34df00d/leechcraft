@@ -29,7 +29,7 @@ namespace Mellonetray
 		ulong GetWID () const;
 		void SetWID (const ulong&);
 	protected:
-		void geometryChanged (const QRectF&, const QRectF&) override;
+		void geometryChange (const QRectF&, const QRectF&) override;
 	signals:
 		void widChanged ();
 	};

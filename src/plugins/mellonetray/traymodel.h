@@ -57,7 +57,7 @@ namespace Mellonetray
 		QModelIndex parent (const QModelIndex& child) const override;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-		bool nativeEventFilter (const QByteArray&, void*, long int*) override;
+		bool nativeEventFilter (const QByteArray&, void*, qintptr*) override;
 	private:
 		template<typename T>
 		void HandleClientMsg (T);
