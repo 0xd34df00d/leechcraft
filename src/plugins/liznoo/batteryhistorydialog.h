@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <QLinkedList>
 #include "ui_batteryhistorydialog.h"
 #include "batteryhistory.h"
 
@@ -39,4 +38,3 @@ namespace Liznoo
 	};
 }
 }
-
