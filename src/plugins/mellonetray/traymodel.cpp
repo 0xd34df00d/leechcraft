@@ -31,7 +31,7 @@ namespace Mellonetray
 			auto disp = Util::XWrapper::Instance ().GetDisplay ();
 
 			XVisualInfo init;
-			init.screen = QX11Info::appScreen ();
+			init.screen = Util::XWrapper::Instance ().GetRootWindow ();
 			init.depth = 32;
 			init.c_class = TrueColor;
 

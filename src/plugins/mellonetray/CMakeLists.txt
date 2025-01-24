@@ -10,7 +10,7 @@ LC_DEFINE_PLUGIN (
 		mellonetray.cpp
 		traymodel.cpp
 		iconhandler.cpp
-	QT_COMPONENTS Quick Widgets X11Extras
+	QT_COMPONENTS Quick Widgets
 	LINK_LIBRARIES PkgConfig::MellonetrayX11Parts
 	INSTALL_SHARE
 	)
