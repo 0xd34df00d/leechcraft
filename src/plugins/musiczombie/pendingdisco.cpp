@@ -41,8 +41,9 @@ namespace MusicZombie
 
 		QString NormalizeRelease (QString title)
 		{
+			static QRegularExpression normalizer { "\\([^)]*\\)" };
 			return title
-					.remove (QRegExp { "\\([^)]*\\)" })
+					.remove (normalizer)
 					.remove (' ')
 					.remove ('.')
 					.remove (':')
