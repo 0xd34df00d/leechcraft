@@ -10,7 +10,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPointer>
-#include <QTextCodec>
 #include <QDateTime>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
@@ -111,9 +110,8 @@ namespace
 	QMap<QString, QVariant> GetHeaders (const T *object)
 	{
 		QMap<QString, QVariant> result;
-		const auto codec = QTextCodec::codecForName ("UTF-8");
 		for (const auto& header : object->rawHeaderList ())
-			result [codec->toUnicode (header)] = codec->toUnicode (object->rawHeader (header));
+			result [QString::fromUtf8 (header)] = QString::fromUtf8 (object->rawHeader (header));
 		return result;
 	}
 

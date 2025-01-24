@@ -131,7 +131,7 @@ namespace LC
 						ProxyModel_->setFilterWildcard (search);
 						break;
 					case 2:
-						ProxyModel_->setFilterRegExp (search);
+						ProxyModel_->setFilterRegularExpression (search);
 						break;
 					default:
 						qWarning () << Q_FUNC_INFO
@@ -146,4 +146,3 @@ namespace LC
 };
 
 LC_EXPORT_PLUGIN (leechcraft_networkmonitor, LC::Plugins::NetworkMonitor::Plugin);
-
