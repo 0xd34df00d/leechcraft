@@ -193,8 +193,8 @@ namespace NetStoreManager
 
 		for (const auto& mask : ExceptionMasks_)
 		{
-			QRegExp rx (mask, Qt::CaseInsensitive, QRegExp::WildcardUnix);
-			if (rx.exactMatch (path))
+			auto rx = QRegularExpression::fromWildcard (mask, Qt::CaseInsensitive);
+			if (rx.match (path).hasMatch ())
 			{
 				qDebug () << "entry with name"
 						<< QFileInfo (path).fileName ()

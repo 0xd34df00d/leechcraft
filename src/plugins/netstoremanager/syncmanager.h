@@ -15,7 +15,6 @@
 #include "syncwidget.h"
 
 typedef QList<LC::NetStoreManager::Change> Changes_t;
-Q_DECLARE_METATYPE (Changes_t)
 
 class QThread;
 

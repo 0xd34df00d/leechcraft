@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "downmanager.h"
-#include <QDesktopServices>
+#include <QStandardPaths>
 #include <QFileInfo>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/netstoremanager/istorageaccount.h>

@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "filestreemodel.h"
+#include <QIODevice>
 #include <QMimeData>
 #include <QtDebug>
 #include <QTreeView>
