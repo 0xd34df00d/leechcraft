@@ -3,7 +3,7 @@ project (lemon)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt5Qwt Qt5Qwt6)
+pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt${LC_QT_VERSION}Qwt6 Qt${LC_QT_VERSION}Qwt)
 pkg_check_modules (LemonLibnl REQUIRED IMPORTED_TARGET libnl-3.0 libnl-route-3.0)
 
 LC_DEFINE_PLUGIN (
