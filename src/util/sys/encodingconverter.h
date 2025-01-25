@@ -34,7 +34,7 @@ namespace LC::Util
 
 		QString GetName () const;
 
-		QString ToUnicode (const QByteArray& bytes);
-		QByteArray FromUnicode (const QString& string);
+		QString ToUnicode (QByteArrayView bytes);
+		QByteArray FromUnicode (QStringView string);
 	};
 }

@@ -42,12 +42,12 @@ namespace LC::Util
 		return Name_;
 	}
 
-	QString EncodingConverter::ToUnicode (const QByteArray& bytes)
+	QString EncodingConverter::ToUnicode (QByteArrayView bytes)
 	{
 		return Decoder_.decode (bytes);
 	}
 
-	QByteArray EncodingConverter::FromUnicode (const QString& string)
+	QByteArray EncodingConverter::FromUnicode (QStringView string)
 	{
 		return Encoder_.encode (string);
 	}
