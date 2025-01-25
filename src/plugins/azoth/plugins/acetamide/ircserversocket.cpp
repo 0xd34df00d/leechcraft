@@ -14,57 +14,13 @@
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/sys/encodingconverter.h>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 
 namespace LC::Azoth::Acetamide
 {
 	constexpr int MaxRetriesCount = 10;
-
-	class IrcServerSocket::Converter
-	{
-		QString Name_;
-		QStringEncoder Encoder_;
-		QStringDecoder Decoder_;
-	public:
-		struct UnknownEncoding : std::exception {};
-
-		Converter ()
-		: Name_ { "System" }
-		, Encoder_ { QStringConverter::System }
-		, Decoder_ { QStringConverter::System }
-		{
-		}
-
-		explicit Converter (QAnyStringView encoding)
-		: Name_ { encoding.toString () }
-		, Encoder_ { encoding }
-		, Decoder_ { encoding }
-		{
-			if (!Encoder_.isValid () || !Decoder_.isValid ())
-				throw UnknownEncoding {};
-		}
-
-		QString ToUnicode (const QByteArray& data)
-		{
-			return Decoder_.decode (data);
-		}
-
-		QByteArray FromUnicode (const QString& data)
-		{
-			return Encoder_.encode (data);
-		}
-
-		QString GetName () const
-		{
-			return Name_;
-		}
-
-		static std::unique_ptr<Converter> DefaultConverter ()
-		{
-			return std::make_unique<Converter> ();
-		}
-	};
 
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject { ish }
@@ -190,7 +146,7 @@ namespace LC::Azoth::Acetamide
 		GetSocketPtr ()->close ();
 	}
 
-	IrcServerSocket::Converter& IrcServerSocket::GetCodec ()
+	Util::EncodingConverter& IrcServerSocket::GetCodec ()
 	{
 		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
 		if (LastConverter_ && LastConverter_->GetName () == encoding)
@@ -198,9 +154,9 @@ namespace LC::Azoth::Acetamide
 
 		try
 		{
-			LastConverter_ = std::make_unique<Converter> (encoding);
+			LastConverter_ = std::make_unique<Util::EncodingConverter> (encoding);
 		}
-		catch (const Converter::UnknownEncoding&)
+		catch (const Util::EncodingConverter::UnknownEncoding&)
 		{
 			qWarning () << "unknown encoding" << encoding << QStringConverter::availableCodecs ();
 			const auto& notify = Util::MakeNotification (Lits::AzothAcetamide,
@@ -209,7 +165,7 @@ namespace LC::Azoth::Acetamide
 					Priority::Critical);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (notify);
 
-			LastConverter_ = Converter::DefaultConverter ();
+			LastConverter_ = std::make_unique<Util::EncodingConverter> ();
 		}
 
 		return *LastConverter_;

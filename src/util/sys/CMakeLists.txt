@@ -1,5 +1,6 @@
 add_util_library (util-sys
 	SOURCES
+		encodingconverter.cpp
 		mimedetector.cpp
 		paths.cpp
 		resourceloader.cpp
