@@ -174,7 +174,7 @@ namespace Importers
 		QVariantMap data = accItem->data (Roles::AccountData).toMap ();
 		QString acc = data ["Jid"].toString ();
 		const int pos = acc.indexOf ('@');
-		if (acc <= 0)
+		if (pos <= 0)
 			return;
 
 		acc.replace (pos, 1, "_at_");
