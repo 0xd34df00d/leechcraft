@@ -10,6 +10,17 @@
 
 namespace LC::Util
 {
+	EncodingConverter::UnknownEncoding::UnknownEncoding (const QString& encoding)
+	: std::runtime_error { "unknown encoding " + encoding.toStdString () }
+	, Encoding_ { encoding }
+	{
+	}
+
+	QString EncodingConverter::UnknownEncoding::GetEncoding () const
+	{
+		return Encoding_;
+	}
+
 	EncodingConverter::EncodingConverter ()
 	: Name_ { "System" }
 	, Encoder_ { QStringConverter::System }
@@ -23,7 +34,7 @@ namespace LC::Util
 	, Decoder_ { encoding }
 	{
 		if (!Encoder_.isValid () || !Decoder_.isValid ())
-			throw UnknownEncoding {};
+			throw UnknownEncoding { Name_ };
 	}
 
 	QString EncodingConverter::GetName () const

@@ -20,7 +20,14 @@ namespace LC::Util
 		QStringEncoder Encoder_;
 		QStringDecoder Decoder_;
 	public:
-		struct UnknownEncoding : std::exception {};
+		class UnknownEncoding : std::runtime_error
+		{
+			QString Encoding_;
+		public:
+			explicit UnknownEncoding (const QString& encoding);
+
+			QString GetEncoding () const;
+		};
 
 		EncodingConverter ();
 		explicit EncodingConverter (QStringView encoding);
