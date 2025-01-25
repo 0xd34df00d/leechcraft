@@ -15,7 +15,10 @@
 #include <interfaces/ispellcheckprovider.h>
 #include "hunspell/hunspell.hxx"
 
-class QTextCodec;
+namespace LC::Util
+{
+	class EncodingConverter;
+}
 
 namespace LC
 {
@@ -29,11 +32,7 @@ namespace Rosenthal
 		Q_OBJECT
 		Q_INTERFACES (ISpellChecker)
 
-		struct HunspellItem
-		{
-			std::unique_ptr<Hunspell> Hunspell_;
-			QTextCodec *Codec_ = nullptr;
-		};
+		struct HunspellItem;
 		std::vector<HunspellItem> Hunspells_;
 
 		const KnownDictsManager * const KnownMgr_;
@@ -41,6 +40,7 @@ namespace Rosenthal
 		QSet<QString> LearntWords_;
 	public:
 		Checker (const KnownDictsManager*);
+		~Checker () override;
 
 		QStringList GetPropositions (const QString&) const override;
 		bool IsCorrect (const QString&) const override;
