@@ -13,6 +13,7 @@
 #include <QMap>
 #include <QByteArray>
 #include <QIcon>
+#include <QtPlugin>
 
 namespace LC
 {
