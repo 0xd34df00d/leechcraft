@@ -137,7 +137,7 @@ namespace LC::SB2
 	QRect ViewManager::GetFreeCoords () const
 	{
 		QRect result = Window_->rect ();
-		result.moveTopLeft (Window_->mapToGlobal ({ 0, 0 }));
+		result.moveTopLeft (Window_->mapToGlobal (QPoint { 0, 0 }));
 
 		if (!IsDesktopMode_)
 			switch (Window_->toolBarArea (Toolbar_))

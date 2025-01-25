@@ -11,7 +11,6 @@
 #include <QApplication>
 #include <QQmlContext>
 #include <QMainWindow>
-#include <QDesktopWidget>
 #include <QtDebug>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/scopeguards.h>

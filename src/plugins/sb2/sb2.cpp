@@ -44,7 +44,9 @@ namespace LC::SB2
 		qmlRegisterType<DesaturateEffect> ("Effects", 1, 0, "Desaturate");
 
 		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
+#endif
 
 		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
@@ -194,4 +196,3 @@ namespace LC::SB2
 }
 
 LC_EXPORT_PLUGIN (leechcraft_sb2, LC::SB2::Plugin);
-
