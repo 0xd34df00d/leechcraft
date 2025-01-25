@@ -7,7 +7,6 @@ cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT 
 
 if (WITH_X11)
 	add_definitions (-DWITH_X11)
-	set (EXTRA_X11_QT_LIBRARY X11Extras)
 endif ()
 
 LC_DEFINE_PLUGIN (
@@ -38,6 +37,6 @@ LC_DEFINE_PLUGIN (
 		manifest.cpp
 		panelsettingsdialog.cpp
 	SETTINGS sb2panelsettings.xml
-	QT_COMPONENTS Quick QuickWidgets Widgets ${EXTRA_X11_QT_LIBRARY}
+	QT_COMPONENTS Quick QuickWidgets Widgets
 	INSTALL_SHARE
 	)
