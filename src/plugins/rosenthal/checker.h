@@ -42,9 +42,9 @@ namespace Rosenthal
 	public:
 		Checker (const KnownDictsManager*);
 
-		QStringList GetPropositions (const QString&) const;
-		bool IsCorrect (const QString&) const;
-		void LearnWord (const QString&);
+		QStringList GetPropositions (const QString&) const override;
+		bool IsCorrect (const QString&) const override;
+		void LearnWord (const QString&) override;
 	public slots:
 		void setLanguages (const QStringList&);
 	};
