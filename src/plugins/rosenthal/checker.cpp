@@ -9,7 +9,6 @@
 #include "checker.h"
 #include <algorithm>
 #include <QFile>
-#include <QTextCodec>
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/util.h>
@@ -43,13 +42,9 @@ namespace Rosenthal
 			return hs->spell (word.toStdString ());
 		}
 
-		QStringList Suggest (Hunspell *hs, QTextCodec *codec, const QByteArray& word)
+		QStringList Suggest (Hunspell *hs, const QByteArray& word)
 		{
-			return Util::MapAs<QList> (hs->suggest (word.toStdString ()),
-					[codec] (const std::string& str)
-					{
-						return codec->toUnicode (str.c_str ());
-					});
+			return Util::MapAs<QList> (hs->suggest (word.toStdString ()), &QString::fromStdString);
 		}
 	}
 
@@ -58,9 +53,9 @@ namespace Rosenthal
 		QStringList result;
 		for (const auto& item : Hunspells_)
 		{
-			const auto& encoded = item.Codec_->fromUnicode (word);
+			const auto& encoded = word.toUtf8 ();
 			if (!Spell (item.Hunspell_.get (), encoded))
-				result += Suggest (item.Hunspell_.get (), item.Codec_, encoded);
+				result += Suggest (item.Hunspell_.get (), encoded);
 		}
 		return result;
 	}
@@ -71,10 +66,7 @@ namespace Rosenthal
 			return true;
 
 		return std::any_of (Hunspells_.begin (), Hunspells_.end (),
-				[&word] (const HunspellItem& item)
-				{
-					return Spell (item.Hunspell_.get (), item.Codec_->fromUnicode (word));
-				});
+				[&word] (const HunspellItem& item) { return Spell (item.Hunspell_.get (), word.toUtf8 ()); });
 	}
 
 	void Checker::LearnWord (const QString& word)
@@ -96,10 +88,12 @@ namespace Rosenthal
 			HunspellItem item;
 			item.Hunspell_ = std::make_unique<Hunspell> ((primaryPath + ".aff").toLatin1 (),
 					(primaryPath + ".dic").toLatin1 ());
-			item.Codec_ = QTextCodec::codecForName (item.Hunspell_->get_dic_encoding ());
 
-			if (item.Codec_)
+			if (const auto& encoding = item.Hunspell_->get_dict_encoding ();
+				encoding == "UTF-8" || encoding == "ISO8859-1")
 				Hunspells_.push_back (std::move (item));
+			else
+				qWarning () << "unsupported encoding" << encoding;
 		}
 	}
 }
