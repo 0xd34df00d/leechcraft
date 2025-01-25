@@ -28,7 +28,7 @@ namespace LC::Util
 	{
 	}
 
-	EncodingConverter::EncodingConverter (QStringView encoding)
+	EncodingConverter::EncodingConverter (QAnyStringView encoding)
 	: Name_ { encoding.toString () }
 	, Encoder_ { encoding }
 	, Decoder_ { encoding }

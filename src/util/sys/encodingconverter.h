@@ -30,7 +30,7 @@ namespace LC::Util
 		};
 
 		EncodingConverter ();
-		explicit EncodingConverter (QStringView encoding);
+		explicit EncodingConverter (QAnyStringView encoding);
 
 		QString GetName () const;
 
