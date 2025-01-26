@@ -15,6 +15,7 @@
 #include <QDBusInterface>
 #include <QTimer>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/devices/deviceroles.h>
 
@@ -39,20 +40,14 @@ namespace UDisks
 
 	bool Backend::IsAvailable ()
 	{
-		auto sb = QDBusConnection::systemBus ();
-		auto iface = sb.interface ();
+		const auto iface = QDBusConnection::systemBus ().interface ();
 
-		const QRegExp filterRx ("^org.freedesktop.UDisks$");
-		auto services = iface->registeredServiceNames ().value ().filter (filterRx);
-		if (services.isEmpty ())
-		{
-			iface->startService ("org.freedesktop.UDisks");
-			services = iface->registeredServiceNames ().value ().filter (filterRx);
-			if (services.isEmpty ())
-				return false;
-		}
+		const auto interfaceName = "org.freedesktop.UDisks"_qs;
+		if (iface->registeredServiceNames ().value ().contains (interfaceName))
+			return true;
 
-		return true;
+		iface->startService (interfaceName);
+		return iface->registeredServiceNames ().value ().contains (interfaceName);
 	}
 
 	void Backend::Start ()
