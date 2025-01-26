@@ -28,10 +28,12 @@ namespace XProxy
 
 		CoreProxy_ = proxy;
 
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<Proxy> ("LC::XProxy::Proxy");
 		qRegisterMetaTypeStreamOperators<ReqTarget> ("LC::XProxy::ReqTarget");
 		qRegisterMetaTypeStreamOperators<QList<LC::XProxy::Entry_t>> ("QList<LC::XProxy::Entry_t>");
 		qRegisterMetaTypeStreamOperators<QList<LC::XProxy::ScriptEntry_t>> ("QList<LC::XProxy::ScriptEntry_t>");
+#endif
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
