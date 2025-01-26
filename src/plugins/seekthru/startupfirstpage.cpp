@@ -8,7 +8,6 @@
 
 #include "startupfirstpage.h"
 #include <QLineEdit>
-#include <QTextCodec>
 #include <QComboBox>
 #include <QFile>
 #include <util/util.h>
@@ -116,8 +115,7 @@ namespace LC::SeekThru
 				continue;
 			}
 
-			QString contents = QTextCodec::codecForName ("UTF-8")->
-				toUnicode (file.readAll ());
+			auto contents = QString::fromUtf8 (file.readAll ());
 			Core::Instance ().HandleEntity (contents,
 					static_cast<QLineEdit*> (Ui_.Tree_->itemWidget (item, 1))->text ());
 		}

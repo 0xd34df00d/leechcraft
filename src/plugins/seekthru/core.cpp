@@ -37,9 +37,11 @@ namespace LC::SeekThru
 	Core::Core ()
 	{
 		qRegisterMetaType<Description> ("LC::Plugins::SeekThru::Description");
+#if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<UrlDescription> ("LC::Plugins::SeekThru::UrlDescription");
 		qRegisterMetaTypeStreamOperators<QueryDescription> ("LC::Plugins::SeekThru::QueryDescription");
 		qRegisterMetaTypeStreamOperators<Description> ("LC::Plugins::SeekThru::Description");
+#endif
 
 		ReadSettings ();
 	}
