@@ -108,24 +108,13 @@ namespace XProxy
 	{
 		quint8 ver = 0;
 		in >> ver;
-		if (ver < 1 || ver > 2)
+		if (ver != 2)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< ver;
+			qWarning () << "unknown version" << ver;
 			return in;
 		}
-
-		if (ver == 1)
-		{
-			QRegExp rx;
-			in >> rx;
-			t.Host_ = Util::RegExp { rx.pattern (), rx.caseSensitivity () };
-		}
-		else
-			in >> t.Host_;
-
-		in >> t.Port_
+		in >> t.Host_
+			>> t.Port_
 			>> t.Protocols_;
 		return in;
 	}
