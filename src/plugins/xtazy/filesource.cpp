@@ -48,7 +48,7 @@ namespace Xtazy
 		}
 
 		QVariantMap result;
-		for (auto line : data.splitRef ('\n', Qt::SkipEmptyParts))
+		for (auto line : QStringView { data }.split ('\n', Qt::SkipEmptyParts))
 		{
 			line = line.trimmed ();
 			const int idx = line.indexOf (' ');
