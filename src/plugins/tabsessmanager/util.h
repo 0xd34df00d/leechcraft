@@ -8,15 +8,12 @@
 
 #pragma once
 
+#include <QList>
+#include <QPair>
+
 class QObject;
 class QByteArray;
 class QVariant;
-
-template<typename P1, typename P2>
-struct QPair;
-
-template<typename T>
-class QList;
 
 struct TabClassInfo;
 
