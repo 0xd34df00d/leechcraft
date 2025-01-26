@@ -17,7 +17,7 @@ namespace Sysnotify
 	ImageHint::ImageHint (const QImage& image)
 	: Width_ { image.width () }
 	, Height_ { image.height () }
-	, RowStride_ { image.bytesPerLine () }
+	, RowStride_ { static_cast<int> (image.bytesPerLine ()) }
 	, HasAlpha_ { image.hasAlphaChannel () }
 	, Channels_ { HasAlpha_ ? 4 : 3 }
 	, BPS_ { image.depth () / Channels_ }

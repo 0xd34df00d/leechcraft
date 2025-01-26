@@ -180,7 +180,7 @@ namespace Sysnotify
 				<< reply.argumentAt<2> ()
 				<< versionString;
 
-		const auto& versionSplit = versionString.splitRef ('.', Qt::SkipEmptyParts);
+		const auto& versionSplit = QStringView { versionString }.split ('.', Qt::SkipEmptyParts);
 		if (versionSplit.size () == 2)
 			Version_ = std::make_tuple (versionSplit.value (0).toInt (),
 					versionSplit.value (1).toInt ());
