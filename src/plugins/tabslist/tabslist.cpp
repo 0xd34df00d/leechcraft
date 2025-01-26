@@ -11,10 +11,10 @@
 #include <QAction>
 #include <QToolButton>
 #include <QVBoxLayout>
-#include <QDesktopWidget>
 #include <QApplication>
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <QScreen>
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QTimer>
@@ -199,7 +199,7 @@ namespace TabsList
 
 			void MoveDown (int idx, int count) const
 			{
-				const auto last = AllButtons_.size () - 1;
+				const int last = AllButtons_.size () - 1;
 				AllButtons_ [std::min (idx + count, last)]->setFocus ();
 			}
 
@@ -321,8 +321,7 @@ namespace TabsList
 		layout->update ();
 		layout->activate ();
 
-		const QRect& rect = QApplication::desktop ()->
-				screenGeometry (rootWM->GetPreferredWindow ());
+		const QRect& rect = rootWM->GetPreferredWindow ()->screen ()->geometry ();
 		auto pos = rect.center ();
 
 		const auto maxHeight = rect.height () * 2 / 3;
