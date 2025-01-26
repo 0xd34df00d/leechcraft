@@ -10,9 +10,8 @@
 
 #include <memory>
 #include <QObject>
+#include <QStringList>
 #include <interfaces/core/icoreproxy.h>
-
-class QStringList;
 
 namespace LC
 {
