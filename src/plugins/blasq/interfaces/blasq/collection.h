@@ -45,7 +45,7 @@ namespace LC::Blasq
 	class NamedModel : public Util::RoleNamesMixin<T>
 	{
 	public:
-		explicit NamedModel (QObject *parent)
+		explicit NamedModel (QObject *parent, const QHash<int, QByteArray>& extraNames = {})
 		: Util::RoleNamesMixin<T> { parent }
 		{
 			QHash<int, QByteArray> names
@@ -60,6 +60,7 @@ namespace LC::Blasq
 				{ CollectionRole::Original, "original" },
 				{ CollectionRole::OriginalSize, "originalSize" },
 			};
+			names.insert (extraNames);
 			Util::RoleNamesMixin<T>::setRoleNames (names);
 		}
 	};

@@ -29,12 +29,14 @@ namespace Blasq
 	}
 
 	PhotosProxyModel::PhotosProxyModel (QObject *parent)
-	: NamedModel<QIdentityProxyModel> (parent)
+	: NamedModel<QIdentityProxyModel> {
+			parent,
+			{
+				{ ExtendedRole::SupportsDeletes, "supportsDeletes" },
+				{ ExtendedRole::IsSelected, "isSelected" },
+			}
+		}
 	{
-		auto names = roleNames ();
-		names [ExtendedRole::SupportsDeletes] = "supportsDeletes";
-		names [ExtendedRole::IsSelected] = "isSelected";
-		setRoleNames (names);
 	}
 
 	QVariant PhotosProxyModel::data (const QModelIndex& index, int role) const
