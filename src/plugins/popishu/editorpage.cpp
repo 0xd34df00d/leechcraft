@@ -9,6 +9,7 @@
 #include "editorpage.h"
 #include <iostream>
 #include <algorithm>
+#include <QActionGroup>
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFile>
