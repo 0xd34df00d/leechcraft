@@ -13,9 +13,7 @@
 #include <QByteArray>
 #include <util/models/rolenamesmixin.h>
 
-namespace LC
-{
-namespace Blasq
+namespace LC::Blasq
 {
 	enum CollectionRole
 	{
@@ -47,20 +45,22 @@ namespace Blasq
 	class NamedModel : public Util::RoleNamesMixin<T>
 	{
 	public:
-		NamedModel (QObject *parent)
-		: Util::RoleNamesMixin<T> (parent)
+		explicit NamedModel (QObject *parent)
+		: Util::RoleNamesMixin<T> { parent }
 		{
-			QHash<int, QByteArray> result;
-			result [CollectionRole::Type] = "itemType";
-			result [CollectionRole::ID] = "imageId";
-			result [CollectionRole::Name] = "name";
-			result [CollectionRole::SmallThumb] = "smallThumb";
-			result [CollectionRole::SmallThumbSize] = "smallThumbSize";
-			result [CollectionRole::MediumThumb] = "mediumThumb";
-			result [CollectionRole::MediumThumbSize] = "mediumThumbSize";
-			result [CollectionRole::Original] = "original";
-			result [CollectionRole::OriginalSize] = "originalSize";
-			Util::RoleNamesMixin<T>::setRoleNames (result);
+			QHash<int, QByteArray> names
+			{
+				{ CollectionRole::Type, "itemType" },
+				{ CollectionRole::ID, "imageId" },
+				{ CollectionRole::Name, "name" },
+				{ CollectionRole::SmallThumb, "smallThumb" },
+				{ CollectionRole::SmallThumbSize, "smallThumbSize" },
+				{ CollectionRole::MediumThumb, "mediumThumb" },
+				{ CollectionRole::MediumThumbSize, "mediumThumbSize" },
+				{ CollectionRole::Original, "original" },
+				{ CollectionRole::OriginalSize, "originalSize" },
+			};
+			Util::RoleNamesMixin<T>::setRoleNames (names);
 		}
 	};
 
@@ -70,5 +70,4 @@ namespace Blasq
 		AllPhotos,
 		Image
 	};
-}
 }
