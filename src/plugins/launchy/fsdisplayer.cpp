@@ -15,7 +15,6 @@
 #include <QQuickItem>
 #include <QStandardItemModel>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <util/util.h>
 #include <util/gui/geometry.h>
 #include <util/qml/themeimageprovider.h>
