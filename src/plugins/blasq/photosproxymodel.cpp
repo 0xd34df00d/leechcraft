@@ -75,13 +75,7 @@ namespace Blasq
 					this,
 					SLOT (handleRowsInserted (QModelIndex, int, int)));
 
-		beginResetModel ();
-		blockSignals (true);
-
 		QIdentityProxyModel::setSourceModel (model);
-
-		blockSignals (false);
-		endResetModel ();
 
 		if (model)
 			connect (model,
