@@ -91,7 +91,7 @@ void RequestModel::handleRequest (QNetworkAccessManager::Operation op,
 	appendRow (items);
 
 	connect (rep,
-			SIGNAL (error (QNetworkReply::NetworkError )),
+			SIGNAL (errorOccurred (QNetworkReply::NetworkError )),
 			this,
 			SLOT (handleFinished ()));
 	connect (rep,
