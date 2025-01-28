@@ -9,6 +9,7 @@ add_util_library (util-sll
 		urloperator.cpp
 		qtutil.cpp
 		urlaccessor.cpp
+		raiisignalconnection.cpp
 		serializejson.cpp
 		xmlnode.cpp
 		json.cpp
