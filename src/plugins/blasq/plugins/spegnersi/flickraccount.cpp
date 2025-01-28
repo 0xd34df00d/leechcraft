@@ -7,14 +7,24 @@
  **********************************************************************/
 
 #include "flickraccount.h"
-#include <QTimer>
-#include <QSettings>
 #include <QCoreApplication>
+#include <QDesktopServices>
+#include <QDomDocument>
+#include <QOAuth1>
+#include <QOAuthHttpServerReplyHandler>
+#include <QRestReply>
+#include <QStandardItemModel>
+#include <QUrlQuery>
 #include <QUuid>
 #include <QtDebug>
-#include <QStandardItemModel>
-#include <QDomDocument>
 #include <interfaces/core/ientitymanager.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/raiisignalconnection.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/either.h>
+#include <util/threads/coro/networkresult.h>
 #include <util/xpc/util.h>
 #include "flickrservice.h"
 
@@ -24,9 +34,39 @@ namespace Blasq
 {
 namespace Spegnersi
 {
-	const QString RequestTokenURL = "http://www.flickr.com/services/oauth/request_token";
-	const QString UserAuthURL = "http://www.flickr.com/services/oauth/authorize";
-	const QString AccessTokenURL = "http://www.flickr.com/services/oauth/access_token";
+	const auto RequestTokenURL = "https://www.flickr.com/services/oauth/request_token"_qs;
+	const auto UserAuthURL = "https://www.flickr.com/services/oauth/authorize"_qs;
+	const auto AccessTokenURL = "https://www.flickr.com/services/oauth/access_token"_qs;
+
+	namespace
+	{
+		class FlickrServerReplyHandler : public QOAuthHttpServerReplyHandler
+		{
+		public:
+			using QOAuthHttpServerReplyHandler::QOAuthHttpServerReplyHandler;
+		protected:
+			void networkReplyFinished (QNetworkReply *reply) override
+			{
+				if (const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
+					!contentType.startsWith (u"text/plain"_qsv))
+					return QOAuthHttpServerReplyHandler::networkReplyFinished (reply);
+
+				const QRestReply rest { reply };
+				if (rest.hasError ())
+					return emit tokenRequestErrorOccurred (QAbstractOAuth::Error::NetworkError, reply->errorString ());
+				if (!rest.isHttpStatusSuccess ())
+					return emit tokenRequestErrorOccurred (QAbstractOAuth::Error::ServerError, reply->errorString ());
+
+				const auto& data = reply->readAll ();
+				emit replyDataReceived (data);
+
+				QVariantMap tokens;
+				for (const auto& [name, value] : QUrlQuery { QString::fromUtf8 (data) }.queryItems (QUrl::FullyDecoded))
+					tokens [name] = value;
+				emit tokensReceived (tokens);
+			}
+		};
+	}
 
 	FlickrAccount::FlickrAccount (const QString& name,
 			FlickrService *service, ICoreProxy_ptr proxy, const QByteArray& id)
@@ -35,34 +75,34 @@ namespace Spegnersi
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Service_ (service)
 	, Proxy_ (proxy)
-	, Req_ (new KQOAuthRequest (this))
-	, AuthMgr_ (new KQOAuthManager (this))
+	, AuthMgr_ { new QOAuth1 { "08efe88f972b2b89bd35e42bb26f970e", "f70ac4b1ab7c499b", proxy->GetNetworkAccessManager (), this } }
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	{
-		AuthMgr_->setNetworkManager (proxy->GetNetworkAccessManager ());
-		AuthMgr_->setHandleUserAuthorization (true);
+		auto handler = new FlickrServerReplyHandler { 12345, this };
+		AuthMgr_->setReplyHandler (handler);
+		AuthMgr_->setSignatureMethod (QOAuth1::SignatureMethod::Hmac_Sha1);
+		AuthMgr_->setAuthorizationUrl (UserAuthURL);
+		AuthMgr_->setTemporaryCredentialsUrl (RequestTokenURL);
+		AuthMgr_->setTokenCredentialsUrl (AccessTokenURL);
+		AuthMgr_->setContentType (QAbstractOAuth::ContentType::WwwFormUrlEncoded);
 
 		connect (AuthMgr_,
-				SIGNAL (temporaryTokenReceived (QString, QString)),
+				&QOAuth1::authorizeWithBrowser,
 				this,
-				SLOT (handleTempToken (QString, QString)));
+				[] (const QUrl& url)
+				{
+					const auto& e = Util::MakeEntity (url, {}, FromUserInitiated | OnlyHandle);
+					if (!GetProxyHolder ()->GetEntityManager ()->HandleEntity (e))
+						QDesktopServices::openUrl (url);
+				});
 		connect (AuthMgr_,
-				SIGNAL (authorizationReceived (QString, QString)),
+				&QOAuth1::granted,
 				this,
-				SLOT (handleAuthorization (QString, QString)));
-		connect (AuthMgr_,
-				SIGNAL (accessTokenReceived (QString, QString)),
-				this,
-				SLOT (handleAccessToken (QString, QString)));
-
-		connect (AuthMgr_,
-				SIGNAL (requestReady (QByteArray)),
-				this,
-				SLOT (handleReply (QByteArray)));
-
-		QTimer::singleShot (0,
-				this,
-				SLOT (checkAuthTokens ()));
+				[this, handler]
+				{
+					handler->close ();
+					emit accountChanged (this);
+				});
 	}
 
 	QByteArray FlickrAccount::Serialize () const
@@ -73,8 +113,8 @@ namespace Spegnersi
 			ostr << static_cast<quint8> (1)
 					<< ID_
 					<< Name_
-					<< AuthToken_
-					<< AuthSecret_;
+					<< AuthMgr_->token ()
+					<< AuthMgr_->tokenSecret ();
 		}
 		return result;
 	}
@@ -87,20 +127,21 @@ namespace Spegnersi
 		istr >> version;
 		if (version != 1)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< version;
+			qWarning () << "unknown version" << version;
 			return nullptr;
 		}
 
 		QByteArray id;
 		QString name;
+		QString authToken;
+		QString authSecret;
 		istr >> id
-				>> name;
+				>> name
+				>> authToken
+				>> authSecret;
 
-		auto acc = new FlickrAccount (name, service, proxy, id);
-		istr >> acc->AuthToken_
-				>> acc->AuthSecret_;
+		const auto acc = new FlickrAccount (name, service, proxy, id);
+		acc->AuthMgr_->setTokenCredentials (authToken, authSecret);
 		return acc;
 	}
 
@@ -131,35 +172,6 @@ namespace Spegnersi
 
 	void FlickrAccount::UpdateCollections ()
 	{
-		switch (State_)
-		{
-		case State::CollectionsRequested:
-			return;
-		case State::Idle:
-			break;
-		default:
-			CallQueue_ << [this] { UpdateCollections (); };
-			return;
-		}
-
-		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
-		{
-			UpdateAfterAuth_ = true;
-			return;
-		}
-
-		UpdateAfterAuth_ = false;
-
-		auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
-		req->setAdditionalParameters ({
-					{ "method", "flickr.photos.search" },
-					{ "user_id", "me" },
-					{ "format", "rest" },
-					{ "per_page", "500" },
-					{ "extras", "url_o,url_z,url_m" }
-				});
-		AuthMgr_->executeRequest (req);
-
 		CollectionsModel_->clear ();
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
@@ -168,178 +180,135 @@ namespace Spegnersi
 		AllPhotosItem_->setEditable (false);
 		CollectionsModel_->appendRow (AllPhotosItem_);
 
-		State_ = State::CollectionsRequested;
+		UpdateCollectionsPage ({});
 	}
 
-	KQOAuthRequest* FlickrAccount::MakeRequest (const QUrl& url, KQOAuthRequest::RequestType type)
+	struct AuthGate
 	{
-		Req_->clearRequest ();
-		Req_->initRequest (type, url);
-		Req_->setConsumerKey ("08efe88f972b2b89bd35e42bb26f970e");
-		Req_->setConsumerSecretKey ("f70ac4b1ab7c499b");
-		Req_->setSignatureMethod (KQOAuthRequest::HMAC_SHA1);
+		QOAuth1& AuthMgr_;
 
-		if (!AuthToken_.isEmpty () && !AuthSecret_.isEmpty ())
+		Util::RaiiSignalConnection StatusConn_ {};
+		Util::RaiiSignalConnection ErrorConn_ {};
+
+		bool await_ready () const
 		{
-			Req_->setToken (AuthToken_);
-			Req_->setTokenSecret (AuthSecret_);
+			if (AuthMgr_.status () == QAbstractOAuth::Status::Granted)
+				return true;
+
+			const auto& [token, secret] = AuthMgr_.tokenCredentials ();
+			if (AuthMgr_.status () == QAbstractOAuth::Status::NotAuthenticated)
+				return !token.isEmpty () && !secret.isEmpty ();
+
+			return false;
 		}
 
-		return Req_;
+		void await_suspend (std::coroutine_handle<> handle)
+		{
+			StatusConn_ = QObject::connect (&AuthMgr_,
+					&QOAuth1::statusChanged,
+					[this, handle]
+					{
+						switch (AuthMgr_.status ())
+						{
+						case QAbstractOAuth::Status::Granted:
+						case QAbstractOAuth::Status::NotAuthenticated:
+							handle ();
+							break;
+						case QAbstractOAuth::Status::TemporaryCredentialsReceived:
+						case QAbstractOAuth::Status::RefreshingToken:
+							break;
+						}
+					});
+
+			if (AuthMgr_.status () == QAbstractOAuth::Status::NotAuthenticated)
+			{
+				qDebug () << "requesting authentication";
+				AuthMgr_.grant ();
+			}
+		}
+
+		bool await_resume () const
+		{
+			return await_ready ();
+		}
+	};
+
+	Util::ContextTask<> FlickrAccount::UpdateCollectionsPage (std::optional<int> page)
+	{
+		co_await Util::AddContextObject { *this };
+
+		if (!co_await AuthGate { *AuthMgr_ })
+		{
+			qWarning () << "not authenticated";
+			co_return;
+		}
+
+		const auto reply = AuthMgr_->get ({ "https://api.flickr.com/services/rest/"_qs }, {
+					{ "method", "flickr.photos.search" },
+					{ "user_id", "me" },
+					{ "format", "rest" },
+					{ "per_page", "500" },
+					{ "page", QString::number (page.value_or (0)) },
+					{ "extras", "url_o,url_z,url_m" }
+				});
+		const auto response = co_await *reply;
+		const auto data = co_await Util::WithHandler (response.ToEither ("FlickrAccount::UpdateCollections"_qs),
+				[] (const QString& error)
+				{
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq Spegnersi"_qs,
+								tr ("Unable to refresh collections: %1.").arg (error),
+								Priority::Critical));
+				});
+		HandleCollectionsReply (data);
 	}
 
 	void FlickrAccount::HandleCollectionsReply (const QByteArray& data)
 	{
-		qDebug () << Q_FUNC_INFO;
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse"
-					<< data;
-			State_ = State::Idle;
+			qWarning () << "cannot parse" << data;
 			return;
 		}
 
 		const auto& photos = doc
 				.documentElement ()
-				.firstChildElement ("photos");
+				.firstChildElement ("photos"_qs);
 
-		auto photo = photos.firstChildElement ("photo");
-		while (!photo.isNull ())
+		for (const auto& photo : Util::DomChildren (photos, "photo"_qs))
 		{
 			auto item = new QStandardItem;
 
-			item->setText (photo.attribute ("title"));
+			item->setText (photo.attribute ("title"_qs));
 			item->setEditable (false);
 			item->setData (ItemType::Image, CollectionRole::Type);
-			item->setData (photo.attribute ("id"), CollectionRole::ID);
-			item->setData (photo.attribute ("title"), CollectionRole::Name);
+			item->setData (photo.attribute ("id"_qs), CollectionRole::ID);
+			item->setData (photo.attribute ("title"_qs), CollectionRole::Name);
 
-			auto getSize = [&photo] (const QString& s) -> QSize
+			auto getSize = [&photo] (char s)
 			{
-				return
+				return QSize
 				{
-					photo.attribute ("width_" + s).toInt (),
-					photo.attribute ("height_" + s).toInt ()
+					photo.attribute ("width_"_qs + s).toInt (),
+					photo.attribute ("height_"_qs + s).toInt ()
 				};
 			};
 
-			item->setData (QUrl (photo.attribute ("url_o")), CollectionRole::Original);
-			item->setData (getSize ("o"), CollectionRole::OriginalSize);
-			item->setData (QUrl (photo.attribute ("url_z")), CollectionRole::MediumThumb);
-			item->setData (getSize ("z"), CollectionRole::MediumThumbSize);
-			item->setData (QUrl (photo.attribute ("url_m")), CollectionRole::SmallThumb);
-			item->setData (getSize ("m"), CollectionRole::SmallThumbSize);
+			item->setData (QUrl (photo.attribute ("url_o"_qs)), CollectionRole::Original);
+			item->setData (getSize ('o'), CollectionRole::OriginalSize);
+			item->setData (QUrl (photo.attribute ("url_z"_qs)), CollectionRole::MediumThumb);
+			item->setData (getSize ('z'), CollectionRole::MediumThumbSize);
+			item->setData (QUrl (photo.attribute ("url_m"_qs)), CollectionRole::SmallThumb);
+			item->setData (getSize ('m'), CollectionRole::SmallThumbSize);
 
 			AllPhotosItem_->appendRow (item);
-
-			photo = photo.nextSiblingElement ("photo");
 		}
 
-		const auto thisPage = photos.attribute ("page").toInt ();
-		if (thisPage != photos.attribute ("pages").toInt ())
-		{
-			auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
-			req->setAdditionalParameters ({
-						{ "method", "flickr.photos.search" },
-						{ "user_id", "me" },
-						{ "format", "rest" },
-						{ "per_page", "500" },
-						{ "page", QString::number (thisPage + 1) },
-						{ "extras", "url_o,url_z,url_m" }
-					});
-			AuthMgr_->executeRequest (req);
-		}
+		const auto thisPage = photos.attribute ("page"_qs).toInt ();
+		if (thisPage != photos.attribute ("pages"_qs).toInt ())
+			UpdateCollectionsPage (thisPage + 1);
 		else
 			emit doneUpdating ();
-	}
-
-	void FlickrAccount::checkAuthTokens ()
-	{
-		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "requesting new tokens";
-			requestTempToken ();
-		}
-	}
-
-	void FlickrAccount::requestTempToken ()
-	{
-		auto req = MakeRequest (RequestTokenURL, KQOAuthRequest::TemporaryCredentials);
-		AuthMgr_->executeRequest (req);
-
-		State_ = State::AuthRequested;
-	}
-
-	void FlickrAccount::handleTempToken (const QString&, const QString&)
-	{
-		if (AuthMgr_->lastError () != KQOAuthManager::NoError)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< AuthMgr_->lastError ();
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq Spegnersi",
-						tr ("Unable to get temporary auth token."),
-						Priority::Critical));
-
-			QTimer::singleShot (10 * 60 * 1000,
-					this,
-					SLOT (requestTempToken ()));
-			return;
-		}
-
-		AuthMgr_->getUserAuthorization (UserAuthURL);
-	}
-
-	void FlickrAccount::handleAuthorization (const QString&, const QString&)
-	{
-		switch (AuthMgr_->lastError ())
-		{
-		case KQOAuthManager::NoError:
-			break;
-		case KQOAuthManager::RequestUnauthorized:
-			return;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< AuthMgr_->lastError ();
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq Spegnersi",
-						tr ("Unable to get user authorization."),
-						Priority::Critical));
-
-			QTimer::singleShot (10 * 60 * 1000,
-					this,
-					SLOT (requestTempToken ()));
-			return;
-		}
-
-		AuthMgr_->getUserAccessTokens (AccessTokenURL);
-	}
-
-	void FlickrAccount::handleAccessToken (const QString& token, const QString& secret)
-	{
-		qDebug () << Q_FUNC_INFO
-				<< "access token received";
-		AuthToken_ = token;
-		AuthSecret_ = secret;
-		emit accountChanged (this);
-
-		State_ = State::Idle;
-
-		if (UpdateAfterAuth_)
-			UpdateCollections ();
-	}
-
-	void FlickrAccount::handleReply (const QByteArray& data)
-	{
-		switch (State_)
-		{
-		case State::CollectionsRequested:
-			HandleCollectionsReply (data);
-			break;
-		default:
-			return;
-		}
 	}
 }
 }

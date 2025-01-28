@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include <functional>
-#include <QtKOAuth/QtKOAuth>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
 class QStandardItem;
+
+class QOAuth1;
 
 namespace LC
 {
@@ -35,25 +36,10 @@ namespace Spegnersi
 		FlickrService * const Service_;
 		const ICoreProxy_ptr Proxy_;
 
-		KQOAuthRequest * const Req_;
-		KQOAuthManager * const AuthMgr_;
+		QOAuth1 * const AuthMgr_;
 
 		QStandardItemModel * const CollectionsModel_;
-		QStandardItem *AllPhotosItem_ = 0;
-
-		QString AuthToken_;
-		QString AuthSecret_;
-
-		bool UpdateAfterAuth_ = false;
-
-		enum class State
-		{
-			Idle,
-			AuthRequested,
-			CollectionsRequested
-		} State_ = State::Idle;
-
-		QList<std::function<void ()>> CallQueue_;
+		QStandardItem *AllPhotosItem_ = nullptr;
 	public:
 		FlickrAccount (const QString&, FlickrService*, ICoreProxy_ptr, const QByteArray& = QByteArray ());
 
@@ -69,18 +55,8 @@ namespace Spegnersi
 
 		void UpdateCollections ();
 	private:
-		KQOAuthRequest* MakeRequest (const QUrl&, KQOAuthRequest::RequestType = KQOAuthRequest::AuthorizedRequest);
-
 		void HandleCollectionsReply (const QByteArray&);
-	private slots:
-		void checkAuthTokens ();
-		void requestTempToken ();
-
-		void handleTempToken (const QString&, const QString&);
-		void handleAuthorization (const QString&, const QString&);
-		void handleAccessToken (const QString&, const QString&);
-
-		void handleReply (const QByteArray&);
+		Util::ContextTask<> UpdateCollectionsPage (std::optional<int>);
 	signals:
 		void accountChanged (FlickrAccount*);
 
