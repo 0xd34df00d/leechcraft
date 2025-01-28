@@ -13,8 +13,6 @@
 #include <QtDebug>
 #include <util/sll/either.h>
 #include <util/threads/coro.h>
-#include <util/threads/coro/getresult.h>
-#include <util/threads/coro/networkresult.h>
 #include "hostingservice.h"
 
 namespace LC::Imgaste

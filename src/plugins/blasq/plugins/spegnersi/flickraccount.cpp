@@ -22,9 +22,6 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/raiisignalconnection.h>
 #include <util/threads/coro.h>
-#include <util/threads/coro/context.h>
-#include <util/threads/coro/either.h>
-#include <util/threads/coro/networkresult.h>
 #include <util/xpc/util.h>
 #include "flickrservice.h"
 

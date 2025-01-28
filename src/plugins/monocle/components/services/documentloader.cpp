@@ -11,7 +11,6 @@
 #include <QFile>
 #include <interfaces/iplugin2.h>
 #include <util/threads/coro.h>
-#include <util/threads/coro/context.h>
 #include "interfaces/monocle/ibackendplugin.h"
 #include "interfaces/monocle/iredirectorplugin.h"
 #include "defaultbackendmanager.h"

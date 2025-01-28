@@ -10,7 +10,7 @@
 
 #include <QString>
 #include <QMetaType>
-#include <util/threads/coro.h>
+#include <util/threads/coro/taskfwd.h>
 
 namespace LC::Monocle
 {

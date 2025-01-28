@@ -11,7 +11,7 @@
 #include <QString>
 #include <QList>
 #include <QtPlugin>
-#include <util/threads/coro.h>
+#include <util/threads/coro/taskfwd.h>
 
 namespace LC::Monocle
 {

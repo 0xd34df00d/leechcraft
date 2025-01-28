@@ -8,7 +8,10 @@
 
 #pragma once
 
+#include "coro/either.h"
 #include "coro/networkreply.h"
 #include "coro/process.h"
 #include "coro/task.h"
 #include "coro/timer.h"
+#include "coro/networkresult.h"
+#include "coro/context.h"

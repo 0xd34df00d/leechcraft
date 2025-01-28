@@ -23,8 +23,6 @@
 #include <util/sll/domchildrenrange.h>
 #include <util/svcauth/ljutils.h>
 #include <util/threads/coro.h>
-#include <util/threads/coro/context.h>
-#include <util/threads/coro/either.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"

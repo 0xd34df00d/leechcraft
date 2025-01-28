@@ -13,7 +13,7 @@
 #include <QTemporaryFile>
 #include <util/sll/qtutil.h>
 #include <util/sys/mimedetector.h>
-#include <util/threads/coro/process.h>
+#include <util/threads/coro.h>
 #include <util/util.h>
 
 namespace LC::Monocle::Postrus

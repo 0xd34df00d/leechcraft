@@ -19,8 +19,6 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
-#include <util/threads/coro/either.h>
-#include <util/threads/coro/networkresult.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
 #include <util/util.h>

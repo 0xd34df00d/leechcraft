@@ -9,7 +9,7 @@
 #include "docinfodialog.h"
 #include <QStandardItemModel>
 #include <util/sll/qtutil.h>
-#include <util/threads/coro/context.h>
+#include <util/threads/coro.h>
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavefontinfo.h"
 
