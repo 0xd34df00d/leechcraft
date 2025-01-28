@@ -56,35 +56,35 @@ namespace MP3Tunes
 
 		QMap<QString, Uploader*> Uploaders_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
 
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		void SetLMPProxy (ILMPProxy_ptr);
+		void SetLMPProxy (ILMPProxy_ptr) override;
 
-		QObject* GetQObject ();
-		QString GetCloudName () const;
-		QIcon GetCloudIcon () const;
-		QStringList GetSupportedFileFormats () const;
-		void Upload (const QString& account, const QString& filename);
-		QStringList GetAccounts () const;
+		QObject* GetQObject () override;
+		QString GetCloudName () const override;
+		QIcon GetCloudIcon () const override;
+		QStringList GetSupportedFileFormats () const override;
+		void Upload (const QString& account, const QString& filename) override;
+		QStringList GetAccounts () const override;
 
-		QStandardItem* GetPlaylistsRoot () const;
-		void UpdatePlaylists ();
-		std::optional<Media::AudioInfo> GetURLInfo (const QUrl&);
+		QStandardItem* GetPlaylistsRoot () const override;
+		void UpdatePlaylists () override;
+		std::optional<Media::AudioInfo> GetURLInfo (const QUrl&) override;
 	signals:
 		void uploadFinished (const QString&,
-				LC::LMP::CloudStorageError, const QString&);
-		void accountsChanged ();
+				LC::LMP::CloudStorageError, const QString&) override;
+		void accountsChanged () override;
 	};
 }
 }
