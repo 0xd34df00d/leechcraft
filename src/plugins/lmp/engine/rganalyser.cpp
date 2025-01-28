@@ -153,12 +153,7 @@ namespace LMP
 	void RgAnalyser::HandleTagMsg (GstMessage *msg)
 	{
 		GstUtil::TagMap_t map;
-
-		const auto& region = XmlSettingsManager::Instance ()
-				.property ("TagsRecodingRegion").toString ();
-		const bool isEnabled = XmlSettingsManager::Instance ()
-				.property ("EnableTagsRecoding").toBool ();
-		GstUtil::ParseTagMessage (msg, map, isEnabled ? region : QString ());
+		GstUtil::ParseTagMessage (msg, map);
 
 		auto trySet = [&map] (const QString& key, std::function<void (double)> setter) -> bool
 		{

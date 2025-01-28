@@ -603,11 +603,7 @@ namespace LMP
 	void SourceObject::HandleTagMsg (GstMessage *msg)
 	{
 		const auto oldMetadata = Metadata_;
-		const auto& region = XmlSettingsManager::Instance ()
-				.property ("TagsRecodingRegion").toString ();
-		const bool isEnabled = XmlSettingsManager::Instance ()
-				.property ("EnableTagsRecoding").toBool ();
-		if (!GstUtil::ParseTagMessage (msg, Metadata_, isEnabled ? region : QString ()))
+		if (!GstUtil::ParseTagMessage (msg, Metadata_))
 			return;
 
 		auto merge = [this] (const QString& oldName, const QString& stdName, bool emptyOnly)

@@ -27,7 +27,7 @@ namespace GstUtil
 
 	typedef QMap<QString, QString> TagMap_t;
 
-	LMP_UTIL_API bool ParseTagMessage (GstMessage *msg, TagMap_t& tags, const QString& region);
+	LMP_UTIL_API bool ParseTagMessage (GstMessage *msg, TagMap_t& tags);
 
 	LMP_UTIL_API void PerformWProbe (GstPad *srcpad, const std::function<void ()>& functor);
 

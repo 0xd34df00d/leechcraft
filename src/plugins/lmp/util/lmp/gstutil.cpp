@@ -93,7 +93,7 @@ namespace GstUtil
 		}
 	}
 
-	bool ParseTagMessage (GstMessage *msg, TagMap_t& map, const QString& region)
+	bool ParseTagMessage (GstMessage *msg, TagMap_t& map)
 	{
 		GstTagList *tagList = nullptr;
 		gst_message_parse_tag (msg, &tagList);
