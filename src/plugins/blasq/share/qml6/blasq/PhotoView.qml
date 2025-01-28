@@ -358,11 +358,10 @@ Rectangle {
 
     MultiEffect {
         id: photoViewBlur
-
         anchors.fill: collectionThumbsView
         source: collectionThumbsView
 
-        blurEnabled: visible
-        visible: listingMode && blur != 0
+        blurEnabled: listingMode && blur != 0
+        visible: blurEnabled
     }
 }
