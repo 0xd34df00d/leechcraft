@@ -27,5 +27,7 @@ namespace LC::Util
 		RaiiSignalConnection& operator= (const RaiiSignalConnection&) = delete;
 		RaiiSignalConnection& operator= (RaiiSignalConnection&&) noexcept;
 		RaiiSignalConnection& operator= (QMetaObject::Connection);
+
+		QMetaObject::Connection Release () &&;
 	};
 }

@@ -38,4 +38,11 @@ namespace LC::Util
 		Conn_ = conn;
 		return *this;
 	}
+
+	QMetaObject::Connection RaiiSignalConnection::Release () &&
+	{
+		auto conn = Conn_;
+		Conn_ = QMetaObject::Connection {};
+		return conn;
+	}
 }
