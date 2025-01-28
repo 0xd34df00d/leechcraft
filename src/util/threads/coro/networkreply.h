@@ -10,6 +10,7 @@
 
 #include <coroutine>
 #include <QMetaObject>
+#include <util/sll/raiisignalconnection.h>
 #include "../threadsconfig.h"
 
 class QNetworkReply;
@@ -24,8 +25,8 @@ namespace LC::Util
 		{
 			QNetworkReply& Reply_;
 
-			QMetaObject::Connection FinishedConn_ {};
-			QMetaObject::Connection ErrorConn_ {};
+			RaiiSignalConnection FinishedConn_ {};
+			RaiiSignalConnection ErrorConn_ {};
 
 			~NRAwaiter () noexcept;
 

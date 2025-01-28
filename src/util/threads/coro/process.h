@@ -10,6 +10,7 @@
 
 #include <coroutine>
 #include <QMetaObject>
+#include <util/sll/raiisignalconnection.h>
 #include "../threadsconfig.h"
 
 class QProcess;
@@ -20,10 +21,8 @@ namespace LC::Util::detail
 	{
 		QProcess& Process_;
 
-		QMetaObject::Connection FinishedConn_ {};
-		QMetaObject::Connection ErrorConn_ {};
-
-		~ProcessAwaiter () noexcept;
+		RaiiSignalConnection FinishedConn_ {};
+		RaiiSignalConnection ErrorConn_ {};
 
 		bool await_ready () const noexcept;
 		void await_suspend (std::coroutine_handle<> handle) noexcept;

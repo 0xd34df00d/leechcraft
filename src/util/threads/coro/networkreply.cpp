@@ -14,9 +14,6 @@ namespace LC::Util::detail
 {
 	NRAwaiter::~NRAwaiter () noexcept
 	{
-		QObject::disconnect (FinishedConn_);
-		QObject::disconnect (ErrorConn_);
-
 		Reply_.deleteLater ();
 	}
 
@@ -34,7 +31,7 @@ namespace LC::Util::detail
 				&QNetworkReply::errorOccurred,
 				[this, handle]
 				{
-					QObject::disconnect (FinishedConn_);
+					QObject::disconnect (std::move (FinishedConn_).Release ());
 					handle ();
 				});
 	}

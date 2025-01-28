@@ -11,12 +11,6 @@
 
 namespace LC::Util::detail
 {
-	ProcessAwaiter::~ProcessAwaiter () noexcept
-	{
-		QObject::disconnect (FinishedConn_);
-		QObject::disconnect (ErrorConn_);
-	}
-
 	bool ProcessAwaiter::await_ready () const noexcept
 	{
 		return Process_.state () == QProcess::NotRunning;
@@ -33,7 +27,7 @@ namespace LC::Util::detail
 				{
 					if (await_ready ())
 					{
-						QObject::disconnect (FinishedConn_);
+						QObject::disconnect (std::move (FinishedConn_).Release ());
 						handle ();
 					}
 				});
