@@ -29,7 +29,7 @@ namespace LC::Util
 		switch (path)
 		{
 		case SysPath::QML:
-			return GetPathCandidates (SysPath::Share, "qml5/" + suffix);
+			return GetPathCandidates (SysPath::Share, "qml" QT_STRINGIFY (QT_VERSION_MAJOR) "/" + suffix);
 		case SysPath::Share:
 #ifdef Q_OS_WIN32
 			return { QApplication::applicationDirPath () + "/share/" + suffix };
