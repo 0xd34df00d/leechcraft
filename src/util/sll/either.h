@@ -108,6 +108,20 @@ namespace Util
 					f (GetLeft ());
 		}
 
+		template<typename F>
+		auto MapLeft (F&& f) const
+		{
+			using Result = Either<std::invoke_result_t<F, L>, R>;
+			return IsRight () ? Result::Right (GetRight ()) : Result::Left (std::forward<F> (f) (GetLeft ()));
+		}
+
+		template<typename F>
+		auto MapRight (F&& f) const
+		{
+			using Result = Either<L, std::invoke_result_t<F, R>>;
+			return IsRight () ? Result::Right (std::forward<F> (f) (GetRight ())) : Result::Left (GetLeft ());
+		}
+
 		template<typename RNew>
 		static Either<L, RNew> FromMaybe (const std::optional<RNew>& maybeRight, const L& left)
 		{
