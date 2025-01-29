@@ -54,6 +54,18 @@ namespace LC::Util
 				[] (const NetworkReplyError& error) -> QByteArray { throw NetworkReplyErrorException { error }; });
 	}
 
+	Either<QString, QByteArray> NetworkResult::ToEither (const std::source_location& loc) const
+	{
+		using Result_t = Either<QString, QByteArray>;
+		return Visit (*this,
+				[] (const NetworkReplySuccess& success) { return Result_t { success.Data_ }; },
+				[&loc] (const NetworkReplyError& error)
+				{
+					QMessageLogger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () }.warning () << error;
+					return Result_t { error.ErrorText_ };
+				});
+	}
+
 	Either<QString, QByteArray> NetworkResult::ToEither (const QString& errorContext) const
 	{
 		using Result_t = Either<QString, QByteArray>;

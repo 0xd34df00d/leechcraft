@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <source_location>
 #include <variant>
 #include <QNetworkReply>
 #include "../threadsconfig.h"
@@ -54,6 +55,7 @@ namespace LC::Util
 		std::optional<NetworkReplyError> IsError () const;
 		QByteArray GetReplyData () const;
 
+		Either<QString, QByteArray> ToEither (const std::source_location& = std::source_location::current ()) const;
 		Either<QString, QByteArray> ToEither (const QString& errorContext) const;
 	};
 
