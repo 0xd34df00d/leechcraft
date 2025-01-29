@@ -38,6 +38,19 @@ namespace LC::Util
 
 	namespace detail
 	{
+		template<typename Promise>
+		[[noreturn]]
+		void TerminateLeftyCoroutine (std::coroutine_handle<Promise> handle, const auto& error)
+		{
+			auto& promise = handle.promise ();
+			if constexpr (Promise::IsVoid)
+				promise.return_void ();
+			else
+				promise.return_value (Promise::ReturnType_t::Left (error));
+
+			throw EitherFailureAbort {};
+		}
+
 		template<typename ErrorHandler>
 		struct EitherAwaiterErrorHandler
 		{
@@ -69,18 +82,10 @@ namespace LC::Util
 				return Either_.IsRight ();
 			}
 
-			template<typename Promise>
-			void await_suspend (std::coroutine_handle<Promise> handle)
+			void await_suspend (auto handle)
 			{
 				Handler_.HandleError (Either_.GetLeft ());
-
-				auto& promise = handle.promise ();
-				if constexpr (Promise::IsVoid)
-					promise.return_void ();
-				else
-					promise.return_value (Promise::ReturnType_t::Left (Either_.GetLeft ()));
-
-				throw EitherFailureAbort {};
+				TerminateLeftyCoroutine (handle, Either_.GetLeft ());
 			}
 
 			R await_resume () const noexcept
