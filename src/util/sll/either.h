@@ -130,9 +130,13 @@ namespace Util
 					Either<L, RNew>::Left (left);
 		}
 
-		static Either Left (const L& l)
+		template<typename LL = L>
+		static Either Left (const LL& l)
 		{
-			return Either { l };
+			if constexpr (std::is_same_v<std::decay_t<LL>, std::decay_t<L>>)
+				return Either { l };
+			else
+				return Either { L { l } };
 		}
 
 		static Either Right (R&& r)
