@@ -11,10 +11,11 @@
 #include <source_location>
 #include <QDomDocument>
 #include "either.h"
+#include "../threadsconfig.h"
 
 namespace LC::Util
 {
-	class AsDomDocument
+	class UTIL_THREADS_API AsDomDocument
 	{
 		QDomDocument Doc_;
 		QString ErrorMessage_;
