@@ -9,13 +9,10 @@
 #include "corotasktest.h"
 #include <QtConcurrentRun>
 #include <QtTest>
-#include <coro.h>
 #include <coro/future.h>
-#include <coro/context.h>
-#include <coro/either.h>
+#include <coro.h>
 #include <coro/getresult.h>
 #include <coro/inparallel.h>
-#include <coro/networkresult.h>
 #include <coro/throttle.h>
 #include <util/threads/futures.h>
 #include <util/sll/qtutil.h>
