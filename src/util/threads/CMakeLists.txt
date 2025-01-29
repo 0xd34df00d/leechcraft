@@ -1,5 +1,6 @@
 add_util_library (util-threads
 	SOURCES
+		coro/asdomdocument.cpp
 		coro/context.cpp
 		coro/networkreply.cpp
 		coro/networkresult.cpp
