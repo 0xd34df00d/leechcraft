@@ -122,14 +122,6 @@ namespace Util
 			return IsRight () ? Result::Right (std::forward<F> (f) (GetRight ())) : Result::Left (GetLeft ());
 		}
 
-		template<typename RNew>
-		static Either<L, RNew> FromMaybe (const std::optional<RNew>& maybeRight, const L& left)
-		{
-			return maybeRight ?
-					Either<L, RNew>::Right (*maybeRight) :
-					Either<L, RNew>::Left (left);
-		}
-
 		template<typename LL = L>
 		static Either Left (const LL& l)
 		{
@@ -147,28 +139,6 @@ namespace Util
 		static Either Right (const R& r)
 		{
 			return Either { r };
-		}
-
-		template<typename... Vars>
-		static Either LeftLift (const std::variant<Vars...>& var)
-		{
-			return Either { std::visit ([] (auto&& arg) { return L { std::forward<decltype (arg)> (arg) }; }, var) };
-		}
-
-		template<typename... Vars>
-		static Either LeftLift (const Either<std::variant<Vars...>, R>& either)
-		{
-			return either.IsRight () ?
-					Right (either.GetRight ()) :
-					LeftLift (either.GetLeft ());
-		}
-
-		template<typename LPrime, typename = std::enable_if_t<std::is_convertible_v<LPrime, L>>>
-		static Either LeftLift (const Either<LPrime, R>& either)
-		{
-			return either.IsRight () ?
-					Right (either.GetRight ()) :
-					Left (either.GetLeft ());
 		}
 
 		template<typename RNew>
