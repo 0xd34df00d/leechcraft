@@ -74,7 +74,7 @@ namespace NetStoreManager
 
 	void RemoteDirectorySelectDialog::HandleGotListing (const ISupportFileListings::RefreshResult_t& items)
 	{
-		Util::Visit (items.AsVariant (),
+		Util::Visit (items,
 				[this] (const QString& error)
 				{
 					QMessageBox::critical (this,
