@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
+#include <util/threads/coro.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -19,61 +20,49 @@ namespace LC
 namespace LMP
 {
 	CloudUploader::CloudUploader (ICloudStoragePlugin *cloud, QObject *parent)
-	: QObject (parent)
-	, Cloud_ (cloud)
+	: QObject { parent }
+	, Cloud_ { cloud }
 	{
-		connect (Cloud_->GetQObject (),
-				SIGNAL (uploadFinished (QString, LC::LMP::CloudStorageError, QString)),
-				this,
-				SLOT (handleUploadFinished (QString, LC::LMP::CloudStorageError, QString)),
-				Qt::UniqueConnection);
 	}
 
 	void CloudUploader::Upload (const UploadJob& job)
 	{
-		if (IsRunning ())
-			Queue_ << job;
-		else
-			StartJob (job);
+		Queue_ << job;
+		if (!IsRunning_)
+			DrainQueue ();
 	}
 
-	void CloudUploader::StartJob (const UploadJob& job)
+	Util::ContextTask<> CloudUploader::DrainQueue ()
 	{
-		qDebug () << Q_FUNC_INFO
-				<< "uploading"
-				<< job.Filename_
-				<< "to"
-				<< job.Account_;
+		IsRunning_ = true;
+		const auto runningGuard = Util::MakeScopeGuard ([this] { IsRunning_ = false; });
 
-		CurrentJob_ = job;
-		Cloud_->Upload (job.Account_, job.Filename_);
-		emit startedCopying (job.Filename_);
-	}
+		co_await Util::AddContextObject { *this };
 
-	bool CloudUploader::IsRunning () const
-	{
-		return !CurrentJob_.Filename_.isEmpty ();
-	}
+		while (!Queue_.isEmpty ())
+		{
+			const auto job = Queue_.takeFirst ();
+			qDebug () << "uploading" << job.Filename_ << "to" << job.Account_;
 
-	void CloudUploader::handleUploadFinished (const QString& localPath, CloudStorageError error, const QString& errorStr)
-	{
-		emit finishedCopying ();
+			emit startedCopying (job.Filename_);
+			const auto res = co_await Cloud_->Upload (job.Account_, job.Filename_);
+			emit finishedCopying ();
 
-		const bool remove = CurrentJob_.RemoveOnFinish_;
-		CurrentJob_ = UploadJob ();
-
-		if (!Queue_.isEmpty ())
-			StartJob (Queue_.takeFirst ());
-
-		if (error == CloudStorageError::NoError && remove)
-			QFile::remove (localPath);
-
-		if (!errorStr.isEmpty () && error != CloudStorageError::NoError)
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("LMP",
-						tr ("Error uploading file %1 to cloud: %2.")
-							.arg (QFileInfo (localPath).fileName ())
-							.arg (errorStr),
-						Priority::Warning));
+			Visit (res,
+				[&] (Util::Void)
+				{
+					if (job.RemoveOnFinish_)
+						QFile::remove (job.Filename_);
+				},
+				[&] (const ICloudStoragePlugin::UploadError& error)
+				{
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("LMP",
+								tr ("Error uploading file %1 to cloud: %2.")
+									.arg (QFileInfo { job.Filename_ }.fileName ())
+									.arg (error.Message_),
+								Priority::Critical));
+				});
+		}
 	}
 }
 }

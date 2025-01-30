@@ -9,18 +9,18 @@
 #pragma once
 
 #include <QtPlugin>
+#include <util/sll/eitherfwd.h>
+#include <util/sll/void.h>
+#include <util/threads/coro/taskfwd.h>
 
 class QString;
 class QObject;
 class QIcon;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	enum class CloudStorageError
 	{
-		NoError,
 		LocalError,
 		NetError,
 		FileHashMismatch,
@@ -36,7 +36,7 @@ namespace LMP
 	class ICloudStoragePlugin
 	{
 	public:
-		virtual ~ICloudStoragePlugin () {}
+		virtual ~ICloudStoragePlugin () = default;
 
 		virtual QObject* GetQObject () = 0;
 
@@ -46,16 +46,25 @@ namespace LMP
 
 		virtual QStringList GetSupportedFileFormats () const = 0;
 
-		virtual void Upload (const QString& account, const QString& localPath) = 0;
+		struct UploadError
+		{
+			CloudStorageError Code_;
+			QString Message_;
+
+			explicit operator QString () const
+			{
+				return Message_;
+			}
+		};
+
+		using UploadResult = Util::Either<UploadError, Util::Void>;
+
+		virtual Util::ContextTask<UploadResult> Upload (const QString& account, const QString& localPath) = 0;
 
 		virtual QStringList GetAccounts () const = 0;
 	protected:
-		virtual void uploadFinished (const QString& localPath,
-				CloudStorageError, const QString& errorStr) = 0;
-
 		virtual void accountsChanged () = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0")

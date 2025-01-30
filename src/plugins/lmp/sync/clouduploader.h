@@ -12,9 +12,7 @@
 #include <QList>
 #include <interfaces/lmp/icloudstorageplugin.h>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class CloudUploader : public QObject
 	{
@@ -30,20 +28,15 @@ namespace LMP
 		};
 	private:
 		QList<UploadJob> Queue_;
-		UploadJob CurrentJob_;
+		bool IsRunning_ = false;
 	public:
-		CloudUploader (ICloudStoragePlugin*, QObject* = 0);
+		explicit CloudUploader (ICloudStoragePlugin*, QObject* = nullptr);
 
 		void Upload (const UploadJob&);
 	private:
-		void StartJob (const UploadJob&);
-		bool IsRunning () const;
-	private slots:
-		void handleUploadFinished (const QString& localPath,
-				LC::LMP::CloudStorageError error, const QString& errorStr);
+		Util::ContextTask<> DrainQueue ();
 	signals:
 		void startedCopying (const QString&);
 		void finishedCopying ();
 	};
-}
 }
