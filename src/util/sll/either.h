@@ -142,7 +142,8 @@ namespace Util
 		}
 
 		template<typename RNew>
-		static std::enable_if_t<!std::is_convertible<RNew, R>::value, Either<L, RNew>> Right (const RNew& r)
+			requires (!std::is_convertible_v<RNew, R>)
+		static auto Right (const RNew& r)
 		{
 			return Either<L, RNew>::Right (r);
 		}
