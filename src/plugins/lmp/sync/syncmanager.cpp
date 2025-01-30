@@ -110,7 +110,7 @@ namespace LMP
 				.arg ("<em>" + QFileInfo (from).fileName () + "</em>")
 				.arg ("<em>" + syncTo.MountPath_) + "</em>");
 
-		Util::Visit (FixMask (mask, transcoded).AsVariant (),
+		Util::Visit (FixMask (mask, transcoded),
 				[&] (const QString& filename)
 				{
 					if (!Mount2Copiers_.contains (syncTo.MountPath_))
