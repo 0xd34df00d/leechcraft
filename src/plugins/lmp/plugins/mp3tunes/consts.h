@@ -10,16 +10,7 @@
 
 #include <QString>
 
-namespace LC
-{
-namespace LMP
-{
-namespace MP3Tunes
-{
-namespace Consts
+namespace LC::LMP::MP3Tunes::Consts
 {
 	const QString PartnerId = "9999999999";
-}
-}
-}
 }

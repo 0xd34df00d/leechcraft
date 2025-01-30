@@ -7,43 +7,34 @@
  **********************************************************************/
 
 #include "playlistmanager.h"
-#include <memory>
 #include <QStandardItem>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QDomDocument>
-#include <QtDebug>
-#include <util/util.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/asdomdocument.h>
+#include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/lmp/iplaylistprovider.h>
 #include "authmanager.h"
 #include "accountsmanager.h"
 #include "consts.h"
 
-namespace LC
+namespace LC::LMP::MP3Tunes
 {
-namespace LMP
-{
-namespace MP3Tunes
-{
-	PlaylistManager::PlaylistManager (QNetworkAccessManager *nam,
-			AuthManager *authMgr, AccountsManager *accMgr, QObject *parent)
-	: QObject (parent)
-	, NAM_ (nam)
-	, AuthMgr_ (authMgr)
-	, AccMgr_ (accMgr)
-	, Root_ (new QStandardItem ("mp3tunes.com"))
+	PlaylistManager::PlaylistManager (AuthManager *authMgr, AccountsManager *accMgr, QObject *parent)
+	: QObject { parent }
+	, AuthMgr_ { authMgr }
+	, AccMgr_ { accMgr }
+	, Root_ { new QStandardItem { "mp3tunes.com"_qs } }
 	{
 		Root_->setEditable (false);
-		connect (AuthMgr_,
-				SIGNAL (sidReady (QString)),
-				this,
-				SLOT (requestPlaylists (QString)));
-
 		connect (AccMgr_,
-				SIGNAL (accountsChanged ()),
+				&AccountsManager::accountsChanged,
 				this,
-				SLOT (handleAccountsChanged ()),
+				&PlaylistManager::Update,
 				Qt::QueuedConnection);
 	}
 
@@ -52,23 +43,114 @@ namespace MP3Tunes
 		return Root_;
 	}
 
-	void PlaylistManager::Update ()
+	struct PlaylistTrack
 	{
+		QUrl Url_;
+		Media::AudioInfo Info_;
+	};
+
+	struct Playlist
+	{
+		QString Id_;
+		QString Title_;
+		QList<PlaylistTrack> Tracks_;
+	};
+
+	using PlaylistTracksFetchResult = Util::Either<QString, QList<PlaylistTrack>>;
+
+	namespace
+	{
+		Util::Task<PlaylistTracksFetchResult> FetchTracks (const QString& playlistId, const QString& sid)
+		{
+			const auto& url = "https://ws.mp3tunes.com/api/v1/lockerData?output=xml&sid=%1&partner_token=%2&type=track&playlist_id=%3"_qs
+					.arg (sid, Consts::PartnerId, playlistId);
+			const auto response = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest { url });
+			const auto data = co_await response.ToEither ();
+			const auto doc = co_await Util::AsDomDocument { data, PlaylistManager::tr ("unable to parse server response") };
+
+			QVector<PlaylistTrack> tracks;
+			const auto& trackList = doc.documentElement ().firstChildElement ("trackList"_qs);
+			for (const auto& trackItem : Util::DomChildren (trackList, "item"_qs))
+			{
+				auto getText = [&trackItem] (const QString& elem)
+				{
+					const auto& text = trackItem.firstChildElement (elem).text ();
+					return text.isEmpty () ? PlaylistManager::tr ("unknown") : text;
+				};
+
+				tracks.push_back ({
+						.Url_ = QUrl::fromEncoded (getText ("playURL"_qs).toUtf8 ()),
+						.Info_ = {
+							.Artist_ = getText ("artistName"_qs),
+							.Album_ = getText ("albumTitle"_qs),
+							.Title_ = getText ("trackTitle"_qs),
+							.Length_ = getText ("trackLength"_qs).toInt () / 1000,
+						}
+					});
+			}
+
+			co_return tracks;
+		}
+
+		Util::Task<Util::Either<QString, QList<Playlist>>> FetchPlaylists (QString accName, AuthManager *authMgr)
+		{
+			const auto sidResult = co_await authMgr->GetSID (accName);
+			const auto sid = co_await sidResult;
+
+			const auto& url = "https://ws.mp3tunes.com/api/v1/lockerData?output=xml&sid=%1&partner_token=%2&type=playlist"_qs
+					.arg (sid, Consts::PartnerId);
+			const auto response = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest { url });
+			const auto data = co_await response.ToEither ();
+			const auto doc = co_await Util::AsDomDocument { data, PlaylistManager::tr ("unable to parse server response") };
+
+			QList<Playlist> playlists;
+			const auto& allPlaylistsElem = doc.documentElement ().firstChildElement ("playlistList"_qs);
+			for (const auto& playlistElem : Util::DomChildren (allPlaylistsElem, "item"_qs))
+			{
+				const auto& id = playlistElem.firstChildElement ("playlistId"_qs).text ();
+				if (id == u"INBOX"_qsv || id.isEmpty ())
+					continue;
+
+				FetchTracks (id, sid);
+				playlists.push_back ({
+							.Id_ = id,
+							.Title_ = playlistElem.firstChildElement ("title"_qs).text (),
+							.Tracks_ = co_await co_await FetchTracks (id, sid),
+						});
+			}
+			co_return playlists;
+		}
+	}
+
+	Util::ContextTask<> PlaylistManager::Update ()
+	{
+		co_await Util::AddContextObject { *this };
+
 		while (Root_->rowCount ())
 			Root_->removeRow (0);
-		AccItems_.clear ();
 		AccPlaylists_.clear ();
 		Infos_.clear ();
 
 		const auto& accs = AccMgr_->GetAccounts ();
 		for (const auto& acc : accs)
 		{
-			auto item = new QStandardItem (acc);
+			auto item = new QStandardItem { acc };
 			item->setEditable (false);
-			AccItems_ [acc] = item;
 			Root_->appendRow (item);
 
-			requestPlaylists (acc);
+			const auto result = co_await FetchPlaylists (acc, AuthMgr_);
+			Visit (result,
+					[&] (const QString& error)
+					{
+						const auto& e = Util::MakeNotification ("LMP"_qs,
+								tr ("Unable to fetch playlists for %1: %2.").arg (acc, error),
+								Priority::Critical);
+						GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+					},
+					[this, item] (const QList<Playlist>& playlists)
+					{
+						HandlePlaylists (*item, playlists);
+					});
 		}
 	}
 
@@ -79,144 +161,30 @@ namespace MP3Tunes
 				std::optional<Media::AudioInfo> ();
 	}
 
-	void PlaylistManager::requestPlaylists (const QString& accName)
+	void PlaylistManager::HandlePlaylists (QStandardItem& item, const QList<Playlist>& playlists)
 	{
-		const auto& sid = AuthMgr_->GetSID (accName);
-		if (sid.isEmpty ())
-			return;
-
-		const auto& url = QString ("http://ws.mp3tunes.com/api/v1/lockerData?output=xml"
-					"&sid=%1&partner_token=%2&type=playlist")
-				.arg (sid)
-				.arg (Consts::PartnerId);
-		auto reply = NAM_->get (QNetworkRequest (url));
-		reply->setProperty ("AccountName", accName);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotPlaylists ()));
-	}
-
-	void PlaylistManager::handleGotPlaylists ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& accName = reply->property ("AccountName").toString ();
-		const auto& data = reply->readAll ();
-
-		QDomDocument doc;
-		if (!doc.setContent (data))
+		QList<QStandardItem*> items;
+		items.reserve (playlists.size ());
+		for (const auto& playlist : playlists)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse reply";
-			return;
-		}
-
-		auto playlistsRoot = AccItems_ [accName];
-		auto& playlists = AccPlaylists_ [accName];
-
-		auto plItem = doc.documentElement ()
-				.firstChildElement ("playlistList")
-				.firstChildElement ("item");
-		while (!plItem.isNull ())
-		{
-			std::shared_ptr<void> (static_cast<void*> (0),
-					[&plItem] (void*) { plItem = plItem.nextSiblingElement ("item"); });
-			const auto& id = plItem.firstChildElement ("playlistId").text ();
-			if (id == "INBOX" || id.isEmpty ())
+			if (playlist.Tracks_.isEmpty ())
 				continue;
 
-			const auto& title = plItem.firstChildElement ("playlistTitle").text ();
-			auto item = new QStandardItem (title);
+			const auto item = new QStandardItem { playlist.Title_ };
 			item->setEditable (false);
-			playlists [id] = item;
-			playlistsRoot->appendRow (item);
+			items << item;
 
-			const auto& sid = AuthMgr_->GetSID (accName);
-			const auto& url = QString ("http://ws.mp3tunes.com/api/v1/lockerData?output=xml"
-					"&sid=%1&partner_token=%2&type=track&playlist_id=%3")
-					.arg (sid)
-					.arg (Consts::PartnerId)
-					.arg (id);
-			auto contentsReply = NAM_->get (QNetworkRequest (url));
-			contentsReply->setProperty ("AccountName", accName);
-			contentsReply->setProperty ("PlaylistID", id);
-			connect (contentsReply,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleGotPlaylistContents ()));
-		}
-	}
-
-	void PlaylistManager::handleGotPlaylistContents ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& accName = reply->property ("AccountName").toString ();
-		const auto& id = reply->property ("PlaylistID").toString ();
-
-		const auto& data = reply->readAll ();
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse reply";
-			return;
-		}
-
-		QList<QUrl> urls;
-		QStringList compositions;
-
-		auto trackItem = doc.documentElement ()
-				.firstChildElement ("trackList")
-				.firstChildElement ("item");
-		while (!trackItem.isNull ())
-		{
-			auto getText = [&trackItem] (const QString& elem) -> QString
+			QStringList compositions;
+			QList<QUrl> urls;
+			for (const auto& [url, info] : playlist.Tracks_)
 			{
-				const auto& text = trackItem.firstChildElement (elem).text ();
-				return text.isEmpty () ? "unknown" : text;
-			};
-
-			const auto& urlStr = getText ("playURL").toUtf8 ();
-			const auto& url = QUrl::fromEncoded (urlStr);
-			urls << url;
-
-			Media::AudioInfo info;
-			info.Artist_ = getText ("artistName");
-			info.Album_ = getText ("albumTitle");
-			info.Title_ = getText ("trackTitle");
-			info.Length_ = getText ("trackLength").toInt () / 1000;
-
-			compositions << QString::fromUtf8 ("%1 — %2 — %3")
-					.arg (info.Artist_)
-					.arg (info.Album_)
-					.arg (info.Title_);
-
-			Infos_ [url] = info;
-
-			trackItem = trackItem.nextSiblingElement ("item");
+				Infos_ [url] = info;
+				compositions << u"%1 — %2 — %3"_qs.arg (info.Artist_, info.Album_, info.Title_);
+				urls << url;
+			}
+			item->setToolTip ("<ul><li>" + compositions.join (u"</li><li>"_qsv) + "</li></ul>");
+			item->setData (QVariant::fromValue (urls), IPlaylistProvider::ItemRoles::SourceURLs);
 		}
-
-		auto plItem = AccPlaylists_ [accName] [id];
-
-		if (urls.isEmpty ())
-		{
-			plItem->parent ()->removeRow (plItem->row ());
-			AccPlaylists_ [accName].remove (id);
-			return;
-		}
-
-		plItem->setData (QVariant::fromValue (urls), IPlaylistProvider::ItemRoles::SourceURLs);
-		plItem->setToolTip ("<ul><li>" + compositions.join ("</li><li>") + "</li></ul>");
+		item.appendRows (items);
 	}
-
-	void PlaylistManager::handleAccountsChanged ()
-	{
-		Update ();
-	}
-}
-}
 }

@@ -9,6 +9,7 @@
 #include "mp3tunes.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/threads/coro.h>
 #include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
@@ -16,31 +17,22 @@
 #include "uploader.h"
 #include "playlistmanager.h"
 
-namespace LC
+namespace LC::LMP::MP3Tunes
 {
-namespace LMP
-{
-namespace MP3Tunes
-{
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
+		AuthMgr_ = new AuthManager { this };
+		AccMgr_ = new AccountsManager {};
+		PLManager_ = new PlaylistManager (AuthMgr_, AccMgr_, this);
 
-		auto nam = proxy->GetNetworkAccessManager ();
-		AuthMgr_ = new AuthManager (nam, proxy, this);
-
-		AccMgr_ = new AccountsManager ();
-
-		PLManager_ = new PlaylistManager (nam, AuthMgr_, AccMgr_, this);
-
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpmp3tunessettings.xml");
 		XSD_->SetDataSource ("AccountsView", AccMgr_->GetAccModel ());
 
 		connect (AccMgr_,
-				SIGNAL (accountsChanged ()),
-				this,
-				SIGNAL (accountsChanged ()));
+			SIGNAL (accountsChanged ()),
+			this,
+			SIGNAL (accountsChanged ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -74,10 +66,11 @@ namespace MP3Tunes
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.LMP.CloudStorage";
-		result << "org.LeechCraft.LMP.PlaylistProvider";
-		return result;
+		return
+		{
+			"org.LeechCraft.LMP.CloudStorage",
+			"org.LeechCraft.LMP.PlaylistProvider",
+		};
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -109,23 +102,12 @@ namespace MP3Tunes
 		return { "m4a", "mp3", "mp4", "ogg" };
 	}
 
-	void Plugin::Upload (const QString& acc, const QString& localPath)
+	Util::ContextTask<Plugin::UploadResult> Plugin::Upload (const QString& acc, const QString& localPath)
 	{
 		if (!Uploaders_.contains (acc))
-		{
-			auto up = new Uploader (acc,
-				Proxy_->GetNetworkAccessManager (),
-				AuthMgr_,
-				this);
-			Uploaders_ [acc] = up;
+			Uploaders_ [acc] = new Uploader (acc, AuthMgr_, this);
 
-			connect (up,
-					SIGNAL (uploadFinished (QString, LC::LMP::CloudStorageError, QString)),
-					this,
-					SIGNAL (uploadFinished (QString, LC::LMP::CloudStorageError, QString)));
-		}
-
-		Uploaders_ [acc]->Upload (localPath);
+		return Uploaders_ [acc]->Upload (localPath);
 	}
 
 	QStringList Plugin::GetAccounts () const
@@ -147,8 +129,6 @@ namespace MP3Tunes
 	{
 		return PLManager_->GetMediaInfo (url);
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lmp_mp3tunes, LC::LMP::MP3Tunes::Plugin);

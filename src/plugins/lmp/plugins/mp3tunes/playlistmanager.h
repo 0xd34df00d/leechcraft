@@ -11,47 +11,37 @@
 #include <optional>
 #include <QObject>
 #include <QMap>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/media/audiostructs.h>
 
 class QStandardItem;
-class QNetworkAccessManager;
 
-namespace LC
-{
-namespace LMP
-{
-namespace MP3Tunes
+namespace LC::LMP::MP3Tunes
 {
 	class AuthManager;
 	class AccountsManager;
+
+	struct Playlist;
 
 	class PlaylistManager : public QObject
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
-
 		AuthManager *AuthMgr_;
 		AccountsManager *AccMgr_;
 		QStandardItem *Root_;
 
-		QMap<QString, QStandardItem*> AccItems_;
 		QMap<QString, QMap<QString, QStandardItem*>> AccPlaylists_;
 
 		QHash<QUrl, Media::AudioInfo> Infos_;
 	public:
-		PlaylistManager (QNetworkAccessManager*, AuthManager*, AccountsManager*, QObject* = 0);
+		PlaylistManager (AuthManager*, AccountsManager*, QObject* = nullptr);
 
 		QStandardItem* GetRoot () const;
-		void Update ();
+		Util::ContextTask<> Update ();
 
 		std::optional<Media::AudioInfo> GetMediaInfo (const QUrl&) const;
-	private slots:
-		void requestPlaylists (const QString&);
-		void handleGotPlaylists ();
-		void handleGotPlaylistContents ();
-		void handleAccountsChanged ();
+	private:
+		void HandlePlaylists (QStandardItem&, const QList<Playlist>&);
 	};
-}
-}
 }

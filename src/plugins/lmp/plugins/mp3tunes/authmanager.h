@@ -8,42 +8,25 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QMap>
 #include <QSet>
-#include <interfaces/core/icoreproxy.h>
+#include <interfaces/lmp/icloudstorageplugin.h>
 
-class QNetworkAccessManager;
-
-namespace LC
-{
-struct Entity;
-
-namespace LMP
-{
-namespace MP3Tunes
+namespace LC::LMP::MP3Tunes
 {
 	class AuthManager : public QObject
 	{
-		Q_OBJECT
-
-		QNetworkAccessManager *NAM_;
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::MP3Tunes::AuthManager)
 
 		QMap<QString, QString> Login2Sid_;
 		QSet<QString> FailedAuth_;
-
-		const ICoreProxy_ptr Proxy_;
 	public:
-		AuthManager (QNetworkAccessManager*, const ICoreProxy_ptr&, QObject* = 0);
+		using QObject::QObject;
 
-		QString GetSID (const QString&);
-	private slots:
-		void handleAuthReplyFinished ();
-		void handleAuthReplyError ();
-	signals:
-		void sidReady (const QString&);
-		void sidError (const QString&, const QString&);
+		using ResultType = Util::Either<ICloudStoragePlugin::UploadError, QString>;
+
+		Util::ContextTask<ResultType> GetSID (const QString&);
 	};
-}
-}
 }

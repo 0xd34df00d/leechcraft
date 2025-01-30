@@ -9,44 +9,29 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/lmp/icloudstorageplugin.h>
+#include "authmanager.h"
 
-class QNetworkAccessManager;
-
-namespace LC
+namespace LC::LMP
 {
-struct Entity;
+	enum class CloudStorageError;
+}
 
-namespace LMP
-{
-enum class CloudStorageError;
-
-namespace MP3Tunes
+namespace LC::LMP::MP3Tunes
 {
 	class AuthManager;
 
 	class Uploader : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::MP3Tunes::Uploader)
 
 		const QString Login_;
-		QNetworkAccessManager *NAM_;
 		AuthManager *AuthMgr_;
-
-		QString UpAfterAuth_;
 	public:
-		Uploader (const QString&, QNetworkAccessManager*, AuthManager*, QObject* = 0);
+		Uploader (const QString&, AuthManager*, QObject* = nullptr);
 
-		void Upload (const QString&);
-	private slots:
-		void handleSidReady (const QString&);
-		void handleSidError (const QString&, const QString&);
-		void handleUploadFinished ();
+		Util::ContextTask<ICloudStoragePlugin::UploadResult> Upload (const QString&);
 	signals:
 		void removeThis (const QString&);
-
-		void uploadFinished (const QString&,
-				LC::LMP::CloudStorageError, const QString&);
 	};
-}
-}
 }

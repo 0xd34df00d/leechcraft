@@ -16,11 +16,7 @@
 #include <interfaces/lmp/icloudstorageplugin.h>
 #include <interfaces/lmp/iplaylistprovider.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace MP3Tunes
+namespace LC::LMP::MP3Tunes
 {
 	class AccountsManager;
 	class AuthManager;
@@ -28,24 +24,22 @@ namespace MP3Tunes
 	class PlaylistManager;
 
 	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
-				 , public IPlugin2
-				 , public ILMPPlugin
-				 , public ICloudStoragePlugin
-				 , public IPlaylistProvider
+				   , public IInfo
+				   , public IHaveSettings
+				   , public IPlugin2
+				   , public ILMPPlugin
+				   , public ICloudStoragePlugin
+				   , public IPlaylistProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
-				IHaveSettings
-				IPlugin2
-				LC::LMP::ILMPPlugin
-				LC::LMP::ICloudStoragePlugin
-				LC::LMP::IPlaylistProvider)
+			IHaveSettings
+			IPlugin2
+			LC::LMP::ILMPPlugin
+			LC::LMP::ICloudStoragePlugin
+			LC::LMP::IPlaylistProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.MP3Tunes")
-
-		ICoreProxy_ptr Proxy_;
 
 		AccountsManager *AccMgr_;
 		Util::XmlSettingsDialog_ptr XSD_;
@@ -75,17 +69,13 @@ namespace MP3Tunes
 		QString GetCloudName () const override;
 		QIcon GetCloudIcon () const override;
 		QStringList GetSupportedFileFormats () const override;
-		void Upload (const QString& account, const QString& filename) override;
+		Util::ContextTask<UploadResult> Upload (const QString& account, const QString& filename) override;
 		QStringList GetAccounts () const override;
 
 		QStandardItem* GetPlaylistsRoot () const override;
 		void UpdatePlaylists () override;
 		std::optional<Media::AudioInfo> GetURLInfo (const QUrl&) override;
 	signals:
-		void uploadFinished (const QString&,
-				LC::LMP::CloudStorageError, const QString&) override;
 		void accountsChanged () override;
 	};
-}
-}
 }

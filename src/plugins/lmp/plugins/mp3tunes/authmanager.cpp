@@ -11,93 +11,55 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <interfaces/core/icoreproxy.h>
+#include <util/sll/either.h>
+#include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <util/xpc/passutils.h>
 #include "consts.h"
 
-namespace LC
+namespace LC::LMP::MP3Tunes
 {
-namespace LMP
-{
-namespace MP3Tunes
-{
-	AuthManager::AuthManager (QNetworkAccessManager *nam, const ICoreProxy_ptr& proxy, QObject *parent)
-	: QObject (parent)
-	, NAM_ (nam)
-	, Proxy_ (proxy)
+	Util::ContextTask<AuthManager::ResultType> AuthManager::GetSID (const QString& login)
 	{
-	}
+		using enum CloudStorageError;
 
-	QString AuthManager::GetSID (const QString& login)
-	{
 		if (Login2Sid_.contains (login))
-			return Login2Sid_ [login];
+			co_return ResultType::Right (Login2Sid_ [login]);
+
+		co_await Util::AddContextObject { *this };
 
 		const auto& pass = Util::GetPassword ("org.LeechCraft.LMP.MP3Tunes.Account." + login,
 				tr ("Enter password for MP3tunes account %1:").arg (login),
-				Proxy_,
+				GetProxyHolder (),
 				!FailedAuth_.contains (login));
 		if (pass.isEmpty ())
-		{
-			emit sidError (login, tr ("Empty password."));
-			return QString ();
-		}
+			co_return ResultType::Left ({ .Code_ = NotAuthorized, .Message_ = tr ("empty password") });
 
-		const auto authUrl = QString ("https://shop.mp3tunes.com/api/v1/login?output=xml&"
-				"username=%1&password=%2&partner_token=%3")
-					.arg (login)
-					.arg (pass)
-					.arg (Consts::PartnerId);
-		auto reply = NAM_->get (QNetworkRequest (authUrl));
-		reply->setProperty ("Login", login);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleAuthReplyFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleAuthReplyError ()));
+		const auto authUrl = "https://shop.mp3tunes.com/api/v1/login?output=xml&"
+				"username=%1&password=%2&partner_token=%3"_qs
+					.arg (login, pass, Consts::PartnerId);
+		const auto response = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest (authUrl));
+		if (const auto err = response.IsError ())
+			co_return ResultType::Left ({ .Code_ = NetError, .Message_ = tr ("network error: %1").arg (err->ErrorText_) });
 
-		return QString ();
-	}
-
-	void AuthManager::handleAuthReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& login = reply->property ("Login").toString ();
-
-		const auto& data = reply->readAll ();
 		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			emit sidError (login, tr ("Unable to parse authentication reply."));
-			return;
-		}
+		if (!doc.setContent (response.GetReplyData ()))
+			co_return ResultType::Left ({ .Code_ = NetError, .Message_ = tr ("failed to parse response") });
 
 		const auto& docElem = doc.documentElement ();
-		if (docElem.firstChildElement ("status").text () != "1")
+		if (docElem.firstChildElement ("status"_qs).text () != "1"_qs)
 		{
 			FailedAuth_ << login;
-			emit sidError (login, docElem.firstChildElement ("errorMessage").text ());
-			return;
+			const auto& errorText = docElem.firstChildElement ("errorMessage"_qs).text ();
+			co_return ResultType::Left ({ .Code_ = NotAuthorized, .Message_ = tr ("authentication error: %1").arg (errorText) });
 		}
 
-		Login2Sid_ [login] = docElem.firstChildElement ("session_id").text ();
 		FailedAuth_.remove (login);
 
-		emit sidReady (login);
-	}
+		const auto& sid = docElem.firstChildElement ("session_id"_qs).text ();
+		Login2Sid_ [login] = sid;
 
-	void AuthManager::handleAuthReplyError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		emit sidError (reply->property ("Login").toString (),
-				tr ("Unable to parse authentication reply."));
+		co_return ResultType::Right (sid);
 	}
-}
-}
 }
