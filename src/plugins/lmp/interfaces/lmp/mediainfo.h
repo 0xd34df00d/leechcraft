@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QStringList>
-#include <QMetaType>
 #include <interfaces/media/audiostructs.h>
 
 namespace LC
@@ -55,10 +54,5 @@ namespace LMP
 	{
 		return !(l == r);
 	}
-
-	QDataStream& operator<< (QDataStream&, const MediaInfo&);
-	QDataStream& operator>> (QDataStream&, MediaInfo&);
 }
 }
-
-Q_DECLARE_METATYPE (LC::LMP::MediaInfo)

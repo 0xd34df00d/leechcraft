@@ -17,6 +17,7 @@
 #include <util/sll/prelude.h>
 #include <util/gui/util.h>
 #include <util/models/dndactionsmixin.h>
+#include "util/lmp/util.h"
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"

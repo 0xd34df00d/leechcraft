@@ -23,6 +23,7 @@
 #include <interfaces/media/imodifiableradiostation.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include "util/lmp/util.h"
 #include "player.h"
 #include "xmlsettingsmanager.h"
 #include "radiocustomstreams.h"

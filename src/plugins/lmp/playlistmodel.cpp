@@ -10,6 +10,7 @@
 #include <QMimeData>
 #include <QFileInfo>
 #include <util/sll/prelude.h>
+#include "util/lmp/util.h"
 #include "playlistparsers/playlistfactory.h"
 #include "player.h"
 #include "util.h"
