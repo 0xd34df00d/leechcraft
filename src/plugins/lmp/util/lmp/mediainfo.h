@@ -37,22 +37,8 @@ namespace LC::LMP
 		LMP_UTIL_API static MediaInfo FromAudioInfo (const Media::AudioInfo&);
 	};
 
-	inline bool operator== (const MediaInfo& l, const MediaInfo& r)
-	{
-		return l.LocalPath_ == r.LocalPath_ &&
-				l.Artist_ == r.Artist_ &&
-				l.Album_ == r.Album_ &&
-				l.Title_ == r.Title_ &&
-				l.Genres_ == r.Genres_ &&
-				l.Length_ == r.Length_ &&
-				l.Year_ == r.Year_ &&
-				l.TrackNumber_ == r.TrackNumber_;
-	}
-
-	inline bool operator!= (const MediaInfo& l, const MediaInfo& r)
-	{
-		return !(l == r);
-	}
+	LMP_UTIL_API bool operator== (const MediaInfo& l, const MediaInfo& r);
+	LMP_UTIL_API bool operator!= (const MediaInfo& l, const MediaInfo& r);
 
 	LMP_UTIL_API QDataStream& operator<< (QDataStream&, const MediaInfo&);
 	LMP_UTIL_API QDataStream& operator>> (QDataStream&, MediaInfo&);

@@ -57,6 +57,23 @@ namespace LC::LMP
 		return mi;
 	}
 
+	bool operator== (const MediaInfo& l, const MediaInfo& r)
+	{
+		return l.LocalPath_ == r.LocalPath_ &&
+				l.Artist_ == r.Artist_ &&
+				l.Album_ == r.Album_ &&
+				l.Title_ == r.Title_ &&
+				l.Genres_ == r.Genres_ &&
+				l.Length_ == r.Length_ &&
+				l.Year_ == r.Year_ &&
+				l.TrackNumber_ == r.TrackNumber_;
+	}
+
+	bool operator!= (const MediaInfo& l, const MediaInfo& r)
+	{
+		return !(l == r);
+	}
+
 	QDataStream& operator<< (QDataStream& out, const MediaInfo& info)
 	{
 		out << info.LocalPath_
