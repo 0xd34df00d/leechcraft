@@ -33,7 +33,7 @@ namespace Media
 
 		/** @brief The genres of this track.
 		 */
-		QStringList Genres_;
+		QStringList Genres_ {};
 
 		/** @brief The length of this track in seconds.
 		 */
@@ -53,7 +53,7 @@ namespace Media
 		 * - URL with a QUrl pointing to either local file (if the scheme
 		 *   is "file:") or a remote file or radio stream otherwise.
 		 */
-		QVariantMap Other_;
+		QVariantMap Other_ {};
 
 		bool operator== (const AudioInfo& other) const = default;
 		bool operator!= (const AudioInfo& other) const = default;
