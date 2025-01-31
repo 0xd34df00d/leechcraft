@@ -8,6 +8,8 @@ set (CMAKE_CXX_STANDARD 23)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
+set (LC_SOVERSION 0.6.75)
+
 macro (FindQtLibs Target)
 	cmake_policy (SET CMP0043 NEW)
 	set (CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -41,6 +43,28 @@ function (CreateTrs CompiledTranVar)
 		set (QM_RESULTS)
 	endif ()
 	set (${CompiledTranVar} ${QM_RESULTS} PARENT_SCOPE)
+endfunction ()
+
+function (add_util_library name)
+	cmake_parse_arguments (ARG "" "" "SOURCES;USES;DEPENDS" ${ARGN})
+	set (lib_name "leechcraft-${name}")
+
+	add_library (${lib_name} SHARED ${ARG_SOURCES})
+	set_target_properties (${lib_name} PROPERTIES
+		OUTPUT_NAME "${lib_name}${LC_LIBSUFFIX}"
+		SOVERSION "${LC_SOVERSION}"
+	)
+	install (TARGETS ${lib_name} DESTINATION "${LIBDIR}")
+
+	if (ARG_DEPENDS)
+		target_link_libraries (${lib_name} ${ARG_DEPENDS})
+	endif ()
+
+	if (ARG_USES)
+		FindQtLibs (${lib_name} ${ARG_USES})
+	else ()
+		FindQtLibs (${lib_name} Core)
+	endif ()
 endfunction ()
 
 function (LC_DEFINE_PLUGIN)
