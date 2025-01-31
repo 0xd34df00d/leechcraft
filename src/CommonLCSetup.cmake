@@ -46,7 +46,7 @@ function (CreateTrs CompiledTranVar)
 endfunction ()
 
 function (add_util_library name)
-	cmake_parse_arguments (ARG "" "" "SOURCES;USES;DEPENDS" ${ARGN})
+	cmake_parse_arguments (ARG "" "" "SOURCES;USES;DEPENDS;DEFINES" ${ARGN})
 	set (lib_name "leechcraft-${name}")
 
 	add_library (${lib_name} SHARED ${ARG_SOURCES})
@@ -54,6 +54,7 @@ function (add_util_library name)
 		OUTPUT_NAME "${lib_name}${LC_LIBSUFFIX}"
 		SOVERSION "${LC_SOVERSION}"
 	)
+	target_compile_definitions (${lib_name} PRIVATE ${ARG_DEFINES})
 	install (TARGETS ${lib_name} DESTINATION "${LIBDIR}")
 
 	if (ARG_DEPENDS)
