@@ -15,6 +15,16 @@ endif ()
 
 add_compile_definitions ($<$<BOOL:{ENABLE_LMP_MPRIS}>:ENABLE_MPRIS>)
 
+add_util_library (lmp-util
+	SRCS
+		util/lmp/gstutil.cpp
+		util/lmp/filtersettingsmanager.cpp
+		util/lmp/mediainfo.cpp
+		util/lmp/util.cpp
+	USES Widgets
+	DEPENDS PkgConfig::GStreamer
+	)
+
 LC_DEFINE_PLUGIN (
 	SRCS
 		lmp.cpp
@@ -121,10 +131,6 @@ LC_DEFINE_PLUGIN (
 		playlistparsers/m3u.cpp
 		playlistparsers/pls.cpp
 		playlistparsers/xspf.cpp
-		util/lmp/gstutil.cpp
-		util/lmp/filtersettingsmanager.cpp
-		util/lmp/mediainfo.cpp
-		util/lmp/util.cpp
 		$<IF:$<PLATFORM_ID:Darwin>,
 			recursivedirwatcher_mac.mm,
 			recursivedirwatcher_generic.cpp>
@@ -141,6 +147,7 @@ LC_DEFINE_PLUGIN (
 		PkgConfig::TagLib
 		PkgConfig::GStreamer
 		$<$<PLATFORM_ID:Darwin>:"-framework Foundation -framework CoreServices">
+		leechcraft-lmp-util
 	INSTALL_SHARE
 	INSTALL_DESKTOP
 	)

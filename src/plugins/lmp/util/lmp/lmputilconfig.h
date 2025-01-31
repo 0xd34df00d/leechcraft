@@ -10,7 +10,7 @@
 
 #include <QtGlobal>
 
-#ifdef leechcraft_lmp_EXPORTS
+#ifdef leechcraft_lmp_util_EXPORTS
 #  define LMP_UTIL_API Q_DECL_EXPORT
 #else
 #  define LMP_UTIL_API Q_DECL_IMPORT
