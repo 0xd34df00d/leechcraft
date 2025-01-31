@@ -1,7 +1,6 @@
 if (WITH_QWT)
 	find_package (PkgConfig)
 	pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt${LC_QT_VERSION}Qwt6 Qt${LC_QT_VERSION}Qwt)
-	add_compile_definitions (WITH_QWT)
 endif ()
 
 add_util_library (util-qml
@@ -23,4 +22,5 @@ add_util_library (util-qml
 		leechcraft-util-sys
 		$<$<BOOL:${WITH_QWT}>:PkgConfig::Qwt>
 	USES Network Quick QuickWidgets
+	DEFINES $<$<BOOL:${WITH_QWT}>:WITH_QWT>
 	)

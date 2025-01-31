@@ -9,8 +9,6 @@ if ("${CMAKE_SYSTEM_NAME}" IN_LIST FREEDESKTOP_PLATFORMS)
 	set (MAYBE_DBUS_DEP DBus)
 endif ()
 
-add_compile_definitions ($<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>)
-
 add_util_library (util-gui
 	SRCS
 		autoresizemixin.cpp
@@ -37,6 +35,7 @@ add_util_library (util-gui
 		leechcraft-util-shortcuts
 		leechcraft-util-sll
 	USES ${MAYBE_DBUS_DEP} Network Widgets
+	DEFINES $<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>
 	)
 
 if (ENABLE_UTIL_TESTS)
