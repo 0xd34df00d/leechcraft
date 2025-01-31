@@ -1,5 +1,5 @@
 add_util_library (util-network
-	SOURCES
+	SRCS
 		addresses.cpp
 		customcookiejar.cpp
 		customnetworkreply.cpp

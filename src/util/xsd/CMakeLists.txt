@@ -1,5 +1,5 @@
 add_util_library (util-xsd
-	SOURCES
+	SRCS
 		addressesmodelmanager.cpp
 		fontchooserwidget.cpp
 		massfontchangedialog.cpp

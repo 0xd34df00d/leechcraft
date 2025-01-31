@@ -1,5 +1,5 @@
 add_util_library (util-sys
-	SOURCES
+	SRCS
 		encodingconverter.cpp
 		mimedetector.cpp
 		paths.cpp

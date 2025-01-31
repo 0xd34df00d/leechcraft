@@ -1,5 +1,5 @@
 add_util_library (util-tags
-	SOURCES
+	SRCS
 		categoryselector.cpp
 		tagscompleter.cpp
 		tagscompletionmodel.cpp

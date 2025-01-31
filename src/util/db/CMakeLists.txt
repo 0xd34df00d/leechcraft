@@ -1,5 +1,5 @@
 add_util_library (util-db
-	SOURCES
+	SRCS
 		backendselector.cpp
 		dblock.cpp
 		util.cpp

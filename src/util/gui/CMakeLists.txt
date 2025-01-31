@@ -12,7 +12,7 @@ endif ()
 add_compile_definitions ($<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>)
 
 add_util_library (util-gui
-	SOURCES
+	SRCS
 		autoresizemixin.cpp
 		clearlineeditaddon.cpp
 		colorbutton.cpp

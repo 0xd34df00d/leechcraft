@@ -1,5 +1,5 @@
 add_util_library (util-shortcuts
-	SOURCES
+	SRCS
 		shortcutmanager.cpp
 		util.cpp
 	DEPENDS

@@ -5,7 +5,7 @@ if (WITH_QWT)
 endif ()
 
 add_util_library (util-qml
-	SOURCES
+	SRCS
 		colorthemeproxy.cpp
 		settableiconprovider.cpp
 		standardnamfactory.cpp

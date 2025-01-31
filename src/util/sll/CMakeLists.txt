@@ -1,5 +1,5 @@
 add_util_library (util-sll
-	SOURCES
+	SRCS
 		buildtagstree.cpp
 		channeldevice.cpp
 		domchildrenrange.cpp

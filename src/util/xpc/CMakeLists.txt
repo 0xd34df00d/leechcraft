@@ -1,5 +1,5 @@
 add_util_library (util-xpc
-	SOURCES
+	SRCS
 		basehookinterconnector.cpp
 		defaulthookproxy.cpp
 		notificationactionhandler.cpp

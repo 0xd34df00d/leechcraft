@@ -1,5 +1,5 @@
 add_util_library (util-svcauth
-	SOURCES
+	SRCS
 		ljutils.cpp
 		vkauthmanager.cpp
 		vkcaptchadialog.cpp

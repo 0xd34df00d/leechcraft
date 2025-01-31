@@ -1,5 +1,5 @@
 add_util_library (util-xdg
-	SOURCES
+	SRCS
 		desktopparser.cpp
 		item.cpp
 		itemsdatabase.cpp

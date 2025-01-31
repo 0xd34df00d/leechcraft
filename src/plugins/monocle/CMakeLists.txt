@@ -26,7 +26,7 @@ if (WITH_MONOCLE_IMAGEMAGICK)
 endif ()
 
 add_util_library (monocle-util
-	SOURCES
+	SRCS
 		util/monocle/documentsignals.cpp
 		util/monocle/html2doc.cpp
 		util/monocle/imghandler.cpp

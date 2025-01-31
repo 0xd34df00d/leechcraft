@@ -1,7 +1,7 @@
 include_directories (../)
 
 add_util_library (xsd
-	SOURCES
+	SRCS
 		xmlsettingsdialog.cpp
 		settings.cpp
 		basesettingsmanager.cpp
