@@ -11,10 +11,10 @@
 #include <QFileInfo>
 #include <QDir>
 #include <util/util.h>
+#include <util/lmp/mediainfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <interfaces/lmp/mediainfo.h>
 #include "cuesplitter.h"
 #include "literals.h"
 #include "graffititab.h"

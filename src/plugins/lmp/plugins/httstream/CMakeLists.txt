@@ -10,5 +10,5 @@ LC_DEFINE_PLUGIN (
 		filterconfigurator.cpp
 	SETTINGS lmphttstreamfiltersettings.xml
 	QT_COMPONENTS Gui Network
-	LINK_LIBRARIES PkgConfig::GStreamer
+	LINK_LIBRARIES PkgConfig::GStreamer leechcraft-lmp-util
 	)

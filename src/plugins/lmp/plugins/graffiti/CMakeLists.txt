@@ -15,6 +15,6 @@ LC_DEFINE_PLUGIN (
 		reciterator.cpp
 		literals.cpp
 	QT_COMPONENTS Concurrent Widgets
-	LINK_LIBRARIES PkgConfig::TagLib
+	LINK_LIBRARIES PkgConfig::TagLib leechcraft-lmp-util
 	INSTALL_SHARE
 	)

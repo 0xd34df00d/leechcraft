@@ -13,5 +13,5 @@ LC_DEFINE_PLUGIN (
 		visscene.cpp
 	RESOURCES lmppotorchuresources.qrc
 	QT_COMPONENTS OpenGL
-	LINK_LIBRARIES PkgConfig::GStreamer PkgConfig::ProjectM
+	LINK_LIBRARIES PkgConfig::GStreamer PkgConfig::ProjectM leechcraft-lmp-util
 	)

@@ -29,7 +29,7 @@
 #include <interfaces/media/itagsfetcher.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
-#include <interfaces/lmp/mediainfo.h>
+#include <util/lmp/mediainfo.h>
 #include "filesmodel.h"
 #include "renamedialog.h"
 #include "fileswatcher.h"

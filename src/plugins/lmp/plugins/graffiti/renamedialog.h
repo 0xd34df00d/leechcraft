@@ -10,8 +10,8 @@
 
 #include <QDialog>
 #include <interfaces/lmp/ilmpproxy.h>
-#include <interfaces/lmp/mediainfo.h>
 #include <interfaces/lmp/ilmputilproxy.h>
+#include <util/lmp/mediainfo.h>
 #include "ui_renamedialog.h"
 
 class QStandardItemModel;

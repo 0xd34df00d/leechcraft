@@ -14,7 +14,7 @@
 #include <util/xsd/util.h>
 #include <util/network/addresses.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "util/lmp/filtersettingsmanager.h"
+#include <util/lmp/filtersettingsmanager.h>
 #include "httpstreamfilter.h"
 
 namespace LC
@@ -74,4 +74,3 @@ namespace HttStream
 }
 }
 }
-

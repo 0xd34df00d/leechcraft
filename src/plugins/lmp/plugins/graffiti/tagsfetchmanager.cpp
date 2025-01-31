@@ -10,7 +10,7 @@
 #include <concepts>
 #include <QTimer>
 #include <util/threads/futures.h>
-#include <interfaces/lmp/mediainfo.h>
+#include <util/lmp/mediainfo.h>
 #include <interfaces/media/itagsfetcher.h>
 #include "filesmodel.h"
 

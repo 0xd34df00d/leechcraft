@@ -11,8 +11,8 @@
 #include <QtDebug>
 #include <QTimer>
 #include <gst/gst.h>
-#include "interfaces/lmp/ifilterconfigurator.h"
-#include "util/lmp/gstutil.h"
+#include <interfaces/lmp/ifilterconfigurator.h>
+#include <util/lmp/gstutil.h>
 #include "httpserver.h"
 #include "filterconfigurator.h"
 

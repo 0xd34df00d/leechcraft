@@ -11,7 +11,7 @@
 #include <QAbstractItemModel>
 #include <QFileInfo>
 #include <QStringList>
-#include <interfaces/lmp/mediainfo.h>
+#include <util/lmp/mediainfo.h>
 
 namespace LC::LMP::Graffiti
 {
