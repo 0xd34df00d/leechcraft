@@ -20,33 +20,30 @@ if (WITH_DOCS)
 	install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
 endif ()
 
-add_library (leechcraft-monocle-util SHARED
-	util/monocle/documentsignals.cpp
-	util/monocle/html2doc.cpp
-	util/monocle/imghandler.cpp
-	util/monocle/formatutils.cpp
-	util/monocle/linksbuilder.cpp
-	util/monocle/pagelink.cpp
-	util/monocle/resourcedtextdocument.cpp
-	util/monocle/tablehandler.cpp
-	util/monocle/textboxesdetector.cpp
-	util/monocle/textdocumentadapter.cpp
-	util/monocle/textdocumentformatconfig.cpp
-	util/monocle/tocbuilder.cpp
-	util/monocle/types.cpp
-	)
-FindQtLibs (leechcraft-monocle-util Widgets Xml)
-set_target_properties (leechcraft-monocle-util PROPERTIES
-	OUTPUT_NAME "leechcraft-monocle-util${LC_LIBSUFFIX}"
-	SOVERSION ${LC_SOVERSION}
-	)
 if (WITH_MONOCLE_IMAGEMAGICK)
 	find_package (PkgConfig)
 	pkg_check_modules (MagickPP REQUIRED IMPORTED_TARGET Magick++)
-	target_link_libraries (leechcraft-monocle-util PkgConfig::MagickPP)
-	target_compile_definitions (leechcraft-monocle-util PRIVATE WITH_IMAGEMAGICK)
 endif ()
-install (TARGETS leechcraft-monocle-util DESTINATION ${LIBDIR})
+
+add_util_library (monocle-util
+	SOURCES
+		util/monocle/documentsignals.cpp
+		util/monocle/html2doc.cpp
+		util/monocle/imghandler.cpp
+		util/monocle/formatutils.cpp
+		util/monocle/linksbuilder.cpp
+		util/monocle/pagelink.cpp
+		util/monocle/resourcedtextdocument.cpp
+		util/monocle/tablehandler.cpp
+		util/monocle/textboxesdetector.cpp
+		util/monocle/textdocumentadapter.cpp
+		util/monocle/textdocumentformatconfig.cpp
+		util/monocle/tocbuilder.cpp
+		util/monocle/types.cpp
+	USES Widgets Xml
+	DEPENDS $<$<BOOL:${WITH_MONOCLE_IMAGEMAGICK}>:PkgConfig::MagickPP>
+	DEFINES $<$<BOOL:${WITH_MONOCLE_IMAGEMAGICK}>:WITH_IMAGEMAGICK>
+	)
 
 LC_DEFINE_PLUGIN (
 	SRCS
