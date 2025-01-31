@@ -8,7 +8,7 @@
 
 #include "staticplaylistmanager.h"
 #include <util/sys/paths.h>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "playlistparsers/m3u.h"
 
 namespace LC

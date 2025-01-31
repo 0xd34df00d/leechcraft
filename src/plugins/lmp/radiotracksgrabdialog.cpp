@@ -14,7 +14,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
 #include <util/lmp/util.h>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC

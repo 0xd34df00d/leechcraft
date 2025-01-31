@@ -13,7 +13,7 @@
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
 #include "aalabeleventfilter.h"

@@ -11,7 +11,7 @@
 #include <functional>
 #include <QObject>
 #include <QPixmap>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "interfaces/lmp/isourceobject.h"
 
 class QLabel;

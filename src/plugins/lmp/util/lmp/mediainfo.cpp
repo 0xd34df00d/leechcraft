@@ -9,9 +9,7 @@
 #include "mediainfo.h"
 #include <QDataStream>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	bool MediaInfo::IsUseless () const
 	{
@@ -58,5 +56,32 @@ namespace LMP
 
 		return mi;
 	}
-}
+
+	QDataStream& operator<< (QDataStream& out, const MediaInfo& info)
+	{
+		out << info.LocalPath_
+				<< info.Artist_
+				<< info.Album_
+				<< info.Title_
+				<< info.Genres_
+				<< info.Length_
+				<< info.Year_
+				<< info.TrackNumber_
+				<< info.Additional_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, MediaInfo& info)
+	{
+		in >> info.LocalPath_
+				>> info.Artist_
+				>> info.Album_
+				>> info.Title_
+				>> info.Genres_
+				>> info.Length_
+				>> info.Year_
+				>> info.TrackNumber_
+				>> info.Additional_;
+		return in;
+	}
 }

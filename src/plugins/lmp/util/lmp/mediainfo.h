@@ -10,49 +10,52 @@
 
 #include <QStringList>
 #include <interfaces/media/audiostructs.h>
+#include "lmputilconfig.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	struct MediaInfo
 	{
-		QString LocalPath_ = {};
+		QString LocalPath_ {};
 
-		QString Artist_ = {};
-		QString Album_ = {};
-		QString Title_ = {};
+		QString Artist_ {};
+		QString Album_ {};
+		QString Title_ {};
 
-		QStringList Genres_ = {};
+		QStringList Genres_ {};
 
 		qint32 Length_ = 0;
 		qint32 Year_ = 0;
 		qint32 TrackNumber_ = 0;
 
-		QVariantMap Additional_ = {};
+		QVariantMap Additional_ {};
 
-		bool IsUseless () const;
+		LMP_UTIL_API bool IsUseless () const;
 
-		operator Media::AudioInfo () const;
+		LMP_UTIL_API operator Media::AudioInfo () const;
 
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		LMP_UTIL_API static MediaInfo FromAudioInfo (const Media::AudioInfo&);
 	};
 
 	inline bool operator== (const MediaInfo& l, const MediaInfo& r)
 	{
 		return l.LocalPath_ == r.LocalPath_ &&
-			l.Artist_ == r.Artist_ &&
-			l.Album_ == r.Album_ &&
-			l.Title_ == r.Title_ &&
-			l.Genres_ == r.Genres_ &&
-			l.Length_ == r.Length_ &&
-			l.Year_ == r.Year_ &&
-			l.TrackNumber_ == r.TrackNumber_;
+				l.Artist_ == r.Artist_ &&
+				l.Album_ == r.Album_ &&
+				l.Title_ == r.Title_ &&
+				l.Genres_ == r.Genres_ &&
+				l.Length_ == r.Length_ &&
+				l.Year_ == r.Year_ &&
+				l.TrackNumber_ == r.TrackNumber_;
 	}
 
 	inline bool operator!= (const MediaInfo& l, const MediaInfo& r)
 	{
 		return !(l == r);
 	}
+
+	LMP_UTIL_API QDataStream& operator<< (QDataStream&, const MediaInfo&);
+	LMP_UTIL_API QDataStream& operator>> (QDataStream&, MediaInfo&);
 }
-}
+
+Q_DECLARE_METATYPE (LC::LMP::MediaInfo)

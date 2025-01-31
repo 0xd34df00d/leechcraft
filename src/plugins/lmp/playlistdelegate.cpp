@@ -14,8 +14,8 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoreproxy.h>
+#include "util/lmp/mediainfo.h"
 #include "player.h"
-#include "mediainfo.h"
 #include "util.h"
 
 Q_DECLARE_METATYPE (QList<LC::Entity>)

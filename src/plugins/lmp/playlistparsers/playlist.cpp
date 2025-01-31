@@ -11,7 +11,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/util.h>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 
 namespace LC
 {

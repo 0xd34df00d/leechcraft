@@ -8,7 +8,7 @@
 
 #include "nativeplaylist.h"
 #include <util/sll/prelude.h>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "playlistparsers/playlist.h"
 
 namespace LC

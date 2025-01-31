@@ -21,7 +21,7 @@
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 
 namespace LC
 {

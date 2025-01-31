@@ -10,7 +10,7 @@
 
 #include <QCoreApplication>
 #include <QObject>
-#include "interfaces/lmp/mediainfo.h"
+#include "util/lmp/mediainfo.h"
 
 namespace LC
 {

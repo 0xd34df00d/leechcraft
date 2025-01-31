@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QSystemTrayIcon>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 
 namespace LC::Util
 {

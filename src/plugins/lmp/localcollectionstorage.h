@@ -14,7 +14,7 @@
 #include <QSet>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "interfaces/lmp/collectiontypes.h"
 
 namespace LC::LMP

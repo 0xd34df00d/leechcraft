@@ -13,7 +13,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <interfaces/core/icoreproxy.h>
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 
 namespace LC
 {

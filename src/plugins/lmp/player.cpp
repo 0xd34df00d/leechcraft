@@ -29,8 +29,8 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irestorableradiostationprovider.h>
+#include "util/lmp/mediainfo.h"
 #include "core.h"
-#include "mediainfo.h"
 #include "localfileresolver.h"
 #include "util.h"
 #include "localcollection.h"

@@ -20,7 +20,7 @@
 
 #include <interfaces/media/iradiostation.h>
 #include "engine/audiosource.h"
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "sortingcriteria.h"
 #include "nativeplaylist.h"
 

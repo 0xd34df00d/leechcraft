@@ -16,7 +16,7 @@
 #include <QIcon>
 #include "interfaces/lmp/collectiontypes.h"
 #include "interfaces/lmp/ilocalcollection.h"
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 #include "localcollectionmodel.h"
 
 class QModelIndex;

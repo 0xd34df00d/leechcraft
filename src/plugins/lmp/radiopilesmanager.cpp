@@ -16,8 +16,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include "util/lmp/mediainfo.h"
 #include "previewcharacteristicinfo.h"
-#include "mediainfo.h"
 #include "util.h"
 
 namespace LC

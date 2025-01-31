@@ -11,7 +11,7 @@
 #include <QWidget>
 #include <interfaces/media/ilyricsfinder.h>
 #include "ui_nowplayingwidget.h"
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 
 namespace LC
 {

@@ -41,11 +41,7 @@ namespace LMP
 			const QList<MediaInfo>& infos,
 			const std::function<void (int, QString)>& setter,
 			SubstitutionFlags flags = SFSafeFilesystem);
-
-	LMP_UTIL_API QDataStream& operator<< (QDataStream&, const MediaInfo&);
-	LMP_UTIL_API QDataStream& operator>> (QDataStream&, MediaInfo&);
 }
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::LMP::SubstitutionFlags)
-Q_DECLARE_METATYPE (LC::LMP::MediaInfo)

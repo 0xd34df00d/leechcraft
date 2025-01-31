@@ -16,7 +16,7 @@
 #include <QDateTime>
 #include <taglib/fileref.h>
 #include "interfaces/lmp/itagresolver.h"
-#include "mediainfo.h"
+#include "util/lmp/mediainfo.h"
 
 namespace LC
 {

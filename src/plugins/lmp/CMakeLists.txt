@@ -90,7 +90,6 @@ LC_DEFINE_PLUGIN (
 		nativeplaylist.cpp
 		playlistwidgetviewexpander.cpp
 		sourceerrorhandler.cpp
-		mediainfo.cpp
 		literals.cpp
 		collectionnormalizer.cpp
 		engine/audiosource.cpp
@@ -123,6 +122,7 @@ LC_DEFINE_PLUGIN (
 		playlistparsers/xspf.cpp
 		util/lmp/gstutil.cpp
 		util/lmp/filtersettingsmanager.cpp
+		util/lmp/mediainfo.cpp
 		util/lmp/util.cpp
 		$<IF:$<PLATFORM_ID:Darwin>,
 			recursivedirwatcher_mac.mm,
