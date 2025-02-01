@@ -81,7 +81,7 @@ namespace LC::Aggregator
 		for (const auto& row : rows)
 			CurrentItems_ << row.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 
-		emit selectionChanged ();
+		emit selectionChanged (CurrentItems_);
 	}
 
 	void ItemSelectionTracker::HandleCurrentRowChanged (const QModelIndex& current)

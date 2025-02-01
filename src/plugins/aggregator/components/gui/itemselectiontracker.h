@@ -42,6 +42,6 @@ namespace LC::Aggregator
 		void MarkRead (const QModelIndex&);
 	signals:
 		void refreshItemDisplay ();
-		void selectionChanged ();
+		void selectionChanged (const QSet<IDType_t>&);
 	};
 }

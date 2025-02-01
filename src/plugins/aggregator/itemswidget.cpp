@@ -58,8 +58,8 @@ namespace LC::Aggregator
 
 		QAbstractItemModel *ChannelsModel_ = nullptr;
 
-		std::unique_ptr<ItemsListModel> ItemsModel_ {};
-		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (Parent_);
+		const std::unique_ptr<ItemsListModel> ItemsModel_ = std::make_unique<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
+		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (*ItemsModel_, Parent_);
 		std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ {};
 
 		QModelIndex LastSelectedChannel_ {};
@@ -117,13 +117,8 @@ namespace LC::Aggregator
 
 		Impl_->ControlToolBar_ = CreateToolbar (*Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
-		const auto& proxy = GetProxyHolder ();
-		Impl_->ItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
-
 		Impl_->Ui_.Items_->setAcceptDrops (false);
 
-		Impl_->ItemsFilterModel_->SetItemsWidget (this);
-		Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemsModel_.get ());
 		Impl_->ItemsFilterModel_->setFilterKeyColumn (0);
 		Impl_->ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		Impl_->Ui_.Items_->setModel (Impl_->ItemsFilterModel_.get ());
@@ -143,7 +138,7 @@ namespace LC::Aggregator
 				this,
 				&ItemsWidget::updateItemsFilter);
 
-		new Util::ClearLineEditAddon (proxy, Impl_->Ui_.SearchLine_);
+		new Util::ClearLineEditAddon (GetProxyHolder (), Impl_->Ui_.SearchLine_);
 
 		Impl_->ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
@@ -185,11 +180,6 @@ namespace LC::Aggregator
 	QToolBar* ItemsWidget::GetToolBar () const
 	{
 		return Impl_->ControlToolBar_;
-	}
-
-	QSet<IDType_t> ItemsWidget::GetSelectedItems () const
-	{
-		return SelectionTracker_->GetSelectedItems ();
 	}
 
 	void ItemsWidget::SetTapeMode (bool tape)

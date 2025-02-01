@@ -16,24 +16,29 @@
 
 namespace LC::Aggregator
 {
-	class ItemsWidget;
+	class IItemsModel;
 
 	class ItemsFilterModel : public QSortFilterProxyModel
 	{
+		QSet<QString> ItemCategories_;
+		QSet<IDType_t> TaggedItems_;
+
+		class SelectedIdProxyModel;
+		const std::unique_ptr<SelectedIdProxyModel> SelectedIdProxyModel_;
+
 		bool HideRead_ = false;
 		bool UnreadOnTop_ = false;
-		QSet<QString> ItemCategories_;
-		ItemsWidget *ItemsWidget_ = nullptr;
-		QSet<IDType_t> TaggedItems_;
 	public:
-		explicit ItemsFilterModel (QObject* = nullptr);
+		explicit ItemsFilterModel (IItemsModel&, QObject* = nullptr);
+		~ItemsFilterModel () override;
 
-		void SetItemsWidget (ItemsWidget*);
 		void SetHideRead (bool);
 		void SetItemTags (QList<ITagsManager::tag_id>);
 
 		void InvalidateCategorySelection (const QStringList&);
-		void InvalidateItemsSelection ();
+		void InvalidateItemsSelection (const QSet<IDType_t>&);
+
+		void setSourceModel (QAbstractItemModel*) override;
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const override;

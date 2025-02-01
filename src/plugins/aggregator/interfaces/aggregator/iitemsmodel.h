@@ -36,6 +36,8 @@ namespace Aggregator
 			FullItem,
 		};
 
+		constexpr static auto MaxItemRole = FullItem;
+
 		virtual QAbstractItemModel& GetQModel () = 0;
 
 		virtual void SetChannels (const QVector<IDType_t>& channelIds) = 0;

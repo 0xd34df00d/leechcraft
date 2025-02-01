@@ -62,8 +62,6 @@ namespace Aggregator
 
 		QToolBar* GetToolBar () const;
 
-		QSet<IDType_t> GetSelectedItems () const;
-
 		/** Merge all that channels that are currently shown.
 			*
 			* @param[in] on Whether the merge mode should be enabled.

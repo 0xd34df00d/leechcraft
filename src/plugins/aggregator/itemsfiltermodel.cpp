@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "itemsfiltermodel.h"
+#include <algorithm>
+#include <QIdentityProxyModel>
 #include <QtDebug>
 #include <util/sll/containerconversions.h>
 #include "interfaces/aggregator/iitemsmodel.h"
@@ -16,10 +18,53 @@
 
 namespace LC::Aggregator
 {
-	ItemsFilterModel::ItemsFilterModel (QObject *parent)
+	class ItemsFilterModel::SelectedIdProxyModel : public QIdentityProxyModel
+	{
+		QSet<IDType_t> Selections_;
+		IItemsModel& SourceModel_;
+	public:
+		constexpr static auto IsSelectedRole = IItemsModel::MaxItemRole + 1;
+
+		explicit SelectedIdProxyModel (IItemsModel& sourceModel)
+		: SourceModel_ { sourceModel }
+		{
+			setSourceModel (&SourceModel_.GetQModel ());
+		}
+
+		void SetSelections (const QSet<IDType_t>& selections)
+		{
+			if (Selections_ == selections)
+				return;
+
+			EmitByIds (std::exchange (Selections_, {}));
+			Selections_ = selections;
+			EmitByIds (Selections_);
+		}
+
+		QVariant data (const QModelIndex& index, int role) const override
+		{
+			if (role != IsSelectedRole)
+				return QIdentityProxyModel::data (index, role);
+
+			const auto id = index.data (IItemsModel::ItemId).value<IDType_t> ();
+			return Selections_.contains (id);
+		}
+	private:
+		void EmitByIds (const QSet<IDType_t>& ids)
+		{
+			const auto lastColumn = sourceModel ()->columnCount () - 1;
+			for (const auto& idx : SourceModel_.FindItems (ids))
+				emit dataChanged (idx.siblingAtColumn (0), idx.siblingAtColumn (lastColumn), { IsSelectedRole });
+		}
+	};
+
+	ItemsFilterModel::ItemsFilterModel (IItemsModel& sourceModel, QObject *parent)
 	: QSortFilterProxyModel { parent }
+	, SelectedIdProxyModel_ { std::make_unique<SelectedIdProxyModel> (sourceModel) }
 	, HideRead_ { XmlSettingsManager::Instance ().Property ("HideReadItems", false).toBool () }
 	{
+		QSortFilterProxyModel::setSourceModel (SelectedIdProxyModel_.get ());
+
 		setDynamicSortFilter (true);
 
 		XmlSettingsManager::Instance ().RegisterObject ("UnreadOnTop", this,
@@ -30,10 +75,7 @@ namespace LC::Aggregator
 				});
 	}
 
-	void ItemsFilterModel::SetItemsWidget (ItemsWidget *w)
-	{
-		ItemsWidget_ = w;
-	}
+	ItemsFilterModel::~ItemsFilterModel () = default;
 
 	void ItemsFilterModel::SetHideRead (bool hide)
 	{
@@ -73,10 +115,14 @@ namespace LC::Aggregator
 		invalidateFilter ();
 	}
 
-	void ItemsFilterModel::InvalidateItemsSelection ()
+	void ItemsFilterModel::InvalidateItemsSelection (const QSet<IDType_t>& selections)
 	{
-		if (HideRead_)
-			invalidateFilter ();
+		SelectedIdProxyModel_->SetSelections (selections);
+	}
+
+	void ItemsFilterModel::setSourceModel (QAbstractItemModel*)
+	{
+		throw std::logic_error { "ItemsFilterModel::setSourceModel is not supposed to be called" };
 	}
 
 	bool ItemsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
@@ -85,17 +131,15 @@ namespace LC::Aggregator
 		const auto itemId = index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 		if (HideRead_ &&
 				index.data (IItemsModel::ItemRole::IsRead).toBool () &&
-				!ItemsWidget_->GetSelectedItems ().contains (itemId))
+				!index.data (SelectedIdProxyModel::IsSelectedRole).toBool ())
 			return false;
 
 		if (!ItemCategories_.isEmpty ())
 		{
 			const auto& itemCategories = index.data (IItemsModel::ItemRole::ItemCategories).toStringList ();
 
-			const bool categoryFound = itemCategories.isEmpty () ?
-					true :
-					std::any_of (itemCategories.begin (), itemCategories.end (),
-							[this] (const QString& cat) { return ItemCategories_.contains (cat); });
+			const bool categoryFound = itemCategories.isEmpty () ||
+					std::ranges::any_of (itemCategories, [this] (const QString& cat) { return ItemCategories_.contains (cat); });
 			if (!categoryFound)
 				return false;
 		}
