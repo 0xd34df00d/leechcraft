@@ -50,6 +50,8 @@ namespace Aggregator
 		void SetItems (const QList<IDType_t>&);
 		void ItemDataUpdated (const Item&);
 
+		QList<QModelIndex> FindItems (const QSet<IDType_t>&) const override;
+
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;

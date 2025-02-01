@@ -99,6 +99,21 @@ namespace Aggregator
 		endResetModel ();
 	}
 
+	QList<QModelIndex> ItemsListModel::FindItems (const QSet<IDType_t>& ids) const
+	{
+		QList<QModelIndex> result;
+		result.reserve (ids.size ());
+		for (int i = 0; i < CurrentItems_.size (); ++i)
+			if (ids.contains (CurrentItems_ [i].ItemID_))
+			{
+				result << index (i, 0);
+				if (result.size () == ids.size ())
+					return result;
+			}
+
+		return result;
+	}
+
 	void ItemsListModel::RemoveItems (const QSet<IDType_t>& ids)
 	{
 		auto remainingCount = ids.size ();
