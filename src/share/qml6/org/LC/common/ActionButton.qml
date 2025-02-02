@@ -141,7 +141,7 @@ Item {
                 text: textTooltip
             }
 
-            onClicked: mouse.button == Qt.LeftButton ? actionRoot.triggered() : actionRoot.clicked(mouse)
+            onClicked: mouse => mouse.button == Qt.LeftButton ? actionRoot.triggered() : actionRoot.clicked(mouse)
             onPressAndHold: actionRoot.held()
             onEntered: actionRoot.hovered();
             onExited: actionRoot.hoverLeft()
