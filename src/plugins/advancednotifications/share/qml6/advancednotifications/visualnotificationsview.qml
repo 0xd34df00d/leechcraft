@@ -1,5 +1,5 @@
-import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick
+import QtQuick.Controls
 import org.LC.common 1.0
 
 Rectangle {

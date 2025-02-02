@@ -19,15 +19,11 @@ Rectangle {
         textTooltip: AN_quarkTooltip
 
         onTriggered: {
-            var global = commonJS.getTooltipPos(anButton);
-            var params = {
-                x: global.x,
-                y: global.y,
-                existing: "toggle",
-                "rulesManager": AN_rulesManager,
-                "proxy": AN_proxy
+            const params = {
+                rulesManager: AN_rulesManager,
+                proxy: AN_proxy
             };
-            quarkProxy.openWindow(sourceURL, "RulesListView.qml", params);
+            commonJS.toggleTooltip(anButton, params, Qt.resolvedUrl("RulesListView.qml"));
         }
     }
 }
