@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick
 import SB2 1.0
 import org.LC.common 1.0
 

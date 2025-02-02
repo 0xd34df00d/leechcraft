@@ -1,6 +1,0 @@
-{
-    "quarkID": "org.LeechCraft.SB2.Launcher",
-    "quarkName": "Launcher",
-    "icon": "system-run",
-    "areas": [ "panel" ]
-}
