@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick
 import org.LC.common 1.0
 
 Rectangle
@@ -26,7 +26,7 @@ Rectangle
 
 	anchors.fill: parent
 
-	VisualDataModel
+	DelegateModel
 	{
 		id: commentsVisualModel
 		model: commentsModel

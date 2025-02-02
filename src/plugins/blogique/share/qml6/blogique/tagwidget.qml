@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick
 import org.LC.common 1.0
 import "tagballoonlist.js" as TagBalloonList
 
@@ -300,7 +300,7 @@ Rectangle
 	Connections
 	{
 		target: mainWidget
-		onTagSelected:
+		function onTagSelected()
 		{
 			if (!TagBalloonList.contains (tag))
 			{
