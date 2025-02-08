@@ -121,8 +121,6 @@ Window {
                             { color: "green", points: enableIf(loadObj.ioHist, showIOTime) }
                         ]
 
-                    leftAxisEnabled: true
-                    leftAxisTitle: qsTr("Load, %")
                     yGridEnabled: true
 
                     plotTitle: "CPU " + cpuIdx + ": " + momentalLoadStr
