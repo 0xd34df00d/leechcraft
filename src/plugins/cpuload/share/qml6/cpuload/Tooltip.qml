@@ -5,8 +5,17 @@ import org.LC.common 1.0
 Window {
     id: rootWindow
 
-    width: loadView.cellWidth * 2
-    height: loadView.cellHeight * Math.ceil(loadView.count / 2)
+    function computeColumnsCount(count) {
+      for (let cols = Math.ceil(Math.sqrt(loadView.count)); cols > 0; --cols) {
+          if (!(count % cols))
+              return cols;
+      }
+    }
+
+    readonly property int columns: computeColumnsCount(loadView.count)
+
+    width: loadView.cellWidth * columns
+    height: loadView.cellHeight * Math.ceil(loadView.count / columns)
 
     flags: Qt.ToolTip
 
