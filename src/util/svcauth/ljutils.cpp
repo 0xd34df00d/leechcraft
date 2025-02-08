@@ -23,8 +23,7 @@ namespace LC::Util::LJ
 	{
 		QByteArray GetChallengeRequestBody ()
 		{
-			return R"(
-<?xml version="1.0"?>
+			return R"(<?xml version="1.0"?>
 <methodCall>
   <methodName>LJ.XMLRPC.getchallenge</methodName>
 </methodCall>
@@ -34,7 +33,6 @@ namespace LC::Util::LJ
 		std::optional<QString> GetChallenge (const QDomDocument& doc)
 		{
 			const auto& replyStruct = doc.documentElement ()
-					.firstChildElement ("methodResponse"_qs)
 					.firstChildElement ("params"_qs)
 					.firstChildElement ("param"_qs)
 					.firstChildElement ("value"_qs)
@@ -81,7 +79,7 @@ namespace LC::Util::LJ
 		const auto& challenge = GetChallenge (doc);
 		if (!challenge)
 		{
-			qWarning () << "failed to get challenge from" << data;
+			qWarning () << "failed to get challenge from\n" << doc.toByteArray (1).constData ();
 			co_return RequestChallengeResult::Left ({ Tr::tr ("Failed to parse response") });
 		}
 
