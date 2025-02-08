@@ -33,7 +33,8 @@ QtObject {
     }
 
     function openTooltip(item, params, path) {
-        closeTooltip(path);
+        if (tooltips[path])
+            return;
 
         const component = Qt.createComponent(path);
         const global = getTooltipPos(item);
