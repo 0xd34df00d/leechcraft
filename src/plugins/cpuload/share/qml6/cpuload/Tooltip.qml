@@ -1,5 +1,5 @@
-import QtQuick 2.3
-import QtQuick.Window 2.1
+import QtQuick
+import QtQuick.Window
 import org.LC.common 1.0
 
 Window {
@@ -12,6 +12,7 @@ Window {
 
     property variant loadModel
     property variant cpuProxy
+    property variant colorProxy
     property bool showIOTime
     property bool showLowTime
     property bool showMediumTime

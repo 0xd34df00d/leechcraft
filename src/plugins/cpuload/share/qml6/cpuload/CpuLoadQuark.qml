@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick
 import org.LC.common 1.0
 
 Rectangle {
@@ -44,16 +44,13 @@ Rectangle {
         TimedHoverArea {
             anchors.fill: parent
 
-            property variant tooltip: null
             property bool closeOnExit: true
+            readonly property url tooltipUrl: Qt.resolvedUrl("Tooltip.qml")
 
             hoverInTimeout: commonHoverInTimeout
 
             onHoverInTimedOut: {
-                if (tooltip != null)
-                    return;
-
-                commonJS.openWindow(rootRect,
+                commonJS.openTooltip(rootRect,
                         {
                             "loadModel": CpuLoad_model,
                             "cpuProxy": CpuLoad_proxy,
@@ -63,14 +60,11 @@ Rectangle {
                             "showMediumTime": CpuLoad_showMediumTime,
                             "showHighTime": CpuLoad_showHighTime
                         },
-                        Qt.resolvedUrl("Tooltip.qml"),
-                        tooltip,
-                        function(t) { tooltip = t; });
+                        tooltipUrl);
             }
 
             function closeTooltip() {
-                if (closeOnExit)
-                    commonJS.closeTooltip(tooltip, function(t) { tooltip = t; });
+                closeOnExit && commonJS.closeTooltip(tooltipUrl);
             }
 
             onAreaExited: closeTooltip()
