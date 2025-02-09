@@ -15,6 +15,8 @@ Rectangle {
 
     Common { id: commonJS }
 
+    readonly property url tooltipUrl: Qt.resolvedUrl("Tooltip.qml")
+
     Component.onCompleted: HS_plotManager.setContext(quarkContext)
 
     ActionButton {
@@ -71,8 +73,6 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
-
-                readonly property url tooltipUrl: Qt.resolvedUrl("Tooltip.qml")
 
                 onEntered: {
                     commonJS.closeTooltip(tooltipUrl, sensorName);
