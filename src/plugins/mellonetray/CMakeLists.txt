@@ -3,7 +3,7 @@ project (mellonetray)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (MellonetrayX11Parts REQUIRED IMPORTED_TARGET x11 xdamage)
+pkg_check_modules (MellonetrayX11Parts REQUIRED IMPORTED_TARGET x11 xdamage xrender)
 
 LC_DEFINE_PLUGIN (
 	SRCS
