@@ -96,7 +96,7 @@ namespace LC::Util::XDG
 				Group_ %= GroupName_ >> eol >>
 						*(Comment_ | Line_ | eol);
 
-				Start_ %= *eol >> *Comment_ >> +Group_;
+				Start_ %= *eol >> *Comment_ >> *eol >> +Group_;
 
 				qi::on_error<qi::fail> (Start_,
 						std::cout << phoenix::val ("Error! Expecting") << qi::_4
