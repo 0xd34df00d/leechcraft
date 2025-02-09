@@ -269,4 +269,4 @@ install (FILES ${CMAKE_CURRENT_BINARY_DIR}/lcconfig.h DESTINATION include/leechc
 
 install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 
-install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
+install (FILES ${CMAKE_CURRENT_BINARY_DIR}/InitLCPlugin.cmake DESTINATION share/cmake/Modules)
