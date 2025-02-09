@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick
 import org.LC.common 1.0
 
 Rectangle {
@@ -12,8 +12,6 @@ Rectangle {
     radius: 2
 
     color: "transparent"
-
-    property variant tooltip
 
     Common { id: commonJS }
 
@@ -74,23 +72,23 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                Common { id: opener }
+                readonly property url tooltipUrl: Qt.resolvedUrl("Tooltip.qml")
 
                 onEntered: {
-                    opener.closeTooltip(tooltip, function() {});
+                    commonJS.closeTooltip(tooltipUrl, sensorName);
 
-                    var params = {
-                        "colorProxy": colorProxy,
-                        "maxTemp": maxTemp,
-                        "critTemp": critTemp,
-                        "sensorName": sensorName,
-                        "maxPointsCount": maxPointsCount,
-                        "pointsList": Qt.binding(function() { return pointsList; }),
-                        "maxPointsList": Qt.binding(function() { return maxPointsList; })
+                    const params = {
+                        colorProxy: colorProxy,
+                        maxTemp: maxTemp,
+                        critTemp: critTemp,
+                        sensorName: sensorName,
+                        maxPointsCount: maxPointsCount,
+                        pointsList: Qt.binding(() => pointsList),
+                        maxPointsList: Qt.binding(() => maxPointsList)
                     };
-                    opener.openWindow(delegateItem, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
+                    commonJS.openTooltip(delegateItem, params, tooltipUrl, sensorName);
                 }
-                onExited: opener.closeTooltip(tooltip, function() {})
+                onExited: commonJS.closeTooltip(tooltipUrl, sensorName)
             }
 
             ActionButton {
