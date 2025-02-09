@@ -30,8 +30,7 @@ namespace Liznoo
 		auto iface = SB_.interface ();
 		auto checkRunning = [&iface, this]
 		{
-			return !iface->registeredServiceNames ()
-					.value ().filter (Service_).isEmpty ();
+			return iface->registeredServiceNames ().value ().contains (Service_);
 		};
 		if (checkRunning ())
 			return true;
