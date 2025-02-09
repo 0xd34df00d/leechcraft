@@ -2,8 +2,10 @@ import QtQuick 2.3
 import QtQuick.Window 2.1
 
 Window {
+    property string ifaceName
     property string downSpeed
     property string upSpeed
+    property var colorProxy
 
     width: rootRect.width
     height: rootRect.height
@@ -17,8 +19,6 @@ Window {
 
         smooth: true
         radius: 5
-
-        signal closeRequested()
 
         gradient: Gradient {
             GradientStop {

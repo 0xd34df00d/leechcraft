@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick
 import org.LC.common 1.0
 
 Rectangle {
@@ -10,7 +10,9 @@ Rectangle {
 
     color: "transparent"
 
-    property variant tooltip: null
+    property url tooltipUrl: Qt.resolvedUrl("Tooltip.qml")
+
+    Common { id: opener }
 
     ListView {
         id: indicatorsView
@@ -33,19 +35,17 @@ Rectangle {
                 anchors.fill: parent
                 actionIconURL: "image://ThemeIcons/" + iconName + '/' + width
 
-                Common { id: opener }
-
                 onTriggered: Lemon_proxy.showGraph(ifaceName)
                 onHovered: {
-                    var params = {
-                        "ifaceName": ifaceName,
-                        "upSpeed": Qt.binding(function() { return upSpeedPretty; }),
-                        "downSpeed": Qt.binding(function() { return downSpeedPretty; }),
-                        "colorProxy": colorProxy
+                    const params = {
+                        ifaceName: ifaceName,
+                        upSpeed: Qt.binding(() => upSpeedPretty),
+                        downSpeed: Qt.binding(() => downSpeedPretty),
+                        colorProxy: colorProxy
                     };
-                    opener.openWindow(indicatorButton, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
+                    opener.openTooltip(indicatorButton, params, tooltipUrl, ifaceName);
                 }
-                onHoverLeft: opener.closeTooltip(tooltip, function(t) { tooltip = t; })
+                onHoverLeft: opener.closeTooltip(tooltipUrl, ifaceName)
 
                 function adjustAlpha(c) {
                     return Qt.rgba(c.r, c.g, c.b, 0x22 / 0xff);
