@@ -21,19 +21,25 @@ QtObject {
 
     property var tooltips: ({})
 
-    function closeTooltip(path) {
-        if (!tooltips[path])
+    function tooltipKey(path, extraId) {
+        return path + '/' + extraId;
+    }
+
+    function closeTooltip(path, extraId = '') {
+        const key = tooltipKey(path, extraId);
+        if (!tooltips[key])
             return false;
 
-        const tooltip = tooltips[path];
+        const tooltip = tooltips[key];
         tooltip.close();
         tooltip.destroy();
-        delete tooltips[path];
+        delete tooltips[key];
         return true;
     }
 
-    function openTooltip(item, params, path) {
-        if (tooltips[path])
+    function openTooltip(item, params, path, extraId = '') {
+        const key = tooltipKey(path, extraId);
+        if (tooltips[key])
             return;
 
         const component = Qt.createComponent(path);
@@ -49,10 +55,10 @@ QtObject {
             tooltip.y = y;
             tooltip.show();
             quarkProxy.registerAutoresize(Qt.point(global.x, global.y), tooltip);
-            tooltips[path] = tooltip;
+            tooltips[key] = tooltip;
 
             if (tooltip.closing) {
-                tooltip.closing.connect(() => delete tooltips[path]);
+                tooltip.closing.connect(() => delete tooltips[key]);
             }
         };
 
@@ -65,7 +71,7 @@ QtObject {
             component.onCompleted = sf;
     }
 
-    function toggleTooltip(item, params, path) {
-        closeTooltip(path) || openTooltip(item, params, path);
+    function toggleTooltip(item, params, path, extraId = '') {
+        closeTooltip(path, extraId) || openTooltip(item, params, path, extraId);
     }
 }
