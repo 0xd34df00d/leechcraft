@@ -19,12 +19,12 @@ endif ()
 
 option (USE_ASAN "Use address sanitizer" OFF)
 
-set (LC_QT_VERSION 5)
+set (LC_QT_VERSION 6)
 set (LC_LIBSUFFIX "-qt${LC_QT_VERSION}")
 
 if (UNIX OR (WIN32 AND MINGW))
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -Wextra")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_DEPRECATED_WARNINGS -DQT_DISABLE_DEPRECATED_BEFORE='QT_VERSION_CHECK(5,15,0)'")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_DEPRECATED_WARNINGS")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-enum-enum-conversion")
 
 	if (USE_ASAN)

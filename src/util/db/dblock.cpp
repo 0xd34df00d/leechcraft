@@ -77,9 +77,8 @@ namespace LC::Util
 		qCritical () << "query:" << lastQuery.lastQuery ().simplified ();
 		DumpError (lastQuery.lastError ());
 
-		const auto& boundValues = lastQuery.boundValues ();
-		qCritical () << "bound keys:" << boundValues.size () << boundValues.keys ();
-		qCritical () << "bound values:" << boundValues;
+		qCritical () << "bound keys:" << lastQuery.boundValueNames ();
+		qCritical () << "bound values:" << lastQuery.boundValues ();
 	}
 
 	void DBLock::Execute (QSqlQuery& query)

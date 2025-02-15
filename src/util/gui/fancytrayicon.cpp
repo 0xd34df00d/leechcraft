@@ -101,9 +101,7 @@ namespace LC::Util
 		}
 		catch (const std::exception& e)
 		{
-			qCritical () << Q_FUNC_INFO
-					<< "unable to create icon implementation:"
-					<< e.what ();
+			qCritical () << "unable to create icon implementation:" << e.what ();
 		}
 
 		if (!Impl_)

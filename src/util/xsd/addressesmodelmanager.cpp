@@ -61,7 +61,6 @@ namespace LC::Util
 	void AddressesModelManager::RegisterTypes ()
 	{
 		qRegisterMetaType<AddrList_t> ("LC::Util::AddrList_t");
-		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 	}
 
 	QAbstractItemModel* AddressesModelManager::GetModel () const

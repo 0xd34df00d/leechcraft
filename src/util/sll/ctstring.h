@@ -123,31 +123,22 @@ namespace LC::Util
 	template<CtString Str>
 	QByteArray ToByteArray ()
 	{
-		static constexpr auto literal = []<size_t... Idxes> (std::index_sequence<Idxes...>)
-		{
-			return QStaticByteArrayData<Str.Size>
-			{
-				Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER (Str.Size),
-				{ Str.Data_ [Idxes]..., 0 }
-			};
-		} (std::make_index_sequence<Str.Size> {});
-		QByteArrayDataPtr holder { literal.data_ptr () };
-		return QByteArray { holder };
+		constexpr static auto terminated = Str + '\0';
+		return QByteArray { QByteArrayData { nullptr, terminated.Data_, terminated.Size - 1 } };
 	}
 
 	template<CtString Str>
 	QString ToString ()
 	{
-		static constexpr auto literal = []<size_t... Idxes> (std::index_sequence<Idxes...>)
+		if constexpr (std::is_same_v<typename decltype (Str)::Char_t, char16_t>)
 		{
-			return QStaticStringData<Str.Size>
-			{
-				Q_STATIC_STRING_DATA_HEADER_INITIALIZER (Str.Size),
-				{ Str.Data_ [Idxes]..., 0 }
-			};
-		} (std::make_index_sequence<Str.Size> {});
-		QStringDataPtr holder { literal.data_ptr () };
-		return QString { holder };
+			constexpr static auto terminated = Str + '\0';
+			// this const_cast is fine-ish, since Qt is doing the same in
+			// QtPrivate::qMakeStringPrivate()
+			return QString { QStringPrivate { nullptr, const_cast<char16_t*> (terminated.Data_), terminated.Size - 1 } };
+		}
+		else
+			return ToString<Str.template CastChars<char16_t> ()> ();
 	}
 
 	template<size_t N1, size_t N2, typename Char>

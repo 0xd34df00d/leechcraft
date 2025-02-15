@@ -9,7 +9,6 @@
 #pragma once
 
 #include <string>
-#include <QX11Info>
 #include <QList>
 #include <QString>
 #include <QHash>
@@ -22,9 +21,10 @@
 class QIcon;
 class QWidget;
 class QRect;
+class QScreen;
 
+using Display = struct _XDisplay;
 using Window = unsigned long;
-#define _XTYPEDEF_XID
 
 using XEvent = union _XEvent;
 
@@ -38,8 +38,8 @@ namespace LC::Util
 		Q_OBJECT
 
 		xcb_connection_t *Conn_ = nullptr;
-		Display *Display_;
-		Window AppWin_;
+		Display *Display_ = nullptr;
+		Window AppWin_ {};
 
 		QHash<QByteArray, Atom> Atoms_;
 
@@ -58,7 +58,7 @@ namespace LC::Util
 		Display* GetDisplay () const;
 		Window GetRootWindow () const;
 
-		bool nativeEventFilter (const QByteArray& eventType, void *message, long *result) override;
+		bool nativeEventFilter (const QByteArray& eventType, void *message, qintptr *result) override;
 
 		void Sync ();
 

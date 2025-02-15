@@ -32,10 +32,18 @@ namespace LC::Util
 	const int StateAdd = 1;
 
 	XWrapper::XWrapper ()
-	: Conn_ (QX11Info::connection ())
-	, Display_ (QX11Info::display ())
-	, AppWin_ (QX11Info::appRootWindow ())
 	{
+		const auto x11app = qGuiApp->nativeInterface<QNativeInterface::QX11Application> ();
+		if (!x11app)
+			throw std::runtime_error { "XWrapper used on non-X11" };
+
+		Conn_ = x11app->connection ();
+		Display_ = x11app->display ();
+		AppWin_ = DefaultRootWindow (Display_);
+
+		if (!Display_)
+			throw std::runtime_error { "No X11 display" };
+
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
 
 		const uint32_t rootEvents [] =
@@ -69,7 +77,7 @@ namespace LC::Util
 		return AppWin_;
 	}
 
-	bool XWrapper::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
+	bool XWrapper::nativeEventFilter (const QByteArray& eventType, void *msg, qintptr*)
 	{
 		if (eventType != "xcb_generic_event_t")
 			return false;

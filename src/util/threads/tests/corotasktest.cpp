@@ -161,7 +161,7 @@ namespace LC::Util
 				co_return reply.GetReplyData ();
 			} ();
 
-			QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::NetworkReplyErrorException);
+			QVERIFY_THROWS_EXCEPTION (LC::Util::NetworkReplyErrorException, GetTaskResult (task));
 		}
 
 		void ImmediateFinishMarker (MockReply& reply)
@@ -396,7 +396,7 @@ namespace LC::Util
 		} (&*context);
 		context.reset ();
 
-		QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+		QVERIFY_THROWS_EXCEPTION (LC::Util::ContextDeadException, GetTaskResult (task));
 	}
 
 	void CoroTaskTest::testContextDestrAfterFinish ()
@@ -427,7 +427,7 @@ namespace LC::Util
 		{
 			QElapsedTimer timer;
 			timer.start ();
-			QVERIFY_EXCEPTION_THROWN (GetTaskResult (task), LC::Util::ContextDeadException);
+			QVERIFY_THROWS_EXCEPTION (LC::Util::ContextDeadException, GetTaskResult (task));
 			QVERIFY (timer.elapsed () < DelayThreshold.count ());
 		}
 	}

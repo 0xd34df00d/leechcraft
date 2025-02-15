@@ -28,7 +28,7 @@ LC_DEFINE_PLUGIN (
 		unhandlednotificationskeeper.cpp
 		addfrommisseddialog.cpp
 	SETTINGS advancednotificationssettings.xml
-	QT_COMPONENTS QuickWidgets
+	QT_COMPONENTS QuickWidgets Core5Compat
 	INSTALL_SHARE
 	)
 
