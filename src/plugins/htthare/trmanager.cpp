@@ -31,17 +31,21 @@ namespace LC::HttHare
 		if (locale == "ru")
 			locale = "ru_RU";
 
-		const QMutexLocker lock { &MapLock_ };
-		auto pos = Translators_.find (locale);
-		if (pos == Translators_.end ())
 		{
-			if (auto translator = std::unique_ptr<QTranslator> (Util::LoadTranslator ("htthare", locale)))
-				pos = Translators_.emplace (std::piecewise_construct,
-						std::forward_as_tuple (locale),
-						std::forward_as_tuple (std::in_place, std::move (translator))).first;
-			else
-				pos = Translators_.emplace (locale, std::nullopt).first;
+			const QMutexLocker lock { &MapLock_ };
+			const auto pos = Translators_.find (locale);
+			if (pos != Translators_.end ())
+				return pos->second;
 		}
+
+		auto translator = std::unique_ptr<QTranslator> (Util::LoadTranslator ("htthare", locale));
+
+		const QMutexLocker lock { &MapLock_ };
+		const auto pos = translator ?
+			Translators_.emplace (std::piecewise_construct,
+					std::forward_as_tuple (locale),
+					std::forward_as_tuple (std::in_place, std::move (translator))).first :
+			Translators_.emplace (locale, std::nullopt).first;
 		return pos->second;
 	}
 }
