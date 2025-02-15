@@ -13,24 +13,12 @@
 #include <iomanip>
 #include <cstdlib>
 #include <cstring>
-#include <optional>
-
-#if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
-#include <execinfo.h>
-#include <cxxabi.h>
-#include <sys/types.h>
-#endif
-
-#include <unistd.h>
-
+#include <stacktrace>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
 #include <QDateTime>
 #include <QDir>
-#include <QProcess>
-#include <QHash>
-#include <util/sll/monad.h>
 
 QMutex G_DbgMutex;
 uint Counter = 0;
@@ -121,228 +109,12 @@ namespace
 		return ostr;
 	}
 
-	struct AddrInfo
-	{
-		std::string ObjectPath_;
-		std::string SourcePath_;
-		std::string Symbol_;
-	};
-
-#if defined (_GNU_SOURCE)
-	using StrRange_t = std::pair<const char*, const char*>;
-
-	std::optional<StrRange_t> FindStrRange (const char *str, char open, char close)
-	{
-		const auto strEnd = str + std::strlen (str);
-		const auto parensCount = std::count_if (str, strEnd,
-				[=] (char c) { return c == open || c == close; });
-		if (parensCount != 2)
-			return {};
-
-		const auto openParen = std::find (str, strEnd, open);
-		const auto closeParen = std::find (openParen, strEnd, close);
-		if (openParen == strEnd || closeParen == strEnd)
-			return {};
-
-		return { { openParen + 1, closeParen } };
-	}
-
-	std::optional<AddrInfo> QueryAddr2Line (const std::string& execName,
-			const std::string& addr)
-	{
-		QProcess proc;
-		proc.start ("addr2line",
-				{ "-Cfe", QString::fromStdString (execName), QString::fromStdString (addr) });
-		if (!proc.waitForFinished (500))
-			return {};
-
-		if (proc.exitStatus () != QProcess::NormalExit ||
-			proc.exitCode ())
-			return {};
-
-		const auto& out = proc.readAllStandardOutput ().trimmed ().split ('\n');
-		if (out.size () != 2)
-			return {};
-
-		return { { execName, out [1].constData (), out [0].constData () } };
-	}
-
-	std::optional<AddrInfo> QueryAddr2LineExecutable (const char *str,
-			const std::string& execName)
-	{
-		using LC::Util::operator>>;
-
-		return FindStrRange (str, '[', ']') >>
-				[&] (const auto& bracketRange)
-				{
-					return QueryAddr2Line (execName,
-							{ bracketRange.first, bracketRange.second });
-				};
-	}
-
-	std::optional<AddrInfo> QueryAddr2LineLibrary (const std::string& execName,
-			const std::string& addr)
-	{
-		return QueryAddr2Line (execName, addr);
-	}
-
-	std::optional<std::string> GetDemangled (const char *str)
-	{
-		int status = -1;
-		const auto demangled = abi::__cxa_demangle (str, nullptr, 0, &status);
-
-		if (!demangled)
-			return {};
-
-		const std::string demangledStr { demangled };
-		free (demangled);
-		return demangledStr;
-	}
-
-	class AddrInfoGetter
-	{
-		const QHash<QString, size_t> LibAddrsCache_;
-	public:
-		AddrInfoGetter ()
-		: LibAddrsCache_ { ParseLibAddrs () }
-		{
-		}
-
-		std::optional<AddrInfo> operator() (const char *str) const
-		{
-			using LC::Util::operator>>;
-
-			return FindStrRange (str, '(', ')') >>
-					[this, str] (const StrRange_t& pair)
-					{
-						const std::string binaryName { str, pair.first - 1 };
-
-						const auto plusPos = std::find (pair.first, pair.second, '+');
-
-						if (plusPos == pair.second)
-							return QueryAddr2LineExecutable (str, binaryName);
-
-						if (plusPos == pair.first)
-							return QueryAddr2LineLibrary (binaryName, { plusPos, pair.second });
-
-						if (const auto relative = QueryRelative (binaryName, str))
-							return relative;
-
-						return GetDemangled (pair.first) >>
-								[&] (const std::string& value)
-								{
-									return std::optional<AddrInfo> { { binaryName, {}, value } };
-								};
-					};
-		}
-	private:
-		std::optional<AddrInfo> QueryRelative (const std::string& binaryName, const char *str) const
-		{
-			const auto& symLinked = QFile::symLinkTarget (QString::fromStdString (binaryName));
-			const auto libAddrPos = LibAddrsCache_.find (symLinked);
-			if (libAddrPos == LibAddrsCache_.end ())
-				return {};
-
-			using LC::Util::operator>>;
-
-			return FindStrRange (str, '[', ']') >>
-					[&] (const auto& bracketRange) -> std::optional<AddrInfo>
-					{
-						try
-						{
-							const auto addr = std::stoull (std::string {
-										bracketRange.first,
-										bracketRange.second
-									},
-									nullptr, 16);
-							std::stringstream ss;
-							ss << "0x" << std::hex << addr - libAddrPos.value ();
-							return QueryAddr2LineLibrary (binaryName, ss.str ());
-						}
-						catch (const std::invalid_argument&)
-						{
-						}
-
-						return {};
-					};
-		}
-
-		static QHash<QString, size_t> ParseLibAddrs ()
-		{
-			QFile file { QString { "/proc/%1/maps" }.arg (getpid ()) };
-			if (!file.open (QIODevice::ReadOnly))
-				return {};
-
-			QHash<QString, size_t> result;
-			for (const auto& line : file.readAll ().split ('\n'))
-			{
-				if (!line.contains ("r-xp"))
-					continue;
-
-				const auto lastSpaceIdx = line.lastIndexOf (' ');
-				const auto dashIdx = line.indexOf ('-');
-				if (lastSpaceIdx == -1)
-					continue;
-
-				const QString libName { line.begin () + lastSpaceIdx + 1 };
-
-				try
-				{
-					const auto baseAddr = std::stoull (std::string {
-								line.begin (),
-								line.begin () + dashIdx
-							},
-							nullptr, 16);
-					result.insert (libName, baseAddr);
-				}
-				catch (const std::invalid_argument&)
-				{
-				}
-			}
-			return result;
-		}
-	};
-#elif defined (Q_OS_OSX)
-	class AddrInfoGetter
-	{
-	public:
-		std::optional<AddrInfo> operator() (const char*)
-		{
-			return {};
-		}
-	};
-#endif
-
 	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
 	{
-#if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
-		const int maxSize = 100;
-		void *callstack [maxSize];
-		size_t size = backtrace (callstack, maxSize);
-		char **strings = backtrace_symbols (callstack, size);
-
-		*ostr << "Backtrace of " << size << " frames:" << std::endl;
-
-		AddrInfoGetter getter;
-
-		for (size_t i = 0; i < size; ++i)
-		{
-			*ostr << i << "\t";
-
-			if (const auto info = getter (strings [i]))
-				*ostr << info->ObjectPath_
-						<< ": "
-						<< info->Symbol_
-						<< " ["
-						<< info->SourcePath_
-						<< "]"
-						<< std::endl;
-			else
-				*ostr << strings [i] << std::endl;
-		}
-
-		std::free (strings);
-#endif
+		constexpr auto skip = 2;
+		const auto trace = std::stacktrace::current (skip);
+		for (const auto& e : trace)
+			*ostr << '\t' << e << '\n';
 	}
 
 	QByteArray DetectModule (const QMessageLogContext& ctx)

@@ -127,6 +127,7 @@ target_link_libraries (leechcraft-core
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
 		$<$<BOOL:${X11_FOUND}>:${X11_X11_LIB}>
+		stdc++exp
 		)
 
 if (APPLE AND USE_UNIX_LAYOUT)
