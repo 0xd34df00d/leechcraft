@@ -1,5 +1,5 @@
-import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick
+import QtQuick.Controls
 import org.LC.common 1.0 as LCCommon
 
 Rectangle {
@@ -29,30 +29,30 @@ Rectangle {
         }
 
         delegate: ProgressBar {
-            minimumValue: 0
-            maximumValue: jobTotal
+            from: 0
+            to: jobTotal
             value: jobDone
 
             width: parent.width
             height: 10
-
-            orientation: Qt.Horizontal
         }
     }
 
     LCCommon.Common { id: commonJS }
+
+    readonly property url tooltipUrl: Qt.resolvedUrl("Tooltip.qml")
 
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
 
         onEntered: {
-            var params = {
-                "infoModel": TPI_infoModel,
-                "colorProxy": colorProxy
+            const params = {
+                infoModel: TPI_infoModel,
+                colorProxy: colorProxy
             };
-            commonJS.openWindow(rootRect, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
+            commonJS.openWindow(rootRect, params, tooltipUrl);
         }
-        onExited: commonJS.closeTooltip(tooltip, function(t) { tooltip = t; })
+        onExited: commonJS.closeTooltip(tooltipUrl)
     }
 }

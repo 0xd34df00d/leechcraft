@@ -1,6 +1,6 @@
-import QtQuick 2.3
-import QtQuick.Window 2.1
-import QtQuick.Controls 1.2
+import QtQuick
+import QtQuick.Window
+import QtQuick.Controls
 
 Window {
     property variant colorProxy
@@ -72,8 +72,8 @@ Window {
                 }
 
                 ProgressBar {
-                    minimumValue: 0
-                    maximumValue: jobTotal
+                    from: 0
+                    to: jobTotal
                     value: jobDone
 
                     anchors.top: jobNameLabel.bottom
