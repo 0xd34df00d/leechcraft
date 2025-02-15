@@ -7,62 +7,41 @@
  **********************************************************************/
 
 #include "trmanager.h"
-#include <QThread>
-#include <QTranslator>
-#include <QTimer>
 #include <util/util.h>
 
-namespace LC
+namespace LC::HttHare
 {
-namespace HttHare
-{
-	TrManager::TrManager (QObject *parent)
-	: QObject (parent)
-	{
-		auto timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (purge ()));
-		timer->start (60 * 60 * 1000);
-	}
-
 	QString TrManager::Translate (const QStringList& locales, const char* context, const char* src)
 	{
-		MapLock_.lock ();
-		auto& map = Translators_ [QThread::currentThreadId ()];
-		MapLock_.unlock ();
-
-		for (auto locale : locales)
-		{
-			if (locale.size () > 2)
-				locale = locale.left (2);
-
-			if (locale == "ru")
-				locale = "ru_RU";
-
-			if (!map.contains (locale))
-				map [locale] = Util::LoadTranslator ("htthare", locale);
-
-			if (const auto transl = map [locale])
+		for (const auto& locale : locales)
+			if (auto& translator = GetTranslator (locale))
 			{
-				const auto& str = transl->translate (context, src);
+				const QMutexLocker locker { &translator->TrMutex_ };
+				const auto& str = translator->Translator_->translate (context, src);
 				if (!str.isEmpty ())
 					return str;
 			}
-		}
-
 		return QString::fromUtf8 (src);
 	}
 
-	void TrManager::purge ()
+	std::optional<TrManager::Translator>& TrManager::GetTranslator (QString locale)
 	{
-		MapLock_.lock ();
-		for (const auto& threadMap : Translators_)
-			for (auto tr : threadMap)
-				tr->deleteLater ();
-		Translators_.clear ();
-		MapLock_.unlock ();
+		if (locale.size () > 2)
+			locale = locale.left (2);
+		if (locale == "ru")
+			locale = "ru_RU";
+
+		const QMutexLocker lock { &MapLock_ };
+		auto pos = Translators_.find (locale);
+		if (pos == Translators_.end ())
+		{
+			if (auto translator = std::unique_ptr<QTranslator> (Util::LoadTranslator ("htthare", locale)))
+				pos = Translators_.emplace (std::piecewise_construct,
+						std::forward_as_tuple (locale),
+						std::forward_as_tuple (std::in_place, std::move (translator))).first;
+			else
+				pos = Translators_.emplace (locale, std::nullopt).first;
+		}
+		return pos->second;
 	}
-}
 }

@@ -8,28 +8,27 @@
 
 #pragma once
 
-#include <QObject>
+#include <unordered_map>
 #include <QMutex>
-#include <QMap>
+#include <QTranslator>
 
-class QTranslator;
-
-namespace LC
-{
-namespace HttHare
+namespace LC::HttHare
 {
 	class TrManager : public QObject
 	{
-		Q_OBJECT
-
 		QMutex MapLock_;
-		QMap<Qt::HANDLE, QMap<QString, QTranslator*>> Translators_;
+
+		struct Translator
+		{
+			std::unique_ptr<QTranslator> Translator_;
+			QMutex TrMutex_;
+		};
+		std::unordered_map<QString, std::optional<Translator>> Translators_;
 	public:
-		TrManager (QObject* = 0);
+		using QObject::QObject;
 
 		QString Translate (const QStringList& locales, const char *context, const char *src);
-	private slots:
-		void purge ();
+	private:
+		std::optional<Translator>& GetTranslator (QString locale);
 	};
-}
 }
