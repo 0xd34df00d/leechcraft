@@ -33,7 +33,7 @@ namespace LC::Intermutko
 	void FillLanguageCombobox (QComboBox *combo)
 	{
 		for (int i = 0; i < QLocale::LastLanguage; ++i)
-		   if (i != QLocale::C)
+		   if (i != QLocale::C && i != QLocale::AnyLanguage)
 				combo->addItem (QLocale::languageToString (static_cast<QLocale::Language> (i)), i);
 	}
 
