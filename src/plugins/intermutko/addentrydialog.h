@@ -28,5 +28,7 @@ namespace LC::Intermutko
 		};
 
 		Entries GetEntries () const;
+	private:
+		void SetAcceptEnabled (bool);
 	};
 }

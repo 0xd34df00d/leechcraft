@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "addentrydialog.h"
+#include <QPushButton>
 #include "util.h"
 
 namespace LC::Intermutko
@@ -30,6 +31,8 @@ namespace LC::Intermutko
 	{
 		Ui_.setupUi (this);
 
+		SetAcceptEnabled (false);
+
 		FillLanguageCombobox (Ui_.Language_);
 		Ui_.Language_->setCurrentIndex (-1);
 
@@ -40,6 +43,8 @@ namespace LC::Intermutko
 				{
 					Ui_.Country_->clear ();
 					FillCountryCombobox (Ui_.Country_, GetValue<QLocale::Language> (*Ui_.Language_));
+
+					SetAcceptEnabled (true);
 				});
 	}
 
@@ -56,5 +61,10 @@ namespace LC::Intermutko
 		if (country != QLocale::AnyCountry)
 			entries.AnyCountry_ = LocaleEntry { { lang, QLocale::AnyCountry }, qval };
 		return entries;
+	}
+
+	void AddEntryDialog::SetAcceptEnabled (bool enabled)
+	{
+		Ui_.DiaButtons_->button (QDialogButtonBox::Ok)->setEnabled (enabled);
 	}
 }
