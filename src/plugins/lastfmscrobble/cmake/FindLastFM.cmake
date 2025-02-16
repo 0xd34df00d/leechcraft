@@ -8,7 +8,7 @@
 #  For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
 
-foreach (QT_VER 5 6)
+foreach (QT_VER 6)
 	if (NOT (LastFM${QT_VER}_LIBRARY OR LastFM${QT_VER}_INCLUDE_DIR))
 		find_library (LastFM${QT_VER}_LIBRARY NAMES lastfm-qt${QT_VER} lastfm${QT_VER} lastfm)
 		find_path (LastFM${QT_VER}_INCLUDE_DIR NAMES global.h PATH_SUFFIXES lastfm${QT_VER} lastfm)
