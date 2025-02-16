@@ -32,9 +32,8 @@ namespace Intermutko
 
 		reject ();
 
-		for (int i = 0; i < QLocale::LastCountry; ++i)
-			Ui_.Country_->addItem (QLocale::countryToString (static_cast<QLocale::Country> (i)), i);
-		Ui_.Country_->model ()->sort (0);
+		for (int i = 0; i < QLocale::LastTerritory; ++i)
+			Ui_.Country_->addItem (QLocale::territoryToString (static_cast<QLocale::Country> (i)), i);
 
 		FillLanguageCombobox (Ui_.Language_);
 		on_Language__currentIndexChanged (Ui_.Language_->currentIndex ());
@@ -49,7 +48,7 @@ namespace Intermutko
 	{
 		QString GetFullCode (const LocaleEntry& entry)
 		{
-			return GetDisplayCode (entry) + ";q=" + QString::number (entry.Q_);
+			return GetDisplayCode (entry.Locale_) + ";q=" + QString::number (entry.Q_);
 		}
 	}
 
@@ -73,8 +72,9 @@ namespace Intermutko
 			QList<LocaleEntry> result;
 
 			const QLocale defLocale;
-			result.append ({ defLocale.language (), defLocale.country (), 1 });
-			result.append ({ defLocale.language (), QLocale::AnyCountry, 0.9 });
+			result.append ({ defLocale, 1 });
+			if (defLocale.territory () != QLocale::AnyTerritory)
+				result.append ({ QLocale { defLocale.language (), QLocale::AnyCountry }, 0.9 });
 
 			return result;
 		}
@@ -130,15 +130,15 @@ namespace Intermutko
 		const auto country = GetValue<QLocale::Country> (Ui_.Country_);
 		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
 		const auto qval = Ui_.Q_->value ();
-		AddLocale ({ lang, country, qval });
+		AddLocale ({ { lang, country }, qval });
 
-		if (!Model_->GetEntries ().contains ({ lang, QLocale::AnyCountry, qval }) &&
+		if (!Model_->GetEntries ().contains ({ { lang, QLocale::AnyCountry }, qval }) &&
 				QMessageBox::question (this,
 						"LeechCraft",
 						tr ("Do you want to add an accepted language without "
 							"any country specified as a fallback?"),
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-			AddLocale ({ lang, QLocale::AnyCountry, qval });
+			AddLocale ({ { lang, QLocale::AnyCountry }, qval });
 	}
 
 	void AcceptLangWidget::on_Remove__released ()

@@ -10,24 +10,20 @@
 
 #include <QLocale>
 
-namespace LC
-{
-namespace Intermutko
+namespace LC::Intermutko
 {
 	struct LocaleEntry
 	{
-		QLocale::Language Language_;
-		QLocale::Country Country_;
+		QLocale Locale_;
 		double Q_;
 	};
 
 	bool operator== (const LocaleEntry&, const LocaleEntry&);
-	bool operator!= (const LocaleEntry&, const LocaleEntry&);
 
 	QDataStream& operator<< (QDataStream&, const LocaleEntry&);
 	QDataStream& operator>> (QDataStream&, LocaleEntry&);
 }
-}
 
 Q_DECLARE_METATYPE (LC::Intermutko::LocaleEntry)
+
 Q_DECLARE_METATYPE (QList<LC::Intermutko::LocaleEntry>)

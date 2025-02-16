@@ -11,9 +11,7 @@
 #include <util/sll/util.h>
 #include "util.h"
 
-namespace LC
-{
-namespace Intermutko
+namespace LC::Intermutko
 {
 	int LocalesModel::columnCount (const QModelIndex& parent) const
 	{
@@ -65,18 +63,14 @@ namespace Intermutko
 		switch (static_cast<Column> (index.column ()))
 		{
 		case Column::Language:
-			return QLocale::languageToString (entry.Language_);
+			return entry.Locale_.nativeLanguageName ();
 		case Column::Country:
-			return GetCountryName (entry.Language_, entry.Country_);
+			return GetCountryName (entry.Locale_);
 		case Column::Quality:
 			return entry.Q_;
 		case Column::Code:
-			return GetDisplayCode (entry);
+			return GetDisplayCode (entry.Locale_);
 		}
-
-		qWarning () << Q_FUNC_INFO
-				<< "unknown column"
-				<< index;
 		return {};
 	}
 
@@ -93,32 +87,26 @@ namespace Intermutko
 		if (!idx.isValid ())
 			return false;
 
-		const auto dataChangedGuard = Util::MakeScopeGuard ([this, &idx]
-				{
-					emit dataChanged (index (idx.row (), 0), index (idx.row (), columnCount () - 1));
-				});
-
 		auto& entry = Locales_ [idx.row ()];
-
+		auto& locale = entry.Locale_;
 		switch (static_cast<Column> (idx.column ()))
 		{
 		case Column::Language:
-			entry.Language_ = static_cast<QLocale::Language> (value.toInt ());
-			return true;
+			locale = QLocale { static_cast<QLocale::Language> (value.toInt ()), locale.script (), locale.territory () };
+			break;
 		case Column::Country:
-			entry.Country_ = static_cast<QLocale::Country> (value.toInt ());
-			return true;
+			locale = QLocale { locale.language (), locale.script (), static_cast<QLocale::Country> (value.toInt ()) };
+			break;
 		case Column::Quality:
 			entry.Q_ = value.toDouble ();
-			return true;
-		case Column::Code:
-			return true;
+			break;
+		default:
+			return false;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown column"
-				<< idx;
-		return false;
+		emit dataChanged (index (idx.row (), 0), index (idx.row (), columnCount () - 1));
+
+		return true;
 	}
 
 	const QList<LocaleEntry>& LocalesModel::GetEntries () const
@@ -191,5 +179,4 @@ namespace Intermutko
 		Locales_.insert (r, postRow);
 		endInsertRows ();
 	}
-}
 }

@@ -52,14 +52,14 @@ namespace Intermutko
 		{
 			const auto combo = static_cast<QComboBox*> (editor);
 			FillLanguageCombobox (combo);
-			combo->setCurrentIndex (combo->findData (entry.Language_));
+			combo->setCurrentIndex (combo->findData (entry.Locale_.language ()));
 			break;
 		}
 		case LocalesModel::Column::Country:
 		{
 			const auto combo = static_cast<QComboBox*> (editor);
-			FillCountryCombobox (combo, entry.Language_);
-			combo->setCurrentIndex (combo->findData (entry.Country_));
+			FillCountryCombobox (combo, entry.Locale_.language ());
+			combo->setCurrentIndex (combo->findData (entry.Locale_.territory ()));
 			break;
 		}
 		case LocalesModel::Column::Quality:

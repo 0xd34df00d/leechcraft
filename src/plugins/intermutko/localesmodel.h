@@ -9,16 +9,14 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include <QStringList>
+#include <QCoreApplication>
 #include "localeentry.h"
 
-namespace LC
-{
-namespace Intermutko
+namespace LC::Intermutko
 {
 	class LocalesModel : public QAbstractItemModel
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Intermutko::LocalesModel)
 
 		QList<LocaleEntry> Locales_;
 
@@ -62,5 +60,4 @@ namespace Intermutko
 		void MoveUp (const QModelIndex&);
 		void MoveDown (const QModelIndex&);
 	};
-}
 }

@@ -8,24 +8,24 @@
 
 #include "util.h"
 #include <QComboBox>
+#include <QLoggingCategory>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "localeentry.h"
 
-namespace LC
+namespace LC::Intermutko
 {
-namespace Intermutko
-{
-	QString GetCountryName (QLocale::Language lang, QLocale::Country country)
+	QString GetCountryName (const QLocale& locale)
 	{
-		return country == QLocale::AnyCountry ?
-				QObject::tr ("Any country") :
-				QLocale {lang, country }.nativeCountryName ();
+		return locale.territory () == QLocale::AnyTerritory ?
+			QObject::tr ("Any country") :
+			locale.nativeTerritoryName ();
 	}
 
-	QString GetDisplayCode (const LocaleEntry& entry)
+	QString GetDisplayCode (const QLocale& locale)
 	{
-		const auto& name = Util::GetInternetLocaleName ({ entry.Language_, entry.Country_ });
-		return entry.Country_ != QLocale::AnyCountry ?
+		const auto& name = Util::GetInternetLocaleName (locale);
+		return locale.territory () != QLocale::AnyTerritory ?
 				name :
 				name.left (2);
 	}
@@ -33,25 +33,14 @@ namespace Intermutko
 	void FillLanguageCombobox (QComboBox *combo)
 	{
 		for (int i = 0; i < QLocale::LastLanguage; ++i)
-		{
-			if (i == QLocale::C)
-				continue;
-
-			combo->addItem (QLocale::languageToString (static_cast<QLocale::Language> (i)), i);
-		}
-		combo->model ()->sort (0);
+		   if (i != QLocale::C)
+				combo->addItem (QLocale::languageToString (static_cast<QLocale::Language> (i)), i);
 	}
 
 	void FillCountryCombobox (QComboBox *combo, QLocale::Language language)
 	{
-		auto countries = QLocale::countriesForLanguage (language);
-		if (!countries.contains (QLocale::AnyCountry))
-			countries << QLocale::AnyCountry;
-
-		for (auto c : countries)
-			combo->addItem (GetCountryName (language, c), c);
-
-		combo->model ()->sort (0);
+		combo->addItem (QObject::tr ("Any country"), QLocale::AnyCountry);
+		for (const auto& locale : QLocale::matchingLocales (language, QLocale::AnyScript, QLocale::AnyTerritory))
+			combo->addItem (GetCountryName (locale), locale.territory ());
 	}
-}
 }
