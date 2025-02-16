@@ -5,6 +5,7 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		acceptlangwidget.cpp
+		addentrydialog.cpp
 		entriesdelegate.cpp
 		intermutko.cpp
 		localeentry.cpp

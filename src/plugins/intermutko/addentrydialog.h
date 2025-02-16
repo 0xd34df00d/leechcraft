@@ -8,35 +8,25 @@
 
 #pragma once
 
-#include "ui_acceptlangwidget.h"
+#include "ui_addentrydialog.h"
 #include "localeentry.h"
 
 namespace LC::Intermutko
 {
-	class LocalesModel;
+	struct LocaleEntry;
 
-	class AcceptLangWidget : public QWidget
+	class AddEntryDialog : public QDialog
 	{
-		Q_OBJECT
-
-		Ui::AcceptLangWidget Ui_;
-		LocalesModel * const Model_;
-
-		QList<LocaleEntry> Locales_;
-		QString LocaleStr_;
+		Ui::AddEntryDialog Ui_;
 	public:
-		explicit AcceptLangWidget (QWidget* = nullptr);
+		explicit AddEntryDialog (QWidget *parent = nullptr);
 
-		const QString& GetLocaleString () const;
-	private:
-		void WriteSettings ();
-		void LoadSettings ();
+		struct Entries
+		{
+			LocaleEntry Specific_;
+			std::optional<LocaleEntry> AnyCountry_ {};
+		};
 
-		void RebuildLocaleStr ();
-
-		void RunAddLocaleDialog ();
-	public slots:
-		void accept ();
-		void reject ();
+		Entries GetEntries () const;
 	};
 }

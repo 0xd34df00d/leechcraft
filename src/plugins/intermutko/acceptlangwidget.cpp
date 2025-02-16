@@ -9,16 +9,13 @@
 #include "acceptlangwidget.h"
 #include <QMessageBox>
 #include <util/sll/prelude.h>
+#include "addentrydialog.h"
 #include "xmlsettingsmanager.h"
 #include "localesmodel.h"
 #include "entriesdelegate.h"
 #include "util.h"
 
-Q_DECLARE_METATYPE (QList<QLocale>)
-
-namespace LC
-{
-namespace Intermutko
+namespace LC::Intermutko
 {
 	AcceptLangWidget::AcceptLangWidget (QWidget *parent)
 	: QWidget { parent }
@@ -30,13 +27,24 @@ namespace Intermutko
 
 		LoadSettings ();
 
-		reject ();
+		Model_->SetLocales (Locales_);
 
-		for (int i = 0; i < QLocale::LastTerritory; ++i)
-			Ui_.Country_->addItem (QLocale::territoryToString (static_cast<QLocale::Country> (i)), i);
-
-		FillLanguageCombobox (Ui_.Language_);
-		on_Language__currentIndexChanged (Ui_.Language_->currentIndex ());
+		connect (Ui_.Add_,
+				&QPushButton::released,
+				this,
+				&AcceptLangWidget::RunAddLocaleDialog);
+		connect (Ui_.Remove_,
+				&QPushButton::released,
+				this,
+				[this] { Model_->Remove (Ui_.LangsTree_->currentIndex ()); });
+		connect (Ui_.MoveUp_,
+				&QPushButton::released,
+				this,
+				[this] { Model_->MoveUp (Ui_.LangsTree_->currentIndex ()); });
+		connect (Ui_.MoveDown_,
+				&QPushButton::released,
+				this,
+				[this] { Model_->MoveDown (Ui_.LangsTree_->currentIndex ()); });
 	}
 
 	const QString& AcceptLangWidget::GetLocaleString () const
@@ -50,14 +58,6 @@ namespace Intermutko
 		{
 			return GetDisplayCode (entry.Locale_) + ";q=" + QString::number (entry.Q_);
 		}
-	}
-
-	void AcceptLangWidget::AddLocale (const LocaleEntry& entry)
-	{
-		if (Model_->GetEntries ().contains (entry))
-			return;
-
-		Model_->AddLocaleEntry (entry);
 	}
 
 	void AcceptLangWidget::WriteSettings ()
@@ -111,57 +111,21 @@ namespace Intermutko
 		Model_->SetLocales (Locales_);
 	}
 
-	namespace
+	void AcceptLangWidget::RunAddLocaleDialog ()
 	{
-		template<typename T>
-		T GetValue (const QComboBox *box)
-		{
-			const int idx = box->currentIndex ();
-			if (idx <= 0)
-				return {};
+		AddEntryDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
 
-			const int val = box->itemData (idx).toInt ();
-			return static_cast<T> (val);
-		}
+		const auto& entries = dia.GetEntries ();
+		Model_->AddLocaleEntry (entries.Specific_);
+
+		if (entries.AnyCountry_ &&
+			!Model_->GetEntries ().contains (*entries.AnyCountry_) &&
+			QMessageBox::question (this,
+					"LeechCraft",
+					tr ("Do you want to add this language without any country specified as a fallback?"),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			Model_->AddLocaleEntry (*entries.AnyCountry_);
 	}
-
-	void AcceptLangWidget::on_Add__released ()
-	{
-		const auto country = GetValue<QLocale::Country> (Ui_.Country_);
-		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
-		const auto qval = Ui_.Q_->value ();
-		AddLocale ({ { lang, country }, qval });
-
-		if (!Model_->GetEntries ().contains ({ { lang, QLocale::AnyCountry }, qval }) &&
-				QMessageBox::question (this,
-						"LeechCraft",
-						tr ("Do you want to add an accepted language without "
-							"any country specified as a fallback?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-			AddLocale ({ { lang, QLocale::AnyCountry }, qval });
-	}
-
-	void AcceptLangWidget::on_Remove__released ()
-	{
-		Model_->Remove (Ui_.LangsTree_->currentIndex ());
-	}
-
-	void AcceptLangWidget::on_MoveUp__released ()
-	{
-		Model_->MoveUp (Ui_.LangsTree_->currentIndex ());
-	}
-
-	void AcceptLangWidget::on_MoveDown__released ()
-	{
-		Model_->MoveDown (Ui_.LangsTree_->currentIndex ());
-	}
-
-	void AcceptLangWidget::on_Language__currentIndexChanged (int)
-	{
-		Ui_.Country_->clear ();
-
-		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
-		FillCountryCombobox (Ui_.Country_, lang);
-	}
-}
 }

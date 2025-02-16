@@ -116,6 +116,9 @@ namespace LC::Intermutko
 
 	void LocalesModel::AddLocaleEntry (const LocaleEntry& entry)
 	{
+		if (Locales_.contains (entry))
+			return;
+
 		beginInsertRows ({}, Locales_.size (), Locales_.size ());
 		Locales_ << entry;
 		endInsertRows ();
