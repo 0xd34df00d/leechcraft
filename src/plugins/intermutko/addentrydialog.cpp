@@ -8,6 +8,8 @@
 
 #include "addentrydialog.h"
 #include <QPushButton>
+#include <util/sys/loggingfilter.h>
+#include <util/sll/qtutil.h>
 #include "util.h"
 
 namespace LC::Intermutko
@@ -28,6 +30,7 @@ namespace LC::Intermutko
 
 	AddEntryDialog::AddEntryDialog (QWidget *parent)
 	: QDialog { parent }
+	, OpenTypeMissingFilter_ { { { "qt.text.font.db"_ql, { QtInfoMsg } } } }
 	{
 		Ui_.setupUi (this);
 

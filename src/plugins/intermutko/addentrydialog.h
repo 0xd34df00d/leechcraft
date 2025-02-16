@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ui_addentrydialog.h"
+#include <util/sys/loggingfilter.h>
 #include "localeentry.h"
 
 namespace LC::Intermutko
@@ -18,6 +19,7 @@ namespace LC::Intermutko
 	class AddEntryDialog : public QDialog
 	{
 		Ui::AddEntryDialog Ui_;
+		Util::LoggingFilter OpenTypeMissingFilter_;
 	public:
 		explicit AddEntryDialog (QWidget *parent = nullptr);
 
