@@ -10,6 +10,7 @@ add_util_library (util-sys
 		fdguard.cpp
 		cpufeatures.cpp
 		timer.cpp
+		loggingfilter.cpp
 	DEPENDS
 		leechcraft-util-sll
 		leechcraft-util
