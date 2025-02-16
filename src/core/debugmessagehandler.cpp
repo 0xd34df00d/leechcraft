@@ -229,7 +229,7 @@ namespace DebugHandler
 			return;
 #endif
 
-		const auto& now = QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ();
+		const auto& now = QDateTime::currentDateTime ().toString ("dd.MM HH:mm:ss.zzz").toStdString ();
 		const auto& thread = QString { "0x%1" }
 				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
 				.toStdString ();
