@@ -117,12 +117,9 @@ namespace
 			*ostr << '\t' << e << '\n';
 	}
 
-	QByteArray DetectModule (const QMessageLogContext& ctx)
+	QByteArray DetectModule (const char *fileStr)
 	{
-		if (!ctx.file)
-			return "<unk>";
-
-		const auto& file = QByteArray::fromRawData (ctx.file, std::strlen (ctx.file));
+		const auto& file = QByteArray::fromRawData (fileStr, std::strlen (fileStr));
 		if (file.isEmpty ())
 			return "<unk>";
 
@@ -157,12 +154,9 @@ namespace
 		return file;
 	}
 
-	QByteArray DetectFile (const QMessageLogContext& ctx)
+	QByteArray DetectFile (const char *fileStr)
 	{
-		if (!ctx.file)
-			return "<unk>";
-
-		QByteArray file { ctx.file };
+		QByteArray file { fileStr };
 		const auto pos = file.lastIndexOf ('/');
 		return pos >= 0 ? file.mid (pos + 1) : file;
 	};
@@ -203,15 +197,28 @@ namespace
 		return result;
 	}
 
-	QByteArray Colorize (bool shouldColorize, const QByteArray& str)
+	QByteArray Colorize (DebugHandler::DebugWriteFlags flags, const QByteArray& str)
 	{
-		if (!shouldColorize)
+		if (!(flags & DebugHandler::DWFNoFileLog))
 			return str;
 
 		static const auto table = MakeColorTable ();
 
 		const auto hash = qHash (str) % table.size ();
 		return "\x1b[" + table [hash] + "m" + str + "\x1b[0m";
+	}
+
+	QByteArray GetModule (DebugHandler::DebugWriteFlags flags, const QMessageLogContext& ctx)
+	{
+		if (ctx.file)
+			return Colorize (flags, DetectModule (ctx.file))
+				+ ':' + Colorize (flags, DetectFile (ctx.file))
+				+ DetectLine (ctx);
+
+		if (ctx.category)
+			return Colorize (flags, ctx.category);
+
+		return Colorize (flags, "<unk>");
 	}
 }
 
@@ -233,9 +240,7 @@ namespace DebugHandler
 		const auto& thread = QString { "0x%1" }
 				.arg (std::bit_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
 				.toStdString ();
-		const auto& module = Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx))
-				+ ':' + Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectFile (ctx))
-				+ ':' + DetectLine (ctx);
+		const auto& module = GetModule (flags, ctx);
 
 		QMutexLocker locker { &G_DbgMutex };
 
