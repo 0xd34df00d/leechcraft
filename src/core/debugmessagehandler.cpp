@@ -231,7 +231,7 @@ namespace DebugHandler
 
 		const auto& now = QDateTime::currentDateTime ().toString ("dd.MM HH:mm:ss.zzz").toStdString ();
 		const auto& thread = QString { "0x%1" }
-				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
+				.arg (std::bit_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
 				.toStdString ();
 		const auto& module = Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx))
 				+ ':' + Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectFile (ctx))
