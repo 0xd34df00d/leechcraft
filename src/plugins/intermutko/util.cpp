@@ -18,8 +18,8 @@ namespace LC::Intermutko
 	QString GetCountryName (const QLocale& locale)
 	{
 		return locale.territory () == QLocale::AnyTerritory ?
-			QObject::tr ("Any country") :
-			locale.nativeTerritoryName ();
+				QObject::tr ("Any country") :
+				"%1 (%2)"_qs.arg (locale.nativeTerritoryName (), QLocale::territoryToString (locale.territory ()));
 	}
 
 	QString GetDisplayCode (const QLocale& locale)
