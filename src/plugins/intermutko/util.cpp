@@ -40,7 +40,14 @@ namespace LC::Intermutko
 	void FillCountryCombobox (QComboBox *combo, QLocale::Language language)
 	{
 		combo->addItem (QObject::tr ("Any country"), QLocale::AnyCountry);
+		QSet<QLocale::Territory> territories;
 		for (const auto& locale : QLocale::matchingLocales (language, QLocale::AnyScript, QLocale::AnyTerritory))
+		{
+			if (territories.contains (locale.territory ()))
+				continue;
+
 			combo->addItem (GetCountryName (locale), locale.territory ());
+			territories.insert (locale.territory ());
+		}
 	}
 }
