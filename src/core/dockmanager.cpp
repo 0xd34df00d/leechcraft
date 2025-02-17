@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "dockmanager.h"
+#include <algorithm>
 #include <QDockWidget>
 #include <QToolBar>
 #include <QTimer>
@@ -230,16 +231,24 @@ namespace LC
 
 	void DockManager::handleTabChanged (QWidget *tabWidget)
 	{
-		auto thisWindowIdx = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
-		auto thisWindow = RootWM_->GetMainWindow (thisWindowIdx);
-		auto toolbarMgr = Window2DockToolbarMgr_ [thisWindow];
+		const auto thisWindowIdx = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
+		const auto thisWindow = RootWM_->GetMainWindow (thisWindowIdx);
+		const auto toolbarMgr = Window2DockToolbarMgr_ [thisWindow];
 
-		QList<QDockWidget*> toShowAssoc;
-		QList<QDockWidget*> toShowUnassoc;
-		for (const auto& pair : Util::Stlize (Dock2Info_))
+		const auto addDock = [=] (QDockWidget *dock)
 		{
-			const auto dock = pair.first;
-			const auto& info = pair.second;
+			if (dock->isVisible ())
+				return;
+
+			dock->setVisible (true);
+			if (!dock->isFloating ())
+				toolbarMgr->AddDock (dock, thisWindow->dockWidgetArea (dock));
+		};
+
+		QList<QDockWidget*> toShowFirst;
+		QList<QDockWidget*> toShowLast;
+		for (const auto& [dock, info] : Dock2Info_.asKeyValueRange ())
+		{
 			const auto otherWindow = RootWM_->GetWindowIndex (info.Window_);
 			if (otherWindow != thisWindowIdx)
 				continue;
@@ -249,22 +258,21 @@ namespace LC
 			{
 				dock->setVisible (false);
 				toolbarMgr->RemoveDock (dock);
+				continue;
 			}
-			else if (!ForcefullyClosed_.contains (dock))
-			{
-				if (otherWidget)
-					toShowAssoc << dock;
-				else
-					toShowUnassoc << dock;
-			}
+			if (ForcefullyClosed_.contains (dock))
+				continue;
+
+			// show unassociated docks first, since associated ones take precedence
+			// and shall cover the unassociated ones
+			if (otherWidget)
+				toShowLast << dock;
+			else
+				toShowFirst << dock;
 		}
 
-		for (auto dock : toShowUnassoc + toShowAssoc)
-		{
-			dock->setVisible (true);
-			if (!dock->isFloating ())
-				toolbarMgr->AddDock (dock, thisWindow->dockWidgetArea (dock));
-		}
+		std::ranges::for_each (toShowFirst, addDock);
+		std::ranges::for_each (toShowLast, addDock);
 	}
 
 	void DockManager::handleWindow (int index)
