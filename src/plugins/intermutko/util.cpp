@@ -8,7 +8,6 @@
 
 #include "util.h"
 #include <QComboBox>
-#include <QLoggingCategory>
 #include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "localeentry.h"
@@ -32,9 +31,19 @@ namespace LC::Intermutko
 
 	void FillLanguageCombobox (QComboBox *combo)
 	{
-		for (int i = 0; i < QLocale::LastLanguage; ++i)
-		   if (i != QLocale::C && i != QLocale::AnyLanguage)
-				combo->addItem (QLocale::languageToString (static_cast<QLocale::Language> (i)), i);
+		QSet<QLocale::Language> languages { QLocale::AnyLanguage, QLocale::C };
+		for (const auto& locale : QLocale::matchingLocales (QLocale::AnyLanguage, QLocale::AnyScript, QLocale::AnyTerritory))
+		{
+			const auto lang = locale.language ();
+			if (languages.contains (lang))
+				continue;
+
+			languages.insert (lang);
+
+			const auto& nativeName = locale.nativeLanguageName ();
+			const auto& engName = QLocale::languageToString (lang);
+			combo->addItem ("%1 (%2)"_qs.arg (nativeName, engName), lang);
+		}
 	}
 
 	void FillCountryCombobox (QComboBox *combo, QLocale::Language language)
