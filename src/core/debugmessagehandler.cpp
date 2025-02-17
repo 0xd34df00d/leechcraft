@@ -111,7 +111,7 @@ namespace
 
 	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
 	{
-		constexpr auto skip = 2;
+		constexpr auto skip = 5;
 		const auto trace = std::stacktrace::current (skip);
 		for (const auto& e : trace)
 			*ostr << '\t' << e << '\n';
