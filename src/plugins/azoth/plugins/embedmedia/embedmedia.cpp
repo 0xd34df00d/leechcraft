@@ -17,6 +17,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/util.h>
 #include <util/gui/util.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
@@ -115,6 +116,19 @@ namespace LC::Azoth::EmbedMedia
 			QProgressDialog dia;
 			dia.setMinimumDuration (1000);
 			dia.setLabelText (tr ("Downloading image..."));
+			connect (reply,
+					&QNetworkReply::metaDataChanged,
+					&dia,
+					[&dia, reply]
+					{
+						if (const auto& sizeHeader = reply->header (QNetworkRequest::ContentLengthHeader);
+							sizeHeader.isValid ())
+						{
+							const auto size = sizeHeader.toInt ();
+							dia.setMaximum (size);
+							dia.setLabelText (tr ("Downloading image of %1...").arg (Util::MakePrettySize (size)));
+						}
+					});
 			connect (reply,
 					&QNetworkReply::downloadProgress,
 					&dia,
