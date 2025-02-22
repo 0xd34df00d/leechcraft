@@ -96,6 +96,9 @@ namespace LC::Azoth::EmbedMedia
 			}
 			Util::ShowPixmapLabel (px, pos)->setWindowTitle (url.toString ());
 		}
+
+		using namespace std::chrono_literals;
+		constexpr auto DialogDelay = 1s;
 	}
 
 	void Plugin::hookLinkClicked (IHookProxy_ptr proxy, QObject *chatTabObj, const QUrl& url)
@@ -114,8 +117,9 @@ namespace LC::Azoth::EmbedMedia
 			const auto reply = GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest { url });
 
 			QProgressDialog dia;
-			dia.setMinimumDuration (1000);
+			dia.setMinimumDuration (std::chrono::duration_cast<std::chrono::milliseconds> (DialogDelay).count ());
 			dia.setLabelText (tr ("Downloading image..."));
+			QTimer::singleShot (DialogDelay, &dia, &QDialog::show);
 			connect (reply,
 					&QNetworkReply::metaDataChanged,
 					&dia,
