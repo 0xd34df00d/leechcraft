@@ -258,7 +258,7 @@ namespace Azoth
 				return;
 			}
 
-		Core::Instance ().OpenChat (ProxyModel_->mapToSource (index));
+		Core::Instance ().GetChatTabsManager ()->OpenChat (index);
 	}
 
 	void MainWidget::showAllUsersList ()
