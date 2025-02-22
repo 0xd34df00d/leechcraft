@@ -238,10 +238,6 @@ namespace Azoth
 		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return;
 
-		if (XmlSettingsManager::Instance ().property ("ClearSearchAfterFocus").toBool () &&
-				!Ui_.FilterLine_->text ().isEmpty ())
-			Ui_.FilterLine_->setText (QString ());
-
 		if (QApplication::keyboardModifiers () & Qt::CTRL)
 			if (auto tab = Core::Instance ().GetChatTabsManager ()->GetActiveChatTab ())
 			{
@@ -259,6 +255,10 @@ namespace Azoth
 			}
 
 		Core::Instance ().GetChatTabsManager ()->OpenChat (index);
+
+		if (XmlSettingsManager::Instance ().property ("ClearSearchAfterFocus").toBool () &&
+				!Ui_.FilterLine_->text ().isEmpty ())
+			Ui_.FilterLine_->clear ();
 	}
 
 	void MainWidget::showAllUsersList ()
