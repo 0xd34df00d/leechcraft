@@ -169,12 +169,6 @@ namespace LC::Azoth
 		 */
 		QObject* GetEntry (const QString& id) const;
 
-		/** Opens chat with the remote contact identified by index
-		 * (which is from GetCLModel() model). If the index identifies
-		 * account or category, this function does nothing.
-		 */
-		void OpenChat (const QModelIndex& index);
-
 		TransferJobManager* GetTransferJobManager () const;
 
 		CallManager* GetCallManager () const;

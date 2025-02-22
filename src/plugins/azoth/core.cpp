@@ -605,11 +605,6 @@ namespace LC::Azoth
 		return ID2Entry_.value (id);
 	}
 
-	void Core::OpenChat (const QModelIndex& contactIndex)
-	{
-		ChatTabsManager_->OpenChat (contactIndex);
-	}
-
 	TransferJobManager* Core::GetTransferJobManager () const
 	{
 		return XferJobManager_.get ();
