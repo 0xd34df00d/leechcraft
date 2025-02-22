@@ -1831,15 +1831,10 @@ namespace LC::Azoth
 
 			if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			{
-				auto mucEntry = qobject_cast<IMUCEntry*> (item);
-
-				const bool open = XmlSettingsManager::Instance ()
-						.property ("OpenTabsForAutojoin").toBool ();
+				const auto mucEntry = qobject_cast<IMUCEntry*> (item);
+				const bool open = XmlSettingsManager::Instance ().property ("OpenTabsForAutojoin").toBool ();
 				if (open || !mucEntry->IsAutojoined ())
-				{
-					auto item = Entry2Items_.value (entry).first ();
-					OpenChat (CLModel_->indexFromItem (item));
-				}
+					ChatTabsManager_->OpenChat (entry, false);
 			}
 
 			ChatTabsManager_->HandleEntryAdded (entry);
