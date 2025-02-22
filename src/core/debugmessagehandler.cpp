@@ -226,16 +226,6 @@ namespace DebugHandler
 {
 	void Write (QtMsgType type, const QMessageLogContext& ctx, const char *message, DebugWriteFlags flags)
 	{
-#if !defined (Q_OS_WIN32)
-		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||
-				strstr (message, ": Painter not active"))
-			return;
-#endif
-#if defined (Q_OS_WIN32)
-		if (!strcmp (message, "QObject::startTimer: QTimer can only be used with threads started with QThread"))
-			return;
-#endif
-
 		const auto& now = QDateTime::currentDateTime ().toString ("dd.MM HH:mm:ss.zzz").toStdString ();
 		const auto& thread = QString { "0x%1" }
 				.arg (std::bit_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
