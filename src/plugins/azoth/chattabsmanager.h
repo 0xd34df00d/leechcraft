@@ -55,8 +55,7 @@ namespace Azoth
 		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, QObject* = nullptr);
 
 		QWidget* OpenChat (const QModelIndex&);
-		ChatTab* OpenChat (const ICLEntry*, bool fromUser,
-				const DynPropertiesList_t& = DynPropertiesList_t ());
+		ChatTab* OpenChat (const ICLEntry*, bool fromUser, const DynPropertiesList_t& = {});
 
 		void CloseChat (const ICLEntry*, bool fromUser);
 

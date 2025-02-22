@@ -43,23 +43,11 @@ namespace LC::Azoth
 
 	QWidget* ChatTabsManager::OpenChat (const QModelIndex& ti)
 	{
-		if (!ti.isValid ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "tried to open a chat with invalid index";
-			return nullptr;
-		}
-
-		QObject *entryObj = ti.data (CLREntryObject).value<QObject*> ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entryObj = ti.data (CLREntryObject).value<QObject*> ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "object"
-					<< entryObj
-					<< "from the index"
-					<< ti
-					<< "doesn't implement ICLEntry";
+			qWarning () << "object" << entryObj << "from the index" << ti << "doesn't implement ICLEntry";
 			return nullptr;
 		}
 
