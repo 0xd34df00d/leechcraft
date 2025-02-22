@@ -9,7 +9,6 @@
 #include "embedmedia.h"
 #include <QDebug>
 #include <QFileInfo>
-#include <QIcon>
 #include <QImageReader>
 #include <QLabel>
 #include <QMessageBox>
@@ -21,7 +20,6 @@
 #include <util/gui/util.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <util/threads/coro.h>
 
