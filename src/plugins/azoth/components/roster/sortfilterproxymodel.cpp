@@ -70,16 +70,16 @@ namespace LC::Azoth
 	{
 		if (MUCEntry_)
 			disconnect (MUCEntry_,
-					SIGNAL (destroyed (QObject*)),
+					&QObject::destroyed,
 					this,
-					SLOT (handleMUCDestroyed ()));
+					&SortFilterProxyModel::handleMUCDestroyed);
 
-		MUCEntry_ = qobject_cast<IMUCEntry*> (mucEntry) ? mucEntry : 0;
+		MUCEntry_ = qobject_cast<IMUCEntry*> (mucEntry) ? mucEntry : nullptr;
 		if (MUCEntry_)
 			connect (MUCEntry_,
-					SIGNAL (destroyed (QObject*)),
+					&QObject::destroyed,
 					this,
-					SLOT (handleMUCDestroyed ()));
+					&SortFilterProxyModel::handleMUCDestroyed);
 
 		invalidateFilter ();
 	}
@@ -123,14 +123,13 @@ namespace LC::Azoth
 		const auto leftType = GetType (left);
 		if (leftType == CLETAccount)
 			return QSortFilterProxyModel::lessThan (left, right);
-		else if (leftType == CLETCategory)
+		if (leftType == CLETCategory)
 		{
 			const bool leftIsMuc = left.data (CLRIsMUCCategory).toBool ();
 			const bool rightIsMuc = right.data (CLRIsMUCCategory).toBool ();
 			if (leftIsMuc == rightIsMuc)
 				return QSortFilterProxyModel::lessThan (left, right);
-			else
-				return rightIsMuc;
+			return rightIsMuc;
 		}
 
 		const auto lE = GetEntry (left);
@@ -141,8 +140,8 @@ namespace LC::Azoth
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())
 			if (const auto lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntryObject ()))
 			{
-				bool less = lp->IsLessByPerm (lE->GetQObject (), rE->GetQObject ());
-				bool more = lp->IsLessByPerm (rE->GetQObject (), lE->GetQObject ());
+				const bool less = lp->IsLessByPerm (lE->GetQObject (), rE->GetQObject ());
+				const bool more = lp->IsLessByPerm (rE->GetQObject (), lE->GetQObject ());
 				if (less || more)
 					return more;
 			}
@@ -152,8 +151,8 @@ namespace LC::Azoth
 		if (lState == rState ||
 				!OrderByStatus_)
 			return lE->GetEntryName ().localeAwareCompare (rE->GetEntryName ()) < 0;
-		else
-			return IsLess (lState, rState);
+
+		return IsLess (lState, rState);
 	}
 
 	bool SortFilterProxyModel::FilterAcceptsMucMode (int row, const QModelIndex& parent) const
@@ -171,7 +170,7 @@ namespace LC::Azoth
 		}
 		case CLETCategory:
 		{
-			const QString& gName = idx.data ().toString ();
+			const auto& gName = idx.data ().toString ();
 			return gName == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName () ||
 				   qobject_cast<ICLEntry*> (MUCEntry_)->Groups ().contains (gName);
 		}
@@ -183,30 +182,24 @@ namespace LC::Azoth
 	bool SortFilterProxyModel::FilterAcceptsNonMucMode (int row, const QModelIndex& parent) const
 	{
 		const auto& idx = sourceModel ()->index (row, 0, parent);
-		const auto& pattern = filterRegularExpression ().pattern ();
-		if (!pattern.isEmpty ())
-			return GetType (idx) == CLETContact ?
-					idx.data ().toString ().contains (pattern) :
-					true;
+		if (const auto& pattern = filterRegularExpression ().pattern ();
+			!pattern.isEmpty ())
+			return GetType (idx) != CLETContact || idx.data ().toString ().contains (pattern);
 
 		if (idx.data (CLRUnreadMsgCount).toInt ())
 			return true;
 
-		const auto type = GetType (idx);
-
-		if (type == CLETContact)
+		switch (GetType (idx))
+		{
+		case CLETContact:
 		{
 			const auto entry = GetEntry (idx);
 			const auto state = entry->GetStatus ().State_;
 
-			if (!ShowOffline_ &&
-					HideErroring_ &&
-					state == SError)
+			if (!ShowOffline_ && state == SOffline)
 				return false;
 
-			if (!ShowOffline_ &&
-					state == SOffline &&
-					!idx.data (CLRUnreadMsgCount).toInt ())
+			if (!ShowOffline_ && state == SError && HideErroring_)
 				return false;
 
 			if (HideMUCParts_ &&
@@ -216,9 +209,10 @@ namespace LC::Azoth
 			if (!ShowSelfContacts_ &&
 					entry->GetEntryFeatures () & ICLEntry::FSelfContact)
 				return false;
+
+			break;
 		}
-		else if (type == CLETCategory)
-		{
+		case CLETCategory:
 			if (!ShowOffline_ &&
 					!idx.data (CLRNumOnline).toInt ())
 				return false;
@@ -228,9 +222,9 @@ namespace LC::Azoth
 					return true;
 
 			return false;
-		}
-		else if (type == CLETAccount)
+		case CLETAccount:
 			return idx.data (CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
+		}
 
 		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
 	}
