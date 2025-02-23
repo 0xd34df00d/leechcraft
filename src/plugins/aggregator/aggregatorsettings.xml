@@ -46,9 +46,6 @@
 				<item type="checkbox" property="ShowCategorySelector" default="true">
 					<label lang="en" value="Show items category selector" />
 				</item>
-				<item type="checkbox" property="ShowItemsTooltips" default="true">
-					<label value="Show tooltips for news items" />
-				</item>
 				<item type="checkbox" property="ShowNavBarInItemsView" default="false">
 					<label lang="en" value="Show navigation bar when showing the news item" />
 				</item>

@@ -240,6 +240,19 @@ namespace LC::Aggregator
 			grad.setColorAt (1, p.color (QPalette::Base));
 			return QBrush { grad };
 		}
+
+		QString MakeItemTooltip (const Item& item)
+		{
+			return TooltipBuilder { item.Title_ }
+					.Add (ItemsListModel::tr ("Author"), item.Author_)
+					.Add (ItemsListModel::tr ("Categories"), item.Categories_.join ("; "_ql))
+					.Add (ItemsListModel::tr ("%n comment(s)", "", item.NumComments_), item.NumComments_)
+					.Add (ItemsListModel::tr ("%n enclosure(s)", "", item.Enclosures_.size ()), item.Enclosures_.size ())
+					.Add (ItemsListModel::tr ("%n MediaRSS entry(s)", "", item.MRSSEntries_.size ()), item.MRSSEntries_.size ())
+					.Add (ItemsListModel::tr ("RSS with comments is available"), item.CommentsLink_.size ())
+					.AddHtml ("<hr/>" + item.Description_)
+					.GetTooltip ();
+		}
 	}
 
 	QVariant ItemsListModel::data (const QModelIndex& index, int role) const
@@ -259,24 +272,9 @@ namespace LC::Aggregator
 					XmlSettingsManager::Instance ().property ("UnreadItemsFont") :
 					QVariant {};
 		case Qt::ToolTipRole:
-			if (XmlSettingsManager::Instance ().property ("ShowItemsTooltips").toBool ())
-			{
-				const auto& maybeItem = GetSB ()->GetItem (item.ItemID_);
-				if (!maybeItem)
-					return {};
-
-				const auto& fullItem = *maybeItem;
-				return TooltipBuilder { fullItem.Title_ }
-						.Add (tr ("Author"), fullItem.Author_)
-						.Add (tr ("Categories"), fullItem.Categories_.join ("; "_ql))
-						.Add (tr ("%n comment(s)", "", fullItem.NumComments_), fullItem.NumComments_)
-						.Add (tr ("%n enclosure(s)", "", fullItem.Enclosures_.size ()), fullItem.Enclosures_.size ())
-						.Add (tr ("%n MediaRSS entry(s)", "", fullItem.MRSSEntries_.size ()), fullItem.MRSSEntries_.size ())
-						.Add (tr ("RSS with comments is available"), fullItem.CommentsLink_.size ())
-						.AddHtml ("<hr/>" + fullItem.Description_)
-						.GetTooltip ();
-			}
-			break;
+			return GetSB ()->GetItem (item.ItemID_)
+					.transform (&MakeItemTooltip)
+					.value_or (QString {});
 		case Qt::BackgroundRole:
 			return GetItemBackground ();
 		case Qt::DecorationRole:
