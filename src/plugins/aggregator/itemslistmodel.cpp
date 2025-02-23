@@ -208,20 +208,7 @@ namespace Aggregator
 			switch (column)
 			{
 			case 0:
-			{
-				auto title = item.Title_;
-				auto pos = 0;
-				while ((pos = title.indexOf ('<', pos)) != -1)
-				{
-					auto end = title.indexOf ('>', pos);
-					if (end > 0)
-						title.remove (pos, end - pos + 1);
-					else
-						break;
-				}
-
-				return Parsers::UnescapeHTML (std::move (title));
-			}
+				return Parsers::UnescapeHTML (QString { item.Title_ });
 			case 1:
 				return item.PubDate_;
 			}
