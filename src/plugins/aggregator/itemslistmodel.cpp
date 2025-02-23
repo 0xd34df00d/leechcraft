@@ -144,7 +144,6 @@ namespace Aggregator
 	void ItemsListModel::RemoveFeed (IDType_t feedId)
 	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		sb->GetChannels (feedId);
 
 		QSet<IDType_t> channelIds;
 		for (const auto& chan : sb->GetChannels (feedId))
