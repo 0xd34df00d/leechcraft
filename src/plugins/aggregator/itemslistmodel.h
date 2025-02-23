@@ -14,15 +14,11 @@
 #include <QIcon>
 #include <QThreadStorage>
 #include "interfaces/aggregator/iitemsmodel.h"
-#include "item.h"
-#include "channel.h"
 #include "storagebackend.h"
 
 class IIconThemeManager;
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class ItemsListModel : public QAbstractItemModel
 						 , public IItemsModel
@@ -30,7 +26,7 @@ namespace Aggregator
 		Q_OBJECT
 		Q_INTERFACES (LC::Aggregator::IItemsModel)
 
-		QStringList ItemHeaders_;
+		const QStringList ItemHeaders_;
 		QVector<IDType_t> CurrentChannels_;
 		items_shorts_t CurrentItems_;
 
@@ -69,5 +65,4 @@ namespace Aggregator
 		StorageBackend_ptr GetSB () const;
 		void HandleItemReadStatusUpdated (IDType_t, IDType_t, bool);
 	};
-}
 }
