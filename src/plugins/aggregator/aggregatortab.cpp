@@ -9,7 +9,6 @@
 #include "aggregatortab.h"
 #include <QKeyEvent>
 #include <QMenu>
-#include <QSortFilterProxyModel>
 #include <interfaces/core/icoreproxy.h>
 #include <util/gui/statesaver.h>
 #include <util/models/flattofoldersproxymodel.h>
@@ -24,9 +23,7 @@
 #include "channelsfiltermodel.h"
 #include "itemswidget.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	AggregatorTab::AggregatorTab (const InitParams& deps, QObject *plugin)
 	: TabClass_ { deps.TabClass_ }
@@ -56,13 +53,21 @@ namespace Aggregator
 
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->addWidget (ItemsWidget_.get ());
+		connect (Ui_.MergeItems_,
+				&QCheckBox::toggled,
+				this,
+				[this] (bool merge)
+				{
+					ItemsWidget_->SetMergeMode (merge);
+					XmlSettingsManager::Instance ().setProperty ("MergeItems", merge);
+				});
 
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ().Property ("MergeItems", false).toBool ());
 
 		connect (Ui_.Feeds_,
 				&QWidget::customContextMenuRequested,
 				this,
-				&AggregatorTab::handleFeedsContextMenuRequested);
+				&AggregatorTab::HandleFeedsContextMenuRequested);
 
 		connect (Ui_.TagsLine_,
 				&QLineEdit::textChanged,
@@ -201,7 +206,7 @@ namespace Aggregator
 		return true;
 	}
 
-	void AggregatorTab::handleFeedsContextMenuRequested (const QPoint& pos)
+	void AggregatorTab::HandleFeedsContextMenuRequested (const QPoint& pos)
 	{
 		QMenu menu;
 		if (Ui_.Feeds_->indexAt (pos).isValid ())
@@ -213,7 +218,7 @@ namespace Aggregator
 		menu.exec (Ui_.Feeds_->viewport ()->mapToGlobal (pos));
 	}
 
-	void AggregatorTab::currentChannelChanged ()
+	void AggregatorTab::CurrentChannelChanged ()
 	{
 		const auto& index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 		const auto& mapped = FlatToFolders_->MapToSource (index);
@@ -242,14 +247,7 @@ namespace Aggregator
 		connect (Ui_.Feeds_->selectionModel (),
 				&QItemSelectionModel::currentChanged,
 				this,
-				&AggregatorTab::currentChannelChanged);
+				&AggregatorTab::CurrentChannelChanged);
 		Ui_.Feeds_->expandAll ();
 	}
-
-	void AggregatorTab::on_MergeItems__toggled (bool merge)
-	{
-		ItemsWidget_->SetMergeMode (merge);
-		XmlSettingsManager::Instance ().setProperty ("MergeItems", merge);
-	}
-}
 }

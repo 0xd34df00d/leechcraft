@@ -9,20 +9,17 @@
 #pragma once
 
 #include <memory>
-#include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "ui_mainwidget.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class FlatToFoldersProxyModel;
 	class ShortcutManager;
 }
 
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class AppWideActions;
 	class ChannelActions;
@@ -82,16 +79,11 @@ namespace Aggregator
 	private:
 		bool NavigateChannel (ChannelDirection);
 		void SetGroupByTags (bool);
-	private slots:
-		void handleFeedsContextMenuRequested (const QPoint&);
 
-		void currentChannelChanged ();
-
-		void on_MergeItems__toggled (bool);
+		void HandleFeedsContextMenuRequested (const QPoint&);
+		void CurrentChannelChanged ();
 	signals:
 		void tabRecoverDataChanged () override;
-
 		void removeTab () override;
 	};
-}
 }
