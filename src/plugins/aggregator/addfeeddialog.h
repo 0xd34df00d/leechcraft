@@ -8,12 +8,9 @@
 
 #pragma once
 
-#include <QDialog>
 #include "ui_addfeeddialog.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class AddFeedDialog : public QDialog
 	{
@@ -24,5 +21,4 @@ namespace Aggregator
 		QString GetURL () const;
 		QStringList GetTags () const;
 	};
-}
 }

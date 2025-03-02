@@ -7,15 +7,13 @@
  **********************************************************************/
 
 #include "addfeeddialog.h"
-#include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/tags/tagscompleter.h>
+#include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	AddFeedDialog::AddFeedDialog (const QString& url, QWidget *parent)
 	: QDialog { parent }
@@ -30,9 +28,9 @@ namespace Aggregator
 
 	QString AddFeedDialog::GetURL () const
 	{
-		QString result = Ui_.URL_->text ().simplified ();
-		if (result.startsWith ("itpc"))
-			result.replace (0, 4, "http");
+		auto result = Ui_.URL_->text ().simplified ();
+		if (result.startsWith ("itpc"_ql))
+			result.replace (0, 4, "http"_ql);
 		return result;
 	}
 
@@ -40,5 +38,4 @@ namespace Aggregator
 	{
 		return GetProxyHolder ()->GetTagsManager ()->Split (Ui_.Tags_->text ());
 	}
-}
 }
