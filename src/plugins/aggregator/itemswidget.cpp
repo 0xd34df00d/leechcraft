@@ -25,6 +25,7 @@
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "components/actions/itemactions.h"
+#include "components/models/itemscategoriestracker.h"
 #include "components/gui/itemcategoryselector.h"
 #include "components/gui/itemnavigator.h"
 #include "components/gui/itemselectiontracker.h"
@@ -59,6 +60,7 @@ namespace LC::Aggregator
 		QAbstractItemModel *ChannelsModel_ = nullptr;
 
 		const std::unique_ptr<ItemsListModel> ItemsModel_ = std::make_unique<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
+		const ItemsCategoriesTracker CategoriesTracker_ { *ItemsModel_ };
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (*ItemsModel_, Parent_);
 		std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ {};
 
@@ -148,6 +150,10 @@ namespace LC::Aggregator
 				&Util::CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::InvalidateCategorySelection);
+		connect (&Impl_->CategoriesTracker_,
+				&ItemsCategoriesTracker::categoriesChanged,
+				this,
+				[this] (const QStringList& selections) { Impl_->ItemCategorySelector_->SetPossibleSelections (selections); });
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowNavBarInItemsView", this,
 				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });
@@ -238,10 +244,6 @@ namespace LC::Aggregator
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		RenderSelectedItems ();
-
-		const auto& items = Impl_->ItemsModel_->GetAllItems ();
-		const auto& allCategories = ItemUtils::GetCategories (items).values ();
-		Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
 	}
 
 	void ItemsWidget::ConstructBrowser ()
