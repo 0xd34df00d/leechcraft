@@ -160,16 +160,40 @@ namespace LC::Util
 		int& GetIncrementable ();
 		int GetIncrementable () const;
 	};
-}
 
-namespace std
-{
-	template<>
-	struct iterator_traits<LC::Util::ModelIterator>
+	struct ModelRange
 	{
-		typedef QModelIndex value_type;
-		typedef int difference_type;
+		const ModelIterator Begin_;
+		const ModelIterator End_;
 
-		typedef random_access_iterator_tag iterator_category;
+		auto begin () const { return Begin_; }
+		auto end () const { return End_; }
 	};
+
+	inline ModelRange AllModelRows (const QAbstractItemModel& model, int column = 0)
+	{
+		return ModelRange
+		{
+			.Begin_ = { &model, 0, column, ModelIterator::Direction::Rows },
+			.End_ = { &model, model.rowCount (), column, ModelIterator::Direction::Rows },
+		};
+	}
+
+	inline ModelRange ModelRows (const QAbstractItemModel& model, int from, int to, int column = 0)
+	{
+		return ModelRange
+		{
+			.Begin_ = { &model, from, column, ModelIterator::Direction::Rows },
+			.End_ = { &model, to + 1, column, ModelIterator::Direction::Rows },
+		};
+	}
 }
+
+template<>
+struct std::iterator_traits<LC::Util::ModelIterator>
+{
+	typedef QModelIndex value_type;
+	typedef int difference_type;
+
+	typedef random_access_iterator_tag iterator_category;
+};
