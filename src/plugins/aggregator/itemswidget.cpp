@@ -324,7 +324,6 @@ namespace LC::Aggregator
 			FixedString = 0,
 			Wildcard = 1,
 			Regexp = 2,
-			ImportantThisChannel = 3,
 		};
 	}
 
@@ -349,10 +348,5 @@ namespace LC::Aggregator
 			Impl_->ItemsFilterModel_->setFilterFixedString (text);
 			break;
 		}
-
-		QList<ITagsManager::tag_id> tags;
-		if (section == SearchSection::ImportantThisChannel)
-			tags << "_important";
-		Impl_->ItemsFilterModel_->SetItemTags (tags);
 	}
 }
