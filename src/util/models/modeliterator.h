@@ -134,18 +134,6 @@ namespace LC::Util
 		 */
 		friend UTIL_MODELS_API bool operator== (const ModelIterator& left, const ModelIterator& right);
 
-		/** @brief Checks if two iterators are not equal.
-		 *
-		 * For iterators to not be equal at least either the model, parent
-		 * index, row or column should be unequal. Traversal index is
-		 * \em not taken into account.
-		 *
-		 * @param[in] left First iterator to check for inequality.
-		 * @param[in] right Second iterator to check for inequality.
-		 * @return Whether \em left and \em right are equal.
-		 */
-		friend UTIL_MODELS_API bool operator!= (const ModelIterator& left, const ModelIterator& right);
-
 		/** @brief Returns the index currently pointed by the iterator.
 		 *
 		 * @return The index defined by the parent index of this iterator

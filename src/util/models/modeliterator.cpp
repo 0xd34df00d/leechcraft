@@ -73,11 +73,6 @@ namespace LC::Util
 				left.Parent_ == right.Parent_;
 	}
 
-	bool operator!= (const ModelIterator& left, const ModelIterator& right)
-	{
-		return !(left == right);
-	}
-
 	QModelIndex ModelIterator::operator*() const
 	{
 		return Model_->index (Row_, Col_, Parent_);
