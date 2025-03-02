@@ -29,7 +29,7 @@ namespace LC::Util
 	 */
 	class UTIL_MODELS_API ModelIterator
 	{
-		QAbstractItemModel * const Model_;
+		const QAbstractItemModel * const Model_;
 		const QModelIndex Parent_;
 
 		int Row_;
@@ -62,7 +62,7 @@ namespace LC::Util
 		 * @param[in] dir The direction of traversal.
 		 * @param[in] parent The parent index to be used during traversal.
 		 */
-		ModelIterator (QAbstractItemModel *model, int row, int col = 0,
+		ModelIterator (const QAbstractItemModel *model, int row, int col = 0,
 				Direction dir = Direction::Rows, const QModelIndex& parent = {});
 
 		/** @brief Increments the traversable index and returns the

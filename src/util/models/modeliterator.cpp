@@ -12,7 +12,7 @@
 
 namespace LC::Util
 {
-	ModelIterator::ModelIterator (QAbstractItemModel *model,
+	ModelIterator::ModelIterator (const QAbstractItemModel *model,
 			int row, int col, ModelIterator::Direction dir, const QModelIndex& parent)
 	: Model_ (model)
 	, Parent_ (parent)
