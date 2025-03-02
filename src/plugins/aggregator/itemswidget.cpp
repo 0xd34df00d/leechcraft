@@ -17,6 +17,7 @@
 #include <util/gui/statesaver.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
+#include <util/gui/uiinit.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/itagsmanager.h>
@@ -47,10 +48,7 @@ namespace LC::Aggregator
 
 		Ui::ItemsWidget Ui_ {};
 
-		struct UiInit
-		{
-			UiInit (auto&& ui, QWidget *parent) { ui.setupUi (parent); }
-		} UiInit_ { Ui_, Parent_ };
+		Util::UiInit UiInit_ { Ui_, *Parent_ };
 
 		QToolBar *ControlToolBar_ = nullptr;
 
