@@ -325,20 +325,12 @@ namespace LC::Aggregator
 			Wildcard = 1,
 			Regexp = 2,
 			ImportantThisChannel = 3,
-			ImportantAllChannels = 4,
 		};
 	}
 
 	void ItemsWidget::updateItemsFilter ()
 	{
 		const int section = Impl_->Ui_.SearchType_->currentIndex ();
-		if (section == SearchSection::ImportantAllChannels)
-		{
-			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			Impl_->ItemsModel_->SetItems (sb->GetItemsForTag ("_important"));
-		}
-		else
-			CurrentChannelChanged (Impl_->LastSelectedChannel_);
 
 		const QString& text = Impl_->Ui_.SearchLine_->text ();
 		switch (section)

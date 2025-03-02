@@ -44,11 +44,6 @@
          <string>Important (this channel)</string>
         </property>
        </item>
-       <item>
-        <property name="text">
-         <string>Important (all channels)</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="0" column="2">
