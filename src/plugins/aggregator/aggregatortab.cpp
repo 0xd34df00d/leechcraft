@@ -53,16 +53,6 @@ namespace LC::Aggregator
 
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->addWidget (ItemsWidget_.get ());
-		connect (Ui_.MergeItems_,
-				&QCheckBox::toggled,
-				this,
-				[this] (bool merge)
-				{
-					ItemsWidget_->SetMergeMode (merge);
-					XmlSettingsManager::Instance ().setProperty ("MergeItems", merge);
-				});
-
-		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ().Property ("MergeItems", false).toBool ());
 
 		connect (Ui_.Feeds_,
 				&QWidget::customContextMenuRequested,

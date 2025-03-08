@@ -53,7 +53,6 @@ namespace LC::Aggregator
 		QToolBar *ControlToolBar_ = nullptr;
 
 		bool TapeMode_ = XmlSettingsManager::Instance ().Property ("ShowAsTape", false).toBool ();
-		bool MergeMode_ = false;
 
 		QAbstractItemModel *ChannelsModel_ = nullptr;
 
@@ -106,14 +105,6 @@ namespace LC::Aggregator
 
 		auto& cm = deps.ChannelsModel_;
 		Impl_->ChannelsModel_ = &cm;
-		connect (&cm,
-				&QAbstractItemModel::rowsInserted,
-				this,
-				&ItemsWidget::invalidateMergeMode);
-		connect (&cm,
-				&QAbstractItemModel::rowsRemoved,
-				this,
-				&ItemsWidget::invalidateMergeMode);
 
 		Impl_->ControlToolBar_ = CreateToolbar (*Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
@@ -195,24 +186,8 @@ namespace LC::Aggregator
 		XmlSettingsManager::Instance ().setProperty ("ShowAsTape", tape);
 	}
 
-	void ItemsWidget::SetMergeMode (bool merge)
-	{
-		Impl_->MergeMode_ = merge;
-		if (!Impl_->MergeMode_)
-			return;
-
-		auto cm = Impl_->ChannelsModel_;
-		QVector<IDType_t> channels;
-		for (int i = 0, size = cm->rowCount (); i < size; ++i)
-			channels << cm->index (i, 0).data (ChannelRoles::ChannelID).value<IDType_t> ();
-		Impl_->ItemsModel_->SetChannels (channels);
-	}
-
 	void ItemsWidget::SetMergeModeTags (const QStringList& tags)
 	{
-		if (Impl_->MergeMode_)
-			return;
-
 		const auto& tagsSet = Util::AsSet (tags);
 
 		const auto cm = Impl_->ChannelsModel_;
@@ -230,9 +205,6 @@ namespace LC::Aggregator
 
 	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
 	{
-		if (Impl_->MergeMode_)
-			return;
-
 		Impl_->LastSelectedChannel_ = si;
 
 		if (si.isValid ())
@@ -248,15 +220,6 @@ namespace LC::Aggregator
 	{
 		const auto browser = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 		Impl_->Ui_.ItemView_->Construct (browser);
-	}
-
-	void ItemsWidget::invalidateMergeMode ()
-	{
-		if (Impl_->MergeMode_)
-		{
-			SetMergeMode (false);
-			SetMergeMode (true);
-		}
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)

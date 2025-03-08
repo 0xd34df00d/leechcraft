@@ -62,11 +62,6 @@ namespace Aggregator
 
 		QToolBar* GetToolBar () const;
 
-		/** Merge all that channels that are currently shown.
-			*
-			* @param[in] on Whether the merge mode should be enabled.
-			*/
-		void SetMergeMode (bool on);
 
 		/** Merge only those channels that match given tags.
 			*
@@ -88,8 +83,6 @@ namespace Aggregator
 
 		void RenderSelectedItems ();
 	private slots:
-		void invalidateMergeMode ();
-
 		void on_CaseSensitiveSearch__stateChanged (int);
 
 		void makeCurrentItemVisible ();
