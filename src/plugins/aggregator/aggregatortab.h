@@ -78,7 +78,6 @@ namespace LC::Aggregator
 		QString GetTabRecoverName () const override;
 	private:
 		bool NavigateChannel (ChannelDirection);
-		void SetGroupByTags (bool);
 
 		void HandleFeedsContextMenuRequested (const QPoint&);
 		void CurrentChannelChanged ();

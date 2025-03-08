@@ -54,6 +54,14 @@ namespace LC::Aggregator
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->addWidget (ItemsWidget_.get ());
 
+		FlatToFolders_->SetSourceModel (ChannelsFilterModel_);
+		Ui_.Feeds_->setModel (FlatToFolders_.get ());
+		connect (Ui_.Feeds_->selectionModel (),
+				&QItemSelectionModel::currentChanged,
+				this,
+				&AggregatorTab::CurrentChannelChanged);
+		Ui_.Feeds_->expandAll ();
+
 		connect (Ui_.Feeds_,
 				&QWidget::customContextMenuRequested,
 				this,
@@ -76,9 +84,6 @@ namespace LC::Aggregator
 				&QTreeView::expand);
 
 		ItemsWidget_->ConstructBrowser ();
-
-		XmlSettingsManager::Instance ().RegisterObject ("GroupChannelsByTags", this,
-				[this] (bool group) { SetGroupByTags (group); });
 
 		const auto& fm = fontMetrics ();
 		Util::SetupStateSaver (*Ui_.MainSplitter_,
@@ -219,25 +224,5 @@ namespace LC::Aggregator
 		}
 		else
 			ItemsWidget_->CurrentChannelChanged (mapped);
-	}
-
-	void AggregatorTab::SetGroupByTags (bool group)
-	{
-		if (group)
-		{
-			FlatToFolders_->SetSourceModel (ChannelsFilterModel_);
-			Ui_.Feeds_->setModel (FlatToFolders_.get ());
-		}
-		else
-		{
-			FlatToFolders_->SetSourceModel (nullptr);
-			Ui_.Feeds_->setModel (ChannelsFilterModel_);
-		}
-
-		connect (Ui_.Feeds_->selectionModel (),
-				&QItemSelectionModel::currentChanged,
-				this,
-				&AggregatorTab::CurrentChannelChanged);
-		Ui_.Feeds_->expandAll ();
 	}
 }

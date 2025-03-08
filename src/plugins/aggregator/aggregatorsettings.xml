@@ -40,9 +40,6 @@
 			<label lang="en" value="Appearance" />
 			<groupbox>
 				<label lang="en" value="Appearance" />
-				<item type="checkbox" property="GroupChannelsByTags" default="true">
-					<label lang="en" value="Group channels by tags" />
-				</item>
 				<item type="checkbox" property="ShowCategorySelector" default="true">
 					<label lang="en" value="Show items category selector" />
 				</item>
