@@ -43,7 +43,6 @@ namespace LC::Aggregator
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;
 		void SetChannels (const QVector<IDType_t>&) override;
-		void SetItems (const QList<IDType_t>&);
 		void ItemDataUpdated (const Item&);
 
 		QList<QModelIndex> FindItems (const QSet<IDType_t>&) const override;

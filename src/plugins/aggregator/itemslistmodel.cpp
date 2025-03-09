@@ -83,20 +83,6 @@ namespace LC::Aggregator
 		endResetModel ();
 	}
 
-	void ItemsListModel::SetItems (const QList<IDType_t>& items)
-	{
-		beginResetModel ();
-
-		CurrentItems_.clear ();
-
-		const auto& sb = GetSB ();
-		for (const IDType_t& itemId : items)
-			if (const auto& item = sb->GetItem (itemId))
-				CurrentItems_ << item->ToShort ();
-
-		endResetModel ();
-	}
-
 	QList<QModelIndex> ItemsListModel::FindItems (const QSet<IDType_t>& ids) const
 	{
 		QList<QModelIndex> result;
