@@ -308,6 +308,36 @@ namespace LC::Util
 		return result;
 	}
 
+	bool FlatToFoldersProxyModel::IsFolder (const QModelIndex& index) const
+	{
+		const auto item = ToFlat (index);
+		return item && item->Type_ == FlatTreeItem::Type::Folder;
+	}
+
+	QList<QModelIndex> FlatToFoldersProxyModel::GetChildren (const QModelIndex& index) const
+	{
+		if (!IsFolder (index))
+			return {};
+
+		const auto& children = ToFlat (index)->C_;
+		QList<QModelIndex> result;
+		result.reserve (children.size ());
+		for (const auto& child : children)
+			result << child->Index_;
+		return result;
+	}
+
+	QList<QVariant> FlatToFoldersProxyModel::GetChildrenData (const QModelIndex& index, int role) const
+	{
+		const auto& children = GetChildren (index);
+
+		QList<QVariant> result;
+		result.reserve (children.size ());
+		for (const auto& child : children)
+			result.push_back (child.data (role));
+		return result;
+	}
+
 	FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const QString& tag) const
 	{
 		for (const auto& item : Root_->C_)
@@ -497,4 +527,3 @@ namespace LC::Util
 			HandleRowRemoved (i);
 	}
 }
-

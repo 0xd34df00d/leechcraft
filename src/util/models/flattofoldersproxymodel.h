@@ -49,6 +49,19 @@ namespace LC::Util
 		QAbstractItemModel* GetSourceModel () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
 		QList<QModelIndex> MapFromSource (const QModelIndex&) const;
+
+		bool IsFolder (const QModelIndex&) const;
+		QList<QModelIndex> GetChildren (const QModelIndex&) const;
+		QList<QVariant> GetChildrenData (const QModelIndex& index, int role) const;
+
+		template<typename T>
+		QList<T> GetChildrenData (const QModelIndex& index, int role) const
+		{
+			QList<T> result;
+			for (const auto& var : GetChildrenData (index, role))
+				result.push_back (var.value<T> ());
+			return result;
+		}
 	private:
 		const FlatTreeItem& ToFlatOrRoot (const QModelIndex&) const;
 
