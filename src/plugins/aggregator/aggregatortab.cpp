@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "aggregatortab.h"
+#include <unordered_set>
 #include <QKeyEvent>
 #include <QMenu>
 #include <interfaces/core/icoreproxy.h>
@@ -56,7 +57,7 @@ namespace LC::Aggregator
 		FlatToFolders_->SetSourceModel (ChannelsFilterModel_);
 		Ui_.Feeds_->setModel (FlatToFolders_.get ());
 		connect (Ui_.Feeds_->selectionModel (),
-				&QItemSelectionModel::currentChanged,
+				&QItemSelectionModel::selectionChanged,
 				this,
 				&AggregatorTab::CurrentChannelChanged);
 		Ui_.Feeds_->expandAll ();
@@ -216,11 +217,20 @@ namespace LC::Aggregator
 	{
 		QList<IDType_t> channels;
 
-		const auto& index = Ui_.Feeds_->selectionModel ()->currentIndex ();
-		if (FlatToFolders_->IsFolder (index))
-			channels = FlatToFolders_->GetChildrenData<IDType_t> (index, ChannelRoles::ChannelID);
-		else
-			channels.push_back (index.data (ChannelRoles::ChannelID).value<IDType_t> ());
+		for (const auto& index : Ui_.Feeds_->selectionModel ()->selectedRows ())
+		{
+			if (FlatToFolders_->IsFolder (index))
+				channels << FlatToFolders_->GetChildrenData<IDType_t> (index, ChannelRoles::ChannelID);
+			else
+				channels << index.data (ChannelRoles::ChannelID).value<IDType_t> ();
+		}
+
+		std::unordered_set<IDType_t> duplicates;
+		for (auto it = channels.begin (); it != channels.end (); )
+			if (duplicates.insert (*it).second)
+				++it;
+			else
+				it = channels.erase (it);
 
 		ItemsWidget_->SetChannels (channels);
 	}
