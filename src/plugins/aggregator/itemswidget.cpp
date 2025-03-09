@@ -18,7 +18,6 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <util/gui/uiinit.h>
-#include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -36,7 +35,6 @@
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
-#include "channelsmodel.h"
 #include "storagebackendmanager.h"
 #include "itemutils.h"
 
@@ -54,16 +52,10 @@ namespace LC::Aggregator
 
 		bool TapeMode_ = XmlSettingsManager::Instance ().Property ("ShowAsTape", false).toBool ();
 
-		QAbstractItemModel *ChannelsModel_ = nullptr;
-
 		const std::unique_ptr<ItemsListModel> ItemsModel_ = std::make_unique<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
 		const ItemsCategoriesTracker CategoriesTracker_ { *ItemsModel_ };
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (*ItemsModel_, Parent_);
-		std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ {};
-
-		QModelIndex LastSelectedChannel_ {};
-
-		UpdatesManager *UpdatesManager_ = nullptr;
+		const std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 	};
 
 	namespace
@@ -101,11 +93,6 @@ namespace LC::Aggregator
 		this)
 	}
 	{
-		Impl_->UpdatesManager_ = &deps.UpdatesManager_;
-
-		auto& cm = deps.ChannelsModel_;
-		Impl_->ChannelsModel_ = &cm;
-
 		Impl_->ControlToolBar_ = CreateToolbar (*Actions_, deps.ChannelActions_, deps.AppWideActions_);
 
 		Impl_->Ui_.Items_->setAcceptDrops (false);
@@ -131,7 +118,6 @@ namespace LC::Aggregator
 
 		new Util::ClearLineEditAddon (GetProxyHolder (), Impl_->Ui_.SearchLine_);
 
-		Impl_->ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 		Util::SetupStateSaver (*Impl_->Ui_.CategoriesSplitter_,
 				{ .XSM_ = XmlSettingsManager::Instance (), .Id_ = "CategoriesSplitter", .Initial_ = Util::Factors { 4, 1 } });
@@ -186,31 +172,9 @@ namespace LC::Aggregator
 		XmlSettingsManager::Instance ().setProperty ("ShowAsTape", tape);
 	}
 
-	void ItemsWidget::SetMergeModeTags (const QStringList& tags)
+	void ItemsWidget::SetChannels (const QList<IDType_t>& channels)
 	{
-		const auto& tagsSet = Util::AsSet (tags);
-
-		const auto cm = Impl_->ChannelsModel_;
-		QVector<IDType_t> channels;
-		for (int i = 0, size = cm->rowCount (); i < size; ++i)
-		{
-			const auto& index = cm->index (i, 0);
-			const auto& thisSet = index.data (RoleTags).toStringList ();
-			if (std::any_of (thisSet.begin (), thisSet.end (),
-					[&tagsSet] (const QString& tag) { return tagsSet.contains (tag); }))
-				channels << index.data (ChannelRoles::ChannelID).value<IDType_t> ();
-		}
 		Impl_->ItemsModel_->SetChannels (channels);
-	}
-
-	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
-	{
-		Impl_->LastSelectedChannel_ = si;
-
-		if (si.isValid ())
-			Impl_->ItemsModel_->SetChannels ({ si.data (ChannelRoles::ChannelID).value<IDType_t> () });
-		else
-			Impl_->ItemsModel_->SetChannels ({});
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		RenderSelectedItems ();

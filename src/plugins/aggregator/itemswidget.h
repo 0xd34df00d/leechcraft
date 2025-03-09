@@ -38,7 +38,6 @@ namespace Aggregator
 	struct ItemsWidgetDependencies
 	{
 		Util::ShortcutManager& ShortcutsMgr_;
-		QAbstractItemModel& ChannelsModel_;
 		const AppWideActions& AppWideActions_;
 		const ChannelActions& ChannelActions_;
 		UpdatesManager& UpdatesManager_;
@@ -60,24 +59,11 @@ namespace Aggregator
 		explicit ItemsWidget (const Dependencies&, QWidget* = nullptr);
 		~ItemsWidget () override;
 
+		void ConstructBrowser ();
+
 		QToolBar* GetToolBar () const;
 
-
-		/** Merge only those channels that match given tags.
-			*
-			* To disable the merge mode enabled by this, either enable
-			* "usual" merge mode via SetMergeMode() or do a
-			* CurrentChannelChanged().
-			*
-			* If "usual" merge mode (as activated by SetMergeMode())
-			* is currently active, this function does nothing.
-			*
-			* @param[in] tags The list of tags to merge.
-			*/
-		void SetMergeModeTags (const QStringList& tags);
-		void CurrentChannelChanged (const QModelIndex&);
-
-		void ConstructBrowser ();
+		void SetChannels (const QList<IDType_t>&);
 	private:
 		void SetTapeMode (bool);
 

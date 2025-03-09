@@ -39,7 +39,6 @@ namespace LC::Aggregator
 			}) }
 	, ReprWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
 				.ShortcutsMgr_ = deps.ShortcutManager_,
-				.ChannelsModel_ = deps.ChannelsModel_,
 				.AppWideActions_ = deps.AppWideActions_,
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
@@ -66,7 +65,10 @@ namespace LC::Aggregator
 	{
 		SelectedChannel_ = JobHolderRepresentation_->mapToSource (index);
 		JobHolderRepresentation_->SelectionChanged (index);
-		ReprWidget_->CurrentChannelChanged (SelectedChannel_);
+
+		ReprWidget_->SetChannels (index.isValid () ?
+				QList { index.data (ChannelRoles::ChannelID).value<IDType_t> () } :
+				QList<IDType_t> {});
 	}
 
 	bool RepresentationManager::NavigateChannel (ChannelDirection dir)

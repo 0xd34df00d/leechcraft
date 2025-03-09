@@ -41,7 +41,6 @@ namespace LC::Aggregator
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	, ItemsWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
 				.ShortcutsMgr_ = deps.ShortcutManager_,
-				.ChannelsModel_ = *ChannelsFilterModel_,
 				.AppWideActions_ = deps.AppWideActions_,
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
@@ -215,14 +214,14 @@ namespace LC::Aggregator
 
 	void AggregatorTab::CurrentChannelChanged ()
 	{
+		QList<IDType_t> channels;
+
 		const auto& index = Ui_.Feeds_->selectionModel ()->currentIndex ();
-		const auto& mapped = FlatToFolders_->MapToSource (index);
-		if (!mapped.isValid ())
-		{
-			const auto& tags = index.data (RoleTags).toStringList ();
-			ItemsWidget_->SetMergeModeTags (tags);
-		}
+		if (FlatToFolders_->IsFolder (index))
+			channels = FlatToFolders_->GetChildrenData<IDType_t> (index, ChannelRoles::ChannelID);
 		else
-			ItemsWidget_->CurrentChannelChanged (mapped);
+			channels.push_back (index.data (ChannelRoles::ChannelID).value<IDType_t> ());
+
+		ItemsWidget_->SetChannels (channels);
 	}
 }
