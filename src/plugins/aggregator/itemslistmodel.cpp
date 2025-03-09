@@ -45,7 +45,7 @@ namespace LC::Aggregator
 				this,
 				[this] (const Item& item)
 				{
-					if (CurrentChannels_.isEmpty () || CurrentChannels_.contains (item.ChannelID_))
+					if (CurrentChannels_.contains (item.ChannelID_))
 						ItemDataUpdated (item);
 				});
 		connect (&StorageBackendManager::Instance (),
@@ -336,7 +336,7 @@ namespace LC::Aggregator
 
 	void ItemsListModel::HandleItemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread)
 	{
-		if (!CurrentChannels_.isEmpty () && !CurrentChannels_.contains (channelId))
+		if (!CurrentChannels_.contains (channelId))
 			return;
 
 		const auto pos = std::ranges::find_if (CurrentItems_,
