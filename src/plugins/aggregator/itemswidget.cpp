@@ -280,30 +280,26 @@ namespace LC::Aggregator
 			Impl_->Ui_.Items_->scrollTo (item);
 	}
 
-	namespace
+	void ItemsWidget::updateItemsFilter ()
 	{
-		enum SearchSection
+		enum class Section
 		{
 			FixedString = 0,
 			Wildcard = 1,
 			Regexp = 2,
 		};
-	}
 
-	void ItemsWidget::updateItemsFilter ()
-	{
-		const int section = Impl_->Ui_.SearchType_->currentIndex ();
-
-		const QString& text = Impl_->Ui_.SearchLine_->text ();
-		switch (section)
+		const auto section = Impl_->Ui_.SearchType_->currentIndex ();
+		const auto& text = Impl_->Ui_.SearchLine_->text ();
+		switch (static_cast<Section> (section))
 		{
-		case SearchSection::FixedString:
+		case Section::FixedString:
 			Impl_->ItemsFilterModel_->setFilterFixedString (text);
 			break;
-		case SearchSection::Wildcard:
+		case Section::Wildcard:
 			Impl_->ItemsFilterModel_->setFilterWildcard (text);
 			break;
-		case SearchSection::Regexp:
+		case Section::Regexp:
 			Impl_->ItemsFilterModel_->setFilterRegularExpression (text);
 			break;
 		default:
