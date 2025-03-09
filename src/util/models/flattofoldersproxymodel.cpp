@@ -353,7 +353,7 @@ namespace LC::Util
 
 		QPersistentModelIndex pidx (idx);
 
-		for (const auto& tag : qAsConst (tags))
+		for (const auto& tag : std::as_const (tags))
 			AddForTag (tag, pidx);
 	}
 
