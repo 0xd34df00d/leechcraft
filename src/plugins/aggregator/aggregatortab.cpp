@@ -16,6 +16,7 @@
 #include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "components/gui/util.h"
@@ -35,8 +36,17 @@ namespace LC::Aggregator
 				.UpdatesManager_ = deps.UpdatesManager_,
 				.ResourcesFetcher_ = deps.ResourcesFetcher_,
 				.DBUpThread_ = deps.DBUpThread_,
-				.GetCurrentChannel_ = [this] { return Ui_.Feeds_->selectionModel ()->currentIndex (); },
-				.GetAllSelectedChannels_ = [this] { return Ui_.Feeds_->selectionModel ()->selectedRows (); },
+				.GetCurrentChannel_ = [this] () -> std::optional<ChannelShort>
+				{
+					if (const auto& idx = Ui_.Feeds_->currentIndex (); idx.isValid ())
+						return idx.data (ChannelShortStruct).value<ChannelShort> ();
+					return {};
+				},
+				.GetAllSelectedChannels_ = [this]
+				{
+					return Util::Map (Ui_.Feeds_->selectionModel ()->selectedRows (),
+							[] (const QModelIndex& row) { return row.data (ChannelShortStruct).value<ChannelShort> (); });
+				},
 			}) }
 	, FlatToFolders_ { std::make_unique<Util::FlatToFoldersProxyModel> (GetProxyHolder ()->GetTagsManager ()) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }

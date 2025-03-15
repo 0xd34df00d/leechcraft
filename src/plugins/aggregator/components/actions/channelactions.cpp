@@ -106,63 +106,58 @@ namespace LC::Aggregator
 		return ToolbarActions_;
 	}
 
-	void ChannelActions::Update (const QModelIndexList& idxes)
+	void ChannelActions::Update (const QList<ChannelShort>& channels)
 	{
-		for (const auto& idx : idxes)
-			Deps_.UpdatesManager_.UpdateFeed (idx.data (ChannelRoles::FeedID).value<IDType_t> ());
+		for (const auto& channel : channels)
+			Deps_.UpdatesManager_.UpdateFeed (channel.FeedID_);
 	}
 
-	void ChannelActions::Rename (const QModelIndex& idx)
+	void ChannelActions::Rename (const ChannelShort& channel)
 	{
-		const auto& current = idx.data (ChannelRoles::ChannelTitle).toString ();
 		const auto& newName = QInputDialog::getText (nullptr,
 				tr ("Rename feed"),
 				tr ("New feed name:"),
 				QLineEdit::Normal,
-				current);
-		if (newName.isEmpty ())
+				channel.Title_);
+		if (newName.isEmpty () || newName == channel.Title_)
 			return;
 
-		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		sb->SetChannelDisplayTitle (idx.data (ChannelRoles::ChannelID).value<IDType_t> (), newName);
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->SetChannelDisplayTitle (channel.ChannelID_, newName);
 	}
 
 	namespace
 	{
-		QString GetUserString (const QModelIndexList& idxes,
+		QString GetUserString (const QList<ChannelShort>& channels,
 				const QString& single,
 				const QString& multiple)
 		{
-			if (idxes.size () > 1)
-				return multiple;
-
-			const auto& name = idxes.value (0).data (ChannelRoles::ChannelTitle).toString ();
-			return single.arg (Util::FormatName (name));
+			return channels.size () > 1 ?
+					multiple :
+					single.arg (Util::FormatName (channels.value (0).Title_));
 		}
 
-		bool Confirm (const QModelIndexList& idxes,
+		bool Confirm (const QList<ChannelShort>& channels,
 				const QString& single,
 				const QString& multiple)
 		{
 			return QMessageBox::Yes == QMessageBox::question (nullptr,
 					MessageBoxTitle,
-					GetUserString (idxes, single, multiple),
+					GetUserString (channels, single, multiple),
 					QMessageBox::Yes | QMessageBox::No);
 		}
 
 		auto InvokeHandler (ChannelActions *pThis, const ChannelActions::Deps& deps,
-				std::invocable<ChannelActions*, QModelIndex> auto handler)
+				std::invocable<ChannelActions*, ChannelShort> auto handler)
 		{
 			return [=]
 			{
-				if (const auto& idx = deps.GetCurrentChannel_ ();
-						idx.isValid ())
-					std::invoke (handler, pThis, idx);
+				if (const auto& channel = deps.GetCurrentChannel_ ())
+					std::invoke (handler, pThis, *channel);
 			};
 		}
 
 		auto InvokeHandler (ChannelActions *pThis, const ChannelActions::Deps& deps,
-				std::invocable<ChannelActions*, QModelIndexList> auto handler)
+				std::invocable<ChannelActions*, QList<ChannelShort>> auto handler)
 		{
 			return [=]
 			{
@@ -188,56 +183,56 @@ namespace LC::Aggregator
 		return action;
 	}
 
-	void ChannelActions::MarkAsRead (const QModelIndexList& idxes)
+	void ChannelActions::MarkAsRead (const QList<ChannelShort>& channels)
 	{
-		const auto& userString = GetUserString (idxes,
+		const auto& userString = GetUserString (channels,
 				tr ("Are you sure you want to mark channel %1 as read?"),
-				tr ("Are you sure you want to mark %n channel(s) as read?", nullptr, idxes.size ()));
+				tr ("Are you sure you want to mark %n channel(s) as read?", nullptr, channels.size ()));
 		if (!ConfirmWithPersistence ("ConfirmMarkChannelAsRead", userString))
 			return;
 
-		for (const auto& idx : idxes)
-			Deps_.DBUpThread_.ToggleChannelUnread (idx.data (ChannelRoles::ChannelID).value<IDType_t> (), false);
+		for (const auto& channel : channels)
+			Deps_.DBUpThread_.ToggleChannelUnread (channel.ChannelID_, false);
 	}
 
-	void ChannelActions::MarkAsUnread (const QModelIndexList& idxes)
+	void ChannelActions::MarkAsUnread (const QList<ChannelShort>& channels)
 	{
-		if (!Confirm (idxes,
+		if (!Confirm (channels,
 				tr ("Are you sure you want to mark channel %1 as unread?"),
-				tr ("Are you sure you want to mark %n channel(s) as unread?", nullptr, idxes.size ())))
+				tr ("Are you sure you want to mark %n channel(s) as unread?", nullptr, channels.size ())))
 			return;
 
-		for (const auto& idx : idxes)
-			Deps_.DBUpThread_.ToggleChannelUnread (idx.data (ChannelRoles::ChannelID).value<IDType_t> (), true);
+		for (const auto& channel : channels)
+			Deps_.DBUpThread_.ToggleChannelUnread (channel.ChannelID_, true);
 	}
 
-	void ChannelActions::RemoveFeed (const QModelIndexList& idxes)
+	void ChannelActions::RemoveFeed (const QList<ChannelShort>& channels)
 	{
-		if (!Confirm (idxes,
+		if (!Confirm (channels,
 				tr ("Are you sure you want to delete feed %1?"),
-				tr ("Are you sure you want to delete %n feed(s)?", nullptr, idxes.size ())))
+				tr ("Are you sure you want to delete %n feed(s)?", nullptr, channels.size ())))
 			return;
 
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& idx : idxes)
-			sb->RemoveFeed (idx.data (ChannelRoles::FeedID).value<IDType_t> ());
+		for (const auto& channel : channels)
+			sb->RemoveFeed (channel.FeedID_);
 	}
 
-	void ChannelActions::RemoveChannel (const QModelIndexList& idxes)
+	void ChannelActions::RemoveChannel (const QList<ChannelShort>& channels)
 	{
-		if (!Confirm (idxes,
+		if (!Confirm (channels,
 				tr ("Are you sure you want to delete channel %1?"),
-				tr ("Are you sure you want to delete %n channel(s)?", nullptr, idxes.size ())))
+				tr ("Are you sure you want to delete %n channel(s)?", nullptr, channels.size ())))
 			return;
 
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& idx : idxes)
-			sb->RemoveChannel (idx.data (ChannelRoles::ChannelID).value<IDType_t> ());
+		for (const auto& channel : channels)
+			sb->RemoveChannel (channel.ChannelID_);
 	}
 
-	void ChannelActions::Settings (const QModelIndex& idx)
+	void ChannelActions::Settings (const ChannelShort& channel)
 	{
-		FeedSettings dia { idx.data (ChannelShortStruct).value<ChannelShort> () };
+		FeedSettings dia { channel };
 		connect (&dia,
 				&FeedSettings::faviconRequested,
 				&Deps_.ResourcesFetcher_,

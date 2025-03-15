@@ -25,6 +25,7 @@ namespace LC::Aggregator
 	class DBUpdateThread;
 	class ResourcesFetcher;
 	class UpdatesManager;
+	struct ChannelShort;
 
 	class ChannelActions : public QObject
 	{
@@ -40,8 +41,8 @@ namespace LC::Aggregator
 			ResourcesFetcher& ResourcesFetcher_;
 			DBUpdateThread& DBUpThread_;
 
-			std::function<QModelIndex ()> GetCurrentChannel_;
-			std::function<QList<QModelIndex> ()> GetAllSelectedChannels_;
+			std::function<std::optional<ChannelShort> ()> GetCurrentChannel_;
+			std::function<QList<ChannelShort> ()> GetAllSelectedChannels_;
 		};
 	private:
 		const Deps Deps_;
@@ -56,15 +57,15 @@ namespace LC::Aggregator
 	private:
 		QAction* MakeAction (ActionId, auto handler);
 
-		void MarkAsRead (const QList<QModelIndex>&);
-		void MarkAsUnread (const QList<QModelIndex>&);
+		void MarkAsRead (const QList<ChannelShort>&);
+		void MarkAsUnread (const QList<ChannelShort>&);
 
-		void Update (const QList<QModelIndex>&);
-		void Rename (const QModelIndex&);
-		void RemoveFeed (const QList<QModelIndex>&);
+		void Update (const QList<ChannelShort>&);
+		void Rename (const ChannelShort&);
+		void RemoveFeed (const QList<ChannelShort>&);
 
-		void RemoveChannel (const QList<QModelIndex>&);
+		void RemoveChannel (const QList<ChannelShort>&);
 
-		void Settings (const QModelIndex&);
+		void Settings (const ChannelShort&);
 	};
 }

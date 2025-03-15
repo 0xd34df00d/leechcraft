@@ -35,8 +35,18 @@ namespace LC::Aggregator
 				.UpdatesManager_ = deps.UpdatesManager_,
 				.ResourcesFetcher_ = deps.ResourcesFetcher_,
 				.DBUpThread_ = deps.DBUpThread_,
-				.GetCurrentChannel_ = [this] { return SelectedChannel_; },
-				.GetAllSelectedChannels_ = [this] { return QList { SelectedChannel_ }; },
+				.GetCurrentChannel_ = [this]
+				{
+					return SelectedChannel_.isValid () ?
+							std::optional { SelectedChannel_.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> () } :
+							std::nullopt;
+				},
+				.GetAllSelectedChannels_ = [this]
+				{
+					return SelectedChannel_.isValid () ?
+							QList { SelectedChannel_.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> () } :
+							QList<ChannelShort> {};
+				},
 			}) }
 	, ReprWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
 				.ShortcutsMgr_ = deps.ShortcutManager_,
