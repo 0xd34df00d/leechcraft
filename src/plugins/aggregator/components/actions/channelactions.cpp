@@ -197,7 +197,7 @@ namespace LC::Aggregator
 			return;
 
 		for (const auto& idx : idxes)
-			Deps_.DBUpThread_.ToggleChannelUnread (idx, false);
+			Deps_.DBUpThread_.ToggleChannelUnread (idx.data (ChannelRoles::ChannelID).value<IDType_t> (), false);
 	}
 
 	void ChannelActions::MarkAsUnread (const QModelIndexList& idxes)
@@ -208,7 +208,7 @@ namespace LC::Aggregator
 			return;
 
 		for (const auto& idx : idxes)
-			Deps_.DBUpThread_.ToggleChannelUnread (idx, true);
+			Deps_.DBUpThread_.ToggleChannelUnread (idx.data (ChannelRoles::ChannelID).value<IDType_t> (), true);
 	}
 
 	void ChannelActions::RemoveFeed (const QModelIndexList& idxes)

@@ -8,7 +8,6 @@
 
 #include "dbupdatethread.h"
 #include <QtConcurrent>
-#include <QModelIndex>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
@@ -36,9 +35,8 @@ namespace LC::Aggregator
 				});
 	}
 
-	QFuture<void> DBUpdateThread::ToggleChannelUnread (const QModelIndex& idx, bool unread)
+	QFuture<void> DBUpdateThread::ToggleChannelUnread (IDType_t channelId, bool unread)
 	{
-		const auto channelId = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
 		return QtConcurrent::run (&Pool_,
 				[=]
 				{

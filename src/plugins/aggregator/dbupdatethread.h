@@ -13,8 +13,6 @@
 #include <QFuture>
 #include "channel.h"
 
-class QModelIndex;
-
 namespace LC::Aggregator
 {
 	class DBUpdateThread : public QObject
@@ -26,7 +24,7 @@ namespace LC::Aggregator
 		explicit DBUpdateThread (QObject* = nullptr);
 
 		QFuture<void> SetAllChannelsRead ();
-		QFuture<void> ToggleChannelUnread (const QModelIndex&, bool unread);
+		QFuture<void> ToggleChannelUnread (IDType_t, bool unread);
 
 		QFuture<void> UpdateFeed (channels_container_t channels, QString url);
 	};
