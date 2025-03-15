@@ -8,6 +8,7 @@
 
 #include "feedsettings.h"
 #include <QDesktopServices>
+#include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/xpc/util.h>
@@ -19,9 +20,7 @@
 #include "storagebackend.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	namespace
 	{
@@ -35,11 +34,7 @@ namespace Aggregator
 				shortLink = link;
 
 			if (QUrl { link }.isValid ())
-			{
-				link.insert (0, "<a href=\"");
-				link.append ("\">" + shortLink + "</a>");
-				label->setText (link);
-			}
+				label->setText (R"(<a href="%1">%2</a>)"_qs.arg (link, shortLink));
 			else
 				label->setText (shortLink);
 		}
@@ -138,5 +133,4 @@ namespace Aggregator
 
 		QDialog::accept ();
 	}
-}
 }

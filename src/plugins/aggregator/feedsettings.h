@@ -8,13 +8,10 @@
 
 #pragma once
 
-#include <QModelIndex>
 #include "ui_feedsettings.h"
 #include "common.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	struct ChannelShort;
 
@@ -32,5 +29,4 @@ namespace Aggregator
 	signals:
 		void faviconRequested (IDType_t, const QString&);
 	};
-}
 }
