@@ -14,6 +14,12 @@
 #include <interfaces/core/itagsmanager.h>
 #include "common.h"
 
+namespace LC::Util
+{
+	template<typename>
+	class SelectionProxyModel;
+}
+
 namespace LC::Aggregator
 {
 	class IItemsModel;
@@ -23,8 +29,8 @@ namespace LC::Aggregator
 		QSet<QString> ItemCategories_;
 		QSet<IDType_t> TaggedItems_;
 
-		class SelectedIdProxyModel;
-		const std::unique_ptr<SelectedIdProxyModel> SelectedIdProxyModel_;
+		using SelectionProxy_t = Util::SelectionProxyModel<IDType_t>;
+		const std::unique_ptr<SelectionProxy_t> SelectedIdProxyModel_;
 
 		bool HideRead_ = false;
 		bool UnreadOnTop_ = false;

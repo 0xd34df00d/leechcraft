@@ -8,8 +8,8 @@
 
 #include "itemsfiltermodel.h"
 #include <algorithm>
-#include <QIdentityProxyModel>
 #include <QtDebug>
+#include <util/models/selectionproxymodel.h>
 #include <util/sll/containerconversions.h>
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "itemswidget.h"
@@ -18,49 +18,13 @@
 
 namespace LC::Aggregator
 {
-	class ItemsFilterModel::SelectedIdProxyModel : public QIdentityProxyModel
-	{
-		QSet<IDType_t> Selections_;
-		IItemsModel& SourceModel_;
-	public:
-		constexpr static auto IsSelectedRole = IItemsModel::MaxItemRole + 1;
-
-		explicit SelectedIdProxyModel (IItemsModel& sourceModel)
-		: SourceModel_ { sourceModel }
-		{
-			setSourceModel (&SourceModel_.GetQModel ());
-		}
-
-		void SetSelections (const QSet<IDType_t>& selections)
-		{
-			if (Selections_ == selections)
-				return;
-
-			EmitByIds (std::exchange (Selections_, {}));
-			Selections_ = selections;
-			EmitByIds (Selections_);
-		}
-
-		QVariant data (const QModelIndex& index, int role) const override
-		{
-			if (role != IsSelectedRole)
-				return QIdentityProxyModel::data (index, role);
-
-			const auto id = index.data (IItemsModel::ItemId).value<IDType_t> ();
-			return Selections_.contains (id);
-		}
-	private:
-		void EmitByIds (const QSet<IDType_t>& ids)
-		{
-			const auto lastColumn = sourceModel ()->columnCount () - 1;
-			for (const auto& idx : SourceModel_.FindItems (ids))
-				emit dataChanged (idx.siblingAtColumn (0), idx.siblingAtColumn (lastColumn), { IsSelectedRole });
-		}
-	};
-
-	ItemsFilterModel::ItemsFilterModel (IItemsModel& sourceModel, QObject *parent)
+	ItemsFilterModel::ItemsFilterModel (IItemsModel& source, QObject *parent)
 	: QSortFilterProxyModel { parent }
-	, SelectedIdProxyModel_ { std::make_unique<SelectedIdProxyModel> (sourceModel) }
+	, SelectedIdProxyModel_ { std::make_unique<SelectionProxy_t> (source.GetQModel (), SelectionProxy_t::Config {
+				.IsSelectedRole_ = IItemsModel::MaxItemRole + 1,
+				.SourceIdRole_ = IItemsModel::ItemId,
+				.FindItems_ = std::bind_front (&IItemsModel::FindItems, &source),
+			})}
 	, HideRead_ { XmlSettingsManager::Instance ().Property ("HideReadItems", false).toBool () }
 	{
 		QSortFilterProxyModel::setSourceModel (SelectedIdProxyModel_.get ());
@@ -131,7 +95,7 @@ namespace LC::Aggregator
 		const auto itemId = index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 		if (HideRead_ &&
 				index.data (IItemsModel::ItemRole::IsRead).toBool () &&
-				!index.data (SelectedIdProxyModel::IsSelectedRole).toBool ())
+				!index.data (SelectedIdProxyModel_->GetIsSelectedRole ()).toBool ())
 			return false;
 
 		if (!ItemCategories_.isEmpty ())
