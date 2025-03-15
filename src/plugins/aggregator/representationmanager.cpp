@@ -8,7 +8,9 @@
 
 #include "representationmanager.h"
 #include <QModelIndex>
+#include <util/models/modeliterator.h>
 #include <util/models/selectionproxymodel.h>
+#include <util/sll/prelude.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "jobholderrepresentation.h"
@@ -35,18 +37,8 @@ namespace LC::Aggregator
 				.UpdatesManager_ = deps.UpdatesManager_,
 				.ResourcesFetcher_ = deps.ResourcesFetcher_,
 				.DBUpThread_ = deps.DBUpThread_,
-				.GetCurrentChannel_ = [this]
-				{
-					return SelectedChannel_.isValid () ?
-							std::optional { SelectedChannel_.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> () } :
-							std::nullopt;
-				},
-				.GetAllSelectedChannels_ = [this]
-				{
-					return SelectedChannel_.isValid () ?
-							QList { SelectedChannel_.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> () } :
-							QList<ChannelShort> {};
-				},
+				.GetCurrentChannel_ = [this] { return CurrentChannel_; },
+				.GetAllSelectedChannels_ = [this] { return SelectedChannels_; },
 			}) }
 	, ReprWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
 				.ShortcutsMgr_ = deps.ShortcutManager_,
@@ -80,30 +72,42 @@ namespace LC::Aggregator
 
 	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& index)
 	{
-		SelectedChannel_ = JobHolderRepresentation_->mapToSource (index);
+		if (index.isValid ())
+		{
+			CurrentChannel_ = index.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> ();
+			SelectedIdProxyModel_->SetSelections ({ CurrentChannel_->ChannelID_ });
+		}
+		else
+		{
+			CurrentChannel_.reset ();
+			SelectedIdProxyModel_->SetSelections ({});
+		}
+	}
 
-		const auto id = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
-		SelectedIdProxyModel_->SetSelections (index.isValid () ? QSet { id } : QSet<IDType_t> {});
-		ReprWidget_->SetChannels (index.isValid () ?
-				QList { id } :
-				QList<IDType_t> {});
+	void RepresentationManager::HandleSelectedRowsChanged (const QList<QModelIndex>& indices)
+	{
+		SelectedChannels_ = Util::Map (indices,
+				[] (const QModelIndex& idx) { return idx.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> (); });
+		ReprWidget_->SetChannels (Util::Map (SelectedChannels_, &ChannelShort::ChannelID_));
 	}
 
 	bool RepresentationManager::NavigateChannel (ChannelDirection dir)
 	{
-		if (!SelectedChannel_.isValid ())
+		if (!CurrentChannel_)
 			return false;
 
-		auto index = JobHolderRepresentation_->mapFromSource (SelectedChannel_);
-		if (!index.isValid ())
-			return false;
+		for (const auto& idx : Util::AllModelRows (*JobHolderRepresentation_))
+			if (idx.data (ChannelID) == CurrentChannel_->ChannelID_)
+			{
+				const auto& nextIdx = idx.siblingAtRow (idx.row () + ToRowDelta (dir));
+				if (!nextIdx.isValid ())
+					return false;
 
-		index = index.siblingAtRow (index.row () + ToRowDelta (dir));
-		if (!index.isValid ())
-			return false;
+				// TODO notify the representation view about the new index
+				HandleCurrentRowChanged (nextIdx);
+				return true;
+			}
 
-		// TODO notify the representation view about the new index
-		HandleCurrentRowChanged (index);
-		return true;
+		return false;
 	}
 }

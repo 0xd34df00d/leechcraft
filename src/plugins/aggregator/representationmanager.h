@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QModelIndex>
 #include <interfaces/ijobholderrepresentationhandler.h>
+#include "channel.h"
 
 namespace LC::Util
 {
@@ -43,7 +44,8 @@ namespace LC::Aggregator
 		const std::unique_ptr<SelectionProxy_t> SelectedIdProxyModel_;
 		const std::unique_ptr<JobHolderRepresentation> JobHolderRepresentation_;
 
-		QModelIndex SelectedChannel_;
+		std::optional<ChannelShort> CurrentChannel_;
+		QList<ChannelShort> SelectedChannels_;
 	public:
 		struct Deps
 		{
@@ -60,7 +62,8 @@ namespace LC::Aggregator
 
 		QAbstractItemModel* GetRepresentation () const;
 
-		void HandleCurrentRowChanged (const QModelIndex&) override;
+		void HandleCurrentRowChanged(const QModelIndex&) override;
+		void HandleSelectedRowsChanged (const QList<QModelIndex>&) override;
 	private:
 		bool NavigateChannel (ChannelDirection);
 	};
