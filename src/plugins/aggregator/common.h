@@ -46,6 +46,8 @@ namespace LC::Aggregator
 		ChannelTitle,
 		ChannelLink,
 		ChannelShortStruct,
+
+		ChannelRoleMax,
 	};
 
 	enum class ChannelDirection

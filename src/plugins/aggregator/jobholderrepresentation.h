@@ -24,6 +24,7 @@ namespace LC::Aggregator
 			QToolBar& Toolbar_;
 			QWidget& DetailsWidget_;
 			QMenu& RowMenu_;
+			int SelectedRole_;
 		};
 	private:
 		Deps Deps_;
@@ -31,8 +32,6 @@ namespace LC::Aggregator
 		explicit JobHolderRepresentation (const Deps&, QObject* = nullptr);
 
 		QVariant data (const QModelIndex&, int) const override;
-
-		void SelectionChanged (const QModelIndex&);
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};

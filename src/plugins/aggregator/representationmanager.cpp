@@ -8,6 +8,7 @@
 
 #include "representationmanager.h"
 #include <QModelIndex>
+#include <util/models/selectionproxymodel.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "jobholderrepresentation.h"
@@ -44,13 +45,19 @@ namespace LC::Aggregator
 				.UpdatesManager_ = deps.UpdatesManager_,
 				.ChannelNavigator_ = [this] (auto dir) { return NavigateChannel (dir); },
 			})}
+	, SelectedIdProxyModel_ { std::make_unique<SelectionProxy_t> (deps.ChannelsModel_, SelectionProxy_t::Config {
+				.IsSelectedRole_ = ChannelRoles::ChannelRoleMax + 1,
+				.SourceIdRole_ = ChannelRoles::ChannelID,
+				.FindItems_ = std::bind_front (&ChannelsModel::FindItems, &deps.ChannelsModel_),
+			})}
 	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> (JobHolderRepresentation::Deps {
 				.Toolbar_ = *ReprWidget_->GetToolBar (),
 				.DetailsWidget_ = *ReprWidget_,
 				.RowMenu_ = CreateMenu (*ChannelActions_, deps.AppWideActions_, *ReprWidget_),
+				.SelectedRole_ = SelectedIdProxyModel_->GetIsSelectedRole (),
 			})}
 	{
-		JobHolderRepresentation_->setSourceModel (&deps.ChannelsModel_);
+		JobHolderRepresentation_->setSourceModel (&*SelectedIdProxyModel_);
 		ReprWidget_->ConstructBrowser ();
 	}
 
@@ -64,10 +71,11 @@ namespace LC::Aggregator
 	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& index)
 	{
 		SelectedChannel_ = JobHolderRepresentation_->mapToSource (index);
-		JobHolderRepresentation_->SelectionChanged (index);
 
+		const auto id = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
+		SelectedIdProxyModel_->SetSelections (index.isValid () ? QSet { id } : QSet<IDType_t> {});
 		ReprWidget_->SetChannels (index.isValid () ?
-				QList { index.data (ChannelRoles::ChannelID).value<IDType_t> () } :
+				QList { id } :
 				QList<IDType_t> {});
 	}
 

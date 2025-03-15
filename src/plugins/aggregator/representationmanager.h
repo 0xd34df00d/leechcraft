@@ -16,6 +16,9 @@
 namespace LC::Util
 {
 	class ShortcutManager;
+
+	template<typename>
+	class SelectionProxyModel;
 }
 
 namespace LC::Aggregator
@@ -33,9 +36,12 @@ namespace LC::Aggregator
 	class RepresentationManager : public QObject
 								, public IJobHolderRepresentationHandler
 	{
-		std::unique_ptr<ChannelActions> ChannelActions_;
-		std::unique_ptr<ItemsWidget> ReprWidget_;
-		std::unique_ptr<JobHolderRepresentation> JobHolderRepresentation_;
+		using SelectionProxy_t = Util::SelectionProxyModel<IDType_t>;
+
+		const std::unique_ptr<ChannelActions> ChannelActions_;
+		const std::unique_ptr<ItemsWidget> ReprWidget_;
+		const std::unique_ptr<SelectionProxy_t> SelectedIdProxyModel_;
+		const std::unique_ptr<JobHolderRepresentation> JobHolderRepresentation_;
 
 		QModelIndex SelectedChannel_;
 	public:
