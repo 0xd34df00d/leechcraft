@@ -8,6 +8,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <ranges>
 #include <QtDebug>
 #include <QApplication>
 #include <QFont>
@@ -269,8 +270,18 @@ namespace Aggregator
 	{
 		if (!index.isValid ())
 			throw std::runtime_error ("Invalid index");
-		else
-			return Channels_ [index.row ()];
+
+		return Channels_ [index.row ()];
+	}
+
+	QModelIndexList ChannelsModel::FindItems (const QSet<IDType_t>& ids) const
+	{
+		QModelIndexList result;
+		result.reserve (ids.size ());
+		for (const auto& [channel, row] : std::views::zip (Channels_, std::views::iota (0)))
+			if (ids.contains (channel.ChannelID_))
+				result << index (row, 0);
+		return result;
 	}
 
 	void ChannelsModel::Clear ()

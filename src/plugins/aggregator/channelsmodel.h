@@ -53,6 +53,7 @@ namespace Aggregator
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 		const ChannelShort& GetChannelForIndex (const QModelIndex&) const;
+		QModelIndexList FindItems (const QSet<IDType_t>&) const;
 	private:
 		void RemoveChannel (IDType_t);
 		void RemoveFeed (IDType_t);
