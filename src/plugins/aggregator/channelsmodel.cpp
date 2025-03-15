@@ -187,8 +187,7 @@ namespace Aggregator
 					result = GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 				return result;
 			}
-			else
-				return {};
+			return {};
 		case Qt::ForegroundRole:
 			return GetForegroundColor (channel);
 		case Qt::FontRole:
@@ -198,10 +197,9 @@ namespace Aggregator
 				font.setStrikeOut (true);
 				return font;
 			}
-			else if (channel.Unread_)
+			if (channel.Unread_)
 				return XmlSettingsManager::Instance ().property ("UnreadItemsFont");
-			else
-				return {};
+			return {};
 		case Qt::ToolTipRole:
 			return GetTooltip (TagsManager_, *FeedsErrorManager_, channel);
 		case RoleTags:
@@ -222,6 +220,8 @@ namespace Aggregator
 			return GetChannelTitle (channel);
 		case ChannelRoles::ChannelLink:
 			return channel.Link_;
+		case ChannelRoles::ChannelShortStruct:
+			return QVariant::fromValue (channel);
 		default:
 			return {};
 		}

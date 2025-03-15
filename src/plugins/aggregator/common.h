@@ -45,6 +45,7 @@ namespace LC::Aggregator
 		HumanReadableTags,
 		ChannelTitle,
 		ChannelLink,
+		ChannelShortStruct,
 	};
 
 	enum class ChannelDirection
