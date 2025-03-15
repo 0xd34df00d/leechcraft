@@ -10,7 +10,6 @@
 #include <QDesktopServices>
 #include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
-#include <util/sll/functor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -46,9 +45,10 @@ namespace Aggregator
 		}
 	}
 
-	FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
+	FeedSettings::FeedSettings (const ChannelShort& channel, QWidget *parent)
 	: QDialog { parent }
-	, Index_ { mapped }
+	, FeedId_ { channel.FeedID_ }
+	, ChannelId_ { channel.ChannelID_ }
 	{
 		Ui_.setupUi (this);
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
@@ -76,43 +76,36 @@ namespace Aggregator
 		connect (Ui_.UpdateFavicon_,
 				&QPushButton::released,
 				this,
-				[this]
-				{
-					emit faviconRequested (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (),
-							Index_.data (ChannelRoles::ChannelLink).toString ());
-				});
+				[this, channel] { emit faviconRequested (ChannelId_, channel.Link_); });
 
 		const auto itm = GetProxyHolder ()->GetTagsManager ();
 
-		Ui_.ChannelTags_->setText (itm->Join (Index_.data (ChannelRoles::HumanReadableTags).toStringList ()));
+		Ui_.ChannelTags_->setText (itm->JoinIDs (channel.Tags_));
 
 		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		const auto feedId = Index_.data (ChannelRoles::FeedID).value<IDType_t> ();
-
-		if (const auto feedTags = storage->GetFeedTags (feedId))
+		if (const auto feedTags = storage->GetFeedTags (channel.FeedID_))
 			Ui_.FeedTags_->setText (itm->Join (itm->GetTags (*feedTags)));
 
-		using Util::operator*;
-		[&] (auto&& settings)
-		{
-			Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
-			Ui_.NumItems_->setValue (settings.NumItems_);
-			Ui_.ItemAge_->setValue (settings.ItemAge_);
-			Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
-		} * storage->GetFeedSettings (feedId);
+		storage->GetFeedSettings (channel.FeedID_).transform ([&] (auto&& settings)
+				{
+					Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
+					Ui_.NumItems_->setValue (settings.NumItems_);
+					Ui_.ItemAge_->setValue (settings.ItemAge_);
+					Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
+					return Util::Void {};
+				});
 
-		const auto cid = Index_.data (ChannelRoles::ChannelID).value<IDType_t> ();
-		const auto& fullChannel = storage->GetChannel (cid);
+		const auto& fullChannel = storage->GetChannel (ChannelId_);
 
 		SetLabelLink (Ui_.ChannelLink_, fullChannel.Link_);
 		SetLabelLink (Ui_.FeedURL_, storage->GetFeed (fullChannel.FeedID_).URL_);
 
 		Ui_.ChannelDescription_->setHtml (fullChannel.Description_);
 		Ui_.ChannelAuthor_->setText (fullChannel.Author_);
-		Ui_.FeedNumItems_->setText (QString::number (storage->GetTotalItemsCount (cid)));
+		Ui_.FeedNumItems_->setText (QString::number (storage->GetTotalItemsCount (ChannelId_)));
 
-		if (const auto& maybeImg = storage->GetChannelPixmap (cid))
+		if (const auto& maybeImg = storage->GetChannelPixmap (ChannelId_))
 		{
 			auto img = *maybeImg;
 			if (img.width () > 400 || img.height () > 300)
@@ -128,15 +121,15 @@ namespace Aggregator
 		const auto itm = GetProxyHolder ()->GetTagsManager ();
 
 		const auto& channelTags = Ui_.ChannelTags_->text ();
-		storage->SetChannelTags (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (), itm->SplitToIDs (channelTags));
+		storage->SetChannelTags (ChannelId_, itm->SplitToIDs (channelTags));
 
 		auto feedTags = Ui_.FeedTags_->text ();
 		if (feedTags.isEmpty ())
 			feedTags = channelTags;
-		storage->SetFeedTags (Index_.data (ChannelRoles::FeedID).value<IDType_t> (), itm->SplitToIDs (feedTags));
+		storage->SetFeedTags (FeedId_, itm->SplitToIDs (feedTags));
 
 		storage->SetFeedSettings ({
-				Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
+				FeedId_,
 				Ui_.UpdateInterval_->value (),
 				Ui_.NumItems_->value (),
 				Ui_.ItemAge_->value (),

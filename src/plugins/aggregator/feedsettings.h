@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QDialog>
 #include <QModelIndex>
 #include "ui_feedsettings.h"
 #include "common.h"
@@ -17,15 +16,18 @@ namespace LC
 {
 namespace Aggregator
 {
+	struct ChannelShort;
+
 	class FeedSettings : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::FeedSettings Ui_;
-		QPersistentModelIndex Index_;
+		const IDType_t FeedId_;
+		const IDType_t ChannelId_;
 	public:
-		explicit FeedSettings (const QModelIndex&, QWidget* = nullptr);
-	public:
+		explicit FeedSettings (const ChannelShort&, QWidget* = nullptr);
+
 		void accept () override;
 	signals:
 		void faviconRequested (IDType_t, const QString&);

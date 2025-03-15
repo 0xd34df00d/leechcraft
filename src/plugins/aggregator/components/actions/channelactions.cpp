@@ -237,7 +237,7 @@ namespace LC::Aggregator
 
 	void ChannelActions::Settings (const QModelIndex& idx)
 	{
-		FeedSettings dia { idx };
+		FeedSettings dia { idx.data (ChannelShortStruct).value<ChannelShort> () };
 		connect (&dia,
 				&FeedSettings::faviconRequested,
 				&Deps_.ResourcesFetcher_,
