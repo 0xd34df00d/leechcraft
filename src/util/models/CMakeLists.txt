@@ -6,5 +6,6 @@ add_util_library (util-models
 		mergemodel.cpp
 		modeliterator.cpp
 		modelitem.cpp
+		selectionproxymodel.cpp
 	USES Widgets
 	)
