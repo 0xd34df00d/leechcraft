@@ -125,6 +125,9 @@ namespace LC::Monocle
 					size.height (),
 				};
 			}
+
+			qWarning () << "unknown layout mode" << static_cast<int> (LayMode_);
+			return size;
 		};
 
 		auto calcRatio = [&] (auto dimGetter)
