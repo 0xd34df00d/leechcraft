@@ -1,105 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label lang="en" value="General settings" />
-		<tab>
-			<label lang="en" value="Behavior" />
-			<groupbox>
-				<label lang="en" value="Behavior" />
-				<item type="checkbox" property="BeSilent" default="true">
-					<label lang="en" value="Be silent" />
+	<page label="General settings">
+		<tab label="Behavior">
+			<groupbox label="Behavior">
+				<item type="checkbox" property="BeSilent" default="true" label="Be silent" />
+				<item type="checkbox" property="AlwaysUseExternalBrowser" default="true" label="Always use external browser" />
+				<item type="checkbox" property="UnreadOnTop" default="false" label="Show unread items on top" />
+				<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0" label="Mark as read after" suffix=" s" />
+				<item type="combobox" property="NotificationsFeedUpdateBehavior" label="Notifications on feed update:">
+					<option name="ShowAll" default="true" label="all" />
+					<option name="ShowNew" label="only about new items" />
+					<option name="ShowNo" label="don't show" />
 				</item>
-				<item type="checkbox" property="AlwaysUseExternalBrowser" default="true">
-					<label lang="en" value="Always use external browser" />
-				</item>
-				<item type="checkbox" property="UnreadOnTop" default="false">
-					<label lang="en" value="Show unread items on top" />
-				</item>
-				<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0">
-					<label value="Mark as read after" />
-					<suffix value=" s" />
-				</item>
-				<item type="combobox" property="NotificationsFeedUpdateBehavior">
-					<label lang="en" value="Notifications on feed update:" />
-					<option name="ShowAll" default="true">
-						<label lang="en" value="all" />
-					</option>
-					<option name="ShowNew">
-						<label lang="en" value="only about new items" />
-					</option>
-					<option name="ShowNo">
-						<label lang="en" value="don't show" />
-					</option>
-				</item>
-				<item type="lineedit" property="CommentsTags" default="comments">
-					<label lang="en" value="Additional tags for comment feeds:" />
-				</item>
+				<item type="lineedit" property="CommentsTags" default="comments" label="Additional tags for comment feeds:" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label lang="en" value="Appearance" />
-			<groupbox>
-				<label lang="en" value="Appearance" />
-				<item type="checkbox" property="ShowCategorySelector" default="true">
-					<label lang="en" value="Show items category selector" />
-				</item>
-				<item type="checkbox" property="ShowNavBarInItemsView" default="false">
-					<label lang="en" value="Show navigation bar when showing the news item" />
-				</item>
-				<item type="checkbox" property="EmbedMediaRSSImages" default="true">
-					<label value="Show images linked via MediaRSS" />
-				</item>
+		<tab label="Appearance">
+			<groupbox label="Appearance">
+				<item type="checkbox" property="ShowCategorySelector" default="true" label="Show items category selector" />
+				<item type="checkbox" property="ShowNavBarInItemsView" default="false" label="Show navigation bar when showing the news item" />
+				<item type="checkbox" property="EmbedMediaRSSImages" default="true" label="Show images linked via MediaRSS" />
 			</groupbox>
-			<groupbox>
-				<label lang="en" value="Items list" />
-				<item type="font" property="UnreadItemsFont">
-					<label lang="en" value="Font for unread:" />
+			<groupbox label="Items list">
+				<item type="font" property="UnreadItemsFont" label="Font for unread:" />
+				<item type="groupbox" property="UnreadCustomColor" checkable="true" default="on" label="Use color to mark unread">
+					<item type="color" property="UnreadItemsColor" default="#06007B" label="Color:" />
 				</item>
-				<item type="groupbox" property="UnreadCustomColor" checkable="true" default="on">
-					<label lang="en" value="Use color to mark unread" />
-					<item type="color" property="UnreadItemsColor" default="#06007B">
-						<label lang="en" value="Color:" />
-					</item>
-				</item>
-				<item type="checkbox" property="UsePaletteColors" checkable="true" default="off">
-					<label lang="en" value="Use colors from the palette for read/unread items" />
-				</item>
+				<item type="checkbox" property="UsePaletteColors" checkable="true" default="off" label="Use colors from the palette for read/unread items" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label lang="en" value="Feeds handling" />
-			<groupbox>
-				<label lang="en" value="Updates" />
-				<item type="checkbox" property="UpdateOnStartup" default="false">
-					<label lang="en" value="Update feeds on startup" />
-				</item>
-				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5">
-					<label value="Update interval:" />
-					<suffix value=" min" />
-				</item>
+		<tab label="Feeds handling">
+			<groupbox label="Updates">
+				<item type="checkbox" property="UpdateOnStartup" default="false" label="Update feeds on startup" />
+				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5" label="Update interval:" suffix=" min" />
 			</groupbox>
-			<groupbox>
-				<label lang="en" value="Automatic downloading" />
-				<item type="path" property="EnclosuresDownloadPath">
-					<label lang="en" value="Download directory for enclosures:" />
-				</item>
+			<groupbox label="Automatic downloading">
+				<item type="path" property="EnclosuresDownloadPath" label="Download directory for enclosures:" />
 			</groupbox>
-			<groupbox>
-				<label lang="en" value="Store" />
-				<item type="spinbox" property="ItemsPerChannel" default="1000" minimum="20" maximum="10000" step="50">
-					<label lang="en" value="Items per channel:" />
-				</item>
-				<item type="spinbox" property="ItemsMaxAge" default="90" minimum="1" maximum="3650">
-					<label value="Store items for:" />
-					<suffix value=" days" />
-				</item>
+			<groupbox label="Store">
+				<item type="spinbox" property="ItemsPerChannel" default="1000" minimum="20" maximum="10000" step="50" label="Items per channel:" />
+				<item type="spinbox" property="ItemsMaxAge" default="90" minimum="1" maximum="3650" label="Store items for:" suffix=" days" />
 			</groupbox>
-			<item type="checkbox" property="ConfirmMarkAllAsRead" default="true">
-				<label value="Ask mark all feeds as read confirmation" />
-			</item>
+			<item type="checkbox" property="ConfirmMarkAllAsRead" default="true" label="Ask mark all feeds as read confirmation" />
 		</tab>
-		<tab>
-			<label lang="en" value="Storage" />
+		<tab label="Storage">
 			<item type="customwidget" property="BackendSelector" />
 		</tab>
 	</page>
