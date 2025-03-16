@@ -3,7 +3,7 @@ project (lmp_potorchu)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (ProjectM REQUIRED IMPORTED_TARGET libprojectM)
+pkg_check_modules (ProjectM REQUIRED IMPORTED_TARGET projectM-4)
 
 LC_DEFINE_PLUGIN (
 	SRCS
