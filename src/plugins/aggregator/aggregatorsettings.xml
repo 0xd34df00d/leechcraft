@@ -2,7 +2,6 @@
 <settings>
 	<page label="General settings">
 		<tab label="Behavior">
-			<item type="checkbox" property="BeSilent" default="true" label="Be silent" />
 			<item type="checkbox" property="AlwaysUseExternalBrowser" default="true" label="Always use external browser" />
 			<item type="checkbox" property="UnreadOnTop" default="false" label="Show unread items on top" />
 			<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0" label="Mark as read after" suffix=" s" />
