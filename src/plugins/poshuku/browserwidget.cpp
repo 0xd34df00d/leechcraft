@@ -1514,23 +1514,17 @@ namespace Poshuku
 #ifdef ENABLE_IDN
 		if (userText.contains ("xn--"))
 		{
-			QRegExp rx ("(?://|\\.)xn--(.+)(?:\\.|/)");
-			rx.setMinimal (true);
-			int pos = 0;
-			QStringList caps;
+			static QRegularExpression rx { "(?://|\\.)xn--(.+)(?:\\.|/)", QRegularExpression::InvertedGreedinessOption };
 
-			while ((pos = rx.indexIn (userText, pos)) != -1)
-			{
-				caps << rx.cap (1);
-				pos += rx.matchedLength () - 4;
-			}
+			QStringList caps;
+			for (const auto& match : rx.globalMatch (userText))
+				caps << match.captured (1);
 
 			for (auto str : caps)
 			{
 				str.prepend ("xn--");
 				char *output = 0;
-				idna_to_unicode_8z8z (str.toUtf8 ().constData (),
-						&output, IDNA_ALLOW_UNASSIGNED);
+				idna_to_unicode_8z8z (str.toUtf8 ().constData (), &output, IDNA_ALLOW_UNASSIGNED);
 				QString newStr = QString::fromUtf8 (output);
 				userText.replace (str, newStr);
 			}
