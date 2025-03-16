@@ -9,7 +9,6 @@
 #include "qrd.h"
 #include <QMessageBox>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QLabel>
 #include <QMenu>
 #include <QKeyEvent>
