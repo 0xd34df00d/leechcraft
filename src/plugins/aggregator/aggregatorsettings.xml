@@ -2,25 +2,21 @@
 <settings>
 	<page label="General settings">
 		<tab label="Behavior">
-			<groupbox label="Behavior">
-				<item type="checkbox" property="BeSilent" default="true" label="Be silent" />
-				<item type="checkbox" property="AlwaysUseExternalBrowser" default="true" label="Always use external browser" />
-				<item type="checkbox" property="UnreadOnTop" default="false" label="Show unread items on top" />
-				<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0" label="Mark as read after" suffix=" s" />
-				<item type="combobox" property="NotificationsFeedUpdateBehavior" label="Notifications on feed update:">
-					<option name="ShowAll" default="true" label="all" />
-					<option name="ShowNew" label="only about new items" />
-					<option name="ShowNo" label="don't show" />
-				</item>
-				<item type="lineedit" property="CommentsTags" default="comments" label="Additional tags for comment feeds:" />
-			</groupbox>
+			<item type="checkbox" property="BeSilent" default="true" label="Be silent" />
+			<item type="checkbox" property="AlwaysUseExternalBrowser" default="true" label="Always use external browser" />
+			<item type="checkbox" property="UnreadOnTop" default="false" label="Show unread items on top" />
+			<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0" label="Mark as read after" suffix=" s" />
+			<item type="combobox" property="NotificationsFeedUpdateBehavior" label="Notifications on feed update:">
+				<option name="ShowAll" default="true" label="all" />
+				<option name="ShowNew" label="only about new items" />
+				<option name="ShowNo" label="don't show" />
+			</item>
+			<item type="lineedit" property="CommentsTags" default="comments" label="Additional tags for comment feeds:" />
 		</tab>
 		<tab label="Appearance">
-			<groupbox label="Appearance">
-				<item type="checkbox" property="ShowCategorySelector" default="true" label="Show items category selector" />
-				<item type="checkbox" property="ShowNavBarInItemsView" default="false" label="Show navigation bar when showing the news item" />
-				<item type="checkbox" property="EmbedMediaRSSImages" default="true" label="Show images linked via MediaRSS" />
-			</groupbox>
+			<item type="checkbox" property="ShowCategorySelector" default="true" label="Show items category selector" />
+			<item type="checkbox" property="ShowNavBarInItemsView" default="false" label="Show navigation bar when showing the news item" />
+			<item type="checkbox" property="EmbedMediaRSSImages" default="true" label="Show images linked via MediaRSS" />
 			<groupbox label="Items list">
 				<item type="font" property="UnreadItemsFont" label="Font for unread:" />
 				<item type="groupbox" property="UnreadCustomColor" checkable="true" default="on" label="Use color to mark unread">
