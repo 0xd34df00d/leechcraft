@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QModelIndex>
+#include <QUrlQuery>
 #include <interfaces/core/ientitymanager.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/qtutil.h>
@@ -298,11 +299,31 @@ namespace LC::Aggregator
 
 	namespace
 	{
+		QUrl StripTracking (QUrl url)
+		{
+			QUrlQuery query { url };
+			bool modified = false;
+			for (const auto& [key, _] : query.queryItems ())
+				if (key.startsWith ("utm_"_ql))
+				{
+					query.removeAllQueryItems (key);
+					modified = true;
+				}
+			if (modified)
+				url.setQuery (query);
+			return url;
+		}
+
 		QList<QUrl> GetSelectedLinks (const QModelIndexList& selection)
 		{
+			const auto stripTracking = XmlSettingsManager::Instance ().property ("StripTracking").toBool ();
+
 			QList<QUrl> result;
 			for (const auto& idx : selection)
-				result << QUrl { idx.data (IItemsModel::ItemRole::ItemShortDescr).value<ItemShort> ().URL_ };
+			{
+				QUrl url { idx.data (IItemsModel::ItemRole::ItemShortDescr).value<ItemShort> ().URL_ };
+				result << (stripTracking ? StripTracking (url) : url);
+			}
 			return result;
 		}
 	}

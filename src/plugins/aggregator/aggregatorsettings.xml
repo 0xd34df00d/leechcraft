@@ -3,6 +3,7 @@
 	<page label="General settings">
 		<tab label="Behavior">
 			<item type="checkbox" property="AlwaysUseExternalBrowser" default="true" label="Always use external browser" />
+			<item type="checkbox" property="UrlsStripTracking" default="true" label="Strip tracking parameters from URLs" />
 			<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0" label="Mark as read after" suffix=" s" />
 			<item type="combobox" property="NotificationsFeedUpdateBehavior" label="Notifications on feed update:">
 				<option name="ShowAll" default="true" label="all" />
