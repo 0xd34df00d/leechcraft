@@ -201,7 +201,7 @@ namespace Mellonetray
 			return;
 
 		beginInsertRows ({}, Items_.size (), Items_.size ());
-		Items_.append ({ wid });
+		Items_.append (TrayItem { wid });
 		endInsertRows ();
 	}
 
