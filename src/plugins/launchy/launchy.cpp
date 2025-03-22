@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QAction>
 #include <QAbstractItemModel>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/xdg/itemtypes.h>
@@ -27,8 +26,6 @@ namespace Launchy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("launchy");
-
 		Proxy_ = proxy;
 
 		Finder_ = new Util::XDG::ItemsDatabase (proxy,

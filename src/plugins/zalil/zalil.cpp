@@ -9,7 +9,6 @@
 #include "zalil.h"
 #include <QIcon>
 #include <QStandardItemModel>
-#include <util/util.h>
 #include "servicesmanager.h"
 #include "pendinguploadbase.h"
 
@@ -19,8 +18,6 @@ namespace Zalil
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("zalil");
-
 		Manager_ = std::make_shared<ServicesManager> (proxy);
 		connect (Manager_.get (),
 				SIGNAL (fileUploaded (QString, QUrl)),

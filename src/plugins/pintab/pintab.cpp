@@ -11,7 +11,6 @@
 #include <QIcon>
 #include <QMenu>
 #include <QtDebug>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -21,8 +20,6 @@ namespace LC::PinTab
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("pintab");
-
 		Proxy_ = proxy;
 		connect (proxy->GetRootWindowsManager ()->GetQObject (),
 				SIGNAL (tabAdded (int, QWidget*)),

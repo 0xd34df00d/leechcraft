@@ -19,7 +19,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
 #include <util/db/backendselector.h>
 #include <util/sll/either.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -53,8 +52,6 @@ namespace Aggregator
 {
 	void Aggregator::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("aggregator");
-
 		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
 		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");

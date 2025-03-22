@@ -9,7 +9,6 @@
 #include "metacontacts.h"
 #include <QIcon>
 #include <QAction>
-#include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
@@ -24,8 +23,6 @@ namespace Metacontacts
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("azoth_metacontacts");
-
 		Proto_ = new MetaProtocol (this);
 
 		AddToMetacontacts_ = new QAction (tr ("Add to a metacontact..."), this);

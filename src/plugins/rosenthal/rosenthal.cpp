@@ -9,7 +9,6 @@
 #include "rosenthal.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -24,8 +23,6 @@ namespace Rosenthal
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("rosenthal");
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

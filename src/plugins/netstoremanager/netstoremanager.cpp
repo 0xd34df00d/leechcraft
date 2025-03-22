@@ -12,7 +12,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
@@ -30,8 +29,6 @@ namespace NetStoreManager
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("netstoremanager");
 
 		ManagerTC_ =
 		{

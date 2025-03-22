@@ -18,7 +18,6 @@
 #include <QMessageBox>
 #include <util/sll/qtutil.h>
 #include <util/sys/mimedetector.h>
-#include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "hostingservice.h"
 #include "uploader.h"
@@ -27,8 +26,6 @@ namespace LC::Imgaste
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("imgaste"_qs);
-
 		ReprModel_ = new QStandardItemModel { this };
 	}
 

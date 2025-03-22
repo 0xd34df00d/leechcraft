@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sll/unreachable.h>
-#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "tunesourcebase.h"
 #include "filesource.h"
@@ -31,8 +30,6 @@ namespace Xtazy
 				"xtazysettings.xml");
 
 		LCSource_ = new LCSource (this);
-
-		Util::InstallTranslator ("xtazy");
 
 #ifdef HAVE_DBUS
 		TuneSources_ << new MPRISSource (this);

@@ -12,7 +12,6 @@
 #include <QSettings>
 #include <QFile>
 #include <QCoreApplication>
-#include <util/util.h>
 #include <util/sll/parsejson.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -35,8 +34,6 @@ namespace Fua
 
 	void FUA::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("poshuku_fua");
-
 		Model_ = std::make_shared<QStandardItemModel> ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Domain"), tr ("Agent"), tr ("Identification string") });
 

@@ -13,7 +13,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include "keyboardlayoutswitcher.h"
 #include "xmlsettingsmanager.h"
 #include "kbctl.h"
@@ -29,8 +28,6 @@ namespace KBSwitch
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("kbswitch");
-
 		Proxy_ = proxy;
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();

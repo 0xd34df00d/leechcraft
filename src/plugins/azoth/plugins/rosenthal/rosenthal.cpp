@@ -13,7 +13,6 @@
 #include <QContextMenuEvent>
 #include <QMenu>
 #include <QTranslator>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -28,7 +27,6 @@ namespace Rosenthal
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		Util::InstallTranslator ("azoth_rosenthal");
 	}
 
 	void Plugin::SecondInit ()

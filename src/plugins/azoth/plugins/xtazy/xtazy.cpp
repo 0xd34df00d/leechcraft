@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QUrl>
 #include <QTimer>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -35,8 +34,6 @@ namespace Xtazy
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("azoth_xtazy");
-
 		Proxy_ = proxy;
 
 		XSD_.reset (new Util::XmlSettingsDialog);

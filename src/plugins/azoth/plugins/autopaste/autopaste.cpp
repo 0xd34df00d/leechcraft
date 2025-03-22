@@ -12,7 +12,6 @@
 #include <QTextEdit>
 #include <QAction>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -28,8 +27,6 @@ namespace LC::Azoth::Autopaste
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("azoth_autopaste");
-
 		Proxy_ = proxy;
 
 		ActionsStorage_ = new ActionsStorage { this };

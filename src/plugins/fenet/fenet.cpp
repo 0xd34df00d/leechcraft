@@ -11,7 +11,6 @@
 #include <QApplication>
 #include <QProcess>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include "wmfinder.h"
 #include "xmlsettingsmanager.h"
 #include "compfinder.h"
@@ -22,8 +21,6 @@ namespace LC::Fenet
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("fenet");
-
 		Finder_ = new WMFinder;
 		CompFinder_ = new CompFinder;
 		CompParamsManager_ = new CompParamsManager;

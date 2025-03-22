@@ -27,7 +27,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/xsd/wkfontswidget.h>
@@ -64,8 +63,6 @@ namespace Azoth
 		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
 		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
 #endif
-
-		Util::InstallTranslator ("azoth");
 
 		ChatTab::SetParentMultiTabs (this);
 		ServiceDiscoveryWidget::SetParentMultiTabs (this);

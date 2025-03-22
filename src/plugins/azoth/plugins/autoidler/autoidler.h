@@ -17,8 +17,6 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/ilastactivityprovider.h>
 
-class QTranslator;
-
 class Idle;
 
 namespace LC
@@ -42,7 +40,6 @@ namespace Autoidler
 
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
-		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 		std::shared_ptr<Idle> Idle_;

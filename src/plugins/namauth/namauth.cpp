@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QFile>
 #include <interfaces/core/icoreproxy.h>
-#include <util/util.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <util/db/consistencychecker.h>
@@ -24,8 +23,6 @@ namespace NamAuth
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("namauth");
-
 		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
 		Util::Sequence (this, checker->StartCheck ()) >>
 				Util::Visitor

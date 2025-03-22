@@ -9,7 +9,6 @@
 #include "ooronee.h"
 #include <QIcon>
 #include <QtQuick>
-#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "droparea.h"
@@ -21,8 +20,6 @@ namespace Ooronee
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("ooronee");
-
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "ooroneesettings.xml");
 

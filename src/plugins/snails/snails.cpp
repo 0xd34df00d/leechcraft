@@ -8,7 +8,6 @@
 
 #include "snails.h"
 #include <QIcon>
-#include <util/util.h>
 #include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -33,8 +32,6 @@ namespace Snails
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("snails");
-
 		Proxy_ = proxy;
 
 		MailTabClass_ =
@@ -182,4 +179,3 @@ namespace Snails
 }
 
 LC_EXPORT_PLUGIN (leechcraft_snails, LC::Snails::Plugin);
-

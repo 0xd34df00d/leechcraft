@@ -10,7 +10,6 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <QDebug>
-#include <util/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
@@ -27,8 +26,6 @@ namespace Keywords
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("poshuku_keywords");
-
 		CoreProxy_ = proxy;
 
 		auto model = new QStandardItemModel;

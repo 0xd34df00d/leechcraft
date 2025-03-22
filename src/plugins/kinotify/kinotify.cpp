@@ -8,7 +8,6 @@
 
 #include "kinotify.h"
 #include <QIcon>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/void.h>
@@ -27,8 +26,6 @@ namespace LC::Kinotify
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("kinotify"));
-
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				QStringLiteral ("kinotifysettings.xml"));

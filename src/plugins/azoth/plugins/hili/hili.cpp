@@ -10,10 +10,8 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QMessageBox>
-#include <QTranslator>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/imessage.h>
@@ -28,8 +26,6 @@ namespace HiLi
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("azoth_hili");
-
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothhilisettings.xml");

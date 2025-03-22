@@ -19,7 +19,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
@@ -79,8 +78,6 @@ namespace LMP
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("lmp");
 
 		FixGstPaths ();
 

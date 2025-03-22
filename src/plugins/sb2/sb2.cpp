@@ -14,7 +14,6 @@
 #include <QtQuick>
 #include <QtDebug>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -33,8 +32,6 @@ namespace LC::SB2
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("sb2"));
-
 		ShortcutMgr_ = new Util::ShortcutManager (GetProxyHolder (), this);
 
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");

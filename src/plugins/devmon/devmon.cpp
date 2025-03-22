@@ -8,7 +8,6 @@
 
 #include "devmon.h"
 #include <QIcon>
-#include <util/util.h>
 #include "udevbackend.h"
 
 namespace LC
@@ -17,8 +16,6 @@ namespace Devmon
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("devmon");
-
 		Backend_ = new UDevBackend (proxy);
 	}
 
@@ -70,4 +67,3 @@ namespace Devmon
 }
 
 LC_EXPORT_PLUGIN (leechcraft_devmon, LC::Devmon::Plugin);
-

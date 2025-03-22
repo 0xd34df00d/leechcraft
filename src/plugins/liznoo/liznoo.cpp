@@ -17,7 +17,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/entitytesthandleresult.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
@@ -41,8 +40,6 @@ namespace Liznoo
 	{
 		Proxy_ = proxy;
 		qRegisterMetaType<BatteryInfo> ("Liznoo::BatteryInfo");
-
-		Util::InstallTranslator ("liznoo");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "liznoosettings.xml");

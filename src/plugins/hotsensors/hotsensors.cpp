@@ -9,7 +9,6 @@
 #include "hotsensors.h"
 #include <QIcon>
 #include <QAbstractItemModel>
-#include <util/util.h>
 #include <util/sll/qtutil.h>
 
 #ifdef Q_OS_LINUX
@@ -24,8 +23,6 @@ namespace LC::HotSensors
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("hotsensors"_qs);
-
 		HistoryMgr_ = std::make_unique<HistoryManager> ();
 
 #ifdef Q_OS_LINUX

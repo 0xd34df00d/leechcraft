@@ -13,7 +13,6 @@
 #include <QFileDialog>
 #include <QPixmap>
 #include <xmlsettingsdialog/basesettingsmanager.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/unreachable.h>
 #include <interfaces/core/icoreproxy.h>
@@ -28,8 +27,6 @@ namespace LC::Auscrie
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("auscrie"));
-
 		Dialog_ = new ShooterDialog;
 
 		ShotAction_ = new QAction (GetIcon (),

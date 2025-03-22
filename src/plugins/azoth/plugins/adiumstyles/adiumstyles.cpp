@@ -11,7 +11,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include <util/util.h>
 #include "adiumstylesource.h"
 
 namespace LC
@@ -22,7 +21,6 @@ namespace AdiumStyles
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("azoth_adiumstyles");
 		CoreProxy_ = proxy;
 	}
 

@@ -11,7 +11,6 @@
 #include <QAction>
 #include <QTimer>
 #include <QDir>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
@@ -23,7 +22,6 @@ namespace Dolozhee
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("dolozhee");
 		Proxy_ = proxy;
 
 		Report_ = new QAction (tr ("Report an issue..."), this);

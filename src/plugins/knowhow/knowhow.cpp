@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QTimer>
 #include <QDomDocument>
-#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "tipdialog.h"
@@ -21,8 +20,6 @@ namespace KnowHow
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("knowhow");
-
 		Proxy_ = proxy;
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());

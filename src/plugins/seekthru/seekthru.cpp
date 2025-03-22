@@ -11,7 +11,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
@@ -24,8 +23,6 @@ namespace LC::SeekThru
 	void SeekThru::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("seekthru");
 
 		Core::Instance ().SetProxy (proxy);
 

@@ -12,7 +12,6 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QCoreApplication>
-#include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -24,7 +23,6 @@ namespace LC::Azoth::Depester
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("azoth_depester");
 		qRegisterMetaType<QSet<QString>> ("QSet<QString>");
 #if QT_VERSION_MAJOR < 6
 		qRegisterMetaTypeStreamOperators<QSet<QString>> ("QSet<QString>");

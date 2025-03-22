@@ -16,7 +16,6 @@
 #include <QFutureWatcher>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilmputilproxy.h>
 
@@ -28,8 +27,6 @@ namespace LC::LMP::DumbSync
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("lmp_dumbsync");
-
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml");
 	}

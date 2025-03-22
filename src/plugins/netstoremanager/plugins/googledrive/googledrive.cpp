@@ -12,7 +12,6 @@
 #include <QCoreApplication>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/util.h>
 #include <util/sll/prelude.h>
 #include "authmanager.h"
 #include "core.h"
@@ -26,8 +25,6 @@ namespace GoogleDrive
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("netstoremanager_googledrive");
-
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"nsmgoogledrivesettings.xml");

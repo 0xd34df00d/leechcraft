@@ -9,7 +9,6 @@
 #include "birthdaynotifier.h"
 #include <QTimer>
 #include <QIcon>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
@@ -35,8 +34,6 @@ namespace BirthdayNotifier
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("azoth_birthdaynotifier");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothbirthdaynotifiersettings.xml");

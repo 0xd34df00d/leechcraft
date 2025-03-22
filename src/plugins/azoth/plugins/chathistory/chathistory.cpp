@@ -36,8 +36,6 @@ namespace ChatHistory
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("azoth_chathistory");
-
 		CoreProxy_ = proxy;
 
 		TabClass_.TabClass_ = "Chathistory";

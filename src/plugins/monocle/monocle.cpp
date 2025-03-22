@@ -8,8 +8,7 @@
 
 #include "monocle.h"
 #include <QIcon>
-#include <qurl.h>
-#include <util/util.h>
+#include <QUrl>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -38,8 +37,6 @@ namespace LC::Monocle
 		Loader_ = std::make_shared<DocumentLoader> ();
 		PixmapCacheManager_ = std::make_shared<PixmapCacheManager> ();
 		RecentlyOpenedManager_ = std::make_shared<RecentlyOpenedManager> ();
-
-		Util::InstallTranslator ("monocle");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");

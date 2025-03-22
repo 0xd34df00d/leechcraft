@@ -9,7 +9,6 @@
 #include "pdf.h"
 #include <QIcon>
 #include <poppler-version.h>
-#include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -21,8 +20,6 @@ namespace LC::Monocle::PDF
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("monocle_pdf"_qs);
-
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclepdfsettings.xml"_qs);
 	}

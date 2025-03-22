@@ -9,13 +9,11 @@
 #include "herbicide.h"
 #include <QIcon>
 #include <QAction>
-#include <QTranslator>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
-#include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
 #include <util/xsd/util.h>
@@ -83,8 +81,6 @@ namespace Herbicide
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("azoth_herbicide");
-
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothherbicidesettings.xml");

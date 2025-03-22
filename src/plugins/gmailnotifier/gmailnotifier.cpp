@@ -13,7 +13,6 @@
 #include <QApplication>
 #include <QPen>
 #include <QTranslator>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
@@ -27,7 +26,6 @@ namespace GmailNotifier
 {
 	void GmailNotifier::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("gmailnotifier");
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"gmailnotifiersettings.xml");

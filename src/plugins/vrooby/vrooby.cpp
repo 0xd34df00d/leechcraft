@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QAction>
 #include <QTimer>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -34,8 +33,6 @@ namespace Vrooby
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("vrooby");
-
 		TrayView_ = new TrayView (proxy);
 		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 

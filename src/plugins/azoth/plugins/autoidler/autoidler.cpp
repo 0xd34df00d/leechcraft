@@ -11,7 +11,6 @@
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -29,8 +28,6 @@ namespace Autoidler
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		IdleSeconds_ = 0;
-
-		Translator_.reset (Util::InstallTranslator ("azoth_autoidler"));
 
 		Proxy_ = proxy;
 

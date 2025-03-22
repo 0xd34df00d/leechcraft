@@ -17,7 +17,6 @@
 #include <interfaces/an/entityfields.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
-#include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
@@ -31,8 +30,6 @@ namespace LC::AdvancedNotifications
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("advancednotifications"));
-
 		qRegisterMetaType<QRegExp> ();
 
 		RulesManager_ = new RulesManager { this };

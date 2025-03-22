@@ -20,7 +20,6 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/db/backendselector.h>
@@ -38,8 +37,6 @@ namespace Poshuku
 
 	void Poshuku::Init (ICoreProxy_ptr coreProxy)
 	{
-		Util::InstallTranslator ("poshuku");
-
 		BrowserWidget::SetParentMultiTabs (this);
 		Core::Instance ().SetProxy (coreProxy);
 

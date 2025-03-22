@@ -10,7 +10,6 @@
 #include "pogooglue.h"
 #include <QIcon>
 #include <QUrl>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/ientitymanager.h>
@@ -21,8 +20,6 @@ namespace Pogooglue
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("pogooglue");
-
 		Proxy_ = proxy;
 	}
 

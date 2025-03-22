@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QStandardItem>
 #include <QTimer>
-#include <util/util.h>
 #include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -32,8 +31,6 @@ namespace HotStreams
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("hotstreams");
-
 		Model_ = new QStandardItemModel;
 
 		Proxy_ = proxy;
@@ -174,4 +171,3 @@ namespace HotStreams
 }
 
 LC_EXPORT_PLUGIN (leechcraft_hotstreams, LC::HotStreams::Plugin);
-

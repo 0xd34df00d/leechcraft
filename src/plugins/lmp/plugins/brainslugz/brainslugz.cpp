@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "brainslugz.h"
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "checker.h"
@@ -18,8 +17,6 @@ namespace LC::LMP::BrainSlugz
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("lmp_brainslugz"));
-
 		ProgressModelManager_ = new ProgressModelManager { this };
 
 		CheckTC_ = TabClassInfo

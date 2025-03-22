@@ -150,7 +150,7 @@ namespace LC::AnHero
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		auto translator = Util::InstallTranslator ("anhero"_qs);
+		const std::unique_ptr<QTranslator> translator { Util::InstallTranslator ("anhero"_qs) };
 
 		auto args = QCoreApplication::arguments ();
 		if (args.contains ("-noanhero"_qs))
@@ -167,7 +167,7 @@ namespace LC::AnHero
 		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();
 		AppVersion_ = proxy->GetVersion ().toUtf8 ();
 		AppArgs_ = args.join (' ').toUtf8 ();
-		TsFile_ = translator->filePath ().toUtf8 ();
+		TsFile_ = translator ? translator->filePath ().toUtf8 () : QByteArray {};
 		SetCrashHandler (DefaultCrashHandler);
 	}
 

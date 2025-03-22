@@ -11,7 +11,6 @@
 #include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/util.h>
 #include "schemereply.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
@@ -24,7 +23,6 @@ namespace FileScheme
 {
 	void FileScheme::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("poshuku_filescheme");
 	}
 
 	void FileScheme::SecondInit ()
@@ -86,4 +84,3 @@ namespace FileScheme
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_filescheme,
 		LC::Poshuku::FileScheme::FileScheme);
-

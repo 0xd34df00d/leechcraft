@@ -18,7 +18,6 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QTimer>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -34,8 +33,6 @@ namespace TabsList
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("tabslist");
 
 		ShowList_ = new QAction (tr ("List of tabs"), this);
 		ShowList_->setProperty ("ActionIcon", "view-list-details");

@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <interfaces/poshuku/iwebview.h>
@@ -25,7 +24,6 @@ namespace DCAC
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("poshuku_dcac");
 		ViewsManager_ = new ViewsManager { proxy->GetPluginsManager () };
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
@@ -92,4 +90,3 @@ namespace DCAC
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_dcac, LC::Poshuku::DCAC::Plugin);
-

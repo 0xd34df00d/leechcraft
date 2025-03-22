@@ -8,7 +8,6 @@
 
 #include "otlozhu.h"
 #include <QIcon>
-#include <util/util.h>
 #include <util/sll/prelude.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -33,8 +32,6 @@ namespace Otlozhu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("otlozhu");
-
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "otlozhusettings.xml");
 

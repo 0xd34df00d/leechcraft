@@ -14,7 +14,6 @@
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 
-class QUrl;
 class QPoint;
 
 namespace LC::SB2

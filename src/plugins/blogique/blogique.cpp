@@ -8,7 +8,6 @@
 
 #include "blogique.h"
 #include <QIcon>
-#include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "accountslistwidget.h"
@@ -28,7 +27,6 @@ namespace Blogique
 		qRegisterMetaTypeStreamOperators<LC::Blogique::CommentsWidget::CommentIDs_t> ();
 #endif
 
-		Util::InstallTranslator ("blogique");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquesettings.xml");

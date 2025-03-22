@@ -14,7 +14,6 @@
 #include <QFuture>
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/sll/unreachable.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
@@ -37,8 +36,6 @@ namespace Lastfmscrobble
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("lastfmscrobble");
-
 		Proxy_ = proxy;
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

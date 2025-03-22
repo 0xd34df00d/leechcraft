@@ -9,7 +9,6 @@
 #include "webaccess.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/xsd/addressesmodelmanager.h>
 #include "servermanager.h"
 #include "xmlsettingsmanager.h"
@@ -27,8 +26,6 @@ namespace WebAccess
 		Util::AddressesModelManager::RegisterTypes ();
 
 		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), 9001, this);
-
-		Util::InstallTranslator ("aggregator_webaccess");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorwebaccesssettings.xml");

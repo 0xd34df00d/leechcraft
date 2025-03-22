@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/util.h>
 #include "core.h"
 
 namespace LC
@@ -19,8 +18,6 @@ namespace DBusManager
 {
 	void DBusManager::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("dbusmanager");
-
 		Core::Instance ().SetProxy (proxy);
 	}
 

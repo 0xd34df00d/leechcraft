@@ -12,7 +12,6 @@
 #include <QTextDocument>
 #include <QMessageBox>
 #include <QIcon>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -31,8 +30,6 @@ namespace SHX
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("azoth_shx");
-
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothshxsettings.xml");
 

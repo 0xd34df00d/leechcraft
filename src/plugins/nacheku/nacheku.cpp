@@ -9,7 +9,6 @@
 #include "nacheku.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "clipboardwatcher.h"
@@ -21,8 +20,6 @@ namespace Nacheku
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("nacheku");
-
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
 

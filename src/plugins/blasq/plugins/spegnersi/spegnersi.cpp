@@ -8,7 +8,6 @@
 
 #include "spegnersi.h"
 #include <QIcon>
-#include <util/util.h>
 #include "flickrservice.h"
 
 namespace LC
@@ -19,8 +18,6 @@ namespace Spegnersi
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("blasq_spegnersi");
-
 		Service_ = new FlickrService (proxy);
 	}
 

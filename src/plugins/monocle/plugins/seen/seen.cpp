@@ -8,7 +8,6 @@
 
 #include "seen.h"
 #include <QIcon>
-#include <util/util.h>
 #include "document.h"
 #include "docmanager.h"
 
@@ -31,8 +30,6 @@ namespace Seen
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("monocle_seen");
-
 		Context_ = ddjvu_context_create ("leechcraft");
 		ddjvu_message_set_callback (Context_, MsgCallback, this);
 

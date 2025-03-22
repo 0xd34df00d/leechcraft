@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QFileInfo>
 #include <QDir>
-#include <util/util.h>
 #include <util/lmp/mediainfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -24,8 +23,6 @@ namespace LC::LMP::Graffiti
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("lmp_graffiti"));
-
 		ProgressMgr_ = new ProgressManager ();
 
 		TaggerTC_ =

@@ -11,7 +11,6 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/xsd/addressesmodelmanager.h>
 #include "server.h"
 #include "xmlsettingsmanager.h"
@@ -22,8 +21,6 @@ namespace HttHare
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("htthare");
-
 		Util::AddressesModelManager::RegisterTypes ();
 
 		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), 14801, this);

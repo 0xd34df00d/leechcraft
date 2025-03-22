@@ -9,7 +9,6 @@
 #include "abbrev.h"
 #include <QIcon>
 #include <QWidget>
-#include <util/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -27,8 +26,6 @@ namespace LC::Azoth::Abbrev
 		qRegisterMetaTypeStreamOperators<Abbreviation> ();
 		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
 #endif
-
-		Util::InstallTranslator (QStringLiteral ("azoth_abbrev"));
 
 		Manager_ = std::make_shared<AbbrevsManager> ();
 

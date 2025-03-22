@@ -8,7 +8,6 @@
 
 #include "krigstask.h"
 #include <QIcon>
-#include <util/util.h>
 #include "windowsmodel.h"
 #include "taskbarproxy.h"
 
@@ -18,8 +17,6 @@ namespace Krigstask
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("krigstask");
-
 		auto model = new WindowsModel;
 
 		Panel_.reset (new QuarkComponent);

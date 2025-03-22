@@ -14,7 +14,6 @@
 #include <ConnectionManager>
 #include <PendingStringList>
 #include <util/sll/prelude.h>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iprotocol.h>
@@ -33,7 +32,6 @@ namespace Astrality
 	{
 		Proxy_ = proxy;
 
-		Util::InstallTranslator ("azoth_astrality");
 		Tp::registerTypes ();
 		Tp::enableDebug (false);
 		Tp::enableWarnings (false);

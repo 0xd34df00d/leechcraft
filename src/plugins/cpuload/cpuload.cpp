@@ -9,7 +9,6 @@
 #include "cpuload.h"
 #include <QIcon>
 #include <QAbstractItemModel>
-#include <util/util.h>
 
 #ifdef Q_OS_LINUX
 #include "linuxbackend.h"
@@ -27,8 +26,6 @@ namespace CpuLoad
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("cpuload");
-
 #ifdef Q_OS_LINUX
 		auto backend = new LinuxBackend;
 #elif defined (Q_OS_FREEBSD)

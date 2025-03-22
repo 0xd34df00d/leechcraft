@@ -13,7 +13,6 @@
 #include <QMenu>
 #include <QKeyEvent>
 #include <qrencode.h>
-#include <util/util.h>
 #include <util/gui/geometry.h>
 #include <util/sll/lambdaeventfilter.h>
 
@@ -21,7 +20,6 @@ namespace LC::Poshuku::QRd
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("poshuku_qrd"));
 	}
 
 	void Plugin::SecondInit ()

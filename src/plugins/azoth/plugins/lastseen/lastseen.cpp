@@ -11,7 +11,6 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QTimer>
-#include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
@@ -44,8 +43,6 @@ namespace LastSeen
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("azoth_lastseen");
-
 		qRegisterMetaType<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");
 #if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");

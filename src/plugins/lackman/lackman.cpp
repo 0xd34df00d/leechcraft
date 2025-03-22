@@ -9,7 +9,6 @@
 #include "lackman.h"
 #include <QSortFilterProxyModel>
 #include <QIcon>
-#include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
@@ -26,8 +25,6 @@ namespace LackMan
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("lackman");
-
 		TabClass_.TabClass_ = "Lackman";
 		TabClass_.VisibleName_ = "LackMan";
 		TabClass_.Description_ = GetInfo ();

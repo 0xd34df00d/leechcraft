@@ -8,7 +8,6 @@
 
 #include "vangog.h"
 #include <QIcon>
-#include <util/util.h>
 #include "picasaservice.h"
 
 namespace LC
@@ -19,7 +18,6 @@ namespace Vangog
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("blasq_vangog");
 		Service_ = new PicasaService (proxy);
 	}
 

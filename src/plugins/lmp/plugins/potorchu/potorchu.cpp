@@ -8,7 +8,6 @@
 
 #include "potorchu.h"
 #include <QIcon>
-#include <util/util.h>
 #include "visualfilter.h"
 
 namespace LC
@@ -19,7 +18,6 @@ namespace Potorchu
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("lmp_potorchu");
 	}
 
 	void Plugin::SecondInit ()

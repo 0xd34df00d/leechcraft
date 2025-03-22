@@ -13,8 +13,6 @@
 #include <QNetworkRequest>
 #include <QProcess>
 #include <QStringList>
-#include <QTranslator>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
@@ -61,8 +59,6 @@ namespace FatApe
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		CoreProxy_ = proxy;
-
-		Util::InstallTranslator ("poshuku_fatape");
 
 		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
 

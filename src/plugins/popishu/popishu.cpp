@@ -14,7 +14,6 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include "editorpage.h"
 #include "xmlsettingsmanager.h"
 
@@ -24,8 +23,6 @@ namespace Popishu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("popishu");
-
 		Proxy_ = proxy;
 
 		TabClass_.TabClass_ = "Popishu";

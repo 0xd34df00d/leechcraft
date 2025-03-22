@@ -9,7 +9,6 @@
 #include "lemon.h"
 #include <QIcon>
 #include <QAbstractItemModel>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "trafficmanager.h"
@@ -24,8 +23,6 @@ namespace LC::Lemon
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("lemon");
-
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lemonsettings.xml");
 

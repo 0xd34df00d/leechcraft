@@ -13,7 +13,6 @@
 #include <QSettings>
 #include <QApplication>
 #include <QtDebug>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -43,8 +42,6 @@ namespace LC::TabSessManager
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("tabsessmanager");
-
 		Mgrs_ = std::make_shared<Managers> ();
 
 		for (const auto& name : Mgrs_->SessionsMgr_.GetCustomSessions ())

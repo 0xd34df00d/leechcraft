@@ -12,7 +12,6 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/qtutil.h>
 #include "termtab.h"
@@ -55,8 +54,6 @@ namespace LC::Eleeminator
 				});
 
 		ColorSchemesMgr_ = new ColorSchemesManager;
-
-		Util::InstallTranslator ("eleeminator"_qs);
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "eleeminatorsettings.xml"_qs);

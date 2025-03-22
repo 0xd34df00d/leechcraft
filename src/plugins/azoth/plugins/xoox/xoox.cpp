@@ -9,7 +9,6 @@
 #include "xoox.h"
 #include <QIcon>
 #include <QTranslator>
-#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -28,8 +27,6 @@ namespace Xoox
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("azoth_xoox");
-
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothxooxsettings.xml");
 

@@ -8,7 +8,6 @@
 
 #include "readitlater.h"
 #include <QIcon>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "readitlaterauthwidget.h"
@@ -24,8 +23,6 @@ namespace ReadItLater
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("poshuku_onlinebookmarks_readitlater");
-
 		ReadItLaterService_ = std::make_shared<ReadItLaterService> (proxy);
 	}
 

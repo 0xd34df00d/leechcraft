@@ -9,7 +9,6 @@
 #include "lhtr.h"
 #include <QIcon>
 #include <QtDebug>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -20,8 +19,6 @@ namespace LC::LHTR
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("lhtr");
-
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lhtrsettings.xml");
 	}

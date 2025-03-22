@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QtQuick>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -34,8 +33,6 @@ namespace Blasq
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("blasq");
-
 		Proxy_ = proxy;
 
 		ServicesMgr_ = new ServicesManager;

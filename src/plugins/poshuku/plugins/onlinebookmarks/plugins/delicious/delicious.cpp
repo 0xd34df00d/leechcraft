@@ -8,7 +8,6 @@
 
 #include "delicious.h"
 #include <QIcon>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "deliciousauthwidget.h"
@@ -24,8 +23,6 @@ namespace Delicious
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("poshuku_onlinebookmarks_delicious");
-
 		DeliciousService_ = std::make_shared<DeliciousService> (proxy);
 	}
 

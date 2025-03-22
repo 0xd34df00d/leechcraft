@@ -8,7 +8,6 @@
 
 #include "cstp.h"
 #include <QMenu>
-#include <QTranslator>
 #include <QTabWidget>
 #include <QToolBar>
 #include <QMessageBox>
@@ -22,7 +21,6 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/xpc/util.h>
-#include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -35,8 +33,6 @@ namespace CSTP
 		Proxy_ = coreProxy;
 
 		Core::Instance ().SetCoreProxy (coreProxy);
-
-		Util::InstallTranslator ("cstp");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

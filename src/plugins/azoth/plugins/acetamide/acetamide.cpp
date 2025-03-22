@@ -13,7 +13,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include "ircprotocol.h"
 #include "localtypes.h"
 #include "nickservidentifymanager.h"
@@ -27,8 +26,6 @@ namespace LC::Azoth::Acetamide
 #if QT_VERSION_MAJOR < 6
 		qRegisterMetaTypeStreamOperators<QList<QStringList>> ("QList<QStringList>");
 #endif
-
-		Util::InstallTranslator (QStringLiteral ("azoth_acetamide"));
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

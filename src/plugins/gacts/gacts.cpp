@@ -8,7 +8,6 @@
 
 #include "gacts.h"
 #include <QIcon>
-#include <util/util.h>
 #include <qxtglobalshortcut.h>
 #include <interfaces/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -19,7 +18,6 @@ namespace GActs
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("gacts");
 	}
 
 	void Plugin::SecondInit ()

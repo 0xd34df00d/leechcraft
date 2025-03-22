@@ -9,7 +9,6 @@
 #include "speeddial.h"
 #include <QIcon>
 #include <QUrlQuery>
-#include <util/util.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <interfaces/poshuku/iwebview.h>
@@ -27,8 +26,6 @@ namespace LC::Poshuku::SpeedDial
 #if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 #endif
-
-		Util::InstallTranslator ("poshuku_speeddial");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuspeeddialsettings.xml");

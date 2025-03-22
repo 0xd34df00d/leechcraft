@@ -8,7 +8,6 @@
 
 #include "deathnote.h"
 #include <QIcon>
-#include <util/util.h>
 #include "fotobilderservice.h"
 
 namespace LC
@@ -19,8 +18,6 @@ namespace DeathNote
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("blasq_deathnote");
-
 		Service_ = new FotoBilderService (proxy);
 	}
 

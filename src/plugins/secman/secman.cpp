@@ -9,7 +9,6 @@
 #include "secman.h"
 #include <QIcon>
 #include <QAction>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
@@ -22,8 +21,6 @@ namespace SecMan
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("secman");
-
 #ifdef SECMAN_EXPOSE_CONTENTSDISPLAY
 		auto displayContentsAction = new QAction (tr ("Display storages' contents"), this);
 		connect (displayContentsAction,

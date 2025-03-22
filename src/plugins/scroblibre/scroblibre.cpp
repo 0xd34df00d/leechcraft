@@ -9,7 +9,6 @@
 #include "scroblibre.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include <util/sll/unreachable.h>
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
@@ -21,8 +20,6 @@ namespace Scroblibre
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("scroblibre");
-
 		AccMgr_ = new AccountsManager (this);
 		AuthMgr_ = new AuthManager (proxy, this);
 		connect (AccMgr_,

@@ -14,7 +14,6 @@
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iurlcompletionmodel.h>
-#include <util/util.h>
 #include <util/sll/urloperator.h>
 
 namespace LC
@@ -25,8 +24,6 @@ namespace Autosearch
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("poshuku_autosearch");
-
 		Proxy_ = proxy;
 	}
 

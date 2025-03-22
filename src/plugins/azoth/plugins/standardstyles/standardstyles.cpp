@@ -11,14 +11,12 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include <util/util.h>
 #include "standardstylesource.h"
 
 namespace LC::Azoth::StandardStyles
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator (QStringLiteral ("azoth_standardstyles"));
 	}
 
 	void Plugin::SecondInit ()

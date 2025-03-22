@@ -16,7 +16,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
 #include <util/threads/futures.h>
-#include <util/util.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
@@ -34,8 +33,6 @@ namespace TouchStreams
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("touchstreams");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");

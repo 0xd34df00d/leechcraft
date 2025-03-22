@@ -8,7 +8,6 @@
 
 #include "mucommands.h"
 #include <QIcon>
-#include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "commands.h"
@@ -24,8 +23,6 @@ namespace MuCommands
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("azoth_mucommands");
-
 		CoreProxy_ = proxy;
 	}
 

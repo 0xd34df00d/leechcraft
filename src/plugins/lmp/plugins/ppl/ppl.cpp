@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QAction>
 #include <QFileDialog>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include "loghandler.h"
@@ -20,8 +19,6 @@ namespace LC::LMP::PPL
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		Util::InstallTranslator ("lmp_ppl");
 
 		ActionSync_ = new QAction { tr ("Sync scrobbling log"), this };
 		connect (ActionSync_,

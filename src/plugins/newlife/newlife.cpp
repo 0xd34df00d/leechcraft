@@ -10,8 +10,6 @@
 #include <QIcon>
 #include <QMenu>
 #include <QAction>
-#include <QTranslator>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "common/imimportpage.h"
@@ -23,8 +21,6 @@ namespace NewLife
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("newlife");
-
 		Proxy_ = proxy;
 
 		ImporterAction_ = new QAction (tr ("Import settings..."), this);

@@ -8,7 +8,6 @@
 
 #include "dik.h"
 #include <QIcon>
-#include <util/util.h>
 #include "document.h"
 
 namespace LC
@@ -19,7 +18,6 @@ namespace Dik
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("monocle_dik");
 	}
 
 	void Plugin::SecondInit ()

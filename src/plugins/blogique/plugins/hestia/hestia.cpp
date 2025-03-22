@@ -8,8 +8,6 @@
 
 #include "hestia.h"
 #include <QIcon>
-#include <util/util.h>
-#include <interfaces/structures.h>
 #include "localbloggingplatform.h"
 #include "xmlsettingsmanager.h"
 
@@ -21,7 +19,6 @@ namespace Hestia
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("blogique_hestia");
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquehestiasettings.xml");

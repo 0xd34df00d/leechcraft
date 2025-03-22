@@ -12,7 +12,6 @@
 #include <QTabWidget>
 #include <QToolBar>
 #include <QMainWindow>
-#include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -23,8 +22,6 @@ namespace LC::Glance
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("glance"_qs);
-
 		ActionGlance_ = new QAction (GetName (), this);
 		ActionGlance_->setToolTip (tr ("Show the quick overview of tabs"));
 		ActionGlance_->setShortcut ("Ctrl+Shift+G"_qs);

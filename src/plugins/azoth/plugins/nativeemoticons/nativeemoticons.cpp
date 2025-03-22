@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/util.h>
 #include "nativeemoticonssource.h"
 #include "kopeteemoticonssource.h"
 #include "psiplusemoticonssource.h"
@@ -23,8 +22,6 @@ namespace NativeEmoticons
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("azoth_nativeemoticons");
-
 		ResourceSources_ << new NativeEmoticonsSource ()
 				<< new KopeteEmoticonsSource ()
 				<< new PsiPlusEmoticonsSource ();

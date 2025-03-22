@@ -12,7 +12,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/threads/futures.h>
 #include <util/sll/either.h>
-#include <util/util.h>
 #include "hascirylsearcher.h"
 
 namespace LC
@@ -21,8 +20,6 @@ namespace DeadLyrics
 {
 	void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("deadlyrics");
-
 		Proxy_ = proxy;
 
 		Searchers_ << std::make_shared<HascirylSearcher> (proxy->GetNetworkAccessManager ());

@@ -8,7 +8,6 @@
 
 #include "rappor.h"
 #include <QIcon>
-#include <util/util.h>
 #include "vkservice.h"
 
 namespace LC
@@ -19,8 +18,6 @@ namespace Rappor
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("blasq_rappor");
-
 		Service_ = new VkService (proxy);
 	}
 

@@ -10,7 +10,6 @@
 #include <QIcon>
 #include <QNetworkRequest>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "acceptlangwidget.h"
 #include "localeentry.h"
@@ -25,8 +24,6 @@ namespace Intermutko
 #if QT_VERSION_MAJOR == 5
 		qRegisterMetaTypeStreamOperators<QList<LocaleEntry>> ();
 #endif
-
-		Util::InstallTranslator ("intermutko");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "intermutkosettings.xml");

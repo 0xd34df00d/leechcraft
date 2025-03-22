@@ -9,7 +9,6 @@
 #include "fxb.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/util.h>
 #include "document.h"
 #include "xmlsettingsmanager.h"
 
@@ -21,8 +20,6 @@ namespace FXB
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("monocle_fxb");
-
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclefxbsettings.xml");
 	}

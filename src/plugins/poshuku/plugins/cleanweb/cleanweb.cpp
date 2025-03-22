@@ -12,7 +12,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
-#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -30,8 +29,6 @@ namespace CleanWeb
 {
 	void CleanWeb::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("poshuku_cleanweb");
-
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"poshukucleanwebsettings.xml");

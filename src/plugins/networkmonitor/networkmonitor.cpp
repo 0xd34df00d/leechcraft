@@ -10,9 +10,7 @@
 #include <typeinfo>
 #include <QMenu>
 #include <QSortFilterProxyModel>
-#include <QMainWindow>
 #include <QNetworkAccessManager>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "requestmodel.h"
@@ -26,8 +24,6 @@ namespace LC
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
-				Util::InstallTranslator ("networkmonitor");
-
 				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
 
 				Ui_.setupUi (this);

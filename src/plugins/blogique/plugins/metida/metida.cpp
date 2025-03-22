@@ -8,8 +8,6 @@
 
 #include "metida.h"
 #include <QIcon>
-#include <util/util.h>
-#include <interfaces/structures.h>
 #include "ljbloggingplatform.h"
 #include "localstorage.h"
 #include "xmlsettingsmanager.h"
@@ -22,8 +20,6 @@ namespace Metida
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("blogique_metida");
-
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "blogiquemetidasettings.xml");
 
