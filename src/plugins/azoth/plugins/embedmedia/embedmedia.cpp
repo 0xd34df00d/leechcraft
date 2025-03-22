@@ -49,7 +49,7 @@ namespace LC::Azoth::EmbedMedia
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Enables displaying media objects right in chat windows.");
+		return tr ("Displays media objects right in chat windows.");
 	}
 
 	QIcon Plugin::GetIcon () const
