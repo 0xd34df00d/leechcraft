@@ -8,17 +8,12 @@
 
 #pragma once
 
-#include <QDialog>
 #include "ui_authenticationdialog.h"
 
-namespace LC
-{
-namespace NamAuth
+namespace LC::NamAuth
 {
 	class AuthenticationDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::AuthenticationDialog Ui_;
 	public:
 		AuthenticationDialog (const QString& message,
@@ -30,5 +25,4 @@ namespace NamAuth
 		QString GetPassword () const;
 		bool ShouldSave () const;
 	};
-}
 }

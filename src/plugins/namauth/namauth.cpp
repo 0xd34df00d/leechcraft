@@ -14,12 +14,11 @@
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <util/db/consistencychecker.h>
+#include <util/sll/qtutil.h>
 #include "namhandler.h"
 #include "sqlstoragebackend.h"
 
-namespace LC
-{
-namespace NamAuth
+namespace LC::NamAuth
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -36,7 +35,7 @@ namespace NamAuth
 									[=, this] (const Util::ConsistencyChecker::DumpError& err)
 									{
 										QMessageBox::critical (nullptr,
-												tr ("LeechCraft"),
+												"LeechCraft"_qs,
 												tr ("Unable to recover the HTTP passwords database: %1.")
 														.arg (err.Error_));
 
@@ -70,7 +69,7 @@ namespace NamAuth
 
 	QString Plugin::GetName () const
 	{
-		return "NamAuth";
+		return "NamAuth"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -88,7 +87,6 @@ namespace NamAuth
 		const auto sb = new SQLStorageBackend;
 		new NamHandler { sb, proxy->GetNetworkAccessManager () };
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_namauth, LC::NamAuth::Plugin);

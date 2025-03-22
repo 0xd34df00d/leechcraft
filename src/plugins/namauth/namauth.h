@@ -11,9 +11,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 
-namespace LC
-{
-namespace NamAuth
+namespace LC::NamAuth
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -23,15 +21,14 @@ namespace NamAuth
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.NamAuth")
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 	private:
 		void InitStorage (const ICoreProxy_ptr&);
 	};
-}
 }

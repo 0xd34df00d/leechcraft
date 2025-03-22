@@ -16,6 +16,7 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 
 ORAL_ADAPT_STRUCT (LC::NamAuth::SQLStorageBackend::AuthRecord,
@@ -24,13 +25,11 @@ ORAL_ADAPT_STRUCT (LC::NamAuth::SQLStorageBackend::AuthRecord,
 		Login_,
 		Password_)
 
-namespace LC
-{
-namespace NamAuth
+namespace LC::NamAuth
 {
 	SQLStorageBackend::SQLStorageBackend ()
-	: DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE",
-			Util::GenConnectionName ("NamAuth.Connection"))))
+	: DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE"_qs,
+			Util::GenConnectionName ("NamAuth.Connection"_qs))))
 	{
 		DB_->setDatabaseName (GetDBPath ());
 		if (!DB_->open ())
@@ -46,7 +45,7 @@ namespace NamAuth
 
 	QString SQLStorageBackend::GetDBPath ()
 	{
-		return Util::CreateIfNotExists ("core").filePath ("core.db");
+		return Util::CreateIfNotExists ("core"_qs).filePath ("core.db"_qs);
 	}
 
 	namespace sph = Util::oral::sph;
@@ -61,5 +60,4 @@ namespace NamAuth
 		AdaptedRecord_->Insert (record,
 				Util::oral::InsertAction::Replace::Fields<&AuthRecord::RealmName_, &AuthRecord::Context_>);
 	}
-}
 }

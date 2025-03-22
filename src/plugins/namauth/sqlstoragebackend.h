@@ -15,14 +15,10 @@
 #include <util/db/oral/oraltypes.h>
 #include <util/sll/ctstring.h>
 
-namespace LC
-{
-namespace NamAuth
+namespace LC::NamAuth
 {
 	class SQLStorageBackend : public QObject
 	{
-		Q_OBJECT
-
 		std::shared_ptr<QSqlDatabase> DB_;
 	public:
 		struct AuthRecord
@@ -48,12 +44,11 @@ namespace NamAuth
 		Util::oral::ObjectInfo_ptr<AuthRecord> AdaptedRecord_;
 	public:
 		SQLStorageBackend ();
-		~SQLStorageBackend ();
+		~SQLStorageBackend () override;
 
 		static QString GetDBPath ();
 
 		std::optional<AuthRecord> GetAuth (const QString&, const QString&);
 		void SetAuth (const AuthRecord&);
 	};
-}
 }

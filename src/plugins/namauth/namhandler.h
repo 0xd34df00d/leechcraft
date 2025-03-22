@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 
 class QNetworkAccessManager;
@@ -15,25 +16,19 @@ class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
 
-namespace LC
-{
-namespace NamAuth
+namespace LC::NamAuth
 {
 	class SQLStorageBackend;
 
 	class NamHandler : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::NamAuth::NamHandler)
 
 		SQLStorageBackend * const SB_;
 		QNetworkAccessManager * const NAM_;
 	public:
 		NamHandler (SQLStorageBackend*, QNetworkAccessManager*);
 	private:
-		void DoCommonAuth (const QString&, const QString&, QAuthenticator*);
-	private slots:
-		void handleAuthentication (QNetworkReply*, QAuthenticator*);
-		void handleAuthentication (const QNetworkProxy&, QAuthenticator*);
+		void DoCommonAuth (const QString&, QAuthenticator*) const;
 	};
-}
 }

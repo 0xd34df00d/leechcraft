@@ -8,9 +8,7 @@
 
 #include "authenticationdialog.h"
 
-namespace LC
-{
-namespace NamAuth
+namespace LC::NamAuth
 {
 	AuthenticationDialog::AuthenticationDialog (const QString& message,
 			const QString& login,
@@ -38,5 +36,4 @@ namespace NamAuth
 	{
 		return Ui_.SaveCredentials_->checkState () == Qt::Checked;
 	}
-}
 }
