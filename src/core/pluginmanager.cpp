@@ -29,6 +29,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/scopeguards.h>
+#include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -378,11 +379,23 @@ namespace LC
 		}
 	};
 
+	namespace
+	{
+		void InstallTranslatorForPath (const QString& pluginPath, const QString& localeName)
+		{
+			const auto& baseName = QFileInfo { pluginPath }.baseName ().section ('_', 1);
+			if (const auto transl = Util::LoadTranslator (baseName, localeName))
+				QCoreApplication::installTranslator (transl);
+		}
+	}
+
 	QObject* PluginManager::TryFirstInit (QObjectList ordered, PluginLoadProcess *proc)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		const auto guard = Util::BeginGroup (settings, "Plugins");
+
+		const auto& localeName = Util::GetLocaleName ();
 
 		for (const auto obj : ordered)
 		{
@@ -392,9 +405,12 @@ namespace LC
 			try
 			{
 				qDebug () << "Initializing" << ii->GetName ();
-				ii->Init (ii->GetProxy ());
 
 				const auto& path = GetPluginLibraryPath (obj);
+				InstallTranslatorForPath (path, localeName);
+
+				ii->Init (ii->GetProxy ());
+
 				if (path.isEmpty ())
 					continue;
 
