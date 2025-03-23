@@ -11,6 +11,7 @@
 #include <memory>
 #include <variant>
 #include <QObject>
+#include <util/sll/either.h>
 #include "dbconfig.h"
 
 template<typename>
@@ -42,7 +43,7 @@ namespace LC::Util
 		{
 			QString Error_;
 		};
-		using DumpResult_t = std::variant<DumpFinished, DumpError>;
+		using DumpResult_t = Either<DumpError, DumpFinished>;
 
 		struct Succeeded {};
 		struct IFailed
@@ -55,7 +56,7 @@ namespace LC::Util
 		};
 		using Failed = std::shared_ptr<IFailed>;
 
-		using CheckResult_t = std::variant<Succeeded, Failed>;
+		using CheckResult_t = Either<Failed, Succeeded>;
 
 		QFuture<CheckResult_t> StartCheck ();
 	private:

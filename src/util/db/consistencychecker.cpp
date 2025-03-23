@@ -75,7 +75,7 @@ namespace LC::Util
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "cannot open the DB, but that's not the kind of errors we're solving.";
-			return Succeeded {};
+			return CheckResult_t::Right ({});
 		}
 
 		QSqlQuery pragma { *db };
@@ -91,9 +91,9 @@ namespace LC::Util
 				<< "; result is:"
 				<< isGood;
 		if (isGood)
-			return Succeeded {};
-		else
-			return std::make_shared<FailedImpl> (shared_from_this ());
+			return CheckResult_t::Right ({});
+
+		return CheckResult_t::Left (std::make_shared<FailedImpl> (shared_from_this ()));
 	}
 
 	QFuture<ConsistencyChecker::DumpResult_t> ConsistencyChecker::DumpReinit ()
@@ -141,7 +141,7 @@ namespace LC::Util
 								      Util::MakePrettySize (filesize)),
 						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
 			{
-				ReportResult (iface, DumpError { tr ("Not enough available disk space.") });
+				ReportResult (iface, DumpResult_t::Left ({ tr ("Not enough available disk space.") }));
 				return;
 			}
 		}
@@ -160,7 +160,7 @@ namespace LC::Util
 								.arg ("<em>" + newPath + "</em>"),
 						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
 			{
-				ReportResult (iface, DumpError { tr ("Backup file already exists.") });
+				ReportResult (iface, DumpResult_t::Left ({ tr ("Backup file already exists.") }));
 				return;
 			}
 		}
@@ -175,7 +175,7 @@ namespace LC::Util
 							[iface] (const Dumper::Error& error)
 							{
 								ReportResult (iface,
-										DumpError { tr ("Unable to restore the database.") + " " + error.What_ });
+										DumpResult_t::Left ({ tr ("Unable to restore the database.") + " " + error.What_ }));
 							},
 							[iface, newPath, managed] (Dumper::Finished) { managed->HandleDumperFinished (iface, newPath); });
 				};
@@ -196,6 +196,6 @@ namespace LC::Util
 
 		QFile::rename (to, DBPath_);
 
-		ReportResult (iface, DumpFinished { oldSize, newSize });
+		ReportResult (iface, DumpResult_t::Right ({ oldSize, newSize }));
 	}
 }
