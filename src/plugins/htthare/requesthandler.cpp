@@ -474,8 +474,7 @@ namespace HttHare
 				c->GetStrand ().wrap ([c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
 					{
 						if (ec)
-							qWarning () << Q_FUNC_INFO
-									<< ec.message ().c_str ();
+							qWarning () << ec.message ().c_str ();
 
 						auto& s = c->GetSocket ();
 
@@ -522,8 +521,7 @@ namespace HttHare
 				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
 					{
 						if (ec)
-							qWarning () << Q_FUNC_INFO
-									<< ec.message ().c_str ();
+							qWarning () << ec.message ().c_str ();
 
 						boost::system::error_code iec;
 						c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
