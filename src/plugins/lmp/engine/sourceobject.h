@@ -94,6 +94,7 @@ namespace LMP
 		Q_OBJECT
 
 		friend class Path;
+		friend class MsgPopThread;
 
 		std::shared_ptr<GstElement> Dec_;
 

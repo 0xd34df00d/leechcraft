@@ -90,21 +90,32 @@ namespace LMP
 		ShouldStop_.store (true, std::memory_order_relaxed);
 	}
 
+	namespace
+	{
+		std::shared_ptr<GstMessage> PopMessage (GstBus& bus, GstClockTime timeout)
+		{
+			const auto msg = gst_bus_timed_pop (&bus, timeout);
+			if (!msg)
+				return {};
+			return { msg, gst_message_unref };
+		}
+	}
+
 	void MsgPopThread::run ()
 	{
 		while (!ShouldStop_.load (std::memory_order_relaxed))
 		{
 			msleep (3);
-			const auto msg = gst_bus_timed_pop (Bus_, Multiplier_ * GST_SECOND);
+			const auto msg = PopMessage (*Bus_, Multiplier_ * GST_SECOND);
 			if (!msg)
 				continue;
 
 			QMetaObject::invokeMethod (SourceObj_,
-					"handleMessage",
+					&SourceObject::handleMessage,
 					Qt::QueuedConnection,
-					Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
+					msg);
 
-			if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR)
+			if (GST_MESSAGE_TYPE (&*msg) == GST_MESSAGE_ERROR)
 			{
 				BusDrainMutex_.lock ();
 				BusDrainWC_.wait (&BusDrainMutex_);
