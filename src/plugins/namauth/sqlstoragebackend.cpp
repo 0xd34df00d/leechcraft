@@ -9,7 +9,6 @@
 #include "sqlstoragebackend.h"
 #include <QDir>
 #include <QSqlDatabase>
-#include <QSqlQuery>
 #include <QSqlError>
 #include <QVariant>
 #include <QtDebug>

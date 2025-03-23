@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/iinfo.h>
 
 namespace LC::NamAuth
@@ -29,6 +30,7 @@ namespace LC::NamAuth
 		QString GetInfo () const override;
 		QIcon GetIcon () const override;
 	private:
+		Util::ContextTask<> StartChecks ();
 		void InitStorage (const ICoreProxy_ptr&);
 	};
 }

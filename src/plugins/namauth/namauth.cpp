@@ -11,8 +11,8 @@
 #include <QMessageBox>
 #include <QFile>
 #include <interfaces/core/icoreproxy.h>
-#include <util/sll/visitor.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro/future.h>
+#include <util/threads/coro.h>
 #include <util/db/consistencychecker.h>
 #include <util/sll/qtutil.h>
 #include "namhandler.h"
@@ -20,38 +20,9 @@
 
 namespace LC::NamAuth
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
-		Util::Sequence (this, checker->StartCheck ()) >>
-				Util::Visitor
-				{
-					[=, this] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
-					[=, this] (const Util::ConsistencyChecker::Failed& failed)
-					{
-						Util::Sequence (this, failed->DumpReinit ()) >>
-								Util::Visitor
-								{
-									[=, this] (const Util::ConsistencyChecker::DumpError& err)
-									{
-										QMessageBox::critical (nullptr,
-												"LeechCraft"_qs,
-												tr ("Unable to recover the HTTP passwords database: %1.")
-														.arg (err.Error_));
-
-										const auto& path = SQLStorageBackend::GetDBPath ();
-										QFile::copy (path, path + ".old");
-										QFile::remove (path);
-
-										InitStorage (proxy);
-									},
-									[=, this] (Util::ConsistencyChecker::DumpFinished)
-									{
-										InitStorage (proxy);
-									}
-								};
-					}
-				};
+		StartChecks ();
 	}
 
 	void Plugin::SecondInit ()
@@ -80,6 +51,33 @@ namespace LC::NamAuth
 	QIcon Plugin::GetIcon () const
 	{
 		return {};
+	}
+
+	Util::ContextTask<> Plugin::StartChecks ()
+	{
+		co_await Util::AddContextObject { *this };
+
+		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
+		const auto result = co_await checker->StartCheck ();
+
+		if (const auto error = result.MaybeLeft ())
+		{
+			const auto dumpResult = co_await (*error)->DumpReinit ();
+			co_await WithHandler (dumpResult,
+					[] (const Util::ConsistencyChecker::DumpError& err)
+					{
+						QMessageBox::critical (nullptr,
+								"LeechCraft"_qs,
+								tr ("Unable to recover the HTTP passwords database: %1.")
+										.arg (err.Error_));
+
+						const auto& path = SQLStorageBackend::GetDBPath ();
+						QFile::copy (path, path + ".old");
+						QFile::remove (path);
+					});
+		}
+
+		InitStorage (GetProxyHolder ());
 	}
 
 	void Plugin::InitStorage (const ICoreProxy_ptr& proxy)
