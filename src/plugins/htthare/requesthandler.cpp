@@ -478,8 +478,11 @@ namespace HttHare
 
 						auto& s = c->GetSocket ();
 
-						auto shutdownGuard = Util::MakeScopeGuard ([&s, &ec]
-								{ s.shutdown (boost::asio::socket_base::shutdown_both, ec); }).Shared ();
+						auto shutdownGuard = Util::MakeScopeGuard ([&s]
+							{
+								boost::system::error_code iec;
+								s.shutdown (boost::asio::socket_base::shutdown_both, iec);
+							}).Shared ();
 
 						if (verb != Verb::Get)
 							return;
