@@ -23,7 +23,7 @@ namespace LC::BitTorrent
 
 	bool TabViewProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
 	{
-		const auto& idx = sourceModel ()->index (row, 0, {});
+		const auto& idx = sourceModel ()->index (row, Columns::ColumnName, {});
 
 		switch (StateFilter_)
 		{
