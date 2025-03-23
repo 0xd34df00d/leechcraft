@@ -316,7 +316,7 @@ namespace LC::Aggregator
 
 		QList<QUrl> GetSelectedLinks (const QModelIndexList& selection)
 		{
-			const auto stripTracking = XmlSettingsManager::Instance ().property ("StripTracking").toBool ();
+			const auto stripTracking = XmlSettingsManager::Instance ().property ("UrlsStripTracking").toBool ();
 
 			QList<QUrl> result;
 			for (const auto& idx : selection)
