@@ -2,22 +2,13 @@
 <settings>
 	<page label="Network">
 		<tab label="General">
-			<groupbox label="General">
-				<item type="spinboxrange" property="TCPPortRange" default="56881:56889" minimum="1" maximum="65535" step="5" label="Port range:" />
-				<item type="groupbox" checkable="true" property="EnableSSLPort" default="on" label="Enable port for SSL torrents">
-					<item type="spinbox" property="SSLPort" default="4433" minimum="1024" maximum="65535" label="SSL port:" />
-				</item>
-				<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5" label="Maximum upload connections:" />
-				<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10" label="Maximum total connections:" />
-				<item type="checkbox" property="ResolveCountries" default="true" label="Resolve countries" />
-			</groupbox>
-		</tab>
-		<tab label="Fast speed control">
-			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" default="false" label="Enable fast speed control">
-				<item type="customwidget" property="FastSpeedControl" />
+			<item type="spinboxrange" property="TCPPortRange" default="56881:56889" minimum="1" maximum="65535" step="5" label="Port range:" />
+			<item type="groupbox" checkable="true" property="EnableSSLPort" default="on" label="Enable port for SSL torrents">
+				<item type="spinbox" property="SSLPort" default="4433" minimum="1024" maximum="65535" label="SSL port:" />
 			</item>
-		</tab>
-		<tab label="Proxy">
+			<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5" label="Maximum upload connections:" />
+			<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10" label="Maximum total connections:" />
+			<item type="checkbox" property="ResolveCountries" default="true" label="Resolve countries" />
 			<item type="groupbox" property="PeerProxyEnabled" checkable="true" default="false" label="Proxy">
 				<item type="lineedit" property="PeerProxyHost" label="Host:" />
 				<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1" label="Port:" />
@@ -29,6 +20,11 @@
 				</item>
 			</item>
 		</tab>
+		<tab label="Fast speed control">
+			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" default="false" label="Enable fast speed control">
+				<item type="customwidget" property="FastSpeedControl" />
+			</item>
+		</tab>
 	</page>
 	<page label="Advanced network">
 		<tab label="DHT">
@@ -36,10 +32,8 @@
 				<item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10" label="Maximum peers in reply:" />
 				<item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1" label="Search branching:" />
 				<item type="spinbox" property="MaxDHTFailcount" default="20" minimum="5" maximum="50" step="5" label="Maximum node fail count:" />
+				<item type="checkbox" property="UseDHTAsFallback" default="true" label="Use DHT as a fallback" />
 			</item>
-			<groupbox label="DHT-related options">
-				<item type="checkbox" property="UseDHTAsFallback" default="true" label="Use DHT as fallback" />
-			</groupbox>
 		</tab>
 		<tab label="Features and extensions">
 			<groupbox label="Features">
@@ -128,7 +122,7 @@
 		</tab>
 		<tab label="Advanced">
 			<scrollarea horizontalScroll="off">
-				<item type="checkbox" property="AccurateFileProgress" default="false" label="Accurate but slow file progress calculation" />
+				<item type="checkbox" property="AccurateFileProgress" default="false" label="Precise but slow file progress calculation" />
 				<item type="checkbox" property="UseReadCache" default="true" label="Use read cache" />
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true" label="Give slots to seeding torrents in automanaged mode" />
 				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200" label="Cache expiry:" />
