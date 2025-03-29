@@ -116,7 +116,6 @@
 	<page label="Local settings">
 		<tab label="General">
 			<groupbox label="Local settings">
-				<item type="checkbox" property="NotifyAboutTooBig" default="false" label="Notify when torrent wasn't automatically added because its too large size" />
 				<item type="combobox" property="AllocationMode" label="File allocation mode:">
 					<option name="sparse" default="true" label="Sparse" />
 					<option name="full" label="Full" />

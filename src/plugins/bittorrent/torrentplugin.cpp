@@ -193,8 +193,7 @@ namespace LC::BitTorrent
 				auto& xsm = XmlSettingsManager::Instance ();
 				if (file.size () > xsm.property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
 				{
-					if (str.endsWith (".torrent"_ql, Qt::CaseInsensitive) &&
-							xsm.property ("NotifyAboutTooBig").toBool ())
+					if (str.endsWith (".torrent"_ql, Qt::CaseInsensitive))
 					{
 						auto msg = TorrentPlugin::tr ("Rejecting file %1 because it's bigger than current auto limit.")
 								.arg (str);
