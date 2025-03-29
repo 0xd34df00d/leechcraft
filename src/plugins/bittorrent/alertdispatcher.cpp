@@ -33,15 +33,18 @@ namespace LC::BitTorrent
 
 	void AlertDispatcher::DispatchAlert (const libtorrent::alert& alert) const
 	{
-		const auto& handlersList = Handlers_ [alert.type ()];
-		if (handlersList.empty ())
+		const auto& handlers = Handlers_ [alert.type ()];
+		const auto& tempHandlers = TempHandlers_ [alert.type ()];
+		if (handlers.empty () && tempHandlers.empty ())
 		{
 			qDebug () << "<libtorrent> unhandled alert:" << alert.type () << alert.message ().c_str ();
 			return;
 		}
 
 		bool log = true;
-		for (const auto& handler : handlersList)
+		for (const auto& handler : tempHandlers)
+			log = log && handler (alert);
+		for (const auto& handler : handlers)
 			log = log && handler (alert);
 
 		if (log)

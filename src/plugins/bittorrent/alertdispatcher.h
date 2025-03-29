@@ -28,15 +28,36 @@ namespace LC::BitTorrent
 	{
 		libtorrent::session& Session_;
 		QHash<int, std::list<AlertHandler_f>> Handlers_;
+		QMap<int, std::list<AlertHandler_f>> TempHandlers_;
 	public:
 		explicit AlertDispatcher (libtorrent::session&);
 
 		template<typename F>
 		int RegisterHandler (F&& f)
 		{
+			return RegisterHandlerInto (std::forward<F> (f), Handlers_);
+		}
+
+		template<typename F>
+		auto RegisterTemporaryHandler (F&& f)
+		{
+			auto alertType = RegisterHandlerInto (std::forward<F> (f), TempHandlers_);
+			auto& list = TempHandlers_ [alertType];
+			return Util::MakeScopeGuard ([&list, it = list.begin ()] { list.erase (it); });
+		}
+
+		void Swallow (int alertType, bool logging);
+
+		void PollAlerts ();
+	private:
+		void DispatchAlert (const libtorrent::alert&) const;
+
+		template<typename F>
+		static int RegisterHandlerInto (F&& f, auto& handlers)
+		{
 			using AlertType_t = std::decay_t<Util::ArgType_t<F, 0>>;
 			constexpr int type = AlertType_t::alert_type;
-			auto& list = Handlers_ [type];
+			auto& list = handlers [type];
 			list.push_front ([f] (const libtorrent::alert& alert)
 					{
 						if constexpr (std::is_same_v<Util::RetType_t<F>, bool>)
@@ -49,19 +70,5 @@ namespace LC::BitTorrent
 					});
 			return type;
 		}
-
-		template<typename F>
-		auto RegisterTemporaryHandler (F&& f)
-		{
-			auto alertType = RegisterHandler (std::forward<F> (f));
-			auto& list = Handlers_ [alertType];
-			return Util::MakeScopeGuard ([&list, it = list.begin ()] { list.erase (it); });
-		}
-
-		void Swallow (int alertType, bool logging);
-
-		void PollAlerts ();
-	private:
-		void DispatchAlert (const libtorrent::alert&) const;
 	};
 }
