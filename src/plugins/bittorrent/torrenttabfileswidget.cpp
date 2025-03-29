@@ -24,11 +24,7 @@ namespace LC::BitTorrent
 		class FilesProxyModel final : public QSortFilterProxyModel
 		{
 		public:
-			FilesProxyModel (QObject *parent)
-			: QSortFilterProxyModel { parent }
-			{
-				setDynamicSortFilter (true);
-			}
+			using QSortFilterProxyModel::QSortFilterProxyModel;
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
 			{
