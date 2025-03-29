@@ -24,13 +24,14 @@ namespace LC::BitTorrent
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TorrentTabFilesWidget)
 
 		Ui::TorrentTabFilesWidget Ui_;
-		QSortFilterProxyModel * const ProxyModel_;
+		const std::unique_ptr<QSortFilterProxyModel> ProxyModel_;
 
 		AlertDispatcher *AlertDispatcher_;
 
-		TorrentFilesModel *CurrentFilesModel_ = nullptr;
+		std::unique_ptr<TorrentFilesModel> CurrentFilesModel_;
 	public:
 		explicit TorrentTabFilesWidget (QWidget* = nullptr);
+		~TorrentTabFilesWidget () override;
 
 		void SetAlertDispatcher (AlertDispatcher&);
 

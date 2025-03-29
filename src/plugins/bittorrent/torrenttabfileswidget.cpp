@@ -45,7 +45,7 @@ namespace LC::BitTorrent
 
 	TorrentTabFilesWidget::TorrentTabFilesWidget (QWidget *parent)
 	: QWidget { parent }
-	, ProxyModel_ { new FilesProxyModel { this } }
+	, ProxyModel_ { std::make_unique<FilesProxyModel> (this) }
 	{
 		Ui_.setupUi (this);
 
@@ -53,7 +53,7 @@ namespace LC::BitTorrent
 
 		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
-		Ui_.FilesView_->setModel (ProxyModel_);
+		Ui_.FilesView_->setModel (&*ProxyModel_);
 
 		connect (Ui_.FilesView_->selectionModel (),
 				&QItemSelectionModel::currentChanged,
@@ -87,6 +87,8 @@ namespace LC::BitTorrent
 				&TorrentTabFilesWidget::ShowContextMenu);
 	}
 
+	TorrentTabFilesWidget::~TorrentTabFilesWidget () = default;
+
 	void TorrentTabFilesWidget::SetAlertDispatcher (AlertDispatcher& dispatcher)
 	{
 		AlertDispatcher_ = &dispatcher;
@@ -95,14 +97,14 @@ namespace LC::BitTorrent
 	void TorrentTabFilesWidget::SetCurrentIndex (const QModelIndex& index)
 	{
 		ProxyModel_->setSourceModel (nullptr);
-		delete CurrentFilesModel_;
+		CurrentFilesModel_.reset ();
 
 		Ui_.SearchLine_->clear ();
 
 		const auto& handle = GetTorrentHandle (index);
 
-		CurrentFilesModel_ = new TorrentFilesModel { handle, *AlertDispatcher_ };
-		ProxyModel_->setSourceModel (CurrentFilesModel_);
+		CurrentFilesModel_ = std::make_unique<TorrentFilesModel> (handle, *AlertDispatcher_);
+		ProxyModel_->setSourceModel (&*CurrentFilesModel_);
 		QTimer::singleShot (0,
 				Ui_.FilesView_,
 				&QTreeView::expandAll);
