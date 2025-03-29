@@ -10,6 +10,7 @@
 #include <QMenu>
 #include <QTimer>
 #include <QSortFilterProxyModel>
+#include <libtorrent/torrent_handle.hpp>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/prelude.h>
 #include <util/util.h>
@@ -102,6 +103,8 @@ namespace LC::BitTorrent
 		Ui_.SearchLine_->clear ();
 
 		const auto& handle = GetTorrentHandle (index);
+		if (!handle.is_valid ())
+			return;
 
 		CurrentFilesModel_ = std::make_unique<TorrentFilesModel> (handle, *AlertDispatcher_);
 		ProxyModel_->setSourceModel (&*CurrentFilesModel_);
