@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QStringList>
+#include <util/sll/scopeguards.h>
 #include "fileinfo.h"
 #include "torrentfilesmodelbase.h"
 
@@ -35,7 +36,7 @@ namespace LC::BitTorrent
 	class TorrentFilesModel : public TorrentFilesModelBase<TorrentNodeInfo>
 	{
 		std::unique_ptr<libtorrent::torrent_handle> Handle_;
-		std::unique_ptr<AlertDispatcherRegGuard> RegGuard_;
+		Util::DefaultScopeGuard RegGuard_;
 	public:
 		enum
 		{

@@ -11,6 +11,7 @@
 #include <list>
 #include <memory>
 #include <QHash>
+#include <util/sll/scopeguards.h>
 #include <util/sll/typegetter.h>
 
 namespace libtorrent
@@ -22,28 +23,6 @@ namespace libtorrent
 namespace LC::BitTorrent
 {
 	using AlertHandler_f = std::function<bool (const libtorrent::alert&)>;
-
-	class AlertDispatcherRegGuard
-	{
-		std::list<AlertHandler_f>& HandlerList_;
-		std::list<AlertHandler_f>::iterator Pos_;
-	public:
-		AlertDispatcherRegGuard (std::list<AlertHandler_f>& list, std::list<AlertHandler_f>::iterator pos)
-		: HandlerList_ { list }
-		, Pos_ { pos }
-		{
-		}
-
-		AlertDispatcherRegGuard (AlertDispatcherRegGuard&&) = delete;
-		AlertDispatcherRegGuard (const AlertDispatcherRegGuard&) = delete;
-		AlertDispatcherRegGuard& operator= (AlertDispatcherRegGuard&&) = delete;
-		AlertDispatcherRegGuard& operator= (const AlertDispatcherRegGuard&) = delete;
-
-		~AlertDispatcherRegGuard ()
-		{
-			HandlerList_.erase (Pos_);
-		}
-	};
 
 	class AlertDispatcher
 	{
@@ -72,11 +51,11 @@ namespace LC::BitTorrent
 		}
 
 		template<typename F>
-		std::unique_ptr<AlertDispatcherRegGuard> RegisterTemporaryHandler (F&& f)
+		auto RegisterTemporaryHandler (F&& f)
 		{
 			auto alertType = RegisterHandler (std::forward<F> (f));
 			auto& list = Handlers_ [alertType];
-			return std::make_unique<AlertDispatcherRegGuard> (list, list.begin ());
+			return Util::MakeScopeGuard ([&list, it = list.begin ()] { list.erase (it); });
 		}
 
 		void Swallow (int alertType, bool logging);

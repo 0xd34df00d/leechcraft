@@ -36,7 +36,7 @@ namespace LC::BitTorrent
 				{
 					if (a.handle == *Handle_)
 						HandleFileRenamed (a.index, QString::fromUtf8 (a.new_name ()));
-				});
+				}).EraseType ();
 	}
 
 	TorrentFilesModel::~TorrentFilesModel () = default;
