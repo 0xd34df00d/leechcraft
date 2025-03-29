@@ -43,9 +43,9 @@ namespace LC::BitTorrent
 
 		bool log = true;
 		for (const auto& handler : tempHandlers)
-			log = log && handler (alert);
+			log = handler (alert) && log;
 		for (const auto& handler : handlers)
-			log = log && handler (alert);
+			log = handler (alert) && log;
 
 		if (log)
 			qDebug () << "<libtorrent>" << alert.type () << alert.message ().c_str ();
