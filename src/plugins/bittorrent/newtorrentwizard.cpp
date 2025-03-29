@@ -248,7 +248,7 @@ namespace LC::BitTorrent
 			registerField (DHTNodes, DHTNodes_);
 
 			connect (PieceSize_,
-					qOverload<int> (&QComboBox::currentIndexChanged),
+					&QComboBox::currentIndexChanged,
 					[this]
 					{
 						const auto pieceSize = GetPieceSize (PieceSize_->currentIndex ());

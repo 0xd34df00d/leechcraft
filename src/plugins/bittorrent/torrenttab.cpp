@@ -110,7 +110,7 @@ namespace LC::BitTorrent
 				&QSortFilterProxyModel::setFilterFixedString);
 
 		connect (Ui_.TorrentStateFilter_,
-				qOverload<int> (&QComboBox::currentIndexChanged),
+				&QComboBox::currentIndexChanged,
 				ViewFilter_,
 				&TabViewProxyModel::SetStateFilterMode);
 

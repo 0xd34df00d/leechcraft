@@ -103,19 +103,19 @@ namespace LC::BitTorrent
 
 		SSM_ = &deps.SSM_;
 		connect (Ui_.OverallDownloadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				SSM_,
 				&SessionSettingsManager::SetOverallDownloadRate);
 		connect (Ui_.OverallUploadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				SSM_,
 				&SessionSettingsManager::SetOverallUploadRate);
 		connect (Ui_.DownloadingTorrents_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				SSM_,
 				&SessionSettingsManager::SetMaxDownloadingTorrents);
 		connect (Ui_.UploadingTorrents_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				SSM_,
 				&SessionSettingsManager::SetMaxUploadingTorrents);
 
@@ -132,13 +132,13 @@ namespace LC::BitTorrent
 				});
 
 		connect (Ui_.TorrentDownloadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				[this] (int val)
 				{
 					ForEachSelected ([val] (const QModelIndex& idx) { SetDownloadLimit (GetTorrentHandle (idx), val); });
 				});
 		connect (Ui_.TorrentUploadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				[this] (int val)
 				{
 					ForEachSelected ([val] (const QModelIndex& idx) { SetUploadLimit (GetTorrentHandle (idx), val); });

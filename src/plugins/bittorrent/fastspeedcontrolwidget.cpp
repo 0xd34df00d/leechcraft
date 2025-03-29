@@ -21,7 +21,7 @@ namespace LC::BitTorrent
 		LoadSettings ();
 
 		connect (Ui_.Box_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				this,
 				&FastSpeedControlWidget::SetNum);
 		connect (Ui_.Slider_,

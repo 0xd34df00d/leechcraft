@@ -71,7 +71,7 @@ namespace LC::BitTorrent
 				});
 
 		connect (Ui_.FilePriorityRegulator_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				[this] (int prio)
 				{
 					for (auto idx : GetSelectedIndexes ())

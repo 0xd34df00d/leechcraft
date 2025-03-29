@@ -44,18 +44,18 @@ namespace LC::BitTorrent
 		UpdateDashboard ();
 
 		connect (Ui_.OverallDownloadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				&SSM_,
 				&SessionSettingsManager::SetOverallDownloadRate);
 		connect (Ui_.OverallUploadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				&SSM_,
 				&SessionSettingsManager::SetOverallUploadRate);
 		connect (Ui_.TorrentDownloadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				[this] (int val) { SetDownloadLimit (GetTorrentHandle (Torrent_), val); });
 		connect (Ui_.TorrentUploadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				[this] (int val) { SetUploadLimit (GetTorrentHandle (Torrent_), val); });
 		connect (Ui_.TorrentManaged_,
 				&QCheckBox::clicked,
@@ -64,11 +64,11 @@ namespace LC::BitTorrent
 				&QCheckBox::clicked,
 				[this] (bool sequential) { Model_.setData (Torrent_, sequential, Roles::IsSequentialDownloading); });
 		connect (Ui_.DownloadingTorrents_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				&SSM_,
 				&SessionSettingsManager::SetMaxDownloadingTorrents);
 		connect (Ui_.UploadingTorrents_,
-				qOverload<int> (&QSpinBox::valueChanged),
+				&QSpinBox::valueChanged,
 				&SSM_,
 				&SessionSettingsManager::SetMaxUploadingTorrents);
 		connect (Ui_.TorrentTags_,

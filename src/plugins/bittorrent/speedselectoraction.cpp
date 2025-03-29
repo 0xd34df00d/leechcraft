@@ -72,7 +72,7 @@ namespace LC::BitTorrent
 	{
 		const auto selector = new QComboBox { parent };
 		connect (selector,
-				qOverload<int> (&QComboBox::currentIndexChanged),
+				&QComboBox::currentIndexChanged,
 				this,
 				[this] (int s)
 				{
