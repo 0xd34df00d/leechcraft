@@ -1,399 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label lang="en" value="Network" />
-		<tab>
-			<label lang="en" value="General" />
-			<groupbox>
-				<label lang="en" value="General" />
-				<item type="spinboxrange" property="TCPPortRange" default="56881:56889" minimum="1" maximum="65535" step="5">
-					<label lang="en" value="Port range:" />
+	<page label="Network">
+		<tab label="General">
+			<groupbox label="General">
+				<item type="spinboxrange" property="TCPPortRange" default="56881:56889" minimum="1" maximum="65535" step="5" label="Port range:" />
+				<item type="groupbox" checkable="true" property="EnableSSLPort" default="on" label="Enable port for SSL torrents">
+					<item type="spinbox" property="SSLPort" default="4433" minimum="1024" maximum="65535" label="SSL port:" />
 				</item>
-				<item type="groupbox" checkable="true" property="EnableSSLPort" default="on">
-					<label value="Enable port for SSL torrents" />
-					<item type="spinbox" property="SSLPort" default="4433" minimum="1024" maximum="65535">
-						<label value="SSL port:" />
-					</item>
-				</item>
-				<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
-					<label lang="en" value="Maximum upload connections:" />
-				</item>
-				<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
-					<label lang="en" value="Maximum total connections:" />
-				</item>
-				<item type="checkbox" property="ResolveCountries" default="true">
-					<label value="Resolve countries" />
-				</item>
+				<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5" label="Maximum upload connections:" />
+				<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10" label="Maximum total connections:" />
+				<item type="checkbox" property="ResolveCountries" default="true" label="Resolve countries" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label lang="en" value="Fast speed control" />
-			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" default="false">
-				<label lang="en" value="Enable fast speed control" />
+		<tab label="Fast speed control">
+			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" default="false" label="Enable fast speed control">
 				<item type="customwidget" property="FastSpeedControl" />
 			</item>
 		</tab>
-		<tab>
-			<label lang="en" value="Proxy" />
-			<item type="groupbox" property="PeerProxyEnabled" checkable="true" default="false">
-				<label lang="en" value="Proxy:" />
-				<item type="lineedit" property="PeerProxyHost">
-					<label lang="en" value="Host:" />
-				</item>
-				<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-					<label lang="en" value="Port:" />
-				</item>
-				<item type="lineedit" property="PeerProxyAuth">
-					<label lang="en" value="Login@Password:" />
-				</item>
-				<item type="combobox" property="PeerProxyType">
-					<label lang="en" value="Proxy type:" />
-					<option name="socks5">
-						<label lang="en" value="SOCKS5" />
-					</option>
-					<option name="socks4">
-						<label lang="en" value="SOCKS4" />
-					</option>
-					<option name="http" default="true">
-						<label lang="en" value="HTTP" />
-					</option>
+		<tab label="Proxy">
+			<item type="groupbox" property="PeerProxyEnabled" checkable="true" default="false" label="Proxy">
+				<item type="lineedit" property="PeerProxyHost" label="Host:" />
+				<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1" label="Port:" />
+				<item type="lineedit" property="PeerProxyAuth" label="Login@Password:" />
+				<item type="combobox" property="PeerProxyType" label="Proxy type:">
+					<option name="socks5" label="SOCKS5" />
+					<option name="socks4" label="SOCKS4" />
+					<option name="http" default="true" label="HTTP" />
 				</item>
 			</item>
 		</tab>
 	</page>
-	<page>
-		<label lang="en" value="Advanced network" />
-		<tab>
-			<label lang="en" value="DHT" />
-			<item type="groupbox" property="DHTEnabled" default="true" checkable="true">
-				<label lang="en" value="DHT" />
-				<item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10">
-					<label lang="en" value="Maximum peers in reply:" />
-				</item>
-				<item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1">
-					<label lang="en" value="Search branching:" />
-				</item>
-				<item type="spinbox" property="MaxDHTFailcount" default="20" minimum="5" maximum="50" step="5">
-					<label lang="en" value="Maximum node fail count:" />
-				</item>
+	<page label="Advanced network">
+		<tab label="DHT">
+			<item type="groupbox" property="DHTEnabled" default="true" checkable="true" label="DHT">
+				<item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10" label="Maximum peers in reply:" />
+				<item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1" label="Search branching:" />
+				<item type="spinbox" property="MaxDHTFailcount" default="20" minimum="5" maximum="50" step="5" label="Maximum node fail count:" />
 			</item>
-			<groupbox>
-				<label lang="en" value="DHT-related options" />
-				<item type="checkbox" property="UseDHTAsFallback" default="true">
-					<label lang="en" value="Use DHT as fallback" />
-				</item>
+			<groupbox label="DHT-related options">
+				<item type="checkbox" property="UseDHTAsFallback" default="true" label="Use DHT as fallback" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label lang="en" value="Features &amp;&amp; extensions" />
-			<groupbox>
-				<label lang="en" value="Features" />
-				<item type="checkbox" property="EnableLSD" default="true">
-					<label lang="en" value="Enable Local Service Discovery" />
-				</item>
-				<item type="checkbox" property="EnableUPNP" default="true">
-					<label lang="en" value="Enable UPnP support" />
-				</item>
-				<item type="checkbox" property="EnableNATPMP" default="true">
-					<label lang="en" value="Enable NAT-PMP support" />
-				</item>
+		<tab label="Features and extensions">
+			<groupbox label="Features">
+				<item type="checkbox" property="EnableLSD" default="true" label="Enable Local Service Discovery" />
+				<item type="checkbox" property="EnableUPNP" default="true" label="Enable UPnP support" />
+				<item type="checkbox" property="EnableNATPMP" default="true" label="Enable NAT-PMP support" />
 			</groupbox>
-			<groupbox>
-				<label lang="en" value="Extensions" />
-				<item type="checkbox" property="EnablePEX" default="true">
-					<label lang="en" value="Enable PeX" />
-				</item>
-				<item type="checkbox" property="EnableUTMetadata" default="true">
-					<label lang="en" value="Allow downloading the metadata from the swarm in a µTorrent-compatible way" />
-				</item>
-				<item type="checkbox" property="EnableSmartBan" default="true">
-					<label lang="en" value="Enable Smart Ban" />
-				</item>
+			<groupbox label="Extensions">
+				<item type="checkbox" property="EnablePEX" default="true" label="Enable PeX" />
+				<item type="checkbox" property="EnableUTMetadata" default="true" label="Allow downloading the metadata from the swarm in a µTorrent-compatible way" />
+				<item type="checkbox" property="EnableSmartBan" default="true" label="Enable Smart Ban" />
 			</groupbox>
-			<groupbox>
-				<label lang="en" value="Trackers" />
-				<item type="checkbox" property="AnnounceToAllTrackers" default="true">
-					<label lang="en" value="Announce to all trackers of one tier" />
-				</item>
-				<item type="checkbox" property="AnnounceToAllTiers" default="false">
-					<label lang="en" value="Announce to all tiers" />
-				</item>
-				<item type="checkbox" property="PreferUDPTrackers" default="false">
-					<label lang="en" value="Prefer UDP trackers" />
-				</item>
+			<groupbox label="Trackers">
+				<item type="checkbox" property="AnnounceToAllTrackers" default="true" label="Announce to all trackers of one tier" />
+				<item type="checkbox" property="AnnounceToAllTiers" default="false" label="Announce to all tiers" />
+				<item type="checkbox" property="PreferUDPTrackers" default="false" label="Prefer UDP trackers" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label lang="en" value="Advanced" />
+		<tab label="Advanced">
 			<scrollarea horizontalScroll="off">
-				<item type="groupbox" property="ScrapeEnabled" checkable="true" default="false">
-					<label lang="en" value="Scrape enabled" />
-					<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
-						<label value="Scrape interval" />
-						<suffix value=" s" />
-					</item>
+				<item type="groupbox" property="ScrapeEnabled" checkable="true" default="false" label="Scrape enabled">
+					<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60" label="Scrape interval" suffix=" s" />
 				</item>
-				<groupbox>
-					<label lang="en" value="Advanced settings" />
-					<item type="lineedit" property="AnnounceIP" default="">
-						<label lang="en" value="Announce IP:" />
-					</item>
-					<item type="checkbox" property="AllowMultipleConnectionsPerIP" default="false">
-						<label lang="en" value="Allow multiple connections per IP" />
-					</item>
-					<item type="checkbox" property="DontCountSlowTorrents" default="true">
-						<label lang="en" value="Don't count slow torrents" />
-					</item>
-					<item type="checkbox" property="SendRedundantHave" default="false">
-						<label lang="en" value="Send redundant have messages" />
-					</item>
-					<item type="checkbox" property="AutoUploadSlots" default="true">
-						<label lang="en" value="Auto upload slots" />
-					</item>
-					<item type="checkbox" property="UseParoleMode" default="true">
-						<label lang="en" value="Use parole mode" />
-					</item>
-					<item type="checkbox" property="CloseRedundantConnections" default="true">
-						<label lang="en" value="Close redundant connections" />
-					</item>
-					<item type="checkbox" property="PrioritizePartialPieces" default="true">
-						<label lang="en" value="Prioritize partial pieces" />
-					</item>
-					<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
-						<label value="Tracker request completion timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10">
-						<label value="Tracker data receive timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1">
-						<label value="Stop tracker timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512">
-						<label value="Tracker maximum response length:" />
-						<suffix value=" KB" />
-					</item>
-					<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
-						<label value="Piece response timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5">
-						<label value="Peer connection timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5">
-						<label value="Block request timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
-						<label value="Piece request queue time:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
-						<label lang="en" value="The number of block requests a peer is allowed to queue up:" />
-					</item>
-					<item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50">
-						<label lang="en" value="The number of block requests to a peer in a queue:" />
-					</item>
-					<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10">
-						<label value="Peer timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10">
-						<label value="Web seed timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10">
-						<label value="Minimal scrape interval:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5">
-						<label value="Unchoke interval:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500">
-						<label lang="en" value="Max peer list size:" />
-					</item>
-					<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10">
-						<label value="Minimal announce interval:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="MaxRejects" default="50" minimum="3" maximum="1000">
-						<label lang="en" value="Max rejects for a choked peer before ban:" />
-					</item>
-					<item type="spinbox" property="SeedingPieceQuota" default="3" minimum="1" maximum="1000">
-						<label lang="en" value="Seeding piece quota:" />
-					</item>
-					<item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10">
-						<label value="Web seed retry wait:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10">
-						<label value="Minimum peer reconnect time:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
-						<label value="Force download of a piece if it could not be fetched in:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
-						<label lang="en" value="Maximum peer connection attempt failcount:" />
-					</item>
-					<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
-						<label lang="en" value="Connection attempts per second:" />
-					</item>
-					<item type="spinbox" property="SendBufferWatermark" default="400" minimum="1" maximum="50000">
-						<label value="Upper send buffer low-watermark:" />
-						<suffix value=" KB" />
-					</item>
-					<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60">
-						<label value="Peer inactivity timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5">
-						<label lang="en" value="Request random pieces while we have less than:" />
-					</item>
-					<item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25">
-						<label lang="en" value="How much peers to get from the tracker:" />
-					</item>
-					<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535">
-						<label lang="en" value="Outgoing ports:" />
-					</item>
-					<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
-						<label lang="en" value="Optimistic unchoke multiplier:" />
-					</item>
-					<item type="spinbox" property="PeerTOS" default="0" minimum="0" maximum="255">
-						<label lang="en" value="TOS byte:" />
-					</item>
-					<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000">
-						<label lang="en" value="Share ratio limit:" />
-					</item>
-					<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000">
-						<label lang="en" value="Seed time ratio limit:" />
-					</item>
-					<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60">
-						<label value="Seed time limit:" />
-						<suffix value=" min" />
-					</item>
-					<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10">
-						<label value="Auto scrape interval:" />
-						<suffix value=" min" />
-					</item>
-					<item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5">
-						<label lang="en" value="N of pieces to send via fast extensions:" />
-					</item>
-					<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10">
-						<label value="Handshake timeout:" />
-						<suffix value=" s" />
-					</item>
-					<item type="spinbox" property="UrlSeedPipelineSize" default="5" minimum="1" maximum="20" step="1">
-						<label lang="en" value="Web seed pipeline size:" />
-					</item>
+				<groupbox label="Advanced settings">
+					<item type="lineedit" property="AnnounceIP" default="" label="Announce IP:" />
+					<item type="checkbox" property="AllowMultipleConnectionsPerIP" default="false" label="Allow multiple connections per IP" />
+					<item type="checkbox" property="DontCountSlowTorrents" default="true" label="Don't count slow torrents" />
+					<item type="checkbox" property="SendRedundantHave" default="false" label="Send redundant have messages" />
+					<item type="checkbox" property="AutoUploadSlots" default="true" label="Auto upload slots" />
+					<item type="checkbox" property="UseParoleMode" default="true" label="Use parole mode" />
+					<item type="checkbox" property="CloseRedundantConnections" default="true" label="Close redundant connections" />
+					<item type="checkbox" property="PrioritizePartialPieces" default="true" label="Prioritize partial pieces" />
+					<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10" label="Tracker request completion timeout:" suffix=" s" />
+					<item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10" label="Tracker data receive timeout:" suffix=" s" />
+					<item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1" label="Stop tracker timeout:" suffix=" s" />
+					<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512" label="Tracker maximum response length:" suffix=" KB" />
+					<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5" label="Piece response timeout:" suffix=" s" />
+					<item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5" label="Peer connection timeout:" suffix=" s" />
+					<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5" label="Block request timeout:" suffix=" s" />
+					<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1" label="Piece request queue time:" suffix=" s" />
+					<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50" label="The number of block requests a peer is allowed to queue up:" />
+					<item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50" label="The number of block requests to a peer in a queue:" />
+					<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10" label="Peer timeout:" suffix=" s" />
+					<item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10" label="Web seed timeout:" suffix=" s" />
+					<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10" label="Minimal scrape interval:" suffix=" s" />
+					<item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5" label="Unchoke interval:" suffix=" s" />
+					<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500" label="Max peer list size:" />
+					<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10" label="Minimal announce interval:" suffix=" s" />
+					<item type="spinbox" property="MaxRejects" default="50" minimum="3" maximum="1000" label="Max rejects for a choked peer before ban:" />
+					<item type="spinbox" property="SeedingPieceQuota" default="3" minimum="1" maximum="1000" label="Seeding piece quota:" />
+					<item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10" label="Web seed retry wait:" suffix=" s" />
+					<item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10" label="Minimum peer reconnect time:" suffix=" s" />
+					<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5" label="Force download of a piece if it could not be fetched in:" suffix=" s" />
+					<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1" label="Maximum peer connection attempt failcount:" />
+					<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10" label="Connection attempts per second:" />
+					<item type="spinbox" property="SendBufferWatermark" default="400" minimum="1" maximum="50000" label="Upper send buffer low-watermark:" suffix=" KB" />
+					<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60" label="Peer inactivity timeout:" suffix=" s" />
+					<item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5" label="Request random pieces while we have less than:" />
+					<item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25" label="How much peers to get from the tracker:" />
+					<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535" label="Outgoing ports:" />
+					<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1" label="Optimistic unchoke multiplier:" />
+					<item type="spinbox" property="PeerTOS" default="0" minimum="0" maximum="255" label="TOS byte:" />
+					<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000" label="Share ratio limit:" />
+					<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000" label="Seed time ratio limit:" />
+					<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60" label="Seed time limit:" suffix=" min" />
+					<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10" label="Auto scrape interval:" suffix=" min" />
+					<item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5" label="Pieces count to send via fast extensions:" />
+					<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10" label="Handshake timeout:" suffix=" s" />
+					<item type="spinbox" property="UrlSeedPipelineSize" default="5" minimum="1" maximum="20" step="1" label="Web seed pipeline size:" />
 				</groupbox>
 			</scrollarea>
 		</tab>
 	</page>
-	<page>
-		<label lang="en" value="Local settings" />
-		<tab>
-			<label lang="en" value="General" />
-			<groupbox>
-				<label lang="en" value="Local settings" />
-				<item type="checkbox" property="NotifyAboutTooBig" default="false">
-					<label lang="en" value="Notify when torrent wasn't automatically added because its too large size" />
+	<page label="Local settings">
+		<tab label="General">
+			<groupbox label="Local settings">
+				<item type="checkbox" property="NotifyAboutTooBig" default="false" label="Notify when torrent wasn't automatically added because its too large size" />
+				<item type="combobox" property="AllocationMode" label="File allocation mode:">
+					<option name="sparse" default="true" label="Sparse" />
+					<option name="full" label="Full" />
 				</item>
-				<item type="combobox" property="AllocationMode">
-					<label lang="en" value="File allocation mode:" />
-					<option name="sparse" default="true">
-						<label lang="en" value="Sparse" />
-					</option>
-					<option name="full">
-						<label lang="en" value="Full" />
-					</option>
-				</item>
-				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2">
-					<label value="Maximum automatically added torrent size:" />
-					<suffix value=" MB" />
-				</item>
-				<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
-					<label value="Autosave interval:" />
-					<suffix value=" s" />
-				</item>
-				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256">
-					<label value="Cache size:" />
-					<suffix value=" MB" />
-				</item>
-				<item type="lineedit" property="AutomaticTags" default="automatic">
-					<label lang="en" value="Tags for automatic jobs:" />
-				</item>
+				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2" label="Maximum automatically added torrent file size:" suffix=" MB" />
+				<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" label="Autosave interval:" suffix=" s" />
+				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256" label="Cache size:" suffix=" MB" />>
+				<item type="lineedit" property="AutomaticTags" default="automatic" label="Tags for automatic jobs:" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label lang="en" value="Advanced" />
+		<tab label="Advanced">
 			<scrollarea horizontalScroll="off">
-				<item type="checkbox" property="AccurateFileProgress" default="false">
-					<label lang="en" value="Accurate but slow file progress calculation" />
-				</item>
-				<item type="checkbox" property="UseReadCache" default="true">
-					<label lang="en" value="Use read cache" />
-				</item>
-				<item type="checkbox" property="AutoManagePreferSeeds" default="true">
-					<label lang="en" value="Give slots to seeding torrents in automanaged mode" />
-				</item>
-				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200">
-					<label value="Cache expiry:" />
-					<suffix value=" s" />
-				</item>
-				<item type="spinbox" property="AutoManageStartup" default="120" minimum="10" maximum="16300" step="10">
-					<label value="Automanage startup wait:" />
-					<suffix value=" s" />
-				</item>
-				<item type="spinbox" property="AutoManageInterval" default="10" minimum="10" maximum="1200" step="10">
-					<label value="Auto queue manage interval:" />
-					<suffix value=" s" />
-				</item>
-				<item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512">
-					<label value="Maximum outstanding disk bytes per connection:" />
-					<suffix value=" KB" />
-				</item>
-				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">
-					<label lang="en" value="Maximum amount of concurrently open files:" />
-				</item>
+				<item type="checkbox" property="AccurateFileProgress" default="false" label="Accurate but slow file progress calculation" />
+				<item type="checkbox" property="UseReadCache" default="true" label="Use read cache" />
+				<item type="checkbox" property="AutoManagePreferSeeds" default="true" label="Give slots to seeding torrents in automanaged mode" />
+				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200" label="Cache expiry:" />
+				<item type="spinbox" property="AutoManageStartup" default="120" minimum="10" maximum="16300" step="10" label="Automanage startup wait:" suffix=" s" />
+				<item type="spinbox" property="AutoManageInterval" default="10" minimum="10" maximum="1200" step="10" label="Auto queue manage interval:" suffix=" s" />
+				<item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512" label="Maximum outstanding disk bytes per connection:" suffix=" KB" />
+				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5" label="Maximum amount of concurrently open files:" />
 			</scrollarea>
 		</tab>
 	</page>
-	<page>
-		<label lang="en" value="Info pane" />
-		<tab>
-			<label lang="en" value="Active groups" />
-			<groupbox>
-				<label lang="en" value="Dashboard" />
-				<item type="checkbox" property="ActiveSessionStats" default="on">
-					<label lang="en" value="Session stats" />
-				</item>
-				<item type="checkbox" property="ActiveAdvancedSessionStats" default="on">
-					<label lang="en" value="Advanced session stats" />
-				</item>
-				<item type="checkbox" property="ActiveTrackerStats" default="on">
-					<label lang="en" value="Per-tracker stats" />
-				</item>
+	<page label="Info pane">
+		<tab label="Active groups">
+			<groupbox label="Dashboard">
+				<item type="checkbox" property="ActiveSessionStats" default="on" label="Session stats" />
+				<item type="checkbox" property="ActiveAdvancedSessionStats" default="on" label="Advanced session stats" />
+				<item type="checkbox" property="ActiveTrackerStats" default="on" label="Per-tracker stats" />
 			</groupbox>
-			<groupbox>
-				<label lang="en" value="Torrent" />
-				<item type="checkbox" property="ActiveTorrentStatus" default="on">
-					<label lang="en" value="Status" />
-				</item>
-				<item type="checkbox" property="ActiveTorrentAdvancedStatus" default="on">
-					<label lang="en" value="Advanced status" />
-				</item>
-				<item type="checkbox" property="ActiveTorrentInfo" default="on">
-					<label lang="en" value="Information" />
-				</item>
-				<item type="checkbox" property="ActiveTorrentPeers" default="on">
-					<label lang="en" value="Peers" />
-				</item>
+			<groupbox label="Torrent">
+				<item type="checkbox" property="ActiveTorrentStatus" default="on" label="Status" />
+				<item type="checkbox" property="ActiveTorrentAdvancedStatus" default="on" label="Advanced status" />
+				<item type="checkbox" property="ActiveTorrentInfo" default="on" label="Information" />
+				<item type="checkbox" property="ActiveTorrentPeers" default="on" label="Peers" />
 			</groupbox>
 		</tab>
 	</page>
