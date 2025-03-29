@@ -54,8 +54,8 @@ namespace LC::Monocle
 	Util::DefaultScopeGuard LinksBuilder::HandleTarget (const QString& anchorId)
 	{
 		const auto start = Cursor_.position ();
-		auto& target = Targets_ [anchorId] = Span { start, -1 };
-		return Util::MakeScopeGuard ([this, &target] { target.End_ = Cursor_.position (); });
+		Targets_ [anchorId] = Span { start, -1 };
+		return Util::MakeScopeGuard ([this, anchorId] { Targets_ [anchorId].End_ = Cursor_.position (); });
 	}
 
 	Util::DefaultScopeGuard LinksBuilder::HandleLink (const QDomElement& elem)
