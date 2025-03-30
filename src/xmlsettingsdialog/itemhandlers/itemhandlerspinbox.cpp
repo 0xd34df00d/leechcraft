@@ -37,8 +37,6 @@ namespace LC
 				box->setMinimum (cvt (*min));
 			if (const auto max = GetAttr (item, { "maximum"_qs, "max"_qs }))
 				box->setMaximum (cvt (*max));
-			if (const auto suffix = GetAttr (item, { "suffix"_qs, "suf"_qs }))
-				box->setSuffix (*suffix);
 			if (item.hasAttribute ("step"_qs))
 				box->setSingleStep (cvt (item.attribute ("step"_qs)));
 
