@@ -22,7 +22,7 @@
 			</item>
 		</tab>
 		<tab label="Performance">
-			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" label="Pixmap cache size:" suffix=" MiB" />
+			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024" label="Pixmap cache size:" suffix="MiB" />
 			<item type="checkbox" property="SmoothScrolling" default="true" label="Smooth scrolling" />
 			<item type="checkbox" property="FastRelayoutOnSizeChange" default="true" label="Smaller rendering delay on size changes">
 				<tooltip>
@@ -37,8 +37,8 @@
 	<page label="Text books">
 		<tab label="Appearance">
 			<item type="font" property="DefaultFont" label="Default font:" />
-			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10" label="Page width:" suffix=" px" />
-			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10" label="Page height:" suffix=" px" />
+			<item type="spinbox" property="PageWidth" default="600" minimum="100" maximum="4000" step="10" label="Page width:" suffix="px" />
+			<item type="spinbox" property="PageHeight" default="800" minimum="100" maximum="6000" step="10" label="Page height:" suffix="px" />
 			<item type="groupbox" checkable="true" property="CustomColors" default="false" label="Custom colors">
 				<item type="color" property="ColorBackground" default="#ebdbb2" label="Background color:" />
 				<item type="color" property="ColorForeground" default="black" label="Foreground color:" />
@@ -47,17 +47,17 @@
 		</tab>
 		<tab label="Margins and indents">
 			<groupbox label="Page">
-				<item type="spinbox" property="PageMarginL" def="60" min="0" max="200" suf=" px" label="Left margin:" />
-				<item type="spinbox" property="PageMarginT" def="80" min="0" max="200" suf=" px" label="Top margin:" />
-				<item type="spinbox" property="PageMarginR" def="60" min="0" max="200" suf=" px" label="Right margin:" />
-				<item type="spinbox" property="PageMarginB" def="80" min="0" max="200" suf=" px" label="Bottom margin:" />
+				<item type="spinbox" property="PageMarginL" def="60" min="0" max="200" suffix="px" label="Left margin:" />
+				<item type="spinbox" property="PageMarginT" def="80" min="0" max="200" suffix="px" label="Top margin:" />
+				<item type="spinbox" property="PageMarginR" def="60" min="0" max="200" suffix="px" label="Right margin:" />
+				<item type="spinbox" property="PageMarginB" def="80" min="0" max="200" suffix="px" label="Bottom margin:" />
 			</groupbox>
 			<groupbox label="Paragraph">
-				<item type="spinbox" property="ParaMarginL" def="-1" min="-1" max="200" suf=" px" special="default" label="Left margin:" />
-				<item type="spinbox" property="ParaMarginT" def="-1" min="-1" max="200" suf=" px" special="default" label="Top margin:" />
-				<item type="spinbox" property="ParaMarginR" def="-1" min="-1" max="200" suf=" px" special="default" label="Right margin:" />
-				<item type="spinbox" property="ParaMarginB" def="-1" min="-1" max="200" suf=" px" special="default" label="Bottom margin:" />
-				<item type="spinbox" property="ParaIndent" def="20" min="-1" max="200" suf=" px" special="default" label="First line indent:" />
+				<item type="spinbox" property="ParaMarginL" def="-1" min="-1" max="200" suffix="px" special="default" label="Left margin:" />
+				<item type="spinbox" property="ParaMarginT" def="-1" min="-1" max="200" suffix="px" special="default" label="Top margin:" />
+				<item type="spinbox" property="ParaMarginR" def="-1" min="-1" max="200" suffix="px" special="default" label="Right margin:" />
+				<item type="spinbox" property="ParaMarginB" def="-1" min="-1" max="200" suffix="px" special="default" label="Bottom margin:" />
+				<item type="spinbox" property="ParaIndent" def="20" min="-1" max="200" suffix="px" special="default" label="First line indent:" />
 			</groupbox>
 		</tab>
 	</page>
