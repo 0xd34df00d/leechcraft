@@ -42,7 +42,7 @@ namespace LC
 
 			const auto& langs = ctx.XSD_.GetLangElements (item);
 			if (langs.Suffix_)
-				box->setSuffix (*langs.Suffix_);
+				box->setSuffix (' ' + *langs.Suffix_);
 			if (langs.SpecialValue_)
 				box->setSpecialValueText (*langs.SpecialValue_);
 
