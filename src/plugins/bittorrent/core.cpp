@@ -251,8 +251,7 @@ namespace BitTorrent
 								~cat::dht_log &
 								~cat::port_mapping_log &
 								~cat::picker_log &
-								~cat::session_log &
-								~libtorrent::alert::progress_notification);
+								~cat::session_log);
 					}
 					Session_->apply_settings (settings);
 				}
