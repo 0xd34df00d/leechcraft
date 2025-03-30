@@ -55,7 +55,7 @@
 		<tab label="Advanced">
 			<scrollarea horizontalScroll="off">
 				<item type="groupbox" property="ScrapeEnabled" checkable="true" default="false" label="Scrape enabled">
-					<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60" label="Scrape interval" suffix=" s" />
+					<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60" label="Scrape interval" suffix="s" />
 				</item>
 				<groupbox label="Advanced settings">
 					<item type="lineedit" property="AnnounceIP" default="" label="Announce IP:" />
@@ -66,31 +66,31 @@
 					<item type="checkbox" property="UseParoleMode" default="true" label="Use parole mode" />
 					<item type="checkbox" property="CloseRedundantConnections" default="true" label="Close redundant connections" />
 					<item type="checkbox" property="PrioritizePartialPieces" default="true" label="Prioritize partial pieces" />
-					<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10" label="Tracker request completion timeout:" suffix=" s" />
-					<item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10" label="Tracker data receive timeout:" suffix=" s" />
-					<item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1" label="Stop tracker timeout:" suffix=" s" />
-					<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512" label="Tracker maximum response length:" suffix=" KB" />
-					<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5" label="Piece response timeout:" suffix=" s" />
-					<item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5" label="Peer connection timeout:" suffix=" s" />
-					<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5" label="Block request timeout:" suffix=" s" />
-					<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1" label="Piece request queue time:" suffix=" s" />
+					<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10" label="Tracker request completion timeout:" suffix="s" />
+					<item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10" label="Tracker data receive timeout:" suffix="s" />
+					<item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1" label="Stop tracker timeout:" suffix="s" />
+					<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512" label="Tracker maximum response length:" suffix="KB" />
+					<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5" label="Piece response timeout:" suffix="s" />
+					<item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5" label="Peer connection timeout:" suffix="s" />
+					<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5" label="Block request timeout:" suffix="s" />
+					<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1" label="Piece request queue time:" suffix="s" />
 					<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50" label="The number of block requests a peer is allowed to queue up:" />
 					<item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50" label="The number of block requests to a peer in a queue:" />
-					<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10" label="Peer timeout:" suffix=" s" />
-					<item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10" label="Web seed timeout:" suffix=" s" />
-					<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10" label="Minimal scrape interval:" suffix=" s" />
-					<item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5" label="Unchoke interval:" suffix=" s" />
+					<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10" label="Peer timeout:" suffix="s" />
+					<item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10" label="Web seed timeout:" suffix="s" />
+					<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10" label="Minimal scrape interval:" suffix="s" />
+					<item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5" label="Unchoke interval:" suffix="s" />
 					<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500" label="Max peer list size:" />
-					<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10" label="Minimal announce interval:" suffix=" s" />
+					<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10" label="Minimal announce interval:" suffix="s" />
 					<item type="spinbox" property="MaxRejects" default="50" minimum="3" maximum="1000" label="Max rejects for a choked peer before ban:" />
 					<item type="spinbox" property="SeedingPieceQuota" default="3" minimum="1" maximum="1000" label="Seeding piece quota:" />
-					<item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10" label="Web seed retry wait:" suffix=" s" />
-					<item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10" label="Minimum peer reconnect time:" suffix=" s" />
-					<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5" label="Force download of a piece if it could not be fetched in:" suffix=" s" />
+					<item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10" label="Web seed retry wait:" suffix="s" />
+					<item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10" label="Minimum peer reconnect time:" suffix="s" />
+					<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5" label="Force download of a piece if it could not be fetched in:" suffix="s" />
 					<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1" label="Maximum peer connection attempt failcount:" />
 					<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10" label="Connection attempts per second:" />
-					<item type="spinbox" property="SendBufferWatermark" default="400" minimum="1" maximum="50000" label="Upper send buffer low-watermark:" suffix=" KB" />
-					<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60" label="Peer inactivity timeout:" suffix=" s" />
+					<item type="spinbox" property="SendBufferWatermark" default="400" minimum="1" maximum="50000" label="Upper send buffer low-watermark:" suffix="KB" />
+					<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60" label="Peer inactivity timeout:" suffix="s" />
 					<item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5" label="Request random pieces while we have less than:" />
 					<item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25" label="How much peers to get from the tracker:" />
 					<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535" label="Outgoing ports:" />
@@ -98,10 +98,10 @@
 					<item type="spinbox" property="PeerTOS" default="0" minimum="0" maximum="255" label="TOS byte:" />
 					<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000" label="Share ratio limit:" />
 					<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000" label="Seed time ratio limit:" />
-					<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60" label="Seed time limit:" suffix=" min" />
-					<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10" label="Auto scrape interval:" suffix=" min" />
+					<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60" label="Seed time limit:" suffix="min" />
+					<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10" label="Auto scrape interval:" suffix="min" />
 					<item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5" label="Pieces count to send via fast extensions:" />
-					<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10" label="Handshake timeout:" suffix=" s" />
+					<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10" label="Handshake timeout:" suffix="s" />
 					<item type="spinbox" property="UrlSeedPipelineSize" default="5" minimum="1" maximum="20" step="1" label="Web seed pipeline size:" />
 				</groupbox>
 			</scrollarea>
@@ -114,9 +114,9 @@
 					<option name="sparse" default="true" label="Sparse" />
 					<option name="full" label="Full" />
 				</item>
-				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2" label="Maximum automatically added torrent file size:" suffix=" MB" />
-				<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" label="Autosave interval:" suffix=" s" />
-				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256" label="Cache size:" suffix=" MB" />>
+				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2" label="Maximum automatically added torrent file size:" suffix="MB" />
+				<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" label="Autosave interval:" suffix="s" />
+				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256" label="Cache size:" suffix="MB" />>
 				<item type="lineedit" property="AutomaticTags" default="automatic" label="Tags for automatic jobs:" />
 			</groupbox>
 		</tab>
@@ -126,9 +126,9 @@
 				<item type="checkbox" property="UseReadCache" default="true" label="Use read cache" />
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true" label="Give slots to seeding torrents in automanaged mode" />
 				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200" label="Cache expiry:" />
-				<item type="spinbox" property="AutoManageStartup" default="120" minimum="10" maximum="16300" step="10" label="Automanage startup wait:" suffix=" s" />
-				<item type="spinbox" property="AutoManageInterval" default="10" minimum="10" maximum="1200" step="10" label="Auto queue manage interval:" suffix=" s" />
-				<item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512" label="Maximum outstanding disk bytes per connection:" suffix=" KB" />
+				<item type="spinbox" property="AutoManageStartup" default="120" minimum="10" maximum="16300" step="10" label="Automanage startup wait:" suffix="s" />
+				<item type="spinbox" property="AutoManageInterval" default="10" minimum="10" maximum="1200" step="10" label="Auto queue manage interval:" suffix="s" />
+				<item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512" label="Maximum outstanding disk bytes per connection:" suffix="KB" />
 				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5" label="Maximum amount of concurrently open files:" />
 			</scrollarea>
 		</tab>
