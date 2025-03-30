@@ -240,6 +240,7 @@ namespace BitTorrent
 						namespace cat = libtorrent::alert_category;
 						settings.set_int (libtorrent::settings_pack::alert_mask,
 								cat::all &
+								~cat::incoming_request &
 								~cat::block_progress &
 								~cat::peer &
 								~cat::upload &
@@ -251,6 +252,7 @@ namespace BitTorrent
 								~cat::dht_log &
 								~cat::port_mapping_log &
 								~cat::picker_log &
+								~cat::tracker &
 								~cat::session_log);
 					}
 					Session_->apply_settings (settings);
