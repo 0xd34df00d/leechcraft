@@ -2557,7 +2557,8 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="241"/>
         <location filename="dummy.cpp" line="262"/>
         <location filename="dummy.cpp" line="266"/>
-        <source> s</source>
+        <source>s</source>
+        <oldsource> s</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2644,7 +2645,8 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="121"/>
         <location filename="dummy.cpp" line="187"/>
         <location filename="dummy.cpp" line="270"/>
-        <source> KB</source>
+        <source>KB</source>
+        <oldsource> KB</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2795,7 +2797,8 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="209"/>
         <location filename="dummy.cpp" line="213"/>
-        <source> min</source>
+        <source>min</source>
+        <oldsource> min</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2852,7 +2855,8 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="237"/>
         <location filename="dummy.cpp" line="245"/>
-        <source> MB</source>
+        <source>MB</source>
+        <oldsource> MB</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
