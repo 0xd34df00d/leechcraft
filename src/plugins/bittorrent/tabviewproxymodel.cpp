@@ -50,7 +50,7 @@ namespace LC::BitTorrent
 		const auto& reqTags = tm->Split (pattern);
 		const auto& torrentTags = idx.data (RoleTags).toStringList ();
 
-		return std::any_of (torrentTags.begin (), torrentTags.end (),
+		return std::ranges::any_of (torrentTags,
 				[&] (const auto& tagId) { return reqTags.contains (tm->GetTag (tagId)); });
 	}
 }
