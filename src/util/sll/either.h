@@ -17,6 +17,12 @@ namespace LC
 {
 namespace Util
 {
+	template<typename T>
+	struct Left
+	{
+		T Value_;
+	};
+
 	template<typename L, typename R>
 	class Either
 	{
@@ -44,6 +50,13 @@ namespace Util
 
 		explicit Either (const R& r)
 		: This_ { r }
+		{
+		}
+
+		template<typename LL>
+			requires std::is_constructible_v<L, LL&&>
+		Either (Left<LL>&& left)
+		: This_ { std::move (left.Value_) }
 		{
 		}
 
