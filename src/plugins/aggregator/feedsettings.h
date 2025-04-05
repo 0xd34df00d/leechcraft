@@ -17,7 +17,7 @@ namespace LC::Aggregator
 
 	class FeedSettings : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::FeedSettings)
 
 		Ui::FeedSettings Ui_;
 		const IDType_t FeedId_;
