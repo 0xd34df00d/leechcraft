@@ -253,7 +253,8 @@ namespace BitTorrent
 								~cat::port_mapping_log &
 								~cat::picker_log &
 								~cat::tracker &
-								~cat::session_log);
+								~cat::session_log &
+								~libtorrent::alert::progress_notification);
 					}
 					Session_->apply_settings (settings);
 				}
