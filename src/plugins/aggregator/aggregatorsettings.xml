@@ -4,7 +4,7 @@
 		<tab label="Behavior">
 			<item type="checkbox" property="AlwaysUseExternalBrowser" default="true" label="Always use external browser" />
 			<item type="checkbox" property="UrlsStripTracking" default="true" label="Strip tracking parameters from URLs" />
-			<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0" label="Mark as read after" suffix=" s" />
+			<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0" label="Mark as read after" suffix="s" />
 			<item type="combobox" property="NotificationsFeedUpdateBehavior" label="Notifications on feed update:">
 				<option name="ShowAll" default="true" label="all" />
 				<option name="ShowNew" label="only about new items" />
@@ -30,14 +30,14 @@
 		<tab label="Feeds handling">
 			<groupbox label="Updates">
 				<item type="checkbox" property="UpdateOnStartup" default="false" label="Update feeds on startup" />
-				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5" label="Update interval:" suffix=" min" />
+				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5" label="Update interval:" suffix="min" />
 			</groupbox>
 			<groupbox label="Automatic downloading">
 				<item type="path" property="EnclosuresDownloadPath" label="Download directory for enclosures:" />
 			</groupbox>
 			<groupbox label="Store">
 				<item type="spinbox" property="ItemsPerChannel" default="1000" minimum="20" maximum="10000" step="50" label="Items per channel:" />
-				<item type="spinbox" property="ItemsMaxAge" default="90" minimum="1" maximum="3650" label="Store items for:" suffix=" days" />
+				<item type="spinbox" property="ItemsMaxAge" default="90" minimum="1" maximum="3650" label="Store items for:" suffix="days" />
 			</groupbox>
 			<item type="checkbox" property="ConfirmMarkAllAsRead" default="true" label="Ask mark all feeds as read confirmation" />
 		</tab>
