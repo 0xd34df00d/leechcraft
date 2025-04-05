@@ -40,11 +40,11 @@
 #include "startupsecondpage.h"
 #include "startupthirdpage.h"
 #include "updatesmanager.h"
-#include "resourcesfetcher.h"
 #include "poolsmanager.h"
 #include "opmladder.h"
 #include "feedserrormanager.h"
 #include "dbutils.h"
+#include "resourcesfetcher.h"
 
 namespace LC
 {
@@ -92,7 +92,6 @@ namespace Aggregator
 		ItemActions::RegisterActions (*ShortcutMgr_);
 
 		ChannelsModel_ = std::make_shared<ChannelsModel> (ErrorsManager_, GetProxyHolder ()->GetTagsManager ());
-		ResourcesFetcher_ = std::make_shared<ResourcesFetcher> (GetProxyHolder ()->GetEntityManager ());
 
 		AppWideActions_ = std::make_shared<AppWideActions> (AppWideActions::Deps {
 					.ShortcutManager_ = *ShortcutMgr_,
@@ -107,6 +106,11 @@ namespace Aggregator
 
 		PluginManager_ = std::make_shared<PluginManager> (ChannelsModel_.get ());
 		PluginManager_->RegisterHookable (&StorageBackendManager::Instance ());
+
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelAdded,
+				this,
+				&UpdateChannelResources);
 	}
 
 	void Aggregator::SecondInit ()
@@ -116,7 +120,6 @@ namespace Aggregator
 					.AppWideActions_ = *AppWideActions_,
 					.ChannelsModel_ = *ChannelsModel_,
 					.UpdatesManager_ = *UpdatesManager_,
-					.ResourcesFetcher_ = *ResourcesFetcher_,
 					.DBUpThread_ = *DBUpThread_,
 				});
 	}
@@ -186,7 +189,6 @@ namespace Aggregator
 						.ChannelsModel_ = *ChannelsModel_,
 						.ShortcutManager_ = *ShortcutMgr_,
 						.UpdatesManager_ = *UpdatesManager_,
-						.ResourcesFetcher_ = *ResourcesFetcher_,
 						.DBUpThread_ = *DBUpThread_,
 					},
 					this);

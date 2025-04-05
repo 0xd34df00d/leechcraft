@@ -34,7 +34,6 @@ namespace LC::Aggregator
 	, ChannelActions_ { std::make_unique<ChannelActions> (ChannelActions::Deps {
 				.ShortcutManager_ = deps.ShortcutManager_,
 				.UpdatesManager_ = deps.UpdatesManager_,
-				.ResourcesFetcher_ = deps.ResourcesFetcher_,
 				.DBUpThread_ = deps.DBUpThread_,
 				.GetCurrentChannel_ = [this] () -> std::optional<ChannelShort>
 				{

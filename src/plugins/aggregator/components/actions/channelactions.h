@@ -23,7 +23,6 @@ namespace LC::Util
 namespace LC::Aggregator
 {
 	class DBUpdateThread;
-	class ResourcesFetcher;
 	class UpdatesManager;
 	struct ChannelShort;
 
@@ -38,7 +37,6 @@ namespace LC::Aggregator
 		{
 			Util::ShortcutManager& ShortcutManager_;
 			UpdatesManager& UpdatesManager_;
-			ResourcesFetcher& ResourcesFetcher_;
 			DBUpdateThread& DBUpThread_;
 
 			std::function<std::optional<ChannelShort> ()> GetCurrentChannel_;

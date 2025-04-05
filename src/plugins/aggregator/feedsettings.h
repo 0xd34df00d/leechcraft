@@ -26,7 +26,5 @@ namespace LC::Aggregator
 		explicit FeedSettings (const ChannelShort&, QWidget* = nullptr);
 
 		void accept () override;
-	signals:
-		void faviconRequested (IDType_t, const QString&);
 	};
 }

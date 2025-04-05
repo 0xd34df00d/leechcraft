@@ -8,25 +8,19 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
+#include <util/sll/eitherfwd.h>
+#include <util/sll/void.h>
+#include <util/threads/coro/taskfwd.h>
 #include "common.h"
 
 class QString;
 
-class IEntityManager;
-
 namespace LC::Aggregator
 {
-	class ResourcesFetcher : public QObject
-	{
-		IEntityManager * const EntityManager_;
-	public:
-		explicit ResourcesFetcher (IEntityManager*, QObject* = nullptr);
+	struct Channel;
 
-		void FetchPixmap (IDType_t, const QString&);
-		void FetchFavicon (IDType_t, const QString&);
-	private:
-		void FetchExternalFile (const QString&, const std::function<void (QString)>&);
-	};
+	Util::Task<Util::Either<QString, Util::Void>> UpdateFavicon (IDType_t channelId, const QString& channelLink);
+	Util::Task<Util::Either<QString, Util::Void>> UpdatePixmap (IDType_t channelId, const QString& pixmapLink);
+
+	void UpdateChannelResources (const Channel&);
 }

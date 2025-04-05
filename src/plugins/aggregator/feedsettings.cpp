@@ -9,6 +9,7 @@
 #include "feedsettings.h"
 #include <QDesktopServices>
 #include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/xpc/util.h>
@@ -16,6 +17,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include "resourcesfetcher.h"
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
 #include "xmlsettingsmanager.h"
@@ -71,7 +73,10 @@ namespace LC::Aggregator
 		connect (Ui_.UpdateFavicon_,
 				&QPushButton::released,
 				this,
-				[this, channel] { emit faviconRequested (ChannelId_, channel.Link_); });
+				[this, link = channel.Link_]
+				{
+					UpdateFavicon (ChannelId_, link);
+				});
 
 		const auto itm = GetProxyHolder ()->GetTagsManager ();
 

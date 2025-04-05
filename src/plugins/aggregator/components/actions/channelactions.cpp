@@ -233,10 +233,6 @@ namespace LC::Aggregator
 	void ChannelActions::Settings (const ChannelShort& channel)
 	{
 		FeedSettings dia { channel };
-		connect (&dia,
-				&FeedSettings::faviconRequested,
-				&Deps_.ResourcesFetcher_,
-				&ResourcesFetcher::FetchFavicon);
 		dia.exec ();
 	}
 }

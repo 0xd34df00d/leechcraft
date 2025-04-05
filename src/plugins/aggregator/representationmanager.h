@@ -30,7 +30,6 @@ namespace LC::Aggregator
 	class UpdatesManager;
 	class AppWideActions;
 	class ChannelActions;
-	class ResourcesFetcher;
 	class DBUpdateThread;
 	enum class ChannelDirection;
 
@@ -53,7 +52,6 @@ namespace LC::Aggregator
 			const AppWideActions& AppWideActions_;
 			ChannelsModel& ChannelsModel_;
 			UpdatesManager& UpdatesManager_;
-			ResourcesFetcher& ResourcesFetcher_;
 			DBUpdateThread& DBUpThread_;
 		};
 

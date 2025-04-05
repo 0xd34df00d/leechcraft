@@ -27,7 +27,6 @@ namespace LC::Aggregator
 	class ChannelsModel;
 	class DBUpdateThread;
 	class ItemsWidget;
-	class ResourcesFetcher;
 	class UpdatesManager;
 	enum class ChannelDirection;
 
@@ -61,7 +60,6 @@ namespace LC::Aggregator
 
 			Util::ShortcutManager& ShortcutManager_;
 			UpdatesManager& UpdatesManager_;
-			ResourcesFetcher& ResourcesFetcher_;
 			DBUpdateThread& DBUpThread_;
 		};
 
