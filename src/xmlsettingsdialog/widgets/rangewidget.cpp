@@ -15,8 +15,6 @@ namespace LC
 {
 	RangeWidget::RangeWidget (QWidget *parent)
 	: QWidget { parent }
-	, Lower_ { *new QSpinBox }
-	, Higher_ { *new QSpinBox }
 	{
 		const auto lay = new QHBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);

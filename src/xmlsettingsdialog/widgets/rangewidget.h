@@ -8,9 +8,7 @@
 
 #pragma once
 
-#include <QWidget>
-
-class QSpinBox;
+#include <QSpinBox>
 
 namespace LC
 {
@@ -18,8 +16,8 @@ namespace LC
 	{
 		Q_OBJECT
 
-		QSpinBox& Lower_;
-		QSpinBox& Higher_;
+		QSpinBox Lower_;
+		QSpinBox Higher_;
 	public:
 		explicit RangeWidget (QWidget *parent = nullptr);
 
