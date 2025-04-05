@@ -38,18 +38,18 @@ namespace Util
 
 		Either () = delete;
 
-		explicit Either (const L& l)
-		: This_ { l }
-		{
-		}
-
-		explicit Either (R&& r)
+		Either (R&& r)
 		: This_ { std::move (r) }
 		{
 		}
 
-		explicit Either (const R& r)
+		Either (const R& r)
 		: This_ { r }
+		{
+		}
+
+		explicit Either (const L& l)
+		: This_ { l }
 		{
 		}
 
