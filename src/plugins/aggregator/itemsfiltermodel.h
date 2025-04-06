@@ -24,7 +24,7 @@ namespace LC::Aggregator
 {
 	class IItemsModel;
 
-	class ItemsFilterModel : public QSortFilterProxyModel
+	class ItemsFilterModel final : public QSortFilterProxyModel
 	{
 		QSet<QString> ItemCategories_;
 		QSet<IDType_t> TaggedItems_;

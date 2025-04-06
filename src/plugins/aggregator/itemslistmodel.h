@@ -21,8 +21,8 @@ class IIconThemeManager;
 
 namespace LC::Aggregator
 {
-	class ItemsListModel : public QAbstractItemModel
-						 , public IItemsModel
+	class ItemsListModel final : public QAbstractItemModel
+							   , public IItemsModel
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ItemsListModel)
 		Q_INTERFACES (LC::Aggregator::IItemsModel)

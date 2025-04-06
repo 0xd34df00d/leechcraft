@@ -14,7 +14,7 @@ namespace LC
 {
 namespace Aggregator
 {
-	class ChannelsFilterModel : public Util::TagsFilterModel
+	class ChannelsFilterModel final : public Util::TagsFilterModel
 	{
 	public:
 		ChannelsFilterModel (QObject *parent = 0);
