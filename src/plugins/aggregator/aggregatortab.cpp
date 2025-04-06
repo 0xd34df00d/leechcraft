@@ -20,9 +20,9 @@
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "components/gui/util.h"
+#include "components/models/channelsmodel.h"
+#include "components/models/channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
-#include "channelsmodel.h"
-#include "channelsfiltermodel.h"
 #include "itemswidget.h"
 
 namespace LC::Aggregator

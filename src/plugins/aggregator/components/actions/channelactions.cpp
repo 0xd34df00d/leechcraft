@@ -15,11 +15,10 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/util.h>
+#include "components/models/channelsmodel.h"
 #include "actiondefshelpers.h"
-#include "channelsmodel.h"
 #include "dbupdatethread.h"
 #include "feedsettings.h"
-#include "resourcesfetcher.h"
 #include "storagebackendmanager.h"
 #include "updatesmanager.h"
 #include "xmlsettingsmanager.h"

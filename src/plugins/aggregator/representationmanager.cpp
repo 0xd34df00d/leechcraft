@@ -13,9 +13,9 @@
 #include <util/sll/prelude.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
+#include "components/models/channelsmodel.h"
 #include "jobholderrepresentation.h"
 #include "itemswidget.h"
-#include "channelsmodel.h"
 
 namespace LC::Aggregator
 {

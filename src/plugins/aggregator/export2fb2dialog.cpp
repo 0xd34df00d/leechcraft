@@ -24,7 +24,7 @@
 #include <util/tags/categoryselector.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include "channelsmodel.h"
+#include "components/models/channelsmodel.h"
 #include "storagebackendmanager.h"
 #include "itemutils.h"
 

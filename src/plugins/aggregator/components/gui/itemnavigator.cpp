@@ -10,7 +10,7 @@
 #include <ranges>
 #include <QAbstractItemView>
 #include "interfaces/aggregator/iitemsmodel.h"
-#include "../../channelsmodel.h"
+#include "../models/channelsmodel.h"
 
 namespace LC::Aggregator
 {

@@ -14,7 +14,11 @@ LC_DEFINE_PLUGIN (
 		components/itemrender/item.cpp
 		components/itemrender/mrss.cpp
 		components/itemrender/utils.cpp
+		components/models/channelsfiltermodel.cpp
+		components/models/channelsmodel.cpp
 		components/models/itemscategoriestracker.cpp
+		components/models/itemsfiltermodel.cpp
+		components/models/itemslistmodel.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp
@@ -27,9 +31,6 @@ LC_DEFINE_PLUGIN (
 		channel.cpp
 		feed.cpp
 		xmlsettingsmanager.cpp
-		channelsmodel.cpp
-		channelsfiltermodel.cpp
-		itemsfiltermodel.cpp
 		opmlparser.cpp
 		opmlwriter.cpp
 		importopml.cpp
@@ -39,7 +40,6 @@ LC_DEFINE_PLUGIN (
 		feedsettings.cpp
 		jobholderrepresentation.cpp
 		itemswidget.cpp
-		itemslistmodel.cpp
 		startupfirstpage.cpp
 		startupsecondpage.cpp
 		startupthirdpage.cpp

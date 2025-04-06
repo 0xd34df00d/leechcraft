@@ -26,6 +26,8 @@
 #include "components/actions/channelactions.h"
 #include "components/actions/itemactions.h"
 #include "components/models/itemscategoriestracker.h"
+#include "components/models/itemsfiltermodel.h"
+#include "components/models/itemslistmodel.h"
 #include "components/gui/itemcategoryselector.h"
 #include "components/gui/itemnavigator.h"
 #include "components/gui/itemselectiontracker.h"
@@ -33,8 +35,6 @@
 #include "components/itemrender/item.h"
 #include "ui_itemswidget.h"
 #include "xmlsettingsmanager.h"
-#include "itemsfiltermodel.h"
-#include "itemslistmodel.h"
 #include "storagebackendmanager.h"
 #include "itemutils.h"
 

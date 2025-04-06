@@ -8,10 +8,10 @@
 
 #include "proxyobject.h"
 #include <interfaces/core/icoreproxy.h>
+#include "components/models/channelsmodel.h"
+#include "components/models/itemslistmodel.h"
 #include "poolsmanager.h"
 #include "storagebackendmanager.h"
-#include "channelsmodel.h"
-#include "itemslistmodel.h"
 #include "dbutils.h"
 
 namespace LC
