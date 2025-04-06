@@ -15,7 +15,7 @@ class QToolBar;
 
 namespace LC::Aggregator
 {
-	class JobHolderRepresentation : public QSortFilterProxyModel
+	class JobHolderRepresentationModel : public QSortFilterProxyModel
 	{
 		QModelIndex Selected_;
 	public:
@@ -29,7 +29,7 @@ namespace LC::Aggregator
 	private:
 		Deps Deps_;
 	public:
-		explicit JobHolderRepresentation (const Deps&, QObject* = nullptr);
+		explicit JobHolderRepresentationModel (const Deps&, QObject* = nullptr);
 
 		QVariant data (const QModelIndex&, int) const override;
 	protected:

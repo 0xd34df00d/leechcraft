@@ -19,6 +19,7 @@ LC_DEFINE_PLUGIN (
 		components/models/itemscategoriestracker.cpp
 		components/models/itemsfiltermodel.cpp
 		components/models/itemslistmodel.cpp
+		components/models/jobholderrepresentationmodel.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp
@@ -38,7 +39,6 @@ LC_DEFINE_PLUGIN (
 		sqlstoragebackend.cpp
 		storagebackend.cpp
 		feedsettings.cpp
-		jobholderrepresentation.cpp
 		itemswidget.cpp
 		startupfirstpage.cpp
 		startupsecondpage.cpp

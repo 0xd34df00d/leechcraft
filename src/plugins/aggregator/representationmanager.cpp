@@ -14,7 +14,7 @@
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
 #include "components/models/channelsmodel.h"
-#include "jobholderrepresentation.h"
+#include "components/models/jobholderrepresentationmodel.h"
 #include "itemswidget.h"
 
 namespace LC::Aggregator
@@ -51,7 +51,7 @@ namespace LC::Aggregator
 				.SourceIdRole_ = ChannelRoles::ChannelID,
 				.FindItems_ = std::bind_front (&ChannelsModel::FindItems, &deps.ChannelsModel_),
 			})}
-	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentation> (JobHolderRepresentation::Deps {
+	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentationModel> (JobHolderRepresentationModel::Deps {
 				.Toolbar_ = *ReprWidget_->GetToolBar (),
 				.DetailsWidget_ = *ReprWidget_,
 				.RowMenu_ = CreateMenu (*ChannelActions_, deps.AppWideActions_, *ReprWidget_),

@@ -6,20 +6,20 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "jobholderrepresentation.h"
+#include "jobholderrepresentationmodel.h"
 #include <QMenu>
 #include <QToolBar>
 #include "common.h"
 
 namespace LC::Aggregator
 {
-	JobHolderRepresentation::JobHolderRepresentation (const Deps& deps, QObject *parent)
+	JobHolderRepresentationModel::JobHolderRepresentationModel (const Deps& deps, QObject *parent)
 	: QSortFilterProxyModel { parent }
 	, Deps_ { deps }
 	{
 	}
 
-	QVariant JobHolderRepresentation::data (const QModelIndex& index, int role) const
+	QVariant JobHolderRepresentationModel::data (const QModelIndex& index, int role) const
 	{
 		switch (role)
 		{
@@ -34,7 +34,7 @@ namespace LC::Aggregator
 		}
 	}
 	
-	bool JobHolderRepresentation::filterAcceptsRow (int row, const QModelIndex&) const
+	bool JobHolderRepresentationModel::filterAcceptsRow (int row, const QModelIndex&) const
 	{
 		// The row won't show up anyway in the job list if it was empty, so
 		// we can just check if it has unread items or selected. Later means

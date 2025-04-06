@@ -25,7 +25,7 @@ namespace LC::Util
 namespace LC::Aggregator
 {
 	class ItemsWidget;
-	class JobHolderRepresentation;
+	class JobHolderRepresentationModel;
 	class ChannelsModel;
 	class UpdatesManager;
 	class AppWideActions;
@@ -41,7 +41,7 @@ namespace LC::Aggregator
 		const std::unique_ptr<ChannelActions> ChannelActions_;
 		const std::unique_ptr<ItemsWidget> ReprWidget_;
 		const std::unique_ptr<SelectionProxy_t> SelectedIdProxyModel_;
-		const std::unique_ptr<JobHolderRepresentation> JobHolderRepresentation_;
+		const std::unique_ptr<JobHolderRepresentationModel> JobHolderRepresentation_;
 
 		std::optional<ChannelShort> CurrentChannel_;
 		QList<ChannelShort> SelectedChannels_;
