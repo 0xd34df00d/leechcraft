@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include <QCoreApplication>
 #include <QStringList>
 #include <QSet>
 #include <QIcon>
@@ -23,7 +24,7 @@ namespace LC::Aggregator
 	class ItemsListModel : public QAbstractItemModel
 						 , public IItemsModel
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ItemsListModel)
 		Q_INTERFACES (LC::Aggregator::IItemsModel)
 
 		const QStringList ItemHeaders_;

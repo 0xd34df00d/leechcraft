@@ -16,7 +16,6 @@ namespace Aggregator
 {
 	class ChannelsFilterModel : public Util::TagsFilterModel
 	{
-		Q_OBJECT
 	public:
 		ChannelsFilterModel (QObject *parent = 0);
 	protected:
