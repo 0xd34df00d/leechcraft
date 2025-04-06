@@ -10,7 +10,7 @@
 #include <QAbstractItemView>
 #include <QTimer>
 #include "interfaces/aggregator/iitemsmodel.h"
-#include "storagebackendmanager.h"
+#include "components/storage/storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Aggregator

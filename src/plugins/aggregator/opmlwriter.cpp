@@ -15,7 +15,7 @@
 #include <util/sll/buildtagstree.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "storagebackendmanager.h"
+#include "components/storage/storagebackendmanager.h"
 
 namespace LC
 {

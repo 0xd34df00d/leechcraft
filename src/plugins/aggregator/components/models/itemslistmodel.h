@@ -15,7 +15,7 @@
 #include <QIcon>
 #include <QThreadStorage>
 #include "interfaces/aggregator/iitemsmodel.h"
-#include "storagebackend.h"
+#include "components/storage/storagebackend.h"
 
 class IIconThemeManager;
 

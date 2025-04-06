@@ -11,8 +11,8 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
+#include "components/storage/storagebackendmanager.h"
 #include "feed.h"
-#include "storagebackendmanager.h"
 
 namespace LC
 {

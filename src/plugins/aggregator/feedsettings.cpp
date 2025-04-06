@@ -17,9 +17,9 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include "components/storage/storagebackend.h"
+#include "components/storage/storagebackendmanager.h"
 #include "resourcesfetcher.h"
-#include "storagebackendmanager.h"
-#include "storagebackend.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Aggregator

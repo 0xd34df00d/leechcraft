@@ -11,8 +11,8 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
-#include "storagebackendmanager.h"
-#include "storagebackend.h"
+#include "components/storage/storagebackend.h"
+#include "components/storage/storagebackendmanager.h"
 #include "updatesmanager.h"
 
 namespace LC::Aggregator

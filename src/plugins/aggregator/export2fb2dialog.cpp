@@ -25,7 +25,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include "components/models/channelsmodel.h"
-#include "storagebackendmanager.h"
+#include "components/storage/storagebackendmanager.h"
 #include "itemutils.h"
 
 namespace LC

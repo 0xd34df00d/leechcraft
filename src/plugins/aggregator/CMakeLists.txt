@@ -25,6 +25,10 @@ LC_DEFINE_PLUGIN (
 		components/parsers/parse.cpp
 		components/parsers/rss.cpp
 		components/parsers/utils.cpp
+		components/storage/dumbstorage.cpp
+		components/storage/sqlstoragebackend.cpp
+		components/storage/storagebackend.cpp
+		components/storage/storagebackendmanager.cpp
 		aggregator.cpp
 		aggregatortab.cpp
 		addfeeddialog.cpp
@@ -36,8 +40,6 @@ LC_DEFINE_PLUGIN (
 		opmlwriter.cpp
 		importopml.cpp
 		export.cpp
-		sqlstoragebackend.cpp
-		storagebackend.cpp
 		feedsettings.cpp
 		itemswidget.cpp
 		startupfirstpage.cpp
@@ -47,8 +49,6 @@ LC_DEFINE_PLUGIN (
 		pluginmanager.cpp
 		proxyobject.cpp
 		dbupdatethread.cpp
-		dumbstorage.cpp
-		storagebackendmanager.cpp
 		exportutils.cpp
 		itemutils.cpp
 		representationmanager.cpp

@@ -16,8 +16,6 @@
 #include "export.h"
 #include "export2fb2dialog.h"
 #include "opmlwriter.h"
-#include "storagebackendmanager.h"
-#include "storagebackend.h"
 #include "dbutils.h"
 
 namespace LC::Aggregator::ExportUtils

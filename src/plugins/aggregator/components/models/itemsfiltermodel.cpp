@@ -11,10 +11,10 @@
 #include <QtDebug>
 #include <util/models/selectionproxymodel.h>
 #include <util/sll/containerconversions.h>
+#include "components/storage/storagebackendmanager.h"
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "itemswidget.h"
 #include "xmlsettingsmanager.h"
-#include "storagebackendmanager.h"
 
 namespace LC::Aggregator
 {

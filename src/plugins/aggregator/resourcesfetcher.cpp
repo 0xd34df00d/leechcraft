@@ -15,7 +15,7 @@
 #include <util/threads/futures.h>
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
-#include "storagebackendmanager.h"
+#include "components/storage/storagebackendmanager.h"
 
 namespace LC::Aggregator
 {

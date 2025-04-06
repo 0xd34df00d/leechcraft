@@ -16,10 +16,10 @@
 #include <util/gui/util.h>
 #include <util/util.h>
 #include "components/models/channelsmodel.h"
+#include "components/storage/storagebackendmanager.h"
 #include "actiondefshelpers.h"
 #include "dbupdatethread.h"
 #include "feedsettings.h"
-#include "storagebackendmanager.h"
 #include "updatesmanager.h"
 #include "xmlsettingsmanager.h"
 

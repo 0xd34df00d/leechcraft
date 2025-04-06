@@ -19,9 +19,9 @@
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include "components/parsers/parse.h"
+#include "components/storage/storagebackend.h"
+#include "components/storage/storagebackendmanager.h"
 #include "dbupdatethread.h"
-#include "storagebackend.h"
-#include "storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
 #include "feedserrormanager.h"
 

@@ -6,6 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
+#include "channelsmodel.h"
 #include <stdexcept>
 #include <algorithm>
 #include <ranges>
@@ -22,10 +23,9 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
-#include "channelsmodel.h"
+#include "components/storage/storagebackendmanager.h"
 #include "item.h"
 #include "xmlsettingsmanager.h"
-#include "storagebackendmanager.h"
 #include "feedserrormanager.h"
 #include "tooltipbuilder.h"
 

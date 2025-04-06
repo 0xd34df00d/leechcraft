@@ -13,8 +13,8 @@
 #include <util/sll/visitor.h>
 #include <util/xpc/downloaderrorstrings.h>
 #include <util/xpc/util.h>
-#include "storagebackendmanager.h"
-#include "storagebackend.h"
+#include "components/storage/storagebackendmanager.h"
+#include "components/storage/storagebackend.h"
 
 namespace LC::Aggregator
 {

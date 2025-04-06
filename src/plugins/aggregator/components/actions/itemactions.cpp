@@ -21,8 +21,8 @@
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include "interfaces/aggregator/iitemsmodel.h"
+#include "components/storage/storagebackendmanager.h"
 #include "../../dbutils.h"
-#include "storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
 #include "actiondefshelpers.h"
 
