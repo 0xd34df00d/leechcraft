@@ -16,7 +16,6 @@ namespace Aggregator
 	ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
 	: Util::TagsFilterModel (parent)
 	{
-		setDynamicSortFilter (true);
 		SetTagsMode (true);
 	}
 	

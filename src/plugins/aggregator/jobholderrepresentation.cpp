@@ -17,7 +17,6 @@ namespace LC::Aggregator
 	: QSortFilterProxyModel { parent }
 	, Deps_ { deps }
 	{
-		setDynamicSortFilter (true);
 	}
 
 	QVariant JobHolderRepresentation::data (const QModelIndex& index, int role) const

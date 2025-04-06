@@ -29,8 +29,6 @@ namespace LC::Aggregator
 	{
 		QSortFilterProxyModel::setSourceModel (SelectedIdProxyModel_.get ());
 
-		setDynamicSortFilter (true);
-
 		XmlSettingsManager::Instance ().RegisterObject ("UnreadOnTop", this,
 				[this] (bool unreadOnTop)
 				{
