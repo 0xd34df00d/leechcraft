@@ -178,7 +178,7 @@ namespace LC::Aggregator
 			{
 				QIcon result = QPixmap::fromImage (channel.Favicon_);
 				if (result.isNull ())
-					result = QIcon::fromTheme ("application-rss+xml");
+					result = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("application-rss+xml"_qs);
 				if (result.isNull ())
 					result = GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 				return result;
