@@ -29,20 +29,15 @@
 #include "feedserrormanager.h"
 #include "tooltipbuilder.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	ChannelsModel::ChannelsModel (const std::shared_ptr<const FeedsErrorManager>& errorMgr,
 			const ITagsManager *itm, QObject *parent)
 	: QAbstractItemModel { parent }
+	, Headers_ { tr ("Feed"), tr ("Unread items"), tr ("Last build") }
 	, TagsManager_ { itm }
 	, FeedsErrorManager_ { errorMgr }
 	{
-		Headers_ << tr ("Feed")
-			<< tr ("Unread items")
-			<< tr ("Last build");
-
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::channelRemoved,
 				this,
@@ -291,10 +286,17 @@ namespace Aggregator
 		endResetModel ();
 	}
 
+	namespace
+	{
+		auto FindById (QList<ChannelShort>& channels, IDType_t id)
+		{
+			return std::ranges::find_if (channels, [id] (const ChannelShort& cs) { return cs.ChannelID_ == id; });
+		}
+	}
+
 	void ChannelsModel::RemoveChannel (IDType_t id)
 	{
-		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
-				[id] (const ChannelShort& cs) { return cs.ChannelID_ == id; });
+		const auto pos = FindById (Channels_, id);
 		if (pos == Channels_.end ())
 			return;
 
@@ -330,8 +332,7 @@ namespace Aggregator
 
 	void ChannelsModel::UpdateChannelUnreadCount (IDType_t cid, const UnreadChange& count)
 	{
-		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
-				[cid] (const ChannelShort& cs) { return cs.ChannelID_ == cid; });
+		const auto pos = FindById (Channels_, cid);
 		if (pos == Channels_.end ())
 			return;
 
@@ -345,12 +346,11 @@ namespace Aggregator
 
 	void ChannelsModel::UpdateChannelData (const Channel& channel)
 	{
-		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
-				[&channel] (const ChannelShort& cs) { return cs.ChannelID_ == channel.ChannelID_; });
+		const auto pos = FindById (Channels_, channel.ChannelID_);
 		if (pos == Channels_.end ())
 			return;
 
-		auto unreadCount = pos->Unread_;
+		const auto unreadCount = pos->Unread_;
 		*pos = channel.ToShort ();
 		pos->Unread_ = unreadCount;
 
@@ -367,5 +367,4 @@ namespace Aggregator
 			for (const auto& chan : storage->GetChannels (feedId))
 				AddChannel (chan);
 	}
-}
 }

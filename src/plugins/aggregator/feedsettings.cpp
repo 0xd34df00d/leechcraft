@@ -12,7 +12,6 @@
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/tags/tagscompleter.h>
-#include <util/tags/tagscompletionmodel.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>

@@ -6,22 +6,17 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_CHANNELSFILTERMODEL_H
-#define PLUGINS_AGGREGATOR_CHANNELSFILTERMODEL_H
+#pragma once
+
 #include <util/tags/tagsfiltermodel.h>
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class ChannelsFilterModel final : public Util::TagsFilterModel
 	{
 	public:
-		ChannelsFilterModel (QObject *parent = 0);
+		explicit ChannelsFilterModel (QObject *parent = nullptr);
 	protected:
-		virtual QStringList GetTagsForIndex (int) const;
+		QStringList GetTagsForIndex (int) const override;
 	};
 }
-}
-
-#endif

@@ -9,12 +9,10 @@
 #include "channelsfiltermodel.h"
 #include "common.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
-	: Util::TagsFilterModel (parent)
+	: TagsFilterModel { parent }
 	{
 		SetTagsMode (true);
 	}
@@ -23,5 +21,4 @@ namespace Aggregator
 	{
 		return sourceModel ()->index (row, 0).data (ChannelRoles::HumanReadableTags).toStringList ();
 	}
-}
 }

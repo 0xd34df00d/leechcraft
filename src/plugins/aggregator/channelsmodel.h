@@ -17,9 +17,7 @@ class QMenu;
 
 class ITagsManager;
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class FeedsErrorManager;
 	struct UnreadChange;
@@ -28,9 +26,8 @@ namespace Aggregator
 	{
 		Q_DECLARE_TR_FUNCTIONS (ChannelsModel)
 
-		QStringList Headers_;
-		typedef QList<ChannelShort> Channels_t;
-		Channels_t Channels_;
+		const QStringList Headers_;
+		QList<ChannelShort> Channels_;
 
 		const ITagsManager * const TagsManager_;
 		const std::shared_ptr<const FeedsErrorManager> FeedsErrorManager_;
@@ -67,5 +64,4 @@ namespace Aggregator
 		void Clear ();
 		void PopulateChannels ();
 	};
-}
 }
