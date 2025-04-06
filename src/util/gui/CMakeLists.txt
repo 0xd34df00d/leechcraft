@@ -11,6 +11,7 @@ endif ()
 
 add_util_library (util-gui
 	SRCS
+		actionresultreporter.cpp
 		autoresizemixin.cpp
 		clearlineeditaddon.cpp
 		colorbutton.cpp
