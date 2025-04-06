@@ -8,6 +8,7 @@
 
 #include "feedsettings.h"
 #include <QDesktopServices>
+#include <util/gui/actionresultreporter.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/tags/tagscompleter.h>
@@ -73,9 +74,13 @@ namespace LC::Aggregator
 		connect (Ui_.UpdateFavicon_,
 				&QPushButton::released,
 				this,
-				[this, link = channel.Link_]
+				[this, link = channel.Link_] -> Util::Task<void>
 				{
-					UpdateFavicon (ChannelId_, link);
+					auto& iem = *GetProxyHolder ()->GetEntityManager ();
+					Util::ActionResultReporter reporter { iem, { .Context_ = MessageBoxTitle }, this };
+
+					const auto result = co_await UpdateFavicon (ChannelId_, link);
+					co_await WithHandler (result, reporter);
 				});
 
 		const auto itm = GetProxyHolder ()->GetTagsManager ();
