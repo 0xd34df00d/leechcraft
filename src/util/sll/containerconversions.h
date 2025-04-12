@@ -15,6 +15,6 @@ namespace LC::Util
 	template<typename T>
 	auto AsSet (const T& cont)
 	{
-		return QSet<typename T::value_type> { cont.begin (), cont.end () };
+		return QSet<std::decay_t<decltype (*cont.begin ())>> { cont.begin (), cont.end () };
 	}
 }
