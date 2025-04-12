@@ -285,13 +285,11 @@ namespace LC::AdvancedNotifications
 
 	void SystemTrayHandler::RebuildState ()
 	{
-		// TODO Qt 5.14 remove values() call here
-		auto icons2hide = Util::AsSet (Category2Icon_.values ());
+		auto icons2hide = Util::AsSet (Category2Icon_);
 		for (const auto icon : icons2hide)
 			icon->contextMenu ()->clear ();
 
-		// TODO Qt 5.14 remove values() call here
-		auto actsDel = Util::AsSet (Category2Action_.values ());
+		auto actsDel = Util::AsSet (Category2Action_);
 
 		EventsForIcon_.clear ();
 		EventsForAction_.clear ();
