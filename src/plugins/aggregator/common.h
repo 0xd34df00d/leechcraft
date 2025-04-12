@@ -59,6 +59,10 @@ namespace LC::Aggregator
 	int ToRowDelta (ChannelDirection);
 
 	extern const QString MessageBoxTitle;
+	extern const QString NotificationTitle;
+	extern const QString PluginVisibleName;
+
+	extern const QByteArray PluginId;
 
 	struct Item;
 }

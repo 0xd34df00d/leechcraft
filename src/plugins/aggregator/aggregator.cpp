@@ -137,12 +137,12 @@ namespace Aggregator
 
 	QByteArray Aggregator::GetUniqueID () const
 	{
-		return "org.LeechCraft.Aggregator";
+		return PluginId;
 	}
 
 	QString Aggregator::GetName () const
 	{
-		return "Aggregator";
+		return PluginVisibleName;
 	}
 
 	QString Aggregator::GetInfo () const
@@ -177,10 +177,8 @@ namespace Aggregator
 
 	void Aggregator::TabOpenRequested (const QByteArray& tabClass)
 	{
-		if (tabClass != "Aggregator")
-			qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
-					<< tabClass;
+		if (tabClass != TabInfo_.TabClass_)
+			qWarning () << "unknown tab class" << tabClass;
 
 		if (!AggregatorTab_)
 			AggregatorTab_ = std::make_unique<AggregatorTab> (AggregatorTab::InitParams {

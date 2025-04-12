@@ -155,7 +155,7 @@ namespace LC::Aggregator
 
 				auto str = DBUpdateThread::tr ("Added channel \"%1\" (%n item(s))", nullptr, channel.Items_.size ())
 						.arg (channel.Title_);
-				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification (NotificationTitle, str, Priority::Info));
 			}
 
 			void UpdateChannel (IDType_t ourChannelId, Channel& channel) const
@@ -274,7 +274,7 @@ namespace LC::Aggregator
 				const auto& str = DBUpdateThread::tr ("Updated channel \"%1\" (%2).")
 						.arg (channel.Title_)
 						.arg (substrs.join (", "));
-				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification (NotificationTitle, str, Priority::Info));
 			}
 		};
 	}

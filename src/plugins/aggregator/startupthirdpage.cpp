@@ -14,6 +14,7 @@
 #include <util/util.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
+#include "common.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -45,7 +46,7 @@ namespace Aggregator
 		Ui_.LocalizationBox_->setCurrentIndex (languages.value (language, 0));
 		HandleCurrentIndexChanged ("(" + language + ")");
 
-		setTitle ("Aggregator");
+		setTitle (PluginVisibleName);
 		setSubTitle (tr ("Select feeds"));
 	}
 

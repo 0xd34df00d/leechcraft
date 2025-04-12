@@ -39,7 +39,7 @@ namespace LC::Aggregator
 		const auto& url = fixedUrl.toString ();
 		if (sb->FindFeed (url))
 		{
-			auto e = Util::MakeNotification ("Aggregator",
+			auto e = Util::MakeNotification (NotificationTitle,
 					QObject::tr ("The feed %1 is already added")
 						.arg (url),
 					Priority::Critical);

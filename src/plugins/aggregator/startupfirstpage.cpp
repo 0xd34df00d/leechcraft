@@ -5,8 +5,10 @@
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
+
 #include "startupfirstpage.h"
 #include "xmlsettingsmanager.h"
+#include "common.h"
 
 namespace LC
 {
@@ -17,7 +19,7 @@ namespace Aggregator
 	{
 		Ui_.setupUi (this);
 
-		setTitle ("Aggregator");
+		setTitle (PluginVisibleName);
 		setSubTitle (tr ("Set default options"));
 	}
 

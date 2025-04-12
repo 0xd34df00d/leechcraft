@@ -5,8 +5,10 @@
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
+
 #include "startupsecondpage.h"
 #include <util/db/backendselector.h>
+#include "common.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -22,7 +24,7 @@ namespace Aggregator
 		lay->addWidget (Selector_);
 		Ui_.SelectorContainer_->setLayout (lay);
 
-		setTitle ("Aggregator");
+		setTitle (PluginVisibleName);
 		setSubTitle (tr ("Set storage options"));
 
 		setProperty ("WizardType", 1);

@@ -12,7 +12,16 @@
 
 namespace LC::Aggregator
 {
-	const QString MessageBoxTitle { "LeechCraft Aggregator"_qs };
+	namespace
+	{
+		const QString Aggregator { "Aggregator"_qs };
+	}
+
+	const QString MessageBoxTitle = Aggregator;
+	const QString NotificationTitle = Aggregator;
+	const QString PluginVisibleName = Aggregator;
+
+	const QByteArray PluginId = "org.LeechCraft.Aggregator";
 
 	int ToRowDelta (ChannelDirection dir)
 	{
@@ -24,8 +33,7 @@ namespace LC::Aggregator
 			return +1;
 		}
 
-		qWarning () << "ToRowDelta: unknown direction"
-				<< static_cast<int> (dir);
+		qWarning () << "ToRowDelta: unknown direction" << static_cast<int> (dir);
 		return -1;
 	}
 }

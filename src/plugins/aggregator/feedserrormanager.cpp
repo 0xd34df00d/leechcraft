@@ -58,12 +58,12 @@ namespace LC::Aggregator
 				channels [0].Title_ :
 				storage->GetFeed (id).URL_;
 
-		auto e = Util::MakeAN ("Aggregator",
+		auto e = Util::MakeAN (NotificationTitle,
 				tr ("Error updating feed %1: %2.")
 					.arg (Util::FormatName (reprName))
 					.arg (errInfo.Short_),
 				Priority::Warning,
-				"org.LeechCraft.Aggregator",
+				PluginId,
 				AN::CatNews, AN::TypeNewsSourceBroken,
 				MakeEventId (id),
 				{},
@@ -79,7 +79,7 @@ namespace LC::Aggregator
 
 		emit clearedErrors (id);
 
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Aggregator", MakeEventId (id)));
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeANCancel (PluginId, MakeEventId (id)));
 	}
 
 	QList<FeedsErrorManager::Error> FeedsErrorManager::GetFeedErrors (IDType_t id) const

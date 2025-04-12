@@ -293,7 +293,7 @@ namespace Aggregator
 		w.writeEndDocument ();
 
 		const auto iem = GetProxyHolder ()->GetEntityManager ();
-		iem->HandleEntity (Util::MakeNotification ("Aggregator",
+		iem->HandleEntity (Util::MakeNotification (NotificationTitle,
 					tr ("Export complete."),
 					Priority::Info));
 	}
@@ -411,7 +411,7 @@ namespace Aggregator
 
 		doc.print (&printer);
 
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator",
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification (NotificationTitle,
 					tr ("Export complete."),
 					Priority::Info));
 	}
