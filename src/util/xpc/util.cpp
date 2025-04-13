@@ -21,7 +21,7 @@ Q_DECLARE_METATYPE (QVariantList*);
 namespace LC::Util
 {
 	Entity MakeAN (const QString& header, const QString& text, Priority priority,
-			const QString& senderID, const QString& cat, const QString& type,
+			const QByteArray& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
 			int delta, int count,
 			const QString& fullText, const QString& extendedText)
@@ -41,7 +41,7 @@ namespace LC::Util
 		return e;
 	}
 
-	Entity MakeANRule (const QString& title, const QString& senderID,
+	Entity MakeANRule (const QString& title, const QByteArray& senderID,
 			const QString& cat, const QStringList& types, AN::NotifyFlags flags,
 			bool openConfiguration, const QList<QPair<QString, AN::FieldValue>>& fields)
 	{
@@ -113,7 +113,7 @@ namespace LC::Util
 		return e;
 	}
 
-	Entity MakeANCancel (const QString& senderId, const QString& eventId)
+	Entity MakeANCancel (const QByteArray& senderId, const QString& eventId)
 	{
 		Entity e = MakeNotification (QString (), QString (), Priority::Info);
 		e.Additional_ [AN::EF::SenderID] = senderId;

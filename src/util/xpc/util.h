@@ -63,7 +63,7 @@ namespace LC::Util
 	 * @sa MakeANRule()
 	 */
 	UTIL_XPC_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
-			const QString& senderID, const QString& cat, const QString& type,
+			const QByteArray& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
 			int delta = 1, int count = 0,
 			const QString& fullText = QString (), const QString& extendedText = QString ());
@@ -91,7 +91,7 @@ namespace LC::Util
 	 * @sa MakeAN()
 	 */
 	UTIL_XPC_API Entity MakeANRule (const QString& title,
-			const QString& senderID,
+			const QByteArray& senderID,
 			const QString& category,
 			const QStringList& types,
 			AN::NotifyFlags flags = AN::NotifyNone,
@@ -191,7 +191,7 @@ namespace LC::Util
 	 * @param[in] eventId The ID of the event that is to be canceled.
 	 * @return The Entity canceling the given event.
 	 */
-	UTIL_XPC_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
+	UTIL_XPC_API Entity MakeANCancel (const QByteArray& senderId, const QString& eventId);
 
 	/** @brief Returns persistent data stored under given \em key.
 	 *
