@@ -7,9 +7,10 @@
  **********************************************************************/
 
 #include "systemtrayhandler.h"
+#include <QApplication>
 #include <QMenu>
 #include <QPainter>
-#include <QApplication>
+#include <QSystemTrayIcon>
 #include <interfaces/structures.h>
 #include <interfaces/entityconstants.h>
 #include <interfaces/an/constants.h>
@@ -23,7 +24,8 @@
 #include <util/gui/util.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro/future.h>
+#include <util/threads/coro.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
@@ -44,55 +46,6 @@ namespace LC::AdvancedNotifications
 		return NMTray;
 	}
 
-	namespace
-	{
-		QFuture<QPixmap> GetPixmap (const Entity& e)
-		{
-			const auto& pxVar = e.Additional_ [EF::NotificationPixmap];
-
-			if (pxVar.canConvert<QPixmap> ())
-				return Util::MakeReadyFuture (pxVar.value<QPixmap> ());
-
-			if (pxVar.canConvert<QImage> ())
-				return Util::MakeReadyFuture (QPixmap::fromImage (pxVar.value<QImage> ()));
-
-			const auto prio = e.Additional_ [EF::Priority].value<Priority> ();
-			auto getDefault = [prio]
-			{
-				QString mi;
-				switch (prio)
-				{
-				case Priority::Info:
-					mi = "information"_ql;
-					break;
-				case Priority::Warning:
-					mi = "warning"_ql;
-					break;
-				case Priority::Critical:
-					mi = "error"_ql;
-					break;
-				}
-
-				const auto iconSize = 64;
-				const auto& pixmap = GetProxyHolder ()->GetIconThemeManager ()->
-						GetIcon ("dialog-" + mi).pixmap ({ iconSize, iconSize });
-				return Util::MakeReadyFuture (pixmap);
-			};
-
-			if (pxVar.canConvert<Util::LazyNotificationPixmap_t> ())
-			{
-				const auto& maybeLazy = pxVar.value<Util::LazyNotificationPixmap_t> () ();
-				if (!maybeLazy)
-					return getDefault ();
-
-				return Util::Sequence (nullptr, *maybeLazy) >>
-						[] (const QImage& img) { return Util::MakeReadyFuture (QPixmap::fromImage (img)); };
-			}
-
-			return getDefault ();
-		}
-	}
-
 	void SystemTrayHandler::Handle (const Entity& e, const NotificationRule&)
 	{
 		const auto& cat = e.Additional_ [AN::EF::EventCategory].toString ();
@@ -106,11 +59,12 @@ namespace LC::AdvancedNotifications
 			return;
 		}
 
+		const EventKey key { senderId, eventId };
+
 		PrepareSysTrayIcon (cat);
 		PrepareLCTrayAction (cat);
 		auto& eventData = [&] () -> EventData&
 		{
-			const EventKey key { senderId, eventId };
 			if (!Events_.contains (key))
 			{
 				EventData data;
@@ -134,23 +88,68 @@ namespace LC::AdvancedNotifications
 		eventData.ExtendedText_ = e.Additional_ [AN::EF::ExtendedText].toString ();
 		eventData.FullText_ = e.Additional_ [AN::EF::FullText].toString ();
 
-		// TODO migrate to co_await
-		const auto& pxFuture = GetPixmap (e);
-		if (pxFuture.isFinished ())
-			eventData.Pixmap_ = pxFuture.result ();
-		else
-			Util::Sequence (this, pxFuture) >>
-					[senderId, eventId, this] (const QPixmap& px)
-					{
-						const auto pos = Events_.find ({ senderId, eventId });
-						if (pos != Events_.end ())
-						{
-							pos->Pixmap_ = px;
-							RebuildState ();
-						}
-					};
+		ExtractPixmap (eventData, e);
 
 		RebuildState ();
+	}
+
+	namespace
+	{
+		QPixmap GetDefaultPixmap (Priority prio)
+		{
+			QLatin1String mi;
+			switch (prio)
+			{
+			case Priority::Info:
+				mi = "information"_ql;
+				break;
+			case Priority::Warning:
+				mi = "warning"_ql;
+				break;
+			case Priority::Critical:
+				mi = "error"_ql;
+				break;
+			}
+
+			constexpr auto size = 64;
+			return GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("dialog-" + mi).pixmap ({ size, size });
+		}
+
+		std::optional<QPixmap> ExtractPixmapSync (const QVariant& pxVar)
+		{
+			if (pxVar.canConvert<QPixmap> ())
+				return pxVar.value<QPixmap> ();
+			if (pxVar.canConvert<QImage> ())
+				return QPixmap::fromImage (pxVar.value<QImage> ());
+
+			return {};
+		}
+	}
+
+	Util::ContextTask<void> SystemTrayHandler::ExtractPixmap (EventData& eventData, const Entity& e)
+	{
+		const auto& pxVar = e.Additional_ [EF::NotificationPixmap];
+
+		if (const auto px = ExtractPixmapSync (pxVar))
+		{
+			eventData.Pixmap_ = *px;
+			co_return;
+		}
+
+		eventData.Pixmap_ = GetDefaultPixmap (e.Additional_ [EF::Priority].value<Priority> ());
+
+		if (const auto& lazyPxGetter = pxVar.value<Util::LazyNotificationPixmap_t> ();
+			const auto& maybeLazy = lazyPxGetter ())
+		{
+			co_await Util::AddContextObject { *this };
+			const auto& px = co_await *maybeLazy;
+			const auto pos = Events_.find ({ eventData.SenderId_, eventData.EventId_ });
+			if (pos != Events_.end ())
+			{
+				pos->Pixmap_ = QPixmap::fromImage (px);
+				RebuildState ();
+			}
+		}
 	}
 
 	namespace

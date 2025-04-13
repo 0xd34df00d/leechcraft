@@ -10,9 +10,7 @@
 
 #include <QMap>
 #include <QStringList>
-#include <QPixmap>
-#include <QPointer>
-#include <QSystemTrayIcon>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/structures.h>
 #include <interfaces/iactionsexporter.h>
 #include "concretehandlerbase.h"
@@ -44,6 +42,8 @@ namespace LC::AdvancedNotifications
 		NotificationMethod GetHandlerMethod () const override;
 		void Handle (const Entity&, const NotificationRule&) override;
 	private:
+		Util::ContextTask<void> ExtractPixmap (EventData&, const Entity&);
+
 		VisualNotificationsView* CreateVisualNotificationView ();
 		void PrepareSysTrayIcon (const QString&);
 		void PrepareLCTrayAction (const QString&);
