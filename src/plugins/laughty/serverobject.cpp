@@ -26,7 +26,7 @@ namespace Laughty
 {
 	namespace
 	{
-		const QString LaughtyID = "org.LeechCraft.Laughty";
+		const QByteArray LaughtyID = "org.LeechCraft.Laughty";
 	}
 
 	ServerObject::ServerObject (ICoreProxy_ptr proxy)
