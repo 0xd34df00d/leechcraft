@@ -30,7 +30,7 @@ namespace LC::AdvancedNotifications
 
 		QMap<QString, QSystemTrayIcon*> Category2Icon_;
 		QMap<QString, QAction*> Category2Action_;
-		QMap<QString, EventData> Events_;
+		QMap<EventKey, EventData> Events_;
 
 		QMap<QSystemTrayIcon*, QList<EventData>> EventsForIcon_;
 		QMap<QSystemTrayIcon*, VisualNotificationsView*> Icon2NotificationView_;
@@ -44,17 +44,18 @@ namespace LC::AdvancedNotifications
 		NotificationMethod GetHandlerMethod () const override;
 		void Handle (const Entity&, const NotificationRule&) override;
 	private:
+		VisualNotificationsView* CreateVisualNotificationView ();
 		void PrepareSysTrayIcon (const QString&);
 		void PrepareLCTrayAction (const QString&);
-		void UpdateMenu (QMenu*, const QString&, const EventData&);
+		void UpdateMenu (QMenu*, const EventKey&, const EventData&);
 		void RebuildState ();
 		template<typename T>
 		void UpdateIcon (T iconable, const QString&);
 		void UpdateSysTrayIcon (QSystemTrayIcon*);
 		void UpdateTrayAction (QAction*);
 
-		void HandleActionTriggered (const QString&, int);
-		void DismissNotification (const QString&);
+		void HandleActionTriggered (const EventKey&, int);
+		void DismissNotification (const EventKey&);
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};

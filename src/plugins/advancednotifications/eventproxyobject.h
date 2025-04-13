@@ -42,7 +42,7 @@ namespace LC::AdvancedNotifications
 
 		void dismissEvent ();
 
-		void actionTriggered (const QString&, int);
-		void dismissEventRequested (const QString&);
+		void actionTriggered (const EventKey&, int);
+		void dismissEventRequested (const EventKey&);
 	};
 }

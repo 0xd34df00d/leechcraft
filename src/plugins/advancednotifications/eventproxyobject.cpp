@@ -30,7 +30,7 @@ namespace LC::AdvancedNotifications
 					&ActionsProxyObject::actionSelected,
 					[this, idx = i++]
 					{
-						emit actionTriggered (E_.EventID_, idx);
+						emit actionTriggered ({ E_.SenderId_, E_.EventId_ }, idx);
 					});
 			model << proxy;
 		}
@@ -38,7 +38,7 @@ namespace LC::AdvancedNotifications
 		connect (this,
 				&EventProxyObject::dismissEvent,
 				this,
-				[this] { emit dismissEventRequested (E_.EventID_); },
+				[this] { emit dismissEventRequested ({ E_.SenderId_, E_.EventId_ }); },
 				Qt::QueuedConnection);
 
 		ActionsModel_ = QVariant::fromValue<QList<QObject*>> (model);

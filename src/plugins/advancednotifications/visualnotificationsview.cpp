@@ -33,12 +33,11 @@ namespace LC::AdvancedNotifications
 
 		if (fileLocation.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "visualnotificationsview.qml isn't found";
+			qWarning () << "visualnotificationsview.qml isn't found";
 			return;
 		}
 
-		qDebug () << Q_FUNC_INFO << "created";
+		qDebug () << "created";
 
 		Location_ = QUrl::fromLocalFile (fileLocation);
 

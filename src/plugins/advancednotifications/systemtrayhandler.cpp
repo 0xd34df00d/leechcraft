@@ -95,51 +95,59 @@ namespace LC::AdvancedNotifications
 
 	void SystemTrayHandler::Handle (const Entity& e, const NotificationRule&)
 	{
-		const QString& cat = e.Additional_ [AN::EF::EventCategory].toString ();
-		const QString& eventId = e.Additional_ [AN::EF::EventID].toString ();
+		const auto& cat = e.Additional_ [AN::EF::EventCategory].toString ();
+		const auto& senderId = e.Additional_ [AN::EF::SenderID].toByteArray ();
+		const auto& eventId = e.Additional_ [AN::EF::EventID].toString ();
 
 		if (cat == AN::CatEventCancel)
 		{
-			if (Events_.remove (eventId))
+			if (Events_.remove ({ senderId, eventId }))
 				RebuildState ();
 			return;
 		}
 
 		PrepareSysTrayIcon (cat);
 		PrepareLCTrayAction (cat);
-		if (!Events_.contains (eventId))
+		auto& eventData = [&] () -> EventData&
 		{
-			EventData data;
-			data.EventID_ = eventId;
-			data.Count_ = 0;
-			data.Category_ = cat;
-			data.VisualPath_ = e.Additional_ [AN::EF::VisualPath].toStringList ();
-			data.HandlingObject_ = e.Additional_ [EF::HandlingObject].value<QObject_ptr> ();
-			data.Actions_ = e.Additional_ [EF::NotificationActions].toStringList ();
-			data.Canceller_ = Util::MakeANCancel (e);
-			Events_ [eventId] = data;
-		}
+			const EventKey key { senderId, eventId };
+			if (!Events_.contains (key))
+			{
+				EventData data;
+				data.SenderId_ = senderId;
+				data.EventId_ = eventId;
+				data.Count_ = 0;
+				data.Category_ = cat;
+				data.VisualPath_ = e.Additional_ [AN::EF::VisualPath].toStringList ();
+				data.HandlingObject_ = e.Additional_ [EF::HandlingObject].value<QObject_ptr> ();
+				data.Actions_ = e.Additional_ [EF::NotificationActions].toStringList ();
+				data.Canceller_ = Util::MakeANCancel (e);
+				Events_ [key] = data;
+			}
+			return Events_ [key];
+		} ();
 
 		if (const int delta = e.Additional_.value (AN::EF::DeltaCount, 0).toInt ())
-			Events_ [eventId].Count_ += delta;
+			eventData.Count_ += delta;
 		else
-			Events_ [eventId].Count_ = e.Additional_.value (AN::EF::Count, 1).toInt ();
-		Events_ [eventId].ExtendedText_ = e.Additional_ [AN::EF::ExtendedText].toString ();
-		Events_ [eventId].FullText_ = e.Additional_ [AN::EF::FullText].toString ();
+			eventData.Count_ = e.Additional_.value (AN::EF::Count, 1).toInt ();
+		eventData.ExtendedText_ = e.Additional_ [AN::EF::ExtendedText].toString ();
+		eventData.FullText_ = e.Additional_ [AN::EF::FullText].toString ();
 
 		// TODO migrate to co_await
 		const auto& pxFuture = GetPixmap (e);
 		if (pxFuture.isFinished ())
-			Events_ [eventId].Pixmap_ = pxFuture.result ();
+			eventData.Pixmap_ = pxFuture.result ();
 		else
 			Util::Sequence (this, pxFuture) >>
-					[eventId, this] (const QPixmap& px)
+					[senderId, eventId, this] (const QPixmap& px)
 					{
-						if (!Events_.contains (eventId))
-							return;
-
-						Events_ [eventId].Pixmap_ = px;
-						RebuildState ();
+						const auto pos = Events_.find ({ senderId, eventId });
+						if (pos != Events_.end ())
+						{
+							pos->Pixmap_ = px;
+							RebuildState ();
+						}
 					};
 
 		RebuildState ();
@@ -184,6 +192,20 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
+	VisualNotificationsView* SystemTrayHandler::CreateVisualNotificationView ()
+	{
+		const auto vnv = new VisualNotificationsView { GetProxyHolder () };
+		connect (vnv,
+				&VisualNotificationsView::actionTriggered,
+				this,
+				&SystemTrayHandler::HandleActionTriggered);
+		connect (vnv,
+				&VisualNotificationsView::dismissEvent,
+				this,
+				&SystemTrayHandler::DismissNotification);
+		return vnv;
+	}
+
 	void SystemTrayHandler::PrepareSysTrayIcon (const QString& category)
 	{
 #ifndef Q_OS_MACOS
@@ -203,15 +225,7 @@ namespace LC::AdvancedNotifications
 						ShowVNV (Icon2NotificationView_ [trayIcon], EventsForIcon_ [trayIcon]);
 				});
 
-		const auto vnv = new VisualNotificationsView { GetProxyHolder () };
-		connect (vnv,
-				&VisualNotificationsView::actionTriggered,
-				this,
-				&SystemTrayHandler::HandleActionTriggered);
-		connect (vnv,
-				&VisualNotificationsView::dismissEvent,
-				this,
-				&SystemTrayHandler::DismissNotification);
+		const auto vnv = CreateVisualNotificationView ();
 		Icon2NotificationView_ [trayIcon] = vnv;
 
 		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
@@ -237,22 +251,14 @@ namespace LC::AdvancedNotifications
 
 		emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
 
-		const auto vnv = new VisualNotificationsView { GetProxyHolder () };
-		connect (vnv,
-				&VisualNotificationsView::actionTriggered,
-				this,
-				&SystemTrayHandler::HandleActionTriggered);
-		connect (vnv,
-				&VisualNotificationsView::dismissEvent,
-				this,
-				&SystemTrayHandler::DismissNotification);
+		const auto vnv = CreateVisualNotificationView ();
 		Action2NotificationView_ [action] = vnv;
 
 		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
 			new Util::UnhoverDeleteMixin (vnv, SLOT (hide ()));
 	}
 
-	void SystemTrayHandler::UpdateMenu (QMenu *menu, const QString& event, const EventData& data)
+	void SystemTrayHandler::UpdateMenu (QMenu *menu, const EventKey& event, const EventData& data)
 	{
 		for (const auto& pathItem : data.VisualPath_)
 			menu = menu->addMenu (pathItem);
@@ -297,11 +303,8 @@ namespace LC::AdvancedNotifications
 		QSet<QSystemTrayIcon*> visibleIcons;
 		QSet<QAction*> actsUpd;
 
-		for (const auto& pair : Util::Stlize (Events_))
+		for (const auto& [event, data] : Util::Stlize (Events_))
 		{
-			const auto& event = pair.first;
-			const auto& data = pair.second;
-
 			const auto icon = Category2Icon_.value (data.Category_);
 			if (icon)
 			{
@@ -416,13 +419,11 @@ namespace LC::AdvancedNotifications
 		UpdateIcon (action, Category2Action_.key (action));
 	}
 
-	void SystemTrayHandler::HandleActionTriggered (const QString& event, int index)
+	void SystemTrayHandler::HandleActionTriggered (const EventKey& event, int index)
 	{
 		if (!Events_.contains (event))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no such event"
-					<< event;
+			qWarning () << "no such event" << event.SenderId_ << event.EventId_;
 			return;
 		}
 
@@ -432,12 +433,12 @@ namespace LC::AdvancedNotifications
 				Q_ARG (int, index));
 	}
 
-	void SystemTrayHandler::DismissNotification (const QString& event)
+	void SystemTrayHandler::DismissNotification (const EventKey& key)
 	{
-		if (!Events_.contains (event))
+		if (!Events_.contains (key))
 			return;
 
-		const auto canceller = Events_.value (event).Canceller_;
+		const auto canceller = Events_.value (key).Canceller_;
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (canceller);
 	}
 }

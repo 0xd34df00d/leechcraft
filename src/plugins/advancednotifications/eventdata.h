@@ -16,7 +16,8 @@ namespace LC::AdvancedNotifications
 {
 	struct EventData
 	{
-		QString EventID_;
+		QByteArray SenderId_;
+		QString EventId_;
 		int Count_;
 		QString Category_;
 		QStringList VisualPath_;
@@ -28,5 +29,13 @@ namespace LC::AdvancedNotifications
 		QStringList Actions_;
 
 		Entity Canceller_;
+	};
+
+	struct EventKey
+	{
+		QByteArray SenderId_;
+		QString EventId_;
+
+		auto operator<=> (const EventKey&) const = default;
 	};
 }

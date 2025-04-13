@@ -26,7 +26,7 @@ namespace LC::AdvancedNotifications
 
 		void SetEvents (const QList<EventData>&);
 	signals:
-		void actionTriggered (const QString&, int);
-		void dismissEvent (const QString&);
+		void actionTriggered (const EventKey&, int);
+		void dismissEvent (const EventKey&);
 	};
 }
