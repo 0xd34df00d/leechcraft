@@ -8,7 +8,6 @@
 
 #include "historywidget.h"
 #include <QDateTime>
-#include <util/sll/curry.h>
 #include "core.h"
 #include "historymodel.h"
 #include "historyfiltermodel.h"

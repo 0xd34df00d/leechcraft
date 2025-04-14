@@ -14,7 +14,6 @@
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
-#include <util/sll/curry.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
 #ifdef ENABLE_CRYPT

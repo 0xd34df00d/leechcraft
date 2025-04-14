@@ -18,7 +18,6 @@
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
-#include <util/sll/curry.h>
 #include <util/threads/futures.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"

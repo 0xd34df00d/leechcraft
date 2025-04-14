@@ -10,7 +10,6 @@
 #include <QColorDialog>
 #include <QtDebug>
 #include <QMessageBox>
-#include <util/sll/curry.h>
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
 
@@ -225,5 +224,3 @@ namespace Metida
 }
 }
 }
-
-

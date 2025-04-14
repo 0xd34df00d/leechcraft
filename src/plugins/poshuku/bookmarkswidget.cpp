@@ -9,7 +9,6 @@
 #include "bookmarkswidget.h"
 #include <QMessageBox>
 #include <util/models/flattofoldersproxymodel.h>
-#include <util/sll/curry.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>

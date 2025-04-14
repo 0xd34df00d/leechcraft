@@ -10,7 +10,6 @@
 #include <QStyledItemDelegate>
 #include <QDoubleSpinBox>
 #include <QtDebug>
-#include <util/sll/curry.h>
 #include "compparamsmanager.h"
 
 namespace LC::Fenet

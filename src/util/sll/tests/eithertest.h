@@ -28,8 +28,6 @@ namespace Util
 		void testPure ();
 		void testGSL ();
 		void testGSLLeft ();
-		void testGSLCurry ();
-		void testGSLCurryLeft ();
 
 		void testBind ();
 		void testBindLeft ();

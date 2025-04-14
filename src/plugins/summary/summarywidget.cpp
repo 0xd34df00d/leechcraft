@@ -25,7 +25,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/imwproxy.h>
 #include <util/gui/clearlineeditaddon.h>
-#include <util/sll/curry.h>
 #include <util/sll/qtutil.h>
 #include "core.h"
 #include "summary.h"

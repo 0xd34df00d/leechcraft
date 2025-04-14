@@ -9,7 +9,6 @@
 #include "transcodingparamswidget.h"
 #include <QThread>
 #include <QtDebug>
-#include <util/sll/curry.h>
 #include "transcodingparams.h"
 #include "formats.h"
 

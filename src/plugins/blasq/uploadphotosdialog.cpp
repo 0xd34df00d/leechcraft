@@ -10,7 +10,6 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <util/util.h>
-#include <util/sll/curry.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 #include "selectalbumdialog.h"

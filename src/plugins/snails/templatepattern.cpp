@@ -9,7 +9,6 @@
 #include "templatepattern.h"
 #include <QHash>
 #include <util/sll/prelude.h>
-#include <util/sll/curry.h>
 #include <interfaces/itexteditor.h>
 #include "account.h"
 #include "util.h"

@@ -9,7 +9,6 @@
 #include "eithertest.h"
 #include <QtTest>
 #include <either.h>
-#include <curry.h>
 #include <void.h>
 #include <functor.h>
 #include <monad.h>
@@ -100,24 +99,6 @@ namespace Util
 		const auto& value = SomeEither_t::Left (2);
 		const auto& app = pure * value;
 		QCOMPARE (app, value);
-	}
-
-	void EitherTest::testGSLCurry ()
-	{
-		const auto& summer = Pure<Either, int> (Curry ([] (const QString& a, const QString& b) { return a + b; }));
-		const auto& s1 = Pure<Either, int> (QString { "foo" });
-		const auto& s2 = Pure<Either, int> (QString { "bar" });
-		const auto& app = summer * s1 * s2;
-		QCOMPARE (app, SomeEither_t::Right ("foobar"));
-	}
-
-	void EitherTest::testGSLCurryLeft ()
-	{
-		const auto& summer = Pure<Either, int> (Curry ([] (const QString& a, const QString& b) { return a + b; }));
-		const auto& s1 = SomeEither_t::Left (2);
-		const auto& s2 = Pure<Either, int> (QString { "bar" });
-		const auto& app = summer * s1 * s2;
-		QCOMPARE (app, s1);
 	}
 
 	void EitherTest::testBind ()
