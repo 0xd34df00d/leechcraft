@@ -15,7 +15,6 @@
 #include <util/models/dndactionsmixin.h>
 #include <util/models/mergemodel.h>
 #include <util/sll/containerconversions.h>
-#include <util/sll/dropargs.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/gui/util.h>
@@ -139,8 +138,8 @@ namespace LMP
 	void RadioManager::Refresh (const QModelIndex& index)
 	{
 		if (!WithSourceProv (index,
-					Util::DropArgs ([] { return true; }),
-					Util::DropArgs ([] { return false; })))
+					[] (auto&&...) { return true; },
+					[] (auto&&...) { return false; }))
 			return;
 
 		WithSourceProv (index,
