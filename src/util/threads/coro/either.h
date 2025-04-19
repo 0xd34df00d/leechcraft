@@ -57,9 +57,9 @@ namespace LC::Util
 			ErrorHandler Handler_;
 
 			template<typename L>
-			void HandleError (L&& left)
+			auto HandleError (L&& left)
 			{
-				Handler_ (std::forward<L> (left));
+				return Handler_ (std::forward<L> (left));
 			}
 		};
 
@@ -84,8 +84,14 @@ namespace LC::Util
 
 			void await_suspend (auto handle)
 			{
-				Handler_.HandleError (Either_.GetLeft ());
-				TerminateLeftyCoroutine (handle, Either_.GetLeft ());
+				using HandlerReturn_t = decltype (Handler_.HandleError (Either_.GetLeft ()));
+				if constexpr (std::is_same_v<void, HandlerReturn_t>)
+				{
+					Handler_.HandleError (Either_.GetLeft ());
+					TerminateLeftyCoroutine (handle, Either_.GetLeft ());
+				}
+				else
+					TerminateLeftyCoroutine (handle, Handler_.HandleError (Either_.GetLeft ()));
 			}
 
 			R await_resume () const noexcept
