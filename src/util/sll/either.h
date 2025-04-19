@@ -53,10 +53,15 @@ namespace Util
 		{
 		}
 
+		Either (Left<L>&& left)
+		: This_ { std::move (left.Value_) }
+		{
+		}
+
 		template<typename LL>
 			requires std::is_constructible_v<L, LL&&>
 		Either (Left<LL>&& left)
-		: This_ { std::move (left.Value_) }
+		: This_ { L { std::move (left.Value_) } }
 		{
 		}
 
