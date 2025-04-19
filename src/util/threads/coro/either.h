@@ -13,28 +13,7 @@
 
 namespace LC::Util
 {
-	template<typename L, std::default_initializable R>
-	struct IgnoreLeft
-	{
-		Either<L, R> Result_;
-
-		bool await_ready () const noexcept
-		{
-			return true;
-		}
-
-		void await_suspend (auto) const noexcept
-		{
-		}
-
-		R await_resume () const noexcept
-		{
-			return RightOr (Result_, R {});
-		}
-	};
-
-	template<typename L, typename R>
-	IgnoreLeft (Either<L, R>) -> IgnoreLeft<L, R>;
+	struct IgnoreLeft {};
 
 	namespace detail
 	{
@@ -51,31 +30,13 @@ namespace LC::Util
 			throw EitherFailureAbort {};
 		}
 
-		template<typename ErrorHandler>
-		struct EitherAwaiterErrorHandler
-		{
-			ErrorHandler Handler_;
-
-			template<typename L>
-			auto HandleError (L&& left)
-			{
-				return Handler_ (std::forward<L> (left));
-			}
-		};
-
-		template<>
-		struct EitherAwaiterErrorHandler<void>
-		{
-			void HandleError (auto&&)
-			{
-			}
-		};
-
-		template<typename L, typename R, typename ErrorHandler = void>
+		template<typename L, typename R, typename ErrorHandler>
 		struct EitherAwaiter
 		{
 			Either<L, R> Either_;
-			EitherAwaiterErrorHandler<ErrorHandler> Handler_ {};
+			ErrorHandler Handler_;
+
+			using HandlerReturn_t = decltype (Handler_ (Either_.GetLeft ()));
 
 			bool await_ready () const noexcept
 			{
@@ -84,14 +45,19 @@ namespace LC::Util
 
 			void await_suspend (auto handle)
 			{
-				using HandlerReturn_t = decltype (Handler_.HandleError (Either_.GetLeft ()));
 				if constexpr (std::is_same_v<void, HandlerReturn_t>)
 				{
-					Handler_.HandleError (Either_.GetLeft ());
+					Handler_ (Either_.GetLeft ());
 					TerminateLeftyCoroutine (handle, Either_.GetLeft ());
 				}
+				else if constexpr (std::is_same_v<IgnoreLeft, HandlerReturn_t>)
+				{
+					static_assert (std::is_default_constructible_v<R>);
+					Handler_ (Either_.GetLeft ());
+					Either_ = R {};
+				}
 				else
-					TerminateLeftyCoroutine (handle, Handler_.HandleError (Either_.GetLeft ()));
+					TerminateLeftyCoroutine (handle, Handler_ (Either_.GetLeft ()));
 			}
 
 			R await_resume () const noexcept
@@ -103,17 +69,17 @@ namespace LC::Util
 
 	template<typename L, typename R, typename F>
 		requires std::invocable<F, const L&>
-	Util::detail::EitherAwaiter<L, R, F> WithHandler (const Util::Either<L, R>& either, F&& errorHandler)
+	detail::EitherAwaiter<L, R, F> WithHandler (const Either<L, R>& either, F&& errorHandler)
 	{
-		return { either, { std::forward<F> (errorHandler) } };
+		return { either, std::forward<F> (errorHandler) };
 	}
 }
 
 namespace LC
 {
 	template<typename L, typename R>
-	Util::detail::EitherAwaiter<L, R> operator co_await (const Util::Either<L, R>& either)
+	Util::detail::EitherAwaiter<L, R, std::identity> operator co_await (const Util::Either<L, R>& either)
 	{
-		return { either };
+		return { either, {} };
 	}
 }
