@@ -18,11 +18,6 @@
 
 namespace LC::Aggregator
 {
-	bool FeedsErrorManager::ParseError::operator== (const FeedsErrorManager::ParseError& other) const
-	{
-		return Error_ == other.Error_;
-	}
-
 	namespace
 	{
 		auto MakeEventId (IDType_t id)
@@ -47,8 +42,8 @@ namespace LC::Aggregator
 		};
 
 		const auto& errInfo = Util::Visit (error,
-				[] (const FeedsErrorManager::ParseError& e)
-					{ return ErrorInfo { tr ("parse error"), tr ("Parse error: ") + e.Error_ }; },
+				[] (const ParseError& e)
+					{ return ErrorInfo { tr ("parse error"), tr ("Parse error: ") + e.Message_ }; },
 				[] (const IDownload::Error& e)
 					{ return ErrorInfo { Util::GetErrorString (e.Type_), e.Message_ }; });
 

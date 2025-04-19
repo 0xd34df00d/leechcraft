@@ -23,9 +23,9 @@ namespace LC::Aggregator
 	public:
 		struct ParseError
 		{
-			QString Error_;
+			QString Message_;
 
-			bool operator== (const ParseError&) const;
+			bool operator<=> (const ParseError&) const = default;
 		};
 		using Error = std::variant<IDownload::Error, ParseError>;
 	private:

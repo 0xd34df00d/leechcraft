@@ -106,7 +106,7 @@ namespace LC::Aggregator
 		QString ErrorToString (const FeedsErrorManager::Error& error)
 		{
 			return Util::Visit (error,
-					[] (const FeedsErrorManager::ParseError& e) { return ChannelsModel::tr ("Parse error: ") + e.Error_; },
+					[] (const FeedsErrorManager::ParseError& e) { return ChannelsModel::tr ("Parse error: ") + e.Message_; },
 					[] (const IDownload::Error& e)
 					{
 						auto str = ChannelsModel::tr ("Error downloading the feed: %1.")
