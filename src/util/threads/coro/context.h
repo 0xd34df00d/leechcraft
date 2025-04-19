@@ -35,7 +35,7 @@ namespace LC::Util
 	namespace detail
 	{
 		template<typename T>
-		auto Awaiter (T&& obj)
+		decltype (auto) Awaiter (T&& obj)
 		{
 			if constexpr (requires { operator co_await (std::forward<T> (obj)); })
 				return operator co_await (std::forward<T> (obj));
@@ -88,7 +88,8 @@ namespace LC::Util
 		template<typename T>
 		auto await_transform (T&& awaitable)
 		{
-			return detail::AwaitableWrapper { *this, detail::Awaiter (std::forward<T> (awaitable)) };
+			using OrigAwaiter = decltype (detail::Awaiter (std::forward<T> (awaitable)));
+			return detail::AwaitableWrapper<ContextExtensions, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
 		}
 	};
 
