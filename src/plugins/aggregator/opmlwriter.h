@@ -8,38 +8,12 @@
 
 #pragma once
 
-#include <QStringList>
 #include "feed.h"
 
-class QDomElement;
-class QDomDocument;
-class QDomNode;
-
-class ITagsManager;
-
-namespace LC
+namespace LC::Aggregator::OPML
 {
-namespace Aggregator
-{
-	class OPMLWriter
-	{
-		const ITagsManager * const TagsManager_;
-	public:
-		explicit OPMLWriter (const ITagsManager*);
-
-		QString Write (const channels_shorts_t&,
-				const QString&,
-				const QString&,
-				const QString&) const;
-	private:
-		void WriteHead (QDomElement&,
-				QDomDocument&,
-				const QString&,
-				const QString&,
-				const QString&) const;
-		void WriteBody (QDomElement&,
-				QDomDocument&,
-				const channels_shorts_t&) const;
-	};
-}
+	QString Write (const channels_shorts_t&,
+			const QString&,
+			const QString&,
+			const QString&);
 }

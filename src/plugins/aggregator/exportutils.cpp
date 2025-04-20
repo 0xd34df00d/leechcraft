@@ -54,8 +54,7 @@ namespace LC::Aggregator::ExportUtils
 
 		auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());
 
-		OPMLWriter writer { GetProxyHolder ()->GetTagsManager () };
-		auto data = writer.Write (channels,
+		auto data = OPML::Write (channels,
 				exportDialog.GetTitle (), exportDialog.GetOwner (), exportDialog.GetOwnerEmail ());
 
 		QFile f { exportDialog.GetDestination () };
