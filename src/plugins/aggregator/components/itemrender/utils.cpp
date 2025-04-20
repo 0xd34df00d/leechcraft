@@ -14,9 +14,9 @@ namespace LC::Aggregator
 {
 	Util::Tag MakeLink (const QString& target, Util::Node contents)
 	{
-		Util::TagAttrs attrs { { "href"_qs, target } };
+		Util::TagAttrs attrs { { "href"_qba, target } };
 		if (XmlSettingsManager::Instance ().property ("AlwaysUseExternalBrowser").toBool ())
-			attrs.push_back ({ "target"_qs, "blank"_qs });
+			attrs.push_back ({ "target"_qba, "blank"_qs });
 
 		return { .Name_ = "a", .Attrs_ = std::move (attrs), .Children_ = { std::move (contents) } };
 	}
@@ -33,8 +33,8 @@ namespace LC::Aggregator
 				.arg (color.Bg_, color.Fg_);
 		return
 		{
-			.Name_ = "div"_qs,
-			.Attrs_ = { { "style"_qs, std::move (blockStyle) } },
+			.Name_ = "div"_qba,
+			.Attrs_ = { { "style"_qba, std::move (blockStyle) } },
 			.Children_ = std::move (children),
 		};
 	}

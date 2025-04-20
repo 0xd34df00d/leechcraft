@@ -125,13 +125,13 @@ namespace LC::Aggregator
 			Nodes nodes { thumbs.size () * nodesPerThumb + 1 };
 			for (const auto& thumb : thumbs)
 			{
-				TagAttrs attrs { { "src"_qs, thumb.URL_ } };
+				TagAttrs attrs { { "src"_qba, thumb.URL_ } };
 				if (thumb.Width_)
-					attrs.push_back ({ "width"_qs, QString::number (thumb.Width_) });
+					attrs.push_back ({ "width"_qba, QString::number (thumb.Width_) });
 				if (thumb.Height_)
-					attrs.push_back ({ "height"_qs, QString::number (thumb.Height_) });
+					attrs.push_back ({ "height"_qba, QString::number (thumb.Height_) });
 				if (!thumb.Time_.isEmpty ())
-					attrs.push_back ({ "alt"_qs, TrCtx::tr ("Thumbnail at %1").arg (thumb.Time_) });
+					attrs.push_back ({ "alt"_qba, TrCtx::tr ("Thumbnail at %1").arg (thumb.Time_) });
 				nodes.push_back (Tag { .Name_ = "img", .Attrs_ = std::move (attrs) });
 			}
 			nodes.push_back (Tags::Br);
@@ -179,7 +179,7 @@ namespace LC::Aggregator
 		{
 			return
 			{
-				Tag::WithText ("strong"_qs, header + ':'),
+				Tag::WithText ("strong"_qba, header + ':'),
 				WithInnerPadding (color, std::move (children)),
 			};
 		}

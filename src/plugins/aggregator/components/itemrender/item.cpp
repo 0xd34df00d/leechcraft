@@ -134,7 +134,7 @@ namespace LC::Aggregator
 			nodes.reserve (enclosures.size ());
 			for (const auto& enclosure : enclosures)
 				nodes << WithInnerPadding (color, MakeEmbedImage (enclosure));
-			return { .Name_ = "div"_qs, .Children_ = std::move (nodes) };
+			return { .Name_ = "div"_qba, .Children_ = std::move (nodes) };
 		}
 
 		Tag MakeHeader (const Item& item, const TextColor& color)
@@ -152,8 +152,8 @@ namespace LC::Aggregator
 
 			return
 			{
-				.Name_ = "div"_qs,
-				.Attrs_ = { { "style"_qs, std::move (headerStyle) } },
+				.Name_ = "div"_qba,
+				.Attrs_ = { { "style"_qba, std::move (headerStyle) } },
 				.Children_ =
 						MakeItemLink (item) +
 						MakePublishedInfo (item) +

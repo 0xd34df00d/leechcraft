@@ -18,7 +18,7 @@ class QSize;
 
 namespace LC::Util
 {
-	using TagAttrs = QVector<std::pair<QString, QString>>;
+	using TagAttrs = QVector<std::pair<QByteArray, QString>>;
 
 	struct Tag;
 
@@ -34,18 +34,18 @@ namespace LC::Util
 
 	struct Tag
 	{
-		QString Name_;
+		QByteArray Name_;
 		TagAttrs Attrs_ {};
 
 		Nodes Children_ {};
 
-		UTIL_SLL_API static Tag WithText (const QString& name, const QString& contents);
+		UTIL_SLL_API static Tag WithText (const QByteArray& name, const QString& contents);
 
 		template<HtmlRepr T = QString>
 		[[nodiscard]]
 		UTIL_SLL_API T ToHtml (T prefix = {}) const;
 
-		UTIL_SLL_API Tag& WithAttr (QString, QString) &&;
+		UTIL_SLL_API Tag& WithAttr (QByteArray, QString) &&;
 	};
 
 	namespace Tags

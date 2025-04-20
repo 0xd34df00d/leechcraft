@@ -82,7 +82,7 @@ namespace LC::Poshuku::SpeedDial
 			const auto& tdWidthStr = QString::number (thumbSize.width () + 20) + "px";
 			return
 			{
-				"head"_qs, {},
+				"head"_qba, {},
 				{
 					Tags::Charset ("UTF-8"_qs),
 					Tags::Title (QObject::tr ("Speed dial")),
@@ -102,12 +102,12 @@ namespace LC::Poshuku::SpeedDial
 			{
 				Tag
 				{
-					.Name_ = "a"_qs,
-					.Attrs_ = { { "href"_qs, url.toEncoded () } },
+					.Name_ = "a"_qba,
+					.Attrs_ = { { "href"_qba, url.toEncoded () } },
 					.Children_
 					{
 						Tags::Image (MakeThumbUrl (url), cache.GetThumbSize ())
-								.WithAttr ("class"_qs, "thumbimage centered"_qs),
+								.WithAttr ("class"_qba, "thumbimage centered"_qs),
 						Tags::P ({ name }),
 					},
 				}
@@ -121,11 +121,11 @@ namespace LC::Poshuku::SpeedDial
 			const auto& cellMaker = std::bind_front (&MakeCell, std::ref (cache), std::ref (items));
 			return Tag
 			{
-				.Name_ = "table"_qs,
-				.Attrs_ = { { "class"_qs, "centered"_qs } },
+				.Name_ = "table"_qba,
+				.Attrs_ = { { "class"_qba, "centered"_qs } },
 				.Children_ =
-					Tag { "th"_qs, { { "colspan"_qs, QString::number (Cols) } }, { heading } } +
-					Util::Tags::TableGrid (Rows, Cols, cellMaker)
+					Tag { "th"_qba, { { "colspan"_qba, QString::number (Cols) } }, { heading } } +
+					Tags::TableGrid (Rows, Cols, cellMaker)
 			};
 		}
 	}

@@ -31,7 +31,7 @@ namespace LC::Util
 		return { std::move (n1), std::move (n2) };
 	}
 
-	Tag Tag::WithText (const QString& name, const QString& contents)
+	Tag Tag::WithText (const QByteArray& name, const QString& contents)
 	{
 		return { .Name_ = name, .Children_ = { contents } };
 	}
@@ -46,7 +46,7 @@ namespace LC::Util
 				w.writeAttribute (name, value);
 
 			for (const auto& node : tag.Children_)
-				Util::Visit (node,
+				Visit (node,
 						[&w] (const QString& str) { w.writeCharacters (str); },
 						[&w] (const Tag& childTag) { TagToHtml (childTag, w); });
 
@@ -58,7 +58,7 @@ namespace LC::Util
 	T Tag::ToHtml (T result) const
 	{
 		if (Name_.isEmpty ())
-			return {};
+			return result;
 
 		QXmlStreamWriter w { &result };
 		TagToHtml (*this, w);
@@ -68,7 +68,7 @@ namespace LC::Util
 	template QString Tag::ToHtml (QString) const;
 	template QByteArray Tag::ToHtml (QByteArray) const;
 
-	Tag& Tag::WithAttr (QString key, QString value) &&
+	Tag& Tag::WithAttr (QByteArray key, QString value) &&
 	{
 		Attrs_.push_back ({ std::move (key), std::move (value) });
 		return *this;
@@ -76,41 +76,41 @@ namespace LC::Util
 
 	namespace Tags
 	{
-		UTIL_SLL_API const Tag Br { .Name_ = QStringLiteral ("br") };
+		UTIL_SLL_API const Tag Br { .Name_ = "br"_qba };
 
 		Tag Html (Nodes&& children)
 		{
 			return
 			{
-				.Name_ = "html"_qs,
-				.Attrs_ = { { "xmlns"_qs, "http://www.w3.org/1999/xhtml" } },
+				.Name_ = "html"_qba,
+				.Attrs_ = { { "xmlns"_qba, "http://www.w3.org/1999/xhtml" } },
 				.Children_ = std::move (children),
 			};
 		}
 
 		Tag Charset (const QString& charset)
 		{
-			return { .Name_ = "meta"_qs, .Attrs_ = { { "charset"_qs, charset } } };
+			return { .Name_ = "meta"_qba, .Attrs_ = { { "charset"_qba, charset } } };
 		}
 
 		Tag Title (const QString& title)
 		{
-			return { .Name_ = "title"_qs, .Children_ = { title } };
+			return { .Name_ = "title"_qba, .Children_ = { title } };
 		}
 
 		Tag Style (const QString& style)
 		{
-			return { .Name_ = "style"_qs, .Children_ = { style } };
+			return { .Name_ = "style"_qba, .Children_ = { style } };
 		}
 
 		Tag Body (Nodes&& children)
 		{
-			return { .Name_ = "body"_qs, .Children_ = std::move (children) };
+			return { .Name_ = "body"_qba, .Children_ = std::move (children) };
 		}
 
 		Tag Image (const QString& url)
 		{
-			return { .Name_ = "img"_qs, .Attrs_ = { { "src"_qs, url } } };
+			return { .Name_ = "img"_qba, .Attrs_ = { { "src"_qba, url } } };
 		}
 
 		Tag Image (const QString& url, const QSize& size)
@@ -119,24 +119,24 @@ namespace LC::Util
 			const auto& h = QString::number (size.height ());
 			return
 			{
-				.Name_ = "img"_qs,
-				.Attrs_ = { { "src"_qs, url }, { "width"_qs, w }, { "height"_qs, h } },
+				.Name_ = "img"_qba,
+				.Attrs_ = { { "src"_qba, url }, { "width"_qba, w }, { "height"_qba, h } },
 			};
 		}
 
 		Tag Li (Nodes&& children)
 		{
-			return { .Name_ = "li"_qs, .Children_ = std::move (children) };
+			return { .Name_ = "li"_qba, .Children_ = std::move (children) };
 		}
 
 		Tag Ul (Nodes&& children)
 		{
-			return { .Name_ = "ul"_qs, .Children_ = std::move (children) };
+			return { .Name_ = "ul"_qba, .Children_ = std::move (children) };
 		}
 
 		Tag P (Nodes&& children)
 		{
-			return { .Name_ = "p"_qs, .Children_ = std::move (children) };
+			return { .Name_ = "p"_qba, .Children_ = std::move (children) };
 		}
 
 		Nodes TableGrid (size_t rows, size_t cols, const std::function<Nodes (size_t, size_t)>& cell)
@@ -149,9 +149,9 @@ namespace LC::Util
 				Nodes rowCells;
 				rowCells.reserve (cols);
 				for (size_t c = 0; c < cols; ++c)
-					rowCells.push_back (Tag { .Name_ = "td"_qs, .Children_ = cell (r, c) });
+					rowCells.push_back (Tag { .Name_ = "td"_qba, .Children_ = cell (r, c) });
 
-				result.push_back (Tag { .Name_ = "tr"_qs, .Children_ = std::move (rowCells) });
+				result.push_back (Tag { .Name_ = "tr"_qba, .Children_ = std::move (rowCells) });
 			}
 
 			return result;
