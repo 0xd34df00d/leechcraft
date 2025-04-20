@@ -17,7 +17,9 @@
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro/future.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/throttle.h>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include "components/parsers/parse.h"
@@ -31,7 +33,7 @@ namespace LC::Aggregator
 {
 	namespace
 	{
-		using ParseResult = Util::Either<QString, channels_container_t>;
+		using ParseResult = Util::Either<FeedsErrorManager::ParseError, channels_container_t>;
 
 		ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId)
 		{
@@ -64,6 +66,8 @@ namespace LC::Aggregator
 		}
 	}
 
+	using namespace std::chrono_literals;
+
 	UpdatesManager::UpdatesManager (const InitParams& initParams, QObject *parent)
 	: QObject { parent }
 	, EntityManager_ { initParams.EntityManager_ }
@@ -71,6 +75,7 @@ namespace LC::Aggregator
 	, FeedsErrorManager_ { initParams.FeedsErrorManager_ }
 	, UpdateTimer_ { new QTimer { this } }
 	, CustomUpdateTimer_ { new QTimer { this } }
+	, UpdateThrottle_ { 500ms }
 	{
 		UpdateTimer_->setSingleShot (true);
 		connect (UpdateTimer_,
@@ -135,14 +140,9 @@ namespace LC::Aggregator
 			UpdateTimer_->start (interval * 60 * 1000);
 	}
 
-	void UpdatesManager::UpdateFeed (IDType_t id)
+	void UpdatesManager::UpdateFeed (IDType_t feedId)
 	{
-		if (UpdatesQueue_.isEmpty ())
-			QTimer::singleShot (500,
-					this,
-					&UpdatesManager::RotateUpdatesQueue);
-
-		UpdatesQueue_ << id;
+		UpdateFeedAsync (feedId);
 	}
 
 	void UpdatesManager::HandleCustomUpdates ()
@@ -168,64 +168,51 @@ namespace LC::Aggregator
 		}
 	}
 
-	void UpdatesManager::RotateUpdatesQueue ()
+	namespace
+	{
+		Util::ContextTask<Util::Either<QString, channels_container_t>> FetchChannels (IDType_t feedId,
+				const QString& urlStr,
+				auto&& errorHandler)
+		{
+			const auto& filename = Util::GetTemporaryName ();
+			const auto& e = Util::MakeEntity (QUrl { urlStr }, filename,
+					Internal | DoNotNotifyUser | DoNotSaveInHistory | NotPersistent | DoNotAnnounceEntity);
+			const auto fileGuard = Util::MakeScopeGuard ([filename] { QFile::remove (filename); });
+
+			const auto& delegateResult = GetProxyHolder ()->GetEntityManager ()->DelegateEntity (e);
+			if (!delegateResult)
+				co_return Util::Left { UpdatesManager::tr ("Could not find plugin for feed with URL %1").arg (urlStr) };
+
+			const auto downloadResult = co_await delegateResult.DownloadResult_;
+			const auto success [[maybe_unused]] = co_await WithHandler (downloadResult, errorHandler);
+			co_return co_await WithHandler (ParseChannels (filename, urlStr, feedId), errorHandler);
+		}
+	}
+
+	Util::ContextTask<void> UpdatesManager::UpdateFeedAsync (IDType_t feedId)
 	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		if (!sb)
-			return;
+			co_return;
 
-		if (UpdatesQueue_.isEmpty ())
-			return;
-
-		const auto feedId = UpdatesQueue_.takeFirst ();
-
-		if (!UpdatesQueue_.isEmpty ())
-			QTimer::singleShot (2000,
-					this,
-					&UpdatesManager::RotateUpdatesQueue);
+		co_await Util::AddContextObject { *this };
+		co_await UpdateThrottle_;
 
 		const auto& url = sb->GetFeed (feedId).URL_;
 
-		auto filename = Util::GetTemporaryName ();
-
-		auto e = Util::MakeEntity (QUrl (url),
-				filename,
-				Internal |
-					DoNotNotifyUser |
-					DoNotSaveInHistory |
-					NotPersistent |
-					DoNotAnnounceEntity);
-
-		auto emitError = [this] (const QString& body)
-		{
-			EntityManager_->HandleEntity (Util::MakeNotification ("Aggregator", body, Priority::Critical));
-		};
-
-		const auto& delegateResult = EntityManager_->DelegateEntity (e);
-		if (!delegateResult)
-		{
-			emitError (tr ("Could not find plugin for feed with URL %1")
-					.arg (url));
-			return;
-		}
-
-		Util::Sequence (this, delegateResult.DownloadResult_) >>
-				Util::Visitor
+		const auto channelsResult = co_await FetchChannels (feedId, url,
+				[this, feedId] (const auto& error)
 				{
-					[=, this] (IDownload::Success)
-					{
-						Util::Visit (ParseChannels (filename, url, feedId),
-								[&] (const channels_container_t& channels)
-								{
-									FeedsErrorManager_->ClearFeedErrors (feedId);
-									DBUpThread_->UpdateFeed (channels, url);
-								},
-								[&] (const QString& error)
-								{
-									FeedsErrorManager_->AddFeedError (feedId, FeedsErrorManager::ParseError { error });
-								});
-					},
-					[=, this] (const IDownload::Error& error) { FeedsErrorManager_->AddFeedError (feedId, error); }
-				}.Finally ([filename] { QFile::remove (filename); });
+					FeedsErrorManager_->AddFeedError (feedId, error);
+					return error.Message_;
+				});
+		const auto channels = co_await WithHandler (channelsResult,
+				[] (const QString& error)
+				{
+					const auto& e = Util::MakeNotification (NotificationTitle, error, Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
+		FeedsErrorManager_->ClearFeedErrors (feedId);
+		DBUpThread_->UpdateFeed (channels, url);
 	}
 }

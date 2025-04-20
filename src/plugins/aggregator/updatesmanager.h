@@ -11,6 +11,8 @@
 #include <memory>
 #include <QCoreApplication>
 #include <QObject>
+#include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/throttle.h>
 #include "common.h"
 #include "dbupdatethread.h"
 
@@ -34,8 +36,9 @@ namespace LC::Aggregator
 		QTimer * const UpdateTimer_;
 		QTimer * const CustomUpdateTimer_;
 
-		QList<IDType_t> UpdatesQueue_;
 		QMap<IDType_t, QDateTime> Updates_;
+
+		Util::Throttle UpdateThrottle_;
 	public:
 		struct InitParams
 		{
@@ -46,10 +49,10 @@ namespace LC::Aggregator
 		explicit UpdatesManager (const InitParams&, QObject* = nullptr);
 
 		void UpdateFeed (IDType_t);
-
 		void UpdateFeeds ();
 	private:
 		void HandleCustomUpdates ();
-		void RotateUpdatesQueue ();
+
+		Util::ContextTask<void> UpdateFeedAsync (IDType_t);
 	};
 }
