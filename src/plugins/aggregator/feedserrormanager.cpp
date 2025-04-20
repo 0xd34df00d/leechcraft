@@ -13,8 +13,6 @@
 #include <util/sll/visitor.h>
 #include <util/xpc/downloaderrorstrings.h>
 #include <util/xpc/util.h>
-#include "components/storage/storagebackendmanager.h"
-#include "components/storage/storagebackend.h"
 
 namespace LC::Aggregator
 {
@@ -26,7 +24,7 @@ namespace LC::Aggregator
 		}
 	}
 
-	void FeedsErrorManager::AddFeedError (IDType_t id, const Error& error)
+	void FeedsErrorManager::AddFeedError (IDType_t id, const QString& feedName, const Error& error)
 	{
 		auto& errors = Errors_ [id];
 		if (errors.contains (error))
@@ -47,15 +45,9 @@ namespace LC::Aggregator
 				[] (const IDownload::Error& e)
 					{ return ErrorInfo { Util::GetErrorString (e.Type_), e.Message_ }; });
 
-		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		const auto& channels = storage->GetChannels (id);
-		const auto& reprName = channels.size () == 1 ?
-				channels [0].Title_ :
-				storage->GetFeed (id).URL_;
-
 		auto e = Util::MakeAN (NotificationTitle,
 				tr ("Error updating feed %1: %2.")
-					.arg (Util::FormatName (reprName))
+					.arg (Util::FormatName (feedName))
 					.arg (errInfo.Short_),
 				Priority::Warning,
 				PluginId,

@@ -32,10 +32,8 @@ namespace LC::Aggregator
 	public:
 		FeedsErrorManager () = default;
 
-		void AddFeedError (IDType_t, const Error&);
-
+		void AddFeedError (IDType_t, const QString&, const Error&);
 		void ClearFeedErrors (IDType_t);
-
 		QList<Error> GetFeedErrors (IDType_t) const;
 	signals:
 		void gotErrors (IDType_t);

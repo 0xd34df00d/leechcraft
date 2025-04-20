@@ -194,9 +194,11 @@ namespace LC::Aggregator
 		const auto& url = sb->GetFeed (feedId).URL_;
 
 		const auto channelsResult = co_await FetchChannels (feedId, url,
-				[this, feedId] (const auto& error)
+				[=, this] (const auto& error)
 				{
-					FeedsErrorManager_->AddFeedError (feedId, error);
+					const auto& channels = sb->GetChannels (feedId);
+					const auto& feedName = channels.size () == 1 ? channels [0].Title_ : url;
+					FeedsErrorManager_->AddFeedError (feedId, feedName, error);
 					return error.Message_;
 				});
 		const auto channels = co_await WithHandler (channelsResult,
