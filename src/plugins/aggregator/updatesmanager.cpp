@@ -13,7 +13,9 @@
 #include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/gui/util.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <util/sys/paths.h>
@@ -36,43 +38,29 @@ namespace LC::Aggregator
 			QFile file { path };
 			if (!file.open (QIODevice::ReadOnly))
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open the local file"
-						<< path;
-				return ParseResult::Left (UpdatesManager::tr ("Unable to open the temporary file."));
+				qWarning () << "unable to open the local file" << path;
+				return Util::Left { UpdatesManager::tr ("Unable to open the temporary file.") };
 			}
 
+			const auto tempPattern = "lc_aggregator_failed.XXXXXX"_qs;
+
 			QDomDocument doc;
-			QString errorMsg;
-			int errorLine, errorColumn;
-			if (!doc.setContent (&file, true, &errorMsg, &errorLine, &errorColumn))
+			if (const auto parseResult = doc.setContent (&file, QDomDocument::ParseOption::UseNamespaceProcessing);
+				!parseResult)
 			{
-				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
+				const auto& copyPath = Util::GetTemporaryName (tempPattern);
 				file.copy (copyPath);
-				qWarning () << Q_FUNC_INFO
-						<< "error parsing XML for"
-						<< url
-						<< errorMsg
-						<< errorLine
-						<< errorColumn
-						<< "; copy at"
-						<< file.fileName ();
-				return ParseResult::Left (UpdatesManager::tr ("XML parse error for the feed %1.")
-						.arg (url));
+				qWarning () << "error parsing XML for" << url << parseResult << "; copy at" << file.fileName ();
+				return Util::Left { UpdatesManager::tr ("XML parse error for the feed %1.").arg (url) };
 			}
 
 			if (auto maybeChannels = Parsers::TryParse (doc, feedId))
-				return ParseResult::Right (*maybeChannels);
+				return *maybeChannels;
 
-			const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
+			const auto& copyPath = Util::GetTemporaryName (tempPattern);
 			file.copy (copyPath);
-			qWarning () << Q_FUNC_INFO
-					<< "no parser for"
-					<< url
-					<< "; copy at"
-					<< copyPath;
-			return ParseResult::Left (UpdatesManager::tr ("Could not find parser to parse %1.")
-					.arg (url));
+			qWarning () << "no parser for" << url << "; copy at" << copyPath;
+			return Util::Left { UpdatesManager::tr ("Could not find parser to parse %1.").arg (url) };
 		}
 	}
 
