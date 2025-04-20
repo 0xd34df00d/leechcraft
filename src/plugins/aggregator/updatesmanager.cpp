@@ -44,24 +44,18 @@ namespace LC::Aggregator
 				return Util::Left { UpdatesManager::tr ("Unable to open the temporary file.") };
 			}
 
-			const auto tempPattern = "lc_aggregator_failed.XXXXXX"_qs;
-
 			QDomDocument doc;
 			if (const auto parseResult = doc.setContent (&file, QDomDocument::ParseOption::UseNamespaceProcessing);
 				!parseResult)
 			{
-				const auto& copyPath = Util::GetTemporaryName (tempPattern);
-				file.copy (copyPath);
-				qWarning () << "error parsing XML for" << url << parseResult << "; copy at" << file.fileName ();
+				qWarning () << "error parsing XML for" << url << parseResult;
 				return Util::Left { UpdatesManager::tr ("XML parse error for the feed %1.").arg (url) };
 			}
 
 			if (auto maybeChannels = Parsers::TryParse (doc, feedId))
 				return *maybeChannels;
 
-			const auto& copyPath = Util::GetTemporaryName (tempPattern);
-			file.copy (copyPath);
-			qWarning () << "no parser for" << url << "; copy at" << copyPath;
+			qWarning () << "no parser for" << url;
 			return Util::Left { UpdatesManager::tr ("Could not find parser to parse %1.").arg (url) };
 		}
 	}
