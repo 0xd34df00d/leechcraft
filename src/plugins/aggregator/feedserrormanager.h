@@ -12,7 +12,6 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/idownload.h>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "common.h"
 
 namespace LC::Aggregator
@@ -29,7 +28,6 @@ namespace LC::Aggregator
 		};
 		using Error = std::variant<IDownload::Error, ParseError>;
 	private:
-		const ICoreProxy_ptr Proxy_;
 		QHash<IDType_t, QList<Error>> Errors_;
 	public:
 		FeedsErrorManager () = default;
