@@ -83,7 +83,6 @@ namespace Aggregator
 		UpdatesManager_ = std::make_shared<UpdatesManager> (UpdatesManager::InitParams {
 					DBUpThread_,
 					ErrorsManager_,
-					GetProxyHolder ()->GetEntityManager ()
 				});
 
 		ShortcutMgr_ = new Util::ShortcutManager (GetProxyHolder (), this);

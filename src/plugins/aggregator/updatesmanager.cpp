@@ -64,7 +64,6 @@ namespace LC::Aggregator
 
 	UpdatesManager::UpdatesManager (const InitParams& initParams, QObject *parent)
 	: QObject { parent }
-	, EntityManager_ { initParams.EntityManager_ }
 	, DBUpThread_ { initParams.DBUpThread_ }
 	, FeedsErrorManager_ { initParams.FeedsErrorManager_ }
 	, UpdateTimer_ { new QTimer { this } }

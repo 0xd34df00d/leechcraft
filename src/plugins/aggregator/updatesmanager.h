@@ -18,8 +18,6 @@
 
 class QTimer;
 
-class IEntityManager;
-
 namespace LC::Aggregator
 {
 	class FeedsErrorManager;
@@ -27,8 +25,6 @@ namespace LC::Aggregator
 	class UpdatesManager : public QObject
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::UpdatesManager)
-
-		IEntityManager * const EntityManager_;
 
 		const DBUpdateThread_ptr DBUpThread_;
 		const std::shared_ptr<FeedsErrorManager> FeedsErrorManager_;
@@ -44,7 +40,6 @@ namespace LC::Aggregator
 		{
 			const DBUpdateThread_ptr DBUpThread_;
 			const std::shared_ptr<FeedsErrorManager>& FeedsErrorManager_;
-			IEntityManager *EntityManager_;
 		};
 		explicit UpdatesManager (const InitParams&, QObject* = nullptr);
 
