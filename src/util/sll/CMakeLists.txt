@@ -2,6 +2,7 @@ add_util_library (util-sll
 	SRCS
 		buildtagstree.cpp
 		channeldevice.cpp
+		debugprinters.cpp
 		domchildrenrange.cpp
 		queuemanager.cpp
 		regexp.cpp
