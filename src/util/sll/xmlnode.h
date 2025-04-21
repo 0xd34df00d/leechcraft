@@ -34,6 +34,18 @@ namespace LC::Util
 	template<typename T>
 	concept XmlRepr = std::is_same_v<T, QString> || std::is_same_v<T, QByteArray>;
 
+	struct NoDtd {};
+	struct Html5Dtd {};
+	struct CustomDtd { QString Dtd_; };
+	using Dtd = std::variant<NoDtd, Html5Dtd, CustomDtd>;
+
+	struct TagSerializeConfig
+	{
+		bool Prolog_ = false;
+		Dtd Dtd_ = NoDtd {};
+		std::optional<int> Indent_ = {};
+	};
+
 	struct Tag
 	{
 		QByteArray Name_;
@@ -46,7 +58,7 @@ namespace LC::Util
 
 		template<XmlRepr T = QString>
 		[[nodiscard]]
-		UTIL_SLL_API T Serialize (T prefix = {}) const;
+		UTIL_SLL_API T Serialize (const TagSerializeConfig& = {}) const;
 
 		UTIL_SLL_API Tag& WithAttr (QByteArray, QString) &&;
 	};

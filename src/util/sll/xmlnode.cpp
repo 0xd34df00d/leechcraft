@@ -63,18 +63,38 @@ namespace LC::Util
 	}
 
 	template<XmlRepr T>
-	T Tag::Serialize (T result) const
+	T Tag::Serialize (const TagSerializeConfig& config) const
 	{
 		if (Name_.isEmpty ())
-			return result;
+			return {};
+
+		T result;
 
 		QXmlStreamWriter w { &result };
+		if (config.Indent_)
+		{
+			w.setAutoFormatting (true);
+			w.setAutoFormattingIndent (*config.Indent_);
+		}
+
+		if (config.Prolog_)
+			w.writeStartDocument ();
+
+		Visit (config.Dtd_,
+				[] (NoDtd) {},
+				[&w] (Html5Dtd) { w.writeDTD ("html"_qba); },
+				[&w] (const CustomDtd& dtd) { w.writeDTD (dtd.Dtd_); });
+
 		TagToHtml (*this, w);
+
+		if (config.Prolog_)
+			w.writeEndDocument ();
+
 		return result;
 	}
 
-	template QString Tag::Serialize (QString) const;
-	template QByteArray Tag::Serialize (QByteArray) const;
+	template QString Tag::Serialize (const TagSerializeConfig&) const;
+	template QByteArray Tag::Serialize (const TagSerializeConfig&) const;
 
 	Tag& Tag::WithAttr (QByteArray key, QString value) &&
 	{
@@ -91,7 +111,7 @@ namespace LC::Util
 			return
 			{
 				.Name_ = "html"_qba,
-				.Attrs_ = { { "xmlns"_qba, "http://www.w3.org/1999/xhtml" } },
+				.Attrs_ = { { "xmlns"_qba, "http://www.w3.org/1999/xhtml"_qs } },
 				.Children_ = std::move (children),
 			};
 		}
