@@ -42,6 +42,7 @@ namespace LC::Util
 		Nodes Children_ {};
 
 		UTIL_SLL_API static Tag WithText (const QByteArray& name, const QString& contents);
+		UTIL_SLL_API static Node WithTextNonEmpty (const QByteArray& name, const QString& contents);
 
 		template<XmlRepr T = QString>
 		[[nodiscard]]

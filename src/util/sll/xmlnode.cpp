@@ -36,6 +36,13 @@ namespace LC::Util
 		return { .Name_ = name, .Children_ = { contents } };
 	}
 
+	Node Tag::WithTextNonEmpty (const QByteArray& name, const QString& contents)
+	{
+		if (contents.isEmpty ())
+			return NoNode {};
+		return Tag { .Name_ = name, .Children_ = { contents } };
+	}
+
 	namespace
 	{
 		void TagToHtml (const Tag& tag, QXmlStreamWriter& w)
