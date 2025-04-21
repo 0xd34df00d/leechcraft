@@ -135,7 +135,7 @@ namespace LC::Poshuku::SpeedDial
 		return Tags::Html ({
 				MakeHead (cache),
 				Tags::Body (Util::MapAs<QVector> (tables, std::bind_front (&MakeTable, std::ref (cache)))),
-			}).ToHtml (QByteArray { "<!DOCTYPE html>" });
+			}).Serialize (QByteArray { "<!DOCTYPE html>" });
 	}
 
 	QByteArray MakeEmptyTopList ()

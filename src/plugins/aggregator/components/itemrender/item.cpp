@@ -189,7 +189,7 @@ namespace LC::Aggregator
 						GetHex (QPalette::LinkVisited),
 						borderColor);
 
-		result += MakeHeader (item, blockColor).ToHtml ();
+		result += MakeHeader (item, blockColor).Serialize ();
 
 		// Description
 		result += R"(
@@ -201,10 +201,10 @@ namespace LC::Aggregator
 				.arg (GetHex (QPalette::Text));
 		result += item.Description_;
 
-		result += MakeEmbedImages (item.Enclosures_, blockColor).ToHtml ();
+		result += MakeEmbedImages (item.Enclosures_, blockColor).Serialize ();
 
 		for (const auto& entry : item.MRSSEntries_)
-			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).ToHtml ();
+			result += WithInnerPadding (blockColor, MakeMRSSEntry (entry, altColor)).Serialize ();
 
 		result += "</div>"_qs + "</div>"_qs;
 

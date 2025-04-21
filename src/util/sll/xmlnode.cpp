@@ -54,8 +54,8 @@ namespace LC::Util
 		}
 	}
 
-	template<HtmlRepr T>
-	T Tag::ToHtml (T result) const
+	template<XmlRepr T>
+	T Tag::Serialize (T result) const
 	{
 		if (Name_.isEmpty ())
 			return result;
@@ -65,8 +65,8 @@ namespace LC::Util
 		return result;
 	}
 
-	template QString Tag::ToHtml (QString) const;
-	template QByteArray Tag::ToHtml (QByteArray) const;
+	template QString Tag::Serialize (QString) const;
+	template QByteArray Tag::Serialize (QByteArray) const;
 
 	Tag& Tag::WithAttr (QByteArray key, QString value) &&
 	{

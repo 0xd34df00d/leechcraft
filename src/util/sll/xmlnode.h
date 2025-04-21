@@ -30,7 +30,7 @@ namespace LC::Util
 	UTIL_SLL_API Nodes operator+ (Node&&, Node&&);
 
 	template<typename T>
-	concept HtmlRepr = std::is_same_v<T, QString> || std::is_same_v<T, QByteArray>;
+	concept XmlRepr = std::is_same_v<T, QString> || std::is_same_v<T, QByteArray>;
 
 	struct Tag
 	{
@@ -41,9 +41,9 @@ namespace LC::Util
 
 		UTIL_SLL_API static Tag WithText (const QByteArray& name, const QString& contents);
 
-		template<HtmlRepr T = QString>
+		template<XmlRepr T = QString>
 		[[nodiscard]]
-		UTIL_SLL_API T ToHtml (T prefix = {}) const;
+		UTIL_SLL_API T Serialize (T prefix = {}) const;
 
 		UTIL_SLL_API Tag& WithAttr (QByteArray, QString) &&;
 	};
