@@ -22,7 +22,9 @@ namespace LC::Util
 
 	struct Tag;
 
-	using Node = std::variant<Tag, QString>;
+	struct NoNode {};
+
+	using Node = std::variant<Tag, QString, NoNode>;
 	using Nodes = QVector<Node>;
 
 	UTIL_SLL_API Nodes operator+ (Node&&, Nodes&&);

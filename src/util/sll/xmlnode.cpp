@@ -47,6 +47,7 @@ namespace LC::Util
 
 			for (const auto& node : tag.Children_)
 				Visit (node,
+						[] (NoNode) {},
 						[&w] (const QString& str) { w.writeCharacters (str); },
 						[&w] (const Tag& childTag) { TagToHtml (childTag, w); });
 
