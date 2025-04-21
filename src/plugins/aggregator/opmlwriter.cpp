@@ -7,95 +7,69 @@
  **********************************************************************/
 
 #include "opmlwriter.h"
-#include <QByteArray>
-#include <QStringList>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QtDebug>
-#include <util/sll/buildtagstree.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/xmlnode.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "components/storage/storagebackendmanager.h"
 
 namespace LC::Aggregator::OPML
 {
+	using Util::Tag;
+
 	namespace
 	{
-		void WriteHead (QDomElement& root,
-				QDomDocument& doc,
-				const QString& title,
-				const QString& owner,
-				const QString& ownerEmail)
+		Tag MakeHead (const QString& title, const QString& owner, const QString& ownerEmail)
 		{
-			QDomElement head = doc.createElement ("head");
-			QDomElement text = doc.createElement ("text");
-			head.appendChild (text);
-			root.appendChild (head);
-
-			if (!title.isEmpty ())
+			return
 			{
-				QDomText t = doc.createTextNode (title);
-				text.appendChild (t);
-			}
-			if (!owner.isEmpty ())
-			{
-				QDomElement elem = doc.createElement ("owner");
-				QDomText t = doc.createTextNode (owner);
-				elem.appendChild (t);
-				head.appendChild (elem);
-			}
-			if (!ownerEmail.isEmpty ())
-			{
-				QDomElement elem = doc.createElement ("ownerEmail");
-				QDomText t = doc.createTextNode (ownerEmail);
-				elem.appendChild (t);
-				head.appendChild (elem);
-			}
+				.Name_ = "head"_qba,
+				.Children_ =
+				{
+					Tag::WithTextNonEmpty ("title"_qba, title),
+					Tag::WithTextNonEmpty ("owner"_qba, owner),
+					Tag::WithTextNonEmpty ("ownerEmail"_qba, ownerEmail),
+				}
+			};
 		}
 
-		void WriteBody (QDomElement& root,
-				QDomDocument& doc,
-				const channels_shorts_t& channels)
+		Tag MakeBody (const channels_shorts_t& channels)
 		{
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+			const auto itm = GetProxyHolder ()->GetTagsManager ();
 
-			auto body = doc.createElement ("body");
-			for (const auto& cs : channels)
+			return
 			{
-				auto tags = GetProxyHolder ()->GetTagsManager ()->GetTags (cs.Tags_);
-				tags.sort ();
-
-				auto inserter = Util::BuildTagsTree (tags,
-						body, doc, "outline",
-						[] (const QDomElement& elem) { return elem.attribute ("text"); },
-						[] (QDomElement& result, const QString& tag)
+				.Name_ = "body"_qba,
+				.Children_ = Util::MapAs<QList> (channels,
+						[&] (const ChannelShort& cs) -> Util::Node
 						{
-							result.setAttribute ("text", tag);
-							result.setAttribute ("isOpen", "true");
-						});
-				auto item = doc.createElement ("outline");
-				item.setAttribute ("title", cs.Title_);
-				item.setAttribute ("xmlUrl", sb->GetFeed (cs.FeedID_).URL_);
-				item.setAttribute ("htmlUrl", cs.Link_);
-				inserter.appendChild (item);
-			}
-
-			root.appendChild (body);
+							const auto& tags = itm->GetTags (cs.Tags_).join (',');
+							return Tag
+							{
+								.Name_ = "outline"_qba,
+								.Attrs_ = {
+									{ "isOpen"_qba, "true"_qs },
+									{ "htmlUrl"_qba, cs.Link_ },
+									{ "xmlUrl"_qba, sb->GetFeed (cs.FeedID_).URL_ },
+									{ "category"_qba, tags },
+								}
+							};
+						})
+			};
 		}
 	}
 
-	QString Write (const channels_shorts_t& channels,
+	QByteArray Write (const channels_shorts_t& channels,
 			const QString& title,
 			const QString& owner,
 			const QString& ownerEmail)
 	{
-		QDomDocument doc;
-		QDomElement root = doc.createElement ("opml");
-		doc.appendChild (root);
-		WriteHead (root, doc, title, owner, ownerEmail);
-		WriteBody (root, doc, channels);
-
-		return doc.toString ();
+		return Tag
+		{
+			.Name_ = "opml"_qba,
+			.Children_ = { MakeHead (title, owner, ownerEmail), MakeBody (channels), },
+		}.Serialize<QByteArray> ({ .Prolog_ = true, .Indent_ = 2 });
 	}
 }

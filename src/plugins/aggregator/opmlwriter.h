@@ -12,7 +12,7 @@
 
 namespace LC::Aggregator::OPML
 {
-	QString Write (const channels_shorts_t&,
+	QByteArray Write (const channels_shorts_t&,
 			const QString&,
 			const QString&,
 			const QString&);

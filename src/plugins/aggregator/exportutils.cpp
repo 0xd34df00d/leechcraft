@@ -66,6 +66,6 @@ namespace LC::Aggregator::ExportUtils
 							.arg (f.fileName ()));
 			return;
 		}
-		f.write (data.toUtf8 ());
+		f.write (data);
 	}
 }
