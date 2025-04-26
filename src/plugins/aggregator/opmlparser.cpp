@@ -36,6 +36,9 @@ namespace LC::Aggregator
 				!category.isEmpty ())
 				categories << category;
 
+			if (outline.hasAttribute ("category"_qs))
+				categories << outline.attribute ("category"_qs).split (',', Qt::SkipEmptyParts);
+
 			if (outline.hasAttribute ("xmlUrl"_qs))
 			{
 				OPMLItem item;
