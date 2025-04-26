@@ -18,6 +18,8 @@ namespace LC::Aggregator
 		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ImportOPML)
 
 		Ui::ImportOPML Ui_;
+
+		QHash<QLatin1String, QLabel*> Fields_;
 	public:
 		explicit ImportOPML (const QString& = {}, QWidget* = nullptr);
 

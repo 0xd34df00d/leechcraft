@@ -31,6 +31,15 @@ namespace LC::Aggregator
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 
+		Fields_ =
+		{
+			{ "title"_ql, Ui_.Title_ },
+			{ "dateCreated"_ql, Ui_.Created_ },
+			{ "dateModified"_ql, Ui_.Edited_ },
+			{ "ownerName"_ql, Ui_.Owner_ },
+			{ "ownerEmail"_ql, Ui_.OwnerEmail_ },
+		};
+
 		connect (Ui_.Browse_,
 				&QPushButton::released,
 				this,
@@ -115,16 +124,8 @@ namespace LC::Aggregator
 				{
 					for (const auto& [name, value] : result.Info_.asKeyValueRange ())
 					{
-						if (name == "title")
-							Ui_.Title_->setText (value);
-						else if (name == "dateCreated")
-							Ui_.Created_->setText (value);
-						else if (name == "dateModified")
-							Ui_.Edited_->setText (value);
-						else if (name == "ownerName")
-							Ui_.Owner_->setText (value);
-						else if (name == "ownerEmail")
-							Ui_.OwnerEmail_->setText (value);
+						if (const auto field = Fields_.value (name))
+							field->setText (value);
 						else
 							new QTreeWidgetItem (Ui_.OtherFields_, { name, value });
 					}
@@ -142,11 +143,9 @@ namespace LC::Aggregator
 
 	void ImportOPML::Reset ()
 	{
-		Ui_.Title_->clear ();
-		Ui_.Created_->clear ();
-		Ui_.Edited_->clear ();
-		Ui_.Owner_->clear ();
-		Ui_.OwnerEmail_->clear ();
+		for (auto field : Fields_)
+			field->clear ();
+
 		Ui_.OtherFields_->clear ();
 		Ui_.FeedsToImport_->clear ();
 
