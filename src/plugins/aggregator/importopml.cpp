@@ -137,11 +137,11 @@ namespace Aggregator
 
 	void ImportOPML::Reset ()
 	{
-		Ui_.Title_->setText ("");
-		Ui_.Created_->setText ("");
-		Ui_.Edited_->setText ("");
-		Ui_.Owner_->setText ("");
-		Ui_.OwnerEmail_->setText ("");
+		Ui_.Title_->clear ();
+		Ui_.Created_->clear ();
+		Ui_.Edited_->clear ();
+		Ui_.Owner_->clear ();
+		Ui_.OwnerEmail_->clear ();
 		Ui_.OtherFields_->clear ();
 		Ui_.FeedsToImport_->clear ();
 
