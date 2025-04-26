@@ -32,8 +32,9 @@ namespace LC::Aggregator
 
 		void ParseOutline (const QDomElement& outline, QStringList categories, QList<OPMLItem>& result)
 		{
-			if (outline.attribute ("text"_qs).size ())
-				categories << outline.attribute ("text"_qs);
+			if (const auto category = outline.attribute ("text"_qs);
+				!category.isEmpty ())
+				categories << category;
 
 			if (outline.hasAttribute ("xmlUrl"_qs))
 			{
