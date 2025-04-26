@@ -31,12 +31,21 @@ namespace LC::Aggregator
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 
+		connect (Ui_.Browse_,
+				&QPushButton::released,
+				this,
+				&ImportOPML::BrowseFile);
+		connect (Ui_.File_,
+				&QLineEdit::textEdited,
+				this,
+				&ImportOPML::HandleFilePathEdited);
+
 		if (file.isEmpty ())
-			on_Browse__released ();
+			BrowseFile ();
 		else
 		{
 			Ui_.File_->setText (file);
-			on_File__textEdited (file);
+			HandleFilePathEdited (file);
 		}
 	}
 
@@ -64,7 +73,7 @@ namespace LC::Aggregator
 		return result;
 	}
 
-	void ImportOPML::on_File__textEdited (const QString& newFilename)
+	void ImportOPML::HandleFilePathEdited (const QString& newFilename)
 	{
 		if (QFile::exists (newFilename))
 			HandleFile (newFilename);
@@ -72,7 +81,7 @@ namespace LC::Aggregator
 			Reset ();
 	}
 
-	void ImportOPML::on_Browse__released ()
+	void ImportOPML::BrowseFile ()
 	{
 		auto startingPath = QFileInfo (Ui_.File_->text ()).path ();
 		if (startingPath.isEmpty ())

@@ -11,27 +11,24 @@
 #include <QDialog>
 #include "ui_importopml.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class ImportOPML : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ImportOPML)
 
 		Ui::ImportOPML Ui_;
 	public:
-		ImportOPML (const QString& = QString (), QWidget* = 0);
+		explicit ImportOPML (const QString& = {}, QWidget* = nullptr);
 
 		QString GetFilename () const;
 		QString GetTags () const;
 		QSet<QString> GetSelectedUrls () const;
-	private slots:
-		void on_File__textEdited (const QString&);
-		void on_Browse__released ();
 	private:
+		void HandleFilePathEdited (const QString&);
+		void BrowseFile ();
+
 		void HandleFile (const QString&);
 		void Reset ();
 	};
-}
 }
