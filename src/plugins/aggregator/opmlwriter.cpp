@@ -28,7 +28,7 @@ namespace LC::Aggregator::OPML
 				.Children_ =
 				{
 					Tag::WithTextNonEmpty ("title"_qba, title),
-					Tag::WithTextNonEmpty ("owner"_qba, owner),
+					Tag::WithTextNonEmpty ("ownerName"_qba, owner),
 					Tag::WithTextNonEmpty ("ownerEmail"_qba, ownerEmail),
 				}
 			};
