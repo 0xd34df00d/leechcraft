@@ -9,19 +9,15 @@
 #include "importopml.h"
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDomDocument>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/visitor.h>
 #include <util/sll/either.h>
 #include "opmlparser.h"
 #include "common.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	namespace
 	{
@@ -29,7 +25,7 @@ namespace Aggregator
 	}
 
 	ImportOPML::ImportOPML (const QString& file, QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
@@ -106,9 +102,9 @@ namespace Aggregator
 					QMessageBox::critical (this, MessageBoxTitle, error);
 					Reset ();
 				},
-				[this] (OPMLParser parser)
+				[this] (const OPMLParseResult& result)
 				{
-					for (const auto& [name, value] : Util::Stlize (parser.GetInfo ()))
+					for (const auto& [name, value] : result.Info_.asKeyValueRange ())
 					{
 						if (name == "title")
 							Ui_.Title_->setText (value);
@@ -124,7 +120,7 @@ namespace Aggregator
 							new QTreeWidgetItem (Ui_.OtherFields_, { name, value });
 					}
 
-					for (const auto& opmlItem : parser.Parse ())
+					for (const auto& opmlItem : result.Items_)
 					{
 						const auto item = new QTreeWidgetItem (Ui_.FeedsToImport_, { opmlItem.Title_, opmlItem.URL_ });
 						item->setData (0, Qt::CheckStateRole, Qt::Checked);
@@ -147,5 +143,4 @@ namespace Aggregator
 
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 	}
-}
 }

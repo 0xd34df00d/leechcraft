@@ -105,11 +105,11 @@ namespace LC::Aggregator::Opml
 		const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (importDialog.GetTags ());
 		const auto& selectedUrls = importDialog.GetSelectedUrls ();
 
-		Util::Visit (ParseOPMLItems (importDialog.GetFilename ()),
+		Util::Visit (ParseOPML (importDialog.GetFilename ()),
 				[] (const QString& error) { ReportError (error); },
-				[&] (const OPMLParser::items_container_t& items)
+				[&] (const OPMLParseResult& result)
 				{
-					for (const auto& item : items)
+					for (const auto& item : result.Items_)
 					{
 						if (!selectedUrls.contains (item.URL_))
 							continue;
