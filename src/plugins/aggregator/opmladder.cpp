@@ -12,6 +12,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/threads/coro/future.h>
@@ -31,13 +32,11 @@ namespace LC::Aggregator::Opml
 			return false;
 
 		const auto& url = e.Entity_.toUrl ();
-		if (e.Mime_ != "text/x-opml")
+		if (e.Mime_ != "text/x-opml"_ql)
 			return false;
 
-		return url.scheme () == "file" ||
-				url.scheme () == "http" ||
-				url.scheme () == "https" ||
-				url.scheme () == "itpc";
+		constexpr std::array schemes { "file"_ql, "http"_ql, "https"_ql, "itpc"_ql };
+		return std::ranges::contains (schemes, url.scheme ());
 	}
 
 	namespace
@@ -51,7 +50,7 @@ namespace LC::Aggregator::Opml
 		struct LocalFile
 		{
 			QString Path_;
-			Util::SharedScopeGuard RemoveGuard_;
+			[[maybe_unused]] Util::SharedScopeGuard RemoveGuard_;
 		};
 
 		Util::Task<Util::Either<QString, LocalFile>> HandleOpmlUrl (const QUrl& url)
@@ -92,10 +91,10 @@ namespace LC::Aggregator::Opml
 				if (e.Additional_.contains (name))
 					XmlSettingsManager::Instance ().setProperty (name, e.Additional_.value (name));
 			};
-			copyVal ("UpdateOnStartup");
-			copyVal ("UpdateTimeout");
-			copyVal ("MaxArticles");
-			copyVal ("MaxAge");
+			copyVal ("UpdateOnStartup"_qba);
+			copyVal ("UpdateTimeout"_qba);
+			copyVal ("MaxArticles"_qba);
+			copyVal ("MaxAge"_qba);
 		}
 	}
 
