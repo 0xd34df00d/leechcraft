@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "exportdialog.h"
+#include "feedsexportdialog.h"
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDir>
@@ -21,7 +21,7 @@ namespace LC::Aggregator
 		constexpr auto IDRole = Qt::UserRole;
 	}
 
-	ExportDialog::ExportDialog (const QString& title,
+	FeedsExportDialog::FeedsExportDialog (const QString& title,
 			const QString& exportTitle,
 			const QString& choices,
 			QWidget *parent)
@@ -36,7 +36,7 @@ namespace LC::Aggregator
 		connect (Ui_.Browse_,
 				&QPushButton::released,
 				this,
-				&ExportDialog::Browse);
+				&FeedsExportDialog::Browse);
 		Browse ();
 
 		connect (Ui_.File_,
@@ -48,27 +48,27 @@ namespace LC::Aggregator
 				});
 	}
 
-	QString ExportDialog::GetDestination () const
+	QString FeedsExportDialog::GetDestination () const
 	{
 		return Ui_.File_->text ();
 	}
 
-	QString ExportDialog::GetTitle () const
+	QString FeedsExportDialog::GetTitle () const
 	{
 		return Ui_.Title_->text ();
 	}
 
-	QString ExportDialog::GetOwner () const
+	QString FeedsExportDialog::GetOwner () const
 	{
 		return Ui_.Owner_->text ();
 	}
 
-	QString ExportDialog::GetOwnerEmail () const
+	QString FeedsExportDialog::GetOwnerEmail () const
 	{
 		return Ui_.OwnerEmail_->text ();
 	}
 
-	QSet<IDType_t> ExportDialog::GetSelectedFeeds () const
+	QSet<IDType_t> FeedsExportDialog::GetSelectedFeeds () const
 	{
 		QSet<IDType_t> result;
 		for (int i = 0, items = Ui_.Channels_->topLevelItemCount (); i < items; ++i)
@@ -80,7 +80,7 @@ namespace LC::Aggregator
 		return result;
 	}
 
-	void ExportDialog::SetFeeds (const channels_shorts_t& channels)
+	void FeedsExportDialog::SetFeeds (const channels_shorts_t& channels)
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (const auto& cs : channels)
@@ -92,7 +92,7 @@ namespace LC::Aggregator
 			}
 	}
 
-	void ExportDialog::Browse ()
+	void FeedsExportDialog::Browse ()
 	{
 		const auto firstPathChoice = Ui_.File_->text ().isEmpty ();
 		auto startingPath = firstPathChoice ? QString {} : QFileInfo { Ui_.File_->text () }.path ();

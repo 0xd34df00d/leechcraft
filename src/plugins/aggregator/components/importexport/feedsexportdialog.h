@@ -10,17 +10,17 @@
 
 #include <QSet>
 #include "channel.h"
-#include "ui_exportdialog.h"
+#include "ui_feedsexportdialog.h"
 
 namespace LC::Aggregator
 {
-	class ExportDialog : public QDialog
+	class FeedsExportDialog : public QDialog
 	{
-		Ui::ExportDialog Ui_;
 		const QString Title_;
 		const QString Choices_;
+		Ui::FeedsExportDialog Ui_;
 	public:
-		explicit ExportDialog (const QString&, const QString&, const QString&, QWidget* = nullptr);
+		explicit FeedsExportDialog (const QString&, const QString&, const QString&, QWidget* = nullptr);
 
 		QString GetDestination () const;
 		QString GetTitle () const;

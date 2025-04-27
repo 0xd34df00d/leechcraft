@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ExportDialog</class>
- <widget class="QDialog" name="ExportDialog">
+ <class>FeedsExportDialog</class>
+ <widget class="QDialog" name="FeedsExportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -118,7 +118,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
-   <receiver>ExportDialog</receiver>
+   <receiver>FeedsExportDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -134,7 +134,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
-   <receiver>ExportDialog</receiver>
+   <receiver>FeedsExportDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

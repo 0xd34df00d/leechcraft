@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Export2FB2Dialog</class>
- <widget class="QDialog" name="Export2FB2Dialog">
+ <class>ItemsExportDialog</class>
+ <widget class="QDialog" name="ItemsExportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -47,7 +47,7 @@
          <item>
           <widget class="QTreeView" name="ChannelsTree_">
            <property name="selectionMode">
-            <enum>QAbstractItemView::ExtendedSelection</enum>
+            <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
            </property>
            <property name="rootIsDecorated">
             <bool>false</bool>
@@ -123,7 +123,7 @@
          <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -145,7 +145,7 @@
            <item>
             <layout class="QFormLayout" name="formLayout">
              <property name="fieldGrowthPolicy">
-              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+              <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
              </property>
              <item row="0" column="0">
               <widget class="QLabel" name="label_2">
@@ -1196,7 +1196,7 @@
          <widget class="QWidget" name="page_2">
           <layout class="QFormLayout" name="formLayout_2">
            <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
            </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label_5">
@@ -1329,10 +1329,10 @@
    <item>
     <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
@@ -1343,7 +1343,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
-   <receiver>Export2FB2Dialog</receiver>
+   <receiver>ItemsExportDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1359,7 +1359,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
-   <receiver>Export2FB2Dialog</receiver>
+   <receiver>ItemsExportDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

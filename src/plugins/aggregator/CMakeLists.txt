@@ -11,10 +11,10 @@ LC_DEFINE_PLUGIN (
 		components/gui/itemnavigator.cpp
 		components/gui/itemselectiontracker.cpp
 		components/gui/util.cpp
-		components/importexport/export2fb2dialog.cpp
-		components/importexport/exportdialog.cpp
 		components/importexport/exportutils.cpp
+		components/importexport/feedsexportdialog.cpp
 		components/importexport/importopmldialog.cpp
+		components/importexport/itemsexportdialog.cpp
 		components/importexport/opmladder.cpp
 		components/importexport/opmlparser.cpp
 		components/importexport/opmlwriter.cpp

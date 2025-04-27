@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "ui_export2fb2dialog.h"
+#include "ui_itemsexportdialog.h"
 
 namespace LC
 {
@@ -22,19 +22,19 @@ namespace Aggregator
 	class ChannelsModel;
 	struct WriteInfo;
 
-	class Export2FB2Dialog : public QDialog
+	class ItemsExportDialog : public QDialog
 	{
 		Q_OBJECT
 
 		ChannelsModel& ChannelsModel_;
 
-		Ui::Export2FB2Dialog Ui_;
+		Ui::ItemsExportDialog Ui_;
 		Util::CategorySelector *Selector_;
 		QStringList CurrentCategories_;
 
 		bool HasBeenTextModified_ = false;
 	public:
-		Export2FB2Dialog (ChannelsModel&, QWidget* = nullptr);
+		ItemsExportDialog (ChannelsModel&, QWidget* = nullptr);
 	private:
 		void WriteFB2 (const WriteInfo&);
 		void WritePDF (const WriteInfo&);

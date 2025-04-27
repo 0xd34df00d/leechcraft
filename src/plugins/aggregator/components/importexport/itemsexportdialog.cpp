@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "export2fb2dialog.h"
+#include "itemsexportdialog.h"
 #include <algorithm>
 #include <QXmlStreamWriter>
 #include <QFileDialog>
@@ -32,7 +32,7 @@ namespace LC
 {
 namespace Aggregator
 {
-	Export2FB2Dialog::Export2FB2Dialog (ChannelsModel& channelsModel, QWidget *parent)
+	ItemsExportDialog::ItemsExportDialog (ChannelsModel& channelsModel, QWidget *parent)
 	: QDialog { parent }
 	, ChannelsModel_ { channelsModel }
 	{
@@ -48,7 +48,7 @@ namespace Aggregator
 		connect (Ui_.ChannelsTree_->selectionModel (),
 				&QItemSelectionModel::selectionChanged,
 				this,
-				&Export2FB2Dialog::handleChannelsSelectionChanged);
+				&ItemsExportDialog::handleChannelsSelectionChanged);
 
 		for (int i = 0; i < Ui_.FB2Genres_->topLevelItemCount (); ++i)
 		{
@@ -62,9 +62,9 @@ namespace Aggregator
 		}
 
 		connect (this,
-				&Export2FB2Dialog::accepted,
+				&ItemsExportDialog::accepted,
 				this,
-				&Export2FB2Dialog::handleAccepted);
+				&ItemsExportDialog::handleAccepted);
 
 		on_File__textChanged (QString ());
 	}
@@ -167,7 +167,7 @@ namespace Aggregator
 					w.writeTextElement ("p", FixContents (cs.Title_));
 				w.writeEndElement ();
 				w.writeTextElement ("annotation",
-						Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
+						ItemsExportDialog::tr ("%n unread item(s)", "", cs.Unread_));
 				for (const auto& item : items)
 				{
 					w.writeStartElement ("title");
@@ -184,11 +184,11 @@ namespace Aggregator
 						w.writeStartElement ("epigraph");
 							if (hasDate)
 								w.writeTextElement ("p",
-										Export2FB2Dialog::tr ("Published on %1")
+										ItemsExportDialog::tr ("Published on %1")
 											.arg (item.PubDate_.toString ()));
 							if (hasAuthor)
 								w.writeTextElement ("p",
-										Export2FB2Dialog::tr ("By %1")
+										ItemsExportDialog::tr ("By %1")
 											.arg (item.Author_));
 						w.writeEndElement ();
 						w.writeEmptyElement ("empty-line");
@@ -252,7 +252,7 @@ namespace Aggregator
 		}
 	}
 
-	void Export2FB2Dialog::WriteFB2 (const WriteInfo& info)
+	void ItemsExportDialog::WriteFB2 (const WriteInfo& info)
 	{
 		QFile file (info.File_);
 		if (!file.open (QIODevice::WriteOnly))
@@ -352,7 +352,7 @@ namespace Aggregator
 		}
 	}
 
-	void Export2FB2Dialog::WritePDF (const WriteInfo& info)
+	void ItemsExportDialog::WritePDF (const WriteInfo& info)
 	{
 		QTextDocument doc;
 		QTextCursor cursor (&doc);
@@ -416,7 +416,7 @@ namespace Aggregator
 					Priority::Info));
 	}
 
-	void Export2FB2Dialog::on_Browse__released ()
+	void ItemsExportDialog::on_Browse__released ()
 	{
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Select save file"),
@@ -433,12 +433,12 @@ namespace Aggregator
 			Ui_.ExportFormat_->setCurrentIndex (0);
 	}
 
-	void Export2FB2Dialog::on_File__textChanged (const QString& name)
+	void ItemsExportDialog::on_File__textChanged (const QString& name)
 	{
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (!name.isEmpty ());
 	}
 
-	void Export2FB2Dialog::on_Name__textEdited ()
+	void ItemsExportDialog::on_Name__textEdited ()
 	{
 		HasBeenTextModified_ = true;
 	}
@@ -458,7 +458,7 @@ namespace Aggregator
 		}
 	}
 
-	void Export2FB2Dialog::handleChannelsSelectionChanged ()
+	void ItemsExportDialog::handleChannelsSelectionChanged ()
 	{
 		Selector_->SetPossibleSelections (CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ()));
 		Selector_->SelectAll ();
@@ -472,7 +472,7 @@ namespace Aggregator
 		}
 	}
 
-	void Export2FB2Dialog::handleAccepted ()
+	void ItemsExportDialog::handleAccepted ()
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
