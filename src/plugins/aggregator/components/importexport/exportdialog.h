@@ -12,19 +12,15 @@
 #include "channel.h"
 #include "ui_exportdialog.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class ExportDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::ExportDialog Ui_;
 		const QString Title_;
 		const QString Choices_;
 	public:
-		ExportDialog (const QString&, const QString&, const QString&, QWidget* = 0);
+		explicit ExportDialog (const QString&, const QString&, const QString&, QWidget* = nullptr);
 
 		QString GetDestination () const;
 		QString GetTitle () const;
@@ -33,9 +29,7 @@ namespace Aggregator
 		QSet<IDType_t> GetSelectedFeeds () const;
 
 		void SetFeeds (const channels_shorts_t&);
-	private slots:
-		void on_File__textEdited (const QString&);
-		void on_Browse__released ();
+	private:
+		void Browse ();
 	};
-}
 }

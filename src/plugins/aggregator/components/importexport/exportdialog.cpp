@@ -14,9 +14,7 @@
 #include "components/storage/storagebackendmanager.h"
 #include "feed.h"
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	namespace
 	{
@@ -34,7 +32,20 @@ namespace Aggregator
 		Ui_.setupUi (this);
 		setWindowTitle (title);
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (false);
-		on_Browse__released ();
+
+		connect (Ui_.Browse_,
+				&QPushButton::released,
+				this,
+				&ExportDialog::Browse);
+		Browse ();
+
+		connect (Ui_.File_,
+				&QLineEdit::textEdited,
+				this,
+				[this] (const QString& text)
+				{
+					Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (!text.isEmpty ());
+				});
 	}
 	
 	QString ExportDialog::GetDestination () const
@@ -81,19 +92,13 @@ namespace Aggregator
 			}
 	}
 	
-	void ExportDialog::on_File__textEdited (const QString& text)
+	void ExportDialog::Browse ()
 	{
-		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (!text.isEmpty ());
-	}
-	
-	void ExportDialog::on_Browse__released ()
-	{
-		QString startingPath = QFileInfo (Ui_.File_->text ()).path ();
-		if (Ui_.File_->text ().isEmpty () ||
-				startingPath.isEmpty ())
+		auto startingPath = QFileInfo { Ui_.File_->text () }.path ();
+		if (Ui_.File_->text ().isEmpty () || startingPath.isEmpty ())
 			startingPath = QDir::homePath () + "/feeds.opml";
 	
-		QString filename = QFileDialog::getSaveFileName (this,
+		const auto& filename = QFileDialog::getSaveFileName (this,
 				Title_,
 				startingPath,
 				Choices_);
@@ -101,12 +106,11 @@ namespace Aggregator
 		{
 			QTimer::singleShot (0,
 					this,
-					SLOT (reject ()));
+					&QDialog::reject);
 			return;
 		}
 	
 		Ui_.File_->setText (filename);
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (true);
 	}
-}
 }
