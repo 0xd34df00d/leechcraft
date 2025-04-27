@@ -16,28 +16,28 @@ namespace LC
 {
 namespace Util
 {
+	class [[nodiscard]] SharedScopeGuard
+	{
+		std::shared_ptr<void> Guard_;
+		public:
+		template<typename F>
+		SharedScopeGuard (const F& f)
+		: Guard_ { nullptr, [f] (void*) { f (); } }
+		{
+		}
+
+		SharedScopeGuard () = delete;
+
+		SharedScopeGuard (const SharedScopeGuard&) = default;
+		SharedScopeGuard (SharedScopeGuard&&) = default;
+
+		SharedScopeGuard& operator= (const SharedScopeGuard&) = default;
+		SharedScopeGuard& operator= (SharedScopeGuard&&) = default;
+	};
+
 	namespace detail
 	{
 		using DefaultScopeGuardDeleter = std::function<void ()>;
-
-		class [[nodiscard]] SharedScopeGuard
-		{
-			std::shared_ptr<void> Guard_;
-		public:
-			template<typename F>
-			SharedScopeGuard (const F& f)
-			: Guard_ { nullptr, [f] (void*) { f (); } }
-			{
-			}
-
-			SharedScopeGuard () = delete;
-
-			SharedScopeGuard (const SharedScopeGuard&) = default;
-			SharedScopeGuard (SharedScopeGuard&&) = default;
-
-			SharedScopeGuard& operator= (const SharedScopeGuard&) = default;
-			SharedScopeGuard& operator= (SharedScopeGuard&&) = default;
-		};
 
 		template<typename F>
 		class [[nodiscard]] ScopeGuard
