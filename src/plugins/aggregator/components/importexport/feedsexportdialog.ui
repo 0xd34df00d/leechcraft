@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>This string is overridden in the source code</string>
+   <string>Export to OPML</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">

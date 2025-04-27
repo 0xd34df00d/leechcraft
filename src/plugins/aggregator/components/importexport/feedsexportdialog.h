@@ -16,11 +16,11 @@ namespace LC::Aggregator
 {
 	class FeedsExportDialog : public QDialog
 	{
-		const QString Title_;
-		const QString Choices_;
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::FeedsExportDialog)
+
 		Ui::FeedsExportDialog Ui_;
 	public:
-		explicit FeedsExportDialog (const QString&, const QString&, const QString&, QWidget* = nullptr);
+		explicit FeedsExportDialog (QWidget* = nullptr);
 
 		QString GetDestination () const;
 		QString GetTitle () const;

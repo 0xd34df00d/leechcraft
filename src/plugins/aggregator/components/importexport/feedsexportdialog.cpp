@@ -21,16 +21,10 @@ namespace LC::Aggregator
 		constexpr auto IDRole = Qt::UserRole;
 	}
 
-	FeedsExportDialog::FeedsExportDialog (const QString& title,
-			const QString& exportTitle,
-			const QString& choices,
-			QWidget *parent)
+	FeedsExportDialog::FeedsExportDialog (QWidget *parent)
 	: QDialog (parent)
-	, Title_ { exportTitle }
-	, Choices_ { choices }
 	{
 		Ui_.setupUi (this);
-		setWindowTitle (title);
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (false);
 
 		connect (Ui_.Browse_,
@@ -100,9 +94,10 @@ namespace LC::Aggregator
 			startingPath = QDir::homePath () + "/feeds.opml";
 
 		const auto& filename = QFileDialog::getSaveFileName (this,
-				Title_,
+				tr ("Export as"),
 				startingPath,
-				Choices_);
+				tr ("OPML files (*.opml);;"
+					"All files (*.*)"));
 		if (filename.isEmpty () && firstPathChoice)
 		{
 			QTimer::singleShot (0,

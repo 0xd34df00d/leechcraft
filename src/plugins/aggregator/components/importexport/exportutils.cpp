@@ -42,12 +42,7 @@ namespace LC::Aggregator::ExportUtils
 	void RunExportOPML (QWidget *parent)
 	{
 		const auto& allChannels = GetAllChannels ();
-		FeedsExportDialog exportDialog (QObject::tr ("Export to OPML"),
-				QObject::tr ("Select save file"),
-				QObject::tr ("OPML files (*.opml);;"
-					"XML files (*.xml);;"
-					"All files (*.*)"),
-				parent);
+		FeedsExportDialog exportDialog { parent };
 		exportDialog.SetFeeds (allChannels);
 		if (exportDialog.exec () == QDialog::Rejected)
 			return;
