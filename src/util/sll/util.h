@@ -118,7 +118,7 @@ namespace Util
 				return EraseType ();
 			}
 
-			SharedScopeGuard Shared ()
+			SharedScopeGuard Shared () &&
 			{
 				if (!Perform_)
 					throw std::logic_error { "this scope guard has already been converted to a shared one" };
