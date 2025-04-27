@@ -47,27 +47,27 @@ namespace LC::Aggregator
 					Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (!text.isEmpty ());
 				});
 	}
-	
+
 	QString ExportDialog::GetDestination () const
 	{
 		return Ui_.File_->text ();
 	}
-	
+
 	QString ExportDialog::GetTitle () const
 	{
 		return Ui_.Title_->text ();
 	}
-	
+
 	QString ExportDialog::GetOwner () const
 	{
 		return Ui_.Owner_->text ();
 	}
-	
+
 	QString ExportDialog::GetOwnerEmail () const
 	{
 		return Ui_.OwnerEmail_->text ();
 	}
-	
+
 	QSet<IDType_t> ExportDialog::GetSelectedFeeds () const
 	{
 		QSet<IDType_t> result;
@@ -79,7 +79,7 @@ namespace LC::Aggregator
 		}
 		return result;
 	}
-	
+
 	void ExportDialog::SetFeeds (const channels_shorts_t& channels)
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
@@ -91,25 +91,26 @@ namespace LC::Aggregator
 				item->setData (0, IDRole, cs.ChannelID_);
 			}
 	}
-	
+
 	void ExportDialog::Browse ()
 	{
-		auto startingPath = QFileInfo { Ui_.File_->text () }.path ();
-		if (Ui_.File_->text ().isEmpty () || startingPath.isEmpty ())
+		const auto firstPathChoice = Ui_.File_->text ().isEmpty ();
+		auto startingPath = firstPathChoice ? QString {} : QFileInfo { Ui_.File_->text () }.path ();
+		if (startingPath.isEmpty ())
 			startingPath = QDir::homePath () + "/feeds.opml";
-	
+
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				Title_,
 				startingPath,
 				Choices_);
-		if (filename.isEmpty ())
+		if (filename.isEmpty () && firstPathChoice)
 		{
 			QTimer::singleShot (0,
 					this,
 					&QDialog::reject);
 			return;
 		}
-	
+
 		Ui_.File_->setText (filename);
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (true);
 	}
