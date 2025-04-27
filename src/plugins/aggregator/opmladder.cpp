@@ -14,7 +14,8 @@
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro/future.h>
+#include <util/threads/coro.h>
 #include <util/xpc/util.h>
 #include "xmlsettingsmanager.h"
 #include "importopml.h"
@@ -47,9 +48,20 @@ namespace LC::Aggregator::Opml
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
-		void HandleOpmlRemote (const QUrl& url, std::weak_ptr<UpdatesManager> updatesManager)
+		struct LocalFile
 		{
+			QString Path_;
+			Util::SharedScopeGuard RemoveGuard_;
+		};
+
+		Util::Task<Util::Either<QString, LocalFile>> HandleOpmlUrl (const QUrl& url)
+		{
+			if (url.isLocalFile ())
+				co_return LocalFile { url.toLocalFile (), [] {} };
+
 			const auto& name = Util::GetTemporaryName ();
+
+			auto removeGuard = Util::MakeScopeGuard ([name] { QFile::remove (name); });
 
 			const auto& dlEntity = Util::MakeEntity (url,
 					name,
@@ -61,25 +73,16 @@ namespace LC::Aggregator::Opml
 
 			const auto& handleResult = GetProxyHolder ()->GetEntityManager ()->DelegateEntity (dlEntity);
 			if (!handleResult)
-			{
-				ReportError (QObject::tr ("Could not find plugin to download OPML %1.")
-						.arg (url.toString ()));
-				return;
-			}
+				co_return Util::Left { QObject::tr ("Could not find plugin to download OPML %1.")
+						.arg (url.toString ()) };
 
-			Util::Sequence (nullptr, handleResult.DownloadResult_) >>
-					Util::Visitor
+			const auto result = co_await handleResult.DownloadResult_;
+			co_await WithHandler (result, [] (const IDownload::Error& error)
 					{
-						[name, updatesManager] (IDownload::Success)
-						{
-							if (const auto um = updatesManager.lock ())
-								HandleOpmlFile (name, *um);
-						},
-						[] (const IDownload::Error&)
-						{
-							ReportError (QObject::tr ("Unable to download the OPML file."));
-						}
-					}.Finally ([name] { QFile::remove (name); });
+						return QObject::tr ("Unable to download the OPML file: %1.").arg (error.Message_);
+					});
+
+			co_return LocalFile { name, std::move (removeGuard).Shared () };
 		}
 
 		void HandleOpmlGlobalSettings (const Entity& e)
@@ -130,12 +133,13 @@ namespace LC::Aggregator::Opml
 
 	void HandleOpmlEntity (const Entity& e, std::weak_ptr<UpdatesManager> updatesManager)
 	{
-		auto url = e.Entity_.toUrl ();
-		if (url.scheme () == "file")
-			HandleOpmlFile (url.toLocalFile (), *updatesManager.lock ());
-		else
-			HandleOpmlRemote (url, std::move (updatesManager));
-
 		HandleOpmlGlobalSettings (e);
+
+		[] (QUrl url, std::weak_ptr<UpdatesManager> updatesManager) -> Util::Task<void>
+		{
+			const auto remoteResult = co_await HandleOpmlUrl (url);
+			const auto localFile = co_await WithHandler (remoteResult, ReportError);
+			HandleOpmlFile (localFile.Path_, *updatesManager.lock ());
+		} (e.Entity_.toUrl (), std::move (updatesManager));
 	}
 }
