@@ -38,7 +38,7 @@ LC_DEFINE_PLUGIN (
 		xmlsettingsmanager.cpp
 		opmlparser.cpp
 		opmlwriter.cpp
-		importopml.cpp
+		importopmldialog.cpp
 		export.cpp
 		feedsettings.cpp
 		itemswidget.cpp

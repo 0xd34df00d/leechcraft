@@ -19,7 +19,7 @@
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
 #include "xmlsettingsmanager.h"
-#include "importopml.h"
+#include "importopmldialog.h"
 #include "opmlparser.h"
 #include "common.h"
 #include "dbutils.h"
@@ -100,7 +100,7 @@ namespace LC::Aggregator::Opml
 
 	void HandleOpmlFile (const QString& file, UpdatesManager& updatesManager)
 	{
-		ImportOPML importDialog { file };
+		ImportOPMLDialog importDialog { file };
 		if (importDialog.exec () == QDialog::Rejected)
 			return;
 

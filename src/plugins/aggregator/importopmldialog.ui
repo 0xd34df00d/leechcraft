@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ImportOPML</class>
- <widget class="QDialog" name="ImportOPML">
+ <class>ImportOPMLDialog</class>
+ <widget class="QDialog" name="ImportOPMLDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,7 +15,7 @@
   </property>
   <layout class="QFormLayout" name="formLayout">
    <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+    <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
    </property>
    <item row="0" column="0">
     <widget class="QLabel" name="label_14">
@@ -163,10 +163,10 @@
    <item row="9" column="1">
     <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Open</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Open</set>
      </property>
     </widget>
    </item>
@@ -184,7 +184,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
-   <receiver>ImportOPML</receiver>
+   <receiver>ImportOPMLDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -200,7 +200,7 @@
   <connection>
    <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
-   <receiver>ImportOPML</receiver>
+   <receiver>ImportOPMLDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

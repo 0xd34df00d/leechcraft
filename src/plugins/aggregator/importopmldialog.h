@@ -9,19 +9,19 @@
 #pragma once
 
 #include <QDialog>
-#include "ui_importopml.h"
+#include "ui_importopmldialog.h"
 
 namespace LC::Aggregator
 {
-	class ImportOPML : public QDialog
+	class ImportOPMLDialog : public QDialog
 	{
-		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ImportOPML)
+		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ImportOPMLDialog)
 
-		Ui::ImportOPML Ui_;
+		Ui::ImportOPMLDialog Ui_;
 
 		QHash<QLatin1String, QLabel*> Fields_;
 	public:
-		explicit ImportOPML (const QString& = {}, QWidget* = nullptr);
+		explicit ImportOPMLDialog (const QString& = {}, QWidget* = nullptr);
 
 		QString GetFilename () const;
 		QString GetTags () const;

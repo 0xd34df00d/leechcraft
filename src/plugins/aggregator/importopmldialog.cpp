@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "importopml.h"
+#include "importopmldialog.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
@@ -24,7 +24,7 @@ namespace LC::Aggregator
 		constexpr auto ItemUrlRole = Qt::UserRole;
 	}
 
-	ImportOPML::ImportOPML (const QString& file, QWidget *parent)
+	ImportOPMLDialog::ImportOPMLDialog (const QString& file, QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
@@ -43,11 +43,11 @@ namespace LC::Aggregator
 		connect (Ui_.Browse_,
 				&QPushButton::released,
 				this,
-				&ImportOPML::BrowseFile);
+				&ImportOPMLDialog::BrowseFile);
 		connect (Ui_.File_,
 				&QLineEdit::textEdited,
 				this,
-				&ImportOPML::HandleFilePathEdited);
+				&ImportOPMLDialog::HandleFilePathEdited);
 
 		if (file.isEmpty ())
 			BrowseFile ();
@@ -58,17 +58,17 @@ namespace LC::Aggregator
 		}
 	}
 
-	QString ImportOPML::GetFilename () const
+	QString ImportOPMLDialog::GetFilename () const
 	{
 		return Ui_.File_->text ();
 	}
 
-	QString ImportOPML::GetTags () const
+	QString ImportOPMLDialog::GetTags () const
 	{
 		return Ui_.AdditionalTags_->text ().trimmed ();
 	}
 
-	QSet<QString> ImportOPML::GetSelectedUrls () const
+	QSet<QString> ImportOPMLDialog::GetSelectedUrls () const
 	{
 		QSet<QString> result;
 
@@ -82,7 +82,7 @@ namespace LC::Aggregator
 		return result;
 	}
 
-	void ImportOPML::HandleFilePathEdited (const QString& newFilename)
+	void ImportOPMLDialog::HandleFilePathEdited (const QString& newFilename)
 	{
 		if (QFile::exists (newFilename))
 			HandleFile (newFilename);
@@ -90,7 +90,7 @@ namespace LC::Aggregator
 			Reset ();
 	}
 
-	void ImportOPML::BrowseFile ()
+	void ImportOPMLDialog::BrowseFile ()
 	{
 		auto startingPath = QFileInfo (Ui_.File_->text ()).path ();
 		if (startingPath.isEmpty ())
@@ -112,7 +112,7 @@ namespace LC::Aggregator
 		HandleFile (filename);
 	}
 
-	void ImportOPML::HandleFile (const QString& filename)
+	void ImportOPMLDialog::HandleFile (const QString& filename)
 	{
 		Util::Visit (ParseOPML (filename),
 				[this] (const QString& error)
@@ -141,7 +141,7 @@ namespace LC::Aggregator
 				});
 	}
 
-	void ImportOPML::Reset ()
+	void ImportOPMLDialog::Reset ()
 	{
 		for (auto field : Fields_)
 			field->clear ();
