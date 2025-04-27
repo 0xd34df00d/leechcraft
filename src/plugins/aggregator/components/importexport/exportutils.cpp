@@ -14,7 +14,7 @@
 #include <QMessageBox>
 #include <interfaces/core/icoreproxy.h>
 #include "dbutils.h"
-#include "export.h"
+#include "exportdialog.h"
 #include "export2fb2dialog.h"
 #include "opmlwriter.h"
 
@@ -42,7 +42,7 @@ namespace LC::Aggregator::ExportUtils
 	void RunExportOPML (QWidget *parent)
 	{
 		const auto& allChannels = GetAllChannels ();
-		Export exportDialog (QObject::tr ("Export to OPML"),
+		ExportDialog exportDialog (QObject::tr ("Export to OPML"),
 				QObject::tr ("Select save file"),
 				QObject::tr ("OPML files (*.opml);;"
 					"XML files (*.xml);;"

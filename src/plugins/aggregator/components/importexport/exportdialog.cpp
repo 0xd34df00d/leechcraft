@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "export.h"
+#include "exportdialog.h"
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDir>
@@ -23,41 +23,41 @@ namespace Aggregator
 		constexpr auto IDRole = Qt::UserRole;
 	}
 
-	Export::Export (const QString& title,
+	ExportDialog::ExportDialog (const QString& title,
 			const QString& exportTitle,
 			const QString& choices,
 			QWidget *parent)
 	: QDialog (parent)
+	, Title_ { exportTitle }
+	, Choices_ { choices }
 	{
 		Ui_.setupUi (this);
 		setWindowTitle (title);
-		Title_ = exportTitle;
-		Choices_ = choices;
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (false);
 		on_Browse__released ();
 	}
 	
-	QString Export::GetDestination () const
+	QString ExportDialog::GetDestination () const
 	{
 		return Ui_.File_->text ();
 	}
 	
-	QString Export::GetTitle () const
+	QString ExportDialog::GetTitle () const
 	{
 		return Ui_.Title_->text ();
 	}
 	
-	QString Export::GetOwner () const
+	QString ExportDialog::GetOwner () const
 	{
 		return Ui_.Owner_->text ();
 	}
 	
-	QString Export::GetOwnerEmail () const
+	QString ExportDialog::GetOwnerEmail () const
 	{
 		return Ui_.OwnerEmail_->text ();
 	}
 	
-	QSet<IDType_t> Export::GetSelectedFeeds () const
+	QSet<IDType_t> ExportDialog::GetSelectedFeeds () const
 	{
 		QSet<IDType_t> result;
 		for (int i = 0, items = Ui_.Channels_->topLevelItemCount (); i < items; ++i)
@@ -69,7 +69,7 @@ namespace Aggregator
 		return result;
 	}
 	
-	void Export::SetFeeds (const channels_shorts_t& channels)
+	void ExportDialog::SetFeeds (const channels_shorts_t& channels)
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (const auto& cs : channels)
@@ -81,12 +81,12 @@ namespace Aggregator
 			}
 	}
 	
-	void Export::on_File__textEdited (const QString& text)
+	void ExportDialog::on_File__textEdited (const QString& text)
 	{
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (!text.isEmpty ());
 	}
 	
-	void Export::on_Browse__released ()
+	void ExportDialog::on_Browse__released ()
 	{
 		QString startingPath = QFileInfo (Ui_.File_->text ()).path ();
 		if (Ui_.File_->text ().isEmpty () ||
