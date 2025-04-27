@@ -25,11 +25,6 @@
 #include "xmlsettingsmanager.h"
 #include "utils.h"
 
-inline uint qHash (const QStringList& id)
-{
-	return qHash (id.join ("/"));
-}
-
 namespace LC
 {
 namespace NetStoreManager
