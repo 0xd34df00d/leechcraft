@@ -8,10 +8,9 @@
 
 #pragma once
 
-#include <QDialog>
 #include <QSet>
-#include "ui_export.h"
 #include "channel.h"
+#include "ui_export.h"
 
 namespace LC
 {

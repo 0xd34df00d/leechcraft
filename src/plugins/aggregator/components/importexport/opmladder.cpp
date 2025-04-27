@@ -19,10 +19,10 @@
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
 #include "xmlsettingsmanager.h"
-#include "importopmldialog.h"
-#include "opmlparser.h"
 #include "common.h"
 #include "dbutils.h"
+#include "importopmldialog.h"
+#include "opmlparser.h"
 
 namespace LC::Aggregator::Opml
 {

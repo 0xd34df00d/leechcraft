@@ -11,6 +11,13 @@ LC_DEFINE_PLUGIN (
 		components/gui/itemnavigator.cpp
 		components/gui/itemselectiontracker.cpp
 		components/gui/util.cpp
+		components/importexport/export.cpp
+		components/importexport/export2fb2dialog.cpp
+		components/importexport/exportutils.cpp
+		components/importexport/importopmldialog.cpp
+		components/importexport/opmladder.cpp
+		components/importexport/opmlparser.cpp
+		components/importexport/opmlwriter.cpp
 		components/itemrender/item.cpp
 		components/itemrender/mrss.cpp
 		components/itemrender/utils.cpp
@@ -36,25 +43,18 @@ LC_DEFINE_PLUGIN (
 		channel.cpp
 		feed.cpp
 		xmlsettingsmanager.cpp
-		opmlparser.cpp
-		opmlwriter.cpp
-		importopmldialog.cpp
-		export.cpp
 		feedsettings.cpp
 		itemswidget.cpp
 		startupfirstpage.cpp
 		startupsecondpage.cpp
 		startupthirdpage.cpp
-		export2fb2dialog.cpp
 		pluginmanager.cpp
 		proxyobject.cpp
 		dbupdatethread.cpp
-		exportutils.cpp
 		itemutils.cpp
 		representationmanager.cpp
 		updatesmanager.cpp
 		resourcesfetcher.cpp
-		opmladder.cpp
 		poolsmanager.cpp
 		feedserrormanager.cpp
 		dbutils.cpp

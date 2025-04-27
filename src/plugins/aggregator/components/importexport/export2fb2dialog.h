@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QDialog>
 #include "ui_export2fb2dialog.h"
 
 namespace LC

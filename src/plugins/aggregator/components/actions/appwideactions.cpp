@@ -14,12 +14,12 @@
 #include <interfaces/iactionsexporter.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/qtutil.h>
+#include "components/importexport/exportutils.h"
+#include "components/importexport/opmladder.h"
 #include "addfeeddialog.h"
 #include "dbupdatethread.h"
 #include "dbutils.h"
-#include "exportutils.h"
 #include "updatesmanager.h"
-#include "opmladder.h"
 #include "xmlsettingsmanager.h"
 #include "actiondefshelpers.h"
 

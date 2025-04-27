@@ -13,10 +13,10 @@
 #include <QDataStream>
 #include <QMessageBox>
 #include <interfaces/core/icoreproxy.h>
+#include "dbutils.h"
 #include "export.h"
 #include "export2fb2dialog.h"
 #include "opmlwriter.h"
-#include "dbutils.h"
 
 namespace LC::Aggregator::ExportUtils
 {

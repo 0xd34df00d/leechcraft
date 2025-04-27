@@ -14,8 +14,8 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/either.h>
+#include "../../common.h"
 #include "opmlparser.h"
-#include "common.h"
 
 namespace LC::Aggregator
 {
