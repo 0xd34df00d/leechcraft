@@ -23,9 +23,12 @@ namespace LC::Aggregator
 	struct FeedsExportDialog::FeedInfo
 	{
 		IDType_t FeedId_;
+
 		QIcon Icon_;
+
 		QString Name_;
 		QUrl Url_;
+
 		Qt::CheckState CheckState_ = Qt::Checked;
 	};
 
@@ -115,6 +118,9 @@ namespace LC::Aggregator
 					});
 			}
 		FeedsModel_->SetItems (std::move (feeds));
+
+		for (int i = 0, size = FeedsModel_->columnCount (); i < size; ++i)
+			Ui_.Channels_->resizeColumnToContents (i);
 	}
 
 	void FeedsExportDialog::Browse ()
