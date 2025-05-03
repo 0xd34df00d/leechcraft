@@ -8,29 +8,19 @@
 
 #pragma once
 
+#include <util/sll/ctstring.h>
 #include "flatitemsmodeltypedbase.h"
 
 namespace LC::Util
 {
-	template<size_t N>
-	struct Literal
-	{
-		char Chars_ [N];
-
-		constexpr Literal (const char (&s) [N])
-		{
-			std::copy_n (s, N, Chars_);
-		}
-	};
-
-	template<Literal RoleArg, auto GetterArg>
+	template<CtString RoleArg, auto GetterArg>
 	struct RoledMemberField
 	{
 		static constexpr auto Getter = GetterArg;
 		static constexpr auto Role = RoleArg;
 	};
 
-	template<Literal RoleArg, auto GetterArg>
+	template<CtString RoleArg, auto GetterArg>
 	RoledMemberField<RoleArg, GetterArg> RoledMemberField_v;
 
 	template<typename T>
@@ -47,7 +37,7 @@ namespace LC::Util
 		RoledItemsModel (QObject *parent, Fields...) noexcept
 		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
 		, Fields_ { +[] (const T& t) -> QVariant { return t.*(Fields::Getter); }... }
-		, Roles_ { MakeRoles ({ QByteArray { Fields::Role.Chars_ }... }) }
+		, Roles_ { MakeRoles ({ ToByteArray<Fields::Role> ()... }) }
 		{
 		}
 
