@@ -87,20 +87,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QTreeWidget" name="Channels_">
-     <column>
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>URL</string>
-      </property>
-     </column>
-    </widget>
-   </item>
    <item row="5" column="1">
     <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
@@ -108,6 +94,19 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Save</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QTreeView" name="Channels_">
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="itemsExpandable">
+      <bool>false</bool>
      </property>
     </widget>
    </item>

@@ -11,20 +11,32 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
+#include <util/models/itemsmodel.h>
 #include "components/storage/storagebackendmanager.h"
 #include "feed.h"
 
 namespace LC::Aggregator
 {
-	namespace
+	struct FeedsExportDialog::FeedInfo
 	{
-		constexpr auto IDRole = Qt::UserRole;
-	}
+		IDType_t FeedId_;
+		QString Name_;
+		QUrl Url_;
+		Qt::CheckState CheckState_ = Qt::Checked;
+	};
+
+	using FeedsModel_t = Util::ItemsModel<FeedsExportDialog::FeedInfo, Util::ItemsCheckable<&FeedsExportDialog::FeedInfo::CheckState_>>;
 
 	FeedsExportDialog::FeedsExportDialog (QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
+	, FeedsModel_ { std::make_unique<FeedsModel_t> (
+			Util::Field<&FeedInfo::Name_> { tr ("Name") },
+			Util::Field<&FeedInfo::Url_> { tr ("URL") }
+		)
+	}
 	{
 		Ui_.setupUi (this);
+		Ui_.Channels_->setModel (FeedsModel_.get ());
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (false);
 
 		connect (Ui_.Browse_,
@@ -41,6 +53,8 @@ namespace LC::Aggregator
 					Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (!text.isEmpty ());
 				});
 	}
+
+	FeedsExportDialog::~FeedsExportDialog () = default;
 
 	QString FeedsExportDialog::GetDestination () const
 	{
@@ -65,25 +79,23 @@ namespace LC::Aggregator
 	QSet<IDType_t> FeedsExportDialog::GetSelectedFeeds () const
 	{
 		QSet<IDType_t> result;
-		for (int i = 0, items = Ui_.Channels_->topLevelItemCount (); i < items; ++i)
-		{
-			const auto item = Ui_.Channels_->topLevelItem (i);
-			if (item->data (0, Qt::CheckStateRole) == Qt::Checked)
-				result << item->data (0, IDRole).value<IDType_t> ();
-		}
+		for (const auto& item : FeedsModel_->GetItems ())
+			if (item.CheckState_ == Qt::Checked)
+				result << item.FeedId_;
 		return result;
 	}
 
 	void FeedsExportDialog::SetFeeds (const channels_shorts_t& channels)
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
+		QList<FeedInfo> feeds;
 		for (const auto& cs : channels)
 			{
 				const auto& feed = sb->GetFeed (cs.FeedID_);
-				const auto item = new QTreeWidgetItem (Ui_.Channels_, { cs.Title_, feed.URL_ });
-				item->setData (0, Qt::CheckStateRole, Qt::Checked);
-				item->setData (0, IDRole, cs.ChannelID_);
+				feeds.push_back ({ .FeedId_ = cs.FeedID_, .Name_ = cs.Title_, .Url_ = feed.URL_ });
 			}
+		FeedsModel_->SetItems (std::move (feeds));
 	}
 
 	void FeedsExportDialog::Browse ()

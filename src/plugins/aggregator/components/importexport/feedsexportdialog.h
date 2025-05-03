@@ -12,6 +12,12 @@
 #include "channel.h"
 #include "ui_feedsexportdialog.h"
 
+namespace LC::Util
+{
+	template<typename T>
+	class FlatItemsModelTypedBase;
+}
+
 namespace LC::Aggregator
 {
 	class FeedsExportDialog : public QDialog
@@ -20,7 +26,12 @@ namespace LC::Aggregator
 
 		Ui::FeedsExportDialog Ui_;
 	public:
+		struct FeedInfo;
+	private:
+		std::unique_ptr<Util::FlatItemsModelTypedBase<FeedInfo>> FeedsModel_;
+	public:
 		explicit FeedsExportDialog (QWidget* = nullptr);
+		~FeedsExportDialog () override;
 
 		QString GetDestination () const;
 		QString GetTitle () const;
