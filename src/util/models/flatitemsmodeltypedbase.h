@@ -16,18 +16,18 @@ namespace LC::Util
 	class FlatItemsModelTypedBase : public FlatItemsModelBase
 	{
 	protected:
-		QVector<T> Items_;
+		QList<T> Items_;
 	public:
 		using FlatItemsModelBase::FlatItemsModelBase;
 
-		void SetItems (QVector<T> items)
+		void SetItems (QList<T> items)
 		{
 			beginResetModel ();
 			Items_ = std::move (items);
 			endResetModel ();
 		}
 
-		const QVector<T>& GetItems () const
+		const QList<T>& GetItems () const
 		{
 			return Items_;
 		}
@@ -36,6 +36,16 @@ namespace LC::Util
 		{
 			beginInsertRows ({}, Items_.size (), Items_.size ());
 			Items_.push_back (item);
+			endInsertRows ();
+		}
+
+		void AddItems (const QList<T>& items)
+		{
+			if (items.isEmpty ())
+				return;
+
+			beginInsertRows ({}, Items_.size (), Items_.size () + items.size () - 1);
+			Items_ += items;
 			endInsertRows ();
 		}
 
