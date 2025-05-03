@@ -19,7 +19,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/udls.h>
 #include <util/models/rolenamesmixin.h>
-#include <util/models/roleditemsmodel.h>
+#include <util/models/itemsmodel.h>
 #include <util/threads/futures.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>

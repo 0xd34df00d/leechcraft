@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "similarmodel.h"
-#include <util/models/roleditemsmodel.h>
+#include <util/models/itemsmodel.h>
 #include <interfaces/media/audiostructs.h>
 #include "localcollection.h"
 

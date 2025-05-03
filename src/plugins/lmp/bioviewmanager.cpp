@@ -18,7 +18,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
-#include <util/models/roleditemsmodel.h>
+#include <util/models/itemsmodel.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>

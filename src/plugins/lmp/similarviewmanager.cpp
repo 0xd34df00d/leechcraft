@@ -11,7 +11,7 @@
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
-#include <util/models/roleditemsmodel.h>
+#include <util/models/itemsmodel.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/sys/paths.h>
 #include <util/sll/visitor.h>

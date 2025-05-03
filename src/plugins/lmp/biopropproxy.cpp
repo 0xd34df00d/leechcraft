@@ -9,7 +9,7 @@
 #include "biopropproxy.h"
 #include <algorithm>
 #include <QtDebug>
-#include <util/models/roleditemsmodel.h>
+#include <util/models/itemsmodel.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 
