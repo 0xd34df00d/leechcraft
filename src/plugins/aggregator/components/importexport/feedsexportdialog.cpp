@@ -43,7 +43,7 @@ namespace LC::Aggregator
 				&QPushButton::released,
 				this,
 				&FeedsExportDialog::Browse);
-		Browse ();
+		QTimer::singleShot (0, this, &FeedsExportDialog::Browse);
 
 		connect (Ui_.File_,
 				&QLineEdit::textEdited,
