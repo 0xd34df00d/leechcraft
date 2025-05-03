@@ -82,6 +82,17 @@ namespace LC::Util
 		};
 	}
 
+	template<auto IconField>
+	struct ItemsDecorated : detail::Extension
+	{
+		static QVariant GetDataForRole (detail::Role<Qt::DecorationRole>, const auto& item, int column)
+		{
+			if (column)
+				return {};
+			return item.*IconField;
+		}
+	};
+
 	template<auto CheckField>
 	struct ItemsCheckable : detail::Extension
 	{
@@ -90,8 +101,7 @@ namespace LC::Util
 			return column ? Qt::ItemFlags {} : Qt::ItemIsUserCheckable;
 		}
 
-		template<typename Item>
-		static QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const Item& item, int column)
+		static QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto& item, int column)
 		{
 			static_assert (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, Qt::CheckState>);
 			return column ? QVariant {} : item.*CheckField;
