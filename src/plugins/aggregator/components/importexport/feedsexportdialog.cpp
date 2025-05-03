@@ -11,7 +11,10 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/models/itemsmodel.h>
+#include <util/sll/qtutil.h>
 #include "components/storage/storagebackendmanager.h"
 #include "feed.h"
 
@@ -20,12 +23,17 @@ namespace LC::Aggregator
 	struct FeedsExportDialog::FeedInfo
 	{
 		IDType_t FeedId_;
+		QIcon Icon_;
 		QString Name_;
 		QUrl Url_;
 		Qt::CheckState CheckState_ = Qt::Checked;
 	};
 
-	using FeedsModel_t = Util::ItemsModel<FeedsExportDialog::FeedInfo, Util::ItemsCheckable<&FeedsExportDialog::FeedInfo::CheckState_>>;
+	using FeedsModel_t = Util::ItemsModel<
+			FeedsExportDialog::FeedInfo,
+			Util::ItemsCheckable<&FeedsExportDialog::FeedInfo::CheckState_>,
+			Util::ItemsDecorated<&FeedsExportDialog::FeedInfo::Icon_>
+		>;
 
 	FeedsExportDialog::FeedsExportDialog (QWidget *parent)
 	: QDialog { parent }
@@ -88,12 +96,23 @@ namespace LC::Aggregator
 	void FeedsExportDialog::SetFeeds (const channels_shorts_t& channels)
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		const auto& defaultIcon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("application-rss+xml"_qs);
 
 		QList<FeedInfo> feeds;
 		for (const auto& cs : channels)
 			{
 				const auto& feed = sb->GetFeed (cs.FeedID_);
-				feeds.push_back ({ .FeedId_ = cs.FeedID_, .Name_ = cs.Title_, .Url_ = feed.URL_ });
+
+				QIcon icon = QPixmap::fromImage (cs.Favicon_);
+				if (icon.isNull ())
+					icon = defaultIcon;
+
+				feeds.push_back ({
+						.FeedId_ = cs.FeedID_,
+						.Icon_ = icon,
+						.Name_ = cs.Title_,
+						.Url_ = feed.URL_,
+					});
 			}
 		FeedsModel_->SetItems (std::move (feeds));
 	}
