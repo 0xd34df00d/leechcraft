@@ -34,7 +34,7 @@ namespace LC::Util
 		const QHash<int, QByteArray> Roles_;
 	public:
 		template<typename... Fields>
-		RoledItemsModel (QObject *parent, Fields...) noexcept
+		explicit RoledItemsModel (QObject *parent, Fields...) noexcept
 		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
 		, Fields_ { +[] (const T& t) -> QVariant { return t.*(Fields::Getter); }... }
 		, Roles_ { MakeRoles ({ ToByteArray<Fields::Role> ()... }) }
