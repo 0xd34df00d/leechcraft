@@ -62,4 +62,106 @@ namespace LC::Util
 			return result;
 		}
 	};
+
+	template<auto Getter>
+	struct Field
+	{
+		QString Name_;
+	};
+
+	namespace detail
+	{
+		template<Qt::ItemDataRole Role>
+		using Role = std::integral_constant<Qt::ItemDataRole, Role>;
+
+		struct Extension
+		{
+			static Qt::ItemFlags GetFlags (auto&&...) { return {}; }
+			static void GetDataForRole () {}
+			static bool SetData (auto&&...) { return false; }
+		};
+	}
+
+	template<auto CheckField>
+	struct ItemsCheckable : detail::Extension
+	{
+		static Qt::ItemFlags GetFlags (int column)
+		{
+			return column ? Qt::ItemFlags {} : Qt::ItemIsUserCheckable;
+		}
+
+		template<typename Item>
+		static QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const Item& item, int column)
+		{
+			static_assert (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, Qt::CheckState>);
+			return column ? QVariant {} : item.*CheckField;
+		}
+
+		template<typename Item>
+		static bool SetData (Item& item, int column, const QVariant& value, int role)
+		{
+			if (role != Qt::CheckStateRole || column)
+				return false;
+
+			item.*CheckField = value.value<Qt::CheckState> ();
+			return true;
+		}
+	};
+
+	template<typename T, typename... Extensions>
+	class ItemsModel : public FlatItemsModelTypedBase<T>
+					 , public Extensions...
+	{
+		using FieldGetter_t = QVariant (*) (const T&);
+		const QVector<FieldGetter_t> Fields_;
+	public:
+		template<auto... Getter>
+		explicit ItemsModel (const Field<Getter>&... fields)
+		: FlatItemsModelTypedBase<T> { { fields.Name_... } }
+		, Fields_ { +[] (const T& t) -> QVariant { return t.*Getter; }... }
+		{
+		}
+
+		Qt::ItemFlags flags (const QModelIndex& index) const override
+		{
+			auto flags = FlatItemsModelTypedBase<T>::flags (index);
+			flags |= (Extensions::GetFlags (index.column ()) | ...);
+			return flags;
+		}
+
+		bool setData (const QModelIndex& index, const QVariant& value, int role) override
+		{
+			auto& item = this->Items_ [index.row ()];
+			const auto result = (Extensions::SetData (item, index.column (), value, role) ||...);
+			if (result)
+				emit this->dataChanged (index, index);
+			return result;
+		}
+	protected:
+		QVariant GetData (int row, int column, int role) const override
+		{
+			const auto& item = this->Items_ [row];
+
+			switch (role)
+			{
+			case Qt::DisplayRole:
+				if (const auto getter = Fields_.value (column))
+					return getter (item);
+				return {};
+			case Qt::CheckStateRole:
+				return this->GetDataForRole (detail::Role<Qt::CheckStateRole> {}, item, column);
+			case Qt::DecorationRole:
+				return this->GetDataForRole (detail::Role<Qt::DecorationRole> {}, item, column);
+			default:
+				return {};
+			}
+		}
+
+		using Extensions::GetDataForRole...;
+
+		static QVariant GetDataForRole (auto, const auto&, int)
+		{
+			return {};
+		}
+	};
 }
