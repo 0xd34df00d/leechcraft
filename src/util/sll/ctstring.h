@@ -124,7 +124,8 @@ namespace LC::Util
 	QByteArray ToByteArray ()
 	{
 		constexpr static auto terminated = Str + '\0';
-		return QByteArray { QByteArrayData { nullptr, terminated.Data_, terminated.Size - 1 } };
+		// this const_cast is fine-ish, since Qt is doing the same in QByteArrayLiteral()
+		return QByteArray { QByteArrayData { nullptr, const_cast<char*> (terminated.Data_), terminated.Size - 1 } };
 	}
 
 	template<CtString Str>
@@ -133,8 +134,7 @@ namespace LC::Util
 		if constexpr (std::is_same_v<typename decltype (Str)::Char_t, char16_t>)
 		{
 			constexpr static auto terminated = Str + '\0';
-			// this const_cast is fine-ish, since Qt is doing the same in
-			// QtPrivate::qMakeStringPrivate()
+			// this const_cast is fine-ish, since Qt is doing the same in QtPrivate::qMakeStringPrivate()
 			return QString { QStringPrivate { nullptr, const_cast<char16_t*> (terminated.Data_), terminated.Size - 1 } };
 		}
 		else
