@@ -11,9 +11,7 @@
 #include <QString>
 #include <QStringList>
 
-namespace LC
-{
-namespace Aggregator
+namespace LC::Aggregator
 {
 	struct OPMLItem
 	{
@@ -27,5 +25,4 @@ namespace Aggregator
 		int MaxArticleNumber_;
 		bool CustomFetchInterval_;
 	};
-}
 }

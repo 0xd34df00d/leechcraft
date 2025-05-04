@@ -12,7 +12,7 @@
 #include <QHash>
 #include <QString>
 #include <util/sll/eitherfwd.h>
-#include "opmlitem.h"
+#include "types.h"
 
 namespace LC::Aggregator
 {
