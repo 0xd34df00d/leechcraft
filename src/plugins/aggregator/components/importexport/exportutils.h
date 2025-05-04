@@ -8,6 +8,7 @@
 
 #pragma once
 
+class QAbstractItemModel;
 class QWidget;
 
 namespace LC::Aggregator
@@ -19,5 +20,5 @@ namespace LC::Aggregator::ExportUtils
 {
 	void RunExportItems (ChannelsModel&, QWidget* = nullptr);
 
-	void RunExportChannels (QWidget* = nullptr);
+	void RunExportChannels (QAbstractItemModel&, QWidget* = nullptr);
 }

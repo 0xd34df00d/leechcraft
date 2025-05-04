@@ -16,6 +16,7 @@
 #include <util/sll/qtutil.h>
 #include "components/importexport/exportutils.h"
 #include "components/importexport/opmladder.h"
+#include "components/models/channelsmodel.h"
 #include "addfeeddialog.h"
 #include "dbupdatethread.h"
 #include "dbutils.h"
@@ -116,7 +117,7 @@ namespace LC::Aggregator
 				});
 		ToolsMenu_.addSection (tr ("Import/export"));
 		makeAction (ImportOPML, [&um] { Opml::HandleOpmlFile ({}, um); });
-		makeAction (ExportChannels, [] { ExportUtils::RunExportChannels (); });
+		makeAction (ExportChannels, [&cm = deps.ChannelsModel_] { ExportUtils::RunExportChannels (cm); });
 		makeAction (ExportItems, [&cm = deps.ChannelsModel_] { ExportUtils::RunExportItems (cm); });
 
 		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);

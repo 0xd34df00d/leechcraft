@@ -9,13 +9,13 @@
 #pragma once
 
 #include <QSet>
-#include "channel.h"
+#include "common.h"
 #include "ui_feedsexportdialog.h"
 
 namespace LC::Util
 {
 	template<typename T>
-	class FlatItemsModelTypedBase;
+	class CheckableProxyModel;
 }
 
 namespace LC::Aggregator
@@ -25,12 +25,9 @@ namespace LC::Aggregator
 		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::FeedsExportDialog)
 
 		Ui::FeedsExportDialog Ui_;
+		std::unique_ptr<Util::CheckableProxyModel<IDType_t>> ChannelsModel_;
 	public:
-		struct FeedInfo;
-	private:
-		std::unique_ptr<Util::FlatItemsModelTypedBase<FeedInfo>> FeedsModel_;
-	public:
-		explicit FeedsExportDialog (QWidget* = nullptr);
+		explicit FeedsExportDialog (QAbstractItemModel&, QWidget* = nullptr);
 		~FeedsExportDialog () override;
 
 		QString GetDestination () const;
@@ -38,8 +35,6 @@ namespace LC::Aggregator
 		QString GetOwner () const;
 		QString GetOwnerEmail () const;
 		QSet<IDType_t> GetSelectedFeeds () const;
-
-		void SetFeeds (const channels_shorts_t&);
 	private:
 		void Browse ();
 	};

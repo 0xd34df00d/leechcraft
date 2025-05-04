@@ -39,17 +39,15 @@ namespace LC::Aggregator::ExportUtils
 		}
 	}
 
-	void RunExportChannels (QWidget *parent)
+	void RunExportChannels (QAbstractItemModel& channelsModel, QWidget *parent)
 	{
 		const auto& allChannels = GetAllChannels ();
-		FeedsExportDialog exportDialog { parent };
-		exportDialog.SetFeeds (allChannels);
+		FeedsExportDialog exportDialog { channelsModel, parent };
 		if (exportDialog.exec () == QDialog::Rejected)
 			return;
 
-		auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());
-
-		auto data = OPML::Write (channels,
+		const auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());
+		const auto data = OPML::Write (channels,
 				exportDialog.GetTitle (), exportDialog.GetOwner (), exportDialog.GetOwnerEmail ());
 
 		QFile f { exportDialog.GetDestination () };

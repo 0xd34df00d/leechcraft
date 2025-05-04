@@ -11,43 +11,20 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/iiconthememanager.h>
-#include <util/models/itemsmodel.h>
-#include <util/sll/qtutil.h>
-#include "components/storage/storagebackendmanager.h"
+#include <util/models/checkableproxymodel.h>
 #include "feed.h"
 
 namespace LC::Aggregator
 {
-	struct FeedsExportDialog::FeedInfo
-	{
-		IDType_t FeedId_;
-
-		QIcon Icon_;
-
-		QString Name_;
-		QUrl Url_;
-
-		Qt::CheckState CheckState_ = Qt::Checked;
-	};
-
-	using FeedsModel_t = Util::ItemsModel<
-			FeedsExportDialog::FeedInfo,
-			Util::ItemsCheckable<&FeedsExportDialog::FeedInfo::CheckState_>,
-			Util::ItemsDecorated<&FeedsExportDialog::FeedInfo::Icon_>
-		>;
-
-	FeedsExportDialog::FeedsExportDialog (QWidget *parent)
+	FeedsExportDialog::FeedsExportDialog (QAbstractItemModel& model, QWidget *parent)
 	: QDialog { parent }
-	, FeedsModel_ { std::make_unique<FeedsModel_t> (
-			Util::Field<&FeedInfo::Name_> { tr ("Name") },
-			Util::Field<&FeedInfo::Url_> { tr ("URL") }
-		)
-	}
+	, ChannelsModel_ { std::make_unique<Util::CheckableProxyModel<IDType_t>> (ChannelID) }
 	{
+		ChannelsModel_->setSourceModel (&model);
+
 		Ui_.setupUi (this);
-		Ui_.Channels_->setModel (FeedsModel_.get ());
+		Ui_.Channels_->setModel (ChannelsModel_.get ());
+		Ui_.Channels_->header ()->resizeSections (QHeaderView::ResizeToContents);
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (false);
 
 		connect (Ui_.Browse_,
@@ -89,38 +66,7 @@ namespace LC::Aggregator
 
 	QSet<IDType_t> FeedsExportDialog::GetSelectedFeeds () const
 	{
-		QSet<IDType_t> result;
-		for (const auto& item : FeedsModel_->GetItems ())
-			if (item.CheckState_ == Qt::Checked)
-				result << item.FeedId_;
-		return result;
-	}
-
-	void FeedsExportDialog::SetFeeds (const channels_shorts_t& channels)
-	{
-		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		const auto& defaultIcon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("application-rss+xml"_qs);
-
-		QList<FeedInfo> feeds;
-		for (const auto& cs : channels)
-			{
-				const auto& feed = sb->GetFeed (cs.FeedID_);
-
-				QIcon icon = QPixmap::fromImage (cs.Favicon_);
-				if (icon.isNull ())
-					icon = defaultIcon;
-
-				feeds.push_back ({
-						.FeedId_ = cs.FeedID_,
-						.Icon_ = icon,
-						.Name_ = cs.Title_,
-						.Url_ = feed.URL_,
-					});
-			}
-		FeedsModel_->SetItems (std::move (feeds));
-
-		for (int i = 0, size = FeedsModel_->columnCount (); i < size; ++i)
-			Ui_.Channels_->resizeColumnToContents (i);
+		return ChannelsModel_->GetChecked ();
 	}
 
 	void FeedsExportDialog::Browse ()
