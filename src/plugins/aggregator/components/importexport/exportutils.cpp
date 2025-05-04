@@ -16,7 +16,7 @@
 #include "dbutils.h"
 #include "feedsexportdialog.h"
 #include "itemsexportdialog.h"
-#include "opmlwriter.h"
+#include "writeopml.h"
 
 namespace LC::Aggregator::ExportUtils
 {

@@ -17,7 +17,7 @@ LC_DEFINE_PLUGIN (
 		components/importexport/itemsexportdialog.cpp
 		components/importexport/opmladder.cpp
 		components/importexport/opmlparser.cpp
-		components/importexport/opmlwriter.cpp
+		components/importexport/writeopml.cpp
 		components/itemrender/item.cpp
 		components/itemrender/mrss.cpp
 		components/itemrender/utils.cpp
