@@ -17,7 +17,7 @@ namespace LC::Aggregator
 
 namespace LC::Aggregator::ExportUtils
 {
-	void RunExportFB2 (ChannelsModel&, QWidget* = nullptr);
+	void RunExportItems (ChannelsModel&, QWidget* = nullptr);
 
-	void RunExportOPML (QWidget* = nullptr);
+	void RunExportChannels (QWidget* = nullptr);
 }

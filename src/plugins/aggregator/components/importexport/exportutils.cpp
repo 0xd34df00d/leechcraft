@@ -20,7 +20,7 @@
 
 namespace LC::Aggregator::ExportUtils
 {
-	void RunExportFB2 (ChannelsModel& channelsModel, QWidget *parent)
+	void RunExportItems (ChannelsModel& channelsModel, QWidget *parent)
 	{
 		// TODO the dialog shouldn't depend on the exact ChannelsModel
 		const auto dialog = new ItemsExportDialog (channelsModel, parent);
@@ -39,7 +39,7 @@ namespace LC::Aggregator::ExportUtils
 		}
 	}
 
-	void RunExportOPML (QWidget *parent)
+	void RunExportChannels (QWidget *parent)
 	{
 		const auto& allChannels = GetAllChannels ();
 		FeedsExportDialog exportDialog { parent };

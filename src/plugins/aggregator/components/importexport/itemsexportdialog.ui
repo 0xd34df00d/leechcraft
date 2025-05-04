@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Export to FB2</string>
+   <string>Export items</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

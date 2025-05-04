@@ -30,8 +30,8 @@ namespace LC::Aggregator
 		UpdateFeeds,
 		MarkAllChannelsRead,
 		ImportOPML,
-		ExportOPML,
-		ExportFB2
+		ExportChannels,
+		ExportItems
 	);
 
 	namespace
@@ -54,10 +54,10 @@ namespace LC::Aggregator
 				return MakeInfo (AppWideActions::tr ("Mark all channels as read"), "mail-mark-read");
 			case ImportOPML:
 				return MakeInfo (AppWideActions::tr ("Import from OPML..."), "document-import");
-			case ExportOPML:
-				return MakeInfo (AppWideActions::tr ("Export to OPML..."), "document-export");
-			case ExportFB2:
-				return MakeInfo (AppWideActions::tr ("Export to FB2..."), "application-xml");
+			case ExportChannels:
+				return MakeInfo (AppWideActions::tr ("Export channels to OPML..."), "document-export");
+			case ExportItems:
+				return MakeInfo (AppWideActions::tr ("Export items..."), "application-xml");
 			}
 
 			qWarning () << "unknown action" << static_cast<int> (action);
@@ -116,8 +116,8 @@ namespace LC::Aggregator
 				});
 		ToolsMenu_.addSection (tr ("Import/export"));
 		makeAction (ImportOPML, [&um] { Opml::HandleOpmlFile ({}, um); });
-		makeAction (ExportOPML, [] { ExportUtils::RunExportOPML (); });
-		makeAction (ExportFB2, [&cm = deps.ChannelsModel_] { ExportUtils::RunExportFB2 (cm); });
+		makeAction (ExportChannels, [] { ExportUtils::RunExportChannels (); });
+		makeAction (ExportItems, [&cm = deps.ChannelsModel_] { ExportUtils::RunExportItems (cm); });
 
 		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);
 	}
