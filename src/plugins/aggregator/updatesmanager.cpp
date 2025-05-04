@@ -164,8 +164,8 @@ namespace LC::Aggregator
 	namespace
 	{
 		Util::ContextTask<Util::Either<QString, channels_container_t>> FetchChannels (IDType_t feedId,
-				const QString& urlStr,
-				auto&& errorHandler)
+				QString urlStr,
+				auto errorHandler)
 		{
 			const auto& filename = Util::GetTemporaryName ();
 			const auto& e = Util::MakeEntity (QUrl { urlStr }, filename,
