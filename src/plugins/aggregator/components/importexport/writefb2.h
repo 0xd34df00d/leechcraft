@@ -8,33 +8,11 @@
 
 #pragma once
 
-#include <QString>
-#include <QStringList>
+#include "channel.h"
+#include "item.h"
+#include "types.h"
 
 namespace LC::Aggregator
 {
-	struct OPMLItem
-	{
-		QString URL_;
-		QString HTMLUrl_;
-		QString Title_;
-		QString Description_;
-		QStringList Categories_;
-		int MaxArticleAge_;
-		int FetchInterval_;
-		int MaxArticleNumber_;
-		bool CustomFetchInterval_;
-	};
-
-	struct ExportFileError
-	{
-		QString Error_;
-	};
-
-	struct ExportConfig
-	{
-		QString Title_;
-		QString OwnerName_;
-		QString OwnerEmail_;
-	};
+	void WriteFB2 (const ExportConfig& config, const QMap<ChannelShort, QList<Item>>& channels, QIODevice& output);
 }

@@ -10,17 +10,16 @@
 
 #include "ui_itemsexportdialog.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class CategorySelector;
-};
+}
 
-namespace Aggregator
+namespace LC::Aggregator
 {
 	class ChannelsModel;
-	struct WriteInfo;
+	struct ExportConfig;
+	struct PdfConfig;
 
 	class ItemsExportDialog : public QDialog
 	{
@@ -36,8 +35,7 @@ namespace Aggregator
 	public:
 		ItemsExportDialog (ChannelsModel&, QWidget* = nullptr);
 	private:
-		void WriteFB2 (const WriteInfo&);
-		void WritePDF (const WriteInfo&);
+		PdfConfig GetPdfConfig (const ExportConfig&) const;
 	private slots:
 		void on_Browse__released ();
 		void on_File__textChanged (const QString&);
@@ -45,5 +43,4 @@ namespace Aggregator
 		void handleChannelsSelectionChanged ();
 		void handleAccepted ();
 	};
-}
 }

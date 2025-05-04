@@ -8,33 +8,25 @@
 
 #pragma once
 
-#include <QString>
-#include <QStringList>
+#include <QFont>
+#include <QPageSize>
+#include "channel.h"
+#include "item.h"
+#include "types.h"
 
 namespace LC::Aggregator
 {
-	struct OPMLItem
+	struct PdfConfig
 	{
-		QString URL_;
-		QString HTMLUrl_;
-		QString Title_;
-		QString Description_;
-		QStringList Categories_;
-		int MaxArticleAge_;
-		int FetchInterval_;
-		int MaxArticleNumber_;
-		bool CustomFetchInterval_;
+		ExportConfig CommonExport_;
+
+		QFont Font_;
+		int FontSize_;
+		QMargins Margins_;
+		QPageSize PageSize_;
+
+		QString Filename_;
 	};
 
-	struct ExportFileError
-	{
-		QString Error_;
-	};
-
-	struct ExportConfig
-	{
-		QString Title_;
-		QString OwnerName_;
-		QString OwnerEmail_;
-	};
+	void WritePDF (const PdfConfig& config, const QMap<ChannelShort, QList<Item>>& channels);
 }
