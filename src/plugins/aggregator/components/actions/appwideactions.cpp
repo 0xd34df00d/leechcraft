@@ -56,7 +56,7 @@ namespace LC::Aggregator
 			case ExportChannels:
 				return MakeInfo (AppWideActions::tr ("Export channels to OPML..."), "document-export");
 			case ExportItems:
-				return MakeInfo (AppWideActions::tr ("Export items..."), "application-xml");
+				return MakeInfo (AppWideActions::tr ("Export items..."), "document-export-table");
 			}
 
 			qWarning () << "unknown action" << static_cast<int> (action);
