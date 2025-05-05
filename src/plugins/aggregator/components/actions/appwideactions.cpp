@@ -8,8 +8,6 @@
 
 #include "appwideactions.h"
 #include <QAction>
-#include <QMessageBox>
-#include <QPushButton>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/iactionsexporter.h>
 #include <util/shortcuts/shortcutmanager.h>
