@@ -84,5 +84,38 @@ namespace LC::Util
 
 			return result;
 		}
+
+		void CheckAll ()
+		{
+			const auto unchecked = std::exchange (Unchecked_, {});
+
+			const auto rc = sourceModel ()->rowCount ();
+			for (int i = 0; i < rc; ++i)
+			{
+				const auto srcIndex = sourceModel ()->index (i, 0);
+				const auto rowId = srcIndex.data (IdRole_).template value<IdType> ();
+				if (unchecked.contains (rowId))
+				{
+					const auto& index = mapFromSource (srcIndex);
+					emit dataChanged (index, index, { Qt::CheckStateRole });
+				}
+			}
+		}
+
+		void CheckNone ()
+		{
+			const auto rc = sourceModel ()->rowCount ();
+			for (int i = 0; i < rc; ++i)
+			{
+				const auto srcIndex = sourceModel ()->index (i, 0);
+				const auto rowId = srcIndex.data (IdRole_).template value<IdType> ();
+				if (!Unchecked_.contains (rowId))
+				{
+					const auto& index = mapFromSource (srcIndex);
+					Unchecked_ << rowId;
+					emit dataChanged (index, index, { Qt::CheckStateRole });
+				}
+			}
+		}
 	};
 }
