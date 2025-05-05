@@ -40,6 +40,15 @@ namespace LC::Aggregator
 				{
 					Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (!text.isEmpty ());
 				});
+
+		connect (Ui_.SelectAll_,
+				&QPushButton::released,
+				ChannelsModel_.get (),
+				&Util::CheckableProxyModel<IDType_t>::CheckAll);
+		connect (Ui_.SelectNone_,
+				&QPushButton::released,
+				ChannelsModel_.get (),
+				&Util::CheckableProxyModel<IDType_t>::CheckNone);
 	}
 
 	FeedsExportDialog::~FeedsExportDialog () = default;
