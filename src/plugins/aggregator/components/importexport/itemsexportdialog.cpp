@@ -44,17 +44,6 @@ namespace Aggregator
 				this,
 				&ItemsExportDialog::handleChannelsSelectionChanged);
 
-		for (int i = 0; i < Ui_.FB2Genres_->topLevelItemCount (); ++i)
-		{
-			QTreeWidgetItem *item = Ui_.FB2Genres_->topLevelItem (i);
-			for (int j = 0; j < item->childCount (); ++j)
-			{
-				QTreeWidgetItem *subItem = item->child (j);
-				if (subItem->checkState (0) == Qt::Unchecked)
-					subItem->setCheckState (0, Qt::Unchecked);
-			}
-		}
-
 		connect (this,
 				&ItemsExportDialog::accepted,
 				this,
