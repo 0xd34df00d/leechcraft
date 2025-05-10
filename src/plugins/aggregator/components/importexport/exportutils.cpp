@@ -50,8 +50,8 @@ namespace LC::Aggregator::ExportUtils
 		const auto data = OPML::Write (channels,
 				exportDialog.GetTitle (), exportDialog.GetOwner (), exportDialog.GetOwnerEmail ());
 
-		QFile f { exportDialog.GetDestination () };
-		if (!f.open (QIODevice::WriteOnly))
+		QFile file { exportDialog.GetDestination () };
+		if (!file.open (QIODevice::WriteOnly))
 		{
 			QMessageBox::critical (parent,
 					MessageBoxTitle,
@@ -59,6 +59,6 @@ namespace LC::Aggregator::ExportUtils
 							.arg (file.fileName (), file.errorString ()));
 			return;
 		}
-		f.write (data);
+		file.write (data);
 	}
 }
