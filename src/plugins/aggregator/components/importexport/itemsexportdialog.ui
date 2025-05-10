@@ -29,7 +29,7 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Name:</string>
+            <string>Title:</string>
            </property>
           </widget>
          </item>
@@ -37,6 +37,9 @@
           <widget class="QLineEdit" name="Name_">
            <property name="text">
             <string>Exported Feeds</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -85,6 +88,9 @@
           <widget class="QPushButton" name="Browse_">
            <property name="text">
             <string>Browse...</string>
+           </property>
+           <property name="icon">
+            <iconset theme="folder"/>
            </property>
           </widget>
          </item>
