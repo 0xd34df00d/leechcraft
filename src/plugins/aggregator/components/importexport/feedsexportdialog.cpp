@@ -31,8 +31,7 @@ namespace LC::Aggregator
 				&QPushButton::released,
 				this,
 				&FeedsExportDialog::Browse);
-		QTimer::singleShot (0,
-				this,
+		QTimer::singleShot (0, this,
 				[this]
 				{
 					if (!Browse ())

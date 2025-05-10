@@ -117,7 +117,7 @@
        <item>
         <widget class="QPushButton" name="SelectNone_">
          <property name="text">
-          <string>Deselect all</string>
+          <string>Select none</string>
          </property>
          <property name="icon">
           <iconset theme="edit-select-none"/>
