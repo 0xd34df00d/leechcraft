@@ -55,8 +55,8 @@ namespace LC::Aggregator::ExportUtils
 		{
 			QMessageBox::critical (parent,
 					MessageBoxTitle,
-					QObject::tr ("OPML export error: could not open file %1 for write.")
-							.arg (f.fileName ()));
+					QObject::tr ("Cannot open %1 for writing: %2.")
+							.arg (file.fileName (), file.errorString ()));
 			return;
 		}
 		f.write (data);
