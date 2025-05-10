@@ -31,7 +31,13 @@ namespace LC::Aggregator
 				&QPushButton::released,
 				this,
 				&FeedsExportDialog::Browse);
-		QTimer::singleShot (0, this, &FeedsExportDialog::Browse);
+		QTimer::singleShot (0,
+				this,
+				[this]
+				{
+					if (!Browse ())
+						reject ();
+				});
 
 		connect (Ui_.File_,
 				&QLineEdit::textEdited,
@@ -78,10 +84,9 @@ namespace LC::Aggregator
 		return ChannelsModel_->GetChecked ();
 	}
 
-	void FeedsExportDialog::Browse ()
+	bool FeedsExportDialog::Browse ()
 	{
-		const auto firstPathChoice = Ui_.File_->text ().isEmpty ();
-		auto startingPath = firstPathChoice ? QString {} : QFileInfo { Ui_.File_->text () }.path ();
+		auto startingPath = QFileInfo { Ui_.File_->text () }.path ();
 		if (startingPath.isEmpty ())
 			startingPath = QDir::homePath () + "/feeds.opml";
 
@@ -90,15 +95,11 @@ namespace LC::Aggregator
 				startingPath,
 				tr ("OPML files (*.opml);;"
 					"All files (*.*)"));
-		if (filename.isEmpty () && firstPathChoice)
-		{
-			QTimer::singleShot (0,
-					this,
-					&QDialog::reject);
-			return;
-		}
+		if (filename.isEmpty ())
+			return false;
 
 		Ui_.File_->setText (filename);
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (true);
+		return true;
 	}
 }

@@ -36,6 +36,6 @@ namespace LC::Aggregator
 		QString GetOwnerEmail () const;
 		QSet<IDType_t> GetSelectedFeeds () const;
 	private:
-		void Browse ();
+		bool Browse ();
 	};
 }
