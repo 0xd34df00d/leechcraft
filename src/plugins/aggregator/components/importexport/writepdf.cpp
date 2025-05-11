@@ -89,7 +89,7 @@ namespace LC::Aggregator
 		titleFmt.setFontWeight (QFont::Bold);
 		titleFmt.setFontPointSize (config.FontSize_ * 1.5);
 		cursor.setCharFormat (titleFmt);
-		cursor.insertText (config.CommonExport_.Title_);
+		cursor.insertText (config.Title_);
 
 		cursor.setPosition (topFrame->lastPosition ());
 

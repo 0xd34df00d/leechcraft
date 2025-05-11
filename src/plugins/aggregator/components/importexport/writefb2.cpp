@@ -174,7 +174,7 @@ namespace LC::Aggregator
 		}
 	}
 
-	void WriteFB2 (const ExportConfig& config, const QMap<ChannelShort, QList<Item>>& channels, QIODevice& output)
+	void WriteFB2 (const Fb2Config& config, const QMap<ChannelShort, QList<Item>>& channels, QIODevice& output)
 	{
 		auto authors = std::ranges::subrange (channels.keyBegin (), channels.keyEnd ())
 				| std::views::transform (&ChannelShort::Author_)

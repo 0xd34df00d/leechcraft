@@ -14,5 +14,5 @@
 
 namespace LC::Aggregator
 {
-	void WriteFB2 (const ExportConfig& config, const QMap<ChannelShort, QList<Item>>& channels, QIODevice& output);
+	void WriteFB2 (const Fb2Config& config, const QMap<ChannelShort, QList<Item>>& channels, QIODevice& output);
 }

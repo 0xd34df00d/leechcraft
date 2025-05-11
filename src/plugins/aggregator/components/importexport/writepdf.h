@@ -8,25 +8,11 @@
 
 #pragma once
 
-#include <QFont>
-#include <QPageSize>
 #include "channel.h"
 #include "item.h"
 #include "types.h"
 
 namespace LC::Aggregator
 {
-	struct PdfConfig
-	{
-		ExportConfig CommonExport_;
-
-		QFont Font_;
-		int FontSize_;
-		QMargins Margins_;
-		QPageSize PageSize_;
-
-		QString Filename_;
-	};
-
 	void WritePDF (const PdfConfig& config, const QMap<ChannelShort, QList<Item>>& channels);
 }

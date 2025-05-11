@@ -9,38 +9,49 @@
 #pragma once
 
 #include "ui_itemsexportdialog.h"
+#include "common.h"
 
 namespace LC::Util
 {
-	class CategorySelector;
+	template<typename T>
+	class CheckableProxyModel;
 }
 
 namespace LC::Aggregator
 {
 	class ChannelsModel;
-	struct ExportConfig;
-	struct PdfConfig;
+	struct ItemsExportFormat;
 
 	class ItemsExportDialog : public QDialog
 	{
 		Q_OBJECT
 
-		ChannelsModel& ChannelsModel_;
-
 		Ui::ItemsExportDialog Ui_;
-		Util::CategorySelector *Selector_;
+
+		std::unique_ptr<Util::CheckableProxyModel<IDType_t>> ChannelsModel_;
+
 		QStringList CurrentCategories_;
 
-		bool HasBeenTextModified_ = false;
+		bool TitleBeenModified_ = false;
 	public:
-		ItemsExportDialog (ChannelsModel&, QWidget* = nullptr);
+		explicit ItemsExportDialog (ChannelsModel&, QWidget* = nullptr);
+		~ItemsExportDialog () override;
+
+		QString GetFilename () const;
+		ItemsExportFormat GetFormat () const;
+
+		struct ItemsExportInfo
+		{
+			QSet<IDType_t> Channels_;
+			QStringList Categories_;
+			bool UnreadOnly_ = false;
+		};
+
+		ItemsExportInfo GetItemsExportInfo () const;
 	private:
-		PdfConfig GetPdfConfig (const ExportConfig&) const;
+		bool Browse ();
+		void CheckDialogAcceptable ();
 	private slots:
-		void on_Browse__released ();
-		void on_File__textChanged (const QString&);
-		void on_Name__textEdited ();
 		void handleChannelsSelectionChanged ();
-		void handleAccepted ();
 	};
 }

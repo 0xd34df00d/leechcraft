@@ -8,8 +8,12 @@
 
 #pragma once
 
+#include <variant>
+#include <QFont>
+#include <QMargins>
 #include <QString>
 #include <QStringList>
+#include <QPageSize>
 
 namespace LC::Aggregator
 {
@@ -36,5 +40,27 @@ namespace LC::Aggregator
 		QString Title_;
 		QString OwnerName_;
 		QString OwnerEmail_;
+	};
+
+	struct Fb2Config
+	{
+		QString Title_;
+	};
+
+	struct PdfConfig
+	{
+		QString Title_;
+
+		QFont Font_;
+		int FontSize_;
+		QMargins Margins_;
+		QPageSize PageSize_;
+
+		QString Filename_;
+	};
+
+	struct ItemsExportFormat : std::variant<Fb2Config, PdfConfig>
+	{
+		using variant::variant;
 	};
 }
