@@ -128,7 +128,7 @@ namespace LC::Aggregator
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Select save file"),
 				QDir::homePath () + "/export.fb2",
-				tr ("fb2 files (*.fb2);;PDF files (*.pdf);;All files (*.*)"));
+				tr ("fb2 files (*.fb2);;PDF files (*.pdf)"));
 		if (filename.isEmpty ())
 			return false;
 
