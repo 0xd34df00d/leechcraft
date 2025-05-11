@@ -32,8 +32,8 @@ namespace LC::Aggregator::ExportUtils
 	{
 		auto FilterChannels (channels_shorts_t channels, const QSet<IDType_t>& selected)
 		{
-			const auto removedPos = std::remove_if (channels.begin (), channels.end (),
-					[&selected] (const ChannelShort& ch) { return !selected.contains (ch.ChannelID_); });
+			const auto removedPos = std::ranges::remove_if (channels,
+					[&selected] (const ChannelShort& ch) { return !selected.contains (ch.ChannelID_); }).begin();
 			channels.erase (removedPos, channels.end ());
 			return channels;
 		}
