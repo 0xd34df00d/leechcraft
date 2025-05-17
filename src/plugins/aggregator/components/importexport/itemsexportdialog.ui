@@ -61,10 +61,16 @@
               <property name="text">
                <string notr="true">fb2</string>
               </property>
+              <property name="icon">
+               <iconset theme="application-x-zip-compressed-fb2"/>
+              </property>
              </item>
              <item>
               <property name="text">
                <string notr="true">pdf</string>
+              </property>
+              <property name="icon">
+               <iconset theme="application-pdf"/>
               </property>
              </item>
             </widget>
