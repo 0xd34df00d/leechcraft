@@ -14,10 +14,7 @@ class QWidget;
 namespace LC::Aggregator
 {
 	class ChannelsModel;
-}
 
-namespace LC::Aggregator::ExportUtils
-{
 	void RunExportItems (ChannelsModel&, QWidget* = nullptr);
 
 	void RunExportChannels (QAbstractItemModel&, QWidget* = nullptr);

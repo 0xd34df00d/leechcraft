@@ -25,7 +25,7 @@
 #include "writeopml.h"
 #include "writepdf.h"
 
-namespace LC::Aggregator::ExportUtils
+namespace LC::Aggregator
 {
 	namespace
 	{

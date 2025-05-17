@@ -115,8 +115,8 @@ namespace LC::Aggregator
 				});
 		ToolsMenu_.addSection (tr ("Import/export"));
 		makeAction (ImportOPML, [&um] { Opml::HandleOpmlFile ({}, um); });
-		makeAction (ExportChannels, [&cm = deps.ChannelsModel_] { ExportUtils::RunExportChannels (cm); });
-		makeAction (ExportItems, [&cm = deps.ChannelsModel_] { ExportUtils::RunExportItems (cm); });
+		makeAction (ExportChannels, [&cm = deps.ChannelsModel_] { RunExportChannels (cm); });
+		makeAction (ExportItems, [&cm = deps.ChannelsModel_] { RunExportItems (cm); });
 
 		GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (AllActions_);
 	}
