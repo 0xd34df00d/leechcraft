@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/gui/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/either.h>
 #include "../../common.h"
@@ -99,9 +100,7 @@ namespace LC::Aggregator
 		const auto& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select OPML file"),
 				startingPath,
-				tr ("OPML files (*.opml);;"
-					"XML files (*.xml);;"
-					"All files (*.*)"));
+				Util::MakeFileDialogFilter ({ { tr ("OPML files"), "opml"_ql }, { tr ("All files"), "*"_ql } }));
 		if (filename.isEmpty ())
 			return;
 

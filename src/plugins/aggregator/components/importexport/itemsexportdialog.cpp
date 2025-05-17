@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <interfaces/core/ientitymanager.h>
+#include <util/gui/util.h>
 #include <util/models/checkableproxymodel.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
@@ -128,7 +129,7 @@ namespace LC::Aggregator
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Select save file"),
 				QDir::homePath () + "/export.fb2",
-				tr ("fb2 files (*.fb2);;PDF files (*.pdf)"));
+				Util::MakeFileDialogFilter ({ { tr ("fb2 files"), "fb2"_ql }, { tr ("PDF files"), "pdf"_ql } }));
 		if (filename.isEmpty ())
 			return false;
 

@@ -11,7 +11,9 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
+#include <util/gui/util.h>
 #include <util/models/checkableproxymodel.h>
+#include <util/sll/qtutil.h>
 #include "feed.h"
 
 namespace LC::Aggregator
@@ -110,8 +112,7 @@ namespace LC::Aggregator
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Export as"),
 				startingPath,
-				tr ("OPML files (*.opml);;"
-					"All files (*.*)"));
+				Util::MakeFileDialogFilter ({ { tr ("OPML files"), "opml"_ql }, { tr ("All files"), "*"_ql } }));
 		if (filename.isEmpty ())
 			return false;
 
