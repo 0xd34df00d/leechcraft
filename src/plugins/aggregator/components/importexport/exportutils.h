@@ -8,7 +8,11 @@
 
 #pragma once
 
+#include <QString>
+
 class QAbstractItemModel;
+class QDialog;
+class QLineEdit;
 class QWidget;
 
 namespace LC::Aggregator
@@ -16,6 +20,15 @@ namespace LC::Aggregator
 	class ChannelsModel;
 
 	void RunExportItems (ChannelsModel&, QWidget* = nullptr);
-
 	void RunExportChannels (QAbstractItemModel&, QWidget* = nullptr);
+
+	struct LastPathParams
+	{
+		QLineEdit& Edit_;
+		const char *SettingName_;
+		QString DefaultPath_;
+		QDialog& Parent_;
+	};
+
+	void ManageLastPath (const LastPathParams& params);
 }

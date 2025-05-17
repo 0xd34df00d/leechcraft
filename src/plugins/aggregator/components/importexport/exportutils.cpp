@@ -24,6 +24,7 @@
 #include "writefb2.h"
 #include "writeopml.h"
 #include "writepdf.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC::Aggregator
 {
@@ -125,5 +126,16 @@ namespace LC::Aggregator
 			return;
 		}
 		file.write (data);
+	}
+
+	void ManageLastPath (const LastPathParams& params)
+	{
+		auto& edit = params.Edit_;
+		auto name = params.SettingName_;
+		edit.setText (XmlSettingsManager::Instance ().Property (name, params.DefaultPath_).toString ());
+
+		QObject::connect (&params.Parent_,
+				&QDialog::accepted,
+				[name, &edit] { XmlSettingsManager::Instance ().setProperty (name, edit.text ()); });
 	}
 }
