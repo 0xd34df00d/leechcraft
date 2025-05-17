@@ -14,7 +14,7 @@ namespace LC::Util
 {
 	struct UiInit
 	{
-		explicit UiInit (auto&& ui, QWidget& parent)
+		explicit UiInit (auto&& ui, auto& parent)
 		{
 			ui.setupUi (&parent);
 		}
