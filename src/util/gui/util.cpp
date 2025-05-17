@@ -15,6 +15,8 @@
 #include <QPainter>
 #include <QStyleOptionViewItem>
 #include <QtDebug>
+#include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "geometry.h"
 
 namespace LC::Util
@@ -153,5 +155,24 @@ namespace LC::Util
 
 		constexpr auto pxSize = 256;
 		return QIcon { icon.pixmap (pxSize, pxSize) };
+	}
+
+	namespace
+	{
+		QString MakeFileDialogFilterImpl (auto&& entries)
+		{
+			const auto toString = [] (const auto& e) { return e.Description_ + " (*." + e.Extension_ + ")"; };
+			return MapAs<QList> (entries, toString).join (";;"_ql);
+		}
+	}
+
+	QString MakeFileDialogFilter (std::initializer_list<FileDialogFilterEntry> entries)
+	{
+		return MakeFileDialogFilterImpl (entries);
+	}
+
+	QString MakeFileDialogFilter (const QList<FileDialogFilterEntry>& entries)
+	{
+		return MakeFileDialogFilterImpl (entries);
 	}
 }

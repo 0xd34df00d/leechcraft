@@ -103,6 +103,16 @@ namespace LC::Util
 
 	UTIL_GUI_API QIcon FixupTrayIcon (const QIcon& icon);
 
+	struct FileDialogFilterEntry
+	{
+		QString Description_;
+		QLatin1String Extension_;
+	};
+
+	UTIL_GUI_API QString MakeFileDialogFilter (std::initializer_list<FileDialogFilterEntry> entries);
+
+	UTIL_GUI_API QString MakeFileDialogFilter (const QList<FileDialogFilterEntry>& entries);
+
 	template<typename T>
 	void Save2MimeData (QMimeData *mimeData, const QString& name, const T& t)
 	{
