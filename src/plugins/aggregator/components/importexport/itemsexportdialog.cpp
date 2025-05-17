@@ -19,6 +19,7 @@
 #include <util/xpc/util.h>
 #include "components/models/channelsmodel.h"
 #include "components/storage/storagebackendmanager.h"
+#include "exportutils.h"
 #include "writefb2.h"
 #include "writepdf.h"
 #include "itemutils.h"
@@ -32,6 +33,7 @@ namespace LC::Aggregator
 		ChannelsModel_->setSourceModel (&model);
 
 		Ui_.setupUi (this);
+		ManageLastPath ({ *Ui_.File_, "ItemsExportLastPath", QDir::homePath () + "/export.fb2", *this });
 		Ui_.CategoriesSelector_->setMinimumHeight (0);
 		Ui_.CategoriesSelector_->setWindowFlags (Qt::Widget);
 
@@ -128,7 +130,7 @@ namespace LC::Aggregator
 	{
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Select save file"),
-				QDir::homePath () + "/export.fb2",
+				GetFilename (),
 				Util::MakeFileDialogFilter ({ { tr ("fb2 files"), "fb2"_ql }, { tr ("PDF files"), "pdf"_ql } }));
 		if (filename.isEmpty ())
 			return false;

@@ -15,7 +15,8 @@
 #include <util/gui/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/either.h>
-#include "../../common.h"
+#include "common.h"
+#include "exportutils.h"
 #include "opmlparser.h"
 
 namespace LC::Aggregator
@@ -29,6 +30,7 @@ namespace LC::Aggregator
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
+		ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 
@@ -93,7 +95,7 @@ namespace LC::Aggregator
 
 	void ImportOPMLDialog::BrowseFile ()
 	{
-		auto startingPath = QFileInfo (Ui_.File_->text ()).path ();
+		auto startingPath = Ui_.File_->text ();
 		if (startingPath.isEmpty ())
 			startingPath = QDir::homePath ();
 

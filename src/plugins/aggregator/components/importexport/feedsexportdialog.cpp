@@ -14,6 +14,7 @@
 #include <util/gui/util.h>
 #include <util/models/checkableproxymodel.h>
 #include <util/sll/qtutil.h>
+#include "exportutils.h"
 #include "feed.h"
 
 namespace LC::Aggregator
@@ -40,9 +41,12 @@ namespace LC::Aggregator
 	: QDialog { parent }
 	, ChannelsModel_ { std::make_unique<ChannelsExportModel> (ChannelID) }
 	{
+		Ui_.setupUi (this);
+
+		ManageLastPath ({ *Ui_.File_, "FeedsExportLastPath", QDir::homePath () + "/feeds.opml", *this });
+
 		ChannelsModel_->setSourceModel (&model);
 
-		Ui_.setupUi (this);
 		Ui_.Channels_->setModel (ChannelsModel_.get ());
 		Ui_.Channels_->header ()->resizeSections (QHeaderView::ResizeToContents);
 		Ui_.ButtonBox_->button (QDialogButtonBox::Save)->setEnabled (false);
@@ -105,13 +109,9 @@ namespace LC::Aggregator
 
 	bool FeedsExportDialog::Browse ()
 	{
-		auto startingPath = QFileInfo { Ui_.File_->text () }.path ();
-		if (startingPath.isEmpty ())
-			startingPath = QDir::homePath () + "/feeds.opml";
-
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Export as"),
-				startingPath,
+				Ui_.File_->text (),
 				Util::MakeFileDialogFilter ({ { tr ("OPML files"), "opml"_ql }, { tr ("All files"), "*"_ql } }));
 		if (filename.isEmpty ())
 			return false;
