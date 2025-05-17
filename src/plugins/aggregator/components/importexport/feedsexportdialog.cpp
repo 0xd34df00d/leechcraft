@@ -11,6 +11,8 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/gui/util.h>
 #include <util/models/checkableproxymodel.h>
 #include <util/sll/qtutil.h>
@@ -42,6 +44,7 @@ namespace LC::Aggregator
 	, ChannelsModel_ { std::make_unique<ChannelsExportModel> (ChannelID) }
 	{
 		Ui_.setupUi (this);
+		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
 		ManageLastPath ({ *Ui_.File_, "FeedsExportLastPath", QDir::homePath () + "/feeds.opml", *this });
 

@@ -30,8 +30,10 @@ namespace LC::Aggregator
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
-		ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
+
+		ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
+
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 
 		Fields_ =

@@ -9,14 +9,13 @@
 #include "itemsexportdialog.h"
 #include <algorithm>
 #include <QFileDialog>
-#include <QMessageBox>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/gui/util.h>
 #include <util/models/checkableproxymodel.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include <util/tags/categoryselector.h>
-#include <util/xpc/util.h>
 #include "components/models/channelsmodel.h"
 #include "components/storage/storagebackendmanager.h"
 #include "exportutils.h"
@@ -33,7 +32,11 @@ namespace LC::Aggregator
 		ChannelsModel_->setSourceModel (&model);
 
 		Ui_.setupUi (this);
+
+		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
+
 		ManageLastPath ({ *Ui_.File_, "ItemsExportLastPath", QDir::homePath () + "/export.fb2", *this });
+
 		Ui_.CategoriesSelector_->setMinimumHeight (0);
 		Ui_.CategoriesSelector_->setWindowFlags (Qt::Widget);
 
