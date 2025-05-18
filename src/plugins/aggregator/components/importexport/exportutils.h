@@ -28,7 +28,14 @@ namespace LC::Aggregator
 		std::function<QString ()> GetPath_;
 		std::function<void (QString)> SetPath_;
 
+		template<typename T>
+		PathEdit (T *context, QString (T::*get) () const, void (T::*set) (const QString&))
+		: PathEdit { std::bind_front (get, context), std::bind_front (set, context) }
+		{
+		}
+
 		PathEdit (std::function<QString ()> get, std::function<void (QString)> set);
+
 		explicit (false) PathEdit (QLineEdit& edit);
 	};
 

@@ -36,7 +36,7 @@ namespace LC::Aggregator
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
 		ManageLastPath ({
-				PathEdit { [this] { return GetFilename (); }, [this] (const QString& path) { SetFilename (path); } },
+				{ this, &ItemsExportDialog::GetFilename, &ItemsExportDialog::SetFilename },
 				"ItemsExportLastPath",
 				QDir::homePath () + "/export.fb2",
 				*this
