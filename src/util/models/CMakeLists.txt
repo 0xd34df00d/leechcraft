@@ -1,5 +1,6 @@
 add_util_library (util-models
 	SRCS
+		checkableproxymodel.cpp
 		flatitemsmodelbase.cpp
 		flattenfiltermodel.cpp
 		flattofoldersproxymodel.cpp

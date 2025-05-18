@@ -14,14 +14,23 @@
 
 namespace LC::Util
 {
+	class UTIL_MODELS_API CheckableProxyModelBase : public QIdentityProxyModel
+	{
+		Q_OBJECT
+	public:
+		using QIdentityProxyModel::QIdentityProxyModel;
+	signals:
+		void selectionChanged ();
+	};
+
 	template<typename IdType>
-	class CheckableProxyModel : public QIdentityProxyModel
+	class CheckableProxyModel : public CheckableProxyModelBase
 	{
 		const int IdRole_;
 		QSet<IdType> Unchecked_;
 	public:
 		explicit CheckableProxyModel (int idRole, QObject *parent = nullptr)
-		: QIdentityProxyModel { parent }
+		: CheckableProxyModelBase { parent }
 		, IdRole_ { idRole }
 		{
 		}
@@ -55,6 +64,7 @@ namespace LC::Util
 				else
 					Unchecked_ << id;
 
+				emit selectionChanged ();
 				emit dataChanged (index, index, { Qt::CheckStateRole });
 
 				return true;
