@@ -128,14 +128,26 @@ namespace LC::Aggregator
 		file.write (data);
 	}
 
+	PathEdit::PathEdit (std::function<QString ()> get, std::function<void (QString)> set)
+	: GetPath_ { std::move (get) }
+	, SetPath_ { std::move (set) }
+	{
+	}
+
+	PathEdit::PathEdit (QLineEdit& edit)
+	: GetPath_ { [&] { return edit.text (); }}
+	, SetPath_ { [&] (const QString& text) { edit.setText (text); } }
+	{
+	}
+
 	void ManageLastPath (const LastPathParams& params)
 	{
 		auto& edit = params.Edit_;
 		auto name = params.SettingName_;
-		edit.setText (XmlSettingsManager::Instance ().Property (name, params.DefaultPath_).toString ());
+		edit.SetPath_ (XmlSettingsManager::Instance ().Property (name, params.DefaultPath_).toString ());
 
 		QObject::connect (&params.Parent_,
 				&QDialog::accepted,
-				[name, &edit] { XmlSettingsManager::Instance ().setProperty (name, edit.text ()); });
+				[=] { XmlSettingsManager::Instance ().setProperty (name, edit.GetPath_ ()); });
 	}
 }

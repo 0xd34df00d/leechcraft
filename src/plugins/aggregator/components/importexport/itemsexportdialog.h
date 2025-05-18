@@ -50,6 +50,7 @@ namespace LC::Aggregator
 		ItemsExportInfo GetItemsExportInfo () const;
 	private:
 		bool Browse ();
+		void SetFilename (const QString&);
 		void CheckDialogAcceptable ();
 	private slots:
 		void handleChannelsSelectionChanged ();

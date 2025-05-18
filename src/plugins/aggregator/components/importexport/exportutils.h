@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QString>
 
 class QAbstractItemModel;
@@ -22,9 +23,18 @@ namespace LC::Aggregator
 	void RunExportItems (ChannelsModel&, QWidget* = nullptr);
 	void RunExportChannels (QAbstractItemModel&, QWidget* = nullptr);
 
+	struct PathEdit
+	{
+		std::function<QString ()> GetPath_;
+		std::function<void (QString)> SetPath_;
+
+		PathEdit (std::function<QString ()> get, std::function<void (QString)> set);
+		explicit (false) PathEdit (QLineEdit& edit);
+	};
+
 	struct LastPathParams
 	{
-		QLineEdit& Edit_;
+		PathEdit Edit_;
 		const char *SettingName_;
 		QString DefaultPath_;
 		QDialog& Parent_;

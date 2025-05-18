@@ -35,7 +35,12 @@ namespace LC::Aggregator
 
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
-		ManageLastPath ({ *Ui_.File_, "ItemsExportLastPath", QDir::homePath () + "/export.fb2", *this });
+		ManageLastPath ({
+				PathEdit { [this] { return GetFilename (); }, [this] (const QString& path) { SetFilename (path); } },
+				"ItemsExportLastPath",
+				QDir::homePath () + "/export.fb2",
+				*this
+			});
 
 		Ui_.CategoriesSelector_->setMinimumHeight (0);
 		Ui_.CategoriesSelector_->setWindowFlags (Qt::Widget);
@@ -138,6 +143,13 @@ namespace LC::Aggregator
 		if (filename.isEmpty ())
 			return false;
 
+		SetFilename (filename);
+		CheckDialogAcceptable ();
+		return true;
+	}
+
+	void ItemsExportDialog::SetFilename (const QString& filename)
+	{
 		const QFileInfo fi { filename };
 		const auto& basePath = fi.path () + '/' + fi.completeBaseName ();
 		const auto& suffix = fi.suffix ();
@@ -145,9 +157,6 @@ namespace LC::Aggregator
 		if (const auto fmtIdx = Ui_.ExportFormat_->findText (suffix, Qt::MatchExactly);
 			fmtIdx != -1)
 			Ui_.ExportFormat_->setCurrentIndex (fmtIdx);
-
-		CheckDialogAcceptable ();
-		return true;
 	}
 
 	void ItemsExportDialog::CheckDialogAcceptable ()
