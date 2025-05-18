@@ -110,6 +110,8 @@ namespace LC::Util
 					emit dataChanged (index, index, { Qt::CheckStateRole });
 				}
 			}
+
+			emit selectionChanged ();
 		}
 
 		void CheckNone ()
@@ -126,6 +128,8 @@ namespace LC::Util
 					emit dataChanged (index, index, { Qt::CheckStateRole });
 				}
 			}
+
+			emit selectionChanged ();
 		}
 	};
 }
