@@ -130,7 +130,10 @@ namespace LC::Aggregator
 						if (const auto field = Fields_.value (name))
 							field->setText (value);
 						else
+						{
 							new QTreeWidgetItem (Ui_.OtherFields_, { name, value });
+							Ui_.RootLayout_->setRowVisible (Ui_.OtherFields_, true);
+						}
 					}
 
 					for (const auto& opmlItem : result.Items_)
@@ -150,6 +153,8 @@ namespace LC::Aggregator
 			field->clear ();
 
 		Ui_.OtherFields_->clear ();
+		Ui_.RootLayout_->setRowVisible (Ui_.OtherFields_, false);
+
 		Ui_.FeedsToImport_->clear ();
 
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
