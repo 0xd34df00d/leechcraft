@@ -19,9 +19,8 @@
 #include "components/models/channelsmodel.h"
 #include "components/storage/storagebackendmanager.h"
 #include "exportutils.h"
-#include "writefb2.h"
-#include "writepdf.h"
 #include "itemutils.h"
+#include "types.h"
 
 namespace LC::Aggregator
 {
