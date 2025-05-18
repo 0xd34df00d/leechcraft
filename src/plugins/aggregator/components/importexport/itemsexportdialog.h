@@ -52,7 +52,7 @@ namespace LC::Aggregator
 		bool Browse ();
 		void SetFilename (const QString&);
 		void CheckDialogAcceptable ();
-	private slots:
-		void handleChannelsSelectionChanged ();
+
+		void UpdateCategories ();
 	};
 }

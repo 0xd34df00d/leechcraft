@@ -47,10 +47,11 @@ namespace LC::Aggregator
 
 		Ui_.ChannelsTree_->setModel (&*ChannelsModel_);
 		Ui_.ChannelsTree_->header ()->resizeSections (QHeaderView::ResizeToContents);
-		connect (Ui_.ChannelsTree_->selectionModel (),
-				&QItemSelectionModel::selectionChanged,
+		connect (&*ChannelsModel_,
+				&Util::CheckableProxyModel<IDType_t>::selectionChanged,
 				this,
-				&ItemsExportDialog::handleChannelsSelectionChanged);
+				&ItemsExportDialog::UpdateCategories);
+		UpdateCategories ();
 
 		connect (Ui_.SelectAll_,
 				&QPushButton::released,
@@ -178,22 +179,20 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		QStringList CatsFromIndexes (const QList<QModelIndex>& indices)
+		QStringList CatsFromIndexes (const QSet<IDType_t>& channels)
 		{
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-
-			return Util::ConcatMap (indices,
-					[&sb] (const QModelIndex& index)
+			return Util::ConcatMap (QList<IDType_t> { channels.begin (), channels.end () },
+					[&sb] (IDType_t channelId)
 					{
-						const auto channelId = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
 						return ItemUtils::GetCategories (sb->GetItems (channelId));
 					}).values ();
 		}
 	}
 
-	void ItemsExportDialog::handleChannelsSelectionChanged ()
+	void ItemsExportDialog::UpdateCategories ()
 	{
-		Ui_.CategoriesSelector_->SetPossibleSelections (CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ()));
+		Ui_.CategoriesSelector_->SetPossibleSelections (CatsFromIndexes (ChannelsModel_->GetChecked ()));
 		Ui_.CategoriesSelector_->SelectAll ();
 
 		if (!TitleBeenModified_ &&
