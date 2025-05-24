@@ -184,7 +184,7 @@ namespace LC::Aggregator
 			return Util::ConcatMap (QList<IDType_t> { channels.begin (), channels.end () },
 					[&sb] (IDType_t channelId)
 					{
-						return ItemUtils::GetCategories (sb->GetItems (channelId));
+						return sb->GetItemsCategories (channelId);
 					}).values ();
 		}
 	}
