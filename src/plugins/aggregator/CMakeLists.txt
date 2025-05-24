@@ -53,7 +53,6 @@ LC_DEFINE_PLUGIN (
 		pluginmanager.cpp
 		proxyobject.cpp
 		dbupdatethread.cpp
-		itemutils.cpp
 		representationmanager.cpp
 		updatesmanager.cpp
 		resourcesfetcher.cpp

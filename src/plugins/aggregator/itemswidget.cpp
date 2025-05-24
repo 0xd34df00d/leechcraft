@@ -36,7 +36,6 @@
 #include "components/storage/storagebackendmanager.h"
 #include "ui_itemswidget.h"
 #include "xmlsettingsmanager.h"
-#include "itemutils.h"
 
 namespace LC::Aggregator
 {
