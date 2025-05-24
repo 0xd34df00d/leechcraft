@@ -1073,7 +1073,7 @@ namespace LC::Util::oral
 			return std::tuple { left, right };
 		}
 
-		enum ResultBehaviour
+		enum class ResultBehaviour
 		{
 			All,
 			First,
