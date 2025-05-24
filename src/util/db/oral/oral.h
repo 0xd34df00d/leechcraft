@@ -909,6 +909,12 @@ namespace LC::Util::oral
 		struct SelectorUnion {};
 
 		template<typename T>
+		struct SelectDistinct
+		{
+			explicit SelectDistinct (T) noexcept {}
+		};
+
+		template<typename T>
 		struct IsSelector : std::false_type {};
 
 		template<>
@@ -922,6 +928,9 @@ namespace LC::Util::oral
 
 		template<typename L, typename R>
 		struct IsSelector<SelectorUnion<L, R>> : std::true_type {};
+
+		template<typename T>
+		struct IsSelector<SelectDistinct<T>> : std::true_type {};
 
 		template<typename L, typename R, typename = std::enable_if_t<IsSelector<L> {} && IsSelector<R> {}>>
 		SelectorUnion<L, R> operator+ (L, R) noexcept
@@ -939,6 +948,9 @@ namespace LC::Util::oral
 		constexpr detail::MemberPtrs<Ptrs...> fields {};
 
 		constexpr detail::SelectWhole all {};
+
+		template<typename T>
+		using distinct = detail::SelectDistinct<T>;
 
 		template<auto... Ptrs>
 		struct asc {};
@@ -1170,6 +1182,12 @@ namespace LC::Util::oral
 			{
 				return InitializeFromQuery<T> (q, SeqIndices<T>, startIdx);
 			}
+		};
+
+		template<typename T, typename U>
+		struct HandleSelector<T, SelectDistinct<U>> : HandleSelector<T, U>
+		{
+			constexpr static auto Fields = "DISTINCT "_ct + HandleSelector<T, U>::Fields;
 		};
 
 		template<typename T, auto... Ptrs>
