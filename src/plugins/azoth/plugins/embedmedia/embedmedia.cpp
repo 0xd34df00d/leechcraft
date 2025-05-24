@@ -19,6 +19,7 @@
 #include <util/util.h>
 #include <util/gui/util.h>
 #include <util/sll/either.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <util/threads/coro.h>
@@ -69,10 +70,10 @@ namespace LC::Azoth::EmbedMedia
 			if (url.scheme () != "http" && url.scheme () != "https")
 				return false;
 
-			static const QStringList imageExts { "gif"_qs, "png"_qs, "jpg"_qs, "jpeg"_qs, "webp"_qs };
-
-			const auto& ext = QFileInfo { url.path () }.suffix ();
-			return imageExts.contains (ext, Qt::CaseInsensitive);
+			static const auto formats = Util::Map (QImageReader::supportedImageFormats (),
+					[] (auto&& ba) { return std::move (ba).toLower (); });
+			const auto& ext = QFileInfo { url.path () }.suffix ().toLower ();
+			return formats.contains (ext);
 		}
 
 		void HandleImageData (const QByteArray& data, const QUrl& url, QWidget *parent)
