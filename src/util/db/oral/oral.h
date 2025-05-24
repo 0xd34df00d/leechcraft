@@ -1157,14 +1157,14 @@ namespace LC::Util::oral
 		template<typename T, typename Selector>
 		struct HandleSelector {};
 
-		struct HSBaseAll { constexpr inline static auto ResultBehaviour_v = ResultBehaviour::All; };
+		struct HSBaseAll { constexpr static auto ResultBehaviour_v = ResultBehaviour::All; };
 
-		struct HSBaseFirst { constexpr inline static auto ResultBehaviour_v = ResultBehaviour::First; };
+		struct HSBaseFirst { constexpr static auto ResultBehaviour_v = ResultBehaviour::First; };
 
 		template<typename T>
 		struct HandleSelector<T, SelectWhole> : HSBaseAll
 		{
-			constexpr inline static auto Fields = JoinTup (QualifiedFieldNames<T>, ", "_ct);
+			constexpr static auto Fields = JoinTup (QualifiedFieldNames<T>, ", "_ct);
 
 			static auto Initializer (const QSqlQuery& q, int startIdx)
 			{
@@ -1182,7 +1182,7 @@ namespace LC::Util::oral
 				return std::tuple { std::get<Ixs> (QualifiedFieldNames<T>)... };
 			}
 		public:
-			constexpr inline static auto Fields = JoinTup (SelectFields<FieldIndex<Ptrs> ()...> (), ", ");
+			constexpr static auto Fields = JoinTup (SelectFields<FieldIndex<Ptrs> ()...> (), ", ");
 
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
@@ -1193,7 +1193,7 @@ namespace LC::Util::oral
 		template<typename T>
 		struct HandleSelector<T, AggregateType<AggregateFunction::Count, CountAllPtr>> : HSBaseFirst
 		{
-			constexpr inline static auto Fields = "count(1)"_ct;
+			constexpr static auto Fields = "count(1)"_ct;
 
 			static auto Initializer (const QSqlQuery& q, int startIdx)
 			{
@@ -1204,7 +1204,7 @@ namespace LC::Util::oral
 		template<typename T, auto Ptr>
 		struct HandleSelector<T, AggregateType<AggregateFunction::Count, Ptr>> : HSBaseFirst
 		{
-			constexpr inline static auto Fields = "count(" + GetQualifiedFieldNamePtr<Ptr> () + ")";
+			constexpr static auto Fields = "count(" + GetQualifiedFieldNamePtr<Ptr> () + ")";
 
 			static auto Initializer (const QSqlQuery& q, int startIdx)
 			{
@@ -1215,7 +1215,7 @@ namespace LC::Util::oral
 		template<CtString Aggregate, typename T, auto Ptr>
 		struct HandleAggSelector : HSBaseFirst
 		{
-			constexpr inline static auto Fields = Aggregate + "(" + GetQualifiedFieldNamePtr<Ptr> () + ")";
+			constexpr static auto Fields = Aggregate + "(" + GetQualifiedFieldNamePtr<Ptr> () + ")";
 
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
@@ -1242,9 +1242,9 @@ namespace LC::Util::oral
 			using HL = HandleSelector<T, L>;
 			using HR = HandleSelector<T, R>;
 
-			constexpr inline static auto ResultBehaviour_v = CombineBehaviour (HL::ResultBehaviour_v, HR::ResultBehaviour_v);
+			constexpr static auto ResultBehaviour_v = CombineBehaviour (HL::ResultBehaviour_v, HR::ResultBehaviour_v);
 
-			constexpr inline static auto Fields = HL::Fields + ", " + HR::Fields;
+			constexpr static auto Fields = HL::Fields + ", " + HR::Fields;
 
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
