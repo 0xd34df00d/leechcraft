@@ -820,7 +820,8 @@ namespace LC::Aggregator
 
 	QSet<QString> SQLStorageBackend::GetItemsCategories (IDType_t channelId) const
 	{
-		const auto itemsCats = Items_->Select (sph::fields<&ItemR::Category_>, sph::f<&ItemR::ChannelID_> == channelId);
+		const auto itemsCats = Items_->Select (sph::distinct { sph::fields<&ItemR::Category_> },
+				sph::f<&ItemR::ChannelID_> == channelId);
 		QSet<QString> result;
 		for (const auto& itemCats : itemsCats)
 			for (const auto& cat : itemCats.Categories_)
