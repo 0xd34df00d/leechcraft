@@ -818,6 +818,16 @@ namespace LC::Aggregator
 				[]<typename Tup> (Tup&& tup) { return std::make_from_tuple<ItemShort> (std::forward<Tup> (tup)); });
 	}
 
+	QSet<QString> SQLStorageBackend::GetItemsCategories (IDType_t channelId) const
+	{
+		const auto itemsCats = Items_->Select (sph::fields<&ItemR::Category_>, sph::f<&ItemR::ChannelID_> == channelId);
+		QSet<QString> result;
+		for (const auto& itemCats : itemsCats)
+			for (const auto& cat : itemCats.Categories_)
+				result << cat;
+		return result;
+	}
+
 	int SQLStorageBackend::GetUnreadItemsCount (IDType_t channelId) const
 	{
 		return Items_->Select (sph::count<>,
