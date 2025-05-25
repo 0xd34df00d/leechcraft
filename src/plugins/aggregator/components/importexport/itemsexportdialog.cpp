@@ -49,6 +49,10 @@ namespace LC::Aggregator
 				&Util::CheckableProxyModel<IDType_t>::selectionChanged,
 				this,
 				&ItemsExportDialog::UpdateCategories);
+		connect (Ui_.UnreadOnly_,
+				&QCheckBox::toggled,
+				this,
+				&ItemsExportDialog::UpdateCategories);
 		UpdateCategories ();
 
 		connect (Ui_.SelectAll_,
@@ -177,20 +181,25 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		QStringList CatsFromIndexes (const QSet<IDType_t>& channels)
+		QStringList CatsFromIndexes (const QSet<IDType_t>& channels, bool unreadOnly)
 		{
+			using enum StorageBackend::ReadStatus;
+			const auto readStatus = unreadOnly ? Unread : All;
+
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 			return Util::ConcatMap (QList<IDType_t> { channels.begin (), channels.end () },
-					[&sb] (IDType_t channelId)
+					[&] (IDType_t channelId)
 					{
-						return sb->GetItemsCategories (channelId);
+						return sb->GetItemsCategories (channelId, readStatus);
 					}).values ();
 		}
 	}
 
 	void ItemsExportDialog::UpdateCategories ()
 	{
-		Ui_.CategoriesSelector_->SetPossibleSelections (CatsFromIndexes (ChannelsModel_->GetChecked ()));
+		const auto unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
+		const auto& checked = ChannelsModel_->GetChecked ();
+		Ui_.CategoriesSelector_->SetPossibleSelections (CatsFromIndexes (checked, unreadOnly));
 		Ui_.CategoriesSelector_->SelectAll ();
 
 		if (!TitleBeenModified_ &&
