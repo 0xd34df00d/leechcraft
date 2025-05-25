@@ -202,12 +202,10 @@ namespace LC::Aggregator
 		Ui_.CategoriesSelector_->SetPossibleSelections (CatsFromIndexes (checked, unreadOnly));
 		Ui_.CategoriesSelector_->SelectAll ();
 
-		if (!TitleBeenModified_ &&
-				Ui_.ChannelsTree_->selectionModel ()->selectedRows ().size () <= 1)
+		if (!TitleBeenModified_ && checked.size () == 1)
 		{
-			const auto& index = Ui_.ChannelsTree_->currentIndex ();
-			if (index.isValid ())
-				Ui_.Title_->setText (index.sibling (index.row (), 0).data ().toString ());
+			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+			Ui_.Title_->setText (sb->GetChannel (*checked.begin ()).Title_);
 		}
 	}
 }
