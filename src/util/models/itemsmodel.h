@@ -140,8 +140,8 @@ namespace LC::Util
 
 		template<typename... Args>
 			requires (std::is_same_v<Arg, Args> || ...)
-		explicit ItemsCheckable (Args&&... args)
-		: Arg_ { std::get<Arg> (std::tuple { std::forward<Args> (args)... }) }
+		explicit ItemsCheckable (const std::tuple<Args...>& args)
+		: Arg_ { std::get<Arg> (args) }
 		{
 		}
 
@@ -179,9 +179,15 @@ namespace LC::Util
 		const QVector<FieldGetter_t> Fields_;
 	public:
 		template<auto... Getter>
-		explicit ItemsModel (const Field<Getter>&... fields, auto&&... extensions)
+		explicit ItemsModel (const Field<Getter>&... fields)
+		: ItemsModel { std::tuple {}, fields... }
+		{
+		}
+
+		template<auto... Getter, typename... ExtParams>
+		explicit ItemsModel (const std::tuple<ExtParams...>& extParams, const Field<Getter>&... fields)
 		: FlatItemsModelTypedBase<T> { { fields.Name_... } }
-		, Extensions { std::forward<decltype (extensions)> (extensions)... }...
+		, Extensions { extParams }...
 		, Fields_ { +[] (const T& t) -> QVariant { return t.*Getter; }... }
 		{
 		}
