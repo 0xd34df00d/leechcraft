@@ -13,11 +13,11 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/gui/util.h>
-#include <util/models/checkableproxymodel.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include "components/models/channelsmodel.h"
 #include "components/storage/storagebackendmanager.h"
+#include "channelsexportmodel.h"
 #include "exportutils.h"
 #include "types.h"
 
@@ -25,7 +25,7 @@ namespace LC::Aggregator
 {
 	ItemsExportDialog::ItemsExportDialog (ChannelsModel& model, QWidget *parent)
 	: QDialog { parent }
-	, ChannelsModel_ { std::make_unique<Util::CheckableProxyModel<IDType_t>> (ChannelID) }
+	, ChannelsModel_ { std::make_unique<ChannelsExportModel> (ChannelID) }
 	{
 		ChannelsModel_->setSourceModel (&model);
 
@@ -34,11 +34,11 @@ namespace LC::Aggregator
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
 		ManageLastPath ({
-				{ this, &ItemsExportDialog::GetFilename, &ItemsExportDialog::SetFilename },
-				"ItemsExportLastPath",
-				QDir::homePath () + "/export.fb2",
-				*this
-			});
+					{ this, &ItemsExportDialog::GetFilename, &ItemsExportDialog::SetFilename },
+					"ItemsExportLastPath",
+					QDir::homePath () + "/export.fb2",
+					*this
+				});
 
 		Ui_.CategoriesSelector_->setMinimumHeight (0);
 		Ui_.CategoriesSelector_->setWindowFlags (Qt::Widget);
