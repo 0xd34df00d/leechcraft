@@ -108,8 +108,15 @@ namespace LC::Util
 
 		static QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto& item, int, int column)
 		{
-			static_assert (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, Qt::CheckState>);
-			return column ? QVariant {} : item.*CheckField;
+			if (column)
+				return QVariant {};
+
+			if constexpr (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, Qt::CheckState>)
+				return item.*CheckField;
+			else if constexpr (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, bool>)
+				return item.*CheckField ? Qt::Checked : Qt::Unchecked;
+			else
+				static_assert (false, "expected Qt::CheckState or bool field");
 		}
 
 		template<typename Item>
@@ -118,7 +125,13 @@ namespace LC::Util
 			if (role != Qt::CheckStateRole || column)
 				return false;
 
-			item.*CheckField = value.value<Qt::CheckState> ();
+			const auto state = value.value<Qt::CheckState> ();
+			if constexpr (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, Qt::CheckState>)
+				item.*CheckField = state;
+			else if constexpr (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, bool>)
+				item.*CheckField = state == Qt::Checked;
+			else
+				static_assert (false, "expected Qt::CheckState or bool field");
 			return true;
 		}
 	};
