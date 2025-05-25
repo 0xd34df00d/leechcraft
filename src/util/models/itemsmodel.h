@@ -79,7 +79,6 @@ namespace LC::Util
 			explicit Extension (auto&&...) {}
 
 			static Qt::ItemFlags GetFlags (auto&&...) { return {}; }
-			static void GetDataForRole () {}
 			static bool SetData (auto&&...) { return false; }
 		};
 	}
@@ -107,14 +106,14 @@ namespace LC::Util
 			return column ? Qt::ItemFlags {} : Qt::ItemIsUserCheckable;
 		}
 
-		static QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto& item, int column)
+		static QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto& item, int, int column)
 		{
 			static_assert (std::is_same_v<std::decay_t<decltype (item.*CheckField)>, Qt::CheckState>);
 			return column ? QVariant {} : item.*CheckField;
 		}
 
 		template<typename Item>
-		static bool SetData (Item& item, int column, const QVariant& value, int role)
+		static bool SetData (Item& item, int, int column, const QVariant& value, int role)
 		{
 			if (role != Qt::CheckStateRole || column)
 				return false;
@@ -149,7 +148,7 @@ namespace LC::Util
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override
 		{
 			auto& item = this->Items_ [index.row ()];
-			const auto result = (Extensions::SetData (item, index.column (), value, role) ||...);
+			const auto result = (Extensions::SetData (item, index.row (), index.column (), value, role) ||...);
 			if (result)
 				emit this->dataChanged (index, index);
 			return result;
@@ -166,9 +165,9 @@ namespace LC::Util
 					return getter (item);
 				return {};
 			case Qt::CheckStateRole:
-				return this->GetDataForRole (detail::Role<Qt::CheckStateRole> {}, item, column);
+				return this->GetDataForRole (detail::Role<Qt::CheckStateRole> {}, item, row, column);
 			case Qt::DecorationRole:
-				return this->GetDataForRole (detail::Role<Qt::DecorationRole> {}, item, column);
+				return this->GetDataForRole (detail::Role<Qt::DecorationRole> {}, item, row, column);
 			default:
 				return {};
 			}
@@ -176,7 +175,7 @@ namespace LC::Util
 
 		using Extensions::GetDataForRole...;
 
-		static QVariant GetDataForRole (auto, const auto&, int)
+		static QVariant GetDataForRole (auto&&...)
 		{
 			return {};
 		}
