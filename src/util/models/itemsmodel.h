@@ -123,6 +123,54 @@ namespace LC::Util
 		}
 	};
 
+	struct NoField {};
+	inline constexpr auto NoField_v = NoField {};
+
+	template<>
+	struct ItemsCheckable<NoField_v> : detail::Extension
+	{
+		struct Arg
+		{
+			Qt::CheckState DefaultChecked_ = Qt::Checked;
+		};
+
+		const Arg Arg_;
+
+		QHash<int, Qt::CheckState> RowsStates_;
+
+		template<typename... Args>
+			requires (std::is_same_v<Arg, Args> || ...)
+		explicit ItemsCheckable (Args&&... args)
+		: Arg_ { std::get<Arg> (std::tuple { std::forward<Args> (args)... }) }
+		{
+		}
+
+		static Qt::ItemFlags GetFlags (int column)
+		{
+			return column ? Qt::ItemFlags {} : Qt::ItemIsUserCheckable;
+		}
+
+		bool IsChecked (int row) const
+		{
+			return RowsStates_.value (row, Arg_.DefaultChecked_) == Qt::Checked;
+		}
+
+		QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto&, int row, int column)
+		{
+			return column ? QVariant {} : RowsStates_.value (row, Arg_.DefaultChecked_);
+		}
+
+		template<typename Item>
+		bool SetData (Item&, int row, int column, const QVariant& value, int role)
+		{
+			if (role != Qt::CheckStateRole || column)
+				return false;
+
+			RowsStates_ [row] = value.value<Qt::CheckState> ();
+			return true;
+		}
+	};
+
 	template<typename T, typename... Extensions>
 	class ItemsModel : public FlatItemsModelTypedBase<T>
 					 , public Extensions...
