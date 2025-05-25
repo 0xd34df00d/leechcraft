@@ -84,7 +84,7 @@ namespace LC::Aggregator
 		void SetChannelLink (IDType_t, const QString&) override;
 
 		items_shorts_t GetItems (IDType_t) const override;
-		QSet<QString> GetItemsCategories (IDType_t) const override;
+		QSet<QString> GetItemsCategories (IDType_t, ReadStatus) const override;
 		int GetUnreadItemsCount (IDType_t) const override;
 		int GetTotalItemsCount (IDType_t) const override;
 		std::optional<Item> GetItem (IDType_t) const override;

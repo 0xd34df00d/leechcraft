@@ -185,7 +185,14 @@ namespace LC::Aggregator
 		 */
 		virtual items_shorts_t GetItems (IDType_t channelId) const = 0;
 
-		virtual QSet<QString> GetItemsCategories (IDType_t channelId) const = 0;
+		enum class ReadStatus
+		{
+			All,
+			Read,
+			Unread,
+		};
+
+		virtual QSet<QString> GetItemsCategories (IDType_t channelId, ReadStatus readStatus = ReadStatus::All) const = 0;
 
 		/** @brief Counts unread items number in a given channel.
 		 *

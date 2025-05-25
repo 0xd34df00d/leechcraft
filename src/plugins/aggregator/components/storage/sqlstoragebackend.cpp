@@ -818,10 +818,27 @@ namespace LC::Aggregator
 				[]<typename Tup> (Tup&& tup) { return std::make_from_tuple<ItemShort> (std::forward<Tup> (tup)); });
 	}
 
-	QSet<QString> SQLStorageBackend::GetItemsCategories (IDType_t channelId) const
+	QSet<QString> SQLStorageBackend::GetItemsCategories (IDType_t channelId, ReadStatus readStatus) const
 	{
-		const auto itemsCats = Items_->Select (sph::distinct { sph::fields<&ItemR::Category_> },
-				sph::f<&ItemR::ChannelID_> == channelId);
+		const auto itemsCats = [&]
+		{
+			switch (readStatus)
+			{
+			case ReadStatus::All:
+				return Items_->Select (sph::distinct { sph::fields<&ItemR::Category_> },
+						sph::f<&ItemR::ChannelID_> == channelId);
+			case ReadStatus::Read:
+			case ReadStatus::Unread:
+			{
+				return Items_->Select (sph::distinct { sph::fields<&ItemR::Category_> },
+					sph::f<&ItemR::ChannelID_> == channelId &&
+					sph::f<&ItemR::Unread_> == (readStatus == ReadStatus::Unread));
+			}
+			}
+
+			qWarning () << "unhandled read status" << static_cast<int> (readStatus);
+			return QList<ItemCategories> {};
+		} ();
 		QSet<QString> result;
 		for (const auto& itemCats : itemsCats)
 			for (const auto& cat : itemCats.Categories_)

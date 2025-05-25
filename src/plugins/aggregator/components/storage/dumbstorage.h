@@ -38,7 +38,7 @@ namespace Aggregator
 		void SetChannelTitle (IDType_t, const QString&) override {}
 		void SetChannelLink (IDType_t, const QString&) override {}
 		items_shorts_t GetItems (IDType_t) const override { return {}; }
-		QSet<QString> GetItemsCategories(IDType_t channelId) const override { return {}; }
+		QSet<QString> GetItemsCategories (IDType_t, ReadStatus) const override { return {}; }
 		int GetUnreadItemsCount (IDType_t) const override { return {}; }
 		int GetTotalItemsCount (IDType_t) const override { return {}; }
 		std::optional<Item> GetItem (IDType_t) const override { return {}; }
