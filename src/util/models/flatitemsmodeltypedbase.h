@@ -27,6 +27,18 @@ namespace LC::Util
 			endResetModel ();
 		}
 
+		template<typename U>
+			requires std::is_constructible_v<T, U&&>
+		void SetItems (QList<U> items)
+		{
+			beginResetModel ();
+			Items_.clear ();
+			Items_.reserve (items.size ());
+			for (auto&& item : items)
+				Items_ << T { std::move (item) };
+			endResetModel ();
+		}
+
 		const QList<T>& GetItems () const
 		{
 			return Items_;
