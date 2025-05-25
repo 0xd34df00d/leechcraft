@@ -76,6 +76,8 @@ namespace LC::Util
 
 		struct Extension
 		{
+			explicit Extension (auto&&...) {}
+
 			static Qt::ItemFlags GetFlags (auto&&...) { return {}; }
 			static void GetDataForRole () {}
 			static bool SetData (auto&&...) { return false; }
@@ -85,6 +87,8 @@ namespace LC::Util
 	template<auto IconField>
 	struct ItemsDecorated : detail::Extension
 	{
+		using Extension::Extension;
+
 		static QVariant GetDataForRole (detail::Role<Qt::DecorationRole>, const auto& item, int column)
 		{
 			if (column)
@@ -96,6 +100,8 @@ namespace LC::Util
 	template<auto CheckField>
 	struct ItemsCheckable : detail::Extension
 	{
+		using Extension::Extension;
+
 		static Qt::ItemFlags GetFlags (int column)
 		{
 			return column ? Qt::ItemFlags {} : Qt::ItemIsUserCheckable;
@@ -126,8 +132,9 @@ namespace LC::Util
 		const QVector<FieldGetter_t> Fields_;
 	public:
 		template<auto... Getter>
-		explicit ItemsModel (const Field<Getter>&... fields)
+		explicit ItemsModel (const Field<Getter>&... fields, auto&&... extensions)
 		: FlatItemsModelTypedBase<T> { { fields.Name_... } }
+		, Extensions { std::forward<decltype (extensions)> (extensions)... }...
 		, Fields_ { +[] (const T& t) -> QVariant { return t.*Getter; }... }
 		{
 		}
