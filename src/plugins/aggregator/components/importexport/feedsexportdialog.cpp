@@ -14,31 +14,12 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/gui/util.h>
-#include <util/models/checkableproxymodel.h>
 #include <util/sll/qtutil.h>
+#include "channelsexportmodel.h"
 #include "exportutils.h"
-#include "feed.h"
 
 namespace LC::Aggregator
 {
-	class ChannelsExportModel : public Util::CheckableProxyModel<IDType_t>
-	{
-	public:
-		using CheckableProxyModel::CheckableProxyModel;
-
-		QVariant data (const QModelIndex& index, int role) const override
-		{
-			switch (role)
-			{
-			case Qt::BackgroundRole:
-			case Qt::ForegroundRole:
-				return {};
-			}
-
-			return CheckableProxyModel::data (index, role);
-		}
-	};
-
 	FeedsExportDialog::FeedsExportDialog (QAbstractItemModel& model, QWidget *parent)
 	: QDialog { parent }
 	, ChannelsModel_ { std::make_unique<ChannelsExportModel> (ChannelID) }

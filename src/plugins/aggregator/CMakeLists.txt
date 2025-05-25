@@ -11,6 +11,7 @@ LC_DEFINE_PLUGIN (
 		components/gui/itemnavigator.cpp
 		components/gui/itemselectiontracker.cpp
 		components/gui/util.cpp
+		components/importexport/channelsexportmodel.cpp
 		components/importexport/exportutils.cpp
 		components/importexport/feedsexportdialog.cpp
 		components/importexport/importopmldialog.cpp
