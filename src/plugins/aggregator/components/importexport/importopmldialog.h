@@ -32,7 +32,7 @@ namespace LC::Aggregator
 
 			bool IsChecked_ = true;
 		};
-		using ItemsModel_t = Util::ItemsModel<Item, Util::ItemsCheckable<&Item::IsChecked_>>;
+		using ItemsModel_t = Util::ItemsModel<Item, Util::ItemsCheckable<&Item::IsChecked_>, Util::ItemsEditable>;
 		ItemsModel_t Model_;
 
 		QHash<QLatin1String, QLabel*> Fields_;

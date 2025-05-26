@@ -15,16 +15,26 @@
 #include <util/gui/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/either.h>
+#include <util/tags/tagseditdelegate.h>
 #include "common.h"
 #include "exportutils.h"
 #include "opmlparser.h"
 
 namespace LC::Aggregator
 {
+	enum Columns
+	{
+		Title,
+		Categories,
+		URL,
+	};
+
 	ImportOPMLDialog::ImportOPMLDialog (const QString& file, QWidget *parent)
 	: QDialog { parent }
 	, Model_ {
+		std::tuple { Util::ItemsEditable::Param { { 1, 2 } } },
 		Util::Field<&Item::Title_> (tr ("Title")),
+		Util::Field<&Item::Categories_> (tr ("Categories")),
 		Util::Field<&Item::URL_> (tr ("URL")),
 	}
 	{
@@ -34,6 +44,8 @@ namespace LC::Aggregator
 		ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
 
 		Ui_.FeedsView_->setModel (&Model_);
+		Ui_.FeedsView_->setItemDelegateForColumn (Categories,
+				new Util::TagsEditDelegate { *GetProxyHolder ()->GetTagsManager (), this });
 
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 
