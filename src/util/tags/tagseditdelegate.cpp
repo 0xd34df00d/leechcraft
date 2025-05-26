@@ -43,12 +43,12 @@ namespace LC::Util
 	void TagsEditDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 	{
 		const auto& tags = index.data (Qt::EditRole).toStringList ();
-		static_cast<TagsLineEdit*> (editor)->setText (ITM_.Join (tags));
+		dynamic_cast<TagsLineEdit*> (editor)->setText (ITM_.Join (tags));
 	}
 
 	void TagsEditDelegate::setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
 	{
-		const auto& tags = ITM_.Split (static_cast<TagsLineEdit*> (editor)->text ());
+		const auto& tags = ITM_.Split (dynamic_cast<TagsLineEdit*> (editor)->text ());
 		model->setData (index, tags, Qt::EditRole);
 	}
 }
