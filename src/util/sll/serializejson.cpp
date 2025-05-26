@@ -21,9 +21,7 @@ namespace Util
 				.toJson (compact ? QJsonDocument::Compact : QJsonDocument::Indented);
 	}
 
-	using SerializeResult_t = Either<QString, Void>;
-
-	SerializeResult_t SerializeJsonToFile (const QString& filename, const QVariant& var, bool compact)
+	Either<QString, Void> SerializeJsonToFile (const QString& filename, const QVariant& var, bool compact)
 	{
 		QFile file { filename };
 		if (!file.open (QIODevice::WriteOnly))
@@ -33,7 +31,7 @@ namespace Util
 					<< file.fileName ()
 					<< "for writing:"
 					<< file.errorString ();
-			return SerializeResult_t::Left (file.errorString ());
+			return Left { file.errorString () };
 		}
 
 		if (!file.write (SerializeJson (var, compact)))
@@ -43,10 +41,10 @@ namespace Util
 					<< file.fileName ()
 					<< ":"
 					<< file.errorString ();
-			return SerializeResult_t::Left (file.errorString ());
+			return Left { file.errorString () };
 		}
 
-		return SerializeResult_t::Right ({});
+		return Void {};
 	}
 }
 }

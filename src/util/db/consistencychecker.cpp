@@ -75,7 +75,7 @@ namespace LC::Util
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "cannot open the DB, but that's not the kind of errors we're solving.";
-			return CheckResult_t::Right ({});
+			return Succeeded {};
 		}
 
 		QSqlQuery pragma { *db };
@@ -91,9 +91,9 @@ namespace LC::Util
 				<< "; result is:"
 				<< isGood;
 		if (isGood)
-			return CheckResult_t::Right ({});
+			return Succeeded {};
 
-		return CheckResult_t::Left (std::make_shared<FailedImpl> (shared_from_this ()));
+		return Left { std::make_shared<FailedImpl> (shared_from_this ()) };
 	}
 
 	QFuture<ConsistencyChecker::DumpResult_t> ConsistencyChecker::DumpReinit ()

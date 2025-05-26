@@ -18,8 +18,8 @@ namespace LC::Util
 		QJsonParseError error;
 		auto doc = QJsonDocument::fromJson (json, &error);
 		if (error.error == QJsonParseError::NoError)
-			return Either<QString, QJsonDocument>::Right (doc);
-		return Either<QString, QJsonDocument>::Left (error.errorString ());
+			return { doc };
+		return Left { error.errorString () };
 	}
 
 	namespace
