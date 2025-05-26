@@ -9,19 +9,36 @@
 #pragma once
 
 #include <QDialog>
+#include <util/models/itemsmodel.h>
+#include "types.h"
 #include "ui_importopmldialog.h"
 
 namespace LC::Aggregator
 {
+	struct OPMLItem;
+
 	class ImportOPMLDialog : public QDialog
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ImportOPMLDialog)
 
 		Ui::ImportOPMLDialog Ui_;
 
+		struct Item : OPMLItem
+		{
+			explicit Item (const OPMLItem& item)
+			: OPMLItem { item }
+			{
+			}
+
+			bool IsChecked_ = true;
+		};
+		using ItemsModel_t = Util::ItemsModel<Item, Util::ItemsCheckable<&Item::IsChecked_>>;
+		ItemsModel_t Model_;
+
 		QHash<QLatin1String, QLabel*> Fields_;
 	public:
 		explicit ImportOPMLDialog (const QString& = {}, QWidget* = nullptr);
+		~ImportOPMLDialog () override;
 
 		QString GetFilename () const;
 		QString GetTags () const;

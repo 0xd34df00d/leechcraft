@@ -21,18 +21,19 @@
 
 namespace LC::Aggregator
 {
-	namespace
-	{
-		constexpr auto ItemUrlRole = Qt::UserRole;
-	}
-
 	ImportOPMLDialog::ImportOPMLDialog (const QString& file, QWidget *parent)
 	: QDialog { parent }
+	, Model_ {
+		Util::Field<&Item::Title_> (tr ("Title")),
+		Util::Field<&Item::URL_> (tr ("URL")),
+	}
 	{
 		Ui_.setupUi (this);
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
 		ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
+
+		Ui_.FeedsView_->setModel (&Model_);
 
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 
@@ -63,6 +64,8 @@ namespace LC::Aggregator
 		}
 	}
 
+	ImportOPMLDialog::~ImportOPMLDialog () = default;
+
 	QString ImportOPMLDialog::GetFilename () const
 	{
 		return Ui_.File_->text ();
@@ -76,14 +79,9 @@ namespace LC::Aggregator
 	QSet<QString> ImportOPMLDialog::GetSelectedUrls () const
 	{
 		QSet<QString> result;
-
-		for (int i = 0, items = Ui_.FeedsToImport_->topLevelItemCount (); i < items; ++i)
-		{
-			const auto item = Ui_.FeedsToImport_->topLevelItem (i);
-			if (item->data (0, Qt::CheckStateRole) == Qt::Checked)
-				result << item->data (0, ItemUrlRole).toString ();
-		}
-
+		for (const auto& item : Model_.GetItems ())
+			if (item.IsChecked_)
+				result << item.URL_;
 		return result;
 	}
 
@@ -136,13 +134,8 @@ namespace LC::Aggregator
 						}
 					}
 
-					for (const auto& opmlItem : result.Items_)
-					{
-						const auto item = new QTreeWidgetItem (Ui_.FeedsToImport_, { opmlItem.Title_, opmlItem.URL_ });
-						item->setData (0, Qt::CheckStateRole, Qt::Checked);
-						item->setData (0, ItemUrlRole, opmlItem.URL_);
-					}
-
+					Model_.SetItems (result.Items_);
+					Ui_.FeedsView_->header ()->resizeSections (QHeaderView::ResizeToContents);
 					Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (true);
 				});
 	}
@@ -155,7 +148,7 @@ namespace LC::Aggregator
 		Ui_.OtherFields_->clear ();
 		Ui_.RootLayout_->setRowVisible (Ui_.OtherFields_, false);
 
-		Ui_.FeedsToImport_->clear ();
+		Model_.SetItems ({});
 
 		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (false);
 	}

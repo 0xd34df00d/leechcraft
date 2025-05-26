@@ -14,9 +14,6 @@
    <string>Import OPML</string>
   </property>
   <layout class="QFormLayout" name="RootLayout_">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
-   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="label_14">
      <property name="text">
@@ -97,6 +94,13 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Owner email:</string>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="1">
     <widget class="QLabel" name="OwnerEmail_">
      <property name="text">
@@ -153,23 +157,19 @@
     </widget>
    </item>
    <item row="8" column="1">
-    <widget class="QTreeWidget" name="FeedsToImport_">
+    <widget class="QTreeView" name="FeedsView_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
-       <verstretch>3</verstretch>
+       <verstretch>2</verstretch>
       </sizepolicy>
      </property>
-     <column>
-      <property name="text">
-       <string>Title</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>URL</string>
-      </property>
-     </column>
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="9" column="1">
@@ -179,13 +179,6 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Open</set>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Owner email:</string>
      </property>
     </widget>
    </item>
