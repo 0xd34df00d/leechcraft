@@ -45,17 +45,24 @@ namespace LC::Aggregator::OPML
 				.Children_ = Util::MapAs<QList> (channels,
 						[&] (const ChannelShort& cs) -> Util::Node
 						{
-							const auto& tags = itm->GetTags (cs.Tags_).join (',');
-							return Tag
+							Util::TagAttrs attrs
 							{
-								.Name_ = "outline"_qba,
-								.Attrs_ = {
-									{ "title"_qba, cs.Title_ },
-									{ "htmlUrl"_qba, cs.Link_ },
-									{ "xmlUrl"_qba, sb->GetFeed (cs.FeedID_).URL_ },
-									{ "category"_qba, tags },
-								}
+								{ "title"_qba, cs.Title_ },
+								{ "htmlUrl"_qba, cs.Link_ },
+								{ "xmlUrl"_qba, sb->GetFeed (cs.FeedID_).URL_ },
+								{ "category"_qba, itm->GetTags (cs.Tags_).join (',') },
 							};
+							const auto feedParams = sb->GetFeedSettings (cs.FeedID_).value_or (Feed::FeedSettings {});
+							if (feedParams.UpdateTimeout_)
+							{
+								attrs.append ({ "useCustomFetchInterval"_qba, "true"_qs });
+								attrs.append ({ "fetchInterval"_qba, QString::number (feedParams.UpdateTimeout_) });
+							}
+							if (feedParams.ItemAge_)
+								attrs.append ({ "maxArticleAge"_qba, QString::number (feedParams.ItemAge_) });
+							if (feedParams.NumItems_)
+								attrs.append ({ "maxArticleNumber"_qba, QString::number (feedParams.NumItems_) });
+							return Tag { .Name_ = "outline"_qba, .Attrs_ = std::move (attrs) };
 						})
 			};
 		}
