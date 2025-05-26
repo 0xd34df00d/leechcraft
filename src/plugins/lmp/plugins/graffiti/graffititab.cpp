@@ -624,7 +624,7 @@ namespace LC::LMP::Graffiti
 			const auto& eithers = Util::Map (files,
 					[resolver] (const QFileInfo& info)
 						{ return resolver->ResolveInfo (info.absoluteFilePath ()); });
-			const auto& parts = Util::PartitionEithers (eithers);
+			const auto& parts = Util::Partition (eithers);
 
 			for (const auto& resolveError : parts.first)
 				qWarning () << resolveError.FilePath_

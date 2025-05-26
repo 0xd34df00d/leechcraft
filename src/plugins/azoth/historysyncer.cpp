@@ -101,7 +101,7 @@ namespace Azoth
 					const auto& results = Util::Map (allStorages->futures (),
 							[] (auto future) { return future.result (); });
 
-					const auto& partition = Util::PartitionEithers (results);
+					const auto& partition = Util::Partition (results);
 					if (!partition.first.isEmpty ())
 					{
 						qWarning () << Q_FUNC_INFO

@@ -117,7 +117,7 @@ namespace Dolozhee
 			uploadResults.reserve (pendingFiles.size ());
 			for (const auto& curUpload : pendingFiles)
 				uploadResults << co_await UploadFile (curUpload, wiz, progressReporter);
-			auto [uploadErrors, uploadedFiles] = Util::PartitionEithers (uploadResults);
+			auto [uploadErrors, uploadedFiles] = Util::Partition (uploadResults);
 
 			Util::MimeDetector detector;
 			for (auto& item : uploadedFiles)

@@ -206,7 +206,7 @@ namespace Util
 	}
 
 	template<template<typename> class Cont, typename L, typename R>
-	std::pair<Cont<L>, Cont<R>> PartitionEithers (const Cont<Either<L, R>>& eithers)
+	std::pair<Cont<L>, Cont<R>> Partition (const Cont<Either<L, R>>& eithers)
 	{
 		std::pair<Cont<L>, Cont<R>> result;
 		for (const auto& either : eithers)
