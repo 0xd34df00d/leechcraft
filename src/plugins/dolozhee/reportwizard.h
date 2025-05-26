@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWizard>
+#include <util/xpc/downloadhelpers.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/idownload.h>
 
@@ -50,9 +51,7 @@ namespace Dolozhee
 
 		explicit ReportWizard (ICoreProxy_ptr, QWidget* = nullptr);
 
-		void PostRequest (const QString&, const QByteArray&, const QByteArray&,
-				const std::function<void (QByteArray)>&,
-				const std::function<void (IDownload::Error)>&);
+		Util::Task<Util::TempDownload_t> PostRequest (const QString&, const QByteArray&, const QByteArray&);
 
 		ChooseUserPage* GetChooseUserPage () const;
 		ReportTypePage* GetReportTypePage () const;

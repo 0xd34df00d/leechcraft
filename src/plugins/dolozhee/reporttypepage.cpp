@@ -8,16 +8,11 @@
 
 #include "reporttypepage.h"
 #include <memory>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
-#include <util/sll/functional.h>
 #include <util/sll/unreachable.h>
-#include <util/sll/either.h>
-#include <util/sll/visitor.h>
-#include <util/threads/futures.h>
+#include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <util/xpc/downloadhelpers.h>
 #include "reportwizard.h"
 
@@ -52,17 +47,16 @@ namespace Dolozhee
 		if (Ui_.CatCombo_->count () > 1)
 			return;
 
-		const QUrl url { "https://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories" };
-		const auto& res = Util::DownloadAsTemporary (Proxy_->GetEntityManager (), url);
-		if (!res)
-			return;
+		[this] -> Util::ContextTask<void>
+		{
+			co_await Util::AddContextObject { *this };
 
-		Util::Sequence (this, *res) >>
-				Util::Visitor
-				{
-					[] (const IDownload::Error&) {},
-					[this] (const QByteArray& data) { ParseCategories (data); }
-				};
+			const QUrl url { "https://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories"_qs };
+			const auto result = co_await Util::DownloadAsTemporary (*Proxy_->GetEntityManager (), url);
+			const auto data = co_await WithHandler (result,
+					[] (const IDownload::Error&) { /* TODO */ });
+			ParseCategories (data);
+		} ();
 	}
 
 	void ReportTypePage::ForceReportType (Type type)

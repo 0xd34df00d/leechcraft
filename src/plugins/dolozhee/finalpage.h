@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWizardPage>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/core/icoreproxy.h>
 #include "ui_finalpage.h"
 #include "structures.h"
@@ -26,24 +27,13 @@ namespace Dolozhee
 		Ui::FinalPage Ui_;
 
 		const ICoreProxy_ptr Proxy_;
-
-		QList<FileInfo> PendingFiles_;
-		FileInfo CurrentUpload_;
-		QList<FileInfo> UploadedFiles_;
 	public:
 		explicit FinalPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		void initializePage () override;
 	private:
-		void UploadPending ();
-
-		void HandleUploadReplyData (const QByteArray&);
-		void HandleReportPostedData (const QByteArray&);
-
-		void ShowRegrets ();
+		Util::ContextTask<void> RunUploading ();
 	private slots:
-		void handleUploadProgress (qint64);
-
 		void on_Status__linkActivated (const QString&);
 	};
 }

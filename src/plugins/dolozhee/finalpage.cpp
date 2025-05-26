@@ -11,9 +11,11 @@
 #include <QDomDocument>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <util/xpc/util.h>
+#include <boost/proto/transform/env.hpp>
+#include <util/sll/qtutil.h>
 #include <util/sys/mimedetector.h>
-#include <util/sll/functional.h>
+#include <util/threads/coro.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/idownload.h>
 #include "reportwizard.h"
@@ -35,134 +37,166 @@ namespace Dolozhee
 		Ui_.UploadProgress_->hide ();
 	}
 
+	namespace
+	{
+		using UploadFileResult_t = Util::Either<QString, FileInfo>;
+
+		Util::Task<UploadFileResult_t> UploadFile (FileInfo pending,
+				ReportWizard *wiz, std::invocable<QString> auto progressReporter)
+		{
+			const auto& filename = QFileInfo { pending.Name_ }.fileName ();
+
+			QFile file { filename };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << "unable to open" << filename << file.errorString ();
+				co_return Util::Left { FinalPage::tr ("Unable to open %1: %2.").arg (filename, file.errorString ()) };
+			}
+
+			progressReporter (FinalPage::tr ("Sending %1...").arg ("<em>" + filename + "</em>"));
+
+			const auto reply = co_await wiz->PostRequest ("/uploads.xml",
+					file.readAll (),
+					"application/octet-stream");
+			if (const auto err = reply.MaybeLeft ())
+				co_return Util::Left { FinalPage::tr ("Unable to upload %1: %2.").arg (filename, err->Message_) };
+
+			QDomDocument doc;
+			if (!doc.setContent (reply.GetRight ()))
+			{
+				qWarning () << "unable to parse reply" << reply.GetRight ();
+				co_return Util::Left { FinalPage::tr ("Unable to parse server reply.")};
+			}
+
+			pending.Token_ = doc.documentElement ().firstChildElement ("token").text ();
+			co_return pending;
+		}
+
+		struct Error { QString Message_; };
+		struct IssueId { QString Id_; };
+
+		using IssueCreationResult = Util::Either<Error, IssueId>;
+
+		Util::Task<IssueCreationResult> CreateIssue (QByteArray issueXml, ReportWizard *wiz)
+		{
+			const auto reply = co_await wiz->PostRequest ("/issues.xml",
+					issueXml,
+					"application/xml");
+			const auto data = co_await WithHandler (reply,
+					[] (const IDownload::Error& err) { return Error { err.Message_ }; });
+
+			QDomDocument doc;
+			if (!doc.setContent (data))
+			{
+				qWarning () << "cannot parse" << data;
+				co_return Util::Left { Error { FinalPage::tr ("Unable to parse the server reply.") } };
+			}
+
+			const auto& id = doc.documentElement ().firstChildElement ("id").text ();
+			if (id.isEmpty ())
+			{
+				qWarning () << "no issue ID" << data;
+				co_return Util::Left { Error { FinalPage::tr ("The server hasn't returned the issue ID.") } };
+			}
+
+			co_return IssueId { id };
+		}
+
+		struct UploadResult
+		{
+			QStringList FileUploadErrors_ {};
+			IssueCreationResult IssueCreationResult_;
+		};
+
+		Util::ContextTask<UploadResult> UploadPending (QList<FileInfo> pendingFiles,
+				ReportWizard *wiz, std::invocable<QString> auto progressReporter)
+		{
+			co_await Util::AddContextObject { *wiz };
+
+			QList<UploadFileResult_t> uploadResults;
+			uploadResults.reserve (pendingFiles.size ());
+			for (const auto& curUpload : pendingFiles)
+				uploadResults << co_await UploadFile (curUpload, wiz, progressReporter);
+			auto [uploadErrors, uploadedFiles] = Util::PartitionEithers (uploadResults);
+
+			Util::MimeDetector detector;
+			for (auto& item : uploadedFiles)
+				item.Mime_ = detector (item.Name_);
+
+			const auto typePage = wiz->GetReportTypePage ();
+			const auto type = typePage->GetReportType ();
+			const auto category = typePage->GetCategoryID ();
+
+			QString title;
+			QString desc;
+			switch (type)
+			{
+			case ReportTypePage::Type::Bug:
+				title = wiz->GetBugReportPage ()->GetTitle ();
+				desc = wiz->GetBugReportPage ()->GetText ();
+				break;
+			case ReportTypePage::Type::Feature:
+				title = wiz->GetFRPage ()->GetTitle ();
+				desc = wiz->GetFRPage ()->GetText ();
+				break;
+			}
+
+			const auto& data = XMLGenerator ().CreateIssue (title, desc,
+					category, type, typePage->GetPriority (), uploadedFiles);
+			const auto result = co_await CreateIssue (data, wiz);
+			co_return { uploadErrors, result };
+		}
+	}
+
 	void FinalPage::initializePage ()
 	{
-		auto wiz = static_cast<ReportWizard*> (wizard ());
-
-		for (const auto& file : wiz->GetFilePage ()->GetFiles ())
-			PendingFiles_.push_back ({ file, QString (), QString (), QString () });
-
-		UploadPending ();
+		RunUploading ();
 	}
 
-	void FinalPage::UploadPending ()
+	namespace
 	{
-		auto wiz = static_cast<ReportWizard*> (wizard ());
-
-		if (!PendingFiles_.isEmpty ())
+		QString MakeStatusMessage (const UploadResult& result)
 		{
-			CurrentUpload_ = PendingFiles_.takeFirst ();
-			QFile file (CurrentUpload_.Name_);
-			if (!file.open (QIODevice::ReadOnly))
-				return UploadPending ();
-
-			const auto& filename = QFileInfo { CurrentUpload_.Name_ }.fileName ();
-
-			Ui_.Status_->setText (tr ("Sending %1...").arg ("<em>" + filename + "</em>"));
-
-			wiz->PostRequest ("/uploads.xml",
-					file.readAll (),
-					"application/octet-stream",
-					Util::BindMemFn (&FinalPage::HandleUploadReplyData, this),
-					[this, filename] (const IDownload::Error&)
+			return Util::Visit (result.IssueCreationResult_,
+					[fileErrors = result.FileUploadErrors_] (const IssueId& id)
 					{
-						QMessageBox::critical (this,
-								"LeechCraft",
-								tr ("Unable to upload %1.")
-									.arg ("<em>" + filename + "</em>"));
+						auto text = FinalPage::tr ("Report has been sent successfully. Thanks for your time!") +
+								"<br />"_ql +
+								(FinalPage::tr ("Your issue number is %1. You can view it here:") +
+									" <a href='https://dev.leechcraft.org/issues/%1'>#%1</a>.<br/>"_ql +
+									FinalPage::tr ("You can also track it via an Atom feed reader:") +
+									" <a href='https://dev.leechcraft.org/issues/%1.atom'>Atom</a>."_ql).arg (id.Id_);
+						if (!fileErrors.isEmpty ())
+						{
+							text += "<br /><br />"_ql;
+							text += FinalPage::tr ("Although, sadly, the following files couldn't be uploaded:");
+							text += "<ul><li>" + fileErrors.join ("</li><li>"_ql) + "</li></ul>";
+						}
+						return text;
+					},
+					[] (const Error& err)
+					{
+						return FinalPage::tr ("I'm very sorry to say that, but seems like "
+								"we're unable to handle your report at the time :(") +
+								"<br />" +
+								err.Message_;
 					});
-
-			return;
 		}
-
-		Util::MimeDetector detector;
-		for (auto& item : UploadedFiles_)
-			item.Mime_ = detector (item.Name_);
-
-		const auto typePage = wiz->GetReportTypePage ();
-		const auto type = typePage->GetReportType ();
-		const auto category = typePage->GetCategoryID ();
-
-		QString title;
-		QString desc;
-		switch (type)
-		{
-		case ReportTypePage::Type::Bug:
-			title = wiz->GetBugReportPage ()->GetTitle ();
-			desc = wiz->GetBugReportPage ()->GetText ();
-			break;
-		case ReportTypePage::Type::Feature:
-			title = wiz->GetFRPage ()->GetTitle ();
-			desc = wiz->GetFRPage ()->GetText ();
-			break;
-		}
-
-		const auto& data = XMLGenerator ().CreateIssue (title, desc,
-				category, type, typePage->GetPriority (), UploadedFiles_);
-		wiz->PostRequest ("/issues.xml",
-				data,
-				"application/xml",
-				Util::BindMemFn (&FinalPage::HandleReportPostedData, this),
-				[this] (const IDownload::Error&) { ShowRegrets (); });
 	}
 
-	void FinalPage::HandleUploadReplyData (const QByteArray& replyData)
+	Util::ContextTask<void> FinalPage::RunUploading ()
 	{
-		QDomDocument doc;
-		if (!doc.setContent (replyData))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse reply"
-					<< replyData;
-			UploadPending ();
-			return;
-		}
+		co_await Util::AddContextObject { *this };
 
-		CurrentUpload_.Token_ = doc
-				.documentElement ()
-				.firstChildElement ("token")
-				.text ();
-		UploadedFiles_ << CurrentUpload_;
+		auto wiz = static_cast<ReportWizard*> (wizard ());
 
-		UploadPending ();
-	}
+		QList<FileInfo> files;
+		for (const auto& file : wiz->GetFilePage ()->GetFiles ())
+			files.push_back ({ file, QString (), QString (), QString () });
 
-	void FinalPage::HandleReportPostedData (const QByteArray& data)
-	{
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse"
-					<< data;
-			ShowRegrets ();
-			return;
-		}
-
-		auto root = doc.documentElement ();
-		const auto& id = root.firstChildElement ("id").text ();
-		auto text = tr ("Report has been sent successfully. Thanks for your time!");
-		if (!id.isEmpty ())
-		{
-			text += "<br />";
-			text += (tr ("Your issue number is %1. You can view it here:") +
-						" <a href='https://dev.leechcraft.org/issues/%1'>#%1</a>.<br/>" +
-						tr ("You can also track it via an Atom feed reader:") +
-						" <a href='https://dev.leechcraft.org/issues/%1.atom'>Atom</a>.").arg (id);
-		}
-		Ui_.Status_->setText (text);
-	}
-
-	void FinalPage::ShowRegrets()
-	{
-		const auto& text = tr ("I'm very sorry to say that, but seems like "
-				"we're unable to handle your report at the time :(");
-		Ui_.Status_->setText (text);
-	}
-
-	void FinalPage::handleUploadProgress (qint64 done)
-	{
-		Ui_.UploadProgress_->setValue (done);
+		const auto result = co_await UploadPending (files, wiz,
+				[this] (const QString& text) { Ui_.Status_->setText (text); });
+		Ui_.Status_->setText (MakeStatusMessage (result));
 	}
 
 	void FinalPage::on_Status__linkActivated (const QString& linkStr)

@@ -7,14 +7,10 @@
  **********************************************************************/
 
 #include "reportwizard.h"
-#include <QNetworkAccessManager>
 #include <QtDebug>
-#include <QMessageBox>
-#include <util/sll/either.h>
-#include <util/sll/visitor.h>
-#include <util/threads/futures.h>
+#include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <util/xpc/util.h>
-#include <util/xpc/downloadhelpers.h>
 #include "chooseuserpage.h"
 #include "userstatuspage.h"
 #include "reporttypepage.h"
@@ -47,14 +43,11 @@ namespace Dolozhee
 		setPage (PageID::FeatureDetails, FRPage_);
 		setPage (PageID::PreviewRequestPage, PreviewPage_);
 		setPage (PageID::FilePage, FilePage_);
-		auto final = new FinalPage (proxy);
-		setPage (PageID::Final, final);
+		setPage (PageID::Final, new FinalPage (proxy));
 	}
 
-	void ReportWizard::PostRequest (const QString& address,
-			const QByteArray& data, const QByteArray& contentType,
-			const std::function<void (QByteArray)>& dataHandler,
-			const std::function<void (IDownload::Error)>& errorHandler)
+	Util::Task<Util::TempDownload_t> ReportWizard::PostRequest (const QString& address,
+			const QByteArray& data, const QByteArray& contentType)
 	{
 		const auto& user = ChooseUser_->GetLogin ().toUtf8 ();
 		const auto& pass = ChooseUser_->GetPassword ().toUtf8 ();
@@ -67,20 +60,9 @@ namespace Dolozhee
 		additional ["UploadData"] = data;
 		additional ["Operation"] = static_cast<int> (QNetworkAccessManager::PostOperation);
 
-		auto res = Util::DownloadAsTemporary (Proxy_->GetEntityManager (),
-				QUrl { "https://dev.leechcraft.org" + address },
-				Util::DownloadParams
-				{
-					.Additional_ = additional,
-					.Context_ = this
-				});
-		if (!res)
-		{
-			errorHandler (IDownload::Error { IDownload::Error::Type::LocalError, "no plugins to handle" });
-			return;
-		}
-
-		Util::Sequence (this, *res) >> Util::Visitor { dataHandler, errorHandler };
+		return Util::DownloadAsTemporary (*Proxy_->GetEntityManager (),
+				QUrl { "https://dev.leechcraft.org"_ql + address },
+				Util::DownloadParams { .Additional_ = additional });
 	}
 
 	ChooseUserPage* ReportWizard::GetChooseUserPage () const
