@@ -115,6 +115,16 @@ namespace LC::Util
 		}
 	};
 
+	struct ItemsEditable : detail::ParameterizedExtension<QList<int>>
+	{
+		using ParameterizedExtension::ParameterizedExtension;
+
+		Qt::ItemFlags GetFlags (int column) const
+		{
+			return Param_.contains (column) ? Qt::ItemIsEditable : Qt::ItemFlags {};
+		}
+	};
+
 	template<auto CheckField>
 	struct ItemsCheckable : detail::Extension
 	{
@@ -197,6 +207,9 @@ namespace LC::Util
 	{
 		using FieldGetter_t = QVariant (*) (const T&);
 		const QVector<FieldGetter_t> Fields_;
+
+		using FieldSetter_t = void (*) (T&, const QVariant&);
+		const QVector<FieldSetter_t> Setters_;
 	public:
 		template<auto... Getter>
 		explicit ItemsModel (const Field<Getter>&... fields)
@@ -204,11 +217,12 @@ namespace LC::Util
 		{
 		}
 
-		template<auto... Getter, typename... ExtParams>
-		explicit ItemsModel (const std::tuple<ExtParams...>& extParams, const Field<Getter>&... fields)
+		template<auto... Member, typename... ExtParams>
+		explicit ItemsModel (const std::tuple<ExtParams...>& extParams, const Field<Member>&... fields)
 		: FlatItemsModelTypedBase<T> { { fields.Name_... } }
 		, Extensions { extParams }...
-		, Fields_ { +[] (const T& t) -> QVariant { return t.*Getter; }... }
+		, Fields_ { +[] (const T& t) -> QVariant { return t.*Member; }... }
+		, Setters_ { +[] (T& t, const QVariant& v) { t.*Member = v.value<std::decay_t<decltype (t.*Member)>> (); }... }
 		{
 		}
 
@@ -222,10 +236,18 @@ namespace LC::Util
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override
 		{
 			auto& item = this->Items_ [index.row ()];
-			const auto result = (Extensions::SetData (item, index.row (), index.column (), value, role) ||...);
-			if (result)
+			if ((Extensions::SetData (item, index.row (), index.column (), value, role) ||...))
+			{
 				emit this->dataChanged (index, index);
-			return result;
+				return true;
+			}
+
+			if (role != Qt::EditRole)
+				return false;
+
+			Setters_ [index.column ()] (item, value);
+			emit this->dataChanged (index, index);
+			return true;
 		}
 	protected:
 		QVariant GetData (int row, int column, int role) const override
@@ -235,6 +257,7 @@ namespace LC::Util
 			switch (role)
 			{
 			case Qt::DisplayRole:
+			case Qt::EditRole:
 				if (const auto getter = Fields_.value (column))
 					return getter (item);
 				return {};
