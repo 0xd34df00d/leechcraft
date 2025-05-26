@@ -76,12 +76,12 @@ namespace LC::Aggregator
 		return Ui_.AdditionalTags_->text ().trimmed ();
 	}
 
-	QSet<QString> ImportOPMLDialog::GetSelectedUrls () const
+	QList<OPMLItem> ImportOPMLDialog::GetSelectedItems () const
 	{
-		QSet<QString> result;
+		QList<OPMLItem> result;
 		for (const auto& item : Model_.GetItems ())
 			if (item.IsChecked_)
-				result << item.URL_;
+				result << item;
 		return result;
 	}
 

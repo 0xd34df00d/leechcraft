@@ -42,7 +42,7 @@ namespace LC::Aggregator
 
 		QString GetFilename () const;
 		QString GetTags () const;
-		QSet<QString> GetSelectedUrls () const;
+		QList<OPMLItem> GetSelectedItems () const;
 	private:
 		void HandleFilePathEdited (const QString&);
 		void BrowseFile ();

@@ -105,29 +105,19 @@ namespace LC::Aggregator::Opml
 			return;
 
 		const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (importDialog.GetTags ());
-		const auto& selectedUrls = importDialog.GetSelectedUrls ();
+		for (const auto& item : importDialog.GetSelectedItems ())
+		{
+			int interval = 0;
+			if (item.CustomFetchInterval_)
+				interval = item.FetchInterval_;
 
-		Util::Visit (ParseOPML (importDialog.GetFilename ()),
-				[] (const QString& error) { ReportError (error); },
-				[&] (const OPMLParseResult& result)
-				{
-					for (const auto& item : result.Items_)
-					{
-						if (!selectedUrls.contains (item.URL_))
-							continue;
-
-						int interval = 0;
-						if (item.CustomFetchInterval_)
-							interval = item.FetchInterval_;
-
-						AddFeed ({
-									.URL_ = item.URL_,
-									.Tags_ = tags + item.Categories_,
-									.FeedSettings_ = { { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } },
-									.UpdatesManager_ = updatesManager,
-								});
-					}
-				});
+			AddFeed ({
+						.URL_ = item.URL_,
+						.Tags_ = tags + item.Categories_,
+						.FeedSettings_ = { { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } },
+						.UpdatesManager_ = updatesManager,
+					});
+		}
 	}
 
 	void HandleOpmlEntity (const Entity& e, std::weak_ptr<UpdatesManager> updatesManager)
