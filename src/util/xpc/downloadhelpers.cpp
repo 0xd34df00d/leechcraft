@@ -7,23 +7,22 @@
  **********************************************************************/
 
 #include "downloadhelpers.h"
-#include <QFuture>
 #include <QFile>
 #include <QtDebug>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro/future.h>
+#include <util/threads/coro.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LC::Util
 {
-	std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
-			const QUrl& url, DownloadParams params)
+	Task<TempDownload_t> DownloadAsTemporary (IEntityManager& iem, QUrl url, DownloadParams params)
 	{
-		const auto& path = Util::GetTemporaryName ();
-		auto e = Util::MakeEntity (url,
+		const auto& path = GetTemporaryName ();
+		auto e = MakeEntity (url,
 				path,
 				DoNotSaveInHistory |
 					Internal |
@@ -32,37 +31,36 @@ namespace LC::Util
 		e.Mime_ = std::move (params.Mime_);
 		e.Additional_ = std::move (params.Additional_);
 
-		auto res = iem->DelegateEntity (e);
+		const auto res = iem.DelegateEntity (e);
 		if (!res)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "delegation failed for"
-					<< url;
-			return {};
+			qWarning () << "delegation failed for" << url;
+			co_return IDownload::Error
+			{
+				IDownload::Error::Type::LocalError,
+				QObject::tr ("Unable to find a downloader plugin.")
+			};
 		}
 
-		return Util::Sequence (params.Context_, res.DownloadResult_) >>
-				Util::Visitor
+		const auto result = co_await res.DownloadResult_;
+		const auto success [[maybe_unused]] = co_await WithHandler (result,
+				[&url] (const IDownload::Error& error)
 				{
-					[] (const IDownload::Error& err) { return Util::MakeReadyFuture (TempResultType_t::Left (err)); },
-					[path] (IDownload::Success)
-					{
-						QFile file { path };
-						auto removeGuard = Util::MakeScopeGuard ([&file] { file.remove (); });
-						if (!file.open (QIODevice::ReadOnly))
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to open downloaded file"
-									<< file.errorString ();
-							return Util::MakeReadyFuture (TempResultType_t::Left ({
-									IDownload::Error::Type::LocalError,
-									"unable to open file"
-							}));
-						}
+					qWarning () << "failed downloading" << url << static_cast<int> (error.Type_) << error.Message_;
+				});
 
-						return Util::MakeReadyFuture (TempResultType_t::Right (file.readAll ()));
-					}
-				};
+		QFile file { path };
+		auto removeGuard = MakeScopeGuard ([&file] { file.remove (); });
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << "unable to open downloaded file" << file.errorString ();
+			co_return IDownload::Error
+			{
+				IDownload::Error::Type::LocalError,
+				QObject::tr ("Unable to open local file: %1.").arg (file.errorString ())
+			};
+		}
+
+		co_return file.readAll ();
 	}
-
 }
