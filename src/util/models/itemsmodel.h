@@ -80,6 +80,25 @@ namespace LC::Util
 
 			static Qt::ItemFlags GetFlags (auto&&...) { return {}; }
 			static bool SetData (auto&&...) { return false; }
+			static void GetDataForRole () {}
+		};
+
+		template<typename P>
+		struct ParameterizedExtension : Extension
+		{
+			struct Param
+			{
+				P Param_;
+			};
+
+			P Param_;
+
+			template<typename... Params>
+				requires (std::is_same_v<Param, Params> || ...)
+			explicit ParameterizedExtension (const std::tuple<Params...>& args)
+			: Param_ { std::get<Param> (args).Param_ }
+			{
+			}
 		};
 	}
 
@@ -140,23 +159,11 @@ namespace LC::Util
 	inline constexpr auto NoField_v = NoField {};
 
 	template<>
-	struct ItemsCheckable<NoField_v> : detail::Extension
+	struct ItemsCheckable<NoField_v> : detail::ParameterizedExtension<Qt::CheckState>
 	{
-		struct Arg
-		{
-			Qt::CheckState DefaultChecked_ = Qt::Checked;
-		};
-
-		const Arg Arg_;
-
 		QHash<int, Qt::CheckState> RowsStates_;
 
-		template<typename... Args>
-			requires (std::is_same_v<Arg, Args> || ...)
-		explicit ItemsCheckable (const std::tuple<Args...>& args)
-		: Arg_ { std::get<Arg> (args) }
-		{
-		}
+		using ParameterizedExtension::ParameterizedExtension;
 
 		static Qt::ItemFlags GetFlags (int column)
 		{
@@ -165,12 +172,12 @@ namespace LC::Util
 
 		bool IsChecked (int row) const
 		{
-			return RowsStates_.value (row, Arg_.DefaultChecked_) == Qt::Checked;
+			return RowsStates_.value (row, Param_) == Qt::Checked;
 		}
 
 		QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto&, int row, int column)
 		{
-			return column ? QVariant {} : RowsStates_.value (row, Arg_.DefaultChecked_);
+			return column ? QVariant {} : RowsStates_.value (row, Param_);
 		}
 
 		template<typename Item>
