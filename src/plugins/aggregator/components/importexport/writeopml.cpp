@@ -51,6 +51,7 @@ namespace LC::Aggregator::OPML
 								.Name_ = "outline"_qba,
 								.Attrs_ = {
 									{ "isOpen"_qba, "true"_qs },
+									{ "title"_qba, cs.Title_ },
 									{ "htmlUrl"_qba, cs.Link_ },
 									{ "xmlUrl"_qba, sb->GetFeed (cs.FeedID_).URL_ },
 									{ "category"_qba, tags },
