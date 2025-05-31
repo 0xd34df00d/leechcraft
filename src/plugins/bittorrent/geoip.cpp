@@ -10,7 +10,6 @@
 #include <QStringList>
 #include <QFile>
 #include <QtDebug>
-#include <util/sll/monad.h>
 
 #ifdef ENABLE_GEOIP
 #include <maxminddb.h>
@@ -43,27 +42,25 @@ namespace LC::BitTorrent
 
 	GeoIP::GeoIP ()
 	{
-		using Util::operator>>;
-
-		const auto maybeImpl = FindDB () >>
-				[] (const QString& path) -> std::optional<ImplPtr_t>
-				{
-					qDebug () << Q_FUNC_INFO << "loading GeoIP from" << path;
-
-					MMDB_s mmdb;
-					if (int status = MMDB_open (path.toStdString ().c_str (), MMDB_MODE_MMAP, &mmdb);
-						status != MMDB_SUCCESS)
+		const auto maybeImpl = FindDB ()
+				.and_then ([] (const QString& path) -> std::optional<ImplPtr_t>
 					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to load MaxMind DB from:"
-								<< status;
-						return {};
-					}
+						qDebug () << Q_FUNC_INFO << "loading GeoIP from" << path;
 
-					auto ptr = ImplPtr_t { new MMDB_s, &MMDB_close };
-					*ptr = mmdb;
-					return { ptr };
-				};
+						MMDB_s mmdb;
+						if (int status = MMDB_open (path.toStdString ().c_str (), MMDB_MODE_MMAP, &mmdb);
+							status != MMDB_SUCCESS)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to load MaxMind DB from:"
+									<< status;
+							return {};
+						}
+
+						auto ptr = ImplPtr_t { new MMDB_s, &MMDB_close };
+						*ptr = mmdb;
+						return { ptr };
+					});
 		Impl_ = maybeImpl.value_or (ImplPtr_t {});
 	}
 
