@@ -15,8 +15,6 @@
 #include <interfaces/lmp/ilocalcollection.h>
 #include <util/sll/views.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/functor.h>
-#include <util/sll/monad.h>
 #include "parser.h"
 #include "tracksselectordialog.h"
 
@@ -103,13 +101,10 @@ namespace LC::LMP::PPL
 
 		std::optional<int> FindMetadata (const Collection::Artists_t& artists, const Media::AudioInfo& info)
 		{
-			using Util::operator>>;
-			using Util::operator*;
-
-			const auto& maybeTrack = FindArtist (artists, info.Artist_) >>
-					[&] (const auto& artist) { return FindAlbum (artist.Albums_, info.Album_); } >>
-					[&] (const auto& album) { return FindTrack (album->Tracks_, info.Title_); };
-			return &Collection::Track::ID_ * maybeTrack;
+			return FindArtist (artists, info.Artist_)
+					.and_then ([&] (const auto& artist) { return FindAlbum (artist.Albums_, info.Album_); })
+					.and_then ([&] (const auto& album) { return FindTrack (album->Tracks_, info.Title_); })
+					.transform ([] (const auto& track) { return track.ID_; });
 		}
 
 		void LocalCollectionScrobbler::SendBackdated (const Media::IAudioScrobbler::BackdatedTracks_t& list)
