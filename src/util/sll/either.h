@@ -23,6 +23,11 @@ namespace Util
 		T Value_;
 	};
 
+	template<>
+	struct Left<void> {};
+
+	constexpr auto AsLeft = Left<void> {};
+
 	template<typename L, typename R>
 	class Either
 	{
@@ -45,6 +50,11 @@ namespace Util
 
 		Either (const R& r)
 		: This_ { r }
+		{
+		}
+
+		Either (Left<void>, const L& l)
+		: This_ { l }
 		{
 		}
 
