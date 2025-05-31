@@ -16,7 +16,6 @@
 #include <QFuture>
 #include <util/sll/either.h>
 #include <util/threads/futures.h>
-#include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "uploadmanager.h"
@@ -168,8 +167,7 @@ namespace DBox
 		else
 			return Util::MakeReadyFuture (RequestUrlResult_t::Left (UserCancelled {}));
 
-		return DriveManager_->ShareEntry (id, type) *
-				RequestUrlResult_t::EmbeddingLeft ();
+		return DriveManager_->ShareEntry (id, type).then (RequestUrlResult_t::EmbeddingLeft ());
 	}
 
 	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)

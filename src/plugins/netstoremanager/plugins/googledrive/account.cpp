@@ -15,9 +15,7 @@
 #include <QPushButton>
 #include <QFuture>
 #include <util/sll/either.h>
-#include <util/sll/visitor.h>
 #include <util/threads/futures.h>
-#include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "uploadmanager.h"
@@ -200,8 +198,7 @@ namespace GoogleDrive
 				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
 		}
 
-		return DriveManager_->ShareEntry (id) *
-				RequestUrlResult_t::EmbeddingLeft ();
+		return DriveManager_->ShareEntry (id).then (RequestUrlResult_t::EmbeddingLeft ());
 	}
 
 	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
