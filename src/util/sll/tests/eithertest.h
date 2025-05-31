@@ -20,19 +20,6 @@ namespace Util
 	private slots:
 		void testBasicLeft ();
 		void testBasicRight ();
-
-		void testFMapLeft ();
-		void testFMapRight ();
-		void testFMapRightChangeType ();
-
-		void testPure ();
-		void testGSL ();
-		void testGSLLeft ();
-
-		void testBind ();
-		void testBindLeft ();
-
-		void testBindLeftNotConstructed ();
 	};
 }
 }

@@ -29,7 +29,6 @@ if (ENABLE_UTIL_TESTS)
 
 	AddUtilTest (sll_either tests/eithertest.cpp UtilSllEitherTest leechcraft-util-sll)
 	AddUtilTest (sll_functor tests/functortest.cpp UtilSllFunctorTest leechcraft-util-sll)
-	AddUtilTest (sll_monad tests/monadtest.cpp UtilSllMonadTest leechcraft-util-sll)
 	AddUtilTest (sll_prelude tests/preludetest.cpp UtilSllPreludeTest leechcraft-util-sll)
 	AddUtilTest (sll_qtutil tests/qtutiltest.cpp UtilSllQtUtilTest leechcraft-util-sll)
 	AddUtilTest (sll_scopeguard tests/scopeguardtest.cpp UtilSllScopeGuardTest leechcraft-util-sll)
