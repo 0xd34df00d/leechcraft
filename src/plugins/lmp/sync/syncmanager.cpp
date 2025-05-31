@@ -14,7 +14,6 @@
 #include <util/lmp/util.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
-#include <util/sll/functor.h>
 #include "copymanager.h"
 #include "../core.h"
 #include "../localfileresolver.h"
@@ -79,15 +78,15 @@ namespace LMP
 	{
 		Util::Either<ResolveError, QString> FixMask (const QString& mask, const QString& transcoded)
 		{
-			return Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded) *
-					[&] (const MediaInfo& info)
-					{
-						auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
-						const auto& ext = QFileInfo (transcoded).suffix ();
-						if (!result.endsWith (ext))
-							result += "." + ext;
-						return result;
-					};
+			return Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded)
+					.MapRight ([&] (const MediaInfo& info)
+						{
+							auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
+							const auto& ext = QFileInfo (transcoded).suffix ();
+							if (!result.endsWith (ext))
+								result += "." + ext;
+							return result;
+						});
 		}
 	}
 

@@ -39,7 +39,7 @@ namespace LMP
 			{
 				const auto& pair = Cache_ [file];
 				if (pair.first == modified)
-					return ResolveResult_t::Right (pair.second);
+					return pair.second;
 			}
 		}
 
@@ -48,7 +48,7 @@ namespace LMP
 		auto r = GetFileRef (file);
 		auto tag = r.tag ();
 		if (!tag)
-			return ResolveResult_t::Left ({ file, "cannot get audio tags" });
+			return { Util::AsLeft, { file, "cannot get audio tags" } };
 
 		auto audio = r.audioProperties ();
 
@@ -73,7 +73,7 @@ namespace LMP
 				Cache_.clear ();
 			Cache_ [file] = qMakePair (modified, info);
 		}
-		return ResolveResult_t::Right (info);
+		return info;
 	}
 
 	QMutex& LocalFileResolver::GetMutex ()
