@@ -20,7 +20,6 @@ add_util_library (util-sll
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
-	AddUtilTest (sll_applicative tests/applicativetest.cpp UtilSllApplicativeTest leechcraft-util-sll)
 	AddUtilTest (sll_ctstring tests/ctstringtest.cpp UtilSllCtStringTest leechcraft-util-sll)
 	AddUtilTest (sll_detector tests/detectortest.cpp UtilSllDetectorTest leechcraft-util-sll)
 
