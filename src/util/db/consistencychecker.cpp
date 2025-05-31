@@ -141,7 +141,7 @@ namespace LC::Util
 								      Util::MakePrettySize (filesize)),
 						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
 			{
-				ReportResult (iface, DumpResult_t::Left ({ tr ("Not enough available disk space.") }));
+				ReportResult (iface, Left { tr ("Not enough available disk space.") });
 				return;
 			}
 		}
@@ -160,7 +160,7 @@ namespace LC::Util
 								.arg ("<em>" + newPath + "</em>"),
 						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
 			{
-				ReportResult (iface, DumpResult_t::Left ({ tr ("Backup file already exists.") }));
+				ReportResult (iface, Left { tr ("Backup file already exists.") });
 				return;
 			}
 		}
@@ -175,7 +175,7 @@ namespace LC::Util
 							[iface] (const Dumper::Error& error)
 							{
 								ReportResult (iface,
-										DumpResult_t::Left ({ tr ("Unable to restore the database.") + " " + error.What_ }));
+										Left { tr ("Unable to restore the database.") + " " + error.What_ });
 							},
 							[iface, newPath, managed] (Dumper::Finished) { managed->HandleDumperFinished (iface, newPath); });
 				};
@@ -196,6 +196,6 @@ namespace LC::Util
 
 		QFile::rename (to, DBPath_);
 
-		ReportResult (iface, DumpResult_t::Right ({ oldSize, newSize }));
+		ReportResult (iface, DumpFinished { oldSize, newSize });
 	}
 }

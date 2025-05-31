@@ -25,7 +25,7 @@ namespace LC::Util
 			if constexpr (Promise::IsVoid)
 				promise.return_void ();
 			else
-				promise.return_value (Promise::ReturnType_t::Left (error));
+				promise.return_value (Left { error });
 
 			throw EitherFailureAbort {};
 		}

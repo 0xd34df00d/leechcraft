@@ -22,7 +22,7 @@ namespace Util
 
 	void EitherTest::testBasicLeft ()
 	{
-		const auto& left = SomeEither_t::Left (1);
+		const SomeEither_t left { Left (1) };
 		QCOMPARE (left.IsLeft (), true);
 		QCOMPARE (left.IsRight (), false);
 		QCOMPARE (left.GetLeft (), 1);
@@ -41,7 +41,7 @@ namespace Util
 
 	void EitherTest::testBasicRight ()
 	{
-		const auto& right = SomeEither_t::Right ("foo");
+		const SomeEither_t right { "foo" };
 		QCOMPARE (right.IsLeft (), false);
 		QCOMPARE (right.IsRight (), true);
 		QCOMPARE (right.GetRight (), QString { "foo" });

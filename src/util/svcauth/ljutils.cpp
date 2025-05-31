@@ -64,7 +64,7 @@ namespace LC::Util::LJ
 		if (const auto err = response.IsError ())
 		{
 			qWarning () << *err;
-			co_return RequestChallengeResult::Left ({ Tr::tr ("Network error: %1").arg (err->ErrorText_) });
+			co_return Left { Tr::tr ("Network error: %1").arg (err->ErrorText_) };
 		}
 
 		const auto& data = response.GetReplyData ();
@@ -73,16 +73,16 @@ namespace LC::Util::LJ
 		if (!doc.setContent (data))
 		{
 			qWarning () << "failed to parse response from" << data;
-			co_return RequestChallengeResult::Left ({ Tr::tr ("Failed to parse response") });
+			co_return Left { Tr::tr ("Failed to parse response") };
 		}
 
 		const auto& challenge = GetChallenge (doc);
 		if (!challenge)
 		{
 			qWarning () << "failed to get challenge from\n" << doc.toByteArray (1).constData ();
-			co_return RequestChallengeResult::Left ({ Tr::tr ("Failed to parse response") });
+			co_return Left { Tr::tr ("Failed to parse response") };
 		}
 
-		co_return RequestChallengeResult::Right (*challenge);
+		co_return *challenge;
 	}
 }

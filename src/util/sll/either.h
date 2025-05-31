@@ -166,15 +166,16 @@ namespace Util
 			return Either<L, RNew>::Right (r);
 		}
 
+		// TODO remove this method
 		static auto EmbeddingLeft ()
 		{
-			return [] (const auto& other)
+			return []<typename LL, typename RR> (const Either<LL, RR>& other)
 			{
-				static_assert (std::is_convertible<std::decay_t<decltype (other.GetLeft ())>, L>::value,
+				static_assert (std::is_convertible_v<LL, L>,
 						"Other's Either's Left type is not convertible to this Left type.");
 				return other.IsLeft () ?
-						Either<L, R>::Left (other.GetLeft ()) :
-						Either<L, R>::Right (other.GetRight ());
+						Either { Util::Left { other.GetLeft () } }:
+						Either { other.GetRight () };
 			};
 		}
 
