@@ -25,7 +25,7 @@ namespace LC::LMP::MP3Tunes
 		using enum CloudStorageError;
 
 		if (Login2Sid_.contains (login))
-			co_return ResultType::Right (Login2Sid_ [login]);
+			co_return Login2Sid_ [login];
 
 		co_await Util::AddContextObject { *this };
 
@@ -34,25 +34,25 @@ namespace LC::LMP::MP3Tunes
 				GetProxyHolder (),
 				!FailedAuth_.contains (login));
 		if (pass.isEmpty ())
-			co_return ResultType::Left ({ .Code_ = NotAuthorized, .Message_ = tr ("empty password") });
+			co_return { Util::AsLeft, { NotAuthorized, tr ("empty password") } };
 
 		const auto authUrl = "https://shop.mp3tunes.com/api/v1/login?output=xml&"
 				"username=%1&password=%2&partner_token=%3"_qs
 					.arg (login, pass, Consts::PartnerId);
 		const auto response = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest (authUrl));
 		if (const auto err = response.IsError ())
-			co_return ResultType::Left ({ .Code_ = NetError, .Message_ = tr ("network error: %1").arg (err->ErrorText_) });
+			co_return { Util::AsLeft, { NetError, tr ("network error: %1").arg (err->ErrorText_) } };
 
 		QDomDocument doc;
 		if (!doc.setContent (response.GetReplyData ()))
-			co_return ResultType::Left ({ .Code_ = NetError, .Message_ = tr ("failed to parse response") });
+			co_return { Util::AsLeft, { NetError, tr ("failed to parse response") } };
 
 		const auto& docElem = doc.documentElement ();
 		if (docElem.firstChildElement ("status"_qs).text () != "1"_qs)
 		{
 			FailedAuth_ << login;
 			const auto& errorText = docElem.firstChildElement ("errorMessage"_qs).text ();
-			co_return ResultType::Left ({ .Code_ = NotAuthorized, .Message_ = tr ("authentication error: %1").arg (errorText) });
+			co_return { Util::AsLeft, { NotAuthorized, tr ("authentication error: %1").arg (errorText) } };
 		}
 
 		FailedAuth_.remove (login);
@@ -60,6 +60,6 @@ namespace LC::LMP::MP3Tunes
 		const auto& sid = docElem.firstChildElement ("session_id"_qs).text ();
 		Login2Sid_ [login] = sid;
 
-		co_return ResultType::Right (sid);
+		co_return sid;
 	}
 }

@@ -57,14 +57,12 @@ namespace LC::LMP::MP3Tunes
 		const auto eitherSid = co_await AuthMgr_->GetSID (Login_);
 		const auto sid = co_await eitherSid;
 
-		using Result = ICloudStoragePlugin::UploadResult;
-
 		QFile file { path };
 		if (!file.open (QIODevice::ReadOnly))
-			co_return Result::Left ({
-					.Code_ = CloudStorageError::LocalError,
-					.Message_ = tr ("Unable to open file %1 for reading.").arg (path),
-				});
+		{
+			const auto& userMsg = tr ("Unable to open file %1 for reading.").arg (path);
+			co_return { Util::AsLeft, { CloudStorageError::LocalError, userMsg } };
+		}
 
 		const auto& fileData = file.readAll ();
 		const auto& hash = QCryptographicHash::hash (fileData, QCryptographicHash::Md5);
@@ -75,13 +73,10 @@ namespace LC::LMP::MP3Tunes
 		const auto reply = GetProxyHolder ()->GetNetworkAccessManager ()->put (QNetworkRequest { url }, fileData);
 		const auto response = co_await *reply;
 		if (!response.IsError ())
-			co_return Result::Right ({});
+			co_return Util::Void {};
 
 		const auto& errnoHeader = reply->rawHeader ("X-MP3tunes-ErrorNo");
 		const auto& errMsgHeader = reply->rawHeader ("X-MP3tunes-ErrorString");
-		co_return Result::Left ({
-				.Code_ = GetErrorCode (errnoHeader),
-				.Message_ = tr ("uploading failed: %1").arg (errMsgHeader),
-			});
+		co_return { Util::AsLeft, { GetErrorCode (errnoHeader), tr ("uploading failed: %1").arg (errMsgHeader) } };
 	}
 }
