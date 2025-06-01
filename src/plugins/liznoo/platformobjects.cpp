@@ -175,11 +175,10 @@ namespace Liznoo
 
 	QFuture<PlatformObjects::ChangeStateResult_t> PlatformObjects::ChangeState (PowerActions::Platform::State state)
 	{
+		using enum ChangeStateFailed::Reason;
+
 		if (!PowerActPlatform_)
-			return Util::MakeReadyFuture (ChangeStateResult_t::Left ({
-						ChangeStateFailed::Reason::Unavailable,
-						{}
-					}));
+			return Util::MakeReadyFuture (ChangeStateResult_t { Util::AsLeft, { Unavailable, {} } });
 
 		return Util::Sequence (this, PowerActPlatform_->CanChangeState (state)) >>
 				[state, this] (const PowerActions::Platform::QueryChangeStateResult& res)
@@ -187,13 +186,9 @@ namespace Liznoo
 					if (res.CanChangeState_)
 					{
 						PowerActPlatform_->ChangeState (state);
-						return Util::MakeReadyFuture (ChangeStateResult_t::Right ({}));
+						return Util::MakeReadyFuture (ChangeStateResult_t { ChangeStateSucceeded {} });
 					}
-					else
-						return Util::MakeReadyFuture (ChangeStateResult_t::Left ({
-										ChangeStateFailed::Reason::PlatformFailure,
-										res.Reason_
-								}));
+					return Util::MakeReadyFuture (ChangeStateResult_t { Util::AsLeft, { PlatformFailure, res.Reason_ } });
 				};
 	}
 
