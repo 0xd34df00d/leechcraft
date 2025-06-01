@@ -32,10 +32,10 @@ namespace DBusManager
 			if (qobject_cast<IInfo*> (plugin)->GetName () != name)
 				continue;
 
-			return RowCountResult_t::Right (qobject_cast<IJobHolder*> (plugin)->GetRepresentation ()->rowCount ());
+			return qobject_cast<IJobHolder*> (plugin)->GetRepresentation ()->rowCount ();
 		}
 
-		return RowCountResult_t::Left (IdentifierNotFound { name });
+		return Util::Left { IdentifierNotFound { name } };
 	}
 
 	Tasks::GetDataResult_t Tasks::GetData (const QString& name, int r, int role) const
@@ -50,10 +50,10 @@ namespace DBusManager
 			QVariantList result;
 			for (int i = 0, size = model->columnCount (); i < size; ++i)
 				result << model->index (r, i).data (role);
-			return GetDataResult_t::Right (result);
+			return result;
 		}
 
-		return GetDataResult_t::Left (IdentifierNotFound { name });
+		return Util::Left { IdentifierNotFound { name } };
 	}
 }
 }

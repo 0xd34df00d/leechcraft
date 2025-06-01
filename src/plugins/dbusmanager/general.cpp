@@ -34,10 +34,10 @@ namespace DBusManager
 		{
 			IInfo *ii = qobject_cast<IInfo*> (plugin);
 			if (ii->GetName () == name)
-				return Description_t::Right (ii->GetInfo ());
+				return ii->GetInfo ();
 		}
 
-		return Description_t::Left (IdentifierNotFound { name });
+		return Util::Left { IdentifierNotFound { name } };
 	}
 
 	General::Icon_t General::GetIcon (const QString& name, int dim)
@@ -52,11 +52,11 @@ namespace DBusManager
 			QPixmap pixmap = icon.pixmap (dim, dim);
 			QBuffer buffer;
 			if (!pixmap.save (&buffer, "PNG", 100))
-				return Icon_t::Left (SerializationError {});
-			return Icon_t::Right (buffer.data ());
+				return Util::Left { SerializationError {} };
+			return buffer.data ();
 		}
 
-		return Icon_t::Left (IdentifierNotFound { name });
+		return Util::Left { IdentifierNotFound { name } };
 	}
 }
 }
