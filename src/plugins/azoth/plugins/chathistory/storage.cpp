@@ -72,7 +72,7 @@ namespace ChatHistory
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open the database";
 			Util::DBLock::DumpError (DB_->lastError ());
-			return InitializationResult_t::Left (GeneralError { tr ("Unable to open Azoth history database.") });
+			return Util::Left { GeneralError { tr ("Unable to open Azoth history database.") } };
 		}
 
 		QSqlQuery pragma (*DB_);
@@ -214,7 +214,7 @@ namespace ChatHistory
 
 		PrepareEntryCache ();
 
-		return InitializationResult_t::Right ({});
+		return Util::Void {};
 	}
 
 	void Storage::InitializeTables ()
@@ -630,16 +630,16 @@ namespace ChatHistory
 		if (!RowID2Pos_.exec ())
 		{
 			Util::DBLock::DumpError (RowID2Pos_);
-			return SearchResult_t::Left ("Unable to execute search query.");
+			return Util::Left { "Unable to execute search query." };
 		}
 
 		if (!RowID2Pos_.next ())
-			return SearchResult_t::Right ({});
+			return { std::nullopt };
 
 		const int index = RowID2Pos_.value (0).toInt ();
 		RowID2Pos_.finish ();
 
-		return SearchResult_t::Right (index);
+		return { index };
 	}
 
 	SearchResult_t Storage::SearchDateImpl (qint32 accountId, qint32 entryId, const QDateTime& dt)
@@ -650,20 +650,19 @@ namespace ChatHistory
 		if (!Date2Pos_.exec ())
 		{
 			Util::DBLock::DumpError (Date2Pos_);
-			return SearchResult_t::Left ("Unable to execute search query.");
+			return Util::Left { "Unable to execute search query." };
 		}
 
 		if (!Date2Pos_.next ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to next record";
-			return SearchResult_t::Left ("Unable to navigate to the search results.");
+			qWarning () << "unable to navigate to next record";
+			return Util::Left { "Unable to navigate to the search results." };
 		}
 
 		const int index = Date2Pos_.value (0).toInt ();
 		Date2Pos_.finish ();
 
-		return SearchResult_t::Right (index);
+		return { index };
 	}
 
 	std::optional<int> Storage::GetAllHistoryCount ()
@@ -677,8 +676,7 @@ namespace ChatHistory
 
 		if (!query.next ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to next record";
+			qWarning () << "unable to navigate to next record";
 			return {};
 		}
 
@@ -849,22 +847,20 @@ namespace ChatHistory
 
 	IHistoryPlugin::MaxTimestampResult_t Storage::GetMaxTimestamp (const QString& accountId)
 	{
-		using R_t = IHistoryPlugin::MaxTimestampResult_t;
-
 		if (!Accounts_.contains (accountId))
-			return R_t::Left ("Unknown account " + accountId);
+			return Util::Left { "Unknown account " + accountId };
 
 		MaxTimestampSelector_.bindValue (":account_id", Accounts_ [accountId]);
 		if (!MaxTimestampSelector_.exec ())
 		{
 			Util::DBLock::DumpError (MaxTimestampSelector_);
-			return R_t::Left ("Error executing the SQL query.");
+			return Util::Left { "Error executing the SQL query." };
 		}
 
 		if (!MaxTimestampSelector_.next ())
-			return R_t::Right ({});
+			return { QDateTime {} };
 
-		return R_t::Right (MaxTimestampSelector_.value (0).toDateTime ());
+		return { MaxTimestampSelector_.value (0).toDateTime () };
 	}
 
 	QStringList Storage::GetOurAccounts () const
@@ -881,14 +877,14 @@ namespace ChatHistory
 					<< accountId
 					<< "; raw contents:"
 					<< Accounts_;
-			return UsersForAccountResult_t::Left ("Unknown account.");
+			return Util::Left { "Unknown account." };
 		}
 
 		UsersForAccountGetter_.bindValue (":account_id", Accounts_ [accountId]);
 		if (!UsersForAccountGetter_.exec ())
 		{
 			Util::DBLock::DumpError (UsersForAccountGetter_);
-			return UsersForAccountResult_t::Left ("Error executing the SQL query.");
+			return Util::Left { "Error executing the SQL query." };
 		}
 
 		QStringList result;
@@ -900,7 +896,7 @@ namespace ChatHistory
 			cachedNames << EntryCache_.value (id);
 		}
 
-		return UsersForAccountResult_t::Right ({ result, cachedNames });
+		return { { result, cachedNames } };
 	}
 
 	namespace
@@ -937,7 +933,7 @@ namespace ChatHistory
 					<< accountId
 					<< "; raw contents"
 					<< Accounts_;
-			return ChatLogsResult_t::Left ("Unknown account.");
+			return Util::Left { "Unknown account." };
 		}
 		if (!Users_.contains (entryId))
 		{
@@ -946,7 +942,7 @@ namespace ChatHistory
 					<< entryId
 					<< "; raw contents"
 					<< Users_;
-			return ChatLogsResult_t::Left ("Unknown user.");
+			return Util::Left { "Unknown user." };
 		}
 
 		HistoryGetter_.bindValue (":entry_id", Users_ [entryId]);
@@ -957,7 +953,7 @@ namespace ChatHistory
 		if (!HistoryGetter_.exec ())
 		{
 			Util::DBLock::DumpError (HistoryGetter_);
-			return ChatLogsResult_t::Left ("Unable to execute the SQL query.");
+			return Util::Left { "Unable to execute the SQL query." };
 		}
 
 		LogList_t result;
@@ -974,7 +970,7 @@ namespace ChatHistory
 
 		std::reverse (result.begin (), result.end ());
 
-		return ChatLogsResult_t::Right (result);
+		return { result };
 	}
 
 	SearchResult_t Storage::Search (const QString& accountId,
@@ -989,7 +985,7 @@ namespace ChatHistory
 			res = SearchImpl (text, shift, cs);
 
 		if (res.IsEmpty ())
-			return SearchResult_t::Right ({});
+			return { std::nullopt };
 
 		return SearchRowIdImpl (res.AccountID_, res.EntryID_, res.RowID_);
 	}
@@ -1003,7 +999,7 @@ namespace ChatHistory
 					<< account
 					<< "; raw contents"
 					<< Accounts_;
-			return SearchResult_t::Left ("Unknown account.");
+			return Util::Left { "Unknown account." };
 		}
 		if (!Users_.contains (entry))
 		{
@@ -1012,7 +1008,7 @@ namespace ChatHistory
 					<< entry
 					<< "; raw contents"
 					<< Users_;
-			return SearchResult_t::Left ("Unknown user.");
+			return Util::Left { "Unknown user." };
 		}
 
 		const qint32 entryId = Users_ [entry];
@@ -1029,7 +1025,7 @@ namespace ChatHistory
 					<< account
 					<< "; raw contents"
 					<< Accounts_;
-			return DaysResult_t::Left ("Unknown account.");
+			return Util::Left { "Unknown account." };
 		}
 		if (!Users_.contains (entry))
 		{
@@ -1038,7 +1034,7 @@ namespace ChatHistory
 					<< entry
 					<< "; raw contents"
 					<< Users_;
-			return DaysResult_t::Left ("Unknown user.");
+			return Util::Left { "Unknown user." };
 		}
 
 		const QDate lowerDate (year, month, 1);
@@ -1053,7 +1049,7 @@ namespace ChatHistory
 		if (!GetMonthDates_.exec ())
 		{
 			Util::DBLock::DumpError (GetMonthDates_);
-			return DaysResult_t::Left ("Unable to execute SQL query.");
+			return Util::Left { "Unable to execute SQL query." };
 		}
 
 		QList<int> result;
@@ -1066,7 +1062,7 @@ namespace ChatHistory
 		}
 		std::sort (result.begin (), result.end ());
 
-		return DaysResult_t::Right (result);
+		return { result };
 	}
 
 	void Storage::ClearHistory (const QString& accountId, const QString& entryId)
