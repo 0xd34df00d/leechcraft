@@ -138,25 +138,29 @@ namespace LC::Poshuku::SpeedDial
 	HandleResult HandleRequest (const QString& path, const QUrlQuery& query, const RootPageDeps& deps)
 	{
 		if (path.isEmpty ())
-			return HandleResult::Right ({
+			return
+			{
+				{
 					.ContentType_ = "text/html",
-					.Contents_ = MakeRootPage (deps),
-				});
+					.Contents_ = MakeRootPage (deps)
+				}
+			};
 
 		if (path == ThumbPath)
 		{
 			const auto& pageUrlStr = query.queryItemValue (ThumbUrlKey);
 			const auto& pageUrl = QUrl::fromEncoded (pageUrlStr.toUtf8 ());
 			if (pageUrl.isValid ())
-				return HandleResult::Right ({
+				return
+				{
+					{
 						.ContentType_ = "image/png",
 						.Contents_ = GetThumbnail (deps.ImageCache_, pageUrl),
-					});
-			else
-				qWarning () << "invalid thumb URL:"
-						<< query.toString ();
+					}
+				};
+			qWarning () << "invalid thumb URL:" << query.toString ();
 		}
 
-		return HandleResult { IInternalSchemeHandler::Error::Unsupported };
+		return { Util::AsLeft, IInternalSchemeHandler::Error::Unsupported };
 	}
 }
