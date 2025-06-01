@@ -43,7 +43,7 @@ namespace LC::Aggregator
 		catch (const std::runtime_error& s)
 		{
 			PrimaryStorageBackend_ = std::make_shared<DumbStorage> ();
-			return StorageCreationResult_t::Left ({ s.what () });
+			return { Util::AsLeft, { s.what () } };
 		}
 
 		const int feedsTable = 2;
@@ -67,13 +67,13 @@ namespace LC::Aggregator
 		if (!runUpdate (&StorageBackend::UpdateFeedsStorage, "FeedsTableVersion", feedsTable) ||
 			!runUpdate (&StorageBackend::UpdateChannelsStorage, "ChannelsTableVersion", channelsTable) ||
 			!runUpdate (&StorageBackend::UpdateItemsStorage, "ItemsTableVersion", itemsTable))
-			return StorageCreationResult_t::Left ({ "Unable to update tables" });
+			return { Util::AsLeft, { "Unable to update tables" } };
 
 		PrimaryStorageBackend_->Prepare ();
 
 		emit storageCreated ();
 
-		return StorageCreationResult_t::Right (PrimaryStorageBackend_);
+		return PrimaryStorageBackend_;
 	}
 
 	bool StorageBackendManager::IsPrimaryStorageCreated () const
