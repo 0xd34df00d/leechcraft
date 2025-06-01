@@ -66,8 +66,8 @@ namespace LC::Azoth::Sarin
 							name.size (),
 							&error);
 					return result == UINT32_MAX ?
-							SendFileResult_t::Left (error) :
-							SendFileResult_t::Right (result);
+							SendFileResult_t { Util::AsLeft, error } :
+							SendFileResult_t { result };
 				});
 
 		Util::Sequence (this, future) >>
