@@ -201,14 +201,14 @@ namespace DeathNote
 			if (!document.setContent (response))
 			{
 				qWarning () << "unable to parse" << response;
-				return ParseFriendsGroupsResult::Left (SelectGroupsDialog::tr ("Unable to parse network response."));
+				return { Util::AsLeft, SelectGroupsDialog::tr ("Unable to parse network response.") };
 			}
 
 			const auto& firstStructElement = document.elementsByTagName ("struct");
 			if (!firstStructElement.at (0).isElement ())
 			{
 				qWarning () << "no groups" << response;
-				return ParseFriendsGroupsResult::Left (SelectGroupsDialog::tr ("Empty friends groups response."));
+				return { Util::AsLeft, SelectGroupsDialog::tr ("Empty friends groups response.") };
 			}
 
 			QList<FriendsGroup> groups;
@@ -222,7 +222,7 @@ namespace DeathNote
 					groups << CreateGroup (element.toList ());
 			}
 
-			return ParseFriendsGroupsResult::Right (groups);
+			return groups;
 		}
 	}
 
