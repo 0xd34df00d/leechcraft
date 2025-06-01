@@ -51,8 +51,8 @@ namespace LC::Imgaste
 				const auto& lines = contents.split ('\n');
 				const auto pos = std::ranges::find_if (lines, [] (auto line) { return line.startsWith (urlMarker); });
 				if (pos == lines.end ())
-					return HostingService::Result_t::Left ({});
-				return HostingService::Result_t::Right (pos->mid (urlMarker.size ()).toString ());
+					return { Util::AsLeft, {} };
+				return pos->mid (urlMarker.size ()).toString ();
 			}
 		}
 
@@ -68,13 +68,13 @@ namespace LC::Imgaste
 			}
 		}
 
-		auto GetLinkTrimmed (QString body)
+		HostingService::Result_t GetLinkTrimmed (QString body)
 		{
 			body = std::move (body).trimmed ();
 			if (QUrl { body }.isValid ())
-				return HostingService::Result_t::Right (body);
+				return body;
 
-			return HostingService::Result_t::Left ({});
+			return { Util::AsLeft, {} };
 		}
 
 		auto SimpleUpload (const QByteArray& fieldName)
@@ -102,7 +102,8 @@ namespace LC::Imgaste
 
 		namespace PomfLike
 		{
-			[[maybe_unused]] auto GetLink (const QString& body)
+			[[maybe_unused]]
+			HostingService::Result_t GetLink (const QString& body)
 			{
 				try
 				{
@@ -113,11 +114,11 @@ namespace LC::Imgaste
 					const auto& files = As<Array> (json [u"files"_qsv]);
 					const auto& file = As<Object> (files [0]);
 					const auto& filename = As<String> (file [u"url"_qsv]);
-					return HostingService::Result_t::Right (filename);
+					return filename;
 				}
 				catch (const std::exception&)
 				{
-					return HostingService::Result_t::Left ({});
+					return { Util::AsLeft, {} };
 				}
 			}
 		}
