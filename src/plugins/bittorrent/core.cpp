@@ -777,7 +777,7 @@ namespace BitTorrent
 
 		QFuture<IDownload::Result> MakeErrorResult (const QString& msg)
 		{
-			return Util::MakeReadyFuture (IDownload::Result::Left ({ IDownload::Error::Type::LocalError, msg }));
+			return MakeReadyFuture (IDownload::Result { AsLeft, { IDownload::Error::Type::LocalError, msg } });
 		}
 	}
 
@@ -1434,7 +1434,7 @@ namespace BitTorrent
 		}
 
 		if (torrent.Promise_)
-			Util::ReportFutureResult (*torrent.Promise_, IDownload::Result::Right ({}));
+			ReportFutureResult (*torrent.Promise_, IDownload::Success {});
 	}
 
 	void Core::ScheduleSave ()

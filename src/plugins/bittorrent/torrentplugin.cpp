@@ -293,7 +293,7 @@ namespace LC::BitTorrent
 			ExecDialog (dia);
 
 			if (dia.result () == QDialog::Rejected)
-				return Util::MakeReadyFuture (Result::Left ({ Error::Type::UserCanceled, {} }));
+				return MakeReadyFuture (Result { AsLeft, { Error::Type::UserCanceled, {} } });
 
 			fname = dia.GetFilename (),
 			path = dia.GetSavePath ();
