@@ -507,7 +507,7 @@ namespace CSTP
 	void Task::HandleError (IDownload::Error::Type err, const QString& msg)
 	{
 		// TODO don't emit this when the file is already fully downloaded
-		Util::ReportFutureResult (Promise_, IDownload::Result::Left ({ err, msg }));
+		Util::ReportFutureResult (Promise_, { { err, msg } });
 
 		emit done (true);
 	}
@@ -694,7 +694,7 @@ namespace CSTP
 
 	void Task::handleFinished ()
 	{
-		Util::ReportFutureResult (Promise_, IDownload::Result::Right ({}));
+		Util::ReportFutureResult (Promise_, IDownload::Success {});
 
 		emit done (false);
 	}

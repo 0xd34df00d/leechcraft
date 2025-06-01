@@ -176,7 +176,7 @@ namespace CSTP
 
 		auto mkErr = [] (auto type, const QString& msg)
 		{
-			return Util::MakeReadyFuture (IDownload::Result::Left ({ type, msg }));
+			return Util::MakeReadyFuture (IDownload::Result { { type, msg } });
 		};
 
 		if (e.Parameters_ & LC::FromUserInitiated &&
@@ -266,10 +266,13 @@ namespace CSTP
 			switch (fileExistsBehaviour)
 			{
 			case FileExistsBehaviour::Abort:
-				return Util::MakeReadyFuture (IDownload::Result::Left ({
+				return Util::MakeReadyFuture (IDownload::Result {
+						Util::AsLeft,
+						{
 							IDownload::Error::Type::LocalError,
 							"File already exists"
-						}));
+						}
+					});
 			case FileExistsBehaviour::Remove:
 				if (!td.File_->resize (0))
 				{
@@ -277,10 +280,13 @@ namespace CSTP
 								  td.File_->errorString ();
 					qWarning () << Q_FUNC_INFO << msg;
 					emit error (msg);
-					return Util::MakeReadyFuture (IDownload::Result::Left ({
+					return Util::MakeReadyFuture (IDownload::Result {
+							Util::AsLeft,
+							{
 								IDownload::Error::Type::LocalError,
 								"Could not truncate file"
-							}));
+							}
+						});
 				}
 				break;
 			case FileExistsBehaviour::Continue:
