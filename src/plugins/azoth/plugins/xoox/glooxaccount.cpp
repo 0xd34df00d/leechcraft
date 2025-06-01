@@ -619,7 +619,7 @@ namespace Xoox
 
 	QFuture<IHaveServerHistory::DatedFetchResult_t> GlooxAccount::FetchServerHistory (const QDateTime&)
 	{
-		return Util::MakeReadyFuture (IHaveServerHistory::DatedFetchResult_t::Left ("Not implemented yet."));
+		return Util::MakeReadyFuture (DatedFetchResult_t { Util::AsLeft, "Not implemented yet." });
 	}
 
 	bool GlooxAccount::SupportsBlacklists () const
