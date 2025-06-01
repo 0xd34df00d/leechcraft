@@ -134,7 +134,7 @@ namespace Murm
 		for (auto& list : Messages_)
 			std::sort (list.Messages_.begin (), list.Messages_.end (), Util::ComparingBy (&HistoryItem::Date_));
 
-		const auto res = IHaveServerHistory::DatedFetchResult_t::Right (Messages_);
+		const IHaveServerHistory::DatedFetchResult_t res { Messages_ };
 		Iface_.reportFinished (&res);
 
 		deleteLater ();
@@ -142,7 +142,7 @@ namespace Murm
 
 	void ServerMessagesSyncer::ReportError (const QString& err)
 	{
-		const auto res = IHaveServerHistory::DatedFetchResult_t::Left (err);
+		const IHaveServerHistory::DatedFetchResult_t res { err };
 		Iface_.reportFinished (&res);
 
 		deleteLater ();
