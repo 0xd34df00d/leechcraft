@@ -134,13 +134,14 @@ namespace DBox
 	QFuture<Account::RequestUrlResult_t> Account::RequestUrl (const QByteArray& id)
 	{
 		if (id.isNull ())
-			return Util::MakeReadyFuture (RequestUrlResult_t::Left (InvalidItem {}));
+			return Util::MakeReadyFuture (RequestUrlResult_t { InvalidItem {} });
 
 		const bool directLinkAvailable = id.startsWith ("/Public");
 		if (directLinkAvailable)
-			return Util::MakeReadyFuture (RequestUrlResult_t::Right (PublicUrlTemplate
-							.arg (UserID_)
-							.arg (QString { id }.remove ("/Public/"))));
+		{
+			const QUrl url { PublicUrlTemplate.arg (UserID_, QString { id }.remove ("/Public/")) };
+			return Util::MakeReadyFuture (RequestUrlResult_t { url });
+		}
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		QMessageBox mbox (QMessageBox::Question,
@@ -165,7 +166,7 @@ namespace DBox
 		else if (mbox.clickedButton () == &dropboxPreviewLink)
 			type = ShareType::Preview;
 		else
-			return Util::MakeReadyFuture (RequestUrlResult_t::Left (UserCancelled {}));
+			return Util::MakeReadyFuture (RequestUrlResult_t { UserCancelled {} });
 
 		return DriveManager_->ShareEntry (id, type).then (RequestUrlResult_t::EmbeddingLeft ());
 	}

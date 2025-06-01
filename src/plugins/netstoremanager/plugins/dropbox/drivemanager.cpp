@@ -189,8 +189,7 @@ namespace DBox
 	{
 		if (Account_->GetAccessToken ().isEmpty ())
 		{
-			Util::ReportFutureResult (iface,
-					RefreshResult_t::Left (tr ("No access token for this account.")));
+			Util::ReportFutureResult (iface, Util::Left { tr ("No access token for this account.") });
 			return;
 		}
 
@@ -214,8 +213,7 @@ namespace DBox
 				const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
 				if (res.isNull ())
 				{
-					Util::ReportFutureResult (iface,
-							RefreshResult_t::Left (tr ("Unable to parse server reply.")));
+					Util::ReportFutureResult (iface, Util::Left { tr ("Unable to parse server reply.") });
 					return;
 				}
 
@@ -228,8 +226,7 @@ namespace DBox
 						RequestFiles ({}, iface);
 					}
 					else
-						Util::ReportFutureResult (iface,
-								RefreshResult_t::Left (tr ("Server returned empty files info.")));
+						Util::ReportFutureResult (iface, Util::Left { tr ("Server returned empty files info.") });
 					return;
 				}
 
@@ -242,7 +239,7 @@ namespace DBox
 						resList << ToStorageItem (driveItem);
 				}
 
-				Util::ReportFutureResult (iface, RefreshResult_t::Right (resList));
+				Util::ReportFutureResult (iface, resList);
 			},
 			reply,
 			SIGNAL (finished ()),
@@ -282,8 +279,8 @@ namespace DBox
 				const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
 				Util::ReportFutureResult (iface,
 						res.isNull () ?
-							ShareResult_t::Left (tr ("Unable to parse server reply.")) :
-							ShareResult_t::Right (res.toMap () ["url"].toUrl ()));
+							ShareResult_t { Util::AsLeft, tr ("Unable to parse server reply.") } :
+							ShareResult_t { res.toMap () ["url"].toUrl () });
 			},
 			reply,
 			SIGNAL (finished ()),
@@ -646,4 +643,3 @@ namespace DBox
 }
 }
 }
-

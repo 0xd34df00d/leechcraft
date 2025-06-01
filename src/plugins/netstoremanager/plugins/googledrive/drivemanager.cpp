@@ -348,7 +348,7 @@ namespace GoogleDrive
 				const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
 				if (res.isNull ())
 				{
-					iface.reportResult (ListingResult_t::Left (tr ("Empty reply from server")), resultPos);
+					iface.reportResult (Util::Left { tr ("Empty reply from server") }, resultPos);
 					iface.reportFinished ();
 					return;
 				}
@@ -356,7 +356,7 @@ namespace GoogleDrive
 				const auto& resMap = res.toMap ();
 				if (resMap.contains ("error"))
 				{
-					iface.reportResult (ListingResult_t::Left (ParseError (res.toMap ())), resultPos);
+					iface.reportResult (Util::Left { ParseError (res.toMap ()) }, resultPos);
 					iface.reportFinished ();
 					return;
 				}
@@ -385,7 +385,7 @@ namespace GoogleDrive
 					resList << ToStorageItem (driveItem);
 				}
 
-				iface.reportResult (ListingResult_t::Right (resList), resultPos);
+				iface.reportResult (resList, resultPos);
 
 				const auto& nextPageToken = resMap ["nextPageToken"].toString ();
 				if (nextPageToken.isEmpty ())

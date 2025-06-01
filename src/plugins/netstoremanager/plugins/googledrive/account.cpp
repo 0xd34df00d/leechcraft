@@ -177,7 +177,7 @@ namespace GoogleDrive
 	QFuture<Account::RequestUrlResult_t> Account::RequestUrl (const QByteArray& id)
 	{
 		if (id.isNull ())
-			return Util::MakeReadyFuture (RequestUrlResult_t::Left (InvalidItem {}));
+			return Util::MakeReadyFuture (RequestUrlResult_t { InvalidItem {} });
 
 		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
 		{
@@ -193,8 +193,8 @@ namespace GoogleDrive
 			mbox.addButton (&always, QMessageBox::AcceptRole);
 
 			if (mbox.exec () == QMessageBox::No)
-				return Util::MakeReadyFuture (RequestUrlResult_t::Left (UserCancelled {}));
-			else if (mbox.clickedButton () == &always)
+				return Util::MakeReadyFuture (RequestUrlResult_t { UserCancelled {} });
+			if (mbox.clickedButton () == &always)
 				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
 		}
 
