@@ -91,7 +91,7 @@ namespace MusicZombie
 								[this] (const auto&)
 								{
 									Util::ReportFutureResult (Promise_,
-											QueryResult_t::Left (tr ("Error getting candidate releases list.")));
+											{ Util::AsLeft, tr ("Error getting candidate releases list.") });
 									deleteLater ();
 								}
 							};
@@ -122,7 +122,7 @@ namespace MusicZombie
 				RequestArtist (false);
 			else
 			{
-				Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("No artists were found.")));
+				Util::ReportFutureResult (Promise_, { Util::AsLeft, tr ("No artists were found.") });
 				deleteLater ();
 			}
 
@@ -183,7 +183,7 @@ namespace MusicZombie
 								[this] (const auto&)
 								{
 									Util::ReportFutureResult (Promise_,
-											QueryResult_t::Left (tr ("Error getting artist releases list.")));
+											{ Util::AsLeft, tr ("Error getting artist releases list.") });
 									deleteLater ();
 								}
 							};
@@ -254,7 +254,7 @@ namespace MusicZombie
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse"
 					<< data;
-			Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("Unable to parse MusicBrainz reply.")));
+			Util::ReportFutureResult (Promise_, { Util::AsLeft, tr ("Unable to parse MusicBrainz reply.") });
 			return;
 		}
 
@@ -307,7 +307,7 @@ namespace MusicZombie
 
 		std::sort (releases.begin (), releases.end (),
 				Util::ComparingBy (&Media::ReleaseInfo::Year_));
-		Util::ReportFutureResult (Promise_, QueryResult_t::Right (releases));
+		Util::ReportFutureResult (Promise_, releases);
 	}
 }
 }
