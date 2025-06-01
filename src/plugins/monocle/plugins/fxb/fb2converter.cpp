@@ -290,7 +290,7 @@ namespace LC::Monocle::FXB
 		if (fb2root.tagName () != "FictionBook"_ql || fb2body.isNull ())
 		{
 			qWarning () << "not a FictionBook document";
-			return ConvertResult_t::Left (QObject::tr ("Not a FictionBook document."));
+			return { Util::AsLeft, QObject::tr ("Not a FictionBook document.") };
 		}
 
 		auto notesElem = fb2body.nextSiblingElement ("body"_qs);
@@ -308,6 +308,6 @@ namespace LC::Monocle::FXB
 			AppendNotes (body, *notes);
 		timer.Stamp ("converting notes and comments");
 
-		return ConvertResult_t::Right ({ body, cvt.GetToc (), std::move (binaries), GetCoverImageId (fb2) });
+		return { { body, cvt.GetToc (), std::move (binaries), GetCoverImageId (fb2) } };
 	}
 }
