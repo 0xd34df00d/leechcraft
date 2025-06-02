@@ -58,10 +58,10 @@ namespace LC::Util
 	template<typename... Args>
 	auto HandleReply (QNetworkReply *reply, QObject *context)
 	{
-		using Err = Find<ErrorInfo, Util::Void, Args...>;
+		using Err = Find<ErrorInfo, Void, Args...>;
 		using Res = Find<ResultInfo, QByteArray, Args...>;
 
-		using Result_t = Util::Either<Err, Res>;
+		using Result_t = Either<Err, Res>;
 		QFutureInterface<Result_t> promise;
 		promise.reportStarted ();
 
@@ -73,9 +73,9 @@ namespace LC::Util
 					reply->deleteLater ();
 
 					if constexpr (std::is_same_v<Res, QByteArray>)
-						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
+						Util::ReportFutureResult (promise, reply->readAll ());
 					else if constexpr (std::is_same_v<Res, ReplyWithHeaders>)
-						Util::ReportFutureResult (promise, Result_t::Right (Res { reply }));
+						Util::ReportFutureResult (promise, Res { reply });
 					else
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
@@ -86,11 +86,11 @@ namespace LC::Util
 				{
 					reply->deleteLater ();
 
-					auto report = [&] (const Err& val) { Util::ReportFutureResult (promise, Result_t::Left (val)); };
+					auto report = [&] (const Err& val) { Util::ReportFutureResult (promise, Left { val }); };
 
 					if constexpr (std::is_same_v<Err, QString>)
 						report (reply->errorString ());
-					else if constexpr (std::is_same_v<Err, Util::Void>)
+					else if constexpr (std::is_same_v<Err, Void>)
 						report ({});
 					else if constexpr (std::is_same_v<Err, ReplyError>)
 						report (Err { reply });

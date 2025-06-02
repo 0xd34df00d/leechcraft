@@ -140,40 +140,14 @@ namespace Util
 		auto MapLeft (F&& f) const
 		{
 			using Result = Either<std::invoke_result_t<F, L>, R>;
-			return IsRight () ? Result::Right (GetRight ()) : Result::Left (std::forward<F> (f) (GetLeft ()));
+			return IsRight () ? Result { GetRight () } : Result { AsLeft, std::forward<F> (f) (GetLeft ()) };
 		}
 
 		template<typename F>
 		auto MapRight (F&& f) const
 		{
 			using Result = Either<L, std::invoke_result_t<F, R>>;
-			return IsRight () ? Result::Right (std::forward<F> (f) (GetRight ())) : Result::Left (GetLeft ());
-		}
-
-		template<typename LL = L>
-		static Either Left (const LL& l)
-		{
-			if constexpr (std::is_same_v<std::decay_t<LL>, std::decay_t<L>>)
-				return Either { l };
-			else
-				return Either { L { l } };
-		}
-
-		static Either Right (R&& r)
-		{
-			return Either { std::move (r) };
-		}
-
-		static Either Right (const R& r)
-		{
-			return Either { r };
-		}
-
-		template<typename RNew>
-			requires (!std::is_convertible_v<RNew, R>)
-		static auto Right (const RNew& r)
-		{
-			return Either<L, RNew>::Right (r);
+			return IsRight () ? Result { std::forward<F> (f) (GetRight ()) } : Result { AsLeft, GetLeft () };
 		}
 
 		// TODO remove this method
@@ -184,7 +158,7 @@ namespace Util
 				static_assert (std::is_convertible_v<LL, L>,
 						"Other's Either's Left type is not convertible to this Left type.");
 				return other.IsLeft () ?
-						Either { Util::Left { other.GetLeft () } }:
+						Either { AsLeft, other.GetLeft () }:
 						Either { other.GetRight () };
 			};
 		}
