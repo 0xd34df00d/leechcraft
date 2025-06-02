@@ -22,7 +22,7 @@
 
 namespace LC::Util
 {
-	template<typename R, typename F, typename... Args>
+	template<typename R, typename F = R, typename... Args>
 	void ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
 	{
 		try
