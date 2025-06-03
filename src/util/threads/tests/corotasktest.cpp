@@ -44,7 +44,7 @@ namespace LC::Util
 
 		auto result = GetTaskResult (task);
 		QCOMPARE (result, 42);
-		QVERIFY (timer.elapsed () > 50);
+		QCOMPARE_GT (timer.elapsed (), 50);
 	}
 
 	void CoroTaskTest::testTaskDestr ()
@@ -264,7 +264,7 @@ namespace LC::Util
 		const auto executionElapsed = timer.elapsed ();
 
 		QCOMPARE (result, expected);
-		QVERIFY (creationElapsed < 1);
+		QCOMPARE_LT (creationElapsed, 1);
 		CompareDouble (executionElapsed, max, 0.05);
 	}
 
@@ -334,7 +334,7 @@ namespace LC::Util
 		const auto time = timer.elapsed ();
 
 		QCOMPARE (result, count * (count - 1) / 2);
-		QVERIFY (time >= count * t.GetInterval ().count ());
+		QCOMPARE_GE (time, count * t.GetInterval ().count ());
 	}
 
 	void CoroTaskTest::testThrottleSameCoroSlow ()
@@ -357,8 +357,8 @@ namespace LC::Util
 		const auto time = timer.elapsed ();
 
 		const auto expectedMinTime = count * t.GetInterval ().count ();
-		QVERIFY (time >= expectedMinTime);
-		QVERIFY (time - expectedMinTime <= expectedMinTime * 0.05);
+		QCOMPARE_GE (time, expectedMinTime);
+		QCOMPARE_LE (time - expectedMinTime, expectedMinTime * 0.05);
 	}
 
 	void CoroTaskTest::testThrottleManyCoros ()
@@ -378,7 +378,7 @@ namespace LC::Util
 			GetTaskResult (task);
 		const auto time = timer.elapsed ();
 
-		QVERIFY (time >= count * tasks.size () * t.GetInterval ().count ());
+		QCOMPARE_GE (time, count * tasks.size () * t.GetInterval ().count ());
 	}
 
 	constexpr auto LongDelay = 500ms;
@@ -428,7 +428,7 @@ namespace LC::Util
 			QElapsedTimer timer;
 			timer.start ();
 			QVERIFY_THROWS_EXCEPTION (LC::Util::ContextDeadException, GetTaskResult (task));
-			QVERIFY (timer.elapsed () < DelayThreshold.count ());
+			QCOMPARE_LT (timer.elapsed (), DelayThreshold.count ());
 		}
 	}
 
