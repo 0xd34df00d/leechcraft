@@ -7,8 +7,9 @@
  **********************************************************************/
 
 #include "serializejson.h"
-#include <QJsonDocument>
 #include <QFile>
+#include <QJsonDocument>
+#include <QtDebug>
 #include "either.h"
 
 namespace LC
@@ -26,21 +27,13 @@ namespace Util
 		QFile file { filename };
 		if (!file.open (QIODevice::WriteOnly))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< file.fileName ()
-					<< "for writing:"
-					<< file.errorString ();
+			qWarning () << "unable to open file" << file.fileName () << "for writing:" << file.errorString ();
 			return Left { file.errorString () };
 		}
 
 		if (!file.write (SerializeJson (var, compact)))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to write to file"
-					<< file.fileName ()
-					<< ":"
-					<< file.errorString ();
+			qWarning () << "unable to write to file" << file.fileName () << ":" << file.errorString ();
 			return Left { file.errorString () };
 		}
 
