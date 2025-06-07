@@ -6,6 +6,7 @@ add_util_library (util-svcauth
 	DEPENDS
 		leechcraft-util-network
 		leechcraft-util-sll
+		leechcraft-util-threads
 		leechcraft-util-xpc
 	USES Network Widgets
 	)
