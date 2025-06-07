@@ -56,8 +56,6 @@ namespace LMP
 		LMPProxy LmpProxy_ { &Collection_, &Resolver_ };
 
 		RgAnalysisManager RgMgr_ { &Collection_ };
-
-		Members () = default;
 	};
 
 	Core::Core ()

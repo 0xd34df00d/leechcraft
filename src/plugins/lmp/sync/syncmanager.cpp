@@ -43,6 +43,13 @@ namespace LMP
 		QString Filename_;
 	};
 
+	SyncManager::SyncManager (QObject *parent)
+	: SyncManagerBase { parent }
+	{
+	}
+
+	SyncManager::~SyncManager () = default;
+
 	void SyncManager::AddFiles (ISyncPlugin *syncer, const QString& mount,
 			const QStringList& files, const TranscodingParams& params)
 	{

@@ -35,13 +35,14 @@ namespace LMP
 		};
 		QMap<QString, SyncTo> Source2Params_;
 	public:
-		using SyncManagerBase::SyncManagerBase;
+		explicit SyncManager (QObject* = nullptr);
+		~SyncManager () override;
 
 		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
 	private:
 		void CreateSyncer (const QString&);
 	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
+		void handleFileTranscoded (const QString& from, const QString&, QString) override;
 	};
 }
 }
