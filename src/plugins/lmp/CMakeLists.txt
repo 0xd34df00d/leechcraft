@@ -22,7 +22,7 @@ add_util_library (lmp-util
 		util/lmp/mediainfo.cpp
 		util/lmp/util.cpp
 	USES Widgets
-	DEPENDS PkgConfig::GStreamer
+	DEPENDS PkgConfig::GStreamer ${LEECHCRAFT_LIBRARIES}
 	)
 
 LC_DEFINE_PLUGIN (
