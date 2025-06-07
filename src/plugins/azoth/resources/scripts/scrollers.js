@@ -1,25 +1,43 @@
 "use strict";
 
-function ScrollToBottom() {
-	if (window.ShouldScroll)
-	    window.scrollTo(0, document.body.scrollHeight);
-}
-function TestScroll() {
-	window.ShouldScroll = document.documentElement.scrollHeight <= (window.innerHeight + window.pageYOffset + window.innerHeight / 5);
-}
-function InstallEventListeners() {
-	window.ShouldScroll = true;
-	let scheduleScroll = () => { setTimeout (ScrollToBottom, 0); };
-	document.body.addEventListener ("DOMNodeInserted", scheduleScroll, false);
-	document.body.addEventListener ("DOMSubtreeModified", scheduleScroll, false);
-	window.addEventListener ("resize", scheduleScroll);
-	window.addEventListener ("scroll", TestScroll);
-}
+const InitializeAutoscroll = () => {
+    const scrollingElement = document.documentElement;
 
-InstallEventListeners();
-ScrollToBottom();
+    const doScroll = () => {
+        const scrollTop = scrollingElement.scrollTop;
+        const scrollHeight = scrollingElement.scrollHeight;
+        const clientHeight = window.innerHeight;
+        const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
 
-function ScrollPage(direction) {
+        if (distanceToBottom < clientHeight / 5) {
+            window.scrollTo(0, scrollHeight);
+        }
+    };
+
+    const observer = new MutationObserver(doScroll);
+    observer.observe(scrollingElement, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
+
+    let resizeTimeout = null;
+    window.addEventListener('resize', () => {
+        if (resizeTimeout) {
+            return;
+        }
+        doScroll();
+        resizeTimeout = setTimeout(() => {
+                doScroll();
+                resizeTimeout = null;
+            },
+            100);
+    });
+};
+
+InitializeAutoscroll();
+
+const ScrollPage = (direction) => {
     window.scrollBy({
         top: (window.innerHeight / 2 - 5) * direction,
         left: 0,
