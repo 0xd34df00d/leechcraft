@@ -41,8 +41,12 @@ namespace Util
 		using VariantHandler_f = std::function<void (QVariant)>;
 	private:
 		using PropHandler_t = std::variant<QByteArray, VariantHandler_f>;
-		using ObjectElement_t = QPair<QPointer<QObject>, PropHandler_t>;
-		using Properties2Object_t = QHash<QByteArray, QList<ObjectElement_t>>;
+		struct ObjectElement
+		{
+			QPointer<QObject> Obj_;
+			PropHandler_t Handler_;
+		};
+		using Properties2Object_t = QHash<QByteArray, QList<ObjectElement>>;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
 

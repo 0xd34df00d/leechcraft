@@ -116,22 +116,22 @@ namespace LC::Util
 
 	void BaseSettingsManager::OptionSelected (const QByteArray& prop, const QVariant& val)
 	{
-		for (const auto& object : SelectProps_.value (prop))
+		for (const auto& [object, handler] : SelectProps_.value (prop))
 		{
-			if (!object.first)
+			if (!object)
 				continue;
 
-			Visit (object.second,
+			Visit (handler,
 					[&val] (const VariantHandler_f& func) { func (val); },
 					[&] (const QByteArray& methodName)
 					{
-						if (!QMetaObject::invokeMethod (object.first,
+						if (!QMetaObject::invokeMethod (object,
 								methodName,
 								Q_ARG (QVariant, val)))
 							qWarning () << Q_FUNC_INFO
 									<< "could not find method in the metaobject"
 									<< prop
-									<< object.first
+									<< object
 									<< methodName;
 					});
 		}
@@ -182,13 +182,9 @@ namespace LC::Util
 
 		PropertyChanged (nameStr, propValue);
 
-		for (const auto& object : ApplyProps_.value (name))
-		{
-			if (!object.first)
-				continue;
-
-			PerformApply (name, propValue, object.first, object.second);
-		}
+		for (const auto& [object, handler] : ApplyProps_.value (name))
+			if (object)
+				PerformApply (name, propValue, object, handler);
 
 		event->accept ();
 		return true;
@@ -242,13 +238,7 @@ namespace LC::Util
 			for (auto it = map.begin (); it != map.end (); )
 			{
 				auto& subscribers = it.value ();
-				for (auto lit = subscribers.begin (); lit != subscribers.end (); )
-				{
-					if (!lit->first)
-						lit = subscribers.erase (lit);
-					else
-						++lit;
-				}
+				subscribers.removeIf ([] (const auto& elem) { return !elem.Obj_; });
 
 				if (subscribers.isEmpty ())
 					it = map.erase (it);
