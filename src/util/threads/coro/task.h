@@ -9,6 +9,7 @@
 #pragma once
 
 #include <coroutine>
+#include <exception>
 #include <utility>
 #include <QVector>
 #include "finalsuspender.h"
