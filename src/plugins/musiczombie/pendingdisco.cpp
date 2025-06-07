@@ -14,6 +14,7 @@
 #include <QDomDocument>
 #include <QFuture>
 #include <QPointer>
+#include <QRegularExpression>
 #include <QtDebug>
 #include <util/sll/queuemanager.h>
 #include <util/util.h>
