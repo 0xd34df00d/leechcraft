@@ -107,11 +107,13 @@ ORAL_ADAPT_STRUCT (ComplexConstraintsRecord,
 
 TOSTRING (ComplexConstraintsRecord)
 
+#if QT_VERSION < QT_VERSION_CHECK (6, 9, 0)
 template<typename... Args>
 QDebug operator<< (QDebug dbg, const std::tuple<Args...>& tup)
 {
 	return std::apply ([&] (auto&&... args) { return ((dbg.nospace () << args << ' '), ...); }, tup);
 }
+#endif
 
 namespace LC
 {
