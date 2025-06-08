@@ -1,41 +1,31 @@
 "use strict";
 
-const InitializeAutoscroll = () => {
-    const scrollingElement = document.documentElement;
+window.ShouldScroll = true;
 
-    const doScroll = () => {
-        const scrollTop = scrollingElement.scrollTop;
-        const scrollHeight = scrollingElement.scrollHeight;
-        const clientHeight = window.innerHeight;
-        const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
+const ScrollToBottom = (force) => {
+    if (window.ShouldScroll || force)
+        window.scrollTo(0, document.body.scrollHeight);
+}
 
-        if (distanceToBottom < clientHeight / 5) {
-            window.scrollTo(0, scrollHeight);
-        }
-    };
+const TestScroll = () => {
+    window.ShouldScroll = document.body.scrollHeight <= (window.innerHeight + window.scrollY + window.innerHeight / 5);
+}
 
-    const observer = new MutationObserver(doScroll);
-    observer.observe(scrollingElement, {
+(() => {
+    const scheduleScroll = () => { setTimeout(ScrollToBottom, 0); };
+
+    const observer = new MutationObserver(scheduleScroll);
+    observer.observe(document.body, {
         childList: true,
         subtree: true,
         characterData: true
     });
 
-    let resizeTimeout = null;
-    window.addEventListener('resize', () => {
-        if (resizeTimeout) {
-            return;
-        }
-        doScroll();
-        resizeTimeout = setTimeout(() => {
-                doScroll();
-                resizeTimeout = null;
-            },
-            100);
-    });
-};
+    window.addEventListener('resize', scheduleScroll, { passive: true });
+    window.addEventListener('scroll', TestScroll, { passive: true });
+})();
 
-InitializeAutoscroll();
+ScrollToBottom(true);
 
 const ScrollPage = (direction) => {
     window.scrollBy({
