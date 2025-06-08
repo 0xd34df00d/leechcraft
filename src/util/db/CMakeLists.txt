@@ -8,6 +8,7 @@ add_util_library (util-db
 		consistencychecker.cpp
 	DEPENDS
 		leechcraft-util-gui
+		leechcraft-util-sll
 		leechcraft-util-sys
 		leechcraft-util-threads
 		leechcraft-util
