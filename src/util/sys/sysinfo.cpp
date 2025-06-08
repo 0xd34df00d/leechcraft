@@ -121,60 +121,13 @@ namespace LC::Util::SysInfo
 
 	OSInfo GetOSInfo ()
 	{
-#if defined(Q_OS_MAC)
-		const auto retVer = [] (const QString& version)
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN32)
+		return OSInfo
 		{
-			// LC only supports building on OS X 10.7 and higher, which all work only on x86_64.
-			return OSInfo { .Arch_ = "x86_64", .Name_ = "Mac OS X", .Version_ = version };
+			.Arch_ = QSysInfo::currentCpuArchitecture (),
+			.Name_ = QSysInfo::productType (),
+			.Version_ = QSysInfo::productVersion (),
 		};
-
-		for (auto minor = 7; minor < 16; ++minor)
-			if (QSysInfo::MacintoshVersion == Q_MV_OSX (10, minor))
-				return retVer ("10." + QString::number (minor));
-
-		return retVer ("Unknown version");
-#elif defined(Q_OS_WIN32)
-		const auto retVer = [] (const QString& version)
-		{
-			return OSInfo
-			{
-				.Arch_ = QSysInfo::WordSize == 64 ? "x86_64" : "x86",
-				.Name_ = "Windows",
-				.Version_ = version
-			};
-		};
-
-		switch (QSysInfo::WindowsVersion)
-		{
-		case QSysInfo::WV_95:
-			return retVer ("95");
-		case QSysInfo::WV_98:
-			return retVer ("98");
-		case QSysInfo::WV_Me:
-			return retVer ("Me");
-		case QSysInfo::WV_DOS_based:
-			return retVer ("9x/Me");
-		case QSysInfo::WV_NT:
-			return retVer ("NT 4.x");
-		case QSysInfo::WV_2000:
-			return retVer ("2000");
-		case QSysInfo::WV_XP:
-			return retVer ("XP");
-		case QSysInfo::WV_2003:
-			return retVer ("2003");
-		case QSysInfo::WV_VISTA:
-			return retVer ("Vista");
-		case QSysInfo::WV_WINDOWS7:
-			return retVer ("7");
-		case 0x00a0:
-			return retVer ("8");
-		case 0x00b0:
-			return retVer ("8.1");
-		case 0x00c0:
-			return retVer ("10");
-		case QSysInfo::WV_NT_based:
-			return retVer ("NT-based");
-		}
 #else
 		auto osName = Linux::GetEtcOsName ();
 		if (osName.isEmpty ())
