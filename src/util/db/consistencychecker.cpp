@@ -8,194 +8,147 @@
 
 #include "consistencychecker.h"
 #include <memory>
+#include <QCoreApplication>
 #include <QFile>
-#include <QSqlDatabase>
 #include <QMessageBox>
+#include <QSqlDatabase>
 #include <QtConcurrentRun>
+#include <util/gui/util.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro.h>
 #include <util/util.h>
 #include "dumper.h"
 #include "util.h"
 
-namespace LC::Util
+namespace LC::Util::ConsistencyChecker
 {
-	class FailedImpl final : public ConsistencyChecker::IFailed
+	namespace
 	{
-		const std::shared_ptr<ConsistencyChecker> Checker_;
-	public:
-		explicit FailedImpl (std::shared_ptr<ConsistencyChecker> checker)
-		: Checker_ {std::move (checker)}
+		struct Tr
 		{
-		}
-	private:
-		QFuture<ConsistencyChecker::DumpResult_t> DumpReinit () override
-		{
-			return Checker_->DumpReinit ();
-		}
-	};
-
-	ConsistencyChecker::ConsistencyChecker (QString dbPath, QString dialogContext, QObject *parent)
-	: QObject { parent }
-	, DBPath_ { std::move (dbPath) }
-	, DialogContext_ { std::move (dialogContext) }
-	{
-	}
-
-	std::shared_ptr<ConsistencyChecker> ConsistencyChecker::Create (QString dbPath, QString dialogContext)
-	{
-		return std::shared_ptr<ConsistencyChecker> { new ConsistencyChecker { std::move (dbPath), std::move (dialogContext) } };
-	}
-
-	QFuture<ConsistencyChecker::CheckResult_t> ConsistencyChecker::StartCheck ()
-	{
-		return QtConcurrent::run ([pThis = shared_from_this ()] { return pThis->CheckDB (); });
-	}
-
-	ConsistencyChecker::CheckResult_t ConsistencyChecker::CheckDB ()
-	{
-		qDebug () << Q_FUNC_INFO
-				<< "checking"
-				<< DBPath_;
-		const auto& connName = Util::GenConnectionName ("ConsistencyChecker_" + DBPath_);
-
-		std::shared_ptr<QSqlDatabase> db
-		{
-			new QSqlDatabase { QSqlDatabase::addDatabase ("QSQLITE", connName) },
-			[connName] (QSqlDatabase *db)
-			{
-				delete db;
-				QSqlDatabase::removeDatabase (connName);
-			}
+			Q_DECLARE_TR_FUNCTIONS (LC::Util::ConsistencyChecker)
 		};
 
-		db->setDatabaseName (DBPath_);
-		if (!db->open ())
+		CheckResult_t CheckSync (const QString& dbPath)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open the DB, but that's not the kind of errors we're solving.";
-			return Succeeded {};
+			qDebug () << "checking" << dbPath;
+			const auto& connName = GenConnectionName ("ConsistencyChecker_" + dbPath);
+
+			auto db = QSqlDatabase::addDatabase ("QSQLITE"_qs, connName);
+			const auto remGuard = MakeScopeGuard ([connName] { QSqlDatabase::removeDatabase (connName); });
+
+			db.setDatabaseName (dbPath);
+			if (!db.open ())
+			{
+				qWarning () << "cannot open the DB, but that's not the kind of errors we're solving.";
+				return Succeeded {};
+			}
+
+			QSqlQuery pragma { db };
+			static const auto checkQuery = qgetenv ("LC_THOROUGH_SQLITE_CHECK") == "1" ?
+					"PRAGMA integrity_check;"_qs :
+					"PRAGMA quick_check;"_qs;
+			const auto isGood = pragma.exec (checkQuery) &&
+					pragma.next () &&
+					pragma.value (0) == "ok";
+			qDebug () << "done checking" << dbPath << "; db is good?" << isGood;
+			if (isGood)
+				return Succeeded {};
+
+			return Left { Failed {} };
 		}
 
-		QSqlQuery pragma { *db };
-		static const QString checkQuery = qgetenv ("LC_THOROUGH_SQLITE_CHECK") == "1" ?
-				QStringLiteral ("PRAGMA integrity_check;") :
-				QStringLiteral ("PRAGMA quick_check;");
-		const auto isGood = pragma.exec (checkQuery) &&
-				pragma.next () &&
-				pragma.value (0) == "ok";
-		qDebug () << Q_FUNC_INFO
-				<< "done checking"
-				<< DBPath_
-				<< "; result is:"
-				<< isGood;
-		if (isGood)
-			return Succeeded {};
+		Either<RecoverFailed, Void> CheckRecoverSpace (const QString& dbPath)
+		{
+			const QFileInfo fi { dbPath };
+			const auto filesize = fi.size ();
 
-		return Left { std::make_shared<FailedImpl> (shared_from_this ()) };
+			const auto available = static_cast<qint64> (GetSpaceInfo (dbPath).Available_);
+
+			qDebug () << "db size:" << filesize
+					<< "free space:" << available;
+			if (available >= filesize)
+				return Void {};
+
+			return Left { RecoverNoSpace { .Available_ = available, .Expected_ = filesize } };
+		}
 	}
 
-	QFuture<ConsistencyChecker::DumpResult_t> ConsistencyChecker::DumpReinit ()
+	Task<CheckResult_t> Check (QString dbPath)
 	{
-		QFutureInterface<DumpResult_t> iface;
-		iface.reportStarted ();
+		co_return co_await QtConcurrent::run (CheckSync, dbPath);
+	}
 
-		DumpReinitImpl (iface);
+	Task<RecoverResult_t> Recover (QString dbPath)
+	{
+		[[maybe_unused]] const auto hasEnoughSpace = co_await CheckRecoverSpace (dbPath);
+		const auto& newPath = dbPath + ".new";
+		if (QFile::exists (newPath))
+			co_return Left { RecoverTargetExists { newPath } };
 
-		return iface.future ();
+		const auto dumpProcResult = co_await DumpSqlite (dbPath, newPath);
+		[[maybe_unused]] const auto dumpProcSuccess = co_await WithHandler (dumpProcResult,
+				[] (const QString& msg) { return RecoverOtherFailure { msg }; });
+
+		const auto oldSize = QFileInfo { dbPath }.size ();
+		const auto newSize = QFileInfo { newPath }.size ();
+
+		const auto& backupPath = dbPath + ".bak";
+		if (!QFile::rename (dbPath, backupPath))
+			co_return Left { RecoverTargetExists { backupPath } };
+
+		// extremely unlikely if the previous rename succeeded
+		while (!QFile::rename (newPath, dbPath))
+		{
+			qCritical () << "unable to rename" << newPath << "→" << dbPath;
+			const auto& msg = Tr::tr ("Unable to rename %1 to %2. Please check %2 does not exist, and hit OK.")
+					.arg (newPath, dbPath);
+			QMessageBox::critical (nullptr, "LeechCraft"_qs, msg);
+		}
+
+		co_return RecoverFinished { .OldFileSize_ = oldSize, .NewFileSize_ = newSize };
 	}
 
 	namespace
 	{
-		void ReportResult (QFutureInterface<ConsistencyChecker::DumpResult_t> iface,
-				const ConsistencyChecker::DumpResult_t& result)
+		QString GetRecoverFailureMessage (const RecoverFailed& failure)
 		{
-			iface.reportFinished (&result);
+			return Visit (failure,
+					[&] (RecoverNoSpace space)
+					{
+						return Tr::tr ("Not enough space available: "
+									"%1 free while the restored file is expected to be around %2. "
+									"Please either free some disk space on this partition "
+									"and retry or cancel the restore process.")
+								.arg (MakePrettySize (space.Available_), MakePrettySize (space.Expected_));
+					},
+					[&] (const RecoverTargetExists& exists)
+					{
+						return Tr::tr ("Target file %1 already exists, please remove it manually and retry.")
+								.arg (FormatName (exists.Target_));
+					},
+					[&] (const RecoverOtherFailure& other)
+					{
+						return other.Message_;
+					});
 		}
 	}
 
-	void ConsistencyChecker::DumpReinitImpl (QFutureInterface<DumpResult_t> iface)
+	Task<RecoverResult_t> RecoverWithUserInteraction (QString dbPath, QString diaTitle)
 	{
-		const QFileInfo fi { DBPath_ };
-		const auto filesize = fi.size ();
-
 		while (true)
 		{
-			const auto available = GetSpaceInfo (DBPath_).Available_;
+			const auto result = co_await Recover (dbPath);
+			if (result.IsRight ())
+				co_return result;
 
-			qDebug () << Q_FUNC_INFO
-					<< "db size:" << filesize
-					<< "free space:" << available;
-			if (available >= static_cast<quint64> (filesize))
-				break;
-
-			if (QMessageBox::question (nullptr,
-						DialogContext_,
-						tr ("Not enough available space on partition with file %1: "
-							"%2 while the restored file is expected to be around %3. "
-							"Please either free some disk space on this partition "
-							"and retry or cancel the restore process.")
-								.arg ("<em>" + DBPath_ + "</em>",
-									  Util::MakePrettySize (available),
-								      Util::MakePrettySize (filesize)),
-						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
-			{
-				ReportResult (iface, Left { tr ("Not enough available disk space.") });
-				return;
-			}
+			const auto& question = Tr::tr ("Unable to dump corrupted SQLite database %1.").arg (FormatName (dbPath)) +
+					"<br/><br/>"_qs +
+					GetRecoverFailureMessage (result.GetLeft ());
+			if (QMessageBox::question (nullptr, diaTitle, question, QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
+				co_return result;
 		}
-
-		const auto& newPath = DBPath_ + ".new";
-
-		while (true)
-		{
-			if (!QFile::exists (newPath))
-				break;
-
-			if (QMessageBox::question (nullptr,
-						DialogContext_,
-						tr ("%1 already exists. Please either remove the file manually "
-							"and retry or cancel the restore process.")
-								.arg ("<em>" + newPath + "</em>"),
-						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
-			{
-				ReportResult (iface, Left { tr ("Backup file already exists.") });
-				return;
-			}
-		}
-
-		const auto dumper = new Dumper { DBPath_, newPath };
-
-		const auto managed = shared_from_this ();
-		Util::Sequence (nullptr, dumper->GetFuture ()) >>
-				[iface, newPath, managed] (const Dumper::Result_t& result)
-				{
-					Util::Visit (result,
-							[iface] (const Dumper::Error& error)
-							{
-								ReportResult (iface,
-										Left { tr ("Unable to restore the database.") + " " + error.What_ });
-							},
-							[iface, newPath, managed] (Dumper::Finished) { managed->HandleDumperFinished (iface, newPath); });
-				};
-	}
-
-	void ConsistencyChecker::HandleDumperFinished (QFutureInterface<DumpResult_t> iface, const QString& to)
-	{
-		const auto oldSize = QFileInfo { DBPath_ }.size ();
-		const auto newSize = QFileInfo { to }.size ();
-
-		const auto& backup = DBPath_ + ".bak";
-		while (!QFile::rename (DBPath_, backup))
-			QMessageBox::critical (nullptr,
-					DialogContext_,
-					tr ("Unable to backup %1 to %2. Please remove %2 and hit OK.")
-						.arg (DBPath_,
-							  backup));
-
-		QFile::rename (to, DBPath_);
-
-		ReportResult (iface, DumpFinished { oldSize, newSize });
 	}
 }

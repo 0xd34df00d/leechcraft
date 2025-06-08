@@ -57,23 +57,18 @@ namespace LC::NamAuth
 	{
 		co_await Util::AddContextObject { *this };
 
-		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
-		const auto result = co_await checker->StartCheck ();
+		namespace CC = Util::ConsistencyChecker;
 
-		if (const auto error = result.MaybeLeft ())
+		const auto dbPath = SQLStorageBackend::GetDBPath ();
+		const auto checkResult = co_await CC::Check (dbPath);
+		if (checkResult.IsLeft ())
 		{
-			const auto dumpResult = co_await (*error)->DumpReinit ();
-			co_await WithHandler (dumpResult,
-					[] (const Util::ConsistencyChecker::DumpError& err)
+			const auto recoverResult = co_await CC::RecoverWithUserInteraction (dbPath, GetName ());
+			co_await WithHandler (recoverResult,
+					[&] (auto)
 					{
-						QMessageBox::critical (nullptr,
-								"LeechCraft"_qs,
-								tr ("Unable to recover the HTTP passwords database: %1.")
-										.arg (err.Error_));
-
-						const auto& path = SQLStorageBackend::GetDBPath ();
-						QFile::copy (path, path + ".old");
-						QFile::remove (path);
+						QFile::rename (dbPath, dbPath + ".old");
+						return Util::IgnoreLeft {};
 					});
 		}
 

@@ -8,42 +8,12 @@
 
 #pragma once
 
-#include <variant>
-#include <QProcess>
-#include <QFuture>
+#include <util/threads/coro/taskfwd.h>
+#include <util/sll/eitherfwd.h>
+#include <util/sll/void.h>
 #include "dbconfig.h"
 
 namespace LC::Util
 {
-	class UTIL_DB_API Dumper : public QObject
-	{
-		QProcess * const Dumper_;
-		QProcess * const Restorer_;
-
-		bool HadError_ = false;
-
-		int FinishedCount_ = 0;
-	public:
-		struct Finished {};
-		struct Error
-		{
-			QString What_;
-
-			explicit Error (QString str)
-			: What_ { std::move (str) }
-			{
-			}
-		};
-		using Result_t = std::variant<Finished, Error>;
-	private:
-		QFutureInterface<Result_t> Iface_;
-	public:
-		Dumper (const QString& from, const QString& to, QObject* = nullptr);
-
-		QFuture<Result_t> GetFuture ();
-	private:
-		void HandleProcessFinished (QProcess*);
-		void HandleProcessError (const QProcess*);
-		void ReportResult (const Result_t&);
-	};
+	Task<Either<QString, Void>> DumpSqlite (QString from, QString to);
 }

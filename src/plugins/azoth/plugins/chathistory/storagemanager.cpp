@@ -10,8 +10,9 @@
 #include <cmath>
 #include <QMessageBox>
 #include <util/util.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro.h>
 #include <util/threads/workerthreadbase.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/db/consistencychecker.h>
 #include <interfaces/azoth/imessage.h>
@@ -46,31 +47,7 @@ namespace ChatHistory
 					HandleStorageError (res.GetLeft ());
 				};
 
-		auto checker = Util::ConsistencyChecker::Create (Storage::GetDatabasePath (), "Azoth ChatHistory");
-		Util::Sequence (this, checker->StartCheck ()) >>
-				Util::Visitor
-				{
-					[this] (const Util::ConsistencyChecker::Succeeded&) { StartStorage (); },
-					[this] (const Util::ConsistencyChecker::Failed& failed)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "db is broken, gonna repair";
-						Util::Sequence (this, failed->DumpReinit ()) >>
-								Util::Visitor
-								{
-									[] (const Util::ConsistencyChecker::DumpError& err)
-									{
-										QMessageBox::critical (nullptr,
-												"Azoth ChatHistory",
-												err.Error_);
-									},
-									[this] (const Util::ConsistencyChecker::DumpFinished& res)
-									{
-										HandleDumpFinished (res.OldFileSize_, res.NewFileSize_);
-									}
-								};
-					}
-				};
+		CheckStorage ();
 	}
 
 	namespace
@@ -202,6 +179,54 @@ namespace ChatHistory
 		StorageThread_->start (QThread::LowestPriority);
 	}
 
+	namespace
+	{
+		void ReportRecoverResult (const QString& context, const std::optional<int>& count,
+				const Util::ConsistencyChecker::RecoverFinished& recoverFinished)
+		{
+			const auto& text = StorageManager::tr ("Finished restoring history database contents. "
+					"Old file size: %1, new file size: %2, %3 records recovered.");
+			const auto& greet = recoverFinished.NewFileSize_ > recoverFinished.OldFileSize_ * 0.9 ?
+					StorageManager::tr ("Yay, seems like most of the contents are intact!") :
+					StorageManager::tr ("Sadly, seems like quite some history is lost.");
+
+			QMessageBox::information (nullptr, context,
+					text.arg (Util::MakePrettySize (recoverFinished.OldFileSize_))
+						.arg (Util::MakePrettySize (recoverFinished.NewFileSize_))
+						.arg (count.value_or (0)) +
+						" " + greet);
+		}
+	}
+
+	Util::ContextTask<void> StorageManager::CheckStorage ()
+	{
+		co_await Util::AddContextObject { *this };
+
+		namespace CC = Util::ConsistencyChecker;
+
+		const auto& dbPath = Storage::GetDatabasePath ();
+		const auto checkResult = co_await CC::Check (dbPath);
+		if (checkResult.IsRight ())
+		{
+			StartStorage ();
+			co_return;
+		}
+
+		qWarning () << "db is broken, gonna repair";
+		const auto& context = "Azoth ChatHistory"_qs;
+		const auto recoverResult = co_await CC::RecoverWithUserInteraction (dbPath, context);
+		const auto recoverFinished = co_await Util::WithHandler (recoverResult,
+				[&] (const auto&)
+				{
+					QMessageBox::critical (nullptr, context, tr ("Unable to recover storage, not initializing ChatHistory."));
+				});
+
+		StartStorage ();
+
+		const auto count = co_await StorageThread_->ScheduleImpl (&Storage::GetAllHistoryCount);
+		ReportRecoverResult (context, count, recoverFinished);
+	}
+
 	void StorageManager::HandleStorageError (const Storage::InitializationError_t& error)
 	{
 		Util::Visit (error,
@@ -212,28 +237,6 @@ namespace ChatHistory
 							tr ("Unable to initialize permanent storage. %1.")
 								.arg (err.ErrorText_));
 				});
-	}
-
-	void StorageManager::HandleDumpFinished (qint64 oldSize, qint64 newSize)
-	{
-		StartStorage ();
-
-		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::GetAllHistoryCount)) >>
-				[=] (const std::optional<int>& count)
-				{
-					const auto& text = QObject::tr ("Finished restoring history database contents. "
-							"Old file size: %1, new file size: %2, %3 records recovered.");
-					const auto& greet = newSize > oldSize * 0.9 ?
-							QObject::tr ("Yay, seems like most of the contents are intact!") :
-							QObject::tr ("Sadly, seems like quite some history is lost.");
-
-					QMessageBox::information (nullptr,
-							"Azoth ChatHistory",
-							text.arg (Util::MakePrettySize (oldSize))
-								.arg (Util::MakePrettySize (newSize))
-								.arg (count.value_or (0)) +
-								" " + greet);
-				};
 	}
 }
 }

@@ -7,109 +7,71 @@
  **********************************************************************/
 
 #include "dumper.h"
+
+#include <QCoreApplication>
+#include <QProcess>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 
 namespace LC::Util
 {
-	Dumper::Dumper (const QString& from, const QString& to, QObject *parent)
-	: QObject { parent }
-	, Dumper_ { new QProcess { this } }
-	, Restorer_ { new QProcess { this } }
+	namespace
 	{
-		Iface_.reportStarted ();
-
-		Dumper_->setStandardOutputProcess (Restorer_);
-
-		connect (Dumper_,
-				&QProcess::errorOccurred,
-				this,
-				[this] { HandleProcessError (Dumper_); });
-		connect (Restorer_,
-				&QProcess::errorOccurred,
-				this,
-				[this] { HandleProcessError (Restorer_); });
-		connect (Dumper_,
-				qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
-				this,
-				[this] { HandleProcessFinished (Dumper_); });
-		connect (Restorer_,
-				qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
-				this,
-				[this] { HandleProcessFinished (Restorer_); });
-
-		static const QString sqliteExecutable = QStringLiteral ("sqlite3");
-		Dumper_->start (sqliteExecutable, { from, QStringLiteral (".dump") });
-		Restorer_->start (sqliteExecutable, { to });
-	}
-
-	QFuture<Dumper::Result_t> Dumper::GetFuture ()
-	{
-		return Iface_.future ();
-	}
-
-	void Dumper::HandleProcessFinished (QProcess *process)
-	{
-		const auto& stderr = QString::fromUtf8 (process->readAllStandardError ());
-		const auto exitCode = process->exitCode ();
-
-		qDebug () << Q_FUNC_INFO
-				<< process->exitStatus ()
-				<< exitCode
-				<< stderr;
-
-		switch (process->exitStatus ())
+		struct Tr
 		{
-		case QProcess::CrashExit:
+			Q_DECLARE_TR_FUNCTIONS (LC::Util::DumpSqlite)
+		};
+
+		Either<QString, Void> CheckProcessFinishStatus (QProcess& process)
 		{
-			if (HadError_)
+			const auto& procStdErr = process.readAllStandardError ();
+			switch (process.exitStatus ())
+			{
+			case QProcess::CrashExit:
+			{
+				const auto& procErr = process.errorString ();
+
+				if (process.error () == QProcess::FailedToStart)
+					return Left { Tr::tr ("Unable to start dumping process: %1. Do you have sqlite3 installed?").arg (procErr) };
+
+				const auto& message = procStdErr.isEmpty () ?
+						Tr::tr ("Dumping process crashed: %1.").arg (procErr) :
+						Tr::tr ("Dumping process crashed: %1 (%2).").arg (procErr, procStdErr);
+				return Left { message };
+			}
+			case QProcess::NormalExit:
+				if (const auto ec = process.exitCode ())
+				{
+					const auto& message = Tr::tr ("Dumping process returned an error: %1 (%2).")
+							.arg (ec)
+							.arg (procStdErr);
+					return Left { message };
+				}
 				break;
+			}
 
-			HadError_ = true;
-			auto errMsg = tr ("Dumping process crashed: %1.")
-					.arg (stderr.isEmpty () ?
-							process->errorString () :
-							stderr);
-			ReportResult (Error { std::move (errMsg) });
-			break;
-		}
-		case QProcess::NormalExit:
-		{
-			if (exitCode)
-			{
-				auto errMsg = tr ("Dumping process finished with error: %1 (%2).")
-						.arg (stderr)
-						.arg (exitCode);
-				ReportResult (Error { std::move (errMsg) });
-			}
-			else if (++FinishedCount_ == 2)
-			{
-				ReportResult (Finished {});
-				deleteLater ();
-			}
-			break;
-		}
+			return Void {};
 		}
 	}
 
-	void Dumper::HandleProcessError (const QProcess *process)
+	Task<Either<QString, Void>> DumpSqlite (QString from, QString to)
 	{
-		qWarning () << Q_FUNC_INFO
-				<< process->error ()
-				<< process->errorString ();
+		QProcess dumper;
+		QProcess restorer;
 
-		if (HadError_)
-			return;
+		dumper.setStandardOutputProcess (&restorer);
 
-		HadError_ = true;
+		static const auto sqlite = "sqlite3"_qs;
+		dumper.start (sqlite, { from, ".dump"_qs });
+		restorer.start (sqlite, { to });
 
-		const auto& errMsg = process->error () == QProcess::FailedToStart ?
-				tr ("Unable to start dumping process: %1. Do you have sqlite3 installed?") :
-				tr ("Unable to dump the database: %1.");
-		ReportResult (Error { errMsg.arg (process->errorString ()) });
-	}
+		co_await dumper;
+		co_await CheckProcessFinishStatus (dumper);
 
-	void Dumper::ReportResult (const Result_t& result)
-	{
-		Iface_.reportFinished (&result);
+		co_await restorer;
+		co_await CheckProcessFinishStatus (restorer);
+
+		co_return Void {};
 	}
 }

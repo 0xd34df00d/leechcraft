@@ -8,63 +8,36 @@
 
 #pragma once
 
-#include <memory>
 #include <variant>
 #include <QObject>
 #include <util/sll/either.h>
+#include <util/threads/coro/taskfwd.h>
 #include "dbconfig.h"
 
-template<typename>
-class QFuture;
-
-template<typename>
-class QFutureInterface;
-
-namespace LC::Util
+namespace LC::Util::ConsistencyChecker
 {
-	class UTIL_DB_API ConsistencyChecker : public QObject
-										 , public std::enable_shared_from_this<ConsistencyChecker>
+	struct Failed {};
+	struct Succeeded {};
+	using CheckResult_t = Either<Failed, Succeeded>;
+
+	UTIL_DB_API Task<CheckResult_t> Check (QString dbPath);
+
+	struct RecoverFinished
 	{
-		const QString DBPath_;
-		const QString DialogContext_;
-
-		friend class FailedImpl;
-
-		ConsistencyChecker (QString dbPath, QString dialogContext, QObject* = nullptr);
-	public:
-		static std::shared_ptr<ConsistencyChecker> Create (QString dbPath, QString dialogContext);
-
-		struct DumpFinished
-		{
-			qint64 OldFileSize_;
-			qint64 NewFileSize_;
-		};
-		struct DumpError
-		{
-			QString Error_;
-		};
-		using DumpResult_t = Either<DumpError, DumpFinished>;
-
-		struct Succeeded {};
-		struct IFailed
-		{
-			virtual QFuture<DumpResult_t> DumpReinit () = 0;
-
-			// Not having a virtual dtor here is fine, since its subclasses will
-			// only be deleted through a shared_ptr, which remembers the exact
-			// type of the constructed object.
-		};
-		using Failed = std::shared_ptr<IFailed>;
-
-		using CheckResult_t = Either<Failed, Succeeded>;
-
-		QFuture<CheckResult_t> StartCheck ();
-	private:
-		CheckResult_t CheckDB ();
-
-		QFuture<DumpResult_t> DumpReinit ();
-		void DumpReinitImpl (QFutureInterface<DumpResult_t>);
-
-		void HandleDumperFinished (QFutureInterface<DumpResult_t>, const QString&);
+		qint64 OldFileSize_;
+		qint64 NewFileSize_;
 	};
+
+	struct RecoverNoSpace
+	{
+		qint64 Available_;
+		qint64 Expected_;
+	};
+	struct RecoverTargetExists { QString Target_; };
+	struct RecoverOtherFailure { QString Message_; };
+	using RecoverFailed = std::variant<RecoverNoSpace, RecoverTargetExists, RecoverOtherFailure>;
+	using RecoverResult_t = Either<RecoverFailed, RecoverFinished>;
+
+	UTIL_DB_API Task<RecoverResult_t> Recover (QString dbPath);
+	UTIL_DB_API Task<RecoverResult_t> RecoverWithUserInteraction (QString dbPath, QString diaTitle);
 }

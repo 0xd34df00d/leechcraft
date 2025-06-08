@@ -9,6 +9,7 @@
 #pragma once
 
 #include "storage.h"
+#include <util/threads/coro/taskfwd.h>
 #include <util/threads/workerthreadbasefwd.h>
 
 namespace LC
@@ -50,9 +51,10 @@ namespace ChatHistory
 
 		void RegenUsersCache ();
 	private:
+		Util::ContextTask<void> CheckStorage ();
+
 		void StartStorage ();
 		void HandleStorageError (const Storage::InitializationError_t&);
-		void HandleDumpFinished (qint64, qint64);
 	};
 }
 }
