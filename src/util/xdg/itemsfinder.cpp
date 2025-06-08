@@ -13,7 +13,8 @@
 #include <QtConcurrentRun>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro/future.h>
+#include <util/threads/coro.h>
 #include "xdg.h"
 #include "item.h"
 
@@ -219,21 +220,20 @@ namespace LC::Util::XDG
 
 		IsScanning_ = true;
 
-		Util::Sequence (this, QtConcurrent::run (FindAndParse, Types_)) >>
-				[this] (const Cat2ID2Item_t& result)
-				{
-					return QtConcurrent::run (Merge, Items_, result);
-				} >>
-				[this] (const std::optional<Cat2Items_t>& result)
-				{
-					IsScanning_ = false;
-					IsReady_ = true;
+		[this] () -> ContextTask<void>
+		{
+			co_await AddContextObject { *this };
+			const auto& cat2id2item = co_await QtConcurrent::run (FindAndParse, Types_);
+			const auto& result = co_await QtConcurrent::run (Merge, Items_, cat2id2item);
 
-					if (result)
-					{
-						Items_ = *result;
-						emit itemsListChanged ();
-					}
-				};
+			IsScanning_ = false;
+			IsReady_ = true;
+
+			if (result)
+			{
+				Items_ = *result;
+				emit itemsListChanged ();
+			}
+		} ();
 	}
 }
