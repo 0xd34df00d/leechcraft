@@ -8,7 +8,5 @@ zypper -n in eatmydata
 eatmydata zypper dup -y
 
 eatmydata zypper -n si -d leechcraft
-eatmydata zypper -n in git gzip
-eatmydata zypper -n in libboost_container-devel
-eatmydata zypper -n in liblastfm-qt6-devel
+eatmydata zypper -n in git gzip libboost_container-devel liblastfm-qt6-devel
 EOF
