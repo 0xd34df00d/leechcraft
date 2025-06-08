@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.10)
 project (azoth_autoidler)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-if (UNIX)
+if (UNIX AND NOT APPLE)
 	find_package (PkgConfig)
 	pkg_check_modules (XSS REQUIRED IMPORTED_TARGET xscrnsaver)
 
