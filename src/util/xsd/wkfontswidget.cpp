@@ -40,10 +40,10 @@ namespace LC::Util
 
 		ResetFontChoosers ();
 
-		for (const auto& pair : Util::Stlize (Family2Chooser_))
-			connect (pair.second,
+		for (const auto& [family, chooser] : Family2Chooser_.asKeyValueRange ())
+			connect (chooser,
 					&FontChooserWidget::fontChanged,
-					[this, pair] { PendingFontChanges_ [pair.first] = pair.second->GetFont (); });
+					[this, family, chooser] { PendingFontChanges_ [family] = chooser->GetFont (); });
 
 		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFontSize] = Ui_->SizeDefault_;
 		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFixedFontSize] = Ui_->SizeFixedWidth_;
@@ -55,10 +55,10 @@ namespace LC::Util
 
 		ResetSizeChoosers ();
 
-		for (const auto& pair : Util::Stlize (Size2Spinbox_))
-			connect (pair.second,
-					qOverload<int> (&QSpinBox::valueChanged),
-					[this, pair] { PendingSizeChanges_ [pair.first] = pair.second->value (); });
+		for (const auto& [size, spinbox] : Size2Spinbox_.asKeyValueRange ())
+			connect (spinbox,
+					&QSpinBox::valueChanged,
+					[this, size, spinbox] { PendingSizeChanges_ [size] = spinbox->value (); });
 
 		connect (Ui_->ChangeAll_,
 				&QPushButton::released,
