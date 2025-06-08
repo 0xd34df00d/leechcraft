@@ -72,7 +72,7 @@ namespace LC::Util
 	namespace detail
 	{
 		template<Qt::ItemDataRole Role>
-		using Role = std::integral_constant<Qt::ItemDataRole, Role>;
+		using RoleTag = std::integral_constant<Qt::ItemDataRole, Role>;
 
 		struct Extension
 		{
@@ -107,7 +107,7 @@ namespace LC::Util
 	{
 		using Extension::Extension;
 
-		static QVariant GetDataForRole (detail::Role<Qt::DecorationRole>, const auto& item, int column)
+		static QVariant GetDataForRole (detail::RoleTag<Qt::DecorationRole>, const auto& item, int column)
 		{
 			if (column)
 				return {};
@@ -135,7 +135,7 @@ namespace LC::Util
 			return column ? Qt::ItemFlags {} : Qt::ItemIsUserCheckable;
 		}
 
-		static QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto& item, int, int column)
+		static QVariant GetDataForRole (detail::RoleTag<Qt::CheckStateRole>, const auto& item, int, int column)
 		{
 			if (column)
 				return QVariant {};
@@ -185,7 +185,7 @@ namespace LC::Util
 			return RowsStates_.value (row, Param_) == Qt::Checked;
 		}
 
-		QVariant GetDataForRole (detail::Role<Qt::CheckStateRole>, const auto&, int row, int column)
+		QVariant GetDataForRole (detail::RoleTag<Qt::CheckStateRole>, const auto&, int row, int column)
 		{
 			return column ? QVariant {} : RowsStates_.value (row, Param_);
 		}
@@ -262,9 +262,9 @@ namespace LC::Util
 					return getter (item);
 				return {};
 			case Qt::CheckStateRole:
-				return this->GetDataForRole (detail::Role<Qt::CheckStateRole> {}, item, row, column);
+				return this->GetDataForRole (detail::RoleTag<Qt::CheckStateRole> {}, item, row, column);
 			case Qt::DecorationRole:
-				return this->GetDataForRole (detail::Role<Qt::DecorationRole> {}, item, row, column);
+				return this->GetDataForRole (detail::RoleTag<Qt::DecorationRole> {}, item, row, column);
 			default:
 				return {};
 			}
