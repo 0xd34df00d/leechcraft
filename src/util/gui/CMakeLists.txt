@@ -35,6 +35,7 @@ add_util_library (util-gui
 		leechcraft-util-network
 		leechcraft-util-shortcuts
 		leechcraft-util-sll
+		leechcraft-util-xpc
 		leechcraft-xsd
 	USES ${MAYBE_DBUS_DEP} Network Widgets
 	DEFINES $<${IS_FREEDESKTOP_PLATFORM}:IS_FREEDESKTOP_PLATFORM>

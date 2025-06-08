@@ -6,7 +6,10 @@ add_util_library (util-db
 		closingdb.cpp
 		dumper.cpp
 		consistencychecker.cpp
-	DEPENDS leechcraft-xsd
+	DEPENDS
+		leechcraft-util-sys
+		leechcraft-util
+		leechcraft-xsd
 	USES Concurrent Sql Widgets
 	)
 

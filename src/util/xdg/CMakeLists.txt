@@ -6,7 +6,9 @@ add_util_library (util-xdg
 		itemsfinder.cpp
 		itemtypes.cpp
 		xdg.cpp
-	DEPENDS leechcraft-util-xpc
+	DEPENDS
+		leechcraft-util-threads
+		leechcraft-util-xpc
 	USES Concurrent Widgets
 	)
 
