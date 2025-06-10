@@ -176,7 +176,7 @@ namespace CSTP
 
 		auto mkErr = [] (auto type, const QString& msg)
 		{
-			return Util::MakeReadyFuture (IDownload::Result { { type, msg } });
+			return Util::MakeReadyFuture (IDownload::Result { Util::AsLeft, { type, msg } });
 		};
 
 		if (e.Parameters_ & LC::FromUserInitiated &&
