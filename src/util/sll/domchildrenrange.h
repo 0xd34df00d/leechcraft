@@ -46,10 +46,13 @@ namespace LC::Util
 	{
 		struct Iterator
 		{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 			using difference_type = ptrdiff_t;
 			using value_type = QDomElement;
 			using reference = QDomElement&;
 			using iterator_category = std::forward_iterator_tag;
+#pragma GCC diagnostic pop
 
 			QDomElement Elem_;
 			const QString Tag_;
