@@ -1807,42 +1807,54 @@ namespace Azoth
 		{
 			return dt.date () == msg->GetDateTime ().date ();
 		}
+
+		bool ShouldShowMessage (IMessage *msg)
+		{
+			if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
+				return false;
+
+			const auto parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
+			const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+
+			if (msg->GetDirection () == IMessage::Direction::Out &&
+					other &&
+					other->GetEntryType () == ICLEntry::EntryType::MUC)
+				return false;
+
+			if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
+					(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
+					!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
+				return false;
+
+			if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
+					(!parent || parent->GetEntryType () != ICLEntry::EntryType::MUC) &&
+					!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
+				return false;
+
+			if ((msg->GetMessageSubType () == IMessage::SubType::ParticipantJoin ||
+						msg->GetMessageSubType () == IMessage::SubType::ParticipantLeave) &&
+					!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
+				return false;
+
+			if (msg->GetMessageSubType () == IMessage::SubType::ParticipantEndedConversation &&
+					!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
+				return false;
+
+			return true;
+		}
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)
 	{
-		auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		const auto parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
-		if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
-			return;
-
-		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-
-		if (msg->GetDirection () == IMessage::Direction::Out &&
-				other &&
-				other->GetEntryType () == ICLEntry::EntryType::MUC)
-			return;
-
-		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
-				(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
-				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
-			return;
-
-		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
-				(!parent || parent->GetEntryType () != ICLEntry::EntryType::MUC) &&
-				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
-			return;
-
-		if ((msg->GetMessageSubType () == IMessage::SubType::ParticipantJoin ||
-					msg->GetMessageSubType () == IMessage::SubType::ParticipantLeave) &&
-				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
+		if (!ShouldShowMessage (msg))
 			return;
 
 		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantEndedConversation)
 		{
-			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
-				return;
-			else if (other)
+			if (other)
 				msg->SetBody (tr ("%1 ended the conversation.")
 						.arg (other->GetEntryName ()));
 			else
