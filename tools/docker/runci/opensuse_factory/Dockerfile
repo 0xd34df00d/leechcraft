@@ -5,4 +5,4 @@ RUN eatmydata git clone https://github.com/0xd34df00d/leechcraft.git && \
   mkdir build && \
   cd build && \
   eatmydata cmake ../src --preset opensuse_factory && \
-  eatmydata make -j$(nproc) -k
+  eatmydata cmake --build . -j$(nproc) -- -k
