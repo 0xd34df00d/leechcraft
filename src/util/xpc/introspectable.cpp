@@ -25,7 +25,7 @@ namespace LC::Util
 
 		const auto type = variant.userType ();
 
-		if (type < static_cast<int> (QVariant::UserType))
+		if (type < static_cast<int> (QMetaType::Type::User))
 			return { { "data", variant } };
 
 		if (Intros_.contains (type))

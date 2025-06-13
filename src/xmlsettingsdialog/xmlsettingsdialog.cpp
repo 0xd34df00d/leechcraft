@@ -18,9 +18,10 @@
 #include <QDomNodeList>
 #include <QTabWidget>
 #include <util/util.h>
-#include <util/sll/util.h>
-#include <util/sll/prelude.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
+#include <util/sll/util.h>
 #include <util/sys/resourceloader.h>
 #include "itemhandlerfactory.h"
 #include "basesettingsmanager.h"
@@ -73,37 +74,28 @@ namespace LC::Util
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
 		{
-			qWarning () << "cannot open file"
-				<< filename
-				<< basename;
+			qWarning () << "cannot open file" << filename << basename;
 			return;
 		}
-		const QByteArray& data = file.readAll ();
-		file.close ();
 
-		QString emsg;
-		int eline;
-		int ecol;
-		if (!Document_->setContent (data, &emsg, &eline, &ecol))
+		if (const auto result = Document_->setContent (&file);
+			!result)
 		{
-			qWarning () << "Could not parse file, line"
-				<< eline
-				<< "; column"
-				<< ecol
-				<< emsg;
+			qWarning () << "could not parse" << filename << result;
 			return;
 		}
-		const QDomElement& root = Document_->documentElement ();
+
+		const auto& root = Document_->documentElement ();
 		if (root.tagName () != "settings")
 		{
-			qWarning () << "Bad settings file";
+			qWarning () << "bad settings file" << filename;
 			return;
 		}
 
 		{
 			auto initGuard = obj->EnterInitMode ();
 
-			for (const auto& pageChild : Util::DomChildren (root, "page"))
+			for (const auto& pageChild : DomChildren (root, "page"))
 				ParsePage (pageChild);
 		}
 

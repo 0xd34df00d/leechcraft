@@ -23,30 +23,23 @@ namespace LC::Util
 	{
 		QString GetPasswordHelper (const QByteArray& key, const ICoreProxy_ptr& proxy)
 		{
-			const auto& result = Util::GetPersistentData (key, proxy);
+			const auto& result = GetPersistentData (key, proxy);
 			if (!result.isValid ())
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid result for key"
-						<< key;
+				qWarning () << "invalid result for key" << key;
 				return {};
 			}
 
-			switch (result.type ())
+			switch (result.typeId ())
 			{
-			case QVariant::String:
+			case QMetaType::QString:
 				return result.toString ();
-			case QVariant::List:
+			case QMetaType::QVariantList:
 				return result.toList ().value (0).toString ();
-			case QVariant::StringList:
+			case QMetaType::QStringList:
 				return result.toStringList ().value (0);
 			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unknown result type"
-						<< result.type ()
-						<< result
-						<< "for key"
-						<< key;
+				qWarning () << "unknown result type" << result.metaType () << result << "for key" << key;
 				return {};
 			}
 		}

@@ -15,7 +15,7 @@ namespace LC
 	ItemRepresentation HandleCheckbox (const ItemContext& ctx)
 	{
 		const auto box = new QCheckBox { ctx.Label_ };
-		SetChangedSignal (ctx, box, &QCheckBox::stateChanged);
+		SetChangedSignal (ctx, box, &QCheckBox::checkStateChanged);
 		return
 		{
 			.Widget_ = box,

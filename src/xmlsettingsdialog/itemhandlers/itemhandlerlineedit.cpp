@@ -20,7 +20,7 @@ namespace LC
 		const auto& item = ctx.Elem_;
 
 		const auto edit = new QLineEdit;
-		edit->setMinimumWidth (QApplication::fontMetrics ().horizontalAdvance ("thisismaybeadefaultsetting"_qs));
+		edit->setMinimumWidth (QFontMetrics { QApplication::font () }.horizontalAdvance ("thisismaybeadefaultsetting"_qs));
 		if (item.hasAttribute ("password"_qs))
 			edit->setEchoMode (QLineEdit::Password);
 		if (item.hasAttribute ("inputMask"_qs))
