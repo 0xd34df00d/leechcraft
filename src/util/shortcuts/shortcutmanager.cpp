@@ -125,16 +125,16 @@ namespace LC::Util
 
 	void ShortcutManager::AnnounceGlobalShorcuts ()
 	{
-		for (const auto& entity : qAsConst (Globals_))
+		for (const auto& entity : std::as_const (Globals_))
 			CoreProxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 
 	void ShortcutManager::SetShortcut (const QByteArray& id, const QKeySequences_t& seqs)
 	{
-		for (auto act : qAsConst (Actions_ [id]))
+		for (auto act : std::as_const (Actions_ [id]))
 			act->setShortcuts (seqs);
 
-		for (auto sc : qAsConst (Shortcuts_ [id]))
+		for (auto sc : std::as_const (Shortcuts_ [id]))
 		{
 			sc->setKey (seqs.value (0));
 			qDeleteAll (Shortcut2Subs_.take (sc));
@@ -142,7 +142,7 @@ namespace LC::Util
 			const int seqsSize = seqs.size ();
 			for (int i = 1; i < seqsSize; ++i)
 			{
-				auto subsc = new QShortcut { sc->parentWidget () };
+				auto subsc = new QShortcut { sc->parent () };
 				subsc->setContext (sc->context ());
 				subsc->setKey (seqs.value (i));
 				connect (subsc,
