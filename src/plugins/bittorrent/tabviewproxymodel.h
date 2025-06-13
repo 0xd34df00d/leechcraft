@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <util/models/fixedstringfilterproxymodel.h>
 
 namespace LC::BitTorrent
 {
-	class TabViewProxyModel : public QSortFilterProxyModel
+	class TabViewProxyModel : public Util::FixedStringFilterProxyModel
 	{
 		enum class StateFilterMode
 		{
@@ -21,7 +21,7 @@ namespace LC::BitTorrent
 			Seeding
 		} StateFilter_ = StateFilterMode::All;
 	public:
-		using QSortFilterProxyModel::QSortFilterProxyModel;
+		using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 
 		void SetStateFilterMode (int);
 	protected:

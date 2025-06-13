@@ -107,7 +107,7 @@ namespace LC::BitTorrent
 		connect (Ui_.SearchLine_,
 				&QLineEdit::textChanged,
 				ViewFilter_,
-				&QSortFilterProxyModel::setFilterFixedString);
+				&TabViewProxyModel::SetFilterString);
 
 		connect (Ui_.TorrentStateFilter_,
 				&QComboBox::currentIndexChanged,
