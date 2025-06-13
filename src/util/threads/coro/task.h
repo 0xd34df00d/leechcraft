@@ -48,7 +48,7 @@ namespace LC::Util
 			}
 		};
 
-		struct EitherFailureAbort : std::exception {};
+		struct EitherFailureAbort final : std::exception {};
 
 		template<typename Promise>
 		struct TaskAwaiter
@@ -81,7 +81,7 @@ namespace LC::Util
 					{
 						std::rethrow_exception (promise.Exception_);
 					}
-					catch (EitherFailureAbort)
+					catch (const EitherFailureAbort&)
 					{
 					}
 
