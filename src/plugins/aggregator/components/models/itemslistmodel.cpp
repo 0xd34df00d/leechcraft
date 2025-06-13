@@ -303,6 +303,9 @@ namespace LC::Aggregator
 
 	QVariant ItemsListModel::headerData (int column, Qt::Orientation orient, int role) const
 	{
+		if (column < 0 || column >= columnCount ())
+			return {};
+
 		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 			return ItemHeaders_.at (column);
 
