@@ -78,22 +78,7 @@
      </column>
      <column>
       <property name="text">
-       <string>From torrent</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>From client</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>From magnet</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>From TeX</string>
+       <string>Sources</string>
       </property>
      </column>
     </widget>

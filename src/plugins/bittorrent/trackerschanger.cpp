@@ -31,6 +31,23 @@ namespace LC::BitTorrent
 				return {};
 			}
 		}
+
+		QString GetSources (uint8_t source)
+		{
+			using enum libtorrent::announce_entry::tracker_source;
+
+			QStringList sources;
+			if (source & source_torrent)
+				sources << TrackersChanger::tr ("torrent");
+			if (source & source_client)
+				sources << TrackersChanger::tr ("user");
+			if (source & source_magnet_link)
+				sources << TrackersChanger::tr ("magnet");
+			if (source & source_tex)
+				sources << TrackersChanger::tr ("tracker exchange");
+
+			return sources.join (", "_ql);
+		}
 	}
 
 	TrackersChanger::TrackersChanger (const std::vector<libtorrent::announce_entry>& trackers, QWidget *parent)
@@ -64,11 +81,6 @@ namespace LC::BitTorrent
 		QList<QTreeWidgetItem*> items;
 		for (const auto& tracker : trackers)
 		{
-			const bool torrent = tracker.source & libtorrent::announce_entry::source_torrent;
-			const bool client = tracker.source & libtorrent::announce_entry::source_client;
-			const bool magnet = tracker.source & libtorrent::announce_entry::source_magnet_link;
-			const bool tex = tracker.source & libtorrent::announce_entry::source_tex;
-
 			const auto showBool = [] (bool val) { return val ? tr ("true") : tr ("false"); };
 
 			const auto now = std::chrono::system_clock::now ();
@@ -91,10 +103,7 @@ namespace LC::BitTorrent
 							showBool (infohash.updating),
 							showBool (infohash.start_sent),
 							showBool (infohash.complete_sent),
-							showBool (torrent),
-							showBool (client),
-							showBool (magnet),
-							showBool (tex)
+							GetSources (tracker.source),
 						}
 					};
 				}
