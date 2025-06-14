@@ -293,7 +293,7 @@ namespace LC
 
 	void SeparateTabBar::dragMoveEvent (QDragMoveEvent *event)
 	{
-		const auto tabIdx = tabAt (event->pos ());
+		const auto tabIdx = tabAt (event->position ().toPoint ());
 		if (tabIdx == count () - 1)
 			return;
 
@@ -313,7 +313,7 @@ namespace LC
 	{
 		auto data = event->mimeData ();
 
-		const int to = tabAt (event->pos ());
+		const int to = tabAt (event->position ().toPoint ());
 		auto widget = TabWidget_->Widget (to);
 		if (data->data ("x-leechcraft/tab-drag-action") == "reordering")
 		{

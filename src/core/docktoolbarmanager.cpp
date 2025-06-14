@@ -157,7 +157,7 @@ namespace LC
 		if (!enabled)
 			return;
 
-		const auto& assocs = action->associatedWidgets ();
+		const auto& assocs = action->associatedObjects ();
 
 		for (auto& info : Area2Info_)
 		{

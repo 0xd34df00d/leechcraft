@@ -114,7 +114,7 @@ namespace LC
 					groupSplit.removeFirst ();
 			}
 
-			const auto& fm = QApplication::fontMetrics ();
+			const QFontMetrics fm { QApplication::font () };
 			const int pad = 3;
 			for (auto& str : origSplit)
 				if (fm.horizontalAdvance (str) > ButtonWidth - 2 * pad)
