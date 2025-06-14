@@ -534,12 +534,10 @@ namespace LC::BitTorrent
 					"dht.transmissionbt.com:6881,"
 					"dht.aelitis.com:6881");
 
-		libtorrent::dht_settings dhtSettings;
+		LT_SET_INT_OPT (dht_max_peers_reply, "MaxPeersReply");
+		LT_SET_INT_OPT (dht_search_branching, "SearchBranching");
+		LT_SET_INT_OPT (dht_max_fail_count, "MaxDHTFailcount");
 
-		dhtSettings.max_peers_reply = xsm.property ("MaxPeersReply").toInt ();
-		dhtSettings.search_branching = xsm.property ("SearchBranching").toInt ();
-		dhtSettings.max_fail_count = xsm.property ("MaxDHTFailcount").toInt ();
-
-		Session_->set_dht_settings (dhtSettings);
+		Session_->apply_settings (settings);
 	}
 }
