@@ -167,8 +167,10 @@ namespace LC::BitTorrent
 		Entity e
 		{
 			.Entity_ = QVariant::fromValue<QIODevice*> (this),
+			.Location_ = {},
 			.Mime_ = QStringLiteral ("x-leechcraft/media-qiodevice"),
 			.Parameters_ = FromUserInitiated,
+			.Additional_ = {},
 		};
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
