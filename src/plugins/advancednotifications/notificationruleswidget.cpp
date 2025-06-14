@@ -156,11 +156,11 @@ namespace LC::AdvancedNotifications
 				&NotificationRulesWidget::PopulateCategories);
 
 		connect (Ui_.NotifyAudio_,
-				&QCheckBox::stateChanged,
-				[this] (int state) { Ui_.PageAudio_->setEnabled (state == Qt::Checked); });
+				&QCheckBox::checkStateChanged,
+				[this] (Qt::CheckState state) { Ui_.PageAudio_->setEnabled (state == Qt::Checked); });
 		connect (Ui_.NotifyCmd_,
-				&QCheckBox::stateChanged,
-				[this] (int state) { Ui_.PageCommand_->setEnabled (state == Qt::Checked); });
+				&QCheckBox::checkStateChanged,
+				[this] (Qt::CheckState state) { Ui_.PageCommand_->setEnabled (state == Qt::Checked); });
 
 		connect (rm,
 				&RulesManager::focusOnRule,
