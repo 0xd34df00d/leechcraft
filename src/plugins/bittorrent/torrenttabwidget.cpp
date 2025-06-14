@@ -144,22 +144,22 @@ namespace LC::BitTorrent
 					ForEachSelected ([val] (const QModelIndex& idx) { SetUploadLimit (GetTorrentHandle (idx), val); });
 				});
 		connect (Ui_.TorrentManaged_,
-				&QCheckBox::stateChanged,
-				[this] (int state)
+				&QCheckBox::checkStateChanged,
+				[this] (Qt::CheckState state)
 				{
 					const auto enable = state == Qt::Checked;
 					ForEachSelected ([this, enable] (const QModelIndex& idx) { Model_->setData (idx, enable, Roles::IsManaged); });
 				});
 		connect (Ui_.TorrentSequentialDownload_,
-				&QCheckBox::stateChanged,
-				[this] (int state)
+				&QCheckBox::checkStateChanged,
+				[this] (Qt::CheckState state)
 				{
 					const auto enable = state == Qt::Checked;
 					ForEachSelected ([this, enable] (const QModelIndex& idx) { Model_->setData (idx, enable, Roles::IsSequentialDownloading); });
 				});
 		connect (Ui_.TorrentSuperSeeding_,
-				&QCheckBox::stateChanged,
-				[this] (int state)
+				&QCheckBox::checkStateChanged,
+				[this] (Qt::CheckState state)
 				{
 					const auto enable = state == Qt::Checked;
 					ForEachSelected ([this, enable] (const QModelIndex& idx) { Model_->setData (idx, enable, Roles::IsSuperSeeding); });
