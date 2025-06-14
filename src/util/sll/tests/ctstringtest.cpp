@@ -63,7 +63,7 @@ namespace LC::Util
 
 	constexpr bool TestUB ()
 	{
-		constexpr auto str = "hello, " + "world!"_ct + " how's life?";
+		[[maybe_unused]] constexpr auto str = "hello, " + "world!"_ct + " how's life?";
 		return true;
 	}
 
