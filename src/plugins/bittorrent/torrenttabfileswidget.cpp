@@ -12,6 +12,7 @@
 #include <QSortFilterProxyModel>
 #include <libtorrent/torrent_handle.hpp>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include <util/sll/prelude.h>
 #include <util/util.h>
 #include "filesviewdelegate.h"
@@ -22,16 +23,16 @@ namespace LC::BitTorrent
 {
 	namespace
 	{
-		class FilesProxyModel final : public QSortFilterProxyModel
+		class FilesProxyModel final : public Util::FixedStringFilterProxyModel
 		{
 		public:
-			using QSortFilterProxyModel::QSortFilterProxyModel;
+			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
 			{
 				const auto& idx = sourceModel ()->index (row, TorrentFilesModel::ColumnPath, parent);
 
-				if (idx.data ().toString ().contains (filterRegularExpression ().pattern (), Qt::CaseInsensitive))
+				if (idx.data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive))
 					return true;
 
 				const auto rc = sourceModel ()->rowCount (idx);
