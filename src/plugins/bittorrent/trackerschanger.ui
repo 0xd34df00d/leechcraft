@@ -33,6 +33,11 @@
      </property>
      <column>
       <property name="text">
+       <string>Info hash</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>URL</string>
       </property>
      </column>
@@ -49,11 +54,6 @@
      <column>
       <property name="text">
        <string>Fails</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Fail limit</string>
       </property>
      </column>
      <column>

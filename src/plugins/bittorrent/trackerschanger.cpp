@@ -12,10 +12,27 @@
 #include <libtorrent/announce_entry.hpp>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/qtutil.h>
 #include "singletrackerchanger.h"
 
 namespace LC::BitTorrent
 {
+	namespace
+	{
+		QString HashVersionToString (libtorrent::protocol_version version)
+		{
+			switch (version)
+			{
+			case libtorrent::protocol_version::V1:
+				return "SHA-1"_qs;
+			case libtorrent::protocol_version::V2:
+				return "SHA-256"_qs;
+			default:
+				return {};
+			}
+		}
+	}
+
 	TrackersChanger::TrackersChanger (const std::vector<libtorrent::announce_entry>& trackers, QWidget *parent)
 	: QDialog { parent }
 	{
@@ -56,26 +73,31 @@ namespace LC::BitTorrent
 
 			const auto now = std::chrono::system_clock::now ();
 			for (const auto& endpoint : tracker.endpoints)
-				items << new QTreeWidgetItem
+				for (const auto& hashVersion : { libtorrent::protocol_version::V1, libtorrent::protocol_version::V2 })
 				{
-					QStringList
-					{
-						QString::fromStdString (tracker.url),
-						QString::number (tracker.tier),
-						tr ("%1 s").arg (libtorrent::total_seconds (endpoint.next_announce - now)),
-						QString::number (endpoint.fails),
-						QString::number (tracker.fail_limit),
-						showBool (tracker.verified),
-						showBool (endpoint.updating),
-						showBool (endpoint.start_sent),
-						showBool (endpoint.complete_sent),
-						showBool (torrent),
-						showBool (client),
-						showBool (magnet),
-						showBool (tex)
+					const auto& infohash = endpoint.info_hashes [hashVersion];
+					if (infohash.next_announce < now)
+						continue;
 
-					}
-				};
+					items << new QTreeWidgetItem
+					{
+						{
+							HashVersionToString (hashVersion),
+							QString::fromStdString (tracker.url),
+							QString::number (tracker.tier),
+							tr ("%1 s").arg (libtorrent::total_seconds (infohash.next_announce - now)),
+							tr ("%1 of %2").arg (infohash.fails).arg (tracker.fail_limit),
+							showBool (tracker.verified),
+							showBool (infohash.updating),
+							showBool (infohash.start_sent),
+							showBool (infohash.complete_sent),
+							showBool (torrent),
+							showBool (client),
+							showBool (magnet),
+							showBool (tex)
+						}
+					};
+				}
 		}
 		Ui_.Trackers_->addTopLevelItems (items);
 		for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
