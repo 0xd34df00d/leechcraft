@@ -67,8 +67,6 @@ namespace LC::BitTorrent
 			xsm.setProperty ("InactivityTimeout", 120);
 			xsm.setProperty ("MaxOutstandingDiskBytesPerConnection", 1);
 			xsm.setProperty ("SendBufferWatermark", 9);
-			xsm.setProperty ("CacheSize", 0);
-			xsm.setProperty ("UseReadCache", false);
 			xsm.setProperty ("CloseRedundantConnections", true);
 			xsm.setProperty ("MaxPeerListSize", 500);
 			xsm.setProperty ("PreferUDPTrackers", true);
@@ -80,9 +78,6 @@ namespace LC::BitTorrent
 			// optimize_hashing_for_speed = true
 			xsm.setProperty ("FilePoolSize", 500);
 			xsm.setProperty ("AllowMultipleConnectionsPerIP", true);
-			xsm.setProperty ("CacheSize", 512);
-			xsm.setProperty ("UseReadCache", true);
-			xsm.setProperty ("CacheExpiry", 60 * 60);
 			xsm.setProperty ("CloseRedundantConnections", true);
 			xsm.setProperty ("MaxRejects", 10);
 			xsm.setProperty ("RequestTimeout", 10);
@@ -312,8 +307,6 @@ namespace LC::BitTorrent
 			"SendBufferWatermark",
 			"AutoUploadSlots",
 			"UseParoleMode",
-			"CacheSize",
-			"CacheExpiry",
 			"OutgoingPorts",
 			"PeerTOS",
 			"DontCountSlowTorrents",
@@ -473,7 +466,6 @@ namespace LC::BitTorrent
 		LT_SET_INT_OPT (initial_picker_threshold, "InitialPickerThreshold");
 		LT_SET_INT_OPT (allowed_fast_set_size, "AllowedFastSetSize");
 		LT_SET_INT_OPT (handshake_timeout, "HandshakeTimeout");
-		LT_SET_INT_OPT (cache_expiry, "CacheExpiry");
 		LT_SET_INT_OPT (peer_tos, "PeerTOS");
 		LT_SET_INT_OPT (auto_manage_interval, "AutoManageInterval");
 		LT_SET_INT_OPT (auto_scrape_min_interval, "AutoScrapeMinInterval");
@@ -487,7 +479,6 @@ namespace LC::BitTorrent
 		LT_SET_PERCENT_OPT (seed_time_ratio_limit, "SeedTimeRatioLimit");
 		LT_SET_PERCENT_OPT (peer_turnover, "PeerTurnover");
 
-		LT_SET_INT_OPT2 (cache_size, "CacheSize", * (1048576 / 16384));
 		LT_SET_INT_OPT2 (max_queued_disk_bytes, "MaxOutstandingDiskBytesPerConnection", * 1024);
 		LT_SET_INT_OPT2 (send_buffer_watermark, "SendBufferWatermark", * 1024);
 		LT_SET_INT_OPT2 (tracker_maximum_response_length, "TrackerMaximumResponseLength", * 1024);
@@ -498,7 +489,6 @@ namespace LC::BitTorrent
 		LT_SET_BOOL_OPT (send_redundant_have, "SendRedundantHave");
 		LT_SET_BOOL_OPT (use_dht_as_fallback, "UseDHTAsFallback");
 		LT_SET_BOOL_OPT (use_parole_mode, "UseParoleMode");
-		LT_SET_BOOL_OPT (use_read_cache, "UseReadCache");
 		LT_SET_BOOL_OPT (auto_manage_prefer_seeds, "AutoManagePreferSeeds");
 		LT_SET_BOOL_OPT (dont_count_slow_torrents, "DontCountSlowTorrents");
 		LT_SET_BOOL_OPT (close_redundant_connections, "CloseRedundantConnections");

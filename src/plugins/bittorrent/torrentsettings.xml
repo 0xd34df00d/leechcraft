@@ -116,16 +116,13 @@
 				</item>
 				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2" label="Maximum automatically added torrent file size:" suffix="MB" />
 				<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" label="Autosave interval:" suffix="s" />
-				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256" label="Cache size:" suffix="MB" />>
 				<item type="lineedit" property="AutomaticTags" default="automatic" label="Tags for automatic jobs:" />
 			</groupbox>
 		</tab>
 		<tab label="Advanced">
 			<scrollarea horizontalScroll="off">
 				<item type="checkbox" property="AccurateFileProgress" default="false" label="Precise but slow file progress calculation" />
-				<item type="checkbox" property="UseReadCache" default="true" label="Use read cache" />
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true" label="Give slots to seeding torrents in automanaged mode" />
-				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200" label="Cache expiry:" />
 				<item type="spinbox" property="AutoManageStartup" default="120" minimum="10" maximum="16300" step="10" label="Automanage startup wait:" suffix="s" />
 				<item type="spinbox" property="AutoManageInterval" default="10" minimum="10" maximum="1200" step="10" label="Auto queue manage interval:" suffix="s" />
 				<item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512" label="Maximum outstanding disk bytes per connection:" suffix="KB" />
