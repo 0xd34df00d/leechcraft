@@ -9,8 +9,8 @@
 #include "pluginmanagerdialog.h"
 #include <QStyledItemDelegate>
 #include <QPushButton>
-#include <QSortFilterProxyModel>
-#include "util/gui/clearlineeditaddon.h"
+#include <util/gui/clearlineeditaddon.h>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iinfo.h"
 #include "core.h"
@@ -86,30 +86,25 @@ namespace LC
 			}
 		};
 
-		class PluginsProxyModel : public QSortFilterProxyModel
+		class PluginsProxyModel : public Util::FixedStringFilterProxyModel
 		{
 		public:
-			PluginsProxyModel (QObject *parent = 0)
-			: QSortFilterProxyModel (parent)
-			{
-				setDynamicSortFilter (true);
-			}
+			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 		protected:
-			bool filterAcceptsRow (int row, const QModelIndex&) const
+			bool filterAcceptsRow (int row, const QModelIndex&) const override
 			{
-				const QString& filter = filterRegularExpression ().pattern ();
-				if (filter.isEmpty ())
+				if (FilterFixedString_.isEmpty ())
 					return true;
 
-				auto m = sourceModel ();
+				const auto m = sourceModel ();
 				for (int c = 0, ccount = m->columnCount (); c < ccount; ++c)
-					if (m->index (row, c).data ().toString ().contains (filter, Qt::CaseInsensitive))
+					if (m->index (row, c).data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive))
 						return true;
 
 				return false;
 			}
 
-			bool lessThan (const QModelIndex& left, const QModelIndex& right) const
+			bool lessThan (const QModelIndex& left, const QModelIndex& right) const override
 			{
 				const QString& lPath = left.data (PluginManager::Roles::PluginFilename).toString ();
 				const QString& rPath = right.data (PluginManager::Roles::PluginFilename).toString ();

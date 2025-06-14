@@ -13,6 +13,7 @@
 #include <QSortFilterProxyModel>
 #include <QSettings>
 #include <QtDebug>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/iinfo.h>
@@ -23,27 +24,22 @@
 
 namespace LC
 {
-	class SMFilterProxyModel : public QSortFilterProxyModel
+	class SMFilterProxyModel : public Util::FixedStringFilterProxyModel
 	{
 	public:
-		explicit SMFilterProxyModel (QObject *parent = nullptr)
-		: QSortFilterProxyModel { parent }
-		{
-			setDynamicSortFilter (true);
-		}
+		using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 	protected:
 		bool filterAcceptsRow (int row, const QModelIndex& parent) const override
 		{
 			if (!parent.isValid ())
 				return true;
 
-			const auto& filter = filterRegularExpression ().pattern ();
-			if (filter.isEmpty ())
+			if (FilterFixedString_.isEmpty ())
 				return true;
 
-			auto checkStr = [row, parent, &filter, this] (int col)
+			auto checkStr = [row, parent, this] (int col)
 			{
-				return sourceModel ()->index (row, col, parent).data ().toString ().contains (filter, Qt::CaseInsensitive);
+				return sourceModel ()->index (row, col, parent).data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive);
 			};
 			return checkStr (0) || checkStr (1);
 		}
