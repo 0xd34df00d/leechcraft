@@ -238,23 +238,18 @@ namespace BitTorrent
 					settings.set_int (libtorrent::settings_pack::alert_queue_size, 10000);
 					{
 						namespace cat = libtorrent::alert_category;
-						settings.set_int (libtorrent::settings_pack::alert_mask,
-								cat::all &
-								~cat::incoming_request &
-								~cat::block_progress &
-								~cat::peer &
-								~cat::upload &
-								~cat::stats &
-								~cat::connect &
-								~cat::piece_progress &
-								~cat::peer_log &
-								~cat::torrent_log &
-								~cat::dht_log &
-								~cat::port_mapping_log &
-								~cat::picker_log &
-								~cat::tracker &
-								~cat::session_log &
-								~libtorrent::alert::progress_notification);
+						constexpr auto alerts
+								= cat::error
+								| cat::port_mapping
+								| cat::storage
+								| cat::status
+								| cat::ip_block
+								| cat::performance_warning
+								| cat::dht
+								| cat::dht_operation
+								| cat::file_progress
+								;
+						settings.set_int (libtorrent::settings_pack::alert_mask, alerts);
 					}
 					Session_->apply_settings (settings);
 				}
