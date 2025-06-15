@@ -11,6 +11,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <util/network/handlenetworkreply.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/util.h>
 #include "util.h"
 
@@ -63,18 +64,9 @@ namespace Lastfmscrobble
 		const auto decrGuard = Util::MakeScopeGuard ([this] { DecrementWaiting (); });
 
 		QDomDocument doc;
-		QString errMsg;
-		int errLine = 0, errCol = 0;
-		if (!doc.setContent (data, &errMsg, &errLine, &errCol))
+		if (const auto result = doc.setContent (data); !result)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse response:"
-					<< errMsg
-					<< "at"
-					<< errLine
-					<< ":"
-					<< errCol
-					<< data;
+			qWarning () << "unable to parse response:" << result << data;
 			return;
 		}
 
