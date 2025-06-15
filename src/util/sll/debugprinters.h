@@ -11,7 +11,4 @@
 #include "sllconfig.h"
 #include <QDomDocument>
 
-namespace LC
-{
-	UTIL_SLL_API QDebug operator<< (QDebug, const QDomDocument::ParseResult&);
-}
+UTIL_SLL_API QDebug operator<< (QDebug, const QDomDocument::ParseResult&);

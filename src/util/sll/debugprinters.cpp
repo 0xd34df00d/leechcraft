@@ -9,17 +9,14 @@
 #include "debugprinters.h"
 #include <QtDebug>
 
-namespace LC
+QDebug operator<< (QDebug debug, const QDomDocument::ParseResult& result)
 {
-	QDebug operator<< (QDebug debug, const QDomDocument::ParseResult& result)
-	{
-		QDebugStateSaver saver { debug };
-		if (result)
-			debug << "success";
-		else
-			debug.nospace () << "failed at "
-					<< result.errorLine << ":" << result.errorColumn
-					<< ": " << result.errorMessage;
-		return debug;
-	}
+	QDebugStateSaver saver { debug };
+	if (result)
+		debug << "success";
+	else
+		debug.nospace () << "failed at "
+				<< result.errorLine << ":" << result.errorColumn
+				<< ": " << result.errorMessage;
+	return debug;
 }
