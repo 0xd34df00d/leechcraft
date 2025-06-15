@@ -31,6 +31,7 @@ add_util_library (util-gui
 		fontsizescrollchanger.cpp
 		statesaver.cpp
 		menumodeladapter.cpp
+		progressdelegate.cpp
 	DEPENDS
 		leechcraft-util-network
 		leechcraft-util-shortcuts
