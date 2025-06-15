@@ -117,7 +117,6 @@ namespace LC::BitTorrent
 			Ui_.PeerPayloadSpeed_->clear ();
 			Ui_.PeerPeakSpeeds_->clear ();
 			Ui_.PeerDownloaded_->clear ();
-			Ui_.PeerRemoteDLSpeed_->clear ();
 			Ui_.PeerProgress_->clear ();
 			Ui_.PeerIsSeed_->clear ();
 			Ui_.PeerLastRequest_->clear ();
@@ -168,9 +167,6 @@ namespace LC::BitTorrent
 		Ui_.PeerPeakSpeeds_->setText (tr ("%1/s | %2/s")
 				.arg (Util::MakePrettySize (p.PI_->download_rate_peak),
 					  Util::MakePrettySize (p.PI_->upload_rate_peak)));
-
-		Ui_.PeerRemoteDLSpeed_->setText (tr ("%1/s")
-				.arg (Util::MakePrettySize (p.PI_->remote_dl_rate)));
 
 		Ui_.PeerDownloaded_->setText (tr ("%1 | %2")
 				.arg (Util::MakePrettySize (p.PI_->total_download),
