@@ -66,11 +66,18 @@ namespace LC::BitTorrent
 
 		connect (Ui_.PeersView_->selectionModel (),
 				&QItemSelectionModel::currentRowChanged,
-				[this, banPeer] (const QModelIndex& idx)
-				{
-					UpdateDetails ();
-					banPeer->setEnabled (idx.isValid ());
-				});
+				this,
+				&PeersWidget::UpdateDetails);
+
+		const auto updateActions = [this, banPeer] { banPeer->setEnabled (Ui_.PeersView_->currentIndex ().isValid ()); };
+		connect (Ui_.PeersView_->selectionModel (),
+				&QItemSelectionModel::selectionChanged,
+				this,
+				updateActions);
+		connect (PeersSorter_,
+				&QAbstractItemModel::modelReset,
+				this,
+				updateActions);
 	}
 
 	PeersWidget::~PeersWidget () = default;

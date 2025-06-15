@@ -81,11 +81,11 @@ namespace LC::BitTorrent
 		QList<QTreeWidgetItem*> items;
 		for (const auto& tracker : trackers)
 		{
-			const auto showBool = [] (bool val) { return val ? tr ("true") : tr ("false"); };
+			const auto showBool = [] (bool val) { return val ? tr ("yes") : tr ("no"); };
 
 			const auto now = std::chrono::system_clock::now ();
 			for (const auto& endpoint : tracker.endpoints)
-				for (const auto& hashVersion : { libtorrent::protocol_version::V1, libtorrent::protocol_version::V2 })
+				for (const auto hashVersion : { libtorrent::protocol_version::V1, libtorrent::protocol_version::V2 })
 				{
 					const auto& infohash = endpoint.info_hashes [hashVersion];
 					if (infohash.next_announce < now)
@@ -109,8 +109,7 @@ namespace LC::BitTorrent
 				}
 		}
 		Ui_.Trackers_->addTopLevelItems (items);
-		for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
-			Ui_.Trackers_->resizeColumnToContents (i);
+		Ui_.Trackers_->header ()->resizeSections (QHeaderView::ResizeToContents);
 	}
 
 	std::vector<libtorrent::announce_entry> TrackersChanger::GetTrackers () const
