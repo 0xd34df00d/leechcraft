@@ -131,7 +131,7 @@ namespace LC::Aggregator
 					.Add (ChannelsModel::tr ("Author"), cs.Author_)
 					.Add (ChannelsModel::tr ("Tags"), itm->JoinIDs (cs.Tags_));
 
-			auto elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
+			auto elidedLink = QFontMetrics { QApplication::font () }.elidedText (cs.Link_, Qt::ElideMiddle, 400);
 			tb += u"<a href='%1'>%2</a>"_qsv
 					.arg (cs.Link_,
 						  elidedLink);

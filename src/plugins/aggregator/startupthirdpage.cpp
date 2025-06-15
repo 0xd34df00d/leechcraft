@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
 #include "common.h"
@@ -75,17 +76,9 @@ namespace Aggregator
 		}
 
 		QDomDocument doc;
-		QString msg;
-		int line = 0;
-		int col = 0;
-		if (!doc.setContent (&file, &msg, &line, &col))
+		if (const auto result = doc.setContent (&file); !result)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse feed resource file:"
-					<< msg
-					<< "on"
-					<< line
-					<< col;
+			qWarning () << "cannot parse feed resource file:" << result;
 			return;
 		}
 
