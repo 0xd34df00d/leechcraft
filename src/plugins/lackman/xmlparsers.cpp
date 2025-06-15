@@ -14,6 +14,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QtDebug>
+#include <util/sll/debugprinters.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/qtutil.h>
 
@@ -42,6 +43,7 @@ namespace LackMan
 					.Name_ = maint.firstChildElement ("name"_qs).text (),
 					.Email_ = maint.firstChildElement ("email"_qs).text (),
 				},
+			.Components_ = {},
 		};
 
 		for (const auto& component : Util::DomChildren (repo.firstChildElement ("components"_qs), "component"_qs))
@@ -56,17 +58,9 @@ namespace LackMan
 	PackageShortInfoList ParseComponent (const QByteArray& data)
 	{
 		QDomDocument doc;
-		QString msg;
-		int line = 0;
-		int column = 0;
-		if (!doc.setContent (data, &msg, &line, &column))
+		if (const auto result = doc.setContent (data); !result)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "erroneous document with msg"
-					<< msg
-					<< line
-					<< column
-					<< data;
+			qWarning () << "erroneous document" << result << data;
 			throw std::runtime_error ("Unable to parse component description.");
 		}
 
@@ -124,17 +118,9 @@ namespace LackMan
 			const QStringList& packageVersions)
 	{
 		QDomDocument doc;
-		QString msg;
-		int line = 0;
-		int column = 0;
-		if (!doc.setContent (data, &msg, &line, &column))
+		if (const auto result = doc.setContent (data); !result)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "erroneous document with msg"
-					<< msg
-					<< line
-					<< column
-					<< data;
+			qWarning () << "erroneous document" << result << data;
 			throw std::runtime_error ("Unagle to parse package description.");
 		}
 
