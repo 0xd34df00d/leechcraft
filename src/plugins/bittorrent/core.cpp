@@ -460,6 +460,10 @@ namespace BitTorrent
 		const int column = index.column ();
 		const auto& h = Handles_.at (row).Handle_;
 
+		const auto& status = StatusKeeper_->GetStatus (h,
+				libtorrent::torrent_handle::query_name |
+				libtorrent::torrent_handle::query_save_path);
+
 		switch (role)
 		{
 		case RoleControls:
@@ -480,11 +484,9 @@ namespace BitTorrent
 			return static_cast<bool> (StatusKeeper_->GetStatus (h).flags & libtorrent::torrent_flags::super_seeding);
 		case Roles::TorrentStats:
 			return QVariant::fromValue (GetTorrentStats (h, *StatusKeeper_));
+		case Roles::TorrentProgress:
+			return status.progress;
 		}
-
-		const auto& status = StatusKeeper_->GetStatus (h,
-				libtorrent::torrent_handle::query_name |
-				libtorrent::torrent_handle::query_save_path);
 
 		switch (role)
 		{

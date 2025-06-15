@@ -47,6 +47,7 @@ namespace LC::BitTorrent
 			IsSequentialDownloading,
 			IsSuperSeeding,
 			TorrentStats,
+			TorrentProgress,
 		};
 	};
 
