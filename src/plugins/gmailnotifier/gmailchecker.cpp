@@ -12,6 +12,7 @@
 #include <QAuthenticator>
 #include <QDateTime>
 #include <QTimer>
+#include <QTimeZone>
 #include <QDomDocument>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
@@ -115,8 +116,7 @@ namespace GmailNotifier
 			{ return entry.firstChildElement (elemName).text (); };
 		auto localDate = [&text] (const QString& name)
 		{
-			return QDateTime::fromString (text (name), Qt::ISODate)
-					.toTimeSpec (Qt::UTC).toLocalTime ();
+			return QDateTime::fromString (text (name), Qt::ISODate).toTimeZone (QTimeZone::UTC).toLocalTime ();
 		};
 
 		while (!entry.isNull ())
