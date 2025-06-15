@@ -52,14 +52,15 @@ namespace LC::BitTorrent
 		}
 
 		QStyleOptionProgressBar progressBarOption;
-		progressBarOption.state = QStyle::StateFlag::State_Horizontal;
-		progressBarOption.direction = QApplication::layoutDirection ();
+		progressBarOption.state = option.state | QStyle::StateFlag::State_Horizontal;
+		progressBarOption.direction = option.direction;
 		progressBarOption.rect = option.rect;
-		progressBarOption.fontMetrics = QApplication::fontMetrics ();
-		progressBarOption.minimum = 0;
-		progressBarOption.maximum = 100;
+		progressBarOption.fontMetrics = option.fontMetrics;
+		progressBarOption.palette = option.palette;
 		progressBarOption.textAlignment = Qt::AlignCenter;
 		progressBarOption.textVisible = true;
+		progressBarOption.minimum = 0;
+		progressBarOption.maximum = 100;
 
 		double progress = index.data (TorrentFilesModel::RoleProgress).toDouble ();
 		qlonglong size = index.data (TorrentFilesModel::RoleSize).toLongLong ();
