@@ -120,7 +120,7 @@ namespace Blogique
 
 	namespace
 	{
-		QStringList GetTags (QSqlQuery query)
+		QStringList GetTags (QSqlQuery& query)
 		{
 			if (!query.exec ())
 			{

@@ -191,7 +191,7 @@ namespace Hestia
 
 	namespace
 	{
-		QStringList GetTags (QSqlQuery query)
+		QStringList GetTags (QSqlQuery& query)
 		{
 			if (!query.exec ())
 			{
