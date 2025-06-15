@@ -21,7 +21,6 @@ namespace LC::BitTorrent
 		explicit FilesViewDelegate (QTreeView *parent = nullptr);
 
 		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
-		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		void setEditorData (QWidget*, const QModelIndex&) const override;
 		void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const override;
 		void updateEditorGeometry (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;

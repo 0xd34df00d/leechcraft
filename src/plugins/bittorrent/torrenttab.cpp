@@ -8,16 +8,15 @@
 
 #include "torrenttab.h"
 #include <cmath>
-#include <QStyledItemDelegate>
 #include <QToolBar>
 #include <QMenu>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
+#include <util/gui/progressdelegate.h>
 #include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/core/itagsmanager.h>
 #include "movetorrentfiles.h"
 #include "tabviewproxymodel.h"
 #include "xmlsettingsmanager.h"
@@ -27,38 +26,6 @@
 
 namespace LC::BitTorrent
 {
-	namespace
-	{
-		class TorrentsListDelegate : public QStyledItemDelegate
-		{
-		public:
-			using QStyledItemDelegate::QStyledItemDelegate;
-
-			void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override
-			{
-				if (index.column () != Columns::ColumnProgress)
-				{
-					QStyledItemDelegate::paint (painter, option, index);
-					return;
-				}
-
-				const auto progress = index.data (Roles::SortRole).toDouble ();
-
-				const auto precision = 1000;
-
-				QStyleOptionProgressBar pbo;
-				pbo.state = QStyle::StateFlag::State_Horizontal;
-				pbo.rect = option.rect;
-				pbo.minimum = 0;
-				pbo.maximum = precision;
-				pbo.progress = std::round (progress * precision);
-				pbo.text = Util::ElideProgressBarText (index.data ().toString (), option);
-				pbo.textVisible = true;
-				QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
-			}
-		};
-	}
-
 	TorrentTab::TorrentTab (const Dependencies& deps, const TabClassInfo& tc, QObject *mt)
 	: D_ { deps }
 	, TC_ { tc }
@@ -78,7 +45,22 @@ namespace LC::BitTorrent
 		ViewFilter_->setSortRole (Roles::SortRole);
 		ViewFilter_->setSourceModel (&deps.Model_);
 
-		Ui_.TorrentsView_->setItemDelegate (new TorrentsListDelegate (Ui_.TorrentsView_));
+		Ui_.TorrentsView_->setItemDelegateForColumn (Columns::ColumnProgress,
+				new Util::ProgressDelegate
+				{
+					[] (const QModelIndex& index) -> Util::ProgressDelegate::Progress
+					{
+						const auto precision = 1000;
+						const auto progress = std::round (index.data (Roles::TorrentProgress).toDouble () * precision);
+						return
+						{
+							.Maximum_ = precision,
+							.Progress_ = static_cast<int> (progress),
+							.Text_ = index.data ().toString (),
+						};
+					},
+					Ui_.TorrentsView_
+				});
 
 		Ui_.TorrentsView_->setModel (ViewFilter_);
 		connect (Ui_.TorrentsView_->selectionModel (),

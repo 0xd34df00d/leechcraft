@@ -9,9 +9,9 @@
 #include "torrenttabfileswidget.h"
 #include <QMenu>
 #include <QTimer>
-#include <QSortFilterProxyModel>
 #include <libtorrent/torrent_handle.hpp>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/gui/progressdelegate.h>
 #include <util/models/fixedstringfilterproxymodel.h>
 #include <util/sll/prelude.h>
 #include <util/util.h>
@@ -43,6 +43,23 @@ namespace LC::BitTorrent
 				return false;
 			}
 		};
+
+		Util::ProgressDelegate::Progress GetFileProgress (const QModelIndex& idx)
+		{
+			const auto progress = idx.data (TorrentFilesModel::RoleProgress).toDouble () * 100;
+			const auto percentage = std::clamp (static_cast<int> (progress * 100), 0, 100);
+			const qlonglong size = idx.data (TorrentFilesModel::RoleSize).toLongLong ();
+			const qlonglong done = progress * size;
+			const auto& text = TorrentTabFilesWidget::tr ("%1% (%2 of %3)")
+					.arg (percentage)
+					.arg (Util::MakePrettySize (done), Util::MakePrettySize (size));
+			return
+			{
+				.Maximum_ = 100,
+				.Progress_ = percentage,
+				.Text_ = text,
+			};
+		}
 	}
 
 	TorrentTabFilesWidget::TorrentTabFilesWidget (QWidget *parent)
@@ -55,6 +72,8 @@ namespace LC::BitTorrent
 
 		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
+		Ui_.FilesView_->setItemDelegateForColumn (TorrentFilesModel::ColumnProgress,
+				new Util::ProgressDelegate { &GetFileProgress, Ui_.FilesView_ });
 		Ui_.FilesView_->setModel (&*ProxyModel_);
 
 		connect (Ui_.FilesView_->selectionModel (),

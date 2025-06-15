@@ -42,43 +42,6 @@ namespace LC::BitTorrent
 		}
 	}
 
-	void FilesViewDelegate::paint (QPainter *painter,
-			const QStyleOptionViewItem& option, const QModelIndex& index) const
-	{
-		if (index.column () != TorrentFilesModel::ColumnProgress)
-		{
-			QStyledItemDelegate::paint (painter, option, index);
-			return;
-		}
-
-		QStyleOptionProgressBar progressBarOption;
-		progressBarOption.state = option.state | QStyle::StateFlag::State_Horizontal;
-		progressBarOption.direction = option.direction;
-		progressBarOption.rect = option.rect;
-		progressBarOption.fontMetrics = option.fontMetrics;
-		progressBarOption.palette = option.palette;
-		progressBarOption.textAlignment = Qt::AlignCenter;
-		progressBarOption.textVisible = true;
-		progressBarOption.minimum = 0;
-		progressBarOption.maximum = 100;
-
-		double progress = index.data (TorrentFilesModel::RoleProgress).toDouble ();
-		qlonglong size = index.data (TorrentFilesModel::RoleSize).toLongLong ();
-		qlonglong done = progress * size;
-		progressBarOption.progress = progress < 0 ?
-				0 :
-				static_cast<int> (progress * 100);
-
-		const auto& text = tr ("%1% (%2 of %3)")
-				.arg (static_cast<int> (progress * 100))
-				.arg (Util::MakePrettySize (done),
-					Util::MakePrettySize (size));
-		progressBarOption.text = Util::ElideProgressBarText (text, option);
-
-		QApplication::style ()->drawControl (QStyle::CE_ProgressBar,
-				&progressBarOption, painter);
-	}
-
 	void FilesViewDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 	{
 		switch (index.column ())
