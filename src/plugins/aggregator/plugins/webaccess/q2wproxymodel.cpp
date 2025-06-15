@@ -118,21 +118,21 @@ namespace WebAccess
 
 		Wt::cpp17::any Variant2Any (const QVariant& var)
 		{
-			switch (var.type ())
+			switch (var.typeId ())
 			{
-			case QVariant::Bool:
+			case QMetaType::Bool:
 				return var.toBool ();
-			case QVariant::DateTime:
+			case QMetaType::QDateTime:
 				return Wt::WDateTime::fromTime_t (var.toDateTime ().toSecsSinceEpoch ());
-			case QVariant::String:
+			case QMetaType::QString:
 				return ToW (var.toString ());
-			case QVariant::Double:
+			case QMetaType::Double:
 				return var.toDouble ();
-			case QVariant::Int:
+			case QMetaType::Int:
 				return var.toInt ();
-			case QVariant::ULongLong:
+			case QMetaType::ULongLong:
 				return var.toULongLong ();
-			case QVariant::Icon:
+			case QMetaType::QIcon:
 			{
 				const auto& icon = var.value<QIcon> ();
 				if (icon.isNull ())
