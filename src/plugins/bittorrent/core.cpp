@@ -93,9 +93,9 @@ namespace BitTorrent
 
 		auto CreateSession ()
 		{
-			libtorrent::settings_pack pack;
-			pack.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (GetProxyHolder ()));
-			return new libtorrent::session (pack, {});
+			libtorrent::session_params params;
+			params.settings.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (GetProxyHolder ()));
+			return new libtorrent::session { std::move (params) };
 		}
 	}
 
@@ -1085,8 +1085,7 @@ namespace BitTorrent
 		torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
 
 		libtorrent::error_code ec;
-		const libtorrent::span metadata { info.metadata ().get (), info.metadata_size () };
-		libtorrent::entry infoE = libtorrent::bdecode (metadata, ec);
+		libtorrent::entry infoE = libtorrent::bdecode (info.info_section (), ec);
 		if (ec)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1515,9 +1514,8 @@ namespace BitTorrent
 
 		settings.endGroup ();
 
-		constexpr auto saveflags = libtorrent::save_state_flags_t::all ();
 		libtorrent::entry sessionState;
-		Session_->save_state (sessionState, saveflags);
+		Session_->save_state (sessionState);
 
 		QByteArray sessionStateBA;
 		libtorrent::bencode (std::back_inserter (sessionStateBA), sessionState);
