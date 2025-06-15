@@ -67,7 +67,7 @@ namespace Metida
 
 	void LJFriendEntry::SetBGColor (const QString& name)
 	{
-		BGColor_.setNamedColor (name);
+		BGColor_ = QColor::fromString (name);
 	}
 
 	QColor LJFriendEntry::GetBGColor () const
@@ -77,7 +77,7 @@ namespace Metida
 
 	void LJFriendEntry::SetFGColor (const QString& name)
 	{
-		FGColor_.setNamedColor (name);
+		FGColor_ = QColor::fromString (name);
 	}
 
 	QColor LJFriendEntry::GetFGColor () const
@@ -159,8 +159,8 @@ namespace Metida
 				>> bgColorName
 				>> fgColorName
 				>> result->GroupMask_;
-		result->BGColor_.setNamedColor (bgColorName);
-		result->FGColor_.setNamedColor (fgColorName);
+		result->BGColor_ = QColor::fromString (bgColorName);
+		result->FGColor_ = QColor::fromString (fgColorName);
 
 		if (ver >= 2)
 			in >> result->Birthday_

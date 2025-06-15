@@ -70,9 +70,9 @@ namespace Metida
 	{
 		void DrawColorPixmap (QLabel *label, const QColor& color)
 		{
-			int height = QApplication::fontMetrics ().height ();
-			int width = 1.62 * height;
-			QPixmap pixmap (width, height);
+			const auto height = QFontMetricsF { QApplication::font () }.height ();
+			const auto width = 1.62 * height;
+			QPixmap pixmap { static_cast<int> (width), static_cast<int> (height) };
 			pixmap.fill (color);
 			label->setPixmap (pixmap);
 		}

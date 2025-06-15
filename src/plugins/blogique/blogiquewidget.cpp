@@ -980,23 +980,23 @@ namespace Blogique
 				QMessageBox mbox (QMessageBox::Question,
 						"LeechCraft",
 						tr ("Do you want to update entry or to post new one?"),
-						QMessageBox::Yes | QMessageBox::Cancel,
+						QMessageBox::Cancel,
 						this);
 				mbox.setDefaultButton (QMessageBox::Cancel);
-				mbox.setButtonText (QMessageBox::Yes, tr ("Update post"));
-				QPushButton newPostButton (tr ("Post new"));
-				mbox.addButton (&newPostButton, QMessageBox::AcceptRole);
+				const auto updateButton = mbox.addButton (tr ("Update post"), QMessageBox::YesRole);
+				const auto newPostButton = mbox.addButton (tr ("Post new"), QMessageBox::YesRole);
 
 				if (mbox.exec () == QMessageBox::Cancel)
 					return;
-				else if (mbox.clickedButton () == &newPostButton)
+
+				if (mbox.clickedButton () == newPostButton)
 				{
 					ShowProgress (tr ("Posting entry..."));
 					acc->submit (e);
 				}
-				else
+				else if (mbox.clickedButton () == updateButton)
 				{
-					ShowProgress (tr ("Posting entry..."));
+					ShowProgress (tr ("Updating entry entry..."));
 					acc->UpdateEntry (e);
 				}
 			}
@@ -1109,4 +1109,3 @@ namespace Blogique
 	}
 }
 }
-

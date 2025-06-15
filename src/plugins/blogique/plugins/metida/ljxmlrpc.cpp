@@ -16,6 +16,7 @@
 #include <QStandardPaths>
 #include <util/sys/sysinfo.h>
 #include <util/xpc/util.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/urloperator.h>
 #include <interfaces/core/icoreproxy.h>
@@ -1561,16 +1562,9 @@ namespace Metida
 
 			const auto& content = reply->readAll ();
 			reply->deleteLater ();
-			QString errorMsg;
-			int errorLine = -1, errorColumn = -1;
-			if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+			if (const auto result = document.setContent (content); !result)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< errorMsg
-						<< "in line:"
-						<< errorLine
-						<< "column:"
-						<< errorColumn;
+				qWarning () << "unable to parse reply" << result;
 				return QByteArray ();
 			}
 

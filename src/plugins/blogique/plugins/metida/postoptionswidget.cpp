@@ -69,7 +69,7 @@ namespace Metida
 				Qt::UserRole);
 		map ["allowMask"] = AllowMask_;
 
-		const bool customMood = (Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()) == QVariant::Invalid);
+		const bool customMood = !Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).isValid ();
 		if (!customMood)
 			map ["moodId"] = Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toInt ();
 		else
