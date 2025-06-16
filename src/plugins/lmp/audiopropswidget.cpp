@@ -174,6 +174,9 @@ namespace LC::LMP
 				case MPEG::Header::Version2_5:
 					mpegVersion = "2.5"_ql;
 					break;
+				case MPEG::Header::Version4:
+					mpegVersion = "4"_ql;
+					break;
 				}
 				Append (VersionField ("MPEG"_ql), mpegVersion);
 
