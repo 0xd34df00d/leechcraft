@@ -11,7 +11,6 @@
 #include <QFile>
 #include <QTimer>
 #include <QtDebug>
-#include <util/sll/qtutil.h>
 #include <util/sll/util.h>
 #include <util/sys/fdguard.h>
 #include "basesettingsmanager.h"
@@ -22,8 +21,7 @@ namespace LC
 	{
 		QMutexLocker l { &Mutex_ };
 		if (!Pendings_.isEmpty ())
-			qWarning () << Q_FUNC_INFO
-					<< "there are pending settings to be saved, unfortunately they will be lost :(";
+			qWarning () << "there are pending settings to be saved, unfortunately they will be lost :(";
 	}
 
 	void SettingsThread::Save (Util::BaseSettingsManager *bsm, QString name, QVariant value)
@@ -45,11 +43,16 @@ namespace LC
 			swap (pendings, Pendings_);
 		}
 
-		for (const auto& pair : Util::Stlize (pendings))
+		for (const auto& [settingsMgr, updates] : pendings.asKeyValueRange ())
 		{
-			const auto& s = pair.first->MakeSettings ();
-			for (const auto& p : pair.second)
-				s->setValue (p.first, p.second);
+			const auto& s = settingsMgr->MakeSettings ();
+			for (const auto& [key, value] : updates)
+			{
+				if (value.isValid ())
+					s->setValue (key, value);
+				else
+					s->remove (key);
+			}
 		}
 	}
 }
