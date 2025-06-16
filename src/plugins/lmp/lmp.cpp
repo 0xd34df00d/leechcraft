@@ -263,7 +263,7 @@ namespace LMP
 			if (!e.Additional_ ["DataFilter"].toString ().startsWith (GetUniqueID ()))
 				return {};
 
-			if (e.Entity_.type () != QVariant::String)
+			if (e.Entity_.typeId () != QMetaType::QString)
 				return {};
 
 			if (e.Entity_.toString ().size () >= 80)
