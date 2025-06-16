@@ -23,13 +23,11 @@ namespace LC::Azoth
 			if (!index.isValid ())
 				return {};
 
-			auto path = "CLTreeState/Expanded/" + index.data ().toString ();
+			QStringList path { index.data ().toString () };
 			while ((index = index.parent ()).isValid ())
-				path.prepend (index.data ().toString () + "/");
+				path.prepend (index.data ().toString ());
 
-			path = path.toUtf8 ().toBase64 ().replace ('/', '_');
-
-			return path;
+			return "CLTreeExpanded/" + path.join ('/');
 		}
 
 		void SetExpanded (const QModelIndex& idx, bool expanded)
@@ -38,9 +36,11 @@ namespace LC::Azoth
 			if (type != CLETCategory)
 				return;
 
-			if (const auto& path = BuildPath (idx);
-				!path.isEmpty ())
-				XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
+			const auto& path = BuildPath (idx);
+			if (path.isEmpty ())
+				return;
+
+			XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
 		}
 	}
 
