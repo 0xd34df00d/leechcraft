@@ -36,8 +36,8 @@ namespace LC::Lemon
 			qint64 PrevRead_ = 0;
 			qint64 PrevWritten_ = 0;
 
-			QVector<qint64> DownSpeeds_;
-			QVector<qint64> UpSpeeds_;
+			QVector<qint64> DownSpeeds_ {};
+			QVector<qint64> UpSpeeds_ {};
 		};
 		QHash<QString, InterfaceInfo> ActiveInterfaces_;
 	public:
