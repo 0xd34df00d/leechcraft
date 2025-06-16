@@ -34,6 +34,10 @@ namespace LC::Azoth
 
 		void SetExpanded (const QModelIndex& idx, bool expanded)
 		{
+			const auto type = idx.data (CLREntryType).value<CLEntryType> ();
+			if (type != CLETCategory)
+				return;
+
 			if (const auto& path = BuildPath (idx);
 				!path.isEmpty ())
 				XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
@@ -178,4 +182,3 @@ namespace LC::Azoth
 			View_.expand (pIdx);
 	}
 }
-
