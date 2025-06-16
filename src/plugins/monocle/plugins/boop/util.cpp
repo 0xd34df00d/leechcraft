@@ -10,8 +10,9 @@
 #include <QDomDocument>
 #include <QUrl>
 #include <quazip/quazipfile.h>
-#include <util/sll/qtutil.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/qtutil.h>
 
 namespace LC::Monocle::Boop
 {
@@ -25,9 +26,11 @@ namespace LC::Monocle::Boop
 		auto ParseXml (auto&& xmlable, const auto& context)
 		{
 			QDomDocument doc;
-			QString errorMsg;
-			if (!doc.setContent (xmlable, false, &errorMsg))
+			if (const auto result = doc.setContent (xmlable); !result)
+			{
+				qWarning () << "uanble to parse xml" << context << result;
 				throw InvalidEpub { "unable to parse xml " + context };
+			}
 			return doc;
 		}
 	}

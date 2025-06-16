@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/sll/debugprinters.h>
 #include <util/sll/either.h>
 #include <util/monocle/resourcedtextdocument.h>
 #include "fb2converter.h"
@@ -35,11 +36,9 @@ namespace FXB
 		}
 
 		QDomDocument fb2;
-		if (!fb2.setContent (file.readAll (), true))
+		if (const auto result = fb2.setContent (file.readAll (), QDomDocument::ParseOption::UseNamespaceProcessing); !result)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "malformed XML in"
-					<< filename;
+			qWarning () << "malformed XML in" << filename << result;
 			return;
 		}
 

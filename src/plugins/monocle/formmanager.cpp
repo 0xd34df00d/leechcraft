@@ -238,9 +238,9 @@ namespace LC::Monocle
 			box->setCheckState (field->IsChecked () ? Qt::Checked : Qt::Unchecked);
 
 			connect (box,
-					&QCheckBox::stateChanged,
+					&QCheckBox::checkStateChanged,
 					this,
-					[field] (int state) { field->SetChecked (state == Qt::Checked); });
+					[field] (Qt::CheckState state) { field->SetChecked (state == Qt::Checked); });
 
 			return Scene_->addWidget (box);
 		}

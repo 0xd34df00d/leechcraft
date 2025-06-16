@@ -163,7 +163,7 @@ namespace LC::Monocle
 				FillMenuForText (*menu, selText);
 			}
 
-		menu->popup (ev.globalPos ());
+		menu->popup (ev.globalPosition ().toPoint ());
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 		menu->show ();
 	}
@@ -249,7 +249,7 @@ namespace LC::Monocle
 		ClearBoxes ();
 
 		SelectionStart_.reset ();
-		EnsureHasSelectionStart (ViewAbsolutePos { ev.localPos () });
+		EnsureHasSelectionStart (ViewAbsolutePos { ev.position () });
 	}
 
 	void TextSelectionInteraction::Moved (QMouseEvent& ev)
@@ -257,7 +257,7 @@ namespace LC::Monocle
 		if (ev.buttons () != Qt::NoButton)
 		{
 			IsSelectionGesture_ = true;
-			UpdateSelection (ViewAbsolutePos { ev.localPos () });
+			UpdateSelection (ViewAbsolutePos { ev.position () });
 		}
 	}
 
@@ -380,7 +380,7 @@ namespace LC::Monocle
 		if (!IsSelectionGesture_)
 			return;
 
-		UpdateSelection (ViewAbsolutePos { ev.localPos () });
+		UpdateSelection (ViewAbsolutePos { ev.position () });
 
 		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
 				[] (int acc, auto&& boxes)
@@ -407,13 +407,13 @@ namespace LC::Monocle
 
 		QMenu menu { &View_ };
 		FillMenuForText (menu, text);
-		menu.exec (ev.globalPos ());
+		menu.exec (ev.globalPosition ().toPoint ());
 	}
 
 	void TextSelectionInteraction::DoubleClicked (QMouseEvent& ev)
 	{
 		IsSelectionGesture_ = true;
-		UpdateSelection (ViewAbsolutePos { ev.localPos () });
+		UpdateSelection (ViewAbsolutePos { ev.position () });
 	}
 
 	void TextSelectionInteraction::UpdateSelection (ViewAbsolutePos pos)

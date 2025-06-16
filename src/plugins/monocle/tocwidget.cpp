@@ -56,7 +56,7 @@ namespace LC::Monocle
 		if (linkPos == Link2Item_.begin ())
 			return;
 
-		const auto item = *(linkPos - 1);
+		const auto item = *std::prev (linkPos);
 		Ui_.TOCTree_->setCurrentIndex (item->index ());
 	}
 
