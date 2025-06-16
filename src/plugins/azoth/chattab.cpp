@@ -864,6 +864,9 @@ namespace Azoth
 			else
 				enabled << entryId;
 
+			disabled.removeDuplicates ();
+			enabled.removeDuplicates ();
+
 			settings.setValue ("Enabled", enabled);
 			settings.setValue ("Disabled", disabled);
 
