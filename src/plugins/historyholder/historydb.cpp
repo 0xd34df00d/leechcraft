@@ -16,7 +16,6 @@
 #include <QCoreApplication>
 #include <QUrl>
 #include <QSqlQueryModel>
-#include <QElapsedTimer>
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
@@ -28,7 +27,7 @@ namespace LC
 {
 namespace HistoryHolder
 {
-	HistoryDB::HistoryDB (ITagsManager *tm, const ILoadProgressReporter_ptr& reporter, QObject *parent)
+	HistoryDB::HistoryDB (ITagsManager *tm, QObject *parent)
 	: QObject { parent }
 	, TM_ { tm }
 	{
@@ -49,8 +48,6 @@ namespace HistoryHolder
 		InitQueries ();
 
 		LoadTags ();
-
-		Migrate (reporter);
 	}
 
 	std::shared_ptr<QAbstractItemModel> HistoryDB::CreateModel () const
@@ -227,61 +224,6 @@ namespace HistoryHolder
 			InsertTagsMapping_.bindValue (":entryId", historyId);
 			Util::DBLock::Execute (InsertTagsMapping_);
 		}
-	}
-
-	void HistoryDB::Migrate (const ILoadProgressReporter_ptr& reporter)
-	{
-		QSettings settings
-		{
-			QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_HistoryHolder"
-		};
-		int size = settings.beginReadArray ("History");
-		if (!size)
-		{
-			settings.endArray ();
-			return;
-		}
-
-		const auto& process = reporter->InitiateProcess (tr ("Migrating downloads history..."), 0, size);
-
-		QElapsedTimer timer;
-		timer.start ();
-
-		{
-			Util::DBLock lock { DB_ };
-			lock.Init ();
-
-			for (int i = 0; i < size; ++i)
-			{
-				settings.setArrayIndex (size - i - 1);
-
-				const auto& var = settings.value ("Item");
-				if (var.isValid ())
-				{
-					const auto& entity = var.value<HistoryEntry> ();
-					Add (entity.Entity_, entity.DateTime_);
-				}
-
-				process->ReportValue (i);
-			}
-
-			lock.Good ();
-		}
-
-		settings.endArray ();
-
-		qDebug () << Q_FUNC_INFO
-				<< "done in"
-				<< timer.elapsed ()
-				<< "ms for"
-				<< size
-				<< "entries";
-
-		settings.remove ("History");
-
-		qDebug () << Q_FUNC_INFO
-				<< "removed history from QSettings";
 	}
 }
 }

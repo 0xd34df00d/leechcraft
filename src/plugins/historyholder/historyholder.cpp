@@ -27,8 +27,7 @@ namespace HistoryHolder
 		qRegisterMetaTypeStreamOperators<HistoryEntry> ("LC::Plugins::HistoryHolder::Core::HistoryEntry");
 #endif
 
-		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager (),
-				proxy->GetPluginsManager ()->CreateLoadProgressReporter (this));
+		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager ());
 	}
 
 	void Plugin::SecondInit ()

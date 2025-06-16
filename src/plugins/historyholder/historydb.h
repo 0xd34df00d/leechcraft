@@ -13,7 +13,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QMap>
-#include <interfaces/core/iloadprogressreporter.h>
 
 class QDateTime;
 class QAbstractItemModel;
@@ -41,7 +40,7 @@ namespace HistoryHolder
 
 		QMap<QString, int> Tags_;
 	public:
-		HistoryDB (ITagsManager*, const ILoadProgressReporter_ptr&, QObject* = nullptr);
+		HistoryDB (ITagsManager*, QObject* = nullptr);
 
 		std::shared_ptr<QAbstractItemModel> CreateModel () const;
 
@@ -54,8 +53,6 @@ namespace HistoryHolder
 		void Add (const Entity&, const QDateTime&);
 		QList<int> AddTags (const QStringList&);
 		void AssociateTags (int, const QList<int>&);
-
-		void Migrate (const ILoadProgressReporter_ptr&);
 	};
 }
 }
