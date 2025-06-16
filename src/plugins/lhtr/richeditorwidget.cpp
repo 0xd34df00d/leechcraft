@@ -38,6 +38,7 @@
 
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
@@ -790,17 +791,9 @@ const findParent = (item, name) => {
 		std::optional<QDomDocument> ParseXml (const QString& xml)
 		{
 			QDomDocument doc;
-			QString errMsg;
-			int errLine = -1;
-			int errCol = -1;
-			if (!doc.setContent (xml, &errMsg, &errLine, &errCol))
+			if (const auto result = doc.setContent (xml); !result)
 			{
-				qWarning () << "unable to parse xml:"
-						<< errMsg
-						<< "at"
-						<< errLine
-						<< ":"
-						<< errCol;
+				qWarning () << "unable to parse xml:" << result;
 				return {};
 			}
 
@@ -896,7 +889,7 @@ const findParent = (item, name) => {
 					return;
 				}
 
-				if (var.type () == QVariant::Bool && !var.toBool ())
+				if (var.typeId () == QMetaType::Bool && !var.toBool ())
 				{
 					qWarning () << "there are parser errors, ignoring reverting";
 					return;
