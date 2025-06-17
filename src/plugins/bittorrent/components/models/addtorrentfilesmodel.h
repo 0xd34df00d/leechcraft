@@ -12,7 +12,7 @@
 
 namespace LC::BitTorrent
 {
-	struct AddTorrentNodeInfo : public TorrentNodeInfoBase<AddTorrentNodeInfo>
+	struct AddTorrentNodeInfo : TorrentNodeInfoBase<AddTorrentNodeInfo>
 	{
 		Qt::CheckState CheckState_ = Qt::Checked;
 

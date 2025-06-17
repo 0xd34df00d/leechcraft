@@ -14,7 +14,6 @@
 #include <libtorrent/torrent_status.hpp>
 #include <util/util.h>
 #include <util/sys/paths.h>
-#include <util/sll/unreachable.h>
 #include <util/sll/qtutil.h>
 #include "geoip.h"
 #include "types.h"

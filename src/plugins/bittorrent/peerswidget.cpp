@@ -12,8 +12,8 @@
 #include <QTime>
 #include <libtorrent/peer_info.hpp>
 #include <util/util.h>
+#include "components/models/peersmodel.h"
 #include "peerinfo.h"
-#include "peersmodel.h"
 #include "addpeerdialog.h"
 #include "banpeersdialog.h"
 #include "ltutils.h"

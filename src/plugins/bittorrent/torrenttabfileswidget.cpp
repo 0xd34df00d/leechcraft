@@ -15,9 +15,9 @@
 #include <util/models/fixedstringfilterproxymodel.h>
 #include <util/sll/prelude.h>
 #include <util/util.h>
+#include "components/models/torrentfilesmodel.h"
 #include "filesviewdelegate.h"
 #include "ltutils.h"
-#include "torrentfilesmodel.h"
 
 namespace LC::BitTorrent
 {

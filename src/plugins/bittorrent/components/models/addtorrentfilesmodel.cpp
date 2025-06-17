@@ -201,13 +201,13 @@ namespace LC::BitTorrent
 	void AddTorrentFilesModel::MarkIndexes (const QList<QModelIndex>& indexes)
 	{
 		for (const auto& index : indexes)
-			setData (index.sibling (index.row (), ColumnPath), Qt::Checked, Qt::CheckStateRole);
+			setData (index.siblingAtColumn (ColumnPath), Qt::Checked, Qt::CheckStateRole);
 	}
 
 	void AddTorrentFilesModel::UnmarkIndexes (const QList<QModelIndex>& indexes)
 	{
 		for (const auto& index : indexes)
-			setData (index.sibling (index.row (), ColumnPath), Qt::Unchecked, Qt::CheckStateRole);
+			setData (index.siblingAtColumn (ColumnPath), Qt::Unchecked, Qt::CheckStateRole);
 	}
 
 	void AddTorrentFilesModel::UpdateSizeGraph (const AddTorrentNodeInfo_ptr& node)

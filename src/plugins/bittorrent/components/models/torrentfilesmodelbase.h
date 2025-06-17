@@ -20,7 +20,7 @@
 namespace LC::BitTorrent
 {
 	template<typename T>
-	struct TorrentNodeInfoBase : public Util::ModelItemBase<T>
+	struct TorrentNodeInfoBase : Util::ModelItemBase<T>
 	{
 		QIcon Icon_;
 

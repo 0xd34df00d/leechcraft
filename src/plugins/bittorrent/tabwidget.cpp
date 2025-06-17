@@ -11,7 +11,7 @@
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "torrentfilesmodel.h"
+#include "components/models/torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"

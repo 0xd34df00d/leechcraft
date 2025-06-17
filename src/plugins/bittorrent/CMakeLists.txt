@@ -14,15 +14,17 @@ endif ()
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		components/models/addtorrentfilesmodel.cpp
+		components/models/peersmodel.cpp
+		components/models/piecesmodel.cpp
+		components/models/tabviewproxymodel.cpp
+		components/models/torrentfilesmodel.cpp
 		torrentplugin.cpp
 		tabwidget.cpp
 		core.cpp
 		addtorrent.cpp
 		newtorrentwizard.cpp
 		pieceswidget.cpp
-		piecesmodel.cpp
-		torrentfilesmodel.cpp
-		peersmodel.cpp
 		filesviewdelegate.cpp
 		wizardgenerator.cpp
 		startupfirstpage.cpp
@@ -32,9 +34,7 @@ LC_DEFINE_PLUGIN (
 		torrentmaker.cpp
 		torrenttab.cpp
 		torrenttabwidget.cpp
-		tabviewproxymodel.cpp
 		addmagnetdialog.cpp
-		addtorrentfilesmodel.cpp
 		torrenttabfileswidget.cpp
 		sessionsettingsmanager.cpp
 		peerswidget.cpp

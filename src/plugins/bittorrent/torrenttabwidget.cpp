@@ -20,9 +20,8 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include "components/models/piecesmodel.h"
 #include "xmlsettingsmanager.h"
-#include "peersmodel.h"
-#include "piecesmodel.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"

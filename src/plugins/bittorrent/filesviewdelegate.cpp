@@ -14,7 +14,7 @@
 #include <QTreeView>
 #include <util/util.h>
 #include <util/gui/util.h>
-#include "torrentfilesmodel.h"
+#include "components/models/torrentfilesmodel.h"
 
 namespace LC::BitTorrent
 {

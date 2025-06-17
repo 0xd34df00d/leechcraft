@@ -17,8 +17,8 @@
 #include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include "components/models/tabviewproxymodel.h"
 #include "movetorrentfiles.h"
-#include "tabviewproxymodel.h"
 #include "xmlsettingsmanager.h"
 #include "types.h"
 #include "ltutils.h"
