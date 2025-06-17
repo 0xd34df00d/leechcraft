@@ -67,7 +67,7 @@ namespace Pogooglue
 				return {};
 		}
 
-		if (e.Entity_.type () != QVariant::String)
+		if (e.Entity_.typeId () != QMetaType::QString)
 			return {};
 
 		const auto& str = e.Entity_.toString ();
