@@ -127,7 +127,7 @@ namespace LC::Util
 namespace LC
 {
 	// TODO make this consteval when clang will stop crashing on this being consteval
-	constexpr QColor operator"" _rgb (const char *str, std::size_t size)
+	constexpr QColor operator""_rgb (const char *str, std::size_t size)
 	{
 		if (size != 7)
 			throw std::runtime_error { "invalid color size" };

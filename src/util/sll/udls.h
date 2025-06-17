@@ -12,7 +12,7 @@
 
 namespace LC
 {
-	constexpr quint64 operator"" _mib (quint64 mibs) noexcept
+	constexpr quint64 operator""_mib (quint64 mibs) noexcept
 	{
 		return mibs * 1024 * 1024;
 	}
