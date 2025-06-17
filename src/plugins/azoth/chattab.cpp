@@ -1236,7 +1236,7 @@ namespace Azoth
 		else if (host == "sendentities")
 		{
 			const QUrlQuery queryObject { url };
-			const auto& count = std::max (queryObject.queryItemValue ("count").toInt (), 1);
+			const auto count = std::max (queryObject.queryItemValue ("count").toInt (), 1);
 			for (int i = 0; i < count; ++i)
 			{
 				const auto& numStr = QString::number (i);
