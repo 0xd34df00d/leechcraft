@@ -94,7 +94,30 @@ namespace BitTorrent
 		auto CreateSession ()
 		{
 			libtorrent::session_params params;
+			if (const auto& stateData = XmlSettingsManager::Instance ().property ("SessionParams").toByteArray ();
+				!stateData.isEmpty ())
+			{
+				params = libtorrent::read_session_params (stateData);
+				XmlSettingsManager::Instance ().setProperty ("SessionState", QVariant {});
+			}
+
 			params.settings.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (GetProxyHolder ()));
+			params.settings.set_int (libtorrent::settings_pack::alert_queue_size, 10000);
+
+			namespace cat = libtorrent::alert_category;
+			constexpr auto alerts
+					= cat::error
+					| cat::port_mapping
+					| cat::storage
+					| cat::status
+					| cat::ip_block
+					| cat::performance_warning
+					| cat::dht
+					| cat::dht_operation
+					| cat::file_progress
+					;
+			params.settings.set_int (libtorrent::settings_pack::alert_mask, alerts);
+
 			return new libtorrent::session { std::move (params) };
 		}
 	}
@@ -102,6 +125,7 @@ namespace BitTorrent
 	Core::Core ()
 	: StatusKeeper_ { new CachedStatusKeeper { this } }
 	, Session_ { CreateSession () }
+	, SessionSettingsMgr_ { new SessionSettingsManager { Session_, this } }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
 	, Dispatcher_ { *Session_ }
@@ -223,36 +247,12 @@ namespace BitTorrent
 	{
 		try
 		{
-			SessionSettingsMgr_ = new SessionSettingsManager { Session_, this };
-
-			auto sstateVariant = XmlSettingsManager::Instance ().property ("SessionState");
-			if (sstateVariant.isValid () &&
-					!sstateVariant.toByteArray ().isEmpty ())
+			const auto& sessState = XmlSettingsManager::Instance ().property ("SessionState").toByteArray ();
+			if (!sessState.isEmpty ())
 			{
 				libtorrent::bdecode_node state;
-				if (DecodeEntry (sstateVariant.toByteArray (), state))
-				{
+				if (DecodeEntry (sessState, state))
 					Session_->load_state (state);
-
-					libtorrent::settings_pack settings;
-					settings.set_int (libtorrent::settings_pack::alert_queue_size, 10000);
-					{
-						namespace cat = libtorrent::alert_category;
-						constexpr auto alerts
-								= cat::error
-								| cat::port_mapping
-								| cat::storage
-								| cat::status
-								| cat::ip_block
-								| cat::performance_warning
-								| cat::dht
-								| cat::dht_operation
-								| cat::file_progress
-								;
-						settings.set_int (libtorrent::settings_pack::alert_mask, alerts);
-					}
-					Session_->apply_settings (settings);
-				}
 			}
 		}
 		catch (const std::exception& e)
@@ -1516,12 +1516,9 @@ namespace BitTorrent
 
 		settings.endGroup ();
 
-		libtorrent::entry sessionState;
-		Session_->save_state (sessionState);
-
-		QByteArray sessionStateBA;
-		libtorrent::bencode (std::back_inserter (sessionStateBA), sessionState);
-		XmlSettingsManager::Instance ().setProperty ("SessionState", sessionStateBA);
+		const auto& stateVec = libtorrent::write_session_params_buf (Session_->session_state ());
+		XmlSettingsManager::Instance ().setProperty ("SessionParams",
+				QByteArray::fromRawData (stateVec.data (), stateVec.size ()));
 
 		Session_->wait_for_alert (libtorrent::time_duration (5));
 

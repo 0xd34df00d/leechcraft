@@ -127,8 +127,8 @@ namespace BitTorrent
 		};
 		CachedStatusKeeper * const StatusKeeper_;
 
-		libtorrent::session *Session_ = nullptr;
-		SessionSettingsManager *SessionSettingsMgr_ = nullptr;
+		libtorrent::session *Session_;
+		SessionSettingsManager *SessionSettingsMgr_;
 
 		typedef QList<TorrentStruct> HandleDict_t;
 		HandleDict_t Handles_;
