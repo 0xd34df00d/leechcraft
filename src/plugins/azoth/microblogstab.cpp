@@ -13,8 +13,7 @@ namespace LC
 {
 namespace Azoth
 {
-	MicroblogsTab::MicroblogsTab (IAccount *acc)
-	: Account_ (acc)
+	MicroblogsTab::MicroblogsTab (IAccount*)
 	{
 		Ui_.setupUi (this);
 	}

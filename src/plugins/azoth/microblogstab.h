@@ -20,8 +20,6 @@ namespace Azoth
 	class MicroblogsTab : public TabBase
 	{
 		Ui::MicroblogsTab Ui_;
-
-		IAccount *Account_;
 	public:
 		explicit MicroblogsTab (IAccount*);
 
