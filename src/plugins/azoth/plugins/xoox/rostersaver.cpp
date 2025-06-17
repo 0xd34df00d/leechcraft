@@ -11,8 +11,9 @@
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
-#include <util/sys/paths.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxaccount.h"
@@ -55,16 +56,9 @@ namespace Xoox
 		}
 
 		QDomDocument doc;
-		QString errStr;
-		int errLine = 0;
-		int errCol = 0;
-		if (!doc.setContent (&rosterFile, &errStr, &errLine, &errCol))
+		if (const auto result = doc.setContent (&rosterFile); !result)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< errStr
-					<< errLine
-					<< ":"
-					<< errCol;
+			qWarning () << "unable to read roster file" << result;
 			return;
 		}
 

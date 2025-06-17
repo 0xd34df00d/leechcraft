@@ -206,10 +206,8 @@ namespace XooxUtil
 		elem.toXml (&w);
 
 		QDomDocument doc;
-		if (!doc.setContent (arr, true))
-			qCritical () << Q_FUNC_INFO
-					<< "unable to set XML contents"
-					<< arr;
+		if (!doc.setContent (arr, QDomDocument::ParseOption::UseNamespaceProcessing))
+			qCritical () << "unable to set XML contents" << arr;
 		return doc.documentElement ();
 	}
 

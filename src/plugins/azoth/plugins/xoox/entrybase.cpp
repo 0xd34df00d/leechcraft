@@ -212,8 +212,7 @@ namespace Xoox
 
 		if (varInfo.SecsDiff_)
 		{
-			auto now = QDateTime::currentDateTimeUtc ();
-			now.setTimeSpec (Qt::LocalTime);
+			const auto& now = QDateTime::currentDateTime ();
 			const auto& secsDiff = *varInfo.SecsDiff_;
 			res ["client_time"] = now
 					.addSecs (secsDiff.Diff_)

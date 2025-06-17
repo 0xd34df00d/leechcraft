@@ -114,7 +114,7 @@ namespace LC::Azoth::Xoox
 			!ShownPixmap_.isNull ())
 		{
 			auto label = Util::ShowPixmapLabel (ShownPixmap_,
-					static_cast<QMouseEvent*> (event)->globalPos ());
+					static_cast<QMouseEvent*> (event)->globalPosition ().toPoint ());
 			label->setWindowTitle (tr ("%1's avatar").arg (JID_));
 		}
 

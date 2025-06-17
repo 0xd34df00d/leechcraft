@@ -21,12 +21,12 @@ namespace Azoth
 namespace Xoox
 {
 	const QString NsLocationNode = "http://jabber.org/protocol/geoloc";
-	
+
 	QString UserLocation::GetNodeString ()
 	{
 		return NsLocationNode;
 	}
-	
+
 	QXmppElement UserLocation::ToXML () const
 	{
 		QXmppElement geoloc;
@@ -38,9 +38,9 @@ namespace Xoox
 			QXmppElement elem;
 			elem.setTagName (key);
 
-			if (val.type () == QVariant::DateTime)
+			if (val.typeId () == QMetaType::QDateTime)
 				elem.setValue (val.toDateTime ().toString (Qt::ISODate));
-			else if (val.type () == QVariant::Url)
+			else if (val.typeId () == QMetaType::QUrl)
 				elem.setValue (val.toUrl ().toEncoded ());
 			else
 				elem.setValue (val.toString ());
@@ -53,12 +53,12 @@ namespace Xoox
 		result.appendChild (geoloc);
 		return result;
 	}
-	
+
 	namespace
 	{
 		template<typename T>
 		struct Converter;
-		
+
 		template<>
 		struct Converter<QString>
 		{
@@ -67,7 +67,7 @@ namespace Xoox
 				return str;
 			}
 		};
-		
+
 		template<>
 		struct Converter<double>
 		{
@@ -76,7 +76,7 @@ namespace Xoox
 				return str.toDouble ();
 			}
 		};
-		
+
 		template<>
 		struct Converter<QUrl>
 		{
@@ -85,7 +85,7 @@ namespace Xoox
 				return QUrl::fromEncoded (str.toUtf8 ());
 			}
 		};
-		
+
 		template<>
 		struct Converter<QDateTime>
 		{
@@ -106,7 +106,7 @@ namespace Xoox
 			, I_ (info)
 			{
 			}
-			
+
 			ParseElem operator() (const char *elemName)
 			{
 				const QDomElement& child = R_.firstChildElement (elemName);
@@ -114,7 +114,7 @@ namespace Xoox
 					I_ [elemName] = Converter<T> () (child.text ());
 				return *this;
 			}
-			
+
 			template<typename U>
 			ParseElem<U> operator() (const U&)
 			{
@@ -122,15 +122,15 @@ namespace Xoox
 			}
 		};
 	}
-	
+
 	void UserLocation::Parse (const QDomElement& elem)
 	{
 		Info_.clear ();
-		
+
 		const QDomElement& geolocElem = elem.firstChildElement ("geoloc");
 		if (geolocElem.namespaceURI () != NsLocationNode)
 			return;
-		
+
 		ParseElem<double> (geolocElem, Info_)
 			("accuracy")
 			("alt")
@@ -157,22 +157,22 @@ namespace Xoox
 			(QUrl ())
 			("uri");
 	}
-	
+
 	QString UserLocation::Node () const
 	{
 		return GetNodeString ();
 	}
-	
+
 	PEPEventBase* UserLocation::Clone () const
 	{
 		return new UserLocation (*this);
 	}
-	
+
 	GeolocationInfo_t UserLocation::GetInfo () const
 	{
 		return Info_;
 	}
-	
+
 	void UserLocation::SetInfo (const GeolocationInfo_t& info)
 	{
 		Info_ = info;

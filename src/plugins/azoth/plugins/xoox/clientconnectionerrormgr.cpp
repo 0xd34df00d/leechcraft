@@ -141,11 +141,11 @@ namespace Xoox
 			return tr ("Unexpected request.");
 		case QXmppStanza::Error::PolicyViolation:
 			return tr ("Local server policy violation.");
+		case QXmppStanza::Error::NoCondition:
+			return {};
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown condition:"
-				<< condition;
+		qWarning () << "unknown condition:" << condition;
 		return tr ("Other error.");
 	}
 
