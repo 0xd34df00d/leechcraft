@@ -245,21 +245,6 @@ namespace BitTorrent
 
 	void Core::DoDelayedInit ()
 	{
-		try
-		{
-			const auto& sessState = XmlSettingsManager::Instance ().property ("SessionState").toByteArray ();
-			if (!sessState.isEmpty ())
-			{
-				libtorrent::bdecode_node state;
-				if (DecodeEntry (sessState, state))
-					Session_->load_state (state);
-			}
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO << typeid (e).name () << e.what ();
-		}
-
 		Headers_ = QStringList
 		{
 			"#",
