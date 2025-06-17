@@ -70,7 +70,7 @@ namespace NetStoreManager
 			}
 		}
 
-		const auto& targetIndex = indexAt (event->pos ());
+		const auto& targetIndex = indexAt (event->position ().toPoint ());
 
 		if (targetIndex.data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash" &&
 				!targetIndex.data (ListingRole::InTrash).toBool ())
@@ -136,7 +136,7 @@ namespace NetStoreManager
 					targetIndex.data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash")
 				menu->addActions ({ CopyItem_, MoveItem_, menu->addSeparator (), Cancel_ });
 
-			menu->exec (viewport ()->mapToGlobal (event->pos ()));
+			menu->exec (viewport ()->mapToGlobal (event->position ().toPoint ()));
 			menu->deleteLater ();
 		}
 		else
@@ -194,4 +194,3 @@ namespace NetStoreManager
 	}
 }
 }
-
