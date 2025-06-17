@@ -59,8 +59,6 @@ Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
 Q_DECLARE_METATYPE (const libtorrent::torrent_handle*)
 
-using namespace LC::Util;
-
 namespace LC
 {
 namespace BitTorrent
@@ -302,7 +300,7 @@ namespace BitTorrent
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		ShortcutMgr_ = new ShortcutManager (proxy, this);
+		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 		LiveStreamManager_ = std::make_shared<LiveStreamManager> (*StatusKeeper_, Dispatcher_);
 	}
 
@@ -752,7 +750,7 @@ namespace BitTorrent
 
 		QFuture<IDownload::Result> MakeErrorResult (const QString& msg)
 		{
-			return MakeReadyFuture (IDownload::Result { AsLeft, { IDownload::Error::Type::LocalError, msg } });
+			return MakeReadyFuture (IDownload::Result { Util::AsLeft, { IDownload::Error::Type::LocalError, msg } });
 		}
 	}
 
