@@ -547,7 +547,41 @@ namespace BitTorrent
 			default:
 				return {};
 			}
-		case Roles::FullLengthText:
+		case Roles::FullProgressText:
+		{
+			if (status.state == libtorrent::torrent_status::downloading)
+			{
+				static const auto templ = tr ("%1% (%2 of %3 at %4 from %5 peers)");
+				return templ
+						.arg (status.progress * 100, 0, 'f', 2)
+						.arg (Util::MakePrettySize (status.total_wanted_done))
+						.arg (Util::MakePrettySize (status.total_wanted))
+						.arg (Util::MakePrettySize (status.download_payload_rate) +
+								tr ("/s"))
+						.arg (status.num_peers);
+			}
+			if (!IsPaused (status) &&
+						(status.state == libtorrent::torrent_status::finished ||
+						status.state == libtorrent::torrent_status::seeding))
+			{
+				auto total = status.num_incomplete;
+				if (total <= 0)
+					total = status.list_peers - status.list_seeds;
+				static const auto templ = tr ("%1, seeding at %2 to %3 leechers (of around %4)");
+				return templ
+						.arg (Util::MakePrettySize (status.total_wanted))
+						.arg (Util::MakePrettySize (status.upload_payload_rate) +
+								tr ("/s"))
+						.arg (status.num_peers - status.num_seeds)
+						.arg (total);
+			}
+
+			static const auto templ = tr ("%1% (%2 of %3)");
+			return templ
+					.arg (status.progress * 100, 0, 'f', 2)
+					.arg (Util::MakePrettySize (status.total_wanted_done))
+					.arg (Util::MakePrettySize (status.total_wanted));
+		}
 		case Qt::DisplayRole:
 			switch (column)
 			{
@@ -558,70 +592,29 @@ namespace BitTorrent
 			case Columns::ColumnState:
 				return GetStringForStatus (status);
 			case Columns::ColumnProgress:
-				if (role == Roles::FullLengthText)
+			{
+				if (status.state == libtorrent::torrent_status::downloading)
 				{
-					if (status.state == libtorrent::torrent_status::downloading)
-					{
-						static const auto templ = tr ("%1% (%2 of %3 at %4 from %5 peers)");
-						return templ
-								.arg (status.progress * 100, 0, 'f', 2)
-								.arg (Util::MakePrettySize (status.total_wanted_done))
-								.arg (Util::MakePrettySize (status.total_wanted))
-								.arg (Util::MakePrettySize (status.download_payload_rate) +
-										tr ("/s"))
-								.arg (status.num_peers);
-					}
-					else if (!IsPaused (status) &&
-								(status.state == libtorrent::torrent_status::finished ||
-								status.state == libtorrent::torrent_status::seeding))
-					{
-						auto total = status.num_incomplete;
-						if (total <= 0)
-							total = status.list_peers - status.list_seeds;
-						static const auto templ = tr ("%1, seeding at %2 to %3 leechers (of around %4)");
-						return templ
-								.arg (Util::MakePrettySize (status.total_wanted))
-								.arg (Util::MakePrettySize (status.upload_payload_rate) +
-										tr ("/s"))
-								.arg (status.num_peers - status.num_seeds)
-								.arg (total);
-					}
-					else
-					{
-						static const auto templ = tr ("%1% (%2 of %3)");
-						return templ
-								.arg (status.progress * 100, 0, 'f', 2)
-								.arg (Util::MakePrettySize (status.total_wanted_done))
-								.arg (Util::MakePrettySize (status.total_wanted));
-					}
+					static const auto templ = tr ("%1% (%2 of %3)");
+					return templ
+							.arg (status.progress * 100, 0, 'f', 2)
+							.arg (Util::MakePrettySize (status.total_wanted_done))
+							.arg (Util::MakePrettySize (status.total_wanted));
 				}
-				else
+				if (!IsPaused (status) &&
+							(status.state == libtorrent::torrent_status::finished ||
+							status.state == libtorrent::torrent_status::seeding))
 				{
-					if (status.state == libtorrent::torrent_status::downloading)
-					{
-						static const auto templ = tr ("%1% (%2 of %3)");
-						return templ
-								.arg (status.progress * 100, 0, 'f', 2)
-								.arg (Util::MakePrettySize (status.total_wanted_done))
-								.arg (Util::MakePrettySize (status.total_wanted));
-					}
-					else if (!IsPaused (status) &&
-								(status.state == libtorrent::torrent_status::finished ||
-								status.state == libtorrent::torrent_status::seeding))
-					{
-						static const auto templ = QString { "100% (%1)" };
-						return templ
-								.arg (Util::MakePrettySize (status.total_wanted));
-					}
-					else
-					{
-						static const auto templ = tr ("%1% (%2 of %3)");
-						return templ
-								.arg (status.progress * 100, 0, 'f', 2)
-								.arg (Util::MakePrettySize (status.total_wanted_done))
-								.arg (Util::MakePrettySize (status.total_wanted));
-					}
+					static const auto templ = QString { "100% (%1)" };
+					return templ
+							.arg (Util::MakePrettySize (status.total_wanted));
 				}
+				static const auto templ = tr ("%1% (%2 of %3)");
+				return templ
+						.arg (status.progress * 100, 0, 'f', 2)
+						.arg (Util::MakePrettySize (status.total_wanted_done))
+						.arg (Util::MakePrettySize (status.total_wanted));
+			}
 			case Columns::ColumnDownSpeed:
 				return Util::MakePrettySize (status.download_payload_rate) + tr ("/s");
 			case Columns::ColumnUpSpeed:

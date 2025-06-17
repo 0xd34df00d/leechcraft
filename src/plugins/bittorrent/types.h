@@ -36,7 +36,7 @@ namespace LC::BitTorrent
 	{
 		enum
 		{
-			FullLengthText = Qt::UserRole,
+			FullProgressText = Qt::UserRole,
 			SortRole,
 			HandleIndex,
 			IsLeeching,

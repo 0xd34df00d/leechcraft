@@ -65,9 +65,8 @@ namespace LC::BitTorrent
 			QVariant data (const QModelIndex& unmapped, int role) const override
 			{
 				const auto& index = mapToSource (unmapped);
-				const int normCol = index.column ();
-				if (normCol == Columns::ColumnProgress && role == Qt::DisplayRole)
-					return sourceModel ()->data (index, Roles::FullLengthText);
+				if (index.column () == Columns::ColumnProgress && role == Qt::DisplayRole)
+					return sourceModel ()->data (index, Roles::FullProgressText);
 
 				return QSortFilterProxyModel::data (unmapped, role);
 			}
