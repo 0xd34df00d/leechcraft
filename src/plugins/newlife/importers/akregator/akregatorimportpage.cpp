@@ -39,7 +39,7 @@ namespace Importers
 			return false;
 
 		QDomDocument document;
-		if (!document.setContent (&file, true))
+		if (!document.setContent (&file, QDomDocument::ParseOption::UseNamespaceProcessing))
 			return false;
 
 		QDomElement root = document.documentElement ();

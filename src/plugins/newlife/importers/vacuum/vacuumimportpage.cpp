@@ -11,6 +11,7 @@
 #include <QDomDocument>
 #include <QDateTime>
 #include <QDir>
+#include <util/sll/debugprinters.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -87,16 +88,9 @@ namespace Importers
 			}
 
 			QDomDocument doc;
-
-			QString error;
-			int line = 0, col = 0;
-			if (!doc.setContent (&file, &error, &line, &col))
+			if (const auto result = doc.setContent (&file); !result)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "XML error:"
-						<< error
-						<< line
-						<< col;
+				qWarning ()  << "XML error:" << result;
 				return;
 			}
 

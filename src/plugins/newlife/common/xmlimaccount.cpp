@@ -11,6 +11,7 @@
 #include <QStandardItemModel>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/sll/debugprinters.h>
 #include "imimportpage.h"
 
 namespace LC
@@ -78,17 +79,9 @@ namespace Common
 		}
 
 		QDomDocument doc;
-
-		QString error;
-		int line = 0, col = 0;
-		if (!doc.setContent (&file, &error, &line, &col))
+		if (const auto result = doc.setContent (&file); !result)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "failed to parse"
-					<< file.fileName ()
-					<< error
-					<< line
-					<< col;
+			qWarning () << "failed to parse" << file.fileName () << result;
 			return;
 		}
 
