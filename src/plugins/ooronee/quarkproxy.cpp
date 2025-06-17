@@ -105,13 +105,13 @@ namespace Ooronee
 	{
 		QString GetTypeString (const QVariant& data)
 		{
-			switch (data.type ())
+			switch (data.typeId ())
 			{
-			case QVariant::Image:
+			case QMetaType::QImage:
 				return QuarkProxy::tr ("Select the data filter to handle the dropped image:");
-			case QVariant::String:
+			case QMetaType::QString:
 				return QuarkProxy::tr ("Select the data filter to handle the dropped text:");
-			case QVariant::Url:
+			case QMetaType::QUrl:
 				return data.toUrl ().isLocalFile () ?
 						QuarkProxy::tr ("Select the data filter to handle the dropped file:") :
 						QuarkProxy::tr ("Select the data filter to handle the dropped URL:");
@@ -166,13 +166,13 @@ namespace Ooronee
 	{
 		QByteArray GetTypeId (const QVariant& data)
 		{
-			switch (data.type ())
+			switch (data.typeId ())
 			{
-			case QVariant::Image:
+			case QMetaType::QImage:
 				return "Image";
-			case QVariant::ByteArray:
+			case QMetaType::QByteArray:
 				return "ByteArray";
-			case QVariant::String:
+			case QMetaType::QString:
 				return "String";
 			default:
 				return "Other";
