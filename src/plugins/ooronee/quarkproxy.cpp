@@ -105,19 +105,16 @@ namespace Ooronee
 	{
 		QString GetTypeString (const QVariant& data)
 		{
-			switch (data.typeId ())
-			{
-			case QMetaType::QImage:
-				return QuarkProxy::tr ("Select the data filter to handle the dropped image:");
-			case QMetaType::QString:
-				return QuarkProxy::tr ("Select the data filter to handle the dropped text:");
-			case QMetaType::QUrl:
-				return data.toUrl ().isLocalFile () ?
-						QuarkProxy::tr ("Select the data filter to handle the dropped file:") :
-						QuarkProxy::tr ("Select the data filter to handle the dropped URL:");
-			default:
-				return QuarkProxy::tr ("Select the data filter to handle the dropped data:");
-			}
+			return Util::HandleQVariant (data,
+					[] (const QImage&) { return QuarkProxy::tr ("Select the data filter to handle the dropped image:"); },
+					[] (const QString&) { return QuarkProxy::tr ("Select the data filter to handle the dropped text:"); },
+					[] (const QUrl& url)
+					{
+						return url.isLocalFile () ?
+								QuarkProxy::tr ("Select the data filter to handle the dropped file:") :
+								QuarkProxy::tr ("Select the data filter to handle the dropped URL:");
+					},
+					[] { return QuarkProxy::tr ("Select the data filter to handle the dropped data:"); });
 		}
 	}
 
@@ -162,27 +159,14 @@ namespace Ooronee
 		XmlSettingsManager::Instance ().setProperty ("PrevVariant" + typeId, variant);
 	}
 
-	namespace
-	{
-		QByteArray GetTypeId (const QVariant& data)
-		{
-			switch (data.typeId ())
-			{
-			case QMetaType::QImage:
-				return "Image";
-			case QMetaType::QByteArray:
-				return "ByteArray";
-			case QMetaType::QString:
-				return "String";
-			default:
-				return "Other";
-			}
-		}
-	}
-
 	void QuarkProxy::handle (const QVariant& data, bool menuSelect)
 	{
-		Handle (data, GetTypeId (data), menuSelect);
+		const auto& typeStr = Util::HandleQVariant (data,
+					[] (const QImage&) { return "Image"_qba; },
+					[] (const QString&) { return "String"_qba; },
+					[] (const QByteArray&) { return "ByteArray"_qba; },
+					[] { return "Other"_qba; });
+		Handle (data, typeStr, menuSelect);
 	}
 }
 }
