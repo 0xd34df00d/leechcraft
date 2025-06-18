@@ -144,9 +144,9 @@ namespace LC::Util
 	{
 		using Ret_t = std::conditional_t<
 				std::is_same_v<R, DetectRetType>,
-				std::common_type_t<RetType_t<Fs>...>,
-				R
-			>;
+				std::common_type<RetType_t<Fs>...>,
+				std::type_identity<R>
+			>::type;
 		return [&]<typename Head, typename... Rest> (this auto self, Head&& head, Rest&&... rest) -> Ret_t
 		{
 			if constexpr (!sizeof... (Rest))
