@@ -23,7 +23,7 @@ namespace LC::BitTorrent
 {
 	PeersModel::PeersModel (const QModelIndex& idx, QObject *parent)
 	: QAbstractItemModel { parent }
-	, FlagsPath_ { Util::GetSysPath (Util::SysPath::Share, QStringLiteral ("global_icons/flags"), {}) }
+	, FlagsPath_ { Util::GetSysPath (Util::SysPath::Share, "global_icons/flags"_qs, {}) }
 	, Headers_
 	{
 		tr ("IP"),
@@ -77,40 +77,32 @@ namespace LC::BitTorrent
 			return {};
 
 		const auto isDisplayRole = role == Qt::DisplayRole;
+		const auto speedValue = [isDisplayRole] (auto value)
+		{
+			return isDisplayRole ? Util::MakePrettySize (value) + tr ("/s") : QVariant { value };
+		};
+		const auto sizeValue = [isDisplayRole] (auto value)
+		{
+			return isDisplayRole ? Util::MakePrettySize (value) : QVariant { static_cast<qulonglong> (value) };
+		};
 
 		switch (index.column ())
 		{
 		case ColumnDownloadRate:
-			if (isDisplayRole)
-				return Util::MakePrettySize (pi.PI_->payload_down_speed) + tr ("/s");
-			else
-				return pi.PI_->payload_down_speed;
+			return speedValue (pi.PI_->payload_down_speed);
 		case ColumnUploadRate:
-			if (isDisplayRole)
-				return Util::MakePrettySize (pi.PI_->payload_up_speed) + tr ("/s");
-			else
-				return pi.PI_->payload_up_speed;
+			return speedValue (pi.PI_->payload_up_speed);
 		case ColumnDownloaded:
-			if (isDisplayRole)
-				return Util::MakePrettySize (pi.PI_->total_download);
-			else
-				return static_cast<qulonglong> (pi.PI_->total_download);
+			return sizeValue (pi.PI_->total_download);
 		case ColumnUploaded:
-			if (isDisplayRole)
-				return Util::MakePrettySize (pi.PI_->total_upload);
-			else
-				return static_cast<qulonglong> (pi.PI_->total_upload);
+			return sizeValue (pi.PI_->total_upload);
 		case ColumnClient:
 			return pi.Client_;
 		case ColumnPieces:
-			return tr ("%1/%2")
-				.arg (pi.RemoteHas_)
-				.arg (pi.PI_->num_pieces);
+			return tr ("%1/%2").arg (pi.RemoteHas_).arg (pi.PI_->num_pieces);
 		default:
 			return {};
 		}
-
-		Util::Unreachable ();
 	}
 
 	Qt::ItemFlags PeersModel::flags (const QModelIndex&) const
@@ -165,13 +157,13 @@ namespace LC::BitTorrent
 			if (!localPieces [i])
 				ourMissing << i;
 
-		auto& geoIP = GeoIP::Instance ();
+		const auto& geoIP = GeoIP::Instance ();
 
 		QList<PeerInfo> peers;
 		peers.reserve (peerInfos.size ());
 		for (const auto& pi : peerInfos)
 		{
-			const int interesting = std::count_if (ourMissing.begin (), ourMissing.end (),
+			const int interesting = std::ranges::count_if (ourMissing,
 					[&pi] (int idx) { return idx < pi.pieces.size () && pi.pieces [idx]; });
 
 			peers.push_back ({
@@ -220,8 +212,8 @@ namespace LC::BitTorrent
 		}
 
 		auto values = ip2position.values ();
-		std::sort (values.begin (), values.end (), std::greater<> ());
-		for (int val : values)
+		std::ranges::sort (values, std::greater {});
+		for (const auto val : values)
 		{
 			beginRemoveRows (QModelIndex (), val, val);
 			Peers_.removeAt (val);
