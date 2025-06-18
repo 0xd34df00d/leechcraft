@@ -66,7 +66,7 @@ namespace LC::Azoth::Acetamide
 		std::sort (pairs.begin (), pairs.end (),
 				[] (const auto& l, const auto& r)
 				{
-					return std::make_tuple (r.second.type (), l.first) < std::make_tuple (l.second.type (), r.first);
+					return std::make_tuple (r.second.typeId (), l.first) < std::make_tuple (l.second.typeId (), r.first);
 				});
 		for (const auto& [key, value] : pairs)
 		{

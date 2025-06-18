@@ -34,6 +34,6 @@ namespace LC::Azoth::Acetamide
 	uint qHash (const ChannelOptions& opts)
 	{
 		std::array items { opts.ChannelName_, opts.ChannelPassword_, opts.ServerName_ };
-		return qHashRange (items.begin (), items.end (), qGlobalQHashSeed ());
+		return qHashRange (items.begin (), items.end (), QHashSeed::globalSeed ());
 	}
 }

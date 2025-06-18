@@ -42,9 +42,9 @@ namespace LC::Azoth::Acetamide
 	struct ServerOptions
 	{
 		QString ServerName_;
-		QString ServerEncoding_;
-		QString ServerPassword_;
-		QString ServerNickName_;
+		QString ServerEncoding_ {};
+		QString ServerPassword_ {};
+		QString ServerNickName_ {};
 		int ServerPort_ = 0;
 		bool SSL_ = false;
 
@@ -56,7 +56,7 @@ namespace LC::Azoth::Acetamide
 	{
 		QString ServerName_;
 		QString ChannelName_;
-		QString ChannelPassword_;
+		QString ChannelPassword_ {};
 
 		bool operator== (const ChannelOptions&) const = default;
 	};

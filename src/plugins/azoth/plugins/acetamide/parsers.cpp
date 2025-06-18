@@ -61,7 +61,7 @@ namespace LC::Azoth::Acetamide
 				QRegularExpression::DontCaptureOption
 			};
 
-			const auto match = rx.match (str);
+			const auto match = rx.matchView (str);
 
 			const auto host = match.captured (u"host");
 			return Result
