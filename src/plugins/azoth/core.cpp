@@ -28,6 +28,7 @@
 #include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/resourceloader.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/prelude.h>
 #include <util/sll/util.h>
@@ -958,16 +959,9 @@ namespace LC::Azoth
 				return;
 
 			QDomDocument doc;
-			QString error;
-			int errorLine;
-			if (!doc.setContent (body, &error, &errorLine))
+			if (const auto result = doc.setContent (body); !result)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to parse the body as XML:"
-						<< error
-						<< errorLine
-						<< "for body:\n"
-						<< body;
+				qWarning () << "unable to parse the body as XML:" << result << "for body:\n" << body;
 				return;
 			}
 
