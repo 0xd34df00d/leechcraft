@@ -12,6 +12,7 @@
 #include <memory>
 #include <utility>
 #include <QLatin1String>
+#include <QVariant>
 #include "ctstring.h"
 
 class QObject;
@@ -134,6 +135,64 @@ namespace LC::Util
 	{
 		return QString::fromRawData (sv.data (), sv.size ());
 	}
+
+	template<typename>
+	struct EmptyVariantMember
+	{
+		constexpr auto operator<=> (const EmptyVariantMember&) const = default;
+	};
+
+	struct UnknownVariantMember
+	{
+		constexpr auto operator<=> (const UnknownVariantMember&) const = default;
+	};
+
+	template<typename R = struct Derive, typename... Fs>
+	auto Handle (const QVariant&, Fs&&... fs)
+	{
+
+	}
+
+	template<typename... Args>
+	std::variant<Args..., UnknownVariantMember> ToStdVariant (const QVariant& variant)
+	{
+		std::variant<Args..., UnknownVariantMember> result { UnknownVariantMember {} };
+		((get_if<Args> (&variant) && (result = *get_if<Args> (&variant), true)) || ...);
+		return result;
+	}
+
+	template<typename... Args>
+	std::variant<Args..., EmptyVariantMember<Args>..., UnknownVariantMember> ToStdVariantNonEmpty (const QVariant& variant)
+	{
+		std::variant<Args..., EmptyVariantMember<Args>..., UnknownVariantMember> result { UnknownVariantMember {} };
+
+		([&]
+		{
+			if (const auto val = get_if<Args> (&variant))
+			{
+				if constexpr (requires { val->isEmpty (); })
+				{
+					if (!val->isEmpty ())
+						result = *val;
+					else
+						result = EmptyVariantMember<Args> {};
+				}
+				else if constexpr (requires { val->isNull (); })
+				{
+					if (!val->isNull ())
+						result = *val;
+					else
+						result = EmptyVariantMember<Args> {};
+				}
+				else
+					static_assert (std::is_same_v<Args, struct Dummy>, "don't know how to handle the type");
+
+				return true;
+			}
+			return false;
+		} () || ...);
+
+		return result;
 }
 
 namespace LC
