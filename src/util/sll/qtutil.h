@@ -139,9 +139,6 @@ namespace LC::Util
 
 	struct DetectRetType {};
 
-	template<typename>
-	struct EmptyVariantMember {};
-
 	template<typename R = DetectRetType, typename... Fs>
 	auto HandleQVariant (const QVariant& variant, Fs&&... handlers)
 	{
