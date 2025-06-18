@@ -20,6 +20,7 @@ namespace LC::Util
 
 		void testStringUDLBench ();
 		void testStringUDLBench_data ();
+
+		void testHandleQVariant ();
 	};
 }
-

@@ -63,5 +63,43 @@ namespace LC::Util
 		QTest::newRow ("QStringLiteral") << 1;
 		QTest::newRow ("UDL") << 2;
 	}
-}
 
+	void QtUtilTest::testHandleQVariant ()
+	{
+		{
+			const auto v = HandleQVariant ("foo"_qs,
+					[] (int) { return 0; },
+					[] (const QString&) { return 1; },
+					[] (const QByteArray&) { return 2; },
+					[] { return 42; });
+			QCOMPARE (v, 1);
+		}
+
+		{
+			const auto v = HandleQVariant ("foo"_qs,
+					[] (int n) { return QString::number (n); },
+					[] (const QString& s) { return s; },
+					[] (const QByteArray& ba) { return ba; },
+					[] { return "default"_qs; });
+			QCOMPARE (v, "foo"_qs);
+		}
+
+		{
+			const auto v = HandleQVariant (42,
+					[] (int n) { return QString::number (n); },
+					[] (const QString& s) { return s; },
+					[] (const QByteArray& ba) { return ba; },
+					[] { return "default"_qs; });
+			QCOMPARE (v, "42"_qs);
+		}
+
+		{
+			const auto v = HandleQVariant (42ULL,
+					[] (int n) { return QString::number (n); },
+					[] (const QString& s) { return s; },
+					[] (const QByteArray& ba) { return ba; },
+					[] { return "default"_qs; });
+			QCOMPARE (v, "default"_qs);
+		}
+	}
+}
