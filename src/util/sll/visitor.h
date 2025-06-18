@@ -9,8 +9,9 @@
 #pragma once
 
 #include <variant>
-#include "void.h"
+#include "overloaded.h"
 #include "util.h"
+#include "void.h"
 
 namespace LC
 {
@@ -28,30 +29,24 @@ namespace Util
 
 			using std::decay_t<Bases>::operator()...;
 		};
-
-		template<class... Ts> struct Overloaded : Ts...
-		{
-			using Ts::operator()...;
-		};
-		template<class... Ts> Overloaded (Ts...) -> Overloaded<Ts...>;
 	}
 
 	template<typename... Vars, typename... Args>
 	decltype (auto) Visit (const std::variant<Vars...>& v, Args&&... args)
 	{
-		return std::visit (detail::Overloaded { std::forward<Args> (args)... }, v);
+		return std::visit (Overloaded { std::forward<Args> (args)... }, v);
 	}
 
 	template<typename... Vars, typename... Args>
 	decltype (auto) Visit (std::variant<Vars...>& v, Args&&... args)
 	{
-		return std::visit (detail::Overloaded { std::forward<Args> (args)... }, v);
+		return std::visit (Overloaded { std::forward<Args> (args)... }, v);
 	}
 
 	template<typename... Vars, typename... Args>
 	decltype (auto) Visit (std::variant<Vars...>&& v, Args&&... args)
 	{
-		return std::visit (detail::Overloaded { std::forward<Args> (args)... }, std::move (v));
+		return std::visit (Overloaded { std::forward<Args> (args)... }, std::move (v));
 	}
 
 	namespace detail
