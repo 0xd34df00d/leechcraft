@@ -1697,7 +1697,7 @@ namespace Murm
 		const auto& infoList = data.toMap () ["response"].toMap () ["items"].toList ();
 		for (const auto& item : infoList)
 		{
-			if (item.type () != QVariant::Map)
+			if (item.typeId () != QMetaType::QVariantMap)
 				continue;
 
 			info = GetFullMessageInfo (item.toMap (), Logger_);

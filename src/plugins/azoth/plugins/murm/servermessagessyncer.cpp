@@ -88,7 +88,7 @@ namespace Murm
 		reply->deleteLater ();
 
 		const auto itemsVar = json.toMap () ["response"].toMap () ["items"];
-		if (itemsVar.type () != QVariant::List)
+		if (itemsVar.typeId () != QMetaType::QVariantList)
 		{
 			ReportError ("Unable to parse reply.");
 			return;
