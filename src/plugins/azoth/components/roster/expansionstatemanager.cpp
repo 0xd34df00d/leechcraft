@@ -18,16 +18,24 @@ namespace LC::Azoth
 {
 	namespace
 	{
-		QString BuildPath (QModelIndex index)
+		QByteArray ToSettingsSafeName (const QString& name)
+		{
+			const auto isLatin1 = std::ranges::all_of (name, [] (QChar ch) { return ch.unicode () <= 127; });
+			auto ba = isLatin1 ? name.toLatin1 () : name.toUtf8 ().toBase64 (QByteArray::OmitTrailingEquals);
+			ba.replace ('/', '_');
+			return ba;
+		}
+
+		QByteArray BuildPath (QModelIndex index)
 		{
 			if (!index.isValid ())
 				return {};
 
-			QStringList path { index.data ().toString () };
+			QByteArrayList path { ToSettingsSafeName (index.data ().toString ()) };
 			while ((index = index.parent ()).isValid ())
-				path.prepend (index.data ().toString ());
+				path.prepend (ToSettingsSafeName (index.data ().toString ()));
 
-			return "CLTreeExpanded/" + path.join ('/');
+			return path.join ('/');
 		}
 
 		void SetExpanded (const QModelIndex& idx, bool expanded)
@@ -40,7 +48,7 @@ namespace LC::Azoth
 			if (path.isEmpty ())
 				return;
 
-			XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
+			XmlSettingsManager::Instance ().SetRawValue (path, expanded);
 		}
 	}
 
@@ -158,7 +166,7 @@ namespace LC::Azoth
 				const auto& path = BuildPath (index);
 
 				const bool expanded = Model_.IsMUCMode () ||
-						XmlSettingsManager::Instance ().Property (path, true).toBool ();
+						XmlSettingsManager::Instance ().GetRawValue (path, true).toBool ();
 				if (expanded)
 					ExpandLater (index);
 			}
