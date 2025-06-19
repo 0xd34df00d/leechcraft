@@ -16,6 +16,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ipersistentstorageplugin.h>
 #include <util/sll/eithercont.h>
+#include <util/sll/qtutil.h>
 
 namespace LC::Util
 {
@@ -30,18 +31,15 @@ namespace LC::Util
 				return {};
 			}
 
-			switch (result.typeId ())
-			{
-			case QMetaType::QString:
-				return result.toString ();
-			case QMetaType::QVariantList:
-				return result.toList ().value (0).toString ();
-			case QMetaType::QStringList:
-				return result.toStringList ().value (0);
-			default:
-				qWarning () << "unknown result type" << result.metaType () << result << "for key" << key;
-				return {};
-			}
+			return HandleQVariant (result,
+					[] (const QString& str) { return str; },
+					[] (const QVariantList& list) { return list.value (0).toString (); },
+					[] (const QStringList& list) { return list.value (0); },
+					[&]
+					{
+						qWarning () << "unknown result type" << result.metaType () << result << "for key" << key;
+						return QString {};
+					});
 		}
 	}
 
