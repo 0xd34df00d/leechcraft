@@ -71,11 +71,11 @@ namespace LC::Util
 		BaseSettingsManager * const BSM_;
 
 		QHash<IWkFontsSettable::FontFamily, FontChooserWidget*> Family2Chooser_;
-		QHash<IWkFontsSettable::FontFamily, std::string_view> Family2Name_;
+		QHash<IWkFontsSettable::FontFamily, QByteArray> Family2Name_;
 		QHash<IWkFontsSettable::FontFamily, QFont> PendingFontChanges_;
 
 		QHash<IWkFontsSettable::FontSize, QSpinBox*> Size2Spinbox_;
-		QHash<IWkFontsSettable::FontSize, std::string_view> Size2Name_;
+		QHash<IWkFontsSettable::FontSize, QByteArray> Size2Name_;
 		QHash<IWkFontsSettable::FontSize, int> PendingSizeChanges_;
 
 		QList<IWkFontsSettable*> Settables_;

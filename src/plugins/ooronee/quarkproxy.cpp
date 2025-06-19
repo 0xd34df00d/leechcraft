@@ -46,7 +46,7 @@ namespace Ooronee
 
 		const auto getId = [&typeId] (const QByteArray& prefix)
 		{
-			return XmlSettingsManager::Instance ().Property (Util::AsStringView (prefix + typeId), {}).toByteArray ();
+			return XmlSettingsManager::Instance ().Property (prefix + typeId, {}).toByteArray ();
 		};
 		const auto& prevPluginId = getId ("PrevHandler");
 		const auto& prevVariantId = getId ("PrevVariant");

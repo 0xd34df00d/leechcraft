@@ -659,7 +659,7 @@ namespace Blasq
 				20;
 
 		const auto value = XmlSettingsManager::Instance ()
-				.Property (Util::AsStringView (GetUniSettingName ()), static_cast<int> (defValue)).toInt ();
+				.Property (GetUniSettingName (), static_cast<int> (defValue)).toInt ();
 		if (value > UniSlider_->maximum ())
 		{
 			UniSlider_->setRange (0, SingleImageMode_ ? Zooms.size () - 1 : 100);

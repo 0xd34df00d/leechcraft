@@ -57,7 +57,7 @@ namespace LC
 			if (info.Features_ & TFByDefault)
 			{
 				const auto& id = ii->GetUniqueID () + '|' + info.TabClass_;
-				const bool hide = XmlSettingsManager::Instance ()->Property (Util::AsStringView ("Hide" + id), false).toBool ();
+				const bool hide = XmlSettingsManager::Instance ()->Property ("Hide" + id, false).toBool ();
 				if (!hide)
 				{
 					OpenTab (newAct);

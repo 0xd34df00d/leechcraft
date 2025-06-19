@@ -158,7 +158,7 @@ namespace LC::Azoth
 				const auto& path = BuildPath (index);
 
 				const bool expanded = Model_.IsMUCMode () ||
-						XmlSettingsManager::Instance ().Property (path.toStdString (), true).toBool ();
+						XmlSettingsManager::Instance ().Property (path, true).toBool ();
 				if (expanded)
 					ExpandLater (index);
 			}

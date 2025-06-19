@@ -61,7 +61,7 @@ namespace LC::Util
 	}
 
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
-			QObject *object, const std::function<void () >& func, EventFlags flags)
+			QObject *object, const std::function<void ()>& func, EventFlags flags)
 	{
 		RegisterObject (propName, object, [func] (const QVariant&) { func (); }, flags);
 	}
@@ -87,13 +87,13 @@ namespace LC::Util
 			RegisterObject (prop, object, wrapper, flags);
 	}
 
-	QVariant BaseSettingsManager::Property (std::string_view propName, const QVariant& def)
+	QVariant BaseSettingsManager::Property (const char *propName, const QVariant& def)
 	{
-		auto result = property (propName.data ());
+		auto result = property (propName);
 		if (!result.isValid ())
 		{
 			result = def;
-			setProperty (propName.data (), def);
+			setProperty (propName, def);
 		}
 
 		return result;

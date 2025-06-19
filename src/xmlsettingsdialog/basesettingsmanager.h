@@ -29,6 +29,9 @@ class SettingsThread;
 
 namespace Util
 {
+	template<typename T>
+	concept ValidPropertyName = std::same_as<T, QByteArray> || std::same_as<T, std::string>;
+
 	/** @brief Base class for settings manager.
 	 *
 	 * Facilitates creation of settings managers due to providing some
@@ -168,7 +171,13 @@ namespace Util
 		 * @param[in] def Default value of the property.
 		 * @return Resulting value of the property.
 		 */
-		QVariant Property (std::string_view propName, const QVariant& def);
+		QVariant Property (const char *propName, const QVariant& def);
+
+		template<ValidPropertyName T>
+		QVariant Property (const T& propName, const QVariant& def)
+		{
+			return Property (propName.data (), def);
+		}
 
 		/** @brief Sets the value directly, without metaproperties system.
 		 *

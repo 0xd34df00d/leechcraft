@@ -31,12 +31,12 @@ namespace LC::Util
 		Family2Chooser_ [IWkFontsSettable::FontFamily::CursiveFont] = Ui_->CursiveChooser_;
 		Family2Chooser_ [IWkFontsSettable::FontFamily::FantasyFont] = Ui_->FantasyChooser_;
 
-		Family2Name_ [IWkFontsSettable::FontFamily::StandardFont] = "StandardFont";
-		Family2Name_ [IWkFontsSettable::FontFamily::FixedFont] = "FixedFont";
-		Family2Name_ [IWkFontsSettable::FontFamily::SerifFont] = "SerifFont";
-		Family2Name_ [IWkFontsSettable::FontFamily::SansSerifFont] = "SansSerifFont";
-		Family2Name_ [IWkFontsSettable::FontFamily::CursiveFont] = "CursiveFont";
-		Family2Name_ [IWkFontsSettable::FontFamily::FantasyFont] = "FantasyFont";
+		Family2Name_ [IWkFontsSettable::FontFamily::StandardFont] = "StandardFont"_qba;
+		Family2Name_ [IWkFontsSettable::FontFamily::FixedFont] = "FixedFont"_qba;
+		Family2Name_ [IWkFontsSettable::FontFamily::SerifFont] = "SerifFont"_qba;
+		Family2Name_ [IWkFontsSettable::FontFamily::SansSerifFont] = "SansSerifFont"_qba;
+		Family2Name_ [IWkFontsSettable::FontFamily::CursiveFont] = "CursiveFont"_qba;
+		Family2Name_ [IWkFontsSettable::FontFamily::FantasyFont] = "FantasyFont"_qba;
 
 		ResetFontChoosers ();
 
@@ -49,9 +49,9 @@ namespace LC::Util
 		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFixedFontSize] = Ui_->SizeFixedWidth_;
 		Size2Spinbox_ [IWkFontsSettable::FontSize::MinimumFontSize] = Ui_->SizeMinimum_;
 
-		Size2Name_ [IWkFontsSettable::FontSize::DefaultFontSize] = "FontSize";
-		Size2Name_ [IWkFontsSettable::FontSize::DefaultFixedFontSize] = "FixedFontSize";
-		Size2Name_ [IWkFontsSettable::FontSize::MinimumFontSize] = "MinimumFontSize";
+		Size2Name_ [IWkFontsSettable::FontSize::DefaultFontSize] = "FontSize"_qba;
+		Size2Name_ [IWkFontsSettable::FontSize::DefaultFixedFontSize] = "FixedFontSize"_qba;
+		Size2Name_ [IWkFontsSettable::FontSize::MinimumFontSize] = "MinimumFontSize"_qba;
 
 		ResetSizeChoosers ();
 

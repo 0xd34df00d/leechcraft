@@ -53,7 +53,7 @@ namespace LC::Aggregator
 		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
 		{
 			const auto& fullPropName = strType + suffix;
-			const auto curVersion = XmlSettingsManager::Instance ().Property (Util::AsStringView (fullPropName), targetVersion).toInt ();
+			const auto curVersion = XmlSettingsManager::Instance ().Property (fullPropName, targetVersion).toInt ();
 			if (curVersion == targetVersion)
 				return true;
 
