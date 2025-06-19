@@ -154,65 +154,37 @@ namespace MuCommands
 		{
 			QStringList strings;
 
-			for (const auto& pair : repr)
+			for (const auto& [field, value] : repr)
 			{
-				if (pair.second.isNull ())
+				if (value.isNull ())
 					continue;
 
-				auto string = "<strong>" + pair.first + ":</strong> ";
+				const auto& descr = Util::HandleQVariant (value,
+						[] (const QString& str) { return str; },
+						[] (const QImage& image)
+						{
+							return image.isNull () ? QString {} : "<img src='" + Util::GetAsBase64Src (image) + "' alt=''/>";
+						},
+						[] (const QDate& date)
+						{
+							return date.isNull () ? QString {} : QLocale {}.toString (date, QLocale::LongFormat);
+						},
+						[] (const QStringList& list)
+						{
+							return list.isEmpty () ?
+									QString {} :
+									"<ul><li>"_qba + list.join ("</li><li>"_ql) + "</li></ul>"_qba;
+						},
+						[&] { return "unhandled data type "_qs + value.typeName (); });
 
-				switch (pair.second.type ())
-				{
-				case QVariant::String:
-				{
-					const auto& metaStr = pair.second.toString ();
-					if (metaStr.isEmpty ())
-						continue;
-
-					string += metaStr;
-					break;
-				}
-				case QVariant::Image:
-				{
-					const auto& image = pair.second.value<QImage> ();
-					if (image.isNull ())
-						continue;
-
-					const auto& src = Util::GetAsBase64Src (image);
-					string += "<img src='" + src + "' alt=''/>";
-					break;
-				}
-				case QVariant::Date:
-				{
-					const auto& date = pair.second.toDate ();
-					if (date.isNull ())
-						continue;
-
-					string += QLocale {}.toString (date, QLocale::LongFormat);
-					break;
-				}
-				case QVariant::StringList:
-				{
-					const auto& list = pair.second.toStringList ();
-					if (list.isEmpty ())
-						continue;
-
-					string += "<ul><li>" + list.join ("</li><li>") + "</li></ul>";
-					break;
-				}
-				default:
-					string += "unhandled data type ";
-					string += pair.second.typeName ();
-					break;
-				}
-
-				strings << string;
+				if (!descr.isEmpty ())
+					strings << "<strong>"_qba  + field + ":</strong> "_qba + descr;
 			}
 
 			if (strings.isEmpty ())
 				return {};
 
-			return "<ul><li>" + strings.join ("</li><li>") + "</li></ul>";
+			return "<ul><li>"_qba + strings.join ("</li><li>"_ql) + "</li></ul>"_qba;
 		}
 
 		template<typename T, typename F>
@@ -223,8 +195,7 @@ namespace MuCommands
 			{
 				if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 					return;
-				else
-					nicks << entry->GetHumanReadableID ();
+				nicks << entry->GetHumanReadableID ();
 			}
 
 			const auto& participants = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
