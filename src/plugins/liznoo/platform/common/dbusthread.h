@@ -18,11 +18,7 @@ namespace Liznoo
 	class DBusThread : public Util::WorkerThread<ConnT>
 	{
 	public:
-		DBusThread (QObject* parent = nullptr)
-		: Util::WorkerThread<ConnT> { parent }
-		{
-			this->SetAutoQuit (true);
-		}
+		using Util::WorkerThread<ConnT>::WorkerThread;
 	};
 
 	template<typename ConnT>

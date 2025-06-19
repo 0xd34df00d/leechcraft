@@ -33,7 +33,6 @@ namespace ChatHistory
 	, LoggingStateKeeper_ { keeper }
 	{
 		StorageThread_->SetPaused (true);
-		StorageThread_->SetAutoQuit (true);
 
 		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::Initialize)) >>
 				[this] (const Storage::InitializationResult_t& res)

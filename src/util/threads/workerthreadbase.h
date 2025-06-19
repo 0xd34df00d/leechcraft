@@ -112,7 +112,6 @@ namespace LC::Util
 	template<typename WorkerType>
 	class WorkerThread : public WorkerThreadBase
 	{
-		std::atomic_bool IsAutoQuit_ { false };
 		unsigned long QuitWait_ = 2000;
 	protected:
 		using W = WorkerType;
@@ -148,20 +147,12 @@ namespace LC::Util
 
 		~WorkerThread ()
 		{
-			if (!IsAutoQuit_)
-				return;
-
 			quit ();
 			wait (QuitWait_);
 
 			if (isRunning ())
 				qWarning () << Q_FUNC_INFO
 						<< "thread is still running";
-		}
-
-		void SetAutoQuit (bool autoQuit)
-		{
-			IsAutoQuit_ = autoQuit;
 		}
 
 		void SetQuitWait (unsigned long wait)

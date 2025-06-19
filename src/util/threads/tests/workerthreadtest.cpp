@@ -52,7 +52,6 @@ namespace LC::Util
 
 		int val = 0;
 		WorkerThread<Worker> worker { &val, QThread::currentThread () };
-		worker.SetAutoQuit (true);
 		worker.SetQuitWait (1000);
 		worker.start ();
 
