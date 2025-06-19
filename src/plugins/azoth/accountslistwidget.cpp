@@ -56,9 +56,9 @@ namespace Azoth
 				auto box = new QComboBox (parent);
 				box->setModel (chatStyler->GetStyleModel ());
 				connect (box,
-						SIGNAL (currentIndexChanged (QString)),
+						&QComboBox::currentTextChanged,
 						chatStyler,
-						SLOT (handleChatStyleSelected (QString)));
+						&ChatStyleOptionManager::StyleSelected);
 				return box;
 			}
 			case AccountsListWidget::Column::ChatVariant:
@@ -76,9 +76,9 @@ namespace Azoth
 				auto box = new QComboBox (parent);
 				box->setModel (chatStyler->GetStyleModel ());
 				connect (box,
-						SIGNAL (currentIndexChanged (QString)),
+						&QComboBox::currentTextChanged,
 						chatStyler,
-						SLOT (handleChatStyleSelected (QString)));
+						&ChatStyleOptionManager::StyleSelected);
 				return box;
 			}
 			case AccountsListWidget::Column::MUCVariant:

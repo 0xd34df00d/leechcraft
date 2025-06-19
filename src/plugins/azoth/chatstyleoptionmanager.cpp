@@ -27,7 +27,7 @@ namespace Azoth
 	{
 		if (!optionName.isEmpty ())
 			XmlSettingsManager::Instance ().RegisterObject (optionName, this,
-					"handleChatStyleSelected", XmlSettingsManager::EventFlag::Select);
+					&ChatStyleOptionManager::StyleSelected, XmlSettingsManager::EventFlag::Select);
 
 		OptionsModel_->AddModel (EmptyOptModel_);
 		OptionsModel_->AddModel (CoreStylesModel_);
@@ -59,12 +59,12 @@ namespace Azoth
 		for (int i = 0, size = model->rowCount (); i < size; ++i)
 			if (model->data (model->index (i, 0)).toString () == option)
 			{
-				handleChatStyleSelected (option);
+				StyleSelected (option);
 				break;
 			}
 	}
 
-	void ChatStyleOptionManager::handleChatStyleSelected (const QString& style)
+	void ChatStyleOptionManager::StyleSelected (const QString& style)
 	{
 		VariantModel_->clear ();
 
@@ -77,11 +77,6 @@ namespace Azoth
 
 		for (const auto& var : source->GetVariantsForPack (style))
 			VariantModel_->appendRow (new QStandardItem { var });
-	}
-
-	void ChatStyleOptionManager::handleChatStyleSelected (const QVariant& val)
-	{
-		handleChatStyleSelected (val.toString ());
 	}
 }
 }
