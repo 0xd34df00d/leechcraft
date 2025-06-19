@@ -177,7 +177,7 @@ namespace LC
 
 	inline QByteArray operator""_qba (const char *str, std::size_t size) noexcept
 	{
-		return QByteArray::fromRawData (str, static_cast<int> (size));
+		return QByteArray { QByteArrayData { nullptr, const_cast<char*> (str), static_cast<qsizetype> (size) } };
 	}
 
 	template<Util::CtString S>
