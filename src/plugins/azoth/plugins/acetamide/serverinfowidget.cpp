@@ -21,27 +21,26 @@ namespace LC::Azoth::Acetamide
 	{
 		QWidget* MakeWidget (const QVariant& value)
 		{
-			switch (value.type ())
-			{
-			case QVariant::ByteArray:
-			{
-				auto edit = new QLineEdit;
-				edit->setText (value.toString ());
-				edit->setReadOnly (true);
-				return edit;
-			}
-			case QVariant::Bool:
-			{
-				auto box = new QCheckBox;
-				box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
-				box->setEnabled (false);
-				return box;
-			}
-			default:
-				qWarning () << "unknown RPLI type"
-						<< value;
-				return nullptr;
-			}
+			return Util::HandleQVariant<QWidget*> (value,
+					[] (const QByteArray& ba)
+					{
+						auto edit = new QLineEdit;
+						edit->setText (QString::fromUtf8 (ba));
+						edit->setReadOnly (true);
+						return edit;
+					},
+					[] (bool val)
+					{
+						auto box = new QCheckBox;
+						box->setCheckState (val ? Qt::Checked : Qt::Unchecked);
+						box->setEnabled (false);
+						return box;
+					},
+					[&value]
+					{
+						qWarning () << "unknown RPLI type" << value;
+						return static_cast<QWidget*> (nullptr);
+					});
 		}
 
 		QString Translate (std::string_view);
