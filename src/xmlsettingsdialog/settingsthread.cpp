@@ -12,7 +12,6 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/sll/util.h>
-#include <util/sys/fdguard.h>
 #include "basesettingsmanager.h"
 
 namespace LC
