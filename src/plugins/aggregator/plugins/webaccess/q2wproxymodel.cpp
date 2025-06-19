@@ -16,6 +16,7 @@
 #include <Wt/WDateTime.h>
 #include <Wt/WApplication.h>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include "util.h"
 
 namespace LC
@@ -118,37 +119,23 @@ namespace WebAccess
 
 		Wt::cpp17::any Variant2Any (const QVariant& var)
 		{
-			switch (var.typeId ())
-			{
-			case QMetaType::Bool:
-				return var.toBool ();
-			case QMetaType::QDateTime:
-				return Wt::WDateTime::fromTime_t (var.toDateTime ().toSecsSinceEpoch ());
-			case QMetaType::QString:
-				return ToW (var.toString ());
-			case QMetaType::Double:
-				return var.toDouble ();
-			case QMetaType::Int:
-				return var.toInt ();
-			case QMetaType::ULongLong:
-				return var.toULongLong ();
-			case QMetaType::QIcon:
-			{
-				const auto& icon = var.value<QIcon> ();
-				if (icon.isNull ())
-					return {};
-
-				return ToW (Util::GetAsBase64Src (icon.pixmap (IconSize, IconSize).toImage ()));
-			}
-			default:
-				if (var.canConvert<double> ())
-					return var.toDouble ();
-				if (var.canConvert<int> ())
-					return var.toInt ();
-				if (var.canConvert<QString> ())
-					return ToW (var.toString ());
-				return {};
-			}
+			return Util::HandleQVariant<Wt::cpp17::any> (var,
+					[] (const QDateTime& dt) { return Wt::WDateTime::fromTime_t (dt.toSecsSinceEpoch ()); },
+					[] (const QString& str) { return ToW (str); },
+					[] (const QIcon& icon) { return ToW (Util::GetAsBase64Src (icon.pixmap (IconSize, IconSize).toImage ())); },
+					[] (bool value) { return value; },
+					[] (double value) { return value; },
+					[] (int value) { return value; },
+					[&var] () -> Wt::cpp17::any
+					{
+						if (var.canConvert<double> ())
+							return var.toDouble ();
+						if (var.canConvert<int> ())
+							return var.toInt ();
+						if (var.canConvert<QString> ())
+							return ToW (var.toString ());
+						return {};
+					});
 		}
 	}
 
