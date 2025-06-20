@@ -19,6 +19,7 @@ namespace LC::BitTorrent
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::PiecesModel)
 
 		QStringList Headers_;
+
 		struct Info
 		{
 			int Index_;

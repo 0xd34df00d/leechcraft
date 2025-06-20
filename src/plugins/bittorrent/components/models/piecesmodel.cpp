@@ -8,6 +8,7 @@
 
 #include "piecesmodel.h"
 #include <libtorrent/torrent_handle.hpp>
+#include <util/sll/qtutil.h>
 #include "types.h"
 #include "ltutils.h"
 
@@ -40,7 +41,7 @@ namespace LC::BitTorrent
 		case 0:
 			return QString::number (Pieces_.at (index.row ()).Index_);
 		case 1:
-			return QStringLiteral ("%1/%2")
+			return "%1/%2"_qs
 					.arg (Pieces_.at (index.row ()).FinishedBlocks_)
 					.arg (Pieces_.at (index.row ()).TotalBlocks_);
 		default:
@@ -76,15 +77,12 @@ namespace LC::BitTorrent
 
 	QModelIndex PiecesModel::parent (const QModelIndex&) const
 	{
-		return QModelIndex ();
+		return {};
 	}
 
 	int PiecesModel::rowCount (const QModelIndex& index) const
 	{
-		if (index.isValid ())
-			return 0;
-
-		return Pieces_.size ();
+		return index.isValid () ? 0 : Pieces_.size ();
 	}
 
 	void PiecesModel::Update ()
@@ -93,7 +91,6 @@ namespace LC::BitTorrent
 		if (!handle.is_valid ())
 			return;
 
-		// TODO move out
 		std::vector<libtorrent::partial_piece_info> queue;
 		handle.get_download_queue (queue);
 
@@ -130,10 +127,10 @@ namespace LC::BitTorrent
 
 		// Remove
 		auto values = index2position.values ();
-		std::sort (values.begin (), values.end (), std::greater<> ());
-		for (auto value : values)
+		std::ranges::sort (values, std::greater ());
+		for (const auto value : values)
 		{
-			beginRemoveRows (QModelIndex (), value, value);
+			beginRemoveRows ({}, value, value);
 			Pieces_.removeAt (value);
 			endRemoveRows ();
 		}
@@ -141,7 +138,7 @@ namespace LC::BitTorrent
 		// Insert new
 		if (!pieces2Insert.isEmpty ())
 		{
-			beginInsertRows (QModelIndex (), Pieces_.size (), Pieces_.size () + pieces2Insert.size () - 1);
+			beginInsertRows ({}, Pieces_.size (), Pieces_.size () + pieces2Insert.size () - 1);
 			Pieces_ += pieces2Insert;
 			endInsertRows ();
 		}
