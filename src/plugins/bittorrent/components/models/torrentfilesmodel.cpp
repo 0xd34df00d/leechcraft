@@ -11,11 +11,11 @@
 #include <QTimer>
 #include <QtDebug>
 #include <libtorrent/alert_types.hpp>
-#include <util/util.h>
-#include <util/xpc/util.h>
-#include <util/sll/unreachable.h>
-#include <util/sys/extensionsdata.h>
 #include <util/models/modelitembase.h>
+#include <util/sll/qtutil.h>
+#include <util/sys/extensionsdata.h>
+#include <util/xpc/util.h>
+#include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "alertdispatcher.h"
 #include "ltutils.h"
@@ -59,7 +59,7 @@ namespace LC::BitTorrent
 				return Qt::PartiallyChecked;
 			return Qt::Unchecked;
 		case Qt::DisplayRole:
-			switch (index.column ())
+			switch (static_cast<Column> (index.column ()))
 			{
 			case ColumnPath:
 				return node->Name_;
@@ -70,7 +70,7 @@ namespace LC::BitTorrent
 			case ColumnProgress:
 				return node->Progress_;
 			}
-			Util::Unreachable ();
+			return {};
 		case Qt::DecorationRole:
 			return index.column () == ColumnPath ?
 					node->Icon_ :
@@ -86,7 +86,7 @@ namespace LC::BitTorrent
 		case RolePriority:
 			return node->Priority_;
 		case RoleSort:
-			switch (index.column ())
+			switch (static_cast<Column> (index.column ()))
 			{
 			case ColumnPath:
 				return node->Name_;
@@ -95,7 +95,9 @@ namespace LC::BitTorrent
 			case ColumnProgress:
 				return node->Progress_;
 			}
-			Util::Unreachable ();
+			return {};
+		default:
+			break;
 		}
 		return {};
 	}
@@ -105,8 +107,8 @@ namespace LC::BitTorrent
 		if (!index.isValid ())
 			return {};
 
-		Qt::ItemFlags flags { Qt::ItemIsSelectable | Qt::ItemIsEnabled };
-		switch (index.column ())
+		auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+		switch (static_cast<Column> (index.column ()))
 		{
 		case ColumnPath:
 			flags |= Qt::ItemIsEditable;
@@ -114,6 +116,8 @@ namespace LC::BitTorrent
 			break;
 		case ColumnPriority:
 			flags |= Qt::ItemIsEditable;
+			break;
+		default:
 			break;
 		}
 		return flags;
@@ -138,11 +142,10 @@ namespace LC::BitTorrent
 				node->Priority_ = newPriority;
 				emit dataChanged (index.sibling (index.row (), ColumnPath), index);
 
-				UpdatePriorities (node);
+				UpdatePriorities (*node);
 			}
 			return true;
 		case ColumnPath:
-		{
 			switch (role)
 			{
 			case Qt::EditRole:
@@ -158,20 +161,18 @@ namespace LC::BitTorrent
 				if (!node->IsEmpty ())
 				{
 					const auto curPathSize = curPath.size ();
-					std::function<void (TorrentNodeInfo*)> setter =
-							[this, &setter, &newPath, curPathSize] (TorrentNodeInfo *node)
-							{
-								if (node->IsEmpty ())
-								{
-									auto specificPath = node->GetFullPathStr ();
-									specificPath.replace (0, curPathSize, newPath);
-									Handle_->rename_file (node->FileIndex_, specificPath.toStdString ());
-								}
-								else
-									for (const auto& subnode : *node)
-										setter (subnode.get ());
-							};
-					setter (node);
+					[this, &newPath, curPathSize] (this const auto& self, TorrentNodeInfo *node) -> void
+					{
+						if (node->IsEmpty ())
+						{
+							auto specificPath = node->GetFullPathStr ();
+							specificPath.replace (0, curPathSize, newPath);
+							Handle_->rename_file (node->FileIndex_, specificPath.toStdString ());
+						}
+						else
+							for (const auto& subnode : *node)
+								self (subnode.get ());
+					} (node);
 				}
 				else
 					Handle_->rename_file (node->FileIndex_, newPath.toStdString ());
@@ -181,8 +182,11 @@ namespace LC::BitTorrent
 				return setData (index.sibling (index.row (), ColumnPriority),
 						value.toInt () == Qt::Checked ? 1 : 0,
 						Qt::EditRole);
+			default:
+				break;
 			}
-		}
+		default:
+			break;
 		}
 
 		return false;
@@ -219,7 +223,7 @@ namespace LC::BitTorrent
 
 			Path2Node_ [fi.Path_] = item;
 
-			UpdatePriorities (item.get ());
+			UpdatePriorities (*item);
 		}
 
 		UpdateSizeGraph (RootNode_);
@@ -266,7 +270,7 @@ namespace LC::BitTorrent
 
 		const auto iem = GetProxyHolder ()->GetEntityManager ();
 		if (std::abs (item->Progress_ - 1) >= std::numeric_limits<decltype (item->Progress_)>::epsilon ())
-			iem->HandleEntity (Util::MakeNotification (QStringLiteral ("BitTorrent"),
+			iem->HandleEntity (Util::MakeNotification ("BitTorrent"_qs,
 					tr ("%1 hasn't finished downloading yet.")
 						.arg ("<em>" + item->Name_ + "</em>"),
 					Priority::Warning));
@@ -300,14 +304,14 @@ namespace LC::BitTorrent
 		node->Progress_ = size ? static_cast<double> (done) / size : 1;
 	}
 
-	void TorrentFilesModel::UpdatePriorities (TorrentNodeInfo *node)
+	void TorrentFilesModel::UpdatePriorities (const TorrentNodeInfo& node)
 	{
-		const auto& parent = node->GetParent ();
-		if (node == RootNode_.get () || parent == RootNode_)
+		const auto& parent = node.GetParent ();
+		if (&node == RootNode_.get () || parent == RootNode_)
 			return;
 
-		const auto prio = node->Priority_;
-		const bool allSame = std::all_of (parent->begin (), parent->end (),
+		const auto prio = node.Priority_;
+		const bool allSame = std::ranges::all_of (*parent,
 				[prio] (const TorrentNodeInfo_ptr& child) { return child->Priority_ == prio; });
 
 		const auto newPrio = allSame ? prio : -1;
@@ -318,7 +322,7 @@ namespace LC::BitTorrent
 		const auto& idx = IndexForNode (parent, ColumnPriority);
 		emit dataChanged (idx.sibling (idx.row (), ColumnPath), idx);
 
-		UpdatePriorities (parent.get ());
+		UpdatePriorities (*parent);
 	}
 
 	void TorrentFilesModel::ClearEmptyParents (const std::filesystem::path& path)
@@ -360,9 +364,8 @@ namespace LC::BitTorrent
 
 	void TorrentFilesModel::HandleFileRenamed (int file, const QString& newName)
 	{
-		const auto filePos = std::find_if (Path2Node_.begin (), Path2Node_.end (),
-				[file] (const Path2Node_t::value_type& pair)
-					{ return pair.second->FileIndex_ == file; });
+		const auto filePos = std::ranges::find_if (Path2Node_,
+				[file] (const Path2Node_t::value_type& pair) { return pair.second->FileIndex_ == file; });
 		if (filePos == Path2Node_.end ())
 		{
 			qWarning () << Q_FUNC_INFO

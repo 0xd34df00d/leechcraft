@@ -21,12 +21,12 @@ namespace libtorrent
 
 namespace LC::BitTorrent
 {
-	struct TorrentNodeInfo : public TorrentNodeInfoBase<TorrentNodeInfo>
+	struct TorrentNodeInfo : TorrentNodeInfoBase<TorrentNodeInfo>
 	{
 		int Priority_ = -1;
 		float Progress_ = 0;
 
-		using TorrentNodeInfoBase<TorrentNodeInfo>::TorrentNodeInfoBase;
+		using TorrentNodeInfoBase::TorrentNodeInfoBase;
 	};
 	using TorrentNodeInfo_ptr = std::shared_ptr<TorrentNodeInfo>;
 
@@ -38,7 +38,7 @@ namespace LC::BitTorrent
 		std::unique_ptr<libtorrent::torrent_handle> Handle_;
 		Util::DefaultScopeGuard RegGuard_;
 	public:
-		enum
+		enum Role
 		{
 			RoleFullPath = Qt::UserRole + 1,
 			RoleFileName,
@@ -48,7 +48,7 @@ namespace LC::BitTorrent
 			RoleSort,
 		};
 
-		enum
+		enum Column
 		{
 			ColumnPath,
 			ColumnPriority,
@@ -71,7 +71,7 @@ namespace LC::BitTorrent
 
 		void Update ();
 		void UpdateSizeGraph (const TorrentNodeInfo_ptr&);
-		void UpdatePriorities (TorrentNodeInfo*);
+		void UpdatePriorities (const TorrentNodeInfo&);
 		void ClearEmptyParents (const std::filesystem::path&);
 	};
 }
