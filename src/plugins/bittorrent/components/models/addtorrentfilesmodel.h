@@ -16,7 +16,7 @@ namespace LC::BitTorrent
 	{
 		Qt::CheckState CheckState_ = Qt::Checked;
 
-		using TorrentNodeInfoBase<AddTorrentNodeInfo>::TorrentNodeInfoBase;
+		using TorrentNodeInfoBase::TorrentNodeInfoBase;
 	};
 	using AddTorrentNodeInfo_ptr = std::shared_ptr<AddTorrentNodeInfo>;
 
@@ -31,7 +31,7 @@ namespace LC::BitTorrent
 			RoleSort
 		};
 
-		enum
+		enum Column
 		{
 			ColumnPath,
 			ColumnSize
@@ -55,7 +55,5 @@ namespace LC::BitTorrent
 		void UnmarkAll ();
 		void MarkIndexes (const QList<QModelIndex>&);
 		void UnmarkIndexes (const QList<QModelIndex>&);
-
-		void UpdateSizeGraph (const AddTorrentNodeInfo_ptr& node);
 	};
 }

@@ -8,6 +8,7 @@
 
 #include "addtorrentfilesmodel.h"
 #include <filesystem>
+#include <ranges>
 #include <util/util.h>
 #include <util/sll/unreachable.h>
 
@@ -31,33 +32,35 @@ namespace LC::BitTorrent
 					node->CheckState_ :
 					QVariant {};
 		case Qt::DisplayRole:
-			switch (index.column ())
+			switch (static_cast<Column> (index.column ()))
 			{
 			case ColumnPath:
 				return node->Name_;
 			case ColumnSize:
 				return Util::MakePrettySize (node->SubtreeSize_);
 			}
-			Util::Unreachable ();
+			break;
 		case Qt::DecorationRole:
 			return index.column () == ColumnPath ?
 					node->Icon_ :
 					QIcon {};
 		case RoleSort:
-			switch (index.column ())
+			switch (static_cast<Column> (index.column ()))
 			{
 			case ColumnPath:
 				return node->Name_;
 			case ColumnSize:
 				return node->SubtreeSize_;
 			}
-			Util::Unreachable ();
+			break;
 		case RoleFullPath:
 			return node->GetFullPathStr ();
 		case RoleFileName:
 			return node->Name_;
 		case RoleSize:
 			return node->SubtreeSize_;
+		default:
+			return {};
 		}
 		return {};
 	}
@@ -93,8 +96,7 @@ namespace LC::BitTorrent
 			const auto prows = rowCount (pi);
 			for (int i = 0; i < prows; ++i)
 			{
-				int state = this->index (i, 0, pi).data (role).toInt ();
-				switch (static_cast<Qt::CheckState> (state))
+				switch (this->index (i, 0, pi).data (role).value<Qt::CheckState> ())
 				{
 				case Qt::Checked:
 					hasChecked = true;
@@ -119,9 +121,7 @@ namespace LC::BitTorrent
 			else if (hasUnchecked)
 				state = Qt::Unchecked;
 			else
-				qWarning () << Q_FUNC_INFO
-					<< pi
-					<< "we have neither checked nor unchecked items. Strange.";
+				qWarning () << pi << "we have neither checked nor unchecked items. Strange.";
 
 			const auto parentNode = static_cast<AddTorrentNodeInfo*> (pi.internalPointer ());
 			if (parentNode->CheckState_ == state)
@@ -134,6 +134,25 @@ namespace LC::BitTorrent
 		}
 
 		return true;
+	}
+
+	namespace
+	{
+		void UpdateSizeGraph (const AddTorrentNodeInfo_ptr& node)
+		{
+			if (!node->GetRowCount ())
+				return;
+
+			qulonglong size = 0;
+
+			for (const auto & child : *node)
+			{
+				UpdateSizeGraph (child);
+				size += child->SubtreeSize_;
+			}
+
+			node->SubtreeSize_ = size;
+		}
 	}
 
 	void AddTorrentFilesModel::ResetFiles (const QList<FileEntry>& entries)
@@ -170,9 +189,9 @@ namespace LC::BitTorrent
 	QVector<bool> AddTorrentFilesModel::GetSelectedFiles () const
 	{
 		QVector<bool> result (FilesInTorrent_);
-		for (const auto& pair : Path2Node_)
-			if (pair.second->FileIndex_ != -1)
-				result [pair.second->FileIndex_] = pair.second->CheckState_ == Qt::Checked;
+		for (const auto& node : Path2Node_ | std::views::values)
+			if (node->FileIndex_ != -1)
+				result [node->FileIndex_] = node->CheckState_ == Qt::Checked;
 		return result;
 	}
 
@@ -182,8 +201,8 @@ namespace LC::BitTorrent
 		if (!rc)
 			return;
 
-		for (const auto& pair : Path2Node_)
-			pair.second->CheckState_ = Qt::Checked;
+		for (const auto& node : Path2Node_ | std::views::values)
+			node->CheckState_ = Qt::Checked;
 		emit dataChanged (index (0, 0), index (rc - 1, 1));
 	}
 
@@ -193,8 +212,8 @@ namespace LC::BitTorrent
 		if (!rc)
 			return;
 
-		for (const auto& pair : Path2Node_)
-			pair.second->CheckState_ = Qt::Unchecked;
+		for (const auto& node : Path2Node_ | std::views::values)
+			node->CheckState_ = Qt::Unchecked;
 		emit dataChanged (index (0, 0), index (rc - 1, 1));
 	}
 
@@ -208,21 +227,5 @@ namespace LC::BitTorrent
 	{
 		for (const auto& index : indexes)
 			setData (index.siblingAtColumn (ColumnPath), Qt::Unchecked, Qt::CheckStateRole);
-	}
-
-	void AddTorrentFilesModel::UpdateSizeGraph (const AddTorrentNodeInfo_ptr& node)
-	{
-		if (!node->GetRowCount ())
-			return;
-
-		qulonglong size = 0;
-
-		for (const auto & child : *node)
-		{
-			UpdateSizeGraph (child);
-			size += child->SubtreeSize_;
-		}
-
-		node->SubtreeSize_ = size;
 	}
 }
