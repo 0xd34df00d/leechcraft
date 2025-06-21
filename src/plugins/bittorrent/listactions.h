@@ -21,6 +21,7 @@ class QWidget;
 namespace libtorrent
 {
 	class session;
+	struct torrent_handle;
 }
 
 namespace LC::BitTorrent
@@ -70,6 +71,7 @@ namespace LC::BitTorrent
 		QMenu* MakeContextMenu () const;
 	private:
 		void SetActionsEnabled ();
+		QList<libtorrent::torrent_handle> GetSelectedHandles () const;
 		QList<int> GetSelectedHandlesIndices () const;
 	};
 }

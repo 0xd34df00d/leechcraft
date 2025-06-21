@@ -413,9 +413,13 @@ namespace LC::BitTorrent
 			action->setEnabled (enable);
 	}
 
+	QList<libtorrent::torrent_handle> ListActions::GetSelectedHandles () const
+	{
+		return Util::Map (CurSelection_, &GetTorrentHandle);
+	}
+
 	QList<int> ListActions::GetSelectedHandlesIndices () const
 	{
 		return Util::Map (CurSelection_, [] (const QModelIndex& idx) { return idx.data (Roles::HandleIndex).toInt (); });
 	}
-
 }
