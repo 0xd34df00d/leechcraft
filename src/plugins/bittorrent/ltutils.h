@@ -23,7 +23,7 @@ class QList;
 
 namespace libtorrent
 {
-	class torrent_handle;
+	struct torrent_handle;
 	class session;
 }
 
