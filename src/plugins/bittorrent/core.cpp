@@ -970,15 +970,6 @@ namespace BitTorrent
 		}
 	}
 
-	QString Core::GetMagnetLink (int idx) const
-	{
-		if (!CheckValidity (idx))
-			return QString ();
-
-		const std::string& result = libtorrent::make_magnet_uri (Handles_ [idx].Handle_);
-		return QString::fromStdString (result);
-	}
-
 	QString Core::GetTorrentDirectory (int idx) const
 	{
 		if (!CheckValidity (idx))

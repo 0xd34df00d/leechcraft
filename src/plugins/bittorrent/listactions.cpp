@@ -15,6 +15,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QToolBar>
+#include <libtorrent/magnet_uri.hpp>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include "addmagnetdialog.h"
@@ -340,7 +341,8 @@ namespace LC::BitTorrent
 		MakeMagnetLink_ = Toolbar_->addAction (tr ("Make magnet link..."), this,
 				[this]
 				{
-					const auto magnet = Core::Instance ()->GetMagnetLink (CurIdx_.data (Roles::HandleIndex).toInt ());
+					const auto& handle = GetTorrentHandle (CurIdx_);
+					const auto magnet = QString::fromStdString (libtorrent::make_magnet_uri (handle));
 					if (magnet.isEmpty ())
 						return;
 
