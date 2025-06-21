@@ -456,15 +456,15 @@ namespace BitTorrent
 		case RoleContextMenu:
 			return QVariant::fromValue<QMenu*> (Menu_);
 		case Roles::HandleIndex:
-			return index.row ();
+			return row;
 		case Roles::TorrentHandle:
 			return QVariant::fromValue (&h);
 		case Roles::IsManaged:
 			return Handles_ [row].AutoManaged_;
 		case Roles::IsSequentialDownloading:
-			return static_cast<bool> (StatusKeeper_->GetStatus (h).flags & libtorrent::torrent_flags::sequential_download);
+			return static_cast<bool> (status.flags & libtorrent::torrent_flags::sequential_download);
 		case Roles::IsSuperSeeding:
-			return static_cast<bool> (StatusKeeper_->GetStatus (h).flags & libtorrent::torrent_flags::super_seeding);
+			return static_cast<bool> (status.flags & libtorrent::torrent_flags::super_seeding);
 		case Roles::TorrentStats:
 			return QVariant::fromValue (GetTorrentStats (h, *StatusKeeper_));
 		case Roles::TorrentProgress:
