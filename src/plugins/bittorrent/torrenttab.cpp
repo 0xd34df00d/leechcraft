@@ -64,7 +64,7 @@ namespace LC::BitTorrent
 
 		Ui_.TorrentsView_->setModel (ViewFilter_);
 		connect (Ui_.TorrentsView_->selectionModel (),
-				&QItemSelectionModel::currentChanged,
+				&QItemSelectionModel::currentRowChanged,
 				[this] (const QModelIndex& index) { Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index)); });
 		connect (Ui_.TorrentsView_->selectionModel (),
 				&QItemSelectionModel::selectionChanged,
