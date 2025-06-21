@@ -983,7 +983,7 @@ namespace BitTorrent
 
 	bool Core::MoveTorrentFiles (const QString& newDir, int idx)
 	{
-		if (!CheckValidity (idx) || newDir == GetTorrentDirectory (idx))
+		if (!CheckValidity (idx))
 			return false;
 
 		Handles_.at (idx).Handle_.move_storage (newDir.toUtf8 ().constData ());
