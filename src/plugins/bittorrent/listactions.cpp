@@ -275,8 +275,6 @@ namespace LC::BitTorrent
 							{
 								const auto newDir = mtf->GetNewLocation ();
 
-								XmlSettingsManager::Instance ().setProperty ("LastMoveDirectory", newDir);
-
 								for (auto it : Util::Views::Zip (currentRows, oldDirs))
 								{
 									if (it.second == newDir)

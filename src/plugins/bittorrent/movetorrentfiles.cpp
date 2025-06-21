@@ -45,6 +45,11 @@ namespace LC::BitTorrent
 
 					Ui_.NewLocation_->setText (dir);
 				});
+
+		connect (this,
+				&QDialog::accepted,
+				this,
+				[this] { XmlSettingsManager::Instance ().setProperty ("LastMoveDirectory", GetNewLocation ()); });
 	}
 
 	QString MoveTorrentFiles::GetNewLocation () const
