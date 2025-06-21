@@ -170,7 +170,6 @@ namespace Liznoo
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "battery backend is not available";
-
 	}
 
 	QFuture<PlatformObjects::ChangeStateResult_t> PlatformObjects::ChangeState (PowerActions::Platform::State state)
