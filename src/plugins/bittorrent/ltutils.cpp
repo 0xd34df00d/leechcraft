@@ -188,13 +188,11 @@ namespace LC::BitTorrent
 		return !ec;
 	}
 
-	const libtorrent::torrent_handle& GetTorrentHandle (const QModelIndex& index)
+	libtorrent::torrent_handle GetTorrentHandle (const QModelIndex& index)
 	{
-		static const libtorrent::torrent_handle guard;
 		if (!index.isValid ())
-			return guard;
-
-		return *index.data (Roles::TorrentHandle).value<const libtorrent::torrent_handle*> ();
+			return {};
+		return index.data (Roles::TorrentHandle).value<libtorrent::torrent_handle> ();
 	}
 
 	int GetFilesCount (const libtorrent::torrent_handle& handle)

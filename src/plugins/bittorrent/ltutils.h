@@ -50,7 +50,7 @@ namespace LC::BitTorrent
 
 	bool IsValidTorrent (const QByteArray&);
 
-	const libtorrent::torrent_handle& GetTorrentHandle (const QModelIndex&);
+	libtorrent::torrent_handle GetTorrentHandle (const QModelIndex&);
 
 	int GetFilesCount (const libtorrent::torrent_handle&);
 

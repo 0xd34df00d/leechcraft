@@ -11,6 +11,7 @@
 #include <QSortFilterProxyModel>
 #include <QTime>
 #include <libtorrent/peer_info.hpp>
+#include <libtorrent/torrent_handle.hpp>
 #include <util/util.h>
 #include "components/models/peersmodel.h"
 #include "peerinfo.h"

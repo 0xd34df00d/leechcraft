@@ -458,7 +458,7 @@ namespace BitTorrent
 		case Roles::HandleIndex:
 			return row;
 		case Roles::TorrentHandle:
-			return QVariant::fromValue (&h);
+			return QVariant::fromValue (h);
 		case Roles::IsManaged:
 			return Handles_ [row].AutoManaged_;
 		case Roles::IsSequentialDownloading:
