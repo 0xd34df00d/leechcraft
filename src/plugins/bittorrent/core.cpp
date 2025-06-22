@@ -970,26 +970,6 @@ namespace BitTorrent
 		}
 	}
 
-	QString Core::GetTorrentDirectory (int idx) const
-	{
-		if (!CheckValidity (idx))
-			return QString ();
-
-		const auto& handle = Handles_.at (idx).Handle_;
-		const auto& path = StatusKeeper_->GetStatus (handle,
-					libtorrent::torrent_handle::query_save_path).save_path;
-		return QString::fromStdString (path);
-	}
-
-	bool Core::MoveTorrentFiles (const QString& newDir, int idx)
-	{
-		if (!CheckValidity (idx))
-			return false;
-
-		Handles_.at (idx).Handle_.move_storage (newDir.toUtf8 ().constData ());
-		return true;
-	}
-
 	void Core::MakeTorrent (const NewTorrentParams& params)
 	{
 		if (const auto result = CreateTorrent (params))

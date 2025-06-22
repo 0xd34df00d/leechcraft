@@ -219,9 +219,6 @@ namespace BitTorrent
 		void ForceReannounce (int);
 		void ForceRecheck (int);
 
-		QString GetTorrentDirectory (int) const;
-		bool MoveTorrentFiles (const QString&, int);
-
 		void MakeTorrent (const NewTorrentParams&);
 		bool CheckValidity (int) const;
 

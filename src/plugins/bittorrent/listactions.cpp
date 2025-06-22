@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "listactions.h"
+#include <ranges>
 #include <QAction>
 #include <QDir>
 #include <QFile>
@@ -17,10 +18,10 @@
 #include <QToolBar>
 #include <libtorrent/magnet_uri.hpp>
 #include <util/sll/prelude.h>
-#include <util/sll/views.h>
 #include "addmagnetdialog.h"
 #include "addmultipletorrents.h"
 #include "addtorrent.h"
+#include "cachedstatuskeeper.h"
 #include "core.h"
 #include "ltutils.h"
 #include "movetorrentfiles.h"
@@ -257,12 +258,16 @@ namespace LC::BitTorrent
 		MoveFiles_ = Toolbar_->addAction (tr ("Move files..."), this,
 				[this]
 				{
-					const auto currentRows = GetSelectedHandlesIndices ();
-					if (currentRows.empty() )
+					const auto handles = GetSelectedHandles ();
+					if (handles.empty() )
 						return;
 
-					const auto oldDirs = Util::Map (currentRows,
-							[] (const int row) { return Core::Instance ()->GetTorrentDirectory (row); });
+					const auto oldDirs = Util::Map (handles,
+							[this] (const libtorrent::torrent_handle& handle)
+							{
+								const auto& status = D_.StatusKeeper_.GetStatus (handle, libtorrent::torrent_handle::query_save_path);
+								return QString::fromStdString (status.save_path);
+							});
 
 					const auto mtf = new MoveTorrentFiles { oldDirs, D_.GetPreferredParent_ () };
 					mtf->setAttribute (Qt::WA_DeleteOnClose);
@@ -271,21 +276,12 @@ namespace LC::BitTorrent
 					connect (mtf,
 							&QDialog::accepted,
 							this,
-							[=, this]
+							[=]
 							{
 								const auto newDir = mtf->GetNewLocation ();
-
-								for (auto it : Util::Views::Zip (currentRows, oldDirs))
-								{
-									if (it.second == newDir)
-										continue;
-
-									if (!Core::Instance ()->MoveTorrentFiles (newDir, it.first))
-										QMessageBox::critical (D_.GetPreferredParent_ (),
-												QStringLiteral ("BitTorrent"),
-												tr ("Failed to move torrent's files from %1 to %2.")
-														.arg (it.second, newDir));
-								}
+								for (const auto& [handle, oldDir] : std::views::zip (handles, oldDirs))
+									if (oldDir != newDir)
+										handle.move_storage (newDir.toUtf8 ().constData ());
 							});
 				});
 		MoveFiles_->setShortcut (tr ("M"));
