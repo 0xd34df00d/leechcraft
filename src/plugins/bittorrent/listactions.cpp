@@ -242,7 +242,7 @@ namespace LC::BitTorrent
 				[this]
 				{
 					for (const auto& handle : GetSelectedHandles ())
-						handle.force_reannounce ();
+						handle.force_reannounce (0, -1, libtorrent::torrent_handle::ignore_min_interval);
 				});
 		ForceReannounce_->setShortcut (tr ("F"));
 		ForceReannounce_->setProperty ("ActionIcon", "network-wireless");
