@@ -216,7 +216,6 @@ namespace BitTorrent
 		void RemoveTorrent (int, bool withFiles = false);
 		void PauseTorrent (int);
 		void ResumeTorrent (int);
-		void ForceReannounce (int);
 		void ForceRecheck (int);
 
 		void MakeTorrent (const NewTorrentParams&);

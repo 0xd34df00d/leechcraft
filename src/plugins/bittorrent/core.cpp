@@ -937,14 +937,6 @@ namespace BitTorrent
 		checkFinished ();
 	}
 
-	void Core::ForceReannounce (int pos)
-	{
-		if (!CheckValidity (pos))
-			return;
-
-		Handles_.at (pos).Handle_.force_reannounce ();
-	}
-
 	void Core::ForceRecheck (int pos)
 	{
 		if (!CheckValidity (pos))
