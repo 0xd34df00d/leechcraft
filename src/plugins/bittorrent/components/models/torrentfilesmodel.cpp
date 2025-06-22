@@ -161,13 +161,13 @@ namespace LC::BitTorrent
 				if (!node->IsEmpty ())
 				{
 					const auto curPathSize = curPath.size ();
-					[this, &newPath, curPathSize] (this const auto& self, TorrentNodeInfo *node) -> void
+					[handle = *Handle_, &newPath, curPathSize] (this const auto& self, TorrentNodeInfo *node) -> void
 					{
 						if (node->IsEmpty ())
 						{
 							auto specificPath = node->GetFullPathStr ();
 							specificPath.replace (0, curPathSize, newPath);
-							Handle_->rename_file (node->FileIndex_, specificPath.toStdString ());
+							handle.rename_file (node->FileIndex_, specificPath.toStdString ());
 						}
 						else
 							for (const auto& subnode : *node)
