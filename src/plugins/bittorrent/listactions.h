@@ -26,6 +26,8 @@ namespace libtorrent
 
 namespace LC::BitTorrent
 {
+	class CachedStatusKeeper;
+
 	class ListActions final : public QObject
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::ListActions)
@@ -33,6 +35,7 @@ namespace LC::BitTorrent
 		struct Dependencies
 		{
 			libtorrent::session& Session_;
+			CachedStatusKeeper& StatusKeeper_;
 			std::function<QWidget* ()> GetPreferredParent_;
 		};
 	private:

@@ -21,6 +21,7 @@ namespace libtorrent
 
 namespace LC::BitTorrent
 {
+	class CachedStatusKeeper;
 	class ListActions;
 	class TabViewProxyModel;
 
@@ -38,6 +39,7 @@ namespace LC::BitTorrent
 			QAbstractItemModel& Model_;
 			AlertDispatcher& Dispatcher_;
 			SessionSettingsManager& SSM_;
+			CachedStatusKeeper& StatusKeeper_;
 		};
 	private:
 		Dependencies D_;

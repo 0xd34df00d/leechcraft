@@ -30,7 +30,7 @@ namespace LC::BitTorrent
 	: D_ { deps }
 	, TC_ { tc }
 	, ParentMT_ { mt }
-	, Actions_ { new ListActions { { deps.Session_, [this] { return this; } }, this } }
+	, Actions_ { new ListActions { { deps.Session_, deps.StatusKeeper_, [this] { return this; } }, this } }
 	, ViewFilter_ { new TabViewProxyModel { this } }
 	{
 		Ui_.setupUi (this);

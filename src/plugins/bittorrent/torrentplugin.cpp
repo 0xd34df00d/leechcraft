@@ -98,6 +98,7 @@ namespace LC::BitTorrent
 		{
 			{
 				.Session_ = Core::Instance ()->GetSession (),
+				.StatusKeeper_ = *Core::Instance ()->GetStatusKeeper (),
 				.GetPreferredParent_ = [] { return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow (); }
 			}
 		};
@@ -111,7 +112,8 @@ namespace LC::BitTorrent
 				.Session_ = Core::Instance ()->GetSession (),
 				.Model_ = *Core::Instance (),
 				.Dispatcher_ = Core::Instance ()->GetAlertDispatcher (),
-				.SSM_ = *Core::Instance ()->GetSessionSettingsManager ()
+				.SSM_ = *Core::Instance ()->GetSessionSettingsManager (),
+				.StatusKeeper_ = *Core::Instance ()->GetStatusKeeper (),
 			},
 			TabTC_,
 			this
