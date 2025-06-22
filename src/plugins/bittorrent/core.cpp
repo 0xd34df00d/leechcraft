@@ -1071,18 +1071,12 @@ namespace BitTorrent
 		const auto pos = FindHandle (h);
 		if (pos == Handles_.end ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown torrent handle"
-					<< StatusKeeper_->GetStatus (h, libtorrent::torrent_handle::query_name)
-							.name.c_str ();
+			qWarning () << "unknown torrent handle";
 			return;
 		}
 
-		if (!pos->PauseAfterCheck_)
-			return;
-
-		pos->PauseAfterCheck_ = false;
-		h.pause ();
+		if (std::exchange (pos->PauseAfterCheck_, false))
+			h.pause ();
 	}
 
 	void Core::MoveUp (const QList<int>& selections)
