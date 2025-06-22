@@ -921,7 +921,7 @@ namespace BitTorrent
 		if (!CheckValidity (pos))
 			return;
 
-		Handles_.at (pos).Handle_.pause ();
+		Handles_.at (pos).Handle_.pause (libtorrent::torrent_handle::graceful_pause);
 		ToggleFlag (Handles_ [pos].Handle_, libtorrent::torrent_flags::auto_managed, false);
 		checkFinished ();
 	}
