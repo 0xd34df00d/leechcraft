@@ -34,11 +34,7 @@ namespace Azoth
 		class SDFilterModel : public QSortFilterProxyModel
 		{
 		public:
-			SDFilterModel (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			{
-				setDynamicSortFilter (true);
-			}
+			using QSortFilterProxyModel::QSortFilterProxyModel;
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const
 			{
