@@ -16,6 +16,11 @@
 class QComboBox;
 class QSortFilterProxyModel;
 
+namespace LC::Util
+{
+	class FixedStringFilterProxyModel;
+}
+
 namespace LC
 {
 namespace Azoth
@@ -36,7 +41,7 @@ namespace Azoth
 		QComboBox *AccountBox_;
 		QLineEdit *AddressLine_;
 		QLineEdit *FilterLine_;
-		QSortFilterProxyModel *FilterModel_;
+		Util::FixedStringFilterProxyModel *FilterModel_;
 
 		QTimer *DiscoveryTimer_;
 		std::shared_ptr<ISDSession> SDSession_;

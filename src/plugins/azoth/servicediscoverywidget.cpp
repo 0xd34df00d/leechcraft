@@ -14,6 +14,7 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "core.h"
@@ -31,15 +32,14 @@ namespace Azoth
 
 	namespace
 	{
-		class SDFilterModel : public QSortFilterProxyModel
+		class SDFilterModel : public Util::FixedStringFilterProxyModel
 		{
 		public:
-			using QSortFilterProxyModel::QSortFilterProxyModel;
+			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const
 			{
-				const auto& filter = filterRegularExpression ().pattern ();
-				if (filter.isEmpty ())
+				if (FilterFixedString_.isEmpty ())
 					return true;
 
 				const auto& idx = sourceModel ()->index (row, 0, parent);
@@ -50,7 +50,7 @@ namespace Azoth
 				for (int i = 0, cc = sourceModel ()->columnCount (parent); i < cc; ++i)
 				{
 					const auto& idx = sourceModel ()->index (row, i, parent);
-					if (idx.data ().toString ().contains (filter, Qt::CaseInsensitive))
+					if (idx.data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive))
 						return true;
 				}
 
@@ -93,9 +93,9 @@ namespace Azoth
 				this,
 				SLOT (discover ()));
 		connect (FilterLine_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				FilterModel_,
-				SLOT (setFilterFixedString (QString)));
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 		connect (DiscoveryTimer_,
 				SIGNAL (timeout ()),
 				this,
