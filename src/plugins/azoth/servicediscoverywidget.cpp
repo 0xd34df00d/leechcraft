@@ -12,8 +12,6 @@
 #include <QLineEdit>
 #include <QTimer>
 #include <QMenu>
-#include <QSortFilterProxyModel>
-#include <util/gui/clearlineeditaddon.h>
 #include <util/models/fixedstringfilterproxymodel.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihaveservicediscovery.h"
@@ -73,11 +71,10 @@ namespace Azoth
 		DiscoveryTimer_->setSingleShot (true);
 		DiscoveryTimer_->setInterval (1500);
 
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), FilterLine_);
-
 		Toolbar_->addWidget (AccountBox_);
 		Toolbar_->addWidget (AddressLine_);
 		Toolbar_->addWidget (FilterLine_);
+		FilterLine_->setClearButtonEnabled (true);
 		FilterLine_->setPlaceholderText (tr ("Filter..."));
 
 		connect (AccountBox_,
