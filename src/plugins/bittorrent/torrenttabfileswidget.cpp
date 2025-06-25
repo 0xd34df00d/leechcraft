@@ -31,8 +31,7 @@ namespace LC::BitTorrent
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
 			{
 				const auto& idx = sourceModel ()->index (row, TorrentFilesModel::ColumnPath, parent);
-
-				if (idx.data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive))
+				if (IsMatch (idx.data ().toString ()))
 					return true;
 
 				const auto rc = sourceModel ()->rowCount (idx);

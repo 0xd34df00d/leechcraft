@@ -39,14 +39,11 @@ namespace LC::BitTorrent
 			break;
 		}
 
-		if (FilterFixedString_.isEmpty ())
-			return true;
-
-		if (idx.data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive))
+		if (IsMatch (idx.data ().toString ()))
 			return true;
 
 		auto tm = GetProxyHolder ()->GetTagsManager ();
-		const auto& reqTags = tm->Split (FilterFixedString_);
+		const auto& reqTags = tm->Split (GetFilterString ());
 		const auto& torrentTags = idx.data (RoleTags).toStringList ();
 
 		return std::ranges::any_of (torrentTags,
