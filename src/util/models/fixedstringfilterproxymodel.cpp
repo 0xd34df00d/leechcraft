@@ -10,9 +10,37 @@
 
 namespace LC::Util
 {
+	FixedStringFilterProxyModel::FixedStringFilterProxyModel (Qt::CaseSensitivity cs, QObject *parent)
+	: QSortFilterProxyModel { parent }
+	, CaseSensitivity_ { cs }
+	{
+		setFilterCaseSensitivity (cs);
+	}
+
+	void FixedStringFilterProxyModel::SetCaseSensitivity (Qt::CaseSensitivity cs)
+	{
+		CaseSensitivity_ = cs;
+		setFilterCaseSensitivity (cs);
+	}
+
 	void FixedStringFilterProxyModel::SetFilterString (const QString& filter)
 	{
 		FilterFixedString_ = filter;
 		QSortFilterProxyModel::setFilterFixedString (filter);
+	}
+
+	QString FixedStringFilterProxyModel::GetFilterString () const
+	{
+		return FilterFixedString_;
+	}
+
+	bool FixedStringFilterProxyModel::IsFilterSet () const
+	{
+		return !FilterFixedString_.isEmpty ();
+	}
+
+	bool FixedStringFilterProxyModel::IsMatch (const QString& text) const
+	{
+		return text.contains (FilterFixedString_, CaseSensitivity_);
 	}
 }

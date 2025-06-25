@@ -17,10 +17,19 @@ namespace LC::Util
 	{
 	protected:
 		QString FilterFixedString_;
+		Qt::CaseSensitivity CaseSensitivity_ = Qt::CaseInsensitive;
 	public:
 		using QSortFilterProxyModel::QSortFilterProxyModel;
+		explicit FixedStringFilterProxyModel (Qt::CaseSensitivity, QObject* = nullptr);
 
+		void SetCaseSensitivity (Qt::CaseSensitivity);
 		void SetFilterString (const QString&);
+
+		QString GetFilterString () const;
+
+		bool IsFilterSet () const;
+	protected:
+		bool IsMatch (const QString&) const;
 	private:
 		using QSortFilterProxyModel::setFilterFixedString;
 	};
