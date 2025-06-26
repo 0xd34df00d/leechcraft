@@ -34,12 +34,12 @@ namespace LC
 			if (!parent.isValid ())
 				return true;
 
-			if (FilterFixedString_.isEmpty ())
+			if (!IsFilterSet ())
 				return true;
 
 			auto checkStr = [row, parent, this] (int col)
 			{
-				return sourceModel ()->index (row, col, parent).data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive);
+				return IsMatch (sourceModel ()->index (row, col, parent).data ().toString ());
 			};
 			return checkStr (0) || checkStr (1);
 		}

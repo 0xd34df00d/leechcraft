@@ -93,12 +93,12 @@ namespace LC
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex&) const override
 			{
-				if (FilterFixedString_.isEmpty ())
+				if (!IsFilterSet ())
 					return true;
 
 				const auto m = sourceModel ();
 				for (int c = 0, ccount = m->columnCount (); c < ccount; ++c)
-					if (m->index (row, c).data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive))
+					if (IsMatch (m->index (row, c).data ().toString ()))
 						return true;
 
 				return false;
@@ -110,7 +110,7 @@ namespace LC
 				const QString& rPath = right.data (PluginManager::Roles::PluginFilename).toString ();
 				if (!lPath.isEmpty () && !rPath.isEmpty ())
 					return lPath < rPath;
-				return QSortFilterProxyModel::lessThan (left, right);
+				return FixedStringFilterProxyModel::lessThan (left, right);
 			}
 		};
 	}
