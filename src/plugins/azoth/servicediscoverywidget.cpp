@@ -37,7 +37,7 @@ namespace Azoth
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex& parent) const
 			{
-				if (FilterFixedString_.isEmpty ())
+				if (!IsFilterSet ())
 					return true;
 
 				const auto& idx = sourceModel ()->index (row, 0, parent);
@@ -48,7 +48,7 @@ namespace Azoth
 				for (int i = 0, cc = sourceModel ()->columnCount (parent); i < cc; ++i)
 				{
 					const auto& idx = sourceModel ()->index (row, i, parent);
-					if (idx.data ().toString ().contains (FilterFixedString_, Qt::CaseInsensitive))
+					if (IsMatch (idx.data ().toString ()))
 						return true;
 				}
 
