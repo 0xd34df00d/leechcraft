@@ -16,8 +16,7 @@ namespace LC::Util
 	class UTIL_MODELS_API FixedStringFilterProxyModel : public QSortFilterProxyModel
 	{
 		QString FilterFixedString_;
-
-		QVector<int> FilterColumns_ {};
+		QList<int> FilterColumns_ {};
 
 		Qt::ItemDataRole FilterRole_ = Qt::DisplayRole;
 		Qt::CaseSensitivity CaseSensitivity_ = Qt::CaseInsensitive;
@@ -38,8 +37,8 @@ namespace LC::Util
 		void SetFilterRole (Qt::ItemDataRole);
 		Qt::ItemDataRole GetFilterRole () const;
 
-		void SetFilterColumns (const QVector<int>&);
-		QVector<int> GetFilterColumns () const;
+		void SetFilterColumns (const QList<int>&);
+		QList<int> GetFilterColumns () const;
 
 		void SetRecursiveFiltering (bool);
 		bool GetRecursiveFiltering () const;

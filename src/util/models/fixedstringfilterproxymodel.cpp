@@ -45,13 +45,13 @@ namespace LC::Util
 		return FilterRole_;
 	}
 
-	void FixedStringFilterProxyModel::SetFilterColumns (const QVector<int>& columns)
+	void FixedStringFilterProxyModel::SetFilterColumns (const QList<int>& columns)
 	{
 		FilterColumns_ = columns;
 		invalidateFilter ();
 	}
 
-	QVector<int> FixedStringFilterProxyModel::GetFilterColumns () const
+	QList<int> FixedStringFilterProxyModel::GetFilterColumns () const
 	{
 		return FilterColumns_;
 	}
