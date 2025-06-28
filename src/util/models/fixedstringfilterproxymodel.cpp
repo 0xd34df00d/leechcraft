@@ -14,13 +14,11 @@ namespace LC::Util
 	: QSortFilterProxyModel { parent }
 	, CaseSensitivity_ { cs }
 	{
-		setFilterCaseSensitivity (cs);
 	}
 
 	void FixedStringFilterProxyModel::SetCaseSensitivity (Qt::CaseSensitivity cs)
 	{
 		CaseSensitivity_ = cs;
-		setFilterCaseSensitivity (cs);
 	}
 
 	void FixedStringFilterProxyModel::SetFilterString (const QString& filter)
