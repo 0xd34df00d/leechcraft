@@ -104,9 +104,9 @@ namespace Azoth
 				});
 
 		connect (Ui_.FilterLine_,
-				SIGNAL (textChanged (const QString&)),
+				&QLineEdit::textChanged,
 				ProxyModel_,
-				SLOT (setFilterFixedString (const QString&)));
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 
 		ExpansionStateMgr_ = new ExpansionStateManager { *ProxyModel_, *Ui_.CLTree_, this };
 

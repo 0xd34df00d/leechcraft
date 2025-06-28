@@ -17,11 +17,8 @@
 namespace LC::Azoth
 {
 	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
-	: QSortFilterProxyModel { parent }
+	: FixedStringFilterProxyModel { Qt::CaseInsensitive, parent }
 	{
-		setDynamicSortFilter (true);
-		setFilterCaseSensitivity (Qt::CaseInsensitive);
-
 		auto& xsm = XmlSettingsManager::Instance ();
 		xsm.RegisterObject ("OrderByStatus", this,
 				[this] (bool orderByStatus)
@@ -122,13 +119,13 @@ namespace LC::Azoth
 	{
 		const auto leftType = GetType (left);
 		if (leftType == CLETAccount)
-			return QSortFilterProxyModel::lessThan (left, right);
+			return FixedStringFilterProxyModel::lessThan (left, right);
 		if (leftType == CLETCategory)
 		{
 			const bool leftIsMuc = left.data (CLRIsMUCCategory).toBool ();
 			const bool rightIsMuc = right.data (CLRIsMUCCategory).toBool ();
 			if (leftIsMuc == rightIsMuc)
-				return QSortFilterProxyModel::lessThan (left, right);
+				return FixedStringFilterProxyModel::lessThan (left, right);
 			return rightIsMuc;
 		}
 
@@ -175,16 +172,15 @@ namespace LC::Azoth
 				   qobject_cast<ICLEntry*> (MUCEntry_)->Groups ().contains (gName);
 		}
 		default:
-			return QSortFilterProxyModel::filterAcceptsRow (row, parent);
+			return FixedStringFilterProxyModel::filterAcceptsRow (row, parent);
 		}
 	}
 
 	bool SortFilterProxyModel::FilterAcceptsNonMucMode (int row, const QModelIndex& parent) const
 	{
 		const auto& idx = sourceModel ()->index (row, 0, parent);
-		if (const auto& pattern = filterRegularExpression ().pattern ();
-			!pattern.isEmpty ())
-			return GetType (idx) != CLETContact || idx.data ().toString ().contains (pattern);
+		if (!IsFilterSet ())
+			return GetType (idx) != CLETContact || IsMatch (idx.data ().toString ());
 
 		if (idx.data (CLRUnreadMsgCount).toInt ())
 			return true;
@@ -226,6 +222,6 @@ namespace LC::Azoth
 			return idx.data (CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
 		}
 
-		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
+		return FixedStringFilterProxyModel::filterAcceptsRow (row, parent);
 	}
 }

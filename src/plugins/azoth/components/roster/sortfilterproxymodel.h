@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <util/models/fixedstringfilterproxymodel.h>
 
 namespace LC::Azoth
 {
-	class SortFilterProxyModel : public QSortFilterProxyModel
+	class SortFilterProxyModel : public Util::FixedStringFilterProxyModel
 	{
 		Q_OBJECT
 
