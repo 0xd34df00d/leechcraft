@@ -26,6 +26,7 @@ namespace LC::Util
 	void FixedStringFilterProxyModel::SetCaseSensitivity (Qt::CaseSensitivity cs)
 	{
 		CaseSensitivity_ = cs;
+		invalidateFilter ();
 	}
 
 	Qt::CaseSensitivity FixedStringFilterProxyModel::GetCaseSensitivity () const
@@ -36,6 +37,7 @@ namespace LC::Util
 	void FixedStringFilterProxyModel::SetFilterRole (Qt::ItemDataRole role)
 	{
 		FilterRole_ = role;
+		invalidateFilter ();
 	}
 
 	Qt::ItemDataRole FixedStringFilterProxyModel::GetFilterRole () const
@@ -46,6 +48,7 @@ namespace LC::Util
 	void FixedStringFilterProxyModel::SetFilterColumns (const QVector<int>& columns)
 	{
 		FilterColumns_ = columns;
+		invalidateFilter ();
 	}
 
 	QVector<int> FixedStringFilterProxyModel::GetFilterColumns () const
