@@ -70,7 +70,7 @@ namespace LC::Util
 	void FixedStringFilterProxyModel::SetFilterString (const QString& filter)
 	{
 		FilterFixedString_ = filter;
-		QSortFilterProxyModel::setFilterFixedString (filter);
+		invalidateFilter ();
 	}
 
 	QString FixedStringFilterProxyModel::GetFilterString () const
