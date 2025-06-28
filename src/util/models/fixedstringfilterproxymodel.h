@@ -15,7 +15,6 @@ namespace LC::Util
 {
 	class UTIL_MODELS_API FixedStringFilterProxyModel : public QSortFilterProxyModel
 	{
-	protected:
 		QString FilterFixedString_;
 		Qt::CaseSensitivity CaseSensitivity_ = Qt::CaseInsensitive;
 	public:
