@@ -36,24 +36,24 @@ namespace LC::Util
 
 	void FixedStringFilterProxyModel::SetFilterRoles (const QList<int>& roles)
 	{
-		FilterRoles_ = roles;
+		Roles_ = roles;
 		invalidateFilter ();
 	}
 
 	QList<int> FixedStringFilterProxyModel::GetFilterRoles () const
 	{
-		return FilterRoles_;
+		return Roles_;
 	}
 
 	void FixedStringFilterProxyModel::SetFilterColumns (const QList<int>& columns)
 	{
-		FilterColumns_ = columns;
+		Columns_ = columns;
 		invalidateFilter ();
 	}
 
 	QList<int> FixedStringFilterProxyModel::GetFilterColumns () const
 	{
-		return FilterColumns_;
+		return Columns_;
 	}
 
 	void FixedStringFilterProxyModel::SetFilterString (const QString& filter)
@@ -85,12 +85,12 @@ namespace LC::Util
 		const auto checkColumn = [&, this] (int col)
 		{
 			const auto& idx = sourceModel ()->index (row, col, parent);
-			return std::ranges::any_of (FilterRoles_,
+			return std::ranges::any_of (Roles_,
 					[this, &idx] (int role) { return IsMatch (idx.data (role).toString ()); });
 		};
 
-		return FilterColumns_.isEmpty () ?
+		return Columns_.isEmpty () ?
 				std::ranges::any_of (std::views::iota (0, sourceModel ()->columnCount (parent)), checkColumn) :
-				std::ranges::any_of (FilterColumns_, checkColumn);
+				std::ranges::any_of (Columns_, checkColumn);
 	}
 }
