@@ -20,8 +20,6 @@ namespace LC::Util
 		QList<int> FilterRoles_ { Qt::DisplayRole };
 
 		Qt::CaseSensitivity CaseSensitivity_ = Qt::CaseInsensitive;
-
-		bool IsRecursiveFiltering_ = true;
 	public:
 		explicit FixedStringFilterProxyModel (QObject* = nullptr);
 		explicit FixedStringFilterProxyModel (Qt::CaseSensitivity, QObject* = nullptr);
@@ -39,9 +37,6 @@ namespace LC::Util
 
 		void SetFilterColumns (const QList<int>&);
 		QList<int> GetFilterColumns () const;
-
-		void SetRecursiveFiltering (bool);
-		bool GetRecursiveFiltering () const;
 	protected:
 		bool IsMatch (const QString&) const;
 

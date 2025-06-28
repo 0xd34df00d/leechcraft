@@ -20,7 +20,7 @@ namespace LC::Util
 	: QSortFilterProxyModel { parent }
 	, CaseSensitivity_ { cs }
 	{
-		setRecursiveFilteringEnabled (IsRecursiveFiltering_);
+		setRecursiveFilteringEnabled (true);
 	}
 
 	void FixedStringFilterProxyModel::SetCaseSensitivity (Qt::CaseSensitivity cs)
@@ -54,17 +54,6 @@ namespace LC::Util
 	QList<int> FixedStringFilterProxyModel::GetFilterColumns () const
 	{
 		return FilterColumns_;
-	}
-
-	void FixedStringFilterProxyModel::SetRecursiveFiltering (bool enabled)
-	{
-		IsRecursiveFiltering_ = enabled;
-		setRecursiveFilteringEnabled (enabled);
-	}
-
-	bool FixedStringFilterProxyModel::GetRecursiveFiltering () const
-	{
-		return IsRecursiveFiltering_;
 	}
 
 	void FixedStringFilterProxyModel::SetFilterString (const QString& filter)
