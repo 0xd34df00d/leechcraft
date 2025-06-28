@@ -16,19 +16,37 @@ namespace LC::Util
 	class UTIL_MODELS_API FixedStringFilterProxyModel : public QSortFilterProxyModel
 	{
 		QString FilterFixedString_;
+
+		QVector<int> FilterColumns_ {};
+
+		Qt::ItemDataRole FilterRole_ = Qt::DisplayRole;
 		Qt::CaseSensitivity CaseSensitivity_ = Qt::CaseInsensitive;
+
+		bool IsRecursiveFiltering_ = true;
 	public:
-		using QSortFilterProxyModel::QSortFilterProxyModel;
+		explicit FixedStringFilterProxyModel (QObject* = nullptr);
 		explicit FixedStringFilterProxyModel (Qt::CaseSensitivity, QObject* = nullptr);
 
-		void SetCaseSensitivity (Qt::CaseSensitivity);
 		void SetFilterString (const QString&);
-
 		QString GetFilterString () const;
 
 		bool IsFilterSet () const;
+
+		void SetCaseSensitivity (Qt::CaseSensitivity);
+		Qt::CaseSensitivity GetCaseSensitivity () const;
+
+		void SetFilterRole (Qt::ItemDataRole);
+		Qt::ItemDataRole GetFilterRole () const;
+
+		void SetFilterColumns (const QVector<int>&);
+		QVector<int> GetFilterColumns () const;
+
+		void SetRecursiveFiltering (bool);
+		bool GetRecursiveFiltering () const;
 	protected:
 		bool IsMatch (const QString&) const;
+
+		bool filterAcceptsRow (int row, const QModelIndex& parent) const override;
 	private:
 		using QSortFilterProxyModel::setFilterFixedString;
 	};
