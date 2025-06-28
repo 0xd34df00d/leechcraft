@@ -8,7 +8,6 @@
 
 #include "advancednotifications.h"
 #include <QIcon>
-#include <QRegExp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/entityconstants.h>
@@ -30,8 +29,6 @@ namespace LC::AdvancedNotifications
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		qRegisterMetaType<QRegExp> ();
-
 		RulesManager_ = new RulesManager { this };
 
 		auto audioThemeMgr = new AudioThemeManager { this };

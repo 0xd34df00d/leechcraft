@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "typedmatchers.h"
-#include <QRegExp>
 #include <QStringList>
 #include <QWidget>
 #include <QtDebug>
@@ -74,37 +73,10 @@ namespace LC::AdvancedNotifications
 		};
 	}
 
-	namespace
-	{
-		AN::StringMatcher Convert (const QRegExp& rx)
-		{
-			const auto& pattern = rx.pattern ();
-			switch (rx.patternSyntax ())
-			{
-			case QRegExp::FixedString:
-				return AN::Substring { pattern };
-			case QRegExp::Wildcard:
-			case QRegExp::WildcardUnix:
-				return AN::Wildcard { pattern };
-			case QRegExp::RegExp:
-			case QRegExp::RegExp2:
-				return QRegularExpression { pattern };
-			default:
-				qWarning () << "unknown pattern syntax" << rx.patternSyntax ();
-				return AN::Substring { pattern };
-			}
-		}
-	}
-
 	void StringLikeMatcher::Load (const QVariantMap& map)
 	{
 		const auto& rxVar = map [Keys::Rx];
-		// TODO get rid of this post Qt6 migration and some grace period (say, in June 2025)
-		if (rxVar.canConvert<QRegExp> ())
-			Value_.Rx_ = Convert (rxVar.value<QRegExp> ());
-		else
-			Value_.Rx_ = Util::AN::StringMatcherFromVariant (rxVar);
-
+		Value_.Rx_ = Util::AN::StringMatcherFromVariant (rxVar);
 		Value_.Contains_ = map [Keys::Contains].toBool ();
 	}
 
