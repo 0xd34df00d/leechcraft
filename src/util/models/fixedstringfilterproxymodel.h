@@ -17,8 +17,8 @@ namespace LC::Util
 	{
 		QString FilterFixedString_;
 		QList<int> FilterColumns_ {};
+		QList<int> FilterRoles_ { Qt::DisplayRole };
 
-		Qt::ItemDataRole FilterRole_ = Qt::DisplayRole;
 		Qt::CaseSensitivity CaseSensitivity_ = Qt::CaseInsensitive;
 
 		bool IsRecursiveFiltering_ = true;
@@ -34,8 +34,8 @@ namespace LC::Util
 		void SetCaseSensitivity (Qt::CaseSensitivity);
 		Qt::CaseSensitivity GetCaseSensitivity () const;
 
-		void SetFilterRole (Qt::ItemDataRole);
-		Qt::ItemDataRole GetFilterRole () const;
+		void SetFilterRoles (const QList<int>&);
+		QList<int> GetFilterRoles () const;
 
 		void SetFilterColumns (const QList<int>&);
 		QList<int> GetFilterColumns () const;

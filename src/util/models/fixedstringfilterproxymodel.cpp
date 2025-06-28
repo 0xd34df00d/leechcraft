@@ -34,15 +34,15 @@ namespace LC::Util
 		return CaseSensitivity_;
 	}
 
-	void FixedStringFilterProxyModel::SetFilterRole (Qt::ItemDataRole role)
+	void FixedStringFilterProxyModel::SetFilterRoles (const QList<int>& roles)
 	{
-		FilterRole_ = role;
+		FilterRoles_ = roles;
 		invalidateFilter ();
 	}
 
-	Qt::ItemDataRole FixedStringFilterProxyModel::GetFilterRole () const
+	QList<int> FixedStringFilterProxyModel::GetFilterRoles () const
 	{
-		return FilterRole_;
+		return FilterRoles_;
 	}
 
 	void FixedStringFilterProxyModel::SetFilterColumns (const QList<int>& columns)
@@ -96,7 +96,8 @@ namespace LC::Util
 		const auto checkColumn = [&, this] (int col)
 		{
 			const auto& idx = sourceModel ()->index (row, col, parent);
-			return IsMatch (idx.data (FilterRole_).toString ());
+			return std::ranges::any_of (FilterRoles_,
+					[this, &idx] (int role) { return IsMatch (idx.data (role).toString ()); });
 		};
 
 		return FilterColumns_.isEmpty () ?
