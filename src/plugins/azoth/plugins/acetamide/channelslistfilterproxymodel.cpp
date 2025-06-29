@@ -13,7 +13,6 @@ namespace LC::Azoth::Acetamide
 	ChannelsListFilterProxyModel::ChannelsListFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	{
-		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
 		setSortCaseSensitivity (Qt::CaseInsensitive);
 		setSortLocaleAware (true);
