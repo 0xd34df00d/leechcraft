@@ -19,6 +19,8 @@ namespace LC::Azoth
 	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
 	: FixedStringFilterProxyModel { Qt::CaseInsensitive, parent }
 	{
+		setRecursiveFilteringEnabled (false);
+
 		auto& xsm = XmlSettingsManager::Instance ();
 		xsm.RegisterObject ("OrderByStatus", this,
 				[this] (bool orderByStatus)
@@ -179,7 +181,7 @@ namespace LC::Azoth
 	bool SortFilterProxyModel::FilterAcceptsNonMucMode (int row, const QModelIndex& parent) const
 	{
 		const auto& idx = sourceModel ()->index (row, 0, parent);
-		if (!IsFilterSet ())
+		if (IsFilterSet ())
 			return GetType (idx) != CLETContact || IsMatch (idx.data ().toString ());
 
 		if (idx.data (CLRUnreadMsgCount).toInt ())
