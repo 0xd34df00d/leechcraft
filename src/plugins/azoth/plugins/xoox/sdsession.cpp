@@ -304,7 +304,7 @@ namespace Xoox
 		}
 
 		auto requestBatch = std::make_shared<std::function<void (int)>> ();
-		*requestBatch = [&items, ptr, requestBatch] (int start)
+		*requestBatch = [=] (int start)
 		{
 			if (!ptr ||
 					start >= items.size ())
