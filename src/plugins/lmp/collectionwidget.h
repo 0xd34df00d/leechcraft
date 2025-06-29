@@ -14,6 +14,11 @@
 
 class QSortFilterProxyModel;
 
+namespace LC::Util
+{
+	class FixedStringFilterProxyModel;
+}
+
 namespace LC::LMP
 {
 	class Player;
@@ -27,7 +32,7 @@ namespace LC::LMP
 
 		Player * const Player_;
 
-		QSortFilterProxyModel * const CollectionFilterModel_;
+		Util::FixedStringFilterProxyModel * const CollectionFilterModel_;
 	public:
 		CollectionWidget (QWidget* = nullptr);
 	private:

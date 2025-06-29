@@ -7,10 +7,10 @@
  **********************************************************************/
 
 #include "collectionwidget.h"
-#include <QSortFilterProxyModel>
 #include <QMessageBox>
 #include <QMenu>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
@@ -30,13 +30,14 @@ namespace LC::LMP
 {
 	namespace
 	{
-		class CollectionFilterModel : public QSortFilterProxyModel
+		class CollectionFilterModel : public Util::FixedStringFilterProxyModel
 		{
 		public:
-			CollectionFilterModel (QObject *parent = nullptr)
-			: QSortFilterProxyModel { parent }
+			explicit CollectionFilterModel (QObject *parent = nullptr)
+			: FixedStringFilterProxyModel { parent }
 			{
-				setDynamicSortFilter (true);
+				using enum LocalCollectionModel::Role;
+				SetFilterRoles ({ ArtistName, AlbumName, TrackTitle, AlbumYear });
 			}
 		protected:
 			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const override
@@ -45,27 +46,7 @@ namespace LC::LMP
 				if (source.data (LocalCollectionModel::Role::IsIgnored).toBool ())
 					return false;
 
-				const auto& pattern = filterRegularExpression ().pattern ();
-				if (pattern.isEmpty ())
-					return true;
-
-				const auto type = source.data (LocalCollectionModel::Role::Node).toInt ();
-				const bool hasAlbumData = type != LocalCollectionModel::NodeType::Artist;
-				const bool isTrack = type == LocalCollectionModel::NodeType::Track;
-				const auto childrenCount = sourceModel ()->rowCount (source);
-				if (!isTrack)
-					for (int i = 0; i < childrenCount; ++i)
-						if (filterAcceptsRow (i, source))
-							return true;
-
-				auto check = [&source, &pattern] (int role)
-				{
-					return source.data (role).toString ().contains (pattern, Qt::CaseInsensitive);
-				};
-				return check (LocalCollectionModel::Role::ArtistName) ||
-						(hasAlbumData && check (LocalCollectionModel::Role::AlbumName)) ||
-						(isTrack && check (LocalCollectionModel::Role::TrackTitle)) ||
-						(hasAlbumData && check (LocalCollectionModel::Role::AlbumYear));
+				return FixedStringFilterProxyModel::filterAcceptsRow (sourceRow, source);
 			}
 		};
 	}
@@ -107,7 +88,7 @@ namespace LC::LMP
 		connect (Ui_.CollectionFilter_,
 				&QLineEdit::textChanged,
 				CollectionFilterModel_,
-				&QSortFilterProxyModel::setFilterFixedString);
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 
 		connect (Ui_.CollectionTree_,
 				&QTreeView::customContextMenuRequested,
