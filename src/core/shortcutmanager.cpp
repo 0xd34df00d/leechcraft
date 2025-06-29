@@ -75,7 +75,7 @@ namespace LC
 		connect (Ui_.FilterLine_,
 				&QLineEdit::textChanged,
 				Filter_,
-				&QSortFilterProxyModel::setFilterFixedString);
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 		connect (Ui_.FilterLine_,
 				&QLineEdit::textChanged,
 				Ui_.Tree_,

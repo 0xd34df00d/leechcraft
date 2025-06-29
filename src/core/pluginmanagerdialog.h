@@ -11,7 +11,10 @@
 #include <QWidget>
 #include "ui_pluginmanagerdialog.h"
 
-class QSortFilterProxyModel;
+namespace LC::Util
+{
+	class FixedStringFilterProxyModel;
+}
 
 namespace LC
 {
@@ -20,7 +23,7 @@ namespace LC
 		Q_OBJECT
 
 		Ui::PluginManagerDialog Ui_;
-		QSortFilterProxyModel *FilterProxy_;
+		Util::FixedStringFilterProxyModel *FilterProxy_;
 	public:
 		PluginManagerDialog (QWidget* = 0);
 	public slots:

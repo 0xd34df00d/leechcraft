@@ -17,6 +17,11 @@ class QSortFilterProxyModel;
 class QStandardItem;
 class QStandardItemModel;
 
+namespace LC::Util
+{
+	class FixedStringFilterProxyModel;
+}
+
 namespace LC
 {
 	class ShortcutManager : public QWidget
@@ -27,7 +32,7 @@ namespace LC
 
 		Ui::ShortcutManager Ui_;
 		QStandardItemModel *Model_;
-		QSortFilterProxyModel *Filter_;
+		Util::FixedStringFilterProxyModel *Filter_;
 	public:
 		using IconsList_t = QVector<QPair<QStandardItem*, ActionInfo::Icon_t>>;
 	private:

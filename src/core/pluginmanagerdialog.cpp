@@ -137,9 +137,9 @@ namespace LC
 		Ui_.PluginsTree_->installEventFilter (new SizeFilter (this));
 
 		connect (Ui_.FilterLine_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				FilterProxy_,
-				SLOT (setFilterFixedString (QString)));
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 
 		new Util::ClearLineEditAddon (CoreProxy::UnsafeWithoutDeps (), Ui_.FilterLine_);
 	}
