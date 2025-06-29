@@ -303,8 +303,7 @@ namespace Xoox
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 		}
 
-		auto requestBatch = std::make_shared<std::function<void (int)>> ();
-		*requestBatch = [=] (int start)
+		[=] (this auto self, int start)
 		{
 			if (!ptr ||
 					start >= items.size ())
@@ -326,10 +325,8 @@ namespace Xoox
 						item.node ());
 			}
 
-			QTimer::singleShot (2000, [=] { (*requestBatch) (start); });
-		};
-
-		(*requestBatch) (0);
+			QTimer::singleShot (2000, [=] { self (start); });
+		} (0);
 	}
 
 	void SDSession::QueryItem (QStandardItem *item)
