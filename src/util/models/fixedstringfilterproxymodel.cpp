@@ -18,20 +18,20 @@ namespace LC::Util
 
 	FixedStringFilterProxyModel::FixedStringFilterProxyModel (Qt::CaseSensitivity cs, QObject *parent)
 	: QSortFilterProxyModel { parent }
-	, CaseSensitivity_ { cs }
 	{
+		Filter_.setCaseSensitivity (cs);
 		setRecursiveFilteringEnabled (true);
 	}
 
 	void FixedStringFilterProxyModel::SetCaseSensitivity (Qt::CaseSensitivity cs)
 	{
-		CaseSensitivity_ = cs;
+		Filter_.setCaseSensitivity (cs);
 		invalidateFilter ();
 	}
 
 	Qt::CaseSensitivity FixedStringFilterProxyModel::GetCaseSensitivity () const
 	{
-		return CaseSensitivity_;
+		return Filter_.caseSensitivity ();
 	}
 
 	void FixedStringFilterProxyModel::SetFilterRoles (const QList<int>& roles)
@@ -58,23 +58,23 @@ namespace LC::Util
 
 	void FixedStringFilterProxyModel::SetFilterString (const QString& filter)
 	{
-		FilterFixedString_ = filter;
+		Filter_.setPattern (filter);
 		invalidateFilter ();
 	}
 
 	QString FixedStringFilterProxyModel::GetFilterString () const
 	{
-		return FilterFixedString_;
+		return Filter_.pattern ();
 	}
 
 	bool FixedStringFilterProxyModel::IsFilterSet () const
 	{
-		return !FilterFixedString_.isEmpty ();
+		return !Filter_.patternView ().isEmpty ();
 	}
 
 	bool FixedStringFilterProxyModel::IsMatch (const QString& text) const
 	{
-		return text.contains (FilterFixedString_, CaseSensitivity_);
+		return Filter_.indexIn (text) >= 0;
 	}
 
 	bool FixedStringFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const

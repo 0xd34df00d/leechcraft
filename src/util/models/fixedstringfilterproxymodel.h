@@ -15,11 +15,9 @@ namespace LC::Util
 {
 	class UTIL_MODELS_API FixedStringFilterProxyModel : public QSortFilterProxyModel
 	{
-		QString FilterFixedString_;
+		QStringMatcher Filter_;
 		QList<int> Columns_ {};
 		QList<int> Roles_ { Qt::DisplayRole };
-
-		Qt::CaseSensitivity CaseSensitivity_ = Qt::CaseInsensitive;
 	public:
 		explicit FixedStringFilterProxyModel (QObject* = nullptr);
 		explicit FixedStringFilterProxyModel (Qt::CaseSensitivity, QObject* = nullptr);
