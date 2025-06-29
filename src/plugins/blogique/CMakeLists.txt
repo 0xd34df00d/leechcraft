@@ -17,7 +17,6 @@ LC_DEFINE_PLUGIN (
 		commentswidget.cpp
 		core.cpp
 		draftentrieswidget.cpp
-		entriesfilterproxymodel.cpp
 		exportwizard.cpp
 		pluginproxy.cpp
 		profiledialog.cpp

@@ -15,6 +15,11 @@
 class QStandardItemModel;
 class QStandardItem;
 
+namespace LC::Util
+{
+	class FixedStringFilterProxyModel;
+}
+
 namespace LC
 {
 namespace Blogique
@@ -29,9 +34,8 @@ namespace Blogique
 		Ui::DraftEntriesWidget Ui_;
 
 		QStandardItemModel *DraftEntriesModel_;
-		EntriesFilterProxyModel *FilterProxyModel_;
+		Util::FixedStringFilterProxyModel *FilterProxyModel_;
 		QHash<QStandardItem*, Entry> Item2Entry_;
-
 	public:
 		explicit DraftEntriesWidget (QWidget *parent = 0);
 		QString GetName () const;

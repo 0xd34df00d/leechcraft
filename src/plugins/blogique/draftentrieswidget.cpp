@@ -10,10 +10,10 @@
 #include <stdexcept>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include <util/util.h>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "core.h"
-#include "entriesfilterproxymodel.h"
 #include "storagemanager.h"
 #include "utils.h"
 #include "xmlsettingsmanager.h"
@@ -26,9 +26,10 @@ namespace Blogique
 	DraftEntriesWidget::DraftEntriesWidget (QWidget *parent)
 	: QWidget (parent)
 	, DraftEntriesModel_ (new QStandardItemModel (this))
-	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
+	, FilterProxyModel_ (new Util::FixedStringFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
+		FilterProxyModel_->SetFilterColumns ({ 1 });
 
 		if (!Ui_.DraftEntriesCalendarSplitter_->
 				restoreState (XmlSettingsManager::Instance ()
@@ -243,7 +244,7 @@ namespace Blogique
 
 	void DraftEntriesWidget::on_DraftEntriesFilter__textChanged (const QString& text)
 	{
-		FilterProxyModel_->setFilterFixedString (text);
+		FilterProxyModel_->SetFilterString (text);
 	}
 
 	void DraftEntriesWidget::on_RemoveDraftEntry__released ()

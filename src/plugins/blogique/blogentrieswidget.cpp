@@ -11,7 +11,7 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QStandardItemModel>
-#include "entriesfilterproxymodel.h"
+#include <util/models/fixedstringfilterproxymodel.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "utils.h"
@@ -24,9 +24,10 @@ namespace Blogique
 	: QWidget (parent)
 	, Account_ (0)
 	, BlogEntriesModel_ (new QStandardItemModel (this))
-	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
+	, FilterProxyModel_ (new Util::FixedStringFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
+		FilterProxyModel_->SetFilterColumns ({ 1 });
 
 		if (!Ui_.BlogEntriesCalendarSplitter_->
 				restoreState (XmlSettingsManager::Instance ()
@@ -192,7 +193,7 @@ namespace Blogique
 
 	void BlogEntriesWidget::on_BlogEntriesFilter__textChanged (const QString& text)
 	{
-		FilterProxyModel_->setFilterFixedString (text);
+		FilterProxyModel_->SetFilterString (text);
 	}
 
 	void BlogEntriesWidget::on_RemoveBlogEntry__released ()
