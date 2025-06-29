@@ -9,7 +9,6 @@
 #include "pluginmanagerdialog.h"
 #include <QStyledItemDelegate>
 #include <QPushButton>
-#include <util/gui/clearlineeditaddon.h>
 #include <util/models/fixedstringfilterproxymodel.h>
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iinfo.h"
@@ -120,6 +119,7 @@ namespace LC
 	, FilterProxy_ (new PluginsProxyModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.FilterLine_->setClearButtonEnabled (true);
 		Ui_.PluginsTree_->setWordWrap (true);
 
 		auto model = Core::Instance ().GetPluginsModel ();
@@ -140,8 +140,6 @@ namespace LC
 				&QLineEdit::textChanged,
 				FilterProxy_,
 				&Util::FixedStringFilterProxyModel::SetFilterString);
-
-		new Util::ClearLineEditAddon (CoreProxy::UnsafeWithoutDeps (), Ui_.FilterLine_);
 	}
 
 	void PluginManagerDialog::readjustColumns ()
