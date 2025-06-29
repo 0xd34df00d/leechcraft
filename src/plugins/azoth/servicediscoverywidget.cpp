@@ -28,42 +28,13 @@ namespace Azoth
 		S_ParentMultiTabs_ = parent;
 	}
 
-	namespace
-	{
-		class SDFilterModel : public Util::FixedStringFilterProxyModel
-		{
-		public:
-			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
-		protected:
-			bool filterAcceptsRow (int row, const QModelIndex& parent) const
-			{
-				if (!IsFilterSet ())
-					return true;
-
-				const auto& idx = sourceModel ()->index (row, 0, parent);
-				for (int i = 0, rc = sourceModel ()->rowCount (idx); i < rc; ++i)
-					if (filterAcceptsRow (i, idx))
-						return true;
-
-				for (int i = 0, cc = sourceModel ()->columnCount (parent); i < cc; ++i)
-				{
-					const auto& idx = sourceModel ()->index (row, i, parent);
-					if (IsMatch (idx.data ().toString ()))
-						return true;
-				}
-
-				return false;
-			}
-		};
-	}
-
 	ServiceDiscoveryWidget::ServiceDiscoveryWidget (QWidget *parent)
 	: QWidget (parent)
 	, Toolbar_ (new QToolBar)
 	, AccountBox_ (new QComboBox)
 	, AddressLine_ (new QLineEdit)
 	, FilterLine_ (new QLineEdit)
-	, FilterModel_ (new SDFilterModel (this))
+	, FilterModel_ (new Util::FixedStringFilterProxyModel (this))
 	, DiscoveryTimer_ (new QTimer (this))
 	{
 		Ui_.setupUi (this);
