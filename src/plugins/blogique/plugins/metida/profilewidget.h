@@ -39,7 +39,7 @@ namespace Metida
 		{
 			Name
 		};
-		
+
 		LJProfile * const Profile_;
 		const ICoreProxy_ptr Proxy_;
 
@@ -83,13 +83,10 @@ namespace Metida
 		void handleReadCommunity ();
 		void handleFriendsViewDoubleClicked (const QModelIndex& index);
 		void handleCommunitiesViewDoubleClicked (const QModelIndex& index);
-		
+
 		void addNewGroup ();
 		void deleteGroup ();
 		void editGroup ();
-		
-	signals:
-		void coloringItemChanged ();
 	};
 }
 }

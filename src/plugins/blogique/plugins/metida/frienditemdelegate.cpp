@@ -12,7 +12,6 @@
 #include <QTreeView>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
-#include "friendsproxymodel.h"
 
 namespace LC
 {
@@ -25,8 +24,14 @@ namespace Metida
 	, View_ (parent)
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("ColoringFriendsList",
-				this, "handleColoringItemChanged");
-		handleColoringItemChanged ();
+				this,
+				[this] (bool enabled)
+				{
+					ColoringItems_ = enabled;
+
+					View_->viewport ()->update ();
+					View_->update ();
+				});
 	}
 
 	void FriendItemDelegate::paint (QPainter *painter,
@@ -47,15 +52,6 @@ namespace Metida
 
 		QStyledItemDelegate::paint (painter, o, index);
 	}
-
-	void FriendItemDelegate::handleColoringItemChanged ()
-	{
-		ColoringItems_ = XmlSettingsManager::Instance ().Property ("ColoringFriendsList", true).toBool ();
-
-		View_->viewport ()->update ();
-		View_->update ();
-	}
-
 }
 }
 }

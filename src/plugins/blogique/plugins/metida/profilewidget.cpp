@@ -52,11 +52,7 @@ namespace Metida
 		FriendsModel_->setHorizontalHeaderLabels ({ tr ("Username"),
 				tr ("Status"), tr ("Full name"), tr ("Birthday") });
 
-		FriendItemDelegate *friendDelegate = new FriendItemDelegate (Ui_.FriendsView_);
-		connect (this,
-				SIGNAL (coloringItemChanged ()),
-				friendDelegate,
-				SLOT (handleColoringItemChanged ()));
+		const auto friendDelegate = new FriendItemDelegate (Ui_.FriendsView_);
 		Ui_.FriendsView_->setItemDelegate (friendDelegate);
 		QAction *newFriend = new QAction (tr ("Add friend"), this);
 		newFriend->setProperty ("ActionIcon", "list-add");
@@ -265,7 +261,6 @@ namespace Metida
 	void ProfileWidget::on_ColoringFriendsList__toggled (bool toggle)
 	{
 		XmlSettingsManager::Instance ().setProperty ("ColoringFriendsList", toggle);
-		emit coloringItemChanged ();
 	}
 
 	void ProfileWidget::on_Add__released ()

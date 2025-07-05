@@ -48,8 +48,6 @@ namespace Metida
 		explicit FriendItemDelegate (QTreeView *view = 0);
 
 		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-	public slots:
-		void handleColoringItemChanged ();
 	};
 }
 }
