@@ -24,24 +24,19 @@ namespace LC::Util
 	{
 		Separator_ = separator;
 
-		if (dynamicSortFilter ())
-			invalidateFilter ();
+		invalidateFilter ();
 	}
 
 	void TagsFilterModel::SetTagsInclusionMode (TagsFilterModel::TagsInclusionMode mode)
 	{
 		TagsMode_ = mode;
-
-		if (dynamicSortFilter ())
-			invalidateFilter ();
+		invalidateFilter ();
 	}
 
 	void TagsFilterModel::SetTagsMode (bool tags)
 	{
 		NormalMode_ = !tags;
-
-		if (dynamicSortFilter ())
-			invalidateFilter ();
+		invalidateFilter ();
 	}
 
 	bool TagsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& index) const
