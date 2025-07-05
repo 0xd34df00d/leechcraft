@@ -448,7 +448,7 @@ namespace Metida
 
 	void ProfileWidget::handleFriendFilterTextChanged (const QString& text)
 	{
-		FriendsProxyModel_->setFilterFixedString (text);
+		FriendsProxyModel_->SetFilterString (text);
 	}
 
 	void ProfileWidget::handleReadJournal ()
@@ -580,5 +580,3 @@ namespace Metida
 }
 }
 }
-
-

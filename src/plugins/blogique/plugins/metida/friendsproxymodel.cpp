@@ -15,29 +15,17 @@ namespace Blogique
 namespace Metida
 {
 	FriendsProxyModel::FriendsProxyModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
+	: FixedStringFilterProxyModel (parent)
 	{
-		setFilterCaseSensitivity (Qt::CaseInsensitive);
 		setSortCaseSensitivity (Qt::CaseInsensitive);
-	}
-
-	bool FriendsProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
-	{
-		const auto& pattern = filterRegularExpression ().pattern ();
-		if (pattern.isEmpty ())
-			return true;
-
-		const auto& nick = sourceModel ()->index (sourceRow, CNickname, sourceParent).data ().toString ();
-		const auto& name = sourceModel ()->index (sourceRow, CUsername, sourceParent).data ().toString ();
-		const auto& birthday = sourceModel ()->index (sourceRow, CBirthday, sourceParent).data ().toString ();
-		return nick.contains (pattern) || name.contains (pattern) || birthday.contains (pattern);
+		SetFilterColumns ({ CNickname, CUsername, CBirthday });
 	}
 
 	bool FriendsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
 		if (left.column () != CFriendStatus || right.column () != CFriendStatus)
-			return QSortFilterProxyModel::lessThan (left, right);
-		
+			return FixedStringFilterProxyModel::lessThan (left, right);
+
 		const int leftStatus = sourceModel ()->data (left, FRFriendStatus).toInt ();
 		const int rightStatus = sourceModel ()->data (right, FRFriendStatus).toInt ();
 		switch (leftStatus)

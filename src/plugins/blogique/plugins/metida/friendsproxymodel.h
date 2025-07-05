@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <util/models/fixedstringfilterproxymodel.h>
 
 namespace LC
 {
@@ -16,16 +16,14 @@ namespace Blogique
 {
 namespace Metida
 {
-	class FriendsProxyModel : public QSortFilterProxyModel
+	class FriendsProxyModel : public Util::FixedStringFilterProxyModel
 	{
-		Q_OBJECT
-
 	public:
 		enum FriendsRoles
 		{
 			FRFriendStatus = Qt::UserRole + 1
 		};
-		
+
 		enum Columns
 		{
 			CNickname,
@@ -33,18 +31,17 @@ namespace Metida
 			CUsername,
 			CBirthday
 		};
-		
+
 		enum FriendStatus
 		{
 			FSFriendOf,
 			FSMyFriend,
 			FSBothFriends
 		};
-		
-		FriendsProxyModel (QObject *parent = 0);
+
+		explicit FriendsProxyModel (QObject *parent = nullptr);
 	protected:
-		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const;
-		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
+		bool lessThan (const QModelIndex& left, const QModelIndex& right) const override;
 	};
 }
 }
