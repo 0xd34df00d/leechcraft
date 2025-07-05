@@ -18,27 +18,21 @@ namespace LC
 namespace LackMan
 {
 	StringFilterModel::StringFilterModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
+	: FixedStringFilterProxyModel (parent)
 	{
+		using enum PackagesModel::PackageModelRole;
+		SetFilterRoles ({ PMRName, PMRShortDescription, PMRVersion });
 	}
 
 	bool StringFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
-		if (QSortFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent))
+		if (FixedStringFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent))
 			return true;
 
-		const QString& filterString = filterRegularExpression ().pattern ();
-		const QModelIndex& idx = sourceModel ()->index (sourceRow, 0, sourceParent);
-
-		if (sourceModel ()->data (idx, PackagesModel::PMRShortDescription)
-				.toString ().contains (filterString, Qt::CaseInsensitive))
-			return true;
-
-		const auto& tags = Util::AsSet (sourceModel ()->data (idx, PackagesModel::PMRTags).toStringList ());
-		const auto& queryList = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (filterString);
-		auto userDefined = Util::AsSet (queryList);
-
-		return tags.contains (userDefined);
+		const auto& sourceIdx = sourceModel ()->index (sourceRow, 0, sourceParent);
+		const auto& itemTags = Util::AsSet (sourceIdx.data (PackagesModel::PMRTags).toStringList ());
+		const auto& queryTags = Util::AsSet (Core::Instance ().GetProxy ()->GetTagsManager ()->Split (GetFilterString ()));
+		return itemTags.contains (queryTags);
 	}
 }
 }

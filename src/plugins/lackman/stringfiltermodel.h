@@ -8,18 +8,18 @@
 
 #ifndef PLUGINS_LACKMAN_STRINGFILTERMODEL_H
 #define PLUGINS_LACKMAN_STRINGFILTERMODEL_H
-#include <QSortFilterProxyModel>
+#include <util/models/fixedstringfilterproxymodel.h>
 
 namespace LC
 {
 namespace LackMan
 {
-	class StringFilterModel : public QSortFilterProxyModel
+	class StringFilterModel : public Util::FixedStringFilterProxyModel
 	{
 	public:
 		StringFilterModel (QObject* = 0);
 	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
 }
 }

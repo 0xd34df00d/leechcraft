@@ -78,11 +78,8 @@ namespace LackMan
 		TypeFilter_->setSourceModel (Core::Instance ().GetPluginsModel ());
 		TypeFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
 
-		FilterString_->setDynamicSortFilter (true);
-		FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSourceModel (TypeFilter_);
-		FilterString_->setFilterKeyColumn (PackagesModel::Columns::Name);
 		FilterString_->sort (PackagesModel::Columns::Name);
 
 		Ui_.PackagesTree_->setModel (FilterString_);
@@ -175,7 +172,7 @@ namespace LackMan
 		TypeFilter_->SetFilterMode (TypeFilterProxyModel::FilterMode::All);
 
 		const auto& filter = Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags);
-		FilterString_->setFilterFixedString (filter);
+		FilterString_->SetFilterString (filter);
 
 		Ui_.SearchLine_->setTags (tags);
 	}

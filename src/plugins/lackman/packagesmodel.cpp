@@ -110,6 +110,8 @@ namespace LackMan
 		}
 		case PMRPackageID:
 			return lpi.PackageID_;
+		case PMRName:
+			return lpi.Name_;
 		case PMRShortDescription:
 			return lpi.ShortDescription_;
 		case PMRLongDescription:

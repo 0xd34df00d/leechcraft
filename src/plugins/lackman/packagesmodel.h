@@ -23,7 +23,8 @@ namespace LackMan
 	public:
 		enum PackageModelRole
 		{
-			PMRShortDescription = Qt::UserRole + 1,
+			PMRName = Qt::UserRole + 1,
+			PMRShortDescription,
 			PMRLongDescription,
 			PMRTags,
 			PMRType,
