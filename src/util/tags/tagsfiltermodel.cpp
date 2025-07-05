@@ -81,9 +81,9 @@ namespace LC::Util
 		switch (TagsMode_)
 		{
 		case TagsInclusionMode::Any:
-			return std::any_of (filterTags.begin (), filterTags.end (), hasTag);
+			return std::ranges::any_of (filterTags, hasTag);
 		case TagsInclusionMode::All:
-			return std::all_of (filterTags.begin (), filterTags.end (), hasTag);
+			return std::ranges::all_of (filterTags, hasTag);
 		}
 
 		Util::Unreachable ();
