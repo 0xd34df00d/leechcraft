@@ -20,11 +20,9 @@ namespace Blogique
 {
 namespace Metida
 {
-	FriendItemDelegate::FriendItemDelegate (QSortFilterProxyModel *sortModel, QTreeView *parent)
+	FriendItemDelegate::FriendItemDelegate (QTreeView *parent)
 	: QStyledItemDelegate (parent)
-	, ColoringItems_ (true)
 	, View_ (parent)
-	, SortModel_ (sortModel)
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("ColoringFriendsList",
 				this, "handleColoringItemChanged");
@@ -35,13 +33,12 @@ namespace Metida
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		auto o = option;
-		const QString& backgroundColor = SortModel_->mapToSource (index.sibling (index.row (), Columns::UserName))
-				.data (ItemColorRoles::BackgroundColor).toString ();
-		const QString& foregroundColor = SortModel_->mapToSource (index.sibling (index.row (), Columns::UserName))
-				.data (ItemColorRoles::ForegroundColor).toString ();
-
 		if (ColoringItems_)
 		{
+			const auto& nameIdx = index.siblingAtColumn (Columns::UserName);
+			const auto& backgroundColor = nameIdx.data (ItemColorRoles::BackgroundColor).toString ();
+			const auto& foregroundColor = nameIdx.data (ItemColorRoles::ForegroundColor).toString ();
+
 			if (!backgroundColor.isEmpty ())
 				painter->fillRect (o.rect, QColor (backgroundColor));
 			if (!foregroundColor.isEmpty ())
@@ -53,8 +50,7 @@ namespace Metida
 
 	void FriendItemDelegate::handleColoringItemChanged ()
 	{
-		ColoringItems_ = XmlSettingsManager::Instance ()
-				.Property ("ColoringFriendsList", true).toBool ();
+		ColoringItems_ = XmlSettingsManager::Instance ().Property ("ColoringFriendsList", true).toBool ();
 
 		View_->viewport ()->update ();
 		View_->update ();

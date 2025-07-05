@@ -11,7 +11,6 @@
 #include <QStyledItemDelegate>
 
 class QTreeView;
-class QSortFilterProxyModel;
 
 namespace LC
 {
@@ -38,19 +37,17 @@ namespace Metida
 	{
 		Q_OBJECT
 
-		bool ColoringItems_;
 		QTreeView *View_;
-		QSortFilterProxyModel *SortModel_;
+		bool ColoringItems_ = true;
 
 		enum Columns
 		{
 			UserName
 		};
 	public:
-		FriendItemDelegate (QSortFilterProxyModel *sortModel, QTreeView *view = 0);
-		void paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& index) const;
+		explicit FriendItemDelegate (QTreeView *view = 0);
 
+		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 	public slots:
 		void handleColoringItemChanged ();
 	};

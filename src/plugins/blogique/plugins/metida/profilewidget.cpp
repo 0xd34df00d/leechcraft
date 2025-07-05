@@ -52,7 +52,7 @@ namespace Metida
 		FriendsModel_->setHorizontalHeaderLabels ({ tr ("Username"),
 				tr ("Status"), tr ("Full name"), tr ("Birthday") });
 
-		FriendItemDelegate *friendDelegate = new FriendItemDelegate (FriendsProxyModel_, Ui_.FriendsView_);
+		FriendItemDelegate *friendDelegate = new FriendItemDelegate (Ui_.FriendsView_);
 		connect (this,
 				SIGNAL (coloringItemChanged ()),
 				friendDelegate,
