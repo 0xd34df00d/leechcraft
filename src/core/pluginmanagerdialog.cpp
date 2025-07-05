@@ -90,19 +90,6 @@ namespace LC
 		public:
 			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 		protected:
-			bool filterAcceptsRow (int row, const QModelIndex&) const override
-			{
-				if (!IsFilterSet ())
-					return true;
-
-				const auto m = sourceModel ();
-				for (int c = 0, ccount = m->columnCount (); c < ccount; ++c)
-					if (IsMatch (m->index (row, c).data ().toString ()))
-						return true;
-
-				return false;
-			}
-
 			bool lessThan (const QModelIndex& left, const QModelIndex& right) const override
 			{
 				const QString& lPath = left.data (PluginManager::Roles::PluginFilename).toString ();

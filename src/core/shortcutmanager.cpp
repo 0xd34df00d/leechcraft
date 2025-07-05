@@ -10,7 +10,6 @@
 #include <memory>
 #include <algorithm>
 #include <QStandardItemModel>
-#include <QSortFilterProxyModel>
 #include <QSettings>
 #include <QtDebug>
 #include <util/models/fixedstringfilterproxymodel.h>
@@ -24,27 +23,6 @@
 
 namespace LC
 {
-	class SMFilterProxyModel : public Util::FixedStringFilterProxyModel
-	{
-	public:
-		using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
-	protected:
-		bool filterAcceptsRow (int row, const QModelIndex& parent) const override
-		{
-			if (!parent.isValid ())
-				return true;
-
-			if (!IsFilterSet ())
-				return true;
-
-			auto checkStr = [row, parent, this] (int col)
-			{
-				return IsMatch (sourceModel ()->index (row, col, parent).data ().toString ());
-			};
-			return checkStr (0) || checkStr (1);
-		}
-	};
-
 	namespace
 	{
 		void UpdateIcons (const ShortcutManager::IconsList_t& icons)
@@ -63,7 +41,7 @@ namespace LC
 	ShortcutManager::ShortcutManager (QWidget *parent)
 	: QWidget { parent }
 	, Model_ { new QStandardItemModel { this } }
-	, Filter_ { new SMFilterProxyModel { this } }
+	, Filter_ { new Util::FixedStringFilterProxyModel { this } }
 	{
 		Filter_->setDynamicSortFilter (true);
 		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Shortcut"), tr ("Alternate") });
