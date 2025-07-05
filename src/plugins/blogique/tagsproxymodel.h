@@ -8,26 +8,26 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <util/models/fixedstringfilterproxymodel.h>
 
 namespace LC
 {
 namespace Blogique
 {
-	class TagsProxyModel : public QSortFilterProxyModel
+	class TagsProxyModel : public Util::FixedStringFilterProxyModel
 	{
 		Q_OBJECT
 
 		Q_PROPERTY (int count READ GetCount NOTIFY countChanged)
 	public:
-		explicit TagsProxyModel (QObject *parent = 0);
+		using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 
-		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const;
-		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
 		int GetCount () const;
 		Q_INVOKABLE QString GetTagName (int index);
 
 		void countUpdated ();
+	protected:
+		bool lessThan (const QModelIndex& left, const QModelIndex& right) const override;
 	signals:
 		void countChanged ();
 	};

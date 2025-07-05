@@ -13,20 +13,6 @@ namespace LC
 {
 namespace Blogique
 {
-	TagsProxyModel::TagsProxyModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
-	{
-		setDynamicSortFilter (true);
-		setFilterCaseSensitivity (Qt::CaseInsensitive);
-	}
-
-	bool TagsProxyModel::filterAcceptsRow (int sourceRow,
-			const QModelIndex& sourceParent) const
-	{
-		auto index = sourceModel ()->index (sourceRow, 0, sourceParent);
-		return sourceModel ()->data (index).toString ().startsWith (filterRegularExpression ().pattern ());
-	}
-
 	bool TagsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
 		const int leftData = sourceModel ()->data (left, BlogiqueWidget::TagFrequency).toInt ();

@@ -66,6 +66,7 @@ namespace Blogique
 	, TagsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		TagsProxyModel_->SetFilterColumns ({ 0 });
 
 		TagsCloud_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 		Tags_->setResizeMode (QQuickWidget::SizeRootObjectToView);
@@ -1066,7 +1067,7 @@ namespace Blogique
 
 	void BlogiqueWidget::handleTagTextChanged (const QString& text)
 	{
-		TagsProxyModel_->setFilterFixedString (text);
+		TagsProxyModel_->SetFilterString (text);
 		TagsProxyModel_->countUpdated ();
 	}
 
