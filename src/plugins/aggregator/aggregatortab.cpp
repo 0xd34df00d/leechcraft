@@ -58,7 +58,6 @@ namespace LC::Aggregator
 			}) }
 	{
 		ChannelsFilterModel_->setSourceModel (&deps.ChannelsModel_);
-		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->addWidget (ItemsWidget_.get ());
