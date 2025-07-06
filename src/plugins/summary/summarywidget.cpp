@@ -28,6 +28,7 @@
 #include <util/sll/qtutil.h>
 #include "core.h"
 #include "summary.h"
+#include "summarytagsfilter.h"
 #include "modeldelegate.h"
 
 Q_DECLARE_METATYPE (QMenu*)

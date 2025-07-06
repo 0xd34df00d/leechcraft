@@ -100,7 +100,7 @@ namespace Summary
 		return data.value<QWidget*> ();
 	}
 
-	QSortFilterProxyModel* Core::GetTasksModel () const
+	SummaryTagsFilter* Core::GetTasksModel () const
 	{
 		const auto filter = new SummaryTagsFilter ();
 		filter->setDynamicSortFilter (true);

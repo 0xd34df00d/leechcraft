@@ -26,6 +26,7 @@ namespace LC
 namespace Summary
 {
 	class SearchWidget;
+	class SummaryTagsFilter;
 
 	class SummaryWidget : public QWidget
 						, public ITabWidget
@@ -42,7 +43,7 @@ namespace Summary
 		std::unique_ptr<QToolBar> Toolbar_;
 		static QObject *S_ParentMultiTabs_;
 
-		QSortFilterProxyModel *Sorter_;
+		SummaryTagsFilter *Sorter_;
 
 		QHash<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
 		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;

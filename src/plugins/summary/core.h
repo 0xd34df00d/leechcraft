@@ -22,6 +22,7 @@ namespace LC
 {
 namespace Summary
 {
+	class SummaryTagsFilter;
 	class SummaryWidget;
 	class TreeViewReemitter;
 
@@ -91,7 +92,7 @@ namespace Summary
 			*
 			* For example, this is used in the Summary.
 			*/
-		QSortFilterProxyModel* GetTasksModel () const;
+		SummaryTagsFilter* GetTasksModel () const;
 
 		/** Returns list of tags for a given row using given model. It's
 			* assumed that the passed model is actually a MergeModel.
