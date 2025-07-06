@@ -103,7 +103,6 @@ namespace Summary
 	SummaryTagsFilter* Core::GetTasksModel () const
 	{
 		const auto filter = new SummaryTagsFilter ();
-		filter->setDynamicSortFilter (true);
 		filter->setSourceModel (MergeModel_.get ());
 		filter->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		return filter;
