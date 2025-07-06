@@ -22,7 +22,7 @@ namespace LC::Util
 		explicit FixedStringFilterProxyModel (QObject* = nullptr);
 		explicit FixedStringFilterProxyModel (Qt::CaseSensitivity, QObject* = nullptr);
 
-		void SetFilterString (const QString&);
+		virtual void SetFilterString (const QString&);
 		QString GetFilterString () const;
 
 		bool IsFilterSet () const;
