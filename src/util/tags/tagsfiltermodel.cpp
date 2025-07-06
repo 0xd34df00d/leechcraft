@@ -15,15 +15,23 @@
 namespace LC::Util
 {
 	TagsFilterModel::TagsFilterModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
-	, Separator_ (GetDefaultTagsSeparator ())
+	: FixedStringFilterProxyModel { parent }
+	, Separator_ { GetDefaultTagsSeparator () }
 	{
+	}
+
+	void TagsFilterModel::SetFilterString (const QString& string)
+	{
+		FilterTags_.clear ();
+		for (const auto& s : string.split (Separator_, Qt::SkipEmptyParts))
+			FilterTags_ << s.trimmed ();
+
+		FixedStringFilterProxyModel::SetFilterString (string);
 	}
 
 	void TagsFilterModel::SetSeparator (const QString& separator)
 	{
 		Separator_ = separator;
-
 		invalidateFilter ();
 	}
 
@@ -41,51 +49,27 @@ namespace LC::Util
 
 	bool TagsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& index) const
 	{
-		return NormalMode_ ?
-				FilterNormalMode (sourceRow, index) :
-				FilterTagsMode (sourceRow, index);
-	}
+		if (NormalMode_)
+			return FixedStringFilterProxyModel::filterAcceptsRow (sourceRow, index);
 
-	bool TagsFilterModel::FilterNormalMode (int sourceRow, const QModelIndex& index) const
-	{
-		if (index.isValid () && sourceModel ()->rowCount (index))
-			return true;
-
-		const auto& pattern = filterRegularExpression ().pattern ();
-		if (pattern.isEmpty ())
-			return true;
-
-		for (int i = 0, cc = sourceModel ()->columnCount (index); i < cc; ++i)
-		{
-			const auto& rowIdx = sourceModel ()->index (sourceRow, i, index);
-			const auto& str = rowIdx.data ().toString ();
-			if (str.contains (pattern) || filterRegularExpression ().match (str).hasMatch ())
-				return true;
-		}
-
-		return false;
+		return FilterTagsMode (sourceRow, index);
 	}
 
 	bool TagsFilterModel::FilterTagsMode (int sourceRow, const QModelIndex&) const
 	{
-		QList<QStringView> filterTags;
-		const auto& pattern = filterRegularExpression ().pattern ();
-		for (const auto& s : QStringView { pattern }.split (Separator_, Qt::SkipEmptyParts))
-			filterTags << s.trimmed ();
-
-		if (filterTags.isEmpty ())
+		if (FilterTags_.isEmpty ())
 			return true;
 
 		const auto& itemTags = GetTagsForIndex (sourceRow);
-		const auto hasTag = [&] (QStringView tag) { return itemTags.contains (tag); };
+		const auto hasTag = [&] (const QString& tag) { return itemTags.contains (tag); };
 		switch (TagsMode_)
 		{
 		case TagsInclusionMode::Any:
-			return std::ranges::any_of (filterTags, hasTag);
+			return std::ranges::any_of (FilterTags_, hasTag);
 		case TagsInclusionMode::All:
-			return std::ranges::all_of (filterTags, hasTag);
+			return std::ranges::all_of (FilterTags_, hasTag);
 		}
 
-		Util::Unreachable ();
+		Unreachable ();
 	}
 }

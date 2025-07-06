@@ -131,16 +131,16 @@ namespace Poshuku
 		{
 		case 1:
 			FavoritesFilterModel_->SetTagsMode (true);
-			FavoritesFilterModel_->setFilterFixedString (text);
+			FavoritesFilterModel_->SetFilterString (text);
 			break;
 		default:
 			FavoritesFilterModel_->SetTagsMode (false);
-			FavoritesFilterModel_->setFilterFixedString (text);
+			FavoritesFilterModel_->SetFilterString (text);
 			break;
 		}
 
 		const bool isCs = Ui_.FavoritesFilterCaseSensitivity_->checkState () == Qt::Checked;
-		FavoritesFilterModel_->setFilterCaseSensitivity (isCs ? Qt::CaseSensitive : Qt::CaseInsensitive);
+		FavoritesFilterModel_->SetCaseSensitivity (isCs ? Qt::CaseSensitive : Qt::CaseInsensitive);
 	}
 
 	void BookmarksWidget::on_FavoritesView__activated (const QModelIndex& act)

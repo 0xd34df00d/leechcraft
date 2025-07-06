@@ -18,23 +18,23 @@ namespace HistoryHolder
 	, R_ (r)
 	{
 		setSourceModel (model.get ());
-		setDynamicSortFilter (true);
 
-		setFilterCaseSensitivity (r.CaseSensitive_ ?
-				Qt::CaseSensitive : Qt::CaseInsensitive);
+		const auto cs = r.CaseSensitive_ ? Qt::CaseSensitive : Qt::CaseInsensitive;
 
 		switch (r.Type_)
 		{
 		case Request::RTWildcard:
 			setFilterWildcard (r.String_);
+			setFilterCaseSensitivity (cs);
 			break;
 		case Request::RTRegexp:
 			setFilterRegularExpression (r.String_);
+			setFilterCaseSensitivity (cs);
 			break;
 		default:
-			setFilterFixedString (r.String_);
-			if (r.Type_ == Request::RTTag)
-				SetTagsMode (true);
+			SetFilterString (r.String_);
+			SetCaseSensitivity (cs);
+			SetTagsMode (r.Type_ == Request::RTTag);
 			break;
 		}
 	}

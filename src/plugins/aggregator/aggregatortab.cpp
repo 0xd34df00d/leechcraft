@@ -78,7 +78,7 @@ namespace LC::Aggregator
 		connect (Ui_.TagsLine_,
 				&QLineEdit::textChanged,
 				ChannelsFilterModel_,
-				&QSortFilterProxyModel::setFilterFixedString);
+				&ChannelsFilterModel::SetFilterString);
 
 		new Util::TagsCompleter (Ui_.TagsLine_);
 		Ui_.TagsLine_->AddSelector ();

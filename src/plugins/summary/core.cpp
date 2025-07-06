@@ -104,7 +104,6 @@ namespace Summary
 	{
 		const auto filter = new SummaryTagsFilter ();
 		filter->setSourceModel (MergeModel_.get ());
-		filter->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		return filter;
 	}
 

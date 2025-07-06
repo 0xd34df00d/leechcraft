@@ -48,14 +48,12 @@ namespace Otlozhu
 
 		Ui_.TodoTree_->setItemDelegate (new TodoListDelegate (Ui_.TodoTree_));
 
-		ProxyModel_->setDynamicSortFilter (true);
 		ProxyModel_->setSourceModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
-		ProxyModel_->setFilterKeyColumn (0);
-		ProxyModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+		ProxyModel_->SetFilterColumns ({ 0 });
 		connect (Ui_.FilterLine_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				ProxyModel_,
-				SLOT (setFilterFixedString (QString)));
+				&TodoSFProxyModel::SetFilterString);
 		connect (Ui_.FilterLine_,
 				&QLineEdit::textChanged,
 				ProxyModel_,

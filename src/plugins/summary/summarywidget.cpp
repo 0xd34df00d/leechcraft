@@ -437,7 +437,7 @@ namespace Summary
 
 	void SummaryWidget::feedFilterParameters ()
 	{
-		Sorter_->setFilterFixedString (SearchWidget_->GetText ());
+		Sorter_->SetFilterString (SearchWidget_->GetText ());
 	}
 
 	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)

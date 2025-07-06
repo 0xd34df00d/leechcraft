@@ -17,7 +17,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include <util/xpc/defaulthookproxy.h>
-#include "filtermodel.h"
 #include "core.h"
 #include "editbookmarkdialog.h"
 

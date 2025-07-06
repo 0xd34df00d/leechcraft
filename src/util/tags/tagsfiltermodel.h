@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include "tagsconfig.h"
 
 namespace LC::Util
@@ -26,10 +26,11 @@ namespace LC::Util
 	 * separator, which is <em>;</em> by default but can be set via the
 	 * SetSeparator() method.
 	 */
-	class UTIL_TAGS_API TagsFilterModel : public QSortFilterProxyModel
+	class UTIL_TAGS_API TagsFilterModel : public FixedStringFilterProxyModel
 	{
-		bool NormalMode_ = true;
 		QString Separator_;
+		QList<QString> FilterTags_;
+		bool NormalMode_ = true;
 	public:
 		/** @brief Describes the modes of matching two sets of tags.
 		 *
@@ -59,6 +60,8 @@ namespace LC::Util
 		 * @param[in] parent The parent object of this model.
 		 */
 		explicit TagsFilterModel (QObject *parent = nullptr);
+
+		void SetFilterString (const QString&) override;
 
 		/** @brief Sets the separator for the tags.
 		 *
@@ -107,7 +110,6 @@ namespace LC::Util
 		 */
 		virtual QStringList GetTagsForIndex (int row) const = 0;
 	private:
-		bool FilterNormalMode (int, const QModelIndex&) const;
 		bool FilterTagsMode (int, const QModelIndex&) const;
 	};
 }
