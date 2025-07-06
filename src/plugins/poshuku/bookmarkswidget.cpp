@@ -28,7 +28,6 @@ namespace Poshuku
 
 		FavoritesFilterModel_ = std::make_unique<FilterModel> (this);
 		FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
-		FavoritesFilterModel_->setDynamicSortFilter (true);
 
 		const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
 		FlatToFolders_ = std::make_shared<Util::FlatToFoldersProxyModel> (itm);
@@ -126,19 +125,11 @@ namespace Poshuku
 	void BookmarksWidget::updateFavoritesFilter ()
 	{
 		int section = Ui_.FavoritesFilterType_->currentIndex ();
-		QString text = Ui_.FavoritesFilterLine_->text ();
+		const auto& text = Ui_.FavoritesFilterLine_->text ();
 
 		switch (section)
 		{
 		case 1:
-			FavoritesFilterModel_->SetTagsMode (false);
-			FavoritesFilterModel_->setFilterWildcard (text);
-			break;
-		case 2:
-			FavoritesFilterModel_->SetTagsMode (false);
-			FavoritesFilterModel_->setFilterRegularExpression (text);
-			break;
-		case 3:
 			FavoritesFilterModel_->SetTagsMode (true);
 			FavoritesFilterModel_->setFilterFixedString (text);
 			break;
@@ -148,10 +139,8 @@ namespace Poshuku
 			break;
 		}
 
-		FavoritesFilterModel_->
-			setFilterCaseSensitivity ((Ui_.FavoritesFilterCaseSensitivity_->
-						checkState () == Qt::Checked) ? Qt::CaseSensitive :
-					Qt::CaseInsensitive);
+		const bool isCs = Ui_.FavoritesFilterCaseSensitivity_->checkState () == Qt::Checked;
+		FavoritesFilterModel_->setFilterCaseSensitivity (isCs ? Qt::CaseSensitive : Qt::CaseInsensitive);
 	}
 
 	void BookmarksWidget::on_FavoritesView__activated (const QModelIndex& act)
