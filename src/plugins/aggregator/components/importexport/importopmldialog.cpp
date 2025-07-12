@@ -137,7 +137,11 @@ namespace LC::Aggregator
 				{
 					for (const auto& [name, value] : result.Info_.asKeyValueRange ())
 					{
+#ifndef Q_PROCESSOR_ARM
 						if (const auto field = Fields_.value (name))
+#else
+						if (const auto field = Fields_.value (QLatin1String { name.toLatin1 () }))
+#endif
 							field->setText (value);
 						else
 						{
