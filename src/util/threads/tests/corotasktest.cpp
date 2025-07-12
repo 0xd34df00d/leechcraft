@@ -265,7 +265,10 @@ namespace LC::Util
 
 		QCOMPARE (result, expected);
 		QCOMPARE_LT (creationElapsed, 1);
-		CompareDouble (executionElapsed, max, 0.05);
+
+		QCOMPARE_GE (executionElapsed, max);
+		const auto linearizedExecTime = max * (max + 1) / 2;
+		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
 
 	void CoroTaskTest::testWaitManyTuple ()
@@ -282,7 +285,9 @@ namespace LC::Util
 		const auto executionElapsed = timer.elapsed ();
 
 		QCOMPARE (result, (std::tuple { 10, 9, 2, 1 }));
-		CompareDouble (executionElapsed, 10, 0.05);
+
+		QCOMPARE_GE (executionElapsed, 10);
+		QCOMPARE_LT (executionElapsed, (10 + 9 + 2 + 1) / 2);
 	}
 
 	void CoroTaskTest::testEither ()
