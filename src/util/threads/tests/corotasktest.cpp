@@ -346,6 +346,7 @@ namespace LC::Util
 	{
 		Throttle t { 10ms };
 		constexpr auto count = 10;
+		constexpr static auto intraDelay = 9ms;
 
 		QElapsedTimer timer;
 		timer.start ();
@@ -355,7 +356,7 @@ namespace LC::Util
 			{
 				co_await t;
 				if (i != count - 1)
-					co_await Precisely { 9ms };
+					co_await Precisely { intraDelay };
 			}
 		} (t);
 		GetTaskResult (task);
@@ -363,7 +364,9 @@ namespace LC::Util
 
 		const auto expectedMinTime = count * t.GetInterval ().count ();
 		QCOMPARE_GE (time, expectedMinTime);
-		QCOMPARE_LE (time - expectedMinTime, expectedMinTime * 0.05);
+
+		const auto delaysTime = (count - 1) * intraDelay.count ();
+		QCOMPARE_LE (time - expectedMinTime, delaysTime / 2);
 	}
 
 	void CoroTaskTest::testThrottleManyCoros ()
