@@ -225,20 +225,6 @@ namespace LC::Util
 		QCOMPARE (GetTaskResult (ready), 42);
 	}
 
-	namespace
-	{
-		void CompareDouble (double actual, double expected, double delta)
-		{
-			const auto diff = std::abs (actual - expected);
-			const auto midpoint = (actual + expected) / 2;
-			if (diff / midpoint >= delta)
-			{
-				auto message = std::to_string (actual) + " is too different from the expected " + std::to_string (expected);
-				QFAIL (message.c_str ());
-			}
-		}
-	}
-
 	void CoroTaskTest::testWaitMany ()
 	{
 		constexpr auto max = 100;
