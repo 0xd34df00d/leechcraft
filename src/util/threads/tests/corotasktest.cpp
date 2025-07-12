@@ -355,6 +355,33 @@ namespace LC::Util
 		QCOMPARE_LE (time - expectedMinTime, delaysTime / 2);
 	}
 
+	void CoroTaskTest::testThrottleSameCoroVerySlow ()
+	{
+		Throttle t { 10ms };
+		constexpr auto count = 10;
+		constexpr static auto intraDelay = 20ms;
+
+		QElapsedTimer timer;
+		timer.start ();
+		auto task = [] (auto& t) -> Task<void>
+		{
+			for (int i = 0; i < count; ++i)
+			{
+				co_await t;
+				if (i != count - 1)
+					co_await Precisely { intraDelay };
+			}
+		} (t);
+		GetTaskResult (task);
+		const auto time = timer.elapsed ();
+
+		const auto expectedMinTime = (count - 1) * intraDelay.count ();
+		QCOMPARE_GE (time, expectedMinTime);
+
+		const auto throttlesTime = count * t.GetInterval ().count ();
+		QCOMPARE_LE (time - expectedMinTime, throttlesTime / 2);
+	}
+
 	void CoroTaskTest::testThrottleManyCoros ()
 	{
 		Throttle t { 1ms, Qt::TimerType::PreciseTimer };

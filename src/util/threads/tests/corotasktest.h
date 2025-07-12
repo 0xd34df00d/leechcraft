@@ -34,6 +34,7 @@ namespace LC::Util
 
 		void testThrottleSameCoro ();
 		void testThrottleSameCoroSlow ();
+		void testThrottleSameCoroVerySlow ();
 		void testThrottleManyCoros ();
 
 		void testContextDestrBeforeFinish ();
