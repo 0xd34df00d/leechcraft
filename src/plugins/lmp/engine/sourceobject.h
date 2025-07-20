@@ -17,6 +17,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <util/sll/util.h>
+#include <util/threads/attributes.h>
 #include "interfaces/lmp/isourceobject.h"
 #include "interfaces/lmp/ipath.h"
 #include "util/lmp/gstutil.h"
@@ -101,12 +102,12 @@ namespace LMP
 		Path *Path_ = nullptr;
 
 		AudioSource CurrentSource_;
-		AudioSource NextSource_;
-
-		AudioSource ActualSource_;
 
 		QMutex NextSrcMutex_;
 		QWaitCondition NextSrcWC_;
+		AudioSource NextSource_ GUARDED_BY (NextSrcMutex_);
+
+		AudioSource ActualSource_;
 
 		bool IsSeeking_ = false;
 
