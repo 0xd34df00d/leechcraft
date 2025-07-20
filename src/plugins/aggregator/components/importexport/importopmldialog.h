@@ -35,7 +35,7 @@ namespace LC::Aggregator
 		using ItemsModel_t = Util::ItemsModel<Item, Util::ItemsCheckable<&Item::IsChecked_>, Util::ItemsEditable>;
 		ItemsModel_t Model_;
 
-		QHash<QLatin1String, QLabel*> Fields_;
+		QHash<QStringView, QLabel*> Fields_;
 	public:
 		explicit ImportOPMLDialog (const QString& = {}, QWidget* = nullptr);
 		~ImportOPMLDialog () override;

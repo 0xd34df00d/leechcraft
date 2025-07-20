@@ -51,11 +51,11 @@ namespace LC::Aggregator
 
 		Fields_ =
 		{
-			{ "title"_ql, Ui_.Title_ },
-			{ "dateCreated"_ql, Ui_.Created_ },
-			{ "dateModified"_ql, Ui_.Edited_ },
-			{ "ownerName"_ql, Ui_.Owner_ },
-			{ "ownerEmail"_ql, Ui_.OwnerEmail_ },
+			{ u"title"_qsv, Ui_.Title_ },
+			{ u"dateCreated"_qsv, Ui_.Created_ },
+			{ u"dateModified"_qsv, Ui_.Edited_ },
+			{ u"ownerName"_qsv, Ui_.Owner_ },
+			{ u"ownerEmail"_qsv, Ui_.OwnerEmail_ },
 		};
 
 		connect (Ui_.Browse_,
@@ -137,11 +137,7 @@ namespace LC::Aggregator
 				{
 					for (const auto& [name, value] : result.Info_.asKeyValueRange ())
 					{
-#ifndef Q_PROCESSOR_ARM
 						if (const auto field = Fields_.value (name))
-#else
-						if (const auto field = Fields_.value (QLatin1String { name.toLatin1 () }))
-#endif
 							field->setText (value);
 						else
 						{
