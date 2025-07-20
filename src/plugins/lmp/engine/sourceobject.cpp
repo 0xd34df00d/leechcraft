@@ -368,8 +368,6 @@ namespace LMP
 
 		NextSrcWC_.wakeAll ();
 		NextSrcMutex_.unlock ();
-
-		Metadata_.clear ();
 	}
 
 	void SourceObject::Play ()
