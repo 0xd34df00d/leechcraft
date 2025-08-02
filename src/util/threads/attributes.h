@@ -16,5 +16,6 @@
 
 #define GUARDED_BY(m) LC_THREAD_ANNOTATION(guarded_by(m))
 #define CAPABILITY(s) LC_THREAD_ANNOTATION(capability(s))
+#define SCOPED_LOCKABLE LC_THREAD_ANNOTATION(scoped_lockable)
 #define ACQUIRE(...) LC_THREAD_ANNOTATION(acquire_capability(__VA_ARGS__))
 #define RELEASE(...) LC_THREAD_ANNOTATION(release_capability(__VA_ARGS__))
