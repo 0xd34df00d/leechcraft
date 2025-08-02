@@ -34,4 +34,20 @@ namespace LC::Util
 			return M_;
 		}
 	};
+
+	class SCOPED_LOCKABLE MutexLocker final
+	{
+		Mutex& M_;
+	public:
+		explicit MutexLocker (Mutex& m) ACQUIRE (m)
+		: M_ { m }
+		{
+			M_.lock ();
+		}
+
+		~MutexLocker () RELEASE ()
+		{
+			M_.unlock ();
+		}
+	};
 }
