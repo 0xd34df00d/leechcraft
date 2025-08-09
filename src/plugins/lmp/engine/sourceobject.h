@@ -17,7 +17,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <util/sll/util.h>
-#include <util/threads/attributes.h>
+#include <util/threads/mutex.h>
 #include "interfaces/lmp/isourceobject.h"
 #include "interfaces/lmp/ipath.h"
 #include "util/lmp/gstutil.h"
@@ -103,7 +103,7 @@ namespace LMP
 
 		AudioSource CurrentSource_;
 
-		QMutex NextSrcMutex_;
+		Util::Mutex NextSrcMutex_;
 		QWaitCondition NextSrcWC_;
 		AudioSource NextSource_ GUARDED_BY (NextSrcMutex_);
 
