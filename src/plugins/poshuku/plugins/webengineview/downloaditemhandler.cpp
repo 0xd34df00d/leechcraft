@@ -8,11 +8,7 @@
 
 #include "downloaditemhandler.h"
 #include <QWebEngineProfile>
-#if QT_VERSION_MAJOR >= 6
 #include <QWebEngineDownloadRequest>
-#else
-#include <QWebEngineDownloadItem>
-#endif
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>

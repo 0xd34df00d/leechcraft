@@ -11,11 +11,7 @@
 #include <QFile>
 #include <QWebEngineSettings>
 #include <QWebEngineHistory>
-#if QT_VERSION_MAJOR >= 6
 #include <QWebEngineContextMenuRequest>
-#else
-#include <QWebEngineContextMenuData>
-#endif
 #include <QWebChannel>
 #include <QPrinter>
 #include <QPrintDialog>
@@ -302,11 +298,7 @@ namespace LC::Poshuku::WebEngineView
 
 	QMenu* CustomWebView::CreateStandardContextMenu ()
 	{
-#if QT_VERSION_MAJOR >= 6
 		return createStandardContextMenu ();
-#else
-		return page ()->createStandardContextMenu ();
-#endif
 	}
 
 	namespace
@@ -487,11 +479,7 @@ namespace LC::Poshuku::WebEngineView
 
 	void CustomWebView::contextMenuEvent (QContextMenuEvent *event)
 	{
-#if QT_VERSION_MAJOR >= 6
 		const auto& data = *lastContextMenuRequest ();
-#else
-		const auto& data = page ()->contextMenuData ();
-#endif
 		emit contextMenuRequested (event->globalPos (),
 				{
 					data.isContentEditable (),
