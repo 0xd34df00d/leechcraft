@@ -356,6 +356,7 @@ namespace LMP
 		auto path = source.ToUrl ().toEncoded ();
 		g_object_set (G_OBJECT (Dec_.get ()), "uri", path.constData (), nullptr);
 
+		const Util::MutexLocker locker { NextSrcMutex_ };
 		NextSource_.Clear ();
 	}
 
@@ -374,10 +375,15 @@ namespace LMP
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "current source is invalid, setting next one";
-			if (NextSource_.IsEmpty ())
+			auto next = [&]
+			{
+				const Util::MutexLocker locker { NextSrcMutex_ };
+				return NextSource_;
+			} ();
+			if (next.IsEmpty ())
 				return;
 
-			SetCurrentSource (NextSource_);
+			SetCurrentSource (next);
 		}
 
 		if (CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
@@ -409,6 +415,7 @@ namespace LMP
 
 	void SourceObject::ClearQueue ()
 	{
+		const Util::MutexLocker locker { NextSrcMutex_ };
 		NextSource_.Clear ();
 	}
 
