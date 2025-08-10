@@ -361,13 +361,11 @@ namespace LMP
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
 	{
-		NextSrcMutex_.lock ();
-
 		qDebug () << Q_FUNC_INFO << source.ToUrl ();
-		NextSource_ = source;
 
+		const Util::MutexLocker locker { NextSrcMutex_ };
+		NextSource_ = source;
 		NextSrcWC_.wakeAll ();
-		NextSrcMutex_.unlock ();
 	}
 
 	void SourceObject::Play ()
@@ -419,17 +417,14 @@ namespace LMP
 		qDebug () << Q_FUNC_INFO;
 		auto timeoutIndicator = std::make_shared<std::atomic_bool> (false);
 
-		NextSrcMutex_.lock ();
+		const Util::MutexLocker locker { NextSrcMutex_ };
 		if (NextSource_.IsEmpty ())
 		{
 			emit aboutToFinish (timeoutIndicator);
-			NextSrcWC_.wait (&NextSrcMutex_, 500);
+			NextSrcWC_.wait (&NextSrcMutex_.GetMutex (), 500);
 		}
 		qDebug () << "wait finished; next source:" << NextSource_.ToUrl ()
 				<< "; current source:" << CurrentSource_.ToUrl ();
-
-		std::shared_ptr<void> mutexGuard (nullptr,
-				[this] (void*) { NextSrcMutex_.unlock (); });
 
 		if (NextSource_.IsEmpty ())
 		{
