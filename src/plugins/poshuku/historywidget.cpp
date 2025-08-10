@@ -8,9 +8,9 @@
 
 #include "historywidget.h"
 #include <QDateTime>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include "core.h"
 #include "historymodel.h"
-#include "historyfiltermodel.h"
 
 namespace LC
 {
@@ -18,7 +18,7 @@ namespace Poshuku
 {
 	HistoryWidget::HistoryWidget (QWidget *parent)
 	: QWidget { parent }
-	, HistoryFilterModel_ { new HistoryFilterModel { this } }
+	, HistoryFilterModel_ { new Util::FixedStringFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
 
@@ -56,7 +56,7 @@ namespace Poshuku
 
 	void HistoryWidget::updateHistoryFilter ()
 	{
-		HistoryFilterModel_->setFilterFixedString (Ui_.HistoryFilterLine_->text ());
+		HistoryFilterModel_->SetFilterString (Ui_.HistoryFilterLine_->text ());
 
 		const auto cs = Ui_.HistoryFilterCaseSensitivity_->checkState () == Qt::Checked ?
 				Qt::CaseSensitive :

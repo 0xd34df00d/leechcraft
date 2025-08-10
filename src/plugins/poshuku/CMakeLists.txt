@@ -34,7 +34,6 @@ LC_DEFINE_PLUGIN (
 		xbelparser.cpp
 		xbelgenerator.cpp
 		pluginmanager.cpp
-		historyfiltermodel.cpp
 		proxyobject.cpp
 		passwordremember.cpp
 		pageformsdata.cpp

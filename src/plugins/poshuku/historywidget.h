@@ -10,6 +10,11 @@
 
 #include "ui_historywidget.h"
 
+namespace LC::Util
+{
+	class FixedStringFilterProxyModel;
+}
+
 namespace LC
 {
 namespace Poshuku
@@ -21,7 +26,7 @@ namespace Poshuku
 		Q_OBJECT
 
 		Ui::HistoryWidget Ui_;
-		HistoryFilterModel * const HistoryFilterModel_;
+		Util::FixedStringFilterProxyModel * const HistoryFilterModel_;
 	public:
 		HistoryWidget (QWidget* = 0);
 	private slots:
