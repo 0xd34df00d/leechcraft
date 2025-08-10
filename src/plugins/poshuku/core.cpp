@@ -59,11 +59,6 @@ namespace Poshuku
 		qRegisterMetaType<BrowserWidgetSettings> ("LC::Poshuku::BrowserWidgetSettings");
 		qRegisterMetaType<ElementData> ("LC::Poshuku::ElementData");
 		qRegisterMetaType<ElementsData_t> ("LC::Poshuku::ElementsData_t");
-#if QT_VERSION_MAJOR == 5
-		qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LC::Poshuku::BrowserWidgetSettings");
-		qRegisterMetaTypeStreamOperators<ElementData> ("LC::Poshuku::ElementData");
-		qRegisterMetaTypeStreamOperators<ElementsData_t> ("LC::Poshuku::ElementsData_t");
-#endif
 
 		Util::Introspectable::Instance ().Register<ElementData> (&ToVariantMap);
 

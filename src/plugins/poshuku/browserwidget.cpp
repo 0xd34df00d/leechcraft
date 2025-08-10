@@ -1447,11 +1447,7 @@ namespace Poshuku
 	{
 		ChangeEncoding_->clear ();
 
-#if QT_VERSION_MAJOR >= 6
 		auto codecs = QStringConverter::availableCodecs ();
-#else
-		QStringList codecs;
-#endif
 		codecs.sort ();
 
 		const auto& curEncoding = WebView_->GetDefaultTextEncoding ();
