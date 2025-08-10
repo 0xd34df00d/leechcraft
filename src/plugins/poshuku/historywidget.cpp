@@ -23,7 +23,6 @@ namespace Poshuku
 		Ui_.setupUi (this);
 
 		HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
-		HistoryFilterModel_->setDynamicSortFilter (true);
 		Ui_.HistoryView_->setModel (HistoryFilterModel_);
 
 		connect (Ui_.HistoryFilterLine_,
