@@ -30,10 +30,6 @@ namespace Poshuku
 				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (updateHistoryFilter ()));
-		connect (Ui_.HistoryFilterType_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (updateHistoryFilter ()));
 		connect (Ui_.HistoryFilterCaseSensitivity_,
 				SIGNAL (stateChanged (int)),
 				this,
@@ -61,21 +57,7 @@ namespace Poshuku
 
 	void HistoryWidget::updateHistoryFilter ()
 	{
-		const int section = Ui_.HistoryFilterType_->currentIndex ();
-		const auto& text = Ui_.HistoryFilterLine_->text ();
-
-		switch (section)
-		{
-		case 1:
-			HistoryFilterModel_->setFilterWildcard (text);
-			break;
-		case 2:
-			HistoryFilterModel_->setFilterRegularExpression (text);
-			break;
-		default:
-			HistoryFilterModel_->setFilterFixedString (text);
-			break;
-		}
+		HistoryFilterModel_->setFilterFixedString (Ui_.HistoryFilterLine_->text ());
 
 		const auto cs = Ui_.HistoryFilterCaseSensitivity_->checkState () == Qt::Checked ?
 				Qt::CaseSensitive :

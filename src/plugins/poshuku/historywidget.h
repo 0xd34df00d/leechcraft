@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <QWidget>
-#include <util/tags/tagscompleter.h>
 #include "ui_historywidget.h"
 
 namespace LC
