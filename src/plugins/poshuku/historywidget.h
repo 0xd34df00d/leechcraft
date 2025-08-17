@@ -23,7 +23,7 @@ namespace Poshuku
 
 	class HistoryWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (Poshuku::HistoryWidget)
 
 		Ui::HistoryWidget Ui_;
 		Util::FixedStringFilterProxyModel * const HistoryFilterModel_;
