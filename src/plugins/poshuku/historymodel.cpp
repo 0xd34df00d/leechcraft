@@ -178,7 +178,10 @@ namespace Poshuku
 			new QStandardItem { QLocale {}.toString (histItem.DateTime_, QLocale::ShortFormat) }
 		};
 		for (const auto item : items)
+		{
 			item->setEditable (false);
+			item->setData (histItem.URL_, URL);
+		}
 		item (section)->appendRow (items);
 	}
 

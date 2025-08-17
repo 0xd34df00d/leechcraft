@@ -36,6 +36,11 @@ namespace Poshuku
 			, ColumnDate
 		};
 
+		enum Roles
+		{
+			URL = Qt::UserRole + 1
+		};
+
 		HistoryModel (QObject* = nullptr);
 
 		void HandleStorageReady ();
