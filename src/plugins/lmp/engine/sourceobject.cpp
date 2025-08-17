@@ -424,16 +424,20 @@ namespace LMP
 		qDebug () << Q_FUNC_INFO;
 		auto timeoutIndicator = std::make_shared<std::atomic_bool> (false);
 
-		const Util::MutexLocker locker { NextSrcMutex_ };
-		if (NextSource_.IsEmpty ())
+		const auto& next = [&, this]
 		{
-			emit aboutToFinish (timeoutIndicator);
-			NextSrcWC_.wait (&NextSrcMutex_.GetMutex (), 500);
-		}
-		qDebug () << "wait finished; next source:" << NextSource_.ToUrl ()
-				<< "; current source:" << CurrentSource_.ToUrl ();
+			const Util::MutexLocker locker { NextSrcMutex_ };
+			if (NextSource_.IsEmpty ())
+			{
+				emit aboutToFinish (timeoutIndicator);
+				NextSrcWC_.wait (&NextSrcMutex_.GetMutex (), 500);
+				qDebug () << "wait finished; next source:" << NextSource_.ToUrl ()
+						<< "; current source:" << CurrentSource_.ToUrl ();
+			}
+			return NextSource_;
+		} ();
 
-		if (NextSource_.IsEmpty ())
+		if (next.IsEmpty ())
 		{
 			*timeoutIndicator = true;
 			qDebug () << Q_FUNC_INFO
@@ -441,7 +445,7 @@ namespace LMP
 			return;
 		}
 
-		SetCurrentSource (NextSource_);
+		SetCurrentSource (next);
 	}
 
 	void SourceObject::SetupSource ()
