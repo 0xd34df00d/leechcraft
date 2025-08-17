@@ -22,17 +22,32 @@ namespace Poshuku
 	{
 		Ui_.setupUi (this);
 
+		connect (Ui_.HistoryView_,
+				&QTreeView::activated,
+				this,
+				[] (const QModelIndex& index)
+				{
+					if (!index.parent ().isValid ())
+						return;
+					const auto& url = index.sibling (index.row (), HistoryModel::ColumnURL).data ().toString ();
+					Core::Instance ().NewURL (url);
+				});
+
 		HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
 		Ui_.HistoryView_->setModel (HistoryFilterModel_);
 
 		connect (Ui_.HistoryFilterLine_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (updateHistoryFilter ()));
+				&QLineEdit::textChanged,
+				HistoryFilterModel_,
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 		connect (Ui_.HistoryFilterCaseSensitivity_,
-				SIGNAL (stateChanged (int)),
+				&QCheckBox::checkStateChanged,
 				this,
-				SLOT (updateHistoryFilter ()));
+				[this] (Qt::CheckState state)
+				{
+					const auto cs = state == Qt::Checked ? Qt::CaseSensitive : Qt::CaseInsensitive;
+					HistoryFilterModel_->setFilterCaseSensitivity (cs);
+				});
 
 		const auto itemsHeader = Ui_.HistoryView_->header ();
 		const auto& fm = fontMetrics ();
@@ -43,25 +58,6 @@ namespace Poshuku
 				fm.horizontalAdvance (QDateTime::currentDateTime ().toString () + " space"));
 		itemsHeader->resizeSection (2,
 				fm.horizontalAdvance ("Average URL could be very very long, but we don't account this."));
-	}
-
-	void HistoryWidget::on_HistoryView__activated (const QModelIndex& index)
-	{
-		if (!index.parent ().isValid ())
-			return;
-
-		const auto& url = index.sibling (index.row (), HistoryModel::ColumnURL).data ().toString ();
-		Core::Instance ().NewURL (url);
-	}
-
-	void HistoryWidget::updateHistoryFilter ()
-	{
-		HistoryFilterModel_->SetFilterString (Ui_.HistoryFilterLine_->text ());
-
-		const auto cs = Ui_.HistoryFilterCaseSensitivity_->checkState () == Qt::Checked ?
-				Qt::CaseSensitive :
-				Qt::CaseInsensitive;
-		HistoryFilterModel_->setFilterCaseSensitivity (cs);
 	}
 }
 }

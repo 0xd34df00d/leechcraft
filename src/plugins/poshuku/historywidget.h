@@ -29,9 +29,6 @@ namespace Poshuku
 		Util::FixedStringFilterProxyModel * const HistoryFilterModel_;
 	public:
 		HistoryWidget (QWidget* = 0);
-	private slots:
-		void on_HistoryView__activated (const QModelIndex&);
-		void updateHistoryFilter ();
 	};
 }
 }
