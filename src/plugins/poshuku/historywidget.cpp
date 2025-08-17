@@ -12,9 +12,7 @@
 #include "core.h"
 #include "historymodel.h"
 
-namespace LC
-{
-namespace Poshuku
+namespace LC::Poshuku
 {
 	HistoryWidget::HistoryWidget (QWidget *parent)
 	: QWidget { parent }
@@ -59,5 +57,4 @@ namespace Poshuku
 		itemsHeader->resizeSection (2,
 				fm.horizontalAdvance ("Average URL could be very very long, but we don't account this."));
 	}
-}
 }

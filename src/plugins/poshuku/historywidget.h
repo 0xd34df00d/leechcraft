@@ -15,9 +15,7 @@ namespace LC::Util
 	class FixedStringFilterProxyModel;
 }
 
-namespace LC
-{
-namespace Poshuku
+namespace LC::Poshuku
 {
 	class HistoryFilterModel;
 
@@ -28,7 +26,6 @@ namespace Poshuku
 		Ui::HistoryWidget Ui_;
 		Util::FixedStringFilterProxyModel * const HistoryFilterModel_;
 	public:
-		HistoryWidget (QWidget* = 0);
+		explicit HistoryWidget (QWidget* = nullptr);
 	};
-}
 }
