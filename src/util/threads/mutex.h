@@ -17,7 +17,7 @@ namespace LC::Util
 	{
 		QMutex M_;
 	public:
-		explicit Mutex ();
+		explicit Mutex () = default;
 
 		void lock () ACQUIRE ()
 		{
