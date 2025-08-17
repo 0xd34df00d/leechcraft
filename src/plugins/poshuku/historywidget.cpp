@@ -25,10 +25,9 @@ namespace LC::Poshuku
 				this,
 				[] (const QModelIndex& index)
 				{
-					if (!index.parent ().isValid ())
-						return;
-					const auto& url = index.sibling (index.row (), HistoryModel::ColumnURL).data ().toString ();
-					Core::Instance ().NewURL (url);
+					const auto& url = index.data (HistoryModel::Roles::URL).toString ();
+					if (!url.isEmpty ())
+						Core::Instance ().NewURL (url);
 				});
 
 		HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
