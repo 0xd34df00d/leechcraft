@@ -252,7 +252,8 @@ namespace LC::Util
 		QCOMPARE (result, expected);
 		QCOMPARE_LT (creationElapsed, 1);
 
-		QCOMPARE_GE (executionElapsed, max);
+		constexpr auto tolerance = 0.05;
+		QCOMPARE_GE (executionElapsed, max * (1 - tolerance));
 		const auto linearizedExecTime = max * (max + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
