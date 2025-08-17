@@ -119,8 +119,8 @@ namespace Poshuku
 	void CookiesEditModel::AddCookie (const QNetworkCookie& cookie)
 	{
 		int i = 0;
-		if (Cookies_.size ())
-			i = (Cookies_.end () - 1).key () + 1;
+		if (!Cookies_.isEmpty ())
+			i = Cookies_.lastKey () + 1;
 		Cookies_ [i] = cookie;
 
 		QString domain = cookie.domain ();
