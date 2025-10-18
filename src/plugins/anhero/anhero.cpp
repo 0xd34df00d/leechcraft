@@ -86,14 +86,14 @@ namespace LC::AnHero
 			const auto pidtxt = ToChars (QCoreApplication::applicationPid ());
 
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
-			char crashprocess [1024] = { 0 };
-			sprintf (crashprocess, "%s/lc_anhero_crashprocess" LC_LIBSUFFIX, AppDir_.constData ());
+			std::array<char, 1024> crashprocess { {} };
+			snprintf (crashprocess.data (), crashprocess.size (), "%s/lc_anhero_crashprocess" LC_LIBSUFFIX, AppDir_.constData ());
 #endif
 
 			const char *argv [] =
 			{
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
-				crashprocess,
+				crashprocess.data (),
 #else
 				"lc_anhero_crashprocess" LC_LIBSUFFIX,
 #endif
