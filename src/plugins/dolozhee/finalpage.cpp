@@ -45,7 +45,7 @@ namespace Dolozhee
 		{
 			const auto& filename = QFileInfo { pending.Name_ }.fileName ();
 
-			QFile file { filename };
+			QFile file { pending.Name_ };
 			if (!file.open (QIODevice::ReadOnly))
 			{
 				qWarning () << "unable to open" << filename << file.errorString ();
