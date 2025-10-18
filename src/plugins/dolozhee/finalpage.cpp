@@ -11,7 +11,6 @@
 #include <QDomDocument>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <boost/proto/transform/env.hpp>
 #include <util/sll/qtutil.h>
 #include <util/sys/mimedetector.h>
 #include <util/threads/coro.h>
