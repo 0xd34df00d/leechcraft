@@ -7,8 +7,9 @@
  **********************************************************************/
 
 #include "anhero.h"
-#include <QIcon>
 #include <QCoreApplication>
+#include <QFile>
+#include <QIcon>
 #include <QTranslator>
 #include <charconv>
 #include <csignal>
