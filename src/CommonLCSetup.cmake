@@ -157,7 +157,7 @@ function (SUBPLUGIN suffix descr)
 	endif ()
 
 	set (defVal "ON")
-	if ("${ARGN}" STREQUAL "OFF")
+	if (ARGC GREATER 0 AND NOT ARGN)
 		set (defVal ${ARGV2})
 	endif ()
 	string (TOLOWER ${suffix} suffixL)
