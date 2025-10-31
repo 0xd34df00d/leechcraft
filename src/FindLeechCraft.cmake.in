@@ -10,7 +10,7 @@ set (LC_SHARE_DEST @LC_SHARE_DEST@)
 set (LC_QT_VERSION @LC_QT_VERSION@)
 set (LC_LIBSUFFIX @LC_LIBSUFFIX@)
 
-include (CommonLCSetup.cmake)
+include ("${CMAKE_CURRENT_LIST_DIR}/CommonLCSetup.cmake")
 
 find_path(LEECHCRAFT_INCLUDE_DIR NAMES leechcraft/config.h PATH ENV)
 if (LEECHCRAFT_INCLUDE_DIR)
