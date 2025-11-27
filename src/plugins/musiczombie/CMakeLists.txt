@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 project (musiczombie)
 include (InitLCPlugin NO_POLICY_SCOPE)
-include (CMakeDependentOption)
 
 option (WITH_MUSICZOMBIE_CHROMAPRINT "Build support for Chromaprints in MusicZombie" ON)
 
