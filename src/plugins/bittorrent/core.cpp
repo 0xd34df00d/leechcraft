@@ -921,8 +921,9 @@ namespace BitTorrent
 		if (!CheckValidity (pos))
 			return;
 
-		Handles_.at (pos).Handle_.pause (libtorrent::torrent_handle::graceful_pause);
-		ToggleFlag (Handles_ [pos].Handle_, libtorrent::torrent_flags::auto_managed, false);
+		auto& handle = Handles_.at (pos).Handle_;
+		handle.unset_flags (libtorrent::torrent_flags::auto_managed);
+		handle.pause (libtorrent::torrent_handle::graceful_pause);
 	}
 
 	void Core::ResumeTorrent (int pos)
@@ -930,9 +931,10 @@ namespace BitTorrent
 		if (!CheckValidity (pos))
 			return;
 
-		Handles_.at (pos).Handle_.resume ();
-		Handles_ [pos].State_ = TSIdle;
-		ToggleFlag (Handles_ [pos].Handle_, libtorrent::torrent_flags::auto_managed, Handles_.at (pos).AutoManaged_);
+		auto& handle = Handles_.at (pos).Handle_;
+		handle.resume ();
+		if (Handles_.at (pos).AutoManaged_)
+			handle.set_flags (libtorrent::torrent_flags::auto_managed);
 	}
 
 	void Core::ForceRecheck (int pos)
