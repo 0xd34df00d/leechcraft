@@ -1,28 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label value="Terminal" />
-		<item type="combobox" property="LinkActivationModifier">
-			<label value="Link activation modifier:" />
-			<option name="None" default="true">
-				<label value="None" />
-			</option>
-			<option name="Ctrl">
-				<label value="Control" />
-			</option>
-			<option name="Alt">
-				<label value="Alt" />
-			</option>
-			<option name="Shift">
-				<label value="Shift" />
-			</option>
+	<page label="Terminal">
+		<item type="combobox" property="LinkActivationModifier" label="Link activation modifier:">
+			<option name="None" default="true" label="None" />
+			<option name="Ctrl" label="Control" />
+			<option name="Alt" label="Alt" />
+			<option name="Shift" label="Shift" />
 		</item>
-		<item type="groupbox" checkable="true" property="FiniteHistory" default="false">
-			<label value="Finite scrollback history" />
-			<item type="spinbox" property="HistorySize" default="1000" minimum="100" maximum="10000" step="100">
-				<label value="History size:" />
-				<suffix value=" lines" />
-			</item>
+		<item type="groupbox" checkable="true" property="FiniteHistory" default="false" label="Finite scrollback history">
+			<item type="spinbox" property="HistorySize" default="1000" minimum="100" maximum="10000" step="100" label="History size:" suffix=" lines" />
 		</item>
 	</page>
 </settings>
