@@ -152,8 +152,8 @@ LC_DEFINE_PLUGIN (
 	INSTALL_DESKTOP
 	)
 
-SUBPLUGIN (BRAINSLUGZ "Enable BrainSlugz, plugin for checking collection completeness" ON)
-SUBPLUGIN (DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
+SUBPLUGIN (BRAINSLUGZ "Enable BrainSlugz for checking collection completeness and new releases" ON)
+SUBPLUGIN (DUMBSYNC "Enable DumbSync for syncing with USB mass storage-based media players" ON)
 SUBPLUGIN (FRADJ "Enable Fradj for multiband configurable equalizer" ON)
 SUBPLUGIN (GRAFFITI "Enable Graffiti for manipulating audio file tags" ON)
 SUBPLUGIN (HTTSTREAM "Enable HttStream for streaming music from LMP via HTTP" ON)
