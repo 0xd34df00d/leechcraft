@@ -3,9 +3,9 @@
 	<page label="Terminal">
 		<item type="combobox" property="LinkActivationModifier" label="Link activation modifier:">
 			<option name="None" default="true" label="None" />
-			<option name="Ctrl" label="Control" />
-			<option name="Alt" label="Alt" />
-			<option name="Shift" label="Shift" />
+			<option name="Ctrl" />
+			<option name="Alt" />
+			<option name="Shift" />
 		</item>
 		<item type="groupbox" checkable="true" property="FiniteHistory" default="false" label="Finite scrollback history">
 			<item type="spinbox" property="HistorySize" default="1000" minimum="100" maximum="10000" step="100" label="History size:" suffix=" lines" />
