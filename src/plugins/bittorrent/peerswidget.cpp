@@ -183,7 +183,7 @@ namespace LC::BitTorrent
 		else
 			Ui_.PeerProgress_->setText (QString::number (p.PI_->progress));
 
-		Ui_.PeerIsSeed_->setText (p.PI_->seed ?
+		Ui_.PeerIsSeed_->setText (p.PI_->flags & libtorrent::peer_info::seed ?
 				tr ("yes") : tr ("no"));
 
 		const auto& lastRequest = QTime {}.addMSecs (libtorrent::total_milliseconds (p.PI_->last_request));
