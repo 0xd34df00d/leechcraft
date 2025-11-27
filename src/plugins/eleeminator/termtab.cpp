@@ -128,7 +128,7 @@ namespace LC::Eleeminator
 			const ColorSchemesManager& colorSchemes, QObject *plugin)
 	: ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
-	, Term_ { *new QTermWidget { false } }
+	, Term_ { *new QTermWidget { false, this } }
 	{
 		auto lay = new QVBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
