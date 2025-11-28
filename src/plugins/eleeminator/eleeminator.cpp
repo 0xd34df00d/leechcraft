@@ -40,6 +40,12 @@ namespace LC::Eleeminator
 					"Ctrl+Shift+F"_qs,
 					itm.GetIcon ("edit-find"_qs)
 				});
+		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".PassShortcut",
+				{
+					tr ("Bypass terminal for next shortcut"),
+					"Ctrl+Shift+Space"_qs,
+					itm.GetIcon ("go-up"_qs)
+				});
 		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Clear",
 				{
 					tr ("Clear terminal window"),

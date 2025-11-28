@@ -36,6 +36,8 @@ namespace LC::Eleeminator
 		QTermWidget& Term_;
 
 		bool IsTabCurrent_ = false;
+
+		bool PassNextShortcut_ = false;
 	public:
 		TermTab (Util::ShortcutManager*, const ColorSchemesManager&, QObject*);
 
@@ -47,7 +49,11 @@ namespace LC::Eleeminator
 		void Remove () override;
 		void TabMadeCurrent () override;
 		void TabLostCurrent () override;
+	protected:
+		bool event (QEvent *event) override;
 	private:
+		bool ShouldPassShortcut (const QKeyEvent&) const;
+
 		void SetupToolbar (Util::ShortcutManager*, const ColorSchemesManager&);
 		void SetupShortcuts (Util::ShortcutManager*);
 
