@@ -32,6 +32,7 @@
 #include "processgraphbuilder.h"
 #include "closedialog.h"
 #include "colorschemesmanager.h"
+#include "shortcutpasser.h"
 #include "termcolorschemechooser.h"
 #include "termcontextmenubuilder.h"
 #include "termfontchooser.h"
@@ -130,6 +131,8 @@ namespace LC::Eleeminator
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
 	, Term_ { *new QTermWidget { false, this } }
 	{
+		new ShortcutPasser { *scMgr, *this };
+
 		auto lay = new QVBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
 		setLayout (lay);
@@ -256,27 +259,6 @@ namespace LC::Eleeminator
 		IsTabCurrent_ = false;
 	}
 
-	bool TermTab::event (QEvent *event)
-	{
-		if (event->type () == QEvent::ShortcutOverride &&
-			!ShouldPassShortcut (*static_cast<QKeyEvent*> (event)))
-		{
-			event->accept ();
-			PassNextShortcut_ = false;
-		}
-		return QWidget::event (event);
-	}
-
-	bool TermTab::ShouldPassShortcut (const QKeyEvent& kev) const
-	{
-		if (PassNextShortcut_)
-			return true;
-
-		const auto mods = kev.modifiers ();
-		const bool isCtrlShiftShortcut = mods & Qt::ControlModifier && mods & Qt::ShiftModifier;
-		return isCtrlShiftShortcut;
-	}
-
 	void TermTab::SetupToolbar (Util::ShortcutManager *manager, const ColorSchemesManager& colorSchemes)
 	{
 		Toolbar_->addWidget (MakeColorChooser (Term_, colorSchemes).release ());
@@ -306,9 +288,6 @@ namespace LC::Eleeminator
 
 		auto searchSc = new QShortcut { {}, &Term_, &Term_, &QTermWidget::toggleShowSearchBar };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Search", {}, searchSc);
-
-		auto passShortcutSc = new QShortcut { {}, &Term_, this, [this] { PassNextShortcut_ = true; } };
-		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.PassShortcut", {}, passShortcutSc);
 	}
 
 	void TermTab::HandleBell (const QString& message) const

@@ -13,6 +13,7 @@ LC_DEFINE_PLUGIN (
 		processinfo.cpp
 		closedialog.cpp
 		colorschemesmanager.cpp
+		shortcutpasser.cpp
 		termcolorschemechooser.cpp
 		termcontextmenubuilder.cpp
 		termfontchooser.cpp
