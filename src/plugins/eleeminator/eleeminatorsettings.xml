@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page label="Terminal">
-		<item type="combobox" property="LinkActivationModifier" label="Link activation modifier:">
-			<option name="None" default="true" label="None" />
-			<option name="Ctrl" />
-			<option name="Alt" />
-			<option name="Shift" />
-		</item>
-		<item type="groupbox" checkable="true" property="FiniteHistory" default="false" label="Finite scrollback history">
-			<item type="spinbox" property="HistorySize" default="1000" minimum="100" maximum="10000" step="100" label="History size:" suffix=" lines" />
-		</item>
+		<groupbox label="Appearance">
+			<item type="checkbox" property="BoldIsIntense" default="true" label="Use bold font for intense colors" />
+		</groupbox>
+		<groupbox label="Behavior">
+			<item type="combobox" property="LinkActivationModifier" label="Link activation modifier:">
+				<option name="None" default="true" label="None" />
+				<option name="Ctrl" />
+				<option name="Alt" />
+				<option name="Shift" />
+			</item>
+			<item type="groupbox" checkable="true" property="FiniteHistory" default="false" label="Finite scrollback history">
+				<item type="spinbox" property="HistorySize" default="1000" minimum="100" maximum="10000" step="100" label="History size:" suffix=" lines" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

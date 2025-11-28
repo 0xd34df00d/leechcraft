@@ -192,6 +192,9 @@ namespace LC::Eleeminator
 							-1;
 					Term_.setHistorySize (linesCount);
 				});
+		xsm.RegisterObject ("BoldIsIntense",
+				this,
+				[this] (bool boldIsIntense) { Term_.setBoldIntense (boldIsIntense); });
 
 		Util::InstallFontSizeChanger (Term_,
 				Util::FontBasedParams
