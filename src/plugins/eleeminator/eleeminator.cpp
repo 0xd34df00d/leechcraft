@@ -34,6 +34,12 @@ namespace LC::Eleeminator
 					"Ctrl+Shift+W"_qs,
 					itm.GetIcon ("tab-close"_qs)
 				});
+		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Search",
+				{
+					tr ("Search text in terminal"),
+					"Ctrl+Shift+F"_qs,
+					itm.GetIcon ("edit-find"_qs)
+				});
 		ShortcutMgr_->RegisterActionInfo (GetUniqueID () + ".Clear",
 				{
 					tr ("Clear terminal window"),

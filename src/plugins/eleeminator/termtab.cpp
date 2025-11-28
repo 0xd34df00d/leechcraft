@@ -282,6 +282,9 @@ namespace LC::Eleeminator
 
 		auto closeSc = new QShortcut { {}, &Term_, this, &TermTab::Remove };
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Close", {}, closeSc);
+
+		auto searchSc = new QShortcut { {}, &Term_, &Term_, &QTermWidget::toggleShowSearchBar };
+		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Search", {}, searchSc);
 	}
 
 	void TermTab::HandleBell (const QString& message) const
