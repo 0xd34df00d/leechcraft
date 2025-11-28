@@ -33,7 +33,7 @@ namespace LC::Eleeminator
 		}
 	}
 
-	ShortcutPasser::ShortcutPasser (Util::ShortcutManager& scMgr, TermTab& tab)
+	ShortcutPasser::ShortcutPasser (Util::ShortcutManager& scMgr, QWidget& tab)
 	: QObject { &tab }
 	{
 		const auto passShortcutSc = new QShortcut { {}, &tab, this, [this] { PassNextShortcut_ = true; } };

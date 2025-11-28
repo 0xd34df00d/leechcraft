@@ -19,13 +19,11 @@ namespace LC::Util
 
 namespace LC::Eleeminator
 {
-	class TermTab;
-
 	class ShortcutPasser : public QObject
 	{
 		bool PassNextShortcut_ = false;
 	public:
-		explicit ShortcutPasser (Util::ShortcutManager&, TermTab&);
+		explicit ShortcutPasser (Util::ShortcutManager&, QWidget&);
 	private:
 		bool ShouldPassShortcut (const QKeyEvent&) const;
 	};
