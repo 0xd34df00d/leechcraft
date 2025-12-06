@@ -61,6 +61,7 @@ namespace LC::Monocle
 			return;
 
 		CurrentFile_ = file;
+		LastIdentity_ = MakeIdentity (CurrentFile_);
 
 		if (const auto& existing = Watcher_.directories () + Watcher_.files ();
 			!existing.isEmpty ())
