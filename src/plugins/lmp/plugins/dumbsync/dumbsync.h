@@ -15,11 +15,7 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/isyncplugin.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace DumbSync
+namespace LC::LMP::DumbSync
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -64,6 +60,4 @@ namespace DumbSync
 	signals:
 		void uploadFinished (const QString&, QFile::FileError, const QString&) override;
 	};
-}
-}
 }

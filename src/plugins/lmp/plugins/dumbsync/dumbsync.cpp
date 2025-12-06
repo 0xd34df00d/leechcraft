@@ -14,10 +14,11 @@
 #include <QDir>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
-#include <xmlsettingsdialog/basesettingsmanager.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilmputilproxy.h>
+#include <util/sll/qtutil.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 using QFile_ptr = std::shared_ptr<QFile>;
 
@@ -27,8 +28,8 @@ namespace LC::LMP::DumbSync
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml");
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml"_qs);
 	}
 
 	void Plugin::SecondInit ()
@@ -37,17 +38,16 @@ namespace LC::LMP::DumbSync
 
 	void Plugin::Release ()
 	{
-
 	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.LMP.DumbSync";
+		return "org.LeechCraft.LMP.DumbSync"_qba;
 	}
 
 	QString Plugin::GetName () const
 	{
-		return "LMP DumbSync";
+		return "LMP DumbSync"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -57,7 +57,7 @@ namespace LC::LMP::DumbSync
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return {};
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -67,9 +67,7 @@ namespace LC::LMP::DumbSync
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.LMP.CollectionSync";
-		return result;
+		return { "org.LeechCraft.LMP.CollectionSync"_qba };
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
