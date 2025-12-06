@@ -176,7 +176,7 @@ namespace LC::BitTorrent
 		if (p.PI_->downloading_piece_index >= 0)
 			Ui_.PeerProgress_->setText (tr ("%1 (piece %2, block %3, %4/%5)")
 					.arg (p.PI_->progress)
-					.arg (p.PI_->downloading_piece_index)
+					.arg (static_cast<libtorrent::piece_index_t::underlying_type> (p.PI_->downloading_piece_index))
 					.arg (p.PI_->downloading_block_index)
 					.arg (p.PI_->downloading_progress)
 					.arg (p.PI_->downloading_total));
