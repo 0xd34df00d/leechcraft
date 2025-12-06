@@ -36,7 +36,12 @@ namespace LC::Monocle
 		connect (&Watcher_,
 				&QFileSystemWatcher::fileChanged,
 				this,
-				&FileWatcher::CheckReload);
+				[this]
+				{
+					if (!Watcher_.files ().contains (CurrentFile_))
+						Watcher_.addPath (CurrentFile_);
+					CheckReload ();
+				});
 
 		using namespace std::chrono_literals;
 		constexpr auto ReloadTimerInterval = 750ms;
