@@ -16,9 +16,12 @@ namespace LC::Monocle
 {
 	namespace
 	{
-		auto MakeIdentity (const QString& path)
+		std::optional<FileWatcher::FileIdentity_t> MakeIdentity (const QString& path)
 		{
 			const QFileInfo fi { path };
+			if (!fi.exists ())
+				return {};
+
 			return FileWatcher::FileIdentity_t { fi.size (), fi.lastModified () };
 		}
 	}
@@ -66,7 +69,7 @@ namespace LC::Monocle
 	void FileWatcher::CheckReload ()
 	{
 		const auto& newIdentity = MakeIdentity (CurrentFile_);
-		if (LastIdentity_ == newIdentity)
+		if (!newIdentity || LastIdentity_ == newIdentity)
 			return;
 
 		LastIdentity_ = newIdentity;

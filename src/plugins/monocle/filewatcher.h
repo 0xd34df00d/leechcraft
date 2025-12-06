@@ -27,7 +27,7 @@ namespace LC::Monocle
 	public:
 		using FileIdentity_t = std::tuple<qint64, QDateTime>;
 	private:
-		FileIdentity_t LastIdentity_;
+		std::optional<FileIdentity_t> LastIdentity_;
 	public:
 		explicit FileWatcher (QObject* = nullptr);
 
