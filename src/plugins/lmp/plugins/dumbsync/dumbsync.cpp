@@ -52,7 +52,7 @@ namespace LC::LMP::DumbSync
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Adds support for synchronization with portable players that show themselves as Flash drives, like Rockbox players.");
+		return tr ("Music collection synchronization with Mass Storage-like devices, like USB Flash drives and Rockbox players.");
 	}
 
 	QIcon Plugin::GetIcon () const
