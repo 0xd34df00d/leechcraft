@@ -40,29 +40,29 @@ namespace DumbSync
 		Util::XmlSettingsDialog_ptr XSD_;
 		ILMPProxy_ptr LMPProxy_;
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr proxy) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		void SetLMPProxy (ILMPProxy_ptr);
+		void SetLMPProxy (ILMPProxy_ptr) override;
 
-		QObject* GetQObject ();
-		QString GetSyncSystemName () const;
-		SyncConfLevel CouldSync (const QString&);
+		QObject* GetQObject () override;
+		QString GetSyncSystemName () const override;
+		SyncConfLevel CouldSync (const QString&) override;
 		void Upload (const QString& localPath, const QString& origLocalPath,
-				const QString& to, const QString& relPath);
+				const QString& to, const QString& relPath) override;
 	private slots:
 		void handleCopyFinished ();
 	signals:
-		void uploadFinished (const QString&, QFile::FileError, const QString&);
+		void uploadFinished (const QString&, QFile::FileError, const QString&) override;
 	};
 }
 }
