@@ -15,6 +15,7 @@ add_util_library (util-threads
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
+	AddUtilTest (threads_corochannel tests/corochanneltest.cpp UtilThreadsCoroChannelTest leechcraft-util-threads)
 	AddUtilTest (threads_corotask tests/corotasktest.cpp UtilThreadsCoroTaskTest leechcraft-util-threads)
 	AddUtilTest (threads_futures tests/futurestest.cpp UtilThreadsFuturesTest leechcraft-util-threads)
 	AddUtilTest (threads_workerthread tests/workerthreadtest.cpp UtilThreadsWorkerThreadTest leechcraft-util-threads)
