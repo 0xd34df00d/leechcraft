@@ -19,8 +19,15 @@ namespace LC::Util
 {
 	namespace detail
 	{
+		struct PromiseBase
+		{
+			std::atomic<size_t> Refs_ = 1;
+			QVector<std::coroutine_handle<>> WaitingHandles_ {};
+			std::exception_ptr Exception_ {};
+		};
+
 		template<typename R>
-		struct PromiseRet
+		struct PromiseRet : PromiseBase
 		{
 			using ReturnType_t = R;
 
@@ -36,7 +43,7 @@ namespace LC::Util
 		};
 
 		template<>
-		struct PromiseRet<void>
+		struct PromiseRet<void> : PromiseBase
 		{
 			constexpr static bool IsVoid = true;
 
@@ -103,10 +110,6 @@ namespace LC::Util
 		struct promise_type : detail::PromiseRet<R>
 							, Extensions<promise_type>...
 		{
-			std::atomic<size_t> Refs_ = 1;
-			QVector<std::coroutine_handle<>> WaitingHandles_ {};
-			std::exception_ptr Exception_ {};
-
 			auto GetAddress () { return Handle_t::from_promise (*this).address (); }
 
 			Task get_return_object ()
@@ -129,17 +132,17 @@ namespace LC::Util
 
 			void unhandled_exception ()
 			{
-				Exception_ = std::current_exception ();
+				this->Exception_ = std::current_exception ();
 			}
 
 			void IncRef ()
 			{
-				Refs_.fetch_add (1);
+				this->Refs_.fetch_add (1);
 			}
 
 			void DecRef ()
 			{
-				if (Refs_.fetch_sub (1) == 1)
+				if (this->Refs_.fetch_sub (1) == 1)
 					Handle_t::from_promise (*this).destroy ();
 			}
 		};
