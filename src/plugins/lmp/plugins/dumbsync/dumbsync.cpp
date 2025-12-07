@@ -121,16 +121,17 @@ namespace LC::LMP::DumbSync
 
 		void WriteScaledPixmap (const QString& pxFile, const QString& target)
 		{
-			const auto& targetDir = QFileInfo (target).absoluteDir ();
-			if (targetDir.exists ("cover.jpg"))
+			const auto& coverName = XmlSettingsManager::Instance ().property ("CoverName").toString ();
+
+			const auto& targetDir = QFileInfo { target }.absoluteDir ();
+			if (targetDir.exists (coverName))
 				return;
 
 			const auto& px = GetScaledPixmap (pxFile);
 			if (px.isNull ())
 				return;
 
-			const auto& name = XmlSettingsManager::Instance ().property ("CoverName").toString ();
-			px.save (targetDir.absoluteFilePath (name), "JPG", 80);
+			px.save (targetDir.absoluteFilePath (coverName), "JPG", 80);
 		}
 	}
 
