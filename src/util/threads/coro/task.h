@@ -103,7 +103,7 @@ namespace LC::Util
 		struct promise_type : detail::PromiseRet<R>
 							, Extensions<promise_type>...
 		{
-			size_t Refs_ = 1; // TODO make thread-safe
+			std::atomic<size_t> Refs_ = 1;
 			QVector<std::coroutine_handle<>> WaitingHandles_ {};
 			std::exception_ptr Exception_ {};
 
@@ -134,12 +134,12 @@ namespace LC::Util
 
 			void IncRef ()
 			{
-				++Refs_;
+				Refs_.fetch_add (1);
 			}
 
 			void DecRef ()
 			{
-				if (!--Refs_)
+				if (Refs_.fetch_sub (1) == 1)
 					Handle_t::from_promise (*this).destroy ();
 			}
 		};
