@@ -51,7 +51,7 @@ namespace LC::Util
 				std::lock_guard guard { Ch_.Lock_ };
 				if (!Ch_.Elems_.empty ())
 				{
-					Slot_ = Ch_.Elems_.front ();
+					Slot_ = std::move (Ch_.Elems_.front ());
 					Ch_.Elems_.pop_front ();
 					return false;
 				}
