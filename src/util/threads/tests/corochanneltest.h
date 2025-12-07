@@ -16,6 +16,7 @@ namespace LC::Util
 	{
 		Q_OBJECT
 	private slots:
-		void testChannel ();
+		void testSingleRecv ();
+		void testManyRecvs ();
 	};
 }

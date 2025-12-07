@@ -17,7 +17,7 @@ QTEST_GUILESS_MAIN (LC::Util::CoroChannelTest)
 
 namespace LC::Util
 {
-	void CoroChannelTest::testChannel ()
+	void CoroChannelTest::testSingleRecv ()
 	{
 		Channel<int> ch;
 
@@ -55,5 +55,55 @@ namespace LC::Util
 
 		auto result = GetTaskResult (reader);
 		QCOMPARE (result, expected);
+	}
+
+	void CoroChannelTest::testManyRecvs ()
+	{
+		Channel<int> ch;
+
+		using namespace std::chrono_literals;
+
+		constexpr auto producersCount = 32;
+		constexpr auto consumersCount = 8;
+		constexpr auto repCount = 100;
+		constexpr auto sleepLength = 1ms;
+		std::vector<std::thread> producers;
+		std::atomic_int expected;
+		for (int i = 0; i < producersCount; ++i)
+			producers.emplace_back ([&, i]
+					{
+						for (int j = 0; j < repCount; ++j)
+						{
+							const auto val = j * producersCount + i;
+							ch.Push (val);
+							expected.fetch_add (val, std::memory_order::relaxed);
+							std::this_thread::sleep_for (sleepLength);
+						}
+					});
+
+		std::atomic_int sum;
+		std::vector<std::thread> consumers;
+		for (int i = 0; i < consumersCount; ++i)
+			consumers.emplace_back ([&]
+			{
+				auto reader = [] (Channel<int> *ch) -> Task<int>
+				{
+					int sum = 0;
+					while (auto next = co_await ch->Pop ())
+						sum += *next;
+					co_return sum;
+				} (&ch);
+				sum.fetch_add (GetTaskResult (reader));
+			});
+
+		for (auto& thread : producers)
+			thread.join ();
+
+		ch.Close ();
+
+		for (auto& thread : consumers)
+			thread.join ();
+
+		QCOMPARE (sum, expected);
 	}
 }
