@@ -131,7 +131,10 @@ namespace LC::LMP::DumbSync
 			if (px.isNull ())
 				return;
 
-			px.save (targetDir.absoluteFilePath (coverName), "JPG", 80);
+			constexpr auto aaQuality = 80;
+			if (const auto& fullCoverPath = targetDir.absoluteFilePath (coverName);
+				!px.save (fullCoverPath, "JPG", aaQuality))
+				qWarning () << "unable to save album art from" << pxFile << "to" << fullCoverPath;
 		}
 	}
 
@@ -141,13 +144,7 @@ namespace LC::LMP::DumbSync
 		if (!target.endsWith ('/') && !relPath.startsWith ('/'))
 			target += '/';
 		target += relPath;
-		qDebug () << Q_FUNC_INFO
-				<< "uploading"
-				<< localPath
-				<< "(from"
-				<< origLocalPath
-				<< ") to "
-				<< target;
+		qDebug () << "uploading" << localPath << "(from" << origLocalPath << ") to " << target;
 
 		const QString& dirPath = relPath.left (relPath.lastIndexOf ('/'));
 		if (!QDir (to).mkpath (dirPath))
@@ -187,10 +184,8 @@ namespace LC::LMP::DumbSync
 
 		const auto& result = watcher->result ();
 		auto file = result.File_;
-		qDebug () << Q_FUNC_INFO << file->error ();
 		if (file->error () != QFile::NoError)
-			qWarning () << Q_FUNC_INFO
-					<< file->errorString ();
+			qWarning () << file->error () << file->errorString ();
 
 		emit uploadFinished (file->fileName (), file->error (), file->errorString ());
 	}
