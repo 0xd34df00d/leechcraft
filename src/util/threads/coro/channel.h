@@ -26,6 +26,7 @@ namespace LC::Util
 			Channel& Ch_;
 			std::optional<T> Slot_;
 			std::coroutine_handle<> Handle_;
+			bool Registered_ = false;
 
 			explicit PopAwaiter (Channel& ch)
 			: Ch_ { ch }
@@ -34,7 +35,7 @@ namespace LC::Util
 
 			~PopAwaiter ()
 			{
-				if (Handle_)
+				if (Registered_)
 				{
 					std::lock_guard guard { Ch_.Lock_ };
 					std::erase (Ch_.Awaiters_, this);
@@ -61,6 +62,7 @@ namespace LC::Util
 
 				Ch_.Awaiters_.push_back (this);
 				Handle_ = handle;
+				Registered_ = true;
 				return true;
 			}
 
@@ -86,6 +88,8 @@ namespace LC::Util
 				std::lock_guard guard { Lock_ };
 				Closed_ = true;
 				awaiters = std::exchange (Awaiters_, {});
+				for (auto awaiter : awaiters)
+					awaiter->Registered_ = false;
 			}
 
 			for (auto awaiter : awaiters)
@@ -105,6 +109,7 @@ namespace LC::Util
 				{
 					next = Awaiters_.front ();
 					Awaiters_.pop_front ();
+					next->Registered_ = false;
 				}
 				else
 					Elems_.emplace_back (std::forward<U> (value));
