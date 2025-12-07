@@ -87,12 +87,13 @@ namespace LC::LMP::DumbSync
 
 	SyncConfLevel Plugin::CouldSync (const QString& path)
 	{
-		QFileInfo fi (path);
+		const QFileInfo fi { path };
 		if (!fi.isDir () || !fi.isWritable ())
 			return SyncConfLevel::None;
 
-		if (fi.dir ().entryList (QDir::Dirs).contains (".rockbox", Qt::CaseInsensitive) ||
-			fi.dir ().entryList (QDir::Dirs).contains ("music", Qt::CaseInsensitive))
+		if (const auto& entries = fi.dir ().entryList (QDir::Dirs);
+			entries.contains (".rockbox"_ql, Qt::CaseInsensitive) ||
+			entries.contains ("music"_ql, Qt::CaseInsensitive))
 			return SyncConfLevel::High;
 
 		return SyncConfLevel::Medium;
