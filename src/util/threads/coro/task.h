@@ -10,6 +10,7 @@
 
 #include <coroutine>
 #include <exception>
+#include <mutex>
 #include <utility>
 #include <QVector>
 #include "finalsuspender.h"
@@ -36,9 +37,10 @@ namespace LC::Util
 			std::optional<R> Ret_;
 
 			template<typename U = R>
-			void return_value (U&& val)
+			void return_value (this auto&& self, U&& val)
 			{
-				Ret_.emplace (std::forward<U> (val));
+				std::lock_guard guard { self };
+				self.Ret_.emplace (std::forward<U> (val));
 			}
 		};
 
@@ -49,9 +51,10 @@ namespace LC::Util
 
 			bool Done_ = false;
 
-			void return_void () noexcept
+			void return_void (this auto&& self) noexcept
 			{
-				Done_ = true;
+				std::lock_guard guard { self };
+				self.Done_ = true;
 			}
 		};
 
@@ -66,6 +69,7 @@ namespace LC::Util
 			bool await_ready () const noexcept
 			{
 				const auto& promise = Handle_.promise ();
+				std::lock_guard guard { promise };
 				if (promise.Exception_)
 					return true;
 
@@ -77,12 +81,15 @@ namespace LC::Util
 
 			void await_suspend (std::coroutine_handle<> handle)
 			{
-				Handle_.promise ().WaitingHandles_.push_back (handle);
+				auto& promise = Handle_.promise ();
+				std::lock_guard guard { promise };
+				promise.WaitingHandles_.push_back (handle);
 			}
 
 			auto await_resume () const
 			{
 				const auto& promise = Handle_.promise ();
+				std::lock_guard guard { promise };
 				if (promise.Exception_)
 					try
 					{
@@ -98,6 +105,22 @@ namespace LC::Util
 		};
 	}
 
+	template<typename>
+	struct ThreadSafetyExtension
+	{
+		mutable std::mutex Mutex_;
+
+		void DoLock () const
+		{
+			Mutex_.lock ();
+		}
+
+		void DoUnlock () const
+		{
+			Mutex_.unlock ();
+		}
+	};
+
 	template<typename R, template<typename> typename... Extensions>
 	class Task
 	{
@@ -110,6 +133,18 @@ namespace LC::Util
 		struct promise_type : detail::PromiseRet<R>
 							, Extensions<promise_type>...
 		{
+			void lock () const
+			{
+				if constexpr (requires { this->DoLock (); })
+					this->DoLock ();
+			}
+
+			void unlock () const
+			{
+				if constexpr (requires { this->DoUnlock (); })
+					this->DoUnlock ();
+			}
+
 			auto GetAddress () { return Handle_t::from_promise (*this).address (); }
 
 			Task get_return_object ()

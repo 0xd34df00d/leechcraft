@@ -21,7 +21,13 @@ namespace LC::Util::detail
 
 		void await_suspend (std::coroutine_handle<>) noexcept
 		{
-			for (auto h : Promise_.WaitingHandles_)
+			decltype (Promise_.WaitingHandles_) handles;
+			{
+				std::lock_guard lock { Promise_ };
+				handles = Promise_.WaitingHandles_;
+			}
+
+			for (auto h : handles)
 				h ();
 
 			Promise_.DecRef ();
