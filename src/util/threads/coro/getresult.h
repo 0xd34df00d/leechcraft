@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <type_traits>
 #include <QEventLoop>
 #include "task.h"
@@ -23,7 +24,7 @@ namespace LC::Util
 		std::exception_ptr exception;
 
 		QEventLoop loop;
-		bool done = false;
+		std::atomic_bool done = false;
 		[] (auto task, auto& result, auto& exception, auto& done, auto& loop) -> Task<void>
 		{
 			try
