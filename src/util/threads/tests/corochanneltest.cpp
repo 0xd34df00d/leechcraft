@@ -40,7 +40,7 @@ namespace LC::Util
 						}
 					});
 
-		auto reader = [] (Channel<int> *ch) -> Task<int>
+		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
 		{
 			int sum = 0;
 			while (auto next = co_await ch->Pop ())
@@ -86,7 +86,7 @@ namespace LC::Util
 		for (int i = 0; i < consumersCount; ++i)
 			consumers.emplace_back ([&]
 			{
-				auto reader = [] (Channel<int> *ch) -> Task<int>
+				auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
 				{
 					int sum = 0;
 					while (auto next = co_await ch->Pop ())
