@@ -19,7 +19,7 @@ namespace LC::Util
 {
 	void CoroChannelTest::testSingleRecv ()
 	{
-		Channel<int> ch;
+		Channel<int> ch { this };
 
 		using namespace std::chrono_literals;
 
@@ -40,13 +40,22 @@ namespace LC::Util
 						}
 					});
 
-		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
+		auto mainThread = std::this_thread::get_id ();
+		auto reader = [] (auto mainThread, Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
 		{
 			int sum = 0;
 			while (auto next = co_await ch->Pop ())
+			{
+				[=]
+				{
+					auto thisThread = std::this_thread::get_id ();
+					QCOMPARE (thisThread, mainThread);
+				} ();
+
 				sum += *next;
+			}
 			co_return sum;
-		} (&ch);
+		} (mainThread, &ch);
 
 		for (auto& thread : threads)
 			thread.join ();
