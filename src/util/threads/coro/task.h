@@ -158,6 +158,7 @@ namespace LC::Util
 			{
 				([this]
 				{
+					static_cast<void> (this);
 					using Base = Extensions<promise_type>;
 					if constexpr (requires (Base t) { t.FinalSuspend (); })
 						Base::FinalSuspend ();
