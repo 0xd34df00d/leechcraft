@@ -76,9 +76,16 @@ namespace LC::Util
 		std::deque<T> Elems_;
 		std::deque<PopAwaiter*> Awaiters_;
 
+		std::function<void (std::coroutine_handle<>)> RunHandle_ { [] (std::coroutine_handle<> handle) { handle (); } };
+
 		bool Closed_ = false;
 	public:
 		Channel () = default;
+
+		explicit Channel (QObject *context)
+		: RunHandle_ { [context] (auto handle) { QMetaObject::invokeMethod (context, handle); } }
+		{
+		}
 
 		void Close ()
 		{
@@ -93,7 +100,7 @@ namespace LC::Util
 			}
 
 			for (auto awaiter : awaiters)
-				awaiter->Handle_ ();
+				RunHandle_ (awaiter->Handle_);
 		}
 
 		template<typename U = T>
@@ -118,7 +125,7 @@ namespace LC::Util
 			if (next)
 			{
 				next->Slot_.emplace (std::forward<U> (value));
-				next->Handle_ ();
+				RunHandle_ (next->Handle_);
 			}
 		}
 
