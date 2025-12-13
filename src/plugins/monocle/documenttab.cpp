@@ -733,7 +733,9 @@ namespace Monocle
 
 		if (state.CurrentPagePos_)
 		{
-			const auto& page = *Pages_ [state.CurrentPagePos_->Page_];
+			const auto savedIdx = state.CurrentPagePos_->Page_;
+			const auto pageIdx = std::clamp (savedIdx, 0, static_cast<int> (Pages_.size () - 1));
+			const auto& page = *Pages_ [pageIdx];
 			Ui_.PagesView_->CenterOn (state.CurrentPagePos_->Pos_.ToSceneAbsolute (page));
 		}
 	}
