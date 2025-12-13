@@ -133,5 +133,10 @@ namespace LC::Util
 		{
 			return ReceiveAwaiter { *this };
 		}
+
+		auto operator co_await ()
+		{
+			return Receive ();
+		}
 	};
 }
