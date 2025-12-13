@@ -134,6 +134,12 @@ namespace LC::Util
 			}
 		}
 
+		bool IsEmpty () const
+		{
+			std::lock_guard guard { Lock_ };
+			return Elems_.empty ();
+		}
+
 		ReceiveAwaiter Receive ()
 		{
 			return ReceiveAwaiter { *this };
