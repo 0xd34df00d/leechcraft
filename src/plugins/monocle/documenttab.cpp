@@ -731,7 +731,7 @@ namespace Monocle
 		C_->LayoutManager_.SetScaleMode (state.ScaleMode_);
 		C_->LayoutManager_.Relayout ();
 
-		if (state.CurrentPagePos_)
+		if (state.CurrentPagePos_ && !Pages_.isEmpty ())
 		{
 			const auto savedIdx = state.CurrentPagePos_->Page_;
 			const auto pageIdx = std::clamp (savedIdx, 0, static_cast<int> (Pages_.size () - 1));
