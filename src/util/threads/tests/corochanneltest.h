@@ -18,5 +18,7 @@ namespace LC::Util
 	private slots:
 		void testSingleRecv ();
 		void testManyRecvs ();
+
+		void testSingleThreaded ();
 	};
 }

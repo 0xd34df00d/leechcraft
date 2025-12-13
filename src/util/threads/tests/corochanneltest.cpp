@@ -115,4 +115,30 @@ namespace LC::Util
 
 		QCOMPARE (sum, expected);
 	}
+
+	void CoroChannelTest::testSingleThreaded ()
+	{
+		Channel<int> ch;
+
+		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
+		{
+			int sum = 0;
+			while (auto next = co_await ch->Pop ())
+				sum += *next;
+			co_return sum;
+		} (&ch);
+
+		constexpr auto iterations = 1000;
+		int expected = 0;
+		for (int i = 0; i < iterations; ++i)
+		{
+			expected += i;
+			ch.Push (i);
+		}
+
+		ch.Close ();
+
+		const auto result = GetTaskResult (reader);
+		QCOMPARE (result, expected);
+	}
 }
