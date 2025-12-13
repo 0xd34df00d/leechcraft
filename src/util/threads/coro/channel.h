@@ -82,6 +82,11 @@ namespace LC::Util
 	public:
 		Channel () = default;
 
+		Channel (const Channel&) = delete;
+		Channel (Channel&&) = delete;
+		Channel& operator= (const Channel&) = delete;
+		Channel& operator= (Channel&&) = delete;
+
 		explicit Channel (QObject *context)
 		: RunHandle_ { [context] (auto handle) { QMetaObject::invokeMethod (context, handle); } }
 		{
