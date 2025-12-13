@@ -68,9 +68,9 @@ namespace LC::Util
 
 	void CoroChannelTest::testManyRecvs ()
 	{
-		Channel<int> ch;
-
 		using namespace std::chrono_literals;
+
+		Channel<int> ch;
 
 		constexpr auto producersCount = 32;
 		constexpr auto consumersCount = 8;
@@ -137,6 +137,42 @@ namespace LC::Util
 		}
 
 		ch.Close ();
+
+		const auto result = GetTaskResult (reader);
+		QCOMPARE (result, expected);
+	}
+
+	void CoroChannelTest::testSingleThreadedTimered ()
+	{
+		using namespace std::chrono_literals;
+
+		Channel<int> ch;
+
+		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
+		{
+			int sum = 0;
+			while (auto next = co_await ch->Receive ())
+				sum += *next;
+			co_return sum;
+		} (&ch);
+
+		constexpr auto iterations = 100;
+		constexpr auto interval = 1ms;
+
+		int expected = 0;
+
+		QTimer timer;
+		timer.callOnTimeout ([&, i = 0] mutable
+				{
+					expected += i;
+					ch.Send (i);
+					if (++i == iterations)
+					{
+						timer.stop ();
+						ch.Close ();
+					}
+				});
+		timer.start (interval);
 
 		const auto result = GetTaskResult (reader);
 		QCOMPARE (result, expected);

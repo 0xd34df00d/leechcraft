@@ -20,5 +20,6 @@ namespace LC::Util
 		void testManyRecvs ();
 
 		void testSingleThreaded ();
+		void testSingleThreadedTimered ();
 	};
 }
