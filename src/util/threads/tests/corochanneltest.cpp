@@ -34,7 +34,7 @@ namespace LC::Util
 						for (int j = 0; j < repCount; ++j)
 						{
 							const auto val = j * producersCount + i;
-							ch.Push (val);
+							ch.Send (val);
 							expected.fetch_add (val, std::memory_order::relaxed);
 							std::this_thread::sleep_for (sleepLength);
 						}
@@ -44,7 +44,7 @@ namespace LC::Util
 		auto reader = [] (auto mainThread, Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
 		{
 			int sum = 0;
-			while (auto next = co_await ch->Pop ())
+			while (auto next = co_await ch->Receive ())
 			{
 				[=]
 				{
@@ -84,7 +84,7 @@ namespace LC::Util
 						for (int j = 0; j < repCount; ++j)
 						{
 							const auto val = j * producersCount + i;
-							ch.Push (val);
+							ch.Send (val);
 							expected.fetch_add (val, std::memory_order::relaxed);
 							std::this_thread::sleep_for (sleepLength);
 						}
@@ -98,7 +98,7 @@ namespace LC::Util
 				auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
 				{
 					int sum = 0;
-					while (auto next = co_await ch->Pop ())
+					while (auto next = co_await ch->Receive ())
 						sum += *next;
 					co_return sum;
 				} (&ch);
@@ -123,7 +123,7 @@ namespace LC::Util
 		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
 		{
 			int sum = 0;
-			while (auto next = co_await ch->Pop ())
+			while (auto next = co_await ch->Receive ())
 				sum += *next;
 			co_return sum;
 		} (&ch);
@@ -133,7 +133,7 @@ namespace LC::Util
 		for (int i = 0; i < iterations; ++i)
 		{
 			expected += i;
-			ch.Push (i);
+			ch.Send (i);
 		}
 
 		ch.Close ();

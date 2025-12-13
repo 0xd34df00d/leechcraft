@@ -21,19 +21,19 @@ namespace LC::Util
 	template<typename T>
 	class Channel
 	{
-		struct PopAwaiter
+		struct ReceiveAwaiter
 		{
 			Channel& Ch_;
 			std::optional<T> Slot_;
 			std::coroutine_handle<> Handle_;
 			bool Registered_ = false;
 
-			explicit PopAwaiter (Channel& ch)
+			explicit ReceiveAwaiter (Channel& ch)
 			: Ch_ { ch }
 			{
 			}
 
-			~PopAwaiter ()
+			~ReceiveAwaiter ()
 			{
 				if (Registered_)
 				{
@@ -74,7 +74,7 @@ namespace LC::Util
 
 		mutable std::mutex Lock_;
 		std::deque<T> Elems_;
-		std::deque<PopAwaiter*> Awaiters_;
+		std::deque<ReceiveAwaiter*> Awaiters_;
 
 		std::function<void (std::coroutine_handle<>)> RunHandle_ { [] (std::coroutine_handle<> handle) { handle (); } };
 
@@ -89,7 +89,7 @@ namespace LC::Util
 
 		void Close ()
 		{
-			std::deque<PopAwaiter*> awaiters;
+			std::deque<ReceiveAwaiter*> awaiters;
 
 			{
 				std::lock_guard guard { Lock_ };
@@ -104,13 +104,13 @@ namespace LC::Util
 		}
 
 		template<typename U = T>
-		void Push (U&& value)
+		void Send (U&& value)
 		{
-			PopAwaiter *next = nullptr;
+			ReceiveAwaiter *next = nullptr;
 			{
 				std::lock_guard guard { Lock_ };
 				if (Closed_)
-					throw std::runtime_error { "pushing into a closed channel" };
+					throw std::runtime_error { "sending into a closed channel" };
 
 				if (!Awaiters_.empty ())
 				{
@@ -129,9 +129,9 @@ namespace LC::Util
 			}
 		}
 
-		PopAwaiter Pop ()
+		ReceiveAwaiter Receive ()
 		{
-			return PopAwaiter { *this };
+			return ReceiveAwaiter { *this };
 		}
 	};
 }
