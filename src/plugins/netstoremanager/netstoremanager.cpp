@@ -43,12 +43,6 @@ namespace NetStoreManager
 		qRegisterMetaType<SyncerInfo> ("SyncerInfo");
 		qRegisterMetaType<Change> ("Change");
 		qRegisterMetaType<StorageItem> ("StorageItem");
-#if QT_VERSION_MAJOR == 5
-		qRegisterMetaTypeStreamOperators<SyncerInfo> ("SyncerInfo");
-		qRegisterMetaTypeStreamOperators<QList<SyncerInfo>> ("QList<SyncerInfo>");
-		qRegisterMetaTypeStreamOperators<Change> ("Change");
-		qRegisterMetaTypeStreamOperators<StorageItem> ("StorageItem");
-#endif
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "netstoremanagersettings.xml");
