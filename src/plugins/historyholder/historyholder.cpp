@@ -22,8 +22,6 @@ namespace HistoryHolder
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		qRegisterMetaType<HistoryEntry> ("LC::Plugins::HistoryHolder::Core::HistoryEntry");
-
 		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager ());
 	}
 
