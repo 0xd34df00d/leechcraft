@@ -21,9 +21,6 @@ namespace Intermutko
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		qRegisterMetaType<QList<LocaleEntry>> ("QList<LocaleEntry>");
-#if QT_VERSION_MAJOR == 5
-		qRegisterMetaTypeStreamOperators<QList<LocaleEntry>> ();
-#endif
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "intermutkosettings.xml");
