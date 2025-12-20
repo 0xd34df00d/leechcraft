@@ -25,11 +25,7 @@ namespace Blogique
 
 		void SetStatistic (const QMap<QDate, int>& statistic);
 	protected:
-#if QT_VERSION_MAJOR >= 6
 		void paintCell (QPainter *painter, const QRect& rect, QDate date) const override;
-#else
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
-#endif
 	};
 }
 }
