@@ -22,10 +22,6 @@ namespace LC::Azoth::Abbrev
 	{
 		qRegisterMetaType<Abbreviation> ("LC::Azoth::Abbrev::Abbreviation");
 		qRegisterMetaType<QList<Abbreviation>> ("QList<LC::Azoth::Abbrev::Abbreviation>");
-#if QT_VERSION_MAJOR < 6
-		qRegisterMetaTypeStreamOperators<Abbreviation> ();
-		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
-#endif
 
 		Manager_ = std::make_shared<AbbrevsManager> ();
 
