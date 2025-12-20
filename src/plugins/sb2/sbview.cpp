@@ -40,11 +40,7 @@ namespace LC::SB2
 		return { Dim_, Dim_ };
 	}
 
-#if QT_VERSION_MAJOR >= 6
 	void SBView::enterEvent (QEnterEvent *lev)
-#else
-	void SBView::enterEvent (QEvent *lev)
-#endif
 	{
 		for (const auto& item : UnhoverItems_)
 		{

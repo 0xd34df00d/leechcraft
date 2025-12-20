@@ -31,11 +31,7 @@ namespace LC::SB2
 		QSize minimumSizeHint () const override;
 		QSize sizeHint () const override;
 	protected:
-#if QT_VERSION_MAJOR >= 6
 		void enterEvent (QEnterEvent*) override;
-#else
-		void enterEvent (QEvent*) override;
-#endif
 		void leaveEvent (QEvent*) override;
 	};
 }
