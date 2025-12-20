@@ -43,10 +43,6 @@ namespace Metida
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
-#if QT_VERSION_MAJOR == 5
-		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
-		qRegisterMetaTypeStreamOperators<QList<LJMood>> ("QList<LJMood>");
-#endif
 
 		connect (LJXmlRpc_,
 				SIGNAL (validatingFinished (bool)),
