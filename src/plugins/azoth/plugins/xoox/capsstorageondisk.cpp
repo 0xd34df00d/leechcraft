@@ -32,9 +32,6 @@ namespace Xoox
 	: QObject { parent }
 	{
 		qRegisterMetaType<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
-#if QT_VERSION_MAJOR < 6
-		qRegisterMetaTypeStreamOperators<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
-#endif
 
 		DB_.setDatabaseName (Util::CreateIfNotExists ("azoth/xoox").filePath ("caps2.db"));
 		if (!DB_.open ())
