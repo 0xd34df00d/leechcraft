@@ -24,9 +24,6 @@ namespace LC::Azoth::Depester
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		qRegisterMetaType<QSet<QString>> ("QSet<QString>");
-#if QT_VERSION_MAJOR < 6
-		qRegisterMetaTypeStreamOperators<QSet<QString>> ("QSet<QString>");
-#endif
 
 		LoadIgnores ();
 
