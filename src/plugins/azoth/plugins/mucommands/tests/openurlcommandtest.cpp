@@ -14,18 +14,6 @@
 
 QTEST_APPLESS_MAIN (LC::Azoth::MuCommands::OpenUrlCommandTest)
 
-#if QT_VERSION_MAJOR == 5
-template<typename T>
-QDebug operator<< (QDebug dbg, const std::optional<T>& opt)
-{
-	if (opt)
-		dbg.nospace () << *opt;
-	else
-		dbg.nospace () << "<nothing>";
-	return dbg.space ();
-}
-#endif
-
 QDebug operator<< (QDebug dbg, const LC::Azoth::MuCommands::UrlRange& r)
 {
 	dbg.nospace () << "UrlRange { start: "
