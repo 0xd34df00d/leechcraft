@@ -44,9 +44,6 @@ namespace LastSeen
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		qRegisterMetaType<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");
-#if QT_VERSION_MAJOR == 5
-		qRegisterMetaTypeStreamOperators<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");
-#endif
 
 		Storage_ = std::make_shared<OnDiskStorage> ();
 
