@@ -133,7 +133,7 @@ namespace LC::SB2
 			break;
 		}
 
-		for (auto act : qAsConst (acts))
+		for (auto act : std::as_const (acts))
 		{
 			if (FindItem (act))
 			{
