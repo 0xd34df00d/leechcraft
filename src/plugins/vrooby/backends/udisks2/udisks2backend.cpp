@@ -197,14 +197,6 @@ namespace UDisks2
 			return false;
 
 		auto partitionIface = GetPartitionInterface (str);
-		const bool isPartition = !partitionIface->property ("Type").toString ().isEmpty ();
-
-		const auto& slaveTo = partitionIface->property ("Table").value<QDBusObjectPath> ();
-		const bool isRemovable = driveIface->property ("Removable").toBool ();
-
-		static const bool debugUdisks = qgetenv ("LC_VROOBY_DEBUG_UDISKS") == "1";
-		if (debugUdisks)
-			qDebug () << str << slaveTo.path () << isPartition << isRemovable;
 
 		QDBusConnection::systemBus ().connect ("org.freedesktop.UDisks2",
 				path.path (),
@@ -215,17 +207,18 @@ namespace UDisks2
 
 		auto item = new QStandardItem;
 		Object2Item_ [str] = item;
-		SetItemData ({ partitionIface, GetFSInterface (str), blockIface, driveIface, GetPropsInterface (str) }, item);
-		if (slaveTo.path ().isEmpty ())
-			DevicesModel_->appendRow (item);
-		else
-		{
-			if (!Object2Item_.contains (slaveTo.path ()))
-				if (!AddPath (slaveTo))
-					return false;
+		SetItemData ({
+					partitionIface,
+					GetFSInterface (str),
+					blockIface,
+					driveIface,
+					GetPropsInterface (str)
+				}, item);
+		if (const auto& slaveTo = partitionIface->property ("Table").value<QDBusObjectPath> ();
+			!slaveTo.path ().isEmpty () && !AddPath (slaveTo))
+			return false;
 
-			Object2Item_ [slaveTo.path ()]->appendRow (item);
-		}
+		DevicesModel_->appendRow (item);
 		return true;
 	}
 
@@ -278,8 +271,14 @@ namespace UDisks2
 		if (!item)
 			return;
 
+		const auto& path = ifaces.Block_->path ();
+		const auto& slaveTo = ifaces.Partition_->property ("Table").value<QDBusObjectPath> ();
 		const bool isRemovable = ifaces.Drive_->property ("Removable").toBool ();
 		const bool isPartition = ifaces.Block_->property ("IdUsage").toString () == "filesystem";
+
+		static const bool debugUdisks = qgetenv ("LC_VROOBY_DEBUG_UDISKS") == "1";
+		if (debugUdisks)
+			qDebug () << path << slaveTo.path () << isPartition << isRemovable;
 
 		const auto& vendor = ifaces.Drive_->property ("Vendor").toString () +
 				" " +
@@ -319,7 +318,9 @@ namespace UDisks2
 		item->setData (isPartition && isRemovable, MassStorageRole::IsMountable);
 		item->setData (!mountPaths.isEmpty (), MassStorageRole::IsMounted);
 		item->setData (ifaces.Drive_->property ("MediaAvailable"), MassStorageRole::IsMediaAvailable);
-		item->setData (ifaces.Block_->path (), CommonDevRole::DevID);
+		item->setData (path, CommonDevRole::DevID);
+		if (!slaveTo.path ().isEmpty ())
+			item->setData (slaveTo.path (), CommonDevRole::DevParentID);
 		item->setData (ifaces.Block_->property ("IdUUID"), CommonDevRole::DevPersistentID);
 		item->setData (fullName, MassStorageRole::VisibleName);
 		item->setData (ifaces.Block_->property ("Size").toLongLong (), MassStorageRole::TotalSize);
