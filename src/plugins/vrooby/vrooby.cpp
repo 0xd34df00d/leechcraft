@@ -16,14 +16,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-
-#ifdef ENABLE_UDISKS
-#include "backends/udisks/udisksbackend.h"
-#endif
-#ifdef ENABLE_UDISKS2
 #include "backends/udisks2/udisks2backend.h"
-#endif
-
 #include "devbackend.h"
 #include "trayview.h"
 
@@ -37,13 +30,7 @@ namespace Vrooby
 		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 
 		QList<std::shared_ptr<DevBackend>> candidates;
-
-#ifdef ENABLE_UDISKS2
 		candidates << std::make_shared<UDisks2::Backend> (proxy);
-#endif
-#ifdef ENABLE_UDISKS
-		candidates << std::make_shared<UDisks::Backend> (proxy);
-#endif
 
 		QStringList allBackends;
 		for (const auto& cand : candidates)
@@ -51,9 +38,7 @@ namespace Vrooby
 			allBackends << cand->GetBackendName ();
 			if (cand->IsAvailable ())
 			{
-				qDebug () << Q_FUNC_INFO
-						<< "selecting"
-						<< cand->GetBackendName ();
+				qDebug () << "selecting" << cand->GetBackendName ();
 				Backend_ = cand;
 				break;
 			}
