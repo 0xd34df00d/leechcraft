@@ -8,7 +8,9 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <QObject>
+#include <QMap>
+#include "transcodingparams.h"
 
 namespace LC
 {
@@ -17,7 +19,7 @@ namespace LMP
 	class ICloudStoragePlugin;
 	class CloudUploader;
 
-	class CloudUploadManager : public SyncManagerBase
+	class CloudUploadManager : public QObject
 	{
 		Q_OBJECT
 
@@ -30,7 +32,7 @@ namespace LMP
 		};
 		QMap<QString, CloudUpload> Source2Params_;
 	public:
-		CloudUploadManager (QObject* = 0);
+		using QObject::QObject;
 
 		void AddFiles (ICloudStoragePlugin*, const QString&, const QStringList&, const TranscodingParams&);
 	private:

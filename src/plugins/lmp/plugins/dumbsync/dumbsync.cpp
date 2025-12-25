@@ -17,6 +17,7 @@
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilmputilproxy.h>
 #include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -101,17 +102,12 @@ namespace LC::LMP::DumbSync
 
 	namespace
 	{
-		struct WorkerThreadResult
-		{
-			QFile_ptr File_;
-		};
-
 		QImage GetScaledPixmap (const QString& pxFile)
 		{
 			if (pxFile.isEmpty ())
-				return QImage ();
+				return {};
 
-			QImage img (pxFile);
+			QImage img { pxFile };
 			const int maxDim = XmlSettingsManager::Instance ().property ("CoverDim").toInt ();
 			if (img.size ().width () <= maxDim && img.size ().height () <= maxDim)
 				return img;
@@ -138,56 +134,36 @@ namespace LC::LMP::DumbSync
 		}
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QString& to, const QString& relPath)
+	Util::ContextTask<Plugin::UploadResult> Plugin::Upload (UploadJob job)
 	{
-		QString target = to;
-		if (!target.endsWith ('/') && !relPath.startsWith ('/'))
+		QString target = job.Target_;
+		if (!target.endsWith ('/') && !job.TargetRelPath_.startsWith ('/'))
 			target += '/';
-		target += relPath;
-		qDebug () << "uploading" << localPath << "(from" << origLocalPath << ") to " << target;
+		target += job.TargetRelPath_;
+		qDebug () << "uploading" << job.LocalPath_ << "(from" << job.OriginalLocalPath_ << ") to " << target;
 
-		const QString& dirPath = relPath.left (relPath.lastIndexOf ('/'));
-		if (!QDir (to).mkpath (dirPath))
-		{
-			emit uploadFinished (localPath,
-					QFile::PermissionsError,
-					tr ("Unable to create the directory path %1 on target device %2.")
-						.arg (dirPath)
-						.arg (to));
-			return;
-		}
+		const QString& dirPath = job.TargetRelPath_.section ('/', 0, -2);
+		if (!QDir (job.Target_).mkpath (dirPath))
+			co_return UploadFailure
+			{
+				QFile::PermissionsError,
+				tr ("Unable to create the directory path %1 on target device %2.").arg (dirPath, job.Target_)
+			};
 
-		auto watcher = new QFutureWatcher<WorkerThreadResult> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleCopyFinished ()));
+		const auto& artPath = LMPProxy_->GetUtilProxy ()->FindAlbumArt (job.OriginalLocalPath_);
 
-		const auto& artPath = LMPProxy_->GetUtilProxy ()->FindAlbumArt (origLocalPath);
-		std::function<WorkerThreadResult (void)> copier = [target, localPath, artPath] () -> WorkerThreadResult
+		co_return co_await QtConcurrent::run ([&] () -> UploadResult
 				{
-					QFile_ptr file (new QFile (localPath));
-					file->copy (target);
+					if (QFile file { job.LocalPath_ };
+						!file.copy (target))
+					{
+						qWarning () << "failed to copy" << job.LocalPath_ << "to" << target << ":" << file.error () << file.errorString ();
+						return { Util::AsLeft, { file.error (), file.errorString () } };
+					}
 					if (XmlSettingsManager::Instance ().property ("UploadCovers").toBool ())
 						WriteScaledPixmap (artPath, target);
-					return { file };
-				};
-		const auto& future = QtConcurrent::run (copier);
-		watcher->setFuture (future);
-	}
-
-	void Plugin::handleCopyFinished ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<WorkerThreadResult>*> (sender ());
-		if (!watcher)
-			return;
-
-		const auto& result = watcher->result ();
-		auto file = result.File_;
-		if (file->error () != QFile::NoError)
-			qWarning () << file->error () << file->errorString ();
-
-		emit uploadFinished (file->fileName (), file->error (), file->errorString ());
+					return UploadSuccess {};
+				});
 	}
 }
 

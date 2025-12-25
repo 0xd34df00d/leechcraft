@@ -8,41 +8,22 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <QObject>
+#include <util/threads/coro/taskfwd.h>
 #include "interfaces/lmp/isyncplugin.h"
+#include "transcoder.h"
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	class TranscodeManager;
-	struct TranscodingParams;
-
-	template<typename>
-	class CopyManager;
-
-	class SyncManager : public SyncManagerBase
+	class SyncManager : public QObject
 	{
 		Q_OBJECT
-
-		struct CopyJob;
-		QMap<QString, CopyManager<CopyJob>*> Mount2Copiers_;
-
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
 	public:
-		explicit SyncManager (QObject* = nullptr);
-		~SyncManager () override;
+		using QObject::QObject;
 
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+		Util::ContextTask<void> RunUpload (ISyncPlugin*, QString mount, QStringList, TranscodingParams);
 	private:
-		void CreateSyncer (const QString&);
-	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString) override;
+		Util::ContextTask<void> UploadTranscoded (Transcoder::Result result,
+				ISyncPlugin *syncer, QString mount, TranscodingParams params);
 	};
-}
 }

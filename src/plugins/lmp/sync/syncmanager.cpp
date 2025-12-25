@@ -10,136 +10,56 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QFileInfo>
-#include <util/util.h>
-#include <util/lmp/util.h>
 #include <util/sll/either.h>
-#include <util/sll/visitor.h>
-#include "copymanager.h"
+#include <util/threads/coro.h>
+#include <util/lmp/util.h>
+#include "transcoder.h"
 #include "../core.h"
 #include "../localfileresolver.h"
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	struct SyncManager::CopyJob
+	Util::ContextTask<void> SyncManager::RunUpload (ISyncPlugin *syncer,
+			QString mount, QStringList files, TranscodingParams params)
 	{
-		QObject* GetQObject () const
-		{
-			return Syncer_->GetQObject ();
-		}
+		co_await Util::AddContextObject { *this };
 
-		void Upload () const
-		{
-			Syncer_->Upload (From_, OrigPath_, MountPoint_, Filename_);
-		}
-
-		QString From_;
-		bool RemoveOnFinish_;
-
-		ISyncPlugin *Syncer_;
-		QString OrigPath_;
-		QString MountPoint_;
-		QString Filename_;
-	};
-
-	SyncManager::SyncManager (QObject *parent)
-	: SyncManagerBase { parent }
-	{
-	}
-
-	SyncManager::~SyncManager () = default;
-
-	void SyncManager::AddFiles (ISyncPlugin *syncer, const QString& mount,
-			const QStringList& files, const TranscodingParams& params)
-	{
-		for (const auto& file : files)
-			Source2Params_ [file] = { syncer, mount };
-
-		SyncManagerBase::AddFiles (files, params);
-	}
-
-	void SyncManager::CreateSyncer (const QString& mount)
-	{
-		auto mgr = new CopyManager<CopyJob> (this);
-		connect (mgr,
-				SIGNAL (startedCopying (QString)),
-				this,
-				SLOT (handleStartedCopying (QString)));
-		connect (mgr,
-				SIGNAL (finishedCopying ()),
-				this,
-				SLOT (handleFinishedCopying ()));
-		connect (mgr,
-				SIGNAL (copyProgress (qint64, qint64)),
-				this,
-				SLOT (handleCopyProgress (qint64, qint64)));
-		connect (mgr,
-				SIGNAL (errorCopying (QString, QString)),
-				this,
-				SLOT (handleErrorCopying (QString, QString)));
-		Mount2Copiers_ [mount] = mgr;
+		Transcoder transcoder { files, params };
+		while (const auto transcoded = co_await transcoder.GetResults ())
+			co_await UploadTranscoded (*transcoded, syncer, mount, params);
 	}
 
 	namespace
 	{
-		Util::Either<ResolveError, QString> FixMask (const QString& mask, const QString& transcoded)
+		QString FixMask (const MediaInfo& info, const QString& mask)
 		{
-			return Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded)
-					.MapRight ([&] (const MediaInfo& info)
-						{
-							auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
-							const auto& ext = QFileInfo (transcoded).suffix ();
-							if (!result.endsWith (ext))
-								result += "." + ext;
-							return result;
-						});
+			auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
+			const auto& ext = QFileInfo { info.LocalPath_ }.suffix ();
+			if (!result.endsWith (ext))
+				result += "." + ext;
+			return result;
 		}
 	}
 
-	void SyncManager::handleFileTranscoded (const QString& from,
-			const QString& transcoded, QString mask)
+	Util::ContextTask<void> SyncManager::UploadTranscoded (Transcoder::Result result,
+			ISyncPlugin *syncer, QString mount, TranscodingParams params)
 	{
-		SyncManagerBase::HandleFileTranscoded (from, transcoded);
-
-		const auto& syncTo = Source2Params_.take (from);
-		if (syncTo.MountPath_.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "dumb transcoded file detected"
-					<< from
-					<< transcoded;
-			return;
-		}
-
-		emit uploadLog (tr ("File %1 successfully transcoded, adding to copy queue for the device %2...")
-				.arg ("<em>" + QFileInfo (from).fileName () + "</em>")
-				.arg ("<em>" + syncTo.MountPath_) + "</em>");
-
-		Util::Visit (FixMask (mask, transcoded),
-				[&] (const QString& filename)
+		const auto& transcoded = (co_await Util::WithHandler (result.Transcoded_,
+				[] (const Transcoder::Result::Failure& failure)
 				{
-					if (!Mount2Copiers_.contains (syncTo.MountPath_))
-						CreateSyncer (syncTo.MountPath_);
-					const CopyJob copyJob
-					{
-						transcoded,
-						from != transcoded,
-						syncTo.Syncer_,
-						from,
-						syncTo.MountPath_,
-						filename
-					};
-					Mount2Copiers_ [syncTo.MountPath_]->Copy (copyJob);
-				},
-				[&] (const ResolveError& err)
-				{
-					const auto& errString = tr ("Unable to expand mask for file %1: %2.")
-							.arg ("<em>" + QFileInfo { transcoded }.fileName () + "</em>")
-							.arg (err.ReasonString_);
-					emit uploadLog (errString);
-					handleErrorCopying (transcoded, errString);
+					// TODO log failure
+				})).TargetPath_;
+
+		const auto& mediaInfo = co_await Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded);
+		const auto& targetPath = FixMask (mediaInfo, params.FilePattern_);
+		const auto uploadResult = co_await syncer->Upload ({
+					.LocalPath_ = transcoded,
+					.OriginalLocalPath_ = result.OrigPath_,
+					.Target_ = mount,
+					.TargetRelPath_ = targetPath,
 				});
+
+		if (transcoded != result.OrigPath_)
+			QFile::remove (transcoded);
 	}
-}
 }

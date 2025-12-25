@@ -53,11 +53,6 @@ namespace LC::LMP::DumbSync
 		QObject* GetQObject () override;
 		QString GetSyncSystemName () const override;
 		SyncConfLevel CouldSync (const QString&) override;
-		void Upload (const QString& localPath, const QString& origLocalPath,
-				const QString& to, const QString& relPath) override;
-	private slots:
-		void handleCopyFinished ();
-	signals:
-		void uploadFinished (const QString&, QFile::FileError, const QString&) override;
+		Util::ContextTask<UploadResult> Upload (UploadJob) override;
 	};
 }

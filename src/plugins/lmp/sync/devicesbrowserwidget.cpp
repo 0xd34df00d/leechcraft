@@ -15,6 +15,8 @@
 #include <util/models/mergemodel.h>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/task.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -27,7 +29,6 @@
 #include "syncmanager.h"
 #include "transcodingparams.h"
 #include "unmountabledevmanager.h"
-#include "syncunmountablemanager.h"
 #include "collectionsmanager.h"
 
 typedef QMap<QString, LC::LMP::TranscodingParams> TranscodingParamsMap_t;
@@ -85,8 +86,9 @@ namespace LMP
 		DevUploadModel_->setSourceModel (Core::Instance ().GetCollectionsManager ()->GetModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
 
-		auto connectManager = [this] (SyncManagerBase *manager) -> void
+		auto connectManager = [this] (auto manager)
 		{
+			/*
 			connect (manager,
 					SIGNAL (uploadLog (QString)),
 					this,
@@ -104,10 +106,10 @@ namespace LMP
 					SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
 					this,
 					SLOT (handleSingleUploadProgress (int, int)));
+					*/
 		};
 
 		connectManager (Core::Instance ().GetSyncManager ());
-		connectManager (Core::Instance ().GetSyncUnmountableManager ());
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
@@ -162,10 +164,6 @@ namespace LMP
 	{
 		qRegisterMetaType<TranscodingParams> ("TranscodingParams");
 		qRegisterMetaType<QMap<QString, TranscodingParams>> ("QMap<QString, TranscodingParams>");
-#if QT_VERSION_MAJOR < 6
-		qRegisterMetaTypeStreamOperators<TranscodingParams> ();
-		qRegisterMetaTypeStreamOperators<QMap<QString, TranscodingParams>> ();
-#endif
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_LMP_Transcoding");
@@ -238,7 +236,7 @@ namespace LMP
 		Ui_.UploadLog_->clear ();
 
 		const auto& params = Ui_.TranscodingOpts_->GetParams ();
-		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, params);
+		Core::Instance ().GetSyncManager ()->RunUpload (CurrentSyncer_, to, paths, params);
 	}
 
 	void DevicesBrowserWidget::UploadUnmountable (int idx)
@@ -257,8 +255,10 @@ namespace LMP
 		const int partIdx = Ui_.UnmountablePartsBox_->currentIndex ();
 		const auto& storageId = Ui_.UnmountablePartsBox_->itemData (partIdx).toByteArray ();
 		const auto& params = Ui_.TranscodingOpts_->GetParams ();
+		/*
 		Core::Instance ().GetSyncUnmountableManager ()->AddFiles ({ syncer, info.ID_,
 				storageId, paths, params });
+				*/
 	}
 
 	void DevicesBrowserWidget::HandleMountableSelected (int idx)

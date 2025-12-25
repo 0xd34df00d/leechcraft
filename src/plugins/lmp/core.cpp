@@ -15,7 +15,6 @@
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
 #include "sync/syncmanager.h"
-#include "sync/syncunmountablemanager.h"
 #include "sync/clouduploadmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
 #include "interfaces/lmp/icloudstorageplugin.h"
@@ -44,7 +43,6 @@ namespace LMP
 		PlaylistManager PLManager_;
 
 		SyncManager SyncManager_;
-		SyncUnmountableManager SyncUnmountableManager_;
 		CloudUploadManager CloudUpMgr_;
 
 		ProgressManager ProgressManager_;
@@ -61,9 +59,10 @@ namespace LMP
 	Core::Core ()
 	: M_ (std::make_shared<Members> ())
 	{
+		/* TODO
 		M_->ProgressManager_.AddSyncManager (&M_->SyncManager_);
-		M_->ProgressManager_.AddSyncManager (&M_->SyncUnmountableManager_);
 		M_->ProgressManager_.AddSyncManager (&M_->CloudUpMgr_);
+		*/
 
 		M_->CollectionsManager_.SetCollectionModel (M_->Collection_.GetCollectionModel ());
 	}
@@ -166,11 +165,6 @@ namespace LMP
 	SyncManager* Core::GetSyncManager () const
 	{
 		return &M_->SyncManager_;
-	}
-
-	SyncUnmountableManager* Core::GetSyncUnmountableManager () const
-	{
-		return &M_->SyncUnmountableManager_;
 	}
 
 	CloudUploadManager* Core::GetCloudUploadManager () const

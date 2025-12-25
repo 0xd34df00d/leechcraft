@@ -10,7 +10,6 @@
 #include <QStandardItemModel>
 #include <util/xpc/util.h>
 #include <interfaces/ijobholder.h>
-#include "sync/syncmanagerbase.h"
 
 namespace LC
 {
@@ -29,6 +28,7 @@ namespace LMP
 
 	void ProgressManager::AddSyncManager (SyncManagerBase *syncManager)
 	{
+		/* TODO
 		connect (syncManager,
 				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
 				this,
@@ -37,11 +37,13 @@ namespace LMP
 				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
 				this,
 				SLOT (handleUploadProgress (int, int, SyncManagerBase*)));
+				*/
 	}
 
 	void ProgressManager::HandleWithHash (int done, int total,
 			SyncManagerBase *syncer, Syncer2Row_t& hash, const QString& name, const QString& status)
 	{
+		/* TODO
 		if (!hash.contains (syncer))
 		{
 			if (done == total)
@@ -70,6 +72,7 @@ namespace LMP
 		}
 
 		Util::SetJobHolderProgress (row, done, total, tr ("%1 of %2").arg (done).arg (total));
+		*/
 	}
 
 	void ProgressManager::handleTCProgress (int done, int total, SyncManagerBase *syncer)

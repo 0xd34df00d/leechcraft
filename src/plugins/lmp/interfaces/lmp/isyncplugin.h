@@ -10,10 +10,10 @@
 
 #include <QtPlugin>
 #include <QFile>
+#include <util/sll/either.h>
+#include <util/threads/coro/taskfwd.h>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	enum class SyncConfLevel
 	{
@@ -25,7 +25,7 @@ namespace LMP
 	class ISyncPlugin
 	{
 	public:
-		virtual ~ISyncPlugin () {}
+		virtual ~ISyncPlugin () = default;
 
 		virtual QObject* GetQObject () = 0;
 
@@ -33,13 +33,25 @@ namespace LMP
 
 		virtual SyncConfLevel CouldSync (const QString& path) = 0;
 
-		virtual void Upload (const QString& localPath, const QString& origLocalPath,
-				const QString& to, const QString& relPath) = 0;
-	protected:
-		virtual void uploadFinished (const QString& localPath,
-				QFile::FileError error, const QString& errorStr) = 0;
+		struct UploadSuccess {};
+		struct UploadFailure
+		{
+			QFile::FileError Error_;
+			QString ErrorStr_;
+		};
+
+		using UploadResult = Util::Either<UploadFailure, UploadSuccess>;
+
+		struct UploadJob
+		{
+			QString LocalPath_;
+			QString OriginalLocalPath_;
+			QString Target_;
+			QString TargetRelPath_;
+		};
+
+		virtual Util::ContextTask<UploadResult> Upload (UploadJob uploadJob) = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::LMP::ISyncPlugin, "org.LeechCraft.LMP.ISyncPlugin/1.0")

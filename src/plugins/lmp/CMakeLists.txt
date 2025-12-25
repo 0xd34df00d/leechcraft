@@ -113,14 +113,10 @@ LC_DEFINE_PLUGIN (
 		sync/cloudwidget.cpp
 		sync/clouduploadmanager.cpp
 		sync/clouduploader.cpp
-		sync/copymanager.cpp
 		sync/devicesbrowserwidget.cpp
 		sync/formats.cpp
-		sync/syncmanagerbase.cpp
 		sync/syncmanager.cpp
-		sync/syncunmountablemanager.cpp
-		sync/transcodejob.cpp
-		sync/transcodemanager.cpp
+		sync/transcoder.cpp
 		sync/transcodingparams.cpp
 		sync/transcodingparamswidget.cpp
 		sync/unmountabledevmanager.cpp

@@ -72,7 +72,6 @@ namespace LMP
 		CollectionsManager* GetCollectionsManager () const;
 		PlaylistManager* GetPlaylistManager () const;
 		SyncManager* GetSyncManager () const;
-		SyncUnmountableManager* GetSyncUnmountableManager () const;
 		CloudUploadManager* GetCloudUploadManager () const;
 		ProgressManager* GetProgressManager () const;
 		RadioManager* GetRadioManager () const;
