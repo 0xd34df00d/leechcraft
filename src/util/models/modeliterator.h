@@ -29,8 +29,8 @@ namespace LC::Util
 	 */
 	class UTIL_MODELS_API ModelIterator
 	{
-		const QAbstractItemModel * const Model_;
-		const QModelIndex Parent_;
+		const QAbstractItemModel *Model_ = nullptr;
+		QModelIndex Parent_;
 
 		int Row_;
 		int Col_;
@@ -52,7 +52,7 @@ namespace LC::Util
 			Cols
 		};
 	private:
-		const Direction Dir_;
+		Direction Dir_;
 	public:
 		/** @brief Constructs an iterator.
 		 *
