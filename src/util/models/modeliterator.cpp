@@ -73,7 +73,7 @@ namespace LC::Util
 				left.Parent_ == right.Parent_;
 	}
 
-	QModelIndex ModelIterator::operator*() const
+	QModelIndex ModelIterator::operator* () const
 	{
 		return Model_->index (Row_, Col_, Parent_);
 	}
@@ -86,6 +86,11 @@ namespace LC::Util
 	int ModelIterator::GetCol () const
 	{
 		return Col_;
+	}
+
+	ModelIterator::Direction ModelIterator::GetDirection () const
+	{
+		return Dir_;
 	}
 
 	int& ModelIterator::GetIncrementable ()
@@ -116,5 +121,18 @@ namespace LC::Util
 		qWarning () << Q_FUNC_INFO
 				<< "unknown direction";
 		return Row_;
+	}
+
+	bool UTIL_MODELS_API operator== (const ModelIterator& left, const ModelRange::Sentinel& right)
+	{
+		switch (left.GetDirection ())
+		{
+		case ModelIterator::Direction::Rows:
+			return left.GetRow () == right.End_;
+		case ModelIterator::Direction::Cols:
+			return left.GetCol () == right.End_;
+		}
+
+		std::unreachable ();
 	}
 }

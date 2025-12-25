@@ -156,26 +156,37 @@ namespace LC::Util
 		 * @sa GetRow()
 		 */
 		int GetCol () const;
+
+		Direction GetDirection () const;
 	private:
 		int& GetIncrementable ();
 		int GetIncrementable () const;
 	};
 
+
 	struct ModelRange
 	{
 		const ModelIterator Begin_;
-		const ModelIterator End_;
+
+		struct Sentinel
+		{
+			// One past the end
+			int End_ = 0;
+		};
+		const Sentinel End_;
 
 		auto begin () const { return Begin_; }
 		auto end () const { return End_; }
 	};
+
+	bool UTIL_MODELS_API operator== (const ModelIterator& left, const ModelRange::Sentinel& right);
 
 	inline ModelRange AllModelRows (const QAbstractItemModel& model, int column = 0)
 	{
 		return ModelRange
 		{
 			.Begin_ = { &model, 0, column, ModelIterator::Direction::Rows },
-			.End_ = { &model, model.rowCount (), column, ModelIterator::Direction::Rows },
+			.End_ = { model.rowCount () },
 		};
 	}
 
@@ -184,7 +195,7 @@ namespace LC::Util
 		return ModelRange
 		{
 			.Begin_ = { &model, from, column, ModelIterator::Direction::Rows },
-			.End_ = { &model, to + 1, column, ModelIterator::Direction::Rows },
+			.End_ = { to + 1 },
 		};
 	}
 }
@@ -197,3 +208,5 @@ struct std::iterator_traits<LC::Util::ModelIterator>
 
 	typedef random_access_iterator_tag iterator_category;
 };
+
+static_assert (std::ranges::input_range<LC::Util::ModelRange>);
