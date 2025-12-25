@@ -305,8 +305,12 @@ namespace UDisks2
 		QDBusReply<QDBusVariant> reply (msg);
 
 		if (reply.isValid ())
-			for (const auto& point : qdbus_cast<ByteArrayList_t> (reply.value ().variant ()))
+			for (auto point : qdbus_cast<ByteArrayList_t> (reply.value ().variant ()))
+			{
+				if (point.endsWith ('\0'))
+					point.chop (1);
 				mountPaths << QString::fromUtf8 (point);
+			}
 
 		if (!mountPaths.isEmpty ())
 			item->setData (QStorageInfo { mountPaths.value (0) }.bytesAvailable (), MassStorageRole::AvailableSize);
