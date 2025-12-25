@@ -145,8 +145,8 @@ Rectangle {
 
                 visible: availableSize > 0
 
-                minimumValue: 0
-                maximumValue: 100
+                minimum: 0
+                maximum: 100
                 value: Math.max(usedPercentage, 0)
 
                 height: 13
