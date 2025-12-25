@@ -52,8 +52,18 @@ namespace LC
 		DevType = Qt::UserRole + 1,
 
 		/** @brief The unique device ID (QString).
+		 *
+		 * @sa DevParentID
 		 */
 		DevID,
+
+		/** @brief The parent's device ID (QString).
+		 *
+		 * If not null, this refers to some other row's `DevID`.
+		 *
+		 * @sa DevID
+		 */
+		DevParentID,
 
 		/** @brief The persistent unique device ID (QString).
 		 */
