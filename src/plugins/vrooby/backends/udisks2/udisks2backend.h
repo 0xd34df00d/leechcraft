@@ -37,7 +37,6 @@ namespace UDisks2
 
 		org::freedesktop::DBus::ObjectManager *UDisksObj_ = nullptr;
 		QHash<QString, QStandardItem*> Object2Item_;
-		QSet<QString> Unremovables_;
 	public:
 		Backend (const ICoreProxy_ptr&);
 

@@ -205,13 +205,6 @@ namespace UDisks2
 		static const bool debugUdisks = qgetenv ("LC_VROOBY_DEBUG_UDISKS") == "1";
 		if (debugUdisks)
 			qDebug () << str << slaveTo.path () << isPartition << isRemovable;
-		if ((!isPartition && !isRemovable) || Unremovables_.contains (slaveTo.path ()))
-		{
-			if (debugUdisks)
-				qDebug () << "detected as unremovable";
-			Unremovables_ << str;
-			return false;
-		}
 
 		QDBusConnection::systemBus ().connect ("org.freedesktop.UDisks2",
 				path.path (),
