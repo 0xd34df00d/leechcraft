@@ -19,6 +19,7 @@
 #include <interfaces/devices/deviceroles.h>
 #include <util/sll/containerconversions.h>
 #include <util/models/modeliterator.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
@@ -63,8 +64,8 @@ namespace Vrooby
 			{
 				const auto& id = index.data (CommonDevRole::DevPersistentID).toString ();
 				return Hidden_.contains (id) ?
-						"image://ThemeIcons/list-add" :
-						"image://ThemeIcons/list-remove";
+						"image://ThemeIcons/list-add"_qs :
+						"image://ThemeIcons/list-remove"_qs;
 			}
 			case CustomRoles::FormattedTotalSize:
 			{
@@ -78,8 +79,8 @@ namespace Vrooby
 			}
 			case CustomRoles::MountButtonIcon:
 				return index.data (MassStorageRole::IsMounted).toBool () ?
-						"image://ThemeIcons/emblem-unmounted" :
-						"image://ThemeIcons/emblem-mounted";
+						"image://ThemeIcons/emblem-unmounted"_qs :
+						"image://ThemeIcons/emblem-mounted"_qs;
 			case CustomRoles::MountedAt:
 			{
 				const auto& mounts = index.data (MassStorageRole::MountPoints).toStringList ();
@@ -105,21 +106,21 @@ namespace Vrooby
 		{
 			static const QHash<int, QByteArray> names
 			{
-				{ MassStorageRole::VisibleName, "devName" },
-				{ MassStorageRole::DevFile, "devFile" },
-				{ MassStorageRole::IsRemovable, "isRemovable" },
-				{ MassStorageRole::IsPartition, "isPartition" },
-				{ MassStorageRole::IsMountable, "isMountable" },
-				{ CommonDevRole::DevID, "devID" },
-				{ CommonDevRole::DevPersistentID, "devPersistentID" },
-				{ MassStorageRole::AvailableSize, "availableSize" },
-				{ MassStorageRole::TotalSize, "totalSize" },
-				{ CustomRoles::FormattedTotalSize, "formattedTotalSize" },
-				{ CustomRoles::FormattedFreeSpace, "formattedFreeSpace" },
-				{ CustomRoles::UsedPercentage, "usedPercentage" },
-				{ CustomRoles::MountButtonIcon, "mountButtonIcon" },
-				{ CustomRoles::ToggleHiddenIcon, "toggleHiddenIcon" },
-				{ CustomRoles::MountedAt, "mountedAt" },
+				{ MassStorageRole::VisibleName, "devName"_qba },
+				{ MassStorageRole::DevFile, "devFile"_qba },
+				{ MassStorageRole::IsRemovable, "isRemovable"_qba },
+				{ MassStorageRole::IsPartition, "isPartition"_qba },
+				{ MassStorageRole::IsMountable, "isMountable"_qba },
+				{ CommonDevRole::DevID, "devID"_qba },
+				{ CommonDevRole::DevPersistentID, "devPersistentID"_qba },
+				{ MassStorageRole::AvailableSize, "availableSize"_qba },
+				{ MassStorageRole::TotalSize, "totalSize"_qba },
+				{ CustomRoles::FormattedTotalSize, "formattedTotalSize"_qba },
+				{ CustomRoles::FormattedFreeSpace, "formattedFreeSpace"_qba },
+				{ CustomRoles::UsedPercentage, "usedPercentage"_qba },
+				{ CustomRoles::MountButtonIcon, "mountButtonIcon"_qba },
+				{ CustomRoles::ToggleHiddenIcon, "toggleHiddenIcon"_qba },
+				{ CustomRoles::MountedAt, "mountedAt"_qba },
 			};
 			return names;
 		}
@@ -192,16 +193,16 @@ namespace Vrooby
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
 
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		engine ()->addImageProvider ("ThemeIcons"_qs, new Util::ThemeImageProvider (proxy));
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 
-		rootContext ()->setContextProperty ("colorProxy",
+		rootContext ()->setContextProperty ("colorProxy"_qs,
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		rootContext ()->setContextProperty ("devModel", TrayModel_);
-		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
-		rootContext ()->setContextProperty ("hasHiddenItems", TrayModel_->GetHiddenCount ());
-		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "vrooby", "DevicesTrayView.qml"));
+		rootContext ()->setContextProperty ("devModel"_qs, TrayModel_);
+		rootContext ()->setContextProperty ("devicesLabelText"_qs, tr ("Removable devices"));
+		rootContext ()->setContextProperty ("hasHiddenItems"_qs, TrayModel_->GetHiddenCount ());
+		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "vrooby"_qs, "DevicesTrayView.qml"_qs));
 
 		connect (rootObject (),
 				SIGNAL (toggleHideRequested (QString)),
@@ -265,7 +266,7 @@ namespace Vrooby
 	{
 		TrayModel_->ToggleHidden (persId);
 
-		rootContext ()->setContextProperty ("hasHiddenItems", TrayModel_->GetHiddenCount ());
+		rootContext ()->setContextProperty ("hasHiddenItems"_qs, TrayModel_->GetHiddenCount ());
 	}
 
 	void TrayView::toggleShowHidden ()

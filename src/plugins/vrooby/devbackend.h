@@ -16,11 +16,9 @@ namespace LC::Vrooby
 	class DevBackend : public QObject
 					 , public IRemovableDevManager
 	{
-		Q_OBJECT
-		Q_INTERFACES (IRemovableDevManager)
 	public:
 		virtual void Start () = 0;
-	public slots:
+
 		virtual void toggleMount (const QString&) = 0;
 	};
 

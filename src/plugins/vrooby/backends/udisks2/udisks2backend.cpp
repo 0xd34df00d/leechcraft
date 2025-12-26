@@ -35,17 +35,22 @@ namespace UDisks2
 	{
 	}
 
+	namespace
+	{
+		const auto UDisks2Service = "org.freedesktop.UDisks2"_qs;
+	}
+
 	bool Backend::IsAvailable ()
 	{
 		const auto sb = QDBusConnection::systemBus ();
 		const auto iface = sb.interface ();
 
-		auto services = iface->registeredServiceNames ().value ().filter ("org.freedesktop.UDisks2");
+		auto services = iface->registeredServiceNames ().value ().filter (UDisks2Service);
 		if (!services.isEmpty ())
 			return true;
 
-		iface->startService ("org.freedesktop.UDisks2");
-		services = iface->registeredServiceNames ().value ().filter ("org.freedesktop.UDisks2");
+		iface->startService (UDisks2Service);
+		services = iface->registeredServiceNames ().value ().filter (UDisks2Service);
 		return !services.isEmpty ();
 	}
 
@@ -84,41 +89,41 @@ namespace UDisks2
 	{
 		QDBusInterface_ptr GetBlockInterface (const QString& path)
 		{
-			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+			return std::make_shared<QDBusInterface> (UDisks2Service,
 					path,
-					"org.freedesktop.UDisks2.Block",
+					"org.freedesktop.UDisks2.Block"_qs,
 					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetPartitionInterface (const QString& path)
 		{
-			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+			return std::make_shared<QDBusInterface> (UDisks2Service,
 					path,
-					"org.freedesktop.UDisks2.Partition",
+					"org.freedesktop.UDisks2.Partition"_qs,
 					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetFSInterface (const QString& path)
 		{
-			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+			return std::make_shared<QDBusInterface> (UDisks2Service,
 					path,
-					"org.freedesktop.UDisks2.Filesystem",
+					"org.freedesktop.UDisks2.Filesystem"_qs,
 					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetDevInterface (const QString& path)
 		{
-			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+			return std::make_shared<QDBusInterface> (UDisks2Service,
 					path,
-					"org.freedesktop.UDisks2.Drive",
+					"org.freedesktop.UDisks2.Drive"_qs,
 					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetPropsInterface (const QString& path)
 		{
-			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+			return std::make_shared<QDBusInterface> (UDisks2Service,
 					path,
-					"org.freedesktop.DBus.Properties",
+					"org.freedesktop.DBus.Properties"_qs,
 					QDBusConnection::systemBus ());
 		}
 	}
@@ -136,7 +141,7 @@ namespace UDisks2
 		const bool isMounted = !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
 		if (!isMounted)
 		{
-			auto async = iface->asyncCall ("Mount", QVariantMap ());
+			auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
@@ -153,7 +158,7 @@ namespace UDisks2
 
 		namespace dbus = org::freedesktop::DBus;
 
-		UDisksObj_ = new dbus::ObjectManager ("org.freedesktop.UDisks2", "/org/freedesktop/UDisks2", sb);
+		UDisksObj_ = new dbus::ObjectManager (UDisks2Service, "/org/freedesktop/UDisks2"_qs, sb);
 		auto reply = UDisksObj_->GetManagedObjects ();
 		auto watcher = new QDBusPendingCallWatcher (reply, this);
 		connect (watcher,
@@ -170,7 +175,7 @@ namespace UDisks2
 				this,
 				[this] (const QDBusObjectPath& path, const QStringList& removed)
 				{
-					if (removed.contains ("org.freedesktop.UDisks2.Block"))
+					if (removed.contains ("org.freedesktop.UDisks2.Block"_ql))
 						RemovePath (path);
 				});
 	}
@@ -184,10 +189,7 @@ namespace UDisks2
 		auto blockIface = GetBlockInterface (str);
 		if (!blockIface->isValid ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid interface for"
-					<< str
-					<< blockIface->lastError ().message ();
+			qWarning () << "invalid interface for" << str << blockIface->lastError ().message ();
 			return false;
 		}
 
@@ -199,10 +201,10 @@ namespace UDisks2
 
 		auto partitionIface = GetPartitionInterface (str);
 
-		QDBusConnection::systemBus ().connect ("org.freedesktop.UDisks2",
+		QDBusConnection::systemBus ().connect (UDisks2Service,
 				path.path (),
-				"org.freedesktop.DBus.Properties",
-				"PropertiesChanged",
+				"org.freedesktop.DBus.Properties"_qs,
+				"PropertiesChanged"_qs,
 				this,
 				SLOT (handleDeviceChanged (QDBusMessage)));
 
@@ -271,7 +273,7 @@ namespace UDisks2
 
 			// This needs to be a `Get` DBus method call since querying `property()` on the Filesystem interface
 			// won't work: Qt DBus doesn't know how to demarshall "aay" into QByteArrayList in `property()` automagic.
-			const auto msg = props.call ("Get", "org.freedesktop.UDisks2.Filesystem", "MountPoints");
+			const auto msg = props.call ("Get"_qs, "org.freedesktop.UDisks2.Filesystem"_qs, "MountPoints"_qs);
 			if (const QDBusReply<QDBusVariant> reply { msg };
 				reply.isValid ())
 				for (auto point : qdbus_cast<ByteArrayList_t> (reply.value ().variant ()))
@@ -293,7 +295,7 @@ namespace UDisks2
 		const auto& path = ifaces.Block_->path ();
 		const auto& slaveTo = ifaces.Partition_->property ("Table").value<QDBusObjectPath> ();
 		const bool isRemovable = ifaces.Drive_->property ("Removable").toBool ();
-		const bool isPartition = ifaces.Block_->property ("IdUsage").toString () == "filesystem";
+		const bool isPartition = ifaces.Block_->property ("IdUsage").toString () == "filesystem"_ql;
 
 		static const bool debugUdisks = qgetenv ("LC_VROOBY_DEBUG_UDISKS") == "1";
 		if (debugUdisks)
@@ -305,7 +307,7 @@ namespace UDisks2
 		const auto& partName = GetPartitionName (ifaces.Partition_, ifaces.Block_);
 		const auto& name = isPartition ? partName : vendor;
 		const auto& fullName = isPartition ?
-				QString ("%1: %2").arg (vendor, partName) :
+				"%1: %2"_qs.arg (vendor, partName) :
 				vendor;
 
 		DevicesModel_->blockSignals (true);
@@ -348,7 +350,7 @@ namespace UDisks2
 		const bool isMounted = !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
 		if (isMounted)
 		{
-			auto async = iface->asyncCall ("Unmount", QVariantMap ());
+			auto async = iface->asyncCall ("Unmount"_qs, QVariantMap {});
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
@@ -356,7 +358,7 @@ namespace UDisks2
 		}
 		else
 		{
-			auto async = iface->asyncCall ("Mount", QVariantMap ());
+			auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
@@ -370,13 +372,13 @@ namespace UDisks2
 		{
 			static const QMap<QString, QString> texts
 			{
-				{ "org.freedesktop.UDisks.Error.PermissionDenied", Backend::tr ("permission denied") },
-				{ "org.freedesktop.PolicyKit.Error.NotAuthorized", Backend::tr ("not authorized") },
-				{ "org.freedesktop.PolicyKit.Error.Busy", Backend::tr ("the device is busy") },
-				{ "org.freedesktop.PolicyKit.Error.Failed", Backend::tr ("the operation has failed") },
-				{ "org.freedesktop.PolicyKit.Error.Cancelled", Backend::tr ("the operation has been cancelled") },
-				{ "org.freedesktop.PolicyKit.Error.InvalidOption", Backend::tr ("invalid mount options were given") },
-				{ "org.freedesktop.PolicyKit.Error.FilesystemDriverMissing", Backend::tr ("unsupported filesystem") }
+				{ "org.freedesktop.UDisks.Error.PermissionDenied"_qs, Backend::tr ("permission denied") },
+				{ "org.freedesktop.PolicyKit.Error.NotAuthorized"_qs, Backend::tr ("not authorized") },
+				{ "org.freedesktop.PolicyKit.Error.Busy"_qs, Backend::tr ("the device is busy") },
+				{ "org.freedesktop.PolicyKit.Error.Failed"_qs, Backend::tr ("the operation has failed") },
+				{ "org.freedesktop.PolicyKit.Error.Cancelled"_qs, Backend::tr ("the operation has been cancelled") },
+				{ "org.freedesktop.PolicyKit.Error.InvalidOption"_qs, Backend::tr ("invalid mount options were given") },
+				{ "org.freedesktop.PolicyKit.Error.FilesystemDriverMissing"_qs, Backend::tr ("unsupported filesystem") }
 			};
 			return texts.value (errorCode, Backend::tr ("unknown error"));
 		}
@@ -396,8 +398,7 @@ namespace UDisks2
 		if (!reply.isError ())
 		{
 			HandleEntity (Util::MakeNotification ("Vrooby",
-						tr ("Device has been successfully mounted at %1.")
-							.arg (reply.value ()),
+						tr ("Device has been successfully mounted at %1.").arg (reply.value ()),
 						Priority::Info));
 			return;
 		}
@@ -405,9 +406,7 @@ namespace UDisks2
 		const auto& error = reply.error ();
 		qWarning () << error.name () << error.message ();
 		HandleEntity (Util::MakeNotification ("Vrooby",
-					tr ("Failed to mount the device: %1 (%2).")
-						.arg (GetErrorText (error.name ()))
-						.arg (error.message ()),
+					tr ("Failed to mount the device: %1 (%2).").arg (GetErrorText (error.name ()), error.message ()),
 					Priority::Critical));
 	}
 
@@ -428,9 +427,7 @@ namespace UDisks2
 		const auto& error = reply.error ();
 		qWarning () << error.name () << error.message ();
 		HandleEntity (Util::MakeNotification ("Vrooby",
-					tr ("Failed to unmount the device: %1 (%2).")
-						.arg (GetErrorText (error.name ()))
-						.arg (error.message ()),
+					tr ("Failed to unmount the device: %1 (%2).").arg (GetErrorText (error.name ()), error.message ()),
 					Priority::Critical));
 	}
 
@@ -455,9 +452,7 @@ namespace UDisks2
 		auto item = Object2Item_.value (path);
 		if (!item)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no item for path"
-					<< path;
+			qWarning () << "no item for path" << path;
 			return;
 		}
 

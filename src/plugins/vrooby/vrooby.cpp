@@ -10,9 +10,10 @@
 #include <QIcon>
 #include <QAction>
 #include <QTimer>
-#include <util/xpc/util.h>
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/sll/qtutil.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -62,8 +63,7 @@ namespace Vrooby
 		{
 			qWarning () << "no backends are available";
 			const auto& e = Util::MakeNotification ("Vrooby",
-					tr ("No backends are available, tried the following: %1.")
-						.arg (result.Attempted_.join ("; ")),
+					tr ("No backends are available, tried the following: %1.").arg (result.Attempted_.join ("; ")),
 					Priority::Critical);
 			QTimer::singleShot (0, this, [e, proxy] { proxy->GetEntityManager ()->HandleEntity (e); });
 		}
@@ -87,7 +87,7 @@ namespace Vrooby
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Vrooby";
+		return "org.LeechCraft.Vrooby"_qba;
 	}
 
 	void Plugin::Release ()
@@ -96,7 +96,7 @@ namespace Vrooby
 
 	QString Plugin::GetName () const
 	{
-		return "Vrooby";
+		return "Vrooby"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -148,7 +148,7 @@ namespace Vrooby
 		}
 
 		ActionDevices_.reset (new QAction (tr ("Removable devices..."), this));
-		ActionDevices_->setProperty ("ActionIcon", "drive-removable-media-usb");
+		ActionDevices_->setProperty ("ActionIcon", "drive-removable-media-usb"_qs);
 
 		connect (ActionDevices_.get (),
 				SIGNAL (triggered ()),
