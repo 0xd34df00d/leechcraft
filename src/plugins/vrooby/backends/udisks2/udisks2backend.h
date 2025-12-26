@@ -38,10 +38,11 @@ namespace UDisks2
 		org::freedesktop::DBus::ObjectManager *UDisksObj_ = nullptr;
 		QHash<QString, QStandardItem*> Object2Item_;
 	public:
-		Backend (const ICoreProxy_ptr&);
+		explicit Backend ();
 
-		QString GetBackendName () const;
-		bool IsAvailable ();
+		static bool IsAvailable ();
+		static QString GetBackendName ();
+
 		void Start ();
 
 		bool SupportsDevType (DeviceType) const;

@@ -9,33 +9,25 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 
-namespace LC
-{
-struct Entity;
-struct DeviceInfo;
-
-namespace Vrooby
+namespace LC::Vrooby
 {
 	class DevBackend : public QObject
 					 , public IRemovableDevManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (IRemovableDevManager)
-
-		const ICoreProxy_ptr Proxy_;
 	public:
-		DevBackend (const ICoreProxy_ptr&);
-
-		virtual QString GetBackendName () const = 0;
-		virtual bool IsAvailable () = 0;
 		virtual void Start () = 0;
-	protected:
-		void HandleEntity (const Entity&);
 	public slots:
 		virtual void toggleMount (const QString&) = 0;
 	};
-}
+
+	template<typename T>
+	concept DevBackendType = std::is_base_of_v<DevBackend, T> && requires
+	{
+		{ T::IsAvailable () } -> std::same_as<bool>;
+		{ T::GetBackendName () } -> std::same_as<QString>;
+	};
 }

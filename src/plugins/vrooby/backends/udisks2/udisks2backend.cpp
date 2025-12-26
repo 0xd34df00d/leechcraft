@@ -16,7 +16,9 @@
 #include <QStorageInfo>
 #include <QTimer>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/devices/deviceroles.h>
 #include "udisks2types.h"
 
@@ -28,21 +30,15 @@ namespace Vrooby
 {
 namespace UDisks2
 {
-	Backend::Backend (const ICoreProxy_ptr& proxy)
-	: DevBackend (proxy)
-	, DevicesModel_ (new QStandardItemModel (this))
+	Backend::Backend ()
+	: DevicesModel_ { new QStandardItemModel { this } }
 	{
-	}
-
-	QString Backend::GetBackendName () const
-	{
-		return "UDisks2";
 	}
 
 	bool Backend::IsAvailable ()
 	{
-		auto sb = QDBusConnection::systemBus ();
-		auto iface = sb.interface ();
+		const auto sb = QDBusConnection::systemBus ();
+		const auto iface = sb.interface ();
 
 		auto services = iface->registeredServiceNames ().value ().filter ("org.freedesktop.UDisks2");
 		if (!services.isEmpty ())
@@ -51,6 +47,11 @@ namespace UDisks2
 		iface->startService ("org.freedesktop.UDisks2");
 		services = iface->registeredServiceNames ().value ().filter ("org.freedesktop.UDisks2");
 		return !services.isEmpty ();
+	}
+
+	QString Backend::GetBackendName ()
+	{
+		return "UDisks2";
 	}
 
 	void Backend::Start ()
@@ -380,6 +381,11 @@ namespace UDisks2
 			};
 			return texts.value (errorCode, Backend::tr ("unknown error"));
 		}
+
+		void HandleEntity (const Entity& e)
+		{
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
 	}
 
 	void Backend::mountCallFinished (QDBusPendingCallWatcher *watcher)
@@ -398,9 +404,7 @@ namespace UDisks2
 		}
 
 		const auto& error = reply.error ();
-		qWarning () << Q_FUNC_INFO
-				<< error.name ()
-				<< error.message ();
+		qWarning () << error.name () << error.message ();
 		HandleEntity (Util::MakeNotification ("Vrooby",
 					tr ("Failed to mount the device: %1 (%2).")
 						.arg (GetErrorText (error.name ()))
@@ -423,9 +427,7 @@ namespace UDisks2
 		}
 
 		const auto& error = reply.error ();
-		qWarning () << Q_FUNC_INFO
-				<< error.name ()
-				<< error.message ();
+		qWarning () << error.name () << error.message ();
 		HandleEntity (Util::MakeNotification ("Vrooby",
 					tr ("Failed to unmount the device: %1 (%2).")
 						.arg (GetErrorText (error.name ()))

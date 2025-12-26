@@ -24,31 +24,46 @@ namespace LC
 {
 namespace Vrooby
 {
+	namespace
+	{
+		template<DevBackendType... Backends>
+		auto SelectBackend ()
+		{
+			struct Result
+			{
+				QStringList Attempted_;
+				std::shared_ptr<DevBackend> Selected_;
+			};
+			Result result;
+
+			(([&]
+			{
+				result.Attempted_ << Backends::GetBackendName ();
+				if (!Backends::IsAvailable ())
+					return false;
+
+				result.Selected_ = std::make_shared<Backends> ();
+				qDebug () << "selecting" << Backends::GetBackendName ();
+				return true;
+			} ()) || ...);
+
+			return result;
+		}
+	}
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		TrayView_ = new TrayView (proxy);
 		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 
-		QList<std::shared_ptr<DevBackend>> candidates;
-		candidates << std::make_shared<UDisks2::Backend> (proxy);
-
-		QStringList allBackends;
-		for (const auto& cand : candidates)
-		{
-			allBackends << cand->GetBackendName ();
-			if (cand->IsAvailable ())
-			{
-				qDebug () << "selecting" << cand->GetBackendName ();
-				Backend_ = cand;
-				break;
-			}
-		}
+		const auto& result = SelectBackend<UDisks2::Backend> ();
+		Backend_ = result.Selected_;
 
 		if (!Backend_)
 		{
+			qWarning () << "no backends are available";
 			const auto& e = Util::MakeNotification ("Vrooby",
 					tr ("No backends are available, tried the following: %1.")
-						.arg (allBackends.join ("; ")),
+						.arg (result.Attempted_.join ("; ")),
 					Priority::Critical);
 			QTimer::singleShot (0, this, [e, proxy] { proxy->GetEntityManager ()->HandleEntity (e); });
 		}
