@@ -67,8 +67,6 @@ namespace UDisks2
 		void mountCallFinished (QDBusPendingCallWatcher*);
 		void umountCallFinished (QDBusPendingCallWatcher*);
 		void handleEnumerationFinished (QDBusPendingCallWatcher*);
-		void handleDeviceAdded (const QDBusObjectPath&, const VariantMapMap_t&);
-		void handleDeviceRemoved (const QDBusObjectPath&);
 		void handleDeviceChanged (const QDBusMessage&);
 		void updateDeviceSpaces ();
 	};

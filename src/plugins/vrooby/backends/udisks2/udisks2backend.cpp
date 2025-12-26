@@ -161,13 +161,17 @@ namespace UDisks2
 				SLOT (handleEnumerationFinished (QDBusPendingCallWatcher*)));
 
 		connect (UDisksObj_,
-				SIGNAL (InterfacesAdded (QDBusObjectPath, VariantMapMap_t)),
+				&dbus::ObjectManager::InterfacesAdded,
 				this,
-				SLOT (handleDeviceAdded (QDBusObjectPath, VariantMapMap_t)));
+				&Backend::AddPath);
 		connect (UDisksObj_,
-				SIGNAL (InterfacesRemoved (QDBusObjectPath, QStringList)),
+				&dbus::ObjectManager::InterfacesRemoved,
 				this,
-				SLOT (handleDeviceRemoved (QDBusObjectPath)));
+				[this] (const QDBusObjectPath& path, const QStringList& removed)
+				{
+					if (removed.contains ("org.freedesktop.UDisks2.Block"))
+						RemovePath (path);
+				});
 	}
 
 	bool Backend::AddPath (const QDBusObjectPath& path)
@@ -441,16 +445,6 @@ namespace UDisks2
 
 		for (const QDBusObjectPath& path : reply.value ().keys ())
 			AddPath (path);
-	}
-
-	void Backend::handleDeviceAdded (const QDBusObjectPath& path, const VariantMapMap_t&)
-	{
-		AddPath (path);
-	}
-
-	void Backend::handleDeviceRemoved (const QDBusObjectPath& path)
-	{
-		RemovePath (path);
 	}
 
 	void Backend::handleDeviceChanged (const QDBusMessage& msg)
