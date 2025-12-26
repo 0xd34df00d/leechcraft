@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (
 		vrooby.cpp
 		devbackend.cpp
 		trayview.cpp
-		flatmountableitems.cpp
 		backends/udisks2/udisks2backend.cpp
 		backends/udisks2/dbus/manager.cpp
 	QT_COMPONENTS DBus QuickWidgets

@@ -16,29 +16,38 @@
 #include <QSortFilterProxyModel>
 #include <QSettings>
 #include <QCoreApplication>
+#include <interfaces/devices/deviceroles.h>
 #include <util/sll/containerconversions.h>
+#include <util/models/modeliterator.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/util.h>
-#include "flatmountableitems.h"
+#include <util/util.h>
 #include "devbackend.h"
 
 namespace LC
 {
 namespace Vrooby
 {
-	class FilterModel : public QSortFilterProxyModel
+	class TrayModel : public QSortFilterProxyModel
 	{
-		bool FilterEnabled_;
 		QSet<QString> Hidden_;
+		bool FilterEnabled_ = true;
 	public:
-		FilterModel (QObject *parent)
-		: QSortFilterProxyModel (parent)
-		, FilterEnabled_ (true)
+		enum CustomRoles
 		{
-			setDynamicSortFilter (true);
+			FormattedTotalSize = MassStorageRole::MassStorageRoleMax + 1,
+			FormattedFreeSpace,
+			UsedPercentage,
+			MountButtonIcon,
+			ToggleHiddenIcon,
+			MountedAt
+		};
 
+		explicit TrayModel (QObject *parent)
+		: QSortFilterProxyModel { parent }
+		{
 			QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Vrooby");
 			settings.beginGroup ("HiddenDevices");
@@ -46,15 +55,73 @@ namespace Vrooby
 			settings.endGroup ();
 		}
 
-		QVariant data (const QModelIndex& index, int role) const
+		QVariant data (const QModelIndex& index, int role) const override
 		{
-			if (role != FlatMountableItems::ToggleHiddenIcon)
-				return QSortFilterProxyModel::data (index, role);
+			switch (role)
+			{
+			case CustomRoles::ToggleHiddenIcon:
+			{
+				const auto& id = index.data (CommonDevRole::DevPersistentID).toString ();
+				return Hidden_.contains (id) ?
+						"image://ThemeIcons/list-add" :
+						"image://ThemeIcons/list-remove";
+			}
+			case CustomRoles::FormattedTotalSize:
+			{
+				const auto size = index.data (MassStorageRole::TotalSize).toLongLong ();
+				return tr ("total size: %1").arg (Util::MakePrettySize (size));
+			}
+			case CustomRoles::FormattedFreeSpace:
+			{
+				const auto size = index.data (MassStorageRole::AvailableSize).toLongLong ();
+				return tr ("available size: %1").arg (Util::MakePrettySize (size));
+			}
+			case CustomRoles::MountButtonIcon:
+				return index.data (MassStorageRole::IsMounted).toBool () ?
+						"image://ThemeIcons/emblem-unmounted" :
+						"image://ThemeIcons/emblem-mounted";
+			case CustomRoles::MountedAt:
+			{
+				const auto& mounts = index.data (MassStorageRole::MountPoints).toStringList ();
+				return mounts.isEmpty () ?
+						QString {} :
+						tr ("Mounted at %1").arg (mounts.join ("; "));
+			}
+			case CustomRoles::UsedPercentage:
+			{
+				const qint64 free = index.data (MassStorageRole::AvailableSize).value<qint64> ();
+				if (free < 0)
+					return -1;
 
-			const auto& id = index.data (CommonDevRole::DevPersistentID).toString ();
-			return Hidden_.contains (id) ?
-					"image://ThemeIcons/list-add" :
-					"image://ThemeIcons/list-remove";
+				const double total = index.data (MassStorageRole::TotalSize).value<qint64> ();
+				return (1 - free / total) * 100;
+			}
+			default:
+				return QSortFilterProxyModel::data (index, role);
+			}
+		}
+
+		QHash<int, QByteArray> roleNames () const override
+		{
+			static const QHash<int, QByteArray> names
+			{
+				{ MassStorageRole::VisibleName, "devName" },
+				{ MassStorageRole::DevFile, "devFile" },
+				{ MassStorageRole::IsRemovable, "isRemovable" },
+				{ MassStorageRole::IsPartition, "isPartition" },
+				{ MassStorageRole::IsMountable, "isMountable" },
+				{ CommonDevRole::DevID, "devID" },
+				{ CommonDevRole::DevPersistentID, "devPersistentID" },
+				{ MassStorageRole::AvailableSize, "availableSize" },
+				{ MassStorageRole::TotalSize, "totalSize" },
+				{ CustomRoles::FormattedTotalSize, "formattedTotalSize" },
+				{ CustomRoles::FormattedFreeSpace, "formattedFreeSpace" },
+				{ CustomRoles::UsedPercentage, "usedPercentage" },
+				{ CustomRoles::MountButtonIcon, "mountButtonIcon" },
+				{ CustomRoles::ToggleHiddenIcon, "toggleHiddenIcon" },
+				{ CustomRoles::MountedAt, "mountedAt" },
+			};
+			return names;
 		}
 
 		void ToggleHidden (const QString& id)
@@ -101,12 +168,15 @@ namespace Vrooby
 			invalidateFilter ();
 		}
 	protected:
-		bool filterAcceptsRow (int row, const QModelIndex&) const
+		bool filterAcceptsRow (int row, const QModelIndex&) const override
 		{
+			const auto& idx = sourceModel ()->index (row, 0);
+			if (!idx.data (MassStorageRole::IsMountable).toBool ())
+				return false;
+
 			if (!FilterEnabled_)
 				return true;
 
-			const auto& idx = sourceModel ()->index (row, 0);
 			const auto& id = idx.data (CommonDevRole::DevPersistentID).toString ();
 			return !Hidden_.contains (id);
 		}
@@ -114,12 +184,8 @@ namespace Vrooby
 
 	TrayView::TrayView (ICoreProxy_ptr proxy)
 	: CoreProxy_ (proxy)
-	, Flattened_ (new FlatMountableItems (this))
-	, Filtered_ (new FilterModel (this))
-	, Backend_ (0)
+	, TrayModel_ (new TrayModel (this))
 	{
-		Filtered_->setSourceModel (Flattened_);
-
 		setWindowFlags (Qt::ToolTip);
 		Util::EnableTransparency (*this);
 
@@ -132,19 +198,10 @@ namespace Vrooby
 
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		rootContext ()->setContextProperty ("devModel", Filtered_);
+		rootContext ()->setContextProperty ("devModel", TrayModel_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
-		rootContext ()->setContextProperty ("hasHiddenItems", Filtered_->GetHiddenCount ());
+		rootContext ()->setContextProperty ("hasHiddenItems", TrayModel_->GetHiddenCount ());
 		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "vrooby", "DevicesTrayView.qml"));
-
-		connect (Flattened_,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				this,
-				SIGNAL (hasItemsChanged ()));
-		connect (Flattened_,
-				SIGNAL (rowsRemoved (QModelIndex, int, int)),
-				this,
-				SIGNAL (hasItemsChanged ()));
 
 		connect (rootObject (),
 				SIGNAL (toggleHideRequested (QString)),
@@ -158,11 +215,18 @@ namespace Vrooby
 
 	void TrayView::SetBackend (DevBackend *backend)
 	{
+		bool prevHasItems = HasItems ();;
 		if (Backend_)
+		{
 			disconnect (rootObject (),
-					0,
+					nullptr,
 					Backend_,
-					0);
+					nullptr);
+			disconnect (Backend_->GetDevicesModel (),
+					nullptr,
+					this,
+					nullptr);
+		}
 
 		Backend_ = backend;
 		connect (rootObject (),
@@ -170,24 +234,43 @@ namespace Vrooby
 				Backend_,
 				SLOT (toggleMount (QString)));
 
-		Flattened_->SetSource (Backend_->GetDevicesModel ());
+		const auto model = Backend_->GetDevicesModel ();
+		TrayModel_->setSourceModel (model);
+		connect (model,
+				&QAbstractItemModel::rowsInserted,
+				this,
+				&TrayView::hasItemsChanged);
+		connect (model,
+				&QAbstractItemModel::rowsRemoved,
+				this,
+				&TrayView::hasItemsChanged);
+
+		if (prevHasItems != HasItems ())
+			emit hasItemsChanged ();
 	}
 
 	bool TrayView::HasItems () const
 	{
-		return Flattened_->rowCount ();
+		if (!Backend_)
+			return false;
+
+		return std::ranges::any_of (Util::AllModelRows (*Backend_->GetDevicesModel ()),
+				[] (const QModelIndex& idx)
+				{
+					return idx.data (MassStorageRole::IsMountable).toBool ();
+				});
 	}
 
 	void TrayView::toggleHide (const QString& persId)
 	{
-		Filtered_->ToggleHidden (persId);
+		TrayModel_->ToggleHidden (persId);
 
-		rootContext ()->setContextProperty ("hasHiddenItems", Filtered_->GetHiddenCount ());
+		rootContext ()->setContextProperty ("hasHiddenItems", TrayModel_->GetHiddenCount ());
 	}
 
 	void TrayView::toggleShowHidden ()
 	{
-		Filtered_->ToggleFilter ();
+		TrayModel_->ToggleFilter ();
 	}
 }
 }

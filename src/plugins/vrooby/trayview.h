@@ -21,17 +21,16 @@ namespace Vrooby
 {
 	class DevBackend;
 	class FlatMountableItems;
-	class FilterModel;
+	class TrayModel;
 
 	class TrayView : public QQuickWidget
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr CoreProxy_;
-		FlatMountableItems *Flattened_;
-		FilterModel *Filtered_;
+		TrayModel *TrayModel_;
 
-		DevBackend *Backend_;
+		DevBackend *Backend_ = nullptr;
 	public:
 		TrayView (ICoreProxy_ptr);
 
