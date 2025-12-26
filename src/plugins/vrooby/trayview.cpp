@@ -183,9 +183,8 @@ namespace Vrooby
 		}
 	};
 
-	TrayView::TrayView (ICoreProxy_ptr proxy)
-	: CoreProxy_ (proxy)
-	, TrayModel_ (new TrayModel (this))
+	TrayView::TrayView ()
+	: TrayModel_ (new TrayModel (this))
 	{
 		setWindowFlags (Qt::ToolTip);
 		Util::EnableTransparency (*this);
@@ -193,12 +192,12 @@ namespace Vrooby
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
 
-		engine ()->addImageProvider ("ThemeIcons"_qs, new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider ("ThemeIcons"_qs, new Util::ThemeImageProvider (GetProxyHolder ()));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 
 		rootContext ()->setContextProperty ("colorProxy"_qs,
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
 		rootContext ()->setContextProperty ("devModel"_qs, TrayModel_);
 		rootContext ()->setContextProperty ("devicesLabelText"_qs, tr ("Removable devices"));
 		rootContext ()->setContextProperty ("hasHiddenItems"_qs, TrayModel_->GetHiddenCount ());

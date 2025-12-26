@@ -51,9 +51,9 @@ namespace Vrooby
 			return result;
 		}
 	}
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		TrayView_ = new TrayView (proxy);
+		TrayView_ = new TrayView ();
 		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 
 		const auto& result = SelectBackend<UDisks2::Backend> ();
@@ -65,7 +65,7 @@ namespace Vrooby
 			const auto& e = Util::MakeNotification ("Vrooby",
 					tr ("No backends are available, tried the following: %1.").arg (result.Attempted_.join ("; ")),
 					Priority::Critical);
-			QTimer::singleShot (0, this, [e, proxy] { proxy->GetEntityManager ()->HandleEntity (e); });
+			QTimer::singleShot (0, this, [e] { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); });
 		}
 	}
 

@@ -8,12 +8,7 @@
 
 #pragma once
 
-#include <QtGlobal>
 #include <QQuickWidget>
-
-#include <interfaces/core/icoreproxy.h>
-
-class QSortFilterProxyModel;
 
 namespace LC
 {
@@ -27,12 +22,10 @@ namespace Vrooby
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr CoreProxy_;
 		TrayModel *TrayModel_;
-
 		DevBackend *Backend_ = nullptr;
 	public:
-		TrayView (ICoreProxy_ptr);
+		explicit TrayView ();
 
 		void SetBackend (DevBackend*);
 		bool HasItems () const;
