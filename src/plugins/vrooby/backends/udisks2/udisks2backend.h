@@ -56,7 +56,6 @@ namespace UDisks2
 		struct ItemInterfaces
 		{
 			QDBusInterface_ptr Partition_;
-			QDBusInterface_ptr FS_;
 			QDBusInterface_ptr Block_;
 			QDBusInterface_ptr Drive_;
 			QDBusInterface_ptr Props_;

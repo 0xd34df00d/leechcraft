@@ -210,7 +210,6 @@ namespace UDisks2
 		Object2Item_ [str] = item;
 		SetItemData ({
 					partitionIface,
-					GetFSInterface (str),
 					blockIface,
 					driveIface,
 					GetPropsInterface (str)
@@ -466,7 +465,6 @@ namespace UDisks2
 		const ItemInterfaces faces =
 		{
 			GetPartitionInterface (path),
-			GetFSInterface (path),
 			blockIface,
 			GetDevInterface (blockIface->property ("Drive").value<QDBusObjectPath> ().path ()),
 			GetPropsInterface (path)
