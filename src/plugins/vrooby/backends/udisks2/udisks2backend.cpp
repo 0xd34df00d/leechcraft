@@ -16,7 +16,6 @@
 #include <QStorageInfo>
 #include <QTimer>
 #include <QtDebug>
-#include <QMetaMethod>
 #include <util/xpc/util.h>
 #include <interfaces/devices/deviceroles.h>
 #include "udisks2types.h"
@@ -45,18 +44,13 @@ namespace UDisks2
 		auto sb = QDBusConnection::systemBus ();
 		auto iface = sb.interface ();
 
-		auto services = iface->registeredServiceNames ()
-				.value ().filter ("org.freedesktop.UDisks2");
-		if (services.isEmpty ())
-		{
-			iface->startService ("org.freedesktop.UDisks2");
-			services = iface->registeredServiceNames ()
-					.value ().filter ("org.freedesktop.UDisks2");
-			if (services.isEmpty ())
-				return false;
-		}
+		auto services = iface->registeredServiceNames ().value ().filter ("org.freedesktop.UDisks2");
+		if (!services.isEmpty ())
+			return true;
 
-		return true;
+		iface->startService ("org.freedesktop.UDisks2");
+		services = iface->registeredServiceNames ().value ().filter ("org.freedesktop.UDisks2");
+		return !services.isEmpty ();
 	}
 
 	void Backend::Start ()
@@ -156,7 +150,9 @@ namespace UDisks2
 
 		auto sb = QDBusConnection::systemBus ();
 
-		UDisksObj_ = new org::freedesktop::DBus::ObjectManager ("org.freedesktop.UDisks2", "/org/freedesktop/UDisks2", sb);
+		namespace dbus = org::freedesktop::DBus;
+
+		UDisksObj_ = new dbus::ObjectManager ("org.freedesktop.UDisks2", "/org/freedesktop/UDisks2", sb);
 		auto reply = UDisksObj_->GetManagedObjects ();
 		auto watcher = new QDBusPendingCallWatcher (reply, this);
 		connect (watcher,
@@ -264,6 +260,25 @@ namespace UDisks2
 
 			return Backend::tr ("Partition %1").arg (partition->property ("Number").toInt ());
 		}
+
+		auto GetMountPaths (QDBusInterface& props)
+		{
+			QStringList mountPaths;
+
+			// This needs to be a `Get` DBus method call since querying `property()` on the Filesystem interface
+			// won't work: Qt DBus doesn't know how to demarshall "aay" into QByteArrayList in `property()` automagic.
+			const auto msg = props.call ("Get", "org.freedesktop.UDisks2.Filesystem", "MountPoints");
+			if (const QDBusReply<QDBusVariant> reply { msg };
+				reply.isValid ())
+				for (auto point : qdbus_cast<ByteArrayList_t> (reply.value ().variant ()))
+				{
+					if (point.endsWith ('\0'))
+						point.chop (1);
+					mountPaths << QString::fromUtf8 (point);
+				}
+
+			return mountPaths;
+		}
 	}
 
 	void Backend::SetItemData (const ItemInterfaces& ifaces, QStandardItem *item)
@@ -291,19 +306,7 @@ namespace UDisks2
 
 		DevicesModel_->blockSignals (true);
 
-		QStringList mountPaths;
-		auto msg = ifaces.Props_->call ("Get",
-				"org.freedesktop.UDisks2.Filesystem", "MountPoints");
-		QDBusReply<QDBusVariant> reply (msg);
-
-		if (reply.isValid ())
-			for (auto point : qdbus_cast<ByteArrayList_t> (reply.value ().variant ()))
-			{
-				if (point.endsWith ('\0'))
-					point.chop (1);
-				mountPaths << QString::fromUtf8 (point);
-			}
-
+		const auto& mountPaths = GetMountPaths (*ifaces.Props_);
 		if (!mountPaths.isEmpty ())
 			item->setData (QStorageInfo { mountPaths.value (0) }.bytesAvailable (), MassStorageRole::AvailableSize);
 		else
@@ -477,7 +480,7 @@ namespace UDisks2
 
 	void Backend::updateDeviceSpaces ()
 	{
-		for (QStandardItem *item : Object2Item_.values ())
+		for (QStandardItem *item : Object2Item_)
 		{
 			const auto& mountPaths = item->data (MassStorageRole::MountPoints).toStringList ();
 			if (mountPaths.isEmpty ())
