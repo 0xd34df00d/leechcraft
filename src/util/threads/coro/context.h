@@ -79,9 +79,9 @@ namespace LC::Util
 		QVector<QMetaObject::Connection> ContextConnections_;
 		QVector<detail::DeadObjectInfo> DeadObjects_;
 
-		void FinalSuspend () noexcept
+		void FinalSuspend () const noexcept
 		{
-			for (auto conn : ContextConnections_)
+			for (const auto& conn : ContextConnections_)
 				QObject::disconnect (conn);
 		}
 
