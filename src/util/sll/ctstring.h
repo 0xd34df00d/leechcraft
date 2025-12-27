@@ -121,7 +121,7 @@ namespace LC::Util
 	};
 
 	template<CtString Str>
-	QByteArray ToByteArray ()
+	QByteArray ToByteArray () noexcept
 	{
 		constexpr static auto terminated = Str + '\0';
 		// this const_cast is fine-ish, since Qt is doing the same in QByteArrayLiteral()
@@ -129,7 +129,7 @@ namespace LC::Util
 	}
 
 	template<CtString Str>
-	QString ToString ()
+	QString ToString () noexcept
 	{
 		if constexpr (std::is_same_v<typename decltype (Str)::Char_t, char16_t>)
 		{

@@ -181,7 +181,7 @@ namespace LC
 	}
 
 	template<Util::CtString S>
-	QString operator""_qs ()
+	QString operator""_qs () noexcept
 	{
 		return Util::ToString<S> ();
 	}
