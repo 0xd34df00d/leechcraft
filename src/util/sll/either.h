@@ -13,9 +13,7 @@
 #include <type_traits>
 #include "visitor.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	template<typename T>
 	struct Left
@@ -140,14 +138,14 @@ namespace Util
 		auto MapLeft (F&& f) const
 		{
 			using Result = Either<std::invoke_result_t<F, L>, R>;
-			return IsRight () ? Result { GetRight () } : Result { AsLeft, std::forward<F> (f) (GetLeft ()) };
+			return IsRight () ? Result { GetRight () } : Result { AsLeft, std::invoke (std::forward<F> (f), GetLeft ()) };
 		}
 
 		template<typename F>
 		auto MapRight (F&& f) const
 		{
 			using Result = Either<L, std::invoke_result_t<F, R>>;
-			return IsRight () ? Result { std::forward<F> (f) (GetRight ()) } : Result { AsLeft, GetLeft () };
+			return IsRight () ? Result { std::invoke (std::forward<F> (f), GetRight ()) } : Result { AsLeft, GetLeft () };
 		}
 
 		// TODO remove this method
@@ -214,5 +212,4 @@ namespace Util
 	{
 		return Visit (std::move (either).AsVariant (), std::forward<Args> (args)...);
 	}
-}
 }
