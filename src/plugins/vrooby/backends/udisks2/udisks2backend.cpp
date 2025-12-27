@@ -17,6 +17,8 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/dbus.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/devices/deviceroles.h>
@@ -124,45 +126,86 @@ namespace LC::Vrooby::UDisks2
 		{
 			return !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
 		}
+
+		QString GetErrorText (const QString& errorCode)
+		{
+			static const QMap<QString, QString> texts
+			{
+				{ "org.freedesktop.UDisks.Error.PermissionDenied"_qs, Backend::tr ("permission denied") },
+				{ "org.freedesktop.PolicyKit.Error.NotAuthorized"_qs, Backend::tr ("not authorized") },
+				{ "org.freedesktop.PolicyKit.Error.Busy"_qs, Backend::tr ("the device is busy") },
+				{ "org.freedesktop.PolicyKit.Error.Failed"_qs, Backend::tr ("the operation has failed") },
+				{ "org.freedesktop.PolicyKit.Error.Cancelled"_qs, Backend::tr ("the operation has been cancelled") },
+				{ "org.freedesktop.PolicyKit.Error.InvalidOption"_qs, Backend::tr ("invalid mount options were given") },
+				{ "org.freedesktop.PolicyKit.Error.FilesystemDriverMissing"_qs, Backend::tr ("unsupported filesystem") },
+			};
+			return texts.value (errorCode, Backend::tr ("unknown error"));
+		}
+
+		void HandleEntity (const Entity& e)
+		{
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
+
+		Util::Task<void> RunMount (QString id)
+		{
+			const auto iface = GetFSInterface (id);
+			Util::Visit (co_await Util::Typed<QString> (iface->asyncCall ("Mount"_qs, QVariantMap {})),
+					[] (const QString& path)
+					{
+						HandleEntity (Util::MakeNotification ("Vrooby",
+								Backend::tr ("Device has been successfully mounted at %1.").arg (path),
+								Priority::Info));
+					},
+					[] (const QDBusError& error)
+					{
+						qWarning () << error.name () << error.message ();
+						HandleEntity (Util::MakeNotification ("Vrooby",
+								Backend::tr ("Failed to mount the device: %1 (%2).")
+									.arg (GetErrorText (error.name ()), error.message ()),
+								Priority::Critical));
+					});
+		}
+
+		Util::Task<void> RunUnmount (QString id)
+		{
+			const auto iface = GetFSInterface (id);
+			Util::Visit (co_await Util::Typed<> (iface->asyncCall ("Unmount"_qs, QVariantMap {})),
+					[] (Util::Void)
+					{
+						HandleEntity (Util::MakeNotification ("Vrooby",
+								Backend::tr ("Device has been successfully unmounted."),
+								Priority::Info));
+					},
+					[] (const QDBusError& error)
+					{
+						qWarning () << error.name () << error.message ();
+						HandleEntity (Util::MakeNotification ("Vrooby",
+								Backend::tr ("Failed to unmount the device: %1 (%2).")
+										.arg (GetErrorText (error.name ()), error.message ()),
+								Priority::Critical));
+					});
+		}
 	}
 
 	void Backend::MountDevice (const QString& id)
 	{
-		const auto iface = GetFSInterface (id);
-		if (!iface)
-			return;
-
 		const auto item = Object2Item_.value (id);
 		if (!item)
 			return;
 
 		if (!IsMounted (item))
-		{
-			const auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
-			connect (new QDBusPendingCallWatcher (async, this),
-					SIGNAL (finished (QDBusPendingCallWatcher*)),
-					this,
-					SLOT (mountCallFinished (QDBusPendingCallWatcher*)));
-		}
+			RunMount (id);
 	}
 
-	void Backend::InitialEnumerate ()
+	Util::ContextTask<void> Backend::InitialEnumerate ()
 	{
-		if (!IsAvailable ())
-			return;
-
-		const auto sb = QDBusConnection::systemBus ();
-
 		namespace dbus = org::freedesktop::DBus;
 
-		UDisksObj_ = new dbus::ObjectManager (UDisks2Service, "/org/freedesktop/UDisks2"_qs, sb);
-		const auto reply = UDisksObj_->GetManagedObjects ();
-		const auto watcher = new QDBusPendingCallWatcher (reply, this);
-		connect (watcher,
-				SIGNAL (finished (QDBusPendingCallWatcher*)),
-				this,
-				SLOT (handleEnumerationFinished (QDBusPendingCallWatcher*)));
+		co_await Util::AddContextObject { *this };
 
+		const auto sb = QDBusConnection::systemBus ();
+		UDisksObj_ = new dbus::ObjectManager (UDisks2Service, "/org/freedesktop/UDisks2"_qs, sb);
 		connect (UDisksObj_,
 				&dbus::ObjectManager::InterfacesAdded,
 				this,
@@ -174,6 +217,18 @@ namespace LC::Vrooby::UDisks2
 				{
 					if (removed.contains ("org.freedesktop.UDisks2.Block"_ql))
 						RemovePath (path);
+				});
+
+		const auto result = co_await Util::Typed<EnumerationResult_t> (UDisksObj_->GetManagedObjects ());
+		Util::Visit (co_await Util::Typed<EnumerationResult_t> (UDisksObj_->GetManagedObjects ()),
+				[] (const QDBusError& error)
+				{
+					qWarning () << error.message ();
+				},
+				[this] (const EnumerationResult_t& devices)
+				{
+					for (const auto& [path, _] : devices.asKeyValueRange ())
+						AddPath (path);
 				});
 	}
 
@@ -315,109 +370,14 @@ namespace LC::Vrooby::UDisks2
 
 	void Backend::toggleMount (const QString& id)
 	{
-		const auto iface = GetFSInterface (id);
-		if (!iface->isValid ())
-			return;
-
 		const auto item = Object2Item_.value (id);
 		if (!item)
 			return;
 
 		if (IsMounted (item))
-		{
-			const auto async = iface->asyncCall ("Unmount"_qs, QVariantMap {});
-			connect (new QDBusPendingCallWatcher (async, this),
-					SIGNAL (finished (QDBusPendingCallWatcher*)),
-					this,
-					SLOT (umountCallFinished (QDBusPendingCallWatcher*)));
-		}
+			RunUnmount (id);
 		else
-		{
-			const auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
-			connect (new QDBusPendingCallWatcher (async, this),
-					SIGNAL (finished (QDBusPendingCallWatcher*)),
-					this,
-					SLOT (mountCallFinished (QDBusPendingCallWatcher*)));
-		}
-	}
-
-	namespace
-	{
-		QString GetErrorText (const QString& errorCode)
-		{
-			static const QMap<QString, QString> texts
-			{
-				{ "org.freedesktop.UDisks.Error.PermissionDenied"_qs, Backend::tr ("permission denied") },
-				{ "org.freedesktop.PolicyKit.Error.NotAuthorized"_qs, Backend::tr ("not authorized") },
-				{ "org.freedesktop.PolicyKit.Error.Busy"_qs, Backend::tr ("the device is busy") },
-				{ "org.freedesktop.PolicyKit.Error.Failed"_qs, Backend::tr ("the operation has failed") },
-				{ "org.freedesktop.PolicyKit.Error.Cancelled"_qs, Backend::tr ("the operation has been cancelled") },
-				{ "org.freedesktop.PolicyKit.Error.InvalidOption"_qs, Backend::tr ("invalid mount options were given") },
-				{ "org.freedesktop.PolicyKit.Error.FilesystemDriverMissing"_qs, Backend::tr ("unsupported filesystem") }
-			};
-			return texts.value (errorCode, Backend::tr ("unknown error"));
-		}
-
-		void HandleEntity (const Entity& e)
-		{
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-		}
-	}
-
-	void Backend::mountCallFinished (QDBusPendingCallWatcher *watcher)
-	{
-		qDebug () << Q_FUNC_INFO;
-		watcher->deleteLater ();
-		QDBusPendingReply<QString> reply = *watcher;
-
-		if (!reply.isError ())
-		{
-			HandleEntity (Util::MakeNotification ("Vrooby",
-						tr ("Device has been successfully mounted at %1.").arg (reply.value ()),
-						Priority::Info));
-			return;
-		}
-
-		const auto& error = reply.error ();
-		qWarning () << error.name () << error.message ();
-		HandleEntity (Util::MakeNotification ("Vrooby",
-					tr ("Failed to mount the device: %1 (%2).").arg (GetErrorText (error.name ()), error.message ()),
-					Priority::Critical));
-	}
-
-	void Backend::umountCallFinished (QDBusPendingCallWatcher *watcher)
-	{
-		qDebug () << Q_FUNC_INFO;
-		watcher->deleteLater ();
-		QDBusPendingReply<void> reply = *watcher;
-
-		if (!reply.isError ())
-		{
-			HandleEntity (Util::MakeNotification ("Vrooby",
-						tr ("Device has been successfully unmounted."),
-						Priority::Info));
-			return;
-		}
-
-		const auto& error = reply.error ();
-		qWarning () << error.name () << error.message ();
-		HandleEntity (Util::MakeNotification ("Vrooby",
-					tr ("Failed to unmount the device: %1 (%2).").arg (GetErrorText (error.name ()), error.message ()),
-					Priority::Critical));
-	}
-
-	void Backend::handleEnumerationFinished (QDBusPendingCallWatcher *watcher)
-	{
-		watcher->deleteLater ();
-		QDBusPendingReply<EnumerationResult_t> reply = *watcher;
-		if (reply.isError ())
-		{
-			qWarning () << reply.error ().message ();
-			return;
-		}
-
-		for (const auto& [path, _] : reply.value ().asKeyValueRange ())
-			AddPath (path);
+			RunMount (id);
 	}
 
 	void Backend::handleDeviceChanged (const QDBusMessage& msg)

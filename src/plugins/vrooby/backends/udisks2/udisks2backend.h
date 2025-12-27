@@ -11,8 +11,7 @@
 #include "../../devbackend.h"
 #include <memory>
 #include <QHash>
-#include <QSet>
-#include <QVariantMap>
+#include <util/threads/coro/taskfwd.h>
 #include "dbus/manager.h"
 
 class QDBusObjectPath;
@@ -45,7 +44,7 @@ namespace LC::Vrooby::UDisks2
 		QAbstractItemModel* GetDevicesModel () const override;
 		void MountDevice (const QString&) override;
 	private:
-		void InitialEnumerate ();
+		Util::ContextTask<void> InitialEnumerate ();
 		bool AddPath (const QDBusObjectPath&);
 		void RemovePath (const QDBusObjectPath&);
 
@@ -62,9 +61,6 @@ namespace LC::Vrooby::UDisks2
 	public slots:
 		void toggleMount (const QString&) override;
 	private slots:
-		void mountCallFinished (QDBusPendingCallWatcher*);
-		void umountCallFinished (QDBusPendingCallWatcher*);
-		void handleEnumerationFinished (QDBusPendingCallWatcher*);
 		void handleDeviceChanged (const QDBusMessage&);
 	};
 

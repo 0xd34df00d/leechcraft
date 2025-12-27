@@ -49,6 +49,7 @@ namespace LC::Vrooby
 			return result;
 		}
 	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		TrayView_ = new TrayView ();
