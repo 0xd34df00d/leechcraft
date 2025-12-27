@@ -9,12 +9,19 @@
 #include "corotasktest.h"
 #include <QtConcurrentRun>
 #include <QtTest>
+#ifdef QT_DBUS_LIB
+#include <QDBusInterface>
+#endif
 #include <coro/future.h>
 #include <coro.h>
 #include <coro/getresult.h>
 #include <coro/inparallel.h>
 #include <coro/throttle.h>
+#ifdef QT_DBUS_LIB
+#include <coro/dbus.h>
+#endif
 #include <util/threads/futures.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/qtutil.h>
 
 QTEST_GUILESS_MAIN (LC::Util::CoroTaskTest)
@@ -511,6 +518,21 @@ namespace LC::Util
 					co_await QtConcurrent::run ([] { QThread::sleep (LongDelay); });
 				}));
 	}
+
+#ifdef QT_DBUS_LIB
+	void CoroTaskTest::testDBus ()
+	{
+		auto task = [] () -> Task<Either<QDBusError::ErrorType, bool>>
+		{
+			const auto& bus = QDBusConnection::systemBus ();
+			QDBusInterface dbusIface { "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", bus };
+			const auto result = co_await Typed<bool> (dbusIface.asyncCall ("NameHasOwner", "org.freedesktop.DBus"_qs));
+			co_return result.MapLeft (&QDBusError::type);
+		} ();
+
+		QCOMPARE (GetTaskResult (task), true);
+	}
+#endif
 
 	void CoroTaskTest::cleanupTestCase ()
 	{

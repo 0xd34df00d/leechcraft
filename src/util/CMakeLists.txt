@@ -1,6 +1,7 @@
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 option (ENABLE_UTIL_TESTS "Enable tests for some of the Utility components" OFF)
+option (ENABLE_UTIL_TESTS_DBUS "Enable Utility tests that depend on D-Bus" ON)
 option (WITH_X11 "Enable X11 support on Linux" ON)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 

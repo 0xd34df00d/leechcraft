@@ -44,6 +44,10 @@ namespace LC::Util
 		void testContextDestrDoesntWaitProcess ();
 		void testContextDestrDoesntWaitFuture ();
 
+#ifdef QT_DBUS_LIB
+		void testDBus ();
+#endif
+
 		void cleanupTestCase ();
 	};
 }

@@ -19,4 +19,8 @@ if (ENABLE_UTIL_TESTS)
 	AddUtilTest (threads_corotask tests/corotasktest.cpp UtilThreadsCoroTaskTest leechcraft-util-threads)
 	AddUtilTest (threads_futures tests/futurestest.cpp UtilThreadsFuturesTest leechcraft-util-threads)
 	AddUtilTest (threads_workerthread tests/workerthreadtest.cpp UtilThreadsWorkerThreadTest leechcraft-util-threads)
+
+	if (ENABLE_UTIL_TESTS_DBUS)
+		FindQtLibs (lc_util_threads_corotask_test DBus)
+	endif ()
 endif ()
