@@ -21,9 +21,7 @@
 #include "devbackend.h"
 #include "trayview.h"
 
-namespace LC
-{
-namespace Vrooby
+namespace LC::Vrooby
 {
 	namespace
 	{
@@ -116,7 +114,7 @@ namespace Vrooby
 
 	QAbstractItemModel* Plugin::GetDevicesModel () const
 	{
-		return Backend_ ? Backend_->GetDevicesModel () : 0;
+		return Backend_ ? Backend_->GetDevicesModel () : nullptr;
 	}
 
 	void Plugin::MountDevice (const QString& id)
@@ -165,7 +163,6 @@ namespace Vrooby
 					TrayView_->size (), Util::FitFlag::NoOverlap));
 		TrayView_->setVisible (shouldShow);
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_vrooby, LC::Vrooby::Plugin);

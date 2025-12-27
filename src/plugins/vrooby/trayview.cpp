@@ -27,9 +27,7 @@
 #include <util/util.h>
 #include "devbackend.h"
 
-namespace LC
-{
-namespace Vrooby
+namespace LC::Vrooby
 {
 	class TrayModel : public QSortFilterProxyModel
 	{
@@ -215,7 +213,7 @@ namespace Vrooby
 
 	void TrayView::SetBackend (DevBackend *backend)
 	{
-		bool prevHasItems = HasItems ();;
+		const bool prevHasItems = HasItems ();
 		if (Backend_)
 		{
 			disconnect (rootObject (),
@@ -272,5 +270,4 @@ namespace Vrooby
 	{
 		TrayModel_->ToggleFilter ();
 	}
-}
 }

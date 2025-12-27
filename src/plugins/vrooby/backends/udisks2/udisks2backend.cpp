@@ -24,11 +24,7 @@
 
 typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
 
-namespace LC
-{
-namespace Vrooby
-{
-namespace UDisks2
+namespace LC::Vrooby::UDisks2
 {
 	Backend::Backend ()
 	: DevicesModel_ { new QStandardItemModel { this } }
@@ -67,11 +63,8 @@ namespace UDisks2
 
 		InitialEnumerate ();
 
-		auto timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (updateDeviceSpaces ()));
+		const auto timer = new QTimer { this };
+		timer->callOnTimeout ([this] { UpdateDeviceSpaces (); });
 		timer->start (10000);
 	}
 
@@ -126,22 +119,26 @@ namespace UDisks2
 					"org.freedesktop.DBus.Properties"_qs,
 					QDBusConnection::systemBus ());
 		}
+
+		bool IsMounted (QStandardItem *item)
+		{
+			return !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
+		}
 	}
 
 	void Backend::MountDevice (const QString& id)
 	{
-		auto iface = GetFSInterface (id);
+		const auto iface = GetFSInterface (id);
 		if (!iface)
 			return;
 
-		auto item = Object2Item_.value (id);
+		const auto item = Object2Item_.value (id);
 		if (!item)
 			return;
 
-		const bool isMounted = !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
-		if (!isMounted)
+		if (!IsMounted (item))
 		{
-			auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
+			const auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
@@ -154,13 +151,13 @@ namespace UDisks2
 		if (!IsAvailable ())
 			return;
 
-		auto sb = QDBusConnection::systemBus ();
+		const auto sb = QDBusConnection::systemBus ();
 
 		namespace dbus = org::freedesktop::DBus;
 
 		UDisksObj_ = new dbus::ObjectManager (UDisks2Service, "/org/freedesktop/UDisks2"_qs, sb);
-		auto reply = UDisksObj_->GetManagedObjects ();
-		auto watcher = new QDBusPendingCallWatcher (reply, this);
+		const auto reply = UDisksObj_->GetManagedObjects ();
+		const auto watcher = new QDBusPendingCallWatcher (reply, this);
 		connect (watcher,
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
 				this,
@@ -186,7 +183,7 @@ namespace UDisks2
 		if (Object2Item_.contains (str))
 			return true;
 
-		auto blockIface = GetBlockInterface (str);
+		const auto blockIface = GetBlockInterface (str);
 		if (!blockIface->isValid ())
 		{
 			qWarning () << "invalid interface for" << str << blockIface->lastError ().message ();
@@ -195,11 +192,11 @@ namespace UDisks2
 
 		const auto& driveId = blockIface->property ("Drive").value<QDBusObjectPath> ().path ();
 
-		auto driveIface = driveId.isEmpty () ? QDBusInterface_ptr () : GetDevInterface (driveId);
+		const auto driveIface = driveId.isEmpty () ? QDBusInterface_ptr () : GetDevInterface (driveId);
 		if (!driveIface || !driveIface->isValid ())
 			return false;
 
-		auto partitionIface = GetPartitionInterface (str);
+		const auto partitionIface = GetPartitionInterface (str);
 
 		QDBusConnection::systemBus ().connect (UDisks2Service,
 				path.path (),
@@ -208,7 +205,7 @@ namespace UDisks2
 				this,
 				SLOT (handleDeviceChanged (QDBusMessage)));
 
-		auto item = new QStandardItem;
+		const auto item = new QStandardItem;
 		Object2Item_ [str] = item;
 		SetItemData ({
 					partitionIface,
@@ -233,17 +230,17 @@ namespace UDisks2
 
 	namespace
 	{
-		QString GetPartitionName (QDBusInterface_ptr partition, QDBusInterface_ptr block)
+		QString GetPartitionName (const QDBusInterface& partition, const QDBusInterface& block)
 		{
-			auto result = block->property ("IdLabel").toString ().trimmed ();
+			auto result = block.property ("IdLabel").toString ().trimmed ();
 			if (!result.isEmpty ())
 				return result;
 
-			result = partition->property ("Name").toString ().trimmed ();
+			result = partition.property ("Name").toString ().trimmed ();
 			if (!result.isEmpty ())
 				return result;
 
-			return Backend::tr ("Partition %1").arg (partition->property ("Number").toInt ());
+			return Backend::tr ("Partition %1").arg (partition.property ("Number").toInt ());
 		}
 
 		auto GetMountPaths (QDBusInterface& props)
@@ -283,7 +280,7 @@ namespace UDisks2
 		const auto& vendor = ifaces.Drive_->property ("Vendor").toString () +
 				" " +
 				ifaces.Drive_->property ("Model").toString ();
-		const auto& partName = GetPartitionName (ifaces.Partition_, ifaces.Block_);
+		const auto& partName = GetPartitionName (*ifaces.Partition_, *ifaces.Block_);
 		const auto& name = isPartition ? partName : vendor;
 		const auto& fullName = isPartition ?
 				"%1: %2"_qs.arg (vendor, partName) :
@@ -318,18 +315,17 @@ namespace UDisks2
 
 	void Backend::toggleMount (const QString& id)
 	{
-		auto iface = GetFSInterface (id);
+		const auto iface = GetFSInterface (id);
 		if (!iface->isValid ())
 			return;
 
-		auto item = Object2Item_.value (id);
+		const auto item = Object2Item_.value (id);
 		if (!item)
 			return;
 
-		const bool isMounted = !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
-		if (isMounted)
+		if (IsMounted (item))
 		{
-			auto async = iface->asyncCall ("Unmount"_qs, QVariantMap {});
+			const auto async = iface->asyncCall ("Unmount"_qs, QVariantMap {});
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
@@ -337,7 +333,7 @@ namespace UDisks2
 		}
 		else
 		{
-			auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
+			const auto async = iface->asyncCall ("Mount"_qs, QVariantMap {});
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
@@ -420,7 +416,7 @@ namespace UDisks2
 			return;
 		}
 
-		for (const QDBusObjectPath& path : reply.value ().keys ())
+		for (const auto& [path, _] : reply.value ().asKeyValueRange ())
 			AddPath (path);
 	}
 
@@ -428,14 +424,14 @@ namespace UDisks2
 	{
 		const auto& path = msg.path ();
 
-		auto item = Object2Item_.value (path);
+		const auto item = Object2Item_.value (path);
 		if (!item)
 		{
 			qWarning () << "no item for path" << path;
 			return;
 		}
 
-		auto blockIface = GetBlockInterface (path);
+		const auto blockIface = GetBlockInterface (path);
 		const ItemInterfaces faces =
 		{
 			GetPartitionInterface (path),
@@ -446,9 +442,9 @@ namespace UDisks2
 		SetItemData (faces, item);
 	}
 
-	void Backend::updateDeviceSpaces ()
+	void Backend::UpdateDeviceSpaces ()
 	{
-		for (QStandardItem *item : Object2Item_)
+		for (const auto item : Object2Item_)
 		{
 			const auto& mountPaths = item->data (MassStorageRole::MountPoints).toStringList ();
 			if (mountPaths.isEmpty ())
@@ -459,6 +455,4 @@ namespace UDisks2
 				item->setData (free, MassStorageRole::AvailableSize);
 		}
 	}
-}
-}
 }

@@ -10,9 +10,7 @@
 
 #include <QQuickWidget>
 
-namespace LC
-{
-namespace Vrooby
+namespace LC::Vrooby
 {
 	class DevBackend;
 	class FlatMountableItems;
@@ -35,5 +33,4 @@ namespace Vrooby
 	signals:
 		void hasItemsChanged ();
 	};
-}
 }

@@ -23,11 +23,7 @@ class QDBusPendingCallWatcher;
 
 typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
 
-namespace LC
-{
-namespace Vrooby
-{
-namespace UDisks2
+namespace LC::Vrooby::UDisks2
 {
 	class Backend : public DevBackend
 	{
@@ -43,11 +39,11 @@ namespace UDisks2
 		static bool IsAvailable ();
 		static QString GetBackendName ();
 
-		void Start ();
+		void Start () override;
 
-		bool SupportsDevType (DeviceType) const;
-		QAbstractItemModel* GetDevicesModel () const;
-		void MountDevice (const QString&);
+		bool SupportsDevType (DeviceType) const override;
+		QAbstractItemModel* GetDevicesModel () const override;
+		void MountDevice (const QString&) override;
 	private:
 		void InitialEnumerate ();
 		bool AddPath (const QDBusObjectPath&);
@@ -61,15 +57,16 @@ namespace UDisks2
 			QDBusInterface_ptr Props_;
 		};
 		void SetItemData (const ItemInterfaces&, QStandardItem*);
+
+		void UpdateDeviceSpaces ();
 	public slots:
-		void toggleMount (const QString&);
+		void toggleMount (const QString&) override;
 	private slots:
 		void mountCallFinished (QDBusPendingCallWatcher*);
 		void umountCallFinished (QDBusPendingCallWatcher*);
 		void handleEnumerationFinished (QDBusPendingCallWatcher*);
 		void handleDeviceChanged (const QDBusMessage&);
-		void updateDeviceSpaces ();
 	};
-}
-}
+
+	static_assert (DevBackendType<Backend>);
 }
