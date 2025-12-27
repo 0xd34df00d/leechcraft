@@ -275,6 +275,13 @@ namespace LC::Vrooby::UDisks2
 			return Backend::tr ("Partition %1").arg (partition.property ("Number").toInt ());
 		}
 
+		QByteArray FixupTrailingZero (QByteArray ba)
+		{
+			if (ba.endsWith ('\0'))
+				ba.chop (1);
+			return ba;
+		}
+
 		auto GetMountPaths (QDBusInterface& props)
 		{
 			QStringList mountPaths;
@@ -285,11 +292,7 @@ namespace LC::Vrooby::UDisks2
 			if (const QDBusReply<QDBusVariant> reply { msg };
 				reply.isValid ())
 				for (auto point : qdbus_cast<ByteArrayList_t> (reply.value ().variant ()))
-				{
-					if (point.endsWith ('\0'))
-						point.chop (1);
-					mountPaths << QString::fromUtf8 (point);
-				}
+					mountPaths << QString::fromUtf8 (FixupTrailingZero (point));
 
 			return mountPaths;
 		}
@@ -328,7 +331,7 @@ namespace LC::Vrooby::UDisks2
 
 		item->setText (name);
 		item->setData (DeviceType::MassStorage, CommonDevRole::DevType);
-		item->setData (ifaces.Block_->property ("Device").toByteArray (), MassStorageRole::DevFile);
+		item->setData (FixupTrailingZero (ifaces.Block_->property ("Device").toByteArray ()), MassStorageRole::DevFile);
 		item->setData (ifaces.Partition_->property ("PartitionType").toInt (), MassStorageRole::PartType);
 		item->setData (isRemovable, MassStorageRole::IsRemovable);
 		item->setData (isPartition, MassStorageRole::IsPartition);
