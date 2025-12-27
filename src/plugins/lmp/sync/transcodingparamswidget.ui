@@ -7,32 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>224</height>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+  <layout class="QVBoxLayout" name="MainLayout_">
+   <property name="margin" stdset="0">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QLineEdit" name="FilenameMask_">
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following variables are allowed in the track filename: $artist, $year, $album, $trackNumber, $title.&lt;/p&gt;&lt;p&gt;Directories are separated by the '/' symbol. File extension is omitted.&lt;/p&gt;&lt;p&gt;For example, a filename could look like this:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;music/$artist/$year - $album/$trackNumber - $artist - $title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="whatsThis">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following variables are allowed in the track filename: $artist, $year, $album, $trackNumber, $title.&lt;/p&gt;&lt;p&gt;Directories are separated by the '/' symbol. File extension is omitted.&lt;/p&gt;&lt;p&gt;For example, a filename could look like this:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;music/$artist/$year - $album/$trackNumber - $artist - $title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string notr="true">music/$artist/$year $album/$trackNumber - $artist - $title</string>
-     </property>
-     <property name="placeholderText">
-      <string>Track filename...</string>
-     </property>
-    </widget>
-   </item>
    <item>
     <widget class="QGroupBox" name="TranscodingBox_">
      <property name="title">
@@ -43,9 +27,9 @@
      </property>
      <layout class="QFormLayout" name="formLayout">
       <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
       </property>
-      <property name="margin">
+      <property name="margin" stdset="0">
        <number>1</number>
       </property>
       <item row="0" column="0">
@@ -77,10 +61,10 @@
         <item>
          <widget class="QSlider" name="QualitySlider_">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="tickPosition">
-           <enum>QSlider::TicksBelow</enum>
+           <enum>QSlider::TickPosition::TicksBelow</enum>
           </property>
           <property name="tickInterval">
            <number>1</number>
@@ -90,7 +74,7 @@
         <item>
          <widget class="QLabel" name="QualityDisplay_">
           <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
+           <enum>QFrame::Shadow::Raised</enum>
           </property>
           <property name="lineWidth">
            <number>1</number>
@@ -99,7 +83,7 @@
            <string/>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -116,10 +100,10 @@
            <number>1</number>
           </property>
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="tickPosition">
-           <enum>QSlider::TicksBelow</enum>
+           <enum>QSlider::TickPosition::TicksBelow</enum>
           </property>
           <property name="tickInterval">
            <number>1</number>

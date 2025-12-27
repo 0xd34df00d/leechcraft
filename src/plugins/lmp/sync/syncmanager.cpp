@@ -19,44 +19,31 @@
 
 namespace LC::LMP
 {
-	Util::ContextTask<void> SyncManager::RunUpload (ISyncPlugin *syncer,
-			QString mount, QStringList files, TranscodingParams params)
+	Util::ContextTask<void> SyncManager::RunUpload (QStringList files, TranscodingParams params, Context context)
 	{
 		co_await Util::AddContextObject { *this };
 
 		Transcoder transcoder { files, params };
 		while (const auto transcoded = co_await transcoder.GetResults ())
-			co_await UploadTranscoded (*transcoded, syncer, mount, params);
+			co_await UploadTranscoded (*transcoded, context);
 	}
 
-	namespace
-	{
-		QString FixMask (const MediaInfo& info, const QString& mask)
-		{
-			auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
-			const auto& ext = QFileInfo { info.LocalPath_ }.suffix ();
-			if (!result.endsWith (ext))
-				result += "." + ext;
-			return result;
-		}
-	}
-
-	Util::ContextTask<void> SyncManager::UploadTranscoded (Transcoder::Result result,
-			ISyncPlugin *syncer, QString mount, TranscodingParams params)
+	Util::ContextTask<void> SyncManager::UploadTranscoded (Transcoder::Result result, Context context)
 	{
 		const auto& transcoded = (co_await Util::WithHandler (result.Transcoded_,
 				[] (const Transcoder::Result::Failure& failure)
 				{
 					// TODO log failure
 				})).TargetPath_;
+		qDebug () << "uploading" << transcoded;
 
 		const auto& mediaInfo = co_await Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded);
-		const auto& targetPath = FixMask (mediaInfo, params.FilePattern_);
-		const auto uploadResult = co_await syncer->Upload ({
+		const auto uploadResult = co_await context.Syncer_->Upload ({
 					.LocalPath_ = transcoded,
 					.OriginalLocalPath_ = result.OrigPath_,
-					.Target_ = mount,
-					.TargetRelPath_ = targetPath,
+					.MediaInfo_ = mediaInfo,
+					.Target_ = context.Target_,
+					.Config_ = context.Config_,
 				});
 
 		if (transcoded != result.OrigPath_)

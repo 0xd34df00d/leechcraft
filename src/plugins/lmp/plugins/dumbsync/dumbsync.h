@@ -9,11 +9,14 @@
 #pragma once
 
 #include <QObject>
+#include <QSortFilterProxyModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/isyncplugin.h>
+
+class QSortFilterProxyModel;
 
 namespace LC::LMP::DumbSync
 {
@@ -35,6 +38,8 @@ namespace LC::LMP::DumbSync
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		ILMPProxy_ptr LMPProxy_;
+
+		std::unique_ptr<QSortFilterProxyModel> SyncTargets_;
 	public:
 		void Init (ICoreProxy_ptr proxy) override;
 		void SecondInit () override;
@@ -52,7 +57,8 @@ namespace LC::LMP::DumbSync
 
 		QObject* GetQObject () override;
 		QString GetSyncSystemName () const override;
-		SyncConfLevel CouldSync (const QString&) override;
+		QAbstractItemModel& GetSyncTargetsModel () const override;
+		ISyncPluginConfigWidget_ptr MakeConfigWidget () override;
 		Util::ContextTask<UploadResult> Upload (UploadJob) override;
 	};
 }

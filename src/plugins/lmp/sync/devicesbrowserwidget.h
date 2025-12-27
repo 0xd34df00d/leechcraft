@@ -11,20 +11,17 @@
 #include <QWidget>
 #include "ui_devicesbrowserwidget.h"
 
+class QConcatenateTablesProxyModel;
+
 class IRemovableDevManager;
 
 namespace LC
 {
-namespace Util
-{
-	class MergeModel;
-}
-
 namespace LMP
 {
 	class ISyncPlugin;
+	class ISyncPluginConfigWidget;
 	class UploadModel;
-	class UnmountableDevManager;
 
 	class DevicesBrowserWidget : public QWidget
 	{
@@ -33,33 +30,27 @@ namespace LMP
 		Ui::DevicesBrowserWidget Ui_;
 		UploadModel *DevUploadModel_;
 
-		Util::MergeModel *Merger_;
-		UnmountableDevManager *UnmountableMgr_;
-		QMap<QAbstractItemModel*, IRemovableDevManager*> Flattener2DevMgr_;
+		std::unique_ptr<QConcatenateTablesProxyModel> Merger_;
+		QHash<const QAbstractItemModel*, ISyncPlugin*> Model2Syncer_;
 
-		ISyncPlugin *CurrentSyncer_ = nullptr;
+		std::unique_ptr<ISyncPluginConfigWidget> SyncerConfigWidget_;
 
-		QString LastDevice_;
 		QMap<QString, TranscodingParams> Device2Params_;
 	public:
-		DevicesBrowserWidget (QWidget* = nullptr);
+		explicit DevicesBrowserWidget (QWidget* = nullptr);
+		~DevicesBrowserWidget ();
 
-		void InitializeDevices ();
+		void InitializeUploaders ();
 	private:
+		void UpdateGuiForSyncer (int);
+		QModelIndex GetSourceIndex (int) const;
+		ISyncPlugin* GetSyncerForIndex (int) const;
+
 		void LoadLastParams ();
 		void SaveLastParams () const;
-
-		void UploadMountable (int);
-		void UploadUnmountable (int);
-		void HandleMountableSelected (int);
-		void HandleUnmountableSelected (int);
 	private slots:
-		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
-		void handleRowsInserted (const QModelIndex&, int, int);
 		void on_UploadButton__released ();
 		void on_RefreshButton__released ();
-		void on_DevicesSelector__activated (int);
-		void on_MountButton__released ();
 
 		void appendUpLog (QString);
 

@@ -18,8 +18,6 @@ namespace LMP
 {
 	struct TranscodingParams
 	{
-		QString FilePattern_;
-
 		/** Possible format IDs are:
 		 *
 		 * - ogg

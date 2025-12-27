@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label value="DumbSync" />
-		<item type="groupbox" checkable="true" property="UploadCovers" default="true">
-			<label value="Upload covers" />
-			<item type="lineedit" property="CoverName" default="cover.jpg">
-				<label value="Cover file name:" />
-			</item>
-			<item type="spinbox" property="CoverDim" minimum="10" maximum="10000" step="10" default="200">
-				<label value="Maximum cover width or height:" />
-				<suffix value=" px" />
-			</item>
+	<page label="DumbSync">
+		<item type="groupbox" checkable="true" property="UploadCovers" default="true" label="Upload covers">
+			<item type="lineedit" property="CoverName" default="cover.jpg" label="Cover file name:" />
+			<item type="spinbox" property="CoverDim" minimum="10" maximum="10000" step="10" default="200" label="Maximum cover width or height:" suffix="px" />
 		</item>
 	</page>
 </settings>

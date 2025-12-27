@@ -8,18 +8,25 @@
 
 #include "dumbsync.h"
 #include <memory>
-#include <functional>
-#include <QIcon>
+#include <QBindable>
+#include <QConcatenateTablesProxyModel>
 #include <QFileInfo>
 #include <QDir>
+#include <QIcon>
+#include <QLineEdit>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
-#include <interfaces/lmp/ilmpproxy.h>
-#include <interfaces/lmp/ilmputilproxy.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/devices/deviceroles.h>
+#include <interfaces/devices/iremovabledevmanager.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/lmp/ilmpproxy.h>
+#include <interfaces/lmp/ilmputilproxy.h>
+#include <util/lmp/util.h>
 
 using QFile_ptr = std::shared_ptr<QFile>;
 
@@ -27,14 +34,58 @@ namespace LC::LMP::DumbSync
 {
 	using XmlSettingsManager = Util::SingletonSettingsManager<"LMP_DumbSync">;
 
+	namespace
+	{
+		class MountableFilterModel : public QSortFilterProxyModel
+		{
+		public:
+			using QSortFilterProxyModel::QSortFilterProxyModel;
+
+			QVariant data (const QModelIndex& index, int role) const override
+			{
+				if (role != Qt::DisplayRole)
+					return QSortFilterProxyModel::data (index, role);
+
+				const auto& srcIdx = mapToSource (index);
+
+				const auto& mounts = srcIdx.data (MassStorageRole::MountPoints).toStringList ();
+				const auto& mountText = mounts.isEmpty () ?
+						Plugin::tr ("not mounted") :
+						Plugin::tr ("mounted at %1").arg (mounts.join ("; "));
+
+				const auto& size = srcIdx.data (MassStorageRole::TotalSize).toLongLong ();
+				return QString ("%1 (%2, %3), %4")
+						.arg (srcIdx.data (MassStorageRole::VisibleName).toString ())
+						.arg (Util::MakePrettySize (size))
+						.arg (srcIdx.data (MassStorageRole::DevFile).toString ())
+						.arg (mountText);
+			}
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex&) const override
+			{
+				return sourceModel()->index (row, 0).data (MassStorageRole::IsMountable).toBool ();
+			}
+		};
+	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml"_qs);
+
+		SyncTargets_ = std::make_unique<MountableFilterModel> ();
 	}
 
 	void Plugin::SecondInit ()
 	{
+		const auto merger = new QConcatenateTablesProxyModel { this };
+
+		const auto pm = GetProxyHolder ()->GetPluginsManager ();
+		for (const auto& mgr : pm->GetAllCastableTo<IRemovableDevManager*> ())
+			if (mgr->SupportsDevType (DeviceType::MassStorage))
+				merger->addSourceModel (mgr->GetDevicesModel ());
+
+		SyncTargets_->setSourceModel (merger);
 	}
 
 	void Plugin::Release ()
@@ -86,22 +137,61 @@ namespace LC::LMP::DumbSync
 		return tr ("dumb copying");
 	}
 
-	SyncConfLevel Plugin::CouldSync (const QString& path)
+	QAbstractItemModel& Plugin::GetSyncTargetsModel () const
 	{
-		const QFileInfo fi { path };
-		if (!fi.isDir () || !fi.isWritable ())
-			return SyncConfLevel::None;
-
-		if (const auto& entries = fi.dir ().entryList (QDir::Dirs);
-			entries.contains (".rockbox"_ql, Qt::CaseInsensitive) ||
-			entries.contains ("music"_ql, Qt::CaseInsensitive))
-			return SyncConfLevel::High;
-
-		return SyncConfLevel::Medium;
+		return *SyncTargets_;
 	}
 
 	namespace
 	{
+		struct UploadConfig : ISyncPluginConfig
+		{
+			QString Mask_;
+
+			explicit UploadConfig (QString mask)
+			: Mask_ { std::move (mask) }
+			{
+			}
+		};
+	}
+
+	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget ()
+	{
+		class ConfigWidget : public QLineEdit
+						   , public ISyncPluginConfigWidget
+		{
+		public:
+			explicit ConfigWidget ()
+			{
+				const auto& defaultMask = "music/$artist/$year $album/$trackNumber - $title"_qs;
+				setText (XmlSettingsManager::Instance ().Property ("FileMask", defaultMask).toString ());
+			}
+
+			QWidget* GetQWidget () override
+			{
+				return this;
+			}
+
+			ISyncPluginConfig_cptr GetConfig () const override
+			{
+				return std::make_shared<const UploadConfig> (text ());
+			}
+		};
+
+		return std::make_unique<ConfigWidget> ();
+	}
+
+	namespace
+	{
+		QString FixMask (const MediaInfo& info, const QString& mask)
+		{
+			auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
+			const auto& ext = QFileInfo { info.LocalPath_ }.suffix ();
+			if (!result.endsWith (ext))
+				result += "." + ext;
+			return result;
+		}
+
 		QImage GetScaledPixmap (const QString& pxFile)
 		{
 			if (pxFile.isEmpty ())
@@ -136,18 +226,33 @@ namespace LC::LMP::DumbSync
 
 	Util::ContextTask<Plugin::UploadResult> Plugin::Upload (UploadJob job)
 	{
-		QString target = job.Target_;
-		if (!target.endsWith ('/') && !job.TargetRelPath_.startsWith ('/'))
+		const auto& config = dynamic_cast<const UploadConfig&> (*job.Config_);
+		XmlSettingsManager::Instance ().setProperty ("FileMask", config.Mask_);
+
+		const auto& targetRelPath = FixMask (job.MediaInfo_, config.Mask_);
+		const auto& targetMountPoint = job.Target_.data (MassStorageRole::MountPoints).toStringList ().value (0);
+		if (targetMountPoint.isEmpty ())
+		{
+			qWarning () << "bad target" << job.Target_;
+			co_return UploadFailure
+			{
+				QFile::OpenError,
+				tr ("Target mount point does not exist."),
+			};
+		}
+
+		auto target = targetMountPoint;
+		if (!target.endsWith ('/') && !targetRelPath.startsWith ('/'))
 			target += '/';
-		target += job.TargetRelPath_;
+		target += targetRelPath;
 		qDebug () << "uploading" << job.LocalPath_ << "(from" << job.OriginalLocalPath_ << ") to " << target;
 
-		const QString& dirPath = job.TargetRelPath_.section ('/', 0, -2);
-		if (!QDir (job.Target_).mkpath (dirPath))
+		const QString& dirPath = targetRelPath.section ('/', 0, -2);
+		if (!QDir (targetMountPoint).mkpath (dirPath))
 			co_return UploadFailure
 			{
 				QFile::PermissionsError,
-				tr ("Unable to create the directory path %1 on target device %2.").arg (dirPath, job.Target_)
+				tr ("Unable to create the directory path %1 on target device %2.").arg (dirPath, targetMountPoint)
 			};
 
 		const auto& artPath = LMPProxy_->GetUtilProxy ()->FindAlbumArt (job.OriginalLocalPath_);

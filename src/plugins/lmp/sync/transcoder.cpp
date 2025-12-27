@@ -111,7 +111,6 @@ namespace LC::LMP
 	Transcoder::Transcoder (const QStringList& files, const TranscodingParams& params)
 	: Params_ { params }
 	{
-		// TODO make this more type-safe
 		if (params.FormatID_.isEmpty ())
 		{
 			for (const auto& file : files)
@@ -121,7 +120,7 @@ namespace LC::LMP
 
 		for (const auto& file : files)
 		{
-			if (params.OnlyLossless_ && IsLossless (file))
+			if (params.OnlyLossless_ && !IsLossless (file))
 				Results_.Send ({ file, Result::Success { file } });
 			else
 				ToTranscode_.Send (file);
@@ -130,8 +129,9 @@ namespace LC::LMP
 		for (int i = 0; i < Params_.NumThreads_; ++i)
 			[this] -> Util::ContextTask<void> // NOLINT(*-avoid-capturing-lambda-coroutines)
 			{
+				co_await Util::AddContextObject { *this };
 				while (const auto maybeNextFile = co_await ToTranscode_)
-					TranscodeFile (*maybeNextFile);
+					co_await TranscodeFile (*maybeNextFile);
 			} ();
 	}
 
@@ -153,16 +153,15 @@ namespace LC::LMP
 #endif
 
 		co_await ffmpeg;
-		qDebug () << ffmpeg.exitStatus () << ffmpeg.error () << ffmpeg.exitCode ();
 		if (ffmpeg.exitStatus () == QProcess::NormalExit && !ffmpeg.exitCode ())
 		{
 			CopyTags (origPath, transcodedPath);
-			Results_.Send ({ origPath, Result::Success { origPath } });
+			Results_.Send ({ origPath, Result::Success { transcodedPath } });
 		}
 		else
 		{
 			const auto& ffmpegErr = ffmpeg.readAllStandardError ();
-			qWarning () << ffmpegErr;
+			qDebug () << ffmpeg.exitStatus () << ffmpeg.error () << ffmpeg.exitCode () << ffmpegErr;
 			Results_.Send ({ origPath, { Util::AsLeft, Result::Failure { ffmpeg.exitStatus (), ffmpegErr } } });
 		}
 	}

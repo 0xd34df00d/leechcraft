@@ -119,7 +119,6 @@ LC_DEFINE_PLUGIN (
 		sync/transcoder.cpp
 		sync/transcodingparams.cpp
 		sync/transcodingparamswidget.cpp
-		sync/unmountabledevmanager.cpp
 		sync/uploadmodel.cpp
 		playlistparsers/commonpl.cpp
 		playlistparsers/playlist.cpp

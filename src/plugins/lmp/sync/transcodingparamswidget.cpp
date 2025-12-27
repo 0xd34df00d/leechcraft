@@ -54,17 +54,11 @@ namespace LMP
 		}
 	}
 
-	void TranscodingParamsWidget::SetMaskVisible (bool visible)
-	{
-		Ui_.FilenameMask_->setVisible (visible);
-	}
-
 	TranscodingParams TranscodingParamsWidget::GetParams () const
 	{
 		const bool transcode = Ui_.TranscodingBox_->isChecked ();
 		return
 		{
-			Ui_.FilenameMask_->text (),
 			transcode ? GetCurrentFormat ()->GetFormatID () : QString (),
 			GetCurrentBitrateType (),
 			Ui_.QualitySlider_->value (),
@@ -76,7 +70,6 @@ namespace LMP
 	void TranscodingParamsWidget::SetParams (const TranscodingParams& params)
 	{
 		Ui_.TranscodingBox_->setChecked (!params.FormatID_.isEmpty ());
-		Ui_.FilenameMask_->setText (params.FilePattern_);
 
 		const auto& formats = Formats_->GetFormats ();
 		const auto pos = std::find_if (formats.begin (), formats.end (),

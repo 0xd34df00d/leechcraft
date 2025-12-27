@@ -10,8 +10,12 @@
 
 #include <QtPlugin>
 #include <QFile>
+#include <QModelIndex>
 #include <util/sll/either.h>
 #include <util/threads/coro/taskfwd.h>
+#include <util/lmp/mediainfo.h>
+
+class QAbstractItemModel;
 
 namespace LC::LMP
 {
@@ -22,6 +26,26 @@ namespace LC::LMP
 		High
 	};
 
+	class ISyncPluginConfig
+	{
+	public:
+		virtual ~ISyncPluginConfig () = default;
+	};
+
+	using ISyncPluginConfig_cptr = std::shared_ptr<const ISyncPluginConfig>;
+
+	class ISyncPluginConfigWidget
+	{
+	public:
+		virtual ~ISyncPluginConfigWidget () = default;
+
+		virtual QWidget* GetQWidget () = 0;
+
+		virtual ISyncPluginConfig_cptr GetConfig () const = 0;
+	};
+
+	using ISyncPluginConfigWidget_ptr = std::unique_ptr<ISyncPluginConfigWidget>;
+
 	class ISyncPlugin
 	{
 	public:
@@ -31,7 +55,24 @@ namespace LC::LMP
 
 		virtual QString GetSyncSystemName () const = 0;
 
-		virtual SyncConfLevel CouldSync (const QString& path) = 0;
+		struct Target
+		{
+			QString VisibleName_;
+			QVariant Payload_;
+
+			bool operator== (const Target& other) const
+			{
+				return Payload_ == other.Payload_;
+			}
+		};
+
+		virtual QAbstractItemModel& GetSyncTargetsModel () const = 0;
+
+		/** @brief Returns the configuration widget for this sync method.
+		 *
+		 * If the sync method has no configuration, a nullptr can be returned.
+		 */
+		virtual ISyncPluginConfigWidget_ptr MakeConfigWidget () = 0;
 
 		struct UploadSuccess {};
 		struct UploadFailure
@@ -46,8 +87,12 @@ namespace LC::LMP
 		{
 			QString LocalPath_;
 			QString OriginalLocalPath_;
-			QString Target_;
-			QString TargetRelPath_;
+
+			MediaInfo MediaInfo_;
+
+			QModelIndex Target_;
+
+			ISyncPluginConfig_cptr Config_;
 		};
 
 		virtual Util::ContextTask<UploadResult> Upload (UploadJob uploadJob) = 0;

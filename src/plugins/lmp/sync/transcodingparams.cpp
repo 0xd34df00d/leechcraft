@@ -16,9 +16,8 @@ namespace LMP
 {
 	QDataStream& operator<< (QDataStream& out, const TranscodingParams& params)
 	{
-		out << static_cast<quint8> (2);
-		out << params.FilePattern_
-				<< params.FormatID_;
+		out << static_cast<quint8> (3);
+		out << params.FormatID_;
 
 		auto fmtStr = "unknown";
 		switch (params.BitrateType_)
@@ -42,17 +41,19 @@ namespace LMP
 	{
 		quint8 version = 0;
 		in >> version;
-		if (version < 1 || version > 2)
+		// TODO drop previous versions 2026-03-01
+		if (version < 1 || version > 3)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< version;
+			qWarning () << "unsupported version" << version;
 			return in;
 		}
 
+		QString dummyFilePattern;
+		if (version < 3)
+			in >> dummyFilePattern;
+
 		QString fmtStr;
-		in >> params.FilePattern_
-				>> params.FormatID_
+		in >> params.FormatID_
 				>> fmtStr
 				>> params.Quality_
 				>> params.NumThreads_;

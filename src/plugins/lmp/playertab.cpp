@@ -190,7 +190,7 @@ namespace LMP
 	void PlayerTab::InitWithOtherPlugins ()
 	{
 		handleSongChanged (MediaInfo ());
-		Ui_.DevicesBrowser_->InitializeDevices ();
+		Ui_.DevicesBrowser_->InitializeUploaders ();
 		Ui_.EventsWidget_->InitializeProviders ();
 		Ui_.ReleasesWidget_->InitializeProviders ();
 		Ui_.HypesWidget_->InitializeProviders ();

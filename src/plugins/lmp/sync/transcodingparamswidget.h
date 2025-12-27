@@ -26,9 +26,7 @@ namespace LMP
 		Ui::TranscodingParamsWidget Ui_;
 		std::shared_ptr<Formats> Formats_;
 	public:
-		TranscodingParamsWidget (QWidget* = 0);
-
-		void SetMaskVisible (bool);
+		TranscodingParamsWidget (QWidget* = nullptr);
 
 		TranscodingParams GetParams () const;
 		void SetParams (const TranscodingParams&);

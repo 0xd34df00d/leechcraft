@@ -21,9 +21,15 @@ namespace LC::LMP
 	public:
 		using QObject::QObject;
 
-		Util::ContextTask<void> RunUpload (ISyncPlugin*, QString mount, QStringList, TranscodingParams);
+		struct Context
+		{
+			ISyncPlugin *Syncer_;
+			QPersistentModelIndex Target_;
+			ISyncPluginConfig_cptr Config_;
+		};
+
+		Util::ContextTask<void> RunUpload (QStringList files, TranscodingParams params, Context context);
 	private:
-		Util::ContextTask<void> UploadTranscoded (Transcoder::Result result,
-				ISyncPlugin *syncer, QString mount, TranscodingParams params);
+		Util::ContextTask<void> UploadTranscoded (Transcoder::Result result, Context context);
 	};
 }

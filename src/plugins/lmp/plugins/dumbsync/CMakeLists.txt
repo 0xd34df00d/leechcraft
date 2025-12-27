@@ -7,4 +7,5 @@ LC_DEFINE_PLUGIN (
 		dumbsync.cpp
 	SETTINGS lmpdumbsyncsettings.xml
 	QT_COMPONENTS Concurrent Gui
+	LINK_LIBRARIES leechcraft-lmp-util
 	)
