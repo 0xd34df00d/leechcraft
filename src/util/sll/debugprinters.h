@@ -9,6 +9,24 @@
 #pragma once
 
 #include "sllconfig.h"
+#include <QDebug>
 #include <QDomDocument>
+#include "either.h"
 
 UTIL_SLL_API QDebug operator<< (QDebug, const QDomDocument::ParseResult&);
+
+namespace LC::Util
+{
+	template<typename T>
+	concept QDebuggable = requires (T t, QDebug out) { out << t; };
+
+	template<QDebuggable L, QDebuggable R>
+	QDebug operator<< (QDebug out, const Either<L, R>& either)
+	{
+		QDebugStateSaver saver { out };
+		Visit (either,
+				[&out] (const L& l) { out.nospace () << "L { " << l << " }"; },
+				[&out] (const R& r) { out.nospace () << "R { " << r << " }"; });
+		return out;
+	}
+}
