@@ -82,43 +82,20 @@ namespace LC::Vrooby::UDisks2
 
 	namespace
 	{
-		QDBusInterface_ptr GetBlockInterface (const QString& path)
+		namespace Interfaces
 		{
-			return std::make_shared<QDBusInterface> (UDisks2Service,
-					path,
-					"org.freedesktop.UDisks2.Block"_qs,
-					QDBusConnection::systemBus ());
+			const auto Block = "org.freedesktop.UDisks2.Block"_qs;
+			const auto Partition = "org.freedesktop.UDisks2.Partition"_qs;
+			const auto Filesystem = "org.freedesktop.UDisks2.Filesystem"_qs;
+			const auto Drive = "org.freedesktop.UDisks2.Drive"_qs;
+			const auto Props = "org.freedesktop.DBus.Properties"_qs;
 		}
 
-		QDBusInterface_ptr GetPartitionInterface (const QString& path)
+		QDBusInterface_ptr GetInterface (const QString& path, const QString& iface)
 		{
 			return std::make_shared<QDBusInterface> (UDisks2Service,
 					path,
-					"org.freedesktop.UDisks2.Partition"_qs,
-					QDBusConnection::systemBus ());
-		}
-
-		QDBusInterface_ptr GetFSInterface (const QString& path)
-		{
-			return std::make_shared<QDBusInterface> (UDisks2Service,
-					path,
-					"org.freedesktop.UDisks2.Filesystem"_qs,
-					QDBusConnection::systemBus ());
-		}
-
-		QDBusInterface_ptr GetDevInterface (const QString& path)
-		{
-			return std::make_shared<QDBusInterface> (UDisks2Service,
-					path,
-					"org.freedesktop.UDisks2.Drive"_qs,
-					QDBusConnection::systemBus ());
-		}
-
-		QDBusInterface_ptr GetPropsInterface (const QString& path)
-		{
-			return std::make_shared<QDBusInterface> (UDisks2Service,
-					path,
-					"org.freedesktop.DBus.Properties"_qs,
+					iface,
 					QDBusConnection::systemBus ());
 		}
 
@@ -149,7 +126,7 @@ namespace LC::Vrooby::UDisks2
 
 		Util::Task<void> RunMount (QString id)
 		{
-			const auto iface = GetFSInterface (id);
+			const auto iface = GetInterface (id, Interfaces::Filesystem);
 			Util::Visit (co_await Util::Typed<QString> (iface->asyncCall ("Mount"_qs, QVariantMap {})),
 					[] (const QString& path)
 					{
@@ -169,7 +146,7 @@ namespace LC::Vrooby::UDisks2
 
 		Util::Task<void> RunUnmount (QString id)
 		{
-			const auto iface = GetFSInterface (id);
+			const auto iface = GetInterface (id, Interfaces::Filesystem);
 			Util::Visit (co_await Util::Typed<> (iface->asyncCall ("Unmount"_qs, QVariantMap {})),
 					[] (Util::Void)
 					{
@@ -238,7 +215,7 @@ namespace LC::Vrooby::UDisks2
 		if (Object2Item_.contains (str))
 			return true;
 
-		const auto blockIface = GetBlockInterface (str);
+		const auto blockIface = GetInterface (str, Interfaces::Block);
 		if (!blockIface->isValid ())
 		{
 			qWarning () << "invalid interface for" << str << blockIface->lastError ().message ();
@@ -247,11 +224,11 @@ namespace LC::Vrooby::UDisks2
 
 		const auto& driveId = blockIface->property ("Drive").value<QDBusObjectPath> ().path ();
 
-		const auto driveIface = driveId.isEmpty () ? QDBusInterface_ptr () : GetDevInterface (driveId);
+		const auto driveIface = driveId.isEmpty () ? QDBusInterface_ptr {} : GetInterface (driveId, Interfaces::Drive);
 		if (!driveIface || !driveIface->isValid ())
 			return false;
 
-		const auto partitionIface = GetPartitionInterface (str);
+		const auto partitionIface = GetInterface (str, Interfaces::Partition);
 
 		QDBusConnection::systemBus ().connect (UDisks2Service,
 				path.path (),
@@ -266,7 +243,7 @@ namespace LC::Vrooby::UDisks2
 					partitionIface,
 					blockIface,
 					driveIface,
-					GetPropsInterface (str)
+					GetInterface (str, Interfaces::Props),
 				}, item);
 		if (const auto& slaveTo = partitionIface->property ("Table").value<QDBusObjectPath> ();
 			!slaveTo.path ().isEmpty () && !AddPath (slaveTo))
@@ -391,13 +368,13 @@ namespace LC::Vrooby::UDisks2
 			return;
 		}
 
-		const auto blockIface = GetBlockInterface (path);
+		const auto blockIface = GetInterface (path, Interfaces::Block);
 		const ItemInterfaces faces =
 		{
-			GetPartitionInterface (path),
+			GetInterface (path, Interfaces::Partition),
 			blockIface,
-			GetDevInterface (blockIface->property ("Drive").value<QDBusObjectPath> ().path ()),
-			GetPropsInterface (path)
+			GetInterface (blockIface->property ("Drive").value<QDBusObjectPath> ().path (), Interfaces::Drive),
+			GetInterface (path, Interfaces::Props)
 		};
 		SetItemData (faces, item);
 	}
