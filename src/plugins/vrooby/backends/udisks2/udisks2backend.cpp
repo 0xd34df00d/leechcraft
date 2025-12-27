@@ -24,7 +24,7 @@
 #include <interfaces/devices/deviceroles.h>
 #include "udisks2types.h"
 
-typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
+using QDBusInterface_ptr = std::shared_ptr<QDBusInterface>;
 
 namespace LC::Vrooby::UDisks2
 {
@@ -54,7 +54,7 @@ namespace LC::Vrooby::UDisks2
 
 	QString Backend::GetBackendName ()
 	{
-		return "UDisks2";
+		return "UDisks2"_qs;
 	}
 
 	void Backend::Start ()
@@ -65,9 +65,11 @@ namespace LC::Vrooby::UDisks2
 
 		InitialEnumerate ();
 
+		using namespace std::chrono_literals;
+
 		const auto timer = new QTimer { this };
 		timer->callOnTimeout ([this] { UpdateDeviceSpaces (); });
-		timer->start (10000);
+		timer->start (10s);
 	}
 
 	bool Backend::SupportsDevType (DeviceType type) const
@@ -99,7 +101,7 @@ namespace LC::Vrooby::UDisks2
 					QDBusConnection::systemBus ());
 		}
 
-		bool IsMounted (QStandardItem *item)
+		bool IsMounted (const QStandardItem *item)
 		{
 			return !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
 		}
@@ -124,20 +126,22 @@ namespace LC::Vrooby::UDisks2
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
+		const auto NotificationTitle = "Vrooby"_qs;
+
 		Util::Task<void> RunMount (QString id)
 		{
 			const auto iface = GetInterface (id, Interfaces::Filesystem);
 			Util::Visit (co_await Util::Typed<QString> (iface->asyncCall ("Mount"_qs, QVariantMap {})),
 					[] (const QString& path)
 					{
-						HandleEntity (Util::MakeNotification ("Vrooby",
+						HandleEntity (Util::MakeNotification (NotificationTitle,
 								Backend::tr ("Device has been successfully mounted at %1.").arg (path),
 								Priority::Info));
 					},
 					[] (const QDBusError& error)
 					{
 						qWarning () << error.name () << error.message ();
-						HandleEntity (Util::MakeNotification ("Vrooby",
+						HandleEntity (Util::MakeNotification (NotificationTitle,
 								Backend::tr ("Failed to mount the device: %1 (%2).")
 									.arg (GetErrorText (error.name ()), error.message ()),
 								Priority::Critical));
@@ -150,14 +154,14 @@ namespace LC::Vrooby::UDisks2
 			Util::Visit (co_await Util::Typed<> (iface->asyncCall ("Unmount"_qs, QVariantMap {})),
 					[] (Util::Void)
 					{
-						HandleEntity (Util::MakeNotification ("Vrooby",
+						HandleEntity (Util::MakeNotification (NotificationTitle,
 								Backend::tr ("Device has been successfully unmounted."),
 								Priority::Info));
 					},
 					[] (const QDBusError& error)
 					{
 						qWarning () << error.name () << error.message ();
-						HandleEntity (Util::MakeNotification ("Vrooby",
+						HandleEntity (Util::MakeNotification (NotificationTitle,
 								Backend::tr ("Failed to unmount the device: %1 (%2).")
 										.arg (GetErrorText (error.name ()), error.message ()),
 								Priority::Critical));
@@ -240,10 +244,10 @@ namespace LC::Vrooby::UDisks2
 		const auto item = new QStandardItem;
 		Object2Item_ [str] = item;
 		SetItemData ({
-					partitionIface,
-					blockIface,
-					driveIface,
-					GetInterface (str, Interfaces::Props),
+					.Partition_ = partitionIface,
+					.Block_ = blockIface,
+					.Drive_ = driveIface,
+					.Props_ = GetInterface (str, Interfaces::Props),
 				}, item);
 		if (const auto& slaveTo = partitionIface->property ("Table").value<QDBusObjectPath> ();
 			!slaveTo.path ().isEmpty () && !AddPath (slaveTo))
@@ -313,7 +317,7 @@ namespace LC::Vrooby::UDisks2
 			qDebug () << path << slaveTo.path () << isPartition << isRemovable;
 
 		const auto& vendor = ifaces.Drive_->property ("Vendor").toString () +
-				" " +
+				' ' +
 				ifaces.Drive_->property ("Model").toString ();
 		const auto& partName = GetPartitionName (*ifaces.Partition_, *ifaces.Block_);
 		const auto& name = isPartition ? partName : vendor;
@@ -374,24 +378,24 @@ namespace LC::Vrooby::UDisks2
 		const auto blockIface = GetInterface (path, Interfaces::Block);
 		const ItemInterfaces faces =
 		{
-			GetInterface (path, Interfaces::Partition),
-			blockIface,
-			GetInterface (blockIface->property ("Drive").value<QDBusObjectPath> ().path (), Interfaces::Drive),
-			GetInterface (path, Interfaces::Props)
+			.Partition_ = GetInterface (path, Interfaces::Partition),
+			.Block_ = blockIface,
+			.Drive_ = GetInterface (blockIface->property ("Drive").value<QDBusObjectPath> ().path (), Interfaces::Drive),
+			.Props_ = GetInterface (path, Interfaces::Props)
 		};
 		SetItemData (faces, item);
 	}
 
 	void Backend::UpdateDeviceSpaces ()
 	{
-		for (const auto item : Object2Item_)
+		for (const auto item : std::as_const (Object2Item_))
 		{
 			const auto& mountPaths = item->data (MassStorageRole::MountPoints).toStringList ();
 			if (mountPaths.isEmpty ())
 				continue;
 
-			const auto free = QStorageInfo { mountPaths.value (0) }.bytesAvailable ();
-			if (free != item->data (MassStorageRole::AvailableSize).value<qint64> ())
+			if (const auto free = QStorageInfo { mountPaths.value (0) }.bytesAvailable ();
+				free != item->data (MassStorageRole::AvailableSize).value<qint64> ())
 				item->setData (free, MassStorageRole::AvailableSize);
 		}
 	}

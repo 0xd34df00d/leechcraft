@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "trayview.h"
-#include <QSortFilterProxyModel>
 #include <QIcon>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -48,7 +47,7 @@ namespace LC::Vrooby
 		: QSortFilterProxyModel { parent }
 		{
 			QSettings settings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Vrooby");
+					QCoreApplication::applicationName () + "_Vrooby"_qs);
 			settings.beginGroup ("HiddenDevices");
 			Hidden_ = Util::AsSet (settings.value ("List").toStringList ());
 			settings.endGroup ();
@@ -84,11 +83,11 @@ namespace LC::Vrooby
 				const auto& mounts = index.data (MassStorageRole::MountPoints).toStringList ();
 				return mounts.isEmpty () ?
 						QString {} :
-						tr ("Mounted at %1").arg (mounts.join ("; "));
+						tr ("Mounted at %1").arg (mounts.join ("; "_qs));
 			}
 			case CustomRoles::UsedPercentage:
 			{
-				const qint64 free = index.data (MassStorageRole::AvailableSize).value<qint64> ();
+				const auto free = index.data (MassStorageRole::AvailableSize).value<qint64> ();
 				if (free < 0)
 					return -1;
 
@@ -129,7 +128,7 @@ namespace LC::Vrooby
 				Hidden_ << id;
 
 			QSettings settings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Vrooby");
+					QCoreApplication::applicationName () + "_Vrooby"_qs);
 			settings.beginGroup ("HiddenDevices");
 			settings.setValue ("List", QStringList (Hidden_.values ()));
 			settings.endGroup ();
