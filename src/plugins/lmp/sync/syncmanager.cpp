@@ -24,18 +24,23 @@ namespace LC::LMP
 		co_await Util::AddContextObject { *this };
 
 		Transcoder transcoder { files, params };
+		connect (&transcoder,
+				&Transcoder::syncEvent,
+				this,
+				&SyncManager::syncEvent);
 		while (const auto transcoded = co_await transcoder.GetResults ())
 			co_await UploadTranscoded (*transcoded, context);
 	}
 
 	Util::ContextTask<void> SyncManager::UploadTranscoded (Transcoder::Result result, Context context)
 	{
-		const auto& transcoded = (co_await Util::WithHandler (result.Transcoded_,
-				[] (const Transcoder::Result::Failure& failure)
-				{
-					// TODO log failure
-				})).TargetPath_;
-		qDebug () << "uploading" << transcoded;
+		using namespace SyncEvents;
+
+		co_await Util::AddContextObject { *this };
+		const auto& transcoded = (co_await result.Transcoded_).TargetPath_;
+
+		const CopyData copyData { { { result.OrigPath_ } }, transcoded };
+		emit syncEvent (CopyStarted { copyData });
 
 		const auto& mediaInfo = co_await Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded);
 		const auto uploadResult = co_await context.Syncer_->Upload ({
@@ -48,5 +53,12 @@ namespace LC::LMP
 
 		if (transcoded != result.OrigPath_)
 			QFile::remove (transcoded);
+
+		Util::Visit (uploadResult,
+				[&, this] (ISyncPlugin::UploadSuccess) { emit syncEvent (CopyFinished { copyData }); },
+				[&, this] (const ISyncPlugin::UploadFailure& failure)
+				{
+					emit syncEvent (CopyFailed { copyData, failure.Error_, failure.ErrorStr_ });
+				});
 	}
 }

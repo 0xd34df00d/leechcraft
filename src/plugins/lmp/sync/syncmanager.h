@@ -11,6 +11,7 @@
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
 #include "interfaces/lmp/isyncplugin.h"
+#include "syncevents.h"
 #include "transcoder.h"
 
 namespace LC::LMP
@@ -31,5 +32,7 @@ namespace LC::LMP
 		Util::ContextTask<void> RunUpload (QStringList files, TranscodingParams params, Context context);
 	private:
 		Util::ContextTask<void> UploadTranscoded (Transcoder::Result result, Context context);
+	signals:
+		void syncEvent (const SyncEvents::Event&);
 	};
 }

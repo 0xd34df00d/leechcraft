@@ -13,12 +13,15 @@
 #include <util/sll/either.h>
 #include <util/threads/coro/channel.h>
 #include <util/threads/coro/taskfwd.h>
+#include "syncevents.h"
 #include "transcodingparams.h"
 
 namespace LC::LMP
 {
 	class Transcoder : public QObject
 	{
+		Q_OBJECT
+
 		const TranscodingParams Params_;
 
 		Util::Channel<QString> ToTranscode_;
@@ -29,6 +32,7 @@ namespace LC::LMP
 
 			struct Failure
 			{
+				QString TargetPath_;
 				QProcess::ExitStatus ExitStatus_;
 				QString Reason_;
 			};
@@ -47,5 +51,7 @@ namespace LC::LMP
 		Util::Channel<Result>& GetResults ();
 	private:
 		Util::ContextTask<void> TranscodeFile (const QString& origPath);
+	signals:
+		void syncEvent (const SyncEvents::Event&);
 	};
 }

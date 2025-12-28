@@ -118,21 +118,26 @@ namespace LC::LMP
 			return;
 		}
 
-		for (const auto& file : files)
-		{
-			if (params.OnlyLossless_ && !IsLossless (file))
-				Results_.Send ({ file, Result::Success { file } });
-			else
-				ToTranscode_.Send (file);
-		}
+		QTimer::singleShot (0,
+				this,
+				[this, files]
+				{
+					for (const auto& file : files)
+					{
+						if (Params_.OnlyLossless_ && !IsLossless (file))
+							Results_.Send ({ file, Result::Success { file } });
+						else
+							ToTranscode_.Send (file);
+					}
 
-		for (int i = 0; i < Params_.NumThreads_; ++i)
-			[this] -> Util::ContextTask<void> // NOLINT(*-avoid-capturing-lambda-coroutines)
-			{
-				co_await Util::AddContextObject { *this };
-				while (const auto maybeNextFile = co_await ToTranscode_)
-					co_await TranscodeFile (*maybeNextFile);
-			} ();
+					for (int i = 0; i < Params_.NumThreads_; ++i)
+						[this] -> Util::ContextTask<void> // NOLINT(*-avoid-capturing-lambda-coroutines)
+						{
+							co_await Util::AddContextObject { *this };
+							while (const auto maybeNextFile = co_await ToTranscode_)
+								co_await TranscodeFile (*maybeNextFile);
+						} ();
+				});
 	}
 
 	Util::Channel<Transcoder::Result>& Transcoder::GetResults ()
@@ -146,6 +151,10 @@ namespace LC::LMP
 
 		const auto& transcodedPath = BuildTranscodedPath (origPath, Params_);
 
+		using namespace SyncEvents;
+		const TranscodingData transcodingData { { origPath }, transcodedPath };
+		emit syncEvent (XcodingStarted { transcodingData });
+
 		QProcess ffmpeg;
 		ffmpeg.start ("ffmpeg"_qs, BuildFfmpegArgs (origPath, transcodedPath, Params_));
 #ifdef Q_OS_UNIX
@@ -156,13 +165,15 @@ namespace LC::LMP
 		if (ffmpeg.exitStatus () == QProcess::NormalExit && !ffmpeg.exitCode ())
 		{
 			CopyTags (origPath, transcodedPath);
+			emit syncEvent (XcodingFinished { transcodingData });
 			Results_.Send ({ origPath, Result::Success { transcodedPath } });
 		}
 		else
 		{
 			const auto& ffmpegErr = ffmpeg.readAllStandardError ();
 			qDebug () << ffmpeg.exitStatus () << ffmpeg.error () << ffmpeg.exitCode () << ffmpegErr;
-			Results_.Send ({ origPath, { Util::AsLeft, Result::Failure { ffmpeg.exitStatus (), ffmpegErr } } });
+			emit syncEvent (XcodingFailed { transcodingData, ffmpegErr });
+			Results_.Send ({ origPath, { Util::AsLeft, Result::Failure { transcodedPath, ffmpeg.exitStatus (), ffmpegErr } } });
 		}
 	}
 }
