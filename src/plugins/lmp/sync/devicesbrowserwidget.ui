@@ -85,16 +85,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QProgressBar" name="SingleUploadProgress_">
-         <property name="value">
-          <number>24</number>
-         </property>
-         <property name="format">
-          <string>Single file: %p%</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="UploadButton_">
          <property name="text">
           <string>Upload...</string>

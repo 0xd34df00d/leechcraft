@@ -39,7 +39,7 @@ namespace LMP
 		QMap<QString, TranscodingParams> Device2Params_;
 	public:
 		explicit DevicesBrowserWidget (QWidget* = nullptr);
-		~DevicesBrowserWidget ();
+		~DevicesBrowserWidget () override;
 
 		void InitializeUploaders ();
 	private:

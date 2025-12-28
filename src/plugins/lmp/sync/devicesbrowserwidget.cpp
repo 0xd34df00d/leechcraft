@@ -15,7 +15,6 @@
 #include <util/sll/qtutil.h>
 #include <util/threads/coro/context.h>
 #include <util/threads/coro/task.h>
-#include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/devices/deviceroles.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -55,7 +54,6 @@ namespace LMP
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
-		Ui_.SingleUploadProgress_->hide ();
 	}
 
 	DevicesBrowserWidget::~DevicesBrowserWidget () = default;
@@ -140,6 +138,29 @@ namespace LMP
 		settings.endGroup ();
 	}
 
+	namespace
+	{
+		class ProgressTracker
+		{
+			QProgressBar& Transcoding_;
+			QProgressBar& Copying_;
+		public:
+			explicit ProgressTracker (QProgressBar& transcoding, QProgressBar& copying)
+			: Transcoding_ { transcoding }
+			, Copying_ { copying }
+			{
+			}
+
+			void HandleSyncEvent (const SyncEvents::Event& event) const
+			{
+				Util::Visit (event,
+						[&] (const SyncEvents::XcodingFinished&) { qDebug () << "bump!" << Transcoding_.value () + 1; Transcoding_.setValue (Transcoding_.value () + 1); },
+						[&] (const SyncEvents::CopyFinished&) { Copying_.setValue (Copying_.value () + 1); },
+						[] (const auto&) {});
+			}
+		};
+	}
+
 	void DevicesBrowserWidget::on_UploadButton__released ()
 	{
 		const int idx = Ui_.DevicesSelector_->currentIndex ();
@@ -162,19 +183,36 @@ namespace LMP
 
 		Ui_.UploadLog_->clear ();
 
-		[&, this] () -> Util::Task<void>
+		for (const auto bar : { Ui_.TSProgress_, Ui_.UploadProgress_ })
 		{
+			bar->setVisible (true);
+			bar->setMaximum (paths.size ());
+			bar->setValue (0);
+		}
+
+		[&, this] -> Util::ContextTask<void>
+		{
+			co_await Util::AddContextObject { *this };
+
+			ProgressTracker progress { *Ui_.TSProgress_, *Ui_.UploadProgress_ };
 			SyncManager mgr;
 			connect (&mgr,
 					&SyncManager::syncEvent,
 					this,
-					&DevicesBrowserWidget::HandleSyncEvent);
+					[this, &progress] (const SyncEvents::Event& event)
+					{
+						HandleSyncEvent (event);
+						progress.HandleSyncEvent (event);
+					});
 			co_await mgr.RunUpload (paths, Ui_.TranscodingOpts_->GetParams (),
 					{
 						.Syncer_ = syncer,
 						.Target_ = GetSourceIndex (idx),
 						.Config_ = SyncerConfigWidget_->GetConfig (),
 					});
+
+			Ui_.TSProgress_->setVisible (false);
+			Ui_.UploadProgress_->setVisible (false);
 		} ();
 	}
 
@@ -223,32 +261,5 @@ namespace LMP
 		const auto& text = timestamp + ToString (event);
 		Ui_.UploadLog_->append (text);
 	}
-
-	/*
-	void DevicesBrowserWidget::handleTranscodingProgress (int done, int total)
-	{
-		Ui_.TSProgress_->setVisible (done < total);
-		Ui_.TSProgress_->setMaximum (total);
-		Ui_.TSProgress_->setValue (done);
-	}
-
-	void DevicesBrowserWidget::handleUploadProgress (int done, int total)
-	{
-		const auto visible = done < total;
-		Ui_.UploadProgress_->setVisible (visible);
-		if (!visible)
-			Ui_.SingleUploadProgress_->hide ();
-
-		Ui_.UploadProgress_->setMaximum (total);
-		Ui_.UploadProgress_->setValue (done);
-	}
-
-	void DevicesBrowserWidget::handleSingleUploadProgress (int done, int total)
-	{
-		Ui_.SingleUploadProgress_->setVisible (done < total && total > 0);
-		Ui_.SingleUploadProgress_->setMaximum (total);
-		Ui_.SingleUploadProgress_->setValue (done);
-	}
-	*/
 }
 }
