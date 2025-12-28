@@ -12,7 +12,7 @@ if (MSVC)
 endif ()
 if (WIN32)
 	add_definitions (-DWIN32_LEAN_AND_MEAN) # Don't include not needed headers with a lot of useless macross definitions
-	add_definitions (-D_WIN32_WINNT=0x0600) # Use Windows Vista definitions. Needed by Liznoo and KInotify
+	add_definitions (-D_WIN32_WINNT=0x0600) # Use Windows Vista definitions. Needed by Liznoo and Kinotify
 	add_definitions (-DWINVER=0x0600)
 	add_definitions (-DNTDDI_VERSION=0x0600)
 endif ()
