@@ -1,4 +1,6 @@
-resolver: nightly-2024-12-13
+resolver: nightly-2025-12-01
 packages:
 - .
 allow-newer: true
+extra-deps:
+- turtle-1.6.2

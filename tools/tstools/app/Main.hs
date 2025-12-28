@@ -60,7 +60,7 @@ find'lupdate = do
   inPath <- which "lupdate"
   case inPath of
     Just path -> pure $ Just path
-    Nothing -> listToMaybe <$> testfile `filterM` [ "/usr/lib/qt5/bin/lupdate", "/usr/lib64/qt5/bin/lupdate" ]
+    Nothing -> listToMaybe <$> testfile `filterM` [ "/usr/lib/qt6/bin/lupdate", "/usr/lib64/qt6/bin/lupdate" ]
 
 main :: IO ()
 main = do
@@ -84,7 +84,9 @@ main = do
                         pure $ (\lang -> [i|#{T.pack tsBase}_#{lang}.ts|]) <$> languages
   lupdate <- find'lupdate >>= maybe (fail "`lupdate` not found; is it in your path?") (pure . T.pack)
   forM_ tsFiles $ \tsFile -> do
-    let lupdateArgs = noobsoleteArg <> fmap T.pack (sources <> generated) <> ["-ts", T.pack tsFile]
+    let lupdateArgs = noobsoleteArg
+                   <> fmap T.pack (sources <> generated)
+                   <> ["-ts", T.pack tsFile]
     view $ inproc lupdate lupdateArgs empty
 
   mapM_ rm generated
