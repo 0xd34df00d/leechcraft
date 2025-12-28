@@ -7,17 +7,9 @@
  **********************************************************************/
 
 #include "uploadmodel.h"
-#include <QtDebug>
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
-	UploadModel::UploadModel (QObject *parent)
-	: QIdentityProxyModel { parent }
-	{
-	}
-
 	QSet<QPersistentModelIndex> UploadModel::GetSelectedIndexes () const
 	{
 		return SourceIndexes_;
@@ -65,5 +57,4 @@ namespace LMP
 
 		return true;
 	}
-}
 }

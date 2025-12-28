@@ -11,21 +11,18 @@
 #include <QIdentityProxyModel>
 #include <QSet>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class UploadModel : public QIdentityProxyModel
 	{
 		QSet<QPersistentModelIndex> SourceIndexes_;
 	public:
-		UploadModel (QObject* = 0);
+		using QIdentityProxyModel::QIdentityProxyModel;
 
 		QSet<QPersistentModelIndex> GetSelectedIndexes () const;
 
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant data (const QModelIndex&, int) const;
-		bool setData (const QModelIndex&, const QVariant&, int);
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QVariant data (const QModelIndex&, int) const override;
+		bool setData (const QModelIndex&, const QVariant&, int) override;
 	};
-}
 }
