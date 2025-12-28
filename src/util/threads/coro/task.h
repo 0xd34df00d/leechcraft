@@ -188,6 +188,9 @@ namespace LC::Util
 		template<typename RR>
 		using ReplaceResult_t = Task<RR, Extensions...>;
 
+		template<template<typename> typename F>
+		using ApplyResult_t = Task<F<R>, Extensions...>;
+
 		explicit Task (const std::coroutine_handle<promise_type>& handle)
 		: Handle_ { handle }
 		{
