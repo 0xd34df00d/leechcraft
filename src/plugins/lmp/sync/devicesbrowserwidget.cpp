@@ -79,8 +79,6 @@ namespace LMP
 					*/
 		};
 
-		connectManager (Core::Instance ().GetSyncManager ());
-
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
 		Ui_.SingleUploadProgress_->hide ();
@@ -188,13 +186,16 @@ namespace LMP
 
 		Ui_.UploadLog_->clear ();
 
-		Core::Instance ().GetSyncManager ()->RunUpload (paths,
-				Ui_.TranscodingOpts_->GetParams (),
-				{
-					.Syncer_ = syncer,
-					.Target_ = GetSourceIndex (idx),
-					.Config_ = SyncerConfigWidget_->GetConfig (),
-				});
+		[&, this] () -> Util::Task<void>
+		{
+			SyncManager mgr;
+			co_await mgr.RunUpload (paths, Ui_.TranscodingOpts_->GetParams (),
+					{
+						.Syncer_ = syncer,
+						.Target_ = GetSourceIndex (idx),
+						.Config_ = SyncerConfigWidget_->GetConfig (),
+					});
+		} ();
 	}
 
 	void DevicesBrowserWidget::on_RefreshButton__released ()

@@ -14,7 +14,6 @@
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
-#include "sync/syncmanager.h"
 #include "sync/clouduploadmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
 #include "interfaces/lmp/icloudstorageplugin.h"
@@ -42,7 +41,6 @@ namespace LMP
 
 		PlaylistManager PLManager_;
 
-		SyncManager SyncManager_;
 		CloudUploadManager CloudUpMgr_;
 
 		ProgressManager ProgressManager_;
@@ -60,7 +58,6 @@ namespace LMP
 	: M_ (std::make_shared<Members> ())
 	{
 		/* TODO
-		M_->ProgressManager_.AddSyncManager (&M_->SyncManager_);
 		M_->ProgressManager_.AddSyncManager (&M_->CloudUpMgr_);
 		*/
 
@@ -109,10 +106,6 @@ namespace LMP
 		ilmpPlug->SetLMPProxy (&M_->LmpProxy_);
 
 		const auto& classes = ip2->GetPluginClasses ();
-		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
-			qobject_cast<ISyncPlugin*> (pluginObj))
-			SyncPlugins_ << pluginObj;
-
 		if (classes.contains ("org.LeechCraft.LMP.CloudStorage") &&
 			qobject_cast<ICloudStoragePlugin*> (pluginObj))
 		{
@@ -125,11 +118,6 @@ namespace LMP
 			M_->PLManager_.AddProvider (pluginObj);
 
 		M_->HookInterconnector_.AddPlugin (pluginObj);
-	}
-
-	QObjectList Core::GetSyncPlugins () const
-	{
-		return SyncPlugins_;
 	}
 
 	QObjectList Core::GetCloudStoragePlugins () const
@@ -160,11 +148,6 @@ namespace LMP
 	PlaylistManager* Core::GetPlaylistManager () const
 	{
 		return &M_->PLManager_;
-	}
-
-	SyncManager* Core::GetSyncManager () const
-	{
-		return &M_->SyncManager_;
 	}
 
 	CloudUploadManager* Core::GetCloudUploadManager () const
