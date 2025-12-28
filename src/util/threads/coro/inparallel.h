@@ -22,34 +22,33 @@ namespace LC::Util
 		co_return result;
 	}
 
-	namespace detail
+	template<
+			typename Inputs,
+			typename F,
+			typename Task = std::invoke_result_t<F, typename std::decay_t<Inputs>::value_type>,
+			bool IsVoid = std::is_same_v<typename Task::ResultType_t, void>
+		>
+	auto InParallel (Inputs&& inputs, F&& mkTask) ->
+			std::conditional_t<
+				IsVoid,
+				typename Task::template ReplaceResult_t<void>,
+				typename Task::template ApplyResult_t<QVector>
+			>
 	{
-		template<typename F, typename Input>
-		struct ParallelTraits
+		QVector<Task> tasks;
+		for (auto&& input : inputs)
+			tasks << mkTask (std::move (input));
+
+		if constexpr (IsVoid)
+			for (const auto& task : tasks)
+				co_await task;
+		else
 		{
-			using TaskType_t = std::invoke_result_t<F, Input>;
-
-			using OrigResultType_t = typename TaskType_t::ResultType_t;
-			using ResultType_t = TaskType_t::template ReplaceResult_t<QVector<OrigResultType_t>>;
-		};
-	}
-
-	template<typename Input, typename F>
-	auto InParallel (QVector<Input>&& inputs, F&& mkTask) -> detail::ParallelTraits<F, Input>::ResultType_t
-	{
-		QVector<typename detail::ParallelTraits<F, Input>::OrigResultType_t> result;
-		for (auto&& input : inputs)
-			result << co_await mkTask (std::move (input));
-		co_return result;
-	}
-
-	template<typename Input, typename F>
-	auto InParallelSemigroup (QVector<Input>&& inputs, F&& mkTask) -> detail::ParallelTraits<F, Input>::TaskType_t
-	{
-		typename detail::ParallelTraits<F, Input>::OrigResultType_t result;
-		for (auto&& input : inputs)
-			result += co_await mkTask (std::move (input));
-		co_return result;
+			QVector<typename Task::ResultType_t> result;
+			for (const auto& task : tasks)
+				result << co_await task;
+			co_return result;
+		}
 	}
 
 	template<typename... Ts, template<typename> typename... Exts>
