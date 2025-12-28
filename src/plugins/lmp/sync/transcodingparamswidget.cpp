@@ -101,7 +101,7 @@ namespace LMP
 		}
 
 		Ui_.QualitySlider_->setValue (params.Quality_);
-
+		Ui_.ThreadsSlider_->setValue (params.NumThreads_);
 		Ui_.OnlyLosslessBox_->setCheckState (params.OnlyLossless_ ? Qt::Checked : Qt::Unchecked);
 	}
 
