@@ -72,6 +72,8 @@ namespace LMP
 					}
 				});
 
+		Ui_.DevicesSelector_->setModel (&*Merger_);
+
 		const auto pm = GetProxyHolder ()->GetPluginsManager ();
 		for (const auto& syncer : pm->GetAllCastableTo<ISyncPlugin*> ())
 		{
@@ -79,8 +81,6 @@ namespace LMP
 			Merger_->addSourceModel (&model);
 			Model2Syncer_ [&model] = syncer;
 		}
-
-		Ui_.DevicesSelector_->setModel (&*Merger_);
 	}
 
 	void DevicesBrowserWidget::UpdateGuiForSyncer (int idx)
@@ -154,7 +154,7 @@ namespace LMP
 			void HandleSyncEvent (const SyncEvents::Event& event) const
 			{
 				Util::Visit (event,
-						[&] (const SyncEvents::XcodingFinished&) { qDebug () << "bump!" << Transcoding_.value () + 1; Transcoding_.setValue (Transcoding_.value () + 1); },
+						[&] (const SyncEvents::XcodingFinished&) { Transcoding_.setValue (Transcoding_.value () + 1); },
 						[&] (const SyncEvents::CopyFinished&) { Copying_.setValue (Copying_.value () + 1); },
 						[] (const auto&) {});
 			}

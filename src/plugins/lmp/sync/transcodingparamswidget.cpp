@@ -72,18 +72,13 @@ namespace LMP
 		Ui_.TranscodingBox_->setChecked (!params.FormatID_.isEmpty ());
 
 		const auto& formats = Formats_->GetFormats ();
-		const auto pos = std::find_if (formats.begin (), formats.end (),
-				[params] (const Format_ptr& format)
-					{ return format->GetFormatID () == params.FormatID_; });
+		const auto pos = std::ranges::find_if (formats,
+				[params] (const auto& format) { return format->GetFormatID () == params.FormatID_; });
 		if (pos == formats.end ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown format"
-					<< params.FormatID_
-					<< "; available formats:";
+			qWarning () << "unknown format" << params.FormatID_ << "; available formats:";
 			for (const auto& format : formats)
-				qWarning () << "\t"
-						<< format->GetFormatID ();
+				qWarning () << "\t" << format->GetFormatID ();
 			return;
 		}
 
