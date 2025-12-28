@@ -12,6 +12,7 @@
 #include <QUuid>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
+#include <util/threads/coro/inparallel.h>
 #include <taglib/tag.h>
 #include "core.h"
 #include "localfileresolver.h"
@@ -130,13 +131,16 @@ namespace LC::LMP
 							ToTranscode_.Send (file);
 					}
 
-					for (int i = 0; i < Params_.NumThreads_; ++i)
-						[this] -> Util::ContextTask<void> // NOLINT(*-avoid-capturing-lambda-coroutines)
-						{
-							co_await Util::AddContextObject { *this };
-							while (const auto maybeNextFile = co_await ToTranscode_)
-								co_await TranscodeFile (*maybeNextFile);
-						} ();
+					ToTranscode_.Close ();
+
+					Util::NCopies (Params_.NumThreads_,
+							[this] -> Util::ContextTask<void> // NOLINT(*-avoid-capturing-lambda-coroutines)
+							{
+								co_await Util::AddContextObject { *this };
+								while (const auto maybeNextFile = co_await ToTranscode_)
+									co_await TranscodeFile (*maybeNextFile);
+							},
+							[this] { Results_.Close (); });
 				});
 	}
 
