@@ -7,15 +7,12 @@
  **********************************************************************/
 
 #include "devicesbrowserwidget.h"
-#include <algorithm>
 #include <QConcatenateTablesProxyModel>
-#include <QMessageBox>
-#include <QInputDialog>
+#include <QFileInfo>
 #include <QSettings>
-#include <util/models/flattenfiltermodel.h>
-#include <util/models/mergemodel.h>
-#include <util/util.h>
+#include <util/gui/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/coro/context.h>
 #include <util/threads/coro/task.h>
 #include <interfaces/devices/iremovabledevmanager.h>
@@ -55,29 +52,6 @@ namespace LMP
 
 		DevUploadModel_->setSourceModel (Core::Instance ().GetCollectionsManager ()->GetModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
-
-		auto connectManager = [this] (auto manager)
-		{
-			/*
-			connect (manager,
-					SIGNAL (uploadLog (QString)),
-					this,
-					SLOT (appendUpLog (QString)));
-
-			connect (manager,
-					SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
-					this,
-					SLOT (handleTranscodingProgress (int, int)));
-			connect (manager,
-					SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
-					this,
-					SLOT (handleUploadProgress (int, int)));
-			connect (manager,
-					SIGNAL (singleUploadProgress (int, int, SyncManagerBase*)),
-					this,
-					SLOT (handleSingleUploadProgress (int, int)));
-					*/
-		};
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
@@ -172,7 +146,9 @@ namespace LMP
 		if (idx < 0)
 			return;
 
-		const auto& devId = Ui_.DevicesSelector_->itemData (idx, CommonDevRole::DevPersistentID).toString ();
+		const auto& modelIndex = GetSourceIndex (idx);
+
+		const auto& devId = modelIndex.data (CommonDevRole::DevPersistentID).toString ();
 		Device2Params_ [devId] = Ui_.TranscodingOpts_->GetParams ();
 		SaveLastParams ();
 
@@ -189,6 +165,10 @@ namespace LMP
 		[&, this] () -> Util::Task<void>
 		{
 			SyncManager mgr;
+			connect (&mgr,
+					&SyncManager::syncEvent,
+					this,
+					&DevicesBrowserWidget::HandleSyncEvent);
 			co_await mgr.RunUpload (paths, Ui_.TranscodingOpts_->GetParams (),
 					{
 						.Syncer_ = syncer,
@@ -203,12 +183,48 @@ namespace LMP
 		// TODO
 	}
 
-	void DevicesBrowserWidget::appendUpLog (QString text)
+	namespace
 	{
-		text.prepend (QTime::currentTime ().toString ("[HH:mm:ss.zzz] "));
-		Ui_.UploadLog_->append ("<code>" + text + "</code>");
+		auto PrepareStrings (SyncEvents::Event event)
+		{
+			Util::Visit (event,
+					[] (SyncEvents::TranscodingData& data)
+					{
+						data.Orig_ = Util::FormatName (QFileInfo { data.Orig_ }.fileName ());
+						data.Target_ = Util::FormatName (QFileInfo { data.Target_ }.fileName ());
+					},
+					[] (SyncEvents::CopyData& data)
+					{
+						data.Orig_ = Util::FormatName (QFileInfo { data.Orig_ }.fileName ());
+						data.CopySource_ = Util::FormatName (QFileInfo { data.CopySource_ }.fileName ());
+					});
+			return event;
+		}
 	}
 
+	QString DevicesBrowserWidget::ToString (const SyncEvents::Event& event)
+	{
+		using namespace SyncEvents;
+		const auto start = u"⏳ "_qs;
+		const auto finish = u"✅ "_qs;
+		const auto error = u"❌ "_qs;
+		return Util::Visit (PrepareStrings (event),
+				[&] (const XcodingStarted& e) { return start + tr ("transcoding %1…").arg (e.Orig_); },
+				[&] (const XcodingFinished& e) { return finish + tr ("transcoded %1").arg (e.Orig_); },
+				[&] (const XcodingFailed& e) { return error + tr ("failed to transcode %1 → %2: %3").arg (e.Orig_, e.Target_, e.Message_); },
+				[&] (const CopyStarted& e) { return start + tr ("copying %1…").arg (e.Orig_); },
+				[&] (const CopyFinished& e) { return finish + tr ("copied %2").arg (e.Orig_); },
+				[&] (const CopyFailed& e) { return error + tr ("failed to copy %1 (from %2): %3").arg (e.Orig_, e.CopySource_, e.Message_); });
+	}
+
+	void DevicesBrowserWidget::HandleSyncEvent (const SyncEvents::Event& event)
+	{
+		const auto& timestamp = QTime::currentTime ().toString ("[HH:mm:ss.zzz] "_qs);
+		const auto& text = timestamp + ToString (event);
+		Ui_.UploadLog_->append (text);
+	}
+
+	/*
 	void DevicesBrowserWidget::handleTranscodingProgress (int done, int total)
 	{
 		Ui_.TSProgress_->setVisible (done < total);
@@ -233,5 +249,6 @@ namespace LMP
 		Ui_.SingleUploadProgress_->setMaximum (total);
 		Ui_.SingleUploadProgress_->setValue (done);
 	}
+	*/
 }
 }

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWidget>
+#include "syncevents.h"
 #include "ui_devicesbrowserwidget.h"
 
 class QConcatenateTablesProxyModel;
@@ -48,15 +49,12 @@ namespace LMP
 
 		void LoadLastParams ();
 		void SaveLastParams () const;
+
+		void HandleSyncEvent (const SyncEvents::Event&);
+		static QString ToString (const SyncEvents::Event&);
 	private slots:
 		void on_UploadButton__released ();
 		void on_RefreshButton__released ();
-
-		void appendUpLog (QString);
-
-		void handleTranscodingProgress (int, int);
-		void handleUploadProgress (int, int);
-		void handleSingleUploadProgress (int, int);
 	};
 }
 }
