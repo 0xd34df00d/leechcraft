@@ -29,6 +29,7 @@ namespace LC::Util
 
 		void testWaitMany ();
 		void testWaitManyTuple ();
+		void testWaitManyInvoking ();
 
 		void testEither ();
 

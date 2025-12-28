@@ -284,6 +284,39 @@ namespace LC::Util
 		QCOMPARE_LT (executionElapsed, (10 + 9 + 2 + 1) / 2);
 	}
 
+	void CoroTaskTest::testWaitManyInvoking ()
+	{
+		constexpr auto max = 100;
+		auto mkTask = [] (int index) -> Task<int>
+		{
+			co_await Precisely { std::chrono::milliseconds { max - index } };
+			co_return index;
+		};
+
+		QElapsedTimer timer;
+		timer.start ();
+		QVector<int> inputs;
+		QVector<int> expected;
+		for (int i = 0; i < max; ++i)
+		{
+			inputs << i;
+			expected << i;
+		}
+		const auto creationElapsed = timer.elapsed ();
+
+		timer.restart ();
+		auto result = GetTaskResult (InParallel (inputs, mkTask));
+		const auto executionElapsed = timer.elapsed ();
+
+		QCOMPARE (result, expected);
+		QCOMPARE_LT (creationElapsed, 1);
+
+		constexpr auto tolerance = 0.05;
+		QCOMPARE_GE (executionElapsed, max * (1 - tolerance));
+		const auto linearizedExecTime = max * (max + 1) / 2;
+		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
+	}
+
 	void CoroTaskTest::testEither ()
 	{
 		using Result_t = Either<QString, bool>;
