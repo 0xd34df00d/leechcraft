@@ -384,8 +384,7 @@ namespace LMP
 
 	void RadioManager::refreshAll ()
 	{
-		// TODO Qt 5.14 remove values() call
-		for (auto prov : Util::AsSet (Model2Prov_.values ()))
+		for (auto prov : Util::AsSet (Model2Prov_))
 			prov->RefreshItems ({});
 	}
 
