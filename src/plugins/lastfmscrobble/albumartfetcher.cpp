@@ -7,79 +7,49 @@
  **********************************************************************/
 
 #include "albumartfetcher.h"
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QNetworkAccessManager>
-#include <QDomDocument>
 #include <QStringList>
-#include <QFuture>
-#include <util/network/handlenetworkreply.h>
-#include <util/sll/visitor.h>
-#include <util/threads/futures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/asdomdocument.h>
+#include <util/sll/qtutil.h>
 #include "util.h"
 
-namespace LC
+namespace LC::Lastfmscrobble
 {
-namespace Lastfmscrobble
-{
-	AlbumArtFetcher::AlbumArtFetcher (const Media::AlbumInfo& albumInfo, ICoreProxy_ptr proxy, QObject *parent)
-	: QObject (parent)
+	Util::Task<Media::IAlbumArtProvider::Result_t> FetchAlbumArt (Media::AlbumInfo albumInfo)
 	{
-		Promise_.reportStarted ();
-
 		const QMap<QString, QString> params
 		{
-			{ "artist", albumInfo.Artist_ },
-			{ "album", albumInfo.Album_ },
-			{ "autocorrect", "1" }
+			{ "artist"_qs, albumInfo.Artist_ },
+			{ "album"_qs, albumInfo.Album_ },
+			{ "autocorrect"_qs, "1"_qs }
 		};
 
-		const auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
-		Util::HandleReplySeq<Util::ErrorInfo<QString>> (reply, this) >>
-				Util::Visitor
-				{
-					[this] (const QString& error) { Util::ReportFutureResult (Promise_, error); },
-					[this] (const QByteArray& result) { HandleReplyFinished (result); }
-				}.Finally ([this] { deleteLater (); });
-	}
+		const auto reply = co_await *Request ("album.getInfo"_qs, GetProxyHolder ()->GetNetworkAccessManager (), params);
+		const auto replyData = co_await reply.ToEither ();
+		const auto doc = co_await Util::AsDomDocument { replyData, QObject::tr ("Unable to parse reply.") };
 
-	QFuture<Media::IAlbumArtProvider::Result_t> AlbumArtFetcher::GetFuture ()
-	{
-		return Promise_.future ();
-	}
-
-	void AlbumArtFetcher::HandleReplyFinished (const QByteArray& data)
-	{
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			Util::ReportFutureResult (Promise_, "Unable to parse reply.");
-			return;
-		}
-
-		const auto& elems = doc.elementsByTagName ("image");
+		const auto& elems = doc.elementsByTagName ("image"_qs);
 
 		static const QStringList sizes
 		{
-			"mega",
-			"extralarge",
-			"large",
-			"medium",
-			"small",
-			""
+			"mega"_qs,
+			"extralarge"_qs,
+			"large"_qs,
+			"medium"_qs,
+			"small"_qs,
+			{}
 		};
 
 		for (const auto& size : sizes)
-			for (int i = 0; i < elems.size (); ++i)
+			for (const auto & node : elems)
 			{
-				const auto& elem = elems.at (i).toElement ();
-				const auto& text = elem.text ();
-				if (elem.attribute ("size") == size && !text.isEmpty ())
-				{
-					Util::ReportFutureResult (Promise_, QList { QUrl { elem.text () } });
-					break;
-				}
+				const auto& elem = node.toElement ();
+				if (const auto& text = elem.text ();
+					elem.attribute ("size"_qs) == size && !text.isEmpty ())
+					co_return QList { QUrl { text } };
 			}
+
+		co_return QList<QUrl> {};
 	}
-}
 }

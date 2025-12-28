@@ -15,6 +15,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sll/unreachable.h>
+#include <util/threads/coro/task.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
@@ -160,9 +161,9 @@ namespace Lastfmscrobble
 		return GetServiceName ();
 	}
 
-	QFuture<Media::IAlbumArtProvider::Result_t> Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	Util::Task<Media::IAlbumArtProvider::Result_t> Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
 	{
-		return (new AlbumArtFetcher (album, Proxy_))->GetFuture ();
+		return FetchAlbumArt (album);
 	}
 
 	QFuture<Media::SimilarityQueryResult_t> Plugin::GetSimilarArtists (const QString& name, int num)

@@ -150,4 +150,7 @@ namespace LC::Util
 			return Receive ();
 		}
 	};
+
+	template<typename T>
+	using Channel_ptr = std::shared_ptr<Channel<T>>;
 }

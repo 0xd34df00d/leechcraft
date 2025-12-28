@@ -12,6 +12,7 @@
 #include <QHash>
 #include <QSet>
 #include <util/models/rolenamesmixin.h>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/lmp/collectiontypes.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
@@ -38,7 +39,7 @@ namespace LC::LMP::BrainSlugz
 		const QString DefaultAlbumIcon_;
 		const QString DefaultArtistIcon_;
 
-		Media::IAlbumArtProvider * const AAProv_;
+		const QList<Media::IAlbumArtProvider*> AAProvs_;
 		Media::IArtistBioFetcher * const BioProv_;
 	public:
 		enum Role
@@ -57,7 +58,7 @@ namespace LC::LMP::BrainSlugz
 
 		Collection::Artists_t GetSelectedArtists () const;
 
-		void SetMissingReleases (const QList<Media::ReleaseInfo>&, const Collection::Artist&);
+		Util::ContextTask<void> SetMissingReleases (QList<Media::ReleaseInfo>, Collection::Artist);
 		void MarkNoNews (const Collection::Artist&);
 
 		void RemoveUnscheduled ();

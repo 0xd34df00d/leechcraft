@@ -14,6 +14,8 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/task.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilmpproxy.h>

@@ -11,6 +11,7 @@
 #include <optional>
 #include <QObject>
 #include <QImage>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/media/idiscographyprovider.h>
 
 class QQuickWidget;
@@ -56,7 +57,7 @@ namespace LC::LMP
 		std::optional<int> FindAlbumItem (const QString&) const;
 
 		bool QueryReleaseImageLocal (const Media::AlbumInfo&) const;
-		void QueryReleaseImage (Media::IAlbumArtProvider*, const Media::AlbumInfo&);
+		Util::ContextTask<void> QueryReleaseImage (Media::AlbumInfo);
 		void SetAlbumImage (const QString&, const QUrl&) const;
 		void HandleDiscographyReady (QList<Media::ReleaseInfo>);
 	signals:

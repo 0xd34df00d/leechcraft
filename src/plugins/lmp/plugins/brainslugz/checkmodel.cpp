@@ -19,9 +19,9 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <util/util.h>
-#include <util/sll/slotclosure.h>
-#include <util/sll/visitor.h>
 #include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/coro.h>
 #include <util/threads/futures.h>
 
 namespace LC::LMP::BrainSlugz
@@ -65,10 +65,8 @@ namespace LC::LMP::BrainSlugz
 	, Proxy_ { lmpProxy }
 	, DefaultAlbumIcon_ { GetIcon ("media-optical", AASize * 2) }
 	, DefaultArtistIcon_ { GetIcon ("view-media-artist", ArtistSize * 2) }
-	, AAProv_ { GetProxyHolder ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IAlbumArtProvider*> ().value (0) }
-	, BioProv_ { GetProxyHolder ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IArtistBioFetcher*> ().value (0) }
+	, AAProvs_ { GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IAlbumArtProvider*> () }
+	, BioProv_ { GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IArtistBioFetcher*> ().value (0) }
 	{
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ArtistId] = "artistId";
@@ -133,19 +131,18 @@ namespace LC::LMP::BrainSlugz
 		return result;
 	}
 
-	void CheckModel::SetMissingReleases (const QList<Media::ReleaseInfo>& releases,
-			const Collection::Artist& artist)
+	Util::ContextTask<void> CheckModel::SetMissingReleases (QList<Media::ReleaseInfo> releases, Collection::Artist artist)
 	{
-		qDebug () << Q_FUNC_INFO << artist.Name_ << releases.size ();
+		qDebug () << artist.Name_ << releases.size ();
 
 		const auto item = Artist2Item_.value (artist.ID_);
 		if (!item)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no item for artist"
-					<< artist.Name_;
-			return;
+			qWarning () << "no item for artist" << artist.Name_;
+			co_return;
 		}
+
+		co_await Util::AddContextObject { *this };
 
 		const auto model = Artist2Submodel_.value (artist.ID_);
 		for (const auto& release : releases)
@@ -156,17 +153,13 @@ namespace LC::LMP::BrainSlugz
 			item->setData (DefaultAlbumIcon_, ReleasesSubmodel::ReleaseArt);
 			model->appendRow (item);
 
-			if (AAProv_)
-				Util::Sequence (this, AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ })) >>
-						Util::Visitor
-						{
-							[item] (const QList<QUrl>& urls)
-							{
-								if (!urls.isEmpty ())
-									item->setData (urls.value (0), ReleasesSubmodel::ReleaseArt);
-							},
-							[] (const QString&) {}
-						};
+			for (const auto aaProv : AAProvs_)
+			{
+				const auto eitherUrls = co_await aaProv->RequestAlbumArt ({ artist.Name_, release.Name_ });
+				const auto urls = co_await Util::WithHandler (eitherUrls, [] (const auto&) { return Util::IgnoreLeft {}; });
+				if (!urls.isEmpty ())
+					item->setData (urls.value (0), ReleasesSubmodel::ReleaseArt);
+			}
 		}
 
 		item->setData (releases.size (), Role::MissingCount);

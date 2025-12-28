@@ -12,7 +12,6 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#include <QtConcurrentRun>
 #include <QStandardItemModel>
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
@@ -22,6 +21,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
+#include <util/threads/coro.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -138,21 +138,23 @@ namespace LC::LMP
 		return true;
 	}
 
-	void BioViewManager::QueryReleaseImage (Media::IAlbumArtProvider *aaProv, const Media::AlbumInfo& info)
+	Util::ContextTask<void> BioViewManager::QueryReleaseImage (Media::AlbumInfo info)
 	{
 		if (QueryReleaseImageLocal (info))
-			return;
+			co_return;
 
-		Util::Sequence (this, aaProv->RequestAlbumArt (info)) >>
-				Util::Visitor
-				{
-					[this, info] (const QList<QUrl>& urls)
-					{
-						if (info.Artist_ == CurrentArtist_ && !urls.isEmpty ())
-							SetAlbumImage (info.Album_, urls.first ());
-					},
-					[] (const QString&) {}
-				};
+		co_await Util::AddContextObject { *this };
+
+		for (const auto prov : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IAlbumArtProvider*> ())
+		{
+			const auto eitherUrls = co_await prov->RequestAlbumArt (info);
+			const auto urls = co_await eitherUrls;
+			if (info.Artist_ == CurrentArtist_ && !urls.isEmpty ())
+			{
+				SetAlbumImage (info.Album_, urls.first ());
+				break;
+			}
+		}
 	}
 
 	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img) const
@@ -171,10 +173,6 @@ namespace LC::LMP
 
 	void BioViewManager::HandleDiscographyReady (QList<Media::ReleaseInfo> releases)
 	{
-		const auto pm = GetProxyHolder ()->GetPluginsManager ();
-		const auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
-		const auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
-
 		const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->
 				GetIcon (Lits::DefaultAlbumImage).pixmap (AASize * 2, AASize * 2);
 		const auto& iconBase64 = Util::GetAsBase64Src (icon.toImage ());
@@ -196,7 +194,7 @@ namespace LC::LMP
 					.TrackListToolTip_ = MakeTrackListTooltip (release.TrackInfos_),
 				});
 
-			QueryReleaseImage (aaProv, { CurrentArtist_, release.Name_ });
+			QueryReleaseImage ({ CurrentArtist_, release.Name_ });
 		}
 		DiscoModel_->SetItems (DiscoModel_->GetItems () + std::move (newItems));
 	}

@@ -12,8 +12,10 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QTimer>
-#include <QtConcurrentMap>
-#include <util/threads/futures.h>
+#include <QtConcurrentRun>
+#include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/channel.h>
 #include "albumartmanager.h"
 
 namespace LC::LMP
@@ -131,60 +133,44 @@ namespace LC::LMP
 		if (image.isNull ())
 			return;
 
-		HandleImages ({ image });
+		AddImage (image);
 	}
 
-	void AlbumArtManagerDialog::HandleImages (const QList<QImage>& images)
+	Util::ContextTask<void> AlbumArtManagerDialog::AddImage (QImage image)
 	{
-		struct ScaleResult
-		{
-			QImage Image_;
-			QImage SourceImage_;
-		};
-
-		auto watcher = new QFutureWatcher<ScaleResult> { this };
-
-		auto worker = [] (const QImage& image) -> ScaleResult
-		{
-			return { image.scaled (200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation), image };
-		};
-		watcher->setFuture (QtConcurrent::mapped (images, std::function<ScaleResult (QImage)> (worker)));
-
-		connect (watcher,
-				&QFutureWatcher<ScaleResult>::finished,
-				this,
-				[this, watcher]
+		const auto scaled = co_await QtConcurrent::run ([image]
 				{
-					for (const auto& result : watcher->future ())
-					{
-						auto item = new QStandardItem ();
-						item->setIcon (QIcon (QPixmap::fromImage (result.Image_)));
-						item->setText (QStringLiteral ("%1×%2")
-								.arg (result.SourceImage_.width ())
-								.arg (result.SourceImage_.height ()));
-						item->setEditable (false);
-						Model_->appendRow (item);
-
-						FullImages_ << result.SourceImage_;
-					}
-
-					watcher->deleteLater ();
+					return image.scaled (200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 				});
+
+		auto item = new QStandardItem ();
+		item->setIcon (QIcon (QPixmap::fromImage (scaled)));
+		item->setText (u"%1×%2"_qs
+				.arg (image.width ())
+				.arg (image.height ()));
+		item->setEditable (false);
+		Model_->appendRow (item);
+
+		FullImages_ << image;
 	}
 
-	void AlbumArtManagerDialog::Request ()
+	Util::ContextTask<void> AlbumArtManagerDialog::Request ()
 	{
 		const auto& artist = GetArtist ();
 		const auto& album = GetAlbum ();
 		if (artist.isEmpty () || album.isEmpty ())
-			return;
+			co_return;
 
-		Util::Sequence (this, AAMgr_->CheckAlbumArt (artist, album)) >>
-				[this, artist, album] (const QList<QImage>& images)
-				{
-					if (GetArtist () == artist && GetAlbum () == album)
-						HandleImages (images);
-				};
+		co_await Util::AddContextObject { *this };
+
+		const auto channel = AAMgr_->CheckAlbumArt (artist, album);
+		while (auto image = co_await *channel)
+		{
+			if (GetArtist () == artist && GetAlbum () == album)
+				AddImage (std::move (*image));
+			else
+				break;
+		}
 	}
 
 	void AlbumArtManagerDialog::ScheduleRequest ()

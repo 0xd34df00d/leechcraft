@@ -8,26 +8,9 @@
 
 #pragma once
 
-#include <QObject>
-#include <QUrl>
-#include <QFutureInterface>
-#include <util/sll/either.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/ialbumartprovider.h>
 
-namespace LC
+namespace LC::Lastfmscrobble
 {
-namespace Lastfmscrobble
-{
-	class AlbumArtFetcher : public QObject
-	{
-		QFutureInterface<Media::IAlbumArtProvider::Result_t> Promise_;
-	public:
-		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = nullptr);
-
-		QFuture<Media::IAlbumArtProvider::Result_t> GetFuture ();
-	private:
-		void HandleReplyFinished (const QByteArray&);
-	};
-}
+	Util::Task<Media::IAlbumArtProvider::Result_t> FetchAlbumArt (Media::AlbumInfo);
 }

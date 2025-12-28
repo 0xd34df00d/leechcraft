@@ -11,8 +11,9 @@
 #include <QString>
 #include <QList>
 #include <QImage>
-#include <QHash>
 #include <QMetaType>
+#include <QtPlugin>
+#include <util/threads/coro/taskfwd.h>
 #include <util/sll/eitherfwd.h>
 
 class QUrl;
@@ -43,8 +44,7 @@ namespace Media
 	 */
 	inline size_t qHash (const AlbumInfo& info)
 	{
-		const std::initializer_list<QString> elems { info.Album_, info.Artist_ };
-		return qHashRange (elems.begin (), elems.end ());
+		return qHash (std::pair { info.Album_, info.Artist_ });
 	}
 
 	/** @brief Interface for plugins that can search for album art.
@@ -79,7 +79,7 @@ namespace Media
 		 * @param[in] album The description of the album.
 		 * @return The future with the album art search result.
 		 */
-		virtual QFuture<Result_t> RequestAlbumArt (const AlbumInfo& album) const = 0;
+		virtual LC::Util::Task<Result_t> RequestAlbumArt (const AlbumInfo& album) const = 0;
 	};
 }
 

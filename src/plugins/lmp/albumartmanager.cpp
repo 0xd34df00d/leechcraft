@@ -8,16 +8,16 @@
 
 #include "albumartmanager.h"
 #include <functional>
-#include <QTimer>
 #include <QUrl>
 #include <QtConcurrentRun>
 #include <QFuture>
-#include <util/xpc/util.h>
-#include <util/sys/paths.h>
-#include <util/sll/prelude.h>
 #include <util/sll/either.h>
+#include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
+#include <util/sys/paths.h>
 #include <util/threads/futures.h>
-#include <util/network/handlenetworkreply.h>
+#include <util/threads/coro.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
@@ -40,14 +40,43 @@ namespace LC::LMP
 				&AlbumArtManager::CheckNewArtists);
 	}
 
-	QFuture<QList<QImage>> AlbumArtManager::CheckAlbumArt (const QString& artist, const QString& album)
+	namespace
 	{
-		if (Queue_.isEmpty ())
-			ScheduleRotateQueue ();
+		Util::Task<void> FetchImage (Util::Channel_ptr<QImage> channel, const QUrl& url)
+		{
+			const auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
+			const auto reply = co_await *nam->get (QNetworkRequest { url });
+			const auto data = co_await reply.ToEither ();
 
-		QFutureInterface<QList<QImage>> promise;
-		Queue_.push_back ({ { artist, album }, promise });
-		return promise.future ();
+			QImage image;
+			if (!image.loadFromData (data))
+			{
+				qWarning () << "unable to decode image from" << url;
+				co_return;
+			}
+
+			channel->Send (std::move (image));
+		}
+
+		Util::Task<void> RunCheckAlbumArt (Util::Channel_ptr<QImage> channel, QString artist, QString album)
+		{
+			for (const auto prov : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IAlbumArtProvider*> ())
+			{
+				const auto eitherUrls = co_await prov->RequestAlbumArt ({ artist, album });
+				const auto urls = co_await eitherUrls;
+				for (const auto& url : urls)
+					co_await FetchImage (channel, url);
+			}
+
+			channel->Close ();
+		}
+	}
+
+	Util::Channel_ptr<QImage> AlbumArtManager::CheckAlbumArt (const QString& artist, const QString& album)
+	{
+		auto channel = std::make_shared<Util::Channel<QImage>> ();
+		RunCheckAlbumArt (channel, artist, album);
+		return channel;
 	}
 
 	void AlbumArtManager::SetAlbumArt (int id, const QString& artist, const QString& album, const QImage& image)
@@ -58,107 +87,43 @@ namespace LC::LMP
 		const auto& fullPath = AADir_.absoluteFilePath (filename);
 
 		constexpr auto compressionRatio = 100;
-		Util::Sequence (this, QtConcurrent::run ([image, fullPath] { image.save (fullPath, "PNG", compressionRatio); })) >>
-				[this, id, fullPath] { Collection_.SetAlbumArt (id, fullPath); };
+		QtConcurrent::run ([image, fullPath] { return image.save (fullPath, "PNG", compressionRatio); })
+			.then (this, [=, this] (bool saved)
+				{
+					if (saved)
+						Collection_.SetAlbumArt (id, fullPath);
+					else
+						qWarning () << "unable to save album art to" << fullPath;
+				});
 	}
 
 	namespace
 	{
-		const auto NotFoundMarker = QStringLiteral ("NOTFOUND");
+		const auto NotFoundMarker = "NOTFOUND"_qs;
 	}
 
-	void AlbumArtManager::CheckNewArtists (const Collection::Artists_t& artists)
+	Util::ContextTask<void> AlbumArtManager::CheckNewArtists (Collection::Artists_t artists)
 	{
 		if (!XmlSettingsManager::Instance ().property ("AutoFetchAlbumArt").toBool ())
-			return;
+			co_return;
+
+		co_await Util::AddContextObject { *this };
 
 		for (const auto& artist : artists)
 			for (const auto& album : artist.Albums_)
 				if (album->CoverPath_.isEmpty () || album->CoverPath_ == NotFoundMarker)
-					Util::Sequence (this, CheckAlbumArt (artist.Name_, album->Name_)) >>
-							[ this
-							, id = album->ID_
-							, artist = artist.Name_
-							, album = album->Name_
-							] (const QList<QImage>& images)
-							{
-								if (images.isEmpty ())
-									Collection_.SetAlbumArt (id, NotFoundMarker);
-								else
-									SetAlbumArt (id, artist, album,
-											*std::max_element (images.begin (), images.end (), Util::ComparingBy (&QImage::width)));
-							};
-	}
-
-	void AlbumArtManager::HandleGotUrls (const TaskQueue& task, const QList<QUrl>& urls)
-	{
-		if (urls.isEmpty ())
-			return;
-
-		const auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
-
-		QFutureInterface<QImage> promise;
-		promise.reportStarted ();
-		promise.setExpectedResultCount (urls.size ());
-
-		auto decreateExpected = [promise] () mutable { promise.setExpectedResultCount (promise.expectedResultCount () - 1); };
-
-		for (const auto& url : urls)
-			Util::HandleReplySeq (nam->get (QNetworkRequest { url }), this) >>
-					Util::Visitor
-					{
-						[=] (Util::Void) mutable { decreateExpected (); },
-						[=] (const QByteArray& data) mutable
-						{
-							if (QImage image; image.loadFromData (data))
-								promise.reportResult (image, promise.resultCount ());
-							else
-								decreateExpected ();
-						}
-					}.Finally ([=] () mutable
-					{
-						if (promise.resultCount () >= promise.expectedResultCount ())
-							promise.reportFinished ();
-					});
-
-		auto watcher = new QFutureWatcher<QImage> { this };
-		watcher->setFuture (promise.future ());
-		connect (watcher,
-				&QFutureWatcher<QImage>::finished,
-				this,
-				[watcher, task]
 				{
-					const auto& images = watcher->future ().results ();
-					auto promise = task.Promise_;
-					promise.reportFinished (&images);
-				});
-	}
+					const auto channel = CheckAlbumArt (artist.Name_, album->Name_);
+					QList<QImage> images;
+					while (const auto image = co_await *channel)
+						images << *image;
 
-	void AlbumArtManager::ScheduleRotateQueue ()
-	{
-		using namespace std::chrono_literals;
-		QTimer::singleShot (500ms,
-				this,
-				&AlbumArtManager::RotateQueue);
-	}
-
-	void AlbumArtManager::RotateQueue ()
-	{
-		auto provs = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<Media::IAlbumArtProvider*> ();
-		const auto& task = Queue_.takeFirst ();
-		for (auto provObj : provs)
-		{
-			const auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
-			Util::Sequence (this, prov->RequestAlbumArt (task.Info_)) >>
-					Util::Visitor
-					{
-						[] (const QString&) {},
-						[this, task] (const QList<QUrl>& urls) { HandleGotUrls (task, urls); }
-					};
-		}
-
-		if (!Queue_.isEmpty ())
-			ScheduleRotateQueue ();
+					if (images.isEmpty ())
+						Collection_.SetAlbumArt (album->ID_, NotFoundMarker);
+					else
+						SetAlbumArt (album->ID_, artist.Name_, album->Name_,
+								*std::ranges::max_element (images, Util::ComparingBy (&QImage::width)));
+				}
 	}
 
 	void AlbumArtManager::HandleCoversPath (const QString& path)
@@ -173,16 +138,12 @@ namespace LC::LMP
 
 		if (failed)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to create"
-					<< path;
-
+			qWarning () << "unable to create" << path;
 			const auto& e = Util::MakeNotification (Lits::LMP,
 					tr ("Path %1 cannot be used as album art storage, default path will be used instead."),
 					Priority::Warning);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-
-			AADir_ = Util::GetUserDir (Util::UserDir::Cache, QStringLiteral ("lmp/covers"));
+			AADir_ = Util::GetUserDir (Util::UserDir::Cache, "lmp/covers"_qs);
 		}
 		else
 			AADir_ = QDir (path);

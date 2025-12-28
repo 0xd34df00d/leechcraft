@@ -10,6 +10,7 @@
 
 #include <QCoreApplication>
 #include <QDialog>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include "ui_albumartmanagerdialog.h"
 
@@ -50,8 +51,7 @@ namespace LC::LMP
 		void accept () override;
 	private:
 		void BrowseImage ();
-		void HandleImages (const QList<QImage>&);
-
-		void Request ();
+		Util::ContextTask<void> AddImage (QImage);
+		Util::ContextTask<void> Request ();
 	};
 }

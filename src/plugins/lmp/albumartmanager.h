@@ -11,8 +11,8 @@
 #include <QCoreApplication>
 #include <QObject>
 #include <QDir>
-#include <QFutureInterface>
 #include <interfaces/media/ialbumartprovider.h>
+#include <util/threads/coro/channel.h>
 #include "interfaces/lmp/collectiontypes.h"
 
 namespace LC::LMP
@@ -26,26 +26,13 @@ namespace LC::LMP
 		LocalCollection& Collection_;
 
 		QDir AADir_;
-
-		struct TaskQueue
-		{
-			Media::AlbumInfo Info_;
-			QFutureInterface<QList<QImage>> Promise_;
-		};
-		QList<TaskQueue> Queue_;
 	public:
 		explicit AlbumArtManager (LocalCollection&, QObject*);
 
-		[[nodiscard]] QFuture<QList<QImage>> CheckAlbumArt (const QString& artist, const QString& album);
+		[[nodiscard]] Util::Channel_ptr<QImage> CheckAlbumArt (const QString& artist, const QString& album);
 		void SetAlbumArt (int id, const QString& artist, const QString& album, const QImage&);
 	private:
-		void CheckNewArtists (const Collection::Artists_t&);
-
-		void HandleGotUrls (const TaskQueue&, const QList<QUrl>&);
-
-		void ScheduleRotateQueue ();
-		void RotateQueue ();
-
+		Util::ContextTask<void> CheckNewArtists (Collection::Artists_t);
 		void HandleCoversPath (const QString&);
 	};
 }
