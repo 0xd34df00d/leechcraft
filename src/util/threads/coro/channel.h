@@ -15,6 +15,7 @@
 #include <optional>
 #include <stdexcept>
 #include <utility>
+#include "channelfwd.h"
 
 namespace LC::Util
 {
@@ -150,7 +151,4 @@ namespace LC::Util
 			return Receive ();
 		}
 	};
-
-	template<typename T>
-	using Channel_ptr = std::shared_ptr<Channel<T>>;
 }

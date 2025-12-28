@@ -11,6 +11,7 @@
 #include <QtTest>
 #include "coro.h"
 #include "coro/channel.h"
+#include "coro/channelutils.h"
 #include "coro/getresult.h"
 
 QTEST_GUILESS_MAIN (LC::Util::CoroChannelTest)
@@ -19,13 +20,14 @@ namespace LC::Util
 {
 	void CoroChannelTest::testSingleRecv ()
 	{
-		Channel<int> ch { this };
-
 		using namespace std::chrono_literals;
 
 		constexpr auto producersCount = 32;
 		constexpr auto repCount = 100;
 		constexpr auto sleepLength = 1ms;
+
+		Channel<int> ch { this };
+
 		std::vector<std::thread> threads;
 		std::atomic_int expected;
 		for (int i = 0; i < producersCount; ++i)
@@ -70,12 +72,13 @@ namespace LC::Util
 	{
 		using namespace std::chrono_literals;
 
-		Channel<int> ch;
-
 		constexpr auto producersCount = 32;
 		constexpr auto consumersCount = 8;
 		constexpr auto repCount = 100;
 		constexpr auto sleepLength = 1ms;
+
+		Channel<int> ch;
+
 		std::vector<std::thread> producers;
 		std::atomic_int expected;
 		for (int i = 0; i < producersCount; ++i)
@@ -118,6 +121,8 @@ namespace LC::Util
 
 	void CoroChannelTest::testSingleThreaded ()
 	{
+		constexpr auto iterations = 1000;
+
 		Channel<int> ch;
 
 		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
@@ -128,7 +133,6 @@ namespace LC::Util
 			co_return sum;
 		} (&ch);
 
-		constexpr auto iterations = 1000;
 		int expected = 0;
 		for (int i = 0; i < iterations; ++i)
 		{
@@ -146,6 +150,9 @@ namespace LC::Util
 	{
 		using namespace std::chrono_literals;
 
+		constexpr auto iterations = 100;
+		constexpr auto interval = 1ms;
+
 		Channel<int> ch;
 
 		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
@@ -155,9 +162,6 @@ namespace LC::Util
 				sum += *next;
 			co_return sum;
 		} (&ch);
-
-		constexpr auto iterations = 100;
-		constexpr auto interval = 1ms;
 
 		int expected = 0;
 
@@ -170,6 +174,51 @@ namespace LC::Util
 					{
 						timer.stop ();
 						ch.Close ();
+					}
+				});
+		timer.start (interval);
+
+		const auto result = GetTaskResult (reader);
+		QCOMPARE (result, expected);
+	}
+
+	void CoroChannelTest::testMerge ()
+	{
+		using namespace std::chrono_literals;
+
+		constexpr auto numChannels = 100;
+		constexpr auto iterations = 100;
+		constexpr auto interval = 1ms;
+
+		QVector<Channel_ptr<int>> channels;
+		std::generate_n (std::back_inserter (channels), numChannels, [] { return std::make_shared<Channel<int>> (); });
+
+		auto merged = MergeChannels (channels);
+
+		auto reader = [] (Channel<int> *ch) -> Task<int, ThreadSafetyExtension>
+		{
+			int sum = 0;
+			while (auto next = co_await ch->Receive ())
+				sum += *next;
+			co_return sum;
+		} (merged.get ());
+
+		int expected = 0;
+
+		QTimer timer;
+		timer.callOnTimeout ([&, i = 0] mutable
+				{
+					for (int j = 0; j < numChannels; ++j)
+					{
+						auto value = i * numChannels + j;
+						expected += value;
+						channels [j]->Send (value);
+					}
+					if (++i == iterations)
+					{
+						timer.stop ();
+						for (auto chan : channels)
+							chan->Close ();
 					}
 				});
 		timer.start (interval);

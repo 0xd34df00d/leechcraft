@@ -8,20 +8,13 @@
 
 #pragma once
 
-#include <QObject>
+#include <memory>
 
 namespace LC::Util
 {
-	class CoroChannelTest : public QObject
-	{
-		Q_OBJECT
-	private slots:
-		void testSingleRecv ();
-		void testManyRecvs ();
+	template<typename T>
+	class Channel;
 
-		void testSingleThreaded ();
-		void testSingleThreadedTimered ();
-
-		void testMerge ();
-	};
+	template<typename T>
+	using Channel_ptr = std::shared_ptr<Channel<T>>;
 }
