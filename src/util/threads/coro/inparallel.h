@@ -57,4 +57,36 @@ namespace LC::Util
 	{
 		co_return std::tuple<Ts...> { co_await tasks... };
 	}
+
+	auto NCopies (size_t count, auto taskFactory, std::function<void ()> finalizer = {})
+			-> decltype (taskFactory ())::template ApplyResult_t<QVector>
+		requires (!std::is_same_v<void, typename decltype (taskFactory ())::ResultType_t>)
+	{
+		using Task_t = decltype (taskFactory ());
+
+		QVector<Task_t> tasks;
+		std::generate_n (std::back_inserter (tasks), count, taskFactory);
+
+		QVector<typename Task_t::ResultType_t> results;
+		for (auto& task : tasks)
+			results << co_await task;
+		if (finalizer)
+			finalizer ();
+		co_return results;
+	}
+
+	auto NCopies (size_t count, auto taskFactory, std::function<void ()> finalizer = {})
+			-> decltype (taskFactory ())::template ReplaceResult_t<void>
+		requires (std::is_same_v<void, typename decltype (taskFactory ())::ResultType_t>)
+	{
+		using Task_t = decltype (taskFactory ());
+
+		QVector<Task_t> tasks;
+		std::generate_n (std::back_inserter (tasks), count, taskFactory);
+		for (auto& task : tasks)
+			co_await task;
+
+		if (finalizer)
+			finalizer ();
+	}
 }
