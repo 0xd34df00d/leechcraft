@@ -81,6 +81,8 @@ namespace LC::Util
 
 		bool Closed_ = false;
 	public:
+		using ItemType_t = T;
+
 		Channel () = default;
 
 		Channel (const Channel&) = delete;
