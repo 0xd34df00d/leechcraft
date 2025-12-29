@@ -29,4 +29,16 @@ namespace LC::Util
 		} (output, std::move (channels));
 		return output;
 	}
+
+	template<typename T, typename F, typename... Args>
+	Channel_ptr<T> WithChannel (F&& f, Args&&... args)
+	{
+		auto output = std::make_shared<Channel<T>> ();
+		[] (auto f, Channel_ptr<T> output, auto... args) -> Task<void>
+		{
+			co_await std::invoke (f, output, args...);
+			output->Close ();
+		} (std::forward<F> (f), output, std::forward<Args> (args)...);
+		return output;
+	}
 }
