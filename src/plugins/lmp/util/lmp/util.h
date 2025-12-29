@@ -11,15 +11,15 @@
 #include <functional>
 #include <QString>
 #include <QFlags>
+#include <interfaces/core/icoreproxyfwd.h>
+#include <util/threads/coro/channelfwd.h>
 #include "lmputilconfig.h"
 #include "mediainfo.h"
 
 template<typename, typename>
 class QMap;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	enum SubstitutionFlag
 	{
@@ -41,7 +41,15 @@ namespace LMP
 			const QList<MediaInfo>& infos,
 			const std::function<void (int, QString)>& setter,
 			SubstitutionFlags flags = SFSafeFilesystem);
-}
+
+	struct AlbumArtInfo
+	{
+		QString Service_;
+		QUrl Url_;
+	};
+
+	LMP_UTIL_API Util::Channel_ptr<AlbumArtInfo> GetAlbumArtUrls (const ICoreProxy_ptr&, const QString& artist, const QString& album);
+	LMP_UTIL_API Util::Channel_ptr<QImage> GetAlbumArtImages (const ICoreProxy_ptr&, const QString& artist, const QString& album);
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::LMP::SubstitutionFlags)

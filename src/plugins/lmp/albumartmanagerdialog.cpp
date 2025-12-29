@@ -13,9 +13,11 @@
 #include <QFileDialog>
 #include <QTimer>
 #include <QtConcurrentRun>
+#include <interfaces/core/icoreproxy.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/channel.h>
+#include <util/lmp/util.h>
 #include "albumartmanager.h"
 
 namespace LC::LMP
@@ -163,7 +165,7 @@ namespace LC::LMP
 
 		co_await Util::AddContextObject { *this };
 
-		const auto channel = AAMgr_->CheckAlbumArt (artist, album);
+		const auto channel = GetAlbumArtImages (GetProxyHolder (), artist, album);
 		while (auto image = co_await *channel)
 		{
 			if (GetArtist () == artist && GetAlbum () == album)

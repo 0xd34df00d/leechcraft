@@ -23,6 +23,7 @@
 #include <util/sll/visitor.h>
 #include <util/threads/coro.h>
 #include <util/threads/futures.h>
+#include <util/lmp/util.h>
 
 namespace LC::LMP::BrainSlugz
 {
@@ -131,7 +132,7 @@ namespace LC::LMP::BrainSlugz
 		return result;
 	}
 
-	Util::ContextTask<void> CheckModel::SetMissingReleases (QList<Media::ReleaseInfo> releases, Collection::Artist artist)
+	void CheckModel::SetMissingReleases (QList<Media::ReleaseInfo> releases, Collection::Artist artist)
 	{
 		qDebug () << artist.Name_ << releases.size ();
 
@@ -139,10 +140,8 @@ namespace LC::LMP::BrainSlugz
 		if (!item)
 		{
 			qWarning () << "no item for artist" << artist.Name_;
-			co_return;
+			return;
 		}
-
-		co_await Util::AddContextObject { *this };
 
 		const auto model = Artist2Submodel_.value (artist.ID_);
 		for (const auto& release : releases)
@@ -153,13 +152,14 @@ namespace LC::LMP::BrainSlugz
 			item->setData (DefaultAlbumIcon_, ReleasesSubmodel::ReleaseArt);
 			model->appendRow (item);
 
-			for (const auto aaProv : AAProvs_)
+			[] (QPersistentModelIndex index, QStandardItemModel *model, QString artist, QString release) -> Util::ContextTask<void>
 			{
-				const auto eitherUrls = co_await aaProv->RequestAlbumArt ({ artist.Name_, release.Name_ });
-				const auto urls = co_await Util::WithHandler (eitherUrls, [] (const auto&) { return Util::IgnoreLeft {}; });
-				if (!urls.isEmpty ())
-					item->setData (urls.value (0), ReleasesSubmodel::ReleaseArt);
-			}
+				co_await Util::AddContextObject { *model };
+				const auto urlsChan = GetAlbumArtUrls (GetProxyHolder (), artist, release);
+				if (const auto url = co_await *urlsChan;
+					url && index.isValid ())
+					model->itemFromIndex (index)->setData (url->Url_, ReleasesSubmodel::ReleaseArt);
+			} (model->indexFromItem (item), model, artist.Name_, release.Name_);
 		}
 
 		item->setData (releases.size (), Role::MissingCount);

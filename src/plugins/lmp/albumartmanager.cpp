@@ -11,14 +11,13 @@
 #include <QUrl>
 #include <QtConcurrentRun>
 #include <QFuture>
-#include <util/sll/either.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
-#include <interfaces/core/ipluginsmanager.h>
+#include <util/lmp/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include "literals.h"
@@ -38,45 +37,6 @@ namespace LC::LMP
 				&LocalCollection::gotNewArtists,
 				this,
 				&AlbumArtManager::CheckNewArtists);
-	}
-
-	namespace
-	{
-		Util::Task<void> FetchImage (Util::Channel_ptr<QImage> channel, const QUrl& url)
-		{
-			const auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
-			const auto reply = co_await *nam->get (QNetworkRequest { url });
-			const auto data = co_await reply.ToEither ();
-
-			QImage image;
-			if (!image.loadFromData (data))
-			{
-				qWarning () << "unable to decode image from" << url;
-				co_return;
-			}
-
-			channel->Send (std::move (image));
-		}
-
-		Util::Task<void> RunCheckAlbumArt (Util::Channel_ptr<QImage> channel, QString artist, QString album)
-		{
-			for (const auto prov : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IAlbumArtProvider*> ())
-			{
-				const auto eitherUrls = co_await prov->RequestAlbumArt ({ artist, album });
-				const auto urls = co_await eitherUrls;
-				for (const auto& url : urls)
-					co_await FetchImage (channel, url);
-			}
-
-			channel->Close ();
-		}
-	}
-
-	Util::Channel_ptr<QImage> AlbumArtManager::CheckAlbumArt (const QString& artist, const QString& album)
-	{
-		auto channel = std::make_shared<Util::Channel<QImage>> ();
-		RunCheckAlbumArt (channel, artist, album);
-		return channel;
 	}
 
 	void AlbumArtManager::SetAlbumArt (int id, const QString& artist, const QString& album, const QImage& image)
@@ -113,7 +73,7 @@ namespace LC::LMP
 			for (const auto& album : artist.Albums_)
 				if (album->CoverPath_.isEmpty () || album->CoverPath_ == NotFoundMarker)
 				{
-					const auto channel = CheckAlbumArt (artist.Name_, album->Name_);
+					const auto channel = GetAlbumArtImages (GetProxyHolder (), artist.Name_, album->Name_);
 					QList<QImage> images;
 					while (const auto image = co_await *channel)
 						images << *image;

@@ -11,45 +11,68 @@
 #include <interfaces/core/icoreproxy.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/asdomdocument.h>
+#include <util/threads/coro/channelutils.h>
 #include <util/sll/qtutil.h>
 #include "util.h"
 
 namespace LC::Lastfmscrobble
 {
-	Util::Task<Media::IAlbumArtProvider::Result_t> FetchAlbumArt (Media::AlbumInfo albumInfo)
+	namespace
 	{
-		const QMap<QString, QString> params
+		Util::Task<Util::Either<QString, std::optional<QUrl>>> RunFetch (Media::AlbumInfo albumInfo)
 		{
-			{ "artist"_qs, albumInfo.Artist_ },
-			{ "album"_qs, albumInfo.Album_ },
-			{ "autocorrect"_qs, "1"_qs }
-		};
-
-		const auto reply = co_await *Request ("album.getInfo"_qs, GetProxyHolder ()->GetNetworkAccessManager (), params);
-		const auto replyData = co_await reply.ToEither ();
-		const auto doc = co_await Util::AsDomDocument { replyData, QObject::tr ("Unable to parse reply.") };
-
-		const auto& elems = doc.elementsByTagName ("image"_qs);
-
-		static const QStringList sizes
-		{
-			"mega"_qs,
-			"extralarge"_qs,
-			"large"_qs,
-			"medium"_qs,
-			"small"_qs,
-			{}
-		};
-
-		for (const auto& size : sizes)
-			for (const auto & node : elems)
+			const QMap<QString, QString> params
 			{
-				const auto& elem = node.toElement ();
-				if (const auto& text = elem.text ();
-					elem.attribute ("size"_qs) == size && !text.isEmpty ())
-					co_return QList { QUrl { text } };
-			}
+				{ "artist"_qs, albumInfo.Artist_ },
+				{ "album"_qs, albumInfo.Album_ },
+				{ "autocorrect"_qs, "1"_qs }
+			};
 
-		co_return QList<QUrl> {};
+			const auto reply = co_await *Request ("album.getInfo"_qs, GetProxyHolder ()->GetNetworkAccessManager (), params);
+			const auto replyData = co_await reply.ToEither ();
+			const auto doc = co_await Util::AsDomDocument { replyData, QObject::tr ("Unable to parse reply.") };
+
+			const auto& elems = doc.elementsByTagName ("image"_qs);
+
+			static const QStringList sizes
+			{
+				"mega"_qs,
+				"extralarge"_qs,
+				"large"_qs,
+				"medium"_qs,
+				"small"_qs,
+				{}
+			};
+
+			for (const auto& size : sizes)
+				for (const auto & node : elems)
+				{
+					const auto& elem = node.toElement ();
+					if (const auto& text = elem.text ();
+						elem.attribute ("size"_qs) == size && !text.isEmpty ())
+						co_return std::optional { QUrl { text } };
+				}
+
+			co_return std::optional<QUrl> {};
+		}
+	}
+
+	using Result_t = Media::IAlbumArtProvider::AlbumArtResponse;
+
+	Util::Channel_ptr<Result_t> FetchAlbumArt (const Media::AlbumInfo& albumInfo)
+	{
+		static const auto service = "Last.FM"_qs;
+		return Util::WithChannel<Result_t> ([] (Util::Channel_ptr<Result_t> chan, Media::AlbumInfo albumInfo) -> Util::Task<void>
+				{
+					const auto result = co_await RunFetch (albumInfo);
+					Util::Visit (result,
+							[chan] (const QString& error) { chan->Send ({ service, { Util::AsLeft, error } }); },
+							[chan] (const std::optional<QUrl>& url)
+							{
+								if (url)
+									chan->Send ({ service, { { *url } } });
+							});
+					chan->Close ();
+				}, albumInfo);
 	}
 }

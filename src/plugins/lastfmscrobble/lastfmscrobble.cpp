@@ -156,12 +156,7 @@ namespace Lastfmscrobble
 		LFSubmitter_->Ban ();
 	}
 
-	QString Plugin::GetAlbumArtProviderName () const
-	{
-		return GetServiceName ();
-	}
-
-	Util::Task<Media::IAlbumArtProvider::Result_t> Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	Util::Channel_ptr<Media::IAlbumArtProvider::AlbumArtResponse> Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
 	{
 		return FetchAlbumArt (album);
 	}

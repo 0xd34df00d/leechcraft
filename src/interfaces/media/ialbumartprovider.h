@@ -13,8 +13,8 @@
 #include <QImage>
 #include <QMetaType>
 #include <QtPlugin>
-#include <util/threads/coro/taskfwd.h>
-#include <util/sll/eitherfwd.h>
+#include <util/threads/coro/channel.h>
+#include <util/sll/either.h>
 
 class QUrl;
 
@@ -57,29 +57,33 @@ namespace Media
 	protected:
 		virtual ~IAlbumArtProvider () = default;
 	public:
-		/** @brief The result of an album art search query.
-		 *
-		 * The result of an album art search query is either a string with a
-		 * human-readable error text, or a list of URLs matching the album art.
-		 */
-		using Result_t = LC::Util::Either<QString, QList<QUrl>>;
+		struct AlbumArtResponse
+		{
+			/** @brief The human-readable name of the service, like `"Last.FM"`.
+			 */
+			QString ServiceName_;
 
-		/** @brief Returns the human-readable name of this provider.
-		 *
-		 * @return The human-readable name of the provider, like Last.FM.
-		 */
-		virtual QString GetAlbumArtProviderName () const = 0;
+			/** @brief The result of an album art search query.
+			 *
+			 * The result of an album art search query is either a string with a
+			 * human-readable error text, or a list of URLs matching the album art.
+			 */
+			LC::Util::Either<QString, QList<QUrl>> Result_;
+		};
+
+		using Channel_t = LC::Util::Channel_ptr<AlbumArtResponse>;
 
 		/** @brief Initiates search for album art of the given album.
 		 *
 		 * This function initiates searching for the album art of the
-		 * given \em album and returns a future with the album art search
-		 * result.
+		 * given \em album and returns a channel for the album art search
+		 * results.
 		 *
 		 * @param[in] album The description of the album.
-		 * @return The future with the album art search result.
+		 * @return The channel with the album art search results.
 		 */
-		virtual LC::Util::Task<Result_t> RequestAlbumArt (const AlbumInfo& album) const = 0;
+		[[nodiscard]]
+		virtual Channel_t RequestAlbumArt (const AlbumInfo& album) const = 0;
 	};
 }
 

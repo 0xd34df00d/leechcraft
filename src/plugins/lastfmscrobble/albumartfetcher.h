@@ -12,5 +12,5 @@
 
 namespace LC::Lastfmscrobble
 {
-	Util::Task<Media::IAlbumArtProvider::Result_t> FetchAlbumArt (Media::AlbumInfo);
+	Util::Channel_ptr<Media::IAlbumArtProvider::AlbumArtResponse> FetchAlbumArt (const Media::AlbumInfo&);
 }

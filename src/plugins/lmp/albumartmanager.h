@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QDir>
 #include <interfaces/media/ialbumartprovider.h>
+#include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/channel.h>
 #include "interfaces/lmp/collectiontypes.h"
 
@@ -29,7 +30,6 @@ namespace LC::LMP
 	public:
 		explicit AlbumArtManager (LocalCollection&, QObject*);
 
-		[[nodiscard]] Util::Channel_ptr<QImage> CheckAlbumArt (const QString& artist, const QString& album);
 		void SetAlbumArt (int id, const QString& artist, const QString& album, const QImage&);
 	private:
 		Util::ContextTask<void> CheckNewArtists (Collection::Artists_t);

@@ -58,7 +58,7 @@ namespace LC::LMP::BrainSlugz
 
 		Collection::Artists_t GetSelectedArtists () const;
 
-		Util::ContextTask<void> SetMissingReleases (QList<Media::ReleaseInfo>, Collection::Artist);
+		void SetMissingReleases (QList<Media::ReleaseInfo>, Collection::Artist);
 		void MarkNoNews (const Collection::Artist&);
 
 		void RemoveUnscheduled ();

@@ -22,6 +22,7 @@
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <util/threads/coro.h>
+#include <util/lmp/util.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -145,16 +146,13 @@ namespace LC::LMP
 
 		co_await Util::AddContextObject { *this };
 
-		for (const auto prov : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<Media::IAlbumArtProvider*> ())
-		{
-			const auto eitherUrls = co_await prov->RequestAlbumArt (info);
-			const auto urls = co_await eitherUrls;
-			if (info.Artist_ == CurrentArtist_ && !urls.isEmpty ())
+		const auto& channel = GetAlbumArtUrls (GetProxyHolder (), info.Artist_, info.Album_);
+		while (const auto result = co_await *channel)
+			if (info.Artist_ == CurrentArtist_)
 			{
-				SetAlbumImage (info.Album_, urls.first ());
+				SetAlbumImage (info.Album_, result->Url_);
 				break;
 			}
-		}
 	}
 
 	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img) const
