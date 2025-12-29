@@ -99,6 +99,9 @@ namespace LC::Util
 
 			{
 				std::lock_guard guard { Lock_ };
+				if (Closed_)
+					return;
+
 				Closed_ = true;
 				awaiters = std::exchange (Awaiters_, {});
 				for (auto awaiter : awaiters)
