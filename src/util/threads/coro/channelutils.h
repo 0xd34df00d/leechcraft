@@ -20,11 +20,11 @@ namespace LC::Util
 		auto output = std::make_shared<Channel<T>> ();
 		[] (Channel_ptr<T> output, QVector<Channel_ptr<T>> channels) -> Task<void>
 		{
-			co_await InParallel (channels, [&output] (auto channel) -> Task<void>
+			co_await InParallel (channels, [] (auto inChan, auto outChan) -> Task<void>
 					{
-						while (auto value = co_await *channel)
-							output->Send (std::move (*value));
-					});
+						while (auto value = co_await *inChan)
+							outChan->Send (std::move (*value));
+					}, output);
 			output->Close ();
 		} (output, std::move (channels));
 		return output;
