@@ -9,7 +9,9 @@
 #pragma once
 
 #include <QObject>
+#include <util/threads/coro/throttle.h>
 #include <interfaces/iinfo.h>
+#include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/media/idiscographyprovider.h>
 
 #ifdef WITH_CHROMAPRINT
@@ -25,15 +27,20 @@ namespace Util
 
 namespace MusicZombie
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public Media::IDiscographyProvider
+	class Plugin
+		: public QObject
+		, public IInfo
+		, public Media::IAlbumArtProvider
+		, public Media::IDiscographyProvider
 #ifdef WITH_CHROMAPRINT
-				 , public Media::ITagsFetcher
+		, public Media::ITagsFetcher
 #endif
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo Media::IDiscographyProvider)
+		Q_INTERFACES (IInfo
+				Media::IAlbumArtProvider
+				Media::IDiscographyProvider
+			)
 #ifdef WITH_CHROMAPRINT
 		Q_INTERFACES (Media::ITagsFetcher)
 #endif
@@ -44,6 +51,8 @@ namespace MusicZombie
 
 		Util::QueueManager *Queue_;
 		Util::QueueManager *AcoustidQueue_;
+
+		Util::Throttle_ptr Throttle_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -52,6 +61,8 @@ namespace MusicZombie
 		QString GetName () const override;
 		QString GetInfo () const override;
 		QIcon GetIcon () const override;
+
+		Channel_t RequestAlbumArt (const Media::AlbumInfo& album) const override;
 
 		QString GetServiceName () const override;
 

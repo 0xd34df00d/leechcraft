@@ -11,6 +11,7 @@
 #include <QFuture>
 #include <interfaces/core/icoreproxy.h>
 #include <util/sll/queuemanager.h>
+#include "albumartfetcher.h"
 #include "pendingdisco.h"
 
 #ifdef WITH_CHROMAPRINT
@@ -27,6 +28,9 @@ namespace MusicZombie
 		AcoustidQueue_ = new Util::QueueManager (1000);
 
 		Proxy_ = proxy;
+
+		using namespace std::chrono_literals;
+		Throttle_ = std::make_shared<Util::Throttle> (1s);
 	}
 
 	void Plugin::SecondInit ()
@@ -56,6 +60,11 @@ namespace MusicZombie
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Media::IAlbumArtProvider::Channel_t Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	{
+		return FetchAlbumArt (album, Throttle_);
 	}
 
 	QString Plugin::GetServiceName () const

@@ -13,6 +13,7 @@ endif ()
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		albumartfetcher.cpp
 		musiczombie.cpp
 		pendingdisco.cpp
 		util.cpp
