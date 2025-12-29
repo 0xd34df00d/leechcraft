@@ -73,6 +73,12 @@ namespace LC::Util
 	{
 		return { either, std::forward<F> (errorHandler) };
 	}
+
+	template<typename L, typename R>
+	auto WithHandler (const Either<L, R>& either, IgnoreLeft)
+	{
+		return WithHandler (either, [] (const auto&) { return IgnoreLeft {}; });
+	}
 }
 
 namespace LC
