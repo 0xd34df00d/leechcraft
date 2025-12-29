@@ -55,24 +55,26 @@ namespace LC::Lastfmscrobble
 
 			co_return std::optional<QUrl> {};
 		}
-	}
 
-	using Result_t = Media::IAlbumArtProvider::AlbumArtResponse;
+		using Result_t = Media::IAlbumArtProvider::AlbumArtResponse;
+
+		Result_t Convert (const Util::Either<QString, std::optional<QUrl>>& result)
+		{
+			static const auto service = "Last.FM"_qs;
+			return Util::Visit (result,
+					[] (const QString& error) { return Result_t { service, { Util::AsLeft, error } }; },
+					[] (const std::optional<QUrl>& url) -> Result_t
+					{
+						QList<QUrl> urls;
+						if (url)
+							urls << *url;
+						return Result_t { service, urls };
+					});
+		}
+	}
 
 	Util::Channel_ptr<Result_t> FetchAlbumArt (const Media::AlbumInfo& albumInfo)
 	{
-		static const auto service = "Last.FM"_qs;
-		return Util::WithChannel<Result_t> ([] (Util::Channel_ptr<Result_t> chan, Media::AlbumInfo albumInfo) -> Util::Task<void>
-				{
-					const auto result = co_await RunFetch (albumInfo);
-					Util::Visit (result,
-							[chan] (const QString& error) { chan->Send ({ service, { Util::AsLeft, error } }); },
-							[chan] (const std::optional<QUrl>& url)
-							{
-								if (url)
-									chan->Send ({ service, { { *url } } });
-							});
-					chan->Close ();
-				}, albumInfo);
+		return Util::ChannelFromSingleResult (&RunFetch, &Convert, albumInfo);
 	}
 }
