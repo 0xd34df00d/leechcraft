@@ -96,23 +96,19 @@ namespace LC::MusicZombie
 			co_return reply;
 		}
 
-		using Result_t = Media::IAlbumArtProvider::AlbumArtResponse::Result_t;
-
-		Util::Task<Result_t> RunFetch (Media::AlbumInfo info, std::shared_ptr<Util::Throttle> throttle)
+		Util::Task<void> RunFetch (Media::IAlbumArtProvider::Channel_t chan,
+				Media::AlbumInfo info, std::shared_ptr<Util::Throttle> throttle)
 		{
 			auto& nam = *GetProxyHolder ()->GetNetworkAccessManager ();
 			const auto& releaseQueryReply = co_await BackingOff ([&] { return nam.get (MakeReleaseQueryRequest (info)); }, throttle);
 			const auto& data = co_await releaseQueryReply.ToEither (QObject::tr ("Unable to query releases."));
 			const auto& json = co_await Util::ToJson (data);
 			const auto& ids = co_await GetReleaseIds (json);
-
-			QVector<QUrl> urls;
 			for (const auto& id : ids)
 			{
 				co_await *throttle;
 				const auto reply = nam.head (MakeAlbumArtQueryRequest (id));
-				const auto& data = co_await *reply;
-				if (const auto error = data.IsError ())
+				if (const auto error = (co_await *reply).IsError ())
 				{
 					if (error->Error_ == QNetworkReply::ContentNotFoundError)
 						qDebug () << "no album art for release" << id;
@@ -120,19 +116,14 @@ namespace LC::MusicZombie
 						qWarning () << *error;
 					continue;
 				}
-				urls << reply->url ();
+				chan->Send ({ "MusicBrainz"_qs, { { reply->url () } }});
 			}
-
-			co_return urls;
 		}
 	}
 
 	Media::IAlbumArtProvider::Channel_t FetchAlbumArt (const Media::AlbumInfo& info,
 			const std::shared_ptr<Util::Throttle>& throttle)
 	{
-		using Response = Media::IAlbumArtProvider::AlbumArtResponse;
-		return Util::ChannelFromSingleResult (&RunFetch,
-				[] (const auto& result) { return Response { "MusicBrainz"_qs, result }; },
-				info, throttle);
+		return Util::WithChannel (&RunFetch, info, throttle);
 	}
 }
