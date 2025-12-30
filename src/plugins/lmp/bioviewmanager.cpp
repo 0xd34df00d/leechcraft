@@ -147,12 +147,9 @@ namespace LC::LMP
 		co_await Util::AddContextObject { *this };
 
 		const auto& channel = GetAlbumArtUrls (GetProxyHolder (), info.Artist_, info.Album_);
-		while (const auto result = co_await *channel)
+		if (const auto result = co_await *channel)
 			if (info.Artist_ == CurrentArtist_)
-			{
-				SetAlbumImage (info.Album_, result->Url_);
-				break;
-			}
+				SetAlbumImage (info.Album_, result->AlbumArt_);
 	}
 
 	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img) const

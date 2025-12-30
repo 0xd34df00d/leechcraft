@@ -135,25 +135,28 @@ namespace LC::LMP
 		if (image.isNull ())
 			return;
 
-		AddImage (image);
+		AddImage ({ tr ("disk"), image });
 	}
 
-	Util::ContextTask<void> AlbumArtManagerDialog::AddImage (QImage image)
+	Util::ContextTask<void> AlbumArtManagerDialog::AddImage (AlbumArtInfo<QImage> info)
 	{
-		const auto scaled = co_await QtConcurrent::run ([image]
+		co_await Util::AddContextObject { *this };
+
+		const auto scaled = co_await QtConcurrent::run ([image = info.AlbumArt_]
 				{
 					return image.scaled (200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 				});
 
 		auto item = new QStandardItem ();
 		item->setIcon (QIcon (QPixmap::fromImage (scaled)));
-		item->setText (u"%1×%2"_qs
-				.arg (image.width ())
-				.arg (image.height ()));
+		item->setText (tr ("%1×%2\n(from %3)")
+				.arg (info.AlbumArt_.width ())
+				.arg (info.AlbumArt_.height ())
+				.arg (info.Service_));
 		item->setEditable (false);
 		Model_->appendRow (item);
 
-		FullImages_ << image;
+		FullImages_ << info.AlbumArt_;
 	}
 
 	Util::ContextTask<void> AlbumArtManagerDialog::Request ()

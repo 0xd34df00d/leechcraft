@@ -63,12 +63,14 @@ namespace Media
 			 */
 			QString ServiceName_;
 
+			using Result_t = LC::Util::Either<QString, QList<QUrl>>;
+
 			/** @brief The result of an album art search query.
 			 *
 			 * The result of an album art search query is either a string with a
 			 * human-readable error text, or a list of URLs matching the album art.
 			 */
-			LC::Util::Either<QString, QList<QUrl>> Result_;
+			Result_t Result_;
 		};
 
 		using Channel_t = LC::Util::Channel_ptr<AlbumArtResponse>;

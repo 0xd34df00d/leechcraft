@@ -75,8 +75,8 @@ namespace LC::LMP
 				{
 					const auto channel = GetAlbumArtImages (GetProxyHolder (), artist.Name_, album->Name_);
 					QList<QImage> images;
-					while (const auto image = co_await *channel)
-						images << *image;
+					while (const auto result = co_await *channel)
+						images << result->AlbumArt_;
 
 					if (images.isEmpty ())
 						Collection_.SetAlbumArt (album->ID_, NotFoundMarker);

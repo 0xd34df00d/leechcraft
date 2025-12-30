@@ -42,14 +42,15 @@ namespace LC::LMP
 			const std::function<void (int, QString)>& setter,
 			SubstitutionFlags flags = SFSafeFilesystem);
 
+	template<typename T>
 	struct AlbumArtInfo
 	{
 		QString Service_;
-		QUrl Url_;
+		T AlbumArt_;
 	};
 
-	LMP_UTIL_API Util::Channel_ptr<AlbumArtInfo> GetAlbumArtUrls (const ICoreProxy_ptr&, const QString& artist, const QString& album);
-	LMP_UTIL_API Util::Channel_ptr<QImage> GetAlbumArtImages (const ICoreProxy_ptr&, const QString& artist, const QString& album);
+	LMP_UTIL_API Util::Channel_ptr<AlbumArtInfo<QUrl>> GetAlbumArtUrls (const ICoreProxy_ptr&, const QString& artist, const QString& album);
+	LMP_UTIL_API Util::Channel_ptr<AlbumArtInfo<QImage>> GetAlbumArtImages (const ICoreProxy_ptr&, const QString& artist, const QString& album);
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::LMP::SubstitutionFlags)

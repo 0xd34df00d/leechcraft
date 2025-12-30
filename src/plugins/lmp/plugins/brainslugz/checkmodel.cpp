@@ -158,7 +158,7 @@ namespace LC::LMP::BrainSlugz
 				const auto urlsChan = GetAlbumArtUrls (GetProxyHolder (), artist, release);
 				if (const auto url = co_await *urlsChan;
 					url && index.isValid ())
-					model->itemFromIndex (index)->setData (url->Url_, ReleasesSubmodel::ReleaseArt);
+					model->itemFromIndex (index)->setData (url->AlbumArt_, ReleasesSubmodel::ReleaseArt);
 			} (model->indexFromItem (item), model, artist.Name_, release.Name_);
 		}
 

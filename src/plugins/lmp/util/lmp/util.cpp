@@ -109,23 +109,23 @@ namespace LMP
 
 	namespace
 	{
-		Util::Task<void> FetchImage (Util::Channel_ptr<QImage> channel, ICoreProxy_ptr proxy, QUrl url)
+		Util::Task<void> FetchImage (Util::Channel_ptr<AlbumArtInfo<QImage>> channel, ICoreProxy_ptr proxy, AlbumArtInfo<QUrl> info)
 		{
 			const auto nam = proxy->GetNetworkAccessManager ();
-			const auto reply = co_await *nam->get (QNetworkRequest { url });
+			const auto reply = co_await *nam->get (QNetworkRequest { info.AlbumArt_ });
 			const auto data = co_await reply.ToEither ();
 
 			QImage image;
 			if (!image.loadFromData (data))
 			{
-				qWarning () << "unable to decode image from" << url;
+				qWarning () << "unable to decode image from" << info.AlbumArt_;
 				co_return;
 			}
 
-			channel->Send (std::move (image));
+			channel->Send ({ info.Service_, std::move (image) });
 		}
 
-		Util::Task<void> RunGetAlbumArtUrls (Util::Channel_ptr<AlbumArtInfo> outChan,
+		Util::Task<void> RunGetAlbumArtUrls (Util::Channel_ptr<AlbumArtInfo<QUrl>> outChan,
 				ICoreProxy_ptr proxy, QString artist, QString album)
 		{
 			QVector<Media::IAlbumArtProvider::Channel_t> channels;
@@ -142,22 +142,22 @@ namespace LMP
 			}
 		}
 
-		Util::Task<void> RunGetAlbumArtImages (Util::Channel_ptr<QImage> outChan,
-				ICoreProxy_ptr proxy, Util::Channel_ptr<AlbumArtInfo> infoChan)
+		Util::Task<void> RunGetAlbumArtImages (Util::Channel_ptr<AlbumArtInfo<QImage>> outChan,
+				ICoreProxy_ptr proxy, Util::Channel_ptr<AlbumArtInfo<QUrl>> urlsChan)
 		{
-			while (const auto& info = co_await *infoChan)
-				co_await FetchImage (outChan, proxy, info->Url_);
+			while (const auto& info = co_await *urlsChan)
+				co_await FetchImage (outChan, proxy, *info);
 		}
 	}
 
-	Util::Channel_ptr<AlbumArtInfo> GetAlbumArtUrls (const ICoreProxy_ptr& proxy, const QString& artist, const QString& album)
+	Util::Channel_ptr<AlbumArtInfo<QUrl>> GetAlbumArtUrls (const ICoreProxy_ptr& proxy, const QString& artist, const QString& album)
 	{
-		return Util::WithChannel<AlbumArtInfo> (&RunGetAlbumArtUrls, proxy, artist, album);
+		return Util::WithChannel (&RunGetAlbumArtUrls, proxy, artist, album);
 	}
 
-	Util::Channel_ptr<QImage> GetAlbumArtImages (const ICoreProxy_ptr& proxy, const QString& artist, const QString& album)
+	Util::Channel_ptr<AlbumArtInfo<QImage>> GetAlbumArtImages (const ICoreProxy_ptr& proxy, const QString& artist, const QString& album)
 	{
-		return Util::WithChannel<QImage> (&RunGetAlbumArtImages, proxy, GetAlbumArtUrls (proxy, artist, album));
+		return Util::WithChannel (&RunGetAlbumArtImages, proxy, GetAlbumArtUrls (proxy, artist, album));
 	}
 }
 }
