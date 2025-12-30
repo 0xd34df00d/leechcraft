@@ -13,13 +13,27 @@
 
 namespace LC::Util
 {
-	template<typename T, template<typename> typename... Exts>
-	Task<QVector<T>, Exts...> InParallel (QVector<Task<T, Exts...>> tasks)
+	template<
+			typename T,
+			template<typename> typename... Exts,
+			template<typename...> typename Cont = std::initializer_list
+		>
+	Task<QVector<T>, Exts...> InParallel (Cont<Task<T, Exts...>> tasks)
 	{
 		QVector<T> result;
 		for (auto& task : tasks)
 			result << co_await task;
 		co_return result;
+	}
+
+	template<
+			template<typename> typename... Exts,
+			template<typename...> typename Cont = std::initializer_list
+		>
+	Task<void, Exts...> InParallel (Cont<Task<void, Exts...>> tasks)
+	{
+		for (auto& task : tasks)
+			co_await task;
 	}
 
 	template<
