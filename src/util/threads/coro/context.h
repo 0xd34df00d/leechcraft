@@ -93,7 +93,7 @@ namespace LC::Util
 		}
 	};
 
-	struct AddContextObject
+	struct [[nodiscard]] AddContextObject
 	{
 		QObject& Context_;
 
