@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>672</width>
-    <height>526</height>
+    <width>1412</width>
+    <height>968</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,18 +38,21 @@
     <widget class="QListView" name="ArtView_">
      <property name="iconSize">
       <size>
-       <width>200</width>
-       <height>200</height>
-      </size>
-     </property>
-     <property name="gridSize">
-      <size>
-       <width>250</width>
+       <width>300</width>
        <height>300</height>
       </size>
      </property>
+     <property name="resizeMode">
+      <enum>QListView::ResizeMode::Fixed</enum>
+     </property>
+     <property name="gridSize">
+      <size>
+       <width>350</width>
+       <height>400</height>
+      </size>
+     </property>
      <property name="viewMode">
-      <enum>QListView::IconMode</enum>
+      <enum>QListView::ViewMode::IconMode</enum>
      </property>
     </widget>
    </item>
@@ -58,7 +61,7 @@
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -83,10 +86,10 @@
    <item>
     <widget class="QDialogButtonBox" name="dialogButtonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
