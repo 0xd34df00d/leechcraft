@@ -177,7 +177,7 @@ Rectangle {
             ActionButton {
                 id: hideButton
                 actionIconURL: toggleHiddenIcon
-                visible: devPersistentID.length > 0
+                visible: devPersistentID.byteLength > 0
 
                 width: height
                 height: mountButton.height * 2 / 3

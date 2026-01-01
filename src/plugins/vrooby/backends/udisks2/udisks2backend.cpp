@@ -8,6 +8,7 @@
 
 #include "udisks2backend.h"
 #include <memory>
+#include <ranges>
 #include <QStandardItemModel>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -28,11 +29,6 @@ using QDBusInterface_ptr = std::shared_ptr<QDBusInterface>;
 
 namespace LC::Vrooby::UDisks2
 {
-	Backend::Backend ()
-	: DevicesModel_ { new QStandardItemModel { this } }
-	{
-	}
-
 	namespace
 	{
 		const auto UDisks2Service = "org.freedesktop.UDisks2"_qs;
@@ -79,7 +75,7 @@ namespace LC::Vrooby::UDisks2
 
 	QAbstractItemModel* Backend::GetDevicesModel ()
 	{
-		return DevicesModel_;
+		return &Devices_;
 	}
 
 	namespace
@@ -99,11 +95,6 @@ namespace LC::Vrooby::UDisks2
 					path,
 					iface,
 					QDBusConnection::systemBus ());
-		}
-
-		bool IsMounted (const QStandardItem *item)
-		{
-			return !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
 		}
 
 		QString GetErrorText (const QString& errorCode)
@@ -171,11 +162,11 @@ namespace LC::Vrooby::UDisks2
 
 	void Backend::MountDevice (const QString& id)
 	{
-		const auto item = Object2Item_.value (id);
-		if (!item)
+		const auto pos = Id2Row_.value (id, -1);
+		if (pos == -1)
 			return;
 
-		if (!IsMounted (item))
+		if (!Devices_.GetItems ().value (pos).IsMounted_)
 			RunMount (id);
 	}
 
@@ -216,7 +207,7 @@ namespace LC::Vrooby::UDisks2
 	bool Backend::AddPath (const QDBusObjectPath& path)
 	{
 		const auto& str = path.path ();
-		if (Object2Item_.contains (str))
+		if (Id2Row_.contains (str))
 			return true;
 
 		const auto blockIface = GetInterface (str, Interfaces::Block);
@@ -241,27 +232,29 @@ namespace LC::Vrooby::UDisks2
 				this,
 				SLOT (handleDeviceChanged (QDBusMessage)));
 
-		const auto item = new QStandardItem;
-		Object2Item_ [str] = item;
-		SetItemData ({
-					.Partition_ = partitionIface,
-					.Block_ = blockIface,
-					.Drive_ = driveIface,
-					.Props_ = GetInterface (str, Interfaces::Props),
-				}, item);
 		if (const auto& slaveTo = partitionIface->property ("Table").value<QDBusObjectPath> ();
 			!slaveTo.path ().isEmpty () && !AddPath (slaveTo))
 			return false;
 
-		DevicesModel_->appendRow (item);
+		Id2Row_ [str] = Devices_.AddItem (ToDevice ({
+					.Partition_ = partitionIface,
+					.Block_ = blockIface,
+					.Drive_ = driveIface,
+					.Props_ = GetInterface (str, Interfaces::Props),
+				}));
 		return true;
 	}
 
 	void Backend::RemovePath (const QDBusObjectPath& pathObj)
 	{
 		const auto& path = pathObj.path ();
-		if (const auto item = Object2Item_.take (path))
-			DevicesModel_->removeRow (item->row ());
+		if (const auto it = Id2Row_.find (path);
+			it != Id2Row_.end ())
+		{
+			const auto row = *it;
+			Id2Row_.erase (it);
+			Devices_.RemoveItem (row);
+		}
 	}
 
 	namespace
@@ -302,11 +295,8 @@ namespace LC::Vrooby::UDisks2
 		}
 	}
 
-	void Backend::SetItemData (const ItemInterfaces& ifaces, QStandardItem *item)
+	Backend::Device Backend::ToDevice (const ItemInterfaces& ifaces)
 	{
-		if (!item)
-			return;
-
 		const auto& path = ifaces.Block_->path ();
 		const auto& slaveTo = ifaces.Partition_->property ("Table").value<QDBusObjectPath> ();
 		const bool isRemovable = ifaces.Drive_->property ("Removable").toBool ();
@@ -325,40 +315,37 @@ namespace LC::Vrooby::UDisks2
 				"%1: %2"_qs.arg (vendor, partName) :
 				vendor;
 
-		DevicesModel_->blockSignals (true);
-
 		const auto& mountPaths = GetMountPaths (*ifaces.Props_);
-		if (!mountPaths.isEmpty ())
-			item->setData (QStorageInfo { mountPaths.value (0) }.bytesAvailable (), MassStorageRole::AvailableSize);
-		else
-			item->setData (-1, MassStorageRole::AvailableSize);
-
-		item->setText (name);
-		item->setData (DeviceType::MassStorage, CommonDevRole::DevType);
-		item->setData (FixupTrailingZero (ifaces.Block_->property ("Device").toByteArray ()), MassStorageRole::DevFile);
-		item->setData (ifaces.Partition_->property ("PartitionType").toInt (), MassStorageRole::PartType);
-		item->setData (isRemovable, MassStorageRole::IsRemovable);
-		item->setData (isPartition, MassStorageRole::IsPartition);
-		item->setData (isPartition && isRemovable, MassStorageRole::IsMountable);
-		item->setData (!mountPaths.isEmpty (), MassStorageRole::IsMounted);
-		item->setData (ifaces.Drive_->property ("MediaAvailable"), MassStorageRole::IsMediaAvailable);
-		item->setData (path, CommonDevRole::DevID);
-		if (!slaveTo.path ().isEmpty ())
-			item->setData (slaveTo.path (), CommonDevRole::DevParentID);
-		item->setData (ifaces.Block_->property ("IdUUID"), CommonDevRole::DevPersistentID);
-		item->setData (fullName, MassStorageRole::VisibleName);
-		item->setData (ifaces.Block_->property ("Size").toLongLong (), MassStorageRole::TotalSize);
-		DevicesModel_->blockSignals (false);
-		item->setData (mountPaths, MassStorageRole::MountPoints);
+		return Device
+		{
+			.DevId_ { path.toUtf8 () },
+			.Name_ { name },
+			.VisibleName_ { fullName },
+			.MountPoints_ { mountPaths },
+			.DevFile_ { FixupTrailingZero (ifaces.Block_->property ("Device").toByteArray ()) },
+			.DevParentId_ { slaveTo.path ().toUtf8 () },
+			.DevPersistentId_ { ifaces.Block_->property ("IdUUID").toByteArray () },
+			.AvailableSize_ { mountPaths.isEmpty () ? -1 : QStorageInfo { mountPaths [0] }.bytesAvailable () },
+			.TotalSize_ { ifaces.Block_->property ("Size").toLongLong () },
+			.PartitionType_ { ifaces.Partition_->property ("PartitionType").value<uint16_t> () },
+			.IsRemovable_ { isRemovable },
+			.IsPartition_ { isPartition },
+			.IsMountable_ { isPartition && isRemovable },
+			.IsMounted_ { !mountPaths.isEmpty () },
+			.IsMediaAvailable_ { ifaces.Drive_->property ("MediaAvailable").toBool () },
+		};
 	}
 
 	void Backend::toggleMount (const QString& id)
 	{
-		const auto item = Object2Item_.value (id);
-		if (!item)
+		const auto row = Id2Row_.value (id, -1);
+		if (row < 0)
+		{
+			qWarning () << "unknown id" << id;
 			return;
+		}
 
-		if (IsMounted (item))
+		if (Devices_.GetItems ().value (row).IsMounted_)
 			RunUnmount (id);
 		else
 			RunMount (id);
@@ -368,8 +355,8 @@ namespace LC::Vrooby::UDisks2
 	{
 		const auto& path = msg.path ();
 
-		const auto item = Object2Item_.value (path);
-		if (!item)
+		const auto row = Id2Row_.value (path, -1);
+		if (row < 0)
 		{
 			qWarning () << "no item for path" << path;
 			return;
@@ -383,20 +370,20 @@ namespace LC::Vrooby::UDisks2
 			.Drive_ = GetInterface (blockIface->property ("Drive").value<QDBusObjectPath> ().path (), Interfaces::Drive),
 			.Props_ = GetInterface (path, Interfaces::Props)
 		};
-		SetItemData (faces, item);
+		Devices_.SetItem (row, ToDevice (faces));
 	}
 
 	void Backend::UpdateDeviceSpaces ()
 	{
-		for (const auto item : std::as_const (Object2Item_))
+		for (auto&& [idx, device] : std::ranges::views::enumerate (Devices_.GetItems ()))
 		{
-			const auto& mountPaths = item->data (MassStorageRole::MountPoints).toStringList ();
-			if (mountPaths.isEmpty ())
+			const auto& mountPaths = device.MountPoints_;
+			if (mountPaths->isEmpty ())
 				continue;
 
-			if (const auto free = QStorageInfo { mountPaths.value (0) }.bytesAvailable ();
-				free != item->data (MassStorageRole::AvailableSize).value<qint64> ())
-				item->setData (free, MassStorageRole::AvailableSize);
+			if (const auto free = QStorageInfo { mountPaths->value (0) }.bytesAvailable ();
+				free != device.AvailableSize_)
+				Devices_.SetField<&Device::AvailableSize_> (idx, free);
 		}
 	}
 }
