@@ -14,8 +14,10 @@
 #include <QDomElement>
 #include <QUrlQuery>
 #include <ws.h>
+#include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -55,11 +57,19 @@ namespace Lastfmscrobble
 			url.setQuery (query);
 		}
 
+		void SetupCommonHeaders (QNetworkRequest& req)
+		{
+			const auto userAgent = "LeechCraft LastFMScrobble/%1 ( https://leechcraft.org/plugins-lastfmscrobble )"_qs
+					.arg (GetProxyHolder ()->GetVersion ());
+			req.setHeader (QNetworkRequest::UserAgentHeader, userAgent);
+		}
+
 		QNetworkReply* MakePostRequest (QNetworkAccessManager *nam, const ParamsList_t& params)
 		{
 			const auto& data = Params2PostData (params);
 
 			QNetworkRequest req { QUrl { "https://ws.audioscrobbler.com/2.0/" } };
+			SetupCommonHeaders (req);
 			req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 			req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 			return nam->post (req, data);
@@ -70,7 +80,9 @@ namespace Lastfmscrobble
 			QUrl url { "https://ws.audioscrobbler.com/2.0/" };
 			AppendParams2Url (params, url);
 
-			return nam->get (QNetworkRequest { url });
+			QNetworkRequest req { url };
+			SetupCommonHeaders (req);
+			return nam->get (req);
 		}
 	}
 
