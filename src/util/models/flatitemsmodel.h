@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <utility>
 #include "flatitemsmodeltypedbase.h"
 
 namespace LC::Util

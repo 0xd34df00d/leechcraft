@@ -23,11 +23,137 @@ namespace LC::Util
 	template<CtString RoleArg, auto GetterArg>
 	RoledMemberField<RoleArg, GetterArg> RoledMemberField_v;
 
+	template<typename T, int RoleV>
+	struct RoleOf
+	{
+		constexpr static auto Role = RoleV;
+
+		T Value_ {};
+
+		RoleOf () = default;
+
+		RoleOf (const RoleOf& other) = default;
+		RoleOf (RoleOf&& other) = default;
+
+		RoleOf& operator= (const RoleOf& other) = default;
+		RoleOf& operator= (RoleOf&& other) = default;
+
+		template<typename U = T>
+		RoleOf (U&& value)
+		: Value_ (std::forward<U> (value))
+		{
+		}
+
+		template<typename U = T>
+		RoleOf& operator= (U&& value)
+		{
+			Value_ = std::forward<U> (value);
+			return *this;
+		}
+
+		T* operator-> ()
+		{
+			return &Value_;
+		}
+
+		const T* operator-> () const
+		{
+			return &Value_;
+		}
+
+		operator T () const
+		{
+			return Value_;
+		}
+
+		operator QVariant () const
+		{
+			return Value_;
+		}
+	};
+
+	namespace detail
+	{
+		constexpr auto GetFieldsCount (auto&& val)
+		{
+			auto&& [...elems] = val;
+			return std::integral_constant<size_t, sizeof... (elems)> {};
+		}
+
+		template<size_t I>
+		constexpr auto GetFieldAt (auto&& val)
+		{
+			auto&& [...elems] = val;
+			return elems... [I];
+		}
+
+		template<typename T, size_t I>
+		using FieldType_t = decltype (GetFieldAt<I> (std::declval<T> ()));
+
+		template<typename T>
+		constexpr size_t FieldsCount_v = decltype (GetFieldsCount (std::declval<T> ()))::value;
+
+		template<typename T>
+		using FieldGetter_t = QVariant (*) (const T&);
+
+		template<typename T>
+		QHash<int, FieldGetter_t<T>> MkGetters ()
+		{
+			return []<size_t... Ixs> (std::index_sequence<Ixs...>)
+			{
+				return QHash<int, FieldGetter_t<T>>
+				{
+					{
+						FieldType_t<T, Ixs>::Role,
+						+[] (const T& t) -> QVariant { return GetFieldAt<Ixs> (t); }
+					}...
+				};
+			} (std::make_index_sequence<FieldsCount_v<T>> {});
+		}
+	}
+
+	template<typename T>
+	class SimpleRoledItemsModel : public FlatItemsModelTypedBase<T>
+	{
+	public:
+		using FieldGetter_t = detail::FieldGetter_t<T>;
+
+		constexpr static size_t FieldsCount_v = decltype (detail::GetFieldsCount (std::declval<T> ()))::value;
+	private:
+		const QHash<int, FieldGetter_t> Role2Getter_;
+		const std::array<int, FieldsCount_v> Field2Role_;
+	public:
+		explicit SimpleRoledItemsModel (QObject *parent = nullptr)
+		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
+		, Role2Getter_ { detail::MkGetters<T> () }
+		, Field2Role_ { []<size_t... Ixs> (std::index_sequence<Ixs...>)
+				{
+					return std::array<int, FieldsCount_v> { { detail::FieldType_t<T, Ixs>::Role... } };
+				} (std::make_index_sequence<FieldsCount_v> {}) }
+		{
+		}
+
+		template<auto F, typename V>
+		void SetField (int idx, V&& value)
+		{
+			this->Items_ [idx].*F = std::forward<V> (value);
+			emit this->dataChanged (this->index (idx, 0), this->index (idx, 0),
+					{ Field2Role_ [std::decay_t<decltype (T {}.*F)>::Role] });
+		}
+	protected:
+		QVariant GetData (int row, int, int role) const override
+		{
+			if (const auto getter = Role2Getter_.value (role))
+				return getter (this->Items_.at (row));
+			return {};
+		}
+	};
+
 	template<typename T>
 	class RoledItemsModel : public FlatItemsModelTypedBase<T>
 	{
 	public:
-		using FieldGetter_t = QVariant (*) (const T&);
+		using FieldGetter_t = detail::FieldGetter_t<T>;
 		using FieldsList_t = QVector<QPair<QByteArray, FieldGetter_t>>;
 	private:
 		const QVector<FieldGetter_t> Fields_;
@@ -36,7 +162,7 @@ namespace LC::Util
 		template<typename... Fields>
 		explicit RoledItemsModel (QObject *parent, Fields...) noexcept
 		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
-		, Fields_ { +[] (const T& t) -> QVariant { return t.*(Fields::Getter); }... }
+		, Fields_ { +[] (const T& t) -> QVariant { return t.*Fields::Getter; }... }
 		, Roles_ { MakeRoles ({ ToByteArray<Fields::Role> ()... }) }
 		{
 		}
