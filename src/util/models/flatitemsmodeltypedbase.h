@@ -44,11 +44,15 @@ namespace LC::Util
 			return Items_;
 		}
 
-		void AddItem (const T& item)
+		qsizetype AddItem (const T& item)
 		{
+			const auto pos = Items_.size ();
+
 			beginInsertRows ({}, Items_.size (), Items_.size ());
 			Items_.push_back (item);
 			endInsertRows ();
+
+			return pos;
 		}
 
 		void AddItems (const QList<T>& items)
