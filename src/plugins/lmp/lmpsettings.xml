@@ -1,103 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label value="Appearance" />
-		<item type="checkbox" property="ShowTrayIcon" default="false">
-			<label value="Show tray icon" />
-		</item>
-		<item type="checkbox" property="UseNavTabBar" default="false">
-			<label value="Use tabs for switching pages" />
-		</item>
-		<item type="checkbox" property="AutocenterCurrentTrack" default="true">
-			<label value="Automatically center on current track" />
-		</item>
-		<item type="checkbox" property="FetchArtistBioPhotos" default="true">
-			<label value="Fetch artist biography photos" />
-		</item>
-		<item type="lineedit" property="SingleTrackDisplayMask" default="$artist - $album - $title">
-			<label value="Format for single tracks in playlist:" />
+	<page label="Appearance">
+		<item type="checkbox" property="ShowTrayIcon" default="false" label="Show tray icon" />
+		<item type="checkbox" property="UseNavTabBar" default="false" label="Use tabs for switching pages" />
+		<item type="checkbox" property="AutocenterCurrentTrack" default="true" label="Automatically center on current track" />
+		<item type="checkbox" property="FetchArtistBioPhotos" default="true" label="Fetch artist biography photos" />
+		<item type="lineedit" property="SingleTrackDisplayMask" default="$artist - $album - $title" label="Format for single tracks in playlist:">
 			<tooltip>The following variables are allowed: &lt;em>$artist&lt;/em>, &lt;em>$year&lt;/em>, &lt;em>$album&lt;/em>, &lt;em>$trackNumber&lt;/em>, &lt;em>$title&lt;/em>.</tooltip>
 		</item>
 	</page>
-	<page>
-		<label value="Behavior" />
-		<tab>
-			<label value="General" />
-			<item type="checkbox" property="EnableNotifications" default="true">
-				<label value="Enable notifications" />
-			</item>
-			<item type="checkbox" property="SortWithThe" default="true">
-				<label value="Take 'The' into account when sorting" />
-			</item>
-			<item type="checkbox" property="FollowSymLinks" default="false">
-				<label value="Follow symbolic links" />
-			</item>
-			<item type="checkbox" property="AutoContinuePlayback" default="false">
-				<label value="Continue playback automatically" />
-			</item>
-			<item type="path" property="CoversStoragePath" default="{CACHEDIR}/lmp/covers">
-				<label value="Album art storage path:" />
-			</item>
+	<page label="Behavior">
+		<tab label="General">
+			<item type="checkbox" property="EnableNotifications" default="true" label="Enable notifications" />
+			<item type="checkbox" property="SortWithThe" default="true" label="Take 'The' into account when sorting" />
+			<item type="checkbox" property="FollowSymLinks" default="false" label="Follow symbolic links" />
+			<item type="checkbox" property="AutoContinuePlayback" default="false" label="Continue playback automatically" />
+			<item type="path" property="CoversStoragePath" default="{CACHEDIR}/lmp/covers" label="Album art storage path:" />
 		</tab>
-		<tab>
-			<label value="Audio" />
-			<item type="doublespinbox" property="VolumeExponent" default="1" minimum="0.125" maximum="8" step="0.1">
-				<label value="Exponent in volume change formula (α in P = x^α):" />
-			</item>
+		<tab label="Audio">
+			<item type="doublespinbox" property="VolumeExponent" default="1" minimum="0.125" maximum="8" step="0.1" label="Exponent in volume change formula (α in P = x^α):" />
 		</tab>
-		<tab>
-			<label value="Services" />
-			<item type="checkbox" property="EnableScrobbling" default="true">
-				<label value="Enable scrobbling" />
+		<tab label="Services">
+			<item type="checkbox" property="EnableScrobbling" default="true" label="Enable scrobbling">
 				<tooltip>This option requires at least one other scrobbler plugin, like LastFMScrobble, for example.</tooltip>
 			</item>
-			<item type="checkbox" property="RequestLyrics" default="true">
-				<label value="Request lyrics" />
-			</item>
-			<item type="checkbox" property="AutoFetchAlbumArt" default="true">
-				<label value="Automatically fetch missing album art" />
-			</item>
-			<item type="checkbox" property="RefreshRadioOnWakeup" default="true">
-				<label value="Refresh radio stations on wake up" />
+			<item type="checkbox" property="RequestLyrics" default="true" label="Request lyrics" />
+			<item type="checkbox" property="AutoFetchAlbumArt" default="true" label="Automatically fetch missing album art" />
+			<item type="checkbox" property="RefreshRadioOnWakeup" default="true" label="RefreshRadioOnWakeup">
 				<tooltip>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn't usually result in changing your IP.</tooltip>
 			</item>
-			<item type="groupbox" checkable="true" property="AutoRefreshRadios" default="true">
-				<label value="Automatically refresh radios" />
-				<item type="spinbox" property="RadioRefreshTimeout" default="1" minimum="1" maximum="24">
-					<label value="Refresh interval:" />
-					<suffix value=" h" />
-				</item>
+			<item type="groupbox" checkable="true" property="AutoRefreshRadios" default="true" label="Automatically refresh radios">
+				<item type="spinbox" property="RadioRefreshTimeout" default="1" minimum="1" maximum="24" label="Refresh interval:" suffix=" h" />
 			</item>
 		</tab>
 	</page>
-	<page>
-		<label value="Effects" />
-		<tab>
-			<label value="Effects manager" />
+	<page value="Effects">
+		<tab value="Effects manager">
 			<item type="dataview" property="EffectsView" modifyEnabled="false">
-				<button id="Settings">
-					<label value="Effect settings" />
-				</button>
+				<button id="Settings" value="Effect settings" />
 			</item>
 		</tab>
 	</page>
-	<page>
-		<label value="Collection" />
-		<groupbox>
-			<label value="Root paths" />
+	<page value="Collection">
+		<groupbox value="Root paths">
 			<item type="dataview" property="RootPathsView" />
 		</groupbox>
-		<item type="checkbox" property="AutobuildRG" default="false">
-			<label value="Automatically calculate ReplayGain data for tracks in collection" />
-		</item>
+		<item type="checkbox" property="AutobuildRG" default="false" value="Automatically calculate ReplayGain data for tracks in collection" />
 	</page>
-	<page>
-		<label value="Plugin communication" />
-		<item type="groupbox" property="TestOnly" default="true" checkable="true">
-			<label value="Test only these extensions" />
-			<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 mp4 ogg">
-				<label value="Extenstions list:" />
-			</item>
+	<page value="Plugin communication">
+		<item type="groupbox" property="TestOnly" default="true" checkable="true" value="Test only these extensions">
+			<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 mp4 ogg" value="Extensions list:" />
 		</item>
 	</page>
 </settings>
