@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1412</width>
-    <height>968</height>
+    <height>999</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,6 +53,16 @@
      </property>
      <property name="viewMode">
       <enum>QListView::ViewMode::IconMode</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="QueryProgress_">
+     <property name="maximum">
+      <number>0</number>
+     </property>
+     <property name="value">
+      <number>-1</number>
      </property>
     </widget>
    </item>

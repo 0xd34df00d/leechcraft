@@ -66,6 +66,7 @@ namespace LC::LMP
 		Ui_.setupUi (this);
 		Ui_.ArtistLine_->setText (artist);
 		Ui_.AlbumLine_->setText (album.Name_);
+		Ui_.QueryProgress_->setVisible (false);
 
 		auto swallower = new ReturnPressSwallower { *this };
 		Ui_.ArtistLine_->installEventFilter (swallower);
@@ -162,6 +163,9 @@ namespace LC::LMP
 		const auto& album = GetAlbum ();
 		if (artist.isEmpty () || album.isEmpty ())
 			co_return;
+
+		Ui_.QueryProgress_->setVisible (true);
+		const auto guard = Util::MakeScopeGuard ([this] { Ui_.QueryProgress_->setVisible (false); });
 
 		co_await Util::AddContextObject { *this };
 
