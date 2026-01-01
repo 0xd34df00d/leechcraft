@@ -45,8 +45,6 @@ namespace LC::MusicZombie
 
 		Util::Either<QString, QStringList> GetReleaseIds (const QJsonDocument& doc)
 		{
-			const auto& errorMessage = QObject::tr ("Unexpected JSON contents.");
-
 			QStringList ids;
 			try
 			{
@@ -66,7 +64,7 @@ namespace LC::MusicZombie
 			catch (const Util::UnexpectedJson& error)
 			{
 				qWarning () << "cannot get release IDs:" << error.what ();
-				return { Util::AsLeft, errorMessage };
+				return { Util::AsLeft, QObject::tr ("Unexpected JSON contents.") };
 			}
 
 			return ids;
