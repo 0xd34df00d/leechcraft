@@ -43,7 +43,7 @@ namespace LC::Vrooby
 		QIcon GetIcon () const override;
 
 		bool SupportsDevType (DeviceType) const override;
-		QAbstractItemModel* GetDevicesModel () const override;
+		QAbstractItemModel* GetDevicesModel () override;
 		void MountDevice (const QString&) override;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;

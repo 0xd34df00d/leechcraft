@@ -41,7 +41,7 @@ namespace LC::Vrooby::UDisks2
 		void Start () override;
 
 		bool SupportsDevType (DeviceType) const override;
-		QAbstractItemModel* GetDevicesModel () const override;
+		QAbstractItemModel* GetDevicesModel () override;
 		void MountDevice (const QString&) override;
 	private:
 		Util::ContextTask<void> InitialEnumerate ();

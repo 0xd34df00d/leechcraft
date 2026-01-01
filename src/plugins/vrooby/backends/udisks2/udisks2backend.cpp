@@ -77,7 +77,7 @@ namespace LC::Vrooby::UDisks2
 		return type == DeviceType::MassStorage;
 	}
 
-	QAbstractItemModel* Backend::GetDevicesModel () const
+	QAbstractItemModel* Backend::GetDevicesModel ()
 	{
 		return DevicesModel_;
 	}

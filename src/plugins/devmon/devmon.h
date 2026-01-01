@@ -38,7 +38,7 @@ namespace Devmon
 		QIcon GetIcon () const;
 
 		bool SupportsDevType (DeviceType) const;
-		QAbstractItemModel* GetDevicesModel () const;
+		QAbstractItemModel* GetDevicesModel ();
 		void MountDevice (const QString& id);
 	};
 }

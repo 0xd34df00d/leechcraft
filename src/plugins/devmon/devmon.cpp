@@ -53,7 +53,7 @@ namespace Devmon
 		return type == DeviceType::USBDevice;
 	}
 
-	QAbstractItemModel* Plugin::GetDevicesModel () const
+	QAbstractItemModel* Plugin::GetDevicesModel ()
 	{
 		return Backend_->GetModel ();
 	}

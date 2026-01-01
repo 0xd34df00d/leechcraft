@@ -113,7 +113,7 @@ namespace LC::Vrooby
 		return type == DeviceType::MassStorage;
 	}
 
-	QAbstractItemModel* Plugin::GetDevicesModel () const
+	QAbstractItemModel* Plugin::GetDevicesModel ()
 	{
 		return Backend_ ? Backend_->GetDevicesModel () : nullptr;
 	}

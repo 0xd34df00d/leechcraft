@@ -65,7 +65,7 @@ public:
 	 * @return The model describing the currently attached removable
 	 * devices.
 	 */
-	virtual QAbstractItemModel* GetDevicesModel () const = 0;
+	virtual QAbstractItemModel* GetDevicesModel () = 0;
 
 	/** @brief Tries to mount the device with the given \em id.
 	 *
