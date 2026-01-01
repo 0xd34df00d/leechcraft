@@ -43,6 +43,19 @@ namespace LC::LMP
 	{
 		const auto NotFoundMarker = "NOTFOUND"_qs;
 
+		std::optional<QString> GetCurrentCoverPath (const Collection::Album& album)
+		{
+			const auto& curPath = album.CoverPath_;
+			if (curPath.isEmpty () || curPath == NotFoundMarker)
+				return {};
+
+			if (const QFileInfo fi { curPath };
+				!fi.exists () || !fi.isWritable ())
+				return {};
+
+			return curPath;
+		}
+
 		QString MakeCoverFileName (const QString& artist, const QString& album)
 		{
 			auto joined = artist + "_-_"_qs + album;
@@ -52,6 +65,9 @@ namespace LC::LMP
 
 		QString GetCoverPath (const QString& artist, const Collection::Album& album, const QDir& aaDir)
 		{
+			if (const auto curPath = GetCurrentCoverPath (album))
+				return *curPath;
+
 			const auto& filename = MakeCoverFileName (artist, album.Name_);
 			const auto& fullPath = aaDir.absoluteFilePath (filename);
 			return fullPath;
