@@ -4,10 +4,11 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (
 	SRCS
-		vrooby.cpp
-		trayview.cpp
 		backends/udisks2/udisks2backend.cpp
 		backends/udisks2/dbus/manager.cpp
+		trayproxymodel.cpp
+		trayview.cpp
+		vrooby.cpp
 	QT_COMPONENTS DBus QuickWidgets
 	INSTALL_SHARE
 	)

@@ -14,13 +14,13 @@ namespace LC::Vrooby
 {
 	class DevBackend;
 	class FlatMountableItems;
-	class TrayModel;
+	class TrayProxyModel;
 
 	class TrayView : public QQuickWidget
 	{
 		Q_OBJECT
 
-		TrayModel *TrayModel_;
+		TrayProxyModel *TrayModel_;
 		DevBackend *Backend_ = nullptr;
 	public:
 		explicit TrayView ();
