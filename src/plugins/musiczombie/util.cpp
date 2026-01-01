@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "util.h"
+#include <util/sll/qtutil.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LC
 {
@@ -14,8 +16,9 @@ namespace MusicZombie
 {
 	QNetworkRequest SetupRequest (QNetworkRequest req)
 	{
-		req.setHeader (QNetworkRequest::UserAgentHeader,
-				"LeechCraft MusicZombie/ver ( 0xd34df00d@gmail.com )");
+		const auto userAgent = "LeechCraft MusicZombie/%1 ( 0xd34df00d@gmail.com )"_qs
+				.arg (GetProxyHolder ()->GetVersion ());
+		req.setHeader (QNetworkRequest::UserAgentHeader, userAgent);
 		return req;
 	}
 }
