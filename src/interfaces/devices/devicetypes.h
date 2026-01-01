@@ -20,7 +20,7 @@ namespace LC
 	 * @sa CommonDevRole::DevType
 	 * @sa CommonDevRole
 	 */
-	enum DeviceType
+	enum DeviceType : uint8_t
 	{
 		/** @brief A general USB device.
 		 *
