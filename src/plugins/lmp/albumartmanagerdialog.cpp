@@ -138,9 +138,10 @@ namespace LC::LMP
 	{
 		co_await Util::AddContextObject { *this };
 
-		const auto scaled = co_await QtConcurrent::run ([image = info.AlbumArt_]
+		const auto iconSize = Ui_.ArtView_->iconSize ();
+		const auto scaled = co_await QtConcurrent::run ([image = info.AlbumArt_, iconSize]
 				{
-					return image.scaled (200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+					return image.scaled (iconSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 				});
 
 		auto item = new QStandardItem ();
