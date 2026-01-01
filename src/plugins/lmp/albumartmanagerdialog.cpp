@@ -51,15 +51,11 @@ namespace LC::LMP
 		};
 	}
 
-	AlbumArtManagerDialog::AlbumArtManagerDialog (int albumId,
-			const QString& artist,
-			const QString& album,
-			AlbumArtManager *aamgr,
-			QWidget *parent)
+	AlbumArtManagerDialog::AlbumArtManagerDialog (const QString& artist,
+			const Collection::Album& album, AlbumArtManager *aamgr, QWidget *parent)
 	: QDialog { parent }
 	, AAMgr_ { aamgr }
 	, Model_ { new QStandardItemModel { this } }
-	, AlbumID_ { albumId }
 	, Artist_ { artist }
 	, Album_ { album }
 	, ReqTimer_ { new QTimer { this } }
@@ -69,7 +65,7 @@ namespace LC::LMP
 
 		Ui_.setupUi (this);
 		Ui_.ArtistLine_->setText (artist);
-		Ui_.AlbumLine_->setText (album);
+		Ui_.AlbumLine_->setText (album.Name_);
 
 		auto swallower = new ReturnPressSwallower { *this };
 		Ui_.ArtistLine_->installEventFilter (swallower);
@@ -77,9 +73,9 @@ namespace LC::LMP
 
 		Ui_.ArtView_->setModel (Model_);
 
-		if (!Artist_.isEmpty () && !Album_.isEmpty ())
+		if (!Artist_.isEmpty () && !Album_.Name_.isEmpty ())
 			setWindowTitle (tr ("Album art for %1 — %2")
-					.arg (Artist_.trimmed (), Album_.trimmed ()));
+					.arg (Artist_.trimmed (), Album_.Name_.trimmed ()));
 
 		connect (Ui_.ArtistLine_,
 				&QLineEdit::textChanged,
@@ -117,7 +113,7 @@ namespace LC::LMP
 	{
 		if (const auto& idx = Ui_.ArtView_->currentIndex ();
 			idx.isValid ())
-			AAMgr_->SetAlbumArt (AlbumID_, Artist_, Album_, FullImages_ [idx.row ()]);
+			AAMgr_->SetAlbumArt (Artist_, Album_, FullImages_ [idx.row ()]);
 
 		QDialog::accept ();
 	}

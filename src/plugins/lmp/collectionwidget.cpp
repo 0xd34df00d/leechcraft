@@ -120,14 +120,21 @@ namespace LC::LMP
 
 	void CollectionWidget::ShowAlbumArtManager ()
 	{
-		auto aamgr = Core::Instance ().GetLocalCollection ()->GetAlbumArtManager ();
+		const auto coll = Core::Instance ().GetLocalCollection ();
+		const auto aamgr = coll->GetAlbumArtManager ();
 
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto albumId = index.data (LocalCollectionModel::Role::AlbumID).toInt ();
-		const auto& album = index.data (LocalCollectionModel::Role::AlbumName).toString ();
 		const auto& artist = index.data (LocalCollectionModel::Role::ArtistName).toString ();
 
-		auto dia = new AlbumArtManagerDialog (albumId, artist, album, aamgr, this);
+		const auto album = coll->GetAlbum (albumId);
+		if (!album)
+		{
+			qWarning () << "unknown album for" << albumId;
+			return;
+		}
+
+		auto dia = new AlbumArtManagerDialog (artist, *album, aamgr, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}

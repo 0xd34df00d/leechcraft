@@ -30,7 +30,7 @@ namespace LC::LMP
 	public:
 		explicit AlbumArtManager (LocalCollection&, QObject*);
 
-		void SetAlbumArt (int id, const QString& artist, const QString& album, const QImage&);
+		void SetAlbumArt (const QString& artist, const Collection::Album& album, const QImage&);
 	private:
 		Util::ContextTask<void> CheckNewArtists (Collection::Artists_t);
 		void HandleCoversPath (const QString&);

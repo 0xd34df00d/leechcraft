@@ -10,8 +10,9 @@
 
 #include <QCoreApplication>
 #include <QDialog>
-#include <util/threads/coro/taskfwd.h>
 #include <interfaces/media/ialbumartprovider.h>
+#include <util/threads/coro/taskfwd.h>
+#include <interfaces/lmp/collectiontypes.h>
 #include <util/lmp/util.h>
 #include "ui_albumartmanagerdialog.h"
 
@@ -32,17 +33,13 @@ namespace LC::LMP
 		QStandardItemModel *Model_;
 		QList<QImage> FullImages_;
 
-		const int AlbumID_;
 		const QString Artist_;
-		const QString Album_;
+		const Collection::Album Album_;
 
 		QTimer * const ReqTimer_;
 	public:
-		AlbumArtManagerDialog (int albumId,
-				const QString& artist,
-				const QString& album,
-				AlbumArtManager*,
-				QWidget* = nullptr);
+		explicit AlbumArtManagerDialog (const QString& artist,
+				const Collection::Album& album, AlbumArtManager*, QWidget* = nullptr);
 
 		QString GetArtist () const;
 		QString GetAlbum () const;

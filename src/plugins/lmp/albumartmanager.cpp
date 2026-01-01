@@ -39,27 +39,39 @@ namespace LC::LMP
 				&AlbumArtManager::CheckNewArtists);
 	}
 
-	void AlbumArtManager::SetAlbumArt (int id, const QString& artist, const QString& album, const QImage& image)
+	namespace
 	{
-		auto joined = artist + "_-_" + album;
-		joined.replace (' ', '_');
-		const auto& filename = QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png";
-		const auto& fullPath = AADir_.absoluteFilePath (filename);
+		const auto NotFoundMarker = "NOTFOUND"_qs;
+
+		QString MakeCoverFileName (const QString& artist, const QString& album)
+		{
+			auto joined = artist + "_-_"_qs + album;
+			joined.replace (' ', '_');
+			return QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png";
+		}
+
+		QString GetCoverPath (const QString& artist, const Collection::Album& album, const QDir& aaDir)
+		{
+			const auto& filename = MakeCoverFileName (artist, album.Name_);
+			const auto& fullPath = aaDir.absoluteFilePath (filename);
+			return fullPath;
+		}
+	}
+
+	void AlbumArtManager::SetAlbumArt (const QString& artist, const Collection::Album& album, const QImage& image)
+	{
+		const auto& fullPath = GetCoverPath (artist, album, AADir_);
+		qDebug () << "saving AA for" << album.Name_ << "to" << fullPath;
 
 		constexpr auto compressionRatio = 100;
 		QtConcurrent::run ([image, fullPath] { return image.save (fullPath, "PNG", compressionRatio); })
-			.then (this, [=, this] (bool saved)
+			.then (this, [fullPath, id = album.ID_, this] (bool saved)
 				{
 					if (saved)
 						Collection_.SetAlbumArt (id, fullPath);
 					else
 						qWarning () << "unable to save album art to" << fullPath;
 				});
-	}
-
-	namespace
-	{
-		const auto NotFoundMarker = "NOTFOUND"_qs;
 	}
 
 	Util::ContextTask<void> AlbumArtManager::CheckNewArtists (Collection::Artists_t artists)
@@ -81,7 +93,7 @@ namespace LC::LMP
 					if (images.isEmpty ())
 						Collection_.SetAlbumArt (album->ID_, NotFoundMarker);
 					else
-						SetAlbumArt (album->ID_, artist.Name_, album->Name_,
+						SetAlbumArt (artist.Name_, *album,
 								*std::ranges::max_element (images, Util::ComparingBy (&QImage::width)));
 				}
 	}
