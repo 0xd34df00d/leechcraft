@@ -63,10 +63,46 @@ namespace LC::LMP
 			return QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png";
 		}
 
+		std::optional<QString> GetAlbumDirCoverPath (const Collection::Album& album, const QString& artist)
+		{
+			const auto& tracks = album.Tracks_;
+			if (tracks.isEmpty ())
+				return {};
+
+			const auto trackDirPath = [] (const Collection::Track& track)
+			{
+				return QFileInfo { track.FilePath_ }.dir ().canonicalPath ();
+			};
+			const auto& albumDir = trackDirPath (tracks [0]);
+
+			if (!QFileInfo { albumDir }.isWritable ())
+				return {};
+
+			if (!std::ranges::all_of (tracks, [&] (const auto& track) { return trackDirPath (track) == albumDir; }))
+				return {};
+
+			const QDir dir { albumDir };
+			if (dir.entryList ().size () > tracks.size () * 2 + 10)
+			{
+				qWarning () << "target dir" << albumDir << "is a mess, not saving AA there";
+				return {};
+			}
+
+			if (const auto defaultName = "cover.png"_qs;
+				!dir.exists (defaultName))
+				return dir.filePath (defaultName);
+
+			return dir.filePath (MakeCoverFileName (artist, album.Name_));
+		}
+
 		QString GetCoverPath (const QString& artist, const Collection::Album& album, const QDir& aaDir)
 		{
 			if (const auto curPath = GetCurrentCoverPath (album))
 				return *curPath;
+
+			if (XmlSettingsManager::Instance ().property ("PreferCoversStoreNearAlbums").toBool ())
+				if (const auto inAlbumDir = GetAlbumDirCoverPath (album, artist))
+					return *inAlbumDir;
 
 			const auto& filename = MakeCoverFileName (artist, album.Name_);
 			const auto& fullPath = aaDir.absoluteFilePath (filename);

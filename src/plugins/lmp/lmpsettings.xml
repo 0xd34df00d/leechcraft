@@ -15,7 +15,8 @@
 			<item type="checkbox" property="SortWithThe" default="true" label="Take 'The' into account when sorting" />
 			<item type="checkbox" property="FollowSymLinks" default="false" label="Follow symbolic links" />
 			<item type="checkbox" property="AutoContinuePlayback" default="false" label="Continue playback automatically" />
-			<item type="path" property="CoversStoragePath" default="{CACHEDIR}/lmp/covers" label="Album art storage path:" />
+			<item type="checkbox" property="PreferCoversStoreNearAlbums" default="true" label="Prefer storing album art cover in the albums directories" />
+			<item type="path" property="CoversStoragePath" default="{CACHEDIR}/lmp/covers" label="Fallback album art storage path:" />
 		</tab>
 		<tab label="Audio">
 			<item type="doublespinbox" property="VolumeExponent" default="1" minimum="0.125" maximum="8" step="0.1" label="Exponent in volume change formula (α in P = x^α):" />
