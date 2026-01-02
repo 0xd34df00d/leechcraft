@@ -34,6 +34,9 @@ namespace LC::LMP::Graffiti
 	class FilesWatcher;
 	class CueSplitter;
 
+	template<typename F>
+	concept MediaInfoEditor = std::is_lvalue_reference_v<std::invoke_result_t<F, MediaInfo&>>;
+
 	class GraffitiTab : public QWidget
 					  , public ITabWidget
 	{
@@ -67,7 +70,7 @@ namespace LC::LMP::Graffiti
 
 		void SetPath (const QString& dir, const QString& filename = {});
 	private:
-		template<typename T, typename F>
+		template<typename T, MediaInfoEditor F>
 		void UpdateData (const T& newData, F getter);
 
 		void SetupEdits ();

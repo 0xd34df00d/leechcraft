@@ -138,12 +138,9 @@ namespace LC::LMP::Graffiti
 		SplitCue_->setEnabled (!QDir (path).entryList ({ QStringLiteral ("*.cue") }).isEmpty ());
 	}
 
-	template<typename T, typename F>
+	template<typename T, MediaInfoEditor F>
 	void GraffitiTab::UpdateData (const T& newData, F getter)
 	{
-		static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
-				"functor doesn't return an lvalue reference");
-
 		bool changed = false;
 
 		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
