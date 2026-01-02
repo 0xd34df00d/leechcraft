@@ -148,19 +148,6 @@ namespace LC::Util
 			return IsRight () ? Result { std::invoke (std::forward<F> (f), GetRight ()) } : Result { AsLeft, GetLeft () };
 		}
 
-		// TODO remove this method
-		static auto EmbeddingLeft ()
-		{
-			return []<typename LL, typename RR> (const Either<LL, RR>& other)
-			{
-				static_assert (std::is_convertible_v<LL, L>,
-						"Other's Either's Left type is not convertible to this Left type.");
-				return other.IsLeft () ?
-						Either { AsLeft, other.GetLeft () }:
-						Either { other.GetRight () };
-			};
-		}
-
 		friend bool operator== (const Either& e1, const Either& e2)
 		{
 			return e1.This_ == e2.This_;
