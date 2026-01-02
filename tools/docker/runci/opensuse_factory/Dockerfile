@@ -1,8 +1,9 @@
 FROM leechcraft/ci_opensuse_factory:latest
 
-RUN eatmydata git clone https://github.com/0xd34df00d/leechcraft.git && \
-  cd leechcraft && \
+WORKDIR /work
+
+RUN --mount=type=bind,source=.,target=/work/leechcraft,ro \
   mkdir build && \
   cd build && \
-  eatmydata cmake ../src -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ --preset opensuse_factory && \
+  eatmydata cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ /work/leechcraft/src --preset opensuse_factory && \
   eatmydata cmake --build . -j$(nproc) -- -k
