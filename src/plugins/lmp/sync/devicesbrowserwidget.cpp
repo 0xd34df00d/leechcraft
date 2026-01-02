@@ -13,6 +13,7 @@
 #include <util/gui/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/threads/coro/context.h>
 #include <util/threads/coro/task.h>
 #include <interfaces/devices/deviceroles.h>

@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
+#include <util/sll/util.h>
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>

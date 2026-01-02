@@ -19,6 +19,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sll/udls.h>
+#include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/threads/futures.h>

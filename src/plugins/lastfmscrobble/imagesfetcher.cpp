@@ -12,8 +12,9 @@
 #include <QNetworkReply>
 #include <QHttpMultiPart>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
 #include <util/network/lcserviceoverride.h>
 #include <util/network/handlenetworkreply.h>
 

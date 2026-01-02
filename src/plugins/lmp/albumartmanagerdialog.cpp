@@ -14,7 +14,7 @@
 #include <QTimer>
 #include <QtConcurrentRun>
 #include <interfaces/core/icoreproxy.h>
-#include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/channel.h>
 #include <util/lmp/util.h>

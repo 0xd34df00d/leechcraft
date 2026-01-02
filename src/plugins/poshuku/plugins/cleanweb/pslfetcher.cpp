@@ -13,6 +13,7 @@
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/network/handlenetworkreply.h>
 #include "pslhandler.h"

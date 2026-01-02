@@ -12,6 +12,7 @@
 #include <QWebEngineUrlRequestJob>
 #include <QWebEngineUrlScheme>
 #include <QtDebug>
+#include <util/sll/visitor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/poshuku/iinternalschemehandler.h>

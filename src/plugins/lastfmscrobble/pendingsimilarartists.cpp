@@ -11,6 +11,7 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <util/network/handlenetworkreply.h>
+#include <util/sll/visitor.h>
 #include "util.h"
 
 namespace LC

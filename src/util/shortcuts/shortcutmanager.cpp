@@ -13,6 +13,7 @@
 #include <interfaces/entityconstants.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
 #include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/ientitymanager.h"
 #include "interfaces/core/iiconthememanager.h"

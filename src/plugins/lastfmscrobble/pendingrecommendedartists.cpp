@@ -10,9 +10,9 @@
 #include <QDomDocument>
 #include <QNetworkReply>
 #include <QtDebug>
-#include <util/sll/util.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
 #include <util/network/handlenetworkreply.h>
 #include "authenticator.h"
 #include "util.h"

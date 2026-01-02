@@ -12,6 +12,7 @@
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/typegetter.h>
+#include <util/sll/visitor.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
 

@@ -17,6 +17,7 @@
 #include <util/sll/json.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/udls.h>
+#include <util/sll/visitor.h>
 #include "requestbuilder.h"
 
 namespace LC::Imgaste

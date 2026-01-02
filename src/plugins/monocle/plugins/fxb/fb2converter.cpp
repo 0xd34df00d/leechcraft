@@ -17,6 +17,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/timer.h>
+#include <util/sll/visitor.h>
 #include "tocbuilder.h"
 
 namespace LC::Monocle::FXB

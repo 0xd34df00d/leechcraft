@@ -12,6 +12,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <util/network/handlenetworkreply.h>
+#include <util/sll/visitor.h>
 #include "util.h"
 #include "imagesfetcher.h"
 
