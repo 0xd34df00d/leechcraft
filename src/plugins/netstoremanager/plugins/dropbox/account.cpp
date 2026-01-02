@@ -168,7 +168,11 @@ namespace DBox
 		else
 			return Util::MakeReadyFuture (RequestUrlResult_t { UserCancelled {} });
 
-		return DriveManager_->ShareEntry (id, type).then (RequestUrlResult_t::EmbeddingLeft ());
+		return DriveManager_->ShareEntry (id, type)
+				.then ([] (const DriveManager::ShareResult_t& either)
+				{
+					return either.MapLeft ([] (const QString& str) { return RequestUrlError_t { str }; });
+				});
 	}
 
 	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)

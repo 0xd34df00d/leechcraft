@@ -198,7 +198,11 @@ namespace GoogleDrive
 				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
 		}
 
-		return DriveManager_->ShareEntry (id).then (RequestUrlResult_t::EmbeddingLeft ());
+		return DriveManager_->ShareEntry (id)
+				.then ([] (const DriveManager::ShareResult_t& either)
+				{
+					return either.MapLeft ([] (const QString& str) { return RequestUrlError_t { str }; });
+				});
 	}
 
 	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
