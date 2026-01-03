@@ -10,5 +10,6 @@ LC_DEFINE_PLUGIN (
 		checker.cpp
 		progressmodelmanager.cpp
 	QT_COMPONENTS Concurrent QuickWidgets
+	LINK_LIBRARIES leechcraft-lmp-util
 	INSTALL_SHARE
 	)
