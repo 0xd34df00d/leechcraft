@@ -133,8 +133,9 @@ namespace VelvetBird
 			auto res = g_io_add_watch_full (channel,
 					G_PRIORITY_DEFAULT,
 					static_cast<GIOCondition> (cond),
-					[] (GIOChannel *source, GIOCondition condition, gpointer data) -> gboolean
+					[] (GIOChannel *source, GIOCondition gCondition, gpointer data) -> gboolean
 					{
+						const auto condition = static_cast<PurpleInputCondition> (gCondition);
 						int cond = 0;
 						if (condition & PURPLE_INPUT_READ)
 							cond |= PurpleReadCond;
