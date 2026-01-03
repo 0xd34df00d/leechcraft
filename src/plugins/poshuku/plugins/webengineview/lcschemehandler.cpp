@@ -44,14 +44,14 @@ namespace LC::Poshuku::WebEngineView
 			switch (error)
 			{
 			case IInternalSchemeHandler::Error::Unsupported:
-				return QWebEngineUrlRequestJob::NoError;
+				return QWebEngineUrlRequestJob::UrlInvalid;
 			case IInternalSchemeHandler::Error::NotFound:
 				return QWebEngineUrlRequestJob::UrlNotFound;
 			case IInternalSchemeHandler::Error::Denied:
 				return QWebEngineUrlRequestJob::RequestDenied;
 			}
 
-			return QWebEngineUrlRequestJob::NoError;
+			return QWebEngineUrlRequestJob::RequestFailed;
 		}
 
 		auto ToJobDevice (QObject *context, const IInternalSchemeHandler::ReplyContents& contents)
