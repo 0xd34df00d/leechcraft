@@ -141,15 +141,27 @@ namespace LMP
 
 	namespace
 	{
-		class ProgressTracker
+		class ProgressTracker final
 		{
 			QProgressBar& Transcoding_;
 			QProgressBar& Copying_;
 		public:
-			explicit ProgressTracker (QProgressBar& transcoding, QProgressBar& copying)
+			explicit ProgressTracker (qsizetype targetCount, QProgressBar& transcoding, QProgressBar& copying)
 			: Transcoding_ { transcoding }
 			, Copying_ { copying }
 			{
+				for (const auto bar : { &transcoding, &copying })
+				{
+					bar->setVisible (true);
+					bar->setMaximum (targetCount);
+					bar->setValue (0);
+				}
+			}
+
+			~ProgressTracker ()
+			{
+				Transcoding_.setVisible (false);
+				Copying_.setVisible (false);
 			}
 
 			void HandleSyncEvent (const SyncEvents::Event& event) const
@@ -184,18 +196,11 @@ namespace LMP
 
 		Ui_.UploadLog_->clear ();
 
-		for (const auto bar : { Ui_.TSProgress_, Ui_.UploadProgress_ })
-		{
-			bar->setVisible (true);
-			bar->setMaximum (paths.size ());
-			bar->setValue (0);
-		}
-
 		[&, this] -> Util::ContextTask<void>
 		{
 			co_await Util::AddContextObject { *this };
 
-			ProgressTracker progress { *Ui_.TSProgress_, *Ui_.UploadProgress_ };
+			ProgressTracker progress { paths.size (), *Ui_.TSProgress_, *Ui_.UploadProgress_ };
 			SyncManager mgr;
 			connect (&mgr,
 					&SyncManager::syncEvent,
@@ -211,9 +216,6 @@ namespace LMP
 						.Target_ = GetSourceIndex (idx),
 						.Config_ = SyncerConfigWidget_->GetConfig (),
 					});
-
-			Ui_.TSProgress_->setVisible (false);
-			Ui_.UploadProgress_->setVisible (false);
 		} ();
 	}
 
