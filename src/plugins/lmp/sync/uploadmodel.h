@@ -20,6 +20,7 @@ namespace LC::LMP
 		using QIdentityProxyModel::QIdentityProxyModel;
 
 		QSet<QPersistentModelIndex> GetSelectedIndexes () const;
+		QStringList GetSelectedPaths () const;
 
 		Qt::ItemFlags flags (const QModelIndex&) const override;
 		QVariant data (const QModelIndex&, int) const override;

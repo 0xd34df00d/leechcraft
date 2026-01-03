@@ -7,12 +7,22 @@
  **********************************************************************/
 
 #include "uploadmodel.h"
+#include <util/sll/prelude.h>
+#include "localcollectionmodel.h"
 
 namespace LC::LMP
 {
 	QSet<QPersistentModelIndex> UploadModel::GetSelectedIndexes () const
 	{
 		return SourceIndexes_;
+	}
+
+	QStringList UploadModel::GetSelectedPaths () const
+	{
+		auto paths = Util::MapAs<QList> (SourceIndexes_,
+				[] (const QModelIndex& idx) { return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
+		paths.removeAll ({});
+		return paths;
 	}
 
 	Qt::ItemFlags UploadModel::flags (const QModelIndex& idx) const

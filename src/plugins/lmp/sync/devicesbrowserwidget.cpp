@@ -211,12 +211,9 @@ namespace LMP
 		if (!syncer)
 			return;
 
-		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().values (),
-				[] (const QModelIndex& idx) { return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
-		paths.removeAll ({});
-
 		Ui_.UploadLog_->clear ();
 
+		const auto& paths = DevUploadModel_->GetSelectedPaths ();
 		[&, this] -> Util::ContextTask<void>
 		{
 			co_await Util::AddContextObject { *this };
