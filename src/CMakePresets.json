@@ -11,6 +11,15 @@
       "hidden": true
     },
     {
+      "name": "opensuse_factory_clang",
+      "inherits": "opensuse_factory",
+      "description": "openSUSE Factory build with clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    },
+    {
       "name": "opensuse_factory",
       "inherits": "default",
       "description": "openSUSE Factory plugins",
