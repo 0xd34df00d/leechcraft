@@ -68,6 +68,8 @@ namespace LC::LMP
 
 		virtual QAbstractItemModel& GetSyncTargetsModel () const = 0;
 
+		virtual void RefreshSyncTargets () = 0;
+
 		/** @brief Returns the configuration widget for this sync method.
 		 *
 		 * If the sync method has no configuration, a nullptr can be returned.

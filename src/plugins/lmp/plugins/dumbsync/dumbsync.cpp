@@ -142,6 +142,10 @@ namespace LC::LMP::DumbSync
 		return *SyncTargets_;
 	}
 
+	void Plugin::RefreshSyncTargets ()
+	{
+	}
+
 	namespace
 	{
 		struct UploadConfig : ISyncPluginConfig
