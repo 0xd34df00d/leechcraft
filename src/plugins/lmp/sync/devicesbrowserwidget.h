@@ -54,7 +54,6 @@ namespace LMP
 		static QString ToString (const SyncEvents::Event&);
 	private slots:
 		void on_UploadButton__released ();
-		void on_RefreshButton__released ();
 	};
 }
 }

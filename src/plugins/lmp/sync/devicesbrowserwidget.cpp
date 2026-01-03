@@ -46,6 +46,15 @@ namespace LMP
 
 		Ui_.setupUi (this);
 
+		connect (Ui_.RefreshButton_,
+				&QPushButton::released,
+				this,
+				[this]
+				{
+					for (auto syncer : Model2Syncer_)
+						syncer->RefreshSyncTargets ();
+				});
+
 		connect (Ui_.DevicesSelector_,
 				&QComboBox::activated,
 				this,
@@ -235,11 +244,6 @@ namespace LMP
 						.Config_ = SyncerConfigWidget_->GetConfig (),
 					});
 		} ();
-	}
-
-	void DevicesBrowserWidget::on_RefreshButton__released ()
-	{
-		// TODO
 	}
 
 	namespace
