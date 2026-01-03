@@ -28,6 +28,7 @@
 #include "syncmanager.h"
 #include "transcodingparams.h"
 #include "collectionsmanager.h"
+#include "progressmanager.h"
 
 typedef QMap<QString, LC::LMP::TranscodingParams> TranscodingParamsMap_t;
 Q_DECLARE_METATYPE (TranscodingParamsMap_t)
@@ -143,33 +144,53 @@ namespace LMP
 	{
 		class ProgressTracker final
 		{
-			QProgressBar& Transcoding_;
-			QProgressBar& Copying_;
+			Q_DECLARE_TR_FUNCTIONS (LC::LMP::ProgressManager)
+
+			QProgressBar& TranscodingBar_;
+			QProgressBar& CopyingBar_;
+
+			ProgressManager::Handle TranscodingProgress_;
+			ProgressManager::Handle CopyingProgress_;
 		public:
-			explicit ProgressTracker (qsizetype targetCount, QProgressBar& transcoding, QProgressBar& copying)
-			: Transcoding_ { transcoding }
-			, Copying_ { copying }
+			explicit ProgressTracker (qsizetype count, QProgressBar& transcoding, QProgressBar& copying)
+			: TranscodingBar_ { transcoding }
+			, CopyingBar_ { copying }
+			, TranscodingProgress_ { Core::Instance ().GetProgressManager ()->Add (MakeItem (tr ("Audio transcoding"), count)) }
+			, CopyingProgress_ { Core::Instance ().GetProgressManager ()->Add (MakeItem (tr ("Audio copying"), count)) }
 			{
 				for (const auto bar : { &transcoding, &copying })
 				{
 					bar->setVisible (true);
-					bar->setMaximum (targetCount);
+					bar->setMaximum (count);
 					bar->setValue (0);
 				}
 			}
 
 			~ProgressTracker ()
 			{
-				Transcoding_.setVisible (false);
-				Copying_.setVisible (false);
+				TranscodingBar_.setVisible (false);
+				CopyingBar_.setVisible (false);
 			}
 
-			void HandleSyncEvent (const SyncEvents::Event& event) const
+			void HandleSyncEvent (const SyncEvents::Event& event)
 			{
 				Util::Visit (event,
-						[&] (const SyncEvents::XcodingFinished&) { Transcoding_.setValue (Transcoding_.value () + 1); },
-						[&] (const SyncEvents::CopyFinished&) { Copying_.setValue (Copying_.value () + 1); },
+						[&] (const SyncEvents::XcodingFinished&)
+						{
+							TranscodingBar_.setValue (TranscodingBar_.value () + 1);
+							++TranscodingProgress_;
+						},
+						[&] (const SyncEvents::CopyFinished&)
+						{
+							CopyingBar_.setValue (CopyingBar_.value () + 1);
+							++CopyingProgress_;
+						},
 						[] (const auto&) {});
+			}
+		private:
+			static ProgressManager::Item MakeItem (const QString& name, int count)
+			{
+				return { .Name_ = name, .StatusPattern_ = tr ("%1 of %2"), .Type_ = ProcessProgress, .Total_ = count };
 			}
 		};
 	}
