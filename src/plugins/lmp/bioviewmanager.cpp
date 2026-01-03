@@ -104,7 +104,7 @@ namespace LC::LMP
 			Util::Sequence (this, prov->GetDiscography (CurrentArtist_, releases)) >>
 					Util::Visitor
 					{
-						[artist] (const QString&) { qWarning () << Q_FUNC_INFO << "error for" << artist; },
+						[artist] (const QString& error) { qWarning () << "error for" << artist << error; },
 						[this] (const auto& releases) { HandleDiscographyReady (releases); }
 					};
 	}
