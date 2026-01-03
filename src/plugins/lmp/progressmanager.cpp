@@ -11,9 +11,7 @@
 #include <util/xpc/util.h>
 #include <interfaces/ijobholder.h>
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	ProgressManager::ProgressManager (QObject *parent)
 	: QObject (parent)
@@ -21,70 +19,58 @@ namespace LMP
 	{
 	}
 
+	ProgressManager::Handle::Handle (QList<QStandardItem*> row, const QString& statusPattern, std::optional<int> total)
+	: Row_ { std::move (row) }
+	, StatusPattern_ { statusPattern }
+	, Total_ { total.value_or (0) }
+	{
+	}
+
+	ProgressManager::Handle::~Handle ()
+	{
+		if (!Row_.isEmpty ())
+		{
+			const auto item = Row_.value (0);
+			item->model ()->removeRow (item->row ());
+		}
+	}
+
+	void ProgressManager::Handle::Update (int done, int total)
+	{
+		Done_ = done;
+		Total_ = total;
+		Update ();
+	}
+
+	void ProgressManager::Handle::Update (int done)
+	{
+		Done_ = done;
+		Update ();
+	}
+
+	void ProgressManager::Handle::operator++ ()
+	{
+		++Done_;
+		Update ();
+	}
+
+	void ProgressManager::Handle::Update () const
+	{
+		Util::SetJobHolderProgress (Row_, Done_, Total_, StatusPattern_);
+	}
+
 	QAbstractItemModel* ProgressManager::GetModel () const
 	{
 		return Model_;
 	}
 
-	void ProgressManager::AddSyncManager (SyncManagerBase *syncManager)
+	ProgressManager::Handle ProgressManager::Add (const Item& item)
 	{
-		/* TODO
-		connect (syncManager,
-				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleTCProgress (int, int, SyncManagerBase*)));
-		connect (syncManager,
-				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
-				this,
-				SLOT (handleUploadProgress (int, int, SyncManagerBase*)));
-				*/
+		const QList row { new QStandardItem { item.Name_ }, new QStandardItem {}, new QStandardItem {} };
+		const auto progress = row.at (JobHolderColumn::JobProgress);
+		progress->setData (QVariant::fromValue (item.Type_), CustomDataRoles::RoleJobHolderRow);
+		Model_->appendRow (row);
+
+		return Handle { row, item.StatusPattern_, item.Total_ };
 	}
-
-	void ProgressManager::HandleWithHash (int done, int total,
-			SyncManagerBase *syncer, Syncer2Row_t& hash, const QString& name, const QString& status)
-	{
-		/* TODO
-		if (!hash.contains (syncer))
-		{
-			if (done == total)
-				return;
-
-			const QList<QStandardItem*> row
-			{
-				new QStandardItem (name),
-				new QStandardItem (status),
-				new QStandardItem ()
-			};
-			auto item = row.at (JobHolderColumn::JobProgress);
-			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-					CustomDataRoles::RoleJobHolderRow);
-
-			hash [syncer] = row;
-			Model_->appendRow (row);
-		}
-
-		const auto& row = hash [syncer];
-		if (done == total)
-		{
-			Model_->removeRow (row.first ()->row ());
-			hash.remove (syncer);
-			return;
-		}
-
-		Util::SetJobHolderProgress (row, done, total, tr ("%1 of %2").arg (done).arg (total));
-		*/
-	}
-
-	void ProgressManager::handleTCProgress (int done, int total, SyncManagerBase *syncer)
-	{
-		HandleWithHash (done, total, syncer, TCRows_,
-				tr ("Audio transcoding"), tr ("Transcoding..."));
-	}
-
-	void ProgressManager::handleUploadProgress (int done, int total, SyncManagerBase *syncer)
-	{
-		HandleWithHash (done, total, syncer, UpRows_,
-				tr ("Audio upload"), tr ("Uploading..."));
-	}
-}
 }

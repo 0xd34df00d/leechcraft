@@ -9,39 +9,59 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
+#include <interfaces/ijobholder.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class SyncManagerBase;
 
 	class ProgressManager : public QObject
 	{
-		Q_OBJECT
-
 		QStandardItemModel *Model_;
-
-		typedef QHash<SyncManagerBase*, QList<QStandardItem*>> Syncer2Row_t;
-		Syncer2Row_t TCRows_;
-		Syncer2Row_t UpRows_;
 	public:
-		ProgressManager (QObject* = 0);
+		explicit ProgressManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
 
-		void AddSyncManager (SyncManagerBase*);
-	private:
-		void HandleWithHash (int, int, SyncManagerBase*,
-				Syncer2Row_t&, const QString&, const QString&);
-	private slots:
-		void handleTCProgress (int, int, SyncManagerBase*);
-		void handleUploadProgress (int, int, SyncManagerBase*);
+		class Handle final
+		{
+			friend class ProgressManager;
+
+			QList<QStandardItem*> Row_;
+			QString StatusPattern_;
+			int Done_ = 0;
+			int Total_ = 0;
+
+			explicit Handle (QList<QStandardItem*> row, const QString& statusPattern, std::optional<int> total);
+		public:
+			~Handle ();
+
+			Handle (const Handle&) = delete;
+			Handle& operator= (const Handle&) = delete;
+
+			Handle (Handle&&) = default;
+			Handle& operator= (Handle&&) = default;
+
+			void Update (int done, int total);
+			void Update (int done);
+
+			void operator++ ();
+		private:
+			void Update () const;
+		};
+
+		struct Item
+		{
+			QString Name_;
+			QString StatusPattern_;
+			JobHolderRow Type_;
+			std::optional<int> Total_;
+		};
+
+		Handle Add (const Item&);
 	};
-}
 }
