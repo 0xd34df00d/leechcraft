@@ -58,11 +58,11 @@ namespace LC::LMP::DumbSync
 						Plugin::tr ("mounted at %1").arg (mounts.join ("; "));
 
 				const auto& size = srcIdx.data (MassStorageRole::TotalSize).toLongLong ();
-				return QString ("%1 (%2, %3), %4")
-						.arg (srcIdx.data (MassStorageRole::VisibleName).toString ())
-						.arg (Util::MakePrettySize (size))
-						.arg (srcIdx.data (MassStorageRole::DevFile).toString ())
-						.arg (mountText);
+				return "%1 (%2, %3), %4"_qs
+						.arg (srcIdx.data (MassStorageRole::VisibleName).toString (),
+								Util::MakePrettySize (size),
+								srcIdx.data (MassStorageRole::DevFile).toString (),
+								mountText);
 			}
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex&) const override
@@ -198,7 +198,7 @@ namespace LC::LMP::DumbSync
 			auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
 			const auto& ext = QFileInfo { info.LocalPath_ }.suffix ();
 			if (!result.endsWith (ext))
-				result += "." + ext;
+				result += '.' + ext;
 			return result;
 		}
 
