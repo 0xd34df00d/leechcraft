@@ -67,7 +67,9 @@ namespace LC::LMP::DumbSync
 		protected:
 			bool filterAcceptsRow (int row, const QModelIndex&) const override
 			{
-				return sourceModel()->index (row, 0).data (MassStorageRole::IsMountable).toBool ();
+				const auto& srcIdx = sourceModel ()->index (row, 0);
+				return srcIdx.data (MassStorageRole::IsMountable).toBool () &&
+						srcIdx.data (MassStorageRole::IsMounted).toBool ();
 			}
 		};
 	}
