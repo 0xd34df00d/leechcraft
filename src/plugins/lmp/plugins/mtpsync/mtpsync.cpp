@@ -155,8 +155,9 @@ namespace LC::LMP::MTPSync
 
 	Util::ContextTask<ISyncPlugin::UploadResult> Plugin::Upload (UploadJob job)
 	{
+		const auto& serial = job.Target_.data (CommonDevRole::DevPersistentID).toByteArray ();
 		return Mtp_->Run (&Mtp::Upload, Mtp::UploadCtx {
-					.Serial_ = {},
+					.Serial_ = serial,
 					.StorageId_ = 0,
 					.LocalPath_ = job.LocalPath_,
 					.MediaInfo_ = job.MediaInfo_,
