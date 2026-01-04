@@ -141,11 +141,15 @@ namespace LC::LMP::MTPSync
 	{
 		const auto device = Helpers::GetDeviceBySerial (ctx.Serial_);
 		if (!device)
+		{
+			qWarning () << "unable to open device for" << ctx.Serial_;
 			return { Util::AsLeft, { QFile::ResourceError, tr ("Unknown device %1.").arg (ctx.Serial_) } };
+		}
 
 		const auto storage = Helpers::GetStorage (*device, ctx.StorageId_);
 		if (!storage)
 		{
+			qWarning () << "unable to open storage" << ctx.StorageId_ << "on" << ctx.Serial_;
 			const auto& msg = tr ("Unknown storage %1 on %2.").arg (ctx.StorageId_).arg (ctx.Serial_);
 			return { Util::AsLeft, { QFile::ResourceError, msg } };
 		}
@@ -156,6 +160,7 @@ namespace LC::LMP::MTPSync
 
 		if (const auto err = LIBMTP_Send_Track_From_File (&*device, ctx.LocalPath_.toUtf8 ().constData (), &*track, nullptr, nullptr))
 		{
+			qWarning () << "sending track failed:" << err;
 			LIBMTP_Dump_Errorstack (&*device);
 			LIBMTP_Clear_Errorstack (&*device);
 			return { Util::AsLeft, { QFile::WriteError, tr ("Error writing track: %1.").arg (err) } };
@@ -163,10 +168,16 @@ namespace LC::LMP::MTPSync
 
 		const auto album = Helpers::FindOrCreateAlbum (*device, ctx.MediaInfo_);
 		if (!album)
+		{
+			qWarning () << "unable to find/create album";
 			return { Util::AsLeft, { QFile::WriteError, tr ("Error creating track album.") } };
+		}
 
 		if (!Helpers::AppendTrack (*device, *track, *album))
+		{
+			qWarning () << "unable to append track to album";
 			return { Util::AsLeft, { QFile::WriteError, tr ("Error appending track to the album.") } };
+		}
 
 		if (album->no_tracks == 1)
 			Helpers::SetAlbumArt (*device, *album, ctx.AlbumArtPath_);

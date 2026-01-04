@@ -61,6 +61,7 @@ namespace LC::LMP::MTPSync::Helpers
 		QList<DeviceStorage> result;
 		while (storage)
 		{
+			qDebug () << "storage" << storage << storage->id << "type" << storage->StorageType << storage->StorageDescription;
 			const DeviceStorage part
 			{
 				storage->id,
@@ -69,8 +70,6 @@ namespace LC::LMP::MTPSync::Helpers
 			};
 			result << part;
 			storage = storage->next;
-
-			qDebug () << "next storage:" << storage;
 		}
 
 		return result;
@@ -79,7 +78,13 @@ namespace LC::LMP::MTPSync::Helpers
 	LIBMTP_devicestorage_t* GetStorage (LIBMTP_mtpdevice_t& device, uint32_t id)
 	{
 		if (!device.storage)
-			LIBMTP_Get_Storage (&device, 0);
+			if (LIBMTP_Get_Storage (&device, 0) == -1)
+			{
+				qWarning () << "failed to update storages for device" << LIBMTP_Get_Serialnumber (&device);
+				LIBMTP_Dump_Errorstack (&device);
+				LIBMTP_Clear_Errorstack (&device);
+				return nullptr;
+			}
 
 		auto storage = device.storage;
 		while (storage)
