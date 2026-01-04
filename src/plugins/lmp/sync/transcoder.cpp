@@ -123,13 +123,18 @@ namespace LC::LMP
 				this,
 				[this, files]
 				{
+					int skipped = 0;
 					for (const auto& file : files)
 					{
 						if (Params_.OnlyLossless_ && !IsLossless (file))
+						{
 							Results_.Send ({ file, Result::Success { file } });
+							++skipped;
+						}
 						else
 							ToTranscode_.Send (file);
 					}
+					emit syncEvent (SyncEvents::XcodingSkipped { skipped });
 
 					ToTranscode_.Close ();
 

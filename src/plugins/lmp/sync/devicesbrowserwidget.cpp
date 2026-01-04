@@ -184,6 +184,11 @@ namespace LMP
 			void HandleSyncEvent (const SyncEvents::Event& event)
 			{
 				Util::Visit (event,
+						[&] (const SyncEvents::XcodingSkipped& e)
+						{
+							TranscodingBar_.setMaximum (TranscodingBar_.maximum () - e.Count_);
+							TranscodingProgress_.SetTotal (TranscodingProgress_.GetTotal () - e.Count_);
+						},
 						[&] (const SyncEvents::XcodingFinished&)
 						{
 							TranscodingBar_.setValue (TranscodingBar_.value () + 1);
@@ -251,6 +256,7 @@ namespace LMP
 		auto PrepareStrings (SyncEvents::Event event)
 		{
 			Util::Visit (event,
+					[] (SyncEvents::XcodingSkipped&) {},
 					[] (SyncEvents::TranscodingData& data)
 					{
 						data.Orig_ = Util::FormatName (QFileInfo { data.Orig_ }.fileName ());
@@ -268,10 +274,12 @@ namespace LMP
 	QString DevicesBrowserWidget::ToString (const SyncEvents::Event& event)
 	{
 		using namespace SyncEvents;
+		const auto skip = u"🛡️ "_qs;
 		const auto start = u"⏳ "_qs;
 		const auto finish = u"✅ "_qs;
 		const auto error = u"❌ "_qs;
 		return Util::Visit (PrepareStrings (event),
+				[&] (const XcodingSkipped& e) { return skip + tr ("skipping transcoding %n lossy file(s)…", nullptr, e.Count_); },
 				[&] (const XcodingStarted& e) { return start + tr ("transcoding %1…").arg (e.Orig_); },
 				[&] (const XcodingFinished& e) { return finish + tr ("transcoded %1").arg (e.Orig_); },
 				[&] (const XcodingFailed& e) { return error + tr ("failed to transcode %1 → %2: %3").arg (e.Orig_, e.Target_, e.Message_); },

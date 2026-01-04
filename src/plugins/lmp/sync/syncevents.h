@@ -14,6 +14,11 @@
 
 namespace LC::LMP::SyncEvents
 {
+	struct XcodingSkipped
+	{
+		int Count_ = 0;
+	};
+
 	struct SyncData
 	{
 		QString Orig_;
@@ -45,6 +50,7 @@ namespace LC::LMP::SyncEvents
 	};
 
 	using Event = std::variant<
+			XcodingSkipped,
 			XcodingStarted, XcodingFinished, XcodingFailed,
 			CopyStarted, CopyFinished, CopyFailed
 		>;

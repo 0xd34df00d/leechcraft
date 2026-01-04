@@ -16,9 +16,7 @@ class QConcatenateTablesProxyModel;
 
 class IRemovableDevManager;
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class ISyncPlugin;
 	class ISyncPluginConfigWidget;
@@ -55,5 +53,4 @@ namespace LMP
 	private slots:
 		void on_UploadButton__released ();
 	};
-}
 }
