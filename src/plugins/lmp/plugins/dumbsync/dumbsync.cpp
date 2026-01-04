@@ -16,6 +16,7 @@
 #include <QLineEdit>
 #include <QtConcurrentRun>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/devices/deviceroles.h>
 #include <interfaces/devices/iremovabledevmanager.h>
@@ -43,6 +44,9 @@ namespace LC::LMP::DumbSync
 
 			QVariant data (const QModelIndex& index, int role) const override
 			{
+				if (role == Qt::DecorationRole)
+					return GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("drive-removable-media-usb"_qs);
+
 				if (role != Qt::DisplayRole)
 					return QSortFilterProxyModel::data (index, role);
 
