@@ -63,7 +63,7 @@ namespace LC::LMP::MTPSync
 
 		QObject* GetQObject () override;
 		QString GetSyncSystemName () const override;
-		QAbstractItemModel& GetSyncTargetsModel () const override;
+		QAbstractItemModel& GetSyncTargetsModel () override;
 		ISyncPluginConfigWidget_ptr MakeConfigWidget () override;
 		void RefreshSyncTargets () override;
 		Util::ContextTask<UploadResult> Upload (UploadJob) override;

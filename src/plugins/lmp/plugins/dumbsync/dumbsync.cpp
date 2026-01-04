@@ -143,7 +143,7 @@ namespace LC::LMP::DumbSync
 		return tr ("dumb copying");
 	}
 
-	QAbstractItemModel& Plugin::GetSyncTargetsModel () const
+	QAbstractItemModel& Plugin::GetSyncTargetsModel ()
 	{
 		return *SyncTargets_;
 	}

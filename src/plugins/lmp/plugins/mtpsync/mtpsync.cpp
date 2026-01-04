@@ -138,7 +138,7 @@ namespace LC::LMP::MTPSync
 		return "MTP"_qs;
 	}
 
-	QAbstractItemModel& Plugin::GetSyncTargetsModel () const
+	QAbstractItemModel& Plugin::GetSyncTargetsModel ()
 	{
 		return *DevicesModel_;
 	}

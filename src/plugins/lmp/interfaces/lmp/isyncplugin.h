@@ -55,7 +55,7 @@ namespace LC::LMP
 
 		virtual QString GetSyncSystemName () const = 0;
 
-		virtual QAbstractItemModel& GetSyncTargetsModel () const = 0;
+		virtual QAbstractItemModel& GetSyncTargetsModel () = 0;
 
 		virtual void RefreshSyncTargets () = 0;
 
