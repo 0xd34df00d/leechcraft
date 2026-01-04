@@ -105,7 +105,8 @@ namespace LMP
 		if (const auto syncer = GetSyncerForIndex (idx))
 		{
 			SyncerConfigWidget_ = syncer->MakeConfigWidget ();
-			Ui_.SyncOptsLayout_->insertWidget (0, SyncerConfigWidget_->GetQWidget ());
+			if (SyncerConfigWidget_)
+				Ui_.SyncOptsLayout_->insertWidget (0, SyncerConfigWidget_->GetQWidget ());
 		}
 	}
 
@@ -245,7 +246,7 @@ namespace LMP
 					{
 						.Syncer_ = syncer,
 						.Target_ = GetSourceIndex (idx),
-						.Config_ = SyncerConfigWidget_->GetConfig (),
+						.Config_ = SyncerConfigWidget_ ? SyncerConfigWidget_->GetConfig () : ISyncPluginConfig_cptr {},
 					});
 		} ();
 	}
