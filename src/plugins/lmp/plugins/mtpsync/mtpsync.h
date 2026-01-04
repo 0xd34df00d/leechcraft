@@ -20,11 +20,7 @@
 class QAbstractItemModel;
 class QModelIndex;
 
-namespace LC
-{
-namespace LMP
-{
-namespace MTPSync
+namespace LC::LMP::MTPSync
 {
 	struct USBDevInfo
 	{
@@ -75,24 +71,24 @@ namespace MTPSync
 		bool IsPolling_ = false;
 		bool IsUploading_ = false;
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr proxy) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		void SetLMPProxy (ILMPProxy_ptr);
+		void SetLMPProxy (ILMPProxy_ptr) override;
 
-		QString GetSyncSystemName () const;
-		QObject* GetQObject ();
-		UnmountableDevInfos_t AvailableDevices () const;
-		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
-		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
-		void Refresh ();
+		QString GetSyncSystemName () const override;
+		QObject* GetQObject () override;
+		UnmountableDevInfos_t AvailableDevices () const override;
+		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info) override;
+		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId) override;
+		void Refresh () override;
 
 		void HandleTransfer (quint64, quint64);
 	private:
@@ -108,10 +104,8 @@ namespace MTPSync
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void handleRowsRemoved (const QModelIndex&, int, int);
 	signals:
-		void availableDevicesChanged ();
-		void uploadProgress (qint64, qint64);
-		void uploadFinished (const QString&, QFile::FileError, const QString&);
+		void availableDevicesChanged () override;
+		void uploadProgress (qint64, qint64) override;
+		void uploadFinished (const QString&, QFile::FileError, const QString&) override;
 	};
-}
-}
 }

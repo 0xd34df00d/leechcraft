@@ -22,11 +22,7 @@
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/devices/deviceroles.h>
 
-namespace LC
-{
-namespace LMP
-{
-namespace MTPSync
+namespace LC::LMP::MTPSync
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -670,8 +666,6 @@ namespace MTPSync
 		if (changed)
 			emit availableDevicesChanged ();
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_lmp_mtpsync, LC::LMP::MTPSync::Plugin);
