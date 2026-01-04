@@ -55,17 +55,6 @@ namespace LC::LMP
 
 		virtual QString GetSyncSystemName () const = 0;
 
-		struct Target
-		{
-			QString VisibleName_;
-			QVariant Payload_;
-
-			bool operator== (const Target& other) const
-			{
-				return Payload_ == other.Payload_;
-			}
-		};
-
 		virtual QAbstractItemModel& GetSyncTargetsModel () const = 0;
 
 		virtual void RefreshSyncTargets () = 0;
