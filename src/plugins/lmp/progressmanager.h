@@ -50,6 +50,12 @@ namespace LC::LMP
 			void Update (int done);
 
 			void operator++ ();
+
+			int GetDone () const;
+			void SetDone (int);
+
+			int GetTotal () const;
+			void SetTotal (int);
 		private:
 			void Update () const;
 		};

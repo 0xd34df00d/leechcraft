@@ -54,6 +54,28 @@ namespace LC::LMP
 		Update ();
 	}
 
+	int ProgressManager::Handle::GetDone () const
+	{
+		return Done_;
+	}
+
+	void ProgressManager::Handle::SetDone (int done)
+	{
+		Done_ = done;
+		Update ();
+	}
+
+	int ProgressManager::Handle::GetTotal () const
+	{
+		return Total_;
+	}
+
+	void ProgressManager::Handle::SetTotal (int total)
+	{
+		Total_ = total;
+		Update ();
+	}
+
 	void ProgressManager::Handle::Update () const
 	{
 		Util::SetJobHolderProgress (Row_, Done_, Total_, StatusPattern_);
