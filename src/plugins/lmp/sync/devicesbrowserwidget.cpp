@@ -20,7 +20,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
-#include <interfaces/lmp/iunmountablesync.h>
 #include "core.h"
 #include "localcollection.h"
 #include "localcollectionmodel.h"
