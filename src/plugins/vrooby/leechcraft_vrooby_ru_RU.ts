@@ -22,17 +22,32 @@
 <context>
     <name>LC::Vrooby::TrayModel</name>
     <message>
-        <location filename="trayview.cpp" line="70"/>
+        <source>total size: %1</source>
+        <translation type="vanished">общий размер: %1</translation>
+    </message>
+    <message>
+        <source>available size: %1</source>
+        <translation type="vanished">доступно: %1</translation>
+    </message>
+    <message>
+        <source>Mounted at %1</source>
+        <translation type="vanished">Смонтировано на %1</translation>
+    </message>
+</context>
+<context>
+    <name>LC::Vrooby::TrayProxyModel</name>
+    <message>
+        <location filename="trayproxymodel.cpp" line="49"/>
         <source>total size: %1</source>
         <translation>общий размер: %1</translation>
     </message>
     <message>
-        <location filename="trayview.cpp" line="75"/>
+        <location filename="trayproxymodel.cpp" line="54"/>
         <source>available size: %1</source>
         <translation>доступно: %1</translation>
     </message>
     <message>
-        <location filename="trayview.cpp" line="86"/>
+        <location filename="trayproxymodel.cpp" line="65"/>
         <source>Mounted at %1</source>
         <translation>Смонтировано на %1</translation>
     </message>
@@ -40,7 +55,7 @@
 <context>
     <name>LC::Vrooby::TrayView</name>
     <message>
-        <location filename="trayview.cpp" line="199"/>
+        <location filename="trayview.cpp" line="44"/>
         <source>Removable devices</source>
         <translation>Съемные накопители</translation>
     </message>
@@ -48,67 +63,67 @@
 <context>
     <name>LC::Vrooby::UDisks2::Backend</name>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="113"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="104"/>
         <source>permission denied</source>
         <translation>доступ запрещён</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="114"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="105"/>
         <source>not authorized</source>
         <translation>не авторизовано</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="115"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="106"/>
         <source>the device is busy</source>
         <translation>устройство занято</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="116"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="107"/>
         <source>the operation has failed</source>
         <translation>операция завершилась с ошибкой</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="117"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="108"/>
         <source>the operation has been cancelled</source>
         <translation>операция была отменена</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="118"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="109"/>
         <source>invalid mount options were given</source>
         <translation>некорректные опции монтирования</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="119"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="110"/>
         <source>unsupported filesystem</source>
         <translation>неподдерживаемая файловая система</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="121"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="112"/>
         <source>unknown error</source>
         <translation>неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="138"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="129"/>
         <source>Device has been successfully mounted at %1.</source>
         <translation>Устройство успешно смонтировано на %1.</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="145"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="136"/>
         <source>Failed to mount the device: %1 (%2).</source>
         <translation>Не удалось смонтировать устройство: %1 (%2).</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="158"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="149"/>
         <source>Device has been successfully unmounted.</source>
         <translation>Устройство успешно отмонтировано.</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="165"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="156"/>
         <source>Failed to unmount the device: %1 (%2).</source>
         <translation>Не удалось отмонтировать устройство: %1 (%2).</translation>
     </message>
     <message>
-        <location filename="backends/udisks2/udisks2backend.cpp" line="279"/>
+        <location filename="backends/udisks2/udisks2backend.cpp" line="272"/>
         <source>Partition %1</source>
         <translation>Раздел %1</translation>
     </message>
