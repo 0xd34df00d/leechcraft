@@ -110,7 +110,7 @@ namespace LC::LMP::MTPSync
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Adds support for synchronization with MTP-enabled portable media players.");
+		return tr ("Music collection synchronization with MTP-enabled portable media players.");
 	}
 
 	QIcon Plugin::GetIcon () const

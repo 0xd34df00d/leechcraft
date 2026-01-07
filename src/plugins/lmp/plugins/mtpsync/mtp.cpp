@@ -143,14 +143,14 @@ namespace LC::LMP::MTPSync
 		if (!device)
 		{
 			qWarning () << "unable to open device for" << ctx.Serial_;
-			return { Util::AsLeft, { QFile::ResourceError, tr ("Unknown device %1.").arg (ctx.Serial_) } };
+			return { Util::AsLeft, { QFile::ResourceError, tr ("Unable to open device %1.").arg (ctx.Serial_) } };
 		}
 
 		const auto storage = Helpers::GetStorage (*device, ctx.StorageId_);
 		if (!storage)
 		{
 			qWarning () << "unable to open storage" << ctx.StorageId_ << "on" << ctx.Serial_;
-			const auto& msg = tr ("Unknown storage %1 on %2.").arg (ctx.StorageId_).arg (ctx.Serial_);
+			const auto& msg = tr ("Unable to open storage %1 on %2.").arg (ctx.StorageId_).arg (ctx.Serial_);
 			return { Util::AsLeft, { QFile::ResourceError, msg } };
 		}
 
