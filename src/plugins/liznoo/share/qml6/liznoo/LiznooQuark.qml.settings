@@ -3,15 +3,15 @@
     <page>
         <label value="Liznoo settings" />
         <item type="combobox" property="Liznoo_labelContents">
-            <label value="Text label contents:" />
+            <label value="Show on battery icon:" />
             <option name="ChargeLevel" default="true">
-                <label value="Charge level" />
+                <label value="charge level" />
             </option>
             <option name="RemainingTime">
-                <label value="Remaining time" />
+                <label value="remaining time" />
             </option>
             <option name="Nothing">
-                <label value="Nothing" />
+                <label value="nothing" />
             </option>
         </item>
     </page>
