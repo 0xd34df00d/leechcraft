@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-    <page>
-        <label value="Liznoo settings" />
-        <item type="combobox" property="Liznoo_labelContents">
-            <label value="Show on battery icon:" />
-            <option name="ChargeLevel" default="true">
-                <label value="charge level" />
-            </option>
-            <option name="RemainingTime">
-                <label value="remaining time" />
-            </option>
-            <option name="Nothing">
-                <label value="nothing" />
-            </option>
+    <page label="Liznoo settings">
+        <item type="combobox" property="Liznoo_labelContents" label="Show on battery icon:">
+            <option name="ChargeLevel" default="true" label="charge level" />
+            <option name="RemainingTime" label="remaining time" />
+            <option name="Nothing" label="nothing" />
         </item>
     </page>
 </settings>
