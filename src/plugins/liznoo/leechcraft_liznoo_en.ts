@@ -57,79 +57,79 @@
 <context>
     <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="164"/>
+        <location filename="batteryhistorydialog.cpp" line="128"/>
         <source>(discharging)</source>
         <translation>(discharging)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="172"/>
+        <location filename="batteryhistorydialog.cpp" line="136"/>
         <source>(charging)</source>
         <translation>(charging)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="196"/>
+        <location filename="batteryhistorydialog.cpp" line="160"/>
         <source>%1 V</source>
         <translation>%1 V</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="207"/>
-        <location filename="batteryhistorydialog.cpp" line="208"/>
-        <location filename="batteryhistorydialog.cpp" line="209"/>
+        <location filename="batteryhistorydialog.cpp" line="171"/>
+        <location filename="batteryhistorydialog.cpp" line="172"/>
+        <location filename="batteryhistorydialog.cpp" line="173"/>
         <source>%1 mAh</source>
         <translation>%1 mAh</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="214"/>
+        <location filename="batteryhistorydialog.cpp" line="178"/>
         <source>awesome</source>
         <translation>awesome</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="216"/>
+        <location filename="batteryhistorydialog.cpp" line="180"/>
         <source>good</source>
         <translation>good</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="218"/>
+        <location filename="batteryhistorydialog.cpp" line="182"/>
         <source>degraded</source>
         <translation>degraded</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="220"/>
+        <location filename="batteryhistorydialog.cpp" line="184"/>
         <source>bad</source>
         <translation>bad</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="221"/>
+        <location filename="batteryhistorydialog.cpp" line="185"/>
         <source>%1% (%2)</source>
         <translation>%1% (%2)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="245"/>
+        <location filename="batteryhistorydialog.cpp" line="209"/>
         <source>Percentage</source>
         <translation>Percentage</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="246"/>
+        <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>Energy rate</source>
         <translation>Energy rate</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="247"/>
+        <location filename="batteryhistorydialog.cpp" line="211"/>
         <source>Temperature</source>
         <translation>Temperature</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="248"/>
+        <location filename="batteryhistorydialog.cpp" line="212"/>
         <source>Charge, %</source>
         <translation>Charge, %</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="249"/>
+        <location filename="batteryhistorydialog.cpp" line="213"/>
         <source>Energy rate, W</source>
         <translation>Energy rate, W</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="250"/>
+        <location filename="batteryhistorydialog.cpp" line="214"/>
         <source>Time, s</source>
         <translation>Time, s</translation>
     </message>
@@ -137,7 +137,7 @@
 <context>
     <name>LC::Liznoo::Logind::LogindConnector</name>
     <message>
-        <location filename="platform/logind/logindconnector.cpp" line="87"/>
+        <location filename="platform/logind/logindconnector.cpp" line="66"/>
         <source>Preparing LeechCraft for going to sleep...</source>
         <translation>Preparing LeechCraft for going to sleep...</translation>
     </message>
@@ -145,53 +145,53 @@
 <context>
     <name>LC::Liznoo::Plugin</name>
     <message>
-        <location filename="liznoo.cpp" line="83"/>
+        <location filename="liznoo.cpp" line="60"/>
         <source>Suspend</source>
         <translation>Suspend</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="90"/>
+        <location filename="liznoo.cpp" line="67"/>
         <source>Hibernate</source>
         <translation>Hibernate</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="138"/>
+        <location filename="liznoo.cpp" line="115"/>
         <source>UPower/WinAPI-based power manager.</source>
         <translation>UPower/WinAPI-based power manager.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="295"/>
+        <location filename="liznoo.cpp" line="269"/>
         <source>No platform backend is available.</source>
         <translation>No platform backend is available.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="297"/>
+        <location filename="liznoo.cpp" line="271"/>
         <source>Platform backend failed.</source>
         <translation>Platform backend failed.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="299"/>
+        <location filename="liznoo.cpp" line="273"/>
         <source>Unknown reason.</source>
         <translation>Unknown reason.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="351"/>
+        <location filename="liznoo.cpp" line="325"/>
         <source>Unable to send test power events.</source>
         <translation>Unable to send test power events.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="212"/>
+        <location filename="liznoo.cpp" line="186"/>
         <source>Battery charge level is %1%.</source>
         <oldsource>Battery charge level is below %1%.</oldsource>
         <translation>Battery charge level is %1%.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="225"/>
+        <location filename="liznoo.cpp" line="199"/>
         <source>The device started charging.</source>
         <translation>The device started charging.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="229"/>
+        <location filename="liznoo.cpp" line="203"/>
         <source>The device started discharging.</source>
         <translation>The device started discharging.</translation>
     </message>
@@ -199,12 +199,12 @@
 <context>
     <name>LC::Liznoo::PowerActions::FreeBSD</name>
     <message>
-        <location filename="platform/poweractions/freebsd.cpp" line="64"/>
+        <location filename="platform/poweractions/freebsd.cpp" line="43"/>
         <source>No permissions to write to %1. If you are in the %2 group, add %3 to %4 and run %5 to apply the required permissions to %1.</source>
         <translation>No permissions to write to %1. If you are in the %2 group, add %3 to %4 and run %5 to apply the required permissions to %1.</translation>
     </message>
     <message>
-        <location filename="platform/poweractions/freebsd.cpp" line="71"/>
+        <location filename="platform/poweractions/freebsd.cpp" line="50"/>
         <source>Unable to open %1 for writing.</source>
         <translation>Unable to open %1 for writing.</translation>
     </message>
@@ -212,7 +212,7 @@
 <context>
     <name>LC::Liznoo::PowerActions::PMUtils</name>
     <message>
-        <location filename="platform/poweractions/pmutils.cpp" line="64"/>
+        <location filename="platform/poweractions/pmutils.cpp" line="43"/>
         <source>%1 failed to start. Probably %2 is not installed? Original message: %3.</source>
         <translation>%1 failed to start. Probably %2 is not installed? Original message: %3.</translation>
     </message>
@@ -220,7 +220,7 @@
 <context>
     <name>LC::Liznoo::PowerActions::UPower</name>
     <message>
-        <location filename="platform/poweractions/upower.cpp" line="80"/>
+        <location filename="platform/poweractions/upower.cpp" line="59"/>
         <source>Cannot connect to UPower daemon.</source>
         <translation>Cannot connect to UPower daemon.</translation>
     </message>
@@ -228,91 +228,122 @@
 <context>
     <name>LC::Liznoo::WinAPI::FakeQWidgetWinAPI</name>
     <message>
-        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="54"/>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="33"/>
         <source>Power saver</source>
         <translation>Power saver</translation>
     </message>
     <message>
-        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="56"/>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="35"/>
         <source>High performance</source>
         <translation>High performance</translation>
     </message>
     <message>
-        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="58"/>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="37"/>
         <source>Balanced</source>
         <translation>Balanced</translation>
     </message>
     <message>
-        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="68"/>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="47"/>
         <source>Battery</source>
         <translation>Battery</translation>
     </message>
     <message>
-        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="68"/>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="47"/>
         <source>AC</source>
         <translation>AC</translation>
     </message>
 </context>
 <context>
+    <name>LiznooQuark.qml.settings</name>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Liznoo settings</source>
+        <translation>Liznoo settings</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Show on battery icon:</source>
+        <translation>Show on battery icon:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>charge level</source>
+        <oldsource>Charge level</oldsource>
+        <translation>charge level</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>remaining time</source>
+        <oldsource>Remaining time</oldsource>
+        <translation>remaining time</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>nothing</source>
+        <oldsource>Nothing</oldsource>
+        <translation>nothing</translation>
+    </message>
+</context>
+<context>
     <name>liznoosettings</name>
     <message>
-        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Power levels</source>
         <translation>Power levels</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Low power level:</source>
         <translation>Low power level:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
-        <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Extremely low power level:</source>
         <translation>Extremely low power level:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Notifications</source>
         <translation>Notifications</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Notify on power transitions</source>
         <translation>Notify on power transitions</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Notify on low power</source>
         <translation>Notify on low power</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Notify on extremely low power</source>
         <translation>Notify on extremely low power</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Debug</source>
         <translation>Debug</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Send sleep event to other plugins</source>
         <translation>Send sleep event to other plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Send wake up event to other plugins</source>
         <translation>Send wake up event to other plugins</translation>
     </message>

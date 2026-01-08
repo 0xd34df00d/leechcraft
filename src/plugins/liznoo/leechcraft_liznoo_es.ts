@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="es_ES">
 <context>
     <name>BatteryHistoryDialog</name>
     <message>
@@ -7,292 +9,342 @@
         <translation>Historia de batería</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="53"/>
+        <location filename="batteryhistorydialog.ui" line="62"/>
         <source>Percentage:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="67"/>
+        <location filename="batteryhistorydialog.ui" line="76"/>
         <source>Remaining time:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="81"/>
+        <location filename="batteryhistorydialog.ui" line="90"/>
         <source>Voltage:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="95"/>
+        <location filename="batteryhistorydialog.ui" line="104"/>
         <source>Temperature:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="109"/>
+        <location filename="batteryhistorydialog.ui" line="118"/>
         <source>Capacity:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="123"/>
+        <location filename="batteryhistorydialog.ui" line="132"/>
         <source>Design capacity:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="137"/>
+        <location filename="batteryhistorydialog.ui" line="146"/>
         <source>Last full capacity:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="151"/>
+        <location filename="batteryhistorydialog.ui" line="160"/>
         <source>Health:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="batteryhistorydialog.ui" line="174"/>
+        <source>Cycles count:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="45"/>
+        <location filename="batteryhistorydialog.cpp" line="209"/>
         <source>Percentage</source>
         <translation>Porcentaje</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="46"/>
+        <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>Energy rate</source>
         <translation>Potencia</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="47"/>
+        <location filename="batteryhistorydialog.cpp" line="211"/>
         <source>Temperature</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="56"/>
-        <source>Percent</source>
-        <translation>Porciento</translation>
-    </message>
-    <message>
-        <location filename="batteryhistorydialog.cpp" line="57"/>
+        <location filename="batteryhistorydialog.cpp" line="213"/>
         <source>Energy rate, W</source>
         <translation>Potencia, W</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="136"/>
+        <location filename="batteryhistorydialog.cpp" line="128"/>
         <source>(discharging)</source>
         <translation>(descargando)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="144"/>
+        <location filename="batteryhistorydialog.cpp" line="136"/>
         <source>(charging)</source>
         <translation>(cargando)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="168"/>
+        <location filename="batteryhistorydialog.cpp" line="160"/>
         <source>%1 V</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="179"/>
-        <location filename="batteryhistorydialog.cpp" line="180"/>
-        <location filename="batteryhistorydialog.cpp" line="181"/>
+        <location filename="batteryhistorydialog.cpp" line="171"/>
+        <location filename="batteryhistorydialog.cpp" line="172"/>
+        <location filename="batteryhistorydialog.cpp" line="173"/>
         <source>%1 mAh</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="186"/>
+        <location filename="batteryhistorydialog.cpp" line="178"/>
         <source>awesome</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="188"/>
+        <location filename="batteryhistorydialog.cpp" line="180"/>
         <source>good</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="190"/>
+        <location filename="batteryhistorydialog.cpp" line="182"/>
         <source>degraded</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="192"/>
+        <location filename="batteryhistorydialog.cpp" line="184"/>
         <source>bad</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="193"/>
+        <location filename="batteryhistorydialog.cpp" line="185"/>
         <source>%1% (%2)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="batteryhistorydialog.cpp" line="212"/>
+        <source>Charge, %</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="batteryhistorydialog.cpp" line="214"/>
+        <source>Time, s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LC::Liznoo::FakeQWidgetWinAPI</name>
+    <name>LC::Liznoo::Logind::LogindConnector</name>
     <message>
-        <location filename="fakeqwidgetwinapi.cpp" line="51"/>
-        <source>Power saver</source>
-        <translation>Eficiencia energética</translation>
-    </message>
-    <message>
-        <location filename="fakeqwidgetwinapi.cpp" line="53"/>
-        <source>High performance</source>
-        <translation>Alta eficiencia</translation>
-    </message>
-    <message>
-        <location filename="fakeqwidgetwinapi.cpp" line="55"/>
-        <source>Balanced</source>
-        <translation>Balanceado</translation>
-    </message>
-    <message>
-        <location filename="fakeqwidgetwinapi.cpp" line="65"/>
-        <source>Battery</source>
-        <translation>Batería</translation>
-    </message>
-    <message>
-        <location filename="fakeqwidgetwinapi.cpp" line="65"/>
-        <source>AC</source>
-        <translation>AC</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Liznoo::PlatformFreeBSD</name>
-    <message>
-        <location filename="platformfreebsd.cpp" line="73"/>
-        <source>Looks like you don&apos;t have permission to write to /dev/acpi. If you&apos;re in &apos;wheel&apos; group, add &apos;perm acpi 0664&apos; to /etc/devfs.conf and run &apos;/etc/rc.d/devfs restart&apos; to apply needed permissions to /dev/acpi.</source>
-        <translation type="unfinished"/>
+        <location filename="platform/logind/logindconnector.cpp" line="66"/>
+        <source>Preparing LeechCraft for going to sleep...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LC::Liznoo::Plugin</name>
     <message>
-        <location filename="liznoo.cpp" line="87"/>
+        <location filename="liznoo.cpp" line="60"/>
         <source>Suspend</source>
         <translation>Modo suspendido</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="94"/>
+        <location filename="liznoo.cpp" line="67"/>
         <source>Hibernate</source>
         <translation>Hibernado</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="129"/>
+        <location filename="liznoo.cpp" line="115"/>
         <source>UPower/WinAPI-based power manager.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="197"/>
-        <source>(charging)</source>
-        <translation>(cargando)</translation>
+        <location filename="liznoo.cpp" line="186"/>
+        <source>Battery charge level is %1%.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="liznoo.cpp" line="269"/>
+        <source>No platform backend is available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="liznoo.cpp" line="271"/>
+        <source>Platform backend failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="liznoo.cpp" line="273"/>
+        <source>Unknown reason.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="liznoo.cpp" line="325"/>
+        <source>Unable to send test power events.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="199"/>
-        <source>(discharging)</source>
-        <translation>(descargando)</translation>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="203"/>
-        <source>Battery</source>
-        <translation>Batería</translation>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="214"/>
-        <source>Battery technology: %1</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="220"/>
-        <source>Energy rate: %1 W</source>
-        <translation>Nivel de potencia: %1 W</translation>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="226"/>
-        <source>Remaining energy: %1 Wh</source>
-        <translation>Energía restante: %1 Wh</translation>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="232"/>
-        <source>Full energy capacity: %1 Wh</source>
-        <translation>Capacidad de carga completa: %1 Wh</translation>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="261"/>
-        <source>Battery charge level is below %1.</source>
-        <translation>Nivel de carga de la batería es menor que %1.</translation>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="274"/>
         <source>The device started charging.</source>
         <translation>El dispositivo comenzó a cargarse.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="278"/>
+        <location filename="liznoo.cpp" line="203"/>
         <source>The device started discharging.</source>
         <translation>El dispositivo comenzó a descargarse.</translation>
     </message>
+</context>
+<context>
+    <name>LC::Liznoo::PowerActions::FreeBSD</name>
     <message>
-        <location filename="liznoo.cpp" line="287"/>
-        <source>Battery status</source>
-        <translation>Estado de la batería</translation>
+        <location filename="platform/poweractions/freebsd.cpp" line="43"/>
+        <source>No permissions to write to %1. If you are in the %2 group, add %3 to %4 and run %5 to apply the required permissions to %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="platform/poweractions/freebsd.cpp" line="50"/>
+        <source>Unable to open %1 for writing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LC::Liznoo::PowerActions::PMUtils</name>
+    <message>
+        <location filename="platform/poweractions/pmutils.cpp" line="43"/>
+        <source>%1 failed to start. Probably %2 is not installed? Original message: %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LC::Liznoo::PowerActions::UPower</name>
+    <message>
+        <location filename="platform/poweractions/upower.cpp" line="59"/>
+        <source>Cannot connect to UPower daemon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LC::Liznoo::WinAPI::FakeQWidgetWinAPI</name>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="33"/>
+        <source>Power saver</source>
+        <translation>Eficiencia energética</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="35"/>
+        <source>High performance</source>
+        <translation>Alta eficiencia</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="37"/>
+        <source>Balanced</source>
+        <translation>Balanceado</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="47"/>
+        <source>Battery</source>
+        <translation>Batería</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="47"/>
+        <source>AC</source>
+        <translation>AC</translation>
+    </message>
+</context>
+<context>
+    <name>LiznooQuark.qml.settings</name>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Liznoo settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Show on battery icon:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>charge level</source>
+        <oldsource>Charge level</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>remaining time</source>
+        <oldsource>Remaining time</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>nothing</source>
+        <oldsource>Nothing</oldsource>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>liznoosettings</name>
     <message>
-        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Power levels</source>
         <translation>Niveles de energía</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Low power level:</source>
         <translation>Bajo nivel de energía:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
-        <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Extremely low power level:</source>
         <translation>Muy bajo nivel de energía:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Notifications</source>
         <translation>Notificaciones</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Notify on power transitions</source>
         <translation>Notificar sobre transiciones de energía</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Notify on low power</source>
         <translation>Notificar sobre bajo nivel energetico de la batería</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Notify on extremely low power</source>
         <translation>Notificar sobre muy bajo nivel energetico de la batería</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Debug</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Send sleep event to other plugins</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Send wake up event to other plugins</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
