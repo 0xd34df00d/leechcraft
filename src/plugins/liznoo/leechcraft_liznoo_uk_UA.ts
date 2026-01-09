@@ -57,79 +57,74 @@
 <context>
     <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="209"/>
+        <location filename="batteryhistorydialog.cpp" line="205"/>
         <source>Percentage</source>
         <translation>Відсоток</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="210"/>
+        <location filename="batteryhistorydialog.cpp" line="206"/>
         <source>Energy rate</source>
         <translation>Потужність</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="211"/>
+        <location filename="batteryhistorydialog.cpp" line="207"/>
         <source>Temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="213"/>
+        <location filename="batteryhistorydialog.cpp" line="209"/>
         <source>Energy rate, W</source>
         <translation>Потужність, Вт</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="128"/>
+        <location filename="batteryhistorydialog.cpp" line="124"/>
         <source>(discharging)</source>
         <translation>(розряджається)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="136"/>
+        <location filename="batteryhistorydialog.cpp" line="132"/>
         <source>(charging)</source>
         <translation>(заряджається)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="160"/>
+        <location filename="batteryhistorydialog.cpp" line="156"/>
         <source>%1 V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="171"/>
-        <location filename="batteryhistorydialog.cpp" line="172"/>
-        <location filename="batteryhistorydialog.cpp" line="173"/>
+        <location filename="batteryhistorydialog.cpp" line="167"/>
+        <location filename="batteryhistorydialog.cpp" line="168"/>
+        <location filename="batteryhistorydialog.cpp" line="169"/>
         <source>%1 mAh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="178"/>
+        <location filename="batteryhistorydialog.cpp" line="174"/>
         <source>awesome</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="180"/>
+        <location filename="batteryhistorydialog.cpp" line="176"/>
         <source>good</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="182"/>
+        <location filename="batteryhistorydialog.cpp" line="178"/>
         <source>degraded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="184"/>
+        <location filename="batteryhistorydialog.cpp" line="180"/>
         <source>bad</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="185"/>
-        <source>%1% (%2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="batteryhistorydialog.cpp" line="212"/>
+        <location filename="batteryhistorydialog.cpp" line="208"/>
         <source>Charge, %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="214"/>
+        <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>Time, s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -292,57 +287,55 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
-        <source>Power levels</source>
+        <source>Charge levels</source>
+        <oldsource>Power levels</oldsource>
         <translation>Рівні заряду</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
-        <source>Low power level:</source>
-        <translation>Низький рівень заряду:</translation>
+        <source>Low charge threshold:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
-        <location filename="dummy.cpp" line="29"/>
-        <source>%</source>
-        <translation>%</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="27"/>
-        <source>Extremely low power level:</source>
+        <source>Extremely low charge threshold:</source>
+        <oldsource>Extremely low power level:</oldsource>
         <translation>Критичний рівень заряду:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Notifications</source>
         <translation>Сповіщення</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Notify on power transitions</source>
         <translation>Сповіщати про зміну стану мережі</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
-        <source>Notify on low power</source>
+        <location filename="dummy.cpp" line="31"/>
+        <source>Notify on low charge</source>
+        <oldsource>Notify on low power</oldsource>
         <translation>Сповіщати про низький рівень заряду</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
-        <source>Notify on extremely low power</source>
+        <location filename="dummy.cpp" line="33"/>
+        <source>Notify on extremely low charge</source>
+        <oldsource>Notify on extremely low power</oldsource>
         <translation>Сповіщати про критичний рівень заряду</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Send sleep event to other plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Send wake up event to other plugins</source>
         <translation type="unfinished"></translation>
     </message>
