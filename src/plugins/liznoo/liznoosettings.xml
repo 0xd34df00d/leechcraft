@@ -1,38 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label value="General" />
-		<groupbox>
-			<label value="Charge levels" />
-			<item type="spinbox" property="LowPowerLevel" minimum="1" maximum="99" default="15">
-				<label value="Low charge threshold:" />
+	<page label="General">
+		<groupbox label="Charge levels">
+			<item type="spinbox" property="LowPowerLevel" minimum="1" maximum="99" default="15" label="Low charge threshold:">
 				<suffix value="%" translatable="false" />
 			</item>
-			<item type="spinbox" property="ExtremeLowPowerLevel" minimum="1" maximum="99" default="5">
-				<label value="Extremely low charge threshold:" />
+			<item type="spinbox" property="ExtremeLowPowerLevel" minimum="1" maximum="99" default="5" label="Extremely low charge threshold:">
 				<suffix value="%" translatable="false" />
 			</item>
 		</groupbox>
-		<groupbox>
-			<label value="Notifications" />
-			<item type="checkbox" property="NotifyOnPowerTransitions" default="true">
-				<label value="Notify on power transitions" />
-			</item>
-			<item type="checkbox" property="NotifyOnLowPower" default="true">
-				<label value="Notify on low charge" />
-			</item>
-			<item type="checkbox" property="NotifyOnExtremeLowPower" default="true">
-				<label value="Notify on extremely low charge" />
-			</item>
+		<groupbox label="Notifications">
+			<item type="checkbox" property="NotifyOnPowerTransitions" default="true" label="Notify on power transitions" />
+			<item type="checkbox" property="NotifyOnLowPower" default="true" label="Notify on low charge" />
+			<item type="checkbox" property="NotifyOnExtremeLowPower" default="true" label="Notify on extremely low charge" />
 		</groupbox>
 	</page>
-	<page>
-		<label value="Debug" />
-		<item type="pushbutton" property="TestSleep">
-			<label value="Send sleep event to other plugins" />
-		</item>
-		<item type="pushbutton" property="TestWake">
-			<label value="Send wake up event to other plugins" />
-		</item>
+	<page label="Debug">
+		<item type="pushbutton" property="TestSleep" label="Send sleep event to other plugins" />
+		<item type="pushbutton" property="TestWake" label="Send wake up event to other plugins" />
 	</page>
 </settings>
