@@ -18,6 +18,7 @@
 #include <qwt_plot_legenditem.h>
 #include <util/util.h>
 #include <util/gui/util.h>
+#include <util/sll/qtutil.h>
 #include "batteryinfo.h"
 
 namespace LC
@@ -182,7 +183,7 @@ namespace Liznoo
 				ratioText = tr ("degraded");
 			else
 				ratioText = tr ("bad");
-			Ui_.Health_->setText (tr ("%1% (%2)")
+			Ui_.Health_->setText ("%1% (%2)"_qs
 					.arg (ratio * 100, 0, 'f', 1)
 					.arg (ratioText));
 		}

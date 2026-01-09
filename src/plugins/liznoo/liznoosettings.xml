@@ -3,14 +3,14 @@
 	<page>
 		<label value="General" />
 		<groupbox>
-			<label value="Power levels" />
+			<label value="Charge levels" />
 			<item type="spinbox" property="LowPowerLevel" minimum="1" maximum="99" default="15">
-				<label value="Low power level:" />
-				<suffix value="%" />
+				<label value="Low charge threshold:" />
+				<suffix value="%" translatable="false" />
 			</item>
 			<item type="spinbox" property="ExtremeLowPowerLevel" minimum="1" maximum="99" default="5">
-				<label value="Extremely low power level:" />
-				<suffix value="%" />
+				<label value="Extremely low charge threshold:" />
+				<suffix value="%" translatable="false" />
 			</item>
 		</groupbox>
 		<groupbox>
@@ -19,10 +19,10 @@
 				<label value="Notify on power transitions" />
 			</item>
 			<item type="checkbox" property="NotifyOnLowPower" default="true">
-				<label value="Notify on low power" />
+				<label value="Notify on low charge" />
 			</item>
 			<item type="checkbox" property="NotifyOnExtremeLowPower" default="true">
-				<label value="Notify on extremely low power" />
+				<label value="Notify on extremely low charge" />
 			</item>
 		</groupbox>
 	</page>
