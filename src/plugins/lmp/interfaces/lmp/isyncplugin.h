@@ -63,7 +63,7 @@ namespace LC::LMP
 		 *
 		 * If the sync method has no configuration, a nullptr can be returned.
 		 */
-		virtual ISyncPluginConfigWidget_ptr MakeConfigWidget () = 0;
+		virtual ISyncPluginConfigWidget_ptr MakeConfigWidget (const QModelIndex&) = 0;
 
 		struct UploadSuccess {};
 		struct UploadFailure

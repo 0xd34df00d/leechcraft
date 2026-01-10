@@ -107,7 +107,10 @@ namespace LMP
 
 		if (const auto syncer = GetSyncerForIndex (idx))
 		{
-			SyncerConfigWidget_ = syncer->MakeConfigWidget ();
+			const auto mergerIdx = Merger_->index (idx, 0);
+			const auto srcIdx = Merger_->mapToSource (mergerIdx);
+
+			SyncerConfigWidget_ = syncer->MakeConfigWidget (srcIdx);
 			if (SyncerConfigWidget_)
 				Ui_.SyncOptsLayout_->insertWidget (0, SyncerConfigWidget_->GetQWidget ());
 		}

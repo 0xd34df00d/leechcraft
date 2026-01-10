@@ -166,7 +166,7 @@ namespace LC::LMP::DumbSync
 		};
 	}
 
-	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget ()
+	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget (const QModelIndex&)
 	{
 		class ConfigWidget : public QLineEdit
 						   , public ISyncPluginConfigWidget

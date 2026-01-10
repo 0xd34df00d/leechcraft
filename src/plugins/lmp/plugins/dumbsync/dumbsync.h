@@ -63,7 +63,7 @@ namespace LC::LMP::DumbSync
 		QString GetSyncSystemName () const override;
 		QAbstractItemModel& GetSyncTargetsModel () override;
 		void RefreshSyncTargets () override;
-		ISyncPluginConfigWidget_ptr MakeConfigWidget () override;
+		ISyncPluginConfigWidget_ptr MakeConfigWidget (const QModelIndex&) override;
 		Util::ContextTask<UploadResult> Upload (UploadJob) override;
 	private:
 		Util::ContextTask<Util::Either<UploadFailure, QString>> EnsureMounted (QPersistentModelIndex);

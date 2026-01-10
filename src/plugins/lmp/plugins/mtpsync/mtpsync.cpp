@@ -143,7 +143,7 @@ namespace LC::LMP::MTPSync
 		return *DevicesModel_;
 	}
 
-	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget ()
+	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget (const QModelIndex&)
 	{
 		return {};
 	}
