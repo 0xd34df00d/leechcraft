@@ -44,7 +44,7 @@ namespace LC::Vrooby
 
 		bool SupportsDevType (DeviceType) const override;
 		QAbstractItemModel* GetDevicesModel () override;
-		void MountDevice (const QString&) override;
+		Util::Task<void> MountDevice (const QString&) override;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 	private slots:

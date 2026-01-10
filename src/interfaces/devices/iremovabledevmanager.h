@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <QList>
 #include <QString>
 #include <QtPlugin>
+#include <util/threads/coro/taskfwd.h>
 #include "devicetypes.h"
 
 class QAbstractItemModel;
@@ -78,7 +78,7 @@ public:
 	 *
 	 * @sa CommonDevRole::DevID
 	 */
-	virtual void MountDevice (const QString& id) = 0;
+	virtual LC::Util::Task<void> MountDevice (const QString& id) = 0;
 };
 
 Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0")

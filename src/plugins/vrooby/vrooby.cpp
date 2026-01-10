@@ -13,6 +13,7 @@
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sll/qtutil.h>
+#include <util/threads/coro/task.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -118,10 +119,12 @@ namespace LC::Vrooby
 		return Backend_ ? Backend_->GetDevicesModel () : nullptr;
 	}
 
-	void Plugin::MountDevice (const QString& id)
+	Util::Task<void> Plugin::MountDevice (const QString& id)
 	{
 		if (Backend_)
-			Backend_->MountDevice (id);
+			co_return co_await Backend_->MountDevice (id);
+
+		co_return;
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const

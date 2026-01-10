@@ -160,14 +160,14 @@ namespace LC::Vrooby::UDisks2
 		}
 	}
 
-	void Backend::MountDevice (const QString& id)
+	Util::Task<void> Backend::MountDevice (const QString& id)
 	{
 		const auto pos = Id2Row_.value (id, -1);
 		if (pos == -1)
-			return;
+			co_return;
 
 		if (!Devices_.GetItems ().value (pos).IsMounted_)
-			RunMount (id);
+			co_return co_await RunMount (id);
 	}
 
 	Util::ContextTask<void> Backend::InitialEnumerate ()

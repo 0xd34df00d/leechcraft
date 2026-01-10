@@ -39,7 +39,7 @@ namespace Devmon
 
 		bool SupportsDevType (DeviceType) const;
 		QAbstractItemModel* GetDevicesModel ();
-		void MountDevice (const QString& id);
+		Util::Task<void> MountDevice (const QString& id);
 	};
 }
 }

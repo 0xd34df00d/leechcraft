@@ -8,6 +8,7 @@
 
 #include "devmon.h"
 #include <QIcon>
+#include <util/threads/coro/task.h>
 #include "udevbackend.h"
 
 namespace LC
@@ -58,10 +59,10 @@ namespace Devmon
 		return Backend_->GetModel ();
 	}
 
-	void Plugin::MountDevice (const QString&)
+	Util::Task<void> Plugin::MountDevice (const QString&)
 	{
-		qWarning () << Q_FUNC_INFO
-				<< "mounts aren't suported";
+		qWarning () << "mounts aren't suported";
+		co_return;
 	}
 }
 }
