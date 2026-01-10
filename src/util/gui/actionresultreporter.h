@@ -30,17 +30,31 @@ namespace LC::Util
 		QPointer<QWidget> Parent_;
 		const bool HadParent_ = Parent_;
 
-		QDeadlineTimer Timer_;
+		QDeadlineTimer TimerBackground_;
+
+		std::optional<QWidget*> InitialFocus_;
 	public:
+		struct DefaultBackgroundPolicy {};
+		struct FocusBackgroundPolicy {};
+		struct TimeoutBackgroundPolicy { std::chrono::milliseconds Timeout_; };
+
+		using BackgroundPolicy = std::variant<
+				DefaultBackgroundPolicy,
+				FocusBackgroundPolicy,
+				std::chrono::milliseconds
+			>;
+
 		struct Config
 		{
 			QString Context_;
 			Priority Priority_ = Priority::Warning;
-			std::optional<std::chrono::milliseconds> BackgroundDelay_ {};
+			BackgroundPolicy BackgroundPolicy_ = DefaultBackgroundPolicy {};
 		};
 
 		explicit ActionResultReporter (IEntityManager& iem, Config config, QWidget *parent = nullptr);
 
 		void operator() (const QString&);
+	private:
+		bool FocusChanged () const;
 	};
 }

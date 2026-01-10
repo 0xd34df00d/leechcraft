@@ -7,26 +7,44 @@
  **********************************************************************/
 
 #include "actionresultreporter.h"
+#include <QApplication>
 #include <QMessageBox>
 #include <interfaces/core/ientitymanager.h>
+#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 
 namespace LC::Util
 {
 	using namespace std::chrono_literals;
 
+	namespace
+	{
+		QDeadlineTimer GetDeadlineTimer (ActionResultReporter::BackgroundPolicy policy)
+		{
+			return Visit (policy,
+					[] (const ActionResultReporter::TimeoutBackgroundPolicy& policy) { return QDeadlineTimer { policy.Timeout_ }; },
+					[] (const auto&) { return QDeadlineTimer { QDeadlineTimer::Forever }; });
+		}
+	}
+
 	ActionResultReporter::ActionResultReporter (IEntityManager& iem, Config config, QWidget *parent)
 	: IEM_ { iem }
 	, Context_ { config.Context_ }
 	, Priority_ { config.Priority_ }
 	, Parent_ { parent }
-	, Timer_ { config.BackgroundDelay_.value_or (5s) }
+	, TimerBackground_ { GetDeadlineTimer (config.BackgroundPolicy_) }
 	{
+		Visit (config.BackgroundPolicy_,
+				[] (const TimeoutBackgroundPolicy&) {},
+				[this] (const auto&)
+				{
+					InitialFocus_ = qApp->focusWidget ();
+				});
 	}
 
 	void ActionResultReporter::operator() (const QString& error)
 	{
-		const auto isBackground = Timer_.hasExpired () || (!Parent_ && HadParent_);
+		const auto isBackground = FocusChanged () || TimerBackground_.hasExpired () || (!Parent_ && HadParent_);
 
 		if (isBackground)
 			IEM_.HandleEntity (MakeNotification (Context_, error, Priority_));
@@ -43,5 +61,14 @@ namespace LC::Util
 				QMessageBox::critical (Parent_, Context_, error);
 				break;
 			}
+	}
+
+	bool ActionResultReporter::FocusChanged () const
+	{
+		if (!InitialFocus_ || !*InitialFocus_)
+			return false;
+
+		const auto curFocus = qApp->focusWidget ();
+		return InitialFocus_ != curFocus;
 	}
 }
