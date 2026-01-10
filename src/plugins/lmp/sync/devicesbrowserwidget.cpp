@@ -187,11 +187,13 @@ namespace LMP
 						[&] (const SyncEvents::XcodingSkipped& e)
 						{
 							TranscodingBar_.setMaximum (TranscodingBar_.maximum () - e.Count_);
+							CheckTranscodingBar ();
 							TranscodingProgress_.SetTotal (TranscodingProgress_.GetTotal () - e.Count_);
 						},
 						[&] (const SyncEvents::XcodingFinished&)
 						{
 							TranscodingBar_.setValue (TranscodingBar_.value () + 1);
+							CheckTranscodingBar ();
 							++TranscodingProgress_;
 						},
 						[&] (const SyncEvents::CopyFinished&)
@@ -205,6 +207,12 @@ namespace LMP
 			static ProgressManager::Item MakeItem (const QString& name, int count)
 			{
 				return { .Name_ = name, .StatusPattern_ = tr ("%1 of %2"), .Type_ = ProcessProgress, .Total_ = count };
+			}
+
+			void CheckTranscodingBar ()
+			{
+				if (TranscodingBar_.value () == TranscodingBar_.maximum ())
+					TranscodingBar_.hide ();
 			}
 		};
 	}
