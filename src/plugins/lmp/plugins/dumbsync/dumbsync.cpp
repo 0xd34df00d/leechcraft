@@ -8,12 +8,12 @@
 
 #include "dumbsync.h"
 #include <memory>
-#include <QBindable>
 #include <QConcatenateTablesProxyModel>
 #include <QFileInfo>
 #include <QDir>
 #include <QIcon>
 #include <QLineEdit>
+#include <QSortFilterProxyModel>
 #include <QtConcurrentRun>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -68,8 +68,7 @@ namespace LC::LMP::DumbSync
 			bool filterAcceptsRow (int row, const QModelIndex&) const override
 			{
 				const auto& srcIdx = sourceModel ()->index (row, 0);
-				return srcIdx.data (MassStorageRole::IsMountable).toBool () &&
-						srcIdx.data (MassStorageRole::IsMounted).toBool ();
+				return srcIdx.data (MassStorageRole::IsMountable).toBool ();
 			}
 		};
 	}
@@ -79,19 +78,21 @@ namespace LC::LMP::DumbSync
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml"_qs);
 
-		SyncTargets_ = std::make_unique<MountableFilterModel> ();
+		DevModelsMerger_ = new QConcatenateTablesProxyModel { this };
+		SyncTargets_ = new MountableFilterModel { this };
 	}
 
 	void Plugin::SecondInit ()
 	{
-		const auto merger = new QConcatenateTablesProxyModel { this };
-
-		const auto pm = GetProxyHolder ()->GetPluginsManager ();
-		for (const auto& mgr : pm->GetAllCastableTo<IRemovableDevManager*> ())
+		for (const auto& mgr : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IRemovableDevManager*> ())
 			if (mgr->SupportsDevType (DeviceType::MassStorage))
-				merger->addSourceModel (mgr->GetDevicesModel ());
+			{
+				const auto model = mgr->GetDevicesModel ();
+				DevModelsMerger_->addSourceModel (model);
+				Model2DevManager_ [model] = mgr;
+			}
 
-		SyncTargets_->setSourceModel (merger);
+		SyncTargets_->setSourceModel (DevModelsMerger_);
 	}
 
 	void Plugin::Release ()
@@ -240,16 +241,7 @@ namespace LC::LMP::DumbSync
 		XmlSettingsManager::Instance ().setProperty ("FileMask", config.Mask_);
 
 		const auto& targetRelPath = FixMask (job.MediaInfo_, config.Mask_);
-		const auto& targetMountPoint = job.Target_.data (MassStorageRole::MountPoints).toStringList ().value (0);
-		if (targetMountPoint.isEmpty ())
-		{
-			qWarning () << "bad target" << job.Target_;
-			co_return UploadFailure
-			{
-				QFile::OpenError,
-				tr ("Target mount point does not exist."),
-			};
-		}
+		const auto& targetMountPoint = co_await co_await EnsureMounted (SyncTargets_->mapToSource (job.Target_));
 
 		auto target = targetMountPoint;
 		if (!target.endsWith ('/') && !targetRelPath.startsWith ('/'))
@@ -267,7 +259,7 @@ namespace LC::LMP::DumbSync
 
 		const auto& artPath = LMPProxy_->GetUtilProxy ()->FindAlbumArt (job.OriginalLocalPath_);
 
-		co_return co_await QtConcurrent::run ([&] () -> UploadResult
+		co_return co_await QtConcurrent::run ([&] -> UploadResult
 				{
 					if (QFile file { job.LocalPath_ };
 						!file.copy (target))
@@ -279,6 +271,32 @@ namespace LC::LMP::DumbSync
 						WriteScaledPixmap (artPath, target);
 					return UploadSuccess {};
 				});
+	}
+
+	Util::ContextTask<Util::Either<ISyncPlugin::UploadFailure, QString>> Plugin::EnsureMounted (QPersistentModelIndex idx)
+	{
+		if (const auto isMounted = idx.data (MassStorageRole::IsMounted).toBool ();
+			!isMounted)
+		{
+			const auto srcModel = DevModelsMerger_->mapToSource (idx).model ();
+			const auto mgr = Model2DevManager_.value (srcModel);
+			if (!mgr)
+			{
+				qWarning () << "unable to find source manager for" << idx << srcModel << Model2DevManager_;
+				co_return UploadFailure { QFile::OpenError, tr ("Unable to mount target.") };
+			}
+
+			co_await mgr->MountDevice (idx.data (CommonDevRole::DevID).toString ());
+		}
+
+		const auto& targetMountPoint = idx.data (MassStorageRole::MountPoints).toStringList ().value (0);
+		if (targetMountPoint.isEmpty ())
+		{
+			qWarning () << "bad target" << idx;
+			co_return UploadFailure { QFile::OpenError, tr ("Target mount point does not exist.") };
+		}
+
+		co_return targetMountPoint;
 	}
 }
 

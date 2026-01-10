@@ -9,13 +9,14 @@
 #pragma once
 
 #include <QObject>
-#include <QSortFilterProxyModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/isyncplugin.h>
 
+class IRemovableDevManager;
+class QConcatenateTablesProxyModel;
 class QSortFilterProxyModel;
 
 namespace LC::LMP::DumbSync
@@ -39,7 +40,10 @@ namespace LC::LMP::DumbSync
 		Util::XmlSettingsDialog_ptr XSD_;
 		ILMPProxy_ptr LMPProxy_;
 
-		std::unique_ptr<QSortFilterProxyModel> SyncTargets_;
+		QConcatenateTablesProxyModel *DevModelsMerger_;
+		QSortFilterProxyModel *SyncTargets_;
+
+		QHash<const QAbstractItemModel*, IRemovableDevManager*> Model2DevManager_;
 	public:
 		void Init (ICoreProxy_ptr proxy) override;
 		void SecondInit () override;
@@ -61,5 +65,7 @@ namespace LC::LMP::DumbSync
 		void RefreshSyncTargets () override;
 		ISyncPluginConfigWidget_ptr MakeConfigWidget () override;
 		Util::ContextTask<UploadResult> Upload (UploadJob) override;
+	private:
+		Util::ContextTask<Util::Either<UploadFailure, QString>> EnsureMounted (QPersistentModelIndex);
 	};
 }
