@@ -10,14 +10,17 @@
 #include <QConcatenateTablesProxyModel>
 #include <QFileInfo>
 #include <QSettings>
+#include <util/gui/actionresultreporter.h>
 #include <util/gui/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/threads/coro/context.h>
 #include <util/threads/coro/task.h>
+#include <util/xpc/util.h>
 #include <interfaces/devices/deviceroles.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include "core.h"
@@ -215,6 +218,61 @@ namespace LMP
 					TranscodingBar_.hide ();
 			}
 		};
+
+		class ErrorAccumulator final
+		{
+			Q_DECLARE_TR_FUNCTIONS (LC::LMP::ErrorAccumulator)
+
+			struct Error
+			{
+				QString Orig_;
+				QString Message_;
+			};
+
+			QList<Error> XcodingErrors_;
+			QList<Error> CopyErrors_;
+		public:
+			bool HasErrors () const
+			{
+				return !XcodingErrors_.isEmpty () || !CopyErrors_.isEmpty ();
+			}
+
+			QString GetMessage () const
+			{
+				return ShowList (tr ("%n file(s) were not transcoded:", nullptr, XcodingErrors_.size ()), XcodingErrors_) +
+						ShowList (tr ("%n file(s) were not copied:", nullptr, CopyErrors_.size ()), CopyErrors_);
+			}
+
+			void HandleSyncEvent (const SyncEvents::Event& event)
+			{
+				Util::Visit (event,
+						[&] (const SyncEvents::XcodingFailed& e) { XcodingErrors_ << Error { e.Orig_, e.Message_ }; },
+						[&] (const SyncEvents::CopyFailed& e) { CopyErrors_ << Error { e.Orig_, e.Message_ }; },
+						[] (const auto&) {});
+			}
+		private:
+			static QString FormatError (const Error& error)
+			{
+				return Util::FormatName (QFileInfo { error.Orig_ }.fileName ()) + ": "_qs + error.Message_;
+			}
+
+			static QString ShowList (const QString& header, const QList<Error>& errors)
+			{
+				if (errors.isEmpty ())
+					return {};
+
+				if (errors.size () == 1)
+					return header + ' ' + FormatError (errors [0]);
+
+				constexpr auto maxDetailed = 3;
+
+				auto strings = Util::Map (errors.mid (0, maxDetailed), &ErrorAccumulator::FormatError);
+				if (errors.size () > maxDetailed)
+					strings += u"…"_qs;
+
+				return header + "<ul><li>"_qs + strings.join ("</li><li>"_qs) + "</li></ul>"_qs;
+			}
+		};
 	}
 
 	void DevicesBrowserWidget::on_UploadButton__released ()
@@ -240,15 +298,23 @@ namespace LMP
 		{
 			co_await Util::AddContextObject { *this };
 
-			ProgressTracker progress { paths.size (), *Ui_.TSProgress_, *Ui_.UploadProgress_ };
+			const auto count = paths.size ();
+
+			auto& iem = *GetProxyHolder ()->GetEntityManager ();
+			ProgressTracker progress { count, *Ui_.TSProgress_, *Ui_.UploadProgress_ };
 			SyncManager mgr;
+
+			ErrorAccumulator errors;
+			Util::ActionResultReporter errorsReporter { iem, { "LMP"_qs, Priority::Critical }, this };
+
 			connect (&mgr,
 					&SyncManager::syncEvent,
 					this,
-					[this, &progress] (const SyncEvents::Event& event)
+					[&, this] (const SyncEvents::Event& event)
 					{
 						HandleSyncEvent (event);
 						progress.HandleSyncEvent (event);
+						errors.HandleSyncEvent (event);
 					});
 			co_await mgr.RunUpload (paths, Ui_.TranscodingOpts_->GetParams (),
 					{
@@ -256,6 +322,14 @@ namespace LMP
 						.Target_ = GetSourceIndex (idx),
 						.Config_ = SyncerConfigWidget_ ? SyncerConfigWidget_->GetConfig () : ISyncPluginConfig_cptr {},
 					});
+
+			if (errors.HasErrors ())
+				errorsReporter (errors.GetMessage ());
+			else
+			{
+				const auto& msg = tr ("Successfully uploaded %n tracks.", nullptr, count);
+				iem.HandleEntity (Util::MakeNotification ("LMP"_qs, msg, Priority::Info));
+			}
 		} ();
 	}
 
