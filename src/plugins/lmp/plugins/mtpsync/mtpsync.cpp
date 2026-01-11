@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "mtpsync.h"
+#include <QComboBox>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -16,6 +17,7 @@
 #include <interfaces/lmp/ilmputilproxy.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
+#include <util/util.h>
 
 namespace LC::LMP::MTPSync
 {
@@ -143,9 +145,45 @@ namespace LC::LMP::MTPSync
 		return *DevicesModel_;
 	}
 
-	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget (const QModelIndex&)
+	namespace
 	{
-		return {};
+		struct UploadConfig : ISyncPluginConfig
+		{
+			uint32_t StorageId_ = 0;
+
+			explicit UploadConfig (uint32_t storageId)
+			: StorageId_ { storageId }
+			{
+			}
+		};
+	}
+
+	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget (const QModelIndex& idx)
+	{
+		class ConfigWidget
+			: public QComboBox
+			, public ISyncPluginConfigWidget
+		{
+		public:
+			QWidget* GetQWidget () override
+			{
+				return this;
+			}
+
+			ISyncPluginConfig_cptr GetConfig () const override
+			{
+				return std::make_shared<const UploadConfig> (currentData ().toInt ());
+			}
+		};
+
+		auto widget = std::make_unique<ConfigWidget> ();
+		widget->setPlaceholderText (tr ("No storages available — is the device in the file transfer mode?"));
+		const auto& storages = DevicesModel_->GetItems ().value (idx.row ()).Storages_;
+		for (const auto& storage : storages)
+			widget->addItem ("%1 (%2)"_qs.arg (storage.Name_, Util::MakePrettySize (storage.TotalSize_)), storage.ID_);
+		if (!storages.isEmpty ())
+			widget->setCurrentIndex (0);
+		return widget;
 	}
 
 	void Plugin::RefreshSyncTargets ()
@@ -155,10 +193,11 @@ namespace LC::LMP::MTPSync
 
 	Util::ContextTask<ISyncPlugin::UploadResult> Plugin::Upload (UploadJob job)
 	{
+		const auto storageId = dynamic_cast<const UploadConfig&> (*job.Config_).StorageId_;
 		const auto& serial = job.Target_.data (CommonDevRole::DevPersistentID).toByteArray ();
 		return Mtp_->Run (&Mtp::Upload, Mtp::UploadCtx {
 					.Serial_ = serial,
-					.StorageId_ = 0,
+					.StorageId_ = storageId,
 					.LocalPath_ = job.LocalPath_,
 					.MediaInfo_ = job.MediaInfo_,
 					.AlbumArtPath_ = LMPProxy_->GetUtilProxy ()->FindAlbumArt (job.OriginalLocalPath_),
@@ -174,7 +213,7 @@ namespace LC::LMP::MTPSync
 		{
 			if (!std::ranges::any_of (DevicesModel_->GetItems (),
 					[&dev] (const ModelRow& row) { return row.Serial_ == dev.Serial_; }))
-				rows << ModelRow { dev.Serial_, dev.DevName_, icon };
+				rows << ModelRow { dev.Serial_, dev.DevName_, icon, dev.Storages_ };
 		}
 		DevicesModel_->AddItems (rows);
 	}
