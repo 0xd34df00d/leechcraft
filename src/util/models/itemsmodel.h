@@ -117,19 +117,12 @@ namespace LC::Util
 	{
 	public:
 		using FieldGetter_t = detail::FieldGetter_t<T>;
-
-		constexpr static size_t FieldsCount_v = decltype (detail::GetFieldsCount (std::declval<T> ()))::value;
 	private:
 		const QHash<int, FieldGetter_t> Role2Getter_;
-		const std::array<int, FieldsCount_v> Field2Role_;
 	public:
 		explicit SimpleRoledItemsModel (QObject *parent = nullptr)
 		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
 		, Role2Getter_ { detail::MkGetters<T> () }
-		, Field2Role_ { []<size_t... Ixs> (std::index_sequence<Ixs...>)
-				{
-					return std::array<int, FieldsCount_v> { { detail::FieldType_t<T, Ixs>::Role... } };
-				} (std::make_index_sequence<FieldsCount_v> {}) }
 		{
 		}
 
@@ -138,7 +131,7 @@ namespace LC::Util
 		{
 			this->Items_ [idx].*F = std::forward<V> (value);
 			emit this->dataChanged (this->index (idx, 0), this->index (idx, 0),
-					{ Field2Role_ [std::decay_t<decltype (T {}.*F)>::Role] });
+					{ std::decay_t<decltype (T {}.*F)>::Role });
 		}
 	protected:
 		QVariant GetData (int row, int, int role) const override
