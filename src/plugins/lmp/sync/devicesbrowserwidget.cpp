@@ -299,7 +299,8 @@ namespace LMP
 
 		Ui_.UploadLog_->clear ();
 
-		const auto& paths = DevUploadModel_->GetSelectedPaths ();
+		auto paths = DevUploadModel_->GetSelectedPaths ();
+		paths.sort ();
 		[&, this] -> Util::ContextTask<void>
 		{
 			co_await Util::AddContextObject { *this };
