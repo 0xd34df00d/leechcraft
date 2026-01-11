@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <QIcon>
 #include <util/models/itemsmodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -44,6 +45,7 @@ namespace LC::LMP::MTPSync
 		{
 			Util::RoleOf<QByteArray, CommonDevRole::DevPersistentID> Serial_;
 			Util::RoleOf<QString, Qt::DisplayRole> DevName_;
+			Util::RoleOf<QIcon, Qt::DecorationRole> Icon_;
 		};
 		Util::SimpleRoledItemsModel<ModelRow> *DevicesModel_;
 

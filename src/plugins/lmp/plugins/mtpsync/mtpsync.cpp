@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "mtpsync.h"
-#include <QIcon>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/devices/deviceroles.h>
@@ -167,12 +167,14 @@ namespace LC::LMP::MTPSync
 
 	void Plugin::AddDevices (const QList<MtpDeviceInfo>& devices)
 	{
+		const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("smartphone"_qs);
+
 		QList<ModelRow> rows;
 		for (const auto& dev : devices)
 		{
 			if (!std::ranges::any_of (DevicesModel_->GetItems (),
 					[&dev] (const ModelRow& row) { return row.Serial_ == dev.Serial_; }))
-				rows << ModelRow { dev.Serial_, dev.DevName_ };
+				rows << ModelRow { dev.Serial_, dev.DevName_, icon };
 		}
 		DevicesModel_->AddItems (rows);
 	}
