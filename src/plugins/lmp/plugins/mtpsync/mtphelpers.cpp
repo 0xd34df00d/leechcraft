@@ -66,7 +66,7 @@ namespace LC::LMP::MTPSync::Helpers
 			{
 				storage->id,
 				QString::fromUtf8 (storage->StorageDescription),
-				storage->FreeSpaceInBytes,
+				storage->MaxCapacity,
 			};
 			result << part;
 			storage = storage->next;
