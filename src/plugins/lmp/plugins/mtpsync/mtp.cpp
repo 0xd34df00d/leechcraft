@@ -122,12 +122,6 @@ namespace LC::LMP::MTPSync
 
 	void Mtp::HandleDevicesDisconnected (const QList<UsbDevice>& devices)
 	{
-		if (std::ranges::any_of (devices, Check))
-			Refresh ();
-	}
-
-	void Mtp::HandleDevicesConnected (const QList<UsbDevice>& devices)
-	{
 		QList<MtpDeviceInfo> mtps;
 		for (const auto& dev : devices)
 			if (Devices_.contains (dev))
@@ -135,6 +129,12 @@ namespace LC::LMP::MTPSync
 
 		if (!mtps.isEmpty ())
 			emit mtpDisconnected (mtps);
+	}
+
+	void Mtp::HandleDevicesConnected (const QList<UsbDevice>& devices)
+	{
+		if (std::ranges::any_of (devices, Check))
+			Refresh ();
 	}
 
 	ISyncPlugin::UploadResult Mtp::Upload (const UploadCtx& ctx)
