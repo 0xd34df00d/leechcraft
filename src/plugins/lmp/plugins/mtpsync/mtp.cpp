@@ -7,9 +7,14 @@
  **********************************************************************/
 
 #include "mtp.h"
+#include <QBuffer>
 #include <QFileInfo>
+#include <QImage>
 #include <libmtp.h>
+#include <taglib/fileref.h>
 #include <util/sll/qtutil.h>
+#include <util/sys/paths.h>
+#include <interfaces/lmp/itagresolver.h>
 #include "mtphelpers.h"
 
 namespace LC::LMP::MTPSync
@@ -149,6 +154,90 @@ namespace LC::LMP::MTPSync
 			Refresh ();
 	}
 
+	namespace
+	{
+		std::shared_ptr<QFile> MakeTemporaryFile (const QString& origPath)
+		{
+			const auto& suffix = QFileInfo { origPath }.completeSuffix ();
+			const auto& tmpPath = Util::GetTemporaryName ("lc_lmp_mtpsync.XXXXXX."_qs + suffix);
+			if (!QFile::copy (origPath, tmpPath))
+			{
+				qWarning () << "unable to copy" << origPath << "to" << tmpPath;
+				return {};
+			}
+
+			return
+			{
+				new QFile { tmpPath },
+				[] (QFile *file)
+				{
+					file->remove ();
+					delete file;
+				}
+			};
+		}
+
+		TagLib::ByteVector GetImageBytes (const QString& path)
+		{
+			const QImage image { path };
+			if (image.isNull ())
+			{
+				qWarning () << "unable to load image from" << path;
+				return {};
+			}
+
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			image.save (&buffer, "JPG", 90);
+			const auto& data = buffer.data ();
+
+			return { data.data (), static_cast<unsigned int> (data.size ()) };
+		}
+
+		bool DoEmbed (const QString& path, const QString& albumArtPath, ITagResolver& resolver)
+		{
+			const auto& albumArt = GetImageBytes (albumArtPath);
+			if (albumArt.isEmpty ())
+				return false;
+
+			using namespace std::string_literals;
+			TagLib::VariantMap pic
+			{
+				{ "data"s, albumArt },
+				{ "mimeType"s, TagLib::String { "image/jpeg"s } },
+				{ "pictureType"s, TagLib::String { "Front Cover"s } },
+			};
+
+			const QMutexLocker guard { &resolver.GetMutex () };
+			TagLib::FileRef fileRef { path.toUtf8 ().constData (), true, TagLib::AudioProperties::Fast };
+			if (fileRef.isNull ())
+			{
+				qWarning () << "unable to create TagLib ref for" << path;
+				return false;
+			}
+
+			if (!fileRef.setComplexProperties ("PICTURE"s, { pic }))
+			{
+				qWarning () << "unable to set PICTURE for" << path;
+				return false;
+			}
+
+			return fileRef.save ();
+		}
+
+		std::shared_ptr<QFile> EmbedAlbumArt (const QString& origPath, const QString& albumArtPath, ITagResolver& resolver)
+		{
+			if (albumArtPath.isEmpty () || !QFile::exists (albumArtPath))
+				return {};
+
+			const auto& tmpFile = MakeTemporaryFile (origPath);
+			if (!tmpFile || !DoEmbed (tmpFile->fileName (), albumArtPath, resolver))
+				return {};
+
+			return tmpFile;
+		}
+	}
+
 	ISyncPlugin::UploadResult Mtp::Upload (const UploadCtx& ctx)
 	{
 		const auto device = GetDevice (ctx.Serial_);
@@ -167,7 +256,9 @@ namespace LC::LMP::MTPSync
 		Helpers::FillTrack (*track, ctx.MediaInfo_);
 		track->storage_id = ctx.StorageId_;
 
-		if (const auto err = LIBMTP_Send_Track_From_File (&*device, ctx.LocalPath_.toUtf8 ().constData (), &*track, nullptr, nullptr))
+		const auto file = EmbedAlbumArt (ctx.LocalPath_, ctx.AlbumArtPath_, ctx.TagsResolver_);
+		const auto filename = file ? file->fileName () : ctx.LocalPath_;
+		if (const auto err = LIBMTP_Send_Track_From_File (&*device, filename.toUtf8 ().constData (), &*track, nullptr, nullptr))
 		{
 			qWarning () << "sending track failed:" << err;
 			LIBMTP_Dump_Errorstack (&*device);

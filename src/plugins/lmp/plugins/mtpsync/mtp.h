@@ -14,6 +14,11 @@
 #include <interfaces/lmp/isyncplugin.h>
 #include "types.h"
 
+namespace LC::LMP
+{
+	class ITagResolver;
+}
+
 namespace LC::LMP::MTPSync
 {
 	struct UsbDevice
@@ -63,6 +68,8 @@ namespace LC::LMP::MTPSync
 
 			MediaInfo MediaInfo_;
 			QString AlbumArtPath_;
+
+			ITagResolver& TagsResolver_;
 		};
 
 		ISyncPlugin::UploadResult Upload (const UploadCtx&);

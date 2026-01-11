@@ -11,5 +11,5 @@ LC_DEFINE_PLUGIN (
 		mtphelpers.cpp
 		mtpsync.cpp
 	QT_COMPONENTS Concurrent Gui
-	LINK_LIBRARIES PkgConfig::MTP
+	LINK_LIBRARIES PkgConfig::MTP PkgConfig::TagLib
 	)

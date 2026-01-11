@@ -201,6 +201,7 @@ namespace LC::LMP::MTPSync
 					.LocalPath_ = job.LocalPath_,
 					.MediaInfo_ = job.MediaInfo_,
 					.AlbumArtPath_ = LMPProxy_->GetUtilProxy ()->FindAlbumArt (job.OriginalLocalPath_),
+					.TagsResolver_ = *LMPProxy_->GetTagResolver (),
 				});
 	}
 
