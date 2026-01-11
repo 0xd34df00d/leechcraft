@@ -70,8 +70,6 @@ namespace MP3Tunes
 		}
 		settings.endArray ();
 		settings.endGroup ();
-
-		emit accountsChanged ();
 	}
 
 	void AccountsManager::addRequested (const QString&, const QVariantList& variants)
@@ -83,7 +81,6 @@ namespace MP3Tunes
 		AccModel_->appendRow (new QStandardItem (str));
 
 		SaveAccounts ();
-		emit accountsChanged ();
 	}
 
 	void AccountsManager::removeRequested (const QString&, const QModelIndexList& indices)
@@ -97,8 +94,6 @@ namespace MP3Tunes
 			AccModel_->removeRow (item->row ());
 
 		SaveAccounts ();
-
-		emit accountsChanged ();
 	}
 }
 }

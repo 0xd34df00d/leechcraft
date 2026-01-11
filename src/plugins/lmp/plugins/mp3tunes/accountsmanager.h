@@ -37,8 +37,6 @@ namespace MP3Tunes
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
 		void removeRequested (const QString&, const QModelIndexList&);
-	signals:
-		void accountsChanged ();
 	};
 }
 }

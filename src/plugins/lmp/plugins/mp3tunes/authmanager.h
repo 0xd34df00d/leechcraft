@@ -12,7 +12,7 @@
 #include <QObject>
 #include <QMap>
 #include <QSet>
-#include <interfaces/lmp/icloudstorageplugin.h>
+#include <interfaces/lmp/isyncplugin.h>
 
 namespace LC::LMP::MP3Tunes
 {
@@ -25,7 +25,7 @@ namespace LC::LMP::MP3Tunes
 	public:
 		using QObject::QObject;
 
-		using ResultType = Util::Either<ICloudStoragePlugin::UploadError, QString>;
+		using ResultType = Util::Either<ISyncPlugin::UploadFailure, QString>;
 
 		Util::ContextTask<ResultType> GetSID (const QString&);
 	};

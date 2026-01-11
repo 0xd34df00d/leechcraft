@@ -30,38 +30,77 @@ namespace LC::LMP::MP3Tunes
 
 	namespace
 	{
+		enum class CloudStorageError
+		{
+			NetError,
+			FileHashMismatch,
+			InvalidSession,
+			NotAuthorized,
+			UnsupportedFileFormat,
+			FilesizeExceeded,
+			StorageFull,
+			ServiceError,
+			OtherError
+		};
+
+		QString GetErrorString (CloudStorageError error)
+		{
+			switch (error)
+			{
+			case CloudStorageError::NetError:
+				return Uploader::tr ("network error");
+			case CloudStorageError::FileHashMismatch:
+				return Uploader::tr ("file hash mismatch");
+			case CloudStorageError::InvalidSession:
+				return Uploader::tr ("invalid session");
+			case CloudStorageError::NotAuthorized:
+				return Uploader::tr ("not authorized");
+			case CloudStorageError::UnsupportedFileFormat:
+				return Uploader::tr ("unsupported file format");
+			case CloudStorageError::FilesizeExceeded:
+				return Uploader::tr ("file size exceeded");
+			case CloudStorageError::StorageFull:
+				return Uploader::tr ("storage full");
+			case CloudStorageError::ServiceError:
+				return Uploader::tr ("service error");
+			case CloudStorageError::OtherError:
+				return Uploader::tr ("unknown error");
+			}
+
+			std::unreachable ();
+		}
+
 		CloudStorageError GetErrorCode (const QByteArray& code)
 		{
 			static const QHash<QByteArray, CloudStorageError> errors
 			{
-				{ "400002", CloudStorageError::FileHashMismatch },
-				{ "401002", CloudStorageError::InvalidSession },
-				{ "401003", CloudStorageError::NotAuthorized },
-				{ "401005", CloudStorageError::InvalidSession },
-				{ "403001", CloudStorageError::OtherError },
-				{ "403002", CloudStorageError::UnsupportedFileFormat },
-				{ "409001", CloudStorageError::FileHashMismatch },
-				{ "413001", CloudStorageError::FilesizeExceeded },
-				{ "413002", CloudStorageError::StorageFull },
-				{ "415001", CloudStorageError::UnsupportedFileFormat },
-				{ "500001", CloudStorageError::ServiceError },
-				{ "503001", CloudStorageError::ServiceError },
+				{ "400002"_qba, CloudStorageError::FileHashMismatch },
+				{ "401002"_qba, CloudStorageError::InvalidSession },
+				{ "401003"_qba, CloudStorageError::NotAuthorized },
+				{ "401005"_qba, CloudStorageError::InvalidSession },
+				{ "403001"_qba, CloudStorageError::OtherError },
+				{ "403002"_qba, CloudStorageError::UnsupportedFileFormat },
+				{ "409001"_qba, CloudStorageError::FileHashMismatch },
+				{ "413001"_qba, CloudStorageError::FilesizeExceeded },
+				{ "413002"_qba, CloudStorageError::StorageFull },
+				{ "415001"_qba, CloudStorageError::UnsupportedFileFormat },
+				{ "500001"_qba, CloudStorageError::ServiceError },
+				{ "503001"_qba, CloudStorageError::ServiceError },
 			};
 			return errors.value (code, CloudStorageError::ServiceError);
 		}
 	}
 
-	Util::ContextTask<ICloudStoragePlugin::UploadResult> Uploader::Upload (const QString& path)
+	Util::ContextTask<ISyncPlugin::UploadResult> Uploader::Upload (const QString& path)
 	{
 		co_await Util::AddContextObject { *this };
-		const auto eitherSid = co_await AuthMgr_->GetSID (Login_);
-		const auto sid = co_await eitherSid;
+		const auto sid = co_await co_await AuthMgr_->GetSID (Login_);
 
 		QFile file { path };
 		if (!file.open (QIODevice::ReadOnly))
 		{
 			const auto& userMsg = tr ("Unable to open file %1 for reading.").arg (path);
-			co_return { Util::AsLeft, { CloudStorageError::LocalError, userMsg } };
+			co_return { Util::AsLeft, { QFile::OpenError, userMsg } };
 		}
 
 		const auto& fileData = file.readAll ();
@@ -73,10 +112,12 @@ namespace LC::LMP::MP3Tunes
 		const auto reply = GetProxyHolder ()->GetNetworkAccessManager ()->put (QNetworkRequest { url }, fileData);
 		const auto response = co_await *reply;
 		if (!response.IsError ())
-			co_return Util::Void {};
+			co_return ISyncPlugin::UploadSuccess {};
 
 		const auto& errnoHeader = reply->rawHeader ("X-MP3tunes-ErrorNo");
 		const auto& errMsgHeader = reply->rawHeader ("X-MP3tunes-ErrorString");
-		co_return { Util::AsLeft, { GetErrorCode (errnoHeader), tr ("uploading failed: %1").arg (errMsgHeader) } };
+		const auto errorCode = GetErrorCode (errnoHeader);
+		const auto errorString = GetErrorString (errorCode);
+		co_return { Util::AsLeft, { QFile::CopyError, tr ("uploading failed: %1 (%2)").arg (errorString, errMsgHeader) } };
 	}
 }

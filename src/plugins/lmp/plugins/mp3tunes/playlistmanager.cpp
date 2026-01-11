@@ -31,8 +31,14 @@ namespace LC::LMP::MP3Tunes
 	, Root_ { new QStandardItem { "mp3tunes.com"_qs } }
 	{
 		Root_->setEditable (false);
-		connect (AccMgr_,
-				&AccountsManager::accountsChanged,
+		const auto accModel = AccMgr_->GetAccModel ();
+		connect (accModel,
+				&QAbstractItemModel::rowsInserted,
+				this,
+				&PlaylistManager::Update,
+				Qt::QueuedConnection);
+		connect (accModel,
+				&QAbstractItemModel::rowsRemoved,
 				this,
 				&PlaylistManager::Update,
 				Qt::QueuedConnection);
@@ -94,8 +100,8 @@ namespace LC::LMP::MP3Tunes
 
 		Util::Task<Util::Either<QString, QList<Playlist>>> FetchPlaylists (QString accName, AuthManager *authMgr)
 		{
-			const auto sidResult = co_await authMgr->GetSID (accName);
-			const auto sid = co_await sidResult;
+			const auto eitherSid = co_await authMgr->GetSID (accName);
+			const auto sid = co_await eitherSid.MapLeft ([] (const auto& failure) { return failure.ErrorStr_; });
 
 			const auto& url = "https://ws.mp3tunes.com/api/v1/lockerData?output=xml&sid=%1&partner_token=%2&type=playlist"_qs
 					.arg (sid, Consts::PartnerId);

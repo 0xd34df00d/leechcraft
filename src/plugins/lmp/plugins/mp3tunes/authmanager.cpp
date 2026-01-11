@@ -22,8 +22,6 @@ namespace LC::LMP::MP3Tunes
 {
 	Util::ContextTask<AuthManager::ResultType> AuthManager::GetSID (const QString& login)
 	{
-		using enum CloudStorageError;
-
 		if (Login2Sid_.contains (login))
 			co_return Login2Sid_ [login];
 
@@ -34,25 +32,26 @@ namespace LC::LMP::MP3Tunes
 				GetProxyHolder (),
 				!FailedAuth_.contains (login));
 		if (pass.isEmpty ())
-			co_return { Util::AsLeft, { NotAuthorized, tr ("empty password") } };
+			co_return { Util::AsLeft, { QFile::PermissionsError, tr ("empty password") } };
 
 		const auto authUrl = "https://shop.mp3tunes.com/api/v1/login?output=xml&"
 				"username=%1&password=%2&partner_token=%3"_qs
 					.arg (login, pass, Consts::PartnerId);
 		const auto response = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest (authUrl));
 		if (const auto err = response.IsError ())
-			co_return { Util::AsLeft, { NetError, tr ("network error: %1").arg (err->ErrorText_) } };
+			co_return { Util::AsLeft, { QFile::UnspecifiedError, tr ("network error: %1").arg (err->ErrorText_) } };
+		// the above is really network error
 
 		QDomDocument doc;
 		if (!doc.setContent (response.GetReplyData ()))
-			co_return { Util::AsLeft, { NetError, tr ("failed to parse response") } };
+			co_return { Util::AsLeft, { QFile::ReadError, tr ("failed to parse response") } };
 
 		const auto& docElem = doc.documentElement ();
 		if (docElem.firstChildElement ("status"_qs).text () != "1"_qs)
 		{
 			FailedAuth_ << login;
 			const auto& errorText = docElem.firstChildElement ("errorMessage"_qs).text ();
-			co_return { Util::AsLeft, { NotAuthorized, tr ("authentication error: %1").arg (errorText) } };
+			co_return { Util::AsLeft, { QFile::PermissionsError, tr ("authentication error: %1").arg (errorText) } };
 		}
 
 		FailedAuth_.remove (login);

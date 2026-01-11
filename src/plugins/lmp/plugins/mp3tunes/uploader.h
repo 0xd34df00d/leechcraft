@@ -9,13 +9,8 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/lmp/icloudstorageplugin.h>
+#include <interfaces/lmp/isyncplugin.h>
 #include "authmanager.h"
-
-namespace LC::LMP
-{
-	enum class CloudStorageError;
-}
 
 namespace LC::LMP::MP3Tunes
 {
@@ -30,6 +25,6 @@ namespace LC::LMP::MP3Tunes
 	public:
 		Uploader (const QString&, AuthManager*, QObject* = nullptr);
 
-		Util::ContextTask<ICloudStoragePlugin::UploadResult> Upload (const QString&);
+		Util::ContextTask<ISyncPlugin::UploadResult> Upload (const QString&);
 	};
 }

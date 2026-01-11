@@ -9,6 +9,7 @@
 #include "mp3tunes.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
@@ -26,13 +27,8 @@ namespace LC::LMP::MP3Tunes
 		PLManager_ = new PlaylistManager (AuthMgr_, AccMgr_, this);
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpmp3tunessettings.xml");
-		XSD_->SetDataSource ("AccountsView", AccMgr_->GetAccModel ());
-
-		connect (AccMgr_,
-			SIGNAL (accountsChanged ()),
-			this,
-			SIGNAL (accountsChanged ()));
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpmp3tunessettings.xml"_qs);
+		XSD_->SetDataSource ("AccountsView"_qs, AccMgr_->GetAccModel ());
 	}
 
 	void Plugin::SecondInit ()
@@ -46,12 +42,12 @@ namespace LC::LMP::MP3Tunes
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.LMP.MP3Tunes";
+		return "org.LeechCraft.LMP.MP3Tunes"_qba;
 	}
 
 	QString Plugin::GetName () const
 	{
-		return "LMP MP3tunes";
+		return "LMP MP3tunes"_qs;
 	}
 
 	QString Plugin::GetInfo () const
@@ -68,8 +64,8 @@ namespace LC::LMP::MP3Tunes
 	{
 		return
 		{
-			"org.LeechCraft.LMP.CloudStorage",
-			"org.LeechCraft.LMP.PlaylistProvider",
+			"org.LeechCraft.LMP.CloudStorage"_qba,
+			"org.LeechCraft.LMP.PlaylistProvider"_qba,
 		};
 	}
 
@@ -87,32 +83,33 @@ namespace LC::LMP::MP3Tunes
 		return this;
 	}
 
-	QString Plugin::GetCloudName () const
+	QString Plugin::GetSyncSystemName () const
 	{
-		return "MP3tunes";
+		return "MP3tunes"_qs;
 	}
 
-	QIcon Plugin::GetCloudIcon () const
+	QAbstractItemModel& Plugin::GetSyncTargetsModel ()
 	{
-		return QIcon ();
+		return *AccMgr_->GetAccModel ();
 	}
 
-	QStringList Plugin::GetSupportedFileFormats () const
+	void Plugin::RefreshSyncTargets ()
 	{
-		return { "m4a", "mp3", "mp4", "ogg" };
 	}
 
-	Util::ContextTask<Plugin::UploadResult> Plugin::Upload (const QString& acc, const QString& localPath)
+	ISyncPluginConfigWidget_ptr Plugin::MakeConfigWidget (const QModelIndex&)
 	{
-		if (!Uploaders_.contains (acc))
-			Uploaders_ [acc] = new Uploader (acc, AuthMgr_, this);
-
-		return Uploaders_ [acc]->Upload (localPath);
+		return {};
 	}
 
-	QStringList Plugin::GetAccounts () const
+	Util::ContextTask<Plugin::UploadResult> Plugin::Upload (UploadJob job)
 	{
-		return AccMgr_->GetAccounts ();
+		const auto& acc = job.Target_.data ().toString ();
+
+		auto& uploader = Uploaders_ [acc];
+		if (!uploader)
+			uploader = new Uploader (acc, AuthMgr_, this);
+		return uploader->Upload (job.LocalPath_);
 	}
 
 	QStandardItem* Plugin::GetPlaylistsRoot () const
