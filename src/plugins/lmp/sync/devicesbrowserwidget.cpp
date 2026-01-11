@@ -99,7 +99,10 @@ namespace LMP
 	void DevicesBrowserWidget::UpdateGuiForSyncer (int idx)
 	{
 		if (idx < 0)
+		{
+			SyncerConfigWidget_.reset ();
 			return;
+		}
 
 		if (const auto& devId = Ui_.DevicesSelector_->itemData (idx, CommonDevRole::DevPersistentID).toString ();
 			Device2Params_.contains (devId))
