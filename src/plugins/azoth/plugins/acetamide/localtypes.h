@@ -54,8 +54,8 @@ namespace LC::Azoth::Acetamide
 
 	struct ChannelOptions
 	{
-		QString ServerName_;
-		QString ChannelName_;
+		QString ServerName_ {};
+		QString ChannelName_ {};
 		QString ChannelPassword_ {};
 
 		bool operator== (const ChannelOptions&) const = default;
