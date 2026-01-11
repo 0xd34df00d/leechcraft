@@ -151,7 +151,8 @@ namespace LC::Poshuku::SpeedDial
 		thumb.save (&buffer, "PNG");
 
 		QFile file { CacheDir_.filePath (QString::number (qHash (url))) + ".png" };
-		file.open (QIODevice::WriteOnly | QIODevice::Truncate);
+		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+			qWarning () << "unable to open" << file.fileName () << file.errorString ();
 		file.write (buffer.data ());
 
 		emit gotSnapshot (url, buffer.data ());
