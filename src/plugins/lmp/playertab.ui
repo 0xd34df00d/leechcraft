@@ -68,7 +68,7 @@
    <item>
     <widget class="QSplitter" name="MainSplitter_">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QHBoxLayout" name="WidgetsLayout_">
@@ -82,7 +82,7 @@
          </property>
          <widget class="QWidget" name="NPTab_">
           <layout class="QVBoxLayout" name="verticalLayout_4">
-           <property name="margin">
+           <property name="margin" stdset="0">
             <number>0</number>
            </property>
            <item>
@@ -92,7 +92,7 @@
          </widget>
          <widget class="QWidget" name="CollectionTab_">
           <layout class="QVBoxLayout" name="verticalLayout_2">
-           <property name="margin">
+           <property name="margin" stdset="0">
             <number>0</number>
            </property>
            <item>
@@ -102,7 +102,7 @@
          </widget>
          <widget class="QWidget" name="PlaylistsTab_">
           <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="margin">
+           <property name="margin" stdset="0">
             <number>1</number>
            </property>
            <item>
@@ -112,7 +112,7 @@
          </widget>
          <widget class="QWidget" name="SocialTab_">
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="margin">
+           <property name="margin" stdset="0">
             <number>0</number>
            </property>
            <item>
@@ -125,7 +125,7 @@
                <string>Recommendations</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_7">
-               <property name="margin">
+               <property name="margin" stdset="0">
                 <number>1</number>
                </property>
                <item>
@@ -138,7 +138,7 @@
                <string>Events</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_12">
-               <property name="margin">
+               <property name="margin" stdset="0">
                 <number>1</number>
                </property>
                <item>
@@ -151,7 +151,7 @@
                <string>Releases</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_9">
-               <property name="margin">
+               <property name="margin" stdset="0">
                 <number>1</number>
                </property>
                <item>
@@ -164,7 +164,7 @@
                <string>Hypes</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_11">
-               <property name="margin">
+               <property name="margin" stdset="0">
                 <number>1</number>
                </property>
                <item>
@@ -178,47 +178,17 @@
          </widget>
          <widget class="QWidget" name="InternetTab_">
           <layout class="QVBoxLayout" name="verticalLayout_13">
-           <property name="margin">
+           <property name="margin" stdset="0">
             <number>0</number>
            </property>
            <item>
-            <widget class="QTabWidget" name="tabWidget_2">
-             <property name="currentIndex">
-              <number>0</number>
-             </property>
-             <widget class="QWidget" name="RadioTab_">
-              <attribute name="title">
-               <string>Radio</string>
-              </attribute>
-              <layout class="QVBoxLayout" name="verticalLayout_14">
-               <property name="margin">
-                <number>1</number>
-               </property>
-               <item>
-                <widget class="LC::LMP::RadioWidget" name="RadioWidget_" native="true"/>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="CloudTab_">
-              <attribute name="title">
-               <string>Cloud</string>
-              </attribute>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
-               <property name="margin">
-                <number>1</number>
-               </property>
-               <item>
-                <widget class="LC::LMP::CloudWidget" name="CloudWidget_" native="true"/>
-               </item>
-              </layout>
-             </widget>
-            </widget>
+            <widget class="LC::LMP::RadioWidget" name="RadioWidget_" native="true"/>
            </item>
           </layout>
          </widget>
          <widget class="QWidget" name="FSTab_">
           <layout class="QVBoxLayout" name="verticalLayout">
-           <property name="margin">
+           <property name="margin" stdset="0">
             <number>0</number>
            </property>
            <item>
@@ -228,7 +198,7 @@
          </widget>
          <widget class="QWidget" name="DevicesTaB_">
           <layout class="QVBoxLayout" name="verticalLayout_10">
-           <property name="margin">
+           <property name="margin" stdset="0">
             <number>0</number>
            </property>
            <item>
@@ -293,12 +263,6 @@
    <class>LC::LMP::PlaylistWidget</class>
    <extends>QWidget</extends>
    <header>playlistwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>LC::LMP::CloudWidget</class>
-   <extends>QWidget</extends>
-   <header>sync/cloudwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

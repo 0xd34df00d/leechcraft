@@ -110,9 +110,6 @@ LC_DEFINE_PLUGIN (
 		engine/rganalyser.cpp
 		engine/rgfilter.cpp
 		engine/sourceobject.cpp
-		sync/cloudwidget.cpp
-		sync/clouduploadmanager.cpp
-		sync/clouduploader.cpp
 		sync/devicesbrowserwidget.cpp
 		sync/formats.cpp
 		sync/syncmanager.cpp

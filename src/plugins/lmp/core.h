@@ -25,7 +25,6 @@ namespace LMP
 	class HookInterconnector;
 	class LocalFileResolver;
 	class PlaylistManager;
-	class CloudUploadManager;
 	class Player;
 	class ProgressManager;
 	class RadioManager;
@@ -41,8 +40,6 @@ namespace LMP
 		struct Members;
 
 		std::shared_ptr<Members> M_;
-
-		QObjectList CloudPlugins_;
 
 		Core ();
 		Core (const Core&) = delete;
@@ -60,14 +57,12 @@ namespace LMP
 		LMPProxy* GetLmpProxy () const;
 
 		void AddPlugin (QObject*);
-		QObjectList GetCloudStoragePlugins () const;
 
 		HookInterconnector* GetHookInterconnector () const;
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
 		CollectionsManager* GetCollectionsManager () const;
 		PlaylistManager* GetPlaylistManager () const;
-		CloudUploadManager* GetCloudUploadManager () const;
 		ProgressManager* GetProgressManager () const;
 		RadioManager* GetRadioManager () const;
 

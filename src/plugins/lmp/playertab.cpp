@@ -581,7 +581,7 @@ namespace LMP
 		Ui_.Playlist_->setEnabled (available);
 		Ui_.PlaylistsTab_->setEnabled (available);
 		Ui_.CollectionTab_->setEnabled (available);
-		Ui_.RadioTab_->setEnabled (available);
+		Ui_.RadioWidget_->setEnabled (available);
 	}
 
 	void PlayerTab::handleStateChanged ()
