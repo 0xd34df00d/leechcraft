@@ -44,6 +44,18 @@ namespace LC::LMP::MTPSync
 		Thread_.wait ();
 	}
 
+	Mtp::Mtp ()
+	{
+		connect (this,
+				&Mtp::mtpDisconnected,
+				this,
+				[this] (const QList<MtpDeviceInfo>& devices)
+				{
+					for (const auto& device : devices)
+						CacheSerial2MtpDev_.remove (device.Serial_);
+				});
+	}
+
 	namespace
 	{
 		bool Check (const UsbDevice& device)
@@ -139,12 +151,9 @@ namespace LC::LMP::MTPSync
 
 	ISyncPlugin::UploadResult Mtp::Upload (const UploadCtx& ctx)
 	{
-		const auto device = Helpers::GetDeviceBySerial (ctx.Serial_);
+		const auto device = GetDevice (ctx.Serial_);
 		if (!device)
-		{
-			qWarning () << "unable to open device for" << ctx.Serial_;
 			return { Util::AsLeft, { QFile::ResourceError, tr ("Unable to open device %1.").arg (ctx.Serial_) } };
-		}
 
 		const auto storage = Helpers::GetStorage (*device, ctx.StorageId_);
 		if (!storage)
@@ -183,5 +192,15 @@ namespace LC::LMP::MTPSync
 			Helpers::SetAlbumArt (*device, *album, ctx.AlbumArtPath_);
 
 		return ISyncPlugin::UploadSuccess {};
+	}
+
+	LibMtpDevice_ptr Mtp::GetDevice (const QByteArray& serial)
+	{
+		auto& device = CacheSerial2MtpDev_ [serial];
+		if (!device)
+			device = Helpers::GetDeviceBySerial (serial);
+		if (!device)
+			qWarning () << "unable to open device for" << serial;
+		return device;
 	}
 }

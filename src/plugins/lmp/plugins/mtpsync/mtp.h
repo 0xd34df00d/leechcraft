@@ -14,9 +14,6 @@
 #include <interfaces/lmp/isyncplugin.h>
 #include "types.h"
 
-using LIBMTP_album_t = struct LIBMTP_album_struct;
-using LIBMTP_mtpdevice_t = struct LIBMTP_mtpdevice_struct;
-
 namespace LC::LMP::MTPSync
 {
 	struct UsbDevice
@@ -45,7 +42,11 @@ namespace LC::LMP::MTPSync
 		Q_OBJECT
 
 		QHash<UsbDevice, MtpDeviceInfo> Devices_;
+
+		QHash<QByteArray, LibMtpDevice_ptr> CacheSerial2MtpDev_;
 	public:
+		explicit Mtp ();
+
 		QList<MtpDeviceInfo> GetCurrentDevices () const;
 
 		void Refresh ();
@@ -65,6 +66,8 @@ namespace LC::LMP::MTPSync
 		};
 
 		ISyncPlugin::UploadResult Upload (const UploadCtx&);
+	private:
+		LibMtpDevice_ptr GetDevice (const QByteArray& serial);
 	signals:
 		void mtpConnected (const QList<MtpDeviceInfo>&);
 		void mtpDisconnected (const QList<MtpDeviceInfo>&);

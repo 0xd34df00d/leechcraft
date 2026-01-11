@@ -29,8 +29,6 @@ namespace LC::LMP::MTPSync::Helpers
 		int Count_;
 	};
 
-	using LibMtpDevice_ptr = std::unique_ptr<LIBMTP_mtpdevice_t, decltype (&LIBMTP_Release_Device)>;
-
 	LibMtpArray<LIBMTP_raw_device_t> GetRawDevices ();
 
 	LibMtpArray<uint16_t> GetSupportedFiletypes (LIBMTP_mtpdevice_t& device);

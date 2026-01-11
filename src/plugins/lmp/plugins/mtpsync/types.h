@@ -8,7 +8,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QString>
+
+using LIBMTP_album_t = struct LIBMTP_album_struct;
+using LIBMTP_mtpdevice_t = struct LIBMTP_mtpdevice_struct;
 
 namespace LC::LMP::MTPSync
 {
@@ -18,4 +22,6 @@ namespace LC::LMP::MTPSync
 		QString Name_;
 		quint64 TotalSize_;
 	};
+
+	using LibMtpDevice_ptr = std::shared_ptr<LIBMTP_mtpdevice_t>;
 }
