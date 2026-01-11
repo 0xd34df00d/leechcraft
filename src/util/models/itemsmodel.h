@@ -96,18 +96,25 @@ namespace LC::Util
 		template<typename T>
 		using FieldGetter_t = QVariant (*) (const T&);
 
+		template<typename T, size_t Ix>
+		std::pair<int, FieldGetter_t<T>> Role2GetterPair ()
+		{
+			if constexpr (requires { FieldType_t<T, Ix>::Role; })
+				return
+				{
+					FieldType_t<T, Ix>::Role,
+					+[] (const T& t) -> QVariant { return GetFieldAt<Ix> (t); }
+				};
+			else
+				return { -1, nullptr };
+		}
+
 		template<typename T>
 		QHash<int, FieldGetter_t<T>> MkGetters ()
 		{
 			return []<size_t... Ixs> (std::index_sequence<Ixs...>)
 			{
-				return QHash<int, FieldGetter_t<T>>
-				{
-					{
-						FieldType_t<T, Ixs>::Role,
-						+[] (const T& t) -> QVariant { return GetFieldAt<Ixs> (t); }
-					}...
-				};
+				return QHash<int, FieldGetter_t<T>> { Role2GetterPair<T, Ixs> ()... };
 			} (std::make_index_sequence<FieldsCount_v<T>> {});
 		}
 	}
