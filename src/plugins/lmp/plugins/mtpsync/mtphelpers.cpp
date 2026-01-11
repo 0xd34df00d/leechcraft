@@ -216,7 +216,7 @@ namespace LC::LMP::MTPSync::Helpers
 
 		if (const auto err = LIBMTP_Create_New_Album (&device, &*album))
 		{
-			qFatal () << "unable to create album:" << err;
+			qCritical () << "unable to create album:" << err;
 			LIBMTP_Dump_Errorstack (&device);
 			LIBMTP_Clear_Errorstack (&device);
 			return { nullptr, nullptr };
@@ -245,7 +245,7 @@ namespace LC::LMP::MTPSync::Helpers
 
 		if (const auto err = LIBMTP_Update_Album (&device, &album))
 		{
-			qFatal () << "unable to create album:" << err;
+			qCritical () << "unable to update album:" << err;
 			LIBMTP_Dump_Errorstack (&device);
 			LIBMTP_Clear_Errorstack (&device);
 			return false;
