@@ -38,7 +38,6 @@ namespace LC::LMP::MTPSync::Helpers
 	std::optional<int> GetBatteryPercentage (LIBMTP_mtpdevice_t& device);
 
 	QList<DeviceStorage> GetStorages (LIBMTP_mtpdevice_t& device);
-	LIBMTP_devicestorage_t* GetStorage (LIBMTP_mtpdevice_t& device, uint32_t id);
 
 	QStringList GetSupportedFormats (LIBMTP_mtpdevice_t& device);
 	LIBMTP_filetype_t GetFileType (const QString& format);

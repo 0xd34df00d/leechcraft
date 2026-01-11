@@ -244,14 +244,6 @@ namespace LC::LMP::MTPSync
 		if (!device)
 			return { Util::AsLeft, { QFile::ResourceError, tr ("Unable to open device %1.").arg (ctx.Serial_) } };
 
-		const auto storage = Helpers::GetStorage (*device, ctx.StorageId_);
-		if (!storage)
-		{
-			qWarning () << "unable to open storage" << ctx.StorageId_ << "on" << ctx.Serial_;
-			const auto& msg = tr ("Unable to open storage %1 on %2.").arg (ctx.StorageId_).arg (ctx.Serial_);
-			return { Util::AsLeft, { QFile::ResourceError, msg } };
-		}
-
 		const auto track = Helpers::New (LIBMTP_new_track_t (), &LIBMTP_destroy_track_t);
 		Helpers::FillTrack (*track, ctx.MediaInfo_);
 		track->storage_id = ctx.StorageId_;

@@ -75,27 +75,6 @@ namespace LC::LMP::MTPSync::Helpers
 		return result;
 	}
 
-	LIBMTP_devicestorage_t* GetStorage (LIBMTP_mtpdevice_t& device, uint32_t id)
-	{
-		if (!device.storage)
-			if (LIBMTP_Get_Storage (&device, 0) == -1)
-			{
-				qWarning () << "failed to update storages for device" << LIBMTP_Get_Serialnumber (&device);
-				LIBMTP_Dump_Errorstack (&device);
-				LIBMTP_Clear_Errorstack (&device);
-				return nullptr;
-			}
-
-		auto storage = device.storage;
-		while (storage)
-		{
-			if (id == storage->id)
-				return storage;
-			storage = storage->next;
-		}
-		return nullptr;
-	}
-
 	QStringList GetSupportedFormats (LIBMTP_mtpdevice_t& device)
 	{
 		static const std::unordered_map<uint16_t, QString> formatID2Format =
