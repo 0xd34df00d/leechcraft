@@ -31,7 +31,5 @@ namespace LC::LMP::MP3Tunes
 		Uploader (const QString&, AuthManager*, QObject* = nullptr);
 
 		Util::ContextTask<ICloudStoragePlugin::UploadResult> Upload (const QString&);
-	signals:
-		void removeThis (const QString&);
 	};
 }
