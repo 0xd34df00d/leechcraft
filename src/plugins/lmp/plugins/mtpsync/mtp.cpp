@@ -175,22 +175,6 @@ namespace LC::LMP::MTPSync
 			return { Util::AsLeft, { QFile::WriteError, tr ("Error writing track: %1.").arg (err) } };
 		}
 
-		const auto album = Helpers::FindOrCreateAlbum (*device, ctx.MediaInfo_);
-		if (!album)
-		{
-			qWarning () << "unable to find/create album";
-			return { Util::AsLeft, { QFile::WriteError, tr ("Error creating track album.") } };
-		}
-
-		if (!Helpers::AppendTrack (*device, *track, *album))
-		{
-			qWarning () << "unable to append track to album";
-			return { Util::AsLeft, { QFile::WriteError, tr ("Error appending track to the album.") } };
-		}
-
-		if (album->no_tracks == 1)
-			Helpers::SetAlbumArt (*device, *album, ctx.AlbumArtPath_);
-
 		return ISyncPlugin::UploadSuccess {};
 	}
 

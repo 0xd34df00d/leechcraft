@@ -45,13 +45,6 @@ namespace LC::LMP::MTPSync::Helpers
 
 	void FillTrack (LIBMTP_track_t& track, const MediaInfo& info);
 
-	using LibMtpAlbumPtr = std::unique_ptr<LIBMTP_album_t, decltype (&LIBMTP_destroy_album_t)>;
-	LibMtpAlbumPtr FindOrCreateAlbum (LIBMTP_mtpdevice_t& device, const MediaInfo&);
-
-	bool AppendTrack (LIBMTP_mtpdevice_t& device, const LIBMTP_track_t& track, LIBMTP_album_t& album);
-
-	void SetAlbumArt (LIBMTP_mtpdevice_t& device, const LIBMTP_album_t& album, const QString& localPath);
-
 	template<typename T, typename F>
 	std::unique_ptr<T, F> New (T *t, F f)
 	{
