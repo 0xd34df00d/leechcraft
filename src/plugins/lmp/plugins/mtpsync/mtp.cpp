@@ -250,13 +250,24 @@ namespace LC::LMP::MTPSync
 
 		const auto file = EmbedAlbumArt (ctx.LocalPath_, ctx.AlbumArtPath_, ctx.TagsResolver_);
 		const auto filename = file ? file->fileName () : ctx.LocalPath_;
-		if (const auto err = LIBMTP_Send_Track_From_File (&*device, filename.toUtf8 ().constData (), &*track, nullptr, nullptr))
-		{
-			qWarning () << "sending track failed:" << err;
-			LIBMTP_Dump_Errorstack (&*device);
-			LIBMTP_Clear_Errorstack (&*device);
-			return { Util::AsLeft, { QFile::WriteError, tr ("Error writing track: %1.").arg (err) } };
-		}
+
+		using namespace std::chrono_literals;
+		constexpr auto retries = 3;
+		constexpr auto backoff = 500ms;
+		bool isSuccessful = false;
+		for (int i = 0; i < retries && !isSuccessful; ++i)
+			if (const auto err = LIBMTP_Send_Track_From_File (&*device, filename.toUtf8 ().constData (), &*track, nullptr, nullptr))
+			{
+				qWarning () << "sending track failed:" << err << "; attempt" << i;
+				LIBMTP_Dump_Errorstack (&*device);
+				LIBMTP_Clear_Errorstack (&*device);
+				QThread::sleep (backoff * (i + 1));
+			}
+			else
+				isSuccessful = true;
+
+		if (!isSuccessful)
+			return { Util::AsLeft, { QFile::WriteError, tr ("Error sending track to the device.") } };
 
 		return ISyncPlugin::UploadSuccess {};
 	}

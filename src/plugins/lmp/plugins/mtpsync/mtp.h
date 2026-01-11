@@ -47,7 +47,6 @@ namespace LC::LMP::MTPSync
 		Q_OBJECT
 
 		QHash<UsbDevice, MtpDeviceInfo> Devices_;
-
 		QHash<QByteArray, LibMtpDevice_ptr> CacheSerial2MtpDev_;
 	public:
 		explicit Mtp ();
