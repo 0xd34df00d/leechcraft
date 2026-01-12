@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <variant>
+#include <expected>
 #include <optional>
 #include <type_traits>
-#include "visitor.h"
+#include "overloaded.h"
 
 namespace LC::Util
 {
@@ -26,18 +26,20 @@ namespace LC::Util
 
 	constexpr auto AsLeft = Left<void> {};
 
+	inline struct FromStdExpected_t {} FromStdExpected;
+
 	template<typename L, typename R>
 	class Either
 	{
-		using Either_t = std::variant<L, R>;
-		Either_t This_;
-
-		enum { LeftVal, RightVal };
-
-		static_assert (!std::is_same<L, R>::value, "Types cannot be the same.");
+		std::expected<R, L> This_;
 	public:
 		using L_t = L;
 		using R_t = R;
+
+		Either (FromStdExpected_t, std::expected<R, L>&& ex)
+		: This_ { std::move (ex) }
+		{
+		}
 
 		Either () = delete;
 
@@ -52,24 +54,24 @@ namespace LC::Util
 		}
 
 		Either (Left<void>, const L& l)
-		: This_ { l }
+		: This_ { std::unexpect, l }
 		{
 		}
 
-		explicit Either (const L& l)
-		: This_ { l }
+		explicit Either (const L& l) requires (!std::is_same_v<L, R>)
+		: This_ { std::unexpect, l }
 		{
 		}
 
 		Either (Left<L>&& left)
-		: This_ { std::move (left.Value_) }
+		: This_ { std::unexpect, std::move (left.Value_) }
 		{
 		}
 
 		template<typename LL>
 			requires std::is_constructible_v<L, LL&&>
 		Either (Left<LL>&& left)
-		: This_ { L { std::move (left.Value_) } }
+		: This_ { std::unexpect, L { std::move (left.Value_) } }
 		{
 		}
 
@@ -80,26 +82,40 @@ namespace LC::Util
 
 		bool IsLeft () const
 		{
-			return This_.index () == LeftVal;
+			return !IsRight ();
 		}
 
 		bool IsRight () const
 		{
-			return This_.index () == RightVal;
+			return This_.has_value ();
 		}
 
 		const L& GetLeft () const
 		{
 			if (!IsLeft ())
 				throw std::runtime_error { "Tried accessing Left for a Right Either" };
-			return std::get<L> (This_);
+			return This_.error ();
+		}
+
+		L& GetLeft ()
+		{
+			if (!IsLeft ())
+				throw std::runtime_error { "Tried accessing Left for a Right Either" };
+			return This_.error ();
 		}
 
 		const R& GetRight () const
 		{
 			if (!IsRight ())
 				throw std::runtime_error { "Tried accessing Right for a Left Either" };
-			return std::get<R> (This_);
+			return This_.value ();
+		}
+
+		R& GetRight ()
+		{
+			if (!IsRight ())
+				throw std::runtime_error { "Tried accessing Right for a Left Either" };
+			return This_.value ();
 		}
 
 		std::optional<L> MaybeLeft () const
@@ -116,36 +132,24 @@ namespace LC::Util
 			return GetRight ();
 		}
 
-		std::variant<L, R> AsVariant () const &
-		{
-			return This_;
-		}
-
-		std::variant<L, R> AsVariant () &&
-		{
-			return std::move (This_);
-		}
-
 		template<typename F>
 		R ToRight (F&& f) const
 		{
-			return IsRight () ?
-					GetRight () :
-					f (GetLeft ());
+			return IsRight () ? GetRight () : std::forward<F> (f) (GetLeft ());
 		}
 
 		template<typename F>
 		auto MapLeft (F&& f) const
 		{
 			using Result = Either<std::invoke_result_t<F, L>, R>;
-			return IsRight () ? Result { GetRight () } : Result { AsLeft, std::invoke (std::forward<F> (f), GetLeft ()) };
+			return Result { FromStdExpected, This_.transform_error (std::forward<F> (f)) };
 		}
 
 		template<typename F>
 		auto MapRight (F&& f) const
 		{
 			using Result = Either<L, std::invoke_result_t<F, R>>;
-			return IsRight () ? Result { std::invoke (std::forward<F> (f), GetRight ()) } : Result { AsLeft, GetLeft () };
+			return Result { This_.transform (std::forward<F> (f)) };
 		}
 
 		friend bool operator== (const Either& e1, const Either& e2)
@@ -158,22 +162,6 @@ namespace LC::Util
 			return !(e1 == e2);
 		}
 	};
-
-	template<typename L, typename R, typename F, typename = std::invoke_result_t<F>>
-	R RightOr (const Either<L, R>& either, F&& f)
-	{
-		return either.IsRight () ?
-				either.GetRight () :
-				f ();
-	}
-
-	template<typename L, typename R>
-	R RightOr (const Either<L, R>& either, const R& r)
-	{
-		return either.IsRight () ?
-				either.GetRight () :
-				r;
-	}
 
 	template<template<typename> class Cont, typename L, typename R>
 	std::pair<Cont<L>, Cont<R>> Partition (const Cont<Either<L, R>>& eithers)
@@ -191,12 +179,18 @@ namespace LC::Util
 	template<typename Left, typename Right, typename... Args>
 	auto Visit (const Either<Left, Right>& either, Args&&... args)
 	{
-		return Visit (either.AsVariant (), std::forward<Args> (args)...);
+		Overloaded visitor { std::forward<Args> (args)... };
+		return either.IsRight () ?
+				std::move (visitor) (either.GetRight ()) :
+				std::move (visitor) (either.GetLeft ());
 	}
 
 	template<typename Left, typename Right, typename... Args>
 	auto Visit (Either<Left, Right>&& either, Args&&... args)
 	{
-		return Visit (std::move (either).AsVariant (), std::forward<Args> (args)...);
+		Overloaded visitor { std::forward<Args> (args)... };
+		return either.IsRight () ?
+				std::move (visitor) (std::move (either.GetRight ())) :
+				std::move (visitor) (std::move (either.GetLeft ()));
 	}
 }
