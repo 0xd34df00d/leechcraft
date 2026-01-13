@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>ChatHistoryWidget</name>
     <message>
@@ -17,12 +19,12 @@
     <message>
         <location filename="chathistorywidget.cpp" line="102"/>
         <source>Previous</source>
-        <translation>Предыдущий</translation>
+        <translation>Предыдущее</translation>
     </message>
     <message>
         <location filename="chathistorywidget.cpp" line="105"/>
         <source>Next</source>
-        <translation>Следующий</translation>
+        <translation>Следующее</translation>
     </message>
     <message>
         <location filename="chathistorywidget.cpp" line="109"/>
@@ -32,17 +34,17 @@
     <message>
         <location filename="chathistorywidget.cpp" line="213"/>
         <source>Unable to get the list of users in the account.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно получить список контактов в учётной записи.</translation>
     </message>
     <message>
         <location filename="chathistorywidget.cpp" line="281"/>
         <source>Error getting logs with %1.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно получить историю разговоров с %1.</translation>
     </message>
     <message>
         <location filename="chathistorywidget.cpp" line="393"/>
         <source>Unable to perform the search.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно выполнить поиск.</translation>
     </message>
     <message>
         <location filename="chathistorywidget.cpp" line="404"/>
@@ -52,7 +54,7 @@
     <message>
         <location filename="chathistorywidget.cpp" line="411"/>
         <source>No more search results for %1, searching from the beginning now.</source>
-        <translation type="unfinished"/>
+        <translation>Больше нет результатов поиска для %1, начинаем сначала.</translation>
     </message>
     <message>
         <location filename="chathistorywidget.cpp" line="583"/>
@@ -62,7 +64,7 @@
     <message>
         <location filename="chathistorywidget.cpp" line="632"/>
         <source>History is loading...</source>
-        <translation>Загрузка истории...</translation>
+        <translation>История загружается…</translation>
     </message>
 </context>
 <context>
@@ -105,7 +107,7 @@
     <message>
         <location filename="storage.cpp" line="94"/>
         <source>Unable to open Azoth history database.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно открыть базу данных с историей.</translation>
     </message>
 </context>
 <context>
@@ -113,7 +115,7 @@
     <message>
         <location filename="storagemanager.cpp" line="237"/>
         <source>Unable to initialize permanent storage. %1.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно инициализировать постоянное хранилище истории: %1.</translation>
     </message>
 </context>
 <context>
@@ -122,17 +124,17 @@
         <location filename="storagemanager.cpp" line="249"/>
         <source>Finished restoring history database contents. Old file size: %1, new file size: %2, %3 records recovered.</source>
         <oldsource>Finished restoring history database contents. Old file size: %1, new file size: %2, %3 records recovered. %4</oldsource>
-        <translation type="unfinished"/>
+        <translation>Восстановление базы данных истории завершено. Размер исходного файла: %1, восстановленного: %2, %3 записей восстановлено.</translation>
     </message>
     <message>
         <location filename="storagemanager.cpp" line="252"/>
         <source>Yay, seems like most of the contents are intact!</source>
-        <translation type="unfinished"/>
+        <translation>Похоже, почти вся история восстановлена успешно, круто!</translation>
     </message>
     <message>
         <location filename="storagemanager.cpp" line="253"/>
         <source>Sadly, seems like quite some history is lost.</source>
-        <translation type="unfinished"/>
+        <translation>К сожалению, похоже, значительная часть истории потерялась.</translation>
     </message>
 </context>
 <context>
@@ -160,7 +162,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Regenerate users cache</source>
-        <translation>Регенерировать кеш пользователя</translation>
+        <translation>Перегенерировать кеш пользователей</translation>
     </message>
 </context>
 </TS>
