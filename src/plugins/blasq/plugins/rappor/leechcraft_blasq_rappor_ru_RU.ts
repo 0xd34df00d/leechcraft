@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
 <context>
     <name>AlbumSettingsDialog</name>
     <message>
@@ -33,13 +31,13 @@
         <location filename="albumsettingsdialog.ui" line="53"/>
         <location filename="albumsettingsdialog.ui" line="94"/>
         <source>friends</source>
-        <translation>друзьям</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="albumsettingsdialog.ui" line="58"/>
         <location filename="albumsettingsdialog.ui" line="99"/>
         <source>friends and their friends</source>
-        <translation>друзьям и друзьям друзей</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="albumsettingsdialog.ui" line="63"/>
@@ -50,7 +48,7 @@
     <message>
         <location filename="albumsettingsdialog.ui" line="71"/>
         <source>Allow comments from:</source>
-        <translation>Разрешить комментарии:</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -63,7 +61,7 @@
     <message>
         <location filename="vkaccount.cpp" line="63"/>
         <source>All photos</source>
-        <translation>Все фотографии</translation>
+        <translation>Все фото</translation>
     </message>
 </context>
 <context>
@@ -71,7 +69,7 @@
     <message>
         <location filename="rappor.cpp" line="67"/>
         <source>VKontakte support module for Blasq.</source>
-        <translation>Модуль поддержки «В Контакте» для Blasq.</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -79,7 +77,7 @@
     <message>
         <location filename="vkservice.cpp" line="65"/>
         <source>VKontakte</source>
-        <translation>В Контакте</translation>
+        <translation>ВКонтакте</translation>
     </message>
 </context>
 </TS>
