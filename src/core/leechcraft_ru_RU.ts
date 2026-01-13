@@ -1510,7 +1510,7 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <location filename="../util/xpc/anutil.cpp" line="28"/>
         <source>Terminal</source>
-        <translation type="unfinished"/>
+        <translation>Терминал</translation>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="29"/>
