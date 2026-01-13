@@ -1,138 +1,105 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>ChatHistoryWidget</name>
     <message>
-        <location filename="chathistorywidget.ui" line="46"/>
+        <location filename="chathistorywidget.ui" line="38"/>
         <source>Filter contacts...</source>
         <translation>Filtrar contactos...</translation>
+    </message>
+    <message>
+        <location filename="chathistorywidget.ui" line="89"/>
+        <source>History search...</source>
+        <translation>Buscar en el historial...</translation>
+    </message>
+    <message>
+        <location filename="chathistorywidget.ui" line="97"/>
+        <source>contact</source>
+        <translation>contacto</translation>
+    </message>
+    <message>
+        <location filename="chathistorywidget.ui" line="102"/>
+        <source>account</source>
+        <translation>cuenta</translation>
+    </message>
+    <message>
+        <location filename="chathistorywidget.ui" line="107"/>
+        <source>everything</source>
+        <translation>todo</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::ChatHistory::ChatHistoryWidget</name>
     <message>
-        <location filename="chathistorywidget.cpp" line="62"/>
+        <location filename="chathistorywidget.cpp" line="53"/>
         <source>Chat history</source>
-        <translation>Historia de conversacion</translation>
+        <translation>Historia del chat</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="102"/>
+        <location filename="chathistorywidget.cpp" line="94"/>
         <source>Previous</source>
         <translation>Previoso</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="105"/>
+        <location filename="chathistorywidget.cpp" line="98"/>
         <source>Next</source>
         <translation>Siguiente</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="109"/>
+        <location filename="chathistorywidget.cpp" line="103"/>
         <source>Clear</source>
         <translation>Aclarar</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="213"/>
-        <source>Unable to get the list of users in the account.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="chathistorywidget.cpp" line="281"/>
-        <source>Error getting logs with %1.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="chathistorywidget.cpp" line="393"/>
-        <source>Unable to perform the search.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="chathistorywidget.cpp" line="404"/>
+        <location filename="chathistorywidget.cpp" line="352"/>
         <source>No more search results for %1.</source>
         <translation>No resultados mas para %1.</translation>
     </message>
     <message>
-        <location filename="chathistorywidget.cpp" line="411"/>
-        <source>No more search results for %1, searching from the beginning now.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="chathistorywidget.cpp" line="583"/>
+        <location filename="chathistorywidget.cpp" line="509"/>
         <source>Are you sure you wish to delete chat history with %1?</source>
         <translation>Esta seguro que quiere borrar la historia de conversacion con %1?</translation>
     </message>
+</context>
+<context>
+    <name>LC::Azoth::ChatHistory::Core</name>
     <message>
-        <location filename="chathistorywidget.cpp" line="632"/>
-        <source>History is loading...</source>
-        <translation type="unfinished"/>
+        <location filename="core.cpp" line="47"/>
+        <source>Chat history</source>
+        <translation>Historia de conversacion</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="48"/>
+        <source>Chat history viewer for the Azoth IM</source>
+        <translation>Visor de historia para Azoth IM</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::ChatHistory::Plugin</name>
     <message>
-        <location filename="chathistory.cpp" line="64"/>
-        <source>Chat history viewer for the Azoth IM</source>
-        <translation>Visor de historia para Azoth IM</translation>
-    </message>
-    <message>
-        <location filename="chathistory.cpp" line="79"/>
+        <location filename="chathistory.cpp" line="51"/>
         <source>IM history</source>
         <translation>Historia de MI</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="109"/>
+        <location filename="chathistory.cpp" line="84"/>
         <source>Stores message history in Azoth.</source>
         <translation>Guarda la historia de mensajes en Azoth.</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="232"/>
+        <location filename="chathistory.cpp" line="204"/>
         <source>History...</source>
         <translation>Historia...</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="245"/>
+        <location filename="chathistory.cpp" line="217"/>
         <source>Logging enabled</source>
         <translation>Guarda de registros de charla esta activada</translation>
     </message>
     <message>
-        <location filename="chathistory.cpp" line="63"/>
-        <location filename="chathistory.cpp" line="344"/>
-        <location filename="chathistory.cpp" line="379"/>
+        <location filename="chathistory.cpp" line="295"/>
+        <location filename="chathistory.cpp" line="333"/>
         <source>Chat history</source>
         <translation>Historia de conversacion</translation>
-    </message>
-</context>
-<context>
-    <name>LC::Azoth::ChatHistory::Storage</name>
-    <message>
-        <location filename="storage.cpp" line="94"/>
-        <source>Unable to open Azoth history database.</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>LC::Azoth::ChatHistory::StorageManager</name>
-    <message>
-        <location filename="storagemanager.cpp" line="237"/>
-        <source>Unable to initialize permanent storage. %1.</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="storagemanager.cpp" line="249"/>
-        <source>Finished restoring history database contents. Old file size: %1, new file size: %2, %3 records recovered.</source>
-        <oldsource>Finished restoring history database contents. Old file size: %1, new file size: %2, %3 records recovered. %4</oldsource>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="storagemanager.cpp" line="252"/>
-        <source>Yay, seems like most of the contents are intact!</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="storagemanager.cpp" line="253"/>
-        <source>Sadly, seems like quite some history is lost.</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -151,16 +118,6 @@
         <location filename="dummy.cpp" line="4"/>
         <source>Items per page:</source>
         <translation>Elementos por página:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="5"/>
-        <source>Service</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="6"/>
-        <source>Regenerate users cache</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 </TS>
