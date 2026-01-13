@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AffiliationSelectorDialog</name>
     <message>
@@ -109,12 +111,12 @@
     <message>
         <location filename="gwitemsremovaldialog.ui" line="14"/>
         <source>Gateway items removal</source>
-        <translation type="unfinished"/>
+        <translation>Удаление контактов транспорта</translation>
     </message>
     <message>
         <location filename="gwitemsremovaldialog.ui" line="20"/>
         <source>Seems like you are removing a gateway. Would you like to remove the following contacts as well?</source>
-        <translation type="unfinished"/>
+        <translation>Похоже, вы удаляете транспорт. Желаете также удалить следующие контакты?</translation>
     </message>
 </context>
 <context>
@@ -122,7 +124,7 @@
     <message>
         <location filename="gwoptionsdialog.ui" line="14"/>
         <source>Gateway options</source>
-        <translation>Параметры транспорта</translation>
+        <translation>Опции транспорта</translation>
     </message>
 </context>
 <context>
@@ -202,7 +204,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="196"/>
         <source>TLS:</source>
-        <translation type="unfinished"/>
+        <translation>TLS:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="204"/>
@@ -212,12 +214,12 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="209"/>
         <source>Disabled</source>
-        <translation type="unfinished"/>
+        <translation>Выключено</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="214"/>
         <source>Required</source>
-        <translation type="unfinished"/>
+        <translation>Требовать</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="227"/>
@@ -244,17 +246,17 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="289"/>
         <source>File transfers</source>
-        <translation>Передачи файлов</translation>
+        <translation>Передача файлов</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="295"/>
         <source>Allowed methods</source>
-        <translation>Допустимые методы</translation>
+        <translation>Разрешённые методы</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="301"/>
         <source>In-band bytestreams</source>
-        <translation type="unfinished"/>
+        <translation>In-band bytestreams</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="308"/>
@@ -264,7 +266,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="318"/>
         <source>Use SOCKS5 proxy</source>
-        <translation>Использовать прокси SOCKS5</translation>
+        <translation>Использовать SOCKS5-прокси</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="327"/>
@@ -274,22 +276,22 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="354"/>
         <source>Media calls</source>
-        <translation type="unfinished"/>
+        <translation>Медиа-вызовы</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="360"/>
         <source>STUN</source>
-        <translation type="unfinished"/>
+        <translation>STUN</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="399"/>
         <source>TURN</source>
-        <translation type="unfinished"/>
+        <translation>TURN</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="435"/>
         <source>User:</source>
-        <translation type="unfinished"/>
+        <translation>Пользователь:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="442"/>
@@ -304,7 +306,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="481"/>
         <source>Log everything to file</source>
-        <translation>Записывать всё в файл</translation>
+        <translation>Вести журнал событий в файле</translation>
     </message>
 </context>
 <context>
@@ -317,7 +319,7 @@
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="36"/>
         <source>leechcraft.org</source>
-        <translation type="unfinished"/>
+        <translation>leechcraft.org</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="41"/>
@@ -374,7 +376,7 @@
     <message>
         <location filename="adhoccommandmanager.cpp" line="222"/>
         <source>Original message: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Исходное сообщение: %1.</translation>
     </message>
 </context>
 <context>
@@ -457,7 +459,7 @@
     <message>
         <location filename="capsstorageondisk.cpp" line="226"/>
         <source>Migrating capabilities database...</source>
-        <translation type="unfinished"/>
+        <translation>Миграция базы данных возможностей клиентов…</translation>
     </message>
 </context>
 <context>
@@ -465,7 +467,7 @@
     <message>
         <location filename="captchamanager.cpp" line="65"/>
         <source>Enter CAPTCHA</source>
-        <translation>Введите капчу</translation>
+        <translation>CAPTCHA</translation>
     </message>
 </context>
 <context>
@@ -488,7 +490,7 @@
     <message>
         <location filename="clientconnection.cpp" line="1020"/>
         <source>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</source>
-        <translation type="unfinished"/>
+        <translation>Использование сервиса juick.com не рекомендуется. Рассмотрите возможность миграции на более адекватные альтернативы вроде point.im.</translation>
     </message>
 </context>
 <context>
@@ -496,12 +498,12 @@
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="102"/>
         <source>Error from %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка от %1: %2</translation>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="105"/>
         <source>Error from %1: %2 (%3).</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка от %1: %2 (%3).</translation>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="120"/>
@@ -596,7 +598,7 @@
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="157"/>
         <source>Subscription is required to perform this action.</source>
-        <translation>Требуется подписка для выполнения этого действия.</translation>
+        <translation>Требуется подписка для произведения этого действия.</translation>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="161"/>
@@ -672,7 +674,7 @@
     <message>
         <location filename="entrybase.cpp" line="306"/>
         <source>Real name</source>
-        <translation type="unfinished"/>
+        <translation>Настоящее имя</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="307"/>
@@ -682,7 +684,7 @@
     <message>
         <location filename="entrybase.cpp" line="309"/>
         <source>About</source>
-        <translation type="unfinished"/>
+        <translation>О себе</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="319"/>
@@ -713,7 +715,7 @@
     <message>
         <location filename="entrybase.cpp" line="327"/>
         <source>Phone</source>
-        <translation type="unfinished"/>
+        <translation>Телефон</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="364"/>
@@ -733,7 +735,7 @@
     <message>
         <location filename="entrybase.cpp" line="377"/>
         <source>Locality: %1</source>
-        <comment>User's locality</comment>
+        <comment>User&apos;s locality</comment>
         <translation>Местоположение: %1</translation>
     </message>
     <message>
@@ -749,27 +751,27 @@
     <message>
         <location filename="entrybase.cpp" line="381"/>
         <source>Address</source>
-        <translation type="unfinished"/>
+        <translation>Адрес</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="386"/>
         <source>Organization</source>
-        <translation type="unfinished"/>
+        <translation>Организация</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="387"/>
         <source>Organization unit</source>
-        <translation type="unfinished"/>
+        <translation>Подразделение</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="388"/>
         <source>Job title</source>
-        <translation type="unfinished"/>
+        <translation>Должность</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="389"/>
         <source>Job role</source>
-        <translation type="unfinished"/>
+        <translation>Роль</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="740"/>
@@ -792,7 +794,7 @@
     <message>
         <location filename="executecommanddialog.cpp" line="200"/>
         <source>Execute another command</source>
-        <translation type="unfinished"/>
+        <translation>Выполнить другую команду</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="214"/>
@@ -833,7 +835,7 @@
     <message>
         <location filename="gwoptionsdialog.cpp" line="84"/>
         <source>Error updating gateway information: %1.</source>
-        <translation>Ошибка обновления информации о транспорте: %1.</translation>
+        <translation>Ошибка обновления информации на транспорте: :%1.</translation>
     </message>
 </context>
 <context>
@@ -841,7 +843,7 @@
     <message>
         <location filename="glooxaccount.cpp" line="106"/>
         <source>Self VCard...</source>
-        <translation>Свой VCard...</translation>
+        <translation>Собственный VCard...</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="107"/>
@@ -851,12 +853,12 @@
     <message>
         <location filename="glooxaccount.cpp" line="108"/>
         <source>Enable message carbons</source>
-        <translation type="unfinished"/>
+        <translation>Включить копирование сообщений</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="116"/>
         <source>Deliver messages from conversations on other resources to this resource as well.</source>
-        <translation type="unfinished"/>
+        <translation>Копировать на этот ресурс все сообщения из разговоров на других ресурсах.</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="499"/>
@@ -866,22 +868,22 @@
     <message>
         <location filename="glooxaccount.cpp" line="862"/>
         <source>By full JID</source>
-        <translation type="unfinished"/>
+        <translation>По полному JID</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="862"/>
         <source>By domain</source>
-        <translation type="unfinished"/>
+        <translation>По домену</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="865"/>
         <source>Select block type:</source>
-        <translation type="unfinished"/>
+        <translation>Выберите тип блокировки:</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="1012"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно присоединиться к тому, что уже добавлено в контакт-лист. Вы желаете удалить %1 из ростера и попробовать снова?</translation>
     </message>
 </context>
 <context>
@@ -956,22 +958,22 @@
     <message>
         <location filename="jabbersearchmanager.cpp" line="52"/>
         <source>First name</source>
-        <translation type="unfinished"/>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="jabbersearchmanager.cpp" line="53"/>
         <source>Last name</source>
-        <translation type="unfinished"/>
+        <translation>Фамилия</translation>
     </message>
     <message>
         <location filename="jabbersearchmanager.cpp" line="54"/>
         <source>Nick</source>
-        <translation type="unfinished"/>
+        <translation>Ник</translation>
     </message>
     <message>
         <location filename="jabbersearchmanager.cpp" line="55"/>
         <source>E-Mail</source>
-        <translation type="unfinished"/>
+        <translation>E-mail</translation>
     </message>
 </context>
 <context>
@@ -1037,7 +1039,7 @@
     <message>
         <location filename="legacyformbuilder.cpp" line="71"/>
         <source>Username:</source>
-        <translation>Имя:</translation>
+        <translation>Имя пользователя:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="73"/>
@@ -1062,7 +1064,7 @@
     <message>
         <location filename="legacyformbuilder.cpp" line="82"/>
         <source>E-Mail:</source>
-        <translation>E-Mail:</translation>
+        <translation>E-mail:</translation>
     </message>
 </context>
 <context>
@@ -1099,7 +1101,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="50"/>
         <source>Action</source>
-        <translation>Экшн</translation>
+        <translation>Действие</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="50"/>
@@ -1124,7 +1126,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="125"/>
         <source>Group</source>
-        <translation>Группу друзей</translation>
+        <translation>Группа</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="131"/>
@@ -1139,7 +1141,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="138"/>
         <source>All</source>
-        <translation>Все</translation>
+        <translation>Всё</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="142"/>
@@ -1179,7 +1181,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="375"/>
         <source>Error fetching lists.</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка получения списков.</translation>
     </message>
 </context>
 <context>
@@ -1192,7 +1194,7 @@
     <message>
         <location filename="privacylistsitemdialog.cpp" line="144"/>
         <source>To</source>
-        <translation>Кому</translation>
+        <translation>К</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="145"/>
@@ -1202,7 +1204,7 @@
     <message>
         <location filename="privacylistsitemdialog.cpp" line="146"/>
         <source>None</source>
-        <translation>Ничего</translation>
+        <translation>Нет</translation>
     </message>
 </context>
 <context>
@@ -1210,7 +1212,7 @@
     <message>
         <location filename="privacylistsmanager.cpp" line="409"/>
         <source>Cannot fetch lists.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно получить списки приватности.</translation>
     </message>
 </context>
 <context>
@@ -1223,7 +1225,7 @@
     <message>
         <location filename="regformhandlerwidget.cpp" line="197"/>
         <source>Server error: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка сервера: %1.</translation>
     </message>
     <message>
         <location filename="regformhandlerwidget.cpp" line="213"/>
@@ -1306,12 +1308,12 @@
     <message>
         <location filename="roomclentry.cpp" line="102"/>
         <source>Banned</source>
-        <translation>Забаненные</translation>
+        <translation>Забаненный</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="103"/>
         <source>None</source>
-        <translation>Ничего</translation>
+        <translation>Без членства</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="104"/>
@@ -1378,7 +1380,7 @@
     <message>
         <location filename="roomhandler.cpp" line="126"/>
         <source>%1 has left the room</source>
-        <translation>%1 покинул комнату</translation>
+        <translation>%1 покинул(а) комнату</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="146"/>
@@ -1618,7 +1620,7 @@
     <message>
         <location filename="transferjob.cpp" line="115"/>
         <source>could not open incoming file %1: %2</source>
-        <translation>невозможно открыть входящий файл %1: %2</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1674,7 +1676,7 @@
     <message>
         <location filename="vcarddialog.cpp" line="145"/>
         <source>%1&apos;s avatar</source>
-        <translation type="unfinished"/>
+        <translation>Аватар %1</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="236"/>
@@ -1704,7 +1706,7 @@
     <message>
         <location filename="vcarddialog.cpp" line="258"/>
         <source>Locality: %1</source>
-        <comment>User's locality</comment>
+        <comment>User&apos;s locality</comment>
         <translation>Местоположение: %1</translation>
     </message>
     <message>
@@ -1730,7 +1732,7 @@
     <message>
         <location filename="vcarddialog.cpp" line="312"/>
         <source>OS</source>
-        <translation>Операционные системы</translation>
+        <translation>ОС</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="401"/>
@@ -1750,7 +1752,7 @@
     <message>
         <location filename="vcarddialog.cpp" line="498"/>
         <source>Images (*.png *.jpg *.jpeg *.gif *.bmp);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Изображения (*.png *.jpg *.jpeg *.gif *.bmp);;Все файлы (*.*)</translation>
     </message>
 </context>
 <context>
@@ -1779,7 +1781,7 @@
     <message>
         <location filename="xep0313modelmanager.cpp" line="45"/>
         <source>Entry name</source>
-        <translation type="unfinished"/>
+        <translation>Имя контакта</translation>
     </message>
     <message>
         <location filename="xep0313modelmanager.cpp" line="45"/>
@@ -1996,17 +1998,17 @@
     <message>
         <location filename="executecommanddialog.cpp" line="105"/>
         <source>Info:</source>
-        <translation type="unfinished"/>
+        <translation>Информация:</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="107"/>
         <source>Warning:</source>
-        <translation type="unfinished"/>
+        <translation>Предупреждение:</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="109"/>
         <source>Error:</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка:</translation>
     </message>
 </context>
 <context>
@@ -2169,12 +2171,12 @@
     <message>
         <location filename="xep0313prefsdialog.ui" line="14"/>
         <source>Message archiving preferences</source>
-        <translation type="unfinished"/>
+        <translation>Настройки архивирования сообщений</translation>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="22"/>
         <source>Default mode:</source>
-        <translation type="unfinished"/>
+        <translation>Режим по умолчанию:</translation>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="30"/>
@@ -2189,27 +2191,27 @@
     <message>
         <location filename="xep0313prefsdialog.ui" line="40"/>
         <source>roster only</source>
-        <translation type="unfinished"/>
+        <translation>только ростер</translation>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="56"/>
         <source>Per-JID configuration</source>
-        <translation type="unfinished"/>
+        <translation>Настройки отдельных JID&apos;ов</translation>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="62"/>
         <source>Always:</source>
-        <translation type="unfinished"/>
+        <translation>Всегда:</translation>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="72"/>
         <source>Never:</source>
-        <translation type="unfinished"/>
+        <translation>Никогда:</translation>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="82"/>
         <source>Enter custom JIDs, one per line:</source>
-        <translation type="unfinished"/>
+        <translation>Введите отдельные JID&apos;ы, один на строку:</translation>
     </message>
 </context>
 <context>
@@ -2227,17 +2229,17 @@
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Advertise OS version</source>
-        <translation>Оглашать версию ОС</translation>
+        <translation>Сообщать о версии OS</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Advertise Qt version</source>
-        <translation>Оглашать версию Qt</translation>
+        <translation>Сообщать о версии Qt</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>IQ requests</source>
-        <translation>Запросы IQ</translation>
+        <translation>IQ-запросы</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
@@ -2247,17 +2249,17 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Request participant VCards in MUCs</source>
-        <translation>Запрашивать VCard участников в конференциях</translation>
+        <translation>Запрашивать VCard&apos;ы участников в конференциях</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Request contacts versions</source>
-        <translation type="unfinished"/>
+        <translation>Запрашивать версии контактов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Request contacts VCards</source>
-        <translation type="unfinished"/>
+        <translation>Запрашивать VCard&apos;ы контактов</translation>
     </message>
 </context>
 </TS>
