@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru_RU">
 <context>
     <name>LC::LMP::PPL::LocalCollectionScrobbler</name>
     <message>
@@ -12,22 +14,22 @@
     <message>
         <location filename="ppl.cpp" line="52"/>
         <source>Sync scrobbling log</source>
-        <translation type="unfinished"/>
+        <translation>Синхронизировать журнал прослушиваний</translation>
     </message>
     <message>
         <location filename="ppl.cpp" line="60"/>
         <source>Select .scrobbler.log</source>
-        <translation type="unfinished"/>
+        <translation>Выберите .scrobbler.log</translation>
     </message>
     <message>
         <location filename="ppl.cpp" line="62"/>
         <source>Scrobbler log (*.scrobbler.log)</source>
-        <translation type="unfinished"/>
+        <translation>Журнал прослушиваний (*.scrobbler.log)</translation>
     </message>
     <message>
         <location filename="ppl.cpp" line="101"/>
         <source>Synchronizes the logs of songs played on portable devices with LMP and scrobbling services like Last.FM.</source>
-        <translation type="unfinished"/>
+        <translation>Синхронизирует журнал прослушивания песен с портативных устройств с коллекцией LMP и сервисами вроде Last.FM.</translation>
     </message>
 </context>
 <context>
@@ -46,7 +48,7 @@
         <location filename="tracksselectordialog.cpp" line="124"/>
         <source>Title</source>
         <oldsource>Track</oldsource>
-        <translation>Заголовок</translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="tracksselectordialog.cpp" line="125"/>
@@ -56,7 +58,7 @@
     <message>
         <location filename="tracksselectordialog.cpp" line="268"/>
         <source>All</source>
-        <translation>Все</translation>
+        <translation>Всё</translation>
     </message>
 </context>
 <context>
@@ -64,32 +66,32 @@
     <message>
         <location filename="tracksselectordialog.ui" line="14"/>
         <source>Listened tracks</source>
-        <translation type="unfinished"/>
+        <translation>Прослушанные композиции</translation>
     </message>
     <message>
         <location filename="tracksselectordialog.ui" line="40"/>
         <source>Mark all</source>
-        <translation>Отметить все</translation>
+        <translation>Выбрать всё</translation>
     </message>
     <message>
         <location filename="tracksselectordialog.ui" line="50"/>
         <source>Unmark all</source>
-        <translation>Снять отметку со всех</translation>
+        <translation>Убрать выбор со всех</translation>
     </message>
     <message>
         <location filename="tracksselectordialog.ui" line="60"/>
         <source>Unmark repetitions</source>
-        <translation type="unfinished"/>
+        <translation>Убрать повторения</translation>
     </message>
     <message>
         <location filename="tracksselectordialog.ui" line="70"/>
         <source>Mark selected</source>
-        <translation>Отметить выделенные</translation>
+        <translation>Выбрать выделенные</translation>
     </message>
     <message>
         <location filename="tracksselectordialog.ui" line="80"/>
         <source>Unmark selected</source>
-        <translation>Снять отметку с выделенных</translation>
+        <translation>Снять выбор с выделенных</translation>
     </message>
 </context>
 </TS>
