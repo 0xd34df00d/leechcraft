@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AccountAddWizardEmailPage</name>
     <message>
@@ -359,7 +361,11 @@
     <message numerus="yes">
         <location filename="composemessagetab.cpp" line="402"/>
         <source>Attached %n files(s) from the source message.</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Прикреплено %n вложение из исходного сообщения.</numerusform>
+            <numerusform>Прикреплено %n вложения из исходного сообщения.</numerusform>
+            <numerusform>Прикреплено %n вложений из исходного сообщения.</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="374"/>
@@ -639,7 +645,11 @@
     <message numerus="yes">
         <location filename="mailtab.cpp" line="1132"/>
         <source>Got %n new messages.</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Получено %n новое письмо.</numerusform>
+            <numerusform>Получено %n новых письма.</numerusform>
+            <numerusform>Получено %n новых писем.</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="1133"/>
@@ -674,7 +684,11 @@
     <message numerus="yes">
         <location filename="mailtab.cpp" line="958"/>
         <source>Copy %n message(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Скопировать %n письмо</numerusform>
+            <numerusform>Скопировать %n письма</numerusform>
+            <numerusform>Скопировать %n писем</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="974"/>
@@ -684,7 +698,11 @@
     <message numerus="yes">
         <location filename="mailtab.cpp" line="975"/>
         <source>Move %n message(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Переместить %n сообщение</numerusform>
+            <numerusform>Переместить %n сообщения</numerusform>
+            <numerusform>Переместить %n сообщений</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -692,12 +710,12 @@
     <message>
         <location filename="multieditorwidget.cpp" line="77"/>
         <source>Plain text (internal)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="multieditorwidget.cpp" line="97"/>
         <source>Rich text (%1)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -705,27 +723,27 @@
     <message>
         <location filename="snails.cpp" line="62"/>
         <source>Mail</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="snails.cpp" line="63"/>
         <source>Mail tab.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="snails.cpp" line="71"/>
         <source>Compose mail</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="snails.cpp" line="72"/>
         <source>Allows one to compose outgoing mail messages.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="snails.cpp" line="137"/>
         <source>LeechCraft mail client.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -734,7 +752,7 @@
         <location filename="progressmanager.cpp" line="65"/>
         <source>Running</source>
         <oldsource>Running...</oldsource>
-        <translation>Выполняется</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -742,12 +760,12 @@
     <message>
         <location filename="templateseditorwidget.cpp" line="107"/>
         <source>Unable to save template: %1.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="templateseditorwidget.cpp" line="156"/>
         <source>Unable to load template: %1.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -755,7 +773,7 @@
     <message>
         <location filename="mailtab.ui" line="134"/>
         <source>about:blank</source>
-        <translation>about:blank</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -766,98 +784,98 @@
         <location filename="messagelistactionsmanager.cpp" line="208"/>
         <location filename="messagelistactionsmanager.cpp" line="243"/>
         <source>Open</source>
-        <translation>Открытый</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="118"/>
         <source>Open the page on GitHub.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="164"/>
         <source>Open the bug page on Bugzilla.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="209"/>
         <source>Open the issue page on Redmine.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="244"/>
         <source>Open the review page on ReviewBoard.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="315"/>
         <location filename="messagelistactionsmanager.cpp" line="356"/>
         <source>Unsubscription confirmation</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="316"/>
         <source>Are you sure you want to unsubscribe from %1? This will send an email to %2.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="336"/>
         <source>Successfully sent unsubscribe request to %1.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="345"/>
         <source>Unable to send unsubscribe request to %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="357"/>
         <source>Are you sure you want to unsubscribe from %1? This will open the following web page in your browser: %2</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="381"/>
         <source>Unsubscribe</source>
-        <translation>Отписаться</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="382"/>
         <source>Try unsubscribing from this maillist.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="418"/>
         <source>Delete</source>
-        <translation>Удалить</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="419"/>
         <source>Delete the message</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="441"/>
         <source>Attachments</source>
-        <translation>Вложения</translation>
+        <translation type="unfinished">Вложения</translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="442"/>
         <source>Open/save attachments.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="util.cpp" line="58"/>
         <source>Save attachment</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="util.cpp" line="69"/>
         <source>Attachment %1 fetched successfully.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="util.cpp" line="76"/>
         <source>Unable to fetch %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -865,7 +883,7 @@
     <message>
         <location filename="accountaddwizard.cpp" line="117"/>
         <source>Choose a service template</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -873,27 +891,27 @@
     <message>
         <location filename="templateseditorwidget.ui" line="25"/>
         <source>Template type:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="templateseditorwidget.ui" line="33"/>
         <source>New message</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="templateseditorwidget.ui" line="38"/>
         <source>Reply</source>
-        <translation>Ответить</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="templateseditorwidget.ui" line="43"/>
         <source>Forwarded message</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="templateseditorwidget.ui" line="51"/>
         <source>Content type:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -901,93 +919,93 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Appearance</source>
-        <translation>Внешний вид</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Fonts</source>
-        <translation>Шрифты</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Behavior</source>
-        <translation>Поведение</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <location filename="dummy.cpp" line="10"/>
         <source>Mail list</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Message viewer</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Message actions hints style:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>icons</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>balls</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Sorting</source>
-        <translation>Сортировка</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Consider read status when sorting threads roots</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Consider read status of children as well</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Editor</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>Default format of a reply:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>As original message</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Plain text</source>
-        <translation>Обычный текст</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>HTML</source>
-        <translation>HTML</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Accounts</source>
-        <translation>Учётные записи</translation>
+        <translation type="unfinished">Учётные записи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Templates</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
