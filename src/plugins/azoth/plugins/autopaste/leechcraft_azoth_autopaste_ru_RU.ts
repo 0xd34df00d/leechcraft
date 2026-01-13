@@ -1,10 +1,12 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru_RU">
 <context>
     <name>LC::Azoth::Autopaste::ActionsStorage</name>
     <message>
         <location filename="actionsstorage.cpp" line="46"/>
         <source>Paste to pastebin...</source>
-        <translation type="unfinished"/>
+        <translation>Отправить на pastebin...</translation>
     </message>
 </context>
 <context>
@@ -23,17 +25,17 @@
         <location filename="pasteservicebase.cpp" line="129"/>
         <source>Unexpected reply from the service. Maybe its support in Autopaste got oudated.</source>
         <oldsource>Unexpected reply from the service. Maybe Autopaste got oudated.</oldsource>
-        <translation type="unfinished"/>
+        <translation>Неожиданный ответ от сервиса. Возможно, его поддержка в Autopaste устарела.</translation>
     </message>
     <message>
         <location filename="pasteservicebase.cpp" line="132"/>
         <source>Text paste failure</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка отправки текста</translation>
     </message>
     <message>
         <location filename="pasteservicebase.cpp" line="133"/>
         <source>Couldn&apos;t paste text. %1</source>
-        <translation type="unfinished"/>
+        <translation>Не получилось отправить текст. %1</translation>
     </message>
 </context>
 <context>
@@ -46,7 +48,7 @@
     <message>
         <location filename="autopaste.cpp" line="162"/>
         <source>Do you want to disable autopasting for this contact (%1)?</source>
-        <translation type="unfinished"/>
+        <translation>Вы хотите отключить автоматическую отправку длинных постов на pastebin&apos;ы для этого контакта (%1)?</translation>
     </message>
 </context>
 <context>
@@ -54,7 +56,7 @@
     <message>
         <location filename="pastedialog.ui" line="14"/>
         <source>Paste options</source>
-        <translation>Опции вставки</translation>
+        <translation>Опции отправки</translation>
     </message>
     <message>
         <location filename="pastedialog.ui" line="20"/>
@@ -74,7 +76,7 @@
     <message>
         <location filename="pastedialog.ui" line="50"/>
         <source>None</source>
-        <translation>Ничего</translation>
+        <translation>Нет</translation>
     </message>
 </context>
 <context>
@@ -112,7 +114,7 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Number of symbols to be detected as a paste:</source>
-        <translation>Количество чисмволов, чтобы считать пастой:</translation>
+        <translation>Предельное число символов:</translation>
     </message>
 </context>
 </TS>
