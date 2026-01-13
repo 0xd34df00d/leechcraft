@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="de">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="de">
 <context>
     <name>Changer</name>
     <message>
@@ -23,47 +21,39 @@
         <source>ID string:</source>
         <translation>ID:</translation>
     </message>
-    <message>
-        <location filename="changer.ui" line="57"/>
-        <source>%Platform% and %Subplatform% are expanded to the windowing system and the operation system.
-%Security% is expanded to U if SSL is enabled, otherwise N.
-%Locale% is replaced with current locale name.
-%WebKitVersion% is expanded to WebKit version.
-%AppVersion% is expanded to the application&apos;s version.</source>
-        <translation>%Platform% und %Subplatform% werden durch das Fenstersystem und das Betriebssystem ersetzt.
-%Security% wird durch U ersetzt, wenn SSL aktiviert ist, ansonsten durch N.
-%Locale% wird durch den Namen des aktuellen Einstellungssatzes für Gebietsschemaparameter ersetzt.
-%WebKitVersion% wird durch die WebKit-Version ersetzt.
-%AppVersion% wird durch die Version der Anwendung ersetzt.</translation>
-    </message>
 </context>
 <context>
     <name>LC::Poshuku::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="66"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Domain</source>
-        <translation type="unfinished">Domain</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="fua.cpp" line="67"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Agent</source>
-        <translation type="unfinished">Agent</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="fua.cpp" line="68"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Identification string</source>
-        <translation type="unfinished">Identifikations Nummer</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="fua.cpp" line="112"/>
+        <location filename="fua.cpp" line="86"/>
         <source>Allows one to set fake user agents for different sites.</source>
-        <translation type="unfinished">Erlaubt die Einstellung gefälschter User Agents für verschiedene Websites.</translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="fua.cpp" line="197"/>
+        <source>LeechCraft (this machine)</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="settings.ui" line="27"/>
+        <location filename="settings.ui" line="24"/>
         <source>Add...</source>
         <translation>Hinzufügen...</translation>
     </message>
@@ -73,12 +63,12 @@
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="settings.ui" line="41"/>
+        <location filename="settings.ui" line="44"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="settings.ui" line="65"/>
+        <location filename="settings.ui" line="71"/>
         <source>Changes would be applied immediately</source>
         <translation>Änderungen werden sofort übernommen</translation>
     </message>
