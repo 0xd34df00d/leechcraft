@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ro_RO">
 <context>
     <name>AddFromMissedDialog</name>
     <message>
@@ -42,7 +42,7 @@
     <message>
         <location filename="intmatcherconfigwidget.ui" line="49"/>
         <source>then</source>
-        <translation>тоді</translation>
+        <translation>decât</translation>
     </message>
 </context>
 <context>
@@ -50,7 +50,7 @@
     <message>
         <location filename="enablesoundactionmanager.cpp" line="17"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"/>
+        <translation>Activează notificările sonore</translation>
     </message>
 </context>
 <context>
@@ -58,12 +58,12 @@
     <message>
         <location filename="matchconfigdialog.cpp" line="33"/>
         <source>Standard fields</source>
-        <translation type="unfinished"/>
+        <translation>Câmpuri standard</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.cpp" line="155"/>
         <source>Invalid matcher type %1.</source>
-        <translation>Некоректний тип матчера %1.</translation>
+        <translation>Tip corespondent invalid %1.</translation>
     </message>
 </context>
 <context>
@@ -71,43 +71,43 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="187"/>
         <source>Field name</source>
-        <translation>Назва поля</translation>
+        <translation>Nume câmp</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="187"/>
         <source>Rule description</source>
-        <translation>Опис правила</translation>
+        <translation>Descriere Regulă </translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="292"/>
         <source>&lt;empty matcher&gt;</source>
-        <translation>&lt;порожній матчер&gt;</translation>
+        <translation>&lt;empty matcher&gt;</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="335"/>
         <source>Custom field %1 (%2)</source>
-        <translation type="unfinished"/>
+        <translation>Câmp personalizat %1 (%2)</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="366"/>
         <source>The rule has been changed. Do you want to save it?</source>
         <oldsource>The rule has been changed. Do you want to save it</oldsource>
-        <translation type="unfinished"/>
+        <translation>Regula a fost schimbată.Doriți să salvați schimbările?</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="456"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
-        <translation>Ви впевнені, що бажаєте замінити усі правила на набір за замовчуванням?</translation>
+        <translation>Sunteți sigur că doriți să înlocuiți toate regulile cu setarea implicită?</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="516"/>
         <source>Select audio file</source>
-        <translation>Обрати звуковий файл</translation>
+        <translation>Alegeți fișierul audio</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="518"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
-        <translation>Звукові файли (*.ogg *.wav *.flac *.mp3);;Усі файли (*.*)</translation>
+        <translation>Fișiere Audio ( *.ogg *.wav *.flac *.mp3);;Toate fișierele (*.*)</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="550"/>
@@ -118,7 +118,7 @@
         <location filename="notificationruleswidget.cpp" line="331"/>
         <location filename="notificationruleswidget.cpp" line="342"/>
         <source>Please enter the argument:</source>
-        <translation>Будь ласка, введіть аргумент:</translation>
+        <translation>Vă rugăm să introduceți argumentul:</translation>
     </message>
 </context>
 <context>
@@ -126,12 +126,12 @@
     <message>
         <location filename="advancednotifications.cpp" line="57"/>
         <source>Toggle Advanced Notifications rules...</source>
-        <translation type="unfinished"/>
+        <translation>Comutaţi regulile Notificărilor Avansate...</translation>
     </message>
     <message>
         <location filename="advancednotifications.cpp" line="95"/>
         <source>Module for the advanced notifications framework.</source>
-        <translation>Модуль для фреймворку advanced notifications.</translation>
+        <translation>Modul pentru cadrul notificărilor avansate.</translation>
     </message>
 </context>
 <context>
@@ -139,77 +139,77 @@
     <message>
         <location filename="rulesmanager.cpp" line="359"/>
         <source>Event is due</source>
-        <translation type="unfinished"/>
+        <translation>Evenimentul urmează</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="373"/>
         <source>Download error</source>
-        <translation>Помилка завантаження</translation>
+        <translation>Eroare la descărcare</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="368"/>
         <source>Download finished</source>
-        <translation type="unfinished"/>
+        <translation>Descărcare finalizată</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="390"/>
         <source>Package updated</source>
-        <translation>Пакет оновлено</translation>
+        <translation>Pachet actualizat</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="382"/>
         <source>Generic</source>
-        <translation type="unfinished"/>
+        <translation>Generic</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="313"/>
         <source>Incoming chat messages</source>
-        <translation>Вхідні повідомлення чату</translation>
+        <translation>Mesaje chat primite</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="319"/>
         <source>MUC highlights</source>
-        <translation>Підсвітки у конференціях</translation>
+        <translation>Evidențieri MUC</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="325"/>
         <source>MUC invitations</source>
-        <translation>Запрошення до конференцій</translation>
+        <translation>Invitații MUC</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="331"/>
         <source>Incoming file transfers</source>
-        <translation>Вхідні передачі файлів</translation>
+        <translation>Transferuri de fișiere primite</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="336"/>
         <source>Subscription requests</source>
-        <translation>Запити про підписку</translation>
+        <translation>Solicitări abonare</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="342"/>
         <source>Subscription changes</source>
-        <translation>Зміни підписок</translation>
+        <translation>Modificări abonare</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="350"/>
         <source>Attention requests</source>
-        <translation>Запити уваги</translation>
+        <translation>Solicitări de atenție</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="402"/>
         <source>Bell in inactive terminal</source>
-        <translation type="unfinished"/>
+        <translation>Clopoțel în terminalul inactiv</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="408"/>
         <source>Activity in inactive terminal</source>
-        <translation type="unfinished"/>
+        <translation>Activitate în terminalul inactiv</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="414"/>
         <source>Inactivity in inactive terminal</source>
-        <translation type="unfinished"/>
+        <translation>Inactivitate în terminalul inactiv</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="423"/>
@@ -224,17 +224,17 @@
     <message>
         <location filename="rulesmanager.cpp" line="467"/>
         <source>Name</source>
-        <translation>Назва</translation>
+        <translation>Nume</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="467"/>
         <source>Category</source>
-        <translation>Категорія</translation>
+        <translation>Categorie</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="467"/>
         <source>Type</source>
-        <translation>Тип</translation>
+        <translation>Tip</translation>
     </message>
 </context>
 <context>
@@ -242,7 +242,7 @@
     <message>
         <location filename="systemtrayhandler.cpp" line="274"/>
         <source>Dismiss</source>
-        <translation>Пропустити</translation>
+        <translation>Închideți</translation>
     </message>
 </context>
 <context>
@@ -250,7 +250,7 @@
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Title</source>
-        <translation>Назва</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
@@ -260,12 +260,12 @@
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Category</source>
-        <translation>Категорія</translation>
+        <translation>Categorie</translation>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Type</source>
-        <translation>Тип</translation>
+        <translation>Tip</translation>
     </message>
 </context>
 <context>
@@ -273,27 +273,27 @@
     <message>
         <location filename="matchconfigdialog.ui" line="14"/>
         <source>Field match</source>
-        <translation>Перевірка поля</translation>
+        <translation>Potrivire câmp</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="25"/>
         <source>Source plugin:</source>
-        <translation>Вихідний плагін:</translation>
+        <translation>Modul sursă:</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="35"/>
         <source>Field name:</source>
-        <translation>Назва поля:</translation>
+        <translation>Nume câmp:</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="45"/>
         <source>Description:</source>
-        <translation>Опис:</translation>
+        <translation>Descriere:</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="67"/>
         <source>Matcher configuration</source>
-        <translation>Конфігурація матчерів</translation>
+        <translation>Configurare Identificator</translation>
     </message>
 </context>
 <context>
@@ -303,57 +303,57 @@
         <location filename="notificationruleswidget.ui" line="330"/>
         <location filename="notificationruleswidget.ui" line="477"/>
         <source>Remove</source>
-        <translation>Видалити</translation>
+        <translation>Eliminare</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="66"/>
         <source>Move up</source>
-        <translation>Підняти</translation>
+        <translation>Mută în sus</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="76"/>
         <source>Move down</source>
-        <translation>Опустити</translation>
+        <translation>Mută în jos</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="103"/>
         <source>Default</source>
-        <translation>За замовчуванням</translation>
+        <translation>Implicit</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="137"/>
         <source>Rule</source>
-        <translation>Правило</translation>
+        <translation>Regulă</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="162"/>
         <source>Name:</source>
-        <translation>Назва:</translation>
+        <translation>Nume:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="172"/>
         <source>Event category:</source>
-        <translation>Категорія події:</translation>
+        <translation>Categorie eveniment:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="182"/>
         <source>Event type:</source>
-        <translation>Тип події:</translation>
+        <translation>Tip eveniment:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="210"/>
         <source>Notify via:</source>
-        <translation>Повідомляти через:</translation>
+        <translation>Notificare prin:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="230"/>
         <source>Visual</source>
-        <translation>Вискакуючі вікна</translation>
+        <translation>Vizual</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="223"/>
         <source>System tray</source>
-        <translation>Системний трей</translation>
+        <translation>Zonă de notificare</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="39"/>
@@ -370,95 +370,95 @@
         <location filename="notificationruleswidget.ui" line="237"/>
         <location filename="notificationruleswidget.ui" line="343"/>
         <source>Audio</source>
-        <translation>Звукові повідомлення</translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="244"/>
         <location filename="notificationruleswidget.ui" line="409"/>
         <source>Command</source>
-        <translation>Команда</translation>
+        <translation>Comandă</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="251"/>
         <source>Draw attention to the window</source>
-        <translation type="unfinished"/>
+        <translation>Atrage atenția la fereastră</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="258"/>
         <source>System-dependent</source>
-        <translation type="unfinished"/>
+        <translation>Dependent de sistem</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="268"/>
         <source>Single shot</source>
-        <translation>Одиничне спрацьовування</translation>
+        <translation>Încercare unică</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="280"/>
         <source>Fields</source>
-        <translation>Поля</translation>
+        <translation>Câmpuri</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="298"/>
         <source>Matches:</source>
-        <translation>Збіжності:</translation>
+        <translation>Potriviri:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="310"/>
         <location filename="notificationruleswidget.ui" line="457"/>
         <source>Add...</source>
-        <translation>Додати...</translation>
+        <translation>Adăugare...</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="320"/>
         <location filename="notificationruleswidget.ui" line="467"/>
         <source>Modify...</source>
-        <translation>Змінити...</translation>
+        <translation>Modifică...</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="383"/>
         <source>Browse...</source>
-        <translation>Огляд...</translation>
+        <translation>Răsfoiește...</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="393"/>
         <source>Test</source>
-        <translation>Перевірка</translation>
+        <translation>Test</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="427"/>
         <source>Command:</source>
-        <translation>Команда:</translation>
+        <translation>Comandă:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="437"/>
         <source>Arguments:</source>
-        <translation>Аргументи:</translation>
+        <translation>Argumente:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="447"/>
         <source>Argument</source>
-        <translation>Аргумент</translation>
+        <translation>Argument</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="505"/>
         <source>Other</source>
-        <translation>Інші</translation>
+        <translation>Altceva</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="511"/>
         <source>Associated color:</source>
-        <translation type="unfinished"/>
+        <translation>Culoare asociată:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="535"/>
         <source>Save rule</source>
-        <translation type="unfinished"/>
+        <translation>Salvare regulă</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="364"/>
         <source>File:</source>
-        <translation>Файл:</translation>
+        <translation>Fișier:</translation>
     </message>
 </context>
 <context>
@@ -466,52 +466,52 @@
     <message>
         <location filename="typedmatchers.cpp" line="235"/>
         <source>contains pattern `%1`</source>
-        <translation>містить шаблон `%1`</translation>
+        <translation>conține modelul `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="236"/>
         <source>doesn&apos;t contain pattern `%1`</source>
-        <translation>не містить шаблон `%1`</translation>
+        <translation>nu conține modelul `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="259"/>
         <source>contains element matching %1</source>
-        <translation>містить елемент, що відповідає %1</translation>
+        <translation>conține elementul ce se potrivește cu %1</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="260"/>
         <source>doesn&apos;t contain element matching %1</source>
-        <translation>не містить елемент, що відповідає %1</translation>
+        <translation>nu conține elementul ce se potrivește cu %1</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="278"/>
         <source>matches URL or pattern `%1`</source>
-        <translation type="unfinished"/>
+        <translation>se potrivește cu URL-ul sau modelul `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="279"/>
         <source>doesn&apos;t match URL or pattern `%1`</source>
-        <translation type="unfinished"/>
+        <translation>nu se potrivește cu URL-ul sau modelul `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="325"/>
         <source>yes</source>
-        <translation>так</translation>
+        <translation>da</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="326"/>
         <source>no</source>
-        <translation>ні</translation>
+        <translation>nu</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="434"/>
         <source>equals to %1</source>
-        <translation type="unfinished"/>
+        <translation>este egal cu %1</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="444"/>
         <source>is %1 then %2</source>
-        <translation>є %1, тоді %2</translation>
+        <translation>este %1 decât %2</translation>
     </message>
 </context>
 <context>
@@ -519,27 +519,27 @@
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="21"/>
         <source>contains</source>
-        <translation>містить</translation>
+        <translation>conține</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="26"/>
         <source>doesn&apos;t contain</source>
-        <translation>не містить</translation>
+        <translation>nu conține</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="45"/>
         <source>string</source>
-        <translation>рядок</translation>
+        <translation>șir</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="50"/>
         <source>wildcard</source>
-        <translation>маска</translation>
+        <translation>meta-caracter</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="55"/>
         <source>regexp</source>
-        <translation>регулярний вираз</translation>
+        <translation>regexp</translation>
     </message>
 </context>
 <context>
@@ -547,27 +547,27 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Rules</source>
-        <translation>Правила</translation>
+        <translation>Reguli</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Methods</source>
-        <translation>Методи</translation>
+        <translation>Metode</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Audio</source>
-        <translation>Звук</translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Enable audio notifications</source>
-        <translation>Увімкнути звукові сповіщення</translation>
+        <translation>Activează notificările sonore</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Audio theme:</source>
-        <translation>Звукова тема:</translation>
+        <translation>Temă audio:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
@@ -577,52 +577,52 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>System tray</source>
-        <translation>Системний трей</translation>
+        <translation>Zonă de notificare</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Counters</source>
-        <translation>Лічильники</translation>
+        <translation>Contoare</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Enable for IM events</source>
-        <translation>Увімкнути для подій IM</translation>
+        <translation>Activare pentru evenimente IM</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Enable for Organizer events</source>
-        <translation type="unfinished"/>
+        <translation>Activare pentru evenimente Organizator</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Enable for Downloads events</source>
-        <translation type="unfinished"/>
+        <translation>Activare pentru evenimente Descărcări</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Enable for Package Manager events</source>
-        <translation type="unfinished"/>
+        <translation>Activare pentru evenimente Manager Pachete</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Enable for Media Player events</source>
-        <translation type="unfinished"/>
+        <translation>Activare pentru evenimente Media Player </translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>Enable for Generic events</source>
-        <translation type="unfinished"/>
+        <translation>Activare pentru evenimente Generice</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>Behavior</source>
-        <translation>Поведінка</translation>
+        <translation>Comportament</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Hide when mouse leaves the notifier</source>
-        <translation type="unfinished"/>
+        <translation>Ascunde atunci când mouse-ul părăsește notificatorul</translation>
     </message>
 </context>
 </TS>

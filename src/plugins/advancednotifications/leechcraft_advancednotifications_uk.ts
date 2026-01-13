@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk">
 <context>
     <name>AddFromMissedDialog</name>
     <message>
@@ -42,7 +42,7 @@
     <message>
         <location filename="intmatcherconfigwidget.ui" line="49"/>
         <source>then</source>
-        <translation>тоді</translation>
+        <translation>ніж</translation>
     </message>
 </context>
 <context>
@@ -63,7 +63,7 @@
     <message>
         <location filename="matchconfigdialog.cpp" line="155"/>
         <source>Invalid matcher type %1.</source>
-        <translation>Некоректний тип матчера %1.</translation>
+        <translation>Не правельний тип матчеру %1.</translation>
     </message>
 </context>
 <context>
@@ -71,7 +71,7 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="187"/>
         <source>Field name</source>
-        <translation>Назва поля</translation>
+        <translation>Поле імені</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="187"/>
@@ -97,17 +97,17 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="456"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
-        <translation>Ви впевнені, що бажаєте замінити усі правила на набір за замовчуванням?</translation>
+        <translation>Ви впевнені що хочете замінити всі правила на початкові?</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="516"/>
         <source>Select audio file</source>
-        <translation>Обрати звуковий файл</translation>
+        <translation>Виберіть аудіо файл</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="518"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
-        <translation>Звукові файли (*.ogg *.wav *.flac *.mp3);;Усі файли (*.*)</translation>
+        <translation>Аудіо файли (*.ogg *.wav *.flac *.mp3);;Всі файли (*.*)</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="550"/>
@@ -118,7 +118,7 @@
         <location filename="notificationruleswidget.cpp" line="331"/>
         <location filename="notificationruleswidget.cpp" line="342"/>
         <source>Please enter the argument:</source>
-        <translation>Будь ласка, введіть аргумент:</translation>
+        <translation>Будь ласка введіть аргумент:</translation>
     </message>
 </context>
 <context>
@@ -131,7 +131,7 @@
     <message>
         <location filename="advancednotifications.cpp" line="95"/>
         <source>Module for the advanced notifications framework.</source>
-        <translation>Модуль для фреймворку advanced notifications.</translation>
+        <translation>Модуль для фреймворку Advanced Notifications.</translation>
     </message>
 </context>
 <context>
@@ -144,7 +144,7 @@
     <message>
         <location filename="rulesmanager.cpp" line="373"/>
         <source>Download error</source>
-        <translation>Помилка завантаження</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="368"/>
@@ -154,7 +154,7 @@
     <message>
         <location filename="rulesmanager.cpp" line="390"/>
         <source>Package updated</source>
-        <translation>Пакет оновлено</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="382"/>
@@ -164,37 +164,37 @@
     <message>
         <location filename="rulesmanager.cpp" line="313"/>
         <source>Incoming chat messages</source>
-        <translation>Вхідні повідомлення чату</translation>
+        <translation>Отримані повідомлення в чаті</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="319"/>
         <source>MUC highlights</source>
-        <translation>Підсвітки у конференціях</translation>
+        <translation>Виділення в конференціях</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="325"/>
         <source>MUC invitations</source>
-        <translation>Запрошення до конференцій</translation>
+        <translation>Запрошення в конференції</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="331"/>
         <source>Incoming file transfers</source>
-        <translation>Вхідні передачі файлів</translation>
+        <translation>Файли які отримуються</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="336"/>
         <source>Subscription requests</source>
-        <translation>Запити про підписку</translation>
+        <translation>Прохання авторизації</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="342"/>
         <source>Subscription changes</source>
-        <translation>Зміни підписок</translation>
+        <translation>Зміни авторизації</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="350"/>
         <source>Attention requests</source>
-        <translation>Запити уваги</translation>
+        <translation>Прохання звернути увагу</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="402"/>
@@ -224,7 +224,7 @@
     <message>
         <location filename="rulesmanager.cpp" line="467"/>
         <source>Name</source>
-        <translation>Назва</translation>
+        <translation>Ім’я</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="467"/>
@@ -250,7 +250,7 @@
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Title</source>
-        <translation>Назва</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
@@ -278,7 +278,7 @@
     <message>
         <location filename="matchconfigdialog.ui" line="25"/>
         <source>Source plugin:</source>
-        <translation>Вихідний плагін:</translation>
+        <translation>Початковий модуль:</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="35"/>
@@ -293,7 +293,7 @@
     <message>
         <location filename="matchconfigdialog.ui" line="67"/>
         <source>Matcher configuration</source>
-        <translation>Конфігурація матчерів</translation>
+        <translation>Налаштування перевірки</translation>
     </message>
 </context>
 <context>
@@ -303,22 +303,22 @@
         <location filename="notificationruleswidget.ui" line="330"/>
         <location filename="notificationruleswidget.ui" line="477"/>
         <source>Remove</source>
-        <translation>Видалити</translation>
+        <translation>Знищити</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="66"/>
         <source>Move up</source>
-        <translation>Підняти</translation>
+        <translation>Перемістити вгору</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="76"/>
         <source>Move down</source>
-        <translation>Опустити</translation>
+        <translation>Перемістити вниз</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="103"/>
         <source>Default</source>
-        <translation>За замовчуванням</translation>
+        <translation>Початкові</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="137"/>
@@ -343,12 +343,12 @@
     <message>
         <location filename="notificationruleswidget.ui" line="210"/>
         <source>Notify via:</source>
-        <translation>Повідомляти через:</translation>
+        <translation>Повідомляти за допомогою:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="230"/>
         <source>Visual</source>
-        <translation>Вискакуючі вікна</translation>
+        <translation>Вікно сповіщення</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="223"/>
@@ -370,7 +370,7 @@
         <location filename="notificationruleswidget.ui" line="237"/>
         <location filename="notificationruleswidget.ui" line="343"/>
         <source>Audio</source>
-        <translation>Звукові повідомлення</translation>
+        <translation>Аудіо</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="244"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="268"/>
         <source>Single shot</source>
-        <translation>Одиничне спрацьовування</translation>
+        <translation>Одне спрацювання</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="280"/>
@@ -401,7 +401,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="298"/>
         <source>Matches:</source>
-        <translation>Збіжності:</translation>
+        <translation>Співпадіння:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="310"/>
@@ -418,12 +418,12 @@
     <message>
         <location filename="notificationruleswidget.ui" line="383"/>
         <source>Browse...</source>
-        <translation>Огляд...</translation>
+        <translation>Вибрати...</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="393"/>
         <source>Test</source>
-        <translation>Перевірка</translation>
+        <translation>Тест</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="427"/>
@@ -443,7 +443,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="505"/>
         <source>Other</source>
-        <translation>Інші</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="511"/>
@@ -458,7 +458,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="364"/>
         <source>File:</source>
-        <translation>Файл:</translation>
+        <translation>Файли:</translation>
     </message>
 </context>
 <context>
@@ -466,22 +466,22 @@
     <message>
         <location filename="typedmatchers.cpp" line="235"/>
         <source>contains pattern `%1`</source>
-        <translation>містить шаблон `%1`</translation>
+        <translation>вміщує шаблон `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="236"/>
         <source>doesn&apos;t contain pattern `%1`</source>
-        <translation>не містить шаблон `%1`</translation>
+        <translation>не вміщує шаблон `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="259"/>
         <source>contains element matching %1</source>
-        <translation>містить елемент, що відповідає %1</translation>
+        <translation>вміщує елемент, задовільняючий `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="260"/>
         <source>doesn&apos;t contain element matching %1</source>
-        <translation>не містить елемент, що відповідає %1</translation>
+        <translation>не вміщує елемент, задовільняючий `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="278"/>
@@ -496,12 +496,12 @@
     <message>
         <location filename="typedmatchers.cpp" line="325"/>
         <source>yes</source>
-        <translation>так</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="326"/>
         <source>no</source>
-        <translation>ні</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="434"/>
@@ -511,7 +511,7 @@
     <message>
         <location filename="typedmatchers.cpp" line="444"/>
         <source>is %1 then %2</source>
-        <translation>є %1, тоді %2</translation>
+        <translation>%1 ніж %2</translation>
     </message>
 </context>
 <context>
@@ -519,17 +519,17 @@
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="21"/>
         <source>contains</source>
-        <translation>містить</translation>
+        <translation>вміщує</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="26"/>
         <source>doesn&apos;t contain</source>
-        <translation>не містить</translation>
+        <translation>не вміщує</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="45"/>
         <source>string</source>
-        <translation>рядок</translation>
+        <translation>лінія</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="50"/>
@@ -539,7 +539,7 @@
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="55"/>
         <source>regexp</source>
-        <translation>регулярний вираз</translation>
+        <translation>регексп</translation>
     </message>
 </context>
 <context>
@@ -557,12 +557,12 @@
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Audio</source>
-        <translation>Звук</translation>
+        <translation>Аудіо</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Enable audio notifications</source>
-        <translation>Увімкнути звукові сповіщення</translation>
+        <translation>Ввімкнути аудіо сповіщення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
@@ -587,7 +587,7 @@
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Enable for IM events</source>
-        <translation>Увімкнути для подій IM</translation>
+        <translation>Включити для подій в IM</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
@@ -617,7 +617,7 @@
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>Behavior</source>
-        <translation>Поведінка</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
