@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ro_RO">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ro_RO">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -60,7 +58,7 @@
     <message>
         <location filename="../util/db/backendselector.ui" line="58"/>
         <source>Yay, SQLite has no settings worth adjusting!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/db/backendselector.ui" line="97"/>
@@ -330,7 +328,7 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="126"/>
         <source>New tab</source>
-        <translation type="unfinished">Filă nouă</translation>
+        <translation>Filă nouă</translation>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="132"/>
@@ -355,17 +353,17 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="162"/>
         <source>Open find dialog (where applicable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="169"/>
         <source>Find previous (where applicable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="175"/>
         <source>Find next (where applicable)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="362"/>
@@ -407,32 +405,32 @@
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="23"/>
         <source>Choose</source>
-        <translation>Alegeți</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="46"/>
         <source>%1 pt</source>
-        <translation>%1 pt</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="49"/>
         <source>bold</source>
-        <translation>îngroșat</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="51"/>
         <source>italic</source>
-        <translation>înclinat</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="53"/>
         <source>underlined</source>
-        <translation>subliniat</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="55"/>
         <source>striken out</source>
-        <translation>barat</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -519,12 +517,12 @@
     <message>
         <location filename="pluginmanager.cpp" line="489"/>
         <source>Plugins initialization: first stage...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="491"/>
         <source>Plugins initialization: second stage...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="927"/>
@@ -679,7 +677,7 @@
     <message>
         <location filename="splashscreen.cpp" line="68"/>
         <source>(%1 of %2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -768,22 +766,22 @@
     <message>
         <location filename="../util/db/consistencychecker.cpp" line="106"/>
         <source>Unable to rename %1 to %2. Please check %2 does not exist, and hit OK.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/db/consistencychecker.cpp" line="121"/>
         <source>Not enough space available: %1 free while the restored file is expected to be around %2. Please either free some disk space on this partition and retry or cancel the restore process.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/db/consistencychecker.cpp" line="129"/>
         <source>Target file %1 already exists, please remove it manually and retry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/db/consistencychecker.cpp" line="147"/>
         <source>Unable to dump corrupted SQLite database %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -791,22 +789,22 @@
     <message>
         <location filename="../util/db/dumper.cpp" line="36"/>
         <source>Unable to start dumping process: %1. Do you have sqlite3 installed?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/db/dumper.cpp" line="39"/>
         <source>Dumping process crashed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/db/dumper.cpp" line="40"/>
         <source>Dumping process crashed: %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/db/dumper.cpp" line="46"/>
         <source>Dumping process returned an error: %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -827,13 +825,13 @@
     <message>
         <location filename="../util/svcauth/ljutils.cpp" line="67"/>
         <source>Network error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/svcauth/ljutils.cpp" line="76"/>
         <location filename="../util/svcauth/ljutils.cpp" line="83"/>
         <source>Failed to parse response</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -841,17 +839,17 @@
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="252"/>
         <source>VK.com authentication for %1 failed because of error %2. Report upstream please.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="319"/>
         <source>VK.com authentication</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="320"/>
         <source>Could not authenticate %1 since authentication requires a browser plugin. Consider installing one like Poshuku.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="332"/>
@@ -873,7 +871,7 @@
         <location filename="winwarndialog.cpp" line="28"/>
         <source>Seems like you are running Microsoft Windows.
 
-LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
         <translation>Se pare că rulați pe platforma Microsoft Windows.
@@ -952,37 +950,37 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="14"/>
         <source>Change fonts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="30"/>
         <source>Standard font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="37"/>
         <source>Monospace font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="44"/>
         <source>Serif font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="51"/>
         <source>Sans-serif font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="58"/>
         <source>Cursive font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="65"/>
         <source>Fantasy font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1044,34 +1042,30 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <location filename="../util/util.cpp" line="69"/>
         <source>b</source>
         <comment>Short one-character unit for bytes.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/util.cpp" line="70"/>
         <source>K</source>
         <comment>Short one-character unit for kilobytes.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/util.cpp" line="71"/>
         <source>M</source>
         <comment>Short one-character unit for megabytes.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/util.cpp" line="72"/>
         <source>G</source>
         <comment>Short one-character unit for gigabytes.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="../util/util.cpp" line="85"/>
         <source>%n day(s), </source>
-        <translation>
-            <numerusform>%n zi, </numerusform>
-            <numerusform>%n zile, </numerusform>
-            <numerusform>%n de zile, </numerusform>
-        </translation>
+        <translation><numerusform>%n zi, </numerusform><numerusform>%n zile, </numerusform><numerusform>%n de zile, </numerusform></translation>
     </message>
     <message>
         <location filename="../util/sys/paths.cpp" line="137"/>
@@ -1186,82 +1180,82 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="57"/>
         <source>incorrect socket state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="59"/>
         <source>SSL internal error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="61"/>
         <source>invalid SSL data, like certificate, key or cypher</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="63"/>
         <source>temporary error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="21"/>
         <source>no error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="23"/>
         <source>not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="25"/>
         <source>gone forever</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="27"/>
         <source>access denied</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="29"/>
         <source>authentication required</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="31"/>
         <source>protocol error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="33"/>
         <source>network error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="35"/>
         <source>content error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="37"/>
         <source>proxy error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="39"/>
         <source>server error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="41"/>
         <source>local error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="43"/>
         <source>user canceled the download</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="46"/>
@@ -1330,154 +1324,154 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>Dimensiunea piesei redate.</translation>
     </message>
     <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="67"/>
+        <source>General activity</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="26"/>
+        <source>Track title</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="27"/>
+        <source>The track that the contact is currently listening to.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="35"/>
+        <source>Track album</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="36"/>
+        <source>The album that the contact is currently listening to.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="44"/>
+        <source>Track artist</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="45"/>
+        <source>The artist the contact is currently listening to.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="53"/>
+        <source>Track length</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="54"/>
+        <source>Length of the track the contact is currently listening to.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="68"/>
+        <source>General activity of the contact.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="76"/>
+        <source>Specific activity</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="77"/>
+        <source>Specific activity of the contact within the given general activity.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="85"/>
+        <source>Activity text</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="86"/>
+        <source>The comment set by the contact.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="99"/>
+        <source>Mood</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="100"/>
+        <source>The mood of the contact.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="108"/>
+        <source>Mood explanation text</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="109"/>
+        <source>The text accompanying the mood set by the contact.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="122"/>
+        <source>Latitude</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="123"/>
+        <source>The latitude of the contact&apos;s current position.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="131"/>
+        <source>Longitude</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="132"/>
+        <source>The longitude of the contact&apos;s current position.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="../util/xpc/stdanfields.cpp" line="140"/>
         <source>Country</source>
         <translation>Țara</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="26"/>
-        <source>Track title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="27"/>
-        <source>The track that the contact is currently listening to.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="35"/>
-        <source>Track album</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="36"/>
-        <source>The album that the contact is currently listening to.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="44"/>
-        <source>Track artist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="45"/>
-        <source>The artist the contact is currently listening to.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="53"/>
-        <source>Track length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="54"/>
-        <source>Length of the track the contact is currently listening to.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="67"/>
-        <source>General activity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="68"/>
-        <source>General activity of the contact.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="76"/>
-        <source>Specific activity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="77"/>
-        <source>Specific activity of the contact within the given general activity.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="85"/>
-        <source>Activity text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="86"/>
-        <source>The comment set by the contact.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="99"/>
-        <source>Mood</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="100"/>
-        <source>The mood of the contact.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="108"/>
-        <source>Mood explanation text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="109"/>
-        <source>The text accompanying the mood set by the contact.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="122"/>
-        <source>Latitude</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="123"/>
-        <source>The latitude of the contact&apos;s current position.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="131"/>
-        <source>Longitude</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="132"/>
-        <source>The longitude of the contact&apos;s current position.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../util/xpc/stdanfields.cpp" line="141"/>
         <source>The country the contact is currently in.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="149"/>
         <source>Locality</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="150"/>
         <source>The the exact locality (like a city or a town) the contact is currently in.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="227"/>
         <source>News source name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="228"/>
         <source>The name of the news source that caused the notification.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="237"/>
         <source>News source URL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="238"/>
         <source>The URL of the news source that caused the notification.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="252"/>
@@ -1522,7 +1516,7 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/xpc/anutil.cpp" line="31"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="32"/>
@@ -1593,22 +1587,22 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/xpc/anutil.cpp" line="133"/>
         <source>Contact&apos;s tune changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="134"/>
         <source>Contact&apos;s mood changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="135"/>
         <source>Contact&apos;s activity changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="136"/>
         <source>Contact&apos;s location changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="138"/>
@@ -1653,12 +1647,12 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/xpc/anutil.cpp" line="151"/>
         <source>News source got updated</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="152"/>
         <source>News source is detected to be broken</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/network/sslerror2treeitem.cpp" line="28"/>
@@ -1762,19 +1756,19 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>Info subiect</translation>
     </message>
     <message>
+        <location filename="../xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="117"/>
+        <source>Get more...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="../util/xpc/downloadhelpers.cpp" line="41"/>
         <source>Unable to find a downloader plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xpc/downloadhelpers.cpp" line="60"/>
         <source>Unable to open local file: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="117"/>
-        <source>Get more...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1805,32 +1799,32 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="79"/>
         <source>Subject</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="86"/>
         <source>Issuer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="100"/>
         <source>Unit:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="107"/>
         <source>Country:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="114"/>
         <source>State:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="121"/>
         <source>City:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="186"/>
@@ -1840,12 +1834,12 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="221"/>
         <source>Start date:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="235"/>
         <source>End date:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1858,12 +1852,12 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="sslerrorsdialog.ui" line="24"/>
         <source>The following URL has SSL errors:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="38"/>
         <source>What should we do?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="46"/>
@@ -1960,69 +1954,69 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="20"/>
         <source>Font families</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="29"/>
         <source>Standard font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="39"/>
         <source>Monospace font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="49"/>
         <source>Serif font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="59"/>
         <source>Sans-serif font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="69"/>
         <source>Cursive font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="79"/>
         <source>Fantasy font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="89"/>
         <source>Change all...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="99"/>
         <source>Font sizes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="108"/>
         <source>Default:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="115"/>
         <location filename="../util/xsd/wkfontswidget.ui" line="129"/>
         <location filename="../util/xsd/wkfontswidget.ui" line="143"/>
         <source> px</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="122"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="136"/>
         <source>Fixed-width:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2162,6 +2156,12 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>Deschide fila nouă lângă cea curentă</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="65"/>
+        <source>Tab selection behavior:</source>
+        <oldsource>Tab selection behavior: </oldsource>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="67"/>
         <source>Select the previously selected tab</source>
         <translation>Selectați fila selectată anterior</translation>
@@ -2253,11 +2253,6 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>Crafty</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
-        <source>Tab selection behavior:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="dummy.cpp" line="73"/>
         <source>Window selection mode for a new tab:</source>
         <translation>Mod selectare fereastră pentru o filă nouă:</translation>
@@ -2325,12 +2320,12 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="dummy.cpp" line="129"/>
         <source>Services</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="131"/>
         <source>Collect (anonymized) VKontakte application statistics</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="133"/>
