@@ -1,177 +1,169 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="uk_UA">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="uk_UA">
 <context>
-    <name>LC::SeekThru::Core</name>
+    <name>LC::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="82"/>
+        <location filename="core.cpp" line="81"/>
         <source>Short name</source>
-        <translation type="unfinished"/>
+        <translation>Коротка назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="124"/>
+        <location filename="core.cpp" line="123"/>
         <source>Open</source>
         <translation>Відкрити</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="126"/>
+        <location filename="core.cpp" line="125"/>
         <source>Limited</source>
-        <translation type="unfinished"/>
+        <translation>Обмежений</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="128"/>
+        <location filename="core.cpp" line="127"/>
         <source>Private</source>
-        <translation type="unfinished"/>
+        <translation>Приватний</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="130"/>
+        <location filename="core.cpp" line="129"/>
         <source>Closed</source>
-        <translation type="unfinished"/>
+        <translation>Закритий</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="251"/>
+        <location filename="core.cpp" line="274"/>
         <source>%1 wasn&apos;t delegated</source>
-        <translation type="unfinished"/>
+        <translation>%1 не було делеговано</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="364"/>
+        <location filename="core.cpp" line="410"/>
         <source>Could not open file %1.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо відкрити файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="374"/>
+        <location filename="core.cpp" line="420"/>
         <source>Could not remove temporary file %1.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо видалити тимчасовий файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="382"/>
+        <location filename="core.cpp" line="428"/>
         <source>A job was delegated, but it failed.</source>
-        <translation type="unfinished"/>
+        <translation>Завдання було делеговано, але виникла помилка.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="450"/>
+        <location filename="core.cpp" line="480"/>
         <source>XML parse error %1 at %2:%3.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка XML: %1 на %2:%3.</translation>
     </message>
 </context>
 <context>
-    <name>LC::SeekThru::SearchHandler</name>
+    <name>LC::Plugins::SeekThru::SearchHandler</name>
     <message>
-        <location filename="searchhandler.cpp" line="58"/>
+        <location filename="searchhandler.cpp" line="49"/>
         <source>Subscribe</source>
         <translation>Підписатись</translation>
     </message>
     <message numerus="yes">
-        <location filename="searchhandler.cpp" line="83"/>
+        <location filename="searchhandler.cpp" line="74"/>
         <source>%n total result(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <oldsource>%1 total results</oldsource>
+        <translation>
+            <numerusform>%n результат загалом</numerusform>
+            <numerusform>%n результати загалом</numerusform>
+            <numerusform>%n результатів загалом</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="85"/>
+        <location filename="searchhandler.cpp" line="76"/>
         <source>Unknown number of results</source>
-        <translation type="unfinished"/>
+        <translation>Невідома кількість результатів</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="196"/>
+        <location filename="searchhandler.cpp" line="218"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
-        <translation type="unfinished"/>
+        <translation>Завдання для запиту&lt;br /&gt;%1&lt;br /&gt;не було делеговано.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="220"/>
+        <location filename="searchhandler.cpp" line="242"/>
         <source>Could not open file %1.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо відкрити файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="231"/>
+        <location filename="searchhandler.cpp" line="253"/>
         <source>Could not remove temporary file %1.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо видалити тимчасовий файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="275"/>
+        <location filename="searchhandler.cpp" line="297"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
-        <translation type="unfinished"/>
+        <translation>Запит для адреси&lt;br /&gt;%1&lt;br /&gt;був делегований, але зазнав невдачі.</translation>
     </message>
 </context>
 <context>
-    <name>LC::SeekThru::SearchersList</name>
+    <name>LC::Plugins::SeekThru::SearchersList</name>
     <message>
-        <location filename="searcherslist.cpp" line="57"/>
-        <source>From searchplugins.net...</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="searcherslist.cpp" line="71"/>
+        <location filename="searcherslist.cpp" line="52"/>
         <source>No description</source>
-        <translation type="unfinished"/>
+        <translation>Немає опису</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="77"/>
+        <location filename="searcherslist.cpp" line="58"/>
         <source>No long name</source>
-        <translation type="unfinished"/>
+        <translation>Немає повної назви</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="87"/>
+        <location filename="searcherslist.cpp" line="68"/>
         <source>No contacts information</source>
-        <translation type="unfinished"/>
+        <translation>Немає контактної інформації</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="93"/>
+        <location filename="searcherslist.cpp" line="74"/>
         <source>No developer information</source>
-        <translation type="unfinished"/>
+        <translation>Немає інформації про розробника</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="99"/>
+        <location filename="searcherslist.cpp" line="80"/>
         <source>No attribution information</source>
-        <translation type="unfinished"/>
+        <translation>Немає інформації про авторство</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="105"/>
+        <location filename="searcherslist.cpp" line="86"/>
         <source>No right information</source>
-        <translation type="unfinished"/>
+        <translation>Немає інформації про права</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="110"/>
+        <location filename="searcherslist.cpp" line="91"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="110"/>
+        <location filename="searcherslist.cpp" line="91"/>
         <source>No</source>
         <translation>Ні</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="119"/>
+        <location filename="searcherslist.cpp" line="100"/>
         <source>Adding a new searcher</source>
-        <translation type="unfinished"/>
+        <translation>Додавання нового пошуковця</translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="120"/>
+        <location filename="searcherslist.cpp" line="101"/>
         <source>Enter the URL of the OpenSearch description</source>
-        <translation type="unfinished"/>
+        <translation>Введіть адресу опису OpenSearch</translation>
     </message>
 </context>
 <context>
-    <name>LC::SeekThru::SeekThru</name>
+    <name>LC::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="109"/>
+        <location filename="seekthru.cpp" line="99"/>
         <source>Search via OpenSearch-aware search providers.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="seekthru.cpp" line="169"/>
-        <source>Search in OpenSearch engines</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="seekthru.cpp" line="180"/>
-        <source>Search this term in OpenSearch engines in category %1.</source>
-        <translation type="unfinished"/>
+        <translation>Пошук за допомогою OpenSearch-пошуковців.</translation>
     </message>
 </context>
 <context>
-    <name>LC::SeekThru::StartupFirstPage</name>
+    <name>LC::Plugins::SeekThru::StartupFirstPage</name>
     <message>
-        <location filename="startupfirstpage.cpp" line="76"/>
+        <location filename="startupfirstpage.cpp" line="72"/>
         <source>Select default search engines</source>
-        <translation type="unfinished"/>
+        <translation>Оберіть типовий пошуковець</translation>
     </message>
 </context>
 <context>
@@ -187,62 +179,62 @@
         <translation>Керування</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="36"/>
+        <location filename="searcherslist.ui" line="30"/>
         <source>Add...</source>
         <translation>Додати...</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="49"/>
+        <location filename="searcherslist.ui" line="40"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="69"/>
+        <location filename="searcherslist.ui" line="60"/>
         <source>Info</source>
         <translation>Інформація</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="78"/>
+        <location filename="searcherslist.ui" line="69"/>
         <source>Long name:</source>
         <translation>Повна назва:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="92"/>
+        <location filename="searcherslist.ui" line="83"/>
         <source>Description:</source>
         <translation>Опис:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="102"/>
+        <location filename="searcherslist.ui" line="93"/>
         <source>Tags:</source>
         <translation>Позначки:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="109"/>
+        <location filename="searcherslist.ui" line="100"/>
         <source>Contact:</source>
         <translation>Контакти:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="123"/>
+        <location filename="searcherslist.ui" line="114"/>
         <source>Attribution:</source>
         <translation>Авторство:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="137"/>
+        <location filename="searcherslist.ui" line="128"/>
         <source>Right:</source>
         <translation>Права:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="151"/>
+        <location filename="searcherslist.ui" line="142"/>
         <source>Developer:</source>
         <translation>Розробник:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="165"/>
+        <location filename="searcherslist.ui" line="156"/>
         <source>Adult:</source>
         <translation>Для дорослих:</translation>
     </message>
     <message>
-        <location filename="searcherslist.ui" line="179"/>
+        <location filename="searcherslist.ui" line="170"/>
         <source>Languages:</source>
         <translation>Мова:</translation>
     </message>
