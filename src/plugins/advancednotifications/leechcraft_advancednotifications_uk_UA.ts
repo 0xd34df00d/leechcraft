@@ -1,17 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
 <context>
     <name>AddFromMissedDialog</name>
     <message>
         <location filename="addfrommisseddialog.ui" line="14"/>
         <source>Missed events</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addfrommisseddialog.ui" line="42"/>
         <source>You can select several root items to create several rules at once. You can also select some of the child nodes to create rules matching specific values of the corresponding fields.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -52,7 +50,7 @@
     <message>
         <location filename="enablesoundactionmanager.cpp" line="17"/>
         <source>Enable sound notifications</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -60,7 +58,7 @@
     <message>
         <location filename="matchconfigdialog.cpp" line="33"/>
         <source>Standard fields</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigdialog.cpp" line="155"/>
@@ -88,13 +86,13 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="335"/>
         <source>Custom field %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="366"/>
         <source>The rule has been changed. Do you want to save it?</source>
         <oldsource>The rule has been changed. Do you want to save it</oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="456"/>
@@ -114,7 +112,7 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="550"/>
         <source>No plugin has been found to play %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="331"/>
@@ -122,17 +120,13 @@
         <source>Please enter the argument:</source>
         <translation>Будь ласка, введіть аргумент:</translation>
     </message>
-    <message>
-        <source>Please enter new argument text:</source>
-        <translation type="vanished">Введіть текст для нового аргументу:</translation>
-    </message>
 </context>
 <context>
     <name>LC::AdvancedNotifications::Plugin</name>
     <message>
         <location filename="advancednotifications.cpp" line="57"/>
         <source>Toggle Advanced Notifications rules...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="advancednotifications.cpp" line="95"/>
@@ -145,7 +139,7 @@
     <message>
         <location filename="rulesmanager.cpp" line="359"/>
         <source>Event is due</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="373"/>
@@ -155,77 +149,77 @@
     <message>
         <location filename="rulesmanager.cpp" line="368"/>
         <source>Download finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="382"/>
-        <source>Generic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="313"/>
-        <source>Incoming chat messages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="319"/>
-        <source>MUC highlights</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="325"/>
-        <source>MUC invitations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="331"/>
-        <source>Incoming file transfers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="336"/>
-        <source>Subscription requests</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="342"/>
-        <source>Subscription changes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="rulesmanager.cpp" line="350"/>
-        <source>Attention requests</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="390"/>
         <source>Package updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Пакет оновлено</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="382"/>
+        <source>Generic</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="313"/>
+        <source>Incoming chat messages</source>
+        <translation>Вхідні повідомлення чату</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="319"/>
+        <source>MUC highlights</source>
+        <translation>Підсвітки у конференціях</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="325"/>
+        <source>MUC invitations</source>
+        <translation>Запрошення до конференцій</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="331"/>
+        <source>Incoming file transfers</source>
+        <translation>Вхідні передачі файлів</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="336"/>
+        <source>Subscription requests</source>
+        <translation>Запити про підписку</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="342"/>
+        <source>Subscription changes</source>
+        <translation>Зміни підписок</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="350"/>
+        <source>Attention requests</source>
+        <translation>Запити уваги</translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="402"/>
         <source>Bell in inactive terminal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="408"/>
         <source>Activity in inactive terminal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="414"/>
         <source>Inactivity in inactive terminal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="423"/>
         <source>News source updated</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="427"/>
         <source>News source broken</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="467"/>
@@ -256,22 +250,22 @@
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Category</source>
-        <translation type="unfinished">Категорія</translation>
+        <translation>Категорія</translation>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
 </context>
 <context>
@@ -304,10 +298,6 @@
 </context>
 <context>
     <name>NotificationRulesWidget</name>
-    <message>
-        <source>Add</source>
-        <translation type="vanished">Додати</translation>
-    </message>
     <message>
         <location filename="notificationruleswidget.ui" line="93"/>
         <location filename="notificationruleswidget.ui" line="330"/>
@@ -368,12 +358,13 @@
     <message>
         <location filename="notificationruleswidget.ui" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="49"/>
         <source>New from missed...</source>
-        <translation type="unfinished"></translation>
+        <oldsource>New from missed</oldsource>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="237"/>
@@ -390,12 +381,12 @@
     <message>
         <location filename="notificationruleswidget.ui" line="251"/>
         <source>Draw attention to the window</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="258"/>
         <source>System-dependent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="268"/>
@@ -452,17 +443,17 @@
     <message>
         <location filename="notificationruleswidget.ui" line="505"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Інші</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="511"/>
         <source>Associated color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="535"/>
         <source>Save rule</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="364"/>
@@ -495,27 +486,27 @@
     <message>
         <location filename="typedmatchers.cpp" line="278"/>
         <source>matches URL or pattern `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="279"/>
         <source>doesn&apos;t match URL or pattern `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="325"/>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation>так</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="326"/>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation>ні</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="434"/>
         <source>equals to %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="444"/>
@@ -601,27 +592,27 @@
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Enable for Organizer events</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Enable for Downloads events</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Enable for Package Manager events</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Enable for Media Player events</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>Enable for Generic events</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
@@ -631,7 +622,7 @@
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Hide when mouse leaves the notifier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>
