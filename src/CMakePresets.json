@@ -38,7 +38,6 @@
         "ENABLE_AZOTH_ABBREV": "True",
         "ENABLE_AZOTH_ACETAMIDE": "True",
         "ENABLE_AZOTH_ADIUMSTYLES": "True",
-        "ENABLE_AZOTH_ASTRALITY": "False",
         "ENABLE_AZOTH_AUTOIDLER": "True",
         "ENABLE_AZOTH_AUTOPASTE": "True",
         "ENABLE_AZOTH_BIRTHDAYNOTIFIER": "True",
