@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
 <context>
     <name>LC::Azoth::Abbrev::AbbrevsManager</name>
     <message>
@@ -81,11 +79,7 @@ Removes a previously added abbrevation either by its _pattern_ or by its _index_
     <message numerus="yes">
         <location filename="abbrev.cpp" line="143"/>
         <source>%n abbreviation(s):</source>
-        <translation>
-            <numerusform>%n сокращение:</numerusform>
-            <numerusform>%n сокращения:</numerusform>
-            <numerusform>%n сокращений:</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="abbrev.cpp" line="171"/>
