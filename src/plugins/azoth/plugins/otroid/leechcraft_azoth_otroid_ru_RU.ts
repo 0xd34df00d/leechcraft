@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>LC::Azoth::OTRoid::Authenticator</name>
     <message>
@@ -60,7 +62,11 @@
     <message numerus="yes">
         <location filename="fpmanager.cpp" line="253"/>
         <source>Are you sure you want to delete %n fingerprint(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы уверены, что хотите удалить %n отпечаток?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n отпечатка?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n отпечатков?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -247,7 +253,11 @@
     <message numerus="yes">
         <location filename="privkeymanager.cpp" line="147"/>
         <source>Are you sure you want to delete %n private key(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы уверены, что хотите удалить %n личный ключ?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n личных ключа?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n личных ключей?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
