@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="de">
 <context>
     <name>LC::Vrooby::Plugin</name>
     <message>
@@ -9,14 +7,29 @@
         <translation>Keine Backends sind verfügbar, die folgenden wurden versucht: %1.</translation>
     </message>
     <message>
+        <location filename="vrooby.cpp" line="149"/>
+        <source>Removable devices...</source>
+        <translation>Wechseldatenträger...</translation>
+    </message>
+    <message>
         <location filename="vrooby.cpp" line="103"/>
         <source>Removable storage devices manager for LeechCraft.</source>
         <translation>Manager für Wechseldatenträger für LeechCraft.</translation>
     </message>
+</context>
+<context>
+    <name>LC::Vrooby::TrayModel</name>
     <message>
-        <location filename="vrooby.cpp" line="149"/>
-        <source>Removable devices...</source>
-        <translation>Wechseldatenträger...</translation>
+        <source>total size: %1</source>
+        <translation type="vanished">Gesamtgröße: %1</translation>
+    </message>
+    <message>
+        <source>available size: %1</source>
+        <translation type="vanished">Verfügbare Größe: %1</translation>
+    </message>
+    <message>
+        <source>Mounted at %1</source>
+        <translation type="vanished">Eingehängt unter %1</translation>
     </message>
 </context>
 <context>
