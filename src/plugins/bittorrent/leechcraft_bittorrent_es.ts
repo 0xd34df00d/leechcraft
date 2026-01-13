@@ -1,27 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="es">
 <context>
     <name>AddMagnetDialog</name>
     <message>
         <location filename="addmagnetdialog.ui" line="14"/>
         <source>Add magnet link</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addmagnetdialog.ui" line="20"/>
         <source>Magnet:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addmagnetdialog.ui" line="30"/>
         <source>Save path:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addmagnetdialog.ui" line="42"/>
         <source>Browse...</source>
-        <translation>Explorar...</translation>
+        <translation>Examinar...</translation>
     </message>
     <message>
         <location filename="addmagnetdialog.ui" line="54"/>
@@ -44,12 +42,12 @@
     <message>
         <location filename="addmultipletorrents.ui" line="86"/>
         <source>Additional parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="92"/>
         <source>Start torrents after adding</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="102"/>
@@ -57,12 +55,12 @@
         <source>If this option is checked, the only torrents added are those for which at least some files are already downloaded. Namely, for a single-file torrent it checks the presentce of the corresponding file in the destination path, and for a multi-file torrent it checks the presence of the root directory of the torrent.
 
 This is useful, for example, when you need to re-add a bunch of torrents you were already seeding after the tracker has changed the torrent files, requiring you to re-download them.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="112"/>
         <source>Add a torrent only if its files already exist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="41"/>
@@ -172,17 +170,17 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="addtorrent.ui" line="114"/>
         <source>Mark...</source>
-        <translation>Marcar...</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addtorrent.ui" line="137"/>
         <source>Expand all</source>
-        <translation>Expandir todo</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addtorrent.ui" line="147"/>
         <source>Collapse all</source>
-        <translation>Desplegar todo</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addtorrent.ui" line="205"/>
@@ -276,12 +274,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="addtorrent.ui" line="419"/>
         <source>Mark existing files</source>
-        <translation>Marcar archivos existentes</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addtorrent.ui" line="424"/>
         <source>Mark missing files</source>
-        <translation>Marcar archivos perdidos</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -434,7 +432,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="addtorrent.cpp" line="303"/>
         <source>Unable to parse %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -475,22 +473,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="277"/>
         <source>Total downloaded</source>
-        <translation>Total descargado</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="278"/>
-        <source>Total uploaded</source>
-        <translation>Total subido</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="279"/>
         <source>Ratio</source>
-        <translation>Proporción</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="391"/>
-        <source>Error</source>
-        <translation>Error</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="397"/>
@@ -538,62 +526,67 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="116"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="123"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="130"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="138"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="146"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="153"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="272"/>
         <source>Down speed</source>
-        <translation>Velocidad de descarga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="273"/>
         <source>Up speed</source>
-        <translation>Velocidad de carga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="274"/>
         <source>Leechers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="275"/>
         <source>Seeders</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="core.cpp" line="278"/>
+        <source>Total uploaded</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="581"/>
         <source>%1% (%2 of %3 at %4 from %5 peers)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="597"/>
         <source>%1, seeding at %2 to %3 leechers (of around %4)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="685"/>
@@ -638,7 +631,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="369"/>
         <source>Checking resume data</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="core.cpp" line="391"/>
+        <source>Error</source>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="core.cpp" line="680"/>
@@ -648,12 +646,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="797"/>
         <source>libtorrent error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="844"/>
         <source>File %1 could not be read: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="1281"/>
@@ -668,12 +666,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="1406"/>
         <source>Open...</source>
-        <translation>Abrir...</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="1414"/>
         <source>Show folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -698,13 +696,13 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="newtorrentwizard.cpp" line="200"/>
         <source>Select where to save torrent file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="newtorrentwizard.cpp" line="213"/>
         <location filename="newtorrentwizard.cpp" line="228"/>
         <source>Select torrent contents</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -746,7 +744,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="115"/>
         <source>Add magnet link...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="listactions.cpp" line="126"/>
@@ -761,10 +759,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message numerus="yes">
         <location filename="listactions.cpp" line="165"/>
         <source>Do you really want to delete %n torrent(s)?</source>
-        <translation>
-            <numerusform>¿Realmente quiere borrar %n torrent?</numerusform>
-            <numerusform>¿Realmente quiere borrar %n torrents?</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="listactions.cpp" line="167"/>
@@ -809,12 +804,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="217"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Subir</translation>
     </message>
     <message>
         <location filename="listactions.cpp" line="222"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Bajar</translation>
     </message>
     <message>
         <location filename="listactions.cpp" line="227"/>
@@ -849,7 +844,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="287"/>
         <source>Failed to move torrent&apos;s files from %1 to %2.</source>
-        <translation>No se pudo mover los ficheros del torrent desde %1 hasta %2.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="listactions.cpp" line="292"/>
@@ -869,7 +864,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="340"/>
         <source>Make magnet link...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="listactions.cpp" line="349"/>
@@ -879,7 +874,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="360"/>
         <source>IP filter...</source>
-        <translation>Filtro de IP...</translation>
+        <translation>Filtro de IP</translation>
     </message>
 </context>
 <context>
@@ -887,7 +882,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="livestreamdevice.cpp" line="31"/>
         <source>No metadata is available yet.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -895,7 +890,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="movetorrentfiles.cpp" line="27"/>
         <source>Multiple directories</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="movetorrentfiles.cpp" line="41"/>
@@ -921,12 +916,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peersmodel.cpp" line="31"/>
         <source>Download rate</source>
-        <translation>Velocidad de descarga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peersmodel.cpp" line="32"/>
         <source>Upload rate</source>
-        <translation>Velocidad de carga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peersmodel.cpp" line="33"/>
@@ -980,7 +975,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.cpp" line="148"/>
         <source>Standard BitTorrent peer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.cpp" line="149"/>
@@ -1008,7 +1003,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.cpp" line="173"/>
         <source>%1 (piece %2, block %3, %4/%5)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.cpp" line="183"/>
@@ -1023,10 +1018,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message numerus="yes">
         <location filename="peerswidget.cpp" line="186"/>
         <source>%1 (%n second(s) remaining)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="peerswidget.cpp" line="194"/>
@@ -1037,12 +1029,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.cpp" line="198"/>
         <source>No send buffer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.cpp" line="205"/>
         <source>No receive buffer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1063,7 +1055,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="sessionsettingsmanager.cpp" line="202"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1121,7 +1113,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrentfilesmodel.cpp" line="270"/>
         <source>%1 hasn&apos;t finished downloading yet.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1134,17 +1126,17 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrentmaker.cpp" line="85"/>
         <source>Hashing torrent...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrentmaker.cpp" line="100"/>
         <source>Torrent creation failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrentmaker.cpp" line="114"/>
         <source>Torrent file generated: %1.&lt;br /&gt;Do you want to start seeding now?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1152,27 +1144,27 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrentplugin.cpp" line="91"/>
         <source>BitTorrent tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="92"/>
         <source>Full BitTorrent downloads tab.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="140"/>
         <source>Full-featured BitTorrent client.</source>
-        <translation>Completamente equipado cliente para BitTorrent.</translation>
+        <translation>Completamente equipado cliente para BitTorrent</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="198"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="449"/>
         <source>Open in torrent tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1185,70 +1177,67 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabfileswidget.cpp" line="193"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="torrenttabfileswidget.cpp" line="194"/>
         <source>Open %n file(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="228"/>
         <source>Change priority</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="231"/>
         <source>File is not downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="232"/>
         <source>Normal priority, download order depends on availability.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="233"/>
         <source>Pieces are preferred over the pieces with same availability.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="234"/>
         <source>Empty pieces are preferred just as much as partial pieces.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="235"/>
         <source>Empty pieces are preferred over partial pieces with the same availability.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="236"/>
         <source>Same as previous.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="237"/>
         <source>Pieces are considered to have highest availability.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="238"/>
         <source>Maximum file priority.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="255"/>
         <source>Expand all</source>
-        <translation>Expandir todo</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="256"/>
         <source>Collapse all</source>
-        <translation>Desplegar todo</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1286,7 +1275,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.cpp" line="429"/>
         <source>Not tracking</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.cpp" line="435"/>
@@ -1315,12 +1304,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="trackerschanger.cpp" line="139"/>
         <source>Confirm tracker removal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.cpp" line="140"/>
         <source>Are you sure you want to remove the following tracker:&lt;br /&gt;%1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1338,7 +1327,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="movetorrentfiles.ui" line="32"/>
         <source>Multiple sources</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="movetorrentfiles.ui" line="39"/>
@@ -1348,7 +1337,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="movetorrentfiles.ui" line="51"/>
         <source>Browse…</source>
-        <translation>Explorar...</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1376,7 +1365,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="newtorrentfirststep.ui" line="58"/>
         <source>Torrent&apos;s root path:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="75"/>
@@ -1489,7 +1478,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="newtorrentthirdstep.ui" line="163"/>
         <source>Public torrent (DHT enabled)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="177"/>
@@ -1517,12 +1506,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.ui" line="129"/>
         <source>Payload DL/UL speeds:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.ui" line="143"/>
         <source>Peak DL/UL speeds:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.ui" line="157"/>
@@ -1532,7 +1521,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.ui" line="171"/>
         <source>Remote DL speed:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.ui" line="185"/>
@@ -1557,12 +1546,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.ui" line="241"/>
         <source>Send buffer:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.ui" line="255"/>
         <source>Receive buffer:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.ui" line="269"/>
@@ -1577,17 +1566,17 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.ui" line="297"/>
         <source>Failcount:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.ui" line="311"/>
         <source>Pending disk bytes:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="peerswidget.ui" line="325"/>
         <source>Estimated round trip time:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1618,7 +1607,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="singletrackerchanger.ui" line="33"/>
         <source>Tier:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1626,22 +1615,22 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="startupfirstpage.ui" line="25"/>
         <source>Port range:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="62"/>
         <source>Max upload connections:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="82"/>
         <source>Max total connections:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="102"/>
         <source>Settings preset:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="110"/>
@@ -1651,12 +1640,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="startupfirstpage.ui" line="115"/>
         <source>Minimal memory usage</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="120"/>
         <source>High performance seed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1670,7 +1659,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="tabwidget.ui" line="63"/>
         <location filename="tabwidget.ui" line="304"/>
         <source>Download/upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="tabwidget.ui" line="72"/>
@@ -1693,12 +1682,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="tabwidget.ui" line="292"/>
         <source>Overall settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="tabwidget.ui" line="378"/>
         <source>Leeching/seeding torrents:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="tabwidget.ui" line="437"/>
@@ -1709,13 +1698,13 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="tabwidget.ui" line="213"/>
         <location filename="tabwidget.ui" line="449"/>
         <source>Total download rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="tabwidget.ui" line="227"/>
         <location filename="tabwidget.ui" line="463"/>
         <source>Total upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="tabwidget.ui" line="269"/>
@@ -1730,7 +1719,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="tabwidget.ui" line="144"/>
         <source>Auto managed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="tabwidget.ui" line="154"/>
@@ -1755,12 +1744,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="tabwidget.ui" line="241"/>
         <source>Wanted size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="tabwidget.ui" line="255"/>
         <source>Wanted done:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1826,7 +1815,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="torrenttabwidget.ui" line="130"/>
         <location filename="torrenttabwidget.ui" line="1062"/>
         <source>Download/upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="139"/>
@@ -1854,7 +1843,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="215"/>
         <source>Auto managed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="225"/>
@@ -1864,7 +1853,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="232"/>
         <source>Super seeding</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="243"/>
@@ -1885,23 +1874,23 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="torrenttabwidget.ui" line="287"/>
         <location filename="torrenttabwidget.ui" line="1206"/>
         <source>Total download rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="301"/>
         <location filename="torrenttabwidget.ui" line="1220"/>
         <source>Total upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="315"/>
         <source>Downloaded, all time:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="329"/>
         <source>Uploaded, all time:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="343"/>
@@ -1911,12 +1900,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="357"/>
         <source>Wanted size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="371"/>
         <source>Wanted done:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="388"/>
@@ -1931,12 +1920,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="411"/>
         <source>Seeding time:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="425"/>
         <source>Seed rank:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="439"/>
@@ -1946,28 +1935,28 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="453"/>
         <source>Last scrape:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="467"/>
         <source>Downloaded (session):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="474"/>
         <source>Uploaded (session):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="495"/>
         <source>Overall rating:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="502"/>
         <location filename="torrenttabwidget.ui" line="1262"/>
         <source>Session rating:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="531"/>
@@ -1978,27 +1967,27 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="540"/>
         <source>Connected peers:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="554"/>
         <source>Peers in list:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="568"/>
         <source>Peers in swarm:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="582"/>
         <source>Connect candidates:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="596"/>
         <source>Upload queue:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="610"/>
@@ -2013,7 +2002,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="638"/>
         <source>Seeds in swarm:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="652"/>
@@ -2038,7 +2027,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="769"/>
         <source>Torrent info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="787"/>
@@ -2103,22 +2092,22 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="970"/>
         <source>DHT nodes count:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="984"/>
         <source>Distributed copies:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1002"/>
         <source>Dashboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1136"/>
         <source>Leeching/seeding torrents:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1197"/>
@@ -2143,22 +2132,22 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="1290"/>
         <source>(Global) DHT nodes:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1304"/>
         <source>DHT torrents:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1318"/>
         <source>TCP listen port:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1337"/>
         <source>Per-tracker stats</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1353"/>
@@ -2168,12 +2157,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="1358"/>
         <source>Download rate</source>
-        <translation>Velocidad de descarga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1363"/>
         <source>Upload rate</source>
-        <translation>Velocidad de carga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1392"/>
@@ -2184,72 +2173,72 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="1595"/>
         <source>Total redundant data:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1609"/>
         <source>Total failed data:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1511"/>
         <source>Overhead downloaded:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1525"/>
         <source>Overhead uploaded:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1539"/>
         <source>Tracker downloaded:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1553"/>
         <source>Tracker uploaded:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1567"/>
         <source>DHT downloaded:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1581"/>
         <source>DHT uploaded:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1427"/>
         <source>Overhead download rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1441"/>
         <source>Overhead upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1483"/>
         <source>DHT download rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1497"/>
         <source>DHT upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1455"/>
         <source>Tracker download rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="1469"/>
         <source>Tracker upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2267,12 +2256,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="trackerschanger.ui" line="41"/>
         <source>Tier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="46"/>
         <source>Next announce</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="51"/>
@@ -2292,37 +2281,37 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="trackerschanger.ui" line="66"/>
         <source>Updating</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="71"/>
         <source>Start sent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="76"/>
         <source>Complete sent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="81"/>
         <source>From torrent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="86"/>
         <source>From client</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="91"/>
         <source>From magnet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="96"/>
         <source>From TeX</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="106"/>
@@ -2356,27 +2345,27 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Port range:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>Maximum upload connections:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Maximum total connections:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Fast speed control</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
         <source>Enable fast speed control</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
@@ -2421,22 +2410,22 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Enable port for SSL torrents</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>SSL port:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Resolve countries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="41"/>
         <source>Advanced network</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="43"/>
@@ -2447,52 +2436,58 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="47"/>
         <source>Maximum peers in reply:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="49"/>
         <source>Search branching:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Maximum node fail count:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="59"/>
         <source>Enable Local Service Discovery</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="61"/>
         <source>Enable UPnP support</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="63"/>
         <source>Enable NAT-PMP support</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="65"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="67"/>
         <source>Enable PeX</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="69"/>
+        <source>Allow downloading the metadata from the swarm in a µTorrent-compatible way</source>
+        <oldsource>Allow to download metadata from the swarm</oldsource>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="71"/>
         <source>Enable Smart Ban</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="73"/>
@@ -2502,17 +2497,17 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="75"/>
         <source>Announce to all trackers of one tier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="77"/>
         <source>Announce to all tiers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="79"/>
         <source>Prefer UDP trackers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="81"/>
@@ -2523,12 +2518,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="83"/>
         <source>Scrape enabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="85"/>
         <source>Scrape interval</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="87"/>
@@ -2554,7 +2549,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="266"/>
         <source>s</source>
         <oldsource> s</oldsource>
-        <translation>s</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="89"/>
@@ -2564,77 +2559,72 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="91"/>
         <source>Announce IP:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="93"/>
         <source>Allow multiple connections per IP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="69"/>
-        <source>Allow downloading the metadata from the swarm in a µTorrent-compatible way</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="53"/>
-        <source>Use DHT as a fallback</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="55"/>
-        <source>Features and extensions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="95"/>
         <source>Don&apos;t count slow torrents</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="97"/>
         <source>Send redundant have messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="99"/>
         <source>Auto upload slots</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="101"/>
         <source>Use parole mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="103"/>
         <source>Close redundant connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="105"/>
         <source>Prioritize partial pieces</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="53"/>
+        <source>Use DHT as a fallback</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="55"/>
+        <source>Features and extensions</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="107"/>
         <source>Tracker request completion timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="111"/>
         <source>Tracker data receive timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="115"/>
         <source>Stop tracker timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="119"/>
         <source>Tracker maximum response length:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="121"/>
@@ -2642,189 +2632,189 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="270"/>
         <source>KB</source>
         <oldsource> KB</oldsource>
-        <translation>KB</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="123"/>
         <source>Piece response timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="127"/>
         <source>Peer connection timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="131"/>
         <source>Block request timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="135"/>
         <source>Piece request queue time:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="139"/>
         <source>The number of block requests a peer is allowed to queue up:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="141"/>
         <source>The number of block requests to a peer in a queue:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="143"/>
         <source>Peer timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="147"/>
         <source>Web seed timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="151"/>
         <source>Minimal scrape interval:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="155"/>
         <source>Unchoke interval:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="159"/>
         <source>Max peer list size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="161"/>
         <source>Minimal announce interval:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="165"/>
         <source>Max rejects for a choked peer before ban:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="167"/>
         <source>Seeding piece quota:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="169"/>
         <source>Web seed retry wait:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="173"/>
         <source>Minimum peer reconnect time:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="177"/>
         <source>Force download of a piece if it could not be fetched in:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="181"/>
         <source>Maximum peer connection attempt failcount:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="183"/>
         <source>Connection attempts per second:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="185"/>
         <source>Upper send buffer low-watermark:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="189"/>
         <source>Peer inactivity timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="193"/>
         <source>Request random pieces while we have less than:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="195"/>
         <source>How much peers to get from the tracker:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="197"/>
         <source>Outgoing ports:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="199"/>
         <source>Optimistic unchoke multiplier:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="201"/>
         <source>TOS byte:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="203"/>
         <source>Share ratio limit:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="205"/>
         <source>Seed time ratio limit:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="207"/>
         <source>Seed time limit:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="209"/>
         <location filename="dummy.cpp" line="213"/>
         <source>min</source>
         <oldsource> min</oldsource>
-        <translation>min</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="211"/>
         <source>Auto scrape interval:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="215"/>
         <source>Pieces count to send via fast extensions:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="235"/>
         <source>Maximum automatically added torrent file size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="252"/>
         <source>Precise but slow file progress calculation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="217"/>
         <source>Handshake timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="221"/>
         <source>Web seed pipeline size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="223"/>
@@ -2835,12 +2825,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="229"/>
         <source>File allocation mode:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="231"/>
         <source>Sparse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="233"/>
@@ -2852,12 +2842,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="245"/>
         <source>MB</source>
         <oldsource> MB</oldsource>
-        <translation>MB</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="239"/>
         <source>Autosave interval:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="243"/>
@@ -2867,58 +2857,58 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="248"/>
         <source>Tags for automatic jobs:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="254"/>
         <source>Use read cache</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="256"/>
         <source>Give slots to seeding torrents in automanaged mode</source>
         <oldsource>Unload hashes from memory if seeding</oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="258"/>
         <source>Cache expiry:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="260"/>
         <source>Automanage startup wait:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="264"/>
         <source>Auto queue manage interval:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="268"/>
         <source>Maximum outstanding disk bytes per connection:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="272"/>
         <source>Maximum amount of concurrently open files:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="274"/>
         <source>Info pane</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="276"/>
         <source>Active groups</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="278"/>
         <source>Dashboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="280"/>
@@ -2933,7 +2923,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="284"/>
         <source>Per-tracker stats</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="286"/>
