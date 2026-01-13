@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>EditorPage</name>
     <message>
@@ -125,102 +125,94 @@
     </message>
 </context>
 <context>
-    <name>LC::Popishu::Core</name>
+    <name>LC::Plugins::Popishu::EditorPage</name>
     <message>
-        <location filename="core.cpp" line="41"/>
-        <source>The Popishu text editor</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>LC::Popishu::EditorPage</name>
-    <message>
-        <location filename="editorpage.cpp" line="117"/>
+        <location filename="editorpage.cpp" line="92"/>
         <source>Document type</source>
         <translation>Tipo del documento</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="147"/>
-        <source>Recent files</source>
-        <translation>Archivos recientes</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="159"/>
+        <location filename="editorpage.cpp" line="129"/>
         <source>Whitespace visibility</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="166"/>
+        <location filename="editorpage.cpp" line="136"/>
         <source>Wrapping mode</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="179"/>
+        <location filename="editorpage.cpp" line="149"/>
         <source>Edit</source>
         <translation>Editar</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="182"/>
+        <location filename="editorpage.cpp" line="152"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="253"/>
-        <location filename="editorpage.cpp" line="325"/>
+        <location filename="editorpage.cpp" line="220"/>
+        <location filename="editorpage.cpp" line="292"/>
         <source>Untitled</source>
         <translation>Sin título</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="258"/>
+        <location filename="editorpage.cpp" line="225"/>
         <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="333"/>
+        <location filename="editorpage.cpp" line="298"/>
         <source>Select file to open</source>
         <translation>Seleccionar archivo para abrir</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="488"/>
-        <source>Script wrapping failed.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="509"/>
-        <location filename="editorpage.cpp" line="545"/>
-        <source>Script injection failed: %1</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="644"/>
+        <location filename="editorpage.cpp" line="609"/>
         <source>File not found</source>
         <translation>Archivo no se encuentra</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="645"/>
+        <location filename="editorpage.cpp" line="610"/>
         <source>The requested file doesn&apos;t exist anymore.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="663"/>
+        <location filename="editorpage.cpp" line="665"/>
+        <source>Could not open file %1 for reading.</source>
+        <translation>No se pudo abrir el archivo %1 para lectura.</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="453"/>
+        <source>Script wrapping failed.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="117"/>
+        <source>Recent files</source>
+        <translation>Archivos recientes</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="474"/>
+        <location filename="editorpage.cpp" line="510"/>
+        <source>Script injection failed: %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="628"/>
         <source>Select file to save</source>
         <translation>Seleccionar archivo para guardar</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="676"/>
+        <location filename="editorpage.cpp" line="641"/>
         <source>Could not open file %1 for writing.</source>
         <translation>No se pudo abrir el archivo %1 para escritura.</translation>
     </message>
-    <message>
-        <location filename="editorpage.cpp" line="706"/>
-        <source>Could not open file %1 for reading.</source>
-        <translation>No se pudo abrir el archivo %1 para lectura.</translation>
-    </message>
 </context>
 <context>
-    <name>LC::Popishu::Plugin</name>
+    <name>LC::Plugins::Popishu::Plugin</name>
     <message>
-        <location filename="popishu.cpp" line="112"/>
+        <location filename="popishu.cpp" line="102"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>
         <translation type="unfinished"/>
     </message>
