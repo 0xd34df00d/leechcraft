@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AddFeedDialog</name>
     <message>
@@ -14,12 +16,12 @@
     <message>
         <location filename="addfeeddialog.ui" line="42"/>
         <source>Tags:</source>
-        <translation>Метки:</translation>
+        <translation>Теги:</translation>
     </message>
     <message>
         <location filename="addfeeddialog.ui" line="49"/>
         <source>untagged</source>
-        <translation>без метки</translation>
+        <translation>без тегов</translation>
     </message>
 </context>
 <context>
@@ -42,17 +44,17 @@
     <message>
         <location filename="channelsmodel.cpp" line="113"/>
         <source>Parse error: </source>
-        <translation type="unfinished"/>
+        <translation>Ошибка парсинга: </translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="116"/>
         <source>Error downloading the feed: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка скачивания ленты: %1.</translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="135"/>
         <source>Author</source>
-        <translation type="unfinished"/>
+        <translation>Автор</translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="136"/>
@@ -65,7 +67,7 @@
     <message>
         <location filename="export.ui" line="14"/>
         <source>This string is overridden in the source code</source>
-        <translation>Эта строка переопределена в исходном коде</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="export.ui" line="25"/>
@@ -133,17 +135,17 @@
     <message>
         <location filename="export2fb2dialog.ui" line="24"/>
         <source>Feeds</source>
-        <translation type="unfinished"/>
+        <translation>Ленты</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="97"/>
         <source>Format</source>
-        <translation type="unfinished"/>
+        <translation>Формат</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="105"/>
         <source>Export format:</source>
-        <translation type="unfinished"/>
+        <translation>Формат экспорта:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="170"/>
@@ -658,12 +660,12 @@
     <message>
         <location filename="export2fb2dialog.ui" line="1204"/>
         <source>Page size:</source>
-        <translation type="unfinished"/>
+        <translation>Размер страницы:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1230"/>
         <source>Page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Отступы страницы:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1239"/>
@@ -671,22 +673,22 @@
         <location filename="export2fb2dialog.ui" line="1259"/>
         <location filename="export2fb2dialog.ui" line="1272"/>
         <source> mm</source>
-        <translation type="unfinished"/>
+        <translation> мм</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1284"/>
         <source>Font:</source>
-        <translation type="unfinished"/>
+        <translation>Шрифт:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1301"/>
         <source>Base font size:</source>
-        <translation type="unfinished"/>
+        <translation>Базовый размер шрифта:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1308"/>
         <source> pt</source>
-        <translation type="unfinished"/>
+        <translation> пт</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="65"/>
@@ -755,7 +757,7 @@
         <location filename="feedsettings.ui" line="141"/>
         <source>&amp;Tags:</source>
         <oldsource>Tags:</oldsource>
-        <translation type="unfinished"/>
+        <translation>&amp;Теги:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="156"/>
@@ -771,7 +773,7 @@
         <location filename="feedsettings.ui" line="175"/>
         <source>&amp;Update interval:</source>
         <oldsource>Update interval:</oldsource>
-        <translation type="unfinished"/>
+        <translation>&amp;Интервал обновления:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="185"/>
@@ -789,13 +791,13 @@
         <location filename="feedsettings.ui" line="201"/>
         <source>&amp;Max items number:</source>
         <oldsource>Max items number:</oldsource>
-        <translation type="unfinished"/>
+        <translation>&amp;Максимально статей:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="224"/>
         <source>Max &amp;item&apos;s age:</source>
-        <oldsource>Max item's age:</oldsource>
-        <translation type="unfinished"/>
+        <oldsource>Max item&apos;s age:</oldsource>
+        <translation>Максимальный &amp;возраст статьи:</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="237"/>
@@ -810,7 +812,7 @@
     <message>
         <location filename="feedsettings.ui" line="254"/>
         <source>Default channel tags:</source>
-        <translation type="unfinished"/>
+        <translation>Теги канала по умолчанию:</translation>
     </message>
 </context>
 <context>
@@ -939,7 +941,7 @@
     <message>
         <location filename="aggregator.cpp" line="383"/>
         <source>Failed to initialize Aggregator storage: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Не удалось инициализировать хранилище Aggregator: %1.</translation>
     </message>
 </context>
 <context>
@@ -957,12 +959,12 @@
     <message>
         <location filename="components/actions/appwideactions.cpp" line="45"/>
         <source>Mark all channels as read</source>
-        <translation type="unfinished"/>
+        <translation>Отметить все каналы как прочитанные</translation>
     </message>
     <message>
         <location filename="components/actions/appwideactions.cpp" line="46"/>
         <source>Import/export</source>
-        <translation type="unfinished"/>
+        <translation>Импорт/экспорт</translation>
     </message>
     <message>
         <location filename="components/actions/appwideactions.cpp" line="47"/>
@@ -982,7 +984,7 @@
     <message>
         <location filename="components/actions/appwideactions.cpp" line="83"/>
         <source>Do you really want to mark all channels as read?</source>
-        <translation type="unfinished"/>
+        <translation>Вы действительно хотите отметить все каналы как прочитанные?</translation>
     </message>
 </context>
 <context>
@@ -990,24 +992,36 @@
     <message numerus="yes">
         <location filename="dbupdatethread.cpp" line="158"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Добавлен канал &quot;%1&quot; (%n статья)</numerusform>
+            <numerusform>Добавлен канал &quot;%1&quot; (%n статьи)</numerusform>
+            <numerusform>Добавлен канал &quot;%1&quot; (%n статей)</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="dbupdatethread.cpp" line="269"/>
         <source>%n new item(s)</source>
         <comment>Channel update</comment>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n новая статья</numerusform>
+            <numerusform>%n новых статьи</numerusform>
+            <numerusform>%n новых статей</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="dbupdatethread.cpp" line="271"/>
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n обновленная статья</numerusform>
+            <numerusform>%n обновленные статьи</numerusform>
+            <numerusform>%n обновленных статей</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="dbupdatethread.cpp" line="272"/>
         <source>Updated channel &quot;%1&quot; (%2).</source>
-        <translation type="unfinished"/>
+        <translation>Обновлен канал &quot;%1&quot; (%2).</translation>
     </message>
 </context>
 <context>
@@ -1020,7 +1034,11 @@
     <message numerus="yes">
         <location filename="export2fb2dialog.cpp" line="184"/>
         <source>%n unread item(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n непрочитанная статья</numerusform>
+            <numerusform>%n непрочитанные статьи</numerusform>
+            <numerusform>%n непрочитанных статей</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="201"/>
@@ -1041,12 +1059,12 @@
         <location filename="export2fb2dialog.cpp" line="311"/>
         <location filename="export2fb2dialog.cpp" line="433"/>
         <source>Export complete.</source>
-        <translation type="unfinished"/>
+        <translation>Экспорт завершен.</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="442"/>
         <source>fb2 files (*.fb2);;XML files (*.xml);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>FB2-файлы (*.fb2);;XML-файлы (*.xml);;PDF-файлы (*.pdf);;Все файлы (*.*)</translation>
     </message>
 </context>
 <context>
@@ -1054,17 +1072,17 @@
     <message>
         <location filename="feedserrormanager.cpp" line="51"/>
         <source>parse error</source>
-        <translation type="unfinished"/>
+        <translation>ошибка парсинга</translation>
     </message>
     <message>
         <location filename="feedserrormanager.cpp" line="51"/>
         <source>Parse error: </source>
-        <translation type="unfinished"/>
+        <translation>Ошибка парсинга: </translation>
     </message>
     <message>
         <location filename="feedserrormanager.cpp" line="62"/>
         <source>Error updating feed %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка обновления ленты %1: %2.</translation>
     </message>
 </context>
 <context>
@@ -1106,12 +1124,12 @@
         <location filename="components/actions/channelactions.cpp" line="39"/>
         <location filename="components/actions/channelactions.cpp" line="68"/>
         <source>Rename feed</source>
-        <translation type="unfinished"/>
+        <translation>Переименовать ленту</translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="41"/>
         <source>Remove channel</source>
-        <translation type="unfinished"/>
+        <translation>Удалить канал</translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="43"/>
@@ -1121,47 +1139,63 @@
     <message>
         <location filename="components/actions/channelactions.cpp" line="69"/>
         <source>New feed name:</source>
-        <translation type="unfinished"/>
+        <translation>Новое имя ленты:</translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="149"/>
         <source>Are you sure you want to mark channel %1 as read?</source>
-        <translation type="unfinished"/>
+        <translation>Вы уверены, что хотите пометить канал %1 как прочитанный?</translation>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="150"/>
         <source>Are you sure you want to mark %n channel(s) as read?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы уверены, что хотите пометить %n канал как прочитанный?</numerusform>
+            <numerusform>Вы уверены, что хотите пометить %n канала как прочитанные?</numerusform>
+            <numerusform>Вы уверены, что хотите пометить %n каналов как прочитанные?</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="161"/>
         <source>Are you sure you want to mark channel %1 as unread?</source>
-        <translation type="unfinished"/>
+        <translation>Вы уверены, что хотите пометить канал %1 как непрочитанный?</translation>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="162"/>
         <source>Are you sure you want to mark %n channel(s) as unread?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы уверены, что хотите пометить %n канал как непрочитанный?</numerusform>
+            <numerusform>Вы уверены, что хотите пометить %n канала как непрочитанные?</numerusform>
+            <numerusform>Вы уверены, что хотите пометить %n каналов как непрочитанные?</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="172"/>
         <source>Are you sure you want to delete feed %1?</source>
-        <translation type="unfinished"/>
+        <translation>Вы уверены, что хотите удалить ленту %1?</translation>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="173"/>
         <source>Are you sure you want to delete %n feed(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы уверены, что хотите удалить %n ленту?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n ленты?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n лент?</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="184"/>
         <source>Are you sure you want to delete channel %1?</source>
-        <translation type="unfinished"/>
+        <translation>Вы уверены, что хотите удалить канал %1?</translation>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="185"/>
         <source>Are you sure you want to delete %n channel(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы уверены, что хотите удалить %n канал?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n канала?</numerusform>
+            <numerusform>Вы уверены, что хотите удалить %n каналов?</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="47"/>
@@ -1176,17 +1210,17 @@
     <message>
         <location filename="components/actions/itemactions.cpp" line="60"/>
         <source>Mark as unread</source>
-        <translation>Отметить как непрочитанное</translation>
+        <translation>Отметить новость как непрочитанную</translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="63"/>
         <source>Mark as read</source>
-        <translation>Отметить как прочитанное</translation>
+        <translation>Отметить новость как прочитанную</translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="67"/>
         <source>Unimportant</source>
-        <translation type="unfinished"/>
+        <translation>Неважное</translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="70"/>
@@ -1211,32 +1245,36 @@
     <message>
         <location filename="components/actions/itemactions.cpp" line="84"/>
         <source>Copy news item link</source>
-        <translation type="unfinished"/>
+        <translation>Копировать ссылку на новость</translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="89"/>
         <source>Previous unread item</source>
-        <translation type="unfinished"/>
+        <translation>Предыдущая непрочитанная статья</translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="92"/>
         <source>Next unread item</source>
-        <translation type="unfinished"/>
+        <translation>Следующая непрочитанная статья</translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="95"/>
         <source>Previous item</source>
-        <translation type="unfinished"/>
+        <translation>Предыдущая статья</translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="98"/>
         <source>Next item</source>
-        <translation type="unfinished"/>
+        <translation>Следующая статья</translation>
     </message>
     <message numerus="yes">
         <location filename="components/actions/itemactions.cpp" line="215"/>
         <source>Are you sure you want to remove %n items?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы действительно хотите удалить %n статью?</numerusform>
+            <numerusform>Вы действительно хотите удалить %n статьи?</numerusform>
+            <numerusform>Вы действительно хотите удалить %n статей?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -1244,38 +1282,38 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="21"/>
         <source>Image</source>
-        <translation type="unfinished"/>
+        <translation>Изображение</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="23"/>
         <source>Audio</source>
-        <translation>Звук</translation>
+        <translation>Аудио</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="25"/>
         <source>Video</source>
-        <translation type="unfinished"/>
+        <translation>Видео</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="27"/>
         <source>Document</source>
-        <translation type="unfinished"/>
+        <translation>Документ</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="29"/>
         <source>Executable</source>
-        <translation type="unfinished"/>
+        <translation>Приложение</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="68"/>
         <source>%1 (as per %2)</source>
         <comment>&lt;rating&gt; (as per &lt;rating scheme&gt;)</comment>
-        <translation type="unfinished"/>
+        <translation>%1 (согласно %2)</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="70"/>
         <source>Rating</source>
-        <translation type="unfinished"/>
+        <translation>Рейтинг</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="83"/>
@@ -1291,7 +1329,7 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="85"/>
         <source>Keywords</source>
-        <translation type="unfinished"/>
+        <translation>Ключевые слова</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="86"/>
@@ -1301,12 +1339,12 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="103"/>
         <source>Also available as:</source>
-        <translation type="unfinished"/>
+        <translation>Также доступно как:</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="129"/>
         <source>Thumbnail at %1</source>
-        <translation type="unfinished"/>
+        <translation>Предпросмотр в %1</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="140"/>
@@ -1331,22 +1369,22 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="154"/>
         <source>Start time</source>
-        <translation type="unfinished"/>
+        <translation>Время начала</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="155"/>
         <source>End time</source>
-        <translation type="unfinished"/>
+        <translation>Время окончания</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="191"/>
         <source>Scenes</source>
-        <translation type="unfinished"/>
+        <translation>Сцены</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="198"/>
         <source>Views</source>
-        <translation type="unfinished"/>
+        <translation>Просмотры</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="199"/>
@@ -1356,32 +1394,32 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="200"/>
         <source>Averate rating</source>
-        <translation type="unfinished"/>
+        <translation>Средний рейтинг</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="201"/>
         <source>Votes</source>
-        <translation type="unfinished"/>
+        <translation>Голоса</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="202"/>
         <source>Minimal rating</source>
-        <translation type="unfinished"/>
+        <translation>Минимальный рейтинг</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="203"/>
         <source>Maximal rating</source>
-        <translation type="unfinished"/>
+        <translation>Максимальный рейтинг</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="214"/>
         <source>Statistics</source>
-        <translation type="unfinished"/>
+        <translation>Статистика</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="229"/>
         <source>Duration</source>
-        <translation type="unfinished"/>
+        <translation>Продолжительность</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="230"/>
@@ -1396,17 +1434,17 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="232"/>
         <source>%1 kbps</source>
-        <translation>%1 kbps</translation>
+        <translation>%1 кбит/с</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="233"/>
         <source>Framerate</source>
-        <translation type="unfinished"/>
+        <translation>Кадров в секунду</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="234"/>
         <source>Sampling rate</source>
-        <translation type="unfinished"/>
+        <translation>Частота дискретизации</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="235"/>
@@ -1416,19 +1454,19 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="247"/>
         <source>Technical information</source>
-        <translation type="unfinished"/>
+        <translation>Техническая информация</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="272"/>
         <location filename="components/itemrender/mrss.cpp" line="275"/>
         <source>Copyright</source>
-        <translation type="unfinished"/>
+        <translation>Копирайт</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="289"/>
         <source>Credits</source>
         <comment>at the end of a video</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished">Титры</translation>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="43"/>
@@ -1448,32 +1486,36 @@
     <message numerus="yes">
         <location filename="components/itemrender/item.cpp" line="69"/>
         <source>%n comment(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n комментарий</numerusform>
+            <numerusform>%n комментария</numerusform>
+            <numerusform>%n комментариев</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="70"/>
         <source>View comments</source>
-        <translation type="unfinished"/>
+        <translation>Посмотреть комментарии</translation>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="87"/>
         <source>Geoposition:</source>
-        <translation type="unfinished"/>
+        <translation>Геолокация:</translation>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="105"/>
         <source>File of type %1, size %2:</source>
-        <translation type="unfinished"/>
+        <translation>Файл типа %1, размера %2:</translation>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="108"/>
         <source>File of type %1:</source>
-        <translation type="unfinished"/>
+        <translation>Файл типа %1:</translation>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="116"/>
         <source>Specified language: %1</source>
-        <translation type="unfinished"/>
+        <translation>Указанный язык: %1</translation>
     </message>
 </context>
 <context>
@@ -1491,7 +1533,7 @@
     <message>
         <location filename="itemslistmodel.cpp" line="257"/>
         <source>Author</source>
-        <translation type="unfinished"/>
+        <translation>Автор</translation>
     </message>
     <message>
         <location filename="itemslistmodel.cpp" line="258"/>
@@ -1501,17 +1543,29 @@
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="259"/>
         <source>%n comment(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n комментарий</numerusform>
+            <numerusform>%n комментария</numerusform>
+            <numerusform>%n комментариев</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="260"/>
         <source>%n enclosure(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n вложение</numerusform>
+            <numerusform>%n вложения</numerusform>
+            <numerusform>%n вложений</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="261"/>
         <source>%n MediaRSS entry(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n запись MediaRSS</numerusform>
+            <numerusform>%n записи MediaRSS</numerusform>
+            <numerusform>%n записей MediaRSS</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="itemslistmodel.cpp" line="262"/>
@@ -1566,17 +1620,17 @@
     <message>
         <location filename="updatesmanager.cpp" line="42"/>
         <source>Unable to open the temporary file.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно открыть временный файл.</translation>
     </message>
     <message>
         <location filename="updatesmanager.cpp" line="60"/>
         <source>XML parse error for the feed %1.</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка разбора XML для ленты %1.</translation>
     </message>
     <message>
         <location filename="updatesmanager.cpp" line="74"/>
         <source>Could not find parser to parse %1.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно найти парсер для разбора %1.</translation>
     </message>
     <message>
         <location filename="updatesmanager.cpp" line="217"/>
@@ -1627,7 +1681,7 @@
     <message>
         <location filename="opmlparser.cpp" line="108"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Не удалось открыть файл %1 для чтения.</translation>
+        <translation>Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
         <location filename="opmlparser.cpp" line="119"/>
@@ -1683,7 +1737,7 @@
     <message>
         <location filename="xmlsettingsmanager.cpp" line="54"/>
         <source>Always</source>
-        <comment>whether to remember the choice and don't ask again</comment>
+        <comment>whether to remember the choice and don&apos;t ask again</comment>
         <translation>Всегда</translation>
     </message>
 </context>
@@ -1846,7 +1900,7 @@
         <location filename="dummy.cpp" line="18"/>
         <source>Show items category selector</source>
         <oldsource>Show unread channels in summary</oldsource>
-        <translation>Показывать список категорий новостей</translation>
+        <translation>Показывать селектор категорий новостей</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
@@ -1861,7 +1915,7 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Show images linked via MediaRSS</source>
-        <translation type="unfinished"/>
+        <translation>Показывать картинки, приложенные через MediaRSS</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
@@ -1946,7 +2000,7 @@
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Ask mark all feeds as read confirmation</source>
-        <translation type="unfinished"/>
+        <translation>Запрашивать подтверждение об отметке всех лент как прочитанных</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
