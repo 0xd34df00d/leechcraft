@@ -231,28 +231,58 @@ namespace LC::AdvancedNotifications
 		{
 			Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::Descriptions)
 		public:
-			static QString ForMatcher (const AN::StringMatcher& matcher)
-			{
-				return Util::Visit (matcher,
-						[] (const QRegularExpression& rx) { return tr ("regular expression `%1`").arg (rx.pattern ()); },
-						[] (const AN::Substring& str) { return tr ("substring `%1`").arg (str.Pattern_); },
-						[] (const AN::Wildcard& wc) { return tr ("wildcard `%1`").arg (wc.Pattern_); });
-			}
-
 			static QString ForStringMatcher (const AN::StringFieldValue& value)
 			{
-				const auto& p = ForMatcher (value.Rx_);
-				return value.Contains_ ?
-						tr ("contains %1").arg (p) :
-						tr ("doesn't contain %1").arg (p);
+				const auto contains = value.Contains_;
+				return Util::Visit (value.Rx_,
+						[&] (const QRegularExpression& rx)
+						{
+							const auto& msg = contains ?
+									tr ("matches regular expression `%1`") :
+									tr ("doesn't match regular expression `%1`");
+							return msg.arg (rx.pattern ());
+						},
+						[&] (const AN::Substring& str)
+						{
+							const auto& msg = contains ?
+									tr ("contains substring `%1`") :
+									tr ("doesn't contain substring `%1`");
+							return msg.arg (str.Pattern_);
+						},
+						[&] (const AN::Wildcard& wc)
+						{
+							const auto& msg = contains ?
+									tr ("matches wildcard `%1`") :
+									tr ("doesn't match wildcard `%1`");
+							return msg.arg (wc.Pattern_);
+						});
 			}
 
 			static QString ForStringListMatcher (const AN::StringFieldValue& value)
 			{
-				const auto& p = ForMatcher (value.Rx_);
-				return value.Contains_ ?
-						tr ("contains element matching %1").arg (p) :
-						tr ("doesn't contain element matching %1").arg (p);
+				const auto contains = value.Contains_;
+				return Util::Visit (value.Rx_,
+						[&] (const QRegularExpression& rx)
+						{
+							const auto& msg = contains ?
+									tr ("contains a string matching regular expression `%1`") :
+									tr ("doesn't contains a string matching regular expression `%1`");
+							return msg.arg (rx.pattern ());
+						},
+						[&] (const AN::Substring& str)
+						{
+							const auto& msg = contains ?
+									tr ("contains a string with the substring `%1`") :
+									tr ("doesn't contain a string with the substring `%1`");
+							return msg.arg (str.Pattern_);
+						},
+						[&] (const AN::Wildcard& wc)
+						{
+							const auto& msg = contains ?
+									tr ("contains a string matching wildcard `%1`") :
+									tr ("doesn't contain a string matching wildcard `%1`");
+							return msg.arg (wc.Pattern_);
+						});
 			}
 		};
 	}
