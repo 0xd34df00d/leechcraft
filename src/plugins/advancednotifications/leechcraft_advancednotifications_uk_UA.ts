@@ -15,34 +15,72 @@
 <context>
     <name>IntMatcherConfigWidget</name>
     <message>
-        <location filename="intmatcherconfigwidget.ui" line="21"/>
-        <source>&gt;</source>
-        <translation>&gt;</translation>
-    </message>
-    <message>
-        <location filename="intmatcherconfigwidget.ui" line="26"/>
-        <source>≥</source>
-        <translation>≥</translation>
-    </message>
-    <message>
-        <location filename="intmatcherconfigwidget.ui" line="31"/>
-        <source>=</source>
-        <translation>=</translation>
-    </message>
-    <message>
-        <location filename="intmatcherconfigwidget.ui" line="36"/>
-        <source>≤</source>
-        <translation>≤</translation>
-    </message>
-    <message>
-        <location filename="intmatcherconfigwidget.ui" line="41"/>
-        <source>&lt;</source>
-        <translation>&lt;</translation>
-    </message>
-    <message>
         <location filename="intmatcherconfigwidget.ui" line="49"/>
         <source>then</source>
         <translation>тоді</translation>
+    </message>
+</context>
+<context>
+    <name>LC::AdvancedNotifications::Descriptions</name>
+    <message>
+        <location filename="typedmatchers.cpp" line="241"/>
+        <source>matches regular expression `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="242"/>
+        <source>doesn&apos;t match regular expression `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="248"/>
+        <source>contains substring `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="249"/>
+        <source>doesn&apos;t contain substring `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="255"/>
+        <source>matches wildcard `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="256"/>
+        <source>doesn&apos;t match wildcard `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="268"/>
+        <source>contains a string matching regular expression `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="269"/>
+        <source>doesn&apos;t contains a string matching regular expression `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="275"/>
+        <source>contains a string with the substring `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="276"/>
+        <source>doesn&apos;t contain a string with the substring `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="282"/>
+        <source>contains a string matching wildcard `%1`</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="typedmatchers.cpp" line="283"/>
+        <source>doesn&apos;t contain a string matching wildcard `%1`</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -124,12 +162,12 @@
 <context>
     <name>LC::AdvancedNotifications::Plugin</name>
     <message>
-        <location filename="advancednotifications.cpp" line="57"/>
+        <location filename="advancednotifications.cpp" line="54"/>
         <source>Toggle Advanced Notifications rules...</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="advancednotifications.cpp" line="95"/>
+        <location filename="advancednotifications.cpp" line="92"/>
         <source>Module for the advanced notifications framework.</source>
         <translation>Модуль для фреймворку advanced notifications.</translation>
     </message>
@@ -137,102 +175,102 @@
 <context>
     <name>LC::AdvancedNotifications::RulesManager</name>
     <message>
-        <location filename="rulesmanager.cpp" line="359"/>
+        <location filename="rulesmanager.cpp" line="358"/>
         <source>Event is due</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="373"/>
+        <location filename="rulesmanager.cpp" line="372"/>
         <source>Download error</source>
         <translation>Помилка завантаження</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="368"/>
+        <location filename="rulesmanager.cpp" line="367"/>
         <source>Download finished</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="390"/>
+        <location filename="rulesmanager.cpp" line="389"/>
         <source>Package updated</source>
         <translation>Пакет оновлено</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="382"/>
+        <location filename="rulesmanager.cpp" line="381"/>
         <source>Generic</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="313"/>
+        <location filename="rulesmanager.cpp" line="312"/>
         <source>Incoming chat messages</source>
         <translation>Вхідні повідомлення чату</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="319"/>
+        <location filename="rulesmanager.cpp" line="318"/>
         <source>MUC highlights</source>
         <translation>Підсвітки у конференціях</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="325"/>
+        <location filename="rulesmanager.cpp" line="324"/>
         <source>MUC invitations</source>
         <translation>Запрошення до конференцій</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="331"/>
+        <location filename="rulesmanager.cpp" line="330"/>
         <source>Incoming file transfers</source>
         <translation>Вхідні передачі файлів</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="336"/>
+        <location filename="rulesmanager.cpp" line="335"/>
         <source>Subscription requests</source>
         <translation>Запити про підписку</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="342"/>
+        <location filename="rulesmanager.cpp" line="341"/>
         <source>Subscription changes</source>
         <translation>Зміни підписок</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="350"/>
+        <location filename="rulesmanager.cpp" line="349"/>
         <source>Attention requests</source>
         <translation>Запити уваги</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="402"/>
+        <location filename="rulesmanager.cpp" line="401"/>
         <source>Bell in inactive terminal</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="408"/>
+        <location filename="rulesmanager.cpp" line="407"/>
         <source>Activity in inactive terminal</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="414"/>
+        <location filename="rulesmanager.cpp" line="413"/>
         <source>Inactivity in inactive terminal</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="423"/>
+        <location filename="rulesmanager.cpp" line="422"/>
         <source>News source updated</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="427"/>
+        <location filename="rulesmanager.cpp" line="426"/>
         <source>News source broken</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="467"/>
+        <location filename="rulesmanager.cpp" line="466"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="467"/>
+        <location filename="rulesmanager.cpp" line="466"/>
         <source>Category</source>
         <translation>Категорія</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="467"/>
+        <location filename="rulesmanager.cpp" line="466"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
@@ -240,7 +278,7 @@
 <context>
     <name>LC::AdvancedNotifications::SystemTrayHandler</name>
     <message>
-        <location filename="systemtrayhandler.cpp" line="274"/>
+        <location filename="systemtrayhandler.cpp" line="280"/>
         <source>Dismiss</source>
         <translation>Пропустити</translation>
     </message>
@@ -464,52 +502,22 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="typedmatchers.cpp" line="235"/>
-        <source>contains pattern `%1`</source>
-        <translation>містить шаблон `%1`</translation>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="236"/>
-        <source>doesn&apos;t contain pattern `%1`</source>
-        <translation>не містить шаблон `%1`</translation>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="259"/>
-        <source>contains element matching %1</source>
-        <translation>містить елемент, що відповідає %1</translation>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="260"/>
-        <source>doesn&apos;t contain element matching %1</source>
-        <translation>не містить елемент, що відповідає %1</translation>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="278"/>
-        <source>matches URL or pattern `%1`</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="279"/>
-        <source>doesn&apos;t match URL or pattern `%1`</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="325"/>
+        <location filename="typedmatchers.cpp" line="371"/>
         <source>yes</source>
         <translation>так</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="326"/>
+        <location filename="typedmatchers.cpp" line="372"/>
         <source>no</source>
         <translation>ні</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="434"/>
+        <location filename="typedmatchers.cpp" line="480"/>
         <source>equals to %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="444"/>
+        <location filename="typedmatchers.cpp" line="490"/>
         <source>is %1 then %2</source>
         <translation>є %1, тоді %2</translation>
     </message>
@@ -545,82 +553,82 @@
 <context>
     <name>advancednotificationssettings</name>
     <message>
-        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Rules</source>
         <translation>Правила</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>Methods</source>
         <translation>Методи</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Enable audio notifications</source>
         <translation>Увімкнути звукові сповіщення</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Audio theme:</source>
         <translation>Звукова тема:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Oxygen</source>
         <translation>Oxygen</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>System tray</source>
         <translation>Системний трей</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>Counters</source>
         <translation>Лічильники</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Enable for IM events</source>
         <translation>Увімкнути для подій IM</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Enable for Organizer events</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Enable for Downloads events</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Enable for Package Manager events</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Enable for Media Player events</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Enable for Generic events</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Behavior</source>
         <translation>Поведінка</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="17"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Hide when mouse leaves the notifier</source>
         <translation type="unfinished"/>
     </message>
