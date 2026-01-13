@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>AddTodoDialog</name>
     <message>
@@ -86,7 +88,11 @@
     <message numerus="yes">
         <location filename="itemsmergedialog.cpp" line="41"/>
         <source>There are %n items to import. How would you like to merge similar tasks?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Импортируется %n задача. Как вы хотите объединить похожие задачи?</numerusform>
+            <numerusform>Импортируется %n задачи. Как вы хотите объединить похожие задачи?</numerusform>
+            <numerusform>Импортируется %n задач. Как вы хотите объединить похожие задачи?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
