@@ -1,8 +1,8 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="es">
 <context>
     <name>LC::Azoth::Autoidler::Plugin</name>
     <message>
-        <location filename="autoidler.cpp" line="73"/>
+        <location filename="autoidler.cpp" line="86"/>
         <source>Automatically updates statuses depending on idle time.</source>
         <translation>Automáticamente actualiza estados dependiendo de tiempo de inactividad.</translation>
     </message>

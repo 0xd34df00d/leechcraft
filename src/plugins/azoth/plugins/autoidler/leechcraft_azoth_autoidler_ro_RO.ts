@@ -1,10 +1,10 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ro_RO">
 <context>
     <name>LC::Azoth::Autoidler::Plugin</name>
     <message>
         <location filename="autoidler.cpp" line="86"/>
         <source>Automatically updates statuses depending on idle time.</source>
-        <translation>Автоматично оновлює статуси залежно від часу неактивності.</translation>
+        <translation>Actualizează automat statusuri în funcție timpul de așteptare.</translation>
     </message>
 </context>
 <context>
@@ -17,33 +17,33 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Enable autoidler</source>
-        <translation>Увімкнути autoidler</translation>
+        <translation>Activare apelare automată</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>&apos;Away&apos; timeout:</source>
-        <translation>Таймаут для стану &quot;Відсутній&quot;:</translation>
+        <translation>Timp de expirare pentru &apos;Plecat&apos;:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <location filename="dummy.cpp" line="7"/>
         <source> min</source>
-        <translation> хв</translation>
+        <translation> min</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>&apos;Not Available&apos; timeout:</source>
-        <translation>Таймаут для стану &quot;Недоступний&quot;:</translation>
+        <translation>Timp de expirare pentru &apos;Nu sunt disponibil&apos;</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>&apos;Away&apos; status text:</source>
-        <translation>Текст статусу для &quot;Відсутній&quot;:</translation>
+        <translation>Text status &apos;Plecat&apos;:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>&apos;Not Available&apos; status text:</source>
-        <translation>Текст статусу для &quot;Недоступний&quot;:</translation>
+        <translation>Text status &apos;Nu sunt disponibil&apos;:</translation>
     </message>
 </context>
 </TS>
