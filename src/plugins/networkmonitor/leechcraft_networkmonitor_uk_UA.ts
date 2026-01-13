@@ -1,36 +1,28 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="uk_UA">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="uk_UA">
 <context>
-    <name>LC::Plugins::NetworkMonitor</name>
+    <name>LC::Plugins::NetworkMonitor::HeaderModel</name>
     <message>
-        <location filename="requestmodel.cpp" line="55"/>
-        <source>Date started</source>
-        <translation type="unfinished"/>
+        <location filename="headermodel.cpp" line="26"/>
+        <source>Name</source>
+        <translation>Назва</translation>
     </message>
     <message>
-        <location filename="requestmodel.cpp" line="56"/>
-        <source>Date finished</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="requestmodel.cpp" line="57"/>
-        <source>Type</source>
-        <translation>Тип</translation>
-    </message>
-    <message>
-        <location filename="requestmodel.cpp" line="58"/>
-        <source>Host</source>
-        <translation type="unfinished"/>
+        <location filename="headermodel.cpp" line="27"/>
+        <source>Value</source>
+        <translation>Значення</translation>
     </message>
 </context>
 <context>
     <name>LC::Plugins::NetworkMonitor::Plugin</name>
     <message>
-        <location filename="networkmonitor.cpp" line="90"/>
+        <location filename="networkmonitor.cpp" line="79"/>
         <source>Network monitor...</source>
         <translation>Мережевий монітор...</translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="121"/>
+        <location filename="networkmonitor.cpp" line="110"/>
         <source>Monitors HTTP network requests and responses.</source>
         <translation>Слідкує за мережевими запитами і відповідями по протоколу HTTP.</translation>
     </message>
@@ -38,7 +30,27 @@
 <context>
     <name>LC::Plugins::NetworkMonitor::RequestModel</name>
     <message>
-        <location filename="requestmodel.cpp" line="109"/>
+        <location filename="requestmodel.cpp" line="35"/>
+        <source>Date started</source>
+        <translation>Дата початку</translation>
+    </message>
+    <message>
+        <location filename="requestmodel.cpp" line="36"/>
+        <source>Date finished</source>
+        <translation>Дата закінчення</translation>
+    </message>
+    <message>
+        <location filename="requestmodel.cpp" line="37"/>
+        <source>Type</source>
+        <translation>Тип</translation>
+    </message>
+    <message>
+        <location filename="requestmodel.cpp" line="38"/>
+        <source>Host</source>
+        <translation>Компьютер</translation>
+    </message>
+    <message>
+        <location filename="requestmodel.cpp" line="93"/>
         <source>In progress</source>
         <translation>Працює</translation>
     </message>
