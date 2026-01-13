@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="uk_UA">
 <context>
     <name>EditorPage</name>
     <message>
@@ -125,94 +125,102 @@
     </message>
 </context>
 <context>
-    <name>LC::Plugins::Popishu::EditorPage</name>
+    <name>LC::Popishu::Core</name>
     <message>
-        <location filename="editorpage.cpp" line="92"/>
+        <location filename="core.cpp" line="41"/>
+        <source>The Popishu text editor</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>LC::Popishu::EditorPage</name>
+    <message>
+        <location filename="editorpage.cpp" line="117"/>
         <source>Document type</source>
         <translation>Тип документу</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="129"/>
-        <source>Whitespace visibility</source>
-        <translation>Видимість пробілу</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="136"/>
-        <source>Wrapping mode</source>
-        <translation>Режим переносу</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="149"/>
-        <source>Edit</source>
-        <translation>Редагування</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="152"/>
-        <source>File</source>
-        <translation>Файл</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="220"/>
-        <location filename="editorpage.cpp" line="292"/>
-        <source>Untitled</source>
-        <translation>Без назви</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="225"/>
-        <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
-        <translation>Документ &lt;em&gt;%1&lt;/em&gt; був модифікований. Ви хочете зберегти його зараз?</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="298"/>
-        <source>Select file to open</source>
-        <translation>Виберіть файл для відкриття</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="609"/>
-        <source>File not found</source>
-        <translation>Файл не знайдено</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="610"/>
-        <source>The requested file doesn&apos;t exist anymore.</source>
-        <translation>Необхідний файл більше не існує.</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="665"/>
-        <source>Could not open file %1 for reading.</source>
-        <translation>Неможливо відкрити файл %1 для читання.</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="453"/>
-        <source>Script wrapping failed.</source>
-        <translation>Не вдалося обгорнути сценарій.</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="117"/>
+        <location filename="editorpage.cpp" line="147"/>
         <source>Recent files</source>
         <translation>Недавні файли</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="474"/>
-        <location filename="editorpage.cpp" line="510"/>
+        <location filename="editorpage.cpp" line="159"/>
+        <source>Whitespace visibility</source>
+        <translation>Видимість пробілу</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="166"/>
+        <source>Wrapping mode</source>
+        <translation>Режим переносу</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="179"/>
+        <source>Edit</source>
+        <translation>Редагування</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="182"/>
+        <source>File</source>
+        <translation>Файл</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="253"/>
+        <location filename="editorpage.cpp" line="325"/>
+        <source>Untitled</source>
+        <translation>Без назви</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="258"/>
+        <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
+        <translation>Документ &lt;em&gt;%1&lt;/em&gt; був модифікований. Ви хочете зберегти його зараз?</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="333"/>
+        <source>Select file to open</source>
+        <translation>Виберіть файл для відкриття</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="488"/>
+        <source>Script wrapping failed.</source>
+        <translation>Не вдалося обгорнути сценарій.</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="509"/>
+        <location filename="editorpage.cpp" line="545"/>
         <source>Script injection failed: %1</source>
         <translation>Не вдалося обгорнути сценарій: %1</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="628"/>
+        <location filename="editorpage.cpp" line="644"/>
+        <source>File not found</source>
+        <translation>Файл не знайдено</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="645"/>
+        <source>The requested file doesn&apos;t exist anymore.</source>
+        <translation>Необхідний файл більше не існує.</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="663"/>
         <source>Select file to save</source>
         <translation>Виберіть файл для збереження</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="641"/>
+        <location filename="editorpage.cpp" line="676"/>
         <source>Could not open file %1 for writing.</source>
-        <translation>Неможливо відкрити файл %1 для запису.</translation>
+        <translation>Не можу відкрити файл %1 для запису.</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="706"/>
+        <source>Could not open file %1 for reading.</source>
+        <translation>Неможливо відкрити файл %1 для читання.</translation>
     </message>
 </context>
 <context>
-    <name>LC::Plugins::Popishu::Plugin</name>
+    <name>LC::Popishu::Plugin</name>
     <message>
-        <location filename="popishu.cpp" line="102"/>
+        <location filename="popishu.cpp" line="112"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>
         <translation>Текстовий редактор з виділенням синтаксису і іншим.</translation>
     </message>
