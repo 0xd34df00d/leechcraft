@@ -215,7 +215,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>General</source>
-        <translation type="unfinished"/>
+        <translation>Général</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
