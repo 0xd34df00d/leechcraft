@@ -1,55 +1,34 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="uk_UA">
 <context>
     <name>LC::GmailNotifier::GmailChecker</name>
     <message>
-        <location filename="gmailchecker.cpp" line="79"/>
-        <location filename="gmailchecker.cpp" line="103"/>
-        <location filename="gmailchecker.cpp" line="161"/>
+        <location filename="gmailchecker.cpp" line="122"/>
+        <location filename="gmailchecker.cpp" line="173"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="84"/>
-        <source>Username or password not set</source>
-        <translation>Не задане ім’я користувача або пароль</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="114"/>
+        <location filename="gmailchecker.cpp" line="128"/>
         <source>Cannot parse XML data</source>
         <translation>Неможливо розібрати дані XML</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="133"/>
-        <source>No subject</source>
-        <translation>Без заголовку</translation>
+        <location filename="gmailchecker.cpp" line="97"/>
+        <source>Username for the GMail checker isn&apos;t set. You can enable it in GMail Notifier settings.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="136"/>
-        <source>No content</source>
-        <translation>Без тексту</translation>
+        <location filename="gmailchecker.cpp" line="104"/>
+        <source>Password isn&apos;t set</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="140"/>
-        <source>from</source>
-        <translation>від</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="144"/>
-        <source>at</source>
-        <translation>о</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="150"/>
-        <source>and %1 more</source>
-        <translation>і ще %1</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="166"/>
+        <location filename="gmailchecker.cpp" line="178"/>
         <source>The username or password is incorrect</source>
         <translation>Невірне ім’я користувача або пароль</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="168"/>
+        <location filename="gmailchecker.cpp" line="180"/>
         <source>Connection timeout</source>
         <translation>Таймаут з’єднання</translation>
     </message>
@@ -57,9 +36,40 @@
 <context>
     <name>LC::GmailNotifier::GmailNotifier</name>
     <message>
-        <location filename="gmailnotifier.cpp" line="97"/>
+        <location filename="gmailnotifier.cpp" line="120"/>
         <source>Google mail notification plugin</source>
         <translation>Плагін сповіщень для Google mail</translation>
+    </message>
+</context>
+<context>
+    <name>LC::GmailNotifier::MailListView</name>
+    <message>
+        <location filename="maillistview.cpp" line="99"/>
+        <source>Yesterday, %1</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>LC::GmailNotifier::Notifier</name>
+    <message>
+        <location filename="notifier.cpp" line="69"/>
+        <source>No subject</source>
+        <translation>Без заголовку</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="69"/>
+        <source>from</source>
+        <translation>з</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="73"/>
+        <source>at</source>
+        <translation>о</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="84"/>
+        <source>and %1 more</source>
+        <translation>і ще %1</translation>
     </message>
 </context>
 <context>
