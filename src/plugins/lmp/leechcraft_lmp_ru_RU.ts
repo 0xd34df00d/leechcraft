@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
 <context>
     <name>AlbumArtManagerDialog</name>
     <message>
@@ -45,7 +43,7 @@
     <message>
         <location filename="share/qml5/lmp/BrowseButton.qml" line="5"/>
         <source>Show artist info...</source>
-        <translation>Показать информацию об исполнителе...</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -137,7 +135,7 @@
     <message>
         <location filename="sync/devicesbrowserwidget.ui" line="103"/>
         <source>Single file: %p%</source>
-        <translation>Один файл: %p%</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sync/devicesbrowserwidget.ui" line="110"/>
@@ -189,7 +187,7 @@
     <message>
         <location filename="albumartmanagerdialog.cpp" line="77"/>
         <source>Album art for %1 — %2</source>
-        <translation>Обложка для %1 — %2</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="albumartmanagerdialog.cpp" line="124"/>
@@ -217,7 +215,7 @@
     <message>
         <location filename="artistbrowsertab.cpp" line="117"/>
         <source>%1 — artist browser</source>
-        <translation>%1 — обзор исполнителей</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="artistbrowsertab.cpp" line="132"/>
@@ -255,7 +253,7 @@
     <message>
         <location filename="audiopropswidget.cpp" line="282"/>
         <source>Sample rate</source>
-        <translation>Частота дискретизации</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="252"/>
@@ -265,7 +263,7 @@
     <message>
         <location filename="audiopropswidget.cpp" line="46"/>
         <source>Property</source>
-        <translation>Свойство</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="46"/>
@@ -275,7 +273,7 @@
     <message>
         <location filename="audiopropswidget.cpp" line="125"/>
         <source>yes</source>
-        <translation>да</translation>
+        <translation>есть</translation>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="125"/>
@@ -285,7 +283,7 @@
     <message>
         <location filename="audiopropswidget.cpp" line="130"/>
         <source>%1 version</source>
-        <translation>Версия %1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="136"/>
@@ -296,52 +294,52 @@
         <location filename="audiopropswidget.cpp" line="236"/>
         <location filename="audiopropswidget.cpp" line="243"/>
         <source>Bits per sample</source>
-        <translation>Бит на сэмпл</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="180"/>
         <source>MPEG layer</source>
-        <translation>Уровень MPEG</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="181"/>
         <source>Protected</source>
-        <translation>Защищён</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="182"/>
         <source>Copyrighted</source>
-        <translation>Копирайт</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="183"/>
         <source>Original</source>
-        <translation>Оригинал</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="189"/>
         <source>Stereo</source>
-        <translation>Стерео</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="192"/>
         <source>Joint Stereo</source>
-        <translation>Объединённое стерео</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="195"/>
         <source>Dual Mono</source>
-        <translation>Двойное моно</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="198"/>
         <source>Mono</source>
-        <translation>Моно</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="201"/>
         <source>Channel mode</source>
-        <translation>Режим каналов</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="215"/>
@@ -356,17 +354,17 @@
     <message>
         <location filename="audiopropswidget.cpp" line="217"/>
         <source>Nominal bitrate</source>
-        <translation>Номинальный битрейт</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="280"/>
         <source>%1 kbps</source>
-        <translation>%1 КиБ/с</translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="282"/>
         <source>%1 Hz</source>
-        <translation>%1 Гц</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="audiopropswidget.cpp" line="307"/>
@@ -468,11 +466,7 @@
     <message numerus="yes">
         <location filename="collectionwidget.cpp" line="202"/>
         <source>Are you sure you want to erase %n track(s)? This action cannot be undone.</source>
-        <translation>
-            <numerusform>Вы уверены, что хотите удалить %n трек? Это действие невозможно отменить.</numerusform>
-            <numerusform>Вы уверены, что хотите удалить %n трека? Это действие невозможно отменить.</numerusform>
-            <numerusform>Вы уверены, что хотите удалить %n треков? Это действие невозможно отменить.</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="collectionwidget.cpp" line="256"/>
@@ -482,7 +476,7 @@
     <message>
         <location filename="collectionwidget.cpp" line="259"/>
         <source>Replace playlist</source>
-        <translation>Заменить список воспроизведения</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="collectionwidget.cpp" line="268"/>
@@ -502,7 +496,7 @@
     <message>
         <location filename="collectionwidget.cpp" line="281"/>
         <source>Show in artist browser</source>
-        <translation>Обзор исполнителя</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="collectionwidget.cpp" line="287"/>
@@ -548,17 +542,17 @@
     <message>
         <location filename="effectsmanager.cpp" line="48"/>
         <source>Effect</source>
-        <translation>Эффект</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="effectsmanager.cpp" line="179"/>
         <source>Effects configuration</source>
-        <translation>Настройки эффектов</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="effectsmanager.cpp" line="180"/>
         <source>Seems like %1 doesn&apos;t have any settings to configure.</source>
-        <translation>Похоже, что %1 не имеет настроек.</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -642,26 +636,18 @@
     <message>
         <location filename="hypeswidget.cpp" line="185"/>
         <source>Growth: x%1</source>
-        <comment>better use unicode multiplication sign here instead of &apos;x&apos;</comment>
+        <comment>better use unicode multiplication sign here instead of 'x'</comment>
         <translation>Рост: ×%1</translation>
     </message>
     <message numerus="yes">
         <location filename="hypeswidget.cpp" line="188"/>
         <source>%n listener(s)</source>
-        <translation>
-            <numerusform>%n слушатель</numerusform>
-            <numerusform>%n слушателя</numerusform>
-            <numerusform>%n слушателей</numerusform>
-        </translation>
+        <translation><numerusform>%n слушатель</numerusform><numerusform>%n слушателя</numerusform><numerusform>%n слушателей</numerusform><numerusform>%n слушателей</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="hypeswidget.cpp" line="190"/>
         <source>%n playback(s)</source>
-        <translation>
-            <numerusform>%n воспроизведение</numerusform>
-            <numerusform>%n воспроизведения</numerusform>
-            <numerusform>%n воспроизведений</numerusform>
-        </translation>
+        <translation><numerusform>%n воспроизведение</numerusform><numerusform>%n воспроизведения</numerusform><numerusform>%n воспроизведений</numerusform><numerusform>%n воспроизведений</numerusform></translation>
     </message>
     <message>
         <location filename="hypeswidget.cpp" line="205"/>
@@ -682,29 +668,17 @@
     <message numerus="yes">
         <location filename="localcollection.cpp" line="814"/>
         <source>%n new artist(s)</source>
-        <translation>
-            <numerusform>%n новый исполнитель</numerusform>
-            <numerusform>%n новых исполнителя</numerusform>
-            <numerusform>%n новых исполнителей</numerusform>
-        </translation>
+        <translation><numerusform>%n новый исполнитель</numerusform><numerusform>%n новых исполнителя</numerusform><numerusform>%n новых исполнителей</numerusform><numerusform>%n новых исполнителей</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="localcollection.cpp" line="815"/>
         <source>%n new album(s)</source>
-        <translation>
-            <numerusform>%n новый альбом</numerusform>
-            <numerusform>%n новых альбома</numerusform>
-            <numerusform>%n новых альбомов</numerusform>
-        </translation>
+        <translation><numerusform>%n новый альбом</numerusform><numerusform>%n новых альбома</numerusform><numerusform>%n новых альбомов</numerusform><numerusform>%n новых альбомов</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="localcollection.cpp" line="816"/>
         <source>%n new track(s)</source>
-        <translation>
-            <numerusform>%n новый трек</numerusform>
-            <numerusform>%n новых трека</numerusform>
-            <numerusform>%n новых треков</numerusform>
-        </translation>
+        <translation><numerusform>%n новый трек</numerusform><numerusform>%n новых трека</numerusform><numerusform>%n новых треков</numerusform><numerusform>%n новых треков</numerusform></translation>
     </message>
     <message>
         <location filename="localcollection.cpp" line="817"/>
@@ -717,31 +691,27 @@
     <message>
         <location filename="localcollectionmodel.cpp" line="497"/>
         <source>Last playback: %1</source>
-        <translation>Последнее воспроизведение: %1</translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="localcollectionmodel.cpp" line="500"/>
         <source>Played %n time(s) since %1</source>
-        <translation>
-            <numerusform>%n воспроизведение с %1</numerusform>
-            <numerusform>%n воспроизведения с %1</numerusform>
-            <numerusform>%n воспроизведений с %1</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="localcollectionmodel.cpp" line="461"/>
         <source>Never has been played</source>
-        <translation>Никогда не воспроизводилось</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="localcollectionmodel.cpp" line="474"/>
         <source>Last palyback: %1 (%2 from %3)</source>
-        <translation>Последнее воспроизведение: %1 (%2 с %3)</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="localcollectionmodel.cpp" line="486"/>
         <source>Last playback: %1 (%2)</source>
-        <translation>Последнее воспроизведение: %1 (%2)</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -778,11 +748,7 @@
         <location filename="nptooltiphook.cpp" line="51"/>
         <source>Played %n time(s) since %1</source>
         <oldsource>Played %1 times since %2</oldsource>
-        <translation>
-            <numerusform>%n воспроизведение с %1</numerusform>
-            <numerusform>%n воспроизведения с %1</numerusform>
-            <numerusform>%n воспроизведений с %1</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
 </context>
 <context>
@@ -790,7 +756,7 @@
     <message>
         <location filename="nowplayingwidget.cpp" line="130"/>
         <source>showing lyrics from %3 (%1 of %2)</source>
-        <translation>отображается текст с %3 (%1 из %2)</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -836,22 +802,22 @@
     <message>
         <location filename="player.cpp" line="1063"/>
         <source>paused</source>
-        <translation>пауза</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="player.cpp" line="1068"/>
         <source>playing</source>
-        <translation>играет</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="player.cpp" line="1072"/>
         <source>stopped</source>
-        <translation>остановлено</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="player.cpp" line="1077"/>
         <source>%1 by %2 is now %3</source>
-        <translation>%1 от %2 теперь %3</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="player.cpp" line="1423"/>
@@ -869,7 +835,7 @@
     <message>
         <location filename="playertab.cpp" line="67"/>
         <source>Effects</source>
-        <translation>Эффекты</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playertab.cpp" line="253"/>
@@ -929,7 +895,7 @@
     <message>
         <location filename="playertab.cpp" line="314"/>
         <source>Love</source>
-        <translation>Отметить как любимое</translation>
+        <translation>Любовный роман</translation>
     </message>
     <message>
         <location filename="playertab.cpp" line="323"/>
@@ -944,12 +910,12 @@
     <message>
         <location filename="playertab.cpp" line="362"/>
         <source>Stop after current track</source>
-        <translation>Остановиться после текущего трека</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playertab.cpp" line="468"/>
         <source>Open effects configuration page...</source>
-        <translation>Открыть страницу настройки эффектов…</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1130,32 +1096,32 @@
     <message>
         <location filename="playlistwidget.cpp" line="589"/>
         <source>Track actions</source>
-        <translation>Действия над треком</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="590"/>
         <source>Perform action after this track starts...</source>
-        <translation>Выполнить после начала трека…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="592"/>
         <source>Perform action after this track stops...</source>
-        <translation>Выполнить после окончания трека…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="595"/>
         <source>Existing</source>
-        <translation>Существующие</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="1000"/>
         <source>Perform when %1 by %2 starts playing</source>
-        <translation>Выполнить, когда начнёт играть %1 от %2</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="1008"/>
         <source>Perform when %1 by %2 stops playing</source>
-        <translation>Выполнить, когда закончит играть %1 от %2</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="330"/>
@@ -1165,7 +1131,7 @@
     <message>
         <location filename="playlistwidget.cpp" line="277"/>
         <source>Download...</source>
-        <translation>Скачать…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="338"/>
@@ -1180,11 +1146,7 @@
     <message numerus="yes">
         <location filename="playlistwidget.cpp" line="871"/>
         <source>Remove %n song(s)</source>
-        <translation>
-            <numerusform>Удалить %n песню</numerusform>
-            <numerusform>Удалить %n песни</numerusform>
-            <numerusform>Удалить %n песен</numerusform>
-        </translation>
+        <translation><numerusform>Удалить %n песню</numerusform><numerusform>Удалить %n песни</numerusform><numerusform>Удалить %n песен</numerusform><numerusform>Удалить %n песен</numerusform></translation>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="1091"/>
@@ -1209,7 +1171,7 @@
     <message>
         <location filename="playlistwidget.cpp" line="1117"/>
         <source>Music files</source>
-        <translation>Музыкальные файлы</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="1118"/>
@@ -1219,7 +1181,7 @@
     <message>
         <location filename="playlistwidget.cpp" line="1119"/>
         <source>All files</source>
-        <translation>Все файлы</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="playlistwidget.cpp" line="1140"/>
@@ -1234,20 +1196,12 @@
     <message numerus="yes">
         <location filename="playlistwidget.cpp" line="1215"/>
         <source>%n track(s), total duration: %1; selected duration: %2</source>
-        <translation>
-            <numerusform>%n трек, общая длительность: %1, длительность выбранного: %2</numerusform>
-            <numerusform>%n трека, общая длительность: %1, длительность выбранного: %2</numerusform>
-            <numerusform>%n треков, общая длительность: %1, длительность выбранного: %2</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="playlistwidget.cpp" line="1219"/>
         <source>%n track(s), total duration: %1</source>
-        <translation>
-            <numerusform>%n трек, продолжительность: %1</numerusform>
-            <numerusform>%n трека, продолжительность: %1</numerusform>
-            <numerusform>%n треков, продолжительность: %1</numerusform>
-        </translation>
+        <translation><numerusform>%n трек, продолжительность: %1</numerusform><numerusform>%n трека, продолжительность: %1</numerusform><numerusform>%n треков, продолжительность: %1</numerusform><numerusform>%n треков, продолжительность: %1</numerusform></translation>
     </message>
 </context>
 <context>
@@ -1255,12 +1209,12 @@
     <message>
         <location filename="lmp.cpp" line="134"/>
         <source>Rebuild collection</source>
-        <translation>Перестроить коллекцию</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="lmp.cpp" line="142"/>
         <source>Are you sure you want to rebuild the collection? This will reset all the play history and counts.</source>
-        <translation>Вы уверены, что хотите перестроить коллекцию? Вы потеряете всю историю прослушиваний.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="lmp.cpp" line="151"/>
@@ -1271,12 +1225,12 @@
         <location filename="lmp.cpp" line="408"/>
         <location filename="lmp.cpp" line="417"/>
         <source>Show artist information</source>
-        <translation>Показать информацию об исполнителе</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="lmp.cpp" line="418"/>
         <source>Search for artist biography, similar artists, releases and so on.</source>
-        <translation>Поискать биографию исполнителя, похожих исполнителей, релизы и тому подобное.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="lmp.cpp" line="466"/>
@@ -1301,7 +1255,7 @@
     <message>
         <location filename="lmp.cpp" line="470"/>
         <source>Stop playback after current track</source>
-        <translation>Остановить воспроизведение после текущего трека</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="lmp.cpp" line="471"/>
@@ -1362,7 +1316,7 @@
     <message>
         <location filename="rgfiltercontroller.cpp" line="49"/>
         <source>ReplayGain configuration</source>
-        <translation>Настройки ReplayGain</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1378,7 +1332,7 @@
     <message>
         <location filename="radiocustomstreams.cpp" line="37"/>
         <source>Custom streams</source>
-        <translation>Особые потоки</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1409,26 +1363,22 @@
     <message>
         <location filename="radiopilesmanager.cpp" line="45"/>
         <source>Search in %1</source>
-        <translation>Поиск в %1</translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="radiopilesmanager.cpp" line="63"/>
         <source>%1 (%n result(s))</source>
-        <translation>
-            <numerusform>%1 (%n результат)</numerusform>
-            <numerusform>%1 (%n результата)</numerusform>
-            <numerusform>%1 (%n результатов)</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="radiopilesmanager.cpp" line="97"/>
         <source>Audio search</source>
-        <translation>Поиск аудио</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="radiopilesmanager.cpp" line="98"/>
         <source>Enter the string to search for:</source>
-        <translation>Введите строку для поиска:</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1451,12 +1401,12 @@
     <message>
         <location filename="radiotracksgrabdialog.cpp" line="59"/>
         <source>The following variables are allowed in the pattern: %1.</source>
-        <translation>Следующие переменные разрешены в шаблоне: %1.</translation>
+        <translation>В шаблоне возможны следующие переменные: %1.</translation>
     </message>
     <message>
         <location filename="radiotracksgrabdialog.cpp" line="115"/>
         <source>Select tracks save directory</source>
-        <translation>Выбор директории сохранения треков</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1469,22 +1419,22 @@
     <message>
         <location filename="radiowidget.cpp" line="156"/>
         <source>Add an URL...</source>
-        <translation>Добавить URL…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="radiowidget.cpp" line="162"/>
         <source>Add current stream...</source>
-        <translation>Добавить текущий поток…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="radiowidget.cpp" line="172"/>
         <source>Download tracks...</source>
-        <translation>Скачать треки…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="radiowidget.cpp" line="184"/>
         <source>Remove this URL</source>
-        <translation>Удалить этот URL</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1497,8 +1447,8 @@
     <message>
         <location filename="rootpathsettingsmanager.cpp" line="52"/>
         <source>Do you want LMP to automatically fetch missing album art? It is done in the background and won&apos;t disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings.</source>
-        <oldsource>Do you want LMP to automatically fetch missing album art? It is done in the background and won&apos;t disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings</oldsource>
-        <translation>Вы желаете, чтобы LMP автоматически скачивал недостающие обложки альбомов? Это выполняется в фоне и никак вас не потревожит, но вполне может съесть траффик и немного локального хранилища, особенно если у вас много альбомов в коллекции.&lt;br/&gt;&lt;br/&gt;Вы всегда можете переключить эту опцию позже в настройках LMP.</translation>
+        <oldsource>Do you want LMP to automatically fetch missing album art? It is done in the background and won't disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings</oldsource>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1532,27 +1482,27 @@
     <message>
         <location filename="sourceerrorhandler.cpp" line="40"/>
         <source>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</source>
-        <translation>Невозможно найти декодер для файла %1. Возможно, у вас нет всех необходимых кодеков.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sourceerrorhandler.cpp" line="47"/>
         <source>Audio source %1 not found, playing next track...</source>
-        <translation>Аудиоисточник %1 не найден, играем следующий трек…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sourceerrorhandler.cpp" line="52"/>
         <source>Cannot open source %1, playing next track...</source>
-        <translation>Невозможно открыть %1, пробуем следующий…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sourceerrorhandler.cpp" line="57"/>
         <source>Audio source %1 is invalid, playing next track...</source>
-        <translation>Аудиоисточник %1 некорректен, пробуем следующий…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sourceerrorhandler.cpp" line="62"/>
         <source>Cannot play %1 because the output device is busy.</source>
-        <translation>Невозможно проиграть %1, так как устройство вывода занято.</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1574,7 +1524,7 @@
         <location filename="sync/syncmanager.cpp" line="131"/>
         <source>Unable to expand mask for file %1: %2.</source>
         <oldsource>Unable to expand mask for file %1.</oldsource>
-        <translation>Невозможно развернуть маску для файла %1: %2.</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1582,11 +1532,7 @@
     <message numerus="yes">
         <location filename="sync/syncmanagerbase.cpp" line="54"/>
         <source>Uploading %n file(s)</source>
-        <translation>
-            <numerusform>Закачка %n файла</numerusform>
-            <numerusform>Закачка %n файлов</numerusform>
-            <numerusform>Закачка %n файлов</numerusform>
-        </translation>
+        <translation><numerusform>Закачка %n файла</numerusform><numerusform>Закачка %n файлов</numerusform><numerusform>Закачка %n файлов</numerusform><numerusform>Закачка %n файлов</numerusform></translation>
     </message>
     <message>
         <location filename="sync/syncmanagerbase.cpp" line="65"/>
@@ -1648,7 +1594,7 @@
     <message>
         <location filename="sync/unmountabledevmanager.cpp" line="82"/>
         <source>%1% charged</source>
-        <translation>заряжено на %1%</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1758,31 +1704,27 @@
     <message numerus="yes">
         <location filename="util.cpp" line="228"/>
         <source>%n day(s) ago</source>
-        <translation>
-            <numerusform>%n день назад</numerusform>
-            <numerusform>%n дня назад</numerusform>
-            <numerusform>%n дней назад</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="util.cpp" line="232"/>
         <source>yesterday</source>
-        <translation>вчера</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util.cpp" line="234"/>
         <source>today</source>
-        <translation>сегодня</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util.cpp" line="252"/>
         <source>Invalid directory</source>
-        <translation>Некорректная директория</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util.cpp" line="253"/>
         <source>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</source>
-        <translation>Аудиотреки не могут быть скачаны в %1. Вы хотите выбрать другую директорию?</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sync/formats.cpp" line="152"/>
@@ -1832,7 +1774,7 @@
     <message>
         <location filename="nptooltiphook.cpp" line="47"/>
         <source>Last playback at %1</source>
-        <translation>Последнее воспроизведение в %1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="similarmodel.cpp" line="29"/>
@@ -1845,7 +1787,7 @@
     <message>
         <location filename="radiocustomdialog.ui" line="14"/>
         <source>Custom radio</source>
-        <translation>Особое радио</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="radiocustomdialog.ui" line="22"/>
@@ -1863,12 +1805,12 @@
     <message>
         <location filename="radiotracksgrabdialog.ui" line="14"/>
         <source>Radio tracks grabber</source>
-        <translation>Сохранение аудиотреков</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="radiotracksgrabdialog.ui" line="20"/>
         <source>Destination:</source>
-        <translation>Путь назначения:</translation>
+        <translation>Пункт назначения:</translation>
     </message>
     <message>
         <location filename="radiotracksgrabdialog.ui" line="32"/>
@@ -1879,7 +1821,7 @@
         <location filename="radiotracksgrabdialog.ui" line="41"/>
         <source>Filenames pattern:</source>
         <oldsource>Filename mask:</oldsource>
-        <translation>Шаблон имён файлов:</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1937,7 +1879,7 @@
         <location filename="share/qml5/lmp/StdArtistActions.qml" line="23"/>
         <source>Save the artist for later</source>
         <oldsource>Bookmark the artist</oldsource>
-        <translation>Отложить исполнителя на потом</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1981,7 +1923,7 @@
     <message>
         <location filename="sync/transcodingparamswidget.ui" line="151"/>
         <source>Only transcode lossless formats</source>
-        <translation>Перекодировать лишь lossless-форматы</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1990,18 +1932,18 @@
         <location filename="dummy.cpp" line="2"/>
         <source>Whole album analysis</source>
         <oldsource>Per-album analysis</oldsource>
-        <translation>Поальбомный анализ</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Audio limiting</source>
         <oldsource>Limiting</oldsource>
-        <translation>Ограничение аудио</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Pre-amplification:</source>
-        <translation>Предусиление:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
@@ -2054,7 +1996,7 @@
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Fetch artist biography photos</source>
-        <translation>Запрашивать фотографии исполнителей в биографии</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
@@ -2065,7 +2007,7 @@
         <location filename="dummy.cpp" line="13"/>
         <source>The following variables are allowed: &lt;em&gt;$artist&lt;/em&gt;, &lt;em&gt;$year&lt;/em&gt;, &lt;em&gt;$album&lt;/em&gt;, &lt;em&gt;$trackNumber&lt;/em&gt;, &lt;em&gt;$title&lt;/em&gt;.</source>
         <oldsource>The following variables are allowed: &amp;lt;em&amp;gt;$artist&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$year&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$album&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$trackNumber&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$title&amp;lt;/em&amp;gt;.</oldsource>
-        <translation>Разрешены следующие переменные: &lt;em&gt;$artist&lt;/em&gt;, &lt;em&gt;$year&lt;/em&gt;, &lt;em&gt;$album&lt;/em&gt;, &lt;em&gt;$trackNumber&lt;/em&gt;, &lt;em&gt;$title&lt;/em&gt;.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
@@ -2105,134 +2047,134 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Tags recoding</source>
-        <translation>Перекодирование тегов</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Tags region:</source>
-        <translation>Регион:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source>arabic</source>
-        <translation>арабский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>baltic</source>
-        <translation>балтийский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source>chinese</source>
-        <translation>китайский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>greek</source>
-        <translation>греческий</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>hebrew</source>
-        <translation>иврит</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>japanese</source>
-        <translation>японский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
         <source>korean</source>
-        <translation>корейский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>polish</source>
-        <translation>польский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source>russian</source>
-        <translation>русский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
         <source>taiwanese</source>
-        <translation>тайваньский</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
         <source>turkish</source>
-        <translation>турецкий</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source>Enable stream tags recoding</source>
-        <translation>Включить перекодировку тегов потоков</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
         <source>Enable local tags recoding</source>
-        <translation>Включить перекодировку локальных тегов</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
         <source>Audio</source>
-        <translation>Аудио</translation>
+        <translation>Звук</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Exponent in volume change formula (α in P = x^α):</source>
         <oldsource>Exponent in volume change formula (Î± in P = x^Î±):</oldsource>
-        <translation>Экспонента в формуле изменения звука (α в P = x^α):</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Services</source>
-        <translation>Сервисы</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="43"/>
         <source>Refresh radio stations on wake up</source>
-        <translation>Обновлять радиостанции при запуске</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn&apos;t usually result in changing your IP.</source>
-        <translation>Некоторые радиопровайдеры (вроде В Контакте) привязывают адреса треков к IP-адресам. Так что. если IP-адрес меняется, треки необходимо перезапросить. Отключите эту опцию, если засыпание и просыпание не ведет обычно к изменению вашего IP.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>
         <source>Automatically refresh radios</source>
-        <translation>Автоматически обновлять радио</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Refresh interval:</source>
-        <translation>Интервал обновления:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
         <source> h</source>
-        <translation> ч</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="48"/>
         <source>Effects</source>
-        <translation>Эффекты</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="49"/>
         <source>Effects manager</source>
-        <translation>Менеджер эффектов</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="50"/>
         <source>Effect settings</source>
         <oldsource>Filter settings</oldsource>
-        <translation>Настройки эффекта</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
@@ -2247,7 +2189,7 @@
     <message>
         <location filename="dummy.cpp" line="53"/>
         <source>Automatically calculate ReplayGain data for tracks in collection</source>
-        <translation>Автоматически вычислять метаинформацию ReplayGain для аудиозаписей в коллекции</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="54"/>
