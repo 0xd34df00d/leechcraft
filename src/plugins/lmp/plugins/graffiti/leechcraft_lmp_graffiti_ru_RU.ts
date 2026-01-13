@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
 <context>
     <name>GraffitiTab</name>
     <message>
@@ -15,7 +13,7 @@
         <location filename="graffititab.ui" line="183"/>
         <location filename="graffititab.ui" line="212"/>
         <source>Use this value for all selected files.</source>
-        <oldsource>Set all marked files&apos; field to this value.</oldsource>
+        <oldsource>Set all marked files' field to this value.</oldsource>
         <translation>Использовать это значение для всех выделенных файлов.</translation>
     </message>
     <message>
@@ -126,20 +124,12 @@
     <message numerus="yes">
         <location filename="graffititab.cpp" line="412"/>
         <source>Do you really want to accept changes to %n file(s)?</source>
-        <translation>
-            <numerusform>Вы действительно хотите сохранить изменения в %n файле?</numerusform>
-            <numerusform>Вы действительно хотите сохранить изменения в %n файлах?</numerusform>
-            <numerusform>Вы действительно хотите сохранить изменения в %n файлах?</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="graffititab.cpp" line="455"/>
         <source>Do you really want to revert changes to %n file(s)?</source>
-        <translation>
-            <numerusform>Вы действительно хотите откатить %n файл?</numerusform>
-            <numerusform>Вы действительно хотите откатить %n файла?</numerusform>
-            <numerusform>Вы действительно хотите откатить %n файлов?</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="graffititab.cpp" line="476"/>
@@ -224,11 +214,7 @@
     <message numerus="yes">
         <location filename="renamedialog.cpp" line="93"/>
         <source>Are you sure you want to rename %n file(s)?</source>
-        <translation>
-            <numerusform>Вы действительно хотите переименовать %n файл?</numerusform>
-            <numerusform>Вы действительно хотите переименовать %n файла?</numerusform>
-            <numerusform>Вы действительно хотите переименовать %n файлов?</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
 </context>
 <context>
