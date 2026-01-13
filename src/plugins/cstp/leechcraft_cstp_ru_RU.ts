@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
 <context>
     <name>AddTask</name>
     <message>
@@ -11,17 +9,17 @@
     <message>
         <location filename="addtask.ui" line="32"/>
         <source>Local path:</source>
-        <translation>Локальный путь:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addtask.ui" line="44"/>
         <source>Browse...</source>
-        <translation>Обзор…</translation>
+        <translation>Обзор...</translation>
     </message>
     <message>
         <location filename="addtask.ui" line="56"/>
         <source>Filename:</source>
-        <translation>Имя файла:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addtask.ui" line="66"/>
@@ -77,17 +75,17 @@
     <message>
         <location filename="cstp.cpp" line="242"/>
         <source>Stop</source>
-        <translation>Стоп</translation>
+        <translation>Остановить</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="249"/>
         <source>Start all</source>
-        <translation>Запустить всё</translation>
+        <translation>Стартовать все</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="256"/>
         <source>Stop all</source>
-        <translation>Остановить всё</translation>
+        <translation>Остановить все</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="268"/>
@@ -140,27 +138,27 @@
     <message>
         <location filename="core.cpp" line="586"/>
         <source>Failed downloading %1 (%2).</source>
-        <translation>Ошибка скачивания %1 (%2).</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="589"/>
         <source>Finished downloading %1 (%2).</source>
-        <translation>Загрузка %1 завершена (%2).</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="603"/>
         <source>Handle...</source>
-        <translation>Обработать…</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="610"/>
         <source>Open externally</source>
-        <translation>Открыть внешним приложением</translation>
+        <translation>Открыть внешней программой</translation>
     </message>
     <message>
         <location filename="core.cpp" line="615"/>
         <source>Show folder</source>
-        <translation>Показать в каталоге</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
