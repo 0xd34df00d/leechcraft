@@ -1,11 +1,11 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ro_RO">
 <context>
     <name>LC::Summary::Core</name>
     <message>
         <location filename="core.cpp" line="254"/>
         <location filename="core.cpp" line="268"/>
         <source>Summary</source>
-        <translation>Resumen</translation>
+        <translation>Sumar</translation>
     </message>
 </context>
 <context>
@@ -13,12 +13,12 @@
     <message>
         <location filename="summary.cpp" line="81"/>
         <source>Summary</source>
-        <translation>Resumen</translation>
+        <translation>Sumar</translation>
     </message>
     <message>
         <location filename="summary.cpp" line="113"/>
         <source>Summary of downloads and recent events</source>
-        <translation>Resumen de descargas y eventos recientes</translation>
+        <translation>Sumarul descărcărilor și evenimentelor recente</translation>
     </message>
 </context>
 <context>
@@ -26,7 +26,7 @@
     <message>
         <location filename="summarywidget.cpp" line="68"/>
         <source>Search...</source>
-        <translation>Buscar...</translation>
+        <translation>Căutare...</translation>
     </message>
 </context>
 </TS>
