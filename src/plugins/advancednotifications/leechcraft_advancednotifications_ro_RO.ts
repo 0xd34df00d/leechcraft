@@ -1,15 +1,17 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ro_RO">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ro_RO">
 <context>
     <name>AddFromMissedDialog</name>
     <message>
         <location filename="addfrommisseddialog.ui" line="14"/>
         <source>Missed events</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="addfrommisseddialog.ui" line="42"/>
         <source>You can select several root items to create several rules at once. You can also select some of the child nodes to create rules matching specific values of the corresponding fields.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25,62 +27,62 @@
     <message>
         <location filename="typedmatchers.cpp" line="241"/>
         <source>matches regular expression `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="242"/>
         <source>doesn&apos;t match regular expression `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="248"/>
         <source>contains substring `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="249"/>
         <source>doesn&apos;t contain substring `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="255"/>
         <source>matches wildcard `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="256"/>
         <source>doesn&apos;t match wildcard `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="268"/>
         <source>contains a string matching regular expression `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="269"/>
         <source>doesn&apos;t contains a string matching regular expression `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="275"/>
         <source>contains a string with the substring `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="276"/>
         <source>doesn&apos;t contain a string with the substring `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="282"/>
         <source>contains a string matching wildcard `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="283"/>
         <source>doesn&apos;t contain a string matching wildcard `%1`</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -150,7 +152,7 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="550"/>
         <source>No plugin has been found to play %1.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="331"/>
@@ -252,12 +254,12 @@
     <message>
         <location filename="rulesmanager.cpp" line="422"/>
         <source>News source updated</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="426"/>
         <source>News source broken</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="466"/>
@@ -288,12 +290,12 @@
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
@@ -396,13 +398,13 @@
     <message>
         <location filename="notificationruleswidget.ui" line="39"/>
         <source>New</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="49"/>
         <source>New from missed...</source>
         <oldsource>New from missed</oldsource>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="237"/>
