@@ -254,14 +254,6 @@ namespace LC::AdvancedNotifications
 						tr ("contains element matching %1").arg (p) :
 						tr ("doesn't contain element matching %1").arg (p);
 			}
-
-			static QString ForUrlMatcher (const AN::StringFieldValue& value)
-			{
-				const auto& p = ForMatcher (value.Rx_);
-				return value.Contains_ ?
-						tr ("URL matches %1").arg (p) :
-						tr ("URL doesn't match %1").arg (p);
-			}
 		};
 	}
 
@@ -300,7 +292,7 @@ namespace LC::AdvancedNotifications
 
 	QString UrlMatcher::GetHRDescription () const
 	{
-		return Descriptions::ForUrlMatcher (Value_);
+		return Descriptions::ForStringMatcher (Value_);
 	}
 
 	BoolMatcher::BoolMatcher (const QString& fieldName)
