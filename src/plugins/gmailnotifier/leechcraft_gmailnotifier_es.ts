@@ -1,55 +1,34 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="es">
 <context>
     <name>LC::GmailNotifier::GmailChecker</name>
     <message>
-        <location filename="gmailchecker.cpp" line="79"/>
-        <location filename="gmailchecker.cpp" line="103"/>
-        <location filename="gmailchecker.cpp" line="161"/>
+        <location filename="gmailchecker.cpp" line="122"/>
+        <location filename="gmailchecker.cpp" line="173"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="84"/>
-        <source>Username or password not set</source>
-        <translation>Nombre de usuario o contraseña no establecido</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="114"/>
+        <location filename="gmailchecker.cpp" line="128"/>
         <source>Cannot parse XML data</source>
         <translation>No se puede analizar los datos XML</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="133"/>
-        <source>No subject</source>
-        <translation>Sin asunto</translation>
+        <location filename="gmailchecker.cpp" line="97"/>
+        <source>Username for the GMail checker isn&apos;t set. You can enable it in GMail Notifier settings.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="136"/>
-        <source>No content</source>
-        <translation>No hay contenido</translation>
+        <location filename="gmailchecker.cpp" line="104"/>
+        <source>Password isn&apos;t set</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="140"/>
-        <source>from</source>
-        <translation>de</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="144"/>
-        <source>at</source>
-        <translation>en</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="150"/>
-        <source>and %1 more</source>
-        <translation>y %1 mas</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="166"/>
+        <location filename="gmailchecker.cpp" line="178"/>
         <source>The username or password is incorrect</source>
         <translation>Nombre de usuario o contraseña es incorrecto (-a).</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="168"/>
+        <location filename="gmailchecker.cpp" line="180"/>
         <source>Connection timeout</source>
         <translation>Tiempo de espera de conexión</translation>
     </message>
@@ -57,9 +36,40 @@
 <context>
     <name>LC::GmailNotifier::GmailNotifier</name>
     <message>
-        <location filename="gmailnotifier.cpp" line="97"/>
+        <location filename="gmailnotifier.cpp" line="120"/>
         <source>Google mail notification plugin</source>
         <translation>Complemento de notificacion de Google Mail</translation>
+    </message>
+</context>
+<context>
+    <name>LC::GmailNotifier::MailListView</name>
+    <message>
+        <location filename="maillistview.cpp" line="99"/>
+        <source>Yesterday, %1</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>LC::GmailNotifier::Notifier</name>
+    <message>
+        <location filename="notifier.cpp" line="69"/>
+        <source>No subject</source>
+        <translation>Sin asunto</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="69"/>
+        <source>from</source>
+        <translation>de</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="73"/>
+        <source>at</source>
+        <translation>en</translation>
+    </message>
+    <message>
+        <location filename="notifier.cpp" line="84"/>
+        <source>and %1 more</source>
+        <translation>y %1 mas</translation>
     </message>
 </context>
 <context>
