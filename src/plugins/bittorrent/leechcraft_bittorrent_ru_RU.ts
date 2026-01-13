@@ -1177,7 +1177,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabfileswidget.cpp" line="193"/>
         <source>Open file</source>
-        <translation type="unfinished"/>
+        <translation>Открыть файл</translation>
     </message>
     <message numerus="yes">
         <location filename="torrenttabfileswidget.cpp" line="194"/>
