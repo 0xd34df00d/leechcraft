@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
 <context>
     <name>BookmarksWidget</name>
     <message>
@@ -93,14 +91,6 @@
     </message>
 </context>
 <context>
-    <name>Core</name>
-    <message>
-        <location filename="core.cpp" line="129"/>
-        <source></source>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>EditBookmarkDialog</name>
     <message>
         <location filename="editbookmarkdialog.ui" line="14"/>
@@ -164,7 +154,7 @@
     <message>
         <location filename="historymodel.cpp" line="110"/>
         <source>Title</source>
-        <translation>Название</translation>
+        <translation>Заголовок</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="110"/>
@@ -184,22 +174,22 @@
     <message>
         <location filename="sslstatedialog.cpp" line="54"/>
         <source>SSL encryption is not used.</source>
-        <translation>Шифрование SSL не используется.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.cpp" line="58"/>
         <source>Some SSL errors where encountered.</source>
-        <translation>Встречены некоторые ошибки SSL.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.cpp" line="62"/>
         <source>Some elements were loaded via unencrypted connection.</source>
-        <translation>Некоторые элементы были загружены через небезопасное соединение.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.cpp" line="66"/>
         <source>Everything is secure!</source>
-        <translation>Всё безопасно!</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -277,17 +267,17 @@
     <message>
         <location filename="browserwidget.cpp" line="258"/>
         <source>Zoom text in</source>
-        <translation>Увеличить текст</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="260"/>
         <source>Zoom text out</source>
-        <translation>Уменьшить текст</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="262"/>
         <source>Reset text zoom</source>
-        <translation>Сбросить масштаб текста</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="265"/>
@@ -303,7 +293,7 @@
         <location filename="browserwidget.cpp" line="268"/>
         <source>Ctrl+H</source>
         <oldsource>Ctrl+b</oldsource>
-        <translation>Ctrl+H</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="334"/>
@@ -338,7 +328,7 @@
     <message>
         <location filename="browserwidget.cpp" line="758"/>
         <source>Ctrl+Shift+0</source>
-        <translation>Ctrl+Shift+0</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="759"/>
@@ -363,7 +353,7 @@
     <message>
         <location filename="browserwidget.cpp" line="274"/>
         <source>Ctrl+B</source>
-        <translation>Ctrl+B</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="947"/>
@@ -388,7 +378,7 @@
     <message>
         <location filename="browserwidget.cpp" line="1548"/>
         <source>Open</source>
-        <translation>Открыть</translation>
+        <translation>Открытый</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1572"/>
@@ -458,7 +448,7 @@
     <message>
         <location filename="customwebpage.cpp" line="545"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
-        <comment>{host} would be substituded with site&apos;s host name.</comment>
+        <comment>{host} would be substituded with site's host name.</comment>
         <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;проверьте&lt;/a&gt; не работает ли сайт &lt;strong&gt;{host}&lt;/strong&gt; только у вас или у всех;</translation>
     </message>
     <message>
@@ -540,12 +530,12 @@
     <message>
         <location filename="customwebpage.cpp" line="280"/>
         <source>%1 requests access to notifications.</source>
-        <translation>%1 запрашивает доступ к уведомлениям.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="282"/>
         <source>%1 requests access to geolocation services.</source>
-        <translation>%1 запрашивает доступ к сервисам геолокации.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="637"/>
@@ -738,7 +728,7 @@
     <message>
         <location filename="favoriteschecker.cpp" line="50"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="108"/>
@@ -781,7 +771,7 @@
     <message>
         <location filename="favoritesmodel.cpp" line="59"/>
         <source>Title</source>
-        <translation>Название</translation>
+        <translation>Заголовок</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="60"/>
@@ -791,7 +781,7 @@
     <message>
         <location filename="favoritesmodel.cpp" line="61"/>
         <source>Tags</source>
-        <translation>Теги</translation>
+        <translation>Метки</translation>
     </message>
 </context>
 <context>
@@ -842,7 +832,7 @@
     <message>
         <location filename="progresslineedit.cpp" line="225"/>
         <source>Paste and go</source>
-        <translation>Вставить и перейти</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -886,17 +876,17 @@
     <message>
         <location filename="urleditbuttonsmanager.cpp" line="113"/>
         <source>Some SSL errors where encountered.</source>
-        <translation>Встречены некоторые ошибки SSL.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="urleditbuttonsmanager.cpp" line="117"/>
         <source>Some elements were loaded via unencrypted connection.</source>
-        <translation>Некоторые элементы были загружены через небезопасное соединение.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="urleditbuttonsmanager.cpp" line="121"/>
         <source>Everything is secure!</source>
-        <translation>Всё безопасно!</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="urleditbuttonsmanager.cpp" line="140"/>
@@ -961,12 +951,7 @@
     <message numerus="yes">
         <location filename="historymodel.cpp" line="102"/>
         <source>Last %n month(s)</source>
-        <oldsource>Last %1 months</oldsource>
-        <translation>
-            <numerusform>Последние %n месяц</numerusform>
-            <numerusform>Последние %n месяца</numerusform>
-            <numerusform>Последние %n месяцев</numerusform>
-        </translation>
+        <translation><numerusform>Последние %n месяц</numerusform><numerusform>Последние %n месяца</numerusform><numerusform>Последние %n месяцев</numerusform><numerusform>Последние %n месяцев</numerusform></translation>
     </message>
     <message>
         <location filename="xbelparser.cpp" line="47"/>
@@ -1077,22 +1062,22 @@
     <message>
         <location filename="sslstatedialog.ui" line="14"/>
         <source>SSL state</source>
-        <translation>Состояние SSL</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="55"/>
         <source>Certificate information</source>
-        <translation>Информация о сертификате</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="61"/>
         <source>Certificate:</source>
-        <translation>Сертификат:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="86"/>
         <source>Common name:</source>
-        <translation>Имя:</translation>
+        <translation>Общее имя:</translation>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="99"/>
@@ -1102,17 +1087,17 @@
     <message>
         <location filename="sslstatedialog.ui" line="127"/>
         <source>Subject</source>
-        <translation>Выдано</translation>
+        <translation>Тема</translation>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="134"/>
         <source>Issuer</source>
-        <translation>Выдавший</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="148"/>
         <source>Unit:</source>
-        <translation>Подразделение:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="155"/>
@@ -1122,12 +1107,12 @@
     <message>
         <location filename="sslstatedialog.ui" line="162"/>
         <source>State:</source>
-        <translation>Штат:</translation>
+        <translation>Состояние:</translation>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="169"/>
         <source>City:</source>
-        <translation>Город:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="227"/>
@@ -1137,32 +1122,32 @@
     <message>
         <location filename="sslstatedialog.ui" line="241"/>
         <source>SHA1:</source>
-        <translation>SHA1:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="248"/>
         <source>MD5:</source>
-        <translation>MD5:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="276"/>
         <source>Start date:</source>
-        <translation>Начало действия:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="283"/>
         <source>End date:</source>
-        <translation>Окончание действия:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="305"/>
         <source>Insecure elements</source>
-        <translation>Небезопасные элементы</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sslstatedialog.ui" line="327"/>
         <source>SSL errors</source>
-        <translation>Ошибки SSL</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1210,7 +1195,7 @@
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Use Summary for displaying search results</source>
-        <translation>Использовать Сводку для отображения результатов поиска</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
@@ -1434,7 +1419,7 @@
     <message>
         <location filename="dummy.cpp" line="58"/>
         <source>Enable HTML5 notifications</source>
-        <translation>Включить уведомления на веб-страницах</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="59"/>
@@ -1444,7 +1429,7 @@
     <message>
         <location filename="dummy.cpp" line="60"/>
         <source>Enable smooth scrolling</source>
-        <translation>Включить гладкую прокрутку</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="61"/>
@@ -1459,7 +1444,7 @@
     <message>
         <location filename="dummy.cpp" line="63"/>
         <source>Font families</source>
-        <translation>Семейства шрифтов</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="64"/>
