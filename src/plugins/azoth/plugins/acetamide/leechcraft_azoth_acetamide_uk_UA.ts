@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
 <context>
     <name>BookmarkEditWidget</name>
     <message>
@@ -48,7 +46,7 @@
         <location filename="bookmarkeditwidget.ui" line="121"/>
         <source>Channel password:</source>
         <oldsource>Password:</oldsource>
-        <translation>Пароль каналу:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="138"/>
@@ -59,7 +57,7 @@
     <message>
         <location filename="bookmarkeditwidget.ui" line="158"/>
         <source>Server password:</source>
-        <translation>Пароль серверу:</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -141,7 +139,7 @@
         <location filename="channelconfigwidget.ui" line="261"/>
         <location filename="channelconfigwidget.ui" line="334"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="192"/>
@@ -155,7 +153,7 @@
         <location filename="channelconfigwidget.ui" line="281"/>
         <location filename="channelconfigwidget.ui" line="354"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="218"/>
@@ -173,7 +171,7 @@
     <message>
         <location filename="channelslistdialog.ui" line="19"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фільтр:</translation>
     </message>
 </context>
 <context>
@@ -192,7 +190,7 @@
         <location filename="invitechannelsdialog.ui" line="39"/>
         <source>From now on:</source>
         <oldsource>From now on: </oldsource>
-        <translation type="unfinished">Надалі: </translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="invitechannelsdialog.ui" line="47"/>
@@ -272,7 +270,7 @@
     <message>
         <location filename="ircjoingroupchat.ui" line="24"/>
         <source>Join parameters</source>
-        <translation>Параметри входу</translation>
+        <translation>Параметри входу:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="35"/>
@@ -298,7 +296,7 @@
         <location filename="ircjoingroupchat.ui" line="102"/>
         <source>Channel password:</source>
         <oldsource>Password:</oldsource>
-        <translation>Пароль каналу:</translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="119"/>
@@ -308,7 +306,7 @@
     <message>
         <location filename="ircjoingroupchat.ui" line="139"/>
         <source>Server password:</source>
-        <translation>Пароль серверу:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="148"/>
@@ -441,7 +439,7 @@
     <message>
         <location filename="channelhandler.cpp" line="274"/>
         <source>You have been kicked by %1 %2</source>
-        <translation>Вас викинув %1 %2</translation>
+        <translation>Ви були кікнуті %1 %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="112"/>
@@ -476,7 +474,7 @@
     <message>
         <location filename="channelhandler.cpp" line="317"/>
         <source>Topic changed to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="486"/>
@@ -593,12 +591,12 @@
     <message>
         <location filename="channelslistdialog.cpp" line="48"/>
         <source>Users count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="channelslistdialog.cpp" line="48"/>
         <source>Topic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -621,7 +619,7 @@
     <message>
         <location filename="channelsmanager.cpp" line="513"/>
         <source>Topic was set by %1 at %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -635,7 +633,7 @@
     <message>
         <location filename="clientconnection.cpp" line="189"/>
         <source>Some bookmarks were lost due to unknown storage version.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -643,7 +641,7 @@
     <message>
         <location filename="invitechannelsdialog.cpp" line="24"/>
         <source>Join</source>
-        <translation>Приєднатись</translation>
+        <translation>Зайти</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="24"/>
@@ -661,7 +659,7 @@
     <message>
         <location filename="ircparticipantentry.cpp" line="21"/>
         <source>Close chat</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -669,12 +667,12 @@
     <message>
         <location filename="ircprotocol.cpp" line="159"/>
         <source>This server needs password. Please enter it here:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircprotocol.cpp" line="165"/>
         <source>This channel needs password. Please enter it here:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -682,7 +680,7 @@
     <message>
         <location filename="ircserverclentry.cpp" line="27"/>
         <source>Channels list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircserverclentry.cpp" line="70"/>
@@ -736,7 +734,7 @@
         <location filename="ircserverhandler.cpp" line="551"/>
         <source>%1 is logged in as %2</source>
         <oldsource>%1 is logged in as %2 </oldsource>
-        <translation type="unfinished">%1 зайшов як %2 </translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="554"/>
@@ -746,22 +744,22 @@
     <message>
         <location filename="ircserverhandler.cpp" line="557"/>
         <source>%1: %2</source>
-        <translation>%1: %2</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="560"/>
         <source>%1 is available for help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="563"/>
         <source>%1 is a registered nick</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="566"/>
         <source>%1 e-mail address is %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="584"/>
@@ -774,7 +772,7 @@
     <message>
         <location filename="ircserversocket.cpp" line="171"/>
         <source>Unknown encoding %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -822,12 +820,12 @@ ascii: The chars [a-z] are lowercase of [A-Z].
 rfc1459: ascii with additional {}|~ the lowercase of []^.
 strict-rfc1459: ascii with additional {}| the lowercase of [].
 Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="161"/>
         <source>Maximum number of channels allowed to join by channel prefix.</source>
-        <translation>Максимальна кількість каналів, до яких можна приєднатися за допомогою префіксу каналу.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="167"/>
@@ -835,21 +833,15 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
         <translation>Максимальна довжина назви каналу.</translation>
     </message>
     <message>
-        <location filename="serverinfowidget.cpp" line="173"/>
-        <source>Indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.
-[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &quot;!&quot; channels; for example  &quot;!JNB4Sircd&quot;, where &quot;JNB4S&quot; is the ID and &quot;ircd&quot; is the channel&apos;s short name.]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="serverinfowidget.cpp" line="181"/>
         <source>Maximum kick comment length.</source>
-        <translation>Максимальна довжина коментарію для викидання.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="187"/>
         <source>Maximum number entries in the list per mode. 
 [Example: Given &quot;b:25,eI:50&quot;, it would be possible to set up to 25 &quot;+b&quot; modes, and up to 50 of a combination of &quot;+e&quot; and &quot;+I&quot;  modes, e.g. 30 &quot;+e&quot; and 20 &quot;+I&quot; modes, making up a total of 50.]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="195"/>
@@ -867,57 +859,62 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
         <translation>Максимальна довжина ніку.</translation>
     </message>
     <message>
+        <location filename="serverinfowidget.cpp" line="173"/>
+        <source>Indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.
+[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &quot;!&quot; channels; for example  &quot;!JNB4Sircd&quot;, where &quot;JNB4S&quot; is the ID and &quot;ircd&quot; is the channel&apos;s short name.]</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="serverinfowidget.cpp" line="213"/>
         <source>Indicates which form(s) of the ISUPPORT numeric are used by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="219"/>
         <source>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status. This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.
 [Example: NOTICE @#channel :Hi there]</source>
-        <translation>Сервер підтримує метод відправки повідомлення NOTICE лише людям з указаним статусом. Це можна реалізувати за допомогою команди NOTICE, встановивши прапорець бажаного статусу на канал.
-[Приклад: NOTICE @#channel :Привiт]</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="227"/>
         <source>Maximum topic length.</source>
-        <translation>Максимальна довжина теми.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="235"/>
         <source>Indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
-        <translation>Вказує на те, що сервер підтримує &quot;винятки банів&quot; (режим каналу +e), визначені в RFC 2811, секція 4.3.1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="241"/>
         <source>Indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</source>
-        <translation>Вказує на те, що клієнт може дати запит на команду &quot;LIST&quot; із сервера, не роз’єднуючись через великий обсяг даних, які ця команда генерує.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="251"/>
         <source>Mode that adds or removes a nick or address to a list. Always has a parameter.</source>
-        <translation>Режим, що додає або видаляє нік чи адресу зі списку. Завжди має параметр.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="257"/>
         <source>Mode that changes a setting and always has a parameter.</source>
-        <translation>Режим, який змінює налаштування та завжди має параметр.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="263"/>
         <source>Mode that changes a setting and only has a parameter when set.</source>
-        <translation>Режим, який змінює налаштування і має параметр лише коли активний.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="269"/>
         <source>Mode that changes a setting and never has a parameter.</source>
-        <translation>Режим, який змінює налаштування та та ніколи не має параметрів.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="275"/>
-        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. [Example: (ab)&amp;* maps the channel mode &apos;a&apos; to the channel status flag &apos;&amp;&apos;, and channel mode &apos;b&apos; to the channel status flag &apos;*&apos;.]
+        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. [Example: (ab)&amp;* maps the channel mode 'a' to the channel status flag '&amp;', and channel mode 'b' to the channel status flag '*'.]
 [Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -938,7 +935,7 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
     <message>
         <location filename="serverresponsemanager.cpp" line="328"/>
         <source>You invite %1 to channel %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="352"/>
@@ -1064,6 +1061,13 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
         <translation>CHANMODES тип D:</translation>
     </message>
     <message>
+        <location filename="serverinfowidget.ui" line="153"/>
+        <location filename="serverinfowidget.ui" line="166"/>
+        <source>The supported channel prefixes.</source>
+        <oldsource>The supported channel prefixes. </oldsource>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="serverinfowidget.ui" line="156"/>
         <source>CHANTYPES:</source>
         <translation>CHANTYPES:</translation>
@@ -1072,12 +1076,6 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
         <location filename="serverinfowidget.ui" line="184"/>
         <source>PREFIX:</source>
         <translation>PREFIX:</translation>
-    </message>
-    <message>
-        <location filename="serverinfowidget.ui" line="153"/>
-        <location filename="serverinfowidget.ui" line="166"/>
-        <source>The supported channel prefixes.</source>
-        <translation>Підтримувані префікси каналу.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="201"/>
