@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="es">
 <context>
     <name>AddFeedDialog</name>
     <message>
@@ -29,7 +27,7 @@
     <message>
         <location filename="channelsmodel.cpp" line="41"/>
         <source>Feed</source>
-        <translation>Feed</translation>
+        <translation>Fuente</translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="42"/>
@@ -44,17 +42,17 @@
     <message>
         <location filename="channelsmodel.cpp" line="113"/>
         <source>Parse error: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="116"/>
         <source>Error downloading the feed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="135"/>
         <source>Author</source>
-        <translation>Autor</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="136"/>
@@ -135,17 +133,17 @@
     <message>
         <location filename="export2fb2dialog.ui" line="24"/>
         <source>Feeds</source>
-        <translation>Feeds</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="97"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="105"/>
         <source>Export format:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="170"/>
@@ -660,12 +658,12 @@
     <message>
         <location filename="export2fb2dialog.ui" line="1204"/>
         <source>Page size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1230"/>
         <source>Page margins:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1239"/>
@@ -673,22 +671,22 @@
         <location filename="export2fb2dialog.ui" line="1259"/>
         <location filename="export2fb2dialog.ui" line="1272"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1284"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1301"/>
         <source>Base font size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1308"/>
         <source> pt</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="65"/>
@@ -757,7 +755,7 @@
         <location filename="feedsettings.ui" line="141"/>
         <source>&amp;Tags:</source>
         <oldsource>Tags:</oldsource>
-        <translation>&amp;Etiquetas:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="feedsettings.ui" line="156"/>
@@ -773,7 +771,7 @@
         <location filename="feedsettings.ui" line="175"/>
         <source>&amp;Update interval:</source>
         <oldsource>Update interval:</oldsource>
-        <translation>&amp;Intervalo de actualización:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="feedsettings.ui" line="185"/>
@@ -791,18 +789,18 @@
         <location filename="feedsettings.ui" line="201"/>
         <source>&amp;Max items number:</source>
         <oldsource>Max items number:</oldsource>
-        <translation>Máximo &amp;número de elementos:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="feedsettings.ui" line="224"/>
         <source>Max &amp;item&apos;s age:</source>
-        <oldsource>Max item&apos;s age:</oldsource>
-        <translation>&amp;Antigüedad máxima del elemento:</translation>
+        <oldsource>Max item's age:</oldsource>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="feedsettings.ui" line="237"/>
         <source> day(s)</source>
-        <translation> dia(s)</translation>
+        <translation>dia(s)</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="247"/>
@@ -812,7 +810,7 @@
     <message>
         <location filename="feedsettings.ui" line="254"/>
         <source>Default channel tags:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -941,7 +939,7 @@
     <message>
         <location filename="aggregator.cpp" line="383"/>
         <source>Failed to initialize Aggregator storage: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -959,12 +957,12 @@
     <message>
         <location filename="components/actions/appwideactions.cpp" line="45"/>
         <source>Mark all channels as read</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/appwideactions.cpp" line="46"/>
         <source>Import/export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/appwideactions.cpp" line="47"/>
@@ -984,7 +982,7 @@
     <message>
         <location filename="components/actions/appwideactions.cpp" line="83"/>
         <source>Do you really want to mark all channels as read?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -992,33 +990,24 @@
     <message numerus="yes">
         <location filename="dbupdatethread.cpp" line="158"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="dbupdatethread.cpp" line="269"/>
         <source>%n new item(s)</source>
         <comment>Channel update</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="dbupdatethread.cpp" line="271"/>
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="dbupdatethread.cpp" line="272"/>
         <source>Updated channel &quot;%1&quot; (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1031,10 +1020,7 @@
     <message numerus="yes">
         <location filename="export2fb2dialog.cpp" line="184"/>
         <source>%n unread item(s)</source>
-        <translation>
-            <numerusform>%n elemento no leído</numerusform>
-            <numerusform>%n elementos no leidos</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="201"/>
@@ -1055,12 +1041,12 @@
         <location filename="export2fb2dialog.cpp" line="311"/>
         <location filename="export2fb2dialog.cpp" line="433"/>
         <source>Export complete.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="442"/>
         <source>fb2 files (*.fb2);;XML files (*.xml);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1068,17 +1054,17 @@
     <message>
         <location filename="feedserrormanager.cpp" line="51"/>
         <source>parse error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="feedserrormanager.cpp" line="51"/>
         <source>Parse error: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="feedserrormanager.cpp" line="62"/>
         <source>Error updating feed %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1120,12 +1106,12 @@
         <location filename="components/actions/channelactions.cpp" line="39"/>
         <location filename="components/actions/channelactions.cpp" line="68"/>
         <source>Rename feed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="41"/>
         <source>Remove channel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="43"/>
@@ -1135,59 +1121,47 @@
     <message>
         <location filename="components/actions/channelactions.cpp" line="69"/>
         <source>New feed name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="149"/>
         <source>Are you sure you want to mark channel %1 as read?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="150"/>
         <source>Are you sure you want to mark %n channel(s) as read?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="161"/>
         <source>Are you sure you want to mark channel %1 as unread?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="162"/>
         <source>Are you sure you want to mark %n channel(s) as unread?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="172"/>
         <source>Are you sure you want to delete feed %1?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="173"/>
         <source>Are you sure you want to delete %n feed(s)?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="components/actions/channelactions.cpp" line="184"/>
         <source>Are you sure you want to delete channel %1?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="components/actions/channelactions.cpp" line="185"/>
         <source>Are you sure you want to delete %n channel(s)?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="47"/>
@@ -1202,17 +1176,17 @@
     <message>
         <location filename="components/actions/itemactions.cpp" line="60"/>
         <source>Mark as unread</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="63"/>
         <source>Mark as read</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="67"/>
         <source>Unimportant</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="70"/>
@@ -1237,35 +1211,32 @@
     <message>
         <location filename="components/actions/itemactions.cpp" line="84"/>
         <source>Copy news item link</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="89"/>
         <source>Previous unread item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="92"/>
         <source>Next unread item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="95"/>
         <source>Previous item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/actions/itemactions.cpp" line="98"/>
         <source>Next item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="components/actions/itemactions.cpp" line="215"/>
         <source>Are you sure you want to remove %n items?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
 </context>
 <context>
@@ -1273,44 +1244,44 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="21"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="23"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="25"/>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="27"/>
         <source>Document</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="29"/>
         <source>Executable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="68"/>
         <source>%1 (as per %2)</source>
         <comment>&lt;rating&gt; (as per &lt;rating scheme&gt;)</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="70"/>
         <source>Rating</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="83"/>
         <location filename="components/itemrender/mrss.cpp" line="231"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="84"/>
@@ -1320,22 +1291,22 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="85"/>
         <source>Keywords</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="86"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="103"/>
         <source>Also available as:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="129"/>
         <source>Thumbnail at %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="140"/>
@@ -1360,104 +1331,104 @@
     <message>
         <location filename="components/itemrender/mrss.cpp" line="154"/>
         <source>Start time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="155"/>
         <source>End time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="191"/>
         <source>Scenes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="198"/>
         <source>Views</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="199"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Desmarcar todo</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="200"/>
         <source>Averate rating</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="201"/>
         <source>Votes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="202"/>
         <source>Minimal rating</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="203"/>
         <source>Maximal rating</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="214"/>
         <source>Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="229"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="230"/>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Canales</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="232"/>
         <source>Bitrate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="232"/>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="233"/>
         <source>Framerate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="234"/>
         <source>Sampling rate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="235"/>
         <source>MIME type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo MIME</translation>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="247"/>
         <source>Technical information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="272"/>
         <location filename="components/itemrender/mrss.cpp" line="275"/>
         <source>Copyright</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/mrss.cpp" line="289"/>
         <source>Credits</source>
         <comment>at the end of a video</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="43"/>
@@ -1477,35 +1448,32 @@
     <message numerus="yes">
         <location filename="components/itemrender/item.cpp" line="69"/>
         <source>%n comment(s)</source>
-        <translation>
-            <numerusform>%n comentario</numerusform>
-            <numerusform>%n comentarios</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="70"/>
         <source>View comments</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="87"/>
         <source>Geoposition:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="105"/>
         <source>File of type %1, size %2:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="108"/>
         <source>File of type %1:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="components/itemrender/item.cpp" line="116"/>
         <source>Specified language: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1523,36 +1491,27 @@
     <message>
         <location filename="itemslistmodel.cpp" line="257"/>
         <source>Author</source>
-        <translation>Autor</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="itemslistmodel.cpp" line="258"/>
         <source>Categories</source>
-        <translation>Categorías</translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="259"/>
         <source>%n comment(s)</source>
-        <translation>
-            <numerusform>%n comentario</numerusform>
-            <numerusform>%n comentarios</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="260"/>
         <source>%n enclosure(s)</source>
-        <translation>
-            <numerusform>%n recinto</numerusform>
-            <numerusform>%n recintos</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="261"/>
         <source>%n MediaRSS entry(s)</source>
-        <translation>
-            <numerusform>%n MediaRSS entrada</numerusform>
-            <numerusform>%n MediaRSS entradas</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="itemslistmodel.cpp" line="262"/>
@@ -1607,17 +1566,17 @@
     <message>
         <location filename="updatesmanager.cpp" line="42"/>
         <source>Unable to open the temporary file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="updatesmanager.cpp" line="60"/>
         <source>XML parse error for the feed %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="updatesmanager.cpp" line="74"/>
         <source>Could not find parser to parse %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="updatesmanager.cpp" line="217"/>
@@ -1666,6 +1625,21 @@
         <translation>Duración: %1</translation>
     </message>
     <message>
+        <location filename="opmlparser.cpp" line="108"/>
+        <source>Could not open file %1 for reading.</source>
+        <translation>No se pudo abrir el archivo %1 para lectura.</translation>
+    </message>
+    <message>
+        <location filename="opmlparser.cpp" line="119"/>
+        <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
+        <translation>Error XML, archivo %1, línea %2, columna %3, error:&lt;br /&gt;%4</translation>
+    </message>
+    <message>
+        <location filename="opmlparser.cpp" line="127"/>
+        <source>OPML from file %1 is not valid.</source>
+        <translation>OPML del archivo%1 no es válida.</translation>
+    </message>
+    <message>
         <location filename="exportutils.cpp" line="47"/>
         <source>Export to OPML</source>
         <translation>Exportar a OPML</translation>
@@ -1685,21 +1659,6 @@
         <source>OPML export error: could not open file %1 for write.</source>
         <oldsource>Could not open file %1 for write.</oldsource>
         <translation>No se pudo abrir el archivo %1 para escritura.</translation>
-    </message>
-    <message>
-        <location filename="opmlparser.cpp" line="108"/>
-        <source>Could not open file %1 for reading.</source>
-        <translation>No se pudo abrir el archivo %1 para lectura.</translation>
-    </message>
-    <message>
-        <location filename="opmlparser.cpp" line="119"/>
-        <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
-        <translation>Error XML, archivo %1, línea %2, columna %3, error:&lt;br /&gt;%4</translation>
-    </message>
-    <message>
-        <location filename="opmlparser.cpp" line="127"/>
-        <source>OPML from file %1 is not valid.</source>
-        <translation>OPML del archivo%1 no es válida.</translation>
     </message>
     <message>
         <location filename="dbutils.cpp" line="43"/>
@@ -1724,7 +1683,7 @@
     <message>
         <location filename="xmlsettingsmanager.cpp" line="54"/>
         <source>Always</source>
-        <comment>whether to remember the choice and don&apos;t ask again</comment>
+        <comment>whether to remember the choice and don't ask again</comment>
         <translation>Siempre</translation>
     </message>
 </context>
@@ -1845,7 +1804,7 @@
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source> s</source>
-        <translation> s</translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
@@ -1887,7 +1846,7 @@
         <location filename="dummy.cpp" line="18"/>
         <source>Show items category selector</source>
         <oldsource>Show unread channels in summary</oldsource>
-        <translation>Mostrar los canales no leídos en el resumen</translation>
+        <translation>Mostrar el selector de categorías de elementos</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
@@ -1902,7 +1861,7 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Show images linked via MediaRSS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
@@ -1952,7 +1911,7 @@
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source> min</source>
-        <translation> min</translation>
+        <translation>min</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
@@ -1982,12 +1941,12 @@
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source> days</source>
-        <translation> dias</translation>
+        <translation>dias</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Ask mark all feeds as read confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
