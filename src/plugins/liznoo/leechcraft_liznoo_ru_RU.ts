@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru_RU">
 <context>
     <name>BatteryHistoryDialog</name>
     <message>
@@ -9,7 +11,7 @@
     <message>
         <location filename="batteryhistorydialog.ui" line="62"/>
         <source>Percentage:</source>
-        <translation>Процент:</translation>
+        <translation>Процент заряда:</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.ui" line="76"/>
@@ -34,7 +36,7 @@
     <message>
         <location filename="batteryhistorydialog.ui" line="132"/>
         <source>Design capacity:</source>
-        <translation>Исходная ёмкость:</translation>
+        <translation>Изначальная ёмкость:</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.ui" line="146"/>
@@ -49,7 +51,7 @@
     <message>
         <location filename="batteryhistorydialog.ui" line="174"/>
         <source>Cycles count:</source>
-        <translation type="unfinished"/>
+        <translation>Количество циклов заряда:</translation>
     </message>
 </context>
 <context>
@@ -74,32 +76,32 @@
         <location filename="batteryhistorydialog.cpp" line="168"/>
         <location filename="batteryhistorydialog.cpp" line="169"/>
         <source>%1 mAh</source>
-        <translation>%1 мАч</translation>
+        <translation>%1 мА</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="174"/>
         <source>awesome</source>
-        <translation>потрясающий</translation>
+        <translation>здорово</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="176"/>
         <source>good</source>
-        <translation>хороший</translation>
+        <translation>хорошо</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="178"/>
         <source>degraded</source>
-        <translation>деградировавший</translation>
+        <translation>деградирует</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="180"/>
         <source>bad</source>
-        <translation>плохой</translation>
+        <translation>плохо</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="205"/>
         <source>Percentage</source>
-        <translation>Процент выполнения</translation>
+        <translation>Процент заряда</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="206"/>
@@ -114,7 +116,7 @@
     <message>
         <location filename="batteryhistorydialog.cpp" line="208"/>
         <source>Charge, %</source>
-        <translation type="unfinished"/>
+        <translation>Заряд, %</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="209"/>
@@ -124,7 +126,7 @@
     <message>
         <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>Time, s</source>
-        <translation type="unfinished"/>
+        <translation>Время, с</translation>
     </message>
 </context>
 <context>
@@ -132,7 +134,7 @@
     <message>
         <location filename="platform/logind/logindconnector.cpp" line="66"/>
         <source>Preparing LeechCraft for going to sleep...</source>
-        <translation type="unfinished"/>
+        <translation>Подготовка LeechCraft ко сну...</translation>
     </message>
 </context>
 <context>
@@ -155,28 +157,28 @@
     <message>
         <location filename="liznoo.cpp" line="269"/>
         <source>No platform backend is available.</source>
-        <translation type="unfinished"/>
+        <translation>Нет доступных платформ.</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="271"/>
         <source>Platform backend failed.</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка в платформе электропитания.</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="273"/>
         <source>Unknown reason.</source>
-        <translation type="unfinished"/>
+        <translation>Неизвестная причина.</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="325"/>
         <source>Unable to send test power events.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно отправить тестовые события электропитания.</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="186"/>
         <source>Battery charge level is %1%.</source>
         <oldsource>Battery charge level is below %1%.</oldsource>
-        <translation type="unfinished"/>
+        <translation>Заряд батареи составляет %1%.</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="199"/>
@@ -194,12 +196,12 @@
     <message>
         <location filename="platform/poweractions/freebsd.cpp" line="43"/>
         <source>No permissions to write to %1. If you are in the %2 group, add %3 to %4 and run %5 to apply the required permissions to %1.</source>
-        <translation type="unfinished"/>
+        <translation>Нет разрешений на запись в %1. Если вы в группе %2, добавьте %3 в %4 и выполните %5 для применения необходимых разрешений к %1.</translation>
     </message>
     <message>
         <location filename="platform/poweractions/freebsd.cpp" line="50"/>
         <source>Unable to open %1 for writing.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно открыть %1 на запись.</translation>
     </message>
 </context>
 <context>
@@ -207,7 +209,7 @@
     <message>
         <location filename="platform/poweractions/pmutils.cpp" line="43"/>
         <source>%1 failed to start. Probably %2 is not installed? Original message: %3.</source>
-        <translation type="unfinished"/>
+        <translation>Не удалось запустить %1. Возможно, %2 не установлено? Исходное сообщение: %3.</translation>
     </message>
 </context>
 <context>
@@ -215,7 +217,7 @@
     <message>
         <location filename="platform/poweractions/upower.cpp" line="59"/>
         <source>Cannot connect to UPower daemon.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно подключиться к демону UPower.</translation>
     </message>
 </context>
 <context>
@@ -251,30 +253,30 @@
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Liznoo settings</source>
-        <translation type="unfinished"/>
+        <translation>Настройки Liznoo</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Show on battery icon:</source>
-        <translation type="unfinished"/>
+        <translation>Показывать на иконке батареи:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>charge level</source>
         <oldsource>Charge level</oldsource>
-        <translation type="unfinished"/>
+        <translation>уровень заряда</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>remaining time</source>
         <oldsource>Remaining time</oldsource>
-        <translation type="unfinished"/>
+        <translation>оставшееся время</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>nothing</source>
         <oldsource>Nothing</oldsource>
-        <translation type="unfinished"/>
+        <translation>ничего</translation>
     </message>
 </context>
 <context>
@@ -293,7 +295,7 @@
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source>Low charge threshold:</source>
-        <translation type="unfinished"/>
+        <translation>Низкий уровень заряда:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
@@ -331,12 +333,12 @@
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Send sleep event to other plugins</source>
-        <translation>Сообщать о сне другим плагинам</translation>
+        <translation>Отправить событие сна другим модулям</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
         <source>Send wake up event to other plugins</source>
-        <translation>Сообщать о пробуждении другим плагинам</translation>
+        <translation>Отправить событие пробуждения другим модулям</translation>
     </message>
 </context>
 </TS>
