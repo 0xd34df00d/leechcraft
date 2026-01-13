@@ -58,13 +58,15 @@
     <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
         <location filename="batteryhistorydialog.cpp" line="124"/>
-        <source>(discharging)</source>
-        <translation>(разряжается)</translation>
+        <source>discharging</source>
+        <oldsource>(discharging)</oldsource>
+        <translation>разряжается</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="132"/>
-        <source>(charging)</source>
-        <translation>(заряжается)</translation>
+        <source>charging</source>
+        <oldsource>(charging)</oldsource>
+        <translation>заряжается</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="156"/>
@@ -99,32 +101,32 @@
         <translation>плохо</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="205"/>
+        <location filename="batteryhistorydialog.cpp" line="208"/>
         <source>Percentage</source>
         <translation>Процент заряда</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="206"/>
+        <location filename="batteryhistorydialog.cpp" line="209"/>
         <source>Energy rate</source>
         <translation>Мощность</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="207"/>
+        <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>Temperature</source>
         <translation>Температура</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="208"/>
+        <location filename="batteryhistorydialog.cpp" line="211"/>
         <source>Charge, %</source>
         <translation>Заряд, %</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="209"/>
+        <location filename="batteryhistorydialog.cpp" line="212"/>
         <source>Energy rate, W</source>
         <translation>Мощность заряда/разряда, Вт</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="210"/>
+        <location filename="batteryhistorydialog.cpp" line="213"/>
         <source>Time, s</source>
         <translation>Время, с</translation>
     </message>

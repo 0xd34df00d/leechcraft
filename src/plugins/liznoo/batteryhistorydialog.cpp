@@ -121,7 +121,7 @@ namespace Liznoo
 			Ui_.RemainingTime_->setVisible (true);
 			Ui_.RemainingTime_->setText (Util::MakeTimeFromLong (info.TimeToEmpty_));
 
-			chargeStateStr = tr ("(discharging)");
+			chargeStateStr = tr ("discharging");
 		}
 		else if (info.TimeToFull_ && info.TimeToFull_ < 3600 * 24)
 		{
@@ -129,7 +129,7 @@ namespace Liznoo
 			Ui_.RemainingTime_->setVisible (true);
 			Ui_.RemainingTime_->setText (Util::MakeTimeFromLong (info.TimeToFull_));
 
-			chargeStateStr = tr ("(charging)");
+			chargeStateStr = tr ("charging");
 		}
 		else
 		{
@@ -197,7 +197,10 @@ namespace Liznoo
 		if (hasCyclesCount)
 			Ui_.CyclesCount_->setText (QString::number (info.CyclesCount_));
 
-		Ui_.PercentageLabel_->setText (QString::number (info.Percentage_) + "% " + chargeStateStr);
+		auto percentageLabel = QString::number (info.Percentage_) + '%';
+		if (!chargeStateStr.isEmpty ())
+			percentageLabel += " ("_qs + chargeStateStr + ')';
+		Ui_.PercentageLabel_->setText (percentageLabel);
 	}
 
 	void BatteryHistoryDialog::InitNames ()

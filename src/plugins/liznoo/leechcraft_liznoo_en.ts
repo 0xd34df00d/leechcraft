@@ -58,13 +58,15 @@
     <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
         <location filename="batteryhistorydialog.cpp" line="124"/>
-        <source>(discharging)</source>
-        <translation>(discharging)</translation>
+        <source>discharging</source>
+        <oldsource>(discharging)</oldsource>
+        <translation>discharging</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="132"/>
-        <source>(charging)</source>
-        <translation>(charging)</translation>
+        <source>charging</source>
+        <oldsource>(charging)</oldsource>
+        <translation>charging</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="156"/>
@@ -99,32 +101,32 @@
         <translation>bad</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="205"/>
+        <location filename="batteryhistorydialog.cpp" line="208"/>
         <source>Percentage</source>
         <translation>Percentage</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="206"/>
+        <location filename="batteryhistorydialog.cpp" line="209"/>
         <source>Energy rate</source>
         <translation>Energy rate</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="207"/>
+        <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>Temperature</source>
         <translation>Temperature</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="208"/>
+        <location filename="batteryhistorydialog.cpp" line="211"/>
         <source>Charge, %</source>
         <translation>Charge, %</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="209"/>
+        <location filename="batteryhistorydialog.cpp" line="212"/>
         <source>Energy rate, W</source>
         <translation>Energy rate, W</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="210"/>
+        <location filename="batteryhistorydialog.cpp" line="213"/>
         <source>Time, s</source>
         <translation>Time, s</translation>
     </message>

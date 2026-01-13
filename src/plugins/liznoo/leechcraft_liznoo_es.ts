@@ -57,34 +57,36 @@
 <context>
     <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="205"/>
+        <location filename="batteryhistorydialog.cpp" line="208"/>
         <source>Percentage</source>
         <translation>Porcentaje</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="206"/>
+        <location filename="batteryhistorydialog.cpp" line="209"/>
         <source>Energy rate</source>
         <translation>Potencia</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="207"/>
+        <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>Temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="209"/>
+        <location filename="batteryhistorydialog.cpp" line="212"/>
         <source>Energy rate, W</source>
         <translation>Potencia, W</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="124"/>
-        <source>(discharging)</source>
-        <translation>(descargando)</translation>
+        <source>discharging</source>
+        <oldsource>(discharging)</oldsource>
+        <translation>descargando</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="132"/>
-        <source>(charging)</source>
-        <translation>(cargando)</translation>
+        <source>charging</source>
+        <oldsource>(charging)</oldsource>
+        <translation>cargando</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="156"/>
@@ -119,12 +121,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="208"/>
+        <location filename="batteryhistorydialog.cpp" line="211"/>
         <source>Charge, %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="210"/>
+        <location filename="batteryhistorydialog.cpp" line="213"/>
         <source>Time, s</source>
         <translation type="unfinished"></translation>
     </message>
