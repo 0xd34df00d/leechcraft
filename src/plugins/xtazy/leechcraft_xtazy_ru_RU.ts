@@ -1,10 +1,12 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>LC::Xtazy::Plugin</name>
     <message>
         <location filename="xtazy.cpp" line="88"/>
         <source>Keeps track of the currently playing song and provides it to other plugins.</source>
-        <translation type="unfinished"/>
+        <translation>Следит за текущей проигрываемой песней и предоставляет информацию о ней другим модулям.</translation>
     </message>
 </context>
 <context>
@@ -12,7 +14,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Xtazy</source>
-        <translation type="unfinished"/>
+        <translation>Xtazy</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
@@ -22,7 +24,7 @@
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Fetch from LeechCraft players like LMP</source>
-        <translation type="unfinished"/>
+        <translation>Получать от плееров LeechCraft вроде LMP</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
