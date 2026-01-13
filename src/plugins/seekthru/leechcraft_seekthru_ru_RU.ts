@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>LC::SeekThru::Core</name>
     <message>
@@ -62,7 +64,11 @@
     <message numerus="yes">
         <location filename="searchhandler.cpp" line="83"/>
         <source>%n total result(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n результат всего</numerusform>
+            <numerusform>%n результата всего</numerusform>
+            <numerusform>%n результатов всего</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="searchhandler.cpp" line="85"/>
