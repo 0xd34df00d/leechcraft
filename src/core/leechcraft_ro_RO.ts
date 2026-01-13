@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ro_RO">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ro_RO">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -58,7 +60,7 @@
     <message>
         <location filename="../util/db/backendselector.ui" line="58"/>
         <source>Yay, SQLite has no settings worth adjusting!</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/db/backendselector.ui" line="97"/>
@@ -223,27 +225,27 @@
 <context>
     <name>LC::Application</name>
     <message>
-        <location filename="application.cpp" line="129"/>
+        <location filename="application.cpp" line="128"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Nu se poate crea calea %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="415"/>
+        <location filename="application.cpp" line="411"/>
         <source>Startup password</source>
         <translation>Parolă de Pornire</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="416"/>
+        <location filename="application.cpp" line="412"/>
         <source>Enter startup password for LeechCraft:</source>
         <translation>Introduceți parola de pornire pentru LeechCraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="421"/>
+        <location filename="application.cpp" line="417"/>
         <source>Sorry, incorrect password</source>
         <translation>Ne pare rău, parola este incorectă</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="520"/>
+        <location filename="application.cpp" line="514"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Această modificare necesită repornirea LeechCraft. Doriți să reporniți acum?</translation>
     </message>
@@ -305,68 +307,73 @@
 <context>
     <name>LC::CoreInstanceObject</name>
     <message>
-        <location filename="coreinstanceobject.cpp" line="270"/>
+        <location filename="coreinstanceobject.cpp" line="281"/>
         <source>LeechCraft Core module.</source>
         <translation>Modulul LeechCraft Core.</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="174"/>
-        <location filename="coreinstanceobject.cpp" line="293"/>
+        <location filename="coreinstanceobject.cpp" line="150"/>
+        <location filename="coreinstanceobject.cpp" line="304"/>
         <source>Settings</source>
         <translation>Configurări</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="144"/>
+        <location filename="coreinstanceobject.cpp" line="114"/>
         <source>Switch to previously active tab</source>
         <translation>Comutaţi la fila activă anterior</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="150"/>
+        <location filename="coreinstanceobject.cpp" line="120"/>
         <source>Toggle fullscreen</source>
         <translation>Comutare Ecran Complet</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="156"/>
+        <location filename="coreinstanceobject.cpp" line="126"/>
+        <source>New tab</source>
+        <translation type="unfinished">Filă nouă</translation>
+    </message>
+    <message>
+        <location filename="coreinstanceobject.cpp" line="132"/>
         <source>Close tab</source>
         <translation>Închide fila</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="162"/>
+        <location filename="coreinstanceobject.cpp" line="138"/>
         <source>Switch to tab to the left</source>
         <translation>Comutare la fila din stânga</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="168"/>
+        <location filename="coreinstanceobject.cpp" line="144"/>
         <source>Switch to tab to the right</source>
         <translation>Comutare la fila din dreapta</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="180"/>
+        <location filename="coreinstanceobject.cpp" line="156"/>
         <source>Quit LeechCraft</source>
         <translation>Părăsire LeechCraft</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="186"/>
+        <location filename="coreinstanceobject.cpp" line="162"/>
         <source>Open find dialog (where applicable)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="193"/>
+        <location filename="coreinstanceobject.cpp" line="169"/>
         <source>Find previous (where applicable)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="199"/>
+        <location filename="coreinstanceobject.cpp" line="175"/>
         <source>Find next (where applicable)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="351"/>
+        <location filename="coreinstanceobject.cpp" line="362"/>
         <source>Context-dependent</source>
         <translation>Dependent de Context</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="416"/>
+        <location filename="coreinstanceobject.cpp" line="427"/>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
         <translation>Din cauza problemelor de licențiere, unele elemente grafice ar putea lipsi din acest pachet. Luați în considerare folosirea modulului LackMan pentru a instala acele elemente grafice.</translation>
     </message>
@@ -400,32 +407,32 @@
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="23"/>
         <source>Choose</source>
-        <translation type="unfinished"/>
+        <translation>Alegeți</translation>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="46"/>
         <source>%1 pt</source>
-        <translation type="unfinished"/>
+        <translation>%1 pt</translation>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="49"/>
         <source>bold</source>
-        <translation type="unfinished"/>
+        <translation>îngroșat</translation>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="51"/>
         <source>italic</source>
-        <translation type="unfinished"/>
+        <translation>înclinat</translation>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="53"/>
         <source>underlined</source>
-        <translation type="unfinished"/>
+        <translation>subliniat</translation>
     </message>
     <message>
         <location filename="../xmlsettingsdialog/widgets/fontpicker.cpp" line="55"/>
         <source>striken out</source>
-        <translation type="unfinished"/>
+        <translation>barat</translation>
     </message>
 </context>
 <context>
@@ -439,22 +446,22 @@
 <context>
     <name>LC::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="369"/>
+        <location filename="mainwindow.cpp" line="368"/>
         <source>Do you really want to restart?</source>
         <translation>Sigur doriți să reporniți?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="382"/>
+        <location filename="mainwindow.cpp" line="381"/>
         <source>Do you really want to quit?</source>
         <translation>Sigur doriți să părăsiți programul?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="387"/>
+        <location filename="mainwindow.cpp" line="386"/>
         <source>Always</source>
         <translation>Întotdeauna</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="624"/>
+        <location filename="mainwindow.cpp" line="623"/>
         <source>Toggle LeechCraft window</source>
         <translation>Comutare fereastră LeechCraft</translation>
     </message>
@@ -470,14 +477,6 @@
         <location filename="mainwindowmenumanager.cpp" line="29"/>
         <source>Tools</source>
         <translation>Instrumente</translation>
-    </message>
-</context>
-<context>
-    <name>LC::NetworkAccessManager</name>
-    <message>
-        <location filename="networkaccessmanager.cpp" line="168"/>
-        <source>Unable to save cookies.</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -498,67 +497,67 @@
 <context>
     <name>LC::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="66"/>
+        <location filename="pluginmanager.cpp" line="68"/>
         <source>Name</source>
         <translation>Nume</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="67"/>
+        <location filename="pluginmanager.cpp" line="69"/>
         <source>Description</source>
         <translation>Descriere</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="286"/>
+        <location filename="pluginmanager.cpp" line="288"/>
         <source>The following plugins would also be disabled as the result:</source>
         <translation>Următoarele module ar putea fi de asemenea dezactivate, ca rezultat:</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="288"/>
+        <location filename="pluginmanager.cpp" line="290"/>
         <source>Are you sure you want to disable this one?</source>
         <translation>Sigur doriți dezactivarea acestuia?</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="472"/>
+        <location filename="pluginmanager.cpp" line="489"/>
         <source>Plugins initialization: first stage...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="474"/>
+        <location filename="pluginmanager.cpp" line="491"/>
         <source>Plugins initialization: second stage...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="867"/>
+        <location filename="pluginmanager.cpp" line="927"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Se refuză încărcarea modulului din %1 deoarece nu este un fişier.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="881"/>
+        <location filename="pluginmanager.cpp" line="941"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Nu se poate încărca modulul din %1: nivel API nepotrivit.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="927"/>
+        <location filename="pluginmanager.cpp" line="987"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Nu se poate încărca modulul din %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="947"/>
+        <location filename="pluginmanager.cpp" line="1007"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Nu se poate încărca modulul din %1: a eșuat construirea instanței modulului cu excepția %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="958"/>
+        <location filename="pluginmanager.cpp" line="1018"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Nu se poate încărca modulul din %1: a eșuat construirea instanței modulului.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="968"/>
+        <location filename="pluginmanager.cpp" line="1028"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Nu se poate încărca modulul din %1: a eșuat trimiterea instanței modulului către IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="1086"/>
+        <location filename="pluginmanager.cpp" line="1146"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Modulul cu ID-ul %1 este deja încărcat din %2; se abandonează încărcarea din %3.</translation>
     </message>
@@ -566,7 +565,7 @@
 <context>
     <name>LC::PrefDelegate</name>
     <message>
-        <location filename="pluginmanagerdialog.cpp" line="41"/>
+        <location filename="pluginmanagerdialog.cpp" line="40"/>
         <source>Configure...</source>
         <translation>Configurare...</translation>
     </message>
@@ -650,27 +649,27 @@
 <context>
     <name>LC::ShortcutManager</name>
     <message>
-        <location filename="shortcutmanager.cpp" line="60"/>
+        <location filename="shortcutmanager.cpp" line="47"/>
         <source>Name</source>
         <translation>Nume</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="60"/>
+        <location filename="shortcutmanager.cpp" line="47"/>
         <source>Shortcut</source>
         <translation>Scurtătură</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="60"/>
+        <location filename="shortcutmanager.cpp" line="47"/>
         <source>Alternate</source>
         <translation>Alternativă</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="217"/>
+        <location filename="shortcutmanager.cpp" line="221"/>
         <source>Set alternate shortcut:</source>
         <translation>Stabilire scurtătură alternativă:</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="218"/>
+        <location filename="shortcutmanager.cpp" line="222"/>
         <source>Set primary shortcut:</source>
         <translation>Stabilire scurtătură principală:</translation>
     </message>
@@ -680,7 +679,7 @@
     <message>
         <location filename="splashscreen.cpp" line="68"/>
         <source>(%1 of %2)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -741,17 +740,17 @@
 <context>
     <name>LC::Util::CategorySelector</name>
     <message>
-        <location filename="../util/tags/categoryselector.cpp" line="117"/>
+        <location filename="../util/tags/categoryselector.cpp" line="115"/>
         <source>Tags selector</source>
         <translation>Selector Etichete</translation>
     </message>
     <message>
-        <location filename="../util/tags/categoryselector.cpp" line="126"/>
+        <location filename="../util/tags/categoryselector.cpp" line="124"/>
         <source>Select all</source>
         <translation>Selectați totul</translation>
     </message>
     <message>
-        <location filename="../util/tags/categoryselector.cpp" line="133"/>
+        <location filename="../util/tags/categoryselector.cpp" line="131"/>
         <source>Select none</source>
         <translation>Nu selecta nimic</translation>
     </message>
@@ -767,57 +766,47 @@
 <context>
     <name>LC::Util::ConsistencyChecker</name>
     <message>
-        <location filename="../util/db/consistencychecker.cpp" line="144"/>
-        <source>Not enough available disk space.</source>
-        <translation type="unfinished"/>
+        <location filename="../util/db/consistencychecker.cpp" line="106"/>
+        <source>Unable to rename %1 to %2. Please check %2 does not exist, and hit OK.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../util/db/consistencychecker.cpp" line="135"/>
-        <source>Not enough available space on partition with file %1: %2 while the restored file is expected to be around %3. Please either free some disk space on this partition and retry or cancel the restore process.</source>
-        <translation type="unfinished"/>
+        <location filename="../util/db/consistencychecker.cpp" line="121"/>
+        <source>Not enough space available: %1 free while the restored file is expected to be around %2. Please either free some disk space on this partition and retry or cancel the restore process.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../util/db/consistencychecker.cpp" line="158"/>
-        <source>%1 already exists. Please either remove the file manually and retry or cancel the restore process.</source>
-        <translation type="unfinished"/>
+        <location filename="../util/db/consistencychecker.cpp" line="129"/>
+        <source>Target file %1 already exists, please remove it manually and retry.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../util/db/consistencychecker.cpp" line="163"/>
-        <source>Backup file already exists.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/db/consistencychecker.cpp" line="178"/>
-        <source>Unable to restore the database.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/db/consistencychecker.cpp" line="193"/>
-        <source>Unable to backup %1 to %2. Please remove %2 and hit OK.</source>
-        <translation type="unfinished"/>
+        <location filename="../util/db/consistencychecker.cpp" line="147"/>
+        <source>Unable to dump corrupted SQLite database %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LC::Util::Dumper</name>
+    <name>LC::Util::DumpSqlite</name>
     <message>
-        <location filename="../util/db/dumper.cpp" line="68"/>
-        <source>Dumping process crashed: %1.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/db/dumper.cpp" line="79"/>
-        <source>Dumping process finished with error: %1 (%2).</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/db/dumper.cpp" line="106"/>
+        <location filename="../util/db/dumper.cpp" line="36"/>
         <source>Unable to start dumping process: %1. Do you have sqlite3 installed?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../util/db/dumper.cpp" line="107"/>
-        <source>Unable to dump the database: %1.</source>
-        <translation type="unfinished"/>
+        <location filename="../util/db/dumper.cpp" line="39"/>
+        <source>Dumping process crashed: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/db/dumper.cpp" line="40"/>
+        <source>Dumping process crashed: %1 (%2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/db/dumper.cpp" line="46"/>
+        <source>Dumping process returned an error: %1 (%2).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -834,21 +823,35 @@
     </message>
 </context>
 <context>
+    <name>LC::Util::LJ::Tr</name>
+    <message>
+        <location filename="../util/svcauth/ljutils.cpp" line="67"/>
+        <source>Network error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/svcauth/ljutils.cpp" line="76"/>
+        <location filename="../util/svcauth/ljutils.cpp" line="83"/>
+        <source>Failed to parse response</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LC::Util::SvcAuth::VkAuthManager</name>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="252"/>
         <source>VK.com authentication for %1 failed because of error %2. Report upstream please.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="319"/>
         <source>VK.com authentication</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="320"/>
         <source>Could not authenticate %1 since authentication requires a browser plugin. Consider installing one like Poshuku.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="332"/>
@@ -870,7 +873,7 @@
         <location filename="winwarndialog.cpp" line="28"/>
         <source>Seems like you are running Microsoft Windows.
 
-LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
         <translation>Se pare că rulați pe platforma Microsoft Windows.
@@ -888,58 +891,58 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="59"/>
+        <location filename="leechcraft.ui" line="50"/>
         <source>Add task</source>
         <translation>Adaugă sarcină</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="64"/>
+        <location filename="leechcraft.ui" line="55"/>
         <source>Settings</source>
         <translation>Configurări</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="72"/>
+        <location filename="leechcraft.ui" line="63"/>
         <source>Quit</source>
         <translation>Renunță</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="83"/>
-        <location filename="leechcraft.ui" line="86"/>
+        <location filename="leechcraft.ui" line="74"/>
+        <location filename="leechcraft.ui" line="77"/>
         <source>Fullscreen mode</source>
         <translation>Mod pe tot ecranul</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="122"/>
+        <location filename="leechcraft.ui" line="113"/>
         <source>Restart LeechCraft...</source>
         <translation>Repornire LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="127"/>
+        <location filename="leechcraft.ui" line="118"/>
         <source>New window</source>
         <translation>Fereastră nouă</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="91"/>
+        <location filename="leechcraft.ui" line="82"/>
         <source>About LeechCraft...</source>
         <translation>Despre LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="96"/>
+        <location filename="leechcraft.ui" line="87"/>
         <source>About Qt...</source>
         <translation>Despre Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="107"/>
+        <location filename="leechcraft.ui" line="98"/>
         <source>Show status bar</source>
         <translation>Arată bara de stare</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="112"/>
+        <location filename="leechcraft.ui" line="103"/>
         <source>Close tab</source>
         <translation>Închide fila</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="117"/>
+        <location filename="leechcraft.ui" line="108"/>
         <source>New tab</source>
         <translation>Filă nouă</translation>
     </message>
@@ -949,37 +952,37 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="14"/>
         <source>Change fonts</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="30"/>
         <source>Standard font</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="37"/>
         <source>Monospace font</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="44"/>
         <source>Serif font</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="51"/>
         <source>Sans-serif font</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="58"/>
         <source>Cursive font</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/massfontchangedialog.ui" line="65"/>
         <source>Fantasy font</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -998,73 +1001,77 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
 <context>
     <name>QObject</name>
     <message>
-        <location filename="entitymanager.cpp" line="142"/>
+        <location filename="entitymanager.cpp" line="141"/>
         <source>Too long to show</source>
         <translation>Prea lung pentru afișare</translation>
     </message>
     <message>
-        <location filename="entitymanager.cpp" line="159"/>
+        <location filename="entitymanager.cpp" line="158"/>
         <source>Binary entity</source>
         <translation>Entitate binară</translation>
     </message>
     <message>
-        <location filename="entitymanager.cpp" line="162"/>
+        <location filename="entitymanager.cpp" line="161"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
         <translation>&lt;br /&gt;&lt;br /&gt;de tip &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="entitymanager.cpp" line="169"/>
+        <location filename="entitymanager.cpp" line="168"/>
         <source>&lt;br /&gt;from %1</source>
         <translation>&lt;br /&gt;din %1</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="57"/>
+        <location filename="../util/util.cpp" line="56"/>
         <source> b</source>
         <translation>b</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="58"/>
+        <location filename="../util/util.cpp" line="57"/>
         <source> KiB</source>
         <translation>KiB</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="59"/>
+        <location filename="../util/util.cpp" line="58"/>
         <source> MiB</source>
         <translation>MiB</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="60"/>
+        <location filename="../util/util.cpp" line="59"/>
         <source> GiB</source>
         <translation>GiB</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="70"/>
+        <location filename="../util/util.cpp" line="69"/>
         <source>b</source>
         <comment>Short one-character unit for bytes.</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/util.cpp" line="70"/>
+        <source>K</source>
+        <comment>Short one-character unit for kilobytes.</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/util.cpp" line="71"/>
-        <source>K</source>
-        <comment>Short one-character unit for kilobytes.</comment>
-        <translation type="unfinished"/>
+        <source>M</source>
+        <comment>Short one-character unit for megabytes.</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/util.cpp" line="72"/>
-        <source>M</source>
-        <comment>Short one-character unit for megabytes.</comment>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/util.cpp" line="73"/>
         <source>G</source>
         <comment>Short one-character unit for gigabytes.</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../util/util.cpp" line="86"/>
+        <location filename="../util/util.cpp" line="85"/>
         <source>%n day(s), </source>
-        <translation><numerusform>%n zi, </numerusform><numerusform>%n zile, </numerusform><numerusform>%n de zile, </numerusform></translation>
+        <translation>
+            <numerusform>%n zi, </numerusform>
+            <numerusform>%n zile, </numerusform>
+            <numerusform>%n de zile, </numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../util/sys/paths.cpp" line="137"/>
@@ -1179,82 +1186,82 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="57"/>
         <source>incorrect socket state</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="59"/>
         <source>SSL internal error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="61"/>
         <source>invalid SSL data, like certificate, key or cypher</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/network/socketerrorstrings.cpp" line="63"/>
         <source>temporary error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="21"/>
         <source>no error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="23"/>
         <source>not found</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="25"/>
         <source>gone forever</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="27"/>
         <source>access denied</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="29"/>
         <source>authentication required</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="31"/>
         <source>protocol error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="33"/>
         <source>network error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="35"/>
         <source>content error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="37"/>
         <source>proxy error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="39"/>
         <source>server error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="41"/>
         <source>local error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="43"/>
         <source>user canceled the download</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/downloaderrorstrings.cpp" line="46"/>
@@ -1323,154 +1330,154 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>Dimensiunea piesei redate.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="67"/>
-        <source>General activity</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="26"/>
-        <source>Track title</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="27"/>
-        <source>The track that the contact is currently listening to.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="35"/>
-        <source>Track album</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="36"/>
-        <source>The album that the contact is currently listening to.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="44"/>
-        <source>Track artist</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="45"/>
-        <source>The artist the contact is currently listening to.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="53"/>
-        <source>Track length</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="54"/>
-        <source>Length of the track the contact is currently listening to.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="68"/>
-        <source>General activity of the contact.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="76"/>
-        <source>Specific activity</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="77"/>
-        <source>Specific activity of the contact within the given general activity.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="85"/>
-        <source>Activity text</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="86"/>
-        <source>The comment set by the contact.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="99"/>
-        <source>Mood</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="100"/>
-        <source>The mood of the contact.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="108"/>
-        <source>Mood explanation text</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="109"/>
-        <source>The text accompanying the mood set by the contact.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="122"/>
-        <source>Latitude</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="123"/>
-        <source>The latitude of the contact&apos;s current position.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="131"/>
-        <source>Longitude</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/stdanfields.cpp" line="132"/>
-        <source>The longitude of the contact&apos;s current position.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="../util/xpc/stdanfields.cpp" line="140"/>
         <source>Country</source>
         <translation>Țara</translation>
     </message>
     <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="26"/>
+        <source>Track title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="27"/>
+        <source>The track that the contact is currently listening to.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="35"/>
+        <source>Track album</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="36"/>
+        <source>The album that the contact is currently listening to.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="44"/>
+        <source>Track artist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="45"/>
+        <source>The artist the contact is currently listening to.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="53"/>
+        <source>Track length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="54"/>
+        <source>Length of the track the contact is currently listening to.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="67"/>
+        <source>General activity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="68"/>
+        <source>General activity of the contact.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="76"/>
+        <source>Specific activity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="77"/>
+        <source>Specific activity of the contact within the given general activity.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="85"/>
+        <source>Activity text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="86"/>
+        <source>The comment set by the contact.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="99"/>
+        <source>Mood</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="100"/>
+        <source>The mood of the contact.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="108"/>
+        <source>Mood explanation text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="109"/>
+        <source>The text accompanying the mood set by the contact.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="122"/>
+        <source>Latitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="123"/>
+        <source>The latitude of the contact&apos;s current position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="131"/>
+        <source>Longitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/stdanfields.cpp" line="132"/>
+        <source>The longitude of the contact&apos;s current position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../util/xpc/stdanfields.cpp" line="141"/>
         <source>The country the contact is currently in.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="149"/>
         <source>Locality</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="150"/>
         <source>The the exact locality (like a city or a town) the contact is currently in.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="227"/>
         <source>News source name</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="228"/>
         <source>The name of the news source that caused the notification.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="237"/>
         <source>News source URL</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="238"/>
         <source>The URL of the news source that caused the notification.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/stdanfields.cpp" line="252"/>
@@ -1483,175 +1490,175 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>Fila terminalului ce a generat notificarea, este activă.</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="23"/>
+        <location filename="../util/xpc/anutil.cpp" line="25"/>
         <source>Instant messaging</source>
         <translation>Mesagerie instantă</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="24"/>
+        <location filename="../util/xpc/anutil.cpp" line="26"/>
         <source>Organizer</source>
         <translation>Organizator</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="25"/>
+        <location filename="../util/xpc/anutil.cpp" line="27"/>
         <source>Downloads</source>
         <translation>Descărcări</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="26"/>
+        <location filename="../util/xpc/anutil.cpp" line="28"/>
         <source>Package manager</source>
         <translation>Manager de pachete</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="27"/>
+        <location filename="../util/xpc/anutil.cpp" line="29"/>
         <source>Media player</source>
         <translation>Redare multimedia</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="28"/>
+        <location filename="../util/xpc/anutil.cpp" line="30"/>
         <source>Terminal</source>
         <translation>Terminal</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="29"/>
+        <location filename="../util/xpc/anutil.cpp" line="31"/>
         <source>News</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="30"/>
-        <location filename="../util/xpc/anutil.cpp" line="152"/>
+        <location filename="../util/xpc/anutil.cpp" line="32"/>
+        <location filename="../util/xpc/anutil.cpp" line="154"/>
         <source>Generic</source>
         <translation>Generic</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="119"/>
+        <location filename="../util/xpc/anutil.cpp" line="121"/>
         <source>Attention request</source>
         <translation>Solicitare atenție</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="120"/>
+        <location filename="../util/xpc/anutil.cpp" line="122"/>
         <source>Incoming file transfer request</source>
         <translation>Solicitare de transfer primire fișiere </translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="121"/>
+        <location filename="../util/xpc/anutil.cpp" line="123"/>
         <source>Incoming chat message</source>
         <translation>Cerere de începere a unei discuții</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="122"/>
+        <location filename="../util/xpc/anutil.cpp" line="124"/>
         <source>MUC highlight</source>
         <translation>Evidențiere MUC</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="123"/>
+        <location filename="../util/xpc/anutil.cpp" line="125"/>
         <source>MUC invitation</source>
         <translation>Invitație MUC</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="124"/>
+        <location filename="../util/xpc/anutil.cpp" line="126"/>
         <source>General MUC message</source>
         <translation>Mesajul General MUC</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="125"/>
+        <location filename="../util/xpc/anutil.cpp" line="127"/>
         <source>Contact status change</source>
         <translation>Starea contactului s-a schimbat</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="126"/>
+        <location filename="../util/xpc/anutil.cpp" line="128"/>
         <source>Authorization granted</source>
         <translation>Autorizare permisă</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="127"/>
+        <location filename="../util/xpc/anutil.cpp" line="129"/>
         <source>Authorization revoked</source>
         <translation>Autorizare revocată</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="128"/>
+        <location filename="../util/xpc/anutil.cpp" line="130"/>
         <source>Authorization requested</source>
         <translation>Autorizare solicitată</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="129"/>
+        <location filename="../util/xpc/anutil.cpp" line="131"/>
         <source>Contact subscribed</source>
         <translation>Contact abonat</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="130"/>
+        <location filename="../util/xpc/anutil.cpp" line="132"/>
         <source>Contact unsubscribed</source>
         <translation>Contact dezabonat</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="131"/>
-        <source>Contact&apos;s tune changed</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../util/xpc/anutil.cpp" line="132"/>
-        <source>Contact&apos;s mood changed</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="../util/xpc/anutil.cpp" line="133"/>
-        <source>Contact&apos;s activity changed</source>
-        <translation type="unfinished"/>
+        <source>Contact&apos;s tune changed</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="134"/>
-        <source>Contact&apos;s location changed</source>
-        <translation type="unfinished"/>
+        <source>Contact&apos;s mood changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="135"/>
+        <source>Contact&apos;s activity changed</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xpc/anutil.cpp" line="136"/>
+        <source>Contact&apos;s location changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/anutil.cpp" line="138"/>
         <source>Event is due</source>
         <translation>Evenimentul urmează</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="138"/>
+        <location filename="../util/xpc/anutil.cpp" line="140"/>
         <source>Download error</source>
         <translation>Eroare la descărcare</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="139"/>
+        <location filename="../util/xpc/anutil.cpp" line="141"/>
         <source>Download finished</source>
         <translation>Descărcare finalizată</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="141"/>
+        <location filename="../util/xpc/anutil.cpp" line="143"/>
         <source>Package updated</source>
         <translation>Pachet actualizat</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="143"/>
+        <location filename="../util/xpc/anutil.cpp" line="145"/>
         <source>Media playback status changed</source>
         <translation>Statusul de redare media a fost schimbat</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="145"/>
+        <location filename="../util/xpc/anutil.cpp" line="147"/>
         <source>Bell in a terminal</source>
         <translation>Clopoțel într-un terminal</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="146"/>
+        <location filename="../util/xpc/anutil.cpp" line="148"/>
         <source>Activity in a terminal</source>
         <translation>Activitate într-un terminal</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="147"/>
+        <location filename="../util/xpc/anutil.cpp" line="149"/>
         <source>Inactivity in a terminal</source>
         <translation>Inactivitate într-un terminal</translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="149"/>
+        <location filename="../util/xpc/anutil.cpp" line="151"/>
         <source>News source got updated</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../util/xpc/anutil.cpp" line="150"/>
+        <location filename="../util/xpc/anutil.cpp" line="152"/>
         <source>News source is detected to be broken</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/network/sslerror2treeitem.cpp" line="28"/>
@@ -1755,9 +1762,19 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
         <translation>Info subiect</translation>
     </message>
     <message>
-        <location filename="../xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="126"/>
+        <location filename="../util/xpc/downloadhelpers.cpp" line="41"/>
+        <source>Unable to find a downloader plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../util/xpc/downloadhelpers.cpp" line="60"/>
+        <source>Unable to open local file: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="117"/>
         <source>Get more...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1788,32 +1805,32 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="79"/>
         <source>Subject</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="86"/>
         <source>Issuer</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="100"/>
         <source>Unit:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="107"/>
         <source>Country:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="114"/>
         <source>State:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="121"/>
         <source>City:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="186"/>
@@ -1823,12 +1840,12 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="221"/>
         <source>Start date:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/gui/sslcertificateinfowidget.ui" line="235"/>
         <source>End date:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1841,12 +1858,12 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="sslerrorsdialog.ui" line="24"/>
         <source>The following URL has SSL errors:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="38"/>
         <source>What should we do?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="46"/>
@@ -1943,396 +1960,395 @@ Dacă ați citit şi înțeles pe deplin toate aceste cuvinte, apăsați pe buto
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="20"/>
         <source>Font families</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="29"/>
         <source>Standard font:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="39"/>
         <source>Monospace font:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="49"/>
         <source>Serif font:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="59"/>
         <source>Sans-serif font:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="69"/>
         <source>Cursive font:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="79"/>
         <source>Fantasy font:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="89"/>
         <source>Change all...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="99"/>
         <source>Font sizes</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="108"/>
         <source>Default:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="115"/>
         <location filename="../util/xsd/wkfontswidget.ui" line="129"/>
         <location filename="../util/xsd/wkfontswidget.ui" line="143"/>
         <source> px</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="122"/>
         <source>Minimum:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../util/xsd/wkfontswidget.ui" line="136"/>
         <source>Fixed-width:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>coresettings</name>
     <message>
-        <location filename="../dummy.cpp" line="2"/>
-        <location filename="../dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>Appearance</source>
         <translation>Aspect</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Tool button style:</source>
         <oldsource>Use tab scroll buttons</oldsource>
         <translation>Stil buton instrument:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Only display the icon</source>
         <translation>Se afișează numai pictograma</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Only display the text</source>
         <translation>Se afișează numai textul</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>The text appears beside the icon</source>
         <translation>Textul apare lângă pictogramă</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>The text appears under the icon</source>
         <translation>Textul apare sub pictogramă</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>Icon set:</source>
         <translation>Set de pictograme:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Oxygen</source>
         <translation>Oxygen</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Style:</source>
         <translation>Stil</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="12"/>
-        <location filename="../dummy.cpp" line="17"/>
+        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Default</source>
         <translation>Implicit</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Plastique</source>
         <translation>Plastique</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="19"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Language:</source>
         <translation>Limba:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="20"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>System</source>
         <translation>Sistem</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Default new tab contents:</source>
         <translation>Conținut Implicit filă nouă:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Context-dependent</source>
         <translation>Dependent de Context</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Tab bar position</source>
         <translation>Poziție bară file</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Top</source>
         <translation>Sus</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Bottom</source>
         <translation>Jos</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Show icon in tray</source>
         <translation>Afișează pictogramele în bara de sistem</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="81"/>
         <source>Try external applications when no plugins can handle an entity</source>
         <translation>Încearcă aplicațiile externe atunci când nici un modul nu poate gestiona o entitate</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="83"/>
         <source>Set startup password</source>
         <translation>Stabilire parola de deschidere</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="89"/>
         <source>Shortcuts</source>
         <translation>Scurtături</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="26"/>
-        <location filename="../dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Behavior</source>
         <translation>Comportament</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Ask quit confirmation</source>
         <translation>Solicitare confirmare la ieșire</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Exit on close</source>
         <translation>Ieșire la închidere</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>Open new tab next to current</source>
         <translation>Deschide fila nouă lângă cea curentă</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="32"/>
-        <source>Tab selection behavior:</source>
-        <oldsource>Tab selection behavior: </oldsource>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Select the previously selected tab</source>
         <translation>Selectați fila selectată anterior</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Select the tab to the right of the one being removed</source>
         <translation>Selectați fila din dreapta celei eliminate</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="71"/>
         <source>Select the tab to the left of the one being removed</source>
         <translation>Selectați fila din stânga celei eliminate</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="79"/>
         <source>Automatically accept task when there is only one handler</source>
         <translation>Accepta automat sarcina când este numai un manipulator</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="85"/>
         <source>Show plugin-dependent actions in tab bar context menu</source>
         <translation>Afișare acțiuni dependente de modul, în meniul contextual din bara de file.</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="87"/>
         <source>Show as a submenu</source>
         <translation>Afișare ca submeniu</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="91"/>
         <source>Tags</source>
         <translation>Etichete</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="93"/>
         <source>Tags manager</source>
         <translation>Manager etichete</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="47"/>
-        <location filename="../dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="95"/>
+        <location filename="dummy.cpp" line="97"/>
         <source>Network</source>
         <translation>Rețea</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="99"/>
         <source>Cache size:</source>
         <translation>Dimensiujne cache:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="101"/>
         <source> MB</source>
         <translation> MB</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="113"/>
         <source>Filter tracking cookies</source>
         <translation>Filtru urmărire cookie-uri</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="103"/>
         <source>Clear cache</source>
         <translation>Șterge Cache</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="123"/>
         <source>Clear cookies</source>
         <translation>Curăță cookie-urile</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Plugins icon set:</source>
         <translation>Set de pictograme:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Color theme:</source>
         <translation>Culoare temă:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>System default</source>
         <translation>Definit de sistem</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Crafty</source>
         <translation>Crafty</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="65"/>
+        <source>Tab selection behavior:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="73"/>
         <source>Window selection mode for a new tab:</source>
         <translation>Mod selectare fereastră pentru o filă nouă:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>Always select current window</source>
         <translation>Întotdeauna de selectează fereastra curentă</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="77"/>
         <source>Select based on tab class</source>
         <translation>Selectare pe baza clasei de filă</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="105"/>
         <source>Privacy</source>
         <translation>Confidențialitate</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="107"/>
         <source>Enable cookies</source>
         <translation>Activează cookie-uri</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="109"/>
         <source>Delete cookies on application exit</source>
         <translation>Ștergere cookies la ieșirea din aplicație</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="111"/>
         <source>Match domain exactly</source>
         <translation>Se potrivește exact domeniul</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="115"/>
         <source>Cookie domains whitelist:</source>
         <translation>Cookie domenii din listă albă :</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="117"/>
         <source>Cookies whose domain matches one of these will always be accepted. Whitelist rules override blacklist.</source>
         <translation>Cookie-urile ale cărui domeniu corespunde cu una dintre acestea, vor fi întotdeauna acceptate. Regulile Listei Albe suprascriu lista neagră.</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="119"/>
         <source>Cookie domains blacklist:</source>
         <translation>Cookie domenii din listă neagră:</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="121"/>
         <source>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</source>
         <translation>Cookie-urile ale cărui domeniu corespunde cu una dintre acestea, vor fi întotdeauna refuzate. Regulile Listei Albe suprascriu lista neagră.</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="125"/>
         <source>Set Do Not Track option</source>
         <translation>Stabiliți opțiunea Nu Urmări</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="127"/>
         <source>Do not track</source>
         <translation>Nu urmări</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="129"/>
         <source>Services</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="131"/>
         <source>Collect (anonymized) VKontakte application statistics</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="133"/>
         <source>Plugins</source>
         <translation>Module</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="135"/>
         <source>Plugins manager</source>
         <translation>Manager module</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="137"/>
         <source>Enable all plugins</source>
         <translation>Activează toate modulele</translation>
     </message>
     <message>
-        <location filename="../dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="139"/>
         <source>Disable all plugins</source>
         <translation>Dezactivează toate modulele</translation>
     </message>
