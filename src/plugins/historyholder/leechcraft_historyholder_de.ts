@@ -1,28 +1,30 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="de">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de">
 <context>
     <name>LC::Plugins::HistoryHolder::Core</name>
     <message>
-        <location filename="core.cpp" line="83"/>
+        <location filename="core.cpp" line="67"/>
         <source>Entity/location</source>
         <translation>Ort</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="84"/>
+        <location filename="core.cpp" line="68"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="85"/>
+        <location filename="core.cpp" line="69"/>
         <source>Tags</source>
         <translation>Tags</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="100"/>
+        <location filename="core.cpp" line="84"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="187"/>
+        <location filename="core.cpp" line="172"/>
         <source>Binary data</source>
         <translation>Binäre Daten</translation>
     </message>
@@ -30,9 +32,9 @@
 <context>
     <name>LC::Plugins::HistoryHolder::Plugin</name>
     <message>
-        <location filename="historyholder.cpp" line="68"/>
-        <source>Holds downloads history from various plugins.</source>
-        <translation type="unfinished"/>
+        <location filename="historyholder.cpp" line="56"/>
+        <source>Holds history from various plugins</source>
+        <translation>Beinhaltet History von verschiedenen Plug-Ins</translation>
     </message>
 </context>
 </TS>
