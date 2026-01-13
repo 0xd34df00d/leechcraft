@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="uk_UA">
 <context>
     <name>AcceptRIEXDialog</name>
     <message>
@@ -51,7 +53,7 @@
     <message>
         <location filename="accountslistwidget.ui" line="87"/>
         <source>Clear styles</source>
-        <translation type="unfinished"/>
+        <translation>Очистити стилі</translation>
     </message>
 </context>
 <context>
@@ -64,12 +66,12 @@
     <message>
         <location filename="activitydialog.ui" line="25"/>
         <source>&amp;Activity:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="activitydialog.ui" line="35"/>
         <source>&amp;Text:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -153,22 +155,22 @@
     <message>
         <location filename="advancedpermchangedialog.ui" line="14"/>
         <source>Permission change</source>
-        <translation type="unfinished"/>
+        <translation>Редагувати права</translation>
     </message>
     <message>
         <location filename="advancedpermchangedialog.ui" line="29"/>
         <source>Reason:</source>
-        <translation type="unfinished"/>
+        <translation>Причина:</translation>
     </message>
     <message>
         <location filename="advancedpermchangedialog.ui" line="39"/>
         <source>Change the permission in all multichat rooms where you have the corresponding ability.</source>
-        <translation type="unfinished"/>
+        <translation>Зміниити права в усіх кімнатах, якщо ви маєте відповідну можливість.</translation>
     </message>
     <message>
         <location filename="advancedpermchangedialog.ui" line="42"/>
         <source>Change globally</source>
-        <translation type="unfinished"/>
+        <translation>Змінити глобально</translation>
     </message>
 </context>
 <context>
@@ -247,7 +249,7 @@
     <message>
         <location filename="chattab.ui" line="128"/>
         <source>MUC events</source>
-        <translation type="unfinished"/>
+        <translation>Події кімнати</translation>
     </message>
     <message>
         <location filename="chattab.ui" line="146"/>
@@ -270,12 +272,12 @@
     <message>
         <location filename="colorlisteditorwidget.ui" line="41"/>
         <source>Add color...</source>
-        <translation type="unfinished"/>
+        <translation>Додати колір...</translation>
     </message>
     <message>
         <location filename="colorlisteditorwidget.ui" line="48"/>
         <source>Remove color</source>
-        <translation type="unfinished"/>
+        <translation>Видалити колір</translation>
     </message>
 </context>
 <context>
@@ -288,7 +290,7 @@
     <message>
         <location filename="consolewidget.ui" line="57"/>
         <source>Filter by entry ID...</source>
-        <translation type="unfinished"/>
+        <translation>Фільтр по ID елемента...</translation>
     </message>
     <message>
         <location filename="consolewidget.ui" line="25"/>
@@ -319,12 +321,12 @@
     <message>
         <location filename="filesenddialog.ui" line="14"/>
         <source>Send file</source>
-        <translation type="unfinished"/>
+        <translation>Надіслати файл</translation>
     </message>
     <message>
         <location filename="filesenddialog.ui" line="22"/>
         <source>Transfer method:</source>
-        <translation type="unfinished"/>
+        <translation>Метод передачі:</translation>
     </message>
     <message>
         <location filename="filesenddialog.ui" line="32"/>
@@ -344,7 +346,7 @@
     <message>
         <location filename="filesenddialog.ui" line="65"/>
         <source>Depending on the protocol the comment text may be lost.</source>
-        <translation type="unfinished"/>
+        <translation>В залежності від протоколу текст коментарю може бути втрачено.</translation>
     </message>
     <message>
         <location filename="filesenddialog.ui" line="74"/>
@@ -365,12 +367,12 @@
     <message>
         <location filename="groupremovedialog.ui" line="14"/>
         <source>Group remove</source>
-        <translation type="unfinished"/>
+        <translation>Видалити групу</translation>
     </message>
     <message>
         <location filename="groupremovedialog.ui" line="20"/>
         <source>The following entries will be removed:</source>
-        <translation type="unfinished"/>
+        <translation>Наступні елементи будуть видалені:</translation>
     </message>
 </context>
 <context>
@@ -378,7 +380,7 @@
     <message>
         <location filename="groupsenddialog.ui" line="14"/>
         <source>Group send</source>
-        <translation>Угруповане надсилання</translation>
+        <translation>Надіслання групі</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="36"/>
@@ -508,27 +510,27 @@
     <message>
         <location filename="accountactions.cpp" line="163"/>
         <source>Open chat with non-roster contact</source>
-        <translation type="unfinished"/>
+        <translation>Почати чат із контактом, відсутнім у ростері</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="164"/>
         <source>Enter ID of the contact you wish to open chat with:</source>
-        <translation type="unfinished"/>
+        <translation>Введіть ID контакта, із яким ви хочете почати чат:</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="178"/>
         <source>Error opening chat: %1</source>
-        <translation type="unfinished"/>
+        <translation>Помилка початку чату: %1</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="191"/>
         <source>Open server history...</source>
-        <translation type="unfinished"/>
+        <translation>Відкрити історію на сервері...</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="198"/>
         <source>Configure server history...</source>
-        <translation type="unfinished"/>
+        <translation>Налаштування історії на сервері...</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="219"/>
@@ -548,12 +550,12 @@
     <message>
         <location filename="accountactions.cpp" line="272"/>
         <source>Change password</source>
-        <translation type="unfinished"/>
+        <translation>Змінити пароль</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="273"/>
         <source>Enter new password for account %1 (the password will be updated on server):</source>
-        <translation type="unfinished"/>
+        <translation>Введіть новий пароль для акаунта %1 (пароль буде оновлено на сервері):</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="284"/>
@@ -573,7 +575,7 @@
     <message>
         <location filename="accountactions.cpp" line="319"/>
         <source>Chat with non-CL contact</source>
-        <translation type="unfinished"/>
+        <translation>Чат із контактом, відсутнім у списку контактів</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="328"/>
@@ -593,13 +595,13 @@
     <message>
         <location filename="accountactions.cpp" line="376"/>
         <source>Update server password...</source>
-        <translation type="unfinished"/>
+        <translation>Оновити пароль на сервері...</translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="377"/>
         <source>Updates the account password on the server</source>
-        <oldsource>Updates the acc's password on the server</oldsource>
-        <translation type="unfinished"/>
+        <oldsource>Updates the acc&apos;s password on the server</oldsource>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="accountactions.cpp" line="381"/>
@@ -637,17 +639,17 @@
     <message>
         <location filename="accountslistwidget.cpp" line="145"/>
         <source>Variant</source>
-        <translation type="unfinished"/>
+        <translation>Варіант</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="145"/>
         <source>MUC style</source>
-        <translation type="unfinished"/>
+        <translation>Стиль кімнати</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="145"/>
         <source>MUC variant</source>
-        <translation type="unfinished"/>
+        <translation>Варіант кімнати</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="255"/>
@@ -670,7 +672,12 @@
     <message numerus="yes">
         <location filename="actionsmanager.cpp" line="903"/>
         <source>%n entry(ies)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translatorcomment>Для двоїни вжито варіант «два елементи»</translatorcomment>
+        <translation>
+            <numerusform>%n елемент</numerusform>
+            <numerusform>%n елементи</numerusform>
+            <numerusform>%n елемента(ів)</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="954"/>
@@ -680,7 +687,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="961"/>
         <source>Copy full entry ID</source>
-        <translation type="unfinished"/>
+        <translation>Копіювати повний ID элемента</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="968"/>
@@ -705,7 +712,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="1000"/>
         <source>Send directed status...</source>
-        <translation>Відправити статус</translation>
+        <translation>Відправити статус...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1008"/>
@@ -755,37 +762,37 @@
     <message>
         <location filename="actionsmanager.cpp" line="1121"/>
         <source>Blacklist...</source>
-        <translation type="unfinished"/>
+        <translation>Чорний список...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1132"/>
         <source>Notify when</source>
-        <translation type="unfinished"/>
+        <translation>Сповіщувати, коли</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1138"/>
         <source>changes state</source>
-        <translation type="unfinished"/>
+        <translation>змінюється статус</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1140"/>
         <source>becomes online</source>
-        <translation type="unfinished"/>
+        <translation>стає онлайн</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1144"/>
         <source>participant enters the room...</source>
-        <translation type="unfinished"/>
+        <translation>учасник входить до кімнати...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1150"/>
         <source>Open server history...</source>
-        <translation type="unfinished"/>
+        <translation>Відкрити історію на сервері...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1151"/>
         <source>View server history log with this contact</source>
-        <translation type="unfinished"/>
+        <translation>Переглянути історію бесіди з цим контактом на сервері</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1160"/>
@@ -800,12 +807,12 @@
     <message>
         <location filename="actionsmanager.cpp" line="1176"/>
         <source>Invite to a MUC...</source>
-        <translation type="unfinished"/>
+        <translation>Запросити до кімнати...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1180"/>
         <source>Save avatar...</source>
-        <translation type="unfinished"/>
+        <translation>Зберегти аватар...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1184"/>
@@ -815,37 +822,37 @@
     <message>
         <location filename="actionsmanager.cpp" line="1238"/>
         <source>Advanced...</source>
-        <translation type="unfinished"/>
+        <translation>Розширені...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="1239"/>
+        <source>Allows one to set advanced fields like reason or global flag</source>
+        <translation>Дозволити встановлювати розширені поля на кшталт причин або глобального флагу</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1510"/>
         <source>Notify when %1 changes state</source>
-        <translation type="unfinished"/>
+        <translation>Сповіщувати, коли %1 змінює стан</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1539"/>
         <source>Notify when %1 becomes online</source>
-        <translation type="unfinished"/>
+        <translation>Сповіщувати, коли %1 змінює статус на онлайн</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1574"/>
         <source>Enter the nick of the participant to alert for:</source>
-        <translation type="unfinished"/>
+        <translation>Введіть нік учасника для сповіщення про:</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1581"/>
         <source>Notify when %1 joins %2</source>
-        <translation type="unfinished"/>
+        <translation>Сповіщувати, коли %1 приєднується до %2</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1252"/>
         <source>Add to contact list...</source>
         <translation>Додати до списку контактів...</translation>
-    </message>
-    <message>
-        <location filename="actionsmanager.cpp" line="617"/>
-        <source>Save avatar</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1259"/>
@@ -855,7 +862,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="1275"/>
         <source>Change nickname...</source>
-        <translation type="unfinished"/>
+        <translation>Змінити нік...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1282"/>
@@ -870,7 +877,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="1296"/>
         <source>Reconnect</source>
-        <translation type="unfinished"/>
+        <translation>Перепідключитися</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1302"/>
@@ -880,12 +887,12 @@
     <message>
         <location filename="actionsmanager.cpp" line="1308"/>
         <source>MUC users...</source>
-        <translation type="unfinished"/>
+        <translation>Користувачі кімнати...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1317"/>
         <source>Configure MUC...</source>
-        <translation>Настроїти багатокористувацьку конференцію</translation>
+        <translation>Настроїти багатокористувацьку конференцію...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1326"/>
@@ -925,17 +932,17 @@
     <message>
         <location filename="actionsmanager.cpp" line="183"/>
         <source>Select variant to send directed status to:</source>
-        <translation>Обрати варіант для надсилання статусу</translation>
+        <translation>Обрати варіант для надсилання статусу:</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="305"/>
         <source>Enter new nickname:</source>
-        <translation type="unfinished"/>
+        <translation>Введіть новий нік:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1239"/>
-        <source>Allows one to set advanced fields like reason or global flag</source>
-        <translation type="unfinished"/>
+        <location filename="actionsmanager.cpp" line="617"/>
+        <source>Save avatar</source>
+        <translation>Зберегти аватар</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="1019"/>
@@ -974,7 +981,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="519"/>
         <source>Failed to change %1 for %2 in %3 due to insufficient permissions.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка зміни %1 на %2 у %3: недостатньо прав.</translation>
     </message>
 </context>
 <context>
@@ -1389,7 +1396,7 @@
     <message>
         <location filename="advancedpermchangedialog.cpp" line="28"/>
         <source>Set %1 to %2 for %3</source>
-        <translation type="unfinished"/>
+        <translation>Надати %1 для %2 у %3</translation>
     </message>
 </context>
 <context>
@@ -1397,7 +1404,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="209"/>
         <source>Add bookmark for account %1</source>
-        <translation type="unfinished"/>
+        <translation>Додати закладку для акаунта %1</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="232"/>
@@ -1407,7 +1414,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="256"/>
         <source>Edit bookmark for account %1</source>
-        <translation type="unfinished"/>
+        <translation>Змінити закладку для акаунта %1</translation>
     </message>
 </context>
 <context>
@@ -1415,7 +1422,7 @@
     <message>
         <location filename="cltooltipmanager.cpp" line="307"/>
         <source>In groups:</source>
-        <translation type="unfinished"/>
+        <translation>У групах:</translation>
     </message>
     <message>
         <location filename="cltooltipmanager.cpp" line="315"/>
@@ -1425,7 +1432,7 @@
     <message>
         <location filename="cltooltipmanager.cpp" line="316"/>
         <source>unknown</source>
-        <translation>Невідомий</translation>
+        <translation>невідомий</translation>
     </message>
     <message>
         <location filename="cltooltipmanager.cpp" line="251"/>
@@ -1435,17 +1442,17 @@
     <message>
         <location filename="cltooltipmanager.cpp" line="268"/>
         <source>Claiming:</source>
-        <translation type="unfinished"/>
+        <translation>Заявлено:</translation>
     </message>
     <message>
         <location filename="cltooltipmanager.cpp" line="274"/>
         <source>OS:</source>
-        <translation type="unfinished"/>
+        <translation>ОС:</translation>
     </message>
     <message>
         <location filename="cltooltipmanager.cpp" line="364"/>
         <source>Client time:</source>
-        <translation type="unfinished"/>
+        <translation>Час кліента:</translation>
     </message>
 </context>
 <context>
@@ -1519,13 +1526,13 @@
     <message>
         <location filename="categoryactions.cpp" line="65"/>
         <source>Mark all messages as read</source>
-        <translation type="unfinished"/>
+        <translation>Позначити всі як прочитані</translation>
     </message>
     <message>
         <location filename="categoryactions.cpp" line="79"/>
         <source>Remove group&apos;s participants...</source>
-        <oldsource>Remove group's participants</oldsource>
-        <translation type="unfinished"/>
+        <oldsource>Remove group&apos;s participants</oldsource>
+        <translation>Видалити учасників групи…</translation>
     </message>
 </context>
 <context>
@@ -1558,17 +1565,21 @@
     <message numerus="yes">
         <location filename="chattab.cpp" line="498"/>
         <source>[%n participant(s)]</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>[%n учасник]</numerusform>
+            <numerusform>[%n учасники]</numerusform>
+            <numerusform>[%n учасники(ів)]</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="602"/>
         <source>Cannot execute %1.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо виконати %1.</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="685"/>
         <source>Error sending message to %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="938"/>
@@ -1613,12 +1624,12 @@
     <message>
         <location filename="chattab.cpp" line="1232"/>
         <source>%1 isn&apos;t present in this conference at the moment.</source>
-        <translation type="unfinished"/>
+        <translation>%1 зараз відсутній у цій конференції.</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1461"/>
         <source>Enable rich text editor</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1483"/>
@@ -1628,7 +1639,7 @@
     <message>
         <location filename="chattab.cpp" line="1611"/>
         <source>MUC log for %1</source>
-        <translation type="unfinished"/>
+        <translation>Лог кімнати для %1</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1645"/>
@@ -1643,12 +1654,12 @@
     <message>
         <location filename="chattab.cpp" line="2058"/>
         <source>This entry has no pubkey assigned to it. Do you want to choose one?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="2069"/>
         <source>Cannot enable encryption: %1.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1666"/>
@@ -1658,12 +1669,12 @@
     <message>
         <location filename="chattab.cpp" line="973"/>
         <source>Would you like to accept or reject file transfer request for file %1?</source>
-        <translation type="unfinished"/>
+        <translation>Бажаєте прийняти файл %1 чи відхилити прийняття?</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="978"/>
         <source>The file description is:</source>
-        <translation type="unfinished"/>
+        <translation>Опис файлу:</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1849"/>
@@ -1696,17 +1707,17 @@
     <message>
         <location filename="chattabwebview.cpp" line="86"/>
         <source>Open as URL</source>
-        <translation type="unfinished"/>
+        <translation>Відкрити як URL</translation>
     </message>
     <message>
         <location filename="chattabwebview.cpp" line="103"/>
         <source>Highlight all occurrences</source>
-        <translation type="unfinished"/>
+        <translation>Підсвічувати усі входження</translation>
     </message>
     <message>
         <location filename="chattabwebview.cpp" line="147"/>
         <source>Highlight the nickname</source>
-        <translation type="unfinished"/>
+        <translation>Підсвічувати нік</translation>
     </message>
     <message>
         <location filename="chattabwebview.cpp" line="154"/>
@@ -1729,7 +1740,8 @@
     <message>
         <location filename="consolewidget.cpp" line="59"/>
         <source>%1: console</source>
-        <translation>%1: консоль</translation>
+        <oldsource>IM console</oldsource>
+        <translation>Консоль %1</translation>
     </message>
 </context>
 <context>
@@ -1737,47 +1749,55 @@
     <message>
         <location filename="contactdropfilter.cpp" line="111"/>
         <source>This message contains inline image, enable XHTML-IM to view it.</source>
-        <translation type="unfinished"/>
+        <translation>Це повідомлення містить зображення, увімкніть XHTML-IM, щоб переглянути його.</translation>
     </message>
     <message>
         <location filename="contactdropfilter.cpp" line="181"/>
         <source>Send directly in chat</source>
-        <translation type="unfinished"/>
+        <translation>Надіслати безпосередньо в чат</translation>
     </message>
     <message>
         <location filename="contactdropfilter.cpp" line="191"/>
         <source>Send link</source>
-        <translation type="unfinished"/>
+        <translation>Надіслати посилання</translation>
     </message>
     <message>
         <location filename="contactdropfilter.cpp" line="196"/>
         <source>Send as file</source>
-        <translation type="unfinished"/>
+        <translation>Надіслати як файл</translation>
     </message>
     <message>
         <location filename="contactdropfilter.cpp" line="213"/>
         <source>Send image</source>
-        <translation type="unfinished"/>
+        <translation>Надіслати зображення</translation>
     </message>
     <message>
         <location filename="contactdropfilter.cpp" line="214"/>
         <source>How would you like to send the image?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
         <location filename="contactdropfilter.cpp" line="288"/>
         <source>Enter reason to invite %n contact(s) to %1:</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>З якої причини ви хочете запросити %n контакт у %1:</numerusform>
+            <numerusform>З якої причини ви хочете запросити %n контакти у %1:</numerusform>
+            <numerusform>З якої причини ви хочете запросити %n контакти(ів) у %1:</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="contactdropfilter.cpp" line="290"/>
         <source>Enter reason to invite %1 to %n conference(s):</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>З якої причини ви хочете запросити %1  у %n конференцію:</numerusform>
+            <numerusform>З якої причини ви хочете запросити %1 у %n конференції:</numerusform>
+            <numerusform>З якої причини ви хочете запросити %1 у %n конференції(ій):</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="contactdropfilter.cpp" line="300"/>
         <source>Enter reason to invite %1 to %2:</source>
-        <translation type="unfinished"/>
+        <translation>З якої причини ви хочете запросити %1 у %2:</translation>
     </message>
     <message>
         <location filename="contactdropfilter.cpp" line="307"/>
@@ -1833,24 +1853,9 @@
         <translation>Клієнт перейшов у сплячий режим</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1553"/>
-        <source>Non-human-readable ID of the sender (protocol-specific).</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="core.cpp" line="1533"/>
         <source>Message body</source>
         <translation>Тіло повідомлення</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="166"/>
-        <source>Smile pack</source>
-        <translation>Набір смайликів</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="167"/>
-        <source>Chat style</source>
-        <translation>Стиль чату</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1534"/>
@@ -1873,26 +1878,6 @@
         <translation>ІD відправника</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1559"/>
-        <source>Sender&apos;s parent entry name</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1560"/>
-        <source>Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1566"/>
-        <source>Sender&apos;s parent ID</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1567"/>
-        <source>Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="core.cpp" line="1573"/>
         <source>Sender groups</source>
         <translation>Групи відправників</translation>
@@ -1911,6 +1896,41 @@
         <location filename="core.cpp" line="1581"/>
         <source>The new status string of the contact.</source>
         <translation>Новий статусний рядок контакта.</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1553"/>
+        <source>Non-human-readable ID of the sender (protocol-specific).</source>
+        <translation>ID відправника у незручному для читання форматі (особливості протоколу).</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="166"/>
+        <source>Smile pack</source>
+        <translation>Набір смайликів</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="167"/>
+        <source>Chat style</source>
+        <translation>Стиль чату</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1559"/>
+        <source>Sender&apos;s parent entry name</source>
+        <translation>Назва батьківського елементу відправника</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1560"/>
+        <source>Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant.</source>
+        <translation>Назва батьківського елементу відправника повідомлення, наприклад ім&apos;я учасника конференції у зручному для читання форматі.</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1566"/>
+        <source>Sender&apos;s parent ID</source>
+        <translation>Батьківський ID відправника</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1567"/>
+        <source>Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant.</source>
+        <translation>ID батьківського елементу відправника повідомлення, наприклад ім&apos;я учасника конференції, у незручному для читання форматі.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2144"/>
@@ -1980,7 +2000,7 @@
     <message>
         <location filename="util.cpp" line="300"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
     </message>
     <message>
         <location filename="util.cpp" line="302"/>
@@ -1993,58 +2013,58 @@
     <message>
         <location filename="corecommandsmanager.cpp" line="39"/>
         <source>The following commands are available:</source>
-        <translation type="unfinished"/>
+        <translation>Доступні наступні команди:</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="41"/>
         <source>Type %1 in chat to get help on a particular command.</source>
-        <translation type="unfinished"/>
+        <translation>Натисніть %1 у чаті для отримання допомоги по визначеній команді.</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="200"/>
         <source>Help on command %1:</source>
-        <translation type="unfinished"/>
+        <translation>Допомога по команді %1:</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="206"/>
         <source>Aliases: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Аліас: %1.</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="240"/>
         <source>Unknown command %1.</source>
-        <translation type="unfinished"/>
+        <translation>Невідома команда %1.</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="288"/>
         <source>Show the list of all commands or get help for a specific command.</source>
-        <translation type="unfinished"/>
+        <translation>Показати перелік команд або отримати довідку для певної команди.</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="289"/>
         <location filename="corecommandsmanager.cpp" line="305"/>
         <source>Usage: </source>
-        <translation type="unfinished"/>
+        <translation>Використання:</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="289"/>
         <source>[command1] [command2] ...</source>
-        <translation type="unfinished"/>
+        <translation>[команда1] [команда2] ...</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="290"/>
         <source>Shows the list of all available commands with their respective short descriptions if called without parameters, otherwise shows help for the passed commands.</source>
-        <translation type="unfinished"/>
+        <translation>Виводить перелік усіх доступних команд разом із їх відповідними описами, якщо викликається без параметрів, в іншому випадку виводить довідку по командам, які передані при виклику.</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="294"/>
         <source>Commands&apos; variable inputs are typically shown in &lt;em&gt;italics&lt;/em&gt;, while the parts that are to be entered as is are shown in &lt;code&gt;monospace&lt;/code&gt; font. Optional arguments are typically in [square brackets], while different options are shown like this:</source>
-        <translation type="unfinished"/>
+        <translation>Данні,що вводяться у якості змінних параметрів команд зазвичай відображені &lt;em&gt;курсивом&lt;/em&gt;, тоді як частина команди, яка повинна бути введена без змін, відображається &lt;code&gt;моноширинним&lt;/code&gt; шрифтом. Необов&apos;язкові аргументи зазвичай узяті в [квадратні дужки], тоді як різні варіанти вибору показані наступним чином:</translation>
     </message>
     <message>
         <location filename="corecommandsmanager.cpp" line="304"/>
         <source>Clear chat window.</source>
-        <translation type="unfinished"/>
+        <translation>Очистити вікно чату.</translation>
     </message>
 </context>
 <context>
@@ -2062,7 +2082,7 @@
     <message>
         <location filename="customstatusesmanager.cpp" line="29"/>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation>Текст</translation>
     </message>
 </context>
 <context>
@@ -2078,27 +2098,27 @@
     <message>
         <location filename="filesenddialog.cpp" line="53"/>
         <source>Protocol file transfer</source>
-        <translation type="unfinished"/>
+        <translation>Протокол передачі файлів</translation>
     </message>
     <message>
         <location filename="filesenddialog.cpp" line="62"/>
         <source>There aren&apos;t any file transfer methods available. Please either make sure protocol file transfers are enabled and active, or install a module like NetStoreManager.</source>
-        <translation type="unfinished"/>
+        <translation>Жодного доступного методу передачі файлів. Будь ласка, пересвідчіться, що протокол передачі файлів увімкнений та активний, або ж встановіть модуль на кшталт NetStoreManager.</translation>
     </message>
     <message>
         <location filename="filesenddialog.cpp" line="125"/>
         <source>Unable to send file to %1.</source>
-        <translation>Неможливо надіслати файл: %1.</translation>
+        <translation>Неможливо надіслати файл до %1.</translation>
     </message>
     <message>
         <location filename="filesenddialog.cpp" line="143"/>
         <source>No file transfer methods available.</source>
-        <translation type="unfinished"/>
+        <translation>Методи передачі файлів недоступні.</translation>
     </message>
     <message>
         <location filename="filesenddialog.cpp" line="149"/>
         <source>Select file to send</source>
-        <translation>Обрати файл для відправлення</translation>
+        <translation>Оберіть файл, який буде надіслано</translation>
     </message>
 </context>
 <context>
@@ -2106,7 +2126,7 @@
     <message>
         <location filename="groupremovedialog.cpp" line="23"/>
         <source>Name</source>
-        <translation>Назва</translation>
+        <translation>Ім&apos;я</translation>
     </message>
     <message>
         <location filename="groupremovedialog.cpp" line="23"/>
@@ -2119,7 +2139,7 @@
     <message>
         <location filename="groupsenddialog.cpp" line="27"/>
         <source>Name</source>
-        <translation>Назва</translation>
+        <translation>Ім&apos;я</translation>
     </message>
     <message>
         <location filename="groupsenddialog.cpp" line="27"/>
@@ -2173,7 +2193,7 @@
     <message>
         <location filename="mainwidget.cpp" line="156"/>
         <source>Show all users list</source>
-        <translation type="unfinished"/>
+        <translation>Показати усіх користувачів</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="186"/>
@@ -2188,7 +2208,7 @@
     <message>
         <location filename="mainwidget.cpp" line="499"/>
         <source>Are you sure you want to remove %1 from roster?</source>
-        <translation type="unfinished"/>
+        <translation>Ви впевнені, що бажаєте видалити %1 з ростера?</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="63"/>
@@ -2451,7 +2471,7 @@
     <message>
         <location filename="mooddialog.cpp" line="115"/>
         <source>intoxicated</source>
-        <translation type="unfinished"/>
+        <translation>отруєний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="116"/>
@@ -2674,7 +2694,7 @@
     <message>
         <location filename="msgformatterwidget.cpp" line="112"/>
         <source>Align left</source>
-        <translation>Вирівняти наліво</translation>
+        <translation>Вирівняти вліво</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="120"/>
@@ -2684,12 +2704,12 @@
     <message>
         <location filename="msgformatterwidget.cpp" line="127"/>
         <source>Align right</source>
-        <translation>Вирівняти направо</translation>
+        <translation>Вирівняти вправо</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="134"/>
         <source>Align justify</source>
-        <translation>Вирівняти по ширині</translation>
+        <translation>Параметри вирівнювання</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="158"/>
@@ -2707,7 +2727,7 @@
     <message>
         <location filename="notificationsmanager.cpp" line="184"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Вхідне повідомлення від &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="197"/>
@@ -2717,23 +2737,35 @@
     <message>
         <location filename="notificationsmanager.cpp" line="206"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;em&gt;%2&lt;/em&gt; потребує вашої уваги в конференції &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;</translation>
     </message>
     <message numerus="yes">
         <location filename="notificationsmanager.cpp" line="239"/>
         <location filename="notificationsmanager.cpp" line="249"/>
         <source>%n message(s) from</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n повідомлення від</numerusform>
+            <numerusform>%n повідомлення від</numerusform>
+            <numerusform>%n повідомлень від</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="notificationsmanager.cpp" line="243"/>
         <source>%n message(s) in</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n вхідне повідомлення</numerusform>
+            <numerusform>%n вхідних повідомлення</numerusform>
+            <numerusform>%n вхідних повідомлень</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="notificationsmanager.cpp" line="255"/>
         <source>%n message(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%n повідомлення</numerusform>
+            <numerusform>%n повідомлення</numerusform>
+            <numerusform>%n повідомлень</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="259"/>
@@ -2750,7 +2782,14 @@
     <message>
         <location filename="notificationsmanager.cpp" line="316"/>
         <source>%1 in room %2 is now %3.</source>
-        <translation type="unfinished"/>
+        <translation>%1 у кімнаті %2 тепер %3.</translation>
+    </message>
+    <message>
+        <location filename="notificationsmanager.cpp" line="321"/>
+        <location filename="notificationsmanager.cpp" line="519"/>
+        <location filename="notificationsmanager.cpp" line="563"/>
+        <source>%1 is now %2.</source>
+        <translation>%1 тепер %2.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="390"/>
@@ -2805,58 +2844,43 @@
     <message>
         <location filename="notificationsmanager.cpp" line="474"/>
         <source>%1 is now listening to %2 by %3.</source>
-        <oldsource>%1 is now listening to %2 by %3</oldsource>
-        <translation type="unfinished"/>
+        <translation>%1 зараз слухає %2 виконавця %3.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="478"/>
         <source>%1 stopped listening to music.</source>
-        <oldsource>%1 stopped listening to music</oldsource>
-        <translation type="unfinished"/>
+        <translation>%1 припинив слухати музику.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="515"/>
         <source>%1 is not doing anything anymore.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="notificationsmanager.cpp" line="841"/>
-        <source>%1 started composing a message to you.</source>
-        <translation>%1 пише вам повідомлення.</translation>
-    </message>
-    <message>
-        <location filename="notificationsmanager.cpp" line="321"/>
-        <location filename="notificationsmanager.cpp" line="519"/>
-        <location filename="notificationsmanager.cpp" line="563"/>
-        <source>%1 is now %2.</source>
-        <translation>%1 тепер %2</translation>
+        <translation>%1 більше нічого взагалі не робить.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="523"/>
         <source>%1 is now %2 (in particular, %3).</source>
-        <translation type="unfinished"/>
+        <translation>%1 тепер %2 (зокрема, %3).</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="560"/>
         <source>%1 is not in any particular mood anymore.</source>
-        <translation type="unfinished"/>
+        <translation>%1 взагалі не знаходиться у будь-якому настрої.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="607"/>
         <source>%1&apos;s location is not known.</source>
-        <translation type="unfinished"/>
+        <translation>Місцезнаходження %1 невідомо.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="613"/>
         <location filename="notificationsmanager.cpp" line="619"/>
         <source>%1 is now in %2 (%3).</source>
-        <oldsource>%1's is now in %2 (%3).</oldsource>
-        <translation type="unfinished"/>
+        <translation>%1 зараз у %2 (%3).</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="623"/>
         <source>%1&apos;s location updated.</source>
-        <translation type="unfinished"/>
+        <translation>Місцезнаходження %1 оновлено.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="694"/>
@@ -2916,7 +2940,12 @@
     <message>
         <location filename="notificationsmanager.cpp" line="803"/>
         <source>Join</source>
-        <translation>Зайти</translation>
+        <translation>Увійти</translation>
+    </message>
+    <message>
+        <location filename="notificationsmanager.cpp" line="841"/>
+        <source>%1 started composing a message to you.</source>
+        <translation>%1 пише вам повідомлення.</translation>
     </message>
 </context>
 <context>
@@ -2959,7 +2988,7 @@
     <message>
         <location filename="azoth.cpp" line="534"/>
         <source>Microblogs where protocol/account supports that</source>
-        <translation type="unfinished"/>
+        <translation>Микроблоги, у яких протокол/акаунт підтримує це</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="502"/>
@@ -2969,37 +2998,37 @@
     <message>
         <location filename="azoth.cpp" line="332"/>
         <source>Show MUC users list</source>
-        <translation type="unfinished"/>
+        <translation>Показати перелік користувачів кімнати</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="336"/>
         <source>Open last link in chat</source>
-        <translation type="unfinished"/>
+        <translation>Відкрити останнє посилання у чаті</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="343"/>
         <source>Show next unread message (global shortcut)</source>
-        <translation type="unfinished"/>
+        <translation>Показати наступне непрочитане повідомлення (глобальна комбінація)</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="350"/>
         <source>Delete the word before the cursor</source>
-        <translation type="unfinished"/>
+        <translation>Видалити слово перед курсором</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="357"/>
         <source>Delete from cursor to the beginning of line</source>
-        <translation type="unfinished"/>
+        <translation>Видалити від курсора до початку рядка</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="364"/>
         <source>Delete from cursor to the end of line</source>
-        <translation type="unfinished"/>
+        <translation>Видалити від курсора до кінця рядка</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="503"/>
         <source>A search tab allows one to search within IM services</source>
-        <translation>Вкладки пошуку дозволяють шукати по IM-сервісам</translation>
+        <translation>Вкладки пошуку дозволяють шукати з по IM сервісам</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="511"/>
@@ -3024,12 +3053,12 @@
     <message>
         <location filename="azoth.cpp" line="544"/>
         <source>Server history</source>
-        <translation type="unfinished"/>
+        <translation>Історія на сервері</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="545"/>
         <source>Server history browser for protocols and accounts supporting this feature</source>
-        <translation type="unfinished"/>
+        <translation>Переглядач історії сервера для протоколів та акаунтів, які підтримують це</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="115"/>
@@ -3044,7 +3073,7 @@
     <message>
         <location filename="azoth.cpp" line="319"/>
         <source>Prepend messages from history</source>
-        <translation type="unfinished"/>
+        <translation>Додати повідомленні із історії</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="323"/>
@@ -3072,7 +3101,7 @@
     <message>
         <location filename="proxyobject.cpp" line="106"/>
         <source>%1 changed status to %2 (%3)</source>
-        <translation>%1 змінив статус на %2 (%3)</translation>
+        <translation>%1 змінив(ла) статус на %2 (%3)</translation>
     </message>
 </context>
 <context>
@@ -3093,12 +3122,12 @@
     <message>
         <location filename="serverhistorywidget.cpp" line="61"/>
         <source>Previous page</source>
-        <translation type="unfinished"/>
+        <translation>Попередня сторінка</translation>
     </message>
     <message>
         <location filename="serverhistorywidget.cpp" line="65"/>
         <source>Next page</source>
-        <translation type="unfinished"/>
+        <translation>Наступна сторінка</translation>
     </message>
 </context>
 <context>
@@ -3106,7 +3135,7 @@
     <message>
         <location filename="servicediscoverywidget.cpp" line="85"/>
         <source>Filter...</source>
-        <translation type="unfinished"/>
+        <translation>Фільтр...</translation>
     </message>
     <message>
         <location filename="servicediscoverywidget.cpp" line="136"/>
@@ -3134,7 +3163,7 @@
     <message>
         <location filename="shareriexdialog.cpp" line="110"/>
         <source>Name</source>
-        <translation>Назва</translation>
+        <translation>Ім’я</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="111"/>
@@ -3144,7 +3173,7 @@
     <message>
         <location filename="shareriexdialog.cpp" line="112"/>
         <source>Account</source>
-        <translation>Акаунт:</translation>
+        <translation>Акаунт</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="113"/>
@@ -3162,21 +3191,26 @@
     <message>
         <location filename="textedit.cpp" line="37"/>
         <source>Delete the word before the cursor</source>
-        <translation type="unfinished"/>
+        <translation>Видалити слово перед курсором</translation>
     </message>
     <message>
         <location filename="textedit.cpp" line="41"/>
         <source>Delete from cursor to the beginning of line</source>
-        <translation type="unfinished"/>
+        <translation>Видалити від курсора до початку рядка</translation>
     </message>
     <message>
         <location filename="textedit.cpp" line="48"/>
         <source>Delete from cursor to the end of line</source>
-        <translation type="unfinished"/>
+        <translation>Видалити від курсора до кінця рядка</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::TransferJobManager</name>
+    <message>
+        <location filename="transferjobmanager.cpp" line="43"/>
+        <source>Abort</source>
+        <translation>Скасувати</translation>
+    </message>
     <message>
         <location filename="transferjobmanager.cpp" line="107"/>
         <source>Transferring %1 from %2</source>
@@ -3212,7 +3246,11 @@
     <message numerus="yes">
         <location filename="transferjobmanager.cpp" line="276"/>
         <source>Are you sure you want to send %n files to %1?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Ви впевнені, що хочете надіслати %n файл %1?</numerusform>
+            <numerusform>Ви впевнені, що хочете надіслати %n файла %1?</numerusform>
+            <numerusform>Ви впевнені, що хочете надіслати %n файли(ів) %1?</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="384"/>
@@ -3222,7 +3260,7 @@
     <message>
         <location filename="transferjobmanager.cpp" line="406"/>
         <source>Incoming file: %1</source>
-        <translation type="unfinished"/>
+        <translation>Вхідний файл: %1</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="464"/>
@@ -3240,14 +3278,9 @@
         <translation>Передача перервана.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="43"/>
-        <source>Abort</source>
-        <translation>Скасувати</translation>
-    </message>
-    <message>
         <location filename="transferjobmanager.cpp" line="351"/>
         <source>Received file from %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation>Отримано файл від %1: %2.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="361"/>
@@ -3480,12 +3513,12 @@
     <message>
         <location filename="mooddialog.ui" line="22"/>
         <source>&amp;Mood:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mooddialog.ui" line="32"/>
         <source>&amp;Text:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3493,17 +3526,17 @@
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="14"/>
         <source>PGP key selection</source>
-        <translation>Вибір PGP-ключа</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="32"/>
         <source>Key:</source>
-        <translation>Ключ:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="43"/>
         <source>&lt;no key&gt;</source>
-        <translation>&lt;немає ключа&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3516,12 +3549,12 @@
     <message>
         <location filename="util.cpp" line="255"/>
         <source>Are you sure you want to remove the account %1?</source>
-        <translation>Ви дійсно бажаєте видалити акаунт%1?</translation>
+        <translation>Ви дійсно бажаєте видалити акаунт %1?</translation>
     </message>
     <message>
         <location filename="util.cpp" line="264"/>
         <source>Do you also want to remove %1 from the server?</source>
-        <translation type="unfinished"/>
+        <translation>Ви хочете також видалити %1 з сервера?</translation>
     </message>
     <message>
         <location filename="util.cpp" line="321"/>
@@ -3531,20 +3564,20 @@
     <message>
         <location filename="statuschange.cpp" line="36"/>
         <source>Custom...</source>
-        <comment>the label for the 'custom status' action</comment>
-        <translation>Особливий...</translation>
+        <comment>the label for the &apos;custom status&apos; action</comment>
+        <translation>Користувацький...</translation>
     </message>
     <message>
         <location filename="statuschange.cpp" line="50"/>
         <source>Other...</source>
         <comment>other custom status</comment>
-        <translation type="unfinished"/>
+        <translation>Інший...</translation>
     </message>
     <message>
         <location filename="statuschange.cpp" line="52"/>
         <source>Custom</source>
-        <comment>the label for the 'custom status' menu</comment>
-        <translation type="unfinished"/>
+        <comment>the label for the &apos;custom status&apos; menu</comment>
+        <translation>Користувацький</translation>
     </message>
     <message>
         <location filename="statuschange.cpp" line="61"/>
@@ -3633,22 +3666,22 @@
     <message>
         <location filename="sslerrorsdialog.ui" line="14"/>
         <source>SSL errors</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="44"/>
         <source>Remember my choice</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="27"/>
         <source>SSL errors occured during account registration.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="31"/>
         <source>SSL errors occured for account %1.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3656,7 +3689,7 @@
     <message>
         <location filename="userslistwidget.ui" line="17"/>
         <source>Users list</source>
-        <translation type="unfinished"/>
+        <translation>Перелік користувачів</translation>
     </message>
 </context>
 <context>
@@ -3737,12 +3770,6 @@
         <translation>Основний</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
-        <source>Message editor font size:</source>
-        <oldsource>Font size:</oldsource>
-        <translation>Розмір шрифта:</translation>
-    </message>
-    <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Contact list</source>
         <translation>Список контактів</translation>
@@ -3755,7 +3782,7 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Chat window style variant:</source>
-        <translation type="unfinished"/>
+        <translation>Варіант стилю вікна чату:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
@@ -3770,12 +3797,12 @@
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source>MUC window style variant:</source>
-        <translation type="unfinished"/>
+        <translation>Варіант стилю вікна MUC:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Show self-contacts</source>
-        <translation type="unfinished"/>
+        <translation>Показати самоконтакти</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
@@ -3821,12 +3848,12 @@
     <message>
         <location filename="dummy.cpp" line="36"/>
         <source>Highlight groups</source>
-        <translation type="unfinished"/>
+        <translation>Підсвітити групи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Hide contacts with errors when hiding offline contacts</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
@@ -3845,7 +3872,7 @@
     <message>
         <location filename="dummy.cpp" line="40"/>
         <source>Avatars size in tooltips:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="43"/>
@@ -3880,17 +3907,17 @@
     <message>
         <location filename="dummy.cpp" line="49"/>
         <source>Show rich text editor (if available)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="50"/>
         <source>Whether rich text editor should be displayed, if supported by the protocol plugin. This is a default value, and the behavior could be changed for each opened chat window.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Show client resources in normal one-to-one chats</source>
-        <translation type="unfinished"/>
+        <translation>Показати ресурси кліента у нормальному чаті один-до-одного</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="52"/>
@@ -3898,40 +3925,34 @@
         <translation>Колір підсвічування:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
-        <source>Shorten URLs longer than:</source>
-        <oldsource>Shorten URLs less than: </oldsource>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="dummy.cpp" line="56"/>
         <source> symbols</source>
-        <translation type="unfinished"/>
+        <translation> символи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Images</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="58"/>
         <source>Show rich text images in chat as links</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="59"/>
         <source>Limit the display dimensions of images embedded in messages</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="60"/>
         <source>Maximum width:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="62"/>
         <source>Maximum height:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="64"/>
@@ -3941,7 +3962,7 @@
     <message>
         <location filename="dummy.cpp" line="65"/>
         <source>Rich text format toolbar position:</source>
-        <translation>Розміщення панелі інструментів при редагуванні у Rich Text</translation>
+        <translation>Розміщення панелі інструментів при редагуванні RTF:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="66"/>
@@ -3961,37 +3982,22 @@
     <message>
         <location filename="dummy.cpp" line="69"/>
         <source>Minimal message edit height:</source>
-        <translation type="unfinished"/>
+        <translation>Мінімальна висота редагування повідомлення:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="70"/>
         <source> lines of text</source>
-        <translation type="unfinished"/>
+        <translation> рядків тексту</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="71"/>
         <source>Nick coloring</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="72"/>
-        <source>Highlight nicks in message bodies</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="73"/>
-        <source>Coloring intensity:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="74"/>
-        <source>%</source>
-        <translation>%</translation>
+        <translation>Розцвічування ніку</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="75"/>
         <source>Override color list</source>
-        <translation type="unfinished"/>
+        <translation>Перелік перевизначення кольорів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="76"/>
@@ -4005,29 +4011,19 @@
         <translation>Поведінка</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="82"/>
-        <source>Open file choosing dialog automatically on file sending</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="83"/>
-        <source>Automatically open received files after transfer finishes</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="dummy.cpp" line="89"/>
         <source>Roster</source>
-        <translation type="unfinished"/>
+        <translation>Ростер</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="92"/>
         <source>Clear search field after entry activation</source>
-        <translation type="unfinished"/>
+        <translation>Очистити поле пошуку після активації елемента</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="97"/>
         <source>Tabs</source>
-        <translation type="unfinished"/>
+        <translation>Вкладки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="98"/>
@@ -4117,7 +4113,7 @@
     <message>
         <location filename="dummy.cpp" line="126"/>
         <source>Keypad Enter is analogous to Enter</source>
-        <translation type="unfinished"/>
+        <translation>Поведінка Enter на цифровій клавіатурі аналогічна Enter</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="131"/>
@@ -4217,29 +4213,64 @@
         <translation>Вікна чатів</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="53"/>
+        <source>Message editor font size:</source>
+        <translation>Розмір шрифта редактора повідомлень:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="55"/>
+        <source>Shorten URLs longer than:</source>
+        <translation>Скорочувати URL, довші за:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="72"/>
+        <source>Highlight nicks in message bodies</source>
+        <translation>Підсвічувати нікнейми в тілі повідомлення</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="73"/>
+        <source>Coloring intensity:</source>
+        <translation>Интенсивність розцвітки:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="74"/>
+        <source>%</source>
+        <translation>%</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="82"/>
+        <source>Open file choosing dialog automatically on file sending</source>
+        <translation>Відкривати діалог вибора файлу автомтично при надісланні файлу</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="83"/>
+        <source>Automatically open received files after transfer finishes</source>
+        <translation>Автоматично відкривати отримані файли після завершення передачі</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="84"/>
         <source>Modify nick on conflicts in chat rooms</source>
-        <translation type="unfinished"/>
+        <translation>Модифікувати нік у випадку конфліктів у кімнатах</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="85"/>
         <source>If enabled, the a string would be appended to your nick according to the next option. If disabled, nothing would happen.</source>
-        <translation type="unfinished"/>
+        <translation>Якщо увімкнено, до вашого ніку буде додано строку згідно цих налаштувань. Якщо вимкнено, ніяких дій не відбуватиметься.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="86"/>
         <source>Nick suffix to append on nick conflict in chat rooms:</source>
-        <translation type="unfinished"/>
+        <translation>Суфікс, який буде додано до ніка у випадку конфліктів у кімнатах:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="87"/>
         <source>This string would be appended to the nick you&apos;ve chosen if another chat room participant already uses your nick.</source>
-        <translation type="unfinished"/>
+        <translation>Ці літери буде додано до обраного вами ніку, якщо інший учасник кімнати вже використовує ваш нік.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="102"/>
         <source>Open tabs for autojoined conferences</source>
-        <translation type="unfinished"/>
+        <translation>Відкривати вкладки для конференцій із автоматичним входом</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="120"/>
@@ -4249,12 +4280,12 @@
     <message>
         <location filename="dummy.cpp" line="121"/>
         <source>Show status changes in private chats</source>
-        <translation type="unfinished"/>
+        <translation>Показувати зміну статусу у приватних чатах</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="122"/>
         <source>Show when participant ends conversation</source>
-        <translation>Показувати, коли співрозмовник закінчує розмову.</translation>
+        <translation>Показувати, коли співрозмовник закінчує розмову</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="123"/>
@@ -4264,55 +4295,53 @@
     <message>
         <location filename="dummy.cpp" line="124"/>
         <source>Separate MUC event log window</source>
-        <translation type="unfinished"/>
+        <translation>Окремі вікна логів подій у MUC</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="125"/>
         <source>Require space before smiles</source>
-        <translation type="unfinished"/>
+        <translation>Пробіл перед смайлами потрібний</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="132"/>
         <source>On chat window clearing, keep the messages arrived during the last</source>
-        <translation type="unfinished"/>
+        <translation>При очистці вікна чату, залишати повідомлення, що надійшли на протязі</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="133"/>
         <source> s</source>
-        <translation>s</translation>
+        <translation> с</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="134"/>
         <source>Caching</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="135"/>
         <source>In-memory avatars cache size:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="136"/>
         <source>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format. Network traffic consumption is not affected by this option.</source>
-        <oldsource>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format.</oldsource>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="137"/>
         <location filename="dummy.cpp" line="140"/>
         <source> MiB</source>
-        <translation>МіБ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="138"/>
         <source>In-memory contact list tooltips-specific avatars cache size:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="139"/>
         <source>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64. Network traffic consumption is not affected by this option.</source>
-        <oldsource>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64.</oldsource>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="141"/>
@@ -4387,7 +4416,7 @@
     <message>
         <location filename="dummy.cpp" line="155"/>
         <source>Custom statuses</source>
-        <translation type="unfinished"/>
+        <translation>Користувацькі статуси</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="156"/>
