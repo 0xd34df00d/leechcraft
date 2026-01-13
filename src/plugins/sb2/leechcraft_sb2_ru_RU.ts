@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>LC::SB2::LCMenuComponent</name>
     <message>
@@ -12,6 +14,7 @@
     <message>
         <location filename="sb2.cpp" line="115"/>
         <source>Side panel with quarks like tab launcher and switcher or tray area, where other plugins can also embed quarks .</source>
+        <oldsource>Side panel with elements quarks like tab launcher and switcher or tray area, where other plugins can also embed quarks .</oldsource>
         <translation>Боковая панель с кварками вроде переключателя вкладок или области уведомлений, куда другие модули также могут встраивать свои кварки.</translation>
     </message>
 </context>
@@ -55,40 +58,33 @@
     <name>sb2panelsettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
-        <location filename="dummy.cpp" line="10"/>
         <source>SB2 panel</source>
         <translation>Панель SB2</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <location filename="dummy.cpp" line="11"/>
         <source>Panel size:</source>
         <translation>Размер панели:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <location filename="dummy.cpp" line="6"/>
-        <location filename="dummy.cpp" line="12"/>
-        <location filename="dummy.cpp" line="14"/>
         <source> px</source>
         <translation> пикселей</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
-        <location filename="dummy.cpp" line="13"/>
         <source>Quark spacing:</source>
         <translation>Расстояние между кварками:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
-        <location filename="dummy.cpp" line="15"/>
         <source>Hover-in timeout:</source>
         <oldsource>Hover-in timeout: </oldsource>
         <translation>Таймаут появления всплывающих элементов:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
-        <location filename="dummy.cpp" line="16"/>
         <source> ms</source>
         <translation> мс</translation>
     </message>
