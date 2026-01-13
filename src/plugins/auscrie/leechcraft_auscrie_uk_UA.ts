@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
 <context>
     <name>LC::Auscrie::Plugin</name>
     <message>
@@ -11,7 +9,7 @@
     <message>
         <location filename="auscrie.cpp" line="72"/>
         <source>Simple auto screenshotter.</source>
-        <translation>Простий скріншотер.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="auscrie.cpp" line="109"/>
@@ -34,12 +32,12 @@
     <message>
         <location filename="shooterdialog.cpp" line="47"/>
         <source>Compression:</source>
-        <translation>Стиснення:</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="shooterdialog.cpp" line="55"/>
         <source>Make screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="shooterdialog.cpp" line="147"/>
