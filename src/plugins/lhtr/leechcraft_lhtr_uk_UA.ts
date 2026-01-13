@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
 <context>
     <name>FindDialog</name>
     <message>
         <location filename="finddialog.ui" line="14"/>
         <source>Find and replace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="finddialog.ui" line="24"/>
@@ -16,7 +14,7 @@
     <message>
         <location filename="finddialog.ui" line="38"/>
         <source>Replace:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="finddialog.ui" line="56"/>
@@ -36,7 +34,7 @@
     <message>
         <location filename="finddialog.ui" line="85"/>
         <source>Replace all</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="finddialog.ui" line="96"/>
@@ -77,52 +75,52 @@
     <message>
         <location filename="imagecollectiondialog.ui" line="14"/>
         <source>Insert image colection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="23"/>
         <source>Position:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="31"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="36"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="41"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="46"/>
         <source>Left (text wrap)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="51"/>
         <source>Right (text wrap)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="59"/>
         <source>Previews are links to full-size images</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="69"/>
         <source>Images:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.ui" line="99"/>
         <source>Preview size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -205,27 +203,27 @@
     <message>
         <location filename="inserttabledialog.ui" line="14"/>
         <source>Insert table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="inserttabledialog.ui" line="20"/>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="inserttabledialog.ui" line="37"/>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="inserttabledialog.ui" line="64"/>
         <source>Caption:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="inserttabledialog.ui" line="71"/>
         <source>Leave blank to disable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -234,21 +232,17 @@
         <location filename="finddialog.cpp" line="67"/>
         <location filename="finddialog.cpp" line="83"/>
         <source>Text editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message numerus="yes">
         <location filename="finddialog.cpp" line="68"/>
         <source>%n replacement(s) have been made</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="finddialog.cpp" line="84"/>
         <source>No replacements were made</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -256,17 +250,17 @@
     <message>
         <location filename="imagecollectiondialog.cpp" line="40"/>
         <source>Thumbnail (%1×%2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.cpp" line="41"/>
         <source>Preview (%1×%2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imagecollectiondialog.cpp" line="42"/>
         <source>Full (%1×%2)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -282,17 +276,17 @@
     <message>
         <location filename="imageinfosmodel.cpp" line="22"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="imageinfosmodel.cpp" line="22"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір</translation>
     </message>
     <message>
         <location filename="imageinfosmodel.cpp" line="22"/>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -300,7 +294,7 @@
     <message>
         <location filename="lhtr.cpp" line="49"/>
         <source>Full-blown Blink-based HTML text editor.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -313,7 +307,7 @@
     <message>
         <location filename="richeditorwidget.cpp" line="166"/>
         <source>Replace</source>
-        <translation type="unfinished">Замінити</translation>
+        <translation>Замінити</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="164"/>
@@ -408,7 +402,7 @@
     <message>
         <location filename="richeditorwidget.cpp" line="313"/>
         <source>Mark as quote</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="317"/>
@@ -443,52 +437,52 @@
     <message>
         <location filename="richeditorwidget.cpp" line="558"/>
         <source>Insert image by link...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="562"/>
         <source>Insert image from collection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="588"/>
         <source>Tables...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="596"/>
         <source>Insert table...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="603"/>
         <source>Insert row above</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="608"/>
         <source>Insert row below</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="613"/>
         <source>Insert column to the left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="618"/>
         <source>Insert column to the right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="625"/>
         <source>Remove row</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="630"/>
         <source>Remove column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="1072"/>
@@ -519,22 +513,22 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Вигляд</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Visual editor background color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>HTML code editor background color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Override background color settings from other plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>
