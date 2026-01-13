@@ -45,7 +45,7 @@
     <message>
         <location filename="managecontactsdialog.cpp" line="43"/>
         <source>Account</source>
-        <translation>Акаунт:</translation>
+        <translation>Акаунт</translation>
     </message>
     <message>
         <location filename="managecontactsdialog.cpp" line="44"/>
