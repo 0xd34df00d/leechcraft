@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="uk_UA">
 <context>
     <name>AddToMetacontactsDialog</name>
     <message>
