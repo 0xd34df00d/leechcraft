@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
 <context>
     <name>AddEditEntryDialog</name>
     <message>
@@ -297,7 +295,7 @@
     <message>
         <location filename="postoptionswidget.cpp" line="297"/>
         <source>Don&apos;t hide</source>
-        <oldsource>Don&apos;t hide&apos;</oldsource>
+        <oldsource>Don't hide'</oldsource>
         <translation>Не прятать</translation>
     </message>
     <message>
@@ -998,7 +996,7 @@
     <message>
         <location filename="utils.cpp" line="80"/>
         <source>Sorry, deleting is temporary disabled. Entry is private now</source>
-        <oldsource>Sorry, deleting is temporary disabled. Entry is &apos;private&apos; now</oldsource>
+        <oldsource>Sorry, deleting is temporary disabled. Entry is 'private' now</oldsource>
         <translation>К сожалению, удаление временно недоступно. Запись теперь частная</translation>
     </message>
     <message>
