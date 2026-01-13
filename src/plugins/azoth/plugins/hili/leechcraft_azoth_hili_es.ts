@@ -1,8 +1,8 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.0" language="es">
 <context>
     <name>LC::Azoth::HiLi::Plugin</name>
     <message>
-        <location filename="hili.cpp" line="66"/>
+        <location filename="hili.cpp" line="81"/>
         <source>Azoth Hili allows one to customize the settings of highlights in conferences.</source>
         <translation>Azoth HiLi permite personalizar la configuración de los resaltados en las salas de charla.</translation>
     </message>
