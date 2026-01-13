@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>274</width>
-    <height>35</height>
+    <height>44</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,27 +18,27 @@
     <widget class="QComboBox" name="OpType_">
      <item>
       <property name="text">
-       <string>&gt;</string>
+       <string notr="true">&gt;</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>≥</string>
+       <string notr="true">≥</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>=</string>
+       <string notr="true">=</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>≤</string>
+       <string notr="true">≤</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>&lt;</string>
+       <string notr="true">&lt;</string>
       </property>
      </item>
     </widget>
@@ -63,7 +63,7 @@
    <item>
     <spacer name="horizontalSpacer">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
