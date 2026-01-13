@@ -1,20 +1,22 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ru_RU">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AddMagnetDialog</name>
     <message>
         <location filename="addmagnetdialog.ui" line="14"/>
         <source>Add magnet link</source>
-        <translation type="unfinished"/>
+        <translation>Добавить magnet-ссылку</translation>
     </message>
     <message>
         <location filename="addmagnetdialog.ui" line="20"/>
         <source>Magnet:</source>
-        <translation type="unfinished"/>
+        <translation>Magnet:</translation>
     </message>
     <message>
         <location filename="addmagnetdialog.ui" line="30"/>
         <source>Save path:</source>
-        <translation type="unfinished"/>
+        <translation>Сохранить в:</translation>
     </message>
     <message>
         <location filename="addmagnetdialog.ui" line="42"/>
@@ -42,12 +44,12 @@
     <message>
         <location filename="addmultipletorrents.ui" line="86"/>
         <source>Additional parameters</source>
-        <translation type="unfinished"/>
+        <translation>Дополнительные параметры</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="92"/>
         <source>Start torrents after adding</source>
-        <translation type="unfinished"/>
+        <translation>Запустить торренты после добавления</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="102"/>
@@ -55,12 +57,14 @@
         <source>If this option is checked, the only torrents added are those for which at least some files are already downloaded. Namely, for a single-file torrent it checks the presentce of the corresponding file in the destination path, and for a multi-file torrent it checks the presence of the root directory of the torrent.
 
 This is useful, for example, when you need to re-add a bunch of torrents you were already seeding after the tracker has changed the torrent files, requiring you to re-download them.</source>
-        <translation type="unfinished"/>
+        <translation>Если эта опция включена, то будут добавлены только те торренты, для которых уже есть какие-то скачанные файлы. В частности, для однофайловых торрентов проверяется наличие соответствующего файла по пути сохранения, а для многофайловых торрентов проверяется наличие их корневой директории.
+
+Эта опция полезна, например, в том случае, когда вам нужно повторно добавить кучу торрентов, которые вы уже раздавали, после того, как они обновились на трекере.</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="112"/>
         <source>Add a torrent only if its files already exist</source>
-        <translation type="unfinished"/>
+        <translation>Игнорировать торренты без загруженных файлов</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.ui" line="41"/>
@@ -117,6 +121,15 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
 <context>
     <name>AddTorrent</name>
     <message>
+        <location filename="addtorrent.ui" line="299"/>
+        <location filename="addtorrent.ui" line="313"/>
+        <location filename="addtorrent.ui" line="327"/>
+        <location filename="addtorrent.ui" line="341"/>
+        <location filename="addtorrent.ui" line="355"/>
+        <source>&lt;unknown&gt;</source>
+        <translation>&lt;неизвестно&gt;</translation>
+    </message>
+    <message>
         <location filename="addtorrent.ui" line="14"/>
         <source>Add torrent</source>
         <translation>Добавить торрент</translation>
@@ -138,9 +151,94 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <translation>Обзор...</translation>
     </message>
     <message>
+        <location filename="addtorrent.ui" line="114"/>
+        <source>Mark...</source>
+        <translation>Выбрать…</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="137"/>
+        <source>Expand all</source>
+        <translation>Развернуть все</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="147"/>
+        <source>Collapse all</source>
+        <translation>Свернуть все</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="205"/>
+        <source>unknown</source>
+        <translation>неизвестно</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="215"/>
+        <source>%p% used</source>
+        <translation>использовано %p%</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="261"/>
+        <source>Try to play this torrent live</source>
+        <translation>Попытаться проиграть этот торрент</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="271"/>
+        <source>Info</source>
+        <translation>Информация</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="292"/>
+        <source>Tracker URL:</source>
+        <translation>URL трекера:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="306"/>
+        <source>Size:</source>
+        <translation>Размер:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="320"/>
+        <source>Creator:</source>
+        <translation>Создатель:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="334"/>
+        <source>Comment:</source>
+        <translation>Комментарий:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="348"/>
+        <source>Date:</source>
+        <translation>Дата:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="419"/>
+        <source>Mark existing files</source>
+        <translation>Отметить существующие файлы</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="424"/>
+        <source>Mark missing files</source>
+        <translation>Отметить отсутствующие файлы</translation>
+    </message>
+    <message>
         <location filename="addtorrent.ui" line="69"/>
         <source>Files:</source>
         <translation>Файлы:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="174"/>
+        <source>Destination:</source>
+        <translation>Сохранить в:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="380"/>
+        <source>OK</source>
+        <translation>ОК</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="387"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="399"/>
@@ -161,36 +259,6 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="addtorrent.ui" line="414"/>
         <source>Unmark selected</source>
         <translation>Снять отметку с выделенных</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="174"/>
-        <source>Destination:</source>
-        <translation>Сохранить в:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="114"/>
-        <source>Mark...</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="137"/>
-        <source>Expand all</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="147"/>
-        <source>Collapse all</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="205"/>
-        <source>unknown</source>
-        <translation>неизвестно</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="215"/>
-        <source>%p% used</source>
-        <translation>использовано %p%</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="226"/>
@@ -216,70 +284,6 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="addtorrent.ui" line="253"/>
         <source>Paused</source>
         <translation>приостановленным</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="261"/>
-        <source>Try to play this torrent live</source>
-        <translation>Попытаться проиграть этот торрент</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="271"/>
-        <source>Info</source>
-        <translation>Информация</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="292"/>
-        <source>Tracker URL:</source>
-        <translation>URL трекера:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="299"/>
-        <location filename="addtorrent.ui" line="313"/>
-        <location filename="addtorrent.ui" line="327"/>
-        <location filename="addtorrent.ui" line="341"/>
-        <location filename="addtorrent.ui" line="355"/>
-        <source>&lt;unknown&gt;</source>
-        <translation>&lt;неизвестно&gt;</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="306"/>
-        <source>Size:</source>
-        <translation>Размер:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="320"/>
-        <source>Creator:</source>
-        <translation>Создатель:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="334"/>
-        <source>Comment:</source>
-        <translation>Комментарий:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="348"/>
-        <source>Date:</source>
-        <translation>Дата:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="380"/>
-        <source>OK</source>
-        <translation>ОК</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="387"/>
-        <source>Cancel</source>
-        <translation>Отмена</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="419"/>
-        <source>Mark existing files</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="424"/>
-        <source>Mark missing files</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -432,7 +436,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="addtorrent.cpp" line="303"/>
         <source>Unable to parse %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation>Невозможно распарсить %1: %2.</translation>
     </message>
 </context>
 <context>
@@ -466,29 +470,9 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="276"/>
-        <source>Size</source>
-        <translation>Размер</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="277"/>
-        <source>Total downloaded</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="core.cpp" line="279"/>
-        <source>Ratio</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="core.cpp" line="397"/>
-        <source>Paused</source>
-        <translation>приостановленным</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="409"/>
         <source>Idle</source>
-        <translation>Бездействующий</translation>
+        <translation>Простаивает</translation>
     </message>
     <message>
         <location filename="core.cpp" line="587"/>
@@ -498,7 +482,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="core.cpp" line="686"/>
         <location filename="core.cpp" line="688"/>
         <source>/s</source>
-        <translation>/c</translation>
+        <translation>/с</translation>
     </message>
     <message>
         <location filename="core.cpp" line="672"/>
@@ -508,7 +492,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="673"/>
         <source>Destination:</source>
-        <translation>Пункт назначения:</translation>
+        <translation>Каталог сохранения:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="675"/>
@@ -556,37 +540,37 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="272"/>
         <source>Down speed</source>
-        <translation type="unfinished"/>
+        <translation>Скорость скачивания</translation>
     </message>
     <message>
         <location filename="core.cpp" line="273"/>
         <source>Up speed</source>
-        <translation type="unfinished"/>
+        <translation>Скорость отдачи</translation>
     </message>
     <message>
         <location filename="core.cpp" line="274"/>
         <source>Leechers</source>
-        <translation type="unfinished"/>
+        <translation>Личеры</translation>
     </message>
     <message>
         <location filename="core.cpp" line="275"/>
         <source>Seeders</source>
-        <translation type="unfinished"/>
+        <translation>Сидеры</translation>
     </message>
     <message>
         <location filename="core.cpp" line="278"/>
         <source>Total uploaded</source>
-        <translation type="unfinished"/>
+        <translation>Всего отдано</translation>
     </message>
     <message>
         <location filename="core.cpp" line="581"/>
         <source>%1% (%2 of %3 at %4 from %5 peers)</source>
-        <translation type="unfinished"/>
+        <translation>%1% — %2 из %3 (%4) от %5 пиров</translation>
     </message>
     <message>
         <location filename="core.cpp" line="597"/>
         <source>%1, seeding at %2 to %3 leechers (of around %4)</source>
-        <translation type="unfinished"/>
+        <translation>%1, раздается %3 личерам (из ≈%4) на скорости %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="685"/>
@@ -602,6 +586,41 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="core.cpp" line="689"/>
         <source>Peers/seeds: %1/%2</source>
         <translation>Пиров/сидов: %1/%2</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1389"/>
+        <source>Torrent finished: %1</source>
+        <translation>Торрент завершён: %1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1406"/>
+        <source>Open...</source>
+        <translation>Открыть…</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1414"/>
+        <source>Show folder</source>
+        <translation>Открыть папку</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="276"/>
+        <source>Size</source>
+        <translation>Размер</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="277"/>
+        <source>Total downloaded</source>
+        <translation>Скачано всего</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="279"/>
+        <source>Ratio</source>
+        <translation>Отношение</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="397"/>
+        <source>Paused</source>
+        <translation>Пауза</translation>
     </message>
     <message>
         <location filename="core.cpp" line="359"/>
@@ -621,7 +640,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="365"/>
         <source>Finished</source>
-        <translation>Закончена</translation>
+        <translation>Закончен</translation>
     </message>
     <message>
         <location filename="core.cpp" line="367"/>
@@ -646,32 +665,17 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="core.cpp" line="797"/>
         <source>libtorrent error: %1</source>
-        <translation type="unfinished"/>
+        <translation>ошибка libtorrent: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="844"/>
         <source>File %1 could not be read: %2.</source>
-        <translation type="unfinished"/>
+        <translation>Файл %1 не может быть прочитан: %2.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1281"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Невозможно открыть сохранённый торрент %1 для чтения.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1389"/>
-        <source>Torrent finished: %1</source>
-        <translation>Торрент завершён: %1</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1406"/>
-        <source>Open...</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1414"/>
-        <source>Show folder</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -680,7 +684,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="fastspeedcontrolwidget.cpp" line="97"/>
         <location filename="fastspeedcontrolwidget.cpp" line="98"/>
         <source> KiB/s</source>
-        <translation>КиБ/с</translation>
+        <translation> КБ/с</translation>
     </message>
 </context>
 <context>
@@ -712,13 +716,13 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="ipfilterdialog.cpp" line="60"/>
         <location filename="ipfilterdialog.cpp" line="96"/>
         <source>block</source>
-        <translation>запретить</translation>
+        <translation>блокировать</translation>
     </message>
     <message>
         <location filename="ipfilterdialog.cpp" line="39"/>
         <location filename="ipfilterdialog.cpp" line="61"/>
         <source>allow</source>
-        <translation>разрешить</translation>
+        <translation>разрешать</translation>
     </message>
 </context>
 <context>
@@ -744,7 +748,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="115"/>
         <source>Add magnet link...</source>
-        <translation type="unfinished"/>
+        <translation>Добавить magnet-ссылку…</translation>
     </message>
     <message>
         <location filename="listactions.cpp" line="126"/>
@@ -759,7 +763,11 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message numerus="yes">
         <location filename="listactions.cpp" line="165"/>
         <source>Do you really want to delete %n torrent(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Вы действительно хотите удалить %n торрент?</numerusform>
+            <numerusform>Вы действительно хотите удалить %n торрента?</numerusform>
+            <numerusform>Вы действительно хотите удалить %n торрентов?</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="listactions.cpp" line="167"/>
@@ -804,7 +812,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="217"/>
         <source>Move up</source>
-        <translation>Переместить наверх</translation>
+        <translation>Переместить вверх</translation>
     </message>
     <message>
         <location filename="listactions.cpp" line="222"/>
@@ -844,7 +852,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="listactions.cpp" line="287"/>
         <source>Failed to move torrent&apos;s files from %1 to %2.</source>
-        <translation type="unfinished"/>
+        <translation>Ошибка при перемещении файлов торрента из %1 в %2.</translation>
     </message>
     <message>
         <location filename="listactions.cpp" line="292"/>
@@ -882,7 +890,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="livestreamdevice.cpp" line="31"/>
         <source>No metadata is available yet.</source>
-        <translation type="unfinished"/>
+        <translation>Метаданные ещё не загружены.</translation>
     </message>
 </context>
 <context>
@@ -890,7 +898,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="movetorrentfiles.cpp" line="27"/>
         <source>Multiple directories</source>
-        <translation type="unfinished"/>
+        <translation>Несколько директорий</translation>
     </message>
     <message>
         <location filename="movetorrentfiles.cpp" line="41"/>
@@ -921,6 +929,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peersmodel.cpp" line="32"/>
         <source>Upload rate</source>
+        <oldsource>Urate</oldsource>
         <translation>Скорость отдачи</translation>
     </message>
     <message>
@@ -944,15 +953,15 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <translation>Доступно частей</translation>
     </message>
     <message>
-        <location filename="peersmodel.cpp" line="86"/>
-        <location filename="peersmodel.cpp" line="91"/>
-        <source>/s</source>
-        <translation>/c</translation>
-    </message>
-    <message>
         <location filename="peersmodel.cpp" line="107"/>
         <source>%1/%2</source>
         <translation>%1/%2</translation>
+    </message>
+    <message>
+        <location filename="peersmodel.cpp" line="86"/>
+        <location filename="peersmodel.cpp" line="91"/>
+        <source>/s</source>
+        <translation>/с</translation>
     </message>
 </context>
 <context>
@@ -1008,7 +1017,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="peerswidget.cpp" line="183"/>
         <source>yes</source>
-        <translation>есть</translation>
+        <translation>да</translation>
     </message>
     <message>
         <location filename="peerswidget.cpp" line="183"/>
@@ -1018,7 +1027,11 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message numerus="yes">
         <location filename="peerswidget.cpp" line="186"/>
         <source>%1 (%n second(s) remaining)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>%1 (осталось %n секунда)</numerusform>
+            <numerusform>%1 (осталось %n секунды)</numerusform>
+            <numerusform>%1 (осталось %n секунд)</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="peerswidget.cpp" line="194"/>
@@ -1063,7 +1076,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="speedselectoraction.cpp" line="52"/>
         <source>%1 KiB/s</source>
-        <translation>%1 КиБ/с</translation>
+        <translation>%1 КБ/с</translation>
     </message>
 </context>
 <context>
@@ -1082,7 +1095,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="tabwidget.cpp" line="144"/>
         <location filename="tabwidget.cpp" line="145"/>
         <source>/s</source>
-        <translation>/c</translation>
+        <translation>/с</translation>
     </message>
 </context>
 <context>
@@ -1113,7 +1126,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrentfilesmodel.cpp" line="270"/>
         <source>%1 hasn&apos;t finished downloading yet.</source>
-        <translation type="unfinished"/>
+        <translation>%1 ещё не скачался.</translation>
     </message>
 </context>
 <context>
@@ -1142,29 +1155,29 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
 <context>
     <name>LC::BitTorrent::TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="91"/>
-        <source>BitTorrent tab</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="92"/>
-        <source>Full BitTorrent downloads tab.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="torrentplugin.cpp" line="140"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
+        <location filename="torrentplugin.cpp" line="91"/>
+        <source>BitTorrent tab</source>
+        <translation>BitTorrent</translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="92"/>
+        <source>Full BitTorrent downloads tab.</source>
+        <translation>Полная версия вкладки BitTorrent.</translation>
+    </message>
+    <message>
         <location filename="torrentplugin.cpp" line="198"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
-        <translation>Файл %1 отклонён из-за слишком большого размера.</translation>
+        <translation>Файл %1 не рассматривался из-за слишком большого размера.</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="449"/>
         <source>Open in torrent tab</source>
-        <translation type="unfinished"/>
+        <translation>Открыть в торрент-вкладке</translation>
     </message>
 </context>
 <context>
@@ -1182,62 +1195,66 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message numerus="yes">
         <location filename="torrenttabfileswidget.cpp" line="194"/>
         <source>Open %n file(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Открыть %n файл</numerusform>
+            <numerusform>Открыть %n файла</numerusform>
+            <numerusform>Открыть %n файлов</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="228"/>
         <source>Change priority</source>
-        <translation type="unfinished"/>
+        <translation>Изменить приоритет</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="231"/>
         <source>File is not downloaded.</source>
-        <translation type="unfinished"/>
+        <translation>Файл не скачивается.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="232"/>
         <source>Normal priority, download order depends on availability.</source>
-        <translation type="unfinished"/>
+        <translation>Обычный приоритет, порядок скачивания зависит от доступности.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="233"/>
         <source>Pieces are preferred over the pieces with same availability.</source>
-        <translation type="unfinished"/>
+        <translation>Кусочки файла предпочитаются другим кусочкам с той же доступностью.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="234"/>
         <source>Empty pieces are preferred just as much as partial pieces.</source>
-        <translation type="unfinished"/>
+        <translation>Пустые кусочки имеют тот же приоритет, что и частично загруженные.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="235"/>
         <source>Empty pieces are preferred over partial pieces with the same availability.</source>
-        <translation type="unfinished"/>
+        <translation>Пустые кусочки имеют предпочитаются частично загруженным кусочкам с той же доступностью.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="236"/>
         <source>Same as previous.</source>
-        <translation type="unfinished"/>
+        <translation>То же, что и предыдущее.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="237"/>
         <source>Pieces are considered to have highest availability.</source>
-        <translation type="unfinished"/>
+        <translation>Кусочки файла рассматриваются как имеющие наивысшую доступность.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="238"/>
         <source>Maximum file priority.</source>
-        <translation type="unfinished"/>
+        <translation>Максимальный приоритет.</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="255"/>
         <source>Expand all</source>
-        <translation type="unfinished"/>
+        <translation>Развернуть все</translation>
     </message>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="256"/>
         <source>Collapse all</source>
-        <translation type="unfinished"/>
+        <translation>Свернуть все</translation>
     </message>
 </context>
 <context>
@@ -1260,7 +1277,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="torrenttabwidget.cpp" line="391"/>
         <location filename="torrenttabwidget.cpp" line="392"/>
         <source>/s</source>
-        <translation>/c</translation>
+        <translation>/с</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.cpp" line="365"/>
@@ -1327,7 +1344,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="movetorrentfiles.ui" line="32"/>
         <source>Multiple sources</source>
-        <translation type="unfinished"/>
+        <translation>Множество источников</translation>
     </message>
     <message>
         <location filename="movetorrentfiles.ui" line="39"/>
@@ -1337,7 +1354,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="movetorrentfiles.ui" line="51"/>
         <source>Browse…</source>
-        <translation type="unfinished"/>
+        <translation>Обзор...</translation>
     </message>
 </context>
 <context>
@@ -1348,14 +1365,14 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <translation>Основные параметры</translation>
     </message>
     <message>
-        <location filename="newtorrentfirststep.ui" line="24"/>
-        <source>Output:</source>
-        <translation>Сохранить в:</translation>
-    </message>
-    <message>
         <location filename="newtorrentfirststep.ui" line="36"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
+    </message>
+    <message>
+        <location filename="newtorrentfirststep.ui" line="24"/>
+        <source>Output:</source>
+        <translation>Сохранить в:</translation>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="48"/>
@@ -1408,62 +1425,42 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="newtorrentthirdstep.ui" line="36"/>
         <source>32 kb</source>
-        <translation>32 КиБ</translation>
+        <translation>32 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="41"/>
         <source>64 kb</source>
-        <translation>64 КиБ</translation>
+        <translation>64 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="46"/>
         <source>128 kb</source>
-        <translation>128 КиБ</translation>
+        <translation>128 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="51"/>
         <source>256 kb</source>
-        <translation>256 КиБ</translation>
+        <translation>256 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="56"/>
         <source>512 kb</source>
-        <translation>512 КиБ</translation>
+        <translation>512 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="61"/>
         <source>1 mb</source>
-        <translation>1 МиБ</translation>
+        <translation>1 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="66"/>
         <source>2 mb</source>
-        <translation>2 МиБ</translation>
+        <translation>2 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="71"/>
         <source>4 mb</source>
-        <translation>4 МиБ</translation>
-    </message>
-    <message>
-        <location filename="newtorrentthirdstep.ui" line="76"/>
-        <source>8 mb</source>
-        <translation>8 МиБ</translation>
-    </message>
-    <message>
-        <location filename="newtorrentthirdstep.ui" line="81"/>
-        <source>16 mb</source>
-        <translation>16 МиБ</translation>
-    </message>
-    <message>
-        <location filename="newtorrentthirdstep.ui" line="86"/>
-        <source>32 mb</source>
-        <translation>32 МиБ</translation>
-    </message>
-    <message>
-        <location filename="newtorrentthirdstep.ui" line="91"/>
-        <source>64 mb</source>
-        <translation>64 МиБ</translation>
+        <translation>4 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="112"/>
@@ -1484,6 +1481,26 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="newtorrentthirdstep.ui" line="177"/>
         <source>Known nodes:</source>
         <translation>Известные узлы:</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="76"/>
+        <source>8 mb</source>
+        <translation>8 МБ</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="81"/>
+        <source>16 mb</source>
+        <translation>16 МБ</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="86"/>
+        <source>32 mb</source>
+        <translation>32 МБ</translation>
+    </message>
+    <message>
+        <location filename="newtorrentthirdstep.ui" line="91"/>
+        <source>64 mb</source>
+        <translation>64 МБ</translation>
     </message>
 </context>
 <context>
@@ -1651,17 +1668,6 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="tabwidget.ui" line="49"/>
-        <source>Settings</source>
-        <translation>Параметры</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="63"/>
-        <location filename="tabwidget.ui" line="304"/>
-        <source>Download/upload rate:</source>
-        <translation>Скорость скачивания/отдачи:</translation>
-    </message>
-    <message>
         <location filename="tabwidget.ui" line="72"/>
         <location filename="tabwidget.ui" line="110"/>
         <location filename="tabwidget.ui" line="313"/>
@@ -1677,17 +1683,63 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="tabwidget.ui" line="319"/>
         <location filename="tabwidget.ui" line="357"/>
         <source> kb/s</source>
-        <translation> КиБ/с</translation>
+        <translation> КБ/с</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="269"/>
+        <source>Total uploaded:</source>
+        <translation>Всего отдано:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="49"/>
+        <source>Settings</source>
+        <translation>Параметры</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="134"/>
+        <source>Tags:</source>
+        <translation>Теги:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="166"/>
+        <source>Status</source>
+        <translation>Статус</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="178"/>
+        <source>State:</source>
+        <translation>Состояние:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="199"/>
+        <source>Progress:</source>
+        <translation>Прогресс:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="63"/>
+        <location filename="tabwidget.ui" line="304"/>
+        <source>Download/upload rate:</source>
+        <translation>Скорость скачивания/отдачи:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="292"/>
         <source>Overall settings</source>
-        <translation type="unfinished"/>
+        <translation>Общие настройки</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="378"/>
         <source>Leeching/seeding torrents:</source>
         <translation>Скачивающихся/раздающихся торрентов:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="144"/>
+        <source>Auto managed</source>
+        <translation>Автоматически управляемый</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="154"/>
+        <source>Sequential download</source>
+        <translation>Последовательная загрузка</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="437"/>
@@ -1705,41 +1757,6 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="tabwidget.ui" line="463"/>
         <source>Total upload rate:</source>
         <translation>Общая скорость отдачи:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="269"/>
-        <source>Total uploaded:</source>
-        <translation>Всего отдано:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="134"/>
-        <source>Tags:</source>
-        <translation>Теги:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="144"/>
-        <source>Auto managed</source>
-        <translation>Автоматически управляемый</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="154"/>
-        <source>Sequential download</source>
-        <translation>Последовательная загрузка</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="166"/>
-        <source>Status</source>
-        <translation>Статус</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="178"/>
-        <source>State:</source>
-        <translation>Состояние:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="199"/>
-        <source>Progress:</source>
-        <translation>Прогресс:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="241"/>
@@ -1767,12 +1784,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttab.ui" line="38"/>
         <source>Downloading</source>
-        <translation>Скачивание</translation>
+        <translation>Скачивающиеся</translation>
     </message>
     <message>
         <location filename="torrenttab.ui" line="43"/>
         <source>Seeding</source>
-        <translation>Раздача</translation>
+        <translation>Раздающиеся</translation>
     </message>
 </context>
 <context>
@@ -1833,12 +1850,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="torrenttabwidget.ui" line="1077"/>
         <location filename="torrenttabwidget.ui" line="1115"/>
         <source> kb/s</source>
-        <translation> КиБ/с</translation>
+        <translation> КБ/с</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="201"/>
         <source>Tags:</source>
-        <translation>Метки:</translation>
+        <translation>Теги:</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="215"/>
@@ -2027,7 +2044,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="769"/>
         <source>Torrent info</source>
-        <translation type="unfinished"/>
+        <translation>Информация о торренте</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="787"/>
@@ -2042,7 +2059,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="torrenttabwidget.ui" line="824"/>
         <source>Destination:</source>
-        <translation>Пункт назначения:</translation>
+        <translation>Каталог:</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="841"/>
@@ -2410,17 +2427,17 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Enable port for SSL torrents</source>
-        <translation type="unfinished"/>
+        <translation>Открыть порт для SSL-торрентов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>SSL port:</source>
-        <translation type="unfinished"/>
+        <translation>SSL-порт:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Resolve countries</source>
-        <translation type="unfinished"/>
+        <translation>Разрешать страны</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="41"/>
@@ -2482,7 +2499,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="69"/>
         <source>Allow downloading the metadata from the swarm in a µTorrent-compatible way</source>
         <oldsource>Allow to download metadata from the swarm</oldsource>
-        <translation type="unfinished"/>
+        <translation>Разрешить скачивание метаданные из роя μTorrent-совместимым образом</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="71"/>
@@ -2549,7 +2566,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="266"/>
         <source>s</source>
         <oldsource> s</oldsource>
-        <translation type="unfinished"/>
+        <translation>с</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="89"/>
@@ -2599,12 +2616,12 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="53"/>
         <source>Use DHT as a fallback</source>
-        <translation type="unfinished"/>
+        <translation>Использовать DHT при недоступном трекере</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
         <source>Features and extensions</source>
-        <translation type="unfinished"/>
+        <translation>Возможности и расширения</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="107"/>
@@ -2632,7 +2649,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="270"/>
         <source>KB</source>
         <oldsource> KB</oldsource>
-        <translation type="unfinished"/>
+        <translation>КБ</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="123"/>
@@ -2784,7 +2801,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="213"/>
         <source>min</source>
         <oldsource> min</oldsource>
-        <translation type="unfinished"/>
+        <translation>мин</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="211"/>
@@ -2794,17 +2811,17 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
     <message>
         <location filename="dummy.cpp" line="215"/>
         <source>Pieces count to send via fast extensions:</source>
-        <translation type="unfinished"/>
+        <translation>Количество частей для отправки через быстрые расширения:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="235"/>
         <source>Maximum automatically added torrent file size:</source>
-        <translation type="unfinished"/>
+        <translation>Максимальный размер автоматически добавляемого торрента:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="252"/>
         <source>Precise but slow file progress calculation</source>
-        <translation type="unfinished"/>
+        <translation>Точный, но медленный расчёт прогресса файлов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="217"/>
@@ -2842,7 +2859,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="245"/>
         <source>MB</source>
         <oldsource> MB</oldsource>
-        <translation type="unfinished"/>
+        <translation>МБ</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="239"/>
@@ -2868,7 +2885,7 @@ This is useful, for example, when you need to re-add a bunch of torrents you wer
         <location filename="dummy.cpp" line="256"/>
         <source>Give slots to seeding torrents in automanaged mode</source>
         <oldsource>Unload hashes from memory if seeding</oldsource>
-        <translation>Давать слоты раздающимся торрентам в автоматическом режиме</translation>
+        <translation>Предоставлять слоты раздающимся торрентам в автоматически управляемом режиме</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="258"/>
