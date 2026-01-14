@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QDir>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 
 namespace LC::Azoth::Sarin
@@ -26,21 +27,19 @@ namespace LC::Azoth::Sarin
 			switch (level)
 			{
 			case TOX_LOG_LEVEL_TRACE:
-				return "[TRACE] ";
+				return "[TRACE] "_qba;
 			case TOX_LOG_LEVEL_DEBUG:
-				return "[DBG]   ";
+				return "[DBG]   "_qba;
 			case TOX_LOG_LEVEL_INFO:
-				return "[INFO]  ";
+				return "[INFO]  "_qba;
 			case TOX_LOG_LEVEL_WARNING:
-				return "[WARN]  ";
+				return "[WARN]  "_qba;
 			case TOX_LOG_LEVEL_ERROR:
-				return "[ERR]   ";
+				return "[ERR]   "_qba;
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown debug level"
-					<< level;
-			return "[UN]";
+			qWarning () << "unknown debug level" << level;
+			return "[UN] "_qba;
 		}
 	}
 
@@ -48,24 +47,17 @@ namespace LC::Azoth::Sarin
 			const char *srcFile, uint32_t line, const char *func,
 			const char *message)
 	{
-		const auto& path = Util::CreateIfNotExists ("azoth/sarin/logs").filePath (Name_ + ".log");
-		QFile file { path };
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Append))
+		const auto& logStr = "%1 %2 %4:%3: `%5`"_qs
+				.arg (LogLevelToMarker (level), srcFile, QByteArray::number (line), func, message)
+				.toUtf8 ();
+		const auto& path = Util::CreateIfNotExists ("azoth/sarin/logs"_qs).filePath (Name_ + ".log"_qs);
+		if (QFile file { path };
+			!file.open (QIODevice::WriteOnly | QIODevice::Append))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open file"
-					<< path
-					<< ":"
-					<< file.errorString ();
-			return;
+			qWarning () << "cannot open file" << path << ":" << file.errorString ();
+			qWarning () << logStr;
 		}
-
-		file.write (QString { "%1 %2 %4:%3: `%5`" }
-				.arg (QString::fromLatin1 (LogLevelToMarker (level)))
-				.arg (QString::fromUtf8 (srcFile))
-				.arg (line)
-				.arg (QString::fromUtf8 (func))
-				.arg (QString::fromUtf8 (message))
-				.toUtf8 ());
+		else
+			file.write (logStr);
 	}
 }
