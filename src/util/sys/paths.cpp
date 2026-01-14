@@ -144,8 +144,9 @@ namespace LC::Util
 	{
 		static const auto defaultPattern = QStringLiteral ("lc_temp.XXXXXX");
 		QTemporaryFile file (QDir::tempPath () + '/' + (pattern.isEmpty () ? defaultPattern : pattern));
-		file.open ();
-		QString name = file.fileName ();
+		if (!file.open ())
+			qWarning () << "unable to open temporary file" << file.errorString ();
+		const auto name = file.fileName ();
 		file.close ();
 		file.remove ();
 		return name;
