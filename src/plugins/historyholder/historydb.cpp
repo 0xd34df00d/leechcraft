@@ -54,7 +54,9 @@ namespace HistoryHolder
 	{
 		auto model = std::make_shared<QSqlQueryModel> ();
 
-		model->setQuery (SelectHistory_);
+		auto selectHistory = QSqlQuery { DB_ };
+		selectHistory.prepare (Util::LoadQuery ("historyholder", "select_history"));
+		model->setQuery (std::move (selectHistory));
 
 		/* The following roles should also be handled by the model:
 		 *
@@ -111,9 +113,6 @@ namespace HistoryHolder
 
 		InsertEntity_ = QSqlQuery { DB_ };
 		InsertEntity_.prepare (loadQuery ("insert_entity"));
-
-		SelectHistory_ = QSqlQuery { DB_ };
-		SelectHistory_.prepare (loadQuery ("select_history"));
 	}
 
 	void HistoryDB::LoadTags ()
