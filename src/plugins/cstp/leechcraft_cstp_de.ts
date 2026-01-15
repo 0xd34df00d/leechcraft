@@ -1,157 +1,215 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="de" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="de">
 <context>
-    <name>LC::Plugins::CSTP::AddTask</name>
+    <name>AddTask</name>
     <message>
-        <location filename="addtask.cpp" line="107"/>
-        <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
-        <translation>Der Ordner %1 existiert nicht, möchten Sie einen Anderen auswählen?</translation>
+        <location filename="addtask.ui" line="14"/>
+        <source>Add task</source>
+        <translation>Aufgabe hinzufügen</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="110"/>
-        <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
-        <translation>Der Ordner %1 ist nicht lesbar, möchten Sie einen Anderen auswählen?</translation>
+        <location filename="addtask.ui" line="32"/>
+        <source>Local path:</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="addtask.cpp" line="113"/>
-        <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
-        <translation>Der Ordner %1 ist nicht schreibbar, möchten Sie einen Anderen auswählen?</translation>
+        <location filename="addtask.ui" line="44"/>
+        <source>Browse...</source>
+        <translation>Auswählen...</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="116"/>
-        <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
-        <translation>%1 ist kein Verzeichnis, willst du ein anderes Auswählen?</translation>
+        <location filename="addtask.ui" line="56"/>
+        <source>Filename:</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="addtask.cpp" line="157"/>
-        <source>Select directory</source>
-        <translation>Verzeichnis auswählen</translation>
+        <location filename="addtask.ui" line="66"/>
+        <source>Comment:</source>
+        <translation>Kommentar:</translation>
     </message>
 </context>
 <context>
-    <name>LC::Plugins::CSTP::CSTP</name>
+    <name>LC::CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="206"/>
+        <location filename="cstp.cpp" line="136"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="213"/>
+        <location filename="cstp.cpp" line="143"/>
         <source>Remove all</source>
         <translation>Alle entfernen</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="222"/>
+        <location filename="cstp.cpp" line="152"/>
         <source>Start</source>
         <translation>Starten</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="229"/>
+        <location filename="cstp.cpp" line="159"/>
         <source>Stop</source>
         <translation>Anhalten</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="236"/>
+        <location filename="cstp.cpp" line="166"/>
         <source>Start all</source>
         <translation>Starte alle</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="243"/>
+        <location filename="cstp.cpp" line="173"/>
         <source>Stop all</source>
         <translation>Halte alle an</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="255"/>
+        <location filename="cstp.cpp" line="185"/>
         <source>File exists</source>
         <translation>Datei existiert</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="256"/>
+        <location filename="cstp.cpp" line="186"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Die Datei %1 existiert bereits, möchten Sie den Download trotzdem fortsetzen?</translation>
     </message>
 </context>
 <context>
-    <name>LC::Plugins::CSTP::Core</name>
+    <name>LC::CSTP::AddTask</name>
     <message>
-        <location filename="core.cpp" line="61"/>
-        <source>URL</source>
-        <translation>URL</translation>
+        <location filename="addtask.cpp" line="95"/>
+        <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
+        <translation>Der Ordner %1 existiert nicht, möchten Sie einen Anderen auswählen?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="62"/>
+        <location filename="addtask.cpp" line="98"/>
+        <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
+        <translation>Der Ordner %1 ist nicht lesbar, möchten Sie einen Anderen auswählen?</translation>
+    </message>
+    <message>
+        <location filename="addtask.cpp" line="101"/>
+        <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
+        <translation>Der Ordner %1 ist nicht schreibbar, möchten Sie einen Anderen auswählen?</translation>
+    </message>
+    <message>
+        <location filename="addtask.cpp" line="104"/>
+        <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
+        <translation>%1 ist kein Verzeichnis, willst du ein anderes Auswählen?</translation>
+    </message>
+    <message>
+        <location filename="addtask.cpp" line="145"/>
+        <source>Select directory</source>
+        <translation>Verzeichnis auswählen</translation>
+    </message>
+</context>
+<context>
+    <name>LC::CSTP::Core</name>
+    <message>
+        <location filename="core.cpp" line="55"/>
         <source>State</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="63"/>
+        <location filename="core.cpp" line="55"/>
         <source>Progress</source>
         <translation>Fortschritt</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="277"/>
+        <location filename="core.cpp" line="279"/>
         <source>Could not truncate file </source>
         <translation>Datei konnte nicht gekürzt werden </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="417"/>
+        <location filename="core.cpp" line="428"/>
         <source>%1 (ETA: %2)</source>
         <translation>%1 (ETA: %2)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="429"/>
+        <location filename="core.cpp" line="440"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation>%1% (%2 von %3 bei %4)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="433"/>
+        <location filename="core.cpp" line="444"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="521"/>
+        <location filename="core.cpp" line="551"/>
         <source>Could not open file %1: %2</source>
         <translation>Kann Datei %1 nicht öffnen: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="580"/>
-        <source>Download finished: %1
-%2</source>
-        <translation>Download fertiggestellt: %1
-%2</translation>
+        <location filename="core.cpp" line="611"/>
+        <source>Failed downloading %1 (%2).</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="core.cpp" line="614"/>
+        <source>Finished downloading %1 (%2).</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="core.cpp" line="629"/>
+        <source>Handle...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="core.cpp" line="637"/>
+        <source>Open externally</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="core.cpp" line="642"/>
+        <source>Show folder</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
-    <name>LC::Plugins::CSTP::MainViewDelegate</name>
+    <name>LC::CSTP::Task</name>
     <message>
-        <location filename="mainviewdelegate.cpp" line="71"/>
-        <source>Idle</source>
-        <translation>Untätig</translation>
+        <location filename="task.cpp" line="220"/>
+        <source>Unsupported operation.</source>
+        <translation type="unfinished"/>
     </message>
-</context>
-<context>
-    <name>LC::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="213"/>
+        <location filename="task.cpp" line="337"/>
         <source>Stopped</source>
         <translation>Angehalten</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="215"/>
+        <location filename="task.cpp" line="339"/>
         <source>Finished</source>
         <translation>Abgeschlossen</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="217"/>
+        <location filename="task.cpp" line="341"/>
         <source>Running</source>
         <translation>Läuft</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="238"/>
+        <location filename="task.cpp" line="361"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>Der Task ist nicht richtig gestartet</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="476"/>
+        <location filename="task.cpp" line="428"/>
+        <source>Redirections loop detected.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="task.cpp" line="621"/>
+        <source>Target path is not a file.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="task.cpp" line="638"/>
+        <source>Unable to open the destination file for writing.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="task.cpp" line="648"/>
+        <source>Unable to open the source file for reading.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="task.cpp" line="680"/>
         <source>Error writing to file %1: %2</source>
         <translation>Fehler beim Schreiben in Datei %1: %2</translation>
     </message>
@@ -159,119 +217,38 @@
 <context>
     <name>cstpsettings</name>
     <message>
-        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Local settings</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
         <location filename="dummy.cpp" line="7"/>
         <source>Behavior</source>
         <translation>Handlungsart</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Alert about errors</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Network settings</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
-        <source>General</source>
-        <translation>Allgemein</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="8"/>
-        <source>Use text transfer mode:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Identification</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
-        <source>HTTP</source>
-        <translation>HTTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="11"/>
-        <source>Login:</source>
-        <translation>Login:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="12"/>
-        <source>Password:</source>
-        <translation>Paßwort:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Custom user agent:</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
-        <source>Predefined user agent:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="15"/>
-        <source>Firefox 3.0.1 on Linux i686</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="16"/>
-        <source>Internet Explorer 6.0 on Windows XP</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="dummy.cpp" line="17"/>
-        <source>Internet Explorer 7.0 on Windows Vista</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="18"/>
-        <source>Internet Explorer 4.0 on Windows 98</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="19"/>
-        <source>Internet Explorer 2.0 on Windows 95</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="20"/>
-        <source>Konqueror 4.0</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="21"/>
-        <source>SeaMonkey 1.1.11 on Linux i686</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="22"/>
-        <source>Opera 9.52 on Linux x86_64</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="23"/>
-        <source>Wget 1.9.1</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="24"/>
-        <source>w3m 0.5.2</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="25"/>
-        <source>Lynx 2.8.7 with OpenSSL</source>
+        <source>Predefined user agent:</source>
         <translation type="unfinished"/>
     </message>
 </context>
