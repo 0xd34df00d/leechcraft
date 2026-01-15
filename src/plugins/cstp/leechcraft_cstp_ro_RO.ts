@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ro_RO">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ro_RO">
 <context>
     <name>AddTask</name>
     <message>
@@ -168,7 +166,7 @@
     <message>
         <location filename="task.cpp" line="220"/>
         <source>Unsupported operation.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="task.cpp" line="337"/>
@@ -193,22 +191,22 @@
     <message>
         <location filename="task.cpp" line="428"/>
         <source>Redirections loop detected.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="task.cpp" line="621"/>
         <source>Target path is not a file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="task.cpp" line="638"/>
         <source>Unable to open the destination file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="task.cpp" line="648"/>
         <source>Unable to open the source file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="task.cpp" line="680"/>
@@ -225,7 +223,6 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
-        <location filename="dummy.cpp" line="15"/>
         <source>Behavior</source>
         <translation>Comportament</translation>
     </message>
@@ -241,103 +238,18 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
-        <source>General</source>
-        <translation>General</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="17"/>
-        <source>Use text transfer mode:</source>
-        <translation>Folosește modul de transfer text</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="19"/>
         <source>Identification</source>
         <translation>Identificare</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
-        <source>HTTP</source>
-        <translation>HTTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="23"/>
-        <source>Login:</source>
-        <translation>Utilizator:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="25"/>
-        <source>Password:</source>
-        <translation>Parola:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Custom user agent:</source>
         <translation>Agent utilizator personalizat:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Predefined user agent:</source>
         <translation>Agent utilizator predefinit:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="31"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="33"/>
-        <source>Firefox 3.0.1 on Linux i686</source>
-        <translation>Firefox 3.0.1 pe Linux i686</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="35"/>
-        <source>Internet Explorer 6.0 on Windows XP</source>
-        <translation>Internet Explorer 6.0 pe Windows XP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="37"/>
-        <source>Internet Explorer 7.0 on Windows Vista</source>
-        <translation>Internet Explorer 7.0 pe Windows Vista</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="39"/>
-        <source>Internet Explorer 4.0 on Windows 98</source>
-        <translation>Internet Explorer 4.0 pe Windows 98</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="41"/>
-        <source>Internet Explorer 2.0 on Windows 95</source>
-        <translation>Internet Explorer 2.0 pe Windows 95</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="43"/>
-        <source>Konqueror 4.0</source>
-        <translation>Konqueror 4.0</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="45"/>
-        <source>SeaMonkey 1.1.11 on Linux i686</source>
-        <translation>SeaMonkey 1.1.11 pe Linux i686</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="47"/>
-        <source>Opera 9.52 on Linux x86_64</source>
-        <translation>Opera 9.52 pe Linux x86_64</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="49"/>
-        <source>Wget 1.9.1</source>
-        <translation>Wget 1.9.1</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="51"/>
-        <source>w3m 0.5.2</source>
-        <translation>w3m 0.5.2</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="53"/>
-        <source>Lynx 2.8.7 with OpenSSL</source>
-        <translation>Lynx 2.8.7 cu OpenSSL</translation>
     </message>
 </context>
 </TS>
