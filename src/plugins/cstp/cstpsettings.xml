@@ -8,7 +8,7 @@
 	<page label="Network settings">
 		<groupbox label="Identification">
 			<item type="lineedit" property="UserUserAgent" label="Custom user agent:" />
-			<item type="combobox" property="PredefinedUserAgent" label="Predefined user agent:">
+			<item type="combobox" property="PredefinedUserAgent" label="Predefined user agent:" tschildren="false">
 				<option default="true" name="%leechcraft%" label="LeechCraft">
 					<binary type="image" place="rcc">:/resources/images/leechcraft.svg</binary>
 				</option>
