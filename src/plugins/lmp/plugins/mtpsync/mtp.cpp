@@ -25,28 +25,16 @@ namespace LC::LMP::MTPSync
 	}
 
 	MtpRunner::MtpRunner ()
+	: WorkerThread { { .ThreadName_ = "LMP MTPSync" } }
 	{
-		Thread_.setServiceLevel (QThread::QualityOfService::Eco);
-		Thread_.start (QThread::LowPriority);
-		Mtp_.moveToThread (&Thread_);
-
-		connect (&Mtp_,
+		connect (&Worker_,
 				&Mtp::mtpConnected,
 				this,
 				&MtpRunner::mtpConnected);
-		connect (&Mtp_,
+		connect (&Worker_,
 				&Mtp::mtpDisconnected,
 				this,
 				&MtpRunner::mtpDisconnected);
-	}
-
-	MtpRunner::~MtpRunner ()
-	{
-		QMetaObject::invokeMethod (&Mtp_,
-				[this, thread = thread ()] { Mtp_.moveToThread (thread); },
-				Qt::BlockingQueuedConnection);
-		Thread_.quit ();
-		Thread_.wait ();
 	}
 
 	Mtp::Mtp ()

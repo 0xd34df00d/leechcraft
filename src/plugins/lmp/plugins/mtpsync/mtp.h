@@ -11,6 +11,7 @@
 #include <QObject>
 #include <util/threads/coro.h>
 #include <util/threads/coro/metamethod.h>
+#include <util/threads/coro/workerthread.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include "types.h"
 
@@ -79,26 +80,11 @@ namespace LC::LMP::MTPSync
 		void mtpDisconnected (const QList<MtpDeviceInfo>&);
 	};
 
-	class MtpRunner final : public QObject
+	class MtpRunner final : public Util::Coro::WorkerThread<Mtp>
 	{
 		Q_OBJECT
-
-		QThread Thread_;
-		Mtp Mtp_;
 	public:
 		MtpRunner ();
-		~MtpRunner () override;
-
-		MtpRunner (const MtpRunner&) = delete;
-		MtpRunner (MtpRunner&&) = delete;
-		MtpRunner& operator= (const MtpRunner&) = delete;
-		MtpRunner& operator= (MtpRunner&&) = delete;
-
-		template<typename F, typename... Args, typename R = std::invoke_result_t<F, Mtp*, Args...>>
-		Util::ContextTask<R> Run (F&& f, Args&&... args)
-		{
-			co_return co_await Util::MetaMethod (Mtp_, std::forward<F> (f), std::forward<Args> (args)...);
-		}
 	signals:
 		void mtpConnected (const QList<MtpDeviceInfo>&);
 		void mtpDisconnected (const QList<MtpDeviceInfo>&);
