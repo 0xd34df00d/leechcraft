@@ -94,7 +94,7 @@ namespace LC::Util::Coro
 					Qt::BlockingQueuedConnection);
 		}
 
-		template<typename F, typename... Args, typename R = std::invoke_result_t<F, T*, Args...>>
+		template<typename F, typename... Args, typename R = std::invoke_result_t<F, T&, Args...>>
 		ContextTask<R> Run (F&& f, Args&&... args)
 		{
 			co_return co_await Util::MetaMethod (Worker_, std::forward<F> (f), std::forward<Args> (args)...);
