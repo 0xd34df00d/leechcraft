@@ -81,7 +81,7 @@ namespace LC::Azoth::Sarin
 
 	void ToxProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
-		const auto detailsPage = qobject_cast<AccRegisterDetailsPage*> (widgets.value (0));
+		const auto detailsPage = dynamic_cast<AccRegisterDetailsPage*> (widgets.value (0));
 
 		auto acc = new ToxAccount { name, this };
 		acc->SetNickname (detailsPage->GetNickname ());

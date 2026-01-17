@@ -15,15 +15,11 @@ namespace LC::Azoth::Sarin
 {
 	class AccRegisterDetailsPage : public QWidget
 	{
-		Q_OBJECT
-
 		Ui::AccRegisterDetailsPage Ui_;
 	public:
 		explicit AccRegisterDetailsPage (QWidget* = nullptr);
 
 		QString GetId () const;
 		QString GetNickname () const;
-	private slots:
-		void on_GenerateButton__released ();
 	};
 }
