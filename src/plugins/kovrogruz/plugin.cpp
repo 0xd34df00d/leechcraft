@@ -10,10 +10,10 @@
 #include <QIcon>
 #include <QUrlQuery>
 #include <interfaces/core/icoreproxy.h>
+#include <util/sll/json.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/channelutils.h>
-#include <util/sll/json.h>
 
 namespace LC::Kovrogruz
 {
@@ -95,7 +95,7 @@ namespace LC::Kovrogruz
 			}
 		}
 
-		Util::Task<void> QueryITunes(Channel_t chan, Media::AlbumInfo album)
+		Util::Task<void> QueryITunes (Channel_t chan, Media::AlbumInfo album)
 		{
 			const auto service = "iTunes"_qs;
 
