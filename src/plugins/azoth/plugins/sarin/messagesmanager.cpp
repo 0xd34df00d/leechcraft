@@ -7,13 +7,12 @@
  **********************************************************************/
 
 #include "messagesmanager.h"
-#include <QTimer>
 #include <tox/tox.h>
+#include <util/threads/coro.h>
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "chatmessage.h"
 #include "util.h"
-#include "callbackmanager.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -24,145 +23,88 @@ namespace LC::Azoth::Sarin
 				&ToxAccount::threadChanged,
 				this,
 				&MessagesManager::SetThread);
-
-		connect (this,
-				&MessagesManager::invokeHandleInMessage,
-				this,
-				&MessagesManager::HandleInMessage);
-		connect (this,
-				&MessagesManager::invokeHandleReadReceipt,
-				this,
-				&MessagesManager::HandleReadReceipt);
 	}
 
-	void MessagesManager::SendMessage (const QByteArray& privkey, ChatMessage *msg)
+	Util::ContextTask<void> MessagesManager::SendMessage (QByteArray pkey, QPointer<ChatMessage> msg)
 	{
-		const auto thread = Thread_.lock ();
-		if (!thread)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot send messages in offline";
-			return;
-		}
-
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty message";
-			return;
-		}
-
+		co_await Util::AddContextObject { *this };
 		const auto& body = msg->GetBody ();
-		const auto future = thread->ScheduleFunction ([=] (Tox *tox) -> MessageSendResult
-				{
-					const auto friendNum = GetFriendId (tox, privkey);
-					if (!friendNum)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unknown friend"
-								<< privkey;
-						return { 0, privkey, msg };
-					}
 
-					const auto& msgUtf8 = body.toUtf8 ();
-					TOX_ERR_FRIEND_SEND_MESSAGE error {};
-					const auto id = tox_friend_send_message (tox,
-							*friendNum,
-							TOX_MESSAGE_TYPE_NORMAL,
-							reinterpret_cast<const uint8_t*> (msgUtf8.constData ()),
-							msgUtf8.size (),
-							&error);
+		const auto runner = Runner_.lock ();
+		if (!runner)
+		{
+			qWarning () << "cannot send messages in offline";
+			co_return;
+		}
 
-					if (error != TOX_ERR_FRIEND_SEND_MESSAGE_OK)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to send message"
-								<< error;
-						throw MakeCommandCodeException ("tox_friend_send_message", error);
-					}
+		const auto friendNum = co_await runner->Run (&ToxW::ResolveFriendNum, pkey);
+		if (!friendNum)
+		{
+			qWarning () << "unknown friend" << friendNum;
+			co_return;
+		}
 
-					return { id, privkey, msg };
-				});
+		using namespace std::chrono_literals;
+		constexpr int retries = 10;
+		constexpr auto backoffBase = 1s;
+		for (int i = 0; i < retries; ++i)
+		{
+			const auto sendResult = co_await runner->RunWithStrError (&tox_friend_send_message, body, *friendNum, TOX_MESSAGE_TYPE_NORMAL);
+			Util::Visit (sendResult,
+					[&, this] (uint32_t msgId) { MsgId2Msg_ [msgId] = msg; },
+					[] (TOX_ERR_FRIEND_SEND_MESSAGE error) { qWarning () << "unable to send message" << error; });
+			if (sendResult.IsRight ())
+				break;
 
-		Util::Sequence (this, future) >>
-				[this] (const MessageSendResult& result)
-				{
-					if (!result.Result_)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "message was not sent, resending in 5 seconds";
-
-						QTimer::singleShot (5000, this,
-								[result, this] { SendMessage (result.Privkey_, result.Msg_); });
-					}
-					else
-						MsgId2Msg_ [result.Result_] = result.Msg_;
-				};
+			co_await (backoffBase * (i + 1));
+		}
 	}
 
 	void MessagesManager::HandleReadReceipt (quint32 msgId)
 	{
-		if (!MsgId2Msg_.contains (msgId))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown message ID"
-					<< msgId
-					<< MsgId2Msg_.keys ();
-			return;
-		}
-
 		const auto& val = MsgId2Msg_.take (msgId);
 		if (!val)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "too late for roses, the message for ID"
-					<< msgId
-					<< "is dead";
+			qWarning () << "the message for ID" << msgId << "is dead";
 			return;
 		}
-
 		val->SetDelivered ();
 	}
 
-	void MessagesManager::HandleInMessage (qint32 friendId, const QString& msg)
+	Util::ContextTask<void> MessagesManager::HandleInMessage (qint32 friendId, const QString& msg)
 	{
-		const auto thread = Thread_.lock ();
-		if (!thread)
+		co_await Util::AddContextObject { *this };
+
+		const auto runner = Runner_.lock ();
+		if (!runner)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "got message in offline, that's kinda strange";
-			return;
+			qWarning () << "got message in offline, that's kinda strange";
+			co_return;
 		}
 
-		Util::Sequence (this, thread->GetFriendPubkey (friendId)) >>
-				[msg, this] (const QByteArray& pubkey)
-				{
-					if (pubkey.isEmpty ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "cannot get pubkey for message"
-								<< msg;
-						return;
-					}
+		const auto& pubkey = co_await runner->Run (&ToxW::GetFriendPubkey, friendId);
+		if (pubkey.isEmpty ())
+		{
+			qWarning () << "cannot get pubkey for message" << msg;
+			co_return;
+		}
 
-					emit gotMessage (pubkey, msg);
-				};
+		emit gotMessage (pubkey, msg);
 	}
 
-	void MessagesManager::SetThread (const std::shared_ptr<ToxThread>& thread)
+	void MessagesManager::SetThread (const std::shared_ptr<ToxRunner>& runner)
 	{
-		Thread_ = thread;
-		if (!thread)
+		Runner_ = runner;
+		if (!runner)
 			return;
 
-		const auto cbMgr = thread->GetCallbackManager ();
-		cbMgr->Register<tox_callback_friend_message> (this,
-				[] (MessagesManager *pThis, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msgData, size_t)
-				{
-					pThis->invokeHandleInMessage (friendId,
-							QString::fromUtf8 (reinterpret_cast<const char*> (msgData)));
-				});
-		cbMgr->Register<tox_callback_friend_read_receipt> (this,
-				[] (MessagesManager *pThis, uint32_t, uint32_t msgId) { pThis->invokeHandleReadReceipt (msgId); });
+		connect (&*runner,
+				&ToxRunner::incomingMessage,
+				this,
+				&MessagesManager::HandleInMessage);
+		connect (&*runner,
+				&ToxRunner::readReceipt,
+				this,
+				&MessagesManager::HandleReadReceipt);
 	}
 }

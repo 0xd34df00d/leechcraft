@@ -17,7 +17,6 @@ LC_DEFINE_PLUGIN (
 		toxthread.cpp
 		toxcontact.cpp
 		toxlogger.cpp
-		callbackmanager.cpp
 		accregisterdetailspage.cpp
 		showtoxiddialog.cpp
 		threadexceptions.cpp

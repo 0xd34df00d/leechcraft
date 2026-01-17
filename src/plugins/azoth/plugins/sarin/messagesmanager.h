@@ -12,43 +12,30 @@
 #include <QObject>
 #include <QPointer>
 #include <QHash>
-
-typedef struct Tox Tox;
+#include <util/threads/coro/taskfwd.h>
 
 namespace LC::Azoth::Sarin
 {
 	class ToxAccount;
-	class ToxThread;
+	class ToxRunner;
 	class ChatMessage;
 
 	class MessagesManager : public QObject
 	{
 		Q_OBJECT
 
-		std::weak_ptr<ToxThread> Thread_;
-
-		struct MessageSendResult
-		{
-			uint32_t Result_;
-
-			QByteArray Privkey_;
-			QPointer<ChatMessage> Msg_;
-		};
-
+		std::weak_ptr<ToxRunner> Runner_;
 		QHash<uint32_t, QPointer<ChatMessage>> MsgId2Msg_;
 	public:
 		explicit MessagesManager (ToxAccount*);
 
-		void SendMessage (const QByteArray& privkey, ChatMessage*);
+		Util::ContextTask<void> SendMessage (QByteArray pkey, QPointer<ChatMessage>);
 	private:
 		void HandleReadReceipt (quint32);
-		void HandleInMessage (qint32, const QString&);
+		Util::ContextTask<void> HandleInMessage (qint32, const QString&);
 
-		void SetThread (const std::shared_ptr<ToxThread>&);
+		void SetThread (const std::shared_ptr<ToxRunner>&);
 	signals:
-		void invokeHandleInMessage (qint32, const QString&);
-		void invokeHandleReadReceipt (quint32);
-
 		void gotMessage (const QByteArray&, const QString&);
 	};
 }

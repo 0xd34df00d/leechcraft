@@ -11,18 +11,17 @@
 #include <memory>
 #include <QObject>
 #include <QFile>
+#include <util/threads/coro/taskfwd.h>
 #include "filetransferbase.h"
 
 namespace LC::Azoth::Sarin
 {
-	class ToxThread;
-
 	class FileTransferOut final : public FileTransferBase
 	{
 		const QString FilePath_;
 
-		uint32_t FriendNum_;
-		uint32_t FileNum_;
+		uint32_t FriendNum_ = -1;
+		uint32_t FileNum_ = -1;
 
 		enum class State
 		{
@@ -40,7 +39,7 @@ namespace LC::Azoth::Sarin
 		FileTransferOut (const QString& azothId,
 				const QByteArray& pubkey,
 				const QString& filename,
-				const std::shared_ptr<ToxThread>& thread,
+				const std::shared_ptr<ToxRunner>& tox,
 				QObject *parent = nullptr);
 
 		QString GetName () const override;
@@ -51,8 +50,10 @@ namespace LC::Azoth::Sarin
 		void Abort () override;
 
 		void HandleFileControl (uint32_t, uint32_t, int);
-		void HandleChunkRequested (uint32_t, uint32_t, uint64_t, size_t);
+		Util::ContextTask<void> HandleChunkRequested (uint32_t, uint32_t, uint64_t, size_t);
 	private:
+		Util::ContextTask<void> Start ();
+
 		void HandleAccept ();
 		void HandleKill ();
 		void HandlePause ();

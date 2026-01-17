@@ -12,12 +12,12 @@ namespace LC::Azoth::Sarin
 {
 	FileTransferBase::FileTransferBase (const QString& azothId,
 			const QByteArray& pubkey,
-			const std::shared_ptr<ToxThread>& thread,
+			const std::shared_ptr<ToxRunner>& tox,
 			QObject *parent)
 	: QObject { parent }
 	, AzothId_ { azothId }
 	, PubKey_ { pubkey }
-	, Thread_ { thread }
+	, Tox_ { tox }
 	{
 	}
 

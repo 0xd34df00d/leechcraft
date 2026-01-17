@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <QObject>
-#include <util/threads/concurrentexception.h>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"
@@ -18,7 +18,7 @@
 namespace LC::Azoth::Sarin
 {
 	class ToxProtocol;
-	class ToxThread;
+	class ToxRunner;
 	class ToxContact;
 	class ChatMessage;
 	class MessagesManager;
@@ -44,7 +44,8 @@ namespace LC::Azoth::Sarin
 
 		QAction * const ActionGetToxId_;
 
-		std::shared_ptr<ToxThread> Thread_;
+		std::shared_ptr<ToxRunner> Tox_;
+		EntryStatus Status_;
 
 		MessagesManager * const MsgsMgr_;
 		FileTransferManager * const XferMgr_;
@@ -90,20 +91,21 @@ namespace LC::Azoth::Sarin
 		QObject* GetTransferManager () const override;
 
 		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
-		void SetTypingState (const QByteArray& pkey, bool isTyping);
+		Util::ContextTask<void> SetTypingState (QByteArray pkey, bool isTyping);
 	private:
-		void InitThread (const EntryStatus&);
+		Util::ContextTask<void> RunRequestAuth (QString, QString);
+		Util::ContextTask<void> RunRemoveEntry (ToxContact*);
+
+		Util::ContextTask<void> InitThread (EntryStatus);
+
 		void InitEntry (const QByteArray&);
 
 		void HandleConfigAccepted (AccountConfigDialog*);
 
-		void HandleThreadReady ();
-
 		void HandleIncomingCall (const QByteArray&, int32_t);
 
-		void HandleToxIdRequested ();
+		Util::ContextTask<void> HandleToxIdRequested ();
 
-		void HandleGotFriend (qint32);
 		void HandleGotFriendRequest (const QByteArray&, const QString&);
 		void HandleRemovedFriend (const QByteArray&);
 
@@ -112,8 +114,6 @@ namespace LC::Azoth::Sarin
 		void HandleFriendTypingChanged (const QByteArray&, bool);
 
 		void HandleInMessage (const QByteArray&, const QString&);
-
-		void HandleThreadFatalException (const LC::Util::QtException_ptr&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;
@@ -129,7 +129,7 @@ namespace LC::Azoth::Sarin
 
 		void accountChanged (ToxAccount*);
 
-		void threadChanged (const std::shared_ptr<ToxThread>&);
+		void threadChanged (const std::shared_ptr<ToxRunner>&);
 
 		void called (QObject*) override;
 	};

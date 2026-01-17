@@ -37,7 +37,7 @@ namespace LC::Azoth::Sarin
 		struct ToxAvThread;
 		std::shared_ptr<ToxAvThread> ToxAvThread_;
 	public:
-		CallManager (ToxThread*, Tox*, QObject* = nullptr);
+		CallManager (ToxThread*, ToxW*, QObject* = nullptr);
 
 		struct AudioFormatParams
 		{

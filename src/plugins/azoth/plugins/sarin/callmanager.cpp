@@ -52,7 +52,7 @@ namespace LC::Azoth::Sarin
 		}
 	};
 
-	CallManager::CallManager (ToxThread *thread, Tox *tox, QObject *parent)
+	CallManager::CallManager (ToxThread *thread, ToxW *tox, QObject *parent)
 	: QObject { parent }
 	, Thread_ { thread }
 	, ToxAv_
@@ -101,7 +101,7 @@ namespace LC::Azoth::Sarin
 
 	QFuture<CallManager::InitiateResult> CallManager::InitiateCall (const QByteArray& pkey)
 	{
-		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox)
+		return Thread_->ScheduleFunction ([this, pkey] (ToxW *tox)
 				{
 					return InitiateResult::FromMaybe (GetFriendId (tox, pkey), UnknownFriendException {}) >>
 							[this] (qint32 id)
@@ -117,7 +117,7 @@ namespace LC::Azoth::Sarin
 
 	QFuture<CallManager::AcceptCallResult> CallManager::AcceptCall (int32_t friendIdx)
 	{
-		return Thread_->ScheduleFunction ([this, friendIdx] (Tox*)
+		return Thread_->ScheduleFunction ([this, friendIdx] (ToxW*)
 				{
 					TOXAV_ERR_ANSWER error;
 					toxav_answer (ToxAv_.get (), friendIdx, AudioBitRate, VideoBitRate, &error);
@@ -130,7 +130,7 @@ namespace LC::Azoth::Sarin
 	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx,
 			const QAudioFormat& fmt, QByteArray data)
 	{
-		return Thread_->ScheduleFunction ([=] (Tox*) mutable
+		return Thread_->ScheduleFunction ([=] (ToxW*) mutable
 				{
 					qDebug () << Q_FUNC_INFO;
 					while (true)

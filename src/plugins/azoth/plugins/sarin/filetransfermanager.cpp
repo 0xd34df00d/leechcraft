@@ -15,7 +15,6 @@
 #include "filetransferout.h"
 #include "toxcontact.h"
 #include "util.h"
-#include "callbackmanager.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -23,38 +22,31 @@ namespace LC::Azoth::Sarin
 	: QObject { acc }
 	, Acc_ { acc }
 	{
-		connect (this,
-				&FileTransferManager::requested,
-				this,
-				&FileTransferManager::HandleRequest);
 	}
 
 	bool FileTransferManager::IsAvailable () const
 	{
-		return !ToxThread_.expired ();
+		return !Tox_.expired ();
 	}
 
 	QObject* FileTransferManager::SendFile (const QString& id,
 			const QString&, const QString& name, const QString&)
 	{
-		const auto toxThread = ToxThread_.lock ();
-		if (!toxThread)
+		const auto tox = Tox_.lock ();
+		if (!tox)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "Tox thread is not available";
+			qWarning () << "Tox thread is not available";
 			return nullptr;
 		}
 
 		const auto contact = Acc_->GetByAzothId (id);
 		if (!contact)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find contact by the ID"
-					<< id;
+			qWarning () << "unable to find contact by the ID" << id;
 			return nullptr;
 		}
 
-		const auto transfer = new FileTransferOut { id, contact->GetPubKey (), name, toxThread };
+		const auto transfer = new FileTransferOut { id, contact->GetPubKey (), name, tox };
 		connect (this,
 				&FileTransferManager::gotFileControl,
 				transfer,
@@ -66,67 +58,44 @@ namespace LC::Azoth::Sarin
 		return transfer;
 	}
 
-	void FileTransferManager::HandleToxThreadChanged (const std::shared_ptr<ToxThread>& thread)
+	void FileTransferManager::HandleToxThreadChanged (const std::shared_ptr<ToxRunner>& tox)
 	{
-		ToxThread_ = thread;
-		if (!thread)
+		Tox_ = tox;
+		if (!tox)
 			return;
 
-		const auto cbMgr = thread->GetCallbackManager ();
-		cbMgr->Register<tox_callback_file_recv_control> (this,
-				[] (FileTransferManager *pThis, uint32_t friendNum, uint32_t fileNum, TOX_FILE_CONTROL ctrl)
-					{ pThis->gotFileControl (friendNum, fileNum, ctrl); });
-		cbMgr->Register<tox_callback_file_recv> (this,
-				[] (FileTransferManager *pThis,
-						uint32_t friendNum,
-						uint32_t filenum, uint32_t kind, uint64_t filesize,
-						const uint8_t *rawFilename, size_t filenameLength)
-				{
-					const auto thread = pThis->ToxThread_.lock ();
-					if (!thread)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "thread is dead";
-						return;
-					}
-
-					const auto filenameStr = reinterpret_cast<const char*> (rawFilename);
-					const auto name = QString::fromUtf8 (filenameStr, filenameLength);
-					Util::Sequence (pThis, thread->GetFriendPubkey (friendNum)) >>
-							[=] (const QByteArray& id) { pThis->requested (friendNum, id, filenum, filesize, name); };
-				});
-		cbMgr->Register<tox_callback_file_recv_chunk> (this,
-				[] (FileTransferManager *pThis,
-						uint32_t friendNum, uint32_t fileNum, uint64_t position,
-						const uint8_t *rawData, size_t rawSize)
-				{
-					const QByteArray data
-					{
-						reinterpret_cast<const char*> (rawData),
-						static_cast<int> (rawSize)
-					};
-					pThis->gotData (friendNum, fileNum, data, position);
-				});
-		cbMgr->Register<tox_callback_file_chunk_request> (this, &FileTransferManager::gotChunkRequest);
+		connect (&*tox,
+				&ToxRunner::gotFileControl,
+				this,
+				&FileTransferManager::gotFileControl);
+		connect (&*tox,
+				&ToxRunner::gotData,
+				this,
+				&FileTransferManager::gotData);
+		connect (&*tox,
+				&ToxRunner::gotChunkRequest,
+				this,
+				&FileTransferManager::gotChunkRequest);
+		connect (&*tox,
+				&ToxRunner::requested,
+				this,
+				&FileTransferManager::HandleRequest);
 	}
 
 	void FileTransferManager::HandleRequest (uint32_t friendNum,
 			const QByteArray& pkey, uint32_t filenum, uint64_t size, const QString& name)
 	{
-		const auto toxThread = ToxThread_.lock ();
-		if (!toxThread)
+		const auto tox = Tox_.lock ();
+		if (!tox)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "Tox thread is not available";
+			qWarning () << "Tox thread is not available";
 			return;
 		}
 
 		const auto entry = Acc_->GetByPubkey (pkey);
 		if (!entry)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find entry for pubkey"
-					<< pkey;
+			qWarning () << "unable to find entry for pubkey" << pkey;
 			return;
 		}
 
@@ -138,7 +107,7 @@ namespace LC::Azoth::Sarin
 			filenum,
 			size,
 			name,
-			toxThread
+			tox
 		};
 
 		connect (this,

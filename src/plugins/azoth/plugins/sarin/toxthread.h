@@ -8,76 +8,56 @@
 
 #pragma once
 
-#include <atomic>
 #include <memory>
-#include <functional>
-#include <type_traits>
-#include <QThread>
-#include <QMutex>
-#include <QFuture>
 #include <interfaces/azoth/iclentry.h>
-#include <util/threads/futures.h>
-#include "threadexceptions.h"
+#include <util/threads/coro.h>
+#include <util/threads/coro/metamethod.h>
+#include <util/threads/coro/workerthread.h>
 #include "toxaccountconfiguration.h"
+#include "types.h"
+#include "util.h"
 
-typedef struct Tox Tox;
+using Tox = struct Tox;
 
 namespace LC::Azoth::Sarin
 {
-	class CallManager;
-	class CallbackManager;
 	class ToxLogger;
+	class ToxRunner;
 
-	class ToxThread : public QThread
+	class ToxW final : public QObject
 	{
-		Q_OBJECT
-
-		std::atomic_bool ShouldStop_ { false };
-
 		const QString Name_;
-
-		QByteArray ToxState_;
-
 		const ToxAccountConfiguration Config_;
-
-		EntryStatus Status_;
-
-		QList<std::function<void (Tox*)>> FQueue_;
-		QMutex FQueueMutex_;
-
-		std::shared_ptr<Tox> Tox_;
-		std::shared_ptr<CallManager> CallManager_;
-
-		const std::shared_ptr<CallbackManager> CbMgr_;
-
+		QByteArray ToxState_;
 		const std::unique_ptr<ToxLogger> Logger_;
+
+		std::unique_ptr<Tox, void (*) (Tox*)> Tox_;
+
+		EntryStatus TargetStatus_;
+
+		ToxRunner& Runner_;
 	public:
-		ToxThread (const QString& name, const QByteArray& toxState, const ToxAccountConfiguration&);
-		~ToxThread ();
-
-		CallManager* GetCallManager () const;
-
-		EntryStatus GetStatus () const;
-		void SetStatus (const EntryStatus&);
-
-		void Stop ();
-		bool IsStoppable () const;
-
-		QFuture<QByteArray> GetToxId ();
-
-		enum class AddFriendResult
+		struct InitContext
 		{
-			Added,
-			InvalidId,
-			TooLong,
-			NoMessage,
-			OwnKey,
-			AlreadySent,
-			BadChecksum,
-			NoSpam,
-			NoMem,
-			Unknown
+			QString Name_;
+			QByteArray State_;
+			ToxAccountConfiguration Config_;
 		};
+
+		explicit ToxW (const InitContext&, ToxRunner&);
+		~ToxW () override;
+
+		Tox* GetTox ();
+
+		QByteArray GetToxId () const;
+
+		bool SetStatus (const EntryStatus&);
+
+		Util::Either<ToxError<InitError>, Util::Void> Init (EntryStatus);
+
+		AddFriendResult AddFriend (const QByteArray&, QString);
+		AddFriendResult AddFriendNoRequest (const QByteArray&);
+		bool RemoveFriend (const QByteArray&);
 
 		struct FriendInfo
 		{
@@ -86,60 +66,60 @@ namespace LC::Azoth::Sarin
 			EntryStatus Status_;
 		};
 
-		CallbackManager* GetCallbackManager () const;
+		std::optional<uint32_t> ResolveFriendNum (const QByteArray&);
+		QByteArray GetFriendPubkey (uint32_t);
 
-		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
-		void AddFriend (QByteArray);
-		void RemoveFriend (const QByteArray&);
+		using ResolveResult = Util::Either<ToxError<FriendQueryError>, FriendInfo>;
+		ResolveResult ResolveFriend (uint32_t) const;
 
-		QFuture<std::optional<qint32>> ResolveFriendId (const QByteArray&);
-		QFuture<QByteArray> GetFriendPubkey (qint32);
-		QFuture<FriendInfo> ResolveFriend (qint32);
-
-		template<typename F>
-		auto ScheduleFunction (F&& func)
-		{
-			QFutureInterface<decltype (func ({}))> iface;
-			iface.reportStarted ();
-			ScheduleFunctionImpl ([iface, func] (Tox *tox) mutable
-					{
-						Util::ReportFutureResult (iface, std::forward<F> (func), tox);
-					});
-			return iface.future ();
-		}
+		QList<uint32_t> GetFriendList () const;
 	private:
-		void ScheduleFunctionImpl (const std::function<void (Tox*)>&);
+		static ToxRunner& Runner (void *udata);
+
+		void Iterate ();
 
 		void SaveState ();
+		void InitializeCallbacks ();
+	};
 
-		void LoadFriends ();
+	class ToxRunner final : public Util::Coro::WorkerThread<ToxW, ToxRunner>
+	{
+		Q_OBJECT
+	public:
+		using WorkerThread::WorkerThread;
 
-		void HandleFriendRequest (const uint8_t*, const uint8_t*, size_t);
-		void HandleNameChange (uint32_t, const uint8_t*, uint16_t);
-		void UpdateFriendStatus (uint32_t);
-		void HandleTypingChange (uint32_t, bool);
+		auto RunWithError (auto f, auto... args)
+		{
+			return Run ([f, ...args = args] (ToxW& tox)
+			{
+				return WithError (f, tox.GetTox (), args...);;
+			});
+		}
 
-		void SetCallbacks ();
-		void RunTox ();
-	protected:
-		void run () override;
+		auto RunWithStrError (auto f, auto... args)
+		{
+			return Run ([f, ...args = args] (ToxW& tox)
+			{
+				return WithStrError (f, tox.GetTox (), args...);
+			});
+		}
 	signals:
 		void statusChanged (const EntryStatus&);
 
-		void toxCreated ();
+		void toxStateChanged (const QByteArray& newState);
 
-		void toxStateChanged (const QByteArray&);
-
-		void gotFriend (qint32);
 		void gotFriendRequest (const QByteArray& pubkey, const QString& msg);
-		void removedFriend (const QByteArray& pubkey);
 
 		void friendNameChanged (const QByteArray& pubkey, const QString&);
-
 		void friendStatusChanged (const QByteArray& pubkey, const EntryStatus& status);
-
 		void friendTypingChanged (const QByteArray& pubkey, bool isTyping);
 
-		void fatalException (const LC::Util::QtException_ptr&);
+		void gotFileControl (uint32_t, uint32_t, int);
+		void gotData (quint32, quint32, const QByteArray&, uint64_t);
+		void gotChunkRequest (uint32_t friendNum, uint32_t fileNum, uint64_t position, size_t length);
+		void requested (uint32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
+
+		void incomingMessage (qint32, const QString&);
+		void readReceipt (quint32);
 	};
 }

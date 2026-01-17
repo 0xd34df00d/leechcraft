@@ -10,6 +10,7 @@
 #include <QFile>
 #include <tox/tox.h>
 #include "toxthread.h"
+#include "util.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -19,9 +20,9 @@ namespace LC::Azoth::Sarin
 			quint32 fileNum,
 			quint64 filesize,
 			const QString& offeredName,
-			const std::shared_ptr<ToxThread>& thread,
+			const std::shared_ptr<ToxRunner>& tox,
 			QObject *parent)
-	: FileTransferBase { azothId, pubkey, thread, parent }
+	: FileTransferBase { azothId, pubkey, tox, parent }
 	, FriendNum_ { friendNum }
 	, FileNum_ { fileNum }
 	, Filename_ { offeredName }
@@ -50,32 +51,20 @@ namespace LC::Azoth::Sarin
 		File_ = std::make_shared<QFile> (outName);
 		if (!File_->open (QIODevice::WriteOnly))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open"
-					<< outName
-					<< "for write"
-					<< File_->errorString ();
+			qWarning () << "unable to open" << outName << "for write" << File_->errorString ();
 			emit errorAppeared (TEFileAccessError, File_->errorString ());
 			emit stateChanged (TSFinished);
 			return;
 		}
 
-		Thread_->ScheduleFunction ([this] (Tox *tox)
-				{
-					TOX_ERR_FILE_CONTROL error {};
-					if (!tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME, &error))
-						throw MakeCommandCodeException ("tox_file_control", error);
-				});
+		// TODO proper error handling
+		Tox_->RunWithError (&tox_file_control, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME);
 	}
 
 	void FileTransferIn::Abort ()
 	{
-		Thread_->ScheduleFunction ([this] (Tox *tox)
-				{
-					TOX_ERR_FILE_CONTROL error {};
-					if (!tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_CANCEL, &error))
-						throw MakeCommandCodeException ("tox_file_control", error);
-				});
+		// TODO proper error handling
+		Tox_->RunWithError (&tox_file_control, FriendNum_, FileNum_, TOX_FILE_CONTROL_CANCEL);
 	}
 
 	void FileTransferIn::HandleData (quint32 friendNum, quint32 fileNum, const QByteArray& data, uint64_t position)
@@ -107,9 +96,7 @@ namespace LC::Azoth::Sarin
 			emit stateChanged (TSFinished);
 			break;
 		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown filecontrol type"
-					<< type;
+			qWarning () << "unknown filecontrol type" << type;
 			break;
 		}
 	}

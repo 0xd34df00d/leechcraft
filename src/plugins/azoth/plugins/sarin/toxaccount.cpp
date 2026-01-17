@@ -15,6 +15,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/functional.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include "toxprotocol.h"
@@ -200,112 +201,103 @@ namespace LC::Azoth::Sarin
 
 	EntryStatus ToxAccount::GetState () const
 	{
-		return Thread_ ? Thread_->GetStatus () : EntryStatus {};
+		return Tox_ ? Status_ : EntryStatus {};
 	}
 
 	void ToxAccount::ChangeState (const EntryStatus& status)
 	{
 		if (status.State_ == SOffline)
 		{
-			if (Thread_ && Thread_->IsStoppable ())
+			if (Tox_)
 			{
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[status, guard = Thread_, this] { emit statusChanged (status); },
-					Thread_.get (),
-					SIGNAL (finished ()),
-					Thread_.get ()
-				};
-				Thread_->Stop ();
+				emit statusChanged (status);
+				Tox_.reset ();
+				emit threadChanged (Tox_);
 			}
-			Thread_.reset ();
-			emit threadChanged (Thread_);
 			return;
 		}
 
-		if (!Thread_)
+		if (!Tox_)
 			InitThread (status);
 		else
-			Thread_->SetStatus (status);
+			Tox_->Run (&ToxW::SetStatus, status);
 	}
 
 	void ToxAccount::Authorize (QObject *entryObj)
 	{
-		if (!Thread_)
+		if (!Tox_)
 			return;
 
 		const auto entry = qobject_cast<ToxContact*> (entryObj);
-		Thread_->AddFriend (entry->GetPubKey ());
+		Tox_->Run (&ToxW::AddFriendNoRequest, entry->GetPubKey ());
 	}
 
 	void ToxAccount::DenyAuth (QObject*)
 	{
 	}
 
+	Util::ContextTask<void> ToxAccount::RunRequestAuth (QString toxId, QString msg)
+	{
+		co_await Util::AddContextObject { *this };
+
+		auto tox = Tox_;
+		if (!tox)
+			co_return;
+
+		const auto addResult = co_await tox->Run (&ToxW::AddFriend, toxId.toUtf8 (), msg);
+		const auto friendNum = co_await Util::WithHandler (addResult,
+				[] (const ToxError<AddFriendError>& error)
+				{
+					qWarning () << "cannot add friend:" << error.Message_;
+					const auto& e = Util::MakeNotification ("Azoth Sarin"_qs,
+							tr ("Unable to add contact: %1.").arg (ToUserString (error.Code_)),
+							Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
+		const auto resolveResult = co_await tox->Run (&ToxW::ResolveFriend, friendNum);
+		Util::Visit (resolveResult,
+				[this] (const ToxW::FriendInfo& info)
+				{
+					qDebug () << info.Pubkey_ << info.Name_;
+					if (!Contacts_.contains (info.Pubkey_))
+						InitEntry (info.Pubkey_);
+
+					const auto entry = Contacts_.value (info.Pubkey_);
+					entry->SetEntryName (info.Name_);
+					entry->SetStatus (info.Status_);
+				},
+				[] (const ToxError<FriendQueryError>& error)
+				{
+					qWarning () << "cannot get friend info:" << error.Message_;
+					const auto& e = Util::MakeNotification ("Azoth Sarin"_qs,
+							tr ("Unable to resolve contact info: %1.").arg (ToUserString (error.Code_)),
+							Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
+	}
+
 	void ToxAccount::RequestAuth (const QString& toxId, const QString& msg, const QString&, const QStringList&)
 	{
-		if (!Thread_)
-			return;
+		RunRequestAuth (toxId, msg);
+	}
 
-		auto iem = Proto_->GetCoreProxy ()->GetEntityManager ();
-		Util::Sequence (this, Thread_->AddFriend (toxId.toLatin1 (), msg)) >>
-				[iem] (ToxThread::AddFriendResult result)
-				{
-					const auto notify = [iem] (Priority prio, const QString& text)
-					{
-						iem->HandleEntity (Util::MakeNotification ("Azoth Sarin", text, prio));
-					};
+	Util::ContextTask<void> ToxAccount::RunRemoveEntry (ToxContact *entry)
+	{
+		co_await Util::AddContextObject { *this };
+		if (!Tox_)
+			co_return;
 
-					switch (result)
-					{
-					case ToxThread::AddFriendResult::Added:
-						return;
-					case ToxThread::AddFriendResult::InvalidId:
-						notify (Priority::Critical, tr ("Friend was not added: invalid Tox ID."));
-						return;
-					case ToxThread::AddFriendResult::TooLong:
-						notify (Priority::Critical, tr ("Friend was not added: too long greeting message."));
-						return;
-					case ToxThread::AddFriendResult::NoMessage:
-						notify (Priority::Critical, tr ("Friend was not added: no message."));
-						return;
-					case ToxThread::AddFriendResult::OwnKey:
-						notify (Priority::Critical, tr ("Why would you add yourself as friend?"));
-						return;
-					case ToxThread::AddFriendResult::AlreadySent:
-						notify (Priority::Warning, tr ("Friend request has already been sent."));
-						return;
-					case ToxThread::AddFriendResult::BadChecksum:
-						notify (Priority::Critical, tr ("Friend was not added: bad Tox ID checksum."));
-						return;
-					case ToxThread::AddFriendResult::NoSpam:
-						notify (Priority::Critical, tr ("Friend was not added: nospam value has been changed. Get a freshier ID!"));
-						return;
-					case ToxThread::AddFriendResult::NoMem:
-						notify (Priority::Critical, tr ("Friend was not added: no memory (but how do you see this in that case?)."));
-						return;
-					case ToxThread::AddFriendResult::Unknown:
-						notify (Priority::Critical, tr ("Friend was not added because of some unknown error."));
-						return;
-					}
-				};
+		const auto& pkey = entry->GetHumanReadableID ().toUtf8 ();
+		if (co_await Tox_->Run (&ToxW::RemoveFriend, pkey))
+			HandleRemovedFriend (pkey);
 	}
 
 	void ToxAccount::RemoveEntry (QObject *entryObj)
 	{
-		if (!Thread_)
-			return;
-
-		const auto entry = qobject_cast<ToxContact*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "is not a ToxContact";
-			return;
-		}
-
-		Thread_->RemoveFriend (entry->GetHumanReadableID ().toUtf8 ());
+		if (const auto entry = qobject_cast<ToxContact*> (entryObj))
+			RunRemoveEntry (entry);
+		else
+			qWarning () << entryObj << "is not a ToxContact";
 	}
 
 	ISupportMediaCalls::MediaCallFeatures ToxAccount::GetMediaCallFeatures () const
@@ -320,7 +312,7 @@ namespace LC::Azoth::Sarin
 	QObject* ToxAccount::Call (const QString& id, const QString&)
 	{
 #ifdef ENABLE_MEDIACALLS
-		if (!Thread_)
+		if (!Tox_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "thread is not running";
@@ -336,10 +328,10 @@ namespace LC::Azoth::Sarin
 			return nullptr;
 		}
 
-		const auto callMgr = Thread_->GetCallManager ();
+		const auto callMgr = Tox_->GetCallManager ();
 		const auto call = new AudioCall { entry, callMgr, AudioCall::DOut };
 		emit called (call);
-		Util::Sequence (entry, Thread_->ResolveFriendId (entry->GetPubKey ())) >>
+		Util::Sequence (entry, Tox_->ResolveFriendId (entry->GetPubKey ())) >>
 				Util::BindMemFn (&AudioCall::SetCallIdx, call);
 		return call;
 #else
@@ -358,86 +350,85 @@ namespace LC::Azoth::Sarin
 		MsgsMgr_->SendMessage (pkey, message);
 	}
 
-	void ToxAccount::SetTypingState (const QByteArray& pkey, bool isTyping)
+	Util::ContextTask<void> ToxAccount::SetTypingState (QByteArray pkey, bool isTyping)
 	{
-		if (!Thread_)
-			return;
+		co_await Util::AddContextObject { *this };
+		if (!Tox_)
+			co_return;
 
-		Thread_->ScheduleFunction ([pkey, isTyping] (Tox *tox)
-				{
-					const auto num = GetFriendId (tox, pkey);
-					if (!num)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to find user ID for"
-								<< pkey;
-						return;
-					}
-
-					TOX_ERR_SET_TYPING error {};
-					if (!tox_self_set_typing (tox, *num, isTyping, &error))
-						qWarning () << Q_FUNC_INFO
-								<< "cannot set typing state to"
-								<< isTyping
-								<< "because of error"
-								<< error;
-				});
+		const auto num = co_await Tox_->Run (&ToxW::ResolveFriendNum, pkey);
+		if (!num)
+			co_return;
+		const auto result = co_await Tox_->RunWithError (&tox_self_set_typing, *num, isTyping);
+		if (const auto err = result.MaybeLeft ())
+			qWarning () << "cannot set typing to" << isTyping << ":" << *err << tox_err_set_typing_to_string (*err);
 	}
 
-	void ToxAccount::InitThread (const EntryStatus& status)
+	Util::ContextTask<void> ToxAccount::InitThread (EntryStatus status)
 	{
-		Thread_ = std::make_shared<ToxThread> (Nick_, ToxState_, ToxConfig_);
-		Thread_->SetStatus (status);
-		connect (Thread_.get (),
-				&ToxThread::statusChanged,
+		co_await Util::AddContextObject { *this };
+
+		Tox_ = std::make_shared<ToxRunner> (ToxW::InitContext { Nick_, ToxState_, ToxConfig_ });
+
+		connect (&*Tox_,
+				&ToxRunner::statusChanged,
 				this,
-				&ToxAccount::statusChanged);
-		connect (Thread_.get (),
-				&ToxThread::toxStateChanged,
+				[this] (const EntryStatus& s)
+				{
+					Status_ = s;
+					emit statusChanged (s);
+				});
+		connect (Tox_.get (),
+				&ToxRunner::toxStateChanged,
 				this,
 				[this] (const QByteArray& toxState)
 				{
 					ToxState_ = toxState;
 					emit accountChanged (this);
 				});
-		connect (Thread_.get (),
-				&ToxThread::gotFriendRequest,
+		connect (Tox_.get (),
+				&ToxRunner::gotFriendRequest,
 				this,
 				&ToxAccount::HandleGotFriendRequest);
-		connect (Thread_.get (),
-				&ToxThread::gotFriend,
-				this,
-				&ToxAccount::HandleGotFriend);
-		connect (Thread_.get (),
-				&ToxThread::friendNameChanged,
+		connect (Tox_.get (),
+				&ToxRunner::friendNameChanged,
 				this,
 				&ToxAccount::HandleFriendNameChanged);
-		connect (Thread_.get (),
-				&ToxThread::friendStatusChanged,
+		connect (Tox_.get (),
+				&ToxRunner::friendStatusChanged,
 				this,
 				&ToxAccount::HandleFriendStatusChanged);
-		connect (Thread_.get (),
-				&ToxThread::friendTypingChanged,
+		connect (Tox_.get (),
+				&ToxRunner::friendTypingChanged,
 				this,
 				&ToxAccount::HandleFriendTypingChanged);
-		connect (Thread_.get (),
-				&ToxThread::removedFriend,
-				this,
-				&ToxAccount::HandleRemovedFriend);
 
-		connect (Thread_.get (),
-				&ToxThread::fatalException,
-				this,
-				&ToxAccount::HandleThreadFatalException);
+		qDebug () << "initializing...";
+		const auto initResult = co_await Tox_->Run (&ToxW::Init, status);
+		Util::Visit (initResult,
+				[this] (Util::Void)
+				{
+					qDebug () << "done!";
+					emit threadChanged (Tox_);
+#ifdef ENABLE_MEDIACALLS
+					const auto callManager = Tox_->GetCallManager ();
+					connect (callManager,
+							&CallManager::gotIncomingCall,
+							this,
+							&ToxAccount::HandleIncomingCall);
+#endif
+				},
+				[this] (const ToxError<InitError>& error)
+				{
+					qWarning () << "failed to init Tox:" << error;
+					Tox_.reset ();
 
-		connect (Thread_.get (),
-				&ToxThread::toxCreated,
-				this,
-				&ToxAccount::HandleThreadReady);
-
-		emit threadChanged (Thread_);
-
-		Thread_->start (QThread::IdlePriority);
+					// TODO human-readable message for the code
+					const auto& e = Util::MakeNotification ("Azoth Sarin"_qs,
+							tr ("Unable to initialize Tox: %1 (%2).").arg (static_cast<int> (error.Code_)).arg (error.Message_),
+							Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 	}
 
 	void ToxAccount::InitEntry (const QByteArray& pkey)
@@ -458,20 +449,6 @@ namespace LC::Azoth::Sarin
 		emit accountChanged (this);
 	}
 
-	void ToxAccount::HandleThreadReady ()
-	{
-		if (!Thread_)
-			return;
-
-#ifdef ENABLE_MEDIACALLS
-		const auto callManager = Thread_->GetCallManager ();
-		connect (callManager,
-				&CallManager::gotIncomingCall,
-				this,
-				&ToxAccount::HandleIncomingCall);
-#endif
-	}
-
 	void ToxAccount::HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
 	{
 #ifdef ENABLE_MEDIACALLS
@@ -485,7 +462,7 @@ namespace LC::Azoth::Sarin
 			return;
 		}
 
-		const auto call = new AudioCall { entry, Thread_->GetCallManager (), AudioCall::DIn };
+		const auto call = new AudioCall { entry, Tox_->GetCallManager (), AudioCall::DIn };
 		call->SetCallIdx (callIdx);
 		emit called (call);
 #else
@@ -494,42 +471,20 @@ namespace LC::Azoth::Sarin
 #endif
 	}
 
-	void ToxAccount::HandleToxIdRequested ()
+	Util::ContextTask<void> ToxAccount::HandleToxIdRequested ()
 	{
-		if (!Thread_)
-			return;
+		co_await Util::AddContextObject { *this };
+		if (!Tox_)
+			co_return;
 
-		auto dialog = new ShowToxIdDialog { tr ("Fetching self Tox ID...") };
+		const auto dialog = new ShowToxIdDialog { tr ("Fetching self Tox ID...") };
 		dialog->show ();
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 
-		Util::Sequence (this, Thread_->GetToxId ()) >>
-				[dialog] (const QByteArray& id) { dialog->setToxId (QString::fromLatin1 (id)); };
-	}
+		co_await Util::AddContextObject { *dialog };
 
-	void ToxAccount::HandleGotFriend (qint32 id)
-	{
-		Util::Sequence (this, Thread_->ResolveFriend (id)) >>
-				[this] (const ToxThread::FriendInfo& info)
-				{
-					try
-					{
-						qDebug () << Q_FUNC_INFO << info.Pubkey_ << info.Name_;
-						if (!Contacts_.contains (info.Pubkey_))
-							InitEntry (info.Pubkey_);
-
-						const auto entry = Contacts_.value (info.Pubkey_);
-						entry->SetEntryName (info.Name_);
-
-						entry->SetStatus (info.Status_);
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "cannot get friend info:"
-								<< e.what ();
-					}
-				};
+		const auto& toxId = co_await Tox_->Run (&ToxW::GetToxId);
+		dialog->setToxId (QString::fromLatin1 (toxId));
 	}
 
 	void ToxAccount::HandleGotFriendRequest (const QByteArray& pubkey, const QString& msg)
@@ -554,11 +509,7 @@ namespace LC::Azoth::Sarin
 	{
 		if (!Contacts_.contains (id))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown friend name change"
-					<< id
-					<< "; new name:"
-					<< newName;
+			qWarning () << "unknown friend name change" << id << "; new name:" << newName;
 			return;
 		}
 
@@ -569,9 +520,7 @@ namespace LC::Azoth::Sarin
 	{
 		if (!Contacts_.contains (pubkey))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown friend status"
-					<< pubkey;
+			qWarning () << "unknown friend status" << pubkey;
 			return;
 		}
 
@@ -582,9 +531,7 @@ namespace LC::Azoth::Sarin
 	{
 		if (!Contacts_.contains (pubkey))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown friend status"
-					<< pubkey;
+			qWarning () << "unknown friend status" << pubkey;
 			return;
 		}
 
@@ -595,23 +542,12 @@ namespace LC::Azoth::Sarin
 	{
 		if (!Contacts_.contains (pubkey))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown pubkey for message"
-					<< body
-					<< pubkey;
+			qWarning () << "unknown pubkey for message" << body << pubkey;
 			InitEntry (pubkey);
 		}
 
 		const auto contact = Contacts_.value (pubkey);
 		const auto msg = new ChatMessage { body, IMessage::Direction::In, contact };
 		msg->Store ();
-	}
-
-	void ToxAccount::HandleThreadFatalException (const Util::QtException_ptr& e)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< e->what ();
-
-		emit statusChanged ({ SError, e->what () });
 	}
 }

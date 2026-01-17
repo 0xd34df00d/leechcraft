@@ -31,7 +31,7 @@ namespace LC::Azoth::Sarin
 				quint32 fileNum,
 				quint64 fileSize,
 				const QString& offeredName,
-				const std::shared_ptr<ToxThread>& thread,
+				const std::shared_ptr<ToxRunner>& tox,
 				QObject *parent = nullptr);
 
 		QString GetName () const override;

@@ -8,6 +8,7 @@
 
 #include "toxcontact.h"
 #include <QImage>
+#include <util/threads/coro.h>
 #include <interfaces/azoth/azothutil.h>
 #include "toxaccount.h"
 #include "chatmessage.h"

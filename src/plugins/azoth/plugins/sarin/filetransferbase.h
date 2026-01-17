@@ -14,7 +14,7 @@
 
 namespace LC::Azoth::Sarin
 {
-	class ToxThread;
+	class ToxRunner;
 
 	class FileTransferBase : public QObject
 						   , public ITransferJob
@@ -24,11 +24,11 @@ namespace LC::Azoth::Sarin
 	protected:
 		const QString AzothId_;
 		const QByteArray PubKey_;
-		const std::shared_ptr<ToxThread> Thread_;
+		const std::shared_ptr<ToxRunner> Tox_;
 	public:
 		FileTransferBase (const QString& azothId,
 				const QByteArray& pubkey,
-				const std::shared_ptr<ToxThread>& thread,
+				const std::shared_ptr<ToxRunner>& tox,
 				QObject *parent = nullptr);
 
 		QString GetSourceID () const override;
