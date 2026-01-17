@@ -15,15 +15,6 @@
 
 namespace LC::Util::Coro
 {
-	namespace detail
-	{
-		template<typename... Args>
-		using Head = Args... [0];
-
-		template<typename... Args>
-		using SafeHead = Head<Args..., struct Dummy>;
-	}
-
 	class WorkerThreadBase : public QObject
 	{
 	protected:
@@ -63,9 +54,16 @@ namespace LC::Util::Coro
 		WorkerThread& operator= (WorkerThread&& thread) = delete;
 
 		template<typename... Args>
-			requires (!std::is_same_v<std::decay_t<detail::SafeHead<Args...>>, Config>)
+			requires std::constructible_from<T, Args&&...> || std::constructible_from<T, Args&&..., WorkerThread&>
 		explicit WorkerThread (Args&&... args)
 		: WorkerThread { Config {}, std::forward<Args> (args)... }
+		{
+		}
+
+		template<typename... Args>
+			requires std::constructible_from<T, Args&&..., WorkerThread&>
+		explicit WorkerThread (const Config& config, Args&&... args)
+		: WorkerThread { config, std::forward<Args> (args)..., *this }
 		{
 		}
 
@@ -74,15 +72,6 @@ namespace LC::Util::Coro
 		explicit WorkerThread (const Config& config, Args&&... args)
 		: WorkerThreadBase { config }
 		, Worker_ { std::forward<Args> (args)... }
-		{
-			Worker_.moveToThread (&Thread_);
-		}
-
-		template<typename... Args>
-			requires std::constructible_from<T, Args&&..., WorkerThread&>
-		explicit WorkerThread (const Config& config, Args&&... args)
-		: WorkerThreadBase { config }
-		, Worker_ { std::forward<Args> (args)..., *this }
 		{
 			Worker_.moveToThread (&Thread_);
 		}
