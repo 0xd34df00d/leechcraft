@@ -38,15 +38,7 @@ struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
 		{
 			Die_ = true;
 			if (State_.Exc_)
-				try
-				{
-					std::rethrow_exception (State_.Exc_);
-				}
-				catch (const LC::Util::detail::EitherFailureAbort&)
-				{
-					// coro terminated early on a `Left` value
-					// so ignore it and return
-				}
+				std::rethrow_exception (State_.Exc_);
 			return State_.Ret_.value ();
 		}
 	};
@@ -80,5 +72,35 @@ struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
 		{
 			return { State_ };
 		}
+
+		template<typename T>
+		auto await_transform (T&& either) const
+		{
+			return SimpleAwaiter<std::decay_t<T>> { either };
+		}
+
+		template<typename>
+		struct SimpleAwaiter;
+
+		template<typename LL, typename RR>
+		struct SimpleAwaiter<LC::Util::Either<LL, RR>>
+		{
+			const LC::Util::Either<LL, RR>& Either_;
+
+			bool await_ready () const noexcept
+			{
+				return Either_.IsRight ();
+			}
+
+			void await_suspend (std::coroutine_handle<promise_type> handle)
+			{
+				handle.promise ().State_.Ret_.emplace (Either_.GetLeft ());
+			}
+
+			const RR& await_resume () const noexcept
+			{
+				return Either_.GetRight ();
+			}
+		};
 	};
 };
