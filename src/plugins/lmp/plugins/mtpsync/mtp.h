@@ -80,7 +80,7 @@ namespace LC::LMP::MTPSync
 		void mtpDisconnected (const QList<MtpDeviceInfo>&);
 	};
 
-	class MtpRunner final : public Util::Coro::WorkerThread<Mtp>
+	class MtpRunner final : public Util::Coro::WorkerThread<Mtp, MtpRunner>
 	{
 		Q_OBJECT
 	public:

@@ -42,7 +42,7 @@ namespace LC::Util::Coro
 		}
 	};
 
-	template<typename T>
+	template<typename T, typename Self>
 	class WorkerThread : public WorkerThreadBase
 	{
 	protected:
@@ -54,16 +54,16 @@ namespace LC::Util::Coro
 		WorkerThread& operator= (WorkerThread&& thread) = delete;
 
 		template<typename... Args>
-			requires std::constructible_from<T, Args&&...> || std::constructible_from<T, Args&&..., WorkerThread&>
+			requires std::constructible_from<T, Args&&...> || std::constructible_from<T, Args&&..., Self&>
 		explicit WorkerThread (Args&&... args)
 		: WorkerThread { Config {}, std::forward<Args> (args)... }
 		{
 		}
 
 		template<typename... Args>
-			requires std::constructible_from<T, Args&&..., WorkerThread&>
+			requires std::constructible_from<T, Args&&..., Self&>
 		explicit WorkerThread (const Config& config, Args&&... args)
-		: WorkerThread { config, std::forward<Args> (args)..., *this }
+		: WorkerThread { config, std::forward<Args> (args)..., static_cast<Self&> (*this) }
 		{
 		}
 
