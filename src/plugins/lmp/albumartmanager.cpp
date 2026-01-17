@@ -133,7 +133,7 @@ namespace LC::LMP
 
 		co_await Util::AddContextObject { *this };
 
-		for (const auto& artist : artists)
+		for (const auto& artist : std::as_const (artists))
 			for (const auto& album : artist.Albums_)
 				if (album->CoverPath_.isEmpty () || album->CoverPath_ == NotFoundMarker)
 				{
@@ -156,8 +156,8 @@ namespace LC::LMP
 		if (!QFile::exists (path) && !QDir::root ().mkpath (path))
 			failed = true;
 
-		const QFileInfo fi (path);
-		if (!failed && !(fi.isDir () && fi.isReadable ()))
+		if (const QFileInfo fi (path);
+			!failed && !(fi.isDir () && fi.isReadable ()))
 			failed = true;
 
 		if (failed)

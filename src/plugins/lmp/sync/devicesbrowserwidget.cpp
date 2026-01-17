@@ -32,12 +32,10 @@
 #include "collectionsmanager.h"
 #include "progressmanager.h"
 
-typedef QMap<QString, LC::LMP::TranscodingParams> TranscodingParamsMap_t;
+using TranscodingParamsMap_t = QMap<QString, LC::LMP::TranscodingParams>;
 Q_DECLARE_METATYPE (TranscodingParamsMap_t)
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	DevicesBrowserWidget::DevicesBrowserWidget (QWidget *parent)
 	: QWidget (parent)
@@ -53,7 +51,7 @@ namespace LMP
 				this,
 				[this]
 				{
-					for (auto syncer : Model2Syncer_)
+					for (const auto syncer : Model2Syncer_)
 						syncer->RefreshSyncTargets ();
 				});
 
@@ -178,7 +176,7 @@ namespace LMP
 			{
 				for (const auto bar : { &transcoding, &copying })
 				{
-					bar->setVisible (true);
+					bar->show ();
 					bar->setMaximum (count);
 					bar->setValue (0);
 				}
@@ -186,8 +184,8 @@ namespace LMP
 
 			~ProgressTracker ()
 			{
-				TranscodingBar_.setVisible (false);
-				CopyingBar_.setVisible (false);
+				TranscodingBar_.hide ();
+				CopyingBar_.hide ();
 			}
 
 			void HandleSyncEvent (const SyncEvents::Event& event)
@@ -383,5 +381,4 @@ namespace LMP
 		const auto& text = timestamp + ToString (event);
 		Ui_.UploadLog_->append (text);
 	}
-}
 }
