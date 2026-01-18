@@ -10,6 +10,7 @@
 
 #include <coroutine>
 #include <util/sll/either.h>
+#include "either.h"
 
 template<typename L, typename R, typename... Args>
 struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
