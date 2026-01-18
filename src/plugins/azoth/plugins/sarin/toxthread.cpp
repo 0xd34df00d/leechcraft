@@ -272,12 +272,12 @@ namespace LC::Azoth::Sarin
 				} (std::make_index_sequence<sizeof... (Args) - 1> {});
 			}
 		};
+	}
 
-		template<auto Reg, auto Handler>
-		void Register (Tox *tox)
-		{
-			RegHandler<Reg, Handler> {} (tox);
-		}
+	template<auto Reg, auto Handler>
+	void ToxW::Register ()
+	{
+		RegHandler<Reg, Handler> {} (Tox_.get ());
 	}
 
 	void ToxW::InitializeCallbacks ()
@@ -290,7 +290,7 @@ namespace LC::Azoth::Sarin
 					const auto& msg = QString::fromUtf8 (std::bit_cast<const char*> (data), size);
 					qDebug () << pubkey << msg;
 					emit self.Runner_.gotFriendRequest (pubkey, msg);
-				}> (Tox_.get ());
+				}> ();
 		Register<tox_callback_friend_name,
 				[] (ToxW& self, Tox *tox, uint32_t num, const uint8_t *data, size_t len)
 				{
@@ -299,7 +299,7 @@ namespace LC::Azoth::Sarin
 					qDebug () << toxId << name;
 					emit self.Runner_.friendNameChanged (toxId, name);
 					self.SaveState ();
-				}> (Tox_.get ());
+				}> ();
 
 		constexpr auto updateFriendStatus = [] (ToxW& self, Tox *tox, uint32_t num, auto...)
 		{
@@ -307,16 +307,16 @@ namespace LC::Azoth::Sarin
 			const auto& status = GetFriendStatus (tox, num);
 			emit self.Runner_.friendStatusChanged (id, status);
 		};
-		Register<tox_callback_friend_status, updateFriendStatus> (Tox_.get ());
-		Register<tox_callback_friend_status_message, updateFriendStatus> (Tox_.get ());
-		Register<tox_callback_friend_connection_status, updateFriendStatus> (Tox_.get ());
+		Register<tox_callback_friend_status, updateFriendStatus> ();
+		Register<tox_callback_friend_status_message, updateFriendStatus> ();
+		Register<tox_callback_friend_connection_status, updateFriendStatus> ();
 
 		Register<tox_callback_friend_typing,
 				[] (ToxW& self, Tox *tox, uint32_t num, bool isTyping)
 				{
 					const auto& id = GetFriendId (tox, num);
 					emit self.Runner_.friendTypingChanged (id, isTyping);
-				}> (Tox_.get ());
+				}> ();
 
 		// self statuses
 		Register<tox_callback_self_connection_status,
@@ -325,14 +325,14 @@ namespace LC::Azoth::Sarin
 					emit self.Runner_.statusChanged (status == TOX_CONNECTION_NONE ?
 							EntryStatus { SConnecting, {} } :
 							self.TargetStatus_);
-				}> (Tox_.get ());
+				}> ();
 
 		// file transfers
 		Register<tox_callback_file_recv_control,
 				[] (ToxW& self, Tox*, uint32_t friendNum, uint32_t fileNum, TOX_FILE_CONTROL ctrl)
 				{
 					emit self.Runner_.gotFileControl (friendNum, fileNum, ctrl);
-				}> (Tox_.get ());
+				}> ();
 		Register<tox_callback_file_recv,
 				[] (ToxW& self, Tox*, uint32_t friendNum,
 						uint32_t filenum, uint32_t kind, uint64_t filesize,
@@ -341,30 +341,30 @@ namespace LC::Azoth::Sarin
 					const auto name = QString::fromUtf8 (std::bit_cast<const char*> (rawFilename), filenameLength);
 					const auto pkey = self.GetFriendPubkey (friendNum);
 					emit self.Runner_.requested (friendNum, pkey, filenum, filesize, name);
-				}> (Tox_.get ());
+				}> ();
 		Register<tox_callback_file_recv_chunk,
 				[] (ToxW& self, Tox*, uint32_t friendNum, uint32_t fileNum, uint64_t position, const uint8_t *rawData, qsizetype rawSize)
 				{
 					const QByteArray data { std::bit_cast<const char*> (rawData), rawSize };
 					emit self.Runner_.gotData (friendNum, fileNum, data, position);
-				}> (Tox_.get ());
+				}> ();
 		Register<tox_callback_file_chunk_request,
 				[] (ToxW& self, Tox*, uint32_t friendNum, uint32_t fileNum, uint64_t position, size_t length)
 				{
 					emit self.Runner_.gotChunkRequest (friendNum, fileNum, position, length);
-				}> (Tox_.get ());
+				}> ();
 
 		// messages
 		Register<tox_callback_friend_message,
 				[] (ToxW& self, Tox*, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msg, size_t size)
 				{
 					emit self.Runner_.incomingMessage (friendId, QString::fromUtf8 (std::bit_cast<const char*> (msg), size));
-				}> (Tox_.get ());
+				}> ();
 		Register<tox_callback_friend_read_receipt,
 				[] (ToxW& self, Tox*, uint32_t, uint32_t msgId)
 				{
 					emit self.Runner_.readReceipt (msgId);
-				}> (Tox_.get ());
+				}> ();
 	}
 
 	Util::Either<ToxError<InitError>, Util::Void> ToxW::Init (EntryStatus initialStatus)

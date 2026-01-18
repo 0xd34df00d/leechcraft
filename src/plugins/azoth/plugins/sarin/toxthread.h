@@ -76,6 +76,9 @@ namespace LC::Azoth::Sarin
 	private:
 		static ToxRunner& Runner (void *udata);
 
+		template<auto Reg, auto Handler>
+		void Register ();
+
 		void Iterate ();
 
 		void SaveState ();
