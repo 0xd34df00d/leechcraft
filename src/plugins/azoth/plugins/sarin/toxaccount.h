@@ -10,10 +10,13 @@
 
 #include <memory>
 #include <QObject>
+#include <util/sll/either.h>
+#include <util/sll/void.h>
 #include <util/threads/coro/taskfwd.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"
+#include "types.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -92,6 +95,9 @@ namespace LC::Azoth::Sarin
 
 		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
 		Util::ContextTask<void> SetTypingState (QByteArray pkey, bool isTyping);
+
+		using JoinGroupResult = Util::Either<JoinGroupError, Util::Void>;
+		Util::ContextTask<JoinGroupResult> JoinGroup (QString groupId, QString nick, QString password);
 	private:
 		Util::ContextTask<void> RunRequestAuth (QString, QString);
 		Util::ContextTask<void> RunRemoveEntry (ToxContact*);

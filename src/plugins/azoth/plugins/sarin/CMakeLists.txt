@@ -29,6 +29,7 @@ LC_DEFINE_PLUGIN (
 		filetransferbase.cpp
 		filetransferin.cpp
 		filetransferout.cpp
+		groupjoinwidget.cpp
 		$<$<BOOL:${ENABLE_MEDIACALLS}>:
 			audiocall.cpp
 			audiocalldevice.cpp

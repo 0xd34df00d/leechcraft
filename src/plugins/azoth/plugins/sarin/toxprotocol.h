@@ -10,19 +10,21 @@
 
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/imucprotocol.h>
 
 namespace LC::Azoth::Sarin
 {
 	class ToxAccount;
 
-	class ToxProtocol final : public QObject
-							, public IProtocol
+	class ToxProtocol final
+		: public QObject
+		, public IProtocol
+		, public IMUCProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LC::Azoth::IProtocol)
+		Q_INTERFACES (LC::Azoth::IProtocol LC::Azoth::IMUCProtocol)
 
 		QObject * const ParentProtocol_;
-
 		QList<ToxAccount*> Accounts_;
 	public:
 		explicit ToxProtocol (QObject *parentPlugin);
@@ -40,6 +42,8 @@ namespace LC::Azoth::Sarin
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options) override;
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) override;
 		void RemoveAccount (QObject* account) override;
+
+		QWidget* GetMUCJoinWidget () override;
 	private:
 		void LoadAccounts ();
 		void InitConnections (ToxAccount*);

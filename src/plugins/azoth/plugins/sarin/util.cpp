@@ -127,6 +127,30 @@ namespace LC::Azoth::Sarin
 		}
 	}
 
+	JoinGroupError MapErrorCode (Tox_Err_Group_Join error)
+	{
+		using enum JoinGroupError;
+		switch (error)
+		{
+		case TOX_ERR_GROUP_JOIN_OK:
+			return UnknownError;
+		case TOX_ERR_GROUP_JOIN_INIT:
+			return InitFailure;
+		case TOX_ERR_GROUP_JOIN_BAD_CHAT_ID:
+			return BadChatId;
+		case TOX_ERR_GROUP_JOIN_EMPTY:
+			return EmptyName;
+		case TOX_ERR_GROUP_JOIN_TOO_LONG:
+			return NameTooLong;
+		case TOX_ERR_GROUP_JOIN_PASSWORD:
+			return PasswordFailure;
+		case TOX_ERR_GROUP_JOIN_CORE:
+			return CoreFailure;
+		}
+
+		return UnknownError;
+	}
+
 	InitError MapErrorCode (TOX_ERR_NEW error)
 	{
 		using enum InitError;

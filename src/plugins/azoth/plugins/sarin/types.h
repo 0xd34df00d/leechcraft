@@ -90,4 +90,19 @@ namespace LC::Azoth::Sarin
 
 		UnknownError
 	};
+
+	enum class JoinGroupError : std::uint8_t
+	{
+		InvalidGroupIdLength,
+		ToxOffline,
+
+		InitFailure,
+		BadChatId,
+		EmptyName,
+		NameTooLong,
+		PasswordFailure,
+		CoreFailure,
+
+		UnknownError
+	};
 }

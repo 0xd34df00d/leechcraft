@@ -364,6 +364,33 @@ namespace LC::Azoth::Sarin
 			qWarning () << "cannot set typing to" << isTyping << ":" << *err << tox_err_set_typing_to_string (*err);
 	}
 
+	Util::ContextTask<ToxAccount::JoinGroupResult> ToxAccount::JoinGroup (QString groupId, QString nick, QString password)
+	{
+		co_await Util::AddContextObject { *this };
+		if (!Tox_)
+			co_return Util::Left { JoinGroupError::ToxOffline };
+
+		const auto& groupIdUtf8 = groupId.toUtf8 ();
+		if (groupIdUtf8.size () != TOX_GROUP_CHAT_ID_SIZE)
+		{
+			qWarning () << "invalid group ID length" << groupIdUtf8.size ();
+			co_return Util::Left { JoinGroupError::InvalidGroupIdLength };
+		}
+
+		std::array<uint8_t, TOX_GROUP_CHAT_ID_SIZE> groupIdArr {};
+		std::copy_n (groupIdUtf8.begin (), TOX_GROUP_CHAT_ID_SIZE, groupIdArr.begin ());
+
+		const auto nickUtf8 = nick.toUtf8 ();
+		const auto pwUtf8 = password.toUtf8 ();
+		const auto joinResult = co_await Tox_->RunWithError (&tox_group_join,
+				&groupIdArr [0],
+				std::bit_cast<const uint8_t*> (nickUtf8.constData ()), nickUtf8.size (),
+				std::bit_cast<const uint8_t*> (pwUtf8.constData ()), pwUtf8.size ());
+		const auto groupNum = co_await joinResult;
+
+		co_return Util::Void {};
+	}
+
 	Util::ContextTask<void> ToxAccount::InitThread (EntryStatus status)
 	{
 		co_await Util::AddContextObject { *this };

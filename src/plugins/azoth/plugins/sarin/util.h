@@ -55,6 +55,7 @@ namespace LC::Azoth::Sarin
 	FileControlError MapErrorCode (TOX_ERR_FILE_CONTROL error);
 	AddFriendError MapErrorCode (TOX_ERR_FRIEND_ADD error);
 	FriendQueryError MapErrorCode (TOX_ERR_FRIEND_QUERY error);
+	JoinGroupError MapErrorCode (Tox_Err_Group_Join error);
 	InitError MapErrorCode (TOX_ERR_NEW error);
 	SetInfoError MapErrorCode (TOX_ERR_SET_INFO error);
 
@@ -71,11 +72,20 @@ namespace LC::Azoth::Sarin
 	template<typename EC>
 	concept KnownErrorCode = requires (EC ec) { MapErrorCode (ec); };
 
-	template<KnownErrorCode EC>
+	template<typename EC>
+	concept KnownErrorMessage = KnownErrorCode<EC> && !std::is_same_v<std::decay_t<decltype (MapErrorMessage<EC>)>, Util::Void>;
+
+	template<KnownErrorMessage EC>
 	ToxError<decltype (MapErrorCode (EC {}))> MapError (EC error)
 	{
 		const auto& msg = QString::fromUtf8 (MapErrorMessage<EC> (error));
 		return { MapErrorCode (error), msg };
+	}
+
+	template<KnownErrorCode EC>
+	auto MapError (EC error)
+	{
+		return MapErrorCode (error);
 	}
 
 	auto MapError (auto error)
@@ -104,7 +114,10 @@ namespace LC::Azoth::Sarin
 		if (error)
 		{
 			const auto mapped = MapError (error);
-			qWarning () << mapped;
+			if constexpr (KnownErrorMessage<ErrorType_t<F>>)
+				qWarning () << mapped;
+			else
+				qWarning () << error;
 			return { Util::AsLeft, mapped };
 		}
 		return result;

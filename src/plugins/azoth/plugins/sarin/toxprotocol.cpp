@@ -12,6 +12,7 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include "accregisterdetailspage.h"
+#include "groupjoinwidget.h"
 #include "toxaccount.h"
 
 namespace LC::Azoth::Sarin
@@ -36,7 +37,7 @@ namespace LC::Azoth::Sarin
 
 	IProtocol::ProtocolFeatures ToxProtocol::GetFeatures () const
 	{
-		return PFNone;
+		return PFSupportsMUCs | PFMUCsJoinable;
 	}
 
 	QList<QObject*> ToxProtocol::GetRegisteredAccounts ()
@@ -99,6 +100,11 @@ namespace LC::Azoth::Sarin
 
 		Accounts_.removeOne (account);
 		emit accountRemoved (accObj);
+	}
+
+	QWidget* ToxProtocol::GetMUCJoinWidget ()
+	{
+		return new GroupJoinWidget {};
 	}
 
 	void ToxProtocol::LoadAccounts ()
