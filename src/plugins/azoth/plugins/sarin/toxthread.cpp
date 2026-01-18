@@ -155,6 +155,14 @@ namespace LC::Azoth::Sarin
 		return GetFriendId (Tox_.get (), pkey);
 	}
 
+	namespace
+	{
+		QString FromToxStr (const uint8_t *data, size_t size)
+		{
+			return QString::fromUtf8 (std::bit_cast<const char*> (data), size);
+		}
+	}
+
 	QByteArray ToxW::GetFriendPubkey (uint32_t id)
 	{
 		return GetFriendId (Tox_.get (), id);
@@ -287,7 +295,7 @@ namespace LC::Azoth::Sarin
 				[] (ToxW& self, Tox*, const uint8_t pkey [TOX_PUBLIC_KEY_SIZE], const uint8_t *data, size_t size)
 				{
 					const auto& pubkey = ToxId2HR<TOX_PUBLIC_KEY_SIZE> (pkey);
-					const auto& msg = QString::fromUtf8 (std::bit_cast<const char*> (data), size);
+					const auto& msg = FromToxStr (data, size);
 					qDebug () << pubkey << msg;
 					emit self.Runner_.gotFriendRequest (pubkey, msg);
 				}> ();
@@ -295,7 +303,7 @@ namespace LC::Azoth::Sarin
 				[] (ToxW& self, Tox *tox, uint32_t num, const uint8_t *data, size_t len)
 				{
 					const auto& toxId = GetFriendId (tox, num);
-					const auto& name = QString::fromUtf8 (std::bit_cast<const char*> (data), len);
+					const auto& name = FromToxStr (data, len);
 					qDebug () << toxId << name;
 					emit self.Runner_.friendNameChanged (toxId, name);
 					self.SaveState ();
@@ -338,7 +346,7 @@ namespace LC::Azoth::Sarin
 						uint32_t filenum, uint32_t kind, uint64_t filesize,
 						const uint8_t *rawFilename, size_t filenameLength)
 				{
-					const auto name = QString::fromUtf8 (std::bit_cast<const char*> (rawFilename), filenameLength);
+					const auto name = FromToxStr (rawFilename, filenameLength);
 					const auto pkey = self.GetFriendPubkey (friendNum);
 					emit self.Runner_.requested (friendNum, pkey, filenum, filesize, name);
 				}> ();
@@ -358,7 +366,7 @@ namespace LC::Azoth::Sarin
 		Register<tox_callback_friend_message,
 				[] (ToxW& self, Tox*, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msg, size_t size)
 				{
-					emit self.Runner_.incomingMessage (friendId, QString::fromUtf8 (std::bit_cast<const char*> (msg), size));
+					emit self.Runner_.incomingMessage (friendId, FromToxStr (msg, size));
 				}> ();
 		Register<tox_callback_friend_read_receipt,
 				[] (ToxW& self, Tox*, uint32_t, uint32_t msgId)
