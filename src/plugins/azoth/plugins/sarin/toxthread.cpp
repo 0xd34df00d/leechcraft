@@ -170,49 +170,25 @@ namespace LC::Azoth::Sarin
 
 	namespace
 	{
-		QString GetFriendStatusString (Tox *tox, uint32_t id)
+		Util::Either<ToxError<FriendQueryError>, EntryStatus> GetFriendStatusEither (Tox *tox, uint32_t id)
 		{
-			TOX_ERR_FRIEND_QUERY error {};
-			const auto size = tox_friend_get_status_message_size (tox, id, &error);
-			if (error)
-			{
-				qWarning () << "error querying friend message" << error;
-				return {};
-			}
+			const auto connStatus = co_await WithError (&tox_friend_get_connection_status, tox, id);
+			if (connStatus == TOX_CONNECTION_NONE)
+				co_return EntryStatus { SOffline, {} };
 
-			const auto statusMsg = std::make_unique<uint8_t []> (size);
-			if (tox_friend_get_status_message (tox, id, statusMsg.get (), &error))
-				return QString::fromUtf8 (std::bit_cast<char*> (statusMsg.get ()), size);
+			const auto status = co_await WithError (&tox_friend_get_status, tox, id);
 
-			qWarning () << "unable to get status text with error" << error;
-			return {};
+			const auto statusSize = co_await WithError (&tox_friend_get_status_message_size, tox, id);
+			const auto statusMsg = std::make_unique<uint8_t []> (statusSize);
+			co_await WithError (&tox_friend_get_status_message, tox, id, statusMsg.get ());
+
+			co_return EntryStatus { ToxStatus2State (status), FromToxStr (statusMsg.get (), statusSize) };
 		}
 
 		EntryStatus GetFriendStatus (Tox *tox, uint32_t id)
 		{
-			TOX_ERR_FRIEND_QUERY error {};
-			if (tox_friend_get_connection_status (tox, id, &error) == TOX_CONNECTION_NONE)
-			{
-				if (error)
-				{
-					qWarning () << "error querying friend connection status:" << error;
-					return { SError, {} };
-				}
-				return { SOffline, {} };
-			}
-
-			const auto status = tox_friend_get_status (tox, id, &error);
-			if (error)
-			{
-				qWarning () << "error querying friend status:" << error;
-				return { SError, {} };
-			}
-
-			return
-			{
-				ToxStatus2State (status),
-				GetFriendStatusString (tox, id)
-			};
+			return GetFriendStatusEither (tox, id)
+					.ToRight ([] (const auto& error) { return EntryStatus { SError, error.Message_ }; });
 		}
 	}
 
