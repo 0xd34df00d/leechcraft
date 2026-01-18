@@ -105,4 +105,21 @@ namespace LC::Azoth::Sarin
 
 		UnknownError
 	};
+
+	enum class GroupExitType : std::uint8_t
+	{
+		Quit,
+		Timeout,
+		Disconnected,
+		SelfDisconnected,
+		Kicked,
+		SyncError,
+	};
+
+	struct GroupPeerExitedEvent
+	{
+		GroupExitType Type_;
+		QString Nick_;
+		QString PartMsg_;
+	};
 }

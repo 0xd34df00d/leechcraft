@@ -41,6 +41,29 @@ namespace LC::Azoth::Sarin
 		return ToxId2HR (clientId);
 	}
 
+	GroupExitType MapToxEnum (Tox_Group_Exit_Type type)
+	{
+		using enum GroupExitType;
+		switch (type)
+		{
+		case TOX_GROUP_EXIT_TYPE_QUIT:
+			return Quit;
+		case TOX_GROUP_EXIT_TYPE_TIMEOUT:
+			return Timeout;
+		case TOX_GROUP_EXIT_TYPE_DISCONNECTED:
+			return Disconnected;
+		case TOX_GROUP_EXIT_TYPE_SELF_DISCONNECTED:
+			return SelfDisconnected;
+		case TOX_GROUP_EXIT_TYPE_KICK:
+			return Kicked;
+		case TOX_GROUP_EXIT_TYPE_SYNC_ERROR:
+			return SyncError;
+		}
+
+		qWarning () << "unknown exit type" << type;
+		return Quit;
+	}
+
 	namespace
 	{
 		struct Errors

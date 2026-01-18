@@ -48,6 +48,8 @@ namespace LC::Azoth::Sarin
 		return ToxId2HR<Size> (address.data ());
 	}
 
+	GroupExitType MapToxEnum (Tox_Group_Exit_Type);
+
 	QString ToUserString (AddFriendError);
 	QString ToUserString (FriendQueryError);
 

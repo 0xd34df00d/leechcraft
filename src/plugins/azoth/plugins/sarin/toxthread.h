@@ -124,5 +124,8 @@ namespace LC::Azoth::Sarin
 
 		void incomingMessage (qint32, const QString&);
 		void readReceipt (quint32);
+
+		void groupPeerJoined (uint32_t groupNum, uint32_t peerId);
+		void groupPeerExited (uint32_t groupNum, uint32_t peerId, const GroupPeerExitedEvent&);
 	};
 }

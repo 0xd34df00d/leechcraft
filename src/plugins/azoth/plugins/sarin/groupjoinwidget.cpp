@@ -10,6 +10,7 @@
 #include <tox/tox.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
+#include "groupsmanager.h"
 #include "toxaccount.h"
 
 namespace LC::Azoth::Sarin
@@ -55,7 +56,7 @@ namespace LC::Azoth::Sarin
 			return;
 		}
 
-		acc->JoinGroup (Ui_.GroupId_->text (), Ui_.Nick_->text (), Ui_.Password_->text ());
+		acc->GetGroupsManager ().Join (Ui_.GroupId_->text (), Ui_.Nick_->text (), Ui_.Password_->text ());
 	}
 
 	void GroupJoinWidget::Cancel ()

@@ -155,14 +155,6 @@ namespace LC::Azoth::Sarin
 		return GetFriendId (Tox_.get (), pkey);
 	}
 
-	namespace
-	{
-		QString FromToxStr (const uint8_t *data, size_t size)
-		{
-			return QString::fromUtf8 (std::bit_cast<const char*> (data), size);
-		}
-	}
-
 	QByteArray ToxW::GetFriendPubkey (uint32_t id)
 	{
 		return GetFriendId (Tox_.get (), id);
@@ -170,6 +162,11 @@ namespace LC::Azoth::Sarin
 
 	namespace
 	{
+		QString FromToxStr (const uint8_t *data, size_t size)
+		{
+			return QString::fromUtf8 (std::bit_cast<const char*> (data), size);
+		}
+
 		Util::Either<ToxError<FriendQueryError>, EntryStatus> GetFriendStatusEither (Tox *tox, uint32_t id)
 		{
 			const auto connStatus = co_await WithError (&tox_friend_get_connection_status, tox, id);
@@ -348,6 +345,27 @@ namespace LC::Azoth::Sarin
 				[] (ToxW& self, Tox*, uint32_t, uint32_t msgId)
 				{
 					emit self.Runner_.readReceipt (msgId);
+				}> ();
+
+		// groups
+		Register<tox_callback_group_peer_join,
+				[] (ToxW& self, Tox*, uint32_t groupNum, uint32_t peerId)
+				{
+					emit self.Runner_.groupPeerJoined (groupNum, peerId);
+				}> ();
+		Register<tox_callback_group_peer_exit,
+				[] (ToxW& self, Tox*,
+						uint32_t groupNum, uint32_t peerId,
+						Tox_Group_Exit_Type exitType,
+						const uint8_t *namePtr, size_t nameLen,
+						const uint8_t *partMsgPtr, size_t partMsgLen)
+				{
+					emit self.Runner_.groupPeerExited (groupNum, peerId,
+						{
+							.Type_ = MapToxEnum (exitType),
+							.Nick_ = FromToxStr (namePtr, nameLen),
+							.PartMsg_ = FromToxStr (partMsgPtr, partMsgLen)
+						});
 				}> ();
 	}
 

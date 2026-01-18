@@ -27,6 +27,7 @@ namespace LC::Azoth::Sarin
 	class MessagesManager;
 	class AccountConfigDialog;
 	class FileTransferManager;
+	class GroupsManager;
 
 	class ToxAccount : public QObject
 					 , public IAccount
@@ -53,6 +54,8 @@ namespace LC::Azoth::Sarin
 		MessagesManager * const MsgsMgr_;
 		FileTransferManager * const XferMgr_;
 
+		GroupsManager * const GroupsMgr_;
+
 		QHash<QByteArray, ToxContact*> Contacts_;
 
 		ToxAccount (const QByteArray&, const QString& name, ToxProtocol*);
@@ -66,6 +69,8 @@ namespace LC::Azoth::Sarin
 
 		ToxContact* GetByAzothId (const QString&) const;
 		ToxContact* GetByPubkey (const QByteArray&) const;
+
+		std::shared_ptr<ToxRunner> GetTox ();
 
 		QObject* GetQObject () override;
 		QObject* GetParentProtocol () const override;
@@ -96,8 +101,7 @@ namespace LC::Azoth::Sarin
 		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
 		Util::ContextTask<void> SetTypingState (QByteArray pkey, bool isTyping);
 
-		using JoinGroupResult = Util::Either<JoinGroupError, Util::Void>;
-		Util::ContextTask<JoinGroupResult> JoinGroup (QString groupId, QString nick, QString password);
+		GroupsManager& GetGroupsManager ();
 	private:
 		Util::ContextTask<void> RunRequestAuth (QString, QString);
 		Util::ContextTask<void> RunRemoveEntry (ToxContact*);
