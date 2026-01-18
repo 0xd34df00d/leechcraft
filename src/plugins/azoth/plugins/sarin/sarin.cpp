@@ -14,11 +14,10 @@
 
 namespace LC::Azoth::Sarin
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		qRegisterMetaType<EntryStatus> ("EntryStatus");
-
-		Proto_ = std::make_shared<ToxProtocol> (proxy, this);
+		Proto_ = std::make_shared<ToxProtocol> (this);
 	}
 
 	void Plugin::SecondInit ()

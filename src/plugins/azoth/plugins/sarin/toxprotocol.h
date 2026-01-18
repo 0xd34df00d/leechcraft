@@ -10,7 +10,6 @@
 
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
-#include <interfaces/core/icoreproxy.h>
 
 namespace LC::Azoth::Sarin
 {
@@ -22,14 +21,12 @@ namespace LC::Azoth::Sarin
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IProtocol)
 
-		const ICoreProxy_ptr CoreProxy_;
-
 		QObject * const ParentProtocol_;
 
 		QList<ToxAccount*> Accounts_;
 	public:
-		ToxProtocol (const ICoreProxy_ptr&, QObject *parentPlugin);
-		~ToxProtocol ();
+		explicit ToxProtocol (QObject *parentPlugin);
+		~ToxProtocol () override;
 
 		QObject* GetQObject () override;
 		ProtocolFeatures GetFeatures () const override;
@@ -43,8 +40,6 @@ namespace LC::Azoth::Sarin
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options) override;
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) override;
 		void RemoveAccount (QObject* account) override;
-
-		const ICoreProxy_ptr& GetCoreProxy () const;
 	private:
 		void LoadAccounts ();
 		void InitConnections (ToxAccount*);

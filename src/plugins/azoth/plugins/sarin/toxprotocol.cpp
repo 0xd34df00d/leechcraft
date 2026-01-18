@@ -16,9 +16,8 @@
 
 namespace LC::Azoth::Sarin
 {
-	ToxProtocol::ToxProtocol (const ICoreProxy_ptr& proxy, QObject* parentPlugin)
+	ToxProtocol::ToxProtocol (QObject* parentPlugin)
 	: QObject { parentPlugin }
-	, CoreProxy_ { proxy }
 	, ParentProtocol_ { parentPlugin }
 	{
 		qRegisterMetaType<int32_t> ("int32_t");
@@ -106,11 +105,6 @@ namespace LC::Azoth::Sarin
 
 		Accounts_.removeOne (account);
 		emit accountRemoved (accObj);
-	}
-
-	const ICoreProxy_ptr& ToxProtocol::GetCoreProxy () const
-	{
-		return CoreProxy_;
 	}
 
 	void ToxProtocol::LoadAccounts ()
