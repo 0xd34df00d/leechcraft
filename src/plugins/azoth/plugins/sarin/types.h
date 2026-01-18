@@ -106,6 +106,44 @@ namespace LC::Azoth::Sarin
 		UnknownError
 	};
 
+	enum class ToxMessageType : std::uint8_t
+	{
+		Normal,
+		Action,
+	};
+
+	enum class ConfType : std::uint8_t
+	{
+		Text,
+		AV,
+	};
+
+	struct ConfInvitationEvent
+	{
+		uint32_t FriendNum_;
+		ConfType Type_;
+		QByteArray Cookie_;
+	};
+
+	struct ConfTitleChangedEvent
+	{
+		uint32_t PeerNum_;
+		QString Title_;
+	};
+
+	struct ConfPeerNameChangedEvent
+	{
+		uint32_t PeerNum_;
+		QString NewName_;
+	};
+
+	struct ConfMessageEvent
+	{
+		uint32_t PeerNum_;
+		ToxMessageType Type_;
+		QString Message_;
+	};
+
 	enum class GroupExitType : std::uint8_t
 	{
 		Quit,

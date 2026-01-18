@@ -41,7 +41,22 @@ namespace LC::Azoth::Sarin
 		return ToxId2HR (clientId);
 	}
 
-	GroupExitType MapToxEnum (Tox_Group_Exit_Type type)
+	ConfType FromToxEnum (TOX_CONFERENCE_TYPE type)
+	{
+		using enum ConfType;
+		switch (type)
+		{
+		case TOX_CONFERENCE_TYPE_TEXT:
+			return Text;
+		case TOX_CONFERENCE_TYPE_AV:
+			return AV;
+		}
+
+		qWarning () << "unknown conf type" << type;
+		return Text;
+	}
+
+	GroupExitType FromToxEnum (Tox_Group_Exit_Type type)
 	{
 		using enum GroupExitType;
 		switch (type)
@@ -62,6 +77,21 @@ namespace LC::Azoth::Sarin
 
 		qWarning () << "unknown exit type" << type;
 		return Quit;
+	}
+
+	ToxMessageType FromToxEnum (TOX_MESSAGE_TYPE type)
+	{
+		using enum ToxMessageType;
+		switch (type)
+		{
+		case TOX_MESSAGE_TYPE_NORMAL:
+			return Normal;
+		case TOX_MESSAGE_TYPE_ACTION:
+			return Action;
+		}
+
+		qWarning () << "unknown message type" << type;
+		return Normal;
 	}
 
 	namespace

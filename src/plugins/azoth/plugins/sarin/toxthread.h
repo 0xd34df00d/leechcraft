@@ -122,8 +122,15 @@ namespace LC::Azoth::Sarin
 		void gotChunkRequest (uint32_t friendNum, uint32_t fileNum, uint64_t position, size_t length);
 		void requested (uint32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
 
-		void incomingMessage (qint32, const QString&);
-		void readReceipt (quint32);
+		void incomingMessage (uint32_t, const QString&);
+		void readReceipt (uint32_t);
+
+		void confInvited (const ConfInvitationEvent&);
+		void confConnected (uint32_t confNum);
+		void confMessage (uint32_t confNum, const ConfMessageEvent&);
+		void confTitleChanged (uint32_t confNum, const ConfTitleChangedEvent&);
+		void confPeerNameChanged (uint32_t confNum, const ConfPeerNameChangedEvent&);
+		void confPeerListChanged (uint32_t confNum);
 
 		void groupPeerJoined (uint32_t groupNum, uint32_t peerId);
 		void groupPeerExited (uint32_t groupNum, uint32_t peerId, const GroupPeerExitedEvent&);

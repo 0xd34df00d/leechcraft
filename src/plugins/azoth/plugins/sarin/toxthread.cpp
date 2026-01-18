@@ -167,6 +167,11 @@ namespace LC::Azoth::Sarin
 			return QString::fromUtf8 (std::bit_cast<const char*> (data), size);
 		}
 
+		QByteArray FromToxBytes (const uint8_t *data, qsizetype size)
+		{
+			return QByteArray { std::bit_cast<const char*> (data), size };
+		}
+
 		Util::Either<ToxError<FriendQueryError>, EntryStatus> GetFriendStatusEither (Tox *tox, uint32_t id)
 		{
 			const auto connStatus = co_await WithError (&tox_friend_get_connection_status, tox, id);
@@ -326,8 +331,7 @@ namespace LC::Azoth::Sarin
 		Register<tox_callback_file_recv_chunk,
 				[] (ToxW& self, Tox*, uint32_t friendNum, uint32_t fileNum, uint64_t position, const uint8_t *rawData, qsizetype rawSize)
 				{
-					const QByteArray data { std::bit_cast<const char*> (rawData), rawSize };
-					emit self.Runner_.gotData (friendNum, fileNum, data, position);
+					emit self.Runner_.gotData (friendNum, fileNum, FromToxBytes (rawData, rawSize), position);
 				}> ();
 		Register<tox_callback_file_chunk_request,
 				[] (ToxW& self, Tox*, uint32_t friendNum, uint32_t fileNum, uint64_t position, size_t length)
@@ -347,6 +351,42 @@ namespace LC::Azoth::Sarin
 					emit self.Runner_.readReceipt (msgId);
 				}> ();
 
+		// conferences
+		Register<tox_callback_conference_invite,
+				[] (ToxW& self, Tox*, uint32_t friendNum, TOX_CONFERENCE_TYPE type, const uint8_t *cookie, size_t len)
+				{
+					emit self.Runner_.confInvited ({
+								.FriendNum_ = friendNum,
+								.Type_ = FromToxEnum (type),
+								.Cookie_ = FromToxBytes (cookie, len),
+							});
+				}> ();
+		Register<tox_callback_conference_connected,
+				[] (ToxW& self, Tox*, uint32_t confNum)
+				{
+					emit self.Runner_.confConnected (confNum);
+				}> ();
+		Register<tox_callback_conference_message,
+				[] (ToxW& self, Tox*, uint32_t confNum, uint32_t peerNum, TOX_MESSAGE_TYPE type, const uint8_t *msg, size_t len)
+				{
+					emit self.Runner_.confMessage (confNum, { peerNum, FromToxEnum (type), FromToxStr (msg, len) });
+				}> ();
+		Register<tox_callback_conference_title,
+				[] (ToxW& self, Tox*, uint32_t confNum, uint32_t peerNum, const uint8_t *title, size_t len)
+				{
+					emit self.Runner_.confTitleChanged (confNum, { peerNum, FromToxStr (title, len) });
+				}> ();
+		Register<tox_callback_conference_peer_name,
+				[] (ToxW& self, Tox*, uint32_t confNum, uint32_t peerNum, const uint8_t *name, size_t len)
+				{
+					emit self.Runner_.confPeerNameChanged (confNum, { peerNum, FromToxStr (name, len) });
+				}> ();
+		Register<tox_callback_conference_peer_list_changed,
+				[] (ToxW& self, Tox*, uint32_t confNum)
+				{
+					emit self.Runner_.confPeerListChanged (confNum);
+				}> ();
+
 		// groups
 		Register<tox_callback_group_peer_join,
 				[] (ToxW& self, Tox*, uint32_t groupNum, uint32_t peerId)
@@ -361,11 +401,11 @@ namespace LC::Azoth::Sarin
 						const uint8_t *partMsgPtr, size_t partMsgLen)
 				{
 					emit self.Runner_.groupPeerExited (groupNum, peerId,
-						{
-							.Type_ = MapToxEnum (exitType),
-							.Nick_ = FromToxStr (namePtr, nameLen),
-							.PartMsg_ = FromToxStr (partMsgPtr, partMsgLen)
-						});
+							{
+								.Type_ = FromToxEnum (exitType),
+								.Nick_ = FromToxStr (namePtr, nameLen),
+								.PartMsg_ = FromToxStr (partMsgPtr, partMsgLen)
+							});
 				}> ();
 	}
 
