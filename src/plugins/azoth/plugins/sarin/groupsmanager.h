@@ -32,11 +32,11 @@ namespace LC::Azoth::Sarin
 
 		ToxAccount& GetAccount ();
 
-		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
-
 		using JoinResult = Util::Either<JoinGroupError, Util::Void>;
 		Util::ContextTask<JoinResult> Join (QString groupId, QString nick, QString password);
 
 		void HandleLeft (uint32_t groupNum);
+	private:
+		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
 	};
 }

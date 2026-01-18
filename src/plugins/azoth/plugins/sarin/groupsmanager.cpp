@@ -18,37 +18,16 @@ namespace LC::Azoth::Sarin
 	GroupsManager::GroupsManager (ToxAccount& acc)
 	: Acc_ { acc }
 	{
+		connect (&acc,
+				&ToxAccount::threadChanged,
+				this,
+				&GroupsManager::HandleToxThreadChanged);
+		HandleToxThreadChanged (acc.GetTox ());
 	}
 
 	ToxAccount& GroupsManager::GetAccount ()
 	{
 		return Acc_;
-	}
-
-	void GroupsManager::HandleToxThreadChanged (const std::shared_ptr<ToxRunner>& runner)
-	{
-		if (!runner)
-			return;
-
-		auto route = [this] (auto fun)
-		{
-			return [this, fun]<typename... Args> (uint32_t groupNum, const Args&... args)
-			{
-				const auto groupEntry = Groups_.value (groupNum);
-				if (!groupEntry)
-				{
-					qWarning () << "no entry for group" << groupNum;
-					return;
-				}
-
-				std::invoke (fun, groupEntry, args...);
-			};
-		};
-
-		connect (&*runner,
-				&ToxRunner::groupPeerJoined,
-				this,
-				route (&GroupChatEntry::HandlePeerJoined));
 	}
 
 	Util::ContextTask<GroupsManager::JoinResult> GroupsManager::Join (QString groupId, QString nick, QString password)
@@ -98,5 +77,35 @@ namespace LC::Azoth::Sarin
 		emit Acc_.removedCLItems (removed);
 
 		entry->deleteLater ();
+	}
+
+	void GroupsManager::HandleToxThreadChanged (const std::shared_ptr<ToxRunner>& runner)
+	{
+		if (!runner)
+			return;
+
+		auto route = [this] (auto fun)
+		{
+			return [this, fun]<typename... Args> (uint32_t groupNum, const Args&... args)
+			{
+				const auto groupEntry = Groups_.value (groupNum);
+				if (!groupEntry)
+				{
+					qWarning () << "no entry for group" << groupNum;
+					return;
+				}
+
+				std::invoke (fun, groupEntry, args...);
+			};
+		};
+
+		connect (&*runner,
+				&ToxRunner::groupPeerJoined,
+				this,
+				route (&GroupChatEntry::HandlePeerJoined));
+		connect (&*runner,
+				&ToxRunner::groupPeerExited,
+				this,
+				route (&GroupChatEntry::HandlePeerExited));
 	}
 }

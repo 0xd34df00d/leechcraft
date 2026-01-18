@@ -179,9 +179,9 @@ namespace LC::Azoth::Sarin
 		qDebug () << peerId << "joined";
 	}
 
-	void GroupChatEntry::HandlePeerLeft (uint32_t peerId, const GroupPeerExitedEvent&)
+	void GroupChatEntry::HandlePeerExited (uint32_t peerId, const GroupPeerExitedEvent&)
 	{
-		qDebug () << peerId << "left";
+		qDebug () << peerId << "exited";
 	}
 
 	Util::ContextTask<void> GroupChatEntry::RunLeave (QString msg, int retry)

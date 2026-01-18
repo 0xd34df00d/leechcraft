@@ -59,10 +59,6 @@ namespace LC::Azoth::Sarin
 				&ToxAccount::threadChanged,
 				XferMgr_,
 				&FileTransferManager::HandleToxThreadChanged);
-		connect (this,
-				&ToxAccount::threadChanged,
-				GroupsMgr_,
-				&GroupsManager::HandleToxThreadChanged);
 	}
 
 	ToxAccount::ToxAccount (const QString& name, ToxProtocol *parent)

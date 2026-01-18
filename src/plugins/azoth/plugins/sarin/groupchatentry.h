@@ -79,7 +79,7 @@ namespace LC::Azoth::Sarin
 		void InviteToMUC (const QString& userId, const QString& msg) override;
 
 		void HandlePeerJoined (uint32_t peerId);
-		void HandlePeerLeft (uint32_t peerId, const GroupPeerExitedEvent&);
+		void HandlePeerExited (uint32_t peerId, const GroupPeerExitedEvent&);
 	private:
 		Util::ContextTask<void> RunLeave (QString, int retry = 0);
 		Util::ContextTask<void> RunSetNick (QString, int retry = 0);
