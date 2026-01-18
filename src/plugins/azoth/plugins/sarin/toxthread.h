@@ -66,8 +66,8 @@ namespace LC::Azoth::Sarin
 			EntryStatus Status_;
 		};
 
-		std::optional<uint32_t> ResolveFriendNum (const QByteArray&);
-		QByteArray GetFriendPubkey (uint32_t);
+		std::optional<uint32_t> ResolveFriendNum (const QByteArray&) const;
+		std::optional<QByteArray> GetFriendPubkey (uint32_t) const;
 
 		using ResolveResult = Util::Either<ToxError<FriendQueryError>, FriendInfo>;
 		ResolveResult ResolveFriend (uint32_t) const;

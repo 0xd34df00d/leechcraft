@@ -10,6 +10,7 @@
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/threads/coro/eithercoro.h>
 #include <tox/tox.h>
 
 namespace LC::Azoth::Sarin
@@ -27,18 +28,12 @@ namespace LC::Azoth::Sarin
 		return res;
 	}
 
-	QByteArray GetFriendId (const Tox *tox, int32_t friendId)
+	std::optional<QByteArray> GetFriendPubkey (const Tox *tox, uint32_t friendId)
 	{
 		std::array<uint8_t, TOX_PUBLIC_KEY_SIZE> clientId;
-		TOX_ERR_FRIEND_GET_PUBLIC_KEY error {};
-
-		if (!tox_friend_get_public_key (tox, friendId, clientId.data (), &error))
-		{
-			qWarning () << "failed to get friend's public key" << friendId << error;
-			throw std::runtime_error { "Cannot get friend's pubkey." };
-		}
-
-		return ToxId2HR (clientId);
+		return Util::Visit (WithError (&tox_friend_get_public_key, tox, friendId, clientId.data ()),
+				[] (FriendQueryError) { return std::optional<QByteArray> {}; },
+				[&] (auto) { return std::optional { ToxId2HR (clientId) }; });
 	}
 
 	ConfType FromToxEnum (TOX_CONFERENCE_TYPE type)

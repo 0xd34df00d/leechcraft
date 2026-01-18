@@ -21,7 +21,7 @@ using Tox = struct Tox;
 namespace LC::Azoth::Sarin
 {
 	std::optional<uint32_t> GetFriendId (const Tox *tox, const QByteArray& pubkey);
-	QByteArray GetFriendId (const Tox *tox, int32_t friendId);
+	std::optional<QByteArray> GetFriendPubkey (const Tox *tox, uint32_t friendId);
 
 	template<size_t Size>
 	QByteArray ToxId2HR (const uint8_t *address)

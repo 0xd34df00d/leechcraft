@@ -83,13 +83,13 @@ namespace LC::Azoth::Sarin
 		}
 
 		const auto& pubkey = co_await runner->Run (&ToxW::GetFriendPubkey, friendId);
-		if (pubkey.isEmpty ())
+		if (!pubkey)
 		{
 			qWarning () << "cannot get pubkey for message" << msg;
 			co_return;
 		}
 
-		emit gotMessage (pubkey, msg);
+		emit gotMessage (*pubkey, msg);
 	}
 
 	void MessagesManager::SetThread (const std::shared_ptr<ToxRunner>& runner)
