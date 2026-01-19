@@ -254,7 +254,6 @@ namespace LC::Azoth::Sarin
 					std::copy_n (pkeyPtr, pkey.size (), pkey.begin ());
 
 					const auto& msg = FromToxStr (data, size);
-					qDebug () << pkey << msg;
 					emit self.Runner_.gotFriendRequest (pkey, msg);
 				}> ();
 		Register<tox_callback_friend_name,
@@ -263,7 +262,6 @@ namespace LC::Azoth::Sarin
 					if (const auto& toxId = self.GetFriendPubkey (num))
 					{
 						const auto& name = FromToxStr (data, len);
-						qDebug () << *toxId << name;
 						emit self.Runner_.friendNameChanged (*toxId, name);
 						self.SaveState ();
 					}

@@ -29,6 +29,8 @@ LC_DEFINE_PLUGIN (
 		filetransferbase.cpp
 		filetransferin.cpp
 		filetransferout.cpp
+		confentry.cpp
+		confparticipant.cpp
 		confsmanager.cpp
 		groupchatentry.cpp
 		groupjoinwidget.cpp

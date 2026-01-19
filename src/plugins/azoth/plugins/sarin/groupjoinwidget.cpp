@@ -147,8 +147,10 @@ namespace LC::Azoth::Sarin
 
 	void GroupJoinWidget::CheckValidity ()
 	{
-		const bool valid = Ui_.GroupId_->text ().size () == TOX_GROUP_CHAT_ID_SIZE &&
+		const auto isLegacyConf = Ui_.TargetPages_->currentWidget () == Ui_.ConfPage_;
+		const auto isGroupValid = Ui_.GroupId_->text ().size () == TOX_GROUP_CHAT_ID_SIZE &&
 				!Ui_.Nick_->text ().isEmpty ();
+		const auto valid = isLegacyConf || isGroupValid;
 		emit validityChanged (valid);
 	}
 }

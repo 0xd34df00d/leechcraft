@@ -15,7 +15,7 @@
 namespace LC::Azoth::Sarin
 {
 	struct ConfInvitationEvent;
-	class ConfChatEntry;
+	class ConfEntry;
 	class ToxAccount;
 	class ToxRunner;
 
@@ -24,11 +24,14 @@ namespace LC::Azoth::Sarin
 		Q_OBJECT
 
 		ToxAccount& Acc_;
-		QHash<uint32_t, ConfChatEntry*> Conf2Entry_;
+		QHash<uint32_t, ConfEntry*> Conf2Entry_;
 	public:
 		explicit ConfsManager (ToxAccount&);
 
+		ToxAccount& GetAccount ();
+
 		Util::ContextTask<void> Join (QByteArray cookie, uint32_t friendNum, int retry = 0);
+		void HandleSelfLeft (uint32_t);
 	private:
 		void HandleInvited (const ConfInvitationEvent&);
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);

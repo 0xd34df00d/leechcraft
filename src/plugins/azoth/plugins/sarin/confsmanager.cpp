@@ -12,6 +12,7 @@
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
+#include "confentry.h"
 #include "groupjoinwidget.h"
 #include "toxaccount.h"
 #include "toxcontact.h"
@@ -28,6 +29,11 @@ namespace LC::Azoth::Sarin
 				this,
 				&ConfsManager::HandleToxThreadChanged);
 		HandleToxThreadChanged (acc.GetTox ());
+	}
+
+	ToxAccount& ConfsManager::GetAccount ()
+	{
+		return Acc_;
 	}
 
 	namespace
@@ -54,13 +60,13 @@ namespace LC::Azoth::Sarin
 		if (!tox)
 			co_return;
 
+		qDebug () << cookie.toHex (':') << cookie.size ();
 		const auto joinResult = co_await tox->RunWithError (&tox_conference_join,
 				friendNum, std::bit_cast<const uint8_t*> (cookie.constData ()), cookie.size ());
 		const auto confNum = co_await Util::WithHandler (joinResult,
 				[=, this] (Tox_Err_Conference_Join error)
 				{
 					const auto errMsg = tox_err_conference_join_to_string (error);
-					qWarning () << "unable to join conference:" << errMsg;
 					switch (error)
 					{
 					case TOX_ERR_CONFERENCE_JOIN_FAIL_SEND:
@@ -71,10 +77,36 @@ namespace LC::Azoth::Sarin
 						ReportError (tr ("You have already joined this conference."));
 						break;
 					default:
-						ReportError (tr ("Unable to join the conference: %1. Please try again later.").arg (errMsg));
+						ReportError (tr ("Unable to join the conference: %1.").arg (errMsg));
 						break;
 					}
 				});
+		const auto confId = co_await tox->Run ([confNum] (ToxW& tox) -> std::optional<ConfId>
+				{
+					ConfId id {};
+					if (!tox_conference_get_id (tox.GetTox (), confNum, &id [0]))
+						return {};
+					return id;
+				});
+		if (!confId)
+		{
+			qWarning () << "unable to get conference ID for" << confNum;
+			co_return;
+		}
+
+		tox->Run (&ToxW::SaveState);
+
+		const auto entry = new ConfEntry { confNum, *confId, *this };
+		Conf2Entry_ [confNum] = entry;
+		entry->RefreshParticipants ();
+	}
+
+	void ConfsManager::HandleSelfLeft (uint32_t confNum)
+	{
+		if (const auto entry = Conf2Entry_.take (confNum))
+			entry->deleteLater ();
+		else
+			qWarning () << "unknown entry for" << confNum;
 	}
 
 	void ConfsManager::HandleInvited (const ConfInvitationEvent& invite)
@@ -89,9 +121,32 @@ namespace LC::Azoth::Sarin
 		if (!runner)
 			return;
 
+		auto route = [this] (auto fun)
+		{
+			return [this, fun]<typename... Args> (uint32_t confNum, const Args&... args)
+			{
+				if (const auto groupEntry = Conf2Entry_.value (confNum))
+					std::invoke (fun, groupEntry, args...);
+				else
+					qWarning () << "no entry for conference" << confNum;
+			};
+		};
+
 		connect (&*runner,
 				&ToxRunner::confInvited,
 				this,
 				&ConfsManager::HandleInvited);
+		connect (&*runner,
+				&ToxRunner::confConnected,
+				this,
+				route (&ConfEntry::HandleConnected));
+		connect (&*runner,
+				&ToxRunner::confMessage,
+				this,
+				route (&ConfEntry::HandleMessage));
+		connect (&*runner,
+				&ToxRunner::confPeerListChanged,
+				this,
+				route (&ConfEntry::RefreshParticipants));
 	}
 }

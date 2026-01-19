@@ -29,6 +29,9 @@ namespace LC::Azoth::Sarin
 		}
 	};
 
+	constexpr inline auto ConfIdSize = 32;
+	using ConfId = std::array<uint8_t, ConfIdSize>;
+
 	constexpr inline auto PubkeySize = 32;
 	using Pubkey = std::array<uint8_t, PubkeySize>;
 

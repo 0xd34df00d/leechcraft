@@ -48,6 +48,7 @@ namespace LC::Azoth::Sarin
 		~ToxW () override;
 
 		Tox* GetTox ();
+		void SaveState ();
 
 		QByteArray GetToxId () const;
 
@@ -81,7 +82,6 @@ namespace LC::Azoth::Sarin
 
 		void Iterate ();
 
-		void SaveState ();
 		void InitializeCallbacks ();
 	};
 
