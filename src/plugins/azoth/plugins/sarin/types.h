@@ -121,6 +121,7 @@ namespace LC::Azoth::Sarin
 	struct ConfInvitationEvent
 	{
 		uint32_t FriendNum_;
+		QByteArray FriendPKey_;
 		ConfType Type_;
 		QByteArray Cookie_;
 	};

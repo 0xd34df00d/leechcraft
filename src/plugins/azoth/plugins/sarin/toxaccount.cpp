@@ -27,6 +27,7 @@
 #include "accountconfigdialog.h"
 #include "util.h"
 #include "filetransfermanager.h"
+#include "confsmanager.h"
 #include "groupsmanager.h"
 
 #ifdef ENABLE_MEDIACALLS
@@ -43,6 +44,7 @@ namespace LC::Azoth::Sarin
 	, ActionGetToxId_ { new QAction { tr ("Get Tox ID"), this } }
 	, MsgsMgr_ { new MessagesManager { this } }
 	, XferMgr_ { new FileTransferManager { this } }
+	, ConfsMgr_ { new ConfsManager { *this } }
 	, GroupsMgr_ { new GroupsManager { *this } }
 	{
 		connect (ActionGetToxId_,
@@ -121,9 +123,7 @@ namespace LC::Azoth::Sarin
 	{
 		const auto& localId = azothId.section ('/', 1).toUtf8 ();
 		if (!Contacts_.contains (localId))
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find entry for Azoth ID"
-					<< azothId;
+			qWarning () << "unable to find entry for Azoth ID" << azothId;
 		return Contacts_.value (localId);
 	}
 
@@ -369,6 +369,11 @@ namespace LC::Azoth::Sarin
 		const auto result = co_await Tox_->RunWithError (&tox_self_set_typing, *num, isTyping);
 		if (const auto err = result.MaybeLeft ())
 			qWarning () << "cannot set typing to" << isTyping << ":" << *err << tox_err_set_typing_to_string (*err);
+	}
+
+	ConfsManager& ToxAccount::GetConfsManager ()
+	{
+		return *ConfsMgr_;
 	}
 
 	GroupsManager& ToxAccount::GetGroupsManager ()

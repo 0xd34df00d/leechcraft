@@ -356,11 +356,15 @@ namespace LC::Azoth::Sarin
 		Register<tox_callback_conference_invite,
 				[] (ToxW& self, Tox*, uint32_t friendNum, TOX_CONFERENCE_TYPE type, const uint8_t *cookie, size_t len)
 				{
-					emit self.Runner_.confInvited ({
-								.FriendNum_ = friendNum,
-								.Type_ = FromToxEnum (type),
-								.Cookie_ = FromToxBytes (cookie, len),
-							});
+					if (const auto pkey = self.GetFriendPubkey (friendNum))
+						emit self.Runner_.confInvited ({
+									.FriendNum_ = friendNum,
+									.FriendPKey_ = *pkey,
+									.Type_ = FromToxEnum (type),
+									.Cookie_ = FromToxBytes (cookie, len),
+								});
+					else
+						qWarning () << "unable to get pkey for" << friendNum;
 				}> ();
 		Register<tox_callback_conference_connected,
 				[] (ToxW& self, Tox*, uint32_t confNum)

@@ -27,6 +27,7 @@ namespace LC::Azoth::Sarin
 	class MessagesManager;
 	class AccountConfigDialog;
 	class FileTransferManager;
+	class ConfsManager;
 	class GroupsManager;
 
 	class ToxAccount : public QObject
@@ -54,6 +55,7 @@ namespace LC::Azoth::Sarin
 		MessagesManager * const MsgsMgr_;
 		FileTransferManager * const XferMgr_;
 
+		ConfsManager * const ConfsMgr_;
 		GroupsManager * const GroupsMgr_;
 
 		QHash<QByteArray, ToxContact*> Contacts_;
@@ -101,6 +103,7 @@ namespace LC::Azoth::Sarin
 		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
 		Util::ContextTask<void> SetTypingState (QByteArray pkey, bool isTyping);
 
+		ConfsManager& GetConfsManager ();
 		GroupsManager& GetGroupsManager ();
 	private:
 		Util::ContextTask<void> RunRequestAuth (QString, QString);

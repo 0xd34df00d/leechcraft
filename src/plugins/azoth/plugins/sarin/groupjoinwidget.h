@@ -22,15 +22,23 @@ namespace LC::Azoth::Sarin
 		Q_INTERFACES (LC::Azoth::IMUCJoinWidget)
 
 		Ui::GroupJoinWidget Ui_;
+
+		// Legacy conference identifying data (if it has been set).
+		// Since there's nothing for the user to edit there, we just return it as is.
+		std::optional<QVariantMap> ConfIdent_;
 	public:
 		explicit GroupJoinWidget ();
 
 		void AccountSelected (QObject *account) override;
 		void Join (QObject *account) override;
 		void Cancel () override;
+
 		QVariantMap GetIdentifyingData () const override;
 		void SetIdentifyingData (const QVariantMap& data) override;
+
+		static QVariantMap GetConfIdentifyingData (const QByteArray& cookie, uint32_t friendNum);
 	private:
+		bool IsJoiningGroup () const;
 		void CheckValidity ();
 	signals:
 		void validityChanged (bool) override;
