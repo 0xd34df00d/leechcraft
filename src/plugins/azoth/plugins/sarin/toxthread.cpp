@@ -139,7 +139,7 @@ namespace LC::Azoth::Sarin
 		if (!friendNum)
 		{
 			qWarning () << "unknown friend" << origId;
-			return false;
+			return true;
 		}
 
 		TOX_ERR_FRIEND_DELETE error {};
