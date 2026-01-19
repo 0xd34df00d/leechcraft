@@ -11,7 +11,6 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <util/threads/coro/eithercoro.h>
-#include <tox/tox.h>
 
 namespace LC::Azoth::Sarin
 {
@@ -34,6 +33,16 @@ namespace LC::Azoth::Sarin
 		return Util::Visit (WithError (&tox_friend_get_public_key, tox, friendId, clientId.data ()),
 				[] (FriendQueryError) { return std::optional<QByteArray> {}; },
 				[&] (auto) { return std::optional { ToxId2HR (clientId) }; });
+	}
+
+	QString FromToxStr (const uint8_t *data, size_t size)
+	{
+		return QString::fromUtf8 (std::bit_cast<const char*> (data), size);
+	}
+
+	QByteArray FromToxBytes (const uint8_t *data, qsizetype size)
+	{
+		return QByteArray { std::bit_cast<const char*> (data), size };
 	}
 
 	ConfType FromToxEnum (TOX_CONFERENCE_TYPE type)

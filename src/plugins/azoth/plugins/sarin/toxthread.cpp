@@ -162,16 +162,6 @@ namespace LC::Azoth::Sarin
 
 	namespace
 	{
-		QString FromToxStr (const uint8_t *data, size_t size)
-		{
-			return QString::fromUtf8 (std::bit_cast<const char*> (data), size);
-		}
-
-		QByteArray FromToxBytes (const uint8_t *data, qsizetype size)
-		{
-			return QByteArray { std::bit_cast<const char*> (data), size };
-		}
-
 		Util::Either<ToxError<FriendQueryError>, EntryStatus> GetFriendStatusEither (Tox *tox, uint32_t id)
 		{
 			const auto connStatus = co_await WithError (&tox_friend_get_connection_status, tox, id);
@@ -179,12 +169,10 @@ namespace LC::Azoth::Sarin
 				co_return EntryStatus { SOffline, {} };
 
 			const auto status = co_await WithError (&tox_friend_get_status, tox, id);
-
-			const auto statusSize = co_await WithError (&tox_friend_get_status_message_size, tox, id);
-			const auto statusMsg = std::make_unique<uint8_t []> (statusSize);
-			co_await WithError (&tox_friend_get_status_message, tox, id, statusMsg.get ());
-
-			co_return EntryStatus { ToxStatus2State (status), FromToxStr (statusMsg.get (), statusSize) };
+			const auto& statusMsg = co_await QueryToxString (&tox_friend_get_status_message_size,
+					&tox_friend_get_status_message,
+					tox, id);
+			co_return EntryStatus { ToxStatus2State (status), statusMsg };
 		}
 
 		EntryStatus GetFriendStatus (Tox *tox, uint32_t id)

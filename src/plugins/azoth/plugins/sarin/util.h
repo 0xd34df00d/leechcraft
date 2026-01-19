@@ -14,6 +14,7 @@
 #include <tox/tox.h>
 #include <util/sll/typegetter.h>
 #include <util/sll/void.h>
+#include <util/threads/coro/eithercoro.h>
 #include "types.h"
 
 using Tox = struct Tox;
@@ -47,6 +48,9 @@ namespace LC::Azoth::Sarin
 	{
 		return ToxId2HR<Size> (address.data ());
 	}
+
+	QString FromToxStr (const uint8_t *data, size_t size);
+	QByteArray FromToxBytes (const uint8_t *data, qsizetype size);
 
 	ConfType FromToxEnum (TOX_CONFERENCE_TYPE);
 	GroupExitType FromToxEnum (Tox_Group_Exit_Type);
@@ -108,7 +112,10 @@ namespace LC::Azoth::Sarin
 	using ErrorType_t = std::remove_pointer_t<Util::ArgType_t<F, Util::ArgCount_v<F> - 1>>;
 
 	template<typename F>
-	using EitherType_t = Util::Either<decltype (MapError (ErrorType_t<F> {})), Util::RetType_t<F>>;
+	using MappedErrorType_t = decltype (MapError (ErrorType_t<F> {}));
+
+	template<typename F>
+	using EitherType_t = Util::Either<MappedErrorType_t<F>, Util::RetType_t<F>>;
 
 	template<typename F>
 	EitherType_t<F> WithError (F f, auto... args)
@@ -131,5 +138,15 @@ namespace LC::Azoth::Sarin
 	EitherType_t<F> WithStrError (F f, Tox *tox, const QString& str, auto... args)
 	{
 		return WithStr (str, [&] (auto bytes, auto size) { return WithError (f, tox, args..., bytes, size); });
+	}
+
+	template<typename SizeF, typename CharsF, typename... Args>
+		requires (std::is_same_v<MappedErrorType_t<SizeF>, MappedErrorType_t<CharsF>>)
+	Util::Either<MappedErrorType_t<SizeF>, QString> QueryToxString (SizeF sizeF, CharsF charsF, Args... args)
+	{
+		const auto size = co_await WithError (sizeF, args...);
+		const auto bytes = std::make_unique<uint8_t []> (size);
+		co_await WithError (charsF, args..., &bytes [0]);
+		co_return FromToxStr (&bytes [0], size);
 	}
 }
