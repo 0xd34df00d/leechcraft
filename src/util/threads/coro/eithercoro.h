@@ -77,16 +77,16 @@ struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
 		template<typename T>
 		auto await_transform (T&& either) const
 		{
-			return SimpleAwaiter<std::decay_t<T>> { either };
+			return SimpleAwaiter<T> { std::forward<T> (either) };
 		}
 
-		template<typename>
-		struct SimpleAwaiter;
-
-		template<typename LL, typename RR>
-		struct SimpleAwaiter<LC::Util::Either<LL, RR>>
+		template<typename T>
+		struct SimpleAwaiter
 		{
-			const LC::Util::Either<LL, RR>& Either_;
+			T Either_;
+
+			constexpr static auto IsOwning = !std::is_lvalue_reference_v<T>;
+			using R_t = std::decay_t<T>::R_t;
 
 			bool await_ready () const noexcept
 			{
@@ -95,12 +95,12 @@ struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
 
 			void await_suspend (std::coroutine_handle<promise_type> handle)
 			{
-				handle.promise ().State_.Ret_.emplace (Either_.GetLeft ());
+				handle.promise ().State_.Ret_.emplace (std::forward_like<T> (Either_.GetLeft ()));
 			}
 
-			const RR& await_resume () const noexcept
+			std::conditional_t<IsOwning, R_t, const R_t&> await_resume ()
 			{
-				return Either_.GetRight ();
+				return std::forward_like<T> (Either_.GetRight ());
 			}
 		};
 	};

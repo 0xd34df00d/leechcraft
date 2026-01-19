@@ -19,5 +19,7 @@ namespace LC::Util
 		void testSuccess ();
 		void testFailure ();
 		void testException ();
+
+		void testSuccessAllocating ();
 	};
 }

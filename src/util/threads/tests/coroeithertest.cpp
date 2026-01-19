@@ -8,6 +8,7 @@
 
 #include "coroeithertest.h"
 #include <QtTest>
+#include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/eithercoro.h>
 
@@ -50,5 +51,18 @@ namespace LC::Util
 			co_return n * m * k;
 		};
 		QVERIFY_THROWS_EXCEPTION (std::runtime_error, action ());
+	}
+
+	void CoroEitherTest::testSuccessAllocating ()
+	{
+		using AllocTy = Either<QByteArray, QString>;
+
+		auto action = [] -> AllocTy
+		{
+			const auto& s1 = co_await AllocTy { QString { "foo" } };
+			const auto& s2 = co_await AllocTy { QString { "bar" } };
+			co_return s1 + s2;
+		};
+		QCOMPARE (action (), "foobar"_qs);
 	}
 }
