@@ -11,6 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
+#include "types.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -23,11 +24,11 @@ namespace LC::Azoth::Sarin
 		Q_INTERFACES (LC::Azoth::ITransferJob)
 	protected:
 		const QString AzothId_;
-		const QByteArray PubKey_;
+		const Pubkey PubKey_;
 		const std::shared_ptr<ToxRunner> Tox_;
 	public:
 		FileTransferBase (const QString& azothId,
-				const QByteArray& pubkey,
+				Pubkey pubkey,
 				const std::shared_ptr<ToxRunner>& tox,
 				QObject *parent = nullptr);
 

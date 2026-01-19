@@ -83,7 +83,7 @@ namespace LC::Azoth::Sarin
 	}
 
 	void FileTransferManager::HandleRequest (uint32_t friendNum,
-			const QByteArray& pkey, uint32_t filenum, uint64_t size, const QString& name)
+			Pubkey pkey, uint32_t filenum, uint64_t size, const QString& name)
 	{
 		const auto tox = Tox_.lock ();
 		if (!tox)

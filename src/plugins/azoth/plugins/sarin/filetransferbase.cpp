@@ -11,7 +11,7 @@
 namespace LC::Azoth::Sarin
 {
 	FileTransferBase::FileTransferBase (const QString& azothId,
-			const QByteArray& pubkey,
+			Pubkey pubkey,
 			const std::shared_ptr<ToxRunner>& tox,
 			QObject *parent)
 	: QObject { parent }

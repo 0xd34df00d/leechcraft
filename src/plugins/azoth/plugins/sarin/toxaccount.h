@@ -58,7 +58,7 @@ namespace LC::Azoth::Sarin
 		ConfsManager * const ConfsMgr_;
 		GroupsManager * const GroupsMgr_;
 
-		QHash<QByteArray, ToxContact*> Contacts_;
+		QHash<Pubkey, ToxContact*> Contacts_;
 
 		ToxAccount (const QByteArray&, const QString& name, ToxProtocol*);
 	public:
@@ -70,7 +70,7 @@ namespace LC::Azoth::Sarin
 		void SetNickname (const QString&);
 
 		ToxContact* GetByAzothId (const QString&) const;
-		ToxContact* GetByPubkey (const QByteArray&) const;
+		ToxContact* GetByPubkey (Pubkey) const;
 
 		std::shared_ptr<ToxRunner> GetTox ();
 
@@ -100,33 +100,33 @@ namespace LC::Azoth::Sarin
 
 		QObject* GetTransferManager () const override;
 
-		void SendMessage (const QByteArray& pkey, ChatMessage *msg);
-		Util::ContextTask<void> SetTypingState (QByteArray pkey, bool isTyping);
+		void SendMessage (Pubkey pkey, ChatMessage *msg);
+		Util::ContextTask<void> SetTypingState (Pubkey pkey, bool isTyping);
 
 		ConfsManager& GetConfsManager ();
 		GroupsManager& GetGroupsManager ();
 	private:
-		Util::ContextTask<void> RunRequestAuth (QString, QString);
+		Util::ContextTask<void> RunRequestAuth (Pubkey, QString);
 		Util::ContextTask<void> RunRemoveEntry (ToxContact*);
 
 		Util::ContextTask<void> InitThread (EntryStatus);
 
-		void InitEntry (const QByteArray&);
+		void InitEntry (Pubkey);
 
 		void HandleConfigAccepted (AccountConfigDialog*);
 
-		void HandleIncomingCall (const QByteArray&, int32_t);
+		void HandleIncomingCall (Pubkey, int32_t);
 
 		Util::ContextTask<void> HandleToxIdRequested ();
 
-		void HandleGotFriendRequest (const QByteArray&, const QString&);
-		void HandleRemovedFriend (const QByteArray&);
+		void HandleGotFriendRequest (Pubkey, const QString&);
+		void HandleRemovedFriend (Pubkey);
 
-		void HandleFriendNameChanged (const QByteArray&, const QString&);
-		void HandleFriendStatusChanged (const QByteArray&, const EntryStatus&);
-		void HandleFriendTypingChanged (const QByteArray&, bool);
+		void HandleFriendNameChanged (Pubkey, const QString&);
+		void HandleFriendStatusChanged (Pubkey, const EntryStatus&);
+		void HandleFriendTypingChanged (Pubkey, bool);
 
-		void HandleInMessage (const QByteArray&, const QString&);
+		void HandleInMessage (Pubkey, const QString&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;

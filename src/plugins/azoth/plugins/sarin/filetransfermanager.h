@@ -11,6 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
+#include "types.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -33,7 +34,7 @@ namespace LC::Azoth::Sarin
 
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
 	private:
-		void HandleRequest (uint32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
+		void HandleRequest (uint32_t, Pubkey, uint32_t, uint64_t, const QString&);
 	signals:
 		void fileOffered (QObject*) override;
 

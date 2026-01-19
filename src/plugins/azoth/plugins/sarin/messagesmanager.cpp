@@ -25,7 +25,7 @@ namespace LC::Azoth::Sarin
 				&MessagesManager::SetThread);
 	}
 
-	Util::ContextTask<void> MessagesManager::SendMessage (QByteArray pkey, QPointer<ChatMessage> msg)
+	Util::ContextTask<void> MessagesManager::SendMessage (Pubkey pkey, QPointer<ChatMessage> msg)
 	{
 		co_await Util::AddContextObject { *this };
 		const auto& body = msg->GetBody ();

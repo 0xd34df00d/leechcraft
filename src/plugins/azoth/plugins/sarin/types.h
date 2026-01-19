@@ -29,6 +29,9 @@ namespace LC::Azoth::Sarin
 		}
 	};
 
+	constexpr inline auto PubkeySize = 32;
+	using Pubkey = std::array<uint8_t, PubkeySize>;
+
 	enum class AddFriendError : std::uint8_t
 	{
 		InvalidId,
@@ -121,7 +124,7 @@ namespace LC::Azoth::Sarin
 	struct ConfInvitationEvent
 	{
 		uint32_t FriendNum_;
-		QByteArray FriendPKey_;
+		Pubkey FriendPKey_;
 		ConfType Type_;
 		QByteArray Cookie_;
 	};

@@ -15,7 +15,7 @@
 namespace LC::Azoth::Sarin
 {
 	FileTransferIn::FileTransferIn (const QString& azothId,
-			const QByteArray& pubkey,
+			Pubkey pubkey,
 			quint32 friendNum,
 			quint32 fileNum,
 			quint64 filesize,

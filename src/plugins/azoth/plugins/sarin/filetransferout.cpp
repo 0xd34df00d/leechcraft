@@ -18,7 +18,7 @@
 namespace LC::Azoth::Sarin
 {
 	FileTransferOut::FileTransferOut (const QString& azothId,
-			const QByteArray& pubkey,
+			Pubkey pubkey,
 			const QString& filename,
 			const std::shared_ptr<ToxRunner>& tox,
 			QObject *parent)

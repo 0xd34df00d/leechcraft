@@ -37,7 +37,7 @@ namespace LC::Azoth::Sarin
 		bool TransferAllowed_ = true;
 	public:
 		FileTransferOut (const QString& azothId,
-				const QByteArray& pubkey,
+				Pubkey pubkey,
 				const QString& filename,
 				const std::shared_ptr<ToxRunner>& tox,
 				QObject *parent = nullptr);

@@ -55,19 +55,19 @@ namespace LC::Azoth::Sarin
 
 		Util::Either<ToxError<InitError>, Util::Void> Init (EntryStatus);
 
-		AddFriendResult AddFriend (const QByteArray&, QString);
-		AddFriendResult AddFriendNoRequest (const QByteArray&);
-		bool RemoveFriend (const QByteArray&);
+		AddFriendResult AddFriend (Pubkey, QString);
+		AddFriendResult AddFriendNoRequest (Pubkey);
+		bool RemoveFriend (Pubkey);
 
 		struct FriendInfo
 		{
-			QByteArray Pubkey_;
+			Pubkey Pubkey_;
 			QString Name_;
 			EntryStatus Status_;
 		};
 
-		std::optional<uint32_t> ResolveFriendNum (const QByteArray&) const;
-		std::optional<QByteArray> GetFriendPubkey (uint32_t) const;
+		std::optional<uint32_t> ResolveFriendNum (Pubkey) const;
+		std::optional<Pubkey> GetFriendPubkey (uint32_t) const;
 
 		using ResolveResult = Util::Either<ToxError<FriendQueryError>, FriendInfo>;
 		ResolveResult ResolveFriend (uint32_t) const;
@@ -111,16 +111,16 @@ namespace LC::Azoth::Sarin
 
 		void toxStateChanged (const QByteArray& newState);
 
-		void gotFriendRequest (const QByteArray& pubkey, const QString& msg);
+		void gotFriendRequest (Pubkey pubkey, const QString& msg);
 
-		void friendNameChanged (const QByteArray& pubkey, const QString&);
-		void friendStatusChanged (const QByteArray& pubkey, const EntryStatus& status);
-		void friendTypingChanged (const QByteArray& pubkey, bool isTyping);
+		void friendNameChanged (Pubkey pubkey, const QString&);
+		void friendStatusChanged (Pubkey pubkey, const EntryStatus& status);
+		void friendTypingChanged (Pubkey pubkey, bool isTyping);
 
 		void gotFileControl (uint32_t, uint32_t, int);
 		void gotData (quint32, quint32, const QByteArray&, uint64_t);
 		void gotChunkRequest (uint32_t friendNum, uint32_t fileNum, uint64_t position, size_t length);
-		void requested (uint32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
+		void requested (uint32_t, Pubkey, uint32_t, uint64_t, const QString&);
 
 		void incomingMessage (uint32_t, const QString&);
 		void readReceipt (uint32_t);

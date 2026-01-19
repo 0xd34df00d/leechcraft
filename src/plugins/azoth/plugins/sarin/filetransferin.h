@@ -10,6 +10,7 @@
 
 #include <memory>
 #include "filetransferbase.h"
+#include "types.h"
 
 class QFile;
 
@@ -26,7 +27,7 @@ namespace LC::Azoth::Sarin
 		std::shared_ptr<QFile> File_;
 	public:
 		FileTransferIn (const QString& azothId,
-				const QByteArray& pubkey,
+				Pubkey pubkey,
 				quint32 friendNum,
 				quint32 fileNum,
 				quint64 fileSize,

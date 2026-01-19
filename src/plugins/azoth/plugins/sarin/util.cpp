@@ -14,11 +14,12 @@
 
 namespace LC::Azoth::Sarin
 {
-	std::optional<uint32_t> GetFriendId (const Tox *tox, const QByteArray& pubkey)
+	static_assert (PubkeySize == TOX_PUBLIC_KEY_SIZE);
+
+	std::optional<uint32_t> GetFriendId (const Tox *tox, Pubkey pubkey)
 	{
-		const auto& binPkey = QByteArray::fromHex (pubkey);
 		TOX_ERR_FRIEND_BY_PUBLIC_KEY error {};
-		const auto res = tox_friend_by_public_key (tox, reinterpret_cast<const uint8_t*> (binPkey.constData ()), &error);
+		const auto res = tox_friend_by_public_key (tox, pubkey.data (), &error);
 		if (error)
 		{
 			qWarning () << "failed to get friend by public key" << pubkey << error;
@@ -27,12 +28,12 @@ namespace LC::Azoth::Sarin
 		return res;
 	}
 
-	std::optional<QByteArray> GetFriendPubkey (const Tox *tox, uint32_t friendId)
+	std::optional<Pubkey> GetFriendPubkey (const Tox *tox, uint32_t friendId)
 	{
-		std::array<uint8_t, TOX_PUBLIC_KEY_SIZE> clientId;
-		return Util::Visit (WithError (&tox_friend_get_public_key, tox, friendId, clientId.data ()),
-				[] (FriendQueryError) { return std::optional<QByteArray> {}; },
-				[&] (auto) { return std::optional { ToxId2HR (clientId) }; });
+		if (const auto result = QueryToxBytes<TOX_PUBLIC_KEY_SIZE> (&tox_friend_get_public_key, tox, friendId);
+			result.IsRight ())
+			return result.GetRight ();
+		return {};
 	}
 
 	QString FromToxStr (const uint8_t *data, size_t size)

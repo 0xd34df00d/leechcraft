@@ -103,42 +103,34 @@ namespace LC::Azoth::Sarin
 		}
 	}
 
-	AddFriendResult ToxW::AddFriend (const QByteArray& hexToxId, QString msg)
+	AddFriendResult ToxW::AddFriend (Pubkey pkey, QString msg)
 	{
-		const auto& toxId = Hex2Bin (hexToxId);
-		if (toxId.size () != TOX_ADDRESS_SIZE)
-			return { Util::AsLeft, { AddFriendError::InvalidId, "invalid ID length"_qs } };
-
 		if (msg.isEmpty ())
 			msg = " ";
 		const auto& msgUtf8 = msg.toUtf8 ();
 
 		auto result = WithError (tox_friend_add,
 				Tox_.get (),
-				std::bit_cast<const uint8_t*> (toxId.constData ()),
+				pkey.data (),
 				std::bit_cast<const uint8_t*> (msgUtf8.constData ()),
 				msgUtf8.size ());
 		SaveState ();
 		return result;
 	}
 
-	AddFriendResult ToxW::AddFriendNoRequest (const QByteArray& hexToxId)
+	AddFriendResult ToxW::AddFriendNoRequest (Pubkey toxId)
 	{
-		auto toxId = Hex2Bin (hexToxId);
-		if (toxId.size () != TOX_PUBLIC_KEY_SIZE)
-			return { Util::AsLeft, { AddFriendError::InvalidId, "invalid ID length"_qs } };
-
-		auto result = WithError (tox_friend_add_norequest, Tox_.get (), std::bit_cast<const uint8_t*> (toxId.constData ()));
+		auto result = WithError (tox_friend_add_norequest, Tox_.get (), toxId.data ());
 		SaveState ();
 		return result;
 	}
 
-	bool ToxW::RemoveFriend (const QByteArray& origId)
+	bool ToxW::RemoveFriend (Pubkey pkey)
 	{
-		const auto friendNum = GetFriendId (Tox_.get (), origId);
+		const auto friendNum = GetFriendId (Tox_.get (), pkey);
 		if (!friendNum)
 		{
-			qWarning () << "unknown friend" << origId;
+			qWarning () << "unknown friend" << pkey;
 			return true;
 		}
 
@@ -150,12 +142,12 @@ namespace LC::Azoth::Sarin
 		return true;
 	}
 
-	std::optional<uint32_t> ToxW::ResolveFriendNum (const QByteArray& pkey) const
+	std::optional<uint32_t> ToxW::ResolveFriendNum (Pubkey pkey) const
 	{
 		return GetFriendId (Tox_.get (), pkey);
 	}
 
-	std::optional<QByteArray> ToxW::GetFriendPubkey (uint32_t id) const
+	std::optional<Pubkey> ToxW::GetFriendPubkey (uint32_t id) const
 	{
 		return Sarin::GetFriendPubkey (Tox_.get (), id);
 	}
@@ -256,20 +248,22 @@ namespace LC::Azoth::Sarin
 	{
 		// friend requests and statuses
 		Register<tox_callback_friend_request,
-				[] (ToxW& self, Tox*, const uint8_t pkey [TOX_PUBLIC_KEY_SIZE], const uint8_t *data, size_t size)
+				[] (ToxW& self, Tox*, const uint8_t pkeyPtr [TOX_PUBLIC_KEY_SIZE], const uint8_t *data, size_t size)
 				{
-					const auto& pubkey = ToxId2HR<TOX_PUBLIC_KEY_SIZE> (pkey);
+					Pubkey pkey {};
+					std::copy_n (pkeyPtr, pkey.size (), pkey.begin ());
+
 					const auto& msg = FromToxStr (data, size);
-					qDebug () << pubkey << msg;
-					emit self.Runner_.gotFriendRequest (pubkey, msg);
+					qDebug () << pkey << msg;
+					emit self.Runner_.gotFriendRequest (pkey, msg);
 				}> ();
 		Register<tox_callback_friend_name,
-				[] (ToxW& self, Tox *tox, uint32_t num, const uint8_t *data, size_t len)
+				[] (ToxW& self, Tox*, uint32_t num, const uint8_t *data, size_t len)
 				{
 					if (const auto& toxId = self.GetFriendPubkey (num))
 					{
 						const auto& name = FromToxStr (data, len);
-						qDebug () << toxId << name;
+						qDebug () << *toxId << name;
 						emit self.Runner_.friendNameChanged (*toxId, name);
 						self.SaveState ();
 					}
@@ -285,7 +279,7 @@ namespace LC::Azoth::Sarin
 		Register<tox_callback_friend_connection_status, updateFriendStatus> ();
 
 		Register<tox_callback_friend_typing,
-				[] (ToxW& self, Tox *tox, uint32_t num, bool isTyping)
+				[] (ToxW& self, Tox*, uint32_t num, bool isTyping)
 				{
 					if (const auto& id = self.GetFriendPubkey (num))
 						emit self.Runner_.friendTypingChanged (*id, isTyping);

@@ -12,17 +12,19 @@
 #include <interfaces/azoth/azothutil.h>
 #include "toxaccount.h"
 #include "chatmessage.h"
+#include "util.h"
 
 namespace LC::Azoth::Sarin
 {
-	ToxContact::ToxContact (const QByteArray& pubkey, ToxAccount *account)
+	ToxContact::ToxContact (Pubkey pkey, ToxAccount *account)
 	: QObject { account }
-	, Pubkey_ { pubkey }
+	, Pubkey_ { pkey }
+	, EntryId_ { account->GetAccountID () + '/' + ToxId2HR (pkey) }
 	, Acc_ { account }
 	{
 	}
 
-	const QByteArray& ToxContact::GetPubKey () const
+	Pubkey ToxContact::GetPubKey () const
 	{
 		return Pubkey_;
 	}
@@ -49,7 +51,7 @@ namespace LC::Azoth::Sarin
 
 	QString ToxContact::GetEntryName () const
 	{
-		return PublicName_.isEmpty () ? Pubkey_ : PublicName_;
+		return PublicName_.isEmpty () ? ToxId2HR (Pubkey_) : PublicName_;
 	}
 
 	void ToxContact::SetEntryName (const QString& name)
@@ -63,12 +65,12 @@ namespace LC::Azoth::Sarin
 
 	QString ToxContact::GetEntryID () const
 	{
-		return Acc_->GetAccountID () + '/' + Pubkey_;
+		return EntryId_;
 	}
 
 	QString ToxContact::GetHumanReadableID () const
 	{
-		return Pubkey_;
+		return ToxId2HR (Pubkey_);
 	}
 
 	QStringList ToxContact::Groups () const

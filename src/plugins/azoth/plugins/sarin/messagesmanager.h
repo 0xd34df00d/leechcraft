@@ -13,6 +13,7 @@
 #include <QPointer>
 #include <QHash>
 #include <util/threads/coro/taskfwd.h>
+#include "types.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -29,13 +30,13 @@ namespace LC::Azoth::Sarin
 	public:
 		explicit MessagesManager (ToxAccount*);
 
-		Util::ContextTask<void> SendMessage (QByteArray pkey, QPointer<ChatMessage>);
+		Util::ContextTask<void> SendMessage (Pubkey pkey, QPointer<ChatMessage>);
 	private:
 		void HandleReadReceipt (quint32);
 		Util::ContextTask<void> HandleInMessage (qint32, const QString&);
 
 		void SetThread (const std::shared_ptr<ToxRunner>&);
 	signals:
-		void gotMessage (const QByteArray&, const QString&);
+		void gotMessage (Pubkey, const QString&);
 	};
 }

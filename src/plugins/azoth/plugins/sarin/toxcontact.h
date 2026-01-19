@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/iclentry.h>
+#include "types.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -22,7 +23,8 @@ namespace LC::Azoth::Sarin
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::ICLEntry)
 
-		const QByteArray Pubkey_;
+		const Pubkey Pubkey_;
+		const QString EntryId_;
 		ToxAccount * const Acc_;
 
 		QList<ChatMessage*> AllMessages_;
@@ -31,9 +33,9 @@ namespace LC::Azoth::Sarin
 
 		EntryStatus Status_;
 	public:
-		ToxContact (const QByteArray& pubkey, ToxAccount *account);
+		ToxContact (Pubkey pubkey, ToxAccount *account);
 
-		const QByteArray& GetPubKey () const;
+		Pubkey GetPubKey () const;
 
 		QObject* GetQObject () override;
 		IAccount* GetParentAccount () const override;

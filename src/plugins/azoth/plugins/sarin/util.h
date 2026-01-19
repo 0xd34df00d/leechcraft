@@ -17,12 +17,10 @@
 #include <util/threads/coro/eithercoro.h>
 #include "types.h"
 
-using Tox = struct Tox;
-
 namespace LC::Azoth::Sarin
 {
-	std::optional<uint32_t> GetFriendId (const Tox *tox, const QByteArray& pubkey);
-	std::optional<QByteArray> GetFriendPubkey (const Tox *tox, uint32_t friendId);
+	std::optional<uint32_t> GetFriendId (const Tox *tox, Pubkey pubkey);
+	std::optional<Pubkey> GetFriendPubkey (const Tox *tox, uint32_t friendId);
 
 	template<size_t Size>
 	QByteArray ToxId2HR (const uint8_t *address)
@@ -47,6 +45,30 @@ namespace LC::Azoth::Sarin
 	QByteArray ToxId2HR (const std::array<uint8_t, Size>& address)
 	{
 		return ToxId2HR<Size> (address.data ());
+	}
+
+	template<size_t Size>
+	QDebug operator<< (QDebug out, const std::array<uint8_t, Size>& id)
+	{
+		return out << ToxId2HR (id);
+	}
+
+	template<size_t Size>
+	std::optional<std::array<uint8_t, Size>> HumanReadable2ToxId (const QByteArray& hex)
+	{
+		const auto& bin = QByteArray::fromHex (hex);
+		if (bin.size () != Size)
+			return {};
+
+		std::array<uint8_t, Size> result;
+		std::copy_n (bin.begin (), Size, result.begin ());
+		return result;
+	}
+
+	template<size_t Size>
+	std::optional<std::array<uint8_t, Size>> HumanReadable2ToxId (const QString& hex)
+	{
+		return HumanReadable2ToxId<Size> (hex.toUtf8 ());
 	}
 
 	QString FromToxStr (const uint8_t *data, size_t size);

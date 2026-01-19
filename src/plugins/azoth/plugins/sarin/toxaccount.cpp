@@ -121,13 +121,21 @@ namespace LC::Azoth::Sarin
 
 	ToxContact* ToxAccount::GetByAzothId (const QString& azothId) const
 	{
-		const auto& localId = azothId.section ('/', 1).toUtf8 ();
-		if (!Contacts_.contains (localId))
-			qWarning () << "unable to find entry for Azoth ID" << azothId;
-		return Contacts_.value (localId);
+		const auto& pubkey = HumanReadable2ToxId<PubkeySize> (azothId.section ('/', 1));
+		if (!pubkey)
+		{
+			qWarning () << "invalid Azoth ID" << azothId;
+			return nullptr;
+		}
+
+		if (const auto entry = Contacts_.value (*pubkey))
+			return entry;
+
+		qWarning () << "unable to find entry for Azoth ID" << azothId;
+		return nullptr;
 	}
 
-	ToxContact* ToxAccount::GetByPubkey (const QByteArray& pubkey) const
+	ToxContact* ToxAccount::GetByPubkey (Pubkey pubkey) const
 	{
 		return Contacts_.value (pubkey);
 	}
@@ -243,7 +251,7 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
-	Util::ContextTask<void> ToxAccount::RunRequestAuth (QString toxId, QString msg)
+	Util::ContextTask<void> ToxAccount::RunRequestAuth (Pubkey toxId, QString msg)
 	{
 		co_await Util::AddContextObject { *this };
 
@@ -251,7 +259,7 @@ namespace LC::Azoth::Sarin
 		if (!tox)
 			co_return;
 
-		const auto addResult = co_await tox->Run (&ToxW::AddFriend, toxId.toUtf8 (), msg);
+		const auto addResult = co_await tox->Run (&ToxW::AddFriend, toxId, msg);
 		const auto friendNum = co_await Util::WithHandler (addResult,
 				[] (const ToxError<AddFriendError>& error)
 				{
@@ -285,7 +293,10 @@ namespace LC::Azoth::Sarin
 
 	void ToxAccount::RequestAuth (const QString& toxId, const QString& msg, const QString&, const QStringList&)
 	{
-		RunRequestAuth (toxId, msg);
+		if (const auto pkey = HumanReadable2ToxId<PubkeySize> (toxId))
+			RunRequestAuth (*pkey, msg);
+		else
+			qWarning () << "invalid tox ID" << toxId;
 	}
 
 	Util::ContextTask<void> ToxAccount::RunRemoveEntry (ToxContact *entry)
@@ -294,7 +305,7 @@ namespace LC::Azoth::Sarin
 		if (!Tox_)
 			co_return;
 
-		const auto& pkey = entry->GetHumanReadableID ().toUtf8 ();
+		const auto& pkey = entry->GetPubKey ();
 		if (co_await Tox_->Run (&ToxW::RemoveFriend, pkey))
 			HandleRemovedFriend (pkey);
 	}
@@ -352,12 +363,12 @@ namespace LC::Azoth::Sarin
 		return XferMgr_;
 	}
 
-	void ToxAccount::SendMessage (const QByteArray& pkey, ChatMessage *message)
+	void ToxAccount::SendMessage (Pubkey pkey, ChatMessage *message)
 	{
 		MsgsMgr_->SendMessage (pkey, message);
 	}
 
-	Util::ContextTask<void> ToxAccount::SetTypingState (QByteArray pkey, bool isTyping)
+	Util::ContextTask<void> ToxAccount::SetTypingState (Pubkey pkey, bool isTyping)
 	{
 		co_await Util::AddContextObject { *this };
 		if (!Tox_)
@@ -448,7 +459,7 @@ namespace LC::Azoth::Sarin
 				});
 	}
 
-	void ToxAccount::InitEntry (const QByteArray& pkey)
+	void ToxAccount::InitEntry (Pubkey pkey)
 	{
 		const auto entry = new ToxContact { pkey, this };
 		Contacts_ [pkey] = entry;
@@ -466,7 +477,7 @@ namespace LC::Azoth::Sarin
 		emit accountChanged (this);
 	}
 
-	void ToxAccount::HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
+	void ToxAccount::HandleIncomingCall (Pubkey pubkey, int32_t callIdx)
 	{
 #ifdef ENABLE_MEDIACALLS
 		qDebug () << Q_FUNC_INFO << pubkey << callIdx;
@@ -504,7 +515,7 @@ namespace LC::Azoth::Sarin
 		dialog->setToxId (QString::fromLatin1 (toxId));
 	}
 
-	void ToxAccount::HandleGotFriendRequest (const QByteArray& pubkey, const QString& msg)
+	void ToxAccount::HandleGotFriendRequest (Pubkey pubkey, const QString& msg)
 	{
 		if (!Contacts_.contains (pubkey))
 			InitEntry (pubkey);
@@ -512,7 +523,7 @@ namespace LC::Azoth::Sarin
 		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
 	}
 
-	void ToxAccount::HandleRemovedFriend (const QByteArray& pubkey)
+	void ToxAccount::HandleRemovedFriend (Pubkey pubkey)
 	{
 		if (!Contacts_.contains (pubkey))
 			return;
@@ -522,7 +533,7 @@ namespace LC::Azoth::Sarin
 		item->deleteLater ();
 	}
 
-	void ToxAccount::HandleFriendNameChanged (const QByteArray& id, const QString& newName)
+	void ToxAccount::HandleFriendNameChanged (Pubkey id, const QString& newName)
 	{
 		if (!Contacts_.contains (id))
 		{
@@ -533,7 +544,7 @@ namespace LC::Azoth::Sarin
 		Contacts_.value (id)->SetEntryName (newName);
 	}
 
-	void ToxAccount::HandleFriendStatusChanged (const QByteArray& pubkey, const EntryStatus& status)
+	void ToxAccount::HandleFriendStatusChanged (Pubkey pubkey, const EntryStatus& status)
 	{
 		if (!Contacts_.contains (pubkey))
 		{
@@ -544,7 +555,7 @@ namespace LC::Azoth::Sarin
 		Contacts_.value (pubkey)->SetStatus (status);
 	}
 
-	void ToxAccount::HandleFriendTypingChanged (const QByteArray& pubkey, bool isTyping)
+	void ToxAccount::HandleFriendTypingChanged (Pubkey pubkey, bool isTyping)
 	{
 		if (!Contacts_.contains (pubkey))
 		{
@@ -555,7 +566,7 @@ namespace LC::Azoth::Sarin
 		Contacts_.value (pubkey)->SetTyping (isTyping);
 	}
 
-	void ToxAccount::HandleInMessage (const QByteArray& pubkey, const QString& body)
+	void ToxAccount::HandleInMessage (Pubkey pubkey, const QString& body)
 	{
 		if (!Contacts_.contains (pubkey))
 		{
