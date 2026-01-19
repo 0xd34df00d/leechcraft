@@ -60,6 +60,7 @@ namespace LC::Azoth::Sarin
 		const auto Conf = "Conf"_qs;
 		const auto Cookie = "Cookie"_qs;
 		const auto FriendNum = "FriendNum"_qs;
+		const auto ConfType = "ConfType"_qs;
 	}
 
 	void GroupJoinWidget::Join (QObject *accObj)
@@ -82,7 +83,8 @@ namespace LC::Azoth::Sarin
 			}
 			const auto& cookie = ConfIdent_->value (Constants::Cookie).toByteArray ();
 			const auto friendNum = ConfIdent_->value (Constants::FriendNum).value<uint32_t> ();
-			acc->GetConfsManager ().Join (cookie, friendNum);
+			const auto type = ConfIdent_->value (Constants::ConfType).toInt ();
+			acc->GetConfsManager ().Join (cookie, static_cast<ConfType> (type), friendNum);
 		}
 	}
 
@@ -101,13 +103,7 @@ namespace LC::Azoth::Sarin
 				{ Constants::Password, Ui_.Password_->text () },
 			};
 		else
-			return
-			{
-				{ Constants::Kind, Constants::Conf },
-				{ Constants::GroupId, Ui_.GroupId_->text () },
-				{ Constants::Nick, Ui_.Nick_->text () },
-				{ Constants::Password, Ui_.Password_->text () },
-			};
+			return *ConfIdent_;
 	}
 
 	void GroupJoinWidget::SetIdentifyingData (const QVariantMap& data)
@@ -130,13 +126,14 @@ namespace LC::Azoth::Sarin
 		}
 	}
 
-	QVariantMap GroupJoinWidget::GetConfIdentifyingData (const QByteArray& cookie, uint32_t friendNum)
+	QVariantMap GroupJoinWidget::GetConfIdentifyingData (const QByteArray& cookie, ConfType type, uint32_t friendNum)
 	{
 		return
 		{
 			{ Constants::Kind, Constants::Conf },
 			{ Constants::Cookie, cookie },
 			{ Constants::FriendNum, friendNum },
+			{ Constants::ConfType, static_cast<int> (type) },
 		};
 	}
 
@@ -147,7 +144,7 @@ namespace LC::Azoth::Sarin
 
 	void GroupJoinWidget::CheckValidity ()
 	{
-		const auto isLegacyConf = Ui_.TargetPages_->currentWidget () == Ui_.ConfPage_;
+		const auto isLegacyConf = !IsJoiningGroup ();
 		const auto isGroupValid = Ui_.GroupId_->text ().size () == TOX_GROUP_CHAT_ID_SIZE &&
 				!Ui_.Nick_->text ().isEmpty ();
 		const auto valid = isLegacyConf || isGroupValid;

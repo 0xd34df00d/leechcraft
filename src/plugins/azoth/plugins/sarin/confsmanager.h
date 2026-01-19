@@ -11,6 +11,7 @@
 #include <QHash>
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
+#include "types.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -30,7 +31,7 @@ namespace LC::Azoth::Sarin
 
 		ToxAccount& GetAccount ();
 
-		Util::ContextTask<void> Join (QByteArray cookie, uint32_t friendNum, int retry = 0);
+		Util::ContextTask<void> Join (QByteArray cookie, ConfType type, uint32_t friendNum);
 		void HandleSelfLeft (uint32_t);
 	private:
 		void HandleInvited (const ConfInvitationEvent&);

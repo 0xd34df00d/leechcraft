@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <interfaces/azoth/imucjoinwidget.h>
 #include "ui_groupjoinwidget.h"
+#include "types.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -36,7 +37,7 @@ namespace LC::Azoth::Sarin
 		QVariantMap GetIdentifyingData () const override;
 		void SetIdentifyingData (const QVariantMap& data) override;
 
-		static QVariantMap GetConfIdentifyingData (const QByteArray& cookie, uint32_t friendNum);
+		static QVariantMap GetConfIdentifyingData (const QByteArray& cookie, ConfType type, uint32_t friendNum);
 	private:
 		bool IsJoiningGroup () const;
 		void CheckValidity ();
