@@ -190,10 +190,7 @@ namespace LC::Azoth::Sarin
 
 		FriendInfo result;
 		result.Pubkey_ = *pubkey;
-
-		char name [TOX_MAX_NAME_LENGTH] = {};
-		co_await WithError (tox_friend_get_name, Tox_.get (), id, std::bit_cast<uint8_t*> (&name [0]));
-		result.Name_ = QString::fromUtf8 (name);
+		result.Name_ = co_await QueryToxString (&tox_friend_get_name_size, &tox_friend_get_name, Tox_.get (), id);
 		result.Status_ = GetFriendStatus (Tox_.get (), id);
 		co_return result;
 	}
