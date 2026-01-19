@@ -9,7 +9,7 @@
 #pragma once
 
 #include <interfaces/azoth/iclentry.h>
-#include <util/sll/void.h>
+#include "confentry.h"
 #include "types.h"
 
 namespace LC::Azoth::Sarin
@@ -48,6 +48,7 @@ namespace LC::Azoth::Sarin
 
 		QObject* GetQObject () override;
 		IAccount* GetParentAccount () const override;
+		ConfEntry* GetParentCLEntry () const override;
 		Features GetEntryFeatures () const override;
 		EntryType GetEntryType () const override;
 

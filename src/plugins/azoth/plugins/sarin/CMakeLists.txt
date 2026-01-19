@@ -31,6 +31,7 @@ LC_DEFINE_PLUGIN (
 		filetransferout.cpp
 		basemessage.cpp
 		confentry.cpp
+		confmessage.cpp
 		confparticipant.cpp
 		confsmanager.cpp
 		groupchatentry.cpp

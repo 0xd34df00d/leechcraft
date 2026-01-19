@@ -36,6 +36,11 @@ namespace LC::Azoth::Sarin
 		return &Acc_;
 	}
 
+	ConfEntry* ConfParticipant::GetParentCLEntry () const
+	{
+		return &Conf_;
+	}
+
 	ICLEntry::Features ConfParticipant::GetEntryFeatures () const
 	{
 		return FSessionEntry;

@@ -16,6 +16,7 @@
 
 namespace LC::Azoth::Sarin
 {
+	class ConfMessage;
 	class ConfParticipant;
 	class ConfsManager;
 
@@ -35,6 +36,10 @@ namespace LC::Azoth::Sarin
 		const QString EntryId_;
 
 		QHash<Pubkey, ConfParticipant*> Participants_;
+		QHash<uint32_t, Pubkey> OnlineNum2Pubkey_;
+		QHash<uint32_t, Pubkey> OfflineNum2Pubkey_;
+
+		QList<IMessage*> AllMessages_;
 	public:
 		explicit ConfEntry (uint32_t confNum, ConfId confId, ConfsManager& mgr);
 		~ConfEntry () override;
@@ -87,6 +92,8 @@ namespace LC::Azoth::Sarin
 		void HandleConnected ();
 		void HandleMessage (const ConfMessageEvent&);
 		Util::ContextTask<void> RefreshParticipants ();
+
+		void AppendMessage (ConfMessage*);
 	private:
 		Util::ContextTask<void> RunLeave ();
 	signals:

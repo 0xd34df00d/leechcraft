@@ -8,6 +8,8 @@
 
 #include "confentry.h"
 #include <ranges>
+#include <interfaces/azoth/azothutil.h>
+#include "confmessage.h"
 #include "confparticipant.h"
 #include "confsmanager.h"
 #include "toxaccount.h"
@@ -74,7 +76,7 @@ namespace LC::Azoth::Sarin
 
 	QStringList ConfEntry::Groups () const
 	{
-		return {};
+		return { tr ("Conferences") };
 	}
 
 	void ConfEntry::SetGroups (const QStringList&)
@@ -94,13 +96,12 @@ namespace LC::Azoth::Sarin
 
 	QList<IMessage*> ConfEntry::GetAllMessages () const
 	{
-		// TODO
-		return {};
+		return AllMessages_;
 	}
 
 	void ConfEntry::PurgeMessages (const QDateTime& before)
 	{
-		//AzothUtil::StandardPurgeMessages (AllMessages_, before);
+		AzothUtil::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void ConfEntry::SetChatPartState (ChatPartState, const QString&)
@@ -141,18 +142,15 @@ namespace LC::Azoth::Sarin
 
 	QString ConfEntry::GetMUCSubject () const
 	{
-		// TODO
 		return {};
 	}
 
-	void ConfEntry::SetMUCSubject (const QString& subject)
+	void ConfEntry::SetMUCSubject (const QString&)
 	{
-		// TODO
 	}
 
 	bool ConfEntry::CanChangeSubject () const
 	{
-		// TODO
 		return false;
 	}
 
@@ -229,7 +227,22 @@ namespace LC::Azoth::Sarin
 
 	void ConfEntry::HandleMessage (const ConfMessageEvent& event)
 	{
-		// TODO display messages
+		const auto pkey = OnlineNum2Pubkey_.value (event.PeerNum_);
+		const auto participant = Participants_.value (pkey);
+		if (!participant)
+		{
+			qWarning () << "unknown participant for" << event.PeerNum_ << event.Message_;
+			return;
+		}
+
+		const auto msg = new ConfMessage { event.Message_, *participant };
+		msg->Store ();
+	}
+
+	void ConfEntry::AppendMessage (ConfMessage *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
 	}
 
 	namespace
@@ -238,6 +251,7 @@ namespace LC::Azoth::Sarin
 		{
 			QString Name_;
 			Pubkey Pkey_;
+			uint32_t Num_;
 		};
 
 		struct OfflinePeer : Peer
@@ -258,16 +272,15 @@ namespace LC::Azoth::Sarin
 
 			Peers result;
 
-			qDebug () << 1;
 			for (const auto onlinePeers = co_await WithError (&tox_conference_peer_count, tox, confNum);
 				 const auto peerNum : std::views::iota (0u, onlinePeers))
 			{
-				const auto& peerName = co_await QueryToxString (&tox_conference_peer_get_name_size,
+				const auto& name = co_await QueryToxString (&tox_conference_peer_get_name_size,
 						&tox_conference_peer_get_name,
 						tox, confNum, peerNum);
 				const auto& pkey = co_await QueryToxBytes<PubkeySize> (&tox_conference_peer_get_public_key,
 						tox, confNum, peerNum);
-				result.Online_ << Peer { .Name_ = peerName, .Pkey_ = pkey };
+				result.Online_ << Peer { .Name_ = name, .Pkey_ = pkey, .Num_ = peerNum };
 
 				if (co_await WithError (&tox_conference_peer_number_is_ours, tox, confNum, peerNum))
 					result.Self_ = peerNum;
@@ -276,16 +289,16 @@ namespace LC::Azoth::Sarin
 			for (const auto offlinePeers = co_await WithError (&tox_conference_offline_peer_count, tox, confNum);
 				 const auto peerNum : std::views::iota (0u, offlinePeers))
 			{
-				const auto& peerName = co_await QueryToxString (&tox_conference_offline_peer_get_name_size,
+				const auto& name = co_await QueryToxString (&tox_conference_offline_peer_get_name_size,
 						&tox_conference_offline_peer_get_name,
 						tox, confNum, peerNum);
 				const auto& pkey = co_await QueryToxBytes<PubkeySize> (&tox_conference_offline_peer_get_public_key,
 						tox, confNum, peerNum);
-				const auto lastActive = co_await WithError (&tox_conference_offline_peer_get_last_active,
+				const auto lastActiveSecs = co_await WithError (&tox_conference_offline_peer_get_last_active,
 						tox, confNum, peerNum);
-				result.Offline_ << OfflinePeer { { .Name_ = peerName, .Pkey_ = pkey }, QDateTime::fromSecsSinceEpoch (lastActive) };
+				const auto lastActive = QDateTime::fromSecsSinceEpoch (lastActiveSecs);
+				result.Offline_ << OfflinePeer { { .Name_ = name, .Pkey_ = pkey, .Num_ = peerNum }, lastActive };
 			}
-			qDebug () << 2;
 
 			co_return result;
 		}
@@ -326,11 +339,17 @@ namespace LC::Azoth::Sarin
 			emit Mgr_.GetAccount ().removedCLItems (removedEntries);
 		qDeleteAll (removedEntries);
 
+		OnlineNum2Pubkey_.clear ();
+		OfflineNum2Pubkey_.clear ();
+
 		QList<QObject*> newEntries;
-		const auto handlePeers = [this, &newEntries] (const auto& list, const auto& getState)
+		const auto handlePeers = [this, &newEntries] (const auto& list,
+				QHash<uint32_t, Pubkey>& num2pkey, const auto& getState)
 		{
 			for (const auto& peer : list)
 			{
+				num2pkey [peer.Num_] = peer.Pkey_;
+
 				if (auto& entry = Participants_ [peer.Pkey_])
 					entry->SetState (getState (peer));
 				else
@@ -340,8 +359,12 @@ namespace LC::Azoth::Sarin
 				}
 			}
 		};
-		handlePeers (peers.Online_, [] (auto) { return ConfParticipant::Online {}; });
-		handlePeers (peers.Offline_, [] (const OfflinePeer& peer) { return ConfParticipant::Offline { peer.LastActive_ }; });
+		handlePeers (peers.Online_,
+				OnlineNum2Pubkey_,
+				[] (auto) { return ConfParticipant::Online {}; });
+		handlePeers (peers.Offline_,
+				OfflineNum2Pubkey_,
+				[] (const OfflinePeer& peer) { return ConfParticipant::Offline { peer.LastActive_ }; });
 		if (!newEntries.isEmpty ())
 			emit Mgr_.GetAccount ().gotCLItems (newEntries);
 	}

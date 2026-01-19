@@ -8,34 +8,23 @@
 
 #pragma once
 
-#include <interfaces/azoth/iadvancedmessage.h>
 #include "basemessage.h"
 
 namespace LC::Azoth::Sarin
 {
-	class ToxContact;
+	class ConfEntry;
+	class ConfParticipant;
 
-	class ChatMessage
+	class ConfMessage
 		: public BaseMessage
-		, public IAdvancedMessage
 	{
-		Q_OBJECT
-		Q_INTERFACES (LC::Azoth::IAdvancedMessage)
-
-		ToxContact * const Contact_;
-		bool IsDelivered_ = false;
+		ConfParticipant& Participant_;
 	public:
-		ChatMessage (const QString&, Direction, ToxContact*);
+		explicit ConfMessage (const QString& body, ConfParticipant& part);
 
 		void Send () override;
 		void Store () override;
-
 		QObject* OtherPart () const override;
 		QString GetOtherVariant () const override;
-
-		bool IsDelivered () const override;
-		void SetDelivered ();
-	signals:
-		void messageDelivered () override;
 	};
 }
