@@ -397,7 +397,56 @@ namespace LC::Azoth::Sarin
 		co_await Util::AddContextObject { *this };
 
 		Tox_ = std::make_shared<ToxRunner> (ToxW::InitContext { Nick_, ToxState_, ToxConfig_ });
+		ConnectSignalsPreRun ();
 
+		qDebug () << "initializing...";
+		const auto initResult = co_await Tox_->Run (&ToxW::Init, status);
+		co_await Util::WithHandler (initResult,
+				[this] (const ToxError<InitError>& error)
+				{
+					qWarning () << "failed to init Tox:" << error;
+					Tox_.reset ();
+
+					// TODO human-readable message for the code
+					const auto& e = Util::MakeNotification ("Azoth Sarin"_qs,
+							tr ("Unable to initialize Tox: %1 (%2).").arg (static_cast<int> (error.Code_)).arg (error.Message_),
+							Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
+
+		co_await LoadFriends ();
+
+		qDebug () << "done!";
+		emit threadChanged (Tox_);
+#ifdef ENABLE_MEDIACALLS
+		const auto callManager = Tox_->GetCallManager ();
+		connect (callManager,
+				&CallManager::gotIncomingCall,
+				this,
+				&ToxAccount::HandleIncomingCall);
+#endif
+	}
+
+	Util::ContextTask<void> ToxAccount::LoadFriends ()
+	{
+		if (!Tox_)
+			co_return;
+
+		const auto pubkeys = co_await Tox_->Run ([] (ToxW& tox)
+				{
+					const auto ids = tox.GetFriendList ();
+					QList<Pubkey> pubkeys;
+					pubkeys.reserve (ids.size ());
+					for (const auto id : ids)
+						if (const auto pubkey = tox.GetFriendPubkey (id))
+							pubkeys << *pubkey;
+					return pubkeys;
+				});
+		InitEntries (pubkeys);
+	}
+
+	void ToxAccount::ConnectSignalsPreRun ()
+	{
 		connect (&*Tox_,
 				&ToxRunner::statusChanged,
 				this,
@@ -430,41 +479,25 @@ namespace LC::Azoth::Sarin
 				&ToxRunner::friendTypingChanged,
 				this,
 				&ToxAccount::HandleFriendTypingChanged);
-
-		qDebug () << "initializing...";
-		const auto initResult = co_await Tox_->Run (&ToxW::Init, status);
-		Util::Visit (initResult,
-				[this] (Util::Void)
-				{
-					qDebug () << "done!";
-					emit threadChanged (Tox_);
-#ifdef ENABLE_MEDIACALLS
-					const auto callManager = Tox_->GetCallManager ();
-					connect (callManager,
-							&CallManager::gotIncomingCall,
-							this,
-							&ToxAccount::HandleIncomingCall);
-#endif
-				},
-				[this] (const ToxError<InitError>& error)
-				{
-					qWarning () << "failed to init Tox:" << error;
-					Tox_.reset ();
-
-					// TODO human-readable message for the code
-					const auto& e = Util::MakeNotification ("Azoth Sarin"_qs,
-							tr ("Unable to initialize Tox: %1 (%2).").arg (static_cast<int> (error.Code_)).arg (error.Message_),
-							Priority::Critical);
-					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-				});
 	}
 
-	void ToxAccount::InitEntry (Pubkey pkey)
+	void ToxAccount::InitEntry (Pubkey pubkey)
 	{
-		const auto entry = new ToxContact { pkey, this };
-		Contacts_ [pkey] = entry;
+		InitEntries ({ pubkey });
+	}
 
-		emit gotCLItems ({ entry });
+	void ToxAccount::InitEntries (const QList<Pubkey>& pubkeys)
+	{
+		QList<QObject*> newEntries;
+		for (const auto pubkey : pubkeys)
+			if (auto& entry = Contacts_ [pubkey];
+				!entry)
+			{
+				entry = new ToxContact { pubkey, this };
+				newEntries << entry;
+			}
+
+		emit gotCLItems (newEntries);
 	}
 
 	void ToxAccount::HandleConfigAccepted (AccountConfigDialog *dialog)

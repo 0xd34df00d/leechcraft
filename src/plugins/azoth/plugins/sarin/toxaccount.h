@@ -110,8 +110,11 @@ namespace LC::Azoth::Sarin
 		Util::ContextTask<void> RunRemoveEntry (ToxContact*);
 
 		Util::ContextTask<void> InitThread (EntryStatus);
+		Util::ContextTask<void> LoadFriends ();
+		void ConnectSignalsPreRun ();
 
 		void InitEntry (Pubkey);
+		void InitEntries (const QList<Pubkey>&);
 
 		void HandleConfigAccepted (AccountConfigDialog*);
 
