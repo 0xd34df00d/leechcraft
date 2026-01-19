@@ -8,7 +8,10 @@
 
 #pragma once
 
+#include <source_location>
+#include <QtDebug>
 #include <util/sll/either.h>
+#include <util/sll/void.h>
 #include "task.h"
 
 namespace LC::Util
@@ -78,6 +81,31 @@ namespace LC::Util
 	auto WithHandler (const Either<L, R>& either, IgnoreLeft)
 	{
 		return WithHandler (either, [] (const auto&) { return IgnoreLeft {}; });
+	}
+
+	template<typename T>
+	Either<Void, T> NonEmpty (const T& t, auto&& msg, std::source_location loc = std::source_location::current ())
+	{
+		if (t)
+			return t;
+
+		QMessageLogger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () }.warning () << msg;
+		return { AsLeft, Void {} };
+	}
+
+	template<typename T, typename... Msgs>
+	Either<Void, T> NonEmpty (const T& t, const std::tuple<Msgs...>& msgsTuple,
+			std::source_location loc = std::source_location::current ())
+	{
+		if (t)
+			return t;
+
+		std::apply ([&]<typename... AMsgs> (AMsgs&&... amsgs)
+		{
+			const QMessageLogger log { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
+			(log.warning () << ... << std::forward<AMsgs> (amsgs));
+		}, msgsTuple);
+		return { AsLeft, Void {} };
 	}
 }
 

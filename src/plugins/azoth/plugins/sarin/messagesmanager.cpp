@@ -72,41 +72,13 @@ namespace LC::Azoth::Sarin
 			qWarning () << "the message for ID" << msgId << "is dead";
 	}
 
-	namespace
-	{
-		template<typename T>
-		Util::Either<Util::Void, T> NonEmpty (const T& t, auto&& msg, std::source_location loc = std::source_location::current ())
-		{
-			if (t)
-				return t;
-
-			QMessageLogger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () }.warning () << msg;
-			return { Util::AsLeft, Util::Void {} };
-		}
-
-		template<typename T, typename... Msgs>
-		Util::Either<Util::Void, T> NonEmpty (const T& t, const std::tuple<Msgs...>& msgsTuple,
-				std::source_location loc = std::source_location::current ())
-		{
-			if (t)
-				return t;
-
-			std::apply ([&]<typename... AMsgs> (AMsgs&&... amsgs)
-			{
-				const QMessageLogger log { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
-				(log.warning () << ... << std::forward<AMsgs> (amsgs));
-			}, msgsTuple);
-			return { Util::AsLeft, Util::Void {} };
-		}
-	}
-
 	Util::ContextTask<void> MessagesManager::HandleInMessage (qint32 friendId, QString body)
 	{
 		co_await Util::AddContextObject { *this };
 
-		const auto runner = co_await NonEmpty (Acc_.GetTox (), "got message in offline");
+		const auto runner = co_await Util::NonEmpty (Acc_.GetTox (), "got message in offline");
 		const auto maybePubkey = co_await runner->Run (&ToxW::GetFriendPubkey, friendId);
-		const auto pubkey = co_await NonEmpty (maybePubkey, std::tie ("cannot get pubkey for message", friendId));
+		const auto pubkey = co_await Util::NonEmpty (maybePubkey, std::tie ("cannot get pubkey for message", friendId));
 		auto& contact = Acc_.GetOrCreateByPubkey (*pubkey);
 
 		const auto msg = new ChatMessage { body, IMessage::Direction::In, &contact };
