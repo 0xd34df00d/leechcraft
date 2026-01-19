@@ -12,16 +12,9 @@
 namespace LC::Azoth::Sarin
 {
 	ChatMessage::ChatMessage (const QString& body, IMessage::Direction dir, ToxContact *contact)
-	: QObject { contact }
+	: BaseMessage { dir, Type::ChatMessage, SubType::Other, body, contact }
 	, Contact_ { contact }
-	, Dir_ { dir }
-	, Body_ { body }
 	{
-	}
-
-	QObject* ChatMessage::GetQObject ()
-	{
-		return this;
 	}
 
 	void ChatMessage::Send ()
@@ -35,21 +28,6 @@ namespace LC::Azoth::Sarin
 		Contact_->HandleMessage (this);
 	}
 
-	IMessage::Direction ChatMessage::GetDirection () const
-	{
-		return Dir_;
-	}
-
-	IMessage::Type ChatMessage::GetMessageType () const
-	{
-		return Type::ChatMessage;
-	}
-
-	IMessage::SubType ChatMessage::GetMessageSubType () const
-	{
-		return SubType::Other;
-	}
-
 	QObject* ChatMessage::OtherPart () const
 	{
 		return Contact_;
@@ -57,27 +35,7 @@ namespace LC::Azoth::Sarin
 
 	QString ChatMessage::GetOtherVariant () const
 	{
-		return "";
-	}
-
-	QString ChatMessage::GetBody () const
-	{
-		return Body_;
-	}
-
-	void ChatMessage::SetBody (const QString& body)
-	{
-		Body_ = body;
-	}
-
-	QDateTime ChatMessage::GetDateTime () const
-	{
-		return TS_;
-	}
-
-	void ChatMessage::SetDateTime (const QDateTime& timestamp)
-	{
-		TS_ = timestamp;
+		return {};
 	}
 
 	bool ChatMessage::IsDelivered () const

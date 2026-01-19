@@ -8,49 +8,33 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
+#include "basemessage.h"
 
 namespace LC::Azoth::Sarin
 {
 	class ToxContact;
 
-	class ChatMessage : public QObject
-					  , public IMessage
-					  , public IAdvancedMessage
+	class ChatMessage
+		: public BaseMessage
+		, public IAdvancedMessage
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage
 				LC::Azoth::IAdvancedMessage)
 
 		ToxContact * const Contact_;
-		const Direction Dir_;
-
-		QString Body_;
-		QDateTime TS_ = QDateTime::currentDateTime ();
-
 		bool IsDelivered_ = false;
 	public:
 		ChatMessage (const QString&, Direction, ToxContact*);
 
-		QObject* GetQObject () override;
 		void Send () override;
 		void Store () override;
 
-		Direction GetDirection () const override;
-		Type GetMessageType () const override;
-		SubType GetMessageSubType () const override;
 		QObject* OtherPart () const override;
 		QString GetOtherVariant () const override;
 
-		QString GetBody () const override;
-		void SetBody (const QString& body) override;
-		QDateTime GetDateTime () const override;
-		void SetDateTime (const QDateTime& timestamp) override;
-
 		bool IsDelivered () const override;
-
 		void SetDelivered ();
 	signals:
 		void messageDelivered () override;

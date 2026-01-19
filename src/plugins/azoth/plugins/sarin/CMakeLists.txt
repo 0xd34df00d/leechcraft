@@ -29,6 +29,7 @@ LC_DEFINE_PLUGIN (
 		filetransferbase.cpp
 		filetransferin.cpp
 		filetransferout.cpp
+		basemessage.cpp
 		confentry.cpp
 		confparticipant.cpp
 		confsmanager.cpp
