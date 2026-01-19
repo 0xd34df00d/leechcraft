@@ -149,4 +149,12 @@ namespace LC::Azoth::Sarin
 		co_await WithError (charsF, args..., &bytes [0]);
 		co_return FromToxStr (&bytes [0], size);
 	}
+
+	template<size_t Size, typename F, typename... Args>
+	Util::Either<MappedErrorType_t<F>, std::array<uint8_t, Size>> QueryToxBytes (F query, Args... args)
+	{
+		std::array<uint8_t, Size> bytes {};
+		co_await WithError (query, args..., &bytes [0]);
+		co_return bytes;
+	}
 }
