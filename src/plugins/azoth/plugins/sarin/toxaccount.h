@@ -71,6 +71,7 @@ namespace LC::Azoth::Sarin
 
 		ToxContact* GetByAzothId (const QString&) const;
 		ToxContact* GetByPubkey (Pubkey) const;
+		ToxContact& GetOrCreateByPubkey (Pubkey);
 
 		std::shared_ptr<ToxRunner> GetTox ();
 
@@ -128,8 +129,6 @@ namespace LC::Azoth::Sarin
 		void HandleFriendNameChanged (Pubkey, const QString&);
 		void HandleFriendStatusChanged (Pubkey, const EntryStatus&);
 		void HandleFriendTypingChanged (Pubkey, bool);
-
-		void HandleInMessage (Pubkey, const QString&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;

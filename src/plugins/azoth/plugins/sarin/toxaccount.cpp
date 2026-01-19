@@ -42,7 +42,7 @@ namespace LC::Azoth::Sarin
 	, UID_ { uid }
 	, Name_ { name }
 	, ActionGetToxId_ { new QAction { tr ("Get Tox ID"), this } }
-	, MsgsMgr_ { new MessagesManager { this } }
+	, MsgsMgr_ { new MessagesManager { *this } }
 	, XferMgr_ { new FileTransferManager { this } }
 	, ConfsMgr_ { new ConfsManager { *this } }
 	, GroupsMgr_ { new GroupsManager { *this } }
@@ -51,12 +51,6 @@ namespace LC::Azoth::Sarin
 				&QAction::triggered,
 				this,
 				&ToxAccount::HandleToxIdRequested);
-
-		connect (MsgsMgr_,
-				&MessagesManager::gotMessage,
-				this,
-				&ToxAccount::HandleInMessage);
-
 		connect (this,
 				&ToxAccount::threadChanged,
 				XferMgr_,
@@ -138,6 +132,13 @@ namespace LC::Azoth::Sarin
 	ToxContact* ToxAccount::GetByPubkey (Pubkey pubkey) const
 	{
 		return Contacts_.value (pubkey);
+	}
+
+	ToxContact& ToxAccount::GetOrCreateByPubkey (Pubkey pubkey)
+	{
+		if (!Contacts_.contains (pubkey))
+			InitEntry (pubkey);
+		return *Contacts_.value (pubkey);
 	}
 
 	std::shared_ptr<ToxRunner> ToxAccount::GetTox ()
@@ -597,18 +598,5 @@ namespace LC::Azoth::Sarin
 		}
 
 		Contacts_.value (pubkey)->SetTyping (isTyping);
-	}
-
-	void ToxAccount::HandleInMessage (Pubkey pubkey, const QString& body)
-	{
-		if (!Contacts_.contains (pubkey))
-		{
-			qWarning () << "unknown pubkey for message" << body << pubkey;
-			InitEntry (pubkey);
-		}
-
-		const auto contact = Contacts_.value (pubkey);
-		const auto msg = new ChatMessage { body, IMessage::Direction::In, contact };
-		msg->Store ();
 	}
 }

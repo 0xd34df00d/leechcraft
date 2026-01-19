@@ -84,7 +84,7 @@ namespace LC::Azoth::Sarin
 
 	QStringList ToxContact::Variants () const
 	{
-		return { "" };
+		return { {} };
 	}
 
 	IMessage* ToxContact::CreateMessage (IMessage::Type type, const QString&, const QString& body)
@@ -102,9 +102,7 @@ namespace LC::Azoth::Sarin
 
 	QList<IMessage*> ToxContact::GetAllMessages () const
 	{
-		QList<IMessage*> result;
-		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
-		return result;
+		return { AllMessages_.begin (), AllMessages_.end () };
 	}
 
 	void ToxContact::PurgeMessages (const QDateTime& before)

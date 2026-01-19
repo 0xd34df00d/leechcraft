@@ -12,17 +12,20 @@
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "chatmessage.h"
+#include "toxcontact.h"
 #include "util.h"
 
 namespace LC::Azoth::Sarin
 {
-	MessagesManager::MessagesManager (ToxAccount *acc)
-	: QObject { acc }
+	MessagesManager::MessagesManager (ToxAccount& acc)
+	: QObject { &acc }
+	, Acc_ { acc }
 	{
-		connect (acc,
+		connect (&acc,
 				&ToxAccount::threadChanged,
 				this,
 				&MessagesManager::SetThread);
+		SetThread (acc.GetTox ());
 	}
 
 	Util::ContextTask<void> MessagesManager::SendMessage (Pubkey pkey, QPointer<ChatMessage> msg)
@@ -30,7 +33,7 @@ namespace LC::Azoth::Sarin
 		co_await Util::AddContextObject { *this };
 		const auto& body = msg->GetBody ();
 
-		const auto runner = Runner_.lock ();
+		const auto runner = Acc_.GetTox ();
 		if (!runner)
 		{
 			qWarning () << "cannot send messages in offline";
@@ -50,6 +53,7 @@ namespace LC::Azoth::Sarin
 		for (int i = 0; i < retries; ++i)
 		{
 			const auto sendResult = co_await runner->RunWithStrError (&tox_friend_send_message, body, *friendNum, TOX_MESSAGE_TYPE_NORMAL);
+			// TODO more specific error handling
 			Util::Visit (sendResult,
 					[&, this] (uint32_t msgId) { MsgId2Msg_ [msgId] = msg; },
 					[] (TOX_ERR_FRIEND_SEND_MESSAGE error) { qWarning () << "unable to send message" << error; });
@@ -62,39 +66,55 @@ namespace LC::Azoth::Sarin
 
 	void MessagesManager::HandleReadReceipt (quint32 msgId)
 	{
-		const auto& val = MsgId2Msg_.take (msgId);
-		if (!val)
-		{
+		if (const auto& val = MsgId2Msg_.take (msgId))
+			val->SetDelivered ();
+		else
 			qWarning () << "the message for ID" << msgId << "is dead";
-			return;
-		}
-		val->SetDelivered ();
 	}
 
-	Util::ContextTask<void> MessagesManager::HandleInMessage (qint32 friendId, const QString& msg)
+	namespace
+	{
+		template<typename T>
+		Util::Either<Util::Void, T> NonEmpty (const T& t, auto&& msg, std::source_location loc = std::source_location::current ())
+		{
+			if (t)
+				return t;
+
+			QMessageLogger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () }.warning () << msg;
+			return { Util::AsLeft, Util::Void {} };
+		}
+
+		template<typename T, typename... Msgs>
+		Util::Either<Util::Void, T> NonEmpty (const T& t, const std::tuple<Msgs...>& msgsTuple,
+				std::source_location loc = std::source_location::current ())
+		{
+			if (t)
+				return t;
+
+			std::apply ([&]<typename... AMsgs> (AMsgs&&... amsgs)
+			{
+				const QMessageLogger log { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
+				(log.warning () << ... << std::forward<AMsgs> (amsgs));
+			}, msgsTuple);
+			return { Util::AsLeft, Util::Void {} };
+		}
+	}
+
+	Util::ContextTask<void> MessagesManager::HandleInMessage (qint32 friendId, QString body)
 	{
 		co_await Util::AddContextObject { *this };
 
-		const auto runner = Runner_.lock ();
-		if (!runner)
-		{
-			qWarning () << "got message in offline, that's kinda strange";
-			co_return;
-		}
+		const auto runner = co_await NonEmpty (Acc_.GetTox (), "got message in offline");
+		const auto maybePubkey = co_await runner->Run (&ToxW::GetFriendPubkey, friendId);
+		const auto pubkey = co_await NonEmpty (maybePubkey, std::tie ("cannot get pubkey for message", friendId));
+		auto& contact = Acc_.GetOrCreateByPubkey (*pubkey);
 
-		const auto& pubkey = co_await runner->Run (&ToxW::GetFriendPubkey, friendId);
-		if (!pubkey)
-		{
-			qWarning () << "cannot get pubkey for message" << msg;
-			co_return;
-		}
-
-		emit gotMessage (*pubkey, msg);
+		const auto msg = new ChatMessage { body, IMessage::Direction::In, &contact };
+		msg->Store ();
 	}
 
 	void MessagesManager::SetThread (const std::shared_ptr<ToxRunner>& runner)
 	{
-		Runner_ = runner;
 		if (!runner)
 			return;
 
