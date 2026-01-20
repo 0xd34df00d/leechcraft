@@ -18,6 +18,7 @@ namespace LC::Azoth
 
 	class AZOTH_UTIL_API Hooks : public QObject
 	{
+		Q_OBJECT
 	protected:
 		using QObject::QObject;
 	signals:
