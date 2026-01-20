@@ -32,6 +32,12 @@ if (ENABLE_CRYPT)
 	add_definitions (-DENABLE_CRYPT)
 endif ()
 
+add_util_library (azoth-util
+	SRCS
+		util/azoth/hooks.cpp
+	USES Widgets
+	)
+
 LC_DEFINE_PLUGIN (
 	SRCS
 		components/dialogs/acceptriexdialog.cpp
@@ -116,11 +122,14 @@ LC_DEFINE_PLUGIN (
 		sslerrorschoicestorage.cpp
 		tabbase.cpp
 		categoryactions.cpp
+		hooksinstance.cpp
 		$<$<BOOL:${ENABLE_CRYPT}>:cryptomanager.cpp>
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
 	QT_COMPONENTS Concurrent Network Sql WebEngineWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
-	LINK_LIBRARIES $<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
+	LINK_LIBRARIES
+		leechcraft-azoth-util
+		$<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
 	INSTALL_SHARE
 	)
 

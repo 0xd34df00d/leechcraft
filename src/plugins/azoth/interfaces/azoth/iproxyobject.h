@@ -27,6 +27,8 @@ namespace Util
 
 namespace Azoth
 {
+	class Hooks;
+
 	class IFormatterProxyObject
 	{
 	public:
@@ -345,6 +347,8 @@ namespace Azoth
 		virtual IFormatterProxyObject& GetFormatterProxy () = 0;
 
 		virtual IAvatarsManager* GetAvatarsManager () = 0;
+
+		virtual Hooks& GetHooks () = 0;
 	};
 }
 }

@@ -26,6 +26,7 @@
 #include "resourcesmanager.h"
 #include "util.h"
 #include "customstatusesmanager.h"
+#include "hooksinstance.h"
 
 namespace LC::Azoth
 {
@@ -391,5 +392,10 @@ namespace LC::Azoth
 	IAvatarsManager* ProxyObject::GetAvatarsManager ()
 	{
 		return AvatarsManager_;
+	}
+
+	Hooks& ProxyObject::GetHooks ()
+	{
+		return HooksInstance::Instance ();
 	}
 }

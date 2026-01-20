@@ -86,6 +86,8 @@ namespace Azoth
 
 		IFormatterProxyObject& GetFormatterProxy () override;
 		IAvatarsManager* GetAvatarsManager() override;
+
+		Hooks& GetHooks () override;
 	};
 }
 }
