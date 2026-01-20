@@ -35,8 +35,6 @@ namespace Azoth
 		void ClearMessages (QObject*);
 
 		QList<IMessage*> GetIMessages (QObject*) const;
-	private slots:
-		void entryDestroyed ();
 	};
 }
 }

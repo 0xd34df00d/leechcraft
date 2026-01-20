@@ -25,27 +25,30 @@ namespace Azoth
 
 	void DummyMsgManager::AddMessage (CoreMessage *msg)
 	{
-		Messages_ [msg->OtherPart ()] << msg;
+		auto& msgs = Messages_ [msg->OtherPart ()];
+		if (msgs.isEmpty ())
+			connect (msg->OtherPart (),
+					&QObject::destroyed,
+					this,
+					&DummyMsgManager::ClearMessages);
+		msgs << msg;
 	}
 
 	void DummyMsgManager::ClearMessages (QObject *entry)
 	{
 		qDeleteAll (Messages_.take (entry));
+		disconnect (entry,
+				&QObject::destroyed,
+				this,
+				&DummyMsgManager::ClearMessages);
 	}
 
 	QList<IMessage*> DummyMsgManager::GetIMessages (QObject *entry) const
 	{
 		QList<IMessage*> result;
-
 		for (const auto msgObj : Messages_.value (entry))
 			result << qobject_cast<IMessage*> (msgObj);
-
 		return result;
-	}
-
-	void DummyMsgManager::entryDestroyed ()
-	{
-		ClearMessages (sender ());
 	}
 }
 }
