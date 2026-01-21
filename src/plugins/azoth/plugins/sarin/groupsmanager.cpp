@@ -88,14 +88,10 @@ namespace LC::Azoth::Sarin
 		{
 			return [this, fun]<typename... Args> (uint32_t groupNum, const Args&... args)
 			{
-				const auto groupEntry = Groups_.value (groupNum);
-				if (!groupEntry)
-				{
+				if (const auto groupEntry = Groups_.value (groupNum))
+					std::invoke (fun, groupEntry, args...);
+				else
 					qWarning () << "no entry for group" << groupNum;
-					return;
-				}
-
-				std::invoke (fun, groupEntry, args...);
 			};
 		};
 
