@@ -13,7 +13,9 @@
     <xsl:if test="@suffix">
       QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@suffix"/>")
     </xsl:if>
-    <xsl:apply-templates/>
+    <xsl:if test="not(@tschildren='false')">
+      <xsl:apply-templates/>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="label[@value]">
     QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@value"/>")
