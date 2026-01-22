@@ -42,18 +42,9 @@ namespace MuCommands
 {
 	namespace
 	{
-		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry,
-				const QString& rich)
+		void InjectMessage (IProxyObject *azothProxy, ICLEntry *entry, const QString& rich)
 		{
-			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = azothProxy->CreateCoreMessage (rich,
-					QDateTime::currentDateTime (),
-					IMessage::Type::ServiceMessage,
-					IMessage::Direction::In,
-					entryObj,
-					entryObj);
-			const auto msg = qobject_cast<IMessage*> (msgObj);
-			msg->Store ();
+			azothProxy->InjectMessage (*entry, { .Body_ = rich, .Kind_ = InjectedMessage::Service {} });
 		}
 	}
 
