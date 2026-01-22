@@ -42,9 +42,9 @@ namespace LC::Azoth
 			Out,
 		};
 
-		struct ChatMessage { Direction Dir_; };
-		struct ServiceMessage {};
-		using Kind = std::variant<ChatMessage, ServiceMessage>;
+		struct Chat { Direction Dir_; };
+		struct Service {};
+		using Kind = std::variant<Chat, Service>;
 		Kind Kind_;
 
 		static InjectedMessage FromOutgoing (const OutgoingMessage& msg)
@@ -53,7 +53,7 @@ namespace LC::Azoth
 			{
 				.Body_ = msg.Body_,
 				.RichTextBody_ = msg.RichTextBody_,
-				.Kind_ = ChatMessage { Direction::Out },
+				.Kind_ = Chat { Direction::Out },
 			};
 		}
 	};

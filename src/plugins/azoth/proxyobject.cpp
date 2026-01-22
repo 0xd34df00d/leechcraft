@@ -323,8 +323,8 @@ namespace LC::Azoth
 	{
 		using enum IMessage::Type;
 		const auto [type, dir] = Util::Visit (message.Kind_,
-				[] (InjectedMessage::ServiceMessage) { return std::tuple { ServiceMessage, IMessage::Direction::In }; },
-				[] (InjectedMessage::ChatMessage chat)
+				[] (InjectedMessage::Service) { return std::tuple { ServiceMessage, IMessage::Direction::In }; },
+				[] (InjectedMessage::Chat chat)
 				{
 					return std::tuple { ChatMessage, static_cast<IMessage::Direction> (chat.Dir_) };
 				});

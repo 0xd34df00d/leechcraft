@@ -140,15 +140,7 @@ namespace LC::Azoth::Abbrev
 		const auto& text = tr ("%n abbreviation(s):", nullptr, abbrevs.size ()) +
 				"<ol><li>" + abbrevs.join (u"</li><li>"_qsv) + "</li></ol>";
 
-		const auto entryObj = entry->GetQObject ();
-		const auto msgObj = AzothProxy_->CreateCoreMessage (text,
-				QDateTime::currentDateTime (),
-				IMessage::Type::ServiceMessage,
-				IMessage::Direction::In,
-				entryObj,
-				entryObj);
-		const auto msg = qobject_cast<IMessage*> (msgObj);
-		msg->Store ();
+		AzothProxy_->InjectMessage (*entry, { .Body_ = text, .Kind_ = InjectedMessage::Service {} });
 	}
 
 	void Plugin::RemoveAbbrev (const QString& text)
@@ -194,14 +186,8 @@ namespace LC::Azoth::Abbrev
 		}
 		catch (const CommandException& e)
 		{
-			const auto msgObj = AzothProxy_->CreateCoreMessage (e.GetError (),
-					QDateTime::currentDateTime (),
-					IMessage::Type::ServiceMessage,
-					IMessage::Direction::In,
-					entryObj,
-					entryObj);
-			const auto msg = qobject_cast<IMessage*> (msgObj);
-			msg->Store ();
+			if (const auto entry = qobject_cast<ICLEntry*> (entryObj))
+				AzothProxy_->InjectMessage (*entry, { .Body_ = e.GetError (), .Kind_ = InjectedMessage::Service {} });
 		}
 	}
 }
