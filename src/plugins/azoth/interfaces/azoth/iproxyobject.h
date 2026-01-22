@@ -27,6 +27,7 @@ namespace Util
 
 namespace Azoth
 {
+	struct InjectedMessage;
 	class Hooks;
 
 	class IFormatterProxyObject
@@ -295,6 +296,8 @@ namespace Azoth
 				IMessage::Direction dir,
 				QObject *other,
 				QObject *parent = nullptr) = 0;
+
+		virtual void InjectMessage (ICLEntry&, const InjectedMessage&) = 0;
 
 		virtual QString ToPlainBody (QString body) = 0;
 

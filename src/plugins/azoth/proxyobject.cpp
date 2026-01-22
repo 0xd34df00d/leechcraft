@@ -16,6 +16,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/regexp.h>
+#include <util/sll/visitor.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -316,6 +317,20 @@ namespace LC::Azoth
 			QObject *other, QObject *parent)
 	{
 		return new CoreMessage (body, date, type, dir, other, parent);
+	}
+
+	void ProxyObject::InjectMessage (ICLEntry& entry, const InjectedMessage& message)
+	{
+		using enum IMessage::Type;
+		const auto [type, dir] = Util::Visit (message.Kind_,
+				[] (InjectedMessage::ServiceMessage) { return std::tuple { ServiceMessage, IMessage::Direction::In }; },
+				[] (InjectedMessage::ChatMessage chat)
+				{
+					return std::tuple { ChatMessage, static_cast<IMessage::Direction> (chat.Dir_) };
+				});
+		const auto entryObj = entry.GetQObject ();
+		const auto msgObj = new CoreMessage { message.Body_, message.TS_, type, dir, entryObj, entryObj };
+		msgObj->Store ();
 	}
 
 	QString ProxyObject::ToPlainBody (QString body)

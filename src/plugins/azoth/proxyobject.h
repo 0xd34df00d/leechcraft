@@ -67,6 +67,7 @@ namespace Azoth
 
 		QObject* CreateCoreMessage (const QString&, const QDateTime&,
 				IMessage::Type, IMessage::Direction, QObject*, QObject*) override;
+		void InjectMessage (ICLEntry&, const InjectedMessage&) override;
 
 		QString ToPlainBody (QString) override;
 
