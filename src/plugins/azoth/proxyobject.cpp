@@ -311,14 +311,6 @@ namespace LC::Azoth
 		return ResourcesManager::Instance ().GetIconForState (state);
 	}
 
-	QObject* ProxyObject::CreateCoreMessage (const QString& body,
-			const QDateTime& date,
-			IMessage::Type type, IMessage::Direction dir,
-			QObject *other, QObject *parent)
-	{
-		return new CoreMessage (body, date, type, dir, other, parent);
-	}
-
 	void ProxyObject::InjectMessage (ICLEntry& entry, const InjectedMessage& message)
 	{
 		using enum IMessage::Type;

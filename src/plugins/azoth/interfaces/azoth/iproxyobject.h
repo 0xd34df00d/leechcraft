@@ -290,13 +290,6 @@ namespace Azoth
 
 		virtual QIcon GetIconForState (State state) const = 0;
 
-		virtual QObject* CreateCoreMessage (const QString& body,
-				const QDateTime& date,
-				IMessage::Type type,
-				IMessage::Direction dir,
-				QObject *other,
-				QObject *parent = nullptr) = 0;
-
 		virtual void InjectMessage (ICLEntry&, const InjectedMessage&) = 0;
 
 		virtual QString ToPlainBody (QString body) = 0;

@@ -65,8 +65,6 @@ namespace Azoth
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const override;
 		QIcon GetIconForState (State) const override;
 
-		QObject* CreateCoreMessage (const QString&, const QDateTime&,
-				IMessage::Type, IMessage::Direction, QObject*, QObject*) override;
 		void InjectMessage (ICLEntry&, const InjectedMessage&) override;
 
 		QString ToPlainBody (QString) override;
