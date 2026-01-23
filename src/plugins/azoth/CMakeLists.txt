@@ -152,7 +152,6 @@ SUBPLUGIN (LASTSEEN "Build plugin for keeping track of the date of contacts' bei
 SUBPLUGIN (METACONTACTS "Build support for metacontacts")
 SUBPLUGIN (MODNOK "Build Modnok for rendering and displaying LaTeX formulas")
 SUBPLUGIN (MUCOMMANDS "Build Mucommands, the module providing some common conference-oriented commands")
-SUBPLUGIN (MURM "Build Murm, special plugin for extensive VKontakte messaging support")
 SUBPLUGIN (NATIVEEMOTICONS "Build support for Azoth's own emoticons packs")
 SUBPLUGIN (OTROID "Build OTRoid for supporting Off-the-Record messaging" OFF)
 SUBPLUGIN (ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth")
