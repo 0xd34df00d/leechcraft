@@ -623,17 +623,6 @@ namespace Xoox
 	void EntryBase::UpdateChatState (QXmppMessage::State state, const QString& variant)
 	{
 		emit chatPartStateChanged (static_cast<ChatPartState> (state), variant);
-
-		if (state == QXmppMessage::Gone)
-		{
-			const auto msg = new GlooxMessage (IMessage::Type::EventMessage,
-					IMessage::Direction::In,
-					GetJID (),
-					variant,
-					Account_->GetClientConnection ().get ());
-			msg->SetMessageSubType (IMessage::SubType::ParticipantEndedConversation);
-			HandleMessage (msg);
-		}
 	}
 
 	void EntryBase::SetErrorPresence (const QString& variant, const QXmppPresence& presence)
@@ -693,37 +682,6 @@ namespace Xoox
 				status.State_ == SOffline ||
 				wasOffline)
 			emit availableVariantsChanged (Variants ());
-
-		GlooxMessage *message = 0;
-		if (GetEntryType () == EntryType::PrivateChat)
-			message = new GlooxMessage (IMessage::Type::StatusMessage,
-					IMessage::Direction::In,
-					qobject_cast<RoomCLEntry*> (GetParentCLEntryObject ())->
-							GetRoomHandler ()->GetRoomJID (),
-					GetEntryName (),
-					Account_->GetClientConnection ().get ());
-		else
-			message = new GlooxMessage (IMessage::Type::StatusMessage,
-				IMessage::Direction::In,
-				GetJID (),
-				variant,
-				Account_->GetClientConnection ().get ());
-		message->SetMessageSubType (IMessage::SubType::ParticipantStatusChange);
-
-		const auto proxy = Account_->GetParentProtocol ()->GetProxyObject ();
-		const auto& state = proxy->StateToString (status.State_);
-
-		const auto& nick = GetEntryName () + '/' + variant;
-		message->setProperty ("Azoth/Nick", nick);
-		message->setProperty ("Azoth/TargetState", state);
-		message->setProperty ("Azoth/StatusText", status.StatusString_);
-
-		const auto& msg = tr ("%1 is now %2 (%3)")
-				.arg (nick)
-				.arg (state)
-				.arg (status.StatusString_);
-		message->SetBody (msg);
-		HandleMessage (message);
 	}
 
 	QXmppVCardIq EntryBase::GetVCard () const
