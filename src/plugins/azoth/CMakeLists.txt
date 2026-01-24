@@ -111,7 +111,6 @@ LC_DEFINE_PLUGIN (
 		resourcesmanager.cpp
 		notificationsmanager.cpp
 		msgeditautocompleter.cpp
-		msgsender.cpp
 		avatarsmanager.cpp
 		avatarsstorage.cpp
 		avatarsstorageondisk.cpp

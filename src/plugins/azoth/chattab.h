@@ -151,7 +151,8 @@ namespace Azoth
 
 		void SetEnabled (bool);
 
-		QObject* GetCLEntry () const;
+		QObject* GetCLEntryObj () const;
+		ICLEntry* GetCLEntry () const;
 		QString GetEntryID () const;
 		QString GetSelectedVariant () const;
 
@@ -259,6 +260,7 @@ namespace Azoth
 
 		void entryMadeCurrent (QObject*);
 		void entryLostCurrent (QObject*);
+		void messageSent ();
 
 		void tabRecoverDataChanged ();
 

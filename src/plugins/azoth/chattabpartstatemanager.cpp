@@ -17,9 +17,9 @@ namespace LC
 {
 namespace Azoth
 {
-	ChatTabPartStateManager::ChatTabPartStateManager (ChatTab *tab)
-	: QObject { tab }
-	, EntryID_ { tab->GetEntryID () }
+	ChatTabPartStateManager::ChatTabPartStateManager (ChatTab& tab)
+	: QObject { &tab }
+	, Tab_ { tab }
 	, TypeTimer_ { new QTimer { this } }
 	{
 		auto setState = [this] (ChatPartState st)
@@ -28,21 +28,22 @@ namespace Azoth
 		};
 
 		TypeTimer_->setInterval (2000);
-		connect (TypeTimer_,
-				&QTimer::timeout,
-				this,
-				setState (CPSPaused));
+		TypeTimer_->callOnTimeout (this, setState (CPSPaused));
 
-		connect (tab,
+		connect (&tab,
 				&ChatTab::entryLostCurrent,
 				this,
 				setState (CPSInactive));
-		connect (tab,
-				&ChatTab::hookMessageSendRequested,
+		connect (&tab,
+				&ChatTab::entryMadeCurrent,
+				this,
+				setState (CPSInactive));
+		connect (&tab,
+				&ChatTab::messageSent,
 				this,
 				setState (CPSActive));
 
-		connect (tab,
+		connect (&tab,
 				&ChatTab::composingTextChanged,
 				this,
 				[this]
@@ -51,7 +52,7 @@ namespace Azoth
 					TypeTimer_->start ();
 				});
 
-		connect (tab,
+		connect (&tab,
 				&ChatTab::currentVariantChanged,
 				this,
 				&ChatTabPartStateManager::HandleVariantChanged);
@@ -68,15 +69,14 @@ namespace Azoth
 			return;
 
 		TypeTimer_->stop ();
+		PreviousState_ = state;
 
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
-		auto entry = GetEntry ();
+		const auto entry = Tab_.GetCLEntry ();
 		if (!entry)
 			return;
-
-		PreviousState_ = state;
 
 		if (state != CPSGone ||
 				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
@@ -96,11 +96,6 @@ namespace Azoth
 		if (const auto entry = Tab_.GetCLEntry ();
 			entry && entry->GetStatus (LastVariant_).State_ != SOffline)
 			entry->SetChatPartState (CPSActive, LastVariant_);
-	}
-
-	ICLEntry* ChatTabPartStateManager::GetEntry () const
-	{
-		return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (EntryID_));
 	}
 }
 }

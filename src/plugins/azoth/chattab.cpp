@@ -218,7 +218,7 @@ namespace Azoth
 				this,
 				SLOT (handleChatWindowSearch (QString)));
 
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
 		PrepareTheme ();
 
 		auto entry = GetEntry<ICLEntry> ();
@@ -248,7 +248,7 @@ namespace Azoth
 				SLOT (handleAccountStyleChanged (IAccount*)));
 
 		if (!IsMUC_)
-			new ChatTabPartStateManager { this };
+			new ChatTabPartStateManager { *this };
 
 		connect (Ui_.VariantBox_,
 				qOverload<const QString&> (&QComboBox::currentTextChanged),
@@ -265,7 +265,7 @@ namespace Azoth
 
 		qDeleteAll (HistoryMessages_);
 		qDeleteAll (CoreMessages_);
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
@@ -501,9 +501,14 @@ namespace Azoth
 			AddManagedActions (false);
 	}
 
-	QObject* ChatTab::GetCLEntry () const
+	QObject* ChatTab::GetCLEntryObj () const
 	{
 		return GetEntry<QObject> ();
+	}
+
+	ICLEntry* ChatTab::GetCLEntry () const
+	{
+		return GetEntry<ICLEntry> ();
 	}
 
 	QString ChatTab::GetEntryID () const
@@ -658,7 +663,9 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		if (!SendMessage (*e, { .Variant_ = variant, .Body_ = text, .RichTextBody_ = richText }))
+		if (SendMessage (*e, { .Variant_ = GetSelectedVariant (), .Body_ = text, .RichTextBody_ = richText }))
+			emit messageSent ();
+		else
 			clear = false;
 	}
 
@@ -806,7 +813,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
 		LastDateTime_ = QDateTime ();
 		PrepareTheme ();
 	}
@@ -818,7 +825,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
 		LastDateTime_ = QDateTime ();
 		RequestLogs (ScrollbackPos_);
 	}

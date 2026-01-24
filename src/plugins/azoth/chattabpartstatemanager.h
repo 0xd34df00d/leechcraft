@@ -21,21 +21,18 @@ namespace Azoth
 
 	class ChatTabPartStateManager : public QObject
 	{
-		const QString EntryID_;
+		const ChatTab& Tab_;
 
 		ChatPartState PreviousState_ = CPSNone;
 		QString LastVariant_;
 
 		QTimer * const TypeTimer_;
 	public:
-		ChatTabPartStateManager (ChatTab*);
-		~ChatTabPartStateManager ();
+		ChatTabPartStateManager (ChatTab&);
+		~ChatTabPartStateManager () override;
 	private:
 		void SetChatPartState (ChatPartState);
-
 		void HandleVariantChanged (const QString&);
-
-		ICLEntry* GetEntry () const;
 	};
 }
 }

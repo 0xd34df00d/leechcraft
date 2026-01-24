@@ -202,7 +202,7 @@ namespace LC::Azoth
 
 	void ChatTabsManager::ChatMadeCurrent (ChatTab *curTab)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (curTab->GetCLEntry ());
+		ICLEntry *entry = qobject_cast<ICLEntry*> (curTab->GetCLEntryObj ());
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -294,7 +294,7 @@ namespace LC::Azoth
 		if (fromUser &&
 				XmlSettingsManager::Instance ().property ("LeaveConfOnClose").toBool ())
 		{
-			const auto entryObj = tab->GetCLEntry ();
+			const auto entryObj = tab->GetCLEntryObj ();
 			if (const auto muc = qobject_cast<IMUCEntry*> (entryObj))
 				muc->Leave ();
 		}
