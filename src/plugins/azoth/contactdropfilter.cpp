@@ -92,21 +92,7 @@ namespace Azoth
 			if (!entry)
 				return;
 
-			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
-						IMessage::Type::MUCMessage :
-						IMessage::Type::ChatMessage;
-
-			QString asBase;
-			if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
-			{
-				QBuffer buf;
-				buf.open (QIODevice::ReadWrite);
-				image.save (&buf, "JPG", 60);
-				asBase = QString ("data:image/png;base64,%1")
-						.arg (QString (buf.buffer ().toBase64 ()));
-			}
-			else
-				asBase = Util::GetAsBase64Src (image);
+			const auto& asBase = Util::GetAsBase64Src (image);
 			const auto& body = "<img src='" + asBase + "'/>";
 			const auto& msg = ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it.");
 
