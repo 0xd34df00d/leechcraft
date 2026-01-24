@@ -27,6 +27,12 @@ namespace Azoth
 			return [this, st] { SetChatPartState (st); };
 		};
 
+		TypeTimer_->setInterval (2000);
+		connect (TypeTimer_,
+				&QTimer::timeout,
+				this,
+				setState (CPSPaused));
+
 		connect (tab,
 				&ChatTab::entryLostCurrent,
 				this,
@@ -39,17 +45,11 @@ namespace Azoth
 		connect (tab,
 				&ChatTab::composingTextChanged,
 				this,
-				&ChatTabPartStateManager::HandleComposingText);
-
-		TypeTimer_->setInterval (2000);
-		connect (TypeTimer_,
-				&QTimer::timeout,
-				this,
-				setState (CPSPaused));
-		connect (tab,
-				&ChatTab::entryLostCurrent,
-				TypeTimer_,
-				&QTimer::stop);
+				[this]
+				{
+					SetChatPartState (CPSComposing);
+					TypeTimer_->start ();
+				});
 
 		connect (tab,
 				&ChatTab::currentVariantChanged,
@@ -67,6 +67,8 @@ namespace Azoth
 		if (state == PreviousState_)
 			return;
 
+		TypeTimer_->stop ();
+
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
@@ -79,17 +81,6 @@ namespace Azoth
 		if (state != CPSGone ||
 				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
 			entry->SetChatPartState (state, LastVariant_);
-	}
-
-	void ChatTabPartStateManager::HandleComposingText (const QString& text)
-	{
-		TypeTimer_->stop ();
-
-		if (!text.isEmpty ())
-		{
-			SetChatPartState (CPSComposing);
-			TypeTimer_->start ();
-		}
 	}
 
 	void ChatTabPartStateManager::HandleVariantChanged (const QString& variant)

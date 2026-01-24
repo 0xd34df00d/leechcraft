@@ -34,7 +34,6 @@ namespace Azoth
 		void SetChatPartState (ChatPartState);
 
 		void HandleVariantChanged (const QString&);
-		void HandleComposingText (const QString&);
 
 		ICLEntry* GetEntry () const;
 	};
