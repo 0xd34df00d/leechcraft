@@ -11,10 +11,9 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
 #include "interfaces/azoth/iclentry.h"
-#include "interfaces/azoth/imessage.h"
 #include "core.h"
 #include "resourcesmanager.h"
-#include "msgsender.h"
+#include "util.h"
 
 namespace LC
 {
@@ -81,10 +80,8 @@ namespace Azoth
 
 		for (const auto [entry, item] : Util::Stlize (Entry2Item_))
 		{
-			if (item->checkState () != Qt::Checked)
-				continue;
-
-			new MsgSender { entry, IMessage::Type::ChatMessage, msg };
+			if (item->checkState () == Qt::Checked)
+				SendMessage (*entry, { .Body_ = msg });
 		}
 
 		Ui_.Message_->clear ();

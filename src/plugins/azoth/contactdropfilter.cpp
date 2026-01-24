@@ -27,7 +27,7 @@
 #include "chattab.h"
 #include "transferjobmanager.h"
 #include "dndutil.h"
-#include "msgsender.h"
+#include "util.h"
 
 namespace LC
 {
@@ -88,27 +88,19 @@ namespace Azoth
 
 		void SendInChat (const QImage& image, const QString& entryId, ChatTab *chatTab)
 		{
-			auto entry = GetEntry<ICLEntry> (entryId);
+			const auto entry = GetEntry<ICLEntry> (entryId);
 			if (!entry)
 				return;
 
-			const auto& asBase = Util::GetAsBase64Src (image);
-			const auto& body = "<img src='" + asBase + "'/>";
+			const auto& richBody = "<img src='" + Util::GetAsBase64Src (image) + "'/>";
 			const auto& msg = ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it.");
-
-			new MsgSender { entry, msgType, msg, chatTab->GetSelectedVariant (), body };
+			SendMessage (*entry, { .Variant_ = chatTab->GetSelectedVariant (), .Body_ = msg, .RichTextBody_ = richBody });
 		}
 
 		void SendLink (const QUrl& url, const QString& entryId, ChatTab *chatTab)
 		{
-			auto entry = GetEntry<ICLEntry> (entryId);
-			if (!entry)
-				return;
-
-			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
-						IMessage::Type::MUCMessage :
-						IMessage::Type::ChatMessage;
-			new MsgSender { entry, msgType, url.toEncoded (), chatTab->GetSelectedVariant () };
+			if (const auto entry = GetEntry<ICLEntry> (entryId))
+				SendMessage (*entry, { .Variant_ = chatTab->GetSelectedVariant (), .Body_ = url.toEncoded () });
 		}
 	}
 

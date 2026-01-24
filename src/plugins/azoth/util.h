@@ -10,6 +10,7 @@
 
 #include <QColor>
 #include "interfaces/azoth/azothcommon.h"
+#include "interfaces/azoth/message.h"
 
 template<typename>
 class QList;
@@ -33,6 +34,8 @@ namespace Azoth
 	class AvatarsManager;
 
 	QWidget* GetDialogParent ();
+
+	void SendMessage (ICLEntry& e, OutgoingMessage);
 
 	Q_REQUIRED_RESULT QFuture<Entity> BuildNotification (AvatarsManager*,
 			Entity, ICLEntry*, const QString& id = {}, ICLEntry* = nullptr);

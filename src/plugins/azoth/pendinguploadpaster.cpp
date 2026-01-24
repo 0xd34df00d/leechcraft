@@ -9,7 +9,7 @@
 #include "pendinguploadpaster.h"
 #include <QUrl>
 #include "interfaces/azoth/iclentry.h"
-#include "msgsender.h"
+#include "util.h"
 
 namespace LC
 {
@@ -33,10 +33,7 @@ namespace Azoth
 		if (filename != Filename_)
 			return;
 
-		const auto msgType = Entry_->GetEntryType () == ICLEntry::EntryType::MUC ?
-					IMessage::Type::MUCMessage :
-					IMessage::Type::ChatMessage;
-		new MsgSender { Entry_, msgType, url.toEncoded (), EntryVariant_ };
+		SendMessage (*Entry_, { .Variant_ = EntryVariant_, .Body_ = url.toEncoded () });
 		deleteLater ();
 	}
 }

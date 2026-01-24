@@ -9,6 +9,7 @@
 #pragma once
 
 #include <optional>
+#include <QDateTime>
 #include <QString>
 
 namespace LC::Azoth

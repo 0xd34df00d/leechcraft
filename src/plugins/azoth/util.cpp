@@ -34,6 +34,7 @@
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "avatarsmanager.h"
+#include "hooksinstance.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 
@@ -44,6 +45,14 @@ namespace Azoth
 	QWidget* GetDialogParent ()
 	{
 		return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
+	}
+
+	void SendMessage (ICLEntry& e, OutgoingMessage message)
+	{
+		bool cancel = false;
+		emit HooksInstance::Instance ().messageWillBeCreated (cancel, e, message);
+		if (!cancel)
+			e.SendMessage (message);
 	}
 
 	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,

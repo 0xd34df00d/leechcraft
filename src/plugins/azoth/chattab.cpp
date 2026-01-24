@@ -74,7 +74,6 @@
 #include "corecommandsmanager.h"
 #include "resourcesmanager.h"
 #include "msgeditautocompleter.h"
-#include "msgsender.h"
 #include "avatarsmanager.h"
 #include "chattabpartstatemanager.h"
 
@@ -619,8 +618,8 @@ namespace Azoth
 			return;
 
 		const auto& richText = ToggleRichEditor_->isChecked () ?
-				MsgFormatter_->GetNormalizedRichText () :
-				QString {};
+				std::optional { MsgFormatter_->GetNormalizedRichText () } :
+				std::optional<QString> {};
 
 		bool clear = true;
 		auto clearGuard = Util::MakeScopeGuard ([&clear, &text, this]
@@ -635,9 +634,7 @@ namespace Azoth
 					MsgHistory_.prepend (text);
 				});
 
-		auto variant = Ui_.VariantBox_->count () > 1 ?
-				Ui_.VariantBox_->currentText () :
-				QString ();
+		const auto& variant = GetSelectedVariant ();
 
 		const auto e = GetEntry<ICLEntry> ();
 
@@ -661,20 +658,7 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		try
-		{
-			new MsgSender { e, type, text, variant, richText };
-		}
-		catch (const std::exception& ex)
-		{
-			clear = false;
-
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Error sending message to %1: %2.")
-						.arg ("<em>" + e->GetEntryName () + "</em>")
-						.arg (QString::fromUtf8 (ex.what ())));
-		}
+		SendMessage (*e, { .Variant_ = variant, .Body_ = text, .RichTextBody_ = richText });
 	}
 
 	void ChatTab::on_MsgEdit__textChanged ()
