@@ -658,7 +658,8 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		SendMessage (*e, { .Variant_ = variant, .Body_ = text, .RichTextBody_ = richText });
+		if (!SendMessage (*e, { .Variant_ = variant, .Body_ = text, .RichTextBody_ = richText }))
+			clear = false;
 	}
 
 	void ChatTab::on_MsgEdit__textChanged ()

@@ -47,12 +47,15 @@ namespace Azoth
 		return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
 	}
 
-	void SendMessage (ICLEntry& e, OutgoingMessage message)
+	bool SendMessage (ICLEntry& e, OutgoingMessage message)
 	{
 		bool cancel = false;
 		emit HooksInstance::Instance ().messageWillBeCreated (cancel, e, message);
-		if (!cancel)
-			e.SendMessage (message);
+		if (cancel)
+			return false;
+
+		e.SendMessage (message);
+		return true;
 	}
 
 	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,

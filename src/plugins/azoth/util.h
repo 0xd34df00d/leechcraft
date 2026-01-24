@@ -35,7 +35,7 @@ namespace Azoth
 
 	QWidget* GetDialogParent ();
 
-	void SendMessage (ICLEntry& e, OutgoingMessage);
+	bool SendMessage (ICLEntry& e, OutgoingMessage);
 
 	Q_REQUIRED_RESULT QFuture<Entity> BuildNotification (AvatarsManager*,
 			Entity, ICLEntry*, const QString& id = {}, ICLEntry* = nullptr);
