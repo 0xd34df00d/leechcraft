@@ -33,7 +33,6 @@ namespace VelvetBird
 		ConvIMMessage (const QString&, Direction, Buddy*);
 
 		QObject* GetQObject ();
-		void Send ();
 		void Store ();
 		Direction GetDirection () const;
 		Type GetMessageType () const;

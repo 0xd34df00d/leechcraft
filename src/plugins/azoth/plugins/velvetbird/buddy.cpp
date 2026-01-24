@@ -99,9 +99,9 @@ namespace VelvetBird
 		return QStringList ();
 	}
 
-	IMessage* Buddy::CreateMessage (IMessage::Type, const QString&, const QString& body)
+	void Buddy::SendMessage (const OutgoingMessage& message)
 	{
-		return new ConvIMMessage (body, IMessage::Direction::Out, this);
+		Send (new ConvIMMessage (message.Body_, IMessage::Direction::Out, this));
 	}
 
 	QList<IMessage*> Buddy::GetAllMessages () const

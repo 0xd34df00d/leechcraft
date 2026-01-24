@@ -29,11 +29,6 @@ namespace VelvetBird
 		return this;
 	}
 
-	void ConvIMMessage::Send ()
-	{
-		Buddy_->Send (this);
-	}
-
 	void ConvIMMessage::Store ()
 	{
 		Buddy_->Store (this);
