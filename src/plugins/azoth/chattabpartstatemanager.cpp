@@ -93,9 +93,9 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
-		auto entry = GetEntry ();
-		if (entry && entry->GetStatus (LastVariant_).State_ != SOffline)
-			entry->SetChatPartState (CPSInactive, LastVariant_);
+		if (const auto entry = Tab_.GetCLEntry ();
+			entry && entry->GetStatus (LastVariant_).State_ != SOffline)
+			entry->SetChatPartState (CPSActive, LastVariant_);
 	}
 
 	ICLEntry* ChatTabPartStateManager::GetEntry () const
