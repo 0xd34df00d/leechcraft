@@ -35,56 +35,14 @@ namespace Azoth
 	{
 		/** @brief The general state of the entry.
 		 */
-		State State_;
+		State State_ = SOffline;
 
 		/** @brief The string of the entry accompanying its state.
 		 */
-		QString StatusString_;
+		QString StatusString_ {};
 
-		/** @brief Default-constructs an (offline) status.
-		 */
-		EntryStatus ()
-		: State_ (SOffline)
-		{
-		}
-
-		/** @brief Constructs a status with a given \em state and status
-		 * \em string.
-		 *
-		 * @param[in] state The state of the entry.
-		 * @param[in] string The status string of the entry.
-		 */
-		EntryStatus (State state, const QString& string)
-		: State_ (state)
-		, StatusString_ (string)
-		{
-		}
+		bool operator== (const EntryStatus& es2) const = default;
 	};
-
-	/** @brief Compares two entry statuses for equality.
-	 *
-	 * \param[in] es1 First status to compare.
-	 * \param[in] es2 Second status to compare.
-	 * @return Whether the statuses correspond to the same state and have
-	 * the same status string.
-	 */
-	inline bool operator== (const EntryStatus& es1, const EntryStatus& es2)
-	{
-		return es1.State_ == es2.State_ &&
-				es1.StatusString_ == es2.StatusString_;
-	}
-
-	/** @brief Compares two entry statuses for inequality.
-	 *
-	 * \param[in] es1 First status to compare.
-	 * \param[in] es2 Second status to compare.
-	 * @return The negation of equality as defined by the equality
-	 * oeprator.
-	 */
-	inline bool operator!= (const EntryStatus& es1, const EntryStatus& es2)
-	{
-		return !(es1 == es2);
-	}
 
 	/** @brief Represents a single entry in contact list.
 	 *
