@@ -279,11 +279,6 @@ namespace Azoth
 				QObject *message);
 		void hookMadeCurrent (LC::IHookProxy_ptr proxy,
 				QObject *chatTab);
-		void hookMessageSendRequested (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
 		void hookThemeReloaded (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QWebEngineView *view,

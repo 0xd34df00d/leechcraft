@@ -618,7 +618,7 @@ namespace Azoth
 
 	void ChatTab::messageSend ()
 	{
-		QString text = Ui_.MsgEdit_->toPlainText ();
+		auto text = Ui_.MsgEdit_->toPlainText ();
 		if (text.isEmpty ())
 			return;
 
@@ -639,27 +639,7 @@ namespace Azoth
 					MsgHistory_.prepend (text);
 				});
 
-		const auto& variant = GetSelectedVariant ();
-
 		const auto e = GetEntry<ICLEntry> ();
-
-		auto type = e->GetEntryType () == ICLEntry::EntryType::MUC ?
-						IMessage::Type::MUCMessage :
-						IMessage::Type::ChatMessage;
-
-		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
-		proxy->SetValue ("text", text);
-		emit hookMessageSendRequested (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
-
-		if (proxy->IsCancelled ())
-		{
-			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
-				clear = false;
-			return;
-		}
-
-		proxy->FillValue ("text", text);
-
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
