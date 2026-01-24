@@ -18,9 +18,8 @@
 
 namespace LC::Azoth::Autopaste
 {
-	PasteServiceBase::PasteServiceBase (QObject *entry, const ICoreProxy_ptr& proxy, QObject *parent)
+	PasteServiceBase::PasteServiceBase (QObject *entry, QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, Entry_ (entry)
 	{
 	}
@@ -73,7 +72,7 @@ namespace LC::Azoth::Autopaste
 					tr ("Your text has been pasted: %1. The URL has "
 						"been copied to the clipboard."),
 					Priority::Info);
-			Proxy_->GetEntityManager ()->HandleEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 			return;
 		}
@@ -100,7 +99,7 @@ namespace LC::Azoth::Autopaste
 		const Entity& e = Util::MakeNotification (tr ("Text paste failure"),
 				tr ("Couldn't paste text. %1").arg (message),
 				Priority::Critical);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 		deleteLater ();
 	}

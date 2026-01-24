@@ -13,11 +13,13 @@
 #include <QAction>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
+#include <util/azoth/hooks.h>
 #include "xmlsettingsmanager.h"
 #include "codepadservice.h"
 #include "pastedialog.h"
@@ -25,10 +27,8 @@
 
 namespace LC::Azoth::Autopaste
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
-
 		ActionsStorage_ = new ActionsStorage { this };
 		connect (ActionsStorage_,
 				&ActionsStorage::pasteRequested,
@@ -65,7 +65,7 @@ namespace LC::Azoth::Autopaste
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -154,7 +154,7 @@ namespace LC::Azoth::Autopaste
 
 		template<typename OkF, typename CancelF>
 		void PerformPaste (ICLEntry *other, const QString& text,
-				const ICoreProxy_ptr& proxy, const IUserChoiceHandler_ptr& handler,
+				const IUserChoiceHandler_ptr& handler,
 				OkF okCont, CancelF cancelCont)
 		{
 			QSettings settings (QCoreApplication::organizationName (),
@@ -187,8 +187,8 @@ namespace LC::Azoth::Autopaste
 				break;
 			case PasteDialog::Yes:
 			{
-				auto service = dia.GetCreator () (other->GetQObject (), proxy);
-				service->Paste ({ proxy->GetNetworkAccessManager (), text, dia.GetHighlight () });
+				auto service = dia.GetCreator () (other->GetQObject ());
+				service->Paste ({ GetProxyHolder ()->GetNetworkAccessManager (), text, dia.GetHighlight () });
 				okCont ();
 
 				handler->Accepted (settings);
@@ -199,62 +199,46 @@ namespace LC::Azoth::Autopaste
 			}
 			}
 		}
+
+		QByteArray GetPropName (ICLEntry& entry)
+		{
+			switch (entry.GetEntryType ())
+			{
+			case ICLEntry::EntryType::Chat:
+				return "EnableForNormalChats"_qba;
+			case ICLEntry::EntryType::MUC:
+				return "EnableForMUCChats"_qba;
+			case ICLEntry::EntryType::PrivateChat:
+				return "EnableForPrivateChats"_qba;
+			default:
+				return {};
+			}
+		}
+
+		void CheckMessage (bool& cancel, ICLEntry& entry, OutgoingMessage& message)
+		{
+			const auto& text = message.Body_;
+			const int maxLines = XmlSettingsManager::Instance ().property ("LineCount").toInt ();
+			const int maxSymbols = XmlSettingsManager::Instance ().property ("SymbolCount").toInt ();
+			if (text.size () < maxSymbols && text.count ('\n') + 1 < maxLines)
+				return;
+
+			if (!XmlSettingsManager::Instance ().property (GetPropName (entry)).toBool ())
+				return;
+
+			PerformPaste (&entry, text, std::make_shared<CountingUserChoiceHandler> (&entry),
+					[&] { cancel = true; },
+					[&] { cancel = true; });
+		}
 	}
 
 	void Plugin::initPlugin (QObject *obj)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
-	}
-
-	void Plugin::hookMessageSendRequested (LC::IHookProxy_ptr proxy,
-			QObject*, QObject *entry, int, QString)
-	{
-		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
-		if (!other)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to cast"
-				<< entry
-				<< "to ICLEntry";
-			return;
-		}
-
-		const auto& text = proxy->GetValue ("text").toString ();
-
-		const int maxLines = XmlSettingsManager::Instance ()
-				.property ("LineCount").toInt ();
-		const int maxSymbols = XmlSettingsManager::Instance ()
-				.property ("SymbolCount").toInt ();
-		if (text.size () < maxSymbols &&
-				text.count ('\n') + 1 < maxLines)
-			return;
-
-		QByteArray propName;
-		switch (other->GetEntryType ())
-		{
-		case ICLEntry::EntryType::Chat:
-			propName = "EnableForNormalChats";
-			break;
-		case ICLEntry::EntryType::MUC:
-			propName = "EnableForMUCChats";
-			break;
-		case ICLEntry::EntryType::PrivateChat:
-			propName = "EnableForPrivateChats";
-			break;
-		default:
-			return;
-		}
-
-		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
-			return;
-
-		PerformPaste (other, text, Proxy_, std::make_shared<CountingUserChoiceHandler> (other),
-				[proxy] { proxy->CancelDefault (); },
-				[proxy]
-				{
-					proxy->CancelDefault ();
-					proxy->SetValue ("PreserveMessageEdit", true);
-				});
+		connect (&AzothProxy_->GetHooks (),
+				&Hooks::messageWillBeCreated,
+				this,
+				&CheckMessage);
 	}
 
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy, QObject *action, QObject*)
@@ -306,7 +290,7 @@ namespace LC::Azoth::Autopaste
 		if (text.isEmpty ())
 			return;
 
-		PerformPaste (entry, text, Proxy_, std::make_shared<NoOpChoiceHandler> (),
+		PerformPaste (entry, text, std::make_shared<NoOpChoiceHandler> (),
 				[edit] { edit->clear (); },
 				[] {});
 	}

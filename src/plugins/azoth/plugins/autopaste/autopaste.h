@@ -33,7 +33,6 @@ namespace Autopaste
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Autopaste")
 
-		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_ = nullptr;
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -53,12 +52,6 @@ namespace Autopaste
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void initPlugin (QObject*);
-
-		void hookMessageSendRequested (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
 
 		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,

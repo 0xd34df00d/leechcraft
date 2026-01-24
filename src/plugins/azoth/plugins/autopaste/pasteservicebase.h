@@ -11,7 +11,6 @@
 #include <QObject>
 #include <QPointer>
 #include <QNetworkReply>
-#include <interfaces/core/icoreproxy.h>
 
 class QNetworkAccessManager;
 
@@ -35,7 +34,6 @@ namespace Azoth::Autopaste
 
 	class PasteServiceBase : public QObject
 	{
-		const ICoreProxy_ptr Proxy_;
 		QPointer<QObject> Entry_;
 	public:
 		struct PasteParams
@@ -45,7 +43,7 @@ namespace Azoth::Autopaste
 			Highlight High_;
 		};
 
-		PasteServiceBase (QObject *entry, const ICoreProxy_ptr&, QObject* = nullptr);
+		PasteServiceBase (QObject *entry, QObject* = nullptr);
 
 		virtual void Paste (const PasteParams&) = 0;
 	protected:

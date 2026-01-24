@@ -18,9 +18,9 @@ namespace LC::Azoth::Autopaste
 	namespace
 	{
 		template<typename T>
-		T* Creator (QObject *entry, const ICoreProxy_ptr& proxy)
+		T* Creator (QObject *entry)
 		{
-			return new T { entry, proxy };
+			return new T { entry };
 		}
 	}
 

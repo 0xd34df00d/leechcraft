@@ -21,7 +21,7 @@ namespace LC::Azoth::Autopaste
 	class PasteServiceFactory
 	{
 	public:
-		typedef std::function<PasteServiceBase* (QObject*, ICoreProxy_ptr)> Creator_f;
+		typedef std::function<PasteServiceBase* (QObject*)> Creator_f;
 		struct PasteInfo
 		{
 			QString Name_;
