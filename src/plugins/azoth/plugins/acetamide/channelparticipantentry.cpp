@@ -79,19 +79,9 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	IMessage* ChannelParticipantEntry::CreateMessage (IMessage::Type,
-			const QString&, const QString& body)
+	void ChannelParticipantEntry::SendMessage (const OutgoingMessage& message)
 	{
-		const auto message = new IrcMessage (IMessage::Type::ChatMessage,
-				IMessage::Direction::Out,
-				ServerID_,
-				Nick_,
-				Account_->GetClientConnection ().get ());
-
-		message->SetBody (body);
-		message->SetDateTime (QDateTime::currentDateTime ());
-
-		return message;
+		new IrcMessage { message, ServerID_, Nick_, Account_->GetClientConnection ().get () };
 	}
 
 	QList<ChannelRole> ChannelParticipantEntry::Roles () const

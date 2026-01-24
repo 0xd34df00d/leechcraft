@@ -87,17 +87,11 @@ namespace LC::Azoth::Sarin
 		return { {} };
 	}
 
-	IMessage* ToxContact::CreateMessage (IMessage::Type type, const QString&, const QString& body)
+	void ToxContact::SendMessage (const OutgoingMessage& message)
 	{
-		if (type != IMessage::Type::ChatMessage)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unsupported message type"
-					<< static_cast<int> (type);
-			return nullptr;
-		}
-
-		return new ChatMessage { body, IMessage::Direction::Out, this };
+		const auto msg = new ChatMessage { message.Body_, IMessage::Direction::Out, this };
+		Acc_->SendMessage (Pubkey_, msg);
+		HandleMessage (msg);
 	}
 
 	QList<IMessage*> ToxContact::GetAllMessages () const
@@ -160,10 +154,5 @@ namespace LC::Azoth::Sarin
 	{
 		AllMessages_ << msg;
 		emit gotMessage (msg);
-	}
-
-	void ToxContact::SendMessage (ChatMessage *msg)
-	{
-		Acc_->SendMessage (Pubkey_, msg);
 	}
 }

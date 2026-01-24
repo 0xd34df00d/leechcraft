@@ -50,7 +50,7 @@ namespace LC::Azoth::Sarin
 
 		QStringList Variants () const override;
 
-		IMessage* CreateMessage (IMessage::Type type, const QString& variant, const QString& body) override;
+		void SendMessage (const OutgoingMessage& message) override;
 		QList<IMessage*> GetAllMessages () const override;
 		void PurgeMessages (const QDateTime& before) override;
 

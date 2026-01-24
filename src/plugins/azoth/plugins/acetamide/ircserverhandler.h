@@ -63,12 +63,12 @@ namespace Acetamide
 		QHash<QString, int> SpyWho_;
 		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
 		QTimer * const AutoWhoTimer_;
-		
+
 		int LastNickIndex_ = 0;
 	public:
 		IrcServerHandler (const ServerOptions& server, IrcAccount* account);
 		~IrcServerHandler () override;
-		
+
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		IrcParser* GetParser () const;
@@ -79,9 +79,6 @@ namespace Acetamide
 		QObjectList GetCLEntries () const;
 
 		QList<ChannelHandler*> GetChannelHandlers () const;
-
-		IrcMessage* CreateMessage (IMessage::Type type,
-				const QString& variant, const QString& body);
 
 		bool IsChannelExists (const QString& channel) const;
 
@@ -101,9 +98,8 @@ namespace Acetamide
 		void QuitParticipant (const QString& nick, const QString& msg);
 
 		void SendMessage (const QStringList&);
-		void IncomingMessage (const QString& nick,
-				const QString& target, const QString& msg,
-				IMessage::Type type = IMessage::Type::ChatMessage);
+		void StatusMessage (const QString& nick, const QString& target, const QString& msg);
+		void IncomingMessage (const QString& nick, const QString& target, const QString& msg);
 		void IncomingNoticeMessage (const QString&, const QString&);
 
 		void ChangeNickname (const QString&, const QString&);

@@ -12,6 +12,8 @@
 #include <QAction>
 #include <QTranslator>
 
+#include "util/azoth/hooks.h"
+
 extern "C"
 {
 #include <libotr/proto.h>
@@ -97,6 +99,11 @@ namespace OTRoid
 
 		OtrHandler_ = new OtrHandler (CoreProxy_, AzothProxy_);
 
+		connect (&AzothProxy_->GetHooks (),
+				&Hooks::messageWillBeCreated,
+				OtrHandler_,
+				&OtrHandler::HandleMessageCreated);
+
 		FPManager_ = new FPManager (OtrHandler_->GetUserState (), AzothProxy_);
 		connect (FPManager_,
 				SIGNAL (fingerprintsChanged ()),
@@ -140,20 +147,6 @@ namespace OTRoid
 	void Plugin::hookGotMessage (IHookProxy_ptr proxy, QObject *msgObj)
 	{
 		OtrHandler_->HandleGotMessage (proxy, msgObj);
-	}
-
-	void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject*, QObject *msgObj)
-	{
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< msgObj
-					<< "doesn't implement IMessage";
-			return;
-		}
-
-		OtrHandler_->HandleMessageCreated (proxy, msg);
 	}
 }
 }

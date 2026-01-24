@@ -7,69 +7,26 @@
  **********************************************************************/
 
 #include "msgsender.h"
-#include <memory>
-#include <QMessageBox>
-#include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
-#include "interfaces/azoth/irichtextmessage.h"
-#include "core.h"
+#include "hooksinstance.h"
 
 namespace LC
 {
 namespace Azoth
 {
-	MsgSender::MsgSender (ICLEntry *e, IMessage::Type type, QString text, QString variant, QString richText)
+	MsgSender::MsgSender (ICLEntry *e, IMessage::Type type, QString text, QString variantStr, QString richText)
 	{
 		deleteLater ();
 
-		Core::Instance ().RegisterHookable (this);
+		std::optional<QString> variant;
+		if (!variantStr.isEmpty ())
+			variant = variantStr;
+		OutgoingMessage message { .Variant_ = variant, .Body_ = text, .RichTextBody_ = richText };
 
-		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
-
-		// TODO pass type without casts
-		emit hookMessageWillCreated (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
-		if (proxy->IsCancelled ())
-			return;
-
-		int intType = static_cast<int> (type);
-		proxy->FillValue ("type", intType);
-		type = static_cast<IMessage::Type> (intType);
-		proxy->FillValue ("variant", variant);
-		proxy->FillValue ("text", text);
-
-		const auto msg = e->CreateMessage (type, variant, text);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to create message to"
-					<< e->GetEntryID ();
-			return;
-		}
-		const auto richMsg = qobject_cast<IRichTextMessage*> (msg->GetQObject ());
-		if (richMsg &&
-				!richText.isEmpty ())
-			richMsg->SetRichBody (richText);
-
-		proxy = std::make_shared<Util::DefaultHookProxy> ();
-		emit hookMessageCreated (proxy, this, msg->GetQObject ());
-		if (proxy->IsCancelled ())
-			return;
-
-		try
-		{
-			msg->Send ();
-		}
-		catch (const std::exception& ex)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error sending message to"
-					<< e->GetEntryID ()
-					<< e->GetEntryName ()
-					<< variant
-					<< ex.what ();
-
-			throw;
-		}
+		bool cancel = false;
+		emit HooksInstance::Instance ().messageWillBeCreated (cancel, *e, message);
+		if (!cancel)
+			e->SendMessage (message);
 	}
 }
 }

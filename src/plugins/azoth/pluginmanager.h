@@ -182,14 +182,6 @@ namespace Azoth
 				QObject *entry,
 				int type,
 				QString variant);
-		void hookMessageWillCreated (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
-		void hookMessageCreated (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *message);
 		void hookShouldCountUnread (LC::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookThemeReloaded (LC::IHookProxy_ptr proxy,

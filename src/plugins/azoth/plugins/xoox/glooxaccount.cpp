@@ -859,14 +859,6 @@ namespace Xoox
 		return result;
 	}
 
-	GlooxMessage* GlooxAccount::CreateMessage (IMessage::Type type,
-			const QString& variant,
-			const QString& body,
-			const QString& jid)
-	{
-		return ClientConnection_->CreateMessage (type, variant, body, jid);
-	}
-
 	QString GlooxAccount::GetPassword (bool authfailure)
 	{
 		return ParentProtocol_->GetProxyObject ()->GetAccountPassword (this, !authfailure);

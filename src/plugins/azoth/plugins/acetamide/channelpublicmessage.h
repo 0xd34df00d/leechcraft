@@ -31,15 +31,14 @@ namespace LC::Azoth::Acetamide
 		const Type Type_;
 		const SubType SubType_;
 	public:
-		ChannelPublicMessage (QString, ChannelCLEntry*);
-		ChannelPublicMessage (QString, Direction,
+		ChannelPublicMessage (const OutgoingMessage&, ChannelCLEntry*);
+		ChannelPublicMessage (QString,
 				ChannelCLEntry*,
 				Type,
 				SubType,
 				ChannelParticipantEntry_ptr = {});
 
 		QObject* GetQObject () override;
-		void Send () override;
 		void Store () override;
 		Direction GetDirection () const override;
 		Type GetMessageType () const override;

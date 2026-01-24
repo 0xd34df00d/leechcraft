@@ -79,13 +79,9 @@ namespace LC::Azoth::Acetamide
 		return { "" };
 	}
 
-	IMessage* IrcServerCLEntry::CreateMessage (IMessage::Type,
-			const QString& variant, const QString& body)
+	void IrcServerCLEntry::SendMessage (const OutgoingMessage& message)
 	{
-		if (!variant.isEmpty ())
-			return nullptr;
-
-		return new ServerCommandMessage (body, this);
+		new ServerCommandMessage (message.Body_, this);
 	}
 
 	IMUCEntry::MUCFeatures IrcServerCLEntry::GetMUCFeatures () const

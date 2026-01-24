@@ -43,15 +43,15 @@ namespace LC::Azoth::Sarin
 		EntryType GetEntryType () const override;
 
 		QString GetEntryName () const override;
-		void SetEntryName (const QString& name) override;
+		void SetEntryName (const QString&) override;
 		QString GetEntryID () const override;
 		QString GetHumanReadableID () const override;
 		QStringList Groups () const override;
-		void SetGroups (const QStringList& groups) override;
+		void SetGroups (const QStringList&) override;
 
 		QStringList Variants () const override;
 
-		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&) override;
+		void SendMessage (const OutgoingMessage&) override;
 		QList<IMessage*> GetAllMessages () const override;
 		void PurgeMessages (const QDateTime&) override;
 
@@ -69,7 +69,6 @@ namespace LC::Azoth::Sarin
 		void SetTyping (bool);
 
 		void HandleMessage (ChatMessage*);
-		void SendMessage (ChatMessage*);
 	signals:
 		void gotMessage (QObject*) override;
 		void statusChanged (const EntryStatus&, const QString&) override;

@@ -26,9 +26,6 @@ namespace Azoth
 	 * Refer to the Type enum for the list of possible message
 	 * types that are covered by this interface.
 	 *
-	 * The message should not be sent upon creation, only call to Send()
-	 * should trigger the sending.
-	 *
 	 * This interface provides only more or less basic functionality.
 	 * Advanced features like delivery receipts and such, are in
 	 * IAdvancedMessage.
@@ -171,16 +168,6 @@ namespace Azoth
 		/** @brief Returns this message as a QObject.
 		 */
 		virtual QObject* GetQObject () = 0;
-
-		/** @brief Sends the message.
-		 *
-		 * A message should never be sent except as the result of this
-		 * method.
-		 *
-		 * Please note that if the other part is a MUC, it should send
-		 * back this message with the "IN" direction set.
-		 */
-		virtual void Send () = 0;
 
 		/** @brief Stores the message.
 		 *

@@ -88,18 +88,7 @@ namespace LC::Azoth::Autopaste
 			return;
 		}
 
-		auto type = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
-				IMessage::Type::MUCMessage :
-				IMessage::Type::ChatMessage;
-		const auto msg = entry->CreateMessage (type, QString (), pasteUrl);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to create message for"
-					<< entry->GetEntryID ();
-			return;
-		}
-		msg->Send ();
+		entry->SendMessage ({ .Body_ = pasteUrl });
 	}
 
 	void PasteServiceBase::HandleError (QNetworkReply::NetworkError error, QNetworkReply *reply)

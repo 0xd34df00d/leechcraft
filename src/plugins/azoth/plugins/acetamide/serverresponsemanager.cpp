@@ -15,6 +15,7 @@
 #include "ircaccount.h"
 #include "localtypes.h"
 #include "xmlsettingsmanager.h"
+#include "interfaces/azoth/iproxyobject.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -414,10 +415,9 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		const auto& target = opts.Parameters_.last ();
-		ISH_->IncomingMessage (target,
+		ISH_->StatusMessage (target,
 				target,
-				u"[AWAY] %1 :%2"_qsv.arg (target, opts.Message_),
-				IMessage::Type::StatusMessage);
+				u"[AWAY] %1 :%2"_qsv.arg (target, opts.Message_));
 	}
 
 	void ServerResponseManager::GotSetAway (const IrcMessageOptions& opts)

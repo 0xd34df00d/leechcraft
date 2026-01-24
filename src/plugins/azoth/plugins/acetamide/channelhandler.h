@@ -58,9 +58,6 @@ namespace LC::Azoth::Acetamide
 
 		bool IsUserExists (const QString&) const;
 
-		IrcMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&);
-
 		void ChangeNickname (const QString& oldNick, const QString& newNick);
 
 		bool IsRosterReceived () const;

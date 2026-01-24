@@ -70,10 +70,9 @@ namespace LC::Azoth::Sarin
 		return { {} };
 	}
 
-	IMessage* GroupChatEntry::CreateMessage (IMessage::Type type, const QString&, const QString& body)
+	void GroupChatEntry::SendMessage (const OutgoingMessage& message)
 	{
 		// TODO
-		return nullptr;
 	}
 
 	QList<IMessage*> GroupChatEntry::GetAllMessages () const

@@ -13,19 +13,19 @@
 
 namespace LC::Azoth::Acetamide
 {
-	ChannelPublicMessage::ChannelPublicMessage (QString msg,
+	ChannelPublicMessage::ChannelPublicMessage (const OutgoingMessage& msg,
 			ChannelCLEntry *entry)
 	: ParentEntry_ (entry)
-	, Message_ (std::move (msg))
+	, Message_ (msg.Body_)
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (Direction::Out)
 	, Type_ (Type::MUCMessage)
 	, SubType_ (SubType::Other)
 	{
+		ParentEntry_->GetChannelHandler ()->SendPublicMessage (Message_);
 	}
 
 	ChannelPublicMessage::ChannelPublicMessage (QString msg,
-			IMessage::Direction direction,
 			ChannelCLEntry *entry,
 			IMessage::Type type,
 			IMessage::SubType subType,
@@ -34,7 +34,7 @@ namespace LC::Azoth::Acetamide
 	, ParticipantEntry_ (std::move (part))
 	, Message_ (std::move (msg))
 	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (direction)
+	, Direction_ (Direction::In)
 	, Type_ (type)
 	, SubType_ (subType)
 	{
@@ -43,14 +43,6 @@ namespace LC::Azoth::Acetamide
 	QObject* ChannelPublicMessage::GetQObject ()
 	{
 		return this;
-	}
-
-	void ChannelPublicMessage::Send ()
-	{
-		if (!ParentEntry_)
-			return;
-
-		ParentEntry_->GetChannelHandler ()->SendPublicMessage (Message_);
 	}
 
 	void ChannelPublicMessage::Store ()

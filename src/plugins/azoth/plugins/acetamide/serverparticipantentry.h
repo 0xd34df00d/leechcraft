@@ -34,7 +34,7 @@ namespace LC::Azoth::Acetamide
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 
-		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&) override;
+		void SendMessage (const OutgoingMessage&) override;
 	};
 
 	using ServerParticipantEntry_ptr = std::shared_ptr<ServerParticipantEntry>;

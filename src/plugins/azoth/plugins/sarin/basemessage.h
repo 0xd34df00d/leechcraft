@@ -17,6 +17,7 @@ namespace LC::Azoth::Sarin
 		: public QObject
 		, public IMessage
 	{
+		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage)
 	protected:
 		QString Body_;

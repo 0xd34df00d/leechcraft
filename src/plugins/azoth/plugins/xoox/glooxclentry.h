@@ -74,8 +74,7 @@ namespace LC::Azoth::Xoox
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		EntryStatus GetStatus (const QString&) const;
-		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&);
+		void SendMessage (const OutgoingMessage& message);
 		QList<QAction*> GetActions () const;
 
 		// IAuthable

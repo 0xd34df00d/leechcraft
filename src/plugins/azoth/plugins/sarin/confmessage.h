@@ -22,7 +22,6 @@ namespace LC::Azoth::Sarin
 	public:
 		explicit ConfMessage (const QString& body, ConfParticipant& part);
 
-		void Send () override;
 		void Store () override;
 		QObject* OtherPart () const override;
 		QString GetOtherVariant () const override;

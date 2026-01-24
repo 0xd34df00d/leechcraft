@@ -32,6 +32,7 @@
 #include "channelslistdialog.h"
 #include "nickservidentifymanager.h"
 #include "parsers.h"
+#include "interfaces/azoth/iproxyobject.h"
 
 namespace LC::Azoth::Acetamide
 {
@@ -114,20 +115,6 @@ namespace LC::Azoth::Acetamide
 	QList<ChannelHandler*> IrcServerHandler::GetChannelHandlers () const
 	{
 		return ChannelsManager_->GetChannels ();
-	}
-
-	IrcMessage* IrcServerHandler::CreateMessage (IMessage::Type type,
-			const QString& variant, const QString& body)
-	{
-		const auto msg = new IrcMessage (type,
-				IMessage::Direction::In,
-				variant,
-				QString (),
-				Account_->GetClientConnection ().get ());
-		msg->SetBody (body);
-		msg->SetDateTime (QDateTime::currentDateTime ());
-
-		return msg;
 	}
 
 	bool IrcServerHandler::IsChannelExists (const QString& channel) const
@@ -220,40 +207,44 @@ namespace LC::Azoth::Acetamide
 			IrcParser_->PrivMsgCommand (cmd);
 	}
 
-	void IrcServerHandler::IncomingMessage (const QString& nick,
-			const QString& target, const QString& msg, IMessage::Type type)
+	void IrcServerHandler::StatusMessage (const QString& nick, const QString& target, const QString& msg)
+	{
+		const auto proxy = GetAccount ()->GetParentProtocol ()->GetProxyObject ();
+
+		ICLEntry *entry = nullptr;
+		if (const auto ch = ChannelsManager_->GetChannelHandler (target))
+			entry = ch->GetCLEntry ();
+		if (!entry)
+			for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
+			{
+				entry = qobject_cast<EntryBase*> (entryObj);
+				if (entry)
+					break;
+			}
+		if (!entry)
+			entry = GetParticipantEntry (nick).get ();
+
+		proxy->InjectMessage (*entry, { .Body_ = msg, .Kind_ = InjectedMessage::Service {} });
+	}
+
+	void IrcServerHandler::IncomingMessage (const QString& nick, const QString& target, const QString& msg)
 	{
 		if (ChannelsManager_->IsChannelExists (target))
 			ChannelsManager_->ReceivePublicMessage (target, nick, msg);
 		else
 		{
 			//TODO Work only for exists entries
-			const auto message = new IrcMessage (type,
-					IMessage::Direction::In,
+			const auto message = new IrcMessage (Message { .Body_ = msg, .Nickname_ = nick },
 					ServerID_,
-					nick,
 					Account_->GetClientConnection ().get ());
-			message->SetBody (msg);
-			message->SetDateTime (QDateTime::currentDateTime ());
 
-			bool found = false;
 			for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
-			{
-				const auto entry = qobject_cast<EntryBase*> (entryObj);
-				if (!entry)
-					continue;
-
-				found = true;
-				entry->HandleMessage (message);
-			}
-
-			if (!found)
-			{
-				if (Nick2Entry_.contains (nick))
-					Nick2Entry_ [nick]->HandleMessage (message);
-				else
-					GetParticipantEntry (nick)->HandleMessage (message);
-			}
+				if (const auto entry = qobject_cast<EntryBase*> (entryObj))
+				{
+					entry->HandleMessage (message);
+					return;
+				}
+			GetParticipantEntry (nick)->HandleMessage (message);
 		}
 	}
 
@@ -440,9 +431,11 @@ namespace LC::Azoth::Acetamide
 		if (!res ||
 				XmlSettingsManager::Instance ()
 						.property ("ServerDuplicateCommandAnswer").toBool ())
-			ServerCLEntry_->HandleMessage (CreateMessage (type,
-					ServerID_,
-					msg));
+			ServerCLEntry_->HandleMessage (new IrcMessage {
+						Message { .Body_ = msg, .Nickname_ = {}, .Type_ = type },
+						ServerID_,
+						Account_->GetClientConnection ().get ()
+					});
 	}
 
 	void IrcServerHandler::CTCPReply (const QString& nick,
@@ -834,14 +827,14 @@ namespace LC::Azoth::Acetamide
 	{
 		if (!Account_)
 			return;
-		
+
 		if (Account_->GetNickNames ().isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "NickName conflict";
 			emit ServerCLEntry_->nicknameConflict (NickName_);
 			return;
 		}
-		
+
 		if (LastNickIndex_ < Account_->GetNickNames ().count ())
 			NickName_ = Account_->GetNickNames ().at (LastNickIndex_++);
 		else
@@ -850,7 +843,7 @@ namespace LC::Azoth::Acetamide
 			emit ServerCLEntry_->nicknameConflict (NickName_);
 			return;
 		}
-		
+
 		if (NickName_.isEmpty ())
 		{
 			NickCmdError ();

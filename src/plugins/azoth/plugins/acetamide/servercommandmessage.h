@@ -21,15 +21,13 @@ namespace LC::Azoth::Acetamide
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage)
 
-		QPointer<IrcServerCLEntry> ParentEntry_;
+		IrcServerCLEntry *ParentEntry_;
 		QString Message_;
 		QDateTime Datetime_ = QDateTime::currentDateTime ();
-		QString FromVariant_;
 	public:
 		ServerCommandMessage (QString, IrcServerCLEntry*);
 
 		QObject* GetQObject () override;
-		void Send () override;
 		void Store () override;
 		Direction GetDirection () const override;
 		Type GetMessageType () const override;

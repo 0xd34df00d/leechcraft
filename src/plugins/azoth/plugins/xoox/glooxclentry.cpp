@@ -215,15 +215,12 @@ namespace LC::Azoth::Xoox
 				max.statusText ());
 	}
 
-	IMessage* GlooxCLEntry::CreateMessage (IMessage::Type type,
-			const QString& variant, const QString& text)
+	void GlooxCLEntry::SendMessage (const OutgoingMessage& message)
 	{
-		if (ODS_)
-			return nullptr;
-
-		const auto msg = Account_->CreateMessage (type, variant, text, GetJID ());
+		const auto msg = new GlooxMessage (message, GetJID (), Account_->GetClientConnection ().get ());
 		AllMessages_ << msg;
-		return msg;
+		Account_->SendMessage (*msg);
+		emit gotMessage (msg);
 	}
 
 	QList<QAction*> GlooxCLEntry::GetActions () const

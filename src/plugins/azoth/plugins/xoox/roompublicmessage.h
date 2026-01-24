@@ -36,28 +36,27 @@ namespace Xoox
 		QPointer<RoomCLEntry> ParentEntry_;
 		RoomParticipantEntry_ptr ParticipantEntry_;
 		QString Message_;
-		QDateTime Datetime_;
+		QDateTime Datetime_ = QDateTime::currentDateTime ();
 		Direction Direction_;
 		QString FromJID_;
 		QString FromVariant_;
 		Type Type_;
 		SubType SubType_;
 
-		QString XHTML_;
+		std::optional<QString> XHTML_;
 	public:
-		RoomPublicMessage (const QString&, RoomCLEntry*);
 		RoomPublicMessage (const QString&, Direction,
 				RoomCLEntry*,
 				Type,
 				SubType,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
+		RoomPublicMessage (const OutgoingMessage&, RoomCLEntry*);
 		RoomPublicMessage (const QXmppMessage&, RoomCLEntry*,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
 
 		void SetParticipantEntry (const RoomParticipantEntry_ptr&);
 
 		QObject* GetQObject ();
-		void Send ();
 		void Store ();
 		Direction GetDirection () const;
 		Type GetMessageType () const;

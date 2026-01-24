@@ -10,20 +10,24 @@
 
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/message.h>
 
 namespace LC::Azoth::Acetamide
 {
 	struct Message
 	{
 		QString Body_;
-		QDateTime Stamp_;
+		QDateTime Stamp_ = QDateTime::currentDateTime ();
 		QString Nickname_;
+
+		IMessage::Type Type_ = IMessage::Type::ChatMessage;
 	};
 
 	class ClientConnection;
 
-	class IrcMessage final : public QObject
-						   , public IMessage
+	class IrcMessage final
+		: public QObject
+		, public IMessage
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMessage)
@@ -38,17 +42,10 @@ namespace LC::Azoth::Acetamide
 
 		QObject *OtherPart_ = nullptr;
 	public:
-		IrcMessage (IMessage::Type type,
-				IMessage::Direction direction,
-				QString chid,
-				QString nickname,
-				ClientConnection *conn);
-		IrcMessage (Message msg,
-				QString id,
-				ClientConnection *conn);
+		IrcMessage (const OutgoingMessage& message, QString chid, QString nickname, ClientConnection *conn);
+		IrcMessage (Message msg, QString id, ClientConnection *conn);
 
 		QObject* GetQObject () override;
-		void Send () override;
 		void Store () override;
 		Direction GetDirection () const override;
 		Type GetMessageType () const override;

@@ -32,7 +32,6 @@ namespace Metacontacts
 		MetaMessage (QObject*, MetaEntry*);
 
 		QObject* GetQObject ();
-		void Send ();
 		void Store ();
 		Direction GetDirection () const;
 		Type GetMessageType () const;

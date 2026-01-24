@@ -88,10 +88,9 @@ namespace LC::Azoth::Sarin
 		return { {} };
 	}
 
-	IMessage* ConfEntry::CreateMessage (IMessage::Type type, const QString&, const QString& body)
+	void ConfEntry::SendMessage (const OutgoingMessage& message)
 	{
 		// TODO
-		return nullptr;
 	}
 
 	QList<IMessage*> ConfEntry::GetAllMessages () const

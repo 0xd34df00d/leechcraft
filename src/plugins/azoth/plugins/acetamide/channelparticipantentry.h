@@ -35,8 +35,7 @@ namespace LC::Azoth::Acetamide
 		void SetGroups (const QStringList&) override;
 		QStringList Groups () const override;
 
-		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&) override;
+		void SendMessage (const OutgoingMessage& message) override;
 
 		QList<ChannelRole> Roles () const;
 		ChannelRole HighestRole () const;

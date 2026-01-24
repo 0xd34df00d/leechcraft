@@ -79,12 +79,14 @@ namespace Xoox
 		return { {} };
 	}
 
-	IMessage* RoomParticipantEntry::CreateMessage (IMessage::Type type,
-			const QString&, const QString& body)
+	void RoomParticipantEntry::SendMessage (const OutgoingMessage& message)
 	{
-		const auto msg = RoomHandler_->CreateMessage (type, Nick_, body);
-		AllMessages_ << msg;
-		return msg;
+		auto withNick = message;
+		withNick.Variant_ = Nick_;
+		const auto obj = new GlooxMessage (withNick, RoomHandler_->GetRoomJID (), Account_->GetClientConnection ().get ());
+		AllMessages_ << obj;
+		Account_->SendMessage (*obj);
+		emit gotMessage (obj);
 	}
 
 	QString RoomParticipantEntry::GetJID () const

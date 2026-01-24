@@ -7,32 +7,34 @@
  **********************************************************************/
 
 #include "ircmessage.h"
-#include <QTextDocument>
 #include "clientconnection.h"
 #include "ircserverhandler.h"
 #include "channelsmanager.h"
 
 namespace LC::Azoth::Acetamide
 {
-	IrcMessage::IrcMessage (IMessage::Type type,
-			IMessage::Direction dir,
+	IrcMessage::IrcMessage (const OutgoingMessage& message,
 			QString id,
 			QString nickname,
 			ClientConnection *conn)
-	: Type_ { type }
+	: Type_ { Type::ChatMessage }
 	, SubType_ { SubType::Other }
-	, Direction_ { dir }
+	, Direction_ { Direction::Out }
 	, ID_ { std::move (id) }
 	, NickName_ { std::move (nickname) }
 	, Connection_ { conn }
 	{
 		Message_.Stamp_ = QDateTime::currentDateTime ();
+		Message_.Body_ = message.Body_;
 		Message_.Nickname_ = NickName_;
+
+		const auto handler = Connection_->GetIrcServerHandler (ID_);
+		handler->SendPrivateMessage (this);
+		handler->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 	}
 
-	IrcMessage::IrcMessage (Message msg,
-			QString id, ClientConnection* conn)
-	: Type_ { Type::MUCMessage }
+	IrcMessage::IrcMessage (Message msg, QString id, ClientConnection* conn)
+	: Type_ { msg.Type_ }
 	, SubType_ { SubType::Other }
 	, Direction_ { Direction::In }
 	, ID_ { std::move (id) }
@@ -46,32 +48,6 @@ namespace LC::Azoth::Acetamide
 	QObject* IrcMessage::GetQObject ()
 	{
 		return this;
-	}
-
-	void IrcMessage::Send ()
-	{
-		if (Direction_ == Direction::In)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "tried to send incoming message";
-			return;
-		}
-
-		switch (Type_)
-		{
-		case Type::ChatMessage:
-		case Type::MUCMessage:
-			Connection_->GetIrcServerHandler (ID_)->SendPrivateMessage (this);
-			Connection_->GetIrcServerHandler (ID_)->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
-			return;
-		case Type::StatusMessage:
-		case Type::EventMessage:
-		case Type::ServiceMessage:
-			qWarning () << Q_FUNC_INFO
-					<< this
-					<< "cannot send a service message";
-			break;
-		}
 	}
 
 	void IrcMessage::Store ()

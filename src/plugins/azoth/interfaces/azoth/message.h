@@ -13,6 +13,9 @@
 
 namespace LC::Azoth
 {
+	/** @brief Describes a message to be sent,
+	 * as formed by the user and before it has been sent to the wire.
+	 */
 	struct OutgoingMessage
 	{
 		std::optional<QString> Variant_ {};
@@ -25,20 +28,14 @@ namespace LC::Azoth
 
 	struct InjectedMessage
 	{
+		std::optional<QString> Variant_ {};
 		QDateTime TS_ = QDateTime::currentDateTime ();
 		QString Body_;
 		std::optional<QString> RichTextBody_ {};
 
-		/** @brief Represents the direction of the message.
-		 */
 		enum class Direction : uint8_t
 		{
-			/** @brief The message is from the remote party to us.
-			 */
 			In,
-
-			/** @brief The message is from us to the remote party.
-			 */
 			Out,
 		};
 

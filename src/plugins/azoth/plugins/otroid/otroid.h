@@ -74,9 +74,6 @@ namespace OTRoid
 				QObject *entry);
 		void hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookMessageCreated (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *message);
 	};
 }
 }

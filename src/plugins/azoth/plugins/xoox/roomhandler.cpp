@@ -491,19 +491,6 @@ namespace Xoox
 		}
 	}
 
-	GlooxMessage* RoomHandler::CreateMessage (IMessage::Type,
-			const QString& nick, const QString& body)
-	{
-		const auto message = new GlooxMessage (IMessage::Type::ChatMessage,
-				IMessage::Direction::Out,
-				GetRoomJID (),
-				nick,
-				Account_->GetClientConnection ().get ());
-		message->SetBody (body);
-		message->SetDateTime (QDateTime::currentDateTime ());
-		return message;
-	}
-
 	QList<QObject*> RoomHandler::GetParticipants () const
 	{
 		return Util::Map (Nick2Entry_, [] (const auto& ptr) -> QObject* { return ptr.get (); });

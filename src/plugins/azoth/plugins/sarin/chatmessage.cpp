@@ -17,12 +17,6 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
-	void ChatMessage::Send ()
-	{
-		Contact_->SendMessage (this);
-		Store ();
-	}
-
 	void ChatMessage::Store ()
 	{
 		Contact_->HandleMessage (this);

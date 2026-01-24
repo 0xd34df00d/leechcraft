@@ -240,17 +240,9 @@ namespace Xtazy
 
 		const auto& encoded = url.toEncoded ();
 
-		for (const auto& notifee : PendingUploads_.take (filename))
-		{
-			auto entry = qobject_cast<ICLEntry*> (notifee.first);
-			if (!entry)
-				continue;
-
-			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
-					IMessage::Type::MUCMessage :
-					IMessage::Type::ChatMessage;
-			entry->CreateMessage (msgType, notifee.second, encoded)->Send ();
-		}
+		for (const auto& [entryObj, variant] : PendingUploads_.take (filename))
+			if (const auto entry = qobject_cast<ICLEntry*> (entryObj))
+				entry->SendMessage ({ .Variant_ = variant, .Body_ = encoded });
 	}
 
 	void Plugin::handleAutoPublishChanged ()

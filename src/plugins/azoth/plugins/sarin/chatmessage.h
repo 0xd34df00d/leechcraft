@@ -27,7 +27,6 @@ namespace LC::Azoth::Sarin
 	public:
 		ChatMessage (const QString&, Direction, ToxContact*);
 
-		void Send () override;
 		void Store () override;
 
 		QObject* OtherPart () const override;

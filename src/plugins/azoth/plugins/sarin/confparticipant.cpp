@@ -81,10 +81,9 @@ namespace LC::Azoth::Sarin
 		return { {} };
 	}
 
-	IMessage* ConfParticipant::CreateMessage (IMessage::Type, const QString&, const QString&)
+	void ConfParticipant::SendMessage (const OutgoingMessage&)
 	{
 		qWarning () << "private messages aren't supported";
-		return nullptr;
 	}
 
 	QList<IMessage*> ConfParticipant::GetAllMessages () const

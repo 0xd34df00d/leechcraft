@@ -10,8 +10,8 @@
 
 #include <QFlags>
 #include <QMetaType>
-#include "imessage.h"
 #include "azothcommon.h"
+#include "message.h"
 
 class QAction;
 class QImage;
@@ -302,28 +302,9 @@ namespace Azoth
 		 */
 		virtual QStringList Variants () const = 0;
 
-		/** @brief Creates the message of the given type to the given
-		 * variant.
-		 *
-		 * Variant is a string from the list returned by Variants(). If
-		 * a different string is passed, particularly, a null one, the
-		 * implementation must choose the best variant itself: for
-		 * example, the resource with the highest priority in XMPP.
-		 *
-		 * No message should be sent as result of CreateMessage().
-		 * Instead, one would later call IMessage::Send() on the
-		 * returned message.
-		 *
-		 * @param[in] type The type of the message.
-		 * @param[in] variant The variant to send to.
-		 * @param[in] body Message boxy.
-		 * @return The prepared message.
-		 *
-		 * @sa Variants()
+		/** @brief Sends the message described by `message`.
 		 */
-		virtual IMessage* CreateMessage (IMessage::Type type,
-				const QString& variant,
-				const QString& body) = 0;
+		virtual void SendMessage (const OutgoingMessage& message) = 0;
 
 		/** @brief Returns all already sent or received messages.
 		 *

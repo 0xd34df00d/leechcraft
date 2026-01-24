@@ -175,13 +175,9 @@ namespace Xoox
 		return { "" };
 	}
 
-	IMessage* RoomCLEntry::CreateMessage (IMessage::Type,
-			const QString& variant, const QString& text)
+	void RoomCLEntry::SendMessage (const OutgoingMessage& message)
 	{
-		if (variant == "")
-			return new RoomPublicMessage (text, this);
-		else
-			return 0;
+		new RoomPublicMessage (message, this);
 	}
 
 	QList<IMessage*> RoomCLEntry::GetAllMessages () const

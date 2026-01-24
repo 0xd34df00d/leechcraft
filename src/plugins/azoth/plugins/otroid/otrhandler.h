@@ -14,6 +14,8 @@
 #include <QHash>
 #include <QSet>
 
+#include "interfaces/azoth/iclentry.h"
+
 extern "C"
 {
 #include <libotr/proto.h>
@@ -64,10 +66,6 @@ namespace OTRoid
 		};
 		QHash<QObject*, EntryActions> Entry2Action_;
 
-		QHash<QObject*, QString> Msg2OrigText_;
-
-		QSet<QObject*> PendingInjectedMessages_;
-
 		bool IsGenerating_ = false;
 
 		QHash<ICLEntry*, Authenticator*> Auths_;
@@ -75,7 +73,7 @@ namespace OTRoid
 		OtrHandler (const ICoreProxy_ptr&, IProxyObject*);
 		~OtrHandler ();
 
-		void HandleMessageCreated (const IHookProxy_ptr&, IMessage*);
+		void HandleMessageCreated (bool& cancel, ICLEntry& other, OutgoingMessage& msg);
 		void HandleGotMessage (const IHookProxy_ptr&, QObject*);
 		void HandleEntryActionsRemoved (QObject*);
 		void HandleEntryActionsRequested (const IHookProxy_ptr&, QObject*);
@@ -84,16 +82,17 @@ namespace OTRoid
 		OtrlUserState GetUserState () const;
 
 		int IsLoggedIn (const QString& accId, const QString& entryId);
-		void InjectMsg (const QString& accId, const QString& entryId,
-				const QString& msg, bool hidden, IMessage::Direction,
-				IMessage::Type = IMessage::Type::ChatMessage);
-		void InjectMsg (ICLEntry *entry,
-				const QString& msg, bool hidden, IMessage::Direction,
-				IMessage::Type = IMessage::Type::ChatMessage);
+
+		void NotifyConvFlow (const ConnContext*, const QString& msg);
+		void NotifyConvFlow (const QString& accId, const QString& entryId, const QString& msg);
+		void NotifyConvFlow (ICLEntry& entry, const QString& msg);
+
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
+
 		QString GetAccountName (const QString& accId);
+		ICLEntry* GetEntry (const QString& accId, const QString& entryId);
 		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
 
 		void CreatePrivkey (const char*, const char*, bool confirm = true);

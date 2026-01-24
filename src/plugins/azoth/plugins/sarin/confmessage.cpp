@@ -17,10 +17,6 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
-	void ConfMessage::Send ()
-	{
-	}
-
 	void ConfMessage::Store ()
 	{
 		Participant_.GetParentCLEntry ()->AppendMessage (this);

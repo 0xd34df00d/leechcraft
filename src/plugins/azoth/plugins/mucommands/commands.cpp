@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "commands.h"
-#include <boost/range/adaptor/reversed.hpp>
+#include <ranges>
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
@@ -102,8 +102,7 @@ namespace MuCommands
 			if (!split.isEmpty ())
 				return split;
 
-			const auto& msgs = entry->GetAllMessages ();
-			for (const auto msg : boost::adaptors::reverse (msgs))
+			for (const auto msg : entry->GetAllMessages () | std::views::reverse)
 			{
 				if (const auto otherPart = qobject_cast<ICLEntry*> (msg->OtherPart ()))
 				{
@@ -1082,9 +1081,7 @@ namespace MuCommands
 			return true;
 		}
 
-		const auto msg = part->CreateMessage (IMessage::Type::ChatMessage,
-				part->Variants ().value (0), message);
-		msg->Send ();
+		part->SendMessage ({ .Variant_ = part->Variants ().value (0), .Body_ = message });
 		return true;
 	}
 

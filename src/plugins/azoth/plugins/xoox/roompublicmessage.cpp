@@ -23,17 +23,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	RoomPublicMessage::RoomPublicMessage (const QString& msg, RoomCLEntry *entry)
-	: QObject (entry)
-	, ParentEntry_ (entry)
-	, Message_ (msg)
-	, Datetime_ (QDateTime::currentDateTime ())
-	, Direction_ (Direction::Out)
-	, Type_ (Type::MUCMessage)
-	, SubType_ (SubType::Other)
-	{
-	}
-
 	RoomPublicMessage::RoomPublicMessage (const QString& msg,
 			IMessage::Direction direction,
 			RoomCLEntry *entry,
@@ -44,11 +33,30 @@ namespace Xoox
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (part)
 	, Message_ (msg)
-	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (direction)
 	, Type_ (type)
 	, SubType_ (subType)
 	{
+	}
+
+	RoomPublicMessage::RoomPublicMessage (const OutgoingMessage& message, RoomCLEntry *entry)
+	: QObject { entry }
+	, ParentEntry_ { entry }
+	, Message_ { message.Body_ }
+	, Direction_ { Direction::Out }
+	, Type_ { Type::MUCMessage }
+	, SubType_ { SubType::Other }
+	, XHTML_ { message.RichTextBody_ }
+	{
+		const auto client = ParentEntry_->GetParentAccount ()->GetClientConnection ()->GetClient ();
+
+		QXmppMessage msg;
+		msg.setBody (Message_);
+		msg.setTo (ParentEntry_->GetRoomHandler ()->GetRoomJID ());
+		msg.setType (QXmppMessage::GroupChat);
+		if (XHTML_)
+			msg.setXhtml (*XHTML_);
+		client->sendPacket (msg);
 	}
 
 	RoomPublicMessage::RoomPublicMessage (const QXmppMessage& msg,
@@ -75,21 +83,6 @@ namespace Xoox
 	QObject* RoomPublicMessage::GetQObject ()
 	{
 		return this;
-	}
-
-	void RoomPublicMessage::Send ()
-	{
-		if (!ParentEntry_)
-			return;
-
-		const auto client = ParentEntry_->GetParentAccount ()->GetClientConnection ()->GetClient ();
-
-		QXmppMessage msg;
-		msg.setBody (Message_);
-		msg.setTo (ParentEntry_->GetRoomHandler ()->GetRoomJID ());
-		msg.setType (QXmppMessage::GroupChat);
-		msg.setXhtml (XHTML_);
-		client->sendPacket (msg);
 	}
 
 	void RoomPublicMessage::Store ()
@@ -163,7 +156,7 @@ namespace Xoox
 
 	QString RoomPublicMessage::GetRichBody () const
 	{
-		return XHTML_;
+		return XHTML_.value_or ({});
 	}
 
 	void RoomPublicMessage::SetRichBody (const QString& xhtml)

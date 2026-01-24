@@ -253,25 +253,20 @@ namespace Herbicide
 
 		Logger_->LogEvent (Logger::Event::Challenged, entry, text);
 
-		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
-		OurMessages_ << msg;
-		msg->Send ();
+		entry->SendMessage ({ .Body_ = text, .Hidden_ = true });
 
 		proxy->CancelDefault ();
 	}
 
 	void Plugin::GreetEntry (QObject *entryObj)
 	{
-		AllowedEntries_ << entryObj;
-
-		AskedEntries_.remove (entryObj);
-
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
 		const auto& text = GetAccountProperty (entry->GetParentAccount (), "QuestSuccessReply").toString ();
-		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
-		OurMessages_ << msg;
-		msg->Send ();
+		entry->SendMessage ({ .Body_ = text, .Hidden_ = true });
+
+		AllowedEntries_ << entryObj;
+		AskedEntries_.remove (entryObj);
 
 		if (DeniedAuth_.contains (entryObj))
 			QMetaObject::invokeMethod (entry->GetParentAccount ()->GetQObject (),
@@ -377,13 +372,6 @@ namespace Herbicide
 			return;
 		}
 
-		if (OurMessages_.contains (msg))
-		{
-			OurMessages_.remove (msg);
-			proxy->CancelDefault ();
-			return;
-		}
-
 		if (msg->GetMessageType () != IMessage::Type::ChatMessage)
 			return;
 
@@ -397,6 +385,12 @@ namespace Herbicide
 		if (IsEntryAllowed (entryObj))
 			return;
 
+		if (msg->GetDirection () == IMessage::Direction::Out)
+		{
+			proxy->CancelDefault ();
+			return;
+		}
+
 		if (!AskedEntries_.contains (entryObj))
 			ChallengeEntry (proxy, entryObj);
 		else if (GetAnswers (acc).contains (msg->GetBody ().toLower ()))
@@ -407,12 +401,7 @@ namespace Herbicide
 		else
 		{
 			Logger_->LogEvent (Logger::Event::Failed, entry, msg->GetBody ());
-
-			const auto& text = GetAccountProperty (acc, "QuestFailureReply").toString ();
-			const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
-			OurMessages_ << msg;
-			msg->Send ();
-
+			entry->SendMessage ({ .Body_ = GetAccountProperty (acc, "QuestFailureReply").toString (), .Hidden_ = true });
 			proxy->CancelDefault ();
 		}
 	}

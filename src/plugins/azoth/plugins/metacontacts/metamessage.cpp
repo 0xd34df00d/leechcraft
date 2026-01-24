@@ -28,11 +28,6 @@ namespace Metacontacts
 		return this;
 	}
 
-	void MetaMessage::Send ()
-	{
-		Message_->Send ();
-	}
-
 	void MetaMessage::Store ()
 	{
 		Message_->Store ();

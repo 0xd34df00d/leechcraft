@@ -194,9 +194,6 @@ namespace Xoox
 		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
 		void FetchVersion (const QString&, bool reportErrors = false);
 
-		GlooxMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&, const QString&);
-
 		struct SplitResult
 		{
 			QString Bare_;

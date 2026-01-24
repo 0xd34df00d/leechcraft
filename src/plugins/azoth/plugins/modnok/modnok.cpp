@@ -14,14 +14,15 @@
 #include <QRegularExpression>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <interfaces/azoth/imessage.h>
-#include <interfaces/azoth/irichtextmessage.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/void.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <util/azoth/hooks.h>
 
 namespace LC
 {
@@ -207,6 +208,38 @@ namespace Modnok
 		return body;
 	}
 
+	void Plugin::ProcessOutgoingMessage (bool&, ICLEntry&, OutgoingMessage& msg)
+	{
+		// TODO check the entry really supports rich messages;
+		if (ConvScriptPath_.isEmpty ())
+			return;
+		if (!XmlSettingsManager::Instance ().property ("SubstituteOutgoing").toBool ())
+			return;
+
+		const auto& body = msg.RichTextBody_.value_or (msg.Body_);
+		if (!body.contains ("$$"))
+			return;
+
+		const auto& newBody = HandleBody (body);
+		if (newBody == body)
+			return;
+
+		if (XmlSettingsManager::Instance ().property ("WarnInOutgoing").toBool ())
+			msg.Body_ += ' ' + tr ("this message contains inline formulas, enable rich messages (like XHTML-IM) to view them");
+
+		msg.RichTextBody_ = newBody;
+	}
+
+	void Plugin::initPlugin (QObject *obj)
+	{
+		const auto proxy = qobject_cast<IProxyObject*> (obj);
+		auto& hooks = proxy->GetHooks ();
+		connect (&hooks,
+				&Hooks::messageWillBeCreated,
+				this,
+				&Plugin::ProcessOutgoingMessage);
+	}
+
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy, QObject*)
 	{
 		if (ConvScriptPath_.isEmpty ())
@@ -240,48 +273,6 @@ namespace Modnok
 			return;
 
 		proxy->CancelDefault ();
-	}
-
-	void Plugin::hookMessageCreated (IHookProxy_ptr, QObject*, QObject *msgObj)
-	{
-		if (ConvScriptPath_.isEmpty ())
-			return;
-
-		if (!XmlSettingsManager::Instance ()
-				.property ("SubstituteOutgoing").toBool ())
-			return;
-
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "message"
-					<< msgObj
-					<< "doesn't implement IMessage";
-			return;
-		}
-
-		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
-		if (!richMsg)
-			return;
-
-		QString body = richMsg->GetRichBody ();
-		if (body.isEmpty ())
-			body = msg->GetBody ();
-
-		if (!body.contains ("$$"))
-			return;
-
-		const QString newBody = HandleBody (body);
-		if (newBody == body)
-			return;
-
-		if (XmlSettingsManager::Instance ()
-				.property ("WarnInOutgoing").toBool ())
-			msg->SetBody (msg->GetBody () + " (this message contains "
-						"inline formulas, enable XHTML-IM to view them)");
-
-		richMsg->SetRichBody (newBody);
 	}
 
 	void Plugin::clearCaches ()

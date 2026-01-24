@@ -93,20 +93,6 @@ namespace LC::Azoth::Acetamide
 		return Nick2Entry_.contains (nick);
 	}
 
-	IrcMessage* ChannelHandler::CreateMessage (IMessage::Type t,
-			const QString& variant, const QString& body)
-	{
-		const auto msg = new IrcMessage (t,
-				IMessage::Direction::In,
-				variant,
-				CM_->GetOurNick (),
-				CM_->GetAccount ()->GetClientConnection ().get ());
-		msg->SetBody (body);
-		msg->SetDateTime (QDateTime::currentDateTime ());
-
-		return msg;
-	}
-
 	void ChannelHandler::ChangeNickname (const QString& oldNick, const QString& newNick)
 	{
 		const QString mess = tr ("%1 has changed nickname to %2")
@@ -142,7 +128,6 @@ namespace LC::Azoth::Acetamide
 			ChannelParticipantEntry_ptr entry)
 	{
 		const auto message = new ChannelPublicMessage (msg,
-				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				mt,
 				mst,
@@ -164,7 +149,6 @@ namespace LC::Azoth::Acetamide
 		const auto& entry = GetParticipantEntry (nick);
 
 		const auto message = new ChannelPublicMessage (msg,
-				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::Type::MUCMessage,
 				IMessage::SubType::Other,
@@ -235,7 +219,6 @@ namespace LC::Azoth::Acetamide
 					  ChannelCLEntry_->Role2String (Nick2Entry_ [nick]->HighestRole ()));
 
 		const auto message = new ChannelPublicMessage (msg,
-				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::Type::StatusMessage,
 				IMessage::SubType::ParticipantJoin,
@@ -252,7 +235,6 @@ namespace LC::Azoth::Acetamide
 				tr ("%1 has left the channel (%2)").arg (nick, msg);
 
 		const auto message = new ChannelPublicMessage (mess,
-				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::Type::StatusMessage,
 				IMessage::SubType::ParticipantLeave,
@@ -281,7 +263,6 @@ namespace LC::Azoth::Acetamide
 					.arg (nick, kicker, reason);
 
 		const auto message = new ChannelPublicMessage (std::move (mess),
-				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::Type::EventMessage,
 				IMessage::SubType::KickNotification);
@@ -297,7 +278,6 @@ namespace LC::Azoth::Acetamide
 				tr ("%1 is not %2 anymore").arg (nick, roleStr);
 
 		const auto message = new ChannelPublicMessage (msg,
-				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::Type::StatusMessage,
 				IMessage::SubType::ParticipantRoleAffiliationChange,
@@ -315,7 +295,6 @@ namespace LC::Azoth::Acetamide
 			Subject_.append ("\nURL: " + Url_);
 
 		const auto message = new ChannelPublicMessage (tr ("Topic changed to: %1").arg (subject),
-				IMessage::Direction::In,
 				ChannelCLEntry_.get (),
 				IMessage::Type::EventMessage,
 				IMessage::SubType::RoomSubjectChange);

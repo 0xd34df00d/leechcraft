@@ -22,6 +22,9 @@ namespace LC
 {
 namespace Azoth
 {
+class ICLEntry;
+struct OutgoingMessage;
+
 namespace Modnok
 {
 	class Plugin : public QObject
@@ -54,15 +57,16 @@ namespace Modnok
 		QImage GetRenderedImage (const QString&);
 		std::optional<QString> NormalizeAndRender (QString);
 		QString HandleBody (QString);
+
+		void ProcessOutgoingMessage (bool&, ICLEntry&, OutgoingMessage&);
 	public slots:
+		void initPlugin (QObject*);
+
 		void hookFormatBodyEnd (LC::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookGonnaHandleSmiles (LC::IHookProxy_ptr proxy,
 				QString body,
 				QString pack);
-		void hookMessageCreated (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *message);
 	private slots:
 		void clearCaches ();
 		void handleCacheSize ();

@@ -36,8 +36,7 @@ namespace Xoox
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;
 		EntryStatus GetStatus (const QString&) const override;
-		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&) override;
+		void SendMessage (const OutgoingMessage&) override;
 		QList<QAction*> GetActions () const override;
 
 		void HandlePresence (const QXmppPresence&, const QString&) override;

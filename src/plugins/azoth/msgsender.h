@@ -23,15 +23,6 @@ namespace Azoth
 	public:
 		MsgSender (ICLEntry *e, IMessage::Type type,
 				QString text, QString variant = {}, QString richText = {});
-	signals:
-		void hookMessageWillCreated (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
-		void hookMessageCreated (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *message);
 	};
 }
 }

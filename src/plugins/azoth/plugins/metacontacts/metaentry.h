@@ -66,7 +66,7 @@ namespace Metacontacts
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&);
+		void SendMessage (const OutgoingMessage& message);
 		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
@@ -81,8 +81,8 @@ namespace Metacontacts
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
 	private:
-		template<typename T, typename U>
-		T ActWithVariant (std::function<T (U, const QString&)>, const QString&) const;
+		template<typename F>
+		auto ActWithVariant (F&&, const QString&) const;
 
 		void ConnectStandardSignals (QObject*);
 		void ConnectAdvancedSiganls (QObject*);

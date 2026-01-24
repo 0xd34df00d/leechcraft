@@ -85,12 +85,12 @@ namespace Xoox
 		return EntryBase::GetStatus (resource);
 	}
 
-	IMessage* SelfContact::CreateMessage (IMessage::Type type,
-			const QString& variant, const QString& text)
+	void SelfContact::SendMessage (const OutgoingMessage& message)
 	{
-		const auto msg = Account_->CreateMessage (type, variant, text, GetJID ());
+		const auto msg = new GlooxMessage (message, GetJID (), Account_->GetClientConnection ().get ());
 		AllMessages_ << msg;
-		return msg;
+		Account_->SendMessage (*msg);
+		emit gotMessage (msg);
 	}
 
 	QList<QAction*> SelfContact::GetActions () const

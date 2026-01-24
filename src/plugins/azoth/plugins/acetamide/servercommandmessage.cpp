@@ -20,19 +20,12 @@ namespace LC::Azoth::Acetamide
 	, ParentEntry_ { entry }
 	, Message_ { std::move (msg) }
 	{
+		ParentEntry_->GetIrcServerHandler ()->SendMessage2Server (Message_);
 	}
 
 	QObject* ServerCommandMessage::GetQObject ()
 	{
 		return this;
-	}
-
-	void ServerCommandMessage::Send ()
-	{
-		if (!ParentEntry_)
-			return;
-
-		ParentEntry_->GetIrcServerHandler ()->SendMessage2Server (Message_);
 	}
 
 	void ServerCommandMessage::Store ()
@@ -68,7 +61,7 @@ namespace LC::Azoth::Acetamide
 
 	QString ServerCommandMessage::GetOtherVariant () const
 	{
-		return FromVariant_;
+		return {};
 	}
 
 	QString ServerCommandMessage::GetBody () const

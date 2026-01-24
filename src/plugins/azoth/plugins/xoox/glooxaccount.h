@@ -254,10 +254,6 @@ namespace Xoox
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, GlooxProtocol*);
 
-		GlooxMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&,
-				const QString&);
-
 		QString GetDefaultReqHost () const;
 	private:
 		QString GetPassword (bool authFailure = false);

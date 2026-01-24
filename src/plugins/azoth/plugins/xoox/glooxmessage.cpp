@@ -29,18 +29,34 @@ namespace Xoox
 	, Direction_ (dir)
 	, BareJID_ (jid)
 	, Variant_ (variant)
-	, DateTime_ (QDateTime::currentDateTime ())
 	, Connection_ (conn)
 	{
-		const QString& remoteJid = variant.isEmpty () ?
+		const auto& remoteJid = variant.isEmpty () ?
 				jid :
-				jid + "/" + variant;
+				jid + '/' + variant;
 		if (type == Type::ChatMessage && variant.isEmpty ())
 		{
 			QObject *object = Connection_->GetCLEntry (jid, variant);
 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
 		}
 		Message_.setTo (dir == Direction::In ? conn->GetOurJID () : remoteJid);
+	}
+
+	GlooxMessage::GlooxMessage (const OutgoingMessage& msg, const QString& jid, ClientConnection *conn)
+	: Type_ { Type::ChatMessage }
+	, Direction_ { Direction::Out }
+	, BareJID_ { jid }
+	, Variant_ { msg.Variant_.value_or ({}) }
+	, Connection_ { conn }
+	{
+		Message_.setBody (msg.Body_);
+		if (msg.RichTextBody_)
+			Message_.setXhtml (*msg.RichTextBody_);
+
+		const auto& targetJid = msg.Variant_ ?
+				jid + '/' + *msg.Variant_ :
+				jid;
+		Message_.setTo (targetJid);
 	}
 
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
@@ -62,31 +78,6 @@ namespace Xoox
 	QObject* GlooxMessage::GetQObject ()
 	{
 		return this;
-	}
-
-	void GlooxMessage::Send ()
-	{
-		if (Direction_ == Direction::In)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "tried to send incoming message";
-			return;
-		}
-
-		switch (Type_)
-		{
-		case Type::ChatMessage:
-		case Type::MUCMessage:
-			Connection_->GetAccount ()->SendMessage (*this);
-			qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< this
-					<< "cannot send a message of type"
-					<< static_cast<int> (Type_);
-			break;
-		}
 	}
 
 	void GlooxMessage::Store ()

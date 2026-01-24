@@ -695,19 +695,6 @@ namespace Xoox
 		VersionQueue_->Schedule (jid, FetchQueue::Priority::PLow, reportErrors);
 	}
 
-	GlooxMessage* ClientConnection::CreateMessage (IMessage::Type type,
-			const QString& resource, const QString& body, const QString& jid)
-	{
-		GlooxMessage *msg = new GlooxMessage (type,
-				IMessage::Direction::Out,
-				jid,
-				resource,
-				this);
-		msg->SetBody (body);
-		msg->SetDateTime (QDateTime::currentDateTime ());
-		return msg;
-	}
-
 	ClientConnection::SplitResult ClientConnection::Split (const QString& jid)
 	{
 		const int pos = jid.indexOf ('/');

@@ -158,12 +158,9 @@ namespace LC::Azoth::Acetamide
 		return { {} };
 	}
 
-	IMessage* ChannelCLEntry::CreateMessage (IMessage::Type,
-			const QString& variant, const QString& body)
+	void ChannelCLEntry::SendMessage (const OutgoingMessage& message)
 	{
-		return variant.isEmpty () ?
-				new ChannelPublicMessage (body, this) :
-				nullptr;
+		new ChannelPublicMessage { message, this };
 	}
 
 	QList<IMessage*> ChannelCLEntry::GetAllMessages () const

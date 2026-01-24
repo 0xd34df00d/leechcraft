@@ -54,11 +54,15 @@ namespace OTRoid
 		void InjectMessage (void *opData, const char *accName,
 				const char*, const char *recipient, const char *msg)
 		{
-			static_cast<OtrHandler*> (opData)->InjectMsg (QString::fromUtf8 (accName),
-					QString::fromUtf8 (recipient),
-					QString::fromUtf8 (msg),
-					true,
-					IMessage::Direction::Out);
+			const auto plugin = static_cast<OtrHandler*> (opData);
+			if (const auto entry = plugin->GetEntry (QString::fromUtf8 (accName), QString::fromUtf8 (recipient)))
+				entry->SendMessage ({
+							.Body_ = QString::fromUtf8 (msg),
+							.AllowServerArchival_ = false,
+							.Hidden_ = true,
+						});
+			else
+				qWarning () << "unknown entry" << accName << recipient;
 		}
 
 		void Notify (void *opData, OtrlNotifyLevel level,
@@ -97,9 +101,7 @@ namespace OTRoid
 		void HandleMsgEvent (void *opData, OtrlMessageEvent event,
 				ConnContext *context, const char *message, gcry_error_t err)
 		{
-			qDebug () << Q_FUNC_INFO
-					<< event
-					<< message;
+			qDebug () << event << message;
 
 			auto plugin = static_cast<OtrHandler*> (opData);
 
@@ -163,13 +165,8 @@ namespace OTRoid
 			if (!msg.isEmpty ())
 			{
 				if (message)
-					msg += " " + OtrHandler::tr ("Original OTR message: %1.")
-							.arg (QString::fromUtf8 (message));
-
-				plugin->InjectMsg (QString::fromUtf8 (context->accountname),
-						QString::fromUtf8 (context->username),
-						msg, false, IMessage::Direction::In,
-						IMessage::Type::ServiceMessage);
+					msg += ' ' + OtrHandler::tr ("Original OTR message: %1.").arg (QString::fromUtf8 (message));
+				plugin->NotifyConvFlow (context, msg);
 			}
 		}
 
@@ -191,36 +188,22 @@ namespace OTRoid
 			const auto& msg = OtrHandler::tr ("You have received a new fingerprint from %1: %2")
 					.arg (plugin->GetVisibleEntryName (QString::fromUtf8 (accountname), QString::fromUtf8 (username)))
 					.arg (hrHash);
-			plugin->InjectMsg (QString::fromUtf8 (accountname),
-					QString::fromUtf8 (username),
-					msg, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
+			plugin->NotifyConvFlow (QString::fromUtf8 (accountname), QString::fromUtf8 (username), msg);
 		}
 
-		void HandleGoneSecure (void *opData, ConnContext *context)
+		void HandleGoneSecure (void *opData, ConnContext *ctx)
 		{
-			const auto& msg = OtrHandler::tr ("Private conversation started");
-			static_cast<OtrHandler*> (opData)->
-					InjectMsg (QString::fromUtf8 (context->accountname),
-							QString::fromUtf8 (context->username),
-							msg, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
+			static_cast<OtrHandler*> (opData)->NotifyConvFlow (ctx, OtrHandler::tr ("Private conversation started"));
 		}
 
-		void HandleGoneInsecure (void *opData, ConnContext *context)
+		void HandleGoneInsecure (void *opData, ConnContext *ctx)
 		{
-			const auto& msg = OtrHandler::tr ("Private conversation lost");
-			static_cast<OtrHandler*> (opData)->
-					InjectMsg (QString::fromUtf8 (context->accountname),
-							QString::fromUtf8 (context->username),
-							msg, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
+			static_cast<OtrHandler*> (opData)->NotifyConvFlow (ctx, OtrHandler::tr ("Private conversation lost"));
 		}
 
-		void HandleStillSecure (void *opData, ConnContext *context, int)
+		void HandleStillSecure (void *opData, ConnContext *ctx, int)
 		{
-			const auto& msg = QObject::tr ("Private conversation refreshed");
-			static_cast<OtrHandler*> (opData)->
-					InjectMsg (QString::fromUtf8 (context->accountname),
-							QString::fromUtf8 (context->username),
-							msg, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
+			static_cast<OtrHandler*> (opData)->NotifyConvFlow (ctx, QObject::tr ("Private conversation refreshed"));
 		}
 	}
 
@@ -245,8 +228,7 @@ namespace OTRoid
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.update_context_list = [] (void*) {};
 		OtrOps_.new_fingerprint = &OTR::HandleNewFingerprint;
-		OtrOps_.write_fingerprints = [] (void *opData)
-				{ static_cast<OtrHandler*> (opData)->writeFingerprints (); };
+		OtrOps_.write_fingerprints = [] (void *opData) { static_cast<OtrHandler*> (opData)->writeFingerprints (); };
 		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
 				{
 					const auto& name = static_cast<OtrHandler*> (opData)->
@@ -292,18 +274,17 @@ namespace OTRoid
 		}
 	}
 
-	void OtrHandler::HandleMessageCreated (const IHookProxy_ptr& proxy, IMessage *msg)
+	void OtrHandler::HandleMessageCreated (bool& cancel, ICLEntry& entry, OutgoingMessage& msg)
 	{
 		if (IsGenerating_)
 			return;
 
-		QObject *entryObj = msg->OtherPart ();
+		const auto entryObj = entry.GetQObject ();
 		if (!Entry2Action_.contains (entryObj) ||
 				!Entry2Action_ [entryObj].ToggleOtr_->isChecked ())
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto acc = entry->GetParentAccount ();
+		const auto acc = entry.GetParentAccount ();
 		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
@@ -312,28 +293,31 @@ namespace OTRoid
 				this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
-				entry->GetEntryID ().toUtf8 ().constData (),
+				entry.GetEntryID ().toUtf8 ().constData (),
 				OTRL_INSTAG_BEST,
-				msg->GetBody ().toUtf8 ().constData (),
-				NULL,
+				msg.Body_.toUtf8 ().constData (),
+				nullptr,
 				&newMsg,
 				OTRL_FRAGMENT_SEND_SKIP,
-				NULL,
-				NULL,
-				NULL);
+				nullptr,
+				nullptr,
+				nullptr);
 
 		if (err)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "OTR error occured, aborting";
-			proxy->CancelDefault ();
+			qWarning () << "OTR error occured, aborting";
+			cancel = true;
+			return;
 		}
 
 		if (newMsg)
 		{
-			Msg2OrigText_ [msg->GetQObject ()] = msg->GetBody ();
-			msg->SetBody (QString::fromUtf8 (newMsg));
-			msg->ToggleOTRMessage (true);
+			AzothProxy_->InjectMessage (entry, InjectedMessage::FromOutgoing (msg));
+
+			msg.Body_ = QString::fromUtf8 (newMsg);
+			msg.RichTextBody_.reset ();
+			msg.AllowServerArchival_ = false;
+			msg.Hidden_ = true;
 		}
 
 		otrl_message_free (newMsg);
@@ -342,9 +326,6 @@ namespace OTRoid
 	void OtrHandler::HandleGotMessage (const IHookProxy_ptr& proxy, QObject *msgObj)
 	{
 		if (IsGenerating_)
-			return;
-
-		if (PendingInjectedMessages_.remove (msgObj))
 			return;
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -363,13 +344,6 @@ namespace OTRoid
 				proxy->CancelDefault ();
 				msgObj->setProperty ("Azoth/HiddenMessage", true);
 			}
-			return;
-		}
-
-		if (msg->GetDirection () == IMessage::Direction::Out &&
-				Msg2OrigText_.contains (msgObj))
-		{
-			msg->SetBody (Msg2OrigText_.take (msgObj));
 			return;
 		}
 
@@ -402,11 +376,9 @@ namespace OTRoid
 		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
-			const auto& message = tr ("%1 has ended the private conversation with you, "
-					"you should do the same.")
-						.arg (GetVisibleEntryNameImpl (entry));
-			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-						message, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
+			const auto& message = tr ("%1 has ended the private conversation with you, you should do the same.")
+					.arg (GetVisibleEntryNameImpl (entry));
+			NotifyConvFlow (*entry, message);
 		}
 		otrl_tlv_free (tlvs);
 
@@ -493,47 +465,22 @@ namespace OTRoid
 		return entry->Variants ().isEmpty () ? 0 : 1;
 	}
 
-	void OtrHandler::InjectMsg (const QString& accId, const QString& entryId,
-			const QString& body, bool hidden, IMessage::Direction dir, IMessage::Type type)
+	void OtrHandler::NotifyConvFlow (const ConnContext *ctx, const QString& msg)
 	{
-		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no such entry"
-					<< entryId
-					<< accId;
-			return;
-		}
-
-		InjectMsg (entry, body, hidden, dir, type);
+		NotifyConvFlow (QString::fromUtf8 (ctx->accountname), QString::fromUtf8 (ctx->username), msg);
 	}
 
-	void OtrHandler::InjectMsg (ICLEntry *entry, const QString& body, bool hidden,
-			IMessage::Direction dir, IMessage::Type type)
+	void OtrHandler::NotifyConvFlow (const QString& accId, const QString& entryId, const QString& msg)
 	{
-		if (dir == IMessage::Direction::Out)
-		{
-			const auto msg = entry->CreateMessage (type, {}, body);
-			if (hidden)
-				msg->GetQObject ()->setProperty ("Azoth/HiddenMessage", true);
-
-			msg->ToggleOTRMessage (true);
-			msg->Send ();
-		}
+		if (const auto entry = GetEntry (accId, entryId))
+			NotifyConvFlow (*entry, msg);
 		else
-		{
-			auto entryObj = entry->GetQObject ();
-			auto msgObj = AzothProxy_->CreateCoreMessage (body,
-					QDateTime::currentDateTime (),
-					type, dir, entryObj, entryObj);
+			qWarning () << "no such entry" << entryId << accId;
+	}
 
-			PendingInjectedMessages_ << msgObj;
-
-			auto msg = qobject_cast<IMessage*> (msgObj);
-			msg->Store ();
-		}
+	void OtrHandler::NotifyConvFlow (ICLEntry& entry, const QString& msg)
+	{
+		AzothProxy_->InjectMessage (entry, { .Body_ = msg, .Kind_ = InjectedMessage::Service {} });
 	}
 
 	void OtrHandler::Notify (const QString&, const QString&,
@@ -561,6 +508,11 @@ namespace OTRoid
 		}
 
 		return acc->GetAccountName ();
+	}
+
+	ICLEntry* OtrHandler::GetEntry (const QString& accId, const QString& entryId)
+	{
+		return qobject_cast<ICLEntry*> (AzothProxy_->GetEntry (entryId, accId));
 	}
 
 	QString OtrHandler::GetVisibleEntryName (const QString& accId, const QString& entryId)
@@ -826,17 +778,11 @@ namespace OTRoid
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
 					accId.constData (), protoId.constData (),
 					entry->GetEntryID ().toUtf8 ().constData (), OTRL_INSTAG_BEST);
-			const auto& message = tr ("Private conversation closed");
-			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-						message, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
+			NotifyConvFlow (*entry, tr ("Private conversation closed"));
 			return;
 		}
-		else
-		{
-			const auto& message = tr ("Attempting to start a private conversation");
-			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-					   message, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
-		}
+
+		NotifyConvFlow (*entry, tr ("Attempting to start a private conversation"));
 
 		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
@@ -845,7 +791,7 @@ namespace OTRoid
 
 		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
 					OTRL_POLICY_DEFAULT), free);
-		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::Direction::Out);
+		entry->SendMessage ({ .Body_ = QString::fromUtf8 (msg.get ()), .Hidden_ = true });
 	}
 
 	void OtrHandler::HandleAuthRequested (ICLEntry *entry)

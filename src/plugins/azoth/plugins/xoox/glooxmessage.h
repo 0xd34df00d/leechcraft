@@ -13,6 +13,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
+#include <interfaces/azoth/message.h>
 
 namespace LC
 {
@@ -38,9 +39,9 @@ namespace Xoox
 		Direction Direction_;
 		QString BareJID_;
 		QString Variant_;
-		QDateTime DateTime_;
+		QDateTime DateTime_ = QDateTime::currentDateTime ();
 		QXmppMessage Message_;
-		ClientConnection *Connection_;
+		ClientConnection * const Connection_;
 
 		bool IsDelivered_ = false;
 	public:
@@ -49,12 +50,11 @@ namespace Xoox
 				const QString& jid,
 				const QString& variant,
 				ClientConnection *conn);
-		GlooxMessage (const QXmppMessage& msg,
-				ClientConnection *conn);
+		GlooxMessage (const OutgoingMessage& msg, const QString& jid, ClientConnection *conn);
+		GlooxMessage (const QXmppMessage& msg, ClientConnection *conn);
 
 		// IMessage
 		QObject* GetQObject () override;
-		void Send () override;
 		void Store () override;
 		Direction GetDirection () const override;
 		Type GetMessageType () const override;

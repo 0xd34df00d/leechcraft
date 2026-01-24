@@ -43,7 +43,6 @@ namespace Herbicide
 
 		QSet<QObject*> AskedEntries_;
 		QSet<QObject*> AllowedEntries_;
-		QSet<IMessage*> OurMessages_;
 
 		QHash<QObject*, QString> DeniedAuth_;
 

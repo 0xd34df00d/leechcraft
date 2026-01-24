@@ -49,18 +49,8 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	IMessage* ServerParticipantEntry::CreateMessage (IMessage::Type,
-			const QString&, const QString& body)
+	void ServerParticipantEntry::SendMessage (const OutgoingMessage& message)
 	{
- 		const auto message = new IrcMessage (IMessage::Type::ChatMessage,
-				IMessage::Direction::Out,
-				ISH_->GetServerID (),
-				Nick_,
-				Account_->GetClientConnection ().get ());
-
-		message->SetBody (body);
-		message->SetDateTime (QDateTime::currentDateTime ());
-
-		return message;
+		new IrcMessage { message, ISH_->GetServerID (), Nick_, Account_->GetClientConnection ().get () };
 	}
 }

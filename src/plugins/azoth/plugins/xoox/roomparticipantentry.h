@@ -47,8 +47,7 @@ namespace Xoox
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&);
+		void SendMessage (const OutgoingMessage&);
 
 		QString GetJID () const;
 		QString GetRealJID () const;

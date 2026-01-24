@@ -42,7 +42,7 @@ namespace LC::Azoth::Acetamide
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;
-		IMessage* CreateMessage (IMessage::Type, const QString&, const QString&) override;
+		void SendMessage (const OutgoingMessage&) override;
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const override;
