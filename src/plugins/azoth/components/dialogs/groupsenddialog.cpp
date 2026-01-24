@@ -85,7 +85,6 @@ namespace Azoth
 				continue;
 
 			new MsgSender { entry, IMessage::Type::ChatMessage, msg };
-			Core::Instance ().IncreaseUnreadCount (entry, -1);
 		}
 
 		Ui_.Message_->clear ();
