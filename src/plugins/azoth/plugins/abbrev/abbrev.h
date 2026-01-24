@@ -70,12 +70,6 @@ namespace Abbrev
 
 		void hookChatTabCreated (LC::IHookProxy_ptr,
 				QObject*, QObject*, QWebEngineView*);
-		void hookMessageSendRequested (LC::IHookProxy_ptr,
-				QObject*,
-				QObject*,
-				int,
-				QString);
 	};
 }
 }
-

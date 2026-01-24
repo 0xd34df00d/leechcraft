@@ -13,6 +13,7 @@
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
+#include <util/azoth/hooks.h>
 #include "abbrevsmanager.h"
 #include "shortcutsmanager.h"
 
@@ -166,29 +167,30 @@ namespace LC::Azoth::Abbrev
 	void Plugin::initPlugin (QObject *proxyObj)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxyObj);
+		connect (&AzothProxy_->GetHooks (),
+				&Hooks::messageWillBeCreated,
+				this,
+				[this] (bool&, ICLEntry& entry, OutgoingMessage& message)
+				{
+					try
+					{
+						const auto& newText = Manager_->Process (message.Body_);
+						if (message.Body_ != newText)
+						{
+							message.Body_ = newText;
+							message.RichTextBody_.reset ();
+						}
+					}
+					catch (const CommandException& e)
+					{
+						AzothProxy_->InjectMessage (entry, { .Body_ = e.GetError (), .Kind_ = InjectedMessage::Service {} });
+					}
+				});
 	}
 
 	void Plugin::hookChatTabCreated (IHookProxy_ptr, QObject *chatTab, QObject*, QWebEngineView*)
 	{
 		ShortcutsMgr_->HandleTab (qobject_cast<QWidget*> (chatTab));
-	}
-
-	void Plugin::hookMessageSendRequested (LC::IHookProxy_ptr proxy,
-			QObject*, QObject *entryObj, int, QString)
-	{
-		const auto& text = proxy->GetValue ("text").toString ();
-
-		try
-		{
-			const auto& newText = Manager_->Process (text);
-			if (text != newText)
-				proxy->SetValue ("text", newText);
-		}
-		catch (const CommandException& e)
-		{
-			if (const auto entry = qobject_cast<ICLEntry*> (entryObj))
-				AzothProxy_->InjectMessage (*entry, { .Body_ = e.GetError (), .Kind_ = InjectedMessage::Service {} });
-		}
 	}
 }
 
