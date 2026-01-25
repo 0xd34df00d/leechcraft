@@ -676,8 +676,7 @@ namespace Azoth
 
 	void NotificationsManager::handleAttentionDrawn (const QString& text, const QString&)
 	{
-		if (XmlSettingsManager::Instance ()
-				.property ("IgnoreDrawAttentions").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("RespectDrawAttentions").toBool ())
 			return;
 
 		const auto entry = qobject_cast<ICLEntry*> (sender ());

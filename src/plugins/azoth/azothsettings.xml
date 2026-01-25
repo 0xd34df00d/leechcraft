@@ -303,8 +303,8 @@
 				<item type="checkbox" property="ShowMsgInNotifications" default="false">
 					<label value="Show triggering message in notifications" />
 				</item>
-				<item type="checkbox" property="IgnoreDrawAttentions" default="false">
-					<label value="Ignore when someone draws our attention" />
+				<item type="checkbox" property="RespectDrawAttentions" default="true">
+					<label value="Notify when somebody draws our attention" />
 				</item>
 			</groupbox>
 			<groupbox>
