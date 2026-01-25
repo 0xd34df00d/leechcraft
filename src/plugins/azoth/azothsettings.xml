@@ -105,6 +105,7 @@
 			<item type="checkbox" property="IsAutojoinAllowed" default="true" label="Autojoin allowed" />
 			<item type="groupbox" property="SendChatStates" default="true" label="Send chat state events">
 				<item type="checkbox" property="SendEndConversations" default="true" label="Send conversation closed events" />
+				<item type="spinbox" property="TypingPausedTimeout" default="5" label="Delay before ‘paused typing’ state" suffix=" s" />
 			</item>
 			<item type="checkbox" property="AutoOpenFileDialogOnSend" default="true" label="Automatically open file chooser when sending files" />
 			<item type="checkbox" property="AutoOpenIncomingFiles" default="true" label="Automatically open received files after transfer finishes" />

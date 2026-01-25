@@ -11,11 +11,8 @@
 #include "interfaces/azoth/iclentry.h"
 #include "chattab.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	ChatTabPartStateManager::ChatTabPartStateManager (ChatTab& tab)
 	: QObject { &tab }
@@ -27,7 +24,9 @@ namespace Azoth
 			return [this, st] { SetChatPartState (st); };
 		};
 
-		TypeTimer_->setInterval (2000);
+		XmlSettingsManager::Instance ().RegisterObject ("TypingPausedTimeout",
+				this,
+				[this] (int seconds) { TypeTimer_->setInterval (std::chrono::seconds { seconds }); });
 		TypeTimer_->callOnTimeout (this, setState (CPSPaused));
 
 		connect (&tab,
@@ -100,5 +99,4 @@ namespace Azoth
 			entry && entry->GetStatus (LastVariant_).State_ != SOffline)
 			entry->SetChatPartState (CPSActive, LastVariant_);
 	}
-}
 }
