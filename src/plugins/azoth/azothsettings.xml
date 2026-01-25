@@ -103,12 +103,14 @@
 	<page label="Behavior">
 		<tab label="Behavior">
 			<item type="checkbox" property="IsAutojoinAllowed" default="true" label="Autojoin allowed" />
-			<item type="checkbox" property="SendChatStates" default="true" label="Send chat state events" />
-			<item type="checkbox" property="SendEndConversations" default="true" label="Send conversation closed events" />
+			<item type="groupbox" property="SendChatStates" default="true" label="Send chat state events">
+				<item type="checkbox" property="SendEndConversations" default="true" label="Send conversation closed events" />
+			</item>
 			<item type="checkbox" property="AutoOpenFileDialogOnSend" default="true" label="Automatically open file chooser when sending files" />
 			<item type="checkbox" property="AutoOpenIncomingFiles" default="true" label="Automatically open received files after transfer finishes" />
-			<item type="checkbox" property="UseAltNick" default="true" label="Modify nick on conflicts in chat rooms" />
-			<item type="lineedit" property="AlternativeNickname" default="_azoth" label="Nick suffix to append on nick conflict in chat rooms:" />
+			<item type="groupbox" property="UseAltNick" default="true" label="Modify nick on conflicts in chat rooms">
+				<item type="lineedit" property="AlternativeNickname" default="_azoth" label="Nick suffix to append:" />
+			</item>
 			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads" label="Default file transfers save path:" />
 		</tab>
 		<tab label="Roster">
