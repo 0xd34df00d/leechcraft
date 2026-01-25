@@ -15,36 +15,25 @@ class QMimeData;
 class QImage;
 class QUrl;
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class ChatTab;
+	class TransferJobManager;
 
 	class ContactDropFilter : public QObject
 	{
 		Q_OBJECT
 
-		const QString EntryId_;
-		ChatTab * const ChatTab_;
+		TransferJobManager& Transfers_;
+		ChatTab& ChatTab_;
 	public:
-		ContactDropFilter (const QString&, ChatTab*);
+		ContactDropFilter (TransferJobManager&, ChatTab&);
 
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 
 		void HandleDrop (const QMimeData*);
 	private:
-		bool CheckImage (const QList<QUrl>&);
-
-		void CollectDataFilters (QStringList& choiceItems,
-				QList<std::function<void ()>>& functions,
-				const QImage& image);
-
 		void HandleImageDropped (const QImage&, const QUrl&);
-		void PerformChoice (const QStringList&, const QList<std::function<void ()>>&);
-
 		void HandleContactsDropped (const QMimeData*);
-		void HandleFilesDropped (const QList<QUrl>&);
 	};
-}
 }

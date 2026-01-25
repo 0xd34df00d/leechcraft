@@ -8,35 +8,32 @@
 
 #include "contactdropfilter.h"
 #include <QDropEvent>
+#include <QFile>
 #include <QImage>
-#include <QMessageBox>
 #include <QInputDialog>
 #include <QUrl>
-#include <QFileInfo>
-#include <QBuffer>
 #include <QMimeData>
-#include <util/util.h>
+#include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
-#include "../../interfaces/azoth/irichtextmessage.h"
-#include "../../interfaces/azoth/iaccount.h"
-#include "../../core.h"
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/imucentry.h>
 #include "../../transferjobmanager.h"
 #include "../../dndutil.h"
 #include "../../util.h"
 #include "chattab.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	ContactDropFilter::ContactDropFilter (const QString& entryId, ChatTab *parent)
-	: QObject { parent }
-	, EntryId_ { entryId }
-	, ChatTab_ { parent }
+	ContactDropFilter::ContactDropFilter (TransferJobManager& tjm, ChatTab& tab)
+	: QObject { &tab }
+	, Transfers_ { tjm }
+	, ChatTab_ { tab }
 	{
 	}
 
@@ -46,8 +43,25 @@ namespace Azoth
 			return false;
 
 		HandleDrop (static_cast<QDropEvent*> (e)->mimeData ());
-
 		return true;
+	}
+
+	namespace
+	{
+		std::optional<QImage> ExtractLocalImageFile (const QList<QUrl>& urls)
+		{
+			if (urls.size () != 1)
+				return {};
+
+			const auto& local = urls.at (0).toLocalFile ();
+			if (!QFile::exists (local))
+				return {};
+
+			QImage img { local };
+			if (img.isNull ())
+				return {};
+			return img;
+		}
 	}
 
 	void ContactDropFilter::HandleDrop (const QMimeData *data)
@@ -57,174 +71,106 @@ namespace Azoth
 		const auto& urls = data->urls ();
 		if (data->hasImage () && urls.size () <= 1)
 			HandleImageDropped (imgData.value<QImage> (), urls.value (0));
+		else if (const auto image = ExtractLocalImageFile (urls))
+			HandleImageDropped (*image, urls.value (0));
 		else if (DndUtil::HasContacts (data))
 			HandleContactsDropped (data);
 		else if (!urls.isEmpty ())
-			HandleFilesDropped (urls);
+			Transfers_.OfferURLs (ChatTab_.GetCLEntry (), urls);
 	}
 
 	namespace
 	{
-		template<typename T>
-		T* GetEntry (const QString& id)
+		void SendInChat (const QImage& image, const ChatTab& chatTab)
 		{
-			QObject *obj = Core::Instance ().GetEntry (id);
-			if (!obj)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no entry for"
-						<< id;
-				return 0;
-			}
-
-			T *entry = qobject_cast<T*> (obj);
-			if (!entry)
-				qWarning () << Q_FUNC_INFO
-						<< "object"
-						<< obj
-						<< "doesn't implement the required interface";
-			return entry;
-		}
-
-		void SendInChat (const QImage& image, const QString& entryId, ChatTab *chatTab)
-		{
-			const auto entry = GetEntry<ICLEntry> (entryId);
+			const auto entry = chatTab.GetCLEntry ();
 			if (!entry)
 				return;
 
-			const auto& richBody = "<img src='" + Util::GetAsBase64Src (image) + "'/>";
+			const auto& richBody = "<img src='"_qs + Util::GetAsBase64Src (image) + "'/>"_qs;
 			const auto& msg = ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it.");
-			SendMessage (*entry, { .Variant_ = chatTab->GetSelectedVariant (), .Body_ = msg, .RichTextBody_ = richBody });
+			SendMessage (*entry, { .Variant_ = chatTab.GetSelectedVariant (), .Body_ = msg, .RichTextBody_ = richBody });
 		}
 
-		void SendLink (const QUrl& url, const QString& entryId, ChatTab *chatTab)
+		void SendLink (const QUrl& url, const ChatTab& chatTab)
 		{
-			if (const auto entry = GetEntry<ICLEntry> (entryId))
-				SendMessage (*entry, { .Variant_ = chatTab->GetSelectedVariant (), .Body_ = url.toEncoded () });
+			if (const auto entry = chatTab.GetCLEntry ())
+				SendMessage (*entry, { .Variant_ = chatTab.GetSelectedVariant (), .Body_ = url.toEncoded () });
 		}
-	}
 
-	void ContactDropFilter::CollectDataFilters (QStringList& choiceItems,
-			QList<std::function<void ()>>& functions,
-			const QImage& image)
-	{
-		const auto& imageVar = QVariant::fromValue (image);
-		const auto& entity = Util::MakeEntity (imageVar,
-				{},
-				TaskParameter::NoParameters,
-				"x-leechcraft/data-filter-request");
-
-		auto prevChoices = choiceItems;
-		choiceItems.clear ();
-		auto prevFunctions = functions;
-		functions.clear ();
-
-		auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
-		for (const auto obj : em->GetPossibleHandlers (entity))
+		struct Action
 		{
-			const auto idf = qobject_cast<IDataFilter*> (obj);
+			QString Label_;
+			std::function<void ()> Fun_;
+		};
 
-			const auto& verb = idf->GetFilterVerb ();
+		QList<Action> CollectDataFilters (const QImage& image, ChatTab& tab)
+		{
+			const auto& imageVar = QVariant::fromValue (image);
+			const auto& entity = Util::MakeEntity (imageVar,
+					{},
+					TaskParameter::NoParameters,
+					"x-leechcraft/data-filter-request"_qs);
 
-			for (const auto& var : idf->GetFilterVariants (imageVar))
+			QList<Action> actions;
+
+			for (const auto obj : GetProxyHolder ()->GetEntityManager ()->GetPossibleHandlers (entity))
 			{
-				auto thisEnt = entity;
-				thisEnt.Additional_ ["DataFilter"] = var.Name_;
+				const auto idf = qobject_cast<IDataFilter*> (obj);
 
-				choiceItems << verb + ": " + var.Name_;
-				thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
-						[this] (const QVariant& var)
-						{
-							const auto& url = var.toUrl ();
-							if (url.isEmpty ())
-								return;
+				const auto& verb = idf->GetFilterVerb ();
 
-							ChatTab_->insertMessageText (url.toEncoded ());
-						});
-				functions.append ([thisEnt, obj]
-						{
-							qobject_cast<IEntityHandler*> (obj)->Handle (thisEnt);
-						});
+				for (const auto& variant : idf->GetFilterVariants (imageVar))
+				{
+					auto thisEnt = entity;
+					thisEnt.Additional_ ["DataFilter"_qs] = variant.Name_;
+					thisEnt.Additional_ ["DataFilterCallback"_qs] = QVariant::fromValue<DataFilterCallback_f> (
+							[&tab] (const QVariant& var)
+							{
+								if (const auto& url = var.toUrl ();
+									!url.isEmpty ())
+									tab.insertMessageText (url.toEncoded ());
+							});
+
+					const auto& label = verb + ": "_qs + variant.Name_;
+
+					actions << Action { label, [thisEnt, obj] { qobject_cast<IEntityHandler*> (obj)->Handle (thisEnt); } };
+				}
 			}
+
+			return actions;
 		}
 
-		choiceItems << prevChoices;
-		functions << prevFunctions;
+		void PerformChoice (const QList<Action>& actions, ChatTab& chatTab)
+		{
+			bool ok = false;
+			const auto& labels = Util::Map (actions, &Action::Label_);
+			const auto& choice = QInputDialog::getItem (&chatTab,
+					ContactDropFilter::tr ("Send image"),
+					ContactDropFilter::tr ("How would you like to send the image?"),
+					labels,
+					0,
+					false,
+					&ok);
+			const auto idx = labels.indexOf (choice);
+			if (!ok || idx < 0)
+				return;
+
+			actions [idx].Fun_ ();
+		}
 	}
 
 	void ContactDropFilter::HandleImageDropped (const QImage& image, const QUrl& url)
 	{
-		QStringList choiceItems
-		{
-			tr ("Send directly in chat")
-		};
-
-		QList<std::function<void ()>> functions
-		{
-			[this, &image] { SendInChat (image, EntryId_, ChatTab_); }
-		};
+		auto actions = CollectDataFilters (image, ChatTab_);
+		actions << Action { tr ("Send directly in chat"), [this, &image] { SendInChat (image, ChatTab_); } };
 
 		if (url.scheme () != "file")
-		{
-			choiceItems << tr ("Send link");
-			functions.append ([this, url] { SendLink (url, EntryId_, ChatTab_); });
-		}
+			actions << Action { tr ("Send link"), [this, url] { SendLink (url, ChatTab_); } };
 		else
-		{
-			choiceItems.prepend (tr ("Send as file"));
-			functions.prepend ([this, &url]
-				{
-					Core::Instance ().GetTransferJobManager ()->
-							OfferURLs (GetEntry<ICLEntry> (EntryId_), { url });
-				});
+			actions << Action { tr ("Send as file"), [this, url] { Transfers_.OfferURLs (ChatTab_.GetCLEntry (), { url }); }};
 
-			CollectDataFilters (choiceItems, functions, image);
-		}
-
-		PerformChoice (choiceItems, functions);
-	}
-
-	void ContactDropFilter::PerformChoice (const QStringList& choiceItems, const QList< std::function<void ()>>& functions)
-	{
-		bool ok = false;
-		const auto& choice = QInputDialog::getItem (ChatTab_,
-				tr ("Send image"),
-				tr ("How would you like to send the image?"),
-				choiceItems,
-				0,
-				false,
-				&ok);
-		if (!ok)
-			return;
-
-		const auto funcIdx = choiceItems.indexOf (choice);
-		const auto& func = functions.at (funcIdx);
-		if (!func)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no function for choice"
-					<< choice;
-			return;
-		}
-
-		func ();
-	}
-
-	bool ContactDropFilter::CheckImage (const QList<QUrl>& urls)
-	{
-		if (urls.size () != 1)
-			return false;
-
-		const auto& local = urls.at (0).toLocalFile ();
-		if (!QFile::exists (local))
-			return false;
-
-		const QImage img (local);
-		if (img.isNull ())
-			return false;
-
-		HandleImageDropped (img, urls.at (0));
-		return true;
+		PerformChoice (actions, ChatTab_);
 	}
 
 	namespace
@@ -245,28 +191,26 @@ namespace Azoth
 
 	void ContactDropFilter::HandleContactsDropped (const QMimeData *data)
 	{
-		const auto thisEntry = GetEntry<ICLEntry> (EntryId_);
+		const auto thisEntry = ChatTab_.GetCLEntry ();
 		const bool isMuc = thisEntry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		auto entries = DndUtil::DecodeEntryObjs (data);
-		entries.erase (std::remove_if (entries.begin (), entries.end (),
-					[thisEntry] (QObject *entryObj)
+		entries.removeIf ([thisEntry] (QObject *entryObj)
 					{
-						return !CanEntryBeInvited (thisEntry,
-								qobject_cast<ICLEntry*> (entryObj));
-					}),
-				entries.end ());
+						return !CanEntryBeInvited (thisEntry, qobject_cast<ICLEntry*> (entryObj));
+					});
 
 		if (entries.isEmpty ())
 			return;
 
 		QString text;
 		if (entries.size () > 1)
+		{
+			const auto& entryName = thisEntry->GetEntryName ();
 			text = isMuc ?
-					tr ("Enter reason to invite %n contact(s) to %1:", 0, entries.size ())
-						.arg (thisEntry->GetEntryName ()) :
-					tr ("Enter reason to invite %1 to %n conference(s):", 0, entries.size ())
-						.arg (thisEntry->GetEntryName ());
+					tr ("Invitation message for %n contact(s) to %1:", nullptr, entries.size ()).arg (entryName) :
+					tr ("Invitation message for %1 to %n conference(s):", nullptr, entries.size ()).arg (entryName);
+		}
 		else
 		{
 			const auto muc = isMuc ?
@@ -275,14 +219,12 @@ namespace Azoth
 			const auto entry = isMuc ?
 					qobject_cast<ICLEntry*> (entries.first ()) :
 					thisEntry;
-			text = tr ("Enter reason to invite %1 to %2:")
-					.arg (entry->GetEntryName ())
-					.arg (muc->GetEntryName ());
+			text = tr ("Invitation message for %1 in %2:").arg (entry->GetEntryName (), muc->GetEntryName ());
 		}
 
 		bool ok = false;
-		auto reason = QInputDialog::getText (nullptr,
-				tr ("Invite to a MUC"),
+		const auto reason = QInputDialog::getText (nullptr,
+				tr ("Invite contacts"),
 				text,
 				QLineEdit::Normal,
 				{},
@@ -293,14 +235,12 @@ namespace Azoth
 		if (isMuc)
 		{
 			const auto muc = qobject_cast<IMUCEntry*> (thisEntry->GetQObject ());
-
 			for (const auto& entry : entries)
 				muc->InviteToMUC (qobject_cast<ICLEntry*> (entry)->GetHumanReadableID (), reason);
 		}
 		else
 		{
 			const auto thisId = thisEntry->GetHumanReadableID ();
-
 			for (const auto& mucEntryObj : entries)
 			{
 				const auto muc = qobject_cast<IMUCEntry*> (mucEntryObj);
@@ -308,14 +248,4 @@ namespace Azoth
 			}
 		}
 	}
-
-	void ContactDropFilter::HandleFilesDropped (const QList<QUrl>& urls)
-	{
-		if (CheckImage (urls))
-			return;
-
-		Core::Instance ().GetTransferJobManager ()->
-				OfferURLs (GetEntry<ICLEntry> (EntryId_), urls);
-	}
-}
 }

@@ -122,7 +122,7 @@ namespace Azoth
 	, MUCEventLog_ (new QTextBrowser ())
 	, EntryID_ (entryId)
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
-	, CDF_ (new ContactDropFilter (entryId, this))
+	, CDF_ (new ContactDropFilter (*Core::Instance ().GetTransferJobManager (), *this))
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->InitializePage (profile);
