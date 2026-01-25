@@ -47,10 +47,18 @@ namespace LC::Azoth
 		if (event->type () != QEvent::KeyPress)
 			return false;
 
-		if (const auto& kev = dynamic_cast<const QKeyEvent&> (*event);
-			kev.key () == Qt::Key_Tab && kev.modifiers () == Qt::NoModifier)
+		const auto& kev = dynamic_cast<const QKeyEvent&> (*event);
+		const auto isForwardTab = kev.key () == Qt::Key_Tab && kev.modifiers () == Qt::NoModifier;
+		const auto isBackwardTab = kev.key () == Qt::Key_Backtab ||
+				(kev.key () == Qt::Key_Tab && kev.modifiers () == Qt::ShiftModifier);
+		if (isForwardTab)
 		{
-			Complete ();
+			Complete (Direction::Forward);
+			return true;
+		}
+		if (isBackwardTab)
+		{
+			Complete (Direction::Backward);
 			return true;
 		}
 
@@ -135,7 +143,7 @@ namespace LC::Azoth
 		}
 	}
 
-	void MsgEditAutocompleter::Complete ()
+	void MsgEditAutocompleter::Complete (Direction dir)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (EntryId_));
 		if (!entry)
@@ -144,7 +152,7 @@ namespace LC::Azoth
 		InsertingCompletion_ = true;
 		const auto guard = Util::MakeScopeGuard ([this] { InsertingCompletion_ = false; });
 		State_ = Util::Visit (State_,
-				[this, entry] (Idle) -> State
+				[this, entry, dir] (Idle) -> State
 				{
 					const auto& trigger = GetCompTrigger (Edit_);
 					if (!trigger)
@@ -152,19 +160,21 @@ namespace LC::Azoth
 					const auto& comps = GetCompletions (*trigger, *entry);
 					if (comps.isEmpty ())
 						return NoCompletions {};
-					return OfferCompletion (Completing { trigger->StartPos_, comps, -1, trigger->Word_.size () });
+					return OfferCompletion (Completing { trigger->StartPos_, comps, -DirectionDelta (dir), trigger->Word_.size () }, dir);
 				},
-				[this] (const Completing& comp) { return State { OfferCompletion (comp) }; },
+				[this, dir] (const Completing& comp) { return State { OfferCompletion (comp, dir) }; },
 				[] (NoCompletions) { return State { NoCompletions {} }; });
 	}
 
-	MsgEditAutocompleter::Completing MsgEditAutocompleter::OfferCompletion (Completing comp)
+	MsgEditAutocompleter::Completing MsgEditAutocompleter::OfferCompletion (Completing comp, Direction dir)
 	{
 		auto c = Edit_.textCursor ();
 		c.setPosition (comp.StartCursorPos_);
 		c.movePosition (QTextCursor::Right, QTextCursor::KeepAnchor, comp.CurCompLength_);
 
-		++comp.Idx_;
+		comp.Idx_ += DirectionDelta (dir);
+		if (comp.Idx_ < 0)
+			comp.Idx_ += comp.Completions_.size ();
 		comp.Idx_ %= comp.Completions_.size ();
 
 		const auto& nextComp = comp.Completions_ [comp.Idx_];
@@ -173,5 +183,18 @@ namespace LC::Azoth
 		comp.CurCompLength_ = nextComp.size ();
 
 		return comp;
+	}
+
+	int MsgEditAutocompleter::DirectionDelta (Direction dir)
+	{
+		switch (dir)
+		{
+		case Direction::Forward:
+			return +1;
+		case Direction::Backward:
+			return -1;
+		}
+
+		std::unreachable ();
 	}
 }

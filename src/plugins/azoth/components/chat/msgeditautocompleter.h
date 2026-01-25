@@ -39,7 +39,15 @@ namespace LC::Azoth
 	protected:
 		bool eventFilter (QObject*, QEvent*) override;
 	private:
-		void Complete ();
-		Completing OfferCompletion (Completing);
+		enum class Direction
+		{
+			Forward,
+			Backward,
+		};
+
+		void Complete (Direction);
+		Completing OfferCompletion (Completing, Direction);
+
+		static int DirectionDelta (Direction);
 	};
 }
