@@ -382,7 +382,7 @@ namespace Azoth
 		else
 			stream << QByteArray ("chattab2")
 					<< entry->GetEntryID ()
-					<< GetSelectedVariant ();
+					<< GetSelectedVariant ().value_or ({});
 
 		stream << Ui_.MsgEdit_->toPlainText ();
 
@@ -516,9 +516,12 @@ namespace Azoth
 		return EntryID_;
 	}
 
-	QString ChatTab::GetSelectedVariant () const
+	std::optional<QString> ChatTab::GetSelectedVariant () const
 	{
-		return Ui_.VariantBox_->currentText ();
+		if (const auto& text = Ui_.VariantBox_->currentText ();
+			!text.isEmpty ())
+			return text;
+		return {};
 	}
 
 	bool ChatTab::eventFilter (QObject *obj, QEvent *event)

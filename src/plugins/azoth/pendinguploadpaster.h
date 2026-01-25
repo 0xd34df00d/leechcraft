@@ -24,10 +24,10 @@ namespace Azoth
 		Q_OBJECT
 
 		ICLEntry *Entry_;
-		const QString EntryVariant_;
+		const std::optional<QString> EntryVariant_;
 		const QString Filename_;
 	public:
-		PendingUploadPaster (QObject *sharer, ICLEntry *entry, const QString& variant, const QString& filename, QObject* = 0);
+		PendingUploadPaster (QObject *sharer, ICLEntry *entry, const std::optional<QString>& variant, const QString& filename, QObject* = 0);
 	private slots:
 		void handleFileUploaded (const QString&, const QUrl&);
 	};

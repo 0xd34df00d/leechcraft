@@ -74,7 +74,7 @@ namespace Azoth
 
 		void EnqueueRestoreInfos (const QList<RestoreChatInfo>&);
 
-		QString GetActiveVariant (ICLEntry*) const;
+		std::optional<QString> GetActiveVariant (ICLEntry*) const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:

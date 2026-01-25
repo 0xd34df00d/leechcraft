@@ -16,7 +16,7 @@ namespace LC
 namespace Azoth
 {
 	PendingUploadPaster::PendingUploadPaster (QObject *sharer,
-			ICLEntry *entry, const QString& variant, const QString& filename, QObject *parent)
+			ICLEntry *entry, const std::optional<QString>& variant, const QString& filename, QObject *parent)
 	: QObject (parent)
 	, Entry_ (entry)
 	, EntryVariant_ (variant)

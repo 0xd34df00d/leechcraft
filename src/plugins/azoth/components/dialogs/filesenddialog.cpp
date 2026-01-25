@@ -119,7 +119,7 @@ namespace Azoth
 			return;
 
 		QObject *job = xferMgr->SendFile (Entry_->GetEntryID (),
-				EntryVariant_, filename, Ui_.CommentEdit_->toPlainText ());
+				EntryVariant_.value_or ({}), filename, Ui_.CommentEdit_->toPlainText ());
 		if (!job)
 		{
 			const auto& e = Util::MakeNotification ("Azoth",

@@ -23,7 +23,7 @@ namespace Azoth
 
 		Ui::FileSendDialog Ui_;
 		ICLEntry *Entry_;
-		const QString EntryVariant_;
+		const std::optional<QString> EntryVariant_;
 		bool AccSupportsFT_;
 
 		struct SharerInfo

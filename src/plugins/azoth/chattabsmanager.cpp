@@ -227,11 +227,11 @@ namespace LC::Azoth
 		}
 	}
 
-	QString ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
+	std::optional<QString> ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
 	{
 		ChatTab_ptr tab = Entry2Tab_ [entry->GetEntryID ()];
 		if (!tab)
-			return QString ();
+			return {};
 
 		return tab->GetSelectedVariant ();
 	}
