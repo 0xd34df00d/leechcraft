@@ -11,9 +11,9 @@
 #include <QShortcut>
 #include <QtDebug>
 #include <util/shortcuts/shortcutmanager.h>
+#include "../../xmlsettingsmanager.h"
+#include "../../core.h"
 #include "chattab.h"
-#include "xmlsettingsmanager.h"
-#include "core.h"
 
 namespace LC
 {

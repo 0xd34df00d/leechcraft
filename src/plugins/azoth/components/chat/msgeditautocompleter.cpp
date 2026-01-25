@@ -10,11 +10,11 @@
 #include <QTextEdit>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "interfaces/azoth/iprovidecommands.h"
-#include "core.h"
-#include "util.h"
-#include "xmlsettingsmanager.h"
-#include "corecommandsmanager.h"
+#include "../../interfaces/azoth/iprovidecommands.h"
+#include "../../core.h"
+#include "../../util.h"
+#include "../../xmlsettingsmanager.h"
+#include "../../corecommandsmanager.h"
 
 namespace LC
 {

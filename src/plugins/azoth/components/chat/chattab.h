@@ -10,7 +10,6 @@
 
 #include <QWidget>
 #include <QPointer>
-#include <QPersistentModelIndex>
 #include <QDateTime>
 #include <util/sll/util.h>
 #include <interfaces/core/ihookproxy.h>

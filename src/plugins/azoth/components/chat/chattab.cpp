@@ -9,7 +9,6 @@
 #include "chattab.h"
 #include <cmath>
 #include <QWebEngineSettings>
-#include <QTextDocument>
 #include <QBuffer>
 #include <QPalette>
 #include <QApplication>
@@ -56,26 +55,26 @@
 #endif
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/userslistwidget.h"
-#include "core.h"
-#include "textedit.h"
-#include "chattabsmanager.h"
-#include "xmlsettingsmanager.h"
-#include "transferjobmanager.h"
-#include "callmanager.h"
 #include "callchatwidget.h"
-#include "msgformatterwidget.h"
-#include "actionsmanager.h"
-#include "contactdropfilter.h"
-#include "util.h"
-#include "proxyobject.h"
-#include "customchatstylemanager.h"
-#include "coremessage.h"
-#include "dummymsgmanager.h"
-#include "corecommandsmanager.h"
-#include "resourcesmanager.h"
-#include "msgeditautocompleter.h"
-#include "avatarsmanager.h"
 #include "chattabpartstatemanager.h"
+#include "contactdropfilter.h"
+#include "msgeditautocompleter.h"
+#include "msgformatterwidget.h"
+#include "textedit.h"
+#include "../../core.h"
+#include "../../chattabsmanager.h"
+#include "../../xmlsettingsmanager.h"
+#include "../../transferjobmanager.h"
+#include "../../callmanager.h"
+#include "../../actionsmanager.h"
+#include "../../util.h"
+#include "../../proxyobject.h"
+#include "../../customchatstylemanager.h"
+#include "../../coremessage.h"
+#include "../../dummymsgmanager.h"
+#include "../../corecommandsmanager.h"
+#include "../../resourcesmanager.h"
+#include "../../avatarsmanager.h"
 
 namespace LC
 {
@@ -636,7 +635,6 @@ namespace Azoth
 						return;
 
 					Ui_.MsgEdit_->clear ();
-					Ui_.MsgEdit_->document ()->clear ();
 					MsgFormatter_->Clear ();
 					CurrentHistoryPosition_ = -1;
 					MsgHistory_.prepend (text);

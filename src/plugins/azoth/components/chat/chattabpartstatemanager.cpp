@@ -9,8 +9,8 @@
 #include "chattabpartstatemanager.h"
 #include <QTimer>
 #include "interfaces/azoth/iclentry.h"
+#include "../../xmlsettingsmanager.h"
 #include "chattab.h"
-#include "xmlsettingsmanager.h"
 
 namespace LC::Azoth
 {

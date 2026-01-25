@@ -25,8 +25,8 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iclentry.h"
-#include "core.h"
-#include "actionsmanager.h"
+#include "../../actionsmanager.h"
+#include "../../core.h"
 
 namespace LC::Azoth
 {

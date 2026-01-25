@@ -32,10 +32,10 @@
 #include <util/xsd/wkfontswidget.h>
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/imucprotocol.h"
+#include "components/chat/chattab.h"
 #include "components/roster/mainwidget.h"
 #include "core.h"
 #include "chattabsmanager.h"
-#include "chattab.h"
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "servicediscoverywidget.h"

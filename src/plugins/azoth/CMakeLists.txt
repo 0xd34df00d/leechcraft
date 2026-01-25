@@ -40,6 +40,14 @@ add_util_library (azoth-util
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		components/chat/callchatwidget.cpp
+		components/chat/chattab.cpp
+		components/chat/chattabpartstatemanager.cpp
+		components/chat/chattabwebview.cpp
+		components/chat/contactdropfilter.cpp
+		components/chat/msgeditautocompleter.cpp
+		components/chat/msgformatterwidget.cpp
+		components/chat/textedit.cpp
 		components/dialogs/acceptriexdialog.cpp
 		components/dialogs/accounthandlerchooserdialog.cpp
 		components/dialogs/activitydialog.cpp
@@ -75,20 +83,15 @@ LC_DEFINE_PLUGIN (
 		azothschemehandler.cpp
 		core.cpp
 		chattabsmanager.cpp
-		chattab.cpp
 		accountslistwidget.cpp
 		pluginmanager.cpp
 		proxyobject.cpp
-		textedit.cpp
 		transferjobmanager.cpp
 		addaccountwizardfirstpage.cpp
 		util.cpp
 		servicediscoverywidget.cpp
 		consolewidget.cpp
 		callmanager.cpp
-		callchatwidget.cpp
-		chattabwebview.cpp
-		msgformatterwidget.cpp
 		searchwidget.cpp
 		actionsmanager.cpp
 		importmanager.cpp
@@ -98,7 +101,6 @@ LC_DEFINE_PLUGIN (
 		microblogstab.cpp
 		riexhandler.cpp
 		pendinguploadpaster.cpp
-		contactdropfilter.cpp
 		colorlisteditorwidget.cpp
 		customstatusesmanager.cpp
 		statuschange.cpp
@@ -110,13 +112,11 @@ LC_DEFINE_PLUGIN (
 		corecommandsmanager.cpp
 		resourcesmanager.cpp
 		notificationsmanager.cpp
-		msgeditautocompleter.cpp
 		avatarsmanager.cpp
 		avatarsstorage.cpp
 		avatarsstorageondisk.cpp
 		avatarsstoragethread.cpp
 		historysyncer.cpp
-		chattabpartstatemanager.cpp
 		sslerrorshandler.cpp
 		sslerrorschoicestorage.cpp
 		tabbase.cpp

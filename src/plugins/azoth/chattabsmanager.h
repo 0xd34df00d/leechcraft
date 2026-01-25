@@ -11,7 +11,7 @@
 #include <QObject>
 #include <QHash>
 #include <QPersistentModelIndex>
-#include "chattab.h"
+#include "components/chat/chattab.h"
 
 class QWidget;
 class QWebEngineProfile;

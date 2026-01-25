@@ -24,8 +24,8 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iresourceplugin.h"
-#include "xmlsettingsmanager.h"
-#include "core.h"
+#include "../../xmlsettingsmanager.h"
+#include "../../core.h"
 
 namespace LC
 {

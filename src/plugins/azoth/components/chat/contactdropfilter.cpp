@@ -21,13 +21,13 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
-#include "interfaces/azoth/irichtextmessage.h"
-#include "interfaces/azoth/iaccount.h"
-#include "core.h"
+#include "../../interfaces/azoth/irichtextmessage.h"
+#include "../../interfaces/azoth/iaccount.h"
+#include "../../core.h"
+#include "../../transferjobmanager.h"
+#include "../../dndutil.h"
+#include "../../util.h"
 #include "chattab.h"
-#include "transferjobmanager.h"
-#include "dndutil.h"
-#include "util.h"
 
 namespace LC
 {
