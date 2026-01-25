@@ -19,9 +19,9 @@ namespace LC::Azoth::Emitters
 		Q_OBJECT
 	public:
 		using QObject::QObject;
-
-		void stateChanged (IMediaCall::State);
-		void audioModeChanged (QIODevice::OpenMode);
+	signals:
+		void stateChanged (LC::Azoth::IMediaCall::State);
+		void audioModeChanged (QIODeviceBase::OpenMode);
 		void readFormatChanged ();
 		void writeFormatChanged ();
 	};

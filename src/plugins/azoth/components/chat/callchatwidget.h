@@ -6,32 +6,21 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CALLCHATWIDGET_H
-#define PLUGINS_AZOTH_CALLCHATWIDGET_H
+#pragma once
+
 #include <QWidget>
-#include "interfaces/azoth/imediacall.h"
 #include "ui_callchatwidget.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
+	class IMediaCall;
+
 	class CallChatWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::CallChatWidget)
 
 		Ui::CallChatWidget Ui_;
-		QObject * const CallObject_;
-		IMediaCall * const Call_;
 	public:
-		CallChatWidget (QObject*, QWidget* = 0);
-	private slots:
-		void on_AcceptButton__released ();
-		void on_HangupButton__released ();
-		void handleStateChanged (LC::Azoth::IMediaCall::State);
-		void scheduleDelete ();
+		explicit CallChatWidget (QObject*, QWidget* = nullptr);
 	};
 }
-}
-
-#endif

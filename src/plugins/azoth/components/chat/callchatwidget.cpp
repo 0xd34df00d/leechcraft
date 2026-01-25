@@ -8,69 +8,65 @@
 
 #include "callchatwidget.h"
 #include <QTimer>
+#include <util/azoth/emitters/mediacall.h>
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	CallChatWidget::CallChatWidget (QObject *call, QWidget *parent)
+	CallChatWidget::CallChatWidget (QObject *callObj, QWidget *parent)
 	: QWidget { parent }
-	, CallObject_ { call }
-	, Call_ { qobject_cast<IMediaCall*> (call) }
 	{
 		Ui_.setupUi (this);
 
 		Ui_.StatusLabel_->setText (tr ("Initializing..."));
 
-		if (Call_->GetDirection () == IMediaCall::DOut)
+		const auto call = qobject_cast<IMediaCall*> (callObj);
+
+		if (call->GetDirection () == IMediaCall::DOut)
 			Ui_.AcceptButton_->hide ();
 
-		connect (call,
-				SIGNAL (destroyed ()),
-				this,
-				SLOT (scheduleDelete ()));
+		connect (Ui_.AcceptButton_,
+				&QPushButton::released,
+				callObj,
+				[call] { call->Accept (); });
+		connect (Ui_.HangupButton_,
+				&QPushButton::released,
+				callObj,
+				[call] { call->Hangup (); });
 
-		connect (call,
-				SIGNAL (stateChanged (LC::Azoth::IMediaCall::State)),
-				this,
-				SLOT (handleStateChanged (LC::Azoth::IMediaCall::State)));
-	}
-
-	void CallChatWidget::handleStateChanged (IMediaCall::State state)
-	{
-		switch (state)
+		const auto handleFinished = [this]
 		{
-		case IMediaCall::SConnecting:
-			Ui_.StatusLabel_->setText (tr ("Connecting..."));
-			break;
-		case IMediaCall::SActive:
-			Ui_.StatusLabel_->setText (tr ("Active"));
-			break;
-		case IMediaCall::SDisconnecting:
-			Ui_.StatusLabel_->setText (tr ("Disconnecting"));
-			break;
-		case IMediaCall::SFinished:
-			scheduleDelete ();
-			break;
-		}
-	}
+			Ui_.StatusLabel_->setText (tr ("No active call"));
 
-	void CallChatWidget::on_AcceptButton__released ()
-	{
-		Call_->Accept ();
-	}
+			using namespace std::chrono_literals;
+			QTimer::singleShot (3s,
+					this,
+					&QObject::deleteLater);
+		};
 
-	void CallChatWidget::on_HangupButton__released ()
-	{
-		Call_->Hangup ();
-	}
-
-	void CallChatWidget::scheduleDelete ()
-	{
-		Ui_.StatusLabel_->setText (tr ("No active call"));
-		QTimer::singleShot (3000,
+		connect (callObj,
+				&QObject::destroyed,
 				this,
-				SLOT (deleteLater ()));
+				handleFinished);
+		connect (&call->GetMediaCallEmitter (),
+				&Emitters::MediaCall::stateChanged,
+				this,
+				[=, this] (IMediaCall::State state)
+				{
+					switch (state)
+					{
+					case IMediaCall::SConnecting:
+						Ui_.StatusLabel_->setText (tr ("Connecting..."));
+						break;
+					case IMediaCall::SActive:
+						Ui_.StatusLabel_->setText (tr ("Active"));
+						break;
+					case IMediaCall::SDisconnecting:
+						Ui_.StatusLabel_->setText (tr ("Disconnecting"));
+						break;
+					case IMediaCall::SFinished:
+						handleFinished ();
+						break;
+					}
+				});
 	}
-}
 }
