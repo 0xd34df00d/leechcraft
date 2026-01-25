@@ -26,7 +26,7 @@ namespace Azoth
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
 	private:
-		bool IsMessageSend (QKeyEvent&) const;
+		bool IsMessageSend (const QKeyEvent&) const;
 	private slots:
 		void handleMsgFontSize ();
 
@@ -35,8 +35,6 @@ namespace Azoth
 		void deleteEOL ();
 	signals:
 		void messageSendRequested ();
-		void keyTabPressed ();
-		void clearAvailableNicks ();
 		void scroll (int);
 	};
 }

@@ -76,20 +76,15 @@ namespace Azoth
 	{
 		if (IsMessageSend (*event))
 			emit messageSendRequested ();
-		else if (event->key () == Qt::Key_Tab && event->modifiers () == Qt::NoModifier)
-			emit keyTabPressed ();
 		else if (event->modifiers () & Qt::ShiftModifier &&
 				(event->key () == Qt::Key_PageUp ||
 				 event->key () == Qt::Key_PageDown))
 			emit scroll (event->key () == Qt::Key_PageUp ? -1 : 1);
 		else
-		{
-			emit clearAvailableNicks ();
 			QTextEdit::keyPressEvent (event);
-		}
 	}
 
-	bool TextEdit::IsMessageSend (QKeyEvent& event) const
+	bool TextEdit::IsMessageSend (const QKeyEvent& event) const
 	{
 		const auto key = event.key ();
 		if (const bool isEnter = key == Qt::Key_Return || (AllowKeypadEnter_ && key == Qt::Key_Enter);
@@ -118,12 +113,7 @@ namespace Azoth
 	void TextEdit::deleteWord ()
 	{
 		auto c = textCursor ();
-
-		const auto pos = c.position ();
-		c.movePosition (QTextCursor::StartOfWord, QTextCursor::KeepAnchor);
-		if (pos == c.position ())
-			c.movePosition (QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
-
+		c.select (QTextCursor::WordUnderCursor);
 		c.removeSelectedText ();
 	}
 

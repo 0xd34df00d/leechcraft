@@ -1704,23 +1704,15 @@ namespace Azoth
 				SLOT (handleHistoryDown ()));
 
 		connect (Ui_.MsgEdit_,
-				SIGNAL (keyReturnPressed ()),
+				&TextEdit::messageSendRequested,
 				this,
-				SLOT (messageSend ()));
+				&ChatTab::messageSend);
 		connect (Ui_.MsgEdit_,
 				SIGNAL (scroll (int)),
 				this,
 				SLOT (handleEditScroll (int)));
 
-		const auto completer = new MsgEditAutocompleter (EntryID_, Ui_.MsgEdit_, this);
-		connect (Ui_.MsgEdit_,
-				SIGNAL (keyTabPressed ()),
-				completer,
-				SLOT (complete ()));
-		connect (Ui_.MsgEdit_,
-				SIGNAL (clearAvailableNicks ()),
-				completer,
-				SLOT (resetState ()));
+		new MsgEditAutocompleter (EntryID_, *Ui_.MsgEdit_);
 
 		UpdateTextHeight ();
 

@@ -13,33 +13,33 @@
 
 class QTextEdit;
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	struct NickReplacement;
-
 	class MsgEditAutocompleter : public QObject
 	{
-		Q_OBJECT
-
 		const QString EntryId_;
-		QTextEdit * const MsgEdit_;
+		QTextEdit& Edit_;
 
-		QStringList AvailableNickList_;
-		int CurrentNickIndex_ = 0;
-		int LastSpacePosition_ = -1;
-		QString NickFirstPart_;
+		struct Idle {};
+		struct Completing
+		{
+			int StartCursorPos_;
+			QStringList Completions_;
+			qsizetype Idx_;
+			qsizetype CurCompLength_;
+		};
+		struct NoCompletions {};
+
+		using State = std::variant<Idle, Completing, NoCompletions>;
+		State State_;
+
+		bool InsertingCompletion_ = false;
 	public:
-		MsgEditAutocompleter (const QString& entryId, QTextEdit *msgEdit, QObject* = nullptr);
+		explicit MsgEditAutocompleter (const QString& entryId, QTextEdit& msgEdit);
+	protected:
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
-		QStringList GetPossibleCompletions (const QString& firstPart, int position) const;
-		QStringList GetCommandCompletions (int position) const;
-		QStringList GetNickCompletions (int position) const;
-		NickReplacement GetNickFromState (const QStringList& participants);
-	public slots:
-		void complete ();
-		void resetState ();
+		void Complete ();
+		Completing OfferCompletion (Completing);
 	};
-}
 }
