@@ -16,6 +16,6 @@ LC_DEFINE_PLUGIN (
 		util.cpp
 	SETTINGS azothotroidsettings.xml
 	QT_COMPONENTS Concurrent Widgets
-	LINK_LIBRARIES PkgConfig::OTR
+	LINK_LIBRARIES leechcraft-azoth-util PkgConfig::OTR
 	INSTALL_SHARE
 	)

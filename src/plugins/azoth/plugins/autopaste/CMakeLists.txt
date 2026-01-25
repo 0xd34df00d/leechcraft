@@ -17,5 +17,6 @@ LC_DEFINE_PLUGIN (
 		pasteservicefactory.cpp
 	SETTINGS azothautopastesettings.xml
 	QT_COMPONENTS Network Widgets
+	LINK_LIBRARIES leechcraft-azoth-util
 	INSTALL_SHARE
 	)

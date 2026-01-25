@@ -9,4 +9,5 @@ LC_DEFINE_PLUGIN (
 		abbreviation.cpp
 		shortcutsmanager.cpp
 	QT_COMPONENTS Core Widgets
+	LINK_LIBRARIES leechcraft-azoth-util
 	)
