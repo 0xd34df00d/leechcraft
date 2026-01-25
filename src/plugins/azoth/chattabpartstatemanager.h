@@ -13,9 +13,7 @@
 
 class QTimer;
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class ChatTab;
 
@@ -34,5 +32,4 @@ namespace Azoth
 		void SetChatPartState (ChatPartState);
 		void HandleVariantChanged (const QString&);
 	};
-}
 }

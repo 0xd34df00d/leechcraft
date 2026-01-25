@@ -37,7 +37,7 @@ namespace Azoth
 		connect (&tab,
 				&ChatTab::entryMadeCurrent,
 				this,
-				setState (CPSInactive));
+				setState (CPSActive));
 		connect (&tab,
 				&ChatTab::messageSent,
 				this,
@@ -46,10 +46,13 @@ namespace Azoth
 		connect (&tab,
 				&ChatTab::composingTextChanged,
 				this,
-				[this]
+				[this] (const QString& text)
 				{
-					SetChatPartState (CPSComposing);
-					TypeTimer_->start ();
+					if (!text.isEmpty ())
+					{
+						SetChatPartState (CPSComposing);
+						TypeTimer_->start ();
+					}
 				});
 
 		connect (&tab,
