@@ -11,6 +11,7 @@
 #include <QShortcut>
 #include <QtDebug>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/qtutil.h>
 #include "../../xmlsettingsmanager.h"
 #include "../../core.h"
 #include "chattab.h"
@@ -56,26 +57,25 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("MsgEditFontSize",
 				this, "handleMsgFontSize");
 		handleMsgFontSize ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("KPEnterAlias", this,
+				[this] (bool allow) { AllowKeypadEnter_ = allow; });
+		XmlSettingsManager::Instance ().RegisterObject ("SendOnModifier", this,
+				[this] (const QString& modOption)
+				{
+					if (modOption == "CtrlEnter"_qs)
+						SendMods_ = Qt::ControlModifier;
+					else if (modOption == "ShiftEnter"_qs)
+						SendMods_ = Qt::ShiftModifier;
+					else
+						SendMods_ = {};
+				});
 	}
 
 	void TextEdit::keyPressEvent (QKeyEvent *event)
 	{
-		const QString& modOption = XmlSettingsManager::Instance ()
-				.property ("SendOnModifier").toString ();
-		Qt::KeyboardModifiers sendMod = Qt::NoModifier;
-		if (modOption == "CtrlEnter")
-			sendMod = Qt::ControlModifier;
-		else if (modOption == "ShiftEnter")
-			sendMod = Qt::ShiftModifier;
-
-		const bool kpEnter = XmlSettingsManager::Instance ()
-				.property ("KPEnterAlias").toBool ();
-		const bool sendMsgButton = event->key () == Qt::Key_Return ||
-				(kpEnter && event->key () == Qt::Key_Enter);
-		const bool modifiersOk = event->modifiers () == sendMod ||
-				(kpEnter && event->modifiers () == (sendMod | Qt::KeypadModifier));
-		if (sendMsgButton && modifiersOk)
-			emit keyReturnPressed ();
+		if (IsMessageSend (*event))
+			emit messageSendRequested ();
 		else if (event->key () == Qt::Key_Tab && event->modifiers () == Qt::NoModifier)
 			emit keyTabPressed ();
 		else if (event->modifiers () & Qt::ShiftModifier &&
@@ -87,6 +87,18 @@ namespace Azoth
 			emit clearAvailableNicks ();
 			QTextEdit::keyPressEvent (event);
 		}
+	}
+
+	bool TextEdit::IsMessageSend (QKeyEvent& event) const
+	{
+		const auto key = event.key ();
+		if (const bool isEnter = key == Qt::Key_Return || (AllowKeypadEnter_ && key == Qt::Key_Enter);
+			!isEnter)
+			return false;
+
+		const auto modsOk = event.modifiers () == SendMods_ ||
+				(AllowKeypadEnter_ && event.modifiers () == (SendMods_ | Qt::KeypadModifier));
+		return modsOk;
 	}
 
 	void TextEdit::handleMsgFontSize ()

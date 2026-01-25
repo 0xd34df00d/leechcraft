@@ -19,10 +19,14 @@ namespace Azoth
 		Q_OBJECT
 
 		QFont DefaultFont_;
+		Qt::KeyboardModifiers SendMods_ {};
+		bool AllowKeypadEnter_ = true;
 	public:
 		TextEdit (QWidget *parent = 0);
 	protected:
-		void keyPressEvent (QKeyEvent*);
+		void keyPressEvent (QKeyEvent*) override;
+	private:
+		bool IsMessageSend (QKeyEvent&) const;
 	private slots:
 		void handleMsgFontSize ();
 
@@ -30,7 +34,7 @@ namespace Azoth
 		void deleteBOL ();
 		void deleteEOL ();
 	signals:
-		void keyReturnPressed ();
+		void messageSendRequested ();
 		void keyTabPressed ();
 		void clearAvailableNicks ();
 		void scroll (int);
