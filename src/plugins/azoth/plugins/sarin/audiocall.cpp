@@ -59,7 +59,7 @@ namespace LC::Azoth::Sarin
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no call idx";
-			emit stateChanged (SFinished);
+			emit Emitter_.stateChanged (SFinished);
 			return;
 		}
 
@@ -71,6 +71,11 @@ namespace LC::Azoth::Sarin
 
 		if (Dir_ == DOut)
 			InitiateCall ();
+	}
+
+	Emitters::MediaCall& AudioCall::GetMediaCallEmitter ()
+	{
+		return Emitter_;
 	}
 
 	IMediaCall::Direction AudioCall::GetDirection () const
@@ -97,7 +102,7 @@ namespace LC::Azoth::Sarin
 						qWarning () << Q_FUNC_INFO
 								<< "error accepting the call:"
 								<< Util::Visit (err, [] (auto&& e) { return e.what (); });
-						emit stateChanged (SFinished);
+						emit Emitter_.stateChanged (SFinished);
 					}
 				};
 	}
@@ -134,14 +139,14 @@ namespace LC::Azoth::Sarin
 					[this] (const CallManager::AudioFormatParams& params)
 					{
 						HandleWriteParams (params);
-						emit stateChanged (SConnecting);
+						emit Emitter_.stateChanged (SConnecting);
 					},
 					[this] (const auto& err)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "error initiating the call:"
 								<< Util::Visit (err, [] (auto&& e) { return e.what (); });
-						emit stateChanged (SFinished);
+						emit Emitter_.stateChanged (SFinished);
 					}
 				};
 	}
@@ -161,7 +166,7 @@ namespace LC::Azoth::Sarin
 			ReadFmt_.setChannelCount (channels);
 			ReadFmt_.setSampleRate (sampleRate);
 
-			emit readFormatChanged ();
+			emit Emitter_.readFormatChanged ();
 		}
 	}
 
@@ -174,7 +179,7 @@ namespace LC::Azoth::Sarin
 
 		if (state & TOXAV_FRIEND_CALL_STATE_ERROR)
 		{
-			emit stateChanged (SFinished);
+			emit Emitter_.stateChanged (SFinished);
 			qWarning () << Q_FUNC_INFO
 					<< "got error state";
 			return;
@@ -182,7 +187,7 @@ namespace LC::Azoth::Sarin
 
 		if (state & TOXAV_FRIEND_CALL_STATE_FINISHED)
 		{
-			emit stateChanged (SFinished);
+			emit Emitter_.stateChanged (SFinished);
 			return;
 		}
 
@@ -198,8 +203,8 @@ namespace LC::Azoth::Sarin
 			CurrentMode_ |= QIODevice::WriteOnly;
 
 		if (CurrentMode_ == QIODevice::ReadWrite)
-			emit stateChanged (SActive);
+			emit Emitter_.stateChanged (SActive);
 
-		emit audioModeChanged (CurrentMode_);
+		emit Emitter_.audioModeChanged (CurrentMode_);
 	}
 }

@@ -6,22 +6,26 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IMEDIACALL_H
-#define PLUGINS_AZOTH_INTERFACES_IMEDIACALL_H
+#pragma once
+
 #include <QtPlugin>
 #include <QIODevice>
 
-class QIODevice;
 class QAudioFormat;
 
-namespace LC
+namespace LC::Azoth::Emitters
 {
-namespace Azoth
+	class MediaCall;
+}
+
+namespace LC::Azoth
 {
 	class IMediaCall
 	{
+	protected:
+		virtual ~IMediaCall () = default;
 	public:
-		virtual ~IMediaCall () {}
+		virtual Emitters::MediaCall& GetMediaCallEmitter () = 0;
 
 		enum Direction
 		{
@@ -52,19 +56,8 @@ namespace Azoth
 		virtual QAudioFormat GetAudioWriteFormat () const = 0;
 
 		virtual QIODevice* GetVideoDevice () = 0;
-	protected:
-		virtual void stateChanged (State) = 0;
-
-		virtual void audioModeChanged (QIODevice::OpenMode) = 0;
-
-		virtual void readFormatChanged () = 0;
-
-		virtual void writeFormatChanged () = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Azoth::IMediaCall,
 		"org.Deviant.LeechCraft.Azoth.IMediaCall/1.0")
-
-#endif

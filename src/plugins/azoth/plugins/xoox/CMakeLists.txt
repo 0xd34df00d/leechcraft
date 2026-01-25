@@ -121,6 +121,9 @@ LC_DEFINE_PLUGIN (
 	RESOURCES azothxooxresources.qrc
 	SETTINGS azothxooxsettings.xml
 	QT_COMPONENTS Concurrent Network Sql Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
-	LINK_LIBRARIES PkgConfig::QXMPP $<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
+	LINK_LIBRARIES
+		leechcraft-azoth-util
+		PkgConfig::QXMPP
+		$<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
 	INSTALL_DESKTOP
 	)

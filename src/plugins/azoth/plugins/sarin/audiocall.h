@@ -16,6 +16,7 @@
 #endif
 
 #include <interfaces/azoth/imediacall.h>
+#include <util/azoth/emitters/mediacall.h>
 #include "callmanager.h"
 
 template<typename T>
@@ -49,10 +50,14 @@ namespace LC::Azoth::Sarin
 
 		std::shared_ptr<AudioCallDevice> Device_;
 		QIODevice::OpenMode CurrentMode_ = QIODevice::NotOpen;
+
+		Emitters::MediaCall Emitter_;
 	public:
 		AudioCall (const ToxContact*, CallManager*, Direction);
 
 		void SetCallIdx (const std::optional<qint32>&);
+
+		Emitters::MediaCall& GetMediaCallEmitter ();
 
 		Direction GetDirection () const;
 		QString GetSourceID () const;
@@ -70,11 +75,5 @@ namespace LC::Azoth::Sarin
 
 		void HandleReadFrameParams (int32_t, int, int);
 		void HandleCallStateChanged (int32_t, uint32_t);
-	signals:
-		void stateChanged (LC::Azoth::IMediaCall::State);
-		void audioModeChanged (QIODevice::OpenMode);
-
-		void readFormatChanged ();
-		void writeFormatChanged ();
 	};
 }

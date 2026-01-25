@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QXmppCallManager.h>
 #include <interfaces/azoth/imediacall.h>
+#include <util/azoth/emitters/mediacall.h>
 
 #ifndef ENABLE_MEDIACALLS
 #error Dont include this if media calls are disabled.
@@ -32,9 +33,11 @@ namespace Xoox
 
 		QXmppCall *Call_;
 		GlooxAccount *Account_;
+		Emitters::MediaCall Emitter_;
 	public:
 		MediaCall (GlooxAccount*, QXmppCall*);
 
+		Emitters::MediaCall& GetMediaCallEmitter ();
 		Direction GetDirection () const;
 		QString GetSourceID () const;
 		void Accept ();
@@ -43,11 +46,6 @@ namespace Xoox
 		QAudioFormat GetAudioReadFormat () const;
 		QAudioFormat GetAudioWriteFormat () const;
 		QIODevice* GetVideoDevice ();
-	signals:
-		void stateChanged (LC::Azoth::IMediaCall::State);
-
-		void readFormatChanged ();
-		void writeFormatChanged ();
 	};
 }
 }

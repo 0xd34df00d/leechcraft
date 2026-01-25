@@ -27,7 +27,12 @@ namespace Xoox
 		connect (Call_,
 				&QXmppCall::stateChanged,
 				this,
-				[this] (QXmppCall::State state) { emit stateChanged (static_cast<State> (state); ) });
+				[this] (QXmppCall::State state) { emit Emitter_.stateChanged (static_cast<State> (state); ) });
+	}
+
+	Emitters::MediaCall& MediaCall::GetMediaCallEmitter ()
+	{
+		return Emitter_;
 	}
 
 	IMediaCall::Direction MediaCall::GetDirection () const

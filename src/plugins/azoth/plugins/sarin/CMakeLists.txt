@@ -44,5 +44,7 @@ LC_DEFINE_PLUGIN (
 			calldatawriter.cpp
 			>
 	QT_COMPONENTS Sql Widgets ${EXTRA_MULTIMEDIA_LIBRARY}
-	LINK_LIBRARIES PkgConfig::TOX
+	LINK_LIBRARIES
+		leechcraft-azoth-util
+		PkgConfig::TOX
 	)

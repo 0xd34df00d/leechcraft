@@ -34,6 +34,7 @@ endif ()
 
 add_util_library (azoth-util
 	SRCS
+		util/azoth/emitters/mediacall.cpp
 		util/azoth/hooks.cpp
 	USES Widgets
 	)
