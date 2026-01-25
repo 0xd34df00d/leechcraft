@@ -1,431 +1,198 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<page>
-		<label value="Accounts" />
+	<page label="Accounts">
 		<item type="customwidget" property="AccountsWidget" />
 	</page>
-	<page>
-		<label value="Appearance" />
-		<tab>
-			<label value="Themes" />
-			<item type="combobox" property="StatusIcons" mayHaveDataSource="true" moreThisStuff="StatusIcons">
-				<label value="Status icons:" />
-				<option name="Likey" default="true">
-					<label value="Likey" />
-				</option>
+	<page label="Appearance">
+		<tab label="Themes">
+			<item type="combobox" property="StatusIcons" mayHaveDataSource="true" moreThisStuff="StatusIcons" label="Status icons:">
+				<option name="Likey" default="true" label="Likey" />
 			</item>
-			<item type="combobox" property="SmileIcons" mayHaveDataSource="true" moreThisStuff="Smiles">
-				<label value="Smiles:" />
-				<option name="None" default="true">
-					<label value="None" />
-				</option>
+			<item type="combobox" property="SmileIcons" mayHaveDataSource="true" moreThisStuff="Smiles" label="Smiles:">
+				<option name="None" default="true" label="None" />
 			</item>
-			<item type="combobox" property="ClientIcons" mayHaveDataSource="true" moreThisStuff="ClientIcons">
-				<label value="Client icons:" />
-				<option name="default" default="true">
-					<label value="default" />
-				</option>
+			<item type="combobox" property="ClientIcons" mayHaveDataSource="true" moreThisStuff="ClientIcons" label="Client icons:">
+				<option name="default" default="true" label="default" />
 			</item>
-			<item type="combobox" property="AffIcons" mayHaveDataSource="true" moreThisStuff="AffIcons">
-				<label value="Affiliation icons:" />
-				<option name="default" default="true">
-					<label value="default" />
-				</option>
+			<item type="combobox" property="AffIcons" mayHaveDataSource="true" moreThisStuff="AffIcons" label="Affiliation icons:">
+				<option name="default" default="true" label="default" />
 			</item>
-			<item type="combobox" property="MoodIcons" mayHaveDataSource="true" moreThisStuff="MoodIcons">
-				<label value="User mood icons:" />
-				<option name="default" default="true">
-					<label value="default" />
-				</option>
+			<item type="combobox" property="MoodIcons" mayHaveDataSource="true" moreThisStuff="MoodIcons" label="User mood icons:">
+				<option name="default" default="true" label="default" />
 			</item>
-			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true" moreThisStuff="ActivityIcons">
-				<label value="User activity icons:" />
-				<option name="default" default="true">
-					<label value="default" />
-				</option>
+			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true" moreThisStuff="ActivityIcons" label="User activity icons:">
+				<option name="default" default="true" label="default" />
 			</item>
-			<item type="combobox" property="SystemIcons" mayHaveDataSource="true" moreThisStuff="SystemIcons">
-				<label value="General icons:" />
-				<option name="default" default="true">
-					<label value="default" />
-				</option>
+			<item type="combobox" property="SystemIcons" mayHaveDataSource="true" moreThisStuff="SystemIcons" label="General icons:">
+				<option name="default" default="true" label="default" />
 			</item>
-			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true" moreThisStuff="ChatWindowStyles">
-				<label value="Chat window style:" />
-				<option name="Basic" default="true">
-					<label value="Basic" />
-				</option>
+			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true" moreThisStuff="ChatWindowStyles" label="Chat window style:">
+				<option name="Basic" default="true" label="Basic" />
 			</item>
-			<item type="combobox" property="ChatWindowStyleVariant" mayHaveDataSource="true">
-				<label value="Chat window style variant:" />
-			</item>
-			<item type="groupbox" property="CustomMUCStyle" checkable="true" default="false">
-				<label value="Custom theme for multiuser chats" />
-				<item type="combobox" property="MUCWindowStyle" mayHaveDataSource="true">
-					<label value="MUC window style:" />
-					<option name="Basic" default="true">
-						<label value="Basic" />
-					</option>
+			<item type="combobox" property="ChatWindowStyleVariant" mayHaveDataSource="true" label="Chat window style variant:" />
+			<item type="groupbox" property="CustomMUCStyle" checkable="true" default="false" label="Custom theme for multiuser chats">
+				<item type="combobox" property="MUCWindowStyle" mayHaveDataSource="true" label="Conference window style:">
+					<option name="Basic" default="true" label="Basic" />
 				</item>
-				<item type="combobox" property="MUCWindowStyleVariant" mayHaveDataSource="true">
-					<label value="MUC window style variant:" />
-				</item>
+				<item type="combobox" property="MUCWindowStyleVariant" mayHaveDataSource="true" label="Conference window style variant:" />
 			</item>
 		</tab>
-		<tab>
-			<label value="Contact list" />
-			<item type="checkbox" property="ShowSelfContacts" default="true">
-				<label value="Show self-contacts" />
+		<tab label="Contact list">
+			<item type="checkbox" property="ShowSelfContacts" default="true" label="Show self-contacts" />
+			<item type="checkbox" property="ShowMenuBar" default="true" label="Show toolbar on top of the contact list" />
+			<item type="checkbox" property="ShowStatuses" default="true" label="Show statuses" />
+			<item type="checkbox" property="ShowAvatars" default="true" label="Show avatars" />
+			<item type="checkbox" property="ShowClientIcons" default="true" label="Show client icons" />
+			<item type="checkbox" property="GroupContacts" default="true" label="Group contacts">
+				<tooltip>When enabled, contacts are displayed under their corresponding groups. Otherwise, they all are displayed in one big list.</tooltip>
 			</item>
-			<item type="checkbox" property="ShowMenuBar" default="true">
-				<label value="Show toolbar on top of the contact list" />
+			<item type="checkbox" property="OrderByStatus" default="true" label="Order contacts by status">
+				<tooltip>When enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</tooltip>
 			</item>
-			<item type="checkbox" property="ShowStatuses" default="true">
-				<label value="Show statuses" />
-			</item>
-			<item type="checkbox" property="ShowAvatars" default="true">
-				<label value="Show avatars" />
-			</item>
-			<item type="checkbox" property="ShowClientIcons" default="true">
-				<label value="Show client icons" />
-			</item>
-			<item type="checkbox" property="GroupContacts" default="true">
-				<label value="Group contacts" />
-				<tooltip>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</tooltip>
-			</item>
-			<item type="checkbox" property="OrderByStatus" default="true">
-				<label value="Group contacts by status" />
-				<tooltip>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</tooltip>
-			</item>
-			<item type="checkbox" property="HighlightGroups" default="false">
-				<label value="Highlight groups" />
-			</item>
-			<item type="checkbox" property="HideErrorContactsWithOffline" default="false">
-				<label value="Hide contacts with errors when hiding offline contacts" />
-			</item>
-			<item type="spinbox" property="RosterContactHeight" default="20" minimum="8" maximum="96">
-				<label value="Distance between contacts in roster:" />
-				<suffix value=" px" />
-			</item>
-			<item type="spinbox" property="CLAvatarsSize" default="300" minimum="32" maximum="600">
-				<label value="Avatars size in tooltips:" />
-				<suffix value=" px" />
-			</item>
+			<item type="checkbox" property="HighlightGroups" default="false" label="Highlight groups" />
+			<item type="checkbox" property="HideErrorContactsWithOffline" default="false" label="Hide contacts with errors when hiding offline contacts" />
+			<item type="spinbox" property="RosterContactHeight" default="20" minimum="8" maximum="96" label="Distance between contacts in roster:" suffix=" px" />
+			<item type="spinbox" property="CLAvatarsSize" default="300" minimum="32" maximum="600" label="Avatars size in tooltips:" suffix=" px" />
 		</tab>
-		<tab>
-			<label value="Chat windows" />
-			<groupbox>
-				<label value="Chat view formatting"/>
-				<item type="lineedit" property="PreNickText" default="">
-					<label value="Pre-nick text:" />
+		<tab label="Chat windows">
+			<groupbox label="Chat view formatting">
+				<item type="lineedit" property="PreNickText" default="" label="Text before nicknames:" />
+				<item type="lineedit" property="PostNickText" default=":" label="Text after nicknames:" />
+				<item type="lineedit" property="PostAddressText" default=":" label="Text after a mention:" />
+				<item type="checkbox" property="ShowRichTextMessageBody" default="true" label="Show rich text message body">
+					<tooltip>Whether rich text message body should be displayed instead of the plain text, if supported by the protocol plugin and available in the message. This setting controls the default value, and the behavior can be changed for each chat window.</tooltip>
 				</item>
-				<item type="lineedit" property="PostNickText" default=":">
-					<label value="Post-nick text:" />
+				<item type="checkbox" property="ShowRichTextEditor" default="true" label="Show rich message editor">
+					<tooltip>Whether rich text editor should be displayed, if supported by the protocol plugin. This setting controls the default value, and the behavior can be changed for each chat window.</tooltip>
 				</item>
-				<item type="lineedit" property="PostAddressText" default=":">
-					<label value="Post-address text:" />
-				</item>
-				<item type="checkbox" property="ShowRichTextMessageBody" default="true">
-					<label value="Show rich text message body (if available)" />
-					<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
-				</item>
-				<item type="checkbox" property="ShowRichTextEditor" default="true">
-					<label value="Show rich text editor (if available)" />
-					<tooltip>Whether rich text editor should be displayed, if supported by the protocol plugin. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
-				</item>
-				<item type="checkbox" property="ShowNormalChatResources" default="false">
-					<label value="Show client resources in normal one-to-one chats" />
-				</item>
-				<item type="color" property="HighlightColor" default="#FF0000">
-					<label value="Highlight color:" />
-				</item>
-				<item type="spinbox" property="MsgEditFontSize" default="5" minimum="5" maximum="72">
-					<label value="Message editor font size:" />
-					<suffix value=" px" />
+				<item type="checkbox" property="ShowNormalChatResources" default="false" label="Show client resources in normal one-to-one chats" />
+				<item type="color" property="HighlightColor" default="#FF0000" label="Highlight color:" />
+				<item type="spinbox" property="MsgEditFontSize" default="5" minimum="5" maximum="72" label="Message editor font size:" suffix=" px">
 					<special value="system default" />
 				</item>
-				<item type="spinbox" property="ShortenURLLength" default="100" minimum="10" maximum="1000">
-					<label value="Shorten URLs longer than:" />
-					<suffix value=" symbols" />
+				<item type="spinbox" property="ShortenURLLength" default="100" minimum="10" maximum="1000" label="Shorten URLs longer than:" suffix=" symbols" />
+			</groupbox>
+			<groupbox label="Images">
+				<item type="checkbox" property="ShowRichImagesAsLinks" default="false" label="Show rich text images in chat as links" />
+				<item type="groupbox" checkable="true" property="LimitMaxImageSize" default="false" label="Limit the display dimensions of images embedded in messages">
+					<item type="spinbox" property="MaxImageWidth" default="1440" minimum="0" maximum="100000" step="10" label="Maximum width:" suffix=" px" />
+					<item type="spinbox" property="MaxImageHeight" default="900" minimum="0" maximum="100000" step="10" label="Maximum height:" suffix=" px" />
 				</item>
 			</groupbox>
-			<groupbox>
-				<label value="Images" />
-				<item type="checkbox" property="ShowRichImagesAsLinks" default="false">
-					<label value="Show rich text images in chat as links" />
+			<groupbox label="Chat tab">
+				<item type="combobox" property="RichFormatterPosition" label="Rich text format toolbar position:">
+					<option name="aboveEdit" default="true" label="Above message editor" />
+					<option name="belowEdit" label="Below message editor" />
 				</item>
-				<item type="groupbox" checkable="true" property="LimitMaxImageSize" default="false">
-					<label value="Limit the display dimensions of images embedded in messages" />
-					<item type="spinbox" property="MaxImageWidth" default="1440" minimum="0" maximum="100000" step="10">
-						<label value="Maximum width:" />
-						<suffix value=" px" />
-					</item>
-					<item type="spinbox" property="MaxImageHeight" default="900" minimum="0" maximum="100000" step="10">
-						<label value="Maximum height:" />
-						<suffix value=" px" />
-					</item>
-				</item>
-			</groupbox>
-			<groupbox>
-				<label value="Chat tab" />
-				<item type="combobox" property="RichFormatterPosition">
-					<label value="Rich text format toolbar position:" />
-					<option name="aboveEdit" default="true">
-						<label value="Above message editor" />
-					</option>
-					<option name="belowEdit">
-						<label value="Below message editor" />
-					</option>
-				</item>
-				<item type="checkbox" property="SendButtonVisible" default="true">
-					<label value="Display send button" />
-				</item>
-				<item type="spinbox" property="MinLinesHeight" minimum="1" maximum="10" default="3">
-					<label value="Minimal message edit height:" />
-					<suffix value=" lines of text" />
-				</item>
+				<item type="checkbox" property="SendButtonVisible" default="true" label="Display send button" />
+				<item type="spinbox" property="MinLinesHeight" minimum="1" maximum="10" default="3" label="Minimal message edit height:" suffix=" lines" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label value="Nick coloring" />
-			<item type="groupbox" checkable="true" property="HighlightNicksInBody" default="false">
-				<label value="Highlight nicks in message bodies" />
-				<item type="spinbox" property="HighlightNicksInBodyAlphaReduction" minimum="0" maximum="100" step="5" default="80">
-					<label value="Coloring intensity:" />
-					<suffix value="%" />
-				</item>
+		<tab label="Nick coloring">
+			<item type="groupbox" checkable="true" property="HighlightNicksInBody" default="false" label="Highlight nicks in message bodies">
+				<item type="spinbox" property="HighlightNicksInBodyAlphaReduction" minimum="0" maximum="100" step="5" default="80" label="Coloring intensity:" suffix="%" />
 			</item>
-			<item type="groupbox" checkable="true" property="OverrideHashColors">
-				<label value="Override color list" />
+			<item type="groupbox" checkable="true" property="OverrideHashColors" label="Override color list">
 				<item type="customwidget" property="ColorListEditor" />
 			</item>
 		</tab>
-		<tab>
-			<label value="Fonts" />
+		<tab label="Fonts">
 			<item type="customwidget" property="FontsSelector" />
 		</tab>
 	</page>
-	<page>
-		<label value="Behavior" />
-		<tab>
-			<label value="Behavior" />
-			<item type="checkbox" property="IsAutojoinAllowed" default="true">
-				<label value="Autojoin allowed" />
-			</item>
-			<item type="checkbox" property="SendChatStates" default="true">
-				<label value="Send chat state events" />
-			</item>
-			<item type="checkbox" property="SendEndConversations" default="true">
-				<label value="Notify remote participant when you've ended conversation" />
-			</item>
-			<item type="checkbox" property="AutoOpenFileDialogOnSend" default="true">
-				<label value="Open file choosing dialog automatically on file sending" />
-			</item>
-			<item type="checkbox" property="AutoOpenIncomingFiles" default="true">
-				<label value="Automatically open received files after transfer finishes" />
-			</item>
-			<item type="checkbox" property="UseAltNick" default="true">
-				<label value="Modify nick on conflicts in chat rooms" />
-				<tooltip>If enabled, the a string would be appended to your nick according to the next option. If disabled, nothing would happen.</tooltip>
-			</item>
-			<item type="lineedit" property="AlternativeNickname" default="_azoth">
-				<label value="Nick suffix to append on nick conflict in chat rooms:" />
-				<tooltip>This string would be appended to the nick you've chosen if another chat room participant already uses your nick.</tooltip>
-			</item>
-			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
-				<label value="Default file transfers save path:" />
+	<page label="Behavior">
+		<tab label="Behavior">
+			<item type="checkbox" property="IsAutojoinAllowed" default="true" label="Autojoin allowed" />
+			<item type="checkbox" property="SendChatStates" default="true" label="Send chat state events" />
+			<item type="checkbox" property="SendEndConversations" default="true" label="Send conversation closed events" />
+			<item type="checkbox" property="AutoOpenFileDialogOnSend" default="true" label="Automatically open file chooser when sending files" />
+			<item type="checkbox" property="AutoOpenIncomingFiles" default="true" label="Automatically open received files after transfer finishes" />
+			<item type="checkbox" property="UseAltNick" default="true" label="Modify nick on conflicts in chat rooms" />
+			<item type="lineedit" property="AlternativeNickname" default="_azoth" label="Nick suffix to append on nick conflict in chat rooms:" />
+			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads" label="Default file transfers save path:" />
+		</tab>
+		<tab label="Roster">
+			<item type="checkbox" property="AutoMUCMode" default="false" label="Switch to conference mode in conferences" />
+			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false" label="Hide conference participants in whole contact list mode" />
+			<item type="checkbox" property="ClearSearchAfterFocus" default="false" label="Clear search field after opening chat" />
+			<item type="combobox" property="EntryActivationType" label="Open chats on:">
+				<option name="click" label="Single click" />
+				<option name="dclick" label="Double click" />
+				<option name="environment" default="true" label="System default" />
 			</item>
 		</tab>
-		<tab>
-			<label value="Roster" />
-			<item type="checkbox" property="AutoMUCMode" default="false">
-				<label value="Automatically switch roster to conference mode when needed" />
-			</item>
-			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false">
-				<label value="Hide MUC participants in Whole CL mode" />
-			</item>
-			<item type="checkbox" property="ClearSearchAfterFocus" default="false">
-				<label value="Clear search field after entry activation" />
-			</item>
-			<item type="combobox" property="EntryActivationType">
-				<label value="Entry activates on:" />
-				<option name="click">
-					<label value="Single click" />
-				</option>
-				<option name="dclick">
-					<label value="Double click" />
-				</option>
-				<option name="environment" default="true">
-					<label value="Let the environment decide" />
-				</option>
-			</item>
+		<tab label="Tabs">
+			<item type="checkbox" property="JumpToNewTabOnOpen" default="true" label="Open new chats in the foreground" />
+			<item type="checkbox" property="OpenTabOnNewMsg" default="false" label="Open chats when receiving a new message" />
+			<item type="checkbox" property="CloseConfOnLeave" default="false" label="Close conferences tabs when leaving" />
+			<item type="checkbox" property="LeaveConfOnClose" default="false" label="Leave conferences when closing their tabs" />
+			<item type="checkbox" property="OpenTabsForAutojoin" default="false" label="Open chats for autojoined conferences" />
 		</tab>
-		<tab>
-			<label value="Tabs" />
-			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
-				<label value="Jump to new tab on open" />
-			</item>
-			<item type="checkbox" property="OpenTabOnNewMsg" default="false">
-				<label value="Open chat tab on new message" />
-			</item>
-			<item type="checkbox" property="CloseConfOnLeave" default="false">
-				<label value="Close conferences tabs when leaving" />
-			</item>
-			<item type="checkbox" property="LeaveConfOnClose" default="false">
-				<label value="Leave conferences when closing their tabs" />
-			</item>
-			<item type="checkbox" property="OpenTabsForAutojoin" default="false">
-				<label value="Open tabs for autojoined conferences" />
-			</item>
-		</tab>
-		<tab>
-			<label value="Notifications" />
-			<groupbox>
-				<label value="Incoming messages" />
-				<item type="checkbox" property="NotifyAboutIncomingMessages" default="true">
-					<label value="Notify about incoming messages" />
+		<tab label="Notifications">
+			<groupbox label="Messages">
+				<item type="checkbox" property="NotifyAboutIncomingMessages" default="true" label="Direct messages" />
+				<item type="combobox" property="NotifyIncomingComposing" label="Contacts composing messages:">
+					<option name="all" label="Always" />
+					<option name="opened" default="true" label="In open chats" />
+					<option name="none" label="Never" />
 				</item>
-				<item type="combobox" property="NotifyIncomingComposing" default="opened">
-					<label value="Notify when remote contact starts composing a message:" />
-					<option name="all">
-						<label value="always" />
-					</option>
-					<option name="opened" default="true">
-						<label value="in opened chats" />
-					</option>
-					<option name="none">
-						<label value="never" />
-					</option>
-				</item>
-				<item type="checkbox" property="NotifyAboutConferenceHighlights" default="true">
-					<label value="Notify about highlights in conferences" />
-				</item>
-				<item type="checkbox" property="ShowMsgInNotifications" default="false">
-					<label value="Show triggering message in notifications" />
-				</item>
-				<item type="checkbox" property="RespectDrawAttentions" default="true">
-					<label value="Notify when somebody draws our attention" />
-				</item>
+				<item type="checkbox" property="NotifyAboutConferenceHighlights" default="true" label="Highlights in conferences" />
+				<item type="checkbox" property="RespectDrawAttentions" default="true" label="Attention requests" />
+				<item type="checkbox" property="ShowMsgInNotifications" default="false" label="Show message text in notifications" />
 			</groupbox>
-			<groupbox>
-				<label value="Subscriptions" />
-				<item type="checkbox" property="NotifyAboutNonrosterUnsub" default="true">
-					<label value="Notify when someone not present in contact-list unsubscribes" />
-				</item>
-				<item type="checkbox" property="NotifySubscriptions" default="true">
-					<label value="Notify when someone subscribes to us" />
-				</item>
-				<item type="checkbox" property="NotifyUnsubscriptions" default="true">
-					<label value="Notify when someone unsubscribes from us" />
-				</item>
-				<item type="checkbox" property="NotifySubCancels" default="true">
-					<label value="Notify when someone cancels our subscription" />
-				</item>
-				<item type="checkbox" property="NotifySubGrants" default="true">
-					<label value="Notify when someone grants us subscription" />
-				</item>
+			<groupbox label="Subscriptions">
+				<item type="checkbox" property="NotifySubscriptions" default="true" label="New subscriptions to us" />
+				<item type="checkbox" property="NotifyUnsubscriptions" default="true" label="Unsubscriptions from us" />
+				<item type="checkbox" property="NotifyAboutNonrosterUnsub" default="true" label="Non-roster unsubscriptions from us" />
+				<item type="checkbox" property="NotifySubGrants" default="true" label="Granting us subscription" />
+				<item type="checkbox" property="NotifySubCancels" default="true" label="Cancellations of our subscription" />
 			</groupbox>
 		</tab>
-		<tab>
-			<label value="Chat windows" />
-			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
-				<label value="Show status changes" />
+		<tab label="Chat windows">
+			<item type="checkbox" property="ShowStatusChangesEvents" default="false" label="Show status changes" />
+			<item type="checkbox" property="ShowStatusChangesEventsInPrivates" default="true" label="Show status changes in private chats" />
+			<item type="checkbox" property="ShowEndConversations" default="true" label="Show when participant ends conversation" />
+			<item type="checkbox" property="ShowJoinsLeaves" default="true" label="Show joins and leaves in conferences" />
+			<item type="checkbox" property="SeparateMUCEventLogWindow" default="false" label="Separate conference event log window" />
+			<item type="checkbox" property="RequireSpaceBeforeSmiles" default="true" label="Require space before smiles" />
+			<item type="checkbox" property="KPEnterAlias" default="true" label="Keypad Enter functions like Enter" />
+			<item type="combobox" property="SendOnModifier" label="Send message on:">
+				<option name="Enter" default="true" label="Enter" />
+				<option name="ShiftEnter" label="Shift+Enter" />
+				<option name="CtrlEnter" label="Ctrl+Enter" />
 			</item>
-			<item type="checkbox" property="ShowStatusChangesEventsInPrivates" default="true">
-				<label value="Show status changes in private chats" />
-			</item>
-			<item type="checkbox" property="ShowEndConversations" default="true">
-				<label value="Show when participant ends conversation" />
-			</item>
-			<item type="checkbox" property="ShowJoinsLeaves" default="true">
-				<label value="Show joins and leaves in MUCs" />
-			</item>
-			<item type="checkbox" property="SeparateMUCEventLogWindow" default="false">
-				<label value="Separate MUC event log window" />
-			</item>
-			<item type="checkbox" property="RequireSpaceBeforeSmiles" default="true">
-				<label value="Require space before smiles" />
-			</item>
-			<item type="checkbox" property="KPEnterAlias" default="true">
-				<label value="Keypad Enter is analogous to Enter" />
-			</item>
-			<item type="combobox" property="SendOnModifier">
-				<label value="Send message on:" />
-				<option name="Enter" default="true">
-					<label value="Enter" />
-				</option>
-				<option name="ShiftEnter">
-					<label value="Shift+Enter" />
-				</option>
-				<option name="CtrlEnter">
-					<label value="Ctrl+Enter" />
-				</option>
-			</item>
-			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
-				<label value="Load at most messages from history:" />
-			</item>
-			<item type="spinbox" property="ChatClearGraceTime" default="1" minimum="0" maximum="10">
-				<label value="On chat window clearing, keep the messages arrived during the last" />
-				<suffix value=" s" />
-			</item>
+			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50" label="Number of messages to preload from history:" />
+			<item type="spinbox" property="ChatClearGraceTime" default="1" minimum="0" maximum="10" label="When clearing chat window, preserve the messages from the last" suffix=" s" />
 		</tab>
-		<tab>
-			<label value="Caching" />
-			<item type="spinbox" property="AvatarsCacheSize" default="5" minimum="0" maximum="100">
-				<label value="In-memory avatars cache size:" />
-				<tooltip>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format. Network traffic consumption is not affected by this option.</tooltip>
-				<suffix value=" MiB" />
+		<tab label="Caching">
+			<item type="spinbox" property="AvatarsCacheSize" default="5" minimum="0" maximum="100" label="In-memory avatars cache size:" suffix=" MiB">
+				<tooltip>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO and will slightly increase the CPU usage. Network traffic consumption is not affected by this option.</tooltip>
 			</item>
-			<item type="spinbox" property="CLToolTipsAvatarsCacheSize" default="2" minimum="0" maximum="100">
-				<label value="In-memory contact list tooltips-specific avatars cache size:" />
-				<tooltip>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64. Network traffic consumption is not affected by this option.</tooltip>
-				<suffix value=" MiB" />
+			<item type="spinbox" property="CLToolTipsAvatarsCacheSize" default="2" minimum="0" maximum="100" label="In-memory contact list tooltips-specific avatars cache size:" suffix=" MiB">
+				<tooltip>This option controls the in-memory cache for the tooltip-specific representation of contacts avatars. Setting this option to a too low value will slightly increase the CPU usage. Network traffic consumption is not affected by this option.</tooltip>
 			</item>
 		</tab>
 	</page>
-	<page>
-		<label value="Statuses" />
-		<groupbox>
-			<label value="Default status texts" />
-			<item type="lineedit" property="DefaultStatus1" translatable="true" default="I'm online!">
-				<label value="Online:" />
-			</item>
-			<item type="lineedit" property="DefaultStatus5" translatable="true" default="Wanna chat :3">
-				<label value="Free to chat:" />
-			</item>
-			<item type="lineedit" property="DefaultStatus2" translatable="true" default="Oh, seems like I'm away">
-				<label value="Away:" />
-			</item>
-			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Please leave me alone now">
-				<label value="DND:" />
-			</item>
-			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Not available is okay">
-				<label value="XA:" />
-			</item>
-			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I turned off my machine to get some life">
-				<label value="Offline:" />
-			</item>
+	<page label="Statuses">
+		<groupbox label="Default status texts">
+			<item type="lineedit" property="DefaultStatus1" translatable="true" default="I'm online!" label="Online:" />
+			<item type="lineedit" property="DefaultStatus5" translatable="true" default="Wanna chat :3" label="Free to chat:" />
+			<item type="lineedit" property="DefaultStatus2" translatable="true" default="Oh, seems like I'm away" label="Away:" />
+			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Please leave me alone now" label="Do not disturb:" />
+			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Not available is okay" label="Extended away:" />
+			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I turned off my machine to get some life" label="Offline:" />
 		</groupbox>
-		<groupbox>
-			<label value="Custom statuses" />
+		<groupbox label="Custom statuses">
 			<item type="dataview" property="CustomStatusesView" />
 		</groupbox>
 	</page>
-	<page>
-		<label value="Devices" />
-		<groupbox>
-			<label value="Audio devices" />
-			<item type="combobox" property="InputAudioDevice" mayHaveDataSource="true">
-				<label value="Input audio device:" />
-				<option name="" default="true">
-					<label value="Default input device" />
-				</option>
+	<page label="Devices">
+		<groupbox label="Audio devices">
+			<item type="combobox" property="InputAudioDevice" mayHaveDataSource="true" label="Input audio device:">
+				<option name="" default="true" label="Default input device" />
 			</item>
-			<item type="combobox" property="OutputAudioDevice" mayHaveDataSource="true">
-				<label value="Output audio device:" />
-				<option name="" default="true">
-					<label value="Default output device" />
-				</option>
+			<item type="combobox" property="OutputAudioDevice" mayHaveDataSource="true" label="Output audio device:">
+				<option name="" default="true" label="Default output device" />
 			</item>
 		</groupbox>
 	</page>
