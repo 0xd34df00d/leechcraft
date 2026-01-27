@@ -85,24 +85,10 @@ namespace Xoox
 				continue;
 
 			const auto acc = id2account [id];
-
-			// TODO remove this some time early 2018.
-			// To allow some transition time for duplicates removal.
-			QSet<QString> existingEntries;
-
 			for (const auto& entry : Util::DomChildren (account.firstChildElement ("entries"), "entry"))
 			{
 				const auto ods = std::make_shared<OfflineDataSource> ();
 				Load (ods, entry, Proxy_, acc);
-				if (existingEntries.contains (ods->ID_))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "detected duplicate entry"
-							<< ods->ID_;
-					continue;
-				}
-
-				existingEntries << ods->ID_;
 				acc->CreateFromODS (ods);
 			}
 		}
