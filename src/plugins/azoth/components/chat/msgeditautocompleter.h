@@ -36,9 +36,9 @@ namespace LC::Azoth
 		bool InsertingCompletion_ = false;
 	public:
 		explicit MsgEditAutocompleter (const QString& entryId, QTextEdit& msgEdit);
-	protected:
-		bool eventFilter (QObject*, QEvent*) override;
 	private:
+		bool eventFilter (QObject*, QEvent*) override;
+
 		enum class Direction
 		{
 			Forward,

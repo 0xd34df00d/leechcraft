@@ -9,6 +9,7 @@
 #pragma once
 
 #include <functional>
+#include <QCoreApplication>
 #include <QObject>
 
 class QMimeData;
@@ -22,7 +23,7 @@ namespace LC::Azoth
 
 	class ContactDropFilter : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::ContactDropFilter)
 
 		TransferJobManager& Transfers_;
 		ChatTab& ChatTab_;
