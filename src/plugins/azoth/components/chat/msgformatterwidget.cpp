@@ -68,7 +68,6 @@ namespace Azoth
 		setLayout (new QVBoxLayout ());
 		layout ()->setContentsMargins (0, 0, 0, 0);
 		QToolBar *toolbar = new QToolBar ();
-		toolbar->setIconSize (QSize (16, 16));
 		layout ()->addWidget (toolbar);
 
 		FormatBold_ = toolbar->addAction (tr ("Bold"),
