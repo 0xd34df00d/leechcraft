@@ -46,6 +46,8 @@ namespace NativeEmoticons
 			return QHash<QString, QString> ();
 		}
 
+		IconCache_.clear ();
+
 		QDomDocument smileXml ("smileXml");
 
 		if (!smileXml.setContent (dev.get ()))

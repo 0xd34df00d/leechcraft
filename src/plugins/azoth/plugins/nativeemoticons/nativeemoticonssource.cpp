@@ -44,9 +44,10 @@ namespace NativeEmoticons
 			return QHash<QString, QString> ();
 		}
 
+		IconCache_.clear ();
 		while (!dev->atEnd ())
 		{
-			const QByteArray& arr = dev->readLine (16384).trimmed ();
+			const QByteArray& arr = dev->readLine ().trimmed ();
 			const int idx = arr.indexOf (' ');
 			if (idx == -1)
 			{
