@@ -31,13 +31,13 @@ namespace NativeEmoticons
 	protected:
 		std::shared_ptr<Util::ResourceLoader> EmoLoader_;
 
-		typedef QHash<QString, QString> String2Filename_t;
+		using String2Filename_t = QHash<QString, QString>;
 	public:
 		BaseEmoticonsSource (const QString&, QObject* = 0);
 
 		QAbstractItemModel* GetOptionsModel () const;
 		QSet<QString> GetEmoticonStrings (const QString&) const;
-		QHash<QImage, QString> GetReprImages (const QString&) const;
+		QList<QPair<QImage, QString>> GetReprImages (const QString&) const;
 		QByteArray GetImage (const QString&, const QString&) const;
 	protected:
 		virtual String2Filename_t ParseFile (const QString&) const = 0;

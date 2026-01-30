@@ -36,14 +36,13 @@ namespace NativeEmoticons
 		return Util::AsSet (ParseFile (pack).keys ());
 	}
 
-	QHash<QImage, QString> BaseEmoticonsSource::GetReprImages (const QString& pack) const
+	QList<QPair<QImage, QString>> BaseEmoticonsSource::GetReprImages (const QString& pack) const
 	{
-		QHash<QImage, QString> result;
+		QList<QPair<QImage, QString>> result;
 
 		QSet<QString> knownPaths;
-		for (const auto& pair : Util::Stlize (ParseFile (pack)))
+		for (const auto& [smileText, path] : Util::Stlize (ParseFile (pack)))
 		{
-			const auto& path = pair.second;
 			if (knownPaths.contains (path))
 				continue;
 
@@ -62,7 +61,7 @@ namespace NativeEmoticons
 				continue;
 			}
 
-			result [img] = pair.first;
+			result.emplace_back (img, smileText);
 		}
 
 		return result;

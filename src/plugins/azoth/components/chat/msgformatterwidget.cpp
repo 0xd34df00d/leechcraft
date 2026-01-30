@@ -346,7 +346,7 @@ namespace Azoth
 		int pos = 0;
 		QSize maxSize;
 		QList<QToolButton*> buttons;
-		for (const auto& pair : Util::Stlize (images))
+		for (const auto& pair : images)
 		{
 			const auto& size = pair.first.size ();
 			maxSize.setWidth (std::max (size.width (), maxSize.width ()));
