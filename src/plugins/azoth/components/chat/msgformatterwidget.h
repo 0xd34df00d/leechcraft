@@ -53,7 +53,7 @@ namespace Azoth
 
 		bool HasCustomFormatting () const;
 		void Clear ();
-		QString GetNormalizedRichText () const;
+		std::optional<QString> GetNormalizedRichText () const;
 
 		void HidePopups ();
 	private:

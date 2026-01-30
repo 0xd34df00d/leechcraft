@@ -624,10 +624,6 @@ namespace Azoth
 		if (text.isEmpty ())
 			return;
 
-		const auto& richText = ToggleRichEditor_->isChecked () ?
-				std::optional { MsgFormatter_->GetNormalizedRichText () } :
-				std::optional<QString> {};
-
 		bool clear = true;
 		auto clearGuard = Util::MakeScopeGuard ([&clear, &text, this]
 				{
@@ -644,7 +640,7 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		if (SendMessage (*e, { .Variant_ = GetSelectedVariant (), .Body_ = text, .RichTextBody_ = richText }))
+		if (SendMessage (*e, { .Variant_ = GetSelectedVariant (), .Body_ = text, .RichTextBody_ = MsgFormatter_->GetNormalizedRichText () }))
 			emit messageSent ();
 		else
 			clear = false;

@@ -178,10 +178,10 @@ namespace Azoth
 		HasCustomFormatting_ = false;
 	}
 
-	QString MsgFormatterWidget::GetNormalizedRichText () const
+	std::optional<QString> MsgFormatterWidget::GetNormalizedRichText () const
 	{
 		if (!HasCustomFormatting ())
-			return QString ();
+			return {};
 
 		QString result = Edit_->toHtml ();
 
@@ -197,7 +197,7 @@ namespace Azoth
 		QDomElement body = doc.elementsByTagName ("body").at (0).toElement ();
 		const QDomElement& elem = body.firstChildElement ();
 		if (elem.isNull ())
-			return QString ();
+			return {};
 		else
 			body.insertBefore (style.cloneNode (true), elem);
 
