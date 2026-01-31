@@ -25,6 +25,9 @@ namespace LC::Azoth
 
 			for (auto it = block.begin (); !it.atEnd (); ++it)
 			{
+				if (it.fragment ().text ().isEmpty ())
+					continue;
+
 				const auto [fragStart, fragEnd] = GetFragmentTags (it.fragment ().charFormat ());
 				substrs += fragStart;
 				substrs << it.fragment ().text ().toHtmlEscaped ();
