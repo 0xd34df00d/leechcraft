@@ -48,6 +48,7 @@ LC_DEFINE_PLUGIN (
 		components/chat/contactdropfilter.cpp
 		components/chat/msgeditautocompleter.cpp
 		components/chat/msgformatterwidget.cpp
+		components/chat/richserializer.cpp
 		components/chat/textedit.cpp
 		components/dialogs/acceptriexdialog.cpp
 		components/dialogs/accounthandlerchooserdialog.cpp
@@ -83,6 +84,7 @@ LC_DEFINE_PLUGIN (
 		components/util/entries.cpp
 		components/util/gui.cpp
 		components/util/misc.cpp
+		components/util/settings.cpp
 		azoth.cpp
 		azothschemehandler.cpp
 		core.cpp

@@ -58,6 +58,7 @@
 #include "components/dialogs/userslistwidget.h"
 #include "components/util/entries.h"
 #include "components/util/misc.h"
+#include "components/util/settings.h"
 #include "callchatwidget.h"
 #include "chattabpartstatemanager.h"
 #include "contactdropfilter.h"
@@ -807,52 +808,16 @@ namespace Azoth
 		RequestLogs (ScrollbackPos_);
 	}
 
-	namespace
-	{
-		void UpdateSettingWithDefaultValue (bool currentValue,
-				const QString& entryId,
-				const QString& groupName,
-				const QByteArray& propertyName)
-		{
-			const bool defaultSetting = XmlSettingsManager::Instance ().property (propertyName).toBool ();
-
-			QSettings settings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Azoth");
-			settings.beginGroup (groupName);
-
-			auto enabled = settings.value ("Enabled").toStringList ();
-			auto disabled = settings.value ("Disabled").toStringList ();
-
-			if (currentValue == defaultSetting)
-			{
-				enabled.removeAll (entryId);
-				disabled.removeAll (entryId);
-			}
-			else if (defaultSetting)
-				disabled << entryId;
-			else
-				enabled << entryId;
-
-			disabled.removeDuplicates ();
-			enabled.removeDuplicates ();
-
-			settings.setValue ("Enabled", enabled);
-			settings.setValue ("Disabled", disabled);
-
-			settings.endGroup ();
-		}
-	}
-
 	void ChatTab::handleRichEditorToggled ()
 	{
-		UpdateSettingWithDefaultValue (ToggleRichEditor_->isChecked (),
+		UpdateWithDefaultValue (ToggleRichEditor_->isChecked (),
 				EntryID_, "RichEditorStates", "ShowRichTextEditor");
 	}
 
 	void ChatTab::handleRichTextToggled ()
 	{
 		PrepareTheme ();
-		UpdateSettingWithDefaultValue (ToggleRichText_->isChecked (),
+		UpdateWithDefaultValue (ToggleRichText_->isChecked (),
 				EntryID_, "RichTextStates", "ShowRichTextMessageBody");
 	}
 
@@ -1323,26 +1288,6 @@ namespace Azoth
 		}
 
 		return qobject_cast<T*> (obj);
-	}
-
-	namespace
-	{
-		bool CheckWithDefaultValue (const QString& entryId,
-				const QString& groupName, const QByteArray& propertyName)
-		{
-			QSettings settings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Azoth");
-
-			settings.beginGroup (groupName);
-			auto guard = Util::MakeEndGroupScopeGuard (settings);
-
-			if (settings.value ("Enabled").toStringList ().contains (entryId))
-				return true;
-			if (settings.value ("Disabled").toStringList ().contains (entryId))
-				return false;
-
-			return XmlSettingsManager::Instance ().property (propertyName).toBool ();
-		}
 	}
 
 	void ChatTab::BuildBasicActions ()
