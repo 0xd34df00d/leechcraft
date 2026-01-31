@@ -1204,51 +1204,6 @@ namespace Azoth
 				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			}
 		}
-		else if (host == "sendentities")
-		{
-			const QUrlQuery queryObject { url };
-			const auto count = std::max (queryObject.queryItemValue ("count").toInt (), 1);
-			for (int i = 0; i < count; ++i)
-			{
-				const auto& numStr = QString::number (i);
-
-				const auto& entityStr = queryObject.queryItemValue ("entityVar" + numStr);
-				const auto& type = queryObject.queryItemValue ("entityType" + numStr);
-
-				QVariant entityVar;
-				if (type == "url")
-					entityVar = QUrl::fromEncoded (entityStr.toUtf8 ());
-				else
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unknown entity type"
-							<< type;
-					continue;
-				}
-
-				const auto& mime = queryObject.queryItemValue ("mime" + numStr);
-
-				const auto& flags = queryObject.queryItemValue ("flags" + numStr).split (",");
-				TaskParameters tp = TaskParameter::FromUserInitiated;
-				if (flags.contains ("OnlyHandle"))
-					tp |= TaskParameter::OnlyHandle;
-				else if (flags.contains ("OnlyDownload"))
-					tp |= TaskParameter::OnlyDownload;
-
-				auto e = Util::MakeEntity (entityVar, {}, tp, mime);
-
-				const auto& addCountStr = queryObject.queryItemValue ("addCount" + numStr);
-				for (int j = 0, cnt = std::max (addCountStr.toInt (), 1); j < cnt; ++j)
-				{
-					const auto& addStr = QString::number (j);
-					const auto& key = queryObject.queryItemValue ("add" + numStr + "key" + addStr);
-					const auto& value = queryObject.queryItemValue ("add" + numStr + "value" + addStr);
-					e.Additional_ [key] = value;
-				}
-
-				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-			}
-		}
 	}
 
 	void ChatTab::InsertNick (const QString& nicknameHtml)
