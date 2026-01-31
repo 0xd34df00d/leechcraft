@@ -30,7 +30,7 @@ namespace LC::Azoth
 
 				const auto [fragStart, fragEnd] = GetFragmentTags (it.fragment ().charFormat ());
 				substrs += fragStart;
-				substrs << it.fragment ().text ().toHtmlEscaped ();
+				substrs << it.fragment ().text ().toHtmlEscaped ().replace ('\n', "<br/>"_qs);
 				substrs += fragEnd;
 			}
 
