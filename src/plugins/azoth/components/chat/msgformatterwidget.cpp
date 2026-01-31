@@ -22,26 +22,25 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QtDebug>
+#include <util/sll/debugprinters.h>
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iresourceplugin.h"
 #include "../../xmlsettingsmanager.h"
 #include "../../core.h"
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	namespace
 	{
 		class SmilesTooltip : public QWidget
 		{
 		public:
-			SmilesTooltip (QWidget *parent)
-			: QWidget (parent, Qt::Tool)
+			explicit SmilesTooltip (QWidget *parent)
+			: QWidget { parent, Qt::Tool }
 			{
 			}
-
-			void keyPressEvent (QKeyEvent *event)
+		protected:
+			void keyPressEvent (QKeyEvent *event) override
 			{
 				if (event->key () == Qt::Key_Escape)
 				{
@@ -54,118 +53,161 @@ namespace Azoth
 		};
 	}
 
-	MsgFormatterWidget::MsgFormatterWidget (QTextEdit *edit, QWidget *parent)
-	: QWidget (parent)
-	, Edit_ (edit)
-	, StockCharFormat_ (Edit_->currentCharFormat ())
-	, StockBlockFormat_ (Edit_->document ()->begin ().blockFormat ())
-	, StockFrameFormat_ (Edit_->document ()->rootFrame ()->frameFormat ())
-	, HasCustomFormatting_ (false)
-	, SmilesTooltip_ (new SmilesTooltip (this))
+	auto MsgFormatterWidget::CharFormatter (auto setter)
+	{
+		return CharFormatter (setter, std::identity {});
+	}
+
+	auto MsgFormatterWidget::CharFormatter (auto setter, auto conv)
+	{
+		return [this, setter, conv] (bool checked)
+		{
+			if (auto cursor = Edit_.textCursor ();
+				cursor.hasSelection ())
+			{
+				auto fmt = cursor.charFormat ();
+				std::invoke (setter, fmt, conv (checked));
+				cursor.setCharFormat (fmt);
+			}
+			else
+			{
+				auto fmt = Edit_.currentCharFormat ();
+				std::invoke (setter, fmt, conv (checked));
+				Edit_.setCurrentCharFormat (fmt);
+			}
+
+			HasCustomFormatting_ = true;
+		};
+	}
+
+	MsgFormatterWidget::MsgFormatterWidget (QTextEdit& edit)
+	: QWidget { &edit }
+	, Edit_ { edit }
+	, StockCharFormat_ { Edit_.currentCharFormat () }
+	, StockBlockFormat_ { Edit_.document ()->begin ().blockFormat () }
+	, StockFrameFormat_ { Edit_.document ()->rootFrame ()->frameFormat () }
+	, SmilesTooltip_ { new SmilesTooltip { this } }
 	{
 		SmilesTooltip_->setWindowTitle (tr ("Emoticons"));
 
-		setLayout (new QVBoxLayout ());
+		setLayout (new QVBoxLayout);
 		layout ()->setContentsMargins (0, 0, 0, 0);
-		QToolBar *toolbar = new QToolBar ();
+		const auto toolbar = new QToolBar;
 		layout ()->addWidget (toolbar);
 
 		FormatBold_ = toolbar->addAction (tr ("Bold"),
 				this,
-				SLOT (handleBold ()));
+				CharFormatter (&QTextCharFormat::setFontWeight,
+						[] (bool checked) { return checked ? QFont::Bold : QFont::Normal; }));
 		FormatBold_->setCheckable (true);
 		FormatBold_->setProperty ("ActionIcon", "format-text-bold");
 
 		FormatItalic_ = toolbar->addAction (tr ("Italic"),
 				this,
-				SLOT (handleItalic ()));
+				CharFormatter (&QTextCharFormat::setFontItalic));
 		FormatItalic_->setCheckable (true);
 		FormatItalic_->setProperty ("ActionIcon", "format-text-italic");
 
 		FormatUnderline_ = toolbar->addAction (tr ("Underline"),
 				this,
-				SLOT (handleUnderline ()));
+				CharFormatter (&QTextCharFormat::setFontUnderline));
 		FormatUnderline_->setCheckable (true);
 		FormatUnderline_->setProperty ("ActionIcon", "format-text-underline");
 
 		FormatStrikeThrough_ = toolbar->addAction (tr ("Strike through"),
 				this,
-				SLOT (handleStrikeThrough ()));
+				CharFormatter (&QTextCharFormat::setFontStrikeOut));
 		FormatStrikeThrough_->setCheckable (true);
 		FormatStrikeThrough_->setProperty ("ActionIcon", "format-text-strikethrough");
 
 		toolbar->addSeparator ();
 
-		FormatColor_ = toolbar->addAction (tr ("Text color"),
+		const auto formatColor = toolbar->addAction (tr ("Text color"),
 				this,
-				SLOT (handleTextColor ()));
-		FormatColor_->setProperty ("ActionIcon", "format-text-color");
+				[this]
+				{
+					const auto& brush = GetActualCharFormat ().foreground ();
+					if (const auto& color = QColorDialog::getColor (brush.color (), &Edit_);
+						color.isValid ())
+						CharFormatActor ([color] (auto fmt) { fmt->setForeground (QBrush (color)); });
+				});
+		formatColor->setProperty ("ActionIcon", "format-text-color");
 
-		FormatFont_ = toolbar->addAction (tr ("Font"),
+		const auto formatFont = toolbar->addAction (tr ("Font"),
 				this,
-				SLOT (handleFont ()));
-		FormatFont_->setProperty ("ActionIcon", "preferences-desktop-font");
+				[this]
+				{
+					const auto& curFont = GetActualCharFormat ().font ();
+					bool ok = false;
+					if (auto font = QFontDialog::getFont (&ok, curFont, &Edit_); ok)
+						CharFormatActor ([font] (auto fmt) { fmt->setFont (font); });
+				});
+		formatFont->setProperty ("ActionIcon", "preferences-desktop-font");
 
 		toolbar->addSeparator ();
 
-		FormatAlignLeft_ = toolbar->addAction (tr ("Align left"),
+		const auto setAlignment = [this] (Qt::Alignment align)
+		{
+			return [this, align] { BlockFormatActor ([&] (auto fmt) { fmt->setAlignment (align); }); };
+		};
+		const auto formatAlignLeft = toolbar->addAction (tr ("Align left"),
 				this,
-				SLOT (handleParaAlignment ()));
-		FormatAlignLeft_->setProperty ("ActionIcon", "format-justify-left");
-		FormatAlignLeft_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
-		FormatAlignLeft_->setCheckable (true);
-		FormatAlignLeft_->setChecked (true);
+				setAlignment (Qt::AlignLeft));
+		formatAlignLeft->setProperty ("ActionIcon", "format-justify-left");
+		formatAlignLeft->setCheckable (true);
+		formatAlignLeft->setChecked (true);
 
-		FormatAlignCenter_ = toolbar->addAction (tr ("Align center"),
+		const auto formatAlignCenter = toolbar->addAction (tr ("Align center"),
 				this,
-				SLOT (handleParaAlignment ()));
-		FormatAlignCenter_->setProperty ("ActionIcon", "format-justify-center");
-		FormatAlignCenter_->setProperty ("Alignment", static_cast<int> (Qt::AlignCenter));
-		FormatAlignCenter_->setCheckable (true);
+				setAlignment (Qt::AlignCenter));
+		formatAlignCenter->setProperty ("ActionIcon", "format-justify-center");
+		formatAlignCenter->setCheckable (true);
 
-		FormatAlignRight_ = toolbar->addAction (tr ("Align right"),
+		const auto formatAlignRight = toolbar->addAction (tr ("Align right"),
 				this,
-				SLOT (handleParaAlignment ()));
-		FormatAlignRight_->setProperty ("ActionIcon", "format-justify-right");
-		FormatAlignRight_->setProperty ("Alignment", static_cast<int> (Qt::AlignRight));
-		FormatAlignRight_->setCheckable (true);
+				setAlignment (Qt::AlignRight));
+		formatAlignRight->setProperty ("ActionIcon", "format-justify-right");
+		formatAlignRight->setCheckable (true);
 
-		FormatAlignJustify_ = toolbar->addAction (tr ("Align justify"),
+		const auto formatAlignJustify = toolbar->addAction (tr ("Align justify"),
 				this,
-				SLOT (handleParaAlignment ()));
-		FormatAlignJustify_->setProperty ("ActionIcon", "format-justify-fill");
-		FormatAlignJustify_->setProperty ("Alignment", static_cast<int> (Qt::AlignJustify));
-		FormatAlignJustify_->setCheckable (true);
+				setAlignment (Qt::AlignJustify));
+		formatAlignJustify->setProperty ("ActionIcon", "format-justify-fill");
+		formatAlignJustify->setCheckable (true);
 
-		QActionGroup *alignGroup = new QActionGroup (this);
-		alignGroup->addAction (FormatAlignLeft_);
-		alignGroup->addAction (FormatAlignCenter_);
-		alignGroup->addAction (FormatAlignRight_);
-		alignGroup->addAction (FormatAlignJustify_);
+		const auto alignGroup = new QActionGroup { this };
+		alignGroup->addAction (formatAlignLeft);
+		alignGroup->addAction (formatAlignCenter);
+		alignGroup->addAction (formatAlignRight);
+		alignGroup->addAction (formatAlignJustify);
 
-		connect (Edit_,
-				SIGNAL (currentCharFormatChanged (const QTextCharFormat&)),
+		connect (&Edit_,
+				&QTextEdit::currentCharFormatChanged,
 				this,
-				SLOT (updateState (const QTextCharFormat&)));
-		connect (Edit_,
-				SIGNAL (textChanged ()),
-				this,
-				SLOT (checkCleared ()));
+				&MsgFormatterWidget::UpdateState);
 
 		toolbar->addSeparator ();
 
 		AddEmoticon_ = toolbar->addAction (tr ("Emoticons..."),
 				this,
-				SLOT (handleAddEmoticon ()));
+				[this]
+				{
+					SmilesTooltip_->move (QCursor::pos ());
+					SmilesTooltip_->show ();
+					SmilesTooltip_->activateWindow ();
+
+					const auto& size = SmilesTooltip_->size ();
+					const auto& newPos = QCursor::pos () - QPoint (0, size.height ());
+					SmilesTooltip_->move (newPos);
+				});
 		AddEmoticon_->setProperty ("ActionIcon", "face-smile");
 
 		for (const auto act : toolbar->actions ())
 			if (!act->isSeparator ())
 				act->setParent (this);
 
-		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons",
-				this, "handleEmoPackChanged");
-		handleEmoPackChanged ();
+		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons", this,
+				[this] (const QString& emoPack) { HandleEmoPackChanged (emoPack); });
 	}
 
 	bool MsgFormatterWidget::HasCustomFormatting () const
@@ -183,25 +225,25 @@ namespace Azoth
 		if (!HasCustomFormatting ())
 			return {};
 
-		QString result = Edit_->toHtml ();
+		auto result = Edit_.toHtml ();
 
 		QDomDocument doc;
-		if (!doc.setContent (result))
-			return result;
+		if (const auto parseResult = doc.setContent (result);
+			!parseResult)
+		{
+			qWarning () << "unable to parse" << result << parseResult;
+			return {};
+		}
 
-		const QDomNodeList& styles = doc.elementsByTagName ("style");
-		const QDomElement& style = styles.size () ?
-				styles.at (0).toElement () :
-				QDomElement ();
+		const auto& style = doc.elementsByTagName ("style"_qs).item (0).toElement ();
 
-		QDomElement body = doc.elementsByTagName ("body").at (0).toElement ();
-		const QDomElement& elem = body.firstChildElement ();
+		auto body = doc.elementsByTagName ("body"_qs).at (0).toElement ();
+		const auto& elem = body.firstChildElement ();
 		if (elem.isNull ())
 			return {};
-		else
-			body.insertBefore (style.cloneNode (true), elem);
 
-		body.setTagName ("div");
+		body.insertBefore (style.cloneNode (true), elem);
+		body.setTagName ("div"_qs);
 
 		QDomDocument finalDoc;
 		finalDoc.appendChild (finalDoc.importNode (body, true));
@@ -214,122 +256,53 @@ namespace Azoth
 
 	void MsgFormatterWidget::HidePopups ()
 	{
-		if (SmilesTooltip_)
-			SmilesTooltip_->hide ();
+		SmilesTooltip_->hide ();
 	}
 
-	void MsgFormatterWidget::CharFormatActor (std::function<void (QTextCharFormat*)> format)
+	void MsgFormatterWidget::CharFormatActor (auto format)
 	{
-		QTextCursor cursor = Edit_->textCursor ();
+		auto cursor = Edit_.textCursor ();
 		if (cursor.hasSelection ())
 		{
-			QTextCharFormat fmt = cursor.charFormat ();
+			auto fmt = cursor.charFormat ();
 			format (&fmt);
 			cursor.setCharFormat (fmt);
 		}
 		else
 		{
-			QTextCharFormat fmt = Edit_->currentCharFormat ();
+			auto fmt = Edit_.currentCharFormat ();
 			format (&fmt);
-			Edit_->setCurrentCharFormat (fmt);
+			Edit_.setCurrentCharFormat (fmt);
 		}
 
 		HasCustomFormatting_ = true;
 	}
 
-	void MsgFormatterWidget::BlockFormatActor (std::function<void (QTextBlockFormat*)> format)
+	void MsgFormatterWidget::BlockFormatActor (auto format)
 	{
-		QTextBlockFormat fmt = Edit_->textCursor ().blockFormat ();
+		auto fmt = Edit_.textCursor ().blockFormat ();
 		format (&fmt);
-		Edit_->textCursor ().setBlockFormat (fmt);
+		Edit_.textCursor ().setBlockFormat (fmt);
 
 		HasCustomFormatting_ = true;
 	}
 
 	QTextCharFormat MsgFormatterWidget::GetActualCharFormat () const
 	{
-		const QTextCursor& cursor = Edit_->textCursor ();
+		const auto& cursor = Edit_.textCursor ();
 		return cursor.hasSelection () ?
 				cursor.charFormat () :
-				Edit_->currentCharFormat ();
+				Edit_.currentCharFormat ();
 	}
 
-	void MsgFormatterWidget::handleBold ()
+	void MsgFormatterWidget::HandleEmoPackChanged (const QString& emoPack)
 	{
-		const auto weight = FormatBold_->isChecked () ? QFont::Bold : QFont::Normal;
-		CharFormatActor ([weight] (QTextCharFormat *fmt) { fmt->setFontWeight (weight); });
-	}
-
-	void MsgFormatterWidget::handleItalic ()
-	{
-		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontItalic (FormatItalic_->isChecked ()); });
-	}
-
-	void MsgFormatterWidget::handleUnderline ()
-	{
-		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontUnderline (FormatUnderline_->isChecked ()); });
-	}
-
-	void MsgFormatterWidget::handleStrikeThrough ()
-	{
-		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontStrikeOut (FormatStrikeThrough_->isChecked ()); });
-	}
-
-	void MsgFormatterWidget::handleTextColor ()
-	{
-		QBrush brush = GetActualCharFormat ().foreground ();
-		const QColor& color = QColorDialog::getColor (brush.color (), Edit_);
-		if (!color.isValid ())
-			return;
-
-		CharFormatActor ([color] (QTextFormat *fmt) { fmt->setForeground (QBrush (color)); });
-	}
-
-	void MsgFormatterWidget::handleFont ()
-	{
-		QFont font = GetActualCharFormat ().font ();
-		bool ok = false;
-		font = QFontDialog::getFont (&ok, font, Edit_);
-		if (!ok)
-			return;
-
-		CharFormatActor ([font] (QTextCharFormat *fmt) { fmt->setFont (font); });
-	}
-
-	void MsgFormatterWidget::handleParaAlignment ()
-	{
-		const auto alignment = static_cast<Qt::Alignment> (sender ()->property ("Alignment").toInt ());
-		BlockFormatActor ([alignment] (QTextBlockFormat* fmt) { fmt->setAlignment (alignment); });
-	}
-
-	void MsgFormatterWidget::handleAddEmoticon ()
-	{
-		if (!SmilesTooltip_)
-			return;
-
-		SmilesTooltip_->move (QCursor::pos ());
-		SmilesTooltip_->show ();
-		SmilesTooltip_->activateWindow ();
-
-		const QSize& size = SmilesTooltip_->size ();
-		const QPoint& newPos = QCursor::pos () - QPoint (0, size.height ());
-		SmilesTooltip_->move (newPos);
-	}
-
-	void MsgFormatterWidget::handleEmoPackChanged ()
-	{
-		const auto& emoPack = XmlSettingsManager::Instance ()
-				.property ("SmileIcons").toString ();
-
 		const auto src = Core::Instance ().GetCurrentEmoSource ();
-
 		AddEmoticon_->setEnabled (src);
-
 		if (!src)
 			return;
 
 		const auto& images = src->GetReprImages (emoPack);
-
 		if (const auto lay = SmilesTooltip_->layout ())
 		{
 			while (const auto item = lay->takeAt (0))
@@ -339,28 +312,31 @@ namespace Azoth
 
 		qDeleteAll (SmilesTooltip_->children ());
 
-		const auto layout = new QGridLayout (SmilesTooltip_);
+		const auto layout = new QGridLayout { SmilesTooltip_ };
 		layout->setSpacing (0);
 		layout->setContentsMargins (1, 1, 1, 1);
-		const int numRows = std::sqrt (static_cast<double> (images.size ())) + 1;
+		const int numRows = std::ceil (std::sqrt (static_cast<double> (images.size ())));
 		int pos = 0;
 		QSize maxSize;
 		QList<QToolButton*> buttons;
-		for (const auto& pair : images)
+		for (const auto& [image, smile] : images)
 		{
-			const auto& size = pair.first.size ();
+			const auto& size = image.size ();
 			maxSize.setWidth (std::max (size.width (), maxSize.width ()));
 			maxSize.setHeight (std::max (size.height (), maxSize.height ()));
 
-			const QIcon icon (QPixmap::fromImage (pair.first));
-			QAction *action = new QAction (icon, pair.second, this);
-			action->setToolTip (pair.second);
-			action->setProperty ("Text", pair.second);
-
+			const QIcon icon { QPixmap::fromImage (image) };
+			const auto action = new QAction { icon, smile, this };
+			action->setToolTip (smile);
 			connect (action,
-					SIGNAL (triggered ()),
+					&QAction::triggered,
 					this,
-					SLOT (insertEmoticon ()));
+					[this, smile]
+					{
+						Edit_.textCursor ().insertText (smile + ' ');
+						if (!(QApplication::keyboardModifiers () & Qt::ControlModifier))
+							SmilesTooltip_->hide ();
+					});
 
 			const auto button = new QToolButton { SmilesTooltip_ };
 			button->setDefaultAction (action);
@@ -378,28 +354,11 @@ namespace Azoth
 		SmilesTooltip_->setMaximumSize (SmilesTooltip_->sizeHint ());
 	}
 
-	void MsgFormatterWidget::insertEmoticon ()
-	{
-		const QString& text = sender ()->property ("Text").toString ();
-		Edit_->textCursor ().insertText (text + " ");
-
-		if (SmilesTooltip_ &&
-				!(QApplication::keyboardModifiers () & Qt::ControlModifier))
-			SmilesTooltip_->hide ();
-	}
-
-	void MsgFormatterWidget::checkCleared ()
-	{
-		if (Edit_->toPlainText ().simplified ().isEmpty ())
-			updateState (Edit_->currentCharFormat ());
-	}
-
-	void MsgFormatterWidget::updateState (const QTextCharFormat& fmt)
+	void MsgFormatterWidget::UpdateState (const QTextCharFormat& fmt)
 	{
 		FormatBold_->setChecked (fmt.fontWeight () != QFont::Normal);
 		FormatItalic_->setChecked (fmt.fontItalic ());
 		FormatUnderline_->setChecked (fmt.fontUnderline ());
 		FormatStrikeThrough_->setChecked (fmt.fontStrikeOut ());
 	}
-}
 }

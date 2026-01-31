@@ -6,9 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MSGFORMATTERWIDGET_H
-#define PLUGINS_AZOTH_MSGFORMATTERWIDGET_H
-#include <functional>
+#pragma once
+
 #include <QWidget>
 #include <QTextCharFormat>
 #include <QTextBlockFormat>
@@ -16,15 +15,13 @@
 
 class QTextEdit;
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class MsgFormatterWidget : public QWidget
 	{
 		Q_OBJECT
 
-		QTextEdit *Edit_;
+		QTextEdit& Edit_;
 
 		const QTextCharFormat StockCharFormat_;
 		const QTextBlockFormat StockBlockFormat_;
@@ -35,50 +32,29 @@ namespace Azoth
 		QAction *FormatUnderline_;
 		QAction *FormatStrikeThrough_;
 
-		QAction *FormatColor_;
-		QAction *FormatFont_;
-
-		QAction *FormatAlignLeft_;
-		QAction *FormatAlignCenter_;
-		QAction *FormatAlignRight_;
-		QAction *FormatAlignJustify_;
-
 		QAction *AddEmoticon_;
 
-		bool HasCustomFormatting_;
-
 		QWidget *SmilesTooltip_;
-	public:
-		MsgFormatterWidget (QTextEdit*, QWidget* = 0);
 
-		bool HasCustomFormatting () const;
+		bool HasCustomFormatting_ = false;
+	public:
+		explicit MsgFormatterWidget (QTextEdit&);
+
 		void Clear ();
 		std::optional<QString> GetNormalizedRichText () const;
 
 		void HidePopups ();
 	private:
-		void CharFormatActor (std::function<void (QTextCharFormat*)>);
-		void BlockFormatActor (std::function<void (QTextBlockFormat*)>);
+		bool HasCustomFormatting () const;
+
+		auto CharFormatter (auto setter);
+		auto CharFormatter (auto setter, auto conv);
+
+		void CharFormatActor (auto);
+		void BlockFormatActor (auto);
 		QTextCharFormat GetActualCharFormat () const;
-	private slots:
-		void handleBold ();
-		void handleItalic ();
-		void handleUnderline ();
-		void handleStrikeThrough ();
 
-		void handleTextColor ();
-		void handleFont ();
-
-		void handleParaAlignment ();
-
-		void handleAddEmoticon ();
-		void handleEmoPackChanged ();
-		void insertEmoticon ();
-
-		void checkCleared ();
-		void updateState (const QTextCharFormat&);
+		void HandleEmoPackChanged (const QString&);
+		void UpdateState (const QTextCharFormat&);
 	};
 }
-}
-
-#endif

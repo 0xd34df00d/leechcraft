@@ -1704,7 +1704,7 @@ namespace Azoth
 
 		UpdateTextHeight ();
 
-		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
+		MsgFormatter_ = new MsgFormatterWidget { *Ui_.MsgEdit_ };
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition", this,
 				[this] (const QString& posStr)
 				{
