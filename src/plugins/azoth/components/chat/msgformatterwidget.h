@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWidget>
 
 class QTextEdit;
@@ -17,7 +18,7 @@ namespace LC::Azoth
 {
 	class MsgFormatterWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Aztoh::MsgFormatterWidget)
 
 		QTextEdit& Edit_;
 
