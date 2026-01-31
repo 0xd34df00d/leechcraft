@@ -9,11 +9,9 @@
 #pragma once
 
 #include <QWidget>
-#include <QTextCharFormat>
-#include <QTextBlockFormat>
-#include <QTextFrameFormat>
 
 class QTextEdit;
+class QTextCharFormat;
 
 namespace LC::Azoth
 {
@@ -23,10 +21,6 @@ namespace LC::Azoth
 
 		QTextEdit& Edit_;
 
-		const QTextCharFormat StockCharFormat_;
-		const QTextBlockFormat StockBlockFormat_;
-		const QTextFrameFormat StockFrameFormat_;
-
 		QAction *FormatBold_;
 		QAction *FormatItalic_;
 		QAction *FormatUnderline_;
@@ -35,16 +29,11 @@ namespace LC::Azoth
 		QAction *AddEmoticon_;
 
 		QWidget *SmilesTooltip_;
-
-		bool HasCustomFormatting_ = false;
 	public:
 		explicit MsgFormatterWidget (QTextEdit&);
 
-		void Clear ();
-		std::optional<QString> GetNormalizedRichText () const;
+		std::optional<QString> GetRichText () const;
 	private:
-		bool HasCustomFormatting () const;
-
 		auto CharFormatter (auto setter);
 		auto CharFormatter (auto setter, auto conv);
 

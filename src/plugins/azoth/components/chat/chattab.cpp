@@ -632,7 +632,6 @@ namespace Azoth
 						return;
 
 					Ui_.MsgEdit_->clear ();
-					MsgFormatter_->Clear ();
 					CurrentHistoryPosition_ = -1;
 					MsgHistory_.prepend (text);
 				});
@@ -641,7 +640,7 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		if (SendMessage (*e, { .Variant_ = GetSelectedVariant (), .Body_ = text, .RichTextBody_ = MsgFormatter_->GetNormalizedRichText () }))
+		if (SendMessage (*e, { .Variant_ = GetSelectedVariant (), .Body_ = text, .RichTextBody_ = MsgFormatter_->GetRichText () }))
 			emit messageSent ();
 		else
 			clear = false;

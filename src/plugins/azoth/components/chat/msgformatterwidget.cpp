@@ -12,9 +12,7 @@
 #include <QTextEdit>
 #include <QToolBar>
 #include <QAction>
-#include <QTextBlock>
 #include <QColorDialog>
-#include <QDomDocument>
 #include <QFontDialog>
 #include <QActionGroup>
 #include <QGridLayout>
@@ -22,9 +20,8 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QtDebug>
-#include <util/sll/debugprinters.h>
-#include <util/sll/qtutil.h>
 #include "interfaces/azoth/iresourceplugin.h"
+#include "richserializer.h"
 #include "../../xmlsettingsmanager.h"
 #include "../../core.h"
 
@@ -91,17 +88,12 @@ namespace LC::Azoth
 				std::invoke (setter, fmt, conv (checked));
 				Edit_.setCurrentCharFormat (fmt);
 			}
-
-			HasCustomFormatting_ = true;
 		};
 	}
 
 	MsgFormatterWidget::MsgFormatterWidget (QTextEdit& edit)
 	: QWidget { &edit }
 	, Edit_ { edit }
-	, StockCharFormat_ { Edit_.currentCharFormat () }
-	, StockBlockFormat_ { Edit_.document ()->begin ().blockFormat () }
-	, StockFrameFormat_ { Edit_.document ()->rootFrame ()->frameFormat () }
 	, SmilesTooltip_ { new SmilesTooltip { this } }
 	{
 		SmilesTooltip_->setWindowTitle (tr ("Emoticons"));
@@ -226,48 +218,12 @@ namespace LC::Azoth
 				[this] (const QString& emoPack) { HandleEmoPackChanged (emoPack); });
 	}
 
-	bool MsgFormatterWidget::HasCustomFormatting () const
+	std::optional<QString> MsgFormatterWidget::GetRichText () const
 	{
-		return HasCustomFormatting_;
-	}
-
-	void MsgFormatterWidget::Clear ()
-	{
-		HasCustomFormatting_ = false;
-	}
-
-	std::optional<QString> MsgFormatterWidget::GetNormalizedRichText () const
-	{
-		if (!HasCustomFormatting ())
+		const RichSerializer serializer { *Edit_.document () };
+		if (!serializer.HasCustomFormatting ())
 			return {};
-
-		auto result = Edit_.toHtml ();
-
-		QDomDocument doc;
-		if (const auto parseResult = doc.setContent (result);
-			!parseResult)
-		{
-			qWarning () << "unable to parse" << result << parseResult;
-			return {};
-		}
-
-		const auto& style = doc.elementsByTagName ("style"_qs).item (0).toElement ();
-
-		auto body = doc.elementsByTagName ("body"_qs).at (0).toElement ();
-		const auto& elem = body.firstChildElement ();
-		if (elem.isNull ())
-			return {};
-
-		body.insertBefore (style.cloneNode (true), elem);
-		body.setTagName ("div"_qs);
-
-		QDomDocument finalDoc;
-		finalDoc.appendChild (finalDoc.importNode (body, true));
-
-		result = finalDoc.toString ();
-		result = result.simplified ();
-		result.remove ('\n');
-		return result;
+		return serializer.GetXhtml ();
 	}
 
 	void MsgFormatterWidget::CharFormatActor (auto format)
@@ -285,8 +241,6 @@ namespace LC::Azoth
 			format (&fmt);
 			Edit_.setCurrentCharFormat (fmt);
 		}
-
-		HasCustomFormatting_ = true;
 	}
 
 	void MsgFormatterWidget::BlockFormatActor (auto format)
@@ -294,8 +248,6 @@ namespace LC::Azoth
 		auto fmt = Edit_.textCursor ().blockFormat ();
 		format (&fmt);
 		Edit_.textCursor ().setBlockFormat (fmt);
-
-		HasCustomFormatting_ = true;
 	}
 
 	QTextCharFormat MsgFormatterWidget::GetActualCharFormat () const
