@@ -1338,14 +1338,6 @@ namespace Azoth
 		UpdateTextHeight ();
 	}
 
-	void ChatTab::handleRichFormatterPosition ()
-	{
-		const QString& posStr = XmlSettingsManager::Instance ()
-				.property ("RichFormatterPosition").toString ();
-		const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + (posStr == "belowEdit" ? 2 : 1);
-		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
-	}
-
 	void ChatTab::handleAccountStyleChanged (IAccount *acc)
 	{
 		auto entry = GetEntry<ICLEntry> ();
@@ -1713,19 +1705,21 @@ namespace Azoth
 		UpdateTextHeight ();
 
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
-		handleRichFormatterPosition ();
+		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition", this,
+				[this] (const QString& posStr)
+				{
+					const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + (posStr == "belowEdit"_ql ? 2 : 1);
+					Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
+				});
 		connect (ToggleRichEditor_,
-				SIGNAL (toggled (bool)),
+				&QAction::toggled,
 				MsgFormatter_,
-				SLOT (setVisible (bool)));
+				&QWidget::setVisible);
 		MsgFormatter_->setVisible (ToggleRichEditor_->isChecked ());
 	}
 
 	void ChatTab::RegisterSettings ()
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
-				this, "handleRichFormatterPosition");
-
 		XmlSettingsManager::Instance ().RegisterObject ("SendButtonVisible",
 				this, "handleSendButtonVisible");
 		handleSendButtonVisible ();

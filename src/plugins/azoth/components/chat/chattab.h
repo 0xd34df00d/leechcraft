@@ -174,7 +174,6 @@ namespace Azoth
 
 		void handleChatWindowSearch (const QString&);
 
-		void handleEditScroll (int);
 		void messageSend ();
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
@@ -209,7 +208,6 @@ namespace Azoth
 
 		void handleSendButtonVisible ();
 		void handleMinLinesHeightChanged ();
-		void handleRichFormatterPosition ();
 
 		void handleAccountStyleChanged (IAccount*);
 
