@@ -10,32 +10,31 @@
 
 #include <QTextEdit>
 
-namespace LC
+namespace LC::Util
 {
-namespace Azoth
+	class ShortcutManager;
+}
+
+namespace LC::Azoth
 {
 	class TextEdit : public QTextEdit
 	{
 		Q_OBJECT
 
-		QFont DefaultFont_;
+		const QFont DefaultFont_;
+
 		Qt::KeyboardModifiers SendMods_ {};
 		bool AllowKeypadEnter_ = true;
 	public:
-		TextEdit (QWidget *parent = 0);
+		explicit TextEdit (QWidget *parent = nullptr);
+
+		void SetShortcutManager (Util::ShortcutManager& mgr);
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
 	private:
 		bool IsMessageSend (const QKeyEvent&) const;
-	private slots:
-		void handleMsgFontSize ();
-
-		void deleteWord ();
-		void deleteBOL ();
-		void deleteEOL ();
 	signals:
 		void messageSendRequested ();
-		void scroll (int);
+		void scrollRequested (int);
 	};
-}
 }

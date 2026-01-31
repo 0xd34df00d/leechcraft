@@ -33,6 +33,7 @@
 #include <util/sll/scopeguards.h>
 #include <util/sll/visitor.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -126,6 +127,7 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->InitializePage (profile);
+		Ui_.MsgEdit_->SetShortcutManager (*Core::Instance ().GetShortcutManager ());
 
 		fontsWidget->RegisterSettable (this);
 
@@ -1696,9 +1698,9 @@ namespace Azoth
 				this,
 				&ChatTab::messageSend);
 		connect (Ui_.MsgEdit_,
-				SIGNAL (scroll (int)),
+				&TextEdit::scrollRequested,
 				this,
-				SLOT (handleEditScroll (int)));
+				[this] (int direction) { Ui_.View_->page ()->runJavaScript ("ScrollPage(%1);"_qs.arg (direction)); });
 
 		new MsgEditAutocompleter (EntryID_, *Ui_.MsgEdit_);
 
@@ -1998,11 +2000,6 @@ namespace Azoth
 		ChatFinder_->FindNext ();
 
 		ChatFinder_->show ();
-	}
-
-	void ChatTab::handleEditScroll (int direction)
-	{
-		Ui_.View_->page ()->runJavaScript (QStringLiteral ("ScrollPage(%1);").arg (direction));
 	}
 
 	void ChatTab::UpdateStateIcon ()

@@ -9,54 +9,30 @@
 #include "textedit.h"
 #include <QKeyEvent>
 #include <QShortcut>
-#include <QtDebug>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/qtutil.h>
 #include "../../xmlsettingsmanager.h"
-#include "../../core.h"
 #include "chattab.h"
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	TextEdit::TextEdit (QWidget *parent)
-	: QTextEdit (parent)
+	: QTextEdit { parent }
+	, DefaultFont_ { font () }
 	{
-		auto wordShortcut = new QShortcut ({},
-				this,
-				SLOT (deleteWord ()));
-		auto bolShortcut = new QShortcut (QString ("Ctrl+U"),
-				this,
-				SLOT (deleteBOL ()));
-		auto eolShortcut = new QShortcut (QString ("Ctrl+K"),
-				this,
-				SLOT (deleteEOL ()));
-
-		auto sm = Core::Instance ().GetShortcutManager ();
-		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteWord",
-				{ tr ("Delete the word before the cursor"), QKeySequence {}, {} },
-				wordShortcut);
-		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteBOL",
+		XmlSettingsManager::Instance ().RegisterObject ("MsgEditFontSize", this,
+				[this] (int size)
 				{
-					tr ("Delete from cursor to the beginning of line"),
-					bolShortcut->key (),
-					{}
-				},
-				bolShortcut);
-		sm->RegisterShortcut ("org.Azoth.TextEdit.DeleteEOL",
-				{
-					tr ("Delete from cursor to the end of line"),
-					eolShortcut->key (),
-					{}
-				},
-				eolShortcut);
+					if (size == 5)	// keep 5 in sync with the settings
+					{
+						setFont (DefaultFont_);
+						return;
+					}
 
-		DefaultFont_ = font ();
-
-		XmlSettingsManager::Instance ().RegisterObject ("MsgEditFontSize",
-				this, "handleMsgFontSize");
-		handleMsgFontSize ();
+					auto newFont = font ();
+					newFont.setPixelSize (size);
+					setFont (newFont);
+				});
 
 		XmlSettingsManager::Instance ().RegisterObject ("KPEnterAlias", this,
 				[this] (bool allow) { AllowKeypadEnter_ = allow; });
@@ -72,6 +48,46 @@ namespace Azoth
 				});
 	}
 
+	void TextEdit::SetShortcutManager (Util::ShortcutManager& sm)
+	{
+		auto remove = [this] (auto selector)
+		{
+			return [this, selector]
+			{
+				auto c = textCursor ();
+				selector (c);
+				c.removeSelectedText ();
+			};
+		};
+		auto wordShortcut = new QShortcut ({},
+				this,
+				remove ([] (QTextCursor& c) { c.select (QTextCursor::WordUnderCursor); }));
+		auto bolShortcut = new QShortcut (QString ("Ctrl+U"),
+				this,
+				remove ([] (QTextCursor& c) { c.movePosition (QTextCursor::StartOfLine, QTextCursor::KeepAnchor); }));
+		auto eolShortcut = new QShortcut (QString ("Ctrl+K"),
+				this,
+				remove ([] (QTextCursor& c) { c.movePosition (QTextCursor::EndOfLine, QTextCursor::KeepAnchor); }));
+
+		sm.RegisterShortcut ("org.Azoth.TextEdit.DeleteWord",
+				{ tr ("Delete the word before the cursor"), QKeySequence {}, {} },
+				wordShortcut);
+		sm.RegisterShortcut ("org.Azoth.TextEdit.DeleteBOL",
+				{
+					tr ("Delete from cursor to the beginning of line"),
+					bolShortcut->key (),
+					{}
+				},
+				bolShortcut);
+		sm.RegisterShortcut ("org.Azoth.TextEdit.DeleteEOL",
+				{
+					tr ("Delete from cursor to the end of line"),
+					eolShortcut->key (),
+					{}
+				},
+				eolShortcut);
+	}
+
 	void TextEdit::keyPressEvent (QKeyEvent *event)
 	{
 		if (IsMessageSend (*event))
@@ -79,7 +95,7 @@ namespace Azoth
 		else if (event->modifiers () & Qt::ShiftModifier &&
 				(event->key () == Qt::Key_PageUp ||
 				 event->key () == Qt::Key_PageDown))
-			emit scroll (event->key () == Qt::Key_PageUp ? -1 : 1);
+			emit scrollRequested (event->key () == Qt::Key_PageUp ? -1 : 1);
 		else
 			QTextEdit::keyPressEvent (event);
 	}
@@ -95,40 +111,4 @@ namespace Azoth
 				(AllowKeypadEnter_ && event.modifiers () == (SendMods_ | Qt::KeypadModifier));
 		return modsOk;
 	}
-
-	void TextEdit::handleMsgFontSize ()
-	{
-		const auto size = XmlSettingsManager::Instance ().property ("MsgEditFontSize").toInt ();
-		if (size == 5)	// keep 5 in sync with the settings
-		{
-			setFont (DefaultFont_);
-			return;
-		}
-
-		auto newFont = font ();
-		newFont.setPixelSize (size);
-		setFont (newFont);
-	}
-
-	void TextEdit::deleteWord ()
-	{
-		auto c = textCursor ();
-		c.select (QTextCursor::WordUnderCursor);
-		c.removeSelectedText ();
-	}
-
-	void TextEdit::deleteBOL ()
-	{
-		auto c = textCursor ();
-		c.movePosition (QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
-		c.removeSelectedText ();
-	}
-
-	void TextEdit::deleteEOL ()
-	{
-		auto c = textCursor ();
-		c.movePosition (QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
-		c.removeSelectedText ();
-	}
-}
 }
