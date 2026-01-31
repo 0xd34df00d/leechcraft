@@ -42,17 +42,26 @@ namespace LC::Azoth
 		{
 			enabled.removeAll (entryId);
 			disabled.removeAll (entryId);
+
+			settings.setValue ("Enabled", enabled);
+			settings.setValue ("Disabled", disabled);
 		}
 		else if (value)
-			enabled << entryId;
+		{
+			if (!enabled.contains (entryId))
+			{
+				enabled << entryId;
+				settings.setValue ("Enabled", enabled);
+			}
+		}
 		else
-			disabled << entryId;
-
-		disabled.removeDuplicates ();
-		enabled.removeDuplicates ();
-
-		settings.setValue ("Enabled", enabled);
-		settings.setValue ("Disabled", disabled);
+		{
+			if (!disabled.contains (entryId))
+			{
+				disabled << entryId;
+				settings.setValue ("Disabled", disabled);
+			}
+		}
 
 		settings.endGroup ();
 	}
