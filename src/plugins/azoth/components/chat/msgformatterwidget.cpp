@@ -38,8 +38,24 @@ namespace LC::Azoth
 			explicit SmilesTooltip (QWidget *parent)
 			: QWidget { parent, Qt::Tool }
 			{
+				parent->installEventFilter (this);
 			}
 		protected:
+			bool eventFilter (QObject*, QEvent *event) override
+			{
+				switch (event->type ())
+				{
+				case QEvent::Hide:
+				case QEvent::HideToParent:
+				case QEvent::Close:
+					hide ();
+					break;
+				default:
+					break;
+				}
+				return false;
+			}
+
 			void keyPressEvent (QKeyEvent *event) override
 			{
 				if (event->key () == Qt::Key_Escape)
@@ -252,11 +268,6 @@ namespace LC::Azoth
 		result = result.simplified ();
 		result.remove ('\n');
 		return result;
-	}
-
-	void MsgFormatterWidget::HidePopups ()
-	{
-		SmilesTooltip_->hide ();
 	}
 
 	void MsgFormatterWidget::CharFormatActor (auto format)

@@ -363,8 +363,6 @@ namespace Azoth
 		emit entryLostCurrent (GetEntry<QObject> ());
 
 		IsCurrent_ = false;
-
-		MsgFormatter_->HidePopups ();
 	}
 
 	QByteArray ChatTab::GetTabRecoverData () const

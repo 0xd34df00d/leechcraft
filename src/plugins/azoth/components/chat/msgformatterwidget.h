@@ -42,8 +42,6 @@ namespace LC::Azoth
 
 		void Clear ();
 		std::optional<QString> GetNormalizedRichText () const;
-
-		void HidePopups ();
 	private:
 		bool HasCustomFormatting () const;
 
