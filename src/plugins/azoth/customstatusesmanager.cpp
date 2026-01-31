@@ -10,11 +10,11 @@
 #include <QStandardItemModel>
 #include <QCoreApplication>
 #include <xmlsettingsdialog/datasourceroles.h>
-#include "interfaces/azoth/azothcommon.h"
+#include <interfaces/azoth/azothcommon.h>
+#include "components/util/gui.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"
-#include "util.h"
 
 namespace LC
 {

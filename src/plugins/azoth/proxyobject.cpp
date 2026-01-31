@@ -19,13 +19,13 @@
 #include <util/sll/visitor.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
+#include "components/util/gui.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"
 #include "coremessage.h"
 #include "unreadqueuemanager.h"
 #include "resourcesmanager.h"
-#include "util.h"
 #include "customstatusesmanager.h"
 #include "hooksinstance.h"
 

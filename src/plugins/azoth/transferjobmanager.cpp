@@ -25,9 +25,9 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "components/dialogs/filesenddialog.h"
+#include "components/util/misc.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "util.h"
 #include "avatarsmanager.h"
 
 Q_DECLARE_METATYPE (QToolBar*)

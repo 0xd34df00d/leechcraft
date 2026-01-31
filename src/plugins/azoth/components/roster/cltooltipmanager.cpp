@@ -29,10 +29,10 @@
 #include "interfaces/azoth/activityinfo.h"
 #include "components/dialogs/activitydialog.h"
 #include "components/dialogs/mooddialog.h"
+#include "components/util/gui.h"
 #include "core.h"
 #include "resourcesmanager.h"
 #include "avatarsmanager.h"
-#include "util.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC

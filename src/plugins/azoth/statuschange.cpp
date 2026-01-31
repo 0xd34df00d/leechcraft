@@ -13,15 +13,15 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/azoth/iaccount.h>
 #include "components/dialogs/setstatusdialog.h"
+#include "components/util/gui.h"
 #include "core.h"
-#include "util.h"
 #include "customstatusesmanager.h"
 #include "resourcesmanager.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Azoth::StatusChange
 {
-	using StatusSetter_f = std::function<void (State, QString)>;
+	using StatusSetter_f = std::function<void  (State, QString)>;
 
 	namespace
 	{
@@ -61,7 +61,8 @@ namespace LC::Azoth::StatusChange
 		const auto result = new QMenu (QObject::tr ("Change status"), parent);
 		const auto addAction = [&] (State state)
 		{
-			result->addAction (rm.GetIconForState (state), StateToString (state), context, [=] { handler (state, {}); });
+			result->addAction (rm.GetIconForState (state), StateToString (state), context,
+				[=] { handler (state, {}); });
 		};
 		addAction (SOnline);
 		addAction (SChat);
@@ -74,17 +75,17 @@ namespace LC::Azoth::StatusChange
 		auto customAct = result->addAction ({}, context, [=] { handler (SInvalid, {}); });
 
 		QObject::connect (result,
-				&QMenu::aboutToShow,
-				[=] { UpdateCustomStatuses (customAct, handler); });
+			&QMenu::aboutToShow,
+			[=] { UpdateCustomStatuses (customAct, handler); });
 		QObject::connect (result,
-				&QObject::destroyed,
-				customAct,
-				[customAct]
-				{
-					auto menu = customAct->menu ();
-					customAct->setMenu (nullptr);
-					delete menu;
-				});
+			&QObject::destroyed,
+			customAct,
+			[customAct]
+			{
+				auto menu = customAct->menu ();
+				customAct->setMenu (nullptr);
+				delete menu;
+			});
 
 		return result;
 	}
@@ -96,7 +97,7 @@ namespace LC::Azoth::StatusChange
 
 		const auto& propName = "DefaultStatus" + QString::number (state);
 		return XmlSettingsManager::Instance ()
-				.property (propName.toLatin1 ()).toString ();
+			   .property (propName.toLatin1 ()).toString ();
 	}
 
 	void ChangeAllAccountsStatus (State state, const QString& text)

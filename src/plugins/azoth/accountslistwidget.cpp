@@ -21,8 +21,8 @@
 #include "components/dialogs/pgpkeyselectiondialog.h"
 #include "cryptomanager.h"
 #endif
+#include "components/util/misc.h"
 #include "core.h"
-#include "util.h"
 #include "customchatstylemanager.h"
 #include "chatstyleoptionmanager.h"
 

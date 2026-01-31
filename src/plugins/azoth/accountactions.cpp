@@ -46,15 +46,14 @@
 #include "components/dialogs/mooddialog.h"
 #include "components/dialogs/locationdialog.h"
 #include "components/dialogs/setstatusdialog.h"
+#include "components/util/gui.h"
+#include "components/util/misc.h"
 #include "consolewidget.h"
 #include "servicediscoverywidget.h"
 #include "microblogstab.h"
 #include "chattabsmanager.h"
 #include "statuschange.h"
-#include "xmlsettingsmanager.h"
 #include "serverhistorywidget.h"
-#include "resourcesmanager.h"
-#include "util.h"
 
 namespace LC::Azoth::Actions
 {

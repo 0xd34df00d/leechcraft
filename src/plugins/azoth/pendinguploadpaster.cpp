@@ -9,7 +9,7 @@
 #include "pendinguploadpaster.h"
 #include <QUrl>
 #include "interfaces/azoth/iclentry.h"
-#include "util.h"
+#include "components/util/misc.h"
 
 namespace LC
 {

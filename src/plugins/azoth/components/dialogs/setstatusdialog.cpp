@@ -7,11 +7,11 @@
  **********************************************************************/
 
 #include "setstatusdialog.h"
+#include "components/util/gui.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "customstatusesmanager.h"
 #include "resourcesmanager.h"
-#include "util.h"
 
 namespace LC
 {

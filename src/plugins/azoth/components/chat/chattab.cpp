@@ -56,6 +56,8 @@
 #endif
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/userslistwidget.h"
+#include "components/util/entries.h"
+#include "components/util/misc.h"
 #include "callchatwidget.h"
 #include "chattabpartstatemanager.h"
 #include "contactdropfilter.h"
@@ -68,7 +70,6 @@
 #include "../../transferjobmanager.h"
 #include "../../callmanager.h"
 #include "../../actionsmanager.h"
-#include "../../util.h"
 #include "../../proxyobject.h"
 #include "../../customchatstylemanager.h"
 #include "../../coremessage.h"

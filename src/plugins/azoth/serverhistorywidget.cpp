@@ -12,10 +12,10 @@
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
+#include "components/util/gui.h"
 #include "proxyobject.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "util.h"
 
 namespace LC
 {

@@ -9,13 +9,11 @@
 #include "actionsmanager.h"
 #include <functional>
 #include <algorithm>
-#include <map>
 #include <variant>
 #include <QAction>
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QClipboard>
 #include <QFileDialog>
 #include <QTimer>
@@ -61,11 +59,10 @@
 #include "components/dialogs/setstatusdialog.h"
 #include "components/dialogs/filesenddialog.h"
 #include "components/dialogs/advancedpermchangedialog.h"
+#include "components/util/entries.h"
 #include "core.h"
-#include "util.h"
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"
-#include "transferjobmanager.h"
 #include "proxyobject.h"
 #include "serverhistorywidget.h"
 #include "avatarsmanager.h"

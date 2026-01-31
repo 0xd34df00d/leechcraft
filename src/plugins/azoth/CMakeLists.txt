@@ -80,6 +80,9 @@ LC_DEFINE_PLUGIN (
 		components/roster/keyboardrosterfixer.cpp
 		components/roster/mainwidget.cpp
 		components/roster/sortfilterproxymodel.cpp
+		components/util/entries.cpp
+		components/util/gui.cpp
+		components/util/misc.cpp
 		azoth.cpp
 		azothschemehandler.cpp
 		core.cpp
@@ -89,7 +92,6 @@ LC_DEFINE_PLUGIN (
 		proxyobject.cpp
 		transferjobmanager.cpp
 		addaccountwizardfirstpage.cpp
-		util.cpp
 		servicediscoverywidget.cpp
 		consolewidget.cpp
 		callmanager.cpp

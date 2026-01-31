@@ -25,9 +25,9 @@
 #include "interfaces/azoth/ihavecontactactivity.h"
 #include "interfaces/azoth/moodinfo.h"
 #include "interfaces/azoth/activityinfo.h"
+#include "components/util/gui.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "util.h"
 #include "resourcesmanager.h"
 #include "roles.h"
 

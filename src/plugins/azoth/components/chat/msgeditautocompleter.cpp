@@ -12,9 +12,9 @@
 #include <util/sll/visitor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "../../interfaces/azoth/iprovidecommands.h"
+#include <interfaces/azoth/iprovidecommands.h>
+#include "components/util/entries.h"
 #include "../../core.h"
-#include "../../util.h"
 #include "../../xmlsettingsmanager.h"
 #include "../../corecommandsmanager.h"
 

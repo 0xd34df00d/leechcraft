@@ -16,7 +16,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "components/dialogs/groupsenddialog.h"
 #include "components/dialogs/groupremovedialog.h"
-#include "util.h"
+#include "components/util/gui.h"
 
 namespace LC::Azoth::Actions
 {

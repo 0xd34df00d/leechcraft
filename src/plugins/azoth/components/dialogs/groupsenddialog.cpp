@@ -11,9 +11,9 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
 #include "interfaces/azoth/iclentry.h"
+#include "components/util/misc.h"
 #include "core.h"
 #include "resourcesmanager.h"
-#include "util.h"
 
 namespace LC
 {
