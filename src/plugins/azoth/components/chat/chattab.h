@@ -189,9 +189,6 @@ namespace Azoth
 		void handleEnableEncryption ();
 		void handleEncryptionStateChanged (QObject*, bool);
 #endif
-		void handleFileOffered (QObject*);
-		void handleFileNoLongerOffered (QObject*);
-		void handleOfferActionTriggered ();
 		void handleEntryMessage (QObject*);
 		void handleVariantsChanged (QStringList);
 		void handleNameChanged (const QString& name);

@@ -62,6 +62,7 @@
 #include "callchatwidget.h"
 #include "chattabpartstatemanager.h"
 #include "contactdropfilter.h"
+#include "filetransfersection.h"
 #include "msgeditautocompleter.h"
 #include "msgformatterwidget.h"
 #include "textedit.h"
@@ -129,6 +130,8 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->InitializePage (profile);
+
+		new FileTransferSection { *Ui_.EventsButton_, *this, *Core::Instance ().GetTransferJobManager () };
 
 		Ui_.MsgEdit_->SetShortcutManager (*Core::Instance ().GetShortcutManager ());
 		Ui_.MsgEdit_->ForceUpdateVisibleLines ();
@@ -206,11 +209,6 @@ namespace Azoth
 		BuildBasicActions ();
 
 		Core::Instance ().RegisterHookable (this);
-
-		connect (Core::Instance ().GetTransferJobManager (),
-				SIGNAL (jobNoLongerOffered (QObject*)),
-				this,
-				SLOT (handleFileNoLongerOffered (QObject*)));
 
 		QSize ccSize = Ui_.CharCounter_->size ();
 		ccSize.setWidth (fontMetrics ().horizontalAdvance (" 9999"));
@@ -820,94 +818,6 @@ namespace Azoth
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void ChatTab::handleFileOffered (QObject *jobObj)
-	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "could not be casted to ITransferJob";
-			return;
-		}
-
-		if (job->GetSourceID () != EntryID_)
-			return;
-
-		Ui_.EventsButton_->show ();
-
-		const QString& text = tr ("File offered: %1.")
-				.arg (job->GetName ());
-		QAction *act = Ui_.EventsButton_->menu ()->
-				addAction (text, this, SLOT (handleOfferActionTriggered ()));
-		act->setData (QVariant::fromValue<QObject*> (jobObj));
-		act->setToolTip (job->GetComment ());
-	}
-
-	void ChatTab::handleFileNoLongerOffered (QObject *jobObj)
-	{
-		for (const auto action : Ui_.EventsButton_->menu ()->actions ())
-			if (action->data ().value<QObject*> () == jobObj)
-			{
-				action->deleteLater ();
-				break;
-			}
-
-		if (Ui_.EventsButton_->menu ()->actions ().count () == 1)
-			Ui_.EventsButton_->hide ();
-	}
-
-	void ChatTab::handleOfferActionTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		QObject *jobObj = action->data ().value<QObject*> ();
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-
-		QString text = tr ("Would you like to accept or reject file transfer "
-				"request for file %1?")
-					.arg (job->GetName ());
-		if (!job->GetComment ().isEmpty ())
-		{
-			text += "<br /><br />" + tr ("The file description is:") + "<br /><br /><em>";
-			auto comment = job->GetComment ().toHtmlEscaped ();
-			comment.replace ("\n", "<br />");
-			text += comment + "</em>";
-		}
-
-		auto questResult = QMessageBox::question (this,
-				tr ("File transfer request"), text,
-				QMessageBox::Save | QMessageBox::Abort | QMessageBox::Cancel);
-
-		if (questResult == QMessageBox::Cancel)
-			return;
-		else if (questResult == QMessageBox::Abort)
-			Core::Instance ().GetTransferJobManager ()->DenyJob (jobObj);
-		else
-		{
-			const QString& path = QFileDialog::getExistingDirectory (this,
-					tr ("Select save path for incoming file"),
-					XmlSettingsManager::Instance ()
-							.property ("DefaultXferSavePath").toString ());
-			if (path.isEmpty ())
-				return;
-
-			Core::Instance ().GetTransferJobManager ()->AcceptJob (jobObj, path);
-		}
-
-		action->deleteLater ();
-
-		if (Ui_.EventsButton_->menu ()->actions ().size () == 1)
-			Ui_.EventsButton_->hide ();
-	}
-
 	void ChatTab::handleEntryMessage (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -1442,23 +1352,8 @@ namespace Azoth
 
 	void ChatTab::InitExtraActions ()
 	{
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		const auto acc = e->GetParentAccount ();
-		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
-		{
-			connect (acc->GetTransferManager (),
-					SIGNAL (fileOffered (QObject*)),
-					this,
-					SLOT (handleFileOffered (QObject*)));
-
-			for (const auto object : Core::Instance ().GetTransferJobManager ()->
-							GetPendingIncomingJobsFor (EntryID_))
-				handleFileOffered (object);
-		}
-
-#if defined(ENABLE_MEDIACALLS) || defined(ENABLE_CRYPT)
-		const auto accObj = acc->GetQObject ();
-#endif
+		const auto e = GetEntry<ICLEntry> ();
+		[[maybe_unused]] const auto accObj = e->GetParentAccount ()->GetQObject ();
 
 #ifdef ENABLE_MEDIACALLS
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
