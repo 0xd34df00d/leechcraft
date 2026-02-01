@@ -23,16 +23,20 @@ namespace LC::Azoth
 
 		const QFont DefaultFont_;
 
+		int PreviousHeight_ = 0;
+
 		Qt::KeyboardModifiers SendMods_ {};
 		bool AllowKeypadEnter_ = true;
 	public:
 		explicit TextEdit (QWidget *parent = nullptr);
 
 		void SetShortcutManager (Util::ShortcutManager& mgr);
+		void ForceUpdateVisibleLines ();
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
 	private:
 		bool IsMessageSend (const QKeyEvent&) const;
+		void UpdateVisibleLines ();
 	signals:
 		void messageSendRequested ();
 		void scrollRequested (int);

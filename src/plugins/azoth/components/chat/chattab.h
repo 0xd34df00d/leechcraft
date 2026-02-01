@@ -84,7 +84,6 @@ namespace Azoth
 
 		QIcon TabIcon_;
 		bool IsMUC_ = false;
-		int PreviousTextHeight_ = 0;
 
 		ContactDropFilter *CDF_;
 		MsgFormatterWidget *MsgFormatter_ = nullptr;
@@ -174,7 +173,6 @@ namespace Azoth
 		void handleChatWindowSearch (const QString&);
 
 		void messageSend ();
-		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
 		void on_View__loadFinished (bool);
@@ -205,7 +203,6 @@ namespace Azoth
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
 
 		void handleSendButtonVisible ();
-		void handleMinLinesHeightChanged ();
 
 		void handleAccountStyleChanged (IAccount*);
 
@@ -225,8 +222,6 @@ namespace Azoth
 		void RegisterSettings ();
 
 		void RequestLogs (int);
-
-		void UpdateTextHeight ();
 
 		/** Appends the message to the message view area.
 		 */

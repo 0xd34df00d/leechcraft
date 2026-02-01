@@ -129,7 +129,9 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->InitializePage (profile);
+
 		Ui_.MsgEdit_->SetShortcutManager (*Core::Instance ().GetShortcutManager ());
+		Ui_.MsgEdit_->ForceUpdateVisibleLines ();
 
 		fontsWidget->RegisterSettable (this);
 
@@ -646,13 +648,6 @@ namespace Azoth
 			emit messageSent ();
 		else
 			clear = false;
-	}
-
-	void ChatTab::on_MsgEdit__textChanged ()
-	{
-		UpdateTextHeight ();
-		emit composingTextChanged (Ui_.MsgEdit_->toPlainText ());
-		emit tabRecoverDataChanged ();
 	}
 
 	void ChatTab::on_SubjectButton__toggled (bool show)
@@ -1247,12 +1242,6 @@ namespace Azoth
 					.property ("SendButtonVisible").toBool ());
 	}
 
-	void ChatTab::handleMinLinesHeightChanged ()
-	{
-		PreviousTextHeight_ = 0;
-		UpdateTextHeight ();
-	}
-
 	void ChatTab::handleAccountStyleChanged (IAccount *acc)
 	{
 		auto entry = GetEntry<ICLEntry> ();
@@ -1587,9 +1576,17 @@ namespace Azoth
 				this,
 				[this] (int direction) { Ui_.View_->page ()->runJavaScript ("ScrollPage(%1);"_qs.arg (direction)); });
 
-		new MsgEditAutocompleter (EntryID_, *Ui_.MsgEdit_);
+		connect (Ui_.MsgEdit_,
+				&QTextEdit::textChanged,
+				this,
+				[this]
+				{
+					Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
+					emit composingTextChanged (Ui_.MsgEdit_->toPlainText ());
+					emit tabRecoverDataChanged ();
+				});
 
-		UpdateTextHeight ();
+		new MsgEditAutocompleter (EntryID_, *Ui_.MsgEdit_);
 
 		MsgFormatter_ = new MsgFormatterWidget { EntryID_, *Ui_.MsgEdit_ };
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition", this,
@@ -1605,9 +1602,6 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("SendButtonVisible",
 				this, "handleSendButtonVisible");
 		handleSendButtonVisible ();
-
-		XmlSettingsManager::Instance ().RegisterObject ("MinLinesHeight",
-				this, "handleMinLinesHeightChanged");
 	}
 
 	void ChatTab::RequestLogs (int num)
@@ -1804,23 +1798,6 @@ namespace Azoth
 		setProperty ("WidgetLogicalPath", path);
 
 		return title;
-	}
-
-	void ChatTab::UpdateTextHeight ()
-	{
-		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
-
-		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
-		if (docHeight == PreviousTextHeight_)
-			return;
-
-		PreviousTextHeight_ = docHeight;
-		const int numLines = XmlSettingsManager::Instance ().property ("MinLinesHeight").toInt ();
-		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().lineSpacing () * numLines +
-				Ui_.MsgEdit_->document ()->documentMargin () * 2;
-		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
-		Ui_.MsgEdit_->setMinimumHeight (resHeight);
-		Ui_.MsgEdit_->setMaximumHeight (resHeight);
 	}
 
 	void ChatTab::prepareMessageText (const QString& text)

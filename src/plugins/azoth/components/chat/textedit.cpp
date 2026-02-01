@@ -46,6 +46,20 @@ namespace LC::Azoth
 					else
 						SendMods_ = {};
 				});
+
+		connect (this,
+				&QTextEdit::textChanged,
+				this,
+				&TextEdit::UpdateVisibleLines);
+		XmlSettingsManager::Instance ().RegisterObject ("MinLinesHeight",
+				this,
+				[this] { ForceUpdateVisibleLines (); });
+	}
+
+	void TextEdit::ForceUpdateVisibleLines ()
+	{
+		PreviousHeight_ = 0;
+		UpdateVisibleLines ();
 	}
 
 	void TextEdit::SetShortcutManager (Util::ShortcutManager& sm)
@@ -110,5 +124,19 @@ namespace LC::Azoth
 		const auto modsOk = event.modifiers () == SendMods_ ||
 				(AllowKeypadEnter_ && event.modifiers () == (SendMods_ | Qt::KeypadModifier));
 		return modsOk;
+	}
+
+	void TextEdit::UpdateVisibleLines ()
+	{
+		const int docHeight = document ()->size ().toSize ().height ();
+		if (docHeight == PreviousHeight_)
+			return;
+
+		PreviousHeight_ = docHeight;
+		const int minLines = XmlSettingsManager::Instance ().property ("MinLinesHeight").toInt ();
+		const int minHeight = fontMetrics ().lineSpacing () * minLines + document ()->documentMargin () * 2;
+		const int resHeight = std::min (parentWidget ()->height () / 3, std::max (docHeight, minHeight));
+		setMaximumHeight (resHeight);
+		setMinimumHeight (resHeight);
 	}
 }
