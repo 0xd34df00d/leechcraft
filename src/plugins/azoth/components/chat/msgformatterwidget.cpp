@@ -215,10 +215,6 @@ namespace LC::Azoth
 				});
 		AddEmoticon_->setProperty ("ActionIcon", "face-smile");
 
-		for (const auto act : toolbar->actions ())
-			if (!act->isSeparator ())
-				act->setParent (this);
-
 		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons", this,
 				[this] (const QString& emoPack) { HandleEmoPackChanged (emoPack); });
 	}
