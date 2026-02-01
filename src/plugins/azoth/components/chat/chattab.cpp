@@ -199,6 +199,8 @@ namespace Azoth
 		ChatFinder_ = new Util::FindNotificationWE (Core::Instance ().GetProxy (), Ui_.View_);
 		ChatFinder_->hide ();
 
+		InitMsgEdit ();
+
 		BuildBasicActions ();
 
 		Core::Instance ().RegisterHookable (this);
@@ -235,7 +237,6 @@ namespace Azoth
 		ReinitEntry ();
 		CheckMUC ();
 		InitExtraActions ();
-		InitMsgEdit ();
 		RegisterSettings ();
 
 		emit hookChatTabCreated (std::make_shared<Util::DefaultHookProxy> (),
@@ -808,12 +809,6 @@ namespace Azoth
 		RequestLogs (ScrollbackPos_);
 	}
 
-	void ChatTab::handleRichEditorToggled ()
-	{
-		UpdateWithDefaultValue (ToggleRichEditor_->isChecked (),
-				EntryID_, "RichEditorStates", "ShowRichTextEditor");
-	}
-
 	void ChatTab::handleRichTextToggled ()
 	{
 		PrepareTheme ();
@@ -1319,15 +1314,7 @@ namespace Azoth
 
 		TabToolbar_->addSeparator ();
 
-		ToggleRichEditor_ = new QAction (tr ("Enable rich text editor"), this);
-		ToggleRichEditor_->setProperty ("ActionIcon", "accessories-text-editor");
-		ToggleRichEditor_->setCheckable (true);
-		ToggleRichEditor_->setChecked (CheckWithDefaultValue (EntryID_, "RichEditorStates", "ShowRichTextEditor"));
-		connect (ToggleRichEditor_,
-				SIGNAL (toggled (bool)),
-				this,
-				SLOT (handleRichEditorToggled ()));
-		TabToolbar_->addAction (ToggleRichEditor_);
+		TabToolbar_->addAction (&MsgFormatter_->GetToggle ());
 
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
 		ToggleRichText_->setProperty ("ActionIcon", "text-enriched");
@@ -1604,18 +1591,13 @@ namespace Azoth
 
 		UpdateTextHeight ();
 
-		MsgFormatter_ = new MsgFormatterWidget { *Ui_.MsgEdit_ };
+		MsgFormatter_ = new MsgFormatterWidget { EntryID_, *Ui_.MsgEdit_ };
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition", this,
 				[this] (const QString& posStr)
 				{
 					const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + (posStr == "belowEdit"_ql ? 2 : 1);
 					Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 				});
-		connect (ToggleRichEditor_,
-				&QAction::toggled,
-				MsgFormatter_,
-				&QWidget::setVisible);
-		MsgFormatter_->setVisible (ToggleRichEditor_->isChecked ());
 	}
 
 	void ChatTab::RegisterSettings ()

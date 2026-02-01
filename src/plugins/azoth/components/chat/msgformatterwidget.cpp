@@ -20,7 +20,9 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "interfaces/azoth/iresourceplugin.h"
+#include "components/util/settings.h"
 #include "richserializer.h"
 #include "../../xmlsettingsmanager.h"
 #include "../../core.h"
@@ -91,11 +93,14 @@ namespace LC::Azoth
 		};
 	}
 
-	MsgFormatterWidget::MsgFormatterWidget (QTextEdit& edit)
+	MsgFormatterWidget::MsgFormatterWidget (const QString& entryId, QTextEdit& edit)
 	: QWidget { &edit }
+	, EntryId_ { entryId }
 	, Edit_ { edit }
 	, SmilesTooltip_ { new SmilesTooltip { this } }
 	{
+		SetupToggle ();
+
 		SmilesTooltip_->setWindowTitle (tr ("Emoticons"));
 
 		setLayout (new QVBoxLayout);
@@ -218,12 +223,39 @@ namespace LC::Azoth
 				[this] (const QString& emoPack) { HandleEmoPackChanged (emoPack); });
 	}
 
+	QAction& MsgFormatterWidget::GetToggle () const
+	{
+		return *Toggle_;
+	}
+
 	std::optional<QString> MsgFormatterWidget::GetRichText () const
 	{
 		const RichSerializer serializer { *Edit_.document () };
 		if (!serializer.HasCustomFormatting ())
 			return {};
 		return serializer.GetXhtml ();
+	}
+
+	void MsgFormatterWidget::SetupToggle ()
+	{
+		static const auto settingsGroup = "RichTextEditorStates"_qs;
+		static const auto settingsName = "ShowRichTextEditor"_qba;
+
+		const bool isEnabled = CheckWithDefaultValue (EntryId_, settingsGroup, settingsName);
+
+		Toggle_ = new QAction (tr ("Enable rich text editor"), this);
+		Toggle_->setProperty ("ActionIcon", "accessories-text-editor");
+		Toggle_->setCheckable (true);
+		Toggle_->setChecked (isEnabled);
+		connect (Toggle_,
+				&QAction::toggled,
+				this,
+				[this] (bool toggled)
+				{
+					UpdateWithDefaultValue (toggled, EntryId_, settingsGroup, settingsName);
+					setVisible (toggled);
+				});
+		setVisible (isEnabled);
 	}
 
 	void MsgFormatterWidget::CharFormatActor (auto format)

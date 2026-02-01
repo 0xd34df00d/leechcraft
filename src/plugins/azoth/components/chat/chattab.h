@@ -63,7 +63,6 @@ namespace Azoth
 		Ui::ChatTab Ui_;
 		std::unique_ptr<QToolBar> TabToolbar_;
 		QTextBrowser *MUCEventLog_;
-		QAction *ToggleRichEditor_ = nullptr;
 		QAction *ToggleRichText_ = nullptr;
 		QAction *Call_ = nullptr;
 #ifdef ENABLE_CRYPT
@@ -180,7 +179,6 @@ namespace Azoth
 		void on_SubjChange__released ();
 		void on_View__loadFinished (bool);
 		void handleHistoryBack ();
-		void handleRichEditorToggled ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
 		void handleOpenLastLink ();

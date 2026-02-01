@@ -20,7 +20,10 @@ namespace LC::Azoth
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aztoh::MsgFormatterWidget)
 
+		const QString EntryId_;
 		QTextEdit& Edit_;
+
+		QAction *Toggle_;
 
 		QAction *FormatBold_;
 		QAction *FormatItalic_;
@@ -31,10 +34,14 @@ namespace LC::Azoth
 
 		QWidget *SmilesTooltip_;
 	public:
-		explicit MsgFormatterWidget (QTextEdit&);
+		explicit MsgFormatterWidget (const QString& entryId, QTextEdit&);
+
+		QAction& GetToggle () const;
 
 		std::optional<QString> GetRichText () const;
 	private:
+		void SetupToggle ();
+
 		auto CharFormatter (auto setter);
 		auto CharFormatter (auto setter, auto conv);
 
