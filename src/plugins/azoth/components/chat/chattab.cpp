@@ -225,7 +225,7 @@ namespace Azoth
 				this,
 				SLOT (handleChatWindowSearch (QString)));
 
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
+		DummyMsgManager::Instance ().ClearMessages (GetEntry<QObject> ());
 		PrepareTheme ();
 
 		auto entry = GetEntry<ICLEntry> ();
@@ -271,7 +271,7 @@ namespace Azoth
 
 		qDeleteAll (HistoryMessages_);
 		qDeleteAll (CoreMessages_);
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
+		DummyMsgManager::Instance ().ClearMessages (GetEntry<QObject> ());
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
@@ -498,16 +498,6 @@ namespace Azoth
 
 		if (enabled)
 			AddManagedActions (false);
-	}
-
-	QObject* ChatTab::GetCLEntryObj () const
-	{
-		return GetEntry<QObject> ();
-	}
-
-	ICLEntry* ChatTab::GetCLEntry () const
-	{
-		return GetEntry<ICLEntry> ();
 	}
 
 	QString ChatTab::GetEntryID () const
@@ -782,7 +772,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
+		DummyMsgManager::Instance ().ClearMessages (GetEntry<QObject> ());
 		LastDateTime_ = QDateTime ();
 		PrepareTheme ();
 	}
@@ -794,7 +784,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		DummyMsgManager::Instance ().ClearMessages (GetCLEntryObj ());
+		DummyMsgManager::Instance ().ClearMessages (GetEntry<QObject> ());
 		LastDateTime_ = QDateTime ();
 		RequestLogs (ScrollbackPos_);
 	}
@@ -1887,5 +1877,9 @@ namespace Azoth
 				});
 	}
 #endif
+
+	template QObject* ChatTab::GetEntry<QObject> () const;
+	template ICLEntry* ChatTab::GetEntry<ICLEntry> () const;
+	template IMUCEntry* ChatTab::GetEntry<IMUCEntry> () const;
 }
 }

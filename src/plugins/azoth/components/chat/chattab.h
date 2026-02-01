@@ -148,8 +148,6 @@ namespace Azoth
 
 		void SetEnabled (bool);
 
-		QObject* GetCLEntryObj () const;
-		ICLEntry* GetCLEntry () const;
 		QString GetEntryID () const;
 		std::optional<QString> GetSelectedVariant () const;
 
@@ -158,6 +156,9 @@ namespace Azoth
 		void ReinitEntry ();
 
 		bool eventFilter (QObject*, QEvent*);
+
+		template<typename T>
+		T* GetEntry () const;
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);
@@ -208,8 +209,6 @@ namespace Azoth
 
 		void performJS (const QString&);
 	private:
-		template<typename T>
-		T* GetEntry () const;
 		void BuildBasicActions ();
 		void ReinitAvatar ();
 		void CheckMUC ();

@@ -76,14 +76,14 @@ namespace LC::Azoth
 		else if (DndUtil::HasContacts (data))
 			HandleContactsDropped (data);
 		else if (!urls.isEmpty ())
-			Transfers_.OfferURLs (ChatTab_.GetCLEntry (), urls);
+			Transfers_.OfferURLs (ChatTab_.GetEntry<ICLEntry> (), urls);
 	}
 
 	namespace
 	{
 		void SendInChat (const QImage& image, const ChatTab& chatTab)
 		{
-			const auto entry = chatTab.GetCLEntry ();
+			const auto entry = chatTab.GetEntry<ICLEntry> ();
 			if (!entry)
 				return;
 
@@ -94,7 +94,7 @@ namespace LC::Azoth
 
 		void SendLink (const QUrl& url, const ChatTab& chatTab)
 		{
-			if (const auto entry = chatTab.GetCLEntry ())
+			if (const auto entry = chatTab.GetEntry<ICLEntry> ())
 				SendMessage (*entry, { .Variant_ = chatTab.GetSelectedVariant (), .Body_ = url.toEncoded () });
 		}
 
@@ -168,7 +168,7 @@ namespace LC::Azoth
 		if (url.scheme () != "file")
 			actions << Action { tr ("Send link"), [this, url] { SendLink (url, ChatTab_); } };
 		else
-			actions << Action { tr ("Send as file"), [this, url] { Transfers_.OfferURLs (ChatTab_.GetCLEntry (), { url }); }};
+			actions << Action { tr ("Send as file"), [this, url] { Transfers_.OfferURLs (ChatTab_.GetEntry<ICLEntry> (), { url }); }};
 
 		PerformChoice (actions, ChatTab_);
 	}
@@ -191,7 +191,7 @@ namespace LC::Azoth
 
 	void ContactDropFilter::HandleContactsDropped (const QMimeData *data)
 	{
-		const auto thisEntry = ChatTab_.GetCLEntry ();
+		const auto thisEntry = ChatTab_.GetEntry<ICLEntry> ();
 		const bool isMuc = thisEntry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		auto entries = DndUtil::DecodeEntryObjs (data);

@@ -76,7 +76,7 @@ namespace LC::Azoth
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
-		const auto entry = Tab_.GetCLEntry ();
+		const auto entry = Tab_.GetEntry<ICLEntry> ();
 		if (!entry)
 			return;
 
@@ -95,7 +95,7 @@ namespace LC::Azoth
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
-		if (const auto entry = Tab_.GetCLEntry ();
+		if (const auto entry = Tab_.GetEntry<ICLEntry> ();
 			entry && entry->GetStatus (LastVariant_).State_ != SOffline)
 			entry->SetChatPartState (CPSActive, LastVariant_);
 	}
