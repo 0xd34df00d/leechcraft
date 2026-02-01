@@ -10,11 +10,12 @@
 
 #include <QObject>
 #include <QIODevice>
-#include "interfaces/azoth/imediacall.h"
+#include <interfaces/azoth/imediacall.h>
+#include "../azothutilconfig.h"
 
 namespace LC::Azoth::Emitters
 {
-	class MediaCall : public QObject
+	class AZOTH_UTIL_API MediaCall : public QObject
 	{
 		Q_OBJECT
 	public:
