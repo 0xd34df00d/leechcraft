@@ -267,8 +267,6 @@ namespace Azoth
 				const QUrl& linkUrl);
 		void hookGonnaAppendMsg (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookMadeCurrent (LC::IHookProxy_ptr proxy,
-				QObject *chatTab);
 		void hookThemeReloaded (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QWebEngineView *view,

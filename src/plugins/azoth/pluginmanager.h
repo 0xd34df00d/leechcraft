@@ -175,8 +175,6 @@ namespace Azoth
 				QObject *message);
 		void hookIsHighlightMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookMadeCurrent (LC::IHookProxy_ptr proxy,
-				QObject *chatTab);
 		void hookShouldCountUnread (LC::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookThemeReloaded (LC::IHookProxy_ptr proxy,
