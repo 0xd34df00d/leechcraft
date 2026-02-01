@@ -9,8 +9,7 @@
 #include "clmodel.h"
 #include <QMimeData>
 #include <QUrl>
-#include <QFileInfo>
-#include <QMessageBox>
+#include <util/sll/qtutil.h>
 #include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
@@ -21,18 +20,16 @@
 #include "cltooltipmanager.h"
 #include "roles.h"
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	CLModel::CLModel (CLTooltipManager *manager, QObject *parent)
 	: QStandardItemModel { parent }
 	, TooltipManager_ { manager }
 	{
 		connect (manager,
-				SIGNAL (rebuiltTooltip ()),
+				&CLTooltipManager::rebuiltTooltip,
 				this,
-				SIGNAL (rebuiltTooltip ()));
+				&CLModel::rebuiltTooltip);
 	}
 
 	QVariant CLModel::data (const QModelIndex& index, int role) const
@@ -43,7 +40,7 @@ namespace Azoth
 
 	QStringList CLModel::mimeTypes () const
 	{
-		return { DndUtil::GetFormatId (), "text/uri-list", "text/plain" };
+		return { DndUtil::GetFormatId (), "text/uri-list"_qs, "text/plain"_qs };
 	}
 
 	QMimeData* CLModel::mimeData (const QModelIndexList& indexes) const
@@ -101,7 +98,7 @@ namespace Azoth
 
 	Qt::DropActions CLModel::supportedDropActions () const
 	{
-		return static_cast<Qt::DropActions> (Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+		return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
 	}
 
 	void CLModel::CheckRequestUpdateTooltip (const QModelIndex& index, int role) const
@@ -213,7 +210,7 @@ namespace Azoth
 
 	bool CLModel::TryDropFile (const QMimeData* mime, const QModelIndex& parent)
 	{
-		// If MIME has CLEntryFormat, it's another serialized entry, we probably
+		// If MIME has CLEntryFormat, it's another serialized entry; we probably
 		// don't want to send it.
 		if (DndUtil::HasContacts (mime))
 			return false;
@@ -229,5 +226,4 @@ namespace Azoth
 
 		return Core::Instance ().GetTransferJobManager ()->OfferURLs (entry, urls);
 	}
-}
 }

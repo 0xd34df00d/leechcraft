@@ -11,9 +11,7 @@
 #include <QStandardItemModel>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class CLTooltipManager;
 
@@ -23,15 +21,14 @@ namespace Azoth
 
 		CLTooltipManager * const TooltipManager_;
 	public:
-		CLModel (CLTooltipManager*, QObject* = 0);
+		explicit CLModel (CLTooltipManager*, QObject* = nullptr);
 
-		QVariant data (const QModelIndex&, int) const;
+		QVariant data (const QModelIndex&, int) const override;
 
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList&) const;
-		bool dropMimeData (const QMimeData*, Qt::DropAction,
-				int, int, const QModelIndex&);
-		Qt::DropActions supportedDropActions () const;
+		QStringList mimeTypes () const override;
+		QMimeData* mimeData (const QModelIndexList&) const override;
+		bool dropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&) override;
+		Qt::DropActions supportedDropActions () const override;
 	private:
 		void CheckRequestUpdateTooltip (const QModelIndex&, int) const;
 
@@ -46,5 +43,4 @@ namespace Azoth
 				QObject*, QObject*);
 		void rebuiltTooltip ();
 	};
-}
 }
