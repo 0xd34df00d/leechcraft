@@ -32,20 +32,20 @@ namespace Xoox
 	public:
 		TransferJob (QXmppTransferJob*, TransferManager*);
 
-		QString GetSourceID () const;
-		QString GetName () const;
-		qint64 GetSize () const;
-		QString GetComment () const;
-		TransferDirection GetDirection () const;
-		void Accept (const QString& out);
-		void Abort ();
+		QString GetSourceID () const override;
+		QString GetName () const override;
+		qint64 GetSize () const override;
+		QString GetComment () const override;
+		TransferDirection GetDirection () const override;
+		void Accept (const QString& out) override;
+		void Abort () override;
 	private slots:
 		void handleErrorAppeared (QXmppTransferJob::Error);
 		void handleStateChanged (QXmppTransferJob::State);
 	signals:
-		void transferProgress (qint64 done, qint64 total);
-		void errorAppeared (TransferError error, const QString& msg);
-		void stateChanged (TransferState state);
+		void transferProgress (qint64 done, qint64 total) override;
+		void errorAppeared (TransferError error, const QString& msg) override;
+		void stateChanged (TransferState state) override;
 	};
 }
 }
