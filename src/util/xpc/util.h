@@ -247,7 +247,7 @@ namespace LC::Util
 	 */
 	UTIL_XPC_API void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total);
 
-	UTIL_XPC_API void InitJobHolderRow (const QList<QStandardItem*>& row);
+	UTIL_XPC_API void InitJobHolderRow (const QList<QStandardItem*>& row, int total = 0);
 
 	using LazyNotificationPixmap_t = std::function<std::optional<QFuture<QImage>> ()>;
 }
