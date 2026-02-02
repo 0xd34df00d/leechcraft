@@ -104,32 +104,24 @@ namespace Azoth
 
 	void FileSendDialog::SendProto ()
 	{
-		auto acc = Entry_->GetParentAccount ();
-		auto xferMgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (!xferMgr)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null Xfer manager for"
-					<< Entry_->GetQObject ();
-			return;
-		}
-
 		const auto& filename = Ui_.FileEdit_->text ();
 		if (filename.isEmpty ())
 			return;
 
-		QObject *job = xferMgr->SendFile (Entry_->GetEntryID (),
-				EntryVariant_.value_or ({}), filename, Ui_.CommentEdit_->toPlainText ());
-		if (!job)
+		const auto success = Core::Instance ().GetTransferJobManager ()->SendFile ({
+					.Entry_ = *Entry_,
+					.Variant_ = EntryVariant_.value_or ({}),
+					.FilePath_ = filename,
+					.Comment_ = Ui_.CommentEdit_->toPlainText (),
+				});
+		if (!success)
 		{
 			const auto& e = Util::MakeNotification ("Azoth",
 						tr ("Unable to send file to %1.")
 							.arg (Entry_->GetEntryName ()),
 						Priority::Critical);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-			return;
 		}
-		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 	void FileSendDialog::send ()

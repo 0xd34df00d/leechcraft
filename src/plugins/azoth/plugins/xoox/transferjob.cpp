@@ -8,114 +8,112 @@
 
 #include "transferjob.h"
 #include <QFile>
-#include <QFileInfo>
-#include <QDir>
-#include "core.h"
-#include "clientconnection.h"
-#include "transfermanager.h"
+#include <QTimer>
+#include <QXmppTransferManager.h>
 
-namespace LC
+namespace LC::Azoth::Xoox
 {
-namespace Azoth
-{
-namespace Xoox
-{
-	TransferJob::TransferJob (QXmppTransferJob *job, TransferManager *mgr)
-	: QObject (job)
-	, Job_ (job)
-	, Manager_ (mgr)
+	namespace
 	{
-		connect (Job_,
-				SIGNAL (progress (qint64, qint64)),
-				this,
-				SIGNAL (transferProgress (qint64,qint64)));
-		connect (Job_,
-				SIGNAL (error (QXmppTransferJob::Error)),
-				this,
-				SLOT (handleErrorAppeared (QXmppTransferJob::Error)));
-		connect (Job_,
-				SIGNAL (stateChanged (QXmppTransferJob::State)),
-				this,
-				SLOT (handleStateChanged (QXmppTransferJob::State)));
-	}
-
-	QString TransferJob::GetSourceID () const
-	{
-		auto [jid, var] = ClientConnection::Split (Job_->jid ());
-		return Manager_->GetAccount ()->GetAccountID () + '_' + jid;
-	}
-
-	QString TransferJob::GetName () const
-	{
-		return Job_->fileInfo ().name ();
-	}
-
-	qint64 TransferJob::GetSize () const
-	{
-		return Job_->fileInfo ().size ();
-	}
-
-	QString TransferJob::GetComment () const
-	{
-		return Job_->fileInfo ().description ();
-	}
-
-	TransferDirection TransferJob::GetDirection () const
-	{
-		switch (Job_->direction ())
+		TransferError FromQxmpp (QXmppTransferJob::Error error)
 		{
-		case QXmppTransferJob::OutgoingDirection:
-			return TDOut;
-		case QXmppTransferJob::IncomingDirection:
-			return TDIn;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown direction"
-					<< Job_->direction ();
-			return TDIn;
+			switch (error)
+			{
+			case QXmppTransferJob::NoError:
+				return TENoError;
+			case QXmppTransferJob::AbortError:
+				return TEAborted;
+			case QXmppTransferJob::FileAccessError:
+				return TEFileAccessError;
+			case QXmppTransferJob::FileCorruptError:
+				return TEFileCorruptError;
+			case QXmppTransferJob::ProtocolError:
+				return TEProtocolError;
+			}
+
+			qWarning () << "unknown error" << error;
+			return TENoError;
+		}
+
+		TransferState FromQxmpp (QXmppTransferJob::State state)
+		{
+			switch (state)
+			{
+			case QXmppTransferJob::OfferState:
+			case QXmppTransferJob::StartState:
+				return TSStarting;
+			case QXmppTransferJob::TransferState:
+				return TSTransfer;
+			case QXmppTransferJob::FinishedState:
+				return TSFinished;
+			}
+
+			qWarning () << "unknown state" << state;
+			return TSStarting;
 		}
 	}
 
-	void TransferJob::Accept (const QString& out)
+	TransferJob::TransferJob (std::unique_ptr<QXmppTransferJob> job)
+	: Job_ { std::move (job) }
 	{
-		const QString& filename = QFileInfo (out).isDir () ?
-				QDir (out).filePath (GetName ()) :
-				out;
+		connect (&*Job_,
+				&QXmppTransferJob::progress,
+				&Emitter_,
+				&Emitters::TransferJob::transferProgress);
+		connect (&*Job_,
+				qOverload<QXmppTransferJob::Error> (&QXmppTransferJob::error),
+				this,
+				[this] (QXmppTransferJob::Error error)
+				{
+					qWarning () << error;
+					emit Emitter_.errorAppeared (FromQxmpp (error), {});
+					deleteLater ();
+				});
+		connect (&*Job_,
+				&QXmppTransferJob::stateChanged,
+				this,
+				[this] (QXmppTransferJob::State state)
+				{
+					emit Emitter_.stateChanged (FromQxmpp (state));
+					if (state == QXmppTransferJob::FinishedState)
+						deleteLater ();
+				});
+	}
 
-		QFile *file = new QFile (filename);
-		if (!file->open (QIODevice::WriteOnly))
+	TransferJob::TransferJob (std::unique_ptr<QXmppTransferJob> job, const QString& savePath)
+	: TransferJob { std::move (job) }
+	{
+		Q_ASSERT (job->direction () == QXmppTransferJob::IncomingDirection);
+
+		SaveFile_ = std::make_unique<QFile> (savePath);
+		if (!SaveFile_->open (QIODevice::WriteOnly))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not open file"
-					<< filename
-					<< file->errorString ();
+			qWarning () << "could not open file" << savePath << SaveFile_->errorString ();
 
-			const QString& msg = tr ("could not open incoming file %1: %2")
-					.arg (filename)
-					.arg (file->errorString ());
-			emit errorAppeared (TEFileAccessError, msg);
+			const auto& msg = tr ("could not open incoming file %1: %2")
+					.arg (savePath)
+					.arg (SaveFile_->errorString ());
+			QTimer::singleShot (0, this,
+					[msg, this]
+					{
+						emit Emitter_.errorAppeared (TEFileAccessError, msg);
+						deleteLater ();
+					});
 			return;
 		}
 
-		Job_->accept (file);
+		Job_->accept (&*SaveFile_);
+	}
+
+	TransferJob::~TransferJob () = default;
+
+	Emitters::TransferJob& TransferJob::GetTransferJobEmitter ()
+	{
+		return Emitter_;
 	}
 
 	void TransferJob::Abort ()
 	{
 		Job_->abort ();
 	}
-
-	void TransferJob::handleErrorAppeared (QXmppTransferJob::Error error)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< error;
-		emit errorAppeared (static_cast<TransferError> (error), QString ());
-	}
-
-	void TransferJob::handleStateChanged (QXmppTransferJob::State state)
-	{
-		emit stateChanged (static_cast<TransferState> (state));
-	}
-}
-}
 }

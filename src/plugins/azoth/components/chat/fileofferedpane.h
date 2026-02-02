@@ -8,23 +8,20 @@
 
 #pragma once
 
-#include <QCoreApplication>
-
-class QToolButton;
+#include <QWidget>
+#include "ui_fileofferedpane.h"
 
 namespace LC::Azoth
 {
-	class ChatTab;
 	struct IncomingOffer;
 	class TransferJobManager;
 
-	class FileTransferSection : public QObject
+	class FileOfferedPane : public QWidget
 	{
-		ChatTab& Tab_;
-		TransferJobManager& Transfers_;
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::FileOfferedPane)
+
+		Ui::FileOfferedPane Ui_ {};
 	public:
-		explicit FileTransferSection (ChatTab&, TransferJobManager&);
-	private:
-		void HandleFileOffered (const IncomingOffer&);
+		explicit FileOfferedPane (const IncomingOffer&, TransferJobManager&, QWidget* = nullptr);
 	};
 }

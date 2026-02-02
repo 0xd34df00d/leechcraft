@@ -6,14 +6,18 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_ITRANSFERMANAGER_H
-#define PLUGINS_AZOTH_INTERFACES_ITRANSFERMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QString>
 
-namespace LC
+namespace LC::Azoth::Emitters
 {
-namespace Azoth
+	class TransferJob;
+	class TransferManager;
+}
+
+namespace LC::Azoth
 {
 	/** @brief Represents the direction of the transfer.
 	 */
@@ -31,11 +35,6 @@ namespace Azoth
 	 */
 	enum TransferState
 	{
-		/** File is just offered and waiting for the other party to be
-		 * accepted or rejected.
-		 */
-		TSOffer,
-
 		/** Transfer is accepted by the remote party and is being
 		 * initiated.
 		 */
@@ -84,84 +83,32 @@ namespace Azoth
 	class ITransferJob
 	{
 	public:
-		virtual ~ITransferJob () {}
+		virtual ~ITransferJob () = default;
 
-		/** @brief Returns the ID of the other party.
-		 *
-		 * The returned string should be compatible with the return
-		 * value of ICLEntry::GetEntryID(), that is, it should be equal
-		 * to that one of the corresponding ICLEntry.
-		 *
-		 * @return The ID of the other party, as ICLEntry::GetEntryID().
-		 */
-		virtual QString GetSourceID () const = 0;
+		virtual Emitters::TransferJob& GetTransferJobEmitter () = 0;
 
-		/** @brief Returns the name of the file.
+		/** @brief Aborts a transfer.
 		 *
-		 * @return The name of the file.
-		 */
-		virtual QString GetName () const = 0;
-
-		/** @brief Returns the size of the file.
-		 *
-		 * @return The size of the file, or -1 if size is not known.
-		 */
-		virtual qint64 GetSize () const = 0;
-
-		/** @brief Returns the human-readable comment.
-		 *
-		 * @return The text describing this transfer job.
-		 */
-		virtual QString GetComment () const = 0;
-
-		/** @brief Returns the direction of the transfer.
-		 *
-		 * @return The direction of the transfer.
-		 */
-		virtual TransferDirection GetDirection () const = 0;
-
-		/** @brief Accepts an incoming transfer.
-		 *
-		 * This method only makes sense in incoming file transfers. It
-		 * is used to accept the transfer and write the file the path
-		 * given by the out parameter.
-		 *
-		 * @param[in] out The file path to save the incoming data to.
-		 */
-		virtual void Accept (const QString& out) = 0;
-
-		/** @brief Rejects or aborts a transfer.
-		 *
-		 * This method is used to reject an incoming file transfer
-		 * request or abort an already accepted one that's in progress.
+		 * This method is used to abort a transfer already in progress.
 		 */
 		virtual void Abort () = 0;
-	protected:
-		/** @brief Notifies about transfer progress.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] done The amount of data already transferred.
-		 * @param[out] total The total amount of data.
-		 */
-		virtual void transferProgress (qint64 done, qint64 total) = 0;
+	};
 
-		/** @brief Notifies about error.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] error The error condition.
-		 * @param[out] msg The human-readable message describing the error.
-		 */
-		virtual void errorAppeared (TransferError error, const QString& msg) = 0;
+	class ITransferManager;
 
-		/** @brief Notifies about state changes.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] state The new state of the transfer job.
-		 */
-		virtual void stateChanged (TransferState state) = 0;
+	struct IncomingOffer
+	{
+		ITransferManager *Manager_;
+		uint64_t JobId_;
+
+		QString EntryId_;
+
+		QString Name_;
+		qsizetype Size_;
+
+		QString Description_ {};
+
+		bool operator== (const IncomingOffer& other) const = default;
 	};
 
 	/** @brief This interface must be implemented by transfer managers
@@ -170,9 +117,11 @@ namespace Azoth
 	class ITransferManager
 	{
 	public:
-		virtual ~ITransferManager () {}
+		virtual ~ITransferManager () = default;
 
-		/** @brief Returns whether transfer manager is available.
+		virtual Emitters::TransferManager& GetTransferManagerEmitter () = 0;
+
+		/** @brief Returns whether the transfer manager is available.
 		 *
 		 * This method returns whether file transfers are available via
 		 * the corresponding IAccount.
@@ -187,57 +136,42 @@ namespace Azoth
 		 */
 		virtual bool IsAvailable () const = 0;
 
+		virtual ITransferJob* Accept (const IncomingOffer& offer, const QString& savePath) = 0;
+
+		virtual void Decline (const IncomingOffer&) = 0;
+
 		/** @brief Requests a file transfer with the remote party.
 		 *
 		 * The entry is identified by the ID, which is the result of
 		 * ICLEntry::GetEntryID().
 		 *
 		 * If the variant is an empty string, or there is no such
-		 * variant, the file should be transferred the the variant with
+		 * variant, the file should be transferred to the variant with
 		 * the highest priority.
 		 *
-		 * The returned object represents the file transfer request,
+		 * The returned object (which must implement ITransferJob)
+		 * represents the file transfer request,
 		 * and, further on, the file transfer job, should it be
-		 * accepted. The returned object must implement ITransferJob.
-		 * Ownership is transferred to the caller.
+		 * accepted.
+		 *
+		 * The returned object is owned by the plugin.
 		 *
 		 * @param[in] id The id of the remote party, as
 		 * ICLEntry::GetEntryID().
-		 * @param[in] variant The entry variant to transfer with.
-		 * @param[in] name The path to the file that should be
+		 * @param[in] variant The entry variant to send the file to.
+		 * @param[in] path The path to the file that should be
 		 * transferred.
 		 * @param[in] comment The comment describing the file to be
 		 * sent, if applicable.
 		 * @return The transfer job object representing this transfer
 		 * and implement ITransferJob.
 		 */
-		virtual QObject* SendFile (const QString& id,
+		virtual ITransferJob* SendFile (const QString& id,
 				const QString& variant,
-				const QString& name,
+				const QString& path,
 				const QString& comment) = 0;
-	protected:
-		/** @brief Notifies about incoming transfer request.
-		 *
-		 * This signal should be emitted by the transfer manager
-		 * whenever another party issues a file transfer request.
-		 *
-		 * The passed obj represents the transfer job, and it must
-		 * implement the ITransferJob interface.
-		 *
-		 * Ownership of the obj is transferred to the signal handler.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] job The transfer job, implementing ITransferJob.
-		 */
-		virtual void fileOffered (QObject *job) = 0;
 	};
 }
-}
 
-Q_DECLARE_INTERFACE (LC::Azoth::ITransferJob,
-		"org.Deviant.LeechCraft.Azoth.ITransferJob/1.0")
-Q_DECLARE_INTERFACE (LC::Azoth::ITransferManager,
-		"org.Deviant.LeechCraft.Azoth.ITransferManager/1.0")
-
-#endif
+Q_DECLARE_INTERFACE (LC::Azoth::ITransferJob, "org.Deviant.LeechCraft.Azoth.ITransferJob/1.0")
+Q_DECLARE_INTERFACE (LC::Azoth::ITransferManager, "org.Deviant.LeechCraft.Azoth.ITransferManager/1.0")

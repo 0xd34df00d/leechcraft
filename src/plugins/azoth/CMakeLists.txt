@@ -35,6 +35,7 @@ endif ()
 add_util_library (azoth-util
 	SRCS
 		util/azoth/emitters/mediacall.cpp
+		util/azoth/emitters/transfermanager.cpp
 		util/azoth/hooks.cpp
 	USES Widgets
 	)
@@ -46,6 +47,7 @@ LC_DEFINE_PLUGIN (
 		components/chat/chattabpartstatemanager.cpp
 		components/chat/chattabwebview.cpp
 		components/chat/contactdropfilter.cpp
+		components/chat/fileofferedpane.cpp
 		components/chat/filetransfersection.cpp
 		components/chat/msgeditautocompleter.cpp
 		components/chat/msgformatterwidget.cpp

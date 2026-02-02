@@ -36,17 +36,11 @@ namespace LC::Azoth::Sarin
 
 		bool TransferAllowed_ = true;
 	public:
-		FileTransferOut (const QString& azothId,
-				Pubkey pubkey,
+		FileTransferOut (Pubkey pubkey,
 				const QString& filename,
 				const std::shared_ptr<ToxRunner>& tox,
 				QObject *parent = nullptr);
 
-		QString GetName () const override;
-		qint64 GetSize () const override;
-		TransferDirection GetDirection () const override;
-
-		void Accept (const QString&) override;
 		void Abort () override;
 
 		void HandleFileControl (uint32_t, uint32_t, int);

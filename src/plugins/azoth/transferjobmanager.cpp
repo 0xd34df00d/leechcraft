@@ -18,12 +18,14 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
-#include <util/threads/futures.h>
+#include <util/util.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
+#include "util/azoth/emitters/transfermanager.h"
 #include "components/dialogs/filesenddialog.h"
 #include "components/util/misc.h"
 #include "core.h"
@@ -53,22 +55,36 @@ namespace Azoth
 
 	void TransferJobManager::AddAccountManager (QObject *mgrObj)
 	{
-		ITransferManager *mgr = qobject_cast<ITransferManager*> (mgrObj);
+		const auto mgr = qobject_cast<ITransferManager*> (mgrObj);
 		if (!mgr)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< mgrObj
-					<< "could not be casted to ITransferManager";
+			qWarning () << mgrObj << "is not a ITransferManager";
 			return;
 		}
 
 		connect (mgrObj,
-				SIGNAL (fileOffered (QObject*)),
+				&QObject::destroyed,
 				this,
-				SLOT (handleFileOffered (QObject*)));
+				[this, mgr]
+				{
+					for (auto& entryIncomingOffers : Entry2Incoming_)
+					{
+						const auto it = std::ranges::partition (entryIncomingOffers,
+								[mgr] (const IncomingOffer& offer) { return offer.Manager_ != mgr; });
+						for (const auto& offer : it)
+							NotifyDeoffer (offer);
+						entryIncomingOffers.erase (it.begin (), it.end ());
+					}
+				});
+
+		const auto& emitter = mgr->GetTransferManagerEmitter ();
+		connect (&emitter,
+				&Emitters::TransferManager::fileOffered,
+				this,
+				&TransferJobManager::HandleFileOffered);
 	}
 
-	QObjectList TransferJobManager::GetPendingIncomingJobsFor (const QString& id)
+	QList<IncomingOffer> TransferJobManager::GetIncomingOffers (const QString& id)
 	{
 		return Entry2Incoming_ [id];
 	}
@@ -85,161 +101,239 @@ namespace Azoth
 			return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (id));
 		}
 
-		QString GetContactName (const QString& id)
+		QString XferError2Str (TransferError error)
 		{
-			ICLEntry *contact = GetContact (id);
-			return contact ?
-					contact->GetHumanReadableID () :
-					id;
+			switch (error)
+			{
+			case TEAborted:
+				return TransferJobManager::tr ("Transfer aborted.");
+			case TEFileAccessError:
+				return TransferJobManager::tr ("Error accessing file.");
+			case TEFileCorruptError:
+				return TransferJobManager::tr ("File is corrupted.");
+			case TEProtocolError:
+				return TransferJobManager::tr ("Protocol error.");
+			case TENoError:
+				return TransferJobManager::tr ("No error.");
+			}
+
+			qWarning () << "unknown error" << error;
+			return {};
+		}
+
+		QString GetRowLabelTemplate (const TransferJobManager::JobContext& context)
+		{
+			return Util::Visit (context.Dir_,
+					[] (TransferJobManager::JobContext::In) { return TransferJobManager::tr ("Receiving %1 from %2"); },
+					[] (TransferJobManager::JobContext::Out) { return TransferJobManager::tr ("Sending %1 to %2"); });
+		}
+
+		QString GetErrorMessageTemplate (const TransferJobManager::JobContext& context)
+		{
+			return Util::Visit (context.Dir_,
+					[] (TransferJobManager::JobContext::In) { return TransferJobManager::tr ("Unable to receive file from %1."); },
+					[] (TransferJobManager::JobContext::Out) { return TransferJobManager::tr ("Unable to send file to %1."); });
+		}
+
+		QString GetFilename (const TransferJobManager::JobContext& context)
+		{
+			return Util::Visit (context.Dir_,
+					[] (TransferJobManager::JobContext::In in) { return QFileInfo { in.SavePath_ }.fileName (); },
+					[&] (TransferJobManager::JobContext::Out) { return context.OrigFilename_; });
 		}
 	}
 
-	void TransferJobManager::HandleJob (QObject *jobObj)
+	void TransferJobManager::HandleJob (ITransferJob *job, const JobContext& context)
 	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
+		const auto& filename = GetFilename (context);
+		QList items
 		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "is not an ITransferJob";
-			return;
-		}
-
-		const auto& name = (job->GetDirection () == TDIn ?
-					tr ("Transferring %1 from %2") :
-					tr ("Transferring %1 to %2"))
-							.arg (job->GetName ())
-							.arg (GetContactName (job->GetSourceID ()));
-		QList<QStandardItem*> items
-		{
-			new QStandardItem (name),
+			new QStandardItem (GetRowLabelTemplate (context).arg (filename, context.EntryName_)),
 			new QStandardItem (tr ("offered")),
 			new QStandardItem (tr ("%1 of %2 (%3%).")
 					.arg (Util::MakePrettySize (0))
-					.arg (Util::MakePrettySize (job->GetSize ()))
+					.arg (Util::MakePrettySize (context.Size_))
 					.arg (0))
 		};
-		const auto& barVar = QVariant::fromValue<QToolBar*> (ReprBar_);
-		const auto& jobObjVar = QVariant::fromValue<QObject*> (jobObj);
 		for (const auto item : items)
 		{
-			item->setData (barVar, RoleControls);
-			item->setData (jobObjVar, MRJobObject);
+			item->setData (QVariant::fromValue<QToolBar*> (ReprBar_), RoleControls);
+			item->setData (QVariant::fromValue<ITransferJob*> (job), MRJobObject);
 			item->setEditable (false);
 		}
-		Object2Status_ [jobObj] = items.at (1);
-		Object2Progress_ [jobObj] = items.at (2);
 
-		auto progressItem = items.at (JobHolderColumn::JobProgress);
+		const auto statusItem = items.at (JobHolderColumn::JobStatus);
+		const auto progressItem = items.at (JobHolderColumn::JobProgress);
 		progressItem->setData (QVariant::fromValue<ProcessStateInfo> ({
 					0,
-					job->GetSize (),
+					context.Size_,
 					FromUserInitiated
 				}),
 				JobHolderRole::ProcessState);
 
 		SummaryModel_->appendRow (items);
 
-		connect (jobObj,
-				SIGNAL (errorAppeared (TransferError, const QString&)),
+		auto& emitter = job->GetTransferJobEmitter ();
+		connect (&emitter,
+				&Emitters::TransferJob::errorAppeared,
 				this,
-				SLOT (handleXferError (TransferError, const QString&)));
-		connect (jobObj,
-				SIGNAL (stateChanged (TransferState)),
+				[=] (TransferError error, const QString& message)
+				{
+					auto str = GetErrorMessageTemplate (context).arg (context.EntryName_);
+					str += ' ' + XferError2Str (error);
+					if (!message.isEmpty ())
+						str += ' ' + message;
+
+					const auto& e = Util::MakeNotification ("Azoth",
+							str,
+							error == TEAborted ? Priority::Warning : Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
+		connect (&emitter,
+				&Emitters::TransferJob::stateChanged,
 				this,
-				SLOT (handleStateChanged (TransferState)));
-		connect (jobObj,
-				SIGNAL (transferProgress (qint64, qint64)),
+				[this, context, statusItem] (TransferState state) { HandleStateChanged (state, context, statusItem); });
+		connect (&emitter,
+				&Emitters::TransferJob::transferProgress,
 				this,
-				SLOT (handleXferProgress (qint64, qint64)));
+				[progressItem] (qint64 done, qint64 total)
+				{
+					if (total > 0)
+					{
+						progressItem->setText (tr ("%1 of %2 (%3%).")
+									.arg (Util::MakePrettySize (done))
+									.arg (Util::MakePrettySize (total))
+									.arg (done * 100 / total));
+						Util::SetJobHolderProgress (progressItem, done, total);
+					}
+				});
 	}
 
-	QString TransferJobManager::CheckSavePath (QString path)
+	namespace
 	{
-		QFileInfo pathInfo (path);
-		if (!pathInfo.exists () ||
-			!pathInfo.isDir () ||
-			!pathInfo.isWritable ())
+		QString GetDefaultPath ()
 		{
-			if (QMessageBox::warning (0,
+			auto path = XmlSettingsManager::Instance ().property ("DefaultXferSavePath").toString ();
+			if (const QFileInfo pathInfo { path };
+				!pathInfo.exists () && !QDir {}.mkpath (path))
+			{
+				qWarning () << "unable to create" << path;
+				return {};
+			}
+
+			if (const QFileInfo pathInfo { path };
+				pathInfo.exists () && pathInfo.isDir () && pathInfo.isWritable ())
+				return path;
+
+			if (QMessageBox::warning (nullptr,
 					"Azoth",
-					tr ("Default path for incoming files doesn't exist, is not a directory or is unwritable. "
-						"Would you like to adjust the path now? Refusing will abort the transfer."),
+					TransferJobManager::tr ("Default path for incoming files doesn't exist, is not a directory or is unwritable. "
+						"Would you like to change the path now? Refusing will abort the transfer."),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 				return QString ();
 
-			path = QFileDialog::getSaveFileName (0,
-					tr ("Select default path for incoming files"),
+			path = QFileDialog::getExistingDirectory (nullptr,
+					TransferJobManager::tr ("Select default path for incoming files"),
 					path);
-
 			if (!path.isEmpty ())
 				XmlSettingsManager::Instance ().setProperty ("DefaultXferSavePath", path);
+
+			return path;
 		}
 
-		return path;
+		QString GetSavePath (const QString& dirPath, const QString& filename)
+		{
+			if (const QDir dir { dirPath };
+				!dir.exists (filename))
+				return dir.filePath (filename);
+
+			return QFileDialog::getSaveFileName (nullptr,
+					TransferJobManager::tr ("Select save path"),
+					dirPath);
+		}
 	}
 
-	void TransferJobManager::AcceptJob (QObject *jobObj, QString path)
+	void TransferJobManager::AcceptOffer (const IncomingOffer& offer, QString savePath)
 	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
+		if (savePath.isEmpty ())
+			savePath = GetSavePath (GetDefaultPath (), offer.Name_);
+
+		if (savePath.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "is not an ITransferJob";
+			DeclineOffer (offer);
 			return;
 		}
 
-		if (path.isEmpty ())
+		const auto entry = GetContact (offer.EntryId_);
+		if (!entry)
 		{
-			path = XmlSettingsManager::Instance ().property ("DefaultXferSavePath").toString ();
-			const QString& homePath = QDir::homePath ();
-			if (!QFileInfo (path).exists () &&
-					path.startsWith (homePath))
-			{
-				QDir dir = QDir::home ();
-				QString relPath = path.mid (homePath.size ());
-				if (relPath.at (0) == '/')
-					relPath = relPath.mid (1);
-				dir.mkpath (relPath);
-			}
-
-			path = CheckSavePath (path);
-			if (path.isEmpty ())
-			{
-				DenyJob (jobObj);
-				return;
-			}
-		}
-
-		HandleDeoffer (jobObj);
-
-		HandleJob (jobObj);
-
-		Job2SavePath_ [job] = path;
-		job->Accept (path);
-	}
-
-	void TransferJobManager::DenyJob (QObject *jobObj)
-	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "is not an ITransferJob";
+			DeclineOffer (offer);
+			const auto& e = Util::MakeNotification ("Azoth",
+					tr ("Unable to accept %1: the contact is no longer available.").arg (offer.Name_),
+					Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			return;
 		}
 
-		HandleDeoffer (jobObj);
+		if (const auto job = offer.Manager_->Accept (offer, savePath))
+			HandleJob (job,
+					{
+						.Dir_ = JobContext::In { savePath },
+						.OrigFilename_ = offer.Name_,
+						.Size_ = offer.Size_,
+						.EntryName_ = entry->GetEntryName (),
+						.EntryId_ = entry->GetEntryID (),
+					});
+		else
+		{
+			qWarning () << "unable to accept job";
+			const auto& e = Util::MakeNotification ("Azoth",
+					tr ("Unable to accept %1.").arg (offer.Name_),
+					Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
 
-		job->Abort ();
-		sender ()->deleteLater ();
+		Deoffer (offer);
+	}
+
+	void TransferJobManager::DeclineOffer (const IncomingOffer& offer)
+	{
+		offer.Manager_->Decline (offer);
+		Deoffer (offer);
 	}
 
 	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
 	{
 		return SummaryModel_;
+	}
+
+	bool TransferJobManager::SendFile (const OutgoingFileOffer& offer)
+	{
+		const auto acc = offer.Entry_.GetParentAccount ();
+		const auto mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (!mgr)
+		{
+			qWarning () << offer.Entry_.GetHumanReadableID () << "does not support transfers";
+			return false;
+		}
+
+		const auto job = mgr->SendFile (offer.Entry_.GetEntryID (), offer.Variant_, offer.FilePath_, offer.Comment_);
+		if (!job)
+		{
+			qWarning () << offer.Entry_.GetHumanReadableID () << "unable to create job";
+			return false;
+		}
+
+		const QFileInfo info { offer.FilePath_ };
+		HandleJob (job,
+				{
+					.Dir_ = JobContext::Out {},
+					.OrigFilename_ = info.fileName (),
+					.Size_ = info.size (),
+					.EntryName_ = offer.Entry_.GetEntryName (),
+					.EntryId_ = offer.Entry_.GetEntryID (),
+				});
+		return true;
 	}
 
 	namespace
@@ -278,7 +372,7 @@ namespace Azoth
 		const auto& text = tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
 				.arg (entry->GetEntryName ());
 		if (QMessageBox::question (0,
-					"LeechCraft",
+					"Azoth",
 					text,
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return false;
@@ -286,53 +380,39 @@ namespace Azoth
 		for (const auto& url : urls)
 		{
 			const QString& path = url.toLocalFile ();
-			if (!QFileInfo (path).exists ())
-				continue;
-
-			QObject *job = mgr->SendFile (entry->GetEntryID (),
-					entry->Variants ().first (),
-					path,
-					QString ());
-			Core::Instance ().GetTransferJobManager ()->HandleJob (job);
+			if (QFileInfo (path).exists ())
+				SendFile ({ *entry, {}, path, {} });
 		}
 
 		return true;
 	}
 
-	void TransferJobManager::HandleDeoffer (QObject *jobObj)
+	void TransferJobManager::Deoffer (const IncomingOffer& offer)
 	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "could not be casted to ITransferJob";
-			return;
-		}
+		if (Entry2Incoming_ [offer.EntryId_].removeOne (offer))
+			NotifyDeoffer (offer);
+	}
 
-		if (Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj))
-		{
-			Entity e = Util::MakeNotification ("Azoth", QString (), Priority::Info);
-			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-			e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-					"org.LC.Plugins.Azoth.IncomingFileFrom/" +
-						GetContact (job->GetSourceID ())->GetEntryID () +
-						"/" + job->GetName ();
-			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
-					"org.LC.AdvNotifications.Cancel";
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+	void TransferJobManager::NotifyDeoffer (const IncomingOffer& offer)
+	{
+		auto e = Util::MakeNotification ("Azoth", {}, Priority::Info);
+		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.IncomingFileFrom/" + offer.EntryId_ + "/" + offer.Name_;
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
-			emit jobNoLongerOffered (jobObj);
+		emit jobNoLongerOffered (offer);
+
+		if (const auto entry = GetContact (offer.EntryId_))
+		{
+			Core::Instance ().IncreaseUnreadCount (entry, -1);
+			Core::Instance ().CheckFileIcon (offer.EntryId_);
 		}
 	}
 
-	void TransferJobManager::HandleTaskFinished (ITransferJob *job)
+	void TransferJobManager::HandleIncomingFinished (const JobContext& context, const JobContext::In& inInfo)
 	{
-		const auto& path = Job2SavePath_.take (job);
-		if (job->GetDirection () != TDIn)
-			return;
-
-		const auto& fileUrl = QUrl::fromLocalFile (path + '/' + job->GetName ());
+		const auto& fileUrl = QUrl::fromLocalFile (inInfo.SavePath_);
 		const auto& openEntity = Util::MakeEntity (fileUrl,
 				{},
 				IsDownloaded | FromUserInitiated | OnlyHandle);
@@ -340,223 +420,117 @@ namespace Azoth
 		if (XmlSettingsManager::Instance ().property ("AutoOpenIncomingFiles").toBool ())
 			opener ();
 
-		const auto entry = GetContact (job->GetSourceID ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown contact for"
-					<< job->GetSourceID ();
-			return;
-		}
-
 		auto e = Util::MakeAN ("Azoth",
 				tr ("Received file from %1: %2.")
-					.arg (entry->GetEntryName ())
-					.arg (QFileInfo { job->GetName () }.fileName ()),
+					.arg (context.EntryName_, QFileInfo { inInfo.SavePath_ }.fileName ()),
 				Priority::Info,
 				"org.LeechCraft.Azoth",
 				AN::CatDownloads,
 				AN::TypeDownloadFinished,
-				"org.LC.Plugins.Azoth.IncomingFileFinished/" + entry->GetEntryID () + "/" + job->GetName (),
-				{ entry->GetEntryName (), job->GetName () });
+				"org.LC.Plugins.Azoth.IncomingFileFinished/" + context.EntryId_ + "/" + context.OrigFilename_,
+				{ context.EntryName_, context.OrigFilename_ });
 		auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open"), opener);
-		nh->AddFunction (tr ("Open externally"),
-				[fileUrl] { QDesktopServices::openUrl (fileUrl); });
+		nh->AddFunction (tr ("Open externally"), [fileUrl] { QDesktopServices::openUrl (fileUrl); });
 
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void TransferJobManager::handleFileOffered (QObject *jobObj)
+	void TransferJobManager::HandleFileOffered (const IncomingOffer& offer)
 	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "could not be casted to ITransferJob";
-			return;
-		}
+		Entry2Incoming_ [offer.EntryId_] << offer;
 
-		const QString& id = job->GetSourceID ();
-
-		Entry2Incoming_ [id] << jobObj;
-
-		Entity e = Util::MakeNotification ("Azoth",
-				tr ("File %1 (%2) offered from %3.")
-					.arg (job->GetName ())
-					.arg (Util::MakePrettySize (job->GetSize ()))
-					.arg (GetContactName (id)),
-				Priority::Info);
-
-		ICLEntry *entry = GetContact (id);
+		const auto entry = GetContact (offer.EntryId_);
 		if (!entry)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown contact for"
-					<< id;
+			qWarning () << "unknown contact for" << offer.EntryId_;
 			return;
 		}
 
-		Util::Sequence (jobObj, BuildNotification (AvatarsMgr_, e, entry)) >>
-				[this, entry, job, jobObj] (Entity e)
+		const auto e = Util::MakeNotification ("Azoth",
+				tr ("File %1 (%2) offered from %3.")
+					.arg (offer.Name_)
+					.arg (Util::MakePrettySize (offer.Size_))
+					.arg (entry->GetHumanReadableID ()),
+				Priority::Info);
+
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry)) >>
+				[this, entry, offer] (Entity e)
 				{
 					e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-							"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
-					e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), job->GetName () };
+							"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + offer.Name_;
+					e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), offer.Name_ };
 					e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
 					e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file: %1")
-								.arg (job->GetComment ().isEmpty () ?
-										job->GetName () :
-										job->GetComment ());
+								.arg (offer.Description_.isEmpty () ? offer.Name_ : offer.Description_);
 
 					e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
 
 					auto nh = new Util::NotificationActionHandler { e };
-					nh->AddFunction (tr ("Accept"), [this, jobObj] { AcceptJob (jobObj, {}); });
-					nh->AddFunction (tr ("Deny"), [this, jobObj] { DenyJob (jobObj); });
-					nh->AddDependentObject (jobObj);
+					nh->AddFunction (tr ("Accept"), [this, offer] { AcceptOffer (offer, {}); });
+					nh->AddFunction (tr ("Deny"), [this, offer] { DeclineOffer (offer); });
+					nh->AddDependentObject (this);
 
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				};
+
+		Core::Instance ().IncreaseUnreadCount (entry, 1);
+		Core::Instance ().CheckFileIcon (offer.EntryId_);
 	}
 
 	namespace
 	{
-		QString XferError2Str (TransferError error)
+		QString GetNotificationMessageTemplate (TransferState state)
 		{
-			switch (error)
+			switch (state)
 			{
-			case TEAborted:
-				return TransferJobManager::tr ("Transfer aborted.");
-			case TEFileAccessError:
-				return TransferJobManager::tr ("Error accessing file.");
-			case TEFileCorruptError:
-				return TransferJobManager::tr ("File is corrupted.");
-			case TEProtocolError:
-				return TransferJobManager::tr ("Protocol error.");
-			case TENoError:
-				return TransferJobManager::tr ("No error.");
+			case TSStarting:
+				return TransferJobManager::tr ("Transfer of %1 with %2 is being started...");
+			case TSTransfer:
+				return TransferJobManager::tr ("Transfer of %1 with %2 is started.");
+			case TSFinished:
+				return TransferJobManager::tr ("Transfer of %1 with %2 has finished.");
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown error"
-					<< error;
+			qWarning () << "unhandled state" << state;
+			return {};
+		}
 
+		QString GetStatusString (TransferState state)
+		{
+			switch (state)
+			{
+			case TSStarting:
+				return TransferJobManager::tr ("starting");
+			case TSTransfer:
+				return TransferJobManager::tr ("transferring");
+			case TSFinished:
+				return {};
+			}
+
+			qWarning () << "unhandled state" << state;
 			return {};
 		}
 	}
 
-	void TransferJobManager::handleXferError (TransferError error, const QString& message)
+	void TransferJobManager::HandleStateChanged (TransferState state, const JobContext& context, QStandardItem *status)
 	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (sender ());
-		if (!job)
+		const auto& notification = GetNotificationMessageTemplate (state).arg (GetFilename (context), context.EntryName_);
+		status->setText (GetStatusString (state));
+
+		if (state == TSFinished)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not an ITransferJob";
-			return;
-		}
-
-		HandleDeoffer (sender ());
-
-		const QString& other = GetContactName (job->GetSourceID ());
-
-		auto str = job->GetDirection () == TDIn ?
-			tr ("Unable to transfer file from %1.")
-				.arg (other) :
-			tr ("Unable to transfer file to %1.")
-				.arg (other);
-
-		str += " " + XferError2Str (error);
-
-		if (!message.isEmpty ())
-			str += " " + message;
-
-		const Entity& e = Util::MakeNotification ("Azoth",
-				str,
-				error == TEAborted ? Priority::Warning : Priority::Critical);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	void TransferJobManager::handleStateChanged (TransferState state)
-	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (sender ());
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not an ITransferJob";
-			return;
-		}
-
-		const QString& name = GetContactName (job->GetSourceID ());
-		QString msg;
-		QString status;
-		switch (state)
-		{
-		case TSOffer:
-			msg = tr ("Transfer of file %1 with %2 has been offered.")
-					.arg (job->GetName ())
-					.arg (name);
-			status = tr ("offered");
-			break;
-		case TSStarting:
-			msg = tr ("Transfer of file %1 with %2 is being started...")
-					.arg (job->GetName ())
-					.arg (name);
-			status = tr ("starting");
-			break;
-		case TSTransfer:
-			msg = tr ("Transfer of file %1 with %2 is started.")
-					.arg (job->GetName ())
-					.arg (name);
-			status = tr ("transferring");
-			break;
-		case TSFinished:
-			msg = tr ("Transfer of file %1 with %2 is finished.")
-					.arg (job->GetName ())
-					.arg (name);
-			break;
-		}
-
-		if (state != TSOffer)
-			HandleDeoffer (sender ());
-
-		if (state != TSFinished)
-		{
-			Object2Status_ [sender ()]->setText (status);
-
-			const Entity& e = Util::MakeNotification ("Azoth",
-					msg,
-					Priority::Info);
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+			status->model ()->removeRow (status->row ());
+			if (const auto in = std::get_if<JobContext::In> (&context.Dir_))
+				HandleIncomingFinished (context, *in);
 		}
 		else
 		{
-			SummaryModel_->removeRow (Object2Status_ [sender ()]->row ());
-			Object2Status_.remove (sender ());
-			Object2Progress_.remove (sender ());
-			sender ()->deleteLater ();
-
-			HandleTaskFinished (job);
+			const auto& e = Util::MakeNotification ("Azoth",
+					notification,
+					Priority::Info);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
-	}
-
-	void TransferJobManager::handleXferProgress (qint64 done, qint64 total)
-	{
-		if (!Object2Progress_.contains (sender ()))
-			return;
-
-		if (total <= 0)
-			return;
-
-		auto progress = Object2Progress_ [sender ()];
-		progress->setText (tr ("%1 of %2 (%3%).")
-					.arg (Util::MakePrettySize (done))
-					.arg (Util::MakePrettySize (total))
-					.arg (done * 100 / total));
-		Util::SetJobHolderProgress (progress, done, total);
 	}
 
 	void TransferJobManager::handleAbortAction ()
@@ -564,27 +538,17 @@ namespace Azoth
 		if (!Selected_.isValid ())
 			return;
 
-		QStandardItem *item = SummaryModel_->itemFromIndex (Selected_);
+		const auto item = SummaryModel_->itemFromIndex (Selected_);
 		if (!item)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "null item for index"
-					<< Selected_;
+			qWarning () << "null item for index" << Selected_;
 			return;
 		}
 
-		QObject *jobObj = item->data (MRJobObject).value<QObject*> ();
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null transfer job for"
-					<< jobObj
-					<< Selected_;
-			return;
-		}
-
-		job->Abort ();
+		if (const auto job = item->data (MRJobObject).value<ITransferJob*> ())
+			job->Abort ();
+		else
+			qWarning () << "null transfer job for" << Selected_;
 	}
 }
 }

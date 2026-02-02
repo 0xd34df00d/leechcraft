@@ -6,25 +6,4 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#pragma once
-
-#include <QCoreApplication>
-
-class QToolButton;
-
-namespace LC::Azoth
-{
-	class ChatTab;
-	struct IncomingOffer;
-	class TransferJobManager;
-
-	class FileTransferSection : public QObject
-	{
-		ChatTab& Tab_;
-		TransferJobManager& Transfers_;
-	public:
-		explicit FileTransferSection (ChatTab&, TransferJobManager&);
-	private:
-		void HandleFileOffered (const IncomingOffer&);
-	};
-}
+#include "transfermanager.h"

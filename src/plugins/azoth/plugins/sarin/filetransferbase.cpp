@@ -10,24 +10,15 @@
 
 namespace LC::Azoth::Sarin
 {
-	FileTransferBase::FileTransferBase (const QString& azothId,
-			Pubkey pubkey,
-			const std::shared_ptr<ToxRunner>& tox,
-			QObject *parent)
+	FileTransferBase::FileTransferBase (Pubkey pubkey, const std::shared_ptr<ToxRunner>& tox, QObject *parent)
 	: QObject { parent }
-	, AzothId_ { azothId }
 	, PubKey_ { pubkey }
 	, Tox_ { tox }
 	{
 	}
 
-	QString FileTransferBase::GetSourceID () const
+	Emitters::TransferJob& FileTransferBase::GetTransferJobEmitter ()
 	{
-		return AzothId_;
-	}
-
-	QString FileTransferBase::GetComment () const
-	{
-		return {};
+		return Emitter_;
 	}
 }

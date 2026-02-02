@@ -17,12 +17,11 @@
 
 namespace LC::Azoth::Sarin
 {
-	FileTransferOut::FileTransferOut (const QString& azothId,
-			Pubkey pubkey,
+	FileTransferOut::FileTransferOut (Pubkey pubkey,
 			const QString& filename,
 			const std::shared_ptr<ToxRunner>& tox,
 			QObject *parent)
-	: FileTransferBase { azothId, pubkey, tox, parent }
+	: FileTransferBase { pubkey, tox, parent }
 	, FilePath_ { filename }
 	, File_ { filename }
 	, Filesize_ { File_.size () }
@@ -34,10 +33,9 @@ namespace LC::Azoth::Sarin
 			QTimer::singleShot (0, this,
 					[this]
 					{
-						emit errorAppeared (TEFileAccessError,
-								tr ("Error opening local file: %1.")
-									.arg (File_.errorString ()));
-						emit stateChanged (TransferState::TSFinished);
+						emit Emitter_.errorAppeared (TEFileAccessError,
+								tr ("Error opening local file: %1.").arg (File_.errorString ()));
+						emit Emitter_.stateChanged (TransferState::TSFinished);
 					});
 
 			return;
@@ -46,27 +44,9 @@ namespace LC::Azoth::Sarin
 		Start ();
 	}
 
-	QString FileTransferOut::GetName () const
-	{
-		return FilePath_;
-	}
-
-	qint64 FileTransferOut::GetSize () const
-	{
-		return Filesize_;
-	}
-
-	TransferDirection FileTransferOut::GetDirection () const
-	{
-		return TransferDirection::TDOut;
-	}
-
-	void FileTransferOut::Accept (const QString&)
-	{
-	}
-
 	void FileTransferOut::Abort ()
 	{
+		// TODO handle abortion gracefully
 	}
 
 	Util::ContextTask<void> FileTransferOut::Start ()
@@ -76,8 +56,8 @@ namespace LC::Azoth::Sarin
 		const auto friendNum = co_await Tox_->Run (&ToxW::ResolveFriendNum, PubKey_);
 		if (!friendNum)
 		{
-			emit errorAppeared (TEProtocolError, tr ("Unknown friend."));
-			emit stateChanged (TSFinished);
+			emit Emitter_.errorAppeared (TEProtocolError, tr ("Unknown friend."));
+			emit Emitter_.stateChanged (TSFinished);
 			co_return;
 		}
 		FriendNum_ = *friendNum;
@@ -97,24 +77,24 @@ namespace LC::Azoth::Sarin
 				[this] (TOX_ERR_FILE_SEND err)
 				{
 					qWarning () << err;
-					emit errorAppeared (TEProtocolError,
+					emit Emitter_.errorAppeared (TEProtocolError,
 							tr ("Tox file send error: %1").arg (tox_err_file_send_to_string (err)));
-					emit stateChanged (TSFinished);
+					emit Emitter_.stateChanged (TSFinished);
 				});
-		emit stateChanged (TSOffer);
+		emit Emitter_.stateChanged (TSStarting);
 	}
 
 	void FileTransferOut::HandleAccept ()
 	{
 		State_ = State::Transferring;
-		emit stateChanged (TSTransfer);
+		emit Emitter_.stateChanged (TSTransfer);
 	}
 
 	void FileTransferOut::HandleKill ()
 	{
 		TransferAllowed_ = false;
-		emit errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
-		emit stateChanged (TSFinished);
+		emit Emitter_.errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
+		emit Emitter_.stateChanged (TSFinished);
 		State_ = State::Idle;
 	}
 

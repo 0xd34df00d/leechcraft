@@ -221,6 +221,11 @@ namespace LC::Azoth
 
 		int GetUnreadCount (ICLEntry *entry) const;
 
+		/** Checks whether icon representing incoming file should be
+		 * drawn for the entry with the given id.
+		 */
+		void CheckFileIcon (const QString& id);
+
 		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;
 	private:
 		/** Adds the protocol object. The object must implement
@@ -267,11 +272,6 @@ namespace LC::Azoth
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
 				ICLEntry *entry, const QString& variant);
-
-		/** Checks whether icon representing incoming file should be
-		 * drawn for the entry with the given id.
-		 */
-		void CheckFileIcon (const QString& id);
 
 		/** This functions calculates new value of number of unread
 		 * items for the chain of parents of the given item.
@@ -401,9 +401,6 @@ namespace LC::Azoth
 		void handleClearUnreadMsgCount (QObject*);
 
 		void handleGotSDSession (QObject*);
-
-		void handleFileOffered (QObject*);
-		void handleJobDeoffered (QObject*);
 
 		void handleRIEXItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString);
 	signals:

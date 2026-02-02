@@ -20,27 +20,19 @@ namespace LC::Azoth::Sarin
 	{
 		const quint32 FriendNum_;
 		const quint32 FileNum_;
-
-		QString Filename_;
 		const quint64 Filesize_;
-
 		std::shared_ptr<QFile> File_;
 	public:
-		FileTransferIn (const QString& azothId,
-				Pubkey pubkey,
+		FileTransferIn (Pubkey pubkey,
 				quint32 friendNum,
 				quint32 fileNum,
 				quint64 fileSize,
-				const QString& offeredName,
 				const std::shared_ptr<ToxRunner>& tox,
 				QObject *parent = nullptr);
 
-		QString GetName () const override;
-		qint64 GetSize () const override;
-		TransferDirection GetDirection () const override;
-
-		void Accept (const QString&) override;
 		void Abort () override;
+
+		void Accept (const QString&);
 
 		void HandleData (quint32, quint32, const QByteArray&, uint64_t);
 		void HandleFileControl (uint32_t, uint32_t, int);

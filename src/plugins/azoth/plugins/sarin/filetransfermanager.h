@@ -11,6 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
+#include <util/azoth/emitters/transfermanager.h>
 #include "types.h"
 
 namespace LC::Azoth::Sarin
@@ -24,20 +25,34 @@ namespace LC::Azoth::Sarin
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::ITransferManager)
 
+		Emitters::TransferManager Emitter_;
 		ToxAccount * const Acc_;
 		std::weak_ptr<ToxRunner> Tox_;
+
+		struct OfferContext
+		{
+			uint32_t FriendNum_;
+			Pubkey Pkey_;
+			uint32_t FileNum_;
+			uint64_t Size_;
+		};
+
+		QHash<uint64_t, OfferContext> Offers_;
+		uint64_t JobIdGen_ = 0;
 	public:
 		explicit FileTransferManager (ToxAccount*);
 
+		Emitters::TransferManager& GetTransferManagerEmitter () override;
+
 		bool IsAvailable () const override;
-		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
+		ITransferJob* Accept (const IncomingOffer& offer, const QString& savePath) override;
+		void Decline (const IncomingOffer&) override;
+		ITransferJob* SendFile (const QString&, const QString&, const QString&, const QString&) override;
 
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
 	private:
 		void HandleRequest (uint32_t, Pubkey, uint32_t, uint64_t, const QString&);
 	signals:
-		void fileOffered (QObject*) override;
-
 		// TODO handle these signals in this Manager instead of re-emitting them
 		void gotFileControl (uint32_t, uint32_t, int);
 		void gotData (quint32, quint32, const QByteArray&, uint64_t);

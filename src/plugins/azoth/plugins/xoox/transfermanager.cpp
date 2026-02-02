@@ -29,12 +29,7 @@ namespace Xoox
 		connect (&Manager_,
 				&QXmppTransferManager::fileReceived,
 				this,
-				[this] (QXmppTransferJob *job)
-				{
-					if (!Conn_.GetCLEntry (job->jid ()))
-						Conn_.CreateEntry (job->jid ());
-					emit fileOffered (new TransferJob (job, this));
-				});
+				&TransferManager::HandleQxmppJob);
 
 		auto settings = Account_.GetSettings ();
 
@@ -66,13 +61,31 @@ namespace Xoox
 		updateFTSettings ();
 	}
 
+	Emitters::TransferManager& TransferManager::GetTransferManagerEmitter ()
+	{
+		return Emitter_;
+	}
+
+	ITransferJob* TransferManager::Accept (const IncomingOffer& offer, const QString& savePath)
+	{
+		if (const auto node = PendingJobs_.extract (offer.JobId_))
+			return new TransferJob { std::move (node.mapped ()), savePath };
+		return {};
+	}
+
+	void TransferManager::Decline (const IncomingOffer& offer)
+	{
+		if (const auto node = PendingJobs_.extract (offer.JobId_))
+			node.mapped ()->abort ();
+	}
+
 	bool TransferManager::IsAvailable () const
 	{
 		const auto settings = Account_.GetSettings ();
 		return settings->GetFTMethods () != QXmppTransferJob::NoMethod;
 	}
 
-	QObject* TransferManager::SendFile (const QString& id,
+	ITransferJob* TransferManager::SendFile (const QString& id,
 			const QString& sourceVar, const QString& name, const QString& comment)
 	{
 		QString target = GlooxCLEntry::JIDFromID (&Account_, id);
@@ -87,12 +100,40 @@ namespace Xoox
 		}
 		if (!var.isEmpty ())
 			target += '/' + var;
-		return new TransferJob (Manager_.sendFile (target, name, comment), this);
+		return new TransferJob { std::unique_ptr<QXmppTransferJob> { Manager_.sendFile (target, name, comment) } };
 	}
 
 	GlooxAccount* TransferManager::GetAccount () const
 	{
 		return &Account_;
+	}
+
+	void TransferManager::HandleQxmppJob (QXmppTransferJob *rawJob)
+	{
+		std::unique_ptr<QXmppTransferJob> job { rawJob };
+		if (!Conn_.GetCLEntry (job->jid ()))
+			Conn_.CreateEntry (job->jid ());
+
+		const auto entry = qobject_cast<ICLEntry*> (Conn_.GetCLEntry (job->jid ()));
+		if (!entry)
+		{
+			job->abort ();
+			return;
+		}
+
+		const auto& info = job->fileInfo ();
+
+		const auto jobId = JobIdGen_++;
+		PendingJobs_ [jobId] = std::move (job);
+
+		emit Emitter_.fileOffered ({
+					.Manager_ = this,
+					.JobId_ = jobId,
+					.EntryId_ = entry->GetEntryID (),
+					.Name_ = info.name (),
+					.Size_ = info.size (),
+					.Description_ = info.description (),
+				});
 	}
 }
 }

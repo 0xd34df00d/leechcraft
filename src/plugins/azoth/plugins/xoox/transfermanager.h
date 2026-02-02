@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include <unordered_map>
 #include <interfaces/azoth/itransfermanager.h>
+#include <util/azoth/emitters/transfermanager.h>
 
 class QXmppTransferManager;
 class QXmppTransferJob;
@@ -28,17 +30,26 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::ITransferManager)
 
+		Emitters::TransferManager Emitter_;
+
 		ClientConnection& Conn_;
 		QXmppTransferManager& Manager_;
 		GlooxAccount& Account_;
+
+		std::unordered_map<uint64_t, std::unique_ptr<QXmppTransferJob>> PendingJobs_;
+		uint64_t JobIdGen_ = 0;
 	public:
 		TransferManager (QXmppTransferManager&, ClientConnection&, GlooxAccount&);
 
+		Emitters::TransferManager& GetTransferManagerEmitter () override;
 		bool IsAvailable () const override;
-		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
+		ITransferJob* Accept (const IncomingOffer& offer, const QString& savePath) override;
+		void Decline (const IncomingOffer&) override;
+		ITransferJob* SendFile (const QString&, const QString&, const QString&, const QString&) override;
+
 		GlooxAccount* GetAccount () const;
-	signals:
-		void fileOffered (QObject*) override;
+	private:
+		void HandleQxmppJob (QXmppTransferJob*);
 	};
 }
 }

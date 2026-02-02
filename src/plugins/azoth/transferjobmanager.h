@@ -39,12 +39,7 @@ namespace Azoth
 			MRJobObject = Qt::UserRole + 1
 		};
 
-		typedef QHash<QObject*, QStandardItem*> ObjectDictionary_t;
-		ObjectDictionary_t Object2Status_;
-		ObjectDictionary_t Object2Progress_;
-
-		QHash<QString, QObjectList> Entry2Incoming_;
-		QHash<ITransferJob*, QString> Job2SavePath_;
+		QHash<QString, QList<IncomingOffer>> Entry2Incoming_;
 
 		QPersistentModelIndex Selected_;
 		QToolBar * const ReprBar_;
@@ -52,29 +47,49 @@ namespace Azoth
 		TransferJobManager (AvatarsManager*, QObject* = nullptr);
 
 		void AddAccountManager (QObject*);
-		QObjectList GetPendingIncomingJobsFor (const QString&);
 
 		void SelectionChanged (const QModelIndex&);
-
-		void HandleJob (QObject*);
-		void AcceptJob (QObject*, QString);
-		void DenyJob (QObject*);
 		QAbstractItemModel* GetSummaryModel () const;
 
-		bool OfferURLs (ICLEntry *entry, QList<QUrl> urls);
-	private:
-		QString CheckSavePath (QString);
-		void HandleDeoffer (QObject*);
+		void AcceptOffer (const IncomingOffer&, QString);
+		void DeclineOffer (const IncomingOffer&);
+		QList<IncomingOffer> GetIncomingOffers (const QString&);
 
-		void HandleTaskFinished (ITransferJob*);
+		struct OutgoingFileOffer
+		{
+			ICLEntry& Entry_;
+			QString Variant_;
+			QString FilePath_;
+			QString Comment_;
+		};
+		bool SendFile (const OutgoingFileOffer&);
+		bool OfferURLs (ICLEntry *entry, QList<QUrl> urls);
+
+		struct JobContext
+		{
+			struct In { QString SavePath_; };
+			struct Out {};
+			std::variant<In, Out> Dir_;
+
+			QString OrigFilename_;
+			qint64 Size_;
+
+			QString EntryName_;
+			QString EntryId_;
+		};
+	private:
+		void HandleJob (ITransferJob*, const JobContext&);
+
+		void Deoffer (const IncomingOffer&);
+		void NotifyDeoffer (const IncomingOffer&);
+
+		void HandleIncomingFinished (const JobContext&, const JobContext::In&);
+		void HandleFileOffered (const IncomingOffer&);
+		void HandleStateChanged (TransferState, const JobContext&, QStandardItem*);
 	private slots:
-		void handleFileOffered (QObject*);
-		void handleXferError (TransferError, const QString&);
-		void handleStateChanged (TransferState);
-		void handleXferProgress (qint64, qint64);
 		void handleAbortAction ();
 	signals:
-		void jobNoLongerOffered (QObject*);
+		void jobNoLongerOffered (const IncomingOffer&);
 	};
 }
 }

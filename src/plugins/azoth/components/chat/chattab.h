@@ -113,6 +113,8 @@ namespace Azoth
 				QWidget* = nullptr);
 		~ChatTab ();
 
+		void AddActionPane (QWidget&);
+
 		/** Prepare (or update after it has been changed) the theme.
 		 */
 		void PrepareTheme ();

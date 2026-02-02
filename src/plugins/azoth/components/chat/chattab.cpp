@@ -43,7 +43,6 @@
 #include "interfaces/azoth/imessage.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/imucentry.h"
-#include "interfaces/azoth/itransfermanager.h"
 #include "interfaces/azoth/iconfigurablemuc.h"
 #include "interfaces/azoth/ichatstyleresourcesource.h"
 #include "interfaces/azoth/isupportmediacalls.h"
@@ -69,7 +68,6 @@
 #include "../../core.h"
 #include "../../chattabsmanager.h"
 #include "../../xmlsettingsmanager.h"
-#include "../../transferjobmanager.h"
 #include "../../callmanager.h"
 #include "../../actionsmanager.h"
 #include "../../proxyobject.h"
@@ -131,8 +129,6 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.View_->InitializePage (profile);
 
-		new FileTransferSection { *Ui_.EventsButton_, *this, *Core::Instance ().GetTransferJobManager () };
-
 		Ui_.MsgEdit_->SetShortcutManager (*Core::Instance ().GetShortcutManager ());
 		Ui_.MsgEdit_->ForceUpdateVisibleLines ();
 
@@ -190,9 +186,6 @@ namespace Azoth
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
-
-		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events"), this));
-		Ui_.EventsButton_->hide ();
 
 		Ui_.SendButton_->setIcon (Core::Instance ().GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("key-enter"));
@@ -255,9 +248,11 @@ namespace Azoth
 			new ChatTabPartStateManager { *this };
 
 		connect (Ui_.VariantBox_,
-				qOverload<const QString&> (&QComboBox::currentTextChanged),
+				&QComboBox::currentTextChanged,
 				this,
 				&ChatTab::currentVariantChanged);
+
+		new FileTransferSection { *this, *Core::Instance ().GetTransferJobManager () };
 	}
 
 	ChatTab::~ChatTab ()
@@ -273,6 +268,13 @@ namespace Azoth
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
+	}
+
+	void ChatTab::AddActionPane (QWidget& pane)
+	{
+		const auto editIdx = Ui_.MainLayout_->indexOf (Ui_.MsgEditLayout_);
+		const auto fmtIdx = Ui_.MainLayout_->indexOf (MsgFormatter_);
+		Ui_.MainLayout_->insertWidget (std::min (editIdx, fmtIdx), &pane);
 	}
 
 	void ChatTab::PrepareTheme ()

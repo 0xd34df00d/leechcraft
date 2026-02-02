@@ -6,18 +6,17 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_TRANSFERJOB_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_TRANSFERJOB_H
+#pragma once
+
+#include <memory>
 #include <interfaces/azoth/itransfermanager.h>
-#include <QXmppTransferManager.h>
+#include <util/azoth/emitters/transfermanager.h>
+
+class QFile;
 
 class QXmppTransferJob;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	class TransferManager;
 
@@ -27,28 +26,16 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::ITransferJob)
 
-		QXmppTransferJob *Job_;
-		TransferManager *Manager_;
-	public:
-		TransferJob (QXmppTransferJob*, TransferManager*);
+		Emitters::TransferJob Emitter_;
 
-		QString GetSourceID () const override;
-		QString GetName () const override;
-		qint64 GetSize () const override;
-		QString GetComment () const override;
-		TransferDirection GetDirection () const override;
-		void Accept (const QString& out) override;
+		std::unique_ptr<QFile> SaveFile_;
+		std::unique_ptr<QXmppTransferJob> Job_;
+	public:
+		explicit TransferJob (std::unique_ptr<QXmppTransferJob>);
+		explicit TransferJob (std::unique_ptr<QXmppTransferJob>, const QString& out);
+		~TransferJob () override;
+
+		Emitters::TransferJob& GetTransferJobEmitter () override;
 		void Abort () override;
-	private slots:
-		void handleErrorAppeared (QXmppTransferJob::Error);
-		void handleStateChanged (QXmppTransferJob::State);
-	signals:
-		void transferProgress (qint64 done, qint64 total) override;
-		void errorAppeared (TransferError error, const QString& msg) override;
-		void stateChanged (TransferState state) override;
 	};
 }
-}
-}
-
-#endif

@@ -183,10 +183,6 @@ namespace LC::Azoth
 				SIGNAL (hookAddingCLEntryEnd (LC::IHookProxy_ptr, QObject*)),
 				ChatTabsManager_,
 				SLOT (handleAddingCLEntryEnd (LC::IHookProxy_ptr, QObject*)));
-		connect (XferJobManager_.get (),
-				SIGNAL (jobNoLongerOffered (QObject*)),
-				this,
-				SLOT (handleJobDeoffered (QObject*)));
 		connect (ChatTabsManager_,
 				SIGNAL (entryMadeCurrent (QObject*)),
 				UnreadQueueManager_.get (),
@@ -1275,7 +1271,7 @@ namespace LC::Azoth
 		}
 
 		const QString& id = entry->GetEntryID ();
-		if (!XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
+		if (!XferJobManager_->GetIncomingOffers (id).isEmpty ())
 			CheckFileIcon (id);
 	}
 
@@ -1290,18 +1286,16 @@ namespace LC::Azoth
 			return;
 		}
 
-		if (XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
+		if (XferJobManager_->GetIncomingOffers (id).isEmpty ())
 		{
 			const QString& variant = entry->Variants ().value (0);
 			HandleStatusChanged (entry->GetStatus (variant), entry, variant);
 			return;
 		}
 
-		const QString& filename = XmlSettingsManager::Instance ()
-				.property ("StatusIcons").toString () + "/file";
-		const auto& fileIcon = ResourcesManager::Instance ()
-				.GetResourceLoader (ResourcesManager::RLTStatusIconLoader)->
-						GetIconDevice (filename, true);
+		const auto& filename = XmlSettingsManager::Instance ().property ("StatusIcons").toString () + "/file";
+		const auto& resourceLoader = ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTStatusIconLoader);
+		const auto& fileIcon = resourceLoader->GetIconDevice (filename, true);
 		for (auto item : Entry2Items_.value (entry))
 			ItemIconManager_->SetIcon (item, fileIcon.get ());
 	}
@@ -1727,14 +1721,7 @@ namespace LC::Azoth
 		}
 
 		if (const auto xferMgr = account->GetTransferManager ())
-		{
 			XferJobManager_->AddAccountManager (xferMgr);
-
-			connect (xferMgr,
-					SIGNAL (fileOffered (QObject*)),
-					this,
-					SLOT (handleFileOffered (QObject*)));
-		}
 
 		CallManager_->AddAccount (account->GetQObject ());
 
@@ -2257,39 +2244,6 @@ namespace LC::Azoth
 		w->SetAccount (sender ());
 		w->SetSDSession (sess);
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (w);
-	}
-
-	void Core::handleFileOffered (QObject *jobObj)
-	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "could not be casted to ITransferJob";
-			return;
-		}
-
-		const QString& id = job->GetSourceID ();
-		IncreaseUnreadCount (qobject_cast<ICLEntry*> (GetEntry (id)));
-
-		CheckFileIcon (id);
-	}
-
-	void Core::handleJobDeoffered (QObject *jobObj)
-	{
-		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< jobObj
-					<< "could not be casted to ITransferJob";
-			return;
-		}
-
-		const QString& id = job->GetSourceID ();
-		IncreaseUnreadCount (qobject_cast<ICLEntry*> (GetEntry (id)), -1);
-		CheckFileIcon (id);
 	}
 
 	void Core::handleRIEXItemsSuggested (QList<RIEXItem> items, QObject *from, QString message)

@@ -14,46 +14,26 @@
 
 namespace LC::Azoth::Sarin
 {
-	FileTransferIn::FileTransferIn (const QString& azothId,
-			Pubkey pubkey,
+	FileTransferIn::FileTransferIn (Pubkey pubkey,
 			quint32 friendNum,
 			quint32 fileNum,
 			quint64 filesize,
-			const QString& offeredName,
 			const std::shared_ptr<ToxRunner>& tox,
 			QObject *parent)
-	: FileTransferBase { azothId, pubkey, tox, parent }
+	: FileTransferBase { pubkey, tox, parent }
 	, FriendNum_ { friendNum }
 	, FileNum_ { fileNum }
-	, Filename_ { offeredName }
 	, Filesize_ { filesize }
 	{
 	}
 
-	QString FileTransferIn::GetName () const
+	void FileTransferIn::Accept (const QString& outName)
 	{
-		return Filename_;
-	}
-
-	qint64 FileTransferIn::GetSize () const
-	{
-		return Filesize_;
-	}
-
-	TransferDirection FileTransferIn::GetDirection () const
-	{
-		return TDIn;
-	}
-
-	void FileTransferIn::Accept (const QString& dirName)
-	{
-		const auto& outName = dirName + '/' + Filename_;
 		File_ = std::make_shared<QFile> (outName);
 		if (!File_->open (QIODevice::WriteOnly))
 		{
 			qWarning () << "unable to open" << outName << "for write" << File_->errorString ();
-			emit errorAppeared (TEFileAccessError, File_->errorString ());
-			emit stateChanged (TSFinished);
+			emit Emitter_.errorAppeared (TEFileAccessError, File_->errorString ());
 			return;
 		}
 
@@ -74,14 +54,14 @@ namespace LC::Azoth::Sarin
 
 		if (position == Filesize_ || data.isEmpty ())
 		{
-			emit transferProgress (Filesize_, Filesize_);
-			emit stateChanged (TSFinished);
+			emit Emitter_.transferProgress (Filesize_, Filesize_);
+			emit Emitter_.stateChanged (TSFinished);
 			return;
 		}
 
 		File_->seek (position);
 		File_->write (data);
-		emit transferProgress (File_->pos (), Filesize_);
+		emit Emitter_.transferProgress (File_->pos (), Filesize_);
 	}
 
 	void FileTransferIn::HandleFileControl (uint32_t friendNum, uint32_t fileNum, int type)
@@ -92,8 +72,8 @@ namespace LC::Azoth::Sarin
 		switch (type)
 		{
 		case TOX_FILE_CONTROL_CANCEL:
-			emit errorAppeared (TEAborted, tr ("Remote party aborted the transfer."));
-			emit stateChanged (TSFinished);
+			emit Emitter_.errorAppeared (TEAborted, tr ("Remote party aborted the transfer."));
+			emit Emitter_.stateChanged (TSFinished);
 			break;
 		default:
 			qWarning () << "unknown filecontrol type" << type;
