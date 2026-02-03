@@ -112,7 +112,7 @@
 			<item type="groupbox" property="UseAltNick" default="true" label="Modify nick on conflicts in chat rooms">
 				<item type="lineedit" property="AlternativeNickname" default="_azoth" label="Nick suffix to append:" />
 			</item>
-			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads" label="Default file transfers save path:" />
+			<item type="path" property="DefaultXferSavePath" default="{DOWNLOAD}" label="Default file transfers save path:" />
 		</tab>
 		<tab label="Roster">
 			<item type="checkbox" property="AutoMUCMode" default="false" label="Switch to conference mode in conferences" />
