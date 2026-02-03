@@ -44,6 +44,7 @@ namespace LC
 			static const QVector<QPair<QString, QString>> str2loc
 			{
 				{ "DOCUMENTS", QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation) },
+				{ "DOWNLOAD", QStandardPaths::writableLocation (QStandardPaths::DownloadLocation) },
 				{ "DESKTOP", QStandardPaths::writableLocation (QStandardPaths::DesktopLocation) },
 				{ "MUSIC", QStandardPaths::writableLocation (QStandardPaths::MusicLocation) },
 				{ "MOVIES", QStandardPaths::writableLocation (QStandardPaths::MoviesLocation) },
