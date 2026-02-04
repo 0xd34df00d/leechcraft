@@ -113,16 +113,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="EventsButton_">
-       <property name="text">
-        <string>Events...</string>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="MUCEventsButton_">
        <property name="text">
         <string>MUC events</string>
