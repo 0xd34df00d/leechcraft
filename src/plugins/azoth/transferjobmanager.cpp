@@ -16,6 +16,7 @@
 #include <QAction>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/visitor.h>
@@ -396,9 +397,9 @@ namespace Azoth
 	void TransferJobManager::NotifyDeoffer (const IncomingOffer& offer)
 	{
 		auto e = Util::MakeNotification ("Azoth", {}, Priority::Info);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.IncomingFileFrom/" + offer.EntryId_ + "/" + offer.Name_;
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
+		e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth.IncomingFileFrom/" + offer.EntryId_ + '/' + offer.Name_;
+		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 		emit jobNoLongerOffered (offer);
@@ -427,7 +428,7 @@ namespace Azoth
 				"org.LeechCraft.Azoth",
 				AN::CatDownloads,
 				AN::TypeDownloadFinished,
-				"org.LC.Plugins.Azoth.IncomingFileFinished/" + context.EntryId_ + "/" + context.OrigFilename_,
+				"org.LC.Plugins.Azoth.IncomingFileFinished/" + context.EntryId_ + '/' + context.OrigFilename_,
 				{ context.EntryName_, context.OrigFilename_ });
 		auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open"), opener);
@@ -457,14 +458,12 @@ namespace Azoth
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry)) >>
 				[this, entry, offer] (Entity e)
 				{
-					e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-							"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + offer.Name_;
-					e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), offer.Name_ };
-					e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
-					e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file: %1")
+					e.Additional_ [AN::EF::EventType] = AN::TypeIMIncFile;
+					e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + offer.Name_;
+					e.Additional_ [AN::EF::VisualPath] = QStringList { entry->GetEntryName (), offer.Name_ };
+					e.Additional_ [AN::EF::DeltaCount] = 1;
+					e.Additional_ [AN::EF::ExtendedText] = tr ("Incoming file: %1")
 								.arg (offer.Description_.isEmpty () ? offer.Name_ : offer.Description_);
-
-					e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
 
 					auto nh = new Util::NotificationActionHandler { e };
 					nh->AddFunction (tr ("Accept"), [this, offer] { AcceptOffer (offer, {}); });
