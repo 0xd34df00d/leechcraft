@@ -337,57 +337,6 @@ namespace Azoth
 		return true;
 	}
 
-	namespace
-	{
-		void CleanupUrls (QList<QUrl>& urls)
-		{
-			for (auto i = urls.begin (); i != urls.end (); )
-				if (!i->isLocalFile ())
-					i = urls.erase (i);
-				else
-					++i;
-		}
-	}
-
-	bool TransferJobManager::OfferURLs (ICLEntry *entry, QList<QUrl> urls)
-	{
-		if (entry->Variants ().isEmpty ())
-			return false;
-
-		const auto acc = entry->GetParentAccount ();
-		const auto mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (!mgr)
-			return false;
-
-		CleanupUrls (urls);
-
-		if (urls.isEmpty ())
-			return false;
-
-		if (urls.size () == 1)
-		{
-			new FileSendDialog (entry, urls.value (0).toLocalFile ());
-			return true;
-		}
-
-		const auto& text = tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
-				.arg (entry->GetEntryName ());
-		if (QMessageBox::question (0,
-					"Azoth",
-					text,
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return false;
-
-		for (const auto& url : urls)
-		{
-			const QString& path = url.toLocalFile ();
-			if (QFileInfo (path).exists ())
-				SendFile ({ *entry, {}, path, {} });
-		}
-
-		return true;
-	}
-
 	void TransferJobManager::Deoffer (const IncomingOffer& offer)
 	{
 		if (Entry2Incoming_ [offer.EntryId_].removeOne (offer))

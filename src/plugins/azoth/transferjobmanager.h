@@ -63,7 +63,6 @@ namespace Azoth
 			QString Comment_;
 		};
 		bool SendFile (const OutgoingFileOffer&);
-		bool OfferURLs (ICLEntry *entry, QList<QUrl> urls);
 
 		struct JobContext
 		{

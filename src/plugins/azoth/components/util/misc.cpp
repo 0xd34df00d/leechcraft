@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "misc.h"
+#include <QFileInfo>
 #include <QFuture>
 #include <QMessageBox>
 #include <QWizard>
@@ -17,11 +18,13 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iregmanagedaccount.h>
 #include "components/chat/chattab.h"
+#include "components/dialogs/filesenddialog.h"
 #include "../../avatarsmanager.h"
 #include "../../addaccountwizardfirstpage.h"
 #include "../../core.h"
 #include "../../chattabsmanager.h"
 #include "../../hooksinstance.h"
+#include "../../transferjobmanager.h"
 
 namespace LC::Azoth
 {
@@ -33,6 +36,54 @@ namespace LC::Azoth
 			return false;
 
 		e.SendMessage (message);
+		return true;
+	}
+
+	namespace
+	{
+		void CleanupUrls (QList<QUrl>& urls)
+		{
+			for (auto i = urls.begin (); i != urls.end (); )
+				if (!i->isLocalFile ())
+					i = urls.erase (i);
+				else
+					++i;
+		}
+	}
+
+	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, QList<QUrl> urls, QWidget *parent)
+	{
+		if (!entry)
+			return false;
+
+		const auto acc = entry->GetParentAccount ();
+		const auto mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (!mgr)
+			return false;
+
+		CleanupUrls (urls);
+		if (urls.isEmpty ())
+			return false;
+
+		if (urls.size () == 1)
+		{
+			new FileSendDialog { entry, urls.value (0).toLocalFile () };
+			return true;
+		}
+
+		const auto& text = QObject::tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
+				.arg (entry->GetEntryName ());
+		if (QMessageBox::question (parent,
+					"Azoth",
+					text,
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return false;
+
+		for (const auto& url : urls)
+			if (const auto& path = url.toLocalFile ();
+				QFileInfo { path }.exists ())
+				transfers.SendFile ({ *entry, {}, path, {} });
+
 		return true;
 	}
 

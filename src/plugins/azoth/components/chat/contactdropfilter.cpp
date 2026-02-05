@@ -76,7 +76,7 @@ namespace LC::Azoth
 		else if (DndUtil::HasContacts (data))
 			HandleContactsDropped (data);
 		else if (!urls.isEmpty ())
-			Transfers_.OfferURLs (ChatTab_.GetEntry<ICLEntry> (), urls);
+			OfferURLs (Transfers_, ChatTab_.GetEntry<ICLEntry> (), urls);
 	}
 
 	namespace
@@ -168,7 +168,7 @@ namespace LC::Azoth
 		if (url.scheme () != "file")
 			actions << Action { tr ("Send link"), [this, url] { SendLink (url, ChatTab_); } };
 		else
-			actions << Action { tr ("Send as file"), [this, url] { Transfers_.OfferURLs (ChatTab_.GetEntry<ICLEntry> (), { url }); }};
+			actions << Action { tr ("Send as file"), [this, url] { OfferURLs (Transfers_, ChatTab_.GetEntry<ICLEntry> (), { url }); }};
 
 		PerformChoice (actions, ChatTab_);
 	}

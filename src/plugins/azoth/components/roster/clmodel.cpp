@@ -14,6 +14,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "components/dialogs/mucinvitedialog.h"
+#include "components/util/misc.h"
 #include "core.h"
 #include "transferjobmanager.h"
 #include "dndutil.h"
@@ -219,11 +220,6 @@ namespace LC::Azoth
 			return false;
 
 		const auto entry = parent.data (CLRIEntry).value<ICLEntry*> ();
-
-		const auto& urls = mime->urls ();
-		if (urls.isEmpty ())
-			return false;
-
-		return Core::Instance ().GetTransferJobManager ()->OfferURLs (entry, urls);
+		return OfferURLs (*Core::Instance ().GetTransferJobManager (), entry, mime->urls ());
 	}
 }

@@ -1159,16 +1159,11 @@ namespace Azoth
 	template<typename T>
 	T* ChatTab::GetEntry () const
 	{
-		QObject *obj = Core::Instance ().GetEntry (EntryID_);
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no entry for"
-					<< EntryID_;
-			return 0;
-		}
+		if (const auto obj = Core::Instance ().GetEntry (EntryID_))
+			return qobject_cast<T*> (obj);
 
-		return qobject_cast<T*> (obj);
+		qWarning () << "no entry for" << EntryID_;
+		return nullptr;
 	}
 
 	void ChatTab::BuildBasicActions ()
