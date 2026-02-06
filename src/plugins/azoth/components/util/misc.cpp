@@ -74,12 +74,13 @@ namespace LC::Azoth
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return false;
 
+		bool allSuccess = true;
 		for (const auto& url : urls)
 			if (const auto& path = url.toLocalFile ();
 				QFileInfo { path }.exists ())
-				transfers.SendFile ({ *entry, {}, path, {} });
+				allSuccess = transfers.SendFile ({ *entry, {}, path, {} }) && allSuccess;
 
-		return true;
+		return allSuccess;
 	}
 
 	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,
