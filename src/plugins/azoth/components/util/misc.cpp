@@ -41,32 +41,34 @@ namespace LC::Azoth
 
 	namespace
 	{
-		void CleanupUrls (QList<QUrl>& urls)
+		QStringList ToLocalFiles (const QList<QUrl>& urls)
 		{
-			for (auto i = urls.begin (); i != urls.end (); )
-				if (!i->isLocalFile ())
-					i = urls.erase (i);
-				else
-					++i;
+			QStringList result;
+			result.reserve (urls.size ());
+			for (const auto& url : urls)
+				if (const auto& path = url.toLocalFile ();
+					url.isLocalFile () && QFileInfo { path }.exists ())
+					result << path;
+			return result;
 		}
 	}
 
-	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, QList<QUrl> urls, QWidget *parent)
+	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, const QList<QUrl>& urls, QWidget *parent)
 	{
 		if (!entry)
 			return false;
 
-		CleanupUrls (urls);
-		if (urls.isEmpty ())
+		const auto& paths = ToLocalFiles (urls);
+		if (paths.isEmpty ())
 			return false;
 
-		if (urls.size () == 1)
+		if (paths.size () == 1)
 		{
-			new FileSendDialog { entry, urls.value (0).toLocalFile () };
+			new FileSendDialog { entry, paths [0] };
 			return true;
 		}
 
-		const auto& text = QObject::tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
+		const auto& text = QObject::tr ("Are you sure you want to send %n files to %1?", nullptr, paths.size ())
 				.arg (entry->GetEntryName ());
 		if (QMessageBox::question (parent,
 					"Azoth",

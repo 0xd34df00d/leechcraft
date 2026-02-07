@@ -28,7 +28,7 @@ namespace LC::Azoth
 
 	bool SendMessage (ICLEntry& e, OutgoingMessage);
 
-	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, QList<QUrl> urls, QWidget *parent = nullptr);
+	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, const QList<QUrl>& urls, QWidget *parent = nullptr);
 
 	[[nodiscard]] QFuture<Entity> BuildNotification (AvatarsManager*, Entity, ICLEntry*, const QString& id = {}, ICLEntry* = nullptr);
 
