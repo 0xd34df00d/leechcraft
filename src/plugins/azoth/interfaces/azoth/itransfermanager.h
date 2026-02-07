@@ -19,18 +19,6 @@ namespace LC::Azoth::Emitters
 
 namespace LC::Azoth
 {
-	/** @brief Represents the direction of the transfer.
-	 */
-	enum TransferDirection
-	{
-		/** File is transferred from remote party to us.
-		 */
-		TDIn,
-		/** File is transferred from us to remote party.
-		 */
-		TDOut
-	};
-
 	/** @brief Represents the state of the file transfer job.
 	 */
 	enum TransferState
