@@ -53,7 +53,7 @@ namespace LC::Util
 	{
 		static QStringList units
 		{
-			QObject::tr (" b"),
+			QObject::tr (" B"),
 			QObject::tr (" KiB"),
 			QObject::tr (" MiB"),
 			QObject::tr (" GiB")
@@ -66,7 +66,7 @@ namespace LC::Util
 	{
 		static const QStringList units
 		{
-			QObject::tr ("b", "Short one-character unit for bytes."),
+			QObject::tr ("B", "Short one-character unit for bytes."),
 			QObject::tr ("K", "Short one-character unit for kilobytes."),
 			QObject::tr ("M", "Short one-character unit for megabytes."),
 			QObject::tr ("G", "Short one-character unit for gigabytes.")
