@@ -36,6 +36,9 @@
    </item>
    <item>
     <widget class="QLabel" name="FileName_">
+     <property name="toolTipDuration">
+      <number>0</number>
+     </property>
      <property name="text">
       <string/>
      </property>

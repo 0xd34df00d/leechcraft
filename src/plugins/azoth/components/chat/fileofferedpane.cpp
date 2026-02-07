@@ -22,9 +22,12 @@ namespace LC::Azoth
 	{
 		Ui_.setupUi (this);
 
-		const auto& text = offer.Description_.isEmpty () ?
-				offer.Name_ :
-				"%1 (%2)"_qs.arg (offer.Name_, offer.Description_);
+		auto text = offer.Name_;
+		if (!offer.Description_.isEmpty ())
+		{
+			text += u" ⓘ"_qs;
+			Ui_.FileName_->setToolTip ("<pre>"_qs + offer.Description_.toHtmlEscaped () + "</pre>"_qs);
+		}
 		Ui_.FileName_->setText (text);
 		Ui_.FileSize_->setText ('(' + Util::MakePrettySize (offer.Size_) + ')');
 
