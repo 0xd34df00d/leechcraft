@@ -33,7 +33,8 @@ namespace LC::Azoth::Sarin
 		if (!File_->open (QIODevice::WriteOnly))
 		{
 			qWarning () << "unable to open" << outName << "for write" << File_->errorString ();
-			emit Emitter_.errorAppeared (TEFileAccessError, File_->errorString ());
+			using namespace Transfers;
+			emit Emitter_.stateChanged (Error { ErrorReason::FileInaccessible, File_->errorString () });
 			return;
 		}
 
@@ -55,7 +56,7 @@ namespace LC::Azoth::Sarin
 		if (position == Filesize_ || data.isEmpty ())
 		{
 			emit Emitter_.transferProgress (Filesize_, Filesize_);
-			emit Emitter_.stateChanged (TSFinished);
+			emit Emitter_.stateChanged (Transfers::Phase::Finished);
 			return;
 		}
 
@@ -72,8 +73,8 @@ namespace LC::Azoth::Sarin
 		switch (type)
 		{
 		case TOX_FILE_CONTROL_CANCEL:
-			emit Emitter_.errorAppeared (TEAborted, tr ("Remote party aborted the transfer."));
-			emit Emitter_.stateChanged (TSFinished);
+			using namespace Transfers;
+			emit Emitter_.stateChanged (Error { ErrorReason::Aborted, tr ("Remote party aborted the transfer.") });
 			break;
 		default:
 			qWarning () << "unknown filecontrol type" << type;

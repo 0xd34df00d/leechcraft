@@ -84,7 +84,7 @@ namespace Azoth
 
 		void HandleIncomingFinished (const JobContext&, const JobContext::In&);
 		void HandleFileOffered (const IncomingOffer&);
-		void HandleStateChanged (TransferState, const JobContext&, QStandardItem*);
+		void HandleStateChanged (const TransferState&, const JobContext&, QStandardItem*);
 	private slots:
 		void handleAbortAction ();
 	signals:

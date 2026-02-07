@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <variant>
 #include <QObject>
 #include <QString>
 
@@ -19,51 +20,41 @@ namespace LC::Azoth::Emitters
 
 namespace LC::Azoth
 {
-	/** @brief Represents the state of the file transfer job.
-	 */
-	enum TransferState
+	namespace Transfers
 	{
-		/** Transfer is accepted by the remote party and is being
-		 * initiated.
-		 */
-		TSStarting,
+		enum class Phase : std::uint8_t
+		{
+			Starting,
+			Transferring,
+			Finished
+		};
 
-		/** File transfer is in progress.
-		 */
-		TSTransfer,
+		enum class ErrorReason : std::uint8_t
+		{
+			Aborted,
+			FileInaccessible,
+			FileCorrupted,
+			ProtocolError,
+		};
 
-		/** File transfer is finished.
-		 */
-		TSFinished
-	};
+		struct Error
+		{
+			ErrorReason Reason_;
+			QString Message_ {};
 
-	/** @brief Represents the error condition of the transfer.
-	 */
-	enum TransferError
+			bool operator== (const Error&) const = default;
+		};
+	}
+
+	using TransferState = std::variant<
+			Transfers::Phase,
+			Transfers::Error
+		>;
+
+	inline bool IsTerminal (const TransferState& state)
 	{
-		/** There is no error.
-		 */
-		TENoError,
-
-		/** Transfer is refused by the other party or aborted in the
-		 * progress.
-		 */
-		TEAborted,
-
-		/** Error occured while trying to access the local file: read
-		 * failure in case of outgoing transfer and write error in case
-		 * of incoming transfer.
-		 */
-		TEFileAccessError,
-
-		/** File is found to be corrupted during the transfer.
-		 */
-		TEFileCorruptError,
-
-		/** A protocol error occurred.
-		 */
-		TEProtocolError
-	};
+		return std::holds_alternative<Transfers::Error> (state) || state == TransferState { Transfers::Phase::Finished };
+	}
 
 	/** @brief This interface must be implemented by objects
 	 * representing file transfer jobs.

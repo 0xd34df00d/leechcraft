@@ -33,9 +33,9 @@ namespace LC::Azoth::Sarin
 			QTimer::singleShot (0, this,
 					[this]
 					{
-						emit Emitter_.errorAppeared (TEFileAccessError,
-								tr ("Error opening local file: %1.").arg (File_.errorString ()));
-						emit Emitter_.stateChanged (TransferState::TSFinished);
+						using namespace Transfers;
+						const auto& msg = tr ("Error opening local file: %1.").arg (File_.errorString ());
+						emit Emitter_.stateChanged (Error { ErrorReason::FileInaccessible, msg });
 					});
 
 			return;
@@ -53,11 +53,12 @@ namespace LC::Azoth::Sarin
 	{
 		co_await Util::AddContextObject { *this };
 
+		using namespace Transfers;
+
 		const auto friendNum = co_await Tox_->Run (&ToxW::ResolveFriendNum, PubKey_);
 		if (!friendNum)
 		{
-			emit Emitter_.errorAppeared (TEProtocolError, tr ("Unknown friend."));
-			emit Emitter_.stateChanged (TSFinished);
+			emit Emitter_.stateChanged (Error { ErrorReason::ProtocolError, tr ("Unknown friend.") });
 			co_return;
 		}
 		FriendNum_ = *friendNum;
@@ -77,24 +78,24 @@ namespace LC::Azoth::Sarin
 				[this] (TOX_ERR_FILE_SEND err)
 				{
 					qWarning () << err;
-					emit Emitter_.errorAppeared (TEProtocolError,
-							tr ("Tox file send error: %1").arg (tox_err_file_send_to_string (err)));
-					emit Emitter_.stateChanged (TSFinished);
+					const auto& msg = tr ("Tox file send error: %1").arg (tox_err_file_send_to_string (err));
+					emit Emitter_.stateChanged (Error { ErrorReason::ProtocolError, msg });
 				});
-		emit Emitter_.stateChanged (TSStarting);
+		emit Emitter_.stateChanged (Phase::Starting);
 	}
 
 	void FileTransferOut::HandleAccept ()
 	{
 		State_ = State::Transferring;
-		emit Emitter_.stateChanged (TSTransfer);
+		emit Emitter_.stateChanged (Transfers::Phase::Transferring);
 	}
 
 	void FileTransferOut::HandleKill ()
 	{
+		using namespace Transfers;
+
 		TransferAllowed_ = false;
-		emit Emitter_.errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
-		emit Emitter_.stateChanged (TSFinished);
+		emit Emitter_.stateChanged (Error { ErrorReason::Aborted, tr ("Remote party aborted file transfer.") });
 		State_ = State::Idle;
 	}
 

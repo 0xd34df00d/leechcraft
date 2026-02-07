@@ -40,16 +40,11 @@ namespace LC::Azoth::Sarin
 		{
 			auto& emitter = job->GetTransferJobEmitter ();
 			QObject::connect (&emitter,
-					&Emitters::TransferJob::errorAppeared,
-					job,
-					&QObject::deleteLater,
-					Qt::QueuedConnection);
-			QObject::connect (&emitter,
 					&Emitters::TransferJob::stateChanged,
 					job,
 					[job] (TransferState state)
 					{
-						if (state == TSFinished)
+						if (IsTerminal (state))
 							job->deleteLater ();
 					},
 					Qt::QueuedConnection);

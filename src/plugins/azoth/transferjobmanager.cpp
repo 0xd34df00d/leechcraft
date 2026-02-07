@@ -102,38 +102,11 @@ namespace Azoth
 			return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (id));
 		}
 
-		QString XferError2Str (TransferError error)
-		{
-			switch (error)
-			{
-			case TEAborted:
-				return TransferJobManager::tr ("Transfer aborted.");
-			case TEFileAccessError:
-				return TransferJobManager::tr ("Error accessing file.");
-			case TEFileCorruptError:
-				return TransferJobManager::tr ("File is corrupted.");
-			case TEProtocolError:
-				return TransferJobManager::tr ("Protocol error.");
-			case TENoError:
-				return TransferJobManager::tr ("No error.");
-			}
-
-			qWarning () << "unknown error" << error;
-			return {};
-		}
-
 		QString GetRowLabelTemplate (const TransferJobManager::JobContext& context)
 		{
 			return Util::Visit (context.Dir_,
 					[] (TransferJobManager::JobContext::In) { return TransferJobManager::tr ("Receiving %1 from %2"); },
 					[] (TransferJobManager::JobContext::Out) { return TransferJobManager::tr ("Sending %1 to %2"); });
-		}
-
-		QString GetErrorMessageTemplate (const TransferJobManager::JobContext& context)
-		{
-			return Util::Visit (context.Dir_,
-					[] (TransferJobManager::JobContext::In) { return TransferJobManager::tr ("Unable to receive file from %1."); },
-					[] (TransferJobManager::JobContext::Out) { return TransferJobManager::tr ("Unable to send file to %1."); });
 		}
 
 		QString GetFilename (const TransferJobManager::JobContext& context)
@@ -176,24 +149,9 @@ namespace Azoth
 
 		auto& emitter = job->GetTransferJobEmitter ();
 		connect (&emitter,
-				&Emitters::TransferJob::errorAppeared,
-				this,
-				[=] (TransferError error, const QString& message)
-				{
-					auto str = GetErrorMessageTemplate (context).arg (context.EntryName_);
-					str += ' ' + XferError2Str (error);
-					if (!message.isEmpty ())
-						str += ' ' + message;
-
-					const auto& e = Util::MakeNotification ("Azoth",
-							str,
-							error == TEAborted ? Priority::Warning : Priority::Critical);
-					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-				});
-		connect (&emitter,
 				&Emitters::TransferJob::stateChanged,
 				this,
-				[this, context, statusItem] (TransferState state) { HandleStateChanged (state, context, statusItem); });
+				[this, context, statusItem] (const TransferState& state) { HandleStateChanged (state, context, statusItem); });
 		connect (&emitter,
 				&Emitters::TransferJob::transferProgress,
 				this,
@@ -428,57 +386,103 @@ namespace Azoth
 
 	namespace
 	{
-		QString GetNotificationMessageTemplate (TransferState state)
+		QString XferError2Str (Transfers::ErrorReason error)
 		{
-			switch (state)
+			using enum Transfers::ErrorReason;
+			switch (error)
 			{
-			case TSStarting:
-				return TransferJobManager::tr ("Transfer of %1 with %2 is being started...");
-			case TSTransfer:
-				return TransferJobManager::tr ("Transfer of %1 with %2 is started.");
-			case TSFinished:
-				return TransferJobManager::tr ("Transfer of %1 with %2 has finished.");
+			case Aborted:
+				return TransferJobManager::tr ("Transfer aborted.");
+			case FileInaccessible:
+				return TransferJobManager::tr ("Error accessing file.");
+			case FileCorrupted:
+				return TransferJobManager::tr ("File is corrupted.");
+			case ProtocolError:
+				return TransferJobManager::tr ("Protocol error.");
 			}
 
-			qWarning () << "unhandled state" << state;
+			qWarning () << "unknown error" << static_cast<int> (error);
 			return {};
 		}
 
-		QString GetStatusString (TransferState state)
+		QString GetErrorMessageTemplate (const TransferJobManager::JobContext& context)
 		{
+			return Util::Visit (context.Dir_,
+					[] (TransferJobManager::JobContext::In) { return TransferJobManager::tr ("Unable to receive file from %1."); },
+					[] (TransferJobManager::JobContext::Out) { return TransferJobManager::tr ("Unable to send file to %1."); });
+		}
+
+		QString GetNotificationMessageTemplate (Transfers::Phase phase)
+		{
+			using enum Transfers::Phase;
+			switch (phase)
+			{
+			case Starting:
+				return TransferJobManager::tr ("Transfer of %1 with %2 is being started...");
+			case Transferring:
+				return TransferJobManager::tr ("Transfer of %1 with %2 is started.");
+			case Finished:
+				return TransferJobManager::tr ("Transfer of %1 with %2 has finished.");
+			}
+
+			qWarning () << "unhandled state" << static_cast<int> (phase);
+			return {};
+		}
+
+		QString GetStatusString (Transfers::Phase state)
+		{
+			using enum Transfers::Phase;
 			switch (state)
 			{
-			case TSStarting:
+			case Starting:
 				return TransferJobManager::tr ("starting");
-			case TSTransfer:
+			case Transferring:
 				return TransferJobManager::tr ("transferring");
-			case TSFinished:
+			case Finished:
 				return {};
 			}
 
-			qWarning () << "unhandled state" << state;
+			qWarning () << "unhandled state" << static_cast<int> (state);
 			return {};
 		}
 	}
 
-	void TransferJobManager::HandleStateChanged (TransferState state, const JobContext& context, QStandardItem *status)
+	void TransferJobManager::HandleStateChanged (const TransferState& state, const JobContext& context, QStandardItem *status)
 	{
-		const auto& notification = GetNotificationMessageTemplate (state).arg (GetFilename (context), context.EntryName_);
-		status->setText (GetStatusString (state));
+		Util::Visit (state,
+				[&] (Transfers::Phase phase)
+				{
+					if (phase == Transfers::Phase::Finished)
+					{
+						status->model ()->removeRow (status->row ());
+						if (const auto in = std::get_if<JobContext::In> (&context.Dir_))
+							HandleIncomingFinished (context, *in);
+					}
+					else
+					{
+						status->setText (GetStatusString (phase));
+						const auto& e = Util::MakeNotification ("Azoth",
+								GetNotificationMessageTemplate (phase).arg (GetFilename (context), context.EntryName_),
+								Priority::Info);
+						GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+					}
+				},
+				[&] (const Transfers::Error& error)
+				{
+					status->model ()->removeRow (status->row ());
 
-		if (state == TSFinished)
-		{
-			status->model ()->removeRow (status->row ());
-			if (const auto in = std::get_if<JobContext::In> (&context.Dir_))
-				HandleIncomingFinished (context, *in);
-		}
-		else
-		{
-			const auto& e = Util::MakeNotification ("Azoth",
-					notification,
-					Priority::Info);
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-		}
+					auto str = GetErrorMessageTemplate (context).arg (context.EntryName_);
+					str += ' ' + XferError2Str (error.Reason_);
+					if (!error.Message_.isEmpty ())
+						str += ' ' + error.Message_;
+
+					const auto& e = Util::MakeNotification ("Azoth",
+							str,
+							error.Reason_ == Transfers::ErrorReason::Aborted ?
+									Priority::Warning :
+									Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 	}
 
 	void TransferJobManager::handleAbortAction ()

@@ -28,18 +28,11 @@ namespace LC::Azoth::Emitters
 		 */
 		void transferProgress (qint64 done, qint64 total);
 
-		/** @brief Notifies about error.
-		 *
-		 * @param[out] error The error condition.
-		 * @param[out] msg The human-readable message describing the error.
-		 */
-		void errorAppeared (TransferError error, const QString& msg);
-
 		/** @brief Notifies about state changes.
 		 *
 		 * @param[out] state The new state of the transfer job.
 		 */
-		void stateChanged (TransferState state);
+		void stateChanged (LC::Azoth::TransferState state);
 	};
 
 	class AZOTH_UTIL_API TransferManager : public QObject

@@ -15,47 +15,52 @@ namespace LC::Azoth::Xoox
 {
 	namespace
 	{
-		TransferError FromQxmpp (QXmppTransferJob::Error error)
+		TransferState FromQxmpp (QXmppTransferJob::Error error, QXmppTransferJob::State state)
 		{
+			using namespace Transfers;
+
 			switch (error)
 			{
 			case QXmppTransferJob::NoError:
-				return TENoError;
+				switch (state)
+				{
+				case QXmppTransferJob::OfferState:
+				case QXmppTransferJob::StartState:
+					return Phase::Starting;
+				case QXmppTransferJob::TransferState:
+					return Phase::Transferring;
+				case QXmppTransferJob::FinishedState:
+					return Phase::Finished;
+				}
+				break;
 			case QXmppTransferJob::AbortError:
-				return TEAborted;
+				return Error { ErrorReason::Aborted };
 			case QXmppTransferJob::FileAccessError:
-				return TEFileAccessError;
+				return Error { ErrorReason::FileInaccessible };
 			case QXmppTransferJob::FileCorruptError:
-				return TEFileCorruptError;
+				return Error { ErrorReason::FileCorrupted };
 			case QXmppTransferJob::ProtocolError:
-				return TEProtocolError;
+				return Error { ErrorReason::ProtocolError };
 			}
 
-			qWarning () << "unknown error" << error;
-			return TENoError;
-		}
-
-		TransferState FromQxmpp (QXmppTransferJob::State state)
-		{
-			switch (state)
-			{
-			case QXmppTransferJob::OfferState:
-			case QXmppTransferJob::StartState:
-				return TSStarting;
-			case QXmppTransferJob::TransferState:
-				return TSTransfer;
-			case QXmppTransferJob::FinishedState:
-				return TSFinished;
-			}
-
-			qWarning () << "unknown state" << state;
-			return TSStarting;
+			qWarning () << "unknown error or state" << error << state;
+			return Phase::Starting;
 		}
 	}
 
 	TransferJob::TransferJob (std::unique_ptr<QXmppTransferJob> job)
 	: Job_ { std::move (job) }
 	{
+		const auto emitState = [this]
+		{
+			if (Job_->error () != QXmppTransferJob::NoError)
+				qWarning () << Job_->error ();
+
+			const auto state = FromQxmpp (Job_->error (), Job_->state ());
+			emit Emitter_.stateChanged (state);
+			if (IsTerminal (state))
+				deleteLater ();
+		};
 		connect (&*Job_,
 				&QXmppTransferJob::progress,
 				&Emitter_,
@@ -63,21 +68,11 @@ namespace LC::Azoth::Xoox
 		connect (&*Job_,
 				qOverload<QXmppTransferJob::Error> (&QXmppTransferJob::error),
 				this,
-				[this] (QXmppTransferJob::Error error)
-				{
-					qWarning () << error;
-					emit Emitter_.errorAppeared (FromQxmpp (error), {});
-					deleteLater ();
-				});
+				emitState);
 		connect (&*Job_,
 				&QXmppTransferJob::stateChanged,
 				this,
-				[this] (QXmppTransferJob::State state)
-				{
-					emit Emitter_.stateChanged (FromQxmpp (state));
-					if (state == QXmppTransferJob::FinishedState)
-						deleteLater ();
-				});
+				emitState);
 	}
 
 	TransferJob::TransferJob (std::unique_ptr<QXmppTransferJob> job, const QString& savePath)
@@ -96,7 +91,8 @@ namespace LC::Azoth::Xoox
 			QTimer::singleShot (0, this,
 					[msg, this]
 					{
-						emit Emitter_.errorAppeared (TEFileAccessError, msg);
+						using namespace Transfers;
+						emit Emitter_.stateChanged (Error { ErrorReason::FileInaccessible, msg });
 						deleteLater ();
 					});
 			return;
