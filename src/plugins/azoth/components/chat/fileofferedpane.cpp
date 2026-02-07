@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QMimeDatabase>
 #include <util/sll/qtutil.h>
+#include <util/util.h>
 #include "interfaces/azoth/itransfermanager.h"
 #include "../../transferjobmanager.h"
 #include "../../xmlsettingsmanager.h"
@@ -25,6 +26,7 @@ namespace LC::Azoth
 				offer.Name_ :
 				"%1 (%2)"_qs.arg (offer.Name_, offer.Description_);
 		Ui_.FileName_->setText (text);
+		Ui_.FileSize_->setText ('(' + Util::MakePrettySize (offer.Size_) + ')');
 
 		const auto& mimeType = QMimeDatabase {}.mimeTypeForFile (offer.Name_, QMimeDatabase::MatchExtension);
 		if (const auto& icon = QIcon::fromTheme (mimeType.iconName ());
