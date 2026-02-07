@@ -37,7 +37,7 @@ namespace LC::Util
 
 	namespace
 	{
-		QString MakePrettySizeWith (qint64 sourceSize, const QStringList& units)
+		QString MakePrettySizeWith (qint64 sourceSize, const QStringList& units, const QString& space)
 		{
 			int strNum = 0;
 			long double size = sourceSize;
@@ -45,7 +45,7 @@ namespace LC::Util
 			for (; strNum < 3 && size >= 1024; ++strNum, size /= 1024)
 				;
 
-			return QString::number (size, 'f', 1) + units.value (strNum);
+			return QString::number (size, 'f', 1) + space + units.value (strNum);
 		}
 	}
 
@@ -53,13 +53,13 @@ namespace LC::Util
 	{
 		static QStringList units
 		{
-			QObject::tr (" B"),
-			QObject::tr (" KiB"),
-			QObject::tr (" MiB"),
-			QObject::tr (" GiB")
+			QObject::tr ("B", "The unit for bytes."),
+			QObject::tr ("KiB", "The unit for kilobytes."),
+			QObject::tr ("MiB", "The unit for megabytes."),
+			QObject::tr ("GiB", "The unit for gigabytes.")
 		};
 
-		return MakePrettySizeWith (sourcesize, units);
+		return MakePrettySizeWith (sourcesize, units, " "_qs);
 	}
 
 	QString MakePrettySizeShort (qint64 sourcesize)
@@ -72,7 +72,7 @@ namespace LC::Util
 			QObject::tr ("G", "Short one-character unit for gigabytes.")
 		};
 
-		return MakePrettySizeWith (sourcesize, units);
+		return MakePrettySizeWith (sourcesize, units, {});
 	}
 
 	QString MakeTimeFromLong (ulong time)
