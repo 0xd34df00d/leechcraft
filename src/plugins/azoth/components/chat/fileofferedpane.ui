@@ -30,7 +30,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>File transfer request:</string>
+      <string>Incoming file:</string>
      </property>
     </widget>
    </item>
