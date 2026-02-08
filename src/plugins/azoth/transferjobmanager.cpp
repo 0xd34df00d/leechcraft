@@ -452,12 +452,9 @@ namespace Azoth
 		Util::Visit (state,
 				[&] (Transfers::Phase phase)
 				{
-					if (phase == Transfers::Phase::Finished)
-					{
-						status->model ()->removeRow (status->row ());
-						if (const auto in = std::get_if<JobContext::In> (&context.Dir_))
-							HandleIncomingFinished (context, *in);
-					}
+					if (const auto in = std::get_if<JobContext::In> (&context.Dir_);
+						in && phase == Transfers::Phase::Finished)
+						HandleIncomingFinished (context, *in);
 					else
 					{
 						status->setText (GetStatusString (phase));
@@ -469,8 +466,6 @@ namespace Azoth
 				},
 				[&] (const Transfers::Error& error)
 				{
-					status->model ()->removeRow (status->row ());
-
 					auto str = GetErrorMessageTemplate (context).arg (context.EntryName_);
 					str += ' ' + XferError2Str (error.Reason_);
 					if (!error.Message_.isEmpty ())
@@ -483,6 +478,9 @@ namespace Azoth
 									Priority::Critical);
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				});
+
+		if (IsTerminal (state))
+			status->model ()->removeRow (status->row ());
 	}
 
 	void TransferJobManager::handleAbortAction ()
