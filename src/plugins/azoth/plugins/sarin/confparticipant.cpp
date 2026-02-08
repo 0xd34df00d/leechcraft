@@ -8,6 +8,7 @@
 
 #include "confparticipant.h"
 #include <util/sll/visitor.h>
+#include <util/util.h>
 #include "confentry.h"
 #include "confsmanager.h"
 #include "toxaccount.h"
@@ -105,7 +106,8 @@ namespace LC::Azoth::Sarin
 				[] (Online) { return EntryStatus { SOnline, {} }; },
 				[] (const Offline& offline)
 				{
-					return EntryStatus { SOffline, tr ("Offline since %1.").arg (QLocale {}.toString (offline.Since_)) };
+					const auto& sinceStr = Util::GetLocale ().toString (offline.Since_);
+					return EntryStatus { SOffline, tr ("Offline since %1.").arg (sinceStr) };
 				});
 	}
 

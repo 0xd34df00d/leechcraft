@@ -348,11 +348,6 @@ namespace LC::Azoth
 		Core::Instance ().GetUnreadQueueManager ()->clearMessagesForEntry (entryObj);
 	}
 
-	QString ProxyObject::PrettyPrintDateTime (const QDateTime& dt)
-	{
-		return Azoth::PrettyPrintDateTime (dt);
-	}
-
 	std::optional<CustomStatus> ProxyObject::FindCustomStatus (const QString& name) const
 	{
 		const auto mgr = Core::Instance ().GetCustomStatusesManager ();

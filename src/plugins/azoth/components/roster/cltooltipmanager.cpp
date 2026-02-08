@@ -360,7 +360,7 @@ namespace Azoth
 			if (info.contains ("client_time"))
 			{
 				const auto& datetime = info.value ("client_time").toDateTime ();
-				const auto& dateStr = PrettyPrintDateTime (datetime);
+				const auto& dateStr = Util::GetLocale ().toString (datetime);
 				tip += "<br />" + tr ("Client time:") + ' ' + dateStr;
 			}
 

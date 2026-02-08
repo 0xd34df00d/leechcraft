@@ -72,8 +72,6 @@ namespace Azoth
 		bool IsMessageRead (QObject*) override;
 		void MarkMessagesAsRead (QObject*) override;
 
-		QString PrettyPrintDateTime (const QDateTime&) override;
-
 		std::optional<CustomStatus> FindCustomStatus (const QString&) const override;
 		QStringList GetCustomStatusNames () const override;
 

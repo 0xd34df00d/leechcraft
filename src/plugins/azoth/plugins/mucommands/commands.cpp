@@ -157,7 +157,7 @@ namespace MuCommands
 						},
 						[] (const QDate& date)
 						{
-							return date.isNull () ? QString {} : QLocale {}.toString (date, QLocale::LongFormat);
+							return date.isNull () ? QString {} : Util::GetLocale ().toString (date, QLocale::LongFormat);
 						},
 						[] (const QStringList& list)
 						{
@@ -341,6 +341,8 @@ namespace MuCommands
 
 					bool shouldUpdate = false;
 
+					const auto& locale = Util::GetLocale ();
+
 					QStringList fields;
 
 					const auto& variants = target->Variants ();
@@ -364,7 +366,7 @@ namespace MuCommands
 								.arg (varName);
 						field += "<ul><li>";
 						field += QObject::tr ("Local time: %1")
-								.arg (azothProxy->PrettyPrintDateTime (time));
+								.arg (locale.toString (time));
 						field += "</li><li>";
 						field += QObject::tr ("Timezone: %1")
 								.arg (FormatTzo (tzo));
@@ -372,7 +374,7 @@ namespace MuCommands
 
 						const auto& utcTime = time.addSecs (-tzo);
 						field += QObject::tr ("UTC time: %1")
-								.arg (azothProxy->PrettyPrintDateTime (utcTime));
+								.arg (locale.toString (utcTime));
 
 						field += "</li></ul>";
 						fields << field;

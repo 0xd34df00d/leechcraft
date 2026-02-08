@@ -298,20 +298,6 @@ namespace Azoth
 
 		virtual void MarkMessagesAsRead (QObject *entryObject) = 0;
 
-		/** @brief Formats the \em datetime according to current locale.
-		 *
-		 * This method returns the \em datetime formatted according to
-		 * the current locale. The timezones are respected.
-		 *
-		 * The primary difference from <code>QLocale {}.toString (datetime)</code>
-		 * is that Boost.Locale backend is used if available to avoid
-		 * nasty timezone-related problems.
-		 *
-		 * @param[in] datetime The timestamp to format.
-		 * @return The formatted \em datetime as string.
-		 */
-		virtual QString PrettyPrintDateTime (const QDateTime& datetime) = 0;
-
 		/** @brief Tries to find a cusotm status under the given \em name.
 		 *
 		 * @param[in] name The name of the custom status.

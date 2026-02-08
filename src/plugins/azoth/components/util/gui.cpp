@@ -117,14 +117,4 @@ namespace LC::Azoth
 			return QObject::tr ("Error");
 		}
 	}
-
-	QString PrettyPrintDateTime (const QDateTime& dt)
-	{
-		static const auto format = QLocale {}
-				.dateTimeFormat ()
-				.remove (" t")
-				.remove ("t ")
-				.remove ("t");
-		return QLocale {}.toString (dt, format);
-	}
 }
