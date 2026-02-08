@@ -147,35 +147,25 @@ namespace LC::Util
 		return nullptr;
 	}
 
+	QLocale GetLocale ()
+	{
+		const QSettings settings { QCoreApplication::organizationName (), QCoreApplication::applicationName () };
+		const auto& localeName = settings.value ("Language"_qs, "system"_qs).toString ();
+		if (localeName == "system"_ql)
+			return QLocale {};
+
+		QLocale locale { localeName };
+		if (locale.language () == QLocale::AnyLanguage)
+		{
+			qWarning () << "unable to parse" << localeName;
+			return QLocale {};
+		}
+		return locale;
+	}
+
 	QString GetLocaleName ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName ());
-		QString localeName = settings.value (QStringLiteral ("Language"), QStringLiteral ("system")).toString ();
-
-		if (localeName == "system"_ql)
-		{
-			const auto localeLen = 5;
-			localeName = qEnvironmentVariable ("LANG").left (localeLen);
-
-			if (localeName == "C"_ql || localeName.isEmpty ())
-				localeName = QStringLiteral ("en_US");
-
-			if (localeName.isEmpty () || localeName.size () != localeLen)
-				localeName = QLocale::system ().name ().left (localeLen);
-		}
-
-		if (localeName.size () == 2)
-		{
-			auto lang = QLocale (localeName).language ();
-			const auto& cs = QLocale::countriesForLanguage (lang);
-			if (cs.isEmpty ())
-				localeName += "_00"_ql;
-			else
-				localeName = QLocale (lang, cs.at (0)).name ();
-		}
-
-		return localeName;
+		return GetLocale ().name ();
 	}
 
 	QString GetInternetLocaleName (const QLocale& locale)

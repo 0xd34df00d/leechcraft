@@ -105,6 +105,8 @@ namespace LC::Util
 			const QString& prefix = LCLowercase,
 			const QString& appname = LCLowercase);
 
+	UTIL_API QLocale GetLocale ();
+
 	/** @brief Returns the current locale name, like en_US.
 	 *
 	 * First, this function checks the locale value stored in
