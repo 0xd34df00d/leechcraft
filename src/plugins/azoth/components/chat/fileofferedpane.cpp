@@ -12,7 +12,7 @@
 #include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "interfaces/azoth/itransfermanager.h"
-#include "../../transferjobmanager.h"
+#include "components/transfers/transferjobmanager.h"
 #include "../../xmlsettingsmanager.h"
 
 namespace LC::Azoth

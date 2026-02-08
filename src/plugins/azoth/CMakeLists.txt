@@ -84,6 +84,8 @@ LC_DEFINE_PLUGIN (
 		components/roster/keyboardrosterfixer.cpp
 		components/roster/mainwidget.cpp
 		components/roster/sortfilterproxymodel.cpp
+		components/transfers/pendinguploadpaster.cpp
+		components/transfers/transferjobmanager.cpp
 		components/util/entries.cpp
 		components/util/dnd.cpp
 		components/util/gui.cpp
@@ -96,7 +98,6 @@ LC_DEFINE_PLUGIN (
 		accountslistwidget.cpp
 		pluginmanager.cpp
 		proxyobject.cpp
-		transferjobmanager.cpp
 		addaccountwizardfirstpage.cpp
 		servicediscoverywidget.cpp
 		consolewidget.cpp
@@ -109,7 +110,6 @@ LC_DEFINE_PLUGIN (
 		chatstyleoptionmanager.cpp
 		microblogstab.cpp
 		riexhandler.cpp
-		pendinguploadpaster.cpp
 		colorlisteditorwidget.cpp
 		customstatusesmanager.cpp
 		statuschange.cpp

@@ -10,7 +10,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "util/azoth/emitters/transfermanager.h"
-#include "../../transferjobmanager.h"
+#include "components/transfers/transferjobmanager.h"
 #include "chattab.h"
 #include "fileofferedpane.h"
 

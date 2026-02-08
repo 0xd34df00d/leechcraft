@@ -19,12 +19,12 @@
 #include <interfaces/azoth/iregmanagedaccount.h>
 #include "components/chat/chattab.h"
 #include "components/dialogs/filesenddialog.h"
+#include "components/transfers/transferjobmanager.h"
 #include "../../avatarsmanager.h"
 #include "../../addaccountwizardfirstpage.h"
 #include "../../core.h"
 #include "../../chattabsmanager.h"
 #include "../../hooksinstance.h"
-#include "../../transferjobmanager.h"
 
 namespace LC::Azoth
 {

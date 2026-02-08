@@ -29,9 +29,9 @@
 #include "util/azoth/emitters/transfermanager.h"
 #include "components/dialogs/filesenddialog.h"
 #include "components/util/misc.h"
-#include "core.h"
-#include "xmlsettingsmanager.h"
-#include "avatarsmanager.h"
+#include "../../core.h"
+#include "../../xmlsettingsmanager.h"
+#include "../../avatarsmanager.h"
 
 Q_DECLARE_METATYPE (QToolBar*)
 

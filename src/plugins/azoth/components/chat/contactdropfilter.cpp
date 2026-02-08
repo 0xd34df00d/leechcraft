@@ -21,11 +21,11 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
-#include <interfaces/azoth/iaccount.h>
-#include <interfaces/azoth/imucentry.h>
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/imucentry.h"
+#include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"
 #include "components/util/misc.h"
-#include "../../transferjobmanager.h"
 #include "chattab.h"
 
 namespace LC::Azoth

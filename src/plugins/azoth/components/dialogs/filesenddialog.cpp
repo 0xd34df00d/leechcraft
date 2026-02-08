@@ -17,10 +17,10 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/itransfermanager.h"
+#include "components/transfers/pendinguploadpaster.h"
+#include "components/transfers/transferjobmanager.h"
 #include "core.h"
 #include "chattabsmanager.h"
-#include "transferjobmanager.h"
-#include "pendinguploadpaster.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
