@@ -25,6 +25,8 @@ namespace LC::Util
 
 		void SetElideMode (Qt::TextElideMode);
 		Qt::TextElideMode GetElideMode () const;
+
+		QSize sizeHint () const override;
 	protected:
 		void changeEvent (QEvent*) override;
 		void resizeEvent (QResizeEvent*) override;

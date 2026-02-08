@@ -16,7 +16,6 @@ namespace LC::Util
 	: QLabel { parent }
 	{
 		setTextFormat (Qt::PlainText);
-		setSizePolicy (QSizePolicy::Expanding, sizePolicy ().verticalPolicy ());
 	}
 
 	void ElidingLabel::SetFullText (const QString& text)
@@ -47,6 +46,16 @@ namespace LC::Util
 		return ElideMode_;
 	}
 
+	QSize ElidingLabel::sizeHint () const
+	{
+		const auto& cm = contentsMargins ();
+
+		auto result = QLabel::sizeHint ();
+		const auto textWidth = fontMetrics ().horizontalAdvance (FullText_) + 1;
+		result.setWidth (std::max (result.width (), textWidth + cm.left () + cm.right ()));
+		return result;
+	}
+
 	void ElidingLabel::changeEvent (QEvent *ev)
 	{
 		QLabel::changeEvent (ev);
@@ -72,9 +81,6 @@ namespace LC::Util
 	void ElidingLabel::UpdateElide ()
 	{
 		const auto& fm = fontMetrics ();
-
-		const auto& cm = contentsMargins ();
-		setMaximumWidth (fm.horizontalAdvance (FullText_) + cm.left () + cm.right ());
 
 		const auto& elided = fm.elidedText (FullText_, ElideMode_, contentsRect ().width ());
 		setText (elided);
