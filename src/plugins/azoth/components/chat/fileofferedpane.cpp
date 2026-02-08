@@ -39,20 +39,30 @@ namespace LC::Azoth
 			Ui_.FileIcon_->setPixmap (icon.pixmap (dim, dim));
 		}
 
-		connect (Ui_.AcceptButton_,
+		static const auto getDefDir = []
+		{
+			const auto& defDir = XmlSettingsManager::Instance ().property ("DefaultXferSavePath").toString ();
+			if (const QDir dir {};
+				!dir.exists (defDir) && !dir.mkpath (defDir))
+				qWarning () << "unable to create default path" << defDir;
+			return defDir;
+		};
+
+		connect (Ui_.SaveButton_,
+				&QPushButton::released,
+				this,
+				[&transfers, offer]
+				{
+					transfers.AcceptOffer (offer, getDefDir () + '/' + offer.Name_);
+				});
+		connect (Ui_.SaveAsButton_,
 				&QPushButton::released,
 				this,
 				[&transfers, offer, parent]
 				{
-					const auto& defDir = XmlSettingsManager::Instance ().property ("DefaultXferSavePath").toString ();
-
-					if (const QDir dir {};
-						!dir.exists (defDir) && !dir.mkpath (defDir))
-						qWarning () << "unable to create default path" << defDir;
-
 					const auto& savePath = QFileDialog::getSaveFileName (parent,
 							tr ("Select save path for incoming file"),
-							defDir + '/' + offer.Name_);
+							getDefDir () + '/' + offer.Name_);
 					if (!savePath.isEmpty ())
 						transfers.AcceptOffer (offer, savePath);
 				});
