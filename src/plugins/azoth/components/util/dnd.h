@@ -16,13 +16,12 @@ class QList;
 class QMimeData;
 class QObject;
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-class ICLEntry;
+	class ICLEntry;
+}
 
-namespace DndUtil
+namespace LC::Azoth::DndUtil
 {
 	QString GetFormatId ();
 
@@ -38,6 +37,4 @@ namespace DndUtil
 	QList<MimeContactInfo> DecodeMimeInfos (const QMimeData*);
 
 	bool HasContacts (const QMimeData*);
-}
-}
 }

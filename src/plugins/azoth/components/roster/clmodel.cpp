@@ -14,10 +14,10 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "components/dialogs/mucinvitedialog.h"
+#include "components/util/dnd.h"
 #include "components/util/misc.h"
 #include "core.h"
 #include "transferjobmanager.h"
-#include "dndutil.h"
 #include "cltooltipmanager.h"
 #include "roles.h"
 

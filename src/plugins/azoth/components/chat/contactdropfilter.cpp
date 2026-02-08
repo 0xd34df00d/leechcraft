@@ -23,9 +23,9 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/imucentry.h>
+#include "components/util/dnd.h"
 #include "components/util/misc.h"
 #include "../../transferjobmanager.h"
-#include "../../dndutil.h"
 #include "chattab.h"
 
 namespace LC::Azoth

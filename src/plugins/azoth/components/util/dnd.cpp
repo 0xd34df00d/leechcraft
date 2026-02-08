@@ -6,21 +6,18 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "dndutil.h"
+#include "dnd.h"
 #include <QString>
 #include <QList>
 #include <QDataStream>
 #include <QMimeData>
+#include <util/sll/qtutil.h>
 #include "interfaces/azoth/iclentry.h"
-#include "core.h"
+#include "../../core.h"
 
-namespace LC
+namespace LC::Azoth::DndUtil
 {
-namespace Azoth
-{
-namespace DndUtil
-{
-	const QString CLEntryFormat = "x-leechcraft/azoth-cl-entry";
+	const QString CLEntryFormat = "x-leechcraft/azoth-cl-entry"_qs;
 
 	QString GetFormatId ()
 	{
@@ -83,6 +80,4 @@ namespace DndUtil
 	{
 		return data->hasFormat (CLEntryFormat);
 	}
-}
-}
 }

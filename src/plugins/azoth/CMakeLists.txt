@@ -85,6 +85,7 @@ LC_DEFINE_PLUGIN (
 		components/roster/mainwidget.cpp
 		components/roster/sortfilterproxymodel.cpp
 		components/util/entries.cpp
+		components/util/dnd.cpp
 		components/util/gui.cpp
 		components/util/misc.cpp
 		components/util/settings.cpp
@@ -116,7 +117,6 @@ LC_DEFINE_PLUGIN (
 		coremessage.cpp
 		dummymsgmanager.cpp
 		serverhistorywidget.cpp
-		dndutil.cpp
 		corecommandsmanager.cpp
 		resourcesmanager.cpp
 		notificationsmanager.cpp
