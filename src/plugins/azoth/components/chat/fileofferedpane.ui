@@ -35,7 +35,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="FileName_">
+    <widget class="LC::Util::ElidingLabel" name="FileName_">
      <property name="toolTipDuration">
       <number>0</number>
      </property>
@@ -86,6 +86,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LC::Util::ElidingLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">util/gui/elidinglabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

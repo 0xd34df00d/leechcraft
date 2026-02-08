@@ -28,7 +28,7 @@ namespace LC::Azoth
 			text += u" ⓘ"_qs;
 			Ui_.FileName_->setToolTip ("<pre>"_qs + offer.Description_.toHtmlEscaped () + "</pre>"_qs);
 		}
-		Ui_.FileName_->setText (text);
+		Ui_.FileName_->SetFullText (text);
 		Ui_.FileSize_->setText ('(' + Util::MakePrettySize (offer.Size_) + ')');
 
 		const auto& mimeType = QMimeDatabase {}.mimeTypeForFile (offer.Name_, QMimeDatabase::MatchExtension);
