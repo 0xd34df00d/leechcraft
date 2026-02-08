@@ -15,6 +15,7 @@ add_util_library (util-gui
 		autoresizemixin.cpp
 		clearlineeditaddon.cpp
 		colorbutton.cpp
+		elidinglabel.cpp
 		fancytrayicon.cpp
 		fancytrayiconfallback.cpp
 		$<${IS_FREEDESKTOP_PLATFORM}:fancytrayiconfreedesktop.cpp>
