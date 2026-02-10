@@ -45,7 +45,7 @@ namespace LC::Util
 			for (; strNum < 3 && size >= 1024; ++strNum, size /= 1024)
 				;
 
-			return QString::number (size, 'f', 1) + space + units.value (strNum);
+			return GetLocale ().toString (static_cast<double> (size), 'f', 1) + space + units.value (strNum);
 		}
 	}
 
