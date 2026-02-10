@@ -48,11 +48,11 @@
 #include "components/dialogs/setstatusdialog.h"
 #include "components/util/gui.h"
 #include "components/util/misc.h"
+#include "components/util/statuschange.h"
 #include "consolewidget.h"
 #include "servicediscoverywidget.h"
 #include "microblogstab.h"
 #include "chattabsmanager.h"
-#include "statuschange.h"
 #include "serverhistorywidget.h"
 
 namespace LC::Azoth::Actions

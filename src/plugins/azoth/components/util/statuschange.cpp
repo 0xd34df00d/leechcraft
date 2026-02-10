@@ -11,13 +11,13 @@
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <interfaces/azoth/iaccount.h>
+#include "interfaces/azoth/iaccount.h"
 #include "components/dialogs/setstatusdialog.h"
-#include "components/util/gui.h"
-#include "core.h"
-#include "customstatusesmanager.h"
-#include "resourcesmanager.h"
-#include "xmlsettingsmanager.h"
+#include "gui.h"
+#include "../../core.h"
+#include "../../customstatusesmanager.h"
+#include "../../resourcesmanager.h"
+#include "../../xmlsettingsmanager.h"
 
 namespace LC::Azoth::StatusChange
 {

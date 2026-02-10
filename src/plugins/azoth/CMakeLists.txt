@@ -91,6 +91,7 @@ LC_DEFINE_PLUGIN (
 		components/util/gui.cpp
 		components/util/misc.cpp
 		components/util/settings.cpp
+		components/util/statuschange.cpp
 		azoth.cpp
 		azothschemehandler.cpp
 		core.cpp
@@ -112,7 +113,6 @@ LC_DEFINE_PLUGIN (
 		riexhandler.cpp
 		colorlisteditorwidget.cpp
 		customstatusesmanager.cpp
-		statuschange.cpp
 		customchatstylemanager.cpp
 		coremessage.cpp
 		dummymsgmanager.cpp

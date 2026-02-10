@@ -35,6 +35,7 @@
 #include "components/chat/chattab.h"
 #include "components/roster/mainwidget.h"
 #include "components/transfers/transferjobmanager.h"
+#include "components/util/statuschange.h"
 #include "core.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -49,7 +50,6 @@
 #include "serverhistorywidget.h"
 #include "actionsmanager.h"
 #include "resourcesmanager.h"
-#include "statuschange.h"
 
 namespace LC
 {

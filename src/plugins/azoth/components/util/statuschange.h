@@ -9,13 +9,12 @@
 #pragma once
 
 #include <functional>
-#include <QObject>
 #include <QString>
-#include <QHash>
 #include "interfaces/azoth/azothcommon.h"
 
-class QMenu;
 class QAction;
+class QMenu;
+class QObject;
 
 namespace LC::Azoth::StatusChange
 {
