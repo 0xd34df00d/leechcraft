@@ -4,40 +4,29 @@
 <context>
     <name>LC::LMP::MTPSync::Mtp</name>
     <message>
-        <location filename="mtp.cpp" line="147"/>
+        <location filename="mtp.cpp" line="233"/>
         <source>Unable to open device %1.</source>
         <oldsource>Unknown device %1.</oldsource>
         <translation>Невозможно открыть устройство %1.</translation>
     </message>
     <message>
-        <location filename="mtp.cpp" line="154"/>
-        <source>Unable to open storage %1 on %2.</source>
-        <oldsource>Unknown storage %1 on %2.</oldsource>
-        <translation>Невозможно открыть хранилище %1 на %2.</translation>
-    </message>
-    <message>
-        <location filename="mtp.cpp" line="167"/>
-        <source>Error writing track: %1.</source>
-        <translation>Ошибка записи трека: %1.</translation>
-    </message>
-    <message>
-        <location filename="mtp.cpp" line="174"/>
-        <source>Error creating track album.</source>
-        <translation>Ошибка создания альбома для трека.</translation>
-    </message>
-    <message>
-        <location filename="mtp.cpp" line="180"/>
-        <source>Error appending track to the album.</source>
-        <translation>Ошибка добавления трека в альбом.</translation>
+        <location filename="mtp.cpp" line="258"/>
+        <source>Error sending track to the device.</source>
+        <translation>Ошибка отправки трека на устройство.</translation>
     </message>
 </context>
 <context>
     <name>LC::LMP::MTPSync::Plugin</name>
     <message>
-        <location filename="mtpsync.cpp" line="113"/>
+        <location filename="mtpsync.cpp" line="115"/>
         <source>Music collection synchronization with MTP-enabled portable media players.</source>
         <oldsource>Adds support for synchronization with MTP-enabled portable media players.</oldsource>
         <translation>Поддержка синхронизации с поддерживающими MTP портативными аудиоплеерами.</translation>
+    </message>
+    <message>
+        <location filename="mtpsync.cpp" line="180"/>
+        <source>No storages available — is the device in the file transfer mode?</source>
+        <translation>Нет доступных хранилищ — включён ли режим передачи файлов?</translation>
     </message>
 </context>
 </TS>
