@@ -120,14 +120,14 @@ namespace LC::Util
 	}
 
 	template<typename T>
-	class SimpleRoledItemsModel : public FlatItemsModelTypedBase<T>
+	class RoledItemsModel : public FlatItemsModelTypedBase<T>
 	{
 	public:
 		using FieldGetter_t = detail::FieldGetter_t<T>;
 	private:
 		const QHash<int, FieldGetter_t> Role2Getter_;
 	public:
-		explicit SimpleRoledItemsModel (QObject *parent = nullptr)
+		explicit RoledItemsModel (QObject *parent = nullptr)
 		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
 		, Role2Getter_ { detail::MkGetters<T> () }
 		{

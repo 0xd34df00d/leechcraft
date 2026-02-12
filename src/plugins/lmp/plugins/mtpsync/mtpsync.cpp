@@ -23,7 +23,7 @@ namespace LC::LMP::MTPSync
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		DevicesModel_ = new Util::SimpleRoledItemsModel<ModelRow> { this };
+		DevicesModel_ = new Util::RoledItemsModel<ModelRow> { this };
 
 		Mtp_ = std::make_unique<MtpRunner> ();
 		connect (&*Mtp_,

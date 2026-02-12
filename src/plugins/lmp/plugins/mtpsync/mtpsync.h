@@ -49,7 +49,7 @@ namespace LC::LMP::MTPSync
 
 			QList<DeviceStorage> Storages_;
 		};
-		Util::SimpleRoledItemsModel<ModelRow> *DevicesModel_;
+		Util::RoledItemsModel<ModelRow> *DevicesModel_;
 
 		ILMPProxy_ptr LMPProxy_;
 	public:

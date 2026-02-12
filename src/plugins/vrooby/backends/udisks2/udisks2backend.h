@@ -59,7 +59,7 @@ namespace LC::Vrooby::UDisks2
 			R<bool, MassStorageRole::IsMounted> IsMounted_ = false;
 			R<bool, MassStorageRole::IsMediaAvailable> IsMediaAvailable_ = false;
 		};
-		Util::SimpleRoledItemsModel<Device> Devices_;
+		Util::RoledItemsModel<Device> Devices_;
 		QHash<QString, int> Id2Row_;
 
 		org::freedesktop::DBus::ObjectManager *UDisksObj_ = nullptr;
