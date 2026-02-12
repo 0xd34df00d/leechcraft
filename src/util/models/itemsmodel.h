@@ -14,14 +14,14 @@
 namespace LC::Util
 {
 	template<CtString RoleArg, auto GetterArg>
-	struct RoledMemberField
+	struct NamedMemberField
 	{
 		static constexpr auto Getter = GetterArg;
 		static constexpr auto Role = RoleArg;
 	};
 
 	template<CtString RoleArg, auto GetterArg>
-	RoledMemberField<RoleArg, GetterArg> RoledMemberField_v;
+	NamedMemberField<RoleArg, GetterArg> NamedMemberField_v;
 
 	template<typename T, int RoleV>
 	struct RoleOf
@@ -150,7 +150,7 @@ namespace LC::Util
 	};
 
 	template<typename T>
-	class RoledItemsModel : public FlatItemsModelTypedBase<T>
+	class NamedItemsModel : public FlatItemsModelTypedBase<T>
 	{
 	public:
 		using FieldGetter_t = detail::FieldGetter_t<T>;
@@ -160,7 +160,7 @@ namespace LC::Util
 		const QHash<int, QByteArray> Roles_;
 	public:
 		template<typename... Fields>
-		explicit RoledItemsModel (QObject *parent, Fields...) noexcept
+		explicit NamedItemsModel (QObject *parent, Fields...) noexcept
 		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
 		, Fields_ { +[] (const T& t) -> QVariant { return t.*Fields::Getter; }... }
 		, Roles_ { MakeRoles ({ ToByteArray<Fields::Role> ()... }) }

@@ -55,10 +55,10 @@ namespace LC::LMP
 	, BioPropProxy_ { new BioPropProxy { this } }
 	, DiscoModel_ { new DiscoModel {
 		this,
-		Util::RoledMemberField_v<"albumName", &DiscoItem::Name_>,
-		Util::RoledMemberField_v<"albumYear", &DiscoItem::Year_>,
-		Util::RoledMemberField_v<"albumImage", &DiscoItem::Image_>,
-		Util::RoledMemberField_v<"albumTrackListTooltip", &DiscoItem::TrackListToolTip_>,
+		Util::NamedMemberField_v<"albumName", &DiscoItem::Name_>,
+		Util::NamedMemberField_v<"albumYear", &DiscoItem::Year_>,
+		Util::NamedMemberField_v<"albumImage", &DiscoItem::Image_>,
+		Util::NamedMemberField_v<"albumTrackListTooltip", &DiscoItem::TrackListToolTip_>,
 	} }
 	{
 		const auto ctx = View_->rootContext ();

@@ -29,7 +29,7 @@ namespace Media
 namespace LC::Util
 {
 	template<typename>
-	class RoledItemsModel;
+	class NamedItemsModel;
 }
 
 namespace LC::LMP
@@ -47,7 +47,7 @@ namespace LC::LMP
 		BioPropProxy *BioPropProxy_;
 
 		struct DiscoItem;
-		using DiscoModel = Util::RoledItemsModel<DiscoItem>;
+		using DiscoModel = Util::NamedItemsModel<DiscoItem>;
 		DiscoModel * const DiscoModel_;
 	public:
 		BioViewManager (QQuickWidget*, QObject* = nullptr);

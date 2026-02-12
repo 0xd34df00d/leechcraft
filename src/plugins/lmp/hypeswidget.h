@@ -20,7 +20,7 @@ class QQuickWidget;
 namespace LC::Util
 {
 	template<typename T>
-	class RoledItemsModel;
+	class NamedItemsModel;
 }
 
 namespace LC::LMP
@@ -30,7 +30,7 @@ namespace LC::LMP
 		Q_DECLARE_TR_FUNCTIONS (LC::LMP::HypesWidget)
 	public:
 		struct HypedTrack;
-		using TracksModel = Util::RoledItemsModel<HypedTrack>;
+		using TracksModel = Util::NamedItemsModel<HypedTrack>;
 	private:
 		Ui::HypesWidget Ui_;
 

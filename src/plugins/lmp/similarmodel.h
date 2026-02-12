@@ -18,7 +18,7 @@ namespace Media
 namespace LC::Util
 {
 	template<typename>
-	class RoledItemsModel;
+	class NamedItemsModel;
 }
 
 namespace LC::LMP
@@ -34,6 +34,6 @@ namespace LC::LMP
 		SimilarArtistInfo (const Media::ArtistInfo&, const LocalCollection&);
 	};
 
-	using SimilarModel = Util::RoledItemsModel<SimilarArtistInfo>;
+	using SimilarModel = Util::NamedItemsModel<SimilarArtistInfo>;
 	SimilarModel* MakeSimilarModel (QObject *parent);
 }

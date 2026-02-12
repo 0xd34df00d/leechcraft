@@ -21,7 +21,7 @@ namespace Media
 namespace LC::Util
 {
 	template<typename>
-	class RoledItemsModel;
+	class NamedItemsModel;
 }
 
 namespace LC::LMP
@@ -44,7 +44,7 @@ namespace LC::LMP
 		QString CachedInfo_;
 
 	public:
-		using ArtistImagesModel_t = Util::RoledItemsModel<Media::ArtistImage>;
+		using ArtistImagesModel_t = Util::NamedItemsModel<Media::ArtistImage>;
 	private:
 		ArtistImagesModel_t * const ArtistImages_;
 	public:

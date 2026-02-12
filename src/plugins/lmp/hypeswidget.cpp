@@ -44,17 +44,17 @@ namespace LC::LMP
 	{
 		auto MakeTracksModel (QObject *parent)
 		{
-			using Util::RoledMemberField_v;
+			using Util::NamedMemberField_v;
 			return new HypesWidget::TracksModel
 			{
 				parent,
-				RoledMemberField_v<"trackName", &HypesWidget::HypedTrack::TrackName_>,
-				RoledMemberField_v<"trackURL", &HypesWidget::HypedTrack::TrackPage_>,
-				RoledMemberField_v<"artistName", &HypesWidget::HypedTrack::ArtistName_>,
-				RoledMemberField_v<"artistURL", &HypesWidget::HypedTrack::ArtistPage_>,
-				RoledMemberField_v<"thumbImageURL", &HypesWidget::HypedTrack::Image_>,
-				RoledMemberField_v<"fullURL", &HypesWidget::HypedTrack::LargeImage_>,
-				RoledMemberField_v<"change", &HypesWidget::HypedTrack::Stats_>,
+				NamedMemberField_v<"trackName", &HypesWidget::HypedTrack::TrackName_>,
+				NamedMemberField_v<"trackURL", &HypesWidget::HypedTrack::TrackPage_>,
+				NamedMemberField_v<"artistName", &HypesWidget::HypedTrack::ArtistName_>,
+				NamedMemberField_v<"artistURL", &HypesWidget::HypedTrack::ArtistPage_>,
+				NamedMemberField_v<"thumbImageURL", &HypesWidget::HypedTrack::Image_>,
+				NamedMemberField_v<"fullURL", &HypesWidget::HypedTrack::LargeImage_>,
+				NamedMemberField_v<"change", &HypesWidget::HypedTrack::Stats_>,
 			};
 		}
 	}

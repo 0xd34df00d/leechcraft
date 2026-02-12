@@ -31,7 +31,7 @@ namespace LC::LMP
 {
 	namespace
 	{
-		// TODO replace with RoledItemsModel when we get events page scraping working
+		// TODO replace with NamedItemsModel when we get events page scraping working
 		class EventsModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:

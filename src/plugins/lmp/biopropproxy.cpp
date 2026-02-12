@@ -19,11 +19,11 @@ namespace LC::LMP
 	: QObject { parent }
 	, ArtistImages_ { new ArtistImagesModel_t {
 			this,
-			Util::RoledMemberField_v<"thumbURL", &Media::ArtistImage::Thumb_>,
-			Util::RoledMemberField_v<"fullURL", &Media::ArtistImage::Full_>,
-			Util::RoledMemberField_v<"title", &Media::ArtistImage::Title_>,
-			Util::RoledMemberField_v<"author", &Media::ArtistImage::Author_>,
-			Util::RoledMemberField_v<"date", &Media::ArtistImage::Date_>,
+			Util::NamedMemberField_v<"thumbURL", &Media::ArtistImage::Thumb_>,
+			Util::NamedMemberField_v<"fullURL", &Media::ArtistImage::Full_>,
+			Util::NamedMemberField_v<"title", &Media::ArtistImage::Title_>,
+			Util::NamedMemberField_v<"author", &Media::ArtistImage::Author_>,
+			Util::NamedMemberField_v<"date", &Media::ArtistImage::Date_>,
 	} }
 	{
 	}

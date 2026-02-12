@@ -31,19 +31,19 @@ namespace LC::LMP
 
 	SimilarModel* MakeSimilarModel (QObject *parent)
 	{
-		using Util::RoledMemberField_v;
+		using Util::NamedMemberField_v;
 		return new SimilarModel
 		{
 			parent,
-			RoledMemberField_v<"artistName", &SimilarArtistInfo::Name_>,
-			RoledMemberField_v<"artistImageURL", &SimilarArtistInfo::Image_>,
-			RoledMemberField_v<"artistBigImageURL", &SimilarArtistInfo::LargeImage_>,
-			RoledMemberField_v<"artistPageURL", &SimilarArtistInfo::Page_>,
-			RoledMemberField_v<"artistTags", &SimilarArtistInfo::TagsString_>,
-			RoledMemberField_v<"shortDesc", &SimilarArtistInfo::ShortDesc_>,
-			RoledMemberField_v<"fullDesc", &SimilarArtistInfo::FullDesc_>,
-			RoledMemberField_v<"artistInCollection", &SimilarArtistInfo::IsInCollection_>,
-			RoledMemberField_v<"similarity", &SimilarArtistInfo::Similarity_>,
+			NamedMemberField_v<"artistName", &SimilarArtistInfo::Name_>,
+			NamedMemberField_v<"artistImageURL", &SimilarArtistInfo::Image_>,
+			NamedMemberField_v<"artistBigImageURL", &SimilarArtistInfo::LargeImage_>,
+			NamedMemberField_v<"artistPageURL", &SimilarArtistInfo::Page_>,
+			NamedMemberField_v<"artistTags", &SimilarArtistInfo::TagsString_>,
+			NamedMemberField_v<"shortDesc", &SimilarArtistInfo::ShortDesc_>,
+			NamedMemberField_v<"fullDesc", &SimilarArtistInfo::FullDesc_>,
+			NamedMemberField_v<"artistInCollection", &SimilarArtistInfo::IsInCollection_>,
+			NamedMemberField_v<"similarity", &SimilarArtistInfo::Similarity_>,
 		};
 	}
 }
