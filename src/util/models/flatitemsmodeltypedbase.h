@@ -86,6 +86,11 @@ namespace LC::Util
 			Items_.removeAt (idx);
 			endRemoveRows ();
 		}
+
+		void RemoveItem (QList<T>::const_iterator it)
+		{
+			RemoveItem (it - Items_.begin ());
+		}
 	protected:
 		int GetItemsCount () const override
 		{
