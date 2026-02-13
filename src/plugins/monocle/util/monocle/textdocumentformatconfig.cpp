@@ -191,7 +191,7 @@ namespace LC::Monocle
 
 	BlockFormat TextDocumentFormatConfig::GetDefaultTagBlockFormat (QStringView tagName) const
 	{
-		if (tagName == u"p"_qsv)
+		if (tagName == u"p"_qsv || tagName == u"div"_qsv)
 			return FormatP_;
 
 		if (const auto& heading = GetHeadingLevel (tagName))
