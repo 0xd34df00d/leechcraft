@@ -110,7 +110,7 @@ namespace LC::Util
 				return
 				{
 					FieldType_t<T, Ix>::Role,
-					+[] (const T& t) -> QVariant { return GetFieldAt<Ix> (t); }
+					+[] (const T& t) { return QVariant::fromValue<FieldType_t<T, Ix>> (GetFieldAt<Ix> (t)); }
 				};
 			else
 				return { -1, nullptr };
