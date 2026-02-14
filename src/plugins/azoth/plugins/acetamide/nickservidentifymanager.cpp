@@ -43,7 +43,7 @@ namespace LC::Azoth::Acetamide
 		QObject::connect (ConfigWidget_.get (),
 				&NickServIdentifyWidget::identifyRemoved,
 				Model_.get (),
-				&IdentifyModel::RemoveItem);
+				qOverload<int> (&IdentifyModel::RemoveItem));
 	}
 
 	NickServIdentifyManager::~NickServIdentifyManager () = default;
