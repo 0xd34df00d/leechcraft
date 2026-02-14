@@ -16,6 +16,8 @@ namespace LC::Util
 	class UTIL_MODELS_API FlatItemsModelBase : public QAbstractItemModel
 	{
 		const QStringList Headers_;
+
+		QHash<int, QVariant> GlobalData_;
 	public:
 		constexpr static auto DataRole = Qt::UserRole;
 
@@ -27,6 +29,8 @@ namespace LC::Util
 		QModelIndex index (int row, int col, const QModelIndex& parent = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& parent = {}) const override;
+
+		void SetGlobalData (const QVariant& data, int role);
 	protected:
 		virtual int GetItemsCount () const = 0;
 		virtual QVariant GetData (int row, int col, int role) const = 0;

@@ -26,7 +26,8 @@ namespace LC::Util
 		if (!index.isValid ())
 			return {};
 
-		return GetData (index.row (), index.column (), role);
+		const auto& var = GetData (index.row (), index.column (), role);
+		return var.isValid () ? var : GlobalData_.value (role);
 	}
 
 	QVariant FlatItemsModelBase::headerData (int section, Qt::Orientation orientation, int role) const
@@ -55,5 +56,16 @@ namespace LC::Util
 	int FlatItemsModelBase::rowCount (const QModelIndex& parent) const
 	{
 		return parent.isValid () ? 0 : GetItemsCount ();
+	}
+
+	void FlatItemsModelBase::SetGlobalData (const QVariant& data, int role)
+	{
+		if (data.isValid ())
+			GlobalData_ [role] = data;
+		else
+			GlobalData_.remove (role);
+
+		if (const auto rows = GetItemsCount ())
+			emit dataChanged (index (0, 0), index (rows - 1, Headers_.size () - 1), { role });
 	}
 }
