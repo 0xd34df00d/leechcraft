@@ -465,19 +465,15 @@ namespace BitTorrent
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
 		case JobHolderRole::ProcessState:
 		{
-			ProcessStateInfo::State state = ProcessStateInfo::State::Running;
+			auto state = ProcessStateInfo::State::Running;
 			if (status.errc)
 				state = ProcessStateInfo::State::Error;
 			else if (IsPaused (status))
 				state = ProcessStateInfo::State::Paused;
-
-			return QVariant::fromValue<ProcessStateInfo> ({
-					status.total_wanted_done,
-					status.total_wanted,
-					Handles_.at (row).Parameters_,
-					state
-				});
+			return QVariant::fromValue<ProcessStateInfo> ({ status.total_wanted_done, status.total_wanted, state });
 		}
+		case JobHolderRole::TaskParameters:
+			return QVariant::fromValue (Handles_.at (row).Parameters_);
 		}
 
 		switch (role)

@@ -403,10 +403,30 @@ namespace CSTP
 		if (index.row () >= static_cast<int> (ActiveTasks_.size ()))
 			return {};
 
+		const auto& td = TaskAt (index.row ());
+		const auto& task = td.Task_;
+
+		switch (static_cast<JobHolderRole> (role))
+		{
+		case JobHolderRole::RowKind:
+			return QVariant::fromValue (JobHolderRow::DownloadProgress);
+		case JobHolderRole::Name:
+			return task->GetURL ();
+		case JobHolderRole::ProcessState:
+		{
+			auto state = ProcessStateInfo::State::Running;
+			if (td.ErrorFlag_)
+				state = ProcessStateInfo::State::Error;
+			else if (!task->IsRunning ())
+				state = ProcessStateInfo::State::Paused;
+			return QVariant::fromValue<ProcessStateInfo> ({ task->GetDone (), task->GetTotal (), state });
+		}
+		case JobHolderRole::TaskParameters:
+			return QVariant::fromValue (td.Parameters_);
+		}
+
 		if (role == Qt::DisplayRole)
 		{
-			const auto& td = TaskAt (index.row ());
-			const auto& task = td.Task_;
 			switch (index.column ())
 			{
 			case HURL:
@@ -455,25 +475,6 @@ namespace CSTP
 		}
 		else if (role == +CustomDataRoles::Controls)
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		else if (role == +JobHolderRole::RowKind)
-			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
-		else if (role == +JobHolderRole::ProcessState)
-		{
-			const auto& task = TaskAt (index.row ());
-
-			auto state = ProcessStateInfo::State::Running;
-			if (task.ErrorFlag_)
-				state = ProcessStateInfo::State::Error;
-			else if (!task.Task_->IsRunning ())
-				state = ProcessStateInfo::State::Paused;
-
-			return QVariant::fromValue<ProcessStateInfo> ({
-					task.Task_->GetDone (),
-					task.Task_->GetTotal (),
-					task.Parameters_,
-					state
-				});
-		}
 		else
 			return QVariant ();
 	}

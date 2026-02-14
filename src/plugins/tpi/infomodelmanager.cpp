@@ -85,7 +85,7 @@ namespace TPI
 	{
 		bool IsInternal (const QModelIndex& idx)
 		{
-			const auto flags = idx.data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ().Params_;
+			const auto flags = idx.data (+JobHolderRole::TaskParameters).value<TaskParameters> ();
 			return flags & TaskParameter::Internal;
 		}
 	}

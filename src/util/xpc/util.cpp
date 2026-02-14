@@ -170,7 +170,7 @@ namespace LC::Util
 
 		const auto item = row.value (JobHolderColumn::JobProgress);
 
-		const ProcessStateInfo state { 0, total, {}, ProcessStateInfo::State::Running };
+		const ProcessStateInfo state { 0, total, ProcessStateInfo::State::Running };
 		item->setData (QVariant::fromValue (state), +JobHolderRole::ProcessState);
 	}
 }

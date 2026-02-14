@@ -141,12 +141,8 @@ namespace Azoth
 
 		const auto statusItem = items.at (JobHolderColumn::JobStatus);
 		const auto progressItem = items.at (JobHolderColumn::JobProgress);
-		progressItem->setData (QVariant::fromValue<ProcessStateInfo> ({
-					0,
-					context.Size_,
-					FromUserInitiated
-				}),
-				+JobHolderRole::ProcessState);
+		progressItem->setData (QVariant::fromValue<TaskParameters> (FromUserInitiated));
+		progressItem->setData (QVariant::fromValue<ProcessStateInfo> ({ 0, context.Size_ }), +JobHolderRole::ProcessState);
 
 		SummaryModel_->appendRow (items);
 

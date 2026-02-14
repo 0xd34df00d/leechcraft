@@ -107,16 +107,6 @@ namespace LC
 		 */
 		qlonglong Total_ = 0;
 
-		/** @brief The flags of the task as it was originally added to the
-		 * downloader, if relevant.
-		 *
-		 * This field only makes sense if the relevant process is a
-		 * download process, that is, if value of the
-		 * CustomDataRoles::RoleJobHolderRow role is
-		 * JobHolderRow::DownloadProgress.
-		 */
-		TaskParameters Params_ = {};
-
 		/** @brief Describes the state of the process.
 		 */
 		enum class State
@@ -143,21 +133,28 @@ namespace LC
 	 */
 	enum class JobHolderRole
 	{
+		/** This role is for the LC::JobHolderRow enum.
+		 *
+		 * The value at this role is a `JobHolderRow`.
+		 */
+		RowKind = MaxValue<CustomDataRoles> + 1,
+
 		/** @brief Describes the state of a process.
 		 *
-		 * This role should return a meaningful value for the
-		 * JobHolderRow::DownloadProgress and
-		 * JobHolderRow::ProcessProgress rows.
-		 *
-		 * The returned value should be a ProcessStateInfo structure.
+		 * The value at this role is a `ProcessStateInfo`
+		 * describing the state of a `JobHolderRow::DownloadProgress`
+		 * or a `JobHolderRow::ProcessProgress`.
 		 *
 		 * @sa ProcessStateInfo
 		 */
-		ProcessState = MaxValue<CustomDataRoles> + 1,
+		ProcessState,
 
-		/** This role is for the LC::JobHolderRow enum.
+		/** @brief The parameters of the original download task.
+		 *
+		 * The value at this role is a `TaskParameters`
+		 * describing the parameters of a `JobHolderRow::DownloadProgress`.
 		 */
-		RowKind,
+		TaskParameters,
 	};
 
 	constexpr int operator+ (JobHolderRole role) noexcept
@@ -166,7 +163,7 @@ namespace LC
 	}
 
 	template<>
-	inline constexpr int MaxValue<JobHolderRole> = +JobHolderRole::RowKind;
+	inline constexpr int MaxValue<JobHolderRole> = +JobHolderRole::TaskParameters;
 }
 
 class IJobHolderRepresentationHandler;
