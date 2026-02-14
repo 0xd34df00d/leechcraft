@@ -188,17 +188,6 @@ namespace LC
 		 */
 		RoleAdditionalInfo,
 
-		/** The role for the hash of the item, used to compare two
-		 * different results, possibly from two different models.
-		 * QByteArray is expected to be returned.
-		 */
-		RoleHash,
-
-		/** This should return MIME of an item if it's available,
-		 * otherwise an empty string should be returned.
-		 */
-		RoleMime,
-
 		/** This role returns the QMenu* that should be used as the
 		 * context menu.
 		 */

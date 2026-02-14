@@ -62,8 +62,6 @@ namespace HistoryHolder
 		 *
 		 * RoleTags
 		 * RoleControls
-		 * RoleHash
-		 * RoleMime
 		 */
 
 		return model;
