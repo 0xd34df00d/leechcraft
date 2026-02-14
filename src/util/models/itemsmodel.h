@@ -51,6 +51,13 @@ namespace LC::Util
 			return *this;
 		}
 
+		template<typename U = T>
+			requires requires (T t, U u) { t == u; }
+		bool operator== (const U& value) const
+		{
+			return Value_ == value;
+		}
+
 		T* operator-> ()
 		{
 			return &Value_;
