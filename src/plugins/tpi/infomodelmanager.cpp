@@ -85,7 +85,7 @@ namespace TPI
 	{
 		bool IsInternal (const QModelIndex& idx)
 		{
-			const auto flags = idx.data (JobHolderRole::ProcessState).value<ProcessStateInfo> ().Params_;
+			const auto flags = idx.data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ().Params_;
 			return flags & TaskParameter::Internal;
 		}
 	}
@@ -103,7 +103,7 @@ namespace TPI
 					row != JobHolderRow::ProcessProgress)
 				continue;
 
-			const auto& state = idx.data (JobHolderRole::ProcessState).value<ProcessStateInfo> ();
+			const auto& state = idx.data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ();
 
 			if (state.Done_ == state.Total_)
 				continue;
@@ -152,7 +152,7 @@ namespace TPI
 			if (IsInternal (idx))
 				continue;
 
-			const auto& state = idx.data (JobHolderRole::ProcessState).value<ProcessStateInfo> ();
+			const auto& state = idx.data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ();
 			auto done = state.Done_;
 			auto total = state.Total_;
 

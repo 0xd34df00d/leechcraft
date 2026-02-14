@@ -124,7 +124,7 @@ namespace NetStoreManager
 					fi.size (),
 					FromUserInitiated
 				}),
-				JobHolderRole::ProcessState);
+				+JobHolderRole::ProcessState);
 		ReprModel_->appendRow (row);
 
 		ReprItems_ [acc] [path] = row;

@@ -146,7 +146,7 @@ namespace Azoth
 					context.Size_,
 					FromUserInitiated
 				}),
-				JobHolderRole::ProcessState);
+				+JobHolderRole::ProcessState);
 
 		SummaryModel_->appendRow (items);
 

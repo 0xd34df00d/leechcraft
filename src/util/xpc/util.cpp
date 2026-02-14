@@ -153,10 +153,10 @@ namespace LC::Util
 
 	void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total)
 	{
-		auto data = item->data (JobHolderRole::ProcessState).value<ProcessStateInfo> ();
+		auto data = item->data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ();
 		data.Done_ = done;
 		data.Total_ = total;
-		item->setData (QVariant::fromValue (data), JobHolderRole::ProcessState);
+		item->setData (QVariant::fromValue (data), +JobHolderRole::ProcessState);
 	}
 
 	void InitJobHolderRow (const QList<QStandardItem*>& row, int total)
@@ -171,6 +171,6 @@ namespace LC::Util
 		const auto item = row.value (JobHolderColumn::JobProgress);
 
 		const ProcessStateInfo state { 0, total, {}, ProcessStateInfo::State::Running };
-		item->setData (QVariant::fromValue (state), JobHolderRole::ProcessState);
+		item->setData (QVariant::fromValue (state), +JobHolderRole::ProcessState);
 	}
 }

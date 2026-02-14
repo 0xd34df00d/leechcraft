@@ -141,7 +141,7 @@ namespace LC
 
 	/** @brief This enum contains roles that are used to query job states.
 	 */
-	enum JobHolderRole
+	enum class JobHolderRole
 	{
 		/** @brief Describes the state of a process.
 		 *
@@ -154,9 +154,15 @@ namespace LC
 		 * @sa ProcessStateInfo
 		 */
 		ProcessState = MaxValue<CustomDataRoles> + 1,
-
-		JobHolderRoleMax
 	};
+
+	constexpr int operator+ (JobHolderRole role) noexcept
+	{
+		return static_cast<int> (role);
+	}
+
+	template<>
+	inline constexpr int MaxValue<JobHolderRole> = +JobHolderRole::ProcessState;
 }
 
 class IJobHolderRepresentationHandler;

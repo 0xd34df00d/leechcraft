@@ -670,7 +670,7 @@ namespace BitTorrent
 		}
 		case Roles::TorrentTags:
 			return Proxy_->GetTagsManager ()->GetTags (Handles_.at (row).Tags_);
-		case JobHolderRole::ProcessState:
+		case +JobHolderRole::ProcessState:
 		{
 			ProcessStateInfo::State state = ProcessStateInfo::State::Running;
 			if (status.errc)
