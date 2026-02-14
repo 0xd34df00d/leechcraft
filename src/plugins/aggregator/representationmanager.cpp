@@ -59,10 +59,14 @@ namespace LC::Aggregator
 			})}
 	{
 		JobHolderRepresentation_->setSourceModel (&*SelectedIdProxyModel_);
-		ReprWidget_->ConstructBrowser ();
 	}
 
 	RepresentationManager::~RepresentationManager () = default;
+
+	void RepresentationManager::HandlePluginsAvailable ()
+	{
+		ReprWidget_->ConstructBrowser ();
+	}
 
 	QAbstractItemModel* RepresentationManager::GetRepresentation () const
 	{

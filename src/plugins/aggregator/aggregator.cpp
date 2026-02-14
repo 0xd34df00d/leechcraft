@@ -110,10 +110,7 @@ namespace Aggregator
 				&StorageBackendManager::channelAdded,
 				this,
 				&UpdateChannelResources);
-	}
 
-	void Aggregator::SecondInit ()
-	{
 		ReprManager_ = std::make_shared<RepresentationManager> (RepresentationManager::Deps {
 					.ShortcutManager_ = *ShortcutMgr_,
 					.AppWideActions_ = *AppWideActions_,
@@ -121,6 +118,11 @@ namespace Aggregator
 					.UpdatesManager_ = *UpdatesManager_,
 					.DBUpThread_ = *DBUpThread_,
 				});
+	}
+
+	void Aggregator::SecondInit ()
+	{
+		ReprManager_->HandlePluginsAvailable ();
 	}
 
 	void Aggregator::Release ()

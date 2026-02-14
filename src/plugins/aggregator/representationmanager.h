@@ -58,6 +58,8 @@ namespace LC::Aggregator
 		explicit RepresentationManager (const Deps&);
 		~RepresentationManager () override;
 
+		void HandlePluginsAvailable ();
+
 		QAbstractItemModel* GetRepresentation () const;
 
 		void HandleCurrentRowChanged(const QModelIndex&) override;
