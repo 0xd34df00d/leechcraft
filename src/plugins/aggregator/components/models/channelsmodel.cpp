@@ -218,6 +218,8 @@ namespace LC::Aggregator
 			return channel.Link_;
 		case ChannelRoles::ChannelShortStruct:
 			return QVariant::fromValue (channel);
+		case ChannelRoles::LastUpdate:
+			return channel.LastBuild_;
 		default:
 			return {};
 		}

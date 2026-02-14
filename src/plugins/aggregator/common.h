@@ -46,6 +46,7 @@ namespace LC::Aggregator
 		ChannelTitle,
 		ChannelLink,
 		ChannelShortStruct,
+		LastUpdate,
 
 		ChannelRoleMax,
 	};
