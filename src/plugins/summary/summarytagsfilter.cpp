@@ -38,7 +38,7 @@ namespace Summary
 		if (!model)
 			return {};
 
-		return model->data (model->index (index, 0), RoleTags).toStringList ();
+		return model->data (model->index (index, 0), +CustomDataRoles::Tags).toStringList ();
 	}
 }
 }

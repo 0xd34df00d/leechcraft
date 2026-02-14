@@ -37,7 +37,7 @@ namespace LC::Aggregator
 
 	enum ChannelRoles
 	{
-		UnreadCount = LC::RoleMAX + 1,
+		UnreadCount = MaxValue<CustomDataRoles> + 1,
 		ErrorCount,
 		ChannelID,
 		FeedID,

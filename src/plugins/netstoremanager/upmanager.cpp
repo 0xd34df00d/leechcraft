@@ -118,7 +118,7 @@ namespace NetStoreManager
 
 		auto progressItem = row.at (JobHolderColumn::JobProgress);
 		progressItem->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-				CustomDataRoles::RoleJobHolderRow);
+				+CustomDataRoles::JobHolderRow);
 		progressItem->setData (QVariant::fromValue<ProcessStateInfo> ({
 					0,
 					fi.size (),

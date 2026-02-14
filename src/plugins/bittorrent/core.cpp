@@ -447,14 +447,22 @@ namespace BitTorrent
 				libtorrent::torrent_handle::query_name |
 				libtorrent::torrent_handle::query_save_path);
 
+		switch (static_cast<CustomDataRoles> (role))
+		{
+		case CustomDataRoles::Controls:
+			return QVariant::fromValue<QToolBar*> (Toolbar_);
+		case CustomDataRoles::AdditionalInfo:
+			return QVariant::fromValue<QWidget*> (TabWidget_);
+		case CustomDataRoles::ContextMenu:
+			return QVariant::fromValue<QMenu*> (Menu_);
+		case CustomDataRoles::Tags:
+			return Handles_.at (row).Tags_;
+		case CustomDataRoles::JobHolderRow:
+			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
+		}
+
 		switch (role)
 		{
-		case RoleControls:
-			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		case RoleAdditionalInfo:
-			return QVariant::fromValue<QWidget*> (TabWidget_);
-		case RoleContextMenu:
-			return QVariant::fromValue<QMenu*> (Menu_);
 		case Roles::HandleIndex:
 			return row;
 		case Roles::TorrentHandle:
@@ -469,10 +477,6 @@ namespace BitTorrent
 			return QVariant::fromValue (GetTorrentStats (h, *StatusKeeper_));
 		case Roles::TorrentProgress:
 			return status.progress;
-		}
-
-		switch (role)
-		{
 		case Roles::IsSeeding:
 			if (IsPaused (status))
 				return false;
@@ -664,12 +668,8 @@ namespace BitTorrent
 			result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
 			return result;
 		}
-		case RoleTags:
-			return Handles_.at (row).Tags_;
 		case Roles::TorrentTags:
 			return Proxy_->GetTagsManager ()->GetTags (Handles_.at (row).Tags_);
-		case CustomDataRoles::RoleJobHolderRow:
-			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
 		case JobHolderRole::ProcessState:
 		{
 			ProcessStateInfo::State state = ProcessStateInfo::State::Running;

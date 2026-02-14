@@ -75,7 +75,7 @@ namespace Poshuku
 				return QVariant ();
 		case Qt::ToolTipRole:
 			return CheckResults_ [Items_ [index.row ()].URL_];
-		case RoleTags:
+		case +CustomDataRoles::Tags:
 			return Items_ [index.row ()].Tags_;
 		default:
 			return {};

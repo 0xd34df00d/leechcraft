@@ -44,7 +44,7 @@ namespace LC::BitTorrent
 
 		auto tm = GetProxyHolder ()->GetTagsManager ();
 		const auto& reqTags = tm->Split (GetFilterString ());
-		const auto& torrentTags = idx.data (RoleTags).toStringList ();
+		const auto& torrentTags = idx.data (+CustomDataRoles::Tags).toStringList ();
 
 		return std::ranges::any_of (torrentTags,
 				[&] (const auto& tagId) { return reqTags.contains (tm->GetTag (tagId)); });

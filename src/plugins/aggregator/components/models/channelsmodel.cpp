@@ -198,7 +198,7 @@ namespace LC::Aggregator
 			return {};
 		case Qt::ToolTipRole:
 			return GetTooltip (TagsManager_, *FeedsErrorManager_, channel);
-		case RoleTags:
+		case +CustomDataRoles::Tags:
 			return channel.Tags_;
 		case ChannelRoles::UnreadCount:
 			return channel.Unread_;

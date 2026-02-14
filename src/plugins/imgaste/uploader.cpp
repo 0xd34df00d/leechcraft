@@ -60,7 +60,7 @@ namespace LC::Imgaste
 				{
 					item->setEditable (false);
 					item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-							CustomDataRoles::RoleJobHolderRow);
+							+CustomDataRoles::JobHolderRow);
 				}
 				ReprModel_.appendRow (ReprRow_);
 			}

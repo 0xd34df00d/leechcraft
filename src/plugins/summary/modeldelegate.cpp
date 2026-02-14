@@ -52,7 +52,7 @@ namespace Summary
 	{
 		if (index.column () == JobHolderColumn::JobProgress)
 		{
-			auto rowRole = index.data (CustomDataRoles::RoleJobHolderRow).value<JobHolderRow> ();
+			auto rowRole = index.data (+CustomDataRoles::JobHolderRow).value<JobHolderRow> ();
 			if ((rowRole == JobHolderRow::DownloadProgress ||
 						rowRole == JobHolderRow::ProcessProgress) &&
 					DrawProgress (painter, option, index))

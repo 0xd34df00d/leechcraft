@@ -21,19 +21,20 @@ namespace LC::Aggregator
 
 	QVariant JobHolderRepresentationModel::data (const QModelIndex& index, int role) const
 	{
-		switch (role)
+		using enum CustomDataRoles;
+		switch (static_cast<CustomDataRoles> (role))
 		{
-		case RoleControls:
+		case Controls:
 			return QVariant::fromValue<QToolBar*> (&Deps_.Toolbar_);
-		case RoleAdditionalInfo:
+		case AdditionalInfo:
 			return QVariant::fromValue<QWidget*> (&Deps_.DetailsWidget_);
-		case RoleContextMenu:
+		case ContextMenu:
 			return QVariant::fromValue<QMenu*> (&Deps_.RowMenu_);
 		default:
 			return QSortFilterProxyModel::data (index, role);
 		}
 	}
-	
+
 	bool JobHolderRepresentationModel::filterAcceptsRow (int row, const QModelIndex&) const
 	{
 		// The row won't show up anyway in the job list if it was empty, so

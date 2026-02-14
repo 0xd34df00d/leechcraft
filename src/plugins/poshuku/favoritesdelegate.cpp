@@ -49,7 +49,7 @@ namespace Poshuku
 		}
 
 		auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		auto tags = Core::Instance ().GetFavoritesModel ()->data (index, RoleTags).toStringList ();
+		auto tags = Core::Instance ().GetFavoritesModel ()->data (index, +CustomDataRoles::Tags).toStringList ();
 		static_cast<TagsLineEdit*> (editor)->setText (itm->Join (itm->GetTags (tags)));
 	}
 

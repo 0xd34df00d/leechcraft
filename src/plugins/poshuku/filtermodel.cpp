@@ -20,7 +20,7 @@ namespace Poshuku
 {
 	QStringList FilterModel::GetTagsForIndex (int row) const
 	{
-		const auto& ids = sourceModel ()->data (sourceModel ()->index (row, 0), RoleTags).toStringList ();
+		const auto& ids = sourceModel ()->data (sourceModel ()->index (row, 0), +CustomDataRoles::Tags).toStringList ();
 		return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (ids);
 	}
 }

@@ -59,7 +59,7 @@ namespace HistoryHolder
 
 	QStringList FindProxy::GetTagsForIndex (int row) const
 	{
-		return sourceModel ()->index (row, 0).data (RoleTags).toStringList ();
+		return sourceModel ()->index (row, 0).data (+CustomDataRoles::Tags).toStringList ();
 	}
 }
 }

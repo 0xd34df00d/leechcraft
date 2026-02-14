@@ -38,7 +38,7 @@ namespace LC::LMP::Graffiti
 			};
 			auto item = row.at (JobHolderColumn::JobProgress);
 			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-					CustomDataRoles::RoleJobHolderRow);
+					+CustomDataRoles::JobHolderRow);
 
 			TagsFetchObj2Row_ [obj] = row;
 			Model_->appendRow (row);
@@ -69,7 +69,7 @@ namespace LC::LMP::Graffiti
 
 		auto item = row.at (JobHolderColumn::JobProgress);
 		item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-				CustomDataRoles::RoleJobHolderRow);
+				+CustomDataRoles::JobHolderRow);
 
 		Splitter2Row_ [splitter] = row;
 		Model_->appendRow (row);

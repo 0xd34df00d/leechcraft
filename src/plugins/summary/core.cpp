@@ -87,7 +87,7 @@ namespace Summary
 		if (!index.isValid ())
 			return 0;
 
-		const QVariant& data = index.data (RoleControls);
+		const QVariant& data = index.data (+CustomDataRoles::Controls);
 		return data.value<QToolBar*> ();
 	}
 
@@ -96,7 +96,7 @@ namespace Summary
 		if (!index.isValid ())
 			return 0;
 
-		const QVariant& data = index.data (RoleAdditionalInfo);
+		const QVariant& data = index.data (+CustomDataRoles::AdditionalInfo);
 		return data.value<QWidget*> ();
 	}
 
@@ -121,7 +121,7 @@ namespace Summary
 		const auto idxModel = *modIter;
 
 		const auto& ids = idxModel->data (idxModel->
-				index (index - starting, 0), RoleTags).toStringList ();
+				index (index - starting, 0), +CustomDataRoles::Tags).toStringList ();
 		const auto tm = Proxy_->GetTagsManager ();
 		return Util::Map (ids, [tm] (const QString& id) { return tm->GetTag (id); });
 	}

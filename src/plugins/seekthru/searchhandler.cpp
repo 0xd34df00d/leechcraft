@@ -87,7 +87,7 @@ namespace LC::SeekThru
 			default:
 				return QString ("");
 			}
-		case LC::RoleAdditionalInfo:
+		case +CustomDataRoles::AdditionalInfo:
 			if (Results_.at (r).Type_ == Result::TypeHTML)
 			{
 				Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ().property ("NavBarVisible").toBool ());
@@ -96,7 +96,7 @@ namespace LC::SeekThru
 			}
 			else
 				return 0;
-		case LC::RoleControls:
+		case +CustomDataRoles::Controls:
 			if (Results_.at (r).Type_ != Result::TypeHTML)
 			{
 				Action_->setData (r);

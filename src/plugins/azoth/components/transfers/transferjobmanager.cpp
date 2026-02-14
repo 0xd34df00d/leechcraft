@@ -134,7 +134,7 @@ namespace Azoth
 		};
 		for (const auto item : items)
 		{
-			item->setData (QVariant::fromValue<QToolBar*> (ReprBar_), RoleControls);
+			item->setData (QVariant::fromValue<QToolBar*> (ReprBar_), +CustomDataRoles::Controls);
 			item->setData (QVariant::fromValue<ITransferJob*> (job), MRJobObject);
 			item->setEditable (false);
 		}

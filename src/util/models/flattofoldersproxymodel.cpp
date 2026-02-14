@@ -88,7 +88,7 @@ namespace LC::Util
 				const auto& ut = TM_->GetTag (fti->Tag_);
 				return ut.isEmpty () ? tr ("<unknown tag>") : ut;
 			}
-			case RoleTags:
+			case +CustomDataRoles::Tags:
 				return fti->Tag_;
 			default:
 				return {};
@@ -276,7 +276,7 @@ namespace LC::Util
 
 	QList<QModelIndex> FlatToFoldersProxyModel::MapFromSource (const QModelIndex& source) const
 	{
-		auto tags = source.data (RoleTags).toStringList ();
+		auto tags = source.data (+CustomDataRoles::Tags).toStringList ();
 		if (tags.isEmpty ())
 			tags << QString ();
 
@@ -376,7 +376,7 @@ namespace LC::Util
 	{
 		const auto& idx = SourceModel_->index (i, 0);
 
-		auto tags = idx.data (RoleTags).toStringList ();
+		auto tags = idx.data (+CustomDataRoles::Tags).toStringList ();
 
 		if (tags.isEmpty ())
 			tags << QString ();
@@ -392,7 +392,7 @@ namespace LC::Util
 		QAbstractItemModel *model = SourceModel_;
 		QModelIndex idx = model->index (i, 0);
 
-		QStringList tags = idx.data (RoleTags).toStringList ();
+		QStringList tags = idx.data (+CustomDataRoles::Tags).toStringList ();
 
 		if (tags.isEmpty ())
 			tags << QString ();
@@ -451,7 +451,7 @@ namespace LC::Util
 
 	void FlatToFoldersProxyModel::HandleChanged (const QModelIndex& idx)
 	{
-		auto newTags = Util::AsSet (idx.data (RoleTags).toStringList ());
+		auto newTags = Util::AsSet (idx.data (+CustomDataRoles::Tags).toStringList ());
 		if (newTags.isEmpty ())
 			newTags << QString {};
 

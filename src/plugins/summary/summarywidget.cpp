@@ -443,7 +443,7 @@ namespace Summary
 	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
 	{
 		QModelIndex current = Ui_.PluginsTasksTree_->currentIndex ();
-		QMenu *sourceMenu = current.data (RoleContextMenu).value<QMenu*> ();
+		QMenu *sourceMenu = current.data (+CustomDataRoles::ContextMenu).value<QMenu*> ();
 		if (!sourceMenu)
 			return;
 

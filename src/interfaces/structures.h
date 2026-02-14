@@ -12,6 +12,7 @@
 #include <QMetaType>
 #include <QVariant>
 #include <QString>
+#include "maxvalue.h"
 
 class QMenu;
 class QIODevice;
@@ -170,35 +171,41 @@ namespace LC
 	 *
 	 * @sa IJobHolder, IFindProxy
 	 */
-	enum CustomDataRoles
+	enum class CustomDataRoles
 	{
 		/** The role for the string list with tags. So, QStringList is
 		 * expected to be returned.
 		 */
-		RoleTags = Qt::UserRole + 100,
+		Tags = Qt::UserRole + 100,
 
 		/** The role for the additional controls for a given item.
 		 * QToolBar* is expected to be returned.
 		 */
-		RoleControls,
+		Controls,
 
 		/** The role for the widget appearing on the right part of the
 		 * screen when the user selects an item. QWidget* is expected to
 		 * be returned.
 		 */
-		RoleAdditionalInfo,
+		AdditionalInfo,
 
 		/** This role returns the QMenu* that should be used as the
 		 * context menu.
 		 */
-		RoleContextMenu,
+		ContextMenu,
 
 		/** This role is for the LC::JobHolderRow enum.
 		 */
-		RoleJobHolderRow,
-
-		RoleMAX
+		JobHolderRow,
 	};
+
+	constexpr int operator+ (CustomDataRoles role) noexcept
+	{
+		return static_cast<int> (role);
+	}
+
+	template<>
+	inline constexpr int MaxValue<CustomDataRoles> = +CustomDataRoles::JobHolderRow;
 
 	enum class Priority
 	{

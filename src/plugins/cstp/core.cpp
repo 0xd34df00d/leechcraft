@@ -453,9 +453,9 @@ namespace CSTP
 				return QVariant ();
 			}
 		}
-		else if (role == LC::RoleControls)
+		else if (role == +CustomDataRoles::Controls)
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		else if (role == CustomDataRoles::RoleJobHolderRow)
+		else if (role == +CustomDataRoles::JobHolderRow)
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
 		else if (role == JobHolderRole::ProcessState)
 		{
