@@ -165,7 +165,7 @@ namespace LC::Util
 		{
 			item->setEditable (false);
 			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-					+CustomDataRoles::JobHolderRow);
+					+CustomDataRoles::RowKind);
 		}
 
 		const auto item = row.value (JobHolderColumn::JobProgress);

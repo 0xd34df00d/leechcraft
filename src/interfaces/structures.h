@@ -196,7 +196,7 @@ namespace LC
 
 		/** This role is for the LC::JobHolderRow enum.
 		 */
-		JobHolderRow,
+		RowKind,
 	};
 
 	constexpr int operator+ (CustomDataRoles role) noexcept
@@ -205,7 +205,7 @@ namespace LC
 	}
 
 	template<>
-	inline constexpr int MaxValue<CustomDataRoles> = +CustomDataRoles::JobHolderRow;
+	inline constexpr int MaxValue<CustomDataRoles> = +CustomDataRoles::RowKind;
 
 	enum class Priority
 	{

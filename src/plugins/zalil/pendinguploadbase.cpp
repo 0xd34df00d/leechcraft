@@ -48,7 +48,7 @@ namespace Zalil
 		{
 			item->setEditable (false);
 			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-					+CustomDataRoles::JobHolderRow);
+					+CustomDataRoles::RowKind);
 		}
 	}
 

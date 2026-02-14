@@ -98,7 +98,7 @@ namespace TPI
 			if (IsInternal (idx))
 				continue;
 
-			const auto row = idx.data (+CustomDataRoles::JobHolderRow).value<JobHolderRow> ();
+			const auto row = idx.data (+CustomDataRoles::RowKind).value<JobHolderRow> ();
 			if (row != JobHolderRow::DownloadProgress &&
 					row != JobHolderRow::ProcessProgress)
 				continue;

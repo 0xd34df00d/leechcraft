@@ -457,7 +457,7 @@ namespace BitTorrent
 			return QVariant::fromValue<QMenu*> (Menu_);
 		case CustomDataRoles::Tags:
 			return Handles_.at (row).Tags_;
-		case CustomDataRoles::JobHolderRow:
+		case CustomDataRoles::RowKind:
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
 		}
 
