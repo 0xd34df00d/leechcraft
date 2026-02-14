@@ -309,7 +309,7 @@ namespace Azoth
 		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
-		emit jobNoLongerOffered (offer);
+		emit jobDeoffered (offer);
 
 		if (const auto entry = GetContact (offer.EntryId_))
 		{

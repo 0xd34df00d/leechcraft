@@ -88,7 +88,7 @@ namespace Azoth
 	private slots:
 		void handleAbortAction ();
 	signals:
-		void jobNoLongerOffered (const IncomingOffer&);
+		void jobDeoffered (const IncomingOffer&);
 	};
 }
 }

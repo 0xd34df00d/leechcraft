@@ -72,7 +72,7 @@ namespace LC::Azoth
 				[&transfers, offer] { transfers.DeclineOffer (offer); });
 
 		connect (&transfers,
-				&TransferJobManager::jobNoLongerOffered,
+				&TransferJobManager::jobDeoffered,
 				this,
 				[this, offer] (const IncomingOffer& deoffered)
 				{
