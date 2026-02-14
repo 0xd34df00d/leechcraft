@@ -12,6 +12,7 @@
 #include <QHash>
 #include <QModelIndex>
 #include "interfaces/azoth/itransfermanager.h"
+#include "types.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -63,32 +64,19 @@ namespace Azoth
 			QString Comment_;
 		};
 		bool SendFile (const OutgoingFileOffer&);
-
-		struct JobContext
-		{
-			struct In { QString SavePath_; };
-			struct Out {};
-			std::variant<In, Out> Dir_;
-
-			QString OrigFilename_;
-			qint64 Size_;
-
-			QString EntryName_;
-			QString EntryId_;
-		};
 	private:
-		void HandleJob (ITransferJob*, const JobContext&);
+		void HandleJob (ITransferJob*, const Transfers::JobContext&);
 
-		void Deoffer (const IncomingOffer&);
-		void NotifyDeoffer (const IncomingOffer&);
+		void Deoffer (const IncomingOffer&, Transfers::DeofferReason);
+		void NotifyDeoffer (const IncomingOffer&, Transfers::DeofferReason);
 
-		void HandleIncomingFinished (const JobContext&, const JobContext::In&);
+		void HandleIncomingFinished (const Transfers::JobContext&, const Transfers::JobContext::In&);
 		void HandleFileOffered (const IncomingOffer&);
-		void HandleStateChanged (const TransferState&, const JobContext&, QStandardItem*);
+		void HandleStateChanged (const TransferState&, const Transfers::JobContext&, QStandardItem*);
 	private slots:
 		void handleAbortAction ();
 	signals:
-		void jobDeoffered (const IncomingOffer&);
+		void jobDeoffered (const IncomingOffer&, Transfers::DeofferReason);
 	};
 }
 }

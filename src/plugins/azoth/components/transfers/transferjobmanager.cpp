@@ -39,6 +39,9 @@ namespace LC
 {
 namespace Azoth
 {
+	using Transfers::JobContext;
+	using Transfers::DeofferReason;
+
 	TransferJobManager::TransferJobManager (AvatarsManager *am, QObject *parent)
 	: QObject { parent }
 	, AvatarsMgr_ { am }
@@ -73,7 +76,7 @@ namespace Azoth
 						const auto it = std::ranges::partition (entryIncomingOffers,
 								[mgr] (const IncomingOffer& offer) { return offer.Manager_ != mgr; });
 						for (const auto& offer : it)
-							NotifyDeoffer (offer);
+							NotifyDeoffer (offer, DeofferReason::Expired);
 						entryIncomingOffers.erase (it.begin (), it.end ());
 					}
 				});
@@ -102,18 +105,18 @@ namespace Azoth
 			return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (id));
 		}
 
-		QString GetRowLabelTemplate (const TransferJobManager::JobContext& context)
+		QString GetRowLabelTemplate (const JobContext& context)
 		{
 			return Util::Visit (context.Dir_,
-					[] (TransferJobManager::JobContext::In) { return TransferJobManager::tr ("Receiving %1 from %2"); },
-					[] (TransferJobManager::JobContext::Out) { return TransferJobManager::tr ("Sending %1 to %2"); });
+					[] (JobContext::In) { return TransferJobManager::tr ("Receiving %1 from %2"); },
+					[] (JobContext::Out) { return TransferJobManager::tr ("Sending %1 to %2"); });
 		}
 
-		QString GetFilename (const TransferJobManager::JobContext& context)
+		QString GetFilename (const JobContext& context)
 		{
 			return Util::Visit (context.Dir_,
-					[] (TransferJobManager::JobContext::In in) { return QFileInfo { in.SavePath_ }.fileName (); },
-					[&] (TransferJobManager::JobContext::Out) { return context.OrigFilename_; });
+					[] (JobContext::In in) { return QFileInfo { in.SavePath_ }.fileName (); },
+					[&] (JobContext::Out) { return context.OrigFilename_; });
 		}
 	}
 
@@ -252,13 +255,13 @@ namespace Azoth
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
-		Deoffer (offer);
+		Deoffer (offer, DeofferReason::Accepted);
 	}
 
 	void TransferJobManager::DeclineOffer (const IncomingOffer& offer)
 	{
 		offer.Manager_->Decline (offer);
-		Deoffer (offer);
+		Deoffer (offer, DeofferReason::Declined);
 	}
 
 	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
@@ -295,13 +298,13 @@ namespace Azoth
 		return true;
 	}
 
-	void TransferJobManager::Deoffer (const IncomingOffer& offer)
+	void TransferJobManager::Deoffer (const IncomingOffer& offer, DeofferReason reason)
 	{
 		if (Entry2Incoming_ [offer.EntryId_].removeOne (offer))
-			NotifyDeoffer (offer);
+			NotifyDeoffer (offer, reason);
 	}
 
-	void TransferJobManager::NotifyDeoffer (const IncomingOffer& offer)
+	void TransferJobManager::NotifyDeoffer (const IncomingOffer& offer, DeofferReason reason)
 	{
 		auto e = Util::MakeNotification ("Azoth", {}, Priority::Info);
 		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
@@ -309,7 +312,7 @@ namespace Azoth
 		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
-		emit jobDeoffered (offer);
+		emit jobDeoffered (offer, reason);
 
 		if (const auto entry = GetContact (offer.EntryId_))
 		{
@@ -405,11 +408,11 @@ namespace Azoth
 			return {};
 		}
 
-		QString GetErrorMessageTemplate (const TransferJobManager::JobContext& context)
+		QString GetErrorMessageTemplate (const JobContext& context)
 		{
 			return Util::Visit (context.Dir_,
-					[] (TransferJobManager::JobContext::In) { return TransferJobManager::tr ("Unable to receive file from %1."); },
-					[] (TransferJobManager::JobContext::Out) { return TransferJobManager::tr ("Unable to send file to %1."); });
+					[] (JobContext::In) { return TransferJobManager::tr ("Unable to receive file from %1."); },
+					[] (JobContext::Out) { return TransferJobManager::tr ("Unable to send file to %1."); });
 		}
 
 		QString GetNotificationMessageTemplate (Transfers::Phase phase)
@@ -447,7 +450,8 @@ namespace Azoth
 		}
 	}
 
-	void TransferJobManager::HandleStateChanged (const TransferState& state, const JobContext& context, QStandardItem *status)
+	void TransferJobManager::HandleStateChanged (const TransferState& state,
+			const JobContext& context, QStandardItem *status)
 	{
 		Util::Visit (state,
 				[&] (Transfers::Phase phase)
