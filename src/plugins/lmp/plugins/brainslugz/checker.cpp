@@ -52,6 +52,7 @@ namespace LC::LMP::BrainSlugz
 	void Checker::HandleReady ()
 	{
 		emit finished ();
+		deleteLater ();
 	}
 
 	namespace
