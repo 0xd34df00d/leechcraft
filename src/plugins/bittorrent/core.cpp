@@ -457,8 +457,27 @@ namespace BitTorrent
 			return QVariant::fromValue<QMenu*> (Menu_);
 		case CustomDataRoles::Tags:
 			return Handles_.at (row).Tags_;
-		case CustomDataRoles::RowKind:
+		}
+
+		switch (static_cast<JobHolderRole> (role))
+		{
+		case JobHolderRole::RowKind:
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
+		case JobHolderRole::ProcessState:
+		{
+			ProcessStateInfo::State state = ProcessStateInfo::State::Running;
+			if (status.errc)
+				state = ProcessStateInfo::State::Error;
+			else if (IsPaused (status))
+				state = ProcessStateInfo::State::Paused;
+
+			return QVariant::fromValue<ProcessStateInfo> ({
+					status.total_wanted_done,
+					status.total_wanted,
+					Handles_.at (row).Parameters_,
+					state
+				});
+		}
 		}
 
 		switch (role)
@@ -670,21 +689,6 @@ namespace BitTorrent
 		}
 		case Roles::TorrentTags:
 			return Proxy_->GetTagsManager ()->GetTags (Handles_.at (row).Tags_);
-		case +JobHolderRole::ProcessState:
-		{
-			ProcessStateInfo::State state = ProcessStateInfo::State::Running;
-			if (status.errc)
-				state = ProcessStateInfo::State::Error;
-			else if (IsPaused (status))
-				state = ProcessStateInfo::State::Paused;
-
-			return QVariant::fromValue<ProcessStateInfo> ({
-					status.total_wanted_done,
-					status.total_wanted,
-					Handles_.at (row).Parameters_,
-					state
-				});
-		}
 		default:
 			return QVariant ();
 		}

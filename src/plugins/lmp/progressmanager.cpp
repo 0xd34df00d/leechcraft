@@ -90,7 +90,7 @@ namespace LC::LMP
 	{
 		const QList row { new QStandardItem { item.Name_ }, new QStandardItem {}, new QStandardItem {} };
 		const auto progress = row.at (JobHolderColumn::JobProgress);
-		progress->setData (QVariant::fromValue (item.Type_), +CustomDataRoles::RowKind);
+		progress->setData (QVariant::fromValue (item.Type_), +JobHolderRole::RowKind);
 		Model_->appendRow (row);
 
 		return Handle { row, item.StatusPattern_, item.Total_ };

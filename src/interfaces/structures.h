@@ -193,10 +193,6 @@ namespace LC
 		 * context menu.
 		 */
 		ContextMenu,
-
-		/** This role is for the LC::JobHolderRow enum.
-		 */
-		RowKind,
 	};
 
 	constexpr int operator+ (CustomDataRoles role) noexcept
@@ -205,7 +201,7 @@ namespace LC
 	}
 
 	template<>
-	inline constexpr int MaxValue<CustomDataRoles> = +CustomDataRoles::RowKind;
+	inline constexpr int MaxValue<CustomDataRoles> = +CustomDataRoles::ContextMenu;
 
 	enum class Priority
 	{

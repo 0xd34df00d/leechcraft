@@ -154,6 +154,10 @@ namespace LC
 		 * @sa ProcessStateInfo
 		 */
 		ProcessState = MaxValue<CustomDataRoles> + 1,
+
+		/** This role is for the LC::JobHolderRow enum.
+		 */
+		RowKind,
 	};
 
 	constexpr int operator+ (JobHolderRole role) noexcept
@@ -162,7 +166,7 @@ namespace LC
 	}
 
 	template<>
-	inline constexpr int MaxValue<JobHolderRole> = +JobHolderRole::ProcessState;
+	inline constexpr int MaxValue<JobHolderRole> = +JobHolderRole::RowKind;
 }
 
 class IJobHolderRepresentationHandler;
