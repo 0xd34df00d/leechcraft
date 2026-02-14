@@ -147,6 +147,24 @@ namespace LC::Util
 			emit this->dataChanged (this->index (idx, 0), this->index (idx, 0),
 					{ std::decay_t<decltype (T {}.*F)>::Role });
 		}
+
+		template<auto... Fs, typename... Vs>
+		void SetFields (int idx, Vs&&... values)
+		{
+			QList<int> changedRoles;
+			changedRoles.reserve (sizeof... (values));
+			(([&, this]
+			{
+				if (this->Items_ [idx].*Fs != std::forward<Vs> (values))
+				{
+					this->Items_ [idx].*Fs = std::forward<Vs> (values);
+					changedRoles << std::decay_t<decltype (T {}.*Fs)>::Role;
+				}
+			} ()), ...);
+
+			if (!changedRoles.isEmpty ())
+				emit this->dataChanged (this->index (idx, 0), this->index (idx, 0), changedRoles);
+		}
 	protected:
 		QVariant GetData (int row, int, int role) const override
 		{
