@@ -309,10 +309,7 @@ namespace LC::Summary
 
 	QByteArray SummaryWidget::GetTabRecoverData () const
 	{
-		QByteArray result;
-		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (1);
-		return result;
+		return {};
 	}
 
 	QString SummaryWidget::GetTabRecoverName () const
@@ -323,15 +320,6 @@ namespace LC::Summary
 	QIcon SummaryWidget::GetTabRecoverIcon () const
 	{
 		return GetTabClassInfo ().Icon_;
-	}
-
-	void SummaryWidget::RestoreState (const QByteArray& data)
-	{
-		QDataStream in (data);
-		quint8 version = 0;
-		in >> version;
-		if (version != 1)
-			qWarning () << "unknown version" << version;
 	}
 
 	void SummaryWidget::handleActionTriggered (QAction *proxyAction)

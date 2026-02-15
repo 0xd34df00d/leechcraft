@@ -78,7 +78,6 @@ namespace LC::Summary
 		Current_ = new SummaryWidget { *this };
 		for (const auto& [name, value] : info.DynProperties_)
 			Current_->setProperty (name, value);
-		Current_->RestoreState (info.Data_);
 
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Summary"), Current_);
 	}

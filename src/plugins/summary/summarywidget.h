@@ -61,8 +61,6 @@ namespace LC::Summary
 		QByteArray GetTabRecoverData () const override;
 		QString GetTabRecoverName () const override;
 		QIcon GetTabRecoverIcon () const override;
-
-		void RestoreState (const QByteArray&);
 	private:
 		QModelIndex MapToSourceRecursively (const QModelIndex&) const;
 		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;
