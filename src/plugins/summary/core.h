@@ -32,9 +32,6 @@ namespace Summary
 
 		ICoreProxy_ptr Proxy_;
 
-		/** Default merge model for the Downloads category with
-		 * all the downloaders and such stuff.
-		 */
 		std::shared_ptr<Util::MergeModel> MergeModel_;
 		QPointer<SummaryWidget> Current_;
 
@@ -53,16 +50,6 @@ namespace Summary
 			* For example, this is used in the Summary.
 			*/
 		SummaryTagsFilter* GetTasksModel () const;
-
-		/** Returns list of tags for a given row using given model. It's
-			* assumed that the passed model is actually a MergeModel.
-			*
-			* @param[in] row The row in the merge model for which the tags
-			* should be retrieved.
-			* @param[in] model The MergeModel which contains the row.
-			* @return Tags for the row.
-			*/
-		QStringList GetTagsForIndex (int row, QAbstractItemModel *model) const;
 
 		/** Maps totally unmapped index to the plugin's source model
 			* through merge model and filter model. If the index doesn't

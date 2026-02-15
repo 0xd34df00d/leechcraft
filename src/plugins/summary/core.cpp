@@ -81,25 +81,6 @@ namespace Summary
 		return filter;
 	}
 
-	QStringList Core::GetTagsForIndex (int index, QAbstractItemModel *model) const
-	{
-		int starting = 0;
-		const auto merger = dynamic_cast<Util::MergeModel*> (model);
-		if (!merger)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not get model" << model;
-			return {};
-		}
-		const auto modIter = merger->GetModelForRow (index, &starting);
-		const auto idxModel = *modIter;
-
-		const auto& ids = idxModel->data (idxModel->
-				index (index - starting, 0), +CustomDataRoles::Tags).toStringList ();
-		const auto tm = Proxy_->GetTagsManager ();
-		return Util::Map (ids, [tm] (const QString& id) { return tm->GetTag (id); });
-	}
-
 	QModelIndex Core::MapToSourceRecursively (QModelIndex index) const
 	{
 		if (!index.isValid ())
