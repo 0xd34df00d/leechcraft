@@ -1174,12 +1174,12 @@ namespace LC
 				continue;
 			}
 
-			QString name = info->GetName ();
-			QString pinfo = info->GetInfo ();
+			info->SetProxy (std::make_shared<CoreProxy> (loader));
+			info->SetPluginInstance (loader->Instance ());
 
 			settings.beginGroup (loader->GetFileName ());
-			settings.setValue ("Name", name);
-			settings.setValue ("Info", pinfo);
+			settings.setValue ("Name", info->GetName ());
+			settings.setValue ("Info", info->GetInfo ());
 			settings.endGroup ();
 		}
 
@@ -1193,11 +1193,6 @@ namespace LC
 			auto inst = loader->Instance ();
 			Plugins_ << inst;
 			Obj2Loader_ [inst] = loader;
-
-			const auto ii = qobject_cast<IInfo*> (inst);
-			auto proxy = std::make_shared<CoreProxy> (loader);
-			ii->SetProxy (proxy);
-			ii->SetPluginInstance (inst);
 
 			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (inst);
 			if (ipa)
