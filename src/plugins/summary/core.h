@@ -47,34 +47,6 @@ namespace Summary
 
 		void SecondInit ();
 
-		/** Returns controls for the model with a given index. The
-			* return value can't be NULL.
-			*
-			* The passed index shouldn't be mapped to source from filter
-			* model, Core will do it itself.
-			*
-			* @param[in] index Unmapped index for which the widget should
-			* be returned.
-			* @return Toolbar with controls.
-			*
-			* @sa GetAdditionalInfo
-			*/
-		QToolBar* GetControls (const QModelIndex& index) const;
-
-		/** Returns additional info for the model with a given index, or
-			* NULL if the model doesn't provide it.
-			*
-			* The passed index shouldn't be mapped to source from filter
-			* model, Core will do it itself.
-			*
-			* @param[in] index Unmapped index for which the widget should
-			* be returned.
-			* @return Widget with additional info/controls.
-			*
-			* @sa GetControls
-			*/
-		QWidget* GetAdditionalInfo (const QModelIndex& index) const;
-
 		/** Creates a new model for the given request and returns a
 			* pointer to it. Ownership is transferred to the caller.
 			*

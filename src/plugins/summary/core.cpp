@@ -74,16 +74,6 @@ namespace Summary
 			MergeModel_->AddModel (plugin->GetRepresentation ());
 	}
 
-	QToolBar* Core::GetControls (const QModelIndex& index) const
-	{
-		return index.data (+CustomDataRoles::Controls).value<QToolBar*> ();
-	}
-
-	QWidget* Core::GetAdditionalInfo (const QModelIndex& index) const
-	{
-		return index.data (+CustomDataRoles::AdditionalInfo).value<QWidget*> ();
-	}
-
 	SummaryTagsFilter* Core::GetTasksModel () const
 	{
 		const auto filter = new SummaryTagsFilter ();
