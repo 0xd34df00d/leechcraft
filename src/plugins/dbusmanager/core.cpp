@@ -21,7 +21,6 @@
 #include <QProcess>
 #endif
 #include "generaladaptor.h"
-#include "tasksadaptor.h"
 #include "webfilestorageadaptor.h"
 
 namespace LC
@@ -65,12 +64,8 @@ namespace DBusManager
 		General_.reset (new General);
 		new GeneralAdaptor (General_.get ());
 
-		Tasks_.reset (new Tasks);
-		new TasksAdaptor (Tasks_.get ());
-
 		QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
 		QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
-		QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
 
 		for (const auto root : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ())
 		{

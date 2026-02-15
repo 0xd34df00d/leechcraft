@@ -9,8 +9,6 @@ LC_DEFINE_PLUGIN (
 		iinfoadaptor.cpp
 		general.cpp
 		generaladaptor.cpp
-		tasks.cpp
-		tasksadaptor.cpp
 		webfilestorageadaptor.cpp
 	QT_COMPONENTS DBus Gui
 	INSTALL_SHARE

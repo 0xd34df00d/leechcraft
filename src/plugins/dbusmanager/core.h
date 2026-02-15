@@ -14,7 +14,6 @@
 #include <QStringList>
 #include <interfaces/core/icoreproxy.h>
 #include "general.h"
-#include "tasks.h"
 
 namespace LC
 {
@@ -28,7 +27,6 @@ namespace DBusManager
 
 		std::unique_ptr<QDBusConnection> Connection_;
 		std::unique_ptr<General> General_;
-		std::unique_ptr<Tasks> Tasks_;
 
 		ICoreProxy_ptr Proxy_;
 
