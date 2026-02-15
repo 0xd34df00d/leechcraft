@@ -408,21 +408,29 @@ namespace CSTP
 
 		switch (static_cast<JobHolderRole> (role))
 		{
-		case JobHolderRole::RowKind:
-			return QVariant::fromValue (JobHolderRow::DownloadProgress);
-		case JobHolderRole::Name:
-			return task->GetURL ();
-		case JobHolderRole::ProcessState:
-		{
-			auto state = ProcessStateInfo::State::Running;
-			if (td.ErrorFlag_)
-				state = ProcessStateInfo::State::Error;
-			else if (!task->IsRunning ())
-				state = ProcessStateInfo::State::Paused;
-			return QVariant::fromValue<ProcessStateInfo> ({ task->GetDone (), task->GetTotal (), state });
+		case JobHolderRole::RowInfo:
+			return QVariant::fromValue<RowInfo> ({
+					.Name_ = task->GetURL (),
+					.Specific_ = ProcessInfo { .Parameters_ = td.Parameters_, .Kind_ = ProcessKind::Download }
+				});
 		}
-		case JobHolderRole::TaskParameters:
-			return QVariant::fromValue (td.Parameters_);
+
+		switch (static_cast<JobHolderProcessRole> (role))
+		{
+		case JobHolderProcessRole::State:
+			if (td.ErrorFlag_)
+				return QVariant::fromValue (ProcessState::Error);
+			if (!task->IsRunning ())
+				return QVariant::fromValue (ProcessState::Paused);
+			return QVariant::fromValue (ProcessState::Running);
+		case JobHolderProcessRole::StateCustomText:
+			if (td.ErrorFlag_)
+				return task->GetErrorString ();
+			return {};
+		case JobHolderProcessRole::Done:
+			return task->GetDone ();
+		case JobHolderProcessRole::Total:
+			return task->GetTotal ();
 		}
 
 		if (role == Qt::DisplayRole)

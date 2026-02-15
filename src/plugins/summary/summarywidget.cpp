@@ -376,50 +376,38 @@ namespace Summary
 
 	void SummaryWidget::checkRowsToBeRemoved (const QModelIndex&, int begin, int end)
 	{
-		const QModelIndex& cur = Ui_.PluginsTasksTree_->
-				selectionModel ()->currentIndex ();
+		const auto& cur = Ui_.PluginsTasksTree_->selectionModel ()->currentIndex ();
 		if (begin <= cur.row () && end >= cur.row ())
 			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
 	}
 
 	void SummaryWidget::updatePanes (const QModelIndex& newIndex, const QModelIndex& oldIndex)
 	{
-		QToolBar *controls = Core::Instance ().GetControls (newIndex);
-		QWidget *addiInfo = Core::Instance ().GetAdditionalInfo (newIndex);
-
-		if (oldIndex.isValid () &&
-				addiInfo != Ui_.ControlsDockWidget_->widget ())
-			Ui_.ControlsDockWidget_->hide ();
-
-		if (Core::Instance ().SameModel (newIndex, oldIndex))
-			return;
-
-		ReinitToolbar ();
-		if (newIndex.isValid ())
+		if (const auto toolbar = newIndex.data (+CustomDataRoles::Controls).value<QToolBar*> ();
+			toolbar != oldIndex.data (+CustomDataRoles::Controls).value<QToolBar*> ())
 		{
-			if (controls)
+			ReinitToolbar ();
+			if (toolbar)
 			{
-				for (const auto action : controls->actions ())
+				for (const auto action : toolbar->actions ())
 				{
-					QString ai = action->property ("ActionIcon").toString ();
-					if (!ai.isEmpty () &&
-							action->icon ().isNull ())
-						action->setIcon (Core::Instance ().GetProxy ()->
-									GetIconThemeManager ()->GetIcon (ai));
+					const auto& ai = action->property ("ActionIcon").toString ();
+					if (!ai.isEmpty () && action->icon ().isNull ())
+						action->setIcon (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (ai));
 				}
 
-				const auto& proxies = CreateProxyActions (controls->actions (), Toolbar_.get ());
+				const auto& proxies = CreateProxyActions (toolbar->actions (), Toolbar_.get ());
 				Toolbar_->insertActions (Toolbar_->actions ().first (), proxies);
 			}
-			if (addiInfo != Ui_.ControlsDockWidget_->widget ())
-				Ui_.ControlsDockWidget_->setWidget (addiInfo);
+		}
 
-			if (addiInfo)
-			{
-				Ui_.ControlsDockWidget_->show ();
-				Core::Instance ().GetProxy ()->GetIconThemeManager ()->
-						UpdateIconset (addiInfo->findChildren<QAction*> ());
-			}
+		if (const auto info = newIndex.data (+CustomDataRoles::AdditionalInfo).value<QWidget*> ();
+			info != oldIndex.data (+CustomDataRoles::AdditionalInfo).value<QWidget*> ())
+		{
+			Ui_.ControlsDockWidget_->setWidget (info);
+			Ui_.ControlsDockWidget_->setVisible (static_cast<bool> (info));
+			if (info)
+				Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (info->findChildren<QAction*> ());
 		}
 	}
 

@@ -10,11 +10,10 @@
 
 #include <memory>
 #include <QObject>
+#include <util/xpc/progressmanager.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iwebfilestorage.h>
-
-class QStandardItemModel;
 
 namespace LC
 {
@@ -34,7 +33,7 @@ namespace Zalil
 
 		std::shared_ptr<ServicesManager> Manager_;
 
-		QStandardItemModel* ReprModel_;
+		mutable Util::ProgressManager Progress_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

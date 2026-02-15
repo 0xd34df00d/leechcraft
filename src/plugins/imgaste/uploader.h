@@ -12,16 +12,19 @@
 #include <QString>
 #include <interfaces/idatafilter.h>
 
-class QStandardItemModel;
-
 namespace LC
 {
 	struct Entity;
+}
+
+namespace LC::Util
+{
+	class ProgressManager;
 }
 
 namespace LC::Imgaste
 {
 	enum class Format;
 
-	void Upload (const QByteArray&, QSize, const Entity&, Format, QStandardItemModel*);
+	void Upload (const QByteArray&, QSize, const Entity&, Format, Util::ProgressManager&);
 }

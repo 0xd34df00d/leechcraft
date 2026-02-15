@@ -14,6 +14,11 @@
 
 class QUrl;
 
+namespace LC::Util
+{
+	class ProgressManager;
+}
+
 namespace LC
 {
 struct Entity;
@@ -63,7 +68,7 @@ namespace LMP
 		LocalCollection* GetLocalCollection () const;
 		CollectionsManager* GetCollectionsManager () const;
 		PlaylistManager* GetPlaylistManager () const;
-		ProgressManager* GetProgressManager () const;
+		Util::ProgressManager* GetProgressManager () const;
 		RadioManager* GetRadioManager () const;
 
 		Player* GetPlayer () const;

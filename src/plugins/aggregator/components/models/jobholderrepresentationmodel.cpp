@@ -9,6 +9,7 @@
 #include "jobholderrepresentationmodel.h"
 #include <QMenu>
 #include <QToolBar>
+#include <interfaces/ijobholder.h>
 #include "common.h"
 
 namespace LC::Aggregator
@@ -30,9 +31,24 @@ namespace LC::Aggregator
 			return QVariant::fromValue<QWidget*> (&Deps_.DetailsWidget_);
 		case ContextMenu:
 			return QVariant::fromValue<QMenu*> (&Deps_.RowMenu_);
-		default:
-			return QSortFilterProxyModel::data (index, role);
+		case Tags: // handled by underlying model
+			break;
 		}
+
+		switch (static_cast<JobHolderRole> (role))
+		{
+		case JobHolderRole::RowInfo:
+			return QVariant::fromValue<RowInfo> ({
+					.Name_ = index.data (ChannelRoles::ChannelTitle).toString (),
+					.Specific_ = NewsInfo
+					{
+						.Count_ = index.data (ChannelRoles::UnreadCount).toInt (),
+						.LastUpdate_ = index.data (ChannelRoles::LastUpdate).toDateTime (),
+					}
+				});
+		}
+
+		return QSortFilterProxyModel::data (index, role);
 	}
 
 	bool JobHolderRepresentationModel::filterAcceptsRow (int row, const QModelIndex&) const

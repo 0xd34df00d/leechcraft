@@ -14,11 +14,12 @@
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
-#include <util/xpc/util.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
+#include <util/xpc/progressmanager.h>
+#include <util/xpc/util.h>
+#include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
@@ -31,30 +32,21 @@ namespace NetStoreManager
 {
 	UpManager::UpManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
-	, ReprModel_ (new QStandardItemModel (0, 3, this))
+	, Progress_ (new Util::ProgressManager (this))
 	, Proxy_ (proxy)
 	{
 	}
 
 	QAbstractItemModel* UpManager::GetRepresentationModel () const
 	{
-		return ReprModel_;
+		return &Progress_->GetModel ();
 	}
 
 	void UpManager::RemovePending (const QString& path)
 	{
 		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
 		Uploads_ [acc].removeAll (path);
-
-		auto items = ReprItems_ [acc].take (path);
-		if (items.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty items list for"
-					<< path;
-			return;
-		}
-		ReprModel_->removeRow (items.first ()->row ());
+		ReprItems_ [acc].remove (path);
 	}
 
 	IStoragePlugin* UpManager::GetSenderPlugin ()
@@ -107,27 +99,16 @@ namespace NetStoreManager
 		auto plugin = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 
 		const QFileInfo fi (path);
-		QList<QStandardItem*> row
-		{
-			new QStandardItem (tr ("Uploading %1 to %2...")
-						.arg (fi.fileName ())
-						.arg (plugin->GetStorageName ())),
-			new QStandardItem (),
-			new QStandardItem (tr ("Initializing..."))
-		};
-
-		auto progressItem = row.at (JobHolderColumn::JobProgress);
-		progressItem->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-				+JobHolderRole::RowKind);
-		progressItem->setData (QVariant::fromValue<ProcessStateInfo> ({
-					0,
-					fi.size (),
-					FromUserInitiated
-				}),
-				+JobHolderRole::ProcessState);
-		ReprModel_->appendRow (row);
-
-		ReprItems_ [acc] [path] = row;
+		auto row = Progress_->AddRow ({
+					.Name_ = tr ("Uploading %1 to %2...").arg (fi.fileName (), plugin->GetStorageName ()),
+					.Specific_ = ProcessInfo
+					{
+						.Parameters_ = byHand ? FromUserInitiated : NoParameters,
+						.Kind_ = ProcessKind::Upload,
+					}
+				},
+				{ .Total_ = fi.size (), .CustomStateText_ = tr ("Initializing...") });
+		ReprItems_ [acc] [path] = std::move (row);
 
 		if (byHand &&
 				XmlSettingsManager::Instance ().Property ("CopyUrlOnUpload", false).toBool ())
@@ -152,10 +133,8 @@ namespace NetStoreManager
 	void UpManager::handleUpStatusChanged (const QString& status, const QString& filepath)
 	{
 		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
-		const auto& list = ReprItems_ [acc] [filepath];
-		if (list.isEmpty ())
-			return;
-		list [1]->setText (status);
+		if (const auto& row = ReprItems_ [acc] [filepath])
+			row->SetState (ProcessState::Running, status);
 	}
 
 	void UpManager::handleUpFinished (const QByteArray& id, const QString& filePath)
@@ -188,15 +167,11 @@ namespace NetStoreManager
 	void UpManager::handleUpProgress (quint64 done, quint64 total, const QString& filepath)
 	{
 		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
-		const auto& list = ReprItems_ [acc] [filepath];
-		if (list.isEmpty ())
-			return;
-
-		auto item = list.at (2);
-		item->setText (tr ("%1 of %2")
-				.arg (Util::MakePrettySize (done))
-				.arg (Util::MakePrettySize (total)));
-		Util::SetJobHolderProgress (item, done, total);
+		if (const auto& row = ReprItems_ [acc] [filepath])
+		{
+			row->SetDone (done);
+			row->SetTotal (total);
+		}
 	}
 }
 }

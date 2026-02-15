@@ -12,9 +12,13 @@
 #include <QObject>
 #include <QHash>
 
-class QStandardItemModel;
 class QAbstractItemModel;
-class QStandardItem;
+
+namespace LC::Util
+{
+	class ProgressManager;
+	class ProgressModelRow;
+}
 
 namespace LC::LMP::Graffiti
 {
@@ -24,9 +28,8 @@ namespace LC::LMP::Graffiti
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::LMP::Graffiti::ProgressManager)
 
-		QStandardItemModel *Model_;
-		QHash<QObject*, QList<QStandardItem*>> TagsFetchObj2Row_;
-		QHash<CueSplitter*, QList<QStandardItem*>> Splitter2Row_;
+		Util::ProgressManager * const Manager_;
+		QHash<QObject*, std::shared_ptr<Util::ProgressModelRow>> TagsFetchObj2Row_;
 	public:
 		explicit ProgressManager (QObject* = nullptr);
 

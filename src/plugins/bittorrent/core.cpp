@@ -461,19 +461,30 @@ namespace BitTorrent
 
 		switch (static_cast<JobHolderRole> (role))
 		{
-		case JobHolderRole::RowKind:
-			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
-		case JobHolderRole::ProcessState:
-		{
-			auto state = ProcessStateInfo::State::Running;
-			if (status.errc)
-				state = ProcessStateInfo::State::Error;
-			else if (IsPaused (status))
-				state = ProcessStateInfo::State::Paused;
-			return QVariant::fromValue<ProcessStateInfo> ({ status.total_wanted_done, status.total_wanted, state });
+		case JobHolderRole::RowInfo:
+			return QVariant::fromValue<RowInfo> ({
+					.Name_ = QString::fromStdString (status.name),
+					.Specific_ = ProcessInfo { .Parameters_ = Handles_.at (row).Parameters_, .Kind_ = ProcessKind::Download, }
+				});
 		}
-		case JobHolderRole::TaskParameters:
-			return QVariant::fromValue (Handles_.at (row).Parameters_);
+
+		switch (static_cast<JobHolderProcessRole> (role))
+		{
+		case JobHolderProcessRole::Done:
+			return qlonglong { status.total_wanted_done };
+		case JobHolderProcessRole::Total:
+			return qlonglong { status.total_wanted };
+		case JobHolderProcessRole::State:
+		{
+			auto state = ProcessState::Running;
+			if (status.errc)
+				state = ProcessState::Error;
+			else if (IsPaused (status))
+				state = ProcessState::Paused;
+			return QVariant::fromValue (state);
+		}
+		case JobHolderProcessRole::StateCustomText:
+			return GetStringForStatus (status);
 		}
 
 		switch (role)

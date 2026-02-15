@@ -139,38 +139,4 @@ namespace LC::Util
 		}
 		return {};
 	}
-
-	void SetJobHolderProgress (const QList<QStandardItem*>& row,
-			qint64 done, qint64 total, const QString& text)
-	{
-		const auto item = row.value (JobHolderColumn::JobProgress);
-		if (text.contains ("%1"_ql) && text.contains ("%2"_ql))
-			item->setText (text.arg (done).arg (total));
-		else
-			item->setText (text);
-		SetJobHolderProgress (item, done, total);
-	}
-
-	void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total)
-	{
-		auto data = item->data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ();
-		data.Done_ = done;
-		data.Total_ = total;
-		item->setData (QVariant::fromValue (data), +JobHolderRole::ProcessState);
-	}
-
-	void InitJobHolderRow (const QList<QStandardItem*>& row, int total)
-	{
-		for (const auto item : row)
-		{
-			item->setEditable (false);
-			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-					+JobHolderRole::RowKind);
-		}
-
-		const auto item = row.value (JobHolderColumn::JobProgress);
-
-		const ProcessStateInfo state { 0, total, ProcessStateInfo::State::Running };
-		item->setData (QVariant::fromValue (state), +JobHolderRole::ProcessState);
-	}
 }

@@ -21,7 +21,7 @@ namespace Zalil
 
 		QString GetName () const;
 		qint64 GetMaxFileSize () const;
-		PendingUploadBase* UploadFile (const QString&);
+		PendingUploadBase* UploadFile (const QString&, Util::ProgressManager&);
 	};
 }
 }

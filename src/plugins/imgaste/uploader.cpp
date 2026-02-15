@@ -11,17 +11,14 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QStandardItem>
-#include <QStandardItemModel>
 #include <interfaces/ijobholder.h>
 #include <util/threads/futures.h>
 #include <util/sll/either.h>
-#include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
-#include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include "hostingservice.h"
@@ -34,53 +31,11 @@ namespace LC::Imgaste
 		{
 			QByteArray Data_;
 			Format Fmt_;
-			QStandardItemModel *ReprModel_;
+			Util::ProgressManager& ProgressManager_;
 			DataFilterCallback_f Callback_;
 			QHash<QString, HostingService> Services_;
 
 			QString ServiceName_;
-		};
-
-		struct ReprRow final : QObject
-		{
-			QStandardItemModel& ReprModel_;
-			QList<QStandardItem*> ReprRow_;
-
-			ReprRow (QStandardItemModel& reprModel)
-			: ReprModel_ { reprModel }
-			{
-				ReprRow_ =
-				{
-					new QStandardItem { QObject::tr ("Image upload") },
-					new QStandardItem { QObject::tr ("Uploading...") },
-					new QStandardItem
-				};
-
-				for (const auto item : ReprRow_)
-				{
-					item->setEditable (false);
-					item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-							+JobHolderRole::RowKind);
-				}
-				ReprModel_.appendRow (ReprRow_);
-			}
-
-			~ReprRow () override
-			{
-				ReprModel_.removeRow (ReprRow_.first ()->row ());
-			}
-
-			ReprRow (const ReprRow&) = delete;
-			ReprRow (ReprRow&&) = delete;
-			ReprRow& operator= (const ReprRow&) = delete;
-			ReprRow& operator= (ReprRow&&) = delete;
-
-			void SetProgress (qint64 done, qint64 total) const
-			{
-				Util::SetJobHolderProgress (ReprRow_, done, total,
-						QObject::tr ("%1 of %2")
-								.arg (Util::MakePrettySize (done), Util::MakePrettySize (total)));
-			}
 		};
 
 		void TryAnotherService (UploadContext);
@@ -123,14 +78,24 @@ namespace LC::Imgaste
 
 			const auto& service = servicePos.value ();
 
-			ReprRow row { *ctx.ReprModel_ };
-			row.SetProgress (0, ctx.Data_.size ());
+			auto row = ctx.ProgressManager_.AddRow ({
+						.Name_ = QObject::tr ("Uploading image to %1").arg (ctx.ServiceName_),
+						.Specific_ = ProcessInfo
+						{
+							.Parameters_ = FromUserInitiated,
+							.Kind_ = ProcessKind::Upload,
+						}
+					},
+					{ .Total_ = ctx.Data_.size () });
 
 			const auto reply = Post (service, ctx.Data_, ctx.Fmt_, *GetProxyHolder ()->GetNetworkAccessManager ());
 			QObject::connect (reply,
 					&QNetworkReply::uploadProgress,
-					&row,
-					&ReprRow::SetProgress);
+					[row = std::move (row)] (qint64 done, qint64 total)
+					{
+						row->SetDone (done);
+						row->SetTotal (total);
+					});
 
 			const auto result = co_await *reply;
 			if (const auto error = result.IsError ())
@@ -171,7 +136,7 @@ namespace LC::Imgaste
 		}
 	}
 
-	void Upload (const QByteArray& data, QSize dim, const Entity& e, Format fmt, QStandardItemModel *reprModel)
+	void Upload (const QByteArray& data, QSize dim, const Entity& e, Format fmt, Util::ProgressManager& progress)
 	{
 		auto callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
 		auto dataFilter = e.Additional_ ["DataFilter"].toString ();
@@ -180,6 +145,6 @@ namespace LC::Imgaste
 		for (const auto& service : GetAllServices ())
 			if (service.Accepts_ ({ .Size_ = static_cast<quint64> (data.size ()), .Dim_ = dim }))
 				allServices [service.Name_] = service;
-		RunUpload ({ data, fmt, reprModel, callback, allServices, dataFilter });
+		RunUpload ({ data, fmt, progress, callback, allServices, dataFilter });
 	}
 }

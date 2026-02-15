@@ -19,6 +19,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
@@ -31,7 +32,6 @@
 #include "rootpathsettingsmanager.h"
 #include "collectionstatsdialog.h"
 #include "artistbrowsertab.h"
-#include "progressmanager.h"
 #include "volumenotifycontroller.h"
 #include "radiomanager.h"
 #include "notificationplayer.h"
@@ -410,7 +410,7 @@ namespace LMP
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
-		return Core::Instance ().GetProgressManager ()->GetModel ();
+		return &Core::Instance ().GetProgressManager ()->GetModel ();
 	}
 
 	QString Plugin::GetFilterVerb () const

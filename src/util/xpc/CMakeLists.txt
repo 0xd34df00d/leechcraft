@@ -13,7 +13,9 @@ add_util_library (util-xpc
 		anconstantsdefs.cpp
 		downloadhelpers.cpp
 		downloaderrorstrings.cpp
+		progressmanager.cpp
 	DEPENDS
+		leechcraft-util-models
 		leechcraft-util-sll
 		leechcraft-util-sys
 	USES Widgets

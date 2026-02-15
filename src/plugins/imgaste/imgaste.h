@@ -13,6 +13,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/ijobholder.h>
+#include <util/xpc/progressmanager.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -32,7 +33,7 @@ namespace LC::Imgaste
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Imgaste")
 
-		QStandardItemModel *ReprModel_;
+		mutable Util::ProgressManager ProgressManager_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;

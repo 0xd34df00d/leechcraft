@@ -9,59 +9,34 @@
 #include "progressmodelmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <util/xpc/util.h>
+#include <util/xpc/progressmanager.h>
 #include "checker.h"
 
 namespace LC::LMP::BrainSlugz
 {
 	ProgressModelManager::ProgressModelManager (QObject *parent)
 	: QObject { parent }
-	, Model_ { new QStandardItemModel { this } }
+	, Progress_ { new Util::ProgressManager { this } }
 	{
 	}
 
 	QAbstractItemModel* ProgressModelManager::GetModel () const
 	{
-		return Model_;
+		return &Progress_->GetModel ();
 	}
 
 	void ProgressModelManager::AddChecker (Checker *checker)
 	{
-		if (!Row_.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "seems like a check is already in progress";
-			return;
-		}
-
-		InitialCount_ = checker->GetRemainingCount ();
-		const auto& label = tr ("Checking new releases of %n artist(s)...", 0, InitialCount_);
-		Row_ = QList<QStandardItem*>
-		{
-			new QStandardItem { label },
-			new QStandardItem { tr ("Checking...") },
-			new QStandardItem {}
-		};
-
-		Util::InitJobHolderRow (Row_);
-
-		Model_->appendRow (Row_);
-
+		const auto initialCount = checker->GetRemainingCount ();
+		const auto& label = tr ("Checking new album releases...");
+		auto row = Progress_->AddRow ({
+				.Name_ = label,
+				.Specific_ = ProcessInfo { .Parameters_ = FromUserInitiated, .Kind_ = ProcessKind::Generic },
+			},
+			{ .Total_ = initialCount });
 		connect (checker,
 				&Checker::progress,
 				this,
-				[this] (int remaining)
-				{
-					const auto done = InitialCount_ - remaining;
-					Util::SetJobHolderProgress (Row_, done, InitialCount_, tr ("%1 of %2"));
-				});
-		connect (checker,
-				&Checker::finished,
-				this,
-				[this]
-				{
-					Model_->removeRow (0);
-					Row_.clear ();
-				});
+				[initialCount, row = std::move (row)] (int remaining) { row->SetDone (initialCount - remaining); });
 	}
 }

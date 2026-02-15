@@ -27,8 +27,6 @@ namespace TPI
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.TPI")
 
-		ICoreProxy_ptr Proxy_;
-
 		QuarkComponents_t Components_;
 		InfoModelManager *ModelMgr_;
 	public:
@@ -44,4 +42,3 @@ namespace TPI
 	};
 }
 }
-

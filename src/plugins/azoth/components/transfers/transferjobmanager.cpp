@@ -22,6 +22,7 @@
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include "interfaces/azoth/iclentry.h"
@@ -45,7 +46,7 @@ namespace Azoth
 	TransferJobManager::TransferJobManager (AvatarsManager *am, QObject *parent)
 	: QObject { parent }
 	, AvatarsMgr_ { am }
-	, SummaryModel_ { new QStandardItemModel { this } }
+	, ProgressManager_ { new Util::ProgressManager { this } }
 	, ReprBar_ { new QToolBar }
 	{
 		QAction *abort = new QAction (tr ("Abort"), this);
@@ -55,6 +56,8 @@ namespace Azoth
 				this,
 				SLOT (handleAbortAction ()));
 		ReprBar_->addAction (abort);
+
+		ProgressManager_->SetGlobalData (QVariant::fromValue (ReprBar_), +CustomDataRoles::Controls);
 	}
 
 	void TransferJobManager::AddAccountManager (QObject *mgrObj)
@@ -123,47 +126,35 @@ namespace Azoth
 	void TransferJobManager::HandleJob (ITransferJob *job, const JobContext& context)
 	{
 		const auto& filename = GetFilename (context);
-		QList items
-		{
-			new QStandardItem (GetRowLabelTemplate (context).arg (filename, context.EntryName_)),
-			new QStandardItem (tr ("offered")),
-			new QStandardItem (tr ("%1 of %2 (%3%).")
-					.arg (Util::MakePrettySize (0))
-					.arg (Util::MakePrettySize (context.Size_))
-					.arg (0))
-		};
-		for (const auto item : items)
-		{
-			item->setData (QVariant::fromValue<QToolBar*> (ReprBar_), +CustomDataRoles::Controls);
-			item->setData (QVariant::fromValue<ITransferJob*> (job), MRJobObject);
-			item->setEditable (false);
-		}
 
-		const auto statusItem = items.at (JobHolderColumn::JobStatus);
-		const auto progressItem = items.at (JobHolderColumn::JobProgress);
-		progressItem->setData (QVariant::fromValue<TaskParameters> (FromUserInitiated));
-		progressItem->setData (QVariant::fromValue<ProcessStateInfo> ({ 0, context.Size_ }), +JobHolderRole::ProcessState);
-
-		SummaryModel_->appendRow (items);
+		std::shared_ptr row = ProgressManager_->AddRow (
+				{
+					.Name_ = GetRowLabelTemplate (context).arg (filename, context.EntryName_),
+					.Specific_ = ProcessInfo
+					{
+						.Parameters_ = FromUserInitiated,
+						.Kind_ = ProcessKind::Download,
+					},
+				},
+				{
+					.State_ = ProcessState::Paused,
+					.Total_ = context.Size_,
+					.CustomStateText_ = tr ("offered"),
+					.CustomData_ = QVariant::fromValue (job),
+				});
 
 		auto& emitter = job->GetTransferJobEmitter ();
 		connect (&emitter,
 				&Emitters::TransferJob::stateChanged,
 				this,
-				[this, context, statusItem] (const TransferState& state) { HandleStateChanged (state, context, statusItem); });
+				[this, context, row] (const TransferState& state) { HandleStateChanged (state, context, *row); });
 		connect (&emitter,
 				&Emitters::TransferJob::transferProgress,
 				this,
-				[progressItem] (qint64 done, qint64 total)
+				[row] (qint64 done, qint64 total)
 				{
-					if (total > 0)
-					{
-						progressItem->setText (tr ("%1 of %2 (%3%).")
-									.arg (Util::MakePrettySize (done))
-									.arg (Util::MakePrettySize (total))
-									.arg (done * 100 / total));
-						Util::SetJobHolderProgress (progressItem, done, total);
-					}
+					row->SetDone (done);
+					row->SetTotal (total);
 				});
 	}
 
@@ -262,7 +253,7 @@ namespace Azoth
 
 	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
 	{
-		return SummaryModel_;
+		return &ProgressManager_->GetModel ();
 	}
 
 	bool TransferJobManager::SendFile (const OutgoingFileOffer& offer)
@@ -444,10 +435,25 @@ namespace Azoth
 			qWarning () << "unhandled state" << static_cast<int> (state);
 			return {};
 		}
+
+		ProcessState ToProcessState (Transfers::Phase state)
+		{
+			using enum Transfers::Phase;
+			switch (state)
+			{
+			case Starting:
+			case Transferring:
+				return ProcessState::Running;
+			case Finished:
+				return ProcessState::Finished;
+			}
+
+			return ProcessState::Unknown;
+		}
 	}
 
 	void TransferJobManager::HandleStateChanged (const TransferState& state,
-			const JobContext& context, QStandardItem *status)
+			const JobContext& context, Util::ProgressModelRow& row)
 	{
 		Util::Visit (state,
 				[&] (Transfers::Phase phase)
@@ -457,7 +463,7 @@ namespace Azoth
 						HandleIncomingFinished (context, *in);
 					else
 					{
-						status->setText (GetStatusString (phase));
+						row.SetState (ToProcessState (phase), GetStatusString (phase));
 						const auto& e = Util::MakeNotification ("Azoth",
 								GetNotificationMessageTemplate (phase).arg (GetFilename (context), context.EntryName_),
 								Priority::Info);
@@ -478,9 +484,6 @@ namespace Azoth
 									Priority::Critical);
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				});
-
-		if (IsTerminal (state))
-			status->model ()->removeRow (status->row ());
 	}
 
 	void TransferJobManager::handleAbortAction ()
@@ -488,14 +491,7 @@ namespace Azoth
 		if (!Selected_.isValid ())
 			return;
 
-		const auto item = SummaryModel_->itemFromIndex (Selected_);
-		if (!item)
-		{
-			qWarning () << "null item for index" << Selected_;
-			return;
-		}
-
-		if (const auto job = item->data (MRJobObject).value<ITransferJob*> ())
+		if (const auto job = ProgressManager_->GetCustomData (Selected_).value<ITransferJob*> ())
 			job->Abort ();
 		else
 			qWarning () << "null transfer job for" << Selected_;

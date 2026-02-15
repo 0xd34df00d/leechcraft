@@ -11,7 +11,6 @@
 #include <QIcon>
 #include <QBuffer>
 #include <QUrl>
-#include <QStandardItemModel>
 #include <QImageReader>
 #include <QFile>
 #include <QFileInfo>
@@ -26,7 +25,6 @@ namespace LC::Imgaste
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		ReprModel_ = new QStandardItemModel { this };
 	}
 
 	void Plugin::SecondInit ()
@@ -140,7 +138,7 @@ namespace LC::Imgaste
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
-		return ReprModel_;
+		return &ProgressManager_.GetModel ();
 	}
 
 	namespace
@@ -174,7 +172,7 @@ namespace LC::Imgaste
 
 		const auto& formatStr = QString::fromLatin1 (Util::DetectFileMime (name)).section ('/', 1, 1);
 		const auto& data = file.readAll ();
-		Upload (data, QImageReader { name }.size (), e, GuessFormat (formatStr), ReprModel_);
+		Upload (data, QImageReader { name }.size (), e, GuessFormat (formatStr), ProgressManager_);
 	}
 
 	void Plugin::UploadImage (const QImage& img, const Entity& e)
@@ -196,7 +194,7 @@ namespace LC::Imgaste
 			return;
 		}
 
-		Upload (buf.data (), img.size (), e, GuessFormat (formatStr), ReprModel_);
+		Upload (buf.data (), img.size (), e, GuessFormat (formatStr), ProgressManager_);
 	}
 }
 

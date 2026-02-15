@@ -71,7 +71,6 @@ LC_DEFINE_PLUGIN (
 		similarviewmanager.cpp
 		artistbrowsertab.cpp
 		albumartmanagerdialog.cpp
-		progressmanager.cpp
 		volumeslider.cpp
 		seekslider.cpp
 		palettefixerfilter.cpp

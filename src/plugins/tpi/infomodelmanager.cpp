@@ -7,9 +7,13 @@
  **********************************************************************/
 
 #include "infomodelmanager.h"
-#include <QStandardItemModel>
+#include <QConcatenateTablesProxyModel>
+#include <QSortFilterProxyModel>
+#include <QIdentityProxyModel>
 #include <QUrl>
 #include <util/models/rolenamesmixin.h>
+#include <util/sll/visitor.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ijobholder.h>
 
@@ -19,7 +23,50 @@ namespace TPI
 {
 	namespace
 	{
-		class InfoModel : public Util::RoleNamesMixin<QStandardItemModel>
+		bool IsInternal (const ProcessInfo& info)
+		{
+			return info.Parameters_ & TaskParameter::Internal;
+		}
+
+		class FilterModel : public QSortFilterProxyModel
+		{
+		public:
+			using QSortFilterProxyModel::QSortFilterProxyModel;
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
+			{
+				if (parent.isValid ())
+					return false;
+
+				const auto& rowInfo = sourceModel ()->index (row, 0).data (+JobHolderRole::RowInfo).value<RowInfo> ();
+				return Util::Visit (rowInfo.Specific_,
+						[] (const ProcessInfo& info) { return !IsInternal (info); },
+						[] (const NewsInfo&) { return false; });
+			}
+		};
+
+		QUrl GetIconUrl (ProcessState state)
+		{
+			switch (state)
+			{
+			case ProcessState::Unknown:
+				return QUrl { "image://ThemeIcons/dialog-information" };
+			case ProcessState::Running:
+				return QUrl { "image://ThemeIcons/media-playback-start" };
+			case ProcessState::Paused:
+				return QUrl { "image://ThemeIcons/media-playback-pause" };
+			case ProcessState::Finished:
+				return QUrl { "image://ThemeIcons/task-complete" };
+			case ProcessState::Error:
+				return QUrl { "image://ThemeIcons/dialog-error" };
+			}
+
+			qWarning () << "unknown process info state" << static_cast<int> (state);
+
+			return QUrl { "image://ThemeIcons/dialog-information" };
+		}
+
+		class InfoModel : public Util::RoleNamesMixin<QIdentityProxyModel>
 		{
 		public:
 			enum Roles
@@ -30,8 +77,8 @@ namespace TPI
 				StateIcon
 			};
 
-			InfoModel (QObject *parent)
-			: RoleNamesMixin<QStandardItemModel> (parent)
+			explicit InfoModel (QObject *parent)
+			: RoleNamesMixin (parent)
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::Done] = "jobDone";
@@ -40,185 +87,46 @@ namespace TPI
 				roleNames [Roles::StateIcon] = "stateIcon";
 				setRoleNames (roleNames);
 			}
+
+			QVariant data (const QModelIndex& index, int role) const override
+			{
+				const auto& srcIdx = mapToSource (index);
+				switch (role)
+				{
+				case Done:
+					return srcIdx.data (+JobHolderProcessRole::Done);
+				case Total:
+					return srcIdx.data (+JobHolderProcessRole::Total);
+				case Name:
+					return srcIdx.data (Qt::DisplayRole);
+				case StateIcon:
+					return GetIconUrl (srcIdx.data (+JobHolderProcessRole::State).value<ProcessState> ());
+				}
+
+				return srcIdx.data (role);
+			}
 		};
 	}
 
-	InfoModelManager::InfoModelManager (ICoreProxy_ptr proxy, QObject *parent)
-	: QObject (parent)
-	, Proxy_ (proxy)
-	, Model_ (new InfoModel (this))
+	InfoModelManager::InfoModelManager (QObject *parent)
+	: QObject { parent }
+	, Concat_ { *new QConcatenateTablesProxyModel { this } }
+	, Filter_ { *new FilterModel { this } }
+	, Structurize_ { *new InfoModel { this } }
 	{
+		Filter_.setSourceModel (&Concat_);
+		Structurize_.setSourceModel (&Filter_);
 	}
 
 	QAbstractItemModel* InfoModelManager::GetModel () const
 	{
-		return Model_;
+		return &Structurize_;
 	}
 
 	void InfoModelManager::SecondInit ()
 	{
-		auto pm = Proxy_->GetPluginsManager ();
-		for (auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
-			ManageModel (ijh->GetRepresentation ());
-	}
-
-	void InfoModelManager::ManageModel (QAbstractItemModel *model)
-	{
-		connect (model,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				this,
-				SLOT (handleRowsInserted (QModelIndex, int, int)));
-		connect (model,
-				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
-				this,
-				SLOT (handleRowsRemoved (QModelIndex, int, int)));
-		connect (model,
-				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleDataChanged (QModelIndex, QModelIndex)));
-
-		if (auto numRows = model->rowCount ())
-			HandleRows (model, 0, numRows - 1);
-	}
-
-	namespace
-	{
-		bool IsInternal (const QModelIndex& idx)
-		{
-			const auto flags = idx.data (+JobHolderRole::TaskParameters).value<TaskParameters> ();
-			return flags & TaskParameter::Internal;
-		}
-	}
-
-	void InfoModelManager::HandleRows (QAbstractItemModel *model, int from, int to)
-	{
-		for (int i = from; i <= to; ++i)
-		{
-			const auto& idx = model->index (i, JobHolderColumn::JobProgress);
-			if (IsInternal (idx))
-				continue;
-
-			const auto row = idx.data (+JobHolderRole::RowKind).value<JobHolderRow> ();
-			if (row != JobHolderRow::DownloadProgress &&
-					row != JobHolderRow::ProcessProgress)
-				continue;
-
-			const auto& state = idx.data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ();
-
-			if (state.Done_ == state.Total_)
-				continue;
-
-			auto ourItem = new QStandardItem;
-
-			const auto& name = model->index (i, JobHolderColumn::JobName).data ().toString ();
-			ourItem->setData (name, InfoModel::Name);
-
-			PIdx2Item_ [idx] = ourItem;
-			HandleData (model, i, i);
-
-			Model_->appendRow (ourItem);
-		}
-	}
-
-	namespace
-	{
-		QUrl GetIconUrl (ProcessStateInfo::State state)
-		{
-			switch (state)
-			{
-			case ProcessStateInfo::State::Unknown:
-				return QUrl { "image://ThemeIcons/dialog-information" };
-			case ProcessStateInfo::State::Running:
-				return QUrl { "image://ThemeIcons/media-playback-start" };
-			case ProcessStateInfo::State::Paused:
-				return QUrl { "image://ThemeIcons/media-playback-pause" };
-			case ProcessStateInfo::State::Error:
-				return QUrl { "image://ThemeIcons/dialog-error" };
-			}
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown process info state"
-					<< static_cast<int> (state);
-
-			return QUrl { "image://ThemeIcons/dialog-information" };
-		}
-	}
-
-	void InfoModelManager::HandleData (QAbstractItemModel *model, int from, int to)
-	{
-		for (int i = from; i <= to; ++i)
-		{
-			const auto& idx = model->index (i, JobHolderColumn::JobProgress);
-			if (IsInternal (idx))
-				continue;
-
-			const auto& state = idx.data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ();
-			auto done = state.Done_;
-			auto total = state.Total_;
-
-			auto item = PIdx2Item_.value (idx);
-			if (!item)
-			{
-				if (done != total)
-					HandleRows (model, i, i);
-				continue;
-			}
-
-			if (done == total)
-			{
-				PIdx2Item_.remove (idx);
-				Model_->removeRow (item->row ());
-				continue;
-			}
-
-			while (done > 1000 && total > 1000)
-			{
-				done /= 10;
-				total /= 10;
-			}
-
-			item->setData (static_cast<double> (done), InfoModel::Roles::Done);
-			item->setData (static_cast<double> (total), InfoModel::Roles::Total);
-			item->setData (model->index (i, JobHolderColumn::JobName).data ().toString (),
-					InfoModel::Roles::Name);
-			item->setData (GetIconUrl (state.State_), InfoModel::Roles::StateIcon);
-		}
-	}
-
-	void InfoModelManager::handleRowsInserted (const QModelIndex& parent, int from, int to)
-	{
-		if (parent.isValid ())
-			return;
-
-		auto model = qobject_cast<QAbstractItemModel*> (sender ());
-		HandleRows (model, from, to);
-	}
-
-	void InfoModelManager::handleRowsRemoved (const QModelIndex& parent, int from, int to)
-	{
-		if (parent.isValid ())
-			return;
-
-		auto model = qobject_cast<QAbstractItemModel*> (sender ());
-
-		for (int i = from; i <= to; ++i)
-		{
-			const auto& idx = model->index (i, JobHolderColumn::JobProgress);
-			auto item = PIdx2Item_.take (idx);
-			if (!item)
-				continue;
-
-			Model_->removeRow (item->row ());
-		}
-	}
-
-	void InfoModelManager::handleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
-	{
-		if (bottomRight.column () < JobHolderColumn::JobProgress)
-			return;
-
-		auto model = qobject_cast<QAbstractItemModel*> (sender ());
-		HandleData (model, topLeft.row (), bottomRight.row ());
+		for (const auto ijh : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
+			Concat_.addSourceModel (ijh->GetRepresentation ());
 	}
 }
 }

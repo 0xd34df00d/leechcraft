@@ -23,9 +23,9 @@ namespace Zalil
 		return 41 * 1024 * 1024;
 	}
 
-	PendingUploadBase* BitcheeseService::UploadFile (const QString& file)
+	PendingUploadBase* BitcheeseService::UploadFile (const QString& file, Util::ProgressManager& progress)
 	{
-		return new BitcheesePending { file, Proxy_, this };
+		return new BitcheesePending { file, Proxy_, progress, this };
 	}
 }
 }

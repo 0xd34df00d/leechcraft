@@ -8,93 +8,56 @@
 
 #include "progressmanager.h"
 #include <QStandardItemModel>
-#include <util/xpc/util.h>
+#include <util/xpc/progressmanager.h>
 #include <interfaces/ijobholder.h>
 #include "cuesplitter.h"
 
 namespace LC::LMP::Graffiti
 {
 	ProgressManager::ProgressManager (QObject *parent)
-	: QObject (parent)
-	, Model_ (new QStandardItemModel (this))
+	: QObject { parent }
+	, Manager_ { new Util::ProgressManager { this } }
 	{
-		Model_->setColumnCount (3);
 	}
 
 	QAbstractItemModel* ProgressManager::GetModel () const
 	{
-		return Model_;
+		return &Manager_->GetModel ();
 	}
 
 	void ProgressManager::HandleTagsFetch (int fetched, int total, QObject *obj)
 	{
-		if (!TagsFetchObj2Row_.contains (obj))
-		{
-			const QList<QStandardItem*> row
-			{
-				new QStandardItem { tr ("Fetching tags...") },
-				new QStandardItem { tr ("Fetching...") },
-				new QStandardItem {}
-			};
-			auto item = row.at (JobHolderColumn::JobProgress);
-			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-					+JobHolderRole::RowKind);
-
-			TagsFetchObj2Row_ [obj] = row;
-			Model_->appendRow (row);
-		}
-
 		if (fetched == total)
 		{
-			const auto& list = TagsFetchObj2Row_.take (obj);
-			Model_->removeRow (list.first ()->row ());
+			TagsFetchObj2Row_.remove (obj);
 			return;
 		}
 
-		const auto& list = TagsFetchObj2Row_ [obj];
+		auto& row = TagsFetchObj2Row_ [obj];
+		if (!row)
+			row = Manager_->AddRow ({
+						.Name_ = tr ("Fetching tags...."),
+						.Specific_ = ProcessInfo { .Kind_ = ProcessKind::Generic }
+					},
+					{ .Total_ = total });
 
-		auto item = list.at (JobHolderColumn::JobProgress);
-		item->setText (tr ("%1 of %2").arg (fetched).arg (total));
-		Util::SetJobHolderProgress (item, fetched, total);
+		row->SetDone (fetched);
+		row->SetTotal (total);
 	}
 
 	void ProgressManager::HandleCueSplitter (CueSplitter *splitter)
 	{
-		const QList<QStandardItem*> row
-		{
-			new QStandardItem (tr ("Splitting CUE %1...").arg (splitter->GetCueFile ())),
-			new QStandardItem (tr ("Splitting...")),
-			new QStandardItem ()
-		};
-
-		auto item = row.at (JobHolderColumn::JobProgress);
-		item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-				+JobHolderRole::RowKind);
-
-		Splitter2Row_ [splitter] = row;
-		Model_->appendRow (row);
-
+		auto row = Manager_->AddRow ({
+					.Name_ = tr ("Splitting CUE %1...").arg (splitter->GetCueFile ()),
+					.Specific_ = ProcessInfo { .Kind_ = ProcessKind::Generic },
+				});
 		connect (splitter,
 				&CueSplitter::splitProgress,
 				this,
-				[this, splitter] (int done, int total)
+				[row = std::move (row)] (int done, int total)
 				{
-					if (!Splitter2Row_.contains (splitter))
-					{
-						qWarning () << "unknown splitter";
-						return;
-					}
-
-					Util::SetJobHolderProgress (Splitter2Row_ [splitter], done, total,
-							tr ("%1 of %2").arg (done).arg (total));
-				});
-		connect (splitter,
-				&CueSplitter::finished,
-				this,
-				[this, splitter]
-				{
-					if (Splitter2Row_.contains (splitter))
-						Model_->removeRow (Splitter2Row_.take (splitter).constFirst ()->row ());
+					row->SetDone (done);
+					row->SetTotal (total);
 				});
 	}
 }

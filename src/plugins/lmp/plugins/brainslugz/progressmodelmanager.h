@@ -12,8 +12,11 @@
 #include <QObject>
 
 class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+
+namespace LC::Util
+{
+	class ProgressManager;
+}
 
 namespace LC::LMP::BrainSlugz
 {
@@ -23,10 +26,7 @@ namespace LC::LMP::BrainSlugz
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::LMP::BrainSlugz::ProgressModelManager)
 
-		QStandardItemModel * const Model_;
-		QList<QStandardItem*> Row_;
-
-		int InitialCount_ = 0;
+		Util::ProgressManager * const Progress_;
 	public:
 		explicit ProgressModelManager (QObject* = nullptr);
 

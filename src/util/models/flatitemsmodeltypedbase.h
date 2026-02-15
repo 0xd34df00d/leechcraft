@@ -44,6 +44,11 @@ namespace LC::Util
 			return Items_;
 		}
 
+		QList<T>& GetMutItems ()
+		{
+			return Items_;
+		}
+
 		qsizetype AddItem (const T& item)
 		{
 			const auto pos = Items_.size ();

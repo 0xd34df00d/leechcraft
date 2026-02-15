@@ -8,7 +8,6 @@
 
 #include "zalil.h"
 #include <QIcon>
-#include <QStandardItemModel>
 #include "servicesmanager.h"
 #include "pendinguploadbase.h"
 
@@ -23,8 +22,6 @@ namespace Zalil
 				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
 				SIGNAL (fileUploaded (QString, QUrl)));
-
-		ReprModel_ = new QStandardItemModel { this };
 	}
 
 	void Plugin::SecondInit ()
@@ -63,16 +60,12 @@ namespace Zalil
 
 	void Plugin::UploadFile (const QString& filename, const QString& service)
 	{
-		const auto pending = Manager_->Upload (filename, service);
-		if (!pending)
-			return;
-
-		ReprModel_->appendRow (pending->GetReprRow ());
+		Manager_->Upload (filename, service, Progress_);
 	}
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
-		return ReprModel_;
+		return &Progress_.GetModel ();
 	}
 }
 }

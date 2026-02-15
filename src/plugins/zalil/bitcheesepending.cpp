@@ -7,16 +7,18 @@
  **********************************************************************/
 
 #include "bitcheesepending.h"
+#include <QFileInfo>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <util/xpc/progressmanager.h>
 
 namespace LC
 {
 namespace Zalil
 {
-	BitcheesePending::BitcheesePending (const QString& filename, const ICoreProxy_ptr& proxy, QObject *parent)
+	BitcheesePending::BitcheesePending (const QString& filename, const ICoreProxy_ptr& proxy, Util::ProgressManager& progress, QObject *parent)
 	: PendingUploadBase { filename, proxy, parent }
 	{
 		const auto nam = proxy->GetNetworkAccessManager ();
@@ -31,6 +33,14 @@ namespace Zalil
 			return;
 		}
 
+		const QFileInfo fi { filename };
+
+		auto row = progress.AddRow ({
+				.Name_ = tr ("Uploading %1").arg (fi.fileName ()),
+				.Specific_ = ProcessInfo { .Parameters_ = FromUserInitiated, .Kind_ = ProcessKind::Upload }
+			},
+			{ .Total_ = fi.size () });
+
 		const auto reply = nam->post (req, multipart);
 		connect (reply,
 				SIGNAL (finished ()),
@@ -42,9 +52,13 @@ namespace Zalil
 				SLOT (handleError ()));
 
 		connect (reply,
-				SIGNAL (uploadProgress (qint64, qint64)),
+				&QNetworkReply::uploadProgress,
 				this,
-				SLOT (handleUploadProgress (qint64, qint64)));
+				[row = std::move (row)] (qint64 done, qint64 total)
+				{
+					row->SetDone (done);
+					row->SetTotal (total);
+				});
 	}
 
 	void BitcheesePending::handleFinished ()

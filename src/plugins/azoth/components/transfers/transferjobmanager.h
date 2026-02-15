@@ -14,11 +14,15 @@
 #include "interfaces/azoth/itransfermanager.h"
 #include "types.h"
 
-class QStandardItemModel;
-class QStandardItem;
 class QAbstractItemModel;
 class QToolBar;
 class QUrl;
+
+namespace LC::Util
+{
+	class ProgressManager;
+	class ProgressModelRow;
+}
 
 namespace LC
 {
@@ -32,20 +36,14 @@ namespace Azoth
 		Q_OBJECT
 
 		AvatarsManager * const AvatarsMgr_;
-
-		QStandardItemModel * const SummaryModel_;
-
-		enum ModelRoles
-		{
-			MRJobObject = Qt::UserRole + 1
-		};
-
 		QHash<QString, QList<IncomingOffer>> Entry2Incoming_;
 
+		Util::ProgressManager * const ProgressManager_;
 		QPersistentModelIndex Selected_;
+
 		QToolBar * const ReprBar_;
 	public:
-		TransferJobManager (AvatarsManager*, QObject* = nullptr);
+		explicit TransferJobManager (AvatarsManager*, QObject* = nullptr);
 
 		void AddAccountManager (QObject*);
 
@@ -72,7 +70,7 @@ namespace Azoth
 
 		void HandleIncomingFinished (const Transfers::JobContext&, const Transfers::JobContext::In&);
 		void HandleFileOffered (const IncomingOffer&);
-		void HandleStateChanged (const TransferState&, const Transfers::JobContext&, QStandardItem*);
+		void HandleStateChanged (const TransferState&, const Transfers::JobContext&, Util::ProgressModelRow&);
 	private slots:
 		void handleAbortAction ();
 	signals:

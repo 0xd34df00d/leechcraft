@@ -9,15 +9,14 @@
 #include "core.h"
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/xpc/progressmanager.h>
+#include "interfaces/lmp/ilmpplugin.h"
 #include "collectionsmanager.h"
 #include "localfileresolver.h"
 #include "localcollection.h"
-#include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
-#include "interfaces/lmp/ilmpplugin.h"
 #include "lmpproxy.h"
 #include "player.h"
-#include "progressmanager.h"
 #include "radiomanager.h"
 #include "rganalysismanager.h"
 #include "hookinterconnector.h"
@@ -39,7 +38,7 @@ namespace LMP
 
 		PlaylistManager PLManager_;
 
-		ProgressManager ProgressManager_;
+		Util::ProgressManager ProgressManager_;
 
 		RadioManager RadioManager_;
 
@@ -53,10 +52,6 @@ namespace LMP
 	Core::Core ()
 	: M_ (std::make_shared<Members> ())
 	{
-		/* TODO
-		M_->ProgressManager_.AddSyncManager (&M_->CloudUpMgr_);
-		*/
-
 		M_->CollectionsManager_.SetCollectionModel (M_->Collection_.GetCollectionModel ());
 	}
 
@@ -134,7 +129,7 @@ namespace LMP
 		return &M_->PLManager_;
 	}
 
-	ProgressManager* Core::GetProgressManager () const
+	Util::ProgressManager* Core::GetProgressManager () const
 	{
 		return &M_->ProgressManager_;
 	}

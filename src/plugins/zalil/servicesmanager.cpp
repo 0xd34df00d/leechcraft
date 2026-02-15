@@ -40,20 +40,19 @@ namespace Zalil
 		return result;
 	}
 
-	PendingUploadBase* ServicesManager::Upload (const QString& file, const QString& svcName)
+	void ServicesManager::Upload (const QString& file, const QString& svcName, Util::ProgressManager& progress)
 	{
 		const auto pos = std::find_if (Services_.begin (), Services_.end (),
-				[&svcName] (const ServiceBase_ptr& service)
-					{ return service->GetName () == svcName; });
+				[&svcName] (const ServiceBase_ptr& service) { return service->GetName () == svcName; });
 		if (pos == Services_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "cannot find service"
 					<< svcName;
-			return nullptr;
+			return;
 		}
 
-		const auto pending = (*pos)->UploadFile (file);
+		const auto pending = (*pos)->UploadFile (file, progress);
 		if (!pending)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -61,14 +60,13 @@ namespace Zalil
 					<< file
 					<< "to"
 					<< svcName;
-			return nullptr;
+			return;
 		}
 
 		connect (pending,
 				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
 				SIGNAL (fileUploaded (QString, QUrl)));
-		return pending;
 	}
 }
 }

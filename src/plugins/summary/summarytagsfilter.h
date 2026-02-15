@@ -8,19 +8,39 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <util/tags/tagsfiltermodel.h>
 
 namespace LC
 {
-namespace Summary
+	struct RowInfo;
+}
+
+namespace LC::Summary
 {
 	class SummaryTagsFilter : public Util::TagsFilterModel
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Summary::SummaryTagsFilter)
+
+		mutable QList<std::optional<RowInfo>> CachedRowInfos_;
 	public:
-		SummaryTagsFilter (QObject* = 0);
+		enum Columns
+		{
+			Name,
+			Status,
+			Progress,
+
+			ColumnCount
+		};
+
+		void setSourceModel (QAbstractItemModel *sourceModel) override;
+
+		int columnCount (const QModelIndex& parent) const override;
+		QVariant data (const QModelIndex& index, int role) const override;
 	protected:
 		QStringList GetTagsForIndex (int) const override;
+	private:
+		QVariant GetDisplayData (const QModelIndex& srcIdx, int column) const;
+		const RowInfo& GetRowInfo (int row) const;
 	};
-}
 }

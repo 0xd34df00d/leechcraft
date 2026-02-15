@@ -16,9 +16,13 @@
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
 
-class QStandardItemModel;
-class QStandardItem;
 class QAbstractItemModel;
+
+namespace LC::Util
+{
+	class ProgressManager;
+	class ProgressModelRow;
+}
 
 namespace LC
 {
@@ -33,9 +37,10 @@ namespace NetStoreManager
 	{
 		Q_OBJECT
 
+		Util::ProgressManager * const Progress_;
+
 		QHash<IStorageAccount*, QStringList> Uploads_;
-		QStandardItemModel *ReprModel_;
-		QHash<IStorageAccount*, QHash<QString, QList<QStandardItem*>>> ReprItems_;
+		QHash<IStorageAccount*, QHash<QString, std::shared_ptr<Util::ProgressModelRow>>> ReprItems_;
 		QSet<QString> Autoshare_;
 
 		ICoreProxy_ptr Proxy_;

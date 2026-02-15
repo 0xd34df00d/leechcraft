@@ -12,6 +12,7 @@
 #include <util/gui/util.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/structures.h>
+#include "summarytagsfilter.h"
 
 namespace LC
 {
@@ -19,12 +20,10 @@ namespace Summary
 {
 	namespace
 	{
-		bool DrawProgress (QPainter *painter,
-				const QStyleOptionViewItem& option, const QModelIndex& index)
+		bool DrawProgress (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index)
 		{
-			const auto& state = index.data (+JobHolderRole::ProcessState).value<ProcessStateInfo> ();
-			auto done = state.Done_;
-			auto total = state.Total_;
+			auto done = index.data (+JobHolderProcessRole::Done).value<qlonglong> ();
+			auto total = index.data (+JobHolderProcessRole::Total).value<qlonglong> ();
 			if (done < 0 || total <= 0)
 				return false;
 
@@ -47,15 +46,13 @@ namespace Summary
 		}
 	}
 
-	void ModelDelegate::paint (QPainter *painter,
-			const QStyleOptionViewItem& option, const QModelIndex& index) const
+	void ModelDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		if (index.column () == JobHolderColumn::JobProgress)
+		if (index.column () == SummaryTagsFilter::Progress)
 		{
-			auto rowRole = index.data (+JobHolderRole::RowKind).value<JobHolderRow> ();
-			if ((rowRole == JobHolderRow::DownloadProgress ||
-						rowRole == JobHolderRow::ProcessProgress) &&
-					DrawProgress (painter, option, index))
+			const auto rowInfo = index.data (+JobHolderRole::RowInfo).value<RowInfo> ();
+			if (const auto isProcess = std::holds_alternative<ProcessInfo> (rowInfo.Specific_);
+				isProcess && DrawProgress (painter, option, index))
 				return;
 		}
 

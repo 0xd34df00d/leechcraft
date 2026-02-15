@@ -13,16 +13,6 @@
 
 namespace LC::Util
 {
-	template<CtString RoleArg, auto GetterArg>
-	struct NamedMemberField
-	{
-		static constexpr auto Getter = GetterArg;
-		static constexpr auto Role = RoleArg;
-	};
-
-	template<CtString RoleArg, auto GetterArg>
-	NamedMemberField<RoleArg, GetterArg> NamedMemberField_v;
-
 	template<typename T, int RoleV>
 	struct RoleOf
 	{
@@ -140,6 +130,12 @@ namespace LC::Util
 		{
 		}
 
+		explicit RoledItemsModel (const QHash<int, FieldGetter_t>& getters, QObject *parent = nullptr)
+		: FlatItemsModelTypedBase<T> { QStringList { {} }, parent }
+		, Role2Getter_ { getters }
+		{
+		}
+
 		template<auto F, typename V>
 		void SetField (int idx, V&& value)
 		{
@@ -173,6 +169,17 @@ namespace LC::Util
 			return {};
 		}
 	};
+
+
+	template<CtString RoleArg, auto GetterArg>
+	struct NamedMemberField
+	{
+		static constexpr auto Getter = GetterArg;
+		static constexpr auto Role = RoleArg;
+	};
+
+	template<CtString RoleArg, auto GetterArg>
+	NamedMemberField<RoleArg, GetterArg> NamedMemberField_v;
 
 	template<typename T>
 	class NamedItemsModel : public FlatItemsModelTypedBase<T>

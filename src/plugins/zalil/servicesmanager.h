@@ -13,6 +13,11 @@
 #include <QStringList>
 #include <interfaces/core/icoreproxy.h>
 
+namespace LC::Util
+{
+	class ProgressManager;
+}
+
 namespace LC
 {
 namespace Zalil
@@ -32,7 +37,7 @@ namespace Zalil
 		ServicesManager (const ICoreProxy_ptr&, QObject* = 0);
 
 		QStringList GetNames (const QString& file) const;
-		PendingUploadBase* Upload (const QString& file, const QString& service);
+		void Upload (const QString& file, const QString& service, Util::ProgressManager& progress);
 	signals:
 		void fileUploaded (const QString&, const QUrl&);
 	};

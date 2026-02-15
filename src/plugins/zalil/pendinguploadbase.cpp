@@ -26,35 +26,9 @@ namespace Zalil
 	PendingUploadBase::PendingUploadBase (const QString& filename,
 			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
-	, ProgressRow_
-	{
-		new QStandardItem { tr ("Uploading %1")
-			.arg (QFileInfo { filename }.fileName ()) },
-		new QStandardItem { tr ("Uploading...") },
-		new QStandardItem
-	}
-	, ProgressRowGuard_
-	{
-		[this]
-		{
-			if (const auto model = ProgressRow_.value (0)->model ())
-				model->removeRow (ProgressRow_.value (0)->row ());
-		}
-	}
 	, Filename_ { filename }
 	, Proxy_ { proxy }
 	{
-		for (const auto item : ProgressRow_)
-		{
-			item->setEditable (false);
-			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
-					+JobHolderRole::RowKind);
-		}
-	}
-
-	const QList<QStandardItem*>& PendingUploadBase::GetReprRow () const
-	{
-		return ProgressRow_;
 	}
 
 	QHttpMultiPart* PendingUploadBase::MakeStandardMultipart ()
@@ -82,14 +56,6 @@ namespace Zalil
 		multipart->append (textPart);
 
 		return multipart;
-	}
-
-	void PendingUploadBase::handleUploadProgress (qint64 done, qint64 total)
-	{
-		Util::SetJobHolderProgress (ProgressRow_, done, total,
-				tr ("%1 of %2")
-					.arg (Util::MakePrettySize (done))
-					.arg (Util::MakePrettySize (total)));
 	}
 
 	void PendingUploadBase::handleError ()

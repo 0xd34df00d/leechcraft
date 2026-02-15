@@ -10,6 +10,11 @@
 
 #include "pendinguploadbase.h"
 
+namespace LC::Util
+{
+	class ProgressManager;
+}
+
 namespace LC
 {
 namespace Zalil
@@ -17,7 +22,7 @@ namespace Zalil
 	class BitcheesePending final : public PendingUploadBase
 	{
 	public:
-		BitcheesePending (const QString&, const ICoreProxy_ptr&, QObject* = nullptr);
+		BitcheesePending (const QString&, const ICoreProxy_ptr&, Util::ProgressManager&, QObject* = nullptr);
 	private:
 		void handleFinished () override;
 	};

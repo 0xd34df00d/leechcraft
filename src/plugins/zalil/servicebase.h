@@ -12,6 +12,11 @@
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
 
+namespace LC::Util
+{
+	class ProgressManager;
+}
+
 namespace LC
 {
 namespace Zalil
@@ -28,7 +33,7 @@ namespace Zalil
 
 		virtual QString GetName () const = 0;
 		virtual qint64 GetMaxFileSize () const = 0;
-		virtual PendingUploadBase* UploadFile (const QString&) = 0;
+		virtual PendingUploadBase* UploadFile (const QString&, Util::ProgressManager&) = 0;
 	};
 
 	typedef std::shared_ptr<ServiceBase> ServiceBase_ptr;

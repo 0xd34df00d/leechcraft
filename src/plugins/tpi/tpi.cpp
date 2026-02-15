@@ -17,11 +17,9 @@ namespace LC
 {
 namespace TPI
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
-
-		ModelMgr_ = new InfoModelManager (proxy);
+		ModelMgr_ = new InfoModelManager ();
 
 		auto comp = std::make_shared<QuarkComponent> ("tpi", "TPIQuark.qml");
 		comp->DynamicProps_.append ({ "TPI_infoModel", ModelMgr_->GetModel () });

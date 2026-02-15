@@ -30,7 +30,6 @@ namespace Summary
 	, Current_ (nullptr)
 	{
 		MergeModel_->setObjectName ("Core MergeModel");
-		MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
 	}
 
 	Core& Core::Instance ()
@@ -75,29 +74,14 @@ namespace Summary
 			MergeModel_->AddModel (plugin->GetRepresentation ());
 	}
 
-	bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
-	{
-		const auto& mapped1 = MapToSourceRecursively (i1);
-		const auto& mapped2 = MapToSourceRecursively (i2);
-		return mapped1.model () == mapped2.model ();
-	}
-
 	QToolBar* Core::GetControls (const QModelIndex& index) const
 	{
-		if (!index.isValid ())
-			return 0;
-
-		const QVariant& data = index.data (+CustomDataRoles::Controls);
-		return data.value<QToolBar*> ();
+		return index.data (+CustomDataRoles::Controls).value<QToolBar*> ();
 	}
 
 	QWidget* Core::GetAdditionalInfo (const QModelIndex& index) const
 	{
-		if (!index.isValid ())
-			return 0;
-
-		const QVariant& data = index.data (+CustomDataRoles::AdditionalInfo);
-		return data.value<QWidget*> ();
+		return index.data (+CustomDataRoles::AdditionalInfo).value<QWidget*> ();
 	}
 
 	SummaryTagsFilter* Core::GetTasksModel () const
@@ -131,31 +115,9 @@ namespace Summary
 		if (!index.isValid ())
 			return {};
 
-		while (true)
-		{
-			const auto model = index.model ();
-			if (!model ||
-					!model->property ("__LeechCraft_own_core_model").toBool ())
-				break;
-
-			if (auto pModel = dynamic_cast<const QAbstractProxyModel*> (model))
-			{
-				index = pModel->mapToSource (index);
-				continue;
-			}
-
-			if (auto mModel = dynamic_cast<const Util::MergeModel*> (model))
-			{
-				index = mModel->mapToSource (index);
-				continue;
-			}
-
-			qWarning () << Q_FUNC_INFO
-					<< "unhandled parent own core model"
-					<< model;
-			break;
-		}
-
+		const auto& tagsFilterModel = dynamic_cast<const SummaryTagsFilter&> (*index.model ());
+		index = tagsFilterModel.mapToSource (index);
+		index = MergeModel_->mapToSource (index);
 		return index;
 	}
 

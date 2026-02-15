@@ -17,6 +17,7 @@
 #include <util/sll/visitor.h>
 #include <util/threads/coro/context.h>
 #include <util/threads/coro/task.h>
+#include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
 #include <interfaces/devices/deviceroles.h>
 #include <interfaces/core/icoreproxy.h>
@@ -30,7 +31,6 @@
 #include "syncmanager.h"
 #include "transcodingparams.h"
 #include "collectionsmanager.h"
-#include "progressmanager.h"
 
 using TranscodingParamsMap_t = QMap<QString, LC::LMP::TranscodingParams>;
 Q_DECLARE_METATYPE (TranscodingParamsMap_t)
@@ -165,14 +165,16 @@ namespace LC::LMP
 			QProgressBar& TranscodingBar_;
 			QProgressBar& CopyingBar_;
 
-			ProgressManager::Handle TranscodingProgress_;
-			ProgressManager::Handle CopyingProgress_;
+			Util::ProgressManager& ProgressManager_;
+			std::unique_ptr<Util::ProgressModelRow> TranscodingProgress_;
+			std::unique_ptr<Util::ProgressModelRow> CopyingProgress_;
 		public:
 			explicit ProgressTracker (qsizetype count, QProgressBar& transcoding, QProgressBar& copying)
 			: TranscodingBar_ { transcoding }
 			, CopyingBar_ { copying }
-			, TranscodingProgress_ { Core::Instance ().GetProgressManager ()->Add (MakeItem (tr ("Audio transcoding"), count)) }
-			, CopyingProgress_ { Core::Instance ().GetProgressManager ()->Add (MakeItem (tr ("Audio copying"), count)) }
+			, ProgressManager_ { *Core::Instance ().GetProgressManager () }
+			, TranscodingProgress_ { ProgressManager_.AddRow (MakeItem (tr ("Audio transcoding")), { .Total_ = count }) }
+			, CopyingProgress_ { ProgressManager_.AddRow (MakeItem (tr ("Audio copying")), { .Total_ = count }) }
 			{
 				for (const auto bar : { &transcoding, &copying })
 				{
@@ -195,25 +197,25 @@ namespace LC::LMP
 						{
 							TranscodingBar_.setMaximum (TranscodingBar_.maximum () - e.Count_);
 							CheckTranscodingBar ();
-							TranscodingProgress_.SetTotal (TranscodingProgress_.GetTotal () - e.Count_);
+							TranscodingProgress_->ChangeTotalBy (-e.Count_);
 						},
 						[&] (const SyncEvents::XcodingFinished&)
 						{
 							TranscodingBar_.setValue (TranscodingBar_.value () + 1);
 							CheckTranscodingBar ();
-							++TranscodingProgress_;
+							++*TranscodingProgress_;
 						},
 						[&] (const SyncEvents::CopyFinished&)
 						{
 							CopyingBar_.setValue (CopyingBar_.value () + 1);
-							++CopyingProgress_;
+							++*CopyingProgress_;
 						},
 						[] (const auto&) {});
 			}
 		private:
-			static ProgressManager::Item MakeItem (const QString& name, int count)
+			static RowInfo MakeItem (const QString& name)
 			{
-				return { .Name_ = name, .StatusPattern_ = tr ("%1 of %2"), .Type_ = ProcessProgress, .Total_ = count };
+				return { .Name_ = name, .Specific_ = ProcessInfo { .Kind_ = ProcessKind::Generic } };
 			}
 
 			void CheckTranscodingBar ()

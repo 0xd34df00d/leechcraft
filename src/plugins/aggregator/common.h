@@ -11,6 +11,7 @@
 #include <QList>
 #include <QMetaType>
 #include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 
 namespace LC::Aggregator
 {
@@ -37,7 +38,7 @@ namespace LC::Aggregator
 
 	enum ChannelRoles
 	{
-		UnreadCount = MaxValue<CustomDataRoles> + 1,
+		UnreadCount = MaxValue<JobHolderRole> + 1,
 		ErrorCount,
 		ChannelID,
 		FeedID,
