@@ -140,8 +140,6 @@ namespace LC::Util
 	 */
 	UTIL_API QString GetLanguage ();
 
-	UTIL_API QList<QModelIndex> GetSummarySelectedRows (QObject *sender);
-
 	/** @brief Returns the action that is set to act as a separator.
 	 *
 	 * That is the action with setSeparator(true);

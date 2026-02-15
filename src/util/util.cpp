@@ -183,23 +183,6 @@ namespace LC::Util
 		return GetLocaleName ().left (2);
 	}
 
-	QModelIndexList GetSummarySelectedRows (QObject *sender)
-	{
-		const auto senderAct = qobject_cast<QAction*> (sender);
-		if (!senderAct)
-		{
-			QString debugString;
-			{
-				QDebug d (&debugString);
-				d << "sender is not a QAction*"
-						<< sender;
-			}
-			throw std::runtime_error (qPrintable (debugString));
-		}
-
-		return senderAct->property ("SelectedRows").value<QList<QModelIndex>> ();
-	}
-
 	QAction* CreateSeparator (QObject *parent)
 	{
 		const auto result = new QAction (parent);
