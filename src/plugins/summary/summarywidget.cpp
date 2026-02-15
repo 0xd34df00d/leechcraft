@@ -8,36 +8,24 @@
 
 #include "summarywidget.h"
 #include <QTimer>
-#include <QComboBox>
 #include <QMenu>
 #include <QToolBar>
-#include <QMainWindow>
 #include <QWidgetAction>
-#include <QCloseEvent>
-#include <QSortFilterProxyModel>
 #include <QLineEdit>
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <interfaces/imwproxy.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/qtutil.h>
 #include "summary.h"
 #include "summarytagsfilter.h"
 #include "modeldelegate.h"
 
-Q_DECLARE_METATYPE (QMenu*)
-
-namespace LC
+namespace LC::Summary
 {
-namespace Summary
-{
-	QObject *SummaryWidget::S_ParentMultiTabs_ = 0;
-
 	class SearchWidget : public QWidget
 	{
 		QLineEdit *Edit_;
@@ -219,12 +207,10 @@ namespace Summary
 
 	SummaryWidget::~SummaryWidget ()
 	{
-		Toolbar_->clear ();
-
-		QWidget *widget = Ui_.ControlsDockWidget_->widget ();
-		Ui_.ControlsDockWidget_->setWidget (0);
+		const auto widget = Ui_.ControlsDockWidget_->widget ();
+		Ui_.ControlsDockWidget_->setWidget (nullptr);
 		if (widget)
-			widget->setParent (0);
+			widget->setParent (nullptr);
 	}
 
 	TabClassInfo SummaryWidget::GetStaticTabClassInfo ()
@@ -285,16 +271,12 @@ namespace Summary
 	void SummaryWidget::ReinitToolbar ()
 	{
 		for (const auto action : Toolbar_->actions ())
-		{
-			auto wa = qobject_cast<QWidgetAction*> (action);
-			if (!wa || wa->defaultWidget () != SearchWidget_)
+			if (auto wa = qobject_cast<QWidgetAction*> (action);
+				!wa || wa->defaultWidget () != SearchWidget_)
 			{
 				Toolbar_->removeAction (action);
 				delete action;
 			}
-			else if (wa->defaultWidget () != SearchWidget_)
-				Toolbar_->removeAction (action);
-		}
 	}
 
 	QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions, QObject *parent) const
@@ -362,11 +344,6 @@ namespace Summary
 		in >> version;
 		if (version != 1)
 			qWarning () << "unknown version" << version;
-	}
-
-	Ui::SummaryWidget SummaryWidget::GetUi () const
-	{
-		return Ui_;
 	}
 
 	void SummaryWidget::handleActionTriggered (QAction *proxyAction)
@@ -483,5 +460,4 @@ namespace Summary
 			updatePanes (now, current);
 		}
 	}
-}
 }

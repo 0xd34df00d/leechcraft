@@ -11,7 +11,6 @@
 #include <unordered_map>
 #include <QWidget>
 #include <QToolBar>
-#include <QStringList>
 #include <util/models/mergemodel.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavetabs.h>
@@ -20,11 +19,8 @@
 #include "summarytagsfilter.h"
 
 class QTimer;
-class QComboBox;
 
-namespace LC
-{
-namespace Summary
+namespace LC::Summary
 {
 	class SearchWidget;
 
@@ -45,7 +41,6 @@ namespace Summary
 		SearchWidget * const SearchWidget_;
 
 		std::unique_ptr<QToolBar> Toolbar_;
-		static QObject *S_ParentMultiTabs_;
 
 		Util::MergeModel MergeModel_;
 		SummaryTagsFilter Filter_;
@@ -69,8 +64,6 @@ namespace Summary
 		QIcon GetTabRecoverIcon () const override;
 
 		void RestoreState (const QByteArray&);
-
-		Ui::SummaryWidget GetUi () const;
 	private:
 		QModelIndex MapToSourceRecursively (const QModelIndex&) const;
 		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;
@@ -94,5 +87,4 @@ namespace Summary
 
 		void tabRecoverDataChanged () override;
 	};
-}
 }
