@@ -50,7 +50,7 @@ namespace LC::Summary
 			connect (Edit_,
 					SIGNAL (returnPressed ()),
 					summary,
-					SLOT (feedFilterParameters ()));
+					SLOT (filterReturnPressed ()));
 		}
 
 		QString GetText () const
