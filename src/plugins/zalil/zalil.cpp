@@ -63,9 +63,9 @@ namespace Zalil
 		Manager_->Upload (filename, service, Progress_);
 	}
 
-	QAbstractItemModel* Plugin::GetRepresentation () const
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
-		return &Progress_.GetModel ();
+		return Progress_.CreateDefaultHandler ();
 	}
 }
 }

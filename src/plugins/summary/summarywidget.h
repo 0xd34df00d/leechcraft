@@ -8,15 +8,17 @@
 
 #pragma once
 
+#include <unordered_map>
 #include <QWidget>
 #include <QToolBar>
-#include <QMap>
 #include <QStringList>
+#include <util/models/mergemodel.h>
+#include <interfaces/ijobholder.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
-#include <interfaces/ijobholderrepresentationhandler.h>
 #include "ui_summarywidget.h"
 #include "core.h"
+#include "summarytagsfilter.h"
 
 class QTimer;
 class QComboBox;
@@ -26,7 +28,6 @@ namespace LC
 namespace Summary
 {
 	class SearchWidget;
-	class SummaryTagsFilter;
 
 	class SummaryWidget : public QWidget
 						, public ITabWidget
@@ -43,9 +44,10 @@ namespace Summary
 		std::unique_ptr<QToolBar> Toolbar_;
 		static QObject *S_ParentMultiTabs_;
 
-		SummaryTagsFilter *Sorter_;
+		Util::MergeModel MergeModel_;
+		SummaryTagsFilter Filter_;
 
-		QHash<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
+		std::unordered_map<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
 		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;
 	public:
 		explicit SummaryWidget (QWidget* = nullptr);
@@ -69,7 +71,9 @@ namespace Summary
 
 		Ui::SummaryWidget GetUi () const;
 	private:
-		SearchWidget* CreateSearchWidget ();
+		QModelIndex MapToSourceRecursively (const QModelIndex&) const;
+		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;
+
 		void ReinitToolbar ();
 		QList<QAction*> CreateProxyActions (const QList<QAction*>&, QObject*) const;
 	private slots:

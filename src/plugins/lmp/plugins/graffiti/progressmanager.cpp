@@ -20,9 +20,9 @@ namespace LC::LMP::Graffiti
 	{
 	}
 
-	QAbstractItemModel* ProgressManager::GetModel () const
+	IJobHolderRepresentationHandler_ptr ProgressManager::CreateReprHandler ()
 	{
-		return &Manager_->GetModel ();
+		return Manager_->CreateDefaultHandler ();
 	}
 
 	void ProgressManager::HandleTagsFetch (int fetched, int total, QObject *obj)

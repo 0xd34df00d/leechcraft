@@ -14,6 +14,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QSet>
+#include <interfaces/ijobholder.h>
 #include <interfaces/core/icoreproxy.h>
 
 class QAbstractItemModel;
@@ -47,7 +48,7 @@ namespace NetStoreManager
 	public:
 		UpManager (ICoreProxy_ptr proxy, QObject* = 0);
 
-		QAbstractItemModel* GetRepresentationModel () const;
+		IJobHolderRepresentationHandler_ptr CreateReprHandler ();
 		void ScheduleAutoshare (const QString&);
 	private:
 		void RemovePending (const QString&);

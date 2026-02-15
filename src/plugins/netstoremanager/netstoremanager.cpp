@@ -138,9 +138,9 @@ namespace NetStoreManager
 		return XSD_;
 	}
 
-	QAbstractItemModel* Plugin::GetRepresentation () const
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
-		return UpManager_->GetRepresentationModel ();
+		return UpManager_->CreateReprHandler ();
 	}
 
 	QStringList Plugin::GetServiceVariants () const

@@ -26,7 +26,6 @@
 #include <interfaces/imwproxy.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/qtutil.h>
-#include "core.h"
 #include "summary.h"
 #include "summarytagsfilter.h"
 #include "modeldelegate.h"
@@ -54,7 +53,7 @@ namespace Summary
 			Edit_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
 			lay->addStretch ();
 			lay->addWidget (Edit_, 0, Qt::AlignRight);
-			new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Edit_);
+			new Util::ClearLineEditAddon (GetProxyHolder (), Edit_);
 
 			connect (Edit_,
 					SIGNAL (textChanged (QString)),
@@ -77,13 +76,26 @@ namespace Summary
 		}
 	};
 
+	namespace
+	{
+		struct GuardHandler : IJobHolderRepresentationHandler
+		{
+			QAbstractItemModel& GetRepresentation () override
+			{
+				throw std::runtime_error { "null model representation called" };
+			}
+		};
+	}
+
 	SummaryWidget::SummaryWidget (QWidget *parent)
 	: QWidget (parent)
 	, FilterTimer_ (new QTimer)
-	, SearchWidget_ (CreateSearchWidget ())
+	, SearchWidget_ (new SearchWidget (this))
 	, Toolbar_ (new QToolBar)
-	, Sorter_ (Core::Instance ().GetTasksModel ())
+	, MergeModel_ { { {}, {}, {} } }
 	{
+		SrcModel2Handler_ [nullptr] = std::make_unique<GuardHandler> ();
+
 		Toolbar_->setWindowTitle ("Summary");
 		connect (Toolbar_.get (),
 				SIGNAL (actionTriggered (QAction*)),
@@ -104,17 +116,25 @@ namespace Summary
 
 		Ui_.ControlsDockWidget_->hide ();
 
-		Ui_.PluginsTasksTree_->setModel (Sorter_);
+		for (const auto plugin : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
+		{
+			auto reprHandler = plugin->CreateRepresentationHandler ();
+			auto& model = reprHandler->GetRepresentation ();
+			MergeModel_.AddModel (&model);
+			SrcModel2Handler_ [&model] = std::move (reprHandler);
+		}
+		Filter_.setSourceModel (&MergeModel_);
+		Ui_.PluginsTasksTree_->setModel (&Filter_);
 
-		connect (Sorter_,
+		connect (&Filter_,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (checkDataChanged (QModelIndex, QModelIndex)));
-		connect (Sorter_,
+		connect (&Filter_,
 				SIGNAL (modelAboutToBeReset ()),
 				this,
 				SLOT (handleReset ()));
-		connect (Sorter_,
+		connect (&Filter_,
 				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (checkRowsToBeRemoved (QModelIndex, int, int)));
@@ -134,11 +154,6 @@ namespace Summary
 		itemsHeader->resizeSection (1, fm.horizontalAdvance ("Of the download."));
 		itemsHeader->resizeSection (2, fm.horizontalAdvance ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		for (const auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
-			if (const auto handler = ijh->CreateRepresentationHandler ())
-				SrcModel2Handler_ [ijh->GetRepresentation ()] = handler;
-
 		auto connectChange = [this] (auto signal, auto method)
 		{
 			connect (Ui_.PluginsTasksTree_->selectionModel (),
@@ -146,14 +161,14 @@ namespace Summary
 					this,
 					[this, method] (const QModelIndex& current, const QModelIndex& previous)
 					{
-						const auto& prevMapped = Core::Instance ().MapToSourceRecursively (previous);
-						const auto& thisMapped = Core::Instance ().MapToSourceRecursively (current);
+						const auto& prevMapped = MapToSourceRecursively (previous);
+						const auto& thisMapped = MapToSourceRecursively (current);
 
 						if (prevMapped.isValid () && prevMapped.model () != thisMapped.model ())
-							std::invoke (method, SrcModel2Handler_ [prevMapped.model ()], QModelIndex {});
+							std::invoke (method, GetHandler (prevMapped), QModelIndex {});
 
 						if (thisMapped.isValid ())
-							std::invoke (method, SrcModel2Handler_ [thisMapped.model ()], thisMapped);
+							std::invoke (method, GetHandler (thisMapped), thisMapped);
 					});
 		};
 		connectChange (&QItemSelectionModel::currentChanged,
@@ -170,9 +185,9 @@ namespace Summary
 					this,
 					[this, method] (const QModelIndex& index)
 					{
-						const auto& mapped = Core::Instance ().MapToSourceRecursively (index);
+						const auto& mapped = MapToSourceRecursively (index);
 						if (mapped.isValid ())
-							std::invoke (method, SrcModel2Handler_ [mapped.model ()], mapped);
+							std::invoke (method, GetHandler (mapped), mapped);
 					});
 		};
 		connectAction (&QAbstractItemView::activated, &IJobHolderRepresentationHandler::HandleActivated);
@@ -188,16 +203,16 @@ namespace Summary
 					QHash<const QAbstractItemModel*, QModelIndexList> newSelections;
 					for (const auto& row : Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ())
 					{
-						const auto& mapped = Core::Instance ().MapToSourceRecursively (row);
+						const auto& mapped = MapToSourceRecursively (row);
 						newSelections [mapped.model ()] << mapped;
 					}
 
 					for (const auto& [model, rows] : Util::Stlize (newSelections))
-						SrcModel2Handler_ [model]->HandleSelectedRowsChanged (rows);
+						SrcModel2Handler_.at (model)->HandleSelectedRowsChanged (rows);
 
 					QSet<const QAbstractItemModel*> curModels { newSelections.keyBegin (), newSelections.keyEnd () };
 					for (const auto model : PreviouslySelectedModels_ - curModels)
-						SrcModel2Handler_ [model]->HandleSelectedRowsChanged ({});
+						SrcModel2Handler_.at (model)->HandleSelectedRowsChanged ({});
 					PreviouslySelectedModels_ = curModels;
 				});
 	}
@@ -210,8 +225,6 @@ namespace Summary
 		Ui_.ControlsDockWidget_->setWidget (0);
 		if (widget)
 			widget->setParent (0);
-
-		delete Sorter_;
 	}
 
 	void SummaryWidget::SetParentMultiTabs (QObject *parent)
@@ -245,9 +258,20 @@ namespace Summary
 		return qobject_cast<Summary*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
 	}
 
-	SearchWidget* SummaryWidget::CreateSearchWidget ()
+	QModelIndex SummaryWidget::MapToSourceRecursively (const QModelIndex& index) const
 	{
-		return new SearchWidget (this);
+		if (!index.isValid ())
+			return {};
+
+		return MergeModel_.mapToSource (Filter_.mapToSource (index));
+	}
+
+	IJobHolderRepresentationHandler& SummaryWidget::GetHandler (const QModelIndex& index) const
+	{
+		const auto pos = SrcModel2Handler_.find (index.model ());
+		if (pos == SrcModel2Handler_.end ())
+			qFatal () << "no source model handler for" << index;
+		return *pos->second;
 	}
 
 	void SummaryWidget::ReinitToolbar ()
@@ -363,8 +387,7 @@ namespace Summary
 
 	void SummaryWidget::checkDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
 	{
-		const QModelIndex& cur = Ui_.PluginsTasksTree_->
-				selectionModel ()->currentIndex ();
+		const auto& cur = Ui_.PluginsTasksTree_->selectionModel ()->currentIndex ();
 		if (topLeft.row () <= cur.row () && bottomRight.row () >= cur.row ())
 			updatePanes (cur, cur);
 	}
@@ -383,8 +406,10 @@ namespace Summary
 
 	void SummaryWidget::updatePanes (const QModelIndex& newIndex, const QModelIndex& oldIndex)
 	{
-		if (const auto toolbar = newIndex.data (+CustomDataRoles::Controls).value<QToolBar*> ();
-			toolbar != oldIndex.data (+CustomDataRoles::Controls).value<QToolBar*> ())
+		const auto& newSrcIdx = MapToSourceRecursively (newIndex);
+		const auto& oldSrcIdx = MapToSourceRecursively (oldIndex);
+		if (const auto toolbar = newSrcIdx.data (+CustomDataRoles::Controls).value<QToolBar*> ();
+			toolbar != oldSrcIdx.data (+CustomDataRoles::Controls).value<QToolBar*> ())
 		{
 			ReinitToolbar ();
 			if (toolbar)
@@ -393,7 +418,7 @@ namespace Summary
 				{
 					const auto& ai = action->property ("ActionIcon").toString ();
 					if (!ai.isEmpty () && action->icon ().isNull ())
-						action->setIcon (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (ai));
+						action->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon (ai));
 				}
 
 				const auto& proxies = CreateProxyActions (toolbar->actions (), Toolbar_.get ());
@@ -401,13 +426,13 @@ namespace Summary
 			}
 		}
 
-		if (const auto info = newIndex.data (+CustomDataRoles::AdditionalInfo).value<QWidget*> ();
-			info != oldIndex.data (+CustomDataRoles::AdditionalInfo).value<QWidget*> ())
+		if (const auto info = GetHandler (newSrcIdx).GetInfoWidget ();
+			info != GetHandler (oldSrcIdx).GetInfoWidget ())
 		{
 			Ui_.ControlsDockWidget_->setWidget (info);
 			Ui_.ControlsDockWidget_->setVisible (static_cast<bool> (info));
 			if (info)
-				Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (info->findChildren<QAction*> ());
+				GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (info->findChildren<QAction*> ());
 		}
 	}
 
@@ -425,7 +450,7 @@ namespace Summary
 
 	void SummaryWidget::feedFilterParameters ()
 	{
-		Sorter_->SetFilterString (SearchWidget_->GetText ());
+		Filter_.SetFilterString (SearchWidget_->GetText ());
 	}
 
 	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)

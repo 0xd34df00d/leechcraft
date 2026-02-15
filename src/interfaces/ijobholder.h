@@ -8,11 +8,15 @@
 
 #pragma once
 
+#include <memory>
 #include <QtPlugin>
 #include "interfaces/structures.h"
 
 class QAbstractItemModel;
-class QWidget;
+class QModelIndex;
+
+template<typename>
+class QList;
 
 namespace LC
 {
@@ -107,8 +111,60 @@ namespace LC
 	inline constexpr int MaxValue<JobHolderProcessRole> = +JobHolderProcessRole::StateCustomText;
 }
 
-class IJobHolderRepresentationHandler;
-using IJobHolderRepresentationHandler_ptr = std::shared_ptr<IJobHolderRepresentationHandler>;
+class IJobHolderRepresentationHandler
+{
+public:
+	virtual ~IJobHolderRepresentationHandler () = default;
+
+	/** @brief Returns the item representation model.
+	 *
+	 * The returned model is role-based: each row should provide a
+	 * RowInfo via JobHolderRole::RowInfo, and process rows should
+	 * also provide JobHolderProcessRole values (Done, Total, State,
+	 * StateCustomText). Inside of LeechCraft the model would be
+	 * merged with other models from other plugins.
+	 *
+	 * This model is also used to retrieve controls and additional info
+	 * for a given index via the CustomDataRoles::RoleControls and
+	 * CustomDataRoles::RoleAdditionalInfo respectively.
+	 *
+	 * Returned controls widget would be placed above the view with the
+	 * jobs, so usually it has some actions controlling the job, but in
+	 * fact it can have anything you want. It is only visible when a job
+	 * from your plugin is selected. If a job from other plugin is
+	 * selected, then other plugin's controls would be placed, and if no
+	 * jobs are selected at all then all controls are hidden.
+	 *
+	 * Widget with the additional information is placed to the right of
+	 * the view with the jobs, so usually it has additional information
+	 * about the job like transfer log for FTP client, but in fact it
+	 * can have anything you want. The same rules regarding its
+	 * visibility apply as for controls widget.
+	 *
+	 * @return Representation model.
+	 *
+	 * @sa IJobHolder
+	 * @sa LC::CustomDataRoles
+	 * @sa LC::RowInfo
+	 * @sa LC::JobHolderProcessRole
+	 */
+	virtual QAbstractItemModel& GetRepresentation () = 0;
+
+	virtual void HandleCurrentChanged (const QModelIndex&) {}
+	virtual void HandleCurrentColumnChanged (const QModelIndex&) {}
+	virtual void HandleCurrentRowChanged (const QModelIndex&) {}
+	virtual void HandleSelectedRowsChanged (const QList<QModelIndex>&) {}
+
+	virtual void HandleActivated (const QModelIndex&) {}
+	virtual void HandleClicked (const QModelIndex&) {}
+	virtual void HandleDoubleClicked (const QModelIndex&) {}
+	virtual void HandleEntered (const QModelIndex&) {}
+	virtual void HandlePressed (const QModelIndex&) {}
+
+	virtual QWidget* GetInfoWidget () { return nullptr; }
+};
+
+using IJobHolderRepresentationHandler_ptr = std::unique_ptr<IJobHolderRepresentationHandler>;
 
 /** @brief Interface for plugins holding jobs or persistent notifications.
  *
@@ -139,40 +195,7 @@ class Q_DECL_EXPORT IJobHolder
 protected:
 	virtual ~IJobHolder () = default;
 public:
-	/** @brief Returns the item representation model.
-	 *
-	 * The returned model is role-based: each row should provide a
-	 * RowInfo via JobHolderRole::RowInfo, and process rows should
-	 * also provide JobHolderProcessRole values (Done, Total, State,
-	 * StateCustomText). Inside of LeechCraft the model would be
-	 * merged with other models from other plugins.
-	 *
-	 * This model is also used to retrieve controls and additional info
-	 * for a given index via the CustomDataRoles::RoleControls and
-	 * CustomDataRoles::RoleAdditionalInfo respectively.
-	 *
-	 * Returned controls widget would be placed above the view with the
-	 * jobs, so usually it has some actions controlling the job, but in
-	 * fact it can have anything you want. It is only visible when a job
-	 * from your plugin is selected. If a job from other plugin is
-	 * selected, then other plugin's controls would be placed, and if no
-	 * jobs are selected at all then all controls are hidden.
-	 *
-	 * Widget with the additional information is placed to the right of
-	 * the view with the jobs, so usually it has additional information
-	 * about the job like transfer log for FTP client, but in fact it
-	 * can have anything you want. The same rules regarding its
-	 * visibility apply as for controls widget.
-	 *
-	 * @return Representation model.
-	 *
-	 * @sa LC::CustomDataRoles
-	 * @sa LC::RowInfo
-	 * @sa LC::JobHolderProcessRole
-	 */
-	virtual QAbstractItemModel* GetRepresentation () const = 0;
-
-	virtual IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () { return {}; }
+	virtual IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () = 0;
 };
 
 Q_DECLARE_METATYPE (LC::RowInfo)

@@ -83,9 +83,9 @@ namespace LC::LMP::Graffiti
 					<< tabClass;
 	}
 
-	QAbstractItemModel* Plugin::GetRepresentation () const
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
-		return ProgressMgr_->GetModel ();
+		return ProgressMgr_->CreateReprHandler ();
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)

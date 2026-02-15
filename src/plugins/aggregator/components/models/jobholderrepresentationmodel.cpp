@@ -27,8 +27,6 @@ namespace LC::Aggregator
 		{
 		case Controls:
 			return QVariant::fromValue<QToolBar*> (&Deps_.Toolbar_);
-		case AdditionalInfo:
-			return QVariant::fromValue<QWidget*> (&Deps_.DetailsWidget_);
 		case ContextMenu:
 			return QVariant::fromValue<QMenu*> (&Deps_.RowMenu_);
 		case Tags: // handled by underlying model

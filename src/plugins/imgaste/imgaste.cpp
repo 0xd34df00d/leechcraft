@@ -136,9 +136,9 @@ namespace LC::Imgaste
 		return result;
 	}
 
-	QAbstractItemModel* Plugin::GetRepresentation () const
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
-		return &ProgressManager_.GetModel ();
+		return ProgressManager_.CreateDefaultHandler ();
 	}
 
 	namespace

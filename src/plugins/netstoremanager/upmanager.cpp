@@ -37,9 +37,9 @@ namespace NetStoreManager
 	{
 	}
 
-	QAbstractItemModel* UpManager::GetRepresentationModel () const
+	IJobHolderRepresentationHandler_ptr UpManager::CreateReprHandler ()
 	{
-		return &Progress_->GetModel ();
+		return Progress_->CreateDefaultHandler ();
 	}
 
 	void UpManager::RemovePending (const QString& path)

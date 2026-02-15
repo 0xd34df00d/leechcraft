@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QObject>
 #include <QHash>
+#include <interfaces/ijobholder.h>
 
 class QAbstractItemModel;
 
@@ -33,7 +34,7 @@ namespace LC::LMP::Graffiti
 	public:
 		explicit ProgressManager (QObject* = nullptr);
 
-		QAbstractItemModel* GetModel () const;
+		IJobHolderRepresentationHandler_ptr CreateReprHandler ();
 
 		void HandleTagsFetch (int fetched, int total, QObject *obj);
 		void HandleCueSplitter (CueSplitter*);

@@ -53,24 +53,20 @@ namespace LC::Aggregator
 			})}
 	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentationModel> (JobHolderRepresentationModel::Deps {
 				.Toolbar_ = *ReprWidget_->GetToolBar (),
-				.DetailsWidget_ = *ReprWidget_,
 				.RowMenu_ = CreateMenu (*ChannelActions_, deps.AppWideActions_, *ReprWidget_),
 				.SelectedRole_ = SelectedIdProxyModel_->GetIsSelectedRole (),
 			})}
 	{
 		JobHolderRepresentation_->setSourceModel (&*SelectedIdProxyModel_);
+
+		ReprWidget_->ConstructBrowser ();
 	}
 
 	RepresentationManager::~RepresentationManager () = default;
 
-	void RepresentationManager::HandlePluginsAvailable ()
+	QAbstractItemModel& RepresentationManager::GetRepresentation ()
 	{
-		ReprWidget_->ConstructBrowser ();
-	}
-
-	QAbstractItemModel* RepresentationManager::GetRepresentation () const
-	{
-		return JobHolderRepresentation_.get ();
+		return *JobHolderRepresentation_;
 	}
 
 	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& index)
@@ -92,6 +88,11 @@ namespace LC::Aggregator
 		SelectedChannels_ = Util::Map (indices,
 				[] (const QModelIndex& idx) { return idx.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> (); });
 		ReprWidget_->SetChannels (Util::Map (SelectedChannels_, &ChannelShort::ChannelID_));
+	}
+
+	QWidget* RepresentationManager::GetInfoWidget ()
+	{
+		return ReprWidget_.get ();
 	}
 
 	bool RepresentationManager::NavigateChannel (ChannelDirection dir)

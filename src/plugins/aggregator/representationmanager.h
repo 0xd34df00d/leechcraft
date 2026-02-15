@@ -11,7 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <QModelIndex>
-#include <interfaces/ijobholderrepresentationhandler.h>
+#include <interfaces/ijobholder.h>
 #include "channel.h"
 
 namespace LC::Util
@@ -58,12 +58,11 @@ namespace LC::Aggregator
 		explicit RepresentationManager (const Deps&);
 		~RepresentationManager () override;
 
-		void HandlePluginsAvailable ();
+		QAbstractItemModel& GetRepresentation () override;
 
-		QAbstractItemModel* GetRepresentation () const;
-
-		void HandleCurrentRowChanged(const QModelIndex&) override;
+		void HandleCurrentRowChanged (const QModelIndex&) override;
 		void HandleSelectedRowsChanged (const QList<QModelIndex>&) override;
+		QWidget* GetInfoWidget () override;
 	private:
 		bool NavigateChannel (ChannelDirection);
 	};

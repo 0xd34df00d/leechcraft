@@ -92,7 +92,6 @@ namespace LC::BitTorrent
 		QFuture<Result> AddJob (LC::Entity) override;
 
 		// IJobHolder
-		QAbstractItemModel* GetRepresentation () const override;
 		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 
 		// ITaggableJobs

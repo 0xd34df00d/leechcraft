@@ -20,9 +20,9 @@ namespace LC::LMP::BrainSlugz
 	{
 	}
 
-	QAbstractItemModel* ProgressModelManager::GetModel () const
+	IJobHolderRepresentationHandler_ptr ProgressModelManager::CreateReprHandler ()
 	{
-		return &Progress_->GetModel ();
+		return Progress_->CreateDefaultHandler ();
 	}
 
 	void ProgressModelManager::AddChecker (Checker *checker)

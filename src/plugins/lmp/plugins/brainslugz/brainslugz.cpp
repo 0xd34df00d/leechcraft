@@ -68,9 +68,9 @@ namespace LC::LMP::BrainSlugz
 		return { "org.LeechCraft.LMP.General" };
 	}
 
-	QAbstractItemModel* Plugin::GetRepresentation () const
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
-		return ProgressModelManager_->GetModel ();
+		return ProgressModelManager_->CreateReprHandler ();
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)

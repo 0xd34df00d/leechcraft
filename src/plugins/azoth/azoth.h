@@ -78,7 +78,6 @@ namespace Azoth
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		QAbstractItemModel* GetRepresentation () const override;
 		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;

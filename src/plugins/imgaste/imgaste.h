@@ -49,7 +49,7 @@ namespace LC::Imgaste
 		QString GetFilterVerb () const override;
 		QList<FilterVariant> GetFilterVariants (const QVariant&) const override;
 
-		QAbstractItemModel* GetRepresentation () const override;
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 	private:
 		void UploadFile (const QString&, const Entity&);
 		void UploadImage (const QImage&, const Entity&);

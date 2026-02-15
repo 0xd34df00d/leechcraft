@@ -126,7 +126,11 @@ namespace TPI
 	void InfoModelManager::SecondInit ()
 	{
 		for (const auto ijh : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
-			Concat_.addSourceModel (ijh->GetRepresentation ());
+		{
+			auto handler = ijh->CreateRepresentationHandler ();
+			Concat_.addSourceModel (&handler->GetRepresentation ());
+			Handlers_.emplace_back (std::move (handler));
+		}
 	}
 }
 }

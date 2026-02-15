@@ -26,10 +26,7 @@ namespace LC
 namespace Summary
 {
 	Core::Core ()
-	: MergeModel_ (new Util::MergeModel ({ {}, {}, {} }))
-	, Current_ (nullptr)
 	{
-		MergeModel_->setObjectName ("Core MergeModel");
 	}
 
 	Core& Core::Instance ()
@@ -56,11 +53,6 @@ namespace Summary
 				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
-
-		connect (Proxy_->GetPluginsManager ()->GetQObject (),
-				SIGNAL (pluginInjected (QObject*)),
-				this,
-				SLOT (handlePluginInjected (QObject*)));
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -70,26 +62,6 @@ namespace Summary
 
 	void Core::SecondInit ()
 	{
-		for (const auto plugin : Proxy_->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
-			MergeModel_->AddModel (plugin->GetRepresentation ());
-	}
-
-	SummaryTagsFilter* Core::GetTasksModel () const
-	{
-		const auto filter = new SummaryTagsFilter ();
-		filter->setSourceModel (MergeModel_.get ());
-		return filter;
-	}
-
-	QModelIndex Core::MapToSourceRecursively (QModelIndex index) const
-	{
-		if (!index.isValid ())
-			return {};
-
-		const auto& tagsFilterModel = dynamic_cast<const SummaryTagsFilter&> (*index.model ());
-		index = tagsFilterModel.mapToSource (index);
-		index = MergeModel_->mapToSource (index);
-		return index;
 	}
 
 	template<typename F>
@@ -149,12 +121,6 @@ namespace Summary
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentTabChanged (int)));
-	}
-
-	void Core::handlePluginInjected (QObject *object)
-	{
-		if (auto ijh = qobject_cast<IJobHolder*> (object))
-			MergeModel_->AddModel (ijh->GetRepresentation ());
 	}
 }
 }

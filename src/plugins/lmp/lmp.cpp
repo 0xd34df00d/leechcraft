@@ -408,9 +408,9 @@ namespace LMP
 				EffectsMgr_->RegisterEffect (effect);
 	}
 
-	QAbstractItemModel* Plugin::GetRepresentation () const
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
-		return &Core::Instance ().GetProgressManager ()->GetModel ();
+		return Core::Instance ().GetProgressManager ()->CreateDefaultHandler ();
 	}
 
 	QString Plugin::GetFilterVerb () const

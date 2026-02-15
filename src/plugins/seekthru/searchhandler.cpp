@@ -87,15 +87,15 @@ namespace LC::SeekThru
 			default:
 				return QString ("");
 			}
+			/* TODO migrate to IJobHolder
 		case +CustomDataRoles::AdditionalInfo:
-			if (Results_.at (r).Type_ == Result::TypeHTML)
-			{
-				Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ().property ("NavBarVisible").toBool ());
-				Viewer_->SetHtml (Results_.at (r).Response_, Results_.at (r).RequestURL_.toString ());
-				return QVariant::fromValue<QWidget*> (Viewer_.get ());
-			}
-			else
-				return 0;
+			if (Results_.at (r).Type_ != Result::TypeHTML)
+				return QVariant::fromValue<QWidget*> (nullptr);
+
+			Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ().property ("NavBarVisible").toBool ());
+			Viewer_->SetHtml (Results_.at (r).Response_, Results_.at (r).RequestURL_.toString ());
+			return QVariant::fromValue<QWidget*> (Viewer_.get ());
+			*/
 		case +CustomDataRoles::Controls:
 			if (Results_.at (r).Type_ != Result::TypeHTML)
 			{

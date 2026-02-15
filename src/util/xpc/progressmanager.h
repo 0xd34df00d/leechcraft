@@ -56,11 +56,14 @@ namespace LC::Util
 		};
 		RoledItemsModel<Item> Model_;
 	public:
+		constexpr static auto MaxRole = MaxValue<JobHolderProcessRole>;
+
 		explicit ProgressManager (QObject *parent = nullptr);
 
 		void SetGlobalData (const QVariant& data, int role);
 
 		QAbstractItemModel& GetModel ();
+		IJobHolderRepresentationHandler_ptr CreateDefaultHandler ();
 
 		struct Initializers
 		{

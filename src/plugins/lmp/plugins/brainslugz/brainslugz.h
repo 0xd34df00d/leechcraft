@@ -56,7 +56,7 @@ namespace LC::LMP::BrainSlugz
 
 		QSet<QByteArray> GetPluginClasses () const override;
 
-		QAbstractItemModel* GetRepresentation () const override;
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 
 		void SetLMPProxy (ILMPProxy_ptr) override;
 	};

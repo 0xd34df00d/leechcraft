@@ -15,7 +15,6 @@
 #include <QUrl>
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
-#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -104,23 +103,22 @@ namespace CSTP
 		return Core::Instance ().AddTask (e);
 	}
 
-	QAbstractItemModel* CSTP::GetRepresentation () const
-	{
-		return Core::Instance ().GetRepresentationModel ();
-	}
-
 	IJobHolderRepresentationHandler_ptr CSTP::CreateRepresentationHandler ()
 	{
-		class Handler : public IJobHolderRepresentationHandler
+		struct Handler : IJobHolderRepresentationHandler
 		{
-		public:
+			QAbstractItemModel& GetRepresentation () override
+			{
+				return *Core::Instance ().GetRepresentationModel ();
+			}
+
 			void HandleCurrentRowChanged (const QModelIndex& index) override
 			{
 				Core::Instance ().ItemSelected (index);
 			}
 		};
 
-		return std::make_shared<Handler> ();
+		return std::make_unique<Handler> ();
 	}
 
 	Util::XmlSettingsDialog_ptr CSTP::GetSettingsDialog () const

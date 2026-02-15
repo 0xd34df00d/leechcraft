@@ -212,10 +212,9 @@ namespace BitTorrent
 		return Dispatcher_;
 	}
 
-	void Core::SetWidgets (QToolBar *tool, QWidget *tab)
+	void Core::SetWidgets (QToolBar *tool)
 	{
 		Toolbar_ = tool;
-		TabWidget_ = tab;
 	}
 
 	void Core::SetMenu (QMenu *menu)
@@ -451,8 +450,6 @@ namespace BitTorrent
 		{
 		case CustomDataRoles::Controls:
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		case CustomDataRoles::AdditionalInfo:
-			return QVariant::fromValue<QWidget*> (TabWidget_);
 		case CustomDataRoles::ContextMenu:
 			return QVariant::fromValue<QMenu*> (Menu_);
 		case CustomDataRoles::Tags:

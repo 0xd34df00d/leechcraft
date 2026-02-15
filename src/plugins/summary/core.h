@@ -32,7 +32,6 @@ namespace Summary
 
 		ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<Util::MergeModel> MergeModel_;
 		QPointer<SummaryWidget> Current_;
 
 		Core ();
@@ -44,25 +43,6 @@ namespace Summary
 
 		void SecondInit ();
 
-		/** Creates a new model for the given request and returns a
-			* pointer to it. Ownership is transferred to the caller.
-			*
-			* For example, this is used in the Summary.
-			*/
-		SummaryTagsFilter* GetTasksModel () const;
-
-		/** Maps totally unmapped index to the plugin's source model
-			* through merge model and filter model. If the index doesn't
-			* belong this plugin, returns an invalid QModelIndex().
-			*
-			* @param[in] index The original unmapped index.
-			* @return Mapped index from the plugin's model.
-			*
-			* @exception std::runtime_error Throws if the required model
-			* could not be found.
-			*/
-		QModelIndex MapToSourceRecursively (QModelIndex index) const;
-
 		void RecoverTabs (const QList<TabRecoverInfo>&);
 	public slots:
 		void handleNewTabRequested ();
@@ -72,7 +52,6 @@ namespace Summary
 	private slots:
 		void handleCurrentTabChanged (int);
 		void handleWindow (int);
-		void handlePluginInjected (QObject*);
 	signals:
 		void currentViewChanged (QTreeView*);
 	};

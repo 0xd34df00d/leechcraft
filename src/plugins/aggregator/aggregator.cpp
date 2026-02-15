@@ -14,7 +14,6 @@
 #include <QTranslator>
 #include <QKeyEvent>
 #include <QXmlStreamReader>
-#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -110,25 +109,15 @@ namespace Aggregator
 				&StorageBackendManager::channelAdded,
 				this,
 				&UpdateChannelResources);
-
-		ReprManager_ = std::make_shared<RepresentationManager> (RepresentationManager::Deps {
-					.ShortcutManager_ = *ShortcutMgr_,
-					.AppWideActions_ = *AppWideActions_,
-					.ChannelsModel_ = *ChannelsModel_,
-					.UpdatesManager_ = *UpdatesManager_,
-					.DBUpThread_ = *DBUpThread_,
-				});
 	}
 
 	void Aggregator::SecondInit ()
 	{
-		ReprManager_->HandlePluginsAvailable ();
 	}
 
 	void Aggregator::Release ()
 	{
 		PluginManager_.reset ();
-		ReprManager_.reset ();
 		AggregatorTab_.reset ();
 		ChannelsModel_.reset ();
 		DBUpThread_.reset ();
@@ -201,15 +190,15 @@ namespace Aggregator
 		return XmlSettingsDialog_;
 	}
 
-	QAbstractItemModel* Aggregator::GetRepresentation () const
-	{
-		return ReprManager_->GetRepresentation ();
-	}
-
 	IJobHolderRepresentationHandler_ptr Aggregator::CreateRepresentationHandler ()
 	{
-		// TODO create per-call
-		return ReprManager_;
+		return std::make_unique<RepresentationManager> (RepresentationManager::Deps {
+					.ShortcutManager_ = *ShortcutMgr_,
+					.AppWideActions_ = *AppWideActions_,
+					.ChannelsModel_ = *ChannelsModel_,
+					.UpdatesManager_ = *UpdatesManager_,
+					.DBUpThread_ = *DBUpThread_,
+				});
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const

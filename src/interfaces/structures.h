@@ -183,12 +183,6 @@ namespace LC
 		 */
 		Controls,
 
-		/** The role for the widget appearing on the right part of the
-		 * screen when the user selects an item. QWidget* is expected to
-		 * be returned.
-		 */
-		AdditionalInfo,
-
 		/** This role returns the QMenu* that should be used as the
 		 * context menu.
 		 */

@@ -10,8 +10,7 @@
 
 #include <QCoreApplication>
 #include <QObject>
-
-class QAbstractItemModel;
+#include <interfaces/ijobholder.h>
 
 namespace LC::Util
 {
@@ -30,7 +29,7 @@ namespace LC::LMP::BrainSlugz
 	public:
 		explicit ProgressModelManager (QObject* = nullptr);
 
-		QAbstractItemModel* GetModel () const;
+		IJobHolderRepresentationHandler_ptr CreateReprHandler ();
 
 		void AddChecker (Checker*);
 	};

@@ -19,7 +19,6 @@
 #include <QFileInfo>
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
-#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -321,20 +320,20 @@ namespace LC::BitTorrent
 		return result;
 	}
 
-	QAbstractItemModel* TorrentPlugin::GetRepresentation () const
-	{
-		return ReprProxy_;
-	}
-
 	IJobHolderRepresentationHandler_ptr TorrentPlugin::CreateRepresentationHandler ()
 	{
-		class Handler : public IJobHolderRepresentationHandler
+		struct Handler : IJobHolderRepresentationHandler
 		{
 			TorrentPlugin * const Plugin_;
-		public:
+
 			explicit Handler (TorrentPlugin *plugin)
 			: Plugin_ { plugin }
 			{
+			}
+
+			QAbstractItemModel& GetRepresentation () override
+			{
+				return *Plugin_->ReprProxy_;
 			}
 
 			void HandleCurrentRowChanged (const QModelIndex& srcIdx) override
@@ -350,9 +349,14 @@ namespace LC::BitTorrent
 						[this] (const auto& idx) { return Plugin_->ReprProxy_->mapToSource (idx); });
 				Plugin_->Actions_->SetCurrentSelection (indexes);
 			}
+
+			QWidget* GetInfoWidget () override
+			{
+				return Plugin_->TabWidget_.get ();
+			}
 		};
 
-		return std::make_shared<Handler> (this);
+		return std::make_unique<Handler> (this);
 	}
 
 	void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
@@ -419,7 +423,7 @@ namespace LC::BitTorrent
 				Core::Instance ()->GetSession (),
 				*Core::Instance ()->GetSessionSettingsManager ());
 
-		Core::Instance ()->SetWidgets (Actions_->GetToolbar (), TabWidget_.get ());
+		Core::Instance ()->SetWidgets (Actions_->GetToolbar ());
 	}
 
 	void TorrentPlugin::SetupStuff ()

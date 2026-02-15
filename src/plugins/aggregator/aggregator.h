@@ -73,7 +73,6 @@ namespace Aggregator
 		TabClassInfo TabInfo_;
 
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-		std::shared_ptr<RepresentationManager> ReprManager_;
 		std::shared_ptr<AggregatorTab> AggregatorTab_;
 
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
@@ -102,7 +101,6 @@ namespace Aggregator
 		TabClasses_t GetTabClasses () const override;
 		void TabOpenRequested (const QByteArray&) override;
 
-		QAbstractItemModel* GetRepresentation () const override;
 		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;

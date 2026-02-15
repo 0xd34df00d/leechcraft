@@ -20,7 +20,6 @@
 
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
-#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -149,23 +148,23 @@ namespace Azoth
 		return XmlSettingsDialog_;
 	}
 
-	QAbstractItemModel* Plugin::GetRepresentation () const
-	{
-		return Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
-	}
-
 	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
 		class Handler : public IJobHolderRepresentationHandler
 		{
 		public:
+			QAbstractItemModel& GetRepresentation () override
+			{
+				return *Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
+			}
+
 			void HandleCurrentRowChanged (const QModelIndex& index) override
 			{
 				Core::Instance ().GetTransferJobManager ()->SelectionChanged (index);
 			}
 		};
 
-		return std::make_shared<Handler> ();
+		return std::make_unique<Handler> ();
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const

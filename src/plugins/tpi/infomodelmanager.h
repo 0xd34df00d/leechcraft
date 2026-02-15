@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/ijobholder.h>
 
 class QAbstractItemModel;
 class QConcatenateTablesProxyModel;
@@ -24,6 +25,8 @@ namespace TPI
 		QConcatenateTablesProxyModel& Concat_;
 		QSortFilterProxyModel& Filter_;
 		QIdentityProxyModel& Structurize_;
+
+		std::vector<IJobHolderRepresentationHandler_ptr> Handlers_;
 	public:
 		explicit InfoModelManager (QObject* = nullptr);
 

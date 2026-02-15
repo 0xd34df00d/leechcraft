@@ -87,6 +87,26 @@ namespace LC::Util
 		return Model_;
 	}
 
+	IJobHolderRepresentationHandler_ptr ProgressManager::CreateDefaultHandler ()
+	{
+		struct Handler : IJobHolderRepresentationHandler
+		{
+			QAbstractItemModel& Model_;
+
+			explicit Handler (QAbstractItemModel& model)
+			: Model_ { model }
+			{
+			}
+
+			QAbstractItemModel& GetRepresentation () override
+			{
+				return Model_;
+			}
+		};
+
+		return std::make_unique<Handler> (Model_);
+	}
+
 	std::unique_ptr<ProgressModelRow> ProgressManager::AddRow (RowInfo info)
 	{
 		return AddRow (std::move (info), {});
