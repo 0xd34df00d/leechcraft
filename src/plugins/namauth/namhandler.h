@@ -25,7 +25,6 @@ namespace LC::NamAuth
 		Q_DECLARE_TR_FUNCTIONS (LC::NamAuth::NamHandler)
 
 		SQLStorageBackend * const SB_;
-		QNetworkAccessManager * const NAM_;
 	public:
 		NamHandler (SQLStorageBackend*, QNetworkAccessManager*);
 	private:

@@ -19,7 +19,6 @@ namespace LC::NamAuth
 	NamHandler::NamHandler (SQLStorageBackend *sb, QNetworkAccessManager *nam)
 	: QObject { nam }
 	, SB_ { sb }
-	, NAM_ { nam }
 	{
 		connect (nam,
 				&QNetworkAccessManager::authenticationRequired,
