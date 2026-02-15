@@ -107,11 +107,6 @@ namespace LC
 
 		RootWindowsManager* GetRootWindowsManager () const;
 
-		/** Maps given index from a model obtained from GetTasksModel()
-		 * to the index provided by a corresponding plugin's model.
-		 */
-		QModelIndex MapToSource (const QModelIndex& index) const;
-
 		/** Returns the app-wide new tab menu manager.
 		 */
 		NewTabMenuManager* GetNewTabMenuManager () const;

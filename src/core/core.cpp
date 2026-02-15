@@ -200,17 +200,6 @@ namespace LC
 		return RootWindowsManager_.get ();
 	}
 
-	QModelIndex Core::MapToSource (const QModelIndex& index) const
-	{
-		for (const auto summary : PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ())
-		{
-			const QModelIndex& mapped = summary->MapToSource (index);
-			if (mapped.isValid ())
-				return mapped;
-		}
-		return {};
-	}
-
 	NewTabMenuManager* Core::GetNewTabMenuManager () const
 	{
 		return NewTabMenuManager_.get ();

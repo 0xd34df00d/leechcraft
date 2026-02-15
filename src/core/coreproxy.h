@@ -30,7 +30,6 @@ namespace LC
 
 		QNetworkAccessManager* GetNetworkAccessManager () const override;
 		IShortcutProxy* GetShortcutProxy () const override;
-		QModelIndex MapToSource (const QModelIndex&) const override;
 
 		Util::BaseSettingsManager* GetSettingsManager () const override;
 

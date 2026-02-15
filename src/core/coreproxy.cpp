@@ -83,11 +83,6 @@ namespace LC
 		return Core::Instance ().GetShortcutProxy ();
 	}
 
-	QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
-	{
-		return Core::Instance ().MapToSource (index);
-	}
-
 	Util::BaseSettingsManager* CoreProxy::GetSettingsManager () const
 	{
 		return XmlSettingsManager::Instance ();

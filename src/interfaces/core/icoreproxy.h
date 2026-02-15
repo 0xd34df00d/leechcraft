@@ -68,10 +68,6 @@ public:
 	 */
 	virtual IShortcutProxy* GetShortcutProxy () const = 0;
 
-	/** @brief Maps the given index to the plugin's model.
-	 */
-	virtual QModelIndex MapToSource (const QModelIndex& index) const = 0;
-
 	/** @brief Returns the LeechCraft's settings manager.
 	 *
 	 * In the returned settings manager you can use any property name
