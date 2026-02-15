@@ -9,16 +9,15 @@
 #pragma once
 
 #include <unordered_map>
-#include <QWidget>
+#include <QTimer>
 #include <QToolBar>
+#include <QWidget>
 #include <util/models/mergemodel.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "ui_summarywidget.h"
 #include "summarytagsfilter.h"
-
-class QTimer;
 
 namespace LC::Summary
 {
@@ -36,7 +35,7 @@ namespace LC::Summary
 
 		QObject& Plugin_;
 
-		QTimer *FilterTimer_;
+		QTimer FilterTimer_;
 
 		SearchWidget * const SearchWidget_;
 
@@ -70,14 +69,13 @@ namespace LC::Summary
 
 		void ReinitToolbar ();
 		QList<QAction*> CreateProxyActions (const QList<QAction*>&, QObject*) const;
+
+		void SetFilterParams ();
 	private slots:
 		void handleActionTriggered (QAction*);
 		void handleReset ();
 		void checkRowsToBeRemoved (const QModelIndex&, int, int);
 		void updatePanes (const QModelIndex&, const QModelIndex&);
-		void filterParametersChanged ();
-		void filterReturnPressed ();
-		void feedFilterParameters ();
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
 		void syncSelection (const QModelIndex&);
 	signals:

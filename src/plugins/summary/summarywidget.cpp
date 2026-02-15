@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "summarywidget.h"
-#include <QTimer>
 #include <QMenu>
 #include <QToolBar>
 #include <QWidgetAction>
@@ -18,9 +17,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/gui/clearlineeditaddon.h>
 #include <util/sll/qtutil.h>
-#include "summary.h"
 #include "summarytagsfilter.h"
 #include "modeldelegate.h"
 
@@ -28,39 +25,25 @@ namespace LC::Summary
 {
 	class SearchWidget : public QWidget
 	{
-		QLineEdit *Edit_;
+		QHBoxLayout Layout_;
+		QLineEdit Edit_;
 	public:
-		SearchWidget (SummaryWidget *summary)
-		: Edit_ (new QLineEdit)
+		explicit SearchWidget (QWidget *parent)
+		: QWidget { parent }
 		{
-			auto lay = new QHBoxLayout;
-			setLayout (lay);
+			setLayout (&Layout_);
 
-			Edit_->setPlaceholderText (SummaryWidget::tr ("Search..."));
-			Edit_->setMaximumWidth (400);
-			Edit_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
-			lay->addStretch ();
-			lay->addWidget (Edit_, 0, Qt::AlignRight);
-			new Util::ClearLineEditAddon (GetProxyHolder (), Edit_);
-
-			connect (Edit_,
-					SIGNAL (textChanged (QString)),
-					summary,
-					SLOT (filterParametersChanged ()));
-			connect (Edit_,
-					SIGNAL (returnPressed ()),
-					summary,
-					SLOT (filterReturnPressed ()));
+			Edit_.setPlaceholderText (SummaryWidget::tr ("Search..."));
+			Edit_.setMaximumWidth (fontMetrics ().horizontalAdvance ('x') * 50);
+			Edit_.setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
+			Edit_.setClearButtonEnabled (true);
+			Layout_.addStretch ();
+			Layout_.addWidget (&Edit_, 0, Qt::AlignRight);
 		}
 
-		QString GetText () const
+		QLineEdit& GetEdit ()
 		{
-			return Edit_->text ();
-		}
-
-		void SetText (const QString& text)
-		{
-			Edit_->setText (text);
+			return Edit_;
 		}
 	};
 
@@ -77,7 +60,6 @@ namespace LC::Summary
 
 	SummaryWidget::SummaryWidget (QObject& plugin)
 	: Plugin_ { plugin }
-	, FilterTimer_ { new QTimer }
 	, SearchWidget_ { new SearchWidget { this } }
 	, Toolbar_ { new QToolBar }
 	, MergeModel_ { { {}, {}, {} } }
@@ -92,15 +74,25 @@ namespace LC::Summary
 
 		Toolbar_->addWidget (SearchWidget_);
 
+		connect (&SearchWidget_->GetEdit (),
+				&QLineEdit::textChanged,
+				&FilterTimer_,
+				qOverload<> (&QTimer::start));
+		connect (&SearchWidget_->GetEdit (),
+				&QLineEdit::returnPressed,
+				this,
+				[this]
+				{
+					FilterTimer_.stop ();
+					SetFilterParams ();
+				});
+
 		Ui_.setupUi (this);
 		Ui_.PluginsTasksTree_->setItemDelegate (new ModelDelegate (this));
 
-		FilterTimer_->setSingleShot (true);
-		FilterTimer_->setInterval (800);
-		connect (FilterTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (feedFilterParameters ()));
+		FilterTimer_.setSingleShot (true);
+		FilterTimer_.setInterval (800);
+		FilterTimer_.callOnTimeout (this, &SummaryWidget::SetFilterParams);
 
 		Ui_.ControlsDockWidget_->hide ();
 
@@ -401,21 +393,9 @@ namespace LC::Summary
 		}
 	}
 
-	void SummaryWidget::filterParametersChanged ()
+	void SummaryWidget::SetFilterParams ()
 	{
-		FilterTimer_->stop ();
-		FilterTimer_->start ();
-	}
-
-	void SummaryWidget::filterReturnPressed ()
-	{
-		FilterTimer_->stop ();
-		feedFilterParameters ();
-	}
-
-	void SummaryWidget::feedFilterParameters ()
-	{
-		Filter_.SetFilterString (SearchWidget_->GetText ());
+		Filter_.SetFilterString (SearchWidget_->GetEdit ().text ());
 	}
 
 	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
