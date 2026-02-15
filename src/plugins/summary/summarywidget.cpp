@@ -37,8 +37,8 @@ namespace LC::Summary
 			Edit_.setMaximumWidth (fontMetrics ().horizontalAdvance ('x') * 50);
 			Edit_.setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
 			Edit_.setClearButtonEnabled (true);
-			Layout_.addStretch ();
-			Layout_.addWidget (&Edit_, 0, Qt::AlignRight);
+			Layout_.addStretch (1);
+			Layout_.addWidget (&Edit_, 3);
 		}
 
 		QLineEdit& GetEdit ()
