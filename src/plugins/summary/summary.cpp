@@ -9,40 +9,27 @@
 #include "summary.h"
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
-#include "core.h"
 #include "summarywidget.h"
 
-namespace LC
+namespace LC::Summary
 {
-namespace Summary
-{
-	void Summary::Init (ICoreProxy_ptr proxy)
+	void Summary::Init (ICoreProxy_ptr)
 	{
-		SummaryWidget::SetParentMultiTabs (this);
-
-		Core::Instance ().SetProxy (proxy);
-
-		TabClassInfo tabClass =
-		{
-			"Summary",
-			tr ("Summary"),
-			GetInfo (),
-			GetIcon (),
-			50,
-			TFOpenableByRequest | TFByDefault | TFSuggestOpening
-		};
-		TabClasses_ << tabClass;
 	}
 
 	void Summary::SecondInit ()
 	{
-		Core::Instance ().SecondInit ();
 	}
 
 	void Summary::Release ()
 	{
-		Core::Instance ().Release ();
+		if (Current_)
+		{
+			delete Current_;
+			Current_ = nullptr;
+		}
 	}
 
 	QByteArray Summary::GetUniqueID () const
@@ -57,7 +44,7 @@ namespace Summary
 
 	QString Summary::GetInfo () const
 	{
-		return tr ("Summary of downloads and recent events");
+		return SummaryWidget::GetStaticTabClassInfo ().Description_;
 	}
 
 	QIcon Summary::GetIcon () const
@@ -67,29 +54,39 @@ namespace Summary
 
 	TabClasses_t Summary::GetTabClasses () const
 	{
-		return TabClasses_;
+		return { SummaryWidget::GetStaticTabClassInfo () };
 	}
 
-	void Summary::TabOpenRequested (const QByteArray& tabClass)
+	void Summary::TabOpenRequested (const QByteArray&)
 	{
-		if (tabClass == "Summary")
-			Core::Instance ().handleNewTabRequested ();
+		if (Current_)
+			emit Current_->raiseTab ();
 		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
-					<< tabClass;
+		{
+			Current_ = new SummaryWidget { *this };
+			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Summary"), Current_);
+		}
 	}
 
 	void Summary::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Core::Instance ().RecoverTabs (infos);
+		if (infos.isEmpty () || Current_)
+			return;
+
+		const auto& info = infos.first ();
+
+		Current_ = new SummaryWidget { *this };
+		for (const auto& [name, value] : info.DynProperties_)
+			Current_->setProperty (name, value);
+		Current_->RestoreState (info.Data_);
+
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Summary"), Current_);
 	}
 
 	bool Summary::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
 	{
 		return true;
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_summary, LC::Summary::Summary);

@@ -14,35 +14,35 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 
-namespace LC
+namespace LC::Summary
 {
-namespace Summary
-{
-	class Summary : public QObject
-					, public IInfo
-					, public IHaveTabs
-					, public IHaveRecoverableTabs
+	class SummaryWidget;
+
+	class Summary
+		: public QObject
+		, public IInfo
+		, public IHaveTabs
+		, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IHaveRecoverableTabs)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Summary")
 
-		TabClasses_t TabClasses_;
+		QPointer<SummaryWidget> Current_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		void RecoverTabs (const QList<TabRecoverInfo>&);
-		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
+		void RecoverTabs (const QList<TabRecoverInfo>&) override;
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 	};
-}
 }

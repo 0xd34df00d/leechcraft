@@ -17,7 +17,6 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "ui_summarywidget.h"
-#include "core.h"
 #include "summarytagsfilter.h"
 
 class QTimer;
@@ -29,14 +28,18 @@ namespace Summary
 {
 	class SearchWidget;
 
-	class SummaryWidget : public QWidget
-						, public ITabWidget
-						, public IRecoverableTab
+	class SummaryWidget
+		: public QWidget
+		, public ITabWidget
+		, public IRecoverableTab
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::SummaryWidget Ui_;
+
+		QObject& Plugin_;
+
 		QTimer *FilterTimer_;
 
 		SearchWidget * const SearchWidget_;
@@ -50,10 +53,10 @@ namespace Summary
 		std::unordered_map<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
 		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;
 	public:
-		explicit SummaryWidget (QWidget* = nullptr);
+		explicit SummaryWidget (QObject& parentPlugin);
 		~SummaryWidget () override;
 
-		static void SetParentMultiTabs (QObject*);
+		static TabClassInfo GetStaticTabClassInfo ();
 
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
@@ -66,8 +69,6 @@ namespace Summary
 		QIcon GetTabRecoverIcon () const override;
 
 		void RestoreState (const QByteArray&);
-
-		void SetUpdatesEnabled (bool);
 
 		Ui::SummaryWidget GetUi () const;
 	private:

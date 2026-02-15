@@ -87,11 +87,11 @@ namespace Summary
 		};
 	}
 
-	SummaryWidget::SummaryWidget (QWidget *parent)
-	: QWidget (parent)
-	, FilterTimer_ (new QTimer)
-	, SearchWidget_ (new SearchWidget (this))
-	, Toolbar_ (new QToolBar)
+	SummaryWidget::SummaryWidget (QObject& plugin)
+	: Plugin_ { plugin }
+	, FilterTimer_ { new QTimer }
+	, SearchWidget_ { new SearchWidget { this } }
+	, Toolbar_ { new QToolBar }
 	, MergeModel_ { { {}, {}, {} } }
 	{
 		SrcModel2Handler_ [nullptr] = std::make_unique<GuardHandler> ();
@@ -227,9 +227,17 @@ namespace Summary
 			widget->setParent (0);
 	}
 
-	void SummaryWidget::SetParentMultiTabs (QObject *parent)
+	TabClassInfo SummaryWidget::GetStaticTabClassInfo ()
 	{
-		S_ParentMultiTabs_ = parent;
+		return
+		{
+			"Summary",
+			tr ("Summary"),
+			tr ("Summary of downloads and recent events."),
+			GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon (),
+			50,
+			TFOpenableByRequest | TFByDefault | TFSuggestOpening
+		};
 	}
 
 	void SummaryWidget::Remove ()
@@ -250,12 +258,12 @@ namespace Summary
 
 	QObject* SummaryWidget::ParentMultiTabs ()
 	{
-		return S_ParentMultiTabs_;
+		return &Plugin_;
 	}
 
 	TabClassInfo SummaryWidget::GetTabClassInfo () const
 	{
-		return qobject_cast<Summary*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
+		return GetStaticTabClassInfo ();
 	}
 
 	QModelIndex SummaryWidget::MapToSourceRecursively (const QModelIndex& index) const
@@ -353,16 +361,7 @@ namespace Summary
 		quint8 version = 0;
 		in >> version;
 		if (version != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version";
-			return;
-		}
-	}
-
-	void SummaryWidget::SetUpdatesEnabled (bool)
-	{
-		// TODO implement this
+			qWarning () << "unknown version" << version;
 	}
 
 	Ui::SummaryWidget SummaryWidget::GetUi () const
