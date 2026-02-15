@@ -11,17 +11,12 @@
 #include <iostream>
 #include <QMessageBox>
 #include <QtDebug>
-#include <QTimer>
 #include <QNetworkProxy>
-#include <QApplication>
 #include <QAction>
-#include <QToolBar>
 #include <QCryptographicHash>
 #include <QAbstractNetworkCache>
 #include <QDropEvent>
 #include <QInputDialog>
-#include <QMimeData>
-#include <QNetworkCookie>
 #include <QTimer>
 #include <util/xpc/util.h>
 #include <util/network/customcookiejar.h>
@@ -30,7 +25,6 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iactionsexporter.h>
-#include <interfaces/isummaryrepresentation.h>
 #include <interfaces/structures.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "components/network/networkaccessmanager.h"

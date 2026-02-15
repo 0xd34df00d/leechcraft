@@ -80,11 +80,6 @@ namespace Summary
 					<< tabClass;
 	}
 
-	QModelIndex Summary::MapToSource (const QModelIndex& index) const
-	{
-		return Core::Instance ().MapToSourceRecursively (index);
-	}
-
 	void Summary::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
 		Core::Instance ().RecoverTabs (infos);

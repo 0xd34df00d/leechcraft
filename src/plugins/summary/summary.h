@@ -12,7 +12,6 @@
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
-#include <interfaces/isummaryrepresentation.h>
 #include <interfaces/ihaverecoverabletabs.h>
 
 namespace LC
@@ -22,11 +21,10 @@ namespace Summary
 	class Summary : public QObject
 					, public IInfo
 					, public IHaveTabs
-					, public ISummaryRepresentation
 					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs ISummaryRepresentation IHaveRecoverableTabs)
+		Q_INTERFACES (IInfo IHaveTabs IHaveRecoverableTabs)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Summary")
 
@@ -42,8 +40,6 @@ namespace Summary
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
-
-		QModelIndex MapToSource (const QModelIndex&) const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>&);
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
