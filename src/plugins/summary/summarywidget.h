@@ -72,7 +72,6 @@ namespace LC::Summary
 		QList<QAction*> CreateProxyActions (const QList<QAction*>&, QObject*) const;
 	private slots:
 		void handleActionTriggered (QAction*);
-		void checkDataChanged (const QModelIndex&, const QModelIndex&);
 		void handleReset ();
 		void checkRowsToBeRemoved (const QModelIndex&, int, int);
 		void updatePanes (const QModelIndex&, const QModelIndex&);

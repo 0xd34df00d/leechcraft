@@ -115,10 +115,6 @@ namespace LC::Summary
 		Ui_.PluginsTasksTree_->setModel (&Filter_);
 
 		connect (&Filter_,
-				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (checkDataChanged (QModelIndex, QModelIndex)));
-		connect (&Filter_,
 				SIGNAL (modelAboutToBeReset ()),
 				this,
 				SLOT (handleReset ()));
@@ -359,13 +355,6 @@ namespace LC::Summary
 				QVariant::fromValue<QObject*> (selModel));
 
 		action->activate (QAction::Trigger);
-	}
-
-	void SummaryWidget::checkDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
-	{
-		const auto& cur = Ui_.PluginsTasksTree_->selectionModel ()->currentIndex ();
-		if (topLeft.row () <= cur.row () && bottomRight.row () >= cur.row ())
-			updatePanes (cur, cur);
 	}
 
 	void SummaryWidget::handleReset ()
