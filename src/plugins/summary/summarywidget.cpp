@@ -7,7 +7,9 @@
  **********************************************************************/
 
 #include "summarywidget.h"
+#include <QGuiApplication>
 #include <QMenu>
+#include <QStyleHints>
 #include <QToolBar>
 #include <QWidgetAction>
 #include <QLineEdit>
@@ -86,7 +88,7 @@ namespace LC::Summary
 		Ui_.PluginsTasksTree_->setItemDelegate (new ModelDelegate (this));
 
 		FilterTimer_.setSingleShot (true);
-		FilterTimer_.setInterval (800);
+		FilterTimer_.setInterval (QGuiApplication::styleHints ()->keyboardInputInterval ());
 		FilterTimer_.callOnTimeout (this, &SummaryWidget::SetFilterParams);
 
 		Ui_.ControlsDockWidget_->hide ();
