@@ -20,6 +20,13 @@ namespace LC::Util
 
 	void ProgressDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
+		const auto& progress = ProgressGetter_ (index);
+		if (!progress)
+		{
+			QStyledItemDelegate::paint (painter, option, index);
+			return;
+		}
+
 		QStyleOptionProgressBar progressBarOption;
 		progressBarOption.state = option.state | QStyle::StateFlag::State_Horizontal;
 		progressBarOption.direction = option.direction;
@@ -29,11 +36,10 @@ namespace LC::Util
 		progressBarOption.textAlignment = Qt::AlignCenter;
 		progressBarOption.textVisible = true;
 
-		const auto& progress = ProgressGetter_ (index);
-		progressBarOption.minimum = progress.Minimum_;
-		progressBarOption.maximum = progress.Maximum_;
-		progressBarOption.progress = progress.Progress_;
-		progressBarOption.text = ElideProgressBarText (progress.Text_, option);
+		progressBarOption.minimum = progress->Minimum_;
+		progressBarOption.maximum = progress->Maximum_;
+		progressBarOption.progress = progress->Progress_;
+		progressBarOption.text = ElideProgressBarText (progress->Text_, option);
 
 		QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &progressBarOption, painter);
 	}

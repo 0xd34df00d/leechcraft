@@ -24,7 +24,7 @@ namespace LC::Util
 			QString Text_;
 		};
 
-		using ProgressGetter_t = std::function<Progress (QModelIndex)>;
+		using ProgressGetter_t = std::function<std::optional<Progress> (QModelIndex)>;
 	private:
 		ProgressGetter_t ProgressGetter_;
 	public:
