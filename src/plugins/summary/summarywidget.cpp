@@ -112,9 +112,9 @@ namespace LC::Summary
 				this,
 				&SummaryWidget::EnsureCurrentRowSelected);
 
-		auto connectChange = [this] (auto signal, auto method)
+		auto connectViewSignal = [this] (auto emitter, auto signal, auto method)
 		{
-			connect (Ui_.PluginsTasksTree_->selectionModel (),
+			connect (emitter,
 					signal,
 					this,
 					[this, method] (const QModelIndex& current)
@@ -123,6 +123,8 @@ namespace LC::Summary
 						std::invoke (method, GetHandler (thisMapped), thisMapped);
 					});
 		};
+
+		const auto connectChange = std::bind_front (connectViewSignal, Ui_.PluginsTasksTree_->selectionModel ());
 		connectChange (&QItemSelectionModel::currentChanged,
 				&IJobHolderRepresentationHandler::HandleCurrentChanged);
 		connectChange (&QItemSelectionModel::currentRowChanged,
@@ -130,17 +132,7 @@ namespace LC::Summary
 		connectChange (&QItemSelectionModel::currentColumnChanged,
 				&IJobHolderRepresentationHandler::HandleCurrentColumnChanged);
 
-		auto connectAction = [this] (auto signal, auto method)
-		{
-			connect (Ui_.PluginsTasksTree_,
-					signal,
-					this,
-					[this, method] (const QModelIndex& index)
-					{
-						const auto& mapped = MapToSourceRecursively (index);
-						std::invoke (method, GetHandler (mapped), mapped);
-					});
-		};
+		const auto connectAction = std::bind_front (connectViewSignal, Ui_.PluginsTasksTree_);
 		connectAction (&QAbstractItemView::activated, &IJobHolderRepresentationHandler::HandleActivated);
 		connectAction (&QAbstractItemView::clicked, &IJobHolderRepresentationHandler::HandleClicked);
 		connectAction (&QAbstractItemView::doubleClicked, &IJobHolderRepresentationHandler::HandleDoubleClicked);
