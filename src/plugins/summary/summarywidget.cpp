@@ -106,10 +106,9 @@ namespace LC::Summary
 				this,
 				&SummaryWidget::SetCurrentRow);
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				&QItemSelectionModel::currentRowChanged,
 				this,
-				SLOT (syncSelection (QModelIndex)),
-				Qt::QueuedConnection);
+				&SummaryWidget::EnsureCurrentRowSelected);
 
 		auto connectChange = [this] (auto signal, auto method)
 		{
@@ -292,15 +291,11 @@ namespace LC::Summary
 			menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 	}
 
-	void SummaryWidget::syncSelection (const QModelIndex& current)
+	void SummaryWidget::EnsureCurrentRowSelected (const QModelIndex&)
 	{
 		const auto selm = Ui_.PluginsTasksTree_->selectionModel ();
-		const auto& now = selm->currentIndex ();
-		if (current != now ||
-				(now.isValid () && !selm->rowIntersectsSelection (now.row ())))
-		{
-			selm->select (now, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-			SetCurrentRow (now);
-		}
+		if (const auto& cur = selm->currentIndex ();
+			cur.isValid () && !selm->rowIntersectsSelection (cur.row ()))
+			selm->select (cur, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 	}
 }

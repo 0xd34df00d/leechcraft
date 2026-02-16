@@ -72,9 +72,9 @@ namespace LC::Summary
 		void SetFilterParams ();
 
 		void SetCurrentRow (const QModelIndex&);
+		void EnsureCurrentRowSelected (const QModelIndex&);
 	private slots:
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
-		void syncSelection (const QModelIndex&);
 	signals:
 		void removeTab () override;
 		void raiseTab () override;
