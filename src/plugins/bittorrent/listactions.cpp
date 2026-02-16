@@ -388,8 +388,6 @@ namespace LC::BitTorrent
 		menu->addSeparator ();
 		menu->addActions ({ ForceReannounce_, ForceRecheck_, MoveFiles_, ChangeTrackers_ });
 
-		menu->setAttribute (Qt::WA_DeleteOnClose);
-
 		return menu;
 	}
 
