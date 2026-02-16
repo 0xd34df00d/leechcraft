@@ -69,7 +69,6 @@ namespace LC::Summary
 
 		void SetFilterParams ();
 	private slots:
-		void handleReset ();
 		void checkRowsToBeRemoved (const QModelIndex&, int, int);
 		void updatePanes (const QModelIndex&, const QModelIndex&);
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);

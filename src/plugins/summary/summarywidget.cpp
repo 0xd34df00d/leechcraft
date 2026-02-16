@@ -102,9 +102,9 @@ namespace LC::Summary
 		Ui_.PluginsTasksTree_->setModel (&Filter_);
 
 		connect (&Filter_,
-				SIGNAL (modelAboutToBeReset ()),
+				&QSortFilterProxyModel::modelAboutToBeReset,
 				this,
-				SLOT (handleReset ()));
+				[this] { Ui_.PluginsTasksTree_->selectionModel ()->clear (); });
 		connect (&Filter_,
 				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
@@ -272,11 +272,6 @@ namespace LC::Summary
 	QIcon SummaryWidget::GetTabRecoverIcon () const
 	{
 		return GetTabClassInfo ().Icon_;
-	}
-
-	void SummaryWidget::handleReset ()
-	{
-		Ui_.PluginsTasksTree_->selectionModel ()->clear ();
 	}
 
 	void SummaryWidget::checkRowsToBeRemoved (const QModelIndex&, int begin, int end)
