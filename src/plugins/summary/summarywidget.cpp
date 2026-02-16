@@ -67,11 +67,6 @@ namespace LC::Summary
 		SrcModel2Handler_ [nullptr] = std::make_unique<GuardHandler> ();
 
 		Toolbar_->setWindowTitle ("Summary");
-		connect (Toolbar_.get (),
-				SIGNAL (actionTriggered (QAction*)),
-				this,
-				SLOT (handleActionTriggered (QAction*)));
-
 		Toolbar_->addWidget (SearchWidget_);
 
 		connect (&SearchWidget_->GetEdit (),
@@ -259,52 +254,9 @@ namespace LC::Summary
 	void SummaryWidget::ReinitToolbar ()
 	{
 		for (const auto action : Toolbar_->actions ())
-			if (auto wa = qobject_cast<QWidgetAction*> (action);
+			if (const auto wa = qobject_cast<QWidgetAction*> (action);
 				!wa || wa->defaultWidget () != SearchWidget_)
-			{
 				Toolbar_->removeAction (action);
-				delete action;
-			}
-	}
-
-	QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions, QObject *parent) const
-	{
-		QList<QAction*> proxies;
-
-		for (const auto action : actions)
-		{
-			if (qobject_cast<QWidgetAction*> (action))
-			{
-				proxies << action;
-				continue;
-			}
-
-			QAction *pa = new QAction (action->icon (), action->text (), parent);
-			if (action->isSeparator ())
-				pa->setSeparator (true);
-			else
-			{
-				pa->setCheckable (action->isCheckable ());
-				pa->setChecked (action->isChecked ());
-				pa->setShortcuts (action->shortcuts ());
-				pa->setStatusTip (action->statusTip ());
-				pa->setToolTip (action->toolTip ());
-				pa->setWhatsThis (action->whatsThis ());
-				pa->setData (QVariant::fromValue<QObject*> (action));
-
-				connect (pa,
-						SIGNAL (hovered ()),
-						action,
-						SIGNAL (hovered ()));
-				connect (pa,
-						SIGNAL (toggled (bool)),
-						action,
-						SIGNAL (toggled (bool)));
-			}
-			proxies << pa;
-		}
-
-		return proxies;
 	}
 
 	QByteArray SummaryWidget::GetTabRecoverData () const
@@ -322,21 +274,6 @@ namespace LC::Summary
 		return GetTabClassInfo ().Icon_;
 	}
 
-	void SummaryWidget::handleActionTriggered (QAction *proxyAction)
-	{
-		QAction *action = qobject_cast<QAction*> (proxyAction->
-				data ().value<QObject*> ());
-		QItemSelectionModel *selModel =
-				Ui_.PluginsTasksTree_->selectionModel ();
-		QModelIndexList indexes = selModel->selectedRows ();
-		action->setProperty ("SelectedRows",
-				QVariant::fromValue<QList<QModelIndex>> (indexes));
-		action->setProperty ("ItemSelectionModel",
-				QVariant::fromValue<QObject*> (selModel));
-
-		action->activate (QAction::Trigger);
-	}
-
 	void SummaryWidget::handleReset ()
 	{
 		Ui_.PluginsTasksTree_->selectionModel ()->clear ();
@@ -345,7 +282,7 @@ namespace LC::Summary
 	void SummaryWidget::checkRowsToBeRemoved (const QModelIndex&, int begin, int end)
 	{
 		const auto& cur = Ui_.PluginsTasksTree_->selectionModel ()->currentIndex ();
-		if (begin <= cur.row () && end >= cur.row ())
+		if (begin <= cur.row () && cur.row () <= end)
 			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
 	}
 
@@ -358,17 +295,7 @@ namespace LC::Summary
 		{
 			ReinitToolbar ();
 			if (toolbar)
-			{
-				for (const auto action : toolbar->actions ())
-				{
-					const auto& ai = action->property ("ActionIcon").toString ();
-					if (!ai.isEmpty () && action->icon ().isNull ())
-						action->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetIcon (ai));
-				}
-
-				const auto& proxies = CreateProxyActions (toolbar->actions (), Toolbar_.get ());
-				Toolbar_->insertActions (Toolbar_->actions ().first (), proxies);
-			}
+				Toolbar_->insertActions (Toolbar_->actions ().first (), toolbar->actions ());
 		}
 
 		if (const auto info = GetHandler (newSrcIdx).GetInfoWidget ();
@@ -388,20 +315,9 @@ namespace LC::Summary
 
 	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
 	{
-		QModelIndex current = Ui_.PluginsTasksTree_->currentIndex ();
-		QMenu *sourceMenu = current.data (+CustomDataRoles::ContextMenu).value<QMenu*> ();
-		if (!sourceMenu)
-			return;
-
-		QMenu *menu = new QMenu ();
-		connect (menu,
-				SIGNAL (triggered (QAction*)),
-				this,
-				SLOT (handleActionTriggered (QAction*)));
-		menu->setAttribute (Qt::WA_DeleteOnClose, true);
-		menu->addActions (CreateProxyActions (sourceMenu->actions (), menu));
-		menu->setTitle (sourceMenu->title ());
-		menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
+		const auto& current = Ui_.PluginsTasksTree_->currentIndex ();
+		if (const auto menu = current.data (+CustomDataRoles::ContextMenu).value<QMenu*> ())
+			menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 	}
 
 	void SummaryWidget::syncSelection (const QModelIndex& current)

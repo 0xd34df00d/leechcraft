@@ -66,11 +66,9 @@ namespace LC::Summary
 		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;
 
 		void ReinitToolbar ();
-		QList<QAction*> CreateProxyActions (const QList<QAction*>&, QObject*) const;
 
 		void SetFilterParams ();
 	private slots:
-		void handleActionTriggered (QAction*);
 		void handleReset ();
 		void checkRowsToBeRemoved (const QModelIndex&, int, int);
 		void updatePanes (const QModelIndex&, const QModelIndex&);
