@@ -73,8 +73,6 @@ namespace LC::Summary
 
 		void SetCurrentRow (const QModelIndex&);
 		void EnsureCurrentRowSelected (const QModelIndex&);
-	private slots:
-		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
 	signals:
 		void removeTab () override;
 		void raiseTab () override;

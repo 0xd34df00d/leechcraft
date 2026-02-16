@@ -168,6 +168,16 @@ namespace LC::Summary
 					PreviouslySelectedModels_ = curModels;
 				});
 
+		connect (Ui_.PluginsTasksTree_,
+				&QWidget::customContextMenuRequested,
+				this,
+				[this] (const QPoint& pos)
+				{
+					const auto& current = Ui_.PluginsTasksTree_->currentIndex ();
+					if (const auto menu = current.data (+CustomDataRoles::ContextMenu).value<QMenu*> ())
+						menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
+				});
+
 		const auto itemsHeader = Ui_.PluginsTasksTree_->header ();
 		const auto& fm = fontMetrics ();
 		itemsHeader->resizeSection (0, fm.horizontalAdvance ("Average download job or torrent name is just like this."));
@@ -282,13 +292,6 @@ namespace LC::Summary
 	void SummaryWidget::SetFilterParams ()
 	{
 		Filter_.SetFilterString (SearchWidget_->GetEdit ().text ());
-	}
-
-	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
-	{
-		const auto& current = Ui_.PluginsTasksTree_->currentIndex ();
-		if (const auto menu = current.data (+CustomDataRoles::ContextMenu).value<QMenu*> ())
-			menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 	}
 
 	void SummaryWidget::EnsureCurrentRowSelected (const QModelIndex&)
