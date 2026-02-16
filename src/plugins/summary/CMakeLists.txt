@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (
 		summary.cpp
 		summarywidget.cpp
 		summarytagsfilter.cpp
-		modeldelegate.cpp
 	INSTALL_SHARE
 	QT_COMPONENTS Widgets
 	)

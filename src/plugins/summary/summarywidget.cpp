@@ -19,9 +19,9 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/gui/progressdelegate.h>
 #include <util/sll/qtutil.h>
 #include "summarytagsfilter.h"
-#include "modeldelegate.h"
 
 namespace LC::Summary
 {
@@ -58,6 +58,29 @@ namespace LC::Summary
 				throw std::runtime_error { "null model representation called" };
 			}
 		};
+
+		std::optional<Util::ProgressDelegate::Progress> GetProgress (const QModelIndex& index)
+		{
+			auto done = index.data (+JobHolderProcessRole::Done).value<qlonglong> ();
+			auto total = index.data (+JobHolderProcessRole::Total).value<qlonglong> ();
+			while (total > 1000)
+			{
+				done /= 10;
+				total /= 10;
+			}
+
+			const auto rowInfo = index.data (+JobHolderRole::RowInfo).value<RowInfo> ();
+			if (const auto isProcess = std::holds_alternative<ProcessInfo> (rowInfo.Specific_);
+				!isProcess)
+				return {};
+
+			return Util::ProgressDelegate::Progress
+			{
+				.Maximum_ = static_cast<int> (std::max (total, 0LL)),
+				.Progress_ = static_cast<int> (std::max (done, 0LL)),
+				.Text_ = index.data ().toString (),
+			};
+		}
 	}
 
 	SummaryWidget::SummaryWidget (QObject& plugin)
@@ -85,7 +108,8 @@ namespace LC::Summary
 				});
 
 		Ui_.setupUi (this);
-		Ui_.PluginsTasksTree_->setItemDelegate (new ModelDelegate (this));
+		Ui_.PluginsTasksTree_->setItemDelegateForColumn (SummaryTagsFilter::Progress,
+				new Util::ProgressDelegate { &GetProgress, this });
 
 		FilterTimer_.setSingleShot (true);
 		FilterTimer_.setInterval (QGuiApplication::styleHints ()->keyboardInputInterval ());
