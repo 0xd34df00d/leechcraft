@@ -278,8 +278,6 @@ namespace LC::Summary
 		const auto info = GetHandler (srcIdx).GetInfoWidget ();
 		Ui_.ControlsDockWidget_->setWidget (info);
 		Ui_.ControlsDockWidget_->setVisible (static_cast<bool> (info));
-		if (info)
-			GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (info->findChildren<QAction*> ());
 	}
 
 	void SummaryWidget::SetFilterParams ()
