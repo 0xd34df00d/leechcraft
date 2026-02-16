@@ -46,6 +46,8 @@ namespace LC::Summary
 
 		std::unordered_map<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
 		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;
+
+		const QAbstractItemModel *CurrentModel_ = nullptr;
 	public:
 		explicit SummaryWidget (QObject& parentPlugin);
 		~SummaryWidget () override;
@@ -68,9 +70,9 @@ namespace LC::Summary
 		void ReinitToolbar ();
 
 		void SetFilterParams ();
+
+		void SetCurrentRow (const QModelIndex&);
 	private slots:
-		void checkRowsToBeRemoved (const QModelIndex&, int, int);
-		void updatePanes (const QModelIndex&, const QModelIndex&);
 		void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
 		void syncSelection (const QModelIndex&);
 	signals:

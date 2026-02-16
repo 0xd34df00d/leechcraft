@@ -101,43 +101,26 @@ namespace LC::Summary
 		Filter_.setSourceModel (&MergeModel_);
 		Ui_.PluginsTasksTree_->setModel (&Filter_);
 
-		connect (&Filter_,
-				&QSortFilterProxyModel::modelAboutToBeReset,
-				this,
-				[this] { Ui_.PluginsTasksTree_->selectionModel ()->clear (); });
-		connect (&Filter_,
-				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
-				this,
-				SLOT (checkRowsToBeRemoved (QModelIndex, int, int)));
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				&QItemSelectionModel::currentRowChanged,
 				this,
-				SLOT (updatePanes (QModelIndex, QModelIndex)));
+				&SummaryWidget::SetCurrentRow);
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (syncSelection (QModelIndex)),
 				Qt::QueuedConnection);
 
-		const auto itemsHeader = Ui_.PluginsTasksTree_->header ();
-		const auto& fm = fontMetrics ();
-		itemsHeader->resizeSection (0, fm.horizontalAdvance ("Average download job or torrent name is just like this."));
-		itemsHeader->resizeSection (1, fm.horizontalAdvance ("Of the download."));
-		itemsHeader->resizeSection (2, fm.horizontalAdvance ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
-
 		auto connectChange = [this] (auto signal, auto method)
 		{
 			connect (Ui_.PluginsTasksTree_->selectionModel (),
 					signal,
 					this,
-					[this, method] (const QModelIndex& current, const QModelIndex& previous)
+					[this, method] (const QModelIndex& current)
 					{
-						const auto& prevMapped = MapToSourceRecursively (previous);
 						const auto& thisMapped = MapToSourceRecursively (current);
-
-						if (prevMapped.isValid () && prevMapped.model () != thisMapped.model ())
-							std::invoke (method, GetHandler (prevMapped), QModelIndex {});
-
+						if (CurrentModel_ != thisMapped.model ())
+							std::invoke (method, SrcModel2Handler_.at (CurrentModel_), QModelIndex {});
 						if (thisMapped.isValid ())
 							std::invoke (method, GetHandler (thisMapped), thisMapped);
 					});
@@ -157,8 +140,7 @@ namespace LC::Summary
 					[this, method] (const QModelIndex& index)
 					{
 						const auto& mapped = MapToSourceRecursively (index);
-						if (mapped.isValid ())
-							std::invoke (method, GetHandler (mapped), mapped);
+						std::invoke (method, GetHandler (mapped), mapped);
 					});
 		};
 		connectAction (&QAbstractItemView::activated, &IJobHolderRepresentationHandler::HandleActivated);
@@ -186,6 +168,12 @@ namespace LC::Summary
 						SrcModel2Handler_.at (model)->HandleSelectedRowsChanged ({});
 					PreviouslySelectedModels_ = curModels;
 				});
+
+		const auto itemsHeader = Ui_.PluginsTasksTree_->header ();
+		const auto& fm = fontMetrics ();
+		itemsHeader->resizeSection (0, fm.horizontalAdvance ("Average download job or torrent name is just like this."));
+		itemsHeader->resizeSection (1, fm.horizontalAdvance ("Of the download."));
+		itemsHeader->resizeSection (2, fm.horizontalAdvance ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 	}
 
 	SummaryWidget::~SummaryWidget ()
@@ -274,33 +262,24 @@ namespace LC::Summary
 		return GetTabClassInfo ().Icon_;
 	}
 
-	void SummaryWidget::checkRowsToBeRemoved (const QModelIndex&, int begin, int end)
+	void SummaryWidget::SetCurrentRow (const QModelIndex& index)
 	{
-		const auto& cur = Ui_.PluginsTasksTree_->selectionModel ()->currentIndex ();
-		if (begin <= cur.row () && cur.row () <= end)
-			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
-	}
+		const auto& srcIdx = MapToSourceRecursively (index);
+		const auto srcModel = srcIdx.model ();
+		if (srcModel == CurrentModel_)
+			return;
 
-	void SummaryWidget::updatePanes (const QModelIndex& newIndex, const QModelIndex& oldIndex)
-	{
-		const auto& newSrcIdx = MapToSourceRecursively (newIndex);
-		const auto& oldSrcIdx = MapToSourceRecursively (oldIndex);
-		if (const auto toolbar = newSrcIdx.data (+CustomDataRoles::Controls).value<QToolBar*> ();
-			toolbar != oldSrcIdx.data (+CustomDataRoles::Controls).value<QToolBar*> ())
-		{
-			ReinitToolbar ();
-			if (toolbar)
-				Toolbar_->insertActions (Toolbar_->actions ().first (), toolbar->actions ());
-		}
+		CurrentModel_ = srcModel;
 
-		if (const auto info = GetHandler (newSrcIdx).GetInfoWidget ();
-			info != GetHandler (oldSrcIdx).GetInfoWidget ())
-		{
-			Ui_.ControlsDockWidget_->setWidget (info);
-			Ui_.ControlsDockWidget_->setVisible (static_cast<bool> (info));
-			if (info)
-				GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (info->findChildren<QAction*> ());
-		}
+		ReinitToolbar ();
+		if (const auto toolbar = srcIdx.data (+CustomDataRoles::Controls).value<QToolBar*> ())
+			Toolbar_->insertActions (Toolbar_->actions ().first (), toolbar->actions ());
+
+		const auto info = GetHandler (srcIdx).GetInfoWidget ();
+		Ui_.ControlsDockWidget_->setWidget (info);
+		Ui_.ControlsDockWidget_->setVisible (static_cast<bool> (info));
+		if (info)
+			GetProxyHolder ()->GetIconThemeManager ()->UpdateIconset (info->findChildren<QAction*> ());
 	}
 
 	void SummaryWidget::SetFilterParams ()
@@ -317,15 +296,13 @@ namespace LC::Summary
 
 	void SummaryWidget::syncSelection (const QModelIndex& current)
 	{
-		QItemSelectionModel *selm = Ui_.PluginsTasksTree_->selectionModel ();
-		const QModelIndex& now = selm->currentIndex ();
+		const auto selm = Ui_.PluginsTasksTree_->selectionModel ();
+		const auto& now = selm->currentIndex ();
 		if (current != now ||
-				(now.isValid () &&
-					!selm->rowIntersectsSelection (now.row (), QModelIndex ())))
+				(now.isValid () && !selm->rowIntersectsSelection (now.row ())))
 		{
-			selm->select (now, QItemSelectionModel::ClearAndSelect |
-					QItemSelectionModel::Rows);
-			updatePanes (now, current);
+			selm->select (now, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+			SetCurrentRow (now);
 		}
 	}
 }
