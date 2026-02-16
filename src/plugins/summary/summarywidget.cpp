@@ -120,10 +120,7 @@ namespace LC::Summary
 					[this, method] (const QModelIndex& current)
 					{
 						const auto& thisMapped = MapToSourceRecursively (current);
-						if (CurrentModel_ != thisMapped.model ())
-							std::invoke (method, SrcModel2Handler_.at (CurrentModel_), QModelIndex {});
-						if (thisMapped.isValid ())
-							std::invoke (method, GetHandler (thisMapped), thisMapped);
+						std::invoke (method, GetHandler (thisMapped), thisMapped);
 					});
 		};
 		connectChange (&QItemSelectionModel::currentChanged,
@@ -250,7 +247,7 @@ namespace LC::Summary
 		return *pos->second;
 	}
 
-	void SummaryWidget::ReinitToolbar ()
+	void SummaryWidget::ClearToolbar ()
 	{
 		for (const auto action : Toolbar_->actions ())
 			if (const auto wa = qobject_cast<QWidgetAction*> (action);
@@ -280,9 +277,14 @@ namespace LC::Summary
 		if (srcModel == CurrentModel_)
 			return;
 
+		const auto& handler = SrcModel2Handler_.at (CurrentModel_);
+		handler->HandleCurrentChanged ({});
+		handler->HandleCurrentRowChanged ({});
+		handler->HandleCurrentColumnChanged ({});
+
 		CurrentModel_ = srcModel;
 
-		ReinitToolbar ();
+		ClearToolbar ();
 		if (const auto toolbar = srcIdx.data (+CustomDataRoles::Controls).value<QToolBar*> ())
 			Toolbar_->insertActions (Toolbar_->actions ().first (), toolbar->actions ());
 

@@ -67,7 +67,7 @@ namespace LC::Summary
 		QModelIndex MapToSourceRecursively (const QModelIndex&) const;
 		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;
 
-		void ReinitToolbar ();
+		void ClearToolbar ();
 
 		void SetFilterParams ();
 
