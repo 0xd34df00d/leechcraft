@@ -177,7 +177,7 @@ namespace LC::Summary
 					for (const auto& [model, rows] : Util::Stlize (newSelections))
 						SrcModel2Handler_.at (model)->HandleSelectedRowsChanged (rows);
 
-					QSet<const QAbstractItemModel*> curModels { newSelections.keyBegin (), newSelections.keyEnd () };
+					const QSet<const QAbstractItemModel*> curModels { newSelections.keyBegin (), newSelections.keyEnd () };
 					for (const auto model : PreviouslySelectedModels_ - curModels)
 						SrcModel2Handler_.at (model)->HandleSelectedRowsChanged ({});
 					PreviouslySelectedModels_ = curModels;
@@ -234,7 +234,7 @@ namespace LC::Summary
 
 	QList<QAction*> SummaryWidget::GetTabBarContextMenuActions () const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	QObject* SummaryWidget::ParentMultiTabs ()
@@ -316,7 +316,7 @@ namespace LC::Summary
 		Filter_.SetFilterString (SearchWidget_->GetEdit ().text ());
 	}
 
-	void SummaryWidget::EnsureCurrentRowSelected (const QModelIndex&)
+	void SummaryWidget::EnsureCurrentRowSelected ()
 	{
 		const auto selm = Ui_.PluginsTasksTree_->selectionModel ();
 		if (const auto& cur = selm->currentIndex ();
