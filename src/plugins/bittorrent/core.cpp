@@ -471,6 +471,8 @@ namespace BitTorrent
 			return qlonglong { status.total_wanted_done };
 		case JobHolderProcessRole::Total:
 			return qlonglong { status.total_wanted };
+		case JobHolderProcessRole::ProgressCustomText:
+			return data (index, Roles::FullProgressText);
 		case JobHolderProcessRole::State:
 		{
 			auto state = ProcessState::Running;
