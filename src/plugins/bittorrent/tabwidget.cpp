@@ -80,11 +80,6 @@ namespace LC::BitTorrent
 				});
 	}
 
-	QModelIndex TabWidget::GetCurrentTorrent () const
-	{
-		return Torrent_;
-	}
-
 	void TabWidget::SetCurrentTorrent (const QModelIndex& torrent)
 	{
 		Q_ASSERT (!torrent.isValid () || torrent.model () == &Model_);

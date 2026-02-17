@@ -38,7 +38,6 @@ namespace LC::BitTorrent
 	public:
 		explicit TabWidget (QAbstractItemModel&, libtorrent::session&, SessionSettingsManager&, QWidget* = nullptr);
 
-		QModelIndex GetCurrentTorrent () const;
 		void SetCurrentTorrent (const QModelIndex&);
 		void UpdateTorrentStats ();
 	private:

@@ -11,18 +11,21 @@
 #include <QTimer>
 #include <interfaces/ijobholder.h>
 #include "listactions.h"
-#include "tabwidget.h"
 #include "speedselectoraction.h"
 
 namespace LC::BitTorrent
 {
+	class TabWidget;
+
 	class RepresentationHandler
 		: public QObject
 		, public IJobHolderRepresentationHandler
 	{
 		Q_OBJECT
 
-		TabWidget TabWidget_;
+		QModelIndex CurrentRow_ {};
+
+		std::unique_ptr<TabWidget> TabWidget_;
 		ListActions Actions_;
 
 		SpeedSelectorAction DownSelectorAction_;
@@ -45,6 +48,8 @@ namespace LC::BitTorrent
 		QMenu* GetContextMenu () override;
 
 		void UpdateSpeedControllerOptions ();
+	private:
+		void EnsureTabWidgetCreated ();
 	signals:
 		void torrentTabFocusRequested (const QModelIndex&);
 	};

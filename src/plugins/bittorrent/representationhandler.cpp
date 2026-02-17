@@ -16,17 +16,12 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "sessionsettingsmanager.h"
+#include "tabwidget.h"
 
 namespace LC::BitTorrent
 {
 	RepresentationHandler::RepresentationHandler ()
-	: TabWidget_
-	{
-		*Core::Instance (),
-		Core::Instance ()->GetSession (),
-		*Core::Instance ()->GetSessionSettingsManager ()
-	}
-	, Actions_
+	: Actions_
 	{
 		{
 			.Session_ = Core::Instance ()->GetSession (),
@@ -37,16 +32,12 @@ namespace LC::BitTorrent
 	, DownSelectorAction_ { Core::Instance ()->GetSessionSettingsManager (), &SessionSettingsManager::SetOverallDownloadRate, "Down"_qs, }
 	, UpSelectorAction_ { Core::Instance ()->GetSessionSettingsManager (), &SessionSettingsManager::SetOverallUploadRate, "Up"_qs, }
 	{
-		UpdateTimer_.callOnTimeout (&TabWidget_, &TabWidget::UpdateTorrentStats);
-		UpdateTimer_.start (2000);
-
 		auto toolbar = Actions_.GetToolbar ();
 		auto openInTorrentTab = toolbar->addAction (tr ("Open in torrent tab"), this,
 				[this]
 				{
-					if (const auto torrent = TabWidget_.GetCurrentTorrent ();
-						torrent.isValid ())
-						emit torrentTabFocusRequested (torrent);
+					if (CurrentRow_.isValid ())
+						emit torrentTabFocusRequested (CurrentRow_);
 				});
 		openInTorrentTab->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
@@ -70,8 +61,11 @@ namespace LC::BitTorrent
 
 	void RepresentationHandler::HandleCurrentRowChanged (const QModelIndex& index)
 	{
+		CurrentRow_ = index;
+
 		Actions_.SetCurrentIndex (index);
-		TabWidget_.SetCurrentTorrent (index);
+		if (TabWidget_)
+			TabWidget_->SetCurrentTorrent (index);
 	}
 
 	void RepresentationHandler::HandleSelectedRowsChanged (const QModelIndexList& indexes)
@@ -81,7 +75,8 @@ namespace LC::BitTorrent
 
 	QWidget* RepresentationHandler::GetInfoWidget ()
 	{
-		return &TabWidget_;
+		EnsureTabWidgetCreated ();
+		return &*TabWidget_;
 	}
 
 	QToolBar* RepresentationHandler::GetControls ()
@@ -98,5 +93,18 @@ namespace LC::BitTorrent
 	{
 		DownSelectorAction_.HandleSpeedsChanged ();
 		UpSelectorAction_.HandleSpeedsChanged ();
+	}
+
+	void RepresentationHandler::EnsureTabWidgetCreated ()
+	{
+		if (!TabWidget_)
+		{
+			const auto core = Core::Instance ();
+			TabWidget_ = std::make_unique<TabWidget> (*core, core->GetSession (), *core->GetSessionSettingsManager ());
+			TabWidget_->SetCurrentTorrent (CurrentRow_);
+
+			UpdateTimer_.callOnTimeout (&*TabWidget_, &TabWidget::UpdateTorrentStats);
+			UpdateTimer_.start (2000);
+		}
 	}
 }
