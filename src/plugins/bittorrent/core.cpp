@@ -212,16 +212,6 @@ namespace BitTorrent
 		return Dispatcher_;
 	}
 
-	void Core::SetWidgets (QToolBar *tool)
-	{
-		Toolbar_ = tool;
-	}
-
-	void Core::SetMenu (QMenu *menu)
-	{
-		Menu_ = menu;
-	}
-
 	namespace
 	{
 		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)

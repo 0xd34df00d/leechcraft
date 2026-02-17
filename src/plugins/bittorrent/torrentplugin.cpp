@@ -10,13 +10,10 @@
 #include <QUrl>
 #include <QTemporaryFile>
 #include <QtDebug>
-#include <QMenu>
 #include <QAction>
 #include <QTimer>
-#include <QToolBar>
 #include <QUrlQuery>
 #include <QFileInfo>
-#include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -39,17 +36,16 @@
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 #include "types.h"
-#include "listactions.h"
 #include "ltutils.h"
+#include "representationhandler.h"
 
-using LC::ActionInfo;
 using namespace LC::Util;
 
 namespace LC::BitTorrent
 {
 	void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 	{
-		InstallTranslator (QStringLiteral ("bittorrent"));
+		InstallTranslator ("bittorrent"_qs);
 		Core::Instance ()->SetProxy (proxy);
 
 		TabTC_ =
@@ -62,17 +58,13 @@ namespace LC::BitTorrent
 			TFSingle | TFOpenableByRequest | TFSuggestOpening
 		};
 
-		Actions_ = new ListActions
-		{
-			{
-				.Session_ = Core::Instance ()->GetSession (),
-				.StatusKeeper_ = *Core::Instance ()->GetStatusKeeper (),
-				.GetPreferredParent_ = [] { return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow (); }
-			}
-		};
+		XmlSettingsDialog_ = std::make_shared<XmlSettingsDialog> ();
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "torrentsettings.xml"_qs);
 
-		SetupCore ();
-		SetupStuff ();
+		Core::Instance ()->DoDelayedInit ();
+
+		FastSpeedControlWidget_ = new FastSpeedControlWidget ();
+		XmlSettingsDialog_->SetCustomWidget ("FastSpeedControl"_qs, FastSpeedControlWidget_);
 
 		TorrentTab_ = new TorrentTab
 		{
@@ -99,7 +91,7 @@ namespace LC::BitTorrent
 
 	QString TorrentPlugin::GetName () const
 	{
-		return QStringLiteral ("BitTorrent");
+		return "BitTorrent"_qs;
 	}
 
 	QString TorrentPlugin::GetInfo () const
@@ -109,7 +101,7 @@ namespace LC::BitTorrent
 
 	QStringList TorrentPlugin::Provides () const
 	{
-		return { QStringLiteral ("bittorrent"), QStringLiteral ("resume"), QStringLiteral ("remoteable") };
+		return { "bittorrent"_qs, "resume"_qs, "remoteable"_qs };
 	}
 
 	void TorrentPlugin::Release ()
@@ -164,7 +156,7 @@ namespace LC::BitTorrent
 					{
 						auto msg = TorrentPlugin::tr ("Rejecting file %1 because it's bigger than current auto limit.")
 								.arg (str);
-						const auto& entity = Util::MakeNotification (QStringLiteral ("BitTorrent"),
+						const auto& entity = Util::MakeNotification ("BitTorrent"_qs,
 								msg, Priority::Warning);
 						GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
 					}
@@ -213,7 +205,7 @@ namespace LC::BitTorrent
 
 		const auto tagsMgr = GetProxyHolder ()->GetTagsManager ();
 
-		const auto& suggestedTags = e.Additional_ [QStringLiteral (" Tags")].toStringList ();
+		const auto& suggestedTags = e.Additional_ [" Tags"_qs].toStringList ();
 		const auto& autoTags = XmlSettingsManager::Instance ().property ("AutomaticTags").toString ();
 		auto tagsIds = tagsMgr->SplitToIDs (autoTags) + tagsMgr->GetIDs (suggestedTags);
 
@@ -223,7 +215,7 @@ namespace LC::BitTorrent
 			if (resource.scheme () == "magnet"_ql)
 			{
 				for (const auto& [key, value] : QUrlQuery { resource }.queryItems ())
-					if (key == QStringLiteral ("kt"))
+					if (key == "kt"_qs)
 						tagsIds += tagsMgr->GetIDs (value.split ('+', Qt::SkipEmptyParts));
 
 				return Core::Instance ()->AddMagnet (resource.toString (),
@@ -237,7 +229,7 @@ namespace LC::BitTorrent
 		}
 		else if (IsValidTorrent (e.Entity_.toByteArray ()))
 		{
-			QTemporaryFile tmpFile { QStringLiteral ("lctemporarybittorrentfile.XXXXXX") };
+			QTemporaryFile tmpFile { "lctemporarybittorrentfile.XXXXXX"_qs };
 			tmpFile.write (e.Entity_.toByteArray ());
 			suggestedFname = tmpFile.fileName ().toUtf8 ();
 			tmpFile.setAutoRemove (false);
@@ -246,7 +238,7 @@ namespace LC::BitTorrent
 		QString path;
 		QVector<bool> files;
 		QString fname;
-		bool tryLive = e.Additional_ [QStringLiteral ("TryToStreamLive")].toBool ();
+		bool tryLive = e.Additional_ ["TryToStreamLive"_qs].toBool ();
 		if (e.Parameters_ & FromUserInitiated)
 		{
 			AddTorrent dia;
@@ -289,38 +281,25 @@ namespace LC::BitTorrent
 
 	IJobHolderRepresentationHandler_ptr TorrentPlugin::CreateRepresentationHandler ()
 	{
-		struct Handler : IJobHolderRepresentationHandler
-		{
-			TorrentPlugin * const Plugin_;
+		auto handler = std::make_unique<RepresentationHandler> ();
 
-			explicit Handler (TorrentPlugin *plugin)
-			: Plugin_ { plugin }
-			{
-			}
+		connect (FastSpeedControlWidget_,
+				&FastSpeedControlWidget::speedsChanged,
+				&*handler,
+				&RepresentationHandler::UpdateSpeedControllerOptions);
+		XmlSettingsManager::Instance ().RegisterObject ("EnableFastSpeedControl",
+				&*handler, [handler = &*handler] (auto) { handler->UpdateSpeedControllerOptions (); });
 
-			QAbstractItemModel& GetRepresentation () override
-			{
-				return *Core::Instance ();
-			}
+		connect (&*handler,
+				&RepresentationHandler::torrentTabFocusRequested,
+				this,
+				[this] (const QModelIndex& torrent)
+				{
+					TorrentTab_->SetCurrentTorrent (torrent);
+					TabOpenRequested (TabTC_.TabClass_);
+				});
 
-			void HandleCurrentRowChanged (const QModelIndex& index) override
-			{
-				Plugin_->Actions_->SetCurrentIndex (index);
-				Plugin_->TabWidget_->SetCurrentTorrent (index);
-			}
-
-			void HandleSelectedRowsChanged (const QModelIndexList& indexes) override
-			{
-				Plugin_->Actions_->SetCurrentSelection (indexes);
-			}
-
-			QWidget* GetInfoWidget () override
-			{
-				return Plugin_->TabWidget_.get ();
-			}
-		};
-
-		return std::make_unique<Handler> (this);
+		return handler;
 	}
 
 	void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
@@ -371,89 +350,7 @@ namespace LC::BitTorrent
 
 	QString TorrentPlugin::GetDiagInfoString () const
 	{
-		return QStringLiteral ("Built with rb_libtorrent %1 (%2).")
-				.arg (LIBTORRENT_VERSION, LIBTORRENT_REVISION);
-	}
-
-	void TorrentPlugin::SetupCore ()
-	{
-		XmlSettingsDialog_ = std::make_shared<XmlSettingsDialog> ();
-		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), QStringLiteral ("torrentsettings.xml"));
-
-		Core::Instance ()->DoDelayedInit ();
-
-		SetupActions ();
-		TabWidget_ = std::make_unique<TabWidget> (*Core::Instance (),
-				Core::Instance ()->GetSession (),
-				*Core::Instance ()->GetSessionSettingsManager ());
-
-		Core::Instance ()->SetWidgets (Actions_->GetToolbar ());
-	}
-
-	void TorrentPlugin::SetupStuff ()
-	{
-		auto statsUpdateTimer = new QTimer { this };
-		statsUpdateTimer->callOnTimeout (TabWidget_.get (), &TabWidget::UpdateTorrentStats);
-		statsUpdateTimer->start (2000);
-
-		const auto selectorsUpdater = [this]
-		{
-			DownSelectorAction_->HandleSpeedsChanged ();
-			UpSelectorAction_->HandleSpeedsChanged ();
-		};
-
-		const auto fsc = new FastSpeedControlWidget ();
-		XmlSettingsDialog_->SetCustomWidget (QStringLiteral ("FastSpeedControl"), fsc);
-		connect (fsc,
-				&FastSpeedControlWidget::speedsChanged,
-				this,
-				selectorsUpdater);
-		XmlSettingsManager::Instance ().RegisterObject ("EnableFastSpeedControl",
-				this, [=] (auto) { selectorsUpdater (); });
-	}
-
-	void TorrentPlugin::SetupActions ()
-	{
-		auto toolbar = Actions_->GetToolbar ();
-		auto openInTorrentTab = toolbar->addAction (tr ("Open in torrent tab"), this,
-				[this]
-				{
-					const auto torrent = TabWidget_->GetCurrentTorrent ();
-					if (!torrent.isValid ())
-						return;
-
-					TorrentTab_->SetCurrentTorrent (torrent);
-					TabOpenRequested (TabTC_.TabClass_);
-				});
-		openInTorrentTab->setIcon (TabTC_.Icon_);
-
-		toolbar->addSeparator ();
-		toolbar->addAction (openInTorrentTab);
-		toolbar->addSeparator ();
-
-		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
-
-		DownSelectorAction_ = new SpeedSelectorAction
-		{
-			ssm,
-			&SessionSettingsManager::SetOverallDownloadRate,
-			QStringLiteral ("Down"),
-			this
-		};
-		toolbar->addAction (DownSelectorAction_);
-		UpSelectorAction_ = new SpeedSelectorAction
-		{
-			ssm,
-			&SessionSettingsManager::SetOverallUploadRate,
-			QStringLiteral ("Up"),
-			this
-		};
-		toolbar->addAction (UpSelectorAction_);
-
-		auto contextMenu = Actions_->MakeContextMenu ();
-		contextMenu->addSeparator ();
-		contextMenu->addAction (openInTorrentTab);
-		Core::Instance ()->SetMenu (contextMenu);
+		return "Built with rb_libtorrent %1 (%2)."_qs.arg (LIBTORRENT_VERSION, LIBTORRENT_REVISION);
 	}
 }
 

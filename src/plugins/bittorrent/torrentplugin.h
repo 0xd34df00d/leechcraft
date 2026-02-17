@@ -20,19 +20,11 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavediaginfo.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "tabwidget.h"
-
-class QTimer;
-class QToolBar;
-class QComboBox;
-class QTabWidget;
-class QTranslator;
 
 namespace LC::BitTorrent
 {
 	class AddTorrent;
-	class ListActions;
-	class SpeedSelectorAction;
+	class FastSpeedControlWidget;
 	class TorrentTab;
 
 	class TorrentPlugin : public QObject
@@ -62,15 +54,12 @@ namespace LC::BitTorrent
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.BitTorrent")
 
-		std::shared_ptr<LC::Util::XmlSettingsDialog> XmlSettingsDialog_;
-		std::unique_ptr<TabWidget> TabWidget_;
-		ListActions *Actions_;
-
-		SpeedSelectorAction *DownSelectorAction_;
-		SpeedSelectorAction *UpSelectorAction_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 		TabClassInfo TabTC_;
 		TorrentTab *TorrentTab_;
+
+		FastSpeedControlWidget *FastSpeedControlWidget_;
 	public:
 		// IInfo
 		void Init (ICoreProxy_ptr) override;
@@ -113,10 +102,6 @@ namespace LC::BitTorrent
 
 		// IHaveDiagInfo
 		QString GetDiagInfoString () const override;
-	private:
-		void SetupCore ();
-		void SetupStuff ();
-		void SetupActions ();
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

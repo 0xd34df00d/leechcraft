@@ -136,9 +136,7 @@ namespace BitTorrent
 		std::shared_ptr<QTimer> FinishedTimer_, WarningWatchdog_;
 		std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 		bool SaveScheduled_ = false;
-		QToolBar *Toolbar_ = nullptr;
 		ICoreProxy_ptr Proxy_;
-		QMenu *Menu_ = nullptr;
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		AlertDispatcher Dispatcher_;
@@ -147,8 +145,6 @@ namespace BitTorrent
 	public:
 		static Core* Instance ();
 
-		void SetWidgets (QToolBar*);
-		void SetMenu (QMenu*);
 		void DoDelayedInit ();
 		void Release ();
 

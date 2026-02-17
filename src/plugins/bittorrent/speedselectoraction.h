@@ -29,7 +29,7 @@ namespace LC::BitTorrent
 		const QString Setting_;
 		QList<QComboBox*> Boxes_;
 	public:
-		SpeedSelectorAction (SessionSettingsManager*, Setter_t, const QString&, QObject*);
+		SpeedSelectorAction (SessionSettingsManager*, Setter_t, const QString&, QObject* = nullptr);
 
 		void HandleSpeedsChanged ();
 	protected:

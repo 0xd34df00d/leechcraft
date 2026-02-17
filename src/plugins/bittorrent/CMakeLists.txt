@@ -41,7 +41,7 @@ LC_DEFINE_PLUGIN (
 		ltutils.cpp
 		listactions.cpp
 		alertdispatcher.cpp
-
+		representationhandler.cpp
 		banpeersdialog.cpp
 		addwebseeddialog.cpp
 		ipvalidators.cpp
