@@ -28,6 +28,7 @@ namespace LC::Util
 		}
 
 		const auto style = option.widget ? option.widget->style () : QApplication::style ();
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
 		QStyleOptionProgressBar progressBarOption;
 		progressBarOption.state = option.state | QStyle::StateFlag::State_Horizontal;
