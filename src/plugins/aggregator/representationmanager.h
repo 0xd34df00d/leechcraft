@@ -45,6 +45,8 @@ namespace LC::Aggregator
 
 		std::optional<ChannelShort> CurrentChannel_;
 		QList<ChannelShort> SelectedChannels_;
+
+		QMenu& ContextMenu_;
 	public:
 		struct Deps
 		{
@@ -62,7 +64,10 @@ namespace LC::Aggregator
 
 		void HandleCurrentRowChanged (const QModelIndex&) override;
 		void HandleSelectedRowsChanged (const QList<QModelIndex>&) override;
+
 		QWidget* GetInfoWidget () override;
+		QToolBar* GetControls () override;
+		QMenu* GetContextMenu () override;
 	private:
 		bool NavigateChannel (ChannelDirection);
 	};

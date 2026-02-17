@@ -448,10 +448,6 @@ namespace BitTorrent
 
 		switch (static_cast<CustomDataRoles> (role))
 		{
-		case CustomDataRoles::Controls:
-			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		case CustomDataRoles::ContextMenu:
-			return QVariant::fromValue<QMenu*> (Menu_);
 		case CustomDataRoles::Tags:
 			return Handles_.at (row).Tags_;
 		}

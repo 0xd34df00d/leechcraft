@@ -22,17 +22,6 @@ namespace LC::Aggregator
 
 	QVariant JobHolderRepresentationModel::data (const QModelIndex& index, int role) const
 	{
-		using enum CustomDataRoles;
-		switch (static_cast<CustomDataRoles> (role))
-		{
-		case Controls:
-			return QVariant::fromValue<QToolBar*> (&Deps_.Toolbar_);
-		case ContextMenu:
-			return QVariant::fromValue<QMenu*> (&Deps_.RowMenu_);
-		case Tags: // handled by underlying model
-			break;
-		}
-
 		switch (static_cast<JobHolderRole> (role))
 		{
 		case JobHolderRole::RowInfo:

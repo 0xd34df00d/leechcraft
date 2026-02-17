@@ -39,8 +39,6 @@ namespace CSTP
 
 		SetupToolbar ();
 
-		Core::Instance ().SetToolbar (Toolbar_);
-
 		connect (&Core::Instance (),
 				SIGNAL (error (QString)),
 				this,
@@ -107,6 +105,13 @@ namespace CSTP
 	{
 		struct Handler : IJobHolderRepresentationHandler
 		{
+			QToolBar *Toolbar_ = nullptr;
+
+			explicit Handler (QToolBar *toolbar)
+			: Toolbar_ { toolbar }
+			{
+			}
+
 			QAbstractItemModel& GetRepresentation () override
 			{
 				return *Core::Instance ().GetRepresentationModel ();
@@ -116,9 +121,14 @@ namespace CSTP
 			{
 				Core::Instance ().ItemSelected (index);
 			}
+
+			QToolBar* GetControls () override
+			{
+				return Toolbar_;
+			}
 		};
 
-		return std::make_unique<Handler> ();
+		return std::make_unique<Handler> (Toolbar_);
 	}
 
 	Util::XmlSettingsDialog_ptr CSTP::GetSettingsDialog () const

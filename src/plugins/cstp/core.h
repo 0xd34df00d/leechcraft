@@ -51,7 +51,6 @@ namespace CSTP
 		tasks_t ActiveTasks_;
 		bool SaveScheduled_ = false;
 		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
-		QToolBar *Toolbar_ = nullptr;
 		QSet<QNetworkReply*> FinishedReplies_;
 		QModelIndex Selected_;
 		ICoreProxy_ptr CoreProxy_;
@@ -79,7 +78,6 @@ namespace CSTP
 		void Release ();
 		void SetCoreProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetCoreProxy () const;
-		void SetToolbar (QToolBar*);
 		void ItemSelected (const QModelIndex&);
 
 		QFuture<IDownload::Result> AddTask (const Entity&);

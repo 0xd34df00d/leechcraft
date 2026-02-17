@@ -21,8 +21,6 @@ namespace LC::Aggregator
 	public:
 		struct Deps
 		{
-			QToolBar& Toolbar_;
-			QMenu& RowMenu_;
 			int SelectedRole_;
 		};
 	private:

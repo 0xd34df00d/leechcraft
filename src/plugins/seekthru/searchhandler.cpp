@@ -95,7 +95,6 @@ namespace LC::SeekThru
 			Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ().property ("NavBarVisible").toBool ());
 			Viewer_->SetHtml (Results_.at (r).Response_, Results_.at (r).RequestURL_.toString ());
 			return QVariant::fromValue<QWidget*> (Viewer_.get ());
-			*/
 		case +CustomDataRoles::Controls:
 			if (Results_.at (r).Type_ != Result::TypeHTML)
 			{
@@ -104,6 +103,7 @@ namespace LC::SeekThru
 			}
 			else
 				return 0;
+			*/
 		default:
 			return QVariant ();
 		}

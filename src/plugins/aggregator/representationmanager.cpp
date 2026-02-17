@@ -52,10 +52,9 @@ namespace LC::Aggregator
 				.FindItems_ = std::bind_front (&ChannelsModel::FindItems, &deps.ChannelsModel_),
 			})}
 	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentationModel> (JobHolderRepresentationModel::Deps {
-				.Toolbar_ = *ReprWidget_->GetToolBar (),
-				.RowMenu_ = CreateMenu (*ChannelActions_, deps.AppWideActions_, *ReprWidget_),
-				.SelectedRole_ = SelectedIdProxyModel_->GetIsSelectedRole (),
+				.SelectedRole_ = SelectedIdProxyModel_->GetIsSelectedRole ()
 			})}
+	, ContextMenu_ { CreateMenu (*ChannelActions_, deps.AppWideActions_, *ReprWidget_) }
 	{
 		JobHolderRepresentation_->setSourceModel (&*SelectedIdProxyModel_);
 
@@ -93,6 +92,16 @@ namespace LC::Aggregator
 	QWidget* RepresentationManager::GetInfoWidget ()
 	{
 		return ReprWidget_.get ();
+	}
+
+	QToolBar* RepresentationManager::GetControls ()
+	{
+		return ReprWidget_->GetToolBar ();
+	}
+
+	QMenu* RepresentationManager::GetContextMenu ()
+	{
+		return &ContextMenu_;
 	}
 
 	bool RepresentationManager::NavigateChannel (ChannelDirection dir)

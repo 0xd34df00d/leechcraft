@@ -13,7 +13,9 @@
 #include "interfaces/structures.h"
 
 class QAbstractItemModel;
+class QMenu;
 class QModelIndex;
+class QToolBar;
 
 template<typename>
 class QList;
@@ -163,6 +165,8 @@ public:
 	virtual void HandlePressed (const QModelIndex&) {}
 
 	virtual QWidget* GetInfoWidget () { return nullptr; }
+	virtual QToolBar* GetControls () { return nullptr; }
+	virtual QMenu* GetContextMenu () { return nullptr; }
 };
 
 using IJobHolderRepresentationHandler_ptr = std::unique_ptr<IJobHolderRepresentationHandler>;

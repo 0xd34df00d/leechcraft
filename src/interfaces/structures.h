@@ -177,16 +177,6 @@ namespace LC
 		 * expected to be returned.
 		 */
 		Tags = Qt::UserRole + 100,
-
-		/** The role for the additional controls for a given item.
-		 * QToolBar* is expected to be returned.
-		 */
-		Controls,
-
-		/** This role returns the QMenu* that should be used as the
-		 * context menu.
-		 */
-		ContextMenu,
 	};
 
 	constexpr int operator+ (CustomDataRoles role) noexcept
@@ -195,7 +185,7 @@ namespace LC
 	}
 
 	template<>
-	inline constexpr int MaxValue<CustomDataRoles> = +CustomDataRoles::ContextMenu;
+	inline constexpr int MaxValue<CustomDataRoles> = +CustomDataRoles::Tags;
 
 	enum class Priority
 	{

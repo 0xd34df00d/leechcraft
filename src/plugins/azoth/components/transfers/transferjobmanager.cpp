@@ -56,8 +56,6 @@ namespace Azoth
 				this,
 				SLOT (handleAbortAction ()));
 		ReprBar_->addAction (abort);
-
-		ProgressManager_->SetGlobalData (QVariant::fromValue (ReprBar_), +CustomDataRoles::Controls);
 	}
 
 	void TransferJobManager::AddAccountManager (QObject *mgrObj)

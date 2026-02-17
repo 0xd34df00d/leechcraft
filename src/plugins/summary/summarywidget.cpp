@@ -189,7 +189,7 @@ namespace LC::Summary
 				[this] (const QPoint& pos)
 				{
 					const auto& current = Ui_.PluginsTasksTree_->currentIndex ();
-					if (const auto menu = current.data (+CustomDataRoles::ContextMenu).value<QMenu*> ())
+					if (const auto menu = GetHandler (MapToSourceRecursively (current)).GetContextMenu ())
 						menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 				});
 
@@ -293,18 +293,20 @@ namespace LC::Summary
 		if (srcModel == CurrentModel_)
 			return;
 
-		const auto& handler = SrcModel2Handler_.at (CurrentModel_);
-		handler->HandleCurrentChanged ({});
-		handler->HandleCurrentRowChanged ({});
-		handler->HandleCurrentColumnChanged ({});
+		const auto& prevHandler = SrcModel2Handler_.at (CurrentModel_);
+		prevHandler->HandleCurrentChanged ({});
+		prevHandler->HandleCurrentRowChanged ({});
+		prevHandler->HandleCurrentColumnChanged ({});
 
 		CurrentModel_ = srcModel;
 
+		auto& handler = GetHandler (srcIdx);
+
 		ClearToolbar ();
-		if (const auto toolbar = srcIdx.data (+CustomDataRoles::Controls).value<QToolBar*> ())
+		if (const auto toolbar = handler.GetControls ())
 			Toolbar_->insertActions (Toolbar_->actions ().first (), toolbar->actions ());
 
-		const auto info = GetHandler (srcIdx).GetInfoWidget ();
+		const auto info = handler.GetInfoWidget ();
 		Ui_.ControlsDockWidget_->setWidget (info);
 		Ui_.ControlsDockWidget_->setVisible (static_cast<bool> (info));
 	}

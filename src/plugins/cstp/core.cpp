@@ -88,11 +88,6 @@ namespace CSTP
 		return CoreProxy_;
 	}
 
-	void Core::SetToolbar (QToolBar *widget)
-	{
-		Toolbar_ = widget;
-	}
-
 	void Core::ItemSelected (const QModelIndex& i)
 	{
 		Selected_ = i;
@@ -481,8 +476,6 @@ namespace CSTP
 				return QVariant ();
 			}
 		}
-		else if (role == +CustomDataRoles::Controls)
-			return QVariant::fromValue<QToolBar*> (Toolbar_);
 		else
 			return QVariant ();
 	}
