@@ -87,7 +87,7 @@ namespace LC::BitTorrent
 
 	void TabWidget::SetCurrentTorrent (const QModelIndex& torrent)
 	{
-		Q_ASSERT (torrent.model () == &Model_);
+		Q_ASSERT (!torrent.isValid () || torrent.model () == &Model_);
 
 		Torrent_ = torrent;
 
