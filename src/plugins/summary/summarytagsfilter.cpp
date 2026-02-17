@@ -199,6 +199,10 @@ namespace LC::Summary
 			return Util::Visit (rowInfo.Specific_,
 					[&srcIdx] (const ProcessInfo& proc) -> QVariant
 					{
+						if (const auto& customData = srcIdx.data (+JobHolderProcessRole::ProgressCustomText);
+							!customData.isNull ())
+							return customData;
+
 						const auto done = srcIdx.data (+JobHolderProcessRole::Done).value<qlonglong> ();
 						const auto total = srcIdx.data (+JobHolderProcessRole::Total).value<qlonglong> ();
 						switch (proc.Kind_)
