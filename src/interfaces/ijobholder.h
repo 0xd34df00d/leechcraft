@@ -98,6 +98,7 @@ namespace LC
 	{
 		Done = MaxValue<JobHolderRole> + 1, // qint64
 		Total, // qint64
+		ProgressCustomText, // QString
 		State, // ProcessState
 		StateCustomText, // QString
 	};

@@ -117,6 +117,7 @@ namespace LC::Summary
 		{
 		case JobHolderProcessRole::Done:
 		case JobHolderProcessRole::Total:
+		case JobHolderProcessRole::ProgressCustomText:
 		case JobHolderProcessRole::State:
 		case JobHolderProcessRole::StateCustomText:
 			return srcIdx.data (role);
