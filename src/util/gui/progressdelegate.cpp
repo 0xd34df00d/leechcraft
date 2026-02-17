@@ -27,6 +27,8 @@ namespace LC::Util
 			return;
 		}
 
+		const auto style = option.widget ? option.widget->style () : QApplication::style ();
+
 		QStyleOptionProgressBar progressBarOption;
 		progressBarOption.state = option.state | QStyle::StateFlag::State_Horizontal;
 		progressBarOption.direction = option.direction;
@@ -41,6 +43,6 @@ namespace LC::Util
 		progressBarOption.progress = progress->Progress_;
 		progressBarOption.text = ElideProgressBarText (progress->Text_, option);
 
-		QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &progressBarOption, painter);
+		style->drawControl (QStyle::CE_ProgressBar, &progressBarOption, painter, option.widget);
 	}
 }
