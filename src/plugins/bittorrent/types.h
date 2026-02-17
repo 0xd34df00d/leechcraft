@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <qnamespace.h>
+#include <interfaces/ijobholder.h>
 
 namespace LC::BitTorrent
 {
@@ -36,7 +36,7 @@ namespace LC::BitTorrent
 	{
 		enum
 		{
-			FullProgressText = Qt::UserRole,
+			FullProgressText = MaxValue<JobHolderProcessRole> + 1,
 			SortRole,
 			HandleIndex,
 			IsLeeching,
