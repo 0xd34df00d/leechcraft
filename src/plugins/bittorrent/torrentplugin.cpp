@@ -14,7 +14,6 @@
 #include <QAction>
 #include <QTimer>
 #include <QToolBar>
-#include <QSortFilterProxyModel>
 #include <QUrlQuery>
 #include <QFileInfo>
 #include <QMainWindow>
@@ -26,7 +25,6 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/threads/futures.h>
@@ -49,35 +47,6 @@ using namespace LC::Util;
 
 namespace LC::BitTorrent
 {
-	namespace
-	{
-		class ReprProxy final : public QSortFilterProxyModel
-		{
-		public:
-			explicit ReprProxy (QAbstractItemModel *model)
-			: QSortFilterProxyModel (model)
-			{
-				setDynamicSortFilter (true);
-				setSourceModel (model);
-			}
-
-			QVariant data (const QModelIndex& unmapped, int role) const override
-			{
-				const auto& index = mapToSource (unmapped);
-				if (index.column () == Columns::ColumnProgress && role == Qt::DisplayRole)
-					return sourceModel ()->data (index, Roles::FullProgressText);
-
-				return QSortFilterProxyModel::data (unmapped, role);
-			}
-		protected:
-			bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const override
-			{
-				return sourceColumn >= Columns::ColumnName &&
-						sourceColumn <= Columns::ColumnProgress;
-			}
-		};
-	}
-
 	void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 	{
 		InstallTranslator (QStringLiteral ("bittorrent"));
@@ -117,8 +86,6 @@ namespace LC::BitTorrent
 			TabTC_,
 			this
 		};
-
-		ReprProxy_ = new ReprProxy (Core::Instance ());
 	}
 
 	void TorrentPlugin::SecondInit ()
@@ -333,20 +300,17 @@ namespace LC::BitTorrent
 
 			QAbstractItemModel& GetRepresentation () override
 			{
-				return *Plugin_->ReprProxy_;
+				return *Core::Instance ();
 			}
 
-			void HandleCurrentRowChanged (const QModelIndex& srcIdx) override
+			void HandleCurrentRowChanged (const QModelIndex& index) override
 			{
-				const auto& index = Plugin_->ReprProxy_->mapToSource (srcIdx);
 				Plugin_->Actions_->SetCurrentIndex (index);
 				Plugin_->TabWidget_->SetCurrentTorrent (index);
 			}
 
-			void HandleSelectedRowsChanged (const QModelIndexList& srcIdxs) override
+			void HandleSelectedRowsChanged (const QModelIndexList& indexes) override
 			{
-				const auto& indexes = Util::Map (srcIdxs,
-						[this] (const auto& idx) { return Plugin_->ReprProxy_->mapToSource (idx); });
 				Plugin_->Actions_->SetCurrentSelection (indexes);
 			}
 

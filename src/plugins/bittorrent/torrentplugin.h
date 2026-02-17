@@ -27,7 +27,6 @@ class QToolBar;
 class QComboBox;
 class QTabWidget;
 class QTranslator;
-class QSortFilterProxyModel;
 
 namespace LC::BitTorrent
 {
@@ -72,8 +71,6 @@ namespace LC::BitTorrent
 
 		TabClassInfo TabTC_;
 		TorrentTab *TorrentTab_;
-
-		QSortFilterProxyModel *ReprProxy_;
 	public:
 		// IInfo
 		void Init (ICoreProxy_ptr) override;
