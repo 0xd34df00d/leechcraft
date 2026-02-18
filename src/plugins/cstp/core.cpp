@@ -426,6 +426,8 @@ namespace CSTP
 			return task->GetDone ();
 		case JobHolderProcessRole::Total:
 			return task->GetTotal ();
+		case JobHolderProcessRole::ProgressCustomText:
+			return {};
 		}
 
 		if (role == Qt::DisplayRole)
