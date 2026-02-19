@@ -1,4 +1,4 @@
-[![Build Status](http://leechcraft.org:8080/job/leechcraft/badge/icon)](http://leechcraft.org:8080/job/leechcraft/)
+[![Build Status](https://jenkins.leechcraft.org/job/leechcraft/badge/icon)](http://jenkins.leechcraft.org/job/leechcraft/)
 
 LeechCraft is a (C++ and Qt-based) modular live environment: a kind
 of a desktop environment with a focus on the actual applications for
@@ -8,7 +8,7 @@ LeechCraft allows one to:
 * chat via XMPP, IRC, Tox and a bunch of other protocols;
 * read RSS feeds;
 * listen to music in an Amarok-like audio player;
-* view documents in PDF, FB2 and other formats;
+* view documents in PDF, ePub, FB2 and other formats;
 * download BitTorrent files;
 * share files via cloud;
 * post to blogs;
@@ -21,6 +21,7 @@ A more or less up-to-date list of plugins is available here:
 https://leechcraft.org/plugins
 
 ## Getting LeechCraft
+
 Getting precompiled LeechCraft for various OS is documented here:
 https://leechcraft.org/download
 
