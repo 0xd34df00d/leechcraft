@@ -18,9 +18,9 @@ namespace LC
 
 namespace LC::Summary
 {
-	class SummaryTagsFilter : public Util::TagsFilterModel
+	class JobsPresentationModel : public Util::TagsFilterModel
 	{
-		Q_DECLARE_TR_FUNCTIONS (LC::Summary::SummaryTagsFilter)
+		Q_DECLARE_TR_FUNCTIONS (LC::Summary::JobsPresentationModel)
 
 		mutable QList<std::optional<RowInfo>> CachedRowInfos_;
 	public:

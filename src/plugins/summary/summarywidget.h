@@ -17,7 +17,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "ui_summarywidget.h"
-#include "summarytagsfilter.h"
+#include "jobspresentationmodel.h"
 
 namespace LC::Summary
 {
@@ -42,7 +42,7 @@ namespace LC::Summary
 		std::unique_ptr<QToolBar> Toolbar_;
 
 		Util::MergeModel MergeModel_;
-		SummaryTagsFilter Filter_;
+		JobsPresentationModel Filter_;
 
 		std::unordered_map<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
 		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;

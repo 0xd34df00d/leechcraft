@@ -6,7 +6,7 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		summary.cpp
 		summarywidget.cpp
-		summarytagsfilter.cpp
+		jobspresentationmodel.cpp
 	INSTALL_SHARE
 	QT_COMPONENTS Widgets
 	)

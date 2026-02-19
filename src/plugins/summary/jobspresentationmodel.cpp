@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "summarytagsfilter.h"
+#include "jobspresentationmodel.h"
 #include <QStringList>
 #include <interfaces/ijobholder.h>
 #include <interfaces/structures.h>
@@ -15,7 +15,7 @@
 
 namespace LC::Summary
 {
-	void SummaryTagsFilter::setSourceModel (QAbstractItemModel *model)
+	void JobsPresentationModel::setSourceModel (QAbstractItemModel *model)
 	{
 		if (const auto oldModel = sourceModel ())
 		{
@@ -99,12 +99,12 @@ namespace LC::Summary
 		QSortFilterProxyModel::setSourceModel (model);
 	}
 
-	int SummaryTagsFilter::columnCount (const QModelIndex&) const
+	int JobsPresentationModel::columnCount (const QModelIndex&) const
 	{
 		return ColumnCount;
 	}
 
-	QVariant SummaryTagsFilter::data (const QModelIndex& index, int role) const
+	QVariant JobsPresentationModel::data (const QModelIndex& index, int role) const
 	{
 		const auto& srcIdx = mapToSource (index.siblingAtColumn (0));
 		switch (static_cast<JobHolderRole> (role))
@@ -138,7 +138,7 @@ namespace LC::Summary
 		}
 	}
 
-	QStringList SummaryTagsFilter::GetTagsForIndex (int index) const
+	QStringList JobsPresentationModel::GetTagsForIndex (int index) const
 	{
 		const auto model = sourceModel ();
 		if (!model)
@@ -154,13 +154,13 @@ namespace LC::Summary
 			switch (state)
 			{
 			case ProcessState::Running:
-				return SummaryTagsFilter::tr ("running");
+				return JobsPresentationModel::tr ("running");
 			case ProcessState::Paused:
-				return SummaryTagsFilter::tr ("paused");
+				return JobsPresentationModel::tr ("paused");
 			case ProcessState::Finished:
-				return SummaryTagsFilter::tr ("finished");
+				return JobsPresentationModel::tr ("finished");
 			case ProcessState::Error:
-				return SummaryTagsFilter::tr ("error");
+				return JobsPresentationModel::tr ("error");
 			case ProcessState::Unknown:
 				return {};
 			}
@@ -170,7 +170,7 @@ namespace LC::Summary
 		}
 	}
 
-	QVariant SummaryTagsFilter::GetDisplayData (const QModelIndex& srcIdx, int column) const
+	QVariant JobsPresentationModel::GetDisplayData (const QModelIndex& srcIdx, int column) const
 	{
 		if (srcIdx.row () >= CachedRowInfos_.size ())
 		{
@@ -181,9 +181,9 @@ namespace LC::Summary
 		const auto& rowInfo = GetRowInfo (srcIdx.row ());
 		switch (column)
 		{
-		case SummaryTagsFilter::Name:
+		case Columns::Name:
 			return rowInfo.Name_;
-		case SummaryTagsFilter::Status:
+		case Columns::Status:
 			return Util::Visit (rowInfo.Specific_,
 					[&srcIdx] (const ProcessInfo&)
 					{
@@ -195,7 +195,7 @@ namespace LC::Summary
 						return GetStatusText (status);
 					},
 					[] (const NewsInfo& news) { return QString::number (news.Count_); });
-		case SummaryTagsFilter::Progress:
+		case Columns::Progress:
 			return Util::Visit (rowInfo.Specific_,
 					[&srcIdx] (const ProcessInfo& proc) -> QVariant
 					{
@@ -221,7 +221,7 @@ namespace LC::Summary
 		return {};
 	}
 
-	const RowInfo& SummaryTagsFilter::GetRowInfo (int row) const
+	const RowInfo& JobsPresentationModel::GetRowInfo (int row) const
 	{
 		auto& rowInfo = CachedRowInfos_ [row];
 		if (!rowInfo)

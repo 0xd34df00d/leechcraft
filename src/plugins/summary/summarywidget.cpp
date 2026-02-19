@@ -21,7 +21,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/gui/progressdelegate.h>
 #include <util/sll/qtutil.h>
-#include "summarytagsfilter.h"
+#include "jobspresentationmodel.h"
 
 namespace LC::Summary
 {
@@ -108,7 +108,7 @@ namespace LC::Summary
 				});
 
 		Ui_.setupUi (this);
-		Ui_.PluginsTasksTree_->setItemDelegateForColumn (SummaryTagsFilter::Progress,
+		Ui_.PluginsTasksTree_->setItemDelegateForColumn (JobsPresentationModel::Progress,
 				new Util::ProgressDelegate { &GetProgress, this });
 
 		FilterTimer_.setSingleShot (true);
