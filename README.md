@@ -36,3 +36,8 @@ make
 ```
 
 Prerequisites and more details are available at: https://leechcraft.org/development-building-from-source
+
+## Translations
+
+LeechCraft uses hosted [Weblate](https://hosted.weblate.org/projects/leechcraft/)
+for translations, kindly provided to opensource projects.
