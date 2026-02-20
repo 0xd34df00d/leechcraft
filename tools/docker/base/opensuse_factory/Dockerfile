@@ -6,4 +6,5 @@ RUN zypper ar 'https://download.opensuse.org/source/tumbleweed/repo/oss/' oss-sr
     eatmydata zypper dup -y && \
     eatmydata zypper -n si -d leechcraft && \
     eatmydata zypper -n in git gzip libboost_container-devel liblastfm-qt6-devel qt6-networkauth-devel c-toxcore-devel && \
-    eatmydata zypper -n in clang ninja
+    eatmydata zypper -n in clang ninja && \
+    eatmydata zypper clean -a
