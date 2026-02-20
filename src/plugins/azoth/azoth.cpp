@@ -58,10 +58,6 @@ namespace Azoth
 	{
 		qRegisterMetaType<QColor> ("QColor");
 		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
-#if QT_VERSION_MAJOR < 6
-		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
-		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
-#endif
 
 		ChatTab::SetParentMultiTabs (this);
 		ServiceDiscoveryWidget::SetParentMultiTabs (this);
