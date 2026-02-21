@@ -4,9 +4,10 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (
 	SRCS
+		jobspresentationmodel.cpp
 		summary.cpp
 		summarywidget.cpp
-		jobspresentationmodel.cpp
+		util.cpp
 	INSTALL_SHARE
 	QT_COMPONENTS Widgets
 	)

@@ -12,6 +12,7 @@
 #include <interfaces/structures.h>
 #include <util/sll/visitor.h>
 #include <util/util.h>
+#include "util.h"
 
 namespace LC::Summary
 {
@@ -144,7 +145,7 @@ namespace LC::Summary
 		if (!model)
 			return {};
 
-		return model->data (model->index (index, 0), +CustomDataRoles::Tags).toStringList ();
+		return model->index (index, 0).data (+CustomDataRoles::Tags).toStringList ();
 	}
 
 	namespace
@@ -199,21 +200,10 @@ namespace LC::Summary
 			return Util::Visit (rowInfo.Specific_,
 					[&srcIdx] (const ProcessInfo& proc) -> QVariant
 					{
-						if (const auto& customData = srcIdx.data (+JobHolderProcessRole::ProgressCustomText);
-							!customData.isNull ())
-							return customData;
-
-						const auto done = srcIdx.data (+JobHolderProcessRole::Done).value<qlonglong> ();
-						const auto total = srcIdx.data (+JobHolderProcessRole::Total).value<qlonglong> ();
-						switch (proc.Kind_)
-						{
-						case ProcessKind::Download:
-						case ProcessKind::Upload:
-							return tr ("%1 of %2").arg (Util::MakePrettySize (done), Util::MakePrettySize (total));
-						case ProcessKind::Generic:
-							return tr ("%1 of %2").arg (done).arg (total);
-						}
-						return {};
+						return MakeProgressString (proc,
+								srcIdx.data (+JobHolderProcessRole::Done).toLongLong (),
+								srcIdx.data (+JobHolderProcessRole::Total).toLongLong (),
+								srcIdx);
 					},
 					[] (const NewsInfo& news) { return QVariant { news.LastUpdate_ }; });
 		}

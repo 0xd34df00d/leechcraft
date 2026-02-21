@@ -22,6 +22,7 @@
 #include <util/gui/progressdelegate.h>
 #include <util/sll/qtutil.h>
 #include "jobspresentationmodel.h"
+#include "util.h"
 
 namespace LC::Summary
 {
@@ -61,24 +62,27 @@ namespace LC::Summary
 
 		std::optional<Util::ProgressDelegate::Progress> GetProgress (const QModelIndex& index)
 		{
-			auto done = index.data (+JobHolderProcessRole::Done).value<qlonglong> ();
-			auto total = index.data (+JobHolderProcessRole::Total).value<qlonglong> ();
-			while (total > 1000)
-			{
-				done /= 10;
-				total /= 10;
-			}
-
 			const auto rowInfo = index.data (+JobHolderRole::RowInfo).value<RowInfo> ();
-			if (const auto isProcess = std::holds_alternative<ProcessInfo> (rowInfo.Specific_);
-				!isProcess)
+			const auto procInfo = std::get_if<ProcessInfo> (&rowInfo.Specific_);
+			if (!procInfo)
 				return {};
+
+			const auto done = index.data (+JobHolderProcessRole::Done).value<qlonglong> ();
+			const auto total = index.data (+JobHolderProcessRole::Total).value<qlonglong> ();
+
+			auto scaledDone = done;
+			auto scaledTotal = total;
+			while (scaledTotal > 1000)
+			{
+				scaledDone /= 10;
+				scaledTotal /= 10;
+			}
 
 			return Util::ProgressDelegate::Progress
 			{
-				.Maximum_ = static_cast<int> (std::max (total, 0LL)),
-				.Progress_ = static_cast<int> (std::max (done, 0LL)),
-				.Text_ = index.data ().toString (),
+				.Maximum_ = static_cast<int> (std::max (scaledTotal, 0LL)),
+				.Progress_ = static_cast<int> (std::max (scaledDone, 0LL)),
+				.Text_ = MakeProgressString (*procInfo, done, total, index),
 			};
 		}
 	}
