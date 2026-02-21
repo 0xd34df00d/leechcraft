@@ -40,7 +40,11 @@ namespace LC::Util
 	class UTIL_XPC_API ProgressManager : public QObject
 	{
 		friend class ProgressModelRow;
+	public:
+		constexpr static auto CustomDataRole = MaxValue<JobHolderProcessRole> + 1;
 
+		constexpr static auto MaxRole = CustomDataRole;
+	private:
 		struct Item
 		{
 			RoleOf<RowInfo, +JobHolderRole::RowInfo> RowInfo_;
@@ -52,12 +56,10 @@ namespace LC::Util
 
 			RoleOf<QString, Qt::DisplayRole> CachedName_;
 
-			QVariant CustomData_ {};
+			RoleOf<QVariant, CustomDataRole> CustomData_;
 		};
 		RoledItemsModel<Item> Model_;
 	public:
-		constexpr static auto MaxRole = MaxValue<JobHolderProcessRole>;
-
 		explicit ProgressManager (QObject *parent = nullptr);
 
 		void SetGlobalData (const QVariant& data, int role);
