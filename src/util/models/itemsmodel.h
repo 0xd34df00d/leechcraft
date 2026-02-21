@@ -140,6 +140,9 @@ namespace LC::Util
 		template<auto F, typename V>
 		void SetField (int idx, V&& value)
 		{
+			if (this->Items_ [idx].*F == value)
+				return;
+
 			this->Items_ [idx].*F = std::forward<V> (value);
 			emit this->dataChanged (this->index (idx, 0), this->index (idx, 0),
 					{ std::decay_t<decltype (T {}.*F)>::Role });
