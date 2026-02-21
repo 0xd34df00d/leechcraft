@@ -18,6 +18,8 @@ namespace LC::Util
 	{
 		constexpr static auto Role = RoleV;
 
+		using Type = T;
+
 		T Value_ {};
 
 		RoleOf () = default;
@@ -46,6 +48,16 @@ namespace LC::Util
 		bool operator== (const U& value) const
 		{
 			return Value_ == value;
+		}
+
+		T& operator* ()
+		{
+			return Value_;
+		}
+
+		const T& operator* () const
+		{
+			return Value_;
 		}
 
 		T* operator-> ()
@@ -101,7 +113,7 @@ namespace LC::Util
 				return
 				{
 					FieldType_t<T, Ix>::Role,
-					+[] (const T& t) { return QVariant::fromValue<FieldType_t<T, Ix>> (GetFieldAt<Ix> (t)); }
+					+[] (const T& t) { return QVariant::fromValue (*GetFieldAt<Ix> (t)); }
 				};
 			else
 				return { -1, nullptr };
