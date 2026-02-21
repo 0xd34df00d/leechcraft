@@ -20,6 +20,15 @@
       }
     },
     {
+      "name": "opensuse_leap_16_0_clang",
+      "inherits": "opensuse_factory_clang",
+      "description": "openSUSE Leap 16.0 build with clang",
+      "cacheVariables": {
+        "ENABLE_AGGREGATOR_WEBACCESS": "False",
+        "ENABLE_AZOTH_VELVETBIRD": "False"
+      }
+    },
+    {
       "name": "opensuse_factory",
       "inherits": "default",
       "description": "openSUSE Factory plugins",
