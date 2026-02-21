@@ -79,7 +79,7 @@ else ()
 	set (LC_SHARE_DEST "leechcraft.app/Contents/Resources/share")
 endif ()
 
-find_package (Boost REQUIRED COMPONENTS date_time filesystem program_options thread)
+find_package (Boost REQUIRED COMPONENTS program_options)
 
 include (CommonLCSetup.cmake)
 
