@@ -59,6 +59,7 @@ namespace LC::Util
 		}
 
 		operator T () const
+			requires (!std::is_same_v<T, QVariant>)
 		{
 			return Value_;
 		}
