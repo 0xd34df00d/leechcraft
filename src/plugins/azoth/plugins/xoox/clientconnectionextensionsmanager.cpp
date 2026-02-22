@@ -10,7 +10,9 @@
 #include <QXmppClient.h>
 #include <QXmppArchiveManager.h>
 #include <QXmppBookmarkManager.h>
+#ifdef ENABLE_MEDIACALLS
 #include <QXmppCallManager.h>
+#endif
 #include <QXmppDiscoveryManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppMessageReceiptManager.h>

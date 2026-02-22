@@ -9,7 +9,9 @@
 #include "mediacall.h"
 #include <QAudioFormat>
 #include <QtDebug>
+#ifdef ENABLE_MEDIACALLS
 #include <QXmppCallManager.h>
+#endif
 #include "clientconnection.h"
 #include "glooxaccount.h"
 

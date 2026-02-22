@@ -9,13 +9,11 @@
 #pragma once
 
 #include <QObject>
-#include <QXmppCallManager.h>
 #include <interfaces/azoth/imediacall.h>
 #include <util/azoth/emitters/mediacall.h>
 
-#ifndef ENABLE_MEDIACALLS
-#error Dont include this if media calls are disabled.
-#endif
+class QAudioFormat;
+class QXmppCall;
 
 namespace LC
 {

@@ -8,7 +8,9 @@
 
 #include "callshandler.h"
 #include <QHostAddress>
+#ifdef ENABLE_MEDIACALLS
 #include <QXmppCallManager.h>
+#endif
 #include <util/xpc/util.h>
 #include "accountsettingsholder.h"
 #include "clientconnection.h"
