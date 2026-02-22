@@ -16,6 +16,30 @@
 
 namespace LC::Summary
 {
+	namespace
+	{
+		bool IsColumnAffected (int column, const QList<int>& roles)
+		{
+			if (roles.isEmpty () || roles.contains (+JobHolderRole::RowInfo))
+				return true;
+
+			switch (column)
+			{
+			case JobsPresentationModel::Name:
+				return false;
+			case JobsPresentationModel::Status:
+				return roles.contains (+JobHolderProcessRole::State) ||
+						roles.contains (+JobHolderProcessRole::StateCustomText);
+			case JobsPresentationModel::Progress:
+				return roles.contains (+JobHolderProcessRole::Done) ||
+						roles.contains (+JobHolderProcessRole::Total) ||
+						roles.contains (+JobHolderProcessRole::ProgressCustomText);
+			}
+
+			return false;
+		}
+	}
+
 	void JobsPresentationModel::setSourceModel (QAbstractItemModel *model)
 	{
 		if (const auto oldModel = sourceModel ())
@@ -43,6 +67,14 @@ namespace LC::Summary
 					if (!topLeft.parent ().isValid () && isInfoAffected)
 						for (int i = topLeft.row (); i <= bottomRight.row (); ++i)
 							CachedRowInfos_ [i].reset ();
+
+					static const QList<int> displayRole { Qt::DisplayRole };
+
+					const auto& thisTopLeft = mapFromSource (topLeft);
+					const auto& thisBottomRight = mapFromSource (bottomRight);
+					for (int c = 0; c < ColumnCount; ++c)
+						if (IsColumnAffected (c, roles))
+							emit dataChanged (thisTopLeft.siblingAtColumn (c), thisBottomRight.siblingAtColumn (c), displayRole);
 				});
 
 		connect (model,
