@@ -190,6 +190,20 @@
       }
     },
     {
+      "name": "debian_experimental",
+      "inherits": "debian_unstable",
+      "description": "Debian Experimental plugins"
+    },
+    {
+      "name": "debian_experimental_clang",
+      "inherits": "debian_experimental",
+      "description": "Debian Experimental build with clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    },
+    {
       "name": "opensuse_factory",
       "inherits": "default",
       "description": "openSUSE Factory plugins",
