@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <stacktrace>
+#include <unistd.h>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
