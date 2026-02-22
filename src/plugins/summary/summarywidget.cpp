@@ -128,8 +128,10 @@ namespace LC::Summary
 			MergeModel_.AddModel (&model);
 			SrcModel2Handler_ [&model] = std::move (reprHandler);
 		}
-		Filter_.setSourceModel (&MergeModel_);
-		Ui_.PluginsTasksTree_->setModel (&Filter_);
+		TagsFilterModel_.SetTagsRole (+CustomDataRoles::Tags);
+		TagsFilterModel_.setSourceModel (&MergeModel_);
+		PresentationModel_.setSourceModel (&TagsFilterModel_);
+		Ui_.PluginsTasksTree_->setModel (&PresentationModel_);
 
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
 				&QItemSelectionModel::currentRowChanged,
@@ -256,7 +258,7 @@ namespace LC::Summary
 		if (!index.isValid ())
 			return {};
 
-		return MergeModel_.mapToSource (Filter_.mapToSource (index));
+		return MergeModel_.mapToSource (TagsFilterModel_.mapToSource (PresentationModel_.mapToSource (index)));
 	}
 
 	IJobHolderRepresentationHandler& SummaryWidget::GetHandler (const QModelIndex& index) const
@@ -317,7 +319,7 @@ namespace LC::Summary
 
 	void SummaryWidget::SetFilterParams ()
 	{
-		Filter_.SetFilterString (SearchWidget_->GetEdit ().text ());
+		TagsFilterModel_.SetFilterString (SearchWidget_->GetEdit ().text ());
 	}
 
 	void SummaryWidget::EnsureCurrentRowSelected ()

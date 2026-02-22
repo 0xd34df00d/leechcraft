@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QCoreApplication>
-#include <util/tags/tagsfiltermodel.h>
+#include <QIdentityProxyModel>
 
 namespace LC
 {
@@ -18,7 +18,7 @@ namespace LC
 
 namespace LC::Summary
 {
-	class JobsPresentationModel : public Util::TagsFilterModel
+	class JobsPresentationModel : public QIdentityProxyModel
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Summary::JobsPresentationModel)
 
@@ -38,8 +38,6 @@ namespace LC::Summary
 		int columnCount (const QModelIndex& parent) const override;
 		QVariant data (const QModelIndex& index, int role) const override;
 		Qt::ItemFlags flags (const QModelIndex& index) const override;
-	protected:
-		QStringList GetTagsForIndex (int) const override;
 	private:
 		QVariant GetDisplayData (const QModelIndex& srcIdx, int column) const;
 		const RowInfo& GetRowInfo (int row) const;

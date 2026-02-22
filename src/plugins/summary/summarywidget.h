@@ -13,6 +13,7 @@
 #include <QToolBar>
 #include <QWidget>
 #include <util/models/mergemodel.h>
+#include <util/tags/tagsfiltermodel.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -42,7 +43,8 @@ namespace LC::Summary
 		std::unique_ptr<QToolBar> Toolbar_;
 
 		Util::MergeModel MergeModel_;
-		JobsPresentationModel Filter_;
+		Util::TagsFilterModel TagsFilterModel_;
+		JobsPresentationModel PresentationModel_;
 
 		std::unordered_map<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
 		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;

@@ -20,7 +20,7 @@ namespace LC::Summary
 	{
 		if (const auto oldModel = sourceModel ())
 		{
-			QSortFilterProxyModel::setSourceModel (nullptr);
+			QIdentityProxyModel::setSourceModel (nullptr);
 			disconnect (oldModel, nullptr, this, nullptr);
 		}
 
@@ -97,7 +97,7 @@ namespace LC::Summary
 						CachedRowInfos_.insert (row, count, {});
 				});
 
-		QSortFilterProxyModel::setSourceModel (model);
+		QIdentityProxyModel::setSourceModel (model);
 	}
 
 	int JobsPresentationModel::columnCount (const QModelIndex&) const
@@ -144,15 +144,6 @@ namespace LC::Summary
 		if (index.column () == 0)
 			return mapToSource (index).flags ();
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	}
-
-	QStringList JobsPresentationModel::GetTagsForIndex (int index) const
-	{
-		const auto model = sourceModel ();
-		if (!model)
-			return {};
-
-		return model->index (index, 0).data (+CustomDataRoles::Tags).toStringList ();
 	}
 
 	namespace
