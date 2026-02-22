@@ -30,6 +30,7 @@ namespace Azoth
 	class ConsoleWidget;
 	class MicroblogsTab;
 	class ServerHistoryWidget;
+	class TransferModelManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -63,7 +64,12 @@ namespace Azoth
 		TabClasses_t TabClasses_;
 
 		QMenu *StatusChangeMenu_;
+
+		std::unique_ptr<TransferModelManager> TransferModelManager_;
 	public:
+		explicit Plugin ();
+		~Plugin () override;
+
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
 		void Release () override;
@@ -97,6 +103,7 @@ namespace Azoth
 
 		QList<AN::FieldData> GetANFields () const override;
 	private:
+		void InitTransfers ();
 		void InitShortcuts ();
 		void InitSettings ();
 		void InitMW ();

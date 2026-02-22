@@ -37,18 +37,10 @@ namespace Azoth
 
 		AvatarsManager * const AvatarsMgr_;
 		QHash<QString, QList<IncomingOffer>> Entry2Incoming_;
-
-		Util::ProgressManager * const ProgressManager_;
-		QPersistentModelIndex Selected_;
-
-		QToolBar * const ReprBar_;
 	public:
 		explicit TransferJobManager (AvatarsManager*, QObject* = nullptr);
 
 		void AddAccountManager (QObject*);
-
-		void SelectionChanged (const QModelIndex&);
-		QAbstractItemModel* GetSummaryModel () const;
 
 		void AcceptOffer (const IncomingOffer&, QString);
 		void DeclineOffer (const IncomingOffer&);
@@ -70,11 +62,12 @@ namespace Azoth
 
 		void HandleIncomingFinished (const Transfers::JobContext&, const Transfers::JobContext::In&);
 		void HandleFileOffered (const IncomingOffer&);
-		void HandleStateChanged (const TransferState&, const Transfers::JobContext&, Util::ProgressModelRow&);
-	private slots:
-		void handleAbortAction ();
+		void HandleStateChanged (const TransferState&, const Transfers::JobContext&);
 	signals:
+		void jobOffered (const IncomingOffer&);
 		void jobDeoffered (const IncomingOffer&, Transfers::DeofferReason);
+
+		void jobInitialized (ITransferJob&, const Transfers::JobContext&);
 	};
 }
 }

@@ -6,32 +6,16 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#pragma once
-
-#include <variant>
-#include <QString>
+#include "types.h"
+#include <QFileInfo>
+#include <util/sll/visitor.h>
 
 namespace LC::Azoth::Transfers
 {
-	enum class DeofferReason
+	QString GetFilename (const JobContext& context)
 	{
-		Expired,
-		Accepted,
-		Declined,
-	};
-
-	struct JobContext
-	{
-		struct In { QString SavePath_; };
-		struct Out {};
-		std::variant<In, Out> Dir_;
-
-		QString OrigFilename_;
-		qint64 Size_;
-
-		QString EntryName_;
-		QString EntryId_;
-	};
-
-	QString GetFilename (const JobContext&);
+		return Util::Visit (context.Dir_,
+				[] (JobContext::In in) { return QFileInfo { in.SavePath_ }.fileName (); },
+				[&] (JobContext::Out) { return context.OrigFilename_; });
+	}
 }

@@ -85,7 +85,10 @@ LC_DEFINE_PLUGIN (
 		components/roster/mainwidget.cpp
 		components/roster/sortfilterproxymodel.cpp
 		components/transfers/pendinguploadpaster.cpp
+		components/transfers/representationhandler.cpp
 		components/transfers/transferjobmanager.cpp
+		components/transfers/transfermodelmanager.cpp
+		components/transfers/types.cpp
 		components/util/entries.cpp
 		components/util/dnd.cpp
 		components/util/gui.cpp

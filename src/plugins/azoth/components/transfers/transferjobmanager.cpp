@@ -8,12 +8,9 @@
 
 #include "transferjobmanager.h"
 #include <QUrl>
-#include <QStandardItemModel>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QToolBar>
-#include <QAction>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
@@ -34,8 +31,6 @@
 #include "../../xmlsettingsmanager.h"
 #include "../../avatarsmanager.h"
 
-Q_DECLARE_METATYPE (QToolBar*)
-
 namespace LC
 {
 namespace Azoth
@@ -46,16 +41,7 @@ namespace Azoth
 	TransferJobManager::TransferJobManager (AvatarsManager *am, QObject *parent)
 	: QObject { parent }
 	, AvatarsMgr_ { am }
-	, ProgressManager_ { new Util::ProgressManager { this } }
-	, ReprBar_ { new QToolBar }
 	{
-		QAction *abort = new QAction (tr ("Abort"), this);
-		abort->setProperty ("ActionIcon", "process-stop");
-		connect (abort,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAbortAction ()));
-		ReprBar_->addAction (abort);
 	}
 
 	void TransferJobManager::AddAccountManager (QObject *mgrObj)
@@ -94,66 +80,22 @@ namespace Azoth
 		return Entry2Incoming_ [id];
 	}
 
-	void TransferJobManager::SelectionChanged (const QModelIndex& idx)
-	{
-		Selected_ = idx;
-	}
-
 	namespace
 	{
 		ICLEntry* GetContact (const QString& id)
 		{
 			return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (id));
 		}
-
-		QString GetRowLabelTemplate (const JobContext& context)
-		{
-			return Util::Visit (context.Dir_,
-					[] (JobContext::In) { return TransferJobManager::tr ("Receiving %1 from %2"); },
-					[] (JobContext::Out) { return TransferJobManager::tr ("Sending %1 to %2"); });
-		}
-
-		QString GetFilename (const JobContext& context)
-		{
-			return Util::Visit (context.Dir_,
-					[] (JobContext::In in) { return QFileInfo { in.SavePath_ }.fileName (); },
-					[&] (JobContext::Out) { return context.OrigFilename_; });
-		}
 	}
 
 	void TransferJobManager::HandleJob (ITransferJob *job, const JobContext& context)
 	{
-		const auto& filename = GetFilename (context);
+		emit jobInitialized (*job, context);
 
-		std::shared_ptr row = ProgressManager_->AddRow (
-				{
-					.Name_ = GetRowLabelTemplate (context).arg (filename, context.EntryName_),
-					.Specific_ = ProcessInfo
-					{
-						.Parameters_ = FromUserInitiated,
-						.Kind_ = ProcessKind::Download,
-					},
-				},
-				{
-					.State_ = ProcessState::Paused,
-					.Total_ = context.Size_,
-					.CustomStateText_ = tr ("offered"),
-					.CustomData_ = QVariant::fromValue (job),
-				});
-
-		auto& emitter = job->GetTransferJobEmitter ();
-		connect (&emitter,
+		connect (&job->GetTransferJobEmitter (),
 				&Emitters::TransferJob::stateChanged,
 				this,
-				[this, context, row] (const TransferState& state) { HandleStateChanged (state, context, *row); });
-		connect (&emitter,
-				&Emitters::TransferJob::transferProgress,
-				this,
-				[row] (qint64 done, qint64 total)
-				{
-					row->SetDone (done);
-					row->SetTotal (total);
-				});
+				[this, context] (const TransferState& state) { HandleStateChanged (state, context); });
 	}
 
 	namespace
@@ -249,11 +191,6 @@ namespace Azoth
 		Deoffer (offer, DeofferReason::Declined);
 	}
 
-	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
-	{
-		return &ProgressManager_->GetModel ();
-	}
-
 	bool TransferJobManager::SendFile (const OutgoingFileOffer& offer)
 	{
 		const auto acc = offer.Entry_.GetParentAccount ();
@@ -334,6 +271,8 @@ namespace Azoth
 
 	void TransferJobManager::HandleFileOffered (const IncomingOffer& offer)
 	{
+		emit jobOffered (offer);
+
 		Entry2Incoming_ [offer.EntryId_] << offer;
 
 		const auto entry = GetContact (offer.EntryId_);
@@ -416,42 +355,9 @@ namespace Azoth
 			qWarning () << "unhandled state" << static_cast<int> (phase);
 			return {};
 		}
-
-		QString GetStatusString (Transfers::Phase state)
-		{
-			using enum Transfers::Phase;
-			switch (state)
-			{
-			case Starting:
-				return TransferJobManager::tr ("starting");
-			case Transferring:
-				return TransferJobManager::tr ("transferring");
-			case Finished:
-				return {};
-			}
-
-			qWarning () << "unhandled state" << static_cast<int> (state);
-			return {};
-		}
-
-		ProcessState ToProcessState (Transfers::Phase state)
-		{
-			using enum Transfers::Phase;
-			switch (state)
-			{
-			case Starting:
-			case Transferring:
-				return ProcessState::Running;
-			case Finished:
-				return ProcessState::Finished;
-			}
-
-			return ProcessState::Unknown;
-		}
 	}
 
-	void TransferJobManager::HandleStateChanged (const TransferState& state,
-			const JobContext& context, Util::ProgressModelRow& row)
+	void TransferJobManager::HandleStateChanged (const TransferState& state, const JobContext& context)
 	{
 		Util::Visit (state,
 				[&] (Transfers::Phase phase)
@@ -461,7 +367,6 @@ namespace Azoth
 						HandleIncomingFinished (context, *in);
 					else
 					{
-						row.SetState (ToProcessState (phase), GetStatusString (phase));
 						const auto& e = Util::MakeNotification ("Azoth",
 								GetNotificationMessageTemplate (phase).arg (GetFilename (context), context.EntryName_),
 								Priority::Info);
@@ -482,17 +387,6 @@ namespace Azoth
 									Priority::Critical);
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				});
-	}
-
-	void TransferJobManager::handleAbortAction ()
-	{
-		if (!Selected_.isValid ())
-			return;
-
-		if (const auto job = ProgressManager_->GetCustomData (Selected_).value<ITransferJob*> ())
-			job->Abort ();
-		else
-			qWarning () << "null transfer job for" << Selected_;
 	}
 }
 }

@@ -33,7 +33,9 @@
 #include "interfaces/azoth/imucprotocol.h"
 #include "components/chat/chattab.h"
 #include "components/roster/mainwidget.h"
+#include "components/transfers/representationhandler.h"
 #include "components/transfers/transferjobmanager.h"
+#include "components/transfers/transfermodelmanager.h"
 #include "components/util/statuschange.h"
 #include "core.h"
 #include "chattabsmanager.h"
@@ -54,10 +56,16 @@ namespace LC
 {
 namespace Azoth
 {
+	Plugin::Plugin () = default;
+
+	Plugin::~Plugin () = default;
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		qRegisterMetaType<QColor> ("QColor");
 		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
+
+		InitTransfers ();
 
 		ChatTab::SetParentMultiTabs (this);
 		ServiceDiscoveryWidget::SetParentMultiTabs (this);
@@ -146,21 +154,7 @@ namespace Azoth
 
 	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
 	{
-		class Handler : public IJobHolderRepresentationHandler
-		{
-		public:
-			QAbstractItemModel& GetRepresentation () override
-			{
-				return *Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
-			}
-
-			void HandleCurrentRowChanged (const QModelIndex& index) override
-			{
-				Core::Instance ().GetTransferJobManager ()->SelectionChanged (index);
-			}
-		};
-
-		return std::make_unique<Handler> ();
+		return std::make_unique<RepresentationHandler> (*TransferModelManager_);
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
@@ -301,6 +295,24 @@ namespace Azoth
 	QList<AN::FieldData> Plugin::GetANFields () const
 	{
 		return Core::Instance ().GetANFields ();
+	}
+
+	void Plugin::InitTransfers ()
+	{
+		TransferModelManager_ = std::make_unique<TransferModelManager> ();
+		const auto jobManager = Core::Instance ().GetTransferJobManager ();
+		connect (jobManager,
+				&TransferJobManager::jobOffered,
+				&*TransferModelManager_,
+				&TransferModelManager::AddOffer);
+		connect (jobManager,
+				&TransferJobManager::jobDeoffered,
+				&*TransferModelManager_,
+				&TransferModelManager::RemoveOffer);
+		connect (jobManager,
+				&TransferJobManager::jobInitialized,
+				&*TransferModelManager_,
+				&TransferModelManager::AddJob);
 	}
 
 	void Plugin::InitShortcuts ()
