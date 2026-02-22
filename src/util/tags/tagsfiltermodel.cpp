@@ -29,6 +29,12 @@ namespace LC::Util
 		FixedStringFilterProxyModel::SetFilterString (string);
 	}
 
+	void TagsFilterModel::SetTagsRole (int role)
+	{
+		TagsRole_ = role;
+		invalidateFilter ();
+	}
+
 	void TagsFilterModel::SetSeparator (const QString& separator)
 	{
 		Separator_ = separator;
@@ -53,6 +59,18 @@ namespace LC::Util
 			return FixedStringFilterProxyModel::filterAcceptsRow (sourceRow, index);
 
 		return FilterTagsMode (sourceRow, index);
+	}
+
+	QStringList TagsFilterModel::GetTagsForIndex (int row) const
+	{
+		if (TagsRole_ < 0)
+			throw std::runtime_error { "no tags role for the default TagsFilterModel::GetTagsForIndex() implementation" };
+
+		const auto model = sourceModel ();
+		if (!model)
+			return {};
+
+		return model->index (row, 0).data (TagsRole_).toStringList ();
 	}
 
 	bool TagsFilterModel::FilterTagsMode (int sourceRow, const QModelIndex&) const

@@ -30,6 +30,7 @@ namespace LC::Util
 	{
 		QString Separator_;
 		QList<QString> FilterTags_;
+		int TagsRole_ = -1;
 		bool NormalMode_ = true;
 	public:
 		/** @brief Describes the modes of matching two sets of tags.
@@ -62,6 +63,8 @@ namespace LC::Util
 		explicit TagsFilterModel (QObject *parent = nullptr);
 
 		void SetFilterString (const QString&) override;
+
+		void SetTagsRole (int role);
 
 		/** @brief Sets the separator for the tags.
 		 *
@@ -108,7 +111,7 @@ namespace LC::Util
 		 * @param[in] row The source row for which tags should be fetched.
 		 * @return The list of tags for the \em row.
 		 */
-		virtual QStringList GetTagsForIndex (int row) const = 0;
+		virtual QStringList GetTagsForIndex (int row) const;
 	private:
 		bool FilterTagsMode (int, const QModelIndex&) const;
 	};
