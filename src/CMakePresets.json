@@ -88,6 +88,24 @@
       }
     },
     {
+      "name": "alpine_edge",
+      "inherits": "common_plugins",
+      "description": "Alpine Linux edge settings",
+      "cacheVariables": {
+        "STRICT_LICENSING": "True",
+        "ENABLE_LASTFMSCROBBLE": "False"
+      }
+    },
+    {
+      "name": "alpine_edge_clang",
+      "inherits": "alpine_edge",
+      "description": "Alpine edge build with clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    },
+    {
       "name": "common_plugins",
       "inherits": "default",
       "hidden": true,
