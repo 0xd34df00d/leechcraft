@@ -18,14 +18,19 @@ namespace LC::Summary
 			!customData.isNull ())
 			return customData;
 
-		switch (info.Kind_)
+		const auto percentage = std::max (done, 0LL) / std::max (static_cast<double> (total), 1.) * 100;
+		const auto& pattern = QObject::tr ("%1 of %2 (%3%)");
+		const auto& absValuesSubstitued = [&]
 		{
-		case ProcessKind::Download:
-		case ProcessKind::Upload:
-			return QObject::tr ("%1 of %2").arg (Util::MakePrettySize (done), Util::MakePrettySize (total));
-		case ProcessKind::Generic:
-			return QObject::tr ("%1 of %2").arg (done).arg (total);
-		}
-		return {};
+			switch (info.Kind_)
+			{
+			case ProcessKind::Download:
+			case ProcessKind::Upload:
+				return pattern.arg (Util::MakePrettySize (done), Util::MakePrettySize (total));
+			case ProcessKind::Generic:
+				return pattern.arg (done).arg (total);
+			}
+		} ();
+		return absValuesSubstitued.arg (percentage, 0, 'f', 1);
 	}
 }
