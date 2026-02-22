@@ -68,6 +68,26 @@
       "description": "Debian Experimental build with clang"
     },
     {
+      "name": "fedora_rawhide",
+      "inherits": "common_plugins",
+      "description": "Fedora Rawhide settings",
+      "cacheVariables": {
+        "LIB_SUFFIX": "64",
+        "STRICT_LICENSING": "True",
+        "ENABLE_AGGREGATOR_WEBACCESS": "True",
+        "ENABLE_ELEEMINATOR": "False"
+      }
+    },
+    {
+      "name": "fedora_rawhide_clang",
+      "inherits": "fedora_rawhide",
+      "description": "Fedora Rawhide build with clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    },
+    {
       "name": "common_plugins",
       "inherits": "default",
       "hidden": true,
