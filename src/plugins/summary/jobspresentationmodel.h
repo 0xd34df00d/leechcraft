@@ -37,6 +37,7 @@ namespace LC::Summary
 
 		int columnCount (const QModelIndex& parent) const override;
 		QVariant data (const QModelIndex& index, int role) const override;
+		Qt::ItemFlags flags (const QModelIndex& index) const override;
 	protected:
 		QStringList GetTagsForIndex (int) const override;
 	private:

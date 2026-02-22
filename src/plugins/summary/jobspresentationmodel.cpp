@@ -139,6 +139,13 @@ namespace LC::Summary
 		}
 	}
 
+	Qt::ItemFlags JobsPresentationModel::flags (const QModelIndex& index) const
+	{
+		if (index.column () == 0)
+			return mapToSource (index).flags ();
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	}
+
 	QStringList JobsPresentationModel::GetTagsForIndex (int index) const
 	{
 		const auto model = sourceModel ();
