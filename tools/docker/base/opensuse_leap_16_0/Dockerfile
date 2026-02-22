@@ -4,6 +4,6 @@ RUN zypper ar -G 'https://download.opensuse.org/repositories/network/16.0/networ
     zypper ar -G 'https://download.opensuse.org/repositories/devel:/tools:/compiler/16.0/devel:tools:compiler.repo' && \
     zypper ref && \
     zypper -n si -d leechcraft && \
-    zypper -n in git gzip libboost_container-devel liblastfm-qt6-devel qt6-networkauth-devel c-toxcore-devel && \
+    zypper -n in git gzip libboost_container-devel liblastfm-qt6-devel qt6-networkauth-devel c-toxcore-devel qscintilla-qt6-devel && \
     zypper -n in clang ninja && \
     zypper clean -a
