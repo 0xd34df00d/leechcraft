@@ -93,7 +93,11 @@
       "description": "Alpine Linux edge settings",
       "cacheVariables": {
         "STRICT_LICENSING": "True",
-        "ENABLE_LASTFMSCROBBLE": "False"
+        "ENABLE_LASTFMSCROBBLE": "False",
+        "WITH_QWT": "False",
+        "ENABLE_LEMON": "False",
+        "ENABLE_LIZNOO": "False",
+        "ENABLE_LMP_FRADJ": "False"
       }
     },
     {
