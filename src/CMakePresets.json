@@ -33,6 +33,10 @@
       "name": "opensuse_leap_16_0_clang",
       "inherits": "opensuse_factory_clang",
       "description": "openSUSE Leap 16.0 build with clang",
+      "environment": {
+        "CXXFLAGS": "$env{CXXFLAGS} -Wno-deprecated-declarations",
+        "CFLAGS": "$env{CFLAGS} -Wno-deprecated-declarations"
+      },
       "cacheVariables": {
         "ENABLE_AGGREGATOR_WEBACCESS": "False",
         "ENABLE_AZOTH_VELVETBIRD": "False"
