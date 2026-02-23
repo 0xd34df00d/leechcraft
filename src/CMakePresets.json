@@ -17,7 +17,9 @@
       "cacheVariables": {
         "LIB_SUFFIX": "64",
         "STRICT_LICENSING": "True",
-        "ENABLE_AGGREGATOR_WEBACCESS": "True"
+        "ENABLE_AGGREGATOR_WEBACCESS": "True",
+        "ENABLE_AZOTH_SARIN": "True",
+        "ENABLE_POPISHU": "True"
       }
     },
     {
