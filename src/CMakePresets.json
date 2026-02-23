@@ -110,6 +110,28 @@
       }
     },
     {
+      "name": "arch_linux",
+      "inherits": "common_plugins",
+      "description": "Arch Linux settings",
+      "cacheVariables": {
+        "STRICT_LICENSING": "True",
+        "ENABLE_LASTFMSCROBBLE": "False",
+        "WITH_QWT": "False",
+        "ENABLE_LEMON": "False",
+        "ENABLE_LIZNOO": "False",
+        "ENABLE_LMP_FRADJ": "False"
+      }
+    },
+    {
+      "name": "arch_linux_clang",
+      "inherits": "arch_linux",
+      "description": "Arch Linux build with clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    },
+    {
       "name": "common_plugins",
       "inherits": "default",
       "hidden": true,
