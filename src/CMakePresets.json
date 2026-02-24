@@ -54,8 +54,6 @@
         "ENABLE_LEMON": "False",
         "ENABLE_LIZNOO": "False",
         "ENABLE_LMP_FRADJ": "False",
-        "ENABLE_NACHEKU": "True",
-        "ENABLE_NETSTOREMANAGER_DROPBOX": "True",
         "ENABLE_POPISHU": "True"
       }
     },
@@ -241,10 +239,10 @@
         "ENABLE_MONOCLE_SEEN": "True",
         "ENABLE_MUSICZOMBIE": "True",
         "WITH_MUSICZOMBIE_CHROMAPRINT": "True",
-        "ENABLE_NACHEKU": "False",
+        "ENABLE_NACHEKU": "True",
         "ENABLE_NAMAUTH": "True",
         "ENABLE_NETSTOREMANAGER": "True",
-        "ENABLE_NETSTOREMANAGER_DROPBOX": "False",
+        "ENABLE_NETSTOREMANAGER_DROPBOX": "True",
         "ENABLE_NETSTOREMANAGER_GOOGLEDRIVE": "True",
         "ENABLE_NEWLIFE": "True",
         "ENABLE_OORONEE": "True",
