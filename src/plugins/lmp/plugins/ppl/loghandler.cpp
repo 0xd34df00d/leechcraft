@@ -132,7 +132,6 @@ namespace LC::LMP::PPL
 	LogHandler::LogHandler (const QString& logPath,
 			ILocalCollection *coll, IPluginsManager *ipm, QObject *parent)
 	: QObject { parent }
-	, Collection_ { coll }
 	{
 		QFile file { logPath };
 		if (!file.open (QIODevice::ReadOnly))
