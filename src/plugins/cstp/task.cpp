@@ -19,7 +19,6 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/either.h>
-#include <util/sll/qstringwrappers.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -518,7 +517,7 @@ namespace CSTP
 			return;
 
 		const auto& contdis = Reply_->rawHeader ("Content-Disposition");
-		qDebug () << Q_FUNC_INFO << contdis;
+		qDebug () << contdis;
 		if (!contdis.contains ("filename="))
 			return;
 
@@ -535,8 +534,7 @@ namespace CSTP
 
 		if (path == oldPath)
 		{
-			qDebug () << Q_FUNC_INFO
-					<< "new name equals to the old name, skipping renaming";
+			qDebug () << "new name equals to the old name, skipping renaming";
 			return;
 		}
 
@@ -544,19 +542,13 @@ namespace CSTP
 		To_->close ();
 
 		if (!To_->rename (path))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to rename to"
-				<< path
-				<< To_->errorString ();
-		}
+			qWarning () << "failed to rename to" << path << To_->errorString ();
 		if (!To_->open (openMode))
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to re-open the renamed file"
-				<< path;
+			qWarning () << "failed to re-open the renamed file" << path;
 			To_->rename (oldPath);
-			To_->open (openMode);
+			if (!To_->open (openMode))
+				qWarning () << "failed to re-open the non-renamed file" << oldPath << To_->errorString ();
 		}
 	}
 
