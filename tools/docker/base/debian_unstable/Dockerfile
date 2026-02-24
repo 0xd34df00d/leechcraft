@@ -9,21 +9,13 @@ RUN apt-get update && \
         qt6-tools-dev qt6-tools-dev-tools \
         qt6-svg-dev \
         qt6-declarative-dev qt6-declarative-private-dev \
-        qt6-5compat-dev \
-        qt6-webchannel-dev \
         qt6-webengine-dev \
         qt6-scxml-dev \
         qt6-networkauth-dev \
-        qt6-positioning-dev \
         libboost-dev \
-        libboost-date-time-dev \
-        libboost-filesystem-dev \
         libboost-program-options-dev \
-        libboost-thread-dev \
-        libboost-locale-dev \
         libboost-container-dev \
         libx11-dev \
-        libx11-xcb-dev \
         libxkbfile-dev \
         libxcomposite-dev \
         libxrender-dev \
@@ -56,7 +48,6 @@ RUN apt-get update && \
         libidn-dev \
         libqrencode-dev \
         libsensors-dev \
-        libmagic-dev \
         libudev-dev \
         liblastfm6-dev \
         libqtermwidget-dev \
