@@ -420,6 +420,9 @@ namespace LC::Azoth::Sarin
 			.log_user_data = Logger_.get (),
 			.experimental_thread_safety = false,
 			.experimental_groups_persistence = false,
+#if TOX_VERSION_IS_API_COMPATIBLE (0, 2, 21)
+			.experimental_disable_dns = false,
+#endif
 		};
 
 		TOX_ERR_NEW initError {};
@@ -427,6 +430,7 @@ namespace LC::Azoth::Sarin
 		if (!Tox_ || initError != TOX_ERR_NEW_OK)
 			co_return Util::Left { MapError (initError) };
 
+		// TODO
 		//CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
 
 		if (const auto setNameRes = WithStrError (&tox_self_set_name, Tox_.get (), Name_);
