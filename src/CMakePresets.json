@@ -167,7 +167,6 @@
         "ENABLE_AZOTH_MODNOK": "True",
         "ENABLE_AZOTH_MUCOMMANDS": "True",
         "ENABLE_AZOTH_MUCOMMANDS_TESTS": "True",
-        "ENABLE_AZOTH_MURM": "True",
         "ENABLE_AZOTH_NATIVEEMOTICONS": "True",
         "ENABLE_AZOTH_OTROID": "True",
         "ENABLE_AZOTH_ROSENTHAL": "True",
