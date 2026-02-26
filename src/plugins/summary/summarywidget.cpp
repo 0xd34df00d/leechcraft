@@ -72,7 +72,7 @@ namespace LC::Summary
 
 			auto scaledDone = done;
 			auto scaledTotal = total;
-			while (scaledTotal > 1000)
+			while (scaledTotal > std::numeric_limits<int>::max ())
 			{
 				scaledDone /= 10;
 				scaledTotal /= 10;
