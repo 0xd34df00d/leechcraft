@@ -52,7 +52,7 @@ namespace LC::Summary
 
 	namespace
 	{
-		struct GuardHandler : IJobHolderRepresentationHandler
+		struct NullHandler : IJobHolderRepresentationHandler
 		{
 			QAbstractItemModel& GetRepresentation () override
 			{
@@ -93,7 +93,7 @@ namespace LC::Summary
 	, Toolbar_ { new QToolBar }
 	, MergeModel_ { { {}, {}, {} } }
 	{
-		SrcModel2Handler_ [nullptr] = std::make_unique<GuardHandler> ();
+		SrcModel2Handler_ [nullptr] = std::make_unique<NullHandler> ();
 
 		Toolbar_->setWindowTitle ("Summary");
 		Toolbar_->addWidget (SearchWidget_);
