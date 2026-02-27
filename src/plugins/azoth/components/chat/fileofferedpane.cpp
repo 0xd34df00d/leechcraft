@@ -51,10 +51,7 @@ namespace LC::Azoth
 		connect (Ui_.SaveButton_,
 				&QPushButton::released,
 				this,
-				[&transfers, offer]
-				{
-					transfers.AcceptOffer (offer, getDefDir () + '/' + offer.Name_);
-				});
+				[&transfers, offer] { transfers.AcceptOffer (offer, {}); });
 		connect (Ui_.SaveAsButton_,
 				&QPushButton::released,
 				this,

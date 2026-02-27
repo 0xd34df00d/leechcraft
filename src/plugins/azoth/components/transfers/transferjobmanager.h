@@ -42,7 +42,7 @@ namespace Azoth
 
 		void AddAccountManager (QObject*);
 
-		void AcceptOffer (const IncomingOffer&, QString);
+		void AcceptOffer (const IncomingOffer&, QString savePath = {});
 		void DeclineOffer (const IncomingOffer&);
 		QList<IncomingOffer> GetIncomingOffers (const QString&);
 
