@@ -44,6 +44,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/util.h>
 #include <util/sll/either.h>
+#include <util/sll/macros.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
@@ -318,12 +319,22 @@ namespace BitTorrent
 		return Headers_.size ();
 	}
 
+#if defined(TORRENT_ABI_VERSION) && TORRENT_ABI_VERSION == 1
+	#define LC_TORRENT_ABI1_DEPRECATED(...) \
+		LC_SUPPRESS_DEPRECATED_BEGIN        \
+		__VA_ARGS__                         \
+		LC_SUPPRESS_DEPRECATED_END
+#else
+	#define LC_TORRENT_ABI1_DEPRECATED(...)
+#endif
+
 	namespace
 	{
 		QString GetStringForState (libtorrent::torrent_status::state_t state)
 		{
 			switch (state)
 			{
+			LC_TORRENT_ABI1_DEPRECATED (case libtorrent::torrent_status::queued_for_checking:)
 			case libtorrent::torrent_status::checking_files:
 				return Core::tr ("Checking files");
 			case libtorrent::torrent_status::downloading_metadata:
@@ -334,6 +345,7 @@ namespace BitTorrent
 				return Core::tr ("Finished");
 			case libtorrent::torrent_status::seeding:
 				return Core::tr ("Seeding");
+			LC_TORRENT_ABI1_DEPRECATED (case libtorrent::torrent_status::allocating:)
 			case libtorrent::torrent_status::checking_resume_data:
 				return Core::tr ("Checking resume data");
 			}
@@ -510,9 +522,11 @@ namespace BitTorrent
 
 			switch (status.state)
 			{
+			LC_TORRENT_ABI1_DEPRECATED (case libtorrent::torrent_status::queued_for_checking:)
 			case libtorrent::torrent_status::checking_files:
 			case libtorrent::torrent_status::checking_resume_data:
 				return QIcon::fromTheme ("tools-check-spelling");
+			LC_TORRENT_ABI1_DEPRECATED (case libtorrent::torrent_status::allocating:)
 			case libtorrent::torrent_status::downloading:
 			case libtorrent::torrent_status::downloading_metadata:
 				return QIcon::fromTheme ("arrow-down");
@@ -1472,6 +1486,8 @@ namespace BitTorrent
 
 			switch (state)
 			{
+			LC_TORRENT_ABI1_DEPRECATED (case libtorrent::torrent_status::allocating:)
+			LC_TORRENT_ABI1_DEPRECATED (case libtorrent::torrent_status::queued_for_checking:)
 			case libtorrent::torrent_status::checking_files:
 			case libtorrent::torrent_status::checking_resume_data:
 			case libtorrent::torrent_status::downloading_metadata:
