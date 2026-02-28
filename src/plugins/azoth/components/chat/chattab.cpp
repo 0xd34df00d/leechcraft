@@ -1525,12 +1525,6 @@ namespace Azoth
 				return false;
 
 			const auto parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-			const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-
-			if (msg->GetDirection () == IMessage::Direction::Out &&
-					other &&
-					other->GetEntryType () == ICLEntry::EntryType::MUC)
-				return false;
 
 			if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
 					(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
