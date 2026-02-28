@@ -11,7 +11,6 @@ LC_DEFINE_PLUGIN (
 		visualfilter.cpp
 		viswidget.cpp
 		visscene.cpp
-	RESOURCES lmppotorchuresources.qrc
 	QT_COMPONENTS OpenGL OpenGLWidgets
 	LINK_LIBRARIES PkgConfig::GStreamer libprojectM::projectM libprojectM::playlist leechcraft-lmp-util
 	)
