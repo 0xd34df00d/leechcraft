@@ -19,7 +19,7 @@ namespace LC::Azoth::Xoox
 
 	class CallsHandler : public QObject
 	{
-		QXmppCallManager& Mgr_;
+		[[maybe_unused]] QXmppCallManager& Mgr_;
 		ClientConnection& Conn_;
 		GlooxAccount& Acc_;
 	public:
