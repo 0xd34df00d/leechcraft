@@ -205,8 +205,6 @@ namespace Azoth
 		void handleSendButtonVisible ();
 
 		void handleAccountStyleChanged (IAccount*);
-
-		void performJS (const QString&);
 	private:
 		void BuildBasicActions ();
 		void ReinitAvatar ();

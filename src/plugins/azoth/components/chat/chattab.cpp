@@ -48,7 +48,6 @@
 #include "interfaces/azoth/isupportmediacalls.h"
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/ihistoryplugin.h"
-#include "interfaces/azoth/iupdatablechatentry.h"
 #include "interfaces/azoth/iprovidecommands.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
@@ -1151,11 +1150,6 @@ namespace Azoth
 		PrepareTheme ();
 	}
 
-	void ChatTab::performJS (const QString& js)
-	{
-		Ui_.View_->page ()->runJavaScript (js);
-	}
-
 	template<typename T>
 	T* ChatTab::GetEntry () const
 	{
@@ -1258,12 +1252,6 @@ namespace Azoth
 
 		const auto& accName = e->GetParentAccount ()->GetAccountName ();
 		Ui_.AccountName_->setText (accName);
-
-		if (GetEntry<IUpdatableChatEntry> ())
-			connect (obj,
-					SIGNAL (performJS (QString)),
-					this,
-					SLOT (performJS (QString)));
 
 		ReinitAvatar ();
 	}
