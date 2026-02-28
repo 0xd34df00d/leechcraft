@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QXmppDiscoveryManager.h>
+#include <QXmppUtils.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -85,7 +86,7 @@ namespace Xoox
 
 		if (elem.attribute ("type") == "set")
 			return HandleIqSet (elem);
-		else if (QXmppDiscoveryIq::isDiscoveryIq (elem))
+		if (QXmpp::isIqElement<QXmppDiscoveryIq> (elem))
 			return HandleDiscoIq (elem);
 
 		return false;
