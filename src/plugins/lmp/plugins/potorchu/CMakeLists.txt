@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 3.10)
 project (lmp_potorchu)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (PkgConfig)
-pkg_check_modules (ProjectM REQUIRED IMPORTED_TARGET projectM-4)
+find_package (projectM4 REQUIRED)
+find_package (projectM4Playlist REQUIRED)
 
 LC_DEFINE_PLUGIN (
 	SRCS
@@ -12,6 +12,6 @@ LC_DEFINE_PLUGIN (
 		viswidget.cpp
 		visscene.cpp
 	RESOURCES lmppotorchuresources.qrc
-	QT_COMPONENTS OpenGL
-	LINK_LIBRARIES PkgConfig::GStreamer PkgConfig::ProjectM leechcraft-lmp-util
+	QT_COMPONENTS OpenGL OpenGLWidgets
+	LINK_LIBRARIES PkgConfig::GStreamer libprojectM::projectM libprojectM::playlist leechcraft-lmp-util
 	)

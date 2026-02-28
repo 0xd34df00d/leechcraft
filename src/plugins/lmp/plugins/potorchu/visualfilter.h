@@ -10,13 +10,13 @@
 
 #include <memory>
 #include <QObject>
+#include <projectM-4/projectM.h>
+#include <projectM-4/playlist.h>
 #include <interfaces/lmp/ifilterelement.h>
 #include <interfaces/lmp/ilmpproxy.h>
 
 typedef struct _GstPad GstPad;
 typedef struct _GstBuffer GstBuffer;
-
-class projectM;
 
 namespace LC
 {
@@ -44,11 +44,11 @@ namespace Potorchu
 		GstElement * const ProbeQueue_;
 		GstElement * const Converter_;
 		GstElement * const FakeSink_;
-		IPath *Path_;
-
-		std::shared_ptr<projectM> ProjectM_;
+		projectm_handle ProjectM_ = nullptr;
+		projectm_playlist_handle Playlist_ = nullptr;
 	public:
 		VisualFilter (const QByteArray&, const ILMPProxy_ptr&);
+		~VisualFilter ();
 
 		QByteArray GetEffectId () const;
 		QByteArray GetInstanceId () const;

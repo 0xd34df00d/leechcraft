@@ -8,11 +8,9 @@
 
 #include "visualfilter.h"
 #include <QtDebug>
-#include <QTemporaryFile>
 #include <QWidget>
 #include <QAction>
 #include <gst/gst.h>
-#include <libprojectM/projectM.hpp>
 #include <util/sll/util.h>
 #include <util/lmp/gstutil.h>
 #include <interfaces/lmp/ilmpguiproxy.h>
@@ -113,6 +111,14 @@ namespace Potorchu
 				nullptr);
 	}
 
+	VisualFilter::~VisualFilter ()
+	{
+		if (Playlist_)
+			projectm_playlist_destroy (Playlist_);
+		if (ProjectM_)
+			projectm_destroy (ProjectM_);
+	}
+
 	QByteArray VisualFilter::GetEffectId () const
 	{
 		return EffectId_;
@@ -133,41 +139,23 @@ namespace Potorchu
 		return Elem_;
 	}
 
-	namespace
-	{
-		projectM::Settings makeSettings (const QRect& sceneRect)
-		{
-			std::unique_ptr<QTemporaryFile> fontFile
-			{
-				QTemporaryFile::createNativeFile (":/lmp/potorchu/resources/data/blank.ttf")
-			};
-			const std::string fontFileNameStr { fontFile->fileName ().toUtf8 ().constData () };
-
-			projectM::Settings settings {};
-			settings.meshX = 32;
-			settings.meshY = 24;
-			settings.fps = 30;
-			settings.textureSize = 512;
-			settings.windowWidth = sceneRect.width ();
-			settings.windowHeight = sceneRect.height ();
-			settings.presetURL = "/usr/share/projectM/presets";
-			settings.titleFontURL = fontFileNameStr;
-			settings.menuFontURL = fontFileNameStr;
-			settings.smoothPresetDuration = 5;
-			settings.presetDuration = 15;
-			settings.beatSensitivity = 10;
-			settings.aspectCorrection = false;
-			settings.easterEgg = 0;
-			settings.shuffleEnabled = true;
-			settings.softCutRatingsEnabled = false;
-			return settings;
-		}
-	}
-
 	void VisualFilter::InitProjectM ()
 	{
-		auto settings = makeSettings (Scene_->sceneRect ().toRect ());
-		ProjectM_.reset (new projectM { settings });
+		const auto rect = Scene_->sceneRect ().toRect ();
+
+		ProjectM_ = projectm_create ();
+		projectm_set_mesh_size (ProjectM_, 32, 24);
+		projectm_set_fps (ProjectM_, 30);
+		projectm_set_window_size (ProjectM_, rect.width (), rect.height ());
+		projectm_set_soft_cut_duration (ProjectM_, 5);
+		projectm_set_preset_duration (ProjectM_, 15);
+		projectm_set_beat_sensitivity (ProjectM_, 10);
+		projectm_set_aspect_correction (ProjectM_, false);
+		projectm_set_easter_egg (ProjectM_, 0);
+
+		Playlist_ = projectm_playlist_create (ProjectM_);
+		projectm_playlist_add_path (Playlist_, "/usr/share/projectM/presets", true, false);
+		projectm_playlist_set_shuffle (Playlist_, true);
 	}
 
 	void VisualFilter::HandleBuffer (GstBuffer *buffer)
@@ -182,19 +170,19 @@ namespace Potorchu
 
 		auto mapGuard = Util::MakeScopeGuard ([buffer, &map] { gst_buffer_unmap (buffer, &map); });
 
-		const auto data = reinterpret_cast<const short*> (map.data);
+		const auto data = reinterpret_cast<const int16_t*> (map.data);
 		const auto size = map.size;
 
-		const auto samples = size / sizeof (short) / 2;
+		const auto samples = size / sizeof (int16_t) / 2;
 
 		if (ProjectM_)
-			ProjectM_->pcm ()->addPCM16Data (data, samples);
+			projectm_pcm_add_int16 (ProjectM_, data, samples, PROJECTM_STEREO);
 	}
 
 	void VisualFilter::handleSceneRectChanged (const QRectF& rect)
 	{
 		if (ProjectM_)
-			ProjectM_->projectM_resetGL (rect.width (), rect.height ());
+			projectm_set_window_size (ProjectM_, rect.width (), rect.height ());
 	}
 
 	void VisualFilter::updateFrame ()
@@ -202,17 +190,19 @@ namespace Potorchu
 		if (!ProjectM_)
 			InitProjectM ();
 
-		ProjectM_->renderFrame ();
+		projectm_opengl_render_frame (ProjectM_);
 	}
 
 	void VisualFilter::handleNextVis ()
 	{
-		ProjectM_->selectNext (true);
+		if (Playlist_)
+			projectm_playlist_play_next (Playlist_, false);
 	}
 
 	void VisualFilter::handlePrevVis ()
 	{
-		ProjectM_->selectPrevious (true);
+		if (Playlist_)
+			projectm_playlist_play_previous (Playlist_, false);
 	}
 }
 }

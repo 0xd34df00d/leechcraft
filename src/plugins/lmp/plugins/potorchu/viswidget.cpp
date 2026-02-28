@@ -10,7 +10,7 @@
 #include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QTimer>
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include <QtDebug>
 
 namespace LC
@@ -28,7 +28,7 @@ namespace Potorchu
 				this,
 				SIGNAL (redrawRequested ()));
 
-		setViewport (new QGLWidget { QGLFormat { QGL::SampleBuffers } });
+		setViewport (new QOpenGLWidget);
 		setViewportUpdateMode (QGraphicsView::FullViewportUpdate);
 	}
 
