@@ -1969,9 +1969,6 @@ namespace LC::Azoth
 
 		for (auto item : Entry2Items_.value (entry))
 			item->setText (newName);
-
-		if (entry->Variants ().size ())
-			HandleStatusChanged (entry->GetStatus (), entry, entry->Variants ().first ());
 	}
 
 	void Core::handleEntryGroupsChanged (QStringList newGroups, QObject *perform)
