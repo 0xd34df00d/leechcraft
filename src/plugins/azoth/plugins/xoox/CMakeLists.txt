@@ -3,11 +3,12 @@ project (azoth_xoox)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET QXmppQt${LC_QT_VERSION}>=1.9.0)
+pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET QXmppQt${LC_QT_VERSION}>=1.11.0)
 
 add_compile_definitions (
 	$<$<BOOL:${ENABLE_CRYPT}>:ENABLE_CRYPT>
 	$<$<BOOL:${ENABLE_MEDIACALLS}>:ENABLE_MEDIACALLS>
+	QXMPP_DISABLE_DEPRECATED_BEFORE=0x011100
 	)
 
 LC_DEFINE_PLUGIN (
