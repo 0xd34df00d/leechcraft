@@ -133,7 +133,7 @@ namespace Azoth
 	 *
 	 * Each plugin that wishes to provide the Azoth core with various
 	 * resource sources, like, support for loading of QIP- or Psi-style
-	 * plugins or some special styles (like Adium ones, for example),
+	 * emoticon packs or chat window styles,
 	 * should implement this interface. Since it's plugin for another
 	 * plugin, it should also implement IPlugin2, and it should return
 	 * "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin"
