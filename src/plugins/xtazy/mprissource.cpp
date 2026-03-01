@@ -30,8 +30,8 @@ namespace Xtazy
 		MPRISVersion GetVersion (const QString& service)
 		{
 			return service.contains ("MediaPlayer2") ?
-					MPRISVersion::V1 :
-					MPRISVersion::V2;
+					MPRISVersion::V2 :
+					MPRISVersion::V1;
 		}
 	}
 
