@@ -129,7 +129,6 @@ LC_DEFINE_PLUGIN (
 			mpris/instance.cpp
 			mpris/mediaplayer2adaptor.cpp
 			mpris/playeradaptor.cpp
-			mpris/fdopropsadaptor.cpp
 			>
 	RESOURCES resources.qrc
 	SETTINGS lmpsettings.xml lmpfilterrgsettings.xml

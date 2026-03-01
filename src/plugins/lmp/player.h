@@ -13,11 +13,6 @@
 #include <memory>
 #include <atomic>
 #include <QObject>
-
-#ifdef ENABLE_MPRIS
-#include <qdbuscontext.h>
-#endif
-
 #include <interfaces/media/iradiostation.h>
 #include "engine/audiosource.h"
 #include "util/lmp/mediainfo.h"
@@ -44,9 +39,6 @@ namespace LMP
 	enum class SourceState;
 
 	class Player : public QObject
-#ifdef ENABLE_MPRIS
-				 , public QDBusContext
-#endif
 	{
 		Q_OBJECT
 

@@ -7,20 +7,21 @@
  **********************************************************************/
 
 #include "playeradaptor.h"
+#include <QDBusConnection>
+#include <QDBusMessage>
 #include <QMetaObject>
 #include <QString>
 #include <QStringList>
+#include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 #include "../player.h"
 #include "../engine/sourceobject.h"
 #include "../engine/output.h"
-#include "fdopropsadaptor.h"
 
 namespace LC::LMP::MPRIS
 {
-	PlayerAdaptor::PlayerAdaptor (FDOPropsAdaptor *fdo, Player *player)
+	PlayerAdaptor::PlayerAdaptor (Player *player)
 	: QDBusAbstractAdaptor (player)
-	, Props_ (fdo)
 	, Player_ (player)
 	{
 		setAutoRelaySignals (true);
@@ -193,8 +194,13 @@ namespace LC::LMP::MPRIS
 
 	void PlayerAdaptor::Notify (const QString& propName)
 	{
-		Props_->Notify ("org.mpris.MediaPlayer2.Player",
-				propName, property (propName.toUtf8 ()));
+		auto signal = QDBusMessage::createSignal ("/org/mpris/MediaPlayer2"_qs,
+				"org.freedesktop.DBus.Properties"_qs,
+				"PropertiesChanged"_qs);
+		signal << "org.mpris.MediaPlayer2.Player"_qs
+			   << QVariantMap { { propName, property (propName.toUtf8 ()) } }
+			   << QStringList {};
+		QDBusConnection::sessionBus ().send (signal);
 	}
 
 	void PlayerAdaptor::Next ()

@@ -22,18 +22,15 @@ namespace LC::LMP
 
 namespace LC::LMP::MPRIS
 {
-	class FDOPropsAdaptor;
-
 	class PlayerAdaptor: public QDBusAbstractAdaptor
 	{
 		Q_OBJECT
 		Q_CLASSINFO("D-Bus Interface", "org.mpris.MediaPlayer2.Player")
 
-		FDOPropsAdaptor *Props_;
 		Player *Player_;
 	public:
-		PlayerAdaptor (FDOPropsAdaptor *fdo, Player*);
-	public:
+		explicit PlayerAdaptor (Player*);
+
 		Q_PROPERTY (bool CanControl READ GetCanControl)
 		bool GetCanControl () const;
 

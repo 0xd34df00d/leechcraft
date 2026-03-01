@@ -12,7 +12,6 @@
 #include "../player.h"
 #include "mediaplayer2adaptor.h"
 #include "playeradaptor.h"
-#include "fdopropsadaptor.h"
 
 namespace LC::LMP::MPRIS
 {
@@ -33,8 +32,7 @@ namespace LC::LMP::MPRIS
 				this,
 				&Instance::raiseRequested);
 
-		auto fdo = new FDOPropsAdaptor { player };
-		new PlayerAdaptor { fdo, player };
+		new PlayerAdaptor { player };
 
 		QDBusConnection::sessionBus ().registerService (GetServiceName ());
 		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2"_qs, player);
