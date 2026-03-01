@@ -10,8 +10,6 @@
 #include <QDBusConnectionInterface>
 #include <QDBusMetaType>
 #include <QtDebug>
-#include <util/sll/prelude.h>
-#include <util/sll/functional.h>
 
 namespace LC
 {
