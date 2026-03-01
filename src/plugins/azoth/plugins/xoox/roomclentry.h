@@ -131,15 +131,6 @@ namespace Xoox
 		void handleBookmarks (const QXmppBookmarkSet&);
 		void reemitStatusChange (const EntryStatus&);
 	signals:
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
-
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
 		void nicknameConflict (const QString&);

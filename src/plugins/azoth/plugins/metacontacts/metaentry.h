@@ -38,7 +38,7 @@ namespace Metacontacts
 
 		QStringList UnavailableRealEntries_;
 		QList<QObject*> AvailableRealEntries_;
-		QMap<QString, QPair<QObject*, QString>> Variant2RealVariant_;
+		QMap<QString, QPair<ICLEntry*, QString>> Variant2RealVariant_;
 
 		QList<IMessage*> Messages_;
 
@@ -84,34 +84,20 @@ namespace Metacontacts
 		template<typename F>
 		auto ActWithVariant (F&&, const QString&) const;
 
-		void ConnectStandardSignals (QObject*);
+		void ConnectStandardSignals (ICLEntry*);
 		void ConnectAdvancedSiganls (QObject*);
-	private:
+
 		void PerformRemoval (QObject*);
 		void SetNewEntryList (const QList<QObject*>&, bool readdRemoved);
-	private slots:
-		void handleRealGotMessage (QObject*);
-		void handleRealStatusChanged (const EntryStatus&, const QString&);
-		void handleRealVariantsChanged (QStringList, QObject* = 0);
-		void handleRealNameChanged (const QString&);
-		void handleRealCPSChanged (const ChatPartState&, const QString&);
 
+		void HandleRealGotMessage (QObject*);
+		void HandleRealVariantsChanged (ICLEntry*, QStringList);
 		void handleRealAttentionDrawn (const QString&, const QString&);
-
+	private slots:
 		void checkRemovedCLItems (const QList<QObject*>&);
 
 		void handleManageContacts ();
 	signals:
-		// ICLEntry
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
-
 		// IAdvancedCLEntry
 		void attentionDrawn (const QString&, const QString&);
 		void locationChanged (const QString&);

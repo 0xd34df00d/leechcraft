@@ -69,14 +69,5 @@ namespace LC::Azoth::Sarin
 		void SetTyping (bool);
 
 		void HandleMessage (ChatMessage*);
-	signals:
-		void gotMessage (QObject*) override;
-		void statusChanged (const EntryStatus&, const QString&) override;
-		void availableVariantsChanged (const QStringList&) override;
-		void nameChanged (const QString&) override;
-		void groupsChanged (const QStringList&) override;
-		void chatPartStateChanged (const ChatPartState&, const QString&) override;
-		void permsChanged () override;
-		void entryGenerallyChanged () override;
 	};
 }

@@ -90,7 +90,7 @@ namespace Xoox
 		const auto msg = new GlooxMessage (message, GetJID (), Account_->GetClientConnection ().get ());
 		AllMessages_ << msg;
 		Account_->SendMessage (*msg);
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	QList<QAction*> SelfContact::GetActions () const
@@ -111,7 +111,7 @@ namespace Xoox
 	void SelfContact::UpdatePriority (const QString& resource, int prio)
 	{
 		Status2Prio_ [resource] = prio;
-		emit availableVariantsChanged (Variants ());
+		emit Emitter_.availableVariantsChanged (Variants ());
 	}
 
 	void SelfContact::RemoveVariant (const QString& resource, bool thisInstance)
@@ -138,7 +138,7 @@ namespace Xoox
 	{
 		std::tie (BareJID_, Resource_) = ClientConnection::Split (fullJid);
 
-		emit availableVariantsChanged (Variants ());
+		emit Emitter_.availableVariantsChanged (Variants ());
 	}
 
 	void SelfContact::handleSelfVCardUpdated ()

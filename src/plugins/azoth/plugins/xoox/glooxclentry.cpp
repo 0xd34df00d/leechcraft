@@ -64,7 +64,7 @@ namespace LC::Azoth::Xoox
 		if (prevVariants.isEmpty ())
 			return;
 
-		emit availableVariantsChanged (QStringList ());
+		emit Emitter_.availableVariantsChanged (QStringList ());
 	}
 
 	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
@@ -79,9 +79,9 @@ namespace LC::Azoth::Xoox
 	{
 		ODS_.reset ();
 
-		emit availableVariantsChanged (Variants ());
-		emit nameChanged (GetEntryName ());
-		emit groupsChanged (item.groups ().values ());
+		emit Emitter_.availableVariantsChanged (Variants ());
+		emit Emitter_.nameChanged (GetEntryName ());
+		emit Emitter_.groupsChanged (item.groups ().values ());
 	}
 
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
@@ -128,7 +128,7 @@ namespace LC::Azoth::Xoox
 		item.setName (name);
 		Account_->GetClientConnection ()->Update (item);
 
-		emit nameChanged (name);
+		emit Emitter_.nameChanged (name);
 	}
 
 	QString GlooxCLEntry::GetEntryID () const
@@ -220,7 +220,7 @@ namespace LC::Azoth::Xoox
 		const auto msg = new GlooxMessage (message, GetJID (), Account_->GetClientConnection ().get ());
 		AllMessages_ << msg;
 		Account_->SendMessage (*msg);
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	QList<QAction*> GlooxCLEntry::GetActions () const
@@ -336,8 +336,8 @@ namespace LC::Azoth::Xoox
 	void GlooxCLEntry::SetAuthRequested (bool auth)
 	{
 		AuthRequested_ = auth;
-		emit statusChanged (GetStatus (QString ()), QString ());
-		emit groupsChanged (Groups ());
+		emit Emitter_.statusChanged (GetStatus (QString ()), QString ());
+		emit Emitter_.groupsChanged (Groups ());
 	}
 
 	void GlooxCLEntry::SendGWPresence (QXmppPresence::Type type)

@@ -241,7 +241,7 @@ namespace LC::Azoth::Sarin
 	void ConfEntry::AppendMessage (ConfMessage *msg)
 	{
 		AllMessages_ << msg;
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	namespace

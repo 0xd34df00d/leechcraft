@@ -51,6 +51,7 @@ namespace Azoth
 		void RebuildTooltip (ICLEntry *entry);
 	private:
 		QString MakeTooltipString (ICLEntry*, QString);
+		void InvalidateTooltip (ICLEntry*);
 	private slots:
 		void remakeTooltipForSender ();
 		void handleAvatarChanged (QObject*);

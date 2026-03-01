@@ -296,7 +296,7 @@ namespace LC::Azoth::Acetamide
 	void ChannelCLEntry::HandleMessage (ChannelPublicMessage *msg)
 	{
 		AllMessages_ << msg;
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	QByteArray ChannelCLEntry::GetAffName (QObject *participant) const

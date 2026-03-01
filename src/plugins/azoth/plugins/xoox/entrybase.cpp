@@ -571,7 +571,7 @@ namespace Xoox
 		proxy->GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	void EntryBase::HandlePEPEvent (QString variant, PEPEventBase *event)
@@ -622,7 +622,7 @@ namespace Xoox
 
 	void EntryBase::UpdateChatState (QXmppMessage::State state, const QString& variant)
 	{
-		emit chatPartStateChanged (static_cast<ChatPartState> (state), variant);
+		emit Emitter_.chatPartStateChanged (static_cast<ChatPartState> (state), variant);
 	}
 
 	void EntryBase::SetErrorPresence (const QString& variant, const QXmppPresence& presence)
@@ -676,12 +676,12 @@ namespace Xoox
 		else
 			Variants_.remove (variant);
 
-		emit statusChanged (status, variant);
+		emit Emitter_.statusChanged (status, variant);
 
 		if (!existed ||
 				status.State_ == SOffline ||
 				wasOffline)
-			emit availableVariantsChanged (Variants ());
+			emit Emitter_.availableVariantsChanged (Variants ());
 	}
 
 	QXmppVCardIq EntryBase::GetVCard () const
@@ -777,7 +777,7 @@ namespace Xoox
 	void EntryBase::SetClientVersion (const QString& variant, const QXmppVersionIq& version)
 	{
 		Variants_ [variant].Version_ = version;
-		emit entryGenerallyChanged ();
+		emit Emitter_.entryGenerallyChanged ();
 	}
 
 	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
@@ -792,7 +792,7 @@ namespace Xoox
 			varInfo.ClientInfo_ ["client_type"] = "kopete";
 			varInfo.ClientInfo_ ["client_name"] = "Kopete";
 			varInfo.ClientInfo_ ["raw_client_name"] = "kopete";
-			emit statusChanged (GetStatus (variant), variant);
+			emit Emitter_.statusChanged (GetStatus (variant), variant);
 		}
 		else if (name.contains ("emacs", Qt::CaseInsensitive) ||
 				name.contains ("jabber.el", Qt::CaseInsensitive))
@@ -800,14 +800,14 @@ namespace Xoox
 			varInfo.ClientInfo_ ["client_type"] = "jabber.el";
 			varInfo.ClientInfo_ ["client_name"] = "Emacs Jabber.El";
 			varInfo.ClientInfo_ ["raw_client_name"] = "jabber.el";
-			emit statusChanged (GetStatus (variant), variant);
+			emit Emitter_.statusChanged (GetStatus (variant), variant);
 		}
 		else if (type == "mrim")
 		{
 			varInfo.ClientInfo_ ["client_type"] = "mailruagent";
 			varInfo.ClientInfo_ ["client_name"] = "Mail.Ru Agent Gateway";
 			varInfo.ClientInfo_ ["raw_client_name"] = "mailruagent";
-			emit statusChanged (GetStatus (variant), variant);
+			emit Emitter_.statusChanged (GetStatus (variant), variant);
 		}
 	}
 
@@ -988,7 +988,7 @@ namespace Xoox
 		const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
 		Variants_ [variant].SecsDiff_ = { static_cast<int> (secsDiff), iq.tzo () };
 
-		emit entryGenerallyChanged ();
+		emit Emitter_.entryGenerallyChanged ();
 
 		emit entityTimeUpdated ();
 	}

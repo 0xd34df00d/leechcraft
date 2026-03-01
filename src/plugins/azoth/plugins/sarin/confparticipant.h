@@ -76,14 +76,5 @@ namespace LC::Azoth::Sarin
 		void ChatTabClosed () override;
 
 		void SetState (const State& state);
-	signals:
-		void gotMessage (QObject *msg) override;
-		void statusChanged (const EntryStatus& st, const QString& variant) override;
-		void availableVariantsChanged (const QStringList& newVars) override;
-		void nameChanged (const QString& name) override;
-		void groupsChanged (const QStringList& groups) override;
-		void chatPartStateChanged (const ChatPartState& state, const QString& variant) override;
-		void permsChanged () override;
-		void entryGenerallyChanged () override;
 	};
 }

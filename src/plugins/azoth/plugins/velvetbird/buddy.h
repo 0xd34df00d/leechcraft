@@ -69,15 +69,6 @@ namespace VelvetBird
 
 		PurpleBuddy* GetPurpleBuddy () const;
 		void Update ();
-	signals:
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
 	};
 }
 }

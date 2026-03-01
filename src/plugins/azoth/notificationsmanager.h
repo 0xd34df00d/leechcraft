@@ -51,6 +51,8 @@ namespace Azoth
 				const char*, const QString&,
 				const QString&, const QString&);
 		void HandleStatusChanged (ICLEntry*, const EntryStatus&, const QString&);
+
+		void HandleChatPartStateChanged (ICLEntry*, ChatPartState, const QString&);
 	public slots:
 		void handleClearUnreadMsgCount (QObject*);
 	private slots:
@@ -61,7 +63,6 @@ namespace Azoth
 		void handleItemGrantedSubscription (QObject*, const QString&);
 
 		void handleAccountStatusChanged (const EntryStatus&);
-		void handleStatusChanged (const EntryStatus&, const QString&);
 
 		void handleTuneChanged (const QString&);
 		void handleActivityChanged (const QString&);
@@ -72,8 +73,6 @@ namespace Azoth
 		void handleAuthorizationRequested (QObject*, const QString&);
 
 		void handleMUCInvitation (const QVariantMap&, const QString&, const QString&);
-
-		void handleChatPartStateChanged (ChatPartState, const QString&);
 
 		void handleEntryMadeCurrent (QObject*);
 	signals:

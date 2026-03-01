@@ -227,15 +227,6 @@ namespace Xoox
 		void handleCommands ();
 		void handleDetectNick ();
 	signals:
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
-
 		void chatTabClosed ();
 
 		void attentionDrawn (const QString&, const QString&);

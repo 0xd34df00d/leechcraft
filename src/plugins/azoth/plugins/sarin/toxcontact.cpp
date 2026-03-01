@@ -60,7 +60,7 @@ namespace LC::Azoth::Sarin
 			return;
 
 		PublicName_ = name;
-		emit nameChanged (GetEntryName ());
+		emit Emitter_.nameChanged (GetEntryName ());
 	}
 
 	QString ToxContact::GetEntryID () const
@@ -142,17 +142,17 @@ namespace LC::Azoth::Sarin
 			return;
 
 		Status_ = status;
-		emit statusChanged (Status_, Variants ().front ());
+		emit Emitter_.statusChanged (Status_, Variants ().front ());
 	}
 
 	void ToxContact::SetTyping (bool isTyping)
 	{
-		emit chatPartStateChanged (isTyping ? ChatPartState::CPSComposing : ChatPartState::CPSNone, {});
+		emit Emitter_.chatPartStateChanged (isTyping ? ChatPartState::CPSComposing : ChatPartState::CPSNone, {});
 	}
 
 	void ToxContact::HandleMessage (ChatMessage *msg)
 	{
 		AllMessages_ << msg;
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 }

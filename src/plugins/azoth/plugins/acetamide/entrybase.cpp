@@ -100,13 +100,13 @@ namespace LC::Azoth::Acetamide
 		Account_->GetParentProtocol ()->GetProxyObject ()->GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	void EntryBase::SetStatus (const EntryStatus& status)
 	{
 		CurrentStatus_ = status;
-		emit statusChanged (CurrentStatus_, QString ());
+		emit Emitter_.statusChanged (CurrentStatus_, QString ());
 	}
 
 	void EntryBase::SetAvatar (const QByteArray&)

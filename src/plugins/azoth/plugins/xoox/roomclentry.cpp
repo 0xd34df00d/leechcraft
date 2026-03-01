@@ -583,7 +583,7 @@ namespace Xoox
 				GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
@@ -601,14 +601,14 @@ namespace Xoox
 		for (const auto& bm : set.conferences ())
 			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
 			{
-				emit nameChanged (bm.name ());
+				emit Emitter_.nameChanged (bm.name ());
 				break;
 			}
 	}
 
 	void RoomCLEntry::reemitStatusChange (const EntryStatus& status)
 	{
-		emit statusChanged (status, QString ());
+		emit Emitter_.statusChanged (status, QString ());
 	}
 }
 }

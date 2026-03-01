@@ -9,7 +9,6 @@
 #include "groupsenddialog.h"
 #include <QStandardItemModel>
 #include <util/sll/qtutil.h>
-#include <util/sll/slotclosure.h>
 #include "interfaces/azoth/iclentry.h"
 #include "components/util/misc.h"
 #include "core.h"
@@ -52,14 +51,15 @@ namespace Azoth
 						const auto item = Entry2Item_.take (entry);
 						ContactsModel_->removeRow (item->row ());
 					});
-			new Util::SlotClosure<Util::NoDeletePolicy> ([entry, item]
+
+			connect (&entry->GetCLEntryEmitter (),
+					&Emitters::CLEntry::statusChanged,
+					this,
+					[entry, item]
 					{
 						const auto& icon = ResourcesManager::Instance ().GetIconForState (entry->GetStatus ().State_);
 						item->setIcon (icon);
-					},
-					entry->GetQObject (),
-					SIGNAL (statusChanged (EntryStatus, QString)),
-					this);
+					});
 		}
 
 		Ui_.setupUi (this);

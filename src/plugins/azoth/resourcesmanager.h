@@ -94,6 +94,8 @@ namespace Azoth
 		QMap<QString, QIcon> GetClientIconForEntry (ICLEntry *entry);
 
 		QImage GetDefaultAvatar (int size) const;
+
+		void InvalidateClientsIconCache (ICLEntry*);
 	private slots:
 		/** Removes the entries in the client icon cache for the sender,
 		 * if obj is null, or for obj, if it is not null.
@@ -101,8 +103,6 @@ namespace Azoth
 		 * If the object can't be casted to ICLEntry, this function does
 		 * nothing.
 		 */
-		void invalidateClientsIconCache (QObject *obj = 0);
-		void invalidateClientsIconCache (ICLEntry*);
 		void flushIconCaches ();
 	};
 }

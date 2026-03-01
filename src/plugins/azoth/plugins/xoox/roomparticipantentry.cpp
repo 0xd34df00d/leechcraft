@@ -57,7 +57,7 @@ namespace Xoox
 	void RoomParticipantEntry::SetEntryName (const QString& nick)
 	{
 		Nick_ = nick;
-		emit nameChanged (Nick_);
+		emit Emitter_.nameChanged (Nick_);
 	}
 
 	QString RoomParticipantEntry::GetEntryID () const
@@ -86,7 +86,7 @@ namespace Xoox
 		const auto obj = new GlooxMessage (withNick, RoomHandler_->GetRoomJID (), Account_->GetClientConnection ().get ());
 		AllMessages_ << obj;
 		Account_->SendMessage (*obj);
-		emit gotMessage (obj);
+		emit Emitter_.gotMessage (obj);
 	}
 
 	QString RoomParticipantEntry::GetJID () const
@@ -133,7 +133,7 @@ namespace Xoox
 		if (other->HasUnreadMsgs ())
 		{
 			for (auto msg : other->UnreadMessages_)
-				emit gotMessage (msg);
+				emit Emitter_.gotMessage (msg);
 
 			MergeMessages (UnreadMessages_, other->UnreadMessages_);
 		}
@@ -147,7 +147,7 @@ namespace Xoox
 	void RoomParticipantEntry::SetAffiliation (QXmppMucItem::Affiliation aff)
 	{
 		Affiliation_ = aff;
-		emit permsChanged ();
+		emit Emitter_.permsChanged ();
 	}
 
 	QXmppMucItem::Role RoomParticipantEntry::GetRole () const
@@ -158,7 +158,7 @@ namespace Xoox
 	void RoomParticipantEntry::SetRole (QXmppMucItem::Role role)
 	{
 		Role_ = role;
-		emit permsChanged ();
+		emit Emitter_.permsChanged ();
 	}
 }
 }

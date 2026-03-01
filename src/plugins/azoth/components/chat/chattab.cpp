@@ -909,13 +909,7 @@ namespace Azoth
 			handleStatusChanged (EntryStatus (), QString ());
 	}
 
-	void ChatTab::handleNameChanged (const QString&)
-	{
-		ReformatTitle ();
-	}
-
-	void ChatTab::handleStatusChanged (const EntryStatus& status,
-			const QString& variant)
+	void ChatTab::handleStatusChanged (const EntryStatus& status, const QString& variant)
 	{
 		auto entry = GetEntry<ICLEntry> ();
 		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
@@ -1224,23 +1218,24 @@ namespace Azoth
 
 	void ChatTab::ReinitEntry ()
 	{
-		auto obj = GetEntry<QObject> ();
-		connect (obj,
-				SIGNAL (gotMessage (QObject*)),
+		const auto entry = GetEntry<ICLEntry> ();
+		auto& emitter = entry->GetCLEntryEmitter ();
+		connect (&emitter,
+				&Emitters::CLEntry::gotMessage,
 				this,
-				SLOT (handleEntryMessage (QObject*)));
-		connect (obj,
-				SIGNAL (statusChanged (EntryStatus, QString)),
+				&ChatTab::handleEntryMessage);
+		connect (&emitter,
+				&Emitters::CLEntry::statusChanged,
 				this,
-				SLOT (handleStatusChanged (EntryStatus, QString)));
-		connect (obj,
-				SIGNAL (availableVariantsChanged (QStringList)),
+				&ChatTab::handleStatusChanged);
+		connect (&emitter,
+				&Emitters::CLEntry::availableVariantsChanged,
 				this,
-				SLOT (handleVariantsChanged (QStringList)));
-		connect (obj,
-				SIGNAL (nameChanged (QString)),
+				&ChatTab::handleVariantsChanged);
+		connect (&emitter,
+				&Emitters::CLEntry::nameChanged,
 				this,
-				SLOT (handleNameChanged (QString)));
+				&ChatTab::ReformatTitle);
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
@@ -1304,10 +1299,10 @@ namespace Azoth
 			Ui_.MUCEventsButton_->hide ();
 			TabIcon_ = ResourcesManager::Instance ().GetIconForState (e->GetStatus ().State_);
 
-			connect (GetEntry<QObject> (),
-					SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
+			connect (&e->GetCLEntryEmitter (),
+					&Emitters::CLEntry::chatPartStateChanged,
 					this,
-					SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
+					&ChatTab::handleChatPartStateChanged);
 		}
 	}
 

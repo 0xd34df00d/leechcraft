@@ -138,6 +138,6 @@ namespace LC::Azoth::Sarin
 		if (State_ == state)
 			return;
 		State_ = state;
-		emit statusChanged (GetStatus ({}), {});
+		emit Emitter_.statusChanged (GetStatus ({}), {});
 	}
 }

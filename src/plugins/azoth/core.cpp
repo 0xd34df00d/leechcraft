@@ -1115,46 +1115,54 @@ namespace LC::Azoth
 		}
 	}
 
-	void Core::AddCLEntry (ICLEntry *clEntry,
-			QStandardItem *accItem)
+	void Core::AddCLEntry (ICLEntry *entry, QStandardItem *accItem)
 	{
-		const auto entryObj = clEntry->GetQObject ();
+		const auto entryObj = entry->GetQObject ();
 
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingCLEntryBegin (proxy, entryObj);
 		if (proxy->IsCancelled ())
 			return;
 
-		ResourcesManager::Instance ().HandleEntry (clEntry);
+		ResourcesManager::Instance ().HandleEntry (entry);
 
-		connect (entryObj,
-				SIGNAL (statusChanged (EntryStatus, QString)),
+		auto& emitter = entry->GetCLEntryEmitter ();
+		connect (&emitter,
+				&Emitters::CLEntry::statusChanged,
 				this,
-				SLOT (handleStatusChanged (EntryStatus, QString)));
-		connect (entryObj,
-				SIGNAL (availableVariantsChanged (QStringList)),
+				std::bind_front (&Core::HandleStatusChanged, this, entry));
+		connect (&emitter,
+				&Emitters::CLEntry::availableVariantsChanged,
 				this,
-				SLOT (handleVariantsChanged ()));
-		connect (entryObj,
-				SIGNAL (gotMessage (QObject*)),
+				[this, entry] { HandleStatusChanged (entry, entry->GetStatus (), {}); });
+		connect (&emitter,
+				&Emitters::CLEntry::gotMessage,
 				this,
-				SLOT (handleEntryGotMessage (QObject*)));
-		connect (entryObj,
-				SIGNAL (nameChanged (const QString&)),
+				&Core::handleEntryGotMessage);
+		connect (&emitter,
+				&Emitters::CLEntry::nameChanged,
 				this,
-				SLOT (handleEntryNameChanged (const QString&)));
-		connect (entryObj,
-				SIGNAL (groupsChanged (const QStringList&)),
+				[this, entry] (const QString& newName)
+				{
+					for (auto item : Entry2Items_.value (entry))
+						item->setText (newName);
+				});
+		connect (&emitter,
+				&Emitters::CLEntry::groupsChanged,
 				this,
-				SLOT (handleEntryGroupsChanged (const QStringList&)));
-		connect (entryObj,
-				SIGNAL (permsChanged ()),
+				std::bind_front (&Core::handleEntryGroupsChanged, this, entry));
+		connect (&emitter,
+				&Emitters::CLEntry::permsChanged,
 				this,
-				SLOT (handleEntryPermsChanged ()));
-		connect (entryObj,
-				SIGNAL (entryGenerallyChanged ()),
+				std::bind_front (&Core::handleEntryPermsChanged, this, entry));
+		connect (&emitter,
+				&Emitters::CLEntry::entryGenerallyChanged,
 				this,
-				SLOT (updateItem ()));
+				[this, entry]
+				{
+					for (auto item : Entry2Items_.value (entry))
+						item->model ()->dataChanged (item->index (), item->index ());
+				});
 
 		if (qobject_cast<IMUCEntry*> (entryObj))
 		{
@@ -1175,29 +1183,29 @@ namespace LC::Azoth
 		NotificationsManager_->AddCLEntry (entryObj);
 
 #ifdef ENABLE_CRYPT
-		CryptoManager::Instance ().AddEntry (clEntry);
+		CryptoManager::Instance ().AddEntry (entry);
 #endif
 
-		const QString& id = clEntry->GetEntryID ();
+		const QString& id = entry->GetEntryID ();
 		ID2Entry_ [id] = entryObj;
 
-		const auto& groups = GetDisplayGroups (clEntry);
+		const auto& groups = GetDisplayGroups (entry);
 		for (const auto catItem : GetCategoriesItems (groups, accItem))
 		{
-			AddEntryTo (clEntry, catItem);
+			AddEntryTo (entry, catItem);
 
 			bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
 			if (!isMucCat)
-				isMucCat = clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat;
+				isMucCat = entry->GetEntryType () == ICLEntry::EntryType::PrivateChat;
 			catItem->setData (isMucCat, CLRIsMUCCategory);
 		}
 
-		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
+		HandleStatusChanged (entry, entry->GetStatus (), {});
 
-		if (clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-			handleEntryPermsChanged (clEntry);
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
+			handleEntryPermsChanged (entry);
 
-		TooltipManager_->AddEntry (clEntry);
+		TooltipManager_->AddEntry (entry);
 
 		ChatTabsManager_->UpdateEntryMapping (id);
 
@@ -1256,7 +1264,7 @@ namespace LC::Azoth
 		return accountItem;
 	}
 
-	void Core::HandleStatusChanged (const EntryStatus&, ICLEntry *entry, const QString& variant)
+	void Core::HandleStatusChanged (ICLEntry *entry, const EntryStatus&, const QString& variant)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetQObject (), variant);
@@ -1289,7 +1297,7 @@ namespace LC::Azoth
 		if (XferJobManager_->GetIncomingOffers (id).isEmpty ())
 		{
 			const QString& variant = entry->Variants ().value (0);
-			HandleStatusChanged (entry->GetStatus (variant), entry, variant);
+			HandleStatusChanged (entry, entry->GetStatus (variant), variant);
 			return;
 		}
 
@@ -1838,6 +1846,7 @@ namespace LC::Azoth
 					0,
 					this,
 					0);
+			entry->GetCLEntryEmitter ().disconnect (this);
 
 			TooltipManager_->RemoveEntry (entry);
 
@@ -1928,60 +1937,8 @@ namespace LC::Azoth
 		}
 	}
 
-	void Core::handleStatusChanged (const EntryStatus& status, const QString& variant)
+	void Core::handleEntryGroupsChanged (ICLEntry *entry, QStringList newGroups)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a ICLEntry:"
-					<< sender ();
-			return;
-		}
-
-		HandleStatusChanged (status, entry, variant);
-	}
-
-	void Core::handleVariantsChanged ()
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a ICLEntry:"
-					<< sender ();
-			return;
-		}
-
-		HandleStatusChanged (entry->GetStatus (), entry, {});
-	}
-
-	void Core::handleEntryNameChanged (const QString& newName)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a ICLEntry:"
-					<< sender ();
-			return;
-		}
-
-		for (auto item : Entry2Items_.value (entry))
-			item->setText (newName);
-	}
-
-	void Core::handleEntryGroupsChanged (QStringList newGroups, QObject *perform)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (perform ? perform : sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
 		if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
 			newGroups = GetDisplayGroups (entry);
 
@@ -2005,25 +1962,16 @@ namespace LC::Azoth
 		for (auto catItem : GetCategoriesItems (newGroups, accItem))
 			AddEntryTo (entry, catItem);
 
-		HandleStatusChanged (entry->GetStatus (), entry, QString ());
+		HandleStatusChanged (entry, entry->GetStatus (), QString ());
 	}
 
-	void Core::handleEntryPermsChanged (ICLEntry *suggest)
+	void Core::handleEntryPermsChanged (ICLEntry *entry)
 	{
-		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
-		QObject *entryObj = entry->GetQObject ();
 		const auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ());
 		if (!mucPerms)
 			return;
 
+		const auto entryObj = entry->GetQObject ();
 		const QString& name = mucPerms->GetAffName (entryObj);
 		for (auto item : Entry2Items_.value (entry))
 			item->setData (name, CLRAffiliation);
@@ -2197,23 +2145,8 @@ namespace LC::Azoth
 		{
 			const auto entry = pair.first;
 			if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
-				handleEntryGroupsChanged (GetDisplayGroups (entry), entry->GetQObject ());
+				handleEntryGroupsChanged (entry, GetDisplayGroups (entry));
 		}
-	}
-
-	void Core::updateItem ()
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender doesn't implement ICLEntry"
-					<< sender ();
-			return;
-		}
-
-		for (auto item : Entry2Items_.value (entry))
-			item->model ()->dataChanged (item->index (), item->index ());
 	}
 
 	void Core::handleClearUnreadMsgCount (QObject *entryObj)

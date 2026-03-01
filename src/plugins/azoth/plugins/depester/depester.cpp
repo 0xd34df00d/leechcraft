@@ -111,7 +111,7 @@ namespace LC::Azoth::Depester
 	void Plugin::hookEntryActionsRemoved (IHookProxy_ptr, QObject *entry)
 	{
 		delete Entry2ActionIgnore_.take (entry);
-		Entry2Nick_.remove (entry);
+		Entry2Nick_.remove (qobject_cast<ICLEntry*> (entry));
 	}
 
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
@@ -169,24 +169,33 @@ namespace LC::Azoth::Depester
 		if (!entry)
 			return;
 
+		auto& emitter = entry->GetCLEntryEmitter ();
+
 		if (ignore)
 		{
-			const QString& nick = entry->GetEntryName ();
+			const auto& nick = entry->GetEntryName ();
 			IgnoredNicks_ << nick;
-			Entry2Nick_ [entryObj] = nick;
-			connect (entryObj,
-					SIGNAL (nameChanged (const QString&)),
+			Entry2Nick_ [entry] = nick;
+			connect (&emitter,
+					&Emitters::CLEntry::nameChanged,
 					this,
-					SLOT (handleNameChanged (const QString&)));
+					[this, entry] (const QString& newName)
+					{
+						auto& storedName = Entry2Nick_ [entry];
+						IgnoredNicks_.remove (storedName);
+
+						IgnoredNicks_ << newName;
+						storedName = newName;
+					});
 		}
 		else
 		{
 			IgnoredNicks_.remove (entry->GetEntryName ());
-			Entry2Nick_.remove (entryObj);
-			disconnect (entryObj,
-					SIGNAL (nameChanged (const QString&)),
+			Entry2Nick_.remove (entry);
+			disconnect (&emitter,
+					&Emitters::CLEntry::nameChanged,
 					this,
-					SLOT (handleNameChanged (const QString&)));
+					nullptr);
 		}
 
 		SaveIgnores ();
@@ -203,17 +212,6 @@ namespace LC::Azoth::Depester
 			return;
 
 		icons.prepend (IgnoredAction_.icon ());
-	}
-
-	void Plugin::handleNameChanged (const QString& name)
-	{
-		QObject *entryObj = sender ();
-		if (!entryObj)
-			return;
-
-		IgnoredNicks_.remove (Entry2Nick_ [entryObj]);
-		IgnoredNicks_ << name;
-		Entry2Nick_ [entryObj] = name;
 	}
 }
 

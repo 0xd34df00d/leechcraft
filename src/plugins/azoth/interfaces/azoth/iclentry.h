@@ -10,15 +10,14 @@
 
 #include <QFlags>
 #include <QMetaType>
+#include <util/azoth/emitters/clentry.h>
 #include "azothcommon.h"
 #include "message.h"
 
 class QAction;
 class QImage;
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	class IAccount;
 	class IMessage;
@@ -56,8 +55,12 @@ namespace Azoth
 	 */
 	class ICLEntry
 	{
+	protected:
+		Emitters::CLEntry Emitter_;
+
+		virtual ~ICLEntry () = default;
 	public:
-		virtual ~ICLEntry () {}
+		Emitters::CLEntry& GetCLEntryEmitter () { return Emitter_; }
 
 		/** Represents the features that may be supported by a contant
 		 * list entry.
@@ -391,94 +394,7 @@ namespace Azoth
 		/** @brief Called by Azoth when the chat with the entry is closed.
 		 */
 		virtual void ChatTabClosed () = 0;
-
-		/** @brief This signal should be emitted whenever a new message
-		 * is received.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] msg The message that was just received.
-		 */
-		virtual void gotMessage (QObject *msg) = 0;
-
-		/** @brief This signal should be emitted whenever the status of
-		 * a variant in this entry changes.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] st The new status of this entry.
-		 * @param[out] variant What variant is subject to change.
-		 */
-		virtual void statusChanged (const EntryStatus& st,
-				const QString& variant) = 0;
-
-		/** @brief This signal should be emitted whenever the list of
-		 * available variants changes.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] newVars The list of new variants, as
-		 * returned by GetVariants().
-		 */
-		virtual void availableVariantsChanged (const QStringList& newVars) = 0;
-
-		/** @brief This signal should be emitted whenever the entry
-		 * changes name.
-		 *
-		 * This signal should be emitted both if the name of the entry
-		 * changes as the result of our actions (particularly, the
-		 * SetEntryName() method) and as a result of some other event,
-		 * for example, a roster push in XMPP.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] name The new name of this entry.
-		 */
-		virtual void nameChanged (const QString& name) = 0;
-
-		/** @brief This signal should be emitted whenever the entry's
-		 * groups are changed.
-		 *
-		 * This signal should be emitted both if the list of groups
-		 * changes as the result of our actions (particularly, the
-		 * SetGroups() method) and as a result of some other event, for
-		 * example, a roster push in XMPP.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] groups The new list of groups of this entry.
-		 */
-		virtual void groupsChanged (const QStringList& groups) = 0;
-
-		/** @brief This signal should be emitted whenever the chat
-		 * participation state of this entry changes.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 * @param[out] state The new chat state.
-		 * @param[out] variant The variant that this change applies to,
-		 * may be a null string if not applicable.
-		 */
-		virtual void chatPartStateChanged (const ChatPartState& state,
-				const QString& variant) = 0;
-
-		/** @brief This signal should be emitted if it's a MUC
-		 * participant and his role/affiliation changes.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 */
-		virtual void permsChanged () = 0;
-
-		/** @brief This signal should be emitted when the entry changes.
-		 *
-		 * This signal should be emitted only if no other signals apply
-		 * (even those from IAdvancedCLEntry or such): it is some kind
-		 * of a fall-back notification.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 */
-		virtual void entryGenerallyChanged () = 0;
 	};
-}
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::ICLEntry::Features)

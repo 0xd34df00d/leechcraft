@@ -10,8 +10,8 @@
 #include <QIcon>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
-#include "xmlsettingsmanager.h"
 #include "interfaces/azoth/iclentry.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -46,26 +46,29 @@ namespace Azoth
 		return ResourceLoaders_ [type].get ();
 	}
 
-	void ResourcesManager::HandleEntry (ICLEntry *clEntry)
+	void ResourcesManager::HandleEntry (ICLEntry *entry)
 	{
-		connect (clEntry->GetQObject (),
-				SIGNAL (availableVariantsChanged (const QStringList&)),
+		auto& emitter = entry->GetCLEntryEmitter ();
+
+		auto invalidate = [this, entry] { InvalidateClientsIconCache (entry); };
+		connect (&emitter,
+				&Emitters::CLEntry::availableVariantsChanged,
 				this,
-				SLOT (invalidateClientsIconCache ()));
-		connect (clEntry->GetQObject (),
-				SIGNAL (statusChanged (EntryStatus, QString)),
+				invalidate);
+		connect (&emitter,
+				&Emitters::CLEntry::statusChanged,
 				this,
-				SLOT (invalidateClientsIconCache ()));
-		connect (clEntry->GetQObject (),
-				SIGNAL (entryGenerallyChanged ()),
+				invalidate);
+		connect (&emitter,
+				&Emitters::CLEntry::entryGenerallyChanged,
 				this,
-				SLOT (invalidateClientsIconCache ()));
+				invalidate);
 	}
 
 	void ResourcesManager::HandleRemoved (ICLEntry *entry)
 	{
-		EntryClientIconCache_.remove (entry);
-		invalidateClientsIconCache (entry->GetQObject ());
+		entry->GetCLEntryEmitter ().disconnect (this);
+		InvalidateClientsIconCache (entry);
 	}
 
 	namespace
@@ -183,22 +186,7 @@ namespace Azoth
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
-	void ResourcesManager::invalidateClientsIconCache (QObject *passedObj)
-	{
-		QObject *obj = passedObj ? passedObj : sender ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< obj
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
-		invalidateClientsIconCache (entry);
-	}
-
-	void ResourcesManager::invalidateClientsIconCache (ICLEntry *entry)
+	void ResourcesManager::InvalidateClientsIconCache (ICLEntry *entry)
 	{
 		EntryClientIconCache_.remove (entry);
 	}

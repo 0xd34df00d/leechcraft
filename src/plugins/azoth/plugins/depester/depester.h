@@ -16,8 +16,12 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
 class QAction;
+
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
 
 namespace LC::Azoth::Depester
 {
@@ -31,7 +35,7 @@ namespace LC::Azoth::Depester
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Depester")
 
 		QHash<QObject*, QAction*> Entry2ActionIgnore_;
-		QHash<QObject*, QString> Entry2Nick_;
+		QHash<ICLEntry*, QString> Entry2Nick_;
 		QSet<QString> IgnoredNicks_;
 
 		QAction IgnoredAction_;
@@ -68,6 +72,5 @@ namespace LC::Azoth::Depester
 		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&);
 	private slots:
 		void handleIgnoreEntry (bool);
-		void handleNameChanged (const QString&);
 	};
 }

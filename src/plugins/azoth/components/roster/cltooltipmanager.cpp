@@ -69,37 +69,39 @@ namespace Azoth
 		}
 	}
 
-	void CLTooltipManager::AddEntry (ICLEntry *clEntry)
+	void CLTooltipManager::AddEntry (ICLEntry *entry)
 	{
-		DirtyTooltips_ << clEntry;
+		DirtyTooltips_ << entry;
 
-		const auto entryObj = clEntry->GetQObject ();
+		const auto invalidate = [this, entry] { InvalidateTooltip (entry); };
 
-		connect (entryObj,
-				SIGNAL (statusChanged (EntryStatus, QString)),
+		auto& emitter = entry->GetCLEntryEmitter ();
+		connect (&emitter,
+				&Emitters::CLEntry::statusChanged,
 				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (entryObj,
-				SIGNAL (availableVariantsChanged (QStringList)),
+				invalidate);
+		connect (&emitter,
+				&Emitters::CLEntry::availableVariantsChanged,
 				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (entryObj,
-				SIGNAL (entryGenerallyChanged ()),
+				invalidate);
+		connect (&emitter,
+				&Emitters::CLEntry::entryGenerallyChanged,
 				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (entryObj,
-				SIGNAL (nameChanged (const QString&)),
+				invalidate);
+		connect (&emitter,
+				&Emitters::CLEntry::nameChanged,
 				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (entryObj,
-				SIGNAL (groupsChanged (const QStringList&)),
+				invalidate);
+		connect (&emitter,
+				&Emitters::CLEntry::groupsChanged,
 				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (entryObj,
-				SIGNAL (permsChanged ()),
+				invalidate);
+		connect (&emitter,
+				&Emitters::CLEntry::permsChanged,
 				this,
-				SLOT (remakeTooltipForSender ()));
+				invalidate);
 
+		const auto entryObj = entry->GetQObject ();
 		if (qobject_cast<IHaveAvatars*> (entryObj))
 			connect (entryObj,
 					SIGNAL (avatarChanged (QObject*)),
@@ -144,6 +146,7 @@ namespace Azoth
 				0,
 				this,
 				0);
+		entry->GetCLEntryEmitter ().disconnect (this);
 		DirtyTooltips_.remove (entry);
 	}
 
@@ -437,6 +440,14 @@ namespace Azoth
 		DirtyTooltips_.remove (entry);
 	}
 
+	void CLTooltipManager::InvalidateTooltip (ICLEntry *entry)
+	{
+		for (auto item : Entry2Items_.value (entry))
+			item->setToolTip ({});
+
+		DirtyTooltips_ << entry;
+	}
+
 	void CLTooltipManager::remakeTooltipForSender ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
@@ -447,11 +458,7 @@ namespace Azoth
 					<< "could not be casted to ICLEntry";
 			return;
 		}
-
-		for (auto item : Entry2Items_.value (entry))
-			item->setToolTip ({});
-
-		DirtyTooltips_ << entry;
+		InvalidateTooltip (entry);
 	}
 
 	void CLTooltipManager::handleAvatarChanged (QObject *entryObj)

@@ -82,7 +82,7 @@ namespace Xoox
 
 	void GlooxMessage::Store ()
 	{
-		qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);
+		emit qobject_cast<ICLEntry*> (OtherPart ())->GetCLEntryEmitter ().gotMessage (this);
 	}
 
 	IMessage::Direction GlooxMessage::GetDirection () const

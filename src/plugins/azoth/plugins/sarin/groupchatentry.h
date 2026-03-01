@@ -84,15 +84,6 @@ namespace LC::Azoth::Sarin
 		Util::ContextTask<void> RunLeave (QString, int retry = 0);
 		Util::ContextTask<void> RunSetNick (QString, int retry = 0);
 	signals:
-		void gotMessage (QObject*) override;
-		void statusChanged (const EntryStatus&, const QString&) override;
-		void availableVariantsChanged (const QStringList&) override;
-		void nameChanged (const QString&) override;
-		void groupsChanged (const QStringList&) override;
-		void chatPartStateChanged (const ChatPartState&, const QString&) override;
-		void permsChanged () override;
-		void entryGenerallyChanged () override;
-
 		void gotNewParticipants (const QList<QObject*>&) override;
 		void mucSubjectChanged (const QString&) override;
 		void nicknameConflict (const QString&) override;

@@ -193,7 +193,6 @@ namespace Azoth
 #endif
 		void handleEntryMessage (QObject*);
 		void handleVariantsChanged (QStringList);
-		void handleNameChanged (const QString& name);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
 		void handleViewLinkClicked (QUrl, bool);

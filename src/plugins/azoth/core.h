@@ -270,8 +270,7 @@ namespace LC::Azoth
 
 		/** Handles the event of status changes in a contact list entry.
 		 */
-		void HandleStatusChanged (const EntryStatus& status,
-				ICLEntry *entry, const QString& variant);
+		void HandleStatusChanged (ICLEntry *entry, const EntryStatus& status, const QString& variant);
 
 		/** This functions calculates new value of number of unread
 		 * items for the chain of parents of the given item.
@@ -341,45 +340,11 @@ namespace LC::Azoth
 
 		void handleAccountRenamed (const QString&);
 
-		/** Handles the status change of a CL entry to new status.
-		 */
-		void handleStatusChanged (const EntryStatus& status, const QString& variant);
-
-		/** Removes the old unneeded variants.
-		 */
-		void handleVariantsChanged ();
-
-		/** Handles the event of name changes in plugin.
-		 */
-		void handleEntryNameChanged (const QString& newName);
-
-		/** Handles the event of groups change in plugin.
-		 *
-		 * If obj is null, the sender() is used, otherwise obj is used.
-		 */
-		void handleEntryGroupsChanged (QStringList, QObject *obj = 0);
-
-		/** Handles the event of permissions change in entry from plugin.
-		 *
-		 * If the passed entry is not NULL, it will be used, otherwise
-		 * sender() will be used.
-		 */
-		void handleEntryPermsChanged (ICLEntry *entry = 0);
-
-		/** Handles the message receival from contact list entries.
-		 */
+		void handleEntryGroupsChanged (ICLEntry *entry, QStringList);
+		void handleEntryPermsChanged (ICLEntry *entry);
 		void handleEntryGotMessage (QObject *msg);
-
-		/** Handles nick conflict.
-		 */
 		void handleNicknameConflict (const QString&);
-
-		/** Handles kicks.
-		 */
 		void handleBeenKicked (const QString&);
-
-		/** Handles bans.
-		 */
 		void handleBeenBanned (const QString&);
 
 		/** Is registered in the XmlSettingsManager as handler for
@@ -391,12 +356,6 @@ namespace LC::Azoth
 		 * changes of the "GroupContacts" property.
 		 */
 		void handleGroupContactsChanged ();
-
-		/** This slot is used to update the model item which is
-		 * corresponding to the sender() which is expected to be a
-		 * ICLEntry.
-		 */
-		void updateItem ();
 
 		void handleClearUnreadMsgCount (QObject*);
 

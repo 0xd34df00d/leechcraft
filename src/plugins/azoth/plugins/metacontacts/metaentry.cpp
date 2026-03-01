@@ -16,6 +16,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/util.h>
+#include <util/azoth/emitters/clentry.h>
 #include "metaaccount.h"
 #include "metamessage.h"
 #include "managecontactsdialog.h"
@@ -65,21 +66,20 @@ namespace Metacontacts
 		AvailableRealEntries_ << entryObj;
 		UnavailableRealEntries_.removeAll (entry->GetEntryID ());
 
-		handleRealVariantsChanged (entry->Variants (), entryObj);
+		HandleRealVariantsChanged (entry, entry->Variants ());
 		for (const auto msg : entry->GetAllMessages ())
-			handleRealGotMessage (msg->GetQObject ());
+			HandleRealGotMessage (msg->GetQObject ());
 
-		emit statusChanged (GetStatus (QString ()), QString ());
+		emit Emitter_.statusChanged (GetStatus (QString ()), QString ());
 
-		ConnectStandardSignals (entryObj);
+		ConnectStandardSignals (entry);
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 			ConnectAdvancedSiganls (entryObj);
 	}
 
 	QString MetaEntry::GetMetaVariant (QObject *entry, const QString& realVar) const
 	{
-		QPair<QObject*, QString> pair = qMakePair (entry, realVar);
-		return Variant2RealVariant_.key (pair);
+		return Variant2RealVariant_.key ({ qobject_cast<ICLEntry*> (entry), realVar });
 	}
 
 	QObject* MetaEntry::GetQObject ()
@@ -110,7 +110,7 @@ namespace Metacontacts
 	void MetaEntry::SetEntryName (const QString& name)
 	{
 		Name_ = name;
-		emit nameChanged (name);
+		emit Emitter_.nameChanged (name);
 	}
 
 	QString MetaEntry::GetEntryID () const
@@ -131,7 +131,7 @@ namespace Metacontacts
 	void MetaEntry::SetGroups (const QStringList& groups)
 	{
 		Groups_ = groups;
-		emit groupsChanged (groups);
+		emit Emitter_.groupsChanged (groups);
 	}
 
 	QStringList MetaEntry::Variants () const
@@ -184,9 +184,11 @@ namespace Metacontacts
 		}
 
 		const auto& [realEntry, realVar] = Variant2RealVariant_ [variant];
-		return func (qobject_cast<Arg> (realEntry), realVar);
+		if constexpr (std::is_same_v<Arg, ICLEntry*>)
+			return func (realEntry, realVar);
+		else
+			return func (qobject_cast<Arg> (realEntry->GetQObject ()), realVar);
 	}
-
 
 	void MetaEntry::SendMessage (const OutgoingMessage& message)
 	{
@@ -263,34 +265,40 @@ namespace Metacontacts
 		ActWithVariant (f, variant);
 	}
 
-	void MetaEntry::ConnectStandardSignals (QObject *entryObj)
+	void MetaEntry::ConnectStandardSignals (ICLEntry *entry)
 	{
-		connect (entryObj,
-				SIGNAL (gotMessage (QObject*)),
+		auto& emitter = entry->GetCLEntryEmitter ();
+		connect (&emitter,
+				&Emitters::CLEntry::gotMessage,
 				this,
-				SLOT (handleRealGotMessage (QObject*)));
-		connect (entryObj,
-				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				&MetaEntry::HandleRealGotMessage);
+		connect (&emitter,
+				&Emitters::CLEntry::statusChanged,
 				this,
-				SLOT (handleRealStatusChanged (const EntryStatus&, const QString&)));
-		connect (entryObj,
-				SIGNAL (availableVariantsChanged (const QStringList&)),
+				[this, entry] (const EntryStatus& status, const QString& var)
+				{
+					emit Emitter_.statusChanged (status, entry->GetEntryName () + '/' + var);
+				});
+		connect (&emitter,
+				&Emitters::CLEntry::availableVariantsChanged,
 				this,
-				SLOT (handleRealVariantsChanged (const QStringList&)));
-		connect (entryObj,
-				SIGNAL (nameChanged (const QString&)),
+				std::bind_front (&MetaEntry::HandleRealVariantsChanged, this, entry));
+		connect (&emitter,
+				&Emitters::CLEntry::nameChanged,
 				this,
-				SLOT (handleRealNameChanged (const QString&)));
-		connect (entryObj,
-				SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
+				[this, entry] { HandleRealVariantsChanged (entry, entry->Variants ()); });
+		connect (&emitter,
+				&Emitters::CLEntry::chatPartStateChanged,
 				this,
-				SLOT (handleRealCPSChanged (const ChatPartState&, const QString&)));
-		connect (entryObj,
-				SIGNAL (entryGenerallyChanged ()),
-				this,
-				SIGNAL (entryGenerallyChanged ()));
+				[this, entry] (const ChatPartState& cps, const QString& var)
+				{
+					emit Emitter_.chatPartStateChanged (cps, entry->GetEntryName () + '/' + var);
+				});
+		connect (&emitter,
+				&Emitters::CLEntry::entryGenerallyChanged,
+				&Emitter_,
+				&Emitters::CLEntry::entryGenerallyChanged);
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		connect (entry->GetParentAccount ()->GetQObject (),
 				SIGNAL (removedCLItems (QList<QObject*>)),
 				this,
@@ -327,21 +335,22 @@ namespace Metacontacts
 				++i;
 		}
 
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		for (auto i = Variant2RealVariant_.begin (); i != Variant2RealVariant_.end (); )
 		{
 			const auto& var = i.key ();
 			const auto& pair = i.value ();
 
-			if (pair.first == entryObj)
+			if (pair.first == entry)
 			{
-				emit statusChanged ({ SOffline, QString () }, var);
+				emit Emitter_.statusChanged ({ SOffline, QString () }, var);
 				i = Variant2RealVariant_.erase (i);
 			}
 			else
 				++i;
 		}
 
-		emit availableVariantsChanged (Variants ());
+		emit Emitter_.availableVariantsChanged (Variants ());
 	}
 
 	void MetaEntry::SetNewEntryList (const QList<QObject*>& newList, bool readdRemoved)
@@ -366,11 +375,11 @@ namespace Metacontacts
 			return;
 		}
 
-		emit availableVariantsChanged (Variants ());
-		emit statusChanged (GetStatus (QString ()), QString ());
+		emit Emitter_.availableVariantsChanged (Variants ());
+		emit Emitter_.statusChanged (GetStatus (QString ()), QString ());
 	}
 
-	void MetaEntry::handleRealGotMessage (QObject *msgObj)
+	void MetaEntry::HandleRealGotMessage (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
@@ -390,55 +399,32 @@ namespace Metacontacts
 		if (shouldSort)
 			std::stable_sort (Messages_.begin (), Messages_.end (), Util::ComparingBy (&IMessage::GetDateTime));
 
-		emit gotMessage (message);
+		emit Emitter_.gotMessage (message);
 	}
 
-	void MetaEntry::handleRealStatusChanged (const EntryStatus& status, const QString& var)
+	void MetaEntry::HandleRealVariantsChanged (ICLEntry *entry, QStringList variants)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		emit statusChanged (status, entry->GetEntryName () + '/' + var);
-	}
-
-	void MetaEntry::handleRealVariantsChanged (QStringList variants, QObject *passedObj)
-	{
-		QObject *obj = passedObj ? passedObj : sender ();
 		for (auto it = Variant2RealVariant_.begin (); it != Variant2RealVariant_.end ();)
 		{
-			if (it.value ().first == obj)
+			if (it.value ().first == entry)
 				it = Variant2RealVariant_.erase (it);
 			else
 				++it;
 		}
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-
 		if (!variants.contains (QString ()))
 			variants.prepend (QString ());
 
 		for (const auto& var : variants)
-			Variant2RealVariant_ [entry->GetEntryName () + '/' + var] = QPair { obj, var };
+			Variant2RealVariant_ [entry->GetEntryName () + '/' + var] = QPair { entry, var };
 
-		emit availableVariantsChanged (Variants ());
+		emit Emitter_.availableVariantsChanged (Variants ());
 
 		for (const auto& var : variants)
 		{
 			const auto& str = entry->GetEntryName () + '/' + var;
-			emit statusChanged (GetStatus (str), str);
+			emit Emitter_.statusChanged (GetStatus (str), str);
 		}
-	}
-
-	void MetaEntry::handleRealNameChanged (const QString&)
-	{
-		QObject *obj = sender ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-
-		handleRealVariantsChanged (entry->Variants (), obj);
-	}
-
-	void MetaEntry::handleRealCPSChanged (const ChatPartState& cps, const QString& var)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		emit chatPartStateChanged (cps, entry->GetEntryName () + '/' + var);
 	}
 
 	void MetaEntry::handleRealAttentionDrawn (const QString& text, const QString& var)

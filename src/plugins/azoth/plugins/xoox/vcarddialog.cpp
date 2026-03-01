@@ -244,14 +244,15 @@ namespace LC::Azoth::Xoox
 
 	void VCardDialog::InitConnections (EntryBase *entry)
 	{
-		connect (entry,
-				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+		auto& emitter = entry->GetCLEntryEmitter ();
+		connect (&emitter,
+				&Emitters::CLEntry::statusChanged,
 				this,
-				SLOT (rebuildClientInfo ()));
-		connect (entry,
-				SIGNAL (entryGenerallyChanged ()),
+				&VCardDialog::rebuildClientInfo);
+		connect (&emitter,
+				&Emitters::CLEntry::entryGenerallyChanged,
 				this,
-				SLOT (rebuildClientInfo ()));
+				&VCardDialog::rebuildClientInfo);
 	}
 
 	void VCardDialog::rebuildClientInfo ()

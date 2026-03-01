@@ -102,14 +102,16 @@ namespace Azoth
 
 	void NotificationsManager::AddCLEntry (QObject *entryObj)
 	{
-		connect (entryObj,
-				SIGNAL (statusChanged (EntryStatus, QString)),
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		auto& emitter = entry->GetCLEntryEmitter ();
+		connect (&emitter,
+				&Emitters::CLEntry::statusChanged,
 				this,
-				SLOT (handleStatusChanged (EntryStatus, QString)));
-		connect (entryObj,
-				SIGNAL (chatPartStateChanged (ChatPartState, QString)),
+				std::bind_front (&NotificationsManager::HandleStatusChanged, this, entry));
+		connect (&emitter,
+				&Emitters::CLEntry::chatPartStateChanged,
 				this,
-				SLOT (handleChatPartStateChanged (ChatPartState, QString)));
+				std::bind_front (&NotificationsManager::HandleChatPartStateChanged, this, entry));
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{
@@ -141,7 +143,6 @@ namespace Azoth
 					this,
 					SLOT (handleActivityChanged (QString)));
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto status = entry->GetStatus ();
 		if (status.State_ != SOffline)
 			HandleStatusChanged (entry, status, entry->Variants ().value (0));
@@ -153,6 +154,9 @@ namespace Azoth
 				0,
 				this,
 				0);
+
+		if (const auto entry = qobject_cast<ICLEntry*> (entryObj))
+			entry->GetCLEntryEmitter ().disconnect (this);
 	}
 
 	void NotificationsManager::HandleMessage (IMessage *msg)
@@ -451,19 +455,6 @@ namespace Azoth
 			LastAccountStatusChange_.remove (acc);
 		else if (!LastAccountStatusChange_.contains (acc))
 			LastAccountStatusChange_ [acc] = QDateTime::currentDateTime ();
-	}
-
-	void NotificationsManager::handleStatusChanged (const EntryStatus& entrySt, const QString& variant)
-	{
-		const auto entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a ICLEntry:"
-					<< sender ();
-			return;
-		}
-		HandleStatusChanged (entry, entrySt, variant);
 	}
 
 	namespace
@@ -804,7 +795,7 @@ namespace Azoth
 		const auto& cancel = Util::MakeANCancel (e);
 
 		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Join"), [this, acc, ident, cancel] ()
+		nh->AddFunction (tr ("Join"), [this, acc, ident, cancel]
 				{
 					SuggestJoiningMUC (acc, ident);
 					EntityMgr_->HandleEntity (cancel);
@@ -814,19 +805,10 @@ namespace Azoth
 		EntityMgr_->HandleEntity (e);
 	}
 
-	void NotificationsManager::handleChatPartStateChanged (ChatPartState state, const QString&)
+	void NotificationsManager::HandleChatPartStateChanged (ICLEntry *entry, ChatPartState state, const QString&)
 	{
 		if (state != CPSComposing)
 			return;
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "doesn't implement ICLentry";
-			return;
-		}
 
 		const auto& id = entry->GetEntryID ();
 		if (!ShouldNotifyNextTyping_.value (id, true))

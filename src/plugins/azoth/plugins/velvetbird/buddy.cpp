@@ -200,7 +200,7 @@ namespace VelvetBird
 	void Buddy::Store (ConvIMMessage *msg)
 	{
 		Messages_ << msg;
-		emit gotMessage (msg);
+		emit Emitter_.gotMessage (msg);
 	}
 
 	void Buddy::SetConv (PurpleConversation *conv)
@@ -229,7 +229,7 @@ namespace VelvetBird
 		if (Name_ != GetEntryName ())
 		{
 			Name_ = GetEntryName ();
-			emit nameChanged (Name_);
+			emit Emitter_.nameChanged (Name_);
 		}
 
 		auto purpleStatus = purple_presence_get_active_status (Buddy_->presence);
@@ -237,7 +237,7 @@ namespace VelvetBird
 		if (status != Status_)
 		{
 			Status_ = status;
-			emit statusChanged (Status_, QString ());
+			emit Emitter_.statusChanged (Status_, QString ());
 		}
 
 		auto groupNode = purple_buddy_get_group (Buddy_);
@@ -245,7 +245,7 @@ namespace VelvetBird
 		if (newGroup != Group_)
 		{
 			Group_ = newGroup;
-			emit groupsChanged ({ Group_ });
+			emit Emitter_.groupsChanged ({ Group_ });
 		}
 	}
 }

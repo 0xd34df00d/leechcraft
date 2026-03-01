@@ -121,15 +121,6 @@ namespace LC::Azoth::Acetamide
 		void gotNewParticipants (const QList<QObject*>&) override;
 		void mucSubjectChanged (const QString&) override;
 
-		void gotMessage (QObject*) override;
-		void statusChanged (const EntryStatus&, const QString&) override;
-		void availableVariantsChanged (const QStringList&) override;
-		void nameChanged (const QString&) override;
-		void groupsChanged (const QStringList&) override;
-		void chatPartStateChanged (const ChatPartState&, const QString&) override;
-		void permsChanged () override;
-		void entryGenerallyChanged () override;
-
 		void nicknameConflict (const QString&) override;
 		void beenKicked (const QString&) override;
 		void beenBanned (const QString&) override;
