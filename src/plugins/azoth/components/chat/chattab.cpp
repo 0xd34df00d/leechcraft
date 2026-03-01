@@ -1286,20 +1286,13 @@ namespace Azoth
 
 	void ChatTab::CheckMUC ()
 	{
-		ICLEntry *e = GetEntry<ICLEntry> ();
+		const auto e = GetEntry<ICLEntry> ();
 
-		bool claimsMUC = e->GetEntryType () == ICLEntry::EntryType::MUC;
-		IsMUC_ = true;
-		if (!claimsMUC)
-			IsMUC_ = false;
+		IsMUC_ = e->GetEntryType () == ICLEntry::EntryType::MUC;
 
-		if (claimsMUC &&
-				!GetEntry<IMUCEntry> ())
+		if (IsMUC_ && !GetEntry<IMUCEntry> ())
 		{
-			qWarning () << Q_FUNC_INFO
-				<< e->GetEntryName ()
-				<< "declares itself to be a MUC, "
-					"but doesn't implement IMUCEntry";
+			qWarning () << e->GetEntryName () << "declares itself to be a MUC, but doesn't implement IMUCEntry";
 			IsMUC_  = false;
 		}
 
