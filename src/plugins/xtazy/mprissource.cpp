@@ -127,7 +127,7 @@ namespace Xtazy
 					"StatusChange",
 					"(iiii)",
 					this,
-					SLOT (handlePlayerStatusChange (PlayerStatus)));
+					SLOT (handlePlayerStatusChange (LC::Xtazy::PlayerStatus)));
 			SB_.connect (service,
 					"/Player",
 					"org.freedesktop.MediaPlayer",
@@ -158,7 +158,7 @@ namespace Xtazy
 					"StatusChange",
 					"(iiii)",
 					this,
-					SLOT (handlePlayerStatusChange (PlayerStatus)));
+					SLOT (handlePlayerStatusChange (LC::Xtazy::PlayerStatus)));
 			SB_.disconnect (service,
 					"/Player",
 					"org.freedesktop.MediaPlayer",
