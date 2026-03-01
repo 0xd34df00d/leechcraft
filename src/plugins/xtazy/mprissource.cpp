@@ -8,30 +8,12 @@
 
 #include "mprissource.h"
 #include <QDBusConnectionInterface>
-#include <QDBusMetaType>
-#include <QtDebug>
 
 namespace LC
 {
 namespace Xtazy
 {
 	const QString MPRISPrefix = "org.mpris";
-
-	enum class MPRISVersion
-	{
-		V1,
-		V2
-	};
-
-	namespace
-	{
-		MPRISVersion GetVersion (const QString& service)
-		{
-			return service.contains ("MediaPlayer2") ?
-					MPRISVersion::V2 :
-					MPRISVersion::V1;
-		}
-	}
 
 	enum class PlayStatus
 	{
@@ -40,60 +22,16 @@ namespace Xtazy
 		Stopped
 	};
 
-	struct PlayerStatus
-	{
-		PlayStatus PlayStatus_;
-		int PlayOrder_;
-		int PlayRepeat_;
-		int StopOnce_;
-	};
-}
-}
-
-Q_DECLARE_METATYPE (LC::Xtazy::PlayerStatus);
-
-namespace LC
-{
-namespace Xtazy
-{
 	namespace
 	{
 		PlayStatus GetMPRIS2PlayStatus (const QString& status)
 		{
 			if (status == "Playing")
 				return PlayStatus::Playing;
-			else if (status == "Paused")
+			if (status == "Paused")
 				return PlayStatus::Paused;
-			else
-				return PlayStatus::Stopped;
+			return PlayStatus::Stopped;
 		}
-	}
-
-	QDBusArgument& operator<< (QDBusArgument& arg, const PlayerStatus& ps)
-	{
-		arg.beginStructure ();
-		arg << static_cast<int> (ps.PlayStatus_)
-			<< ps.PlayOrder_
-			<< ps.PlayRepeat_
-			<< ps.StopOnce_;
-		arg.endStructure ();
-		return arg;
-	}
-
-	const QDBusArgument& operator>> (const QDBusArgument& arg, PlayerStatus& ps)
-	{
-		arg.beginStructure ();
-
-		int rawPS = 0;
-		arg >> rawPS
-			>> ps.PlayOrder_
-			>> ps.PlayRepeat_
-			>> ps.StopOnce_;
-
-		ps.PlayStatus_ = static_cast<PlayStatus> (rawPS);
-
-		arg.endStructure ();
-		return arg;
 	}
 
 	MPRISSource::MPRISSource (QObject *parent)
@@ -101,8 +39,6 @@ namespace Xtazy
 	, SB_ { QDBusConnection::connectToBus (QDBusConnection::SessionBus, "org.LeechCraft.Xtazy") }
 	, Players_ { SB_.interface ()->registeredServiceNames ().value ().filter (MPRISPrefix) }
 	{
-		qDBusRegisterMetaType<PlayerStatus> ();
-
 		for (const auto& player : Players_)
 			ConnectToBus (player);
 
@@ -116,67 +52,25 @@ namespace Xtazy
 
 	void MPRISSource::ConnectToBus (const QString& service)
 	{
-		switch (GetVersion (service))
-		{
-		case MPRISVersion::V1:
-			SB_.connect (service,
-					"/Player",
-					"org.freedesktop.MediaPlayer",
-					"StatusChange",
-					"(iiii)",
-					this,
-					SLOT (handlePlayerStatusChange (LC::Xtazy::PlayerStatus)));
-			SB_.connect (service,
-					"/Player",
-					"org.freedesktop.MediaPlayer",
-					"TrackChange",
-					"a{sv}",
-					this,
-					SLOT (handleTrackChange (QVariantMap)));
-			break;
-		case MPRISVersion::V2:
-			SB_.connect (service,
-					"/org/mpris/MediaPlayer2",
-					"org.freedesktop.DBus.Properties",
-					"PropertiesChanged",
-					this,
-					SLOT (handlePropertyChange (QDBusMessage)));
-			break;
-		}
+		SB_.connect (service,
+				"/org/mpris/MediaPlayer2",
+				"org.freedesktop.DBus.Properties",
+				"PropertiesChanged",
+				this,
+				SLOT (handlePropertyChange (QDBusMessage)));
 	}
 
 	void MPRISSource::DisconnectFromBus (const QString& service)
 	{
-		switch (GetVersion (service))
-		{
-		case MPRISVersion::V1:
-			SB_.disconnect (service,
-					"/Player",
-					"org.freedesktop.MediaPlayer",
-					"StatusChange",
-					"(iiii)",
-					this,
-					SLOT (handlePlayerStatusChange (LC::Xtazy::PlayerStatus)));
-			SB_.disconnect (service,
-					"/Player",
-					"org.freedesktop.MediaPlayer",
-					"TrackChange",
-					"a{sv}",
-					this,
-					SLOT (handleTrackChange (QVariantMap)));
-			break;
-		case MPRISVersion::V2:
-			SB_.disconnect (service,
-					"/org/mpris/MediaPlayer2",
-					"org.freedesktop.DBus.Properties",
-					"PropertiesChanged",
-					this,
-					SLOT (handlePropertyChange (QDBusMessage)));
-			break;
-		}
+		SB_.disconnect (service,
+				"/org/mpris/MediaPlayer2",
+				"org.freedesktop.DBus.Properties",
+				"PropertiesChanged",
+				this,
+				SLOT (handlePropertyChange (QDBusMessage)));
 	}
 
-	Media::AudioInfo MPRISSource::GetTuneMV2 (const QVariantMap& map)
+	Media::AudioInfo MPRISSource::GetTuneInfo (const QVariantMap& map)
 	{
 		QVariantMap result;
 		if (map.contains ("xesam:title"))
@@ -197,55 +91,29 @@ namespace Xtazy
 		const auto& arg = msg.arguments ().at (1).value<QDBusArgument> ();
 		const auto& map = qdbus_cast<QVariantMap> (arg);
 
-		auto v = map.value ("Metadata");
-		if (v.isValid ())
-		{
-			const auto& tune = GetTuneMV2 (qdbus_cast<QVariantMap> (v.value<QDBusArgument> ()));
-			if (tune != Tune_)
+		if (const auto metadataVar = map.value ("Metadata");
+			metadataVar.isValid ())
+			if (const auto& tune = GetTuneInfo (qdbus_cast<QVariantMap> (metadataVar.value<QDBusArgument> ()));
+				tune != Tune_)
 			{
 				Tune_ = tune;
 				if (!Tune_.Title_.isEmpty ())
 					EmitChange (Tune_);
 			}
-		}
 
-		v = map.value ("PlaybackStatus");
-		if (v.isValid ())
+		if (const auto statusVar = map.value ("PlaybackStatus");
+			statusVar.isValid ())
 		{
-			PlayerStatus status;
-			status.PlayStatus_ = GetMPRIS2PlayStatus (v.toString ());
-			handlePlayerStatusChange (status);
+			if (const auto status = GetMPRIS2PlayStatus (statusVar.toString ());
+				status != PlayStatus::Playing)
+			{
+				EmitChange ({});
+				if (status == PlayStatus::Stopped)
+					Tune_ = {};
+			}
+			else if (!Tune_.Title_.isEmpty ())
+				EmitChange (Tune_);
 		}
-	}
-
-	void MPRISSource::handlePlayerStatusChange (const PlayerStatus& ps)
-	{
-		if (ps.PlayStatus_ != PlayStatus::Playing)
-		{
-			EmitChange ({});
-			if (ps.PlayStatus_ == PlayStatus::Stopped)
-				Tune_ = {};
-		}
-		else if (!Tune_.Title_.isEmpty ())
-			EmitChange (Tune_);
-	}
-
-	void MPRISSource::handleTrackChange (const QVariantMap& map)
-	{
-		auto tuneMap = map;
-		if (tuneMap.contains ("album"))
-			tuneMap ["source"] = tuneMap.take ("album");
-		if (tuneMap.contains ("time"))
-			tuneMap ["length"] = tuneMap.take ("time");
-
-		const auto& tune = FromMPRISMap (tuneMap);
-
-		if (tune == Tune_)
-			return;
-
-		Tune_ = tune;
-		if (!Tune_.Title_.isEmpty ())
-			EmitChange (Tune_);
 	}
 
 	void MPRISSource::checkMPRISService (QString name,

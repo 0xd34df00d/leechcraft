@@ -17,8 +17,6 @@ namespace LC
 {
 namespace Xtazy
 {
-	struct PlayerStatus;
-
 	class MPRISSource : public TuneSourceBase
 	{
 		Q_OBJECT
@@ -32,11 +30,9 @@ namespace Xtazy
 	private:
 		void ConnectToBus (const QString&);
 		void DisconnectFromBus (const QString&);
-		Media::AudioInfo GetTuneMV2 (const QVariantMap&);
+		Media::AudioInfo GetTuneInfo (const QVariantMap&);
 	private slots:
 		void handlePropertyChange (const QDBusMessage&);
-		void handlePlayerStatusChange (const PlayerStatus&);
-		void handleTrackChange (const QVariantMap&);
 		void checkMPRISService (QString, QString, QString);
 	};
 }
