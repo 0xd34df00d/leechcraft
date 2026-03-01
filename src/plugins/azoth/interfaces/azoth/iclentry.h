@@ -23,27 +23,6 @@ namespace Azoth
 	class IAccount;
 	class IMessage;
 
-	/** @brief Describes an entry's status.
-	 *
-	 * A status is a combination of an entry state (one of several states
-	 * described by the State enumeration) and an associated status string
-	 * defined by the contact.
-	 *
-	 * @sa State
-	 */
-	struct EntryStatus
-	{
-		/** @brief The general state of the entry.
-		 */
-		State State_ = SOffline;
-
-		/** @brief The string of the entry accompanying its state.
-		 */
-		QString StatusString_ {};
-
-		bool operator== (const EntryStatus& es2) const = default;
-	};
-
 	/** @brief Represents a single entry in contact list.
 	 *
 	 * Everything that should go to the contact list should implement
@@ -502,7 +481,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LC::Azoth::EntryStatus)
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::ICLEntry::Features)
-Q_DECLARE_INTERFACE (LC::Azoth::ICLEntry,
-		"org.Deviant.LeechCraft.Azoth.ICLEntry/1.0")
+Q_DECLARE_INTERFACE (LC::Azoth::ICLEntry, "org.Deviant.LeechCraft.Azoth.ICLEntry/1.0")
