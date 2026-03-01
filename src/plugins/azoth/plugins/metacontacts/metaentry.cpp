@@ -351,6 +351,8 @@ namespace Metacontacts
 		}
 
 		emit Emitter_.availableVariantsChanged (Variants ());
+
+		entry->GetCLEntryEmitter ().disconnect (this);
 	}
 
 	void MetaEntry::SetNewEntryList (const QList<QObject*>& newList, bool readdRemoved)
