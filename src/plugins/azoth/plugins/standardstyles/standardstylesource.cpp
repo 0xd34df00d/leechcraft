@@ -191,7 +191,7 @@ namespace LC::Azoth::StandardStyles
 		QString statusIconName;
 
 		QString string = dateBegin + '[' +
-				msg->GetDateTime ().time ().toString () +
+				Util::GetLocale ().toString (msg->GetDateTime ().time ()) +
 				']' + dateEnd;
 		string.append (' ');
 		switch (msg->GetDirection ())
