@@ -8,6 +8,7 @@
 
 #include "instance.h"
 #include <QDBusConnection>
+#include <util/sll/qtutil.h>
 #include "../player.h"
 #include "mediaplayer2adaptor.h"
 #include "playeradaptor.h"
@@ -15,6 +16,14 @@
 
 namespace LC::LMP::MPRIS
 {
+	namespace
+	{
+		QString GetServiceName ()
+		{
+			return "org.mpris.MediaPlayer2."_ql + qEnvironmentVariable ("LC_LMP_MPRIS_NAME_OVERRIDE", "LMP"_qs);
+		}
+	}
+
 	Instance::Instance (Player *player, QObject *parent)
 	: QObject { parent }
 	{
@@ -27,7 +36,7 @@ namespace LC::LMP::MPRIS
 		auto fdo = new FDOPropsAdaptor { player };
 		new PlayerAdaptor { fdo, player };
 
-		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP");
-		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", player);
+		QDBusConnection::sessionBus ().registerService (GetServiceName ());
+		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2"_qs, player);
 	}
 }
