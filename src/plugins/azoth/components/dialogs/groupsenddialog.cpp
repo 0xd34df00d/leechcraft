@@ -50,7 +50,7 @@ namespace Azoth
 					[this, entry]
 					{
 						const auto item = Entry2Item_.take (entry);
-						qDeleteAll (ContactsModel_->takeRow (item->row ()));
+						ContactsModel_->removeRow (item->row ());
 					});
 			new Util::SlotClosure<Util::NoDeletePolicy> ([entry, item]
 					{
