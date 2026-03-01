@@ -209,7 +209,6 @@ namespace LC::Azoth
 
 		void FrameFocused (QObject*, QWebEnginePage*);
 
-		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);
 		QString FormatBody (QString body, IMessage *msg, const QList<QColor>& coloring);
 		QString HandleSmiles (QString body);
@@ -381,10 +380,6 @@ namespace LC::Azoth
 		void hookEntryStatusChanged (LC::IHookProxy_ptr proxy,
 				QObject *entry,
 				QString variant);
-		void hookFormatDateTime (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QDateTime dateTime,
-				QObject *message);
 		void hookFormatNickname (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QString nick,

@@ -191,7 +191,7 @@ namespace LC::Azoth::StandardStyles
 		QString statusIconName;
 
 		QString string = dateBegin + '[' +
-				formatter.FormatDate (msg->GetDateTime (), msg->GetQObject ()) +
+				msg->GetDateTime ().time ().toString () +
 				']' + dateEnd;
 		string.append (' ');
 		switch (msg->GetDirection ())

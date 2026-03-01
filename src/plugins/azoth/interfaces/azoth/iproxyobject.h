@@ -63,17 +63,6 @@ namespace Azoth
 		 */
 		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
 
-		/** @brief Formats the date for the given message.
-		 *
-		 * This function should be used to format the date of a
-		 * \em message when displaying it.
-		 *
-		 * @param[in] date The timestamp of the message to format.
-		 * @param[in] message The message object implementing IMessage.
-		 * @return The formatted date string.
-		 */
-		virtual QString FormatDate (QDateTime date, QObject *message) const = 0;
-
 		/** @brief Formats the nickname for the given message and color.
 		 *
 		 * This function should be used to format the nick when

@@ -761,18 +761,6 @@ namespace LC::Azoth
 		src->FrameFocused (page);
 	}
 
-	QString Core::FormatDate (QDateTime dt, IMessage *msg)
-	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFormatDateTime (proxy, this, dt, msg->GetQObject ());
-		if (proxy->IsCancelled ())
-			return proxy->GetReturnValue ().toString ();
-
-		proxy->FillValue ("dateTime", dt);
-
-		return dt.time ().toString ();
-	}
-
 	QString Core::FormatNickname (QString nick, IMessage *msg, const QString& color)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);

@@ -161,10 +161,6 @@ namespace Azoth
 				QObject *message);
 		void hookGotMessage2 (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookFormatDateTime (LC::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QDateTime dateTime,
-				QObject *message);
 		void hookFormatNickname (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QString nick,

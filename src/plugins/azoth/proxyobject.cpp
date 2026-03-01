@@ -46,11 +46,6 @@ namespace LC::Azoth
 		return Azoth::GetNickColor (nick, colors);
 	}
 
-	QString FormatterProxyObject::FormatDate (QDateTime dt, QObject *obj) const
-	{
-		return Core::Instance ().FormatDate (std::move (dt), qobject_cast<IMessage*> (obj));
-	}
-
 	QString FormatterProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
 	{
 		return Core::Instance ().FormatNickname (std::move (nick), qobject_cast<IMessage*> (obj), color);

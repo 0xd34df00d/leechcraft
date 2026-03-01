@@ -28,7 +28,6 @@ namespace Azoth
 
 		QList<QColor> GenerateColors (const QString&, QColor) const override;
 		QString GetNickColor (const QString&, const QList<QColor>&) const override;
-		QString FormatDate (QDateTime, QObject*) const override;
 		QString FormatNickname (QString, QObject*, const QString&) const override;
 		QString EscapeBody (QString, IMessage::EscapePolicy) const override;
 		QString FormatBody (QString, QObject*, const QList<QColor>&) const override;
