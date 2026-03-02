@@ -78,7 +78,6 @@
       "cacheVariables": {
         "LIB_SUFFIX": "64",
         "STRICT_LICENSING": "True",
-        "ENABLE_ELEEMINATOR": "False",
         "WITH_LHTR_HTML": "False"
       }
     },
