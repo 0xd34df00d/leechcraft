@@ -94,7 +94,7 @@ namespace Azoth
 	 *
 	 * Modelled after XMPP XEP-085.
 	 */
-	enum ChatPartState
+	enum ChatPartState : std::uint8_t
 	{
 		/** Unknown chat state.
 		 */
