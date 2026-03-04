@@ -471,7 +471,7 @@ namespace HttHare
 		auto c = Conn_;
 		boost::asio::async_write (c->GetSocket (),
 				ToBuffers (verb),
-				c->GetStrand ().wrap ([c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
+				boost::asio::bind_executor (c->GetStrand (), [c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
 					{
 						if (ec)
 							qWarning () << ec.message ().c_str ();
@@ -521,7 +521,7 @@ namespace HttHare
 		auto c = Conn_;
 		boost::asio::async_write (c->GetSocket (),
 				ToBuffers (verb),
-				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
+				boost::asio::bind_executor (c->GetStrand (), [c] (const boost::system::error_code& ec, ulong)
 					{
 						if (ec)
 							qWarning () << ec.message ().c_str ();

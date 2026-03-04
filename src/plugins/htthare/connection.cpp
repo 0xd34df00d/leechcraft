@@ -56,7 +56,7 @@ namespace HttHare
 		boost::asio::async_read_until (Socket_,
 				Buf_,
 				std::string { "\r\n\r\n" },
-				Strand_.wrap ([conn] (const boost::system::error_code& ec, ulong transferred)
+				boost::asio::bind_executor (Strand_, [conn] (const boost::system::error_code& ec, ulong transferred)
 					{ conn->HandleHeader (ec, transferred); }));
 	}
 
