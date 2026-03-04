@@ -298,9 +298,9 @@ namespace HttHare
 			QPair<qint64, qint64> CurrentRange_;
 			QList<QPair<qint64, qint64>> TailRanges_;
 
-			std::function<void (boost::system::error_code, ulong)> Handler_;
+			std::function<void (boost::system::error_code)> Handler_;
 
-			void operator() (boost::system::error_code ec, ulong)
+			void operator() (boost::system::error_code ec)
 			{
 				for (qint64 toTransfer = CurrentRange_.second - CurrentRange_.first + 1; toTransfer > 0; )
 				{
@@ -345,7 +345,7 @@ namespace HttHare
 					if (ec == boost::asio::error::would_block ||
 							ec == boost::asio::error::try_again)
 					{
-						Sock_.async_write_some (boost::asio::null_buffers {}, *this);
+						Sock_.async_wait (boost::asio::socket_base::wait_write, *this);
 						return;
 					}
 
@@ -355,12 +355,12 @@ namespace HttHare
 					if (!toTransfer && !TailRanges_.isEmpty ())
 					{
 						CurrentRange_ = TailRanges_.takeFirst ();
-						Sock_.async_write_some (boost::asio::null_buffers {}, *this);
+						Sock_.async_wait (boost::asio::socket_base::wait_write, *this);
 						return;
 					}
 				}
 
-				Handler_ (ec, 0);
+				Handler_ (ec);
 			}
 		};
 	}
@@ -511,8 +511,8 @@ namespace HttHare
 							0,
 							headRange,
 							ranges,
-							[c, shutdownGuard] (boost::system::error_code, ulong) {}
-						} (ec, 0);
+							[c, shutdownGuard] (boost::system::error_code) {}
+						} (ec);
 					}));
 	}
 
