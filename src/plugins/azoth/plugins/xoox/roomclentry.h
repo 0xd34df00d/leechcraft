@@ -125,13 +125,11 @@ namespace Xoox
 		void MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to);
 
 		void HandleMessage (RoomPublicMessage*);
-		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);
 	private slots:
 		void handleBookmarks (const QXmppBookmarkSet&);
 		void reemitStatusChange (const EntryStatus&);
 	signals:
-		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
 		void nicknameConflict (const QString&);
 		void beenKicked (const QString&);

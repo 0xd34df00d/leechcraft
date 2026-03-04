@@ -586,11 +586,6 @@ namespace Xoox
 		emit Emitter_.gotMessage (msg);
 	}
 
-	void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
-	{
-		emit gotNewParticipants (Util::Map (parts, &ICLEntry::GetQObject));
-	}
-
 	void RoomCLEntry::HandleSubjectChanged (const QString& subj)
 	{
 		emit mucSubjectChanged (subj);

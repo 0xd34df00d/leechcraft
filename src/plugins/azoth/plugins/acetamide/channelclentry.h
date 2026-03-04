@@ -118,7 +118,6 @@ namespace LC::Azoth::Acetamide
 		void SetNewChannelModes (const ChannelModes&);
 		QString Role2String (ChannelRole) const;
 	signals:
-		void gotNewParticipants (const QList<QObject*>&) override;
 		void mucSubjectChanged (const QString&) override;
 
 		void nicknameConflict (const QString&) override;

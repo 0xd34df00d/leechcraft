@@ -199,17 +199,6 @@ namespace Azoth
 		 */
 		virtual void InviteToMUC (const QString& userId, const QString& msg) = 0;
 
-		/** @brief Notifies about new participants in the room.
-		 *
-		 * This signal should emitted when new participants join this
-		 * room.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] parts The list of participants that joined.
-		 */
-		virtual void gotNewParticipants (const QList<QObject*>& parts) = 0;
-
 		/** @brief Notifies about subject change.
 		 *
 		 * This signal should be emitted when room subject is changed

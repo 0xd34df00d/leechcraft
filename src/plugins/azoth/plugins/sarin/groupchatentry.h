@@ -84,7 +84,6 @@ namespace LC::Azoth::Sarin
 		Util::ContextTask<void> RunLeave (QString, int retry = 0);
 		Util::ContextTask<void> RunSetNick (QString, int retry = 0);
 	signals:
-		void gotNewParticipants (const QList<QObject*>&) override;
 		void mucSubjectChanged (const QString&) override;
 		void nicknameConflict (const QString&) override;
 		void beenKicked (const QString&) override;

@@ -64,7 +64,6 @@ namespace LC::Azoth::Acetamide
 		QWidget* GetConfigurationWidget () override;
 		void AcceptConfiguration (QWidget*) override;
 	signals:
-		void gotNewParticipants (const QList<QObject*>&) override;
 		void mucSubjectChanged (const QString&) override;
 		void nicknameConflict (const QString&) override;
 		void beenKicked (const QString&) override;
