@@ -43,6 +43,7 @@ LC_DEFINE_PLUGIN (
 		vcarddialog.cpp
 	SETTINGS azothacetamidesettings.xml
 	QT_COMPONENTS Network Widgets Xml
+	LINK_LIBRARIES leechcraft-azoth-util
 	INSTALL_DESKTOP
 	INSTALL_SHARE
 	)
