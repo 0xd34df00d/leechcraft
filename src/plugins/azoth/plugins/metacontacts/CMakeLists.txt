@@ -13,5 +13,6 @@ LC_DEFINE_PLUGIN (
 		addtometacontactsdialog.cpp
 		managecontactsdialog.cpp
 	QT_COMPONENTS Widgets
+	LINK_LIBRARIES leechcraft-azoth-util
 	INSTALL_SHARE
 	)
