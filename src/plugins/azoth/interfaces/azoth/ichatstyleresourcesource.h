@@ -21,13 +21,11 @@ namespace LC::Azoth
 	 */
 	struct ChatMsgAppendInfo
 	{
-		/** @brief Whether this message has triggered a highlight.
+		/** @brief Whether this message has triggered our highlight.
 		 */
 		bool IsHighlightMsg_;
 
-		/** @brief Whether this message is appended in an active session.
-		 *
-		 * The active session is the session that is currently opened.
+		/** @brief Whether the chat view is currently visible and focused.
 		 */
 		bool IsActiveChat_;
 
