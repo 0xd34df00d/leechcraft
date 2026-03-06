@@ -123,6 +123,13 @@ namespace LC::Azoth::StandardStyles
 		{
 			return QString::number (std::bit_cast<uintptr_t> (msgObj));
 		}
+
+		QString FormatTimestamp (const QDateTime& ts)
+		{
+			const auto locale = Util::GetLocale ();
+			const auto fmt = locale.timeFormat (QLocale::LongFormat).remove ('t').trimmed ();
+			return locale.toString (ts.time (), fmt);
+		}
 	}
 
 	bool StandardStyleSource::AppendMessage (QWebEnginePage *frame,
@@ -190,9 +197,7 @@ namespace LC::Azoth::StandardStyles
 		QString divClass;
 		QString statusIconName;
 
-		QString string = dateBegin + '[' +
-				Util::GetLocale ().toString (msg->GetDateTime ().time ()) +
-				']' + dateEnd;
+		QString string = dateBegin + '[' + FormatTimestamp (msg->GetDateTime ()) + ']' + dateEnd;
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
