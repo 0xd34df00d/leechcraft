@@ -44,6 +44,7 @@ add_util_library (azoth-util
 LC_DEFINE_PLUGIN (
 	SRCS
 		components/chat/callchatwidget.cpp
+		components/chat/chateventsadapter.cpp
 		components/chat/chattab.cpp
 		components/chat/chattabpartstatemanager.cpp
 		components/chat/chattabwebview.cpp

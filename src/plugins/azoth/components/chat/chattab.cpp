@@ -58,6 +58,7 @@
 #include "components/util/misc.h"
 #include "components/util/settings.h"
 #include "callchatwidget.h"
+#include "chateventsadapter.h"
 #include "chattabpartstatemanager.h"
 #include "contactdropfilter.h"
 #include "filetransfersection.h"
@@ -1249,6 +1250,20 @@ namespace Azoth
 		Ui_.AccountName_->setText (accName);
 
 		ReinitAvatar ();
+
+		const auto adapter = new ChatEventsAdapter { *entry };
+		connect (adapter,
+				&ChatEventsAdapter::gotEvent,
+				this,
+				[this, entryObj = entry->GetQObject ()] (const ChatEvent& event)
+				{
+					const auto source = Core::Instance ().GetCurrentChatStyle (entryObj);
+					source->Append (Ui_.View_->page (), event);
+				});
+		connect (this,
+				&QObject::destroyed,
+				adapter,
+				&ChatEventsAdapter::deleteLater);
 	}
 
 	void ChatTab::ReinitAvatar ()
