@@ -11,6 +11,7 @@
 #include <optional>
 #include <QDateTime>
 #include <QString>
+#include <util/sll/taintedstring.h>
 
 namespace LC::Azoth
 {
@@ -54,5 +55,11 @@ namespace LC::Azoth
 				.Kind_ = Chat { Direction::Out },
 			};
 		}
+	};
+
+	struct ChatEvent
+	{
+		QDateTime TS_ = QDateTime::currentDateTime ();
+		Util::TaintedString Text_;
 	};
 }

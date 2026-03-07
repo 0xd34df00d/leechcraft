@@ -15,6 +15,8 @@ class QWebEnginePage;
 
 namespace LC::Azoth
 {
+	struct ChatEvent;
+
 	class IAccount;
 
 	/** @brief Defines additional parameters of the message.
@@ -109,8 +111,9 @@ namespace LC::Azoth
 		 * @param[in] info Additional chat message info structure.
 		 * @return true on success, false otherwise.
 		 */
-		virtual bool AppendMessage (QWebEnginePage *page, QObject *message,
-				const ChatMsgAppendInfo& info) = 0;
+		virtual bool AppendMessage (QWebEnginePage *page, QObject *message, const ChatMsgAppendInfo& info) = 0;
+
+		virtual void Append (QWebEnginePage *page, const ChatEvent& event) = 0;
 
 		/** @brief Notifies about a frame obtaining user input focus.
 		 *

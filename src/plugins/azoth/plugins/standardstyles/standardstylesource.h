@@ -55,6 +55,7 @@ namespace StandardStyles
 		QString GetHTMLTemplate (const QString&,
 				const QString&, QObject*, QWebEnginePage*) const override;
 		bool AppendMessage (QWebEnginePage*, QObject*, const ChatMsgAppendInfo&) override;
+		void Append (QWebEnginePage*, const ChatEvent&) override;
 		void FrameFocused (QWebEnginePage*) override;
 		QStringList GetVariantsForPack (const QString&) override;
 

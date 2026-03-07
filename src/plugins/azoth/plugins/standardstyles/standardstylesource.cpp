@@ -328,6 +328,20 @@ namespace LC::Azoth::StandardStyles
 		return true;
 	}
 
+	void StandardStyleSource::Append (QWebEnginePage *page, const ChatEvent& event)
+	{
+		const auto img = GetStatusImage ("notification_chat_info"_ql);
+		auto string = "<img src='%1' style='max-width:1em;max-height:1em;' class='deliveryStatusIcon' />"_qs.arg (img) +
+				"<span class='datetime'>["_qs + FormatTimestamp (event.TS_) + "]</span> ! "_qs +
+				event.Text_.ToHtmlEscaped ();
+		const auto js = R"(
+				document.body.insertAdjacentHTML("beforeend", "<div class='eventmsg' style='word-wrap: break-word;'>%1</div>");
+				true;
+				)"_ql
+				.arg (std::move (string).replace ('"', R"(\")"_ql));
+		page->runJavaScript (js);
+	}
+
 	void StandardStyleSource::FrameFocused (QWebEnginePage *frame)
 	{
 		IsLastMsgRead_ [frame] = true;
