@@ -1602,17 +1602,7 @@ namespace LC::Azoth
 	{
 		std::optional<EntryStatus> LoadSavedStatus (IAccount *account)
 		{
-			const auto proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-			if (!proto)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "account's parent proto isn't IProtocol"
-						<< account->GetParentProtocol ();
-				return {};
-			}
-
-			const auto& id = proto->GetProtocolID () + account->GetAccountID ();
-			const auto& var = XmlSettingsManager::Instance ().property (id);
+			const auto& var = XmlSettingsManager::Instance ().property (account->GetAccountID ());
 			if (var.isNull () || !var.canConvert<QByteArray> ())
 				return {};
 
@@ -1868,23 +1858,12 @@ namespace LC::Azoth
 			return;
 		}
 
-		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-		if (!proto)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "account's proto is not a IProtocol"
-					<< acc->GetParentProtocol ();
-			return;
-		}
-
-		const QByteArray& id = proto->GetProtocolID () + acc->GetAccountID ();
 		QByteArray serializedStatus;
 		{
 			QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
 			stream << status;
 		}
-		XmlSettingsManager::Instance ().setProperty (id,
-				serializedStatus);
+		XmlSettingsManager::Instance ().setProperty (acc->GetAccountID (), serializedStatus);
 
 		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
 		{
