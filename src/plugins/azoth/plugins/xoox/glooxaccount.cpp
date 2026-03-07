@@ -215,6 +215,10 @@ namespace Xoox
 				SIGNAL (rosterItemRemoved (QObject*)),
 				this,
 				SLOT (handleEntryRemoved (QObject*)));
+		connect (ClientConnection_.get (),
+				&ClientConnection::rosterChanged,
+				this,
+				&GlooxAccount::rosterSaveRequested);
 
 		connect (ClientConnection_->GetXep0313Manager (),
 				&Xep0313Manager::serverHistoryFetched,

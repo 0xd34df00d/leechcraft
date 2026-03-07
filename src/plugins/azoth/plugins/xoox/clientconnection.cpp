@@ -747,6 +747,7 @@ namespace Xoox
 				entry->SetClientInfo (resource, presences [resource]);
 		}
 		emit gotRosterItems (items);
+		emit rosterChanged ();
 
 		for (const auto& msg : OfflineMsgQueue_)
 			handleMessageReceived (msg);
@@ -776,6 +777,8 @@ namespace Xoox
 			entry->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
+
+		emit rosterChanged ();
 	}
 
 	void ClientConnection::handleRosterItemRemoved (const QString& bareJid)
@@ -787,6 +790,8 @@ namespace Xoox
 		const auto entry = JID2CLEntry_.take (bareJid);
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
+
+		emit rosterChanged ();
 	}
 
 	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)

@@ -242,6 +242,7 @@ namespace Xoox
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
+		void rosterChanged ();
 
 		void gotRequestedPosts (const QList<LC::Azoth::Post>&, const QString&);
 		void gotNewPost (const LC::Azoth::Post&);
