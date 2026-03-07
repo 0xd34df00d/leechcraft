@@ -8,6 +8,7 @@
 
 #include "notificationsmanager.h"
 #include <QMainWindow>
+#include <util/sll/qobjectrefcast.h>
 #include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -275,21 +276,11 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << entryObj << "doesn't implement ICLEntry";
-			return;
-		}
+		auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
 
 		const auto& str = msg.isEmpty () ?
-				patternLite
-					.arg (entry->GetEntryName ())
-					.arg (entry->GetHumanReadableID ()) :
-				patternFull
-					.arg (entry->GetEntryName ())
-					.arg (entry->GetHumanReadableID ())
-					.arg (msg);
+				patternLite.arg (entry.GetEntryName (), entry.GetHumanReadableID ()) :
+				patternFull.arg (entry.GetEntryName (), entry.GetHumanReadableID (), msg);
 
 		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
@@ -297,7 +288,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "Event")) >>
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "Event")) >>
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
@@ -659,36 +650,25 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property ("RespectDrawAttentions").toBool ())
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "doesn't implement ICLEntry";
-			return;
-		}
+		auto& entry = qobject_ref_cast<ICLEntry> (*sender ());
 
 		const auto& str = text.isEmpty () ?
-				tr ("%1 requests your attention")
-					.arg (entry->GetEntryName ()) :
-				tr ("%1 requests your attention: %2")
-					.arg (entry->GetEntryName ())
-					.arg (text);
+				tr ("%1 requests your attention.").arg (entry.GetEntryName ()) :
+				tr ("%1 requests your attention: %2.").arg (entry.GetEntryName (), text);
 
 		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMAttention;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = tr ("Attention requested by %1")
-				.arg (entry->GetEntryName ());
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested.");
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = tr ("Attention requested by %1.").arg (entry.GetEntryName ());
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = text;
 
 		const auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Open chat"),
-				[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
-		nh->AddDependentObject (entry->GetQObject ());
+				[&entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (&entry, true); });
+		nh->AddDependentObject (entry.GetQObject ());
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "AttentionDrawnBy")) >>
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "AttentionDrawnBy")) >>
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
@@ -699,21 +679,10 @@ namespace Azoth
 		if (proxy->IsCancelled ())
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
+		auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
 		const auto& str = msg.isEmpty () ?
-				tr ("Subscription requested by %1.")
-					.arg (entry->GetEntryName ()) :
-				tr ("Subscription requested by %1: %2.")
-					.arg (entry->GetEntryName ())
-					.arg (msg);
+				tr ("Subscription requested by %1.").arg (entry.GetEntryName ()) :
+				tr ("Subscription requested by %1: %2.").arg (entry.GetEntryName (), msg);
 		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
@@ -721,12 +690,12 @@ namespace Azoth
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
 		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Authorize"), [entry] { AuthorizeEntry (entry); });
-		nh->AddFunction (tr ("Deny"), [entry] { DenyAuthForEntry (entry); });
-		nh->AddFunction (tr ("View info"), [entry] { entry->ShowInfo (); });
-		nh->AddDependentObject (entry->GetQObject ());
+		nh->AddFunction (tr ("Authorize"), [&entry] { AuthorizeEntry (&entry); });
+		nh->AddFunction (tr ("Deny"), [&entry] { DenyAuthForEntry (&entry); });
+		nh->AddFunction (tr ("View info"), [&entry] { entry.ShowInfo (); });
+		nh->AddDependentObject (entry.GetQObject ());
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "AuthRequestFrom")) >>
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "AuthRequestFrom")) >>
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
@@ -748,14 +717,7 @@ namespace Azoth
 	void NotificationsManager::handleMUCInvitation (const QVariantMap& ident,
 			const QString& inviter, const QString& reason)
 	{
-		const auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "doesn't implement IAccount";
-			return;
-		}
+		auto& acc = qobject_ref_cast<IAccount> (sender ());
 
 		const auto& name = ident ["HumanReadableName"].toString ();
 
@@ -782,12 +744,12 @@ namespace Azoth
 		const auto& cancel = Util::MakeANCancel (e);
 
 		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Join"), [this, acc, ident, cancel]
+		nh->AddFunction (tr ("Join"), [this, &acc, ident, cancel]
 				{
-					SuggestJoiningMUC (acc, ident);
+					SuggestJoiningMUC (&acc, ident);
 					EntityMgr_->HandleEntity (cancel);
 				});
-		nh->AddDependentObject (acc->GetQObject ());
+		nh->AddDependentObject (acc.GetQObject ());
 
 		EntityMgr_->HandleEntity (e);
 	}
@@ -826,16 +788,8 @@ namespace Azoth
 
 	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)
 	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
-		ShouldNotifyNextTyping_ [entry->GetEntryID ()] = true;
+		if (entryObj)
+			ShouldNotifyNextTyping_ [qobject_ref_cast<ICLEntry> (entryObj).GetEntryID ()] = true;
 	}
 }
 }
