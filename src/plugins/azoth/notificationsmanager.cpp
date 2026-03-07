@@ -269,16 +269,16 @@ namespace Azoth
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
-	void NotificationsManager::NotifyWithReason (QObject *entryObj, const QString& msg,
-			const char *func, const QString& eventType,
-			const QString& patternLite, const QString& patternFull)
+	void NotificationsManager::NotifyWithReason (const char *settingName, QObject *entryObj, const QString& msg,
+			const QString& eventType, const QString& patternLite, const QString& patternFull)
 	{
+		if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
+			return;
+
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
-			qWarning () << func
-					<< entryObj
-					<< "doesn't implement ICLEntry";
+			qWarning () << entryObj << "doesn't implement ICLEntry";
 			return;
 		}
 
@@ -386,11 +386,8 @@ namespace Azoth
 
 	void NotificationsManager::handleItemSubscribed (QObject *entryObj, const QString& msg)
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("NotifySubscriptions").toBool ())
-			return;
-
-		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+		NotifyWithReason ("NotifySubscriptions",
+				entryObj, msg,
 				AN::TypeIMSubscrSub,
 				tr ("%1 (%2) subscribed to us."),
 				tr ("%1 (%2) subscribed to us: %3."));
@@ -398,11 +395,8 @@ namespace Azoth
 
 	void NotificationsManager::handleItemUnsubscribed (QObject *entryObj, const QString& msg)
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("NotifyUnsubscriptions").toBool ())
-			return;
-
-		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+		NotifyWithReason ("NotifyUnsubscriptions",
+				entryObj, msg,
 				AN::TypeIMSubscrUnsub,
 				tr ("%1 (%2) unsubscribed from us."),
 				tr ("%1 (%2) unsubscribed from us: %3."));
@@ -410,8 +404,7 @@ namespace Azoth
 
 	void NotificationsManager::handleItemUnsubscribed (const QString& entryId, const QString& msg)
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("NotifyAboutNonrosterUnsub").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("NotifyAboutNonrosterUnsub").toBool ())
 			return;
 
 		const auto& str = msg.isEmpty () ?
@@ -425,11 +418,8 @@ namespace Azoth
 
 	void NotificationsManager::handleItemCancelledSubscription (QObject *entryObj, const QString& msg)
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("NotifySubCancels").toBool ())
-			return;
-
-		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+		NotifyWithReason ("NotifySubCancels",
+				entryObj, msg,
 				AN::TypeIMSubscrRevoke,
 				tr ("%1 (%2) cancelled our subscription."),
 				tr ("%1 (%2) cancelled our subscription: %3."));
@@ -437,11 +427,8 @@ namespace Azoth
 
 	void NotificationsManager::handleItemGrantedSubscription (QObject *entryObj, const QString& msg)
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("NotifySubGrants").toBool ())
-			return;
-
-		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+		NotifyWithReason ("NotifySubGrants",
+				entryObj, msg,
 				AN::TypeIMSubscrGrant,
 				tr ("%1 (%2) granted subscription."),
 				tr ("%1 (%2) granted subscription: %3."));

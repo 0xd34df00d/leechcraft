@@ -47,9 +47,7 @@ namespace Azoth
 
 		void HandleMessage (IMessage*);
 	private:
-		void NotifyWithReason (QObject*, const QString&,
-				const char*, const QString&,
-				const QString&, const QString&);
+		void NotifyWithReason (const char*, QObject*, const QString&, const QString&, const QString&, const QString&);
 		void HandleStatusChanged (ICLEntry*, const EntryStatus&, const QString&);
 
 		void HandleChatPartStateChanged (ICLEntry*, ChatPartState, const QString&);
