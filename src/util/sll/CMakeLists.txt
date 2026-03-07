@@ -15,6 +15,7 @@ add_util_library (util-sll
 		xmlnode.cpp
 		json.cpp
 		timer.cpp
+		qobjectrefcast.cpp
 	USES Concurrent Xml
 	)
 
