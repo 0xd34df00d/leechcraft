@@ -1240,18 +1240,6 @@ namespace LC::Azoth
 		return 0;
 	}
 
-	QStandardItem* Core::GetAccountItem (const IAccount *account,
-			QMap<const IAccount*, QStandardItem*>& accountItemCache)
-	{
-		if (accountItemCache.contains (account))
-			return accountItemCache [account];
-
-		const auto accountItem = GetAccountItem (account);
-		if (accountItem)
-			accountItemCache [account] = accountItem;
-		return accountItem;
-	}
-
 	void Core::HandleStatusChanged (ICLEntry *entry, const EntryStatus&, const QString& variant)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
@@ -1761,33 +1749,18 @@ namespace LC::Azoth
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
 	{
-		QMap<const IAccount*, QStandardItem*> accountItemCache;
+		if (items.isEmpty ())
+			return;
+
+		const auto accountItem = GetAccountItem (qobject_cast<ICLEntry*> (items.first ())->GetParentAccount ());
+		if (!accountItem)
+			return;
+
 		for (const auto item : items)
 		{
 			const auto entry = qobject_cast<ICLEntry*> (item);
-			if (!entry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< item
-						<< "from"
-						<< sender ()
-						<< "is not a valid ICLEntry";
-				continue;
-			}
-
 			if (Entry2Items_.contains (entry))
 				continue;
-
-			const auto account = entry->GetParentAccount ();
-			const auto accountItem = GetAccountItem (account, accountItemCache);
-			if (!accountItem)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "could not find account item for"
-						<< item
-						<< account->GetAccountID ();
-				continue;
-			}
 
 			AddCLEntry (entry, accountItem);
 

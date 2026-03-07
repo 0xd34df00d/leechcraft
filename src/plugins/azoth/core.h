@@ -261,12 +261,6 @@ namespace LC::Azoth
 		 */
 		QStandardItem* GetAccountItem (const IAccount *accountObj);
 
-		/** Returns the QStandardItem for the given account and adds it
-		 * into accountItemCache.
-		 */
-		QStandardItem* GetAccountItem (const IAccount *account,
-				QMap<const IAccount*, QStandardItem*>& accountItemCache);
-
 		/** Handles the event of status changes in a contact list entry.
 		 */
 		void HandleStatusChanged (ICLEntry *entry, const EntryStatus& status, const QString& variant);
