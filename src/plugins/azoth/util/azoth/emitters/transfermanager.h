@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
 #include "../azothutilconfig.h"
@@ -32,7 +31,7 @@ namespace LC::Azoth::Emitters
 		 *
 		 * @param[out] state The new state of the transfer job.
 		 */
-		void stateChanged (LC::Azoth::TransferState state);
+		void stateChanged (TransferState state);
 	};
 
 	class AZOTH_UTIL_API TransferManager : public QObject
@@ -48,6 +47,6 @@ namespace LC::Azoth::Emitters
 		 *
 		 * @param[out] offer The file transfer offer.
 		 */
-		void fileOffered (const LC::Azoth::IncomingOffer& offer);
+		void fileOffered (const IncomingOffer& offer);
 	};
 }
