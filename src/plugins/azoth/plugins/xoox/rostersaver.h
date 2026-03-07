@@ -32,11 +32,8 @@ namespace Xoox
 		RosterSaver (GlooxProtocol*, IProxyObject*, QObject* = nullptr);
 	private:
 		void LoadRoster ();
+		void SaveRoster ();
 	private slots:
-		void scheduleSaveRoster (int = 2000);
-
-		void saveRoster ();
-
 		void handleAccount (QObject*);
 	};
 }

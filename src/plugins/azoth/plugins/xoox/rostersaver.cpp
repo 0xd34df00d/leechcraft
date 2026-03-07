@@ -94,18 +94,7 @@ namespace Xoox
 		}
 	}
 
-	void RosterSaver::scheduleSaveRoster (int hint)
-	{
-		if (SaveRosterScheduled_)
-			return;
-
-		SaveRosterScheduled_ = true;
-		QTimer::singleShot (hint,
-				this,
-				SLOT (saveRoster ()));
-	}
-
-	void RosterSaver::saveRoster ()
+	void RosterSaver::SaveRoster ()
 	{
 		SaveRosterScheduled_ = false;
 
@@ -150,10 +139,19 @@ namespace Xoox
 
 	void RosterSaver::handleAccount (QObject *accObj)
 	{
-		connect (accObj,
-				SIGNAL (rosterSaveRequested ()),
+		connect (qobject_cast<GlooxAccount*> (accObj),
+				&GlooxAccount::rosterSaveRequested,
 				this,
-				SLOT (scheduleSaveRoster ()));
+				[this]
+				{
+					if (SaveRosterScheduled_)
+						return;
+
+					SaveRosterScheduled_ = true;
+					QTimer::singleShot (2000,
+							this,
+							SLOT (saveRoster ()));
+				});
 	}
 }
 }
