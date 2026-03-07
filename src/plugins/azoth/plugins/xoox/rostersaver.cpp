@@ -148,34 +148,12 @@ namespace Xoox
 		w.writeEndDocument ();
 	}
 
-	void RosterSaver::handleAccount (QObject *account)
+	void RosterSaver::handleAccount (QObject *accObj)
 	{
-		connect (account,
-				SIGNAL (gotCLItems (QList<QObject*>)),
-				this,
-				SLOT (checkItemsInvalidation (QList<QObject*>)));
-		connect (account,
-				SIGNAL (removedCLItems (QList<QObject*>)),
-				this,
-				SLOT (checkItemsInvalidation (QList<QObject*>)));
-		connect (account,
+		connect (accObj,
 				SIGNAL (rosterSaveRequested ()),
 				this,
 				SLOT (scheduleSaveRoster ()));
-	}
-
-	void RosterSaver::checkItemsInvalidation (const QList<QObject*>& items)
-	{
-		if (std::any_of (items.begin (), items.end (), [] (QObject *clEntry)
-				{
-					if (const auto entry = qobject_cast<GlooxCLEntry*> (clEntry))
-					{
-						const auto lng = entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity;
-						return lng == ICLEntry::FPermanentEntry;
-					}
-					return false;
-				}))
-			scheduleSaveRoster (5000);
 	}
 }
 }
