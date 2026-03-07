@@ -16,5 +16,23 @@ namespace LC::Azoth
 	: QObject { entry.GetQObject () }
 	, Entry_ { entry }
 	{
+		auto& emitter = entry.GetCLEntryEmitter ();
+		if (Entry_.GetEntryType () != ICLEntry::EntryType::MUC)
+			connect (&emitter,
+					&Emitters::CLEntry::chatPartStateChanged,
+					this,
+					&ChatEventsAdapter::HandleChatState);
+	}
+
+	void ChatEventsAdapter::HandleChatState (ChatPartState state, const QString& variant)
+	{
+		if (state != CPSGone)
+			return;
+
+		if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
+			return;
+
+		const auto& id = variant.isEmpty () ? Entry_.GetEntryName () : Entry_.GetEntryName () + '/' + variant;
+		emit gotEvent ({ .Text_ = Util::TaintedString { tr ("%1 has left the conversation").arg (id) }  });
 	}
 }

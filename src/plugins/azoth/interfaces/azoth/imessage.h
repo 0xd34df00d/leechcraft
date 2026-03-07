@@ -150,10 +150,6 @@ namespace Azoth
 			 */
 			ParticipantNickChange,
 
-			/** @brief The participant has ended the conversation.
-			 */
-			ParticipantEndedConversation,
-
 			/** @brief Notifies about changing subject in a MUC room.
 			 */
 			RoomSubjectChange

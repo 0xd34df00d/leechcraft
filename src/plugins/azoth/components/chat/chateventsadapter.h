@@ -25,6 +25,8 @@ namespace LC::Azoth
 		ICLEntry& Entry_;
 	public:
 		explicit ChatEventsAdapter (ICLEntry&);
+	private:
+		void HandleChatState (ChatPartState, const QString&);
 	signals:
 		void gotEvent (const ChatEvent&);
 	};

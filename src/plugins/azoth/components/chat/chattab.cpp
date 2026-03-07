@@ -1532,30 +1532,16 @@ namespace Azoth
 					!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 				return false;
 
-			if (msg->GetMessageSubType () == IMessage::SubType::ParticipantEndedConversation &&
-					!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
-				return false;
-
 			return true;
 		}
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)
 	{
-		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		const auto parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (!ShouldShowMessage (msg))
 			return;
-
-		if (msg->GetMessageSubType () == IMessage::SubType::ParticipantEndedConversation)
-		{
-			if (other)
-				msg->SetBody (tr ("%1 ended the conversation.")
-						.arg (other->GetEntryName ()));
-			else
-				msg->SetBody (tr ("Conversation ended."));
-		}
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookGonnaAppendMsg (proxy, msg->GetQObject ());
@@ -1615,8 +1601,7 @@ namespace Azoth
 		if (!links.isEmpty ())
 			LastLink_ = links.last ();
 
-		if (!Core::Instance ().AppendMessageByTemplate (frame,
-				msg->GetQObject (), info))
+		if (!Core::Instance ().AppendMessageByTemplate (frame, msg->GetQObject (), info))
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled append message :(";
 	}
