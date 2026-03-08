@@ -149,7 +149,7 @@ namespace LC::Aggregator
 
 			const auto next = std::find_if (pos + 1, CurrentItems_.end (), std::not_fn (filter));
 
-			beginRemoveRows ({}, pos - CurrentItems_.begin (), next - CurrentItems_.begin ());
+			beginRemoveRows ({}, pos - CurrentItems_.begin (), next - CurrentItems_.begin () - 1);
 			pos = CurrentItems_.erase (pos, next);
 			endRemoveRows ();
 		}
