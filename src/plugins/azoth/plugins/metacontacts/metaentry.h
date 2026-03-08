@@ -94,8 +94,6 @@ namespace Metacontacts
 		void HandleRealVariantsChanged (ICLEntry*, QStringList);
 		void handleRealAttentionDrawn (const QString&, const QString&);
 	private slots:
-		void checkRemovedCLItems (const QList<QObject*>&);
-
 		void handleManageContacts ();
 	signals:
 		// IAdvancedCLEntry

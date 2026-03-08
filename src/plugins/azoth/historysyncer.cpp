@@ -58,23 +58,19 @@ namespace Azoth
 		if (!ihsh)
 			return;
 
-		const auto accObj = acc->GetQObject ();
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, acc]
-			{
-				if (!IsOnline (acc->GetState ().State_))
-					CurrentlyOnline_.remove (acc);
-				else if (!CurrentlyOnline_.contains (acc))
+		connect (&acc->GetAccountEmitter (),
+				&Emitters::Account::statusChanged,
+				this,
+				[this, acc] (const EntryStatus& status)
 				{
-					CurrentlyOnline_ << acc;
-					StartAccountSync (acc);
-				}
-			},
-			accObj,
-			SIGNAL (statusChanged (EntryStatus)),
-			accObj
-		};
+					if (!IsOnline (status.State_))
+						CurrentlyOnline_.remove (acc);
+					else if (!CurrentlyOnline_.contains (acc))
+					{
+						CurrentlyOnline_ << acc;
+						StartAccountSync (acc);
+					}
+				});
 	}
 
 	void HistorySyncer::StartAccountSync (IAccount *acc)

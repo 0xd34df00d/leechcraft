@@ -25,14 +25,14 @@ namespace LC::Azoth::Sarin
 	, ConfNum_ { confNum }
 	, EntryId_ { mgr.GetAccount ().GetAccountID () + '_' + ToxId2HR (ConfId_) }
 	{
-		emit mgr.GetAccount ().gotCLItems ({ this });
+		emit mgr.GetAccount ().GetAccountEmitter ().gotCLItems ({ this });
 	}
 
 	ConfEntry::~ConfEntry ()
 	{
 		auto removed = GetParticipants ();
 		removed << this;
-		emit Mgr_.GetAccount ().removedCLItems (removed);
+		emit Mgr_.GetAccount ().GetAccountEmitter ().removedCLItems (removed);
 	}
 
 	ConfsManager& ConfEntry::GetConfsManager ()
@@ -335,7 +335,7 @@ namespace LC::Azoth::Sarin
 			 auto pkey : removedPkeys)
 			removedEntries << Participants_.take (pkey);
 		if (!removedEntries.isEmpty ())
-			emit Mgr_.GetAccount ().removedCLItems (removedEntries);
+			emit Mgr_.GetAccount ().GetAccountEmitter ().removedCLItems (removedEntries);
 		qDeleteAll (removedEntries);
 
 		OnlineNum2Pubkey_.clear ();
@@ -365,6 +365,6 @@ namespace LC::Azoth::Sarin
 				OfflineNum2Pubkey_,
 				[] (const OfflinePeer& peer) { return ConfParticipant::Offline { peer.LastActive_ }; });
 		if (!newEntries.isEmpty ())
-			emit Mgr_.GetAccount ().gotCLItems (newEntries);
+			emit Mgr_.GetAccount ().GetAccountEmitter ().gotCLItems (newEntries);
 	}
 }

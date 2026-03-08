@@ -17,20 +17,40 @@ namespace Azoth
 {
 namespace Xoox
 {
+	namespace
+	{
+		void PerformWithEntries (const QList<QObject*>& items, const auto& f)
+		{
+			for (auto itemObj : items)
+				if (const auto entry = qobject_cast<ICLEntry*> (itemObj);
+					entry->GetEntryType () != ICLEntry::EntryType::MUC)
+					f (entry);
+		}
+	}
+
 	Xep0313ModelManager::Xep0313ModelManager (GlooxAccount *acc)
 	: QObject { acc }
 	, Model_ { new QStandardItemModel { this } }
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Entry name"), tr ("JID") });
 
-		connect (acc,
-				SIGNAL (gotCLItems (QList<QObject*>)),
+		auto& emitter = acc->GetAccountEmitter ();
+		connect (&emitter,
+				&Emitters::Account::gotCLItems,
 				this,
-				SLOT (handleGotCLItems (QList<QObject*>)));
-		connect (acc,
-				SIGNAL (removedCLItems (QList<QObject*>)),
+				&Xep0313ModelManager::HandleGotCLItems);
+		connect (&emitter,
+				&Emitters::Account::removedCLItems,
 				this,
-				SLOT (handleRemovedCLItems (QList<QObject*>)));
+				[this] (const QList<QObject*>& items)
+				{
+					PerformWithEntries (items,
+							[this] (ICLEntry *entry)
+							{
+								if (const auto item = Jid2Item_.take (entry->GetHumanReadableID ()))
+									Model_->removeRow (item->row ());
+							});
+				});
 	}
 
 	QAbstractItemModel* Xep0313ModelManager::GetModel () const
@@ -49,28 +69,13 @@ namespace Xoox
 		const auto item = Jid2Item_.value (jid);
 		if (!item)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no index for JID"
-					<< jid;
+			qWarning () << "no index for JID" << jid;
 			return {};
 		}
 		return item->index ();
 	}
 
-	void Xep0313ModelManager::PerformWithEntries (const QList<QObject*>& items,
-			const std::function<void (ICLEntry*)>& f)
-	{
-		for (auto itemObj : items)
-		{
-			auto entry = qobject_cast<ICLEntry*> (itemObj);
-			if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
-				continue;
-
-			f (entry);
-		}
-	}
-
-	void Xep0313ModelManager::handleGotCLItems (const QList<QObject*>& items)
+	void Xep0313ModelManager::HandleGotCLItems (const QList<QObject*>& items)
 	{
 		PerformWithEntries (items,
 				[this] (ICLEntry *entry)
@@ -79,7 +84,7 @@ namespace Xoox
 					if (Jid2Item_.contains (jid))
 						return;
 
-					const QList<QStandardItem*> row
+					const QList row
 					{
 						new QStandardItem (entry->GetEntryName ()),
 						new QStandardItem (jid)
@@ -87,26 +92,11 @@ namespace Xoox
 					for (const auto item : row)
 					{
 						item->setEditable (false);
-						item->setData (QVariant::fromValue (entry->GetQObject ()),
-								ServerHistoryRole::CLEntry);
+						item->setData (QVariant::fromValue (entry->GetQObject ()), ServerHistoryRole::CLEntry);
 					}
 					Jid2Item_ [jid] = row.first ();
 
 					Model_->appendRow (row);
-				});
-	}
-
-	void Xep0313ModelManager::handleRemovedCLItems (const QList<QObject*>& items)
-	{
-		PerformWithEntries (items,
-				[this] (ICLEntry *entry) -> void
-				{
-					const auto& jid = entry->GetHumanReadableID ();
-					if (!Jid2Item_.contains (jid))
-						return;
-
-					const auto row = Jid2Item_.take (jid)->row ();
-					Model_->removeRow (row);
 				});
 	}
 }

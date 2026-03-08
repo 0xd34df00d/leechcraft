@@ -476,36 +476,32 @@ namespace MuCommands
 
 		const auto& mucData = mucEntry->GetIdentifyingData ();
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[entryObj, acc, mucData] () -> void
-			{
-				if (acc->GetCLEntries ().contains (entryObj))
-					return;
+		QObject::connect (&acc->GetAccountEmitter (),
+				&Emitters::Account::removedCLItems,
+				entryObj,		// ensure the connection dies when this entry dies, and no excessive rejoins happen
+				[=] (const QList<QObject*>& removedEntries)
+				{
+					if (!removedEntries.contains (entryObj))
+						return;
 
-				QTimer::singleShot (1000,
-						[acc, mucData]
-						{
-							const auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
-							if (!proto)
-								return;
+					QTimer::singleShot (1000,
+							[=]
+							{
+								const auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+								if (!proto)
+									return;
 
-							std::unique_ptr<QWidget> jw { proto->GetMUCJoinWidget () };
-							if (!jw)
-								return;
+								std::unique_ptr<QWidget> jw { proto->GetMUCJoinWidget () };
+								if (!jw)
+									return;
 
-							const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
-							imjw->SetIdentifyingData (mucData);
-							imjw->Join (acc->GetQObject ());
-						});
-			},
-			acc->GetQObject (),
-			SIGNAL (removedCLItems (QList<QObject*>)),
-			entryObj
-		};
+								const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
+								imjw->SetIdentifyingData (mucData);
+								imjw->Join (acc->GetQObject ());
+							});
+					});
 
 		mucEntry->Leave (text.section (' ', 1));
-
 		return true;
 	}
 

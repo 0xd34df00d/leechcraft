@@ -17,6 +17,6 @@ LC_DEFINE_PLUGIN (
 		convimmessage.cpp
 		accountconfigdialog.cpp
 	QT_COMPONENTS Widgets
-	LINK_LIBRARIES PkgConfig::Purple
+	LINK_LIBRARIES PkgConfig::Purple leechcraft-azoth-util
 	INSTALL_SHARE
 	)

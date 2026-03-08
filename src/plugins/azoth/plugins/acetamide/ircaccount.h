@@ -111,19 +111,6 @@ namespace LC::Azoth::Acetamide
 	private slots:
 		void joinFromBookmarks ();
 	signals:
-		void gotCLItems (const QList<QObject*>&) override;
-		void removedCLItems (const QList<QObject*>&) override;
-		void accountRenamed (const QString&) override;
-		void authorizationRequested (QObject*, const QString&) override;
-		void itemSubscribed (QObject*, const QString&) override;
-		void itemUnsubscribed (QObject*, const QString&) override;
-		void itemUnsubscribed (const QString&, const QString&) override;
-		void itemCancelledSubscription (QObject*, const QString&) override;
-		void itemGrantedSubscription (QObject*, const QString&) override;
-		void statusChanged (const EntryStatus&) override;
-		void mucInvitationReceived (const QVariantMap&,
-				const QString&, const QString&) override;
-
 		void accountSettingsChanged ();
 
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&) override;

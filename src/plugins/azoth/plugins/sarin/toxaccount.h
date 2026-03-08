@@ -130,18 +130,6 @@ namespace LC::Azoth::Sarin
 		void HandleFriendStatusChanged (Pubkey, const EntryStatus&);
 		void HandleFriendTypingChanged (Pubkey, bool);
 	signals:
-		void accountRenamed (const QString&) override;
-		void authorizationRequested (QObject*, const QString&) override;
-		void gotCLItems (const QList<QObject*>&) override;
-		void itemCancelledSubscription (QObject*, const QString&) override;
-		void itemGrantedSubscription (QObject*, const QString&) override;
-		void itemSubscribed (QObject*, const QString&) override;
-		void itemUnsubscribed (const QString& entryID, const QString&) override;
-		void itemUnsubscribed (QObject*, const QString&) override;
-		void mucInvitationReceived (const QVariantMap&, const QString&, const QString&) override;
-		void removedCLItems (const QList< QObject* >&) override;
-		void statusChanged (const EntryStatus&) override;
-
 		void accountChanged (ToxAccount*);
 
 		void threadChanged (const std::shared_ptr<ToxRunner>&);

@@ -1012,7 +1012,7 @@ namespace Xoox
 		identifying ["Room"] = split.value (0);
 		identifying ["Server"] = split.value (1);
 
-		emit Account_->mucInvitationReceived (identifying, inviter, reason);
+		emit Account_->GetAccountEmitter ().mucInvitationReceived (identifying, inviter, reason);
 	}
 
 	namespace
@@ -1044,21 +1044,21 @@ namespace Xoox
 				emit gotRosterItems ({ entry });
 			}
 			JID2CLEntry_ [jid]->SetAuthRequested (true);
-			emit Account_->authorizationRequested (JID2CLEntry_ [jid], pres.statusText ());
+			emit Account_->GetAccountEmitter ().authorizationRequested (JID2CLEntry_ [jid], pres.statusText ());
 			break;
 		case QXmppPresence::Subscribed:
 			if (JID2CLEntry_.contains (jid))
-				emit Account_->itemGrantedSubscription (JID2CLEntry_ [jid], QString ());
+				emit Account_->GetAccountEmitter ().itemGrantedSubscription (JID2CLEntry_ [jid], QString ());
 			break;
 		case QXmppPresence::Unsubscribe:
 			if (JID2CLEntry_.contains (jid))
-				emit Account_->itemUnsubscribed (JID2CLEntry_ [jid], pres.statusText ());
+				emit Account_->GetAccountEmitter ().itemUnsubscribed (JID2CLEntry_ [jid], pres.statusText ());
 			else
-				emit Account_->itemUnsubscribed (jid, pres.statusText ());
+				emit Account_->GetAccountEmitter ().itemUnsubscribed (jid, pres.statusText ());
 			break;
 		case QXmppPresence::Unsubscribed:
 			if (JID2CLEntry_.contains (jid))
-				emit Account_->itemCancelledSubscription (JID2CLEntry_ [jid], pres.statusText ());
+				emit Account_->GetAccountEmitter ().itemCancelledSubscription (JID2CLEntry_ [jid], pres.statusText ());
 			break;
 		case QXmppPresence::Error:
 		{

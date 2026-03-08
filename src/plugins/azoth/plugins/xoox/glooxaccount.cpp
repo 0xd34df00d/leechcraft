@@ -204,13 +204,13 @@ namespace Xoox
 
 		connect (ClientConnection_.get (),
 				&ClientConnection::statusChanged,
-				this,
-				&GlooxAccount::statusChanged);
+				&Emitter_,
+				&Emitters::Account::statusChanged);
 
 		connect (ClientConnection_.get (),
 				&ClientConnection::gotRosterItems,
-				this,
-				&GlooxAccount::gotCLItems);
+				&Emitter_,
+				&Emitters::Account::gotCLItems);
 		connect (ClientConnection_.get (),
 				SIGNAL (rosterItemRemoved (QObject*)),
 				this,
@@ -237,7 +237,7 @@ namespace Xoox
 
 	void GlooxAccount::Release ()
 	{
-		emit removedCLItems (GetCLEntries ());
+		emit Emitter_.removedCLItems (GetCLEntries ());
 	}
 
 	AccountSettingsHolder* GlooxAccount::GetSettings () const
@@ -286,7 +286,7 @@ namespace Xoox
 	void GlooxAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;
-		emit accountRenamed (name);
+		emit Emitter_.accountRenamed (name);
 		emit accountSettingsChanged ();
 	}
 
@@ -792,7 +792,7 @@ namespace Xoox
 		if (!password.isEmpty ())
 			entry->GetRoomHandler ()->GetRoom ()->setPassword (password);
 
-		emit gotCLItems ({ entry });
+		emit Emitter_.gotCLItems ({ entry });
 	}
 
 	void GlooxAccount::JoinRoom (const QString& server,
@@ -883,7 +883,7 @@ namespace Xoox
 
 	void GlooxAccount::handleEntryRemoved (QObject *entry)
 	{
-		emit removedCLItems ({ entry });
+		emit Emitter_.removedCLItems ({ entry });
 
 		if (ExistingEntry2JoinConflict_.contains (entry))
 		{

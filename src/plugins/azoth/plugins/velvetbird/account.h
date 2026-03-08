@@ -71,18 +71,6 @@ namespace VelvetBird
 		void updateIcon ();
 	private slots:
 		void handleAuthFailure (const LC::Azoth::EntryStatus&);
-	signals:
-		void accountRenamed (const QString&);
-		void gotCLItems (const QList<QObject*>&);
-		void removedCLItems (const QList<QObject*>&);
-		void authorizationRequested (QObject*, const QString&);
-		void itemSubscribed (QObject*, const QString&);
-		void itemUnsubscribed (QObject*, const QString&);
-		void itemUnsubscribed (const QString&, const QString&);
-		void itemCancelledSubscription (QObject*, const QString&);
-		void itemGrantedSubscription (QObject*, const QString&);
-		void statusChanged (const EntryStatus&);
-		void mucInvitationReceived (const QVariantMap&, const QString&, const QString&);
 	};
 }
 }

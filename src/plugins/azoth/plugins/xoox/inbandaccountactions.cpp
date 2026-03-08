@@ -100,28 +100,25 @@ namespace LC::Azoth::Xoox
 			return;
 		}
 
-		Acc_.ChangeState ({ SOnline, {} });
-		new Util::SlotClosure<Util::ChoiceDeletePolicy>
-		{
-			[this, worker]
-			{
-				switch (Acc_.GetState ().State_)
+		const auto conn = std::make_shared<QMetaObject::Connection> ();
+		*conn = QObject::connect (&Acc_.GetAccountEmitter (),
+				&Emitters::Account::statusChanged,
+				&Acc_,
+				[=] (const EntryStatus& status)
 				{
-				case SOffline:
-				case SError:
-				case SConnecting:
-					return Util::ChoiceDeletePolicy::Delete::No;
-				default:
-					break;
-				}
+					switch (status.State_)
+					{
+					case SOffline:
+					case SError:
+					case SConnecting:
+						return;
+					default:
+						worker ();
+						QObject::disconnect (*conn);
+						break;
+					}
+				});
 
-				worker ();
-
-				return Util::ChoiceDeletePolicy::Delete::Yes;
-			},
-			&Acc_,
-			SIGNAL (statusChanged (EntryStatus)),
-			&Acc_
-		};
+		Acc_.ChangeState ({ SOnline, {} });
 	}
 }

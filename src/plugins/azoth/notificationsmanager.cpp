@@ -55,64 +55,192 @@ namespace Azoth
 	{
 	}
 
+	namespace
+	{
+		auto NotifyWithReason (AvatarsManager& avatarsMgr,
+				const char *settingName,
+				const QString& eventType,
+				const QString& patternLite,
+				const QString& patternFull)
+		{
+			return [=, &avatarsMgr] (QObject *entryObj, const QString& msg)
+			{
+				if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
+					return;
+
+				auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
+
+				const auto& str = msg.isEmpty () ?
+						patternLite.arg (entry.GetEntryName (), entry.GetHumanReadableID ()) :
+						patternFull.arg (entry.GetEntryName (), entry.GetHumanReadableID (), msg);
+
+				auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
+				e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
+				e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
+				e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+				e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
+
+				Util::Sequence (entryObj, BuildNotification (&avatarsMgr, e, &entry, "Event")) >>
+						[] (const Entity& e) { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); };
+			};
+		}
+
+		void NotifyNonRosterUnsub (const QString& entryId, const QString& msg)
+		{
+			if (!XmlSettingsManager::Instance ().property ("NotifyAboutNonrosterUnsub").toBool ())
+				return;
+
+			const auto& str = msg.isEmpty () ?
+					NotificationsManager::tr ("%1 unsubscribed from us.").arg (entryId) :
+					NotificationsManager::tr ("%1 unsubscribed from us: %2.").arg (entryId, msg);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth", str, Priority::Info));
+		}
+
+		void NotifyAuthRequested (AvatarsManager& avatarsMgr, QObject *entryObj, const QString& msg)
+		{
+			/* TODO go through new typed hooks
+			const auto& proxy = std::make_shared<Util::DefaultHookProxy> ();
+			emit hookGotAuthRequest (proxy, entryObj, msg);
+			if (proxy->IsCancelled ())
+				return;
+				*/
+
+			auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
+			const auto& str = msg.isEmpty () ?
+					NotificationsManager::tr ("Subscription requested by %1.").arg (entry.GetEntryName ()) :
+					NotificationsManager::tr ("Subscription requested by %1: %2.").arg (entry.GetEntryName (), msg);
+			auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
+			e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
+			e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+			e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
+
+			const auto nh = new Util::NotificationActionHandler { e };
+			nh->AddFunction (NotificationsManager::tr ("Authorize"), [&entry] { AuthorizeEntry (&entry); });
+			nh->AddFunction (NotificationsManager::tr ("Deny"), [&entry] { DenyAuthForEntry (&entry); });
+			nh->AddFunction (NotificationsManager::tr ("View info"), [&entry] { entry.ShowInfo (); });
+			nh->AddDependentObject (entry.GetQObject ());
+
+			Util::Sequence (entryObj, BuildNotification (&avatarsMgr, e, &entry, "AuthRequestFrom")) >>
+					[] (const Entity& e) { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); };
+		}
+
+		void SuggestJoiningMUC (IAccount *acc, QVariantMap ident)
+		{
+			if (auto& accountId = ident ["AccountID"];
+				accountId.toByteArray ().isEmpty ())
+				accountId = acc->GetAccountID ();
+
+			const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			const auto dia = new JoinConferenceDialog { { acc }, rootWM->GetPreferredWindow () };
+			dia->SetIdentifyingData (ident);
+			dia->show ();
+		}
+
+		void HandleMUCInvitation (IAccount& acc, const QVariantMap& ident, const QString& inviter, const QString& reason)
+		{
+			const auto& name = ident ["HumanReadableName"].toString ();
+
+			const auto str = reason.isEmpty () ?
+					NotificationsManager::tr ("You have been invited to %1 by %2.").arg (name, inviter) :
+					NotificationsManager::tr ("You have been invited to %1 by %2: %3").arg (name, inviter, reason);
+
+			auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
+			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (name);
+			e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.Invited/" + name + '/' + inviter;
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMMUCInvite;
+			e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
+			e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+			e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
+
+			const auto& cancel = Util::MakeANCancel (e);
+
+			const auto nh = new Util::NotificationActionHandler { e };
+			nh->AddFunction (NotificationsManager::tr ("Join"),
+					[&acc, ident, cancel]
+					{
+						SuggestJoiningMUC (&acc, ident);
+						GetProxyHolder ()->GetEntityManager ()->HandleEntity (cancel);
+					});
+			nh->AddDependentObject (acc.GetQObject ());
+
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
+	}
+
 	void NotificationsManager::AddAccount (QObject *accObject)
 	{
-		connect (accObject,
-				SIGNAL (itemSubscribed (QObject*, const QString&)),
+		auto& acc = qobject_ref_cast<IAccount> (accObject);
+		auto& emitter = acc.GetAccountEmitter ();
+		connect (&emitter,
+				&Emitters::Account::itemSubscribed,
 				this,
-				SLOT (handleItemSubscribed (QObject*, const QString&)));
-		connect (accObject,
-				SIGNAL (itemUnsubscribed (QObject*, const QString&)),
+				NotifyWithReason (*AvatarsMgr_, "NotifySubscriptions", AN::TypeIMSubscrSub,
+						tr ("%1 (%2) subscribed to us."),
+						tr ("%1 (%2) subscribed to us: %3.")));
+		connect (&emitter,
+				qOverload<QObject*, const QString&> (&Emitters::Account::itemUnsubscribed),
 				this,
-				SLOT (handleItemUnsubscribed (QObject*, const QString&)));
-		connect (accObject,
-				SIGNAL (itemUnsubscribed (const QString&, const QString&)),
+				NotifyWithReason (*AvatarsMgr_, "NotifyUnsubscriptions", AN::TypeIMSubscrUnsub,
+						tr ("%1 (%2) unsubscribed from us."),
+						tr ("%1 (%2) unsubscribed from us: %3.")));
+		connect (&emitter,
+				qOverload<const QString&, const QString&> (&Emitters::Account::itemUnsubscribed),
 				this,
-				SLOT (handleItemUnsubscribed (const QString&, const QString&)));
-		connect (accObject,
-				SIGNAL (itemCancelledSubscription (QObject*, const QString&)),
+				&NotifyNonRosterUnsub);
+		connect (&emitter,
+				&Emitters::Account::itemCancelledSubscription,
 				this,
-				SLOT (handleItemCancelledSubscription (QObject*, const QString&)));
-		connect (accObject,
-				SIGNAL (itemGrantedSubscription (QObject*, const QString&)),
+				NotifyWithReason (*AvatarsMgr_, "NotifySubCancels", AN::TypeIMSubscrRevoke,
+						tr ("%1 (%2) cancelled our subscription."),
+						tr ("%1 (%2) cancelled our subscription: %3.")));
+		connect (&emitter,
+				&Emitters::Account::itemGrantedSubscription,
 				this,
-				SLOT (handleItemGrantedSubscription (QObject*, const QString&)));
-		connect (accObject,
-				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)),
+				NotifyWithReason (*AvatarsMgr_, "NotifySubGrants", AN::TypeIMSubscrGrant,
+						tr ("%1 (%2) granted subscription."),
+						tr ("%1 (%2) granted subscription: %3.")));
+		connect (&emitter,
+				&Emitters::Account::authorizationRequested,
 				this,
-				SLOT (handleMUCInvitation (QVariantMap, QString, QString)));
+				std::bind_front (&NotifyAuthRequested, std::ref (*AvatarsMgr_)));
 
-		connect (accObject,
-				SIGNAL (authorizationRequested (QObject*, const QString&)),
+		connect (&emitter,
+				&Emitters::Account::mucInvitationReceived,
 				this,
-				SLOT (handleAuthorizationRequested (QObject*, const QString&)));
+				std::bind_front (&HandleMUCInvitation, std::ref (acc)));
 
-		connect (accObject,
-				SIGNAL (statusChanged (const EntryStatus&)),
+		connect (&emitter,
+				&Emitters::Account::statusChanged,
 				this,
-				SLOT (handleAccountStatusChanged (const EntryStatus&)));
+				[this, &acc] (const EntryStatus& status)
+				{
+					if (status.State_ == SOffline)
+						LastAccountStatusChange_.remove (&acc);
+					else if (!LastAccountStatusChange_.contains (&acc))
+						LastAccountStatusChange_ [&acc] = QDateTime::currentDateTime ();
+				});
 	}
 
 	void NotificationsManager::RemoveAccount (QObject *accObject)
 	{
-		disconnect (accObject,
-				0,
-				this,
-				0);
+		qobject_ref_cast<IAccount> (accObject).GetAccountEmitter ().disconnect (this);
 	}
 
 	void NotificationsManager::AddCLEntry (QObject *entryObj)
 	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		auto& emitter = entry->GetCLEntryEmitter ();
+		auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
+		auto& emitter = entry.GetCLEntryEmitter ();
 		connect (&emitter,
 				&Emitters::CLEntry::statusChanged,
 				this,
-				std::bind_front (&NotificationsManager::HandleStatusChanged, this, entry));
+				std::bind_front (&NotificationsManager::HandleStatusChanged, this, &entry));
 		connect (&emitter,
 				&Emitters::CLEntry::chatPartStateChanged,
 				this,
-				std::bind_front (&NotificationsManager::HandleChatPartStateChanged, this, entry));
+				std::bind_front (&NotificationsManager::HandleChatPartStateChanged, this, &entry));
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{
@@ -144,9 +272,9 @@ namespace Azoth
 					this,
 					SLOT (handleActivityChanged (QString)));
 
-		const auto status = entry->GetStatus ();
+		const auto status = entry.GetStatus ();
 		if (status.State_ != SOffline)
-			HandleStatusChanged (entry, status, entry->Variants ().value (0));
+			HandleStatusChanged (&entry, status, entry.Variants ().value (0));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
@@ -270,28 +398,6 @@ namespace Azoth
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
-	void NotificationsManager::NotifyWithReason (const char *settingName, QObject *entryObj, const QString& msg,
-			const QString& eventType, const QString& patternLite, const QString& patternFull)
-	{
-		if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
-			return;
-
-		auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
-
-		const auto& str = msg.isEmpty () ?
-				patternLite.arg (entry.GetEntryName (), entry.GetHumanReadableID ()) :
-				patternFull.arg (entry.GetEntryName (), entry.GetHumanReadableID (), msg);
-
-		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
-
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "Event")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
-	}
-
 	namespace
 	{
 		QString GetStatusChangeText (const ICLEntry *entry,
@@ -373,66 +479,6 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entryID;
 
 		EntityMgr_->HandleEntity (e);
-	}
-
-	void NotificationsManager::handleItemSubscribed (QObject *entryObj, const QString& msg)
-	{
-		NotifyWithReason ("NotifySubscriptions",
-				entryObj, msg,
-				AN::TypeIMSubscrSub,
-				tr ("%1 (%2) subscribed to us."),
-				tr ("%1 (%2) subscribed to us: %3."));
-	}
-
-	void NotificationsManager::handleItemUnsubscribed (QObject *entryObj, const QString& msg)
-	{
-		NotifyWithReason ("NotifyUnsubscriptions",
-				entryObj, msg,
-				AN::TypeIMSubscrUnsub,
-				tr ("%1 (%2) unsubscribed from us."),
-				tr ("%1 (%2) unsubscribed from us: %3."));
-	}
-
-	void NotificationsManager::handleItemUnsubscribed (const QString& entryId, const QString& msg)
-	{
-		if (!XmlSettingsManager::Instance ().property ("NotifyAboutNonrosterUnsub").toBool ())
-			return;
-
-		const auto& str = msg.isEmpty () ?
-				tr ("%1 unsubscribed from us.")
-					.arg (entryId) :
-				tr ("%1 unsubscribed from us: %2.")
-					.arg (entryId)
-					.arg (msg);
-		EntityMgr_->HandleEntity (Util::MakeNotification ("Azoth", str, Priority::Info));
-	}
-
-	void NotificationsManager::handleItemCancelledSubscription (QObject *entryObj, const QString& msg)
-	{
-		NotifyWithReason ("NotifySubCancels",
-				entryObj, msg,
-				AN::TypeIMSubscrRevoke,
-				tr ("%1 (%2) cancelled our subscription."),
-				tr ("%1 (%2) cancelled our subscription: %3."));
-	}
-
-	void NotificationsManager::handleItemGrantedSubscription (QObject *entryObj, const QString& msg)
-	{
-		NotifyWithReason ("NotifySubGrants",
-				entryObj, msg,
-				AN::TypeIMSubscrGrant,
-				tr ("%1 (%2) granted subscription."),
-				tr ("%1 (%2) granted subscription: %3."));
-	}
-
-	void NotificationsManager::handleAccountStatusChanged (const EntryStatus& status)
-	{
-		const auto acc = qobject_cast<IAccount*> (sender ());
-
-		if (status.State_ == SOffline)
-			LastAccountStatusChange_.remove (acc);
-		else if (!LastAccountStatusChange_.contains (acc))
-			LastAccountStatusChange_ [acc] = QDateTime::currentDateTime ();
 	}
 
 	namespace
@@ -670,88 +716,6 @@ namespace Azoth
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "AttentionDrawnBy")) >>
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
-	}
-
-	void NotificationsManager::handleAuthorizationRequested (QObject *entryObj, const QString& msg)
-	{
-		const auto& proxy = std::make_shared<Util::DefaultHookProxy> ();
-		emit hookGotAuthRequest (proxy, entryObj, msg);
-		if (proxy->IsCancelled ())
-			return;
-
-		auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
-		const auto& str = msg.isEmpty () ?
-				tr ("Subscription requested by %1.").arg (entry.GetEntryName ()) :
-				tr ("Subscription requested by %1: %2.").arg (entry.GetEntryName (), msg);
-		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
-
-		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Authorize"), [&entry] { AuthorizeEntry (&entry); });
-		nh->AddFunction (tr ("Deny"), [&entry] { DenyAuthForEntry (&entry); });
-		nh->AddFunction (tr ("View info"), [&entry] { entry.ShowInfo (); });
-		nh->AddDependentObject (entry.GetQObject ());
-
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "AuthRequestFrom")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
-	}
-
-	namespace
-	{
-		void SuggestJoiningMUC (IAccount *acc, QVariantMap ident)
-		{
-			if (auto& accountId = ident ["AccountID"];
-				accountId.toByteArray ().isEmpty ())
-				accountId = acc->GetAccountID ();
-
-			const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-			const auto dia = new JoinConferenceDialog { { acc }, rootWM->GetPreferredWindow () };
-			dia->SetIdentifyingData (ident);
-			dia->show ();
-		}
-	}
-
-	void NotificationsManager::handleMUCInvitation (const QVariantMap& ident,
-			const QString& inviter, const QString& reason)
-	{
-		auto& acc = qobject_ref_cast<IAccount> (sender ());
-
-		const auto& name = ident ["HumanReadableName"].toString ();
-
-		const auto str = reason.isEmpty () ?
-				tr ("You have been invited to %1 by %2.")
-					.arg (name)
-					.arg (inviter) :
-				tr ("You have been invited to %1 by %2: %3")
-					.arg (name)
-					.arg (inviter)
-					.arg (reason);
-
-		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (name);
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.Invited/" + name + '/' + inviter;
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMMUCInvite;
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
-
-		const auto& cancel = Util::MakeANCancel (e);
-
-		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Join"), [this, &acc, ident, cancel]
-				{
-					SuggestJoiningMUC (&acc, ident);
-					EntityMgr_->HandleEntity (cancel);
-				});
-		nh->AddDependentObject (acc.GetQObject ());
-
-		EntityMgr_->HandleEntity (e);
 	}
 
 	void NotificationsManager::HandleChatPartStateChanged (ICLEntry *entry, ChatPartState state, const QString&)

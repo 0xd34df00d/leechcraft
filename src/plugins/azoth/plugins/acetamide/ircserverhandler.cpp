@@ -800,7 +800,7 @@ namespace LC::Azoth::Acetamide
 		ChannelsManager_->CloseAllChannels ();
 
 		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& entry) -> QObject* { return entry.get (); });
-		emit Account_->removedCLItems (entries);
+		emit Account_->GetAccountEmitter ().removedCLItems (entries);
 
 		Nick2Entry_.clear ();
 
@@ -898,7 +898,7 @@ namespace LC::Azoth::Acetamide
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
 	{
 		auto entry = std::make_shared<ServerParticipantEntry> (nick, this, Account_);
-		emit Account_->gotCLItems ({ entry.get () });
+		emit Account_->GetAccountEmitter ().gotCLItems ({ entry.get () });
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
 		return entry;
 	}
@@ -972,7 +972,7 @@ namespace LC::Azoth::Acetamide
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)
 	{
 		if (const auto entry = Nick2Entry_.take (nick))
-			emit Account_->removedCLItems ({ entry.get () });
+			emit Account_->GetAccountEmitter ().removedCLItems ({ entry.get () });
 
 		for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
 			if (const auto entry = dynamic_cast<IrcParticipantEntry*> (entryObj))

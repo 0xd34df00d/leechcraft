@@ -12,6 +12,7 @@ LC_DEFINE_PLUGIN (
 		openurlcommand.cpp
 		descparser.cpp
 	QT_COMPONENTS Widgets
+	LINK_LIBRARIES leechcraft-azoth-util
 	)
 
 if (ENABLE_AZOTH_MUCOMMANDS_TESTS)

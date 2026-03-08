@@ -58,7 +58,7 @@ namespace LC::Azoth::Sarin
 
 		const auto entry = new GroupChatEntry { nick, groupNum, groupId, *this };
 		Groups_ [groupNum] = entry;
-		emit Acc_.gotCLItems ({ entry });
+		emit Acc_.GetAccountEmitter ().gotCLItems ({ entry });
 
 		co_return Util::Void {};
 	}
@@ -74,7 +74,7 @@ namespace LC::Azoth::Sarin
 
 		auto removed = entry->GetParticipants ();
 		removed << entry;
-		emit Acc_.removedCLItems (removed);
+		emit Acc_.GetAccountEmitter ().removedCLItems (removed);
 
 		entry->deleteLater ();
 	}

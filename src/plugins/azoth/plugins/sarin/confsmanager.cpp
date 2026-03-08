@@ -149,7 +149,7 @@ namespace LC::Azoth::Sarin
 	{
 		const auto inviter = Acc_.GetByPubkey (invite.FriendPKey_);
 		const auto& ident = GroupJoinWidget::GetConfIdentifyingData (invite.Cookie_, invite.Type_, invite.FriendNum_);
-		emit Acc_.mucInvitationReceived (ident, inviter ? inviter->GetEntryName () : ToxId2HR (invite.FriendPKey_), {});
+		emit Acc_.GetAccountEmitter ().mucInvitationReceived (ident, inviter ? inviter->GetEntryName () : ToxId2HR (invite.FriendPKey_), {});
 	}
 
 	void ConfsManager::HandleToxThreadChanged (const std::shared_ptr<ToxRunner>& runner)

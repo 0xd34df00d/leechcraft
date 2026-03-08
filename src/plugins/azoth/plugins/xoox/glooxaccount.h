@@ -261,25 +261,11 @@ namespace Xoox
 	public slots:
 		void handleEntryRemoved (QObject*);
 	signals:
-		void gotCLItems (const QList<QObject*>&) override;
-		void removedCLItems (const QList<QObject*>&) override;
-		void accountRenamed (const QString&) override;
-		void authorizationRequested (QObject*, const QString&) override;
-		void itemSubscribed (QObject*, const QString&) override;
-		void itemUnsubscribed (QObject*, const QString&) override;
-		void itemUnsubscribed (const QString&, const QString&) override;
-		void itemCancelledSubscription (QObject*, const QString&) override;
-		void itemGrantedSubscription (QObject*, const QString&) override;
-		void statusChanged (const EntryStatus&) override;
-		void mucInvitationReceived (const QVariantMap&,
-				const QString&, const QString&) override;
-
 		void gotSDSession (QObject*) override;
 
 		void bookmarksChanged () override;
 
-		void riexItemsSuggested (QList<LC::Azoth::RIEXItem> items,
-				QObject*, QString) override;
+		void riexItemsSuggested (QList<LC::Azoth::RIEXItem> items, QObject*, QString) override;
 
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&) override;
 
@@ -287,11 +273,9 @@ namespace Xoox
 
 		void serverPasswordUpdated (const QString&) override;
 
-		void serverHistoryFetched (const QModelIndex&,
-				const QByteArray&, const SrvHistMessages_t&) override;
+		void serverHistoryFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&) override;
 
-		void sslErrors (const QList<QSslError>&,
-				const ICanHaveSslErrors::ISslErrorsReaction_ptr&) override;
+		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&) override;
 
 #ifdef ENABLE_MEDIACALLS
 		void called (QObject*) override;

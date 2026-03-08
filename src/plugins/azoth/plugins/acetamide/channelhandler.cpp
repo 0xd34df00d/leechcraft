@@ -103,12 +103,12 @@ namespace LC::Azoth::Acetamide
 				IMessage::SubType::ParticipantNickChange,
 				Nick2Entry_ [oldNick]);
 
-		emit CM_->GetAccount ()->removedCLItems ({ Nick2Entry_ [oldNick].get () });
+		emit CM_->GetAccount ()->GetAccountEmitter ().removedCLItems ({ Nick2Entry_ [oldNick].get () });
 		QList<ChannelRole> roles = Nick2Entry_ [oldNick]->Roles ();
 		ChannelParticipantEntry_ptr entry = Nick2Entry_.take (oldNick);
 		entry->SetEntryName (newNick);
 		entry->SetRoles (roles);
-		emit CM_->GetAccount ()->gotCLItems ({ entry.get () });
+		emit CM_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
 		Nick2Entry_ [newNick] = entry;
 	}
@@ -207,7 +207,7 @@ namespace LC::Azoth::Acetamide
 		entry->SetStatus (EntryStatus (SOnline, QString ()));
 
 		if (!existed)
-			emit CM_->GetAccount ()->gotCLItems ({ entry.get () });
+			emit CM_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
 		MakeJoinMessage (nickName);
 	}
@@ -400,7 +400,7 @@ namespace LC::Azoth::Acetamide
 	void ChannelHandler::RemoveThis ()
 	{
 		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& obj) -> QObject* { return obj.get (); });
-		emit CM_->GetAccount ()->removedCLItems (entries);
+		emit CM_->GetAccount ()->GetAccountEmitter ().removedCLItems (entries);
 
 		for (const auto& entry : Nick2Entry_)
 			if (entry->IsPrivateChat ())
@@ -408,7 +408,7 @@ namespace LC::Azoth::Acetamide
 
 		Nick2Entry_.clear ();
 
-		emit CM_->GetAccount ()->removedCLItems ({ ChannelCLEntry_.get () });
+		emit CM_->GetAccount ()->GetAccountEmitter ().removedCLItems ({ ChannelCLEntry_.get () });
 
 		CM_->UnregisterChannel (this);
 	}
@@ -628,7 +628,7 @@ namespace LC::Azoth::Acetamide
 
 		ChannelParticipantEntry_ptr entry = Nick2Entry_ [nick];
 		Nick2Entry_.remove (nick);
-		emit CM_->GetAccount ()->removedCLItems ({ entry.get () });
+		emit CM_->GetAccount ()->GetAccountEmitter ().removedCLItems ({ entry.get () });
 
 		return true;
 	}
@@ -637,7 +637,7 @@ namespace LC::Azoth::Acetamide
 	{
 		auto entry = std::make_shared<ChannelParticipantEntry> (nick, this, CM_->GetAccount ());
 		if (announce)
-			emit CM_->GetAccount ()->gotCLItems ({ entry.get () });
+			emit CM_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ entry.get () });
 		return entry;
 	}
 

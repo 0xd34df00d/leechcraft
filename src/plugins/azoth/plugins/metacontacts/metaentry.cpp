@@ -299,10 +299,18 @@ namespace Metacontacts
 				&Emitter_,
 				&Emitters::CLEntry::entryGenerallyChanged);
 
-		connect (entry->GetParentAccount ()->GetQObject (),
-				SIGNAL (removedCLItems (QList<QObject*>)),
+		connect (&entry->GetParentAccount ()->GetAccountEmitter (),
+				&Emitters::Account::removedCLItems,
 				this,
-				SLOT (checkRemovedCLItems (QList<QObject*>)));
+				[this] (const QList<QObject*>& objs)
+				{
+					auto remaining = AvailableRealEntries_;
+					for (const auto obj : objs)
+						remaining.removeAll (obj);
+
+					if (remaining.size () != AvailableRealEntries_.size ())
+						SetNewEntryList (remaining, false);
+				});
 
 		/*
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
@@ -433,16 +441,6 @@ namespace Metacontacts
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		emit attentionDrawn (text, entry->GetEntryName () + '/' + var);
-	}
-
-	void MetaEntry::checkRemovedCLItems (const QList<QObject*>& objs)
-	{
-		auto leave = AvailableRealEntries_;
-		for (const auto obj : objs)
-			leave.removeAll (obj);
-
-		if (leave.size () != AvailableRealEntries_.size ())
-			SetNewEntryList (leave, false);
 	}
 
 	void MetaEntry::handleManageContacts ()

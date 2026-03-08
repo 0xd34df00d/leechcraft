@@ -40,10 +40,7 @@ namespace Xoox
 		QString Index2Jid (const QModelIndex&) const;
 		QModelIndex Jid2Index (const QString&) const;
 	private:
-		void PerformWithEntries (const QList<QObject*>&, const std::function<void (ICLEntry*)>&);
-	private slots:
-		void handleGotCLItems (const QList<QObject*>&);
-		void handleRemovedCLItems (const QList<QObject*>&);
+		void HandleGotCLItems (const QList<QObject*>&);
 	};
 }
 }

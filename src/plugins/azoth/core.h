@@ -308,30 +308,7 @@ namespace LC::Azoth
 		 *
 		 * account is expected to implement IAccount interface.
 		 */
-		void handleAccountRemoved (QObject *account);
-
-		/** Handles newly added contact list items. Each item is
-		 * expected to implement ICLEntry. This slot appends the items
-		 * to already existing ones, so only really new ones (during the
-		 * session lifetime) should be in the items list.
-		 */
-		void handleGotCLItems (const QList<QObject*>& items);
-
-		/** Handles removal of items previously added to the contact
-		 * list. Each item is expected to implement the ICLEntry
-		 * interface.
-		 *
-		 * This slot removes the model items corresponding to the items
-		 * removed and also removes those categories that became empty
-		 * because of items removal, if any.
-		 */
-		void handleRemovedCLItems (const QList<QObject*>& items);
-
-		/** Handles the status change of an account to new status.
-		 */
-		void handleAccountStatusChanged (const EntryStatus& status);
-
-		void handleAccountRenamed (const QString&);
+		void handleAccountRemoved (QObject *accObj);
 
 		void handleEntryGroupsChanged (ICLEntry *entry, QStringList);
 		void handleEntryPermsChanged (ICLEntry *entry);

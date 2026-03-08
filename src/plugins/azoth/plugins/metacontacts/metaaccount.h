@@ -47,19 +47,6 @@ namespace Metacontacts
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
-	signals:
-		void gotCLItems (const QList<QObject*>&);
-		void removedCLItems (const QList<QObject*>&);
-		void accountRenamed (const QString&);
-		void authorizationRequested (QObject*, const QString&);
-		void itemSubscribed (QObject*, const QString&);
-		void itemUnsubscribed (QObject*, const QString&);
-		void itemUnsubscribed (const QString&, const QString&);
-		void itemCancelledSubscription (QObject*, const QString&);
-		void itemGrantedSubscription (QObject*, const QString&);
-		void statusChanged (const EntryStatus&);
-		void mucInvitationReceived (const QVariantMap&,
-				const QString&, const QString&);
 	};
 }
 }

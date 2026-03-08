@@ -47,30 +47,18 @@ namespace Azoth
 
 		void HandleMessage (IMessage*);
 	private:
-		void NotifyWithReason (const char*, QObject*, const QString&, const QString&, const QString&, const QString&);
 		void HandleStatusChanged (ICLEntry*, const EntryStatus&, const QString&);
 
 		void HandleChatPartStateChanged (ICLEntry*, ChatPartState, const QString&);
 	public slots:
 		void handleClearUnreadMsgCount (QObject*);
 	private slots:
-		void handleItemSubscribed (QObject*, const QString&);
-		void handleItemUnsubscribed (QObject*, const QString&);
-		void handleItemUnsubscribed (const QString&, const QString&);
-		void handleItemCancelledSubscription (QObject*, const QString&);
-		void handleItemGrantedSubscription (QObject*, const QString&);
-
-		void handleAccountStatusChanged (const EntryStatus&);
-
 		void handleTuneChanged (const QString&);
 		void handleActivityChanged (const QString&);
 		void handleMoodChanged (const QString&);
 		void handleLocationChanged (const QString&);
 
 		void handleAttentionDrawn (const QString&, const QString&);
-		void handleAuthorizationRequested (QObject*, const QString&);
-
-		void handleMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		void handleEntryMadeCurrent (QObject*);
 	signals:

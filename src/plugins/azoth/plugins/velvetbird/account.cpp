@@ -32,7 +32,7 @@ namespace VelvetBird
 
 	void Account::Release ()
 	{
-		emit removedCLItems (GetCLEntries ());
+		emit Emitter_.removedCLItems (GetCLEntries ());
 		qDeleteAll (Buddies_);
 		Buddies_.clear ();
 	}
@@ -78,7 +78,7 @@ namespace VelvetBird
 	void Account::RenameAccount (const QString& name)
 	{
 		purple_account_set_string (Account_, "AccountName", name.toUtf8 ().constData ());
-		emit accountRenamed (name);
+		emit Emitter_.accountRenamed (name);
 	}
 
 	QByteArray Account::GetAccountID () const
@@ -179,7 +179,7 @@ namespace VelvetBird
 		{
 			auto buddy = new Buddy (purpleBuddy, this);
 			Buddies_ [purpleBuddy] = buddy;
-			emit gotCLItems ({ buddy });
+			emit Emitter_.gotCLItems ({ buddy });
 		}
 
 		Buddies_ [purpleBuddy]->Update ();
@@ -191,7 +191,7 @@ namespace VelvetBird
 		if (!buddy)
 			return;
 
-		emit removedCLItems ({ buddy });
+		emit Emitter_.removedCLItems ({ buddy });
 		delete buddy;
 	}
 
@@ -200,7 +200,7 @@ namespace VelvetBird
 		const auto& prevStatus = GetState ();
 
 		CurrentStatus_ = EntryStatus ();
-		emit statusChanged (CurrentStatus_);
+		emit Emitter_.statusChanged (CurrentStatus_);
 
 		const auto& eNotify = Util::MakeNotification (GetAccountName (),
 				tr ("Connection error: %1.")
@@ -238,7 +238,7 @@ namespace VelvetBird
 	{
 		CurrentStatus_ = status ? FromPurpleStatus (Account_, status) : EntryStatus ();
 		qDebug () << Q_FUNC_INFO << CurrentStatus_.State_;
-		emit statusChanged (CurrentStatus_);
+		emit Emitter_.statusChanged (CurrentStatus_);
 
 		QTimer::singleShot (5000, this, SLOT (updateIcon ()));
 	}

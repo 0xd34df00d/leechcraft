@@ -143,7 +143,7 @@ namespace LC::Azoth::Xoox
 
 		const auto& it = JoinQueue_.takeFirst ();
 		if (const auto roomItem = Conn_.JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_))
-			emit Acc_.gotCLItems ({ roomItem });
+			emit Acc_.GetAccountEmitter ().gotCLItems ({ roomItem });
 
 		if (!JoinQueue_.isEmpty ())
 			QTimer::singleShot (800,

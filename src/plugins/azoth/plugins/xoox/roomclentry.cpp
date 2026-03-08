@@ -101,10 +101,10 @@ namespace Xoox
 	, Aff2Str_ (MakeAff2Str ())
 	, Translations_ (MakeTranslations ())
 	{
-		connect (Account_,
-				SIGNAL (statusChanged (const EntryStatus&)),
+		connect (&Account_->GetAccountEmitter (),
+				&Emitters::Account::statusChanged,
 				this,
-				SLOT (reemitStatusChange (const EntryStatus&)));
+				[this] (const EntryStatus& status) { emit Emitter_.statusChanged (status, {}); });
 
 		connect (&Account_->GetClientConnection ()->Exts ().Get<QXmppBookmarkManager> (),
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
@@ -172,7 +172,7 @@ namespace Xoox
 
 	QStringList RoomCLEntry::Variants () const
 	{
-		return { "" };
+		return { {} };
 	}
 
 	void RoomCLEntry::SendMessage (const OutgoingMessage& message)
@@ -599,11 +599,6 @@ namespace Xoox
 				emit Emitter_.nameChanged (bm.name ());
 				break;
 			}
-	}
-
-	void RoomCLEntry::reemitStatusChange (const EntryStatus& status)
-	{
-		emit Emitter_.statusChanged (status, QString ());
 	}
 }
 }

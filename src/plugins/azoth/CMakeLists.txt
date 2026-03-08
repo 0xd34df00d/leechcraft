@@ -34,6 +34,7 @@ endif ()
 
 add_util_library (azoth-util
 	SRCS
+		util/azoth/emitters/account.cpp
 		util/azoth/emitters/clentry.cpp
 		util/azoth/emitters/mediacall.cpp
 		util/azoth/emitters/transfermanager.cpp

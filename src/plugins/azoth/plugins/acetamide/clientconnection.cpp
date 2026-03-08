@@ -51,7 +51,7 @@ namespace LC::Azoth::Acetamide
 		}
 		return result;
 	}
-	
+
 	namespace
 	{
 		QString GetServerKey (const ServerOptions& server)
@@ -78,7 +78,7 @@ namespace LC::Azoth::Acetamide
 		}
 
 		const auto ish = new IrcServerHandler (server, Account_);
-		emit Account_->gotCLItems ({ ish->GetCLEntry () });
+		emit Account_->GetAccountEmitter ().gotCLItems ({ ish->GetCLEntry () });
 
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
@@ -284,7 +284,7 @@ namespace LC::Azoth::Acetamide
 		if (!entry)
 			return;
 
-		emit Account_->removedCLItems ({ entry->GetCLEntry () });
+		emit Account_->GetAccountEmitter ().removedCLItems ({ entry->GetCLEntry () });
 		entry->DisconnectFromServer ();
 		entry->deleteLater ();
 

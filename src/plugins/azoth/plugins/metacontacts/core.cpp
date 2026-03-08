@@ -50,14 +50,6 @@ namespace Metacontacts
 
 		Account_ = acc;
 		connect (this,
-				SIGNAL (gotCLItems (const QList<QObject*>&)),
-				acc,
-				SIGNAL (gotCLItems (const QList<QObject*>&)));
-		connect (this,
-				SIGNAL (removedCLItems (const QList<QObject*>&)),
-				acc,
-				SIGNAL (removedCLItems (const QList<QObject*>&)));
-		connect (this,
 				SIGNAL (accountAdded (QObject*)),
 				Account_->GetParentProtocol (),
 				SIGNAL (accountAdded (QObject*)));
@@ -232,7 +224,8 @@ namespace Metacontacts
 	void Core::RemoveEntry (MetaEntry *entry)
 	{
 		Entries_.removeAll (entry);
-		emit removedCLItems ({ entry });
+		if (Account_)
+			emit Account_->GetAccountEmitter ().removedCLItems ({ entry });
 
 		HandleEntriesRemoved (entry->GetAvailEntryObjs (), true);
 
@@ -260,7 +253,7 @@ namespace Metacontacts
 			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 			AvailRealEntries_.remove (entry->GetEntryID ());
 			if (readd)
-				entry->GetParentAccount ()->gotCLItems ({ entryObj });
+				emit entry->GetParentAccount ()->GetAccountEmitter ().gotCLItems ({ entryObj });
 		}
 
 		ScheduleSaveEntries ();
@@ -269,7 +262,12 @@ namespace Metacontacts
 	void Core::AddRealToMeta (MetaEntry *existingMeta, ICLEntry *real)
 	{
 		existingMeta->AddRealObject (real);
-		QTimer::singleShot (0, this, [this, real] { emit removedCLItems ({ real->GetQObject () }); });
+		if (Account_)
+			QTimer::singleShot (0, this,
+					[this, real]
+					{
+						emit Account_->GetAccountEmitter ().removedCLItems ({ real->GetQObject () });
+					});
 		ScheduleSaveEntries ();
 	}
 
@@ -284,7 +282,8 @@ namespace Metacontacts
 
 		Entries_ << result;
 
-		emit gotCLItems ({ result });
+		if (Account_)
+			emit Account_->GetAccountEmitter ().gotCLItems ({ result });
 
 		return result;
 	}

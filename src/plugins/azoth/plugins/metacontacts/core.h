@@ -58,9 +58,6 @@ namespace Metacontacts
 		void handleEntryShouldBeRemoved ();
 		void saveEntries ();
 	signals:
-		void gotCLItems (const QList<QObject*>&);
-		void removedCLItems (const QList<QObject*>&);
-
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
 	};

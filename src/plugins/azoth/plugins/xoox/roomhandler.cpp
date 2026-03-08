@@ -583,7 +583,7 @@ namespace Xoox
 			const auto& newEntry = GetParticipantEntry (newNick, false);
 			newEntry->SetAffiliation (entry->GetAffiliation ());
 			newEntry->SetRole (entry->GetRole ());
-			Account_->gotCLItems ({ newEntry.get () });
+			emit Account_->GetAccountEmitter ().gotCLItems ({ newEntry.get () });
 		}
 
 		PendingNickChanges_ << newNick;
@@ -616,7 +616,7 @@ namespace Xoox
 					},
 					Qt::QueuedConnection);
 			if (announce && !nick.isEmpty ())
-				Account_->gotCLItems ({ entry.get () });
+				emit Account_->GetAccountEmitter ().gotCLItems ({ entry.get () });
 		}
 
 		return entry;
@@ -644,7 +644,7 @@ namespace Xoox
 		entry->HandlePresence (pres, {});
 
 		if (!existed && !nick.isEmpty ())
-			Account_->gotCLItems ({ entry.get () });
+			emit Account_->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
 		MakeJoinMessage (pres, nick);
 	}

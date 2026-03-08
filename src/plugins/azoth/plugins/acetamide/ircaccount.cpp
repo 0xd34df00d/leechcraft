@@ -36,7 +36,7 @@ namespace LC::Azoth::Acetamide
 
 	IrcAccount::~IrcAccount ()
 	{
-		emit removedCLItems (GetCLEntries ());
+		emit Emitter_.removedCLItems (GetCLEntries ());
 	}
 
 	QObject* IrcAccount::GetQObject ()
@@ -94,7 +94,7 @@ namespace LC::Azoth::Acetamide
 	void IrcAccount::RenameAccount (const QString& name)
 	{
 		AccountName_ = name;
-		emit accountRenamed (name);
+		emit Emitter_.accountRenamed (name);
 		emit accountSettingsChanged ();
 	}
 
@@ -329,7 +329,7 @@ namespace LC::Azoth::Acetamide
 	void IrcAccount::SetState (const EntryStatus& status)
 	{
 		IrcAccountState_ = status.State_;
-		emit statusChanged (status);
+		emit Emitter_.statusChanged (status);
 	}
 
 	void IrcAccount::Authorize (QObject*)

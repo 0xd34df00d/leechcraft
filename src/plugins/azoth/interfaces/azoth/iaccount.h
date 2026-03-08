@@ -6,13 +6,14 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
-#define PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
+#pragma once
+
 #include <QFlags>
 #include <QMetaType>
 #include <QVariant>
 #include <QStringList>
 #include <interfaces/azoth/azothcommon.h>
+#include <util/azoth/emitters/account.h>
 #include "iclentry.h"
 
 namespace LC
@@ -44,8 +45,12 @@ namespace Azoth
 	class IAccount
 	{
 		bool IsShown_ = true;
+	protected:
+		Emitters::Account Emitter_;
+
+		virtual ~IAccount () = default;
 	public:
-		virtual ~IAccount () {}
+		virtual Emitters::Account& GetAccountEmitter () { return Emitter_; }
 
 		/** Represents the features that may be supported by an acoount.
 		 */
@@ -284,170 +289,10 @@ namespace Azoth
 		{
 			IsShown_ = shown;
 		}
-
-		/** @brief This signal should be emitted when account is renamed.
-		 *
-		 * This signal should be emitted even after an explicit call to
-		 * RenameAccount().
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] newName The new name of this account.
-		 */
-		virtual void accountRenamed (const QString& newName) = 0;
-
-		/** @brief This signal should be emitted when new contact list
-		 * items appear in this account.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] items The list of newly appeared items.
-		 */
-		virtual void gotCLItems (const QList<QObject*>& items) = 0;
-
-		/** @brief This signal should be emitted after any contact list
-		 * items are removed.
-		 *
-		 * The reason for removal doesn't matter. It could be a
-		 * groupchat participant that exited or changed nickname, or
-		 * some other stuff.
-		 *
-		 * @note This functions is expected to be a signal.
-		 *
-		 * @param[out] items The list of removed items.
-		 */
-		virtual void removedCLItems (const QList<QObject*>& items) = 0;
-
-		/** @brief This signal should be emitted when another user
-		 * requests authorization from this account.
-		 *
-		 * When a remote user requests authorization (or subscription in
-		 * terms of XMPP, for example) from this account, this signal
-		 * should be emitted. The entry is expected to represent the
-		 * remote that requested the authorization and it must implement
-		 * ICLEntry.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] entry The object representing the requesting
-		 * entry, must be an ICLEntry.
-		 * @param[out] message Optional request message, if applicable.
-		 *
-		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * itemSubscribed(), itemUnsubscribed(),
-		 * itemCancelledSubscription(), itemGrantedSubscription()
-		 */
-		virtual void authorizationRequested (QObject *entry,
-				const QString& message) = 0;
-
-		/** @brief This signal should be emitted when an already added
-		 * entry has just subscribed to us.
-		 *
-		 * If the item didn't previously exist, the proper gotCLItems()
-		 * signal should be emitted before this one, of course.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] entry The object representing the just subscribed
-		 * entry in the contact list, must be an ICLEntry.
-		 * @param[out] message An optional reason message.
-		 *
-		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * authorizationRequested(), itemUnsubscribed(),
-		 * itemCancelledSubscription(), itemGrantedSubscription()
-		 */
-		virtual void itemSubscribed (QObject *entry, const QString& message) = 0;
-
-		/** @brief This signal should be emitted when an already added
-		 * entry has just unsubscribed from us.
-		 *
-		 * If the item didn't exist in the roster, another overload of
-		 * itemUnsubscribed() should be used, which takes the entry's ID
-		 * as first parameter.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] entry The object representing the unsubscribed
-		 * entry in the contact list, must be an ICLEntry.
-		 * @param[out] message An optional reason message.
-		 *
-		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * authorizationRequested(), itemSubscribed(),
-		 * itemCancelledSubscription(), itemGrantedSubscription()
-		 */
-		virtual void itemUnsubscribed (QObject *entry, const QString& message) = 0;
-
-		/** @brief This signal should be emitted when a non-roster item
-		 * has just unsubscribed from us.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] entryID The ID of just unsubscribed entry.
-		 * @param[out] message An optional reason message.
-		 *
-		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * authorizationRequested(), itemSubscribed(),
-		 * itemCancelledSubscription(), itemGrantedSubscription()
-		 */
-		virtual void itemUnsubscribed (const QString& entryID, const QString& message) = 0;
-
-		/** @brief This signal should be emitted when a roster item
-		 * cancels (or denies) our subscription.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] entry The object representing the entry that
-		 * granted the subscription, must be an ICLEntry.
-		 * @param[out] message Optional reason message.
-		 *
-		 * @sa RequestAuth(), authorizationRequested(), itemSubscribed(),
-		 * itemGrantedSubscription()
-		 */
-		virtual void itemCancelledSubscription (QObject *entry, const QString& message) = 0;
-
-		/** @brief This signal should be emitted when a roster item
-		 * grants us subscription.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] entry The object representing the entry that
-		 * granted the subscription, must be an ICLEntry.
-		 * @param[out] message Optional reason message.
-		 *
-		 * @sa RequestAuth(), authorizationRequested(), itemSubscribed(),
-		 * itemCancelledSubscription()
-		 */
-		virtual void itemGrantedSubscription (QObject *entry, const QString& message) = 0;
-
-		/** @brief This signal should be emitted when status of this
-		 * account changes for whatever reason.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] status New status of this account.
-		 */
-		virtual void statusChanged (const EntryStatus& status) = 0;
-
-		/** @brief This signal should be emitted whenever a MUC
-		 * invitation has been received.
-		 *
-		 * The ident parameter contains the map with the identifying
-		 * data suitable for the IMUCJoinWidget of this account. Refer
-		 * to IMUCJoinWidget documentation for more information.
-		 *
-		 * @param[out] ident MUC identifying data for IMUCJoinWidget.
-		 * @param[out] inviter The inviter's source ID or nickname.
-		 * @param[out] reason An optional reason string.
-		 */
-		virtual void mucInvitationReceived (const QVariantMap& ident,
-				const QString& inviter, const QString& reason) = 0;
 	};
 }
 }
 
 Q_DECLARE_METATYPE (LC::Azoth::IAccount*)
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::IAccount::AccountFeatures)
-Q_DECLARE_INTERFACE (LC::Azoth::IAccount,
-		"org.Deviant.LeechCraft.Azoth.IAccount/1.0")
-
-#endif
+Q_DECLARE_INTERFACE (LC::Azoth::IAccount, "org.Deviant.LeechCraft.Azoth.IAccount/1.0")

@@ -184,7 +184,7 @@ namespace LC::Azoth::Sarin
 			return;
 
 		Name_ = name;
-		emit accountRenamed (Name_);
+		emit Emitter_.accountRenamed (Name_);
 		emit accountChanged (this);
 	}
 
@@ -226,7 +226,7 @@ namespace LC::Azoth::Sarin
 		{
 			if (Tox_)
 			{
-				emit statusChanged (status);
+				emit Emitter_.statusChanged (status);
 				Tox_.reset ();
 				emit threadChanged (Tox_);
 			}
@@ -454,7 +454,7 @@ namespace LC::Azoth::Sarin
 				[this] (const EntryStatus& s)
 				{
 					Status_ = s;
-					emit statusChanged (s);
+					emit Emitter_.statusChanged (s);
 				});
 		connect (Tox_.get (),
 				&ToxRunner::toxStateChanged,
@@ -498,7 +498,7 @@ namespace LC::Azoth::Sarin
 				newEntries << entry;
 			}
 
-		emit gotCLItems (newEntries);
+		emit Emitter_.gotCLItems (newEntries);
 	}
 
 	void ToxAccount::HandleConfigAccepted (AccountConfigDialog *dialog)
@@ -554,7 +554,7 @@ namespace LC::Azoth::Sarin
 		if (!Contacts_.contains (pubkey))
 			InitEntry (pubkey);
 
-		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
+		emit Emitter_.authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
 	}
 
 	void ToxAccount::HandleRemovedFriend (Pubkey pubkey)
@@ -563,7 +563,7 @@ namespace LC::Azoth::Sarin
 			return;
 
 		const auto item = Contacts_.take (pubkey);
-		emit removedCLItems ({ item });
+		emit Emitter_.removedCLItems ({ item });
 		item->deleteLater ();
 	}
 

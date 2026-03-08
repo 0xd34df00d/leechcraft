@@ -29,10 +29,11 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/resourceloader.h>
 #include <util/sll/debugprinters.h>
-#include <util/sll/urloperator.h>
 #include <util/sll/prelude.h>
-#include <util/sll/util.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/urloperator.h>
+#include <util/sll/util.h>
 #include <util/threads/futures.h>
 #include <interfaces/entityconstants.h>
 #include <interfaces/iplugin2.h>
@@ -1230,14 +1231,11 @@ namespace LC::Azoth
 
 	QStandardItem* Core::GetAccountItem (const IAccount *account)
 	{
-		for (int i = 0, size = CLModel_->rowCount ();
-				i < size; ++i)
-		{
-			const auto& var = CLModel_->item (i)->data (CLRAccountObject);
-			if (var.value<IAccount*> () == account)
-				return CLModel_->item (i);
-		}
-		return 0;
+		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
+			if (const auto item = CLModel_->item (i);
+				item->data (CLRAccountObject).value<IAccount*> () == account)
+				return item;
+		return nullptr;
 	}
 
 	void Core::HandleStatusChanged (ICLEntry *entry, const EntryStatus&, const QString& variant)
@@ -1645,42 +1643,96 @@ namespace LC::Azoth
 
 		accItem->setEditable (false);
 
-		QList<QStandardItem*> clItems;
 		for (const auto clObj : account->GetCLEntries ())
-		{
-			const auto clEntry = qobject_cast<ICLEntry*> (clObj);
-			if (!clEntry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "entry doesn't implement ICLEntry"
-						<< clObj
-						<< account;
-				continue;
-			}
-
-			AddCLEntry (clEntry, accItem);
-		}
+			AddCLEntry (&qobject_ref_cast<ICLEntry> (clObj), accItem);
 
 		NotificationsManager_->AddAccount (accObject);
 
-		connect (accObject,
-				SIGNAL (gotCLItems (const QList<QObject*>&)),
+		auto& emitter = account->GetAccountEmitter ();
+		connect (&emitter,
+				&Emitters::Account::gotCLItems,
 				this,
-				SLOT (handleGotCLItems (const QList<QObject*>&)));
-		connect (accObject,
-				SIGNAL (removedCLItems (const QList<QObject*>&)),
-				this,
-				SLOT (handleRemovedCLItems (const QList<QObject*>&)));
+				[this, account] (const QList<QObject*>& items)
+				{
+					if (items.isEmpty ())
+						return;
 
-		connect (accObject,
-				SIGNAL (statusChanged (const EntryStatus&)),
-				this,
-				SLOT (handleAccountStatusChanged (const EntryStatus&)));
+					const auto accountItem = GetAccountItem (account);
+					if (!accountItem)
+						return;
 
-		connect (accObject,
-				SIGNAL (accountRenamed (const QString&)),
+					for (const auto item : items)
+					{
+						auto& entry = qobject_ref_cast<ICLEntry> (item);
+						if (Entry2Items_.contains (&entry))
+							continue;
+
+						AddCLEntry (&entry, accountItem);
+
+						if (entry.GetEntryType () == ICLEntry::EntryType::MUC)
+						{
+							const bool open = XmlSettingsManager::Instance ().property ("OpenTabsForAutojoin").toBool ();
+							if (open || !qobject_ref_cast<IMUCEntry> (item).IsAutojoined ())
+								ChatTabsManager_->OpenChat (&entry, false);
+						}
+
+						ChatTabsManager_->HandleEntryAdded (&entry);
+					}
+				});
+		connect (&emitter,
+				&Emitters::Account::removedCLItems,
 				this,
-				SLOT (handleAccountRenamed (const QString&)));
+				[this] (const QList<QObject*>& entries)
+				{
+					for (const auto entryObj : entries)
+					{
+						auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
+						if (entry.GetEntryType () == ICLEntry::EntryType::MUC &&
+								XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+							GetChatTabsManager ()->CloseChat (&entry, false);
+
+						entryObj->disconnect (this);
+						entry.GetCLEntryEmitter ().disconnect (this);
+
+						TooltipManager_->RemoveEntry (&entry);
+						ChatTabsManager_->HandleEntryRemoved (&entry);
+
+						for (auto clItem : Entry2Items_.value (&entry))
+							RemoveCLItem (clItem);
+
+						Entry2Items_.remove (&entry);
+						ActionsManager_->HandleEntryRemoved (&entry);
+						ID2Entry_.remove (entry.GetEntryID ());
+						Entry2SmoothAvatarCache_.remove (&entry);
+						NotificationsManager_->RemoveCLEntry (entryObj);
+						ResourcesManager::Instance ().HandleRemoved (&entry);
+					}
+				});
+
+		connect (&emitter,
+				&Emitters::Account::statusChanged,
+				this,
+				[this, account] (const EntryStatus& status)
+				{
+					QByteArray serializedStatus;
+					{
+						QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
+						stream << status;
+					}
+					XmlSettingsManager::Instance ().setProperty (account->GetAccountID (), serializedStatus);
+
+					if (const auto item = GetAccountItem (account))
+						ItemIconManager_->SetIcon (item, ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
+				});
+
+		connect (&emitter,
+				&Emitters::Account::accountRenamed,
+				this,
+				[this, account] (const QString& name)
+				{
+					if (const auto item = GetAccountItem (account))
+						item->setText (name);
+				});
 
 		if (qobject_cast<IHaveServiceDiscovery*> (accObject))
 			connect (accObject,
@@ -1709,172 +1761,26 @@ namespace LC::Azoth
 			new SslErrorsHandler { SslErrorsHandler::Account { accountId, accountName }, ichse };
 	}
 
-	void Core::handleAccountRemoved (QObject *account)
+	void Core::handleAccountRemoved (QObject *accObj)
 	{
-		auto accFace = qobject_cast<IAccount*> (account);
-		if (!accFace)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "account doesn't implement IAccount*"
-					<< account
-					<< sender ();
-			return;
-		}
+		auto& account = qobject_ref_cast<IAccount> (accObj);
 
-		emit accountRemoved (accFace);
+		emit accountRemoved (&account);
 
-		for (int i = 0; i < CLModel_->rowCount (); ++i)
+		if (const auto item = GetAccountItem (&account))
 		{
-			QStandardItem *item = CLModel_->item (i);
-			const auto obj = item->data (CLRAccountObject).value<IAccount*> ();
-			if (obj == accFace)
-			{
-				ItemIconManager_->Cancel (item);
-				CLModel_->removeRow (i);
-				break;
-			}
+			ItemIconManager_->Cancel (item);
+			CLModel_->removeRow (item->row ());
 		}
 
 		for (auto entry : Entry2Items_.keys ())
-			if (entry->GetParentAccount () == accFace)
+			if (entry->GetParentAccount () == &account)
 				Entry2Items_.remove (entry);
 
-		NotificationsManager_->RemoveAccount (account);
+		NotificationsManager_->RemoveAccount (accObj);
 
-		disconnect (account,
-				0,
-				this,
-				0);
-	}
-
-	void Core::handleGotCLItems (const QList<QObject*>& items)
-	{
-		if (items.isEmpty ())
-			return;
-
-		const auto accountItem = GetAccountItem (qobject_cast<ICLEntry*> (items.first ())->GetParentAccount ());
-		if (!accountItem)
-			return;
-
-		for (const auto item : items)
-		{
-			const auto entry = qobject_cast<ICLEntry*> (item);
-			if (Entry2Items_.contains (entry))
-				continue;
-
-			AddCLEntry (entry, accountItem);
-
-			if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
-			{
-				const auto mucEntry = qobject_cast<IMUCEntry*> (item);
-				const bool open = XmlSettingsManager::Instance ().property ("OpenTabsForAutojoin").toBool ();
-				if (open || !mucEntry->IsAutojoined ())
-					ChatTabsManager_->OpenChat (entry, false);
-			}
-
-			ChatTabsManager_->HandleEntryAdded (entry);
-		}
-	}
-
-	void Core::handleRemovedCLItems (const QList<QObject*>& items)
-	{
-		for (const auto clitem : items)
-		{
-			const auto entry = qobject_cast<ICLEntry*> (clitem);
-			if (!entry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< clitem
-						<< "is not a valid ICLEntry";
-				continue;
-			}
-
-			if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
-					XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-				GetChatTabsManager ()->CloseChat (entry, false);
-
-			disconnect (clitem,
-					0,
-					this,
-					0);
-			entry->GetCLEntryEmitter ().disconnect (this);
-
-			TooltipManager_->RemoveEntry (entry);
-
-			ChatTabsManager_->HandleEntryRemoved (entry);
-
-			for (auto item : Entry2Items_.value (entry))
-				RemoveCLItem (item);
-
-			Entry2Items_.remove (entry);
-
-			ActionsManager_->HandleEntryRemoved (entry);
-
-			ID2Entry_.remove (entry->GetEntryID ());
-
-			Entry2SmoothAvatarCache_.remove (entry);
-
-			NotificationsManager_->RemoveCLEntry (clitem);
-
-			ResourcesManager::Instance ().HandleRemoved (entry);
-		}
-	}
-
-	void Core::handleAccountStatusChanged (const EntryStatus& status)
-	{
-		IAccount *acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not an IAccount"
-					<< sender ();
-			return;
-		}
-
-		QByteArray serializedStatus;
-		{
-			QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
-			stream << status;
-		}
-		XmlSettingsManager::Instance ().setProperty (acc->GetAccountID (), serializedStatus);
-
-		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
-		{
-			QStandardItem *item = CLModel_->item (i);
-			if (item->data (CLRAccountObject).value<IAccount*> () != acc)
-				continue;
-
-			ItemIconManager_->SetIcon (item,
-					ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
-			return;
-		}
-
-		qWarning () << Q_FUNC_INFO
-				<< "item for account"
-				<< sender ()
-				<< "not found";
-	}
-
-	void Core::handleAccountRenamed (const QString& name)
-	{
-		const auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not an IAccount"
-					<< sender ();
-			return;
-		}
-
-		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
-		{
-			QStandardItem *item = CLModel_->item (i);
-			if (item->data (CLRAccountObject).value<IAccount*> () != acc)
-				continue;
-
-			item->setText (name);
-			return;
-		}
+		account.GetAccountEmitter ().disconnect (this);
+		accObj->disconnect (this);
 	}
 
 	void Core::handleEntryGroupsChanged (ICLEntry *entry, QStringList newGroups)
