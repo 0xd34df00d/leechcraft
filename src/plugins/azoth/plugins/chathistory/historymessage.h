@@ -26,7 +26,7 @@ namespace ChatHistory
 		Q_INTERFACES (LC::Azoth::IMessage LC::Azoth::IRichTextMessage)
 
 		Direction Direction_;
-		QObject * const OtherPart_;
+		ICLEntry * const OtherPart_;
 		Type Type_;
 		QString Variant_;
 		QString Body_;
@@ -37,7 +37,7 @@ namespace ChatHistory
 		const EscapePolicy EscPolicy_;
 	public:
 		HistoryMessage (Direction dir,
-				QObject *other,
+				ICLEntry *other,
 				Type type,
 				const QString& variant,
 				const QString& body,

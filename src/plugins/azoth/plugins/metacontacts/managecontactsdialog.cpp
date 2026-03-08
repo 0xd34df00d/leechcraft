@@ -10,6 +10,7 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QtDebug>
+#include <util/sll/qobjectrefcast.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iprotocol.h>
@@ -20,7 +21,7 @@ namespace Azoth
 {
 namespace Metacontacts
 {
-	ManageContactsDialog::ManageContactsDialog (const QList<QObject*>& objects, QWidget *parent)
+	ManageContactsDialog::ManageContactsDialog (const QList<ICLEntry*>& entries, QWidget *parent)
 	: QDialog (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
@@ -34,52 +35,33 @@ namespace Metacontacts
 				<< tr ("Protocol");
 		Model_->setHorizontalHeaderLabels (labels);
 
-		for (const auto entryObj : objects)
+		for (const auto entry : entries)
 		{
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< entryObj
-						<< "not a ICLEntry";
-				continue;
-			}
-
 			const auto account = entry->GetParentAccount ();
-			const auto proto = account ?
-					qobject_cast<IProtocol*> (account->GetParentProtocol ()) :
-					nullptr;
-
-			if (!account || !proto)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid parent chain for"
-						<< entryObj;
-				continue;
-			}
+			const auto& proto = qobject_ref_cast<IProtocol> (account->GetParentProtocol ());
 
 			QList<QStandardItem*> row;
 
 			QStandardItem *nameItem = new QStandardItem (entry->GetEntryName ());
-			nameItem->setData (QVariant::fromValue<QObject*> (entryObj));
+			nameItem->setData (QVariant::fromValue (entry));
 			row << nameItem;
 
 			row << new QStandardItem (entry->GetHumanReadableID ());
 			row << new QStandardItem (account->GetAccountName ());
 
-			QStandardItem *protoItem = new QStandardItem (proto->GetProtocolName ());
-			protoItem->setIcon (proto->GetProtocolIcon ());
+			QStandardItem *protoItem = new QStandardItem (proto.GetProtocolName ());
+			protoItem->setIcon (proto.GetProtocolIcon ());
 			row << protoItem;
 
 			Model_->appendRow (row);
 		}
 	}
 
-	QList<QObject*> ManageContactsDialog::GetObjects () const
+	QList<ICLEntry*> ManageContactsDialog::GetObjects () const
 	{
-		QList<QObject*> result;
+		QList<ICLEntry*> result;
 		for (int i = 0; i < Model_->rowCount (); ++i)
-			result << Model_->item (i)->data ().value<QObject*> ();
+			result << Model_->item (i)->data ().value<ICLEntry*> ();
 		return result;
 	}
 

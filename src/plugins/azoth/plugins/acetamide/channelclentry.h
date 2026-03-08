@@ -63,7 +63,7 @@ namespace LC::Azoth::Acetamide
 		void MarkMsgsRead () override;
 		void ChatTabClosed () override;
 
-		QString GetRealID (QObject*) const override;
+		QString GetRealID (const ICLEntry&) const override;
 
 		EntryStatus GetStatus (const QString& variant = QString ()) const override;
 		void ShowInfo () override;
@@ -73,7 +73,7 @@ namespace LC::Azoth::Acetamide
 		QString GetMUCSubject () const override;
 		bool CanChangeSubject () const override;
 		void SetMUCSubject (const QString&) override;
-		QList<QObject*> GetParticipants () override;
+		QList<ICLEntry*> GetParticipants () override;
 		bool IsAutojoined () const override;
 		void Join () override;
 		void Leave (const QString&) override;
@@ -86,15 +86,15 @@ namespace LC::Azoth::Acetamide
 		void HandleMessage (ChannelPublicMessage*);
 
 		// IMUCPerms
-		QByteArray GetAffName (QObject*) const override;
-		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject*) const override;
+		QByteArray GetAffName (const ICLEntry&) const override;
+		QMap<QByteArray, QList<QByteArray>> GetPerms (const ICLEntry&) const override;
 		QPair<QByteArray, QByteArray> GetKickPerm () const override;
 		QPair<QByteArray, QByteArray> GetBanPerm () const override;
-		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&) override;
+		void SetPerm (ICLEntry&, const QByteArray&, const QByteArray&, const QString&) override;
 		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const override;
 		QString GetUserString (const QByteArray&) const override;
-		bool IsLessByPerm (QObject*, QObject*) const override;
-		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const override;
+		bool IsLessByPerm (const ICLEntry&, const ICLEntry&) const override;
+		bool MayChangePerm (const ICLEntry&, const QByteArray&, const QByteArray&) const override;
 		bool IsMultiPerm (const QByteArray&) const override;
 
 		ChannelModes GetChannelModes () const;

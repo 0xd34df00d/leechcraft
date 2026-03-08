@@ -349,7 +349,7 @@ namespace Xoox
 		if (aff == QXmppMucItem::OutcastAffiliation ||
 				role == QXmppMucItem::NoRole)
 		{
-			Account_->handleEntryRemoved (entry.get ());
+			emit Account_->GetAccountEmitter ().removedCLItems ({ entry.get () });
 
 			if (aff == QXmppMucItem::OutcastAffiliation)
 				MakeBanMessage (nick, reason);
@@ -491,9 +491,9 @@ namespace Xoox
 		}
 	}
 
-	QList<QObject*> RoomHandler::GetParticipants () const
+	QList<ICLEntry*> RoomHandler::GetParticipants () const
 	{
-		return Util::Map (Nick2Entry_, [] (const auto& ptr) -> QObject* { return ptr.get (); });
+		return Util::Map (Nick2Entry_, [] (const auto& ptr) -> ICLEntry* { return ptr.get (); });
 	}
 
 	QString RoomHandler::GetSubject () const
@@ -516,10 +516,11 @@ namespace Xoox
 
 	void RoomHandler::Leave (const QString& msg, bool remove)
 	{
-		for (const auto& entry : Nick2Entry_)
-			Account_->handleEntryRemoved (entry.get ());
+		auto entries = Util::Map (Nick2Entry_, [] (const auto& ptr) -> ICLEntry* { return ptr.get (); });
 		if (RoomPseudoEntry_)
-			Account_->handleEntryRemoved (RoomPseudoEntry_.get ());
+			entries << RoomPseudoEntry_.get ();
+		if (!entries.isEmpty ())
+			emit Account_->GetAccountEmitter ().removedCLItems (entries);
 
 		Room_->leave (msg);
 		Nick2Entry_.clear ();
@@ -544,21 +545,19 @@ namespace Xoox
 		Room_->setNickName (nick);
 	}
 
-	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
-			QXmppMucItem::Affiliation newAff, const QString& reason)
+	void RoomHandler::SetAffiliation (const RoomParticipantEntry& entry, QXmppMucItem::Affiliation newAff, const QString& reason)
 	{
 		QXmppMucItem item;
-		item.setNick (entry->GetNick ());
+		item.setNick (entry.GetNick ());
 		item.setReason (reason);
 		item.setAffiliation (newAff);
 		Account_->GetClientConnection ()->Update (item, Room_->jid ());
 	}
 
-	void RoomHandler::SetRole (RoomParticipantEntry *entry,
-			QXmppMucItem::Role newRole, const QString& reason)
+	void RoomHandler::SetRole (const RoomParticipantEntry& entry, QXmppMucItem::Role newRole, const QString& reason)
 	{
 		QXmppMucItem item;
-		item.setNick (entry->GetNick ());
+		item.setNick (entry.GetNick ());
 		item.setReason (reason);
 		item.setRole (newRole);
 		Account_->GetClientConnection ()->Update (item, Room_->jid ());
@@ -593,7 +592,7 @@ namespace Xoox
 		CLEntry_->MoveMessages (entry, otherEntry);
 
 		MakeNickChangeMessage (nick, newNick);
-		Account_->handleEntryRemoved (Nick2Entry_.value (nick).get ());
+		emit Account_->GetAccountEmitter ().removedCLItems ({ Nick2Entry_.value (nick).get () });
 		Nick2Entry_.remove (nick);
 	}
 
@@ -748,7 +747,7 @@ namespace Xoox
 
 	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)
 	{
-		Account_->handleEntryRemoved (entry);
+		emit Account_->GetAccountEmitter ().removedCLItems ({ entry });
 		if (const auto nick = entry->GetNick ();
 			!nick.isEmpty ())
 			Nick2Entry_.remove (nick);
@@ -758,8 +757,8 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
+		emit Account_->GetAccountEmitter ().removedCLItems ({ CLEntry_ });
 		Account_->GetClientConnection ()->Unregister (this);
-		Account_->handleEntryRemoved (CLEntry_);
 		Room_->deleteLater ();
 		Room_ = 0;
 		deleteLater ();

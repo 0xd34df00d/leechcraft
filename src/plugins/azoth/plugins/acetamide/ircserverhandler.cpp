@@ -99,16 +99,13 @@ namespace LC::Azoth::Acetamide
 		return ServerOptions_;
 	}
 
-	QObjectList IrcServerHandler::GetCLEntries () const
+	QList<ICLEntry*> IrcServerHandler::GetCLEntries () const
 	{
-		QObjectList result;
-
+		QList<ICLEntry*> result;
 		if (ChannelsManager_)
 			result << ChannelsManager_->GetCLEntries ();
-
 		for (const auto& spe : Nick2Entry_)
 			result << spe.get ();
-
 		return result;
 	}
 
@@ -799,7 +796,7 @@ namespace LC::Azoth::Acetamide
 		Account_->ChangeState (EntryStatus (SOffline, QString ()));
 		ChannelsManager_->CloseAllChannels ();
 
-		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& entry) -> QObject* { return entry.get (); });
+		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& entry) -> ICLEntry* { return entry.get (); });
 		emit Account_->GetAccountEmitter ().removedCLItems (entries);
 
 		Nick2Entry_.clear ();

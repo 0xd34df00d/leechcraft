@@ -196,7 +196,7 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	QString ChannelCLEntry::GetRealID (QObject*) const
+	QString ChannelCLEntry::GetRealID (const ICLEntry&) const
 	{
 		return {};
 	}
@@ -231,7 +231,7 @@ namespace LC::Azoth::Acetamide
 		ICH_->SetTopic (subject);
 	}
 
-	QList<QObject*> ChannelCLEntry::GetParticipants ()
+	QList<ICLEntry*> ChannelCLEntry::GetParticipants ()
 	{
 		return ICH_->GetParticipants ();
 	}
@@ -299,38 +299,19 @@ namespace LC::Azoth::Acetamide
 		emit Emitter_.gotMessage (msg);
 	}
 
-	QByteArray ChannelCLEntry::GetAffName (QObject *participant) const
+	QByteArray ChannelCLEntry::GetAffName (const ICLEntry& participant) const
 	{
-		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a ChannelParticipantEntry";
-			return "noaffiliation";
-		}
-
-		return Aff2Str [entry->HighestRole ()];
+		const auto& entry = dynamic_cast<const ChannelParticipantEntry&> (participant);
+		return Aff2Str [entry.HighestRole ()];
 	}
 
-	QMap<QByteArray, QList<QByteArray>>  ChannelCLEntry::GetPerms (QObject *participant) const
+	QMap<QByteArray, QList<QByteArray>> ChannelCLEntry::GetPerms (const ICLEntry& participant) const
 	{
-		if (!participant)
-			participant = ICH_->GetSelf ().get ();
-
-		QMap<QByteArray, QList<QByteArray>>  result;
-		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a ChannelParticipantEntry";
-			result ["permclass_role"] << "norole";
-		}
-		else
-			for (const auto& role : entry->Roles ())
-				result ["permclass_role"] << Role2Str [role];
-
+		QMap<QByteArray, QList<QByteArray>> result;
+		auto& roles = result ["permclass_role"];
+		for (const auto& entry = dynamic_cast<const ChannelParticipantEntry&> (participant);
+			 const auto& role : entry.Roles ())
+			roles << Role2Str [role];
 		return result;
 	}
 
@@ -344,31 +325,19 @@ namespace LC::Azoth::Acetamide
 		return {};
 	}
 
-	void ChannelCLEntry::SetPerm (QObject *participant,
+	void ChannelCLEntry::SetPerm (ICLEntry& participant,
 			const QByteArray& permClass,
 			const QByteArray& perm,
 			const QString& reason)
 	{
-		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a ChannelParticipantEntry";
-			return;
-		}
+		const auto& entry = dynamic_cast<const ChannelParticipantEntry&> (participant);
 
 		if (permClass == "permclass_role")
 			ICH_->SetRole (entry, Str2Role (Util::AsStringView (perm)), reason);
 		else if (permClass == "permclass_managment")
 			ICH_->ManageWithParticipant (entry, Str2Management (Util::AsStringView (perm)));
 		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown perm class"
-					<< permClass;
-			return;
-		}
+			qWarning () << "unknown perm class" << permClass;
 	}
 
 	QMap<QByteArray, QList<QByteArray>> ChannelCLEntry::GetPossiblePerms () const
@@ -397,30 +366,20 @@ namespace LC::Azoth::Acetamide
 		return translations.value (id, id);
 	}
 
-	bool ChannelCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
+	bool ChannelCLEntry::IsLessByPerm (const ICLEntry& p1, const ICLEntry& p2) const
 	{
-		const auto e1 = dynamic_cast<ChannelParticipantEntry*> (p1);
-		const auto e2 = dynamic_cast<ChannelParticipantEntry*> (p2);
-		if (!e1 || !e2)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< p1
-					<< "or"
-					<< p2
-					<< "is not a ChannelParticipantEntry";
-			return false;
-		}
-
-		return e1->HighestRole () < e2->HighestRole ();
+		const auto& e1 = dynamic_cast<const ChannelParticipantEntry&> (p1);
+		const auto& e2 = dynamic_cast<const ChannelParticipantEntry&> (p2);
+		return e1.HighestRole () < e2.HighestRole ();
 	}
 
 	namespace
 	{
 		bool MayChange (ChannelRole ourRole,
-				ChannelParticipantEntry *entry,
+				const ChannelParticipantEntry& entry,
 				ChannelRole newRole)
 		{
-			ChannelRole role = entry->HighestRole ();
+			const auto role = entry.HighestRole ();
 
 			if (ourRole < ChannelRole::HalfOperator)
 				return false;
@@ -438,10 +397,10 @@ namespace LC::Azoth::Acetamide
 		}
 
 		bool MayManage (ChannelRole ourRole,
-				ChannelParticipantEntry *entry,
+				const ChannelParticipantEntry& entry,
 				const QString& nick)
 		{
-			ChannelRole role = entry->HighestRole ();
+			const auto role = entry.HighestRole ();
 
 			if (ourRole < ChannelRole::HalfOperator)
 				return false;
@@ -452,25 +411,16 @@ namespace LC::Azoth::Acetamide
 			if (role > ourRole)
 				return false;
 
-			if (entry->GetEntryName () == nick)
+			if (entry.GetEntryName () == nick)
 				return false;
 
 			return true;
 		}
 	}
 
-	bool ChannelCLEntry::MayChangePerm (QObject *participant,
-			const QByteArray& permClass, const QByteArray& perm) const
+	bool ChannelCLEntry::MayChangePerm (const ICLEntry& participant, const QByteArray& permClass, const QByteArray& perm) const
 	{
-		const auto entry = dynamic_cast<ChannelParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a ChannelParticipantEntry";
-			return false;
-		}
-
+		const auto& entry = dynamic_cast<const ChannelParticipantEntry&> (participant);
 		const auto ourRole = ICH_->GetSelf ()->HighestRole ();
 
 		if (permClass == "permclass_role")

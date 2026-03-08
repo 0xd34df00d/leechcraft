@@ -13,8 +13,10 @@
 #include <QtDebug>
 #include <util/sll/debugprinters.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sys/paths.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include "clientconnection.h"
 #include "glooxprotocol.h"
 #include "glooxaccount.h"
 #include "glooxclentry.h"
@@ -117,19 +119,17 @@ namespace Xoox
 		w.writeAttribute ("formatversion", "1");
 		for (auto accObj : Proto_->GetRegisteredAccounts ())
 		{
-			auto acc = qobject_cast<IAccount*> (accObj);
-			w.writeStartElement ("account");
-				w.writeTextElement ("id", acc->GetAccountID ());
-				w.writeStartElement ("entries");
-				for (auto entryObj : acc->GetCLEntries ())
-				{
-					const auto entry = qobject_cast<GlooxCLEntry*> (entryObj);
-					if (!entry ||
-							(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
-						continue;
+			const auto& acc = qobject_ref_cast<GlooxAccount> (accObj);
+			const auto conn = acc.GetClientConnection ();
+			if (!conn)
+				continue;
 
-					Save (entry->ToOfflineDataSource (), &w, Proxy_);
-				}
+			w.writeStartElement ("account");
+				w.writeTextElement ("id", acc.GetAccountID ());
+				w.writeStartElement ("entries");
+				for (const auto entry : conn->GetRosterEntries ())
+					if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry)
+						Save (entry->ToOfflineDataSource (), &w, Proxy_);
 				w.writeEndElement ();
 			w.writeEndElement ();
 		}

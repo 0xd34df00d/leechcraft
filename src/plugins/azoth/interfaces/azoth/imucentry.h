@@ -97,7 +97,7 @@ namespace Azoth
 		 *
 		 * @return The list of participants of this MUC.
 		 */
-		virtual QList<QObject*> GetParticipants () = 0;
+		virtual QList<ICLEntry*> GetParticipants () = 0;
 
 		/** @brief Whether this MUC room was automatically joined.
 		 *
@@ -166,7 +166,7 @@ namespace Azoth
 		 * the real JID.
 		 * @return The real ID of a participant.
 		 */
-		virtual QString GetRealID (QObject *participant) const = 0;
+		virtual QString GetRealID (const ICLEntry& participant) const = 0;
 
 		/** @brief Returns the data identifying this room.
 		 *

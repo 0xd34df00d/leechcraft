@@ -115,7 +115,7 @@ namespace Azoth
 		 *
 		 * @return The list of contact list entries of this account.
 		 */
-		virtual QList<QObject*> GetCLEntries () = 0;
+		virtual QList<ICLEntry*> GetCLEntries () = 0;
 
 		/** @brief Returns the human-readable name of this account.
 		 *

@@ -171,16 +171,15 @@ namespace BirthdayNotifier
 		{
 			auto acc = qobject_cast<IAccount*> (accObj);
 			auto extSelf = qobject_cast<IExtSelfInfoAccount*> (accObj);
-			for (auto entryObj : acc->GetCLEntries ())
+			for (const auto entry : acc->GetCLEntries ())
 			{
-				auto entry = qobject_cast<ICLEntry*> (entryObj);
-				if (!entry || entry->GetEntryType () != ICLEntry::EntryType::Chat)
+				if (entry->GetEntryType () != ICLEntry::EntryType::Chat)
 					continue;
 
-				if (extSelf && extSelf->GetSelfContact () == entryObj)
+				if (extSelf && extSelf->GetSelfContact () == entry->GetQObject ())
 					continue;
 
-				auto meta = qobject_cast<IMetaInfoEntry*> (entryObj);
+				auto meta = qobject_cast<IMetaInfoEntry*> (entry->GetQObject ());
 				if (!meta)
 					continue;
 

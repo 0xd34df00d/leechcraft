@@ -63,12 +63,10 @@ namespace Azoth
 				const QString& patternLite,
 				const QString& patternFull)
 		{
-			return [=, &avatarsMgr] (QObject *entryObj, const QString& msg)
+			return [=, &avatarsMgr] (ICLEntry& entry, const QString& msg)
 			{
 				if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
 					return;
-
-				auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
 
 				const auto& str = msg.isEmpty () ?
 						patternLite.arg (entry.GetEntryName (), entry.GetHumanReadableID ()) :
@@ -80,7 +78,7 @@ namespace Azoth
 				e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 				e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
-				Util::Sequence (entryObj, BuildNotification (&avatarsMgr, e, &entry, "Event")) >>
+				Util::Sequence (entry.GetQObject (), BuildNotification (&avatarsMgr, e, &entry, "Event")) >>
 						[] (const Entity& e) { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); };
 			};
 		}
@@ -96,7 +94,7 @@ namespace Azoth
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth", str, Priority::Info));
 		}
 
-		void NotifyAuthRequested (AvatarsManager& avatarsMgr, QObject *entryObj, const QString& msg)
+		void NotifyAuthRequested (AvatarsManager& avatarsMgr, ICLEntry& entry, const QString& msg)
 		{
 			/* TODO go through new typed hooks
 			const auto& proxy = std::make_shared<Util::DefaultHookProxy> ();
@@ -105,7 +103,6 @@ namespace Azoth
 				return;
 				*/
 
-			auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
 			const auto& str = msg.isEmpty () ?
 					NotificationsManager::tr ("Subscription requested by %1.").arg (entry.GetEntryName ()) :
 					NotificationsManager::tr ("Subscription requested by %1: %2.").arg (entry.GetEntryName (), msg);
@@ -121,7 +118,7 @@ namespace Azoth
 			nh->AddFunction (NotificationsManager::tr ("View info"), [&entry] { entry.ShowInfo (); });
 			nh->AddDependentObject (entry.GetQObject ());
 
-			Util::Sequence (entryObj, BuildNotification (&avatarsMgr, e, &entry, "AuthRequestFrom")) >>
+			Util::Sequence (entry.GetQObject (), BuildNotification (&avatarsMgr, e, &entry, "AuthRequestFrom")) >>
 					[] (const Entity& e) { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); };
 		}
 
@@ -181,7 +178,7 @@ namespace Azoth
 						tr ("%1 (%2) subscribed to us."),
 						tr ("%1 (%2) subscribed to us: %3.")));
 		connect (&emitter,
-				qOverload<QObject*, const QString&> (&Emitters::Account::itemUnsubscribed),
+				qOverload<ICLEntry&, const QString&> (&Emitters::Account::itemUnsubscribed),
 				this,
 				NotifyWithReason (*AvatarsMgr_, "NotifyUnsubscriptions", AN::TypeIMSubscrUnsub,
 						tr ("%1 (%2) unsubscribed from us."),

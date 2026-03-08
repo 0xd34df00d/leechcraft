@@ -21,7 +21,7 @@ namespace LC::Azoth
 	void AuthorizeEntry (ICLEntry*);
 	void DenyAuthForEntry (ICLEntry*);
 
-	QObject* FindByHRId (IAccount*, const QString&);
+	ICLEntry* FindByHRId (IAccount*, const QString&);
 
 	bool ChoosePGPKey (ISupportPGP*, ICLEntry*);
 

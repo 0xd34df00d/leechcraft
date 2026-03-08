@@ -84,15 +84,13 @@ namespace Azoth
 		{
 			QMap<QString, QList<ICLEntry*>> result;
 
-			for (const auto entryObj : acc->GetCLEntries ())
+			for (const auto entry : acc->GetCLEntries ())
 			{
-				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-				if (!entry ||
-						(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
+				if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 					continue;
 
 				if (entry->Groups ().isEmpty ())
-					result [""] << entry;
+					result [{}] << entry;
 				else
 					for (const auto& group : entry->Groups ())
 						result [group] << entry;

@@ -381,9 +381,9 @@ namespace Xoox
 	{
 		const QString& to = sourceElem.attribute ("from");
 
-		for (auto obj : Conn_->GetCLEntries ())
+		for (auto entry : Conn_->GetCLEntries ())
 		{
-			auto base = qobject_cast<EntryBase*> (obj);
+			const auto base = dynamic_cast<EntryBase*> (entry);
 			if (!base)
 				continue;
 

@@ -84,8 +84,8 @@ namespace LC::Azoth::Actions
 				return;
 
 			auto bms = isb->GetBookmarkedMUCs ();
-			for (auto mucObj : account->GetCLEntries ())
-				if (const auto muc = qobject_cast<IMUCEntry*> (mucObj))
+			for (const auto entry : account->GetCLEntries ())
+				if (const auto muc = qobject_cast<IMUCEntry*> (entry->GetQObject ()))
 					bms.removeOne (muc->GetIdentifyingData ());
 			if (bms.isEmpty ())
 				return;

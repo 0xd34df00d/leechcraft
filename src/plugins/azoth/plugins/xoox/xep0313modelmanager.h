@@ -40,7 +40,7 @@ namespace Xoox
 		QString Index2Jid (const QModelIndex&) const;
 		QModelIndex Jid2Index (const QString&) const;
 	private:
-		void HandleGotCLItems (const QList<QObject*>&);
+		void HandleGotCLItems (const QList<ICLEntry*>&);
 	};
 }
 }

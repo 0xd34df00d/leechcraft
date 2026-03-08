@@ -285,23 +285,23 @@ namespace ChatHistory
 		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
 		const auto& parts = mucEntry ?
 				mucEntry->GetParticipants () :
-				QObjectList ();
+				QList<ICLEntry*> ();
 
 		QList<QObject*> logs;
 		for (const auto& item : result.GetRight ())
 		{
-			QObject *participantObj = nullptr;
-			for (auto part : parts)
-				if (qobject_cast<ICLEntry*> (part)->GetEntryName () == item.Variant_)
+			ICLEntry *participant = nullptr;
+			for (const auto part : parts)
+				if (part->GetEntryName () == item.Variant_)
 				{
-					participantObj = part;
+					participant = part;
 					break;
 				}
 
 			const auto msg = new HistoryMessage (item.Dir_,
-					participantObj ? participantObj : entryObj.data (),
+					participant ? participant : qobject_cast<ICLEntry*> (entryObj.data ()),
 					item.Type_,
-					participantObj ? QString {} : item.Variant_,
+					participant ? QString {} : item.Variant_,
 					item.Message_,
 					item.Date_,
 					item.RichMessage_,

@@ -212,9 +212,17 @@ namespace Xoox
 				&Emitter_,
 				&Emitters::Account::gotCLItems);
 		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemRemoved (QObject*)),
+				&ClientConnection::rosterItemRemoved,
 				this,
-				SLOT (handleEntryRemoved (QObject*)));
+				[this] (GlooxCLEntry *entry)
+				{
+					emit Emitter_.removedCLItems ({ entry });
+					if (ExistingEntry2JoinConflict_.contains (entry))
+					{
+						const auto& pair = ExistingEntry2JoinConflict_.take (entry);
+						JoinRoom (pair.first, pair.second, {});
+					}
+				});
 		connect (ClientConnection_.get (),
 				&ClientConnection::rosterChanged,
 				this,
@@ -260,11 +268,11 @@ namespace Xoox
 		return FRenamable | FSupportsXA | FMUCsSupportFileTransfers | FCanViewContactsInfoInOffline;
 	}
 
-	QList<QObject*> GlooxAccount::GetCLEntries ()
+	QList<ICLEntry*> GlooxAccount::GetCLEntries ()
 	{
 		return ClientConnection_ ?
 				ClientConnection_->GetCLEntries () :
-				QList<QObject*> ();
+				QList<ICLEntry*> ();
 	}
 
 	void GlooxAccount::SendMessage (GlooxMessage& msg)
@@ -363,19 +371,12 @@ namespace Xoox
 
 		if (entry->IsGateway ())
 		{
-			const auto& allEntries = ClientConnection_->GetCLEntries ();
-
 			const auto& gwJid = entry->GetJID ();
 
 			QList<GlooxCLEntry*> subs;
-			for (auto obj : allEntries)
-			{
-				auto otherEntry = qobject_cast<GlooxCLEntry*> (obj);
-				if (otherEntry &&
-						otherEntry != entry &&
-						otherEntry->GetJID ().endsWith (gwJid))
+			for (auto otherEntry : ClientConnection_->GetRosterEntries ())
+				if (otherEntry != entry && otherEntry->GetJID ().endsWith (gwJid))
 					subs << otherEntry;
-			}
 
 			if (!subs.isEmpty ())
 			{
@@ -781,7 +782,7 @@ namespace Xoox
 				return;
 
 			RemoveEntry (existingObj);
-			ExistingEntry2JoinConflict_ [existingObj] = qMakePair (jid, nick);
+			ExistingEntry2JoinConflict_ [existing] = qMakePair (jid, nick);
 			return;
 		}
 
@@ -879,17 +880,6 @@ namespace Xoox
 	{
 		for (auto act : GetActions ())
 			act->setEnabled (available);
-	}
-
-	void GlooxAccount::handleEntryRemoved (QObject *entry)
-	{
-		emit Emitter_.removedCLItems ({ entry });
-
-		if (ExistingEntry2JoinConflict_.contains (entry))
-		{
-			const auto& pair = ExistingEntry2JoinConflict_.take (entry);
-			JoinRoom (pair.first, pair.second, {});
-		}
 	}
 }
 }

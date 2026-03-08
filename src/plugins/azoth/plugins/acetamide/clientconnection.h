@@ -31,7 +31,7 @@ namespace LC::Azoth::Acetamide
 
 		IrcAccount* GetAccount () const;
 		QList<IrcServerHandler*> GetServerHandlers () const;
-		QList<QObject*> GetCLEntries () const;
+		QList<ICLEntry*> GetCLEntries () const;
 
 		bool IsServerExists (const ServerOptions&) const;
 		IrcServerHandler& JoinServer (const ServerOptions&);

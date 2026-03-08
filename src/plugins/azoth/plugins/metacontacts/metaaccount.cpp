@@ -40,7 +40,7 @@ namespace Metacontacts
 		return FMUCsSupportFileTransfers;
 	}
 
-	QList<QObject*> MetaAccount::GetCLEntries ()
+	QList<ICLEntry*> MetaAccount::GetCLEntries ()
 	{
 		return Core::Instance ().GetEntries ();
 	}

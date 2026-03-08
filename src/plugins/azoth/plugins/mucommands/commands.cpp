@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "commands.h"
+#include <algorithm>
 #include <ranges>
 #include <QStringList>
 #include <QtDebug>
@@ -53,17 +54,9 @@ namespace MuCommands
 		const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 
 		QStringList names;
-		for (const auto obj : mucEntry->GetParticipants ())
+		for (const auto part : mucEntry->GetParticipants ())
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-			if (!entry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< obj
-						<< "doesn't implement ICLEntry";
-				continue;
-			}
-			const QString& name = entry->GetEntryName ();
+			const auto& name = part->GetEntryName ();
 			if (!name.isEmpty ())
 				names << name;
 		}
@@ -84,12 +77,8 @@ namespace MuCommands
 				return {};
 
 			QHash<QString, ICLEntry*> result;
-			for (const auto entryObj : entry->GetParticipants ())
-			{
-				const auto entry = qobject_cast<ICLEntry*> (entryObj);
-				if (entry)
-					result [entry->GetEntryName ()] = entry;
-			}
+			for (const auto part : entry->GetParticipants ())
+				result [part->GetEntryName ()] = part;
 			return result;
 		}
 
@@ -120,15 +109,9 @@ namespace MuCommands
 				return context.value (name);
 
 			QList<ICLEntry*> entries;
-			for (const auto entryObj : acc->GetCLEntries ())
-			{
-				const auto entry = qobject_cast<ICLEntry*> (entryObj);
-				if (!entry)
-					continue;
-
+			for (const auto entry : acc->GetCLEntries ())
 				if (entry->GetEntryName () == name || entry->GetHumanReadableID () == name)
 					entries << entry;
-			}
 
 			if (!entries.isEmpty ())
 				return entries.contains (hint) ? hint : entries.first ();
@@ -479,9 +462,9 @@ namespace MuCommands
 		QObject::connect (&acc->GetAccountEmitter (),
 				&Emitters::Account::removedCLItems,
 				entryObj,		// ensure the connection dies when this entry dies, and no excessive rejoins happen
-				[=] (const QList<QObject*>& removedEntries)
+				[=] (const QList<ICLEntry*>& removedEntries)
 				{
-					if (!removedEntries.contains (entryObj))
+					if (!removedEntries.contains (entry))
 						return;
 
 					QTimer::singleShot (1000,
@@ -560,16 +543,11 @@ namespace MuCommands
 			auto mucPerms = qobject_cast<IMUCPerms*> (mucEntryObj);
 
 			const auto& parts = mucEntry->GetParticipants ();
-			auto partPos = std::find_if (parts.begin (), parts.end (),
-					[&nick] (QObject *entryObj) -> bool
-					{
-						auto entry = qobject_cast<ICLEntry*> (entryObj);
-						return entry && entry->GetEntryName () == nick;
-					});
+			const auto partPos = std::ranges::find (parts, nick, &ICLEntry::GetEntryName);
 			if (partPos == parts.end ())
 				return;
 
-			mucPerms->SetPerm (*partPos, role.first, role.second, reason);
+			mucPerms->SetPerm (**partPos, role.first, role.second, reason);
 		}
 	}
 
@@ -861,9 +839,7 @@ namespace MuCommands
 		void PermSetter::SetNickPerms (decltype (GetParticipants ({})) parts)
 		{
 			const auto part = parts [Nick_];
-			const auto partObj = part->GetQObject ();
-
-			if (!MucPerms_->MayChangePerm (partObj, PermClass_, PermValue_))
+			if (!MucPerms_->MayChangePerm (*part, PermClass_, PermValue_))
 			{
 				InjectMessage (AzothProxy_, Entry_,
 						QObject::tr ("Cannot change %1's role of class %2 (%3) to %4 (%5).")
@@ -875,7 +851,7 @@ namespace MuCommands
 				return;
 			}
 
-			MucPerms_->SetPerm (partObj, PermClass_, PermValue_, Reason_);
+			MucPerms_->SetPerm (*part, PermClass_, PermValue_, Reason_);
 		}
 
 		void PermSetter::SetIdPerms ()
@@ -1027,7 +1003,7 @@ namespace MuCommands
 
 			const auto& nick = part->GetEntryName ();
 
-			const auto& rid = mucEntry->GetRealID (part->GetQObject ());
+			const auto& rid = mucEntry->GetRealID (*part);
 			if (rid.isEmpty ())
 				InjectMessage (azothProxy, showEntry,
 						QObject::tr ("Unable to get real ID of %1.")

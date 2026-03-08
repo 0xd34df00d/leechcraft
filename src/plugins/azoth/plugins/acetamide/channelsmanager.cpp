@@ -43,15 +43,14 @@ namespace LC::Azoth::Acetamide
 		return ISH_->GetServerOptions ();
 	}
 
-	QObjectList ChannelsManager::GetCLEntries () const
+	QList<ICLEntry*> ChannelsManager::GetCLEntries () const
 	{
-		QObjectList result;
+		QList<ICLEntry*> result;
 		for (const auto& ich : ChannelHandlers_)
 		{
 			result << ich->GetCLEntry ();
 			result << ich->GetParticipants ();
 		}
-
 		return result;
 	}
 

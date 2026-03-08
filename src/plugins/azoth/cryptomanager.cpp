@@ -172,19 +172,8 @@ namespace Azoth
 		{
 			RestoreKeyForAccount (acc);
 
-			for (const auto entryObj : acc->GetCLEntries ())
-			{
-				const auto entry = qobject_cast<ICLEntry*> (entryObj);
-				if (!entry)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< entry
-							<< "doesn't implement ICLEntry";
-					continue;
-				}
-
+			for (const auto entry : acc->GetCLEntries ())
 				RestoreKeyForEntry (entry);
-			}
 		}
 	}
 }

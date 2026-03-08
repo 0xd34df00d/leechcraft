@@ -39,7 +39,7 @@ namespace Metacontacts
 		static Core& Instance ();
 
 		void SetMetaAccount (MetaAccount*);
-		QList<QObject*> GetEntries () const;
+		QList<ICLEntry*> GetEntries () const;
 
 		bool HandleRealEntryAddBegin (QObject*);
 		void AddRealEntry (QObject*);
@@ -49,7 +49,7 @@ namespace Metacontacts
 		void RemoveEntry (MetaEntry*);
 		void ScheduleSaveEntries ();
 
-		void HandleEntriesRemoved (const QList<QObject*>&, bool readd);
+		void HandleEntriesRemoved (const QList<ICLEntry*>&, bool readd);
 	private:
 		void AddRealToMeta (MetaEntry*, ICLEntry*);
 		MetaEntry* CreateMetaEntry ();

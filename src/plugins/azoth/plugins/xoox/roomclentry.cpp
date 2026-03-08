@@ -259,7 +259,7 @@ namespace Xoox
 		RH_->SetSubject (subj);
 	}
 
-	QList<QObject*> RoomCLEntry::GetParticipants ()
+	QList<ICLEntry*> RoomCLEntry::GetParticipants ()
 	{
 		return RH_->GetParticipants ();
 	}
@@ -311,13 +311,10 @@ namespace Xoox
 		return result;
 	}
 
-	QString RoomCLEntry::GetRealID (QObject *obj) const
+	QString RoomCLEntry::GetRealID (const ICLEntry& obj) const
 	{
-		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (obj);
-		if (!entry)
-			return QString ();
-
-		return ClientConnection::Split (entry->GetRealJID ()).Bare_;
+		const auto& entry = dynamic_cast<const RoomParticipantEntry&> (obj);
+		return ClientConnection::Split (entry.GetRealJID ()).Bare_;
 	}
 
 	void RoomCLEntry::InviteToMUC (const QString& id, const QString& msg)
@@ -330,26 +327,12 @@ namespace Xoox
 		return Perms_;
 	}
 
-	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPerms (QObject *participant) const
+	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPerms (const ICLEntry& participant) const
 	{
-		if (!participant)
-			participant = RH_->GetSelf ();
-
 		QMap<QByteArray, QList<QByteArray>> result;
-		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a RoomParticipantEntry";
-			result ["role"] << "norole";
-			result ["aff"] << "noaffiliation";
-		}
-		else
-		{
-			result ["role"] << Role2Str_.value (entry->GetRole (), "invalid");
-			result ["aff"] << Aff2Str_.value (entry->GetAffiliation (), "invalid");
-		}
+		const auto& entry = dynamic_cast<const RoomParticipantEntry&> (participant);
+		result ["role"] << Role2Str_.value (entry.GetRole (), "invalid");
+		result ["aff"] << Aff2Str_.value (entry.GetAffiliation (), "invalid");
 		return result;
 	}
 
@@ -363,29 +346,20 @@ namespace Xoox
 		return { "aff", Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation] };
 	}
 
-	QByteArray RoomCLEntry::GetAffName (QObject *participant) const
+	QByteArray RoomCLEntry::GetAffName (const ICLEntry& part) const
 	{
-		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a RoomParticipantEntry";
-			return "noaffiliation";
-		}
-
-		return Aff2Str_ [entry->GetAffiliation ()];
+		return Aff2Str_ [dynamic_cast<const RoomParticipantEntry&> (part).GetAffiliation ()];
 	}
 
 	namespace
 	{
 		bool MayChange (QXmppMucItem::Role ourRole,
 				QXmppMucItem::Affiliation ourAff,
-				RoomParticipantEntry *entry,
+				const RoomParticipantEntry& entry,
 				QXmppMucItem::Role newRole)
 		{
-			QXmppMucItem::Affiliation aff = entry->GetAffiliation ();
-			QXmppMucItem::Role role = entry->GetRole ();
+			const auto aff = entry.GetAffiliation ();
+			const auto role = entry.GetRole ();
 
 			if (role == QXmppMucItem::UnspecifiedRole ||
 					ourRole == QXmppMucItem::UnspecifiedRole ||
@@ -405,7 +379,7 @@ namespace Xoox
 
 		bool MayChange (QXmppMucItem::Role,
 				QXmppMucItem::Affiliation ourAff,
-				RoomParticipantEntry *entry,
+				const RoomParticipantEntry& entry,
 				QXmppMucItem::Affiliation aff)
 		{
 			if (ourAff < QXmppMucItem::AdminAffiliation)
@@ -414,7 +388,7 @@ namespace Xoox
 			if (ourAff == QXmppMucItem::OwnerAffiliation)
 				return true;
 
-			QXmppMucItem::Affiliation partAff = entry->GetAffiliation ();
+			const auto partAff = entry.GetAffiliation ();
 			if (partAff >= ourAff)
 				return false;
 
@@ -425,59 +399,35 @@ namespace Xoox
 		}
 	}
 
-	bool RoomCLEntry::MayChangePerm (QObject *participant,
+	bool RoomCLEntry::MayChangePerm (const ICLEntry& participant,
 			const QByteArray& permClass, const QByteArray& perm) const
 	{
-		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a RoomParticipantEntry";
-			return false;
-		}
+		const auto& entry = dynamic_cast<const RoomParticipantEntry&> (participant);
 
 		const auto ourRole = RH_->GetSelf ()->GetRole ();
 		const auto ourAff = RH_->GetSelf ()->GetAffiliation ();
 
 		if (permClass == "role")
 			return MayChange (ourRole, ourAff, entry, Role2Str_.key (perm));
-		else if (permClass == "aff")
+		if (permClass == "aff")
 			return MayChange (ourRole, ourAff, entry, Aff2Str_.key (perm));
-		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown perm class"
-					<< permClass;
-			return false;
-		}
+
+		qWarning () << "unknown perm class" << permClass;
+		return false;
 	}
 
-	void RoomCLEntry::SetPerm (QObject *participant,
+	void RoomCLEntry::SetPerm (ICLEntry& participant,
 			const QByteArray& permClass,
 			const QByteArray& perm,
 			const QString& reason)
 	{
-		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a RoomParticipantEntry";
-			return;
-		}
-
+		const auto& entry = dynamic_cast<const RoomParticipantEntry&> (participant);
 		if (permClass == "role")
 			RH_->SetRole (entry, Role2Str_.key (perm), reason);
 		else if (permClass == "aff")
 			RH_->SetAffiliation (entry, Aff2Str_.key (perm), reason);
 		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown perm class"
-					<< permClass;
-			return;
-		}
+			qWarning () << "unknown perm class" << permClass;
 	}
 
 	void RoomCLEntry::TrySetPerm (const QString& userId,
@@ -499,21 +449,11 @@ namespace Xoox
 		Account_->GetClientConnection ()->Update (item, RH_->GetRoomJID ());
 	}
 
-	bool RoomCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
+	bool RoomCLEntry::IsLessByPerm (const ICLEntry& p1, const ICLEntry& p2) const
 	{
-		RoomParticipantEntry *e1 = qobject_cast<RoomParticipantEntry*> (p1);
-		RoomParticipantEntry *e2 = qobject_cast<RoomParticipantEntry*> (p2);
-		if (!e1 || !e2)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< p1
-					<< "or"
-					<< p2
-					<< "is not a RoomParticipantEntry";
-			return false;
-		}
-
-		return e1->GetRole () < e2->GetRole ();
+		const auto& e1 = dynamic_cast<const RoomParticipantEntry&> (p1);
+		const auto& e2 = dynamic_cast<const RoomParticipantEntry&> (p2);
+		return e1.GetRole () < e2.GetRole ();
 	}
 
 	bool RoomCLEntry::IsMultiPerm (const QByteArray&) const

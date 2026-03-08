@@ -138,11 +138,9 @@ namespace RIEX
 
 		const auto acc = entry->GetParentAccount ();
 		QHash<QString, ICLEntry*> clEntries;
-		for (const auto entryObj : acc->GetCLEntries ())
+		for (const auto entry : acc->GetCLEntries ())
 		{
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry ||
-					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
+			if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				continue;
 
 			clEntries [entry->GetHumanReadableID ()] = entry;

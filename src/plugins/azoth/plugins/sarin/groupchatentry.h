@@ -67,14 +67,14 @@ namespace LC::Azoth::Sarin
 		QString GetMUCSubject () const override;
 		void SetMUCSubject (const QString& subject) override;
 		bool CanChangeSubject () const override;
-		QList<QObject*> GetParticipants () override;
+		QList<ICLEntry*> GetParticipants () override;
 		bool IsAutojoined () const override;
 		void Join () override;
 		void Leave (const QString& msg) override;
 		QString GetNick () const override;
 		void SetNick (const QString& nick) override;
 		QString GetGroupName () const override;
-		QString GetRealID (QObject *participant) const override;
+		QString GetRealID (const ICLEntry& participant) const override;
 		QVariantMap GetIdentifyingData () const override;
 		void InviteToMUC (const QString& userId, const QString& msg) override;
 

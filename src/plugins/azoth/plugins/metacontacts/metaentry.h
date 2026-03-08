@@ -37,7 +37,7 @@ namespace Metacontacts
 		QStringList Groups_;
 
 		QStringList UnavailableRealEntries_;
-		QList<QObject*> AvailableRealEntries_;
+		QList<ICLEntry*> AvailableRealEntries_;
 		QMap<QString, QPair<ICLEntry*, QString>> Variant2RealVariant_;
 
 		QList<IMessage*> Messages_;
@@ -47,7 +47,7 @@ namespace Metacontacts
 	public:
 		MetaEntry (const QString&, MetaAccount*);
 
-		QObjectList GetAvailEntryObjs () const;
+		QList<ICLEntry*> GetAvailEntryObjs () const;
 		QStringList GetRealEntries () const;
 		void SetRealEntries (const QStringList&);
 		void AddRealObject (ICLEntry*);
@@ -87,8 +87,8 @@ namespace Metacontacts
 		void ConnectStandardSignals (ICLEntry*);
 		void ConnectAdvancedSiganls (QObject*);
 
-		void PerformRemoval (QObject*);
-		void SetNewEntryList (const QList<QObject*>&, bool readdRemoved);
+		void PerformRemoval (ICLEntry*);
+		void SetNewEntryList (const QList<ICLEntry*>&, bool readdRemoved);
 
 		void HandleRealGotMessage (QObject*);
 		void HandleRealVariantsChanged (ICLEntry*, QStringList);

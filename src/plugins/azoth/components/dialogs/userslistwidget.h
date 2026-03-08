@@ -30,9 +30,9 @@ namespace Azoth
 		QSortFilterProxyModel *Filter_;
 		QStandardItemModel *PartsModel_;
 	public:
-		UsersListWidget (const QList<QObject*>&, std::function<QString (ICLEntry*)>, QWidget* = 0);
+		UsersListWidget (const QList<ICLEntry*>&, std::function<QString (ICLEntry*)>, QWidget* = 0);
 
-		QObject* GetActivatedParticipant () const;
+		ICLEntry* GetActivatedParticipant () const;
 	};
 }
 }

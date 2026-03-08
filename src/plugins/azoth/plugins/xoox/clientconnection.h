@@ -189,7 +189,8 @@ namespace Xoox
 		QObject* GetCLEntry (const QString& fullJid) const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (OfflineDataSource_ptr);
-		QList<QObject*> GetCLEntries () const;
+		QList<ICLEntry*> GetCLEntries () const;
+		QList<GlooxCLEntry*> GetRosterEntries () const;
 		QList<RoomCLEntry*> GetRoomCLEntries () const;
 		void FetchVCard (const QString&, bool reportErrors = false);
 		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
@@ -241,8 +242,8 @@ namespace Xoox
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
 		GlooxCLEntry* ConvertFromODS (const QString&, const QXmppRosterIq::Item&);
 	signals:
-		void gotRosterItems (const QList<QObject*>&);
-		void rosterItemRemoved (QObject*);
+		void gotRosterItems (const QList<ICLEntry*>&);
+		void rosterItemRemoved (GlooxCLEntry*);
 		void rosterChanged ();
 
 		void gotRequestedPosts (const QList<LC::Azoth::Post>&, const QString&);

@@ -16,6 +16,11 @@
 
 class QDateTime;
 
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
+
 namespace LC::Azoth::Acetamide
 {
 	class IrcServerHandler;
@@ -45,7 +50,7 @@ namespace LC::Azoth::Acetamide
 
 		ServerOptions GetServerOptions () const;
 
-		QObjectList GetCLEntries () const;
+		QList<ICLEntry*> GetCLEntries () const;
 
 		ChannelHandler* GetChannelHandler (const QString& channel);
 		QList<ChannelHandler*> GetChannels () const;

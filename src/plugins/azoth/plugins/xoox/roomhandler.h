@@ -58,7 +58,7 @@ namespace Xoox
 
 		void SetPresence (QXmppPresence);
 
-		QList<QObject*> GetParticipants () const;
+		QList<ICLEntry*> GetParticipants () const;
 		QString GetSubject () const;
 		void SetSubject (const QString&);
 		void Join ();
@@ -67,10 +67,8 @@ namespace Xoox
 		QString GetOurNick () const;
 		void SetOurNick (const QString&);
 
-		void SetAffiliation (RoomParticipantEntry*,
-				QXmppMucItem::Affiliation, const QString&);
-		void SetRole (RoomParticipantEntry*,
-				QXmppMucItem::Role, const QString&);
+		void SetAffiliation (const RoomParticipantEntry&, QXmppMucItem::Affiliation, const QString&);
+		void SetRole (const RoomParticipantEntry&, QXmppMucItem::Role, const QString&);
 
 		QXmppMucRoom* GetRoom () const;
 

@@ -26,7 +26,7 @@ namespace Azoth
 		};
 	}
 
-	UsersListWidget::UsersListWidget (const QList<QObject*>& parts,
+	UsersListWidget::UsersListWidget (const QList<ICLEntry*>& entries,
 			std::function<QString (ICLEntry*)> nameGetter, QWidget *parent)
 	: QDialog (parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint)
 	, Filter_ (new QSortFilterProxyModel (this))
@@ -34,13 +34,11 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		for (auto part : parts)
+		for (auto entry : entries)
 		{
-			auto entry = qobject_cast<ICLEntry*> (part);
-
 			auto item = new QStandardItem (nameGetter (entry));
 			item->setIcon (ResourcesManager::Instance ().GetIconForState (entry->GetStatus ().State_));
-			item->setData (QVariant::fromValue (part), PLRObject);
+			item->setData (QVariant::fromValue (entry), PLRObject);
 			item->setEditable (false);
 
 			PartsModel_->appendRow (item);
@@ -77,16 +75,16 @@ namespace Azoth
 		fixer->SetInterceptEnter (false);
 	}
 
-	QObject* UsersListWidget::GetActivatedParticipant () const
+	ICLEntry* UsersListWidget::GetActivatedParticipant () const
 	{
 		const auto& current = Ui_.ListView_->currentIndex ();
 		if (current.isValid ())
-			return current.data (PLRObject).value<QObject*> ();
+			return current.data (PLRObject).value<ICLEntry*> ();
 
 		if (Filter_->rowCount ())
-			return Filter_->index (0, 0).data (PLRObject).value<QObject*> ();
+			return Filter_->index (0, 0).data (PLRObject).value<ICLEntry*> ();
 
-		return 0;
+		return nullptr;
 	}
 }
 }

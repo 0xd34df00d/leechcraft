@@ -57,12 +57,9 @@ namespace VelvetBird
 		return FRenamable;
 	}
 
-	QList<QObject*> Account::GetCLEntries ()
+	QList<ICLEntry*> Account::GetCLEntries ()
 	{
-		QList<QObject*> result;
-		for (auto buddy : Buddies_)
-			result << buddy;
-		return result;
+		return { Buddies_.begin (), Buddies_.end () };
 	}
 
 	QString Account::GetAccountName () const

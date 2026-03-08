@@ -169,19 +169,14 @@ namespace Azoth
 
 	void AvatarsManager::handleAccount (QObject *accObj)
 	{
-		const auto handleEntries = [this] (const QList<QObject*>& entries)
+		const auto handleEntries = [this] (const QList<ICLEntry*>& entries)
 		{
-			for (const auto entryObj : entries)
-			{
-				if (const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
-					!iha)
-					continue;
-
-				connect (entryObj,
-						SIGNAL (avatarChanged (QObject*)),
-						this,
-						SLOT (invalidateAvatar (QObject*)));
-			}
+			for (const auto entry : entries)
+				if (qobject_cast<IHaveAvatars*> (entry->GetQObject ()))
+					connect (entry->GetQObject (),
+							SIGNAL (avatarChanged (QObject*)),
+							this,
+							SLOT (invalidateAvatar (QObject*)));
 		};
 		const auto acc = qobject_cast<IAccount*> (accObj);
 		connect (&acc->GetAccountEmitter (),

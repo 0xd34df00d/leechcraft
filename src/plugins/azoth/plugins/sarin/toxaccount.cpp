@@ -161,11 +161,9 @@ namespace LC::Azoth::Sarin
 		return FRenamable;
 	}
 
-	QList<QObject*> ToxAccount::GetCLEntries ()
+	QList<ICLEntry*> ToxAccount::GetCLEntries ()
 	{
-		QList<QObject*> result;
-		std::copy (Contacts_.begin (), Contacts_.end (), std::back_inserter (result));
-		return result;
+		return { Contacts_.begin (), Contacts_.end() };
 	}
 
 	QString ToxAccount::GetAccountName () const
@@ -489,7 +487,7 @@ namespace LC::Azoth::Sarin
 
 	void ToxAccount::InitEntries (const QList<Pubkey>& pubkeys)
 	{
-		QList<QObject*> newEntries;
+		QList<ICLEntry*> newEntries;
 		for (const auto pubkey : pubkeys)
 			if (auto& entry = Contacts_ [pubkey];
 				!entry)
@@ -554,7 +552,7 @@ namespace LC::Azoth::Sarin
 		if (!Contacts_.contains (pubkey))
 			InitEntry (pubkey);
 
-		emit Emitter_.authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
+		emit Emitter_.authorizationRequested (*Contacts_.value (pubkey), msg.trimmed ());
 	}
 
 	void ToxAccount::HandleRemovedFriend (Pubkey pubkey)

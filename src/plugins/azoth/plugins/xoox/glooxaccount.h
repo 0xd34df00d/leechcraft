@@ -129,7 +129,7 @@ namespace Xoox
 		struct Managers;
 		std::shared_ptr<Managers> Managers_;
 
-		QHash<QObject*, QPair<QString, QString>> ExistingEntry2JoinConflict_;
+		QHash<ICLEntry*, QPair<QString, QString>> ExistingEntry2JoinConflict_;
 
 		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;
@@ -150,7 +150,7 @@ namespace Xoox
 		QObject* GetQObject () override;
 		GlooxProtocol* GetParentProtocol () const override;
 		AccountFeatures GetAccountFeatures () const override;
-		QList<QObject*> GetCLEntries () override;
+		QList<ICLEntry*> GetCLEntries () override;
 		void SendMessage (GlooxMessage&);
 		QString GetAccountName () const override;
 		QString GetOurNick () const override;
@@ -258,8 +258,6 @@ namespace Xoox
 	private:
 		QString GetPassword (bool authFailure = false);
 		void HandleClientConnectionAvailable (bool);
-	public slots:
-		void handleEntryRemoved (QObject*);
 	signals:
 		void gotSDSession (QObject*) override;
 

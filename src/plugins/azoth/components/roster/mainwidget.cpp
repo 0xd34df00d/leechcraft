@@ -16,6 +16,7 @@
 #include <QShortcut>
 #include <QToolTip>
 #include <QTimer>
+#include <algorithm>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -263,7 +264,7 @@ namespace Azoth
 
 	void MainWidget::showAllUsersList ()
 	{
-		QList<QObject*> entries;
+		QList<ICLEntry*> entries;
 		int accCount = 0;
 		for (auto acc : Core::Instance ().GetAccounts ())
 		{
@@ -272,16 +273,12 @@ namespace Azoth
 
 			++accCount;
 			const auto& accEntries = acc->GetCLEntries ();
-			std::copy_if (accEntries.begin (), accEntries.end (), std::back_inserter (entries),
-					[] (QObject *entryObj) -> bool
-					{
-						auto entry = qobject_cast<ICLEntry*> (entryObj);
-						return entry->GetEntryType () != ICLEntry::EntryType::PrivateChat;
-					});
+			std::ranges::copy_if (accEntries, std::back_inserter (entries),
+					[] (ICLEntry *entry) { return entry->GetEntryType () != ICLEntry::EntryType::PrivateChat; });
 		}
 
 		UsersListWidget w (entries,
-				[accCount] (ICLEntry *entry) -> QString
+				[accCount] (ICLEntry *entry)
 				{
 					QString text = entry->GetEntryName ();
 					if (text != entry->GetHumanReadableID ())
@@ -298,8 +295,7 @@ namespace Azoth
 			return;
 
 		if (auto entry = w.GetActivatedParticipant ())
-			Core::Instance ().GetChatTabsManager ()->
-					OpenChat (qobject_cast<ICLEntry*> (entry), true);
+			Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 	}
 
 	namespace

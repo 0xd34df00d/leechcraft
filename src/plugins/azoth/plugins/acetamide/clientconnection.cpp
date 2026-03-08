@@ -41,9 +41,9 @@ namespace LC::Azoth::Acetamide
 		return ServerHandlers_.values ();
 	}
 
-	QList<QObject*> ClientConnection::GetCLEntries () const
+	QList<ICLEntry*> ClientConnection::GetCLEntries () const
 	{
-		QList<QObject*> result;
+		QList<ICLEntry*> result;
 		for (const auto ish : ServerHandlers_)
 		{
 			result << ish->GetCLEntry ();

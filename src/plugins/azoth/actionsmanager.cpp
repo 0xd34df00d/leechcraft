@@ -154,9 +154,7 @@ namespace Azoth
 		{
 			const auto parentObj = entry->GetParentCLEntryObject ();
 			const auto mucEntry = qobject_cast<IMUCEntry*> (parentObj);
-			return mucEntry ?
-					mucEntry->GetRealID (entry->GetQObject ()) :
-					QString ();
+			return mucEntry ? mucEntry->GetRealID (*entry) : QString ();
 		}
 
 		void SendDirectedStatus (QList<ICLEntry*> entries)
@@ -317,13 +315,11 @@ namespace Azoth
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			const auto mucEntryObj = FindByHRId (account, dia.GetID ());
-			const auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryObj);
+			const auto mucEntryBase = FindByHRId (account, dia.GetID ());
+			const auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryBase ? mucEntryBase->GetQObject () : nullptr);
 			if (!mucEntry)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "no MUC for"
-						<< dia.GetID ();
+				qWarning () << "no MUC for" << dia.GetID ();
 				return;
 			}
 
@@ -361,20 +357,8 @@ namespace Azoth
 
 			const bool closeTabs = XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ();
 			if (closeTabs)
-				for (auto partObj : mucEntry->GetParticipants ())
-				{
-					ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
-					if (!partEntry)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to cast"
-								<< partObj
-								<< "to ICLEntry";
-						continue;
-					}
-
-					Core::Instance ().GetChatTabsManager ()->CloseChat (partEntry, true);
-				}
+				for (const auto part : mucEntry->GetParticipants ())
+					Core::Instance ().GetChatTabsManager ()->CloseChat (part, true);
 
 			mucEntry->Leave ();
 
@@ -449,7 +433,7 @@ namespace Azoth
 			dia->show ();
 		}
 
-		void ChangePerm (QAction *action, ICLEntry* entry, const QString& text = QString (), bool global = false)
+		void ChangePerm (QAction *action, ICLEntry& entry, const QString& text = QString (), bool global = false)
 		{
 			const auto& permClass = action->property ("Azoth/TargetPermClass").toByteArray ();
 			const auto& perm = action->property ("Azoth/TargetPerm").toByteArray ();
@@ -462,7 +446,7 @@ namespace Azoth
 				return;
 			}
 
-			const auto parentObj = entry->GetParentCLEntryObject ();
+			const auto parentObj = entry.GetParentCLEntryObject ();
 			auto muc = qobject_cast<IMUCEntry*> (parentObj);
 			auto mucPerms = qobject_cast<IMUCPerms*> (parentObj);
 			if (!muc || !mucPerms)
@@ -473,43 +457,42 @@ namespace Azoth
 				return;
 			}
 
-			const auto acc = entry->GetParentAccount ();
-			const auto& realID = muc->GetRealID (entry->GetQObject ());
+			const auto acc = entry.GetParentAccount ();
+			const auto& realID = muc->GetRealID (entry);
 
-			mucPerms->SetPerm (entry->GetQObject (), permClass, perm, text);
+			mucPerms->SetPerm (entry, permClass, perm, text);
 
 			if (!global || realID.isEmpty ())
 				return;
 
 			for (auto item : acc->GetCLEntries ())
 			{
-				auto otherMuc = qobject_cast<IMUCEntry*> (item);
+				auto otherMuc = qobject_cast<IMUCEntry*> (item->GetQObject ());
 				if (!otherMuc || otherMuc == muc)
 					continue;
 
-				auto perms = qobject_cast<IMUCPerms*> (item);
+				auto perms = qobject_cast<IMUCPerms*> (item->GetQObject ());
 				if (!perms)
 					continue;
 
 				bool found = false;
 				for (auto part : otherMuc->GetParticipants ())
 				{
-					if (otherMuc->GetRealID (part) != realID)
+					if (otherMuc->GetRealID (*part) != realID)
 						continue;
 
 					found = true;
 
-					if (perms->MayChangePerm (part, permClass, perm))
+					if (perms->MayChangePerm (*part, permClass, perm))
 					{
-						perms->SetPerm (part, permClass, perm, text);
+						perms->SetPerm (*part, permClass, perm, text);
 						continue;
 					}
 
-					const auto& body = ActionsManager::tr ("Failed to change %1 for %2 in %3 "
-							"due to insufficient permissions.")
+					const auto& body = ActionsManager::tr ("Failed to change %1 for %2 in %3 due to insufficient permissions.")
 							.arg (perms->GetUserString (permClass))
 							.arg ("<em>" + realID + "</em>")
-							.arg (qobject_cast<ICLEntry*> (item)->GetEntryName ());
+							.arg (item->GetEntryName ());
 					const auto& e = Util::MakeNotification ("Azoth", body, Priority::Warning);
 					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 				}
@@ -522,7 +505,7 @@ namespace Azoth
 		void ChangePermMulti (QAction *action, const QList<ICLEntry*>& entries, const QString& text = QString (), bool global = false)
 		{
 			for (const auto entry : entries)
-				ChangePerm (action, entry, text, global);
+				ChangePerm (action, *entry, text, global);
 		}
 
 		void ChangePermAdvanced (QAction *action, const QList<ICLEntry*>& entries)
@@ -1340,17 +1323,17 @@ namespace Azoth
 
 	namespace
 	{
-		void UpdatePermChangeState (QMenu *menu, IMUCPerms *mucPerms, QObject *entryObj, const QByteArray& permClass)
+		void UpdatePermChangeState (QMenu *menu, IMUCPerms *mucPerms, ICLEntry& entry, const QByteArray& permClass)
 		{
 			for (QAction *action : menu->actions ())
 			{
 				const QByteArray& perm = action->property ("Azoth/TargetPerm").toByteArray ();
 				if (action->menu ())
-					UpdatePermChangeState (action->menu (), mucPerms, entryObj, permClass);
+					UpdatePermChangeState (action->menu (), mucPerms, entry, permClass);
 				else if (!action->isSeparator ())
 				{
-					action->setEnabled (mucPerms->MayChangePerm (entryObj, permClass, perm));
-					action->setChecked (mucPerms->GetPerms (entryObj) [permClass].contains (perm));
+					action->setEnabled (mucPerms->MayChangePerm (entry, permClass, perm));
+					action->setChecked (mucPerms->GetPerms (entry) [permClass].contains (perm));
 				}
 			}
 		}
@@ -1373,11 +1356,8 @@ namespace Azoth
 			Entry2Actions_ [entry] ["saveAvatar"]->setEnabled (AvatarsManager_->HasAvatar (entry->GetQObject ()));
 
 			const auto& allEntries = account->GetCLEntries ();
-			const auto hasMucs = std::any_of (allEntries.begin (), allEntries.end (),
-					[] (QObject *entryObj)
-					{
-						return qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::EntryType::MUC;
-					});
+			const auto hasMucs = std::ranges::any_of (allEntries,
+					[] (ICLEntry *entry) { return entry->GetEntryType () == ICLEntry::EntryType::MUC; });
 
 			Entry2Actions_ [entry] ["inviteToMuc"]->setEnabled (hasMucs);
 		}
@@ -1414,11 +1394,8 @@ namespace Azoth
 			if (mucPerms)
 			{
 				const auto& possible = mucPerms->GetPossiblePerms ();
-				QObject *entryObj = entry->GetQObject ();
-
-				for (const auto& permClass : possible.keys ())
-					UpdatePermChangeState (Entry2Actions_ [entry] [permClass]->menu (),
-							mucPerms, entryObj, permClass);
+				for (const auto& [permClass, _] : possible.asKeyValueRange ())
+					UpdatePermChangeState (Entry2Actions_ [entry] [permClass]->menu (), mucPerms, *entry, permClass);
 			}
 
 			const QString& realJid = GetMUCRealID (entry);

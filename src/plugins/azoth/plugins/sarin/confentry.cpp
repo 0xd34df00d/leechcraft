@@ -15,6 +15,7 @@
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "util.h"
+#include "util/sll/prelude.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -153,7 +154,7 @@ namespace LC::Azoth::Sarin
 		return false;
 	}
 
-	QList<QObject*> ConfEntry::GetParticipants ()
+	QList<ICLEntry*> ConfEntry::GetParticipants ()
 	{
 		return { Participants_.begin (), Participants_.end() };
 	}
@@ -172,7 +173,7 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	QString ConfEntry::GetRealID (QObject*) const
+	QString ConfEntry::GetRealID (const ICLEntry&) const
 	{
 		qWarning () << "real IDs are unsupported";
 		return {};
@@ -330,18 +331,19 @@ namespace LC::Azoth::Sarin
 		const auto& newPkeys = GetAllPkeys (peers);
 		const auto& prevPkeys = QSet<Pubkey> { Participants_.keyBegin (), Participants_.keyEnd () };
 
-		QList<QObject*> removedEntries;
+		QList<ICLEntry*> removedEntries;
 		for (const auto removedPkeys = prevPkeys - newPkeys;
 			 auto pkey : removedPkeys)
 			removedEntries << Participants_.take (pkey);
 		if (!removedEntries.isEmpty ())
 			emit Mgr_.GetAccount ().GetAccountEmitter ().removedCLItems (removedEntries);
-		qDeleteAll (removedEntries);
+		for (auto entry : removedEntries)
+			delete entry->GetQObject ();
 
 		OnlineNum2Pubkey_.clear ();
 		OfflineNum2Pubkey_.clear ();
 
-		QList<QObject*> newEntries;
+		QList<ICLEntry*> newEntries;
 		const auto handlePeers = [this, &newEntries] (const auto& list,
 				QHash<uint32_t, Pubkey>& num2pkey, const auto& getState)
 		{

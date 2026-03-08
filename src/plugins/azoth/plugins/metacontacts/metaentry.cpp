@@ -42,16 +42,14 @@ namespace Metacontacts
 				SLOT (handleManageContacts ()));
 	}
 
-	QObjectList MetaEntry::GetAvailEntryObjs () const
+	QList<ICLEntry*> MetaEntry::GetAvailEntryObjs () const
 	{
 		return AvailableRealEntries_;
 	}
 
 	QStringList MetaEntry::GetRealEntries () const
 	{
-		return UnavailableRealEntries_ +
-				Util::Map (AvailableRealEntries_,
-						[] (QObject *entryObj) { return qobject_cast<ICLEntry*> (entryObj)->GetEntryID (); });
+		return UnavailableRealEntries_ + Util::Map (AvailableRealEntries_, &ICLEntry::GetEntryID);
 	}
 
 	void MetaEntry::SetRealEntries (const QStringList& ids)
@@ -61,9 +59,7 @@ namespace Metacontacts
 
 	void MetaEntry::AddRealObject (ICLEntry *entry)
 	{
-		QObject *entryObj = entry->GetQObject ();
-
-		AvailableRealEntries_ << entryObj;
+		AvailableRealEntries_ << entry;
 		UnavailableRealEntries_.removeAll (entry->GetEntryID ());
 
 		HandleRealVariantsChanged (entry, entry->Variants ());
@@ -73,7 +69,9 @@ namespace Metacontacts
 		emit Emitter_.statusChanged (GetStatus (QString ()), QString ());
 
 		ConnectStandardSignals (entry);
-		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
+
+		if (const auto entryObj = entry->GetQObject ();
+			qobject_cast<IAdvancedCLEntry*> (entryObj))
 			ConnectAdvancedSiganls (entryObj);
 	}
 
@@ -137,10 +135,8 @@ namespace Metacontacts
 	QStringList MetaEntry::Variants () const
 	{
 		QStringList result;
-		for (const auto entryObj : AvailableRealEntries_)
+		for (const auto entry : AvailableRealEntries_)
 		{
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-
 			const auto& name = entry->GetEntryName ();
 			auto variants = entry->Variants ();
 			if (!variants.contains (QString ()))
@@ -164,6 +160,15 @@ namespace Metacontacts
 		return result;
 	}
 
+	template<typename Target>
+	auto CastEntry (ICLEntry *src)
+	{
+		if constexpr (std::is_same_v<Target, ICLEntry*>)
+			return src;
+		else
+			return qobject_cast<Target> (src->GetQObject ());
+	}
+
 	template<typename F>
 	auto MetaEntry::ActWithVariant (F&& func, const QString& variant) const
 	{
@@ -173,7 +178,7 @@ namespace Metacontacts
 		if (variant.isEmpty ())
 		{
 			if (!AvailableRealEntries_.isEmpty ())
-				return func (qobject_cast<Arg> (AvailableRealEntries_.first ()), QString ());
+				return func (CastEntry<Arg> (AvailableRealEntries_.first ()), QString ());
 			return R ();
 		}
 
@@ -184,10 +189,7 @@ namespace Metacontacts
 		}
 
 		const auto& [realEntry, realVar] = Variant2RealVariant_ [variant];
-		if constexpr (std::is_same_v<Arg, ICLEntry*>)
-			return func (realEntry, realVar);
-		else
-			return func (qobject_cast<Arg> (realEntry->GetQObject ()), realVar);
+		return func (CastEntry<Arg> (realEntry), realVar);
 	}
 
 	void MetaEntry::SendMessage (const OutgoingMessage& message)
@@ -207,8 +209,8 @@ namespace Metacontacts
 
 	void MetaEntry::PurgeMessages (const QDateTime& from)
 	{
-		for (const auto obj : AvailableRealEntries_)
-			qobject_cast<ICLEntry*> (obj)->PurgeMessages (from);
+		for (const auto entry : AvailableRealEntries_)
+			entry->PurgeMessages (from);
 	}
 
 	void MetaEntry::SetChatPartState (ChatPartState state, const QString& variant)
@@ -229,14 +231,10 @@ namespace Metacontacts
 
 	QList<QAction*> MetaEntry::GetActions () const
 	{
-		auto result = Util::ConcatMap (AvailableRealEntries_,
-				[] (QObject *entryObj) { return qobject_cast<ICLEntry*> (entryObj)->GetActions (); });
-
+		auto result = Util::ConcatMap (AvailableRealEntries_, &ICLEntry::GetActions);
 		if (!result.isEmpty ())
 			result << ActionMCSep_;
-
 		result << ActionManageContacts_;
-
 		return result;
 	}
 
@@ -302,11 +300,11 @@ namespace Metacontacts
 		connect (&entry->GetParentAccount ()->GetAccountEmitter (),
 				&Emitters::Account::removedCLItems,
 				this,
-				[this] (const QList<QObject*>& objs)
+				[this] (const QList<ICLEntry*>& entries)
 				{
 					auto remaining = AvailableRealEntries_;
-					for (const auto obj : objs)
-						remaining.removeAll (obj);
+					for (const auto entry : entries)
+						remaining.removeAll (entry);
 
 					if (remaining.size () != AvailableRealEntries_.size ())
 						SetNewEntryList (remaining, false);
@@ -330,8 +328,9 @@ namespace Metacontacts
 				SLOT (handleRealAttentionDrawn (const QString&, const QString&)));
 	}
 
-	void MetaEntry::PerformRemoval (QObject *entryObj)
+	void MetaEntry::PerformRemoval (ICLEntry *entry)
 	{
+		const auto entryObj = entry->GetQObject ();
 		for (auto i = Messages_.begin (); i != Messages_.end (); )
 		{
 			const auto metaMsg = dynamic_cast<MetaMessage*> (*i);
@@ -343,7 +342,6 @@ namespace Metacontacts
 				++i;
 		}
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		for (auto i = Variant2RealVariant_.begin (); i != Variant2RealVariant_.end (); )
 		{
 			const auto& var = i.key ();
@@ -363,18 +361,18 @@ namespace Metacontacts
 		entry->GetCLEntryEmitter ().disconnect (this);
 	}
 
-	void MetaEntry::SetNewEntryList (const QList<QObject*>& newList, bool readdRemoved)
+	void MetaEntry::SetNewEntryList (const QList<ICLEntry*>& newList, bool readdRemoved)
 	{
 		if (newList == AvailableRealEntries_)
 			return;
 
 		const auto removedContacts = Util::Filter (AvailableRealEntries_,
-				[&newList] (QObject *obj) { return !newList.contains (obj); });
+				[&newList] (ICLEntry *obj) { return !newList.contains (obj); });
 
 		AvailableRealEntries_ = newList;
 
-		for (const auto entryObj : removedContacts)
-			PerformRemoval (entryObj);
+		for (const auto entry : removedContacts)
+			PerformRemoval (entry);
 
 		Core::Instance ().HandleEntriesRemoved (removedContacts, readdRemoved);
 

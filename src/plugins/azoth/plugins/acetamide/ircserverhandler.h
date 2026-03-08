@@ -76,7 +76,7 @@ namespace Acetamide
 		QString GetNickName () const;
 		QString GetServerID () const;
 		ServerOptions GetServerOptions () const;
-		QObjectList GetCLEntries () const;
+		QList<ICLEntry*> GetCLEntries () const;
 
 		QList<ChannelHandler*> GetChannelHandlers () const;
 

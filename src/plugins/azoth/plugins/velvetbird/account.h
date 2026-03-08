@@ -44,7 +44,7 @@ namespace VelvetBird
 		QObject* GetQObject ();
 		Protocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
-		QList<QObject*> GetCLEntries ();
+		QList<ICLEntry*> GetCLEntries ();
 		QString GetAccountName () const;
 		QString GetOurNick () const;
 		void RenameAccount (const QString& name);

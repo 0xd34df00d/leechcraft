@@ -13,6 +13,11 @@
 
 class QStandardItemModel;
 
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
+
 namespace LC
 {
 namespace Azoth
@@ -22,13 +27,13 @@ namespace Metacontacts
 	class ManageContactsDialog : public QDialog
 	{
 		Q_OBJECT
-		
+
 		Ui::ManageContactsDialog Ui_;
 		QStandardItemModel *Model_;
 	public:
-		ManageContactsDialog (const QList<QObject*>&, QWidget* = 0);
-		
-		QList<QObject*> GetObjects () const;
+		ManageContactsDialog (const QList<ICLEntry*>&, QWidget* = 0);
+
+		QList<ICLEntry*> GetObjects () const;
 	private slots:
 		void on_MoveUp__released ();
 		void on_MoveDown__released ();

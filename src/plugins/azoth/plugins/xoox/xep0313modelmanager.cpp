@@ -19,11 +19,10 @@ namespace Xoox
 {
 	namespace
 	{
-		void PerformWithEntries (const QList<QObject*>& items, const auto& f)
+		void PerformWithEntries (const QList<ICLEntry*>& entries, const auto& f)
 		{
-			for (auto itemObj : items)
-				if (const auto entry = qobject_cast<ICLEntry*> (itemObj);
-					entry->GetEntryType () != ICLEntry::EntryType::MUC)
+			for (auto entry : entries)
+				if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 					f (entry);
 		}
 	}
@@ -42,9 +41,9 @@ namespace Xoox
 		connect (&emitter,
 				&Emitters::Account::removedCLItems,
 				this,
-				[this] (const QList<QObject*>& items)
+				[this] (const QList<ICLEntry*>& entries)
 				{
-					PerformWithEntries (items,
+					PerformWithEntries (entries,
 							[this] (ICLEntry *entry)
 							{
 								if (const auto item = Jid2Item_.take (entry->GetHumanReadableID ()))
@@ -75,9 +74,9 @@ namespace Xoox
 		return item->index ();
 	}
 
-	void Xep0313ModelManager::HandleGotCLItems (const QList<QObject*>& items)
+	void Xep0313ModelManager::HandleGotCLItems (const QList<ICLEntry*>& entries)
 	{
-		PerformWithEntries (items,
+		PerformWithEntries (entries,
 				[this] (ICLEntry *entry)
 				{
 					const auto& jid = entry->GetHumanReadableID ();

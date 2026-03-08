@@ -32,7 +32,7 @@ namespace Metacontacts
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
-		QList<QObject*> GetCLEntries ();
+		QList<ICLEntry*> GetCLEntries ();
 		QString GetAccountName () const;
 		QString GetOurNick () const;
 		void RenameAccount (const QString&);

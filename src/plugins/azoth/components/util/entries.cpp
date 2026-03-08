@@ -9,6 +9,7 @@
 #include "entries.h"
 #include <ranges>
 #include <QSettings>
+#include <util/sll/qobjectrefcast.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -22,6 +23,7 @@
 #endif
 
 #include "../../core.h"
+#include "util/sll/prelude.h"
 
 namespace LC::Azoth
 {
@@ -47,13 +49,13 @@ namespace LC::Azoth
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	QObject* FindByHRId (IAccount *acc, const QString& hrId)
+	ICLEntry* FindByHRId (IAccount *acc, const QString& hrId)
 	{
 		const auto& allEntries = acc->GetCLEntries ();
 		const auto pos = std::ranges::find_if (allEntries,
-				[&hrId] (QObject *obj)
+				[&hrId] (ICLEntry *entry)
 				{
-					return qobject_cast<ICLEntry*> (obj)->GetHumanReadableID () == hrId;
+					return entry->GetHumanReadableID () == hrId;
 				});
 		return pos == allEntries.end () ? nullptr : *pos;
 	}
@@ -90,29 +92,7 @@ namespace LC::Azoth
 
 	QStringList GetMucParticipants (const QString& entryId)
 	{
-		const auto entry = qobject_cast<IMUCEntry*> (Core::Instance ().GetEntry (entryId));
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry
-					<< "doesn't implement IMUCEntry";
-			return {};
-		}
-
-		QStringList participantsList;
-		for (const auto item : entry->GetParticipants ())
-		{
-			const auto part = qobject_cast<ICLEntry*> (item);
-			if (!part)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast item to ICLEntry"
-						<< item;
-				continue;
-			}
-			participantsList << part->GetEntryName ();
-		}
-		return participantsList;
+		auto& entry = qobject_ref_cast<IMUCEntry> (Core::Instance ().GetEntry (entryId));
+		return Util::Map (entry.GetParticipants (), &ICLEntry::GetEntryName);
 	}
-
 }

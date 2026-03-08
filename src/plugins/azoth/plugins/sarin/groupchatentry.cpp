@@ -139,7 +139,7 @@ namespace LC::Azoth::Sarin
 		return false;
 	}
 
-	QList<QObject*> GroupChatEntry::GetParticipants ()
+	QList<ICLEntry*> GroupChatEntry::GetParticipants ()
 	{
 		return {};
 	}
@@ -158,7 +158,7 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	QString GroupChatEntry::GetRealID (QObject *participant) const
+	QString GroupChatEntry::GetRealID (const ICLEntry& participant) const
 	{
 		return {};
 	}

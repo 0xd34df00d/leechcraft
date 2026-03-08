@@ -56,9 +56,10 @@ namespace LC::Azoth::Acetamide
 		return ChannelOptions_;
 	}
 
-	QList<QObject*> ChannelHandler::GetParticipants () const
+	QList<ICLEntry*> ChannelHandler::GetParticipants () const
 	{
-		QList<QObject*> result;
+		QList<ICLEntry*> result;
+		result.reserve (Nick2Entry_.size ());
 		for (const auto& cpe : Nick2Entry_)
 			result << cpe.get ();
 		return result;
@@ -339,7 +340,7 @@ namespace LC::Azoth::Acetamide
 		RemoveUserFromChannel (kickee);
 	}
 
-	void ChannelHandler::SetRole (ChannelParticipantEntry *entry, ChannelRole role, const QString&)
+	void ChannelHandler::SetRole (const ChannelParticipantEntry& entry, ChannelRole role, const QString&)
 	{
 		QString mode;
 
@@ -365,41 +366,39 @@ namespace LC::Azoth::Acetamide
 		}
 
 		if (!mode.isEmpty ())
-			mode.prepend (entry->Roles ().contains (Voiced) ? '-' : '+');
+			mode.prepend (entry.Roles ().contains (Voiced) ? '-' : '+');
 
 		if (!mode.isEmpty ())
 			CM_->SetNewChannelMode (ChannelOptions_.ChannelName_,
-					mode, entry->GetEntryName ());
+					mode, entry.GetEntryName ());
 	}
 
-	void ChannelHandler::ManageWithParticipant (ChannelParticipantEntry *entry, ChannelManagment manage)
+	void ChannelHandler::ManageWithParticipant (const ChannelParticipantEntry& entry, ChannelManagment manage)
 	{
 		switch (manage)
 		{
 		case ChannelManagment::BanByName:
-			AddBanListItem (entry->GetEntryName () + "!*@*");
+			AddBanListItem (entry.GetEntryName () + "!*@*");
 			break;
 		case ChannelManagment::BanByUserAndDomain:
-			AddBanListItem ("*!" + entry->GetUserName () + "@" + entry->GetHostName ());
+			AddBanListItem ("*!" + entry.GetUserName () + "@" + entry.GetHostName ());
 			break;
 		case ChannelManagment::BanByDomain:
-			AddBanListItem ("*!*@" + entry->GetHostName ());
+			AddBanListItem ("*!*@" + entry.GetHostName ());
 			break;
 		case ChannelManagment::Kick:
-			CM_->KickCommand (ChannelOptions_.ChannelName_,
-					entry->GetEntryName (), {});
+			CM_->KickCommand (ChannelOptions_.ChannelName_, entry.GetEntryName (), {});
 			break;
 		case ChannelManagment::KickAndBan:
-			AddBanListItem (entry->GetEntryName () + "!*@*");
-			CM_->KickCommand (ChannelOptions_.ChannelName_,
-					entry->GetEntryName (), {});
+			AddBanListItem (entry.GetEntryName () + "!*@*");
+			CM_->KickCommand (ChannelOptions_.ChannelName_, entry.GetEntryName (), {});
 			break;
 		}
 	}
 
 	void ChannelHandler::RemoveThis ()
 	{
-		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& obj) -> QObject* { return obj.get (); });
+		const auto& entries = Util::Map (Nick2Entry_, [] (const auto& obj) -> ICLEntry* { return obj.get (); });
 		emit CM_->GetAccount ()->GetAccountEmitter ().removedCLItems (entries);
 
 		for (const auto& entry : Nick2Entry_)

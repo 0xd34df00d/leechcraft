@@ -659,16 +659,16 @@ namespace Xoox
 		return entry;
 	}
 
-	QList<QObject*> ClientConnection::GetCLEntries () const
+	QList<ICLEntry*> ClientConnection::GetCLEntries () const
 	{
-		QList<QObject*> result { SelfContact_ };
+		QList<ICLEntry*> result { SelfContact_ };
 
 		const auto totalRoomParticipants = std::accumulate (RoomHandlers_.begin (), RoomHandlers_.end (), 0,
 				[] (int acc, RoomHandler *rh) { return acc + rh->GetParticipants ().size (); });
 		result.reserve (1 + JID2CLEntry_.size () + ODSEntries_.size () + totalRoomParticipants + RoomHandlers_.size ());
 
-		std::copy (JID2CLEntry_.begin (), JID2CLEntry_.end (), std::back_inserter (result));
-		std::copy (ODSEntries_.begin (), ODSEntries_.end (), std::back_inserter (result));
+		std::ranges::copy (JID2CLEntry_, std::back_inserter (result));
+		std::ranges::copy (ODSEntries_, std::back_inserter (result));
 
 		for (const auto rh : RoomHandlers_)
 		{
@@ -676,6 +676,14 @@ namespace Xoox
 			result += rh->GetParticipants ();
 		}
 
+		return result;
+	}
+
+	QList<GlooxCLEntry*> ClientConnection::GetRosterEntries () const
+	{
+		QList<GlooxCLEntry*> result { JID2CLEntry_.begin (), JID2CLEntry_.end () };
+		result.reserve (result.size () + ODSEntries_.size ());
+		std::ranges::copy (ODSEntries_, std::back_inserter (result));
 		return result;
 	}
 
@@ -741,7 +749,7 @@ namespace Xoox
 	void ClientConnection::handleRosterReceived ()
 	{
 		const auto& rm = Exts ().Get<QXmppRosterManager> ();
-		QObjectList items;
+		QList<ICLEntry*> items;
 		for (const auto& bareJid : rm.getRosterBareJids ())
 		{
 			const auto& re = rm.getRosterEntry (bareJid);
@@ -1042,28 +1050,30 @@ namespace Xoox
 		switch (pres.type ())
 		{
 		case QXmppPresence::Subscribe:
-			if (!JID2CLEntry_.contains (jid))
+		{
+			auto& entry = JID2CLEntry_ [jid];
+			if (!entry)
 			{
-				GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
-				JID2CLEntry_ [jid] = entry;
+				entry = new GlooxCLEntry (jid, Account_);
 				emit gotRosterItems ({ entry });
 			}
-			JID2CLEntry_ [jid]->SetAuthRequested (true);
-			emit Account_->GetAccountEmitter ().authorizationRequested (JID2CLEntry_ [jid], pres.statusText ());
+			entry->SetAuthRequested (true);
+			emit Account_->GetAccountEmitter ().authorizationRequested (*entry, pres.statusText ());
 			break;
+		}
 		case QXmppPresence::Subscribed:
-			if (JID2CLEntry_.contains (jid))
-				emit Account_->GetAccountEmitter ().itemGrantedSubscription (JID2CLEntry_ [jid], QString ());
+			if (const auto entry = JID2CLEntry_.value (jid))
+				emit Account_->GetAccountEmitter ().itemGrantedSubscription (*entry, QString ());
 			break;
 		case QXmppPresence::Unsubscribe:
-			if (JID2CLEntry_.contains (jid))
-				emit Account_->GetAccountEmitter ().itemUnsubscribed (JID2CLEntry_ [jid], pres.statusText ());
+			if (const auto entry = JID2CLEntry_.value (jid))
+				emit Account_->GetAccountEmitter ().itemUnsubscribed (*entry, pres.statusText ());
 			else
 				emit Account_->GetAccountEmitter ().itemUnsubscribed (jid, pres.statusText ());
 			break;
 		case QXmppPresence::Unsubscribed:
-			if (JID2CLEntry_.contains (jid))
-				emit Account_->GetAccountEmitter ().itemCancelledSubscription (JID2CLEntry_ [jid], pres.statusText ());
+			if (const auto entry = JID2CLEntry_.value (jid))
+				emit Account_->GetAccountEmitter ().itemCancelledSubscription (*entry, pres.statusText ());
 			break;
 		case QXmppPresence::Error:
 		{

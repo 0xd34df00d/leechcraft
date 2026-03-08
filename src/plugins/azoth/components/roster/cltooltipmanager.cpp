@@ -204,13 +204,13 @@ namespace Azoth
 				tip += " (" + Util::MakeTimeFromLong (tuneInfo.Length_) + ")";
 		}
 
-		void FormatMucPerms (QString& tip, IMUCPerms *mucPerms, ICLEntry *entry)
+		void FormatMucPerms (QString& tip, IMUCPerms *mucPerms, ICLEntry& entry)
 		{
 			if (!mucPerms)
 				return;
 
 			tip += "<hr />";
-			const auto& perms = mucPerms->GetPerms (entry->GetQObject ());
+			const auto& perms = mucPerms->GetPerms (entry);
 			for (const auto& pair : Util::Stlize (perms))
 			{
 				const auto& permClass = pair.first;
@@ -314,14 +314,14 @@ namespace Azoth
 
 		if (auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntryObject ()))
 		{
-			const QString& jid = mucEntry->GetRealID (entry->GetQObject ());
+			const QString& jid = mucEntry->GetRealID (*entry);
 			tip += "<br />" + tr ("Real ID:") + ' ';
 			tip += jid.isEmpty () ? tr ("unknown") : jid.toHtmlEscaped ();
 		}
 
 		FormatMucPerms (tip,
 				qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()),
-				entry);
+				*entry);
 
 		const auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		proxy->SetValue ("tooltip", tip);

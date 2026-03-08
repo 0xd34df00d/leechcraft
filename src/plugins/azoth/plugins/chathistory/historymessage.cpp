@@ -10,6 +10,8 @@
 #include <QtDebug>
 #include <interfaces/azoth/imucentry.h>
 
+#include "interfaces/azoth/iclentry.h"
+
 namespace LC
 {
 namespace Azoth
@@ -17,7 +19,7 @@ namespace Azoth
 namespace ChatHistory
 {
 	HistoryMessage::HistoryMessage (IMessage::Direction dir,
-			QObject *otherPart,
+			ICLEntry *otherPart,
 			Type type,
 			const QString& variant,
 			const QString& body,
@@ -69,7 +71,7 @@ namespace ChatHistory
 
 	QObject* HistoryMessage::OtherPart () const
 	{
-		return OtherPart_;
+		return OtherPart_ ? OtherPart_->GetQObject () : nullptr;
 	}
 
 	QString HistoryMessage::GetOtherVariant () const

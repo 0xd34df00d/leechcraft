@@ -59,16 +59,10 @@ namespace Azoth
 		 * GetPossiblePerms(), and the values must be contained in the
 		 * corresponding lists in GetPossiblePerms()'s return value.
 		 *
-		 * @note This function is also used for getting our user's
-		 * permissions. For this, null pointer is passed instead of
-		 * participant, and permissions of our user are expected to be
-		 * returned.
-		 *
-		 * @param[in] participant The participant for which to query the
-		 * permissions, or NULL to query self.
+		 * @param[in] participant The participant to query the permissions for.
 		 * @return The current permissions for the given participant.
 		 */
-		virtual QMap<QByteArray, QList<QByteArray>> GetPerms (QObject *participant) const = 0;
+		virtual QMap<QByteArray, QList<QByteArray>> GetPerms (const ICLEntry& participant) const = 0;
 
 		virtual QPair<QByteArray, QByteArray> GetKickPerm () const = 0;
 		virtual QPair<QByteArray, QByteArray> GetBanPerm () const = 0;
@@ -89,7 +83,7 @@ namespace Azoth
 		 * @param[in] participant The participant to query.
 		 * @return The affiliation analog for this participant
 		 */
-		virtual QByteArray GetAffName (QObject *participant) const = 0;
+		virtual QByteArray GetAffName (const ICLEntry& participant) const = 0;
 
 		/** @brief Whether given participant's permission may be changed
 		 * to the given value.
@@ -109,7 +103,7 @@ namespace Azoth
 		 * @param[in] targetPerm Target permission in that class.
 		 * @return Whether permission could be set successfully.
 		 */
-		virtual bool MayChangePerm (QObject *participant,
+		virtual bool MayChangePerm (const ICLEntry& participant,
 				const QByteArray& permClass, const QByteArray& targetPerm) const = 0;
 
 		/** @brief Sets the permission for the given participant.
@@ -130,7 +124,7 @@ namespace Azoth
 		 *
 		 * @sa TrySetPerm
 		 */
-		virtual void SetPerm (QObject *participant,
+		virtual void SetPerm (ICLEntry& participant,
 				const QByteArray& permClass, const QByteArray& targetPerm, const QString& reason) = 0;
 
 		/** @brief Returns if one participant has less perms than another.
@@ -144,7 +138,7 @@ namespace Azoth
 		 * @return True if first participant is "less than" the other
 		 * one, false otherwise.
 		 */
-		virtual bool IsLessByPerm (QObject *part1, QObject *part2) const = 0;
+		virtual bool IsLessByPerm (const ICLEntry& part1, const ICLEntry& part2) const = 0;
 
 		/** @brief Returns whether users can have many perms of the
 		 * given class at once.

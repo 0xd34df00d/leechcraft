@@ -105,7 +105,7 @@ namespace LC::Azoth
 
 		ICLEntry* GetEntry (const QModelIndex& idx)
 		{
-			return qobject_cast<ICLEntry*> (idx.data (CLREntryObject).value<QObject*> ());
+			return idx.data (CLRIEntry).value<ICLEntry*> ();
 		}
 	}
 
@@ -139,8 +139,8 @@ namespace LC::Azoth
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())
 			if (const auto lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntryObject ()))
 			{
-				const bool less = lp->IsLessByPerm (lE->GetQObject (), rE->GetQObject ());
-				const bool more = lp->IsLessByPerm (rE->GetQObject (), lE->GetQObject ());
+				const bool less = lp->IsLessByPerm (*lE, *rE);
+				const bool more = lp->IsLessByPerm (*rE, *lE);
 				if (less || more)
 					return more;
 			}

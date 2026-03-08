@@ -79,7 +79,7 @@ namespace LC::Azoth::Sarin
 		QObject* GetParentProtocol () const override;
 		AccountFeatures GetAccountFeatures () const override;
 
-		QList<QObject*> GetCLEntries () override;
+		QList<ICLEntry*> GetCLEntries () override;
 
 		QString GetAccountName () const override;
 		QString GetOurNick () const override;

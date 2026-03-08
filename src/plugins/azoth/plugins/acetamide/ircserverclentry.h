@@ -49,14 +49,14 @@ namespace LC::Azoth::Acetamide
 		QString GetMUCSubject () const override;
 		bool CanChangeSubject () const override;
 		void SetMUCSubject (const QString&) override;
-		QList<QObject*> GetParticipants () override;
+		QList<ICLEntry*> GetParticipants () override;
 		bool IsAutojoined () const override;
 		void Join () override;
 		void Leave (const QString& msg = {}) override;
 		QString GetNick () const override;
 		void SetNick (const QString&) override;
 		QString GetGroupName () const override;
-		QString GetRealID (QObject*) const override;
+		QString GetRealID (const ICLEntry&) const override;
 		QVariantMap GetIdentifyingData () const override;
 		void InviteToMUC (const QString&, const QString&) override;
 

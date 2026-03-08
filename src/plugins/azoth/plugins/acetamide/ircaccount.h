@@ -63,7 +63,7 @@ namespace LC::Azoth::Acetamide
 		QObject* GetQObject () override;
 		IrcProtocol* GetParentProtocol () const override;
 		AccountFeatures GetAccountFeatures () const override;
-		QList<QObject*> GetCLEntries () override;
+		QList<ICLEntry*> GetCLEntries () override;
 
 		QString GetAccountName () const override;
 		QString GetOurNick () const override;

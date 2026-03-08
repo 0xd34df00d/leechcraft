@@ -823,9 +823,7 @@ namespace LC::Azoth
 			const auto intensity = XmlSettingsManager::Instance ()
 					.property ("HighlightNicksInBodyAlphaReduction").toInt ();
 
-			const auto& nicks = Util::Map (entry->GetParticipants (),
-					[] (QObject *obj) { return qobject_cast<ICLEntry*> (obj)->GetEntryName (); });
-			for (const auto& nick : nicks)
+			for (const auto& nick : Util::Map (entry->GetParticipants (), &ICLEntry::GetEntryName))
 			{
 				if (!body.contains (nick) || nick.isEmpty ())
 					continue;
@@ -1643,8 +1641,8 @@ namespace LC::Azoth
 
 		accItem->setEditable (false);
 
-		for (const auto clObj : account->GetCLEntries ())
-			AddCLEntry (&qobject_ref_cast<ICLEntry> (clObj), accItem);
+		for (const auto entry : account->GetCLEntries ())
+			AddCLEntry (entry, accItem);
 
 		NotificationsManager_->AddAccount (accObject);
 
@@ -1652,60 +1650,58 @@ namespace LC::Azoth
 		connect (&emitter,
 				&Emitters::Account::gotCLItems,
 				this,
-				[this, account] (const QList<QObject*>& items)
+				[this, account] (const QList<ICLEntry*>& entries)
 				{
-					if (items.isEmpty ())
+					if (entries.isEmpty ())
 						return;
 
 					const auto accountItem = GetAccountItem (account);
 					if (!accountItem)
 						return;
 
-					for (const auto item : items)
+					for (const auto entry : entries)
 					{
-						auto& entry = qobject_ref_cast<ICLEntry> (item);
-						if (Entry2Items_.contains (&entry))
+						if (Entry2Items_.contains (entry))
 							continue;
 
-						AddCLEntry (&entry, accountItem);
+						AddCLEntry (entry, accountItem);
 
-						if (entry.GetEntryType () == ICLEntry::EntryType::MUC)
+						if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 						{
 							const bool open = XmlSettingsManager::Instance ().property ("OpenTabsForAutojoin").toBool ();
-							if (open || !qobject_ref_cast<IMUCEntry> (item).IsAutojoined ())
-								ChatTabsManager_->OpenChat (&entry, false);
+							if (open || !qobject_ref_cast<IMUCEntry> (entry->GetQObject ()).IsAutojoined ())
+								ChatTabsManager_->OpenChat (entry, false);
 						}
 
-						ChatTabsManager_->HandleEntryAdded (&entry);
+						ChatTabsManager_->HandleEntryAdded (entry);
 					}
 				});
 		connect (&emitter,
 				&Emitters::Account::removedCLItems,
 				this,
-				[this] (const QList<QObject*>& entries)
+				[this] (const QList<ICLEntry*>& entries)
 				{
-					for (const auto entryObj : entries)
+					for (const auto entry : entries)
 					{
-						auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
-						if (entry.GetEntryType () == ICLEntry::EntryType::MUC &&
+						if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
 								XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-							GetChatTabsManager ()->CloseChat (&entry, false);
+							GetChatTabsManager ()->CloseChat (entry, false);
 
-						entryObj->disconnect (this);
-						entry.GetCLEntryEmitter ().disconnect (this);
+						entry->GetQObject ()->disconnect (this);
+						entry->GetCLEntryEmitter ().disconnect (this);
 
-						TooltipManager_->RemoveEntry (&entry);
-						ChatTabsManager_->HandleEntryRemoved (&entry);
+						TooltipManager_->RemoveEntry (entry);
+						ChatTabsManager_->HandleEntryRemoved (entry);
 
-						for (auto clItem : Entry2Items_.value (&entry))
+						for (auto clItem : Entry2Items_.value (entry))
 							RemoveCLItem (clItem);
 
-						Entry2Items_.remove (&entry);
-						ActionsManager_->HandleEntryRemoved (&entry);
-						ID2Entry_.remove (entry.GetEntryID ());
-						Entry2SmoothAvatarCache_.remove (&entry);
-						NotificationsManager_->RemoveCLEntry (entryObj);
-						ResourcesManager::Instance ().HandleRemoved (&entry);
+						Entry2Items_.remove (entry);
+						ActionsManager_->HandleEntryRemoved (entry);
+						ID2Entry_.remove (entry->GetEntryID ());
+						Entry2SmoothAvatarCache_.remove (entry);
+						NotificationsManager_->RemoveCLEntry (entry->GetQObject ());
+						ResourcesManager::Instance ().HandleRemoved (entry);
 					}
 				});
 
@@ -1817,8 +1813,7 @@ namespace LC::Azoth
 		if (!mucPerms)
 			return;
 
-		const auto entryObj = entry->GetQObject ();
-		const QString& name = mucPerms->GetAffName (entryObj);
+		const QString& name = mucPerms->GetAffName (*entry);
 		for (auto item : Entry2Items_.value (entry))
 			item->setData (name, CLRAffiliation);
 	}

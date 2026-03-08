@@ -466,8 +466,8 @@ namespace Azoth
 		if (w.exec () != QDialog::Accepted)
 			return;
 
-		if (auto part = w.GetActivatedParticipant ())
-			InsertNick (qobject_cast<ICLEntry*> (part)->GetEntryName ());
+		if (const auto part = w.GetActivatedParticipant ())
+			InsertNick (part->GetEntryName ());
 	}
 
 	void ChatTab::HandleMUCParticipantsChanged ()
@@ -968,10 +968,9 @@ namespace Azoth
 		void OpenChatWithText (QUrl newUrl, const QString& id, ICLEntry *own)
 		{
 			Util::UrlOperator { newUrl } -= "hrid";
-			for (QObject *entryObj : own->GetParentAccount ()->GetCLEntries ())
+			for (const auto entry : own->GetParentAccount ()->GetCLEntries ())
 			{
-				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-				if (!entry || entry->GetHumanReadableID () != id)
+				if (entry->GetHumanReadableID () != id)
 					continue;
 
 				auto w = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);

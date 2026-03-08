@@ -103,7 +103,7 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	QList<QObject*> IrcServerCLEntry::GetParticipants ()
+	QList<ICLEntry*> IrcServerCLEntry::GetParticipants ()
 	{
 		return {};
 	}
@@ -138,7 +138,7 @@ namespace LC::Azoth::Acetamide
 		return {};
 	}
 
-	QString IrcServerCLEntry::GetRealID (QObject*) const
+	QString IrcServerCLEntry::GetRealID (const ICLEntry&) const
 	{
 		return {};
 	}

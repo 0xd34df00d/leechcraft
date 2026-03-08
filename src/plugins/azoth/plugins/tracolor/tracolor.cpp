@@ -148,7 +148,7 @@ namespace Tracolor
 
 		for (const auto accObj : AzothProxy_->GetAllAccounts ())
 			for (const auto entry : qobject_cast<IAccount*> (accObj)->GetCLEntries ())
-				AzothProxy_->RedrawItem (entry);
+				AzothProxy_->RedrawItem (entry->GetQObject ());
 	}
 }
 }

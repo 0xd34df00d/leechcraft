@@ -50,7 +50,7 @@ namespace LC::Azoth::Acetamide
 		QString GetParentID () const;
 
 		ChannelOptions GetChannelOptions () const;
-		QList<QObject*> GetParticipants () const;
+		QList<ICLEntry*> GetParticipants () const;
 
 		ChannelParticipantEntry_ptr GetSelf ();
 		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&, bool announce = true);
@@ -91,8 +91,8 @@ namespace LC::Azoth::Acetamide
 		void KickParticipant (const QString&, const QString&,
 				const QString&);
 
-		void SetRole (ChannelParticipantEntry*, ChannelRole, const QString&);
-		void ManageWithParticipant (ChannelParticipantEntry*, ChannelManagment);
+		void SetRole (const ChannelParticipantEntry&, ChannelRole, const QString&);
+		void ManageWithParticipant (const ChannelParticipantEntry&, ChannelManagment);
 
 		void RequestBanList ();
 		void RequestExceptList ();

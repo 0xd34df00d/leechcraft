@@ -54,11 +54,11 @@ namespace LC::Azoth::Acetamide
 		return FRenamable | FMUCsSupportFileTransfers;
 	}
 
-	QList<QObject*> IrcAccount::GetCLEntries ()
+	QList<ICLEntry*> IrcAccount::GetCLEntries ()
 	{
 		return ClientConnection_ ?
 				ClientConnection_->GetCLEntries () :
-				QList<QObject*> {};
+				QList<ICLEntry*> {};
 	}
 
 	QString IrcAccount::GetAccountName () const

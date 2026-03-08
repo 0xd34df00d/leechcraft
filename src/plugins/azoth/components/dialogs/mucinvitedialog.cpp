@@ -33,11 +33,9 @@ namespace Azoth
 			break;
 		}
 
-		for (auto entryObj : acc->GetCLEntries ())
+		for (const auto entry : acc->GetCLEntries ())
 		{
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry ||
-					entry->GetEntryType () != requestedType)
+			if (entry->GetEntryType () != requestedType)
 				continue;
 
 			const QString& id = entry->GetHumanReadableID ();

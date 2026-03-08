@@ -90,7 +90,7 @@ namespace Xoox
 		QString GetMUCSubject () const;
 		bool CanChangeSubject () const;
 		void SetMUCSubject (const QString&);
-		QList<QObject*> GetParticipants ();
+		QList<ICLEntry*> GetParticipants ();
 		bool IsAutojoined () const;
 		void Join ();
 		void Leave (const QString&);
@@ -98,19 +98,19 @@ namespace Xoox
 		void SetNick (const QString&);
 		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
-		QString GetRealID (QObject*) const;
+		QString GetRealID (const ICLEntry&) const;
 		void InviteToMUC (const QString&, const QString&);
 
 		// IMUCPerms
 		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;
-		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject *object) const;
+		QMap<QByteArray, QList<QByteArray>> GetPerms (const ICLEntry&) const;
 		QPair<QByteArray, QByteArray> GetKickPerm () const;
 		QPair<QByteArray, QByteArray> GetBanPerm () const;
-		QByteArray GetAffName (QObject*) const;
-		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const;
-		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);
+		QByteArray GetAffName (const ICLEntry&) const;
+		bool MayChangePerm (const ICLEntry&, const QByteArray&, const QByteArray&) const;
+		void SetPerm (ICLEntry&, const QByteArray&, const QByteArray&, const QString&);
 		void TrySetPerm (const QString&, const QByteArray&, const QByteArray&, const QString&);
-		bool IsLessByPerm (QObject*, QObject*) const;
+		bool IsLessByPerm (const ICLEntry&, const ICLEntry&) const;
 		bool IsMultiPerm (const QByteArray&) const;
 		QString GetUserString (const QByteArray&) const;
 

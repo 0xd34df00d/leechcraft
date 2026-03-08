@@ -12,6 +12,11 @@
 #include <interfaces/azoth/azothcommon.h>
 #include "../azothutilconfig.h"
 
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
+
 namespace LC::Azoth::Emitters
 {
 	class AZOTH_UTIL_API Account : public QObject
@@ -30,22 +35,18 @@ namespace LC::Azoth::Emitters
 		void accountRenamed (const QString& newName);
 
 		/** @brief This signal should be emitted when new contact list
-		 * items appear in this account.
+		 * entries appear in this account.
 		 *
-		 * @param[out] items The list of newly appeared items.
+		 * @param[out] entries The new entries.
 		 */
-		void gotCLItems (const QList<QObject*>& items);
+		void gotCLItems (const QList<ICLEntry*>& entries);
 
 		/** @brief This signal should be emitted after any contact list
-		 * items are removed.
+		 * entries are removed.
 		 *
-		 * The reason for removal doesn't matter. It could be a
-		 * groupchat participant that exited or changed nickname, or
-		 * some other stuff.
-		 *
-		 * @param[out] items The list of removed items.
+		 * @param[out] entries The removed entries.
 		 */
-		void removedCLItems (const QList<QObject*>& items);
+		void removedCLItems (const QList<ICLEntry*>& entries);
 
 		/** @brief This signal should be emitted when another user
 		 * requests authorization from this account.
@@ -64,7 +65,7 @@ namespace LC::Azoth::Emitters
 		 * itemSubscribed(), itemUnsubscribed(),
 		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
-		void authorizationRequested (QObject *entry, const QString& message);
+		void authorizationRequested (ICLEntry& entry, const QString& message);
 
 		/** @brief This signal should be emitted when an already added
 		 * entry has just subscribed to us.
@@ -80,7 +81,7 @@ namespace LC::Azoth::Emitters
 		 * authorizationRequested(), itemUnsubscribed(),
 		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
-		void itemSubscribed (QObject *entry, const QString& message);
+		void itemSubscribed (ICLEntry& entry, const QString& message);
 
 		/** @brief This signal should be emitted when an already added
 		 * entry has just unsubscribed from us.
@@ -97,7 +98,7 @@ namespace LC::Azoth::Emitters
 		 * authorizationRequested(), itemSubscribed(),
 		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
-		void itemUnsubscribed (QObject *entry, const QString& message);
+		void itemUnsubscribed (ICLEntry& entry, const QString& message);
 
 		/** @brief This signal should be emitted when a non-roster item
 		 * has just unsubscribed from us.
@@ -121,7 +122,7 @@ namespace LC::Azoth::Emitters
 		 * @sa RequestAuth(), authorizationRequested(), itemSubscribed(),
 		 * itemGrantedSubscription()
 		 */
-		void itemCancelledSubscription (QObject *entry, const QString& message);
+		void itemCancelledSubscription (ICLEntry& entry, const QString& message);
 
 		/** @brief This signal should be emitted when a roster item
 		 * grants us subscription.
@@ -133,7 +134,7 @@ namespace LC::Azoth::Emitters
 		 * @sa RequestAuth(), authorizationRequested(), itemSubscribed(),
 		 * itemCancelledSubscription()
 		 */
-		void itemGrantedSubscription (QObject *entry, const QString& message);
+		void itemGrantedSubscription (ICLEntry& entry, const QString& message);
 
 		/** @brief This signal should be emitted when status of this
 		 * account changes for whatever reason.
