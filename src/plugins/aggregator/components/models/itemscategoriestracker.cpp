@@ -58,7 +58,7 @@ namespace LC::Aggregator
 							++Counts_ [cat];
 				});
 		connect (&model,
-				&QAbstractItemModel::rowsRemoved,
+				&QAbstractItemModel::rowsAboutToBeRemoved,
 				this,
 				[this] (const QModelIndex&, int start, int end)
 				{
