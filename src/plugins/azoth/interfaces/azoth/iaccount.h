@@ -50,7 +50,7 @@ namespace Azoth
 
 		virtual ~IAccount () = default;
 	public:
-		virtual Emitters::Account& GetAccountEmitter () { return Emitter_; }
+		Emitters::Account& GetAccountEmitter () { return Emitter_; }
 
 		/** Represents the features that may be supported by an acoount.
 		 */
