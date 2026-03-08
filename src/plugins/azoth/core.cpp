@@ -1112,25 +1112,15 @@ namespace LC::Azoth
 				altNick = origNick + append;
 			}
 
-			if ((altNick.isEmpty () || altNick == origNick) &&
-					QMessageBox::question (nullptr,
+			const auto& newNick = altNick.isEmpty () || altNick == origNick ?
+					QInputDialog::getText (nullptr,
 							Core::tr ("Nickname conflict"),
-							Core::tr ("You have specified a nickname for %1 that's "
-								"already used. Would you like to try to "
-								"join with another nick?")
-								.arg (entry.GetEntryName ()),
-							QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-				return;
-
-			const QString& newNick = altNick.isEmpty () || altNick == origNick ?
-					QInputDialog::getText (0,
-							Core::tr ("Enter new nick"),
-							Core::tr ("Enter new nick for joining %1 (%2 is already used):")
-								.arg (entry.GetEntryName (), origNick),
+							Core::tr ("The nickname %1 is already used in %2. Please enter a new nickname to join:")
+								.arg (origNick, entry.GetEntryName ()),
 							QLineEdit::Normal,
 							origNick) :
 					altNick;
-			if (newNick.isEmpty ())
+			if (newNick.isEmpty () || newNick == origNick)
 				return;
 
 			mucEntry.SetNick (newNick);
