@@ -828,7 +828,7 @@ namespace LC::Azoth::Acetamide
 		if (Account_->GetNickNames ().isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "NickName conflict";
-			emit ServerCLEntry_->nicknameConflict (NickName_);
+			emit ServerCLEntry_->GetMUCEntryEmitter ().nicknameConflict (NickName_);
 			return;
 		}
 
@@ -837,7 +837,7 @@ namespace LC::Azoth::Acetamide
 		else
 		{
 			qDebug () << Q_FUNC_INFO << "NickName conflict";
-			emit ServerCLEntry_->nicknameConflict (NickName_);
+			emit ServerCLEntry_->GetMUCEntryEmitter ().nicknameConflict (NickName_);
 			return;
 		}
 

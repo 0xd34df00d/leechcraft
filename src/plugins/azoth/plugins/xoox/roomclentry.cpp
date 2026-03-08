@@ -528,7 +528,7 @@ namespace Xoox
 
 	void RoomCLEntry::HandleSubjectChanged (const QString& subj)
 	{
-		emit mucSubjectChanged (subj);
+		emit MUCEmitter_.mucSubjectChanged (subj);
 	}
 
 	void RoomCLEntry::handleBookmarks (const QXmppBookmarkSet& set)

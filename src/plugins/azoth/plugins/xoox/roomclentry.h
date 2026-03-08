@@ -128,11 +128,6 @@ namespace Xoox
 		void HandleSubjectChanged (const QString&);
 	private slots:
 		void handleBookmarks (const QXmppBookmarkSet&);
-	signals:
-		void mucSubjectChanged (const QString&);
-		void nicknameConflict (const QString&);
-		void beenKicked (const QString&);
-		void beenBanned (const QString&);
 	};
 }
 }

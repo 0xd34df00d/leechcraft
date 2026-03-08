@@ -63,10 +63,5 @@ namespace LC::Azoth::Acetamide
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget () override;
 		void AcceptConfiguration (QWidget*) override;
-	signals:
-		void mucSubjectChanged (const QString&) override;
-		void nicknameConflict (const QString&) override;
-		void beenKicked (const QString&) override;
-		void beenBanned (const QString&) override;
 	};
 }

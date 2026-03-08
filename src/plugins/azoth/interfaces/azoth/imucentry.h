@@ -9,8 +9,8 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_IMUCENTRY_H
 #define PLUGINS_AZOTH_INTERFACES_IMUCENTRY_H
 #include <QFlags>
-#include <QMetaType>
 #include <QVariant>
+#include <util/azoth/emitters/mucentry.h>
 
 namespace LC
 {
@@ -30,9 +30,12 @@ namespace Azoth
 	 */
 	class IMUCEntry
 	{
-		Q_GADGET
+	protected:
+		Emitters::MUCEntry MUCEmitter_;
+
+		virtual ~IMUCEntry () = default;
 	public:
-		virtual ~IMUCEntry () {}
+		Emitters::MUCEntry& GetMUCEntryEmitter () { return MUCEmitter_; }
 
 		enum MUCFeature
 		{
@@ -198,65 +201,11 @@ namespace Azoth
 		 * @sa ICLEntry::GetHumanReadableID()
 		 */
 		virtual void InviteToMUC (const QString& userId, const QString& msg) = 0;
-
-		/** @brief Notifies about subject change.
-		 *
-		 * This signal should be emitted when room subject is changed
-		 * to newSubj.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] newSubj The new subject of this room.
-		 */
-		virtual void mucSubjectChanged (const QString& newSubj) = 0;
-
-		/** @brief Notifies about nick conflict.
-		 *
-		 * This signal should be emitted when room gets the error from
-		 * the server that the nickname is already in use.
-		 *
-		 * The signal handler could either call SetNick() with some
-		 * other nickname (in this case the room should automatically
-		 * try to rejoin) or do nothing it all (in this case the room
-		 * should, well, do nothing as well).
-		 *
-		 * This signal should be emitted only if the error arises while
-		 * joining, not as result of SetNick().
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] usedNick The nickname that was used to join the
-		 * room.
-		 */
-		virtual void nicknameConflict (const QString& usedNick) = 0;
-
-		/** @brief Notifies about participant being kicked.
-		 *
-		 * This signal should be emitted whenever our user gets kicked
-		 * from this room.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] reason The optional reason message.
-		 */
-		virtual void beenKicked (const QString& reason) = 0;
-
-		/** @brief Notifies about participant being banned.
-		 *
-		 * This signal should be emitted whenever our user gets banned
-		 * from this room.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] reason The optional reason message.
-		 */
-		virtual void beenBanned (const QString& reason) = 0;
 	};
 }
 }
 
-Q_DECLARE_INTERFACE (LC::Azoth::IMUCEntry,
-		"org.Deviant.LeechCraft.Azoth.IMUCEntry/1.0")
+Q_DECLARE_INTERFACE (LC::Azoth::IMUCEntry, "org.Deviant.LeechCraft.Azoth.IMUCEntry/1.0")
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::IMUCEntry::MUCFeatures)
 
 #endif

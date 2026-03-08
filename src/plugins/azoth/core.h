@@ -313,9 +313,6 @@ namespace LC::Azoth
 		void handleEntryGroupsChanged (ICLEntry *entry, QStringList);
 		void handleEntryPermsChanged (ICLEntry *entry);
 		void handleEntryGotMessage (QObject *msg);
-		void handleNicknameConflict (const QString&);
-		void handleBeenKicked (const QString&);
-		void handleBeenBanned (const QString&);
 
 		/** Is registered in the XmlSettingsManager as handler for
 		 * changes of the "StatusIcons" property.

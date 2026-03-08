@@ -1100,6 +1100,42 @@ namespace LC::Azoth
 				groups << Core::tr ("Contacts");
 			return groups;
 		}
+
+		void HandleNickConflict (const ICLEntry& entry, IMUCEntry& mucEntry, const QString& origNick)
+		{
+			QString altNick;
+			if (XmlSettingsManager::Instance ().property ("UseAltNick").toBool ())
+			{
+				auto append = XmlSettingsManager::Instance ().property ("AlternativeNickname").toString ();
+				if (append.isEmpty ())
+					append = "_azoth";
+				altNick = origNick + append;
+			}
+
+			if ((altNick.isEmpty () || altNick == origNick) &&
+					QMessageBox::question (nullptr,
+							Core::tr ("Nickname conflict"),
+							Core::tr ("You have specified a nickname for %1 that's "
+								"already used. Would you like to try to "
+								"join with another nick?")
+								.arg (entry.GetEntryName ()),
+							QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+
+			const QString& newNick = altNick.isEmpty () || altNick == origNick ?
+					QInputDialog::getText (0,
+							Core::tr ("Enter new nick"),
+							Core::tr ("Enter new nick for joining %1 (%2 is already used):")
+								.arg (entry.GetEntryName (), origNick),
+							QLineEdit::Normal,
+							origNick) :
+					altNick;
+			if (newNick.isEmpty ())
+				return;
+
+			mucEntry.SetNick (newNick);
+			mucEntry.Join ();
+		}
 	}
 
 	void Core::AddCLEntry (ICLEntry *entry, QStandardItem *accItem)
@@ -1151,20 +1187,37 @@ namespace LC::Azoth
 						item->model ()->dataChanged (item->index (), item->index ());
 				});
 
-		if (qobject_cast<IMUCEntry*> (entryObj))
+		if (const auto mucEntry = qobject_cast<IMUCEntry*> (entryObj))
 		{
-			connect (entryObj,
-					SIGNAL (nicknameConflict (const QString&)),
+			auto& mucEmitter = mucEntry->GetMUCEntryEmitter ();
+			connect (&mucEmitter,
+					&Emitters::MUCEntry::nicknameConflict,
 					this,
-					SLOT (handleNicknameConflict (const QString&)));
-			connect (entryObj,
-					SIGNAL (beenKicked (const QString&)),
+					std::bind_front (&HandleNickConflict, std::ref (*entry), std::ref (*mucEntry)));
+			connect (&mucEmitter,
+					&Emitters::MUCEntry::beenKicked,
 					this,
-					SLOT (handleBeenKicked (const QString&)));
-			connect (entryObj,
-					SIGNAL (beenBanned (const QString&)),
+					[entry, mucEntry] (const QString& reason)
+					{
+						const auto& text = reason.isEmpty () ?
+								tr ("You have been kicked from %1. Do you want to rejoin?").arg (entry->GetEntryName ()) :
+								tr ("You have been kicked from %1: %2. Do you want to rejoin?").arg (entry->GetEntryName (), reason);
+						if (QMessageBox::question (nullptr,
+								"LeechCraft Azoth",
+								text,
+								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+							mucEntry->Join ();
+					});
+			connect (&mucEmitter,
+					&Emitters::MUCEntry::beenBanned,
 					this,
-					SLOT (handleBeenBanned (const QString&)));
+					[entry] (const QString& reason)
+					{
+						const auto& text = reason.isEmpty () ?
+								tr ("You have been banned from %1.").arg (entry->GetEntryName ()) :
+								tr ("You have been banned from %1: %2.").arg (entry->GetEntryName (), reason);
+						QMessageBox::warning (nullptr, "LeechCraft Azoth", text);
+					});
 		}
 
 		NotificationsManager_->AddCLEntry (entryObj);
@@ -1689,6 +1742,8 @@ namespace LC::Azoth
 
 						entry->GetQObject ()->disconnect (this);
 						entry->GetCLEntryEmitter ().disconnect (this);
+						if (const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ()))
+							mucEntry->GetMUCEntryEmitter ().disconnect (this);
 
 						TooltipManager_->RemoveEntry (entry);
 						ChatTabsManager_->HandleEntryRemoved (entry);
@@ -1865,102 +1920,6 @@ namespace LC::Azoth
 
 		ChatTabsManager_->HandleInMessage (msg);
 		NotificationsManager_->HandleMessage (msg);
-	}
-
-	void Core::handleNicknameConflict (const QString& usedNick)
-	{
-		ICLEntry *clEntry = qobject_cast<ICLEntry*> (sender ());
-		IMUCEntry *entry = qobject_cast<IMUCEntry*> (sender ());
-		if (!entry || !clEntry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "doesn't implement ICLEntry or IMUCEntry";
-			return;
-		}
-
-		QString altNick;
-		if (XmlSettingsManager::Instance ().property ("UseAltNick").toBool ())
-		{
-			QString append = XmlSettingsManager::Instance ()
-				.property ("AlternativeNickname").toString ();
-			if (append.isEmpty ())
-				append = "_azoth";
-			altNick = usedNick + append;
-		}
-
-		if ((altNick.isEmpty () || altNick == usedNick) &&
-				QMessageBox::question (0,
-						tr ("Nickname conflict"),
-						tr ("You have specified a nickname for %1 that's "
-							"already used. Would you like to try to "
-							"join with another nick?")
-							.arg (clEntry->GetEntryName ()),
-						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return;
-
-		const QString& newNick = altNick.isEmpty () || altNick == usedNick ?
-				QInputDialog::getText (0,
-						tr ("Enter new nick"),
-						tr ("Enter new nick for joining %1 (%2 is already used):")
-							.arg (clEntry->GetEntryName ())
-							.arg (usedNick),
-						QLineEdit::Normal,
-						usedNick) :
-				altNick;
-		if (newNick.isEmpty ())
-			return;
-
-		entry->SetNick (newNick);
-		entry->Join ();
-	}
-
-	void Core::handleBeenKicked (const QString& reason)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (sender ());
-		if (!entry || !mucEntry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "doesn't implement ICLEntry or IMUCEntry";
-			return;
-		}
-
-		const QString& text = reason.isEmpty () ?
-				tr ("You have been kicked from %1. Do you want to rejoin?")
-					.arg (entry->GetEntryName ()) :
-				tr ("You have been kicked from %1: %2. Do you want to rejoin?")
-					.arg (entry->GetEntryName ())
-					.arg (reason);
-
-		if (QMessageBox::question (0,
-				"LeechCraft Azoth",
-				text,
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-			mucEntry->Join ();
-	}
-
-	void Core::handleBeenBanned (const QString& reason)
-	{
-		ICLEntry* entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
-		const QString& text = reason.isEmpty () ?
-				tr ("You have been banned from %1.")
-					.arg (entry->GetEntryName ()) :
-				tr ("You have been banned from %1: %2.")
-					.arg (entry->GetEntryName ())
-					.arg (reason);
-		QMessageBox::warning (0,
-				"LeechCraft Azoth",
-				text);
 	}
 
 	void Core::updateStatusIconset ()

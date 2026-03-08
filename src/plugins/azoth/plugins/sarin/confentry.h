@@ -96,10 +96,5 @@ namespace LC::Azoth::Sarin
 		void AppendMessage (ConfMessage*);
 	private:
 		Util::ContextTask<void> RunLeave ();
-	signals:
-		void mucSubjectChanged (const QString&) override;
-		void nicknameConflict (const QString&) override;
-		void beenKicked (const QString&) override;
-		void beenBanned (const QString&) override;
 	};
 }

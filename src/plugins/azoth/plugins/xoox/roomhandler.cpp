@@ -250,7 +250,7 @@ namespace Xoox
 		if (Room_->isJoined ())
 			return;
 
-		emit CLEntry_->nicknameConflict (Room_->nickName ());
+		emit CLEntry_->GetMUCEntryEmitter ().nicknameConflict (Room_->nickName ());
 	}
 
 	void RoomHandler::HandlePasswordRequired ()
@@ -686,11 +686,11 @@ namespace Xoox
 		else if (pres.mucStatusCodes ().contains (301))
 			!us ?
 				MakeBanMessage (nick, reason) :
-				QTimer::singleShot (0, this, [=, this] { CLEntry_->beenBanned (reason); });
+				QTimer::singleShot (0, this, [=, this] { CLEntry_->GetMUCEntryEmitter ().beenBanned (reason); });
 		else if (pres.mucStatusCodes ().contains (307))
 			!us ?
 				MakeKickMessage (nick, reason) :
-				QTimer::singleShot (0, this, [=, this] { CLEntry_->beenKicked (reason); });
+				QTimer::singleShot (0, this, [=, this] { CLEntry_->GetMUCEntryEmitter ().beenKicked (reason); });
 		else
 			MakeLeaveMessage (pres, nick);
 

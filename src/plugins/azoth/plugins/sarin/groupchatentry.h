@@ -83,10 +83,5 @@ namespace LC::Azoth::Sarin
 	private:
 		Util::ContextTask<void> RunLeave (QString, int retry = 0);
 		Util::ContextTask<void> RunSetNick (QString, int retry = 0);
-	signals:
-		void mucSubjectChanged (const QString&) override;
-		void nicknameConflict (const QString&) override;
-		void beenKicked (const QString&) override;
-		void beenBanned (const QString&) override;
 	};
 }
