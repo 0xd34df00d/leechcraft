@@ -336,18 +336,12 @@ namespace Xoox
 		fields.append (field);
 
 		QList<QPair<QString, QString>> options;
-		for (auto entryObj : Conn_->GetCLEntries ())
-		{
-			const auto entry = qobject_cast<RoomCLEntry*> (entryObj);
-			if (!entry)
-				continue;
-
+		for (const auto entry : Conn_->GetRoomCLEntries ())
 			options << QPair
 			{
 				entry->GetHumanReadableID () + "/" + entry->GetNick (),
 				entry->GetEntryID ()
 			};
-		}
 
 		QXmppDataForm::Field gcs (QXmppDataForm::Field::ListMultiField);
 		gcs.setLabel (tr ("Groupchats"));
@@ -373,17 +367,9 @@ namespace Xoox
 				continue;
 
 			const QStringList& ids = field.value ().toStringList ();
-			for (auto entryObj : Conn_->GetCLEntries ())
-			{
-				auto entry = qobject_cast<RoomCLEntry*> (entryObj);
-				if (!entry)
-					continue;
-
-				if (!ids.contains (entry->GetEntryID ()))
-					continue;
-
-				entry->Leave (tr ("leaving as the result of the remote command"));
-			}
+			for (const auto entry : Conn_->GetRoomCLEntries ())
+				if (ids.contains (entry->GetEntryID ()))
+					entry->Leave (tr ("leaving as the result of the remote command"));
 
 			break;
 		}
