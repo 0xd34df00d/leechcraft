@@ -679,6 +679,11 @@ namespace Xoox
 		return result;
 	}
 
+	QList<RoomCLEntry*> ClientConnection::GetRoomCLEntries () const
+	{
+		return Util::Map (RoomHandlers_, &RoomHandler::GetCLEntry);
+	}
+
 	void ClientConnection::FetchVCard (const QString& jid, bool reportErrors)
 	{
 		ScheduleFetchVCard (jid, reportErrors);

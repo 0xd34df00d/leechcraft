@@ -190,6 +190,7 @@ namespace Xoox
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
+		QList<RoomCLEntry*> GetRoomCLEntries () const;
 		void FetchVCard (const QString&, bool reportErrors = false);
 		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
 		void FetchVersion (const QString&, bool reportErrors = false);
