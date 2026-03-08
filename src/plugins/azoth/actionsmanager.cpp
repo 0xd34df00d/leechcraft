@@ -311,15 +311,7 @@ namespace Azoth
 
 		void InviteToMuc (ICLEntry *entry)
 		{
-			QList<QObject*> mucObjs;
-
 			const auto account = entry->GetParentAccount ();
-			for (const auto entryObj : account->GetCLEntries ())
-				if (qobject_cast<ICLEntry*> (entryObj)->GetEntryType () == ICLEntry::EntryType::MUC)
-					mucObjs << entryObj;
-
-			if (mucObjs.isEmpty ())
-				return;
 
 			MUCInviteDialog dia (account, MUCInviteDialog::ListType::ListMucs);
 			if (dia.exec () != QDialog::Accepted)
