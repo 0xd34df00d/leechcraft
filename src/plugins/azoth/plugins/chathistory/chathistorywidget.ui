@@ -14,13 +14,13 @@
    <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
-   <property name="margin">
+   <property name="margin" stdset="0">
     <number>0</number>
    </property>
    <item>
     <widget class="QSplitter" name="VertSplitter_">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -55,6 +55,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
+         </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
@@ -75,10 +78,10 @@
           <bool>true</bool>
          </property>
          <property name="horizontalHeaderFormat">
-          <enum>QCalendarWidget::SingleLetterDayNames</enum>
+          <enum>QCalendarWidget::HorizontalHeaderFormat::SingleLetterDayNames</enum>
          </property>
          <property name="verticalHeaderFormat">
-          <enum>QCalendarWidget::NoVerticalHeader</enum>
+          <enum>QCalendarWidget::VerticalHeaderFormat::NoVerticalHeader</enum>
          </property>
          <property name="navigationBarVisible">
           <bool>true</bool>

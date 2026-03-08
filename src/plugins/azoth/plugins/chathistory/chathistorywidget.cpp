@@ -12,9 +12,10 @@
 #include <QMessageBox>
 #include <QShortcut>
 #include <QToolBar>
-#include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/sll/prelude.h>
 #include <util/threads/futures.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
@@ -554,25 +555,39 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::clearHistory ()
 	{
-		if (CurrentAccount_.isEmpty () ||
-				CurrentEntry_.isEmpty ())
+		if (CurrentAccount_.isEmpty ())
 			return;
 
-		if (QMessageBox::question (0, "LeechCraft",
-					tr ("Are you sure you wish to delete chat history with %1?")
-						.arg (EntryID2NameCache_.value (CurrentEntry_, CurrentEntry_)),
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		auto selected = Util::Map (Ui_.Contacts_->selectionModel ()->selectedRows (),
+				[] (const QModelIndex& idx) { return idx.data (MRIDRole).toString (); });
+		if (!selected.contains (CurrentEntry_) && !CurrentEntry_.isEmpty ())
+			selected << CurrentEntry_;
+		if (selected.isEmpty ())
 			return;
 
-		Params_.StorageMgr_->ClearHistory (CurrentAccount_, CurrentEntry_);
+		const auto& msg = selected.size () == 1 ?
+				tr ("Are you sure you wish to delete chat history with %1?")
+					.arg (EntryID2NameCache_.value (selected [0], selected [0])) :
+				tr ("Are you sure you wish to delete chat history with %n entry(ies)?", nullptr, selected.size ());
+		if (QMessageBox::question (nullptr, "LeechCraft", msg, QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
 
 		Ui_.Contacts_->clearSelection ();
-		if (const auto item = FindContactItem (CurrentEntry_))
+		CurrentEntry_.clear ();
+
 		{
-			CurrentEntry_.clear ();
-			ContactsModel_->removeRow (item->row ());
+			const QSignalBlocker blocker { Ui_.Contacts_->selectionModel () };
+			for (const auto& entry : selected)
+			{
+				Params_.StorageMgr_->ClearHistory (CurrentAccount_, entry);
+				if (const auto item = FindContactItem (entry))
+					ContactsModel_->removeRow (item->row ());
+			}
 		}
 
+		if (const auto idx = Ui_.Contacts_->selectionModel ()->currentIndex ();
+			idx.isValid ())
+			CurrentEntry_ = idx.data (MRIDRole).toString ();
 		Backpages_ = 0;
 		RequestLogs ();
 	}
