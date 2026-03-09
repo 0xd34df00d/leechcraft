@@ -99,7 +99,7 @@ namespace LC::LMP::Graffiti
 		if (files.isEmpty ())
 			return;
 
-		beginInsertRows (QModelIndex (), Files_.size (), files.size () + Files_.size ());
+		beginInsertRows (QModelIndex (), Files_.size (), files.size () + Files_.size () - 1);
 		std::copy (files.begin (), files.end (), std::back_inserter (Files_));
 		endInsertRows ();
 	}
