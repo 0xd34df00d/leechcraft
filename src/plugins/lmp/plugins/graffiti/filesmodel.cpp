@@ -143,12 +143,9 @@ namespace LC::LMP::Graffiti
 
 	void FilesModel::Clear ()
 	{
-		if (Files_.isEmpty ())
-			return;
-
-		beginRemoveRows (QModelIndex (), 0, Files_.size ());
+		beginResetModel ();
 		Files_.clear ();
-		endRemoveRows ();
+		endResetModel ();
 	}
 
 	QModelIndex FilesModel::FindIndex (const QString& path) const
