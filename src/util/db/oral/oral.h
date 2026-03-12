@@ -209,7 +209,11 @@ namespace LC::Util::oral
 	{
 		constexpr auto operator() () const noexcept
 		{
-			if constexpr (HasType<T> (Typelist<int, qlonglong, qulonglong, bool> {}) || std::is_enum_v<T>)
+			if constexpr (detail::TypeNameCustomized<T>)
+				return T::TypeName;
+			else if constexpr (detail::BaseTypeCustomized<T>)
+				return Type2Name<ImplFactory, typename T::BaseType> {} ();
+			else if constexpr (HasType<T> (Typelist<int, qlonglong, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER"_ct;
 			else if constexpr (std::is_same_v<T, double>)
 				return "REAL"_ct;
@@ -217,10 +221,6 @@ namespace LC::Util::oral
 				return "TEXT"_ct;
 			else if constexpr (std::is_same_v<T, QByteArray>)
 				return ImplFactory::TypeLits::Binary;
-			else if constexpr (detail::TypeNameCustomized<T>)
-				return T::TypeName;
-			else if constexpr (detail::BaseTypeCustomized<T>)
-				return Type2Name<ImplFactory, typename T::BaseType> {} ();
 			else
 				static_assert (std::is_same_v<T, struct Dummy>, "Unsupported type");
 		}
@@ -266,16 +266,16 @@ namespace LC::Util::oral
 	{
 		QVariant operator() (const T& t) const noexcept
 		{
-			if constexpr (std::is_same_v<T, QDateTime>)
+			if constexpr (detail::TypeNameCustomized<T>)
+				return t.ToVariant ();
+			else if constexpr (detail::BaseTypeCustomized<T>)
+				return ToVariant<typename T::BaseType> {} (t.ToBaseType ());
+			else if constexpr (std::is_same_v<T, QDateTime>)
 				return t.toString (Qt::ISODate);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<qint64> (t);
 			else if constexpr (IsIndirect<T> {})
 				return ToVariant<typename T::value_type> {} (t);
-			else if constexpr (detail::TypeNameCustomized<T>)
-				return t.ToVariant ();
-			else if constexpr (detail::BaseTypeCustomized<T>)
-				return ToVariant<typename T::BaseType> {} (t.ToBaseType ());
 			else
 				return t;
 		}
@@ -286,16 +286,16 @@ namespace LC::Util::oral
 	{
 		T operator() (const QVariant& var) const noexcept
 		{
-			if constexpr (std::is_same_v<T, QDateTime>)
+			if constexpr (detail::TypeNameCustomized<T>)
+				return T::FromVariant (var);
+			else if constexpr (detail::BaseTypeCustomized<T>)
+				return T::FromBaseType (FromVariant<typename T::BaseType> {} (var));
+			else if constexpr (std::is_same_v<T, QDateTime>)
 				return QDateTime::fromString (var.toString (), Qt::ISODate);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<T> (var.value<qint64> ());
 			else if constexpr (IsIndirect<T> {})
 				return FromVariant<typename T::value_type> {} (var);
-			else if constexpr (detail::TypeNameCustomized<T>)
-				return T::FromVariant (var);
-			else if constexpr (detail::BaseTypeCustomized<T>)
-				return T::FromBaseType (FromVariant<typename T::BaseType> {} (var));
 			else
 				return var.value<T> ();
 		}
