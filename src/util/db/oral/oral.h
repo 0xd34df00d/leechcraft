@@ -106,7 +106,7 @@ namespace LC::Util::oral
 	};
 
 	template<typename>
-	constexpr size_t SeqSize = -1;
+	constexpr size_t SeqSize = 0;
 
 	template<typename>
 	struct MemberNames {};
