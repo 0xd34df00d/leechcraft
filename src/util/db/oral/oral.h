@@ -53,6 +53,9 @@
 namespace LC::Util::oral																							\
 {																													\
 	template<>																										\
+	constexpr auto BeenAdapted<sname> = true;																		\
+																													\
+	template<>																										\
 	constexpr auto SeqSize<sname> = BOOST_PP_TUPLE_SIZE((__VA_ARGS__));												\
 																													\
 	template<>																										\
@@ -104,6 +107,9 @@ namespace LC::Util::oral
 
 		~QueryException () noexcept = default;
 	};
+
+	template<typename>
+	constexpr bool BeenAdapted = false;
 
 	template<typename>
 	constexpr size_t SeqSize = 0;
@@ -1640,6 +1646,8 @@ namespace LC::Util::oral
 	template<typename T, typename ImplFactory = detail::SQLite::ImplFactory>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
+		static_assert (BeenAdapted<T>, "Please use ORAL_ADAPT_STRUCT");
+
 		if (!db.tables ().contains (ToString<T::ClassName> (), Qt::CaseInsensitive))
 		{
 			constexpr auto query = detail::AdaptCreateTable<ImplFactory, T> ();
