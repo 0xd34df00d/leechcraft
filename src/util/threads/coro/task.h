@@ -254,7 +254,7 @@ namespace LC::Util
 
 			bool await_ready () const noexcept { return false; }
 
-			bool await_suspend (std::coroutine_handle<Promise> handle) const noexcept
+			bool await_suspend (std::coroutine_handle<Promise> handle) noexcept
 			{
 				Promise_ = &handle.promise ();
 				return false;
