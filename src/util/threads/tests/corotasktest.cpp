@@ -324,7 +324,7 @@ namespace LC::Util
 		auto immediatelyFailing = [] () -> Task<Result_t>
 		{
 			const auto theInt = co_await Either<QString, int> { "meh" };
-			co_return { theInt > 420 };
+			co_return theInt > 420;
 		} ();
 		QCOMPARE (GetTaskResult (immediatelyFailing), Result_t { Left { "meh" } });
 
@@ -332,7 +332,7 @@ namespace LC::Util
 		{
 			const auto theInt = co_await Either<QString, int> { "meh" };
 			co_await 10ms;
-			co_return { theInt > 420 };
+			co_return theInt > 420;
 		} ();
 		QCOMPARE (GetTaskResult (earlyFailing), Result_t { Left { "meh" } });
 
@@ -340,9 +340,19 @@ namespace LC::Util
 		{
 			const auto theInt = co_await Either<QString, int> { 42 };
 			co_await 10ms;
-			co_return { theInt > 420 };
+			co_return theInt > 420;
 		} ();
 		QCOMPARE (GetTaskResult (successful), Result_t { false });
+	}
+
+	void CoroTaskTest::testEitherIgnoreLeft ()
+	{
+		auto immediatelyFailing = [] () -> Task<Either<QString, int>>
+		{
+			const auto theInt = co_await WithHandler (Either<QString, int> { "meh" }, IgnoreLeft {});
+			co_return theInt;
+		} ();
+		QCOMPARE (GetTaskResult (immediatelyFailing), (Either<QString, int> { 0 }));
 	}
 
 	void CoroTaskTest::testThrottleSameCoro ()

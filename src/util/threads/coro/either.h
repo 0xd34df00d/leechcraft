@@ -46,7 +46,7 @@ namespace LC::Util
 				return Either_.IsRight ();
 			}
 
-			void await_suspend (auto handle)
+			auto await_suspend (auto handle)
 			{
 				if constexpr (std::is_same_v<void, HandlerReturn_t>)
 				{
@@ -58,6 +58,7 @@ namespace LC::Util
 					static_assert (std::is_default_constructible_v<R>);
 					Handler_ (Either_.GetLeft ());
 					Either_ = R {};
+					return false;
 				}
 				else
 					TerminateLeftyCoroutine (handle, Handler_ (Either_.GetLeft ()));

@@ -32,6 +32,7 @@ namespace LC::Util
 		void testWaitManyInvoking ();
 
 		void testEither ();
+		void testEitherIgnoreLeft ();
 
 		void testThrottleSameCoro ();
 		void testThrottleSameCoroSlow ();
