@@ -70,20 +70,18 @@ namespace LC::Util
 			{
 				const auto& promise = Handle_.promise ();
 				std::lock_guard guard { promise };
-				if (promise.Exception_)
-					return true;
-
-				if constexpr (Promise::IsVoid)
-					return promise.Done_;
-				else
-					return static_cast<bool> (promise.Ret_);
+				return CheckTaskFinishedUnlocked (promise);
 			}
 
-			void await_suspend (std::coroutine_handle<> handle)
+			bool await_suspend (std::coroutine_handle<> handle)
 			{
 				auto& promise = Handle_.promise ();
 				std::lock_guard guard { promise };
+				if (CheckTaskFinishedUnlocked (promise))
+					return false;
+
 				promise.WaitingHandles_.push_back (handle);
+				return true;
 			}
 
 			auto await_resume () const
@@ -101,6 +99,17 @@ namespace LC::Util
 
 				if constexpr (!Promise::IsVoid)
 					return *promise.Ret_;
+			}
+		private:
+			bool CheckTaskFinishedUnlocked (const Promise& promise) const
+			{
+				if (promise.Exception_)
+					return true;
+
+				if constexpr (Promise::IsVoid)
+					return promise.Done_;
+				else
+					return static_cast<bool> (promise.Ret_);
 			}
 		};
 	}
