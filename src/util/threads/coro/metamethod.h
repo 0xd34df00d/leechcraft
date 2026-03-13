@@ -60,7 +60,7 @@ namespace LC::Util::detail
 					Qt::QueuedConnection);
 		}
 
-		R await_resume () const noexcept
+		R await_resume () const
 		{
 			while (!Ready_.load (std::memory_order_acquire))
 				;
