@@ -41,6 +41,7 @@ namespace LC::Util
 
 		void testContextDestrBeforeFinish ();
 		void testContextDestrAfterFinish ();
+		void testContextDestrAwaitedSubtask ();
 		void testContextDestrDoesntWaitTimer ();
 		void testContextDestrDoesntWaitNetwork ();
 		void testContextDestrDoesntWaitProcess ();

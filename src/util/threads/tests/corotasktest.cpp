@@ -484,6 +484,27 @@ namespace LC::Util
 		QCOMPARE (GetTaskResult (task), 0);
 	}
 
+	void CoroTaskTest::testContextDestrAwaitedSubtask ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto task = [] (QObject *context) -> ContextTask<int>
+		{
+			co_await AddContextObject { *context };
+
+			const auto nestedSubtask = [] -> ContextTask<int>
+			{
+				co_await ShortDelay;
+				co_return 42;
+			} ();
+
+			co_await nestedSubtask;
+			co_return context->children ().size ();
+		} (&*context);
+		context.reset ();
+
+		QVERIFY_THROWS_EXCEPTION (LC::Util::ContextDeadException, GetTaskResult (task));
+	}
+
 	namespace
 	{
 		template<typename... Ts>
