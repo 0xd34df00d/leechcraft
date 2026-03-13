@@ -68,6 +68,21 @@ namespace LC::Util
 
 			std::coroutine_handle<> OuterTask_ {};
 
+			explicit TaskAwaiter (Handle_t subtask)
+			: Subtask_ { subtask }
+			{
+			}
+
+			TaskAwaiter (TaskAwaiter&& other) noexcept
+			: Subtask_ { std::exchange (other.Subtask_, {}) }
+			, OuterTask_ { std::exchange (other.OuterTask_, {}) }
+			{
+			}
+
+			TaskAwaiter (const TaskAwaiter&) = delete;
+			TaskAwaiter& operator= (const TaskAwaiter&) = delete;
+			TaskAwaiter& operator= (TaskAwaiter&& other) = delete;
+
 			~TaskAwaiter ()
 			{
 				// Check if the outer task had been registered as waiting for the subtask but hasn't woken up
