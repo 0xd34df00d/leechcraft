@@ -12,7 +12,6 @@
 #include <exception>
 #include <mutex>
 #include <utility>
-#include <QVector>
 #include "finalsuspender.h"
 #include "taskfwd.h"
 
@@ -23,7 +22,7 @@ namespace LC::Util
 		struct PromiseBase
 		{
 			std::atomic<size_t> Refs_ = 1;
-			QVector<std::coroutine_handle<>> WaitingHandles_ {};
+			std::atomic<std::coroutine_handle<>> Continuation_ {};
 			std::exception_ptr Exception_ {};
 		};
 
@@ -66,8 +65,6 @@ namespace LC::Util
 			using Handle_t = std::coroutine_handle<Promise>;
 			Handle_t Subtask_;
 
-			std::coroutine_handle<> OuterTask_ {};
-
 			explicit TaskAwaiter (Handle_t subtask)
 			: Subtask_ { subtask }
 			{
@@ -75,7 +72,6 @@ namespace LC::Util
 
 			TaskAwaiter (TaskAwaiter&& other) noexcept
 			: Subtask_ { std::exchange (other.Subtask_, {}) }
-			, OuterTask_ { std::exchange (other.OuterTask_, {}) }
 			{
 			}
 
@@ -85,17 +81,8 @@ namespace LC::Util
 
 			~TaskAwaiter ()
 			{
-				// Check if the outer task had been registered as waiting for the subtask but hasn't woken up
-				// (`await_resume()` didn't execute).
-				if (OuterTask_)
-				{
-					// If it had been registered but hasn't woken up, and it's being destroyed,
-					// then we need to unregister it to avoid resuming what would be a dead task
-					// subtask's FinalSuspender.
-					auto& promise = Subtask_.promise ();
-					std::lock_guard guard { promise };
-					promise.WaitingHandles_.removeOne (OuterTask_);
-				}
+				if (Subtask_)
+					Subtask_.promise ().Continuation_.exchange ({});
 			}
 
 			bool await_ready () const noexcept
@@ -112,15 +99,13 @@ namespace LC::Util
 				if (CheckTaskFinishedUnlocked (promise))
 					return false;
 
-				promise.WaitingHandles_.push_back (handle);
-				OuterTask_ = handle;
+				if (promise.Continuation_.exchange (handle))
+					qFatal () << "subtask has already been awaited on";
 				return true;
 			}
 
 			auto await_resume ()
 			{
-				OuterTask_ = {};
-
 				const auto& promise = Subtask_.promise ();
 				std::lock_guard guard { promise };
 				if (promise.Exception_)
