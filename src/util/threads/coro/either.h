@@ -41,9 +41,20 @@ namespace LC::Util
 
 			using HandlerReturn_t = decltype (Handler_ (Either_.GetLeft ()));
 
-			bool await_ready () const noexcept
+			bool await_ready () noexcept
 			{
-				return Either_.IsRight ();
+				if (Either_.IsRight ())
+					return true;
+
+				if constexpr (std::is_same_v<IgnoreLeft, HandlerReturn_t>)
+				{
+					static_assert (std::is_default_constructible_v<R>);
+					Handler_ (Either_.GetLeft ());
+					Either_ = R {};
+					return true;
+				}
+
+				return false;
 			}
 
 			auto await_suspend (auto handle)
@@ -54,12 +65,7 @@ namespace LC::Util
 					TerminateLeftyCoroutine (handle, Either_.GetLeft ());
 				}
 				else if constexpr (std::is_same_v<IgnoreLeft, HandlerReturn_t>)
-				{
-					static_assert (std::is_default_constructible_v<R>);
-					Handler_ (Either_.GetLeft ());
-					Either_ = R {};
-					return false;
-				}
+					qFatal () << "shall never suspend when ignoring left";
 				else
 					TerminateLeftyCoroutine (handle, Handler_ (Either_.GetLeft ()));
 			}
