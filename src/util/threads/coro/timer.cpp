@@ -25,13 +25,7 @@ namespace LC::Util::detail
 
 	void TimerAwaiter::await_suspend (std::coroutine_handle<> handle) noexcept
 	{
-		QObject::connect (&Timer_,
-				&QTimer::timeout,
-				[handle]
-				{
-					if (!handle.done ())
-						handle ();
-				});
+		Timer_.callOnTimeout (handle);
 		Timer_.start ();
 	}
 
