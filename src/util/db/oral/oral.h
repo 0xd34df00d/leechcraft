@@ -279,10 +279,10 @@ namespace LC::Util::oral
 		using ValueAtC_t = std::decay_t<decltype (Get<Idx> (std::declval<Seq> ()))>;
 
 		template<typename T>
-		struct IsPKey : std::false_type {};
+		constexpr bool IsPKey = false;
 
 		template<typename U, typename... Tags>
-		struct IsPKey<PKey<U, Tags...>> : std::true_type {};
+		constexpr bool IsPKey<PKey<U, Tags...>> = true;
 
 		template<typename T>
 		QVariant ToVariantF (const T& t) noexcept
@@ -293,7 +293,7 @@ namespace LC::Util::oral
 		template<size_t Ix, typename Seq>
 		void BindAtIndex (const Seq& seq, QSqlQuery& query, bool bindPrimaryKey)
 		{
-			if (bindPrimaryKey || !IsPKey<ValueAtC_t<Seq, Ix>>::value)
+			if (bindPrimaryKey || !IsPKey<ValueAtC_t<Seq, Ix>>)
 				query.bindValue (ToString<std::get<Ix> (BoundFieldNames<Seq>)> (), ToVariantF (Get<Ix> (seq)));
 		}
 
@@ -319,7 +319,7 @@ namespace LC::Util::oral
 			auto run = []<size_t... Idxes> (std::index_sequence<Idxes...>)
 			{
 				int result = -1;
-				((IsPKey<ValueAtC_t<Seq, Idxes>>::value ? (result = Idxes) : 0), ...);
+				((IsPKey<ValueAtC_t<Seq, Idxes>> ? (result = Idxes) : 0), ...);
 				return result;
 			};
 			return run (SeqIndices<Seq>);
@@ -561,10 +561,10 @@ namespace LC::Util::oral
 		class ExprTree;
 
 		template<typename T>
-		struct IsExprTree : std::false_type {};
+		constexpr bool IsExprTree = false;
 
 		template<ExprType Type, typename L, typename R>
-		struct IsExprTree<ExprTree<Type, L, R>> : std::true_type {};
+		constexpr bool IsExprTree<ExprTree<Type, L, R>> = true;
 
 		template<typename L, typename R>
 		class AssignList
@@ -581,7 +581,7 @@ namespace LC::Util::oral
 			template<typename Seq, CtString S>
 			constexpr static auto ToSql () noexcept
 			{
-				if constexpr (IsExprTree<L> {})
+				if constexpr (IsExprTree<L>)
 					return L::GetFieldName () + " = " + R::template ToSql<Seq, S + "r"> ();
 				else
 					return L::template ToSql<Seq, S + "l"> () + ", " + R::template ToSql<Seq, S + "r"> ();
@@ -684,7 +684,7 @@ namespace LC::Util::oral
 		template<typename T>
 		constexpr auto AsLeafData (const T& node) noexcept
 		{
-			if constexpr (IsExprTree<T> {})
+			if constexpr (IsExprTree<T>)
 				return node;
 			else
 				return ExprTree<ExprType::LeafData, T> { node };
@@ -772,37 +772,31 @@ namespace LC::Util::oral
 		}
 
 		template<typename L, typename R>
-		constexpr bool EitherIsExprTree () noexcept
-		{
-			if (IsExprTree<L> {})
-				return true;
-			if (IsExprTree<R> {})
-				return true;
-			return false;
-		}
+		concept EitherIsExprTree = IsExprTree<L> || IsExprTree<R>;
 
 		template<typename L, typename R>
-		using EnableRelOp_t = std::enable_if_t<EitherIsExprTree<L, R> ()>;
-
-		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+			requires EitherIsExprTree<L, R>
 		auto operator< (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Less> (left, right);
 		}
 
-		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		template<typename L, typename R>
+			requires EitherIsExprTree<L, R>
 		auto operator> (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Greater> (left, right);
 		}
 
-		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		template<typename L, typename R>
+			requires EitherIsExprTree<L, R>
 		auto operator== (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Equal> (left, right);
 		}
 
-		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		template<typename L, typename R>
+			requires EitherIsExprTree<L, R>
 		auto operator!= (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Neq> (left, right);
@@ -837,13 +831,15 @@ namespace LC::Util::oral
 			return MakeExprTree<Op> (left.Left_, right);
 		}
 
-		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		template<typename L, typename R>
+			requires EitherIsExprTree<L, R>
 		auto operator&& (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::And> (left, right);
 		}
 
-		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		template<typename L, typename R>
+			requires EitherIsExprTree<L, R>
 		auto operator|| (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Or> (left, right);
@@ -893,24 +889,25 @@ namespace LC::Util::oral
 		};
 
 		template<typename T>
-		struct IsSelector : std::false_type {};
+		constexpr bool IsSelector = false;
 
 		template<>
-		struct IsSelector<SelectWhole> : std::true_type {};
+		inline constexpr bool IsSelector<SelectWhole> = true;
 
 		template<AggregateFunction Fun, auto Ptr>
-		struct IsSelector<AggregateType<Fun, Ptr>> : std::true_type {};
+		constexpr bool IsSelector<AggregateType<Fun, Ptr>> = true;
 
 		template<auto... Ptrs>
-		struct IsSelector<MemberPtrs<Ptrs...>> : std::true_type {};
+		constexpr bool IsSelector<MemberPtrs<Ptrs...>> = true;
 
 		template<typename L, typename R>
-		struct IsSelector<SelectorUnion<L, R>> : std::true_type {};
+		constexpr bool IsSelector<SelectorUnion<L, R>> = true;
 
 		template<typename T>
-		struct IsSelector<SelectDistinct<T>> : std::true_type {};
+		constexpr bool IsSelector<SelectDistinct<T>> = true;
 
-		template<typename L, typename R, typename = std::enable_if_t<IsSelector<L> {} && IsSelector<R> {}>>
+		template<typename L, typename R>
+			requires IsSelector<L> && IsSelector<R>
 		SelectorUnion<L, R> operator+ (L, R) noexcept
 		{
 			return {};
@@ -1077,17 +1074,6 @@ namespace LC::Util::oral
 			else if constexpr (ResultBehaviour == ResultBehaviour::First)
 				return list.value (0);
 		}
-
-		template<typename F, typename R>
-		struct HandleSelectorResult
-		{
-			QString Fields_;
-			F Initializer_;
-			R Behaviour_;
-		};
-
-		template<typename F, typename R>
-		HandleSelectorResult (QString, F, R) -> HandleSelectorResult<F, R>;
 
 		class SelectWrapperCommon
 		{
@@ -1344,7 +1330,7 @@ namespace LC::Util::oral
 			template<typename Single>
 			auto operator() (Single&& single) const
 			{
-				if constexpr (IsExprTree<std::decay_t<Single>> {})
+				if constexpr (IsExprTree<std::decay_t<Single>>)
 					return (*this) (SelectWhole {}, std::forward<Single> (single));
 				else
 					return (*this) (std::forward<Single> (single), ConstTrueTree_v);
