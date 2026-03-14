@@ -19,11 +19,11 @@ namespace LC::Util::detail
 
 		bool await_ready () const noexcept { return false; }
 
-		void await_suspend (std::coroutine_handle<>) noexcept
+		auto await_suspend (std::coroutine_handle<>) noexcept
 		{
-			if (const auto cont = Promise_.Continuation_.exchange ({}))
-				cont.resume ();
+			const auto cont = Promise_.Continuation_.exchange ({});
 			Promise_.DecRef ();
+			return cont ? cont : std::noop_coroutine ();
 		}
 
 		void await_resume () const noexcept {}
