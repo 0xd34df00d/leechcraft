@@ -19,23 +19,27 @@ namespace Azoth
 {
 namespace LastSeen
 {
-	struct OnDiskStorage::Record : EntryStats
+	struct OnDiskStorage::Record
 	{
 		Util::oral::PKey<QString, Util::oral::NoAutogen> EntryID_;
+		QDateTime Available_;
+		QDateTime Online_;
+		QDateTime StatusChange_;
 
-		Record () = default;
-
-		Record (const QString& entryId, const EntryStats& stats)
-		: EntryStats (stats)
-		, EntryID_ (entryId)
+		static Record FromEntryStats (const QString& entryId, const EntryStats& stats)
 		{
+			return
+			{
+				.EntryID_ = entryId,
+				.Available_ = stats.Available_,
+				.Online_ = stats.Online_,
+				.StatusChange_ = stats.StatusChange_
+			};
 		}
 
-		template<typename... Args>
-		Record (const QString& entryId, Args&&... args)
-		: EntryStats { std::forward<Args> (args)... }
-		, EntryID_ { entryId }
+		EntryStats ToEntryStats () const
 		{
+			return { .Available_ = Available_, .Online_ = Online_, .StatusChange_ = StatusChange_ };
 		}
 
 		constexpr static auto ClassName = "EntryStats"_ct;
@@ -91,7 +95,7 @@ namespace LastSeen
 
 	void OnDiskStorage::SetEntryStats (const QString& entryId, const EntryStats& stats)
 	{
-		AdaptedRecord_->Insert ({ entryId, stats }, Util::oral::InsertAction::Replace::PKey);
+		AdaptedRecord_->Insert (Record::FromEntryStats (entryId, stats), Util::oral::InsertAction::Replace::PKey);
 	}
 
 	Util::DBLock OnDiskStorage::BeginTransaction ()
