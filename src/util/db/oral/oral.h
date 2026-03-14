@@ -26,7 +26,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/typelist.h>
 #include <util/sll/typegetter.h>
-#include <util/sll/detector.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
@@ -34,17 +33,13 @@
 
 #ifndef ORAL_ADAPT_STRUCT
 
-#define ORAL_STRING_FIELD(_, index, tuple)																			\
-	if constexpr (Idx == index)																						\
-		return CtString { BOOST_PP_STRINGIZE(BOOST_PP_TUPLE_ELEM(index, tuple)) };
-
-#define ORAL_GET_FIELD(_, index, tuple)																				\
-	if constexpr (Idx == index)																						\
-		return s.BOOST_PP_TUPLE_ELEM(index, tuple);
+#define ORAL_STRING_FIELD(_, index, args)																			\
+	template<> \
+	constexpr auto MemberNames<BOOST_PP_TUPLE_ELEM(0, args), index> = CtString { BOOST_PP_STRINGIZE(BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args))) };
 
 #define ORAL_GET_FIELD_INDEX_IMPL(index, sname, field)																\
 	template<>																										\
-	constexpr size_t FieldIndexAccess<sname>::FieldIndex<&sname::field> () { return index; }
+	constexpr size_t FieldIndex<&sname::field> = index;
 
 #define ORAL_GET_FIELD_INDEX(_, index, args) \
 	ORAL_GET_FIELD_INDEX_IMPL(index, BOOST_PP_TUPLE_ELEM(0, args), BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args)))
@@ -58,39 +53,9 @@ namespace LC::Util::oral																							\
 	template<>																										\
 	constexpr auto SeqSize<sname> = BOOST_PP_TUPLE_SIZE((__VA_ARGS__));												\
 																													\
-	template<>																										\
-	struct MemberNames<sname>																						\
-	{																												\
-		template<size_t Idx>																						\
-		constexpr static auto Get ()																				\
-		{																											\
-			BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_STRING_FIELD, (__VA_ARGS__))					\
-		}																											\
-	};																												\
+	static_assert (SeqSize<sname> == detail::FullSize<sname>);														\
 																													\
-	template<>																										\
-	struct FieldAccess<sname>																						\
-	{																												\
-		template<size_t Idx>																						\
-		constexpr static const auto& Get (const sname& s)															\
-		{																											\
-			BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD, (__VA_ARGS__))						\
-		}																											\
-																													\
-		template<size_t Idx>																						\
-		constexpr static auto& Get (sname& s)																		\
-		{																											\
-			BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD, (__VA_ARGS__))						\
-		}																											\
-	};																												\
-																													\
-	template<>																										\
-	struct FieldIndexAccess<sname>																					\
-	{																												\
-		template<auto Ptr>																							\
-		constexpr static size_t FieldIndex ();																		\
-	};																												\
-																													\
+	BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_STRING_FIELD, (sname, (__VA_ARGS__)))					\
 	BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD_INDEX, (sname, (__VA_ARGS__)))				\
 }																													\
 
@@ -114,28 +79,42 @@ namespace LC::Util::oral
 	template<typename>
 	constexpr size_t SeqSize = 0;
 
-	template<typename>
-	struct MemberNames {};
+	namespace detail
+	{
+		struct UnspecializedSentinel {};
+	}
 
-	template<typename>
-	struct FieldAccess {};
+	template<typename, int>
+	constexpr auto MemberNames = detail::UnspecializedSentinel {};
 
-	template<typename>
-	struct FieldIndexAccess {};
+	template<auto>
+	constexpr auto FieldIndex = detail::UnspecializedSentinel {};
 
 	namespace detail
 	{
 		template<size_t Idx, typename Seq>
 		constexpr decltype (auto) Get (const Seq& seq)
 		{
-			return FieldAccess<Seq>::template Get<Idx> (seq);
+			const auto& [...fields] = seq;
+			return (fields... [Idx]);
 		}
 
 		template<size_t Idx, typename Seq>
 		constexpr decltype (auto) Get (Seq& seq)
 		{
-			return FieldAccess<Seq>::template Get<Idx> (seq);
+			auto& [...fields] = seq;
+			return (fields... [Idx]);
 		}
+
+		template<typename Seq>
+		constexpr auto GetFullSize (const Seq& seq)
+		{
+			const auto& [...fields] = seq;
+			return std::integral_constant<size_t, sizeof... (fields)> {};
+		}
+
+		template<typename Seq>
+		constexpr auto FullSize = decltype (GetFullSize (std::declval<Seq> ()))::value;
 
 		template<typename T, CtString str>
 		consteval auto MorphFieldName ()
@@ -151,7 +130,7 @@ namespace LC::Util::oral
 		template<typename Seq, int Idx>
 		consteval auto GetFieldName ()
 		{
-			constexpr auto str = MemberNames<Seq>::template Get<Idx> ();
+			constexpr auto str = MemberNames<Seq, Idx>;
 			return MorphFieldName<Seq, str> ();
 		}
 
@@ -177,24 +156,17 @@ namespace LC::Util::oral
 			} (SeqIndices<S>);
 
 		template<auto Ptr>
-		constexpr size_t FieldIndex () noexcept
-		{
-			using S = MemberPtrStruct_t<Ptr>;
-			return FieldIndexAccess<S>::template FieldIndex<Ptr> ();
-		}
-
-		template<auto Ptr>
 		constexpr auto GetFieldNamePtr () noexcept
 		{
 			using S = MemberPtrStruct_t<Ptr>;
-			return GetFieldName<S, FieldIndex<Ptr> ()> ();
+			return GetFieldName<S, FieldIndex<Ptr>> ();
 		}
 
 		template<auto Ptr>
 		constexpr auto GetQualifiedFieldNamePtr () noexcept
 		{
 			using S = MemberPtrStruct_t<Ptr>;
-			return S::ClassName + "." + GetFieldName<S, FieldIndex<Ptr> ()> ();
+			return S::ClassName + "." + GetFieldName<S, FieldIndex<Ptr>> ();
 		}
 
 		template<typename T>
@@ -204,7 +176,7 @@ namespace LC::Util::oral
 		concept BaseTypeCustomized = requires { typename T::BaseType; };
 	}
 
-	template<typename ImplFactory, typename T, typename = void>
+	template<typename ImplFactory, typename T>
 	struct Type2Name
 	{
 		constexpr auto operator() () const noexcept
@@ -261,7 +233,7 @@ namespace LC::Util::oral
 		}
 	};
 
-	template<typename T, typename = void>
+	template<typename T>
 	struct ToVariant
 	{
 		QVariant operator() (const T& t) const noexcept
@@ -281,7 +253,7 @@ namespace LC::Util::oral
 		}
 	};
 
-	template<typename T, typename = void>
+	template<typename T>
 	struct FromVariant
 	{
 		T operator() (const QVariant& var) const noexcept
@@ -385,7 +357,7 @@ namespace LC::Util::oral
 		template<typename Seq, auto... Ptrs>
 		constexpr auto ExtractConflictingFields (InsertAction::Replace::FieldsType<Ptrs...>)
 		{
-			return std::tuple { std::get<FieldIndex<Ptrs> ()> (FieldNames<Seq>)... };
+			return std::tuple { std::get<FieldIndex<Ptrs>> (FieldNames<Seq>)... };
 		}
 
 		template<typename Seq>
@@ -1206,7 +1178,7 @@ namespace LC::Util::oral
 				return std::tuple { std::get<Ixs> (QualifiedFieldNames<T>)... };
 			}
 		public:
-			constexpr static auto Fields = JoinTup (SelectFields<FieldIndex<Ptrs> ()...> (), ", ");
+			constexpr static auto Fields = JoinTup (SelectFields<FieldIndex<Ptrs>...> (), ", ");
 
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
