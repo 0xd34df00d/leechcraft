@@ -26,6 +26,25 @@ namespace LC::Util
 		QVector<std::coroutine_handle<>> Queue_;
 
 		int BackoffFactor_ = 0;
+
+		struct Awaiter
+		{
+			Throttle& Throttle_;
+			std::coroutine_handle<> Handle_ {};
+
+			explicit Awaiter (Throttle& throttle);
+			Awaiter (Awaiter&& other) noexcept;
+
+			Awaiter (const Awaiter&) = delete;
+			Awaiter& operator= (const Awaiter&) = delete;
+			Awaiter& operator= (Awaiter&&) = delete;
+
+			~Awaiter ();
+
+			bool await_ready () const;
+			void await_suspend (std::coroutine_handle<>);
+			void await_resume ();
+		};
 	public:
 		explicit Throttle (std::chrono::milliseconds, Qt::TimerType = Qt::TimerType::CoarseTimer);
 
@@ -33,9 +52,7 @@ namespace LC::Util
 
 		void Backoff ();
 
-		bool await_ready ();
-		void await_suspend (std::coroutine_handle<>);
-		void await_resume () const;
+		Awaiter operator co_await ();
 	private:
 		void StartTimer (std::chrono::milliseconds);
 	};
