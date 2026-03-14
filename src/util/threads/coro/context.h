@@ -71,28 +71,6 @@ namespace LC::Util
 		};
 	}
 
-	template<typename>
-	struct ContextExtensions
-	{
-		using HasContextExtensions = void;
-
-		QVector<QMetaObject::Connection> ContextConnections_;
-		QVector<detail::DeadObjectInfo> DeadObjects_;
-
-		void FinalSuspend () const noexcept
-		{
-			for (const auto& conn : ContextConnections_)
-				QObject::disconnect (conn);
-		}
-
-		template<typename T>
-		auto await_transform (T&& awaitable)
-		{
-			using OrigAwaiter = decltype (detail::Awaiter (std::forward<T> (awaitable)));
-			return detail::AwaitableWrapper<ContextExtensions, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
-		}
-	};
-
 	struct [[nodiscard]] AddContextObject
 	{
 		QObject& Context_;
@@ -125,6 +103,33 @@ namespace LC::Util
 
 		void await_resume ()
 		{
+		}
+	};
+
+	template<typename>
+	struct ContextExtensions
+	{
+		using HasContextExtensions = void;
+
+		QVector<QMetaObject::Connection> ContextConnections_;
+		QVector<detail::DeadObjectInfo> DeadObjects_;
+
+		void FinalSuspend () const noexcept
+		{
+			for (const auto& conn : ContextConnections_)
+				QObject::disconnect (conn);
+		}
+
+		AddContextObject await_transform (AddContextObject awaitable) const
+		{
+			return awaitable;
+		}
+
+		template<typename T>
+		auto await_transform (T&& awaitable)
+		{
+			using OrigAwaiter = decltype (detail::Awaiter (std::forward<T> (awaitable)));
+			return detail::AwaitableWrapper<ContextExtensions, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
 		}
 	};
 }
