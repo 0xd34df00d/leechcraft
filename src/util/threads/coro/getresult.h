@@ -24,7 +24,7 @@ namespace LC::Util
 		std::exception_ptr exception;
 
 		QEventLoop loop;
-		std::atomic_bool done = false;
+		bool done = false;
 		[] (auto task, auto& result, auto& exception, auto& done, auto& loop) -> Task<void>
 		{
 			try
