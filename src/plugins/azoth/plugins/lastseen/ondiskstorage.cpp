@@ -10,8 +10,6 @@
 #include <QDir>
 #include <QSqlError>
 #include <util/db/oral/oral.h>
-#include <util/sll/functor.h>
-#include <util/sll/functional.h>
 #include <util/sys/paths.h>
 #include "entrystats.h"
 
@@ -88,9 +86,7 @@ namespace LastSeen
 
 	std::optional<EntryStats> OnDiskStorage::GetEntryStats (const QString& entryId)
 	{
-		using Util::operator*;
-		return AdaptedRecord_->SelectOne (sph::f<&Record::EntryID_> == entryId) *
-				Util::Caster<EntryStats> {};
+		return AdaptedRecord_->SelectOne (sph::f<&Record::EntryID_> == entryId).transform (&Record::ToEntryStats);
 	}
 
 	void OnDiskStorage::SetEntryStats (const QString& entryId, const EntryStats& stats)
