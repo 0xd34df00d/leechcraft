@@ -78,11 +78,11 @@ namespace ChatHistory
 	public:
 		ChatHistoryWidget (const InitParams&, ICLEntry* = 0, QWidget* = 0);
 
-		void Remove ();
-		QToolBar* GetToolBar () const;
-		QObject* ParentMultiTabs ();
-		TabClassInfo GetTabClassInfo () const;
-		QList<QAction*> GetTabBarContextMenuActions () const;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
+		QObject* ParentMultiTabs () override;
+		TabClassInfo GetTabClassInfo () const override;
+		QList<QAction*> GetTabBarContextMenuActions () const override;
 	private:
 		void HandleGotOurAccounts (const QStringList&);
 		void HandleGotUsersForAccount (const QString&, const UsersForAccountResult_t&);
@@ -111,7 +111,7 @@ namespace ChatHistory
 		void RequestLogs ();
 		void RequestSearch (ChatFindBox::FindFlags);
 	signals:
-		void removeTab ();
+		void removeTab () override;
 	};
 }
 }
