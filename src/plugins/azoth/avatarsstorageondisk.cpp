@@ -51,17 +51,13 @@ namespace Util::oral
 	};
 
 	template<>
-	struct ToVariant<Azoth::IHaveAvatars::Size>
+	struct ConvertT<Azoth::IHaveAvatars::Size>
 	{
 		QVariant operator() (Azoth::IHaveAvatars::Size size) const
 		{
 			return static_cast<int> (size);
 		}
-	};
 
-	template<>
-	struct FromVariant<Azoth::IHaveAvatars::Size>
-	{
 		Azoth::IHaveAvatars::Size operator() (const QVariant& var) const
 		{
 			return static_cast<Azoth::IHaveAvatars::Size> (var.toInt ());

@@ -92,7 +92,7 @@ namespace oral
 	};
 
 	template<>
-	struct ToVariant<Azoth::Herbicide::Logger::Event>
+	struct ConvertT<Azoth::Herbicide::Logger::Event>
 	{
 		QVariant operator() (Azoth::Herbicide::Logger::Event event) const
 		{
@@ -110,13 +110,9 @@ namespace oral
 				return "failed";
 			}
 
-			Util::Unreachable ();
+			std::unreachable ();
 		}
-	};
 
-	template<>
-	struct FromVariant<Azoth::Herbicide::Logger::Event>
-	{
 		Azoth::Herbicide::Logger::Event operator() (const QVariant& var) const
 		{
 			static const QMap<QString, Azoth::Herbicide::Logger::Event> map

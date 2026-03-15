@@ -170,7 +170,7 @@ namespace LC::Util::oral
 		}
 
 		template<typename T>
-		concept TypeNameCustomized = requires { typename T::TypeName; };
+		concept TypeNameCustomizedMember = requires { typename T::TypeName; };
 
 		template<typename T>
 		concept BaseTypeCustomized = requires { typename T::BaseType; };
@@ -181,7 +181,7 @@ namespace LC::Util::oral
 	{
 		constexpr auto operator() () const noexcept
 		{
-			if constexpr (detail::TypeNameCustomized<T>)
+			if constexpr (detail::TypeNameCustomizedMember<T>)
 				return T::TypeName;
 			else if constexpr (detail::BaseTypeCustomized<T>)
 				return Type2Name<ImplFactory, typename T::BaseType> {} ();
@@ -234,40 +234,44 @@ namespace LC::Util::oral
 	};
 
 	template<typename T>
-	struct ToVariant
+		requires (!std::same_as<T, QVariant>)
+	struct ConvertT;
+
+	template<typename T>
+	constexpr auto Convert = ConvertT<T> {};
+
+	template<typename T>
+		requires (!std::same_as<T, QVariant>)
+	struct ConvertT
 	{
-		QVariant operator() (const T& t) const noexcept
+		static QVariant operator() (const T& t) noexcept
 		{
-			if constexpr (detail::TypeNameCustomized<T>)
+			if constexpr (detail::TypeNameCustomizedMember<T>)
 				return t.ToVariant ();
 			else if constexpr (detail::BaseTypeCustomized<T>)
-				return ToVariant<typename T::BaseType> {} (t.ToBaseType ());
+				return Convert<typename T::BaseType> (t.ToBaseType ());
 			else if constexpr (std::is_same_v<T, QDateTime>)
 				return t.toString (Qt::ISODate);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<qint64> (t);
 			else if constexpr (IsIndirect<T> {})
-				return ToVariant<typename T::value_type> {} (t);
+				return Convert<typename T::value_type> (t);
 			else
 				return t;
 		}
-	};
 
-	template<typename T>
-	struct FromVariant
-	{
-		T operator() (const QVariant& var) const noexcept
+		static T operator() (const QVariant& var) noexcept
 		{
-			if constexpr (detail::TypeNameCustomized<T>)
+			if constexpr (detail::TypeNameCustomizedMember<T>)
 				return T::FromVariant (var);
 			else if constexpr (detail::BaseTypeCustomized<T>)
-				return T::FromBaseType (FromVariant<typename T::BaseType> {} (var));
+				return T::FromBaseType (Convert<typename T::BaseType> (var));
 			else if constexpr (std::is_same_v<T, QDateTime>)
 				return QDateTime::fromString (var.toString (), Qt::ISODate);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<T> (var.value<qint64> ());
 			else if constexpr (IsIndirect<T> {})
-				return FromVariant<typename T::value_type> {} (var);
+				return Convert<typename T::value_type> (var);
 			else
 				return var.value<T> ();
 		}
@@ -287,7 +291,7 @@ namespace LC::Util::oral
 		template<typename T>
 		QVariant ToVariantF (const T& t) noexcept
 		{
-			return ToVariant<T> {} (t);
+			return Convert<T> (t);
 		}
 
 		template<size_t Ix, typename Seq>
@@ -429,7 +433,7 @@ namespace LC::Util::oral
 				{
 					constexpr auto index = PKeyIndex_v<Seq>;
 
-					const auto& lastId = FromVariant<ValueAtC_t<Seq, index>> {} (query.lastInsertId ());
+					const auto& lastId = Convert<ValueAtC_t<Seq, index>> (query.lastInsertId ());
 					if constexpr (!std::is_const_v<T>)
 						Get<index> (t) = lastId;
 					else
@@ -467,12 +471,12 @@ namespace LC::Util::oral
 		template<typename T, size_t... Indices>
 		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>, int startIdx) noexcept
 		{
-			if constexpr (requires { T { FromVariant<ValueAtC_t<T, Indices>> {} (QVariant {})... }; })
-				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))... };
+			if constexpr (requires { T { Convert<ValueAtC_t<T, Indices>> (QVariant {})... }; })
+				return T { Convert<ValueAtC_t<T, Indices>> (q.value (startIdx + Indices))... };
 			else
 			{
 				T t;
-				((Get<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), ...);
+				((Get<Indices> (t) = Convert<ValueAtC_t<T, Indices>> (q.value (startIdx + Indices))), ...);
 				return t;
 			}
 		}
@@ -964,7 +968,7 @@ namespace LC::Util::oral
 		template<auto Ptr>
 		auto MemberFromVariant (const QVariant& var) noexcept
 		{
-			return FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (var);
+			return Convert<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> (var);
 		}
 
 		template<auto Ptr>
@@ -1203,7 +1207,7 @@ namespace LC::Util::oral
 				const auto& var = q.value (startIdx);
 				return var.isNull () ?
 						std::nullopt :
-						std::optional { FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (var) };
+						std::optional { Convert<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> (var) };
 			}
 		};
 
