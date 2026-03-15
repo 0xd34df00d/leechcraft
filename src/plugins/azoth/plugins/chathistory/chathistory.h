@@ -63,7 +63,6 @@ namespace ChatHistory
 
 		QAction *SeparatorAction_ = nullptr;
 
-		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *PluginProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr) override;

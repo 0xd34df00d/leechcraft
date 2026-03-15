@@ -45,7 +45,7 @@ namespace ChatHistory
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
 		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
-		FindBox_ = new ChatFindBox (Params_.CoreProxy_, Ui_.HistView_);
+		FindBox_ = new ChatFindBox (Ui_.HistView_);
 		connect (FindBox_,
 				SIGNAL (next (QString, ChatFindBox::FindFlags)),
 				this,
@@ -388,7 +388,7 @@ namespace ChatHistory
 						tr ("No more search results for %1, searching from the beginning now.")
 							.arg ("<em>" + PreviousSearchText_ + "</em>"),
 						Priority::Info);
-				Params_.CoreProxy_->GetEntityManager ()->HandleEntity (e);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 				RequestSearch (FindBox_->GetFlags ());
 			}

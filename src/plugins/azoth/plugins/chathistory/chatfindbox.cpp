@@ -14,8 +14,8 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	ChatFindBox::ChatFindBox (ICoreProxy_ptr proxy, QWidget *parent)
-	: FindNotification { proxy, parent }
+	ChatFindBox::ChatFindBox (QWidget *parent)
+	: FindNotification { GetProxyHolder (), parent }
 	{
 	}
 

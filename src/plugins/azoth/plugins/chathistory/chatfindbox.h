@@ -20,7 +20,7 @@ namespace ChatHistory
 	{
 		Q_OBJECT
 	public:
-		ChatFindBox (ICoreProxy_ptr, QWidget*);
+		ChatFindBox (QWidget*);
 	protected:
 		void HandleNext (const QString& text, FindFlags flags) override;
 	signals:

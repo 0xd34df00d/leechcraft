@@ -34,16 +34,14 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		CoreProxy_ = proxy;
-
 		TabClass_.TabClass_ = "Chathistory";
 		TabClass_.VisibleName_ = tr ("Chat history");
 		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
 		TabClass_.Priority_ = 40;
 		TabClass_.Features_ = TFOpenableByRequest;
-		TabClass_.Icon_ = proxy->GetIconThemeManager ()->GetPluginIcon ();
+		TabClass_.Icon_ = GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
@@ -322,14 +320,14 @@ namespace ChatHistory
 	void Plugin::HandleHistoryRequested ()
 	{
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Chat history"),
-				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ } },
+				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, this, TabClass_ } },
 				IRootWindowsManager::AddTabFlag::Background);
 	}
 
 	void Plugin::HandleEntryHistoryRequested (ICLEntry *entry)
 	{
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Chat history"),
-				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ }, entry });
+				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, this, TabClass_ }, entry });
 	}
 
 }
