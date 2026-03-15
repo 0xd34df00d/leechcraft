@@ -1525,17 +1525,17 @@ namespace LC::Util::oral
 			}
 		};
 
-		template<typename T, size_t... Fields>
-		constexpr auto ExtractConstraintFields (UniqueSubset<Fields...>)
+		template<typename T, auto... Ptrs>
+		constexpr auto ExtractConstraintFields (UniqueSubset<Ptrs...>)
 		{
-			return "UNIQUE (" + Join (", ", std::get<Fields> (FieldNames<T>)...) + ")";
-		};
+			return "UNIQUE (" + Join (", ", std::get<FieldIndex<Ptrs>> (FieldNames<T>)...) + ")";
+		}
 
 		template<typename T, size_t... Fields>
 		constexpr auto ExtractConstraintFields (PrimaryKey<Fields...>)
 		{
 			return "PRIMARY KEY (" + Join (", ", std::get<Fields> (FieldNames<T>)...) + ")";
-		};
+		}
 
 		template<typename T>
 		constexpr auto GetConstraintsStrings () noexcept

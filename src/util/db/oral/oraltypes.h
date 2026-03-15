@@ -132,7 +132,7 @@ namespace oral
 	template<size_t... Fields>
 	struct PrimaryKey {};
 
-	template<size_t... Fields>
+	template<auto... Fields>
 	struct UniqueSubset {};
 
 	template<typename... Args>

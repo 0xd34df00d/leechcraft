@@ -26,7 +26,7 @@ namespace LC::Azoth
 		constexpr static auto ClassName = "Record"_ct;
 
 		using Constraints = Util::oral::Constraints<
-				Util::oral::UniqueSubset<1, 2>
+				Util::oral::UniqueSubset<&Record::EntryID_, &Record::Size_>
 			>;
 	};
 }
