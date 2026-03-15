@@ -66,33 +66,33 @@ namespace ChatHistory
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *PluginProxy_ = nullptr;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
 		// IPlugin2
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
 		// IActionsExporter
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		QMap<QString, QList<QAction*>> GetMenuActions () const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
+		QMap<QString, QList<QAction*>> GetMenuActions () const override;
 
 		// IHaveTabs
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
 		// IHaveSettings
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
 		// IHistoryPlugin
-		bool IsHistoryEnabledFor (QObject*) const;
-		void RequestLastMessages (QObject*, int);
-		QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount*);
-		void AddRawMessages (const QString&, const QString&, const QString&, const QList<HistoryItem>&);
+		bool IsHistoryEnabledFor (QObject*) const override;
+		void RequestLastMessages (QObject*, int) override;
+		QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount*) override;
+		void AddRawMessages (const QString&, const QString&, const QString&, const QList<HistoryItem>&) override;
 	private:
 		void HandleGotChatLogs (const QPointer<QObject>&, const ChatLogsResult_t&);
 
@@ -113,9 +113,9 @@ namespace ChatHistory
 	private slots:
 		void handlePushButton (const QString&);
 	signals:
-		void gotLastMessages (QObject*, const QList<QObject*>&);
+		void gotLastMessages (QObject*, const QList<QObject*>&) override;
 
-		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }
