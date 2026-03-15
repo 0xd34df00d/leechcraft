@@ -1134,7 +1134,6 @@ namespace LC::Util::oral
 		struct HandleSelector {};
 
 		struct HSBaseAll { constexpr static auto ResultBehaviour_v = ResultBehaviour::All; };
-
 		struct HSBaseFirst { constexpr static auto ResultBehaviour_v = ResultBehaviour::First; };
 
 		template<typename T>
@@ -1201,7 +1200,10 @@ namespace LC::Util::oral
 
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
-				return MakeIndexedQueryHandler<Ptr> (q, startIdx);
+				const auto& var = q.value (startIdx);
+				return var.isNull () ?
+						std::nullopt :
+						std::optional { FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (var) };
 			}
 		};
 

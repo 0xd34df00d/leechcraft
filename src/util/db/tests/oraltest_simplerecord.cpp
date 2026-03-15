@@ -213,6 +213,13 @@ namespace Util
 		QCOMPARE (minMax, (std::tuple { 0, 2 }));
 	}
 
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectMinPlusMaxEmpty ()
+	{
+		auto adapted = oral::AdaptPtr<SimpleRecord, OralFactory> (MakeDatabase ());
+		const auto minMax = adapted->Select (sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>);
+		QCOMPARE (minMax, (std::tuple { std::nullopt, std::nullopt }));
+	}
+
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectValuePlusMinPlusMax ()
 	{
 		auto adapted = oral::AdaptPtr<SimpleRecord, OralFactory> (MakeDatabase ());
@@ -225,7 +232,11 @@ namespace Util
 				.Select (sph::fields<&SimpleRecord::Value_> + sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>)
 				.Group (oral::GroupBy<&SimpleRecord::Value_>)
 				();
-		QCOMPARE (allMinMax, (QList<std::tuple<QString, int, int>> { { { "0" }, 0, 2 }, { { "1" }, 3, 5 } }));
+		QCOMPARE (allMinMax, (QList<std::tuple<QString, std::optional<int>, std::optional<int>>>
+				{
+					{ { "0" }, 0, 2 },
+					{ { "1" }, 3, 5 }
+				}));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectAllPlusMinPlusMax ()
@@ -235,7 +246,10 @@ namespace Util
 				.Select (sph::all + sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>)
 				.Group<&SimpleRecord::ID_, &SimpleRecord::Value_> ()
 				();
-		QCOMPARE (allMinMax, (QList<std::tuple<SimpleRecord, int, int>> { { { 0, "0" }, 0, 0 }, { { 1, "1" }, 1, 1 } }));
+		QCOMPARE (allMinMax, (QList<std::tuple<SimpleRecord, std::optional<int>, std::optional<int>>>
+				{
+					{ { 0, "0" }, 0, 0 }, { { 1, "1" }, 1, 1 }
+				}));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectLike ()
