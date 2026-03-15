@@ -9,6 +9,7 @@
 #pragma once
 
 #include <util/sll/ctstring.h>
+#include <util/sll/typegetter.h>
 #include "flatitemsmodeltypedbase.h"
 
 namespace LC::Util
@@ -128,6 +129,9 @@ namespace LC::Util
 			} (std::make_index_sequence<FieldsCount_v<T>> {});
 		}
 	}
+
+	template<auto F>
+	constexpr auto FromField = +[] (const ArgType_t<decltype (F), 0>& t) { return QVariant::fromValue (t.*F); };
 
 	template<typename T>
 	class RoledItemsModel : public FlatItemsModelTypedBase<T>
