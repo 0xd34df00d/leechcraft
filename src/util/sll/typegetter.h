@@ -21,13 +21,22 @@ namespace LC::Util
 		auto TypeGetter (F&& f) -> decltype (TypeGetter (+f));
 
 		template<typename C, typename R, typename... Args>
-		std::tuple<R, Args...>* TypeGetter (R (C::*) (Args...) const);
+		std::tuple<R, const C, Args...>* TypeGetter (R (C::*) (Args...) const);
 
 		template<typename C, typename R, typename... Args>
-		std::tuple<R, Args...>* TypeGetter (R (C::*) (Args...));
+		std::tuple<R, C, Args...>* TypeGetter (R (C::*) (Args...));
+
+		template<typename C, typename R>
+		std::tuple<R, C>* TypeGetter (R (C::*));
+
+		template<typename C, typename R, typename... Args>
+		std::tuple<R, Args...>* TypeGetterNoClass (R (C::*) (Args...) const);
+
+		template<typename C, typename R, typename... Args>
+		std::tuple<R, Args...>* TypeGetterNoClass (R (C::*) (Args...));
 
 		template<typename C>
-		decltype (TypeGetter (&C::operator ())) TypeGetter (const C& c);
+		decltype (TypeGetterNoClass (&C::operator ())) TypeGetter (const C& c);
 
 		template<typename F>
 		using CallTypeGetter_t = std::decay_t<decltype (*detail::TypeGetter (*static_cast<F*> (nullptr)))>;

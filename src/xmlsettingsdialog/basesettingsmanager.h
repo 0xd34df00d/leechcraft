@@ -128,16 +128,16 @@ namespace Util
 					flags);
 		}
 
-		template<std::derived_from<QObject> Ctx, typename F, size_t Cnt = ArgCount_v<F>>
-			requires (Cnt > 0 && !std::is_same_v<std::decay_t<ArgType_t<F, 0>>, QVariant>)
+		template<std::derived_from<QObject> Ctx, typename F>
+			requires (ArgCount_v<F> > 1 && !std::is_same_v<std::decay_t<ArgType_t<F, 1>>, QVariant>)
 		void RegisterObject (const QByteArray& propName,
 				Ctx *object, F func,
 				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate)
-			requires requires (std::decay_t<ArgType_t<F, 0>> arg) { std::invoke (func, object, arg); }
+			requires requires (std::decay_t<ArgType_t<F, 1>> arg) { std::invoke (func, object, arg); }
 		{
 			RegisterObject (propName,
 					object,
-					[object, func] (const QVariant& var) { std::invoke (func, object, var.value<std::decay_t<ArgType_t<F, 0>>> ()); },
+					[object, func] (const QVariant& var) { std::invoke (func, object, var.value<std::decay_t<ArgType_t<F, 1>>> ()); },
 					flags);
 		}
 
