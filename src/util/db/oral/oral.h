@@ -873,8 +873,6 @@ namespace LC::Util::oral
 
 		struct CountAll {};
 
-		inline constexpr CountAll *CountAllPtr = nullptr;
-
 		template<typename... MemberDirectionList>
 		struct OrderBy {};
 
@@ -937,7 +935,8 @@ namespace LC::Util::oral
 		template<auto... Ptrs>
 		struct desc {};
 
-		template<auto Ptr = detail::CountAllPtr>
+		// observe the irony: we count ⊤!
+		template<auto Ptr = std::true_type {}>
 		constexpr detail::AggregateType<detail::AggregateFunction::Count, Ptr> count {};
 
 		template<auto Ptr>
@@ -1176,7 +1175,7 @@ namespace LC::Util::oral
 		};
 
 		template<typename T>
-		struct HandleSelector<T, AggregateType<AggregateFunction::Count, CountAllPtr>> : HSBaseFirst
+		struct HandleSelector<T, AggregateType<AggregateFunction::Count, std::true_type {}>> : HSBaseFirst
 		{
 			constexpr static auto Fields = "count(1)"_ct;
 
