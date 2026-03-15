@@ -115,11 +115,12 @@ namespace Util
 				QObject *object, const VariantHandler_f& func,
 				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate);
 
-		template<typename F, size_t Cnt = ArgCount_v<F>>
-			requires (Cnt > 0 && !std::is_same_v<std::decay_t<ArgType_t<F, 0>>, QVariant>)
+		template<typename F>
+			requires (ArgCount_v<F> > 0 && !std::is_same_v<std::decay_t<ArgType_t<F, 0>>, QVariant>)
 		void RegisterObject (const QByteArray& propName,
 				QObject *object, F func,
 				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate)
+			requires requires (std::decay_t<ArgType_t<F, 0>> arg) { std::invoke (func, arg); }
 		{
 			RegisterObject (propName,
 					object,
