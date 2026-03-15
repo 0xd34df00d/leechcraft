@@ -12,7 +12,6 @@
 #include <QMessageBox>
 #include <QShortcut>
 #include <QToolBar>
-#include <util/gui/clearlineeditaddon.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include <util/xpc/util.h>
@@ -52,8 +51,6 @@ namespace ChatHistory
 				this,
 				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
 		FindBox_->SetEscCloses (false);
-
-		new Util::ClearLineEditAddon (Params_.CoreProxy_, Ui_.ContactsSearch_);
 
 		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
 		connect (hvef,
