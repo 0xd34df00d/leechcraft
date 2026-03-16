@@ -938,6 +938,9 @@ namespace LC::Util::oral
 		template<AggregateFunction, auto Ptr>
 		struct AggregateType {};
 
+		template<typename FunRetType, CtString Fun, auto Ptr>
+		struct CustomFunctionType {};
+
 		struct CountAll {};
 
 		template<typename... MemberDirectionList>
@@ -965,6 +968,9 @@ namespace LC::Util::oral
 
 		template<AggregateFunction Fun, auto Ptr>
 		constexpr bool IsSelector<AggregateType<Fun, Ptr>> = true;
+
+		template<typename FunRetType, CtString Fun, auto Ptr>
+		constexpr bool IsSelector<CustomFunctionType<FunRetType, Fun, Ptr>> = true;
 
 		template<auto... Ptrs>
 		constexpr bool IsSelector<MemberPtrs<Ptrs...>> = true;
@@ -1011,6 +1017,9 @@ namespace LC::Util::oral
 
 		template<auto Ptr>
 		constexpr detail::AggregateType<detail::AggregateFunction::Max, Ptr> max {};
+
+		template<typename FunRetType, CtString Fun, auto Ptr>
+		constexpr detail::CustomFunctionType<FunRetType, Fun, Ptr> fun {};
 	};
 
 	template<typename... Orders>
@@ -1238,6 +1247,17 @@ namespace LC::Util::oral
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
 				return MakeIndexedQueryHandler (MemberPtrs<Ptrs...> {}, q, startIdx);
+			}
+		};
+
+		template<typename T, typename FunRetType, CtString Fun, auto Ptr>
+		struct HandleSelector<T, CustomFunctionType<FunRetType, Fun, Ptr>> : HSBaseAll
+		{
+			constexpr static auto Fields = ReplaceAll<Fun, '@'> (GetQualifiedFieldNamePtr<Ptr> ());
+
+			static auto Initializer (const QSqlQuery& q, int startIdx)
+			{
+				return Convert<FunRetType> (q.value (startIdx));
 			}
 		};
 
