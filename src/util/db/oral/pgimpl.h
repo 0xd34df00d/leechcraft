@@ -39,10 +39,9 @@ namespace LC::Util::oral::detail::PostgreSQL
 			return "ON CONFLICT DO NOTHING"_ct;
 		}
 
-		constexpr static auto GetInsertSuffix (InsertAction::Replace, auto conflictingFields, auto allFields)
+		constexpr static auto GetInsertSuffix (InsertAction::Replace, auto fields)
 		{
-			return "ON CONFLICT (" + JoinTup (conflictingFields, ", ") +
-					") DO UPDATE SET " + JoinTup (ZipWith (allFields, " = EXCLUDED.", allFields), ", ");
+			return "ON CONFLICT DO UPDATE SET " + JoinTup (ZipWith (fields, " = EXCLUDED.", fields), ", ");
 		}
 	};
 }

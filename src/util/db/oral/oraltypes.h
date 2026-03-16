@@ -161,8 +161,8 @@ namespace oral
 
 	struct InsertAction
 	{
-		constexpr inline static struct DefaultTag {} Default {};
-		constexpr inline static struct IgnoreTag {} Ignore {};
+		constexpr static struct DefaultTag {} Default {};
+		constexpr static struct IgnoreTag {} Ignore {};
 
 		struct Replace
 		{
@@ -170,9 +170,9 @@ namespace oral
 			struct FieldsType {};
 
 			template<auto... Ptrs>
-			constexpr inline static FieldsType<Ptrs...> Fields {};
+			constexpr static FieldsType<Ptrs...> Fields {};
 
-			constexpr inline static struct PKeyType {} PKey {};
+			constexpr static struct WholeType {} Whole {};
 		};
 	};
 }

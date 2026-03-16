@@ -196,7 +196,7 @@ namespace Herbicide
 				entry->GetHumanReadableID (),
 				entry->GetEntryName ()
 			},
-			Util::oral::InsertAction::Replace::Fields<&EntryRecord::EntryID_>);
+			Util::oral::InsertAction::Replace::Whole);
 	}
 }
 }

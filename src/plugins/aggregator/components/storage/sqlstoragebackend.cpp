@@ -623,7 +623,7 @@ namespace LC::Aggregator
 				{
 					FeedsSettings_->Insert (impl,
 							FeedSettingsR::FromOrig (settings),
-							oral::InsertAction::Replace::Fields<&FeedSettingsR::FeedID_>);
+							oral::InsertAction::Replace::Whole);
 				});
 	}
 
@@ -640,7 +640,7 @@ namespace LC::Aggregator
 				{
 					Feeds2Tags_->Insert (impl,
 							Feed2TagsR { feedId, tags },
-							oral::InsertAction::Replace::Fields<&Feed2TagsR::FeedID_>);
+							oral::InsertAction::Replace::Whole);
 				});
 	}
 
@@ -1043,7 +1043,7 @@ namespace LC::Aggregator
 				[&] (auto impl)
 				{
 					for (const auto& enclosure : enclosures)
-						Enclosures_->Insert (impl, EnclosureR::FromOrig (enclosure), oral::InsertAction::Replace::PKey);
+						Enclosures_->Insert (impl, EnclosureR::FromOrig (enclosure), oral::InsertAction::Replace::Whole);
 				});
 	}
 
@@ -1058,7 +1058,7 @@ namespace LC::Aggregator
 		void InsertList (auto impl, const oral::ObjectInfo_ptr<RecType>& records, const auto& origs)
 		{
 			for (const auto& orig : origs)
-				records->Insert (impl, RecType::FromOrig (orig), oral::InsertAction::Replace::PKey);
+				records->Insert (impl, RecType::FromOrig (orig), oral::InsertAction::Replace::Whole);
 		}
 	}
 
@@ -1069,7 +1069,7 @@ namespace LC::Aggregator
 				{
 					for (const auto& e : entries)
 					{
-						MRSSEntries_->Insert (impl, MRSSEntryR::FromOrig (e), oral::InsertAction::Replace::PKey);
+						MRSSEntries_->Insert (impl, MRSSEntryR::FromOrig (e), oral::InsertAction::Replace::Whole);
 						InsertList (impl, MRSSThumbnails_, e.Thumbnails_);
 						InsertList (impl, MRSSCredits_, e.Credits_);
 						InsertList (impl, MRSSComments_, e.Comments_);

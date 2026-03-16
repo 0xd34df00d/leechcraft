@@ -79,7 +79,7 @@ namespace Azoth
 			QSslError::SslError err, Action act)
 	{
 		AdaptedRecord_->Insert ({ id, err, act },
-				Util::oral::InsertAction::Replace::Fields<&Record::AccountID_, &Record::Error_>);
+				Util::oral::InsertAction::Replace::Whole);
 	}
 }
 }

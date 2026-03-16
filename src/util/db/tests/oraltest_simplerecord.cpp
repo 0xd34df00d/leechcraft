@@ -31,7 +31,7 @@ namespace Util
 
 		auto adapted = Util::oral::AdaptPtr<SimpleRecord, OralFactory> (db);
 		for (int i = 0; i < 3; ++i)
-			adapted->Insert (OralFactory {}, { 0, QString::number (i) }, lco::InsertAction::Replace::PKey);
+			adapted->Insert (OralFactory {}, { 0, QString::number (i) }, lco::InsertAction::Replace::Whole);
 
 		const auto& list = adapted->Select ();
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "2" } }));

@@ -18,36 +18,47 @@ namespace LC::Util::oral::detail::SQLite
 
 		struct TypeLits
 		{
-			inline constexpr static CtString IntAutoincrement { "INTEGER PRIMARY KEY AUTOINCREMENT" };
-			inline constexpr static CtString Binary { "BLOB" };
+			constexpr static CtString IntAutoincrement { "INTEGER PRIMARY KEY AUTOINCREMENT" };
+			constexpr static CtString Binary { "BLOB" };
 		};
 
-		inline constexpr static CtString LimitNone { "-1" };
-
-		constexpr static auto GetInsertPrefix (InsertAction::DefaultTag)
-		{
-			return "INSERT"_ct;
-		}
+		constexpr static CtString LimitNone { "-1" };
 
 		constexpr static auto GetInsertPrefix (InsertAction::IgnoreTag)
 		{
 			return "INSERT OR IGNORE"_ct;
 		}
 
-		constexpr static auto GetInsertPrefix (InsertAction::Replace::PKeyType)
+		constexpr static auto GetInsertPrefix (InsertAction::DefaultTag)
 		{
-			return "INSERT OR REPLACE"_ct;
+			return "INSERT"_ct;
 		}
 
 		template<auto... Ptrs>
 		constexpr static auto GetInsertPrefix (InsertAction::Replace::FieldsType<Ptrs...>)
 		{
-			return "INSERT OR REPLACE"_ct;
+			return "INSERT"_ct;
 		}
 
-		constexpr static auto GetInsertSuffix (auto...)
+		constexpr static auto GetInsertPrefix (InsertAction::Replace::WholeType)
 		{
-			return ""_ct;
+			return "INSERT"_ct;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::DefaultTag)
+		{
+			return "RETURNING rowid"_ct;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::IgnoreTag)
+		{
+			return "RETURNING rowid"_ct;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::Replace, auto fields)
+		{
+			return "ON CONFLICT DO UPDATE SET " + JoinTup (ZipWith (fields, " = EXCLUDED.", fields), ", ") +
+					" RETURNING rowid";
 		}
 	};
 }

@@ -353,13 +353,21 @@ namespace LC::Util::oral
 		}
 
 		template<typename Seq>
-		constexpr auto ExtractConflictingFields (InsertAction::Replace::PKeyType)
+		constexpr auto ExtractReplaceFields (InsertAction::Replace::WholeType)
 		{
-			return std::tuple { detail::GetFieldName<Seq, PKeyIndex_v<Seq>> () };
+			constexpr static auto allNames = FieldNames<Seq>;
+			if constexpr (HasAutogenPKey<Seq> ())
+				return []<size_t... Idxs> (std::index_sequence<Idxs...>)
+				{
+					const auto [...namesPack] = allNames;
+					return std::tuple { namesPack... [Idxs >= PKeyIndex_v<Seq> ? Idxs + 1 : Idxs]... };
+				} (std::make_index_sequence<SeqSize<Seq> - 1> ());
+			else
+				return allNames;
 		}
 
 		template<typename Seq, auto... Ptrs>
-		constexpr auto ExtractConflictingFields (InsertAction::Replace::FieldsType<Ptrs...>)
+		constexpr auto ExtractReplaceFields (InsertAction::Replace::FieldsType<Ptrs...>)
 		{
 			return std::tuple { std::get<FieldIndex<Ptrs>> (FieldNames<Seq>)... };
 		}
@@ -406,8 +414,7 @@ namespace LC::Util::oral
 					return ImplFactory::GetInsertSuffix (action);
 				else
 					return ImplFactory::GetInsertSuffix (InsertAction::Replace {},
-							ExtractConflictingFields<Seq> (action),
-							FieldNames<Seq>);
+							ExtractReplaceFields<Seq> (action));
 			}
 
 			template<typename ImplFactory>

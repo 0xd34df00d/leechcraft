@@ -57,6 +57,6 @@ namespace LC::NamAuth
 	void SQLStorageBackend::SetAuth (const AuthRecord& record)
 	{
 		AdaptedRecord_->Insert (record,
-				Util::oral::InsertAction::Replace::Fields<&AuthRecord::RealmName_, &AuthRecord::Context_>);
+				Util::oral::InsertAction::Replace::Whole);
 	}
 }

@@ -79,10 +79,32 @@ ORAL_ADAPT_STRUCT (NonInPlaceConstructibleRecord,
 
 TOSTRING (NonInPlaceConstructibleRecord)
 
+struct ConstrainedAutogenPKeyRecord
+{
+	lco::PKey<int> ID_ {};
+	lco::Unique<QString> City_;
+	int Population_;
+
+	constexpr static auto ClassName = "ConstrainedAutogenPKeyRecord"_ct;
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, City_, Population_);
+	}
+};
+
+ORAL_ADAPT_STRUCT (ConstrainedAutogenPKeyRecord,
+		ID_,
+		City_,
+		Population_)
+
+TOSTRING (ConstrainedAutogenPKeyRecord)
+
 struct ComplexConstraintsRecord
 {
 	int ID_;
-	QString Value_;
+	QString Name_;
+	QString City_;
 	int Age_;
 	int Weight_;
 
@@ -90,7 +112,7 @@ struct ComplexConstraintsRecord
 
 	auto AsTuple () const
 	{
-		return std::tie (ID_, Value_, Age_, Weight_);
+		return std::tie (ID_, Name_, City_, Age_, Weight_);
 	}
 
 	using Constraints = lco::Constraints<
@@ -101,7 +123,8 @@ struct ComplexConstraintsRecord
 
 ORAL_ADAPT_STRUCT (ComplexConstraintsRecord,
 		ID_,
-		Value_,
+		Name_,
+		City_,
 		Age_,
 		Weight_)
 
@@ -182,50 +205,66 @@ namespace Util
 	{
 		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
 
-		adapted->Insert ({ 0, "first", 1, 2 });
-		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "second", 1, 2 }));
-		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "first", 1, 3 }));
-		adapted->Insert ({ 0, "second", 1, 3 });
-		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "first", 1, 3 }));
+		adapted->Insert ({ 0, "first", "c1", 1, 2 });
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "second", "c1", 1, 2 }));
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "first", "c1", 1, 3 }));
+		adapted->Insert ({ 0, "second", "c2", 1, 3 });
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "first", "c1", 1, 3 }));
 
 		const auto& list = adapted->Select ();
-		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
+		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", "c1", 1, 2 }, { 0, "second", "c2", 1, 3 } }));
 	}
 
 	void OralTest::testComplexConstraintsRecordInsertSelectIgnore ()
 	{
 		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
 
-		adapted->Insert ({ 0, "first", 1, 2 }, lco::InsertAction::Ignore);
-		adapted->Insert ({ 0, "second", 1, 2 }, lco::InsertAction::Ignore);
-		adapted->Insert ({ 0, "first", 1, 3 }, lco::InsertAction::Ignore);
-		adapted->Insert ({ 0, "second", 1, 3 }, lco::InsertAction::Ignore);
-		adapted->Insert ({ 0, "first", 1, 3 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "first", "c1", 1, 2 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "second", "c2", 1, 2 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "first", "c3", 1, 3 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "second", "c4", 1, 3 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "first", "c5", 1, 3 }, lco::InsertAction::Ignore);
 
 		const auto& list = adapted->Select ();
-		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
+		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", "c1", 1, 2 }, { 0, "second", "c4", 1, 3 } }));
 	}
 
 	void OralTest::testComplexConstraintsRecordInsertSelectReplace ()
 	{
 		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
 
-		const auto idValueFields = lco::InsertAction::Replace::Fields<
-				&ComplexConstraintsRecord::ID_,
-				&ComplexConstraintsRecord::Value_
-			>;
-		const auto weightAgeFields = lco::InsertAction::Replace::Fields<
-				&ComplexConstraintsRecord::Weight_,
-				&ComplexConstraintsRecord::Age_
-			>;
-		adapted->Insert ({ 0, "first", 1, 2 }, idValueFields);
-		adapted->Insert ({ 0, "second", 1, 2 }, weightAgeFields);
-		adapted->Insert ({ 0, "first", 1, 3 }, idValueFields);
-		adapted->Insert ({ 0, "third", 1, 3 }, weightAgeFields);
-		adapted->Insert ({ 0, "first", 1, 3 }, weightAgeFields);
+		adapted->Insert ({ 0, "alice", "city1", 1, 2 });
+		adapted->Insert ({ 0, "bob", "city2", 1, 2 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::Name_>);
+		QCOMPARE (adapted->Select (), (QList<ComplexConstraintsRecord> { { 0, "bob", "city1", 1, 2 } }));
 
-		const auto& list = adapted->Select ();
-		QCOMPARE (list, (QList<ComplexConstraintsRecord> { {0, "second", 1, 2 }, { 0, "first", 1, 3 } }));
+		adapted->Insert ({ 0, "alice", "city3", 2, 3 });
+		QCOMPARE (adapted->Select (), (QList<ComplexConstraintsRecord> { { 0, "bob", "city1", 1, 2 }, { 0, "alice", "city3", 2, 3 } }));
+
+		// cascading constraint violation: (0, "alice") ↦ (0, "bob") fails
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException,
+				adapted->Insert ({ 1, "bob", "city4", 2, 3 },
+						lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::Name_, &ComplexConstraintsRecord::City_>));
+
+		adapted->Insert ({ 1, "bob", "city4", 2, 3 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Name_, &ComplexConstraintsRecord::City_>);
+		QCOMPARE (adapted->Select (), (QList<ComplexConstraintsRecord> { { 0, "bob", "city1", 1, 2 }, { 1, "bob", "city4", 2, 3 } }));
+	}
+
+	void OralTest::testConstrainedAutogenPKeyRecordInsertReplace ()
+	{
+		using Rec = ConstrainedAutogenPKeyRecord;
+		auto adapted = Util::oral::AdaptPtr<Rec, OralFactory> (MakeDatabase ());
+
+		adapted->Insert ({ .City_ = "c1", .Population_ = 100 });
+		adapted->Insert ({ .City_ = "c2", .Population_ = 200 });
+		QCOMPARE (adapted->Select (), (QList<Rec> { { 1, "c1", 100 }, { 2, "c2", 200 } }));
+
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ .City_ = "c1", .Population_ = 300 }));
+
+		adapted->Insert ({ .City_ = "c1", .Population_ = 300 }, lco::InsertAction::Replace::Whole);
+		adapted->Insert ({ .City_ = "c2", .Population_ = 400 }, lco::InsertAction::Replace::Whole);
+		QCOMPARE (adapted->Select (), (QList<Rec> { { 1, "c1", 300 }, { 2, "c2", 400 } }));
 	}
 }
 }

@@ -95,7 +95,7 @@ namespace LastSeen
 
 	void OnDiskStorage::SetEntryStats (const QString& entryId, const EntryStats& stats)
 	{
-		AdaptedRecord_->Insert (Record::FromEntryStats (entryId, stats), Util::oral::InsertAction::Replace::PKey);
+		AdaptedRecord_->Insert (Record::FromEntryStats (entryId, stats), Util::oral::InsertAction::Replace::Whole);
 	}
 
 	Util::DBLock OnDiskStorage::BeginTransaction ()

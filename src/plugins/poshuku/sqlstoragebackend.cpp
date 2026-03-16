@@ -226,8 +226,8 @@ namespace Poshuku
 	{
 		const auto& record = History::FromHistoryItem (item);
 		Type_ == SBSQLite ?
-				History_->Insert (oral::SQLiteImplFactory {}, record, oral::InsertAction::Replace::PKey) :
-				History_->Insert (oral::PostgreSQLImplFactory {}, record, oral::InsertAction::Replace::PKey);
+				History_->Insert (oral::SQLiteImplFactory {}, record, oral::InsertAction::Replace::Whole) :
+				History_->Insert (oral::PostgreSQLImplFactory {}, record, oral::InsertAction::Replace::Whole);
 		emit added (item);
 	}
 

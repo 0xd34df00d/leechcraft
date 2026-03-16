@@ -80,8 +80,8 @@ namespace LC::Poshuku::WebEngineView
 
 		const auto& now = QDateTime::currentDateTime ();
 
-		IconUrl2Icon_->Insert ({ iconUrl, icon }, Replace::PKey);
-		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl, now }, Replace::PKey);
+		IconUrl2Icon_->Insert ({ iconUrl, icon }, Replace::Whole);
+		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl, now }, Replace::Whole);
 	}
 
 	QIcon IconDatabaseOnDisk::GetIcon (const QUrl& iconUrl)

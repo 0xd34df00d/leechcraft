@@ -81,7 +81,7 @@ namespace Xoox
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
 	{
-		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::PKey);
+		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::Whole);
 	}
 
 	std::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
@@ -91,7 +91,7 @@ namespace Xoox
 
 	void VCardStorageOnDisk::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
 	{
-		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace::PKey);
+		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace::Whole);
 	}
 
 	std::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
