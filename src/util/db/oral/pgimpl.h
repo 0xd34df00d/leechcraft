@@ -29,6 +29,22 @@ namespace LC::Util::oral::detail::PostgreSQL
 			return "INSERT"_ct;
 		}
 
+		constexpr static auto GetInsertSuffix (InsertAction::DefaultTag, auto pkName)
+		{
+			return "RETURNING "_ct + pkName;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::IgnoreTag, auto pkName)
+		{
+			return "ON CONFLICT DO NOTHING RETURNING "_ct + pkName;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::Replace, auto fields, auto pkName)
+		{
+			return "ON CONFLICT DO UPDATE SET " + JoinTup (ZipWith (fields, " = EXCLUDED.", fields), ", ") +
+					" RETURNING " + pkName;
+		}
+
 		constexpr static auto GetInsertSuffix (InsertAction::DefaultTag)
 		{
 			return ""_ct;

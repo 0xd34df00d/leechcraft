@@ -410,11 +410,24 @@ namespace LC::Util::oral
 			template<typename ImplFactory, typename Action>
 			constexpr static auto MakeInsertSuffix (Action action)
 			{
-				if constexpr (std::is_same_v<Action, InsertAction::DefaultTag> || std::is_same_v<Action, InsertAction::IgnoreTag>)
-					return ImplFactory::GetInsertSuffix (action);
+				if constexpr (HasAutogen_)
+				{
+					constexpr auto pkIdx = PKeyIndex_v<Seq>;
+					if constexpr (std::is_same_v<Action, InsertAction::DefaultTag> || std::is_same_v<Action, InsertAction::IgnoreTag>)
+						return ImplFactory::GetInsertSuffix (action, GetFieldName<Seq, pkIdx> ());
+					else
+						return ImplFactory::GetInsertSuffix (InsertAction::Replace {},
+								ExtractReplaceFields<Seq> (action),
+								GetFieldName<Seq, pkIdx> ());
+				}
 				else
-					return ImplFactory::GetInsertSuffix (InsertAction::Replace {},
-							ExtractReplaceFields<Seq> (action));
+				{
+					if constexpr (std::is_same_v<Action, InsertAction::DefaultTag> || std::is_same_v<Action, InsertAction::IgnoreTag>)
+						return ImplFactory::GetInsertSuffix (action);
+					else
+						return ImplFactory::GetInsertSuffix (InsertAction::Replace {},
+								ExtractReplaceFields<Seq> (action));
+				}
 			}
 
 			template<typename ImplFactory>

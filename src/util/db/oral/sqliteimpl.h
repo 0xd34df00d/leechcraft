@@ -47,18 +47,33 @@ namespace LC::Util::oral::detail::SQLite
 
 		constexpr static auto GetInsertSuffix (InsertAction::DefaultTag)
 		{
-			return "RETURNING rowid"_ct;
+			return ""_ct;
 		}
 
 		constexpr static auto GetInsertSuffix (InsertAction::IgnoreTag)
 		{
-			return "RETURNING rowid"_ct;
+			return ""_ct;
 		}
 
 		constexpr static auto GetInsertSuffix (InsertAction::Replace, auto fields)
 		{
+			return "ON CONFLICT DO UPDATE SET " + JoinTup (ZipWith (fields, " = EXCLUDED.", fields), ", ");
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::DefaultTag, auto pkName)
+		{
+			return "RETURNING "_ct + pkName;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::IgnoreTag, auto pkName)
+		{
+			return "RETURNING "_ct + pkName;
+		}
+
+		constexpr static auto GetInsertSuffix (InsertAction::Replace, auto fields, auto pkName)
+		{
 			return "ON CONFLICT DO UPDATE SET " + JoinTup (ZipWith (fields, " = EXCLUDED.", fields), ", ") +
-					" RETURNING rowid";
+					" RETURNING " + pkName;
 		}
 	};
 }
