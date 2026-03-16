@@ -780,9 +780,23 @@ namespace LC::Util::oral
 
 		template<typename L, typename R>
 			requires EitherIsExprTree<L, R>
+		auto operator== (const L& left, const R& right) noexcept
+		{
+			return MakeExprTree<ExprType::Equal> (left, right);
+		}
+
+		template<typename L, typename R>
+			requires EitherIsExprTree<L, R>
 		auto operator< (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Less> (left, right);
+		}
+
+		template<typename L, typename R>
+			requires EitherIsExprTree<L, R>
+		auto operator<= (const L& left, const R& right) noexcept
+		{
+			return MakeExprTree<ExprType::Leq> (left, right);
 		}
 
 		template<typename L, typename R>
@@ -794,9 +808,9 @@ namespace LC::Util::oral
 
 		template<typename L, typename R>
 			requires EitherIsExprTree<L, R>
-		auto operator== (const L& left, const R& right) noexcept
+		auto operator>= (const L& left, const R& right) noexcept
 		{
-			return MakeExprTree<ExprType::Equal> (left, right);
+			return MakeExprTree<ExprType::Geq> (left, right);
 		}
 
 		template<typename L, typename R>
