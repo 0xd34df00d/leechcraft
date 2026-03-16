@@ -256,14 +256,14 @@ namespace Util
 		using Rec = ConstrainedAutogenPKeyRecord;
 		auto adapted = Util::oral::AdaptPtr<Rec, OralFactory> (MakeDatabase ());
 
-		adapted->Insert ({ .City_ = "c1", .Population_ = 100 });
-		adapted->Insert ({ .City_ = "c2", .Population_ = 200 });
+		QCOMPARE (adapted->Insert ({ .City_ = "c1", .Population_ = 100 }), 1);
+		QCOMPARE (adapted->Insert ({ .City_ = "c2", .Population_ = 200 }), 2);
 		QCOMPARE (adapted->Select (), (QList<Rec> { { 1, "c1", 100 }, { 2, "c2", 200 } }));
 
 		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ .City_ = "c1", .Population_ = 300 }));
 
-		adapted->Insert ({ .City_ = "c1", .Population_ = 300 }, lco::InsertAction::Replace::Whole);
-		adapted->Insert ({ .City_ = "c2", .Population_ = 400 }, lco::InsertAction::Replace::Whole);
+		QCOMPARE (adapted->Insert ({ .City_ = "c1", .Population_ = 300 }, lco::InsertAction::Replace::Whole), 1);
+		QCOMPARE (adapted->Insert ({ .City_ = "c2", .Population_ = 400 }, lco::InsertAction::Replace::Whole), 2);
 		QCOMPARE (adapted->Select (), (QList<Rec> { { 1, "c1", 300 }, { 2, "c2", 400 } }));
 	}
 }

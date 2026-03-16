@@ -440,7 +440,10 @@ namespace LC::Util::oral
 				{
 					constexpr auto index = PKeyIndex_v<Seq>;
 
-					const auto& lastId = Convert<ValueAtC_t<Seq, index>> (query.lastInsertId ());
+					if (!query.next ())
+						throw QueryException { "unable to fetch last inserted rowid" };
+
+					const auto& lastId = Convert<ValueAtC_t<Seq, index>> (query.value (0));
 					if constexpr (!std::is_const_v<T>)
 						Get<index> (t) = lastId;
 					else
