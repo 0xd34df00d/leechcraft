@@ -186,34 +186,15 @@ namespace Util
 		QCOMPARE (list, (QList<NonInPlaceConstructibleRecord> { { 0, "0", 0 }, { 1, "1", 0 }, { 2, "2", 0 } }));
 	}
 
-	namespace
-	{
-		template<typename Ex, typename F>
-		void ShallThrow (F&& f)
-		{
-			bool failed = false;
-			try
-			{
-				f ();
-			}
-			catch (const Ex&)
-			{
-				failed = true;
-			}
-
-			QCOMPARE (failed, true);
-		}
-	}
-
 	void OralTest::testComplexConstraintsRecordInsertSelectDefault ()
 	{
 		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
 
 		adapted->Insert ({ 0, "first", 1, 2 });
-		ShallThrow<oral::QueryException> ([&] { adapted->Insert ({ 0, "second", 1, 2 }); });
-		ShallThrow<oral::QueryException> ([&] { adapted->Insert ({ 0, "first", 1, 3 }); });
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "second", 1, 2 }));
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "first", 1, 3 }));
 		adapted->Insert ({ 0, "second", 1, 3 });
-		ShallThrow<oral::QueryException> ([&] { adapted->Insert ({ 0, "first", 1, 3 }); });
+		QVERIFY_THROWS_EXCEPTION (oral::QueryException, adapted->Insert ({ 0, "first", 1, 3 }));
 
 		const auto& list = adapted->Select ();
 		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
