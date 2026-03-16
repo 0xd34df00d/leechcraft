@@ -51,6 +51,14 @@ namespace LC::Util
 		QCOMPARE (ToString<"hello, " + "world!"_ct + " how's life?"> (), expected);
 	}
 
+	void CtStringTest::testReplaceAll ()
+	{
+		constexpr auto s1 = "Hello, _! The _ is nice!"_ct;
+		constexpr auto s2 = "world"_ct;
+		constexpr auto s3 = ReplaceAll<s1, '_'> (s2);
+		QCOMPARE (ToString<s3> (), "Hello, world! The world is nice!");
+	}
+
 	void CtStringTest::testNub ()
 	{
 		constexpr static std::tuple input { "hello"_ct, "world"_ct, "hello"_ct, "lc"_ct, "what's"_ct, "up"_ct, "lc"_ct, "lc"_ct };

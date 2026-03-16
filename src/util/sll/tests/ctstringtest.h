@@ -21,6 +21,8 @@ namespace LC::Util
 		void testUDL ();
 		void testConcat ();
 
+		void testReplaceAll ();
+
 		void testNub ();
 	};
 }

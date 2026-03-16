@@ -118,7 +118,29 @@ namespace LC::Util
 			std::copy (Data_, Data_ + N, result.Data_);
 			return result;
 		}
+
+		template<Char Needle>
+		constexpr size_t Count () const noexcept
+		{
+			return std::count (Data_, Data_ + Size, Needle);
+		}
 	};
+
+	template<CtString Source, auto Needle, size_t N2, typename Char>
+	constexpr auto ReplaceAll (CtString<N2, Char> replacement) noexcept
+	{
+		constexpr auto repCount = Source.template Count<static_cast<Char> (Needle)> ();
+		constexpr auto newSize = Source.Size + repCount * (N2 - 1);
+
+		CtString<newSize, Char> result;
+		auto out = result.Data_;
+		for (auto in = Source.Data_; in < Source.Data_ + Source.Size; ++in)
+			if (*in == Needle)
+				out = std::copy (replacement.Data_, replacement.Data_ + N2, out);
+			else
+				*out++ = *in;
+		return result;
+	}
 
 	template<CtString Str>
 	QByteArray ToByteArray () noexcept
