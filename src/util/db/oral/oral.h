@@ -222,6 +222,12 @@ namespace LC::Util::oral
 		constexpr auto operator() () const noexcept { return ImplFactory::TypeLits::IntAutoincrement; }
 	};
 
+	template<typename ImplFactory, typename T>
+	struct Type2Name<ImplFactory, std::optional<T>>
+	{
+		constexpr auto operator() () const noexcept { return Type2Name<ImplFactory, T> {} (); }
+	};
+
 	template<typename ImplFactory, auto Ptr>
 	struct Type2Name<ImplFactory, References<Ptr>>
 	{
@@ -274,6 +280,20 @@ namespace LC::Util::oral
 				return Convert<typename T::value_type> (var);
 			else
 				return var.value<T> ();
+		}
+	};
+
+	template<typename T>
+	struct ConvertT<std::optional<T>>
+	{
+		static QVariant operator() (const std::optional<T>& t) noexcept
+		{
+			return t ? Convert<T> (*t) : QVariant {};
+		}
+
+		static std::optional<T> operator() (const QVariant& var) noexcept
+		{
+			return var.isValid () ? std::optional { Convert<T> (var) } : std::nullopt;
 		}
 	};
 
