@@ -251,6 +251,20 @@ namespace Util
 		QCOMPARE (adapted->Select (), (QList<ComplexConstraintsRecord> { { 0, "bob", "city1", 1, 2 }, { 1, "bob", "city4", 2, 3 } }));
 	}
 
+	void OralTest::testConstrainedAutogenPKeyRecordInsertIgnore ()
+	{
+		using Rec = ConstrainedAutogenPKeyRecord;
+		auto adapted = Util::oral::AdaptPtr<Rec, OralFactory> (MakeDatabase ());
+
+		QCOMPARE (adapted->Insert ({ .City_ = "c1", .Population_ = 100 }), 1);
+		QCOMPARE (adapted->Insert ({ .City_ = "c2", .Population_ = 200 }), 2);
+		QCOMPARE (adapted->Select (), (QList<Rec> { { 1, "c1", 100 }, { 2, "c2", 200 } }));
+
+		QCOMPARE (adapted->Insert ({ .City_ = "c1", .Population_ = 300 }, lco::InsertAction::Ignore), std::optional<int> {});
+
+		QCOMPARE (adapted->Select (), (QList<Rec> { { 1, "c1", 100 }, { 2, "c2", 200 } }));
+	}
+
 	void OralTest::testConstrainedAutogenPKeyRecordInsertReplace ()
 	{
 		using Rec = ConstrainedAutogenPKeyRecord;

@@ -427,8 +427,8 @@ namespace LC::Util::oral
 						MakeInsertSuffix<ImplFactory> (action);
 			}
 
-			template<typename ImplFactory, typename T>
-			auto Run (T& t, auto action) const
+			template<typename ImplFactory, typename T, typename Action>
+			auto Run (T& t, Action action) const
 			{
 				QSqlQuery query { DB_ };
 				constexpr auto queryText = MakeQueryForAction<ImplFactory> (action);
@@ -438,14 +438,24 @@ namespace LC::Util::oral
 
 				if constexpr (HasAutogen_)
 				{
-					constexpr auto index = PKeyIndex_v<Seq>;
+					constexpr auto pkIndex = PKeyIndex_v<Seq>;
+					constexpr auto mightBeMissing = std::same_as<Action, InsertAction::IgnoreTag>;
+					using FieldType_t = ValueAtC_t<Seq, pkIndex>;
 
 					if (!query.next ())
+					{
+						if constexpr (mightBeMissing)
+							return std::optional<FieldType_t> {};
 						throw QueryException { "unable to fetch last inserted rowid" };
+					}
 
-					const auto& lastId = Convert<ValueAtC_t<Seq, index>> (query.value (0));
+					const auto& lastId = Convert<FieldType_t> (query.value (0));
+
 					if constexpr (!std::is_const_v<T>)
-						Get<index> (t) = lastId;
+						Get<pkIndex> (t) = lastId;
+
+					if constexpr (mightBeMissing)
+						return std::optional { lastId };
 					else
 						return lastId;
 				}

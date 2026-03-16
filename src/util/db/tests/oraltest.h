@@ -31,6 +31,7 @@ namespace Util
 		void testComplexConstraintsRecordInsertSelectIgnore ();
 		void testComplexConstraintsRecordInsertSelectReplace ();
 
+		void testConstrainedAutogenPKeyRecordInsertIgnore ();
 		void testConstrainedAutogenPKeyRecordInsertReplace ();
 	};
 }
