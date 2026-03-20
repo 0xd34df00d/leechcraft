@@ -42,11 +42,11 @@ namespace LC::Util
 			typename... MkTaskArgs,
 			typename Task = std::invoke_result_t<F&,
 					std::add_rvalue_reference_t<typename std::decay_t<Inputs>::value_type>,
-					MkTaskArgs...
+					MkTaskArgs&&...
 				>,
 			bool IsVoid = std::is_same_v<typename Task::ResultType_t, void>
 		>
-	auto InParallel (Inputs inputs, F mkTask, MkTaskArgs... mkTaskArgs) ->
+	auto InParallel (Inputs inputs, F mkTask, MkTaskArgs&&... mkTaskArgs) ->
 			std::conditional_t<
 				IsVoid,
 				typename Task::template ReplaceResult_t<void>,
@@ -55,7 +55,7 @@ namespace LC::Util
 	{
 		QVector<Task> tasks;
 		for (auto&& input : inputs)
-			tasks << mkTask (std::move (input), mkTaskArgs...);
+			tasks << mkTask (std::move (input), std::forward<MkTaskArgs> (mkTaskArgs)...);
 
 		if constexpr (IsVoid)
 			for (const auto& task : tasks)
