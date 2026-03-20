@@ -100,12 +100,12 @@ namespace LC::LMP
 		ScheduleRequest ();
 	}
 
-	QString AlbumArtManagerDialog::GetArtist () const
+	QString AlbumArtManagerDialog::GetEditedArtist () const
 	{
 		return Ui_.ArtistLine_->text ();
 	}
 
-	QString AlbumArtManagerDialog::GetAlbum () const
+	QString AlbumArtManagerDialog::GetEditedAlbum () const
 	{
 		return Ui_.AlbumLine_->text ();
 	}
@@ -159,8 +159,8 @@ namespace LC::LMP
 
 	Util::ContextTask<void> AlbumArtManagerDialog::Request ()
 	{
-		const auto& artist = GetArtist ();
-		const auto& album = GetAlbum ();
+		const auto& artist = GetEditedArtist ();
+		const auto& album = GetEditedAlbum ();
 		if (artist.isEmpty () || album.isEmpty ())
 			co_return;
 
@@ -172,7 +172,7 @@ namespace LC::LMP
 		const auto channel = GetAlbumArtImages (GetProxyHolder (), artist, album);
 		while (auto image = co_await *channel)
 		{
-			if (GetArtist () == artist && GetAlbum () == album)
+			if (GetEditedArtist () == artist && GetEditedAlbum () == album)
 				AddImage (std::move (*image));
 			else
 				break;

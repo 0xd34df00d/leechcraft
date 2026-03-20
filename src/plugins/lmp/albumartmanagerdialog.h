@@ -41,13 +41,13 @@ namespace LC::LMP
 		explicit AlbumArtManagerDialog (const QString& artist,
 				const Collection::Album& album, AlbumArtManager*, QWidget* = nullptr);
 
-		QString GetArtist () const;
-		QString GetAlbum () const;
-
 		void ScheduleRequest ();
 	protected:
 		void accept () override;
 	private:
+		QString GetEditedArtist () const;
+		QString GetEditedAlbum () const;
+
 		void BrowseImage ();
 		Util::ContextTask<void> AddImage (AlbumArtInfo<QImage>);
 		Util::ContextTask<void> Request ();
