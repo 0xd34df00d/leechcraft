@@ -33,6 +33,11 @@ namespace Util
 
 		void testConstrainedAutogenPKeyRecordInsertIgnore ();
 		void testConstrainedAutogenPKeyRecordInsertReplace ();
+
+		void testOptionalFieldNullRoundTrip ();
+		void testOptionalFieldValueRoundTrip ();
+		void testOptionalFieldUpdateNullToValue ();
+		void testOptionalFieldUpdateValueToNull ();
 	};
 }
 }

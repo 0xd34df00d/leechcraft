@@ -100,6 +100,29 @@ ORAL_ADAPT_STRUCT (ConstrainedAutogenPKeyRecord,
 
 TOSTRING (ConstrainedAutogenPKeyRecord)
 
+struct OptionalFieldRecord
+{
+	lco::PKey<int> ID_;
+	QString Name_;
+	std::optional<QString> NickName_;
+	std::optional<QByteArray> Extra_;
+
+	constexpr static auto ClassName = "OptionalFieldRecord"_ct;
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Name_, NickName_, Extra_);
+	}
+};
+
+ORAL_ADAPT_STRUCT (OptionalFieldRecord,
+		ID_,
+		Name_,
+		NickName_,
+		Extra_)
+
+TOSTRING (OptionalFieldRecord)
+
 struct ComplexConstraintsRecord
 {
 	int ID_;
@@ -279,6 +302,68 @@ namespace Util
 		QCOMPARE (adapted->Insert ({ .City_ = "c1", .Population_ = 300 }, lco::InsertAction::Replace::Whole), 1);
 		QCOMPARE (adapted->Insert ({ .City_ = "c2", .Population_ = 400 }, lco::InsertAction::Replace::Whole), 2);
 		QCOMPARE (adapted->Select (), (QList<Rec> { { 1, "c1", 300 }, { 2, "c2", 400 } }));
+	}
+
+	void OralTest::testOptionalFieldNullRoundTrip ()
+	{
+		using Rec = OptionalFieldRecord;
+		auto adapted = Util::oral::AdaptPtr<Rec, OralFactory> (MakeDatabase ());
+
+		adapted->Insert ({ {}, "alice", std::nullopt, std::nullopt });
+		adapted->Insert ({ {}, "bob", std::nullopt, std::nullopt });
+
+		const auto& list = adapted->Select ();
+		QCOMPARE (list.size (), 2);
+		QCOMPARE (list [0].NickName_, std::nullopt);
+		QCOMPARE (list [0].Extra_, std::nullopt);
+		QCOMPARE (list [1].NickName_, std::nullopt);
+		QCOMPARE (list [1].Extra_, std::nullopt);
+	}
+
+	void OralTest::testOptionalFieldValueRoundTrip ()
+	{
+		using Rec = OptionalFieldRecord;
+		auto adapted = Util::oral::AdaptPtr<Rec, OralFactory> (MakeDatabase ());
+
+		adapted->Insert ({ {}, "alice", "Al", QByteArray { "data1" } });
+		adapted->Insert ({ {}, "bob", std::nullopt, std::nullopt });
+
+		const auto& list = adapted->Select ();
+		QCOMPARE (list.size (), 2);
+		QCOMPARE (list [0].NickName_, std::optional<QString> { "Al" });
+		QCOMPARE (list [0].Extra_, std::optional<QByteArray> { "data1" });
+		QCOMPARE (list [1].NickName_, std::nullopt);
+		QCOMPARE (list [1].Extra_, std::nullopt);
+	}
+
+	void OralTest::testOptionalFieldUpdateNullToValue ()
+	{
+		using Rec = OptionalFieldRecord;
+		auto adapted = Util::oral::AdaptPtr<Rec, OralFactory> (MakeDatabase ());
+
+		adapted->Insert ({ {}, "alice", std::nullopt, std::nullopt });
+		adapted->Update (sph::f<&Rec::NickName_> = QString { "Al" },
+				sph::f<&Rec::Name_> == QString { "alice" });
+
+		const auto& list = adapted->Select ();
+		QCOMPARE (list.size (), 1);
+		QCOMPARE (list [0].NickName_, std::optional<QString> { "Al" });
+		QCOMPARE (list [0].Extra_, std::nullopt);
+	}
+
+	void OralTest::testOptionalFieldUpdateValueToNull ()
+	{
+		using Rec = OptionalFieldRecord;
+		auto adapted = Util::oral::AdaptPtr<Rec, OralFactory> (MakeDatabase ());
+
+		adapted->Insert ({ {}, "alice", "Al", QByteArray { "data" } });
+		adapted->Update (sph::f<&Rec::NickName_> = std::optional<QString> {},
+				sph::f<&Rec::Name_> == QString { "alice" });
+
+		const auto& list = adapted->Select ();
+		QCOMPARE (list.size (), 1);
+		QCOMPARE (list [0].NickName_, std::nullopt);
+		QCOMPARE (list [0].Extra_, std::optional<QByteArray> { "data" });
 	}
 }
 }
