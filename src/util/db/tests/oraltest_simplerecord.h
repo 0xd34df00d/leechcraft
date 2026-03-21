@@ -46,6 +46,9 @@ namespace Util
 		//void testSimpleRecordInsertSelectOffsetNoLimit ();
 		void testSimpleRecordInsertSelectOffsetLimit ();
 
+		void testSimpleRecordInsertSelectBuilderAndWhere ();
+		void testSimpleRecordInsertSelectBuilderAndWhereMultiple ();
+
 		void testSimpleRecordInsertSelectCount ();
 		void testSimpleRecordInsertSelectCountByFields ();
 

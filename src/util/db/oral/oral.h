@@ -1369,6 +1369,12 @@ namespace LC::Util::oral
 				}
 
 				template<typename U>
+				constexpr auto AndWhere (U&& tree) && noexcept
+				{
+					return std::move (*this).Where (std::get<1> (Params_) && std::forward<U> (tree));
+				}
+
+				template<typename U>
 				constexpr auto Order (U&& order) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<2> (std::move (Params_), std::forward<U> (order)));

@@ -178,6 +178,27 @@ namespace Util
 		QCOMPARE (list, (QList<SimpleRecord> { { 5, "5" }, { 6, "6" } }));
 	}
 
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectBuilderAndWhere ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->Select.Build ()
+				.Where (sph::f<&SimpleRecord::ID_> < 2)
+				.AndWhere (sph::f<&SimpleRecord::Value_> == QString { "1" })
+				();
+		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
+	}
+
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectBuilderAndWhereMultiple ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase (), 10);
+		const auto& list = adapted->Select.Build ()
+				.Where (sph::f<&SimpleRecord::ID_> < 8)
+				.AndWhere (sph::f<&SimpleRecord::ID_> >= 2)
+				.AndWhere (sph::f<&SimpleRecord::Value_> == QString { "5" })
+				();
+		QCOMPARE (list, (QList<SimpleRecord> { { 5, "5" } }));
+	}
+
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectCount ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
