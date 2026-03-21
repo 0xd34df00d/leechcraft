@@ -293,7 +293,7 @@ namespace LC::Util::oral
 
 		static std::optional<T> operator() (const QVariant& var) noexcept
 		{
-			return var.isValid () ? std::optional { Convert<T> (var) } : std::nullopt;
+			return var.isNull () ? std::nullopt : std::optional { Convert<T> (var) };
 		}
 	};
 
