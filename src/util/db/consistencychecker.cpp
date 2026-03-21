@@ -83,7 +83,7 @@ namespace LC::Util::ConsistencyChecker
 
 	Task<RecoverResult_t> Recover (QString dbPath)
 	{
-		[[maybe_unused]] const auto hasEnoughSpace = co_await CheckRecoverSpace (dbPath);
+		co_await CheckRecoverSpace (dbPath);
 		const auto& newPath = dbPath + ".new";
 		if (QFile::exists (newPath))
 			co_return Left { RecoverTargetExists { newPath } };
