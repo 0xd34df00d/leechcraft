@@ -549,6 +549,7 @@ namespace LC::Util::oral
 			Neq,
 
 			Like,
+			ILike,
 
 			And,
 			Or
@@ -569,7 +570,7 @@ namespace LC::Util::oral
 				return "<="_ct;
 			else if constexpr (Type == ExprType::Neq)
 				return "!="_ct;
-			else if constexpr (Type == ExprType::Like)
+			else if constexpr (Type == ExprType::Like || Type == ExprType::ILike)
 				return "LIKE"_ct;
 			else if constexpr (Type == ExprType::And)
 				return "AND"_ct;
@@ -587,7 +588,17 @@ namespace LC::Util::oral
 					type == ExprType::Geq ||
 					type == ExprType::Leq ||
 					type == ExprType::Neq ||
-					type == ExprType::Like;
+					type == ExprType::Like ||
+					type == ExprType::ILike;
+		}
+
+		template<ExprType Type>
+		constexpr auto WrapSubexpr (auto subexpr)
+		{
+			if constexpr (Type == ExprType::ILike)
+				return "lower(" + subexpr + ")";
+			else
+				return subexpr;
 		}
 
 		template<typename T>
@@ -676,7 +687,9 @@ namespace LC::Util::oral
 				static_assert (Typecheck<Type, Seq, L, R> (),
 						"Incompatible types passed to a relational operator.");
 
-				return L::template ToSql<Seq, S + "l"> () + " " + TypeToSql<Type> () + " " + R::template ToSql<Seq, S + "r"> ();
+				return WrapSubexpr<Type> (L::template ToSql<Seq, S + "l"> ()) +
+						" " + TypeToSql<Type> () + " " +
+						WrapSubexpr<Type> (R::template ToSql<Seq, S + "r"> ());
 			}
 
 			template<typename Seq, CtString S>
@@ -880,6 +893,7 @@ namespace LC::Util::oral
 	namespace infix
 	{
 		constexpr detail::InfixBinary<detail::ExprType::Like> like {};
+		constexpr detail::InfixBinary<detail::ExprType::ILike> ilike {};
 	}
 
 	namespace detail
