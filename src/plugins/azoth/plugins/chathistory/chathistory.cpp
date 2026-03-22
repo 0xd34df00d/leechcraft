@@ -11,7 +11,7 @@
 #include <QAction>
 #include <QTranslator>
 #include <util/util.h>
-#include <util/threads/futures.h>
+#include <util/sll/visitor.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -24,16 +24,16 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "chathistorywidget.h"
 #include "historymessage.h"
-#include "xmlsettingsmanager.h"
-#include "storagemanager.h"
 #include "loggingstatekeeper.h"
+#include "storage2.h"
+#include "xmlsettingsmanager.h"
 
-namespace LC
+namespace LC::Azoth::ChatHistory
 {
-namespace Azoth
-{
-namespace ChatHistory
-{
+	Plugin::Plugin () = default;
+
+	Plugin::~Plugin () = default;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		TabClass_.TabClass_ = "Chathistory";
@@ -45,13 +45,9 @@ namespace ChatHistory
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
-		connect (XSD_.get (),
-				SIGNAL (pushButtonClicked (QString)),
-				this,
-				SLOT (handlePushButton (QString)));
 
-		LoggingStateKeeper_ = std::make_shared<LoggingStateKeeper> ();
-		StorageMgr_ = std::make_shared<StorageManager> (LoggingStateKeeper_.get ());
+		LoggingStateKeeper_ = std::make_unique<LoggingStateKeeper> ();
+		StorageThread_ = std::make_unique<StorageThread> ();
 
 		ActionHistory_ = new QAction (tr ("IM history"), this);
 		connect (ActionHistory_,
@@ -130,48 +126,74 @@ namespace ChatHistory
 		return XSD_;
 	}
 
-	bool Plugin::IsHistoryEnabledFor (QObject *entryObj) const
+	bool Plugin::IsHistoryEnabledFor (ICLEntry& entry) const
 	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
+		return LoggingStateKeeper_->IsLoggingEnabled (&entry);
+	}
+
+	namespace
+	{
+		QHash<QString, ICLEntry*> BuildNick2Participant (const QList<ICLEntry*>& parts)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "could not be casted to ICLEntry";
-			return true;
+			QHash<QString, ICLEntry*> result;
+			result.reserve (parts.size ());
+			for (const auto& part : parts)
+				result [part->GetEntryName ()] = part;
+			return result;
+		}
+	}
+
+	Util::ContextTask<void> Plugin::RequestLastMessages (ICLEntry& entry, int count)
+	{
+		const auto account = entry.GetParentAccount ();
+		const auto accId = account->GetAccountID ();
+		const auto entryHRId = entry.GetHumanReadableID ();
+
+		co_await Util::AddContextObject { *this };
+		co_await Util::AddContextObject { *entry.GetQObject () };
+		const auto messages = co_await StorageThread_->Run (&Storage2::GetLastMessages, accId, entryHRId, count);
+
+		const auto mucEntry = qobject_cast<IMUCEntry*> (entry.GetQObject ());
+		const auto& nick2part = BuildNick2Participant (mucEntry ? mucEntry->GetParticipants () : QList<ICLEntry*> {});
+
+		QList<QObject*> logs;
+		for (const auto& message : messages)
+		{
+			const auto otherPart = [&]
+			{
+				switch (entry.GetEntryType ())
+				{
+				case ICLEntry::EntryType::Chat:
+				case ICLEntry::EntryType::UnauthEntry:
+					return &entry;
+				case ICLEntry::EntryType::MUC:
+				case ICLEntry::EntryType::PrivateChat:
+					return nick2part.value (message.DisplayName_, &entry);
+				}
+			} ();
+			const auto variant = message.Variant_.value_or ({});
+
+			logs << new HistoryMessage (message.Direction_,
+					otherPart,
+					mucEntry ? IMessage::Type::MUCMessage : IMessage::Type::ChatMessage,
+					variant,
+					message.Body_,
+					message.TS_,
+					message.RichBody_.value_or ({}),
+					IMessage::EscapePolicy::Escape);
 		}
 
-		return LoggingStateKeeper_->IsLoggingEnabled (entry);
+		emit gotLastMessages (entry.GetQObject (), logs);
 	}
 
-	void Plugin::RequestLastMessages (QObject *entryObj, int num)
+	Util::ContextTask<std::optional<QDateTime>> Plugin::RequestMaxTimestamp (IAccount& acc)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
-		const auto account = entry->GetParentAccount ();
-		const QString& accId = account->GetAccountID ();
-		const QString& entryId = entry->GetEntryID ();
-		Util::Sequence (this, StorageMgr_->GetChatLogs (accId, entryId, 0, num)) >>
-				std::bind (&Plugin::HandleGotChatLogs,
-						this, QPointer<QObject> { entryObj }, std::placeholders::_1);
+		return StorageThread_->Run (&Storage2::GetLastTimestamp, acc.GetAccountID ());
 	}
 
-	QFuture<Plugin::MaxTimestampResult_t> Plugin::RequestMaxTimestamp (IAccount *acc)
+	void Plugin::AddMessages (const History::SomeEntryWithMessages& messages)
 	{
-		return StorageMgr_->GetMaxTimestamp (acc->GetAccountID ());
-	}
-
-	void Plugin::AddRawMessages (const QString& accountId, const QString& entryId,
-			const QString& visibleName, const QList<HistoryItem>& items)
-	{
-		StorageMgr_->AddLogItems (accountId, entryId, visibleName, items, true);
+		StorageThread_->Run (&Storage2::AddMessage, messages);
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
@@ -242,96 +264,149 @@ namespace ChatHistory
 		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookGotMessage2 (LC::IHookProxy_ptr,
-				QObject *message)
+	namespace
 	{
-		if (message->property ("Azoth/HiddenMessage").toBool () == true)
+		ICLEntry& GetEntry (const IMessage& msg)
+		{
+			switch (msg.GetMessageType ())
+			{
+			case IMessage::Type::MUCMessage:
+				return *qobject_cast<ICLEntry*> (msg.ParentCLEntry ());
+			case IMessage::Type::ChatMessage:
+			default:
+				return *qobject_cast<ICLEntry*> (msg.OtherPart ());
+			}
+		}
+
+		History::SomeEntryDescrWithEndpoint GetDescription (const ICLEntry& entry, const IMessage& msg)
+		{
+			const auto& name = entry.GetEntryName ();
+
+			using namespace History;
+			using enum EntryKind;
+
+			// TODO fill out self variant when the API will allow that
+			const SelfEndpoint self { .Name_ = entry.GetParentAccount ()->GetOurNick (), .Variant_ = {} };
+
+			const auto selfOr = [&]<EntryKind K> (EntryEndpoint<K>&& incoming)
+			{
+				return msg.GetDirection () == IMessage::Direction::Out ? Endpoint<K> { self } : std::move (incoming);
+			};
+
+			switch (entry.GetEntryType ())
+			{
+			case ICLEntry::EntryType::UnauthEntry: [[fallthrough]];
+			case ICLEntry::EntryType::Chat:
+			{
+				const auto& variant = msg.GetOtherVariant ().isEmpty () ? std::nullopt : std::optional { msg.GetOtherVariant () };
+				return EntryDescrWithEndpoint
+				{
+					EntryDescr<Chat> { name },
+					selfOr (EntryEndpoint<Chat> { .Variant_ = variant }),
+				};
+			}
+			case ICLEntry::EntryType::MUC:
+				return EntryDescrWithEndpoint<MUC>
+				{
+					EntryDescr<MUC> { name },
+					EntryEndpoint<MUC> { .Nick_ = msg.GetOtherVariant (), .PersistentId_ = {} },
+				};
+			case ICLEntry::EntryType::PrivateChat:
+				// TODO XEP-0421-style persistent IDs
+				return EntryDescrWithEndpoint
+				{
+					EntryDescr<PrivateChat> { .MucName_ = entry.GetParentCLEntry ()->GetEntryName (), .Nick_ = name, .PersistentId_ = {} },
+					selfOr (EntryEndpoint<PrivateChat> {}),
+				};
+			}
+
+			qCritical () << "unknown entry type" << static_cast<int> (entry.GetEntryType ());
+			return EntryDescrWithEndpoint
+			{
+				EntryDescr<Chat> { name },
+				selfOr (EntryEndpoint<Chat> { .Variant_ = msg.GetOtherVariant () }),
+			};
+		}
+	}
+
+	void Plugin::hookGotMessage2 (IHookProxy_ptr, QObject *msgObj)
+	{
+		if (msgObj->property ("Azoth/HiddenMessage").toBool ())
 			return;
 
-		IMessage *msg = qobject_cast<IMessage*> (message);
+		const auto msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< message
-					<< "doesn't implement IMessage"
-					<< sender ();
+			qWarning () << msgObj << "doesn't implement IMessage" << sender ();
 			return;
 		}
 
-		StorageMgr_->Process (message);
-	}
-
-	void Plugin::HandleGotChatLogs (const QPointer<QObject>& entryObj,
-			const ChatLogsResult_t& result)
-	{
-		if (!entryObj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "is dead already";
+		if (msg->GetMessageType () != IMessage::Type::ChatMessage &&
+			msg->GetMessageType () != IMessage::Type::MUCMessage)
 			return;
-		}
 
-		if (const auto err = result.MaybeLeft ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to request logs:"
-					<< *err;
+		if (msg->GetBody ().isEmpty ())
 			return;
-		}
 
-		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
-		const auto& parts = mucEntry ?
-				mucEntry->GetParticipants () :
-				QList<ICLEntry*> ();
+		if (msg->GetDirection () == IMessage::Direction::Out &&
+				msg->GetMessageType () == IMessage::Type::MUCMessage)
+			return;
 
-		QList<QObject*> logs;
-		for (const auto& item : result.GetRight ())
-		{
-			ICLEntry *participant = nullptr;
-			for (const auto part : parts)
-				if (part->GetEntryName () == item.Variant_)
+		const double secsDiff = msg->GetDateTime ().secsTo (QDateTime::currentDateTime ());
+		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
+				std::abs (secsDiff) >= 2)
+			return;
+
+		auto& entry = GetEntry (*msg);
+		if (!LoggingStateKeeper_->IsLoggingEnabled (&entry))
+			return;
+
+		const auto acc = entry.GetParentAccount ();
+
+		const auto irtm = qobject_cast<IRichTextMessage*> (msgObj);
+		const auto richBody = irtm ? irtm->GetRichBody () : QString {};
+
+		StorageThread_->Run (&Storage2::AddMessage, Util::Visit (GetDescription (entry, *msg),
+				[&] (const auto& descrWithEndpoint)
 				{
-					participant = part;
-					break;
-				}
-
-			const auto msg = new HistoryMessage (item.Dir_,
-					participant ? participant : qobject_cast<ICLEntry*> (entryObj.data ()),
-					item.Type_,
-					participant ? QString {} : item.Variant_,
-					item.Message_,
-					item.Date_,
-					item.RichMessage_,
-					item.EscPolicy_);
-
-			logs << msg;
-		}
-
-		emit gotLastMessages (entryObj, logs);
-	}
-
-	void Plugin::handlePushButton (const QString& name)
-	{
-		if (name == "RegenUsersCache")
-			StorageMgr_->RegenUsersCache ();
+					return History::SomeEntryWithMessages
+					{
+						History::EntryWithMessages
+						{
+							History::Entry
+							{
+								.AccountId_ = acc->GetAccountID (),
+								.AccountName_ = acc->GetAccountName (),
+								.EntryHumanReadableId_ = entry.GetHumanReadableID (),
+								.Description_ = descrWithEndpoint.Description_,
+							},
+							{
+								History::NewMessage
+								{
+									.Endpoint_ = descrWithEndpoint.Endpoint_,
+									.TS_ = msg->GetDateTime (),
+									.Body_ = msg->GetBody (),
+									.RichBody_ = richBody.isEmpty () ? std::nullopt : std::optional { richBody },
+								}
+							}
+						}
+					};
+				}));
 	}
 
 	void Plugin::HandleHistoryRequested ()
 	{
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Chat history"),
-				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, this, TabClass_ } },
+				new ChatHistoryWidget { { *StorageThread_, PluginProxy_, this, TabClass_ } },
 				IRootWindowsManager::AddTabFlag::Background);
 	}
 
 	void Plugin::HandleEntryHistoryRequested (ICLEntry *entry)
 	{
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Chat history"),
-				new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, this, TabClass_ }, entry });
+				new ChatHistoryWidget { { *StorageThread_, PluginProxy_, this, TabClass_ }, entry });
 	}
 
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_chathistory, LC::Azoth::ChatHistory::Plugin);

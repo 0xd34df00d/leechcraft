@@ -7,15 +7,10 @@
  **********************************************************************/
 
 #include "historysyncer.h"
-#include <QFutureSynchronizer>
-#include <QtConcurrentRun>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
-#include <util/sll/either.h>
-#include <util/sll/prelude.h>
-#include <util/sll/visitor.h>
-#include <util/sll/qtutil.h>
-#include <util/threads/futures.h>
+#include <ranges>
+#include <util/threads/coro.h>
+#include <util/threads/coro/inparallel.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
@@ -68,79 +63,47 @@ namespace Azoth
 					else if (!CurrentlyOnline_.contains (acc))
 					{
 						CurrentlyOnline_ << acc;
-						StartAccountSync (acc);
+						SyncAccount (acc);
 					}
 				});
 	}
 
-	void HistorySyncer::StartAccountSync (IAccount *acc)
+	Util::ContextTask<void> HistorySyncer::SyncAccount (IAccount *acc)
 	{
-		qDebug () << Q_FUNC_INFO
-				<< acc->GetAccountID ();
+		qDebug () << Q_FUNC_INFO << acc->GetAccountID ();
 
 		if (Storages_.isEmpty ())
 		{
-			qDebug () << Q_FUNC_INFO
-					<< "no history storage plugins are loaded";
-			return;
+			qDebug () << "no history storage plugins are loaded";
+			co_return;
 		}
 
-		using RetType_t = Util::UnwrapFutureType_t<decltype (Storages_ [0]->RequestMaxTimestamp (acc))>;
+		co_await Util::AddContextObject { *this };
+		co_await Util::AddContextObject { *acc->GetQObject () };
 
-		auto allStorages = std::make_shared<QFutureSynchronizer<RetType_t>> ();
-		for (const auto& storage : Storages_)
-			allStorages->addFuture (storage->RequestMaxTimestamp (acc));
-
-		Util::Sequence (this, QtConcurrent::run ([allStorages] { allStorages->waitForFinished (); })) >>
-				[=, this]
-				{
-					const auto& results = Util::Map (allStorages->futures (),
-							[] (auto future) { return future.result (); });
-
-					const auto& partition = Util::Partition (results);
-					if (!partition.first.isEmpty ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "got storage errors:"
-								<< partition.first
-								<< "; aborting sync";
-						return;
-					}
-
-					const auto& minDate = *std::min_element (partition.second.begin (), partition.second.end ());
-					RequestAccountFrom (acc, minDate);
-				};
+		auto results = co_await Util::InParallel (Storages_, &IHistoryPlugin::RequestMaxTimestamp, *acc)
+				| std::views::filter ([] (const auto& opt) { return opt.has_value (); })
+				| std::views::transform ([] (const auto& opt) { return opt.value (); })
+				;
+		const auto minDate = std::ranges::fold_left_first (results, std::ranges::min);
+		co_await RequestAccountFrom (acc, minDate);
 	}
 
-	void HistorySyncer::RequestAccountFrom (IAccount *acc, const QDateTime& from)
+	Util::ContextTask<void> HistorySyncer::RequestAccountFrom (IAccount *acc, const std::optional<QDateTime>& from)
 	{
-		qDebug () << Q_FUNC_INFO
-				<< acc->GetAccountID ()
-				<< from;
+		qDebug () << acc->GetAccountID () << from;
+		co_await Util::AddContextObject { *this };
 
 		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
-		Util::Sequence (this, ihsh->FetchServerHistory (from)) >>
-				Util::Visitor
-				{
-					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; },
-					[this, acc] (const auto& map) { AppendItems (acc, map); }
-				};
+		const auto history = co_await ihsh->FetchServerHistory (from);
+		AppendItems (history);
 	}
 
-	void HistorySyncer::AppendItems (IAccount *acc,
-			const IHaveServerHistory::MessagesSyncMap_t& map)
+	void HistorySyncer::AppendItems (const QList<History::SomeEntryWithMessages>& entries)
 	{
-		for (const auto& pair : Util::Stlize (map))
-		{
-			const auto& entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (pair.first));
-			const auto& name = entry ?
-					entry->GetEntryName () :
-					pair.second.VisibleName_;
-
+		for (const auto& entryWithMessages : entries)
 			for (const auto storage : Storages_)
-				storage->AddRawMessages (acc->GetAccountID (),
-						pair.first, name, pair.second.Messages_);
-		}
+				storage->AddMessages (entryWithMessages);
 	}
 }
 }

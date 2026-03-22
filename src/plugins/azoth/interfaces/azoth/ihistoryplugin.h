@@ -9,56 +9,88 @@
 #pragma once
 
 #include <QList>
-#include <QVariantMap>
-#include <util/sll/eitherfwd.h>
+#include <util/threads/coro/taskfwd.h>
 #include "imessage.h"
 
-template<typename>
-class QFuture;
-
 class QDateTime;
-
 class QObject;
 
-namespace LC
+namespace LC::Azoth::History
 {
-namespace Azoth
+	enum class EntryKind : std::uint8_t
+	{
+		Chat,
+		MUC,
+		PrivateChat,
+	};
+
+	template<template<EntryKind K> typename Kinded>
+	using KindedGADT = std::variant<
+			Kinded<EntryKind::Chat>,
+			Kinded<EntryKind::MUC>,
+			Kinded<EntryKind::PrivateChat>
+		>;
+
+	template<EntryKind> struct EntryDescr;
+	template<> struct EntryDescr<EntryKind::Chat> { QString Nick_; };
+	template<> struct EntryDescr<EntryKind::MUC> { QString MucName_; };
+	template<> struct EntryDescr<EntryKind::PrivateChat> { QString MucName_; QString Nick_; std::optional<QByteArray> PersistentId_; };
+
+	using SomeEntryDescr = KindedGADT<EntryDescr>;
+
+	template<template<EntryKind K> typename EntryKinded>
+	EntryKind GetEntryKind (const KindedGADT<EntryKinded>& gadt)
+	{
+		return static_cast<EntryKind> (gadt.index ());
+	}
+
+	template<EntryKind K>
+	struct Entry
+	{
+		QByteArray AccountId_;
+		QString AccountName_;
+		QString EntryHumanReadableId_;
+
+		EntryDescr<K> Description_;
+	};
+
+	struct SelfEndpoint { QString Name_; std::optional<QString> Variant_; };
+
+	template<EntryKind> struct EntryEndpoint;
+	template<> struct EntryEndpoint<EntryKind::Chat> { std::optional<QString> Variant_; };
+	template<> struct EntryEndpoint<EntryKind::MUC> { QString Nick_; std::optional<QByteArray> PersistentId_; };
+	template<> struct EntryEndpoint<EntryKind::PrivateChat> {};
+
+	template<EntryKind K>
+	using Endpoint = std::variant<SelfEndpoint, EntryEndpoint<K>>;
+
+	template<EntryKind K>
+	struct EntryDescrWithEndpoint
+	{
+		EntryDescr<K> Description_;
+		Endpoint<K> Endpoint_;
+	};
+	using SomeEntryDescrWithEndpoint = KindedGADT<EntryDescrWithEndpoint>;
+
+	template<EntryKind K>
+	struct NewMessage
+	{
+		Endpoint<K> Endpoint_;
+
+		QDateTime TS_;
+		QString Body_;
+		std::optional<QString> RichBody_;
+	};
+
+	template<EntryKind K>
+	using EntryWithMessages = std::pair<Entry<K>, QList<NewMessage<K>>>;
+
+	using SomeEntryWithMessages = KindedGADT<EntryWithMessages>;
+}
+
+namespace LC::Azoth
 {
 	class IAccount;
-
-	/** @brief Describes a single chat log item.
-	 */
-	struct HistoryItem
-	{
-		/** @brief The timestamp of the message.
-		 */
-		QDateTime Date_;
-
-		/** @brief The direction of the message.
-		 */
-		IMessage::Direction Dir_;
-
-		/** @brief The message itself.
-		 */
-		QString Message_;
-
-		/** @brief The variant of the other entry.
-		 */
-		QString Variant_;
-
-		/** @brief The message type.
-		 */
-		IMessage::Type Type_;
-
-		/** @brief The rich message contents, if any.
-		 */
-		QString RichMessage_;
-
-		/** @brief Whether the message should be HTML-escaped when
-		 * displayed to the user.
-		 */
-		IMessage::EscapePolicy EscPolicy_;
-	};
 
 	/** @brief Interface for plugins storing chat history.
 	 *
@@ -68,18 +100,18 @@ namespace Azoth
 	 */
 	class IHistoryPlugin
 	{
+	protected:
+		virtual ~IHistoryPlugin () = default;
 	public:
-		virtual ~IHistoryPlugin () {}
-
 		/** @brief Whether history is enabled for the given entry.
 		 *
 		 * This method checks if history logging is enabled for the
 		 * given entry.
 		 *
-		 * @param[in] entry The entry to check (implements ICLEntry).
+		 * @param[in] entry The entry to check.
 		 * @return Whether history logging is enabled for this entry.
 		 */
-		virtual bool IsHistoryEnabledFor (QObject *entry) const = 0;
+		virtual bool IsHistoryEnabledFor (ICLEntry& entry) const = 0;
 
 		/** @brief Requests last messages for the given entry.
 		 *
@@ -90,32 +122,18 @@ namespace Azoth
 		 * after being called, and the result is expected to be emitted
 		 * via the gotLastMessages() signal.
 		 *
-		 * @param[in] entry The entry for which to query the history
-		 * (implements ICLEntry).
-		 * @param[in] num The maximum number of messages to retrieve.
+		 * @param[in] entry The entry for which to query the history.
+		 * @param[in] count The maximum number of messages to retrieve.
 		 *
 		 * @sa gotLastMessages()
 		 */
-		virtual void RequestLastMessages (QObject *entry, int num) = 0;
+		virtual Util::ContextTask<void> RequestLastMessages (ICLEntry& entry, int count) = 0;
 
-		using MaxTimestampResult_t = Util::Either<QString, QDateTime>;
-
-		virtual QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount *acc) = 0;
+		virtual Util::ContextTask<std::optional<QDateTime>> RequestMaxTimestamp (IAccount& acc) = 0;
 
 		/** @brief Adds a set of messages to the history.
-		 *
-		 * @param[in] accountId The unique ID of the corresponding account.
-		 * @param[in] entryId The unique ID of the corresponding entry.
-		 * @param[in] visibleName The human-readable name of the entry.
-		 * @param[in] items A list of HistoryItem structures describing the
-		 * messages.
-		 *
-		 * @sa HistoryItem
 		 */
-		virtual void AddRawMessages (const QString& accountId,
-				const QString& entryId,
-				const QString& visibleName,
-				const QList<HistoryItem>& items) = 0;
+		virtual void AddMessages (const History::SomeEntryWithMessages&) = 0;
 	protected:
 		/** @brief Notifies about last messages for the given entry.
 		 *
@@ -133,7 +151,6 @@ namespace Azoth
 		 */
 		virtual void gotLastMessages (QObject *entry, const QList<QObject*>& messages) = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Azoth::IHistoryPlugin,

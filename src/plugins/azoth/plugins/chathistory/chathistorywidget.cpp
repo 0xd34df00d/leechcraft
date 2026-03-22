@@ -7,13 +7,12 @@
  **********************************************************************/
 
 #include "chathistorywidget.h"
-#include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
-#include <QShortcut>
 #include <QToolBar>
 #include <util/sll/prelude.h>
-#include <util/threads/futures.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iaccount.h>
@@ -22,73 +21,106 @@
 #include "chathistory.h"
 #include "xmlsettingsmanager.h"
 #include "historyvieweventfilter.h"
-#include "storagemanager.h"
 
-namespace LC
+namespace LC::Azoth::ChatHistory
 {
-namespace Azoth
-{
-namespace ChatHistory
-{
-	using namespace std::placeholders;
-
 	ChatHistoryWidget::ChatHistoryWidget (const InitParams& params, ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
 	, Params_ (params)
 	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
-	, ContactsModel_ (new QStandardItemModel (this))
+	, AccountsModel_ { { { Qt::DisplayRole, Util::FromField<&AccountInfo::AccountName_> } } }
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
-	, EntryToFocus_ (entry)
+	, FocusEntry_ { entry ? std::optional<FocusEntry> { { .AccId_ = entry->GetParentAccount ()->GetAccountID (), .EntryId_ = entry->GetHumanReadableID () } } : std::nullopt }
 	{
 		Ui_.setupUi (this);
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
 		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
+		connect (Ui_.Calendar_,
+				&QCalendarWidget::currentPageChanged,
+				this,
+				&ChatHistoryWidget::UpdateDates);
+		connect (Ui_.Calendar_,
+				&QCalendarWidget::activated,
+				this,
+				&ChatHistoryWidget::RequestLogsForDate);
+
 		FindBox_ = new ChatFindBox (Ui_.HistView_);
 		connect (FindBox_,
-				SIGNAL (next (QString, ChatFindBox::FindFlags)),
+				&ChatFindBox::next,
 				this,
-				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
+				&ChatHistoryWidget::HandleSearch);
 		FindBox_->SetEscCloses (false);
 
 		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
 		connect (hvef,
-				SIGNAL (bgLinkRequested (QUrl)),
+				&HistoryViewEventFilter::bgLinkRequested,
 				this,
-				SLOT (handleBgLinkRequested (QUrl)));
+				[] (const QUrl& url)
+				{
+					auto e = Util::MakeEntity (url,
+							QString (),
+							FromUserInitiated | OnlyHandle);
+					e.Additional_ ["BackgroundHandle"] = true;
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
+		connect (Ui_.HistView_,
+				&QTextBrowser::anchorClicked,
+				this,
+				[] (const QUrl& url)
+				{
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (url,
+							{},
+							FromUserInitiated | OnlyHandle));
+				});
 
-		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		SortFilter_->setFilterCaseSensitivity (Qt::CaseInsensitive);
-		SortFilter_->setSourceModel (ContactsModel_);
+		SortFilter_->setSourceModel (&EntriesModel_);
 		SortFilter_->sort (0);
 		Ui_.Contacts_->setModel (SortFilter_);
 
 		ShowLoading ();
 
 		connect (Ui_.ContactsSearch_,
-				SIGNAL (textChanged (const QString&)),
+				&QLineEdit::textChanged,
 				SortFilter_,
-				SLOT (setFilterFixedString (const QString&)));
+				&QSortFilterProxyModel::setFilterFixedString);
 		connect (Ui_.Contacts_->selectionModel (),
-				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+				&QItemSelectionModel::currentRowChanged,
 				this,
-				SLOT (handleContactSelected (const QModelIndex&)));
+				&ChatHistoryWidget::HandleEntrySelected);
 
 		Toolbar_->addAction (tr ("Previous"),
 				this,
-				SLOT (previousHistory ()))->setProperty ("ActionIcon", "go-previous");
+				[this]
+				{
+					const auto firstId = DisplayedSpan_
+							.transform ([] (auto span) { return span.FirstId_; })
+							.value_or (std::numeric_limits<qint64>::max ());
+					RequestLogs (Storage2::Pagination { .CursorMessageId_ = firstId, .Before_ = PerPageAmount_ });
+				})->setProperty ("ActionIcon", "go-previous");
 		Toolbar_->addAction (tr ("Next"),
 				this,
-				SLOT (nextHistory ()))->setProperty ("ActionIcon", "go-next");
+				[this]
+				{
+					const auto lastId = DisplayedSpan_
+							.transform ([] (auto span) { return span.LastId_; })
+							.value_or (0);
+					RequestLogs (Storage2::Pagination { .CursorMessageId_ = lastId, .After_ = PerPageAmount_ });
+				})->setProperty ("ActionIcon", "go-next");
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (tr ("Clear"),
 				this,
-				SLOT (clearHistory ()))->setProperty ("ActionIcon", "list-remove");
+				&ChatHistoryWidget::ClearHistory)->setProperty ("ActionIcon", "list-remove");
 
-		Util::Sequence (this, Params_.StorageMgr_->GetOurAccounts ()) >>
-				[this] (const QStringList& accs) { HandleGotOurAccounts (accs); };
+		Ui_.AccountBox_->setModel (&AccountsModel_);
+		connect (Ui_.AccountBox_,
+				&QComboBox::currentIndexChanged,
+				this,
+				&ChatHistoryWidget::LoadAccountEntries);
+		LoadAccounts ();
 	}
 
 	void ChatHistoryWidget::Remove ()
@@ -117,504 +149,209 @@ namespace ChatHistory
 		return {};
 	}
 
-	void ChatHistoryWidget::HandleGotOurAccounts (const QStringList& accounts)
+	std::optional<AccountInfo> ChatHistoryWidget::GetCurrentAccount () const
 	{
-		for (const auto& accountID : accounts)
-		{
-			const auto account = qobject_cast<IAccount*> (Params_.PluginProxy_->GetAccount (accountID));
-			if (!account)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "got invalid IAccount for"
-						<< accountID;
-				continue;
-			}
-			Ui_.AccountBox_->addItem (account->GetAccountName (), accountID);
-			if (CurrentAccount_.isEmpty ())
-				CurrentAccount_ = accountID;
-		}
-
-		if (EntryToFocus_)
-		{
-			const auto entryAcc = EntryToFocus_->GetParentAccount ();
-			if (!entryAcc)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid entry account for entry"
-						<< EntryToFocus_->GetQObject ();
-				return;
-			}
-
-			const auto& id = entryAcc->GetAccountID ();
-			for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
-				if (id == Ui_.AccountBox_->itemData (i).toString ())
-				{
-					Ui_.AccountBox_->setCurrentIndex (i);
-					on_AccountBox__currentIndexChanged (i);
-					break;
-				}
-		}
+		const auto curIdx = Ui_.AccountBox_->currentIndex ();
+		if (curIdx < 0)
+			return {};
+		return AccountsModel_.GetItems () [curIdx];
 	}
 
-	namespace
+	std::optional<ChatHistoryWidget::DisplayEntry> ChatHistoryWidget::GetCurrentEntry () const
 	{
-		QString GetEntryName (const QString& entryId, const QString& accountId, const QString& cachedName, IProxyObject *proxy)
-		{
-			if (const auto entry = qobject_cast<ICLEntry*> (proxy->GetEntry (entryId, accountId)))
-			{
-				const auto& entryName = entry->GetEntryName ();
-
-				if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-				{
-					const auto parent = entry->GetParentCLEntry ();
-					return parent->GetEntryName () + '/' + entryName;
-				}
-				else
-					return entryName;
-			}
-
-			if (!cachedName.isEmpty ())
-				return cachedName;
-
-			return entryId;
-		}
+		const auto& curIdx = SortFilter_->mapToSource (Ui_.Contacts_->selectionModel ()->currentIndex ());
+		if (!curIdx.isValid ())
+			return {};
+		return EntriesModel_.GetItems () [curIdx.row ()];
 	}
 
-	void ChatHistoryWidget::HandleGotUsersForAccount (const QString& id,
-			const UsersForAccountResult_t& result)
+	Util::ContextTask<void> ChatHistoryWidget::LoadAccounts ()
 	{
-		if (const auto left = result.MaybeLeft ())
-		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Unable to get the list of users in the account.") + " " + *left);
-			return;
-		}
+		co_await Util::AddContextObject { *this };
 
-		const auto& right = result.GetRight ();
-		const auto& nameCache = right.NameCache_;
-		const auto& users = right.Users_;
+		const auto& accToFocus = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.AccId_; }).value_or ({});
 
-		ContactsModel_->clear ();
+		const auto accounts = co_await Params_.StorageThread_.Run (&Storage2::GetAccounts);
 
+		const QSignalBlocker blocker { Ui_.AccountBox_ };
+		AccountsModel_.SetItems (accounts);
+		if (accounts.isEmpty ())
+			co_return;
+
+		const auto focusPos = std::ranges::find (accounts, accToFocus, &AccountInfo::AccountId_);
+		const auto focusIndex = focusPos != accounts.end () ? static_cast<int> (focusPos - accounts.begin ()) : 0;
+		Ui_.AccountBox_->setCurrentIndex (focusIndex);
+		LoadAccountEntries (focusIndex);
+	}
+
+	Util::ContextTask<void> ChatHistoryWidget::LoadAccountEntries (int idx)
+	{
 		Ui_.HistView_->clear ();
+		UpdateDates ();
+		if (idx < 0 || idx >= AccountsModel_.rowCount ())
+			co_return;
 
-		QStandardItem *ourFocus = nullptr;
-		const auto& focusId = EntryToFocus_ ?
-				EntryToFocus_->GetEntryID () :
-				CurrentEntry_;
-		for (int i = 0; i < users.size (); ++i)
+		co_await Util::AddContextObject { *this };
+
+		const auto accountId = AccountsModel_.GetItems () [idx].Id_;
+		const auto entries = co_await Params_.StorageThread_.Run (&Storage2::GetEntries, accountId);
+		if (Ui_.AccountBox_->currentIndex () != idx)
+			co_return;
+
+		const auto& focusId = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.EntryId_; }).value_or ({});
+		std::optional<int> focusIndex;
+
+		QList<DisplayEntry> displayEntries;
+		displayEntries.reserve (entries.size ());
+		for (const auto& entry : entries)
 		{
-			const auto& user = users.at (i);
-			const auto& name = GetEntryName (user, id, nameCache.value (i), Params_.PluginProxy_);
+			using History::EntryDescr;
+			using enum History::EntryKind;
+			const auto& name = Util::Visit (entry.EntryInfo_,
+					[] (const EntryDescr<Chat>& roster) { return roster.Nick_; },
+					[] (const EntryDescr<MUC>& muc) { return muc.MucName_; },
+					[] (const EntryDescr<PrivateChat>& part) { return part.MucName_ + '/' + part.Nick_; });
+			displayEntries << DisplayEntry
+			{
+				.Id_ = entry.Id_,
+				.Name_ = name,
+				.Base_ = entry,
+			};
 
-			EntryID2NameCache_ [user] = name;
-
-			const auto item = new QStandardItem (name);
-			item->setData (user, MRIDRole);
-			item->setToolTip (name);
-			item->setEditable (false);
-			ContactsModel_->appendRow (item);
-
-			if (!ourFocus && user == focusId)
-				ourFocus = item;
+			if (!focusIndex && focusId == entry.HumanReadableId_)
+				focusIndex = displayEntries.size () - 1;
 		}
+		EntriesModel_.SetItems (std::move (displayEntries));
 
-		if (ourFocus)
+		if (focusIndex)
 		{
-			EntryToFocus_ = nullptr;
-			ShowLoading ();
-			auto idx = ContactsModel_->indexFromItem (ourFocus);
-			idx = SortFilter_->mapFromSource (idx);
-			Ui_.Contacts_->selectionModel ()->
-					setCurrentIndex (idx, QItemSelectionModel::SelectCurrent);
+			FocusEntry_.reset ();
+			const auto& row = SortFilter_->mapFromSource (EntriesModel_.index (*focusIndex, 0));
+			Ui_.Contacts_->selectionModel ()->setCurrentIndex (row, QItemSelectionModel::SelectCurrent);
 		}
 	}
 
-	void ChatHistoryWidget::HandleGotChatLogs (const QString& accountId,
-			const QString& entryId, const ChatLogsResult_t& result)
+	void ChatHistoryWidget::HandleEntrySelected (const QModelIndex& idx)
 	{
-		const auto& selEntry = Ui_.Contacts_->selectionModel ()->
-				currentIndex ().data (MRIDRole).toString ();
-		const auto& selAcc = Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ();
-		if (accountId != selAcc ||
-				entryId != selEntry)
+		if (!idx.isValid ())
 			return;
 
-		Amount_ = 0;
-		Ui_.HistView_->clear ();
+		DisplayedSpan_.reset ();
 
-		auto& formatter = Params_.PluginProxy_->GetFormatterProxy ();
-
-		const auto entry = qobject_cast<ICLEntry*> (Params_.PluginProxy_->GetEntry (entryId, accountId));
-		const auto& name = entry ?
-				entry->GetEntryName () :
-				EntryID2NameCache_.value (entryId, entryId);
-
-		if (const auto err = result.MaybeLeft ())
-		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Error getting logs with %1.")
-						.arg (name) +
-					" " + *err);
-			return;
-		}
-
-		const auto& ourName = entry ?
-				entry->GetParentAccount ()->GetOurNick () :
-				QString ();
-
-		auto preNick = Params_.PluginProxy_->GetSettingsManager ()->property ("PreNickText").toString ();
-		auto postNick = Params_.PluginProxy_->GetSettingsManager ()->property ("PostNickText").toString ();
-		preNick.replace ('<', "&lt;");
-		postNick.replace ('<', "&lt;");
-
-		const auto& bgColor = palette ().color (QPalette::Base);
-		const auto& colors = formatter.GenerateColors ("hash", bgColor);
-
-		int scrollPos = -1;
-
-		for (const auto& logItem : result.GetRight ())
-		{
-			const bool isChat = logItem.Type_ == IMessage::Type::ChatMessage;
-			const bool isIncoming = logItem.Dir_ == IMessage::Direction::In;
-
-			QString remoteName;
-
-			auto html = "[" + logItem.Date_.toString () + "] " + preNick;
-			const auto& var = logItem.Variant_;
-			if (isChat)
-			{
-				if (!name.isEmpty () && var.isEmpty ())
-					remoteName += name;
-				else if (name.isEmpty () && !var.isEmpty ())
-					remoteName += var;
-				else if (!name.endsWith ('/' + var))
-					remoteName += name + '/' + var;
-				else
-					remoteName += name;
-
-				if (!ourName.isEmpty ())
-					html += isIncoming ?
-							remoteName :
-							ourName;
-				else
-				{
-					html += isIncoming ?
-							QString::fromUtf8 ("← ") :
-							QString::fromUtf8 ("→ ");
-					html += remoteName;
-				}
-			}
-			else
-			{
-				const auto& color = formatter.GetNickColor (var, colors);
-				html += "<font color=\"" + color + "\">" + var + "</font>";
-			}
-
-			auto msgText = logItem.RichMessage_;
-			if (msgText.isEmpty ())
-			{
-				const bool escape = logItem.EscPolicy_ == IMessage::EscapePolicy::Escape;
-
-				msgText = logItem.Message_;
-
-				if (escape)
-					msgText.replace ('<', "&lt;");
-				formatter.FormatLinks (msgText);
-				if (escape)
-					msgText.replace ('\n', "<br/>");
-			}
-
-			html += postNick + ' ' + msgText;
-
-			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - ++Amount_;
-			if (isChat && !isSearchRes)
-			{
-				const auto& color = formatter.GetNickColor (isIncoming ? remoteName : ourName, colors);
-				html.prepend ("<font color=\"" + color + "\">");
-				html += "</font>";
-			}
-			else if (isSearchRes)
-			{
-				scrollPos = Ui_.HistView_->document ()->characterCount ();
-
-				html.prepend ("<font color='#FF7E00'>");
-				html += "</font>";
-			}
-
-			Ui_.HistView_->append (html);
-		}
-
-		if (scrollPos >= 0)
-		{
-			QTextCursor cur (Ui_.HistView_->document ());
-			cur.setPosition (scrollPos);
-			Ui_.HistView_->setTextCursor (cur);
-			Ui_.HistView_->ensureCursorVisible ();
-		}
+		RequestLogs ({ .Before_ = PerPageAmount_ });
+		UpdateDates ();
 	}
 
-	void ChatHistoryWidget::HandleGotSearchPosition (const QString& accountId,
-			const QString& entryId, const SearchResult_t& result)
+	Util::ContextTask<void> ChatHistoryWidget::RequestLogs (const Storage2::Pagination& pagination)
 	{
-		if (accountId != CurrentAccount_ ||
-				entryId != CurrentEntry_)
-			return;
+		const auto entry = GetCurrentEntry ();
+		if (!entry)
+			co_return;
 
-		if (const auto err = result.MaybeLeft ())
-		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Unable to perform the search.") + " " + *err);
-			return;
-		}
+		ShowLoading ();
 
-		const auto position = result.GetRight ();
-
-		if (!position)
-		{
-			if (!(FindBox_->GetFlags () & ChatFindBox::FindWrapsAround) || !SearchShift_)
-				QMessageBox::warning (this,
-						"LeechCraft",
-						tr ("No more search results for %1.")
-							.arg ("<em>" + PreviousSearchText_ + "</em>"));
-			else
-			{
-				SearchShift_ = 0;
-
-				const auto& e = Util::MakeNotification ("Azoth ChatHistory",
-						tr ("No more search results for %1, searching from the beginning now.")
-							.arg ("<em>" + PreviousSearchText_ + "</em>"),
-						Priority::Info);
-				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-
-				RequestSearch (FindBox_->GetFlags ());
-			}
-			return;
-		}
-
-		if (CurrentEntry_ != entryId)
-		{
-			ContactSelectedAsGlobSearch_ = true;
-			CurrentEntry_ = entryId;
-			if (CurrentAccount_ == accountId)
-				for (int i = 0; i < ContactsModel_->rowCount (); ++i)
-				{
-					auto item = ContactsModel_->item (i);
-					if (item->data (MRIDRole) == CurrentEntry_)
-					{
-						Ui_.Contacts_->setCurrentIndex (item->index ());
-						break;
-					}
-				}
-		}
-		if (CurrentAccount_ != accountId)
-		{
-			ContactSelectedAsGlobSearch_ = true;
-			CurrentAccount_ = accountId;
-			for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
-				if (accountId == Ui_.AccountBox_->itemData (i).toString ())
-				{
-					Ui_.AccountBox_->setCurrentIndex (i);
-					CurrentEntry_ = entryId;
-					break;
-				}
-		}
-
-		Backpages_ = *position / PerPageAmount_;
-		SearchResultPosition_ = *position % PerPageAmount_;
-		RequestLogs ();
+		co_await Util::AddContextObject { *this };
+		const auto messages = co_await Params_.StorageThread_.Run (&Storage2::GetMessages, entry->Base_, pagination);
+		co_await GuardEntryChanged (entry->Id_);
+		RenderMessages (messages);
 	}
 
-	void ChatHistoryWidget::HandleGotDaysForSheet (const QString& accountId,
-			const QString& entryId, int year, int month, const DaysResult_t& days)
+	Util::ContextTask<void> ChatHistoryWidget::RequestLogsForDate (const QDate& date)
 	{
-		if (accountId != CurrentAccount_ ||
-			entryId != CurrentEntry_ ||
-			year != Ui_.Calendar_->yearShown () ||
-			month != Ui_.Calendar_->monthShown ())
-			return;
+		const auto entry = GetCurrentEntry ();
+		if (!entry)
+			co_return;
 
-		if (days.IsLeft ())
-			return;
+		ShowLoading ();
+		FindBox_->Clear ();
 
+		co_await Util::AddContextObject { *this };
+		const auto& messages = co_await Params_.StorageThread_.Run (&Storage2::GetMessagesDated, entry->Base_, date);
+		co_await GuardEntryChanged (entry->Id_);
+		RenderMessages (messages);
+	}
+
+	Util::ContextTask<void> ChatHistoryWidget::UpdateDates ()
+	{
 		Ui_.Calendar_->setDateTextFormat ({}, {});
+
+		const auto entry = GetCurrentEntry ();
+		if (!entry)
+			co_return;
+
+		co_await Util::AddContextObject { *this };
+
+		const auto year = Ui_.Calendar_->yearShown ();
+		const auto month = Ui_.Calendar_->monthShown ();
+		const auto days = co_await Params_.StorageThread_.Run (&Storage2::GetDaysWithHistory, entry->Base_, year, month);
+
+		co_await GuardEntryChanged (entry->Id_);
+
+		if (year != Ui_.Calendar_->yearShown () || month != Ui_.Calendar_->monthShown ())
+			co_return;
 
 		QTextCharFormat fmt;
 		fmt.setFontWeight (QFont::Bold);
-		for (int day : days.GetRight ())
+		for (auto day : days)
 			Ui_.Calendar_->setDateTextFormat ({ year, month, day }, fmt);
 	}
 
-	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
+	Util::ContextTask<void> ChatHistoryWidget::HandleSearch (const QString& text, ChatFindBox::FindFlags flags)
 	{
-		const auto& id = Ui_.AccountBox_->itemData (idx).toString ();
-		CurrentEntry_.clear ();
-		UpdateDates ();
-
-		Util::Sequence (this, Params_.StorageMgr_->GetUsersForAccount (id)) >>
-				std::bind (&ChatHistoryWidget::HandleGotUsersForAccount, this, id, _1);
-	}
-
-	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
-	{
-		if (!index.isValid ())
-		{
-			Ui_.HistView_->clear ();
-			return;
-		}
-
-		CurrentAccount_ = Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ();
-		CurrentEntry_ = index.data (MRIDRole).toString ();
-		if (!ContactSelectedAsGlobSearch_)
-		{
-			SearchShift_ = 0;
-			PreviousSearchText_.clear ();
-			Backpages_ = 0;
-			SearchResultPosition_ = -1;
-		}
-		ContactSelectedAsGlobSearch_ = false;
-
-		ShowLoading ();
-
-		RequestLogs ();
-		UpdateDates ();
-	}
-
-	void ChatHistoryWidget::on_Calendar__currentPageChanged ()
-	{
-		UpdateDates ();
-	}
-
-	void ChatHistoryWidget::on_Calendar__activated (const QDate& date)
-	{
-		if (CurrentEntry_.isEmpty ())
-			return;
-
-		ShowLoading ();
-
-		PreviousSearchText_.clear ();
-		FindBox_->Clear ();
-
-		Util::Sequence (this,
-				Params_.StorageMgr_->Search (CurrentAccount_, CurrentEntry_, date.startOfDay ())) >>
-				std::bind (&ChatHistoryWidget::HandleGotSearchPosition,
-						this, CurrentAccount_, CurrentEntry_, _1);
-	}
-
-	void ChatHistoryWidget::handleNext (const QString& text, ChatFindBox::FindFlags flags)
-	{
-		ShowLoading ();
-
 		if (text.isEmpty ())
-		{
-			PreviousSearchText_.clear ();
-			Backpages_ = 0;
-			SearchResultPosition_ = -1;
-			RequestLogs ();
-			return;
-		}
+			co_return;
 
-		if (text != PreviousSearchText_)
+		const auto entry = GetCurrentEntry ();
+		if (!entry)
+			co_return;
+
+		co_await Util::AddContextObject { *this };
+
+		if (PreviousSearchText_ != text)
 		{
-			SearchShift_ = 0;
+			LastSearchCursor_.reset ();
 			PreviousSearchText_ = text;
 		}
-		else if (!(flags & ChatFindBox::FindBackwards))
-			++SearchShift_;
-		else
-			SearchShift_ = std::max (SearchShift_ - 1, 0);
 
-		RequestSearch (flags);
-	}
+		using enum Storage2::SearchDirection;
+		const auto cs = flags & ChatFindBox::FindCaseSensitively ? Qt::CaseSensitive : Qt::CaseInsensitive;
+		const auto dir = flags & ChatFindBox::FindBackwards ? Backward : Forward;
 
-	void ChatHistoryWidget::previousHistory ()
-	{
-		if (Amount_ < PerPageAmount_)
-			return;
+		const auto def = dir == Backward ? std::numeric_limits<qint64>::max () : -1;
+		const auto from = LastSearchCursor_.value_or (def);
 
-		++Backpages_;
-		SearchResultPosition_ = -1;
-		RequestLogs ();
-	}
-
-	void ChatHistoryWidget::nextHistory ()
-	{
-		if (Backpages_ <= 0)
-			return;
-
-		--Backpages_;
-		SearchResultPosition_ = -1;
-		RequestLogs ();
-	}
-
-	void ChatHistoryWidget::clearHistory ()
-	{
-		if (CurrentAccount_.isEmpty ())
-			return;
-
-		auto selected = Util::Map (Ui_.Contacts_->selectionModel ()->selectedRows (),
-				[] (const QModelIndex& idx) { return idx.data (MRIDRole).toString (); });
-		if (!selected.contains (CurrentEntry_) && !CurrentEntry_.isEmpty ())
-			selected << CurrentEntry_;
-		if (selected.isEmpty ())
-			return;
-
-		const auto& msg = selected.size () == 1 ?
-				tr ("Are you sure you wish to delete chat history with %1?")
-					.arg (EntryID2NameCache_.value (selected [0], selected [0])) :
-				tr ("Are you sure you wish to delete chat history with %n entry(ies)?", nullptr, selected.size ());
-		if (QMessageBox::question (nullptr, "LeechCraft", msg, QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return;
-
-		Ui_.Contacts_->clearSelection ();
-		CurrentEntry_.clear ();
-
+		auto nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, from);
+		if (!nextPos && flags & ChatFindBox::FindWrapsAround)
 		{
-			const QSignalBlocker blocker { Ui_.Contacts_->selectionModel () };
-			for (const auto& entry : selected)
-			{
-				Params_.StorageMgr_->ClearHistory (CurrentAccount_, entry);
-				if (const auto item = FindContactItem (entry))
-					ContactsModel_->removeRow (item->row ());
-			}
+			const auto& e = Util::MakeNotification ("Azoth ChatHistory",
+					tr ("No more search results, wrapping the search around…"),
+					Priority::Info);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+			nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, def);
 		}
 
-		if (const auto idx = Ui_.Contacts_->selectionModel ()->currentIndex ();
-			idx.isValid ())
-			CurrentEntry_ = idx.data (MRIDRole).toString ();
-		Backpages_ = 0;
-		RequestLogs ();
-	}
+		co_await GuardEntryChanged (entry->Id_);
 
-	void ChatHistoryWidget::on_HistView__anchorClicked (const QUrl& url)
-	{
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeEntity (url,
-				{},
-				FromUserInitiated | OnlyHandle));
-	}
-
-	void ChatHistoryWidget::handleBgLinkRequested (const QUrl& url)
-	{
-		auto e = Util::MakeEntity (url,
-				QString (),
-				FromUserInitiated | OnlyHandle);
-		e.Additional_ ["BackgroundHandle"] = true;
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	QStandardItem* ChatHistoryWidget::FindContactItem (const QString& id) const
-	{
-		for (auto i = 0; i < ContactsModel_->rowCount (); ++i)
+		if (!nextPos)
 		{
-			const auto item = ContactsModel_->item (i);
-			if (item->data (MRIDRole).toString () == id)
-				return item;
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("No more search results for %1.").arg ("<em>" + text.toHtmlEscaped () + "</em>"));
+			co_return;
 		}
 
-		return nullptr;
+		LastSearchCursor_ = nextPos;
+
+		const uint16_t halfAmount = PerPageAmount_ / 2;
+		RequestLogs ({ .CursorMessageId_ = *nextPos, .Before_ = halfAmount, .After_ = halfAmount });
+	}
+
+	Util::Either<ChatHistoryWidget::EntryChanged, Util::Void> ChatHistoryWidget::GuardEntryChanged (qint64 entryId) const
+	{
+		if (const auto currEntry = GetCurrentEntry ();
+			!currEntry || currEntry->Id_ != entryId)
+			return Util::Left { EntryChanged {} };
+		return Util::Void {};
 	}
 
 	void ChatHistoryWidget::ShowLoading ()
@@ -625,39 +362,127 @@ namespace ChatHistory
 		Ui_.HistView_->setHtml (html);
 	}
 
-	void ChatHistoryWidget::UpdateDates ()
+	void ChatHistoryWidget::RenderMessages (const QList<Storage2::HistoryMessage>& messages)
 	{
-		Ui_.Calendar_->setDateTextFormat (QDate (), QTextCharFormat ());
-
-		if (CurrentEntry_.isEmpty ())
+		const auto& acc = GetCurrentAccount ();
+		if (!acc)
 			return;
 
-		const auto year = Ui_.Calendar_->yearShown ();
-		const auto month = Ui_.Calendar_->monthShown ();
-		const auto& future = Params_.StorageMgr_->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
-				year, month);
-		Util::Sequence (this, future) >>
-				std::bind (&ChatHistoryWidget::HandleGotDaysForSheet,
-						this, CurrentAccount_, CurrentEntry_, year, month, _1);
+		const auto& entry = GetCurrentEntry ();
+		if (!entry)
+			qFatal () << "unexpected null entry";
+
+		Ui_.HistView_->clear ();
+
+		if (messages.isEmpty ())
+		{
+			DisplayedSpan_.reset ();
+			return;
+		}
+
+		DisplayedSpan_ = DisplayedMessagesSpan { messages.front ().Id_, messages.back ().Id_ };
+
+		const auto azothSettings = Params_.PluginProxy_->GetSettingsManager ();
+		const auto preNick = azothSettings->property ("PreNickText").toString ().toHtmlEscaped ();
+		const auto postNick = azothSettings->property ("PostNickText").toString ().toHtmlEscaped ();
+
+		auto& formatter = Params_.PluginProxy_->GetFormatterProxy ();
+
+		const auto& bgColor = palette ().color (QPalette::Base);
+		const auto& colors = formatter.GenerateColors ("hash", bgColor);
+
+		std::optional<int> scrollPos;
+
+		for (const auto& message : messages)
+		{
+			std::optional<QString> lineColor;
+
+			auto html = "[" + message.TS_.toString () + "] " + preNick;
+			if (entry->IsMuc ())
+			{
+				const auto& nick = message.DisplayName_;
+				const auto& color = formatter.GetNickColor (nick, colors);
+				html += "<font color=\"" + color + "\">" + nick.toHtmlEscaped () + "</font>";
+			}
+			else
+			{
+				constexpr static auto withVariant = [] (const QString& nick, const QString& variant)
+				{
+					return variant.isEmpty () ? nick : nick + '/' + variant;
+				};
+				auto nick = withVariant (message.DisplayName_, message.Variant_.value_or ({}));
+				html += nick.toHtmlEscaped ();
+				lineColor = formatter.GetNickColor (nick, colors);
+			}
+			html += postNick + ' ';
+
+			const auto preparePlain = [&]
+			{
+				auto text = message.Body_.toHtmlEscaped ();
+				formatter.FormatLinks (text);
+				text.replace ('\n', "<br/>"_qs);
+				return text;
+			};
+			html += message.RichBody_ ? *message.RichBody_ : preparePlain ();
+
+			if (LastSearchCursor_ == message.Id_)
+			{
+				lineColor = "#FF7E00"_qs;
+				scrollPos = Ui_.HistView_->document ()->characterCount ();
+			}
+
+			if (lineColor)
+				html = "<font color=\"" + *lineColor + "\">" + html + "</font>";
+
+			Ui_.HistView_->append (html);
+		}
+
+		if (scrollPos)
+		{
+			QTextCursor cur { Ui_.HistView_->document () };
+			cur.setPosition (*scrollPos);
+			Ui_.HistView_->setTextCursor (cur);
+			Ui_.HistView_->ensureCursorVisible ();
+		}
 	}
 
-	void ChatHistoryWidget::RequestLogs ()
+	void ChatHistoryWidget::ClearHistory ()
 	{
-		const auto& future = Params_.StorageMgr_->GetChatLogs (CurrentAccount_,
-				CurrentEntry_, Backpages_, PerPageAmount_);
-		Util::Sequence (this, future) >>
-				std::bind (&ChatHistoryWidget::HandleGotChatLogs, this, CurrentAccount_, CurrentEntry_, _1);
-	}
+		const auto acc = GetCurrentAccount ();
+		if (!acc)
+			return;
 
-	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)
-	{
-		const auto& future = Params_.StorageMgr_->Search (CurrentAccount_, CurrentEntry_,
-				PreviousSearchText_, SearchShift_,
-				flags & ChatFindBox::FindCaseSensitively);
-		Util::Sequence (this, future) >>
-				std::bind (&ChatHistoryWidget::HandleGotSearchPosition,
-						this, CurrentAccount_, CurrentEntry_, _1);
+		const auto entry = GetCurrentEntry ();
+
+		auto selected = Util::Map (Ui_.Contacts_->selectionModel ()->selectedRows (),
+				[&] (const QModelIndex& idx) { return SortFilter_->mapToSource (idx).row (); });
+		if (const auto current = SortFilter_->mapToSource (Ui_.Contacts_->selectionModel ()->currentIndex ());
+			current.isValid () && !selected.contains (current.row ()))
+			selected << current.row ();
+		if (selected.isEmpty ())
+			return;
+
+		std::sort (selected.rbegin (), selected.rend ());
+
+		const auto& msg = selected.size () == 1 ?
+				tr ("Are you sure you wish to delete chat history with %1?")
+					.arg (EntriesModel_.GetItems () [selected.front ()].Base_.HumanReadableId_) :
+				tr ("Are you sure you wish to delete chat history with %n entry(ies)?", nullptr, selected.size ());
+		if (QMessageBox::question (nullptr, "LeechCraft", msg, QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		Ui_.Contacts_->clearSelection ();
+
+		{
+			const QSignalBlocker blocker { Ui_.Contacts_->selectionModel () };
+			for (const auto row : selected)
+			{
+				Params_.StorageThread_.Run (&Storage2::ClearHistory, EntriesModel_.GetItems () [row].Base_);
+				EntriesModel_.RemoveItem (row);
+			}
+		}
+
+		if (GetCurrentEntry ())
+			RequestLogs ({ .Before_ = PerPageAmount_ });
 	}
-}
-}
 }

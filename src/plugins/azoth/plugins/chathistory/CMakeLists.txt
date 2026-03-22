@@ -5,12 +5,11 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 LC_DEFINE_PLUGIN (
 	SRCS
 		chathistory.cpp
-		storage.cpp
+		storage2.cpp
 		chathistorywidget.cpp
 		historymessage.cpp
 		chatfindbox.cpp
 		historyvieweventfilter.cpp
-		storagemanager.cpp
 		loggingstatekeeper.cpp
 	SETTINGS azothchathistorysettings.xml
 	QT_COMPONENTS Core Sql Widgets

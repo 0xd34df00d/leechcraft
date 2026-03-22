@@ -8,11 +8,5 @@
 				<label value="Items per page:" />
 			</item>
 		</groupbox>
-		<groupbox>
-			<label value="Service" />
-			<item type="pushbutton" property="RegenUsersCache">
-				<label value="Regenerate users cache" />
-			</item>
-		</groupbox>
 	</page>
 </settings>

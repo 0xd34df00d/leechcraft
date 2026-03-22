@@ -19,27 +19,26 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/ihistoryplugin.h>
-#include "storagestructures.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-class IProxyObject;
+	class IProxyObject;
+}
 
-namespace ChatHistory
+namespace LC::Azoth::ChatHistory
 {
 	class ChatHistoryWidget;
-	class StorageManager;
 	class LoggingStateKeeper;
+	class StorageThread;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IActionsExporter
-				 , public IHaveTabs
-				 , public IHaveSettings
-				 , public IHistoryPlugin
+	class Plugin final
+		: public QObject
+		, public IInfo
+		, public IPlugin2
+		, public IActionsExporter
+		, public IHaveTabs
+		, public IHaveSettings
+		, public IHistoryPlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -55,8 +54,8 @@ namespace ChatHistory
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		std::shared_ptr<LoggingStateKeeper> LoggingStateKeeper_;
-		std::shared_ptr<StorageManager> StorageMgr_;
+		std::unique_ptr<LoggingStateKeeper> LoggingStateKeeper_;
+		std::unique_ptr<StorageThread> StorageThread_;
 		QAction *ActionHistory_ = nullptr;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
@@ -65,6 +64,9 @@ namespace ChatHistory
 
 		IProxyObject *PluginProxy_ = nullptr;
 	public:
+		Plugin ();
+		~Plugin ();
+
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
 		QByteArray GetUniqueID () const override;
@@ -88,13 +90,11 @@ namespace ChatHistory
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
 		// IHistoryPlugin
-		bool IsHistoryEnabledFor (QObject*) const override;
-		void RequestLastMessages (QObject*, int) override;
-		QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount*) override;
-		void AddRawMessages (const QString&, const QString&, const QString&, const QList<HistoryItem>&) override;
+		bool IsHistoryEnabledFor (ICLEntry&) const override;
+		Util::ContextTask<void> RequestLastMessages (ICLEntry&, int) override;
+		Util::ContextTask<std::optional<QDateTime>> RequestMaxTimestamp (IAccount&) override;
+		void AddMessages (const History::SomeEntryWithMessages&) override;
 	private:
-		void HandleGotChatLogs (const QPointer<QObject>&, const ChatLogsResult_t&);
-
 		void HandleHistoryRequested ();
 		void HandleEntryHistoryRequested (ICLEntry*);
 	public slots:
@@ -108,14 +108,10 @@ namespace ChatHistory
 		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entryObj);
 		void hookGotMessage2 (LC::IHookProxy_ptr proxy,
-				QObject *message);
-	private slots:
-		void handlePushButton (const QString&);
+				QObject *msgObj);
 	signals:
 		void gotLastMessages (QObject*, const QList<QObject*>&) override;
 
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
-}
-}
 }

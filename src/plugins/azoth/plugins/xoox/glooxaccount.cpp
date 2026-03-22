@@ -17,9 +17,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/util.h>
-#include <util/sll/either.h>
-#include <util/sll/void.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -622,9 +620,10 @@ namespace Xoox
 		return { 0, Qt::DisplayRole, Qt::AscendingOrder };
 	}
 
-	QFuture<IHaveServerHistory::DatedFetchResult_t> GlooxAccount::FetchServerHistory (const QDateTime&)
+	Util::ContextTask<QList<History::SomeEntryWithMessages>> GlooxAccount::FetchServerHistory (const std::optional<QDateTime>&)
 	{
-		return Util::MakeReadyFuture (DatedFetchResult_t { Util::AsLeft, "Not implemented yet." });
+		qWarning () << "not implemented yet";
+		co_return {};
 	}
 
 	bool GlooxAccount::SupportsBlacklists () const

@@ -34,6 +34,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -1489,7 +1490,7 @@ namespace Azoth
 		for (const auto histObj : histories)
 		{
 			const auto hist = qobject_cast<IHistoryPlugin*> (histObj);
-			if (!hist->IsHistoryEnabledFor (entryObj))
+			if (!hist->IsHistoryEnabledFor (*entry))
 				continue;
 
 			connect (histObj,
@@ -1498,7 +1499,7 @@ namespace Azoth
 					SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)),
 					Qt::UniqueConnection);
 
-			hist->RequestLastMessages (entryObj, num);
+			hist->RequestLastMessages (*entry, num);
 		}
 	}
 

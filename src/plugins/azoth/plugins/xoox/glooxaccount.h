@@ -223,7 +223,7 @@ namespace Xoox
 		QAbstractItemModel* GetServerContactsModel () const override;
 		void FetchServerHistory (const QModelIndex&, const QByteArray&, int) override;
 		DefaultSortParams GetSortParams () const override;
-		QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime&) override;
+		Util::ContextTask<QList<History::SomeEntryWithMessages>> FetchServerHistory (const std::optional<QDateTime>&) override;
 
 		// IHaveBlacklists
 		bool SupportsBlacklists () const override;

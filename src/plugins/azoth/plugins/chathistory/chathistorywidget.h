@@ -9,29 +9,24 @@
 #pragma once
 
 #include <QWidget>
+#include <util/models/itemsmodel.h>
 #include <interfaces/ihavetabs.h>
 #include "chatfindbox.h"
-#include "storagestructures.h"
+#include "storage2.h"
 #include "ui_chathistorywidget.h"
 
-class QStandardItemModel;
-class QStandardItem;
 class QSortFilterProxyModel;
 
-namespace LC
+namespace LC::Azoth
 {
-struct Entity;
+	class ICLEntry;
+	class IProxyObject;
+}
 
-namespace Azoth
+namespace LC::Azoth::ChatHistory
 {
-class ICLEntry;
-class IProxyObject;
-
-namespace ChatHistory
-{
-	class Plugin;
 	class ChatFindBox;
-	class StorageManager;
+	class StorageThread;
 
 	class ChatHistoryWidget : public QWidget
 							, public ITabWidget
@@ -43,38 +38,52 @@ namespace ChatHistory
 	public:
 		struct InitParams
 		{
-			StorageManager * const StorageMgr_;
+			StorageThread& StorageThread_;
 			IProxyObject * const PluginProxy_;
-			Plugin * const ParentMultiTabs_;
+			QObject * const ParentMultiTabs_;
 			const TabClassInfo Info_;
 		};
 	private:
 		InitParams Params_;
 
-		const int PerPageAmount_;
+		const uint16_t PerPageAmount_;
 
-		QStandardItemModel *ContactsModel_;
-		QSortFilterProxyModel *SortFilter_;
-		int Backpages_ = 0;
-		int Amount_ = 0;
-		int SearchShift_ = 0;
-		int SearchResultPosition_ = -1;
-		bool ContactSelectedAsGlobSearch_ = false;
-		QString CurrentAccount_;
-		QString CurrentEntry_;
+		struct DisplayedMessagesSpan
+		{
+			qint64 FirstId_;
+			qint64 LastId_;
+		};
+		std::optional<DisplayedMessagesSpan> DisplayedSpan_;
+
 		QString PreviousSearchText_;
+		std::optional<qint64> LastSearchCursor_;
+
+		Util::RoledItemsModel<AccountInfo> AccountsModel_;
+
+		struct DisplayEntry
+		{
+			qint64 Id_;
+			Util::RoleOf<QString, Qt::DisplayRole> Name_;
+			Entry Base_;
+
+			bool IsMuc () const
+			{
+				return History::GetEntryKind (Base_.EntryInfo_) == History::EntryKind::MUC;
+			}
+		};
+		Util::RoledItemsModel<DisplayEntry> EntriesModel_;
+
+		QSortFilterProxyModel *SortFilter_;
 		QToolBar *Toolbar_;
 
-		QHash<QString, QString> EntryID2NameCache_;
-
-		ICLEntry *EntryToFocus_;
+		struct FocusEntry
+		{
+			QByteArray AccId_;
+			QString EntryId_;
+		};
+		std::optional<FocusEntry> FocusEntry_;
 
 		ChatFindBox *FindBox_;
-
-		enum ModelRoles
-		{
-			MRIDRole = Qt::UserRole + 1
-		};
 	public:
 		ChatHistoryWidget (const InitParams&, ICLEntry* = 0, QWidget* = 0);
 
@@ -84,35 +93,27 @@ namespace ChatHistory
 		TabClassInfo GetTabClassInfo () const override;
 		QList<QAction*> GetTabBarContextMenuActions () const override;
 	private:
-		void HandleGotOurAccounts (const QStringList&);
-		void HandleGotUsersForAccount (const QString&, const UsersForAccountResult_t&);
-		void HandleGotChatLogs (const QString&, const QString&, const ChatLogsResult_t&);
-		void HandleGotSearchPosition (const QString&, const QString&, const SearchResult_t&);
-		void HandleGotDaysForSheet (const QString&, const QString&, int, int, const DaysResult_t&);
-	private slots:
-		void on_AccountBox__currentIndexChanged (int);
-		void handleContactSelected (const QModelIndex&);
+		std::optional<AccountInfo> GetCurrentAccount () const;
+		std::optional<DisplayEntry> GetCurrentEntry () const;
 
-		void on_Calendar__currentPageChanged ();
-		void on_Calendar__activated (const QDate&);
+		Util::ContextTask<void> LoadAccounts ();
+		Util::ContextTask<void> LoadAccountEntries (int);
+		void HandleEntrySelected (const QModelIndex&);
+		Util::ContextTask<void> RequestLogs (const Storage2::Pagination&);
+		Util::ContextTask<void> RequestLogsForDate (const QDate&);
 
-		void handleNext (const QString&, ChatFindBox::FindFlags);
-		void previousHistory ();
-		void nextHistory ();
-		void clearHistory ();
+		Util::ContextTask<void> UpdateDates ();
 
-		void on_HistView__anchorClicked (const QUrl&);
-		void handleBgLinkRequested (const QUrl&);
-	private:
-		QStandardItem* FindContactItem (const QString&) const;
+		Util::ContextTask<void> HandleSearch (const QString& text, ChatFindBox::FindFlags flags);
+
+		struct EntryChanged {};
+		Util::Either<EntryChanged, Util::Void> GuardEntryChanged (qint64 entryId) const;
 
 		void ShowLoading ();
-		void UpdateDates ();
-		void RequestLogs ();
-		void RequestSearch (ChatFindBox::FindFlags);
+		void RenderMessages (const QList<Storage2::HistoryMessage>&);
+
+		void ClearHistory ();
 	signals:
 		void removeTab () override;
 	};
-}
-}
 }

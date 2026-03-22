@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "importmanager.h"
-#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/azoth/iaccount.h"
@@ -48,52 +47,6 @@ namespace Azoth
 		}
 	}
 
-	namespace
-	{
-		IMessage::Direction GetDirection (const QByteArray& dirStr)
-		{
-			if (dirStr == "out")
-				return IMessage::Direction::Out;
-			else if (dirStr == "in")
-				return IMessage::Direction::In;
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown direction"
-					<< dirStr;
-			return IMessage::Direction::In;
-		}
-
-		IMessage::Type GetMessageType (const QByteArray& typeStr)
-		{
-			if (typeStr == "chat")
-				return IMessage::Type::ChatMessage;
-			else if (typeStr == "muc")
-				return IMessage::Type::MUCMessage;
-			else if (typeStr == "event")
-				return IMessage::Type::EventMessage;
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown type"
-					<< typeStr;
-			return IMessage::Type::ChatMessage;
-		}
-
-		IMessage::EscapePolicy GetEscapePolicy (const QByteArray& polStr)
-		{
-			if (polStr.isEmpty ())
-				return IMessage::EscapePolicy::Escape;
-			else if (polStr == "escape")
-				return IMessage::EscapePolicy::Escape;
-			else if (polStr == "noEscape")
-				return IMessage::EscapePolicy::NoEscape;
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown escape policy"
-					<< polStr;
-			return IMessage::EscapePolicy::Escape;
-		}
-	}
-
 	void ImportManager::HandleHistoryImport (Entity e)
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -110,67 +63,96 @@ namespace Azoth
 		if (!acc)
 			return;
 
-		const auto isi = qobject_cast<ISupportImport*> (acc->GetParentProtocol ());
-
-		QHash<QString, QString> entryIDcache;
-
 		QVariantList history;
 		for (const auto& qe : EntityQueues_.take (e.Additional_ ["AccountID"].toString ()))
 			history.append (qe.Additional_ ["History"].toList ());
 
 		qDebug () << history.size ();
 
-		struct EntryInfo
-		{
-			QString VisibleName_;
-			QList<HistoryItem> Items_;
-		};
-		QHash<QString, QHash<QString, EntryInfo>> items;
+		using namespace History;
+		using enum EntryKind;
+
+		const auto ourNick = acc->GetOurNick ();
+		const auto accountId = acc->GetAccountID ();
+		const auto accountName = acc->GetAccountName ();
+
+		QHash<QString, EntryWithMessages<Chat>> chatEntries;
+		QHash<QString, EntryWithMessages<MUC>> mucEntries;
+
 		for (const auto& lineVar : history)
 		{
 			const auto& histMap = lineVar.toMap ();
 
-			const auto& origId = histMap ["EntryID"].toString ();
-			QString entryId;
-			if (entryIDcache.contains (origId))
-				entryId = entryIDcache [origId];
-			else
+			const auto& entryHRId = histMap ["EntryID"].toString ();
+			const auto& typeStr = histMap ["MessageType"].toByteArray ();
+
+			if (typeStr == "event")
+				continue;
+
+			const auto& visibleName = histMap ["VisibleName"].toString ();
+			const auto& otherVariant = histMap ["Variant"].toString ();
+			const auto& richBody = histMap ["RichBody"].toString ();
+
+			const bool isMuc = typeStr == "muc";
+			const bool isOut = histMap ["Direction"].toByteArray () == "out";
+
+			const auto appendTo = [&]<EntryKind K> (QHash<QString, EntryWithMessages<K>>& hash,
+					EntryDescr<K> descr, EntryEndpoint<K> incoming)
 			{
-				const auto& realId = isi->GetEntryID (origId, acc->GetQObject ());
-				entryIDcache [origId] = realId;
-				entryId = realId;
-			}
+				auto it = hash.find (entryHRId);
+				if (it == hash.end ())
+					it = hash.insert (entryHRId,
+					{
+						Entry<K>
+						{
+							.AccountId_ = accountId,
+							.AccountName_ = accountName,
+							.EntryHumanReadableId_ = entryHRId,
+							.Description_ = std::move (descr),
+						},
+						{},
+					});
 
-			auto visibleName = histMap ["VisibleName"].toString ();
-			if (visibleName.isEmpty ())
-				visibleName = origId;
-
-			const auto& accId = acc->GetAccountID ();
-
-			const HistoryItem item
-			{
-				histMap ["DateTime"].toDateTime (),
-				GetDirection (histMap ["Direction"].toByteArray ()),
-				histMap ["Body"].toString (),
-				histMap ["OtherVariant"].toString (),
-				GetMessageType (histMap ["Type"].toByteArray ()),
-				histMap ["RichBody"].toString (),
-				GetEscapePolicy (histMap ["EscapePolicy"].toByteArray ())
+				auto endpoint = isOut ?
+						Endpoint<K> { SelfEndpoint { ourNick, {} } } :
+						Endpoint<K> { std::move (incoming) };
+				it->second << NewMessage<K>
+				{
+					.Endpoint_ = std::move (endpoint),
+					.TS_ = histMap ["DateTime"].toDateTime (),
+					.Body_ = histMap ["Body"].toString (),
+					.RichBody_ = richBody.isEmpty () ? std::nullopt : std::optional { richBody },
+				};
+				return it;
 			};
 
-			auto& info = items [accId] [entryId];
-			info.VisibleName_ = visibleName;
-			info.Items_ << item;
+			const auto displayName = visibleName.isEmpty () ? entryHRId : visibleName;
+			if (isMuc)
+				appendTo (mucEntries,
+						EntryDescr<MUC> { displayName },
+						EntryEndpoint<MUC> { .Nick_ = otherVariant, .PersistentId_ = {} });
+			else
+			{
+				auto it = appendTo (chatEntries,
+						EntryDescr<Chat> { displayName },
+						EntryEndpoint<Chat> { .Variant_ = otherVariant.isEmpty () ? std::nullopt : std::optional { otherVariant } });
+				if (!visibleName.isEmpty ())
+					it->first.Description_.Nick_ = visibleName;
+			}
 		}
 
-		for (const auto& accPair : Util::Stlize (items))
-			for (const auto& entryPair : Util::Stlize (accPair.second))
-			{
-				const auto& info = entryPair.second;
-				for (const auto plugin : histories)
-					plugin->AddRawMessages (accPair.first,
-							entryPair.first, info.VisibleName_, info.Items_);
-			}
+		for (const auto& ewm : chatEntries)
+		{
+			const SomeEntryWithMessages some { ewm };
+			for (const auto plugin : histories)
+				plugin->AddMessages (some);
+		}
+		for (const auto& ewm : mucEntries)
+		{
+			const SomeEntryWithMessages some { ewm };
+			for (const auto plugin : histories)
+				plugin->AddMessages (some);
+		}
 	}
 
 	IAccount* ImportManager::GetAccountID (Entity e)

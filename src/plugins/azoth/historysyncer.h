@@ -10,10 +10,8 @@
 
 #include <QObject>
 #include <QSet>
+#include <util/threads/coro/taskfwd.h>
 #include "interfaces/azoth/ihaveserverhistory.h"
-
-template<typename>
-class QFuture;
 
 class QDateTime;
 
@@ -37,10 +35,10 @@ namespace Azoth
 		void AddStorage (IHistoryPlugin*);
 		void AddAccount (IAccount*);
 	private:
-		void StartAccountSync (IAccount*);
-		void RequestAccountFrom (IAccount*, const QDateTime&);
+		Util::ContextTask<void> SyncAccount (IAccount*);
+		Util::ContextTask<void> RequestAccountFrom (IAccount*, const std::optional<QDateTime>&);
 
-		void AppendItems (IAccount*, const IHaveServerHistory::MessagesSyncMap_t&);
+		void AppendItems (const QList<History::SomeEntryWithMessages>&);
 	};
 }
 }

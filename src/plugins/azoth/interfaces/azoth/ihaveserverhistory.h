@@ -107,15 +107,7 @@ namespace Azoth
 
 		virtual DefaultSortParams GetSortParams () const = 0;
 
-		struct UserHistorySyncInfo
-		{
-			QString VisibleName_;
-			QList<HistoryItem> Messages_;
-		};
-		using MessagesSyncMap_t = QHash<QString, UserHistorySyncInfo>;
-		using DatedFetchResult_t = Util::Either<QString, MessagesSyncMap_t>;
-
-		virtual QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime& since) = 0;
+		virtual Util::ContextTask<QList<History::SomeEntryWithMessages>> FetchServerHistory (const std::optional<QDateTime>& since) = 0;
 	protected:
 		/** @brief Emitted when messages are fetched.
 		 *
