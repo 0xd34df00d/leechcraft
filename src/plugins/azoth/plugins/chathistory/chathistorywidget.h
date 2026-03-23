@@ -48,15 +48,16 @@ namespace LC::Azoth::ChatHistory
 
 		const uint16_t PerPageAmount_;
 
-		struct DisplayedMessagesSpan
+		template<typename T>
+		struct Span
 		{
-			qint64 FirstId_;
-			qint64 LastId_;
+			T First_;
+			T Last_;
 		};
-		std::optional<DisplayedMessagesSpan> DisplayedSpan_;
+		std::optional<Span<Storage2::Cursor>> DisplayedSpan_;
 
 		QString PreviousSearchText_;
-		std::optional<qint64> LastSearchCursor_;
+		std::optional<Storage2::Cursor> LastSearchCursor_;
 
 		Util::RoledItemsModel<AccountInfo> AccountsModel_;
 

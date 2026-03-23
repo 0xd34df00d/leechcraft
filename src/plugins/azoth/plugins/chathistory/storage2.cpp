@@ -327,27 +327,54 @@ namespace LC::Azoth::ChatHistory
 		}
 	}
 
+	Storage2::Cursor Storage2::Cursor::FromMessage (const HistoryMessage& msg)
+	{
+		return { .TS_ = msg.TS_, .MsgId_ = msg.Id_ };
+	}
+
+	Storage2::Cursor Storage2::Cursor::Min ()
+	{
+		const QDateTime sentinel { QDate { 1000, 1, 1 }, QTime { 0, 0, 0 } };
+		return { sentinel, -1 };
+	}
+
+	Storage2::Cursor Storage2::Cursor::Max ()
+	{
+		const QDateTime sentinel { QDate { 9999, 12, 31 }, QTime { 23, 59, 59 } };
+		return { sentinel, std::numeric_limits<qint64>::max () };
+	}
+
+	namespace
+	{
+		auto AsTuple (const Storage2::Cursor& cursor)
+		{
+			return std::tuple { cursor.TS_, cursor.MsgId_ };
+		}
+	}
+
 	QList<Storage2::HistoryMessage> Storage2::GetMessages (const Entry& entry, const Pagination& pagination) const
 	{
+		const auto cursor = pagination.Cursor_.value_or (Cursor::Max ());
+
 		QList<MessageRecord> records;
 		if (pagination.Before_)
 		{
 			auto preceding = Messages_->Select.Build ()
 				.Where (sph::f<&MessageRecord::Entry_> == entry.Id_ &&
-						sph::f<&MessageRecord::Id_> < pagination.CursorMessageId_)
-				.Order (o::OrderBy<sph::desc<&MessageRecord::Id_>>)
+						sph::tuple<&MessageRecord::TS_, &MessageRecord::Id_> < AsTuple (cursor))
+				.Order (o::OrderBy<sph::desc<&MessageRecord::TS_, &MessageRecord::Id_>>)
 				.Limit (pagination.Before_)
 				();
 			std::ranges::reverse (preceding);
 			records += std::move (preceding);
 		}
 		if (pagination.IncludeCursor_)
-			records += Messages_->Select (sph::f<&MessageRecord::Id_> == pagination.CursorMessageId_);
+			records += Messages_->Select (sph::f<&MessageRecord::Id_> == cursor.MsgId_);
 		if (pagination.After_)
 			records += Messages_->Select.Build ()
 				.Where (sph::f<&MessageRecord::Entry_> == entry.Id_ &&
-						sph::f<&MessageRecord::Id_> > pagination.CursorMessageId_)
-				.Order (o::OrderBy<sph::asc<&MessageRecord::Id_>>)
+						sph::tuple<&MessageRecord::TS_, &MessageRecord::Id_> > AsTuple (cursor))
+				.Order (o::OrderBy<sph::asc<&MessageRecord::TS_, &MessageRecord::Id_>>)
 				.Limit (pagination.After_)
 				();
 
@@ -360,7 +387,7 @@ namespace LC::Azoth::ChatHistory
 				.Where (sph::f<&MessageRecord::Entry_> == entry.Id_ &&
 						sph::f<&MessageRecord::TS_> >= QDateTime { date, {} } &&
 						sph::f<&MessageRecord::TS_> <  QDateTime { date.addDays (1), {} })
-				.Order (o::OrderBy<sph::asc<&MessageRecord::Id_>>)
+				.Order (o::OrderBy<sph::asc<&MessageRecord::TS_, &MessageRecord::Id_>>)
 				();
 		return Util::Map (std::move (records), &ToHistoryMessage);
 	}
@@ -377,7 +404,7 @@ namespace LC::Azoth::ChatHistory
 
 		auto messages = Messages_->Select.Build ()
 				.Where (sph::f<&MessageRecord::Entry_> == entryId)
-				.Order (o::OrderBy<sph::desc<&MessageRecord::Id_>>)
+				.Order (o::OrderBy<sph::desc<&MessageRecord::TS_, &MessageRecord::Id_>>)
 				.Limit (count)
 				();
 		std::ranges::reverse (messages);
@@ -411,12 +438,14 @@ namespace LC::Azoth::ChatHistory
 		}
 	}
 
-	std::optional<qint64> Storage2::Search (const Entry& entry, const QString& text, Qt::CaseSensitivity cs, SearchDirection dir, qint64 from) const
+	std::optional<Storage2::Cursor> Storage2::Search (const Entry& entry,
+			const QString& text, Qt::CaseSensitivity cs, SearchDirection dir,
+			const Cursor& from) const
 	{
 		using namespace o::infix;
 
 		auto srcQuery = Messages_->SelectOne.Build ()
-				.Select (sph::fields<&MessageRecord::Id_>)
+				.Select (sph::fields<&MessageRecord::TS_, &MessageRecord::Id_>)
 				.Where (sph::f<&MessageRecord::Entry_> == entry.Id_)
 				.Limit (1)
 				;
@@ -439,18 +468,23 @@ namespace LC::Azoth::ChatHistory
 			{
 			case SearchDirection::Backward:
 				return cont (std::move (query)
-						.AndWhere (sph::f<&MessageRecord::Id_> < from)
-						.Order (o::OrderBy<sph::desc<&MessageRecord::Id_>>));
+						.AndWhere (sph::tuple<&MessageRecord::TS_, &MessageRecord::Id_> < AsTuple (from))
+						.Order (o::OrderBy<sph::desc<&MessageRecord::TS_, &MessageRecord::Id_>>));
 			case SearchDirection::Forward:
 				return cont (std::move (query)
-						.AndWhere (sph::f<&MessageRecord::Id_> > from)
-						.Order (o::OrderBy<sph::asc<&MessageRecord::Id_>>));
+						.AndWhere (sph::tuple<&MessageRecord::TS_, &MessageRecord::Id_> > AsTuple (from))
+						.Order (o::OrderBy<sph::asc<&MessageRecord::TS_, &MessageRecord::Id_>>));
 			}
 			std::unreachable ();
 		};
 		const auto execute = [] (auto&& query) { return std::move (query) (); };
 
-		return Pipe (srcQuery, withText, withBound, execute);
+		return Pipe (srcQuery, withText, withBound, execute)
+				.transform ([&] (const auto& fields)
+						{
+							const auto& [ts, id] = fields;
+							return Cursor { .TS_ = ts, .MsgId_ = id };
+						});
 	}
 
 	namespace
@@ -476,7 +510,7 @@ namespace LC::Azoth::ChatHistory
 		using namespace History;
 
 		Util::Visit (some,
-				[this]<EntryKind Kind>(const EntryWithMessages<Kind>& entryWithMessages)
+				[this]<EntryKind Kind> (const EntryWithMessages<Kind>& entryWithMessages)
 				{
 					const auto& [entry, messages] = entryWithMessages;
 					if (messages.isEmpty ())

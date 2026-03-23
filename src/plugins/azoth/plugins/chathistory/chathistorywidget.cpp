@@ -96,19 +96,17 @@ namespace LC::Azoth::ChatHistory
 				this,
 				[this]
 				{
-					const auto firstId = DisplayedSpan_
-							.transform ([] (auto span) { return span.FirstId_; })
-							.value_or (std::numeric_limits<qint64>::max ());
-					RequestLogs (Storage2::Pagination { .CursorMessageId_ = firstId, .Before_ = PerPageAmount_ });
+					const auto cursor = DisplayedSpan_
+							.transform ([] (const auto& span) { return span.First_; });
+					RequestLogs (Storage2::Pagination { .Cursor_ = cursor, .Before_ = PerPageAmount_ });
 				})->setProperty ("ActionIcon", "go-previous");
 		Toolbar_->addAction (tr ("Next"),
 				this,
 				[this]
 				{
-					const auto lastId = DisplayedSpan_
-							.transform ([] (auto span) { return span.LastId_; })
-							.value_or (0);
-					RequestLogs (Storage2::Pagination { .CursorMessageId_ = lastId, .After_ = PerPageAmount_ });
+					const auto cursor = DisplayedSpan_
+							.transform ([] (const auto& span) { return span.Last_; });
+					RequestLogs (Storage2::Pagination { .Cursor_ = cursor, .After_ = PerPageAmount_ });
 				})->setProperty ("ActionIcon", "go-next");
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (tr ("Clear"),
@@ -317,17 +315,18 @@ namespace LC::Azoth::ChatHistory
 		const auto cs = flags & ChatFindBox::FindCaseSensitively ? Qt::CaseSensitive : Qt::CaseInsensitive;
 		const auto dir = flags & ChatFindBox::FindBackwards ? Backward : Forward;
 
-		const auto def = dir == Backward ? std::numeric_limits<qint64>::max () : -1;
-		const auto from = LastSearchCursor_.value_or (def);
+		const auto wraparound = dir == Backward ?
+				Storage2::Cursor::Max () :
+				Storage2::Cursor::Min ();
 
-		auto nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, from);
+		auto nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, LastSearchCursor_.value_or (wraparound));
 		if (!nextPos && flags & ChatFindBox::FindWrapsAround && LastSearchCursor_)
 		{
 			const auto& e = Util::MakeNotification ("Azoth ChatHistory",
 					tr ("No more search results, wrapping the search around…"),
 					Priority::Info);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-			nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, def);
+			nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, wraparound);
 		}
 
 		co_await GuardEntryChanged (entry->Id_);
@@ -343,7 +342,7 @@ namespace LC::Azoth::ChatHistory
 		LastSearchCursor_ = nextPos;
 
 		const uint16_t halfAmount = PerPageAmount_ / 2;
-		RequestLogs ({ .CursorMessageId_ = *nextPos, .Before_ = halfAmount, .After_ = halfAmount });
+		RequestLogs ({ .Cursor_ = *nextPos, .Before_ = halfAmount, .After_ = halfAmount });
 	}
 
 	Util::Either<ChatHistoryWidget::EntryChanged, Util::Void> ChatHistoryWidget::GuardEntryChanged (qint64 entryId) const
@@ -380,7 +379,8 @@ namespace LC::Azoth::ChatHistory
 			return;
 		}
 
-		DisplayedSpan_ = DisplayedMessagesSpan { messages.front ().Id_, messages.back ().Id_ };
+		using Cursor = Storage2::Cursor;
+		DisplayedSpan_ = Span { Cursor::FromMessage (messages.front ()), Cursor::FromMessage (messages.back ()) };
 
 		const auto azothSettings = Params_.PluginProxy_->GetSettingsManager ();
 		const auto preNick = azothSettings->property ("PreNickText").toString ().toHtmlEscaped ();
@@ -425,7 +425,7 @@ namespace LC::Azoth::ChatHistory
 			};
 			html += message.RichBody_ ? *message.RichBody_ : preparePlain ();
 
-			if (LastSearchCursor_ == message.Id_)
+			if (LastSearchCursor_ == Storage2::Cursor::FromMessage (message))
 			{
 				lineColor = "#FF7E00"_qs;
 				scrollPos = Ui_.HistView_->document ()->characterCount ();

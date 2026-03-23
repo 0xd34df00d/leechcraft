@@ -67,9 +67,22 @@ namespace LC::Azoth::ChatHistory
 			std::optional<QString> RichBody_;
 		};
 
+		struct Cursor
+		{
+			QDateTime TS_;
+			qint64 MsgId_;
+
+			bool operator== (const Cursor& other) const = default;
+
+			static Cursor FromMessage (const HistoryMessage& msg);
+
+			static Cursor Min ();
+			static Cursor Max ();
+		};
+
 		struct Pagination
 		{
-			qint64 CursorMessageId_ = std::numeric_limits<qint64>::max ();
+			std::optional<Cursor> Cursor_ {};
 			uint16_t Before_ = 0;
 			uint16_t After_ = 0;
 			bool IncludeCursor_ = Before_ && After_;
@@ -85,9 +98,9 @@ namespace LC::Azoth::ChatHistory
 			Backward,
 			Forward,
 		};
-		std::optional<qint64> Search (const Entry& entry,
-				const QString& text, Qt::CaseSensitivity cs,
-				SearchDirection dir, qint64 from) const;
+		std::optional<Cursor> Search (const Entry& entry,
+				const QString& text, Qt::CaseSensitivity cs, SearchDirection dir,
+				const Cursor& from) const;
 
 		void AddMessage (const History::SomeEntryWithMessages& messages);
 
