@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ctstring.h"
+#include <charconv>
 #include <QDebug>
 
 namespace LC::Util
@@ -30,6 +31,32 @@ namespace LC::Util
 	{
 		return std::apply ([&sep]<typename... Ts> (Ts&&... args) { return Join (sep, std::forward<Ts> (args)...); },
 				stringsTuple);
+	}
+
+	namespace detail
+	{
+		constexpr size_t DecimalWidth (std::integral auto v, int base = 10)
+		{
+			if (!v)
+				return 1;
+
+			size_t count = static_cast<bool> (v < 0);
+			while (v)
+			{
+				++count;
+				v /= base;
+			}
+			return count;
+		}
+	}
+
+	template<std::integral auto Value, typename Char = char>
+	constexpr auto IntegralToString ()
+	{
+		constexpr auto width = detail::DecimalWidth (Value);
+		CtString<width, Char> result;
+		std::to_chars (result.Data_, result.Data_ + width, Value);
+		return result;
 	}
 
 	template<typename Tup1, typename Tup2,

@@ -65,6 +65,14 @@ namespace Util
 		void testSimpleRecordUpdate ();
 		void testSimpleRecordUpdateExprTree ();
 		void testSimpleRecordUpdateMultiExprTree ();
+
+		void testTupleCompareEq ();
+		void testTupleCompareLt ();
+		void testTupleCompareGt ();
+		void testTupleCompareLte ();
+		void testTupleCompareGte ();
+		void testTupleCompareIsNotComponentwise ();
+		void testTupleCompareInBuilder ();
 	};
 }
 }

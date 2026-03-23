@@ -751,6 +751,53 @@ namespace LC::Util::oral
 			}
 		};
 
+		template<typename... Ts>
+		class ExprTree<ExprType::LeafData, std::tuple<Ts...>, void>
+		{
+			const std::tuple<Ts...>& Data_;
+
+			template<size_t Idx, CtString S>
+			constexpr static auto BoundVarName = ":bound_" + S + IntegralToString<Idx> ();
+		public:
+			template<typename>
+			using ValueType_t = std::tuple<Ts...>;
+
+			constexpr ExprTree (const std::tuple<Ts...>& t) noexcept
+			: Data_ (t)
+			{
+			}
+
+			template<typename, CtString S>
+			constexpr static auto ToSql () noexcept
+			{
+				return []<size_t... Indices> (std::index_sequence<Indices...>)
+				{
+					return "(" + Join (", "_ct, BoundVarName<Indices, S>...) + ")";
+				} (std::index_sequence_for<Ts...> {});
+			}
+
+			template<typename Seq, CtString S>
+			void BindValues (QSqlQuery& query) const noexcept
+			{
+				[&]<size_t... Indices> (std::index_sequence<Indices...>)
+				{
+					(query.bindValue (ToString<BoundVarName<Indices, S>> (), ToVariantF (std::get<Indices> (Data_))), ...);
+				} (std::index_sequence_for<Ts...> {});
+			}
+
+			template<typename>
+			constexpr static auto AdditionalTables () noexcept
+			{
+				return std::tuple {};
+			}
+
+			template<typename>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return false;
+			}
+		};
+
 		template<typename T>
 		constexpr auto AsLeafData (const T& node) noexcept
 		{
@@ -806,6 +853,46 @@ namespace LC::Util::oral
 			constexpr auto operator= (const ExpectedType_t& r) const noexcept
 			{
 				return AssignList { *this, AsLeafData (r) };
+			}
+		};
+
+		template<auto... Ptrs>
+			requires (sizeof... (Ptrs) > 1)
+		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtrs<Ptrs...>, void>
+		{
+			using ExpectedType_t = std::tuple<MemberPtrType_t<Ptrs>...>;
+		public:
+			template<typename>
+			using ValueType_t = ExpectedType_t;
+
+			template<typename Seq, CtString S>
+			constexpr static auto ToSql () noexcept
+			{
+				return "(" + Join (", "_ct, (MemberPtrStruct_t<Ptrs>::ClassName + "." + GetFieldNamePtr<Ptrs> ())...) + ")";
+			}
+
+			template<typename Seq, CtString S>
+			void BindValues (QSqlQuery&) const noexcept
+			{
+			}
+
+			template<typename T>
+			constexpr static auto AdditionalTables () noexcept
+			{
+				return std::tuple_cat ([]
+				{
+					using Seq = MemberPtrStruct_t<Ptrs>;
+					if constexpr (std::is_same_v<Seq, T>)
+						return std::tuple {};
+					else
+						return std::tuple { Seq::ClassName };
+				} ()...);
+			}
+
+			template<typename T>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return !(std::is_same_v<MemberPtrStruct_t<Ptrs>, T> || ...);
 			}
 		};
 
@@ -1007,6 +1094,9 @@ namespace LC::Util::oral
 	{
 		template<auto Ptr>
 		constexpr detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, detail::MemberPtrs<Ptr>> f {};
+
+		template<auto... Ptrs>
+		constexpr detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, detail::MemberPtrs<Ptrs...>> tuple {};
 
 		template<auto... Ptrs>
 		constexpr detail::MemberPtrs<Ptrs...> fields {};

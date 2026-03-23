@@ -12,6 +12,32 @@
 
 QTEST_GUILESS_MAIN (LC::Util::OralTest_SimpleRecord)
 
+using LC::operator""_ct;
+
+// Models the pagination scenario: messages with a timestamp (TS) and an
+// auto-generated primary key (Id) that don't necessarily correlate.
+// After history sync, a message from the past gets a high Id.
+struct MessageLikeRecord
+{
+	lco::PKey<int> Id_;
+	int TS_;
+	QString Body_;
+
+	constexpr static auto ClassName = "MessageLikeRecord"_ct;
+
+	auto AsTuple () const
+	{
+		return std::tuple (Id_, TS_, Body_);
+	}
+};
+
+ORAL_ADAPT_STRUCT (MessageLikeRecord,
+		Id_,
+		TS_,
+		Body_)
+
+TOSTRING (MessageLikeRecord)
+
 namespace LC
 {
 namespace Util
@@ -308,6 +334,96 @@ namespace Util
 				sph::f<&SimpleRecord::ID_> == 0);
 		const auto updated = adapted->Select (sph::f<&SimpleRecord::ID_> == 10);
 		QCOMPARE (updated, (QList<SimpleRecord> { { 10, "meh" } }));
+	}
+
+	auto PrepareMessageLikeRecords (QSqlDatabase db)
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = oral::AdaptPtr<Rec, OralFactory> (db);
+		adapted->Insert ({ {}, 300, "c" });
+		adapted->Insert ({ {}, 400, "d" });
+		adapted->Insert ({ {}, 500, "e" });
+		adapted->Insert ({ {}, 100, "a" });
+		adapted->Insert ({ {}, 200, "b" });
+		return adapted;
+	}
+
+	void OralTest_SimpleRecord::testTupleCompareEq ()
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = PrepareMessageLikeRecords (MakeDatabase ());
+		const auto& list = adapted->Select (sph::tuple<&Rec::TS_, &Rec::Id_> == std::tuple (300, 1));
+		QCOMPARE (list, (QList<Rec> { { 1, 300, "c" } }));
+	}
+
+	void OralTest_SimpleRecord::testTupleCompareLt ()
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = PrepareMessageLikeRecords (MakeDatabase ());
+		const auto& list = adapted->Select.Build ()
+				.Where (sph::tuple<&Rec::TS_, &Rec::Id_> < std::tuple (300, 1))
+				.Order (oral::OrderBy<sph::asc<&Rec::TS_>, sph::asc<&Rec::Id_>>)
+				();
+		QCOMPARE (list, (QList<Rec> { { 4, 100, "a" }, { 5, 200, "b" } }));
+	}
+
+	void OralTest_SimpleRecord::testTupleCompareGt ()
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = PrepareMessageLikeRecords (MakeDatabase ());
+		const auto& list = adapted->Select.Build ()
+				.Where (sph::tuple<&Rec::TS_, &Rec::Id_> > std::tuple (300, 1))
+				.Order (oral::OrderBy<sph::asc<&Rec::TS_>, sph::asc<&Rec::Id_>>)
+				();
+		QCOMPARE (list, (QList<Rec> { { 2, 400, "d" }, { 3, 500, "e" } }));
+	}
+
+	void OralTest_SimpleRecord::testTupleCompareLte ()
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = PrepareMessageLikeRecords (MakeDatabase ());
+		const auto& list = adapted->Select.Build ()
+				.Where (sph::tuple<&Rec::TS_, &Rec::Id_> <= std::tuple (300, 1))
+				.Order (oral::OrderBy<sph::asc<&Rec::TS_>, sph::asc<&Rec::Id_>>)
+				();
+		QCOMPARE (list, (QList<Rec> { { 4, 100, "a" }, { 5, 200, "b" }, { 1, 300, "c" } }));
+	}
+
+	void OralTest_SimpleRecord::testTupleCompareGte ()
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = PrepareMessageLikeRecords (MakeDatabase ());
+		const auto& list = adapted->Select.Build ()
+				.Where (sph::tuple<&Rec::TS_, &Rec::Id_> >= std::tuple (300, 1))
+				.Order (oral::OrderBy<sph::asc<&Rec::TS_>, sph::asc<&Rec::Id_>>)
+				();
+		QCOMPARE (list, (QList<Rec> { { 1, 300, "c" }, { 2, 400, "d" }, { 3, 500, "e" } }));
+	}
+
+	void OralTest_SimpleRecord::testTupleCompareIsNotComponentwise ()
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = PrepareMessageLikeRecords (MakeDatabase ());
+		const auto& before = adapted->Select (sph::tuple<&Rec::TS_, &Rec::Id_> < std::tuple (200, 5));
+		QCOMPARE (before, (QList<Rec> { { 4, 100, "a" } }));
+
+		const auto& after = adapted->Select.Build ()
+				.Where (sph::tuple<&Rec::TS_, &Rec::Id_> > std::tuple (200, 5))
+				.Order (oral::OrderBy<sph::asc<&Rec::TS_>, sph::asc<&Rec::Id_>>)
+				();
+		QCOMPARE (after, (QList<Rec> { { 1, 300, "c" }, { 2, 400, "d" }, { 3, 500, "e" } }));
+	}
+
+	void OralTest_SimpleRecord::testTupleCompareInBuilder ()
+	{
+		using Rec = MessageLikeRecord;
+		auto adapted = PrepareMessageLikeRecords (MakeDatabase ());
+		auto page = adapted->Select.Build ()
+				.Where (sph::tuple<&Rec::TS_, &Rec::Id_> < std::tuple (400, 2))
+				.Order (oral::OrderBy<sph::desc<&Rec::TS_>, sph::desc<&Rec::Id_>>)
+				.Limit (2)
+				();
+		QCOMPARE (page, (QList<Rec> { { 1, 300, "c" }, { 5, 200, "b" } }));
 	}
 }
 }
