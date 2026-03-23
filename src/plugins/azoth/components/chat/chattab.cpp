@@ -1483,8 +1483,6 @@ namespace Azoth
 			return;
 		}
 
-		QObject *entryObj = entry->GetQObject ();
-
 		const auto& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
 		for (const auto histObj : histories)
