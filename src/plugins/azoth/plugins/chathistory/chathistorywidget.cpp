@@ -321,7 +321,7 @@ namespace LC::Azoth::ChatHistory
 		const auto from = LastSearchCursor_.value_or (def);
 
 		auto nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, from);
-		if (!nextPos && flags & ChatFindBox::FindWrapsAround)
+		if (!nextPos && flags & ChatFindBox::FindWrapsAround && LastSearchCursor_)
 		{
 			const auto& e = Util::MakeNotification ("Azoth ChatHistory",
 					tr ("No more search results, wrapping the search around…"),
