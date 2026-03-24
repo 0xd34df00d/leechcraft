@@ -16,11 +16,9 @@
 #include <boost/preprocessor/tuple.hpp>
 #include <QStringList>
 #include <QDateTime>
-#include <QPair>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QVariant>
-#include <QDateTime>
 #include <QtDebug>
 #include <util/sll/ctstringutils.h>
 #include <util/sll/prelude.h>
@@ -257,7 +255,7 @@ namespace LC::Util::oral
 			else if constexpr (detail::BaseTypeCustomized<T>)
 				return Convert<typename T::BaseType> (t.ToBaseType ());
 			else if constexpr (std::is_same_v<T, QDateTime>)
-				return t.toString (Qt::ISODate);
+				return t.toString (Qt::ISODateWithMs);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<qint64> (t);
 			else if constexpr (IsIndirect<T> {})
@@ -273,7 +271,7 @@ namespace LC::Util::oral
 			else if constexpr (detail::BaseTypeCustomized<T>)
 				return T::FromBaseType (Convert<typename T::BaseType> (var));
 			else if constexpr (std::is_same_v<T, QDateTime>)
-				return QDateTime::fromString (var.toString (), Qt::ISODate);
+				return QDateTime::fromString (var.toString (), Qt::ISODateWithMs);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<T> (var.value<qint64> ());
 			else if constexpr (IsIndirect<T> {})
@@ -1577,8 +1575,7 @@ namespace LC::Util::oral
 						HandleOrder (std::forward<Order> (order)) +
 						HandleGroup (std::forward<Group> (group)) +
 						LimitOffsetToString<Limit, Offset> ();
-				auto selectResult = Select<HS> (ToString<query> (),
-						binder);
+				auto selectResult = Select<HS> (ToString<query> (), binder);
 				return HandleResultBehaviour<HS::ResultBehaviour_v> (std::move (selectResult));
 			}
 		private:
