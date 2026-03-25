@@ -1747,7 +1747,7 @@ namespace LC::Util::oral
 				} (typename T::Constraints {});
 			}
 			else
-				return std::tuple<> {};
+				return std::tuple {};
 		}
 
 		template<typename ImplFactory, typename T, size_t... Indices>
