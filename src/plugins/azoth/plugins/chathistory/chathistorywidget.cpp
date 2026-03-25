@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "chathistorywidget.h"
+#include <algorithm>
+#include <ranges>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
 #include <QToolBar>
@@ -468,7 +470,7 @@ namespace LC::Azoth::ChatHistory
 		if (selected.isEmpty ())
 			return;
 
-		std::sort (selected.rbegin (), selected.rend ());
+		std::ranges::sort (std::ranges::reverse_view (selected));
 
 		const auto& msg = selected.size () == 1 ?
 				tr ("Are you sure you wish to delete chat history with %1?")
