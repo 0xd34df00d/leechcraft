@@ -376,6 +376,10 @@ namespace LC::Azoth::ChatHistory
 		if (messages.isEmpty ())
 		{
 			DisplayedSpan_.reset ();
+			const auto& html = "<html><head/><body><span style='color:#996666'>" +
+					tr ("No messages matching the criteria") +
+					"</span></body></html>";
+			Ui_.HistView_->setHtml (html);
 			return;
 		}
 
