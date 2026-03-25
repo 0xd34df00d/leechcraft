@@ -97,7 +97,8 @@ namespace LC::Azoth::ChatHistory
 				[this]
 				{
 					const auto cursor = DisplayedSpan_
-							.transform ([] (const auto& span) { return span.First_; });
+							.transform ([] (const auto& span) { return span.First_; })
+							.value_or (Storage2::Cursor::Max ());
 					RequestLogs (Storage2::Pagination { .Cursor_ = cursor, .Before_ = PerPageAmount_ });
 				})->setProperty ("ActionIcon", "go-previous");
 		Toolbar_->addAction (tr ("Next"),
@@ -105,8 +106,9 @@ namespace LC::Azoth::ChatHistory
 				[this]
 				{
 					const auto cursor = DisplayedSpan_
-							.transform ([] (const auto& span) { return span.Last_; });
-					RequestLogs (Storage2::Pagination { .Cursor_ = cursor, .After_ = PerPageAmount_ });
+							.transform ([] (const auto& span) { return span.Last_; })
+							.value_or (Storage2::Cursor::Min ());
+					RequestLogs (Storage2::Pagination { .Cursor_ = cursor, .Before_ = 0, .After_ = PerPageAmount_ });
 				})->setProperty ("ActionIcon", "go-next");
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (tr ("Clear"),
