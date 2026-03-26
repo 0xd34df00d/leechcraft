@@ -586,9 +586,12 @@ namespace LC::Util
 #ifdef QT_DBUS_LIB
 	void CoroTaskTest::testDBus ()
 	{
-		auto task = [] () -> Task<Either<QDBusError::ErrorType, bool>>
+		const auto& bus = QDBusConnection::systemBus ();
+		if (!bus.isConnected ())
+			QSKIP ("D-Bus system bus is not available");
+
+		auto task = [&bus] () -> Task<Either<QDBusError::ErrorType, bool>>
 		{
-			const auto& bus = QDBusConnection::systemBus ();
 			QDBusInterface dbusIface { "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", bus };
 			const auto result = co_await Typed<bool> (dbusIface.asyncCall ("NameHasOwner", "org.freedesktop.DBus"_qs));
 			co_return result.MapLeft (&QDBusError::type);
