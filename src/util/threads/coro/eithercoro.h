@@ -12,6 +12,11 @@
 #include <util/sll/either.h>
 #include "either.h"
 
+namespace LC::Util::detail
+{
+	struct EitherLeanCoroAbort {};
+}
+
 template<typename L, typename R, typename... Args>
 struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
 {
@@ -21,57 +26,74 @@ struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
 	{
 		std::optional<EitherType> Ret_ {};
 		std::exception_ptr Exc_ {};
-		std::coroutine_handle<> Handle_;
 	};
+
+	struct promise_type;
 
 	struct Wrapper
 	{
-		State& State_;
-		bool Die_ = false;
+		State State_;
+		promise_type& Promise_;
 
-		~Wrapper ()
+		explicit Wrapper (promise_type& promise)
+		: Promise_ { promise }
 		{
-			if (Die_)
-				State_.Handle_.destroy ();
+			promise.Wrapper_ = this;
 		}
+
+		Wrapper (Wrapper&& other) noexcept
+		: State_ { std::move (other.State_) }
+		, Promise_ { other.Promise_ }
+		{
+			Promise_.Wrapper_ = this;
+		}
+
+		Wrapper (const Wrapper&) = delete;
+		Wrapper& operator= (const Wrapper&) = delete;
+		Wrapper& operator= (Wrapper&&) = delete;
 
 		explicit (false) operator EitherType ()
 		{
-			Die_ = true;
 			if (State_.Exc_)
-				std::rethrow_exception (State_.Exc_);
-			return State_.Ret_.value ();
+			{
+				try
+				{
+					std::rethrow_exception (State_.Exc_);
+				}
+				catch (const LC::Util::detail::EitherLeanCoroAbort&) {}
+			}
+			return std::move (*State_.Ret_);
 		}
 	};
 
 	struct promise_type
 	{
 		constexpr std::suspend_never initial_suspend () const noexcept { return {}; }
-		constexpr std::suspend_always final_suspend () const noexcept { return {}; }
+		constexpr std::suspend_never final_suspend () const noexcept { return {}; }
 
 		constexpr static bool IsVoid = false;
 
-		State State_ { .Handle_ = std::coroutine_handle<promise_type>::from_promise (*this) };
+		Wrapper *Wrapper_ = nullptr;
 
 		template<typename U = R>
 		void return_value (U&& val)
 		{
-			State_.Ret_.emplace (std::forward<U> (val));
+			Wrapper_->State_.Ret_.emplace (std::forward<U> (val));
 		}
 
 		void return_value (LC::Util::Left<L>&& val)
 		{
-			State_.Ret_.emplace (std::move (val));
+			Wrapper_->State_.Ret_.emplace (std::move (val));
 		}
 
 		void unhandled_exception ()
 		{
-			State_.Exc_ = std::current_exception ();
+			Wrapper_->State_.Exc_ = std::current_exception ();
 		}
 
 		Wrapper get_return_object ()
 		{
-			return { State_ };
+			return Wrapper { *this };
 		}
 
 		template<typename T>
@@ -93,9 +115,11 @@ struct std::coroutine_traits<LC::Util::Either<L, R>, Args...>
 				return Either_.IsRight ();
 			}
 
+			[[noreturn]]
 			void await_suspend (std::coroutine_handle<promise_type> handle)
 			{
-				handle.promise ().State_.Ret_.emplace (std::forward_like<T> (Either_.GetLeft ()));
+				handle.promise ().Wrapper_->State_.Ret_.emplace (std::forward_like<T> (Either_.GetLeft ()));
+				throw LC::Util::detail::EitherLeanCoroAbort {};
 			}
 
 			std::conditional_t<IsOwning, R_t, const R_t&> await_resume ()
