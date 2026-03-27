@@ -172,6 +172,10 @@ namespace LC::Azoth::ChatHistory
 		std::optional<QString> RichBody_;
 
 		constexpr static auto ClassName = "Message"_ct;
+
+		using Indices = o::Indices<
+				o::Index<&MessageRecord::Entry_, &MessageRecord::TS_>
+			>;
 	};
 }
 
