@@ -23,6 +23,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/unreachable.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
@@ -385,15 +386,11 @@ namespace LC::SeekThru
 	Description Core::ParseData (const QString& contents, const QString& useTags)
 	{
 		QDomDocument doc;
-		QString errorString;
-		int line, column;
-		if (!doc.setContent (contents, true, &errorString, &line, &column))
+		if (const auto parseResult = doc.setContent (contents, QDomDocument::ParseOption::UseNamespaceProcessing);
+			!parseResult)
 		{
-			qWarning () << contents;
-			emit error (tr ("XML parse error %1 at %2:%3.")
-					.arg (errorString)
-					.arg (line)
-					.arg (column));
+			qWarning () << "unable to parse XML:" << parseResult << "at\n" << contents;
+			emit error (tr ("XML parse error."));
 			throw std::runtime_error ("Parse error");
 		}
 

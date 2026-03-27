@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <QObject>
 #include <QDomDocument>
+#include <util/sll/debugprinters.h>
 #include "core.h"
 
 namespace LC
@@ -19,11 +20,12 @@ namespace Poshuku
 	XbelParser::XbelParser (const QByteArray& data)
 	{
 		QDomDocument document;
-		QString errorString;
-		int errorLine, errorColumn;
-		if (!document.setContent (data, true,
-					&errorString, &errorLine, &errorColumn))
+		if (const auto parseResult = document.setContent (data, QDomDocument::ParseOption::UseNamespaceProcessing);
+			!parseResult)
+		{
+			qWarning () << parseResult;
 			throw std::runtime_error (QObject::tr ("XML parse error.").toStdString ());
+		}
 
 		QDomElement root = document.documentElement ();
 		if (root.tagName () != "xbel")

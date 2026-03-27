@@ -10,6 +10,7 @@
 #include <QNetworkRequest>
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/sll/debugprinters.h>
 #include <util/sll/parsejson.h>
 #include "picasaaccount.h"
 
@@ -93,9 +94,6 @@ namespace Vangog
 
 	QByteArray PicasaManager::CreateDomDocument (const QByteArray& content, QDomDocument &document)
 	{
-		QString errorMsg;
-		int errorLine = -1, errorColumn = -1;
-
 		if (QString::fromUtf8 (content).contains ("Invalid token"))
 		{
 			AccessToken_ = "";
@@ -106,14 +104,10 @@ namespace Vangog
 		if (!ApiCallsQueue_.isEmpty ())
 			ApiCallsQueue_.removeFirst ();
 
-		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		if (const auto parseResult = document.setContent (content);
+			!parseResult)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< errorMsg
-					<< "in line:"
-					<< errorLine
-					<< "column:"
-					<< errorColumn;
+			qWarning () << parseResult;
 			return QByteArray ();
 		}
 

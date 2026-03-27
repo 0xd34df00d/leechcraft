@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QtDebug>
+#include <util/sll/debugprinters.h>
 #include <util/sys/paths.h>
 
 namespace LC
@@ -53,20 +54,11 @@ namespace CleanWeb
 			return;
 		}
 		QByteArray fileData = file.readAll ();
-		QString errMsg;
-		int errLine = 0;
-		int errColumn = 0;
 		QDomDocument doc;
-		if (!doc.setContent (fileData, &errMsg, &errLine, &errColumn))
+		if (const auto parseResult = doc.setContent (fileData);
+			!parseResult)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not parse document at err:line "
-					<< errLine
-					<< errColumn
-					<< "with"
-					<< errMsg
-					<< "; original contents follow:"
-					<< fileData;
+			qWarning () << parseResult << "; original contents follow:" << fileData;
 			return;
 		}
 

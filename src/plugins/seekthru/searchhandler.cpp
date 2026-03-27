@@ -215,8 +215,8 @@ namespace LC::SeekThru
 					<< "unable to remove temporary file"
 					<< filename;
 
-		QDomDocument doc;
-		if (doc.setContent (result.Response_, true))
+		if (QDomDocument doc;
+			doc.setContent (result.Response_, QDomDocument::ParseOption::UseNamespaceProcessing))
 		{
 			if (result.Type_ == Result::TypeHTML)
 			{

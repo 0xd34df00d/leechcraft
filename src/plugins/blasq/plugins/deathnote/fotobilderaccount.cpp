@@ -19,6 +19,7 @@
 #include <QFileInfo>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/sll/debugprinters.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
@@ -192,16 +193,10 @@ namespace DeathNote
 
 			const auto& content = reply->readAll ();
 			reply->deleteLater ();
-			QString errorMsg;
-			int errorLine = -1, errorColumn = -1;
-			if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+			if (const auto parseResult = document.setContent (content);
+				!parseResult)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< errorMsg
-						<< "in line:"
-						<< errorLine
-						<< "column:"
-						<< errorColumn;
+				qWarning () << parseResult;
 				return QByteArray ();
 			}
 
@@ -294,9 +289,11 @@ namespace DeathNote
 	bool FotoBilderAccount::IsErrorReply (const QByteArray& content)
 	{
 		QDomDocument doc;
-		if (!doc.setContent (content))
+		if (const auto parseResult = doc.setContent (content);
+			!parseResult)
 		{
-			qWarning () << "unable to parse XML:" << content;
+			qWarning () << "unable to parse XML:" << parseResult;
+			qWarning () << content;
 			return true;
 		}
 
