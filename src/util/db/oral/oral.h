@@ -31,16 +31,14 @@
 
 #ifndef ORAL_ADAPT_STRUCT
 
-#define ORAL_STRING_FIELD(_, index, args)																			\
+#define ORAL_STRING_FIELD_IMPL(index, sname, field)																			\
 	template<> \
-	constexpr auto MemberNames<BOOST_PP_TUPLE_ELEM(0, args), index> = CtString { BOOST_PP_STRINGIZE(BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args))) };
+	constexpr auto MemberNameByIdx<sname, index> = CtString { BOOST_PP_STRINGIZE(field) }; \
+	template<> \
+	constexpr auto MemberNameByPtr<&sname::field> = CtString { BOOST_PP_STRINGIZE(field) };
 
-#define ORAL_GET_FIELD_INDEX_IMPL(index, sname, field)																\
-	template<>																										\
-	constexpr size_t FieldIndex<&sname::field> = index;
-
-#define ORAL_GET_FIELD_INDEX(_, index, args) \
-	ORAL_GET_FIELD_INDEX_IMPL(index, BOOST_PP_TUPLE_ELEM(0, args), BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args)))
+#define ORAL_STRING_FIELD(_, index, args) \
+	ORAL_STRING_FIELD_IMPL(index, BOOST_PP_TUPLE_ELEM(0, args), BOOST_PP_TUPLE_ELEM(index, BOOST_PP_TUPLE_ELEM(1, args)))
 
 #define ORAL_ADAPT_STRUCT(sname, ...)																				\
 namespace LC::Util::oral																							\
@@ -54,9 +52,7 @@ namespace LC::Util::oral																							\
 	static_assert (SeqSize<sname> == detail::FullSize<sname>);														\
 																													\
 	BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_STRING_FIELD, (sname, (__VA_ARGS__)))					\
-	BOOST_PP_REPEAT(BOOST_PP_TUPLE_SIZE((__VA_ARGS__)), ORAL_GET_FIELD_INDEX, (sname, (__VA_ARGS__)))				\
-}																													\
-
+}
 #endif
 
 namespace LC::Util::oral
@@ -83,10 +79,10 @@ namespace LC::Util::oral
 	}
 
 	template<typename, int>
-	constexpr auto MemberNames = detail::UnspecializedSentinel {};
+	constexpr auto MemberNameByIdx = detail::UnspecializedSentinel {};
 
 	template<auto>
-	constexpr auto FieldIndex = detail::UnspecializedSentinel {};
+	constexpr auto MemberNameByPtr = detail::UnspecializedSentinel {};
 
 	namespace detail
 	{
@@ -128,7 +124,7 @@ namespace LC::Util::oral
 		template<typename Seq, int Idx>
 		consteval auto GetFieldName ()
 		{
-			constexpr auto str = MemberNames<Seq, Idx>;
+			constexpr auto str = MemberNameByIdx<Seq, Idx>;
 			return MorphFieldName<Seq, str> ();
 		}
 
@@ -154,18 +150,10 @@ namespace LC::Util::oral
 			} (SeqIndices<S>);
 
 		template<auto Ptr>
-		constexpr auto GetFieldNamePtr () noexcept
-		{
-			using S = MemberPtrStruct_t<Ptr>;
-			return GetFieldName<S, FieldIndex<Ptr>> ();
-		}
+		constexpr auto FieldNameByPtr = MorphFieldName<MemberPtrStruct_t<Ptr>, MemberNameByPtr<Ptr>> ();
 
 		template<auto Ptr>
-		constexpr auto GetQualifiedFieldNamePtr () noexcept
-		{
-			using S = MemberPtrStruct_t<Ptr>;
-			return S::ClassName + "." + GetFieldName<S, FieldIndex<Ptr>> ();
-		}
+		constexpr auto QualifiedFieldNameByPtr = MemberPtrStruct_t<Ptr>::ClassName + "." + FieldNameByPtr<Ptr>;
 
 		template<typename T>
 		concept TypeNameCustomizedMember = requires { typename T::TypeName; };
@@ -233,7 +221,7 @@ namespace LC::Util::oral
 		{
 			constexpr auto className = MemberPtrStruct_t<Ptr>::ClassName;
 			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
-					" REFERENCES " + className + " (" + detail::GetFieldNamePtr<Ptr> () + ") ON DELETE CASCADE";
+					" REFERENCES " + className + " (" + detail::FieldNameByPtr<Ptr> + ") ON DELETE CASCADE";
 		}
 	};
 
@@ -387,7 +375,7 @@ namespace LC::Util::oral
 		template<typename Seq, auto... Ptrs>
 		constexpr auto ExtractReplaceFields (InsertAction::Replace::FieldsType<Ptrs...>)
 		{
-			return std::tuple { std::get<FieldIndex<Ptrs>> (FieldNames<Seq>)... };
+			return std::tuple { detail::FieldNameByPtr<Ptrs>... };
 		}
 
 		template<typename Seq>
@@ -829,7 +817,7 @@ namespace LC::Util::oral
 
 			constexpr static auto GetFieldName () noexcept
 			{
-				return detail::GetFieldNamePtr<Ptr> ();
+				return detail::FieldNameByPtr<Ptr>;
 			}
 
 			template<typename T>
@@ -866,7 +854,7 @@ namespace LC::Util::oral
 			template<typename Seq, CtString S>
 			constexpr static auto ToSql () noexcept
 			{
-				return "(" + Join (", "_ct, (MemberPtrStruct_t<Ptrs>::ClassName + "." + GetFieldNamePtr<Ptrs> ())...) + ")";
+				return "(" + Join (", "_ct, (MemberPtrStruct_t<Ptrs>::ClassName + "." + FieldNameByPtr<Ptrs>)...) + ")";
 			}
 
 			template<typename Seq, CtString S>
@@ -1337,14 +1325,7 @@ namespace LC::Util::oral
 		template<typename T, auto... Ptrs>
 		struct HandleSelector<T, MemberPtrs<Ptrs...>> : HSBaseAll
 		{
-		private:
-			template<size_t... Ixs>
-			constexpr static auto SelectFields ()
-			{
-				return std::tuple { std::get<Ixs> (QualifiedFieldNames<T>)... };
-			}
-		public:
-			constexpr static auto Fields = JoinTup (SelectFields<FieldIndex<Ptrs>...> (), ", ");
+			constexpr static auto Fields = Join (", ", QualifiedFieldNameByPtr<Ptrs>...);
 
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
@@ -1355,7 +1336,7 @@ namespace LC::Util::oral
 		template<typename T, typename FunRetType, CtString Fun, auto Ptr>
 		struct HandleSelector<T, CustomFunctionType<FunRetType, Fun, Ptr>> : HSBaseAll
 		{
-			constexpr static auto Fields = ReplaceAll<Fun, '@'> (GetQualifiedFieldNamePtr<Ptr> ());
+			constexpr static auto Fields = ReplaceAll<Fun, '@'> (QualifiedFieldNameByPtr<Ptr>);
 
 			static auto Initializer (const QSqlQuery& q, int startIdx)
 			{
@@ -1377,7 +1358,7 @@ namespace LC::Util::oral
 		template<typename T, auto Ptr>
 		struct HandleSelector<T, AggregateType<AggregateFunction::Count, Ptr>> : HSBaseFirst
 		{
-			constexpr static auto Fields = "count(" + GetQualifiedFieldNamePtr<Ptr> () + ")";
+			constexpr static auto Fields = "count(" + QualifiedFieldNameByPtr<Ptr> + ")";
 
 			static auto Initializer (const QSqlQuery& q, int startIdx)
 			{
@@ -1388,7 +1369,7 @@ namespace LC::Util::oral
 		template<CtString Aggregate, typename T, auto Ptr>
 		struct HandleAggSelector : HSBaseFirst
 		{
-			constexpr static auto Fields = Aggregate + "(" + GetQualifiedFieldNamePtr<Ptr> () + ")";
+			constexpr static auto Fields = Aggregate + "(" + QualifiedFieldNameByPtr<Ptr> + ")";
 
 			static auto Initializer (const QSqlQuery& q, int startIdx) noexcept
 			{
@@ -1618,13 +1599,13 @@ namespace LC::Util::oral
 			template<auto... Ptrs>
 			constexpr static auto HandleSuborder (sph::asc<Ptrs...>) noexcept
 			{
-				return std::tuple { (GetQualifiedFieldNamePtr<Ptrs> () + " ASC")... };
+				return std::tuple { (QualifiedFieldNameByPtr<Ptrs> + " ASC")... };
 			}
 
 			template<auto... Ptrs>
 			constexpr static auto HandleSuborder (sph::desc<Ptrs...>) noexcept
 			{
-				return std::tuple { (GetQualifiedFieldNamePtr<Ptrs> () + " DESC")... };
+				return std::tuple { (QualifiedFieldNameByPtr<Ptrs> + " DESC")... };
 			}
 
 			template<typename... Suborders>
@@ -1641,7 +1622,7 @@ namespace LC::Util::oral
 			template<auto... Ptrs>
 			constexpr static auto HandleGroup (GroupBy<Ptrs...>) noexcept
 			{
-				return " GROUP BY " + Join (", ", GetQualifiedFieldNamePtr<Ptrs> ()...);
+				return " GROUP BY " + Join (", ", QualifiedFieldNameByPtr<Ptrs>...);
 			}
 		};
 
@@ -1737,7 +1718,7 @@ namespace LC::Util::oral
 		template<typename T, auto... Ptrs>
 		constexpr auto ExtractConstraintFields (UniqueSubset<Ptrs...>)
 		{
-			return "UNIQUE (" + Join (", ", std::get<FieldIndex<Ptrs>> (FieldNames<T>)...) + ")";
+			return "UNIQUE (" + Join (", ", FieldNameByPtr<Ptrs>...) + ")";
 		}
 
 		template<typename T, size_t... Fields>
