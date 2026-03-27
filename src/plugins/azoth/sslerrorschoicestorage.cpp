@@ -26,7 +26,9 @@ namespace Azoth
 		QSslError::SslError Error_;
 		SslErrorsChoiceStorage::Action Action_;
 
-		using Constraints = Util::oral::Constraints<Util::oral::PrimaryKey<0, 1>>;
+		using Constraints = Util::oral::Constraints<
+				Util::oral::PrimaryKey<&Record::AccountID_, &Record::Error_>
+			>;
 
 		constexpr static auto ClassName = "SslErrors"_ct;
 	};

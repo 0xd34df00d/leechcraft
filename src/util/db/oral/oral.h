@@ -1715,23 +1715,23 @@ namespace LC::Util::oral
 			return Tgt { f (Vals {})... };
 		}
 
-		template<typename T, auto... Ptrs>
+		template<auto... Ptrs>
 		constexpr auto ExtractConstraintFields (UniqueSubset<Ptrs...>)
 		{
 			return "UNIQUE (" + Join (", ", FieldNameByPtr<Ptrs>...) + ")";
 		}
 
-		template<typename T, size_t... Fields>
-		constexpr auto ExtractConstraintFields (PrimaryKey<Fields...>)
+		template<auto... Ptrs>
+		constexpr auto ExtractConstraintFields (PrimaryKey<Ptrs...>)
 		{
-			return "PRIMARY KEY (" + Join (", ", std::get<Fields> (FieldNames<T>)...) + ")";
+			return "PRIMARY KEY (" + Join (", ", FieldNameByPtr<Ptrs>...) + ")";
 		}
 
 		template<typename T>
 		constexpr auto GetConstraintsStrings () noexcept
 		{
 			if constexpr (requires { typename T::Constraints; })
-				return MapTy (typename T::Constraints {}, [] (auto ctr) { return ExtractConstraintFields<T> (ctr); });
+				return MapTy (typename T::Constraints {}, [] (auto ctr) { return ExtractConstraintFields (ctr); });
 			else
 				return std::tuple {};
 		}

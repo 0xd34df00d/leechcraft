@@ -129,7 +129,7 @@ namespace oral
 	template<auto Ptr>
 	using ReferencesValue_t = typename References<Ptr>::value_type;
 
-	template<size_t... Fields>
+	template<auto... Fields>
 	struct PrimaryKey {};
 
 	template<auto... Fields>

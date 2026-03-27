@@ -139,7 +139,7 @@ struct ComplexConstraintsRecord
 	}
 
 	using Constraints = lco::Constraints<
-				lco::PrimaryKey<0, 1>,
+				lco::PrimaryKey<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Name_>,
 				lco::UniqueSubset<&ComplexConstraintsRecord::Age_, &ComplexConstraintsRecord::Weight_>
 			>;
 };

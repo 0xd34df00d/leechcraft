@@ -37,7 +37,7 @@ namespace LC::NamAuth
 			}
 
 			using Constraints = Util::oral::Constraints<
-					Util::oral::PrimaryKey<0, 1>
+					Util::oral::PrimaryKey<&AuthRecord::RealmName_, &AuthRecord::Context_>
 				>;
 		};
 	private:
