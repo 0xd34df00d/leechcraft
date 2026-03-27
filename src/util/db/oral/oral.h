@@ -24,6 +24,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/typelist.h>
 #include <util/sll/typegetter.h>
+#include <util/sll/void.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
@@ -1715,6 +1716,23 @@ namespace LC::Util::oral
 			return Tgt { f (Vals {})... };
 		}
 
+		template<typename Seq, auto... Ptrs>
+		constexpr auto CreateIndex (const QSqlDatabase& db, Index<Ptrs...>)
+		{
+			constexpr auto query = "CREATE INDEX IF NOT EXISTS "_ct +
+					"idx_" + Seq::ClassName + "_" + Join ("_", FieldNameByPtr<Ptrs>...) +
+					" ON " + Seq::ClassName + " (" + Join (", ", FieldNameByPtr<Ptrs>...) + ")";
+			RunTextQuery (db, ToString<query> ());
+			return Void {};
+		}
+
+		template<typename Seq>
+		void AdaptCreateIndices (const QSqlDatabase& db)
+		{
+			if constexpr (requires { typename Seq::Indices; })
+				MapTy (typename Seq::Indices {}, [&db] (auto index) { return CreateIndex<Seq> (db, index); });
+		}
+
 		template<auto... Ptrs>
 		constexpr auto ExtractConstraintFields (UniqueSubset<Ptrs...>)
 		{
@@ -1796,6 +1814,8 @@ namespace LC::Util::oral
 			constexpr auto query = detail::AdaptCreateTable<ImplFactory, T> ();
 			RunTextQuery (db, ToString<query> ());
 		}
+
+		detail::AdaptCreateIndices<T> (db);
 
 		return
 		{

@@ -139,7 +139,7 @@ namespace oral
 	using Constraints = Typelist<Args...>;
 
 	template<auto... Fields>
-	struct Index;
+	struct Index {};
 
 	template<typename... Args>
 	using Indices = Typelist<Args...>;
