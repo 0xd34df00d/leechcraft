@@ -23,11 +23,7 @@ namespace Poshuku
 		int errorLine, errorColumn;
 		if (!document.setContent (data, true,
 					&errorString, &errorLine, &errorColumn))
-			throw std::runtime_error (qPrintable (QObject::tr ("XML parse "
-							"error<blockquote>%1</blockquote>at %2:%3.")
-						.arg (errorString)
-						.arg (errorLine)
-						.arg (errorColumn)));
+			throw std::runtime_error (QObject::tr ("XML parse error.").toStdString ());
 
 		QDomElement root = document.documentElement ();
 		if (root.tagName () != "xbel")
