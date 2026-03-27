@@ -1724,6 +1724,16 @@ namespace LC::Util::oral
 			}
 		};
 
+		template<
+				template<typename...> typename Tgt = std::tuple,
+				template<typename...> typename Src,
+				typename... Vals
+			>
+		constexpr auto MapTy (Src<Vals...>, auto f)
+		{
+			return Tgt { f (Vals {})... };
+		}
+
 		template<typename T, auto... Ptrs>
 		constexpr auto ExtractConstraintFields (UniqueSubset<Ptrs...>)
 		{
@@ -1740,12 +1750,7 @@ namespace LC::Util::oral
 		constexpr auto GetConstraintsStrings () noexcept
 		{
 			if constexpr (requires { typename T::Constraints; })
-			{
-				return []<typename... Args> (Constraints<Args...>)
-				{
-					return std::tuple { ExtractConstraintFields<T> (Args {})... };
-				} (typename T::Constraints {});
-			}
+				return MapTy (typename T::Constraints {}, [] (auto ctr) { return ExtractConstraintFields<T> (ctr); });
 			else
 				return std::tuple {};
 		}
