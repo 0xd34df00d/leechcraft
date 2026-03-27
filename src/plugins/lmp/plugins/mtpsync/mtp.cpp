@@ -12,6 +12,7 @@
 #include <QImage>
 #include <libmtp.h>
 #include <taglib/fileref.h>
+#include <taglib/taglib.h>
 #include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <interfaces/lmp/itagresolver.h>
@@ -184,6 +185,7 @@ namespace LC::LMP::MTPSync
 
 		bool DoEmbed (const QString& path, const QString& albumArtPath, ITagResolver& resolver)
 		{
+#if TAGLIB_MAJOR_VERSION >= 2
 			const auto& albumArt = GetImageBytes (albumArtPath);
 			if (albumArt.isEmpty ())
 				return false;
@@ -211,6 +213,10 @@ namespace LC::LMP::MTPSync
 			}
 
 			return fileRef.save ();
+#else
+			qWarning () << "album art embedding requires TagLib 2.0+";
+			return false;
+#endif
 		}
 
 		std::shared_ptr<QFile> EmbedAlbumArt (const QString& origPath, const QString& albumArtPath, ITagResolver& resolver)
