@@ -23,7 +23,7 @@
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include "components/parsers/parse.h"
-#include "components/storage/storagebackend.h"
+#include "components/storage/sqlstoragebackend.h"
 #include "components/storage/storagebackendmanager.h"
 #include "dbupdatethread.h"
 #include "xmlsettingsmanager.h"
@@ -115,7 +115,7 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		bool IsCustomTimer (const StorageBackend& sb, IDType_t feedId)
+		bool IsCustomTimer (const SQLStorageBackend& sb, IDType_t feedId)
 		{
 			return sb.GetFeedSettings (feedId).value_or (Feed::FeedSettings {}).UpdateTimeout_;
 		}

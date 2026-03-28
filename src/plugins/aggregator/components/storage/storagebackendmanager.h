@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <QObject>
-#include "storagebackend.h"
+#include "sqlstoragebackend.h"
 
 namespace LC::Aggregator
 {
@@ -18,7 +18,7 @@ namespace LC::Aggregator
 	{
 		Q_OBJECT
 
-		StorageBackend_ptr PrimaryStorageBackend_;
+		SQLStorageBackend_ptr PrimaryStorageBackend_;
 
 		StorageBackendManager () = default;
 	public:
@@ -29,9 +29,9 @@ namespace LC::Aggregator
 		void Release ();
 
 		void CreatePrimaryStorage ();
-		StorageBackend_ptr MakeStorageBackendForThread () const;
+		SQLStorageBackend_ptr MakeStorageBackendForThread () const;
 	private:
-		void Register (const StorageBackend_ptr&) const;
+		void Register (const SQLStorageBackend&) const;
 	signals:
 		void channelAdded (const Channel& channel) const;
 

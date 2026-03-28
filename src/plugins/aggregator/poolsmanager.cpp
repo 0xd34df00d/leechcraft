@@ -8,7 +8,7 @@
 
 #include "poolsmanager.h"
 #include "components/storage/storagebackendmanager.h"
-#include "components/storage/storagebackend.h"
+#include "components/storage/sqlstoragebackend.h"
 
 namespace LC::Aggregator
 {

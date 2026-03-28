@@ -15,7 +15,7 @@
 #include <QIcon>
 #include <QThreadStorage>
 #include "interfaces/aggregator/iitemsmodel.h"
-#include "components/storage/storagebackend.h"
+#include "components/storage/sqlstoragebackend.h"
 
 class IIconThemeManager;
 
@@ -35,7 +35,7 @@ namespace LC::Aggregator
 		const QIcon UnreadIcon_;
 		const QIcon ReadIcon_;
 
-		mutable QThreadStorage<StorageBackend_ptr> SB_;
+		mutable QThreadStorage<SQLStorageBackend_ptr> SB_;
 	public:
 		explicit ItemsListModel (IIconThemeManager*, QObject* = nullptr);
 
@@ -62,7 +62,7 @@ namespace LC::Aggregator
 		template<typename F>
 		void RemoveChunked (F&&);
 
-		StorageBackend_ptr GetSB () const;
+		SQLStorageBackend_ptr GetSB () const;
 		void HandleItemReadStatusUpdated (IDType_t, IDType_t, bool);
 	};
 }

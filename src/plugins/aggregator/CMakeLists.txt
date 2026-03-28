@@ -36,7 +36,6 @@ LC_DEFINE_PLUGIN (
 		components/parsers/rss.cpp
 		components/parsers/utils.cpp
 		components/storage/sqlstoragebackend.cpp
-		components/storage/storagebackend.cpp
 		components/storage/storagebackendmanager.cpp
 		aggregator.cpp
 		aggregatortab.cpp

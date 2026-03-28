@@ -183,7 +183,7 @@ namespace LC::Aggregator
 	{
 		QStringList CatsFromIndexes (const QSet<IDType_t>& channels, bool unreadOnly)
 		{
-			using enum StorageBackend::ReadStatus;
+			using enum SQLStorageBackend::ReadStatus;
 			const auto readStatus = unreadOnly ? Unread : All;
 
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();

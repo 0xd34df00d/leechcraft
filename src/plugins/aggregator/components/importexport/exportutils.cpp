@@ -16,7 +16,7 @@
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include "components/storage/storagebackend.h"
+#include "components/storage/sqlstoragebackend.h"
 #include "components/storage/storagebackendmanager.h"
 #include "dbutils.h"
 #include "feedsexportdialog.h"

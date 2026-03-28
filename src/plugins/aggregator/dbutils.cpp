@@ -11,7 +11,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
-#include "components/storage/storagebackend.h"
+#include "components/storage/sqlstoragebackend.h"
 #include "components/storage/storagebackendmanager.h"
 #include "updatesmanager.h"
 

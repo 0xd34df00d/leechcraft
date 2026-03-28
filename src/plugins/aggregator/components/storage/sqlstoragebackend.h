@@ -9,14 +9,33 @@
 #pragma once
 
 #include <QSqlDatabase>
-#include <QSqlQuery>
 #include <util/sll/util.h>
 #include <util/db/oral/oralfwd.h>
-#include "storagebackend.h"
+#include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/itagsmanager.h>
+#include "feed.h"
 
 namespace LC::Aggregator
 {
-	class SQLStorageBackend : public StorageBackend
+	struct UnreadDelta
+	{
+			int delta;
+			auto operator<=> (const UnreadDelta&) const = default;
+	};
+
+	struct UnreadTotal
+	{
+			qsizetype total;
+			auto operator<=> (const UnreadTotal&) const = default;
+	};
+
+	struct UnreadChange : std::variant<UnreadDelta, UnreadTotal>
+	{
+			using variant::variant;
+			auto operator<=> (const UnreadChange&) const = default;
+	};
+
+	class SQLStorageBackend : public QObject
 	{
 		Q_OBJECT
 
@@ -58,51 +77,62 @@ namespace LC::Aggregator
 		explicit SQLStorageBackend (const QString& = {});
 		~SQLStorageBackend ();
 
-		ids_t GetFeedsIDs () const override;
-		Feed GetFeed (IDType_t) const override;
-		std::optional<IDType_t> FindFeed (const QString&) const override;
-		std::optional<Feed::FeedSettings> GetFeedSettings (IDType_t) const override;
-		void SetFeedSettings (const Feed::FeedSettings&) override;
-		std::optional<QStringList> GetFeedTags (IDType_t) const override;
-		void SetFeedTags (IDType_t, const QStringList&) override;
-		void SetFeedURL (IDType_t, const QString&) override;
+		struct FeedNotFoundError {};
+		struct ChannelNotFoundError {};
+		struct ItemNotFoundError {};
 
-		channels_shorts_t GetChannels (IDType_t) const override;
-		Channel GetChannel (IDType_t) const override;
-		std::optional<IDType_t> FindChannel (const QString& , const QString&, IDType_t) const override;
-		void TrimChannel (IDType_t, int, int) override;
-		std::optional<QImage> GetChannelPixmap (IDType_t) const override;
-		void SetChannelPixmap (IDType_t, const std::optional<QImage>&) override;
-		void SetChannelFavicon (IDType_t, const std::optional<QImage>&) override;
-		void SetChannelTags (IDType_t, const QStringList&) override;
-		void SetChannelDisplayTitle (IDType_t, const QString&) override;
-		void SetChannelTitle (IDType_t, const QString&) override;
-		void SetChannelLink (IDType_t, const QString&) override;
+		enum class ReadStatus
+		{
+			All,
+			Read,
+			Unread,
+		};
 
-		items_shorts_t GetItems (IDType_t) const override;
-		QSet<QString> GetItemsCategories (IDType_t, ReadStatus) const override;
-		int GetUnreadItemsCount (IDType_t) const override;
-		int GetTotalItemsCount (IDType_t) const override;
-		std::optional<Item> GetItem (IDType_t) const override;
-		std::optional<IDType_t> FindItem (const QString&, const QString&, IDType_t) const override;
-		std::optional<IDType_t> FindItemByLink (const QString&, IDType_t) const override;
-		std::optional<IDType_t> FindItemByTitle (const QString&, IDType_t) const override;
+		ids_t GetFeedsIDs () const;
+		Feed GetFeed (IDType_t) const;
+		std::optional<IDType_t> FindFeed (const QString&) const;
+		std::optional<Feed::FeedSettings> GetFeedSettings (IDType_t) const;
+		void SetFeedSettings (const Feed::FeedSettings&);
+		std::optional<QStringList> GetFeedTags (IDType_t) const;
+		void SetFeedTags (IDType_t, const QStringList&);
+		void SetFeedURL (IDType_t, const QString&);
 
-		void AddFeed (const Feed&) override;
-		void UpdateItem (const Item&) override;
-		void SetItemUnread (IDType_t, IDType_t, bool) override;
-		void AddChannel (const Channel&) override;
-		void AddItem (const Item&) override;
-		void RemoveItems (const QSet<IDType_t>&) override;
-		void RemoveChannel (IDType_t) override;
-		void RemoveFeed (IDType_t) override;
-		void ToggleChannelUnread (IDType_t, bool) override;
+		channels_shorts_t GetChannels (IDType_t) const;
+		Channel GetChannel (IDType_t) const;
+		std::optional<IDType_t> FindChannel (const QString& , const QString&, IDType_t) const;
+		void TrimChannel (IDType_t, int, int);
+		std::optional<QImage> GetChannelPixmap (IDType_t) const;
+		void SetChannelPixmap (IDType_t, const std::optional<QImage>&);
+		void SetChannelFavicon (IDType_t, const std::optional<QImage>&);
+		void SetChannelTags (IDType_t, const QStringList&);
+		void SetChannelDisplayTitle (IDType_t, const QString&);
+		void SetChannelTitle (IDType_t, const QString&);
+		void SetChannelLink (IDType_t, const QString&);
 
-		QList<ITagsManager::tag_id> GetItemTags (IDType_t) override;
-		void SetItemTags (IDType_t, const QList<ITagsManager::tag_id>&) override;
-		QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&) override;
+		items_shorts_t GetItems (IDType_t) const;
+		QSet<QString> GetItemsCategories (IDType_t, ReadStatus) const;
+		int GetUnreadItemsCount (IDType_t) const;
+		int GetTotalItemsCount (IDType_t) const;
+		std::optional<Item> GetItem (IDType_t) const;
+		std::optional<IDType_t> FindItem (const QString&, const QString&, IDType_t) const;
+		std::optional<IDType_t> FindItemByLink (const QString&, IDType_t) const;
+		std::optional<IDType_t> FindItemByTitle (const QString&, IDType_t) const;
 
-		IDType_t GetHighestID (const PoolType&) const override;
+		void AddFeed (const Feed&);
+		void UpdateItem (const Item&);
+		void SetItemUnread (IDType_t, IDType_t, bool);
+		void AddChannel (const Channel&);
+		void AddItem (const Item&);
+		void RemoveItems (const QSet<IDType_t>&);
+		void RemoveChannel (IDType_t);
+		void RemoveFeed (IDType_t);
+		void ToggleChannelUnread (IDType_t, bool);
+
+		QList<ITagsManager::tag_id> GetItemTags (IDType_t);
+		void SetItemTags (IDType_t, const QList<ITagsManager::tag_id>&);
+		QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&);
+
+		IDType_t GetHighestID (const PoolType&) const;
 	private:
 		void WriteItem (const Item&);
 		void WriteEnclosures (const QList<Enclosure>&);
@@ -110,5 +140,19 @@ namespace LC::Aggregator
 		void WriteMRSSEntries (const QList<MRSSEntry>&);
 		void GetMRSSEntries (IDType_t, QList<MRSSEntry>&) const;
 		IDType_t GetHighestID (const QByteArray&, const QByteArray&) const;
+	signals:
+		void channelAdded (const Channel& channel) const;
+		void channelUnreadCountUpdated (IDType_t channelId, const UnreadChange& unreadChange) const;
+		void channelDataUpdated (const Channel&) const;
+		void itemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread) const;
+		void itemDataUpdated (const Item& item) const;
+		void itemsRemoved (const QSet<IDType_t>& items) const;
+		void channelRemoved (IDType_t channelId);
+		void feedRemoved (IDType_t feedId);
+
+		void hookItemLoad (LC::IHookProxy_ptr proxy, Item *item) const;
+		void hookItemAdded (LC::IHookProxy_ptr proxy, const Item& item) const;
 	};
+
+	using SQLStorageBackend_ptr = std::shared_ptr<SQLStorageBackend>;
 }

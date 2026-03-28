@@ -42,61 +42,60 @@ namespace LC::Aggregator
 			throw;
 		}
 
-		Register (PrimaryStorageBackend_);
+		Register (*PrimaryStorageBackend_);
 		emit storageCreated ();
 	}
 
-	StorageBackend_ptr StorageBackendManager::MakeStorageBackendForThread () const
+	SQLStorageBackend_ptr StorageBackendManager::MakeStorageBackendForThread () const
 	{
 		if (QThread::currentThread () == qApp->thread ())
 			return PrimaryStorageBackend_;
 
 		auto mgr = std::make_shared<SQLStorageBackend> ("_AuxThread");
-		Register (mgr);
+		Register (*mgr);
 		return mgr;
 	}
 
-	void StorageBackendManager::Register (const StorageBackend_ptr& backend) const
+	void StorageBackendManager::Register (const SQLStorageBackend& backend) const
 	{
-		auto backendPtr = backend.get ();
-		connect (backendPtr,
-				&StorageBackend::channelAdded,
+		connect (&backend,
+				&SQLStorageBackend::channelAdded,
 				this,
 				&StorageBackendManager::channelAdded);
-		connect (backendPtr,
-				&StorageBackend::channelUnreadCountUpdated,
+		connect (&backend,
+				&SQLStorageBackend::channelUnreadCountUpdated,
 				this,
 				&StorageBackendManager::channelUnreadCountUpdated);
-		connect (backendPtr,
-				&StorageBackend::channelDataUpdated,
+		connect (&backend,
+				&SQLStorageBackend::channelDataUpdated,
 				this,
 				&StorageBackendManager::channelDataUpdated);
-		connect (backendPtr,
-				&StorageBackend::itemReadStatusUpdated,
+		connect (&backend,
+				&SQLStorageBackend::itemReadStatusUpdated,
 				this,
 				&StorageBackendManager::itemReadStatusUpdated);
-		connect (backendPtr,
-				&StorageBackend::itemDataUpdated,
+		connect (&backend,
+				&SQLStorageBackend::itemDataUpdated,
 				this,
 				&StorageBackendManager::itemDataUpdated);
-		connect (backendPtr,
-				&StorageBackend::itemsRemoved,
+		connect (&backend,
+				&SQLStorageBackend::itemsRemoved,
 				this,
 				&StorageBackendManager::itemsRemoved);
-		connect (backendPtr,
-				&StorageBackend::channelRemoved,
+		connect (&backend,
+				&SQLStorageBackend::channelRemoved,
 				this,
 				&StorageBackendManager::channelRemoved);
-		connect (backendPtr,
-				&StorageBackend::feedRemoved,
+		connect (&backend,
+				&SQLStorageBackend::feedRemoved,
 				this,
 				&StorageBackendManager::feedRemoved);
-		connect (backendPtr,
-				&StorageBackend::hookItemLoad,
+		connect (&backend,
+				&SQLStorageBackend::hookItemLoad,
 				this,
 				&StorageBackendManager::hookItemLoad);
-		connect (backendPtr,
-				&StorageBackend::hookItemAdded,
+		connect (&backend,
+				&SQLStorageBackend::hookItemAdded,
 				this,
 				&StorageBackendManager::hookItemAdded);
 	}

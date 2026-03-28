@@ -49,7 +49,7 @@ namespace LC::Aggregator
 	{
 		class UpdateFeedWorker
 		{
-			const StorageBackend_ptr SB_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+			const SQLStorageBackend_ptr SB_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 			IDType_t FeedID_;
 			Feed::FeedSettings FeedSettings_;

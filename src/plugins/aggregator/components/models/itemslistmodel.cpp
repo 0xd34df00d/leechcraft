@@ -330,7 +330,7 @@ namespace LC::Aggregator
 		return parent.isValid () ? 0 : CurrentItems_.size ();
 	}
 
-	StorageBackend_ptr ItemsListModel::GetSB () const
+	SQLStorageBackend_ptr ItemsListModel::GetSB () const
 	{
 		if (!SB_.hasLocalData ())
 			SB_.setLocalData (StorageBackendManager::Instance ().MakeStorageBackendForThread ());
