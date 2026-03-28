@@ -43,6 +43,8 @@ namespace LC::Poshuku::WebEngineView
 			HANDLE (PluginResource)
 			HANDLE (NavigationPreloadMainFrame)
 			HANDLE (NavigationPreloadSubFrame)
+			HANDLE (Json)
+			HANDLE (WebSocket)
 			HANDLE (Unknown)
 			}
 #undef HANDLE
