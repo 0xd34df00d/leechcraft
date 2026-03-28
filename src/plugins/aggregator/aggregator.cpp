@@ -6,13 +6,9 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
+#include "aggregator.h"
 #include <QMessageBox>
 #include <QtDebug>
-#include <QPainter>
-#include <QQueue>
-#include <QTimer>
-#include <QTranslator>
-#include <QKeyEvent>
 #include <QXmlStreamReader>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -26,10 +22,8 @@
 #include "components/importexport/opmladder.h"
 #include "components/models/channelsmodel.h"
 #include "components/storage/storagebackendmanager.h"
-#include "aggregator.h"
 #include "addfeeddialog.h"
 #include "xmlsettingsmanager.h"
-#include "feedsettings.h"
 #include "aggregatortab.h"
 #include "representationmanager.h"
 #include "dbupdatethread.h"
