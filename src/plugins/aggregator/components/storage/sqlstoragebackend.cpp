@@ -284,7 +284,7 @@ DEFINE_STRUCT (FeedR, "feeds", Feed,
 		(SAME_NAME (QDateTime, LastUpdate_))
 		)
 DEFINE_STRUCT (FeedSettingsR, "feeds_settings", Feed::FeedSettings,
-		(SAME_NAME (oral::References<&FeedR::FeedID_>, FeedID_))
+		(SAME_NAME (oral::Unique<oral::References<&FeedR::FeedID_>>, FeedID_))
 		(SAME_NAME (oral::NotNull<int>, UpdateTimeout_))
 		(SAME_NAME (oral::NotNull<int>, NumItems_))
 		(SAME_NAME (oral::NotNull<int>, ItemAge_))
