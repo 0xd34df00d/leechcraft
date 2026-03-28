@@ -29,10 +29,10 @@ namespace Poshuku
 
 		QDomElement root = document.documentElement ();
 		if (root.tagName () != "xbel")
-			throw std::runtime_error (qPrintable (QObject::tr ("Not an XBEL entity.")));
-		else if (root.hasAttribute ("version") &&
+			throw std::runtime_error (QObject::tr ("Not an XBEL entity.").toStdString ());
+		if (root.hasAttribute ("version") &&
 				root.attribute ("version") != "1.0")
-			throw std::runtime_error (qPrintable (QObject::tr ("This XBEL is not 1.0.")));
+			throw std::runtime_error (QObject::tr ("This XBEL is not 1.0.").toStdString ());
 
 		QDomElement child = root.firstChildElement ("folder");
 		while (!child.isNull ())
