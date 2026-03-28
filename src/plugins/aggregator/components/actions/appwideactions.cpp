@@ -138,10 +138,4 @@ namespace LC::Aggregator
 	{
 		return FastActions_;
 	}
-
-	void AppWideActions::SetEnabled (bool enabled)
-	{
-		for (const auto action : AllActions_)
-			action->setEnabled (enabled);
-	}
 }

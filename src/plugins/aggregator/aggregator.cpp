@@ -18,7 +18,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/sll/either.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "components/actions/appwideactions.h"
@@ -58,6 +57,8 @@ namespace Aggregator
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
 		qRegisterMetaType<UnreadChange> ("UnreadChange");
 
+		StorageBackendManager::Instance ().CreatePrimaryStorage ();
+
 		TabInfo_ = TabClassInfo
 		{
 			"Aggregator",
@@ -93,8 +94,6 @@ namespace Aggregator
 					.DBUpThread_ = *DBUpThread_,
 					.ChannelsModel_ = *ChannelsModel_,
 				});
-
-		ReinitStorage ();
 
 		PoolsManager::Instance ().ReloadPools ();
 
@@ -339,24 +338,6 @@ namespace Aggregator
 	bool Aggregator::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
 	{
 		return true;
-	}
-
-	void Aggregator::ReinitStorage ()
-	{
-		const auto storageReady = Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
-				[] (Util::Void) { return true; },
-				[] (const auto& error)
-				{
-					auto box = new QMessageBox (QMessageBox::Critical,
-							MessageBoxTitle,
-							tr ("Failed to initialize Aggregator storage: %1.")
-								.arg (error.Message_),
-							QMessageBox::Ok);
-					box->open ();
-					return false;
-				});
-
-		AppWideActions_->SetEnabled (storageReady);
 	}
 }
 }

@@ -74,8 +74,7 @@ namespace LC::Aggregator
 				this,
 				&ChannelsModel::HandleFeedErrorsChanged);
 
-		if (StorageBackendManager::Instance ().IsPrimaryStorageCreated ())
-			PopulateChannels ();
+		PopulateChannels ();
 	}
 
 	int ChannelsModel::columnCount (const QModelIndex&) const

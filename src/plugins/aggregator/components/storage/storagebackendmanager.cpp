@@ -30,7 +30,7 @@ namespace LC::Aggregator
 		PrimaryStorageBackend_.reset ();
 	}
 
-	StorageBackendManager::StorageCreationResult_t StorageBackendManager::CreatePrimaryStorage ()
+	void StorageBackendManager::CreatePrimaryStorage ()
 	{
 		try
 		{
@@ -39,17 +39,11 @@ namespace LC::Aggregator
 		catch (const std::exception& e)
 		{
 			qWarning () << "unable to create primary storage:" << e.what ();
-			return { Util::AsLeft, StorageCreationError { e.what () } };
+			throw;
 		}
 
 		Register (PrimaryStorageBackend_);
 		emit storageCreated ();
-		return Util::Void {};
-	}
-
-	bool StorageBackendManager::IsPrimaryStorageCreated () const
-	{
-		return static_cast<bool> (PrimaryStorageBackend_);
 	}
 
 	StorageBackend_ptr StorageBackendManager::MakeStorageBackendForThread () const

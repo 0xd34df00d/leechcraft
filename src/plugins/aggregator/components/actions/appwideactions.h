@@ -52,7 +52,5 @@ namespace LC::Aggregator
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QList<QAction*> GetFastActions () const;
-
-		void SetEnabled (bool);
 	};
 }

@@ -10,8 +10,6 @@
 
 #include <memory>
 #include <QObject>
-#include <util/sll/eitherfwd.h>
-#include <util/sll/void.h>
 #include "storagebackend.h"
 
 namespace LC::Aggregator
@@ -28,21 +26,11 @@ namespace LC::Aggregator
 		StorageBackendManager& operator= (const StorageBackendManager&) = delete;
 
 		static StorageBackendManager& Instance ();
-
 		void Release ();
 
-		struct StorageCreationError
-		{
-			QString Message_;
-		};
-
-		using StorageCreationResult_t = Util::Either<StorageCreationError, Util::Void>;
-		StorageCreationResult_t CreatePrimaryStorage ();
-
-		bool IsPrimaryStorageCreated () const;
-
+		void CreatePrimaryStorage ();
 		StorageBackend_ptr MakeStorageBackendForThread () const;
-
+	private:
 		void Register (const StorageBackend_ptr&) const;
 	signals:
 		void channelAdded (const Channel& channel) const;
