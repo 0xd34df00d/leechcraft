@@ -59,6 +59,8 @@ namespace Poshuku
 			PluginResource,
 			NavigationPreloadMainFrame,
 			NavigationPreloadSubFrame,
+			Json,
+			WebSocket,
 			Other
 		};
 
