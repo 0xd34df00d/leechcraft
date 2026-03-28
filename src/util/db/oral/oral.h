@@ -1838,7 +1838,7 @@ namespace LC::Util::oral
 		return std::make_unique<ObjectInfo<T>> (Adapt<T, ImplFactory> (db));
 	}
 
-	template<typename ImplFactory, typename... Ts>
+	template<typename ImplFactory = SQLiteImplFactory, typename... Ts>
 	void AdaptPtrs (const QSqlDatabase& db, ObjectInfo_ptr<Ts>&... objects)
 	{
 		((objects = AdaptPtr<Ts, ImplFactory> (db)), ...);
