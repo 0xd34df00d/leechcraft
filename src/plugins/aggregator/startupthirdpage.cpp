@@ -113,9 +113,6 @@ namespace Aggregator
 
 	void StartupThirdPage::HandleAccepted ()
 	{
-		if (wizard ()->field ("Aggregator/StorageDirty").toBool ())
-			emit reinitStorageRequested ();
-
 		QList<SelectedFeed> feeds;
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
 		{

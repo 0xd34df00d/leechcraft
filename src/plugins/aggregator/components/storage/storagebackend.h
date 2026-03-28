@@ -55,27 +55,7 @@ namespace LC::Aggregator
 		struct ChannelNotFoundError {};
 		struct ItemNotFoundError {};
 
-		enum Type
-		{
-			SBSQLite,
-			SBPostgres,
-		};
-
 		using QObject::QObject;
-
-		static StorageBackend_ptr Create (const QString&, const QString& = QString ());
-		static StorageBackend_ptr Create (Type, const QString& = QString ());
-
-		/** @brief Do post-initialization.
-		 *
-		 * This function is called by the Core after all the updates are
-		 * checked and done, if required.
-		 *
-		 * @sa UpdateFeedsStorage
-		 * @sa UpdateChannelsStorage
-		 * @sa UpdateItemsStorage
-		 */
-		virtual void Prepare () = 0;
 
 		/** @brief Returns all the feeds in the storage.
 		 *
@@ -361,39 +341,6 @@ namespace LC::Aggregator
 		 * @param[in] feedId The ID of the feed that should be removed.
 		 */
 		virtual void RemoveFeed (IDType_t feedId) = 0;
-
-		/** @brief Update feeds storage section.
-		 *
-		 * This function is called if feeds storage section format version
-		 * stored in application settings is lower than newer one.
-		 *
-		 * @param[in] oldV Old storage version.
-		 *
-		 * @return true if update successful, else false.
-		 */
-		virtual bool UpdateFeedsStorage (int oldV) = 0;
-
-		/** @brief Update channels storage section.
-		 *
-		 * This function is called if channels storage section format version
-		 * stored in application settings is lower than newer one.
-		 *
-		 * @param[in] oldV Old storage version.
-		 *
-		 * @return true if update successful, else false.
-		 */
-		virtual bool UpdateChannelsStorage (int oldV) = 0;
-
-		/** @brief Update items storage section.
-		 *
-		 * This function is called if items storage section format version
-		 * stored in application settings is lower than newer one.
-		 *
-		 * @param[in] oldV Old storage version.
-		 *
-		 * @return true if update successful, else false.
-		 */
-		virtual bool UpdateItemsStorage (int oldV) = 0;
 
 		/** @brief Toggle channel state.
 		 *

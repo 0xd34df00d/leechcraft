@@ -18,7 +18,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/db/backendselector.h>
 #include <util/sll/either.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -37,7 +36,6 @@
 #include "dbupdatethread.h"
 #include "pluginmanager.h"
 #include "startupfirstpage.h"
-#include "startupsecondpage.h"
 #include "startupthirdpage.h"
 #include "updatesmanager.h"
 #include "poolsmanager.h"
@@ -72,8 +70,6 @@ namespace Aggregator
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorsettings.xml");
-		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
-				new Util::BackendSelector (&XmlSettingsManager::Instance ()));
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> ();
 
@@ -285,8 +281,6 @@ namespace Aggregator
 		int version = XmlSettingsManager::Instance ().Property ("StartupVersion", 0).toInt ();
 		if (version <= 0)
 			result << new StartupFirstPage ();
-		if (version <= 1)
-			result << new StartupSecondPage ();
 		if (version <= 2)
 		{
 			auto third = new StartupThirdPage ();
@@ -305,11 +299,6 @@ namespace Aggregator
 										.UpdatesManager_ = *UpdatesManager_,
 									});
 					});
-
-			connect (third,
-					&StartupThirdPage::reinitStorageRequested,
-					this,
-					&Aggregator::ReinitStorage);
 		}
 		return result;
 	}
@@ -355,7 +344,7 @@ namespace Aggregator
 	void Aggregator::ReinitStorage ()
 	{
 		const auto storageReady = Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
-				[] (const StorageBackend_ptr&) { return true; },
+				[] (Util::Void) { return true; },
 				[] (const auto& error)
 				{
 					auto box = new QMessageBox (QMessageBox::Critical,

@@ -35,7 +35,6 @@ LC_DEFINE_PLUGIN (
 		components/parsers/parse.cpp
 		components/parsers/rss.cpp
 		components/parsers/utils.cpp
-		components/storage/dumbstorage.cpp
 		components/storage/sqlstoragebackend.cpp
 		components/storage/storagebackend.cpp
 		components/storage/storagebackendmanager.cpp
@@ -49,7 +48,6 @@ LC_DEFINE_PLUGIN (
 		feedsettings.cpp
 		itemswidget.cpp
 		startupfirstpage.cpp
-		startupsecondpage.cpp
 		startupthirdpage.cpp
 		pluginmanager.cpp
 		proxyobject.cpp

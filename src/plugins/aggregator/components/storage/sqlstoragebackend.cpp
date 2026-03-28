@@ -20,7 +20,6 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
-#include <util/db/oral/pgimpl.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/functor.h>
@@ -435,84 +434,33 @@ namespace LC::Aggregator
 {
 	using Util::operator*;
 
-	namespace
+	SQLStorageBackend::SQLStorageBackend (const QString& id)
 	{
-		template<typename F, typename... Args>
-		auto WithType (StorageBackend::Type type, F&& f)
-		{
-			if (type == StorageBackend::SBSQLite)
-				return std::forward<F> (f) (oral::SQLiteImplFactory {});
-			else
-				return std::forward<F> (f) (oral::PostgreSQLImplFactory {});
-		}
-	}
+		DB_ = QSqlDatabase::addDatabase ("QSQLITE"_qs, Util::GenConnectionName ("org.LeechCraft.Aggregator" + id));
 
-	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t, const QString& id)
-	: Type_ (t)
-	{
-		QString strType;
-		switch (Type_)
-		{
-		case SBSQLite:
-			strType = "QSQLITE"_qs;
-			break;
-		case SBPostgres:
-			strType = "QPSQL"_qs;
-			break;
-		}
-
-		DB_ = QSqlDatabase::addDatabase (strType, Util::GenConnectionName ("org.LeechCraft.Aggregator" + id));
-
-		switch (Type_)
-		{
-		case SBSQLite:
-		{
-			auto dir = Util::GetUserDir (Util::UserDir::LC, "aggregator"_qs);
-			DB_.setDatabaseName (dir.filePath ("aggregator.db"_qs));
-			break;
-		}
-		case SBPostgres:
-		{
-			auto& xsm = XmlSettingsManager::Instance ();
-			DB_.setDatabaseName (xsm.property ("PostgresDBName").toString ());
-			DB_.setHostName (xsm.property ("PostgresHostname").toString ());
-			DB_.setPort (xsm.property ("PostgresPort").toInt ());
-			DB_.setUserName (xsm.property ("PostgresUsername").toString ());
-			DB_.setPassword (xsm.property ("PostgresPassword").toString ());
-			break;
-		}
-		}
+		const auto dir = Util::GetUserDir (Util::UserDir::LC, "aggregator"_qs);
+		DB_.setDatabaseName (dir.filePath ("aggregator.db"_qs));
 
 		if (!DB_.open ())
 		{
-			qWarning () << "Aggregator::SQLStorageBackend";
 			Util::DBLock::DumpError (DB_.lastError ());
-			throw std::runtime_error (qPrintable ("Could not initialize database: %1"_qs
-						.arg (DB_.lastError ().text ())));
+			throw std::runtime_error ("Could not initialize database: %1"_qs
+						.arg (DB_.lastError ().text ())
+						.toStdString ());
 		}
 
-		WithType (Type_,
-				[&]<typename Impl> (Impl)
-				{
-					oral::AdaptPtrs<Impl> (DB_,
-							Feeds_, FeedsSettings_, Channels_, Items_, Enclosures_,
-							MRSSEntries_, MRSSThumbnails_, MRSSCredits_, MRSSComments_, MRSSPeerLinks_, MRSSScenes_,
-							Items2Tags_, Feeds2Tags_);
-				});
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;"_qs);
+		Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;"_qs);
+
+		oral::AdaptPtrs (DB_,
+				Feeds_, FeedsSettings_, Channels_, Items_, Enclosures_,
+				MRSSEntries_, MRSSThumbnails_, MRSSCredits_, MRSSComments_, MRSSPeerLinks_, MRSSScenes_,
+				Items2Tags_, Feeds2Tags_);
 
 		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}
 
 	SQLStorageBackend::~SQLStorageBackend () = default;
-
-	void SQLStorageBackend::Prepare ()
-	{
-		if (Type_ == SBSQLite)
-		{
-			Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;"_qs);
-			Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;"_qs);
-		}
-	}
 
 	ids_t SQLStorageBackend::GetFeedsIDs () const
 	{
@@ -618,13 +566,7 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::SetFeedSettings (const Feed::FeedSettings& settings)
 	{
-		WithType (Type_,
-				[&] (auto impl)
-				{
-					FeedsSettings_->Insert (impl,
-							FeedSettingsR::FromOrig (settings),
-							oral::InsertAction::Replace::Whole);
-				});
+		FeedsSettings_->Insert (FeedSettingsR::FromOrig (settings), oral::InsertAction::Replace::Whole);
 	}
 
 	std::optional<QStringList> SQLStorageBackend::GetFeedTags (IDType_t feedId) const
@@ -635,13 +577,7 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::SetFeedTags (IDType_t feedId, const QStringList& tags)
 	{
-		WithType (Type_,
-				[&] (auto impl)
-				{
-					Feeds2Tags_->Insert (impl,
-							Feed2TagsR { feedId, tags },
-							oral::InsertAction::Replace::Whole);
-				});
+		Feeds2Tags_->Insert (Feed2TagsR { feedId, tags }, oral::InsertAction::Replace::Whole);
 	}
 
 	void SQLStorageBackend::SetFeedURL (IDType_t feedId, const QString& url)
@@ -992,59 +928,10 @@ namespace LC::Aggregator
 				emit itemReadStatusUpdated (channelId, itemId, state);
 	}
 
-	bool SQLStorageBackend::UpdateFeedsStorage (int from)
-	{
-		Util::DBLock lock { DB_ };
-		lock.Init ();
-		try
-		{
-			if (from <= 1)
-			{
-				qDebug () << Q_FUNC_INFO << "migrating tags";
-
-				const auto& feedsTags = Feeds2Tags_->Select ();
-
-				Util::RunTextQuery (DB_, Util::ToString<"DROP TABLE " + Feed2TagsR::ClassName> ());
-
-				Feeds2Tags_ = WithType (Type_,
-						[&]<typename Impl> (Impl) { return oral::AdaptPtr<Feed2TagsR, Impl> (DB_); });
-
-				for (const auto& [feedId, tags] : feedsTags)
-					SetFeedTags (*feedId, tags->TagsList_);
-			}
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			return false;
-		}
-		lock.Good ();
-		return true;
-	}
-
-	bool SQLStorageBackend::UpdateChannelsStorage (int version)
-	{
-		qCritical () << "support for old channel storage tables dropped; asked for v."
-				<< version;
-		return false;
-	}
-
-	bool SQLStorageBackend::UpdateItemsStorage (int version)
-	{
-		qCritical () << "support for old items storage tables dropped; asked for v."
-				<< version;
-		return false;
-	}
-
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)
 	{
-		WithType (Type_,
-				[&] (auto impl)
-				{
-					for (const auto& enclosure : enclosures)
-						Enclosures_->Insert (impl, EnclosureR::FromOrig (enclosure), oral::InsertAction::Replace::Whole);
-				});
+		for (const auto& enclosure : enclosures)
+			Enclosures_->Insert (EnclosureR::FromOrig (enclosure), oral::InsertAction::Replace::Whole);
 	}
 
 	void SQLStorageBackend::GetEnclosures (IDType_t itemId, QList<Enclosure>& enclosures) const
@@ -1055,28 +942,24 @@ namespace LC::Aggregator
 	namespace
 	{
 		template<typename RecType>
-		void InsertList (auto impl, const oral::ObjectInfo_ptr<RecType>& records, const auto& origs)
+		void InsertList (const oral::ObjectInfo_ptr<RecType>& records, const auto& origs)
 		{
 			for (const auto& orig : origs)
-				records->Insert (impl, RecType::FromOrig (orig), oral::InsertAction::Replace::Whole);
+				records->Insert (RecType::FromOrig (orig), oral::InsertAction::Replace::Whole);
 		}
 	}
 
 	void SQLStorageBackend::WriteMRSSEntries (const QList<MRSSEntry>& entries)
 	{
-		WithType (Type_,
-				[&] (auto impl)
-				{
-					for (const auto& e : entries)
-					{
-						MRSSEntries_->Insert (impl, MRSSEntryR::FromOrig (e), oral::InsertAction::Replace::Whole);
-						InsertList (impl, MRSSThumbnails_, e.Thumbnails_);
-						InsertList (impl, MRSSCredits_, e.Credits_);
-						InsertList (impl, MRSSComments_, e.Comments_);
-						InsertList (impl, MRSSPeerLinks_, e.PeerLinks_);
-						InsertList (impl, MRSSScenes_, e.Scenes_);
-					}
-				});
+		for (const auto& e : entries)
+		{
+			MRSSEntries_->Insert (MRSSEntryR::FromOrig (e), oral::InsertAction::Replace::Whole);
+			InsertList (MRSSThumbnails_, e.Thumbnails_);
+			InsertList (MRSSCredits_, e.Credits_);
+			InsertList (MRSSComments_, e.Comments_);
+			InsertList (MRSSPeerLinks_, e.PeerLinks_);
+			InsertList (MRSSScenes_, e.Scenes_);
+		}
 	}
 
 	namespace

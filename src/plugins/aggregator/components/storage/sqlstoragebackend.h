@@ -41,8 +41,6 @@ namespace LC::Aggregator
 
 		struct Feed2TagsR;
 	private:
-		const Type Type_;
-
 		Util::oral::ObjectInfo_ptr<FeedR> Feeds_;
 		Util::oral::ObjectInfo_ptr<FeedSettingsR> FeedsSettings_;
 		Util::oral::ObjectInfo_ptr<ChannelR> Channels_;
@@ -57,10 +55,8 @@ namespace LC::Aggregator
 		Util::oral::ObjectInfo_ptr<Item2TagsR> Items2Tags_;
 		Util::oral::ObjectInfo_ptr<Feed2TagsR> Feeds2Tags_;
 	public:
-		SQLStorageBackend (Type, const QString&);
+		explicit SQLStorageBackend (const QString& = {});
 		~SQLStorageBackend ();
-
-		void Prepare () override;
 
 		ids_t GetFeedsIDs () const override;
 		Feed GetFeed (IDType_t) const override;
@@ -100,9 +96,6 @@ namespace LC::Aggregator
 		void RemoveItems (const QSet<IDType_t>&) override;
 		void RemoveChannel (IDType_t) override;
 		void RemoveFeed (IDType_t) override;
-		bool UpdateFeedsStorage (int) override;
-		bool UpdateChannelsStorage (int) override;
-		bool UpdateItemsStorage (int) override;
 		void ToggleChannelUnread (IDType_t, bool) override;
 
 		QList<ITagsManager::tag_id> GetItemTags (IDType_t) override;

@@ -41,8 +41,5 @@
 			</groupbox>
 			<item type="checkbox" property="ConfirmMarkAllAsRead" default="true" label="Ask mark all feeds as read confirmation" />
 		</tab>
-		<tab label="Storage">
-			<item type="customwidget" property="BackendSelector" />
-		</tab>
 	</page>
 </settings>

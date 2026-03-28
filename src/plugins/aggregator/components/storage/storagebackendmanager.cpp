@@ -12,8 +12,7 @@
 #include <QtDebug>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
-#include "dumbstorage.h"
-#include "xmlsettingsmanager.h"
+#include "sqlstoragebackend.h"
 
 namespace LC::Aggregator
 {
@@ -26,54 +25,26 @@ namespace LC::Aggregator
 	void StorageBackendManager::Release ()
 	{
 		if (auto cnt = PrimaryStorageBackend_.use_count (); cnt > 1)
-			qWarning () << Q_FUNC_INFO
-					<< "primary storage use count is"
-					<< cnt;
+			qWarning () << "primary storage use count is" << cnt;
 
 		PrimaryStorageBackend_.reset ();
 	}
 
 	StorageBackendManager::StorageCreationResult_t StorageBackendManager::CreatePrimaryStorage ()
 	{
-		const auto& strType = XmlSettingsManager::Instance ().property ("StorageType").toByteArray ();
 		try
 		{
-			PrimaryStorageBackend_ = StorageBackend::Create (strType);
+			PrimaryStorageBackend_ = std::make_shared<SQLStorageBackend> ();
 		}
-		catch (const std::runtime_error& s)
+		catch (const std::exception& e)
 		{
-			PrimaryStorageBackend_ = std::make_shared<DumbStorage> ();
-			return { Util::AsLeft, { s.what () } };
+			qWarning () << "unable to create primary storage:" << e.what ();
+			return { Util::AsLeft, StorageCreationError { e.what () } };
 		}
 
-		const int feedsTable = 2;
-		const int channelsTable = 2;
-		const int itemsTable = 6;
-
-		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
-		{
-			const auto& fullPropName = strType + suffix;
-			const auto curVersion = XmlSettingsManager::Instance ().Property (fullPropName, targetVersion).toInt ();
-			if (curVersion == targetVersion)
-				return true;
-
-			if (!std::invoke (updater, PrimaryStorageBackend_.get (), curVersion))
-				return false;
-
-			XmlSettingsManager::Instance ().setProperty (fullPropName, targetVersion);
-			return true;
-		};
-
-		if (!runUpdate (&StorageBackend::UpdateFeedsStorage, "FeedsTableVersion", feedsTable) ||
-			!runUpdate (&StorageBackend::UpdateChannelsStorage, "ChannelsTableVersion", channelsTable) ||
-			!runUpdate (&StorageBackend::UpdateItemsStorage, "ItemsTableVersion", itemsTable))
-			return { Util::AsLeft, { "Unable to update tables" } };
-
-		PrimaryStorageBackend_->Prepare ();
-
+		Register (PrimaryStorageBackend_);
 		emit storageCreated ();
-
-		return PrimaryStorageBackend_;
+		return Util::Void {};
 	}
 
 	bool StorageBackendManager::IsPrimaryStorageCreated () const
@@ -86,22 +57,12 @@ namespace LC::Aggregator
 		if (QThread::currentThread () == qApp->thread ())
 			return PrimaryStorageBackend_;
 
-		const auto& strType = XmlSettingsManager::Instance ().property ("StorageType").toString ();
-		try
-		{
-			auto mgr = StorageBackend::Create (strType, "_AuxThread");
-			mgr->Prepare ();
-			return mgr;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot create storage for auxiliary thread";
-			return {};
-		}
+		auto mgr = std::make_shared<SQLStorageBackend> ("_AuxThread");
+		Register (mgr);
+		return mgr;
 	}
 
-	void StorageBackendManager::Register (const StorageBackend_ptr& backend)
+	void StorageBackendManager::Register (const StorageBackend_ptr& backend) const
 	{
 		auto backendPtr = backend.get ();
 		connect (backendPtr,

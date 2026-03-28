@@ -11,6 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <util/sll/eitherfwd.h>
+#include <util/sll/void.h>
 #include "storagebackend.h"
 
 namespace LC::Aggregator
@@ -35,14 +36,14 @@ namespace LC::Aggregator
 			QString Message_;
 		};
 
-		using StorageCreationResult_t = Util::Either<StorageCreationError, StorageBackend_ptr>;
+		using StorageCreationResult_t = Util::Either<StorageCreationError, Util::Void>;
 		StorageCreationResult_t CreatePrimaryStorage ();
 
 		bool IsPrimaryStorageCreated () const;
 
 		StorageBackend_ptr MakeStorageBackendForThread () const;
 
-		void Register (const StorageBackend_ptr&);
+		void Register (const StorageBackend_ptr&) const;
 	signals:
 		void channelAdded (const Channel& channel) const;
 
