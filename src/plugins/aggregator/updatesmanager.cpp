@@ -123,10 +123,10 @@ namespace LC::Aggregator
 
 	void UpdatesManager::UpdateFeeds ()
 	{
-		if (const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ())
-			for (const auto id : sb->GetFeedsIDs ())
-				if (!IsCustomTimer (*sb, id))
-					UpdateFeed (id);
+		for (const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+			 const auto id : sb->GetFeedsIDs ())
+			if (!IsCustomTimer (*sb, id))
+				UpdateFeed (id);
 
 		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
 		if (int interval = XmlSettingsManager::Instance ().property ("UpdateInterval").toInt ())
