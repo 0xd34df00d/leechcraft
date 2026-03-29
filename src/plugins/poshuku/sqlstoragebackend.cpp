@@ -18,6 +18,7 @@
 #include <util/db/oral/oral.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sys/paths.h>
 
 namespace LC
 {
@@ -111,9 +112,7 @@ namespace Poshuku
 	: DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
 	{
 		DB_ = QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("org.LeechCraft.Poshuku"));
-		QDir dir = QDir::home ();
-		dir.cd (".leechcraft");
-		dir.cd ("poshuku");
+		const auto dir = Util::GetUserDir (Util::UserDir::LC, "poshuku"_qs);
 		DB_.setDatabaseName (dir.filePath ("poshuku.db"));
 
 		if (!DB_.open ())
