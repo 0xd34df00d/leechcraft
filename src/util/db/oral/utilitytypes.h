@@ -71,4 +71,42 @@ namespace LC::Util::oral
 		}
 	};
 
+	struct CharEnumTypeName
+	{
+		constexpr auto operator() () const noexcept
+		{
+			return "VARCHAR(1)"_ct;
+		}
+	};
+
+	template<typename Enum, std::pair<Enum, char>... Chars>
+		requires std::is_enum_v<Enum>
+	struct ConvertEnum
+	{
+		static_assert (sizeof... (Chars) > 0);
+
+		QVariant operator() (Enum val) const
+		{
+			for (const auto& [e, ch] : { Chars... })
+				if (e == val)
+					return QString { QChar { ch } };
+
+			throw std::runtime_error { "invalid enum value " + std::to_string (static_cast<int> (val)) };
+		}
+
+		Enum operator() (const QVariant& var) const
+		{
+			if (const auto& str = var.toString ();
+				str.size () == 1)
+			{
+				const auto ch = str.at (0).toLatin1 ();
+				for (const auto& [k, v] : { Chars... })
+					if (v == ch)
+						return k;
+			}
+
+			qWarning () << "invalid stored value:" << var;
+			return Chars... [0].first;
+		}
+	};
 }
