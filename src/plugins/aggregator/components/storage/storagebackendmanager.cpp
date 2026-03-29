@@ -10,7 +10,6 @@
 #include <QCoreApplication>
 #include <QThread>
 #include <QtDebug>
-#include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include "sqlstoragebackend.h"
 
@@ -43,7 +42,6 @@ namespace LC::Aggregator
 		}
 
 		Register (*PrimaryStorageBackend_);
-		emit storageCreated ();
 	}
 
 	SQLStorageBackend_ptr StorageBackendManager::MakeStorageBackendForThread () const

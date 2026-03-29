@@ -60,10 +60,6 @@ namespace LC::Aggregator
 				this,
 				&ChannelsModel::UpdateChannelData,
 				Qt::QueuedConnection);
-		connect (&StorageBackendManager::Instance (),
-				&StorageBackendManager::storageCreated,
-				this,
-				&ChannelsModel::PopulateChannels);
 
 		connect (FeedsErrorManager_.get (),
 				&FeedsErrorManager::gotErrors,

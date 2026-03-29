@@ -70,8 +70,6 @@ namespace LC::Aggregator
 		void channelRemoved (IDType_t) const;
 		void feedRemoved (IDType_t) const;
 
-		void storageCreated ();
-
 		/** @brief Should be emitted whenever a full item is loaded.
 		 *
 		 * @param[out] proxy Standard proxy object.
