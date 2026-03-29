@@ -84,15 +84,6 @@ namespace Poshuku
 
 	void Core::Init ()
 	{
-		QDir dir = QDir::home ();
-		if (!dir.cd (".leechcraft/poshuku") &&
-				!dir.mkpath (".leechcraft/poshuku"))
-		{
-			qCritical () << Q_FUNC_INFO
-				<< "could not create necessary directories for Poshuku";
-			throw std::runtime_error ("could not create necessary directories for Poshuku");
-		}
-
 		try
 		{
 			StorageBackend_ = std::make_shared<SQLStorageBackend> ();
