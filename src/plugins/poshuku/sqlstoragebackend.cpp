@@ -122,7 +122,7 @@ namespace Poshuku
 			throw std::runtime_error ("Could not initialize database");
 		}
 
-		Util::RunTextQuery (DB_, "PRAGMA journal_model = WAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		oral::AdaptPtrs (DB_, History_, Favorites_, FormsNever_);
 	}
