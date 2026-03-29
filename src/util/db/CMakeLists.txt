@@ -1,6 +1,5 @@
 add_util_library (util-db
 	SRCS
-		backendselector.cpp
 		dblock.cpp
 		util.cpp
 		closingdb.cpp
