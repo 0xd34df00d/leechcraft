@@ -15,24 +15,7 @@
 
 namespace lco = LC::Util::oral;
 
-#define ORAL_FACTORY_SQLITE 1
-#define ORAL_FACTORY_POSTGRES 2
-
-#if ORAL_FACTORY == ORAL_FACTORY_SQLITE
-
 using OralFactory = lco::SQLiteImplFactory;
-
-#elif ORAL_FACTORY == ORAL_FACTORY_POSTGRES
-
-#include <oral/pgimpl.h>
-
-using OralFactory = lco::PostgreSQLImplFactory;
-
-#else
-
-#error "Unknown oral tests factory"
-
-#endif
 
 template<typename T, typename = decltype (T {}.AsTuple ())>
 auto operator== (const T& left, const T& right)
@@ -72,7 +55,6 @@ namespace LC::Util
 {
 	QSqlDatabase MakeDatabase (const QString& name = ":memory:")
 	{
-#if ORAL_FACTORY == ORAL_FACTORY_SQLITE
 		auto db = QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("TestConnection"));
 		db.setDatabaseName (name);
 		if (!db.open ())
@@ -81,23 +63,6 @@ namespace LC::Util
 		RunTextQuery (db, "PRAGMA foreign_keys = ON;");
 
 		return db;
-#elif ORAL_FACTORY == ORAL_FACTORY_POSTGRES
-		Q_UNUSED (name)
-
-		auto db = QSqlDatabase::addDatabase ("QPSQL", Util::GenConnectionName ("TestConnection"));
-
-		db.setHostName ("localhost");
-		db.setPort (5432);
-		db.setUserName (qgetenv ("TEST_POSTGRES_USERNAME"));
-
-		if (!db.open ())
-		{
-			DBLock::DumpError (db.lastError ());
-			throw std::runtime_error { "cannot create test database" };
-		}
-
-		return db;
-#endif
 	}
 
 	template<typename T>
