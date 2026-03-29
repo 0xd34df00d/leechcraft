@@ -37,7 +37,6 @@
 #include <interfaces/azoth/isupportpgp.h>
 #endif
 #include "glooxprotocol.h"
-#include "offlinedatasource.h"
 
 namespace LC
 {
@@ -245,7 +244,6 @@ namespace Xoox
 				const QString& nick, const QString& password);
 
 		std::shared_ptr<ClientConnection> GetClientConnection () const;
-		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
 
 		void UpdateOurPhotoHash (const QByteArray&);
 
@@ -283,8 +281,6 @@ namespace Xoox
 		void signatureVerified (QObject*, bool) override;
 		void encryptionStateChanged (QObject*, bool) override;
 #endif
-
-		void rosterSaveRequested ();
 
 		void accountSettingsChanged ();
 	};

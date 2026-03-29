@@ -35,38 +35,6 @@ namespace LC::Azoth::Xoox
 	{
 	}
 
-	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
-	: EntryBase (XooxUtil::GetBareJID (ods->ID_, parent), parent)
-	, ODS_ (ods)
-	{
-	}
-
-	OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
-	{
-		if (ODS_)
-			return ODS_;
-
-		const auto ods = std::make_shared<OfflineDataSource> ();
-		ods->ID_ = GetEntryID ();
-		ods->Name_ = GetEntryName ();
-		ods->Groups_ = Groups ();
-		ods->AuthStatus_ = GetAuthStatus ();
-
-		return ods;
-	}
-
-	void GlooxCLEntry::Convert2ODS ()
-	{
-		const auto& prevVariants = Variants ();
-
-		ODS_ = ToOfflineDataSource ();
-		Variants_.clear ();
-		if (prevVariants.isEmpty ())
-			return;
-
-		emit Emitter_.availableVariantsChanged (QStringList ());
-	}
-
 	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
 	{
 		const QString& pre = acc->GetAccountID () + '_';
@@ -75,10 +43,18 @@ namespace LC::Azoth::Xoox
 				id;
 	}
 
+	bool GlooxCLEntry::IsRosterEntry () const
+	{
+		return IsRosterEntry_;
+	}
+
+	void GlooxCLEntry::PromoteToRosterEntry ()
+	{
+		IsRosterEntry_ = true;
+	}
+
 	void GlooxCLEntry::UpdateRI (const QXmppRosterIq::Item& item)
 	{
-		ODS_.reset ();
-
 		emit Emitter_.availableVariantsChanged (Variants ());
 		emit Emitter_.nameChanged (GetEntryName ());
 		emit Emitter_.groupsChanged (item.groups ().values ());
@@ -91,15 +67,10 @@ namespace LC::Azoth::Xoox
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		ICLEntry::Features result = FSupportsAuth | FSupportsGrouping;
-
-		auto& rm = Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ();
-		const bool isPerm = ODS_ || rm.getRosterBareJids ().contains (GetJID ());
-
-		result |= isPerm ?
+		auto result = FSupportsAuth | FSupportsGrouping;
+		result |= IsRosterEntry_ ?
 				FSupportsRenames | FPermanentEntry :
 				FSessionEntry;
-
 		return result;
 	}
 
@@ -110,9 +81,6 @@ namespace LC::Azoth::Xoox
 
 	QString GlooxCLEntry::GetEntryName () const
 	{
-		if (ODS_)
-			return ODS_->Name_;
-
 		QString name = GetRI ().name ();
 		if (name.isEmpty ())
 			return HumanReadableId_;
@@ -121,29 +89,21 @@ namespace LC::Azoth::Xoox
 
 	void GlooxCLEntry::SetEntryName (const QString& name)
 	{
-		if (ODS_)
-			return;
-
 		QXmppRosterIq::Item item = GetRI ();
 		item.setName (name);
 		Account_->GetClientConnection ()->Update (item);
 
+		// TODO emit delayed, when we get the ack of any sort
 		emit Emitter_.nameChanged (name);
 	}
 
 	QString GlooxCLEntry::GetEntryID () const
 	{
-		if (ODS_)
-			return ODS_->ID_;
-
 		return Account_->GetAccountID () + '_' + HumanReadableId_;
 	}
 
 	QStringList GlooxCLEntry::Groups () const
 	{
-		if (ODS_)
-			return ODS_->Groups_;
-
 		QStringList groups = GetRI ().groups ().values ();
 		if (AuthRequested_)
 			groups += tr ("Unauthorized users");
@@ -152,9 +112,6 @@ namespace LC::Azoth::Xoox
 
 	void GlooxCLEntry::SetGroups (const QStringList& groups)
 	{
-		if (ODS_)
-			return;
-
 		QXmppRosterIq::Item item = GetRI ();
 		item.setGroups (Util::AsSet (groups));
 		Account_->GetClientConnection ()->Update (item);
@@ -164,21 +121,18 @@ namespace LC::Azoth::Xoox
 	{
 		QStringList result;
 
-		if (!ODS_)
+		const auto& presences = Account_->GetClientConnection ()->Exts ()
+				.Get<QXmppRosterManager> ().getAllPresencesForBareJid (HumanReadableId_);
+		if (presences.size () == 1)
+			result << presences.begin ().key ();
+		else
 		{
-			const auto& presences = Account_->GetClientConnection ()->Exts ()
-					.Get<QXmppRosterManager> ().getAllPresencesForBareJid (HumanReadableId_);
-			if (presences.size () == 1)
-				result << presences.begin ().key ();
-			else
-			{
-				QMap<int, QList<QString>> prio2res;
-				for (const auto& pair : Util::Stlize (presences))
-					prio2res [pair.second.priority ()] << pair.first;
-				for (const auto& list : prio2res)
-					result += list;
-				std::reverse (result.begin (), result.end ());
-			}
+			QMap<int, QList<QString>> prio2res;
+			for (const auto& pair : Util::Stlize (presences))
+				prio2res [pair.second.priority ()] << pair.first;
+			for (const auto& list : prio2res)
+				result += list;
+			std::reverse (result.begin (), result.end ());
 		}
 
 		return result;
@@ -186,9 +140,6 @@ namespace LC::Azoth::Xoox
 
 	EntryStatus GlooxCLEntry::GetStatus (const QString& variant) const
 	{
-		if (ODS_)
-			return EntryStatus ();
-
 		if (AuthRequested_)
 			return EntryStatus (SOnline, QString ());
 
@@ -284,17 +235,11 @@ namespace LC::Azoth::Xoox
 
 	AuthStatus GlooxCLEntry::GetAuthStatus () const
 	{
-		if (ODS_)
-			return ODS_->AuthStatus_;
-
 		return static_cast<AuthStatus> (GetRI ().subscriptionType ());
 	}
 
 	void GlooxCLEntry::ResendAuth (const QString& reason)
 	{
-		if (ODS_)
-			return;
-
 		SetAuthRequested (false);
 		RerequestAuth (QString ());
 		Account_->GetClientConnection ()->GrantSubscription (GetJID (), reason);
@@ -302,26 +247,17 @@ namespace LC::Azoth::Xoox
 
 	void GlooxCLEntry::RevokeAuth (const QString& reason)
 	{
-		if (ODS_)
-			return;
-
 		SetAuthRequested (false);
 		Account_->GetClientConnection ()->RevokeSubscription (GetJID (), reason);
 	}
 
 	void GlooxCLEntry::Unsubscribe (const QString& reason)
 	{
-		if (ODS_)
-			return;
-
 		Account_->GetClientConnection ()->Unsubscribe (GetJID (), reason);;
 	}
 
 	void GlooxCLEntry::RerequestAuth (const QString& reason)
 	{
-		if (ODS_)
-			return;
-
 		Account_->GetClientConnection ()->Subscribe (GetJID (),
 				reason,
 				GetEntryName (),

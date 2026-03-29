@@ -640,6 +640,15 @@ namespace Xoox
 		SetStatus ({ SError, presence.error ().text () }, {}, {});
 	}
 
+	void EntryBase::SetOffline ()
+	{
+		for (const auto& [variant, _] : Variants_.asKeyValueRange ())
+			emit Emitter_.statusChanged ({ SOffline }, variant);
+
+		Variants_.clear ();
+		emit Emitter_.availableVariantsChanged ({});
+	}
+
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant, const QXmppPresence& presence)
 	{
 		const bool existed = Variants_.contains (variant);

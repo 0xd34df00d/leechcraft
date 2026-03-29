@@ -8,15 +8,12 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
-#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QXmppRosterIq.h>
-#include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
 #include <interfaces/azoth/iauthable.h>
 #include "entrybase.h"
-#include "offlinedatasource.h"
 
 namespace LC::Azoth
 {
@@ -35,8 +32,6 @@ namespace LC::Azoth::Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IAuthable)
-	private:
-		OfflineDataSource_ptr ODS_;
 
 		struct MessageQueueItem
 		{
@@ -48,16 +43,16 @@ namespace LC::Azoth::Xoox
 		QList<MessageQueueItem> MessageQueue_;
 
 		bool AuthRequested_ = false;
+		bool IsRosterEntry_ = false;
 
 		mutable QList<QAction*> GWActions_;
 	public:
 		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
-		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
-
-		OfflineDataSource_ptr ToOfflineDataSource () const;
-		void Convert2ODS ();
 
 		static QString JIDFromID (GlooxAccount*, const QString&);
+
+		bool IsRosterEntry () const;
+		void PromoteToRosterEntry ();
 
 		void UpdateRI (const QXmppRosterIq::Item&);
 		QXmppRosterIq::Item GetRI () const;

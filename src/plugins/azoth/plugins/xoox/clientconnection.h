@@ -11,9 +11,7 @@
 #include <functional>
 #include <memory>
 #include <QObject>
-#include <QMap>
 #include <QHash>
-#include <QSet>
 #include <QXmppClient.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/icanhavesslerrors.h>
@@ -98,7 +96,6 @@ namespace Xoox
 		ServerInfoStorage *ServerInfoStorage_;
 
 		QHash<QString, GlooxCLEntry*> JID2CLEntry_;
-		QHash<QString, GlooxCLEntry*> ODSEntries_;
 
 		bool IsConnected_ = false;
 		bool FirstTimeConnect_ = true;
@@ -188,7 +185,6 @@ namespace Xoox
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& fullJid) const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
-		GlooxCLEntry* AddODSCLEntry (OfflineDataSource_ptr);
 		QList<ICLEntry*> GetCLEntries () const;
 		QList<GlooxCLEntry*> GetRosterEntries () const;
 		QList<RoomCLEntry*> GetRoomCLEntries () const;
@@ -240,11 +236,9 @@ namespace Xoox
 		void ScheduleFetchVCard (const QString&, bool);
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
-		GlooxCLEntry* ConvertFromODS (const QString&, const QXmppRosterIq::Item&);
 	signals:
 		void gotRosterItems (const QList<ICLEntry*>&);
 		void rosterItemRemoved (GlooxCLEntry*);
-		void rosterChanged ();
 
 		void gotRequestedPosts (const QList<LC::Azoth::Post>&, const QString&);
 		void gotNewPost (const LC::Azoth::Post&);

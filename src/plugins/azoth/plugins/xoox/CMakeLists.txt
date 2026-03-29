@@ -105,11 +105,9 @@ LC_DEFINE_PLUGIN (
 		pendinglastactivityrequest.cpp
 		discomanagerwrapper.cpp
 		addtoblockedrunner.cpp
-		rostersaver.cpp
 		vcardstorage.cpp
 		vcardstorageondisk.cpp
 		sslerrorshandler.cpp
-		offlinedatasource.cpp
 		callshandler.cpp
 		bookmarksintegrator.cpp
 		clientloggermanager.cpp

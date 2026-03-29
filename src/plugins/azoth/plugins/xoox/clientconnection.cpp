@@ -306,12 +306,8 @@ namespace Xoox
 			CapsQueue_->Clear ();
 			VersionQueue_->Clear ();
 
-			for (const auto& jid : JID2CLEntry_.keys ())
-			{
-				auto entry = JID2CLEntry_.take (jid);
-				ODSEntries_ [jid] = entry;
-				entry->Convert2ODS ();
-			}
+			for (const auto& entry : JID2CLEntry_)
+				entry->SetOffline ();
 			SelfContact_->RemoveVariant (OurResource_, true);
 
 			emit statusChanged (EntryStatus (SOffline, state.Status_));
@@ -377,7 +373,7 @@ namespace Xoox
 
 	void ClientConnection::CreateEntry (const QString& jid)
 	{
-		GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
+		const auto entry = new GlooxCLEntry (jid, Account_);
 		JID2CLEntry_ [jid] = entry;
 		emit gotRosterItems ({ entry });
 	}
@@ -561,19 +557,6 @@ namespace Xoox
 					<< "isn't present in roster manager, removing directly";
 			handleRosterItemRemoved (jid);
 		}
-
-		if (ODSEntries_.contains (jid))
-		{
-			const auto otherEntry = ODSEntries_.take (jid);
-			if (otherEntry != entry)
-				qWarning () << Q_FUNC_INFO
-						<< "stored ODS entry isn't equal to entry for"
-						<< jid
-						<< "!";
-			emit rosterItemRemoved (otherEntry);
-
-			delete otherEntry;
-		}
 	}
 
 	ClientConnectionErrorMgr* ClientConnection::GetErrorManager () const
@@ -633,30 +616,16 @@ namespace Xoox
 			else
 				return rh->GetParticipantEntry (variant).get ();
 		}
-		else if (bareJid == OurBareJID_)
+		if (bareJid == OurBareJID_)
 			return SelfContact_;
-		else if (const auto entry = JID2CLEntry_.value (bareJid))
+		if (const auto entry = JID2CLEntry_.value (bareJid))
 			return entry;
-		else if (const auto entry = ODSEntries_.value (bareJid))
-			return entry;
-		else
-		{
-			auto [trueBare, trueVar] = Split (bareJid);
-			if (trueBare != bareJid)
-				return GetCLEntry (trueBare, trueVar);
 
-			return nullptr;
-		}
-	}
+		const auto& [trueBare, trueVar] = Split (bareJid);
+		if (trueBare != bareJid)
+			return GetCLEntry (trueBare, trueVar);
 
-	GlooxCLEntry* ClientConnection::AddODSCLEntry (OfflineDataSource_ptr ods)
-	{
-		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
-		ODSEntries_ [entry->GetJID ()] = entry;
-
-		emit gotRosterItems ({ entry });
-
-		return entry;
+		return nullptr;
 	}
 
 	QList<ICLEntry*> ClientConnection::GetCLEntries () const
@@ -665,10 +634,9 @@ namespace Xoox
 
 		const auto totalRoomParticipants = std::accumulate (RoomHandlers_.begin (), RoomHandlers_.end (), 0,
 				[] (int acc, RoomHandler *rh) { return acc + rh->GetParticipants ().size (); });
-		result.reserve (1 + JID2CLEntry_.size () + ODSEntries_.size () + totalRoomParticipants + RoomHandlers_.size ());
+		result.reserve (1 + JID2CLEntry_.size () + totalRoomParticipants + RoomHandlers_.size ());
 
 		std::ranges::copy (JID2CLEntry_, std::back_inserter (result));
-		std::ranges::copy (ODSEntries_, std::back_inserter (result));
 
 		for (const auto rh : RoomHandlers_)
 		{
@@ -681,10 +649,7 @@ namespace Xoox
 
 	QList<GlooxCLEntry*> ClientConnection::GetRosterEntries () const
 	{
-		QList<GlooxCLEntry*> result { JID2CLEntry_.begin (), JID2CLEntry_.end () };
-		result.reserve (result.size () + ODSEntries_.size ());
-		std::ranges::copy (ODSEntries_, std::back_inserter (result));
-		return result;
+		return JID2CLEntry_.values ();
 	}
 
 	QList<RoomCLEntry*> ClientConnection::GetRoomCLEntries () const
@@ -749,18 +714,30 @@ namespace Xoox
 	void ClientConnection::handleRosterReceived ()
 	{
 		const auto& rm = Exts ().Get<QXmppRosterManager> ();
+
+		const auto& serverJids = rm.getRosterBareJids ();
+
+		QStringList removedJids;
+		for (const QSet<QString> serverJidsSet { serverJids.begin (), serverJids.end () };
+			const auto& [jid, entry] : JID2CLEntry_.asKeyValueRange ())
+			if (!serverJidsSet.contains (jid) && entry->IsRosterEntry ())
+				removedJids << jid;
+		for (const auto& jid : removedJids)
+			handleRosterItemRemoved (jid);
+
 		QList<ICLEntry*> items;
-		for (const auto& bareJid : rm.getRosterBareJids ())
+		for (const auto& bareJid : serverJids)
 		{
 			const auto& re = rm.getRosterEntry (bareJid);
 			const auto entry = CreateCLEntry (re);
 			items << entry;
-			const auto& presences = rm.getAllPresencesForBareJid (re.bareJid ());
-			for (const auto& resource : presences.keys ())
-				entry->SetClientInfo (resource, presences [resource]);
+			for (const auto& [resource, presence] : rm.getAllPresencesForBareJid (re.bareJid ()).asKeyValueRange ())
+			{
+				entry->SetStatus (XooxUtil::PresenceToStatus (presence), resource, presence);
+				entry->SetClientInfo (resource, presence);
+			}
 		}
 		emit gotRosterItems (items);
-		emit rosterChanged ();
 
 		for (const auto& msg : OfflineMsgQueue_)
 			handleMessageReceived (msg);
@@ -776,22 +753,18 @@ namespace Xoox
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
 	{
-		const auto& rm = Exts ().Get<QXmppRosterManager> ();
-		const auto& presences = rm.getAllPresencesForBareJid (bareJid);
-
 		if (!JID2CLEntry_.contains (bareJid))
 			emit gotRosterItems ({ CreateCLEntry (bareJid) });
 
+		const auto& rm = Exts ().Get<QXmppRosterManager> ();
 		const auto entry = JID2CLEntry_ [bareJid];
-		for (const auto& resource : presences.keys ())
+		entry->PromoteToRosterEntry ();
+		for (const auto& [resource, presence] : rm.getAllPresencesForBareJid (bareJid).asKeyValueRange ())
 		{
-			const auto& pres = presences [resource];
-			entry->SetClientInfo (resource, pres);
-			entry->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
+			entry->SetClientInfo (resource, presence);
+			entry->SetStatus (XooxUtil::PresenceToStatus (presence), resource, presence);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
-
-		emit rosterChanged ();
 	}
 
 	void ClientConnection::handleRosterItemRemoved (const QString& bareJid)
@@ -803,8 +776,6 @@ namespace Xoox
 		const auto entry = JID2CLEntry_.take (bareJid);
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
-
-		emit rosterChanged ();
 	}
 
 	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)
@@ -860,12 +831,10 @@ namespace Xoox
 			SelfContact_->HandlePresence (pres, resource);
 			return;
 		}
-		else if (!JID2CLEntry_.contains (jid))
+		if (!JID2CLEntry_.contains (jid))
 		{
-			if (ODSEntries_.contains (jid))
-				ConvertFromODS (jid, Exts ().Get<QXmppRosterManager> ().getRosterEntry (jid));
-			else
-				return;
+			qWarning () << "received non-roster presence" << jid;
+			return;
 		}
 
 		JID2CLEntry_ [jid]->HandlePresence (pres, resource);
@@ -1199,29 +1168,16 @@ namespace Xoox
 		const QString& bareJID = ri.bareJid ();
 		if (!JID2CLEntry_.contains (bareJID))
 		{
-			if (ODSEntries_.contains (bareJID))
-				entry = ConvertFromODS (bareJID, ri);
-			else
-			{
-				entry = new GlooxCLEntry (bareJID, Account_);
-				JID2CLEntry_ [bareJID] = entry;
-				ScheduleFetchVCard (bareJID, false);
-			}
+			entry = new GlooxCLEntry (bareJID, Account_);
+			JID2CLEntry_ [bareJID] = entry;
+			ScheduleFetchVCard (bareJID, false);
 		}
 		else
 		{
 			entry = JID2CLEntry_ [bareJID];
 			entry->UpdateRI (ri);
 		}
-		return entry;
-	}
-
-	GlooxCLEntry* ClientConnection::ConvertFromODS (const QString& bareJID,
-			const QXmppRosterIq::Item& ri)
-	{
-		GlooxCLEntry *entry = ODSEntries_.take (bareJID);
-		entry->UpdateRI (ri);
-		JID2CLEntry_ [bareJID] = entry;
+		entry->PromoteToRosterEntry ();
 		return entry;
 	}
 }

@@ -221,10 +221,6 @@ namespace Xoox
 						JoinRoom (pair.first, pair.second, {});
 					}
 				});
-		connect (ClientConnection_.get (),
-				&ClientConnection::rosterChanged,
-				this,
-				&GlooxAccount::rosterSaveRequested);
 
 		connect (ClientConnection_->GetXep0313Manager (),
 				&Xep0313Manager::serverHistoryFetched,
@@ -805,11 +801,6 @@ namespace Xoox
 	std::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
-	}
-
-	GlooxCLEntry* GlooxAccount::CreateFromODS (OfflineDataSource_ptr ods)
-	{
-		return ClientConnection_->AddODSCLEntry (ods);
 	}
 
 	void GlooxAccount::UpdateOurPhotoHash (const QByteArray& hash)
