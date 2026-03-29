@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/" >
-    <file>resources/data/default_feeds.xml</file>
-  </qresource>
-</RCC>

@@ -28,8 +28,6 @@
 #include "representationmanager.h"
 #include "dbupdatethread.h"
 #include "pluginmanager.h"
-#include "startupfirstpage.h"
-#include "startupthirdpage.h"
 #include "updatesmanager.h"
 #include "poolsmanager.h"
 #include "feedserrormanager.h"
@@ -266,34 +264,6 @@ namespace Aggregator
 	QMap<QByteArray, ActionInfo> Aggregator::GetActionInfo () const
 	{
 		return ShortcutMgr_->GetActionInfo ();
-	}
-
-	QList<QWizardPage*> Aggregator::GetWizardPages () const
-	{
-		QList<QWizardPage*> result;
-		int version = XmlSettingsManager::Instance ().Property ("StartupVersion", 0).toInt ();
-		if (version <= 0)
-			result << new StartupFirstPage ();
-		if (version <= 2)
-		{
-			auto third = new StartupThirdPage ();
-			result << third;
-
-			connect (third,
-					&StartupThirdPage::feedsSelected,
-					this,
-					[this] (const QList<StartupThirdPage::SelectedFeed>& feeds)
-					{
-						auto tm = GetProxyHolder ()->GetTagsManager ();
-						for (const auto& feed : feeds)
-							AddFeed ({
-										.URL_ = feed.URL_,
-										.Tags_ = tm->Split (feed.Tags_),
-										.UpdatesManager_ = *UpdatesManager_,
-									});
-					});
-		}
-		return result;
 	}
 
 	QList<QAction*> Aggregator::GetActions (ActionsEmbedPlace place) const

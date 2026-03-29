@@ -46,8 +46,6 @@ LC_DEFINE_PLUGIN (
 		xmlsettingsmanager.cpp
 		feedsettings.cpp
 		itemswidget.cpp
-		startupfirstpage.cpp
-		startupthirdpage.cpp
 		pluginmanager.cpp
 		proxyobject.cpp
 		dbupdatethread.cpp
@@ -60,7 +58,6 @@ LC_DEFINE_PLUGIN (
 		tooltipbuilder.cpp
 		common.cpp
 	SETTINGS aggregatorsettings.xml
-	RESOURCES aggregatorresources.qrc
 	QT_COMPONENTS Network PrintSupport Sql Widgets Xml
 	INSTALL_SHARE
 	HAS_TESTS

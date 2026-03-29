@@ -18,10 +18,8 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
 #include <interfaces/iactionsexporter.h>
-#include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
-#include "feed.h"
 
 namespace LC
 {
@@ -50,7 +48,6 @@ namespace Aggregator
 					 , public IEntityHandler
 					 , public IHaveShortcuts
 					 , public IActionsExporter
-					 , public IStartupWizard
 					 , public IPluginReady
 					 , public IHaveRecoverableTabs
 	{
@@ -61,7 +58,6 @@ namespace Aggregator
 				IJobHolder
 				IEntityHandler
 				IHaveShortcuts
-				IStartupWizard
 				IActionsExporter
 				IPluginReady
 				IHaveRecoverableTabs)
@@ -110,8 +106,6 @@ namespace Aggregator
 
 		void SetShortcut (const QByteArray&, const QKeySequences_t&) override;
 		QMap<QByteArray, ActionInfo> GetActionInfo () const override;
-
-		QList<QWizardPage*> GetWizardPages () const override;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
