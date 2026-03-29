@@ -42,7 +42,7 @@ namespace Poshuku
 
 	IStorageBackend_ptr ProxyObject::CreateStorageBackend ()
 	{
-		return StorageBackend::Create ();
+		return std::make_shared<SQLStorageBackend> ();
 	}
 
 	QString ProxyObject::GetUserAgent (const QUrl& url) const

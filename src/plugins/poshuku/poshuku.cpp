@@ -22,7 +22,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompletionmodel.h>
-#include <util/db/backendselector.h>
 #include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
@@ -46,8 +45,6 @@ namespace Poshuku
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"poshukusettings.xml");
-		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
-				new Util::BackendSelector (&XmlSettingsManager::Instance ()));
 
 		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
 		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
@@ -74,22 +71,7 @@ namespace Poshuku
 		ReloadAll_->setProperty ("ActionIcon", "system-software-update");
 		ShortcutMgr_->RegisterAction ("EAReloadAll_", ReloadAll_);
 
-		try
-		{
-			Core::Instance ().Init ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			QMessageBox::critical (nullptr,
-					"LeechCraft",
-					tr ("Poshuku failed to initialize properly. "
-						"Check logs and talk with the developers. "
-						"Or, at least, check the storage backend "
-						"settings and restart LeechCraft."));
-			throw;
-		}
+		Core::Instance ().Init ();
 
 		PrepopulateShortcuts ();
 

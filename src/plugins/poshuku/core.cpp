@@ -43,6 +43,7 @@
 #include "favoriteschecker.h"
 #include "importentity.h"
 #include "dummywebview.h"
+#include "pageformsdata.h"
 
 namespace LC
 {
@@ -94,16 +95,11 @@ namespace Poshuku
 
 		try
 		{
-			StorageBackend_ = StorageBackend::Create ();
+			StorageBackend_ = std::make_shared<SQLStorageBackend> ();
 		}
 		catch (const std::runtime_error& s)
 		{
 			emit error (QString::fromUtf8 (s.what ()));
-			throw;
-		}
-		catch (...)
-		{
-			emit error (tr ("Poshuku: general storage initialization error."));
 			throw;
 		}
 
@@ -385,7 +381,7 @@ namespace Poshuku
 		return NetworkAccessManager_;
 	}
 
-	StorageBackend* Core::GetStorageBackend () const
+	SQLStorageBackend* Core::GetStorageBackend () const
 	{
 		return StorageBackend_.get ();
 	}

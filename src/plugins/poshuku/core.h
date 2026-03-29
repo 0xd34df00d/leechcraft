@@ -21,7 +21,7 @@
 #include "interfaces/poshuku/iwebviewprovider.h"
 #include "favoritesmodel.h"
 #include "historymodel.h"
-#include "storagebackend.h"
+#include "sqlstoragebackend.h"
 #include "urlcompletionmodel.h"
 #include "pluginmanager.h"
 #include "browserwidgetsettings.h"
@@ -59,7 +59,7 @@ namespace Poshuku
 		HistoryModel * const HistoryModel_;
 		FavoritesModel * const FavoritesModel_;
 
-		std::shared_ptr<StorageBackend> StorageBackend_;
+		std::shared_ptr<SQLStorageBackend> StorageBackend_;
 		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
 
 		ICoreProxy_ptr Proxy_;
@@ -115,7 +115,7 @@ namespace Poshuku
 		HistoryModel* GetHistoryModel () const;
 		URLCompletionModel* GetURLCompletionModel () const;
 		QNetworkAccessManager* GetNetworkAccessManager () const;
-		StorageBackend* GetStorageBackend () const;
+		SQLStorageBackend* GetStorageBackend () const;
 		PluginManager* GetPluginManager () const;
 
 		QIcon GetIcon (const QUrl&) const;

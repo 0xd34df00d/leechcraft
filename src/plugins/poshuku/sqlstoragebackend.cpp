@@ -10,18 +10,14 @@
 #include <stdexcept>
 #include <cmath>
 #include <QDir>
-#include <QSqlQuery>
 #include <QSqlError>
 #include <QThread>
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
-#include <util/db/oral/pgimpl.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
-#include <util/util.h>
-#include "xmlsettingsmanager.h"
 
 namespace LC
 {
@@ -111,43 +107,14 @@ namespace LC
 {
 namespace Poshuku
 {
-	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type type)
-	: Type_ { type }
-	, DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
+	SQLStorageBackend::SQLStorageBackend ()
+	: DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
 	{
-		QString strType;
-		switch (type)
-		{
-		case SBSQLite:
-			strType = "QSQLITE";
-			break;
-		case SBPostgres:
-			strType = "QPSQL";
-			break;
-		}
-
-		DB_ = QSqlDatabase::addDatabase (strType, Util::GenConnectionName ("org.LeechCraft.Poshuku"));
-		switch (type)
-		{
-		case SBSQLite:
-		{
-			QDir dir = QDir::home ();
-			dir.cd (".leechcraft");
-			dir.cd ("poshuku");
-			DB_.setDatabaseName (dir.filePath ("poshuku.db"));
-			break;
-		}
-		case SBPostgres:
-		{
-			auto& xsm = XmlSettingsManager::Instance ();
-			DB_.setDatabaseName (xsm.property ("PostgresDBName").toString ());
-			DB_.setHostName (xsm.property ("PostgresHostname").toString ());
-			DB_.setPort (xsm.property ("PostgresPort").toInt ());
-			DB_.setUserName (xsm.property ("PostgresUsername").toString ());
-			DB_.setPassword (xsm.property ("PostgresPassword").toString ());
-			break;
-		}
-		}
+		DB_ = QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("org.LeechCraft.Poshuku"));
+		QDir dir = QDir::home ();
+		dir.cd (".leechcraft");
+		dir.cd ("poshuku");
+		DB_.setDatabaseName (dir.filePath ("poshuku.db"));
 
 		if (!DB_.open ())
 		{
@@ -155,12 +122,9 @@ namespace Poshuku
 			throw std::runtime_error ("Could not initialize database");
 		}
 
-		if (type == SBSQLite)
-			Util::RunTextQuery (DB_, "PRAGMA journal_model = WAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_model = WAL;");
 
-		type == SBSQLite ?
-				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, History_, Favorites_, FormsNever_) :
-				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, History_, Favorites_, FormsNever_);
+		oral::AdaptPtrs (DB_, History_, Favorites_, FormsNever_);
 	}
 
 	SQLStorageBackend::~SQLStorageBackend () = default;
@@ -225,9 +189,7 @@ namespace Poshuku
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)
 	{
 		const auto& record = History::FromHistoryItem (item);
-		Type_ == SBSQLite ?
-				History_->Insert (oral::SQLiteImplFactory {}, record, oral::InsertAction::Replace::Whole) :
-				History_->Insert (oral::PostgreSQLImplFactory {}, record, oral::InsertAction::Replace::Whole);
+		History_->Insert (record, oral::InsertAction::Replace::Whole);
 		emit added (item);
 	}
 

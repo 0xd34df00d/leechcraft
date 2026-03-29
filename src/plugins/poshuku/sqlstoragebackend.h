@@ -8,18 +8,24 @@
 
 #pragma once
 
-#include "storagebackend.h"
 #include <QSqlDatabase>
 #include <util/sll/util.h>
 #include <util/db/oral/oralfwd.h>
+#include "interfaces/poshuku/poshukutypes.h"
+#include "interfaces/poshuku/istoragebackend.h"
+#include "favoritesmodel.h"
 
 namespace LC
 {
 namespace Poshuku
 {
-	class SQLStorageBackend : public StorageBackend
+	class SQLStorageBackend
+		: public QObject
+		, public IStorageBackend
 	{
-		const Type Type_;
+		Q_OBJECT
+		Q_INTERFACES (LC::Poshuku::IStorageBackend)
+
 		QSqlDatabase DB_;
 		const Util::DefaultScopeGuard DBGuard_;
 	public:
@@ -31,19 +37,24 @@ namespace Poshuku
 		Util::oral::ObjectInfo_ptr<Favorites> Favorites_;
 		Util::oral::ObjectInfo_ptr<FormsNever> FormsNever_;
 	public:
-		SQLStorageBackend (Type);
+		SQLStorageBackend ();
 		~SQLStorageBackend ();
 
 		void LoadHistory (history_items_t&) const override;
-		history_items_t LoadResemblingHistory (const QString&) const override;
-		void AddToHistory (const HistoryItem&) override;
-		void ClearOldHistory (int, int) override;
-		void LoadFavorites (FavoritesModel::items_t&) const override;
-		void AddToFavorites (const FavoritesModel::FavoritesItem&) override;
-		void RemoveFromFavorites (const FavoritesModel::FavoritesItem&) override;
-		void UpdateFavorites (const FavoritesModel::FavoritesItem&) override;
-		void SetFormsIgnored (const QString&, bool) override;
-		bool GetFormsIgnored (const QString&) const override;
+		history_items_t LoadResemblingHistory (const QString&) const;
+		void AddToHistory (const HistoryItem&);
+		void ClearOldHistory (int, int);
+		void LoadFavorites (FavoritesModel::items_t&) const;
+		void AddToFavorites (const FavoritesModel::FavoritesItem&);
+		void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
+		void UpdateFavorites (const FavoritesModel::FavoritesItem&);
+		void SetFormsIgnored (const QString&, bool);
+		bool GetFormsIgnored (const QString&) const;
+	signals:
+		void added (const HistoryItem&);
+		void added (const FavoritesModel::FavoritesItem&);
+		void updated (const FavoritesModel::FavoritesItem&);
+		void removed (const FavoritesModel::FavoritesItem&);
 	};
 }
 }

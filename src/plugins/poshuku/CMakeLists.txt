@@ -23,7 +23,6 @@ LC_DEFINE_PLUGIN (
 		favoritesdelegate.cpp
 		favoritestreeview.cpp
 		historymodel.cpp
-		storagebackend.cpp
 		sqlstoragebackend.cpp
 		urlcompletionmodel.cpp
 		screenshotsavedialog.cpp
