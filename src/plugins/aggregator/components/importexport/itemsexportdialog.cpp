@@ -140,7 +140,7 @@ namespace LC::Aggregator
 	bool ItemsExportDialog::Browse ()
 	{
 		const auto& filename = QFileDialog::getSaveFileName (this,
-				tr ("Select save file"),
+				tr ("Export news items"),
 				GetFilename (),
 				Util::MakeFileDialogFilter ({ { tr ("fb2 files"), "fb2"_ql }, { tr ("PDF files"), "pdf"_ql } }));
 		if (filename.isEmpty ())

@@ -112,7 +112,7 @@ namespace LC::Aggregator
 			startingPath = QDir::homePath ();
 
 		const auto& filename = QFileDialog::getOpenFileName (this,
-				tr ("Select OPML file"),
+				tr ("Import from OPML"),
 				startingPath,
 				Util::MakeFileDialogFilter ({ { tr ("OPML files"), "opml"_ql }, { tr ("All files"), "*"_ql } }));
 		if (filename.isEmpty ())

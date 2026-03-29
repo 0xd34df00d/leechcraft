@@ -94,7 +94,7 @@ namespace LC::Aggregator
 	bool FeedsExportDialog::Browse ()
 	{
 		const auto& filename = QFileDialog::getSaveFileName (this,
-				tr ("Export as"),
+				tr ("Export as OPML"),
 				Ui_.File_->text (),
 				Util::MakeFileDialogFilter ({ { tr ("OPML files"), "opml"_ql }, { tr ("All files"), "*"_ql } }));
 		if (filename.isEmpty ())
