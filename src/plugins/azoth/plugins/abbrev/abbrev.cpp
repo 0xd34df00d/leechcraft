@@ -19,10 +19,20 @@
 
 namespace LC::Azoth::Abbrev
 {
+	namespace
+	{
+		void RegisterSettingsTypes ()
+		{
+			qRegisterMetaType<Abbreviation> ("LC::Azoth::Abbrev::Abbreviation");
+			qRegisterMetaType<Abbreviation> ("LeechCraft::Azoth::Abbrev::Abbreviation");
+			qRegisterMetaType<QList<Abbreviation>> ("QList<LC::Azoth::Abbrev::Abbreviation>");
+			qRegisterMetaType<QList<Abbreviation>> ("QList<LeechCraft::Azoth::Abbrev::Abbreviation>");
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		qRegisterMetaType<Abbreviation> ("LC::Azoth::Abbrev::Abbreviation");
-		qRegisterMetaType<QList<Abbreviation>> ("QList<LC::Azoth::Abbrev::Abbreviation>");
+		RegisterSettingsTypes ();
 
 		Manager_ = std::make_shared<AbbrevsManager> ();
 
