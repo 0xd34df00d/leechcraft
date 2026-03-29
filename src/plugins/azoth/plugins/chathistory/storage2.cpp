@@ -10,102 +10,31 @@
 #include <QDir>
 #include <QSqlError>
 #include <util/db/oral/oral.h>
+#include <util/db/oral/utilitytypes.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 
 namespace LC::Util::oral
 {
 	template<typename ImplFactory>
-	struct Type2Name<ImplFactory, Azoth::IMessage::Direction>
-	{
-		constexpr auto operator() () const noexcept
-		{
-			return "VARCHAR(1)"_ct;
-		}
-	};
+	struct Type2Name<ImplFactory, Azoth::IMessage::Direction> : CharEnumTypeName {};
 
+	using enum Azoth::IMessage::Direction;
 	template<>
-	struct ConvertT<Azoth::IMessage::Direction>
-	{
-		QVariant operator() (Azoth::IMessage::Direction kind) const noexcept
-		{
-			using enum Azoth::IMessage::Direction;
-			switch (kind)
-			{
-			case In:
-				return QString { QChar { 'I' } };
-			case Out:
-				return QString { QChar { 'O' } };
-			}
-			std::unreachable ();
-		}
-
-		Azoth::IMessage::Direction operator() (const QVariant& var) const noexcept
-		{
-			using enum Azoth::IMessage::Direction;
-
-			if (const auto& str = var.toString ();
-				str.size () == 1)
-				switch (str.at (0).toLatin1 ())
-				{
-				case 'I':
-					return In;
-				case 'O':
-					return Out;
-				}
-
-			qWarning () << "invalid stored value:" << var;
-			return In;
-		}
-	};
+	struct ConvertT<Azoth::IMessage::Direction> : ConvertEnum<
+			Azoth::IMessage::Direction,
+			{ In, 'I' }, { Out, 'O' }
+		> {};
 
 	template<typename ImplFactory>
-	struct Type2Name<ImplFactory, Azoth::History::EntryKind>
-	{
-		constexpr auto operator() () const noexcept
-		{
-			return "VARCHAR(1)"_ct;
-		}
-	};
+	struct Type2Name<ImplFactory, Azoth::History::EntryKind> : CharEnumTypeName {};
 
+	using enum Azoth::History::EntryKind;
 	template<>
-	struct ConvertT<Azoth::History::EntryKind>
-	{
-		QVariant operator() (Azoth::History::EntryKind kind) const noexcept
-		{
-			using enum Azoth::History::EntryKind;
-			switch (kind)
-			{
-			case Chat:
-				return QString { QChar { 'C' } };
-			case MUC:
-				return QString { QChar { 'M' } };
-			case PrivateChat:
-				return QString { QChar { 'P' } };
-			}
-			std::unreachable ();
-		}
-
-		Azoth::History::EntryKind operator() (const QVariant& var) const noexcept
-		{
-			using enum Azoth::History::EntryKind;
-
-			if (const auto& str = var.toString ();
-				str.size () == 1)
-				switch (str.at (0).toLatin1 ())
-				{
-				case 'C':
-					return Chat;
-				case 'M':
-					return MUC;
-				case 'P':
-					return PrivateChat;
-				}
-
-			qWarning () << "invalid stored value:" << var;
-			return Chat;
-		}
-	};
+	struct ConvertT<Azoth::History::EntryKind> : ConvertEnum<
+			Azoth::History::EntryKind,
+			{ Chat, 'C' }, { MUC, 'M' }, { PrivateChat, 'P' }
+		> {};
 }
 
 namespace LC::Azoth::ChatHistory
