@@ -21,8 +21,18 @@
 
 namespace LC::Azoth::Acetamide
 {
+	namespace
+	{
+		void RegisterSettingsTypes ()
+		{
+			qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		RegisterSettingsTypes ();
+
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 					QStringLiteral ("azothacetamidesettings.xml"));
