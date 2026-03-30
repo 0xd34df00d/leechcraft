@@ -247,7 +247,7 @@ namespace LC::Util::oral
 				return t.toString (Qt::ISODateWithMs);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<qint64> (t);
-			else if constexpr (IsIndirect<T> {})
+			else if constexpr (Indirect<T>)
 				return Convert<typename T::value_type> (t);
 			else
 				return t;
@@ -263,7 +263,7 @@ namespace LC::Util::oral
 				return QDateTime::fromString (var.toString (), Qt::ISODateWithMs);
 			else if constexpr (std::is_enum_v<T>)
 				return static_cast<T> (var.value<qint64> ());
-			else if constexpr (IsIndirect<T> {})
+			else if constexpr (Indirect<T>)
 				return Convert<typename T::value_type> (var);
 			else
 				return var.value<T> ();
@@ -595,7 +595,7 @@ namespace LC::Util::oral
 		};
 
 		template<typename T>
-		using UnwrapIndirect_t = typename std::conditional_t<IsIndirect<T> {},
+		using UnwrapIndirect_t = std::conditional_t<Indirect<T>,
 				T,
 				WrapDirect<T>>::value_type;
 

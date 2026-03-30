@@ -23,6 +23,8 @@ namespace oral
 	template<typename T, typename Concrete>
 	struct IndirectHolderBase
 	{
+		constexpr static bool IsIndirect = true;
+
 		using value_type = T;
 
 		T Val_;
@@ -145,19 +147,7 @@ namespace oral
 	using Indices = Typelist<Args...>;
 
 	template<typename T>
-	struct IsIndirect : std::false_type {};
-
-	template<typename T, typename... Args>
-	struct IsIndirect<PKey<T, Args...>> : std::true_type {};
-
-	template<typename T>
-	struct IsIndirect<Unique<T>> : std::true_type {};
-
-	template<typename T>
-	struct IsIndirect<NotNull<T>> : std::true_type {};
-
-	template<auto Ptr>
-	struct IsIndirect<References<Ptr>> : std::true_type {};
+	concept Indirect = T::IsIndirect;
 
 	struct InsertAction
 	{

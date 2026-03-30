@@ -230,7 +230,7 @@ namespace LC::Aggregator
 	template<typename T>
 	decltype (auto) FromOralType (const T& src)
 	{
-		if constexpr (oral::IsIndirect<T> {})
+		if constexpr (oral::Indirect<T>)
 			return *src;
 		else
 			return src;
