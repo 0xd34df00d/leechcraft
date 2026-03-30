@@ -109,6 +109,8 @@ namespace oral
 	template<auto Ptr>
 	struct References : IndirectHolderBase<typename MemberPtrType_t<Ptr>::value_type, References<Ptr>>
 	{
+		constexpr static bool IsReferences = true;
+
 		using member_type = MemberPtrType_t<Ptr>;
 		static_assert (detail::IsReferencesTarget<member_type>::value, "References<> element must refer to a PKey<> element");
 
@@ -148,6 +150,9 @@ namespace oral
 
 	template<typename T>
 	concept Indirect = T::IsIndirect;
+
+	template<typename T>
+	concept ForeignKey = T::IsReferences;
 
 	struct InsertAction
 	{
