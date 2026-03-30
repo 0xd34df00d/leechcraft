@@ -20,45 +20,65 @@ namespace oral
 {
 	struct NoAutogen;
 
+	template<typename T>
+	concept Indirect = T::IsIndirect;
+
+	namespace detail
+	{
+		template<typename T>
+		struct WrapDirect { using value_type = T; };
+
+		template<typename T>
+		using UnwrapIndirect_t = std::conditional_t<Indirect<T>,
+				T,
+				WrapDirect<T>>::value_type;
+	}
+
 	template<typename T, typename Concrete>
 	struct IndirectHolderBase
 	{
 		constexpr static bool IsIndirect = true;
 
-		using value_type = T;
+		using base_type = T;
+		using value_type = detail::UnwrapIndirect_t<T>;
 
 		T Val_;
 
 		IndirectHolderBase () = default;
 
-		IndirectHolderBase (T val)
-		: Val_ { val }
+		IndirectHolderBase (value_type val)
+		: Val_ { std::move (val) }
 		{
 		}
 
-		template<typename U = T, typename Sub = typename U::value_type>
-		IndirectHolderBase (Sub val)
-		: Val_ { val }
+		template<typename Arg, typename... Args>
+			requires std::constructible_from<value_type, Arg&&, Args&&...> &&
+					(sizeof... (Args) > 0 || !std::derived_from<std::decay_t<Arg>, IndirectHolderBase>)
+		IndirectHolderBase (Arg&& arg, Args&&... args)
+		: Val_ { std::forward<Arg> (arg), std::forward<Args> (args)... }
 		{
 		}
 
-		Concrete& operator= (T val)
+		Concrete& operator= (value_type val)
 		{
-			Val_ = val;
+			Val_ = std::move (val);
 			return static_cast<Concrete&> (*this);
 		}
 
-		operator value_type () const
+		explicit (false) operator value_type () const
 		{
 			return Val_;
 		}
 
 		const value_type& operator* () const
 		{
-			return Val_;
+			if constexpr (Indirect<T>)
+				return *Val_;
+			else
+				return Val_;
 		}
 
-		const value_type* operator-> () const
+		auto operator-> () const
 		{
 			return &Val_;
 		}
@@ -147,9 +167,6 @@ namespace oral
 
 	template<typename... Args>
 	using Indices = Typelist<Args...>;
-
-	template<typename T>
-	concept Indirect = T::IsIndirect;
 
 	template<typename T>
 	concept ForeignKey = T::IsReferences;

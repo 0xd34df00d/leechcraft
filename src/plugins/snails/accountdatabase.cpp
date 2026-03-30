@@ -562,7 +562,7 @@ namespace Snails
 	void AccountDatabase::LoadKnownFolders ()
 	{
 		for (const auto& folder : Folders_->Select ())
-			KnownFolders_ [(**folder.FolderPath_).split ('/')] = folder.Id_;
+			KnownFolders_ [folder.FolderPath_->split ('/')] = folder.Id_;
 	}
 }
 }

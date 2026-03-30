@@ -588,17 +588,6 @@ namespace LC::Util::oral
 				return subexpr;
 		}
 
-		template<typename T>
-		struct WrapDirect
-		{
-			using value_type = T;
-		};
-
-		template<typename T>
-		using UnwrapIndirect_t = std::conditional_t<Indirect<T>,
-				T,
-				WrapDirect<T>>::value_type;
-
 		template<ExprType Type, typename Seq, typename L, typename R>
 		constexpr bool Typecheck ()
 		{

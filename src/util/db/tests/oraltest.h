@@ -18,6 +18,8 @@ namespace Util
 	{
 		Q_OBJECT
 	private slots:
+		void testNestedIndirect ();
+
 		void testAutoPKeyRecordInsertSelect ();
 		void testAutoPKeyRecordInsertRvalueReturnsPKey ();
 		void testAutoPKeyRecordInsertConstLvalueReturnsPKey ();

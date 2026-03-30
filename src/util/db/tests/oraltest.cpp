@@ -159,6 +159,20 @@ namespace Util
 {
 	namespace sph = oral::sph;
 
+	void OralTest::testNestedIndirect ()
+	{
+		static_assert (lco::detail::IsForeignKeyRecursive<lco::PKey<lco::References<&OptionalFieldRecord::ID_>>> ());
+
+		lco::PKey<lco::References<&OptionalFieldRecord::ID_>> prid { 1 };
+		static_assert (std::is_same_v<std::decay_t<decltype (*prid)>, int>);
+		QCOMPARE (prid, 1);
+		QCOMPARE (*prid, 1);
+
+		lco::PKey<lco::Unique<lco::References<&OptionalFieldRecord::ID_>>> purid { 1 };
+		QCOMPARE (purid, 1);
+		static_assert (std::is_same_v<std::decay_t<decltype (*purid)>, int>);
+	}
+
 	void OralTest::testAutoPKeyRecordInsertSelect ()
 	{
 		qDebug () << oral::detail::FieldNames<AutogenPKeyRecord>;
