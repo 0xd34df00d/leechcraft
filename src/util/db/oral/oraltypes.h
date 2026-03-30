@@ -91,7 +91,7 @@ namespace oral
 	};
 
 	template<typename T, typename... Args>
-	using PKeyValue_t = typename PKey<T, Args...>::value_type;
+	using PKeyValue_t = PKey<T, Args...>::value_type;
 
 	template<typename T>
 	struct Unique : IndirectHolderBase<T, Unique<T>>
@@ -100,7 +100,7 @@ namespace oral
 	};
 
 	template<typename T>
-	using UniqueValue_t = typename Unique<T>::value_type;
+	using UniqueValue_t = Unique<T>::value_type;
 
 	template<typename T>
 	struct NotNull : IndirectHolderBase<T, NotNull<T>>
@@ -109,7 +109,7 @@ namespace oral
 	};
 
 	template<typename T>
-	using NotNullValue_t = typename NotNull<T>::value_type;
+	using NotNullValue_t = NotNull<T>::value_type;
 
 	template<typename T>
 	using UniqueNotNull = Unique<NotNull<T>>;
@@ -151,7 +151,7 @@ namespace oral
 	};
 
 	template<auto Ptr>
-	using ReferencesValue_t = typename References<Ptr>::value_type;
+	using ReferencesValue_t = References<Ptr>::value_type;
 
 	template<auto... Fields>
 	struct PrimaryKey {};
