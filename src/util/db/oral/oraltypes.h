@@ -82,6 +82,28 @@ namespace oral
 		{
 			return &Val_;
 		}
+
+		friend constexpr bool operator== (const Concrete& c1, const Concrete& c2)
+		{
+			return c1.Val_ == c2.Val_;
+		}
+
+		friend constexpr bool operator== (const Concrete& c, const value_type& v)
+		{
+			return c.Val_ == v;
+		}
+
+		friend constexpr auto operator<=> (const Concrete& c1, const Concrete& c2)
+			requires std::three_way_comparable<T>
+		{
+			return c1.Val_ <=> c2.Val_;
+		}
+
+		friend constexpr auto operator<=> (const Concrete& c, const value_type& v)
+			requires std::three_way_comparable<T>
+		{
+			return c.Val_ <=> v;
+		}
 	};
 
 	template<typename T, typename... Tags>
