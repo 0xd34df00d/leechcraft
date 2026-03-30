@@ -19,6 +19,9 @@ namespace Util
 		Q_OBJECT
 	private slots:
 		void testBasicFKeys ();
+
+		void testPKeyReferencesInsert ();
+		void testPKeyReferencesUpsert ();
 	};
 }
 }

@@ -336,6 +336,16 @@ namespace LC::Util::oral
 			return run (SeqIndices<Seq>);
 		}
 
+		template<typename T>
+		constexpr bool IsForeignKeyRecursive ()
+		{
+			if constexpr (ForeignKey<T>)
+				return true;
+			if constexpr (Indirect<T>)
+				return IsForeignKeyRecursive<typename T::base_type> ();
+			return false;
+		}
+
 		template<typename Seq>
 		consteval int PKeyIndex ()
 		{
@@ -354,7 +364,11 @@ namespace LC::Util::oral
 		constexpr auto HasAutogenPKey () noexcept
 		{
 			if constexpr (HasPKey<Seq>)
-				return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, PKeyIndex_v<Seq>>> {});
+			{
+				using PKeyType = ValueAtC_t<Seq, PKeyIndex_v<Seq>>;
+				return !HasType<NoAutogen> (AsTypelist_t<PKeyType> {}) &&
+						!IsForeignKeyRecursive<PKeyType> ();
+			}
 			else
 				return false;
 		}

@@ -95,6 +95,25 @@ ORAL_ADAPT_STRUCT (Student2Lecturer,
 
 TOSTRING (Student2Lecturer)
 
+struct StudentExtra
+{
+	lco::PKey<lco::References<&Student::ID_>> Id_ {};
+	lco::NotNull<QString> ExtraName_;
+
+	constexpr static auto ClassName = "StudentExtra"_ct;
+
+	auto AsTuple () const
+	{
+		return std::tie (Id_, ExtraName_);
+	}
+};
+
+ORAL_ADAPT_STRUCT (StudentExtra,
+		Id_,
+		ExtraName_)
+
+TOSTRING (StudentExtra)
+
 namespace LC
 {
 namespace Util
@@ -126,6 +145,35 @@ namespace Util
 				sph::f<&StudentInfo::Age_> > 18);
 		const QList<Student> expected { list [1].first, list [2].first };
 		QCOMPARE (selected, expected);
+	}
+
+	void OralFKeyTest::testPKeyReferencesInsert ()
+	{
+		auto db = MakeDatabase ();
+
+		const auto student = lco::AdaptPtr<Student, OralFactory> (db);
+		const auto extra = lco::AdaptPtr<StudentExtra, OralFactory> (db);
+
+		const auto id = student->Insert ({ {}, "Student 1" });
+		extra->Insert ({ .Id_ = id, .ExtraName_ = "foo" });
+
+		const auto& selected = extra->Select ();
+		QCOMPARE (selected, (QList { StudentExtra { 1, "foo" } }));
+	}
+
+	void OralFKeyTest::testPKeyReferencesUpsert ()
+	{
+		auto db = MakeDatabase ();
+
+		const auto student = lco::AdaptPtr<Student, OralFactory> (db);
+		const auto extra = lco::AdaptPtr<StudentExtra, OralFactory> (db);
+
+		const auto id = student->Insert ({ {}, "Student 1" });
+		extra->Insert ({ .Id_ = id, .ExtraName_ = "foo" });
+		extra->Insert ({ .Id_ = id, .ExtraName_ = "bar" }, lco::InsertAction::Replace::Fields<&StudentExtra::ExtraName_>);
+
+		const auto& selected = extra->Select ();
+		QCOMPARE (selected, (QList { StudentExtra { 1, "bar" } }));
 	}
 }
 }
