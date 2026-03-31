@@ -68,7 +68,7 @@ namespace LC::LMP::PPL
 			case Header::Album:
 			case Header::Track:
 			case Header::Date:
-				using ResultType_t = std::result_of_t<Summary (int)>;
+				using ResultType_t = std::invoke_result_t<Summary, int>;
 				if constexpr (std::is_same_v<ResultType_t, void>)
 					return;
 				else
