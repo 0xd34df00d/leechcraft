@@ -21,9 +21,26 @@ namespace LC
 {
 namespace XProxy
 {
+	namespace
+	{
+		void RegisterSettingsTypes ()
+		{
+			qRegisterMetaType<Entry_t> ("LC::XProxy::Entry_t");
+			qRegisterMetaType<Entry_t> ("LeechCraft::XProxy::Entry_t");
+			qRegisterMetaType<QList<Entry_t>> ("QList<LC::XProxy::Entry_t>");
+			qRegisterMetaType<QList<Entry_t>> ("QList<LeechCraft::XProxy::Entry_t>");
+
+			qRegisterMetaType<ScriptEntry_t> ("LC::XProxy::ScriptEntry_t");
+			qRegisterMetaType<ScriptEntry_t> ("LeechCraft::XProxy::ScriptEntry_t");
+			qRegisterMetaType<QList<ScriptEntry_t>> ("QList<LC::XProxy::ScriptEntry_t>");
+			qRegisterMetaType<QList<ScriptEntry_t>> ("QList<LeechCraft::XProxy::ScriptEntry_t>");
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		CoreProxy_ = proxy;
+		RegisterSettingsTypes ();
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
