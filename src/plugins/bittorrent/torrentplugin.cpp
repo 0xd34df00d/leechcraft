@@ -46,7 +46,6 @@ namespace LC::BitTorrent
 	void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 	{
 		InstallTranslator ("bittorrent"_qs);
-		Core::Instance ()->SetProxy (proxy);
 
 		TabTC_ =
 		{
@@ -61,6 +60,7 @@ namespace LC::BitTorrent
 		XmlSettingsDialog_ = std::make_shared<XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "torrentsettings.xml"_qs);
 
+		Core::Instance ()->SetProxy (proxy);
 		Core::Instance ()->DoDelayedInit ();
 
 		FastSpeedControlWidget_ = new FastSpeedControlWidget ();
