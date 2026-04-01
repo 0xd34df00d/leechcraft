@@ -36,8 +36,8 @@ namespace LC::Util::ConsistencyChecker
 			qDebug () << "checking" << dbPath;
 			const auto& connName = GenConnectionName ("ConsistencyChecker_" + dbPath);
 
-			auto db = QSqlDatabase::addDatabase ("QSQLITE"_qs, connName);
 			const auto remGuard = MakeScopeGuard ([connName] { QSqlDatabase::removeDatabase (connName); });
+			auto db = QSqlDatabase::addDatabase ("QSQLITE"_qs, connName);
 
 			db.setDatabaseName (dbPath);
 			if (!db.open ())
