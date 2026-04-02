@@ -14,7 +14,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
-#include "core.h"
+#include "util/azoth/util.h"
 
 namespace LC
 {
@@ -28,23 +28,6 @@ namespace Azoth
 	void HistorySyncer::AddStorage (IHistoryPlugin *storage)
 	{
 		Storages_ << storage;
-	}
-
-	namespace
-	{
-		bool IsOnline (State st)
-		{
-			switch (st)
-			{
-			case SOffline:
-			case SError:
-			case SConnecting:
-			case SInvalid:
-				return false;
-			default:
-				return true;
-			}
-		}
 	}
 
 	void HistorySyncer::AddAccount (IAccount *acc)

@@ -40,6 +40,7 @@ add_util_library (azoth-util
 		util/azoth/emitters/mucentry.cpp
 		util/azoth/emitters/transfermanager.cpp
 		util/azoth/hooks.cpp
+		util/azoth/util.cpp
 	USES Widgets
 	)
 
