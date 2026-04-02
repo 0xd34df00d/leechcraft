@@ -19,7 +19,7 @@ namespace Azoth
 	/** @brief Describes possible presence states of an account or a
 	 * contact.
 	 */
-	enum State
+	enum State : std::uint8_t
 	{
 		SOffline,
 		SOnline,
