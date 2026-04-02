@@ -599,7 +599,7 @@ namespace Xoox
 				}
 			});
 
-		if (PEPMicroblog *microblog = dynamic_cast<PEPMicroblog*> (event))
+		if (const auto microblog = dynamic_cast<PEPMicroblog*> (event))
 		{
 			emit gotNewPost (*microblog);
 			return;
@@ -608,9 +608,7 @@ namespace Xoox
 		if (dynamic_cast<UserAvatarData*> (event) || dynamic_cast<UserAvatarMetadata*> (event))
 			return;
 
-		qWarning () << Q_FUNC_INFO
-				<< "unhandled PEP event from"
-				<< GetJID ();
+		qWarning () << "unhandled PEP event from" << GetJID () << event->Node ();
 	}
 
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
@@ -848,32 +846,38 @@ namespace Xoox
 			qWarning () << "no such variant" << variant;
 	}
 
+	namespace
+	{
+		std::optional<ActivityInfo> GetActivityInfo (const UserActivity& activity)
+		{
+			if (activity.GetGeneral () == UserActivity::GeneralEmpty)
+				return {};
+			return { { activity.GetGeneralStr (), activity.GetSpecificStr (), activity.GetText () } };
+		}
+
+		std::optional<MoodInfo> GetMoodInfo (const UserMood& mood)
+		{
+			if (mood.GetMood () == UserMood::MoodEmpty)
+				return {};
+			return { { mood.GetMoodStr (), mood.GetText () } };
+		}
+
+		std::optional<Media::AudioInfo> GetAudioInfo (const UserTune& tune)
+		{
+			return tune.IsNull () ? std::nullopt : std::optional { tune.ToAudioInfo () };
+		}
+	}
+
 	void EntryBase::HandleUserActivity (const UserActivity *activity, const QString& variant)
 	{
 		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{
-			if (activity->GetGeneral () != UserActivity::GeneralEmpty)
+			if (auto newActivity = GetActivityInfo (*activity);
+				newActivity != varInfo.Activity_)
 			{
-				if (!varInfo.Activity_)
-					return;
-
-				varInfo.Activity_.reset ();
+				varInfo.Activity_ = std::move (newActivity);
+				emit activityChanged (variant);
 			}
-			else
-			{
-				const ActivityInfo info
-				{
-					activity->GetGeneralStr (),
-					activity->GetSpecificStr (),
-					activity->GetText ()
-				};
-				if (varInfo.Activity_ == info)
-					return;
-
-				varInfo.Activity_ = info;
-			}
-
-			emit activityChanged (variant);
 		});
 	}
 
@@ -881,27 +885,12 @@ namespace Xoox
 	{
 		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{
-			if (mood->GetMood () == UserMood::MoodEmpty)
+			if (auto newMood = GetMoodInfo (*mood);
+				newMood != varInfo.Mood_)
 			{
-				if (!varInfo.Mood_)
-					return;
-
-				varInfo.Mood_.reset ();
+				varInfo.Mood_ = std::move (newMood);
+				emit moodChanged (variant);
 			}
-			else
-			{
-				const MoodInfo info
-				{
-					mood->GetMoodStr (),
-					mood->GetText ()
-				};
-				if (varInfo.Mood_ == info)
-					return;
-
-				varInfo.Mood_ = info;
-			}
-
-			emit moodChanged (variant);
 		});
 	}
 
@@ -909,23 +898,12 @@ namespace Xoox
 	{
 		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{
-			if (tune->IsNull ())
+			if (auto newAudio = GetAudioInfo (*tune);
+				newAudio != varInfo.Audio_)
 			{
-				if (!varInfo.Audio_)
-					return;
-
-				varInfo.Audio_.reset ();
+				varInfo.Audio_ = std::move (newAudio);
+				emit tuneChanged (variant);
 			}
-			else
-			{
-				const auto& audioInfo = tune->ToAudioInfo ();
-				if (varInfo.Audio_ == audioInfo)
-					return;
-
-				varInfo.Audio_ = audioInfo;
-			}
-
-			emit tuneChanged (variant);
 		});
 	}
 
