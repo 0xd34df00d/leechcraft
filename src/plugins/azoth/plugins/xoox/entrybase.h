@@ -212,6 +212,9 @@ namespace Xoox
 		QByteArray GetVariantVerString (const QString&) const;
 		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
+		template<typename F>
+		void OnVariant (const QString& variant, F&& f);
+
 		void HandleUserActivity (const UserActivity*, const QString&);
 		void HandleUserMood (const UserMood*, const QString&);
 		void HandleUserTune (const UserTune*, const QString&);

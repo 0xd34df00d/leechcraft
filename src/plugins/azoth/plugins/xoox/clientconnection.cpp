@@ -761,8 +761,8 @@ namespace Xoox
 		entry->PromoteToRosterEntry ();
 		for (const auto& [resource, presence] : rm.getAllPresencesForBareJid (bareJid).asKeyValueRange ())
 		{
-			entry->SetClientInfo (resource, presence);
 			entry->SetStatus (XooxUtil::PresenceToStatus (presence), resource, presence);
+			entry->SetClientInfo (resource, presence);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
 	}

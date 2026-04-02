@@ -553,8 +553,8 @@ namespace Xoox
 
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
-		SetClientInfo (resource, pres);
 		SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
+		SetClientInfo (resource, pres);
 
 		CheckVCardUpdate (pres);
 	}
@@ -589,16 +589,15 @@ namespace Xoox
 			return HandleUserTune (tune, variant);
 
 		if (const auto location = dynamic_cast<UserLocation*> (event))
-		{
-			auto& currentLocation = Variants_ [variant].Location_;
-			if (currentLocation == location->GetInfo ())
-				return;
-
-			currentLocation = location->GetInfo ();
-			emit locationChanged (variant, this);
-			emit locationChanged (variant);
-			return;
-		}
+			return OnVariant (variant, [&, this] (VariantInfo& varInfo)
+			{
+				if (varInfo.Location_ != location->GetInfo ())
+				{
+					varInfo.Location_ = location->GetInfo ();
+					emit locationChanged (variant, this);
+					emit locationChanged (variant);
+				}
+			});
 
 		if (PEPMicroblog *microblog = dynamic_cast<PEPMicroblog*> (event))
 		{
@@ -727,54 +726,53 @@ namespace Xoox
 		return UnreadMessages_;
 	}
 
-	void EntryBase::SetClientInfo (const QString& variant,
-			const QString& node, const QByteArray& ver)
+	void EntryBase::SetClientInfo (const QString& variant, const QString& node, const QByteArray& ver)
 	{
-		auto& varInfo = Variants_ [variant];
-		if (varInfo.VerString_ == ver)
-			return;
-
-		const auto& staticClientInfo = XooxUtil::GetStaticClientInfo (node);
-		if (staticClientInfo.IsEmpty () && !node.isEmpty ())
-			qWarning () << Q_FUNC_INFO
-					<< "unknown client for"
-					<< node;
-
-		varInfo.ClientInfo_ ["client_type"] = staticClientInfo.ID_;
-		varInfo.ClientInfo_ ["client_name"] = staticClientInfo.HumanReadableName_;
-		varInfo.ClientInfo_ ["raw_client_name"] = staticClientInfo.HumanReadableName_;
-
-		varInfo.VerString_ = ver;
-
-		QString reqJid = GetJID ();
-		QString reqVar = "";
-		if (GetEntryType () == EntryType::Chat)
+		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{
-			reqJid = variant.isEmpty () ?
-					reqJid :
-					reqJid + '/' + variant;
-			reqVar = variant;
-		}
+			if (varInfo.VerString_ == ver)
+				return;
 
-		auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
-		const auto& storedIds = capsManager->GetIdentities (ver);
+			const auto& staticClientInfo = XooxUtil::GetStaticClientInfo (node);
+			if (staticClientInfo.IsEmpty () && !node.isEmpty ())
+				qWarning () << "unknown client for" << node;
 
-		if (!storedIds.isEmpty ())
-			SetDiscoIdentities (reqVar, storedIds);
-		else
-		{
-			qDebug () << "requesting ids for" << reqJid << reqVar;
-			QPointer<EntryBase> pThis (this);
-			QPointer<CapsManager> pCM (capsManager);
-			Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (reqJid,
-				[ver, reqVar, pThis, pCM] (const QXmppDiscoveryIq& iq)
-				{
-					if (!ver.isEmpty () && pCM)
-						pCM->SetIdentities (ver, iq.identities ());
-					if (pThis)
-						pThis->SetDiscoIdentities (reqVar, iq.identities ());
-				});
-		}
+			varInfo.ClientInfo_ ["client_type"] = staticClientInfo.ID_;
+			varInfo.ClientInfo_ ["client_name"] = staticClientInfo.HumanReadableName_;
+			varInfo.ClientInfo_ ["raw_client_name"] = staticClientInfo.HumanReadableName_;
+
+			varInfo.VerString_ = ver;
+
+			QString reqJid = GetJID ();
+			QString reqVar = "";
+			if (GetEntryType () == EntryType::Chat)
+			{
+				reqJid = variant.isEmpty () ?
+						reqJid :
+						reqJid + '/' + variant;
+				reqVar = variant;
+			}
+
+			auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
+			const auto& storedIds = capsManager->GetIdentities (ver);
+
+			if (!storedIds.isEmpty ())
+				SetDiscoIdentities (reqVar, storedIds);
+			else
+			{
+				qDebug () << "requesting ids for" << reqJid << reqVar;
+				QPointer<EntryBase> pThis (this);
+				QPointer<CapsManager> pCM (capsManager);
+				Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (reqJid,
+					[ver, reqVar, pThis, pCM] (const QXmppDiscoveryIq& iq)
+					{
+						if (!ver.isEmpty () && pCM)
+							pCM->SetIdentities (ver, iq.identities ());
+						if (pThis)
+							pThis->SetDiscoIdentities (reqVar, iq.identities ());
+					});
+			}
+		});
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
@@ -785,39 +783,44 @@ namespace Xoox
 
 	void EntryBase::SetClientVersion (const QString& variant, const QXmppVersionIq& version)
 	{
-		Variants_ [variant].Version_ = version;
-		emit Emitter_.entryGenerallyChanged ();
+		OnVariant (variant, [&, this] (VariantInfo& varInfo)
+		{
+			varInfo.Version_ = version;
+			emit Emitter_.entryGenerallyChanged ();
+		});
 	}
 
 	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
 	{
-		auto& varInfo = Variants_ [variant];
-		varInfo.Identities_ = ids;
+		OnVariant (variant, [&, this] (VariantInfo& varInfo)
+		{
+			varInfo.Identities_ = ids;
 
-		const QString& name = ids.value (0).name ();
-		const QString& type = ids.value (0).type ();
-		if (name.contains ("Kopete"))
-		{
-			varInfo.ClientInfo_ ["client_type"] = "kopete";
-			varInfo.ClientInfo_ ["client_name"] = "Kopete";
-			varInfo.ClientInfo_ ["raw_client_name"] = "kopete";
-			emit Emitter_.statusChanged (GetStatus (variant), variant);
-		}
-		else if (name.contains ("emacs", Qt::CaseInsensitive) ||
-				name.contains ("jabber.el", Qt::CaseInsensitive))
-		{
-			varInfo.ClientInfo_ ["client_type"] = "jabber.el";
-			varInfo.ClientInfo_ ["client_name"] = "Emacs Jabber.El";
-			varInfo.ClientInfo_ ["raw_client_name"] = "jabber.el";
-			emit Emitter_.statusChanged (GetStatus (variant), variant);
-		}
-		else if (type == "mrim")
-		{
-			varInfo.ClientInfo_ ["client_type"] = "mailruagent";
-			varInfo.ClientInfo_ ["client_name"] = "Mail.Ru Agent Gateway";
-			varInfo.ClientInfo_ ["raw_client_name"] = "mailruagent";
-			emit Emitter_.statusChanged (GetStatus (variant), variant);
-		}
+			const QString& name = ids.value (0).name ();
+			const QString& type = ids.value (0).type ();
+			if (name.contains ("Kopete"))
+			{
+				varInfo.ClientInfo_ ["client_type"] = "kopete";
+				varInfo.ClientInfo_ ["client_name"] = "Kopete";
+				varInfo.ClientInfo_ ["raw_client_name"] = "kopete";
+				emit Emitter_.statusChanged (GetStatus (variant), variant);
+			}
+			else if (name.contains ("emacs", Qt::CaseInsensitive) ||
+					name.contains ("jabber.el", Qt::CaseInsensitive))
+			{
+				varInfo.ClientInfo_ ["client_type"] = "jabber.el";
+				varInfo.ClientInfo_ ["client_name"] = "Emacs Jabber.El";
+				varInfo.ClientInfo_ ["raw_client_name"] = "jabber.el";
+				emit Emitter_.statusChanged (GetStatus (variant), variant);
+			}
+			else if (type == "mrim")
+			{
+				varInfo.ClientInfo_ ["client_type"] = "mailruagent";
+				varInfo.ClientInfo_ ["client_name"] = "Mail.Ru Agent Gateway";
+				varInfo.ClientInfo_ ["raw_client_name"] = "mailruagent";
+				emit Emitter_.statusChanged (GetStatus (variant), variant);
+			}
+		});
 	}
 
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
@@ -835,79 +838,95 @@ namespace Xoox
 		return Variants_ [var].Version_;
 	}
 
+	template<typename F>
+	void EntryBase::OnVariant (const QString& variant, F&& f)
+	{
+		if (const auto it = Variants_.find (variant);
+			it != Variants_.end ())
+			std::forward<F> (f) (*it);
+		else
+			qWarning () << "no such variant" << variant;
+	}
+
 	void EntryBase::HandleUserActivity (const UserActivity *activity, const QString& variant)
 	{
-		auto& varInfo = Variants_ [variant];
-		if (activity->GetGeneral () == UserActivity::GeneralEmpty)
+		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{
-			if (!varInfo.Activity_)
-				return;
-
-			varInfo.Activity_.reset ();
-		}
-		else
-		{
-			const ActivityInfo info
+			if (activity->GetGeneral () != UserActivity::GeneralEmpty)
 			{
-				activity->GetGeneralStr (),
-				activity->GetSpecificStr (),
-				activity->GetText ()
-			};
-			if (varInfo.Activity_ == info)
-				return;
+				if (!varInfo.Activity_)
+					return;
 
-			varInfo.Activity_ = info;
-		}
+				varInfo.Activity_.reset ();
+			}
+			else
+			{
+				const ActivityInfo info
+				{
+					activity->GetGeneralStr (),
+					activity->GetSpecificStr (),
+					activity->GetText ()
+				};
+				if (varInfo.Activity_ == info)
+					return;
 
-		emit activityChanged (variant);
+				varInfo.Activity_ = info;
+			}
+
+			emit activityChanged (variant);
+		});
 	}
 
 	void EntryBase::HandleUserMood (const UserMood *mood, const QString& variant)
 	{
-		auto& varInfo = Variants_ [variant];
-		if (mood->GetMood () == UserMood::MoodEmpty)
+		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{
-			if (!varInfo.Mood_)
-				return;
-
-			varInfo.Mood_.reset ();
-		}
-		else
-		{
-			const MoodInfo info
+			if (mood->GetMood () == UserMood::MoodEmpty)
 			{
-				mood->GetMoodStr (),
-				mood->GetText ()
-			};
-			if (varInfo.Mood_ == info)
-				return;
+				if (!varInfo.Mood_)
+					return;
 
-			varInfo.Mood_ = info;
-		}
+				varInfo.Mood_.reset ();
+			}
+			else
+			{
+				const MoodInfo info
+				{
+					mood->GetMoodStr (),
+					mood->GetText ()
+				};
+				if (varInfo.Mood_ == info)
+					return;
 
-		emit moodChanged (variant);
+				varInfo.Mood_ = info;
+			}
+
+			emit moodChanged (variant);
+		});
 	}
 
 	void EntryBase::HandleUserTune (const UserTune *tune, const QString& variant)
 	{
-		auto& varInfo = Variants_ [variant];
-		if (tune->IsNull ())
+		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{
-			if (!varInfo.Audio_)
-				return;
+			if (tune->IsNull ())
+			{
+				if (!varInfo.Audio_)
+					return;
 
-			varInfo.Audio_.reset ();
-		}
-		else
-		{
-			const auto& audioInfo = tune->ToAudioInfo ();
-			if (varInfo.Audio_ == audioInfo)
-				return;
+				varInfo.Audio_.reset ();
+			}
+			else
+			{
+				const auto& audioInfo = tune->ToAudioInfo ();
+				if (varInfo.Audio_ == audioInfo)
+					return;
 
-			varInfo.Audio_ = audioInfo;
-		}
+				varInfo.Audio_ = audioInfo;
+			}
 
-		emit tuneChanged (variant);
+			emit tuneChanged (variant);
+		});
 	}
 
 	void EntryBase::CheckVCardUpdate (const QXmppPresence& pres)
@@ -994,12 +1013,13 @@ namespace Xoox
 		if (variant.isEmpty () || GetEntryType () == EntryType::PrivateChat)
 			variant = "";
 
-		const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
-		Variants_ [variant].SecsDiff_ = { static_cast<int> (secsDiff), iq.tzo () };
-
-		emit Emitter_.entryGenerallyChanged ();
-
-		emit entityTimeUpdated ();
+		OnVariant (variant, [&, this] (VariantInfo& varInfo)
+		{
+			const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
+			varInfo.SecsDiff_ = { static_cast<int> (secsDiff), iq.tzo () };
+			emit Emitter_.entryGenerallyChanged ();
+			emit entityTimeUpdated ();
+		});
 	}
 
 	void EntryBase::handleCommands ()
