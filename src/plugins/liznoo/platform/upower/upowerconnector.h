@@ -25,12 +25,9 @@ namespace UPower
 	{
 		Q_OBJECT
 
-		bool HasGlobalDeviceChanged_;
 		QSet<QString> SubscribedDevices_;
 	public:
 		UPowerConnector (QObject* = nullptr);
-	private:
-		void ConnectChangedNotification ();
 	private slots:
 		void handleGonnaSleep ();
 		void enumerateDevices ();

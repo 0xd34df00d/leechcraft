@@ -33,8 +33,6 @@ namespace UPower
 				this,
 				SLOT (requeryDevice (QString)));
 
-		ConnectChangedNotification ();
-
 		if (!CheckSignals ("/org/freedesktop/UPower", { "\"Sleeping\"", "\"Resuming\"" }))
 		{
 			qDebug () << Q_FUNC_INFO
@@ -56,22 +54,6 @@ namespace UPower
 				SIGNAL (wokeUp ()));
 
 		PowerEventsAvailable_ = sleepConnected && resumeConnected;
-	}
-
-	void UPowerConnector::ConnectChangedNotification ()
-	{
-		HasGlobalDeviceChanged_ = CheckSignals ("/org/freedesktop/UPower", { "DeviceChanged" });
-		qDebug () << Q_FUNC_INFO
-			<< "has global DeviceChanged signal?"
-			<< HasGlobalDeviceChanged_;
-
-		if (HasGlobalDeviceChanged_)
-			SB_.connect ("org.freedesktop.UPower",
-					"/org/freedesktop/UPower",
-					"org.freedesktop.UPower",
-					"DeviceChanged",
-					this,
-					SLOT (requeryDevice (QString)));
 	}
 
 	void UPowerConnector::handleGonnaSleep ()
@@ -148,7 +130,7 @@ namespace UPower
 
 		emit batteryInfoUpdated (info);
 
-		if (!HasGlobalDeviceChanged_ && !SubscribedDevices_.contains (id))
+		if (!SubscribedDevices_.contains (id))
 		{
 			SB_.connect ("org.freedesktop.UPower",
 					id,
