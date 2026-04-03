@@ -34,13 +34,7 @@ add_subdirectory (xdg)
 add_subdirectory (xpc)
 add_subdirectory (xsd)
 
-if (WITH_X11 AND NOT APPLE)
-	add_subdirectory (x11)
-	set (LEECHCRAFT_UTIL_LIBRARIES leechcraft-util-x11)
-endif ()
-
 set (LEECHCRAFT_UTIL_LIBRARIES
-	${LEECHCRAFT_UTIL_LIBRARIES}
 	leechcraft-util
 	leechcraft-util-db
 	leechcraft-util-gui
@@ -57,6 +51,22 @@ set (LEECHCRAFT_UTIL_LIBRARIES
 	leechcraft-util-xpc
 	leechcraft-util-xsd
 	)
+
+if (WITH_DBUS)
+	add_subdirectory (dbus)
+	set (LEECHCRAFT_UTIL_LIBRARIES
+		${LEECHCRAFT_UTIL_LIBRARIES}
+		leechcraft-util-dbus
+		)
+endif ()
+
+if (WITH_X11 AND NOT APPLE)
+	add_subdirectory (x11)
+	set (LEECHCRAFT_UTIL_LIBRARIES
+		${LEECHCRAFT_UTIL_LIBRARIES}
+		leechcraft-util-x11
+		)
+endif ()
 
 set (LEECHCRAFT_UTIL_LIBRARIES ${LEECHCRAFT_UTIL_LIBRARIES} PARENT_SCOPE)
 
