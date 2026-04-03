@@ -32,6 +32,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
+#include <util/azoth/util.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "glooxprotocol.h"
@@ -639,11 +640,30 @@ namespace Xoox
 
 	void EntryBase::SetOffline ()
 	{
+		TopVariant_.reset ();
 		for (const auto& [variant, _] : Variants_.asKeyValueRange ())
 			emit Emitter_.statusChanged ({ SOffline }, variant);
 
 		Variants_.clear ();
 		emit Emitter_.availableVariantsChanged ({});
+	}
+
+	void EntryBase::CheckTopVariantInvalidation (const EntryStatus& status, const QString& variant, int newPriority)
+	{
+		if (!TopVariant_)
+			return;
+
+		const bool thisIsTopVariant = variant == TopVariant_;
+		const auto topPriority = Variants_.value (*TopVariant_).Priority_;
+
+		const bool topVariantUnavailable = thisIsTopVariant && !IsOnline (status.State_);
+		const bool topVariantPrioDowngraded = thisIsTopVariant && newPriority < topPriority;
+		const bool thisVariantIsNowTop = !thisIsTopVariant && newPriority > topPriority;
+
+		if (topVariantUnavailable || topVariantPrioDowngraded)
+			TopVariant_.reset ();
+		if (thisVariantIsNowTop)
+			TopVariant_ = variant;
 	}
 
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant, const QXmppPresence& presence)
@@ -659,7 +679,10 @@ namespace Xoox
 				presence.priority () == varInfo.ClientInfo_.value ("priority"))
 			return;
 
+		CheckTopVariantInvalidation (status, variant, presence.priority ());
+
 		varInfo.CurrentStatus_ = status;
+		varInfo.Priority_ = presence.priority ();
 
 		if ((!existed || wasOffline) &&
 				status.State_ != SOffline)
@@ -971,9 +994,19 @@ namespace Xoox
 
 	QString EntryBase::GetVariantOrHighest (const QString& var) const
 	{
-		return var.isEmpty () ?
-				Variants ().value (0) :
-				var;
+		if (!var.isEmpty ())
+			return var;
+
+		if (Variants_.isEmpty ())
+			return {};
+
+		if (!TopVariant_)
+		{
+			auto assumeBorrowedRange = Variants_.asKeyValueRange ();
+			auto priorityProj = [] (const auto& pair) { return pair.second.Priority_; };
+			TopVariant_ = std::ranges::max_element (assumeBorrowedRange, {}, priorityProj)->first;
+		}
+		return *TopVariant_;
 	}
 
 	void EntryBase::handleTimeReceived (const QXmppEntityTimeIq& iq)

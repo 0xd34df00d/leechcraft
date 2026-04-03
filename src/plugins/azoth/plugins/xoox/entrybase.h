@@ -108,6 +108,7 @@ namespace Xoox
 		struct VariantInfo
 		{
 			EntryStatus CurrentStatus_;
+			int Priority_ = 0;
 			GeolocationInfo_t Location_;
 			QMap<QString, QVariant> ClientInfo_;
 			QByteArray VerString_;
@@ -119,6 +120,7 @@ namespace Xoox
 			std::optional<EntityTimeInfo> SecsDiff_;
 		};
 		QHash<QString, VariantInfo> Variants_;
+		mutable std::optional<QString> TopVariant_;
 
 		QPointer<VCardDialog> VCardDialog_;
 
@@ -214,6 +216,8 @@ namespace Xoox
 	private:
 		template<typename F>
 		void OnVariant (const QString& variant, F&& f);
+
+		void CheckTopVariantInvalidation (const EntryStatus&, const QString&, int);
 
 		void HandleUserActivity (const UserActivity*, const QString&);
 		void HandleUserMood (const UserMood*, const QString&);
