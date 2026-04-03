@@ -73,9 +73,9 @@ namespace LC::Util
 
 	struct [[nodiscard]] AddContextObject
 	{
-		QObject& Context_;
+		const QObject& Context_;
 
-		explicit AddContextObject (QObject& context)
+		explicit AddContextObject (const QObject& context)
 		: Context_ { context }
 		{
 		}
