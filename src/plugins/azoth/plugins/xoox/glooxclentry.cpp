@@ -143,27 +143,7 @@ namespace LC::Azoth::Xoox
 		if (AuthRequested_)
 			return EntryStatus (SOnline, QString ());
 
-		auto& rm = Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ();
-		if (!rm.isRosterReceived ())
-			return EntryBase::GetStatus (variant);
-
-		const auto& press = rm.getAllPresencesForBareJid (GetJID ());
-		if (!press.size ())
-			return EntryBase::GetStatus (variant);
-
-		QXmppPresence max = press.begin ().value ();
-		for (const auto& [resource, pres] : Util::Stlize (press))
-		{
-			if (!variant.isEmpty () && variant == resource)
-			{
-				max = pres;
-				break;
-			}
-			if (pres.priority () > max.priority ())
-				max = pres;
-		}
-		return EntryStatus (static_cast<State> (max.availableStatusType () + 1),
-				max.statusText ());
+		return EntryBase::GetStatus (variant);
 	}
 
 	void GlooxCLEntry::SendMessage (const OutgoingMessage& message)
