@@ -8,6 +8,7 @@
 
 #include "glooxclentry.h"
 #include <algorithm>
+#include <ranges>
 #include <QStringList>
 #include <QAction>
 #include <QtDebug>
@@ -119,22 +120,9 @@ namespace LC::Azoth::Xoox
 
 	QStringList GlooxCLEntry::Variants () const
 	{
-		QStringList result;
-
-		const auto& presences = Account_->GetClientConnection ()->Exts ()
-				.Get<QXmppRosterManager> ().getAllPresencesForBareJid (HumanReadableId_);
-		if (presences.size () == 1)
-			result << presences.begin ().key ();
-		else
-		{
-			QMap<int, QList<QString>> prio2res;
-			for (const auto& pair : Util::Stlize (presences))
-				prio2res [pair.second.priority ()] << pair.first;
-			for (const auto& list : prio2res)
-				result += list;
-			std::reverse (result.begin (), result.end ());
-		}
-
+		auto result = Variants_.keys ();
+		std::ranges::sort (std::ranges::reverse_view (result), {},
+				[this] (const QString& variant) { return Variants_ [variant].Priority_; });
 		return result;
 	}
 
