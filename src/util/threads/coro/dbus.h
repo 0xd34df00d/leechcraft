@@ -86,6 +86,12 @@ namespace LC
 namespace LC::Util
 {
 	template<typename... Rets>
+	detail::DBusAwaiter<Rets...> Reply (const QDBusPendingReply<Rets...>& reply)
+	{
+		return { reply };
+	}
+
+	template<typename... Rets>
 	detail::DBusAwaiter<Rets...> Typed (const QDBusPendingCall& asyncCall)
 	{
 		return { asyncCall };
