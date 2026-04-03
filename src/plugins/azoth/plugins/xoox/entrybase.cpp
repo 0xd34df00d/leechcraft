@@ -150,14 +150,7 @@ namespace Xoox
 
 	EntryStatus EntryBase::GetStatus (const QString& variant) const
 	{
-		if (!variant.isEmpty () &&
-				Variants_.contains (variant))
-			return Variants_ [variant].CurrentStatus_;
-
-		if (!Variants_.isEmpty ())
-			return Variants_.begin ()->CurrentStatus_;
-
-		return EntryStatus ();
+		return Variants_ [GetVariantOrHighest (variant)].CurrentStatus_;
 	}
 
 	QList<QAction*> EntryBase::GetActions () const
