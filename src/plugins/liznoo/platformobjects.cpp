@@ -20,7 +20,6 @@
 #if defined(Q_OS_LINUX)
 	#include "platform/battery/upowerplatform.h"
 	#include "platform/events/platformupowerlike.h"
-	#include "platform/poweractions/pmutils.h"
 	#include "platform/poweractions/upower.h"
 	#include "platform/screen/freedesktop.h"
 	#include "platform/common/dbusthread.h"
@@ -132,8 +131,7 @@ namespace Liznoo
 
 		const auto actionsChecker = new AvailabilityChecker<PowerActions::Platform>
 		{
-			std::make_unique<PowerActionsChecker<PowerActions::UPower>> (),
-			std::make_unique<PowerActionsChecker<PowerActions::PMUtils>> ()
+			std::make_unique<PowerActionsChecker<PowerActions::UPower>> ()
 		};
 		Util::Sequence (this, actionsChecker->GetResult ()) >>
 				[this] (const auto& maybeActions)

@@ -39,7 +39,6 @@ LC_DEFINE_PLUGIN (
 		$<$<PLATFORM_ID:Linux>:
 			platform/common/dbusthread.cpp
 			platform/common/connectorbase.cpp
-			platform/poweractions/pmutils.cpp
 			platform/logind/logindconnector.cpp
 			platform/battery/upowerplatform.cpp
 			platform/upower/upowerconnector.cpp
