@@ -13,14 +13,24 @@
 
 namespace LC::Util::DBus
 {
-	QDBusPendingCall GetProperty (const Endpoint& endpoint, const QString& property)
+	QDBusPendingCall Endpoint::GetProperty (const QString& property) const
 	{
-		auto msg = QDBusMessage::createMethodCall (endpoint.Service,
-				endpoint.Path,
+		auto msg = QDBusMessage::createMethodCall (Service,
+				Path,
 				"org.freedesktop.DBus.Properties"_qs,
 				"Get"_qs);
-		msg << endpoint.Interface << property;
-		return endpoint.Conn.asyncCall (msg);
+		msg << Interface << property;
+		return Conn.asyncCall (msg);
+	}
+
+	QDBusPendingReply<QVariantMap> Endpoint::GetAllProperties () const
+	{
+		auto msg = QDBusMessage::createMethodCall (Service,
+				Path,
+				"org.freedesktop.DBus.Properties"_qs,
+				"GetAll"_qs);
+		msg << Interface;
+		return Conn.asyncCall (msg);
 	}
 
 	QDBusPendingCall StartService (const QDBusConnection& conn, const QString& name)

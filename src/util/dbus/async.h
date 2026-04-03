@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QDBusConnection>
+#include <QDBusPendingReply>
 #include "dbusconfig.h"
 
 namespace LC::Util::DBus
@@ -19,8 +20,10 @@ namespace LC::Util::DBus
 		QString Path;
 		QString Interface;
 		QDBusConnection Conn;
+
+		UTIL_DBUS_API QDBusPendingCall GetProperty (const QString& property) const;
+		UTIL_DBUS_API QDBusPendingReply<QVariantMap> GetAllProperties () const;
 	};
 
-	UTIL_DBUS_API QDBusPendingCall GetProperty (const Endpoint& endpoint, const QString& property);
 	UTIL_DBUS_API QDBusPendingCall StartService (const QDBusConnection& conn, const QString& name);
 }
