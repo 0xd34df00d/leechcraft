@@ -634,10 +634,11 @@ namespace Xoox
 	void EntryBase::SetOffline ()
 	{
 		TopVariant_.reset ();
-		for (const auto& [variant, _] : Variants_.asKeyValueRange ())
-			emit Emitter_.statusChanged ({ SOffline }, variant);
-
+		const auto& variants = Variants_.keys ();
 		Variants_.clear ();
+
+		for (const auto& variant : variants)
+			emit Emitter_.statusChanged ({ SOffline }, variant);
 		emit Emitter_.availableVariantsChanged ({});
 	}
 
