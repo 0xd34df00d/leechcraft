@@ -277,7 +277,6 @@
         "ENABLE_TEXTOGROOSE": "True",
         "ENABLE_BITTORRENT": "True",
         "ENABLE_BITTORRENT_GEOIP": "True",
-        "ENABLE_TOUCHSTREAMS": "True",
         "ENABLE_TPI": "True",
         "ENABLE_VROOBY": "True",
         "ENABLE_XPROXY": "True",
