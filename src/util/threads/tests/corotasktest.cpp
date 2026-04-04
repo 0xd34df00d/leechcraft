@@ -37,6 +37,32 @@ namespace LC::Util
 		QCOMPARE (result, 42);
 	}
 
+	void CoroTaskTest::testMoveOnlyReturn ()
+	{
+		auto direct = [] () -> Task<std::unique_ptr<int>>
+		{
+			co_return std::make_unique<int> (42);
+		} ();
+		auto directResult = GetTaskResult (direct);
+		QVERIFY (directResult);
+		QCOMPARE (*directResult, 42);
+
+		auto chained = [] () -> Task<std::unique_ptr<int>>
+		{
+			auto inner = [] () -> Task<std::unique_ptr<int>>
+			{
+				co_await 5ms;
+				co_return std::make_unique<int> (7);
+			} ();
+			auto value = co_await inner;
+			*value *= 6;
+			co_return std::move (value);
+		} ();
+		auto chainedResult = GetTaskResult (chained);
+		QVERIFY (chainedResult);
+		QCOMPARE (*chainedResult, 42);
+	}
+
 	void CoroTaskTest::testWait ()
 	{
 		QElapsedTimer timer;

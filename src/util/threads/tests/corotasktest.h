@@ -17,6 +17,7 @@ namespace LC::Util
 		Q_OBJECT
 	private slots:
 		void testReturn ();
+		void testMoveOnlyReturn ();
 		void testWait ();
 		void testTaskDestr ();
 

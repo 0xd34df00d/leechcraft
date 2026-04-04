@@ -48,6 +48,6 @@ namespace LC::Util
 			std::rethrow_exception (exception);
 
 		if constexpr (!isVoid)
-			return *result;
+			return std::move (*result);
 	}
 }

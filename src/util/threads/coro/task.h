@@ -106,7 +106,7 @@ namespace LC::Util
 
 			auto await_resume ()
 			{
-				const auto& promise = Subtask_.promise ();
+				auto& promise = Subtask_.promise ();
 				std::lock_guard guard { promise };
 				if (promise.Exception_)
 					try
@@ -118,7 +118,7 @@ namespace LC::Util
 					}
 
 				if constexpr (!Promise::IsVoid)
-					return *promise.Ret_;
+					return std::move (*promise.Ret_);
 			}
 		private:
 			bool CheckTaskFinishedUnlocked (const Promise& promise) const
