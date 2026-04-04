@@ -23,6 +23,14 @@ namespace LC::Util::DBus
 
 		UTIL_DBUS_API QDBusPendingCall GetProperty (const QString& property) const;
 		UTIL_DBUS_API QDBusPendingReply<QVariantMap> GetAllProperties () const;
+
+		template<typename... Args>
+		QDBusPendingCall Call (const QString& method, Args&&... args) const
+		{
+			auto msg = QDBusMessage::createMethodCall (Service, Path, Interface, method);
+			msg.setArguments ({ std::forward<Args> (args)... });
+			return Conn.asyncCall (msg);
+		}
 	};
 
 	UTIL_DBUS_API QDBusPendingCall StartService (const QDBusConnection& conn, const QString& name);
