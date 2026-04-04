@@ -112,7 +112,7 @@ namespace Liznoo
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("UPower/WinAPI-based power manager.");
+		return tr ("Battery, power and sleep manager.");
 	}
 
 	QIcon Plugin::GetIcon () const
