@@ -51,23 +51,23 @@ namespace Liznoo
 
 		QuarkComponent_ptr LiznooQuark_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
+		EntityTestHandleResult CouldHandle (const Entity& entity) const override;
+		void Handle (Entity entity) override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		QMap<QString, QList<QAction*>> GetMenuActions () const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
+		QMap<QString, QList<QAction*>> GetMenuActions () const override;
 
-		QuarkComponents_t GetComponents () const;
+		QuarkComponents_t GetComponents () const override;
 	private:
 		void CheckNotifications (const BatteryInfo&);
 	private slots:
@@ -81,7 +81,7 @@ namespace Liznoo
 
 		void handlePushButton (const QString&);
 	signals:
-		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }
