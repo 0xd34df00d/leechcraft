@@ -70,27 +70,16 @@ namespace LC::Util::DBus
 
 			auto unwrapper = [this, name, handler = std::forward<F> (handler)] (const QDBusMessage& msg)
 			{
-				const auto& args = msg.arguments ();
-				if (args.size () < static_cast<qsizetype> (ArgCount_v<F>))
-				{
-					qCritical () << "expected" << ArgCount_v<F> << "arguments, got" << args.size () << "for" << name;
-					return;
-				}
-
 				[&, this]<size_t... Ixs> (std::index_sequence<Ixs...>)
 				{
-					const auto allConvertable = ([&]
+					QDBusPendingReply<std::decay_t<ArgType_t<F, Ixs>>...> payload { msg };
+					if (payload.isError ())
 					{
-						if (!args [Ixs].template canConvert<ArgType_t<F, Ixs>> ())
-						{
-							qWarning () << Endpoint_.Service << Endpoint_.Path << Endpoint_.Interface << name
-									<< "unable to convert" << args [Ixs] << "to" << typeid (ArgType_t<F, Ixs>).name ();
-							return false;
-						}
-						return true;
-					} () && ...);
-					if (allConvertable)
-						handler (args [Ixs].template value<ArgType_t<F, Ixs>> ()...);
+						qWarning () << Endpoint_.Service << Endpoint_.Path << Endpoint_.Interface << name
+								<< "mismatching arguments:" << payload.error ();
+						return;
+					}
+					handler (payload.template argumentAt<Ixs> ()...);
 				} (std::make_index_sequence<ArgCount_v<F>> {});
 			};
 			handlers << std::move (unwrapper);
