@@ -121,8 +121,9 @@ namespace LC::Util::DBus
 			return TypedSignals_->Connect (name, std::forward<F> (handler));
 		}
 
-		template<std::derived_from<QObject> Obj, typename R, typename... Args>
-		bool Connect (const QString& name, Obj *ctx, R (Obj::*handler) (Args...))
+		template<std::derived_from<QObject> Ctx, typename C, typename R, typename... Args>
+			requires std::derived_from<Ctx, C>
+		bool Connect (const QString& name, Ctx *ctx, R (C::*handler) (Args...))
 		{
 			return Connect (name, [ctx, handler] (Args... args) { std::invoke (handler, ctx, args...); });
 		}
