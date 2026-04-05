@@ -100,3 +100,17 @@ namespace LC::Util
 	template<typename... Rets, typename... Actual>
 	detail::DBusAwaiter<Rets...> Typed (const QDBusPendingReply<Actual...>&) = delete ("do not use Util::Typed to await typed QDBusPendingReply<...>");
 }
+
+namespace LC::Util::DBus
+{
+	template<typename... Args>
+	struct AsyncReply
+	{
+		QDBusPendingReply<Args...> Raw_;
+
+		detail::DBusAwaiter<Args...> operator co_await () const
+		{
+			return { Raw_ };
+		}
+	};
+}
