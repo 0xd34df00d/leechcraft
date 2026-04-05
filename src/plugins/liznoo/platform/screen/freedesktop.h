@@ -16,14 +16,10 @@ namespace LC::Liznoo::Screen
 {
 	class Freedesktop : public Platform
 	{
-		Q_OBJECT
-
 		QTimer * const ActivityTimer_;
 	public:
-		Freedesktop (QObject* = nullptr);
+		explicit Freedesktop (QObject* = nullptr);
 
 		void ProhibitScreensaver (bool prohibit, const QString& id) override;
-	private slots:
-		void handleTimeout ();
 	};
 }

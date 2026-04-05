@@ -8,20 +8,31 @@
 
 #include "freedesktop.h"
 #include <QTimer>
-#include <QDBusConnection>
-#include <QDBusInterface>
-#include <QDBusPendingCall>
+#include <util/dbus/async.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/dbus.h>
 
 namespace LC::Liznoo::Screen
 {
+	namespace
+	{
+		void SimulateUserActivity ()
+		{
+			const Util::DBus::Endpoint screensaver
+			{
+				.Service = "org.freedesktop.ScreenSaver"_qs,
+				.Path = "/ScreenSaver"_qs,
+				.Interface = "org.freedesktop.ScreenSaver"_qs,
+			};
+			auto _ = screensaver.Call<> ("SimulateUserActivity"_qs);
+		}
+	}
+
 	Freedesktop::Freedesktop (QObject *parent)
 	: Platform (parent)
 	, ActivityTimer_ (new QTimer (this))
 	{
-		connect (ActivityTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleTimeout ()));
+		ActivityTimer_->callOnTimeout (&SimulateUserActivity);
 		ActivityTimer_->setInterval (30000);
 	}
 
@@ -41,11 +52,5 @@ namespace LC::Liznoo::Screen
 			if (ActiveProhibitions_.isEmpty ())
 				ActivityTimer_->stop ();
 		}
-	}
-
-	void Freedesktop::handleTimeout ()
-	{
-		QDBusInterface iface ("org.freedesktop.ScreenSaver", "/ScreenSaver");
-		iface.call ("SimulateUserActivity");
 	}
 }
